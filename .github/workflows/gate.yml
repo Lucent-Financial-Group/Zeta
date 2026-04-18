@@ -1,0 +1,73 @@
+# Zeta CI gate — Phase 1 per docs/research/ci-gate-inventory.md.
+#
+# Runs on every PR (opened / reopened / synchronize / ready_for_review)
+# and every push to main, plus workflow_dispatch for manual triage.
+#
+# Discipline (design doc: docs/research/ci-workflow-design.md, Aaron-
+# reviewed 2026-04-18):
+#   - Runners digest-pinned (ubuntu-22.04, macos-14), not -latest.
+#   - Third-party actions SHA-pinned by full 40-char commit SHA;
+#     trailing `# vX.Y.Z` comments for humans.
+#   - permissions: contents: read at the workflow level; no job
+#     elevates. No secrets referenced.
+#   - Concurrency: workflow-scoped; cancel-in-progress only for PR
+#     events (main pushes queue so every main commit gets a record).
+#   - fail-fast: false so one OS failure doesn't hide another.
+#   - NuGet cache keyed on packages.lock.json hash; runner.os
+#     prefixed so macOS + Linux caches don't collide.
+#   - Parity-drift flag: `actions/setup-dotnet` is a temporary
+#     stand-in. GOVERNANCE §24 target is tools/setup/install.sh in
+#     CI for three-way parity. Backlog item
+#     (docs/BACKLOG.md "Parity swap: CI's actions/setup-dotnet →
+#     tools/setup/install.sh").
+
+name: gate
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build-and-test:
+    name: build-and-test (${{ matrix.os }})
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, macos-14]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup .NET SDK (temporary parity-drift per GOVERNANCE §24 backlog)
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.nuget/packages
+            ~/.local/share/NuGet
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json', 'Directory.Packages.props') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      - name: Build (0 Warning(s) / 0 Error(s) required)
+        run: dotnet build Zeta.sln -c Release
+
+      - name: Test
+        run: dotnet test Zeta.sln -c Release --no-build --verbosity normal
