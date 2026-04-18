@@ -1,79 +1,22 @@
-# Current Round — 31 (rest round, maintainer-called)
+# Current Round — 32 (open)
 
-Round 30 closed; narrative absorbed into
-`docs/ROUND-HISTORY.md`. Round 30 shipped the first
-fully-green gate in the repo's history. Aaron called
-a rest round in response — "everyone take a round
-off." Planned round-31 work (LawRunner `checkBilinear`
-+ `checkSinkTerminal`; `packages.lock.json` +
-verifier SHA-pin + safety-clause-diff +
-`mise trust` + CodeQL) shifts to **round 32**.
+Round 31 closed as a rest round (maintainer-called after the
+first fully-green gate in the repo's history — PR #6 round 30,
+then PR #7 round 31 rest marker). Round 32 picks up the Track A
++ Track B plan that originally sat on round 31.
 
 ## Status
 
-- **Round number:** 31 (rest)
-- **Opened:** 2026-04-18 (continuous from round-30
-  close)
-- **Classification:** rest — no coding work, no
-  reviewer dispatches, no DEBT reshuffling.
-  Maintainer-called per first-green-gate milestone.
-- **Reviewer budget:** `harsh-critic` +
-  `maintainability-reviewer` floor per GOVERNANCE §20.
-  `security-researcher` on any workflow / install-
-  script / threat-model touch. `public-api-designer`
-  on any public-API change. `threat-model-critic` on
-  any security doc edit (round cadence per §0 of
-  THREAT-MODEL.md).
+- **Round number:** 32
+- **Opened:** 2026-04-18 (immediately post round-31 rest)
+- **Classification:** split — product + security follow-through
+- **Reviewer budget:** `harsh-critic` + `maintainability-reviewer`
+  floor per GOVERNANCE §20. `security-researcher` on any workflow
+  / install-script / threat-model touch. `public-api-designer`
+  on any public-API change. `threat-model-critic` on any
+  security doc edit (round cadence per §0 of THREAT-MODEL.md).
 
-## Round 30 close — what landed
-
-Anchor: nation-state + supply-chain threat-model
-elevation. Delivered:
-
-- **Semgrep-in-CI** — 14 custom rules went from
-  aspirational to enforced. `.github/workflows/gate.yml`
-  `lint` job runs `semgrep --config .semgrep.yml
-  --error` on every PR + push-to-main. Biggest single
-  posture fix.
-- **Semgrep rule 15** — SHA-pin enforcement on
-  `.github/workflows/**`. Defends the tj-actions tag-
-  rewrite class (CVE-2025-30066).
-- **`docs/security/THREAT-MODEL.md` expansion** —
-  adversary tiers T0-T3, re-audit cadence every round,
-  bus-factor documented exception (Aaron runs 2FA
-  only; further controls are education-over-time),
-  supply-chain boundary decomposition, SLSA ladder
-  (L1 now → L2 mid-term → L3 pre-v1.0), long-game
-  persistence defences, adversary-tier-to-control
-  matrix, formal-spec cross-reference.
-- **`docs/security/THREAT-MODEL-SPACE-OPERA.md`
-  rewritten** — 24 adversaries (was 17) with creative
-  license. Reality-tag legend (shipped / BACKLOG /
-  aspirational / teaching). New: Poisoned Bard,
-  Changeling Action, Hungry Cache, Time-Bomb Package,
-  Helpful Stranger, Moon Stares Back, Ghost in the
-  Git Blame. Rewritten: Whispering Drone Swarm,
-  Echoes from the Dyson Sphere, Fungal Network.
-- **`docs/security/INCIDENT-PLAYBOOK.md`** (new) — 6
-  playbooks (A: third-party GHA compromise, B:
-  toolchain installer hijack, C: NuGet dep poisoning,
-  D: maintainer-account compromise, E: skill safety-
-  clause regression, F: escalation), triage-in-60-
-  seconds, contact tree, disclosure timeline.
-- **`docs/security/SDL-CHECKLIST.md` honest
-  downgrades** — #7 / #8 / #9 ✅ → 🔜; #12 partial →
-  ✅. Tightened ✅ definition: "shipped AND enforced
-  by CI or governance."
-- **Reviewer floor fired** — `threat-model-critic`
-  caught a P0 (SPACE-OPERA rewrite silently didn't
-  commit in the initial write) and four P1s (matrix
-  overconfidence on build-gate T3 + Semgrep T3;
-  INCIDENT-PLAYBOOK Playbook D recovery-code
-  assumption; SDL ✅ definition self-contradiction
-  with #12; prediction-in-doc on #9). All five fixed
-  in-round.
-
-## Round 31 — parallel tracks
+## Round 32 — parallel tracks
 
 **Track A — product (LawRunner):**
 
@@ -134,12 +77,12 @@ elevation. Delivered:
 - Windows CI matrix (trigger: stable on mac + linux).
 - Parity swap: CI's `actions/setup-dotnet` →
   `tools/setup/install.sh` (gated on `mise trust`
-  hardening).
+  hardening — Track B item 4).
 - Branch-protection required-check on `main`.
 
 ## Open asks to the maintainer
 
-- **Aaron decisions staged for round 31:**
+- **Aaron decisions staged for round 32:**
   - `packages.lock.json` adoption — do we want it on
     every project or just the library (`Zeta.Core`)?
   - `mise trust` CI hardening approach — allow-list
@@ -148,7 +91,9 @@ elevation. Delivered:
     `.mise.toml` change (policy).
   - When to flip branch-protection required-check on
     `main` (one week of clean `gate.yml` runs is the
-    proposed trigger).
+    proposed trigger; round 30 + round 31 are two
+    green runs so far).
+  - Track A vs Track B first — or parallel?
 
 - **Round 30 standing asks (carried):**
   - NuGet prefix reservation on `nuget.org` for
@@ -159,13 +104,13 @@ elevation. Delivered:
 
 ## Notes for the next architect waking
 
-- **Round-30 landed big security posture work.** Any
-  round-31 PR touching security docs auto-invokes
-  `threat-model-critic` re-audit per new §0
-  "re-audit every round" rule.
-- **Semgrep-in-CI is live.** If a PR fails `lint`,
-  the fix is always to the code (not to lower a rule's
+- **First fully-green gate landed in round 30.** Round
+  31 was the rest round. If a PR fails `gate.yml`, the
+  fix is always to the code (not to lower a rule's
   severity). Weakening a rule is a design-doc moment.
+- **Any round-32 PR touching security docs auto-invokes
+  `threat-model-critic` re-audit** per §0 of
+  `docs/security/THREAT-MODEL.md`.
 - **Reality tags in SPACE-OPERA are honest signal.**
   `shipped` means enforced; `BACKLOG` means designed
   not shipped; `aspirational` means defence pattern
