@@ -10,29 +10,42 @@ namespace Zeta.Core
 /// `System.Random -> 'T` so authors wire FsCheck (or any other
 /// generator) at their end.
 ///
-/// All checks are **deterministic** given the same seed. A failing
-/// run reports the seed and the sample index; re-running with the
-/// same seed and `samples >= sampleIndex + 1` reproduces bit-exact.
+/// All checks are **deterministic** given the same seed. Each
+/// sample uses its own `System.Random(seed + sampleIndex)` so a
+/// failing `(seed, sampleIndex)` pair reproduces bit-exact on
+/// re-run with any `samples >= sampleIndex + 1` — sample N does
+/// not depend on whether earlier samples failed fast.
+///
+/// `checkRetractionCompleteness` uses the **state-restoration
+/// via continuation** formulation: feed a forward trace, then
+/// its retraction, then a continuation; compare continuation
+/// outputs to a fresh-op run of the continuation alone. Any
+/// divergence means the op's internal state survived what was
+/// supposed to be a full cancel. This catches stateful ops that
+/// mistag themselves as retraction-clean (Option B per the
+/// design doc; Option A enrichment — `Init`/`Step`/`Retract`
+/// triple — is round-29+ work).
+///
+/// `'TState` on `IStatefulStrictOperator` is unused by the
+/// trace-based law — the check runs through `StepAsync` and
+/// never inspects state. Tests pass `unit` for this parameter.
 [<RequireQualifiedAccess>]
 module LawRunner =
 
-    /// Reported when a law fails. `Seed` + `SampleIndex` are
-    /// enough to reproduce; `Message` describes the specific
-    /// failure mode.
+    /// Reported when a law fails or a check cannot run.
+    /// `Seed` + `SampleIndex` are enough to reproduce via a
+    /// fresh `checkX` call on the same seed; `Message` describes
+    /// the specific failure mode.
     type LawViolation =
         { Seed: int
           SampleIndex: int
           Message: string }
 
-    /// Drive a factory through one fresh op instance per sample
-    /// so state cannot leak across samples. Each trace runs on
-    /// its own `PluginHarness.runSingleInput` invocation which
-    /// also asserts exactly-one-`Publish`-per-tick.
-    let private runTrace<'TIn, 'TOut>
-        (makeOp: Stream<'TIn> -> IOperator<'TOut>)
-        (inputs: 'TIn list)
-        : 'TOut list =
-        PluginHarness.runSingleInput makeOp inputs
+    /// Bad arguments surface as `Error` rather than exceptions
+    /// so every public entry returns a `Result` — CLAUDE.md's
+    /// result-over-exception rule.
+    let private badArgs (seed: int) (message: string) : LawViolation =
+        { Seed = seed; SampleIndex = -1; Message = message }
 
     let private generateTrace<'TIn>
         (rng: System.Random)
@@ -40,6 +53,29 @@ module LawRunner =
         (genInput: System.Random -> 'TIn)
         : 'TIn list =
         [ for _ in 1 .. length -> genInput rng ]
+
+    /// Shared sample-loop shape used by every law. Each sample
+    /// gets a fresh `System.Random(seed + i)` so reproducibility
+    /// is per-sample, not whole-loop. `check` returns `None` on
+    /// pass and `Some message` on failure; the framer wraps it
+    /// as a `LawViolation`.
+    let private runSamples
+        (seed: int)
+        (samples: int)
+        (check: System.Random -> int -> string option)
+        : Result<unit, LawViolation> =
+        let mutable failure : LawViolation option = None
+        let mutable i = 0
+        while failure.IsNone && i < samples do
+            let rng = System.Random(seed + i)
+            match check rng i with
+            | Some msg ->
+                failure <- Some { Seed = seed; SampleIndex = i; Message = msg }
+            | None -> ()
+            i <- i + 1
+        match failure with
+        | Some v -> Error v
+        | None -> Ok ()
 
     /// Linearity: for every trace pair `(A, B)`, the output
     /// trace on `A + B` (elementwise) must equal the elementwise
@@ -65,79 +101,89 @@ module LawRunner =
         (addOut: 'TOut -> 'TOut -> 'TOut)
         (equalOut: 'TOut -> 'TOut -> bool)
         : Result<unit, LawViolation> =
-        if samples < 1 then invalidArg "samples" "must be >= 1"
-        if scheduleLength < 1 then invalidArg "scheduleLength" "must be >= 1"
-        let rng = System.Random(seed)
-        let mutable failure : LawViolation option = None
-        let mutable i = 0
-        while failure.IsNone && i < samples do
-            let traceA = generateTrace rng scheduleLength genInput
-            let traceB = generateTrace rng scheduleLength genInput
-            let traceSum = List.map2 addIn traceA traceB
-            let outA = runTrace makeOp traceA
-            let outB = runTrace makeOp traceB
-            let outSum = runTrace makeOp traceSum
-            // Compare elementwise: op(a_t + b_t) == op(a_t) + op(b_t)
-            // at every tick t. Short-circuit on first divergence so
-            // the reported message points at the offending tick.
-            let mutable tick = 0
-            let mutable broke = false
-            while not broke && tick < scheduleLength do
-                let lhs = outSum.[tick]
-                let rhs = addOut outA.[tick] outB.[tick]
-                if not (equalOut lhs rhs) then
-                    failure <-
-                        Some { Seed = seed
-                               SampleIndex = i
-                               Message =
-                                 sprintf
+        if samples < 1 then
+            Error (badArgs seed "samples must be >= 1")
+        elif scheduleLength < 1 then
+            Error (badArgs seed "scheduleLength must be >= 1")
+        else
+            runSamples seed samples (fun rng i ->
+                let traceA = generateTrace rng scheduleLength genInput
+                let traceB = generateTrace rng scheduleLength genInput
+                let traceSum = List.map2 addIn traceA traceB
+                // Convert outputs to arrays once — tick indexing
+                // is O(n) on `List.item`, so a List scan would
+                // be O(scheduleLength²) per sample.
+                let outA = PluginHarness.runSingleInput makeOp traceA |> List.toArray
+                let outB = PluginHarness.runSingleInput makeOp traceB |> List.toArray
+                let outSum = PluginHarness.runSingleInput makeOp traceSum |> List.toArray
+                let mutable result = None
+                let mutable tick = 0
+                while result.IsNone && tick < scheduleLength do
+                    let lhs = outSum.[tick]
+                    let rhs = addOut outA.[tick] outB.[tick]
+                    if not (equalOut lhs rhs) then
+                        result <-
+                            Some (sprintf
                                      "Linearity broke at sample %d, tick %d: \
-                                      op(a+b) ≠ op(a) + op(b)."
-                                     i tick }
-                    broke <- true
-                tick <- tick + 1
-            i <- i + 1
-        match failure with
-        | Some v -> Error v
-        | None -> Ok ()
+                                      op(a+b) != op(a) + op(b)."
+                                     i tick)
+                    tick <- tick + 1
+                result)
 
-    /// Retraction completeness (Option B, trace-based).
-    /// Forward-run a generated Z-set trace, then retract each
-    /// tick's input in the same order. After the round-trip the
-    /// cumulative output Z-set must be empty — any residual
-    /// means the operator leaked state through retraction.
+    /// Retraction completeness via state restoration.
+    /// A forward trace of random Z-sets is cancelled by its
+    /// elementwise negation; a continuation trace is then fed
+    /// to the same op instance, and the continuation outputs
+    /// are compared to a fresh-op run of the continuation
+    /// alone. Any divergence means state survived the cancel.
     ///
-    /// Works against the existing marker `IStatefulStrictOperator`
-    /// without interface enrichment (see the design doc for the
-    /// Option A follow-up path).
+    /// The earlier "cumulative output = 0" formulation was
+    /// rejected in review: it passes trivially for empty-emitting
+    /// ops, it is not the correct law for stateful-strict ops
+    /// whose outputs are not themselves cancelling (e.g.
+    /// integration-shaped aggregates), and a pathological op
+    /// can trivially satisfy it while leaking state. State
+    /// restoration is the law the tag actually promises.
     let checkRetractionCompleteness<'TIn, 'TOut when 'TIn : comparison and 'TOut : comparison>
         (seed: int)
         (samples: int)
         (scheduleLength: int)
+        (continuationLength: int)
         (makeOp: Stream<ZSet<'TIn>> -> IOperator<ZSet<'TOut>>)
         (genInput: System.Random -> ZSet<'TIn>)
         : Result<unit, LawViolation> =
-        if samples < 1 then invalidArg "samples" "must be >= 1"
-        if scheduleLength < 1 then invalidArg "scheduleLength" "must be >= 1"
-        let rng = System.Random(seed)
-        let mutable failure : LawViolation option = None
-        let mutable i = 0
-        while failure.IsNone && i < samples do
-            let forward = generateTrace rng scheduleLength genInput
-            let retract = forward |> List.map ZSet.neg
-            let outputs = runTrace makeOp (forward @ retract)
-            let cumulative = outputs |> List.fold ZSet.add ZSet.empty
-            if not cumulative.IsEmpty then
-                failure <-
-                    Some { Seed = seed
-                           SampleIndex = i
-                           Message =
-                             sprintf
-                                 "Retraction incomplete at sample %d: after \
-                                  forward+retract round-trip of %d ticks, \
-                                  cumulative output has %d residual entries."
-                                 i scheduleLength cumulative.Count }
-            i <- i + 1
-        match failure with
-        | Some v -> Error v
-        | None -> Ok ()
+        if samples < 1 then
+            Error (badArgs seed "samples must be >= 1")
+        elif scheduleLength < 1 then
+            Error (badArgs seed "scheduleLength must be >= 1")
+        elif continuationLength < 1 then
+            Error (badArgs seed "continuationLength must be >= 1")
+        else
+            runSamples seed samples (fun rng i ->
+                let forward = generateTrace rng scheduleLength genInput
+                let retract = forward |> List.map ZSet.neg
+                let continuation = generateTrace rng continuationLength genInput
+                let fullTrace = forward @ retract @ continuation
+                let outFull =
+                    PluginHarness.runSingleInput makeOp fullTrace
+                    |> List.toArray
+                let outFresh =
+                    PluginHarness.runSingleInput makeOp continuation
+                    |> List.toArray
+                let prefix = scheduleLength + scheduleLength
+                let mutable result = None
+                let mutable tick = 0
+                while result.IsNone && tick < continuationLength do
+                    let afterCancel = outFull.[prefix + tick]
+                    let fresh = outFresh.[tick]
+                    let diff = ZSet.add afterCancel (ZSet.neg fresh)
+                    if not diff.IsEmpty then
+                        result <-
+                            Some (sprintf
+                                     "Retraction incomplete at sample %d, \
+                                      continuation tick %d: state survived the \
+                                      forward+retract cancel (diff has %d \
+                                      residual entries)."
+                                     i tick diff.Count)
+                    tick <- tick + 1
+                result)
