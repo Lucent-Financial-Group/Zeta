@@ -406,3 +406,47 @@ than renumbering the rest.
       drift to close.
     - Parity drift is tracked in `docs/DEBT.md`, not
       accepted as permanent.
+
+25. **Upstream temporary-pin expiry.** When Zeta pins a
+    dependency to a forked branch or an unreleased
+    upstream commit (e.g., waiting for a PR to merge per
+    §23), the pin carries a dated DEBT entry and an
+    expected-release date. If the upstream release lands,
+    the pin flips to the release version in the same
+    round. If the upstream release has not landed after
+    **three rounds**, the DEBT entry is re-evaluated by
+    the Architect + Aaron: ship anyway, maintain the fork,
+    or drop the dependency. Temporary pins that silently
+    live longer than three rounds are a factory smell the
+    `factory-audit` skill surfaces.
+
+    `docs/INSTALLED.md` carries the dated "temporary pin"
+    note; the `docs/UPSTREAM-CONTRIBUTIONS.md` ledger
+    (backlogged) tracks the upstream PR status.
+
+26. **Research-doc lifecycle.** Files under
+    `docs/research/*.md` capture design rationale at a
+    point in time. Policy:
+
+    - **Active** — the design is still landing; the doc
+      is current-state. Edit in place per §2 when the
+      decision evolves.
+    - **Landed** — the design shipped. The doc becomes
+      historical rationale (like an ADR). Move to
+      `docs/DECISIONS/YYYY-MM-DD-<name>.md` on a
+      calendar date that matches the landing; keep in
+      place under `docs/research/` if it's still a
+      live reference surface (e.g., the gate inventory
+      that CI continues to audit against).
+    - **Obsolete** — the design was rejected or
+      superseded. Move to `docs/_retired/` with a
+      one-paragraph note explaining what replaced it,
+      OR delete (git history preserves the rationale).
+      `sweep-refs` is wearable for the reference sweep.
+
+    **Quarterly review.** `maintainability-reviewer`
+    (Rune) or `factory-audit` walks the
+    `docs/research/` directory every ~10 rounds and
+    classifies each doc as active / landed / obsolete.
+    Orphan design docs (no references, no ongoing
+    relevance) are retirement candidates.
