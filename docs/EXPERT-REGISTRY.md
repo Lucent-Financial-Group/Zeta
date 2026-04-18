@@ -27,7 +27,7 @@ up naturally in skill bodies; that's fine.
 | **Paper Peer Reviewer** | **Wei** | Chinese 伟 ("great / eminent") — PC-grade rigor. |
 | **Maintainability Reviewer** | **Rune** | Nordic (a "rune" is a lasting mark carved in stone) — long-horizon thinking, cares about what will still be readable years later. |
 | **Prompt Protector** | **Nadia** | Slavic / Arabic ("hope") — shields the TCB against injection; hope against adversaries. |
-| **Skill Tune-Up Ranker** | **Aarav** | Sanskrit ("peaceful") — ranks without drama; self-recommends when honest. |
+| **Skill Expert** | **Aarav** | Sanskrit ("peaceful") — ranks without drama; self-recommends when honest. Wears `skill-tune-up` (ranks existing) and `skill-gap-finder` (proposes absent) across the skill-library lifecycle. |
 | **TECH-RADAR Owner** | **Jun** | Chinese / Korean 真 ("truth") — calls Adopt / Trial / Assess / Hold with honest evidence. |
 | **Next Steps Advisor** | **Mei** | Chinese 梅 ("plum blossom") — a fresh short list each round. |
 | **Harsh Critic** | **Kira** | Russian / Japanese ("mistress of power" / "sparkle / cut") — zero empathy, unforgiving light on bad code. |
