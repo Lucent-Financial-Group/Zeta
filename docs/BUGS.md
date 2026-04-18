@@ -53,7 +53,7 @@ tempted to ship.
   others as "migrating."
 
 ### RecursiveCounting multi-tick-seed behaviour unproven
-- **Site:** `src/Dbsp.Core/Recursive.fs:152-…`
+- **Site:** `src/Core/Recursive.fs:152-…`
 - **Found:** round 20 by Kira; reproduced by an FsCheck
   property in `tests/Dbsp.Tests.FSharp/Operators/RecursiveCounting.MultiSeed.Tests.fs`
 - **Severity:** P0 honesty (tests only cover one-shot seed)
@@ -94,7 +94,7 @@ tempted to ship.
   the references.
 
 ### Durability.createBackingStore error message is 6 lines of prose
-- **Site:** `src/Dbsp.Core/Durability.fs:166-174`
+- **Site:** `src/Core/Durability.fs:166-174`
 - **Found:** round 21 by Kira
 - **Severity:** P1
 - **Symptom:** `invalidOp` body spans 6 lines; log-grep wraps badly;
@@ -104,7 +104,7 @@ tempted to ship.
   case so callers can pattern-match instead of string-match.
 
 ### RecursiveCounting lacks [<Experimental>] attribute
-- **Site:** `src/Dbsp.Core/Recursive.fs` (`RecursiveCounting` combinator)
+- **Site:** `src/Core/Recursive.fs` (`RecursiveCounting` combinator)
 - **Found:** round 21 by Kira + Tariq
 - **Severity:** P1
 - **Symptom:** the "Known limitation — one-shot seed" docstring
@@ -118,7 +118,7 @@ tempted to ship.
   the feedback cell — that's a separate P2 research item.
 
 ### FeatureFlags.isEnabled "O(1)" claim is hand-waved
-- **Site:** `src/Dbsp.Core/FeatureFlags.fs:121-127`
+- **Site:** `src/Core/FeatureFlags.fs:121-127`
 - **Found:** round 21 by Hiroshi
 - **Severity:** P1 honesty
 - **Symptom:** `ConcurrentDictionary.TryGetValue` is amortised O(1)
@@ -171,7 +171,7 @@ tempted to ship.
   model row noting BUGS.md as an injection surface.
 
 ### FeatureFlags has no Stable-stage branch
-- **Site:** `src/Dbsp.Core/FeatureFlags.fs:86-91`
+- **Site:** `src/Core/FeatureFlags.fs:86-91`
 - **Found:** round 20 by Viktor
 - **Severity:** P1 (spec drift)
 - **Symptom:** `docs/FEATURE-FLAGS.md` documents a Stable
@@ -185,7 +185,7 @@ tempted to ship.
   stage entirely and document graduation-means-deletion.
 
 ### IterateToFixedPoint lossy overload
-- **Site:** `src/Dbsp.Core/Recursive.fs:247-264`
+- **Site:** `src/Core/Recursive.fs:247-264`
 - **Found:** round 20 by Viktor
 - **Severity:** P1
 - **Symptom:** the `int`-returning overload can't distinguish
@@ -197,7 +197,7 @@ tempted to ship.
   need cap detection."
 
 ### FeedbackOp permits Build with connected=0
-- **Site:** `src/Dbsp.Core/Recursive.fs:38-53`
+- **Site:** `src/Core/Recursive.fs:38-53`
 - **Found:** round 20 by Viktor
 - **Severity:** P1
 - **Symptom:** a `FeedbackOp` that was registered but never
@@ -207,7 +207,7 @@ tempted to ship.
   `connected=1`; throw otherwise.
 
 ### CountingBloomFilter hash quality on user types
-- **Site:** `src/Dbsp.Core/BloomFilter.fs:125-133`
+- **Site:** `src/Core/BloomFilter.fs:125-133`
 - **Found:** round 20 by Kira
 - **Severity:** P1
 - **Symptom:** fallback uses `EqualityComparer<'T>.Default.GetHashCode`
@@ -218,7 +218,7 @@ tempted to ship.
   `TraceWarning`.
 
 ### InfoTheoreticSharder Checked.+ mid-loop overflow
-- **Site:** `src/Dbsp.Core/NovelMathExt.fs`
+- **Site:** `src/Core/NovelMathExt.fs`
 - **Found:** round 20 by Kira
 - **Severity:** P1
 - **Symptom:** `Checked.(+)` inside the argmin loop throws on
@@ -229,7 +229,7 @@ tempted to ship.
   document the saturation as "load cap, not an error".
 
 ### Delay overload without initial uses Unchecked.defaultof
-- **Site:** `src/Dbsp.Core/Primitive.fs:74-75`
+- **Site:** `src/Core/Primitive.fs:74-75`
 - **Found:** round 20 by Viktor
 - **Severity:** P1
 - **Symptom:** `Delay` no-initial overload passes
@@ -248,7 +248,7 @@ tempted to ship.
 - **Fix:** `rng.NextInt64()`.
 
 ### FeatureFlags.resetAll not atomic vs concurrent set/isEnabled
-- **Site:** `src/Dbsp.Core/FeatureFlags.fs:132-143`
+- **Site:** `src/Core/FeatureFlags.fs:132-143`
 - **Found:** round 20 by Kira
 - **Severity:** P1 (test-harness only, but docstring promises
   "clean slate")
@@ -262,7 +262,7 @@ tempted to ship.
 ## P2 — nice to have
 
 ### "Round-N fix" historical voice survivors in docstrings
-- **Sites:** `src/Dbsp.Core/FastCdc.fs:68`, `Residuated.fs:39`,
+- **Sites:** `src/Core/FastCdc.fs:68`, `Residuated.fs:39`,
   `Durability.fs:17`, `Durability.fs:33`, `Recursive.fs:211`,
   `FeatureFlags.fs:43`
 - **Found:** round 20 by Rune

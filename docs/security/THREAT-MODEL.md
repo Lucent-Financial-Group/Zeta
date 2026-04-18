@@ -1,6 +1,6 @@
-# Dbsp.Core Threat Model (STRIDE)
+# Zeta.Core Threat Model (STRIDE)
 
-**Scope:** Dbsp.Core + Dbsp.Core.CSharp shim + Dbsp.Bayesian plugin.
+**Scope:** Zeta.Core + Zeta.Core.CSharp shim + Zeta.Bayesian plugin.
 **Out of scope:** host application that embeds the engine; user-supplied
 lambdas (Map / Filter / SelectMany); the network layer (we don't have
 one yet — multi-node is P2 roadmap).
@@ -20,7 +20,7 @@ trusted).
 │   │ Map, Filter, SelectMany, Combine │    │ 2PC, File, Arrow   │      │
 │   └─────────────┬────────────────────┘    └─────────┬──────────┘      │
 │                 ▼                                   ▼                 │
-│     ┌─── Dbsp.Core (high integrity) ─────────────────┐                │
+│     ┌─── Zeta.Core (high integrity) ─────────────────┐                │
 │     │  ZSet / Spine / Runtime / Watermark / Sink    │                │
 │     └─────────────┬──────────────────────────────────┘                │
 │                   ▼                                                   │

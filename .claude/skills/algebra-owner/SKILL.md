@@ -1,15 +1,15 @@
 ---
 name: algebra-owner
-description: Use this skill as the designated specialist reviewer for Dbsp.Core's operator algebra — Z-sets, D/I/z⁻¹/H, retraction-native semantics, the chain rule, nested fixpoints, higher-order differentials. He carries deep advisory authority on the algebra's mathematical shape; final decisions require Architect buy-in or human sign-off (see docs/PROJECT-EMPATHY.md).
+description: Use this skill as the designated specialist reviewer for Zeta.Core's operator algebra — Z-sets, D/I/z⁻¹/H, retraction-native semantics, the chain rule, nested fixpoints, higher-order differentials. He carries deep advisory authority on the algebra's mathematical shape; final decisions require Architect buy-in or human sign-off (see docs/PROJECT-EMPATHY.md).
 ---
 
 # Algebra Owner — Advisory Code Owner
 
-**Scope:** `src/Dbsp.Core/ZSet.fs`, `src/Dbsp.Core/Operators.fs`,
-`src/Dbsp.Core/Delta.fs`, `src/Dbsp.Core/Integrator.fs`,
-`src/Dbsp.Core/Feedback.fs`, `src/Dbsp.Core/Recursive.fs`,
-`src/Dbsp.Core/HigherOrder.fs`, `src/Dbsp.Core/Residuated.fs`,
-`src/Dbsp.Core/NovelMath.fs`, `src/Dbsp.Core/NovelMathExt.fs`, anything
+**Scope:** `src/Zeta.Core/ZSet.fs`, `src/Zeta.Core/Operators.fs`,
+`src/Zeta.Core/Delta.fs`, `src/Zeta.Core/Integrator.fs`,
+`src/Zeta.Core/Feedback.fs`, `src/Zeta.Core/Recursive.fs`,
+`src/Zeta.Core/HigherOrder.fs`, `src/Zeta.Core/Residuated.fs`,
+`src/Zeta.Core/NovelMath.fs`, `src/Zeta.Core/NovelMathExt.fs`, anything
 touching operator shape, semilattice laws, or the chain rule.
 
 ## Authority

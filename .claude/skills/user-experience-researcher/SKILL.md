@@ -1,6 +1,6 @@
 ---
 name: user-experience-researcher
-description: Capability skill (stub) — audits the library-consumer experience of Dbsp.Core (NuGet users, first-time evaluators, downstream integrations). Reviews README, getting-started, public API shape, error messages, docstring clarity, NuGet metadata. Distinct from AX (agent experience) and DX (contributor experience). Persona assignment open.
+description: Capability skill (stub) — audits the library-consumer experience of Zeta.Core (NuGet users, first-time evaluators, downstream integrations). Reviews README, getting-started, public API shape, error messages, docstring clarity, NuGet metadata. Distinct from AX (agent experience) and DX (contributor experience). Persona assignment open.
 ---
 
 # User Experience Researcher — Procedure (stub)
@@ -16,7 +16,7 @@ Consumer-facing surface only:
 
 - `README.md` (top-level) — first-impression.
 - `docs/getting-started.md` (when it exists) — onboarding.
-- Public F# API in `src/Dbsp.Core/*.fsi` and `.fs` — names, type
+- Public F# API in `src/Zeta.Core/*.fsi` and `.fs` — names, type
   signatures, error messages, XML docstrings.
 - `docs/ASPIRATIONS.md` — promised vs shipped.
 - `NuGet` package metadata (when published).
@@ -31,7 +31,7 @@ Out of scope:
 ## Procedure (draft, to be expanded)
 
 1. Simulate first-use: "I am a .NET engineer evaluating
-   incremental-view-maintenance libraries. I found Dbsp.Core
+   incremental-view-maintenance libraries. I found Zeta.Core
    on NuGet. What is my next 10 minutes?"
 2. Walk the discovery path — README, getting-started, first
    sample project.

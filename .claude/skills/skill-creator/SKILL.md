@@ -142,7 +142,7 @@ future rounds may want the reasoning.
 ## Interaction with the Architect
 
 The Architect has edit rights on *his own* skill
-(`.claude/skills/architect/SKILL.md`) through this
+(`.claude/agents/architect.md` + `round-management`) through this
 workflow — which means his edits go through the same draft /
 Prompt-Protector / commit cycle. He does **not** have the
 right to skip these steps even for his own skill.

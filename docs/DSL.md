@@ -8,8 +8,8 @@ underlying method calls — no `FSharpFunc` allocations.
 ## Imports
 
 ```fsharp
-open Dbsp.Core
-open Dbsp.Core.Dsl
+open Zeta.Core
+open Zeta.Core.Dsl
 ```
 
 ## Example 1 — simple map + filter

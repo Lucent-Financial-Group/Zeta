@@ -1,6 +1,6 @@
 # Lock Inventory
 
-Every synchronisation primitive in `src/Dbsp.Core/`, the reason it's
+Every synchronisation primitive in `src/Core/`, the reason it's
 there, and whether a lock-free alternative exists / has been tried.
 
 If you add a lock, add a row here. If you convert a lock to CAS,

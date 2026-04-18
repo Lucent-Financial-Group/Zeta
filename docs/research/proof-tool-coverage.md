@@ -5,7 +5,7 @@ proves today, what it *could* prove with more rigging, and a
 prioritised list of tools we're **not yet using** that would catch
 bug classes our stack currently misses.
 
-Scope is `Dbsp.Core` (F#) with its C# shim. Audit date: 2026-04-17.
+Scope is `Zeta.Core` (F#) with its C# shim. Audit date: 2026-04-17.
 
 ---
 
@@ -15,7 +15,7 @@ Scope is `Dbsp.Core` (F#) with its C# shim. Audit date: 2026-04-17.
 
 - `tools/Z3Verify/Program.fs` — standalone CLI, shells to `z3 -in`
   over SMT-LIB2. 8 theorems proven over unbounded `Int`.
-- `tests/Dbsp.Tests.FSharp/FormalVerificationTests.fs` — same 8
+- `tests/Tests.FSharp/FormalVerificationTests.fs` — same 8
   axioms re-asserted as xUnit `[<Fact>]`s that run in every
   `dotnet test` pass (skip gracefully if `z3` binary is absent).
 
@@ -80,25 +80,25 @@ the test harness is already wired.
 | `AsyncStreamEnumerator` | **missing** | no |
 | `SpineMergeInvariants_TTrace_…` | n/a (TLC output) | no |
 
-CI runs four specs via `tests/Dbsp.Tests.FSharp/TlcRunnerTests.fs`.
+CI runs four specs via `tests/Tests.FSharp/TlcRunnerTests.fs`.
 Five specs with `.cfg` are *not* in CI (DbspSpec, SpineAsyncProtocol,
 CircuitRegistration, SpineMergeInvariants — all are runnable today
 but deliberately skipped pending a re-verification pass).
 
 **Code paths WITHOUT any TLA+ model:**
 
-- `src/Dbsp.Core/Recursive.fs` (semi-naïve LFP) — fixpoint
+- `src/Core/Recursive.fs` (semi-naïve LFP) — fixpoint
   convergence is currently only property-tested.
-- `src/Dbsp.Core/SpineAsync.fs` worker shutdown — lost-wakeup
+- `src/Core/SpineAsync.fs` worker shutdown — lost-wakeup
   proven, but graceful-drain-on-stop is not.
-- `src/Dbsp.Core/WorkStealingRuntime.fs` — TPL-dataflow work
+- `src/Core/WorkStealingRuntime.fs` — TPL-dataflow work
   scheduler; no TLA+ model.
-- `src/Dbsp.Core/MailboxRuntime.fs` — MailboxProcessor variant;
+- `src/Core/MailboxRuntime.fs` — MailboxProcessor variant;
   no TLA+ model.
-- `src/Dbsp.Core/Durability.fs` — Witness-Durable Commit protocol
+- `src/Core/Durability.fs` — Witness-Durable Commit protocol
   is listed in `TECH-RADAR.md` as **Assess**; needs a spec
   before it's trusted.
-- `src/Dbsp.Core/Hierarchy.fs` closure-table recursive joins —
+- `src/Core/Hierarchy.fs` closure-table recursive joins —
   retraction-native fixpoint has no TLA+ spec.
 
 **Target: add 4 `.cfg` files + 2 new specs (SpineAsyncDrain,

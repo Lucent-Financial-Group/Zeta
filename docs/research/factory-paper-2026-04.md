@@ -1,6 +1,6 @@
 # Factory-Paper Novelty and Venue Survey (2026-04)
 
-Scope: whether the Dbsp.Core "software-defined software factory"
+Scope: whether the Zeta.Core "software-defined software factory"
 (SOFTWARE-FACTORY.md + AGENTS.md + PROJECT-EMPATHY.md +
 AGENT-BEST-PRACTICES.md + EXPERT-REGISTRY.md + FORMAL-VERIFICATION.md)
 is publishable, and if so where. Audience: Aaron, deciding submit
@@ -151,7 +151,7 @@ Minimum viable: rounds case study + 2-3-feature ablation.
 
 **Submit to FORGE 2027** (ACM workshop at ICSE 2027),
 approximately 2026-11 deadline, as an experience report titled
-something like *"The Dbsp.Core Software Factory: BP-NN Rules,
+something like *"The Zeta.Core Software Factory: BP-NN Rules,
 Persona Registries, and Bug/Debt Honesty as First-Class Repo
 Artefacts"*. Before submission: rounds-17-to-25 metrics table
 and a factory-on/off ablation on 2-3 features, ~2-4 weeks of

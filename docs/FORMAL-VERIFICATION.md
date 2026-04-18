@@ -4,8 +4,8 @@ Three independent oracles, each using the right tool for its problem.
 
 | Tool | Covers | Runs in CI? | File(s) |
 |---|---|---|---|
-| **FsCheck** (property-based tests) | Algebraic laws over generated Z-sets + pipelines | ✓ (xUnit) | `tests/Dbsp.Tests.FSharp/FuzzTests.fs` |
-| **Z3 SMT solver** | Pointwise axioms over **unbounded integers** | ✓ (xUnit shells to `z3`) | `tests/Dbsp.Tests.FSharp/FormalVerificationTests.fs` |
+| **FsCheck** (property-based tests) | Algebraic laws over generated Z-sets + pipelines | ✓ (xUnit) | `tests/Tests.FSharp/FuzzTests.fs` |
+| **Z3 SMT solver** | Pointwise axioms over **unbounded integers** | ✓ (xUnit shells to `z3`) | `tests/Tests.FSharp/FormalVerificationTests.fs` |
 | **TLA+ / TLC** | Concurrent-protocol invariants (interleavings) | Manual (optional) | `docs/SpineAsyncProtocol.tla` |
 
 ## Why each tool where
@@ -44,7 +44,7 @@ you edit the algebra and want a quick visual sanity check, open the
 
 ```bash
 # Z3 (runs automatically under dotnet test)
-dotnet test tests/Dbsp.Tests.FSharp -c Release \
+dotnet test tests/Tests.FSharp -c Release \
     --filter "FullyQualifiedName~FormalVerificationTests"
 
 # TLA+ protocol spec

@@ -1,4 +1,4 @@
-# Dbsp.Core Microsoft SDL Compliance Checklist
+# Zeta.Core Microsoft SDL Compliance Checklist
 
 Pre-v1 greenfield; applies the SDL to the subset that makes sense
 for an embedded F# library with no network surface yet.

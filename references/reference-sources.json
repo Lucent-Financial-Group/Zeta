@@ -45,7 +45,7 @@
     "branch": "master",
     "path": "references/upstreams/spacetimedb",
     "categories": ["streaming", "relational-engine"],
-    "notes": "Realtime relational-runtime reference for reducers, subscriptions, and server-owned state synchronization over relational tables without turning Dbsp.Core itself into a multiplayer/runtime product."
+    "notes": "Realtime relational-runtime reference for reducers, subscriptions, and server-owned state synchronization over relational tables without turning Zeta.Core itself into a multiplayer/runtime product."
   },
   {
     "name": "chaisql",

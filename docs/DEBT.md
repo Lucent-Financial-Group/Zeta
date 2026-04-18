@@ -56,7 +56,7 @@ feature + debt budget).
   public-api-designer review. Round-26+ work.
 
 ### "Round-N fix" historical-voice survivors in source docstrings
-- **Sites:** `src/Dbsp.Core/FastCdc.fs:68`, `Residuated.fs:39`,
+- **Sites:** `src/Core/FastCdc.fs:68`, `Residuated.fs:39`,
   `Durability.fs:17`, `Durability.fs:33`, `Recursive.fs:211`,
   `FeatureFlags.fs:43`
 - **Found:** round 20 by Rune
@@ -80,7 +80,7 @@ feature + debt budget).
   "see `docs/EXPERT-REGISTRY.md`."
 
 ### Durability.createBackingStore `invalidOp` message spans 6 lines of prose
-- **Site:** `src/Dbsp.Core/Durability.fs:166-174`
+- **Site:** `src/Core/Durability.fs:166-174`
 - **Found:** round 21 by Kira
 - **Effort:** S
 - **Friction:** log-grep wraps the message badly; callers can't
@@ -149,7 +149,7 @@ feature + debt budget).
 - **Site:** `tests/Dbsp.Tests.FSharp/Formal/Tlc.Runner.Tests.fs:24-31`
 - **Found:** round 22 by Kenji — full-solution `dotnet test`
   occasionally lands with a CWD outside the repo, walk-up never
-  finds `Dbsp.sln`, every TLC-runner test throws at module init.
+  finds `Zeta.sln`, every TLC-runner test throws at module init.
 - **Effort:** S
 - **Friction:** test ordering / harness-level CWD flips can
   fail all 7 TLC-runner tests at once in the same run that the
@@ -161,7 +161,7 @@ feature + debt budget).
   on CWD.
 
 ### BloomFilter.pairOfString hashes UTF-16 bytes, not UTF-8
-- **Site:** `src/Dbsp.Core/BloomFilter.fs` — `BloomHash.pairOfString`
+- **Site:** `src/Core/BloomFilter.fs` — `BloomHash.pairOfString`
 - **Found:** round 22 by the bug-fix agent
 - **Effort:** S
 - **Friction:** the zero-alloc path uses
@@ -194,13 +194,27 @@ feature + debt budget).
   `AddMonoidHom` slice only; DBSP linearity (Budiu et al. §3.1)
   is additive **and** time-invariant **and** causal. Blocks
   closure of B2, B3, and the full chain rule.
-- **Fix:** Tariq (algebra-owner) picks one of three options —
+- **Fix:** Tariq's round-26 review picked **option (c) — roll
+  `IsDbspLinear` bundling a per-tick `AddMonoidHom` family
+  `phi_n : (Fin (n+1) -> G) ->+ H` plus a `pointwise` witness
+  that `f s n = phi n (prefix)`.** Rationale: (c) models
+  exactly what Zeta operators already satisfy
+  (pointwise-at-each-tick, retraction-native); (a) causality
+  alone still fails at `n = 0`; (b) shift-commutation
+  axiomatises the statement being proven. B2 closes as a
+  direct witness application, B3 via `AddMonoidHom.map_sub`,
+  B1 via `AddMonoidHom.map_sum`. Estimate half-day to close
+  B2, two days for full chain rule. Implementation deferred
+  to a dedicated algebra-proof round. Full review at
+  `docs/skill-notes/algebra-owner.md`. Alternatives kept here
+  as rejected:
   (a) add causality (`f s n` depends only on `s 0 .. s n`);
   (b) add explicit shift-commutation as an axiom
   (`f . z-inv = z-inv . f`); (c) pointwise action
   (`f s n = phi_n (s 0 .. s n)` for per-tick `AddMonoidHom`s).
-  (a) is the most general; (b) cleanest for the chain-rule
-  proof but essentially assumes the answer; (c) is the most
+  (a) is the most general but fails at n=0; (b) cleanest for
+  the chain-rule proof but essentially assumes the answer;
+  (c) is the most
   explicit model.
 
 ### Wake-up-drift category — AX audit findings (Daya)
@@ -233,31 +247,6 @@ Entries under the `wake-up-drift` tag defined in
   four of six.
 - **Fix:** add four bullets to the README.
 
-#### wake-up-drift: orphan skill directories (no wearer)
-- **Site:** `.claude/skills/architect/SKILL.md`,
-  `.claude/skills/harsh-critic/SKILL.md`
-- **Found:** round 24 by Daya
-- **Effort:** S
-- **Friction:** both files have no persona listing them in a
-  `skills:` frontmatter. They duplicate `round-management/
-  SKILL.md` and `code-review-zero-empathy/SKILL.md` respectively.
-  A Skill-tool invocation (`Skill(skill: architect)`) still
-  loads the orphan; the canonical version is invoked only via
-  the Agent path with `subagent_type: architect`. Preferred fix:
-  retire to `.claude/skills/_retired/YYYY-MM-DD-<name>/`, pending
-  confirmation that retirement does not break Skill-tool
-  discovery in a way callers depend on.
-- **Fix:** `git mv` to `_retired/`; one-`git mv`-back rollback.
-
-#### wake-up-drift: Aarav skill missing BP-10 citation
-- **Site:** `.claude/skills/skill-tune-up-ranker/SKILL.md:117`
-- **Found:** round 24 by Daya
-- **Effort:** S
-- **Friction:** Aarav's own contract requires BP-NN cites on
-  rule references; the invisible-Unicode-codepoint rule is
-  mentioned but not cited as `(BP-10)`. On-brand self-drift.
-- **Fix:** Yara via `skill-creator` — add `(BP-10)` after the
-  invisible-Unicode mention.
 
 ### Flaky FsCheck property in the F# suite
 - **Site:** one of the `[<Property>]` tests in

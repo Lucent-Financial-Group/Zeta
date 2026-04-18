@@ -111,10 +111,12 @@ across sessions. The file is growing but bounded:
 - **Prune cadence:** every third invocation of this skill,
   re-read the whole notebook and collapse or delete entries
   that have been resolved or are no longer actionable.
-- **ASCII only.** Invisible-Unicode codepoints
-  (U+200B/U+200C/U+200D/U+2060/U+FEFF/U+202A-U+202E/U+2066-U+2069)
-  are forbidden in the notebook. The Prompt Protector lints for
-  them; any hit blocks notebook edits until cleaned.
+- **ASCII only (BP-10).** Invisible-Unicode codepoints
+  (U+200B/U+200C/U+200D/U+2060/U+FEFF/U+202A-U+202E/U+2066-U+2069,
+  and the tag-character range U+E0000-U+E007F) are forbidden in
+  the notebook. The Prompt Protector lints for them on every
+  notebook edit and at pre-commit; any hit blocks notebook edits
+  until cleaned.
 
 Notebook format:
 

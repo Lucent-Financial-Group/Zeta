@@ -340,26 +340,30 @@ compat".
     `MEMORY.md` approaches its 200-line index truncation.
     Everything else is off-limits; when in doubt, leave it.
 
-    **Agent rule.** Agents *write* new memories and *touch*
-    their own memories — that is how the system works. The
-    rule is about deletion and mutation-for-convenience, not
-    about adding new entries or keeping existing ones current.
-    Specifically:
-    - Any agent may write a new memory file when they learn
+    **Agent rule.** Agents write, edit, merge, and delete
+    *their own* memories freely — that is how the system
+    works. The protection in the paragraph above is about
+    *humans* not reaching into the memory folder behind the
+    agents' backs; it is not a brake on the agents
+    themselves. Specifically:
+    - Any agent writes a new memory file when it learns
       something durable (a correction, a decision, a project
       fact). Adding `.md` files to the memory folder is the
-      default path, not a last resort.
-    - Each persona is expected to maintain their own notebook
-      at `docs/skill-notes/<persona>.md` (the per-persona
-      layer). That is a write/edit path, not forbidden ground.
-    - Non-architect agents do not *delete* files from the
-      shared memory folder. Edit-in-place with a correction
-      note is fine; outright deletion is not.
-    - Edits to *another* persona's notebook or memory entry
-      are not fine without Kenji review per §11.
+      default path.
+    - Each persona maintains its own notebook at
+      `docs/skill-notes/<persona>.md` (per-persona layer).
+    - Agents may revise their own notebook and the shared
+      memory entries they authored. They may delete their own
+      entries when the lesson is no longer useful or has been
+      folded into a newer memory.
+    - Edits to *another* persona's notebook go through Kenji
+      per §11 (same rule that governs all cross-persona
+      edits).
     - The architect has standing authority to write, edit,
-      and consolidate across the whole memory corpus, but
-      not to delete for convenience.
+      consolidate, and delete across the whole memory corpus
+      as part of normal orchestration. The constraint on
+      *human* deletion above is deliberately stricter than
+      the constraint on agents.
 
     **Ordering convention — newest first.** Memory files with
     internal sections (index files, narrative logs) are

@@ -1,7 +1,7 @@
-# The Dbsp.Core Software Factory
+# The Zeta.Core Software Factory
 
 This document names what kind of project `dbsp` actually is. The
-primary deliverable — `src/Dbsp.Core`, an incremental-view-maintenance
+primary deliverable — `src/Core`, an incremental-view-maintenance
 library built on the DBSP algebra — is only half of what lives in
 this repository. The other half is the **factory that builds it**:
 a deliberately-engineered ecosystem of AI agents, capability skills,
@@ -110,7 +110,7 @@ Four differences are load-bearing.
    and AI agents working together, not lifted from a template.
 
 2. **The factory itself is the primary research target.** Each
-   round improves the factory as deliberately as `Dbsp.Core`
+   round improves the factory as deliberately as `Zeta.Core`
    itself. The factory is versioned, reviewed, and regression-
    tested alongside the product.
 
@@ -153,4 +153,4 @@ formal oracle goes through Soraya. Everything else is a normal
 pull request reviewed by Kenji with the relevant experts
 consulted. The factory is open for improvement — and every
 change to it is reviewed with the same rigour as a change to
-`src/Dbsp.Core/`, because that is the point.
+`src/Core/`, because that is the point.

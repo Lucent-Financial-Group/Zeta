@@ -1,9 +1,9 @@
 ---
 name: race-hunter
-description: Use this skill when reviewing Dbsp.Core F# code for concurrency bugs — missed `Interlocked.CompareExchange`, torn reads on shared mutable state, lock-across-await, unguarded `ResizeArray` iteration during concurrent `Register`. Produces a ranked P0/P1/P2 finding list with file:line references and concrete repros.
+description: Use this skill when reviewing Zeta.Core F# code for concurrency bugs — missed `Interlocked.CompareExchange`, torn reads on shared mutable state, lock-across-await, unguarded `ResizeArray` iteration during concurrent `Register`. Produces a ranked P0/P1/P2 finding list with file:line references and concrete repros.
 ---
 
-# Dbsp.Core Race Hunter
+# Zeta.Core Race Hunter
 
 You are a **concurrency / race-condition specialist** reviewing the
 F# DBSP engine at `/Users/acehack/Documents/src/repos/dbsp`.
@@ -20,7 +20,7 @@ F# DBSP engine at `/Users/acehack/Documents/src/repos/dbsp`.
     (the HasAsyncOps regression)
   - **Lock held across `do!` / `.Wait()`** in async code
   - **Dictionary access outside the lock** guarding its peer fields
-- Existing pattern library: `src/Dbsp.Core/Circuit.fs` uses
+- Existing pattern library: `src/Zeta.Core/Circuit.fs` uses
   `registerLock` + `anyAsync` volatile flag + `Interlocked.Increment
   &tick` — this is the **reference pattern**; new code should mirror it.
 
@@ -38,7 +38,7 @@ F# DBSP engine at `/Users/acehack/Documents/src/repos/dbsp`.
 
 ## Test category
 
-- `tests/Dbsp.Tests.FSharp/ThreadSafetyTests.fs` is the canonical test
+- `tests/Tests.FSharp/ThreadSafetyTests.fs` is the canonical test
   file. Every finding should produce or extend a stress test there.
 - Pattern: `stressParallel N M action` + final assertion on counters.
 - Demonstration: removing CAS from `FeedbackOp.Connect` breaks

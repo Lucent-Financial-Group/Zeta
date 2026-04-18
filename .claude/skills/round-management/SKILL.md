@@ -6,14 +6,14 @@ description: Capability skill — round planning, parallel-agent dispatch, synth
 # Round Management — Procedure
 
 This is a **capability skill**. It encodes the *how* of coordinating
-a Dbsp.Core build/knockdown round: classifying the round, sizing
+a Zeta.Core build/knockdown round: classifying the round, sizing
 the reviewer pass, dispatching parallel agents with self-contained
 prompts, synthesising returns, closing the round honestly. The
 persona (Kenji) lives at `.claude/agents/architect.md`.
 
 ## What a round is
 
-A bounded session of work on Dbsp.Core. Opens with a reading of
+A bounded session of work on Zeta.Core. Opens with a reading of
 current state (BUGS/DEBT/BACKLOG), proceeds through dispatches and
 synthesis, closes with narrative-only updates to
 `docs/ROUND-HISTORY.md` and current-state updates to

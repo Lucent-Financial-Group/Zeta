@@ -1,4 +1,4 @@
-# Dbsp.Core Roadmap
+# Zeta.Core Roadmap
 
 ## Legend
 - **P0** — ship-blocker, next round
@@ -71,8 +71,8 @@
 - **State TTL on BalancedSpine** — retract-on-expiry via `-Δ`, preserves correctness for free
 - **Session windows** — `IndexedZSet` + watermark + coalesce gap > T
 - **Package audit** — Stryker.NET, CodeQL, Semgrep wired into CI
-- **Dbsp.Bayesian project** — Infer.NET F# wrapper, `BayesianAggregate` operator
-- **Dbsp.Core.CSharp shim** — declaration-site variance on interfaces (`IBackingStore<out K>` etc)
+- **Zeta.Bayesian project** — Infer.NET F# wrapper, `BayesianAggregate` operator
+- **Zeta.Core.CSharp shim** — declaration-site variance on interfaces (`IBackingStore<out K>` etc)
 - **Remaining TLA+ specs** — `TransactionInterleaving`, `ChaosEnvDeterminism`, `ConsistentHashRebalance`
 - **TLC-validation test** — run the `.tla` files in a `dotnet test` to prevent drift
 

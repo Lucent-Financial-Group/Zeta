@@ -1,7 +1,7 @@
 # Consistent Hashing — Research & Decisions
 
 Captured from deep research agent 2025. Drives the selection in
-`src/Dbsp.Core/ConsistentHash.fs`.
+`src/Core/ConsistentHash.fs`.
 
 ## Decision matrix
 

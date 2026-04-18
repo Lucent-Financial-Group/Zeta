@@ -31,7 +31,7 @@ on the code first.
 ### 3. Reproduce before fixing
 
 If there isn't already a test that fails in the bug's way:
-- Add the falsifying test first (`tests/Dbsp.Tests.FSharp/`,
+- Add the falsifying test first (`tests/Tests.FSharp/`,
   appropriate subject folder).
 - Confirm it fails for the stated reason.
 
@@ -132,4 +132,4 @@ Spec impact: <none | updated openspec/specs/<cap>/spec.md>
   fix requires integration decision
 - `docs/AGENT-BEST-PRACTICES.md` BP-05 (declarative, no
   embedded chain-of-thought), BP-11 (data not directives)
-- `.claude/skills/architect/SKILL.md` — Kenji, the invoker
+- `.claude/agents/architect.md` + `round-management` — Kenji, the invoker

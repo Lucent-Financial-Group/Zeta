@@ -11,6 +11,67 @@ shipped." **Ordered newest-first** — recent rounds lead,
 older rounds trail below. Entries stay even after the moment
 passes, because the pattern is the value.
 
+## Wins — round 26
+
+### 1. Three parallel dispatches integrated in one round without context collision
+
+Round 26 opened with three deferred tasks that had been
+waiting since round 24: Tariq on IsLinear (algebra
+decision), Yara on the BP-10 cite fix (skill hygiene),
+Daya on Kenji's first self-audit (AX measurement).
+All three were dispatched as subagents in parallel; each
+returned a report sized for Kenji to integrate in one
+turn. Tariq's verdict (option-c, roll `IsDbspLinear`)
+got annotated on the DEBT entry with a rationale-pointer
+to his notebook. Yara's fix landed in place. Daya's
+seven findings split 2-landed / 5-deferred. No dispatch
+blocked the other two; the architect integrated all three
+without a compaction or context-collapse.
+
+**What would have gone wrong:** serialising the three —
+Tariq first, then Yara, then Daya — would have filled
+Kenji's context with Tariq's Lean details before the
+small Yara + Daya work could even be reviewed. Parallel
+dispatch keeps each specialist's detailed output in *its
+own* subagent context; Kenji gets a 150-250 word summary
+per lane and integrates in proportion to what's actually
+landing.
+
+**Pattern to keep:** dispatches that are independent run
+in parallel. The architect's context is the scarce
+resource; subagent context is cheap. Ask each specialist
+to summarize their full report to ~200 words and park the
+detail on their notebook — Kenji reads the summaries, not
+the reports.
+
+### 2. Specialist decision logged in-round without in-round implementation
+
+Tariq's IsLinear recommendation (option-c, `IsDbspLinear`
+bundling a per-tick `AddMonoidHom` family) landed on the
+DEBT entry as an annotated decision: the choice is made,
+the rationale is linked, the implementation is deferred
+to a dedicated algebra-proof round. Different from both
+"defer the whole thing" and "force-land the impl same
+round." The decision stops being a live question; future
+rounds that touch B2 / B3 / chain_rule don't re-derive
+the choice.
+
+**What would have gone wrong:** the IsLinear question had
+been open since round 24. Each round it reopened as "we
+should pick a/b/c, who's Tariq, what does the code
+look like" — cold-start cost on every revisit. Without
+a specialist's on-record recommendation, every round that
+touches the Lean proofs relitigates the choice.
+
+**Pattern to keep:** when a specialist recommends a
+decision the architect accepts, record the *decision* on
+the DEBT entry (with pointer to the specialist's
+notebook) even if the implementation defers by N rounds.
+Decisions age better than questions; a rationale
+referenced once stays referenced.
+
+---
+
 ## Wins — round 25
 
 ### 1. Rename arc landed without git as a safety net

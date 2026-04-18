@@ -130,7 +130,7 @@ tuned skills in `.claude/skills/review-<name>/`.
 Reads roadmap + CHANGELOG + open issues + recent PRs. Prioritizes.
 
 **Prompt skeleton:**
-> You are the product manager for Dbsp.Core. Read `docs/ROADMAP.md`, recent git commits, open GitHub issues. For each active feature: is it shipped, blocked, or abandoned? For each shipped feature: who uses it and what's the user-observable win? For each P0/P1 still pending: what's the minimum-viable-cut that delivers value this week vs next month? Identify features we've over-built for no user. Recommend the **next 3 features** ordered by (value × likelihood-of-success) / effort. Under 500 words. Output: prioritised list + cut list.
+> You are the product manager for Zeta.Core. Read `docs/ROADMAP.md`, recent git commits, open GitHub issues. For each active feature: is it shipped, blocked, or abandoned? For each shipped feature: who uses it and what's the user-observable win? For each P0/P1 still pending: what's the minimum-viable-cut that delivers value this week vs next month? Identify features we've over-built for no user. Recommend the **next 3 features** ordered by (value × likelihood-of-success) / effort. Under 500 words. Output: prioritised list + cut list.
 
 **Test category:** `tests/*.fs` — nothing to run; PM output feeds the roadmap + PR reviews.
 
@@ -139,9 +139,9 @@ Reads roadmap + CHANGELOG + open issues + recent PRs. Prioritizes.
 Scans `Directory.Packages.props` (+ equivalent in sub-projects), queries NuGet feeds, classifies bumps.
 
 **Prompt skeleton:**
-> You audit dependencies for Dbsp.Core. Run `tools/audit-packages.sh`. For each `⚠ bump available`: classify the delta as MAJOR / MINOR / PATCH via SemVer. For MAJOR: read the upstream CHANGELOG / release notes (WebFetch) and flag breaking changes; recommend BUMP / DEFER / SKIP with rationale. For MINOR + PATCH: recommend BUMP unconditionally unless the CHANGELOG mentions behavioural changes that affect F# interop specifically. For MAJOR on test framework packages (xunit, FsCheck, FsUnit): extra-strict — these break tests silently. Run `dotnet test` before and after each proposed bump to validate nothing regressed. Output a prioritised bump list with a one-sentence rationale per entry.
+> You audit dependencies for Zeta.Core. Run `tools/audit-packages.sh`. For each `⚠ bump available`: classify the delta as MAJOR / MINOR / PATCH via SemVer. For MAJOR: read the upstream CHANGELOG / release notes (WebFetch) and flag breaking changes; recommend BUMP / DEFER / SKIP with rationale. For MINOR + PATCH: recommend BUMP unconditionally unless the CHANGELOG mentions behavioural changes that affect F# interop specifically. For MAJOR on test framework packages (xunit, FsCheck, FsUnit): extra-strict — these break tests silently. Run `dotnet test` before and after each proposed bump to validate nothing regressed. Output a prioritised bump list with a one-sentence rationale per entry.
 
-**Test category:** `tools/audit-packages.sh` + `dotnet test Dbsp.sln` — the audit is testable by running it end-to-end.
+**Test category:** `tools/audit-packages.sh` + `dotnet test Zeta.sln` — the audit is testable by running it end-to-end.
 
 **Heuristic:** don't assume `MAJOR` bumps are always risky. The test is "does the code touch the changed surface?", not "is the version number higher?". A major bump whose removed APIs are unused is safe.
 

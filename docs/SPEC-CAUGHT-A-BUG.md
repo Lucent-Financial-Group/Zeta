@@ -1,13 +1,13 @@
 # The Spec Caught a Bug — A Short Story
 
 A real, reproducible case study of a TLA+ specification catching a
-concurrency bug in the Dbsp.Core F# engine before it shipped. Use this
+concurrency bug in the Zeta.Core F# engine before it shipped. Use this
 doc when you need to sell a skeptic on formal specifications — it's
 concrete, honest, and takes ~3 minutes to read.
 
 ## Setup
 
-**System.** Dbsp.Core, an F# implementation of DBSP incremental
+**System.** Zeta.Core, an F# implementation of DBSP incremental
 view maintenance. One piece is the `Circuit` — a directed acyclic
 graph of operators that gets advanced one tick at a time.
 
@@ -128,7 +128,7 @@ Three ingredients, all automated in this repo:
 
 ## Takeaways for contributors
 
-When you add a new concurrent operation to `Dbsp.Core`:
+When you add a new concurrent operation to `Zeta.Core`:
 
 1. Write a TLA+ spec (or ask a reviewer to) describing the
    invariants you want preserved.
@@ -144,6 +144,6 @@ When you add a new concurrent operation to `Dbsp.Core`:
 - `docs/OperatorLifecycleRace.cfg` — the TLC configuration
 - `tests/Dbsp.Tests.FSharp/TlcRunnerTests.fs` — the test that shells
   out to TLC
-- `src/Dbsp.Core/Circuit.fs` — the code that was fixed
+- `src/Core/Circuit.fs` — the code that was fixed
 - Lamport, *Specifying Systems* — the canonical TLA+ reference
 - Newcombe et al. *How Amazon Web Services Uses Formal Methods* CACM 2015

@@ -1,4 +1,4 @@
-# Dbsp.Core Feature Flags
+# Zeta.Core Feature Flags
 
 Flags gate research-preview and experimental code so production
 callers opt in explicitly. All flags default **off**.
@@ -17,7 +17,7 @@ No flag reads the network. No flag reads a config file the caller
 did not hand us. Offline-safe by construction.
 
 See also:
-- `src/Dbsp.Core/FeatureFlags.fs` — the module.
+- `src/Core/FeatureFlags.fs` — the module.
 - `docs/WONT-DO.md` — why we're not using LaunchDarkly / Unleash /
   any centralised service.
 
@@ -27,7 +27,7 @@ See also:
 |------|-------|-------|-------|-------|----------|
 | `witnessDurable`    | ResearchPreview | r17 | —   | `DurabilityMode.WitnessDurable` | `docs/papers/WDC-draft.md` (not yet written) |
 | `signedSemiNaive`   | ResearchPreview | r18 | —   | `RecursiveSignedSemiNaive` (not yet implemented) | `docs/research/retraction-safe-semi-naive.md` |
-| `countingSemiNaive` | Experimental    | r19 | —   | `RecursiveCounting` / `CountingClosureTable`    | `src/Dbsp.Core/Recursive.fs`, `src/Dbsp.Core/Hierarchy.fs` |
+| `countingSemiNaive` | Experimental    | r19 | —   | `RecursiveCounting` / `CountingClosureTable`    | `src/Core/Recursive.fs`, `src/Core/Hierarchy.fs` |
 | `cqfCountingFilter` | Experimental    | r18 | —   | CQF replacement for `CountingBloomFilter` (not yet implemented) | `docs/research/bloom-filter-frontier.md` |
 
 `Since` = the round the flag was introduced.
@@ -65,7 +65,7 @@ same round the graduation ships. This rule lives in
 
 ## How to add a flag
 
-1. Add a case to `Flag` in `src/Dbsp.Core/FeatureFlags.fs`.
+1. Add a case to `Flag` in `src/Core/FeatureFlags.fs`.
 2. Add the stage mapping in the same file's `stage` function.
 3. Add the env-var-name case in `envName`.
 4. Add a row in the **Active flags** table above with a `Since`

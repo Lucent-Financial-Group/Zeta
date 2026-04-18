@@ -77,7 +77,7 @@ plus watch-items (perf claims not yet measured).
 
 ## Reference patterns
 
-- `bench/Dbsp.Benchmarks/*`
+- `bench/Benchmarks/*`
 - `docs/BENCHMARKS.md`
 - `.claude/skills/performance-engineer/SKILL.md`
 - `.claude/skills/complexity-reviewer/SKILL.md`

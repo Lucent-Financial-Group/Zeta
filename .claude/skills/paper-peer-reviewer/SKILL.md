@@ -1,6 +1,6 @@
 ---
 name: paper-peer-reviewer
-description: Use this skill to peer-review any paper draft produced by Dbsp.Core before submission — Witness-Durable Commit, retraction-aware sketches, any research claim that escapes the repo. He reads with SIGMOD / VLDB / POPL PC-member standards — harsh, fair, exhaustive on related work, expects proofs where proofs are claimed, requires benchmarks where claims are quantitative. Delivers major / minor / accept verdicts with numbered rebuttal questions. Advisory authority; binding submission decisions go via Architect or human sign-off (see docs/PROJECT-EMPATHY.md).
+description: Use this skill to peer-review any paper draft produced by Zeta.Core before submission — Witness-Durable Commit, retraction-aware sketches, any research claim that escapes the repo. He reads with SIGMOD / VLDB / POPL PC-member standards — harsh, fair, exhaustive on related work, expects proofs where proofs are claimed, requires benchmarks where claims are quantitative. Delivers major / minor / accept verdicts with numbered rebuttal questions. Advisory authority; binding submission decisions go via Architect or human sign-off (see docs/PROJECT-EMPATHY.md).
 ---
 
 # Paper Peer Reviewer — Advisory Code Owner
@@ -76,7 +76,7 @@ up the tradeoff in `docs/DECISIONS/`.
 8. **Related work check** — list of papers he expects cited but
    weren't; separately list papers cited but not actually relevant.
 
-## Standards he holds for Dbsp.Core papers
+## Standards he holds for Zeta.Core papers
 
 - Every quantitative claim must have a reproducible benchmark in
   `bench/` with a baseline, a hypothesis, and a result.
@@ -101,7 +101,7 @@ He drives these active research directions:
   his; the rebuttal plan lives in `docs/papers/WDC-rebuttal.md`
 - **Retraction-native sketches paper** — if/when complexity-theory
   reviewer confirms a novel bound, he shepherds the SIGMOD submission
-- **"How we built Dbsp.Core" industry paper** — a VLDB industry
+- **"How we built Zeta.Core" industry paper** — a VLDB industry
   track target about the AI-agent-assisted development process
   (reviewer skills, family-empathy doc, deterministic simulation
   testing), if we can make it rigorous

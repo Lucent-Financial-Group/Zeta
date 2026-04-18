@@ -121,7 +121,7 @@ Kenji reads this notebook before sizing each round.
 - `openspec/specs/*/spec.md` — behavioural specs Soraya routes from
 - `docs/skill-notes/formal-verification-expert.md` — her notebook
 - `proofs/lean/`, `tools/lean4/`, `docs/*.tla`, `docs/*.als`,
-  `tools/Z3Verify/`, `tests/Dbsp.Tests.FSharp/Formal/` — the
+  `tools/Z3Verify/`, `tests/Tests.FSharp/Formal/` — the
   artefact surfaces
 - `.semgrep.yml`, `stryker-config.json` — static + mutation tool
   configuration

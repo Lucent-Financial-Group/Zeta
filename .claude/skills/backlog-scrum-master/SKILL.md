@@ -182,7 +182,7 @@ re-prioritisation.
 - `docs/EXPERT-REGISTRY.md` — who's in the roster.
 - `.claude/skills/next-steps/SKILL.md` — Mei's surface;
   coordination partner.
-- `.claude/skills/architect/SKILL.md` — Kenji's surface; peer
+- `.claude/agents/architect.md` + `round-management` — Kenji's surface; peer
   on integration.
 - `.claude/skills/documentation-agent/SKILL.md` — Samir's
   surface; tone model for "second agent with real edit rights,

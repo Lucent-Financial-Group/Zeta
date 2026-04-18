@@ -2,7 +2,7 @@
 
 Survey of 23 AMQ-adjacent structures, rated for (a) retraction
 compatibility — the gating criterion for DBSP — and (b) space/time
-vs. our shipped blocked + counting Bloom in `src/Dbsp.Core/BloomFilter.fs`.
+vs. our shipped blocked + counting Bloom in `src/Core/BloomFilter.fs`.
 
 ## Findings table
 

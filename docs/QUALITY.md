@@ -19,7 +19,7 @@ to rewrite an existing module when a better shape appears.
 
 ```bash
 dotnet build -c Release      # 0 Warning(s), 0 Error(s)
-dotnet test Dbsp.sln -c Release   # all green
+dotnet test Zeta.sln -c Release   # all green
 ```
 
 `TreatWarningsAsErrors` is on in `Directory.Build.props`. A warning is a
@@ -107,7 +107,7 @@ For simulation and chaos work:
 
 - Keep the DI container out of hot loops. Composition happens once at
   pipeline build; runtime dispatches through concrete types.
-- Prefer adding a project over growing `Dbsp.Core` when a capability
+- Prefer adding a project over growing `Zeta.Core` when a capability
   can evolve independently (Bayesian / Arrow wire / SQL front-end /
   learned plan).
 - Current-state projection seams stay distinct from row-materialization

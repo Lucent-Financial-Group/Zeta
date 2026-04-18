@@ -1,4 +1,4 @@
-# Dbsp.Core Unified Backlog
+# Zeta.Core Unified Backlog
 
 Single source of truth. Replaces scattered "flagged P1" notes in
 ROADMAP.md and round summaries. Append-only; keep ordered newest-first
@@ -44,7 +44,7 @@ within each priority tier.
   — harsh-critic #28 (shipped round 17: 22 new tests in
   `Round17Tests.fs`; total suite 471 passing).
 - [ ] **Witness-Durable Commit mode** — skeleton shipped round 17
-  (`src/Dbsp.Core/Durability.fs` DU + `WitnessDurableBackingStore`
+  (`src/Core/Durability.fs` DU + `WitnessDurableBackingStore`
   placeholder). Full protocol impl blocked on the WDC paper peer-
   review rebuttal; see `docs/papers/WDC-rebuttal.md`.
 - [ ] **SpeculativeWindow test coverage** — still pending; covered by
@@ -111,7 +111,7 @@ within each priority tier.
 ## P1 — within 2-3 rounds
 
 - [ ] **Wire HLL from `Sketch.fs` into `Plan.estimate`** (query-planner
-  P1, Imani). `src/Dbsp.Core/Plan.fs:28-51` currently uses static
+  P1, Imani). `src/Core/Plan.fs:28-51` currently uses static
   heuristics (filter /2, groupBy /4, 1024L unknown); real per-input
   cardinality needs `HyperLogLog` sketches per input stream plugged
   into the `inputRows` array path. Research context:
@@ -238,7 +238,7 @@ within each priority tier.
 - [ ] ILP-relaxed MaxSAT spine scheduling with online warm-start
 - [ ] Semiring-parametric Z-sets (tropical / Boolean / distributive
   lattice)
-- [ ] Full `Dbsp.Core.CSharp` shim with variance on every generic
+- [ ] Full `Zeta.Core.CSharp` shim with variance on every generic
   seam
 - [ ] Sakana AI Scientist / Agent Laboratory investigation (limited
   trial, Lit-Review phase only)

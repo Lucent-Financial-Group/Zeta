@@ -1,14 +1,14 @@
 # Upstream Reference List
 
 Curated list of external repos / projects / papers we study to keep
-`Dbsp.Core` honest.
+`Zeta.Core` honest.
 
 See `docs/TECH-RADAR.md` for our own Adopt/Trial/Assess/Hold rings;
 this doc is the broader "here's every system we should keep an eye on"
 list. When a project graduates from here into our tech radar, mark it
 with a ⭐ below and add a row there.
 
-## Dbsp.Core's own reading list
+## Zeta.Core's own reading list
 
 - **DBSP / IVM** ⭐ — Budiu et al. *DBSP: Automatic Incremental View
   Maintenance for Rich Query Languages* (VLDB 2023); VLDB Journal
@@ -103,7 +103,7 @@ with a ⭐ below and add a row there.
 
 ## How we use this list
 
-1. When a Dbsp.Core feature starts, the relevant code-owner agent
+1. When a Zeta.Core feature starts, the relevant code-owner agent
    (see `.claude/skills/dbsp-*-specialist/` / `-owner/`) scans this
    list for prior art.
 2. If a reference is cited as inspiration, we add a row to
@@ -119,7 +119,7 @@ with a ⭐ below and add a row there.
 - SlateDB ⭐ — current verdict *adopt CAS-manifest
   protocol, don't clone code*.
 - Feldera Rust DBSP — bench target; P1 to run an apples-to-apples
-  micro-benchmark vs our `Dbsp.Core`.
+  micro-benchmark vs our `Zeta.Core`.
 - FoundationDB ⭐ — DST + simulator; our `ChaosEnv.fs` + SimulatedFs
   are modeled on this.
 - Apache Iceberg — table-format reference for the Z-set-aware SST

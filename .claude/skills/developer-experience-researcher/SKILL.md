@@ -1,6 +1,6 @@
 ---
 name: developer-experience-researcher
-description: Capability skill (stub) — audits the human-contributor experience of the Dbsp.Core repo. Reviews CONTRIBUTING, local build setup, test layout, error noise, IDE integration, dev loop friction. Distinct from AX (agent experience) and UX (library consumers). Persona assignment open.
+description: Capability skill (stub) — audits the human-contributor experience of the Zeta.Core repo. Reviews CONTRIBUTING, local build setup, test layout, error noise, IDE integration, dev loop friction. Distinct from AX (agent experience) and UX (library consumers). Persona assignment open.
 ---
 
 # Developer Experience Researcher — Procedure (stub)

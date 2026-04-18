@@ -2,7 +2,7 @@
 
 F# is a functional-first language with strong ties to category-
 theoretic primitives (functor, monad, natural transformation,
-profunctor, adjunction). **Dbsp.Core** leans on this heritage
+profunctor, adjunction). **Zeta.Core** leans on this heritage
 hard — the operator algebra (D, I, z⁻¹, H) literally is a
 category-theoretic abstraction over streaming IVM.
 

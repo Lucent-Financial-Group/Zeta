@@ -1,6 +1,6 @@
-# Retraction-safe semi-naïve evaluation for `Dbsp.Core`
+# Retraction-safe semi-naïve evaluation for `Zeta.Core`
 
-**Context.** `RecursiveSemiNaive` (`src/Dbsp.Core/Recursive.fs` lines 101–147) implements Bancilhon–Ramakrishnan: `total` grows monotonically with the previous iteration's `Δ`. Under DBSP retractions, `total` never decrements and retracted derivations leak forever. `ClosureTable` was reverted to the O(|C|·iter) `Recursive` combinator in round-17 to restore correctness; the O(|Δ|) win is lost. The user's instinct — "let the feedback value dip, then recover" — points at the literature surveyed below.
+**Context.** `RecursiveSemiNaive` (`src/Core/Recursive.fs` lines 101–147) implements Bancilhon–Ramakrishnan: `total` grows monotonically with the previous iteration's `Δ`. Under DBSP retractions, `total` never decrements and retracted derivations leak forever. `ClosureTable` was reverted to the O(|C|·iter) `Recursive` combinator in round-17 to restore correctness; the O(|Δ|) win is lost. The user's instinct — "let the feedback value dip, then recover" — points at the literature surveyed below.
 
 ## 1. Differential Dataflow (DD)
 
