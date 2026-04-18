@@ -11,6 +11,67 @@ shipped." **Ordered newest-first** — recent rounds lead,
 older rounds trail below. Entries stay even after the moment
 passes, because the pattern is the value.
 
+## Wins — round 28
+
+### Reviewer floor caught a P0 in the law definition itself
+
+Kira's harsh-critic pass on the first `LawRunner` landing
+didn't flag style — it flagged the retraction law's
+semantics. The original "cumulative output over
+forward+retract = 0" formulation passes trivially for
+empty-emitting ops and a floored-counter can leak state
+while satisfying it. The rewritten law (state-restoration
+via continuation) is what the `IStatefulStrictOperator`
+tag actually promises. Without the round-27 codification
+of Kira + Rune as mandatory per GOVERNANCE.md §20, the
+wrong law would have landed as canonical and the test
+fixture (`PositiveOnlyOp` — non-linear, not even a
+retraction fixture) would have silently misled the next
+plugin author.
+
+**What it teaches.** Reviewer-floor-as-rule pays the first
+time a round produces novel semantics. The cost of
+dispatching two reviewers on a 130-line file is hours of
+future confusion averted. §20 is load-bearing, not
+ceremonial.
+
+### Option B with a planned Option A path, not "ship and pray"
+
+Mid-round Aaron asked "what does Option A get us for the
+future, is it the right long-term decision?" The answer
+shipped as part of the design doc, not as verbal
+agreement: Option A matches the DBSP paper's `(σ, λ, ρ)`
+triple and unlocks generic WDC checkpointing + planner
+fusion, so it's the right long-term direction — but Option
+B is the right first step because prototyping A in a
+vacuum would ship a contract we'd revise. The document
+names the sequenced round-29+ follow-ups explicitly.
+
+**What it teaches.** When a design question has a future,
+write the future down. "Decided Option B" is a weaker
+commit than "Option B with these specific round-29+
+follow-ups and this specific rationale for why not A
+today." The latter survives the next Kenji waking.
+
+### Deterministic simulation as the harness framing, not an afterthought
+
+Aaron's mid-round "I'm assuming this is for deterministic
+simulation?" re-shaped the design doc. Rather than a
+loose "tests should be reproducible" intent, the doc
+encodes the constraint: one seeded RNG per sample (not
+per whole loop), no wall-clock, total tick order, failing
+run prints seed + sample index, fresh op instance per
+sample so state can't leak across samples. The
+implementation followed the framing; per-sample RNG was a
+Kira P0 because the initial implementation had drifted
+from the doc and the doc was the source of truth.
+
+**What it teaches.** Framing labels ("deterministic
+simulation", "result-over-exception") are contracts, not
+decoration. When the framing and the code disagree, the
+framing wins and the code gets rewritten — not the other
+way round.
+
 ## Wins — round 27
 
 ### 1. Reviewer cadence caught two P0s in the same round the code landed
