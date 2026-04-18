@@ -5,4 +5,3 @@
 - [Newest-first memory ordering](feedback_newest_first_ordering.md) — MEMORY.md, ROUND-HISTORY, per-persona notebooks all prepend new entries; recent history leads, ancient trails.
 - [Memories are the most valuable resource](project_memory_is_first_class.md) — human maintainer does not delete or modify the memory folder except as an absolute last resort; agents WRITE their own memories freely (that's the point). Per-entry policy in file.
 - [No regulated clinical titles on personas](feedback_regulated_titles.md) — never label a persona "therapist"/"counselor"/"psychologist"; use coach/steward/keeper/facilitator/liaison instead.
-- [Git init timing is the maintainer's call](feedback_git_timing.md) — never `git init` or commit on the Zeta repo without explicit authorization; "reversible" is not "authorized."
