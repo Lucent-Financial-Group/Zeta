@@ -176,8 +176,8 @@ pollution.
 
 ## What this skill does NOT do
 
-- Does NOT grant public-API authority — Ilyana.
-- Does NOT grant perf authority — Naledi.
+- Does NOT grant public-API authority — the `public-api-designer`.
+- Does NOT grant perf authority — the `performance-engineer`.
 - Does NOT override F#-first — the default answer to
   "should this go in C#?" is "no, unless a C# consumer
   specifically needs it."
@@ -193,4 +193,4 @@ pollution.
   ledger (includes the C# test projects)
 - `.claude/skills/fsharp-expert/SKILL.md` — sibling
 - `.claude/skills/public-api-designer/SKILL.md` —
-  Ilyana; cross-language API surface review
+  the `public-api-designer`; cross-language API surface review

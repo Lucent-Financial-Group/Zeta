@@ -47,7 +47,7 @@ round-29                      o---o---o---o
   clean CI runs per round-29 design) — every PR passes
   the `gate.yml` workflow before merge.
 - **Admins included.** No "admin bypass" for Aaron or
-  Kenji — the rule applies to everyone.
+  the `architect` — the rule applies to everyone.
 
 ## Squash-merge on round close
 
@@ -165,7 +165,7 @@ Rules:
 - **`round-management`** — closes the round via PR.
 - **`github-actions-expert`** — workflow files enforce
   the gate before merge.
-- **`devops-engineer`** — Dejan pairs when the git flow
+- **`devops-engineer`** — the `devops-engineer` pairs when the git flow
   intersects CI (branch-protection rules, required
   checks, PR-comment bots).
 
@@ -192,4 +192,4 @@ Rules:
   round cadence
 - `.claude/skills/github-actions-expert/SKILL.md` — the
   gate before merge
-- `.claude/skills/devops-engineer/SKILL.md` — Dejan
+- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`

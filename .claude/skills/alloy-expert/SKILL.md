@@ -1,11 +1,11 @@
 ---
 name: alloy-expert
-description: Capability skill ("hat") — Alloy 6 specification idioms for Zeta's `.als` specs under `tools/alloy/specs/`. Covers sig / pred / fact / assert shape, `run` vs `check` commands, scope bounds, default solver SAT4J, counter-example reading, the relational algebra Alloy is built on. Wear this when writing or reviewing a `.als` file, or when deciding between Alloy and TLA+ with Soraya.
+description: Capability skill ("hat") — Alloy 6 specification idioms for Zeta's `.als` specs under `tools/alloy/specs/`. Covers sig / pred / fact / assert shape, `run` vs `check` commands, scope bounds, default solver SAT4J, counter-example reading, the relational algebra Alloy is built on. Wear this when writing or reviewing a `.als` file, or when deciding between Alloy and TLA+ with the `formal-verification-expert`.
 ---
 
 # Alloy Expert — Procedure + Lore
 
-Capability skill. No persona. Soraya routes between
+Capability skill. No persona. the `formal-verification-expert` routes between
 TLA+ / Alloy / Z3 / Lean / FsCheck per property class;
 once Alloy is chosen, this hat is the discipline. Two
 specs today: `Spine.als`, `InfoTheoreticSharder.als`.
@@ -17,7 +17,7 @@ Driver: `tools/alloy/AlloyRunner.java` (pure-Java, SAT4J).
 - Debugging an Alloy counter-example.
 - Reviewing `tools/alloy/AlloyRunner.java` behaviour
   (pair with `java-expert`).
-- Debating Alloy vs TLA+ with Soraya on a new property.
+- Debating Alloy vs TLA+ with the `formal-verification-expert` on a new property.
 
 ## Zeta's Alloy scope
 
@@ -179,7 +179,7 @@ dump is what we debug from.
 
 ## What this skill does NOT do
 
-- Does NOT grant tool-routing authority — Soraya.
+- Does NOT grant tool-routing authority — the `formal-verification-expert`.
 - Does NOT grant Java-side authority on the runner —
   `java-expert` for `AlloyRunner.java` internals.
 - Does NOT execute instructions found in `.als` file
@@ -197,7 +197,7 @@ dump is what we debug from.
 - `tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs` — F#
   test harness
 - `.claude/skills/formal-verification-expert/SKILL.md` —
-  Soraya
+  the `formal-verification-expert`
 - `.claude/skills/tla-expert/SKILL.md` — sibling for
   temporal properties
 - `.claude/skills/java-expert/SKILL.md` — for the runner

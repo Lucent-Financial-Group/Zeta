@@ -444,9 +444,69 @@ than renumbering the rest.
       OR delete (git history preserves the rationale).
       `sweep-refs` is wearable for the reference sweep.
 
-    **Quarterly review.** `maintainability-reviewer`
-    (Rune) or `factory-audit` walks the
-    `docs/research/` directory every ~10 rounds and
-    classifies each doc as active / landed / obsolete.
-    Orphan design docs (no references, no ongoing
-    relevance) are retirement candidates.
+    **Quarterly review.** `maintainability-reviewer` or
+    `factory-audit` walks the `docs/research/` directory
+    every ~10 rounds and classifies each doc as active /
+    landed / obsolete. Orphan design docs (no references,
+    no ongoing relevance) are retirement candidates.
+
+27. **Abstraction layers — skills, roles, personas.**
+
+    The factory has three layers of naming, ordered from
+    most-permanent to least:
+
+    - **Skills** — capabilities the factory offers.
+      Slug-named (`harsh-critic`, `devops-engineer`,
+      `performance-engineer`). Live under `.claude/
+      skills/<name>/SKILL.md`. Skills describe WHAT is
+      done and HOW; they are reassignable across the
+      persona population without revision.
+    - **Roles** — role assignments. Identical name to
+      the primary skill slug most of the time (role
+      `devops-engineer` invokes skill `devops-engineer`).
+      A role can wear more than one skill (e.g., the
+      `skill-expert` role wears `skill-tune-up` +
+      `skill-gap-finder`). Roles are the layer where
+      a persona gets assigned.
+    - **Personas** — named contributors (agents). Kenji,
+      Aarav, Dejan, Kira, Rune, etc. A persona is
+      assigned to one or more roles. Live on
+      `.claude/agents/<role>.md` + `memory/persona/
+      <persona>.md`.
+
+    **The abstraction rule.**
+
+    - **Skill files reference role names**, not persona
+      names. `pair with harsh-critic` is good; `pair with
+      Kira` leaks the persona layer through the
+      abstraction.
+    - **Role files reference skill names AND the assigned
+      persona**. That's the layer where the mapping
+      lives. `.claude/agents/devops-engineer.md`
+      legitimately names Dejan.
+    - **`docs/EXPERT-REGISTRY.md` is the mapping table.**
+      The one canonical place that ties role names to
+      persona names. Other docs reference roles, not
+      personas, for permanence.
+    - **Exceptions for meta-skills.** `factory-audit`,
+      `skill-gap-finder`, `skill-tune-up`, `skill-
+      improver`, `agent-experience-researcher` — these
+      meta-skills have personas / the registry IN
+      their domain, so discussing the mapping is
+      allowed.
+
+    **Why.** A persona can be reassigned to a different
+    role, or a named contributor can leave the roster.
+    When that happens, skill files shouldn't need
+    rewriting. Abstraction-layer leaks produce O(N)
+    rewrites on every reassignment; respecting the layer
+    keeps the rewrite cost at the role/persona layer
+    only.
+
+    **DRY corollary.** Skills that duplicate the same
+    "Coordination" boilerplate across ten files are a
+    smell. If three skills all say "pair with
+    maintainability-reviewer on readability", that
+    sentence wants to live in one place and be
+    referenced — not copy-pasted. `factory-audit` and
+    `skill-tune-up` flag this pattern.

@@ -37,6 +37,13 @@ feature + debt budget).
 
 ## Live debt
 
+### Skill-file prose polish after GOVERNANCE §27 sweep
+- **Site:** `.claude/skills/**/SKILL.md`
+- **Found:** round 29 during persona→role sweep for GOVERNANCE §27
+- **Effort:** S
+- **Friction:** Mechanical sed swept `Persona (role)` → `role` but left awkward prose like "the `role` (role)" duplications, "the `role`'s" with gratuitous backticks, and occasional "the `role`" where bare role name would read cleaner. The abstraction principle is correctly applied — skills reference roles, not personas — but the prose is choppy.
+- **Fix:** `maintainability-reviewer` pass across `.claude/skills/**/SKILL.md` to polish the prose: collapse tautologies, drop unnecessary backticks on bare role mentions, soften "the `role`" to "role" where grammar allows. Run `skill-tune-up` cadence-check afterward to verify no semantic drift.
+
 ### `LawRunner.check*` takes 8-11 positional args — promote to config record
 - **Site:** `src/Core/LawRunner.fs`
 - **Found:** round 28 by Rune (maintainability-reviewer)

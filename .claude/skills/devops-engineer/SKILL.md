@@ -30,14 +30,14 @@ work. The persona (Dejan) lives on
   flag trends, justify any matrix widening.
 
 Out of scope:
-- Hot-path benchmarks — Naledi (performance-engineer).
+- Hot-path benchmarks — `performance-engineer`.
 - Contributor-experience audits — DX persona (when
-  assigned). Dejan builds; DX measures felt experience.
-- Agent-layer adversarial hardening — Nadia (prompt-
+  assigned). the `devops-engineer` builds; DX measures felt experience.
+- Agent-layer adversarial hardening — the `prompt-protector` (prompt-
   protector).
 - Library-surface security (CodeQL on F# sources,
-  Semgrep rule design) — Mateo (security-researcher)
-  owns the rules; Dejan wires them into CI.
+  Semgrep rule design) — `security-researcher`
+  owns the rules; the `devops-engineer` wires them into CI.
 
 ## Procedure
 
@@ -70,10 +70,10 @@ no copied code.
 
 ### Step 4 — reviewer floor
 
-Dispatch Kira (harsh-critic) + Rune (maintainability-
+Dispatch `harsh-critic` + the `maintainability-reviewer` (maintainability-
 reviewer) per GOVERNANCE §20 before the PR lands. For
 any workflow that touches secrets, action pinning, or
-permissions: also Mateo (security-researcher).
+permissions: also `security-researcher`.
 
 ### Step 5 — land + measure
 
@@ -154,21 +154,21 @@ approved.>
 
 - **Aaron (human maintainer)** — every CI design
   decision requires Aaron sign-off; round-29 rule.
-- **Kenji (architect)** — integrates infra decisions;
+- **`architect`** — integrates infra decisions;
   dispatches reviewer floor before code lands.
-- **Kira (harsh-critic)** — P0/P1 findings on CI code;
+- **`harsh-critic`** — P0/P1 findings on CI code;
   GOVERNANCE §20 floor.
-- **Rune (maintainability-reviewer)** — readability of
+- **`maintainability-reviewer`** — readability of
   workflows + install scripts; naming, step shape,
   timeout values.
-- **Mateo (security-researcher)** — supply-chain
+- **`security-researcher`** — supply-chain
   surface on third-party actions, secret handling,
   permission elevation.
-- **Leilani (backlog-scrum-master)** — CI cost / parity-
+- **`backlog-scrum-master`** — CI cost / parity-
   drift DEBT items flow through BACKLOG.md.
-- **Nadia (prompt-protector)** — pair on any workflow
+- **`prompt-protector`** — pair on any workflow
   step that feeds untrusted input to an agent.
-- **Adaeze (claims-tester)** — pair on "CI got faster"
+- **`claims-tester`** — pair on "CI got faster"
   claims; measure or dismiss.
 
 ## Reference patterns
@@ -185,4 +185,4 @@ approved.>
 - `GOVERNANCE.md` §19, §20, §23, §24
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04, BP-07, BP-09,
   BP-11, BP-16
-- `.claude/agents/devops-engineer.md` — Dejan (persona)
+- `.claude/agents/devops-engineer.md` — the `devops-engineer` (persona)

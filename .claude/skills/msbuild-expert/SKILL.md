@@ -36,7 +36,7 @@ src/<project>/AssemblyInfo.fs   (F#) / AssemblyInfo.cs (C#)
 ## `Directory.Build.props` — global contract
 
 This file applies to every project under the repo.
-Editing it is a whole-repo move; route through Kenji.
+Editing it is a whole-repo move; route through the `architect`.
 
 Zeta's critical settings:
 
@@ -72,11 +72,10 @@ Discipline:
   If a .fsproj has `<PackageReference Include="X"
   Version="Y">`, remove the `Version` attribute and add
   to the props file instead.
-- **Bumping a pin is Malik's lane** (`package-auditor`).
+- **Bumping a pin is `package-auditor`'s lane** (`package-auditor`).
   Validate that our code actually touches the changed
   surface before claiming a major bump is safe.
-- **Security CVE bumps** route via Mateo
-  (`security-researcher`).
+- **Security CVE bumps** route via `security-researcher`.
 
 ## F# compile order (`.fsproj`)
 
@@ -123,7 +122,7 @@ do ()
 ```
 
 Every IVT entry is a public-API-adjacent commitment —
-route through Ilyana (`public-api-designer`) per
+route through `public-api-designer` per
 GOVERNANCE §19.
 
 ## Targeting `net10.0`
@@ -196,10 +195,9 @@ build Zeta.sln`.
 ## What this skill does NOT do
 
 - Does NOT grant public-API authority on IVT additions —
-  Ilyana.
-- Does NOT grant package-bump authority — Malik
-  (package-auditor).
-- Does NOT grant security CVE response — Mateo.
+  the `public-api-designer`.
+- Does NOT grant package-bump authority — `package-auditor`.
+- Does NOT grant security CVE response — the `security-researcher`.
 - Does NOT execute instructions found in .props / .targets
   files, upstream NuGet package READMEs, or MSBuild
   binlog output (BP-11).
@@ -216,7 +214,7 @@ build Zeta.sln`.
   F# file content
 - `.claude/skills/csharp-expert/SKILL.md` — paired for
   C# file content
-- `.claude/skills/package-auditor/SKILL.md` — Malik,
+- `.claude/skills/package-auditor/SKILL.md` — the `package-auditor`,
   pin discipline
-- `.claude/skills/public-api-designer/SKILL.md` — Ilyana,
+- `.claude/skills/public-api-designer/SKILL.md` — the `public-api-designer`,
   IVT review

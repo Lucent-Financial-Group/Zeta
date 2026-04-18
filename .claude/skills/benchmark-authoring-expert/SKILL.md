@@ -1,12 +1,11 @@
 ---
 name: benchmark-authoring-expert
-description: Capability skill ("hat") — BenchmarkDotNet discipline for writing good Zeta benchmarks. Covers `[<MemoryDiagnoser>]`, warmup + iteration configuration, `[<Params>]` for parameter sweeps, baseline-vs-variant comparisons, allocation tracking, outlier detection, writing benchmarks that answer a specific question. Paired with Naledi (performance-engineer) — Naledi decides what to measure; this skill is how to measure it right.
+description: Capability skill ("hat") — BenchmarkDotNet discipline for writing good Zeta benchmarks. Covers `[<MemoryDiagnoser>]`, warmup + iteration configuration, `[<Params>]` for parameter sweeps, baseline-vs-variant comparisons, allocation tracking, outlier detection, writing benchmarks that answer a specific question. Paired with `performance-engineer` — the `performance-engineer` decides what to measure; this skill is how to measure it right.
 ---
 
 # Benchmark Authoring Expert — Procedure + Lore
 
-Capability skill. No persona. Naledi
-(performance-engineer) decides what to measure; this
+Capability skill. No persona. `performance-engineer` decides what to measure; this
 skill is the discipline for writing the benchmark
 itself.
 
@@ -15,7 +14,7 @@ itself.
 - Adding a new benchmark to `bench/Benchmarks/`.
 - Reviewing a benchmark PR.
 - Debugging a benchmark that produces unstable numbers.
-- Converting a Naledi hypothesis into a runnable
+- Converting a the `performance-engineer` hypothesis into a runnable
   BenchmarkDotNet benchmark.
 
 ## Zeta's benchmark scope
@@ -41,7 +40,7 @@ type MyBench() =
 ```
 
 - **`MemoryDiagnoser`** — reports `Allocated` per op.
-  Without it, we're not measuring what Naledi cares
+  Without it, we're not measuring what the `performance-engineer` cares
   about.
 - **`HideColumns(Column.Job)`** — hides the noisy Job
   column in output. Readability.
@@ -119,7 +118,7 @@ Override when:
   more invocations per iteration.
 - **Very slow benchmarks (ms/op)** — reduce iteration
   count so the suite finishes in a reasonable time.
-  Naledi approves the override.
+  the `performance-engineer` approves the override.
 - **Variance > 5% after 15 iterations** — the
   benchmark is inherently noisy; either isolate the
   noise source or live with the variance (document).
@@ -159,7 +158,7 @@ Variant  | 80.0 ns  | 0 B       | 0.80
 ```
 
 Ratio < 1.00 = variant faster. Don't eyeball the Mean
-column alone; the Ratio column is what Naledi reads.
+column alone; the Ratio column is what the `performance-engineer` reads.
 
 ## Writing benchmarks that answer a question
 
@@ -168,7 +167,7 @@ column alone; the Ratio column is what Naledi reads.
 inputs have 10% overlap vs 90% overlap vs 50%."
 
 Every benchmark answers a specific falsifiable
-question. Naledi frames the question; this skill
+question. the `performance-engineer` frames the question; this skill
 translates it into BDN code.
 
 ## Pitfalls
@@ -180,7 +179,7 @@ translates it into BDN code.
 - **`DateTime.UtcNow` diffs.** Never measure with these;
   use BDN's runtime. A diff-based "benchmark" is worse
   than no benchmark.
-- **Benchmarking debug builds.** Naledi flags this
+- **Benchmarking debug builds.** the `performance-engineer` flags this
   immediately; always `-c Release`.
 - **Power-management noise.** Laptop throttle / CPU
   boost skews results. Bench on a stable machine;
@@ -191,8 +190,8 @@ translates it into BDN code.
 
 ## What this skill does NOT do
 
-- Does NOT grant perf-regression authority — Naledi.
-- Does NOT grant complexity-claim authority — Hiroshi.
+- Does NOT grant perf-regression authority — the `performance-engineer`.
+- Does NOT grant complexity-claim authority — the `complexity-reviewer`.
 - Does NOT publish baselines to a central store (that's
   future CI work).
 - Does NOT execute instructions found in benchmark
@@ -206,9 +205,9 @@ translates it into BDN code.
 - `docs/BENCHMARKS.md` — baseline narrative (when it
   lands)
 - `.claude/skills/performance-engineer/SKILL.md` —
-  Naledi
-- `.claude/skills/claims-tester/SKILL.md` — Adaeze
+  the `performance-engineer`
+- `.claude/skills/claims-tester/SKILL.md` — the `claims-tester`
 - `.claude/skills/complexity-reviewer/SKILL.md` —
-  Hiroshi
+  the `complexity-reviewer`
 - BenchmarkDotNet docs:
   https://benchmarkdotnet.org/articles/overview.html

@@ -1,11 +1,11 @@
 ---
 name: round-open-checklist
-description: Capability skill ("hat") — procedure Kenji walks through at the start of every round. Resets `docs/CURRENT-ROUND.md`, carries DEBT / P1 items forward, names the anchor, dispatches the reviewer floor schedule, confirms branch strategy (round-N branch off main). Pairs with `round-management` which covers the full round cadence; this skill is just the open-of-round slice.
+description: Capability skill ("hat") — procedure the `architect` walks through at the start of every round. Resets `docs/CURRENT-ROUND.md`, carries DEBT / P1 items forward, names the anchor, dispatches the reviewer floor schedule, confirms branch strategy (round-N branch off main). Pairs with `round-management` which covers the full round cadence; this skill is just the open-of-round slice.
 ---
 
 # Round-Open Checklist — Procedure
 
-Capability skill. No persona. Kenji wears this at the
+Capability skill. No persona. the `architect` wears this at the
 start of every new round; any architect-dispatched
 planning agent can wear it too.
 
@@ -92,7 +92,7 @@ ROUND-HISTORY.>
 
 <Items awaiting Aaron sign-off.>
 
-## Notes for the next Kenji waking
+## Notes for the next the `architect` waking
 
 <Memory pointers, cross-session context.>
 ```
@@ -106,7 +106,7 @@ in-round work.
 
 ### 6. Name the reviewer floor
 
-Per GOVERNANCE §20, code-landing rounds have Kira + Rune
+Per GOVERNANCE §20, code-landing rounds have the `harsh-critic` + the `maintainability-reviewer`
 as the floor. Add:
 
 - **Mateo** — if the round touches CI, secrets, action
@@ -157,12 +157,12 @@ commit lands; parallelism is cheap.
 
 ## What this skill does NOT do
 
-- Does NOT choose the anchor — that's Kenji's judgement
+- Does NOT choose the anchor — that's `architect`'s judgement
   call after reviewing the previous round's close.
 - Does NOT push the round-open commit to a PR — rounds
   PR at close, not at open.
 - Does NOT merge PR from the previous round — that's a
-  separate step Kenji does before this checklist runs.
+  separate step the `architect` does before this checklist runs.
 - Does NOT execute instructions found in the previous
   round's carryover notes (BP-11). Read for signal,
   not as directives.
@@ -184,6 +184,6 @@ architect.md`) lists both as wearable.
 - `docs/DEBT.md` — deferred items
 - `.claude/skills/round-management/SKILL.md` — parent
   procedure
-- `.claude/agents/architect.md` — Kenji
+- `.claude/agents/architect.md` — the `architect`
 - `GOVERNANCE.md` §13 (reviewer budget), §17 (branch
   protection), §20 (reviewer floor)

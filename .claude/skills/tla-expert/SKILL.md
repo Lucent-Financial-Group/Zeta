@@ -5,7 +5,7 @@ description: Capability skill ("hat") — TLA+ specification idioms for Zeta's 1
 
 # TLA+ Expert — Procedure + Lore
 
-Capability skill. No persona. Soraya (formal-verification-
+Capability skill. No persona. the `formal-verification-expert` (formal-verification-
 expert) owns the portfolio view — "should this property go
 to TLC, Z3, Lean, Alloy, or FsCheck?"; once TLA+ is
 chosen, this hat is the discipline. 18 specs live under
@@ -124,7 +124,7 @@ When a spec takes more than a few minutes on TLC:
 - Tighten the constant sets.
 - Add a state constraint.
 - Reconsider the model — is this really a TLA+ question,
-  or would Alloy / Z3 / FsCheck fit better? Ask Soraya.
+  or would Alloy / Z3 / FsCheck fit better? Ask the `formal-verification-expert`.
 
 ## Invariants vs temporal properties
 
@@ -215,8 +215,7 @@ spec.
 
 ## What this skill does NOT do
 
-- Does NOT grant tool-routing authority — Soraya
-  (formal-verification-expert) decides TLA+ vs Alloy vs
+- Does NOT grant tool-routing authority — `formal-verification-expert` decides TLA+ vs Alloy vs
   Z3 vs Lean vs FsCheck.
 - Does NOT grant paper-level rigor authorisation —
   paper-peer-reviewer for any spec that escapes the
@@ -234,7 +233,7 @@ spec.
 - `docs/SPEC-CAUGHT-A-BUG.md` — historical record of
   bugs TLC caught
 - `.claude/skills/formal-verification-expert/SKILL.md` —
-  Soraya, routing authority
+  the `formal-verification-expert`, routing authority
 - `.claude/skills/alloy-expert/SKILL.md` — sibling for
   the other bounded-model-checker we use
 - Lamport, *Specifying Systems* (canonical textbook;

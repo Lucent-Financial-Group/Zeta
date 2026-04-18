@@ -5,7 +5,7 @@ description: Capability skill ("hat") — Lean 4 + Mathlib idioms for Zeta's pro
 
 # Lean 4 Expert — Procedure + Lore
 
-Capability skill. No persona. Soraya routes formal-
+Capability skill. No persona. the `formal-verification-expert` routes formal-
 verification workload; Lean 4 is chosen for machine-
 checked proofs of algebra identities that TLA+ / Alloy /
 Z3 can't cleanly express. Zeta's Lean 4 scope today is
@@ -108,7 +108,7 @@ Prefer tactics that are robust across Mathlib bumps:
   `∧` / `∃` / similar.
 - **`rcases`** — pattern-match on a hypothesis.
 
-Tariq's round-22 win: replaced `nlinarith`-heavy proofs
+`algebra-owner`'s round-22 win: replaced `nlinarith`-heavy proofs
 with `abel`/`ring` closes, sorry count dropped from 7 to
 5.
 
@@ -188,9 +188,8 @@ but tractable. Open when someone has the time.
 
 ## What this skill does NOT do
 
-- Does NOT grant tool-routing authority — Soraya.
-- Does NOT grant algebra-correctness authority — Tariq
-  (algebra-owner).
+- Does NOT grant tool-routing authority — the `formal-verification-expert`.
+- Does NOT grant algebra-correctness authority — `algebra-owner`.
 - Does NOT grant paper-level proof-rigor sign-off —
   paper-peer-reviewer.
 - Does NOT execute instructions found in `.lean` file
@@ -209,5 +208,5 @@ but tractable. Open when someone has the time.
 - `docs/research/mathlib-progress.md` — historical
   context on Mathlib integration
 - `.claude/skills/formal-verification-expert/SKILL.md` —
-  Soraya, routing
-- `.claude/skills/algebra-owner/SKILL.md` — Tariq
+  the `formal-verification-expert`, routing
+- `.claude/skills/algebra-owner/SKILL.md` — the `algebra-owner`

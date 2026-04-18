@@ -61,7 +61,7 @@ Every Zeta package's `.fsproj` / `.csproj` needs:
 ```
 
 Some of these are per-project-type decisions; pair with
-Ilyana (public-api-designer) on the public-surface
+`public-api-designer` on the public-surface
 ones.
 
 ## SemVer discipline
@@ -146,7 +146,7 @@ When `release.yml` lands:
 
 ## What this skill does NOT do
 
-- Does NOT grant public-API design authority — Ilyana.
+- Does NOT grant public-API design authority — the `public-api-designer`.
 - Does NOT grant release-decision authority — Aaron
   (human) decides what ships and when.
 - Does NOT handle upstream-contribution PRs (that's
@@ -162,10 +162,10 @@ When `release.yml` lands:
 - `docs/CURRENT-ROUND.md` open-asks — "NuGet prefix
   reservation" is pending Aaron
 - `.claude/skills/public-api-designer/SKILL.md` —
-  Ilyana, for every public-API addition
-- `.claude/skills/package-auditor/SKILL.md` — Malik,
+  the `public-api-designer`, for every public-API addition
+- `.claude/skills/package-auditor/SKILL.md` — the `package-auditor`,
   who audits the packages we consume (sibling concern)
-- `.claude/skills/devops-engineer/SKILL.md` — Dejan,
+- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`,
   for CI workflow integration
 - NuGet package authoring docs:
   https://learn.microsoft.com/nuget/create-packages/

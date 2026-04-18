@@ -87,12 +87,12 @@ products.** Audit surfaces:
 
 ## What this skill does NOT audit
 
-- **The operator algebra** — Tariq / paper-peer-
+- **The operator algebra** — the `algebra-owner` / paper-peer-
   reviewer.
-- **Formal-verification portfolio** — Soraya.
-- **Hot-path performance** — Naledi.
-- **Security threat model** — Aminata / Mateo.
-- **Public API design** — Ilyana.
+- **Formal-verification portfolio** — the `formal-verification-expert`.
+- **Hot-path performance** — the `performance-engineer`.
+- **Security threat model** — the `threat-model-critic` / the `security-researcher`.
+- **Public API design** — the `public-api-designer`.
 - **Library-consumer experience** — UX researcher
   (when personaed).
 - **Contributor dev-loop friction** — DX researcher
@@ -147,18 +147,18 @@ For each factory bug / debt:
   - [ ] New meta-skill
   - [ ] Documentation restructure
   - [ ] Reviewer-protocol tweak
-- **Who lands it:** Kenji / Aaron / skill-creator /
+- **Who lands it:** the `architect` / Aaron / skill-creator /
   persona owner.
 - **Cost estimate:** S / M / L.
 ```
 
-### Step 5 — hand off to Kenji + Aaron
+### Step 5 — hand off to the `architect` + Aaron
 
 Write the report in
 `memory/persona/factory-audit-scratch.md` (or append to
-Aarav's scratchpad if it fits). Do NOT implement any
+`skill-expert`'s scratchpad if it fits). Do NOT implement any
 proposal yourself — this skill is strictly
-advisory. Kenji integrates; Aaron signs off on
+advisory. the `architect` integrates; Aaron signs off on
 structural changes (governance, persona, cadence).
 
 ## Output format
@@ -214,20 +214,20 @@ Aaron-facing.>
 
 ## Coordination
 
-- **Kenji (architect)** — integrates factory proposals;
+- **`architect`** — integrates factory proposals;
   binding authority per GOVERNANCE §11.
 - **Aaron (human maintainer)** — signs off on structural
   factory changes (new § rules, persona spawns /
   retirements, cadence shifts).
-- **Aarav (skill-expert)** — sibling in the meta-skill
-  space. Aarav's scope is skills; this skill's scope is
+- **`skill-expert`** — sibling in the meta-skill
+  space. `skill-expert`'s scope is skills; this skill's scope is
   the whole factory. When the two audits overlap on a
-  skill-shaped signal, Aarav handles.
-- **Daya (agent-experience-researcher)** — sibling on
+  skill-shaped signal, the `skill-expert` handles.
+- **`agent-experience-researcher`** — sibling on
   agent-side friction. When factory-audit surfaces a
   cold-start / wake-up / notebook issue, hand off to
-  Daya.
-- **Leilani (backlog-scrum-master)** — any P1 factory
+  the `agent-experience-researcher`.
+- **`backlog-scrum-master`** — any P1 factory
   debt that becomes cross-round work flows through the
   backlog.
 
@@ -246,6 +246,6 @@ Aaron-facing.>
   existing-skill scope
 - `.claude/skills/agent-experience-researcher/SKILL.md` —
   sibling at agent-experience scope
-- `.claude/agents/architect.md` — Kenji, integration
-- `.claude/agents/skill-expert.md` — Aarav, sibling
+- `.claude/agents/architect.md` — the `architect`, integration
+- `.claude/agents/skill-expert.md` — the `skill-expert`, sibling
   meta-skill owner

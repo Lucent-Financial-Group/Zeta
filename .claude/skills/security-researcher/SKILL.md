@@ -1,6 +1,6 @@
 ---
 name: security-researcher
-description: Capability skill — proactive security research. Scouts novel attack classes, crypto primitives, supply-chain patterns, CVEs in the dep graph, and research-preview attack surfaces. Distinct from Aminata (threat-model-critic reviews the *shipped* model) and Nadia (prompt-protector owns the agent layer). Persona lives on `.claude/agents/security-researcher.md` (Mateo).
+description: Capability skill — proactive security research. Scouts novel attack classes, crypto primitives, supply-chain patterns, CVEs in the dep graph, and research-preview attack surfaces. Distinct from the `threat-model-critic` (threat-model-critic reviews the *shipped* model) and the `prompt-protector` (prompt-protector owns the agent layer). Persona lives on `.claude/agents/security-researcher.md` (Mateo).
 ---
 
 # Security Researcher — Procedure
@@ -23,18 +23,18 @@ CVEs in the dependency graph. The persona (Mateo) lives on
   specs.
 - **Supply chain** — NuGet package integrity, upstream
   maintainer changes, typosquat candidates, transitive dep
-  freshness. Pairs with Malik (package-auditor).
+  freshness. Pairs with `package-auditor`.
 - **CVE triage** — known CVEs in pinned deps; routes impact to
-  Aminata for threat-model updates and Malik for pin bumps.
+  the `threat-model-critic` for threat-model updates and the `package-auditor` for pin bumps.
 - **Research-preview surfaces** — each new flag in
   `docs/FEATURE-FLAGS.md` is a potential new attack surface;
-  Mateo walks the exposure at flag-landing time.
+  the `security-researcher` walks the exposure at flag-landing time.
 
 Out of scope:
-- Review of the shipped threat model — Aminata.
-- Prompt-injection / agent-layer defences — Nadia.
-- Code-level bug hunting — Kira.
-- Formal-verification routing — Soraya.
+- Review of the shipped threat model — the `threat-model-critic`.
+- Prompt-injection / agent-layer defences — the `prompt-protector`.
+- Code-level bug hunting — the `harsh-critic`.
+- Formal-verification routing — the `formal-verification-expert`.
 
 ## Procedure
 
@@ -42,7 +42,7 @@ Out of scope:
 
 One of: novel-attack-class / crypto-primitive / supply-chain /
 CVE-triage / research-preview-surface. The persona picks the
-highest-leverage per round; Kenji may request a specific one.
+highest-leverage per round; the `architect` may request a specific one.
 
 ### Step 2 — literature sweep
 
@@ -65,8 +65,8 @@ today? Which files? Which specs? Which feature flags?
 
 Four severities:
 - **Critical** — novel attack lands on shipped code or a live
-  research-preview without mitigation. Surface to Kenji and
-  Aminata immediately. File a BUGS.md P0-security entry.
+  research-preview without mitigation. Surface to the `architect` and
+  the `threat-model-critic` immediately. File a BUGS.md P0-security entry.
 - **Important** — novel attack lands on the roadmap; plan
   mitigation before the feature ships.
 - **Watch** — novel attack lands on a related surface we might
@@ -116,13 +116,13 @@ Critical, also open a BUGS.md entry immediately.
 
 ## Coordination
 
-- **Aminata (threat-model-critic)** — paired; Mateo finds,
-  Aminata integrates into THREAT-MODEL.md.
-- **Nadia (prompt-protector)** — paired on agent-layer
+- **`threat-model-critic`** — paired; the `security-researcher` finds,
+  the `threat-model-critic` integrates into THREAT-MODEL.md.
+- **`prompt-protector`** — paired on agent-layer
   attack classes.
-- **Malik (package-auditor)** — paired on supply-chain CVE
+- **`package-auditor`** — paired on supply-chain CVE
   bumps.
-- **Kenji (architect)** — routes Critical findings; writes the
+- **`architect`** — routes Critical findings; writes the
   code fix.
 
 ## Reference patterns
@@ -133,5 +133,5 @@ Critical, also open a BUGS.md entry immediately.
 - `.claude/skills/threat-model-critic/SKILL.md`
 - `.claude/skills/prompt-protector/SKILL.md`
 - `.claude/skills/package-auditor/SKILL.md`
-- `.semgrep.yml` — rules Mateo proposes extensions to
+- `.semgrep.yml` — rules the `security-researcher` proposes extensions to
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04, BP-10, BP-11

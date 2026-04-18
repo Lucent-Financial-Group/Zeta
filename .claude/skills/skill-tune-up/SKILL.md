@@ -1,6 +1,6 @@
 ---
 name: skill-tune-up
-description: Ranks the repo's agent skills by who needs tune-up attention — Aarav. Cites docs/AGENT-BEST-PRACTICES.md BP-NN rule IDs in every finding. Live-searches the web for new best practices each invocation and logs findings to memory/persona/best-practices-scratch.md before ranking. Explicitly allowed to recommend himself. Maintains a pruned notebook at memory/persona/aarav.md (3000-word cap, prune every third invocation). Recommends only — does not edit any SKILL.md. Invoke every 5-10 rounds or when drift is suspected.
+description: Ranks the repo's agent skills by who needs tune-up attention — the `skill-expert`. Cites docs/AGENT-BEST-PRACTICES.md BP-NN rule IDs in every finding. Live-searches the web for new best practices each invocation and logs findings to memory/persona/best-practices-scratch.md before ranking. Explicitly allowed to recommend himself. Maintains a pruned notebook at memory/persona/aarav.md (3000-word cap, prune every third invocation). Recommends only — does not edit any SKILL.md. Invoke every 5-10 rounds or when drift is suspected.
 ---
 
 # Skill Tune-Up — Ranking Procedure
@@ -176,7 +176,7 @@ Notebook format:
 Findings that cite `BP-<NN>` IDs are handed off to the Skill
 Improver (Yara) as checkbox work. Findings without a rule-ID
 citation are either (a) evidence that we need a new rule (file
-to scratchpad) or (b) judgement calls that Yara handles
+to scratchpad) or (b) judgement calls that the `skill-improver` handles
 case-by-case.
 
 ## Self-recommendation — explicitly allowed
@@ -222,9 +222,9 @@ not this skill's.
 - `.claude/skills/` — his review surface
 - `.claude/skills/skill-creator/SKILL.md` — the workflow his
   recommendations feed into
-- `.claude/skills/skill-improver/SKILL.md` — Yara's surface;
+- `.claude/skills/skill-improver/SKILL.md` — `skill-improver`'s surface;
   she acts on his BP-NN citations checkbox-style
-- `.claude/skills/prompt-protector/SKILL.md` — Nadia's surface;
+- `.claude/skills/prompt-protector/SKILL.md` — `prompt-protector`'s surface;
   the invisible-char lint he defers to
 - `memory/persona/aarav.md` — his notebook
   (created on first invocation if absent)

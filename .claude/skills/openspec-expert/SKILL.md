@@ -96,12 +96,12 @@ redundant.
   property. Verifies the behavioural contract holds
   under all inputs / interleavings / bounded scopes.
 
-**Routing:** Soraya (formal-verification-expert) decides
+**Routing:** `formal-verification-expert` decides
 which formal tool fits which behavioural claim.
 OpenSpec captures "what"; TLA+ / Alloy / Lean captures
 "why we believe what." If a `REQUIRES` block has no
 corresponding formal spec, that's a coverage signal —
-not necessarily a bug, but Soraya's call.
+not necessarily a bug, but `formal-verification-expert`'s call.
 
 ## Overlays
 
@@ -119,9 +119,9 @@ as the base spec.
 
 ## What this skill does NOT do
 
-- Does NOT grant algebra authority — Tariq.
+- Does NOT grant algebra authority — the `algebra-owner`.
 - Does NOT grant formal-verification routing authority
-  — Soraya.
+  — the `formal-verification-expert`.
 - Does NOT grant paper-level rigor authority —
   paper-peer-reviewer.
 - Does NOT use the `openspec/changes/` directory per
@@ -178,7 +178,7 @@ as the base spec.
   (Note: archive is a stub per Zeta's no-archive
   choice; keep the skill definition but don't invoke.)
 - `.claude/skills/formal-verification-expert/SKILL.md`
-  — Soraya
-- `.claude/skills/algebra-owner/SKILL.md` — Tariq
-- `.claude/skills/spec-zealot/SKILL.md` — Viktor, for
+  — the `formal-verification-expert`
+- `.claude/skills/algebra-owner/SKILL.md` — the `algebra-owner`
+- `.claude/skills/spec-zealot/SKILL.md` — the `spec-zealot`, for
   spec-to-code drift review

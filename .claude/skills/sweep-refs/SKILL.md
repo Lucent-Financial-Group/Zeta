@@ -111,8 +111,8 @@ One commit per logical move. Include:
 ## What this skill does NOT do
 
 - Does NOT decide whether to move something — that's
-  Kenji / persona owner / Aaron.
-- Does NOT replace Rune's readability review for the
+  the `architect` / persona owner / Aaron.
+- Does NOT replace `maintainability-reviewer`'s readability review for the
   resulting naming.
 - Does NOT handle symbol renames in F# code that require
   the compiler's help (use an IDE rename, then sweep the
@@ -147,14 +147,14 @@ One commit per logical move. Include:
 
 - Round 29 example: `tools/install-verifiers.sh` retired;
   10 refs swept; historical narrative kept in
-  `docs/research/build-machine-setup.md` and Dejan's
+  `docs/research/build-machine-setup.md` and `devops-engineer`'s
   notebook.
 - Round 27 example: `docs/*.tla` → `tools/tla/specs/*.tla`;
   29 files moved; bulk sed across .md / .fs / .sh.
 - Round 27 example: `docs/FAMILY-EMPATHY.md` →
   `docs/PROJECT-EMPATHY.md`; refs swept across skills +
   research docs.
-- `.claude/skills/documentation-agent/SKILL.md` — Samir,
+- `.claude/skills/documentation-agent/SKILL.md` — the `documentation-agent`,
   who wears this hat most frequently.
-- `.claude/skills/devops-engineer/SKILL.md` — Dejan,
+- `.claude/skills/devops-engineer/SKILL.md` — the `devops-engineer`,
   wears it on install-script / workflow renames.
