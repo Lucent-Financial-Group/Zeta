@@ -395,6 +395,22 @@ within each priority tier.
   time, and gives the factory-paper a concrete
   contribution to point at.
 
+  **Bootstrap discipline to preserve.** When this factory
+  pattern becomes reusable (template / starter / docs for
+  adopters), carry forward the "first-time consequential
+  repo-shaping actions need explicit maintainer
+  authorization" rule. Concrete instance from Zeta's
+  history: an agent initialising git prematurely on a
+  fresh repo before the maintainer was ready. The
+  specific git-init example is obsolete for Zeta (we're
+  past init), but the general principle — agents don't
+  take first-time, hard-to-reverse, repo-shaping actions
+  without explicit authorization — belongs in the
+  adopter-facing bootstrap guide. Place it alongside
+  CLAUDE.md's existing reversibility / blast-radius
+  discipline; the bootstrap context adds "and first-time
+  on a fresh repo is a special case of consequential."
+
 - [ ] **Wire HLL from `Sketch.fs` into `Plan.estimate`** (query-planner
   P1, Imani). `src/Core/Plan.fs:28-51` currently uses static
   heuristics (filter /2, groupBy /4, 1024L unknown); real per-input
