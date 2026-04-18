@@ -244,8 +244,12 @@ PRs + can merge to `main`.
 3. **Sign out all sessions** (Settings → Sessions →
    Sign out of all other sessions).
 4. **Rotate 2FA.** If the compromise might be 2FA-
-   bypass, regenerate the 2FA secret; if a recovery
-   code was used, all recovery codes regenerate.
+   bypass, regenerate the 2FA secret; regenerate all
+   recovery codes regardless. **Note:** under the
+   bus-factor exception, Aaron runs 2FA only (no
+   hardware key); there is no pre-documented
+   recovery-code custody location. Rotation relies
+   on GitHub's re-enrolment flow.
 5. **Revoke deploy keys** (Settings → Deploy keys) on
    the repo.
 6. **Force Codespaces + Actions stop.** Cancel all

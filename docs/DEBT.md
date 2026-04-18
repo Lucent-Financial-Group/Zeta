@@ -37,6 +37,20 @@ feature + debt budget).
 
 ## Live debt
 
+### Verifier-jar SHA-256 pinning (round-30 → round-31)
+- **Site:** `tools/setup/common/verifiers.sh` + `tools/setup/manifests/verifiers.txt`
+- **Found:** round 30 — elevation design doc deferred this to round 31 per Aaron's "accept today, improve over time" TOFU stance
+- **Effort:** S
+- **Friction:** TOFU on first-use means a DNS-spoof or upstream-account-compromise at the moment of install becomes permanently trusted. Acceptable residual risk today, but concrete gradient step to close the gap exists.
+- **Fix:** extend manifest format to `<path> <url> <sha256>`; have `verifiers.sh` compute SHA after download and error-out on mismatch. Re-verify on re-fetch.
+
+### Safety-clause-diff lint on `.claude/skills/**/SKILL.md`
+- **Site:** `.semgrep.yml` rule 16 (stubbed, deferred)
+- **Found:** round 30 — elevation design called for this; Semgrep generic-mode regex can't cleanly express "file lacks any of these headings"
+- **Effort:** M
+- **Friction:** XZ-class long-game adversary regresses safety clauses over many PRs; INCIDENT-PLAYBOOK Playbook E assumes we can detect this, but the detector doesn't exist
+- **Fix:** bespoke diff-level lint that detects section removal / shrinkage on skill SKILL.md files. Can be a small .NET tool or a jq-over-git-diff script; wire into CI.
+
 ### Install-script P1 follow-ups from round-29 harsh-critic review
 - **Site:** `tools/setup/common/{shellenv,dotnet-tools,macos,linux,mise}.sh`, `.github/workflows/gate.yml`
 - **Found:** round 29 by `harsh-critic`

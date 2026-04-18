@@ -298,12 +298,12 @@ adversary tier it defends to. Forces honest tier scoring.
 
 | Control | T0 | T1 | T2 | T3 |
 |---|---|---|---|---|
-| Semgrep lint rules (14, ENFORCED at CI round 30) | ✅ | ✅ | ✅ | partial (regression surfaces outside lint scope) |
-| Build gate (`dotnet build` 0W/0E) | ✅ | ✅ | ✅ | ✅ |
+| Semgrep lint rules (14, ENFORCED at CI round 30 via `--error`; all matches hard-fail regardless of declared severity) | ✅ | ✅ | ✅ | partial (long-game regression outside lint scope; diff-lint on skills BACKLOG) |
+| Build gate (`dotnet build` 0W/0E) | ✅ | ✅ | ✅ | — (compile-clean code can still be a Jia-Tan-class backdoor; not a T3 control) |
 | Test suite | ✅ | ✅ | partial | partial |
 | Full-SHA action pins | — | — | ✅ | ✅ |
 | SHA-pin enforcement Semgrep rule | — | — | ✅ | ✅ |
-| `permissions: contents: read` + no secrets | — | ✅ | ✅ | ✅ |
+| `permissions: contents: read` + no secrets *(invariant breakable the moment any secret — e.g., `NUGET_API_KEY` — lands; treat secret introduction as a design-doc moment)* | — | ✅ | ✅ | ✅ (today) |
 | 2FA on maintainer account | — | ✅ | ✅ | **partial — bus-factor exception** |
 | Hardware security key on maintainer | — | — | — | ✅ (not yet enabled) |
 | Signed commits on main | — | — | — | ✅ (deferred) |

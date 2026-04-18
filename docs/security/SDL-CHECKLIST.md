@@ -13,7 +13,7 @@ for an embedded F# library with no network surface yet.
 | 6 | Define cryptography standards | yes | 🔜 | `docs/security/CRYPTO.md` (CRC32C vs SHA-256 rationale) — P1. **Round-30 decision:** no crypto surface today, so deferred; revisit when HMAC / signed-checkpoint lands |
 | 7 | Manage third-party component risk | yes | 🔜 | **Downgraded from ✅ (round 30 honest check):** `tools/audit-packages.sh` + `package-auditor` skill are manual, not CI-gated. `packages.lock.json` NOT YET adopted; transitive MSBuild `.targets` not allowlisted. Round-31 deliverables |
 | 8 | Use approved tools | partial | 🔜 | **Downgraded from ✅ (round 30 honest check):** analyzers run in build (G-Research + Ionide + Meziantou), but Semgrep ran nowhere before round 30. Round 30 lands Semgrep-in-CI as a hard gate. **Now true** under nation-state bar once the gate ships on main |
-| 9 | Static Analysis (SAST) | yes | 🔜 | **Downgraded from ✅ (round 30 honest check):** 14 Semgrep rules existed but no CI job ran them (pre-round-30). Round 30 lands `.github/workflows/gate.yml` `lint` job. CodeQL workflow still P1 (backlogged). **After round 30 merge:** ✅ for Semgrep, 🔜 for CodeQL |
+| 9 | Static Analysis (SAST) | yes | 🔜 | **Downgraded from ✅ (round 30 honest check):** 14 Semgrep rules existed but no CI job ran them (pre-round-30). Round 30 lands `.github/workflows/gate.yml` `lint` job. CodeQL workflow still P1 (backlogged). Upgrade to ✅ once the lint job has one week of clean runs on `main`. |
 | 10 | Dynamic Analysis (DAST) | **defer** | N/A | no runtime surface pre-v1 — revisit when multi-node ships |
 | 11 | Penetration testing | **defer** | N/A | post-v1 |
 | 12 | Incident response plan | yes | ✅ | `SECURITY.md` disclosure policy + `docs/security/INCIDENT-PLAYBOOK.md` (round-30 new) — 6 playbooks cover third-party-action compromise, toolchain installer hijack, NuGet dep poisoning, maintainer-account compromise, skill safety-clause regression, unknown/escalate |
@@ -48,10 +48,12 @@ Greenfield caveat: we have no CVE process yet. Pre-v1, "ship" means
 
 ## Compliance tracker
 
-- ✅ = shipped + evidenced by a file/test **and enforced by CI**
-  (round-30 tightening: a lint rule without a CI gate is not a
-  control; see `docs/security/THREAT-MODEL.md` §Long-game
-  defences)
+- ✅ = shipped + evidenced by a file/test **and enforced by CI
+  or governance** (round-30 tightening: a lint rule without a
+  CI gate is not a control; see `docs/security/THREAT-MODEL.md`
+  §Long-game defences). For policy-based controls (incident
+  response, review cadence), governance-enforcement counts.
+  Technical controls require CI-enforcement.
 - 🔜 = next-round P1 with concrete artifact target
 - 🔮 = post-v1
 - ⏭️ = explicitly declined with reason
