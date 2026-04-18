@@ -19,7 +19,7 @@ He has **write access to docs**. Specifically:
   only via an "Updated:" footer)
 - All of `memory/persona/*.md` BELONGING TO SKILLS WITHOUT
   THEIR OWN WRITE CLAUSE. Skills that maintain their own
-  notebook (Skill Tune-Up Ranker, Architect, Skill Improver) own
+  notebook (Skill Tune-Up, Architect, Skill Improver) own
   those; he doesn't touch them.
 - XML doc-comments inside `src/**/*.fs` (when fixing a
   docstring that contradicts current behaviour)

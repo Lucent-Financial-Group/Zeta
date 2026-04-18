@@ -24,4 +24,4 @@ skill writes to its own file. Every change is visible in git.
 ## Current notebooks
 
 - `architect.md` — the Architect's running notes
-- `skill-tune-up-ranker.md` — his ranking notebook
+- `skill-tune-up.md` — his ranking notebook

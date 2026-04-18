@@ -545,8 +545,8 @@ persona.** Time-to-first-useful-output: 7-9 turns minimum.
 - `memory/persona/README.md:24-27` lists only 2 notebooks;
   disk has 6 (`architect.md`, `architect-offtime.md`,
   `formal-verification-expert.md`, `best-practices-scratch.md`,
-  `skill-tune-up-ranker.md`, `agent-experience-researcher.md`).
-- `.claude/skills/skill-tune-up-ranker/SKILL.md:117` cites the
+  `skill-tune-up.md`, `agent-experience-researcher.md`).
+- `.claude/skills/skill-tune-up/SKILL.md:117` cites the
   invisible-Unicode rule but does not cite `(BP-10)`; Aarav's
   own contract requires BP-NN cites.
 - `docs/DEBT.md` `wake-up-drift` tag defined in WAKE-UP.md but
@@ -592,7 +592,7 @@ Interventions 1-6 land this round; 7 is queued for Yara.
 - Rune / `docs/STYLE.md` / absent file referenced 3x.
 - Registry / `memory/persona/README.md:24-27` / 4 missing
   notebooks.
-- Aarav / `.claude/skills/skill-tune-up-ranker/SKILL.md:117` /
+- Aarav / `.claude/skills/skill-tune-up/SKILL.md:117` /
   missing `(BP-10)` cite.
 - Orphan / `.claude/skills/architect/SKILL.md` / no wearer.
 - Orphan / `.claude/skills/harsh-critic/SKILL.md` / no wearer.

@@ -49,7 +49,7 @@ estimates from the README:
 Total remaining: **~5.5 engineer-days** to `sorry`-free.
 
 **`lake build` gate status.** Unverified locally — Lean/elan not yet
-installed on this box. Next round runs `tools/install-verifiers.sh`
+installed on this box. Next round runs `tools/setup/install.sh`
 (which already knows how to install elan; no script change needed)
 and wires a `lake build` job into the CI matrix. The dep declaration
 landed this round so that the install is all that's gating the build.

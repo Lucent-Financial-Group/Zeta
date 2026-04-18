@@ -15,7 +15,7 @@ be able to recreate the environment from this doc.
 | **Python 3** | system default | Package-audit script JSON parsing + helper scripts | Pre-installed |
 | **bash / awk / curl / git** | system default | `tools/*.sh` helper scripts | Pre-installed |
 
-## Project-specific binary artifacts (downloaded by `tools/install-verifiers.sh`)
+## Project-specific binary artifacts (downloaded by `tools/setup/install.sh`)
 
 | Artifact | Version | Path | Why | Install command |
 |---|---|---|---|---|
@@ -30,7 +30,7 @@ be able to recreate the environment from this doc.
 | Tool | Version | Why | Install |
 |---|---|---|---|
 | **dotnet-stryker** | latest | Mutation testing against `Zeta.Core.fsproj` | `dotnet tool install -g dotnet-stryker` |
-| **elan / lean / lake** | elan-installed, toolchain `leanprover/lean4:v4.30.0-rc1` at `/opt/homebrew/bin/{elan,lean,lake}` | Lean 4 version manager + compiler + build tool; drives chain-rule proof | `tools/install-verifiers.sh` runs the elan installer; toolchain pinned by `tools/lean4/lean-toolchain` |
+| **elan / lean / lake** | elan-installed, toolchain `leanprover/lean4:v4.30.0-rc1` at `/opt/homebrew/bin/{elan,lean,lake}` | Lean 4 version manager + compiler + build tool; drives chain-rule proof | `tools/setup/install.sh` runs the elan installer; toolchain pinned by `tools/lean4/lean-toolchain` |
 
 ## NuGet packages (pinned in `Directory.Packages.props`)
 
@@ -80,7 +80,7 @@ brew install --cask dotnet          # .NET 10.0.202
 brew install openjdk@21             # Java for TLC / Alloy
 brew install rustup && rustup-init   # Rust for Feldera
 # Everything else, including dotnet-stryker, TLC, Alloy, elan:
-bash tools/install-verifiers.sh
+bash tools/setup/install.sh
 
 # Project packages:
 dotnet restore Zeta.sln

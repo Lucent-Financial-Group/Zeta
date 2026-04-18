@@ -125,7 +125,7 @@ it's parked mid-setup.**
 **What's left to finish the chain-rule proof:**
 
 1. Install `elan` + Lean 4 toolchain (one-liner in
-   `tools/install-verifiers.sh`).
+   `tools/setup/install.sh`).
 2. Add `require mathlib from git "https://github.com/leanprover-community/mathlib4"`
    to `lakefile.lean`.
 3. Import `Mathlib.Algebra.Group.Basic` for abelian-group lemmas.
@@ -148,7 +148,7 @@ machine-checked in Lean 4"* — a publication-grade claim.
   size-doubling invariant and batch-level-ownership over bound
   4 batches, 4 levels.
 - **Not in CI.** Requires `tools/alloy/alloy.jar` (downloaded by
-  `tools/install-verifiers.sh` but not run by `dotnet test`).
+  `tools/setup/install.sh` but not run by `dotnet test`).
 - `TECH-RADAR.md` rates Alloy as **Assess**.
 
 **Low-hanging: add a CI hook mirroring `TlcRunnerTests.fs` but
@@ -220,7 +220,7 @@ verification claim the repo can make**: a machine-checked Lean 4
 proof of `(q₁ ∘ q₂)^Δ = q₁^Δ ∘ q₂^Δ` that can be cited in papers
 (POPL / PLDI target per `ROADMAP.md`).
 
-Concrete steps: (a) run `tools/install-verifiers.sh` to install
+Concrete steps: (a) run `tools/setup/install.sh` to install
 elan, (b) pin Mathlib in `lakefile.lean`, (c) port the stream +
 group structure, (d) replace `sorry` with the proof, (e) add a
 `lake build` job to CI.

@@ -32,7 +32,7 @@ Seven moving parts, each doing a distinct job:
    linted.
 4. **Best-practices tiers** — `docs/AGENT-BEST-PRACTICES.md`
    (stable `BP-01..BP-15`) + `memory/persona/best-practices-scratch.md`
-   (volatile). Rule IDs cited in `skill-tune-up-ranker` output
+   (volatile). Rule IDs cited in `skill-tune-up` output
    so tune-up is checkbox-actionable.
 5. **Governance docs** — `AGENTS.md` (rules 1-13),
    `docs/PROJECT-EMPATHY.md` (IFS-flavoured conflict protocol),

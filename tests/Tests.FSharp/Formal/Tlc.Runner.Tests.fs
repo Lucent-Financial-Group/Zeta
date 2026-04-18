@@ -43,7 +43,7 @@ let private runTlc (specName: string) : int * string =
     // Assume java is on PATH. If it's not, the user sees a clear
     // ProcessStartInfo error.
     if not (File.Exists tlaJarPath) then
-        failwithf "TLC jar not found at %s — run tools/install-verifiers.sh" tlaJarPath
+        failwithf "TLC jar not found at %s — run tools/setup/install.sh" tlaJarPath
     let psi = ProcessStartInfo()
     psi.FileName <- "java"
     psi.WorkingDirectory <- docsPath

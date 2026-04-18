@@ -1,0 +1,11 @@
+# Single source of truth for language-runtime pins.
+# Consumed by `tools/setup/common/mise.sh` which runs `mise install`
+# from this directory. See docs/research/build-machine-setup.md.
+#
+# Lean stays outside mise until a mise plugin exists (candidate OSS
+# contribution target per GOVERNANCE.md §23) — it is installed via
+# `tools/setup/common/elan.sh`.
+
+[tools]
+dotnet = "10"
+python = "3.14"

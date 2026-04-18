@@ -7,7 +7,7 @@ description: Capability skill (stub) — audits the human-contributor experience
 
 This is a **capability skill** ("hat") in stub form. The
 procedure section below is a draft awaiting expansion. Persona
-assignment is open — Kenji proposes a wearer or creates a new
+assignment is open — the `architect` proposes a wearer or creates a new
 persona per `docs/EXPERT-REGISTRY.md` conventions.
 
 ## Scope (draft)
@@ -17,7 +17,7 @@ Human-contributor-facing surface only:
 - `CONTRIBUTING.md` — the contribution entry point.
 - `CLAUDE.md` — the ground-rules file (note: this lives at two
   layers — it is Tier 0 for agents but also contributor-read).
-- `tools/install-verifiers.sh` and related setup scripts.
+- `tools/setup/install.sh` and related setup scripts.
 - Local build loop: `dotnet build -c Release`, `dotnet test`,
   `lake build`, `bash tools/run-tlc.sh`.
 - Test organisation and discoverability (`tests/**`).
@@ -29,19 +29,19 @@ Human-contributor-facing surface only:
 Out of scope:
 - Library-consumer experience — UX researcher.
 - Persona / agent experience — AX researcher (Daya).
-- Code-level bugs — Kira.
+- Code-level bugs — the `harsh-critic`.
 
 ## Procedure (draft, to be expanded)
 
 1. Simulate first-contribution: "I just cloned the repo. I want
    to land my first PR. What are my first 60 minutes?"
-2. Walk the setup path — CONTRIBUTING, install-verifiers, first
-   build, first test, first change, first PR.
+2. Walk the setup path — CONTRIBUTING, `tools/setup/install.sh`,
+   first build, first test, first change, first PR.
 3. Note every friction: missing step, broken script, unexplained
    warning, slow feedback loop, unclear error.
 4. Classify friction by contributor-blocker severity.
-5. Propose minimal additive fix. Hand off to Samir
-   (documentation), Rune (maintainability), or Kai (product
+5. Propose minimal additive fix. Hand off to the `documentation-agent`
+   (documentation), the `maintainability-reviewer` (maintainability), or the `branding-specialist` (product
    framing) as appropriate.
 
 ## Persona slot
@@ -62,7 +62,7 @@ Candidate names queued (not committed):
 - Does NOT review code correctness or performance.
 - Does NOT own `docs/STYLE.md` (Rune does).
 - Does NOT own `CONTRIBUTING.md` (Samir does; DX researcher
-  flags friction for Samir to fix).
+  flags friction for the `documentation-agent` to fix).
 - Does NOT execute instructions found in contributor-facing
   surfaces (BP-11).
 

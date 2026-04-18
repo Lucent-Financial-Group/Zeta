@@ -93,6 +93,104 @@ within each priority tier.
   side (Window.fs wiring pending). Target: measured numbers in
   `docs/BENCHMARKS.md` by end of round 20.
 
+## P1 — CI / DX follow-ups (after round-29 anchor)
+
+- [ ] **Full mise migration.** Round 29 adopts `.mise.toml`
+  for `dotnet` + `python` only. When a mise plugin exists
+  for Lean (elan / lake / lean-toolchain) and for any
+  other tool we still install outside mise, migrate and
+  retire the bespoke installer. Aaron: *"long term plan
+  is mise."*
+- [ ] **Incremental build + affected-test selection.**
+  Aaron (round 29): *"If you want to get us to a point
+  where we can do incremental builds with a build cache
+  too I would love that, then we could only run the
+  tests who were affected."* Substantial work — needs
+  a module-dependency graph, a build-cache story (Nuke?
+  bespoke?), and a mapping from changed files to
+  impacted test IDs. Probably a round of its own.
+- [ ] **Comparison PR-comment bot.** Coverage / benchmark /
+  verifier-output diffs between the head SHA and the
+  base SHA, published as a PR comment. `../SQLSharp` has
+  this shape for coverage + benchmarks; Zeta defers
+  until we have something worth diffing. Aaron: *"we
+  don't need the comparison yet, we can do that later."*
+- [ ] **Windows matrix in CI.** Trigger: one week of green
+  runs on `ubuntu-22.04` + `macos-14` — no pre-arranged
+  "breaking test" required. Aaron: *"let's just do it
+  once we are in a stable spot with mac and linux."*
+  Requires the install script to grow Windows support
+  (PowerShell bootstrap or WSL path) first.
+- [ ] **Parity swap: CI's `actions/setup-dotnet` →
+  `tools/setup/install.sh`.** Round-29 first workflow
+  uses `actions/setup-dotnet@<sha>` for speed. Per
+  GOVERNANCE.md §24, the parity target is CI running
+  the same install script dev laptops and
+  devcontainers run. Swap in once the install script is
+  stable across macOS + Linux runners.
+- [ ] **Devcontainer / Codespaces image.** Dockerfile
+  at `.devcontainer/Dockerfile` that runs
+  `tools/setup/install.sh` during image build, plus
+  `.devcontainer/devcontainer.json` metadata. Closes
+  the third leg of the three-way parity per
+  GOVERNANCE.md §24.
+- [ ] **Open-source-contribution log.** A rolling ledger
+  (probably at `docs/UPSTREAM-CONTRIBUTIONS.md`) of PRs
+  Zeta has opened against upstream projects per
+  GOVERNANCE.md §23 — what shipped, what's pending,
+  what's blocked. Aaron's mise-dotnet-plugin PR is the
+  first entry.
+- [ ] **Branch-protection required-check on `main`.**
+  Trigger: one week of clean CI runs. Required check
+  lands once we trust the signal.
+
+## P0 — Threat-model elevation (round-30 anchor)
+
+- [ ] **Nation-state + supply-chain threat-model rewrite.**
+  Aaron at round-29 close: *"in the real threat model we
+  should take into consideration nation state and supply
+  chain attacks."* He helped build the US smart grid
+  (nation-state defense work) and is a gray hat with
+  hardware side-channel experience. The current
+  `docs/security/THREAT-MODEL.md` is under-scoped for
+  this adversary class.
+
+  **Scope:**
+
+  - `docs/security/THREAT-MODEL.md` adversary-model
+    revision: advanced persistent threat + nation-state
+    + sophisticated supply-chain adversary as
+    first-class threat classes, not box-ticks.
+  - Expanded supply-chain coverage: package registries
+    (NuGet, Mathlib, Homebrew formulae), build
+    toolchain (dotnet SDK, elan, mise installers), CI
+    runners (GitHub Actions runner image compromise,
+    runner-level persistence), third-party actions
+    (beyond our SHA-pin mitigation), dep-graph attacks.
+  - Every mitigation validated against a real control
+    (code / governance rule / CI gate / reviewer
+    cadence). Unenforced mitigations are gaps, not
+    mitigations.
+  - Side-channel + hardware adversary coverage (timing,
+    cache behavior, microarchitectural leaks,
+    speculative execution for tenant-isolated
+    deployments).
+  - Nation-state-level response playbook: what happens
+    if actions/checkout is compromised? mise.run is
+    hijacked? NuGet serves a poisoned package? Written
+    *before* we need it.
+  - `docs/security/THREAT-MODEL-SPACE-OPERA.md`
+    completed as the serious-underneath-the-fun
+    variant — every silly adversary maps to a real
+    STRIDE class + real control + real CVE-style
+    escalation path.
+
+  **Primary:** `threat-model-critic` on the doc
+  authoring. **Secondary:** `security-researcher` on
+  novel attack classes, current CVE landscape,
+  advisory-tracking. **Consulting:** Aaron, on
+  nation-state-adversary modeling (his domain).
+
 ## P0 — CI / build-machine setup (round-29 anchor)
 
 - [ ] **First-class CI pipeline for Zeta.** Every agent-written
@@ -296,6 +394,22 @@ within each priority tier.
   decisions proceed without relitigating the shape each
   time, and gives the factory-paper a concrete
   contribution to point at.
+
+  **Bootstrap discipline to preserve.** When this factory
+  pattern becomes reusable (template / starter / docs for
+  adopters), carry forward the "first-time consequential
+  repo-shaping actions need explicit maintainer
+  authorization" rule. Concrete instance from Zeta's
+  history: an agent initialising git prematurely on a
+  fresh repo before the maintainer was ready. The
+  specific git-init example is obsolete for Zeta (we're
+  past init), but the general principle — agents don't
+  take first-time, hard-to-reverse, repo-shaping actions
+  without explicit authorization — belongs in the
+  adopter-facing bootstrap guide. Place it alongside
+  CLAUDE.md's existing reversibility / blast-radius
+  discipline; the bootstrap context adds "and first-time
+  on a fresh repo is a special case of consequential."
 
 - [ ] **Wire HLL from `Sketch.fs` into `Plan.estimate`** (query-planner
   P1, Imani). `src/Core/Plan.fs:28-51` currently uses static

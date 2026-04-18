@@ -8,7 +8,7 @@ every ~3 rounds. Promotion from scratchpad → this file is an
 Architect decision.
 
 Every rule carries a stable ID (`BP-NN`). The
-`skill-tune-up-ranker` cites these IDs in its output so
+`skill-tune-up` cites these IDs in its output so
 tune-up suggestions are auditable ("skill X violates BP-02,
 BP-07").
 
@@ -153,7 +153,7 @@ and move it back to the scratchpad with the refutation cited.
 ## `re-search-flag` rules
 
 These are still best-practice today but are evolving fast. The
-`skill-tune-up-ranker` re-searches them on every invocation and
+`skill-tune-up` re-searches them on every invocation and
 logs any shift into the scratchpad. If shifts accumulate, the
 rule either tightens (back to `stable`) or splits into multiple
 rules.

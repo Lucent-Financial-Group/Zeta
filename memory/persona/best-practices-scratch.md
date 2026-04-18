@@ -1,6 +1,6 @@
 # Best-Practices Scratchpad — Volatile
 
-Live-search findings from the `skill-tune-up-ranker` go here.
+Live-search findings from the `skill-tune-up` go here.
 Pruned every ~3 invocations. Items that survive review and
 earn Architect sign-off promote to
 `docs/AGENT-BEST-PRACTICES.md` with a stable `BP-NN` ID.

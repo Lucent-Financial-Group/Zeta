@@ -7,7 +7,7 @@ description: Capability skill (stub) — audits the library-consumer experience 
 
 This is a **capability skill** ("hat") in stub form. The
 procedure section below is a draft awaiting expansion. Persona
-assignment is open — Kenji proposes a wearer or creates a new
+assignment is open — the `architect` proposes a wearer or creates a new
 persona per `docs/EXPERT-REGISTRY.md` conventions.
 
 ## Scope (draft)
@@ -26,7 +26,7 @@ Consumer-facing surface only:
 Out of scope:
 - Internal build / test / contributor surfaces — DX researcher.
 - Persona / agent experience — AX researcher (Daya).
-- API correctness or performance — Tariq / Hiroshi / Kira.
+- API correctness or performance — the `algebra-owner` / the `complexity-reviewer` / the `harsh-critic`.
 
 ## Procedure (draft, to be expanded)
 
@@ -40,8 +40,8 @@ Out of scope:
    pre-condition.
 4. Classify friction by blocker-severity (P0: cannot proceed;
    P1: proceeds with confusion; P2: cosmetic).
-5. Propose minimal additive fix for each. Hand off to Samir
-   (documentation) or Kai (product framing) for landing.
+5. Propose minimal additive fix for each. Hand off to the `documentation-agent`
+   (documentation) or the `branding-specialist` (product framing) for landing.
 
 ## Persona slot
 
@@ -57,7 +57,7 @@ Candidate names queued (not committed):
 - **Amara** (Igbo — grace) — UX grace.
 - **Lior** (Hebrew — my light) — illuminating the user's path.
 
-Final choice waits for Kai / Daya / Leilani input.
+Final choice waits for the `branding-specialist` / the `agent-experience-researcher` / the `backlog-scrum-master` input.
 
 ## What this skill does NOT do
 

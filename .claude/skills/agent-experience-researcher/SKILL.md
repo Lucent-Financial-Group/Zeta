@@ -37,7 +37,7 @@ Out of scope:
 
 ### Step 1 — pick the audit target
 
-- A named persona (e.g., "audit Kira's cold start").
+- A named persona (e.g., "audit `harsh-critic`'s cold start").
 - "all" — roster-wide audit. Use on round-close cadence only.
 - "new-persona" — invoked before a proposed new persona merges.
 - "tier-0" — audit only the Tier 0 docs that every persona reads.
@@ -85,16 +85,16 @@ Every intervention is rollback-safe in one round:
 - **missing-notebook** → create a small template file.
 - **over-long-notebook** → flag for the persona owner to prune;
   do NOT prune unilaterally.
-- **unclear-contract** → propose wording; surface to Kenji.
+- **unclear-contract** → propose wording; surface to the `architect`.
 - **orphan-persona** → either deprecate the dead file (via
   `skill-creator` retirement path) or create the missing sibling.
 
-No multi-file refactor is proposed without Kenji sign-off first.
+No multi-file refactor is proposed without the `architect` sign-off first.
 
 ### Step 5 — publish
 
 Append findings to `memory/persona/daya.md`
-in the output format below. Kenji reads this notebook on round-
+in the output format below. the `architect` reads this notebook on round-
 close and acts on the top-3 items.
 
 ## Output format
@@ -138,7 +138,7 @@ P2 (small wins):
 - Does NOT audit UX (library consumers) — separate skill.
 - Does NOT audit DX (human contributors) — separate skill.
 - Does NOT rewrite SKILL.md / agent.md unilaterally. Proposes
-  interventions; `skill-creator` executes on Kenji's sign-off.
+  interventions; `skill-creator` executes on `architect`'s sign-off.
 - Does NOT prune another persona's notebook. Flags only.
 - Does NOT run eval benchmarks. That belongs to the eval-harness
   scope (`docs/research/agent-eval-harness-2026-04.md`).
@@ -152,30 +152,30 @@ P2 (small wins):
   start before merge.
 - **On `docs/WAKE-UP.md` change** — re-audit Tier 0 impact
   across the roster.
-- **On-demand** — when Kenji suspects a specific persona is
+- **On-demand** — when the `architect` suspects a specific persona is
   drifting.
 
 ## Coordination
 
 - **Kenji (Architect)** — receives audits, acts on top-3 per
-  round-close. Kenji's own wake-up is audited too.
-- **Aarav (skill-tune-up-ranker)** — structural view; ranks
-  skills by drift/bloat/contradiction. Daya measures the
+  round-close. `architect`'s own wake-up is audited too.
+- **Aarav (skill-tune-up)** — structural view; ranks
+  skills by drift/bloat/contradiction. the `agent-experience-researcher` measures the
   *experience* of wearing them. Different axis, complementary.
-- **Rune (maintainability-reviewer)** — Rune speaks for the
-  human cold-reader; Daya for the persona cold-reader. Adjacent.
-- **Nadia (prompt-protector)** — Daya's interventions land in
-  files Nadia lints for invisible-char hygiene.
-- **Yara (skill-improver)** — interventions requiring skill-body
-  edits flow to Yara via Kenji.
+- **`maintainability-reviewer`** — the `maintainability-reviewer` speaks for the
+  human cold-reader; the `agent-experience-researcher` for the persona cold-reader. Adjacent.
+- **`prompt-protector`** — `agent-experience-researcher`'s interventions land in
+  files the `prompt-protector` lints for invisible-char hygiene.
+- **`skill-improver`** — interventions requiring skill-body
+  edits flow to the `skill-improver` via the `architect`.
 
 ## Reference patterns
 
 - `.claude/agents/agent-experience-researcher.md` — the persona
 - `docs/WAKE-UP.md` — the cold-start index audited here
 - `docs/GLOSSARY.md` — AX / wake / hat / frontmatter
-- `memory/persona/daya.md` — Daya's
+- `memory/persona/daya.md` — `agent-experience-researcher`'s
   notebook (created on first audit)
-- `docs/EXPERT-REGISTRY.md` — Daya's roster entry
+- `docs/EXPERT-REGISTRY.md` — `agent-experience-researcher`'s roster entry
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01, BP-03, BP-07, BP-08,
   BP-11, BP-16

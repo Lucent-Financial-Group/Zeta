@@ -340,3 +340,173 @@ than renumbering the rest.
     prompt surfaces that path, treat it as the sandbox
     convenience mirror it is; the canonical material
     lives in the repo.
+
+23. **Upstream open-source contributions are encouraged.**
+    When Zeta depends on an open-source project (mise
+    plugins, Mathlib, Alloy, TLA+ tooling, an npm/NuGet
+    package, anything else) and we need a bug fix or a
+    new feature from that project, the expected move is
+    to fix it upstream — not to carry a fork or a
+    workaround in Zeta.
+
+    **Workflow:**
+    - Clone the upstream repo as a sibling at `../`
+      (e.g. `../mise-plugin-dotnet`). The `../` tree is
+      the shared work area for upstream contributions;
+      nothing under `../` is part of Zeta's git history.
+    - Branch, fix, push to a personal fork, open a PR
+      upstream. Credit the actual work (who wrote the
+      fix, which Zeta round surfaced the need).
+    - If Zeta needs the fix before the upstream PR
+      merges, pin to the forked branch temporarily with
+      a dated note in `docs/INSTALLED.md` and remove the
+      pin the moment the upstream release lands.
+    - Prior example: Aaron landed a bug-fix PR on the
+      mise dotnet plugin surfaced while wiring up
+      `../SQLSharp`; the plugin's current release
+      already carries it.
+
+    **Scope:**
+    - Read-only references (`../scratch`, `../SQLSharp`)
+      live at `../` too but follow the read-only
+      discipline codified per round — never copy files
+      from them into Zeta.
+    - Every `../` clone is optional; a fresh checkout of
+      Zeta must build and test without any `../`
+      siblings present.
+
+24. **Dev setup, build-machine setup, and devcontainer
+    setup share one install script.** The `tools/setup/`
+    script is consumed three ways: (a) a contributor
+    runs it on their laptop to provision a Zeta dev
+    environment; (b) CI runners run the same script in
+    the build step; (c) a devcontainer / Codespaces
+    image runs the same script during build. **One
+    script, three consumers.**
+
+    The CI matrix on this script is first-class — the
+    workflow exists specifically to test the developer
+    experience across first-class dev platforms, not
+    because the library requires a wide matrix. A Mac
+    developer discovering a Linux install-script bug
+    belongs in CI, not in a ticket filed three weeks
+    later. "Works on my machine" is the bug class this
+    rule eliminates.
+
+    **Implications:**
+    - The install script is idempotent. A second run
+      detects existing tools and upgrades; it does not
+      re-download.
+    - The install script is safe to run daily as a
+      "keep tools fresh" command.
+    - Asymmetries between dev and CI are bugs. If a CI
+      step shells out to `apt install ...` the dev
+      script does the same; if the dev script
+      `brew install`s something CI doesn't, that's a
+      drift to close.
+    - Parity drift is tracked in `docs/DEBT.md`, not
+      accepted as permanent.
+
+25. **Upstream temporary-pin expiry.** When Zeta pins a
+    dependency to a forked branch or an unreleased
+    upstream commit (e.g., waiting for a PR to merge per
+    §23), the pin carries a dated DEBT entry and an
+    expected-release date. If the upstream release lands,
+    the pin flips to the release version in the same
+    round. If the upstream release has not landed after
+    **three rounds**, the DEBT entry is re-evaluated by
+    the Architect + Aaron: ship anyway, maintain the fork,
+    or drop the dependency. Temporary pins that silently
+    live longer than three rounds are a factory smell the
+    `factory-audit` skill surfaces.
+
+    `docs/INSTALLED.md` carries the dated "temporary pin"
+    note; the `docs/UPSTREAM-CONTRIBUTIONS.md` ledger
+    (backlogged) tracks the upstream PR status.
+
+26. **Research-doc lifecycle.** Files under
+    `docs/research/*.md` capture design rationale at a
+    point in time. Policy:
+
+    - **Active** — the design is still landing; the doc
+      is current-state. Edit in place per §2 when the
+      decision evolves.
+    - **Landed** — the design shipped. The doc becomes
+      historical rationale (like an ADR). Move to
+      `docs/DECISIONS/YYYY-MM-DD-<name>.md` on a
+      calendar date that matches the landing; keep in
+      place under `docs/research/` if it's still a
+      live reference surface (e.g., the gate inventory
+      that CI continues to audit against).
+    - **Obsolete** — the design was rejected or
+      superseded. Move to `docs/_retired/` with a
+      one-paragraph note explaining what replaced it,
+      OR delete (git history preserves the rationale).
+      `sweep-refs` is wearable for the reference sweep.
+
+    **Quarterly review.** `maintainability-reviewer` or
+    `factory-audit` walks the `docs/research/` directory
+    every ~10 rounds and classifies each doc as active /
+    landed / obsolete. Orphan design docs (no references,
+    no ongoing relevance) are retirement candidates.
+
+27. **Abstraction layers — skills, roles, personas.**
+
+    The factory has three layers of naming, ordered from
+    most-permanent to least:
+
+    - **Skills** — capabilities the factory offers.
+      Slug-named (`harsh-critic`, `devops-engineer`,
+      `performance-engineer`). Live under `.claude/
+      skills/<name>/SKILL.md`. Skills describe WHAT is
+      done and HOW; they are reassignable across the
+      persona population without revision.
+    - **Roles** — role assignments. Identical name to
+      the primary skill slug most of the time (role
+      `devops-engineer` invokes skill `devops-engineer`).
+      A role can wear more than one skill (e.g., the
+      `skill-expert` role wears `skill-tune-up` +
+      `skill-gap-finder`). Roles are the layer where
+      a persona gets assigned.
+    - **Personas** — named contributors (agents). Kenji,
+      Aarav, Dejan, Kira, Rune, etc. A persona is
+      assigned to one or more roles. Live on
+      `.claude/agents/<role>.md` + `memory/persona/
+      <persona>.md`.
+
+    **The abstraction rule.**
+
+    - **Skill files reference role names**, not persona
+      names. `pair with harsh-critic` is good; `pair with
+      Kira` leaks the persona layer through the
+      abstraction.
+    - **Role files reference skill names AND the assigned
+      persona**. That's the layer where the mapping
+      lives. `.claude/agents/devops-engineer.md`
+      legitimately names Dejan.
+    - **`docs/EXPERT-REGISTRY.md` is the mapping table.**
+      The one canonical place that ties role names to
+      persona names. Other docs reference roles, not
+      personas, for permanence.
+    - **Exceptions for meta-skills.** `factory-audit`,
+      `skill-gap-finder`, `skill-tune-up`, `skill-
+      improver`, `agent-experience-researcher` — these
+      meta-skills have personas / the registry IN
+      their domain, so discussing the mapping is
+      allowed.
+
+    **Why.** A persona can be reassigned to a different
+    role, or a named contributor can leave the roster.
+    When that happens, skill files shouldn't need
+    rewriting. Abstraction-layer leaks produce O(N)
+    rewrites on every reassignment; respecting the layer
+    keeps the rewrite cost at the role/persona layer
+    only.
+
+    **DRY corollary.** Skills that duplicate the same
+    "Coordination" boilerplate across ten files are a
+    smell. If three skills all say "pair with
+    maintainability-reviewer on readability", that
+    sentence wants to live in one place and be
+    referenced — not copy-pasted. `factory-audit` and
+    `skill-tune-up` flag this pattern.

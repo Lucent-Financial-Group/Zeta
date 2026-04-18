@@ -166,9 +166,9 @@ let ``Alloy spec InfoTheoreticSharder rules out double commits`` () =
 
 
 [<Fact>]
-let ``Alloy jar is installed where install-verifiers drops it`` () =
+let ``Alloy jar is installed where tools/setup/install.sh drops it`` () =
     // Informational gate: fails when someone forgets to re-run
-    // `tools/install-verifiers.sh`. Keeps the "why is the runner
+    // `tools/setup/install.sh`. Keeps the "why is the runner
     // silently skipping?" diagnosis out of CI.
     if File.Exists alloyJarPath then
         (FileInfo alloyJarPath).Length |> should be (greaterThan 1_000_000L)
