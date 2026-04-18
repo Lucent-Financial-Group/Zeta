@@ -20,15 +20,20 @@ if ! command -v dotnet >/dev/null 2>&1; then
   exit 1
 fi
 
-# Cache the current global-tool listing once — a dozen `dotnet tool
-# list -g` invocations is slower than one grep loop.
-INSTALLED="$(dotnet tool list -g 2>/dev/null || echo '')"
+# Cache the current global-tool listing once. `dotnet tool list -g`
+# prints a two-line header (`Package Id ... Version ... Commands`)
+# followed by rows starting with the (lowercase) package id and
+# whitespace. We extract just the first column from rows after the
+# header; the grep below is exact-match against that set so tools
+# sharing a name prefix (dotnet-ef vs dotnet-ef-tools) don't collide.
+INSTALLED="$(dotnet tool list -g 2>/dev/null | awk 'NR>2 {print tolower($1)}' || echo '')"
 
 grep -vE '^(#|$)' "$MANIFEST" | while IFS= read -r line; do
   # Manifest lines are "<tool> <version>" or just "<tool>".
   tool="$(echo "$line" | awk '{print $1}')"
   version="$(echo "$line" | awk '{print $2}')"
-  if echo "$INSTALLED" | grep -qi "^${tool}\b"; then
+  tool_lc="$(echo "$tool" | tr '[:upper:]' '[:lower:]')"
+  if echo "$INSTALLED" | grep -Fxq "$tool_lc"; then
     if [ -n "$version" ]; then
       dotnet tool update -g "$tool" --version "$version" >/dev/null 2>&1 || true
     else

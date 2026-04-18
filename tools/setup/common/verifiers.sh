@@ -35,11 +35,15 @@ grep -vE '^(#|$)' "$MANIFEST" | while IFS= read -r line; do
   mkdir -p "$(dirname "$dest")"
   if [ -f "$dest" ]; then
     # Trust-on-first-use: if the file exists we assume it's intact.
-    # Per Aaron's round-29 call we do not re-verify.
+    # Per Aaron's round-29 call we do not re-verify content.
     echo "✓ $target already present"
   else
+    # Download to a .part suffix then atomic-rename. Protects against
+    # partial downloads (network flap, Ctrl-C, OOM) becoming
+    # permanently trusted by the TOFU check above.
     echo "↓ downloading $target from $url"
-    curl -fsSL -o "$dest" "$url"
+    curl -fsSL -o "$dest.part" "$url"
+    mv "$dest.part" "$dest"
     echo "✓ $target"
   fi
 done
