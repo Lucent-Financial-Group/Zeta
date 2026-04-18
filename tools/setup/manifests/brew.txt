@@ -1,0 +1,8 @@
+# macOS Homebrew packages — installed by tools/setup/macos.sh.
+# Add a package by appending a line. Comments start with `#`.
+#
+# System-level packages only. Language runtimes (dotnet, python) are
+# pinned via `.mise.toml`, NOT via brew — avoids Homebrew's release
+# lag per round-29 discipline.
+
+openjdk@21

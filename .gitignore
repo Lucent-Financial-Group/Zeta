@@ -41,7 +41,7 @@ lake-packages/
 *.ilean
 *.trace
 
-# Verifier JARs — downloaded by tools/install-verifiers.sh.
+# Verifier JARs — downloaded by tools/setup/install.sh.
 # Regeneratable; not committed so clones stay lean.
 tools/alloy/*.jar
 tools/tla/*.jar

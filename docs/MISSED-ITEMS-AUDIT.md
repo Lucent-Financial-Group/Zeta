@@ -55,7 +55,7 @@ reason.
 - ✅ REVIEW-AGENTS.md with 15 reviewer prompts
 - ✅ Semgrep 7 rules
 - ✅ Stryker config + Alloy `.als` + Lean `.lean` stub
-- ✅ `tools/install-verifiers.sh` installer
+- ✅ `tools/setup/install.sh` installer
 - 🔜 Retraction-native speculative watermark operator (shipped;
   formal proof + property tests P1)
 - ✅ SpeculativeWatermark operator

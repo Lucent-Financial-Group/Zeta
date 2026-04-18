@@ -1,0 +1,6 @@
+# dotnet global tools — installed by tools/setup/common/dotnet-tools.sh.
+# Format: <tool-id> [<version>]    (version optional; comments start with `#`)
+#
+# Pin only when we have a reason to pin; unpinned tools track latest.
+
+dotnet-stryker

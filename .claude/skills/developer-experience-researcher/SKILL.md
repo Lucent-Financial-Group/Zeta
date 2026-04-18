@@ -17,7 +17,7 @@ Human-contributor-facing surface only:
 - `CONTRIBUTING.md` — the contribution entry point.
 - `CLAUDE.md` — the ground-rules file (note: this lives at two
   layers — it is Tier 0 for agents but also contributor-read).
-- `tools/install-verifiers.sh` and related setup scripts.
+- `tools/setup/install.sh` and related setup scripts.
 - Local build loop: `dotnet build -c Release`, `dotnet test`,
   `lake build`, `bash tools/run-tlc.sh`.
 - Test organisation and discoverability (`tests/**`).
@@ -35,8 +35,8 @@ Out of scope:
 
 1. Simulate first-contribution: "I just cloned the repo. I want
    to land my first PR. What are my first 60 minutes?"
-2. Walk the setup path — CONTRIBUTING, install-verifiers, first
-   build, first test, first change, first PR.
+2. Walk the setup path — CONTRIBUTING, `tools/setup/install.sh`,
+   first build, first test, first change, first PR.
 3. Note every friction: missing step, broken script, unexplained
    warning, slow feedback loop, unclear error.
 4. Classify friction by contributor-blocker severity.
