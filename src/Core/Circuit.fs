@@ -206,7 +206,7 @@ type Circuit() =
             let vt = strictN.[i].AfterStepAsync ct
             if not vt.IsCompletedSuccessfully then
                 invalidOp "Circuit contains async operators; use StepAsync"
-        tick <- tick + 1L
+        Interlocked.Increment &tick |> ignore
 
     member this.StepAsync() : Task = this.StepAsync CancellationToken.None
 

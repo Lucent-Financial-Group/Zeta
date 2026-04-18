@@ -127,6 +127,7 @@ module LawRunner =
                                      "Linearity broke at sample %d, tick %d: \
                                       op(a+b) != op(a) + op(b)."
                                      i tick)
+                    // nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads
                     tick <- tick + 1
                 result)
 
@@ -185,5 +186,6 @@ module LawRunner =
                                       forward+retract cancel (diff has %d \
                                       residual entries)."
                                      i tick diff.Count)
+                    // nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads
                     tick <- tick + 1
                 result)

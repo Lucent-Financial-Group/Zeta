@@ -76,3 +76,38 @@ jobs:
 
       - name: Test
         run: dotnet test Zeta.sln -c Release --no-build --verbosity normal
+
+  lint:
+    # Semgrep runs every rule in `.semgrep.yml` — 14+ custom rules
+    # codifying F# / security / supply-chain anti-patterns. Single OS
+    # since rules are OS-independent; saves minutes.
+    #
+    # Round 30 posture fix: before this job existed, 14 rules were
+    # codified but 0 gated the build. See docs/security/
+    # THREAT-MODEL.md "mitigation validation" section + round-30
+    # elevation design (docs/research/threat-model-elevation.md).
+    name: lint (semgrep)
+    timeout-minutes: 10
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.14'
+
+      - name: Install Semgrep
+        run: |
+          python -m pip install --upgrade pip
+          pip install semgrep
+
+      - name: Run Semgrep
+        # --error exits non-zero if any rule matches. The 14 rules in
+        # `.semgrep.yml` are ERROR or WARNING; --error flips any match
+        # into a hard-fail regardless of declared severity. Rationale:
+        # under nation-state posture per round-30 elevation, a lint
+        # rule without a gate isn't a control.
+        run: semgrep --config .semgrep.yml --error --metrics=off

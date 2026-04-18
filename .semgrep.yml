@@ -18,7 +18,7 @@ rules:
     severity: ERROR
     paths:
       include:
-        - "src/Zeta.Core/**/*.fs"
+        - "src/Core/**/*.fs"
 
   # ────────────────────────────────────────────────────────────────
   # Rule 2: Tick mutation without Interlocked → torn-read class.
@@ -28,6 +28,12 @@ rules:
       - pattern-either:
           - pattern: tick <- tick + 1L
           - pattern: tick <- tick + 1
+    paths:
+      include:
+        - "src/Core/**/*.fs"
+      exclude:
+        - ".semgrep.yml"
+        - ".claude/**"
     message: >-
       Use `Interlocked.Increment &tick |> ignore` instead — plain
       mutation of a shared int64 is not torn-read-safe on 32-bit
@@ -101,7 +107,7 @@ rules:
   # ────────────────────────────────────────────────────────────────
   - id: public-mutable-field
     patterns:
-      - pattern: val mutable public $NAME : $T
+      - pattern: "val mutable public $NAME : $T"
     message: >-
       Public `val mutable` on a sealed type exposes shared mutable
       state. Prefer a property with explicit get/set so future
@@ -136,6 +142,10 @@ rules:
           - pattern: BinaryFormatter()
           - pattern: NetDataContractSerializer()
           - pattern: SoapFormatter()
+    paths:
+      exclude:
+        - ".semgrep.yml"
+        - ".claude/**"
     message: >-
       BinaryFormatter / NetDataContractSerializer / SoapFormatter are
       known-unsafe under untrusted input (arbitrary-type instantiation
@@ -157,7 +167,7 @@ rules:
           - pattern: File.ReadAllText($P)
     paths:
       include:
-        - "src/Zeta.Core/**/*.fs"
+        - "src/Core/**/*.fs"
       exclude:
         - "**/DiskBackingStore*.fs"   # size-checked in pathFor
     message: >-
@@ -294,3 +304,39 @@ rules:
       `allowResearchPreview` pattern.
     languages: [generic]
     severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 15: GitHub Actions third-party action pinned by mutable
+  # tag (`@v4`, `@main`, `@develop`) instead of a full 40-char
+  # commit SHA. Under nation-state + supply-chain posture
+  # (round-30 elevation) the tag-rewrite attack class (tj-actions/
+  # changed-files, CVE-2025-30066, March 2025) makes mutable tags
+  # a supply-chain vulnerability. Every third-party action (`uses:`)
+  # MUST pin by full SHA; the tag comment alongside is for humans.
+  #
+  # Exempt: reusable workflows under this repo (`uses: ./...`).
+  # ────────────────────────────────────────────────────────────────
+  - id: gha-action-mutable-tag
+    patterns:
+      - pattern-regex: '(?m)^\s*-?\s*uses:\s+(?!\.\/)[^\s@#]+@(?:v?\d+(?:\.\d+)*|main|master|develop|latest|HEAD)\s*(?:#.*)?$'
+    paths:
+      include:
+        - ".github/workflows/*.yml"
+        - ".github/workflows/*.yaml"
+    message: >-
+      Third-party GitHub Action pinned by a mutable tag. A tag-
+      rewrite attack (tj-actions/changed-files cascade,
+      CVE-2025-30066, March 2025) landed a malicious commit on
+      23,000+ repos via exactly this path. Pin by the full 40-char
+      commit SHA; put the human-readable version in a trailing
+      `# vX.Y.Z` comment. Example:
+        `uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2`
+      See `.github/workflows/gate.yml` for the canonical pattern.
+    languages: [generic]
+    severity: ERROR
+
+  # Rule 16 — skill safety-clause shape check — intentionally
+  # deferred. Semgrep generic-mode regex cannot cleanly express
+  # "file lacks any of these headings"; a bespoke diff-level lint
+  # (which round-30 spec calls the "safety-clause-diff lint") is
+  # the stronger signal. Tracked in docs/DEBT.md; target round-31.

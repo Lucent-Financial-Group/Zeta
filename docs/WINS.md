@@ -11,6 +11,58 @@ shipped." **Ordered newest-first** — recent rounds lead,
 older rounds trail below. Entries stay even after the moment
 passes, because the pattern is the value.
 
+## Wins — round 30
+
+### Reviewer floor caught a committed-but-didn't-commit bug
+
+The round-30 design doc said 24 adversaries in
+SPACE-OPERA. The commit message said the same. The
+file had 17. A `Write` tool error had silently
+dropped the rewrite while everything else in the
+commit landed. The brief and the commit were both
+confident; only the `threat-model-critic` audit
+against actual file state caught the mismatch.
+
+**What it teaches.** Write-then-verify is not the
+same as write-then-trust-the-tool. Reviewer-on-commit
+is a separate control from reviewer-on-design.
+Round 30 ran both; the second one earned its keep.
+
+### "A lint rule without a CI gate is not a control"
+
+Pre-round-30, `.semgrep.yml` had 14 rules. Zero ran
+in CI. They were documented mitigations against
+real attack classes, and a nation-state-adversary
+reviewer would have noticed they were aspirational.
+Round 30 made them real: one CI job, one `--error`
+flag, 14 rules went from labels to controls.
+
+**What it teaches.** The gap between "we have a
+rule" and "we enforce a rule" is the biggest single
+posture-vs-reality gap to watch for. Codified as a
+principle in THREAT-MODEL.md §Long-game defences;
+applies forward to every future control.
+
+### Creative license as a rigour tool
+
+Aaron granted creative license on SPACE-OPERA:
+*"really an imagination game at heart."* The
+rewrite pushed imagination (Whispering Drone
+Swarm, Fungal Network, Moon Stares Back) and
+*improved* the teaching rigour — because each
+creative adversary had to carry a reality tag
+(shipped / BACKLOG / aspirational / teaching)
+forcing honesty. The result is a doc that teaches
+better than the sober version would have, and
+maps to real STRIDE classes that the sober doc
+cross-references.
+
+**What it teaches.** Whimsy and rigour aren't in
+tension when the teaching structure demands
+honest tags on each entry. If Aaron asks for
+creative license, creative license is a tool not
+a distraction.
+
 ## Wins — round 29
 
 ### Reviewer floor caught three P0s on fresh CI code

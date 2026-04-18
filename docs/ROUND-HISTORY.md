@@ -9,6 +9,111 @@ New rounds are appended at the top.
 
 ---
 
+## Round 30 — nation-state + supply-chain threat-model elevation
+
+### Anchor — bar raised to nation-state posture
+
+Aaron at round-29 close: *"in the real threat model we
+should take into consideration nation state and supply
+chain attacks. I helped build the US smart grid and
+protect against nation state level attackers, we can be
+very very serious on our security posture."* Round 30
+delivered that elevation with Aaron's seven-decision
+scope locked at round-open:
+
+1. Re-audit cadence *every round*, not quarterly.
+2. Cut smart-grid / side-channel / hardware sections —
+   personal context, not requirement.
+3. Maintainer-account controls: documented exception —
+   2FA only today; hardware key / signed commits /
+   co-maintainer cooling period as education-over-
+   time items.
+4. SLSA: L1 now, walk up to L3 pre-v1.0.
+5. SPACE-OPERA: creative license ("really an
+   imagination game at heart").
+6. TOFU on verifier jars + installers: accept today,
+   improve over time (SHA-256 pinning = round 31).
+7. Bus factor 1: documented exception, not round-30
+   P0.
+
+### Landed
+
+- **Semgrep-in-CI** as a lint gate. The single largest
+  posture-vs-reality gap pre-round-30: 14 Semgrep rules
+  existed but 0 CI jobs ran them. Round 30 wires
+  `semgrep --config .semgrep.yml --error` into
+  `gate.yml`. Every future PR respects the 14 rules as
+  hard-fails.
+- **Semgrep rule 15 — SHA-pin enforcement.** Scans
+  `.github/workflows/**` for third-party actions
+  pinned by mutable tag. Defends the tj-actions/
+  changed-files cascade class (CVE-2025-30066, 23,000
+  repos compromised March 2025).
+- **THREAT-MODEL.md expansion.** Adversary tiers
+  T0-T3 with T3 first-class; tj-actions + XZ as
+  canonical case studies; bus-factor documented
+  exception; supply-chain boundary decomposition
+  (B-CI / B-Installer / B-NuGet-In / B-NuGet-Out /
+  B-Skill-Supply-Chain / B-Mathlib-Lean-TLA+); SLSA
+  ladder; long-game persistence defences;
+  adversary-tier-to-control matrix; formal-spec cross-
+  reference. Round-30 principle baked in: *"a lint
+  rule without a CI gate is not a control."*
+- **SPACE-OPERA rewrite** with pushed-imagination
+  creative license. 24 adversaries (was 17). Reality-
+  tag legend (shipped / BACKLOG / aspirational /
+  teaching) added. New: Poisoned Bard (maintainer
+  compromise), Changeling Action (SHA-tag-move),
+  Hungry Cache (poisoning), Time-Bomb Package
+  (shanhai666), Helpful Stranger (XZ sock-puppet),
+  Moon Stares Back + Ghost in the Git Blame
+  (imaginative extras). Rewritten: Whispering Drone
+  Swarm, Echoes from the Dyson Sphere, Fungal Network.
+- **INCIDENT-PLAYBOOK.md** (new). 6 playbooks
+  (third-party GHA compromise, toolchain installer
+  hijack, NuGet dep poisoning, maintainer-account
+  compromise, skill safety-clause regression,
+  escalation), triage-in-60-seconds decision tree,
+  contact tree, disclosure timeline.
+- **SDL-CHECKLIST honest downgrades.** #7 / #8 / #9
+  ✅ → 🔜 (controls claimed without CI enforcement);
+  #12 partial → ✅ (INCIDENT-PLAYBOOK lands); ✅
+  definition tightened to "shipped AND enforced by
+  CI or governance."
+- **Bus-factor explicit documentation.** The
+  structural single-maintainer CVE (XZ-shape) now
+  lives in the threat model as a named exception
+  with a remediation ladder.
+
+### Reviewer floor caught the P0
+
+Mid-round dispatch of `threat-model-critic` on the
+actual landings (not the design) surfaced that the
+SPACE-OPERA rewrite had silently not committed —
+a `Write` tool error earlier in the round dropped the
+file edit while everything else landed. Without the
+audit the doc would have shipped with 17 adversaries
+and the brief claiming 24. Also caught 4 P1 (adversary-
+tier matrix overconfidence on build-gate and Semgrep;
+Playbook D recovery-code assumption; SDL ✅ definition
+self-contradiction; prediction-in-doc rot on #9). All
+five fixed in-round.
+
+**What it teaches.** Even after a careful design-doc +
+careful implementation, a reviewer floor on the actual
+commits catches what the author's self-review missed.
+§20 earns its keep on the same day it's invoked.
+
+### Governance principle minted
+
+*"A lint rule without a CI gate is not a control; it
+is a label."* Codified in THREAT-MODEL.md §Long-game
+defences. Applied immediately to Semgrep-in-CI landing
+(16 rules defined; 16 rules enforced). Applies forward
+to every future security control added to Zeta.
+
+---
+
 ## Round 29 — CI pipeline + three-way parity install script, factory-improvement surge
 
 ### Anchor — CI + install script
