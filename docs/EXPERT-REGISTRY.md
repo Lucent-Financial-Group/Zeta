@@ -43,6 +43,7 @@ up naturally in skill bodies; that's fine.
 | **Agent-Experience Researcher** | **Daya** | Sanskrit दया ("compassion / kindness") — speaks for the personas themselves as a user population; audits cold-start friction, pointer drift, wake-up clarity. |
 | **Security Researcher** | **Mateo** | Spanish / Italian ("gift") — proactive security research (novel attack classes, crypto primitives, supply-chain, CVE triage). Distinct from Aminata's review of the shipped threat model and Nadia's agent-layer defences. |
 | **Performance Engineer** | **Naledi** | Tswana ("star") — benchmark-driven hot-path tuning, zero-alloc audits, SIMD dispatch. Distinct from Hiroshi (asymptotic complexity) and Imani (planner cost model). Southern-African broadens the roster's linguistic traditions. |
+| **DevOps Engineer** | **Dejan** | Serbian дејан ("action / doing") — the DevOps ethos made a name. Owns the one install script (tools/setup/) consumed three ways by dev laptops, CI runners, and devcontainer images per GOVERNANCE.md §24. Owns GitHub Actions workflows, runner pinning, caching strategy, and the upstream-contribution workflow per GOVERNANCE.md §23. Serbian broadens the Slavic tradition beyond Russian-adjacent Viktor / Nadia. |
 
 ## Pending persona slots (skill exists, persona open)
 
