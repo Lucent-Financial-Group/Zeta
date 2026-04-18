@@ -1,94 +1,133 @@
-# Current Round — 28 (open)
+# Current Round — 29 (open)
 
-Round 27 closed; narrative absorbed into
-`docs/ROUND-HISTORY.md`. Round 28 opens with these
-deferred items carried over from round 27:
+Round 28 closed; narrative absorbed into
+`docs/ROUND-HISTORY.md`. Round 29 opens with **CI setup as
+the anchor** — see `docs/BACKLOG.md` §"P0 — CI /
+build-machine setup" for the full discipline rules and
+sub-tasks.
 
 ## Status
 
-- **Round number:** 28
-- **Opened:** 2026-04-18 (continuous from round-27 close)
-- **Classification:** split — non-trivial P1 carryover
-  from reviewer pass + other deferred work.
-- **Reviewer budget:** 2-3 per §13 + mandatory Kira+Rune
-  floor per §20 on any code-landing phase.
+- **Round number:** 29
+- **Opened:** 2026-04-18 (continuous from round-28 close)
+- **Classification:** infrastructure round — CI pipeline
+  design is the anchor; product work (bilinear / sink-
+  terminal laws, Option-A stateful promotion) runs in
+  parallel where it doesn't block on Aaron's CI-design
+  review gates.
+- **Reviewer budget:** Kira + Rune floor per GOVERNANCE.md
+  §20 on every code landing. Aaron personally reviews
+  every CI-decision artefact.
 
-## Carried from round 27
+## Round 28 close — what landed
 
-**Reviewer P1 findings (Kira + Rune, logged to DEBT):**
-- `OutputBuffer` tick-stamp + invalidate-on-tick-end.
-- `ReadDependencies` defensive copy at registration.
-- `box plugin` triple-evaluation → `let boxed = box plugin` once.
-- `BayesianRateOp` `int64` accumulator → `Checked.(+)` or saturate.
-- `INestedFixpointParticipant` inherits `IOperator<'TOut>`.
-- `PluginHarness` id-space via `Int32.MinValue`-range synthetics.
-- `IOperator<'T>` → `IZetaOperator<'T>` rename (before external adoption).
-- `Op<'T>.Value` mixed-accessibility hover-doc pointing at `OutputBuffer.Publish`.
-- `PluginApi.fs` split when >300 lines.
-- PLUGIN-AUTHOR.md `[<Extension>]` explanation in sample.
-- Extract `internal assignHarnessId` helper shared by `Circuit.Build` + `PluginHarness`.
+Anchor goal achieved: FsCheck law runner live as a test-
+time library.
 
-**Design work still open:**
+- `LawRunner.checkLinear` — generic additivity check; works
+  over `ZSet` and plain numerics via user-supplied `add`/
+  `equal` callbacks.
+- `LawRunner.checkRetractionCompleteness` — Option B
+  (trace-based), state-restoration via continuation after
+  reviewer P0 rewrite. Catches retraction-lossy stateful
+  ops (tested against a floored-counter fixture).
+- Per-sample `System.Random(seed + i)` for true bit-exact
+  reproducibility of `(seed, sampleIndex)`.
+- Deterministic-simulation framing locked in
+  `docs/research/stateful-harness-design.md`; Option A
+  (enrich `IStatefulStrictOperator` with `Init`/`Step`/
+  `Retract` triple matching the DBSP paper's `(σ, λ, ρ)`
+  shape) is the planned additive promotion in round-30+.
+- Scaffolding cleanup: `tools/lean4/` `lake new` leftovers
+  removed; `Lean4.lean` rewired to import the real
+  `DbspChainRule` proof file.
+
+## Round 29 anchor — CI pipeline setup
+
+**Discipline rules (committed up front; `docs/BACKLOG.md`
+has the full text):**
+
+1. Read `../scratch` (build-machine setup) and
+   `../SQLSharp` (GitHub workflows) for shape + intent.
+   **Never copy files.** Hand-craft every artefact.
+2. Aaron reviews every CI design decision before it lands.
+   This is not a "ship and iterate" surface.
+3. Cost discipline: every CI minute earns its slot; default
+   to narrow matrix and widen with a stated reason.
+4. Cross-platform eventual: macOS + Linux first; Windows
+   when there's a Windows-breaking test to justify it.
+   Aaron can run rounds on Windows on request.
+5. Product work and CI work run in parallel on the same
+   machine; dispatch research subagents for CI design
+   concurrently with product work as long as neither
+   writes the same file.
+
+**Sub-task sequence (each its own Aaron review gate):**
+
+1. Audit `../scratch` → `docs/research/build-machine-setup.md`.
+2. Audit `../SQLSharp/.github/workflows/` →
+   `docs/research/ci-workflow-design.md`.
+3. Gate inventory → `docs/research/ci-gate-inventory.md`.
+4. First workflow: `build-and-test.yml` covering
+   `dotnet build -c Release` + `dotnet test Zeta.sln -c
+   Release` on `ubuntu-latest` + `macos-latest`. Nothing
+   else until Aaron signs off on the gate list.
+5. Subsequent workflows land one at a time, each with an
+   explicit design doc and sign-off.
+
+## Carried from round 28
+
+**Law runner follow-ups (DEBT-tracked):**
+- `check*` take 8-11 positional args → promote to config
+  record before `checkBilinear` lands.
+- `LawViolation.Message` → structured DU.
+- Test covering ops that omit the marker tag.
+
+**Law coverage (product work; can run in parallel with CI):**
+- `checkBilinear` — join-shaped ops; standard DBSP
+  incrementalisation form.
+- `checkSinkTerminal` — Sink-tagged ops must not compose
+  into a relational path.
+- Option-A promotion of `IStatefulStrictOperator` to
+  explicit `(σ, λ, ρ)` triple — round-30+ unless CI work
+  stalls on a review gate, in which case advance here.
+
+**Open from round 27 (deferred to round-30+ pool):**
 - `IsDbspLinear` Lean predicate + B1/B2/B3/chain_rule
-  closures (Tariq option-c; half-day B2, two days full).
-- FsCheck law runner at `Circuit.Build()` per capability
-  tag — unblocks PLUGIN-AUTHOR.md's soft-claim in "Known
-  limits of round-27."
-
-**Persona-notes migration tail:**
-- 6 remaining persona notebooks still in single-file
-  layout (`public-api-designer.md`, `skill-tune-up-ranker.md`,
-  `best-practices-scratch.md`, `algebra-owner.md`,
-  `formal-verification-expert.md`, `agent-experience-researcher.md`).
-  Lazy migration per §21; convert when a persona next
-  writes a typed memory entry.
-
-**Other deferred:**
-- Rune on `docs/STYLE.md` decision (small).
-- UX + DX persona proposals.
-- Empathy-coach persona spawn (naming pending).
-
-## Workflow cadence (established round-26, codified round-27)
-
-- Each round runs on its own branch (`round-N`).
-- Coherent changes within a round become separate commits
-  where it helps readability.
-- Round-close = PR from `round-N` to `main` + merge.
-- Reviewer pass per §20 before round-close.
-- Maintainer may request a review pass on the branch diff
-  before merge; ask before pushing the merge.
+  closures (Tariq option-c).
+- Reviewer P1 list: `OutputBuffer` tick-stamp,
+  `ReadDependencies` defensive copy, BayesianRate
+  `Checked.(+)`, `IOperator` → `IZetaOperator` rename
+  window, `PluginApi.fs` split when >300 lines.
 
 ## Open asks to the maintainer
 
-- **NuGet prefix reservation** on `nuget.org` for
-  `Zeta.*` — maintainer owns.
-- **`global.json` `rollForward`** — status quo vs relaxed
-  (silent-pick status quo unless objection).
-- **Eval-harness MVP scope** — still pending since round
-  23.
-- **Repo visibility** — currently private on AceHack;
-  flip to public when ready.
-
-## Next architect actions
-
-1. Open `round-28` branch off `main` once round-27 PR
-   merges.
-2. Anchor choice: **FsCheck law runner** (unblocks
-   plugin-author trust + validates Tariq's design) or
-   **OutputBuffer tick-stamp** (closes Kira's P0 that
-   DEBT'd this round). Recommend law runner — larger
-   impact, removes the soft-claim from PLUGIN-AUTHOR.md.
-3. Dispatch code-phase reviewer floor (Kira + Rune) per
-   §20 on any code that lands.
+- **Aaron decisions blocking round-29 progress:**
+  - Sign-off on the build-machine-setup design doc (first
+    sub-task).
+  - Sign-off on the CI-workflow design doc (second sub-
+    task).
+  - Sign-off on the gate inventory (third sub-task).
+  - Sign-off on the first workflow's OS matrix and dotnet
+    pin (fourth sub-task).
+- **NuGet prefix reservation** on `nuget.org` for `Zeta.*`
+  — still maintainer-owned.
+- **`global.json` `rollForward`** — status quo vs relaxed.
+- **Eval-harness MVP scope** — pending since round 23.
+- **Repo visibility** — private on AceHack; flip to public
+  when ready.
 
 ## Notes for the next Kenji waking
 
-- `memory/` is canonical shared memory (not the
-  sandbox). See GOVERNANCE.md §18 + §22.
-- `memory/persona/<persona>/` is per-persona memory.
-  Kenji's seat already folder-migrated; others lazy.
-- Reviewer pass per §20 is mandatory every code-landing
-  round. Kira + Rune is the floor.
-- Public API changes go through Ilyana per §19.
+- `memory/` is canonical shared memory; `memory/persona/
+  <name>/` is per-persona (name-keyed).
+- Reviewer pass per GOVERNANCE.md §20 is mandatory every
+  code-landing round. Kira + Rune is the floor.
+- Public API changes go through Ilyana per GOVERNANCE.md
+  §19.
 - `~/.claude/projects/` is Claude Code sandbox, not git.
-  Do not cite as canonical (§22).
+  Do not cite as canonical (GOVERNANCE.md §22).
+- **CI decisions need Aaron sign-off before landing** —
+  round-29 discipline rule.
+- `../scratch` and `../SQLSharp` are **read-only references**
+  — never copy files.

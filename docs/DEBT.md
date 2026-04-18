@@ -37,6 +37,27 @@ feature + debt budget).
 
 ## Live debt
 
+### `LawRunner.check*` takes 8-11 positional args — promote to config record
+- **Site:** `src/Core/LawRunner.fs`
+- **Found:** round 28 by Rune (maintainability-reviewer)
+- **Effort:** S
+- **Friction:** call sites stack integer literals with trailing `// seed` / `// samples` comments; the next law (`checkBilinear`) will need 10+ positionals and multiply the drift surface.
+- **Fix:** introduce `LinearityConfig<'TIn,'TOut>` / `RetractionConfig<'TIn,'TOut>` records and take one argument. Do it before `checkBilinear` lands.
+
+### `LawViolation.Message` is a string — promote to a structured DU
+- **Site:** `src/Core/LawRunner.fs`
+- **Found:** round 28 by Kira (harsh-critic)
+- **Effort:** S
+- **Friction:** tests string-grep on `"Linearity broke"` / `"Retraction incomplete"`; downstream tooling can't pattern-match on cause.
+- **Fix:** `type Reason = LinearityBreak of tick:int | RetractionResidual of count:int | BadArgs of string`; keep `Message` as a rendering helper.
+
+### `LawRunner` has no test covering operators that omit the marker tag
+- **Site:** `tests/Tests.FSharp/Plugin/LawRunner.Tests.fs`
+- **Found:** round 28 by Kira (harsh-critic)
+- **Effort:** S
+- **Friction:** law runner claims to verify the tag; no test proves the runner doesn't secretly rely on the tag to compile-time dispatch.
+- **Fix:** add a fixture that implements `IOperator<_>` directly (no `ILinearOperator` tag) and confirm `checkLinear` runs against it.
+
 ### `Op<'T>` implicitly publicised as a plugin subclass-extension point
 - **Site:** `src/Core/Circuit.fs` (`Op`, `Op<'T>`) and every subtype under
   `src/Core/Operators.fs`

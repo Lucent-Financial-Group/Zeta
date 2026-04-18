@@ -45,7 +45,10 @@ type OutputBuffer<'TOut> =
 /// Plugin-author contract for a custom operator with a typed
 /// output. External plugin libraries implement this to extend
 /// Zeta's operator catalogue without touching internal scheduler
-/// types.
+/// types. Conformance to an algebra capability tag
+/// (`ILinearOperator`, `IBilinearOperator`, etc.) is verified
+/// in the plugin author's test project via `LawRunner` — see
+/// `docs/PLUGIN-AUTHOR.md` §"Verifying your plugin's algebra tag".
 type IOperator<'TOut> =
 
     /// Short diagnostic label for the operator instance. Used

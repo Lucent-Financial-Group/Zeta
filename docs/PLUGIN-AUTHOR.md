@@ -43,10 +43,13 @@ only when your operator genuinely needs them.
 
 Pick the **strongest** algebra tag that honestly describes
 your operator. Lying (claiming Linear when you are not) is
-detected by Zeta's algebra layer; the full law-verification
-suite runs at `Circuit.Build()` once the FsCheck generators
-for each tag are implemented — see **Known limits of
-round-27** at the bottom of this doc for current coverage.
+caught by `Zeta.Core.LawRunner` — a deterministic-simulation
+law runner that plugin authors call from their test project.
+Run `LawRunner.checkLinear` against an `ILinearOperator` and
+`LawRunner.checkRetractionCompleteness` against an
+`IStatefulStrictOperator`; both take a seed so failures
+reproduce bit-exact. See **Verifying your plugin's
+algebra tag** below.
 
 ## The canonical example
 
@@ -131,6 +134,51 @@ let outputs =
 Use it in unit tests. `Tests.FSharp/Plugin/*.Tests.fs` has
 more examples.
 
+## Verifying your plugin's algebra tag
+
+`Zeta.Core.LawRunner` is the test-time harness that verifies
+your algebra tag is honest. It runs under deterministic
+simulation: given a seed and a schedule length, a failing
+run prints enough to reproduce bit-exact.
+
+```fsharp
+open Zeta.Core
+
+let result =
+    LawRunner.checkLinear
+        42      // seed — reproduces the exact trace on failure
+        20      // samples (a, b) trace pairs
+        8       // ticks per trace
+        (fun input -> MyLinearOp input :> IOperator<int>)
+        (fun rng -> rng.Next(-100, 101))   // genInput
+        (+)                                 // addIn
+        (+)                                 // addOut
+        (=)                                 // equalOut
+
+match result with
+| Ok () -> ()
+| Error v -> failwithf "Linearity broke: %A" v
+```
+
+`checkRetractionCompleteness` works against
+`IStatefulStrictOperator<ZSet<'TIn>, _, ZSet<'TOut>>`:
+it forward-runs a random Z-set trace, retracts each tick
+in the same order, and asserts the cumulative output Z-set
+is empty. Any residual means the operator leaked state
+through retraction.
+
+```fsharp
+let result =
+    LawRunner.checkRetractionCompleteness
+        7 15 6
+        (fun input -> MyStatefulOp input :> IOperator<ZSet<int>>)
+        (fun rng -> ZSet.ofSeq [ rng.Next(0,5), int64 (rng.Next(-3,4)) ])
+```
+
+Bilinear and sink-terminal law runners are round-29+ work —
+see `docs/research/stateful-harness-design.md` for the
+sequenced plan.
+
 ## What you cannot do
 
 - **You cannot mutate another operator's output.** The
@@ -150,20 +198,19 @@ more examples.
   cleanly, declare `ISinkOperator` — which tells Zeta to
   keep you at terminal edges only.
 
-## Known limits of round-27
+## Known limits
 
 Safe-to-ship caveats — each is tracked in `docs/DEBT.md`
 with a target round.
 
-- **FsCheck algebra-law verification is not yet wired at
-  `Circuit.Build()`.** `ILinearOperator` / `IBilinearOperator`
-  / `IStatefulStrictOperator` / `ISinkOperator` are marker
-  interfaces today; the scheduler does not yet run the
-  `LinearLaw`, `BilinearLaw`, `RetractionCompletenessLaw`,
-  or `SinkTerminalLaw` generators against tagged ops. A
-  wrongly-tagged op compiles and runs; the runtime does not
-  catch it. **Fine for internal plugins; hold off publishing
-  to NuGet until law coverage lands.**
+- **Law coverage.** `LawRunner.checkLinear` and
+  `LawRunner.checkRetractionCompleteness` (Option B, trace-
+  based) are live. `checkBilinear` and `checkSinkTerminal`
+  are round-29+ work. An Option-A promotion of
+  `IStatefulStrictOperator` to an explicit `Init` / `Step` /
+  `Retract` triple (matching the DBSP paper's `(σ, λ, ρ)`
+  shape) is also scheduled — see
+  `docs/research/stateful-harness-design.md`.
 - **`PluginHarness.runSingleInput` asserts exactly-one-
   `Publish`-per-tick**, but the production `Circuit` path
   currently does not. An op that forgets to call `Publish`
@@ -174,9 +221,9 @@ with a target round.
   undefined behaviour.** Don't stash the buffer in a field
   or pass it to another thread to call `Publish` later. A
   tick-stamped guard is tracked as DEBT.
-- **`dotnet new zeta-plugin` scaffolding template** is a
-  round-28+ deliverable. Until it exists, start from the
-  Bayesian example in `src/Bayesian/BayesianAggregate.fs`.
+- **`dotnet new zeta-plugin` scaffolding template** is
+  still pending. Until it exists, start from the Bayesian
+  example in `src/Bayesian/BayesianAggregate.fs`.
 - **Multi-input operators** beyond one-input and two-input
   shapes need a custom `IOperator<'TOut>` with a longer
   `ReadDependencies` array; there's no generic N-input

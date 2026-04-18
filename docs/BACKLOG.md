@@ -93,6 +93,76 @@ within each priority tier.
   side (Window.fs wiring pending). Target: measured numbers in
   `docs/BENCHMARKS.md` by end of round 20.
 
+## P0 — CI / build-machine setup (round-29 anchor)
+
+- [ ] **First-class CI pipeline for Zeta.** Every agent-written
+  commit eventually has to pass the same gate a human commit
+  does; right now the only gate is `dotnet build -c Release`
+  on the maintainer's laptop. Aaron's framing (round 28):
+
+  > "Our CI setup is as first class for this software factory
+  > as is the agents themselves, it does not ultimately work
+  > without both."
+
+  Discipline rules committed up front:
+
+  1. **Read-only reference.** `../scratch` is the model for
+     build-machine setup (scripts, installers, install
+     locations, tool pins). `../SQLSharp` is the model for
+     GitHub Actions workflows. **Never copy files.** Read to
+     understand the shape and the intent; hand-craft every
+     artefact from scratch for Zeta so no cruft or
+     assumptions from another repo's context sneaks in.
+  2. **Human review on every decision.** Aaron reviews the
+     OS matrix, tool versions, caching strategy, artefact
+     retention, secret handling, permissions model, workflow
+     triggers, and the per-job concurrency/timeout settings
+     before any workflow lands. This is *not* a place for
+     "ship and iterate".
+  3. **Cost discipline.** CI minutes are the expensive
+     resource. Every job earns its slot: justify any
+     matrix-axis expansion, any scheduled run, any
+     always-on-PR gate. Default to narrow (one OS, one
+     dotnet, current branch only) and widen only with a
+     stated reason.
+  4. **Cross-platform, eventually.** Zeta is cross-platform
+     (.NET 10, macOS arm64 dev box, Linux CI, Windows
+     supported). Aaron can run rounds on Windows when
+     Windows-specific work is under way; say so when useful.
+     CI matrix should cover at least macOS + Linux; Windows
+     gets added once we have a Windows-breaking test to
+     justify the slot.
+  5. **Parallelism note.** Product work and CI work run on
+     one maintainer machine but rarely interfere at the
+     shell level. Architect is free to dispatch CI-design
+     subagents in parallel with product work as long as
+     neither agent writes the same file.
+
+  **First sub-tasks (round-29 anchor; each its own Aaron
+  review gate):**
+
+  1. Audit `../scratch` for install-script patterns (what
+     tools, what versions, what pinning method, what target
+     paths). Output: a design doc at
+     `docs/research/build-machine-setup.md` citing every
+     borrowed idea and nothing else. No file copies.
+  2. Audit `../SQLSharp` `.github/workflows/` for workflow
+     shape (triggers, jobs, matrix, caching, permissions).
+     Output: a design doc at
+     `docs/research/ci-workflow-design.md`.
+  3. Map Zeta's actual gate list: `dotnet build`,
+     `dotnet test`, Semgrep, Alloy (needs JDK), Lean proofs
+     (needs elan/lake), TLC (needs JDK + tla2tools.jar),
+     Stryker (slow — scheduled not per-PR), FsCheck tests.
+     Output: a gate inventory at
+     `docs/research/ci-gate-inventory.md`.
+  4. First workflow: `build-and-test.yml` covering
+     `dotnet build -c Release` + `dotnet test Zeta.sln -c
+     Release` on `ubuntu-latest` + `macos-latest`. Nothing
+     else until Aaron has signed off on the gate list.
+  5. Subsequent workflows added one at a time, each with
+     explicit Aaron sign-off on the design doc first.
+
 ## P0 — security / SDL artifacts
 
 - [ ] **`docs/security/CRYPTO.md`** — justify CRC32C (integrity, not

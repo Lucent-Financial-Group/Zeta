@@ -9,6 +9,123 @@ New rounds are appended at the top.
 
 ---
 
+## Round 28 — FsCheck law runner (Option B), stateful-harness design doc, lean4 cleanup
+
+### Anchor — FsCheck law runner at plugin-law surface
+
+Round 28's committed anchor from `CURRENT-ROUND.md` round-27
+close was a law runner that could catch a falsely-tagged
+plugin operator. Design call early in the round: move it
+from `Circuit.Build()` gate (the round-27 soft-claim in
+`docs/PLUGIN-AUTHOR.md`) to a **test-time library** —
+`Zeta.Core.LawRunner`. Rationale committed: keeps `Core`
+free of FsCheck, defers probabilistic-testing cost to the
+plugin author's test project, idiomatic F#.
+
+**Live laws:**
+- `LawRunner.checkLinear` — generates trace pairs `(A, B)`
+  via a `System.Random -> 'TIn` generator, asserts
+  `op(A + B) = op(A) + op(B)` tick-by-tick using user-
+  supplied `addIn` / `addOut` / `equalOut`. Works for
+  `ZSet<'T>` (via `ZSet.add`) and plain numerics.
+- `LawRunner.checkRetractionCompleteness` — Option B
+  (trace-based, no interface change). State-restoration
+  via continuation: feed `forward ++ retract ++
+  continuation`, compare continuation outputs to a fresh-
+  op run of the continuation alone. Any divergence means
+  state survived the cancel.
+
+Deterministic-simulation framing throughout: one seeded
+`System.Random(seed + sampleIndex)` per sample, failing
+run reports `(seed, sampleIndex)`, re-run reproduces
+bit-exact. Each `runSingleInput` call creates a fresh op
+instance so state cannot leak across samples.
+
+**Design doc.** `docs/research/stateful-harness-design.md`
+captures the build-vs-test decision, the Option A vs
+Option B analysis, and the sequenced follow-up plan.
+Aaron's question mid-round — "what does Option A get us
+for the future?" — produced an explicit long-term
+recommendation baked into the doc: **Option A is the right
+long-term direction** because it matches the DBSP paper's
+`(σ, λ, ρ)` triple (the same shape
+`tools/lean4/Lean4/DbspChainRule.lean` proves against) and
+unlocks generic WDC checkpointing + planner fusion of
+adjacent stateful ops. **Option B is the right first step**
+because Option A needs real design work on the async path
+and retraction contract, and prototyping A in a vacuum
+would ship a contract we would need to revise. Option B
+also stays as a fallback for plugins that cannot expose
+`Init`/`Step`/`Retract` (ML wrappers, third-party system
+integrations).
+
+### Reviewer floor — GOVERNANCE.md §20 caught real bugs
+
+Kira + Rune dispatched after the first LawRunner landing.
+Kira P0: original retraction law ("cumulative output over
+forward+retract = 0") is too weak — passes trivially for
+empty-emitting ops and a floored-counter can leak state
+while keeping cumulative zero. Law rewritten to state-
+restoration via continuation (the law the tag actually
+promises), test fixture replaced: `FlooredCounterOp`
+(genuinely stateful and lossy) supersedes the mistagged
+`PositiveOnlyOp` filter (which was non-linear, not a
+retraction fixture). Second Kira P0: `invalidArg` in Core
+public surface violates CLAUDE.md's result-over-exception
+rule — all entries now return `Result<unit, LawViolation>`.
+Third Kira P0: whole-loop RNG meant `(seed, sampleIndex)`
+didn't actually reproduce; fixed with per-sample
+`System.Random(seed + i)`.
+
+Rune P1 findings logged to DEBT: `check*` 8-11 positional
+args → promote to config record before `checkBilinear`
+lands; `LawViolation.Message: string` → structured DU; add
+a test covering ops that omit the marker tag.
+
+Lesson carried forward: **reviewer floor is not a
+formality.** Kira's P0 on retraction semantics was a real
+bug in the law definition, not a style nit. The round 27
+codification of Kira + Rune as mandatory per §20 paid off
+on its first applicable round.
+
+### Lean4 scaffolding cleanup
+
+`lake new` boilerplate removed from `tools/lean4/`:
+`README.md` (GitHub-Pages setup template), `Basic.lean`
+(hello-world sample), `.github/workflows/` (upstream Lean
+CI templates), redundant `.gitignore` (root `.gitignore`
+already covers `.lake/`). `Lean4.lean` rewired to `import
+Lean4.DbspChainRule` so `lake build` walks the real proof
+file. Load-bearing pieces kept: `lakefile.toml`,
+`lake-manifest.json`, `lean-toolchain`. Sample deletion
+flagged by Aaron: "that was a sample hello world [lake
+scaffold] project and we don't need the [Lake] project
+itself we are calling it from dotnet."
+
+### PLUGIN-AUTHOR.md soft-claim retracted
+
+Round 27's "law verification at `Circuit.Build()` once the
+FsCheck generators are implemented" was honest-but-
+aspirational. Round 28's doc now points at
+`LawRunner.checkLinear` / `checkRetractionCompleteness` as
+live, `checkBilinear` / `checkSinkTerminal` flagged as
+round-29+ work.
+
+### Round 29 anchor — CI pipeline
+
+Aaron (round 28 close): "Our CI setup is as first class
+for this software factory as is the agents themselves, it
+does not ultimately work without both." Round 29 opens
+with CI as the anchor; `../scratch` + `../SQLSharp` are
+**read-only reference** repos (never copy files, hand-
+craft every artefact from scratch). Discipline rules
+committed in `docs/BACKLOG.md` §"P0 — CI / build-machine
+setup": Aaron reviews every design decision before it
+lands, cost discipline on CI minutes, cross-platform
+eventual (macOS + Linux first, Windows when justified).
+
+---
+
 ## Round 27 — big round: governance §20-§22, plugin API redesign landed, memory moved in-repo
 
 ### Shipped — governance rules (§20 / §21 / §22)
