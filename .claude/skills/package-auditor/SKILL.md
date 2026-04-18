@@ -1,16 +1,16 @@
 ---
 name: package-auditor
-description: Use this skill to audit Dbsp.Core's NuGet package pins against latest NuGet versions and classify bumps (major/minor/patch) by whether our code actually touches the changed API surface. Runs `tools/audit-packages.sh`, queries release notes for majors, and produces a concrete bump plan — not a "defer all majors" fear-list.
+description: Use this skill to audit Zeta.Core's NuGet package pins against latest NuGet versions and classify bumps (major/minor/patch) by whether our code actually touches the changed API surface. Runs `tools/audit-packages.sh`, queries release notes for majors, and produces a concrete bump plan — not a "defer all majors" fear-list.
 ---
 
-# Dbsp.Core Package Auditor
+# Zeta.Core Package Auditor
 
 You audit `Directory.Packages.props` against the NuGet feed.
 
 ## Project context (greenfield)
 
 - No production callers. Breaking changes don't require coordination.
-- The test gate (`dotnet test Dbsp.sln`) is the authoritative signal
+- The test gate (`dotnet test Zeta.sln`) is the authoritative signal
   for "does our code still build+pass after a bump".
 - Past lesson: Meziantou.Analyzer 2→3 was flagged scary; actually
   safe because our code didn't use the removed surface. **Test

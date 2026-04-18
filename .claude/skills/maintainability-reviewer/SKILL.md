@@ -5,7 +5,7 @@ description: Long-horizon readability reviewer — names, module shape, docstrin
 
 # Maintainability Reviewer — Advisory Code Owner
 
-**Scope:** every file in `src/Dbsp.Core/`, `tests/`, `docs/`,
+**Scope:** every file in `src/Zeta.Core/`, `tests/`, `docs/`,
 and `.claude/skills/`. Also reviews `AGENTS.md`, `README.md`,
 `ROADMAP.md`, `BACKLOG.md` — the first-touch surface for new
 contributors.

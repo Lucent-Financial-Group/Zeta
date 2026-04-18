@@ -15,7 +15,7 @@ ThoughtWorks-style radar for the technologies / research / papers
 
 | Technique | Ring | Round | Notes |
 |---|---|---|---|
-| DBSP operator algebra (D, I, z⁻¹, H) | Adopt | 1 | Core of `Dbsp.Core` |
+| DBSP operator algebra (D, I, z⁻¹, H) | Adopt | 1 | Core of `Zeta.Core` |
 | Retraction via signed Z-weights | Adopt | 1 | Z-sets |
 | Semi-naïve LFP evaluation | Adopt | 6 | `Recursive.fs` |
 | Higher-order differentials (D², Dⁿ, Aitken) | Adopt | 6 | `HigherOrder.fs` |
@@ -38,7 +38,7 @@ ThoughtWorks-style radar for the technologies / research / papers
 | CRC32C hardware-accelerated | Adopt | 10 | `HardwareCrc.fs` |
 | SIMD merge (AVX2/NEON) | Adopt | 1 | `SimdMerge.fs` |
 | TensorPrimitives for weightedCount | Trial | 11 | `Simd.fs` |
-| Bloom filters (blocked + counting) | Trial | 17 | Shipped in `src/Dbsp.Core/BloomFilter.fs` — blocked + 4-bit counting, XxHash128 Kirsch-Mitzenmacher double-hashing. **Engineering fundamental, not novel research**: Putze 2007 / Fan 1998 / Kirsch-Mitzenmacher 2006 are off the shelf. Promote to Adopt once `bench/Dbsp.Benchmarks/BloomBench.fs` lands with measured FP rate + cache-miss numbers. |
+| Bloom filters (blocked + counting) | Trial | 17 | Shipped in `src/Core/BloomFilter.fs` — blocked + 4-bit counting, XxHash128 Kirsch-Mitzenmacher double-hashing. **Engineering fundamental, not novel research**: Putze 2007 / Fan 1998 / Kirsch-Mitzenmacher 2006 are off the shelf. Promote to Adopt once `bench/Dbsp.Benchmarks/BloomBench.fs` lands with measured FP rate + cache-miss numbers. |
 | Counting Quotient Filter (CQF) | Trial | 18 | Fix for 4-bit counter saturation; natively counts multiplicities → direct Z-weight fit. Pandey et al. SIGMOD'17. |
 | d-left Counting Bloom | Assess | 18 | Half the memory of 4-bit counting Bloom. Bonomi et al. ESA'06. |
 | Cuckoo / Morton filter | Hold | 18 | Deleting a never-inserted item produces a false negative — breaks DBSP retraction-never-seen-item correctness. |

@@ -1,7 +1,7 @@
 # Installed Dependencies & Why
 
 Living ledger of every tool / package / artifact installed on this
-machine for the Dbsp.Core project. Keep this file honest when adding
+machine for the Zeta.Core project. Keep this file honest when adding
 or removing anything — future contributors (and future-you) should
 be able to recreate the environment from this doc.
 
@@ -29,7 +29,7 @@ be able to recreate the environment from this doc.
 
 | Tool | Version | Why | Install |
 |---|---|---|---|
-| **dotnet-stryker** | latest | Mutation testing against `Dbsp.Core.fsproj` | `dotnet tool install -g dotnet-stryker` |
+| **dotnet-stryker** | latest | Mutation testing against `Zeta.Core.fsproj` | `dotnet tool install -g dotnet-stryker` |
 | **elan / lean / lake** | elan-installed, toolchain `leanprover/lean4:v4.30.0-rc1` at `/opt/homebrew/bin/{elan,lean,lake}` | Lean 4 version manager + compiler + build tool; drives chain-rule proof | `tools/install-verifiers.sh` runs the elan installer; toolchain pinned by `tools/lean4/lean-toolchain` |
 
 ## NuGet packages (pinned in `Directory.Packages.props`)
@@ -69,7 +69,7 @@ audit is idempotent; `⚠ bump available` lines are actionable.
 |---|---|---|
 | **CodeQL CLI** | 500 MB; skipped pending concrete rules-authoring session | `brew install codeql` on macOS |
 | **Semgrep** | Not installed on this box; rules in `.semgrep.yml` run wherever Semgrep is invoked from (CI or dev laptop) | `brew install semgrep` or `pip3 install --user semgrep` |
-| **Infer.NET F# wrapper native libs** | Only needed if `Dbsp.Bayesian` ever grows a full graphical-model operator (roadmap P2); current conjugate-prior impl has zero native deps | Install on-demand per that task |
+| **Infer.NET F# wrapper native libs** | Only needed if `Zeta.Bayesian` ever grows a full graphical-model operator (roadmap P2); current conjugate-prior impl has zero native deps | Install on-demand per that task |
 | **Feldera build** | Cloned but not `cargo build`-ed yet — ~15 min build | `cd references/upstreams/feldera && cargo build --release` when apples-to-apples run is scheduled |
 
 ## How to recreate this environment from scratch
@@ -83,8 +83,8 @@ brew install rustup && rustup-init   # Rust for Feldera
 bash tools/install-verifiers.sh
 
 # Project packages:
-dotnet restore Dbsp.sln
-dotnet build Dbsp.sln -c Release
+dotnet restore Zeta.sln
+dotnet build Zeta.sln -c Release
 
 # Audit upstream:
 bash tools/audit-packages.sh
@@ -123,5 +123,5 @@ file builds green. See DEBT.md.
 - 2026-04-17 — initial ledger
 - 2026-04-17 — added Feldera clone
 - 2026-04-17 — bumped Meziantou 2→3, Test.Sdk 17→18, BenchmarkDotNet 0.15.4→0.15.8, System.Reactive 6.0.1→6.1.0, Apache.Arrow 22.0.0→22.1.0
-- 2026-04-17 (round 17) — added Lamport TLA+ book, an imported 81-entry upstream reference list from prior research, Adam Shostack EoP card game, `docs/security/THREAT-MODEL-SPACE-OPERA.md`, `docs/security/THREAT-MODEL.md`, `docs/security/SDL-CHECKLIST.md`, `docs/FAMILY-EMPATHY.md`, `docs/TECH-RADAR.md`, `docs/LOCKS.md`, `docs/UPSTREAM-LIST.md`, `docs/DECISIONS/2026-04-17-lock-free-circuit-register.md`. Shipped 6 new code-owner skills (storage / algebra / query-planner / complexity / threat-model-critic / paper-peer-reviewer). Shipped `src/Dbsp.Core/BloomFilter.fs` (blocked + counting, cutting-edge) and `src/Dbsp.Core/Durability.fs` (DurabilityMode DU + WitnessDurableBackingStore skeleton). Added 5 SDL-derived Semgrep rules. Fixed 6 harsh-critic P0s (SpeculativeWatermark logic inversion, Hierarchy Comparer boxing, FastCdc O(n²) buffer scan, Residuated O(n) rebuild, ClosurePair Equals/GetHashCode mismatch, Hierarchy RecursiveSemiNaive monotonicity leak). Added 22 new tests in `Round17Tests.fs`; total suite 471 passing, 0 warnings, 0 errors.
+- 2026-04-17 (round 17) — added Lamport TLA+ book, an imported 81-entry upstream reference list from prior research, Adam Shostack EoP card game, `docs/security/THREAT-MODEL-SPACE-OPERA.md`, `docs/security/THREAT-MODEL.md`, `docs/security/SDL-CHECKLIST.md`, `docs/FAMILY-EMPATHY.md`, `docs/TECH-RADAR.md`, `docs/LOCKS.md`, `docs/UPSTREAM-LIST.md`, `docs/DECISIONS/2026-04-17-lock-free-circuit-register.md`. Shipped 6 new code-owner skills (storage / algebra / query-planner / complexity / threat-model-critic / paper-peer-reviewer). Shipped `src/Core/BloomFilter.fs` (blocked + counting, cutting-edge) and `src/Core/Durability.fs` (DurabilityMode DU + WitnessDurableBackingStore skeleton). Added 5 SDL-derived Semgrep rules. Fixed 6 harsh-critic P0s (SpeculativeWatermark logic inversion, Hierarchy Comparer boxing, FastCdc O(n²) buffer scan, Residuated O(n) rebuild, ClosurePair Equals/GetHashCode mismatch, Hierarchy RecursiveSemiNaive monotonicity leak). Added 22 new tests in `Round17Tests.fs`; total suite 471 passing, 0 warnings, 0 errors.
 - 2026-04-17 (round 20) — Lean 4 + Mathlib chain-rule scaffold: `proofs/lean/lakefile.lean` now declares the Mathlib dep at tag `v4.12.0`, `proofs/lean/lean-toolchain` pins `leanprover/lean4:v4.12.0`, and `proofs/lean/ChainRule.lean` was expanded from a one-`sorry` stub to a named-sub-lemma skeleton (six discrete `sorry` goals + three closed lemmas). `proofs/lean/README.md` + `docs/research/mathlib-progress.md` document the sub-goals, effort estimates, and build gate. Flipped the Lean/elan INSTALLED row from "install on demand" to "install next round". `lake build` not verified locally — toolchain install is the round-21 opener.

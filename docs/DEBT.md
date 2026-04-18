@@ -56,7 +56,7 @@ feature + debt budget).
   public-api-designer review. Round-26+ work.
 
 ### "Round-N fix" historical-voice survivors in source docstrings
-- **Sites:** `src/Dbsp.Core/FastCdc.fs:68`, `Residuated.fs:39`,
+- **Sites:** `src/Core/FastCdc.fs:68`, `Residuated.fs:39`,
   `Durability.fs:17`, `Durability.fs:33`, `Recursive.fs:211`,
   `FeatureFlags.fs:43`
 - **Found:** round 20 by Rune
@@ -80,7 +80,7 @@ feature + debt budget).
   "see `docs/EXPERT-REGISTRY.md`."
 
 ### Durability.createBackingStore `invalidOp` message spans 6 lines of prose
-- **Site:** `src/Dbsp.Core/Durability.fs:166-174`
+- **Site:** `src/Core/Durability.fs:166-174`
 - **Found:** round 21 by Kira
 - **Effort:** S
 - **Friction:** log-grep wraps the message badly; callers can't
@@ -149,7 +149,7 @@ feature + debt budget).
 - **Site:** `tests/Dbsp.Tests.FSharp/Formal/Tlc.Runner.Tests.fs:24-31`
 - **Found:** round 22 by Kenji — full-solution `dotnet test`
   occasionally lands with a CWD outside the repo, walk-up never
-  finds `Dbsp.sln`, every TLC-runner test throws at module init.
+  finds `Zeta.sln`, every TLC-runner test throws at module init.
 - **Effort:** S
 - **Friction:** test ordering / harness-level CWD flips can
   fail all 7 TLC-runner tests at once in the same run that the
@@ -161,7 +161,7 @@ feature + debt budget).
   on CWD.
 
 ### BloomFilter.pairOfString hashes UTF-16 bytes, not UTF-8
-- **Site:** `src/Dbsp.Core/BloomFilter.fs` — `BloomHash.pairOfString`
+- **Site:** `src/Core/BloomFilter.fs` — `BloomHash.pairOfString`
 - **Found:** round 22 by the bug-fix agent
 - **Effort:** S
 - **Friction:** the zero-alloc path uses

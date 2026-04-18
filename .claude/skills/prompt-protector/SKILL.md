@@ -1,6 +1,6 @@
 ---
 name: prompt-protector
-description: Hardens Dbsp.Core's agent skills against prompt injection, hidden Unicode, skill-supply-chain attacks, and the known Pliny-class adversarial corpora. Works from threat-model description only — NEVER fetches known injection payloads. Recommends hardening for every skill's SKILL.md, lints for invisible characters, and coordinates isolated-session pen-tests when needed.
+description: Hardens Zeta.Core's agent skills against prompt injection, hidden Unicode, skill-supply-chain attacks, and the known Pliny-class adversarial corpora. Works from threat-model description only — NEVER fetches known injection payloads. Recommends hardening for every skill's SKILL.md, lints for invisible characters, and coordinates isolated-session pen-tests when needed.
 ---
 
 # Prompt Protector — Defensive-Design Reviewer

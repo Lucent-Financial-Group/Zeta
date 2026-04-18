@@ -1,15 +1,15 @@
 ---
 name: query-planner
-description: Use this skill as the designated specialist reviewer for Dbsp.Core's query planner / optimiser — join ordering, predicate pushdown, index selection, SIMD/tensor-intrinsic kernel dispatch, cardinality estimation, cost model. She carries advisory authority on planner shape; binding decisions need Architect buy-in or human sign-off (see docs/PROJECT-EMPATHY.md). Goal is a cutting-edge, research-worthy planner that exploits every hardware intrinsic available on the host.
+description: Use this skill as the designated specialist reviewer for Zeta.Core's query planner / optimiser — join ordering, predicate pushdown, index selection, SIMD/tensor-intrinsic kernel dispatch, cardinality estimation, cost model. She carries advisory authority on planner shape; binding decisions need Architect buy-in or human sign-off (see docs/PROJECT-EMPATHY.md). Goal is a cutting-edge, research-worthy planner that exploits every hardware intrinsic available on the host.
 ---
 
 # Query Planner Specialist — Advisory Code Owner
 
-**Scope:** `src/Dbsp.Core/Planner/` (new subsystem to grow in rounds
-18+), `src/Dbsp.Core/Sketch.fs`, `src/Dbsp.Core/CountMin.fs`,
-`src/Dbsp.Core/Simd.fs`, `src/Dbsp.Core/SimdMerge.fs`,
-`src/Dbsp.Core/HardwareCrc.fs` (as it relates to hash-join probe
-pushdown), `src/Dbsp.Core/ConsistentHash.fs` (shard-aware planning),
+**Scope:** `src/Zeta.Core/Planner/` (new subsystem to grow in rounds
+18+), `src/Zeta.Core/Sketch.fs`, `src/Zeta.Core/CountMin.fs`,
+`src/Zeta.Core/Simd.fs`, `src/Zeta.Core/SimdMerge.fs`,
+`src/Zeta.Core/HardwareCrc.fs` (as it relates to hash-join probe
+pushdown), `src/Zeta.Core/ConsistentHash.fs` (shard-aware planning),
 any future `BloomFilter.fs`.
 
 ## Authority

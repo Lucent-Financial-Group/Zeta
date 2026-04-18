@@ -31,7 +31,7 @@ on the code first.
 ### 3. Reproduce before fixing
 
 If there isn't already a test that fails in the bug's way:
-- Add the falsifying test first (`tests/Dbsp.Tests.FSharp/`,
+- Add the falsifying test first (`tests/Tests.FSharp/`,
   appropriate subject folder).
 - Confirm it fails for the stated reason.
 

@@ -1,6 +1,6 @@
 # Architecture Principles
 
-Dbsp.Core is an F# implementation of the DBSP algebra (Budiu et al. VLDB'23).
+Zeta.Core is an F# implementation of the DBSP algebra (Budiu et al. VLDB'23).
 It is not a transliteration of the Rust reference. This doc captures the
 design principles the codebase is organised around — what it borrows,
 what it rejects, and where the shape is going.
@@ -26,7 +26,7 @@ what it rejects, and where the shape is going.
 ## Package split
 
 ```
-Dbsp.Core            algebra, operators, Circuit/Stream/Op, sketches,
+Zeta.Core            algebra, operators, Circuit/Stream/Op, sketches,
                      primitives (z^-1, integrate, differentiate), CRDTs
 Dbsp.Tests.FSharp    F# xUnit v3 + FsUnit + FsCheck
 Dbsp.Tests.CSharp    C# xUnit v3 — C# surface coverage
@@ -37,7 +37,7 @@ Dbsp.Demo            sample app
 The current inner core is one assembly. If a feature wants to evolve
 independently (learned plan, Bayesian aggregates, Arrow wire, SQL front-
 end, storage tiers), split it into its own project before it welds itself
-into `Dbsp.Core`.
+into `Zeta.Core`.
 
 Seams exposed via DI:
 
@@ -163,7 +163,7 @@ happens once per pipeline build, not per tuple.
    Lean 4 / FsCheck) strictly current with the F# surface; drift is a bug.
 6. A real storage tier lands as a separate project with FASTER-style
    regions and SlateDB-style CAS-manifest semantics — not as another
-   layer grafted onto `Dbsp.Core`.
+   layer grafted onto `Zeta.Core`.
 
 ## Formal-verification posture
 
@@ -196,6 +196,6 @@ Research pass on coverage gaps in `docs/research/proof-tool-coverage.md`
   with Mathlib, rewrite-commute as a derived theorem.
 
 None of this lands without a paper target or a measurable user win.
-Dbsp.Core is a research library; publishability is a first-class
+Zeta.Core is a research library; publishability is a first-class
 priority signal. See `docs/ROADMAP.md` for research opportunities
 and CFPs.

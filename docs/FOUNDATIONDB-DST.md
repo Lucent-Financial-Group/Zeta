@@ -10,7 +10,7 @@ to hit production without a traditional integration suite.
 
 ## What we already have
 
-- **`ChaosEnvironment`** (`src/Dbsp.Core/ChaosEnv.fs`) — seed-driven
+- **`ChaosEnvironment`** (`src/Core/ChaosEnv.fs`) — seed-driven
   simulation environment with `DelayJitter`, `ClockSkew`, `RngStall`,
   `TimeReversal` policies. `splitMix + AdvanceTime` are now atomic
   under the same lock so replays are deterministic across threads.
@@ -102,7 +102,7 @@ combining into `ISimulationDriver` is the right unification — flagged
 ## Roadmap slot
 
 **P1 (next 2 weeks):**
-- Promote `VirtualTimeScheduler` to `src/Dbsp.Core/Simulation.fs`
+- Promote `VirtualTimeScheduler` to `src/Core/Simulation.fs`
 - Define `ISimulationDriver` with `Scheduler + FileSystem + Network`
 - Wire `DiskBackingStore` through `ISimulatedFs`
 - One end-to-end simulation test that runs 1000 randomised scenarios

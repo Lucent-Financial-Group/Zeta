@@ -413,7 +413,7 @@ pointer-drift catalogue, wake-up clarity score.
 
 ### UX (user experience)
 **Plain:** The experience of being a library consumer of
-Dbsp.Core — the NuGet user, the first-time evaluator, the
+Zeta.Core — the NuGet user, the first-time evaluator, the
 downstream integrator. What the README and getting-started and
 public API feel like.
 **Technical:** Audit scope of the `user-experience-researcher`

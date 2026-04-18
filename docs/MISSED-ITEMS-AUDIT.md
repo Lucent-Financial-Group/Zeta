@@ -48,8 +48,8 @@ reason.
 - ✅ 4 additional TLA+ specs
 - ✅ HardwareCrc (Sse42 + AdvSimd.Crc32.Arm64)
 - ✅ FsPickler + TLV + Span + Arrow IPC serializers (4-tier)
-- ✅ Dbsp.Core.CSharp shim with variance + C# tests
-- ✅ Dbsp.Bayesian with BayesianRateOp used in real operator
+- ✅ Zeta.Core.CSharp shim with variance + C# tests
+- ✅ Zeta.Bayesian with BayesianRateOp used in real operator
 - ✅ Content-based hashing research + FastCDC + Merkle
 - ✅ Feldera benchmark scaffold (Q1/Q2)
 - ✅ REVIEW-AGENTS.md with 15 reviewer prompts
@@ -94,7 +94,7 @@ reason.
 
 ## 🔜 Next round (concrete P1 items queued)
 
-- **Port 3 P0 items from prior research** to Dbsp.Core (F# translations,
+- **Port 3 P0 items from prior research** to Zeta.Core (F# translations,
   latest-research rewrites per AGENTS.md policy):
   1. `CommitBoundary` in `DiskSpine.fs` + `ISimulatedFs.FlushToStableStorage`
   2. Frame-first/header-second commit protocol with hardware CRC32C

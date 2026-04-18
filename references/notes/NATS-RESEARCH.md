@@ -1,7 +1,7 @@
 # NATS + JetStream — Research Notes
 
 Authored synthesis for the `nats` and `nats-jetstream`
-upstreams in `reference-sources.json`. Focus: what Dbsp.Core
+upstreams in `reference-sources.json`. Focus: what Zeta.Core
 borrows, what it does not, and where the ideas land in our
 code.
 
@@ -63,7 +63,7 @@ are first-class server-side objects, not client-held offsets.
 Our "checkpoint + replay" story tracks the `eventstore`
 reference, not the `kafka` one.
 
-## Why this applies to Dbsp.Core
+## Why this applies to Zeta.Core
 
 **NATS core as transport.** Arrow Flight remains the primary
 data-plane target — Flight carries zero-copy Arrow batches end
@@ -86,7 +86,7 @@ for fan-out across circuit replicas.
 a plan.
 
 **Sharder mapping.** `InfoTheoreticSharder`
-(`src/Dbsp.Core/NovelMathExt.fs:88`) picks least-loaded shard
+(`src/Core/NovelMathExt.fs:88`) picks least-loaded shard
 via a Count-Min sketch; JetStream queue groups use name-hash
 with pull-based work-stealing. Compatible: one circuit shard
 plays one queue-group member.

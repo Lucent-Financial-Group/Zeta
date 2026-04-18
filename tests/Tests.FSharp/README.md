@@ -1,12 +1,12 @@
-# Dbsp.Tests.FSharp
+# Tests.FSharp
 
-Subject-first F# test suite for `Dbsp.Core`. Tests are organised by the
-subsystem they cover, mirroring `src/Dbsp.Core/`'s module structure.
+Subject-first F# test suite for `Zeta.Core`. Tests are organised by the
+subsystem they cover, mirroring `src/Core/`'s module structure.
 
 ## Directory layout
 
 ```
-tests/Dbsp.Tests.FSharp/
+tests/Tests.FSharp/
   Algebra/        ZSet / IndexedZSet / Weight / overflow guards
   Circuit/        Circuit core, Incremental, NestedCircuit, Plan, Plan.Branches
   Operators/      Aggregate, Window, Join, Upsert, Transaction, Fusion,
@@ -19,17 +19,17 @@ tests/Dbsp.Tests.FSharp/
   Formal/         Z3.Laws, Tlc.Runner, Sharder.InfoTheoretic
   Properties/     Math.Invariants, Fuzz, Determinism  (cross-module; compiled last)
   _Support/       ConcurrencyHarness  (helpers, not tests)
-  Dbsp.Tests.FSharp.fsproj
+  Tests.FSharp.fsproj
   README.md
 ```
 
 ## Naming convention
 
-- **One test file per source module.** `src/Dbsp.Core/Foo.fs`
-  → `tests/.../<Subsystem>/Foo.Tests.fs`. Subject-first, never
-  date-first. No `RoundN` or `Coverage` in filenames.
+- **One test file per source module.** `src/Core/Foo.fs`
+  → `tests/Tests.FSharp/<Subsystem>/Foo.Tests.fs`. Subject-first,
+  never date-first. No `RoundN` or `Coverage` in filenames.
 - **Module name matches folder + filename.** `Storage/Spine.Tests.fs`
-  declares `module Dbsp.Tests.Storage.SpineTests`.
+  declares `module Zeta.Tests.Storage.SpineTests`.
 - **Dot-separated sub-aspects when a file grows.** When a subject's
   test file passes ~400 lines, split by aspect with a dot:
   `Spine.Tests.fs` + `Spine.Disk.Tests.fs` + `Spine.Selector.Tests.fs`.
@@ -52,11 +52,11 @@ tests/Dbsp.Tests.FSharp/
 - **`_Support/`** holds helper code that is not itself a test. The
   leading underscore sorts it first and signals "not a test file"
   at a glance. Helper modules use the namespace
-  `Dbsp.Tests.Support.*`.
+  `Zeta.Tests.Support.*`.
 
-## Compile order in `Dbsp.Tests.FSharp.fsproj`
+## Compile order in `Tests.FSharp.fsproj`
 
-F# requires a total order. We group `<Compile Include>` by folder in
+F# requires a total order. Group `<Compile Include>` by folder in
 this order (helpers first, properties last):
 
 1. `_Support/`
@@ -64,8 +64,8 @@ this order (helpers first, properties last):
    → `Runtime/` → `Infra/` → `Crdt/` → `Formal/`
 3. `Properties/`
 
-Within each subject folder, files listed in no particular order; F#
-sees them as independent modules that all depend on `Dbsp.Core`.
+Within each subject folder, files are listed in no particular order;
+F# sees them as independent modules that all depend on `Zeta.Core`.
 
 ## Test framework
 
@@ -86,7 +86,6 @@ dotnet test -c Release --no-build --logger "console;verbosity=minimal"
 ## Rationale
 
 The layout is subject-first: each file is named after *what* the
-tests cover, never *when* or *why* they were added. Flat
-`RoundN` / `Coverage` / `CoverageBoost` prefixes are explicitly
-not used. See `docs/research/test-organization.md` for the
-full rationale.
+tests cover, never *when* or *why* it was added. Flat `RoundN` /
+`Coverage` / `CoverageBoost` prefixes are explicitly not used. See
+`docs/research/test-organization.md` for the full rationale.

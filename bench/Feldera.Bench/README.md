@@ -1,13 +1,13 @@
-# Dbsp.Feldera.Bench
+# Feldera.Bench
 
-Side-by-side benchmark harness comparing **Dbsp.Core** against **Feldera**
+Side-by-side benchmark harness comparing **Zeta.Core** against **Feldera**
 (https://github.com/feldera/feldera) on **Nexmark** and **TPC-H-streaming**
 workloads.
 
 ## Running locally
 
 ```bash
-dotnet run -c Release --project bench/Dbsp.Feldera.Bench --filter "*"
+dotnet run -c Release --project bench/Feldera.Bench --filter "*"
 ```
 
 BenchmarkDotNet runs each query across `EventCount ∈ {10K, 100K}` and

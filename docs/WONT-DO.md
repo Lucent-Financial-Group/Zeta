@@ -49,7 +49,7 @@ Entries are grouped by area. Each entry has:
 - **Decision:** 2026-04-17
 - **Proposal:** Add learned-Bloom variants (Kraska 2018 / Mitzenmacher 2018 / Vaidya 2021).
 - **Why not:** Classifier retraining per retraction batch breaks
-  streaming latency. Dbsp.Core is a retraction-native engine;
+  streaming latency. Zeta.Core is a retraction-native engine;
   any sketch that needs a model refit on `δ<0` is a latency bomb.
 - **Revisit when:** A learned-index subsystem ships deliberately.
   Or a drift-bounded variant shows an order-of-magnitude
@@ -204,10 +204,10 @@ library in F#. Declining them here saves review cycles.
 - **Decision:** 2026-04-17
 - **Proposal:** Build a full SQL front-end pipeline (parser → binder
   → logical plan → optimizer → physical plan → executor).
-- **Why not:** Dbsp.Core is the algebra + runtime. A SQL compiler is
+- **Why not:** Zeta.Core is the algebra + runtime. A SQL compiler is
   Feldera's product category; any SQL text parsing would land as a
   separate project targeting the same Z-set operator surface, not
-  inside `Dbsp.Core`. Host-language embedding (F#, C#, LINQ) is the
+  inside `Zeta.Core`. Host-language embedding (F#, C#, LINQ) is the
   first-class surface.
 - **Revisit when:** A research result (e.g. verified query
   optimisation in Lean 4, PLDI/POPL gap #4) or a user workload
@@ -217,7 +217,7 @@ library in F#. Declining them here saves review cycles.
 - **Decision:** 2026-04-17
 - **Proposal:** Track per-feature SQL:2023 conformance in a generated
   matrix modelled on PostgreSQL's `sql_features` table.
-- **Why not:** Dbsp.Core doesn't ship SQL. It ships DBSP operators.
+- **Why not:** Zeta.Core doesn't ship SQL. It ships DBSP operators.
   The algebraic-law coverage in `docs/MATH-SPEC-TESTS.md` is the
   equivalent instrument for this library.
 - **Revisit when:** A SQL front-end package ships (see above).
@@ -245,7 +245,7 @@ library in F#. Declining them here saves review cycles.
 - **Decision:** 2026-04-17
 - **Proposal:** Build the standard single-node ACID engine (WAL,
   MVCC, crash recovery, isolation-level semantics) inside
-  `Dbsp.Core`.
+  `Zeta.Core`.
 - **Why not:** The library is incremental-view-maintenance over
   streams, not a transactional store. ACID semantics belong in
   the sink layer. `ISink` (2PC) and `IAppendSink` (event-log)
@@ -253,7 +253,7 @@ library in F#. Declining them here saves review cycles.
   stores that provide ACID, it doesn't implement one.
 - **Revisit when:** Never as engine-core. The `Dbsp.Storage` project,
   if it ever exists, may wrap a local ACID store (SlateDB pattern,
-  FASTER regions), but `Dbsp.Core` itself doesn't carry that.
+  FASTER regions), but `Zeta.Core` itself doesn't carry that.
 
 ### Root-catalog discovery / catalog snapshots / table metadata parsing
 - **Decision:** 2026-04-17
@@ -301,7 +301,7 @@ library in F#. Declining them here saves review cycles.
 - **Decision:** 2026-04-17
 - **Proposal:** Wrap the embedded engine in a management + query
   service with versioned wire contracts, gRPC/JSON/etc.
-- **Why not:** Dbsp.Core is a library. Any service would land as a
+- **Why not:** Zeta.Core is a library. Any service would land as a
   separate project layered over the library — and the wire story
   is already committed to Arrow Flight (P1) for multi-node delta
   streaming. No general query/management service surface is
@@ -345,7 +345,7 @@ executor layering as a package
   surface.
 - **Why not:** One library, one operator algebra, one storage
   boundary (`IBackingStore`). A pluggable-storage architecture is
-  a product choice for a user-facing RDBMS; Dbsp.Core is neither.
+  a product choice for a user-facing RDBMS; Zeta.Core is neither.
 - **Revisit when:** Never.
 
 ### Columnar analytical side engine (MariaDB ColumnStore / Druid /
@@ -356,7 +356,7 @@ ClickHouse / Iceberg / Delta Lake)
 - **Why not:** Feldera (the prior-art upstream) already solves
   column-oriented IVM. Columnar storage, if ever needed, lands
   as a separate package with Arrow-native segments, not as a
-  side engine inside `Dbsp.Core`.
+  side engine inside `Zeta.Core`.
 - **Revisit when:** A user workload demonstrably needs columnar
   pruning that Z-set operators can't cover, and a publication
   story exists for it.

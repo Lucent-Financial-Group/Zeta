@@ -32,7 +32,7 @@ Everything the Zeta rename left on the floor at phase B8:
   - Phase 12: TLA+ filenames audit
   - Phase 13: remove NAMING.md "pending" banner
   - Phase 14: final smoke (`dotnet test`, `dotnet run
-    --project samples/Zeta.Demo`)
+    --project samples/Demo`)
   - Phase 15: retire `docs/drafts/zeta-rename-plan.md`
     (promote any lingering learnings to the canonical
     docs first)

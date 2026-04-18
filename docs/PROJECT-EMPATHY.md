@@ -42,7 +42,7 @@ human to arbitrate.
    is either a research contribution (paper target) or
    explicitly an engineering fundamental.
 8. **F# idiomatic over C# transliterated.** F# is the core language;
-   C# callers get a shim (`Dbsp.Core.CSharp`).
+   C# callers get a shim (`Zeta.Core.CSharp`).
 
 These aren't absolute — a feature that violates 4 or 5
 simultaneously is a firefighter, not a contribution.

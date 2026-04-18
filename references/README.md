@@ -1,6 +1,6 @@
 # References
 
-External material we study to keep Dbsp.Core honest. Two kinds:
+External material we study to keep Zeta.Core honest. Two kinds:
 
 1. **Authored notes** under `references/notes/` — our own
    write-ups synthesising what matters from each upstream.

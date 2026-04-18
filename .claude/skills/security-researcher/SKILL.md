@@ -58,7 +58,7 @@ elder-plinius / Pliny-class corpora (CLAUDE.md absolute rule).
 
 ### Step 3 — map to our code
 
-For each finding from Step 2: does Dbsp.Core touch this surface
+For each finding from Step 2: does Zeta.Core touch this surface
 today? Which files? Which specs? Which feature flags?
 
 ### Step 4 — classify impact

@@ -1,4 +1,4 @@
-# Dbsp.Core Space Opera Threat Model
+# Zeta.Core Space Opera Threat Model
 
 > *"Given that the real threat model exists, we might as well build a
 > second one for when we're trying to convince a twelve-year-old that

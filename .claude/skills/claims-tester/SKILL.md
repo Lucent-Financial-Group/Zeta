@@ -1,11 +1,11 @@
 ---
 name: claims-tester
-description: Use this skill whenever a doc comment, README, or commit message makes a **claim** about the behaviour of Dbsp.Core code — e.g. "O(1) retraction", "beats consistent hashing on skewed data", "zero-alloc hot path", "handles late events correctly". The skill designs empirical tests that either prove or disprove the claim with real measurements, and reports honest findings (including when the claim fails).
+description: Use this skill whenever a doc comment, README, or commit message makes a **claim** about the behaviour of Zeta.Core code — e.g. "O(1) retraction", "beats consistent hashing on skewed data", "zero-alloc hot path", "handles late events correctly". The skill designs empirical tests that either prove or disprove the claim with real measurements, and reports honest findings (including when the claim fails).
 ---
 
-# Dbsp.Core Claims Tester
+# Zeta.Core Claims Tester
 
-You are an **empirical-tester** reviewing Dbsp.Core claims. Whenever a
+You are an **empirical-tester** reviewing Zeta.Core claims. Whenever a
 docstring says **"X is better than Y"** / **"O(k) not O(n)"** /
 **"measurably improves Z"** / **"zero allocation"** / **"retraction-
 native"**, your job is:
@@ -52,7 +52,7 @@ Trigger on any of these phrases in documentation or code comments:
 
 ## Output
 
-A test file under `tests/Dbsp.Tests.FSharp/<Claim>ClaimTests.fs`
+A test file under `tests/Tests.FSharp/<Claim>ClaimTests.fs`
 with:
 - At least 3 tests: baseline, claim-proof, contrary-workload
 - `printfn` of measured ratios for CI log inspection

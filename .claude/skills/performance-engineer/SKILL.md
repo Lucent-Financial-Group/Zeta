@@ -111,7 +111,7 @@ before/after row.
 
 ## Reference patterns
 
-- `bench/Dbsp.Benchmarks/*` — measurement surface
+- `bench/Benchmarks/*` — measurement surface
 - `docs/BENCHMARKS.md` — baseline log
 - `docs/TECH-RADAR.md` — perf-tool ring state
 - `.claude/skills/complexity-reviewer/SKILL.md` — Hiroshi

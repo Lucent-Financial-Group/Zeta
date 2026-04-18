@@ -45,7 +45,7 @@ capability. The file is three lines pinning `fantomas`,
 plus a `@min` include.
 
 OpenSpec shape: new capability `openspec/specs/dev-tools/spec.md`
-with requirements like "Dbsp.Core SHALL pin dotnet global tool
+with requirements like "Zeta.Core SHALL pin dotnet global tool
 versions exactly" and "The `min` profile SHALL include fantomas".
 Backing data at `declarative/dotnet/tools/min.dotnet-tools`, paired
 with a single `tools/install-dev-tools.sh` that reads the manifest

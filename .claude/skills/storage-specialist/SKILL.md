@@ -1,15 +1,15 @@
 ---
 name: storage-specialist
-description: Use this skill as the designated specialist reviewer for Dbsp.Core's storage layer — DiskBackingStore, Spine family, checkpoint format, durability modes, WDC. Carries deep advisory authority on storage technical direction; final decisions require Architect buy-in or human contributor sign-off (see docs/PROJECT-EMPATHY.md).
+description: Use this skill as the designated specialist reviewer for Zeta.Core's storage layer — DiskBackingStore, Spine family, checkpoint format, durability modes, WDC. Carries deep advisory authority on storage technical direction; final decisions require Architect buy-in or human contributor sign-off (see docs/PROJECT-EMPATHY.md).
 ---
 
 # Storage Specialist — Advisory Code Owner
 
-**Scope:** `src/Dbsp.Core/DiskSpine.fs`, `src/Dbsp.Core/Spine.fs`,
-`src/Dbsp.Core/SpineAsync.fs`, `src/Dbsp.Core/BalancedSpine.fs`,
-`src/Dbsp.Core/SpineSelector.fs`, `src/Dbsp.Core/Merkle.fs`,
-`src/Dbsp.Core/FastCdc.fs`, `src/Dbsp.Core/HardwareCrc.fs`, anything
-new under the `DurabilityMode` umbrella (`src/Dbsp.Core/Durability.fs`).
+**Scope:** `src/Zeta.Core/DiskSpine.fs`, `src/Zeta.Core/Spine.fs`,
+`src/Zeta.Core/SpineAsync.fs`, `src/Zeta.Core/BalancedSpine.fs`,
+`src/Zeta.Core/SpineSelector.fs`, `src/Zeta.Core/Merkle.fs`,
+`src/Zeta.Core/FastCdc.fs`, `src/Zeta.Core/HardwareCrc.fs`, anything
+new under the `DurabilityMode` umbrella (`src/Zeta.Core/Durability.fs`).
 
 ## Authority
 

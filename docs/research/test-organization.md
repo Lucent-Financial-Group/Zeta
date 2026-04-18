@@ -29,7 +29,7 @@ search time. `Coverage*` names encode *why* (a coverage target) rather than
 - **Miller's 7±2.** A directory with 28 entries exceeds working memory.
   Grouping into ~7 folders with ~4–6 files each is the legibility sweet spot.
 - **Principle of locality.** Put tests next to the subsystem name: if
-  `src/Dbsp.Core/Spine.fs` exists, `tests/.../Storage/Spine.Tests.fs` is
+  `src/Core/Spine.fs` exists, `tests/.../Storage/Spine.Tests.fs` is
   where a human looks first.
 - **Feature-first vs module-first.** Module-first (mirror `src/` layout) wins
   for library code because contributors arrive via the module they touched,
@@ -79,7 +79,7 @@ tests/Dbsp.Tests.FSharp/
 ```
 
 Ten top-level folders, each with 3–7 files. Each filename names a module in
-`src/Dbsp.Core/`. New contributors browse by subsystem, not by history.
+`src/Core/`. New contributors browse by subsystem, not by history.
 
 ## 4. Rename map (every file)
 
@@ -116,7 +116,7 @@ Ten top-level folders, each with 3–7 files. Each filename names a module in
 
 ## 5. Rules for new test files
 
-- **One test file per src module.** `src/Dbsp.Core/Foo.fs` → `Xxx/Foo.Tests.fs`.
+- **One test file per src module.** `src/Core/Foo.fs` → `Xxx/Foo.Tests.fs`.
 - **Append until ~400 lines**, then split by sub-aspect using a dot:
   `Spine.Tests.fs` + `Spine.Disk.Tests.fs`. Hard ceiling: 600 lines.
 - **Never encode dates, rounds, or coverage targets in filenames.** The
@@ -155,5 +155,5 @@ Ten top-level folders, each with 3–7 files. Each filename names a module in
 5. Delete the empty originals; final `.fsproj` cleanup. (commit 21)
 6. Add `tests/Dbsp.Tests.FSharp/README.md` documenting §3 and §5. (commit 22)
 
-Each commit runs `dotnet test Dbsp.sln` — the 447-test gate stays green
+Each commit runs `dotnet test Zeta.sln` — the 447-test gate stays green
 throughout.

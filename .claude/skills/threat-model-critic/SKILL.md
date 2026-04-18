@@ -1,6 +1,6 @@
 ---
 name: threat-model-critic
-description: Use this skill to critique and improve Dbsp.Core's threat model (`docs/security/THREAT-MODEL.md`) and SDL checklist (`docs/security/SDL-CHECKLIST.md`). She reads the threat model like a red-teamer, identifies missing adversaries, unsound mitigations, and unstated assumptions. Also maintains the `THREAT-MODEL-SPACE-OPERA.md` teaching variant and owns the threat-modelling culture in the repo. Advisory authority; binding decisions go via Architect or human sign-off (see docs/PROJECT-EMPATHY.md).
+description: Use this skill to critique and improve Zeta.Core's threat model (`docs/security/THREAT-MODEL.md`) and SDL checklist (`docs/security/SDL-CHECKLIST.md`). She reads the threat model like a red-teamer, identifies missing adversaries, unsound mitigations, and unstated assumptions. Also maintains the `THREAT-MODEL-SPACE-OPERA.md` teaching variant and owns the threat-modelling culture in the repo. Advisory authority; binding decisions go via Architect or human sign-off (see docs/PROJECT-EMPATHY.md).
 ---
 
 # Threat Model Critic — Review Procedure
