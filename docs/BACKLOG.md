@@ -144,6 +144,53 @@ within each priority tier.
   Trigger: one week of clean CI runs. Required check
   lands once we trust the signal.
 
+## P0 — Threat-model elevation (round-30 anchor)
+
+- [ ] **Nation-state + supply-chain threat-model rewrite.**
+  Aaron at round-29 close: *"in the real threat model we
+  should take into consideration nation state and supply
+  chain attacks."* He helped build the US smart grid
+  (nation-state defense work) and is a gray hat with
+  hardware side-channel experience. The current
+  `docs/security/THREAT-MODEL.md` is under-scoped for
+  this adversary class.
+
+  **Scope:**
+
+  - `docs/security/THREAT-MODEL.md` adversary-model
+    revision: advanced persistent threat + nation-state
+    + sophisticated supply-chain adversary as
+    first-class threat classes, not box-ticks.
+  - Expanded supply-chain coverage: package registries
+    (NuGet, Mathlib, Homebrew formulae), build
+    toolchain (dotnet SDK, elan, mise installers), CI
+    runners (GitHub Actions runner image compromise,
+    runner-level persistence), third-party actions
+    (beyond our SHA-pin mitigation), dep-graph attacks.
+  - Every mitigation validated against a real control
+    (code / governance rule / CI gate / reviewer
+    cadence). Unenforced mitigations are gaps, not
+    mitigations.
+  - Side-channel + hardware adversary coverage (timing,
+    cache behavior, microarchitectural leaks,
+    speculative execution for tenant-isolated
+    deployments).
+  - Nation-state-level response playbook: what happens
+    if actions/checkout is compromised? mise.run is
+    hijacked? NuGet serves a poisoned package? Written
+    *before* we need it.
+  - `docs/security/THREAT-MODEL-SPACE-OPERA.md`
+    completed as the serious-underneath-the-fun
+    variant — every silly adversary maps to a real
+    STRIDE class + real control + real CVE-style
+    escalation path.
+
+  **Primary:** `threat-model-critic` on the doc
+  authoring. **Secondary:** `security-researcher` on
+  novel attack classes, current CVE landscape,
+  advisory-tracking. **Consulting:** Aaron, on
+  nation-state-adversary modeling (his domain).
+
 ## P0 — CI / build-machine setup (round-29 anchor)
 
 - [ ] **First-class CI pipeline for Zeta.** Every agent-written

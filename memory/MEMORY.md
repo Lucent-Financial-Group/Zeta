@@ -1,3 +1,4 @@
+- [Aaron's security credentials — pitch threat-model rigor at nation-state level](project_aaron_security_credentials.md) — built parts of US smart grid, gray hat with hardware side-channel experience; no watering down on security posture.
 - [Public API changes go through public-api-designer](feedback_public_api_review.md) — internal→public flips, new public members, signature changes all require Ilyana's review before landing; InternalsVisibleTo is not a workaround.
 - [Don't repeat project name in own folder tree](feedback_folder_naming_convention.md) — on-disk folders go bare (Core, Bayesian, Tests.FSharp); Zeta prefix survives only in published identity (NuGet / namespaces / published assembly names).
 - [Path hygiene in documentation](feedback_path_hygiene.md) — absolute filesystem paths and paths outside repo root are doc smells; documentation-agent greps and rewrites; GOVERNANCE.md §18 is the single memory-folder exception.

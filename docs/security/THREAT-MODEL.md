@@ -105,6 +105,31 @@ trusted).
 4. **P2 — Arrow IPC HMAC / mTLS** — when multi-node wire lands.
 5. **P2 — AssemblyLoadContext isolation** for plugin operators.
 
+### Supply-chain: install-script download posture
+
+**Verifier jars (TOFU by design).** `tools/setup/common/verifiers.sh`
+downloads `tools/tla/tla2tools.jar` and `tools/alloy/alloy.jar`
+from the canonical GitHub release URLs without checksum
+verification. Threat classes:
+- **MITM on curl** — defeated by TLS + HSTS on github.com.
+- **DNS spoof of github.com** — defeated by CT + HSTS.
+- **Upstream GitHub release-account compromise** — the residual
+  risk. Low probability, bounded impact (jars run against
+  `.tla`/`.als` files we authored, not against secrets; JVM
+  sandboxing is the default trust posture for these tools).
+
+Accepted trade-off per round 29. Revisit if (a) a release-account
+compromise class surfaces in our ecosystem, or (b) upstream
+publishes signed `SHA256SUMS` we can pin to.
+
+**Toolchain installers via curl-pipe-sh.** `tools/setup/common/
+elan.sh` pulls `elan-init.sh` from `leanprover/elan` at `master`;
+`tools/setup/macos.sh` pulls the Homebrew installer at `HEAD`;
+`tools/setup/linux.sh` pulls mise at `https://mise.run`. Same
+threat class as the jars; same trade-off. Each delivers a
+toolchain we would trust anyway (Lean, Homebrew, mise). Pin to a
+versioned script when upstream publishes one.
+
 ## References
 
 - Microsoft SDL practices 4+5+9 (`docs/security/SDL-CHECKLIST.md`)

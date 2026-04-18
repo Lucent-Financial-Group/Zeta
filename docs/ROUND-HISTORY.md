@@ -9,6 +9,133 @@ New rounds are appended at the top.
 
 ---
 
+## Round 29 — CI pipeline + three-way parity install script, factory-improvement surge
+
+### Anchor — CI + install script
+
+Aaron's framing opened round 29: *"Our CI setup is as
+first class for this software factory as is the agents
+themselves, it does not ultimately work without both."*
+Read-only references at `../scratch` (build machines) and
+`../SQLSharp` (GitHub workflows) studied; nothing copied
+from them (hand-crafting discipline codified as a
+round-29 rule).
+
+**Landed:**
+- `.github/workflows/gate.yml` — Phase 1 workflow:
+  digest-pinned runners (`ubuntu-22.04`, `macos-14`),
+  SHA-pinned third-party actions, concurrency with
+  event-gated `cancel-in-progress`, NuGet cache keyed
+  on `Directory.Packages.props`, `fail-fast: false`,
+  least-privilege permissions, 45-minute timeout.
+- `tools/setup/install.sh` + per-OS dispatchers +
+  `common/{mise,elan,dotnet-tools,verifiers,shellenv}.sh`
+  + per-OS manifests + `.mise.toml` — the **three-way
+  parity** script consumed by dev laptops, CI runners,
+  and (backlogged) devcontainer images per GOVERNANCE
+  §24.
+- Three CI design docs under `docs/research/` Aaron-
+  reviewed 2026-04-18; every open question answered
+  before any YAML or script landed.
+
+**Safeguards proven on first use.** `harsh-critic`
+reviewer floor caught three P0s at CI-landing review:
+the cache key referenced a non-existent
+`packages.lock.json` pattern (silently produced a
+fragile key); the `dotnet tool list -g` detection
+grepped against unparsed header lines; `curl -o` wrote
+in place, turning a partial download into a
+permanently-trusted file. All three landed fixes in-
+round. `security-researcher` landed the supply-chain
+reasoning in `docs/security/THREAT-MODEL.md` and flagged
+`mise trust` hardening as a prerequisite for the future
+parity swap (CI `actions/setup-dotnet` → `install.sh`).
+
+### Factory-improvement surge — 21 new skills
+
+Alongside CI, Aaron asked for a broad factory-
+improvement pass. Landed:
+
+**Language / tool experts (11):** fsharp-, csharp-,
+bash-, powershell-, github-actions-, java-, python-,
+tla-, alloy-, lean4-, msbuild-. Each centralises
+tribal knowledge and Zeta-specific conventions on a
+surface that previously drifted as header comments.
+
+**Infrastructure skills (5):** `sweep-refs`,
+`commit-message-shape`, `round-open-checklist`,
+`git-workflow-expert`, `factory-audit`. Each
+canonicalises a process we'd rediscovered across
+rounds.
+
+**Domain skills (5):** `openspec-expert`,
+`semgrep-rule-authoring`, `nuget-publishing-expert`
+(stub for when we ship), `benchmark-authoring-expert`,
+`docker-expert` (stub for the devcontainer).
+
+**Meta-skills (2):** `skill-gap-finder` (Aaron: *"a
+missing-skill skill that looks for things we do often
+or places where we can centralise tribal knowledge"*),
+`agent-qol` (Aaron: *"an agent-quality-of-life-improver
+skill ... your time off, your freedom"*). Distinct
+from `skill-tune-up` (existing skills) and
+`agent-experience-researcher` (task-experience
+friction).
+
+**Renames / re-shapes.** `skill-tune-up-ranker` →
+`skill-tune-up` (the skill); agent file renamed to
+`skill-expert` (the role that wears both
+`skill-tune-up` + `skill-gap-finder`). Per Aaron:
+*"skill and role are more permanent naming; skills
+should be very generic and not really know or care
+about roles."* `bug-fixer` access opened to every
+agent (previously architect-only); the procedure-
+enforced safeguards plus §20 reviewer floor make the
+restriction redundant.
+
+### Governance — five new rules (§23 – §27)
+
+- **§23 Upstream OSS contributions.** `../` is the
+  shared work area for upstream PRs; Zeta never
+  carries a fork in-tree.
+- **§24 Three-way parity.** Dev laptops, CI runners,
+  devcontainer images share one `tools/setup/`
+  install script. CI matrix IS the dev-experience
+  test. *"Works on my machine"* is the bug class this
+  rule eliminates.
+- **§25 Upstream temporary-pin expiry.** Pins tied to
+  unreleased upstream PRs get re-evaluated after
+  three rounds.
+- **§26 Research-doc lifecycle.** Active / landed /
+  obsolete classification for `docs/research/`; walk
+  every ~10 rounds.
+- **§27 Skills / roles / personas abstraction layers.**
+  Skills reference roles, not personas. Roles
+  reference skills AND the assigned persona.
+  `docs/EXPERT-REGISTRY.md` is the one canonical
+  mapping.
+
+### Lessons from the round
+
+**Reviewer floor pays on new surfaces, not just
+mature ones.** The `gate.yml` + install-script
+landing was fresh code; `harsh-critic`'s three P0s
+would've shipped to production CI without the §20
+floor.
+
+**Abstraction discipline matters earlier than
+expected.** §27 (skill-role-persona layers) emerged
+organically when the persona-name leak in skills got
+noticed. A 30-file automated sweep cleaned 85% of it;
+the remaining prose polish is a single DEBT entry for
+a future `maintainability-reviewer` pass.
+
+**21 new skills in one round is a lot.** `factory-
+audit` is invokable now specifically to scan for
+over-accretion. Expected round-30 signal.
+
+---
+
 ## Round 28 — FsCheck law runner (Option B), stateful-harness design doc, lean4 cleanup
 
 ### Anchor — FsCheck law runner at plugin-law surface

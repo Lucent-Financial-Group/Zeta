@@ -11,6 +11,62 @@ shipped." **Ordered newest-first** — recent rounds lead,
 older rounds trail below. Entries stay even after the moment
 passes, because the pattern is the value.
 
+## Wins — round 29
+
+### Reviewer floor caught three P0s on fresh CI code
+
+`gate.yml` + install scripts landed brand-new this round,
+and the `harsh-critic` floor still found three ship-
+blockers: cache key matched no files (hashFiles on a
+missing pattern returns empty — key would serve stale
+packages across bumps); `dotnet tool list -g` detection
+grepped header lines and triggered false-positive matches
+on name-prefix siblings; `curl -o` wrote in place,
+turning any interrupted download into a permanently-
+trusted partial file via the subsequent TOFU check. All
+three would have shipped to main CI without §20 floor.
+
+**What it teaches.** §20 reviewer floor is *especially*
+valuable on fresh code — it's tempting to think new code
+has been thought-through, but every landing has novel
+failure modes the author couldn't have caught. The rule
+earns its keep on every applicable round, not just the
+"risky" ones.
+
+### Hand-crafting discipline under read-only reference
+
+`../scratch` and `../SQLSharp` were the reference
+repositories for build-machine setup and CI workflow
+shape. Round-29 discipline committed up front: study
+shape and intent, never copy files, cite every borrowed
+pattern by `../<path>` in the design doc. Zero files
+copied across the round; every script and workflow
+hand-crafted.
+
+**What it teaches.** The read-only rule prevented
+cruft migration. Patterns travelled; accumulated
+assumptions from a different repo's context did not.
+The design docs cite patterns cleanly, and the
+artefacts-in-Zeta are specific to Zeta. Codify this
+for every future reference-repo study.
+
+### GOVERNANCE §27 abstraction layers — caught drift mid-round
+
+§27 (skills-roles-personas) was proposed and landed in
+the same round the drift was noticed. Aaron: *"skills
+should be very generic and not really know or care
+about roles."* The mechanical sweep updated ~30 skill
+files; the remaining prose polish is one DEBT entry.
+Future changes don't need to re-re-discover this — the
+rule is in GOVERNANCE, the sweep pattern is in
+`sweep-refs`, and the layer hierarchy is documented in
+every skill's tone contract.
+
+**What it teaches.** When an abstraction-leak signal
+appears, codify it as a governance rule in the same
+round. The rule prevents the re-re-discovery cost on
+round 30+.
+
 ## Wins — round 28
 
 ### Reviewer floor caught a P0 in the law definition itself

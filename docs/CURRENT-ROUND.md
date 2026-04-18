@@ -1,133 +1,171 @@
-# Current Round — 29 (open)
+# Current Round — 30 (open)
 
-Round 28 closed; narrative absorbed into
-`docs/ROUND-HISTORY.md`. Round 29 opens with **CI setup as
-the anchor** — see `docs/BACKLOG.md` §"P0 — CI /
-build-machine setup" for the full discipline rules and
-sub-tasks.
+Round 29 closed; narrative absorbed into
+`docs/ROUND-HISTORY.md`. Round 30 opens with
+**factory-improvement follow-ups + product work**
+running in parallel.
 
 ## Status
 
-- **Round number:** 29
-- **Opened:** 2026-04-18 (continuous from round-28 close)
-- **Classification:** infrastructure round — CI pipeline
-  design is the anchor; product work (bilinear / sink-
-  terminal laws, Option-A stateful promotion) runs in
-  parallel where it doesn't block on Aaron's CI-design
-  review gates.
-- **Reviewer budget:** Kira + Rune floor per GOVERNANCE.md
-  §20 on every code landing. Aaron personally reviews
-  every CI-decision artefact.
+- **Round number:** 30
+- **Opened:** 2026-04-18 (continuous from round-29 close)
+- **Classification:** split — product + factory debt
+- **Reviewer budget:** `harsh-critic` + `maintainability-
+  reviewer` floor per GOVERNANCE §20 on every code landing.
+  `security-researcher` on any CI or install-script edit.
+  `public-api-designer` on any public-API touch.
 
-## Round 28 close — what landed
+## Round 29 close — what landed
 
-Anchor goal achieved: FsCheck law runner live as a test-
-time library.
+Round 29's anchor was the CI pipeline + three-way-parity
+install script. Delivered:
 
-- `LawRunner.checkLinear` — generic additivity check; works
-  over `ZSet` and plain numerics via user-supplied `add`/
-  `equal` callbacks.
-- `LawRunner.checkRetractionCompleteness` — Option B
-  (trace-based), state-restoration via continuation after
-  reviewer P0 rewrite. Catches retraction-lossy stateful
-  ops (tested against a floored-counter fixture).
-- Per-sample `System.Random(seed + i)` for true bit-exact
-  reproducibility of `(seed, sampleIndex)`.
-- Deterministic-simulation framing locked in
-  `docs/research/stateful-harness-design.md`; Option A
-  (enrich `IStatefulStrictOperator` with `Init`/`Step`/
-  `Retract` triple matching the DBSP paper's `(σ, λ, ρ)`
-  shape) is the planned additive promotion in round-30+.
-- Scaffolding cleanup: `tools/lean4/` `lake new` leftovers
-  removed; `Lean4.lean` rewired to import the real
-  `DbspChainRule` proof file.
+- **CI landing.** `.github/workflows/gate.yml` — digest-
+  pinned runners (`ubuntu-22.04`, `macos-14`), SHA-pinned
+  third-party actions, concurrency groups, NuGet cache,
+  `fail-fast: false` matrix, least-privilege permissions.
+- **Install script.** `tools/setup/install.sh` dispatcher +
+  `macos.sh` + `linux.sh` + `common/{mise,elan,dotnet-
+  tools,verifiers,shellenv}.sh` + per-OS manifests +
+  `.mise.toml` at repo root. Three-way parity per
+  GOVERNANCE §24; `tools/install-verifiers.sh` retired
+  greenfield.
+- **Governance.** §23 upstream OSS contributions via `../`
+  clones. §24 three-way parity (dev / CI / devcontainer).
+  §25 upstream temporary-pin expiry (three-round
+  re-evaluation). §26 research-doc lifecycle. §27
+  skills-roles-personas abstraction layers.
+- **Personas.** DevOps Engineer (Dejan); Skill Expert
+  (Aarav's role wraps `skill-tune-up` + `skill-gap-finder`).
+- **Skills — 21 new capability skills.** Language / tool
+  experts (F#, C#, Bash, PowerShell, GitHub Actions,
+  Java, Python, TLA+, Alloy, Lean 4, MSBuild). Infra
+  skills (sweep-refs, commit-message-shape, round-open-
+  checklist, git-workflow-expert, factory-audit). Domain
+  skills (openspec-expert, semgrep-rule-authoring, nuget-
+  publishing-expert, benchmark-authoring-expert, docker-
+  expert). Meta-skills (skill-tune-up rename, skill-gap-
+  finder, factory-audit, agent-qol). Bug-fixer opened to
+  all agents.
+- **Docs.** Three design docs (build-machine-setup,
+  ci-workflow-design, ci-gate-inventory), CONTRIBUTING.md
+  rewrite as landing page with pointer tree,
+  `docs/security/THREAT-MODEL.md` supply-chain section.
+- **Reviewer floor fired.** `harsh-critic` P0s (cache key
+  lie, dotnet-tools detection, verifier partial-download
+  trusted) landed in-round; `security-researcher` Important
+  findings (TOFU doc, mise trust pre-swap hardening)
+  tracked in DEBT.
 
-## Round 29 anchor — CI pipeline setup
+## Round 30 anchor — threat model elevation (nation-state + supply-chain)
 
-**Discipline rules (committed up front; `docs/BACKLOG.md`
-has the full text):**
+Aaron set the bar at round-29 close: *"in the real
+threat model we should take into consideration nation
+state and supply chain attacks."* He has serious
+professional credentials for this work — built the US
+smart grid (nation-state defense), is a gray hat with
+hardware side-channel experience. The current
+`docs/security/THREAT-MODEL.md` is solid but under-
+scoped for that adversary class; `THREAT-MODEL-SPACE-
+OPERA.md` is the fun teaching variant but worth
+finishing with the same rigor.
 
-1. Read `../scratch` (build-machine setup) and
-   `../SQLSharp` (GitHub workflows) for shape + intent.
-   **Never copy files.** Hand-craft every artefact.
-2. Aaron reviews every CI design decision before it lands.
-   This is not a "ship and iterate" surface.
-3. Cost discipline: every CI minute earns its slot; default
-   to narrow matrix and widen with a stated reason.
-4. Cross-platform eventual: macOS + Linux first; Windows
-   when there's a Windows-breaking test to justify it.
-   Aaron can run rounds on Windows on request.
-5. Product work and CI work run in parallel on the same
-   machine; dispatch research subagents for CI design
-   concurrently with product work as long as neither
-   writes the same file.
+Round-30 anchor sub-tasks (each its own review gate):
 
-**Sub-task sequence (each its own Aaron review gate):**
+1. **Elevate `docs/security/THREAT-MODEL.md` to
+   nation-state posture.** Revise the adversary model,
+   expand supply-chain coverage (package registries,
+   build toolchain, CI runners, action supply chain,
+   mise / uv / elan / Homebrew install scripts, dep
+   graphs), harden trust boundaries. Paired:
+   `threat-model-critic` primary,
+   `security-researcher` secondary.
+2. **Validate threat-model claims against real
+   controls.** Each mitigation cites the code /
+   governance rule / CI gate / review cadence that
+   enforces it. Unenforced mitigations are gaps, not
+   mitigations.
+3. **Complete `docs/security/THREAT-MODEL-SPACE-OPERA.md`
+   as the serious-underneath-the-fun variant.** Every
+   silly adversary maps to a real STRIDE class + real
+   control + real CVE-style escalation path. The
+   teaching narrative stays; the technical rigor
+   matches the serious doc. `threat-model-critic`
+   maintains.
+4. **Side-channel + hardware adversary coverage.**
+   Aaron's expertise area. Timing side channels,
+   cache behavior, microarchitectural leaks in
+   tenant-isolated deployments, speculative-execution
+   considerations. Low priority for current deployment
+   shape but worth writing down so future work doesn't
+   silently assume it's covered.
+5. **Nation-state supply-chain playbook.** What
+   happens if `actions/checkout` is compromised?
+   `mise.run` repo is hijacked? NuGet registry serves
+   a poisoned package? Response protocol written down
+   before we need it.
 
-1. Audit `../scratch` → `docs/research/build-machine-setup.md`.
-2. Audit `../SQLSharp/.github/workflows/` →
-   `docs/research/ci-workflow-design.md`.
-3. Gate inventory → `docs/research/ci-gate-inventory.md`.
-4. First workflow: `build-and-test.yml` covering
-   `dotnet build -c Release` + `dotnet test Zeta.sln -c
-   Release` on `ubuntu-latest` + `macos-latest`. Nothing
-   else until Aaron signs off on the gate list.
-5. Subsequent workflows land one at a time, each with an
-   explicit design doc and sign-off.
+**Parallel tracks (lower priority than the anchor):**
 
-## Carried from round 28
+- **Factory debt:** `maintainability-reviewer` prose
+  polish after round-29 §27 sweep; remaining
+  `harsh-critic` P1s on install script; `mise trust`
+  hardening.
+- **Product:** `LawRunner.checkBilinear`,
+  `checkSinkTerminal`, Option-A promotion for
+  `IStatefulStrictOperator` per round-28 design doc.
 
-**Law runner follow-ups (DEBT-tracked):**
-- `check*` take 8-11 positional args → promote to config
-  record before `checkBilinear` lands.
-- `LawViolation.Message` → structured DU.
-- Test covering ops that omit the marker tag.
+## Carried from round 29
 
-**Law coverage (product work; can run in parallel with CI):**
-- `checkBilinear` — join-shaped ops; standard DBSP
-  incrementalisation form.
-- `checkSinkTerminal` — Sink-tagged ops must not compose
-  into a relational path.
-- Option-A promotion of `IStatefulStrictOperator` to
-  explicit `(σ, λ, ρ)` triple — round-30+ unless CI work
-  stalls on a review gate, in which case advance here.
-
-**Open from round 27 (deferred to round-30+ pool):**
-- `IsDbspLinear` Lean predicate + B1/B2/B3/chain_rule
-  closures (Tariq option-c).
-- Reviewer P1 list: `OutputBuffer` tick-stamp,
-  `ReadDependencies` defensive copy, BayesianRate
-  `Checked.(+)`, `IOperator` → `IZetaOperator` rename
-  window, `PluginApi.fs` split when >300 lines.
+Beyond the tracks above:
+- Full `.mise.toml` migration for every tool (currently
+  dotnet + python only); mise-lean plugin is a candidate
+  upstream contribution per §23.
+- Devcontainer / Codespaces image — closes third leg of
+  §24 parity.
+- Windows CI matrix — trigger: one week of clean mac +
+  linux runs.
+- Parity swap: CI's `actions/setup-dotnet` →
+  `tools/setup/install.sh` (gated on `mise trust`
+  hardening per DEBT).
+- Upstream contribution log at
+  `docs/UPSTREAM-CONTRIBUTIONS.md` (backlogged).
+- Branch-protection required-check on `main` after one
+  week of clean `gate.yml` runs.
 
 ## Open asks to the maintainer
 
-- **Aaron decisions blocking round-29 progress:**
-  - Sign-off on the build-machine-setup design doc (first
-    sub-task).
-  - Sign-off on the CI-workflow design doc (second sub-
-    task).
-  - Sign-off on the gate inventory (third sub-task).
-  - Sign-off on the first workflow's OS matrix and dotnet
-    pin (fourth sub-task).
-- **NuGet prefix reservation** on `nuget.org` for `Zeta.*`
-  — still maintainer-owned.
-- **`global.json` `rollForward`** — status quo vs relaxed.
-- **Eval-harness MVP scope** — pending since round 23.
-- **Repo visibility** — private on AceHack; flip to public
-  when ready.
+- **Aaron decisions staged for round 30:**
+  - After one week of clean `gate.yml` runs, flip the
+    branch-protection required-check toggle on `main`.
+  - `.mise.toml` full-migration decision — when to move
+    Lean tooling in (depends on mise-lean plugin
+    landing upstream, our OSS contribution or someone
+    else's).
+  - Windows matrix switch — Aaron flipped from "wait
+    for a breaking test" to "just do it once stable."
+- **NuGet prefix reservation** on `nuget.org` for
+  `Zeta.*` — still maintainer-owned.
+- **Repo visibility** — currently private on AceHack;
+  flip to public when ready.
 
-## Notes for the next Kenji waking
+## Notes for the next architect waking
 
-- `memory/` is canonical shared memory; `memory/persona/
-  <name>/` is per-persona (name-keyed).
-- Reviewer pass per GOVERNANCE.md §20 is mandatory every
-  code-landing round. Kira + Rune is the floor.
-- Public API changes go through Ilyana per GOVERNANCE.md
-  §19.
-- `~/.claude/projects/` is Claude Code sandbox, not git.
-  Do not cite as canonical (GOVERNANCE.md §22).
-- **CI decisions need Aaron sign-off before landing** —
-  round-29 discipline rule.
-- `../scratch` and `../SQLSharp` are **read-only references**
-  — never copy files.
+- 21 new skills landed in round 29 — factory cadence
+  rule: `skill-tune-up` + `skill-gap-finder` should
+  run early in round 30 to catch any drift before
+  accretion.
+- GOVERNANCE §27 abstraction rule is new; any skill
+  edit in round 30 is expected to comply (role names
+  in skills, not persona names).
+- `factory-audit` is a new skill; consider a first run
+  mid-round 30 now that there's enough factory
+  surface to audit meaningfully.
+- `bug-fixer` is now open to every agent — the
+  procedure holds the quality bar.
+- `memory/` is canonical; `memory/persona/<name>/` is
+  per-persona.
+- GOVERNANCE §20 reviewer floor is mandatory every
+  code-landing round.
+- `~/.claude/projects/` is Claude Code sandbox, not
+  git (GOVERNANCE §22).

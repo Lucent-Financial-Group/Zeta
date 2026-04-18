@@ -37,6 +37,20 @@ feature + debt budget).
 
 ## Live debt
 
+### Install-script P1 follow-ups from round-29 harsh-critic review
+- **Site:** `tools/setup/common/{shellenv,dotnet-tools,macos,linux,mise}.sh`, `.github/workflows/gate.yml`
+- **Found:** round 29 by `harsh-critic`
+- **Effort:** S
+- **Friction:** five P1s surfaced in the round-29 review that didn't block ship but leave rough edges. (1) `shellenv.sh` claims cross-machine stable output in its header comment — false when `brew` resolves to different absolute paths on Intel vs Apple-Silicon Macs. (2) `gate.yml` concurrency group collapses `workflow_dispatch` onto `refs/heads/main` — manual triage serialises behind PR-less main traffic. (3) `macos.sh` `xcode-select --install || true` silently continues into brew on a fresh dev laptop where CLT is missing and the GUI confirmation is pending. (4) `dotnet-tools.sh` `update -g … >/dev/null 2>&1 || true` swallows every failure including "version not found"; claims "updated if possible" regardless. (5) `linux.sh` `grep -vE '^(#|$)'` passes inline-comment manifest lines (`pkg # reason`) verbatim to `apt-get install`. Brew batch-install vs per-package loop is a cost hit, not correctness.
+- **Fix:** per-finding edits per the review; no single sweep. Tracked here so `maintainability-reviewer` can pick them up in a tune-up round.
+
+### CI gate swap requires `mise trust` hardening first
+- **Site:** `tools/setup/common/mise.sh`
+- **Found:** round 29 by `security-researcher`
+- **Effort:** S
+- **Friction:** `.mise.toml` supports `[env]` / hook directives that can execute arbitrary commands during `mise install`. The script currently runs `mise trust "$REPO_ROOT/.mise.toml"` unconditionally. Today `gate.yml` uses `actions/setup-dotnet` so CI isn't exposed — but the GOVERNANCE §24 backlog item "Parity swap: CI's `actions/setup-dotnet` → `tools/setup/install.sh`" lands this attack path in CI the moment the swap happens.
+- **Fix:** before the parity swap: in CI mode, gate `mise trust` on `.mise.toml` being unchanged vs `main` (or on an allow-list schema that rejects `[env]`/hooks). Block the swap on this fix.
+
 ### Skill-file prose polish after GOVERNANCE §27 sweep
 - **Site:** `.claude/skills/**/SKILL.md`
 - **Found:** round 29 during persona→role sweep for GOVERNANCE §27
