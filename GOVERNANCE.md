@@ -340,3 +340,69 @@ than renumbering the rest.
     prompt surfaces that path, treat it as the sandbox
     convenience mirror it is; the canonical material
     lives in the repo.
+
+23. **Upstream open-source contributions are encouraged.**
+    When Zeta depends on an open-source project (mise
+    plugins, Mathlib, Alloy, TLA+ tooling, an npm/NuGet
+    package, anything else) and we need a bug fix or a
+    new feature from that project, the expected move is
+    to fix it upstream — not to carry a fork or a
+    workaround in Zeta.
+
+    **Workflow:**
+    - Clone the upstream repo as a sibling at `../`
+      (e.g. `../mise-plugin-dotnet`). The `../` tree is
+      the shared work area for upstream contributions;
+      nothing under `../` is part of Zeta's git history.
+    - Branch, fix, push to a personal fork, open a PR
+      upstream. Credit the actual work (who wrote the
+      fix, which Zeta round surfaced the need).
+    - If Zeta needs the fix before the upstream PR
+      merges, pin to the forked branch temporarily with
+      a dated note in `docs/INSTALLED.md` and remove the
+      pin the moment the upstream release lands.
+    - Prior example: Aaron landed a bug-fix PR on the
+      mise dotnet plugin surfaced while wiring up
+      `../SQLSharp`; the plugin's current release
+      already carries it.
+
+    **Scope:**
+    - Read-only references (`../scratch`, `../SQLSharp`)
+      live at `../` too but follow the read-only
+      discipline codified per round — never copy files
+      from them into Zeta.
+    - Every `../` clone is optional; a fresh checkout of
+      Zeta must build and test without any `../`
+      siblings present.
+
+24. **Dev setup, build-machine setup, and devcontainer
+    setup share one install script.** The `tools/setup/`
+    script is consumed three ways: (a) a contributor
+    runs it on their laptop to provision a Zeta dev
+    environment; (b) CI runners run the same script in
+    the build step; (c) a devcontainer / Codespaces
+    image runs the same script during build. **One
+    script, three consumers.**
+
+    The CI matrix on this script is first-class — the
+    workflow exists specifically to test the developer
+    experience across first-class dev platforms, not
+    because the library requires a wide matrix. A Mac
+    developer discovering a Linux install-script bug
+    belongs in CI, not in a ticket filed three weeks
+    later. "Works on my machine" is the bug class this
+    rule eliminates.
+
+    **Implications:**
+    - The install script is idempotent. A second run
+      detects existing tools and upgrades; it does not
+      re-download.
+    - The install script is safe to run daily as a
+      "keep tools fresh" command.
+    - Asymmetries between dev and CI are bugs. If a CI
+      step shells out to `apt install ...` the dev
+      script does the same; if the dev script
+      `brew install`s something CI doesn't, that's a
+      drift to close.
+    - Parity drift is tracked in `docs/DEBT.md`, not
+      accepted as permanent.

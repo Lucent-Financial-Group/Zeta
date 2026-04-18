@@ -93,6 +93,57 @@ within each priority tier.
   side (Window.fs wiring pending). Target: measured numbers in
   `docs/BENCHMARKS.md` by end of round 20.
 
+## P1 — CI / DX follow-ups (after round-29 anchor)
+
+- [ ] **Full mise migration.** Round 29 adopts `.mise.toml`
+  for `dotnet` + `python` only. When a mise plugin exists
+  for Lean (elan / lake / lean-toolchain) and for any
+  other tool we still install outside mise, migrate and
+  retire the bespoke installer. Aaron: *"long term plan
+  is mise."*
+- [ ] **Incremental build + affected-test selection.**
+  Aaron (round 29): *"If you want to get us to a point
+  where we can do incremental builds with a build cache
+  too I would love that, then we could only run the
+  tests who were affected."* Substantial work — needs
+  a module-dependency graph, a build-cache story (Nuke?
+  bespoke?), and a mapping from changed files to
+  impacted test IDs. Probably a round of its own.
+- [ ] **Comparison PR-comment bot.** Coverage / benchmark /
+  verifier-output diffs between the head SHA and the
+  base SHA, published as a PR comment. `../SQLSharp` has
+  this shape for coverage + benchmarks; Zeta defers
+  until we have something worth diffing. Aaron: *"we
+  don't need the comparison yet, we can do that later."*
+- [ ] **Windows matrix in CI.** Trigger: one week of green
+  runs on `ubuntu-22.04` + `macos-14` — no pre-arranged
+  "breaking test" required. Aaron: *"let's just do it
+  once we are in a stable spot with mac and linux."*
+  Requires the install script to grow Windows support
+  (PowerShell bootstrap or WSL path) first.
+- [ ] **Parity swap: CI's `actions/setup-dotnet` →
+  `tools/setup/install.sh`.** Round-29 first workflow
+  uses `actions/setup-dotnet@<sha>` for speed. Per
+  GOVERNANCE.md §24, the parity target is CI running
+  the same install script dev laptops and
+  devcontainers run. Swap in once the install script is
+  stable across macOS + Linux runners.
+- [ ] **Devcontainer / Codespaces image.** Dockerfile
+  at `.devcontainer/Dockerfile` that runs
+  `tools/setup/install.sh` during image build, plus
+  `.devcontainer/devcontainer.json` metadata. Closes
+  the third leg of the three-way parity per
+  GOVERNANCE.md §24.
+- [ ] **Open-source-contribution log.** A rolling ledger
+  (probably at `docs/UPSTREAM-CONTRIBUTIONS.md`) of PRs
+  Zeta has opened against upstream projects per
+  GOVERNANCE.md §23 — what shipped, what's pending,
+  what's blocked. Aaron's mise-dotnet-plugin PR is the
+  first entry.
+- [ ] **Branch-protection required-check on `main`.**
+  Trigger: one week of clean CI runs. Required check
+  lands once we trust the signal.
+
 ## P0 — CI / build-machine setup (round-29 anchor)
 
 - [ ] **First-class CI pipeline for Zeta.** Every agent-written

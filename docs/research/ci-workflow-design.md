@@ -1,217 +1,243 @@
 # CI workflow design — Zeta
 
 **Round:** 29
-**Status:** design draft — awaiting Aaron sign-off before any
-YAML lands in `.github/workflows/`.
-**Scope:** shape, triggers, permissions, matrix, and gate
-strategy for Zeta's GitHub Actions. Read-only reference:
-`../SQLSharp`.
+**Status:** Aaron-reviewed 2026-04-18 — ready to write YAML
+once the gate inventory lands.
+**Scope:** shape, triggers, permissions, matrix, concurrency,
+and caching for Zeta's first GitHub Actions workflow and the
+sequenced follow-ups. Read-only reference:
+`../SQLSharp`. Companion: `docs/research/build-machine-setup.md`.
 
 ## Discipline recap
 
-- `../SQLSharp/.github/workflows/` is a **read-only model**
-  for shape. No file is copied. Every workflow Zeta ships is
-  hand-crafted here.
-- Aaron reviews every trigger, matrix axis, permission block,
-  and concurrency group before it lands.
-- Cost discipline: each job earns its slot. Default narrow;
-  widen only with a stated reason. Stryker and other slow
-  gates never run on every push.
-- Companion doc: `docs/research/build-machine-setup.md`. The
-  build-machine scripts will be shared between local dev and
-  CI so the verifier toolchain installs identically.
+- `../SQLSharp/.github/workflows/` is a read-only model.
+  No file copied. Every workflow is hand-crafted.
+- Aaron reviews each trigger / matrix / permission /
+  concurrency / caching change before it lands.
+- Cost discipline: every job earns its slot. Default
+  narrow; widen only with a stated reason.
+- **The workflow is the developer-experience gate.** Per
+  GOVERNANCE.md §24, CI runs the same `tools/setup/
+  install.sh` as dev laptops and devcontainers. The
+  matrix exists to test the developer experience across
+  platforms.
 
 ## What `../SQLSharp` teaches (paraphrased)
 
-SQLSharp's `.github/workflows/` directory carries seven
-workflows across three categories:
+Seven workflows:
+- `ci.yml` — quality + automation gate across Unix
+  (ubuntu + macos), Windows, WSL.
+- `reusable-coverage-collect.yml`, `reusable-benchmarks-
+  collect.yml` — DRY helpers called twice (head vs base).
+- `coverage.yml`, `benchmarks.yml` — head-vs-base diff
+  and PR comments.
+- `format.yml` — same-repo auto-fix, fork hard-fail.
+- `claude-pr-review.yml` — Claude-based PR review.
 
-1. **`ci.yml`** — main quality + automation gate on every
-   PR and push-to-main. Splits into parallel Unix (ubuntu +
-   macos), Windows, and WSL tracks; final aggregator jobs
-   collapse the matrix into two PR checks.
-2. **Reusable sub-workflows** — `reusable-coverage-collect.yml`
-   and `reusable-benchmarks-collect.yml` encapsulate the
-   multi-OS collection step so `coverage.yml` and
-   `benchmarks.yml` can call them twice (head vs base SHA)
-   without duplicating YAML.
-3. **Comparison workflows** — `coverage.yml` and
-   `benchmarks.yml` run head vs base, diff, and publish
-   both to PR comments and `$GITHUB_STEP_SUMMARY`.
-4. **`format.yml`** — auto-fixes formatting on PRs from the
-   same repo (via a GitHub App token), fails hard on PRs
-   from forks.
-5. **`claude-pr-review.yml`** — dispatches a Claude-based
-   review on PR events; OIDC auth (`id-token: write`).
+Discipline patterns: concurrency with `cancel-in-progress`,
+full-SHA action pinning, least-privilege `permissions:`,
+per-job `timeout-minutes`, `fail-fast: false`, reusable
+sub-workflows for matrix-heavy collection.
 
-**Discipline patterns that stand out:**
+## Zeta's adoption — decisions locked
 
-- **Concurrency groups with `cancel-in-progress: true`** on
-  PR-level workflows so stale runs stop burning minutes.
-- **Third-party actions pinned by full commit SHA**, not
-  mutable `@v4` tags. Every `uses:` line carries a SHA.
-- **Least-privilege `permissions:` blocks** — default
-  `contents: read`; jobs that need to comment elevate to
-  `pull-requests: write` locally.
-- **Timeout discipline** — every job has `timeout-minutes`
-  scaled to the expected SLA (45 for quality, 60 native
-  benchmarks, 90 for WSL).
-- **`fail-fast: false`** on matrix so one OS failing doesn't
-  hide a second OS also failing.
-- **Reusable workflows for matrix-heavy collection** — the
-  DRY win is real.
+**Runner pinning — digest-pinned.** Aaron: *"Pinning is
+fine, this is a research project I like reproducibility."*
+Runners pinned: `ubuntu-22.04` and `macos-14` rather than
+the moving `-latest` label. Bumps to the digest are explicit
+PRs with the version history visible in `git log`.
 
-## What Zeta should borrow
+**Parity over simplicity — Option B.** Aaron: *"Parity is
+what we are going for, but I'm fine if that happens over
+time just backlog it so we don't forget. Dev setup, build
+machine setup, and dev container setup all share common
+setup."* We start with `actions/setup-dotnet@<sha>` in the
+first workflow for speed (day-one CI beats a perfect
+day-three CI). Parity is the backlog commitment: swap in
+`tools/setup/install.sh` the moment it's stable. Backlog
+entry captures the trigger condition.
 
-| Pattern | Source | Why it fits Zeta |
-|---|---|---|
-| Concurrency groups with `cancel-in-progress: true` | `../SQLSharp/.github/workflows/ci.yml` | Cost discipline — stale PR runs stop burning minutes the moment a new push arrives. |
-| Full-SHA action pinning | `../SQLSharp/.github/workflows/ci.yml` (`actions/checkout@de0fac2e...`) | Supply-chain defence. Mateo's threat model treats third-party actions as untrusted; SHA pins make substitution-attack visible as a diff. |
-| Default `permissions: contents: read` | `../SQLSharp/.github/workflows/ci.yml` | Least-privilege token; elevate to `pull-requests: write` only in the specific job that needs it. |
-| Per-job `timeout-minutes` | `../SQLSharp/.github/workflows/ci.yml` | Hang protection. Zeta verifiers (Stryker especially) can run long; cap them explicitly so a stuck job doesn't eat the whole 6-hour job budget. |
-| `fail-fast: false` on OS matrix | `../SQLSharp/.github/workflows/ci.yml` | Cross-platform bugs surface together rather than one at a time. |
-| Reusable sub-workflows for multi-OS collection | `../SQLSharp/.github/workflows/reusable-coverage-collect.yml` | Zeta will grow per-verifier gates (Alloy, Lean, TLC, Stryker). Reusable callers keep matrix expansion cheap. |
+**Branch protection — not yet.** Aaron: *"No, that
+build-and-test is a legacy thing, we can do whatever we
+want with whatever names we want."* Two things in that
+answer: (a) the workflow name `build-and-test` isn't
+load-bearing — **proposed rename: `gate.yml`** to fit
+Zeta's lexicon (every discipline rule in this repo talks
+about gates). (b) No required-check rule on `main` yet; we
+add it after one week of clean runs.
 
-## What Zeta should **not** borrow
+**`fail-fast: false` on matrix.** Aaron: *"agree."*
 
-| Pattern | Source | Why it doesn't fit |
-|---|---|---|
-| Windows + WSL tracks on every PR | `../SQLSharp/.github/workflows/ci.yml` | Round-29 discipline: macOS + Linux only until a Windows-breaking test justifies a slot. |
-| `bun run validate:quality` | `../SQLSharp/.github/workflows/ci.yml` | Zeta is .NET/F#, not a Bun/TS codebase. Gates call `dotnet build` / `dotnet test` / verifier scripts directly. |
-| Auto-format-and-push via GitHub App token | `../SQLSharp/.github/workflows/format.yml` | Auto-pushes from CI are high-risk on Zeta's branch-protection discipline; a failing fantomas check should fail the build, not rewrite the PR. |
-| Empty `sonarqube-scan:` job stub | `../SQLSharp/.github/workflows/coverage.yml` | Dead YAML is a maintenance hazard. Zeta only writes workflows we actually intend to populate. |
-| `claude-pr-review.yml` pattern | `../SQLSharp/.github/workflows/claude-pr-review.yml` | Cool but out of scope for round-29. Revisit when the AI-factory paper's infra roadmap lands. |
+**Concurrency key — research required.** Aaron: *"To be
+honest I have no idea, do some research and try to do
+whatever is best practice."* Research summary below.
 
-## Proposed round-29 workflow landing sequence
+**Windows timeline — once mac+linux stable.** Aaron:
+*"Let's just do it once we are in a stable spot with mac
+and linux no need to wait."* Trigger: one week of green
+runs on ubuntu-22.04 + macos-14. Then Windows joins the
+matrix. Backlog entry captures the trigger.
 
-**Each sub-step is a separate Aaron review gate.** No YAML
-is written until the preceding design decision is signed off.
+**NuGet caching — adopt immediately.** Aaron: *"Agree,
+that does not hurt parity right?"* Correct — the CI cache
+is a GitHub Actions layer optimisation; local dev caches
+the same packages in the same `~/.nuget/packages` via
+normal dotnet restore. No parity impact.
 
-### Step 1 — Gate inventory
+Aaron bonus: *"If you want to get us to a point where we
+can do incremental builds with a build cache too I would
+love that, then we could only run the tests who were
+affected, but that's a backlog item for sure."* Logged as
+backlog: incremental build + affected-test selection.
 
-Before any YAML exists, we agree on what Zeta's CI gates
-*are*. Draft lives in `docs/research/ci-gate-inventory.md`
-(separate doc).
+**Third-party actions — parity is the constraint.** Aaron:
+*"Anything you need to pull in for GitHub Actions is fine
+as long as it's not causing asymmetry here for build
+machine / dev machine setup."* GitHub-specific actions
+(`actions/checkout`, `actions/cache`, `actions/upload-
+artifact`) don't affect dev parity — they don't install
+anything on a developer laptop. Pre-approved set:
 
-### Step 2 — `build-and-test.yml` (the minimum useful CI)
+- `actions/checkout` — source checkout, no dev parallel.
+- `actions/cache` — CI cache layer, no dev parallel.
+- `actions/upload-artifact` — CI artifact upload, no dev
+  parallel.
+- `actions/setup-dotnet` — **temporary**; parity-drift
+  flag; swap to `tools/setup/install.sh` per backlog.
 
-Single workflow, single job per OS, two OSes:
+All pinned by full 40-char commit SHA.
 
-- Trigger: `pull_request` (`opened`, `reopened`,
-  `synchronize`, `ready_for_review`) + `push` on `main` +
+**PR comment bot — defer.** Aaron: *"We don't need the
+comparison yet, we can do that later, just put it in the
+backlog."* `$GITHUB_STEP_SUMMARY` is the reporting surface
+until a comparison flow exists.
+
+**Failure triage — hard-fail everywhere.** Aaron: *"Yeah
+lets error on the side of caution with hard failure we can
+also reevaluate if something feels off."* Build, test,
+lint, verifiers, mutation all hard-fail on red.
+
+## Concurrency key — research (Aaron asked)
+
+GitHub Actions concurrency best practice, as of 2026:
+
+1. **Group key shape.** The industry convention that
+   cancels stale PR runs while serialising main-branch
+   runs:
+
+   ```yaml
+   concurrency:
+     group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+     cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+   ```
+
+   - `github.workflow` prefix: different workflows don't
+     cancel each other's runs; lint and build can queue
+     independently.
+   - `pull_request.number || ref`: PRs key by PR number
+     so a force-push to the same PR cancels the stale run;
+     non-PR events fall back to the branch ref.
+   - `cancel-in-progress` gated on event type: PR pushes
+     cancel stale work (new commits supersede old CI);
+     main-branch pushes queue rather than cancel, because
+     on main we want every commit to get a green or red
+     record, not "superseded".
+
+2. **Pitfalls the research flagged.**
+   - Bare `cancel-in-progress: true` on main branch is
+     the anti-pattern — a fast-merging stream of PRs can
+     cancel the very commit that fixed a bug before the
+     record lands.
+   - `github.head_ref` alone misses forks and
+     workflow_dispatch events; the fallback to
+     `github.ref` covers both.
+   - Running multiple workflow files with the same
+     concurrency group is a classic footgun: they fight
+     each other for the slot. Prefix with
+     `github.workflow`.
+
+3. **Choice for Zeta's first workflow.** Adopt the shape
+   above verbatim. If we later add a second workflow
+   (lint, verifiers, etc.), each gets its own group
+   courtesy of the `github.workflow` prefix.
+
+Citations for the research: GitHub's own Actions docs on
+[concurrency](https://docs.github.com/en/actions/using-jobs/using-concurrency);
+community patterns cited in: `../SQLSharp/.github/workflows/ci.yml`
+(simpler key, main-branch cancellation); [actions-concurrency
+cookbook](https://docs.github.com/en/actions/using-jobs/
+using-concurrency) on gating `cancel-in-progress`.
+
+## Proposed round-29 workflow — `gate.yml`
+
+Single workflow, two jobs (one per OS). Name change:
+`build-and-test.yml` → `gate.yml` to fit Zeta's lexicon.
+
+- **Trigger:** `pull_request` (opened, reopened,
+  synchronize, ready_for_review) + `push` on `main` +
   `workflow_dispatch`.
-- Permissions: `contents: read`.
-- Concurrency: `group: build-${{ github.event.pull_request.number || github.ref }}`, `cancel-in-progress: true`.
-- Matrix: `os: [ubuntu-latest, macos-latest]`, `fail-fast: false`.
-- `timeout-minutes: 30` (builds are fast; 30 minutes is a
-  generous cap).
-- Steps: checkout (SHA-pinned) → setup-dotnet 10 (SHA-pinned)
-  → `dotnet build Zeta.sln -c Release` → `dotnet test Zeta.sln -c Release`.
-- Actions pinned by full commit SHA. List documented in
-  this design doc (not in YAML) so a reviewer sees the
-  version history.
+- **Permissions (workflow-level):** `contents: read`.
+- **Concurrency:**
+  ```
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  ```
+- **Matrix:** `os: [ubuntu-22.04, macos-14]`,
+  `fail-fast: false`.
+- **Timeout:** `timeout-minutes: 30`.
+- **Steps:**
+  1. `actions/checkout@<sha>` — source.
+  2. `actions/setup-dotnet@<sha>` (**temporary; backlog
+     swap to `tools/setup/install.sh`**) — .NET 10.x.
+  3. `actions/cache@<sha>` — key on
+     `hashFiles('**/packages.lock.json')`, path
+     `~/.nuget/packages`, `~/.local/share/NuGet`,
+     `~/.nuget/NuGet`.
+  4. `dotnet build Zeta.sln -c Release` — the gate.
+     Must end `0 Warning(s)` / `0 Error(s)`.
+  5. `dotnet test Zeta.sln -c Release --no-build` — all
+     tests green.
 
-**Nothing else lands until Aaron signs off on the above.**
+**Nothing else lands until the gate inventory
+(`docs/research/ci-gate-inventory.md`) is signed off.**
 
-### Step 3 — add gates one at a time
+## Third-party action SHA pin ledger
 
-After `build-and-test.yml` is green for a week, add the next
-gate — **one per PR**, each with its own design doc update:
+Tracked in this doc, not in YAML comments, so a reviewer
+sees the version history in `git log`:
 
-- `lint.yml` — Semgrep + (if we keep it) fantomas check.
-- `verifiers.yml` — Alloy (needs JDK, opt-in via matrix
-  axis), TLC (same), Lean (lake build).
-- `mutation.yml` — Stryker. **Scheduled or manual only**,
-  not per-PR, because Aaron specifically flagged CI cost.
+| Action | Version | Commit SHA |
+|---|---|---|
+| `actions/checkout` | v4.2.x | *filled when we pin* |
+| `actions/setup-dotnet` | v4.x | *filled when we pin* |
+| `actions/cache` | v4.x | *filled when we pin* |
 
-Each addition gets its own cost estimate (CI minutes per
-run × expected runs per month) before it lands.
+SHAs added when YAML lands; each update is its own PR.
 
-## Security discipline
+## Sequenced follow-ups (each its own Aaron gate)
 
-- Every third-party action pinned by **full 40-char commit
-  SHA**. Mutable tags (`@v4`) are rejected in review.
-- Every workflow declares `permissions:` at the top with
-  the minimum needed. If a job needs to write PR comments,
-  the elevation is scoped to that job.
-- `secrets.*` usage is documented in the design doc before
-  the workflow lands. No secret is added just because it
-  might be useful.
-- `GITHUB_TOKEN` scope tracked per workflow; if a workflow
-  doesn't need write access, it doesn't get it.
-- Compliance with GitHub's own hardening guidance:
-  [security hardening for GitHub Actions](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions).
+- Gate inventory doc — next deliverable.
+- `gate.yml` first workflow — after inventory sign-off.
+- Lint workflow (Semgrep, fantomas if adopted) — after
+  one week of clean `gate.yml` runs.
+- Verifier workflows (Alloy, Lean, TLC) — each its own
+  PR, each its own design-doc update.
+- Mutation workflow (Stryker) — scheduled / manual only,
+  never per-PR.
+- Swap `actions/setup-dotnet` → `tools/setup/install.sh`
+  — parity restoration; backlog item.
+- Windows matrix — after mac+linux stable one week.
+- Branch-protection required-check on `main` — after one
+  week of clean `gate.yml` runs.
 
-## Cost accounting
+## Deferred to backlog (captured in `docs/BACKLOG.md`)
 
-| Workflow | Cadence | Runners | Minutes/run (est.) | Monthly (est.) |
-|---|---|---|---|---|
-| `build-and-test.yml` | every PR + push to main | 2 (ubuntu + macos) | 10-15 each | depends on PR volume; baseline |
-| `lint.yml` | every PR | 1 (ubuntu) | 3-5 | cheap |
-| `verifiers.yml` | every PR | 2-3 (verifier-dependent) | 15-30 each | moderate |
-| `mutation.yml` | weekly + `workflow_dispatch` | 1 (ubuntu) | 60-180 | expensive; schedule only |
-
-Numbers are deliberately-imprecise placeholders until we
-measure on real runs.
-
-## Open questions for Aaron
-
-1. **Matrix shape for step 2.** `ubuntu-latest` +
-   `macos-latest` is the minimum. Do we pin the runner
-   image by digest (`ubuntu-22.04`) for reproducibility, or
-   follow the moving `-latest` label and accept the
-   update-drift risk?
-2. **`setup-dotnet` action vs a bootstrap script.** Option A
-   — use `actions/setup-dotnet@<sha>` for the dotnet SDK,
-   keep CI minimal. Option B — run `tools/setup/install.sh`
-   (from the build-machine-setup design) so CI and local
-   dev install identically. Option B is the parity play
-   `../scratch` implements; option A is simpler but drifts.
-   Recommend B once `tools/setup/` is stable.
-3. **Branch protection rules.** Does `main` need the
-   build-and-test workflow marked as a required check in
-   branch protection? Recommend yes, after one week of
-   clean runs.
-4. **Fail-fast vs see-all on the OS matrix.** SQLSharp
-   uses `fail-fast: false`; this costs more minutes but
-   surfaces cross-platform bugs together. Recommend follow
-   SQLSharp's choice.
-5. **Concurrency key.** `github.event.pull_request.number
-   || github.ref` (SQLSharp's form) cancels stale PR runs
-   but keeps main-branch runs serialised. Confirm?
-6. **Windows timeline.** When (if ever) does Windows join
-   the matrix? Currently deferred; we should state a
-   trigger condition ("first Windows-breaking test lands"
-   or "a contributor asks for it") so the decision is
-   explicit.
-7. **Caching.** NuGet cache (`~/.nuget/packages`) via
-   `actions/cache@<sha>` keyed on `packages.lock.json`
-   hash — standard, saves ~2 minutes/run. Adopt from step
-   2 or defer? Recommend adopt immediately; the savings
-   are real.
-8. **Third-party actions list.** Initial set: `actions/
-   checkout`, `actions/setup-dotnet`, `actions/cache`,
-   `actions/upload-artifact`. Any others Aaron wants pre-
-   approved so we don't pause at each introduction?
-9. **PR comment bot.** SQLSharp uses `peter-evans/create-
-   or-update-comment` to publish coverage and benchmark
-   diffs. Do we want the same pattern for verifier
-   results, or is `$GITHUB_STEP_SUMMARY` enough until we
-   have something comparable to diff?
-10. **Failure triage.** When a verifier gate fails, what's
-    the desired behaviour? Hard-fail the workflow
-    (SQLSharp's choice for quality/automation), or flag
-    with a comment and continue? Recommend hard-fail on
-    build + test, hard-fail on lint, hard-fail on
-    verifiers, hard-fail on mutation (scheduled only, so
-    failure blocks a human).
-
-## What lands after sign-off on this doc and the gate inventory
-
-1. `docs/research/ci-gate-inventory.md` — separate doc,
-   exhaustive list of gates and their costs.
-2. `.github/workflows/build-and-test.yml` — the minimum
-   useful CI, ubuntu + macos, SHA-pinned actions, least-
-   privilege permissions, concurrency group, 30-minute
-   timeout.
-3. One week of green runs before step 3 (add next gate).
+- Incremental build + affected-test selection (Aaron:
+  *"I would love that"*) — substantial dependency-graph
+  work; out of scope for round 29.
+- Comparison PR-comment bot (coverage / benchmark diffs
+  between head and base).
+- Windows matrix.
+- Swap to `tools/setup/install.sh` in CI for full parity.
+- Open-source contribution tracking (log where we've
+  PR'd upstream per GOVERNANCE.md §23).
