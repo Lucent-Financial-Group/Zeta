@@ -9,6 +9,114 @@ New rounds are appended at the top.
 
 ---
 
+## Round 26 — first git round, rename tail, specialist dispatch cadence
+
+### Shipped — git workflow established
+
+- `git init` + initial commit `4765118` + push to
+  `github.com/AceHack/Zeta` (private). Previous rounds ran
+  without git per the maintainer's "no commits for a long
+  time" direction in round 25; this round opened with the
+  authorised commit.
+- **Branch-per-round cadence adopted.** `round-26` branch
+  for all work this round; PR + merge at round-close.
+  Going forward: each round is a branch; each coherent
+  change is a commit; round-close is a PR.
+
+### Shipped — rename tail
+
+- `docs/NAMING.md` rewritten as current-state (the "proposal,
+  not yet executed" banner retired; doc reads as the rules
+  today, not the rename history).
+- `proofs/lean/` directory retired outright — superseded
+  scaffold; `tools/lean4/Lean4/DbspChainRule.lean` is the
+  canonical Lean proof home.
+- Stale `Dbsp.*` path references swept across
+  `docs/FORMAL-VERIFICATION.md`,
+  `docs/research/proof-tool-coverage.md`,
+  `references/README.md`, `references/notes/NATS-RESEARCH.md`,
+  `references/reference-sources.json`,
+  `bench/Feldera.Bench/README.md`,
+  `tests/Tests.FSharp/README.md`, and every
+  `.claude/agents/*.md` + `.claude/skills/*/SKILL.md`
+  description / example. `ROUND-HISTORY.md` and `WINS.md`
+  preserved — first-pass folder names in those files are
+  load-bearing history.
+
+### Shipped — memory policy clarification (AGENTS.md §18)
+
+- Human rule unchanged: maintainer does not delete or modify
+  memory files behind the agents' backs.
+- Agent freedom explicit: agents write, edit, merge,
+  consolidate, and delete *their own* memories as normal
+  curation. Cross-persona edits still go through §11.
+- `memory/README.md` and `memory/project_memory_is_first_class.md`
+  updated to match.
+
+### Shipped — specialist dispatches (three parallel)
+
+- **Tariq (algebra-owner)** on the Mathlib `IsLinear`
+  weakness blocking B2 / B3 / chain_rule closure.
+  **Verdict: option (c) — roll `IsDbspLinear` bundling a
+  per-tick `AddMonoidHom` family plus a pointwise
+  witness.** Rationale logged to
+  `docs/skill-notes/algebra-owner.md`. Half-day to close
+  B2, two days for the full chain rule. Implementation
+  deferred to a dedicated algebra-proof round; DEBT entry
+  annotated with the decision.
+- **Yara (skill-improver)** on the BP-10 cite defect in
+  Aarav's own skill file. Fixed in place at
+  `.claude/skills/skill-tune-up-ranker/SKILL.md` lines
+  114-119; three cosmetic BP-cite follow-ups flagged for
+  Aarav's next tune-up pass.
+- **Daya (AX researcher)** ran Kenji's first self-audit.
+  Cold-start 17.9k tokens (flat vs round-24 baseline,
+  despite AGENTS.md growing by ~700 tokens). Three P1
+  findings; two applied this round (`the 22` → `the full
+  roster`, four dead-`architect/SKILL.md` paths in sibling
+  SKILL files), five deferred. Systemic finding: ~20-35%
+  content overlap between agent files and sibling skill
+  bodies — seeded as a future BP-NN candidate.
+
+### Shipped — close / cleanup
+
+- DEBT.md: two resolved entries deleted (orphan skill
+  retirement already done round 25; Aarav BP-10 cite
+  just fixed). IsLinear entry annotated with Tariq's
+  decision.
+- Build gate held: `0W / 0E` at every checkpoint in
+  round 26.
+
+### Not landed / deferred to round 27+
+
+- `IsDbspLinear` Lean implementation + B1/B2/B3/chain_rule
+  closures (Tariq's option-c work; dedicated algebra round).
+- `Op<'T>` plugin-extension-surface redesign (Ilyana's
+  round-25 P0 DEBT; needs design spike + public-api-designer
+  review cycle).
+- Five of Daya's seven self-audit interventions (P1,
+  non-urgent).
+- Rune on `docs/STYLE.md` decision.
+- UX + DX persona proposals.
+- Empathy-coach persona spawn + naming.
+
+### What round-26 felt like
+
+Rhythm restored. Round 25 was structural whiplash — git
+timing, folder naming, memory policy, public API, three
+maintainer corrections in one session. Round 26 ran the
+factory as designed: dispatch three specialists in
+parallel, integrate their findings, land the small ones,
+track the big ones, PR at the end. The IsLinear case
+worked particularly well — a round-24-open question got
+a round-26 answer without the in-between rounds grinding
+on it. The self-audit on Kenji was overdue (round 24
+saved self-reference for last by choice) and the findings
+were small enough to land in the same round Daya
+produced them.
+
+---
+
 ## Round 25 — Zeta rename arc (no-git), memory policy codified, doc cleanup
 
 ### Shipped — Zeta rename (NAMING.md phases A through B8)

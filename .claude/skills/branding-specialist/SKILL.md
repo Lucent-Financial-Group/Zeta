@@ -166,7 +166,7 @@ or edit namespaces without an explicit human go-ahead.
 - `docs/TECH-RADAR.md` — Jun's surface, Kai reads for
   competitive framing
 - `README.md` — primary first-touch surface
-- `.claude/skills/architect/SKILL.md` — Kenji, integration
+- `.claude/agents/architect.md` + `round-management` — Kenji, integration
   partner
 - `.claude/skills/backlog-scrum-master/SKILL.md` — Leilani,
   backlog partner

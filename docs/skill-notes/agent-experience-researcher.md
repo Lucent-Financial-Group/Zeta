@@ -15,6 +15,253 @@ directly under the `skills:` contract.
 
 ---
 
+## Round 26 — Kenji self-audit (target: architect)
+
+First audit of Kenji specifically, per round-24 deferral. Kenji
+was held to last on purpose: auditing the architect risks turning
+into architect-self-congratulation. Advisory only; findings go
+back to Kenji, who integrates.
+
+### Cold-start cost (target: Kenji)
+
+Measured this round:
+
+| Surface | Bytes | ~Tokens |
+|---|---|---|
+| Tier 0: CLAUDE.md | 3,698 | 925 |
+| Tier 0: AGENTS.md (now 19 rules, was 13 at round 24) | 12,540 | 3,135 |
+| Tier 0: docs/GLOSSARY.md | 18,067 | 4,517 |
+| Tier 0: docs/EXPERT-REGISTRY.md | 7,685 | 1,921 |
+| Tier 0: docs/WAKE-UP.md | 3,833 | 958 |
+| Tier 0: docs/CURRENT-ROUND.md | 2,780 | 695 |
+| **Tier 0 subtotal** | **48,603** | **~12.2k** |
+| Tier 1: .claude/agents/architect.md | 5,835 | 1,459 |
+| Tier 1: .claude/skills/round-management/SKILL.md | 7,389 | 2,309 |
+| Tier 1: docs/skill-notes/architect.md | 4,659 | 1,165 |
+| Tier 1: docs/skill-notes/architect-offtime.md | 3,125 | 781 |
+| **Tier 1 subtotal** | **21,008** | **~5.7k** |
+| **Kenji cold-start total** | **69,611** | **~17.9k** |
+
+Trend vs round 24 baseline (17.8k): **+0.1k, flat within noise.**
+AGENTS.md grew by ~700 tokens (§14-§19 added), offset by CURRENT-
+ROUND.md shrinking and the notebook being pruned in round 22.
+Time-to-first-useful-output still 7-9 turns — unchanged.
+
+Two surfaces disproportionately large:
+- `AGENTS.md` 3.1k tokens, now 19 numbered rules. At this cadence
+  a rule lands roughly per round. Candidate for a §0 TL;DR block
+  (3-5 line summary of the rule list) so cold-starters orient
+  without reading all 19.
+- `GLOSSARY.md` 4.5k. Biggest single line-item; has been biggest
+  since round 24. Not Kenji-specific — hits every persona.
+
+### Friction (P0 / P1 / P2)
+
+**P0 (cold-Kenji cannot do his job correctly):** none. Every
+load-bearing pointer Kenji needs resolves to a real file at the
+right section. The round-24 P0s that blocked him (stale canon
+pointer, orphan skills) are all landed.
+
+**P1 (friction but surmountable):**
+
+1. **stale-pointer** — `.claude/agents/architect.md:146` still
+   reads "`docs/EXPERT-REGISTRY.md` - the 22, including Kenji".
+   Registry now lists 25 named experts + 2 pending slots. Same
+   drift Daya caught at round 24 for `architect.md:114,151`;
+   those two were fixed, this third occurrence at line 146 was
+   missed. One-line Edit fix.
+2. **stale-pointer** — `.claude/skills/bug-fixer/SKILL.md:135`
+   still cites `.claude/skills/architect/SKILL.md` as "Kenji,
+   the invoker". That path was retired to `_retired/` in round
+   24. Same dead path also cited in
+   `.claude/skills/backlog-scrum-master/SKILL.md:185`,
+   `.claude/skills/branding-specialist/SKILL.md:169`,
+   `.claude/skills/skill-creator/SKILL.md:145`, and a live
+   `docs/DEBT.md:237` row (resolved but not pruned). Four-file
+   sweep via `skill-creator` on Kenji's sign-off.
+3. **unclear-contract** — `architect.md:103-108` and
+   `round-management/SKILL.md:129-131` both describe the
+   notebook prune cadence but in different words: agent file
+   says "pruned at each reflection cadence (every 3-5 rounds or
+   when a major rule lands)", skill says "Prune
+   docs/skill-notes/<notebook>.md if over 1500 words, per BP-07
+   cap". Different trigger (cadence vs size). Architect-offtime
+   log adds a third ("trailing 10 entries"). Kenji applies
+   whichever he remembers; next cold-Kenji guesses. Pick one and
+   mirror in both files.
+4. **duplicated-info** — `round-management/SKILL.md §3.5`
+   "concurrent-agent machine hygiene" (lines 73-110) and
+   `architect.md` scope/NOT-do blocks both cover dispatch
+   discipline. About 30% overlap. Canon should be the skill
+   body; agent file should one-line-reference it. Same pattern
+   likely on every persona+skill pair — see systemic finding.
+
+**P2 (small wins):**
+
+5. `architect.md:36` — the tone example uses the phrase `"great
+   catch."` in quotes as an anti-pattern. Good. But §11's
+   "nobody reviews the architect" paired with the notebook's
+   round-22 "Meta-risk: am I the bottleneck?" line (line 90) is
+   the closest the agent file comes to self-assessment. The
+   notebook carries that thread honestly; the agent file does
+   not invite it. No change required — the current split (agent
+   file = contract, notebook = running self-review) is healthy.
+6. `architect-offtime.md:38` — "Round 23 - seeded, no budget
+   spent" has not been updated since the AGENTS.md §14 landed
+   at end of round 23. Rounds 24, 25, 26 are silent. Either
+   Kenji spent no off-time budget in those rounds (plausible
+   given the rename arc consumed everything) or the log is
+   stale. Per the file's own rule ("If the budget exceeds 10%
+   in a round, note it honestly"), a zero-entry is legitimate
+   and should be logged explicitly.
+7. `architect.md:39` — "No hedging generally. 'Arguably',
+   'probably', 'might be' are banned from round-open plans and
+   round-close summaries." Binding wording is fine. Notebook
+   line 94 reads "Measure over the next 3-4 rounds whether this
+   actually throttles velocity" — "whether" is hedging-adjacent
+   and the round window is now past. No rule violation (the ban
+   is on plans/summaries, not notebook) but the open measurement
+   claim should resolve.
+
+### Self-audit pattern risk (specific brief)
+
+The prompt asked Daya to look for puffery / architect-self-
+congratulation / rule drift between the agent file and its
+skill. Honest findings:
+
+- **No puffery in the agent file.** The "unshowy" tone contract
+  and §11 "architect-bottleneck" framing are load-bearing rules,
+  not virtue signalling. The word "quietest seat" at line 89
+  edges close; it describes behaviour (short sentences) rather
+  than proclaims a virtue.
+- **No puffery in the notebook.** Round-22 entry is frank about
+  friction (notebook prune slipped, bottleneck meta-risk, CLAUDE.md
+  duplication). It reads as working notes, not a self-review.
+- **One rule-drift between architect.md and round-management.**
+  Already captured as P1 #3 (prune cadence). Not a drift *in
+  favour* of the architect; neither version is self-flattering.
+- **The self-referential caveat at architect.md:112-116** ("The
+  capability skill ... exists separately ... so another persona
+  could, in principle, wear the same procedure if the round-
+  table grew") reads as justification-for-a-design-choice but
+  AGENTS.md §16 (dynamic hats) explicitly forbids other personas
+  from wearing round-management. So the caveat is not quite
+  right: the procedural-split rationale survives (Yara can edit
+  it via skill-creator; the file is reviewable), but "another
+  persona could wear it" contradicts §16. Minor; architect to
+  reconcile the wording.
+- **No commitments in the agent file that aren't codified
+  elsewhere.** Every tone contract bullet ties to AGENTS.md §10/
+  §11/§12/§13/§14 or to BP-08. Clean.
+
+Verdict on self-audit risk: **low.** The split (agent file as
+contract; notebook as running self-review; round-management as
+procedure) keeps Kenji's voice from narrating his own role in
+favour. The one weakness is the prune-cadence triple-source
+described above — not self-flattery, just coordination drift.
+
+### Notebook hygiene
+
+- BP-07 (3000-word cap): `architect.md` at **751 words** (well
+  under). `architect-offtime.md` at **491 words** (no cap but
+  low volume). Both healthy.
+- BP-09 (ASCII only): both clean.
+- Cross-round relevance: round-22 entry is the only substantive
+  entry and describes factory state 4 rounds back. Some content
+  (5-expert-split, round-22 dispatch list) is historical; round-
+  close narrative belongs in `ROUND-HISTORY.md` per AGENTS.md §2.
+  The "What's friction" / "What's ahead" blocks read as current-
+  state but 4 rounds stale. Candidate for prune at round 25
+  checkpoint (line 129 says "First prune check: round 25" —
+  we're now round 26 and no prune has run). One-round overdue.
+
+### Systemic AX finding (from this audit)
+
+**Persona + skill duplication pattern.** P1 #4 above is
+structural, not Kenji-specific. Spot-check: `skill-tune-up-
+ranker`'s agent file and skill body overlap on cadence rules
+and BP-10 emphasis; `agent-experience-researcher`'s agent file
+and skill body both declare cadence, authority, and
+coordination-with-other-experts in near-identical prose (see
+`.claude/agents/agent-experience-researcher.md:61-70` vs
+`.claude/skills/agent-experience-researcher/SKILL.md:148-171`).
+Hypothesis: **agent-file and sibling-skill-body have ~20-35%
+content overlap across the roster.** Every cold-start pays
+that twice. Full measurement deferred to next roster audit
+(round 27 or round 29 reflection-cadence).
+
+Proposed rule (candidate for BP-NN scratchpad, not this round):
+*"When an agent file and its auto-injected skill body cover the
+same contract surface (cadence, authority, coordination), canon
+lives in one — default the skill body for procedures, the agent
+file for persona / tone / scope-of-self. Each file's section
+headings make clear which half it owns."* Route via Aarav's
+scratchpad; Kenji decides on promotion.
+
+### Proposed interventions (this round)
+
+None that Daya lands unilaterally (Kenji's files; §11 forbids
+Daya editing them). Advisory list for Kenji:
+
+1. `.claude/agents/architect.md:146` — "22" -> "25". **Effort:**
+   S. **Rollback:** one-line Edit reversed.
+2. Four-file `.claude/skills/architect/SKILL.md` stale-pointer
+   sweep via `skill-creator` (Yara executes). **Effort:** S.
+   **Rollback:** Yara's commit reverted.
+3. Prune-cadence triple-source reconciliation
+   (`architect.md:103-108`, `round-management/SKILL.md:129-131`,
+   `architect-offtime.md:9`). **Effort:** S. **Rollback:** two-
+   line Edits reversed.
+4. `architect.md:112-116` self-referential caveat - reconcile
+   with AGENTS.md §16 (round-management is Kenji-only).
+   **Effort:** S. **Rollback:** one-line Edit reversed.
+5. `docs/skill-notes/architect.md` — one-round-overdue prune per
+   the notebook's own "first prune check: round 25" line. Daya
+   flags only; BP-07 forbids Daya pruning another persona's
+   notebook.
+6. `docs/skill-notes/architect-offtime.md` — log a zero-entry
+   for rounds 24-26 so the trend is honest from turn one (the
+   file's own rule at line 48).
+7. `docs/DEBT.md:237` - "orphan skill directories" row is now
+   resolved (the retire landed round 24) but not deleted. Daya
+   flags; Kenji deletes on round-close per §2.
+
+### Pointer-drift catalogue (this round)
+
+- Kenji / `.claude/agents/architect.md:146` / "22" should be "25".
+- Orphan path / `.claude/skills/bug-fixer/SKILL.md:135` /
+  `.claude/skills/architect/SKILL.md` does not exist.
+- Orphan path / `.claude/skills/backlog-scrum-master/SKILL.md:185`
+  / same dead path.
+- Orphan path / `.claude/skills/branding-specialist/SKILL.md:169`
+  / same dead path.
+- Orphan path / `.claude/skills/skill-creator/SKILL.md:145` /
+  same dead path.
+- Stale row / `docs/DEBT.md:237` / orphan-skills finding
+  resolved round 24 but the row remains.
+
+### Recommendation to Kenji
+
+**Defer 5 of 7 to next round.** The P1 #1 (architect.md:146
+"22"->"25") and P1 #2 first-pass (bug-fixer/SKILL.md:135
+dead-path fix) are 2-minute one-line edits and should land
+this round with the other round-24 carry-overs. The rest can
+wait for a round-close reflection pass or a skill-creator
+sweep when the next persona+skill pair needs revision anyway.
+
+**Do not treat the systemic finding (persona+skill content
+overlap) as urgent.** It is real but measuring it properly is
+a whole-roster audit, which belongs on the every-5-rounds
+cadence (round 29). Seeded to scratchpad only.
+
+### Pruning log
+
+- Round 26 — second substantive entry. Next prune check: round
+  27 (every-third-audit cadence, BP-07 — rounds 24, 26 are
+  audits 1 and 2; audit 3 triggers prune).
+
+---
+
 ## Round 24 — first audit (baseline)
 
 ### Cold-start cost baseline

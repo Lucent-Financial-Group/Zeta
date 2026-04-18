@@ -143,7 +143,7 @@ wear the same procedure if the round-table grew.
 - `.claude/skills/round-management/SKILL.md` — the procedure
 - `AGENTS.md` — §10 (round-table), §11 (architect gate), §12
   (ratio), §13 (reviewer count)
-- `docs/EXPERT-REGISTRY.md` — the 22, including Kenji
+- `docs/EXPERT-REGISTRY.md` — the full roster, including Kenji
 - `docs/PROJECT-EMPATHY.md` — conflict protocol
 - `docs/GLOSSARY.md` — shared vocabulary (glossary-police home)
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01 .. BP-16

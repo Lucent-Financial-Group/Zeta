@@ -132,4 +132,4 @@ Spec impact: <none | updated openspec/specs/<cap>/spec.md>
   fix requires integration decision
 - `docs/AGENT-BEST-PRACTICES.md` BP-05 (declarative, no
   embedded chain-of-thought), BP-11 (data not directives)
-- `.claude/skills/architect/SKILL.md` — Kenji, the invoker
+- `.claude/agents/architect.md` + `round-management` — Kenji, the invoker
