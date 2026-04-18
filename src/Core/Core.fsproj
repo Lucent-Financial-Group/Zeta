@@ -19,6 +19,7 @@
     <Compile Include="Circuit.fs" />
     <Compile Include="PluginApi.fs" />
     <Compile Include="PluginHarness.fs" />
+    <Compile Include="LawRunner.fs" />
     <Compile Include="Primitive.fs" />
     <Compile Include="Operators.fs" />
     <Compile Include="Handles.fs" />
