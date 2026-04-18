@@ -124,7 +124,10 @@
       "Bash(gh repo *)",
       "Bash(git config *)",
       "Bash(git add *)",
-      "Bash(git diff *)"
+      "Bash(git diff *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git checkout *)"
     ]
   }
 }
