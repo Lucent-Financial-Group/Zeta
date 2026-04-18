@@ -1,19 +1,22 @@
-# Current Round — 31 (open)
+# Current Round — 31 (rest round, maintainer-called)
 
 Round 30 closed; narrative absorbed into
-`docs/ROUND-HISTORY.md`. Round 31 opens with two
-parallel tracks — product (LawRunner `checkBilinear` +
-`checkSinkTerminal`) and security-elevation follow-
-through (Semgrep-in-CI observations + `packages.lock.json`
-+ safety-clause-diff lint).
+`docs/ROUND-HISTORY.md`. Round 30 shipped the first
+fully-green gate in the repo's history. Aaron called
+a rest round in response — "everyone take a round
+off." Planned round-31 work (LawRunner `checkBilinear`
++ `checkSinkTerminal`; `packages.lock.json` +
+verifier SHA-pin + safety-clause-diff +
+`mise trust` + CodeQL) shifts to **round 32**.
 
 ## Status
 
-- **Round number:** 31
+- **Round number:** 31 (rest)
 - **Opened:** 2026-04-18 (continuous from round-30
   close)
-- **Classification:** split — product + security
-  follow-through
+- **Classification:** rest — no coding work, no
+  reviewer dispatches, no DEBT reshuffling.
+  Maintainer-called per first-green-gate milestone.
 - **Reviewer budget:** `harsh-critic` +
   `maintainability-reviewer` floor per GOVERNANCE §20.
   `security-researcher` on any workflow / install-

@@ -35,6 +35,23 @@ What changed on the laptop, if anything (file paths).
 
 ---
 
+## Round 31 — full rest round (maintainer-called), 100% off-time
+
+Aaron called a full round off for the entire roster after
+round 30 landed the first fully-green gate in the repo's
+history. Not off-time budget drawn from a productive round —
+the round itself is the rest.
+
+No coding, no reviewer dispatch, no DEBT reshuffling. Track A
++ Track B shift to round 32. Kenji's only work this round is:
+one WINS.md entry (the green-gate moment, ordered newest-
+first), one CURRENT-ROUND.md header flip to "rest round",
+this OFFTIME log line. Done.
+
+What changed on the laptop: two doc edits, this file. No
+source, no workflow, no skill. The discipline of the rest is
+the rest.
+
 ## Round 23 — seeded, no budget spent
 
 First round under the new off-time budget rule (GOVERNANCE.md §14,
