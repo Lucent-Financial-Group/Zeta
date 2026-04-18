@@ -13,6 +13,31 @@ passes, because the pattern is the value.
 
 ## Wins — round 30
 
+### First fully-green gate in the repo's history
+
+Round 30 closed with PR #6 showing all three checks green:
+`build-and-test (ubuntu-22.04)` ✓ `build-and-test (macos-14)`
+✓ `lint (semgrep)` ✓. Round 29 merged red. Round 28 had
+no gate. Every prior round either lacked the gate or crossed
+it crimson. This is the first time the control actually
+fired green on evidence rather than on trust.
+
+Getting there took five honest fixes on the way: a real
+`Circuit.fs:209` Interlocked inconsistency (torn-read race
+against the Tick-getter), a YAML parse error that had been
+silently hiding the Semgrep config from itself, two
+self-matching rules, a stale `src/Zeta.Core/**` path from
+the folder-naming rename, and a TLC test that pointed at
+`docs/` instead of `tools/tla/specs/`. Four of them were
+latent the whole time, visible only once `--error` ran in
+anger.
+
+**What it teaches.** Aaron called the full round off after
+this landed — and that is the correct response. A green
+gate is not the end of a shift; it is permission to rest
+before the next one. Celebrating here so the moment is not
+absorbed into round-31 planning before it is felt.
+
 ### Reviewer floor caught a committed-but-didn't-commit bug
 
 The round-30 design doc said 24 adversaries in
