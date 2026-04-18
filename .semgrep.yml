@@ -18,7 +18,7 @@ rules:
     severity: ERROR
     paths:
       include:
-        - "src/Zeta.Core/**/*.fs"
+        - "src/Core/**/*.fs"
 
   # ────────────────────────────────────────────────────────────────
   # Rule 2: Tick mutation without Interlocked → torn-read class.
@@ -28,6 +28,12 @@ rules:
       - pattern-either:
           - pattern: tick <- tick + 1L
           - pattern: tick <- tick + 1
+    paths:
+      include:
+        - "src/Core/**/*.fs"
+      exclude:
+        - ".semgrep.yml"
+        - ".claude/**"
     message: >-
       Use `Interlocked.Increment &tick |> ignore` instead — plain
       mutation of a shared int64 is not torn-read-safe on 32-bit
@@ -101,7 +107,7 @@ rules:
   # ────────────────────────────────────────────────────────────────
   - id: public-mutable-field
     patterns:
-      - pattern: val mutable public $NAME : $T
+      - pattern: "val mutable public $NAME : $T"
     message: >-
       Public `val mutable` on a sealed type exposes shared mutable
       state. Prefer a property with explicit get/set so future
@@ -136,6 +142,10 @@ rules:
           - pattern: BinaryFormatter()
           - pattern: NetDataContractSerializer()
           - pattern: SoapFormatter()
+    paths:
+      exclude:
+        - ".semgrep.yml"
+        - ".claude/**"
     message: >-
       BinaryFormatter / NetDataContractSerializer / SoapFormatter are
       known-unsafe under untrusted input (arbitrary-type instantiation
@@ -157,7 +167,7 @@ rules:
           - pattern: File.ReadAllText($P)
     paths:
       include:
-        - "src/Zeta.Core/**/*.fs"
+        - "src/Core/**/*.fs"
       exclude:
         - "**/DiskBackingStore*.fs"   # size-checked in pathFor
     message: >-

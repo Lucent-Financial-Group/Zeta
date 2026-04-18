@@ -156,6 +156,7 @@ module AsyncStream =
                             let t = circuit.StepAsync ct
                             if t.IsCompletedSuccessfully then
                                 current <- handle.Current
+                                // nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads
                                 tick <- tick + 1
                                 ValueTask<bool>(true)
                             else
@@ -164,6 +165,7 @@ module AsyncStream =
                                 ValueTask<bool>(task {
                                     do! t
                                     current <- handle.Current
+                                    // nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads
                                     tick <- tick + 1
                                     return true
                                 })

@@ -73,5 +73,6 @@ module PluginHarness =
                         "PluginHarness: tick %d expected exactly one Publish; saw %d."
                         tick delta)
             outputs.Add adapter.Value
+            // nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads
             tick <- tick + 1
         List.ofSeq outputs

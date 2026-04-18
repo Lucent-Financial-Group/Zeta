@@ -37,6 +37,41 @@ feature + debt budget).
 
 ## Live debt
 
+### Semgrep rule 2 `plain-tick-increment` — four `nosemgrep` suppressions
+- **Site:** `src/Core/FSharpApi.fs:160,168`, `src/Core/LawRunner.fs:131,189`, `src/Core/PluginHarness.fs:77`
+- **Found:** round 30 close — first-ever `gate.yml` `lint` run under `--error` exposed the rule never ran before; real bug at `Circuit.fs:209` fixed in-round, remaining four sites are method-local loop counters suppressed with `// nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads`.
+- **Effort:** S
+- **Friction:** rule over-triggers on any `tick <- tick + 1` regardless of scope. Every future method-local counter will either get an inline suppression (noise) or sharpen the rule once.
+- **Fix:** sharpen rule 2 to match only `let mutable tick = 0L` at class/module scope (not `let mutable tick = 0` inside a method body). Either via `metavariable-comparison` + class-scope anchor, or by switching the rule to a proper F# parser plugin when `languages: [fsharp]` matures in Semgrep.
+
+### Semgrep rules self-match on `.semgrep.yml` + teaching files
+- **Site:** `.semgrep.yml` rule 2 + rule 8 `paths.exclude`
+- **Found:** round 30 close — the rules' own pattern literals matched themselves; excluded `.semgrep.yml` + `.claude/**` as a shortcut.
+- **Effort:** S
+- **Friction:** any new rule that uses a literal antipattern in its `pattern:` block will silently self-match unless the author remembers to add the same exclude. Scales poorly.
+- **Fix:** global `paths.exclude` block at the top of `.semgrep.yml` OR `.semgrepignore` file at repo root with `/.semgrep.yml` + `/.claude/skills/**`.
+
+### Stale path `src/Zeta.Core/**` in two Semgrep rules
+- **Site:** `.semgrep.yml` rules 1 + 9 — previously `paths.include: "src/Zeta.Core/**/*.fs"`, now corrected to `"src/Core/**/*.fs"`.
+- **Found:** round 30 close — `feedback_folder_naming_convention` sweep missed these two stale includes; corrected in-round.
+- **Effort:** S — already fixed this round; leave as a marker that the folder-naming rename's sweep missed `.semgrep.yml` when it ran.
+- **Friction:** effectively none going forward; remove this entry next round.
+- **Fix:** delete this entry in round 31 close.
+
+### `TlcRunnerTests` was pointing at `docs/` for spec files
+- **Site:** `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` — `docsPath` → `specsPath` (`tools/tla/specs/`) in round 30 close.
+- **Found:** round 30 close — `gate.yml` failure log exposed 9 TLC tests failing because `.tla` files live under `tools/tla/specs/` not `docs/`, and the test also hard-failed when the jar was absent.
+- **Effort:** S — fixed in-round (path + Alloy-style `toolchainReady` skip pattern).
+- **Friction:** new TLA+ spec authors might copy the old `docs/` convention from git blame. Low risk; delete this entry next round.
+- **Fix:** delete this entry in round 31 close.
+
+### CI parity-swap — `gate.yml` runs `actions/setup-dotnet` not `tools/setup/install.sh`
+- **Site:** `.github/workflows/gate.yml:54-57`
+- **Found:** round 29 (original landing) — explicitly flagged in the workflow header comment as temporary; exposed again in round 30 close when `TlcRunnerTests` couldn't find the TLC jar on CI runners.
+- **Effort:** M
+- **Friction:** three-way parity is two-legged until this closes. Any toolchain component installed only by `install.sh` (TLC jar, Alloy jar, Lean toolchain) is invisible to CI; tests that need them skip rather than validate. Today that's the TLC + Alloy suite; tomorrow it bites the first spec that materially enforces a design.
+- **Fix:** replace the `setup-dotnet` step with `./tools/setup/install.sh`; gate on `mise trust` CI hardening (round-31 Track B item 4 open-question: allow-list schema vs diff-vs-main vs require human review on any `.mise.toml` change).
+
 ### Verifier-jar SHA-256 pinning (round-30 → round-31)
 - **Site:** `tools/setup/common/verifiers.sh` + `tools/setup/manifests/verifiers.txt`
 - **Found:** round 30 — elevation design doc deferred this to round 31 per Aaron's "accept today, improve over time" TOFU stance
