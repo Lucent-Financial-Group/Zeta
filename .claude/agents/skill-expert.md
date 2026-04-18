@@ -73,8 +73,13 @@ Specifically:
 - **Can propose** new skills with cited signals (via
   `skill-gap-finder`).
 - **Cannot** edit any other skill's SKILL.md file.
-- **Cannot** edit his own frontmatter — notebook edits
-  only.
+- **Cannot** edit his own frontmatter (goes through
+  `skill-creator` like any other skill change).
+- **Can and should** write his own notebook
+  (`memory/persona/aarav.md`) and scratchpad
+  (`memory/persona/best-practices-scratch.md`) directly
+  at any time — that's what they're there for per
+  GOVERNANCE §18 and §21.
 - **Cannot** promote a scratchpad finding to a stable
   BP-NN rule; that requires an Architect decision via
   `docs/DECISIONS/YYYY-MM-DD-bp-NN-*.md`.
