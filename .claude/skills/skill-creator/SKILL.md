@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Meta-skill — the canonical path for creating and tuning every other agent skill in this repo. Invoke whenever a new skill is proposed, an existing skill needs non-trivial revision, or the skill-tune-up-ranker flags drift. Enforces the repo convention that all skill changes pass through this workflow (so diffs are visible in git and safety rules are re-applied).
+description: Meta-skill — the canonical path for creating and tuning every other agent skill in this repo. Invoke whenever a new skill is proposed, an existing skill needs non-trivial revision, or the skill-tune-up flags drift. Enforces the repo convention that all skill changes pass through this workflow (so diffs are visible in git and safety rules are re-applied).
 ---
 
 # Skill Creator — Meta-Skill
@@ -28,7 +28,7 @@ new state/notebook file — comes through this skill.
 3. **Consistency.** All skills end up with roughly the same
    sections (frontmatter, scope, authority, disagreement
    playbook, reference patterns).
-4. **Tunability.** The skill-tune-up-ranker's recommendations
+4. **Tunability.** The skill-tune-up's recommendations
    are only actionable if there's a single workflow to act on
    them.
 
@@ -111,7 +111,7 @@ One file, one commit, under a clear message:
 
 ### 6. Tune-up follow-up
 
-After 2-3 invocations, the skill-tune-up-ranker will re-evaluate.
+After 2-3 invocations, the skill-tune-up will re-evaluate.
 If the skill drifted, the cycle repeats from step 1.
 
 ## Standard sections checklist
@@ -147,7 +147,7 @@ workflow — which means his edits go through the same draft /
 Prompt-Protector / commit cycle. He does **not** have the
 right to skip these steps even for his own skill.
 
-## Interaction with the Skill Tune-Up Ranker
+## Interaction with the Skill Tune-Up
 
 The ranker recommends; this workflow executes. The ranker does
 not directly edit any SKILL.md. The human or Architect decides
@@ -173,5 +173,5 @@ workflow runs.
 - `memory/persona/` — per-skill notebooks
 - `.claude/skills/prompt-protector/SKILL.md` — the lint
   pass this workflow invokes
-- `.claude/skills/skill-tune-up-ranker/SKILL.md` — the
+- `.claude/skills/skill-tune-up/SKILL.md` — the
   recommender that triggers this workflow

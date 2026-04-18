@@ -263,7 +263,7 @@ Entries under the `wake-up-drift` tag defined in
 - **Friction:** lists 2 notebooks; disk has 6
   (`architect.md`, `architect-offtime.md`,
   `formal-verification-expert.md`, `best-practices-scratch.md`,
-  `skill-tune-up-ranker.md`, `agent-experience-researcher.md`).
+  `skill-tune-up.md`, `agent-experience-researcher.md`).
   New contributors discovering notebooks via the README miss
   four of six.
 - **Fix:** add four bullets to the README.

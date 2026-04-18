@@ -325,7 +325,7 @@ insisted the doc accompany the code, and it did.
   annotated with the decision.
 - **Yara (skill-improver)** on the BP-10 cite defect in
   Aarav's own skill file. Fixed in place at
-  `.claude/skills/skill-tune-up-ranker/SKILL.md` lines
+  `.claude/skills/skill-tune-up/SKILL.md` lines
   114-119; three cosmetic BP-cite follow-ups flagged for
   Aarav's next tune-up pass.
 - **Daya (AX researcher)** ran Kenji's first self-audit.
@@ -699,7 +699,7 @@ noted here so the history reads continuously:
 - Tariq dispatch on IsLinear strengthening.
 - Rune dispatch on `docs/STYLE.md`.
 - Yara via skill-creator on Aarav's BP-10 cite at
-  `skill-tune-up-ranker/SKILL.md:117`.
+  `skill-tune-up/SKILL.md:117`.
 - First Kenji self-audit via Daya's procedure.
 - Eval-harness MVP scope sign-off.
 - UX + DX persona proposals.
@@ -985,7 +985,7 @@ or split by sub-aspect once past ~400 lines.
   creating or meaningfully changing any skill. Mechanical renames
   and injection-lint fixes are the only allowed skip-the-workflow
   edits.
-- **New skills shipped**: `architect`, `skill-tune-up-ranker`
+- **New skills shipped**: `architect`, `skill-tune-up`
   (with state file), `prompt-protector`, `maintainability-reviewer`,
   `tech-radar-owner`, `next-steps`, `skill-creator`.
 

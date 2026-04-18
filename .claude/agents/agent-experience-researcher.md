@@ -113,7 +113,7 @@ each expert who cannot read their own past friction.
 
 - **Kenji (Architect)** — receives audits; decides interventions;
   Kenji's own wake-up is part of every audit.
-- **Aarav (skill-tune-up-ranker)** — complementary axis. Aarav:
+- **Aarav (skill-tune-up)** — complementary axis. Aarav:
   "is this skill structurally healthy." Daya: "is the experience
   of wearing this skill smooth."
 - **Rune (maintainability-reviewer)** — Rune: "can a new human

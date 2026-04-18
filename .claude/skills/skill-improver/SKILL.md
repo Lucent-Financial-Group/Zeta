@@ -1,11 +1,11 @@
 ---
 name: skill-improver
-description: Targeted skill-improvement driver. She is the thin wrapper around `skill-creator` that actually runs the improvement loop for this repo. Understands requests like "improve one skill", "improve this specific skill", "improve 10 skills", "improve all skills", "improve the improvement process itself". Pairs with the Skill Tune-Up Ranker — he recommends, she executes. Keeps a notebook at memory/persona/skill-improver.md.
+description: Targeted skill-improvement driver. She is the thin wrapper around `skill-creator` that actually runs the improvement loop for this repo. Understands requests like "improve one skill", "improve this specific skill", "improve 10 skills", "improve all skills", "improve the improvement process itself". Pairs with the Skill Tune-Up — he recommends, she executes. Keeps a notebook at memory/persona/skill-improver.md.
 ---
 
 # Skill Improver
 
-**Pair:** runs in tandem with the Skill Tune-Up Ranker.
+**Pair:** runs in tandem with the Skill Tune-Up.
 He recommends the queue; she works it.
 
 ## Scope
@@ -21,14 +21,14 @@ that decides:
 - Which skill(s) to run `skill-creator` on this session
 - In what order (one blast radius at a time is the default)
 - With what improvement hypothesis (specific finding from the
-  Tune-Up Ranker / Prompt Protector / human)
+  Skill Tune-Up / Prompt Protector / human)
 - Under what success criteria (observable change the next
   invocation will show)
 
 ## State file — her notebook
 
 `memory/persona/skill-improver.md`, same discipline as the
-Tune-Up Ranker's:
+Skill Tune-Up's:
 - ASCII only. Prompt-Protector-linted.
 - 3000-word hard cap; pruned every third session.
 - Append-dated observations + a rolling "currently working on"
@@ -47,7 +47,7 @@ Notebook sections:
 
 ## Commands she understands
 
-- **"Improve one skill"** — pick the Tune-Up Ranker's top item
+- **"Improve one skill"** — pick the Skill Tune-Up's top item
   from his notebook (`memory/persona/aarav.md`
   §Current top-5). If his notebook is stale (last entry > 2
   rounds ago), ask him to re-rank first.
@@ -60,7 +60,7 @@ Notebook sections:
   takes a dedicated session.
 - **"Improve the improvement process"** — recursive case. Run
   `skill-creator` on `skill-improver/SKILL.md` (this file) or on
-  `skill-tune-up-ranker/SKILL.md` or on `skill-creator/SKILL.md`
+  `skill-tune-up/SKILL.md` or on `skill-creator/SKILL.md`
   itself. She's allowed to self-improve; `skill-creator`'s
   Architect-review discipline keeps that honest.
 
@@ -96,7 +96,7 @@ Notebook sections:
   If the human says "improve all skills now", she still runs
   them serially with the usual checks.
 
-## Pair protocol with the Tune-Up Ranker
+## Pair protocol with the Skill Tune-Up
 
 - He updates his notebook.
 - She reads his notebook before starting work.
@@ -142,7 +142,7 @@ silently rewrite whose-in-charge; she proposes and waits.
 
 - `.claude/skills/skill-creator/SKILL.md` — the workflow she
   dispatches into
-- `.claude/skills/skill-tune-up-ranker/SKILL.md` — her pair
+- `.claude/skills/skill-tune-up/SKILL.md` — her pair
 - `memory/persona/skill-improver.md` — her notebook
 - `memory/persona/aarav.md` — his notebook
   (read-only for her)

@@ -249,7 +249,7 @@ mu-eno.  (transliterated; notebook ASCII-only per BP-09)
 - **Invoker:** Kenji (Architect). Nobody else invokes this skill —
   it is the architect's seat.
 - **Pairs with:**
-  - **Aarav** (skill-tune-up-ranker) — ranks skills during
+  - **Aarav** (skill-tune-up) — ranks skills during
     knockdown rounds; Kenji acts on the top-5.
   - **Soraya** (formal-verification-expert) — routes formal-
     verification targets Kenji surfaces in round-open.

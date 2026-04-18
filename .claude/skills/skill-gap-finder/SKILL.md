@@ -1,6 +1,6 @@
 ---
 name: skill-gap-finder
-description: Meta-capability skill — scans the repo for recurring patterns, scattered tribal knowledge, and repeated discussions that should be centralised in a skill but aren't yet. Proposes new skills for the `skill-creator` workflow to execute on. Distinct from Aarav's `skill-tune-up-ranker`, which ranks EXISTING skills by tune-up urgency; this skill looks for ABSENT skills. Recommends only — does not edit any SKILL.md itself. Invoke every 5-10 rounds or when a round feels like it rediscovered discipline already repeated three times.
+description: Meta-capability skill — scans the repo for recurring patterns, scattered tribal knowledge, and repeated discussions that should be centralised in a skill but aren't yet. Proposes new skills for the `skill-creator` workflow to execute on. Distinct from Aarav's `skill-tune-up`, which ranks EXISTING skills by tune-up urgency; this skill looks for ABSENT skills. Recommends only — does not edit any SKILL.md itself. Invoke every 5-10 rounds or when a round feels like it rediscovered discipline already repeated three times.
 ---
 
 # Skill Gap Finder — Procedure
@@ -34,9 +34,9 @@ Common signals the pass picks up:
 - Scattered tribal knowledge in multiple SKILL.md files —
   candidate for extraction into a shared hat.
 
-## Distinct from Aarav's tune-up-ranker
+## Distinct from Aarav's tune-up
 
-| | `skill-tune-up-ranker` (Aarav) | `skill-gap-finder` (this) |
+| | `skill-tune-up` (Aarav) | `skill-gap-finder` (this) |
 |---|---|---|
 | Scope | existing skills | absent skills |
 | Question | "which skill needs work?" | "what skill is missing?" |
@@ -145,7 +145,7 @@ recommends; skill-creator executes.
 ## Retired candidates (suggest deletion)
 
 - <skill that's no longer invoked; confirm with
-  skill-tune-up-ranker before retirement>
+  skill-tune-up before retirement>
 
 ## Meta-observations
 
@@ -157,7 +157,7 @@ recommends; skill-creator executes.
 
 - Does NOT edit any SKILL.md. Recommendations only;
   `skill-creator` workflow is the landing path.
-- Does NOT duplicate `skill-tune-up-ranker`. If the
+- Does NOT duplicate `skill-tune-up`. If the
   candidate is an existing skill that needs revision
   (not a new skill), hand off to Aarav.
 - Does NOT invent patterns. Every proposal cites at
@@ -184,7 +184,7 @@ recommends; skill-creator executes.
 
 ## Coordination
 
-- **Aarav (skill-tune-up-ranker)** — sibling; sibling-
+- **Aarav (skill-tune-up)** — sibling; sibling-
   cadenced. Hand off "this existing skill needs work" to
   Aarav; take "this new skill should exist" from Aarav
   if he spots one.
@@ -206,7 +206,7 @@ recommends; skill-creator executes.
   skills
 - `.claude/skills/skill-creator/SKILL.md` — the landing
   workflow
-- `.claude/skills/skill-tune-up-ranker/SKILL.md` —
+- `.claude/skills/skill-tune-up/SKILL.md` —
   sibling; Aarav
 - `.claude/skills/skill-improver/SKILL.md` — Yara,
   paired on consolidation

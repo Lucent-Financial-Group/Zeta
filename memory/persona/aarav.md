@@ -51,7 +51,7 @@ Running observations (append-dated). Pruned every third session.
 4. **harsh-critic** — P2. Recently retuned, zero post-retune
    observations. Observe only; trigger skill-creator only on
    compliment-leakage or ad-hominem drift.
-5. **skill-tune-up-ranker (self)** — P2. State file live
+5. **skill-tune-up (self)** — P2. State file live
    but untested; pruning cadence unproven. Defer. Re-evaluate
    at round 21 when first pruning pass is due.
 

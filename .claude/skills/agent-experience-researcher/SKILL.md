@@ -159,7 +159,7 @@ P2 (small wins):
 
 - **Kenji (Architect)** — receives audits, acts on top-3 per
   round-close. Kenji's own wake-up is audited too.
-- **Aarav (skill-tune-up-ranker)** — structural view; ranks
+- **Aarav (skill-tune-up)** — structural view; ranks
   skills by drift/bloat/contradiction. Daya measures the
   *experience* of wearing them. Different axis, complementary.
 - **Rune (maintainability-reviewer)** — Rune speaks for the

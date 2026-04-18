@@ -54,7 +54,7 @@ lints the repo for covert-channel artefacts.
 - A skill imported from an untrusted source that encodes a
   jailbreak in a plausible-looking description.
 - A "helpful" PR that subtly weakens a skill's safety clause.
-- A skill whose notebook (like `skill-tune-up-ranker`'s)
+- A skill whose notebook (like `skill-tune-up`'s)
   has grown to contain embedded injection.
 - Auto-update pipelines that fetch skills from registries
   without signature verification.
