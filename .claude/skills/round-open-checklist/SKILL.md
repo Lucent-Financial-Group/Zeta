@@ -157,6 +157,28 @@ Each lens recommends only; the architect integrates.
 Overlap at the edges is deliberate; union-of-findings is
 richer than any single lens. Parallel-dispatchable.
 
+### 7.6. Resurrect scheduled crons after session restart
+
+Claude Code `CronCreate` jobs are session-scoped — they die
+when Claude exits (verified round 34; see
+`docs/research/claude-cron-durability.md`). At round-open,
+invoke `long-term-rescheduler` to detect the gap:
+
+1. `CronList` — what's live this session?
+2. `docs/factory-crons.md` — what *should* be live?
+3. For every row with `lifetime: session + reregister`
+   missing from `CronList`, recreate via `CronCreate` with
+   the registry spec.
+4. For every row with `lifetime: needs durable`, verify a
+   matching `.github/workflows/scheduled-*.yml` exists;
+   file a DEBT entry if not. Do NOT run from the session.
+5. Emit a one-line summary: "cron recovered: N re-registered;
+   M needed resurrection."
+
+If the heartbeat re-registration step itself is skipped,
+long-term scheduling is silently broken until the next
+round-open. Do not skip.
+
 ### 8. Create the todo list for the round
 
 Use `TodoWrite`. First todo = first concrete step
