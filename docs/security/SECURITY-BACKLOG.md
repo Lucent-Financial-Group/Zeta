@@ -144,6 +144,21 @@ cost) but is still worth shipping eventually.
 - **Rough cost estimate:** S
 - **Priority:** P2
 
+### `openspec-gap-finder` skill (missing-spec detection)
+- **Why deferred:** Viktor (spec-zealot) reviews spec-to-code
+  alignment for an existing capability but doesn't scan the repo
+  for capabilities shipped without a spec. Aaron's round-32
+  observation: "someone should be responsible for looking for
+  missing openspec, do we already have one that looks for ones
+  that are out of sync, we should be checking these too every
+  now and then as well." Gap is parallel to `skill-gap-finder`
+  (finds absent skills); needs `openspec-gap-finder` (finds
+  absent specs + flags drift between spec and shipped artefact).
+- **Trigger to revisit:** round 33 factory-improvement slot.
+- **Rough cost estimate:** M (skill + skill-creator workflow +
+  first audit run)
+- **Priority:** P1 (GOVERNANCE §28 enforcement depends on it)
+
 ### Declarative-manifest setup (match `../scratch`'s shape)
 - **Why deferred:** Zeta's `tools/setup/manifests/` is already
   declarative-ish (`apt.txt`, `brew.txt`, `dotnet-tools.txt`,

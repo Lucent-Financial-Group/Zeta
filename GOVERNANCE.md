@@ -510,3 +510,49 @@ than renumbering the rest.
     sentence wants to live in one place and be
     referenced — not copy-pasted. `factory-audit` and
     `skill-tune-up` flag this pattern.
+
+28. **OpenSpec is first-class for every committed
+    artefact.** Anything the repo installs, lints, builds,
+    tests, or publishes MUST be reconstructable from
+    `openspec/specs/**` plus per-language profile
+    overlays. This includes F# production code, C#
+    surface, Lean proofs, TLA+/Alloy specs — AND install
+    scripts under `tools/setup/`, GitHub Actions
+    workflows under `.github/workflows/`, editor
+    configuration, devcontainer definitions, and any
+    other committed automation or governance artefact.
+    Non-declarative installation steps and spec-less
+    committed scripts are smells.
+
+    The spec tree follows the generic + language-
+    specific-overlay shape (per SQLSharp's proven
+    pattern): a base `spec.md` per capability carries
+    the cross-cutting requirements; `profiles/*.md`
+    subdirectories carry language- or surface-specific
+    overlays. Base spec + relevant profile overlay MUST
+    be sufficient to recreate the committed artefact
+    from scratch.
+
+    **Graduating a new artefact.** When a new committed
+    artefact lands that doesn't fit an existing
+    capability spec, either:
+    - Extend the nearest existing capability with a new
+      requirement + scenario, OR
+    - Create a new `openspec/specs/<name>/spec.md` via
+      the `openspec-expert` skill.
+
+    Shipping an artefact with neither path taken is a
+    design-doc event requiring Architect or human
+    sign-off.
+
+    **Drift detection.** `spec-zealot` reviews
+    spec-to-code alignment for existing capabilities;
+    `openspec-gap-finder` (SECURITY-BACKLOG round-33
+    P1) scans for absent specs. Both cadences live in
+    `factory-audit`'s reflection pass.
+
+    **Current-state-only.** Per GOVERNANCE §2, specs
+    describe current truth — no archive, no
+    change-history folders. The modified-OpenSpec
+    workflow at `openspec/README.md` documents the
+    divergence from upstream.
