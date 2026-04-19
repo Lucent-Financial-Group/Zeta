@@ -61,34 +61,52 @@ For every finding, produce exactly one of:
   comment must name (i) which rule is suppressed, (ii) why
   the rule's motivation does not apply here, (iii) what
   would need to change for the suppression to be removed.
-- **Prefer global suppression sites over per-file `#pragma`**
-  (Aaron's round-34 rule). Scatter kills visibility; a
-  suppression the reviewer floor can't see is effectively
-  invisible. Allowed sites in preference order:
-  1. **`.editorconfig` with per-file override** —
-     `[src/Path/File.cs]` + `dotnet_diagnostic.<RULE>.severity
-     = none`. Central, auditable in one place, file-scoped
-     without touching source. Rationale comment lives above
-     the override block. Best fit for "this file's design
-     doesn't match this rule's motivation" cases like
-     MA0048 on a collected-interfaces module.
+- **`[SuppressMessage]` attributes on the target
+  type/member are preferred** (Aaron's round-34 rule).
+  The suppression and its rationale live right next to
+  the code they apply to — a reader looking at the type
+  sees both the rule being suppressed and the
+  `Justification` string in one glance. `GlobalSuppressions.cs`
+  is the scaling fallback for when per-target attachment
+  isn't practical (e.g., the rule fires on generated code,
+  or dozens of call sites all need the same suppression).
+  Pragmas are ugly and should be avoided. Allowed sites
+  in preference order:
+  1. **`[SuppressMessage]` attribute on the specific
+     type / member** — `[SuppressMessage("Design",
+     "MA0048:...", Justification = "...")]` directly on
+     the offending class / interface / method. Preferred
+     for almost every case. File-level rationale (e.g.,
+     "why four related types live in one file") goes as
+     a comment at the file header; each type still
+     carries its own attribute referencing the header.
   2. **`GlobalSuppressions.cs` at project root** with
-     `[assembly: SuppressMessage(..., Scope, Target)]`.
-     Best fit when the suppression targets a specific type
-     or member across multiple call sites. `Justification`
-     attribute carries the three-element rationale.
-  3. **`NoWarn` in `.csproj`** — project-wide suppression.
-     Best fit when an entire project genuinely doesn't want
-     the rule (e.g., a generated-code project).
-  4. **`NoWarn` in `Directory.Build.props`** — repo-wide
-     suppression. Reserved for "we never want this rule
-     because our architecture makes it wrong everywhere" —
-     extremely rare; requires Kenji sign-off.
+     `[assembly: SuppressMessage(..., Justification = "...",
+     Scope, Target)]`. Scaling fallback. Best fit when a
+     single suppression targets N types or members the
+     way `Scope` / `Target` can express cleanly, and
+     repeating the per-target attribute N times would
+     violate DRY.
+  3. **`NoWarn` in `.csproj`** — project-wide
+     suppression. Best fit when an entire project
+     genuinely doesn't want the rule (e.g., a
+     generated-code project).
+  4. **`NoWarn` in `Directory.Build.props`** — repo-
+     wide suppression. Reserved for "we never want this
+     rule because our architecture makes it wrong
+     everywhere" — extremely rare; requires Kenji
+     sign-off.
+  5. **`.editorconfig`** per-file override — allowed
+     but discouraged for suppressions (prefer for
+     formatting rules only; suppression accumulation in
+     `.editorconfig` gets messy at scale).
 - Per-file `#pragma warning disable` in source is **the
-  last resort**, used only when the suppression is about a
-  single line or inline expression that `.editorconfig`
-  can't address. Even then, prefer `[SuppressMessage]` with
-  a specific target over a file-wide pragma.
+  last resort**, used only when the suppression is about
+  a single line or inline expression that no
+  `[SuppressMessage]` attachment point exists for. Even
+  then, prefer a more-targeted `[SuppressMessage]` on an
+  enclosing element with an inline `Justification` over
+  a file-wide pragma.
 
 ### The forbidden third path
 
