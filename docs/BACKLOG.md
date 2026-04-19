@@ -298,7 +298,7 @@ within each priority tier.
   - Undo. Document an `--unedit-profiles` inverse.
 
   **Effort.** M — script work plus careful idempotency
-  + undo testing across bash + zsh on macOS + Linux.
+  and undo testing across bash + zsh on macOS and Linux.
   Lands with the Oh-My-Zsh BACKLOG item if we bundle
   the interactive-shell setup.
 
