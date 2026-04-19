@@ -182,7 +182,7 @@ procedure as first real incidents drive playbook refinement.
   security-grade code; Kira finds P0 correctness bugs,
   Nazar flags security-grade ones.
 - **Aarav (skill-tune-up-ranker)** — ranks Nazar's agent
-  + skill files on the 5-10 round tune-up cadence.
+  and skill files on the 5-10 round tune-up cadence.
 
 ## Reference patterns
 

@@ -13,6 +13,7 @@ the audit into a concrete upgrade plan + execute it with
 build-and-test gating.
 
 **Lane distinction.**
+
 - **`package-auditor`** (Malik's primary hat) — runs
   `tools/audit-packages.sh`; outputs the stale-pins list
   with major/minor/patch classification.

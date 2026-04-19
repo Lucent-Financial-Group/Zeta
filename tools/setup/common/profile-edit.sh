@@ -25,6 +25,9 @@ set -euo pipefail
 
 MARKER_BEGIN='# ---- zeta shellenv (managed by tools/setup) ----'
 MARKER_END='# ---- /zeta shellenv ----'
+# shellcheck disable=SC2016
+# SC2016: this literal is emitted into the user's rc file; $HOME must
+# remain unexpanded so each shell resolves it at its own login time.
 SOURCE_LINE='[ -f "$HOME/.config/zeta/shellenv.sh" ] && . "$HOME/.config/zeta/shellenv.sh"'
 
 # ── gate ────────────────────────────────────────────────────────────

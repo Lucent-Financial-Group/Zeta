@@ -185,7 +185,7 @@ author (typically Kenji for integration):
 
 - **P0** findings — route to Naledi
   (performance-engineer) for benchmark measurement
-  + Kenji for integration decision.
+  and Kenji for integration decision.
 - **P1** findings — route to the diff author + Rune
   (maintainability-reviewer).
 - **P2** findings — note in the PR review, no

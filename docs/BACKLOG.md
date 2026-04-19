@@ -267,7 +267,6 @@ within each priority tier.
   audits build/CI/install lane; Bodhi DX-tests the
   starter-template extraction when it reaches a round.
 
-
 - [ ] **SonarAnalyzer.CSharp CLI adoption after findings
   cleanup** (round 34 follow-up). Package pinned in
   `Directory.Packages.props` this round; editor-only
@@ -503,7 +502,7 @@ within each priority tier.
   2. **Developer experience (DX).** A new contributor
      searching "how does recursion terminate" should get
      relevant `docs/research/retraction-safe-semi-naive.md`
-     + `openspec/specs/retraction-safe-recursion/*.md` +
+     and `openspec/specs/retraction-safe-recursion/*.md` and
      the relevant Lean proof sketch, even though the
      docs say "LFP convergence" not "termination." Hits
      Bodhi's first-PR walk — reduces the "figure out

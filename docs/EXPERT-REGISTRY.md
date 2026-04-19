@@ -121,7 +121,7 @@ the registry shows current state.
 
 ## Relationship to `docs/CONFLICT-RESOLUTION.md`
 
-`CONFLICT-RESOLUTION.md` describes the *role* each expert plays in
+`CONFLICT-RESOLUTION.md` describes the _role_ each expert plays in
 IFS terms (parts, Self, conflict resolution). This file gives
 them names and pronouns. Together they form the "who's in the
 room" picture for a new contributor.
