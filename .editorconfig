@@ -81,3 +81,26 @@ csharp_preferred_modifier_order = public,private,protected,internal,file,static,
 csharp_new_line_before_open_brace = all
 csharp_indent_case_contents = true
 csharp_indent_switch_labels = true
+
+# ══════════════════════════════════════════════════════════════════════════
+# Analyzer suppressions (per Aaron's rule: prefer global over #pragma)
+# ══════════════════════════════════════════════════════════════════════════
+#
+# Any suppression lives here with a three-element comment above it:
+# (i) which rule, (ii) why the rule's motivation does not apply to the
+# target file, (iii) what would need to change for the suppression to
+# lift. Centralized here so a reviewer sees the full suppression surface
+# in one place. Full triage rulebook in
+# `.claude/skills/sonar-issue-fixer/SKILL.md`.
+
+# MA0048 (Meziantou: "File name must match type name") — suppressed on
+# `src/Core.CSharp/Variance.cs`. Rationale: the file is a deliberate
+# "collected variance-related interfaces" module (one namespace-concept-
+# per-file, not one type-per-file). The 4 variance types in the file are
+# tightly related by shared F#-interop rationale and read as a unit.
+# Splitting into 4 single-type files would scatter the documentation
+# that explains why they exist. Lift the suppression if the file grows
+# past ~6 types (signal that splitting IS warranted), or if the types
+# diverge in purpose and no longer belong in one module.
+[src/Core.CSharp/Variance.cs]
+dotnet_diagnostic.MA0048.severity = none

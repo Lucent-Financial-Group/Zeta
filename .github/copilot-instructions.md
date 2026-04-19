@@ -143,6 +143,25 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   line. This has bitten round 34 five separate times;
   flag it inline on any PR diff that introduces a
   line-start `+` in prose or a list continuation.
+- **Analyzer findings: right-long-term-fix OR documented
+  suppression, never the third path of "quick appeasement."**
+  For every `Sxxxx` (Sonar) / `MAxxxx` (Meziantou) /
+  `CAxxxx` / `IDExxxx` finding on a PR diff, route the
+  author to: (a) the real refactor even if it's big — read
+  the rule's motivation page, apply the fix that removes
+  the actual defect, or (b) a documented suppression with
+  three-element rationale (which rule, why the rule's
+  motivation doesn't apply here, what would need to change
+  for the suppression to lift). **Prefer global suppression
+  sites over per-file `#pragma`** in this preference order:
+  `.editorconfig` per-file override → `GlobalSuppressions.cs`
+  `[assembly: SuppressMessage]` → `.csproj NoWarn` →
+  `Directory.Build.props NoWarn` (Kenji sign-off only). A
+  `#pragma warning disable` in source is last resort. Adding
+  `_ = Send(...)` / `Assert.True(true)` / empty
+  `catch (Exception) { }` to silence a rule is a rejection,
+  not a suggestion. Full rulebook at
+  `.claude/skills/sonar-issue-fixer/SKILL.md`.
 - **F# and C# language-fit on every code diff.** Zeta
   is F#-first by design — DBSP's math shape fits F#
   idioms cleanly. But `src/Core.CSharp/` is a
