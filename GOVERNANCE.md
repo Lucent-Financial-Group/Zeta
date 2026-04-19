@@ -556,3 +556,43 @@ than renumbering the rest.
     change-history folders. The modified-OpenSpec
     workflow at `openspec/README.md` documents the
     divergence from upstream.
+
+29. **Backlog files are scoped.** Zeta has two backlog
+    files; each one holds a specific class of work.
+    Cross-contamination is a smell.
+
+    - **`docs/BACKLOG.md`** — general engineering
+      backlog. New features, refactors, factory /
+      tooling / skill work, UX / DX items, research
+      that doesn't tie to a specific security
+      control. Default destination for almost
+      everything.
+    - **`docs/security/SECURITY-BACKLOG.md`** —
+      deferred SECURITY CONTROLS only. Partner
+      document to `docs/security/V1-SECURITY-GOALS.md`.
+      Items here must be genuine security controls
+      that fail one of the three v1.0 gates
+      (plausible adversary / quiet failure / bounded
+      cost). Infrastructure, CI, skill gaps, editor
+      tooling, lint configs — all belong in
+      `BACKLOG.md`, not here.
+
+    **Enforcement.** The `backlog-scrum-master`
+    (Leilani) owns the audit cadence — every round
+    or two, walk both backlogs and flag any entry
+    that belongs in the other. Mis-filed entries get
+    moved, not duplicated.
+
+    **Why.** Security-audit readers need
+    `SECURITY-BACKLOG.md` to be a clean list of
+    deferred security controls — that's how it
+    feeds SDL attestations (SDL-CHECKLIST.md) and
+    threat-model reviews. Letting factory /
+    engineering items drift in dilutes the
+    signal and makes future security audits harder.
+
+    **Detection aid.** When unsure, ask: "would an
+    external auditor reading this list of deferred
+    items to assess my v1.0 security posture expect
+    to see this entry?" If no, it's
+    `docs/BACKLOG.md`.

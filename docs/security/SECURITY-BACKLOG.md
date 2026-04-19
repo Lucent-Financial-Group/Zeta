@@ -146,136 +146,20 @@ cost) but is still worth shipping eventually.
 - **Rough cost estimate:** M
 - **Priority:** P1
 
-### Devcontainer / Codespaces image (GOVERNANCE §24 third leg)
-
-- **Why deferred:** two-leg parity (dev + CI) is the v1.0 floor;
-  devcontainer is a consumer-experience boost, not a security
-  control per se.
-- **Trigger to revisit:** first external contributor onboards
-  and friction measures the gap, OR Codespaces becomes the
-  default onboarding path.
-- **Rough cost estimate:** S
-- **Priority:** P2
-
-### documentation-agent cadence
-
-- **Why deferred:** the documentation-agent skill only triggers
-  when someone spots drift. Round 33 surfaced multiple stale-
-  comment / out-of-date-documentation issues that would have
-  been caught by a scheduled doc-state audit (e.g., my own
-  `.markdownlint-cli2.jsonc` comment drifted from the actual
-  suppression strategy in one round). Aaron round 33: "is the
-  documentation person looking for out of date documentation
-  on any kind of cadence?"
-- **Trigger to revisit:** round 34 factory-improvement slot.
-  Add documentation-agent to `factory-audit`'s every-10-rounds
-  walk scope. Each walk: scan comments in config files +
-  doc-to-code alignment + retired-file references.
-- **Rough cost estimate:** S (just add to cadence)
-- **Priority:** P1
-
-### Post-install repo automation: runtime choice open (research needed)
-
-- **Why deferred:** `tools/setup/install.sh` (bash) owns bootstrap
-  because it can't assume any runtime pre-install. After install,
-  Zeta's eventual polyglot repo-automation surface (format-repo,
-  coverage-collect, benchmark-compare, lint orchestration)
-  benefits from a single cross-platform runtime. Aaron's prior
-  choice on `../SQLSharp` + `../scratch` was Bun + TypeScript +
-  package.json — it worked, but Aaron is explicitly NOT committed
-  to repeating it: "IDK if I want to stick with this which is
-  why i want the research." Candidates worth comparing include
-  Bun/Node, Deno, Python (already on PATH post-install via mise),
-  .NET console tools (already on PATH), or something else
-  entirely. The constraint is "one runtime handles
-  everything polyglot-post-install, no bash+pwsh parallel twins."
-- **Trigger to revisit:** first post-install automation task that
-  would need cross-platform scripting (benchmark comparison,
-  coverage aggregation, format-repo across .fs/.cs/.md/etc.).
-  Research round before committing: write a design doc comparing
-  candidate runtimes across cold-start cost, install weight, type
-  safety, ecosystem breadth for lint/format/test orchestration,
-  and maintainability.
-- **Rough cost estimate:** S (research doc) + M (first shipped
-  automation in chosen runtime)
-- **Priority:** P2 (on-demand; not blocking)
-- **Note:** install.sh stays bash regardless — bootstrap can't
-  depend on its own output.
-
-### `static-analysis-gap-finder` skill (missing-lint-tool detection)
-
-- **Why deferred:** Round 33 Track D surfaced that Zeta had no
-  markdown / workflow / shell linter until this round. Nobody
-  was proactively scanning for missing linters. Aaron: "we need
-  another gap analysis tool around static analysis and linting
-  and tools and rules we maybe missing." Parallel to
-  `openspec-gap-finder` and `skill-gap-finder`; owned by the
-  `spec-zealot` role (Viktor) along with those other gap-finders
-  — one role wearing multiple gap-finding skills, Aarav pattern.
-  Proactive lint discovery: on a new-project template, this
-  skill would enumerate committed languages/surfaces + check
-  whether a matching linter is on the lint gate.
-- **Trigger to revisit:** round 34 factory-improvement slot.
-- **Rough cost estimate:** M
-- **Priority:** P1
-
-### Crank lint configurations to HIGH across the board
-
-- **Why deferred:** Aaron round 33: "in general when there is
-  static analysis configuration or linting things of that nature
-  we want to crank it up to high." Current configs are mid-
-  stringency (several relaxed rules in markdownlint, severity-
-  floor-style on shellcheck, default ruleset on actionlint).
-  A post-round-33 pass should research each tool's
-  recommended-strict preset and adopt.
-- **Trigger to revisit:** round 34, after round-33 Track D
-  baseline has proven itself stable.
-- **Rough cost estimate:** S-per-tool, L cumulative
-- **Priority:** P1
-
-### `openspec-gap-finder` skill (missing-spec detection)
-
-- **Why deferred:** Viktor (spec-zealot) reviews spec-to-code
-  alignment for an existing capability but doesn't scan the repo
-  for capabilities shipped without a spec. Aaron's round-32
-  observation: "someone should be responsible for looking for
-  missing openspec, do we already have one that looks for ones
-  that are out of sync, we should be checking these too every
-  now and then as well." Gap is parallel to `skill-gap-finder`
-  (finds absent skills); needs `openspec-gap-finder` (finds
-  absent specs + flags drift between spec and shipped artefact).
-- **Trigger to revisit:** round 33 factory-improvement slot.
-- **Rough cost estimate:** M (skill + skill-creator workflow +
-  first audit run)
-- **Priority:** P1 (GOVERNANCE §28 enforcement depends on it)
-
-### Declarative-manifest setup (match `../scratch`'s shape)
-
-- **Why deferred:** Zeta's `tools/setup/manifests/` is already
-  declarative-ish (`apt.txt`, `brew.txt`, `dotnet-tools.txt`,
-  `verifiers.txt`) but flat and un-tiered. `../scratch`'s
-  `declarative/` directory has tiered profiles
-  (`min`/`runner`/`quality`/`all`) per platform per tool,
-  matching dotnet's `.dotnet-tools` / `.dotnet-workloads` /
-  Brewfile / Caskfile / `.apt` / `.uv-tools` / `.bun-global`
-  formats. Aaron's round-32 ask: "push hard each sprint" on
-  closing this gap.
-- **Trigger to revisit:** every round, track at least one
-  incremental step toward the scratch shape — e.g., split
-  `brew.txt` into min/runtimes/quality tiers this round,
-  convert `dotnet-tools.txt` to `.dotnet-tools` next.
-- **Rough cost estimate:** L (incremental over 4-6 rounds)
-- **Priority:** P1 (ratchet toward v1.0)
-
-### Windows CI matrix
-
-- **Why deferred:** stable green on mac + linux is the immediate
-  target. Windows expands surface by 50% of CI-minute budget
-  for a v1.0 consumer base that is predominantly mac + linux.
-- **Trigger to revisit:** named Windows consumer, OR 4 weeks
-  stable on the current two-OS matrix.
-- **Rough cost estimate:** M (install.sh Windows path + CI job)
-- **Priority:** P2
+<!-- Non-security engineering / factory items that previously
+     lived here have been moved to docs/BACKLOG.md in round 33
+     per the Aaron-raised scoping rule: SECURITY-BACKLOG holds
+     security-control items only; general engineering backlog
+     lives in docs/BACKLOG.md. Items moved:
+     - Devcontainer / Codespaces image
+     - documentation-agent cadence
+     - Post-install repo automation (runtime choice research)
+     - static-analysis-gap-finder skill
+     - Crank lint configurations to HIGH
+     - openspec-gap-finder skill
+     - Declarative-manifest setup
+     - Windows CI matrix
+     See GOVERNANCE §29 for the scope rule. -->
 
 ### Signed-commit requirement on `main`
 
