@@ -1,0 +1,50 @@
+# CodeQL configuration — Zeta-tuned (round 34).
+# Consumed by: .github/workflows/codeql.yml (via `config-file`).
+#
+# Why this file exists
+# --------------------
+# Without paths-ignore, the C# pack happily scans every .cs /
+# .csproj under the repo — including vendored reference
+# implementations (Rust DBSP via references/upstreams/feldera/,
+# which carries incidental C# test scaffolding) and the
+# benchmark harness. Those findings would pollute the triage
+# queue with code Zeta does not own.
+#
+# paths / paths-ignore semantics: glob-style, relative to repo
+# root. `paths-ignore` wins over `paths` on overlap.
+
+name: "Zeta CodeQL config"
+
+paths-ignore:
+  # Vendored upstream references (Feldera, Materialize docs,
+  # FASTER notes, etc.). Not Zeta's code; not Zeta's bugs.
+  - "references/upstreams/**"
+
+  # Benchmark harness. Perf-critical by definition; uses
+  # patterns (unsafe pointers, pinned spans, unchecked
+  # arithmetic) that are intentional there. Keep CodeQL
+  # focused on production surfaces.
+  - "bench/**"
+
+  # Formal-method tool trees. TLA+ specs, Alloy models, Lean
+  # proofs — CodeQL has no language pack that understands any
+  # of these, and incidental C# helper code in these dirs
+  # (e.g. TLC driver shims) is tool-internal, not shipped.
+  - "tools/tla/**"
+  - "tools/alloy/**"
+  - "tools/lean4/**"
+
+  # Generated code. If any file ends in `.generated.cs` it is
+  # source-of-truth-elsewhere; findings on it would ask us to
+  # fix a generator, not the file.
+  - "**/*.generated.cs"
+
+# Custom query packs — reserved for the follow-up round that
+# ships Zeta-specific taint / CWE rules. The formal-
+# verification-expert (Soraya) routes the rule authoring
+# between Semgrep (syntactic) and CodeQL (taint-flow); see
+# .claude/skills/codeql-expert/SKILL.md §"When CodeQL is the
+# wrong tool" for the decision rubric.
+#
+# packs:
+#   - custom-queries/zeta-security
