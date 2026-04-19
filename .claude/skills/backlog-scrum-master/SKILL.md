@@ -15,6 +15,7 @@ the same conversation — one person, two hats. Retires the old
 ## Scope
 
 Reads and edits:
+
 - `docs/BACKLOG.md` — primary surface.
 - `docs/ROADMAP.md` — near-term tiers (P0, P1). Architect owns
   the long-horizon research arc.

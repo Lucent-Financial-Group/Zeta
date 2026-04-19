@@ -76,6 +76,7 @@ merely present as a codified rule. Downgrades:
   CodeQL workflow remains 🔜.
 
 One cell upgraded 🔜 (partial) → ✅:
+
 - **#12 incident response plan** — round-30 ships
   `docs/security/INCIDENT-PLAYBOOK.md` with 6 playbooks.
   Pairs with `SECURITY.md` disclosure policy.

@@ -28,6 +28,7 @@ native"**, your job is:
 ## When to invoke
 
 Trigger on any of these phrases in documentation or code comments:
+
 - "measurably better", "provably", "always X", "never Y"
 - Big-O claims: "O(1) retraction", "O(log n) lookup"
 - Allocation claims: "zero heap alloc", "pooled", "no GC pressure"
@@ -54,6 +55,7 @@ Trigger on any of these phrases in documentation or code comments:
 
 A test file under `tests/Tests.FSharp/<Claim>ClaimTests.fs`
 with:
+
 - At least 3 tests: baseline, claim-proof, contrary-workload
 - `printfn` of measured ratios for CI log inspection
 - Honest assertions — prefer `"does not make worse"` over `"beats"`
@@ -64,6 +66,7 @@ claim was wrong and what the fix is. If the claim is fixed, tighten
 the test's assertion.
 
 ## Reference patterns
+
 - `tests/InfoTheoreticSharderClaimTests.fs` — structure template
 - `tests/MathInvariantTests.fs` — property-test template
 - `tests/ThreadSafetyTests.fs` — stress-test template

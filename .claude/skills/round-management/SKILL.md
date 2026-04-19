@@ -117,6 +117,7 @@ three-slot reviewer pass:
 
 **Slot 1 — design-phase specialists** — run *before or
 during* implementation, not after. Scope-triggered:
+
 - Public API change → `public-api-designer`.
 - Algebra / operator / chain-rule touch → `algebra-owner`.
 - Persona / skill / roster change → the `agent-experience-researcher` (AX researcher).
@@ -129,6 +130,7 @@ during* implementation, not after. Scope-triggered:
 
 **Slot 2 — code-phase reviewers** — mandatory floor on any
 round that lands code. At minimum:
+
 - **`harsh-critic`** — always, no exceptions.
 - **`maintainability-reviewer`** — mandatory on
   public-surface change or >200 lines of churn in any
@@ -142,6 +144,7 @@ round that lands code. At minimum:
 
 **Slot 3 — formal-coverage check** — run when invariants
 change:
+
 - **`formal-verification-expert`** routes to TLA+ /
   Z3 / Alloy / FsCheck / Lean. Mandatory when round
   touches the operator algebra or chain rule. Optional

@@ -61,6 +61,7 @@ declarative-manifest tiering push.
 ## Carried in flight
 
 **Round-32 DEBT follow-ups:**
+
 - Devcontainer third leg (GOVERNANCE §24) — unscheduled.
 - Windows CI matrix — unscheduled (gate on stable green on
   mac + linux first).
@@ -68,6 +69,7 @@ declarative-manifest tiering push.
   follow-up per SECURITY-BACKLOG.
 
 **Round-29 DEBT carry-over:**
+
 - `LawRunner` config-record refactor (before `checkBilinear`
   lands).
 - Structured `LawViolation.Reason` DU.
@@ -76,6 +78,7 @@ declarative-manifest tiering push.
 - Install-script P1 follow-ups.
 
 **Round-27+ deferred pool:**
+
 - `IsDbspLinear` Lean predicate + B1/B2/B3/chain_rule closures.
 - Full `.mise.toml` migration when Lean plugin lands (candidate
   upstream contribution per §23).

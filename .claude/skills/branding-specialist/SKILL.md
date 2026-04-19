@@ -21,6 +21,7 @@ the story behind it.
 ## Scope
 
 **Product identity + positioning:**
+
 - Product / library / package name (the one the user types when
   they `dotnet add package`).
 - Namespace / assembly name (the shape developers see in
@@ -35,6 +36,7 @@ the story behind it.
 - Repo metadata: GitHub description, topics, social preview.
 
 **Product aspirations + roadmap narrative:**
+
 - `docs/ASPIRATIONS.md` (when it exists) — the long-horizon
   goals: what this project wants to be in 2, 5, 10 years.
 - `docs/ROADMAP.md` narrative framing — *why* the tiers are
@@ -48,6 +50,7 @@ the story behind it.
   research-side framing.
 
 **Stakeholder comms:**
+
 - README opening that makes the "who is this for" answer clear
   inside 6 lines.
 - Contributor-facing prose (`CONTRIBUTING.md`, top of
@@ -67,6 +70,7 @@ migration plan; the human picks. the `branding-specialist` does not rename files
 or edit namespaces without an explicit human go-ahead.
 
 **Edit rights:**
+
 - `README.md`, `docs/ASPIRATIONS.md` (when created),
   `docs/NAMING.md`, `docs/research/branding-*.md`.
 - Narrative sections of `docs/ROADMAP.md` (the "why" prose;

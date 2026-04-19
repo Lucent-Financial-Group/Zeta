@@ -59,6 +59,7 @@ RUN rm -rf /tmp/setup
 ```
 
 Principles:
+
 - **Pin the base image by SHA digest.** Mutable tags
   (`:ubuntu-22.04`) can shift under us; digests don't.
 - **Non-root user.** Running as root in dev containers

@@ -91,6 +91,7 @@ For **concurrent protocols** — lock orderings, exactly-once commits, register-
 For **pointwise axioms over unbounded ℤ** — Z3 is the right tool because its bit-vector / integer theories are *strictly stronger* than property-based sampling over int64.
 
 **The combination** gives us, for every operator:
+
 - An algebraic contract (property test)
 - A concurrent contract (TLA+ spec, if stateful)
 - A low-level SMT proof (Z3, if the axiom is pointwise)

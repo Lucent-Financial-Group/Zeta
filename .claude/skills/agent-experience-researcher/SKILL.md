@@ -28,6 +28,7 @@ high-leverage maintenance, not cosmetics.
   orientation docs (Tier 0).
 
 Out of scope:
+
 - Library-consumer experience — that is the UX researcher skill.
 - Human-contributor experience — that is the DX researcher skill.
 - Agent quality / correctness — that is the eval-harness scope
@@ -45,6 +46,7 @@ Out of scope:
 ### Step 2 — simulate the cold start
 
 For the target:
+
 1. List the files the persona must read per `docs/WAKE-UP.md`
    Tier 0 + Tier 1. Add any `wake-up:` stanza overrides from
    the agent frontmatter.
@@ -79,6 +81,7 @@ Six friction types:
 ### Step 4 — propose minimal intervention
 
 Every intervention is rollback-safe in one round:
+
 - **stale-pointer** → one-line Edit.
 - **duplicated-info** → canonical content stays in one location;
   other points at it.

@@ -41,6 +41,7 @@ worth introducing a build system, or can F# do it?
 ## JDK target
 
 JDK 21 (LTS). Pinned via:
+
 - macOS: Homebrew `openjdk@21` in
   `tools/setup/manifests/brew.txt`.
 - Linux: apt `openjdk-21-jdk-headless` in

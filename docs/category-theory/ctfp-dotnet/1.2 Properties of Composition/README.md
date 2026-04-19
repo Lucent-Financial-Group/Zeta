@@ -2,9 +2,9 @@
 
 Addition operation is associative : 1 + 2 = 2 + 1.
 
-# Identity and zero : 
+# Identity and zero
 
-You can define identity by adding zero (neutral value) : 
+You can define identity by adding zero (neutral value) :
 
 1 + 0 = 1 and 0 + 1 = 1
 

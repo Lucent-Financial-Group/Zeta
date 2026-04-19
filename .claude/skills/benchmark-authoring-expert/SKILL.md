@@ -107,6 +107,7 @@ output table shows size vs throughput. Use for any
 ## Warmup + iteration discipline
 
 Defaults:
+
 - Warmup: 6 iterations (lets JIT stabilise).
 - Target iteration count: 15 (BDN computes more if
   variance is high).
@@ -114,6 +115,7 @@ Defaults:
   runtime target.
 
 Override when:
+
 - **Very fast benchmarks (ns/op)** — more warmup,
   more invocations per iteration.
 - **Very slow benchmarks (ms/op)** — reduce iteration
@@ -127,6 +129,7 @@ Override when:
 
 `MemoryDiagnoser` reports Gen0/Gen1/Gen2 GC counts +
 `Allocated` bytes per op. Zeta cares deeply about:
+
 - **Zero-alloc hot paths** — `Allocated: 0 B`.
 - **Pool usage** — allocations that happen at rental
   (once) vs per-tick (bad).
@@ -141,6 +144,7 @@ record).
 ## Outlier detection
 
 BDN reports outliers:
+
 - `X outlier values removed` — BDN auto-drops extreme
   iterations. Fine; outliers are usually GC
   interruptions.

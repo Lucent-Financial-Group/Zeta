@@ -81,6 +81,7 @@ a `JetStreamSource` operator paired with the existing `Sharder`
 for fan-out across circuit replicas.
 
 **JetStream as durability substrate.** Secondary. `AckExplicit
+
 + R=3` maps loosely to `StableStorage`. JetStream acks a
 *consumer cursor*, not a transactional commit — reference, not
 a plan.
@@ -114,11 +115,11 @@ adequate, no fork needed; serialisation hooks accept our
 
 ## Sources
 
-- `nats-io/nats-server` README + `doc/` (Apache-2.0)
-- `nats-io/nats.net` (Apache-2.0)
-- ADR-018 "JetStream as the Durable Replacement for STAN",
++ `nats-io/nats-server` README + `doc/` (Apache-2.0)
++ `nats-io/nats.net` (Apache-2.0)
++ ADR-018 "JetStream as the Durable Replacement for STAN",
   `nats-io/nats-architecture-and-design`
-- Ongaro + Ousterhout 2014 (RAFT)
-- EventStoreDB docs (server-side-consumer comparison)
-- Kingsbury, Jepsen reports on Kafka (2013, 2024) — the
++ Ongaro + Ousterhout 2014 (RAFT)
++ EventStoreDB docs (server-side-consumer comparison)
++ Kingsbury, Jepsen reports on Kafka (2013, 2024) — the
   methodology JetStream has not yet been subjected to

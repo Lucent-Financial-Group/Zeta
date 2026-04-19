@@ -51,6 +51,7 @@ CQF), ChainedFilter composition theory, Stable Learned Bloom
 (only learned variant with drift-bounded FPR).
 
 **Hold.**
+
 - **Cuckoo / Morton filter** — deleting a never-inserted item
   produces a false negative, breaking DBSP's tolerance for
   `δ(x)=−1` on unseen `x`.

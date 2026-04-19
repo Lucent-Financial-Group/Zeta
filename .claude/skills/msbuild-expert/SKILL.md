@@ -68,6 +68,7 @@ one file. Projects reference packages without versions:
 ```
 
 Discipline:
+
 - **Version lives only in `Directory.Packages.props`.**
   If a .fsproj has `<PackageReference Include="X"
   Version="Y">`, remove the `Version` attribute and add
@@ -97,6 +98,7 @@ surfaces as `"The type 'X' is not defined"` at confusing
 lines.
 
 **New-file checklist:**
+
 1. Create the .fs file.
 2. Insert `<Compile Include="MyFile.fs" />` at the right
    spot (after its dependencies, before its dependents).
@@ -111,7 +113,7 @@ C# projects auto-include `*.cs`; file order doesn't
 matter. A `.csproj` with explicit `<Compile>` entries
 overrides the auto-include — rare in Zeta.
 
-## `InternalsVisibleTo` in F#
+## `InternalsVisibleTo` across assembly boundaries
 
 F# uses `AssemblyInfo.fs` (not an attribute on the
 .fsproj):
@@ -146,6 +148,7 @@ need multi-targeting; Zeta is single-target today.
 
 Pins the dotnet SDK used for this repo. `rollForward`
 controls what happens on a miss:
+
 - `latestFeature` — accept any 10.0.x ≥ 100.
 - `disable` — require the exact version.
 - `patch`, `latestPatch` — similar but tighter.

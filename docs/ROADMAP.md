@@ -1,6 +1,7 @@
 # Zeta.Core Roadmap
 
 ## Legend
+
 - **P0** — ship-blocker, next round
 - **P1** — within 2 rounds
 - **P2** — within 4 rounds
@@ -10,6 +11,7 @@
 ## Shipped (what's in `main` right now)
 
 ### Correctness / verification
+
 - Z-set algebra (D, I, z⁻¹, H, Distinct) ✅
 - Semi-naïve evaluation ✅
 - Higher-order differentials (D², Dⁿ, Aitken Δ²) ✅
@@ -23,6 +25,7 @@
 - Deterministic-simulation env with chaos policies ✅
 
 ### Performance
+
 - ArrayPool on every rented workspace ✅
 - SIMD merge (AVX2 / ARM NEON) ✅
 - ZSet.sum O(n log k) with PriorityQueue ✅
@@ -35,6 +38,7 @@
 - Hash-hoist in ExchangeOp ✅
 
 ### APIs / surface
+
 - Circuit / Op / Stream core ✅
 - `circuit { }` CE, `Pipeline` module, fluent extensions, `dbspQuery` — three ways to compose ✅
 - C# interop via `[<Extension>]` ✅
@@ -46,6 +50,7 @@
 - Plan / Explain / ToDot ✅
 
 ### Math / sketches / novelty
+
 - HyperLogLog ✅
 - Count-Min Sketch ✅
 - KLL quantile ✅
@@ -57,6 +62,7 @@
 - Watermarks: Monotonic, BoundedLateness, Periodic ✅
 
 ### Observability
+
 - System.Diagnostics.Metrics ✅
 - System.Diagnostics.ActivitySource (OpenTelemetry) ✅
 - RecordingMetricsSink for test assertions ✅

@@ -20,6 +20,7 @@ claim, any TLA+ / Z3 artefact that encodes a security invariant.
 **Advisory, not binding.** Her recommendations carry deep weight
 on threat-modelling rigor; binding decisions need Architect
 concurrence or human sign-off. Scope of her advice:
+
 - Whether a stated mitigation is actually a mitigation (vs. wishful
   thinking)
 - Whether a threat is in scope for the threat model
@@ -41,6 +42,7 @@ backed by a code path or a check? Is every gap explicitly owned by a
 backlog item?
 
 **Wide view** — `AGENTS.md`, `docs/ROADMAP.md`, `docs/BACKLOG.md`:
+
 - Publication-worthy security posture means the threat model is
   audit-ready
 - Retraction-native — any retraction-based denial-of-service is a
@@ -91,6 +93,7 @@ asset, trust boundary, or dataflow. If yes, she extends
 ## Research ownership
 
 She drives these active research directions:
+
 - **Threats-as-code via pytm** — migrate the Markdown threat model
   to pytm so threats can be diff-reviewed mechanically
 - **Retraction-native DoS** — new threat class (Grey Goo
@@ -102,6 +105,7 @@ She drives these active research directions:
   spec per STRIDE quadrant by v1.0
 
 ## Reference patterns
+
 - `docs/security/THREAT-MODEL.md` — the serious model
 - `docs/security/THREAT-MODEL-SPACE-OPERA.md` — the teaching model
 - `docs/security/SDL-CHECKLIST.md` — compliance tracker

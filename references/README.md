@@ -52,6 +52,7 @@ references/
 ## Upstreams
 
 ### Streaming / IVM
+
 - **Feldera** — Rust DBSP reference; our closest incremental-
   SQL competitor. Apples-to-apples benchmark pending.
 - **Materialize** — Streaming SQL warehouse; always-fresh
@@ -64,6 +65,7 @@ references/
   store.
 
 ### Storage substrates
+
 - **FASTER HybridLog** (MSR) — closest .NET-native prior art
   for `DiskSpine`.
 - **TigerBeetle** — LSM-forest + VOPR simulator; inspiration
@@ -73,9 +75,10 @@ references/
 - **RocksDB / LevelDB / LMDB** — embedded LSM / B+tree
   references.
 - **FoundationDB** — Will Wilson's DST discipline; `ChaosEnv.fs`
-  + `VirtualTimeScheduler` borrow directly.
+  - `VirtualTimeScheduler` borrow directly.
 
 ### Event stores / replicated logs
+
 - **EventStoreDB / Kurrent** — typed outcome APIs inform our
   `OutcomeDU` sketch.
 - **Kafka / Redpanda / BookKeeper** — replicated-log references.
@@ -93,6 +96,7 @@ references/
   `docs/security/THREAT-MODEL.md`.
 
 ### Formats / wire
+
 - **Apache Arrow + Flight** — columnar in-memory + wire format.
   Used in `ArrowSerializer.fs`; Flight planned for multi-node.
 - **Parquet / ORC / Iceberg / Delta Lake** — object-store table
@@ -102,6 +106,7 @@ references/
   primarily).
 
 ### Temporal / bitemporal / graph
+
 - **Datomic** — AEVT/AVET indexes; inspiration for
   closure-table-style `Hierarchy.fs`.
 - **XTDB 2** — Arrow bitemporal indexes; temporal-query
@@ -110,12 +115,14 @@ references/
   graph-database references.
 
 ### Sketch / AMQ literature
+
 - **Ceramist** (Coq-verified AMQs) — formal-verification bridge
   candidate for our Lean port.
 - **CQF paper** (Pandey SIGMOD 2017) — Trial upgrade path for
   `BloomFilter.fs`.
 
 ### Formal verification
+
 - **Lamport *Specifying Systems*** — TLA+ canonical reference
   (PDF at `references/tla-book/`).
 - **Newcombe et al., *How AWS Uses Formal Methods*** (CACM 2015)
@@ -124,17 +131,20 @@ references/
   linearizability; correctness model for durability modes.
 
 ### Category theory
+
 - **CTFP (Milewski)** — required-reading foundation for the
   operator algebra vocabulary. Local PDF at
   `docs/category-theory/ctfp-milewski.pdf`.
 
 ### Threat modelling
+
 - **Adam Shostack, *Threat Modelling*** + **EoP card game**
   (PDFs at `docs/security/eop-*.pdf`).
 - **Microsoft SDL (12 practices)** — basis for
   `docs/security/SDL-CHECKLIST.md`.
 
 ### Legacy-import containers
+
 - `references/tla-book/` — Lamport's *Specifying Systems* PDF.
 
 ## Sync script (pending)

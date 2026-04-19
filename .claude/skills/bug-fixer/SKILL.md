@@ -48,6 +48,7 @@ fresh eyes on the code first.
 
 If there isn't already a test that fails in the bug's
 way:
+
 - Add the falsifying test first
   (`tests/Tests.FSharp/`, appropriate subject folder).
 - Confirm it fails for the stated reason.
@@ -59,6 +60,7 @@ wants the test to exist independent of the fix.
 ### 4. Walk the blast radius
 
 Before writing the fix:
+
 - `grep` every call site of the affected function /
   type.
 - List the specialists whose domain the fix touches.
@@ -74,6 +76,7 @@ Before writing the fix:
 ### 5. Write the minimal correct fix
 
 **No quick hacks.** The bar:
+
 - Fix treats the cause, not the symptom.
 - Fix makes the test from step 3 pass.
 - Fix makes every other existing test still pass.

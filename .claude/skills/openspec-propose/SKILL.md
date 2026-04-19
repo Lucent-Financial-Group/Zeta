@@ -12,6 +12,7 @@ metadata:
 Propose a new change - create the change and generate all artifacts in one step.
 
 I'll create a change with artifacts:
+
 - proposal.md (what & why)
 - design.md (how)
 - tasks.md (implementation steps)
@@ -87,6 +88,7 @@ When ready to implement, run /opsx:apply
 **Output**
 
 After completing all artifacts, summarize:
+
 - Change name and location
 - List of artifacts created with brief descriptions
 - What's ready: "All artifacts created! Ready for implementation."
@@ -103,6 +105,7 @@ After completing all artifacts, summarize:
   - These guide what you write, but should never appear in the output
 
 **Guardrails**
+
 - Create ALL artifacts needed for implementation (as defined by schema's `apply.requires`)
 - Always read dependency artifacts before creating a new one
 - If context is critically unclear, ask the user - but prefer making reasonable decisions to keep momentum

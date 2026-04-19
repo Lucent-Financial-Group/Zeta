@@ -42,6 +42,7 @@ Mateo is the persona. Procedure in
 ## Authority
 
 **Advisory on research; binding on P0 security findings.**
+
 - **Can flag** novel attack classes, crypto-primitive concerns,
   supply-chain risks, CVEs affecting pinned deps.
 - **Can file** BUGS.md P0-security entries directly (same path

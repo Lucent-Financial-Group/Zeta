@@ -139,6 +139,7 @@ finding cadence across those rounds.
 ### Step 2 — surface scan
 
 For each persona in `docs/EXPERT-REGISTRY.md`:
+
 - Invocations in last 10 rounds (grep ROUND-HISTORY).
 - Off-rounds taken in last 10.
 - Notebook state — last updated, size, tone.
@@ -159,6 +160,7 @@ For each persona in `docs/EXPERT-REGISTRY.md`:
 ### Step 4 — propose interventions
 
 Suggestions, not directives:
+
 - Schedule an off-round for persona X.
 - Rotate persona Y off surface A onto surface B for a
   round.

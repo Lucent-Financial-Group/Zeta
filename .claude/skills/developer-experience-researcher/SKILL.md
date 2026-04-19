@@ -27,6 +27,7 @@ Human-contributor-facing surface only:
   they exist).
 
 Out of scope:
+
 - Library-consumer experience — UX researcher.
 - Persona / agent experience — AX researcher (Daya).
 - Code-level bugs — the `harsh-critic`.
@@ -49,6 +50,7 @@ Out of scope:
 Open. Must follow `docs/EXPERT-REGISTRY.md` §About the names.
 
 Candidate names queued (not committed):
+
 - **Bodhi** (Sanskrit — awakening) — awakening new contributors.
 - **Sefa** (Akan — word, speech) — clear communication to
   contributors.

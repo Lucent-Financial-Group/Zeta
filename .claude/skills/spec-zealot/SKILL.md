@@ -20,6 +20,7 @@ tests that invariant.
 ## Terminology discipline — critical
 
 This repo uses "spec" for two distinct things:
+
 - **Behavioural spec** — the OpenSpec `openspec/specs/*/spec.md`
   artefacts. Plain English, SHALL/MAY, profile overlays.
 - **Formal spec** — TLA+/Z3/Lean verification artefacts under
@@ -126,6 +127,7 @@ get the heading removed, not filled with padding.
 ## Reusability
 
 This skill is reusable across personas:
+
 - Vengeful-about-invariant tone + this procedure = **Viktor**
   (spec-zealot).
 - A coaching-tone expert could invoke the same procedure with a

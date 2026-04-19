@@ -38,6 +38,7 @@ feature + debt budget).
 ## Live debt
 
 ### Semgrep rule 2 `plain-tick-increment` — four `nosemgrep` suppressions
+
 - **Site:** `src/Core/FSharpApi.fs:160,168`, `src/Core/LawRunner.fs:131,189`, `src/Core/PluginHarness.fs:77`
 - **Found:** round 30 close — first-ever `gate.yml` `lint` run under `--error` exposed the rule never ran before; real bug at `Circuit.fs:209` fixed in-round, remaining four sites are method-local loop counters suppressed with `// nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads`.
 - **Effort:** S
@@ -45,6 +46,7 @@ feature + debt budget).
 - **Fix:** sharpen rule 2 to match only `let mutable tick = 0L` at class/module scope (not `let mutable tick = 0` inside a method body). Either via `metavariable-comparison` + class-scope anchor, or by switching the rule to a proper F# parser plugin when `languages: [fsharp]` matures in Semgrep.
 
 ### Semgrep rules self-match on `.semgrep.yml` + teaching files
+
 - **Site:** `.semgrep.yml` rule 2 + rule 8 `paths.exclude`
 - **Found:** round 30 close — the rules' own pattern literals matched themselves; excluded `.semgrep.yml` + `.claude/**` as a shortcut.
 - **Effort:** S
@@ -52,6 +54,7 @@ feature + debt budget).
 - **Fix:** global `paths.exclude` block at the top of `.semgrep.yml` OR `.semgrepignore` file at repo root with `/.semgrep.yml` + `/.claude/skills/**`.
 
 ### Stale path `src/Zeta.Core/**` in two Semgrep rules
+
 - **Site:** `.semgrep.yml` rules 1 + 9 — previously `paths.include: "src/Zeta.Core/**/*.fs"`, now corrected to `"src/Core/**/*.fs"`.
 - **Found:** round 30 close — `feedback_folder_naming_convention` sweep missed these two stale includes; corrected in-round.
 - **Effort:** S — already fixed this round; leave as a marker that the folder-naming rename's sweep missed `.semgrep.yml` when it ran.
@@ -59,6 +62,7 @@ feature + debt budget).
 - **Fix:** delete this entry in round 31 close.
 
 ### `TlcRunnerTests` was pointing at `docs/` for spec files
+
 - **Site:** `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` — `docsPath` → `specsPath` (`tools/tla/specs/`) in round 30 close.
 - **Found:** round 30 close — `gate.yml` failure log exposed 9 TLC tests failing because `.tla` files live under `tools/tla/specs/` not `docs/`, and the test also hard-failed when the jar was absent.
 - **Effort:** S — fixed in-round (path + Alloy-style `toolchainReady` skip pattern).
@@ -66,6 +70,7 @@ feature + debt budget).
 - **Fix:** delete this entry in round 31 close.
 
 ### CI parity-swap — `gate.yml` runs `actions/setup-dotnet` not `tools/setup/install.sh`
+
 - **Site:** `.github/workflows/gate.yml:54-57`
 - **Found:** round 29 (original landing) — explicitly flagged in the workflow header comment as temporary; exposed again in round 30 close when `TlcRunnerTests` couldn't find the TLC jar on CI runners.
 - **Effort:** M
@@ -73,6 +78,7 @@ feature + debt budget).
 - **Fix:** replace the `setup-dotnet` step with `./tools/setup/install.sh`; gate on `mise trust` CI hardening (round-31 Track B item 4 open-question: allow-list schema vs diff-vs-main vs require human review on any `.mise.toml` change).
 
 ### Verifier-jar SHA-256 pinning (round-30 → round-31)
+
 - **Site:** `tools/setup/common/verifiers.sh` + `tools/setup/manifests/verifiers.txt`
 - **Found:** round 30 — elevation design doc deferred this to round 31 per Aaron's "accept today, improve over time" TOFU stance
 - **Effort:** S
@@ -80,6 +86,7 @@ feature + debt budget).
 - **Fix:** extend manifest format to `<path> <url> <sha256>`; have `verifiers.sh` compute SHA after download and error-out on mismatch. Re-verify on re-fetch.
 
 ### Safety-clause-diff lint on `.claude/skills/**/SKILL.md`
+
 - **Site:** `.semgrep.yml` rule 16 (stubbed, deferred)
 - **Found:** round 30 — elevation design called for this; Semgrep generic-mode regex can't cleanly express "file lacks any of these headings"
 - **Effort:** M
@@ -87,6 +94,7 @@ feature + debt budget).
 - **Fix:** bespoke diff-level lint that detects section removal / shrinkage on skill SKILL.md files. Can be a small .NET tool or a jq-over-git-diff script; wire into CI.
 
 ### Install-script P1 follow-ups from round-29 harsh-critic review
+
 - **Site:** `tools/setup/common/{shellenv,dotnet-tools,macos,linux,mise}.sh`, `.github/workflows/gate.yml`
 - **Found:** round 29 by `harsh-critic`
 - **Effort:** S
@@ -94,6 +102,7 @@ feature + debt budget).
 - **Fix:** per-finding edits per the review; no single sweep. Tracked here so `maintainability-reviewer` can pick them up in a tune-up round.
 
 ### CI gate swap requires `mise trust` hardening first
+
 - **Site:** `tools/setup/common/mise.sh`
 - **Found:** round 29 by `security-researcher`
 - **Effort:** S
@@ -101,6 +110,7 @@ feature + debt budget).
 - **Fix:** before the parity swap: in CI mode, gate `mise trust` on `.mise.toml` being unchanged vs `main` (or on an allow-list schema that rejects `[env]`/hooks). Block the swap on this fix.
 
 ### Skill-file prose polish after GOVERNANCE §27 sweep
+
 - **Site:** `.claude/skills/**/SKILL.md`
 - **Found:** round 29 during persona→role sweep for GOVERNANCE §27
 - **Effort:** S
@@ -108,6 +118,7 @@ feature + debt budget).
 - **Fix:** `maintainability-reviewer` pass across `.claude/skills/**/SKILL.md` to polish the prose: collapse tautologies, drop unnecessary backticks on bare role mentions, soften "the `role`" to "role" where grammar allows. Run `skill-tune-up` cadence-check afterward to verify no semantic drift.
 
 ### `LawRunner.check*` takes 8-11 positional args — promote to config record
+
 - **Site:** `src/Core/LawRunner.fs`
 - **Found:** round 28 by Rune (maintainability-reviewer)
 - **Effort:** S
@@ -115,6 +126,7 @@ feature + debt budget).
 - **Fix:** introduce `LinearityConfig<'TIn,'TOut>` / `RetractionConfig<'TIn,'TOut>` records and take one argument. Do it before `checkBilinear` lands.
 
 ### `LawViolation.Message` is a string — promote to a structured DU
+
 - **Site:** `src/Core/LawRunner.fs`
 - **Found:** round 28 by Kira (harsh-critic)
 - **Effort:** S
@@ -122,6 +134,7 @@ feature + debt budget).
 - **Fix:** `type Reason = LinearityBreak of tick:int | RetractionResidual of count:int | BadArgs of string`; keep `Message` as a rendering helper.
 
 ### `LawRunner` has no test covering operators that omit the marker tag
+
 - **Site:** `tests/Tests.FSharp/Plugin/LawRunner.Tests.fs`
 - **Found:** round 28 by Kira (harsh-critic)
 - **Effort:** S
@@ -129,6 +142,7 @@ feature + debt budget).
 - **Fix:** add a fixture that implements `IOperator<_>` directly (no `ILinearOperator` tag) and confirm `checkLinear` runs against it.
 
 ### `Op<'T>` implicitly publicised as a plugin subclass-extension point
+
 - **Site:** `src/Core/Circuit.fs` (`Op`, `Op<'T>`) and every subtype under
   `src/Core/Operators.fs`
 - **Found:** public-api-designer (Ilyana) first review
@@ -147,6 +161,7 @@ feature + debt budget).
   public-api-designer review. Round-26+ work.
 
 ### "Round-N fix" historical-voice survivors in source docstrings
+
 - **Sites:** `src/Core/FastCdc.fs:68`, `Residuated.fs:39`,
   `Durability.fs:17`, `Durability.fs:33`, `Recursive.fs:211`,
   `FeatureFlags.fs:43`
@@ -160,6 +175,7 @@ feature + debt budget).
   in `docs/ROUND-HISTORY.md` under the round it happened.
 
 ### `docs/EXPERT-REGISTRY.md` / `docs/PROJECT-EMPATHY.md` pronoun drift
+
 - **Sites:** `docs/EXPERT-REGISTRY.md`, `docs/PROJECT-EMPATHY.md`
 - **Found:** round 20 by Rune
 - **Effort:** S
@@ -171,6 +187,7 @@ feature + debt budget).
   "see `docs/EXPERT-REGISTRY.md`."
 
 ### Durability.createBackingStore `invalidOp` message spans 6 lines of prose
+
 - **Site:** `src/Core/Durability.fs:166-174`
 - **Found:** round 21 by Kira
 - **Effort:** S
@@ -181,6 +198,7 @@ feature + debt budget).
   case so callers can pattern-match instead of string-match.
 
 ### `bench/Dbsp.Benchmarks/BloomBench.fs` referenced but absent on disk
+
 - **Site:** referenced in `docs/BUGS.md`, `docs/research/bloom-filter-frontier.md`, `docs/TECH-RADAR.md`
 - **Found:** round 21 by Imani
 - **Effort:** S (remove refs) to M (ship the bench)
@@ -194,6 +212,7 @@ feature + debt budget).
   promotion.
 
 ### "bug-fixer description has an unprovable claim" (Kira nit)
+
 - **Site:** `.claude/skills/bug-fixer/SKILL.md:3`
 - **Found:** round 21 by Kira
 - **Effort:** S
@@ -207,6 +226,7 @@ feature + debt budget).
   by the Architect (Kenji). No persona."
 
 ### `.claude/skills/skill-creator/SKILL.md` frontmatter bloat
+
 - **Site:** `.claude/skills/skill-creator/SKILL.md` (~180 lines)
 - **Found:** round 21 by Rune (implicit in BP-03 "skill body
   ≤ ~300 lines")
@@ -219,6 +239,7 @@ feature + debt budget).
   meta-skill from BP-03 in a one-line note.
 
 ### CLAUDE.md duplicates commands that live in CONTRIBUTING.md
+
 - **Site:** `CLAUDE.md:54`
 - **Found:** round 21 by Rune
 - **Effort:** S
@@ -228,6 +249,7 @@ feature + debt budget).
   with a pointer to `CONTRIBUTING.md#local-validation`.
 
 ### `.github/PULL_REQUEST_TEMPLATE.md` missing a Feature-Flag checkbox
+
 - **Site:** `.github/PULL_REQUEST_TEMPLATE.md`
 - **Found:** round 21 by Rune
 - **Effort:** S
@@ -237,6 +259,7 @@ feature + debt budget).
   feature flag, `docs/FEATURE-FLAGS.md` is updated."
 
 ### TlcRunnerTests `repoRoot` lookup CWD-brittle
+
 - **Site:** `tests/Dbsp.Tests.FSharp/Formal/Tlc.Runner.Tests.fs:24-31`
 - **Found:** round 22 by Kenji — full-solution `dotnet test`
   occasionally lands with a CWD outside the repo, walk-up never
@@ -252,6 +275,7 @@ feature + debt budget).
   on CWD.
 
 ### BloomFilter.pairOfString hashes UTF-16 bytes, not UTF-8
+
 - **Site:** `src/Core/BloomFilter.fs` — `BloomHash.pairOfString`
 - **Found:** round 22 by the bug-fix agent
 - **Effort:** S
@@ -270,6 +294,7 @@ feature + debt budget).
   Prefer the latter the first time anyone asks for persistence.
 
 ### Lean `IsLinear` predicate too weak for B2 (`linear_commute_zInv`)
+
 - **Site:** `tools/lean4/Lean4/DbspChainRule.lean` §Linearity +
   §Bilinearity sub-lemma `linear_commute_zInv`
 - **Found:** round 24 by the Mathlib-closure subagent (during
@@ -314,6 +339,7 @@ Entries under the `wake-up-drift` tag defined in
 `docs/WAKE-UP.md:11`. Category kept open for future AX audits.
 
 #### wake-up-drift: STYLE.md referenced 3x but absent
+
 - **Site:** `.claude/agents/maintainability-reviewer.md:68,104`,
   `.claude/skills/maintainability-reviewer/SKILL.md:109,146-147`,
   `.claude/skills/developer-experience-researcher/SKILL.md`
@@ -327,6 +353,7 @@ Entries under the `wake-up-drift` tag defined in
   reviewer.md`; promoted to STYLE.md when stable."
 
 #### wake-up-drift: memory/persona/README.md notebook list stale
+
 - **Site:** `memory/persona/README.md:24-27`
 - **Found:** round 24 by Daya
 - **Effort:** S
@@ -338,8 +365,8 @@ Entries under the `wake-up-drift` tag defined in
   four of six.
 - **Fix:** add four bullets to the README.
 
-
 ### Flaky FsCheck property in the F# suite
+
 - **Site:** one of the `[<Property>]` tests in
   `tests/Dbsp.Tests.FSharp/` (error didn't surface the test
   name; seeds `(5370856837815825128,13581531945998878741)` and

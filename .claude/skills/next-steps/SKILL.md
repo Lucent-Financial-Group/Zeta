@@ -12,6 +12,7 @@ item.
 ## Scope
 
 Reads the following sources, in order:
+
 1. `docs/BACKLOG.md` — P0 / P1 / P2 / P3 tiers
 2. `docs/ROUND-HISTORY.md` — what just landed
 3. `docs/research/` — recent research reports

@@ -41,6 +41,7 @@ quarterly cadence; round-cadence is more expensive but catches
 the XZ-class precursor activity.
 
 Re-audit touchpoints per round:
+
 - Round-open: `threat-model-critic` skims the "mitigation
   validation" section; anything stale gets a DEBT entry.
 - Mid-round: any code landing that touches a mitigated
@@ -83,6 +84,7 @@ of round 30. XZ Utils is the canonical cautionary tale.
 **Accepted controls today: 2FA on the maintainer's GitHub
 account.** Deferred controls (remediation ladder, education-
 over-time):
+
 - Hardware security key (YubiKey-class) instead of TOTP.
 - Signed commits required on `main` (defeats "attacker
   posts a commit impersonating Aaron" — the Renovate-spoof
@@ -144,6 +146,7 @@ adversaries.
 ## STRIDE × components
 
 ### Spoofing (identity)
+
 | Vector | Mitigation | Tier defended | Gap |
 |---|---|---|---|
 | Fake checkpoint file in spine dir | `Magic == 0xD85C01E2` + CRC fail on bad bytes | T2 | T3: no writer_epoch / manifest CAS — stale writer could overwrite |
@@ -152,6 +155,7 @@ adversaries.
 | **Attacker posts commit impersonating Aaron** (Renovate-spoof class, tj-actions) | 2FA on GitHub account | T1 | **T3 gap (documented exception): no signed commits yet** |
 
 ### Tampering (integrity)
+
 | Vector | Mitigation | Tier defended | Gap |
 |---|---|---|---|
 | Bit-flip in on-disk spine segment | `HardwareCrc32C` per-frame; checkpoint CRC; Merkle root | T2 | T3: CRC detects accident, not adversary — needs SHA-256 for adversarial model |
@@ -164,6 +168,7 @@ adversaries.
 | **Cache poisoning across PR/main** (Khan class) | Cache key pinned to `Directory.Packages.props` hash; no `restore-keys` prefix fallback | T2 | Inherits `packages.lock.json` gap |
 
 ### Repudiation (non-repudiation)
+
 | Vector | Mitigation | Tier defended | Gap |
 |---|---|---|---|
 | Sink claims exactly-once, no audit | `ISink.BeginTx/Commit` lifecycle logged via `DbspTracing` ActivitySource | T1 | OpenTelemetry hook only — no durable audit log |
@@ -171,6 +176,7 @@ adversaries.
 | **`git push --force main`** | Branch protection on `main` (round 27) | T2 | — |
 
 ### Information disclosure
+
 | Vector | Mitigation | Tier defended | Gap |
 |---|---|---|---|
 | Temp files during merge world-readable | `DiskBackingStore.pathFor` canonicalises + rejects ADS | T2 | No umask / ACL on spine dir |
@@ -180,6 +186,7 @@ adversaries.
 | **Side-channel classes (EM / timing / acoustic / cache)** | Out of scope today (no crypto) | — | Revisit when crypto lands; Aaron's domain |
 
 ### Denial of Service
+
 | Vector | Mitigation | Tier defended | Gap |
 |---|---|---|---|
 | Join cardinality blowup (\|a\| × \|b\|) | Int64 cap + `Array.MaxLength` guard | T2 | No global memory budget |
@@ -188,6 +195,7 @@ adversaries.
 | Query timeout | — | — | No per-query deadline |
 
 ### Elevation of Privilege
+
 | Vector | Mitigation | Tier defended | Gap |
 |---|---|---|---|
 | Deserialize untrusted Arrow IPC → gadget | Schema is fixed literal (two Int64Array columns) | T2 | If dynamic schemas land, need type allowlist |
@@ -317,6 +325,7 @@ adversary tier it defends to. Forces honest tier scoring.
 ## Priorities
 
 Round-30 delta:
+
 - **Round 30 shipped:** Semgrep-in-CI (14 rules enforced);
   SHA-pin enforcement rule (15); adversary-tier model; bus-
   factor documented exception; supply-chain trust boundaries
@@ -327,6 +336,7 @@ Round-30 delta:
   honest downgrades.
 
 Carry-forward priorities:
+
 1. **P0** — Witness-Durable Commit (closes several tampering
    gaps; fsync witness is tamper-evident via Merkle root).
 2. **P1** — SHA-256 checkpoint signatures (upgrade tamper model

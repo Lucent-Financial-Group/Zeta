@@ -27,7 +27,7 @@ framing: **regression tests, not verification**.
 
 - **Promptfoo-style fixture regression.** Canned input + multiple
   assertion types (exact, regex, JSON-schema, LLM-judged rubric)
-  + CI gating is the dominant working pattern. YAML config,
+  - CI gating is the dominant working pattern. YAML config,
   multi-provider, cheap to extend
   ([Promptfoo](https://github.com/promptfoo/promptfoo)).
 

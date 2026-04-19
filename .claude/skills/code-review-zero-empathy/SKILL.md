@@ -102,6 +102,7 @@ from new code, then hunts new classes.
 ## Reusability
 
 This skill is reusable across personas:
+
 - Zero-empathy tone + this procedure = **Kira** (harsh-critic).
 - Future mentor-tone expert could invoke the same procedure
   with a different tone contract.

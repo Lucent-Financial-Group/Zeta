@@ -30,7 +30,7 @@ with a ⭐ below and add a row there.
 - **Apache Arrow + Flight** ⭐ — columnar wire format; we use Arrow
   IPC in `ArrowSerializer.fs` and plan Flight for multi-node.
 - **FoundationDB** ⭐ — Will Wilson's DST lineage; our `ChaosEnv.fs`
-  + `VirtualTimeScheduler` borrow directly.
+  - `VirtualTimeScheduler` borrow directly.
 - **Materialize / Feldera** ⭐ — our closest incremental-SQL
   competitors; Feldera is `docs/research/feldera-comparison-status.md`.
 - **SlateDB** ⭐ — CAS-manifest + `writer_epoch` fencing pattern

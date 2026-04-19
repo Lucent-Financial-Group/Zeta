@@ -39,11 +39,11 @@ Everyone reads these. Measured cost: ~12k tokens total cold (GLOSSARY.md dominat
 
 Each persona adds these on top of Tier 0. ~5-10k tokens.
 
-6. `.claude/agents/<your-name>.md` — the persona file. Frontmatter
+1. `.claude/agents/<your-name>.md` — the persona file. Frontmatter
    wins on disagreement with notebook (BP-08).
-7. `.claude/skills/<each-skill-in-frontmatter>/SKILL.md` — the
+2. `.claude/skills/<each-skill-in-frontmatter>/SKILL.md` — the
    procedures you wear (one per entry in the `skills:` list).
-8. `memory/persona/<your-notebook>.md` — your cross-session
+3. `memory/persona/<your-notebook>.md` — your cross-session
    memory, when one exists. 3000-word cap (BP-07); ASCII only
    (BP-09).
 
@@ -51,14 +51,14 @@ Each persona adds these on top of Tier 0. ~5-10k tokens.
 
 Only when you have a specific task.
 
-9. `docs/BUGS.md` — P0 only if just orienting; full read if you
+1. `docs/BUGS.md` — P0 only if just orienting; full read if you
    are in the bug-fix lane.
-10. `docs/DEBT.md` — P0 only for orientation; full for knockdown
+2. `docs/DEBT.md` — P0 only for orientation; full for knockdown
     rounds.
-11. `docs/BACKLOG.md` — top 3 rows for orientation.
-12. `docs/WINS.md` — last round's entries only, for recent
+3. `docs/BACKLOG.md` — top 3 rows for orientation.
+4. `docs/WINS.md` — last round's entries only, for recent
     context.
-13. The specific file(s) in scope for your task.
+5. The specific file(s) in scope for your task.
 
 ## Tier 3 — on demand
 

@@ -170,6 +170,7 @@ not defend a dependabot rubber-stamp of a legitimately-
 published compromised SHA.
 
 Other classes that apply:
+
 - **Shai-Hulud npm worm** (Sept + Nov 2025) — NuGet
   has no auto-execute postinstall, but MSBuild
   `.targets` / `.props` from transitive deps execute
@@ -356,6 +357,7 @@ adversary. Placeholder line noting deferral.
 | 7 | Safety-clause-diff lint on `.claude/skills/**` | S | Long-game skill regression defence |
 
 Deferred per Aaron:
+
 - Hardware-key 2FA, signed commits, co-maintainer
   cooling period — documented exception, not
   enforced this round.

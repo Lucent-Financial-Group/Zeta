@@ -94,6 +94,7 @@ every round with only internal changes bumps patch.
 
 Every published package should be author-signed. Once
 NuGet publish lands:
+
 - Acquire a code-signing certificate (or use
   GitHub-hosted sigstore once NuGet supports it).
 - Sign via `dotnet nuget sign`.

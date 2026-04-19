@@ -10,6 +10,7 @@ revision, or retirement. This repo's convention is that no
 agent skill is created or meaningfully changed outside this
 workflow. Ad-hoc edits to other skill SKILL.md files are
 allowed only for:
+
 - Mechanical rename (e.g., path-reference swap after a doc
   moves)
 - Tone-contract hardening pre-approved by the Architect
@@ -37,6 +38,7 @@ new state/notebook file — comes through this skill.
 ### 1. Proposal (human or Architect)
 
 A proposal contains:
+
 - Proposed `name:` (frontmatter slug; no project prefix — skill
   directories under `.claude/skills/` are bare-named).
 - 1-paragraph rationale: what problem does this skill solve?
@@ -117,6 +119,7 @@ If the skill drifted, the cycle repeats from step 1.
 ## Standard sections checklist
 
 Every skill SKILL.md should have:
+
 - [ ] `name:` matches directory
 - [ ] `description:` is scoped narrowly, ≤ 600 chars
 - [ ] Pronouns set (if character-style skill) or absent (if
@@ -129,6 +132,7 @@ Every skill SKILL.md should have:
 ## Retirement
 
 A skill is retired when:
+
 - Its responsibility has been absorbed into another skill.
 - It has drifted so far that a rewrite is effectively a new skill.
 - It was a bad idea and the tune-up ranker has flagged it

@@ -24,6 +24,7 @@ Consumer-facing surface only:
   minutes of a new user.
 
 Out of scope:
+
 - Internal build / test / contributor surfaces — DX researcher.
 - Persona / agent experience — AX researcher (Daya).
 - API correctness or performance — the `algebra-owner` / the `complexity-reviewer` / the `harsh-critic`.
@@ -50,6 +51,7 @@ diverse linguistic traditions; short; pronounceable; non-
 overlapping with current roster.
 
 Candidate names queued (not committed):
+
 - **Iris** (Greek — rainbow / messenger) — messenger between
   library and user.
 - **Hana** (Korean/Japanese — flower; Arabic — happiness) —

@@ -70,6 +70,7 @@ Promotion of a scratchpad finding to a stable `BP-NN` rule is
 (Kenji) decision via `docs/DECISIONS/YYYY-MM-DD-bp-NN-*.md`.
 
 Sources that count for promotion:
+
 - Anthropic docs (`platform.claude.com`, `code.claude.com`)
 - OpenAI Agents SDK + official guides
 - Microsoft Semantic Kernel + Azure AI Agent docs

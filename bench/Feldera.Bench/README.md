@@ -12,6 +12,7 @@ dotnet run -c Release --project bench/Feldera.Bench --filter "*"
 
 BenchmarkDotNet runs each query across `EventCount ∈ {10K, 100K}` and
 reports:
+
 - **Mean / P95 / P99** wall-clock latency
 - **Allocations / tick** via `[<MemoryDiagnoser>]`
 - **Gen0 / Gen1 / Gen2** GC counts
