@@ -174,6 +174,29 @@ cost) but is still worth shipping eventually.
 - **Rough cost estimate:** S (just add to cadence)
 - **Priority:** P1
 
+### Post-install repo automation: Bun + TypeScript + package.json
+
+- **Why deferred:** `tools/setup/install.sh` (bash) owns bootstrap
+  because it can't assume Bun/Node/anything pre-install. After
+  install, Zeta's eventual polyglot repo-automation surface
+  (format-repo, coverage-collect, benchmark-compare, lint
+  orchestration) benefits from a single cross-platform runtime.
+  Aaron: "I used bun and typescript and package.json for repo
+  automation after the point of install … better than maintaining
+  bash and pwsh scripts everywhere." Pattern visible in
+  `../SQLSharp/tools/automation/` and `../scratch`.
+- **Trigger to revisit:** first post-install automation task that
+  would need cross-platform scripting (benchmark comparison,
+  coverage aggregation, format-repo across .fs/.cs/.md/etc., or
+  the first case where bash+pwsh would have to be maintained in
+  parallel).
+- **Rough cost estimate:** M (introduce `bun`/`package.json`
+  at repo root, first TypeScript automation entry point, wire
+  Bun install into `tools/setup/`)
+- **Priority:** P2 (on-demand; not blocking)
+- **Note:** post-install only; install.sh stays bash so the
+  bootstrap can't depend on its own output.
+
 ### `static-analysis-gap-finder` skill (missing-lint-tool detection)
 
 - **Why deferred:** Round 33 Track D surfaced that Zeta had no

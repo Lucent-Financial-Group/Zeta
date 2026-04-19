@@ -43,14 +43,23 @@ rather than re-installing or re-downloading.
 - **AND** CI MUST be able to assert this contract via a
   second-run check if a regression is suspected
 
-### Requirement: macOS bash 3.2 compatibility
+### Requirement: macOS bash 3.2 + Linux bash 5.x compatibility
 
-Zeta scripts MUST run under macOS's default bash 3.2 as well as
-Linux bash 5.x. Associative arrays (`declare -A`), advanced
-parameter expansion, and other bash-4+ features are forbidden in
-scripts that need to work on both.
+Zeta bash scripts are Unix-only. They MUST run under macOS's
+default bash 3.2 and Linux bash 5.x. Windows contributors run
+a separate PowerShell install path (`tools/setup/windows.ps1`
+— backlogged); bash is NOT expected to run on Git Bash for
+Windows. Two reasons, together: (1) Git Bash is not guaranteed
+installed on a Windows developer machine, so assuming it would
+make bootstrap fail on fresh boxes; and (2) post-install
+automation moves to TypeScript (via Bun) for cross-platform
+work — cleaner than trying to make bash portable to msys2.
 
-#### Scenario: Adding cross-platform logic
+Associative arrays (`declare -A`) and other bash-4+ features
+are forbidden because macOS ships bash 3.2 as `/bin/bash` for
+licensing reasons.
+
+#### Scenario: Adding cross-platform bash logic
 
 - **WHEN** a bash script needs to map multiple keys to values
 - **THEN** the script MUST use parallel arrays (`NAMES=(...)`
@@ -60,6 +69,19 @@ scripts that need to work on both.
   instead)
 - **AND** MUST avoid `readarray` / `mapfile` (use a
   `while IFS= read -r line; do ... done < <(...)` loop instead)
+
+#### Scenario: Cross-platform repo automation (non-install)
+
+- **WHEN** an automation task needs to run on Unix + Windows
+  developer machines (formatting, benchmark orchestration,
+  coverage aggregation, lint driver, etc.)
+- **THEN** the task MUST be written in TypeScript + Bun + a
+  repo-root `package.json` entry rather than in bash
+- **AND** bash MUST NOT be chosen for any task that would
+  otherwise need a parallel PowerShell twin — maintaining
+  bash+pwsh for the same job is explicitly out-of-scope per
+  Aaron round 33 + SECURITY-BACKLOG "Post-install repo
+  automation: Bun + TypeScript + package.json"
 
 ### Requirement: Manifest-driven installs
 
