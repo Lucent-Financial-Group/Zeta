@@ -157,6 +157,36 @@ cost) but is still worth shipping eventually.
 - **Rough cost estimate:** S
 - **Priority:** P2
 
+### documentation-agent cadence
+- **Why deferred:** the documentation-agent skill only triggers
+  when someone spots drift. Round 33 surfaced multiple stale-
+  comment / out-of-date-documentation issues that would have
+  been caught by a scheduled doc-state audit (e.g., my own
+  `.markdownlint-cli2.jsonc` comment drifted from the actual
+  suppression strategy in one round). Aaron round 33: "is the
+  documentation person looking for out of date documentation
+  on any kind of cadence?"
+- **Trigger to revisit:** round 34 factory-improvement slot.
+  Add documentation-agent to `factory-audit`'s every-10-rounds
+  walk scope. Each walk: scan comments in config files +
+  doc-to-code alignment + retired-file references.
+- **Rough cost estimate:** S (just add to cadence)
+- **Priority:** P1
+
+### Replace `tools/alloy/AlloyRunner.java` with a shell driver
+- **Why deferred:** the 65-line Java driver normalizes Alloy's
+  counter-example parsing to a clean stdout+exit-code contract.
+  Replacing with a bash script calling `java -cp alloy.jar ...`
+  directly would remove the Java compilation step, the
+  `classes/` build dir, and `java-expert` as a stub-weight
+  skill. Hard part is parsing Alloy's counter-example output
+  in shell instead of Java.
+- **Trigger to revisit:** when Zeta outgrows the Java driver
+  OR when `java-expert` becomes a maintenance burden.
+- **Rough cost estimate:** M (understand Alloy's output format
+  well enough to parse it in shell / F#)
+- **Priority:** P2
+
 ### `static-analysis-gap-finder` skill (missing-lint-tool detection)
 
 - **Why deferred:** Round 33 Track D surfaced that Zeta had no

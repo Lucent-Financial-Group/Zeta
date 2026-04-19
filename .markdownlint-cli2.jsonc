@@ -58,10 +58,12 @@
     // round-history prose.
     "MD028": false,
     // MD020 stays enabled — it catches real malformed closed-atx
-    // headings. Headings that end with `F#` / `C#` get the lint
-    // suppressed inline via `<!-- markdownlint-disable-next-line
-    // MD020 -->` since F# and C# are canonical names (the linter
-    // mis-parses trailing `#` as an ATX-close sigil).
+    // headings. Authors who need to mention `F#` / `C#` in a
+    // heading wrap the name in backticks (``## ... + `F#` ``) so
+    // the trailing `#` lives inside an inline-code span rather
+    // than at end-of-line where CommonMark would consume it as
+    // an ATX-close sigil. This is the unambiguous fix AND renders
+    // the language name as code, which is the canonical style.
     // MD003 pinned to atx so the parser never prefers closed-atx.
     "MD003": { "style": "atx" }
   }
