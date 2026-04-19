@@ -147,6 +147,9 @@ wear the same procedure if the round-table grew.
 - `docs/EXPERT-REGISTRY.md` — the full roster, including Kenji
 - `docs/CONFLICT-RESOLUTION.md` — conflict protocol
 - `docs/GLOSSARY.md` — shared vocabulary (glossary-police home)
-- `docs/AGENT-BEST-PRACTICES.md` — BP-01 .. BP-16
+- `docs/AGENT-BEST-PRACTICES.md` — BP-01 .. BP-16 plus
+  the "Operational standing rules" section (upstreams
+  exclusion on every file-iteration command; no name
+  attribution in code / docs / skills)
 - `docs/ROUND-HISTORY.md` — where the round narrative lands
 - `memory/persona/kenji/NOTEBOOK.md` — own notebook

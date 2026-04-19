@@ -134,6 +134,47 @@ BP-07").
 
 ---
 
+## Operational standing rules
+
+These are not BP-NN rules (they lack ≥3 external-source
+backing and don't affect skill *design*). They are
+project-wide operational standards that apply to every
+agent's tool use. Every agent is expected to follow them;
+`skill-tune-up` flags violations the same way it flags
+BP drift.
+
+- **Exclude `references/upstreams/` from every file-iteration
+  command.** That tree is read-only clones from other
+  projects (sibling repos pulled in via GOVERNANCE §23 for
+  reference, not consumption). Grep, Glob, `find`, `sed`,
+  `xargs`, `wc`, any tool that walks files MUST exclude it
+  by default. Not doing so produces 10x-100x slower scans
+  and surfaces noise from other projects as if it were
+  Zeta code. Concretely:
+  - Grep tool: set `path` narrowly, or filter with `glob`
+    — the built-in tool honours `.gitignore`-style skips.
+  - `rg` from Bash: pass `--glob '!references/upstreams/**'`.
+  - `find`: pass `-not -path '*/references/upstreams/*'`
+    (also skip `.git`, `bin`, `obj`).
+  - Globs: prefer specific roots (`src/**/*.fs`) over `**/*.fs`.
+
+  Rationale: this rule was discovered the hard way in
+  round 34 when repo-wide greps started timing out. The
+  tree is expected to grow as more upstream reference
+  repos land per GOVERNANCE §23, so the cost compounds.
+
+- **No name attribution in code, docs, or skills.** Direct
+  names of contributors (human or agent) appear only in
+  persona memory directories (`memory/persona/<name>/`) and
+  optionally `docs/BACKLOG.md` when a specific request is
+  captured. Code / docs / skill bodies use role-refs
+  ("human maintainer", "architect", "security researcher")
+  so the factory reads stable across contributor turnover.
+  Comms-hygiene sweep is logged under Samir's lane in
+  `docs/BACKLOG.md`.
+
+---
+
 ## How rules become stable
 
 A practice promotes from scratchpad to this file when all three
