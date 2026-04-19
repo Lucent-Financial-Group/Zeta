@@ -75,15 +75,18 @@ fi
 echo "✓ mise: $(mise --version)"
 
 # ── 5-10. Common steps ──────────────────────────────────────────────
+# mise.sh runs `mise install` from .mise.toml, which now includes
+# dotnet (round-34 flip). No separate dotnet install step needed;
+# mise shims handle PATH. `~/.dotnet/tools` still needs PATH for
+# `dotnet tool install -g` globals — that's dotnet's own convention
+# independent of where the SDK lives. shellenv.sh wires it.
 "$SETUP_DIR/common/mise.sh"
 "$SETUP_DIR/common/python-tools.sh"
-"$SETUP_DIR/common/dotnet.sh"
 
-# Make ~/.dotnet available for the remainder of this install.sh
-# process so dotnet-tools.sh can find the SDK we just installed.
-# shellenv.sh handles propagation to subsequent shells + CI env.
-export DOTNET_ROOT="$HOME/.dotnet"
-export PATH="$DOTNET_ROOT:$HOME/.dotnet/tools:$PATH"
+# Make ~/.dotnet/tools available for the remainder of this install.sh
+# process so dotnet-tools.sh can install globals (semgrep / stryker)
+# into $HOME/.dotnet/tools and find them on PATH in the same run.
+export PATH="$HOME/.dotnet/tools:$PATH"
 
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"

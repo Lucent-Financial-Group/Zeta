@@ -270,6 +270,17 @@ within each priority tier.
   invocation as a mandatory round-close step after any
   rename campaign (add to `round-open-checklist` or
   GOVERNANCE §).
+- [ ] **Verify pure `mise activate` (no shims) on CI**
+  (round 34, in-flight). Shipped this round without
+  `--shims` on Aaron's "CI will tell us" call. Pure PATH
+  activation is ~10x faster per mise docs and worked in a
+  local non-interactive bash test with BASH_ENV sourcing.
+  **Next check:** first CI run on PR #27 post-flip. If
+  green across Ubuntu + macOS, close this item + backport
+  the finding to `../scratch` (they ship `--shims` only by
+  historical default). If red, flip back to
+  `mise activate bash --shims` and file the failing step
+  as DEBT with the specific break.
 - [ ] **Cross-harness mirror pipeline** (round 34 ask from
   Aaron). Zeta is currently Claude-Code-biased
   (`.claude/skills/`, `.claude/agents/`). Real contributors

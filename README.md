@@ -16,7 +16,9 @@ references are Zeta. See [docs/NAMING.md](docs/NAMING.md) for the full split.
 DBSP defines a tiny, complete calculus for incremental computation over
 changing relations. Three primitives — delay (`z^-1`), differentiation (`D`),
 and integration (`I`) — together with lifting (`↑`) let you transform *any*
-query `Q` into its incremental form `Q^Δ = D ∘ Q^↑ ∘ I`. Key identities:
+query `Q` into its incremental form `Q^Δ = D ∘ Q^↑ ∘ I`. Plain-English
+definitions for every term here live in
+[docs/GLOSSARY.md](docs/GLOSSARY.md#core-ideas). Key identities:
 
 - `I ∘ D = D ∘ I = id` (bijection on streams)
 - `(Q1 ∘ Q2)^Δ = Q1^Δ ∘ Q2^Δ` (chain rule)
