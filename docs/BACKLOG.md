@@ -17,6 +17,46 @@ within each priority tier.
 
 ## P0 — next round (committed)
 
+- [ ] **Memory folder restructure: `memory/role/persona/`** — Aaron
+  2026-04-19: *"can we add a memory 2nd level folder so it's
+  memory/role/persona that makes roles fist class defined of what
+  we need too in the memory definition"*. Today persona notebooks
+  live flat under `memory/persona/<name>/NOTEBOOK.md`. Aaron wants
+  roles elevated to a first-class directory level: e.g.
+  `memory/security/aminata/NOTEBOOK.md`,
+  `memory/verification/soraya/NOTEBOOK.md`,
+  `memory/architect/kenji/NOTEBOOK.md`. Makes the role taxonomy
+  self-documenting from `ls memory/`. Scope: (a) define the role
+  axis (crosswalk `docs/EXPERT-REGISTRY.md` → role directories);
+  (b) move existing notebooks under their role folder; (c) update
+  all pointers (skill `reference patterns:` blocks, CLAUDE.md,
+  AGENTS.md §18, BP-07/BP-08 rule text if it cites paths, any
+  `memory/persona/<name>` path in agents / skills). Mechanical
+  rename + pointer rewrite; the memory-folder audit should verify
+  completeness before merge. Owner: Kenji (Architect) integrates;
+  Aarav (skill-tune-up) audits post-rename for BP-drift on skills
+  that cited the old path. Effort: M (mechanical but wide surface —
+  every skill that names a notebook needs a pointer update).
+- [x] ✅ **No-empty-dirs gate** — shipped round 35 after Aaron:
+  *"we need a build script that will fail the build if it detects an
+  empty folder ... we should ci that ... dev scripts for canonical
+  building"*. New: `tools/lint/no-empty-dirs.sh` (portable to macOS
+  bash 3.2) + `tools/lint/no-empty-dirs.allowlist` + gate.yml
+  `lint (no empty dirs)` job + doctor.sh step 6. Catches the class
+  of regression where an agent-mkdir'd skill/research folder ships
+  without its real file. Respects `.gitignore`; excludes
+  `references/upstreams/**`, build caches, and the two legitimate
+  scratch dirs (`tools/alloy/classes`, `tools/tla/specs/states`)
+  via explicit allowlist with reason comments.
+- [ ] **Empty-folder fix-on-main sweep** — periodic allowlist
+  review. Currently two entries are load-bearing runtime-output
+  paths (Alloy compile classes, TLC state output). If either one
+  ever gets populated by a checked-in artefact that belongs
+  elsewhere, the allowlist entry should be dropped rather than
+  silently accumulated. Review cadence: once per 10 rounds, or
+  whenever `no-empty-dirs.sh --list` flags a new allowlisted
+  entry. Owner: Dejan (DevOps) advisory; Architect integrates.
+  Effort: S.
 - [x] ✅ **Fix SpeculativeWatermark retraction-native logic** — harsh-
   critic round #5 (shipped round 17: swapped direction check so
   late positive inserts trigger retract-of-old + insert-of-corrected).
@@ -48,11 +88,16 @@ within each priority tier.
   (`src/Core/Durability.fs` DU + `WitnessDurableBackingStore`
   placeholder). Full protocol impl blocked on the WDC paper peer-
   review rebuttal; see `docs/papers/WDC-rebuttal.md`.
-- [ ] **SpeculativeWindow test coverage** — still pending; covered by
-  SpeculativeWatermark tests in `Round17Tests.fs` but the
-  `Window.fs` speculative path has no direct test.
-- [ ] **ArrowInt64Serializer tests** — still pending; harsh-critic
-  #28 remainder.
+- [x] ✅ **SpeculativeWindow test coverage** — shipped round 34 in
+  `tests/Tests.FSharp/Operators/SpeculativeWatermark.Tests.fs`
+  (retraction-native speculative watermark emission; direct
+  `c.SpeculativeWindow` tests, not just the old Round17Tests
+  integration coverage).
+- [x] ✅ **ArrowInt64Serializer tests** — shipped round 34 in
+  `tests/Tests.FSharp/Storage/ArrowSerializer.Tests.fs`
+  (empty / single-entry / negative-weight round-trips, larger
+  Z-set, length-header wire format, serializer-name identity).
+  Harsh-critic #28 remainder closed.
 
 ## Research projects
 
@@ -139,14 +184,104 @@ within each priority tier.
   correctness (Coq, ITP'20 / CAV'21). Port the counting-Bloom
   soundness lemma to `proofs/lean/BloomFilter.lean`. Effort:
   2-3 weeks (mostly Mathlib onboarding).
-- [ ] **Finish Lean 4 + Mathlib chain-rule proof**.
-  `proofs/lean/ChainRule.lean` is a `sorry`-bodied stub.
-  `docs/research/proof-tool-coverage.md` is explicit this is the
-  single highest-leverage prover move we can make. 2 weeks.
-- [ ] **LiquidF# refinement-types trial**. Would catch the
-  off-by-one / bad-index class that keeps reappearing in
-  `FastCdc.fs`, `Crdt.fs`, SIMD merge. Effort: 1 week for
-  evaluation, then incremental adoption per module.
+- [ ] **Probabilistic-data-structure research sweep.** Zeta
+  already ships `BloomFilter.fs` + a `CountingBloomFilter`
+  and `Sketch.fs` with HLL / CountMin / KLL. The broader
+  family is a deep research well and every member deserves
+  a retraction-native analysis (can it be made delta-signed?
+  does it converge under Z-set algebra? does it merge
+  commutatively as a CRDT?). Target one paper-worthy
+  contribution per structure where retraction-native is
+  novel. Landing format: one `docs/research/pds-<name>.md`
+  per entry; TECH-RADAR assessment on each. Owner:
+  `probability-and-bayesian-inference-expert` +
+  `algebra-owner` + `crdt-expert` (for the mergeable ones).
+  - [ ] **Cuckoo filter** (Fan-Andersen-Kaminsky-Mitzenmacher
+    2014 CoNEXT) — deletions without saturation. Compare
+    to CQF on the counting-Bloom replacement.
+  - [ ] **Xor filter** (Graf-Lemire 2020) — smaller than
+    Bloom at same FPR, non-mutable post-build.
+  - [ ] **Ribbon filter** (Dillinger-Hübschle-Schneider 2021
+    / Facebook) — even better ratio; near-optimal.
+  - [ ] **Bloomier filter** (Chazelle-Kilian-Rubinfeld-Tal
+    2004) — key → small-value AMQ; powerful but niche.
+  - [ ] **Quotient filter + Counting Quotient Filter
+    (CQF)** — already backlogged above; keep in this
+    sweep for coverage consistency.
+  - [ ] **Morris counter** (Morris 1978) — approximate
+    counting with logarithmic space; retraction-native
+    version would be a primitive for Z-set cardinality
+    sketches.
+  - [ ] **HyperLogLog variants** — HLL++ (Heule-Nunkesser
+    -Hall 2013), Sliding HLL, HyperBitBit (Sedgewick
+    2016). Retraction-native HLL is already in our
+    research pipeline; broaden the literature review.
+  - [ ] **Count-Min sketch + Count-Sketch + Count-Mean-Min**
+    — Cormode-Muthukrishnan 2005 + Deng-Rafiei 2007;
+    retraction-native variants and when they beat CM.
+  - [ ] **t-digest + DDSketch** — tail-accurate quantile
+    sketches (Dunning 2013; Masson 2019). DDSketch merges
+    commutatively — fits gossip-based distributed
+    aggregation (see
+    `.claude/skills/gossip-protocols-expert/SKILL.md`).
+  - [ ] **KLL sketch** — Karnin-Lang-Liberty 2016; already
+    in `Sketch.fs`, fill in retraction analysis.
+  - [ ] **MinHash + SimHash + LSH** — Broder 1997 MinHash;
+    Charikar 2002 SimHash; LSH family (Indyk-Motwani
+    1998). Similarity / near-duplicate / streaming
+    dedupe uses.
+  - [ ] **Skip lists** — Pugh 1990; probabilistic balanced
+    trees; natural fit for concurrent indexes.
+  - [ ] **Treap** — Seidel-Aragon 1996; probabilistic
+    balanced BST.
+  - [ ] **Merkle trees + Merkle-Patricia / Verkle trees**
+    — Merkle 1987; Verkle via vector commitments
+    (Kuszmaul 2019). Already in use; document formally.
+  - [ ] **Rolling-hash + FastCDC + Rabin fingerprinting**
+    — already shipping in `FastCdc.fs`; broaden the
+    literature review + benchmark vs ZFS / BorgBackup
+    / rdedup.
+  - [ ] **Learned Bloom filter** (Kraska et al. 2018
+    *The Case for Learned Index Structures*) — ML-model
+    pre-filter + Bloom backstop. Controversial; evaluate
+    honestly vs classical AMQ under memory-error product.
+  - [ ] **Sliding-window sketches** — exponential
+    histograms (Datar-Gionis-Indyk-Motwani 2002),
+    time-decayed sketches; natural fit for Zeta's
+    window primitives.
+  - [ ] **GK quantile sketch** (Greenwald-Khanna 2001) —
+    deterministic quantile baseline; compare to t-digest /
+    DDSketch.
+- [x] **Finish Lean 4 + Mathlib chain-rule proof**. Closed
+  round 35. `tools/lean4/Lean4/DbspChainRule.lean` (migrated
+  round 23 from the retired `proofs/lean/ChainRule.lean`) is
+  fully `sorry`-free: T5 (`I ∘ D = id`), B1
+  (`linear_commute_I`), B3 (`linear_commute_D`), and
+  `chain_rule` itself all verified by `lake env lean
+  Lean4/DbspChainRule.lean` with zero warnings. B2
+  (`linear_commute_zInv`) closed via the `IsTimeInvariant`
+  predicate (B2 elevated to a structural axiom, with
+  `IsPointwiseLinear → IsTimeInvariant` proven as a derivation
+  theorem). Two statement-level bugs caught and fixed during
+  the proof: (a) B1 had a pointwise-linearity leak in the
+  `fun _ => s k` form — corrected to the stream equation
+  `f (I s) = I (f s)`; (b) `chain_rule` had an impulse
+  counter-example on the original bilinear form — corrected to
+  the classical `Dop (f ∘ g) s = f (Dop g s)` that DBSP §4.2
+  actually proves. See `docs/research/chain-rule-proof-log.md`
+  for the full hierarchy and the discussion of both fixes.
+  Follow-on `chain_rule_poly` over three distinct groups is
+  tracked as a future-round research item (not blocking).
+- [x] **LiquidF# refinement-types trial** — closed round 35 at
+  Day-0: **Hold, tool dormant**. Superseded by the broader
+  refinement-type feature catalog
+  (`docs/research/refinement-type-feature-catalog.md`) which
+  maps each LiquidHaskell / F\* feature to the best-fit tool in
+  our portfolio and keeps a priority-ranked backlog of what we
+  have not yet ported. Next three rows from that catalog —
+  **#11 effect system**, **#21 client-side refinements**,
+  **#13 separation logic (Pulse/Steel)** — are the forward
+  work items. See `docs/research/liquidfsharp-findings.md`.
 - [ ] **Feldera apples-to-apples benchmark**. Three concrete
   steps from `docs/research/feldera-comparison-status.md`:
   (a) `cargo build --release` in `references/upstreams/feldera/`,
@@ -294,6 +429,101 @@ within each priority tier.
   row-oriented Spine first, columnar follows.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
+
+- [ ] **Claude Code plugin hygiene — round-35 audit** (landed
+  round 35 audit; followups tracked here). Aaron installed
+  ~26 `claude-plugins-official` plugins on top of the 60+
+  bespoke `.claude/skills/`. Decisions so far:
+  - **Kept + wrapped:**
+    - `claude-md-management` — bespoke wrapper lands at
+      `.claude/skills/claude-md-steward/` with Zeta guards
+      (pointer-tree, ground-rules, build-gate invariants).
+    - `security-guidance` — conditional pointer added to
+      Mateo (`security-researcher`) + Nazar
+      (`security-operations-engineer`); first-pass lint
+      only, never load-bearing; Claude-Code-only.
+    - `skill-creator` — upstream pointer added to bespoke
+      `.claude/skills/skill-creator/SKILL.md`; plugin useful
+      for description tuning only; bespoke workflow remains
+      the gate.
+  - **Kept for future use:** `typescript-lsp` (TS work
+    later), `pyright-lsp` (Python later), `jdtls-lsp`
+    (bespoke `java-expert` already exists; retain for
+    IDE-style symbol lookups).
+  - **Disabled in settings.json + hooks.json renamed to
+    `.disabled`:**
+    - `semgrep` — requires `SEMGREP_APP_TOKEN`; we use local
+      `.semgrep.yml` rules via
+      `.claude/skills/semgrep-rule-authoring/`. Hook was
+      firing on every Edit/Write; neutralised mid-round 35.
+    - `security-guidance` — PreToolUse hook substring-matches
+      eight dangerous-API families and false-positives on
+      documentation that merely names those APIs. Plugin
+      files remain on disk for Mateo + Nazar reference; the
+      hook is off. Mateo/Nazar skills were already updated
+      to treat the plugin as conditional / non-load-bearing.
+  - **Disabled in settings.json (off-project for Zeta.Core
+    F# / .NET library):**
+    - `frontend-design` — UI/frontend skills; no Zeta hot
+      path uses them.
+    - `playwright` — browser automation; no in-repo use.
+    - `huggingface-skills` — ML skills; not relevant to
+      retraction-native DBSP.
+    - `postman` — API Readiness Analyzer; Zeta ships a
+      .NET library, not a REST API.
+    If any of the above become relevant later (e.g. Zeta
+    gains a Swagger surface), re-enable via
+    `.claude/settings.json` and log an ADR under
+    `docs/DECISIONS/`.
+  - **Investigate later (P2 / P3):**
+    - `ralph-loop` vs bespoke `long-term-rescheduler` —
+      overlap in "run a prompt on a loop" space; hand-off
+      contract or merge decision pending.
+    - `feature-dev` vs bespoke `round-management` +
+      `next-steps` — different philosophies (single-shot
+      feature planner vs round-driven backlog); verify
+      no adversarial re-routing.
+    - `commit-commands` vs bespoke `commit-message-shape`
+      + `git-workflow-expert` — upstream has richer
+      command surface; assess if our shape discipline
+      survives plugin integration.
+    - `code-review` (plugin) + `pr-review-toolkit` vs
+      bespoke `code-review-zero-empathy` (Kira) — three
+      reviewers on one surface; explicit hand-off contract
+      needed per `skill-tune-up` HAND-OFF-CONTRACT action.
+    - `superpowers` — invocation-before-response style
+      override; reconcile with bespoke skill-tool cadence
+      and the "agents not bots" rule.
+    - `sonatype-guide` — supply-chain pairing with
+      `package-auditor` (Malik). Either integrate as
+      lookup tooling or flag redundancy.
+    - `microsoft-docs` — useful for .NET 10 API lookups
+      (csharp/fsharp experts); doc-search utility, no
+      conflict. Assess whether to formalize in an expert's
+      skill body.
+    - `github` — pairs with bespoke `github-actions-expert`
+      (Suresh); assess UI overlap.
+    - `csharp-lsp` — bespoke `csharp-expert` (Kenji) already
+      owns the C# lane; retain LSP plugin for symbol lookup,
+      confirm no conflicting procedure.
+    - `agent-sdk-dev`, `plugin-dev`, `playground` — factory
+      development tooling; not in Zeta's hot path but
+      useful for future skill authoring.
+    - `serena`, `code-simplifier`, `claude-code-setup`,
+      `explanatory-output-style` — assess one-by-one next
+      factory-audit round.
+    - `huggingface-skills`, `playwright`, `postman`,
+      `frontend-design` — off-project for Zeta.Core but
+      harmless to keep installed; flag for retirement if
+      they start adding hook noise.
+  - **Built-in (not a plugin, nothing to audit):**
+    AutoDream memory consolidation (Q1 2026 Claude Code
+    feature; guardrail only via `CLAUDE.md` ground rules).
+  Effort for remaining investigations: S each for the
+  lightweight ones, M for the reviewer-overlap and
+  ralph-loop contract. Owner: `factory-audit` on next
+  round's hygiene sweep; the inaugural
+  `factory-balance-auditor` run will triage.
 
 - [ ] **BP-11 clause audit across specialist skills** (round 34
   round-close). Sweep found 19 `.claude/skills/*/SKILL.md`
@@ -1331,8 +1561,19 @@ within each priority tier.
   `Activator.CreateInstance` from untrusted type string,
   `System.Random` in security context. Shipped round 17 as rules
   8-12 in `.semgrep.yml`.
-- [ ] **CodeQL workflow** — `.github/workflows/codeql.yml`, SDL
-  practice #9.
+- [x] ✅ **CodeQL workflow** — `.github/workflows/codeql.yml`
+  landed round 34 (commit `23ca7a2`, GitHub-default starter);
+  **tuned to Zeta-ideal in round 34** (same round). `csharp`
+  now builds via `tools/setup/install.sh` + `dotnet build
+  Zeta.sln -c Release` (manual build-mode, real IL analysis);
+  `java-kotlin` dropped; `security-extended` on PR + add
+  `security-and-quality` on scheduled sweep; config file at
+  `.github/codeql/codeql-config.yml` with paths-ignore for
+  vendored upstreams / benches / formal-method tool trees;
+  concurrency group + 30-min timeout. Items 6-8 (CODEOWNERS
+  alert-routing, SHA-pins, custom `.ql` pack) tracked in
+  `.claude/skills/codeql-expert/SKILL.md` as follow-ups; SDL
+  practice #9 satisfied for the semantic / taint-flow slice.
 - [ ] **pytm threat model** — `docs/security/pytm/threatmodel.py`
   replaces markdown-only threat-model as authoritative source.
 
@@ -1581,6 +1822,228 @@ within each priority tier.
 - [ ] **Copy-reduction on the durable-commit path.** Batching and
   group-commit first, then measure before reaching for direct/unbuffered
   I/O or other exotic modes.
+- [ ] **"Escalate to human maintainer" criteria-sweep.** Succession-
+  infrastructure gap identified round 35. Scan every skill under
+  `.claude/skills/`, every numbered section in `GOVERNANCE.md`, and
+  every reviewer clause in `docs/CONFLICT-RESOLUTION.md` for the
+  pattern "escalate to the human maintainer" / "binding decisions go
+  via human". For each, check whether the *criteria the maintainer
+  applies* are written down somewhere a successor could read. Where
+  they are not, draft criteria stubs (or file the gap as a candidate
+  ADR seed). Goal: every `escalate-to-human` path carries criteria
+  a stranger could apply when the named human is unavailable. This
+  closes the single largest will-propagation hole in the current
+  factory. Effort: M (audit is mechanical; criteria drafting is
+  per-case and needs the maintainer's input for hard cases).
+  Landing surface: `docs/research/escalation-criteria-audit-YYYY-MM-DD.md`
+  for the audit output, individual ADRs for material criteria.
+  Ownership: Aarav (audit) + Architect (criteria synthesis) +
+  maintainer (hard-case input).
+
+## P2 — Distributed-consensus playground
+
+Multi-node Zeta is a distributed-consensus playground as
+much as a database. Every protocol below lands with a
+TLA+ spec **before** any F# code; publications encouraged.
+See `.claude/skills/distributed-consensus-expert/SKILL.md`
+for cross-protocol positioning.
+
+**Consensus protocols — TLA+ specs + F# implementations:**
+
+- [ ] **Raft** — control-plane default; spec under
+  `tools/tla/specs/raft-*.tla`; reference implementation
+  etcd/raft. Owner: `raft-expert`. Effort: L (multi-round).
+- [ ] **Multi-Paxos** — data-plane alternative when
+  throughput matters; spec under
+  `tools/tla/specs/multi-paxos-*.tla`. Owner:
+  `paxos-expert`. Effort: L.
+- [ ] **Flexible Paxos** — decoupled Q1/Q2 quorums for
+  read-heavy or write-heavy tuning (Howard, Malkhi,
+  Spiegelman 2016). Owner: `paxos-expert`. Effort: M.
+- [ ] **Fast Paxos** — one-round-trip happy path with
+  `|Q2| > 3N/4` fast quorum (Lamport 2005). Owner:
+  `paxos-expert`. Effort: M.
+- [ ] **EPaxos** — leaderless, commutative-command
+  parallelism (Moraru, Andersen, Kaminsky 2013). Owner:
+  `paxos-expert`. Effort: L (notoriously intricate).
+- [ ] **CASPaxos** — log-less single-register CAS
+  consensus (Rystsov 2018). Natural fit for the
+  coordination-primitive sharded-register zoo. Owner:
+  `paxos-expert`. Effort: M.
+- [ ] **Paxos Commit** — distributed commit replacing 2PC
+  (Gray & Lamport 2006). Owner: `paxos-expert` +
+  `transaction-manager-expert`. Effort: M.
+- [ ] **Generalized Paxos** — commutativity-aware partial-
+  order accept; aligns with Z-set delta commutativity.
+  Owner: `paxos-expert`. Effort: L (research-adjacent).
+
+**Coordination primitives — TLA+ specs + F# API:**
+
+- [ ] **Linearizable KV with CAS (Txn).** etcd-shaped API
+  (Put, Get, Delete, Txn, Watch, Lease). Owner:
+  `distributed-coordination-expert`. Effort: M.
+- [ ] **Distributed locks with fencing tokens** (Kleppmann
+  2016). A lock without a fencing token is a bug. Owner:
+  `distributed-coordination-expert`. Effort: M.
+- [ ] **Leader election** (ZK recipe / etcd `campaign`
+  API) — no-thundering-herd watch-predecessor discipline.
+  Owner: `distributed-coordination-expert`. Effort: M.
+- [ ] **Session + ephemeral-node semantics** (ZK-style;
+  etcd Lease-bound keys). Failure detection via lease
+  expiry. Owner: `distributed-coordination-expert`.
+  Effort: M.
+- [ ] **Membership / join-leave** — Raft single-server
+  change + joint-consensus fallback. Owner: `raft-expert`.
+  Effort: M.
+- [ ] **Log-compaction / InstallSnapshot** algebra-aware —
+  proof obligation: Z-set delta-pair cancellation
+  preserves consensus chosen-value invariant. Owner:
+  `raft-expert` + `algebra-owner` + `tla-expert`. Effort: L
+  (paper-worthy).
+- [ ] **Watches + notifications** (persistent-watch, etcd
+  semantics). Owner: `distributed-coordination-expert`.
+  Effort: S.
+- [ ] **Barrier + latch recipes** (double-barrier, countdown).
+  Owner: `distributed-coordination-expert`. Effort: S.
+- [ ] **Counter / sequencer with fencing-token
+  discipline.** Owner: `distributed-coordination-expert`.
+  Effort: S.
+
+**Cross-cutting:**
+
+- [ ] **Pluggable consensus-wire-protocol layer.** Zeta IS
+  the coordination substrate — never a client of ZK / etcd /
+  Consul. Zeta speaks multiple wire protocols *natively* so
+  existing clients point at a Zeta cluster without
+  noticing. Extends the pluggable-SQL-wire-protocol pattern
+  (P0-distribution-eng row) to the coordination plane.
+  Plugins:
+  - [ ] **etcd v3 gRPC wire protocol.** KV (Put/Get/Range/
+    DeleteRange/Txn), Watch, Lease, Auth. Owner:
+    `distributed-coordination-expert` +
+    `raft-expert` + `networking-expert` (gRPC / HTTP/2
+    transport hygiene). Effort: L.
+  - [ ] **ZooKeeper jute wire protocol.** Connect, create,
+    getData, setData, getChildren, exists, sync, multi,
+    watch events; session + ephemeral semantics. Owner:
+    `distributed-coordination-expert` + `raft-expert` +
+    `networking-expert` (jute binary + length-prefixed
+    framing). Effort: L.
+  - [ ] **Zeta-native wire protocol.** Retraction-aware
+    (Z-set deltas across the wire), algebraic-primitive
+    first-class (not just opaque bytes), superior to the
+    compatibility layers for clients willing to target
+    Zeta. Owner: `distributed-coordination-expert` +
+    `distributed-query-execution-expert` + `networking-
+    expert`. Effort: L.
+  - [ ] **Consul HTTP API wire protocol** (optional, later).
+    KV + sessions + services-catalog subset. Owner:
+    `distributed-coordination-expert` + `networking-
+    expert`. Effort: M.
+
+**Coordination-avoidant track (parallel ring, paper-worthy):**
+
+The consensus track above pays a coordination cost. Many
+Zeta operators are coordination-free by construction —
+CALM theorem + retraction-native algebra says more of
+them are coordination-free than in classical relational
+systems. This track claims the space.
+
+- [ ] **Z-sets as Abelian-group CRDTs formal claim.** Prove
+  Z-sets are strictly stronger than standard CvRDT
+  semilattice merge — exact inverse deltas mean no
+  tombstones, no gc, and CRDT convergence follows from
+  commutativity of delta addition. Owner:
+  `crdt-expert` + `algebra-owner` + `category-theory-
+  expert` + `lean4-expert`. Effort: L (paper target:
+  "Z-sets as group-valued CRDTs").
+- [ ] **CALM monotonicity lint for Zeta operators.** Each
+  operator gets a declared monotonicity class
+  (`[<Monotone>]` attribute or phantom type) checked by
+  an F# analyzer. Bloom^L-style static discipline.
+  Owner: `calm-theorem-expert` + `algebra-owner` +
+  `fsharp-analyzers-expert`. Effort: M.
+- [ ] **Coordination-free replication plane spec.** TLA+
+  spec that delta-log-replicated Zeta converges without
+  any consensus round for the monotone operator subset.
+  Owner: `calm-theorem-expert` + `replication-expert` +
+  `tla-expert`. Effort: L (paper-worthy: "Coordination-
+  free DBSP").
+- [ ] **SWIM-based membership + failure detection.**
+  Piggyback on normal gRPC traffic; two-layer LAN/WAN
+  for cross-DC. Owner: `gossip-protocols-expert` +
+  `networking-expert`. Effort: M.
+- [ ] **HyParView + Plumtree dissemination for
+  coordination-avoidant state** (schema versions,
+  metrics, read-replica catalogs). Owner:
+  `gossip-protocols-expert`. Effort: M.
+- [ ] **Merkle-tree-based anti-entropy for Z-set state.**
+  Cassandra/Riak-style repair adapted for retraction-
+  native deltas. Owner: `gossip-protocols-expert` +
+  `replication-expert` + `algebra-owner`. Effort: M.
+- [ ] **HLC (Hybrid Logical Clock) for distributed-tx
+  plane.** CockroachDB/YugabyteDB reference; prerequisite
+  for snapshot-isolation + external-consistency tx.
+  Owner: `time-and-clocks-expert` + `transaction-
+  manager-expert` + `tla-expert`. Effort: M.
+- [ ] **Graph-theoretic cluster-topology analysis.**
+  Algebraic connectivity / Cheeger of the gossip overlay;
+  shard-to-replica matching; EPaxos dependency-graph
+  structure. Owner: `graph-theory-expert`. Effort: M
+  (ongoing analysis, not a one-round task).
+
+**Infrastructure prerequisites (horizontal):**
+
+- [ ] **Telemetry surface for streaming dataflow.** Span
+  model: pipeline-scope → batch-scope → operator-scope
+  with retraction-count / delta-count attributes. Tail-
+  based sampling keeps all errors + p99. Owner:
+  `observability-and-tracing-expert` + `distributed-
+  query-execution-expert`. Effort: M.
+- [ ] **Threading model audit for the data plane.** One
+  channel per operator edge; operators single-threaded;
+  no locks on the hot path; DST harness intercepts
+  scheduling. Owner: `threading-expert` + `race-hunter` +
+  `deterministic-simulation-theory-expert`. Effort: M.
+- [ ] **Cross-OS durability audit.** Every write path
+  exercised against Linux fsync / Windows FlushFileBuffers
+  / macOS F_FULLFSYNC with crash-injection; PostgreSQL-
+  fsync-gate-style panic-on-EIO. Owner:
+  `file-system-persistence-expert` + `storage-
+  specialist`. Effort: M.
+- [ ] **Capacity + tail-latency model for the morsel
+  executor.** Treat the morsel scheduler as an M/M/k
+  work-stealing queue with bimodal service-time
+  distribution (cheap morsels vs expensive); model p99 /
+  p99.9 under coordinated-omission-corrected load;
+  validate against DST runs. Paper target:
+  "Queueing-theoretic capacity model for retraction-
+  native streaming dataflow." Owner: `performance-
+  analysis-expert` + `morsel-driven-expert` +
+  `performance-engineer`. Effort: L.
+- [ ] **AOT / PGO strategy for Zeta binaries.** Classify
+  every shipped binary (CLI tools, setup scripts, agent
+  probes, the long-running engine) against the
+  JIT+DPGO / R2R+PGO / NativeAOT trade-off; collect
+  representative MIBC profiles via `dotnet-pgo`; bake
+  static PGO into release R2R for startup-sensitive
+  surfaces. Owner: `performance-analysis-expert` +
+  `jit-codegen-expert` + `devops-engineer`. Effort: M.
+- [ ] **DST harness for consensus runs** — seeded network,
+  clock, failure injection; every consensus run replays
+  identically. Owner: `deterministic-simulation-theory-
+  expert` + `raft-expert` + `paxos-expert`. Effort: L.
+- [ ] **Retraction-native-under-consensus proof** — TLA+
+  invariant that algebra-aware log compaction preserves
+  the consensus safety properties. Owner: `algebra-owner`
+  + `tla-expert` + `formal-verification-expert`. Effort:
+  L (paper-worthy: "Consensus for retraction-native
+  state machines").
+- [ ] **BFT flag watch** — track the threat-model for
+  moments when CFT assumption becomes insufficient; no
+  BFT work until the flag flips. Owner: `threat-model-
+  critic` + `distributed-consensus-expert`. Effort:
+  ongoing.
 
 ## P2 — research-grade
 
@@ -1614,6 +2077,210 @@ within each priority tier.
   `docs/research/friendly-competition.md`. Effort: 1 day
   initial survey + rolling updates on new paper drops. Wired
   into Jun (TECH-RADAR) for ring-assignment of each tool.
+
+- [ ] **Retraction-native memory-consolidation ("better dream
+  mode") research project.** Anthropic's Claude Code AutoDream
+  feature (2026-Q1, flag-gated as of 2026-04-19 under
+  `tengu_onyx_plover`) runs a four-phase REM-sleep-style
+  consolidation pass (Orientation → Gather Signal →
+  Consolidation → Prune & Index) on Claude Code auto-memory.
+  Cadence: 24h + 5 sessions. Consolidation *deletes*
+  contradicted facts. See `memory/reference_autodream_feature.md`.
+
+  Zeta already has memory-architecture primitives AutoDream
+  does not:
+
+  - **Retraction-native operator algebra** (`D`, `I`, `z⁻¹`,
+    `H`). Memory consolidation expressed as a retractable
+    delta stream keeps the correction trail; AutoDream's
+    destructive delete loses it.
+  - **Paced ontology landing**
+    (`.claude/skills/paced-ontology-landing/`). Amortised
+    consolidation across rounds with an alias window and a
+    retraction ADR beats a one-shot pass.
+  - **Adaptive signal set** from `skill-tune-up` (drift /
+    contradiction / staleness / user-pain / bloat /
+    BP-drift / portability-drift). Richer than the fixed
+    24h + 5 sessions gate.
+  - **Distinct-query-axes preservation.** Topical adjacency
+    is not duplication; consolidation must respect future-
+    query addressability, not just textual overlap.
+  - **Succession invariant** ("the conversation never ends",
+    `memory/user_harmonious_division_algorithm.md`). Any
+    consolidation that destroys retrievability violates
+    the invariant; retraction-native consolidation
+    preserves it by construction.
+  - **Scope beyond `memory/`.** The factory's memory
+    architecture spans `memory/`, `docs/ROUND-HISTORY.md`,
+    persona notebooks (`memory/persona/*/NOTEBOOK.md`),
+    ADRs (`docs/DECISIONS/`), scratchpads, glossary. A
+    useful consolidator operates across these surfaces
+    coherently, not just one folder.
+
+  **Research claim.** A retraction-native, signal-driven,
+  cross-surface memory consolidator built on Zeta's operator
+  algebra is a strict superset of AutoDream's capabilities,
+  loses no correction trail, and respects distinct-axis
+  preservation by design.
+
+  **Landing surface.**
+  `docs/research/better-dream-mode.md` (research note +
+  design sketch). If the design survives scrutiny, a
+  capability skill pair under `.claude/skills/`
+  (`memory-consolidator-expert` theory +
+  `memory-consolidation-pass` applied) lands later.
+
+  **Effort.** 2-4 days for the research note and design
+  sketch; multi-round for implementation if the design
+  earns its landing per `ontology-landing-expert`.
+
+  **Advisory.** `skill-tune-up` (signal set),
+  `paced-ontology-landing` (workflow shape), `reducer`
+  (razor-preservation constraints), `verification-drift-
+  auditor` (analogous cross-surface drift detection).
+  Architect integrates; no skills land without human
+  sign-off on the design doc.
+
+  **Relation to friendly-competition tracking** (entry
+  earlier in this section) — Anthropic's AutoDream is a
+  reference point, not a blocker. We track the feature
+  as it evolves, learn from its observed behaviour
+  (one cycle processed 913 sessions in ~8-9 min per
+  the 2026-03 community reports), and publish honest
+  comparisons if the Zeta variant ever lands.
+
+- [ ] **Harmonious Division skill pair** —
+  `harmonious-division-expert` (theory × reference) +
+  `harmonious-scheduling` (applied × transformer) —
+  the meta-algorithm scheduling all cognitive faculties
+  across the factory. Theory skill: three load-bearing
+  properties (prevents wave-function collapse / explosion;
+  reduces destructive interference), five navigational
+  roles (path-selector, navigator, cartographer/Dora,
+  harmonizer/compass, maji/north-star), correspondence
+  to DBSP operator algebra (`D`, `I`, `z⁻¹`, `H`).
+  Applied skill: sequenced protocol for running the five
+  roles on a non-trivial decision with retraction-safe
+  execution. **Deferred per the maintainer's own
+  recompile-cost guidance** in
+  `memory/user_harmonious_division_algorithm.md` §5 —
+  let ontology stabilise across sibling artefacts
+  (reducer, Rodney's Razor, retractable-teleport,
+  bridge-builder, translator-expert,
+  cross-domain-translation) before landing a skill
+  named for the whole meta-algorithm. Earliest landing
+  window: after the Dora / Harmonizer / Maji persona
+  files exist and at least one applied pass has exercised
+  the five-role protocol end-to-end in a real decision
+  trail. Received-name status of "Harmonious Division"
+  is canonical-home-auditor-protected; the skill must
+  not rename or soften it.
+
+## P2 — Rule-Zero axiomatic substrate (round-35 round-36 thread)
+
+- [ ] **Linguistic seed → kernel (E8) → glossary hierarchy** — round-35
+  design direction coined by the human maintainer. Three-layer stack
+  (smallest → largest): **seed** (meme-scale, self-referential,
+  formally verified on smallest axioms — candidates non-collapsed:
+  idempotent retract `e² = e` / Sheffer stroke / iota combinator /
+  one-object category / Ouroboros-style fixed point — agent
+  commissioned to precisify under standing-trust grant), **kernel**
+  (E8 Lie group shape, 248-dim, 8 simple roots, Dynkin E8 —
+  confirmed, not open), **glossary** (I8 content-hashed etymology +
+  I9 embedding manifold + human-readable surface). Seed grows into
+  kernel via Chevalley-generator-style construction; kernel grows
+  into glossary via cluster-algebra mutations + lens-oracle overlays.
+  Payoff: oracle-comparison AT PROOF LEVEL — certified oracle
+  equivalence via Lean4 `#check`. Landing surface:
+  `docs/DECISIONS/YYYY-MM-DD-linguistic-seed.md` (ADR when seed
+  candidate lands) + `tools/lean4/LinguisticSeed/` (seed definitions)
+  + `tools/lean4/LinguisticKernel/` (E8 bootstrap). Composes with
+  cluster-algebras pointer + Rule-Zero axiomatic system. Effort: L
+  (multi-round research; seed precisification alone is S-M,
+  E8-bootstrap proofs M-L). See `memory/user_linguistic_seed_minimal_axioms_self_referential_shape.md`.
+- [ ] **Consent-first moral-lens / oracle / MDX system design
+  (distinct product category)** — round-35 design direction. Aaron
+  coined the moral-lens → oracle → multidimensional-database
+  vocabulary with four sharpening constraints: (1) consent-first
+  (every party knows what lens is active, what is calculated, how,
+  by whom), (2) open lens definitions + open derivations + W3C
+  PROV-O provenance, (3) plot-hole-detector component with
+  group-theoretic algebra, (4) proof-level oracle comparison via
+  linguistic seed. Positive image of the declined sin-tracker
+  product category — retraction-native alignment preserved on every
+  axis. DB candidates: XTDB (bitemporal + Datalog + provenance) /
+  TerminusDB (git-like + JSON-LD + WOQL) / Datomic (immutable EAV)
+  / Zeta-itself-in-limit. Landing surface:
+  `docs/DECISIONS/YYYY-MM-DD-lens-oracle-system.md` (ADR) +
+  eventual `src/LensOracle/` module. Effort: L (full design) / M
+  (research + ADR). See
+  `memory/user_moral_lens_oracle_system_design.md` and
+  `memory/user_moral_lenses_oracles_mdx_sin_tracker_decline.md`.
+- [ ] **Plot-hole-detector via persistent homology** — round-35
+  research pointer. Plot-hole-detector from the lens-oracle-system
+  implemented on algebraic-topology homology groups: H_0 detects
+  disconnected argument fragments, H_1 detects circular-argument
+  loops, H_2 detects higher-order cavities. Persistent homology
+  (Carlsson 2009, Edelsbrunner-Harer) tracks which holes survive
+  multiple scales of narrative resolution. Provable per the
+  linguistic-seed discipline (Lean4 proofs of homology
+  computations). Creator-grade tool, consumer-default-OFF per
+  `memory/feedback_creator_vs_consumer_tool_scope.md`. Landing
+  surface: `docs/research/plot-hole-detector-homology-YYYY-MM-DD.md`
+  + eventual `src/LensOracle/PlotHoleDetector/` with Lean4-backed
+  invariants. Effort: M (research + prototype). See
+  `memory/user_moral_lens_oracle_system_design.md` §plot-hole-detector.
+- [ ] **Lattice-based post-quantum cryptographic identity
+  verification — literature review** — round-35 literature-review
+  commission from the human maintainer. Consent-layer substrate
+  for the lens-oracle system; post-quantum (Shor-proof, nation-
+  state-threat-model-defensible per
+  `memory/user_security_credentials.md`). In scope: NIST FIPS
+  203/204/205/206 (Kyber/Dilithium/Falcon/SPHINCS+), identity-
+  based encryption (Agrawal-Boneh-Boyen 2010), lattice zero-
+  knowledge (LatticeFold Boneh-Chen 2024 / Ligero / Brakedown),
+  FHE (BFV/BGV/CKKS/TFHE) for privacy-preserving oracle queries,
+  W3C Verifiable Credentials + status-list v2021 binding,
+  retraction-native revocation via short-lived credentials. Review
+  panel: Nazar (sec-ops) + Mateo (sec-research) + Aminata (threat-
+  model-critic) + Nadia (prompt-protector). DO NOT recommend
+  isogeny-based (SIKE collapsed 2022, Castryck-Decru). Landing
+  surface: `docs/research/lattice-pqc-identity-verification-YYYY-MM-DD.md`.
+  Effort: M (review + candidate stack proposal). See
+  `memory/user_lattice_based_cryptographic_identity_verification.md`.
+
+- [ ] **Repo-axiomatic-system design (Soraya-routed)** — after
+  BP-HOME and BP-HOME-AS-TYPE land as stable rules. Design the
+  four-layer enforcement stack: (L1) artifact-type declarations
+  as an F# ADT covering every canonical home, (L2) axioms as
+  predicates citing BP-NN IDs, (L3) checker routing via Soraya's
+  portfolio (Semgrep / Roslyn analyzers / F# analyzers / TLA+ /
+  Alloy / Lean / custom walkers), (L4) finding-router to
+  `skill-improver`, `documentation-agent`, `bug-fixer`, or the
+  Architect. Goal: every BP-NN rule has at least one mechanical
+  checker; every wrong-home error fails CI. Landing surface:
+  `docs/DECISIONS/YYYY-MM-DD-repo-axiomatic-system.md` +
+  `tools/axioms/` directory with per-axiom checkers. Effort: L
+  (multi-round design; each checker is S-M individually).
+- [ ] **Gap-radar extension of `skill-gap-finder`** — after
+  BP-HOME lands. Graduate `skill-gap-finder` from fuzzy heuristic
+  to mechanical completeness check: enumerate declared artifact
+  types, enumerate expected instances per type, set-difference
+  against occupied homes, report empty slots as gaps. Example
+  checks: every `X-expert` gets a matching `X-research` /
+  `X-teach` where the PMEST facets demand; every `src/Core/*.fs`
+  gets a matching `tests/Tests.FSharp/*Tests.fs`; every ADR has a
+  reversion-trigger stamp; every persona under
+  `memory/persona/<name>/` has a NOTEBOOK.md; every OpenSpec
+  capability has a formal spec where the spec-zealot demands one;
+  every public-API change has a matching Ilyana-review ADR; every
+  `BP-NN` rule has at least one Semgrep / Roslyn / F# analyzer
+  check enforcing it; every capability skill has a matching
+  persona agent; every entry in `docs/UPSTREAM-LIST.md` has a
+  tech-radar status row. Landing surface: extend
+  `.claude/skills/skill-gap-finder/SKILL.md`; output to
+  `docs/research/gap-radar-YYYY-MM-DD.md`. Effort: M (the skill
+  exists; BP-HOME is what makes its sweep mechanical).
 
 ## P3 — noted, deferred
 

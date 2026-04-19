@@ -1,0 +1,19 @@
+# tools/lint/no-empty-dirs.allowlist — paths that legitimately exist
+# as empty directories in a clean checkout. One path per line, relative
+# to repo root. Comments (#) and blank lines ignored.
+#
+# Every entry needs a reason comment above it. An allowlist without
+# reasons degrades into a silent fail-safe — reviewers can't tell which
+# entries are load-bearing and which were added to quiet the lint.
+#
+# If you are tempted to add a path because the lint is inconvenient:
+# DON'T. The lint exists to catch forgotten artefacts. Populate the
+# directory with its real contents, or delete it.
+
+# Alloy compile output. Created by `install.sh` when Alloy first runs;
+# stays empty in a fresh checkout until you run a spec.
+tools/alloy/classes
+
+# TLC model-checker state output. Created by `install.sh`; populated by
+# `tools/tla/*.sh` runs. Empty on a fresh checkout.
+tools/tla/specs/states
