@@ -270,6 +270,32 @@ within each priority tier.
   invocation as a mandatory round-close step after any
   rename campaign (add to `round-open-checklist` or
   GOVERNANCE §).
+- [ ] **Per-shell `mise activate` in shellenv.sh (dev-laptop
+  perf nit)** (round 34 observation). Managed shellenv
+  emits `eval "$(mise activate bash)"`. In a bash
+  environment (CI, BASH_ENV-sourced subshells, bash
+  login) this works perfectly — initial PATH is set and
+  bash's `PROMPT_COMMAND` hook keeps it synced. In a zsh
+  interactive shell, the bash-specific hooks don't fire;
+  PATH gets the activation-time snapshot only, and mise
+  shims (if present) end up resolving tools rather than
+  direct mise install paths. Functionally correct (still
+  mise-managed dotnet), but the ~10x perf win is bypassed
+  on dev laptops.
+
+  **Fix sketch.** Emit shell-specific activation based on
+  detected parent shell — `mise activate zsh` in zsh,
+  `mise activate bash` in bash. Detection inside a
+  sourced file that runs in-process is tricky (the file
+  is shared across shells); options:
+  - Fork the emission: `shellenv-bash.sh` + `shellenv-zsh.sh`,
+    rc-file sources the right one.
+  - Dynamic detection at source time via `$ZSH_VERSION` /
+    `$BASH_VERSION`.
+  - Option (b) is simpler and fits the "one file" ethos.
+
+  **Effort.** S (15-min edit + dry-run in both shells).
+
 - [x] ✅ **Pure `mise activate` (no shims) on CI — verified
   round 34.** Commit 9f138eb passed 6/6 CI checks
   (build-and-test on macos-14 + ubuntu-22.04, all four
