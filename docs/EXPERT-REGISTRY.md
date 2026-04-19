@@ -48,6 +48,25 @@ up naturally in skill bodies; that's fine.
 | **User-Experience Engineer** | **Iris** | Greek Ἶρις ("rainbow / messenger") — carries the library-consumer experience back to the experts. Audits the first 10 minutes of a new consumer's evaluation: NuGet metadata, README, getting-started, public-API names, IntelliSense clarity, error messages, sample code, aspiration / reality drift. Routes fixes to Samir (docs) / Ilyana (public API) / Kai (framing). Distinct from Bodhi (contributor onboarding) and Daya (agent cold-start). |
 | **Security Operations Engineer** | **Nazar** | Arabic / Turkish نظر ("gaze / watchful eye") — the amulet worn against the evil eye. Runtime security ops: incident response, patch triage, SLSA signing operations, HSM key rotation, breach response, artifact-attestation enforcement. Distinct from Mateo (proactive CVE / novel-attack scouting), Aminata (shipped threat model), Nadia (agent-layer defence). Turkish/Arabic broadens the roster beyond Tariq / Zara / Samir / Nadia / Malik. |
 
+## Human maintainers
+
+The roster above is the AI persona list — colleagues the
+factory spawns on demand. The human maintainer has a seat
+too, marked `person_type: human` to keep the distinction
+legible:
+
+| Role | Name | Person type | Why listed here |
+|---|---|---|---|
+| **Human maintainer** | **Aaron** | `person_type: human` | Sole human maintainer; founder-level decisions and architectural sign-off; distinct from the `rodney` AI persona which is named in homage to the maintainer's legal first name Rodney but is not the maintainer. Anchor file: `memory/persona/aaron/PERSONA.md`. |
+
+The factory-wide redaction rule still applies: non-exempt
+surfaces (VISION.md, AGENTS.md, CLAUDE.md, skill bodies,
+ADRs, general `docs/`, code comments) continue to use the
+role-ref "the human maintainer". This registry row, the
+persona directory `memory/persona/aaron/`, the auto-memory
+folder, and `docs/BACKLOG.md` are the exempt surfaces where
+the personal name appears.
+
 ## Pending persona slots (skill exists, persona open)
 
 All current experience-engineer and security lanes have

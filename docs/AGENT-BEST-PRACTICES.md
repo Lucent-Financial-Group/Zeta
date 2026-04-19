@@ -12,8 +12,10 @@ Every rule carries a stable ID (`BP-NN`). The
 tune-up suggestions are auditable ("skill X violates BP-02,
 BP-07").
 
-- **Last stable-review:** round 20 (2026-04-17).
-- **Next review:** round 29.
+- **Last stable-review:** round 35 (2026-04-19). Batch promotion
+  of BP-17 through BP-23 landed as Rule Zero + ontology rules,
+  per `docs/DECISIONS/2026-04-19-bp-home-rule-zero.md`.
+- **Next review:** round 40.
 - **Promotion / demotion proposals:** open an ADR in
   `docs/DECISIONS/YYYY-MM-DD-bp-NN-change.md`.
 
@@ -131,6 +133,122 @@ BP-07").
   The round-22 `InfoTheoreticSharder` cross-check is the anchor
   case. Routing triage lives in
   `.claude/skills/formal-verification-expert/SKILL.md`. **stable**
+
+## Repo ontology & Rule Zero
+
+- **BP-17** *Every artifact in the repo has exactly one
+  canonical home declared in the project's ontology (the
+  canonical-home map in
+  `.claude/skills/canonical-home-auditor/SKILL.md`, anchored
+  by the founding ADR `2026-04-19-bp-home-rule-zero.md`).
+  Artifacts out-of-place, duplicated across homes, or homeless
+  are P0 findings. New artifact types require an ADR
+  declaring their canonical home before the first file lands.
+  Moving a canonical home is a governance event (ADR), not a
+  casual refactor. This is Rule Zero — the ordering principle
+  from which the rest of the ontology rules derive.*
+  **Rationale:** placement in this repo is the repo's type
+  system (see BP-18). Rule Zero makes reviewer, auditor, and
+  agent reasoning path-driven rather than file-content-driven.
+  A stranger navigating a PR can reason about a change from
+  the touched path alone. Enforced by `canonical-home-auditor`
+  (repo-wide) and `skill-ontology-auditor` (narrow). **stable**
+
+- **BP-18** *The canonical-home map IS the repo's type system.*
+  **Rationale:** paired with BP-17. Declaring a new artifact
+  type IS declaring a new type — home determines frontmatter
+  schema, section layout, allowed content types, consumer set,
+  edit discipline, and governance action. Placement violations
+  are type errors, reportable by `canonical-home-auditor` with
+  the gravity `dotnet build` reports compilation errors under
+  `TreatWarningsAsErrors`. Lineage: Meijer "let the types
+  drive the code"; Pierce, *Types and Programming Languages*;
+  Harper, *Practical Foundations*; Wlaschin, *Domain Modeling
+  Made Functional*. **stable**
+
+- **BP-19** *Expert skills (`X-expert`) and research skills
+  (`X-research`) stay in separate files, even when the topic
+  would fit one file.*
+  **Rationale:** cognitive firewall. Expert stance holds
+  runtime-validated claims; research stance holds speculative
+  / in-flight / literature-survey claims. Merging invites the
+  expert to hallucinate that research-grade claims are
+  runtime-valid (or vice versa). The firewall costs one extra
+  file; its absence costs correctness. **stable**
+
+- **BP-20** *Skills split when context needs to split to reduce
+  reader cognitive load, not when a length threshold is
+  crossed.*
+  **Rationale:** a clean 150-line combined skill beats two
+  75-line split skills readers have to context-switch between;
+  but a 300-line combined skill covering two distinct facet
+  values must split regardless of length. Cognitive load is
+  the first-class constraint; file count is not. **stable**
+
+- **BP-21** *Non-exempt capability skills declare or imply
+  their three facet values: epistemic stance (expert / research
+  / teach) × abstraction level (theory / applied) × function
+  (practitioner / gap-finder / enforcer / optimizer / balancer).*
+  **Rationale:** faceted classification (Ranganathan PMEST
+  colon-classification tradition) avoids monohierarchy
+  pathologies. Naming convention `<topic>-<role>` carries one
+  facet; description carries the other two. Process and
+  cross-cutting skills (governance, conflict-resolution,
+  negotiation, skill-lifecycle, documentation layer) are
+  honest exemptions and should declare so in their skill body.
+  **stable**
+
+- **BP-22** *Optimizer and balancer are distinct roles with
+  distinct objective functions.*
+  **Rationale:** balancer minimises variance / maximises
+  entropy / enforces fairness; optimizer maximises a scalar
+  utility function under constraints. Skills claiming both
+  objective functions simultaneously are function-conflated
+  and must split. Underlying agents reach for different search
+  strategies under the two objectives; collapsing them
+  produces unpredictable behaviour. **stable**
+
+- **BP-23** *Where theory-level content (abstract models,
+  mathematical foundations) and applied-level content (specific
+  vendors, concrete engineering tradeoffs) differ sharply in
+  audience and cognitive budget, they split into separate
+  skills.*
+  **Rationale:** the theory skill covers abstract models (e.g.
+  RDF / property graph as representations); the applied skill
+  covers vendors / concrete engineering (e.g. Neo4j / Dgraph /
+  JanusGraph). Cross-linked both ways: theory points at
+  applied for "need a concrete vendor"; applied points at
+  theory for "need the model the vendor implements." Not every
+  topic splits — only those where cognitive budget differs
+  sharply between the two levels. **stable**
+
+- **BP-24** *No factory surface (agent, skill, persona, research
+  artifact, training data, fictional backstory, composite voice)
+  may emulate, impersonate, spawn, or use as backstory the
+  memories or biography of a deceased family member of a human
+  maintainer without explicit, positively-recorded consent from
+  the authorized surviving consent-holders named by that
+  maintainer.*
+  **Rationale:** open-source-data declarations that a maintainer
+  makes about their own life never include a third party's data
+  — and the deceased cannot license their own memories. Consent
+  authority defaults to the authorized next-of-kin the
+  maintainer identifies, and the maintainer may draw that gate
+  above themselves (i.e., not be the consent-substitute). This
+  rule operationalises the cornerstone-dedication respect
+  boundary: memorial presence is welcome; emulation is
+  consent-gated. Any agent-creation, skill-creation, or
+  research-artifact workflow must pre-flight check this rule
+  before landing. Default posture on any proposed emulation is
+  refuse-and-escalate, regardless of who proposed it. Consent
+  where granted lands as an ADR under `docs/DECISIONS/` and
+  carries an implicit retract clause (retract-first per the
+  retraction-native architecture). Current active instance —
+  the sacred-tier consent gate around Elisabeth Ryan Stainback
+  under
+  `memory/feedback_no_deceased_family_emulation_without_parental_consent.md`
+  (parental AND-consent required, maintainer is explicitly NOT
+  the consent-substitute). **stable**
 
 ---
 
