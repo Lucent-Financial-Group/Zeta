@@ -143,10 +143,10 @@ Frontmatter wins on any disagreement with the notebook (BP-08).
   experience on the same surface. Parity drift and
   first-run friction land as paired DEBT rows — mechanical
   side on Dejan, felt side on Bodhi.
-- **Aarav (skill-tune-up-ranker)** — ranks Dejan's agent
-  + skill files on the 5-10 round tune-up cadence.
-  Structural view on Dejan's contract; complementary to
-  Dejan's own CI / install-script view.
+- **Aarav (skill-tune-up-ranker)** — ranks Dejan's agent and
+  skill files on the 5-10 round tune-up cadence. Structural
+  view on Dejan's contract; complementary to Dejan's own CI /
+  install-script view.
 
 ## Reference patterns
 

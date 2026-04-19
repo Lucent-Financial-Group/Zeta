@@ -302,7 +302,7 @@ within each priority tier.
     syntax). Skills themselves are the portable part.
   - **Generator.** `tools/sync-harness-mirrors.sh` (or a
     small F# / Python script) reads `skills/**/SKILL.md`
-    + `skills/INDEX.md` and writes to:
+    and `skills/INDEX.md` and writes to:
     - `.claude/skills/<name>/SKILL.md` (exact copy;
       Claude Code reads from here)
     - `.cursor/rules/<name>.mdc` (frontmatter-adjusted
@@ -326,8 +326,8 @@ within each priority tier.
 
   **Constraints from Zeta's conventions:**
   - **GOVERNANCE §30 sweep-refs** applies — every `skills/`
-    → `<harness>/<path>` rename is a moved path; grep
-    + verify on every generator run.
+    → `<harness>/<path>` rename is a moved path; grep and
+    verify on every generator run.
   - **GOVERNANCE §31** applies to any Copilot-visible
     artifact — the generator writes `.github/instructions/*`
     through the skill-creator-equivalent of the
@@ -370,7 +370,7 @@ within each priority tier.
   post-v1. A consumer currently believes
   `DurabilityMode.WitnessDurable` is callable; it throws
   `NotImplementedException`. Route: Kai (framing decision)
-  + Samir (README edit). Needs Aaron sign-off on the
+  and Samir (README edit). Needs Aaron sign-off on the
   v1.0 vs post-v1 split before Samir edits. Proposal in
   [memory/persona/iris/NOTEBOOK.md](memory/persona/iris/NOTEBOOK.md)
   round-34 entry.

@@ -81,6 +81,22 @@ echo "✓ mise: $(mise --version)"
 # `dotnet tool install -g` globals — that's dotnet's own convention
 # independent of where the SDK lives. shellenv.sh wires it.
 "$SETUP_DIR/common/mise.sh"
+
+# Put mise shims on THIS shell's PATH so subsequent common/*.sh
+# subprocesses (python-tools, dotnet-tools, verifiers) inherit it
+# and can invoke dotnet / uv / bun / java / python from the mise
+# install. mise.sh also tries to export this but it exports inside
+# its own subprocess; parent inherit needs the parent to export.
+for shim_dir in \
+    "$HOME/.local/share/mise/shims" \
+    "/opt/homebrew/opt/mise/shims" \
+    "/opt/homebrew/share/mise/shims"; do
+  if [ -d "$shim_dir" ]; then
+    export PATH="$shim_dir:$PATH"
+    break
+  fi
+done
+
 "$SETUP_DIR/common/python-tools.sh"
 
 # Make ~/.dotnet/tools available for the remainder of this install.sh
