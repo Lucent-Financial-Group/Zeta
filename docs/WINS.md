@@ -11,6 +11,55 @@ shipped." **Ordered newest-first** — recent rounds lead,
 older rounds trail below. Entries stay even after the moment
 passes, because the pattern is the value.
 
+## Wins — round 33
+
+### Direct questions beat abstract scaffolding
+
+Round 33 started with the question "we probably need a
+product owner to drive direction." My first instinct was
+to draft the `product-visionary` role proposal, scaffold
+it into a skill, queue it in BACKLOG — the whole abstract-
+role-machinery that every prior factory-improvement round
+had produced. Aaron short-circuited the ceremony: he just
+started articulating the vision directly, in ten cascading
+passes across one session.
+
+`docs/VISION.md` went from nothing to v11 in the same
+session, with 14 PRs merged. Every version sharpened the
+north star — two first-class products (database +
+software factory), events-as-source-of-truth foundation,
+HTAP/multi-model fastest-in-all-classes ambition, Apache-
+2.0 license locked, ASP.NET DI north star, pluggable wire
+protocol, Zeta owns persistence 100%. Without Aaron
+answering directly, none of this would be on paper; all
+of it would be blocked on the `product-visionary` role
+not yet existing.
+
+**What it teaches.** When a gap surfaces that needs
+Aaron's judgement, the shortest path is to ask Aaron.
+Building a role or skill to ask him later is indirection
+that costs rounds. Spawn the role when a pattern of
+repeated questions shows up — until then, direct ask
+beats abstract scaffolding.
+
+### Highest-velocity round to date
+
+Round 33 landed 15 PRs. Two prior high-water rounds:
+round 29 (CI anchor, multi-landing), round 30 (threat
+model elevation, 5 landings). 15 is 3× the prior best.
+
+Why it worked: VISION-editing PRs are small, focused,
+and cumulative. Each pass fixed one thing — the shape
+of the DB, the license, the persistence stance, the
+wire-protocol shape — without needing a multi-hour
+design doc first. CI stayed green the whole session.
+Every PR built on the last.
+
+**What it teaches.** Vision work is low-friction when
+the source-of-truth person is engaged. Batch 10 small
+PRs > 1 big design doc. Each merge is a ratchet that
+the next pass can't unwind silently.
+
 ## Wins — round 30
 
 ### First fully-green gate in the repo's history
