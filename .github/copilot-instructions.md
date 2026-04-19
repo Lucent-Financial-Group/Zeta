@@ -143,6 +143,27 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   line. This has bitten round 34 five separate times;
   flag it inline on any PR diff that introduces a
   line-start `+` in prose or a list continuation.
+- **F# and C# language-fit on every code diff.** Zeta
+  is F#-first by design — DBSP's math shape fits F#
+  idioms cleanly. But `src/Core.CSharp/` is a
+  deliberate C# facade and we ship both. When a PR
+  touches `src/**/*.fs` or `src/**/*.cs`, spot the
+  local cases where the other language would be
+  cleaner / faster / easier (never a rewrite
+  proposal — always a local flag). C# wins on:
+  hot-path struct layout (`[StructLayout]` +
+  `[InlineArray]`), `ref struct` / `Span<T>`
+  ergonomics, BCL-attribute-driven metadata,
+  unsafe / pointer / interop (`LibraryImport`
+  source-generators), fluent reads in test code.
+  F# wins on: discriminated unions, computation
+  expressions, units of measure, type providers,
+  pattern matching over DU shapes, pipe-forward
+  pipelines, immutable-by-default value semantics.
+  Tag findings P0 (load-bearing perf / correctness;
+  needs Naledi benchmark), P1 (readability win), P2
+  (idiom nit). Full rulebook at
+  `.claude/skills/csharp-fsharp-fit-reviewer/SKILL.md`.
 - **Python tool management is `uv`-only.** Any PR diff
   that introduces `pip install`, `pipx install`,
   `poetry install` / `poetry add`, `pyenv install`,

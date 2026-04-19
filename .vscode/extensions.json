@@ -15,6 +15,10 @@
     "jnoortheen.xonsh",
     "alloy.alloy",
     "sonarsource.sonarlint-vscode",
-    "jetmartin.bats"
+    "jetmartin.bats",
+    "ms-python.python",
+    "charliermarsh.ruff",
+    "alygin.vscode-tlaplus",
+    "leanprover.lean4"
   ]
 }
