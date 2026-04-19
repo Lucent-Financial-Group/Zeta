@@ -64,6 +64,38 @@ Candidate use cases once ops activity begins:
 
 ---
 
-_(Empty — seeded 2026-04-19 round 34. First migration on
+## Round 34 — persona seeded; no incidents yet — 2026-04-19
+
+First durable record: Nazar was seeded mid-round-34 after
+Aaron flipped Zeta public and named the security-operations
+lane as a distinct persona slot (distinct from Mateo's
+proactive research lane). No incidents fired round 34.
+Preserving the seed state as a trend anchor — round 35+
+incidents compare against zero-baseline here.
+
+**Ops inventory at seed (permanent baseline).**
+- Signed-artifact operations in play: 0 (NuGet publish
+  switch not flipped).
+- HSM keys to rotate: 0 (pre-v1; no signing ceremony
+  established).
+- SLSA attestations shipped: 0 (backlog).
+- CVE-triage log entries: 0.
+- Post-incident writeups: 0 (docs/security/incidents/
+  directory does not exist yet).
+
+**What the seed says about expected round-35+ activity.**
+Nothing fires until either (a) a CVE lands on a Zeta dep
+and Malik / Mateo hand it off for triage, or (b) the NuGet
+publish switch flips and we start signing artifacts. Until
+then Nazar's work is playbook drafting, not incident
+response.
+
+**Evidence anchor:** `.claude/agents/security-operations-engineer.md`
+(round-34 persona file) + `memory/persona/nazar/NOTEBOOK.md`
+(round-34 seed entry with open questions).
+
+---
+
+_(Seeded 2026-04-19 round 34. First migration on
 next NOTEBOOK prune OR first incident resolution,
 whichever fires first.)_

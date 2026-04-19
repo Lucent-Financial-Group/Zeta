@@ -233,6 +233,75 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Shell testing and linting discipline (bats etc.)**
+  (round 34 ask from Aaron). Zeta's install script now
+  has real logic: `macos.sh` / `linux.sh` orchestration,
+  6 `common/*.sh` subprocess scripts including round-34
+  arrivals `python-tools.sh` + `profile-edit.sh`,
+  4 `manifests/*` files the scripts parse. Shellcheck
+  catches syntax + common-anti-pattern issues on every
+  PR, but there's no behavioural test — a refactor that
+  changes the install-script contract wouldn't be caught
+  until the next first-PR contributor ran `install.sh`
+  on a clean laptop and it failed silently.
+
+  **Aaron's references.** `../scratch` and `../SQLSharp`
+  both have shell-testing infrastructure Zeta should
+  learn from before choosing a shape. The canonical
+  pattern in that space is **bats** (Bash Automated
+  Testing System) — a TAP-compatible shell-native
+  test framework that composes well with CI.
+
+  **Research scope for the adoption design:**
+  - Read both reference repos' shell-test layouts:
+    what do they test, what do they deliberately skip,
+    how do they mock `brew install` / `apt-get install`
+    / `mise install` to avoid real toolchain side-
+    effects in CI, how do they structure the test
+    harness (bats helpers, fixtures, golden files).
+  - Inventory Zeta's install-script contract — what
+    behaviours are load-bearing enough to test? Prime
+    candidates: (a) `profile-edit.sh` idempotency
+    (append-or-replace marker block), (b) manifest
+    parsing skips comments + empty lines correctly,
+    (c) `apt`-manifest-is-all-comments case does not
+    fail under pipefail, (d) mise-shim PATH
+    inheritance from parent orchestrator, (e) shellenv
+    regeneration is deterministic.
+  - Comparison table: bats vs shunit2 vs bash_unit vs
+    pure-bats-core. Weight on (i) cross-platform
+    (macOS bash 3.2 + Linux bash 5.x), (ii) CI
+    integration (TAP output, GitHub Actions reporter),
+    (iii) install footprint (we already install a lot;
+    another tool needs to justify itself),
+    (iv) fixture ergonomics (mocking brew / apt /
+    mise / curl cleanly).
+  - shellcheck coverage — we already run it in CI;
+    confirm the ruleset is tight and the
+    `shellcheck disable` comments we have today are
+    justified (BP-04 supply-chain / velocity review).
+
+  **Expected deliverables:**
+  - `docs/research/shell-testing-design.md` —
+    comparison + recommendation.
+  - If bats wins: `tools/setup/common/bats.sh` to
+    install via mise-plugin-if-available or
+    curl-piped-from-tag-pinned-release otherwise,
+    plus `tools/setup/tests/*.bats` with the first
+    half-dozen tests covering the highest-leverage
+    behaviours named above.
+  - GitHub Actions workflow gains a new lint slot:
+    `bats-test` alongside shellcheck.
+  - DEBT entry retired: any install-script bug that
+    ships in round 35+ because we didn't have shell
+    tests is a permanent counterexample to the
+    "shellcheck-is-enough" posture.
+
+  **Effort.** M-L. Research round first; implementation
+  split across a second round. Natural coordinator:
+  Dejan (install script owner) + `bash-expert` capability
+  skill.
+
 - [ ] **Research: local semantic search over text corpora
   for agent / developer / CI leverage** (round 34 ask
   from Aaron). Zeta's text-based corpora grow
