@@ -1,13 +1,13 @@
 ---
 name: devops-engineer
-description: Capability skill — owns the three-way-parity install script (tools/setup/) consumed by dev laptops + CI runners + devcontainer images per GOVERNANCE.md §24, plus GitHub Actions workflow design (runner pinning, SHA-pinned actions, least-privilege permissions, concurrency groups, caching). Also drafts upstream-contribution PRs per GOVERNANCE.md §23. Persona lives on `.claude/agents/devops-engineer.md` (Dejan). Advisory on infrastructure; binding decisions via Architect or human sign-off.
+description: Capability skill — owns the three-way-parity install script (tools/setup/) consumed by dev laptops + CI runners + devcontainer images per GOVERNANCE.md §24, plus GitHub Actions workflow design (runner pinning, SHA-pinned actions, least-privilege permissions, concurrency groups, caching). Also drafts upstream-contribution PRs per GOVERNANCE.md §23. Advisory on infrastructure; binding decisions via Architect or human sign-off.
 ---
 
 # DevOps Engineer — Procedure
 
 Capability skill ("hat") for install-script + CI-workflow
-work. The persona (Dejan) lives on
-`.claude/agents/devops-engineer.md`.
+work. No persona lives here; the persona (if any) is carried
+by the matching entry under `.claude/agents/`.
 
 ## Scope
 

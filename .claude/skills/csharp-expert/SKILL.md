@@ -5,10 +5,12 @@ description: Capability skill ("hat") — C# idioms for Zeta's narrow C# surface
 
 # C# Expert — Procedure + Lore
 
-Capability skill. No persona. Zeta is F#-first; C# exists
-solely to serve **C# consumers** of Zeta's public API —
-idiomatic types, idiomatic calling conventions — and the
-test projects that drive that surface.
+Capability skill. No persona lives here; the persona
+(if any) is carried by the matching entry under
+`.claude/agents/`. Zeta is F#-first; C# exists solely to
+serve **C# consumers** of Zeta's public API — idiomatic
+types, idiomatic calling conventions — and the test
+projects that drive that surface.
 
 ## When to wear
 

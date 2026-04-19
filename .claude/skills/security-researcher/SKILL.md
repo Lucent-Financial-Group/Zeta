@@ -1,6 +1,6 @@
 ---
 name: security-researcher
-description: Capability skill — proactive security research. Scouts novel attack classes, crypto primitives, supply-chain patterns, CVEs in the dep graph, and research-preview attack surfaces. Distinct from the `threat-model-critic` (threat-model-critic reviews the *shipped* model) and the `prompt-protector` (prompt-protector owns the agent layer). Persona lives on `.claude/agents/security-researcher.md` (Mateo).
+description: Capability skill — proactive security research. Scouts novel attack classes, crypto primitives, supply-chain patterns, CVEs in the dep graph, and research-preview attack surfaces. Distinct from the `threat-model-critic` (reviews the *shipped* model) and the `prompt-protector` (owns the agent layer).
 ---
 
 # Security Researcher — Procedure
@@ -8,8 +8,8 @@ description: Capability skill — proactive security research. Scouts novel atta
 Capability skill ("hat") encoding proactive security research:
 scouting novel attack classes before they land, reviewing crypto
 primitives before they ship, watching the supply chain, triaging
-CVEs in the dependency graph. The persona (Mateo) lives on
-`.claude/agents/security-researcher.md`.
+CVEs in the dependency graph. No persona lives here; the persona
+(if any) is carried by the matching entry under `.claude/agents/`.
 
 ## Scope
 
@@ -126,6 +126,36 @@ Critical, also open a BUGS.md entry immediately.
   bumps.
 - **`architect`** — routes Critical findings; writes the
   code fix.
+
+## External tooling (conditional, Claude-Code-only)
+
+When running inside Claude Code, the `security-guidance`
+plugin may be installed at
+`~/.claude/plugins/cache/claude-plugins-official/security-guidance/`.
+If enabled in `.claude/settings.json`, it runs a PreToolUse
+hook that substring-matches ~eight dangerous API families
+(child-process exec, dynamic code evaluation, unsafe HTML
+sinks, Python unpickling, shell-spawn APIs) on
+Edit/Write/MultiEdit and emits an inline reminder to stderr.
+
+Use the plugin as a first-pass lint only:
+
+- Silence from the plugin is NOT sign-off; its substring
+  heuristics miss cases the literature sweep (Step 2) is
+  supposed to catch.
+- The plugin's rule list is useful as a living checklist
+  when composing semgrep rules via
+  `.claude/skills/semgrep-rule-authoring/SKILL.md`.
+- The plugin is Claude-Code-only. Agents running via the
+  Agent SDK directly do not load Claude Code plugins, so
+  this lane must not depend on the plugin firing. Treat
+  its findings as a bonus, not a guarantee.
+- The plugin's hook can false-positive on documentation
+  that merely names a dangerous API family. If that
+  becomes too noisy, disable the plugin in
+  `.claude/settings.json` — the skill content at
+  `.../security-guidance/.../SKILL.md` remains readable
+  from the cache for reference.
 
 ## Reference patterns
 

@@ -1,6 +1,6 @@
 ---
 name: developer-experience-engineer
-description: Capability skill — measures first-60-minutes friction for a new human contributor to Zeta; audits CONTRIBUTING.md, the install script, build loop, test discoverability, IDE integration, and error noise; proposes minimal additive fixes routed to the canonical owners. Distinct from UX (library consumers) and AX (agent cold-start). Persona lives on `.claude/agents/developer-experience-engineer.md` (Bodhi).
+description: Capability skill — measures first-60-minutes friction for a new human contributor to Zeta; audits CONTRIBUTING.md, the install script, build loop, test discoverability, IDE integration, and error noise; proposes minimal additive fixes routed to the canonical owners. Distinct from UX (library consumers) and AX (agent cold-start).
 ---
 
 # Developer Experience Engineer — Procedure
@@ -8,8 +8,8 @@ description: Capability skill — measures first-60-minutes friction for a new h
 This is a **capability skill** ("hat"). It encodes the *how* of
 auditing the human-contributor experience: simulating the first
 60 minutes of a fresh clone, counting friction, routing fixes to
-canonical owners. The persona (Bodhi) lives on
-`.claude/agents/developer-experience-engineer.md`.
+canonical owners. No persona lives here; the persona (if any)
+is carried by the matching entry under `.claude/agents/`.
 
 ## Ground assumption
 

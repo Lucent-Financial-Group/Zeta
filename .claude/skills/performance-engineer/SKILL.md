@@ -1,13 +1,13 @@
 ---
 name: performance-engineer
-description: Capability skill — hot-path tuning, allocation audits, cache-line behaviour, SIMD dispatch, benchmark-driven optimization. Distinct from the `complexity-reviewer` (complexity-reviewer's asymptotics + lower bounds) and the `query-planner` (query-planner's cost model + join order). Persona lives on `.claude/agents/performance-engineer.md` (Naledi).
+description: Capability skill — hot-path tuning, allocation audits, cache-line behaviour, SIMD dispatch, benchmark-driven optimization. Distinct from the `complexity-reviewer` (complexity-reviewer's asymptotics + lower bounds) and the `query-planner` (query-planner's cost model + join order).
 ---
 
 # Performance Engineer — Procedure
 
 Capability skill ("hat") for measurement-driven performance
-work. The persona (Naledi) lives on
-`.claude/agents/performance-engineer.md`.
+work. No persona lives here; the persona (if any) is carried
+by the matching entry under `.claude/agents/`.
 
 ## Scope
 

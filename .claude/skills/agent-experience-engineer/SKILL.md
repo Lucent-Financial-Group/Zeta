@@ -1,6 +1,6 @@
 ---
 name: agent-experience-engineer
-description: Capability skill — measures friction in the agent (persona) experience; audits per-persona cold-start cost, pointer drift, wake-up clarity, notebook hygiene; proposes minimal additive interventions. Distinct from UX (library consumers) and DX (human contributors). Persona lives on `.claude/agents/agent-experience-engineer.md`.
+description: Capability skill — measures friction in the agent (persona) experience; audits per-persona cold-start cost, pointer drift, wake-up clarity, notebook hygiene; proposes minimal additive interventions. Distinct from UX (library consumers) and DX (human contributors).
 ---
 
 # Agent Experience Engineer — Procedure
@@ -8,8 +8,9 @@ description: Capability skill — measures friction in the agent (persona) exper
 This is a **capability skill** ("hat"). It encodes the *how* of
 auditing the per-persona agent experience: simulating cold starts,
 counting orientation cost, finding drift in persona-to-artifact
-pointer chains, designing minimal interventions. The persona
-(Daya) lives on `.claude/agents/agent-experience-engineer.md`.
+pointer chains, designing minimal interventions. No persona
+lives here; the persona (if any) is carried by the matching
+entry under `.claude/agents/`.
 
 ## Ground assumption
 

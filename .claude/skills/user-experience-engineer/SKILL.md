@@ -1,6 +1,6 @@
 ---
 name: user-experience-engineer
-description: Capability skill — measures first-10-minutes friction for a new library consumer of Zeta; audits NuGet metadata, README, getting-started, public API names, IntelliSense, error messages, and sample projects; proposes minimal additive fixes routed to Samir (docs), Ilyana (public API), or Kai (positioning). Distinct from DX (contributor onboarding) and AX (agent cold-start). Persona lives on `.claude/agents/user-experience-engineer.md` (Iris).
+description: Capability skill — measures first-10-minutes friction for a new library consumer of Zeta; audits NuGet metadata, README, getting-started, public API names, IntelliSense, error messages, and sample projects; proposes minimal additive fixes routed to the documentation agent, public-API designer, or branding specialist. Distinct from DX (contributor onboarding) and AX (agent cold-start).
 ---
 
 # User Experience Engineer — Procedure
@@ -8,8 +8,9 @@ description: Capability skill — measures first-10-minutes friction for a new l
 This is a **capability skill** ("hat"). It encodes the *how* of
 auditing the library-consumer experience: simulating the first
 10 minutes of a fresh NuGet discovery, counting friction,
-routing fixes to canonical owners. The persona (Iris) lives on
-`.claude/agents/user-experience-engineer.md`.
+routing fixes to canonical owners. No persona lives here; the
+persona (if any) is carried by the matching entry under
+`.claude/agents/`.
 
 ## Ground assumption
 
