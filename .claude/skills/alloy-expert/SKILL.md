@@ -22,6 +22,7 @@ Driver: `tools/alloy/AlloyRunner.java` (pure-Java, SAT4J).
 ## Zeta's Alloy scope
 
 Two specs, both structural:
+
 - `Spine.als` — shape invariants on the storage spine
   (run tree).
 - `InfoTheoreticSharder.als` — relational invariants on
@@ -68,6 +69,7 @@ check NoDuplicateRuns for 5 Run, 3 Key, 3 Value
 ```
 
 Discipline:
+
 - **`module` declaration** names the spec.
 - **`sig`** declares a type (set of atoms). Use
   abstract sigs + extensions for hierarchies.
@@ -116,6 +118,7 @@ Scopes of 5-7 catch a lot.
   scope, no counter-example exists."
 
 Zeta's driver (`AlloyRunner.java`) treats:
+
 - `check` → OK if `!solution.satisfiable()` (no counter-
   example).
 - `run` → OK if `solution.satisfiable()` (instance found).

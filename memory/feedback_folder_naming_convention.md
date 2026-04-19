@@ -26,6 +26,7 @@ Zeta/
 
 **What keeps the `Zeta.*` prefix** (published identity,
 seen by users — not an on-disk smell):
+
 - NuGet package IDs: `Zeta.Core`, `Zeta.Core.CSharp`,
   `Zeta.Bayesian`
 - Namespaces in source: `namespace Zeta.Core`,
@@ -36,6 +37,7 @@ seen by users — not an on-disk smell):
 
 **What drops the prefix** (internal identity, never
 published to NuGet):
+
 - Test / bench / sample AssemblyNames default to their
   filename: `Tests.FSharp.dll`, `Benchmarks.dll`, `Demo.dll`
 - `.sln` project-display names inside the sln file: bare
@@ -52,6 +54,7 @@ our own project." Paths that repeat the project name are
 noise for every contributor reading the tree.
 
 **How to apply:**
+
 - When creating any new subfolder in this repo, name it
   for its role (Core, Bayesian, Storage, Runtime), not for
   the project.

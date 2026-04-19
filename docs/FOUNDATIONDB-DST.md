@@ -48,6 +48,7 @@ to hit production without a traditional integration suite.
 ## Combining DST with the Rx-style `VirtualTimeScheduler`
 
 **Yes, worth combining.** They're two halves of the same idea:
+
 - `VirtualTimeScheduler` controls **when** async operations fire
 - `ChaosEnvironment` controls **what** I/O / RNG / clock values are
   returned
@@ -102,6 +103,7 @@ combining into `ISimulationDriver` is the right unification — flagged
 ## Roadmap slot
 
 **P1 (next 2 weeks):**
+
 - Promote `VirtualTimeScheduler` to `src/Core/Simulation.fs`
 - Define `ISimulationDriver` with `Scheduler + FileSystem + Network`
 - Wire `DiskBackingStore` through `ISimulatedFs`
@@ -109,6 +111,7 @@ combining into `ISimulationDriver` is the right unification — flagged
   with the same seed and produces identical output
 
 **P2:**
+
 - `ISimulatedNetwork` for the future multi-node wire
 - `Buggify`-style probabilistic fault injection macros
 - Swarm runner (GitHub Actions matrix × 100 seeds)

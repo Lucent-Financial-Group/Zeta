@@ -93,7 +93,7 @@ third time, write the rule.
 - **`patterns`** (top-level list) — logical-AND of the
   sub-clauses.
 
-## `languages: [generic]` for F#
+## `languages: [generic]` for `F#`
 
 Semgrep's F# support is limited; most F# rules use
 `languages: [generic]`. Generic mode is text-based with
@@ -117,6 +117,7 @@ src/Core/` and verify the rule fires where you expect.
 ## Paths include/exclude
 
 Zeta-specific examples:
+
 - Rule targeting library code: `include: "src/Zeta.Core/**/*.fs"`.
 - Rule excluding test fixtures: `exclude: "**/tests/**"`.
 - Rule excluding known-good callsite: `exclude:
@@ -132,6 +133,7 @@ matches one path component.
 ## Message discipline
 
 Every rule's `message:` says two things:
+
 1. **What pattern matched** — reiterate the
    smell (so the author who sees the finding in CI
    understands immediately).

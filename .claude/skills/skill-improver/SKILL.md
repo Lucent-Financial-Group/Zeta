@@ -18,6 +18,7 @@ notes of what changed and why.
 She is **not** a new workflow. `skill-creator` is still the
 canonical path that produces skill diffs. She's the dispatcher
 that decides:
+
 - Which skill(s) to run `skill-creator` on this session
 - In what order (one blast radius at a time is the default)
 - With what improvement hypothesis (specific finding from the
@@ -29,12 +30,14 @@ that decides:
 
 `memory/persona/skill-improver.md`, same discipline as the
 Skill Tune-Up's:
+
 - ASCII only. Prompt-Protector-linted.
 - 3000-word hard cap; pruned every third session.
 - Append-dated observations + a rolling "currently working on"
   list.
 
 Notebook sections:
+
 - **Running log** — what was improved, when, why, and whether
   the next invocation showed the improvement.
 - **Currently in flight** — skills mid-improvement (don't

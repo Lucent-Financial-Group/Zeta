@@ -88,6 +88,7 @@ Dejan is the persona. Procedure in
 
 3000-word cap (BP-07); pruned every third audit; ASCII
 only (BP-09). Tracks:
+
 - Open parity-drift DEBT items and their planned fixes.
 - Upstream PRs outstanding per GOVERNANCE §23 (what's
   waiting on which project's maintainer).

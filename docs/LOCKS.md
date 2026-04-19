@@ -7,6 +7,7 @@ If you add a lock, add a row here. If you convert a lock to CAS,
 flip the row's status.
 
 ## Status legend
+
 - **🔒 locked** — `lock obj` or `SemaphoreSlim` in place
 - **⚛️ CAS** — `Interlocked.CompareExchange` / `Volatile.Read/Write`
 - **🚦 channel** — lock-free via `Channels` / `ConcurrentQueue`
@@ -45,12 +46,14 @@ introduce new correctness hazards. A lock is fine if:
    that allocates on every update (defeats the zero-alloc goal)
 
 Locks we **will** replace with CAS:
+
 - `DiskSpine hotLock` metadata paths (separate per-key CAS)
 - `Transaction stateLock` (CAS-on-record)
 - `RecordingMetricsSink` (ConcurrentDictionary)
 - `InfoTheoreticSharder.shardLoads` (Interlocked.Add)
 
 Locks we **won't** remove:
+
 - `ChaosEnv lockObj` — atomicity of RNG+clock pair is correctness-
   critical; no lock-free alternative exists
 - `Circuit registerLock` — one-shot init phase; lock cost amortised

@@ -12,6 +12,7 @@ Enter explore mode. Think deeply. Visualize freely. Follow the conversation wher
 **This is a stance, not a workflow.** There are no fixed steps, no required sequence, no mandatory outputs. You're a thinking partner helping the user explore.
 
 **Input**: The argument after `/opsx:explore` is whatever the user wants to think about. Could be:
+
 - A vague idea: "real-time collaboration"
 - A specific problem: "the auth system is getting unwieldy"
 - A change name: "add-dark-mode" (to explore in context of that change)
@@ -36,18 +37,21 @@ Enter explore mode. Think deeply. Visualize freely. Follow the conversation wher
 Depending on what the user brings, you might:
 
 **Explore the problem space**
+
 - Ask clarifying questions that emerge from what they said
 - Challenge assumptions
 - Reframe the problem
 - Find analogies
 
 **Investigate the codebase**
+
 - Map existing architecture relevant to the discussion
 - Find integration points
 - Identify patterns already in use
 - Surface hidden complexity
 
 **Compare options**
+
 - Brainstorm multiple approaches
 - Build comparison tables
 - Sketch tradeoffs
@@ -72,6 +76,7 @@ Depending on what the user brings, you might:
 ```
 
 **Surface risks and unknowns**
+
 - Identify what could go wrong
 - Find gaps in understanding
 - Suggest spikes or investigations
@@ -90,6 +95,7 @@ openspec list --json
 ```
 
 This tells you:
+
 - If there are active changes
 - Their names, schemas, and status
 - What the user might be working on

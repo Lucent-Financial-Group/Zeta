@@ -151,3 +151,91 @@ jobs:
         # under nation-state posture per round-30 elevation, a lint
         # rule without a gate isn't a control.
         run: semgrep --config .semgrep.yml --error --metrics=off
+
+  lint-shell:
+    # Shellcheck on every bash script under tools/setup/ + tools/.
+    # Round 33 static-analysis expansion (Aaron: "as much static
+    # analysis as possible, match or surpass SQLSharp + scratch").
+    # See openspec/specs/static-analysis/profiles/shell.md.
+    name: lint (shellcheck)
+    timeout-minutes: 5
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run shellcheck
+        # shellcheck ships pre-installed on ubuntu-22.04 runners.
+        # Scope: Zeta's own scripts under `tools/setup/` only —
+        # `tools/lean4/.lake/packages/**` is Lean/Mathlib vendored
+        # code not governed by Zeta standards.
+        # Format: -f gcc for file:line:col:msg output parseable by
+        # IDEs. Severity floor: style (catches everything including
+        # style warnings; we can relax to warning if noise is high).
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(
+            find tools -name "*.sh" -type f \
+              -not -path "tools/lean4/.lake/*" \
+              | sort
+          )
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "no shell scripts found under tools/; skipping"
+            exit 0
+          fi
+          echo "shellcheck targets:"
+          printf '  %s\n' "${files[@]}"
+          shellcheck --format=gcc --severity=style "${files[@]}"
+
+  lint-workflows:
+    # actionlint catches .github/workflows/*.yml bugs: unknown
+    # context refs, invalid runner labels, shellcheck-style warnings
+    # on run: blocks, wrong action syntax. Round 33 static-analysis
+    # expansion. See openspec/specs/static-analysis/profiles/
+    # github-actions.md.
+    name: lint (actionlint)
+    timeout-minutes: 5
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Download actionlint (pinned)
+        # Download directly from the rhysd/actionlint release; SHA
+        # pin in the install script below. Avoids a third-party
+        # action just to install a linter.
+        run: |
+          set -euo pipefail
+          ACTIONLINT_VERSION="1.7.7"
+          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v${ACTIONLINT_VERSION}/scripts/download-actionlint.bash) "${ACTIONLINT_VERSION}"
+          ./actionlint --version
+
+      - name: Run actionlint
+        run: ./actionlint -color
+
+  lint-markdown:
+    # markdownlint-cli2 on every .md file outside the ignore list in
+    # .markdownlint-cli2.jsonc. Round 33 static-analysis expansion
+    # (docs + specs + skills are a huge surface; drift is easy).
+    # See openspec/specs/static-analysis/profiles/markdown.md.
+    name: lint (markdownlint)
+    timeout-minutes: 5
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Node
+        # Pinned Node is enough for markdownlint-cli2; no bun needed.
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: '22'
+
+      - name: Install markdownlint-cli2
+        run: npm install -g markdownlint-cli2@0.18.1
+
+      - name: Run markdownlint
+        run: markdownlint-cli2 "**/*.md"

@@ -38,6 +38,7 @@ A control that fails any of (1)-(3) lands in
 ## v1.0 required (the floor)
 
 ### Supply chain
+
 - **Third-party GitHub Actions pinned by full 40-char SHA.**
   Enforced by Semgrep rule 15 in the `lint` gate job. Blocks
   tj-actions tag-rewrite class.
@@ -55,6 +56,7 @@ A control that fails any of (1)-(3) lands in
   leg remains on DEBT.
 
 ### SAST + linting
+
 - **Semgrep-in-CI as a hard gate.** 14+ custom rules running
   with `--error`. Round 30 landing. Blocks rule-codified
   antipatterns from ever merging.
@@ -62,6 +64,7 @@ A control that fails any of (1)-(3) lands in
   PR-time scan if cost allows. Round 33 Track B item 5.
 
 ### Incident response
+
 - **Disclosure policy** at `SECURITY.md`. In place.
 - **Incident playbooks** at `docs/security/INCIDENT-PLAYBOOK.md`.
   Round 30 landing; covers 6 scenarios (third-party GHA
@@ -69,6 +72,7 @@ A control that fails any of (1)-(3) lands in
   account compromise, skill safety-clause regression, escalation).
 
 ### Governance
+
 - **Branch protection required-check on `main`** once `gate.yml`
   has one week of consistent green runs. Prevents unreviewed
   PRs from landing even under the maintainer's own push.
@@ -81,6 +85,7 @@ A control that fails any of (1)-(3) lands in
 ## Post-v1 / explicitly out of v1.0 scope
 
 ### Hardware + side-channel
+
 - **Power-analysis / EM / acoustic side-channel resistance.** Not
   a plausible adversary against a library consumed inside the
   host process. Revisit if Zeta ever ships a co-processor or
@@ -92,6 +97,7 @@ A control that fails any of (1)-(3) lands in
   this wrap Zeta in their own TEE.
 
 ### Nation-state bespoke malware
+
 - **Untargeted defence against Mossad-class adversaries.** By
   definition out of scope per Mickens' observation. An attacker
   willing to spend seven figures to compromise a library consumer
@@ -102,12 +108,14 @@ A control that fails any of (1)-(3) lands in
   post-v1 goal.
 
 ### Cryptographic hardening
+
 - **HSM-backed signing keys for releases.** Post-v1; software keys
   acceptable for 0.x.
 - **Reproducible builds.** Desirable; Lean and F# compilers both
   need work upstream. Tracked as a v2-or-beyond goal.
 
 ### Process / compliance
+
 - **Penetration testing / Red-team engagement.** Post-v1. Pre-v1
   the threat model + reviewer floor + incident playbook are the
   surface area worth exercising.

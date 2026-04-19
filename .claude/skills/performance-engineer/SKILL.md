@@ -25,6 +25,7 @@ work. The persona (Naledi) lives on
   axis is the bottleneck and name it.
 
 Out of scope:
+
 - Asymptotic complexity claims — `complexity-reviewer`.
 - Cost-model / planner optimization — `query-planner`.
 - Benchmark rigging (cherry-picked inputs) — never in scope.

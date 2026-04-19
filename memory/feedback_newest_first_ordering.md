@@ -29,6 +29,7 @@ Newest-first means the load-bearing material is the first
 thing seen.
 
 **How to apply:**
+
 - When adding a new entry to `MEMORY.md`, prepend (top of
   file) rather than append.
 - When writing a `docs/ROUND-HISTORY.md` entry, prepend

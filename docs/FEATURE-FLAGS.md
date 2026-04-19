@@ -17,6 +17,7 @@ No flag reads the network. No flag reads a config file the caller
 did not hand us. Offline-safe by construction.
 
 See also:
+
 - `src/Core/FeatureFlags.fs` — the module.
 - `docs/WONT-DO.md` — why we're not using LaunchDarkly / Unleash /
   any centralised service.

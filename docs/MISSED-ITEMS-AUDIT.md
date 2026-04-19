@@ -6,6 +6,7 @@ P1. 🔮 = deferred research-grade. ⏭️ = explicitly declined with
 reason.
 
 ## Round 1-6 (foundation)
+
 - ✅ F# DBSP operator algebra (D, I, z⁻¹, H)
 - ✅ Z-set + IndexedZSet + Spine
 - ✅ LFP / semi-naïve recursion
@@ -22,6 +23,7 @@ reason.
   IWatermarkStrategy/IDbspLogger)
 
 ## Round 7-8 (math + sketches)
+
 - ✅ Tropical semiring
 - ✅ KLL quantile, HyperMinHash
 - ✅ Haar wavelet window
@@ -31,6 +33,7 @@ reason.
 - ✅ Residuated lattice (scaffolding + O(1) max via `ResidualMax`)
 
 ## Round 9 (concurrency + verification)
+
 - ✅ OpenTelemetry tracing (ActivitySource)
 - ✅ IsAsync discoverability + HasAsyncOps
 - ✅ 8 TLA+ specs total (6 now pass TLC)
@@ -43,6 +46,7 @@ reason.
 - ✅ Coverlet bumped 6.0.4 → 10.0.0
 
 ## Round 10-11 (research agents + novel math)
+
 - ✅ Thread-safety stress harness (would catch the CAS regression)
 - ✅ VirtualTimeScheduler (Rx-style)
 - ✅ 4 additional TLA+ specs
@@ -61,6 +65,7 @@ reason.
 - ✅ SpeculativeWatermark operator
 
 ## Round 12 (big feature batch)
+
 - ✅ All upgrade bumps (Meziantou 2→3, Test.Sdk 17→18, BenchmarkDotNet,
   System.Reactive, Apache.Arrow)
 - ✅ OperatorLifecycleRace spec fixed + un-skipped
@@ -73,6 +78,7 @@ reason.
   this round under `.claude/skills/`)
 
 ## Round 13 (THIS round — just shipped)
+
 - ✅ CTFP `.git` stripped
 - ✅ Feldera cloned to `references/upstreams/feldera/`
 - ✅ Rust verified (1.94.1 Homebrew, latest available)

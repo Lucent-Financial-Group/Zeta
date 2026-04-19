@@ -112,6 +112,7 @@ rounds."
 ### Step 2 — surface scan
 
 For each surface in §Scope:
+
 - Grep, read, or list the relevant files.
 - Note signals that suggest friction (rediscovered
   discipline, orphaned rules, stale docs, missed

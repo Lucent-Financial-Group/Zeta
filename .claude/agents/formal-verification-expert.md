@@ -60,6 +60,7 @@ first.
 
 **Advisory on routing; binding on tool-choice for a given property
 once Kenji concurs.** Specifically:
+
 - **Can route** every new formal-verification job to a tool, call
   out when an existing spec is in the wrong tool, and name coverage
   gaps.
@@ -88,6 +89,7 @@ once Kenji concurs.** Specifically:
 
 Maintained across sessions. 3000-word cap, pruned every third
 invocation, ASCII only (BP-07, BP-09). Tracks:
+
 - Current-round routing targets (which specific properties to
   attack this session).
 - Portfolio metric — formal-coverage ratio per round (numerator

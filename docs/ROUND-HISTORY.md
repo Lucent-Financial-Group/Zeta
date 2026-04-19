@@ -155,6 +155,7 @@ from them (hand-crafting discipline codified as a
 round-29 rule).
 
 **Landed:**
+
 - `.github/workflows/gate.yml` — Phase 1 workflow:
   digest-pinned runners (`ubuntu-22.04`, `macos-14`),
   SHA-pinned third-party actions, concurrency with
@@ -163,7 +164,7 @@ round-29 rule).
   least-privilege permissions, 45-minute timeout.
 - `tools/setup/install.sh` + per-OS dispatchers +
   `common/{mise,elan,dotnet-tools,verifiers,shellenv}.sh`
-  + per-OS manifests + `.mise.toml` — the **three-way
+  - per-OS manifests + `.mise.toml` — the **three-way
   parity** script consumed by dev laptops, CI runners,
   and (backlogged) devcontainer images per GOVERNANCE
   §24.
@@ -283,6 +284,7 @@ free of FsCheck, defers probabilistic-testing cost to the
 plugin author's test project, idiomatic F#.
 
 **Live laws:**
+
 - `LawRunner.checkLinear` — generates trace pairs `(A, B)`
   via a `System.Random -> 'TIn` generator, asserts
   `op(A + B) = op(A) + op(B)` tick-by-tick using user-
@@ -394,7 +396,7 @@ eventual (macOS + Linux first, Windows when justified).
   round that touches code runs a three-slot reviewer pass
   before round-close: design specialists (Ilyana / Tariq /
   Daya / Aminata / etc. by scope), code reviewers (Kira
-  + Rune mandatory floor, race-hunter / claims-tester by
+  - Rune mandatory floor, race-hunter / claims-tester by
   scope), formal-coverage (Soraya when invariants move).
   Round-close cannot record clean until the pass is
   logged. Round-management SKILL §3.6 carries the
@@ -1319,11 +1321,11 @@ or split by sub-aspect once past ~400 lines.
   sides), Hierarchy RecursiveSemiNaive retraction leak
   (ClosureTable now uses retraction-safe `Recursive`).
 - **BloomFilter.fs** — blocked Bloom (Putze/Sanders/Singler 2007)
-  + counting Bloom (Fan et al. 1998), XxHash128 double-hashing
+  - counting Bloom (Fan et al. 1998), XxHash128 double-hashing
   (Kirsch-Mitzenmacher 2006), cache-line-aligned buckets.
 - **Durability.fs** — `DurabilityMode` DU
   (`StableStorage`/`OsBuffered`/`InMemoryOnly`/`WitnessDurable`)
-  + `WitnessDurableBackingStore` skeleton.
+  - `WitnessDurableBackingStore` skeleton.
 - **6 code-owner skills** — storage / algebra / query-planner /
   complexity / threat-model-critic / paper-peer-reviewer (since
   demoted to advisory in round 18).
@@ -1370,6 +1372,7 @@ this file in condensed form.
 ## How to add a round entry
 
 After a session lands:
+
 1. New section at the top of this file, `## Round N — <short title>`.
 2. 5-15 bullets grouped by theme (shipped / research / policy).
 3. One-line "end of round" status (build, tests, warnings).

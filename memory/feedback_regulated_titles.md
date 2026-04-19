@@ -13,6 +13,7 @@ regulated clinical title. Specifically avoid:
 **crisis intervention** role titles.
 
 Safer framings for care-coordination personas:
+
 - *coach* (empathy coach, integration coach, team coach)
 - *steward* (relational steward, culture steward, self-work steward)
 - *keeper* (culture keeper, empathy keeper)
@@ -31,6 +32,7 @@ publication — a "Zeta therapist persona" in the repo shows up in
 any paper or public discussion.
 
 **How to apply:**
+
 - When proposing a new persona whose role involves emotional /
   integration / friction / care work, reach for *coach*,
   *steward*, *keeper*, *facilitator*, *mentor*, or *liaison*

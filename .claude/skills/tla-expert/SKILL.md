@@ -25,6 +25,7 @@ chosen, this hat is the discipline. 18 specs live under
 ## Zeta's TLA+ scope
 
 18 specs currently, e.g.:
+
 - `TickMonotonicity.tla` — scheduler tick ordering.
 - `SpineMergeInvariants.tla` — storage spine invariants.
 - `OperatorLifecycleRace.tla` — plugin registration race.
@@ -76,6 +77,7 @@ THEOREM Spec => []TypeInvariant
 ```
 
 Discipline:
+
 - **Module name matches file name.** `MyModule.tla` starts
   with `MODULE MyModule`.
 - **`vars == <<...>>` declared once** and used in
@@ -100,6 +102,7 @@ CHECK_DEADLOCK FALSE
 ```
 
 Discipline:
+
 - **`SPECIFICATION`** names the top-level spec formula
   (`Spec` in the anatomy above).
 - **`INVARIANT`** names state-predicate properties;
@@ -115,12 +118,14 @@ Discipline:
 
 TLC is a bounded explicit-state model checker. Explosion
 kills it. Zeta's specs target:
+
 - Small constant sets (3-5 elements).
 - Bounded tick counts (5-20).
 - State constraints (`CONSTRAINT` clause) to bound
   unbounded types.
 
 When a spec takes more than a few minutes on TLC:
+
 - Tighten the constant sets.
 - Add a state constraint.
 - Reconsider the model — is this really a TLA+ question,

@@ -34,6 +34,7 @@ We keep this doc around because:
    tagged aspirational / teaching*.
 
 **Reality tag legend (round 30):**
+
 - **`shipped`** — mitigation exists and a CI gate /
   governance rule enforces it.
 - **`BACKLOG`** — mitigation designed, not yet shipped.
@@ -147,7 +148,7 @@ We keep this doc around because:
   until calendar triggers targeting ICS / PLC
   workloads). *Mitigation (`BACKLOG`):*
   `packages.lock.json` adoption + `RestoreLockedMode`
-  + reproducible builds + SBOM diff on release.
+  - reproducible builds + SBOM diff on release.
   **Current status: real class, no defence yet —
   round-31 P1.**
 

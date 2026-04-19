@@ -250,8 +250,9 @@ And the ~15 missing FsCheck properties from section 5 are an
 afternoon's work each.
 
 **Bug class:** mutation survival (tests that pass on any value)
-+ hard-coded-path anti-patterns + CRDT algebraic-law violations
-not currently enforced.
+
+- hard-coded-path anti-patterns + CRDT algebraic-law violations
+  not currently enforced.
 
 ---
 

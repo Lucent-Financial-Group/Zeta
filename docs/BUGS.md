@@ -35,6 +35,7 @@ tempted to ship.
 ## P0 — ship-blockers
 
 ### Expert/skill split half-done — onboarding confusion
+
 - **Site:** `.claude/agents/` vs `.claude/skills/` vs `docs/EXPERT-REGISTRY.md`
 - **Found:** round 21 by Rune
 - **Severity:** P0 onboarding
@@ -53,6 +54,7 @@ tempted to ship.
   others as "migrating."
 
 ### RecursiveCounting multi-tick-seed behaviour unproven
+
 - **Site:** `src/Core/Recursive.fs:152-…`
 - **Found:** round 20 by Kira; reproduced by an FsCheck
   property in `tests/Dbsp.Tests.FSharp/Operators/RecursiveCounting.MultiSeed.Tests.fs`
@@ -81,6 +83,7 @@ tempted to ship.
 ## P1 — serious
 
 ### BloomBench.fs referenced but not on disk
+
 - **Site:** `docs/BUGS.md` and `docs/research/bloom-filter-frontier.md`
   reference `bench/Dbsp.Benchmarks/BloomBench.fs`; the file is
   not present on disk.
@@ -94,6 +97,7 @@ tempted to ship.
   the references.
 
 ### Durability.createBackingStore error message is 6 lines of prose
+
 - **Site:** `src/Core/Durability.fs:166-174`
 - **Found:** round 21 by Kira
 - **Severity:** P1
@@ -104,6 +108,7 @@ tempted to ship.
   case so callers can pattern-match instead of string-match.
 
 ### RecursiveCounting lacks [<Experimental>] attribute
+
 - **Site:** `src/Core/Recursive.fs` (`RecursiveCounting` combinator)
 - **Found:** round 21 by Kira + Tariq
 - **Severity:** P1
@@ -118,6 +123,7 @@ tempted to ship.
   the feedback cell — that's a separate P2 research item.
 
 ### FeatureFlags.isEnabled "O(1)" claim is hand-waved
+
 - **Site:** `src/Core/FeatureFlags.fs:121-127`
 - **Found:** round 21 by Hiroshi
 - **Severity:** P1 honesty
@@ -130,6 +136,7 @@ tempted to ship.
   env-var lookup." No code change, doc only.
 
 ### Agent-file edits (`.claude/agents/**`) uncovered in threat model
+
 - **Site:** `docs/security/THREAT-MODEL.md` + `.claude/agents/`
 - **Found:** round 21 by Aminata
 - **Severity:** P1
@@ -144,6 +151,7 @@ tempted to ship.
   the new path.
 
 ### GLOSSARY.md uncovered as trust artefact
+
 - **Site:** `docs/GLOSSARY.md` + `docs/security/THREAT-MODEL.md`
 - **Found:** round 21 by Aminata
 - **Severity:** P1
@@ -158,6 +166,7 @@ tempted to ship.
   `.github/CODEOWNERS` on that path.
 
 ### BUGS.md itself is an adversary surface for bug-fixer
+
 - **Site:** `docs/BUGS.md` + `.claude/skills/bug-fixer/SKILL.md`
 - **Found:** round 21 by Aminata
 - **Severity:** P1
@@ -171,6 +180,7 @@ tempted to ship.
   model row noting BUGS.md as an injection surface.
 
 ### FeatureFlags has no Stable-stage branch
+
 - **Site:** `src/Core/FeatureFlags.fs:86-91`
 - **Found:** round 20 by Viktor
 - **Severity:** P1 (spec drift)
@@ -185,6 +195,7 @@ tempted to ship.
   stage entirely and document graduation-means-deletion.
 
 ### IterateToFixedPoint lossy overload
+
 - **Site:** `src/Core/Recursive.fs:247-264`
 - **Found:** round 20 by Viktor
 - **Severity:** P1
@@ -197,6 +208,7 @@ tempted to ship.
   need cap detection."
 
 ### FeedbackOp permits Build with connected=0
+
 - **Site:** `src/Core/Recursive.fs:38-53`
 - **Found:** round 20 by Viktor
 - **Severity:** P1
@@ -207,6 +219,7 @@ tempted to ship.
   `connected=1`; throw otherwise.
 
 ### CountingBloomFilter hash quality on user types
+
 - **Site:** `src/Core/BloomFilter.fs:125-133`
 - **Found:** round 20 by Kira
 - **Severity:** P1
@@ -218,6 +231,7 @@ tempted to ship.
   `TraceWarning`.
 
 ### InfoTheoreticSharder Checked.+ mid-loop overflow
+
 - **Site:** `src/Core/NovelMathExt.fs`
 - **Found:** round 20 by Kira
 - **Severity:** P1
@@ -229,6 +243,7 @@ tempted to ship.
   document the saturation as "load cap, not an error".
 
 ### Delay overload without initial uses Unchecked.defaultof
+
 - **Site:** `src/Core/Primitive.fs:74-75`
 - **Found:** round 20 by Viktor
 - **Severity:** P1
@@ -239,6 +254,7 @@ tempted to ship.
   define `Unchecked.defaultof` as the declared default.
 
 ### BloomBench 47-bit int64 key generator
+
 - **Site:** `bench/Dbsp.Benchmarks/BloomBench.fs`
 - **Found:** round 20 by Kira
 - **Severity:** P1
@@ -248,6 +264,7 @@ tempted to ship.
 - **Fix:** `rng.NextInt64()`.
 
 ### FeatureFlags.resetAll not atomic vs concurrent set/isEnabled
+
 - **Site:** `src/Core/FeatureFlags.fs:132-143`
 - **Found:** round 20 by Kira
 - **Severity:** P1 (test-harness only, but docstring promises
@@ -262,6 +279,7 @@ tempted to ship.
 ## P2 — nice to have
 
 ### "Round-N fix" historical voice survivors in docstrings
+
 - **Sites:** `src/Core/FastCdc.fs:68`, `Residuated.fs:39`,
   `Durability.fs:17`, `Durability.fs:33`, `Recursive.fs:211`,
   `FeatureFlags.fs:43`
@@ -274,6 +292,7 @@ tempted to ship.
   invariant; move the historical note to `ROUND-HISTORY.md`.
 
 ### TECH-RADAR row for Bloom sits at Trial without a bench
+
 - **Site:** `docs/TECH-RADAR.md` (Bloom filter row)
 - **Found:** round 20 by Hiroshi (complexity-reviewer)
 - **Severity:** P2
@@ -285,6 +304,7 @@ tempted to ship.
   the claim.
 
 ### `docs/EXPERT-REGISTRY.md` / `docs/PROJECT-EMPATHY.md` drift
+
 - **Sites:** both files
 - **Found:** round 20 by Rune
 - **Severity:** P2

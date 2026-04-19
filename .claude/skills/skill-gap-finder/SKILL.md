@@ -20,6 +20,7 @@ skills but aren't, ideally before they bite the third
 time.
 
 Common signals the pass picks up:
+
 - Three commit messages in recent history that rediscover
   the same discipline ("oh right, bash 3.2 doesn't have
   associative arrays") — candidate for a language-expert

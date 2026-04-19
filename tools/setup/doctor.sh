@@ -67,7 +67,7 @@ for stray in $(find "$REPO_ROOT" \
                     2>/dev/null \
                     | grep -vE "/tools/(tla|alloy)/" \
                     | grep -vE "/\.git/"); do
-  warn "jar at non-canonical location: ${stray#$REPO_ROOT/} (move to tools/tla/ or tools/alloy/ or delete)"
+  warn "jar at non-canonical location: ${stray#"$REPO_ROOT"/} (move to tools/tla/ or tools/alloy/ or delete)"
   DRIFT_FOUND=1
 done
 if [ "$DRIFT_FOUND" -eq 0 ]; then

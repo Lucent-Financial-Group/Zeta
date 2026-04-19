@@ -15,7 +15,7 @@ F# DBSP engine at `/Users/acehack/Documents/src/repos/dbsp`.
   - **Missed `Interlocked.CompareExchange`** on exactly-once flags
     (the FeedbackOp.Connect regression)
   - **Torn int64 reads** on shared counters without `[<VolatileField>]`
-    + `Interlocked.Increment` (the Circuit.tick regression)
+    - `Interlocked.Increment` (the Circuit.tick regression)
   - **`ResizeArray` iteration** while concurrent `Register` mutates it
     (the HasAsyncOps regression)
   - **Lock held across `do!` / `.Wait()`** in async code
@@ -47,6 +47,7 @@ F# DBSP engine at `/Users/acehack/Documents/src/repos/dbsp`.
 ## Output format
 
 Under 500 words. For each finding:
+
 - `file:line`
 - Severity: **P0 (observed wrong)** / **P1 (likely wrong under load)** /
   **P2 (latent)**

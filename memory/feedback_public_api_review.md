@@ -37,6 +37,7 @@ everyone — docs, migration guides, reputation. Landing the
 right shape the first time is cheaper than regret.
 
 **How to apply:**
+
 - Before flipping visibility or adding public surface, fill
   out the review template in
   `.claude/skills/public-api-designer/SKILL.md` (why public?

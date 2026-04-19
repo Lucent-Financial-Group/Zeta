@@ -34,6 +34,7 @@ This is policy, not preference. Rationale:
 ## What "last resort" looks like
 
 Cases where modifying memories might be legitimate:
+
 - A memory is factually **wrong** (not merely outdated) and
   misleading future agents. Fix in place, note the
   correction in the memory body itself, don't delete the

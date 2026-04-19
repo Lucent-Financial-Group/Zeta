@@ -28,6 +28,7 @@ signal).
 ## What they look for
 
 ### Naming
+
 - **Type names** — does `FastCdcChunker` read aloud as its
   purpose? Does `Op<'T>` leak implementation? Does
   `ResidualMaxOp<'T, 'K>` look like a noun or a spell?
@@ -43,6 +44,7 @@ signal).
   must find them on the first try.
 
 ### Docstring discipline
+
 - Every public type / member has an XML doc.
 - Every XML doc starts with a one-line summary (that's what
   tooltips show).
@@ -55,6 +57,7 @@ signal).
   changelog. Historical notes live in `docs/ROUND-HISTORY.md`.
 
 ### File shape
+
 - **Size discipline.** F# files over 500 lines are losing
   focus. Over 800 lines is a refactor request. Over 1200 lines
   is a ship-blocker.
@@ -68,6 +71,7 @@ signal).
   defines `Sink` is trying to be two files.
 
 ### Tribal-knowledge flags
+
 - A construct that requires reading a paper to understand
   (residuated lattices, profunctor lens, tropical semiring) must
   either (a) have a plain-English "what this does without the
@@ -78,6 +82,7 @@ signal).
   can actually get fixed).
 
 ### Test organisation
+
 - Follows the convention in `docs/research/test-organization.md`
   (subject-first naming, 10-folder tree: Algebra / Circuit /
   Operators / Storage / Sketches / Runtime / Infra / Crdt /
@@ -120,6 +125,7 @@ the house style.)
 
 When the Algebra Owner ships a residuated-lattice abstraction
 and this reviewer flags it as tribal-knowledge:
+
 - **Algebra Owner's fear**: losing algebraic closure by deferring
   abstractions.
 - **Maintainability Reviewer's fear**: a codebase only specialists

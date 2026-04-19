@@ -6,6 +6,7 @@ round unless promoted to a canonical doc or explicitly kept
 for a follow-up round.
 
 Use for:
+
 - Would-be personas before Kenji commits to them.
 - Half-formed paper notes before they earn a `docs/research/`
   slot.
@@ -16,6 +17,7 @@ Use for:
   into OpenSpec shape.
 
 Don't use for:
+
 - Anything that should survive the round (`docs/` proper).
 - Research-grade writeups (`docs/research/`).
 - Behavioural specs (`openspec/specs/`).
@@ -24,6 +26,7 @@ Don't use for:
 ASCII only (BP-09). No size cap on individual drafts — scratch
 is allowed to sprawl briefly. Round-close is where Kenji (or
 the draft's author) either:
+
 - **promotes** the draft to its canonical home and removes the
   scratch copy, or
 - **deletes** it as a tried-and-rejected idea, or

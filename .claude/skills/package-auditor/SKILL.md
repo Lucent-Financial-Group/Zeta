@@ -57,6 +57,7 @@ Plus a one-line rationale per MAJOR-class bump citing the specific
 removed/changed API and whether our code uses it.
 
 ## Reference
+
 - `tools/audit-packages.sh` — shell audit
 - `docs/INSTALLED.md` — dependency ledger to update alongside bumps
 - `Directory.Packages.props` — the file you modify

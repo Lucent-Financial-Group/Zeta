@@ -40,6 +40,7 @@ round-29                      o---o---o---o
 ## Branch protection on main
 
 `main` is protected:
+
 - **No direct pushes.** Every change goes through PR.
 - **No force-pushes.** `--force` on main is a project
   breaker.
@@ -114,6 +115,7 @@ sibling to Zeta's working directory:
 ```
 
 Rules:
+
 - Nothing under `../` is Zeta's git history.
 - Read-only references (`scratch`, `SQLSharp`) are
   never modified; hand-craft from them per round-29

@@ -118,6 +118,7 @@ Plus the updated `docs/TECH-RADAR.md` itself.
 
 When a specialist insists "my module is Adopt-grade" and the
 radar-owner disagrees because there's no test yet:
+
 - **Specialist's fear**: effort will be deprioritised if listed
   as Trial.
 - **Radar-owner's fear**: radar dishonesty rots the document.

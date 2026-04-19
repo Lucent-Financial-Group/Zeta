@@ -31,6 +31,7 @@ CVEs in the dependency graph. The persona (Mateo) lives on
   the `security-researcher` walks the exposure at flag-landing time.
 
 Out of scope:
+
 - Review of the shipped threat model — the `threat-model-critic`.
 - Prompt-injection / agent-layer defences — the `prompt-protector`.
 - Code-level bug hunting — the `harsh-critic`.
@@ -64,6 +65,7 @@ today? Which files? Which specs? Which feature flags?
 ### Step 4 — classify impact
 
 Four severities:
+
 - **Critical** — novel attack lands on shipped code or a live
   research-preview without mitigation. Surface to the `architect` and
   the `threat-model-critic` immediately. File a BUGS.md P0-security entry.

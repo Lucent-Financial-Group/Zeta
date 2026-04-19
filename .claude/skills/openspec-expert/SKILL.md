@@ -68,6 +68,7 @@ The system SHALL <positive statement>.
 ```
 
 Discipline:
+
 - **`REQUIRES`** is the canonical requirement block
   keyword. `REQUIRES <ID>: <name>` + mandatory SHALL
   statement.

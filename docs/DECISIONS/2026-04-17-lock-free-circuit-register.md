@@ -55,6 +55,7 @@ member this.Build() =
 ```
 
 **Why it's correct.**
+
 - `op.idField` is written *before* the CAS, so any thread that reads
   `state` after the successful CAS sees a fully-initialised op.
   .NET's `Interlocked.CompareExchange` has `memory_order_seq_cst`
@@ -65,6 +66,7 @@ member this.Build() =
   readers see it on subsequent `Volatile.Read`.
 
 **Complexity.**
+
 - Register: *O(n)* per call (full array copy) vs *O(1)* amortised
   for the current `ResizeArray.Add`. For a 1000-op circuit this is
   500× more allocations during construction.
@@ -103,6 +105,7 @@ member this.Build() =
 If we ever see lock contention on `Register` in a real workload
 (e.g., a massive distributed circuit built by 100s of cooperating
 threads), this ADR has the design ready. Revisit criteria:
+
 - Measured Register contention > 5% of circuit construction time.
 - Circuit sizes > 10 000 ops where the O(n) CAS cost would hurt.
 - A user filing a bug that specifically needs lock-freedom.
@@ -123,7 +126,7 @@ stress tests, ship.
   that Build relies on for topo-sort.
 
 - **`SegmentedList<Op>`** (Roslyn-style chunked list). O(1) append
-  + O(n) snapshot. Worth considering if we ever want lock-free
+  - O(n) snapshot. Worth considering if we ever want lock-free
   *and* no-realloc. Listed in `docs/TECH-RADAR.md` as Assess.
 
 ## References

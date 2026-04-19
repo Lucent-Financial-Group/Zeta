@@ -4,6 +4,7 @@ ThoughtWorks-style radar for the technologies / research / papers
 / projects this repo has evaluated. One row = one research pass.
 
 ## Legend
+
 - **Adopt** — in-tree, we depend on it (code or patterns)
 - **Trial** — in prototyping; live code path or skill file exists
 - **Assess** — researched, worth revisiting

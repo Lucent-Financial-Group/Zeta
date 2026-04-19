@@ -30,6 +30,7 @@ work. The persona (Dejan) lives on
   flag trends, justify any matrix widening.
 
 Out of scope:
+
 - Hot-path benchmarks — `performance-engineer`.
 - Contributor-experience audits — DX persona (when
   assigned). the `devops-engineer` builds; DX measures felt experience.
@@ -46,6 +47,7 @@ Out of scope:
 Before any script or YAML lands, a design doc exists at
 `docs/research/<topic>.md` (build-machine-setup,
 ci-workflow-design, ci-gate-inventory, etc.). It captures:
+
 - The problem.
 - What read-only reference repos (`../scratch`,
   `../SQLSharp`, others) teach about the shape.

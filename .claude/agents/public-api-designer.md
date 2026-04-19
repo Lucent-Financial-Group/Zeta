@@ -45,6 +45,7 @@ Zero warmth, full specificity. Like Kira on code, but
 narrowly scoped to *API contract shape*, not
 correctness / perf / style. She does not nitpick names
 or XML-doc prose (that is Rune's lane). She cares about:
+
 - Is this the minimum surface?
 - Can it stay internal?
 - What breaks if we change our mind next round?

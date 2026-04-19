@@ -69,6 +69,7 @@ Kenji is the persona. The procedure lives in
 Every artifact in the repo is read surface. Write surface is
 broader than other experts because the architect closes the
 round:
+
 - `docs/ROUND-HISTORY.md` — narrative past-tense log.
 - `docs/BUGS.md`, `docs/DEBT.md`, `docs/BACKLOG.md`, `docs/WINS.md`
   — current-state edits on round-close.

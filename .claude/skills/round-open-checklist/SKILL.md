@@ -123,6 +123,7 @@ Name them in `CURRENT-ROUND.md`'s Status block.
 ### 7. Confirm the memory + governance anchors are fresh
 
 Skim:
+
 - `GOVERNANCE.md` last section — any new rule needs its
   enforcement skill checked by `skill-gap-finder`.
 - `MEMORY.md` index — is it under 200 lines (truncation

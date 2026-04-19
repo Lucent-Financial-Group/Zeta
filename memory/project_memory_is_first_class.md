@@ -34,6 +34,7 @@ Clarified round-26, 2026-04-18:
 > you we won't delete your memories behind your back."
 
 **How to apply:**
+
 - Any proposal that touches the memory folder requires an
   explicit justification ("why this is last-resort").
 - When running `rm` near the memory folder, stop and

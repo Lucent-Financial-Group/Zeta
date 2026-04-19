@@ -145,6 +145,7 @@ Phase 1 (subject to full-SHA pinning in the workflow PR):
   python)
 
 Phase 2 adds:
+
 - `actions/setup-java` (for TLC + Alloy; temporary, same
   backlog)
 - `github/codeql-action/init` + `github/codeql-action/analyze`

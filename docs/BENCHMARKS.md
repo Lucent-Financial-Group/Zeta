@@ -75,10 +75,10 @@ Verified via `GC.GetAllocatedBytesForCurrentThread()` in unit tests:
 | `join` (hash-index) | O(n + m) avg | O(output + min(n,m)) | bucket-chained index |
 | `join` (indexed) | O(matching keys · avg group) | O(output) | sort-merge on keys |
 | `cartesian` | O(n · m) | O(n · m) | unavoidable |
-| `distinctIncremental` (H function) | **O(|Δ|)** | O(|Δ|) | key DBSP win |
+| `distinctIncremental` (H function) | **O(\|Δ\|)** | O(\|Δ\|) | key DBSP win |
 | `Spine.Insert` | O(log n) amortised | O(n) | size-doubling levels |
 | `Spine.Consolidate` | O(n) | O(n) | |
-| `RecursiveSemiNaive` | O(|LFP|) total | O(|LFP|) | semi-naive Δ-evaluation |
+| `RecursiveSemiNaive` | O(\|LFP\|) total | O(\|LFP\|) | semi-naive Δ-evaluation |
 | `ZSet.sum` of k sets | **O(n log k)** | O(n) | k-way merge |
 
 Bold entries are places we match theoretically-optimal complexity.

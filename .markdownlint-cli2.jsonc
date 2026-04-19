@@ -1,0 +1,70 @@
+// Zeta markdown lint config. Shape mirrors SQLSharp (see
+// `../SQLSharp/.markdownlint-cli2.jsonc`); disables the same
+// subset of strict rules that produce noise in long-form
+// research + design docs without catching real bugs.
+//
+// Governed by `openspec/specs/static-analysis/profiles/markdown.md`
+// (per GOVERNANCE §28 — every lint is speced).
+{
+  "ignores": [
+    ".git/**",
+    "BenchmarkDotNet.Artifacts/**",
+    "TestResults/**",
+    "artifacts/**",
+    "node_modules/**",
+    "bin/**",
+    "obj/**",
+    // Upstream reference repos under `../` are not part of Zeta.
+    "references/upstreams/**",
+    // Memory directory is agent-written append-logs; treating it
+    // as source content would add drift to every OFFTIME entry.
+    "memory/persona/**",
+    // Lean proof dir has its own idioms.
+    "tools/lean4/**"
+  ],
+  "noBanner": true,
+  "noProgress": true,
+  "config": {
+    // MD013 (line-length): disabled. Long-form research docs and
+    // spec prose have paragraph wrapping that doesn't fit 80 cols.
+    "MD013": false,
+    // MD031 (fenced code blocks surrounded by blank lines): off —
+    // too many existing examples with tight code+prose pairing.
+    "MD031": false,
+    // MD033 (inline HTML): off. Allow inline HTML for badges, pics.
+    "MD033": false,
+    // MD034 (bare URL): off. Allow bare URLs in references.
+    "MD034": false,
+    // MD036 (emphasis used instead of heading): off. Intentional
+    // use in several places.
+    "MD036": false,
+    // MD040 (fenced code blocks need language): off. Many
+    // anonymous code fences show raw output + traces.
+    "MD040": false,
+    // MD041 (first line must be top-level heading): off. Some
+    // files intentionally start with YAML frontmatter.
+    "MD041": false,
+    // MD060 (table-column-style): off. Cosmetic; table pipe
+    // alignment is not a bug class worth blocking merges over.
+    "MD060": false,
+    // MD024 (duplicate headings): allow when the duplicate is
+    // under a different H2 parent — ROUND-HISTORY has "### Anchor"
+    // inside each "## Round N" section intentionally.
+    "MD024": { "siblings_only": true },
+    // MD025 (single H1): off. Some files intentionally carry
+    // multiple H1-style headings (legend tables, etc.).
+    "MD025": false,
+    // MD028 (blank line in blockquote): off. Intentional in
+    // round-history prose.
+    "MD028": false,
+    // MD020 stays enabled — it catches real malformed closed-atx
+    // headings. Authors who need to mention `F#` / `C#` in a
+    // heading wrap the name in backticks (``## ... + `F#` ``) so
+    // the trailing `#` lives inside an inline-code span rather
+    // than at end-of-line where CommonMark would consume it as
+    // an ATX-close sigil. This is the unambiguous fix AND renders
+    // the language name as code, which is the canonical style.
+    // MD003 pinned to atx so the parser never prefers closed-atx.
+    "MD003": { "style": "atx" }
+  }
+}

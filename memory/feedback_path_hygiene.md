@@ -18,6 +18,7 @@ or paths outside the repo root. These are doc smells:
    CI can't check them; they drift.
 
 **Rewrite rules:**
+
 - **Repo-relative** when possible: `docs/FOO.md`,
   `src/Zeta.Core/`, `.claude/skills/...`.
 - **`$HOME`-relative** when the thing genuinely lives under
@@ -44,6 +45,7 @@ the filesystem or outside the repo root these are
 documentation smells."
 
 **How to apply:**
+
 - Documentation-agent SKILL.md lists these as smell items 7
   and 8 in the "What he looks for" section.
 - On every doc sweep, the documentation-agent greps for

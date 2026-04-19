@@ -278,6 +278,7 @@ module PluginOperatorHarness =
 | Forbids `Fixedpoint` / `idField` leak                         | 5           | 5              | 4              | 5                      |
 
 Notes on the scoring:
+
 - **B** wins on surface-count and plugin-SDK maintenance because
   the plugin author writes no new types, but loses decisively on
   expressiveness (multi-input / strict / async / fixpoint each
@@ -823,8 +824,8 @@ synthesis side by side without guesswork.
    it.
 2. **Section 5.4 (Bayesian migration).** `BayesianRateOp`
    reclassified from generic `IOperator<struct (double * double
-   * double)>` to `ISinkOperator<ZSet<bool>, struct (double *
-   double * double)>`. The op is retraction-lossy by design; the
+   - double)>` to `ISinkOperator<ZSet<bool>, struct (double *
+   double* double)>`. The op is retraction-lossy by design; the
    sink tag is the correct classification and the algebra
    refuses to compose it past terminal edges.
 3. **New section 5.4.1.** FsCheck law-suite table
@@ -890,4 +891,3 @@ capability sub-interfaces ship together with their FsCheck laws,
 (c) `docs/PLUGIN-AUTHOR.md` is written (not stubbed), and (d)
 `BayesianRateOp` migrates to `ISinkOperator` in the same commit
 sequence. Partial delivery reopens the review.
-

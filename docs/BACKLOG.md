@@ -5,6 +5,7 @@ ROADMAP.md and round summaries. Append-only; keep ordered newest-first
 within each priority tier.
 
 ## Legend
+
 - **P0** = ship-blocker, work on next round
 - **P1** = work on within 2-3 rounds
 - **P2** = research-grade, work on when the stars align
@@ -159,7 +160,7 @@ within each priority tier.
 
   - `docs/security/THREAT-MODEL.md` adversary-model
     revision: advanced persistent threat + nation-state
-    + sophisticated supply-chain adversary as
+    - sophisticated supply-chain adversary as
     first-class threat classes, not box-ticks.
   - Expanded supply-chain coverage: package registries
     (NuGet, Mathlib, Homebrew formulae), build

@@ -113,7 +113,7 @@ these.
   List.toArray` before any tick loop that indexes by
   position (round-28 the `harsh-critic` P1 on `checkLinear`).
 
-## Nullable reference types + F#
+## Nullable reference types + `F#`
 
 F# libraries consumed by C# with NRT on need to annotate.
 `Zeta.Core` currently runs NRT-adjacent discipline via

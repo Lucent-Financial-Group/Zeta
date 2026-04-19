@@ -25,6 +25,7 @@ sequenced follow-ups. Read-only reference:
 ## What `../SQLSharp` teaches (paraphrased)
 
 Seven workflows:
+
 - `ci.yml` — quality + automation gate across Unix
   (ubuntu + macos), Windows, WSL.
 - `reusable-coverage-collect.yml`, `reusable-benchmarks-
