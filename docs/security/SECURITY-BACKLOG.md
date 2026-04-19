@@ -144,6 +144,23 @@ cost) but is still worth shipping eventually.
 - **Rough cost estimate:** S
 - **Priority:** P2
 
+### Declarative-manifest setup (match `../scratch`'s shape)
+- **Why deferred:** Zeta's `tools/setup/manifests/` is already
+  declarative-ish (`apt.txt`, `brew.txt`, `dotnet-tools.txt`,
+  `verifiers.txt`) but flat and un-tiered. `../scratch`'s
+  `declarative/` directory has tiered profiles
+  (`min`/`runner`/`quality`/`all`) per platform per tool,
+  matching dotnet's `.dotnet-tools` / `.dotnet-workloads` /
+  Brewfile / Caskfile / `.apt` / `.uv-tools` / `.bun-global`
+  formats. Aaron's round-32 ask: "push hard each sprint" on
+  closing this gap.
+- **Trigger to revisit:** every round, track at least one
+  incremental step toward the scratch shape — e.g., split
+  `brew.txt` into min/runtimes/quality tiers this round,
+  convert `dotnet-tools.txt` to `.dotnet-tools` next.
+- **Rough cost estimate:** L (incremental over 4-6 rounds)
+- **Priority:** P1 (ratchet toward v1.0)
+
 ### Windows CI matrix
 - **Why deferred:** stable green on mac + linux is the immediate
   target. Windows expands surface by 50% of CI-minute budget

@@ -57,7 +57,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Cache mise runtimes
+      - name: Cache .NET SDK
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.dotnet
+          key: dotnet-${{ runner.os }}-${{ hashFiles('global.json', 'tools/setup/common/dotnet.sh') }}
+
+      - name: Cache mise runtimes (python only post round 32)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |
@@ -70,12 +76,6 @@ jobs:
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('tools/setup/common/elan.sh') }}
-
-      - name: Cache dotnet-tools
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.dotnet/tools
-          key: dotnet-tools-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/dotnet-tools.txt', 'tools/setup/common/dotnet-tools.sh') }}
 
       - name: Cache verifier jars (TLC + Alloy)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -99,37 +99,23 @@ jobs:
           key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        # The single source of truth for toolchain state. Installs:
-        # mise-pinned dotnet + python, elan (Lean manager, no
-        # toolchain yet), dotnet global tools, TLC + Alloy verifier
-        # jars. Writes mise shim dir + ~/.dotnet/tools + ~/.elan/bin
-        # onto $GITHUB_PATH via shellenv.sh so subsequent steps see
-        # the binaries.
-        #
-        # GITHUB_TOKEN is auto-provided to Actions runs, read-only
-        # under `permissions: contents: read` (workflow-level floor).
-        # It's used here by mise to authenticate GitHub API calls
-        # (python-build-standalone attestation verification, etc.),
-        # avoiding the unauthenticated rate limit on shared CI IPs.
-        # Not a cross-workflow secret — rotates per-run. See
-        # docs/security/V1-SECURITY-GOALS.md `supply chain` section.
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Single source of truth for toolchain state. Installs:
+        # .NET SDK (per global.json, via Microsoft's dotnet-install.sh
+        # — round-32 refactor out of mise), python (mise-pinned),
+        # elan (Lean manager), dotnet global tools, TLC + Alloy
+        # verifier jars. shellenv.sh emits BASH_ENV into $GITHUB_ENV
+        # so every subsequent bash `run:` step auto-sources the
+        # managed shellenv file (SQLSharp-proven pattern).
         run: ./tools/setup/install.sh
 
       - name: Build (0 Warning(s) / 0 Error(s) required)
-        # Source the managed shellenv file install.sh wrote so mise
-        # shims + elan bin + dotnet-tools + ~/.local/bin are on PATH
-        # for this step (mirrors what a local dev shell does after
-        # sourcing the file from ~/.zshrc / ~/.bashrc).
-        run: |
-          source "$HOME/.config/zeta/shellenv.sh"
-          dotnet build Zeta.sln -c Release
+        # BASH_ENV (set by shellenv.sh during the install step) has
+        # already pointed this shell at the managed shellenv file;
+        # no explicit source needed.
+        run: dotnet build Zeta.sln -c Release
 
       - name: Test
-        run: |
-          source "$HOME/.config/zeta/shellenv.sh"
-          dotnet test Zeta.sln -c Release --no-build --verbosity normal
+        run: dotnet test Zeta.sln -c Release --no-build --verbosity normal
 
   lint:
     # Semgrep runs every rule in `.semgrep.yml` — 14+ custom rules
