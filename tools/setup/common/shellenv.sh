@@ -110,9 +110,24 @@ fi
 # Suggest sourcing the file from common shell rc files on first run.
 # We do NOT auto-edit .zshrc / .bashrc — that's a user-visible edit
 # and should be opt-in. The doc tells users how to wire it.
-cat <<EOF
+cat <<'EOF'
 
 Next step (one-time, local dev only):
-  Add this line to your ~/.zshrc (or ~/.bashrc on Linux):
-    [ -f "\$HOME/.config/zeta/shellenv.sh" ] && . "\$HOME/.config/zeta/shellenv.sh"
+  Paste the line below into all of the following files that
+  exist on your system so every shell variant finds the
+  Zeta toolchain. The block is idempotent — adding it twice
+  is harmless (the `-f` guard skips if the file isn't there).
+
+    [ -f "$HOME/.config/zeta/shellenv.sh" ] && . "$HOME/.config/zeta/shellenv.sh"
+
+  Target files:
+    ~/.zshrc        (zsh interactive shells; macOS default)
+    ~/.bashrc       (bash interactive shells; Linux default)
+    ~/.bash_profile (bash login shells on macOS)
+    ~/.profile      (POSIX fallback; SSH non-interactive)
+
+  Opt-in auto-edit of these files via the install script is
+  BACKLOGged (see docs/BACKLOG.md "Opt-in auto-edit of shell
+  rc files on install"). Until then, paste manually — we
+  deliberately don't touch user rc files without consent.
 EOF

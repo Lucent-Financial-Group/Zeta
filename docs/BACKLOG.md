@@ -270,6 +270,95 @@ within each priority tier.
   invocation as a mandatory round-close step after any
   rename campaign (add to `round-open-checklist` or
   GOVERNANCE §).
+- [ ] **Opt-in auto-edit of shell rc files on install**
+  (round 34 ask from Aaron). Today the install script
+  deliberately does not touch `~/.zshrc`, `~/.bashrc`,
+  `~/.bash_profile`, `~/.profile` — it writes the managed
+  `$HOME/.config/zeta/shellenv.sh` and prints a paste-ready
+  block. Aaron wants a flag that automates the rc-file
+  edit for contributors who opt in. `../scratch` has a
+  proven pattern for this — check how they append
+  idempotently (detect the source line, skip if present,
+  append with a Zeta-owned header comment so the block is
+  recognisable on next run).
+
+  **Design questions to lock before implementing:**
+  - Flag name. Proposals: `--auto-edit-profiles`,
+    `ZETA_AUTO_EDIT_PROFILES=1`, or a top-level
+    `install.sh --profiles`. Aaron is comfortable with
+    opt-in OR default-on; my lean is default-off +
+    opt-in via flag for the first release (lowers blast
+    radius on first-PR contributors).
+  - Target files. All four (`~/.zshrc`, `~/.bashrc`,
+    `~/.bash_profile`, `~/.profile`) or detect which
+    exist and only touch those?
+  - Idempotency marker. Use a fenced comment like
+    `# ---- zeta shellenv (managed) ----` so a future
+    run can detect and update rather than append.
+  - Undo. Document an `--unedit-profiles` inverse.
+
+  **Effort.** M — script work plus careful idempotency
+  + undo testing across bash + zsh on macOS + Linux.
+  Lands with the Oh-My-Zsh BACKLOG item if we bundle
+  the interactive-shell setup.
+
+- [ ] **Oh My Zsh + plugins in install script + devcontainer**
+  (round 34 ask from Aaron). Symmetry with dev-laptop,
+  Linux dev-box, and the future devcontainer — all
+  should default to zsh + Oh My Zsh with the same plugin
+  set. Also: Oh My Posh for pwsh on Windows for the
+  same cross-shell polish.
+
+  **Proposed shape:**
+  - `.mise.toml` stays language-runtime only (don't
+    conflate tooling with shell polish).
+  - New `tools/setup/common/shell.sh` (opt-in via flag
+    like `--install-shell` or env var) that:
+    - Installs Oh My Zsh (curl-to-install script, pinned
+      commit SHA per BP-04 supply-chain discipline).
+    - Installs the plugin set declared in a new
+      `tools/setup/manifests/zsh-plugins` manifest
+      (semantic extension, no `.txt`). Plugins Aaron
+      runs: `git node vscode dotnet python pip github
+      iterm2 docker kubectl npm pyenv pylint sudo
+      virtualenv` — drop `nvm` (replaced by mise's
+      bun) and `npm` (ditto).
+    - Optionally sets zsh as default shell (chsh —
+      only when user explicitly opts in, never silent).
+    - Bootstraps Oh My Posh on Windows (`.ps1` step,
+      stub-only for now; lands with Windows CI).
+  - Default off on first run; default ON in
+    `.devcontainer/Dockerfile` (containers always want
+    the full experience).
+  - `tools/setup/manifests/zsh-plugins` lives at
+    `tools/setup/manifests/` with other manifests.
+
+  **Why this matters.** Aaron's dev laptop, his Linux
+  dev box, and the future devcontainer all run the
+  same shell + plugins. Every time a plugin gets added
+  on one, the others drift. A managed manifest +
+  install step gives three-way parity (GOVERNANCE §24)
+  at the shell-UX layer, not just the toolchain layer.
+
+  **Effort.** M. Design doc first
+  (`docs/research/shell-polish-design.md`), then
+  implementation split across macOS / Linux / Windows.
+
+- [ ] **emsdk under install script** (round 34 ask from
+  Aaron; mirrors his current ad-hoc
+  `source ".../emsdk/emsdk_env.sh"` in `~/.zshrc`).
+  Today emsdk is manually cloned and sourced per-
+  contributor. Zeta currently doesn't compile to
+  wasm, but Aaron does in his wider workflow. Cleaner
+  shape: put emsdk under `tools/setup/common/emsdk.sh`
+  as an opt-in install (guarded by a
+  `BOOTSTRAP_CATEGORIES=emscripten`-style selector
+  once that pattern lands; see
+  `BOOTSTRAP_CATEGORIES` BACKLOG item).
+
+  **Effort.** S-M. Clone to a known path, source its
+  env file from shellenv.sh when present, opt-in only.
+
 - [ ] **Per-shell `mise activate` in shellenv.sh (dev-laptop
   perf nit)** (round 34 observation). Managed shellenv
   emits `eval "$(mise activate bash)"`. In a bash
