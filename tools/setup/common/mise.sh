@@ -30,7 +30,11 @@ echo "✓ mise runtimes installed"
 # but runs AFTER dotnet-tools.sh — so without this export, the
 # `dotnet` invoked by dotnet-tools.sh resolves to the system pre-
 # installed version, misses global.json's SDK pin, and errors.
-export PATH="$HOME/.local/share/mise/shims:$PATH"
+#
+# Use `mise activate --shims` rather than a hardcoded shim path so
+# homebrew / apt / curl-installed mise all work — each puts the
+# shim directory at a slightly different XDG path.
+eval "$(mise activate bash --shims)"
 
 # Print the resolved versions so the log is useful on a first run.
 (cd "$REPO_ROOT" && mise current)
