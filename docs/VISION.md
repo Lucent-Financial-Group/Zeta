@@ -1,6 +1,6 @@
 # Zeta — Long-Term Vision
 
-> **Status:** round 33 v3 after Aaron's second pass of edits.
+> **Status:** round 33 v4 after Aaron's third pass of edits.
 > Aaron is the source of truth; this document changes freely.
 > The `product-visionary` role (to be spawned, see
 > `docs/BACKLOG.md`) will steward it once it exists.
@@ -9,6 +9,36 @@
 > codename landed on Zeta (locked as of round 33), but the
 > ambition stayed: all DB technologies in one big playground,
 > built retraction-native from the ground up.
+
+## The foundational principle
+
+Aaron, round 33: *"what i'm really doing is just taking the
+lambda architecture and the Kafka turning-the-database-inside-
+out ideas to their absolute logical conclusion when the events
+become the source of truth and everything else is derived."*
+
+This is the load-bearing philosophy behind Product 1. Everything
+downstream (retractions, incremental plans, the DB-vs-event-store
+dual, bitemporal queries, time-travel, materialised projections,
+columnar substrate) follows from one stance: **the log of
+events is the primary state; everything else is a view derived
+from it, re-derivable on demand.**
+
+Zeta is what Kleppmann + Kreps + Marz were pointing at, built
+from day one on a retraction-native algebra that makes the
+"derived everything" part mathematically honest. Conventional
+databases treat the log as an implementation detail under a
+table surface; conventional event stores hide the table
+abstraction and make consumers reconstruct views manually.
+Zeta refuses the trade: both surfaces live on top of the same
+primary log, through the same algebra.
+
+Inputs to study while sharpening this (for the product-
+visionary's first research round): Kleppmann's "Designing Data-
+Intensive Applications"; Jay Kreps' "The Log" + "Turning the
+database inside out with Apache Samza" (2015); Nathan Marz on
+the lambda architecture; Datomic's append-dated model; Kafka
+Streams / ksqlDB; Materialize + Feldera on DBSP.
 
 ## The project has two products
 
@@ -146,17 +176,49 @@ What makes `Zeta.Core 1.0.0` on NuGet:
   retraction model.
 - **Additional ORM providers.** Dapper, NHibernate, LLBLGen,
   etc. — follow the EF Core provider as the pattern.
-- **"C# stored procedures" via Reaqtor-style durable Rx
-  queries.** Microsoft's Reaqtor (MIT, dormant-but-stable)
-  ships `IReactiveQbservable<T>` + a query engine that
-  persists operator state across restarts — "durable
+- **".NET stored procedures" (C# + F#) via Reaqtor-style
+  durable queries.** Microsoft's Reaqtor (MIT, dormant-but-
+  stable) ships `IReactiveQbservable<T>` + a query engine
+  that persists operator state across restarts — "durable
   Rx." Reaqtor is push/event-at-a-time with no native
   retraction; Zeta would take the serializable-expression-
-  tree + durable-subscription shape and swap in DBSP
-  Z-set deltas so retractions are free. This is the
-  research-worthy niche: "Rx + durability + retraction-
-  native" is a Reaqtor-shaped hole nobody has filled.
-  See `docs/BACKLOG.md` for the design-doc task.
+  tree + durable-subscription shape and swap in DBSP Z-set
+  deltas so retractions are free. This is the research-
+  worthy niche: "Rx + durability + retraction-native" is a
+  Reaqtor-shaped hole nobody has filled. Both C# and F#
+  surfaces ship together (not just one). See
+  `docs/BACKLOG.md` for the design-doc task.
+
+### Both modes: event-sourcing AND regular-database
+
+Aaron round 33: "we also want a facade/abstraction so this
+can be used like a normal non-eventing database as well, it
+should be both, i can replace my database AND my event store
+with Zeta." Followed up: "event streaming and regular db
+kinda stuff, and likely column columnar stuff."
+
+So Zeta's surface is TWO modes over the same retraction-
+native core:
+
+- **Event-sourcing mode** — the native DBSP surface.
+  Deltas, retractions, incremental queries, durable
+  streams, projections. Zeta IS the event store. This
+  is what ships naturally from the algebra.
+- **Regular-database mode** — a façade that hides the
+  event-sourcing / retraction / delta machinery and
+  presents a normal "tables + rows + SELECT/INSERT/
+  UPDATE/DELETE" API. The DBSP engine is still running
+  underneath; the façade just doesn't make you care.
+  This is the mode most SQL consumers + ORM integrations
+  land on by default.
+- **Columnar storage** (likely in scope). Many DB
+  workloads benefit from columnar layouts — analytics,
+  OLAP-style queries, wide-row-scan-sparse-projection.
+  Fits alongside the row-oriented Spine family.
+
+The product-visionary runs both modes through the same
+operator algebra + same query IR — different surfaces,
+same correctness model.
 
 ## Product 2 — The software factory
 
@@ -342,7 +404,7 @@ Things Aaron has now stated directly and Kenji is confident about:
 - NuGet library shipping at v1.0 (the first slice of the
   full database).
 
-Things Aaron resolved this round (round 33 v3):
+Things Aaron resolved this round (round 33 v3 + v4):
 
 - **Zeta name is locked.**
 - **SQL frontend is v1**, not post-v1. With tight LINQ
@@ -359,10 +421,18 @@ Things Aaron resolved this round (round 33 v3):
   operator algebra. Inspiration pattern: SQLSharp's
   "SQL-text and integrated-query flows converge on one
   logical planning pipeline."
-- **Reaqtor-shaped niche** ("C# stored procedures" as
-  durable Rx queries) is post-v1 research; genuinely
-  open territory because no upstream has Rx, durability,
-  and retraction-native semantics in one box.
+- **Reaqtor-shaped niche** (".NET stored procedures"
+  — C# AND F# both — as durable Rx-style queries) is
+  post-v1 research; genuinely open territory because no
+  upstream has Rx, durability, and retraction-native
+  semantics in one box.
+- **Zeta ships BOTH modes**: event-sourcing (native DBSP)
+  together with a regular-database façade (tables-and-SQL
+  feel over the same retraction-native core). Replace
+  your database AND your event store with one system.
+- **Columnar storage likely in scope** alongside the
+  row-oriented Spine family. Fits OLAP / analytics /
+  wide-row-sparse-projection workloads.
 
 Remaining gaps the product-visionary walks on first
 audit:

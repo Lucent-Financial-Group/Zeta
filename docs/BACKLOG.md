@@ -150,6 +150,33 @@ within each priority tier.
   syntax (`AS OF TIMESTAMP` vs F# DSL primitives), and
   retraction semantics under time-travel.
 
+- [ ] **Regular-database façade over the event-sourcing
+  core.** Aaron round 33: "a facade/abstraction so this
+  can be used like a normal non eventing database as well,
+  it should be both, i can replace my database and my
+  event store with Zeta." The DBSP engine (retractions,
+  deltas) runs underneath; the façade presents normal
+  `tables + rows + SELECT/INSERT/UPDATE/DELETE` surface.
+  Same operator algebra + query IR feeds both modes.
+  Design questions: (a) is the façade a separate NuGet
+  package consuming Zeta.Core, or the default surface
+  with event-sourcing as opt-in? (b) how does the façade
+  map INSERT/UPDATE/DELETE to DBSP deltas without
+  leaking retraction semantics? (c) transaction model —
+  same as event mode or distinct? Output:
+  `docs/research/db-facade-design.md`.
+
+- [ ] **Columnar storage substrate** alongside row-oriented
+  Spine. Aaron round 33: "likely column columnar stuff."
+  Workload fit: OLAP, analytics, wide-row sparse-
+  projection, large-scan aggregation. Needs design round
+  on integration with DBSP operator algebra (can a
+  retraction-native columnar store expose Z-set deltas?)
+  and on how the planner picks row vs column storage per
+  query. References: DuckDB, Apache Arrow, Parquet,
+  ClickHouse, Feldera. Priority post-v1 — v1 ships
+  row-oriented Spine first, columnar follows.
+
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
 - [ ] **`openspec-gap-finder` skill** (round 32 ask). Viktor
