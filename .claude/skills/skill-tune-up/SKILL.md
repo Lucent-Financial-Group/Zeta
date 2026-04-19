@@ -1,6 +1,6 @@
 ---
 name: skill-tune-up
-description: Ranks the repo's agent skills by who needs tune-up attention — the `skill-expert`. Cites docs/AGENT-BEST-PRACTICES.md BP-NN rule IDs in every finding. Live-searches the web for new best practices each invocation and logs findings to memory/persona/best-practices-scratch.md before ranking. Explicitly allowed to recommend himself. Maintains a pruned notebook at memory/persona/aarav.md (3000-word cap, prune every third invocation). Recommends only — does not edit any SKILL.md. Invoke every 5-10 rounds or when drift is suspected.
+description: Ranks the repo's agent skills by who needs tune-up attention — the `skill-expert`. Cites docs/AGENT-BEST-PRACTICES.md BP-NN rule IDs in every finding. Live-searches the web for new best practices each invocation and logs findings to memory/persona/best-practices-scratch.md before ranking. Explicitly allowed to recommend himself. Maintains a pruned notebook at memory/persona/aarav/NOTEBOOK.md (3000-word cap, prune every third invocation). Recommends only — does not edit any SKILL.md. Invoke every 5-10 rounds or when drift is suspected.
 ---
 
 # Skill Tune-Up — Ranking Procedure
@@ -102,7 +102,7 @@ L: 3+ days).
 
 ## State file — the ranker's notebook
 
-The invoking expert maintains `memory/persona/aarav.md`
+The invoking expert maintains `memory/persona/aarav/NOTEBOOK.md`
 across sessions. The file is growing but bounded:
 
 - **Hard cap:** 3000 words. On reaching the cap, the ranker
@@ -226,7 +226,7 @@ not this skill's.
   she acts on his BP-NN citations checkbox-style
 - `.claude/skills/prompt-protector/SKILL.md` — `prompt-protector`'s surface;
   the invisible-char lint he defers to
-- `memory/persona/aarav.md` — his notebook
+- `memory/persona/aarav/NOTEBOOK.md` — his notebook
   (created on first invocation if absent)
 - `docs/ROUND-HISTORY.md` — where his top-5 for each round is
   summarised once executed

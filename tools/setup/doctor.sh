@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+#
+# tools/setup/doctor.sh — health check for Zeta's three-way-parity
+# toolchain. Reports drift between what `install.sh` installed and
+# what's actually on the machine. Read-only; never mutates.
+#
+# Usage:
+#   tools/setup/doctor.sh           # walk checks; exit 0 iff all OK
+#   tools/setup/doctor.sh --json    # machine-readable output (future)
+#
+# Born round 32 after Aaron noted his jars ended up in random
+# locations before install.sh existed. The fix is to run
+# `tools/setup/install.sh` (which canonizes them at
+# tools/tla/tla2tools.jar + tools/alloy/alloy.jar); this doctor
+# script tells you whether that's actually happened, and where
+# drift exists.
+
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+cd "$REPO_ROOT"
+
+OK=0
+WARN=0
+FAIL=0
+
+pass() { echo "  ✓ $1"; OK=$((OK+1)); }
+warn() { echo "  ⚠ $1"; WARN=$((WARN+1)); }
+fail() { echo "  ✗ $1"; FAIL=$((FAIL+1)); }
+
+echo "=== Zeta toolchain doctor (round-32) ==="
+echo "Repo root: $REPO_ROOT"
+echo
+
+# ── 1. Required executables on PATH ────────────────────────────────
+echo "[1/5] Required executables on PATH"
+for cmd in dotnet java git curl mise; do
+  if command -v "$cmd" >/dev/null 2>&1; then
+    pass "$cmd: $(command -v "$cmd")"
+  else
+    fail "$cmd not on PATH — run tools/setup/install.sh"
+  fi
+done
+echo
+
+# ── 2. Verifier jars at canonical locations ─────────────────────────
+echo "[2/5] Verifier jars (canonical locations per manifest)"
+for jar in "tools/tla/tla2tools.jar" "tools/alloy/alloy.jar"; do
+  if [ -f "$REPO_ROOT/$jar" ]; then
+    size=$(stat -f%z "$REPO_ROOT/$jar" 2>/dev/null || stat -c%s "$REPO_ROOT/$jar" 2>/dev/null || echo 0)
+    if [ "$size" -lt 100000 ]; then
+      warn "$jar exists but is suspiciously small (${size} B) — may be a partial download"
+    else
+      pass "$jar ($(( size / 1024 / 1024 )) MB)"
+    fi
+  else
+    fail "$jar missing — run tools/setup/install.sh (or tools/setup/common/verifiers.sh for just the jars)"
+  fi
+done
+echo
+
+# ── 3. Drift check: jars outside canonical locations? ───────────────
+echo "[3/5] Jar-location drift (jars outside canonical tools/)"
+DRIFT_FOUND=0
+for stray in $(find "$REPO_ROOT" \
+                    -name "tla2tools*.jar" -o -name "alloy*.jar" \
+                    2>/dev/null \
+                    | grep -vE "/tools/(tla|alloy)/" \
+                    | grep -vE "/\.git/"); do
+  warn "jar at non-canonical location: ${stray#$REPO_ROOT/} (move to tools/tla/ or tools/alloy/ or delete)"
+  DRIFT_FOUND=1
+done
+if [ "$DRIFT_FOUND" -eq 0 ]; then
+  pass "no stray jars inside repo"
+fi
+
+# Also check the user's HOME for jars that install.sh didn't put there
+# but that might have accumulated during manual testing. We don't fail
+# on these — Aaron's laptop has them from pre-install.sh days — but we
+# report so the user can tidy up.
+HOME_DRIFT=0
+for stray in $(find "$HOME" -maxdepth 4 \
+                    \( -name "tla2tools*.jar" -o -name "org.alloytools.alloy*.jar" -o -name "alloy*.jar" \) \
+                    2>/dev/null \
+                    | grep -vE "\.mise/|\.local/share/mise/" \
+                    | head -5); do
+  warn "jar outside repo (laptop drift): $stray (safe to delete once tools/ has canonical copies)"
+  HOME_DRIFT=$((HOME_DRIFT+1))
+done
+if [ "$HOME_DRIFT" -eq 0 ]; then
+  pass "no stray jars in \$HOME"
+fi
+echo
+
+# ── 4. Mise runtimes match .mise.toml ───────────────────────────────
+echo "[4/5] mise runtimes match .mise.toml"
+if command -v mise >/dev/null 2>&1 && [ -f .mise.toml ]; then
+  if mise current >/dev/null 2>&1; then
+    while IFS= read -r line; do
+      pass "mise: $line"
+    done < <(mise current 2>&1)
+  else
+    warn "mise current errored — try: mise install (or tools/setup/common/mise.sh)"
+  fi
+else
+  warn "mise or .mise.toml missing — skipping"
+fi
+echo
+
+# ── 5. Managed shellenv present ─────────────────────────────────────
+echo "[5/5] Managed shellenv"
+ZETA_ENV_FILE="$HOME/.config/zeta/shellenv.sh"
+if [ -f "$ZETA_ENV_FILE" ]; then
+  pass "shellenv at $ZETA_ENV_FILE"
+else
+  warn "shellenv missing — run tools/setup/common/shellenv.sh"
+fi
+echo
+
+# ── Summary ─────────────────────────────────────────────────────────
+echo "=== Summary ==="
+echo "✓ ok: $OK   ⚠ warn: $WARN   ✗ fail: $FAIL"
+if [ "$FAIL" -gt 0 ]; then
+  echo
+  echo "Fix suggestion: tools/setup/install.sh"
+  exit 1
+fi
+if [ "$WARN" -gt 0 ]; then
+  echo
+  echo "Warnings don't fail the doctor; review + resolve at your cadence."
+fi

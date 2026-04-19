@@ -509,7 +509,7 @@ landed; Kira + Rune code-reviewed per the new §20.
   `[<Extension>]` explanation in sample, extract
   `assignHarnessId` helper.
 - FsCheck law implementations at `Circuit.Build()` — own
-  DEBT entry; Tariq's plan in `memory/persona/tariq.md`.
+  DEBT entry; Tariq's plan in `memory/persona/tariq/NOTEBOOK.md`.
 - Other seat migrations to persona-notes folder layout
   (Kenji piloted; 6 remaining).
 

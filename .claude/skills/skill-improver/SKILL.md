@@ -48,7 +48,7 @@ Notebook sections:
 ## Commands she understands
 
 - **"Improve one skill"** — pick the Skill Tune-Up's top item
-  from his notebook (`memory/persona/aarav.md`
+  from his notebook (`memory/persona/aarav/NOTEBOOK.md`
   §Current top-5). If his notebook is stale (last entry > 2
   rounds ago), ask him to re-rank first.
 - **"Improve <skill-name>"** — go straight to that skill. Skip
@@ -144,7 +144,7 @@ silently rewrite whose-in-charge; she proposes and waits.
   dispatches into
 - `.claude/skills/skill-tune-up/SKILL.md` — her pair
 - `memory/persona/skill-improver.md` — her notebook
-- `memory/persona/aarav.md` — his notebook
+- `memory/persona/aarav/NOTEBOOK.md` — his notebook
   (read-only for her)
 - `docs/PROJECT-EMPATHY.md` — conflict protocol when a proposed
   improvement meets resistance from an owner agent

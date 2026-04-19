@@ -53,6 +53,11 @@ if [ -n "${GITHUB_ENV:-}" ] && [ -n "${GITHUB_PATH:-}" ]; then
   if [ -d "$HOME/.elan/bin" ];     then echo "$HOME/.elan/bin" >> "$GITHUB_PATH"; fi
   if [ -d "$HOME/.dotnet/tools" ]; then echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"; fi
   if [ -d "$HOME/.local/bin" ];    then echo "$HOME/.local/bin" >> "$GITHUB_PATH"; fi
+  # Mise shims directory — where mise-installed `dotnet`, `python`,
+  # etc. live. Without this on GITHUB_PATH, subsequent `run:` steps
+  # can't see the toolchain install.sh just provisioned.
+  MISE_SHIM_DIR="$HOME/.local/share/mise/shims"
+  if [ -d "$MISE_SHIM_DIR" ];      then echo "$MISE_SHIM_DIR" >> "$GITHUB_PATH"; fi
   echo "✓ GITHUB_PATH updated for the remainder of the CI job"
 fi
 

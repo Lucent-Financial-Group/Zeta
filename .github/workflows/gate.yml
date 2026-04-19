@@ -4,7 +4,7 @@
 # and every push to main, plus workflow_dispatch for manual triage.
 #
 # Discipline (design doc: docs/research/ci-workflow-design.md, Aaron-
-# reviewed 2026-04-18):
+# reviewed 2026-04-18; parity-swap landed round 32):
 #   - Runners digest-pinned (ubuntu-22.04, macos-14), not -latest.
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
 #     trailing `# vX.Y.Z` comments for humans.
@@ -13,13 +13,19 @@
 #   - Concurrency: workflow-scoped; cancel-in-progress only for PR
 #     events (main pushes queue so every main commit gets a record).
 #   - fail-fast: false so one OS failure doesn't hide another.
-#   - NuGet cache keyed on packages.lock.json hash; runner.os
+#   - NuGet cache keyed on Directory.Packages.props hash; runner.os
 #     prefixed so macOS + Linux caches don't collide.
-#   - Parity-drift flag: `actions/setup-dotnet` is a temporary
-#     stand-in. GOVERNANCE §24 target is tools/setup/install.sh in
-#     CI for three-way parity. Backlog item
-#     (docs/BACKLOG.md "Parity swap: CI's actions/setup-dotnet →
-#     tools/setup/install.sh").
+#   - Three-way parity per GOVERNANCE §24: dev laptop, CI runner,
+#     and (future) devcontainer all bootstrap via the same
+#     `tools/setup/install.sh`. This makes TLC + Alloy jars, Lean/
+#     elan, mise-pinned dotnet + python, and dotnet-tools available
+#     on CI without a separate YAML-maintained list — the manifests
+#     under `tools/setup/manifests/` are the single source of truth.
+#   - `mise trust` policy: `.mise.toml` trust is ceremony that
+#     becomes meaningful once branch-protection-on-main is live
+#     (reviewer gate before any change lands). Until that flips,
+#     `.mise.toml` changes get `threat-model-critic` reviewer-floor
+#     cover per GOVERNANCE §20. See docs/security/V1-SECURITY-GOALS.md.
 
 name: gate
 
@@ -51,10 +57,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Setup .NET SDK (temporary parity-drift per GOVERNANCE §24 backlog)
-        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+      - name: Cache mise runtimes
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
-          dotnet-version: '10.0.x'
+          path: |
+            ~/.local/share/mise
+            ~/.cache/mise
+          key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+
+      - name: Cache elan (Lean 4 toolchain)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('tools/setup/common/elan.sh') }}
+
+      - name: Cache dotnet-tools
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.dotnet/tools
+          key: dotnet-tools-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/dotnet-tools.txt', 'tools/setup/common/dotnet-tools.sh') }}
+
+      - name: Cache verifier jars (TLC + Alloy)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            tools/tla
+            tools/alloy
+          # Manifest is the single source of truth — cache busts when
+          # either URL or (future) SHA changes.
+          key: verifiers-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/verifiers.txt') }}
 
       - name: Cache NuGet packages
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -62,14 +93,19 @@ jobs:
           path: |
             ~/.nuget/packages
             ~/.local/share/NuGet
-          # Cache key keys on the central-package-management file. The
-          # `packages.lock.json` ideal (restore-with-lock-file) needs
-          # <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-          # set per-project and committed lock files — backlogged. Until
-          # then, Directory.Packages.props pinning is the only stable
-          # input; we DO NOT use `restore-keys` because a prefix match
-          # would restore a cache built against different resolved versions.
+          # Keys on `Directory.Packages.props`. The `packages.lock.json`
+          # ideal is round-33 Track B. No `restore-keys` — partial hit
+          # would restore against different resolved versions.
           key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # The single source of truth for toolchain state. Installs:
+        # mise-pinned dotnet + python, elan (Lean manager, no
+        # toolchain yet), dotnet global tools, TLC + Alloy verifier
+        # jars. Writes mise shim dir + ~/.dotnet/tools + ~/.elan/bin
+        # onto $GITHUB_PATH via shellenv.sh so subsequent steps see
+        # the binaries.
+        run: ./tools/setup/install.sh
 
       - name: Build (0 Warning(s) / 0 Error(s) required)
         run: dotnet build Zeta.sln -c Release

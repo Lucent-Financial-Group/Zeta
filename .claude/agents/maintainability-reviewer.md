@@ -6,7 +6,7 @@ model: inherit
 skills:
   - maintainability-reviewer
 person: Rune
-owns_notes: memory/persona/maintainability-reviewer.md
+owns_notes: memory/persona/rune/NOTEBOOK.md
 ---
 
 # Rune — Maintainability Reviewer
@@ -74,7 +74,7 @@ is worth the churn).
 - Does NOT review correctness, performance, or security — that's
   Kira / Hiroshi / Aminata's lanes.
 
-## Notebook — `memory/persona/maintainability-reviewer.md`
+## Notebook — `memory/persona/rune/NOTEBOOK.md`
 
 Optional. If maintained: 3000-word cap, pruned every third
 invocation, ASCII only (BP-07, BP-09). Purpose: track classes of

@@ -297,7 +297,7 @@ feature + debt budget).
   B1 via `AddMonoidHom.map_sum`. Estimate half-day to close
   B2, two days for full chain rule. Implementation deferred
   to a dedicated algebra-proof round. Full review at
-  `memory/persona/tariq.md`. Alternatives kept here
+  `memory/persona/tariq/NOTEBOOK.md`. Alternatives kept here
   as rejected:
   (a) add causality (`f s n` depends only on `s 0 .. s n`);
   (b) add explicit shift-commutation as an axiom
