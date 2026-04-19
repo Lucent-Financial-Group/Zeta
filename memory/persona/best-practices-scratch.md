@@ -251,3 +251,22 @@ updates on planner/executor split vs ReAct choices.
 **Decision:** keep in scratch; report to Kenji for `skill-creator`
 routing. F9, F10 are the mechanical broken-pointer / dead-anchor
 items Yara can land checkbox-style.
+
+## 2026-04-19 — candidate BP: no line-start `+` in markdown
+
+Markdown line-start `+` in a wrapped continuation line (or as a
+visual connector) parses as a nested unordered-list item with
+`+` style, which markdownlint MD004/ul-style flags as wrong-
+style when the project expects `-`. Has fired on CI five times
+in round 34 alone across BACKLOG.md, agent files, and round
+narratives. Promotion criteria per the existing AGENT-BEST-
+PRACTICES.md gate:
+
+- Source count: markdownlint default config + CommonMark spec
+  + the pattern in BACKLOG / agents / PRs here. Meets 3.
+- Round survival: round 34 only. Needs ≥10 rounds.
+- Architect sign-off: pending.
+
+Codified meanwhile in `.github/copilot-instructions.md`
+under "Conventions you must respect" so Copilot flags it on
+every PR. Will re-evaluate for BP-17 promotion after round 44.

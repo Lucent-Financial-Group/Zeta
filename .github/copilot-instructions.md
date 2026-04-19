@@ -133,6 +133,14 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   and ADRs under `docs/DECISIONS/`; everywhere else in
   `docs/` edit in place. Don't add "previously this was
   …" notes; delete the old text and update to current.
+- **Never start a wrapped continuation line with `+` in
+  a markdown bullet.** markdownlint MD004/ul-style parses
+  it as a nested list item with `+` style where `-` is
+  expected, and CI blocks the PR. Reword to use "and",
+  "plus", or move the `+` to the end of the previous
+  line. This has bitten round 34 five separate times;
+  flag it inline on any PR diff that introduces a
+  line-start `+` in prose or a list continuation.
 
 ## What to do when unsure
 
