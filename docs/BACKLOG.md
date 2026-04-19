@@ -270,17 +270,58 @@ within each priority tier.
   invocation as a mandatory round-close step after any
   rename campaign (add to `round-open-checklist` or
   GOVERNANCE §).
-- [ ] **Verify pure `mise activate` (no shims) on CI**
-  (round 34, in-flight). Shipped this round without
-  `--shims` on Aaron's "CI will tell us" call. Pure PATH
-  activation is ~10x faster per mise docs and worked in a
-  local non-interactive bash test with BASH_ENV sourcing.
-  **Next check:** first CI run on PR #27 post-flip. If
-  green across Ubuntu + macOS, close this item + backport
-  the finding to `../scratch` (they ship `--shims` only by
-  historical default). If red, flip back to
-  `mise activate bash --shims` and file the failing step
-  as DEBT with the specific break.
+- [x] ✅ **Pure `mise activate` (no shims) on CI — verified
+  round 34.** Commit 9f138eb passed 6/6 CI checks
+  (build-and-test on macos-14 + ubuntu-22.04, all four
+  lints) with `eval "$(mise activate bash)"` — no
+  `--shims`. Matches mise's own ~10x-faster recommendation.
+  Evidence ships green on both CI OSes. Follow-up:
+  backport the finding to `../scratch` via the
+  GOVERNANCE §23 upstream-contribution workflow — they
+  ship `--shims` only by historical default.
+- [ ] **Compaction mode for container builds** (round 34
+  ask from Aaron; mirrors `../scratch`'s
+  `BOOTSTRAP_COMPACT_MODE`). When the install script
+  runs inside a devcontainer / CI image / build-server
+  image, it should clean up intermediate artefacts after
+  each tool install — apt caches, download tarballs,
+  `~/.cache/mise` bits, shallow-clone `.git` histories
+  if we introduce any. Dev-laptop runs should never do
+  this (disk is cheap, re-running install is slow).
+
+  **Pattern (from `../scratch/scripts/setup/unix/common.sh`):**
+  - `BOOTSTRAP_COMPACT_MODE=true` env var is the gate.
+  - `bootstrap_compact_mode_enabled()` helper reads the
+    env var honestly (truthy/falsy parsing).
+  - Per-tool cleanup helpers:
+    `run_<tool>_compact_cleanup` (e.g.,
+    `run_brew_compact_cleanup`,
+    `run_bootstrap_temp_compact_cleanup`).
+  - Called at the tail of the bootstrap orchestrator —
+    AFTER all tools are installed, so a failed install
+    doesn't wipe useful debugging state.
+  - Default: off. CI + container images opt in.
+
+  **Zeta mapping.** Cleanup targets this round would be:
+  (a) apt caches on Ubuntu (`apt-get clean` + `/var/lib/apt/lists/*`);
+  (b) `~/.dotnet` per-SDK temp tarballs (mise's dotnet
+  plugin leaves them around);
+  (c) `~/.cache/mise/downloads`;
+  (d) brew caches on macOS (`brew cleanup --prune=all`).
+  Elan / TLA+ / Alloy jars are small enough to not
+  matter in v1.
+
+  **Effort estimate:** M. Design doc first
+  (`docs/research/compaction-mode.md`), implementation
+  across `tools/setup/common/*.sh` second. Lands with
+  `.devcontainer/Dockerfile` when the third leg of
+  three-way-parity (GOVERNANCE §24) finally ships.
+
+  **Why this matters.** When `.devcontainer` lands and
+  a consumer opens Zeta in Codespaces, the image needs
+  to be small enough to pull fast. Without compaction,
+  each tool leaves hundreds of MB of intermediates
+  that inflate the image 3-5x.
 - [ ] **Cross-harness mirror pipeline** (round 34 ask from
   Aaron). Zeta is currently Claude-Code-biased
   (`.claude/skills/`, `.claude/agents/`). Real contributors
