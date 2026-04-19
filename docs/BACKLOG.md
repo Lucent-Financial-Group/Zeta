@@ -233,6 +233,117 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Research: local semantic search over text corpora
+  for agent / developer / CI leverage** (round 34 ask
+  from Aaron). Zeta's text-based corpora grow
+  monotonically: 17 `JOURNAL.md` unbounded long-term
+  memories, 17 `NOTEBOOK.md` per-persona working notes,
+  `memory/persona/best-practices-scratch.md`,
+  `docs/ROUND-HISTORY.md`, `docs/DECISIONS/**`,
+  `docs/research/**`, `openspec/specs/**`. The JOURNAL
+  read contract is "grep only, never cat" — but grep
+  misses conceptual matches ("this friction we saw back
+  in round 22 about window operators" doesn't grep unless
+  you remember the exact words). A local semantic-search
+  index would extend the contract: grep for exact
+  anchors + semantic search for conceptual ones.
+
+  **Candidate tools (Aaron's list, preliminary — needs
+  hands-on comparison):**
+  - **SemTools** — Rust, parses PDF/DOCX, local
+    semantic keyword matching with multilingual
+    embeddings. Rich input-format coverage; overkill
+    for Zeta's ASCII-markdown scope but maybe useful
+    for indexing `references/upstreams/**` too.
+  - **QMD (Query Markup Documents)** — hybrid vector +
+    BM25 keyword, local LLM re-ranking. Strongest on
+    markdown-heavy corpora like ours. Re-ranking with
+    a local LLM is interesting — could add a factored
+    second pass without cloud dependency.
+  - **sff (SemanticFileFinder)** — lightweight,
+    `.txt` / `.md` / `.mdx` only, `model2vec`-based for
+    speed. Lowest setup cost; fits "grep-only-replacement"
+    framing best.
+  - **refer** — simple CLI with embeddings-based
+    semantic search across local files. Minimal surface;
+    good baseline for a comparison.
+
+  **Scope of the research (three lanes from Aaron's
+  framing):**
+
+  1. **Agent experience (AX).** A persona waking up cold
+     after a compaction event and trying to answer "have
+     we seen this friction before?" should semantically
+     search their own JOURNAL + best-practices-scratch +
+     ROUND-HISTORY without loading the full files. Needs:
+     (a) the chosen tool works on ASCII markdown,
+     (b) indexing cost is bounded (no on-every-wake
+     re-index), (c) the tool's CLI fits the skill body's
+     read contract ("never cat" becomes "grep + semantic
+     as allowed; never cat").
+
+  2. **Developer experience (DX).** A new contributor
+     searching "how does recursion terminate" should get
+     relevant `docs/research/retraction-safe-semi-naive.md`
+     + `openspec/specs/retraction-safe-recursion/*.md` +
+     the relevant Lean proof sketch, even though the
+     docs say "LFP convergence" not "termination." Hits
+     Bodhi's first-PR walk — reduces the "figure out
+     which doc applies" minutes-cost.
+
+  3. **CI enhancements.** Speculative: semantic search
+     could power duplicate-issue detection on a public
+     repo, PR-review context hints ("this change looks
+     similar to the round-17 speculative-watermark fix
+     — did you see it?"), or a `skill-gap-finder`
+     upgrade that spots scattered tribal knowledge by
+     conceptual clustering rather than grep-pattern
+     count. All speculative; this lane is "what else
+     falls out" territory.
+
+  **Constraints Zeta brings:**
+  - **Offline / air-gapped.** Zeta ships without cloud
+    dependencies by design. Any tool that calls
+    OpenAI / Claude / Gemini in the hot path is out.
+    Local embeddings only. Local LLM re-ranking
+    acceptable but must be optional.
+  - **Reproducibility.** Indexing must be deterministic
+    enough that CI and dev laptops produce identical
+    query results. Pinned model + pinned index format.
+  - **ASCII corpus.** BP-09 forbids invisible-Unicode;
+    the index builder must not introduce any.
+  - **No secret leakage.** An adversarial JOURNAL entry
+    must not influence the index in a way that
+    exfiltrates on query. Index-time BP-11 hygiene
+    matches read-time BP-11 hygiene.
+  - **Three-way parity (GOVERNANCE §24).** Dev laptop,
+    CI runner, devcontainer must all resolve the same
+    tool the same way. Lands in the install script per
+    `tools/setup/common/semantic-search.sh` pattern.
+
+  **Deliverables:**
+  - `docs/research/semantic-search-design.md` —
+    comparison of the four tools on (a) index build time
+    on a representative corpus, (b) query latency,
+    (c) result quality on a hand-curated eval set,
+    (d) offline story, (e) install-script integration
+    complexity, (f) disk footprint of the index.
+  - If a tool wins, a second doc
+    `docs/research/semantic-search-<tool>-adoption.md`
+    with the install-script integration plan + the
+    skill-body updates (JOURNAL read contract extended,
+    `skill-gap-finder` and `next-steps` skills gain
+    optional semantic-retrieval step).
+  - If nothing wins clearly, the research doc closes
+    with a "revisit when X changes" exit condition.
+
+  **Effort:** L — research round, not implementation.
+  Budget: one full round for the comparison + eval set
+  design; implementation is a separate round once a
+  tool is chosen. Could spawn a new persona
+  (candidate: `retrieval-engineer` or merge into Daya's
+  AX lane) or stay project-resourced.
+
 - [ ] **Python tool management via `uv tool` (from ../scratch)**
   (round 34). uv pinned in `.mise.toml` this round (P0 from
   Bodhi-adjacent ../scratch research). Next: port
