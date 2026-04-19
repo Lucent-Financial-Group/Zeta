@@ -94,6 +94,90 @@ within each priority tier.
   side (Window.fs wiring pending). Target: measured numbers in
   `docs/BENCHMARKS.md` by end of round 20.
 
+## P1 — Factory / static-analysis / tooling (round-33 surface)
+
+- [ ] **`openspec-gap-finder` skill** (round 32 ask). Viktor
+  (spec-zealot) reviews spec-to-code alignment for an existing
+  capability but doesn't scan the repo for capabilities shipped
+  without a spec. Needs a new skill parallel to
+  `skill-gap-finder` — spec-zealot role wears both via the
+  Aarav pattern. GOVERNANCE §28 enforcement depends on this.
+- [ ] **`static-analysis-gap-finder` skill** (round 33 ask).
+  Aaron: "we need another gap analysis tool around static
+  analysis and linting and tools and rules we maybe missing."
+  Parallel to `openspec-gap-finder` + `skill-gap-finder`.
+  Spec-zealot role wears all three gap-finders. Proactive
+  lint discovery: enumerate committed languages/surfaces +
+  check whether a matching linter is on the lint gate.
+- [ ] **Crank lint configurations to HIGH across the board.**
+  Aaron: "in general when there is static analysis
+  configuration or linting things of that nature we want to
+  crank it up to high." Round-33 baseline is mid-stringency;
+  post-33 pass researches each tool's recommended-strict
+  preset and adopts. Trigger: round 34, after round-33 Track D
+  baseline has proven itself stable.
+- [ ] **documentation-agent cadence.** Add documentation-agent
+  to `factory-audit`'s every-10-rounds walk scope. Each walk:
+  scan comments in config files + doc-to-code alignment +
+  retired-file references. Round 33 surfaced multiple stale-
+  comment issues that would have been caught by a scheduled
+  doc-state audit.
+- [ ] **Declarative-manifest setup matching `../scratch`'s
+  tiered shape.** Zeta's `tools/setup/manifests/` is
+  declarative-ish (`apt.txt`, `brew.txt`, etc.) but flat.
+  `../scratch`'s `declarative/` has tiered profiles
+  (`min`/`runner`/`quality`/`all`) per platform per tool.
+  Push one incremental step per round — split `brew.txt` into
+  tiers, then `.dotnet-tools` / `.bun-global` formats, etc.
+- [ ] **Upstream sync script + `references/upstreams/`
+  population.** `references/reference-sources.json` manifest
+  exists; sync script referenced in README ("when it exists")
+  does not. Build the script so `./tools/setup/sync-
+  upstreams.sh` (or equivalent) reads the manifest, clones
+  each upstream into `references/upstreams/<name>/`, keeps
+  them fresh.
+- [ ] **`upstream-comparative-analysis` skill.** Aaron round 33:
+  "add a skill around upstream reference comparative analysis
+  that will allow us to get ideas and such and compare our
+  code with upstreams for inspiration." Skill procedure: pick
+  a Zeta subsystem + matching upstream, produce a parallel
+  walk highlighting shape / contract / perf / correctness
+  differences. Owned by `tech-radar-owner` role; feeds
+  `docs/TECH-RADAR.md` Adopt/Trial/Assess/Hold moves.
+- [ ] **Upstream categorisation audit (multi-round).** Aaron
+  round 33: "we probably need some upstream maintenance to
+  make sure all the categories are good and correct and make
+  sense for our project because we were not thinking as deeply
+  as we are now so there might be better categorisation." The
+  `categories` field in `references/reference-sources.json`
+  and the grouping prose in `references/README.md` were
+  written incrementally and may no longer reflect Zeta's
+  current mental model. Walk every upstream, re-read our
+  current research notes, propose better categories. Spread
+  across multiple rounds (long task requiring many internal
+  searches); each round picks a sub-tree.
+- [ ] **Post-install repo automation: runtime choice open
+  (research needed).** `tools/setup/install.sh` (bash) owns
+  bootstrap; post-install polyglot automation (format-repo,
+  coverage-collect, benchmark-compare, lint orchestration)
+  benefits from one cross-platform runtime. Aaron: "IDK if
+  I want to stick with [Bun+TS] which is why i want the
+  research." Candidates: Bun/Node, Deno, Python (on PATH
+  via mise), .NET console tools, others. Write a design doc
+  comparing cold-start, install weight, type safety,
+  ecosystem breadth. Trigger: first post-install automation
+  task that would need cross-platform scripting.
+- [ ] **Devcontainer / Codespaces image (GOVERNANCE §24
+  third leg).** Two-leg parity (dev + CI) is today;
+  devcontainer closes three-leg parity for first external
+  contributor onboarding. Dockerfile calls
+  `tools/setup/install.sh`.
+- [ ] **Windows CI matrix + Windows install path
+  (`tools/setup/windows.ps1`).** Trigger: stable green on
+  mac + linux for N rounds, OR named Windows consumer.
+  Windows install will be PowerShell, not Git Bash (Git Bash
+  is not guaranteed installed).
+
 ## P1 — CI / DX follow-ups (after round-29 anchor)
 
 - [ ] **Full mise migration.** Round 29 adopts `.mise.toml`
