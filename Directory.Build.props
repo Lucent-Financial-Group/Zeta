@@ -15,7 +15,7 @@
     <Authors>zeta contributors</Authors>
     <Product>Zeta (DBSP for .NET)</Product>
     <Copyright>Copyright (c) 2026</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild>

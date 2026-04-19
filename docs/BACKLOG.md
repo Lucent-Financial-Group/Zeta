@@ -116,11 +116,50 @@ within each priority tier.
   Core provider so EF consumers get DBSP incremental query
   plans for free. Aaron: "work tightly with entity framework,
   then branch out to other ORMs." First-class v1.
-- [ ] **F# DSL reimagining SQL for the modern era.** Extends
-  the existing `circuit { ... }` computational-expression
-  seed. Natively retraction-aware, bitemporal-ready,
-  incremental-by-default. Needs a design round; Aaron: "a
-  start with our computational workflow."
+- [ ] **F# DSL reimagining SQL for the modern era (HUGE,
+  multi-round).** Extends the existing `circuit { ... }`
+  computational-expression seed. Natively retraction-aware,
+  bitemporal-ready, incremental-by-default. Aaron round 33
+  flag: "sounds like we need design and research, this
+  task sounds HUGE." Spread across multiple rounds:
+  Round N: research what modern SQL should look like
+    (compose-ability, retraction syntax, time-travel
+    primitives, type-system integration with F#
+    discriminated unions). Survey languages that tried
+    (Rel/Tutorial D, Datalog family, LINQ, Kleppmann's
+    "Rethinking relational" talks, relational algebra
+    type theory).
+  Round N+1: design doc with syntax sketch.
+  Round N+2: paper-peer-reviewer pass.
+  Round N+3+: implementation + fit-check against existing
+    circuit/Op algebra.
+  Output: sequence of `docs/research/f-dsl-*.md` docs
+  then `openspec/specs/f-dsl-surface/` once shape
+  stabilizes.
+
+- [ ] **PostgreSQL wire protocol server.** Aaron round 33:
+  "support an existing protocol so existing tools can
+  connect." pgAdmin, DBeaver, psql, Npgsql (via EF) all
+  speak PostgreSQL's wire protocol. Zeta would implement
+  enough of the frontend/backend message protocol (auth,
+  simple query, extended query, COPY) to appear as a
+  PostgreSQL server. Material precedent: CockroachDB,
+  Materialize, YugabyteDB, Apache AGE — all run non-
+  Postgres engines behind Postgres-shaped endpoints.
+  v1-or-early-post-v1 depending on design round: needs
+  auth shape, SSL/TLS, connection pooling posture,
+  protocol-level error mapping to DBSP Result types.
+  Output: `docs/research/pg-wire-protocol-design.md`.
+
+- [ ] **Own admin UI (far future).** Aaron round 33: "we
+  will need some UI that can connect to it like SSMS or
+  PostgreSQL Admin, so we will have to build our own
+  (which we will eventually do)." Stack choice is open
+  — Fable + Elmish (F# + web), SAFE Stack (F# full-
+  stack), Blazor (C# + WebAssembly), or Avalonia
+  (native F#/C#). Signals the polyglot story. Deferred
+  until `Zeta.Core` v1.0 ships and server mode is
+  stable. Research round first.
 - [ ] **Additional ORM providers (post-EF).** Dapper,
   NHibernate, LLBLGen, etc. After the EF provider lands
   and the pattern is understood.

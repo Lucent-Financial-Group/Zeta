@@ -1,6 +1,6 @@
 # Zeta — Long-Term Vision
 
-> **Status:** round 33 v4 after Aaron's third pass of edits.
+> **Status:** round 33 v5 after Aaron's fourth pass of edits.
 > Aaron is the source of truth; this document changes freely.
 > The `product-visionary` role (to be spawned, see
 > `docs/BACKLOG.md`) will steward it once it exists.
@@ -137,25 +137,50 @@ What makes `Zeta.Core 1.0.0` on NuGet:
 - FsCheck LawRunner — `checkBilinear`,
   `checkSinkTerminal`, `checkRetractionCompleteness`
   already landed.
-- **SQL frontend (v1).** Multiple dialect targets (T-SQL,
-  PostgreSQL, MySQL, SQLite, DuckDB) via a shared query
-  IR that compiles to the DBSP operator algebra.
-  `../SQLSharp/openspec/specs/query-frontends/` is the
-  pattern to study; that project has started the
-  LINQ-first frontend + planning convergence we want.
+- **SQL frontend (v1), PostgreSQL dialect first.** Aaron
+  round 33: "whatever is easier to ship first and work
+  with EF, people love postgres compatibility." PostgreSQL
+  wins on both: Npgsql (Apache-2.0) is the widely-used
+  EF Core provider; pgAdmin/DBeaver/psql all speak the
+  wire protocol; Materialize/Feldera/CockroachDB have
+  proven it's viable to look-like-postgres while running
+  a different engine underneath. Other dialects (T-SQL,
+  MySQL, SQLite, DuckDB) follow — all via the shared
+  query IR per `../SQLSharp/openspec/specs/query-
+  frontends/`.
 - **Tight LINQ integration (v1).** `IQueryable<T>` roots
   on mapped tables; LINQ lowers to the same IR the SQL
-  parser targets. This is the primary surface for F# +
-  C# consumers.
-- **Entity Framework provider (v1).** Zeta ships an EF
-  Core provider so EF consumers get DBSP incremental
-  query plans for free; downstream ORMs follow after EF.
+  parser targets. Primary surface for F# + C# consumers.
+- **Entity Framework Core provider (v1), ALL features.**
+  Aaron: "100% all features." Full LINQ provider +
+  save-changes + migrations + tracking + change
+  detection. No "works for SELECT but fails on
+  INSERT-INTO-UPDATE" partial-provider shape —
+  consumers should never hit a "this feature not
+  implemented" wall. Other ORMs (Dapper, NHibernate,
+  LLBLGen) follow the EF Core pattern.
+- **PostgreSQL wire protocol server (v1-or-early-post-v1).**
+  Zeta speaks the PostgreSQL wire protocol so existing
+  tools (pgAdmin, DBeaver, psql, Npgsql-via-EF) connect
+  without modification. Aaron: "we will need some UI
+  that can connect to it like SSMS or PostgreSQL Admin,
+  so we will have to build our own (which we will
+  eventually do) support an existing protocol so
+  existing tools can connect." This is a server mode
+  on top of the embedded library, not a replacement;
+  Zeta keeps the in-process F# surface AND exposes a
+  wire-protocol endpoint. Significant scope — may
+  slip from v1 to early post-v1 depending on design
+  round outcome.
 - **F# DSL reimagining SQL for the modern era (v1).** The
   existing computational-expression sketch (`DSL.fs`,
   `circuit { ... }`) is the seed. Long-term ambition: a
   natively F# relational DSL that treats retractions,
   bitemporality, and incremental plans as first-class —
   not bolted on. Inspired by LINQ but shaped for DBSP.
+  Aaron round 33 on DSL design: "sounds like we need
+  design and research, this task sounds HUGE." Named
+  as a multi-round design effort in `docs/BACKLOG.md`.
 - Formal-method coverage — TLA+ / Alloy specs running
   green in CI.
 - CI parity + security posture — see Product 2 below.
@@ -309,6 +334,21 @@ degrading the factory is a net-negative round.
 - **Not a product chasing users pre-v1.** Research first;
   users follow the research.
 
+## License
+
+**Apache-2.0.** Aaron round 33: "Apache sounds okay …
+just pick one and lets go." Patent grant + contribution
+clauses give slightly better downstream-dispute defence
+than MIT at zero practical cost. Round 33 lands the LICENSE
+flip (MIT → Apache-2.0) and the `<PackageLicenseExpression>`
+update in `Directory.Build.props`.
+
+If commercial emerges, the license can be revisited
+(source-available? dual-licensed with AGPL for the OSS
+core + commercial for hosted?); Apache-2.0 is the start
+state and the easiest to move FROM because all contributors
+have granted patent rights.
+
 ## Commercial posture
 
 Pure research / open-source is the first-class experience.
@@ -434,18 +474,27 @@ Things Aaron resolved this round (round 33 v3 + v4):
   row-oriented Spine family. Fits OLAP / analytics /
   wide-row-sparse-projection workloads.
 
-Remaining gaps the product-visionary walks on first
-audit:
+Things Aaron resolved round 33 v5:
 
-- Which SQL dialect lands first in v1? T-SQL, PostgreSQL,
-  SQLite (all three? incremental?)?
-- What's the license shape — Apache-2 / MIT / LGPL / dual-
-  licensed AGPL+commercial? Licensing is a commercial-
-  trajectory lever worth deciding before the commercial
-  trigger fires.
-- Entity Framework provider surface — full LINQ provider
-  or incremental rollout (query first, then save-changes,
-  then migrations)?
-- F# DSL name — does it need a name distinct from the
-  computational-expression builder syntax, or is
-  `circuit { ... }` the permanent brand?
+- **SQL dialect: PostgreSQL first.** Easier-to-ship +
+  good EF integration + huge existing tool ecosystem.
+- **License: Apache-2.0.** Landed this round.
+- **EF provider: 100% all features.** No partial-provider
+  shape; full LINQ + save-changes + migrations + tracking.
+- **Admin UI**: Zeta will build its own eventually (long-
+  term). In the meantime, speak the PostgreSQL wire
+  protocol so existing admin tools connect.
+- **F# DSL design**: acknowledged as huge multi-round
+  research effort, queued in BACKLOG.
+
+Remaining gaps the product-visionary walks on first
+audit (after round 33):
+
+- Wire protocol server: v1 or slip to early post-v1?
+  Scope impact is significant.
+- Own admin UI: F# + web (Fable? SAFE Stack? Blazor?)
+  or native GUI (Avalonia?). Far-future but the choice
+  signals the polyglot story.
+- Naming within the wire-protocol layer — Zeta as "a
+  PostgreSQL" (we emulate) vs "behind Postgres-shaped
+  endpoint" (we translate on ingress/egress)?
