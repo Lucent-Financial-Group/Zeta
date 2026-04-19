@@ -24,5 +24,20 @@ echo "↓ mise install (reading $REPO_ROOT/.mise.toml)..."
 (cd "$REPO_ROOT" && mise install)
 echo "✓ mise runtimes installed"
 
+# Put mise shims on PATH for the remainder of this install.sh run
+# so downstream scripts (e.g. anything needing python) see the
+# mise-managed binaries. `shellenv.sh` (final step) propagates the
+# same to subsequent shells and to CI's $GITHUB_PATH.
+for shim_dir in \
+    "$HOME/.local/share/mise/shims" \
+    "/opt/homebrew/opt/mise/shims" \
+    "/opt/homebrew/share/mise/shims"; do
+  if [ -d "$shim_dir" ]; then
+    export PATH="$shim_dir:$PATH"
+    echo "✓ mise shims on PATH: $shim_dir"
+    break
+  fi
+done
+
 # Print the resolved versions so the log is useful on a first run.
 (cd "$REPO_ROOT" && mise current)

@@ -1,79 +1,59 @@
-# Current Round — 31 (rest round, maintainer-called)
+# Current Round — 32 (open)
 
-Round 30 closed; narrative absorbed into
-`docs/ROUND-HISTORY.md`. Round 30 shipped the first
-fully-green gate in the repo's history. Aaron called
-a rest round in response — "everyone take a round
-off." Planned round-31 work (LawRunner `checkBilinear`
-+ `checkSinkTerminal`; `packages.lock.json` +
-verifier SHA-pin + safety-clause-diff +
-`mise trust` + CodeQL) shifts to **round 32**.
+Round 31 closed as a rest round (maintainer-called after the
+first fully-green gate in the repo's history — PR #6 round 30,
+then PR #7 round 31 rest marker). Round 32 shifted scope from
+"Track A product + Track B security" to "factory shape + CI
+parity + v1.0 security scoping." Product work (LawRunner bilinear
++ sink-terminal) slides to round 33.
 
 ## Status
 
-- **Round number:** 31 (rest)
-- **Opened:** 2026-04-18 (continuous from round-30
-  close)
-- **Classification:** rest — no coding work, no
-  reviewer dispatches, no DEBT reshuffling.
-  Maintainer-called per first-green-gate milestone.
-- **Reviewer budget:** `harsh-critic` +
-  `maintainability-reviewer` floor per GOVERNANCE §20.
-  `security-researcher` on any workflow / install-
-  script / threat-model touch. `public-api-designer`
-  on any public-API change. `threat-model-critic` on
-  any security doc edit (round cadence per §0 of
-  THREAT-MODEL.md).
+- **Round number:** 32
+- **Opened:** 2026-04-18 (immediately post round-31 rest)
+- **Classification:** factory + parity + security-scoping
+  (product work deferred to round 33)
+- **Reviewer budget:** `harsh-critic` + `maintainability-reviewer`
+  floor per GOVERNANCE §20. `security-researcher` on any workflow
+  / install-script / threat-model touch. `public-api-designer`
+  on any public-API change. `threat-model-critic` on any
+  security doc edit (round cadence per §0 of THREAT-MODEL.md).
 
-## Round 30 close — what landed
+## Round 32 — what landed this round
 
-Anchor: nation-state + supply-chain threat-model
-elevation. Delivered:
+1. **CI parity-swap (GOVERNANCE §24 target).** `gate.yml`
+   replaces `actions/setup-dotnet` with
+   `./tools/setup/install.sh`; single source of truth for
+   toolchain shared by dev laptop + CI runner. Verifier
+   jars, mise-pinned dotnet + python, elan, dotnet tools
+   all provisioned from `tools/setup/manifests/`. Caches
+   added for mise runtimes / elan / dotnet-tools / verifier
+   jars / NuGet packages, all keyed on their manifest hash.
+   TLC + Alloy tests now *run* on CI instead of skipping.
+2. **`mise trust` policy decision.** Held as ceremony; becomes
+   meaningful once branch-protection-on-main lands. Documented
+   in `V1-SECURITY-GOALS.md` and in `gate.yml` header comment.
+3. **Persona memory-layout normalization.** Every persona now
+   owns a directory: `memory/persona/<name>/NOTEBOOK.md` +
+   `MEMORY.md` (index) + `OFFTIME.md` (§14 log, even zero-
+   entry rounds log honestly). Sweep of 26 files updated the
+   `owns_notes:` frontmatter + body references. Promotes Kenji-
+   only pattern to the whole roster.
+4. **OFFTIME seeded for 13 personas.** Kira, Rune, Mateo,
+   Nadia plus the rest of the cast each get their first zero-
+   entry OFFTIME record. Template matches Kenji's shape.
+5. **v1.0 security goals doc.** `docs/security/V1-SECURITY-GOALS.md`
+   names the realistic floor for 0.x → 1.0; out-of-scope
+   items (hardware side-channel, nation-state bespoke, HSM
+   signing, reproducible builds, SLSA L3/L4, ISO/SOC2/FedRAMP,
+   DAST, pen-test) land in `SECURITY-BACKLOG.md` with explicit
+   triggers for revisit.
+6. **`tools/setup/doctor.sh`** — read-only health check for
+   toolchain drift. Reports missing executables, jar drift
+   inside repo + `$HOME`, mise state, managed shellenv.
+   Addresses Aaron's "jars in random locations" observation.
 
-- **Semgrep-in-CI** — 14 custom rules went from
-  aspirational to enforced. `.github/workflows/gate.yml`
-  `lint` job runs `semgrep --config .semgrep.yml
-  --error` on every PR + push-to-main. Biggest single
-  posture fix.
-- **Semgrep rule 15** — SHA-pin enforcement on
-  `.github/workflows/**`. Defends the tj-actions tag-
-  rewrite class (CVE-2025-30066).
-- **`docs/security/THREAT-MODEL.md` expansion** —
-  adversary tiers T0-T3, re-audit cadence every round,
-  bus-factor documented exception (Aaron runs 2FA
-  only; further controls are education-over-time),
-  supply-chain boundary decomposition, SLSA ladder
-  (L1 now → L2 mid-term → L3 pre-v1.0), long-game
-  persistence defences, adversary-tier-to-control
-  matrix, formal-spec cross-reference.
-- **`docs/security/THREAT-MODEL-SPACE-OPERA.md`
-  rewritten** — 24 adversaries (was 17) with creative
-  license. Reality-tag legend (shipped / BACKLOG /
-  aspirational / teaching). New: Poisoned Bard,
-  Changeling Action, Hungry Cache, Time-Bomb Package,
-  Helpful Stranger, Moon Stares Back, Ghost in the
-  Git Blame. Rewritten: Whispering Drone Swarm,
-  Echoes from the Dyson Sphere, Fungal Network.
-- **`docs/security/INCIDENT-PLAYBOOK.md`** (new) — 6
-  playbooks (A: third-party GHA compromise, B:
-  toolchain installer hijack, C: NuGet dep poisoning,
-  D: maintainer-account compromise, E: skill safety-
-  clause regression, F: escalation), triage-in-60-
-  seconds, contact tree, disclosure timeline.
-- **`docs/security/SDL-CHECKLIST.md` honest
-  downgrades** — #7 / #8 / #9 ✅ → 🔜; #12 partial →
-  ✅. Tightened ✅ definition: "shipped AND enforced
-  by CI or governance."
-- **Reviewer floor fired** — `threat-model-critic`
-  caught a P0 (SPACE-OPERA rewrite silently didn't
-  commit in the initial write) and four P1s (matrix
-  overconfidence on build-gate T3 + Semgrep T3;
-  INCIDENT-PLAYBOOK Playbook D recovery-code
-  assumption; SDL ✅ definition self-contradiction
-  with #12; prediction-in-doc on #9). All five fixed
-  in-round.
-
-## Round 31 — parallel tracks
+## Round 33 — deferred
 
 **Track A — product (LawRunner):**
 
@@ -88,24 +68,15 @@ elevation. Delivered:
 **Track B — security follow-through:**
 
 1. **`packages.lock.json` adoption** (round-30 Time-
-   Bomb Package mitigation). `RestorePackagesWithLockFile`
-   per project; `RestoreLockedMode=true` on CI;
-   committed lock files. Closes the transitive-dep
-   time-bomb vector.
+   Bomb Package mitigation).
 2. **Verifier-jar SHA-256 pinning** (round-30 TOFU
-   gradient step). Extend
-   `tools/setup/manifests/verifiers.txt` to
-   `<path> <url> <sha256>`; `verifiers.sh` verifies
-   after download.
+   gradient step).
 3. **Safety-clause-diff lint** on
-   `.claude/skills/**/SKILL.md` (round-30 XZ-class
-   defence, closes INCIDENT-PLAYBOOK Playbook E
-   detection gap). Bespoke diff-level tool; Semgrep
-   generic-mode regex is insufficient.
-4. **`mise trust` CI hardening** (DEBT pre-req for
-   CI parity swap to `install.sh`).
-5. **CodeQL workflow** (SDL #9 follow-through). C#
-   + F# scan on weekly schedule.
+   `.claude/skills/**/SKILL.md`.
+4. **CodeQL workflow** (SDL #9 follow-through).
+5. **Branch-protection required-check on `main`** once
+   `gate.yml` has one week of consistent green runs
+   under the new install.sh path.
 
 ## Carried from round 30
 
@@ -134,12 +105,12 @@ elevation. Delivered:
 - Windows CI matrix (trigger: stable on mac + linux).
 - Parity swap: CI's `actions/setup-dotnet` →
   `tools/setup/install.sh` (gated on `mise trust`
-  hardening).
+  hardening — Track B item 4).
 - Branch-protection required-check on `main`.
 
 ## Open asks to the maintainer
 
-- **Aaron decisions staged for round 31:**
+- **Aaron decisions staged for round 32:**
   - `packages.lock.json` adoption — do we want it on
     every project or just the library (`Zeta.Core`)?
   - `mise trust` CI hardening approach — allow-list
@@ -148,7 +119,9 @@ elevation. Delivered:
     `.mise.toml` change (policy).
   - When to flip branch-protection required-check on
     `main` (one week of clean `gate.yml` runs is the
-    proposed trigger).
+    proposed trigger; round 30 + round 31 are two
+    green runs so far).
+  - Track A vs Track B first — or parallel?
 
 - **Round 30 standing asks (carried):**
   - NuGet prefix reservation on `nuget.org` for
@@ -159,13 +132,13 @@ elevation. Delivered:
 
 ## Notes for the next architect waking
 
-- **Round-30 landed big security posture work.** Any
-  round-31 PR touching security docs auto-invokes
-  `threat-model-critic` re-audit per new §0
-  "re-audit every round" rule.
-- **Semgrep-in-CI is live.** If a PR fails `lint`,
-  the fix is always to the code (not to lower a rule's
+- **First fully-green gate landed in round 30.** Round
+  31 was the rest round. If a PR fails `gate.yml`, the
+  fix is always to the code (not to lower a rule's
   severity). Weakening a rule is a design-doc moment.
+- **Any round-32 PR touching security docs auto-invokes
+  `threat-model-critic` re-audit** per §0 of
+  `docs/security/THREAT-MODEL.md`.
 - **Reality tags in SPACE-OPERA are honest signal.**
   `shipped` means enforced; `BACKLOG` means designed
   not shipped; `aspirational` means defence pattern

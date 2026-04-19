@@ -80,7 +80,7 @@ Rules the architect applies when dispatching:
 
 1. **File-level exclusivity.** At most one in-flight agent may
    write a given file. The dispatch prompt names the agent's
-   write-set explicitly (e.g. "write `memory/persona/daya.md`;
+   write-set explicitly (e.g. "write `memory/persona/daya/NOTEBOOK.md`;
    do not edit any other file"). Read-sets may overlap.
 2. **Heavy-command serialisation.** These commands get serial,
    not parallel, treatment:

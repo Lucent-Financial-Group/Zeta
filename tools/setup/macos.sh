@@ -7,11 +7,12 @@
 #   2. Homebrew (system-package source on macOS)
 #   3. Brew packages from manifests/brew.txt (openjdk, curl, etc.)
 #   4. mise (runtime manager)
-#   5. common/mise.sh     — pins dotnet + python
-#   6. common/elan.sh     — Lean toolchain (no mise plugin yet)
-#   7. common/dotnet-tools.sh — dotnet global tools
-#   8. common/verifiers.sh    — TLA+ + Alloy jars
-#   9. common/shellenv.sh     — managed PATH file
+#   5. common/mise.sh     — pins python (dotnet moved out in round 32)
+#   6. common/dotnet.sh   — installs .NET SDK per global.json
+#   7. common/elan.sh     — Lean toolchain (no mise plugin yet)
+#   8. common/dotnet-tools.sh — dotnet global tools
+#   9. common/verifiers.sh    — TLA+ + Alloy jars
+#  10. common/shellenv.sh     — managed PATH file
 
 set -euo pipefail
 
@@ -65,8 +66,16 @@ if ! command -v mise >/dev/null 2>&1; then
 fi
 echo "✓ mise: $(mise --version)"
 
-# ── 5-9. Common steps ───────────────────────────────────────────────
+# ── 5-10. Common steps ──────────────────────────────────────────────
 "$SETUP_DIR/common/mise.sh"
+"$SETUP_DIR/common/dotnet.sh"
+
+# Make ~/.dotnet available for the remainder of this install.sh
+# process so dotnet-tools.sh can find the SDK we just installed.
+# shellenv.sh handles propagation to subsequent shells + CI env.
+export DOTNET_ROOT="$HOME/.dotnet"
+export PATH="$DOTNET_ROOT:$HOME/.dotnet/tools:$PATH"
+
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"
 "$SETUP_DIR/common/verifiers.sh"

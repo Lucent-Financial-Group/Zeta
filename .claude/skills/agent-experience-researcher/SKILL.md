@@ -93,7 +93,7 @@ No multi-file refactor is proposed without the `architect` sign-off first.
 
 ### Step 5 — publish
 
-Append findings to `memory/persona/daya.md`
+Append findings to `memory/persona/daya/NOTEBOOK.md`
 in the output format below. the `architect` reads this notebook on round-
 close and acts on the top-3 items.
 
@@ -174,7 +174,7 @@ P2 (small wins):
 - `.claude/agents/agent-experience-researcher.md` — the persona
 - `docs/WAKE-UP.md` — the cold-start index audited here
 - `docs/GLOSSARY.md` — AX / wake / hat / frontmatter
-- `memory/persona/daya.md` — `agent-experience-researcher`'s
+- `memory/persona/daya/NOTEBOOK.md` — `agent-experience-researcher`'s
   notebook (created on first audit)
 - `docs/EXPERT-REGISTRY.md` — `agent-experience-researcher`'s roster entry
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01, BP-03, BP-07, BP-08,

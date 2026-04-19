@@ -5,11 +5,12 @@
 # Order matters:
 #   1. apt packages from manifests/apt.txt (openjdk, build-essential, curl)
 #   2. mise (via official installer; no apt package yet)
-#   3. common/mise.sh     — pins dotnet + python
-#   4. common/elan.sh     — Lean toolchain
-#   5. common/dotnet-tools.sh — dotnet global tools
-#   6. common/verifiers.sh    — TLA+ + Alloy jars
-#   7. common/shellenv.sh     — managed PATH file
+#   3. common/mise.sh     — pins python (dotnet moved out in round 32)
+#   4. common/dotnet.sh   — installs .NET SDK per global.json
+#   5. common/elan.sh     — Lean toolchain
+#   6. common/dotnet-tools.sh — dotnet global tools
+#   7. common/verifiers.sh    — TLA+ + Alloy jars
+#   8. common/shellenv.sh     — managed PATH file
 #
 # Non-Debian Linuxes (RHEL/Fedora/Arch/Alpine) are deferred — the
 # install-script layering supports adding them alongside apt.
@@ -52,8 +53,16 @@ if ! command -v mise >/dev/null 2>&1; then
 fi
 echo "✓ mise: $(mise --version)"
 
-# ── 3-7. Common steps ───────────────────────────────────────────────
+# ── 3-8. Common steps ───────────────────────────────────────────────
 "$SETUP_DIR/common/mise.sh"
+"$SETUP_DIR/common/dotnet.sh"
+
+# Make ~/.dotnet available for the remainder of this install.sh
+# process so dotnet-tools.sh can find the SDK we just installed.
+# shellenv.sh handles propagation to subsequent shells + CI env.
+export DOTNET_ROOT="$HOME/.dotnet"
+export PATH="$DOTNET_ROOT:$HOME/.dotnet/tools:$PATH"
+
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"
 "$SETUP_DIR/common/verifiers.sh"

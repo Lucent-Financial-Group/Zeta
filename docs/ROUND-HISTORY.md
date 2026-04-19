@@ -9,6 +9,34 @@ New rounds are appended at the top.
 
 ---
 
+## Round 31 — rest round (maintainer-called)
+
+Round 30 closed with the first fully-green gate in the
+repo's history — PR #6 landed with `build-and-test
+(ubuntu-22.04)` ✓ `build-and-test (macos-14)` ✓ `lint
+(semgrep)` ✓. Every prior round either lacked a gate or
+crossed it red.
+
+Aaron called a full round off for the entire roster:
+*"This is a huge win, please everyone take a round off."*
+Kenji honoured the call with the discipline of the rest —
+one WINS.md entry for the milestone, CURRENT-ROUND.md
+reclassified as rest, Kenji OFFTIME log updated, nothing
+else. No coding, no reviewer dispatch, no DEBT reshuffling.
+
+What round 31 teaches: a green gate is not the end of a
+shift; it is permission to rest before the next one. The
+milestone earned its own clean history slot by being merged
+as its own PR (#7) rather than absorbed into round-32's
+merge. Future rounds inherit the pattern — if the
+maintainer calls rest, rest lands as its own atomic record.
+
+Track A + Track B work (LawRunner `checkBilinear` + `checkSinkTerminal`;
+`packages.lock.json` + verifier SHA-pin + safety-clause-
+diff + `mise trust` + CodeQL) shifts to round 32.
+
+---
+
 ## Round 30 — nation-state + supply-chain threat-model elevation
 
 ### Anchor — bar raised to nation-state posture
@@ -481,7 +509,7 @@ landed; Kira + Rune code-reviewed per the new §20.
   `[<Extension>]` explanation in sample, extract
   `assignHarnessId` helper.
 - FsCheck law implementations at `Circuit.Build()` — own
-  DEBT entry; Tariq's plan in `memory/persona/tariq.md`.
+  DEBT entry; Tariq's plan in `memory/persona/tariq/NOTEBOOK.md`.
 - Other seat migrations to persona-notes folder layout
   (Kenji piloted; 6 remaining).
 
