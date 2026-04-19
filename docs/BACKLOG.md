@@ -233,6 +233,93 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **SonarAnalyzer.CSharp CLI adoption after findings
+  cleanup** (round 34 follow-up). Package pinned in
+  `Directory.Packages.props` this round; editor-only
+  integration landed via SonarLint VS Code extension
+  recommendation + `sonarlint.analysisExcludesStandalone`
+  in `.vscode/settings.json`. CLI integration via
+  `Directory.Build.props` `<ItemGroup>` deferred — a
+  test-build on round-34 enable surfaced 15+ real
+  findings (`TreatWarningsAsErrors` = true turns every
+  new warning into a build break):
+  - `S1905` — unnecessary cast to `(int, long)` in
+    `tests/Tests.CSharp/ZSetTests.cs` + `CircuitTests.cs`
+    (6 occurrences)
+  - `S6966` — `Send` should be `SendAsync`-awaited in
+    `tests/Tests.CSharp/CircuitTests.cs` (4 occurrences)
+  - `S2699` — assertion-less test case in
+    `tests/Core.CSharp.Tests/VarianceTests.cs`
+  - Plus 4+ more from the build-failure tail.
+
+  **Adoption path:** dedicated round with Kira
+  (harsh-critic) + csharp-expert skill running the
+  cleanup pass, then flip one ItemGroup line in
+  `Directory.Build.props`:
+
+  ```xml
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <PackageReference Include="SonarAnalyzer.CSharp" PrivateAssets="all" />
+  </ItemGroup>
+  ```
+
+  **Effort.** S-M — findings are real-code cleanups, not
+  scope changes. Each S-code finding is a rename or
+  await addition; zero design decisions.
+
+- [ ] **Tools-to-extensions parity skill** (round 34 ask
+  from Aaron). When Zeta adds a tool to the install
+  pipeline (mise runtime, uv-managed CLI, shellcheck,
+  bats, semgrep, SonarAnalyzer.CSharp, etc.), the
+  matching VS Code extension recommendation should land
+  in `.vscode/extensions.json` in the same round so
+  first-open contributors get the full IDE experience.
+  Today this sync is ad-hoc — the gap surfaced round 34
+  when shellcheck was already installed for months
+  before its extension joined the recommendations.
+
+  **Shape:** new capability skill
+  `tools-extensions-parity` (or merge into an existing
+  skill — candidates: `skill-gap-finder` for tool-vs-
+  extension gap detection, or a new
+  `ide-experience-auditor`). The skill runs a
+  one-directional audit: for every tool in
+  `tools/setup/manifests/*`, `.mise.toml` `[tools]`,
+  and CI lint jobs, verify the known VS Code
+  extension ID is in `.vscode/extensions.json`.
+  Outputs a list of missing recommendations + the
+  skill-creator-path change to land them.
+
+  **Coverage matrix (rough first cut):**
+  - `dotnet` → `ms-dotnettools.csharp` +
+    `ms-dotnettools.csdevkit` + `Ionide.Ionide-fsharp` ✓
+  - `bun` → `oven.bun-vscode` (missing)
+  - `uv` / `python` → `ms-python.python` +
+    `charliermarsh.ruff` (missing, needed when uv-tools
+    ships ruff as a lint gate)
+  - `java` → no editor required yet (JDK for Alloy jar
+    only); add if Zeta grows Java surface
+  - `markdownlint-cli2` → `davidanson.vscode-markdownlint` ✓
+  - `shellcheck` → `timonwong.shellcheck` ✓
+  - `shellformat` / shell scripts → `foxundermoon.shell-format` ✓
+  - `semgrep` → `semgrep.semgrep` ✓
+  - `actionlint` → `github.vscode-github-actions` ✓
+  - `bats` → `jetmartin.bats` ✓ (added round 34 ahead
+    of the install-script adoption so extension
+    recommends when bats itself lands)
+  - `SonarAnalyzer.CSharp` → `sonarsource.sonarlint-vscode` ✓
+  - `.editorconfig` → `editorconfig.editorconfig` ✓
+  - Alloy → `alloy.alloy` ✓
+  - TLA+ → `alygin.vscode-tlaplus` (missing)
+  - Lean 4 → `leanprover.lean4` (missing)
+
+  **Two obvious gaps right now:** Python/ruff, TLA+,
+  Lean 4. Land alongside this skill when it ships.
+
+  **Effort.** S for the first parity audit run + the
+  three missing recommendations; M if it becomes a
+  proper skill with automated scan logic.
+
 - [ ] **Shell testing and linting discipline (bats etc.)**
   (round 34 ask from Aaron). Zeta's install script now
   has real logic: `macos.sh` / `linux.sh` orchestration,

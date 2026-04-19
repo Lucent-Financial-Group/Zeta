@@ -31,4 +31,13 @@
     <DebugSymbols>true</DebugSymbols>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
+  <!-- SonarAnalyzer.CSharp deferred from CLI build (Directory.Build.props)
+       pending a cleanup pass on S1905 (unnecessary casts),
+       S6966 (Send vs SendAsync), S2699 (assertion-less tests).
+       TreatWarningsAsErrors + Sonar's real findings = 15+ CLI
+       breaks on round-34 enable. Editor-only integration (via
+       SonarLint VS Code extension) lands this round; CLI
+       adoption follows once the findings are cleared. BACKLOG
+       "SonarAnalyzer.CSharp CLI adoption after findings cleanup"
+       tracks the follow-through. -->
 </Project>

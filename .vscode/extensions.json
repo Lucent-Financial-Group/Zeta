@@ -13,6 +13,8 @@
     "tamasfe.even-better-toml",
     "semgrep.semgrep",
     "jnoortheen.xonsh",
-    "alloy.alloy"
+    "alloy.alloy",
+    "sonarsource.sonarlint-vscode",
+    "jetmartin.bats"
   ]
 }
