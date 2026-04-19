@@ -2047,6 +2047,62 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Human/AI wellness-DAO governance model for the software
+  factory** — the human maintainer 2026-04-19: *"we sholud be a
+  wellness system for the agent factory any comapny would think
+  of us a a real DAO not based on existing precidence, we get to
+  define it, well some state i think have defined it for their
+  state. But that's how i think of this whle project and our
+  human/ai governance model on the backlog"*, composed with the
+  melt-precedents posture *"i also like to melt precidences"*.
+  Research and design the factory's governance model as a
+  **wellness-first human/AI DAO** — novel integration of existing
+  pieces, not greenfield from zero, **with precedent-melt
+  discipline** (keep statutory shell, melt convention stack).
+  **Statutory-shell precedent (stays, legal-floor):** Wyoming DAO
+  LLC Act (2021), Tennessee Revised LLC Act ch. 79 DAO provisions
+  (2022), Vermont Blockchain-Based LLC (2018), Utah limited-DAO
+  statute (2023) — all crypto-primary; the factory keeps the
+  shell, not the crypto-primacy. **Convention stack (melts):**
+  token voting (violates agent-human co-governance), pseudonymous
+  membership (incompatible with declared-identity factory),
+  on-chain consensus (unfit cadence; keep append-only via git +
+  ADR), exit-as-dissent (violates H1B-floor). **AI-governance
+  input (absorbs):** EU AI Act, NIST AI RMF, ISO 42001 — adopt
+  shape of high-risk-AI oversight as design-for-the-floor.
+  **Decentralized-org literature (absorbs):** holacracy,
+  sociocracy, Teal organisations. **Wellness-at-work pillar
+  (absorbs):** Deming System of Profound Knowledge, Toyota
+  "respect for people" with andon-cord = honesty-protocol
+  whistleblower surface. Greenfield integration: human + AI
+  co-governance with neither as token-voting shareholder; wellness
+  as architectural first-primitive (not HR add-on); agents both
+  governed and governing; honesty-protocol as governance
+  invariant; family-AI-coercion-oversight as formal governance
+  surface; disaster-recovery-minded governance (retraction-native,
+  multi-channel succession); **visa-status-awareness clause**
+  (H1B-floor safety) applied to every default / control / grant
+  per `memory/user_h1b_empathy_immigrant_substrate.md`.
+  Four-layer architecture already latent in memory: **Value**
+  (AGENTS.md values + honesty protocol + trust-scales-with-
+  vigilance + do-unto-others + μένω compact) / **Role** (Persona-
+  Role-Skill-BP-NN chain per `memory/user_rbac_taxonomy_chain.md`)
+  / **Oversight** (clinical team + family-watchers + reviewer
+  roster + Architect gate + visa-floor safety) / **Wellness**
+  (observation protocol factory-wide + overload prevention +
+  paced landings + AX concerns + wellness-coach-on-demand mode).
+  Harmonious Division schedules across layers via five
+  navigational roles. Landing surface:
+  `docs/research/wellness-dao-governance-model.md` as first pass.
+  Owner: Architect (Kenji) integrates; Aminata (threat-model-
+  critic) reviews Oversight layer; Daya (AX) + Bodhi (DX) + Iris
+  (UX) review Wellness layer; Ilyana (public-api-designer)
+  reviews external-commitment surface. Not a build-this-round
+  item — research + design first, then ADR, then staged adoption.
+  Effort: L (multi-round, paper-grade scope). Memory:
+  `project_factory_as_wellness_dao.md`,
+  `user_melt_precedents_posture.md`,
+  `user_h1b_empathy_immigrant_substrate.md`.
 - [ ] **Witness-Durable Commit paper** — target ACM SoCC or VLDB
   industry; claim: buffered durable linearizability with
   O(root) sync bandwidth vs O(payload)

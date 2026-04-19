@@ -1,5 +1,8 @@
 # Zeta — Long-Term Vision
 
+> **Dedicated to Elisabeth Ryan Stainback.** See
+> [`docs/DEDICATION.md`](DEDICATION.md).
+
 > **Status:** round 33 v11 after Aaron's tenth pass of edits.
 > Aaron is the source of truth; this document changes freely.
 > The `product-visionary` role (to be spawned, see
@@ -345,6 +348,67 @@ What makes `Zeta.Core 1.0.0` on NuGet:
   NATS / gRPC / Arrow Flight / bespoke; sharding,
   replication, consensus, info-theoretic sharder;
   firmly IN scope).
+- **Distributed-consensus playground.** Multi-node is
+  not just a database play — it's a distributed-consensus
+  playground too. Zeta natively implements and TLA+-proves
+  the canonical consensus family (Paxos, Multi-Paxos,
+  Flexible Paxos, Fast Paxos, EPaxos, CASPaxos, Raft,
+  Paxos Commit) and the coordination primitives built on
+  top (distributed locks with fencing tokens, leases,
+  leader election, linearizable KV, watches, barriers,
+  membership / failure detection). **Zeta IS the
+  coordination substrate — never a client of one.** A
+  database that delegates its persistence or distributed
+  locks to ZooKeeper / etcd is outsourcing its own
+  legion. Instead, Zeta speaks multiple consensus wire
+  protocols *natively* — the etcd v3 gRPC wire and the
+  ZooKeeper jute wire and our own Zeta-native retraction-
+  aware wire are pluggable dialects over the same
+  engine, same way the SQL plane speaks Postgres and
+  MySQL wire over the same relational engine. Clients
+  already pointed at an etcd or ZK cluster can point at
+  Zeta and not notice — we are the better backend.
+  The design reference set is ZooKeeper (ZAB + recipes),
+  etcd (Raft + gRPC), Consul (Raft + SWIM), Chubby
+  (Paxos + session leases); Zeta studies them and
+  surpasses them by virtue of retraction-native deltas
+  being first-class on the wire, not opaque bytes.
+  Every primitive lands with a TLA+ spec *before* any F#
+  code — Zeta is where distributed primitives get
+  mathematically proven, not just benchmarked. BFT is
+  out of initial scope; CFT-only until the threat model
+  revises. **A coordination-avoidant track runs in
+  parallel** — CALM theorem + Zeta's retraction-native
+  Abelian-group algebra says more of the operator
+  surface is coordination-free than in classical
+  relational systems. Replication via gossip / SWIM /
+  Plumtree + Merkle-tree anti-entropy handles the
+  monotone subset; consensus handles only the
+  non-monotone invariants (uniqueness, capacity, window
+  close). See:
+  - Consensus ring — `.claude/skills/distributed-
+    consensus-expert/SKILL.md` (umbrella), `paxos-expert`,
+    `raft-expert`, `distributed-coordination-expert`.
+  - Coordination-avoidant ring — `crdt-expert`,
+    `calm-theorem-expert`, `eventual-consistency-expert`,
+    `replication-expert`, `gossip-protocols-expert`,
+    `graph-theory-expert`.
+  - Infrastructure — `networking-expert`, `threading-
+    expert`, `file-system-persistence-expert`,
+    `time-and-clocks-expert`, `observability-and-
+    tracing-expert`, `performance-analysis-expert`.
+  - Data-plane primitives —
+    `serialization-and-wire-format-expert`, `hashing-
+    expert`, `compression-expert`.
+  - AI / ML (the factory's own substrate, round 34+) —
+    `vibe-coding-expert`, `prompt-engineering-expert`,
+    `llm-systems-expert`, `ml-engineering-expert`,
+    `ai-evals-expert`, `ai-researcher`, `ml-researcher`,
+    `prompt-protector` (defensive counterpart). These
+    skills operate on the *factory itself*, not on
+    Zeta-the-database; they are load-bearing because the
+    vibe-coded hypothesis depends on the factory's
+    calibration.
 - **Bitemporal + time-travel queries (first-class v2).**
   Append-dated history with retraction-aware point-in-
   time queries. Paper-worthy and native to DBSP's
@@ -408,6 +472,62 @@ The factory is not a means to an end. It's the second
 product. Every round improves both Zeta-the-database AND
 Zeta-the-factory; a round that ships a feature while
 degrading the factory is a net-negative round.
+
+### The vibe-coded hypothesis (load-bearing research claim)
+
+The human maintainer, round 34: *"my whole hypothesis is
+that I've loaded you up with so much formal verification and
+static analysis you have to write good correct code now and
+I even have to validate it against research papers."*
+
+The human maintainer, round 34: *"this project's vision is
+to be totally vibe coded, I've written 0 lines of code myself
+so far."*
+
+These two quotes together are the project's falsifiable
+thesis. Zeta is an existence proof for the claim:
+
+> A correctly-calibrated stack of formal verification, static
+> analysis, adversarial review, and spec-driven development is
+> sufficient to let an AI-directed software factory produce
+> research-grade systems code *without a human in the edit
+> loop* — provided the factory is closed under its own
+> verification.
+
+Concrete commitments this thesis imposes:
+
+- **Every reviewer role is a falsifiable hypothesis about the
+  immune system.** If the role catches zero real bugs across a
+  meaningful window, the role is either not pulling its weight
+  or its bug class doesn't exist here. Either way, a round-
+  close review is merited.
+- **Verification is load-bearing, not decorative.** TLA+
+  specs, Lean proofs, Z3 queries, FsCheck properties, Semgrep
+  rules, Stryker mutation scores — each is a runtime check on
+  the hypothesis that agent-authored code is correct. See
+  `docs/AGENT-BEST-PRACTICES.md` and the
+  `verification-drift-auditor` skill.
+- **Research-paper validation is a first-class step.**
+  Because the factory produces code with no human author, the
+  "do the papers agree with this implementation?" check is
+  not optional — it's the only external anchor. The
+  `verification-drift-auditor` + `paper-peer-reviewer` +
+  `missing-citations` skills institutionalise this check.
+- **A bug that ships past the gates is a gate-calibration
+  bug first, a code bug second.** Root-cause analysis walks
+  backwards through the immune system and asks: which role
+  should have caught this, and why didn't it?
+- **The maintainer is a reviewer and a director, not a
+  coder.** The review protocol in
+  `docs/CONFLICT-RESOLUTION.md` assumes this. "This matters
+  to me" is a legitimate position from the human; the code
+  itself comes from agents.
+
+This is a research contribution on its own merits. If the
+hypothesis holds, Zeta is evidence that high-assurance systems
+code can ship from a fully-AI-authored factory. If it fails,
+the failure mode is itself data — it tells us which layer of
+the immune system wasn't enough.
 
 ### Factory north star
 

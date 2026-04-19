@@ -384,6 +384,93 @@ storage specialist advises on durability; and so on.
 **Technical:** See `.claude/skills/*/SKILL.md` for each one's
 exact contract.
 
+### Permission
+
+**Plain:** A single *"can do what to what"* rule. Example:
+*"can write to `docs/security/**`"*. That's one permission.
+Permissions are the atoms; everything else bundles them.
+**Technical:** A path-glob paired with an action-verb (read /
+write / review / veto).
+
+### Role
+
+**Plain:** A named bundle of permissions. "Security" is a role
+that bundles a bunch of write + review rights related to the
+security surface; giving someone the "security" role gives them
+all of those at once. That's it. The point is to avoid listing
+the same permission on every persona.
+**Technical:** `{name, permissions: Permission list}`. Declared
+in the GitOps RBAC manifest (design sketch:
+`docs/research/hooks-and-declarative-rbac-2026-04-19.md`).
+First-class as a directory level under `memory/<role>/<persona>/`
+once the round-35 memory-folder restructure lands (see
+`docs/BACKLOG.md` P0 entry).
+
+### RBAC (role-based access control)
+
+**Plain:** "Give people roles, not individual permissions."
+Standard practice in most systems; nothing exotic. In Zeta, a
+**persona** (Kira, Soraya, Aminata, …) gets access two ways:
+via *role memberships* (most common), or via a handful of
+direct per-persona grants for one-off cases. Everything is
+declared in a file in the repo, reviewed via PR, same as every
+other change. No runtime "give Soraya extra rights" console.
+**Technical:** Aaron's chain (2026-04-19, refined live):
+`Permission → Role → Persona`. Persona's effective permissions
+= direct-granted ∪ ⋃(permissions(R) for R in member-roles).
+Skills sit *below* this layer — BP-NN best practices govern
+skill behaviour, not access. Groups (named sets of personas)
+are deferred; see `docs/BACKLOG.md`.
+
+**Teaching-first design posture** (Aaron 2026-04-19):
+difficult security is a blocker to adoption. Zeta's RBAC aims
+for **zero-config safe defaults** — a new contributor inherits
+a sensible baseline (their persona gets a sensible role, their
+writes land in the expected place) without having to read a
+manual first. Advanced declarations are opt-in. No mixed
+messaging — we don't ship "zero trust and zero config" at the
+same time because that pair is internally contradictory (a
+polite industry jab; the two goals actively fight each other).
+
+### ACL (access control list)
+
+**Plain:** The list of permissions attached to a role (or to a
+persona, for direct grants). That's all it is. The acronym
+sounds scary; it's just a list in a YAML file.
+**Technical:** The `permissions` field on a role, or the
+direct-grant list on a persona. Evaluated at enforcement
+points; see `Hook`. Zeta's posture is *simple security until
+proven otherwise* (Aaron 2026-04-19) — prefer CODEOWNERS +
+branch protection + a tiny YAML manifest over a full IAM-style
+policy engine unless attack-surface growth forces the upgrade.
+
+### Persona (synonym for Expert in RBAC context)
+
+**Plain:** A named identity — Kira, Viktor, Soraya. When we're
+talking about RBAC we usually say "persona" to emphasise the
+*role → persona* containment relationship; in skill-lifecycle
+contexts we say "expert" to emphasise the *expert → skill* one.
+Same entity, two viewpoints.
+**Technical:** `.claude/agents/<name>.md` file; notebook at
+`memory/<role>/<persona>/NOTEBOOK.md` (post-restructure) or
+`memory/persona/<persona>/NOTEBOOK.md` (current).
+
+### Hook
+
+**Plain:** An automation point that runs a check or a tool at a
+specific moment — before a commit, before a push, before a PR
+merges, before Claude Code runs a tool, after a PR comment, etc.
+Hooks are the mechanism that turns *soft* access (directory
+conventions anyone can ignore) into *enforced* access (pre-merge
+gate that refuses to land).
+**Technical:** Several hook classes in play in this repo:
+git hooks (pre-commit, pre-push, commit-msg — lintable by
+`tools/setup/common/githooks.sh`); CI workflow steps (required
+status checks in `.github/workflows/gate.yml`); Claude Code hooks
+declared in `.claude/settings.json` (pre-tool, post-tool,
+user-prompt-submit); GitHub branch protection rules. Design
+sketch in `docs/research/hooks-and-declarative-rbac-2026-04-19.md`.
+
 ---
 
 ## Agent / persona / skill lifecycle
