@@ -56,6 +56,68 @@ within each priority tier.
 
 ## Research projects
 
+- [ ] **Overnight autonomous factory operation via scheduled
+  hygiene tasks.** Vision: while the human maintainer sleeps,
+  the factory runs advisory hygiene passes and queues findings
+  for morning triage — no code lands without a human review
+  on wake. Two-phase research:
+
+  **Phase 1 — Claude-specific prototype** (round-35+). The
+  Claude Code harness exposes an MCP-backed `scheduled-tasks`
+  server (see `.claude/scheduled_tasks.lock` in-session proof)
+  with `create_scheduled_task` / `list_scheduled_tasks` /
+  `update_scheduled_task` tools plus a `schedule` skill. Design
+  which hygiene passes make sense as cron-driven scheduled
+  tasks, NOT as code-landing tasks:
+  - Safe candidates: `factory-audit`, `factory-balance-auditor`,
+    `skill-tune-up`, `skill-gap-finder`,
+    `project-structure-reviewer`, `package-auditor` (Malik's
+    audit), CVE feed scan (Mateo's scouting), markdown + link
+    drift scan. All advisory; outputs land as BACKLOG entries
+    / DEBT flags / findings reports.
+  - Unsafe (do NOT schedule): any code-landing skill,
+    `bug-fixer`, anything that pushes to main, anything that
+    closes a PR, anything that modifies specs or proofs. The
+    reviewer floor is a live-human construct; automation does
+    not substitute.
+  - Scheduling shape: one cron per safe pass, cadence matching
+    the pass's documented review cadence (e.g., `skill-tune-up`
+    weekly; `package-auditor` weekly; CVE feed scan daily;
+    `factory-balance-auditor` every two weeks). Output is a
+    finding report written to `docs/nightly/<YYYY-MM-DD>-
+    <skill>.md` or appended to BACKLOG with a `nightly:` tag so
+    the Architect can grep-triage in the morning.
+  - Safety rails: every scheduled prompt starts "READ-ONLY
+    AUDIT; DO NOT LAND CODE; DO NOT PUSH; WRITE FINDINGS TO
+    <path>" so a misconfigured task can't escape.
+  - Human sign-off before any task is created. Aaron reviews
+    the scheduled-task design doc first; each task gets listed
+    with its cron expression, scope, and write path.
+
+  **Phase 2 — cross-harness portability** (post-Phase 1).
+  Scheduled-task features vary by harness (Cursor, Windsurf,
+  Aider, Cline, Continue, Codex may or may not have this; the
+  Claude-Desktop / Claude-Code "Routines" UI is a separate
+  user-facing feature distinct from the MCP). Research:
+  - Which harnesses support scheduled / cron / routine
+    triggers natively?
+  - For harnesses without, what's the portable shim — GitHub
+    Actions schedule-triggered workflows that `gh`-invoke a
+    harness-specific agent CLI?
+  - Does the factory need a generic "schedule-me" skill
+    interface that each harness implements its own way (same
+    shape as the cross-harness-mirror-pipeline entry in this
+    BACKLOG)?
+
+  **Effort.** Phase 1: 1 round for design doc + 1 round for
+  first scheduled task landing with one week of observation
+  before adding more. Phase 2: open-ended research project.
+  Advisory authority: Dejan (automation-adjacent) +
+  prompt-protector (every scheduled prompt is an injection
+  surface if the output path isn't tight). Architect
+  integrates; human maintainer signs off on each scheduled
+  task individually.
+
 - [ ] **Retraction-safe semi-naïve LFP — gap-monotone variant**.
   `docs/research/retraction-safe-semi-naive.md`. Top-2 candidates:
   (1) signed-delta ("gap-monotone") — 10-14 engineer-days, needs a
