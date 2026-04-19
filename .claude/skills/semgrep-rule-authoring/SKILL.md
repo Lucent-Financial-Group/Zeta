@@ -93,8 +93,7 @@ third time, write the rule.
 - **`patterns`** (top-level list) — logical-AND of the
   sub-clauses.
 
-<!-- markdownlint-disable-next-line MD020 -->
-## `languages: [generic]` for F#
+## `languages: [generic]` for `F#`
 
 Semgrep's F# support is limited; most F# rules use
 `languages: [generic]`. Generic mode is text-based with
