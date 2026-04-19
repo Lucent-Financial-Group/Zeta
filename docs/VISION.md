@@ -1,6 +1,6 @@
 # Zeta — Long-Term Vision
 
-> **Status:** round 33 v5 after Aaron's fourth pass of edits.
+> **Status:** round 33 v6 after Aaron's fifth pass of edits.
 > Aaron is the source of truth; this document changes freely.
 > The `product-visionary` role (to be spawned, see
 > `docs/BACKLOG.md`) will steward it once it exists.
@@ -159,18 +159,37 @@ What makes `Zeta.Core 1.0.0` on NuGet:
   consumers should never hit a "this feature not
   implemented" wall. Other ORMs (Dapper, NHibernate,
   LLBLGen) follow the EF Core pattern.
-- **PostgreSQL wire protocol server (v1-or-early-post-v1).**
-  Zeta speaks the PostgreSQL wire protocol so existing
-  tools (pgAdmin, DBeaver, psql, Npgsql-via-EF) connect
-  without modification. Aaron: "we will need some UI
-  that can connect to it like SSMS or PostgreSQL Admin,
-  so we will have to build our own (which we will
-  eventually do) support an existing protocol so
-  existing tools can connect." This is a server mode
-  on top of the embedded library, not a replacement;
-  Zeta keeps the in-process F# surface AND exposes a
-  wire-protocol endpoint. Significant scope — may
-  slip from v1 to early post-v1 depending on design
+- **Pluggable wire-protocol layer (v1-or-early-post-v1).**
+  Aaron round 33: "can we make the wire protocol pluggable
+  and we could just support MySQL too to make sure we can
+  support [multiple] and have our own variant so we can
+  start getting support for UIs with our protocol which
+  will be much better." A protocol-plugin abstraction sits
+  between the query IR and the network: each plugin is a
+  small adapter that translates one wire format
+  (frontend/backend message shape, auth, error mapping,
+  connection state) into Zeta's internal query surface.
+  Three initial plugins:
+  - **PostgreSQL plugin** — pgAdmin, DBeaver, psql,
+    Npgsql-via-EF all connect unmodified.
+  - **MySQL plugin** — MySQL Workbench, Connector/NET,
+    Pomelo-via-EF, Azure Data Studio all connect.
+    Second plugin proves the abstraction isn't
+    PostgreSQL-shaped by accident.
+  - **Zeta-native plugin** — our own protocol designed
+    around retraction-native deltas, bitemporal queries,
+    stored-procedure-as-durable-Rx semantics. UIs that
+    support it get first-class Zeta features (time-
+    travel slider, delta streaming, Rx stored-proc
+    inspection) that PostgreSQL/MySQL protocols can't
+    express. Specification work feeds the eventual
+    Zeta admin UI.
+
+  The protocol layer is a server mode on top of the
+  embedded library, not a replacement; Zeta keeps the
+  in-process F# surface AND exposes one-or-more wire-
+  protocol endpoints simultaneously. Significant scope —
+  may slip from v1 to early post-v1 depending on design
   round outcome.
 - **F# DSL reimagining SQL for the modern era (v1).** The
   existing computational-expression sketch (`DSL.fs`,
