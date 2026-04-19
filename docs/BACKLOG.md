@@ -137,19 +137,34 @@ within each priority tier.
   then `openspec/specs/f-dsl-surface/` once shape
   stabilizes.
 
-- [ ] **PostgreSQL wire protocol server.** Aaron round 33:
-  "support an existing protocol so existing tools can
-  connect." pgAdmin, DBeaver, psql, Npgsql (via EF) all
-  speak PostgreSQL's wire protocol. Zeta would implement
-  enough of the frontend/backend message protocol (auth,
-  simple query, extended query, COPY) to appear as a
-  PostgreSQL server. Material precedent: CockroachDB,
-  Materialize, YugabyteDB, Apache AGE — all run non-
-  Postgres engines behind Postgres-shaped endpoints.
-  v1-or-early-post-v1 depending on design round: needs
-  auth shape, SSL/TLS, connection pooling posture,
-  protocol-level error mapping to DBSP Result types.
-  Output: `docs/research/pg-wire-protocol-design.md`.
+- [ ] **Pluggable wire-protocol layer with PostgreSQL +
+  MySQL + Zeta-native plugins.** Aaron round 33: "can
+  we make the wire protocol pluggable and we could just
+  support MySQL too to make sure we can support
+  [multiple] and have our own variant so we can start
+  getting support for UIs with our protocol which will
+  be much better." Design the protocol-plugin
+  abstraction first; one adapter per protocol (auth,
+  message encoding, error mapping, connection-state
+  machine). Initial plugins:
+  - PostgreSQL plugin: pgAdmin / DBeaver / psql /
+    Npgsql-via-EF compatibility. Precedent:
+    CockroachDB, Materialize, YugabyteDB, Apache AGE.
+  - MySQL plugin: MySQL Workbench / Connector/NET /
+    Pomelo-via-EF / Azure Data Studio compatibility.
+    Second plugin proves the abstraction isn't
+    PostgreSQL-shaped by accident.
+  - Zeta-native plugin: designed around retraction-
+    native deltas, bitemporal queries, durable-Rx
+    stored procedures. Future UIs that speak it get
+    first-class Zeta features (time-travel slider,
+    delta streaming, Rx inspection) the emulated
+    protocols can't express.
+
+  v1-or-early-post-v1 depending on design round
+  outcome. Output: `docs/research/pluggable-wire-
+  protocol-design.md` first, then per-plugin design
+  docs.
 
 - [ ] **Own admin UI (far future).** Aaron round 33: "we
   will need some UI that can connect to it like SSMS or
