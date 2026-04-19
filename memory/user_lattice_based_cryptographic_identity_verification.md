@@ -40,6 +40,7 @@ post-quantum by default).
 ## Lattice primitives relevant to identity verification
 
 ### Signatures
+
 - **Dilithium / ML-DSA** — Fiat-Shamir over lattice, small
   public keys (1312-2592 bytes), small signatures (2420-4595
   bytes), fast.
@@ -49,10 +50,12 @@ post-quantum by default).
 - **Both standardized** by NIST FIPS 204 / 206.
 
 ### Key encapsulation (for session establishment)
+
 - **Kyber / ML-KEM** — Module-LWE, NIST FIPS 203. Session
   keys for identity-authenticated channels.
 
 ### Identity-based encryption (IBE)
+
 - **Agrawal-Boneh-Boyen 2010** — first efficient lattice IBE.
   Identity IS the public key; a master-secret-holder derives
   identity-private-keys.
@@ -62,6 +65,7 @@ post-quantum by default).
   are natural on HIBE.
 
 ### Zero-knowledge proofs (ZK) over lattices
+
 - **LatticeFold** (Boneh-Chen 2024) — recent folding scheme
   for lattice SNARKs.
 - **Ligero / Ligero++** — transparent ZK with lattice flavor.
@@ -72,6 +76,7 @@ Role: consent attestations that prove "I am authorized for
 lens X" without revealing which party I am.
 
 ### Fully homomorphic encryption (FHE)
+
 - **BFV / BGV** (integer arithmetic) — Fan-Vercauteren 2012,
   Brakerski-Gentry-Vaikuntanathan 2014.
 - **CKKS** (approximate real arithmetic) — Cheon-Kim-Kim-Song
@@ -137,7 +142,7 @@ ledger (opposite of retraction-native). Better:
   lattice-PQC assumptions added.
 - **Personas** — Nazar (security-operations) + Mateo
   (security-researcher) + Aminata (threat-model-critic)
-  + Nadia (prompt-protector) are the review panel.
+  - Nadia (prompt-protector) are the review panel.
 
 ## Composition with prior
 

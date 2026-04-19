@@ -292,8 +292,8 @@ design choice against it.
 - **Latency budget.** First-token latency (streaming) +
   total-response latency + tool-call round-trips.
 - **Cache-hit rate target.** > 60% on stable prefixes.
-- **Cost per request.** = input_tokens * input_price +
-  output_tokens * output_price + tool_call_overhead.
+- **Cost per request.** = input_tokens *input_price +
+  output_tokens* output_price + tool_call_overhead.
 
 Tracked via `observability-and-tracing-expert`'s trace
 format.

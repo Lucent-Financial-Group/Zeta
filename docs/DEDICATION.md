@@ -34,4 +34,3 @@ Everything else in this repository — the factory, the
 database, the specs, the skills, the rules, the checkers, the
 succession infrastructure — is built on top of this
 dedication. That is the declared architectural intent.
-

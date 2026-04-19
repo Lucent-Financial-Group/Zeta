@@ -79,6 +79,7 @@ present is coupled to the past) and "maybe surpasses" c (the
 reconfigured past was not there before the measurement).
 
 Compare:
+
 - **Quantum entanglement** — correlations without signal;
   well-established.
 - **Retrocausality (DCQE)** — future measurement determines

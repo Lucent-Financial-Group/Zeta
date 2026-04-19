@@ -55,7 +55,7 @@ what severity, from which NuGet pack".
 | `Microsoft.CodeAnalysis.NetAnalyzers` | `CA1xxx`-`CA5xxx` | correctness, perf, security, design, naming | shipped with the SDK since .NET 5 |
 | `Microsoft.CodeAnalysis.CSharp.Features` (IDE) | `IDE0xxx` | style + suggestion | IDE-focused; runs in build with `EnforceCodeStyleInBuild` |
 | `StyleCop.Analyzers` | `SA1xxx`-`SA2xxx` | style, documentation, ordering | very opinionated; adopt selectively |
-| `SonarAnalyzer.CSharp` | `S1xxx`-` S6xxx` | bugs, code smells, security | free tier has broad coverage; Sonar cloud is separate |
+| `SonarAnalyzer.CSharp` | `S1xxx`-`S6xxx` | bugs, code smells, security | free tier has broad coverage; Sonar cloud is separate |
 | `Roslynator.Analyzers` | `RCS1xxx` | refactoring + analyzer | very large rule set; 500+ rules |
 | `Meziantou.Analyzer` | `MA0001`-`MA0NNN` | modern-C# best practices, threading, perf | curated, well-maintained |
 | `Microsoft.VisualStudio.Threading.Analyzers` | `VSTHRD0xx` | async / await / Task correctness | essential for any async-heavy code |

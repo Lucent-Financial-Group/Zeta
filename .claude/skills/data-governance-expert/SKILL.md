@@ -78,6 +78,7 @@ analytics warehouse.
 ## Retention and deletion
 
 Each dataset has:
+
 - **Retention duration.** (30 days / 1 year / 7 years /
   indefinite.)
 - **Deletion trigger.** (Time-based / event-based / request-
@@ -160,6 +161,7 @@ collecting the data. Retrofitting is expensive.
 
 Data Protection Impact Assessment (GDPR Art. 35) required
 for high-risk processing. Key elements:
+
 - Necessity & proportionality.
 - Risks to data subjects.
 - Mitigations.
@@ -172,6 +174,7 @@ Zhamak Dehghani 2019 — data as a product, owned by the
 domain, governed federatedly.
 
 Four principles:
+
 1. Domain ownership.
 2. Data as a product.
 3. Self-serve platform.

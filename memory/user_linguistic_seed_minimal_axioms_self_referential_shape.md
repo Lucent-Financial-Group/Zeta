@@ -121,6 +121,7 @@ The SEED's own shape is a separate, smaller structure that
 grows INTO E8.
 
 E8 candidates for the KERNEL — confirmed:
+
 - E8 Lie group, 248-dimensional, rank 8
 - 240 roots, 8 simple roots
 - Dynkin diagram E8 (8 nodes in a specific tree pattern)

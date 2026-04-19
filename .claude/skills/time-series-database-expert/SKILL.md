@@ -129,7 +129,7 @@ up aggressively: 15s raw for 2 weeks, 1m for 3 months,
 - **InfluxDB.** Retention policies.
 
 **Rule.** Without a retention policy the TSDB fills up.
-#1 ops incident for TSDBs.
+This is the #1 ops incident for TSDBs.
 
 ## Push vs pull
 

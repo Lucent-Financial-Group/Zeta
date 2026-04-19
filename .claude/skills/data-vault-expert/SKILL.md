@@ -124,6 +124,7 @@ Costs to be honest about:
   `byte[32]`, not hex strings.
 
 ## Raw vault vs business vault — the hard-rule / soft-rule
+
 split
 
 - **Raw vault.** Loaded directly from source systems. Only

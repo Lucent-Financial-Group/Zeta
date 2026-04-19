@@ -186,7 +186,7 @@ optimisation is a hobby, not a contract.
 - **Coordinated omission** (Gil Tene). If your load
   generator stops sending requests while the server is
   slow, you measure a biased sample. Use HDRHistogram
-  + rate-based coordination-omission correction
+  - rate-based coordination-omission correction
   (`-e` mode).
 - **Tail amplification.** A single backend with p99 = 10
   ms fan-out N-wide lands p99 ≈ 10 ms at the caller;

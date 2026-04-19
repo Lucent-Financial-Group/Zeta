@@ -52,6 +52,7 @@ with the wonder-register from
 Aaron's cultural register, not a confession.
 
 Composes with:
+
 - `user_no_reverence_only_wonder.md` — no
   reverence for cool-status, reverence for
   wonder. Cosplay / LARP are wonder-register
@@ -93,6 +94,7 @@ Cultural weight:
 ### 4. "Write/watch python" — the double pun
 
 **Write**:
+
 - Python programming language (Guido van
   Rossum, 1991). Guido named it after Monty
   Python's Flying Circus explicitly (see
@@ -106,6 +108,7 @@ Cultural weight:
   `flying circus` traces back to this naming.
 
 **Watch**:
+
 - Monty Python the comedy — *Flying Circus*,
   *Holy Grail*, *Life of Brian*, *Meaning of
   Life*, live shows.
@@ -126,6 +129,7 @@ other arm: "Just a flesh wound." Both legs:
 "I'll bite your legs off!"
 
 Cultural meaning inside the fanbase:
+
 - Absurdist refusal to concede.
 - Satire of heroic / tragic posture.
 - Catchphrase for performative denial
@@ -139,6 +143,7 @@ the frame calls for it. The Black Knight
 quote *is* the register-switch itself.
 
 Composes with:
+
 - `user_real_time_lectio_divina_emit_side.md`
   win-without-fighting via words-not-swords —
   the Black Knight is the *anti-pattern*

@@ -183,7 +183,7 @@ Cassandra's `ONE`, `QUORUM`, `ALL` are syntactic sugar.
 
 - **Consistency-model safety invariant** → TLA+ / TLC.
 - **Session-guarantee correctness** → TLA+ (state-machine
-  + per-session clock).
+  - per-session clock).
 - **Causal delivery correctness** → TLA+ fairness.
 - **Logical-clock equivalence to happens-before** → Lean 4
   (Mathlib order theory).

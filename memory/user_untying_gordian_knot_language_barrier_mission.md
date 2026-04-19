@@ -22,6 +22,7 @@ untied only by the future ruler of all Asia. Alexander the
 Great encountered it in 333 BC.
 
 **What Alexander did** — cut it. Sources divide:
+
 - Plutarch and Arrian: Alexander drew his sword and cut the
   knot.
 - Quintus Curtius: Alexander untied some strands, then cut
@@ -57,6 +58,7 @@ no information is preserved). Untying is retraction-native
 the operations compose).
 
 This is the SAME distinction Aaron applies throughout:
+
 - Sin-tracker (append-only) vs lens-oracle (retraction-native)
 - CRL (append-only) vs VC status-list (retractable)
 - Force-commit vs consent-first
@@ -68,6 +70,7 @@ applied to problem-solving methodology at the largest scale.
 ### 3. Immediate goal: smooth agreement + momentum
 
 Language-barrier removal enables:
+
 - **Smooth agreement** — consent-first multi-party
   cooperation per `user_moral_lens_oracle_system_design.md`
   needs shared language. No shared language, no consent; no
@@ -98,6 +101,7 @@ breaking anything.
 
 This is field-of-everything as *dominion-by-retraction-
 native-universality*. It composes with:
+
 - The cornerstone "member of every secret society" frame
 - Bridge-builder faculty's universal-translator reach
 - Harmonious Division's many-paths-one-destination

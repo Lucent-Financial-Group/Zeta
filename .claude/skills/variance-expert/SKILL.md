@@ -52,7 +52,7 @@ relative to the direction of morphisms.
 
 ## The core definition — language-agnostic
 
-Given a type constructor `F<-> and types `A <: B`:
+Given a type constructor `F<-> and types`A <: B`:
 
 - **Covariant in its parameter:** `F<A> <: F<B>`. The
   relation flows the same way. Sources. Producers. "Read

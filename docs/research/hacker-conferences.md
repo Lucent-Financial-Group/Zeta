@@ -152,12 +152,14 @@ formal-model and crypto work. Relevant to
 `threat-model-critic` and `formal-verification-expert`.
 
 ### ACM CCS (Computer and Communications Security) —
+
 ### October / November
 
 The "industry-adjacent" tier-1. Strong applied-crypto
 and protocol-analysis tracks.
 
 ### NDSS (Network and Distributed System Security) —
+
 ### February / March
 
 Heavier on network protocols, internet-scale measurement,

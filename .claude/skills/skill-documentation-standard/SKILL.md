@@ -150,6 +150,7 @@ three reasons:
   capability discipline.
 
 Acceptable:
+
 - `"Capability skill. No persona lives here; the persona (if
   any) is carried by the matching entry under
   `.claude/agents/`."`
@@ -157,6 +158,7 @@ Acceptable:
   `data-vault-expert`").
 
 Not acceptable:
+
 - `"Persona name: Foo."`
 - `"The persona (Foo) lives on ..."`
 - `"Naled tone:"`, `"Kenji's perspective:"`.

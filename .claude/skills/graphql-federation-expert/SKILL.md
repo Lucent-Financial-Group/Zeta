@@ -113,6 +113,7 @@ don't run new federation on Node Gateway in 2026.
 - **Inigo Registry.** Commercial.
 
 Features:
+
 - Composition check on PR.
 - Contract checks against operation corpus.
 - Schema change notifications.
@@ -160,6 +161,7 @@ unwound since. It's coordination, not decomposition.
 ## V1 vs V2
 
 Federation v2 (2022) changes:
+
 - `@shareable` replaces v1's implicit-shared.
 - `@override` for field migration.
 - `@interfaceObject` for cross-subgraph interfaces.

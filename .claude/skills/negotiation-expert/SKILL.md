@@ -75,12 +75,14 @@ When a negotiation has N issues and each party values them
 differently, trade across.
 
 Example (upstream contribution):
+
 - **We care about.** Code landing under MIT; attribution
   preserved; merged before our paper.
 - **Maintainer cares about.** Test-coverage match; API
   symmetry with existing module; maintenance commitment.
 
 Logroll:
+
 - We concede: adopt their API shape; add 30 more tests.
 - They concede: merge on our timeline; keep our MIT
   attribution.
@@ -94,6 +96,7 @@ issue, widen it.
 ## Information economics
 
 What to reveal, what to hold:
+
 - **Reveal interests freely.** Trust builds; integrative
   options emerge.
 - **Hold BATNA carefully.** Revealing it caps your upside.
@@ -158,6 +161,7 @@ translator-of-intent, not just of language.
 ## Negotiating with AI agents
 
 Emerging area (2024-26):
+
 - LLM-to-LLM negotiation benchmarks (Diplomacy-style
   experiments — CICERO, Meta 2022).
 - LLM-to-human negotiation research (persuasion,

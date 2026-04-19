@@ -144,6 +144,7 @@ cleanest fix is an org move.
 ## Agile governance
 
 Lightweight, iterative:
+
 - Short decision cycles.
 - Decisions at the team level.
 - Lightweight ADRs.
@@ -157,6 +158,7 @@ external stakeholders.
 ## Regulated overlay
 
 SOX, HIPAA, GDPR, PCI-DSS, FDA add governance constraints:
+
 - Segregation of duties (SOX).
 - Access audit (HIPAA).
 - Privacy impact assessments (GDPR).

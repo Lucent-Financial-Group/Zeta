@@ -199,18 +199,18 @@ Add `causal : ∀ s t n, (∀ k, k ≤ n → s k = t k) → f s n = f t n`.
 *"A linear operator's output at tick n depends only on input
 ticks 0…n."*
 
-- B2 closes via `causal` + `zInv_zero` at `n = 0`:
+* B2 closes via `causal` + `zInv_zero` at `n = 0`:
   `f (z⁻¹ s) 0` depends on `(z⁻¹ s) 0 = 0`, and `f` applied to
   the all-zero-at-prefix input gives `0` at tick 0 by `map_zero`.
   At `n = k+1`, use `causal` to match `f (z⁻¹ s) (k+1)` with
   the value determined by inputs at ticks 0…k+1 of `z⁻¹ s`,
   which are `0, s 0, s 1, …, s k`.
-- **Fit for DBSP.** Every first-class DBSP operator
+* **Fit for DBSP.** Every first-class DBSP operator
   (`D`, `I`, `z⁻¹`, lifted relational operators, retraction-
   aware map/filter) is causal by construction. Bilinear
   operators (join, cartesian) are causal on each argument
   given the other is held. Good fit.
-- **Cost.** One extra axiom; proofs for concrete operators need
+* **Cost.** One extra axiom; proofs for concrete operators need
   a short causality proof each, but these are usually `rfl` or
   one-step induction.
 
@@ -218,13 +218,13 @@ ticks 0…n."*
 
 Add `time_invariant : f ∘ z⁻¹ = z⁻¹ ∘ f`.
 
-- B2 becomes trivial — this axiom **is** the B2 statement.
-- But: begs the question. We would be asserting what we are
+* B2 becomes trivial — this axiom **is** the B2 statement.
+* But: begs the question. We would be asserting what we are
   trying to prove. Adopting this as an axiom is fine only if
   we are willing to stop claiming B2 is a *theorem*. Most DBSP
   writeups treat commutation-with-delay as a definition of
   "linear stream operator", which would justify this choice.
-- **Cost.** Philosophically light, but downgrades the proof
+* **Cost.** Philosophically light, but downgrades the proof
   status of B2 from theorem to axiom. Paper-grade readers of
   the proof artifact may object.
 
@@ -233,7 +233,7 @@ Add `time_invariant : f ∘ z⁻¹ = z⁻¹ ∘ f`.
 Add `pointwise : ∃ phi : ℕ → (G → H), ∀ s n, f s n = phi n (s n)`
 where each `phi n` is an `AddMonoidHom G H`.
 
-- B2 closes: `f (z⁻¹ s) n = phi n ((z⁻¹ s) n)` and
+* B2 closes: `f (z⁻¹ s) n = phi n ((z⁻¹ s) n)` and
   `z⁻¹ (f s) n = (f s) (n-1) = phi (n-1) (s (n-1))`.
   Then case-split on `n = 0` (both sides zero via `phi 0 0 =
   0` from `AddMonoidHom`) and `n = k+1` (substitute
@@ -242,7 +242,7 @@ where each `phi n` is an `AddMonoidHom G H`.
   **same** `phi` must be used to close the equality — so the
   axiom must additionally assert `phi n = phi 0` for all `n`
   (i.e., `f s n = phi (s n)` with a *single* homomorphism).
-- **Fit for DBSP.** `D`, `I`, `z⁻¹` themselves are **not**
+* **Fit for DBSP.** `D`, `I`, `z⁻¹` themselves are **not**
   pointwise — `D s n = s n - s (n-1)` uses two input ticks.
   This axiom cuts out the operators whose commutation we
   actually care about. Poor fit.
@@ -287,16 +287,16 @@ theorem IsPointwiseLinear.toIsLinear {f} (h : IsPointwiseLinear f) :
 
 Under this shape:
 
-- `chain_rule` and `B2` are stated once, against `IsLinear`
+* `chain_rule` and `B2` are stated once, against `IsLinear`
   (causal). No duplication.
-- Strictly-pointwise operators (scalar `map (· * c)` on Z-sets,
+* Strictly-pointwise operators (scalar `map (· * c)` on Z-sets,
   lifted `AddMonoidHom` over Z-set keys) get the
   `IsPointwiseLinear` instance for free and unlock future
   pointwise-specific rewrite lemmas without affecting the core
   proof.
-- `D`, `I`, `z⁻¹` carry `IsLinear` (causal) only — no pressure
+* `D`, `I`, `z⁻¹` carry `IsLinear` (causal) only — no pressure
   to fake pointwise-ness. Correct by the DBSP literature.
-- Time-invariance (candidate (b)) stays rejected — adopting it
+* Time-invariance (candidate (b)) stays rejected — adopting it
   as an axiom begs the B2 question; time-invariance is a
   *consequence* of causality for specific operators, not an
   axiom to assume.
@@ -378,10 +378,10 @@ to Trial when B2 closes and to Adopt when `chain_rule` closes.
 
 ## Reference patterns
 
-- `tools/lean4/Lean4/DbspChainRule.lean` — the proof file
-- `docs/research/proof-tool-coverage.md` — the roadmap
-- `docs/research/mathlib-progress.md` — prior Mathlib navigation notes
-- `.claude/skills/lean4-expert/SKILL.md` — the tactic driver
-- `.claude/skills/formal-verification-expert/SKILL.md` — tool-fit
+* `tools/lean4/Lean4/DbspChainRule.lean` — the proof file
+* `docs/research/proof-tool-coverage.md` — the roadmap
+* `docs/research/mathlib-progress.md` — prior Mathlib navigation notes
+* `.claude/skills/lean4-expert/SKILL.md` — the tactic driver
+* `.claude/skills/formal-verification-expert/SKILL.md` — tool-fit
   routing (Soraya); confirms Lean is right for this goal
-- `docs/DECISIONS/` — where the B2 contract extension ADR will land
+* `docs/DECISIONS/` — where the B2 contract extension ADR will land

@@ -16,7 +16,7 @@ quotient, group action):
 > level invariants are precisely the composition laws
 > that define what consent-revocation across multiple
 > scopes means. The math isn't incidental; the algebra
-> is the engineering.                                  
+> is the engineering.
 > only in my brain i'm waiting for you guys to catch up"*
 
 Three things this names, in increasing weight:

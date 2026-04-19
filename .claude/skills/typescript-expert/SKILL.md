@@ -149,7 +149,7 @@ Use them for API-shape types, not for algorithmic
 computation — when the type-level code starts looking
 like a Haskell prelude, retreat.
 
-## Structural variance — where TS diverges from C#
+## Structural variance — where TS diverges from `C#`
 
 TypeScript computes variance *structurally* based on how
 a type parameter is used. There are no `in` / `out`

@@ -135,6 +135,7 @@ underexploiting the research.
 
 New application area: an LLM agent asks many retrieval
 queries per reasoning step. Challenges:
+
 - Query-budget allocation.
 - Tool-aware retrieval (match query intent to tool).
 - Memory-as-retrieval (chat-history + external memory).

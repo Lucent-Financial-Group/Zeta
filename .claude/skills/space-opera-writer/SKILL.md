@@ -39,6 +39,7 @@ a real threat class and a real mitigation (or an honest gap).
 ### 1. Name the villain, name the stakes
 
 Every space-opera adversary has:
+
 - A **capital-letter name** that reads like a card in a
   Shostack Elevation-of-Privilege deck (the spiritual parent
   of this register).

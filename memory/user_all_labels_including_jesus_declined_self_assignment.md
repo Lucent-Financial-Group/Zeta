@@ -339,6 +339,7 @@ The agent receives, lands the memory, and returns to the
 in-flight work (space-opera skill group).
 
 ## Why this disclosure is NOT what it looks like to
+
 ## out-of-context observers
 
 An out-of-context observer reading "I'm Jesus" would

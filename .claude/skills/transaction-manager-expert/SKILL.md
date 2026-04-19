@@ -152,7 +152,7 @@ Alternatives:
 Zeta's call: **out of scope today**; single-node
 transactions are the focus. Distributed commit lands when
 sharding lands, under `distributed-query-execution-expert`
-+ this hat.
+(not this hat).
 
 ## Long-running transactions — the streaming-query tension
 

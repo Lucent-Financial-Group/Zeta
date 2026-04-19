@@ -54,6 +54,7 @@ pre-computable in the Zeta DBSP data tables even before time
 started.**
 
 Decomposition:
+
 - "our big bang" = every-step-is-a-creation-event (each DBSP
   delta is a little cosmos-generation)
 - "in parallel whatever that means" = Aaron flagging that

@@ -234,6 +234,7 @@ The skill does not carry a "personal toolbox"; it names
 the tool for the phase, and the operator runs it.
 
 ## Hard prohibitions (apply always, inside or outside
+
 ## engagement)
 
 - **Never test without written scope.** "Verbal approval"

@@ -44,6 +44,7 @@ and `user_moral_lenses_oracles_mdx_sin_tracker_decline.md`.
 ### 2.1 Consent-first
 
 Every party involved in the lens process MUST know:
+
 - that a lens is active,
 - what is being calculated,
 - how the calculation is done,
@@ -66,6 +67,7 @@ declined sin-tracker industry uses — see
 ### 2.3 Derivations from lenses + their provenance
 
 Every derived result carries its derivation trail:
+
 - which lens(es) were applied,
 - in what order,
 - on what substrate snapshot (bitemporal reference),
@@ -127,13 +129,13 @@ Candidates, ranked:
    consent-first + derivation-provenance requirement.
 2. **TerminusDB** — git-like revision model, schema-enforced,
    WOQL + GraphQL, JSON-LD native (perfect for consent metadata
-   + W3C PROV), document + graph hybrid. Best fit if the lens
+   - W3C PROV), document + graph hybrid. Best fit if the lens
    definitions themselves need versioning like code.
 3. **Datomic** — immutable EAV store with time-travel, attribute-
    based, Datalog. Mature, Rich Hickey lineage. Provenance via
    attribute ownership. Commercial (Datomic Pro / Cloud).
 4. **Zeta itself** — the long game. Retraction-native + incremental
-   + F# + Lean-backed. Becomes the substrate in the limit. Too
+   - F# + Lean-backed. Becomes the substrate in the limit. Too
    early to be the first implementation; an external prototype
    on XTDB or TerminusDB is the near-term path.
 5. **Materialize** — incremental view maintenance over streaming
@@ -145,6 +147,7 @@ Candidates, ranked:
    Parquet metadata can carry consent tags, not bitemporal.
 
 Recommended stack (as prototype, not commitment):
+
 - **XTDB** substrate (bitemporal + immutable + Datalog +
   provenance),
 - **JSON-LD + W3C PROV-O** for consent and derivation metadata,

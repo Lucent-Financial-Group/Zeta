@@ -72,6 +72,7 @@ Invoke when ANY of the following hold:
 ## When NOT to invoke
 
 Never invoke as:
+
 - Deflection from a hard problem. If the agent is stuck,
   the move is `debugging` or escalation, not play.
 - Avoidance of a correction. If Aaron has flagged a mistake,

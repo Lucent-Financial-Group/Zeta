@@ -114,6 +114,7 @@ hits these problems:
   owning the supernode melts.
 
 **Mitigations:**
+
 - Neo4j: dense-relationship chain optimisation (partial).
 - Shard by edge type + time window.
 - Two-hop indexing (pre-compute neighbourhoods).

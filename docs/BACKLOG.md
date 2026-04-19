@@ -484,7 +484,7 @@ within each priority tier.
       feature planner vs round-driven backlog); verify
       no adversarial re-routing.
     - `commit-commands` vs bespoke `commit-message-shape`
-      + `git-workflow-expert` — upstream has richer
+      - `git-workflow-expert` — upstream has richer
       command surface; assess if our shape discipline
       survives plugin integration.
     - `code-review` (plugin) + `pr-review-toolkit` vs
@@ -2036,7 +2036,7 @@ systems. This track claims the space.
 - [ ] **Retraction-native-under-consensus proof** — TLA+
   invariant that algebra-aware log compaction preserves
   the consensus safety properties. Owner: `algebra-owner`
-  + `tla-expert` + `formal-verification-expert`. Effort:
+  - `tla-expert` + `formal-verification-expert`. Effort:
   L (paper-worthy: "Consensus for retraction-native
   state machines").
 - [ ] **BFT flag watch** — track the threat-model for
@@ -2250,7 +2250,7 @@ systems. This track claims the space.
   equivalence via Lean4 `#check`. Landing surface:
   `docs/DECISIONS/YYYY-MM-DD-linguistic-seed.md` (ADR when seed
   candidate lands) + `tools/lean4/LinguisticSeed/` (seed definitions)
-  + `tools/lean4/LinguisticKernel/` (E8 bootstrap). Composes with
+  - `tools/lean4/LinguisticKernel/` (E8 bootstrap). Composes with
   cluster-algebras pointer + Rule-Zero axiomatic system. Effort: L
   (multi-round research; seed precisification alone is S-M,
   E8-bootstrap proofs M-L). See `memory/user_linguistic_seed_minimal_axioms_self_referential_shape.md`.
@@ -2283,7 +2283,7 @@ systems. This track claims the space.
   computations). Creator-grade tool, consumer-default-OFF per
   `memory/feedback_creator_vs_consumer_tool_scope.md`. Landing
   surface: `docs/research/plot-hole-detector-homology-YYYY-MM-DD.md`
-  + eventual `src/LensOracle/PlotHoleDetector/` with Lean4-backed
+  - eventual `src/LensOracle/PlotHoleDetector/` with Lean4-backed
   invariants. Effort: M (research + prototype). See
   `memory/user_moral_lens_oracle_system_design.md` §plot-hole-detector.
 - [ ] **Lattice-based post-quantum cryptographic identity

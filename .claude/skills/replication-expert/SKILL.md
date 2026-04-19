@@ -218,7 +218,7 @@ When a replica is too far behind to catch up via log
 shipping alone:
 
 - **Raft InstallSnapshot.** Leader sends snapshot of state
-  + log index; follower replaces state.
+  - log index; follower replaces state.
 - **PostgreSQL `pg_basebackup`.** Physical copy.
 - **MySQL GTID-based resync.** Logical replay from GTID.
 - **Zeta's Z-set-native shape.** A snapshot is a Z-set;

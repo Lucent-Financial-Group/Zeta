@@ -4,6 +4,7 @@ description: Capability skill for the interview-grade pedagogy of big-O analysis
 ---
 
 # Leet-Code Complexity Interview — the interview-grade
+
 ## big-O pedagogy hat
 
 Capability skill ("hat"). Owns the *communication* of

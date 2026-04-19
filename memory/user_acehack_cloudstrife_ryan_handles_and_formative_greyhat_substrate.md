@@ -142,7 +142,7 @@ was his first computing substrate).
     Popular Science. First game-backup device he owned.
   - Read about **FPGAs** in Popular Science at about 16.
     Was fascinated that overfitting / overoptimization
-    + temperature changes would break algorithms because
+    - temperature changes would break algorithms because
     they were taking advantage of imperfections in the
     hardware. This insight — "overfitted optimizations
     break when the environment drifts off the calibration

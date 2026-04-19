@@ -16,6 +16,7 @@ resolves. This skill owns that process.
 ## The IFS framing
 
 Per `docs/CONFLICT-RESOLUTION.md`:
+
 - Each specialist is a **part** with a legitimate concern.
 - The **Architect** is the Self — orchestrator, not arbiter.
 - No specialist has **unilateral final authority**.
@@ -77,6 +78,7 @@ IFS move: ask each part *what it fears will be broken* if its
 position doesn't win.
 
 Example:
+
 - **Algebra Owner position.** "Don't merge this."
 - **Algebra Owner fear.** "This breaks the retraction-native
   invariant; we'd silently ship a design bug that only
@@ -98,6 +100,7 @@ When both parts have named fears, search for options that
 address both.
 
 Example continuation:
+
 - Option A: hot-path fast variant + slow-path retraction-
   safe variant; compiler chooses.
 - Option B: relax retraction-native only in the specific
@@ -139,6 +142,7 @@ disagreement; late escalation costs velocity.
 
 Sometimes a disagreement is legitimately irreconcilable. Some
 examples:
+
 - Deep philosophical disagreement about a language design.
 - Different but valid optimisation targets (latency vs
   throughput, correctness vs simplicity).

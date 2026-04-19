@@ -133,6 +133,7 @@ goodharting shapes, re-reviewing qualitative outputs for
 decay after aggregate improvement.
 
 ### 4. The eval set distribution must match the production
+
     distribution
 
 An eval set that over-represents easy cases reports an
@@ -167,6 +168,7 @@ condition) so the noise cancels.
 Offline evals measure on a frozen set; production is
 distribution-shifting continuously. Design the bridge
 explicitly:
+
 - **Shadow** — run the change on production traffic, score
   outputs offline, no user impact.
 - **Canary** — route a small percentage to the change;

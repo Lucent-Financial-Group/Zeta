@@ -62,7 +62,7 @@ queries or missing fields.
 |---|---|---|
 | **Boolean** | AND / OR / NOT, no ranking | 1960s |
 | **TF-IDF** | `tf(t,d) * log(N/df(t))` | Salton 1960s-70s |
-| **BM25** | `tf * (k+1) / (tf + k*(1-b+b*|d|/avgdl)) * idf` | Robertson 1994 |
+| **BM25** | `tf *(k+1) / (tf + k*(1-b+b*len(d)/avgdl)) * idf` | Robertson 1994 |
 | **BM25F** | BM25 with per-field weights | Robertson 2004 |
 | **DFR** | Divergence From Randomness | Amati 2002 |
 | **LM** | Language model with Dirichlet / Jelinek-Mercer smoothing | Ponte-Croft 1998 |

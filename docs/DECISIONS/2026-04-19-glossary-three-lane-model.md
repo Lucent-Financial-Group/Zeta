@@ -137,7 +137,7 @@ and evidence-gated anchor-break events.
   keep an AI only glossary if you want to have an AI only
   language."
 - **Guardian (if opened):** `agent-experience-engineer` (Daya)
-  + Architect + human maintainer retains veto.
+  - Architect + human maintainer retains veto.
 
 ### Invariants across all lanes
 
@@ -495,7 +495,7 @@ referential role.
 
 ## Sign-off
 
-_Pending._ This ADR is proposed by the agent (under execute-
+*Pending.* This ADR is proposed by the agent (under execute-
 and-narrate mandate from the human maintainer per
 `memory/feedback_execute_and_narrate.md`) and awaits:
 

@@ -178,7 +178,7 @@ The review discipline:
   together, cold fields together) not by lexical order.
 - **Polymorphic types.** Boxed heap-allocated polymorphism
   is poison for SIMD. Use struct generics + `in` parameters
-  + structural constraints.
+  - structural constraints.
 
 ## Runtime-fallback review checklist
 

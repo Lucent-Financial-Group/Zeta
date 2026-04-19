@@ -255,6 +255,7 @@ textbook.
 ## Theory / applied split (BP-23)
 
 This is the theory-side skill. Applied consumers:
+
 - `.claude/skills/reducer/SKILL.md` (acts to reduce).
 - `.claude/skills/complexity-reviewer/SKILL.md` (measures
   claims in shipped code and papers).

@@ -20,6 +20,7 @@ complexity subject to:
 - preserving correctness, behaviour, and the public contract.
 
 This is distinct from:
+
 - **Optimizer** — maximises a scalar utility (throughput,
   profit, accuracy).
 - **Balancer** — minimises variance or enforces fairness across

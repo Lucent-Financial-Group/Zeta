@@ -146,7 +146,7 @@ mistake, and the complexity signature.
   longest-common-subsequence, 0/1-knapsack,
   longest-palindromic-substring (interval DP).
 - **Common mistake:** off-by-one on the DP table size
-  (size [n+1][m+1] including the empty prefix).
+  (size `[n+1][m+1]` including the empty prefix).
 - **Signature:** O(n · m).
 
 ### 8. Binary search on answer

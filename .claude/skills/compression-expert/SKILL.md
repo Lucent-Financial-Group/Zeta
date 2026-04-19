@@ -69,7 +69,7 @@ Zeta has several active compression surfaces:
   LZ4-frame or Zstd framing (Apache Arrow supports both).
 - **Parquet / column store** — per-column-chunk codec choice
   runs *after* the column encoding (dictionary + RLE + bit-pack
-  + delta). Getting the encoding right can matter more than
+  - delta). Getting the encoding right can matter more than
   the codec.
 - **Replication / gossip** — network-layer compression on
   small messages; dictionary-based if the vocabulary is

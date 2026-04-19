@@ -238,6 +238,7 @@ This memory specifies *what* the rule is. The
 skill-creator workflow per GOVERNANCE.md §4).
 
 Skill properties (sketch):
+
 - Reviews every GLOSSARY.md change per round.
 - Flags missing anchor tags / citations.
 - Flags drift between current entry and anchor

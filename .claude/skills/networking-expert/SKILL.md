@@ -18,7 +18,7 @@ general wire-protocol shape**. It does not own:
   expert`. That's the *application* of this skill to a
   specific coordination surface.
 - **TLS threat model / CVE triage** → `security-researcher`
-  + `security-operations-engineer`.
+  - `security-operations-engineer`.
 - **Listener socket / LB / ingress config** → `devops-
   engineer`.
 - **End-to-end throughput benchmarks** → `performance-

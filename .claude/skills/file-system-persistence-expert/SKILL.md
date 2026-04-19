@@ -164,7 +164,7 @@ it isn't.
 ## mmap — the three-trap problem
 
 - **Trap 1: no write-visibility guarantee without msync
-  + fsync.** Touching a page via mmap marks it dirty, but
+  - fsync.** Touching a page via mmap marks it dirty, but
   fsync on the file descriptor is *sometimes* enough on
   Linux, *never* enough on macOS.
 - **Trap 2: SIGBUS on file truncation.** If the file shrinks

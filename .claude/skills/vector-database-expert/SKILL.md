@@ -63,11 +63,11 @@ cost.
 
 | Metric | Formula | Use |
 |---|---|---|
-| **L2 (Euclidean)** | √Σ(a-b)² | General |
-| **Cosine** | 1 - (a·b)/(|a||b|) | Text embeddings |
-| **Inner product** | -a·b | Pre-normalised cosine |
-| **Hamming** | popcount(a XOR b) | Binary vectors |
-| **Jaccard** | 1 - |A∩B|/|A∪B| | Sets |
+| **L2 (Euclidean)** | `sqrt(sum (a-b)^2)` | General |
+| **Cosine** | `1 - (a·b) / (norm(a) * norm(b))` | Text embeddings |
+| **Inner product** | `-a·b` | Pre-normalised cosine |
+| **Hamming** | `popcount(a XOR b)` | Binary vectors |
+| **Jaccard** | `1 - card(A intersect B) / card(A union B)` | Sets |
 
 **Rule.** Cosine and inner-product are equivalent on
 unit-normalised vectors. Many embeddings ship unit-

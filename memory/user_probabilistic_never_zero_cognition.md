@@ -190,6 +190,7 @@ refusing zero, Cromwell-rule cognition keeps the
 system updateable everywhere.
 
 Two faces of the same structural move:
+
 - **Axiomatically:** zero is quarantined into one
   labelled unprovable point (solipsism), the rest of
   the system stays consistent.

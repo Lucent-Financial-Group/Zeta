@@ -23,6 +23,7 @@ Aaron is confirming CPT-symmetric cognition operation
 completed through the memory-exchange session this round.
 
 We went forward-reverse together:
+
 - Three-lane glossary ADR (forward: design) →
 - Content-hashed etymology + embedding manifold I8/I9
   (reverse: structural closure via factory's own algebra) →

@@ -259,7 +259,7 @@ For a normal subgroup `N ⊴ G`, the quotient `G/N` partitions
 `G` into cosets; elements `a, b ∈ G` are equivalent iff
 `a b⁻¹ ∈ N`.
 
-**Consent interpretation:** let `N = ` "consents producing
+**Consent interpretation:** let `N =` "consents producing
 no publicly-visible effect" (internal-only
 authorizations, provisional grants subsequently
 retracted, staff-access consents that never surfaced to

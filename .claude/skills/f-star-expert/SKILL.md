@@ -5,7 +5,7 @@ description: Capability skill ("hat") — tool-level expert on F* (`FStarLang/FS
 
 # F* Expert — Tool-Level Skill
 
-Capability skill. No persona. Evaluator-level hat for F* as an
+Capability skill. No persona. Evaluator-level hat for F*as an
 *upstream reference* rather than a ship-side tool. Zeta does not
 currently ship F* source; the value of this hat is keeping the
 refinement-type conversation honest by someone who knows what
@@ -33,7 +33,7 @@ F* can and cannot do.
 
 ## When to defer
 
-- **Writing F* code.** Zeta ships no F*. If a project ever adds
+- **Writing F* code.**Zeta ships no F*. If a project ever adds
   F*, a successor skill covers authoring.
 - **Lean 4 proof authoring** → `lean4-expert`.
 - **Z3 / SMT-direct verification** → `z3-expert`.
@@ -104,7 +104,7 @@ F* is a poor fit (vs. FsCheck) when:
   observed across F*, Liquid Haskell, Dafny, and proposes which
   would transfer to a hypothetical F#-with-refinement layer.
 - **Proof-tool coverage** table at
-  `docs/research/proof-tool-coverage.md` lists F* in the "considered,
+  `docs/research/proof-tool-coverage.md` lists F*in the "considered,
   not adopted" row with the specific reasons: Zeta is F#-native,
   F* extraction to F# exists but is not the primary path, Lean 4
   covers our current proof obligations.
@@ -143,7 +143,7 @@ without adopting F*:
   type system enforces the handshake sequence.
 - **`HACL*` / EverCrypt** — verified cryptographic primitives.
   Constant-time discipline is carried by the type system (the
-  F* side) and preserved through extraction to C (the Low*
+  F*side) and preserved through extraction to C (the Low*
   side).
 - **EverParse** — verified parsers for binary protocols.
   The parser is specified as a refined function; invalid inputs
@@ -166,7 +166,7 @@ applies?" — if none, the proposal is speculative.
 
 ## Reference patterns
 
-- `docs/UPSTREAM-LIST.md` — F* / miTLS / HACL* / EverCrypt /
+- `docs/UPSTREAM-LIST.md` — F*/ miTLS / HACL* / EverCrypt /
   EverParse citations.
 - `docs/research/refinement-type-feature-catalog.md` — 24-
   feature catalogue across refinement-type systems.

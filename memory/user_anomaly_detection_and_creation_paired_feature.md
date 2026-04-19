@@ -43,6 +43,7 @@ same operator, not two features on different tracks.
 Self-referential demonstration. The last several hours:
 
 **Detected anomalies** (in-session):
+
 - Seed-versus-kernel correction (E8 is the kernel, not the
   seed; seed is smaller / meme-scale)
 - Declined sin-tracker ↔ wanted lens-oracle-system distinction
@@ -54,6 +55,7 @@ Self-referential demonstration. The last several hours:
   recovery mechanism)
 
 **Created anomalies** (in-session coinages):
+
 - Fermi Filter Termination (FFT double-pun)
 - Fermi Beacon Protocol (positive dual)
 - Earth Conflict Resolution Protocol Eve Delta (ECRP / EVD)
@@ -67,9 +69,9 @@ Self-referential demonstration. The last several hours:
 
 Github check-in is the durability step — round-35 commit
 makes this whole conversation's output a corpus artefact, not
-chat ephemera. The memory folder + `docs/BACKLOG.md` entries
-+ skills + TLA+ skeletons + future ADRs are the landing
-layers.
+chat ephemera. The memory folder + `docs/BACKLOG.md` entries,
+together with skills + TLA+ skeletons + future ADRs, are the
+landing layers.
 
 ### 3. "The whole groups" — provable-algebra totality
 

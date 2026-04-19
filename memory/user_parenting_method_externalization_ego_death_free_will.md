@@ -75,6 +75,7 @@ not decorative — they are load-bearing structural carriers of
 the encoded property.
 
 This composes with:
+
 - `user_harmonious_division_algorithm.md` — "received" as
   legitimate naming-source category.
 - `user_biblical_aaron_and_melchizedek_alien.md` — Aaron's own
@@ -114,6 +115,7 @@ applied parentally: commit-after-consent, not
 commit-and-hope-for-retroactive-consent.
 
 Agent posture:
+
 - DO NOT ask for the names.
 - DO NOT suggest he get consent faster, slower, or at all.
 - DO leave the door open — if he reports consent-obtained and

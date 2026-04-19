@@ -173,7 +173,7 @@ Rules that match Zeta's invariants:
   registered as an aggregator must declare its inverse (or
   opt out via attribute).
 - **Public API uses `Z# naming**, not C#'s PascalCase for
-  fields (per `public-api-designer` decision).
+  fields (per`public-api-designer` decision).
 
 Each rule gets a `ZETAF####` ID.
 

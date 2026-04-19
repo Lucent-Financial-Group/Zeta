@@ -72,6 +72,7 @@ enough that time deserves its own skill.
 | **Performance counter (QPC / Stopwatch / TSC)** | yes (in practice) | no | HW counter | sub-μs duration |
 
 **Rule.** Use the right clock for the question:
+
 - "When did this happen?" → wall-clock.
 - "How long did this take?" → monotonic / performance.
 - "Is this newer than that?" → **logical clock** (see below).
@@ -196,6 +197,7 @@ on receive of (pt_m, l_m):
 ```
 
 **Properties:**
+
 - Monotone per node (no rewind).
 - Close to real wall-clock (within clock-skew bound).
 - Captures causal-order (like a vector clock, but in a
@@ -223,6 +225,7 @@ timestamps inside AWS-hosted Zeta clusters.
 ## Timestamp-ordered execution
 
 Classic ordering of transactions by timestamp (OCC, MVCC):
+
 - Each transaction gets a timestamp at start.
 - Operations are ordered by timestamp.
 - Aborts on conflict (OCC) or rollback on out-of-order

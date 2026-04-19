@@ -149,6 +149,7 @@ Lifecycle point: runs on GitHub-hosted runner post-push /
 post-PR-event.
 
 Already in use:
+
 - `build-and-test` — gate of gates (0 Warning / 0 Error).
 - `lint (semgrep)` — 14+ custom rules for F# / security.
 - `lint (shellcheck)`, `lint (actionlint)`, `lint (markdownlint)`.
@@ -278,9 +279,9 @@ services. Aligns with "simple until proven otherwise".
 ### 4.3 Candidate C (complex) — A + policy-engine (OPA / cedar)
 
 Use a full policy engine (Open Policy Agent, AWS Cedar,
-oso-native) that evaluates Rego / Cedar policy against the diff
-+ metadata. Supports deny-by-default, rich relationships,
-per-resource attribute-based decisions.
+oso-native) that evaluates Rego / Cedar policy against the
+diff-plus-metadata payload. Supports deny-by-default, rich
+relationships, per-resource attribute-based decisions.
 
 **Cost:** new dependency, new language (Rego), per-policy
 debugging overhead, new CI runner for `opa eval`. Valuable when
@@ -306,6 +307,7 @@ Who / what enforces each ACL decision:
 **Pilot scope: Candidate A + a single additional CI job.**
 
 Delivery order:
+
 1. Draft `.github/rbac.yml` with 4–6 roles pulled from
    `docs/EXPERT-REGISTRY.md`. Review-gated by Architect.
 2. Land `.github/CODEOWNERS` aligned with the role-to-path

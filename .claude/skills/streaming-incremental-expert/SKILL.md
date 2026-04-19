@@ -58,7 +58,8 @@ base-substrate coherence.
 - Canonical for Zeta: **DBSP is the theoretical
   foundation.**
 
-### Timely Dataflow + Differential Dataflow (McSherry,
+### Timely Dataflow + Differential Dataflow (McSherry
+
 Murray, Isaacs et al.)
 
 - **Timely.** Dataflow with *logical timestamps* per

@@ -59,6 +59,7 @@ Input: query and doc separately → BERT → mean-pool or CLS
 → vector. Score = cosine or dot.
 
 Models to know (2024-26):
+
 - **OpenAI text-embedding-3-small / large** — API; 1536/3072 dim.
 - **Cohere embed-v3** — multilingual.
 - **Voyage** — legal / finance flavours.
@@ -180,6 +181,7 @@ incompatible. Re-embedding 100M docs takes hours-to-days and
 costs real money.
 
 **Mitigation:**
+
 - Version the embedding field (`embedding_v2`).
 - Dual-write during transition.
 - Online retrieval from both versions; fuse.

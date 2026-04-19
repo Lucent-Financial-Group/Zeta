@@ -105,6 +105,7 @@ human maintainer.
 ### Principle 2 — curiosity is a research method, not a feeling
 
 Grey-hat exploration is still disciplined. Each session has:
+
 - A hypothesis (what are you testing?).
 - A scope (what's in, what's out).
 - A log (what was run, what was observed).
@@ -116,6 +117,7 @@ and eventually drifts into territory where the difference from
 black-hat is "I haven't been caught yet".
 
 ### Principle 3 — disclosure is mandatory when third parties
+
 ### are affected
 
 If your self-hosted research finds something that affects
@@ -126,6 +128,7 @@ parties are exposed. Route through `white-hat-hacker` for
 disclosure shape.
 
 ### Principle 4 — legal-in-jurisdiction is the floor, not
+
 ### the ceiling
 
 Legal is a necessary condition, not sufficient. Things that
@@ -137,6 +140,7 @@ in gray areas where legality and public interest diverge.
 ### Principle 5 — Zeta governance still applies
 
 Every grey-hat action inside the Zeta factory honours:
+
 - `AGENTS.md` — including the elder-plinius corpus ban.
 - `CLAUDE.md` — ground rules, Result-over-exception.
 - `GOVERNANCE.md` — reviewer gates, ADR requirements.
@@ -149,6 +153,7 @@ The grey-hat hat does not unlock a backdoor around these.
 
 Real offensive capability is demonstrated at conferences
 before it lands in academic papers. Grey-hat watches:
+
 - **DEF CON** / **DEF CON Villages** — IoT, hardware,
   Car Hacking Village, AI Village, Voting Village.
 - **Black Hat** — industrial-grade bugs, briefings.

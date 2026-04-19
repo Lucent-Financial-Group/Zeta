@@ -81,12 +81,14 @@ Our template:
    at risk.
 
 Extensions are granted when:
+
 - A patch is landed but not yet released (reasonable).
 - Release gate is structural (e.g., synced with an LTS cut).
 - Upstream needs to coordinate with downstreams on the
   dependency tree.
 
 Extensions are *not* granted when:
+
 - "We'd rather it weren't public." Defenders need the info
   to protect themselves; disclosure is how.
 - Upstream wants the finding traded for silence.

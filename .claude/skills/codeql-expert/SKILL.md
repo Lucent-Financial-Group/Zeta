@@ -11,8 +11,8 @@ at **Trial (ring 3)** as of round 34 — the GitHub-generated
 scanning `actions` / `csharp` / `java-kotlin` with
 `build-mode: none`. The workflow is a **starter, not a
 destination**: several defaults are wrong for Zeta and get
-called out in the "Round-34 drift list" below. SDL practice
-#9 is now partially satisfied; full coverage needs the drift
+called out in the "Round-34 drift list" below. SDL practice #9
+is now partially satisfied; full coverage needs the drift
 items closed.
 
 ## When to wear
@@ -71,12 +71,12 @@ The round-34 tune closed items 1-5. Status per item:
 
 Additional follow-ups that emerged from the tune:
 
-7. ⬜ **Action SHA-pin `github/codeql-action@v4`** —
+1. ⬜ **Action SHA-pin `github/codeql-action@v4`** —
    dependabot covers weekly bumps; we could tighten to
    SHA-pins for consistency with gate.yml, but the
    official GitHub publisher makes the @v4 floating tag
    a lower-value pin than for third-party actions.
-8. ⬜ **Custom `.ql` query pack** — skeleton reserved in
+2. ⬜ **Custom `.ql` query pack** — skeleton reserved in
    the config file (`packs:` block). First target: a taint
    rule for unsafe deserialisation of user-controlled
    streams in the public API surface. Route decision

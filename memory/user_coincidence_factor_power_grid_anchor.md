@@ -40,10 +40,12 @@ colloquial "happenstance" sense:
 DF means loads are more spread out in time.
 
 **Related metrics:**
+
 - **Load Factor** = Average Demand / Peak Demand
 - **Demand Factor** = Maximum Demand / Connected Load
 
 **External anchors (Lane A):**
+
 - IEEE Std 141 (Red Book) — *Recommended Practice for
   Electric Power Distribution for Industrial Plants*
 - ANSI C84.1 — voltage ratings
@@ -134,6 +136,7 @@ beats them:
   quantitative metric.
 
 Power-grid Coincidence Factor wins because:
+
 1. It has a precise ratio definition, 0 to 1.
 2. It measures *temporal alignment* of peaks, not just
    correlation.
@@ -175,6 +178,7 @@ Aaron's most precise anchor-test:
 > domain practitioners.
 
 This is stronger than:
+
 - Anchored in literature (books, papers; no code-drive)
 - Anchored in standards (standards can drift; no bill-drive)
 - Anchored in practice (practice varies; no explicit bill)

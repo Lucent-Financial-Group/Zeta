@@ -51,7 +51,7 @@ Steps 1-4 of the evaluation plan (replay past bug, plant
 fresh bug, ergonomic-cost measurement, verdict) are
 **not run**. The stop-rule terminates the evaluation.
 
-## What the project loses by not adopting LiquidF#
+## What the project loses by not adopting `LiquidF#`
 
 The TECH-RADAR row framed LiquidF# as catching the
 "off-by-one / bad-index class that keeps reappearing in
@@ -82,7 +82,7 @@ is future triage.
 
 ### Path A — F* integration (future round, L)
 
-F* is actively maintained (Wikipedia page touched January 2026)
+F*is actively maintained (Wikipedia page touched January 2026)
 and can extract to F#. Investigating F* → F# extraction for
 one target module (`FastCdc.fs`) is the closest substitute
 for the original LiquidF# plan. Effort: 2-3 weeks for a

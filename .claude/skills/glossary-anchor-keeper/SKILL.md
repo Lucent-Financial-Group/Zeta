@@ -34,6 +34,7 @@ gated.
 ## Scope
 
 Reviews every file matching:
+
 - `docs/GLOSSARY.md` — the canonical contract surface.
 - `docs/GLOSSARY-AI.md` if and when it lands — the
   proposed agent-internal IR layer. Until landed via
@@ -115,6 +116,7 @@ initial classification.
 For each glossary entry, run:
 
 ### Step 1. Classification check
+
 - Does the entry declare its anchor state (tag, explicit
   sentence, or structural marker)?
   - **No** → flag as `UNCLASSIFIED`; propose classification
@@ -124,8 +126,10 @@ For each glossary entry, run:
   - **No** → flag as `UNCITED-ANCHOR`; propose citation.
 
 ### Step 2. Drift check (anchored entries only)
+
 Live-search (1–3 queries) for current external usage of
 the term:
+
 - Compare the first technical sentence to external
   consensus.
 - If the divergence is > one qualifier (adjective, scope-
@@ -133,6 +137,7 @@ the term:
   `DRIFT-FROM-ANCHOR` with the specific delta.
 
 ### Step 3. Drift check (partially-anchored entries)
+
 - Is the external-overlap portion still aligned with
   external usage?
   - **No** → flag as `PARTIAL-ANCHOR-SHIFT`.
@@ -140,8 +145,10 @@ the term:
   - **No** → flag as `UNMARKED-EXTENSION`.
 
 ### Step 4. Breakage check
+
 For anchored or partially-anchored entries modified this
 round:
+
 - Has the anchor source been changed / removed?
 - Has the first technical sentence changed in a way that
   crosses the divergence threshold?
@@ -154,15 +161,19 @@ round:
       external acceptance, (d) transition plan.
 
 ### Step 5. Budget check
+
 Count the number of legitimate anchor breaks landed this
 round.
+
 - **Default budget: 1 break per round.**
 - If budget exceeded, flag as `BUDGET-EXCEEDED`; the
   excess breaks either revert or require explicit
   Architect / human over-budget sign-off.
 
 ### Step 6. Drift-debt roll-forward
+
 Maintain a running total of:
+
 - **Partial-drift instances** — entries where drift is
   below the break threshold but trending.
 - **Unclassified entries** — accumulated classification
@@ -184,6 +195,7 @@ anchored status but old citations, terms flagged as
 in the persona notebook (see State).
 
 Sources that count for anchor evaluation:
+
 - Standards-body documents (IEEE / ISO / W3C / IETF)
 - Official language / framework documentation
   (dotnet.microsoft.com, fsharp.org, etc.)
@@ -192,6 +204,7 @@ Sources that count for anchor evaluation:
 - Wikipedia (lowest strength; last resort)
 
 Sources that do **not** count as anchors:
+
 - Aaron's own prior phrasing (that is factory-native
   by construction)
 - Other LLM outputs
@@ -303,6 +316,7 @@ Notebook format:
 
 The anchor keeper's output is **advisory to the Architect**.
 The Architect:
+
 - Decides which findings to act on this round.
 - Signs off on anchor-break ADRs.
 - Approves over-budget drift in exceptional rounds.

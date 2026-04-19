@@ -75,6 +75,7 @@ Naive resolver: 1 query for books + 100 queries for authors.
 N+1.
 
 **DataLoader** (Facebook 2015) mitigation:
+
 - Batches resolver calls in one event-loop tick.
 - Deduplicates by key.
 - Caches per-request.
@@ -164,6 +165,7 @@ are a DoS waiting to happen.
 
 Register queries on the server; client sends hash; server
 looks up. Advantages:
+
 - Query-traffic lockdown.
 - Smaller payloads.
 - Cacheable at CDN.
@@ -173,11 +175,13 @@ Apollo APQ (Automatic Persisted Queries) does this opportunistically.
 ## Caching
 
 ### Server-side
+
 - Resolver-level caching (DataLoader).
 - Response caching (Apollo, CDN).
 - CDN caching via persisted queries.
 
 ### Client-side
+
 - Normalised by __typename + id.
 - Fetch policies: cache-first, cache-and-network, network-only,
   no-cache.
@@ -196,6 +200,7 @@ reconnection, auth handshake, queue backpressure. Plan ops.
 ## Introspection
 
 Queries like `__schema` reveal the full schema. Production:
+
 - Disable in public APIs? (Apollo default: enabled.)
 - Keep enabled but rate-limit.
 - Use persisted queries to limit to known ones.
