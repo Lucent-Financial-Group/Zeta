@@ -5,8 +5,8 @@ description: Capability skill ("hat") — audits repo layout at a regular cadenc
 
 # Project Structure Reviewer — Procedure
 
-Aaron's round-34 ask: codify repo layout + naming discipline
-so it's not one-human-keeping-up-with-it. Every round the
+Codify repo layout + naming discipline so the human
+maintainer isn't the only one tracking it. Every round the
 repo gets files added, renamed, moved; drift accumulates
 silently between reviews. This skill is the regular sweep.
 
@@ -58,7 +58,7 @@ Audits the tree shape + naming across:
   CONTRIBUTING.md, CLAUDE.md, AGENTS.md,
   CONFLICT-RESOLUTION.md, GOVERNANCE.md, ROUND-HISTORY.md);
   manifest files have bare semantic names (no `.txt`
-  per Aaron's rule — `apt`, `brew`, `dotnet-tools`,
+  — `apt`, `brew`, `dotnet-tools`,
   `uv-tools`, `verifiers`).
 
 Out of scope:

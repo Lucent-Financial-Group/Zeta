@@ -1,14 +1,10 @@
-// This file is a deliberate "collected variance-related F#-interop types"
-// module (one namespace-concept-per-file, not one type-per-file). The
-// types here are tightly related by shared rationale — each is a
-// declaration-site-variant shape F# can't express natively — and read
-// as a unit. Each of the four types below carries an individual
-// [SuppressMessage] attribute with a matching Justification rather than
-// the bigger [assembly: SuppressMessage] pattern, so the suppression
-// rationale lives right next to the code it applies to (preferred
-// per the round-34 sonar-issue-fixer skill). Lift any of them if the
-// file grows past ~6 types (signal that splitting IS warranted), or if
-// the types diverge in purpose and no longer belong in one module.
+// This file is a deliberate "collected variance-related F#-interop
+// types" module: one namespace-concept-per-file, not one type-per-file.
+// The four types below are tightly related — each is a declaration-site-
+// variant shape F# cannot express natively — and read as a unit. Each
+// carries an individual [SuppressMessage] for MA0048. Split the file
+// (lifting the suppressions) if it grows past roughly six types or if
+// the types diverge in purpose.
 
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -38,7 +34,7 @@ namespace Zeta.Core.CSharp;
 /// </summary>
 /// <typeparam name="T">Element type; covariant.</typeparam>
 [SuppressMessage("Design", "MA0048:File name must match type name",
-    Justification = "Collected variance-related F#-interop module; see file header.")]
+    Justification = "Variance-related F#-interop types collected by namespace concept; see file header.")]
 public interface ICovariantSink<out T> where T : IComparable<T>
 {
     /// <summary>Mode the sink was configured for.</summary>
@@ -50,7 +46,7 @@ public interface ICovariantSink<out T> where T : IComparable<T>
 /// </summary>
 /// <typeparam name="TKey">Key type; contravariant.</typeparam>
 [SuppressMessage("Design", "MA0048:File name must match type name",
-    Justification = "Collected variance-related F#-interop module; see file header.")]
+    Justification = "Variance-related F#-interop types collected by namespace concept; see file header.")]
 public interface IContravariantHashStrategy<in TKey>
 {
     /// <summary>Compute a 32-bit hash of <paramref name="key"/>.</summary>
@@ -63,7 +59,7 @@ public interface IContravariantHashStrategy<in TKey>
 /// </summary>
 /// <typeparam name="TKey">Key type; covariant.</typeparam>
 [SuppressMessage("Design", "MA0048:File name must match type name",
-    Justification = "Collected variance-related F#-interop module; see file header.")]
+    Justification = "Variance-related F#-interop types collected by namespace concept; see file header.")]
 public interface ICovariantBackingStore<out TKey> where TKey : IComparable<TKey>
 {
     /// <summary>Number of batches currently stored.</summary>
@@ -76,7 +72,7 @@ public interface ICovariantBackingStore<out TKey> where TKey : IComparable<TKey>
 /// implementation, one cost model, and zero behavioural divergence.
 /// </summary>
 [SuppressMessage("Design", "MA0048:File name must match type name",
-    Justification = "Collected variance-related F#-interop module; see file header.")]
+    Justification = "Variance-related F#-interop types collected by namespace concept; see file header.")]
 public static class StreamExtensions
 {
     /// <summary>

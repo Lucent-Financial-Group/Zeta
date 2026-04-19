@@ -233,6 +233,41 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Factory portability — generic-by-default across
+  skills, build, CI, and install scaffolding.** The
+  software factory is intended to become reusable across
+  projects; any project should eventually be able to adopt
+  this declarative setup + build + CI + agent-skill stack
+  with minimal friction. Discipline (landed round 34):
+  - **Skills.** `.claude/skills/*/SKILL.md` default to
+    generic. Project-specific skills declare `project:
+    zeta` in frontmatter and open with a
+    "Project-specific: …" rationale. Audited by
+    `skill-tune-up` as the 7th ranking criterion
+    (portability drift).
+  - **Build + CI + install.** `tools/setup/`,
+    `.github/workflows/`, `.mise.toml`,
+    `Directory.Build.props` default to generic.
+    Project-specific hooks live in clearly-named files
+    (`zeta-spec-check.yml` over `spec-check.yml`) or
+    manifest entries (`tools/setup/manifests/*`).
+    Generic files must not hard-code project names.
+    Codified in `devops-engineer/SKILL.md` Step 7
+    (portability check).
+  - **Extraction target (future).** Lift the generic
+    portion into a starter template so a new project
+    inherits the factory without a rewrite. Scope: one
+    dedicated round once the Zeta-side surface
+    stabilises (post-round-35 target, not committed).
+    Will exercise the project-specific fencing by
+    showing the Zeta delta as additive-only.
+
+  **Owners.** Kenji (architect) integrates;
+  `skill-tune-up` (Aarav) audits skills lane; Dejan
+  audits build/CI/install lane; Bodhi DX-tests the
+  starter-template extraction when it reaches a round.
+
+
 - [ ] **SonarAnalyzer.CSharp CLI adoption after findings
   cleanup** (round 34 follow-up). Package pinned in
   `Directory.Packages.props` this round; editor-only
@@ -389,9 +424,36 @@ within each priority tier.
   Dejan (install script owner) + `bash-expert` capability
   skill.
 
+- [ ] **Comms-hygiene sweep: strip name attribution +
+  stream-of-consciousness from code, docs, and skills.**
+  Audit surfaced ~50 files with stale "Aaron said" /
+  "per Aaron" / "round-34 rule" attributions that read as
+  stream-of-consciousness rather than current-state
+  documentation. Rule: the human maintainer's name lives
+  in `memory/persona/**`, this file, and historical-narrative
+  files only (`ROUND-HISTORY.md`, `WINS.md`, ADRs under
+  `DECISIONS/`). Everywhere else, the role ("human
+  maintainer") is the right referent. Samir
+  (documentation-agent) owns the sweep per his edit-rights
+  charter. Scope: `.md` under `docs/`, `openspec/`,
+  `.claude/skills/`, `.claude/agents/`; `.cs` and `.fs`
+  comments; `GOVERNANCE.md`; `CONTRIBUTING.md`. Exclude
+  `memory/persona/**`, `BACKLOG.md` (here),
+  `ROUND-HISTORY.md`, `WINS.md`, `docs/DECISIONS/**`,
+  `references/upstreams/**`. Effort: M. Paired with
+  Rune (maintainability-reviewer) for the "does this
+  read cleanly to a cold reader" check.
+- **Always exclude `references/upstreams/` from
+  iteration commands** (round-34 rule). 85+ full clones
+  of external projects; `find`, `grep`, `rg`, or any
+  recursive walk takes minutes and returns mostly noise.
+  This is not a BACKLOG item — it's a standing rule now
+  codified in `.github/copilot-instructions.md` + the
+  architect agent file. Listed here as a cross-reference
+  so a contributor discovering the rule via BACKLOG
+  search finds the authoritative source.
 - [ ] **Research: local semantic search over text corpora
-  for agent / developer / CI leverage** (round 34 ask
-  from Aaron). Zeta's text-based corpora grow
+  for agent / developer / CI leverage.** Zeta's text-based corpora grow
   monotonically: 17 `JOURNAL.md` unbounded long-term
   memories, 17 `NOTEBOOK.md` per-persona working notes,
   `memory/persona/best-practices-scratch.md`,

@@ -5,10 +5,10 @@ description: Capability skill ("hat") — triages SonarLint / SonarAnalyzer.CSha
 
 # Sonar Issue Fixer — Procedure
 
-Aaron's rule, codified: **Sonar is only good if you drive it,
-don't let it drive you. Never take the quick win to appease.
-Do the right long-term thing even if it's a huge refactor —
-or suppress with documented rationale. No third option.**
+**Sonar is only good if you drive it, don't let it drive
+you. Never take the quick win to appease. Do the right
+long-term thing even if it's a huge refactor — or suppress
+with documented rationale. No third option.**
 
 This skill codifies the two-path triage so agents and humans
 process analyzer findings the same way.
@@ -62,7 +62,7 @@ For every finding, produce exactly one of:
   the rule's motivation does not apply here, (iii) what
   would need to change for the suppression to be removed.
 - **`[SuppressMessage]` attributes on the target
-  type/member are preferred** (Aaron's round-34 rule).
+  type/member are preferred.**
   The suppression and its rationale live right next to
   the code they apply to — a reader looking at the type
   sees both the rule being suppressed and the

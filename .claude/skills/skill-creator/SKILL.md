@@ -51,6 +51,22 @@ A proposal contains:
   is binding, and only on integration decisions.)
 - State-file requirement: does this skill need a notebook? If
   yes, where and with what pruning policy?
+- **Portability declaration.** One of:
+  - **Generic** (default) — the skill encodes a reusable
+    discipline that any project could adopt. Must not hard-
+    code Zeta paths, Zeta-specific module names, Zeta module
+    algebra (Z-sets, D/I/z⁻¹/H), Zeta governance section
+    numbers, or Zeta persona names inside procedural
+    instructions. Examples illustrating those concepts are
+    allowed, but they read as examples, not as scope.
+  - **Project-specific** — the skill is intentionally tied to
+    Zeta's codebase / algebra / governance. Must be signified
+    by a `project:` frontmatter field naming the project
+    (`project: zeta`) and a one-line rationale in the body
+    ("Project-specific: this skill owns Zeta's …").
+  The software factory is intended to become reusable across
+  projects; every project-specific skill is a deliberate
+  exception, not an accident.
 
 ### 2. Draft
 
@@ -61,6 +77,8 @@ with the standard section layout:
 ---
 name: <name>
 description: <what to invoke this for, one paragraph, ≤ 600 chars>
+# Portability — optional; omit for generic skills, set for project-specific.
+# project: zeta
 ---
 
 # <Display Name> — <Role descriptor>
@@ -128,6 +146,11 @@ Every skill SKILL.md should have:
 - [ ] "What this skill does NOT do" section
 - [ ] Reference to `docs/CONFLICT-RESOLUTION.md` for conflicts
 - [ ] Reference patterns section at the end
+- [ ] Portability: either reads generic (no Zeta-specific
+      paths / module names / algebra / governance-section
+      numbers in the procedural body), OR declares
+      `project: zeta` in frontmatter and opens with a
+      "Project-specific: …" rationale line
 
 ## Retirement
 

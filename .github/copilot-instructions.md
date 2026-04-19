@@ -5,7 +5,7 @@ a research-grade F# implementation of DBSP (Database Stream
 Processor) on .NET 10 with ambitions to become a
 fastest-in-all-classes distributed database. A roster of
 named agent personas (Kira, Rune, Daya, Kenji, …) coordinates
-with the human maintainer Aaron under codified rules. Read
+with the human maintainer under codified rules. Read
 [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
 and [AGENTS.md](../AGENTS.md) before making non-trivial
 suggestions — those files define the rules of engagement.
@@ -143,6 +143,26 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   line. This has bitten round 34 five separate times;
   flag it inline on any PR diff that introduces a
   line-start `+` in prose or a list continuation.
+- **Always exclude `references/upstreams/` from any
+  file-iteration command you run or suggest.** That directory
+  contains 85+ full clones of external projects (CTFP, Milewski,
+  scratch, SQLSharp, and more) — `find`, `grep`, `ripgrep`,
+  build-graph scans, lint sweeps, or any recursive walk that
+  includes it takes minutes and returns mostly noise. Every
+  iteration-shaped command needs
+  `! -path "./references/*"` (find), `--exclude-dir=references`
+  (grep), or the Grep tool's equivalent path filter. Applies
+  to every agent in this factory, not just Copilot.
+- **No name attribution in code, docs, or skills.** The human
+  maintainer's name belongs in `memory/persona/**`, `BACKLOG.md`,
+  and historical-narrative files (`ROUND-HISTORY.md`,
+  `WINS.md`, ADRs under `DECISIONS/`) only. Everywhere else,
+  refer to the role — "human maintainer" for the person,
+  persona names (Kenji, Samir, Kira, …) for agents. Don't
+  write "Aaron said X" or "per Aaron's round-34 rule" in a
+  SKILL body, a CSharp comment, a GOVERNANCE section, or
+  anywhere reading documentation. Stream-of-consciousness
+  attribution reads noisy and dates badly.
 - **Analyzer findings: right-long-term-fix OR documented
   suppression, never the third path of "quick appeasement."**
   For every `Sxxxx` (Sonar) / `MAxxxx` (Meziantou) /

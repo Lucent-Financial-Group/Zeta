@@ -27,7 +27,7 @@ exists) and ranks by tune-up urgency. Output is a short list
 (top-N, default 5) with reasoning and explicit recommended
 action from the action-set below.
 
-## Ranking criteria — six, weighted in this order
+## Ranking criteria — seven, weighted in this order
 
 1. **Drift** — does the skill still reference current doc
    paths, current module names, current policy? A skill citing
@@ -46,6 +46,29 @@ action from the action-set below.
    violation is cited by rule ID (e.g. "violates BP-02,
    BP-11"). This criterion is *always checked*, even when the
    skill is otherwise silent.
+7. **Portability drift** — the software factory is intended
+   to become reusable across projects. A skill is expected
+   to be *generic* (reusable on any project) unless it
+   declares `project: zeta` in its frontmatter and opens
+   the body with an explicit "Project-specific: …"
+   rationale. Flag when:
+   - A skill without a `project:` declaration hard-codes
+     Zeta paths (`tools/setup/`, `src/Core/**`,
+     `openspec/specs/**`), Zeta-specific module names or
+     types (`ZSet`, `Spine`, `DiskBackingStore`,
+     `ArrowInt64Serializer`), the Zeta operator algebra
+     (`D`/`I`/`z⁻¹`/`H`, retraction-native), numbered
+     `GOVERNANCE.md` sections, or specific persona names
+     **as scope** rather than as illustration.
+   - A skill *does* declare `project: zeta` but its body
+     is generic enough to be portable — the declaration
+     is then paying a reusability cost without reason.
+     Recommend dropping the declaration.
+   Examples vs. scope is the distinction: "for instance,
+   a Zeta module like `Pipeline`" is example (fine);
+   "audits `src/Core/Pipeline.fs`" is scope (flag unless
+   declared project-specific). This criterion is
+   *always checked*, alongside BP drift.
 
 ## Live-search step — every invocation
 
@@ -129,7 +152,7 @@ Notebook format:
 
 ## Current top-5 (refresh each run)
 1. [skill] — priority: [P0/P1/P2]
-   - Signal: [drift | contradiction | staleness | user-pain | bloat]
+   - Signal: [drift | contradiction | staleness | user-pain | bloat | portability-drift]
    - Action: [TUNE | SPLIT | MERGE | RETIRE | HAND-OFF-CONTRACT | OBSERVE]
    - Effort: [S | M | L]
 
@@ -153,7 +176,7 @@ Notebook format:
 
 1. **<skill-name>** — priority: P0 | P1 | P2
    - Signal: [drift | contradiction | staleness | user-pain |
-     bloat | best-practice-drift]
+     bloat | best-practice-drift | portability-drift]
    - Violates: BP-<NN>[, BP-<NN>]   (only when signal is
      best-practice-drift)
    - Recommended action: [TUNE | SPLIT | MERGE | RETIRE |
