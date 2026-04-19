@@ -662,5 +662,21 @@
     "path": "references/upstreams/nats-jetstream",
     "categories": ["streaming", "distributed-log", "event-store"],
     "notes": "Durable streaming subsystem on top of NATS (MIT-licensed within the Apache-2.0 server repo; successor to retired NATS Streaming/STAN) — reference for stream+consumer abstractions, RAFT-backed replication, and AckExplicit/AckAll/AckNone semantics that map onto our DurabilityMode variants; candidate retraction-native ingestion source for ZSet delta feeds. See references/notes/NATS-RESEARCH.md."
+  },
+  {
+    "name": "milewski-ctfp-pdf",
+    "url": "https://github.com/hmemcpy/milewski-ctfp-pdf.git",
+    "branch": "master",
+    "path": "references/upstreams/milewski-ctfp-pdf",
+    "categories": ["category-theory", "reference-text"],
+    "notes": "Community-maintained LaTeX compilation of Bartosz Milewski's 'Category Theory for Programmers' blog posts into a canonical PDF (11.5k stars, actively maintained). Source of the ctfp-milewski.pdf previously checked into docs/category-theory/. Reference text for the category-theory intuitions behind Zeta's operator algebra. License: CC BY-SA 4.0 for prose + permissive for code scaffolding."
+  },
+  {
+    "name": "category-theory-for-dotnet-programmers",
+    "url": "https://github.com/cboudereau/category-theory-for-dotnet-programmers.git",
+    "branch": "master",
+    "path": "references/upstreams/category-theory-for-dotnet-programmers",
+    "categories": ["category-theory", "fsharp", "csharp"],
+    "notes": "Worked .NET port of Milewski's Haskell/C++ samples into C# and F# (209 stars, last pushed 2021-09, dormant but not archived). MIT-licensed. Reference for translating CT idioms into the exact .NET shape Zeta lives in. Source of the docs/category-theory/ctfp-dotnet/ snapshot previously checked into docs/."
   }
 ]

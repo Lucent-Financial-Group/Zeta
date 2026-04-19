@@ -37,6 +37,77 @@ feature + debt budget).
 
 ## Live debt
 
+### `tools/setup/common/sync-upstreams.sh` is bash, not cross-platform
+
+- **Site:** `tools/setup/common/sync-upstreams.sh`
+- **Found:** round 34 by Aaron
+- **Effort:** M (needs BACKLOG P1 "Post-install repo automation
+  runtime choice" decided first)
+- **Friction:** Aaron: "you are starting to write post install
+  scripts that are not cross platform although you could because
+  we have a two way common starting point now, we are incurring
+  debt." Windows contributors can't run upstream sync; any
+  post-install cross-platform automation hits the same pattern.
+- **Fix:** once the post-install runtime research lands
+  (Bun/Deno/Python/.NET-CLI/etc.), port sync-upstreams to that
+  runtime. Install.sh stays bash (pre-bootstrap; can't depend
+  on its own output).
+
+### Manifest files use `.txt` — feels cheap
+
+- **Site:** `tools/setup/manifests/{apt,brew,dotnet-tools,verifiers}.txt`
+- **Found:** round 34 by Aaron — "never use .txt for declarative
+  filename extensions it feels cheep"
+- **Effort:** S per manifest
+- **Friction:** signals "quick-list" not "declarative source of
+  truth." `../scratch` uses domain-extension discipline
+  (`.apt`, `.Brewfile`, `.dotnet-tools`, `.uv-tools`,
+  `.bun-global`) where the extension names the tool.
+- **Fix:** rename to domain-appropriate extensions; update
+  install.sh path references. Stage alongside the BACKLOG
+  "Declarative-manifest tiering" ratchet — same migration shape.
+
+### `tools/setup/` script organisation less rich than `../scratch`
+
+- **Site:** `tools/setup/` vs `../scratch/scripts/setup/`
+- **Found:** round 34 by Aaron — "our script orginization feels
+  inadcuate compard to ../scratch, that is the feature richness
+  i am looking for eventually here so it's easy to add other
+  packages and languages and it's very very very clean"
+- **Effort:** L (multi-round). `../scratch/scripts/setup/` is
+  ~2,559 lines across unix/linux/macos/ubuntu/debian/windows
+  layers; Zeta's is ~250. 10× gap.
+- **Friction:** adding a new package type or language runtime
+  today means hand-editing `linux.sh` + `macos.sh` + a new
+  `common/` script. Scratch's structure makes the same change
+  a single file drop in the right declarative dir.
+- **Fix:** study `../scratch/scripts/setup/` and incrementally
+  port the layering (unix-common + os-specific overlays +
+  github-env helpers + profile management + `append_line_if_missing`
+  discipline for dotfiles + bash/zsh rc handling). Round-by-round
+  ratchet alongside declarative-manifest tiering.
+
+### Shell-profile management is thin vs `../scratch`
+
+- **Site:** `tools/setup/common/shellenv.sh` + user dotfile
+  integration
+- **Found:** round 34 by Aaron — "they even setup all the bash
+  profiles and zsh and all that, you should check my zsh
+  profiles are okay on my mac too for all this to work"
+- **Effort:** M
+- **Friction:** Zeta's shellenv.sh writes `$HOME/.config/zeta/
+  shellenv.sh` + emits `BASH_ENV` for CI, but relies on the
+  user manually adding the source line to `.zshrc` / `.bash_profile`
+  (one-line hint). Scratch auto-appends via `append_unique_line`
+  to `.bashrc`/`.bash_profile`/`.profile`/`.zshrc`/`.zprofile`
+  with idempotency. Round 34 manually appended Aaron's profiles;
+  should be automatic going forward.
+- **Fix:** port scratch's profile-management helpers
+  (`append_bootstrap_shellenv_line`, `ensure_shell_startup_sources_bootstrap_shellenv`,
+  `ensure_bash_env_sources_bootstrap_shellenv`) to
+  `tools/setup/common/`. Auto-append on install.sh run;
+  detect+skip if already present.
+
 ### Semgrep rule 2 `plain-tick-increment` — four `nosemgrep` suppressions
 
 - **Site:** `src/Core/FSharpApi.fs:160,168`, `src/Core/LawRunner.fs:131,189`, `src/Core/PluginHarness.fs:77`

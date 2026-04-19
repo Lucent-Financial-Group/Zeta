@@ -18,6 +18,14 @@
 
 [tools]
 python = "3.14"
+# Java 26 (latest). Round-34 migration: OpenJDK moved off brew
+# and onto mise so all language runtimes share one manager.
+java = "26"
+# Bun pinned. Round-34 seeding for the post-install repo-
+# automation runtime research (BACKLOG P1 "Post-install repo
+# automation: runtime choice open") + future web/UI work.
+# Matches `../scratch`'s install shape.
+bun = "1.3"
 
 [settings]
 # `python-build-standalone` (upstream for mise's python plugin)
