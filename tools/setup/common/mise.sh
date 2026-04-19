@@ -24,5 +24,13 @@ echo "↓ mise install (reading $REPO_ROOT/.mise.toml)..."
 (cd "$REPO_ROOT" && mise install)
 echo "✓ mise runtimes installed"
 
+# Ensure mise shims are on PATH for the remainder of the install
+# script's own process. shellenv.sh (step 9 in install.sh) handles
+# propagation to subsequent shells and to $GITHUB_PATH under CI,
+# but runs AFTER dotnet-tools.sh — so without this export, the
+# `dotnet` invoked by dotnet-tools.sh resolves to the system pre-
+# installed version, misses global.json's SDK pin, and errors.
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+
 # Print the resolved versions so the log is useful on a first run.
 (cd "$REPO_ROOT" && mise current)
