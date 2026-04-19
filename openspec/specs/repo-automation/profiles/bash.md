@@ -139,6 +139,50 @@ coded absolute paths outside those anchors are a smell.
 - **AND** MUST NOT reference `/Users/<name>/...` or `/home/
   <name>/...` absolute paths outside error messages
 
+### Requirement: Scripts MUST be deterministic — no retries or polling
+
+Zeta scripts MUST behave the same way on every run given the
+same inputs. Retries, poll loops, `sleep N && try again` patterns,
+and "eventual consistency" workarounds are smells and MUST be a
+last resort. If a script appears to need a retry, the default
+response is to investigate the root cause (wrong ordering, race
+condition, missing dependency) rather than paper over it.
+
+#### Scenario: A script call fails occasionally
+
+- **WHEN** a script step fails non-deterministically
+- **THEN** the default investigation path MUST diagnose the
+  root cause — wrong ordering, missing dependency, race
+  condition, upstream flake — NOT insert a retry loop
+- **AND** a retry MUST be introduced only when (a) the upstream
+  failure is genuinely transient and outside repo control and
+  (b) the retry's stopping criterion is bounded (finite max
+  attempts, finite total time) and (c) the retry is documented
+  inline with a reference to the upstream issue or flake class
+
+#### Scenario: A script uses sleep to wait for state
+
+- **WHEN** a script is tempted to `sleep N` before running a
+  follow-up command
+- **THEN** the default MUST be to restructure the script so the
+  prerequisite state is installed synchronously before the
+  follow-up runs — not to add the sleep
+- **AND** if the prerequisite truly cannot be detected
+  synchronously (rare), the wait loop MUST have a bounded
+  max-wall-clock timeout and fail-fast semantics on timeout
+
+#### Scenario: CI behaviour differs from local
+
+- **WHEN** a script runs green locally but flakes on CI (or
+  vice versa)
+- **THEN** the default diagnosis path MUST treat the
+  environment difference as the root cause, not the script
+  non-determinism
+- **AND** `tools/setup/doctor.sh` SHOULD surface the drift
+  (parity-drift between dev + CI is GOVERNANCE §24 DEBT)
+- **AND** adding a retry loop to mask the environment
+  difference MUST NOT be the default
+
 ### Requirement: Managed shellenv via BASH_ENV on CI
 
 Under GitHub Actions, `tools/setup/common/shellenv.sh` MUST emit

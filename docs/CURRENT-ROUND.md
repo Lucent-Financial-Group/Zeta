@@ -1,59 +1,24 @@
-# Current Round — 32 (open)
+# Current Round — 33 (open)
 
-Round 31 closed as a rest round (maintainer-called after the
-first fully-green gate in the repo's history — PR #6 round 30,
-then PR #7 round 31 rest marker). Round 32 shifted scope from
-"Track A product + Track B security" to "factory shape + CI
-parity + v1.0 security scoping." Product work (LawRunner bilinear
-+ sink-terminal) slides to round 33.
+Round 32 closed merged as PR #8. Round 33 picks up the deferred
+product work (LawRunner Track A) and the factory-improvement asks
+surfaced mid-round 32 that scoped out: `openspec-gap-finder`,
+declarative-manifest tiering push.
 
 ## Status
 
-- **Round number:** 32
-- **Opened:** 2026-04-18 (immediately post round-31 rest)
-- **Classification:** factory + parity + security-scoping
-  (product work deferred to round 33)
-- **Reviewer budget:** `harsh-critic` + `maintainability-reviewer`
-  floor per GOVERNANCE §20. `security-researcher` on any workflow
-  / install-script / threat-model touch. `public-api-designer`
-  on any public-API change. `threat-model-critic` on any
-  security doc edit (round cadence per §0 of THREAT-MODEL.md).
+- **Round number:** 33
+- **Opened:** 2026-04-19 (immediately post round-32 merge)
+- **Classification:** split — product (LawRunner) + factory
+  (openspec-gap-finder) + security follow-through
+- **Reviewer budget:** `harsh-critic` +
+  `maintainability-reviewer` floor per GOVERNANCE §20.
+  `security-researcher` + `threat-model-critic` on any
+  security / install-script / threat-model touch. `spec-zealot`
+  on any spec edit (new with GOVERNANCE §28). `public-api-designer`
+  on any public-API change.
 
-## Round 32 — what landed this round
-
-1. **CI parity-swap (GOVERNANCE §24 target).** `gate.yml`
-   replaces `actions/setup-dotnet` with
-   `./tools/setup/install.sh`; single source of truth for
-   toolchain shared by dev laptop + CI runner. Verifier
-   jars, mise-pinned dotnet + python, elan, dotnet tools
-   all provisioned from `tools/setup/manifests/`. Caches
-   added for mise runtimes / elan / dotnet-tools / verifier
-   jars / NuGet packages, all keyed on their manifest hash.
-   TLC + Alloy tests now *run* on CI instead of skipping.
-2. **`mise trust` policy decision.** Held as ceremony; becomes
-   meaningful once branch-protection-on-main lands. Documented
-   in `V1-SECURITY-GOALS.md` and in `gate.yml` header comment.
-3. **Persona memory-layout normalization.** Every persona now
-   owns a directory: `memory/persona/<name>/NOTEBOOK.md` +
-   `MEMORY.md` (index) + `OFFTIME.md` (§14 log, even zero-
-   entry rounds log honestly). Sweep of 26 files updated the
-   `owns_notes:` frontmatter + body references. Promotes Kenji-
-   only pattern to the whole roster.
-4. **OFFTIME seeded for 13 personas.** Kira, Rune, Mateo,
-   Nadia plus the rest of the cast each get their first zero-
-   entry OFFTIME record. Template matches Kenji's shape.
-5. **v1.0 security goals doc.** `docs/security/V1-SECURITY-GOALS.md`
-   names the realistic floor for 0.x → 1.0; out-of-scope
-   items (hardware side-channel, nation-state bespoke, HSM
-   signing, reproducible builds, SLSA L3/L4, ISO/SOC2/FedRAMP,
-   DAST, pen-test) land in `SECURITY-BACKLOG.md` with explicit
-   triggers for revisit.
-6. **`tools/setup/doctor.sh`** — read-only health check for
-   toolchain drift. Reports missing executables, jar drift
-   inside repo + `$HOME`, mise state, managed shellenv.
-   Addresses Aaron's "jars in random locations" observation.
-
-## Round 33 — deferred
+## Round 33 — parallel tracks
 
 **Track A — product (LawRunner):**
 
@@ -67,89 +32,88 @@ parity + v1.0 security scoping." Product work (LawRunner bilinear
 
 **Track B — security follow-through:**
 
-1. **`packages.lock.json` adoption** (round-30 Time-
-   Bomb Package mitigation).
-2. **Verifier-jar SHA-256 pinning** (round-30 TOFU
-   gradient step).
-3. **Safety-clause-diff lint** on
-   `.claude/skills/**/SKILL.md`.
+1. **`packages.lock.json` adoption** (round-30 Time-Bomb
+   Package mitigation).
+2. **Verifier-jar SHA-256 pinning** (round-30 TOFU gradient
+   step).
+3. **Safety-clause-diff lint** on `.claude/skills/**/SKILL.md`.
 4. **CodeQL workflow** (SDL #9 follow-through).
-5. **Branch-protection required-check on `main`** once
-   `gate.yml` has one week of consistent green runs
-   under the new install.sh path.
+5. **Branch-protection required-check on `main`** — round 32
+   gave us two clean green runs; one more round of green
+   seals the trigger.
 
-## Carried from round 30
+**Track C — factory (from round-32 surface):**
 
-**Reviewer floor P2s** (deferred):
-- SPACE-OPERA Simulation Theory entry still has
-  tag-only mitigation clarity (teaching-only, no
-  defence); worth one-line polish at next cadence.
-- Install-script harsh-critic P1s from round-29 still
-  on DEBT list.
+1. **`openspec-gap-finder` skill** (Aaron round-32 ask).
+   Parallel to `skill-gap-finder`; scans for committed
+   artefacts lacking an openspec + flags spec↔code drift.
+   Ships via `skill-creator` workflow.
+2. **Declarative-manifest tiering (scratch-shape ratchet).**
+   Aaron round-32 ask: push hard each sprint. This round's
+   step: split `brew.txt` into `min.Brewfile` + `all.Brewfile`
+   (matches scratch convention), pick up one more tier in
+   each subsequent round.
+3. **BP-NN candidate** — per GOVERNANCE §28 + bash profile:
+   deterministic scripts, no retries/polling. Harvest into
+   `docs/AGENT-BEST-PRACTICES.md` once the openspec
+   requirement has been exercised in a few rounds.
+
+## Carried in flight
+
+**Round-32 DEBT follow-ups:**
+- Devcontainer third leg (GOVERNANCE §24) — unscheduled.
+- Windows CI matrix — unscheduled (gate on stable green on
+  mac + linux first).
+- `mise trust` hardening — now a post-branch-protection
+  follow-up per SECURITY-BACKLOG.
 
 **Round-29 DEBT carry-over:**
-- `LawRunner` config-record refactor (before
-  `checkBilinear` lands).
+- `LawRunner` config-record refactor (before `checkBilinear`
+  lands).
 - Structured `LawViolation.Reason` DU.
 - Test covering ops that omit the marker tag.
 - Skill-file prose polish after §27 sweep.
 - Install-script P1 follow-ups.
 
 **Round-27+ deferred pool:**
-- `IsDbspLinear` Lean predicate + B1/B2/B3/chain_rule
-  closures.
-- Full `.mise.toml` migration when Lean plugin lands
-  (candidate upstream contribution per §23).
-- Devcontainer / Codespaces image (GOVERNANCE §24
-  third leg).
-- Windows CI matrix (trigger: stable on mac + linux).
-- Parity swap: CI's `actions/setup-dotnet` →
-  `tools/setup/install.sh` (gated on `mise trust`
-  hardening — Track B item 4).
-- Branch-protection required-check on `main`.
+- `IsDbspLinear` Lean predicate + B1/B2/B3/chain_rule closures.
+- Full `.mise.toml` migration when Lean plugin lands (candidate
+  upstream contribution per §23).
 
 ## Open asks to the maintainer
 
-- **Aaron decisions staged for round 32:**
-  - `packages.lock.json` adoption — do we want it on
-    every project or just the library (`Zeta.Core`)?
-  - `mise trust` CI hardening approach — allow-list
-    `.mise.toml` schema (strict) vs diff-vs-main
-    (permissive) vs require human review on any
-    `.mise.toml` change (policy).
-  - When to flip branch-protection required-check on
-    `main` (one week of clean `gate.yml` runs is the
-    proposed trigger; round 30 + round 31 are two
-    green runs so far).
-  - Track A vs Track B first — or parallel?
+- **Aaron decisions staged for round 33:**
+  - `packages.lock.json` adoption — every project or just
+    `Zeta.Core`?
+  - Branch-protection required-check on `main` — flip after
+    round 33 if CI stays green for a third round?
+  - `openspec-gap-finder` persona — name this round, or spawn
+    as a skill without a persona first and attach a name once
+    it runs cleanly?
 
-- **Round 30 standing asks (carried):**
-  - NuGet prefix reservation on `nuget.org` for
-    `Zeta.*`.
-  - `global.json` `rollForward` (status quo vs
-    relaxed).
+- **Round 32 standing asks (carried):**
+  - NuGet prefix reservation on `nuget.org` for `Zeta.*`.
+  - `global.json` `rollForward` (status quo vs relaxed).
   - Repo visibility — currently private on AceHack.
 
 ## Notes for the next architect waking
 
-- **First fully-green gate landed in round 30.** Round
-  31 was the rest round. If a PR fails `gate.yml`, the
-  fix is always to the code (not to lower a rule's
-  severity). Weakening a rule is a design-doc moment.
-- **Any round-32 PR touching security docs auto-invokes
-  `threat-model-critic` re-audit** per §0 of
-  `docs/security/THREAT-MODEL.md`.
-- **Reality tags in SPACE-OPERA are honest signal.**
-  `shipped` means enforced; `BACKLOG` means designed
-  not shipped; `aspirational` means defence pattern
-  exists elsewhere but not Zeta; `teaching` means the
-  adversary is allegorical.
-- **Bus-factor exception is documented, not fixed.**
-  Aaron chooses when to adopt the remediation ladder
-  (hardware key, signed commits, co-maintainer
-  cooling period). Education-over-time.
-- `memory/` canonical; `memory/persona/<name>/`
-  per-persona.
-- GOVERNANCE §20 reviewer floor mandatory every
-  code-landing round.
+- **Round 32 landed the SQLSharp-proven CI pattern:** dotnet
+  leaves mise, installed via Microsoft's `dotnet-install.sh`;
+  `BASH_ENV` propagation replaces explicit per-step source.
+  CI is green and stays green.
+- **GOVERNANCE §28 is binding:** every committed artefact needs
+  an openspec. spec-less scripts are smells.
+- **Deterministic scripts are binding:** retries and polling
+  are last-resort, not default. See
+  `openspec/specs/repo-automation/profiles/bash.md`.
+- **Memory is first-class:** every persona carries a directory
+  (`NOTEBOOK.md` + `MEMORY.md` + `OFFTIME.md`). Agents write
+  their own memory freely per user-level memory rule.
+- **Reality tags in SPACE-OPERA are honest signal.** `shipped` =
+  enforced; `BACKLOG` = designed not shipped; `aspirational` =
+  pattern elsewhere not Zeta; `teaching` = allegorical.
+- `memory/` canonical; `memory/persona/<name>/` per-persona.
+- GOVERNANCE §20 reviewer floor mandatory every code-landing
+  round.
 - `~/.claude/projects/` sandbox, not git (§22).
