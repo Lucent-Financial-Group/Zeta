@@ -3,7 +3,12 @@ obj/
 *.user
 *.suo
 .vs/
-.vscode/
+# `.vscode/` is checked in so contributors get the same
+# recommended-extensions + workspace settings (SQLSharp pattern).
+# User-specific overrides go in `.vscode/*.local.json` or
+# `.vscode/settings.user.json` — those are ignored below.
+.vscode/*.local.json
+.vscode/settings.user.json
 .idea/
 .ionide/
 *.swp
