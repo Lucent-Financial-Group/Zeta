@@ -53,20 +53,6 @@ feature + debt budget).
   runtime. Install.sh stays bash (pre-bootstrap; can't depend
   on its own output).
 
-### Manifest files use `.txt` — feels cheap
-
-- **Site:** `tools/setup/manifests/{apt,brew,dotnet-tools,verifiers}.txt`
-- **Found:** round 34 by Aaron — "never use .txt for declarative
-  filename extensions it feels cheep"
-- **Effort:** S per manifest
-- **Friction:** signals "quick-list" not "declarative source of
-  truth." `../scratch` uses domain-extension discipline
-  (`.apt`, `.Brewfile`, `.dotnet-tools`, `.uv-tools`,
-  `.bun-global`) where the extension names the tool.
-- **Fix:** rename to domain-appropriate extensions; update
-  install.sh path references. Stage alongside the BACKLOG
-  "Declarative-manifest tiering" ratchet — same migration shape.
-
 ### `tools/setup/` script organisation less rich than `../scratch`
 
 - **Site:** `tools/setup/` vs `../scratch/scripts/setup/`

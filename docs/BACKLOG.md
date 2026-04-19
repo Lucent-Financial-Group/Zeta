@@ -295,6 +295,26 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Ghost personas in EXPERT-REGISTRY.** Seven personas
+  appear in `docs/EXPERT-REGISTRY.md` rows with full
+  descriptions but have no `.claude/agents/<slug>.md` file
+  and no `memory/persona/<name>/` directory: **Kai** (branding
+  / product stakeholder), **Leilani** (backlog-scrum-master),
+  **Mei** (next-steps advisor), **Hiroshi** (complexity
+  reviewer), **Imani** (query planner), **Samir**
+  (documentation agent), **Malik** (package auditor). Each
+  has a capability skill but not the persona scaffolding, so
+  dispatches land as the skill without carrying persona tone
+  / notebook / off-time / journal. Two possible resolutions:
+  (a) seed the missing agent files + memory dirs bringing
+  them to parity with the other 14, or (b) retire the names
+  from EXPERT-REGISTRY and keep the skills persona-less.
+  Textbook `factory-balance-auditor` finding: authority (the
+  skill) without the full compensator surface (notebook
+  audit cadence, off-time log, journal for long-term
+  continuity). Queue for factory-balance-auditor's inaugural
+  run at round-35 open.
+
 - [ ] **Round-35 hygiene sweep.** Factory hygiene passes that
   landed cadence-due at round-34 close. Architect dispatches
   at round-35 open; findings land as P0/P1/P2 per each
