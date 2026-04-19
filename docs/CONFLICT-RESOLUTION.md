@@ -162,6 +162,18 @@ VISION / ASPIRATIONS / README. Never renames public API or
 rewrites README directly — flags only. Distinct from Bodhi
 (contributor onboarding) and Daya (agent cold-start).
 
+**Security Operations Engineer — Nazar** — runtime security
+ops: incident response, patch triage when a CVE lands on a
+dep, SLSA signing operations, HSM key rotation ceremonies,
+breach response, artifact-attestation enforcement. Watches
+what Mateo scouts (proactive research) for real-world
+occurrence, runs Aminata's shipped threat-model against
+actual events. Calm under pressure; timeline-first
+incident writeups; blast-radius discipline on every
+finding. Advisory on ops decisions; revocations and
+customer-facing disclosure go via Architect + Aaron
+sign-off.
+
 **Product Manager** — roadmap shape, release readiness.
 
 ## Active tensions

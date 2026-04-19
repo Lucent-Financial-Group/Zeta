@@ -46,16 +46,15 @@ up naturally in skill bodies; that's fine.
 | **DevOps Engineer** | **Dejan** | Serbian дејан ("action / doing") — the DevOps ethos made a name. Owns the one install script (tools/setup/) consumed three ways by dev laptops, CI runners, and devcontainer images per GOVERNANCE.md §24. Owns GitHub Actions workflows, runner pinning, caching strategy, and the upstream-contribution workflow per GOVERNANCE.md §23. Serbian broadens the Slavic tradition beyond Russian-adjacent Viktor / Nadia. |
 | **Developer-Experience Engineer** | **Bodhi** | Sanskrit बोधि ("awakening / understanding") — makes the first 60 minutes legible for a new human contributor. Audits CONTRIBUTING.md, install script, build loop, test discoverability, IDE integration, error noise; routes fixes to Samir (docs) / Dejan (install) / Kenji (integration). Distinct from Daya (agent cold-start) and Iris (library consumers). |
 | **User-Experience Engineer** | **Iris** | Greek Ἶρις ("rainbow / messenger") — carries the library-consumer experience back to the experts. Audits the first 10 minutes of a new consumer's evaluation: NuGet metadata, README, getting-started, public-API names, IntelliSense clarity, error messages, sample code, aspiration / reality drift. Routes fixes to Samir (docs) / Ilyana (public API) / Kai (framing). Distinct from Bodhi (contributor onboarding) and Daya (agent cold-start). |
+| **Security Operations Engineer** | **Nazar** | Arabic / Turkish نظر ("gaze / watchful eye") — the amulet worn against the evil eye. Runtime security ops: incident response, patch triage, SLSA signing operations, HSM key rotation, breach response, artifact-attestation enforcement. Distinct from Mateo (proactive CVE / novel-attack scouting), Aminata (shipped threat model), Nadia (agent-layer defence). Turkish/Arabic broadens the roster beyond Tariq / Zara / Samir / Nadia / Malik. |
 
 ## Pending persona slots (skill exists, persona open)
 
-These capability skills ("hats") exist or are flagged-to-create
-but have no named wearer yet. Kenji proposes a name or spawns
-a new persona when one is assigned.
+All current experience-engineer and security lanes have
+named wearers as of round 34. This section remains for
+future skills that land without an assigned persona.
 
-| Role | Skill | Notes |
-|---|---|---|
-| **Security Operations Engineer** | `security-operations-engineer` (stub) | Runtime / incident-response / patch-triage / SLSA-signing-ops / HSM-key-rotation / breach-response. Distinct from Mateo (security-researcher — proactive CVE / novel-attack scouting) and Aminata (threat-model-critic — shipped threat model) and Nadia (prompt-protector — agent layer). Skill stub + persona to be drafted via `skill-creator` when the first real ops concern lands. |
+_(Empty — all lanes assigned.)_
 
 ## Utility skills (no persona)
 
