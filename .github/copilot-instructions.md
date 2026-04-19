@@ -143,6 +143,18 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   line. This has bitten round 34 five separate times;
   flag it inline on any PR diff that introduces a
   line-start `+` in prose or a list continuation.
+- **Python tool management is `uv`-only.** Any PR diff
+  that introduces `pip install`, `pipx install`,
+  `poetry install` / `poetry add`, `pyenv install`,
+  `conda install` / `mamba install`, `pip-tools` /
+  `pip-compile`, hand-managed `virtualenv` / `venv`, or
+  a bare `requirements.txt` without a lockfile is a
+  smell — reject with a suggestion to rewrite using
+  `uv tool install` (CLIs) / `uv add` / `uv sync` /
+  `uv lock` / `uv venv`. Zeta's runtime Python is mise-
+  managed; `uv` is the only package / tool / lockfile
+  manager Zeta uses. Full rewrite table in
+  `.claude/skills/python-expert/SKILL.md` §Packaging.
 
 ## What to do when unsure
 

@@ -270,3 +270,28 @@ PRACTICES.md gate:
 Codified meanwhile in `.github/copilot-instructions.md`
 under "Conventions you must respect" so Copilot flags it on
 every PR. Will re-evaluate for BP-17 promotion after round 44.
+
+## 2026-04-19 — candidate BP: uv-only Python package and tool
+## management
+
+Aaron flagged pip / pipx / poetry / pyenv / conda / requirements.txt
+(no lockfile) / virtualenv as smells on Zeta PRs. uv covers every
+workflow (install, venv, lock, CLI tool, Python interpreter) with a
+Rust-implemented 10-100x speedup and reproducible lockfile.
+`../scratch` ships the same discipline.
+
+Codified meanwhile in:
+- `.claude/skills/python-expert/SKILL.md` §Packaging (authoritative
+  rewrite table)
+- `.github/copilot-instructions.md` "Conventions you must respect"
+  (Copilot flags on PR diff)
+
+Promotion criteria per the existing AGENT-BEST-PRACTICES.md gate:
+
+- Source count: uv docs + Astral blog + multiple .NET/Python
+  community posts preferring uv over pip in 2025. Meets 3.
+- Round survival: round 34 only. Needs ≥10 rounds.
+- Architect sign-off: pending.
+
+Candidate BP-18 for promotion after round 44, paired with BP-17
+candidate (line-start `+` in markdown).
