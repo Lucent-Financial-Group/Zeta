@@ -32,6 +32,7 @@ coverage-summary.json
 # scratch files the harness writes into `.claude/` (scheduled-tasks MCP,
 # session bookkeeping). Not source; regenerated on every session.
 .claude/scheduled_tasks.lock
+.claude/scheduled_tasks.json
 .claude/*.lock
 .DS_Store
 Thumbs.db
