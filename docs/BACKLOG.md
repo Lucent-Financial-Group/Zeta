@@ -233,6 +233,33 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Round-35 hygiene sweep.** Factory hygiene passes that
+  landed cadence-due at round-34 close. Architect dispatches
+  at round-35 open; findings land as P0/P1/P2 per each
+  skill's procedure. The portfolio (five lenses, rotated):
+  - **`factory-audit`** (every ~10 rounds — due) — governance
+    coverage, persona coverage, round cadence, memory hygiene,
+    reviewer protocol.
+  - **`factory-balance-auditor`** (new round 34; inaugural
+    run due) — authority / compensator symmetry: for every
+    power or write-surface in the factory, confirm a
+    compensator exists. "What here has no brake?"
+  - **`skill-tune-up`** (every 5-10 rounds — due; seven
+    ranking criteria now including portability drift) — ranks
+    existing skills by TUNE / SPLIT / MERGE / RETIRE /
+    HAND-OFF-CONTRACT / OBSERVE urgency.
+  - **`skill-gap-finder`** (every 5-10 rounds — due) —
+    recurring patterns that should be a centralised skill but
+    aren't.
+  - **`project-structure-reviewer`** (every 3-5 rounds — due)
+    — physical layout, file placement, naming conventions.
+
+  The five lenses are intentionally overlapping at the edges
+  but non-redundant at the centre. The Architect rotates
+  through them at round-close and uses the union of findings
+  to shape the next round's backlog. Effort: S-M per pass;
+  parallel-dispatchable.
+
 - [ ] **Factory portability — generic-by-default across
   skills, build, CI, and install scaffolding.** The
   software factory is intended to become reusable across
