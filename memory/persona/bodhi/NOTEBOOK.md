@@ -54,7 +54,7 @@ P1 (friction but surmountable):
 - `CONTRIBUTING.md:8-18` — missing-step — quick-start never tells the reader "open a new shell after install to pick up PATH." Only `install.sh:41-42` says it. Intervention: one line under the install block. Owner: Samir.
 - `README.md:170-175` — missing-step — "Building and testing" omits the `install.sh` prerequisite; contributor who skips CONTRIBUTING and lands on README first will `dotnet build` without a pinned SDK. Intervention: one-line pointer to `tools/setup/install.sh` above the build block. Owner: Samir.
 - `CONTRIBUTING.md:122-128` — unclear-contract — "Pull requests" says "Round-scoped branches (round-N) PR to main at round-close" but doesn't tell a first-time contributor whether their typo PR should target `round-N` or open a feature branch. Intervention: one sentence clarifying the trivial-PR path. Owner: Samir on Kenji sign-off.
-- `README.md:183-189` — tooling-gap — analyzer requires `dotnet tool install --global fsharp-analyzers`; `install.sh` doesn't install it, and `manifests/dotnet-tools.txt` only has `dotnet-stryker`. Either install it in the manifest or drop the instruction. Owner: Dejan (add to manifest) or Samir (remove from README).
+- `README.md:183-189` — tooling-gap — analyzer requires `dotnet tool install --global fsharp-analyzers`; `install.sh` doesn't install it, and `manifests/dotnet-tools` only has `dotnet-stryker`. Either install it in the manifest or drop the instruction. Owner: Dejan (add to manifest) or Samir (remove from README).
 
 P2 (small wins):
 
@@ -68,7 +68,7 @@ P2 (small wins):
 1. `README.md` — rewrite the "Layout" block + fix `samples/Demo` / `bench/Benchmarks` / `src/Core/Core.fsproj`. Owner: Samir. Effort: S. Rollback: single-file revert.
 2. `CLAUDE.md`, `AGENTS.md`, `.github/PULL_REQUEST_TEMPLATE.md`, `openspec/README.md` — sweep `Zeta.sln` → `Zeta.sln`, `Dbsp.Core` → `Core` / namespace-stays `Dbsp.Core` where it refers to the API namespace (not the folder). Owner: Samir. Effort: S. Rollback: per-file revert.
 3. `CONTRIBUTING.md` — add "open a new shell after `install.sh`" sentence; add trivial-PR branch guidance. Owner: Samir on Kenji sign-off. Effort: S. Rollback: single-file revert.
-4. `tools/setup/manifests/dotnet-tools.txt` — decision: install `fsharp-analyzers` or delete the README block. Owner: Dejan + Samir. Effort: S. Rollback: one-line.
+4. `tools/setup/manifests/dotnet-tools` — decision: install `fsharp-analyzers` or delete the README block. Owner: Dejan + Samir. Effort: S. Rollback: one-line.
 
 ## Pointer-drift catalogue
 

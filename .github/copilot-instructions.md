@@ -126,8 +126,10 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   `namespace Dbsp.*` — round-33 rename). Public API
   under `src/Core/`, tests under `tests/Tests.FSharp/`.
 - **No `.txt` for declarative files.** Manifests use
-  semantic extensions (e.g., `uv-tools`, `apt.txt` is a
-  DEBT item awaiting cleanup).
+  bare semantic names (e.g., `apt`, `brew`,
+  `dotnet-tools`, `uv-tools`, `verifiers` under
+  `tools/setup/manifests/`). Never propose adding
+  `.txt` to a new manifest.
 - **Documentation is current state, not history.**
   Historical narrative lives in `docs/ROUND-HISTORY.md`
   and ADRs under `docs/DECISIONS/`; everywhere else in

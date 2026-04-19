@@ -64,8 +64,8 @@ and the install scripts.
 - **WHEN** a contributor needs to add a runtime dependency for the
   repo's supported platforms
 - **THEN** the dependency MUST be added to the appropriate
-  manifest under `tools/setup/manifests/` (e.g., `apt.txt`,
-  `brew.txt`, `dotnet-tools.txt`, `verifiers.txt`)
+  manifest under `tools/setup/manifests/` (e.g., `apt`,
+  `brew`, `dotnet-tools`, `verifiers`)
 - **AND** the install scripts MUST read that manifest rather than
   hard-coding the dependency inline
 - **AND** a dependency installed by imperative shell without a

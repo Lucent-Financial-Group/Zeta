@@ -43,9 +43,9 @@ worth introducing a build system, or can F# do it?
 JDK 21 (LTS). Pinned via:
 
 - macOS: Homebrew `openjdk@21` in
-  `tools/setup/manifests/brew.txt`.
+  `tools/setup/manifests/brew`.
 - Linux: apt `openjdk-21-jdk-headless` in
-  `tools/setup/manifests/apt.txt`.
+  `tools/setup/manifests/apt`.
 
 Do not use Java 17 features gratuitously — we're on 21
 for the long haul. Features available and worth using

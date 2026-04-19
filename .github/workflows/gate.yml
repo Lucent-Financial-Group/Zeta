@@ -85,7 +85,7 @@ jobs:
             tools/alloy
           # Manifest is the single source of truth — cache busts when
           # either URL or (future) SHA changes.
-          key: verifiers-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/verifiers.txt') }}
+          key: verifiers-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/verifiers') }}
 
       - name: Cache NuGet packages
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5

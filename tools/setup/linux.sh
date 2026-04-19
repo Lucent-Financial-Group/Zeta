@@ -3,13 +3,16 @@
 # tools/setup/linux.sh — Linux bootstrap path (Debian/Ubuntu for now).
 #
 # Order matters:
-#   1. apt packages from manifests/apt.txt (openjdk, build-essential, curl)
+#   1. apt packages from manifests/apt (build-essential, curl, etc.)
 #   2. mise (via official installer; no apt package yet)
-#   3. common/mise.sh     — pins python (dotnet moved out in round 32)
-#   4. common/dotnet.sh   — installs .NET SDK per global.json
+#   3. common/mise.sh     — installs dotnet/python/java/bun/uv
+#                           per .mise.toml
+#   4. common/python-tools.sh — uv-managed Python CLI tools
+#                              (ruff, etc.) from manifests/uv-tools
 #   5. common/elan.sh     — Lean toolchain
-#   6. common/dotnet-tools.sh — dotnet global tools
-#   7. common/verifiers.sh    — TLA+ + Alloy jars
+#   6. common/dotnet-tools.sh — dotnet global tools from
+#                              manifests/dotnet-tools
+#   7. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
 #   8. common/shellenv.sh     — managed PATH file
 #
 # Non-Debian Linuxes (RHEL/Fedora/Arch/Alpine) are deferred — the
@@ -29,7 +32,7 @@ if ! command -v apt-get >/dev/null 2>&1; then
 fi
 
 # ── 1. apt packages (from manifest) ─────────────────────────────────
-APT_MANIFEST="$SETUP_DIR/manifests/apt.txt"
+APT_MANIFEST="$SETUP_DIR/manifests/apt"
 if [ -f "$APT_MANIFEST" ]; then
   # Extract non-comment non-empty lines via awk (doesn't fail
   # under pipefail when manifest is all comments — unlike

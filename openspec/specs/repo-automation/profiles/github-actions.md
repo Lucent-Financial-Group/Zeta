@@ -124,7 +124,7 @@ floating inputs.
 
 - **WHEN** a workflow caches `tools/tla/` + `tools/alloy/`
 - **THEN** the cache key MUST include
-  `hashFiles('tools/setup/manifests/verifiers.txt')`
+  `hashFiles('tools/setup/manifests/verifiers')`
 - **AND** the cache bust cleanly when the manifest changes
 
 ### Requirement: Workflow YAML stays thin and orchestration-focused

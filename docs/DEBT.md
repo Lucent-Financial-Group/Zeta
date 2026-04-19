@@ -150,7 +150,7 @@ feature + debt budget).
 
 ### Verifier-jar SHA-256 pinning (round-30 → round-31)
 
-- **Site:** `tools/setup/common/verifiers.sh` + `tools/setup/manifests/verifiers.txt`
+- **Site:** `tools/setup/common/verifiers.sh` + `tools/setup/manifests/verifiers`
 - **Found:** round 30 — elevation design doc deferred this to round 31 per Aaron's "accept today, improve over time" TOFU stance
 - **Effort:** S
 - **Friction:** TOFU on first-use means a DNS-spoof or upstream-account-compromise at the moment of install becomes permanently trusted. Acceptable residual risk today, but concrete gradient step to close the gap exists.

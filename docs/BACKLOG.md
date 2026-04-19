@@ -595,10 +595,10 @@ within each priority tier.
   doc-state audit.
 - [ ] **Declarative-manifest setup matching `../scratch`'s
   tiered shape.** Zeta's `tools/setup/manifests/` is
-  declarative-ish (`apt.txt`, `brew.txt`, etc.) but flat.
+  declarative-ish (`apt`, `brew`, etc.) but flat.
   `../scratch`'s `declarative/` has tiered profiles
   (`min`/`runner`/`quality`/`all`) per platform per tool.
-  Push one incremental step per round — split `brew.txt` into
+  Push one incremental step per round — split `brew` into
   tiers, then `.dotnet-tools` / `.bun-global` formats, etc.
 - [ ] **Upstream sync script + `references/upstreams/`
   population.** `references/reference-sources.json` manifest

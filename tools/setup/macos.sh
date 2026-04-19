@@ -5,13 +5,17 @@
 # Order matters:
 #   1. Xcode Command Line Tools (prerequisite for everything else)
 #   2. Homebrew (system-package source on macOS)
-#   3. Brew packages from manifests/brew.txt (openjdk, curl, etc.)
+#   3. Brew packages from manifests/brew (currently empty after
+#      round-34 JDK → mise migration)
 #   4. mise (runtime manager)
-#   5. common/mise.sh     — pins python (dotnet moved out in round 32)
-#   6. common/dotnet.sh   — installs .NET SDK per global.json
+#   5. common/mise.sh     — installs dotnet/python/java/bun/uv
+#                           per .mise.toml
+#   6. common/python-tools.sh — uv-managed Python CLI tools
+#                              (ruff, etc.) from manifests/uv-tools
 #   7. common/elan.sh     — Lean toolchain (no mise plugin yet)
-#   8. common/dotnet-tools.sh — dotnet global tools
-#   9. common/verifiers.sh    — TLA+ + Alloy jars
+#   8. common/dotnet-tools.sh — dotnet global tools (semgrep,
+#                              stryker, etc.) from manifests/dotnet-tools
+#   9. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
 #  10. common/shellenv.sh     — managed PATH file
 
 set -euo pipefail
@@ -44,11 +48,11 @@ fi
 echo "✓ brew: $(brew --version | head -n1)"
 
 # ── 3. Brew packages (from manifest) ────────────────────────────────
-BREW_MANIFEST="$SETUP_DIR/manifests/brew.txt"
+BREW_MANIFEST="$SETUP_DIR/manifests/brew"
 if [ -f "$BREW_MANIFEST" ]; then
   # Extract non-comment non-empty lines via awk (doesn't fail under
   # pipefail when the manifest is all comments — unlike `grep -vE`
-  # which exits 1 on no-match). Round-34 brew.txt has no packages
+  # which exits 1 on no-match). Round-34 brew has no packages
   # after the JDK migration to mise.
   PKGS="$(awk '!/^[[:space:]]*#/ && NF > 0 { print }' "$BREW_MANIFEST")"
   if [ -n "$PKGS" ]; then
