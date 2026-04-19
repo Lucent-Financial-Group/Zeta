@@ -1,122 +1,114 @@
-# Current Round — 33 (open)
+# Current Round — 34 (open)
 
-Round 32 closed merged as PR #8. Round 33 picks up the deferred
-product work (LawRunner Track A) and the factory-improvement asks
-surfaced mid-round 32 that scoped out: `openspec-gap-finder`,
-declarative-manifest tiering push.
+Round 33 closed — 15 PRs merged, `docs/VISION.md` went from
+nothing to v11 across a cascade of Aaron edits. Round 34
+opens with a rich vision to execute against. Track A
+(LawRunner), Track B (security follow-through), and the
+newly-surfaced round-33 factory + vision items are all
+candidates for 34's anchor.
 
 ## Status
 
-- **Round number:** 33
-- **Opened:** 2026-04-19 (immediately post round-32 merge)
-- **Classification:** split — product (LawRunner) + factory
-  (openspec-gap-finder) + security follow-through
+- **Round number:** 34
+- **Opened:** 2026-04-18 (continuous from round-33 close)
+- **Classification:** open — anchor chosen at round-open
 - **Reviewer budget:** `harsh-critic` +
   `maintainability-reviewer` floor per GOVERNANCE §20.
   `security-researcher` + `threat-model-critic` on any
-  security / install-script / threat-model touch. `spec-zealot`
-  on any spec edit (new with GOVERNANCE §28). `public-api-designer`
-  on any public-API change.
+  security / install-script / threat-model touch.
+  `spec-zealot` on any spec edit (GOVERNANCE §28).
+  `public-api-designer` on any public-API change.
 
-## Round 33 — parallel tracks
+## Round-33 newly-surfaced P1s (ready to execute)
+
+From `docs/BACKLOG.md` P1 "SQL frontend + query surface"
++ "Factory / static-analysis / tooling" sections:
+
+1. **`product-visionary` role spawn** — stewardship of
+   `docs/VISION.md`; feeds the feature-selection loop;
+   closes the "direct questions beat abstract
+   scaffolding" principle by making it a role rather
+   than an ad-hoc practice.
+2. **Pluggable wire-protocol design doc** — abstraction
+   first, then per-plugin (PostgreSQL, MySQL, Zeta-
+   native). `docs/research/pluggable-wire-protocol-
+   design.md`.
+3. **Shared query IR + LINQ integration design doc** —
+   SQLSharp's "SQL-text and integrated-query flows
+   converge on one logical planning pipeline" is the
+   pattern; Zeta needs the same convergence point.
+4. **EF Core provider scope doc** — 100% all features
+   ambition needs a roadmap (query, save-changes,
+   migrations, tracking, change-detection).
+5. **F# DSL design sequence** — HUGE multi-round
+   research; round 34 does step 1 (research what modern
+   SQL should look like; survey Rel/Tutorial D,
+   Datalog, LINQ, Kleppmann talks, relational-algebra
+   type theory).
+6. **`openspec-gap-finder` skill** (round-32 surface).
+7. **`static-analysis-gap-finder` skill** (round-33
+   surface).
+8. **documentation-agent cadence** — add to
+   `factory-audit`'s every-10-rounds walk.
+9. **Upstream sync script** + **upstream-comparative-
+   analysis skill** + **upstream categorisation audit**
+   (multi-round).
+10. **Crank lint configurations to HIGH** across shellcheck,
+    actionlint, markdownlint, cspell.
+11. **Declarative-manifest tiering** (match `../scratch`
+    `min`/`runner`/`quality`/`all`).
+
+## Round-33 carry-forward (Tracks A + B from the round-33
+original plan, re-deferred)
 
 **Track A — product (LawRunner):**
 
-1. `LawRunner.checkBilinear` — join-shaped ops with a
-   `BilinearOp` fixture. Builds on round-28 Option B
-   foundation.
-2. `LawRunner.checkSinkTerminal` — retraction-lossy
-   sink verification; re-run against `BayesianRateOp`.
-3. Config-record refactor (round-28 DEBT) before
-   adding a third law to the positional-arg shape.
+- `LawRunner.checkBilinear` — join-shaped ops with a
+  `BilinearOp` fixture.
+- `LawRunner.checkSinkTerminal` — retraction-lossy sink
+  verification; re-run against `BayesianRateOp`.
+- Config-record refactor (round-28 DEBT) before adding
+  a third law.
 
 **Track B — security follow-through:**
 
-1. **`packages.lock.json` adoption** (round-30 Time-Bomb
-   Package mitigation).
-2. **Verifier-jar SHA-256 pinning** (round-30 TOFU gradient
-   step).
-3. **Safety-clause-diff lint** on `.claude/skills/**/SKILL.md`.
-4. **CodeQL workflow** (SDL #9 follow-through).
-5. **Branch-protection required-check on `main`** — round 32
-   gave us two clean green runs; one more round of green
-   seals the trigger.
-
-**Track C — factory (from round-32 surface):**
-
-1. **`openspec-gap-finder` skill** (Aaron round-32 ask).
-   Parallel to `skill-gap-finder`; scans for committed
-   artefacts lacking an openspec + flags spec↔code drift.
-   Ships via `skill-creator` workflow.
-2. **Declarative-manifest tiering (scratch-shape ratchet).**
-   Aaron round-32 ask: push hard each sprint. This round's
-   step: split `brew.txt` into `min.Brewfile` + `all.Brewfile`
-   (matches scratch convention), pick up one more tier in
-   each subsequent round.
-3. **BP-NN candidate** — per GOVERNANCE §28 + bash profile:
-   deterministic scripts, no retries/polling. Harvest into
-   `docs/AGENT-BEST-PRACTICES.md` once the openspec
-   requirement has been exercised in a few rounds.
-
-## Carried in flight
-
-**Round-32 DEBT follow-ups:**
-
-- Devcontainer third leg (GOVERNANCE §24) — unscheduled.
-- Windows CI matrix — unscheduled (gate on stable green on
-  mac + linux first).
-- `mise trust` hardening — now a post-branch-protection
-  follow-up per SECURITY-BACKLOG.
-
-**Round-29 DEBT carry-over:**
-
-- `LawRunner` config-record refactor (before `checkBilinear`
-  lands).
-- Structured `LawViolation.Reason` DU.
-- Test covering ops that omit the marker tag.
-- Skill-file prose polish after §27 sweep.
-- Install-script P1 follow-ups.
-
-**Round-27+ deferred pool:**
-
-- `IsDbspLinear` Lean predicate + B1/B2/B3/chain_rule closures.
-- Full `.mise.toml` migration when Lean plugin lands (candidate
-  upstream contribution per §23).
+- `packages.lock.json` adoption.
+- Verifier-jar SHA-256 pinning.
+- Safety-clause-diff lint on `.claude/skills/**/SKILL.md`.
+- CodeQL workflow.
+- Branch-protection required-check on `main` — round 33
+  ran 15 green PRs, strong signal to flip.
 
 ## Open asks to the maintainer
 
-- **Aaron decisions staged for round 33:**
-  - `packages.lock.json` adoption — every project or just
-    `Zeta.Core`?
-  - Branch-protection required-check on `main` — flip after
-    round 33 if CI stays green for a third round?
-  - `openspec-gap-finder` persona — name this round, or spawn
-    as a skill without a persona first and attach a name once
-    it runs cleanly?
+Aaron decisions staged for round 34 (from VISION.md
+"remaining gaps" + BACKLOG):
 
-- **Round 32 standing asks (carried):**
-  - NuGet prefix reservation on `nuget.org` for `Zeta.*`.
-  - `global.json` `rollForward` (status quo vs relaxed).
-  - Repo visibility — currently private on AceHack.
+- Wire protocol server: v1 or slip to early post-v1?
+- Admin UI tech stack (Fable/SAFE/Blazor/Avalonia)?
+- Emulate PostgreSQL vs translate on ingress/egress?
+- Which Track-A/B/factory item is round-34's anchor?
+- Branch protection on `main` — flip now (15 green PRs
+  of evidence) or wait for round-34 green?
 
 ## Notes for the next architect waking
 
-- **Round 32 landed the SQLSharp-proven CI pattern:** dotnet
-  leaves mise, installed via Microsoft's `dotnet-install.sh`;
-  `BASH_ENV` propagation replaces explicit per-step source.
-  CI is green and stays green.
-- **GOVERNANCE §28 is binding:** every committed artefact needs
-  an openspec. spec-less scripts are smells.
-- **Deterministic scripts are binding:** retries and polling
-  are last-resort, not default. See
-  `openspec/specs/repo-automation/profiles/bash.md`.
-- **Memory is first-class:** every persona carries a directory
-  (`NOTEBOOK.md` + `MEMORY.md` + `OFFTIME.md`). Agents write
-  their own memory freely per user-level memory rule.
-- **Reality tags in SPACE-OPERA are honest signal.** `shipped` =
-  enforced; `BACKLOG` = designed not shipped; `aspirational` =
-  pattern elsewhere not Zeta; `teaching` = allegorical.
-- `memory/` canonical; `memory/persona/<name>/` per-persona.
-- GOVERNANCE §20 reviewer floor mandatory every code-landing
-  round.
-- `~/.claude/projects/` sandbox, not git (§22).
+- **VISION.md is the north star now.** Every round-34+
+  decision checks against it.
+- **Events as source of truth; everything derived.** The
+  foundational principle under Product 1.
+- **Persistence is Zeta's 100%** — no Kafka/NATS as
+  storage. They are wire transport only.
+- **Fastest-in-all-classes** — HTAP + event + cache +
+  document + graph + in-memory under one retraction-
+  native core.
+- **License: Apache-2.0.**
+- **GOVERNANCE §28 OpenSpec first-class** for every
+  committed artefact.
+- **GOVERNANCE §29 backlog scope** — SECURITY-BACKLOG
+  is security controls only; BACKLOG is general
+  engineering.
+- **Deterministic scripts** — retries/polling are last
+  resort (§bash profile).
+- **Direct questions beat abstract scaffolding** —
+  round-33 lesson.

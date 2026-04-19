@@ -9,6 +9,128 @@ New rounds are appended at the top.
 
 ---
 
+## Round 33 — factory shape + vision cascade (15 merged PRs)
+
+Anchor: Aaron's static-analysis push opened round 33 with
+Track D ("as much static analysis as possible, match or
+surpass SQLSharp + scratch"). The round cascaded through
+factory improvements and closed on a 10-version `docs/
+VISION.md` co-authoring session.
+
+### Track D — static analysis (PRs 9-11)
+
+Three new CI lint jobs alongside Semgrep: shellcheck,
+actionlint, markdownlint-cli2. Plus expanded
+`.editorconfig` with SQLSharp's dotnet + C# style rules;
+`cspell.json` with 50+ Zeta-specific words; `.vscode/
+extensions.json` + `.vscode/settings.json` checked in;
+F# in markdown headings via backtick-code style (Aaron:
+"F# is canonical, don't appease the linter"). 680
+`--fix` auto-applies across 100+ docs.
+
+### Factory shape (PRs 12-13)
+
+- **GOVERNANCE §29 — backlog scope.** Non-security
+  items move to `docs/BACKLOG.md`; `SECURITY-BACKLOG.md`
+  is security controls only. 8 items relocated;
+  `backlog-scrum-master` owns enforcement.
+- **`docs/VISION.md` first draft** — Kenji synthesis
+  from rounds 1-33.
+
+### Vision cascade (PRs 14-23; v1 → v11)
+
+Aaron ran 10 successive passes of vision edits:
+
+- **Foundational (Kreps/Kleppmann/Marz):** events are
+  source of truth; everything else derived.
+- **Two first-class products:** Zeta the full database
+  + the cross-platform AI-automated software factory.
+- **DX north star:** `services.AddZeta(...)` → distributed
+  retraction-native database. Test on Kind. Code IS
+  stored procedures. LINQ + SQL + F# DSL on one IR.
+- **Fastest-in-all-classes:** HTAP/translytical, event
+  streaming, cache, document/object store, graph store,
+  VoltDB-class in-memory. One retraction-native core
+  under multi-model surfaces.
+- **Persistence is Zeta's 100%.** Kafka/NATS/NATS-
+  JetStream/Zeta-native are wire-TRANSPORT only.
+- **Pluggable wire-protocol:** PostgreSQL + MySQL +
+  Zeta-native plugins.
+- **SQL frontend v1:** PostgreSQL dialect first. EF
+  Core provider 100% all features.
+- **License: Apache-2.0.**
+- **Commercial trigger:** Aaron uses Zeta in a real
+  project for its database.
+- **Bitemporal + time-travel:** first-class v2.
+- **".NET stored procedures" (C# + F#)** as durable-
+  Rx queries — Reaqtor-shaped open niche.
+- **Event + cache + GraphQL spillover** via retraction-
+  native invalidation-for-free.
+- **F# DSL reimagining SQL:** multi-round design effort.
+
+### What teaches
+
+The vision cascade wasn't planned — it emerged organically
+from one "we probably need a product owner" question. Aaron
+turned out to be willing + eager to articulate the north
+star once asked directly.
+
+Round-33 principle minted: **direct questions beat
+abstract scaffolding.** When a gap surfaces that needs
+Aaron's judgement, ask Aaron directly rather than building
+a role to ask him later.
+
+### Round-33 PR ledger (15 merges)
+
+| PR | Anchor |
+|---|---|
+| #9 | Track D — static analysis lint jobs |
+| #10 | Bash-Unix-only + TS/Bun reframe |
+| #11 | `.vscode/` checked in |
+| #12 | Backlog scope audit + GOVERNANCE §29 |
+| #13 | `docs/VISION.md` first draft |
+| #14 | VISION v2 — Zeta is a full database |
+| #15 | VISION v3 — SQL frontend in v1 |
+| #16 | VISION v4 — DB+event-store façade |
+| #17 | License → Apache-2.0 + VISION v5 |
+| #18 | VISION v6 — pluggable wire protocol |
+| #19 | VISION v7 — DX north star |
+| #20 | VISION v8 — events + cache + GraphQL |
+| #21 | VISION v9 — persistence 100% Zeta-owned |
+| #22 | VISION v10 — fastest-in-all-classes |
+| #23 | VISION v11 — HTAP/multi-model not OLAP |
+
+Plus this round-close. Highest-velocity round to date.
+
+---
+
+## Round 32 — CI parity-swap + memory normalization + v1 security + openspec §28
+
+Anchor: SQLSharp-proven CI pattern + first-class persona
+memory + GOVERNANCE §28 OpenSpec discipline.
+
+Landed:
+
+- **CI parity-swap** — `gate.yml` replaced `actions/
+  setup-dotnet` with `./tools/setup/install.sh`; dotnet
+  leaves mise (now via Microsoft's `dotnet-install.sh`
+  to `~/.dotnet`); `BASH_ENV` propagation replaces
+  explicit per-step source. TLC + Alloy tests now
+  actually run on CI instead of skipping.
+- **Persona memory normalization** — every persona
+  carries a directory (`NOTEBOOK.md` + `MEMORY.md` +
+  `OFFTIME.md`). 14 persona directories.
+- **v1.0 security goals doc + SECURITY-BACKLOG** —
+  realistic floor vs deferred-with-trigger items.
+- **GOVERNANCE §28 — OpenSpec first-class** for every
+  committed artefact.
+- **`openspec/specs/repo-automation/`** with base spec
+  + `profiles/bash.md` + `profiles/github-actions.md`.
+- **`tools/setup/doctor.sh`** — read-only toolchain
+  drift detector.
+
+---
+
 ## Round 31 — rest round (maintainer-called)
 
 Round 30 closed with the first fully-green gate in the
