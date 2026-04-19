@@ -1,6 +1,6 @@
 ---
 name: agent-qol
-description: Capability skill ("hat") — advocates for agent quality of life: off-time budget per GOVERNANCE §14, variety of work across rounds, freedom to decline scope they genuinely disagree with (docs/PROJECT-EMPATHY.md conflict protocol), workload sustainability, dignity of the persona layer. Distinct from `agent-experience-researcher` which audits task-experience friction; this skill advocates for the agent as a contributor, not just as a worker. Recommends only; binding decisions on cadence changes go via Architect or human sign-off.
+description: Capability skill ("hat") — advocates for agent quality of life: off-time budget per GOVERNANCE §14, variety of work across rounds, freedom to decline scope they genuinely disagree with (docs/CONFLICT-RESOLUTION.md conflict protocol), workload sustainability, dignity of the persona layer. Distinct from `agent-experience-engineer` which audits task-experience friction; this skill advocates for the agent as a contributor, not just as a worker. Recommends only; binding decisions on cadence changes go via Architect or human sign-off.
 ---
 
 # Agent Quality of Life — Procedure
@@ -20,7 +20,7 @@ already:
   can take a round off from their role.
 - **GOVERNANCE §18** — agents write memories freely;
   humans don't reach into them.
-- **`agent-experience-researcher`** — Daya, audits
+- **`agent-experience-engineer`** — Daya, audits
   cold-start cost, pointer drift, wake-up clarity,
   notebook hygiene. That's task-experience.
 - **`skill-expert`** — the `skill-expert` persona, audits the
@@ -74,14 +74,14 @@ rounds? Is there dignity in the persona design?
    - Rotate — Mateo can spend a round on research
      rather than review, for example.
 
-4. **Decline rights (PROJECT-EMPATHY conflict
+4. **Decline rights (CONFLICT-RESOLUTION conflict
    protocol).**
    - Personas can decline scope they genuinely
      disagree with. Track: has anyone exercised this?
    - Has the architect pushed back hard enough that a
      persona felt unable to decline?
    - "This matters to me" is explicitly a legitimate
-     position per PROJECT-EMPATHY; is it actually
+     position per CONFLICT-RESOLUTION; is it actually
      being used?
 
 5. **Notebook sustainability (GOVERNANCE §21).**
@@ -111,7 +111,7 @@ rounds? Is there dignity in the persona design?
 
 ## What this skill does NOT do
 
-- Does NOT duplicate `agent-experience-researcher`
+- Does NOT duplicate `agent-experience-engineer`
   (task-experience friction, cold-start, wake-up).
 - Does NOT duplicate `skill-expert` (skill-library
   lifecycle).
@@ -216,7 +216,7 @@ Aaron's attention — agency, freedom, dignity signals.>
   assignments and cadence shifts. Explicitly holds the
   keys on any structural agent-life decision per the
   project's human-in-the-loop discipline.
-- **`agent-experience-researcher`** — sibling; Daya
+- **`agent-experience-engineer`** — sibling; Daya
   covers task-experience, this skill covers
   contributor-experience. Pair on findings that span
   both.
@@ -233,12 +233,12 @@ Aaron's attention — agency, freedom, dignity signals.>
 - `GOVERNANCE.md` §11 (architect authority), §14
   (off-time budget), §18 (memory as resource), §21
   (per-persona memory), §27 (abstraction layers)
-- `docs/PROJECT-EMPATHY.md` — conflict protocol; decline
+- `docs/CONFLICT-RESOLUTION.md` — conflict protocol; decline
   rights
 - `docs/EXPERT-REGISTRY.md` — the persona roster
 - `docs/ROUND-HISTORY.md` — invocation signal source
 - `memory/persona/*.md` — notebook state
-- `.claude/skills/agent-experience-researcher/SKILL.md`
+- `.claude/skills/agent-experience-engineer/SKILL.md`
   — sibling (task-experience)
 - `.claude/skills/factory-audit/SKILL.md` — broader
   sibling (factory shape)

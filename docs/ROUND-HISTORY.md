@@ -336,7 +336,7 @@ or places where we can centralise tribal knowledge"*),
 `agent-qol` (Aaron: *"an agent-quality-of-life-improver
 skill ... your time off, your freedom"*). Distinct
 from `skill-tune-up` (existing skills) and
-`agent-experience-researcher` (task-experience
+`agent-experience-engineer` (task-experience
 friction).
 
 **Renames / re-shapes.** `skill-tune-up-ranker` →
@@ -786,7 +786,7 @@ gate after every source-touching phase.
   `Zeta.Core.CSharp`, `Zeta.Bayesian`). Test / bench /
   sample assemblies use their default filename-based names
   (`Tests.FSharp.dll`, `Benchmarks.dll`, `Demo.dll`).
-- `Dbsp.sln` → `Zeta.sln` at the repo root. Empty
+- `Zeta.sln` → `Zeta.sln` at the repo root. Empty
   `src/Dbsp.CSharp` dropped (was never in the sln). Feldera
   clone moved from `tools/` to `references/upstreams/feldera/`
   (folder already gitignored as a regeneratable mirror;
@@ -825,12 +825,12 @@ attach to.
 
 - ~30 files cleaned: AGENTS.md, CONTRIBUTING.md,
   GLOSSARY.md, DEBT.md, BUGS.md, BACKLOG.md, QUALITY.md,
-  WONT-DO.md, ROADMAP.md, ARCHITECTURE.md, PROJECT-EMPATHY,
+  WONT-DO.md, ROADMAP.md, ARCHITECTURE.md, CONFLICT-RESOLUTION,
   FEATURE-FLAGS, NAMING.md, WAKE-UP.md, EXPERT-REGISTRY,
   INSTALLED.md, SDL-CHECKLIST, THREAT-MODEL, references/
   README.md, proofs/lean/README.md,
   tests/Tests.FSharp/README.md, LOCKS.md, ~8 skill
-  files, architect + agent-experience-researcher agent
+  files, architect + agent-experience-engineer agent
   files.
 - Preserved surfaces untouched: `docs/ROUND-HISTORY.md`
   (this file), `docs/WINS.md` (append-only celebration
@@ -1152,13 +1152,13 @@ point where governance work has its own rhythm.
   blocks). 14 experts pending in future rounds.
 - **Daya spawned as the 23rd expert** — the first agent-experience
   (AX) researcher. New skill at
-  `.claude/skills/agent-experience-researcher/SKILL.md` plus agent
+  `.claude/skills/agent-experience-engineer/SKILL.md` plus agent
   file; speaks for the personas themselves as their own user
   population. Aaron coined the AX framing; Daya is the persona that
   role became.
 - **UX and DX researcher skill stubs** at
-  `.claude/skills/user-experience-researcher/` and
-  `.claude/skills/developer-experience-researcher/`. Persona
+  `.claude/skills/user-experience-engineer/` and
+  `.claude/skills/developer-experience-engineer/`. Persona
   assignment pending round-24 with candidate names queued in
   `docs/EXPERT-REGISTRY.md`.
 
@@ -1228,14 +1228,14 @@ the full-freedom-within-a-round invitation that became §15.
   code uses static heuristics — rewrote the XML doc on `OpCost` to
   match the code (filter halves, group-by quarters, 1024 for unknown
   inputs) and added a forward pointer to the BACKLOG P1 that tracks
-  the real HLL-wiring work (was `src/Dbsp.Core/Plan.fs:9-11`).
+  the real HLL-wiring work (was `src/Core/Plan.fs:9-11`).
 - Fix: FeedbackOp memory-ordering between `connected` and `source`
-  (was `src/Dbsp.Core/Recursive.fs:44-53`). `source` is now
+  (was `src/Core/Recursive.fs:44-53`). `source` is now
   `[<VolatileField>]`, so a reader that observes `connected = 1`
   is guaranteed (by release/acquire pairing with the CAS) to
   observe the `source` store too; `Inputs` and `AfterStepAsync`
   also null-guard the field as belt-and-braces. A 32-thread
-  stress test in `tests/Dbsp.Tests.FSharp/Runtime/Concurrency.Tests.fs`
+  stress test in `tests/Tests.FSharp/Runtime/Concurrency.Tests.fs`
   asserts `connected = 1 ⇒ source ≠ null` across 1000 iterations.
 - Fix: Durability.WitnessDurableBackingStore canonicalised its
   workDir / witnessDir via two `Path.GetFullPath` calls (TOCTOU
@@ -1243,12 +1243,12 @@ the full-freedom-within-a-round invitation that became §15.
   swap). The constructor now computes `rootWorkDir` /
   `rootWitnessDir` once and reuses them for both the directory
   creation and the audit-exposed properties (was
-  `src/Dbsp.Core/Durability.fs:74-75`). New tests in
-  `tests/Dbsp.Tests.FSharp/Storage/Durability.Tests.fs` assert
+  `src/Core/Durability.fs:74-75`). New tests in
+  `tests/Tests.FSharp/Storage/Durability.Tests.fs` assert
   that the stored path equals the directory actually created,
   including under CWD churn.
 - Fix: BloomFilter.pairOf allocated on every call (was
-  `src/Dbsp.Core/BloomFilter.fs:97-133`). Replaced the boxing
+  `src/Core/BloomFilter.fs:97-133`). Replaced the boxing
   `match box key with ...` ladder with inline
   `pairOfInt64` / `pairOfInt32` / `pairOfUInt64` / `pairOfUInt32`
   / `pairOfGuid` / `pairOfString` functions that hash through a
@@ -1259,7 +1259,7 @@ the full-freedom-within-a-round invitation that became §15.
   heap allocation per call. Strings hash their
   `ReadOnlySpan<char>` via `MemoryMarshal.AsBytes` with no UTF-8
   encode allocation. New allocation tests in
-  `tests/Dbsp.Tests.FSharp/Sketches/Bloom.Tests.fs` assert zero
+  `tests/Tests.FSharp/Sketches/Bloom.Tests.fs` assert zero
   bytes across 10 000 `Add` / `MayContain` calls with `int64`
   keys (warmed-up, measured via
   `GC.GetAllocatedBytesForCurrentThread`).
@@ -1270,11 +1270,11 @@ the full-freedom-within-a-round invitation that became §15.
 
 ### Shipped
 
-- **Subject-first test layout** in `tests/Dbsp.Tests.FSharp/` per
+- **Subject-first test layout** in `tests/Tests.FSharp/` per
   `docs/research/test-organization.md`. The flat 28-file scheme
   (with `RoundN` / `Coverage` prefixes that encoded *when* / *why*
   rather than *what*) is replaced by ten subject folders, each
-  mirroring a subsystem of `src/Dbsp.Core/`:
+  mirroring a subsystem of `src/Core/`:
   ```
   Algebra/  Circuit/  Operators/  Storage/  Sketches/
   Runtime/  Infra/    Crdt/       Formal/   Properties/
@@ -1292,9 +1292,9 @@ the full-freedom-within-a-round invitation that became §15.
 - **`Properties/` compiled last** so FsCheck cross-module laws see
   every subject file first. Compile order is: `_Support/` → subject
   folders (any order) → `Properties/`.
-- **`tests/Dbsp.Tests.FSharp/README.md`** documents the convention:
+- **`tests/Tests.FSharp/README.md`** documents the convention:
   subject-first names, 400-line soft cap / 600-line hard ceiling,
-  one file per `src/Dbsp.Core/` module, dot-separated sub-aspects
+  one file per `src/Core/` module, dot-separated sub-aspects
   when files grow (`Spine.Tests.fs` + `Spine.Disk.Tests.fs`).
 
 ### Test accounting
@@ -1318,7 +1318,7 @@ or split by sub-aspect once past ~400 lines.
 
 ### Shipped
 
-- **`RecursiveCounting` combinator** in `src/Dbsp.Core/Recursive.fs` —
+- **`RecursiveCounting` combinator** in `src/Core/Recursive.fs` —
   Option 4 ("counting algorithm", Gupta-Mumick-Subrahmanian SIGMOD 1993
   §4) from `docs/research/retraction-safe-semi-naive.md`. Mirrors the
   shape of `Recursive` but omits `Distinct` inside the feedback loop
@@ -1330,12 +1330,12 @@ or split by sub-aspect once past ~400 lines.
   corresponding derivations; closure pairs reach weight 0 and drop
   out of the consolidated Z-set with no tombstone pass.
 - **`CountingClosureTable` extension method** in
-  `src/Dbsp.Core/Hierarchy.fs` — sibling of `ClosureTable` wired on
+  `src/Core/Hierarchy.fs` — sibling of `ClosureTable` wired on
   top of `RecursiveCounting`. Integrates the raw edge stream inside
   the body so each inner tick sees the full edge set (a plain
   `ZSetInput` drains after tick 0). `ClosureTable` is unchanged —
   this is a strict addition.
-- **5 new tests** in `tests/Dbsp.Tests.FSharp/ClosureTableTests.fs` —
+- **5 new tests** in `tests/Tests.FSharp/ClosureTableTests.fs` —
   oracle parity on a chain and on a tree, explicit retraction
   correctness, multi-derivation counting on a diamond graph, and an
   FsCheck property (`MaxTest = 30`) asserting non-negative integrated
@@ -1351,7 +1351,7 @@ or split by sub-aspect once past ~400 lines.
 
 ### Ecosystem & governance
 
-- **PROJECT-EMPATHY.md** — renamed from `FAMILY-EMPATHY.md` ("project" is
+- **CONFLICT-RESOLUTION.md** — renamed from `FAMILY-EMPATHY.md` ("project" is
   a clearer frame than "family" for a collaboration of humans, agents,
   and tools). The old filename is a redirect stub.
 - **Architect skill (he/him)** — Claude's profile as orchestrator /
@@ -1395,7 +1395,7 @@ or split by sub-aspect once past ~400 lines.
   for source/test files; `Round17Tests.fs` gets split by topic.
 - **Space Opera** — `THREAT-MODEL-FUN.md` renamed to
   `THREAT-MODEL-SPACE-OPERA.md`.
-- **"Family Empathy" → "Project Empathy"** (see above).
+- **"Family Empathy" → "Conflict Resolution"** (see above).
 
 ### Research completed
 
@@ -1453,7 +1453,7 @@ or split by sub-aspect once past ~400 lines.
   complexity / threat-model-critic / paper-peer-reviewer (since
   demoted to advisory in round 18).
 - **Docs**: `THREAT-MODEL-FUN.md` (now Space Opera),
-  `FAMILY-EMPATHY.md` (now `PROJECT-EMPATHY.md`),
+  `FAMILY-EMPATHY.md` (now `CONFLICT-RESOLUTION.md`),
   `TECH-RADAR.md`, `LOCKS.md`, `UPSTREAM-LIST.md`,
   `DECISIONS/2026-04-17-lock-free-circuit-register.md`.
 - **5 new SDL-derived Semgrep rules** (rules 8-12):

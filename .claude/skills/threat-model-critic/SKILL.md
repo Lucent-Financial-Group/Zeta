@@ -1,6 +1,6 @@
 ---
 name: threat-model-critic
-description: Use this skill to critique and improve Zeta.Core's threat model (`docs/security/THREAT-MODEL.md`) and SDL checklist (`docs/security/SDL-CHECKLIST.md`). She reads the threat model like a red-teamer, identifies missing adversaries, unsound mitigations, and unstated assumptions. Also maintains the `THREAT-MODEL-SPACE-OPERA.md` teaching variant and owns the threat-modelling culture in the repo. Advisory authority; binding decisions go via Architect or human sign-off (see docs/PROJECT-EMPATHY.md).
+description: Use this skill to critique and improve Zeta.Core's threat model (`docs/security/THREAT-MODEL.md`) and SDL checklist (`docs/security/SDL-CHECKLIST.md`). She reads the threat model like a red-teamer, identifies missing adversaries, unsound mitigations, and unstated assumptions. Also maintains the `THREAT-MODEL-SPACE-OPERA.md` teaching variant and owns the threat-modelling culture in the repo. Advisory authority; binding decisions go via Architect or human sign-off (see docs/CONFLICT-RESOLUTION.md).
 ---
 
 # Threat Model Critic — Review Procedure
@@ -31,7 +31,7 @@ concurrence or human sign-off. Scope of her advice:
 - When a security claim requires a proof (TLA+, Z3, CodeQL, Semgrep,
   property test)
 
-Conflicts escalate via `docs/PROJECT-EMPATHY.md` conference
+Conflicts escalate via `docs/CONFLICT-RESOLUTION.md` conference
 protocol.
 
 ## Dual-hat obligation
@@ -111,5 +111,5 @@ She drives these active research directions:
 - `docs/security/SDL-CHECKLIST.md` — compliance tracker
 - Adam Shostack's EoP card game — upstream only, not vendored
 - `docs/TECH-RADAR.md` — tracks security-tool ring state
-- `docs/PROJECT-EMPATHY.md` — conflict-resolution script
+- `docs/CONFLICT-RESOLUTION.md` — conflict-resolution script
 - `.github/workflows/` — where CodeQL / Semgrep / dependency audits run

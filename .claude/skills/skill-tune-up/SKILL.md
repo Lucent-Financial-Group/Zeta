@@ -214,13 +214,17 @@ not this skill's.
 
 ## Reference patterns
 
-- `docs/PROJECT-EMPATHY.md` — the conference protocol he supports
+- `docs/CONFLICT-RESOLUTION.md` — the conference protocol he supports
 - `docs/EXPERT-REGISTRY.md` — the roster + diversity notes
 - `docs/AGENT-BEST-PRACTICES.md` — the stable `BP-NN` rule list
   he cites in every finding
 - `memory/persona/best-practices-scratch.md` — volatile
   findings from his live-search step
 - `.claude/skills/` — his review surface
+- `.github/copilot-instructions.md` — factory-managed
+  external reviewer contract (GOVERNANCE §31); audit on
+  the same 5-10 round cadence, same BP-NN citation
+  discipline as any `.claude/skills/*/SKILL.md`
 - `.claude/skills/skill-creator/SKILL.md` — the workflow his
   recommendations feed into
 - `.claude/skills/skill-improver/SKILL.md` — `skill-improver`'s surface;

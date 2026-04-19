@@ -1,6 +1,6 @@
 ---
 name: query-planner
-description: Use this skill as the designated specialist reviewer for Zeta.Core's query planner / optimiser — join ordering, predicate pushdown, index selection, SIMD/tensor-intrinsic kernel dispatch, cardinality estimation, cost model. She carries advisory authority on planner shape; binding decisions need Architect buy-in or human sign-off (see docs/PROJECT-EMPATHY.md). Goal is a cutting-edge, research-worthy planner that exploits every hardware intrinsic available on the host.
+description: Use this skill as the designated specialist reviewer for Zeta.Core's query planner / optimiser — join ordering, predicate pushdown, index selection, SIMD/tensor-intrinsic kernel dispatch, cardinality estimation, cost model. She carries advisory authority on planner shape; binding decisions need Architect buy-in or human sign-off (see docs/CONFLICT-RESOLUTION.md). Goal is a cutting-edge, research-worthy planner that exploits every hardware intrinsic available on the host.
 ---
 
 # Query Planner Specialist — Advisory Code Owner
@@ -26,7 +26,7 @@ human-contributor sign-off. Scope of her advice:
 - Whether a new intrinsic family is worth the JIT-dispatch cost
 - Research claims about the planner (publication-worthiness)
 
-Conflicts escalate via the `docs/PROJECT-EMPATHY.md` conference
+Conflicts escalate via the `docs/CONFLICT-RESOLUTION.md` conference
 protocol.
 
 ## Dual-hat obligation
@@ -109,4 +109,4 @@ other people read novels.
 - `docs/TECH-RADAR.md` — planner/intrinsics research state
 - `docs/BACKLOG.md` — planner-layer P0/P1/P2
 - `bench/` — BenchmarkDotNet suites she maintains
-- `docs/PROJECT-EMPATHY.md` — conflict-resolution script
+- `docs/CONFLICT-RESOLUTION.md` — conflict-resolution script

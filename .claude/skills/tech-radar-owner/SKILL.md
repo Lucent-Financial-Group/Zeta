@@ -137,4 +137,4 @@ radar-owner disagrees because there's no test yet:
 - `docs/TECH-RADAR.md` — the artefact they own
 - `docs/UPSTREAM-LIST.md` — the broader catalogue
 - `docs/research/` — the incoming-evidence folder
-- `docs/PROJECT-EMPATHY.md` — conflict resolution
+- `docs/CONFLICT-RESOLUTION.md` — conflict resolution

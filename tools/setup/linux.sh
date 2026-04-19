@@ -31,15 +31,21 @@ fi
 # ── 1. apt packages (from manifest) ─────────────────────────────────
 APT_MANIFEST="$SETUP_DIR/manifests/apt.txt"
 if [ -f "$APT_MANIFEST" ]; then
-  echo "↓ installing apt packages from $(basename "$APT_MANIFEST")..."
-  # Read non-comment non-empty lines.
-  PKGS=$(grep -vE '^(#|$)' "$APT_MANIFEST" | tr '\n' ' ')
-  # Use sudo only when not already root (CI containers often run as root).
-  SUDO=""
-  if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; fi
-  $SUDO apt-get update -y
-  # shellcheck disable=SC2086
-  $SUDO apt-get install -y --no-install-recommends $PKGS
+  # Extract non-comment non-empty lines via awk (doesn't fail
+  # under pipefail when manifest is all comments — unlike
+  # `grep -vE` which exits 1 on no-match).
+  PKGS="$(awk '!/^[[:space:]]*#/ && NF > 0 { print }' "$APT_MANIFEST" | tr '\n' ' ')"
+  if [ -n "$PKGS" ]; then
+    echo "↓ installing apt packages from $(basename "$APT_MANIFEST")..."
+    # Use sudo only when not already root (CI containers often run as root).
+    SUDO=""
+    if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; fi
+    $SUDO apt-get update -y
+    # shellcheck disable=SC2086
+    $SUDO apt-get install -y --no-install-recommends $PKGS
+  else
+    echo "✓ apt manifest empty; skipping"
+  fi
 fi
 echo "✓ apt packages up to date"
 
@@ -55,6 +61,7 @@ echo "✓ mise: $(mise --version)"
 
 # ── 3-8. Common steps ───────────────────────────────────────────────
 "$SETUP_DIR/common/mise.sh"
+"$SETUP_DIR/common/python-tools.sh"
 "$SETUP_DIR/common/dotnet.sh"
 
 # Make ~/.dotnet available for the remainder of this install.sh

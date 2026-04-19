@@ -21,7 +21,7 @@ Reported each invocation:
 - Numerator: files covered by a CI-gated spec — 4 TLA+ specs
   in gate (`TickMonotonicity`, `OperatorLifecycleRace`,
   `TransactionInterleaving`, `TwoPCSink`) + 8 Z3 pointwise
-  lemmas in `tests/Dbsp.Tests.FSharp/Formal/Z3.Laws.Tests.fs`.
+  lemmas in `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`.
   ≈ 12 artefacts touching ≈ 15 code paths.
 - Denominator: numerator + `docs/BUGS.md` formal-gap entries
   (`InfoTheoreticSharder` missing spec, `RecursiveCounting`

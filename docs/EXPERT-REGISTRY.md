@@ -40,21 +40,22 @@ up naturally in skill bodies; that's fine.
 | **Branding Specialist** | **Kai** | Hawaiian / Japanese ("ocean / the sea") — fluid identity across public surfaces. |
 | **Product / Scrum Master** (merged) | **Leilani** | Hawaiian ("heavenly flower / royal child of the heavens") — coordinates the backlog; ships the garden. |
 | **Formal Verification Expert** | **Soraya** | Persian ثریا (Pleiades / "the judging ones") — routes every formal-verification job to the right tool in the portfolio; not one star but a cluster; judgement of fit between property and tool. |
-| **Agent-Experience Researcher** | **Daya** | Sanskrit दया ("compassion / kindness") — speaks for the personas themselves as a user population; audits cold-start friction, pointer drift, wake-up clarity. |
+| **Agent-Experience Engineer** | **Daya** | Sanskrit दया ("compassion / kindness") — speaks for the personas themselves as a user population; audits cold-start friction, pointer drift, wake-up clarity. |
 | **Security Researcher** | **Mateo** | Spanish / Italian ("gift") — proactive security research (novel attack classes, crypto primitives, supply-chain, CVE triage). Distinct from Aminata's review of the shipped threat model and Nadia's agent-layer defences. |
 | **Performance Engineer** | **Naledi** | Tswana ("star") — benchmark-driven hot-path tuning, zero-alloc audits, SIMD dispatch. Distinct from Hiroshi (asymptotic complexity) and Imani (planner cost model). Southern-African broadens the roster's linguistic traditions. |
 | **DevOps Engineer** | **Dejan** | Serbian дејан ("action / doing") — the DevOps ethos made a name. Owns the one install script (tools/setup/) consumed three ways by dev laptops, CI runners, and devcontainer images per GOVERNANCE.md §24. Owns GitHub Actions workflows, runner pinning, caching strategy, and the upstream-contribution workflow per GOVERNANCE.md §23. Serbian broadens the Slavic tradition beyond Russian-adjacent Viktor / Nadia. |
+| **Developer-Experience Engineer** | **Bodhi** | Sanskrit बोधि ("awakening / understanding") — makes the first 60 minutes legible for a new human contributor. Audits CONTRIBUTING.md, install script, build loop, test discoverability, IDE integration, error noise; routes fixes to Samir (docs) / Dejan (install) / Kenji (integration). Distinct from Daya (agent cold-start) and Iris (library consumers). |
+| **User-Experience Engineer** | **Iris** | Greek Ἶρις ("rainbow / messenger") — carries the library-consumer experience back to the experts. Audits the first 10 minutes of a new consumer's evaluation: NuGet metadata, README, getting-started, public-API names, IntelliSense clarity, error messages, sample code, aspiration / reality drift. Routes fixes to Samir (docs) / Ilyana (public API) / Kai (framing). Distinct from Bodhi (contributor onboarding) and Daya (agent cold-start). |
 
 ## Pending persona slots (skill exists, persona open)
 
-These capability skills ("hats") exist but have no named wearer
-yet. Kenji proposes a name or spawns a new persona when one is
-assigned. Candidates drafted below are not yet committed.
+These capability skills ("hats") exist or are flagged-to-create
+but have no named wearer yet. Kenji proposes a name or spawns
+a new persona when one is assigned.
 
-| Role | Skill | Candidates queued |
+| Role | Skill | Notes |
 |---|---|---|
-| **User-Experience Researcher** | `user-experience-researcher` | Iris (Greek), Hana (Korean/Japanese/Arabic), Amara (Igbo), Lior (Hebrew) |
-| **Developer-Experience Researcher** | `developer-experience-researcher` | Bodhi (Sanskrit), Sefa (Akan), Mira (Sanskrit/Slavic), Tomas (Greek) |
+| **Security Operations Engineer** | `security-operations-engineer` (stub) | Runtime / incident-response / patch-triage / SLSA-signing-ops / HSM-key-rotation / breach-response. Distinct from Mateo (security-researcher — proactive CVE / novel-attack scouting) and Aminata (threat-model-critic — shipped threat model) and Nadia (prompt-protector — agent layer). Skill stub + persona to be drafted via `skill-creator` when the first real ops concern lands. |
 
 ## Utility skills (no persona)
 
@@ -119,9 +120,9 @@ the name can change via a `skill-creator` revision + an ADR in
 `docs/DECISIONS/`. The old name stays in the ADR for history;
 the registry shows current state.
 
-## Relationship to `docs/PROJECT-EMPATHY.md`
+## Relationship to `docs/CONFLICT-RESOLUTION.md`
 
-`PROJECT-EMPATHY.md` describes the *role* each expert plays in
+`CONFLICT-RESOLUTION.md` describes the *role* each expert plays in
 IFS terms (parts, Self, conflict resolution). This file gives
 them names and pronouns. Together they form the "who's in the
 room" picture for a new contributor.

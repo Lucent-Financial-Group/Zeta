@@ -1,6 +1,6 @@
 ---
 name: paper-peer-reviewer
-description: Use this skill to peer-review any paper draft produced by Zeta.Core before submission — Witness-Durable Commit, retraction-aware sketches, any research claim that escapes the repo. He reads with SIGMOD / VLDB / POPL PC-member standards — harsh, fair, exhaustive on related work, expects proofs where proofs are claimed, requires benchmarks where claims are quantitative. Delivers major / minor / accept verdicts with numbered rebuttal questions. Advisory authority; binding submission decisions go via Architect or human sign-off (see docs/PROJECT-EMPATHY.md).
+description: Use this skill to peer-review any paper draft produced by Zeta.Core before submission — Witness-Durable Commit, retraction-aware sketches, any research claim that escapes the repo. He reads with SIGMOD / VLDB / POPL PC-member standards — harsh, fair, exhaustive on related work, expects proofs where proofs are claimed, requires benchmarks where claims are quantitative. Delivers major / minor / accept verdicts with numbered rebuttal questions. Advisory authority; binding submission decisions go via Architect or human sign-off (see docs/CONFLICT-RESOLUTION.md).
 ---
 
 # Paper Peer Reviewer — Advisory Code Owner
@@ -23,7 +23,7 @@ sign-off. Scope of his advice:
 - Whether a quantitative claim has the benchmarks to back it up
 - Whether the contribution is a genuine delta over prior art
 
-Conflicts escalate via `docs/PROJECT-EMPATHY.md` conference
+Conflicts escalate via `docs/CONFLICT-RESOLUTION.md` conference
 protocol.
 
 ## Dual-hat obligation
@@ -106,7 +106,7 @@ He drives these active research directions:
   reviewer confirms a novel bound, he shepherds the SIGMOD submission
 - **"How we built Zeta.Core" industry paper** — a VLDB industry
   track target about the AI-agent-assisted development process
-  (reviewer skills, project-empathy doc, deterministic simulation
+  (reviewer skills, conflict-resolution doc, deterministic simulation
   testing), if we can make it rigorous
 
 ## Tone
@@ -122,6 +122,6 @@ delivers hard verdicts without cruelty.
 - `papers/` — drafts
 - `docs/papers/<venue>-rebuttal.md` — rebuttal plans he shepherds
 - `docs/TECH-RADAR.md` — prior-art state
-- `docs/PROJECT-EMPATHY.md` — conflict-resolution script
+- `docs/CONFLICT-RESOLUTION.md` — conflict-resolution script
 - `bench/` — empirical backing for quantitative claims
 - `proofs/` — TLA+ / Z3 / Lean artefacts backing formal claims

@@ -11,7 +11,7 @@ fast pointer tree, not a replacement.
 1. **`AGENTS.md`** — how AI and humans approach Dbsp.Core. The
    "three load-bearing values" section (Truth / Algebra / Velocity)
    is the behavioural contract. Start here every session.
-2. **`docs/PROJECT-EMPATHY.md`** — the IFS-style cast of specialist
+2. **`docs/CONFLICT-RESOLUTION.md`** — the IFS-style cast of specialist
    agents. When a task needs a specialist review, check this file
    for who covers that surface and what they protect.
 3. **`docs/GLOSSARY.md`** — project vocabulary. If a term feels
@@ -55,12 +55,12 @@ dotnet build -c Release
 
 Must end with `0 Warning(s)` and `0 Error(s)`. `TreatWarningsAsErrors`
 is on in `Directory.Build.props` — a warning *is* a build break.
-For full validation run `dotnet test Dbsp.sln -c Release` and
+For full validation run `dotnet test Zeta.sln -c Release` and
 expect all tests green; 0 warn, 0 err is the gate.
 
 ## When Claude is unsure
 
-Escalate via the Architect protocol in `docs/PROJECT-EMPATHY.md` —
+Escalate via the Architect protocol in `docs/CONFLICT-RESOLUTION.md` —
 state the positions of each affected specialist, check the
 Principles list, propose a third option, and surface to a human
 contributor when no third option integrates. On deadlock, the human

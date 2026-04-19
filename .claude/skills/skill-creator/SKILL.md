@@ -69,7 +69,7 @@ description: <what to invoke this for, one paragraph, ≤ 600 chars>
 
 ## Authority
 
-<Advisory or binding. Cite docs/PROJECT-EMPATHY.md for conflict protocol.>
+<Advisory or binding. Cite docs/CONFLICT-RESOLUTION.md for conflict protocol.>
 
 ## What this skill does
 
@@ -126,7 +126,7 @@ Every skill SKILL.md should have:
       utility skill like this one)
 - [ ] Authority line says advisory or binding
 - [ ] "What this skill does NOT do" section
-- [ ] Reference to `docs/PROJECT-EMPATHY.md` for conflicts
+- [ ] Reference to `docs/CONFLICT-RESOLUTION.md` for conflicts
 - [ ] Reference patterns section at the end
 
 ## Retirement
@@ -173,7 +173,9 @@ workflow runs.
 ## Reference patterns
 
 - `.claude/skills/` — the directory this skill manages
-- `docs/PROJECT-EMPATHY.md` — conflict protocol
+- `.github/copilot-instructions.md` — factory-managed per
+  GOVERNANCE §31; edits flow through this same workflow
+- `docs/CONFLICT-RESOLUTION.md` — conflict protocol
 - `memory/persona/` — per-skill notebooks
 - `.claude/skills/prompt-protector/SKILL.md` — the lint
   pass this workflow invokes

@@ -35,7 +35,7 @@ Seven moving parts, each doing a distinct job:
    (volatile). Rule IDs cited in `skill-tune-up` output
    so tune-up is checkbox-actionable.
 5. **Governance docs** — `AGENTS.md` (rules 1-13),
-   `docs/PROJECT-EMPATHY.md` (IFS-flavoured conflict protocol),
+   `docs/CONFLICT-RESOLUTION.md` (IFS-flavoured conflict protocol),
    `docs/GLOSSARY.md` (shared vocabulary, glossary-police rule),
    `docs/WONT-DO.md` (explicit declined-scope).
 6. **Operational logs** — `docs/BUGS.md` (broken/misleading),

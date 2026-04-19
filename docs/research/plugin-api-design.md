@@ -620,7 +620,7 @@ the interface + harness.** Size target ≤ 2 pages. Contents:
 
 1. One-sentence "who this doc is for" and an explicit "NOT for"
    list pointing away from CONTRIBUTING / openspec /
-   PROJECT-EMPATHY for plugin authors.
+   CONFLICT-RESOLUTION for plugin authors.
 2. Plugin-author mental model: `IOperator<'T>` is the contract;
    `OutputBuffer<'T>.Publish` is the only write channel;
    `ReadDependencies` must list every upstream stream read
@@ -687,7 +687,7 @@ point at; with the doc, scaffolding is a pure multiplier.
   If the former, this belongs in Core as a derived property, not
   a plugin override.
 
-### For Daya (plugin-author AX / developer-experience-researcher)
+### For Daya (plugin-author AX / developer-experience-engineer)
 
 - **Q4 — ANSWERED (blocking; CONDITIONAL YES).** Daya's round-27
   review: a first-time plugin author *can* ship a working op in

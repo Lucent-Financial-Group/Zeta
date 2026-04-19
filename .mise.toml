@@ -26,6 +26,11 @@ java = "26"
 # automation: runtime choice open") + future web/UI work.
 # Matches `../scratch`'s install shape.
 bun = "1.3"
+# uv pinned (round-34 pull-in from ../scratch). Manages Python
+# CLI tooling (ruff etc.) via `uv tool install` with
+# reproducible versions across laptops + CI. See BACKLOG
+# "Python tool management via uv tool (from ../scratch)".
+uv = "0.9"
 
 [settings]
 # `python-build-standalone` (upstream for mise's python plugin)
@@ -35,3 +40,6 @@ bun = "1.3"
 # security scope treats python-attestation on CI as a post-v1
 # hardening item (`SECURITY-BACKLOG.md`).
 python.github_attestations = false
+# Auto-activate uv-created venvs when mise enters a directory.
+# QoL: `uv run` / venv switching seamless. From ../scratch.
+python.uv_venv_auto = "source"

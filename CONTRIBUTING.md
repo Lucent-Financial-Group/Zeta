@@ -10,18 +10,36 @@ agents collaborate under a codified set of rules.
 # One-time setup (runs on dev laptop, CI runner, or devcontainer)
 tools/setup/install.sh
 
+# Open a new shell so the managed PATH / DOTNET_ROOT / JAVA_HOME
+# exports from $HOME/.config/zeta/shellenv.sh take effect. Your
+# existing shell still has the old PATH.
+
 # Build (0 Warning(s), 0 Error(s) required — TreatWarningsAsErrors is on)
 dotnet build Zeta.sln -c Release
 
 # Test
 dotnet test Zeta.sln -c Release --no-build
+
+# Health check (optional, diagnose a broken toolchain)
+tools/setup/doctor.sh
 ```
 
 The install script installs everything a first-class dev
 setup needs: dotnet SDK (via mise), JDK 21 (for Alloy +
 TLC), elan (Lean toolchain), Semgrep, dotnet-stryker, the
 TLA+ and Alloy jars. Re-run it any time to keep tools
-fresh; it's idempotent.
+fresh; it's idempotent. `tools/setup/doctor.sh` reports
+the state of each managed tool when something doesn't
+work.
+
+## Branch model for a trivial PR
+
+For a first-PR (typo fix, doc tweak, small test), branch
+directly off `main` with a descriptive branch name
+(`fix-readme-link`, not `round-N`). Round branches
+(`round-34-…`) are reserved for multi-commit round-scoped
+work the Architect coordinates. Open the PR against `main`;
+squash-merge is the default.
 
 ## Entry-point tree — where things live
 
@@ -29,7 +47,7 @@ fresh; it's idempotent.
 
 - [`AGENTS.md`](AGENTS.md) — philosophy, values, onboarding.
   How humans + AI agents approach this repo.
-- [`docs/PROJECT-EMPATHY.md`](docs/PROJECT-EMPATHY.md) —
+- [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md) —
   the specialist cast, conflict-resolution protocol.
 - [`docs/GLOSSARY.md`](docs/GLOSSARY.md) — shared
   vocabulary.

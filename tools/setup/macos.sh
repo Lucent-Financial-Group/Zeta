@@ -46,16 +46,24 @@ echo "✓ brew: $(brew --version | head -n1)"
 # ── 3. Brew packages (from manifest) ────────────────────────────────
 BREW_MANIFEST="$SETUP_DIR/manifests/brew.txt"
 if [ -f "$BREW_MANIFEST" ]; then
-  echo "↓ installing brew packages from $(basename "$BREW_MANIFEST")..."
-  # Read non-comment non-empty lines; `brew install` is idempotent on
-  # already-installed formulae.
-  grep -vE '^(#|$)' "$BREW_MANIFEST" | while IFS= read -r pkg; do
-    if brew list --formula "$pkg" >/dev/null 2>&1; then
-      brew upgrade "$pkg" >/dev/null 2>&1 || true
-    else
-      brew install "$pkg"
-    fi
-  done
+  # Extract non-comment non-empty lines via awk (doesn't fail under
+  # pipefail when the manifest is all comments — unlike `grep -vE`
+  # which exits 1 on no-match). Round-34 brew.txt has no packages
+  # after the JDK migration to mise.
+  PKGS="$(awk '!/^[[:space:]]*#/ && NF > 0 { print }' "$BREW_MANIFEST")"
+  if [ -n "$PKGS" ]; then
+    echo "↓ installing brew packages from $(basename "$BREW_MANIFEST")..."
+    # `brew install` is idempotent on already-installed formulae.
+    printf '%s\n' "$PKGS" | while IFS= read -r pkg; do
+      if brew list --formula "$pkg" >/dev/null 2>&1; then
+        brew upgrade "$pkg" >/dev/null 2>&1 || true
+      else
+        brew install "$pkg"
+      fi
+    done
+  else
+    echo "✓ brew manifest empty; skipping"
+  fi
 fi
 echo "✓ brew packages up to date"
 
@@ -68,6 +76,7 @@ echo "✓ mise: $(mise --version)"
 
 # ── 5-10. Common steps ──────────────────────────────────────────────
 "$SETUP_DIR/common/mise.sh"
+"$SETUP_DIR/common/python-tools.sh"
 "$SETUP_DIR/common/dotnet.sh"
 
 # Make ~/.dotnet available for the remainder of this install.sh

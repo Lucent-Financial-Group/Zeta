@@ -57,7 +57,7 @@ tempted to ship.
 
 - **Site:** `src/Core/Recursive.fs:152-…`
 - **Found:** round 20 by Kira; reproduced by an FsCheck
-  property in `tests/Dbsp.Tests.FSharp/Operators/RecursiveCounting.MultiSeed.Tests.fs`
+  property in `tests/Tests.FSharp/Operators/RecursiveCounting.MultiSeed.Tests.fs`
 - **Severity:** P0 honesty (tests only cover one-shot seed)
 - **Symptom:** docstring narrowed to "one-shot seed is proven;
   multi-tick is open research" but neither a formal argument
@@ -85,7 +85,7 @@ tempted to ship.
 ### BloomBench.fs referenced but not on disk
 
 - **Site:** `docs/BUGS.md` and `docs/research/bloom-filter-frontier.md`
-  reference `bench/Dbsp.Benchmarks/BloomBench.fs`; the file is
+  reference `bench/Benchmarks/BloomBench.fs`; the file is
   not present on disk.
 - **Found:** round 21 by Imani
 - **Severity:** P1 honesty
@@ -255,7 +255,7 @@ tempted to ship.
 
 ### BloomBench 47-bit int64 key generator
 
-- **Site:** `bench/Dbsp.Benchmarks/BloomBench.fs`
+- **Site:** `bench/Benchmarks/BloomBench.fs`
 - **Found:** round 20 by Kira
 - **Severity:** P1
 - **Symptom:** `int64 (rng.Next()) <<< 16 ||| int64 (rng.Next())`
@@ -296,23 +296,23 @@ tempted to ship.
 - **Site:** `docs/TECH-RADAR.md` (Bloom filter row)
 - **Found:** round 20 by Hiroshi (complexity-reviewer)
 - **Severity:** P2
-- **Symptom:** Bloom row is Trial. `bench/Dbsp.Benchmarks/BloomBench.fs`
+- **Symptom:** Bloom row is Trial. `bench/Benchmarks/BloomBench.fs`
   exists but hasn't been run to produce numbers. No measured
   FPR / throughput backs the promotion decision either way.
 - **Fix:** run the bench, record numbers in
   `docs/BENCHMARKS.md`, promote to Adopt if the numbers match
   the claim.
 
-### `docs/EXPERT-REGISTRY.md` / `docs/PROJECT-EMPATHY.md` drift
+### `docs/EXPERT-REGISTRY.md` / `docs/CONFLICT-RESOLUTION.md` drift
 
 - **Sites:** both files
 - **Found:** round 20 by Rune
 - **Severity:** P2
-- **Symptom:** the registry and `PROJECT-EMPATHY.md` disagree on
+- **Symptom:** the registry and `CONFLICT-RESOLUTION.md` disagree on
   the expert roster and on whether pronouns are declared. The
   name-canon rule is pronoun-free; any residual pronoun phrasing
-  in `PROJECT-EMPATHY.md` should be removed.
-- **Fix:** registry is canon for names; `PROJECT-EMPATHY`
+  in `CONFLICT-RESOLUTION.md` should be removed.
+- **Fix:** registry is canon for names; `CONFLICT-RESOLUTION`
   defers to it.
 
 ---

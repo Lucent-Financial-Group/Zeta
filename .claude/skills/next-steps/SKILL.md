@@ -59,7 +59,7 @@ Reads the following sources, in order:
    last round (`Durability.fs` / `BloomFilter.fs` /
    `WitnessDurableBackingStore`), finishing it beats starting a
    new one.
-6. **Reduces open tensions** in `docs/PROJECT-EMPATHY.md`.
+6. **Reduces open tensions** in `docs/CONFLICT-RESOLUTION.md`.
 
 ## Effort sizing
 

@@ -8,9 +8,9 @@ realised in F# today. Prose bullets, no RFC-2119; those live in the base
 
 - Types and extension methods live in the `Dbsp.Core` namespace, assembled
   from:
-  - `src/Dbsp.Core/Recursive.fs` — feedback cells, the three recursive
+  - `src/Core/Recursive.fs` — feedback cells, the three recursive
     combinators, and the fixed-point iteration driver.
-  - `src/Dbsp.Core/Hierarchy.fs` — `ClosurePair<'N>`, `ClosureTable`, and the
+  - `src/Core/Hierarchy.fs` — `ClosurePair<'N>`, `ClosureTable`, and the
     counting variant that consume this capability.
 
 ## Feedback cell

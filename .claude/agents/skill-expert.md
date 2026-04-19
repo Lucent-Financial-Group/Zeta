@@ -165,5 +165,5 @@ contract — the frontmatter file is always canon.
 - `memory/persona/aarav/NOTEBOOK.md` — Aarav's notebook
 - `docs/ROUND-HISTORY.md` — where executed top-5 rankings
   and landed gap-proposals are recorded
-- `docs/PROJECT-EMPATHY.md` — conflict-resolution when
+- `docs/CONFLICT-RESOLUTION.md` — conflict-resolution when
   findings meet resistance

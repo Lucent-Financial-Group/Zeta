@@ -1,9 +1,9 @@
-# Daya — Agent Experience Researcher Notebook
+# Daya — Agent Experience Engineer Notebook
 
 Cross-session memory for the AX audit lane. 3000-word cap
 (BP-07); prune every third audit (BP-07 cadence). ASCII only
 (BP-09); invisible-Unicode linted (Nadia). Frontmatter on
-`.claude/agents/agent-experience-researcher.md` wins on any
+`.claude/agents/agent-experience-engineer.md` wins on any
 disagreement with this file (BP-08).
 
 Created round 24 by Kenji — Daya's first audit ran cleanly but
@@ -14,6 +14,138 @@ trend data she needs is not lost. Future Daya runs write here
 directly under the `skills:` contract.
 
 ---
+## Round 34 — new-persona audit: Dejan / Bodhi / Iris — 2026-04-19
+
+# AX audit — round 34, target: new-persona (Dejan, Bodhi, Iris)
+
+## Cold-start cost
+
+Tier 0 baseline (WAKE-UP.md:20): ~12k tokens. Tier 1 adds agent
+file + skill body + MEMORY + NOTEBOOK (JOURNAL is Tier 3, grep-
+only; correctly not cold-loaded).
+
+- **Dejan.** 7544 + 6595 + 426 + 3296 = 17.9 kB ~ 4.5k tok T1.
+  Cold total ~16.5k tok. Time-to-first-output: 3-4 turns.
+- **Bodhi.** 8637 + 9359 + 426 + 10633 = 29.1 kB ~ 7.3k tok T1.
+  Cold total ~19.3k tok. **Heaviest** of the three — NOTEBOOK
+  is 2.4x Iris's because a full round-34 audit ran into the
+  seed file. Time-to-first-output: 4-5 turns.
+- **Iris.** 9427 + 10366 + 423 + 3660 = 23.9 kB ~ 6.0k tok T1.
+  Cold total ~18.0k tok. Time-to-first-output: 4 turns.
+
+Trend vs last audit: N/A (baseline).
+
+## Friction
+
+P0 (persona cannot do its job cold):
+
+- (none). All three wake paths resolve; the round-33 sweep
+  landed the load-bearing surfaces (agent filenames, skill
+  dirs, frontmatter `name:`, EXPERT-REGISTRY rows, WAKE-UP
+  tier-0 entries).
+
+P1 (friction but surmountable):
+
+- [Bodhi skill] stale-pointer — SKILL.md:47 reads
+  `developer-experience-researcher (Bodhi)` in its own out-of-
+  scope block. Self-reference names a skill that no longer
+  resolves. Intervention: s/researcher/engineer/.
+- [Iris skill] stale-pointer — SKILL.md:183 reads
+  `agent-experience-researcher`. Same class; renames a sibling
+  skill by its pre-sweep name. Intervention: s/researcher/
+  engineer/.
+- [Bodhi agent] stale-scope — agent.md:90-91 reads "UX
+  researcher skill (persona TBD)." Iris landed this round;
+  no longer TBD. Intervention: s/UX researcher skill
+  (persona TBD)/Iris (user-experience-engineer)/.
+
+P2 (small wins):
+
+- [Bodhi notebook] same-value pointer catalogue —
+  NOTEBOOK.md:75-86 lists drift arrows like `src/Core/` ->
+  `src/Core/` (both sides identical after markdown-escape
+  collapse). Round-35 cold-reader cannot recover what
+  drifted. Canonical before/after already in JOURNAL.md:83-89
+  — flag only; Bodhi owns the rewrite.
+- [Iris notebook] NOTEBOOK.md:23 phrase "experience-
+  researcher" contradicts the engineer titles everywhere
+  else. Prose-only; flag for Iris next prune.
+- [Daya self] NOTEBOOK.md at 4069 w — **exceeds BP-07 cap
+  by 36%**; prune overdue (round 34 is audit #3 since last).
+- [GLOSSARY] lines 430, 514 read "AX researcher (Daya)" —
+  prose-voice consistency drift vs engineer title. Defer to
+  Samir.
+
+## Proposed interventions
+
+1. `.claude/skills/developer-experience-engineer/SKILL.md:47`
+   — s/developer-experience-researcher/developer-experience-
+   engineer/. Effort: S. Rollback: one-line. Route: Kenji
+   -> Yara (skill-creator).
+2. `.claude/skills/user-experience-engineer/SKILL.md:183`
+   — s/agent-experience-researcher/agent-experience-engineer/.
+   Effort: S. Rollback: one-line. Route: Kenji -> Yara.
+3. `.claude/agents/developer-experience-engineer.md:90-91`
+   — name Iris in place of "persona TBD." Effort: S.
+   Rollback: one-line. Route: Kenji -> Yara.
+4. `memory/persona/daya/NOTEBOOK.md` self — prune pass on
+   next wake (r27 plugin-author sections collapse to
+   summary; migrate matrix to JOURNAL.md). Effort: M.
+   Owner: Daya.
+
+## Pointer-drift catalogue
+
+- skills/developer-experience-engineer/SKILL.md:47 —
+  `developer-experience-researcher` -> `developer-experience-engineer`
+- skills/user-experience-engineer/SKILL.md:183 —
+  `agent-experience-researcher` -> `agent-experience-engineer`
+- agents/developer-experience-engineer.md:91 —
+  `UX researcher skill (persona TBD)` -> `Iris (user-experience-engineer)`
+- memory/persona/bodhi/NOTEBOOK.md:75-86 — same-value arrows;
+  lift from JOURNAL.md:83-89.
+- docs/GLOSSARY.md:430,514 — `AX researcher (Daya)` ->
+  `AX engineer (Daya)` (prose-voice; Samir judges).
+
+## Contract clarity (AX/DX/UX lane)
+
+Boundary reads cleanly: Daya owns persona cold-start; Bodhi
+owns human-contributor first-60-minutes; Iris owns library-
+consumer first-10-minutes. Siblings cross-named in each
+agent file's Coordination section. One stale "TBD" pointer
+(Bodhi agent:90) already called out above.
+
+## Notebook hygiene (BP-07 / BP-08 / BP-09)
+
+- Four JOURNAL.md stubs (Daya/Bodhi/Iris/Dejan) carry correct
+  Tier-3 / grep-only / append-only / newest-first / ASCII
+  contract. Clean.
+- BP-07 cap: Bodhi 1396 w OK, Dejan 423 w OK, Iris 524 w OK,
+  **Daya 4069 w OVER.**
+- BP-08 frontmatter-wins clause present on all four
+  NOTEBOOKs. Clean.
+- BP-09 ASCII-only: no invisible-Unicode on inspection.
+- Bodhi's JOURNAL already holds a r34 entry (sweep-refs
+  before-state preserved) — legitimate per its write
+  contract; creates the recurrence-watch baseline.
+
+## Rename-sweep residuals
+
+Round-33 `researcher -> engineer` 27-file sweep: 3 misses in
+the new-persona surfaces (above, all P1). PROJECT-EMPATHY ->
+CONFLICT-RESOLUTION 98-file sweep: zero residuals across the
+14 audited files. Clean.
+
+## Recommended new entries
+
+- `docs/WAKE-UP.md`: none. Lines 110-119 correctly name all
+  three experience-engineers.
+- `docs/DEBT.md` `wake-up-drift`: one entry — "codify a
+  skill-body + cross-reference grep-gate in the rename
+  checklist; the r33 sweep caught 27 files but missed 3
+  self-references inside newly-landed skill bodies."
+
+---
+
 
 ## Round 27 — Plugin-author AX audit (target: imagined first-time Op<'T> plugin author)
 
@@ -40,14 +172,14 @@ Value getter — ~7 members.
    shouldn't need but will read because nothing else signals "not
    for you." **Realistic wake-up: 10-12k tokens.**
 2. **Pointer drift risk.** Four stale pulls:
-   - README.md line 95-109 says "`src/Dbsp.Core/`" but repo uses
+   - README.md line 95-109 says "`src/Core/`" but repo uses
      `src/Core/` per NAMING.md line 73. A plugin author navigating
      to the path will 404.
-   - README.md line 27 references `src/Dbsp.Core/Incremental.fs`;
+   - README.md line 27 references `src/Core/Incremental.fs`;
      same drift. Plugin author hunting the "how `D` is implemented"
      reference for their operator's algebra will get lost.
    - CONTRIBUTING.md pulls them hard toward `openspec/specs/`,
-     `docs/PROJECT-EMPATHY.md`, reviewer roster, and the
+     `docs/CONFLICT-RESOLUTION.md`, reviewer roster, and the
      "0 warnings" gate — all relevant to contributing *to Zeta*,
      none relevant to shipping *a plugin*. Heavy false-positive
      read. This is the single biggest waste of author attention.
@@ -183,7 +315,7 @@ Minimum contents:
   separate NuGet).
 - The shape Ilyana lands (A/B/C) — name, 1-screen example.
 - What NOT to read: explicit "ignore CONTRIBUTING.md unless you
-  are upstreaming a PR; ignore openspec/; ignore PROJECT-EMPATHY."
+  are upstreaming a PR; ignore openspec/; ignore CONFLICT-RESOLUTION."
 - Pointer to `src/Bayesian/BayesianAggregate.fs` as the reference
   implementation with a note on which lines are the operator
   itself vs the domain math.
@@ -400,11 +532,11 @@ described above — not self-flattery, just coordination drift.
 **Persona + skill duplication pattern.** P1 #4 above is
 structural, not Kenji-specific. Spot-check: `skill-tune-up-
 ranker`'s agent file and skill body overlap on cadence rules
-and BP-10 emphasis; `agent-experience-researcher`'s agent file
+and BP-10 emphasis; `agent-experience-engineer`'s agent file
 and skill body both declare cadence, authority, and
 coordination-with-other-experts in near-identical prose (see
-`.claude/agents/agent-experience-researcher.md:61-70` vs
-`.claude/skills/agent-experience-researcher/SKILL.md:148-171`).
+`.claude/agents/agent-experience-engineer.md:61-70` vs
+`.claude/skills/agent-experience-engineer/SKILL.md:148-171`).
 Hypothesis: **agent-file and sibling-skill-body have ~20-35%
 content overlap across the roster.** Every cold-start pays
 that twice. Full measurement deferred to next roster audit
@@ -545,7 +677,7 @@ persona.** Time-to-first-useful-output: 7-9 turns minimum.
 - `memory/persona/README.md:24-27` lists only 2 notebooks;
   disk has 6 (`architect.md`, `architect-offtime.md`,
   `formal-verification-expert.md`, `best-practices-scratch.md`,
-  `skill-tune-up.md`, `agent-experience-researcher.md`).
+  `skill-tune-up.md`, `agent-experience-engineer.md`).
 - `.claude/skills/skill-tune-up/SKILL.md:117` cites the
   invisible-Unicode rule but does not cite `(BP-10)`; Aarav's
   own contract requires BP-NN cites.

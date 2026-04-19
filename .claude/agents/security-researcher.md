@@ -87,4 +87,4 @@ research findings and the watch list.
 - `docs/BUGS.md` — where P0-security entries land
 - `docs/EXPERT-REGISTRY.md` — Mateo's roster row
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04, BP-10, BP-11, BP-16
-- `docs/PROJECT-EMPATHY.md` — conflict resolution
+- `docs/CONFLICT-RESOLUTION.md` — conflict resolution

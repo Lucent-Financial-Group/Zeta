@@ -37,7 +37,7 @@
 
 - **Prefer bold refactors** over polite patches when the refactor
   removes a bug class.
-- **Always run `dotnet test Dbsp.sln` after changes.** 447+ tests,
+- **Always run `dotnet test Zeta.sln` after changes.** 447+ tests,
   0 warnings, 0 errors is the gate.
 - **Check the 17 reviewer skills** in `.claude/skills/` and
   `docs/REVIEW-AGENTS.md` — each represents a bug class to avoid.

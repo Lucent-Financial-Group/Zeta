@@ -1,7 +1,7 @@
 # Factory-Paper Novelty and Venue Survey (2026-04)
 
 Scope: whether the Zeta.Core "software-defined software factory"
-(SOFTWARE-FACTORY.md + AGENTS.md + PROJECT-EMPATHY.md +
+(SOFTWARE-FACTORY.md + AGENTS.md + CONFLICT-RESOLUTION.md +
 AGENT-BEST-PRACTICES.md + EXPERT-REGISTRY.md + FORMAL-VERIFICATION.md)
 is publishable, and if so where. Audience: Aaron, deciding submit
 now / polish / not ready.
@@ -61,7 +61,7 @@ backlog heuristics.
    Clearest novel artifact.
 
 2. **IFS-flavoured "parts + Self" conflict protocol
-   (PROJECT-EMPATHY.md).** Zero hits on Internal-Family-Systems
+   (CONFLICT-RESOLUTION.md).** Zero hits on Internal-Family-Systems
    applied to multi-agent LLMs. OVADARE-style work treats conflict
    as resource contention; our "name what you protect" fear-first
    move is a therapeutic-practice import. Risk: soft-framing

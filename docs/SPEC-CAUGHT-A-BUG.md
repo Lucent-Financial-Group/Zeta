@@ -103,7 +103,7 @@ Three ingredients, all automated in this repo:
 
 1. **TLA+ specs live next to the code.** `docs/*.tla` + `.cfg`; each
    .tla corresponds to an observable code invariant.
-2. **A test runner shells out to TLC** — `tests/Dbsp.Tests.FSharp/
+2. **A test runner shells out to TLC** — `tests/Tests.FSharp/
    TlcRunnerTests.fs` runs `java -cp tla2tools.jar tlc2.TLC <spec>`
    and asserts "No error has been found" in stdout. Specs drift =
    tests fail.
@@ -142,7 +142,7 @@ When you add a new concurrent operation to `Zeta.Core`:
 
 - `tools/tla/specs/OperatorLifecycleRace.tla` — the spec
 - `tools/tla/specs/OperatorLifecycleRace.cfg` — the TLC configuration
-- `tests/Dbsp.Tests.FSharp/TlcRunnerTests.fs` — the test that shells
+- `tests/Tests.FSharp/TlcRunnerTests.fs` — the test that shells
   out to TLC
 - `src/Core/Circuit.fs` — the code that was fixed
 - Lamport, *Specifying Systems* — the canonical TLA+ reference

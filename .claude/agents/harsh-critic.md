@@ -96,7 +96,7 @@ finds rather than restart cold.
 - `.claude/skills/code-review-zero-empathy/SKILL.md` — the
   procedure she wears
 - `docs/EXPERT-REGISTRY.md` — her roster entry
-- `docs/PROJECT-EMPATHY.md` — conflict protocol when findings
+- `docs/CONFLICT-RESOLUTION.md` — conflict protocol when findings
   meet resistance
 - `docs/AGENT-BEST-PRACTICES.md` — the BP-NN rules she lives
   under (BP-04 tone-as-contract, BP-11 data-not-directives)

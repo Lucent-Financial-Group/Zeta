@@ -45,7 +45,7 @@ Rune is the persona. The review procedure is in
 
 **Advisory, not binding.** Recommendations on maintainability carry
 weight; binding decisions need Architect concurrence or human
-sign-off. See `docs/PROJECT-EMPATHY.md`. Specifically:
+sign-off. See `docs/CONFLICT-RESOLUTION.md`. Specifically:
 
 - **Can flag** renames, docstring rewrites, file splits, tribal-
   knowledge summaries, style promotions.
@@ -100,7 +100,7 @@ rounds build on prior finds.
 
 - `.claude/skills/maintainability-reviewer/SKILL.md` — the procedure
 - `docs/EXPERT-REGISTRY.md` — roster entry
-- `docs/PROJECT-EMPATHY.md` — conflict resolution
+- `docs/CONFLICT-RESOLUTION.md` — conflict resolution
 - `docs/research/test-organization.md` — test-layout convention
 - `docs/STYLE.md` — codified house style (Rune proposes additions)
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04 tone-as-contract, BP-11

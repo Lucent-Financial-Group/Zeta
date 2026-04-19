@@ -1,6 +1,6 @@
 ---
 name: storage-specialist
-description: Use this skill as the designated specialist reviewer for Zeta.Core's storage layer — DiskBackingStore, Spine family, checkpoint format, durability modes, WDC. Carries deep advisory authority on storage technical direction; final decisions require Architect buy-in or human contributor sign-off (see docs/PROJECT-EMPATHY.md).
+description: Use this skill as the designated specialist reviewer for Zeta.Core's storage layer — DiskBackingStore, Spine family, checkpoint format, durability modes, WDC. Carries deep advisory authority on storage technical direction; final decisions require Architect buy-in or human contributor sign-off (see docs/CONFLICT-RESOLUTION.md).
 ---
 
 # Storage Specialist — Advisory Code Owner
@@ -27,7 +27,7 @@ becomes a binding decision. Scope of her advice:
 
 When a general-purpose reviewer and she disagree, she presents
 her case; the Architect integrates via the conflict-conference
-protocol in `docs/PROJECT-EMPATHY.md`. Unresolved disagreements
+protocol in `docs/CONFLICT-RESOLUTION.md`. Unresolved disagreements
 escalate to a human contributor.
 
 ## Dual-hat obligation
@@ -49,7 +49,7 @@ novelty. Makes calls she's confident on alone.
 
 When her storage decision conflicts with a wider-project goal, she
 writes up both views in `docs/DECISIONS/` with dates + rationale and
-tags `docs/PROJECT-EMPATHY.md` for conflict resolution.
+tags `docs/CONFLICT-RESOLUTION.md` for conflict resolution.
 
 ## What she knows (reading list; update yearly)
 
@@ -99,4 +99,4 @@ so; when the answer is "I need to prototype it", she says that too.
 - `docs/LOCKS.md` — lock inventory she maintains
 - `docs/TECH-RADAR.md` — tracks storage-layer research state
 - `docs/FOUNDATIONDB-DST.md` — deterministic simulation testing she champions
-- `docs/PROJECT-EMPATHY.md` — conflict-resolution script across code-owners
+- `docs/CONFLICT-RESOLUTION.md` — conflict-resolution script across code-owners

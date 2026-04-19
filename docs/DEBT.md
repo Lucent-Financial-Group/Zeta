@@ -245,15 +245,15 @@ feature + debt budget).
   invariant; if historical context is worth preserving, put it
   in `docs/ROUND-HISTORY.md` under the round it happened.
 
-### `docs/EXPERT-REGISTRY.md` / `docs/PROJECT-EMPATHY.md` pronoun drift
+### `docs/EXPERT-REGISTRY.md` / `docs/CONFLICT-RESOLUTION.md` pronoun drift
 
-- **Sites:** `docs/EXPERT-REGISTRY.md`, `docs/PROJECT-EMPATHY.md`
+- **Sites:** `docs/EXPERT-REGISTRY.md`, `docs/CONFLICT-RESOLUTION.md`
 - **Found:** round 20 by Rune
 - **Effort:** S
 - **Friction:** registry canonicalises names-without-pronouns;
-  PROJECT-EMPATHY should defer to it and not re-state the list
+  CONFLICT-RESOLUTION should defer to it and not re-state the list
   with any pronoun residue.
-- **Fix:** do a line-level pass on `docs/PROJECT-EMPATHY.md`
+- **Fix:** do a line-level pass on `docs/CONFLICT-RESOLUTION.md`
   and swap any residual pronoun-declaring phrasing for
   "see `docs/EXPERT-REGISTRY.md`."
 
@@ -268,7 +268,7 @@ feature + debt budget).
   Optional upgrade: add a `DbspError.WitnessDurablePreview`
   case so callers can pattern-match instead of string-match.
 
-### `bench/Dbsp.Benchmarks/BloomBench.fs` referenced but absent on disk
+### `bench/Benchmarks/BloomBench.fs` referenced but absent on disk
 
 - **Site:** referenced in `docs/BUGS.md`, `docs/research/bloom-filter-frontier.md`, `docs/TECH-RADAR.md`
 - **Found:** round 21 by Imani
@@ -331,7 +331,7 @@ feature + debt budget).
 
 ### TlcRunnerTests `repoRoot` lookup CWD-brittle
 
-- **Site:** `tests/Dbsp.Tests.FSharp/Formal/Tlc.Runner.Tests.fs:24-31`
+- **Site:** `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs:24-31`
 - **Found:** round 22 by Kenji — full-solution `dotnet test`
   occasionally lands with a CWD outside the repo, walk-up never
   finds `Zeta.sln`, every TLC-runner test throws at module init.
@@ -413,7 +413,7 @@ Entries under the `wake-up-drift` tag defined in
 
 - **Site:** `.claude/agents/maintainability-reviewer.md:68,104`,
   `.claude/skills/maintainability-reviewer/SKILL.md:109,146-147`,
-  `.claude/skills/developer-experience-researcher/SKILL.md`
+  `.claude/skills/developer-experience-engineer/SKILL.md`
 - **Found:** round 24 by Daya
 - **Effort:** S (stub STYLE.md) to M (populate with real rules)
 - **Friction:** Rune's skill + agent file both reference a file
@@ -431,7 +431,7 @@ Entries under the `wake-up-drift` tag defined in
 - **Friction:** lists 2 notebooks; disk has 6
   (`architect.md`, `architect-offtime.md`,
   `formal-verification-expert.md`, `best-practices-scratch.md`,
-  `skill-tune-up.md`, `agent-experience-researcher.md`).
+  `skill-tune-up.md`, `agent-experience-engineer.md`).
   New contributors discovering notebooks via the README miss
   four of six.
 - **Fix:** add four bullets to the README.
@@ -439,7 +439,7 @@ Entries under the `wake-up-drift` tag defined in
 ### Flaky FsCheck property in the F# suite
 
 - **Site:** one of the `[<Property>]` tests in
-  `tests/Dbsp.Tests.FSharp/` (error didn't surface the test
+  `tests/Tests.FSharp/` (error didn't surface the test
   name; seeds `(5370856837815825128,13581531945998878741)` and
   `(2518361587550814727,17790701944329487187,23)` reproduce).
 - **Found:** round 22 by Kenji during build gate; second run

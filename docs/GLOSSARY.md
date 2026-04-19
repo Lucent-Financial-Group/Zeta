@@ -457,7 +457,7 @@ for agents); drops a line in `docs/ROUND-HISTORY.md`.
 fast wake-up is, how clear the contract is, how much friction
 the cold start carries. Distinct from user experience (library
 consumers) and developer experience (human contributors).
-**Technical:** Audit scope of the `agent-experience-researcher`
+**Technical:** Audit scope of the `agent-experience-engineer`
 skill; Daya wears the hat. Measured via cold-start token count,
 pointer-drift catalogue, wake-up clarity score.
 
@@ -467,16 +467,23 @@ pointer-drift catalogue, wake-up clarity score.
 Zeta.Core — the NuGet user, the first-time evaluator, the
 downstream integrator. What the README and getting-started and
 public API feel like.
-**Technical:** Audit scope of the `user-experience-researcher`
-skill; persona assignment open.
+**Technical:** Audit scope of the `user-experience-engineer`
+skill; Iris wears the hat. Measured via first-10-minutes
+walk-through, seconds-to-installed, pointer-drift catalogue,
+friction classification (stale-pointer, opaque-terminology,
+missing-hook, wrong-audience, aspiration-vs-reality,
+copy-paste-break, silent-failure).
 
 ### DX (developer experience)
 
 **Plain:** The experience of being a human contributor to this
 repo — cloning, building, running tests, writing the first PR.
 What CONTRIBUTING.md and the dev loop feel like.
-**Technical:** Audit scope of the `developer-experience-researcher`
-skill; persona assignment open.
+**Technical:** Audit scope of the `developer-experience-engineer`
+skill; Bodhi wears the hat. Measured via first-PR walk-through,
+minutes-to-first-build, pointer-drift catalogue, friction
+classification (stale-pointer, unexplained-warning, missing-step,
+wrong-audience, unclear-contract, tooling-gap).
 
 ### Holistic view
 

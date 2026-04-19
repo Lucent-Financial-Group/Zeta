@@ -32,8 +32,9 @@ work. The persona (Dejan) lives on
 Out of scope:
 
 - Hot-path benchmarks — `performance-engineer`.
-- Contributor-experience audits — DX persona (when
-  assigned). the `devops-engineer` builds; DX measures felt experience.
+- Contributor-experience audits — Bodhi
+  (`developer-experience-engineer`). the `devops-engineer`
+  builds; Bodhi measures felt experience.
 - Agent-layer adversarial hardening — the `prompt-protector` (prompt-
   protector).
 - Library-surface security (CodeQL on F# sources,

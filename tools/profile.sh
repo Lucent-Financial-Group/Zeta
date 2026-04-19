@@ -46,13 +46,13 @@ case "${1:-}" in
 
     bench)
         cd "$(dirname "$0")/.."
-        dotnet run --project bench/Dbsp.Benchmarks -c Release -- \
+        dotnet run --project bench/Benchmarks -c Release -- \
             --filter "${2:-*}" --memoryRandomization --runOncePerIteration
         ;;
 
     coverage)
         cd "$(dirname "$0")/.."
-        dotnet test Dbsp.sln -c Release \
+        dotnet test Zeta.sln -c Release \
             /p:CollectCoverage=true \
             /p:CoverletOutputFormat=cobertura \
             /p:CoverletOutput=./TestResults/ \
@@ -74,7 +74,7 @@ DBSP profiling helper.
   $0 coverage           # run tests with coverage, emit HTML
 
 Typical flow for finding a hot spot:
-  dotnet run --project samples/Dbsp.Demo -c Release &
+  dotnet run --project samples/Demo -c Release &
   PID=\$!
   $0 counters \$PID     # watch live — confirm alloc-rate trend
   $0 trace \$PID        # capture a 30-s snapshot, view in speedscope

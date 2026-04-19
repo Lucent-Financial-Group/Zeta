@@ -31,6 +31,7 @@
     <Compile Include="Operators/Window.FiringMode.Tests.fs" />
     <Compile Include="Operators/Join.Tests.fs" />
     <Compile Include="Operators/Upsert.Tests.fs" />
+    <Compile Include="Operators/SpeculativeWatermark.Tests.fs" />
     <Compile Include="Operators/Transaction.Tests.fs" />
     <Compile Include="Operators/Fusion.Tests.fs" />
     <Compile Include="Operators/ResidualMax.Tests.fs" />
@@ -48,6 +49,7 @@
     <Compile Include="Storage/ClosureTable.Tests.fs" />
     <Compile Include="Storage/Simd.Tests.fs" />
     <Compile Include="Storage/Durability.Tests.fs" />
+    <Compile Include="Storage/ArrowSerializer.Tests.fs" />
 
     <!-- Sketches/ -->
     <Compile Include="Sketches/Bloom.Tests.fs" />

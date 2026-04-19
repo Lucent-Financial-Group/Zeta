@@ -1,15 +1,15 @@
 ---
-name: agent-experience-researcher
-description: Capability skill — measures friction in the agent (persona) experience; audits per-persona cold-start cost, pointer drift, wake-up clarity, notebook hygiene; proposes minimal additive interventions. Distinct from UX (library consumers) and DX (human contributors). Persona lives on `.claude/agents/agent-experience-researcher.md`.
+name: agent-experience-engineer
+description: Capability skill — measures friction in the agent (persona) experience; audits per-persona cold-start cost, pointer drift, wake-up clarity, notebook hygiene; proposes minimal additive interventions. Distinct from UX (library consumers) and DX (human contributors). Persona lives on `.claude/agents/agent-experience-engineer.md`.
 ---
 
-# Agent Experience Researcher — Procedure
+# Agent Experience Engineer — Procedure
 
 This is a **capability skill** ("hat"). It encodes the *how* of
 auditing the per-persona agent experience: simulating cold starts,
 counting orientation cost, finding drift in persona-to-artifact
 pointer chains, designing minimal interventions. The persona
-(Daya) lives on `.claude/agents/agent-experience-researcher.md`.
+(Daya) lives on `.claude/agents/agent-experience-engineer.md`.
 
 ## Ground assumption
 
@@ -163,22 +163,22 @@ P2 (small wins):
 - **Kenji (Architect)** — receives audits, acts on top-3 per
   round-close. `architect`'s own wake-up is audited too.
 - **Aarav (skill-tune-up)** — structural view; ranks
-  skills by drift/bloat/contradiction. the `agent-experience-researcher` measures the
+  skills by drift/bloat/contradiction. the `agent-experience-engineer` measures the
   *experience* of wearing them. Different axis, complementary.
 - **`maintainability-reviewer`** — the `maintainability-reviewer` speaks for the
-  human cold-reader; the `agent-experience-researcher` for the persona cold-reader. Adjacent.
-- **`prompt-protector`** — `agent-experience-researcher`'s interventions land in
+  human cold-reader; the `agent-experience-engineer` for the persona cold-reader. Adjacent.
+- **`prompt-protector`** — `agent-experience-engineer`'s interventions land in
   files the `prompt-protector` lints for invisible-char hygiene.
 - **`skill-improver`** — interventions requiring skill-body
   edits flow to the `skill-improver` via the `architect`.
 
 ## Reference patterns
 
-- `.claude/agents/agent-experience-researcher.md` — the persona
+- `.claude/agents/agent-experience-engineer.md` — the persona
 - `docs/WAKE-UP.md` — the cold-start index audited here
 - `docs/GLOSSARY.md` — AX / wake / hat / frontmatter
-- `memory/persona/daya/NOTEBOOK.md` — `agent-experience-researcher`'s
+- `memory/persona/daya/NOTEBOOK.md` — `agent-experience-engineer`'s
   notebook (created on first audit)
-- `docs/EXPERT-REGISTRY.md` — `agent-experience-researcher`'s roster entry
+- `docs/EXPERT-REGISTRY.md` — `agent-experience-engineer`'s roster entry
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01, BP-03, BP-07, BP-08,
   BP-11, BP-16

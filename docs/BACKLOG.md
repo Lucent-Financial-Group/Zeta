@@ -233,6 +233,173 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Python tool management via `uv tool` (from ../scratch)**
+  (round 34). uv pinned in `.mise.toml` this round (P0 from
+  Bodhi-adjacent ../scratch research). Next: port
+  `scripts/setup/unix/python-tools.sh` shape — declarative
+  `manifests/*.uv-tools` profiles (min / all), `uv tool
+  install/upgrade` loop, PATH + $GITHUB_ENV append. Dejan owns
+  the port (hand-crafted, not copied per GOVERNANCE §23).
+  Effort: ~3h. Unlocks ruff / mypy / pytest adoption without
+  ad-hoc global pip installs.
+- [ ] **Manifest `@include` hierarchy (from ../scratch)**
+  (round 34). Today Zeta's manifests are flat. ../scratch
+  supports `@<name>` directives (e.g., `all.uv-tools` includes
+  `@min`). As Python + Bun tool sets grow, hierarchy prevents
+  copy-paste. Effort: ~6h. Retrofits apt / dotnet manifests
+  too.
+- [ ] **`BOOTSTRAP_MODE=minimum|all` (from ../scratch)** (round
+  34). One env var switches between CI-minimum and full dev
+  env. Each manifest carries `min.*` and `all.*` variants.
+  Effort: ~8h. Speeds CI and makes contributor onboarding
+  faster.
+- [ ] **`BOOTSTRAP_CATEGORIES` orthogonal selection (from
+  ../scratch)** (round 34). Allows `BOOTSTRAP_CATEGORIES="
+  quality database"` to pull category-specific manifests on
+  top of min or all. Unblocks modular CI stages + lighter
+  containers. Effort: ~12h. Zeta's categories TBD (candidate:
+  quality, lean, docs, native).
+- [ ] **Bodhi DX audit cleanup (round-34 first-PR walk)** —
+  the P0 Dbsp.* path refs landed this round via sweep-refs.
+  Remaining from her audit: (a) CONTRIBUTING.md — add
+  shellenv sentence + trivial-PR branch-model guidance +
+  `tools/setup/doctor.sh` mention (Samir on Kenji sign-off);
+  (b) decide `fsharp-analyzers` — add to
+  `manifests/dotnet-tools` or remove from README
+  instructions (Dejan + Samir); (c) codify `sweep-refs`
+  invocation as a mandatory round-close step after any
+  rename campaign (add to `round-open-checklist` or
+  GOVERNANCE §).
+- [ ] **Cross-harness mirror pipeline** (round 34 ask from
+  Aaron). Zeta is currently Claude-Code-biased
+  (`.claude/skills/`, `.claude/agents/`). Real contributors
+  may run Cursor / Windsurf / Aider / Cline / Continue /
+  Codex. Each harness reads a different folder; no
+  universal one exists.
+
+  **Design (Aaron's call).** One canonical source of truth,
+  N harness mirrors generated as build artifacts. Keep
+  skill docs ASCII + LF + plain Markdown. No symlinks, no
+  clever indirection. Add an index file listing every
+  skill + path.
+
+  **Proposed shape:**
+  - **Canonical source.** Move `.claude/skills/` →
+    `skills/` at repo root. `.claude/agents/` likely
+    stays Claude-specific (persona frontmatter with
+    `skills:` field, `tools:`, `model:` is Claude-Code
+    syntax). Skills themselves are the portable part.
+  - **Generator.** `tools/sync-harness-mirrors.sh` (or a
+    small F# / Python script) reads `skills/**/SKILL.md`
+    + `skills/INDEX.md` and writes to:
+    - `.claude/skills/<name>/SKILL.md` (exact copy;
+      Claude Code reads from here)
+    - `.cursor/rules/<name>.mdc` (frontmatter-adjusted
+      per Cursor conventions — `description`, `globs`,
+      `alwaysApply`)
+    - `.windsurf/rules/<name>.md` (similar adjustment)
+    - `.github/instructions/<name>.instructions.md`
+      (Copilot path-scoped variant — keeps the existing
+      `copilot-instructions.md` as the global prompt,
+      adds per-skill scoped prompts)
+    - `AGENTS.md` gets a generated "Skills index"
+      section the harness-agnostic tooling picks up
+  - **CI gate.** Workflow runs the generator + `git
+    diff --exit-code`. If mirrors drift from canonical,
+    CI fails. Prevents drift the way
+    `TreatWarningsAsErrors` prevents warning drift.
+  - **Index file.** `skills/INDEX.md` — newest-first per
+    §18; one line per skill: name, one-sentence purpose,
+    mirror paths (so a human scanning for "where does
+    this skill actually live on my harness" finds it).
+
+  **Constraints from Zeta's conventions:**
+  - **GOVERNANCE §30 sweep-refs** applies — every `skills/`
+    → `<harness>/<path>` rename is a moved path; grep
+    + verify on every generator run.
+  - **GOVERNANCE §31** applies to any Copilot-visible
+    artifact — the generator writes `.github/instructions/*`
+    through the skill-creator-equivalent of the
+    generator, not ad-hoc.
+  - **Nadia (prompt-protector) lints** the generator's
+    output. Covert-Unicode + homoglyph sweep on every
+    mirror write.
+  - **BP-09 ASCII-only** is already a rule; enforce it
+    as a generator precondition.
+  - No `.txt` for declarative files (Aaron's rule); the
+    generator honours existing semantic extensions
+    (e.g., `uv-tools` no-extension).
+
+  **Open questions (for the design doc, not this entry):**
+  - Does `.claude/agents/*.md` also need a portable
+    form, or do we accept that persona frontmatter is
+    Claude-Code-only? Leaning toward: agents stay
+    Claude-only (they carry `skills:` hat wiring,
+    tool-access scopes); skills port cleanly.
+  - Should `memory/persona/` stay single-rooted or
+    per-harness? Single-rooted is correct (it's
+    agent-owned data, not harness config).
+  - Is AGENTS.md the aggregation point or does every
+    harness still need its own root file?
+
+  **Effort estimate:** ~M. Design doc first (round-N+1),
+  implementation the round after. Touches ~60 skill files,
+  so the sweep-refs muscle memory from GOVERNANCE §30
+  applies directly.
+
+  **Why this matters post-public.** A stranger evaluating
+  Zeta from Cursor reads zero of our factory rules today.
+  The factory quality signal is invisible to 60%+ of
+  modern AI-native developers.
+
+- [ ] **Iris round-34 P0: README aspiration / reality
+  framing** (round 34, public-repo triggered). README
+  §"What Zeta adds on top" (lines 31-86) reads as
+  shipped-today but many items are research-preview or
+  post-v1. A consumer currently believes
+  `DurabilityMode.WitnessDurable` is callable; it throws
+  `NotImplementedException`. Route: Kai (framing decision)
+  + Samir (README edit). Needs Aaron sign-off on the
+  v1.0 vs post-v1 split before Samir edits. Proposal in
+  [memory/persona/iris/NOTEBOOK.md](memory/persona/iris/NOTEBOOK.md)
+  round-34 entry.
+- [ ] **Iris round-34 P1: README DBSP-notation ↔
+  GLOSSARY link** (round 34). README §"What DBSP is"
+  introduces `z^-1`, `D`, `I`, `↑` with no link to
+  GLOSSARY entries that already gloss them. Cheap fix,
+  Samir-owned, S effort.
+- [ ] **Iris round-34 P2: Circuit.fs module-level XML
+  doc** (round 34). Two-step pattern (`Circuit.create()`
+  → `circuit.ZSetInput<T>()`) not explained in file-level
+  docs. Ilyana (API shape) + Samir (wording). S effort.
+- [ ] **Copilot-instructions continuous improvement
+  wiring** (round 34 ask from Aaron, follow-up). Needed:
+  (a) GOVERNANCE §31 codifying the factory-managed
+  contract, (b) skill-creator scope extension to
+  `.github/copilot-instructions.md`, (c) Aarav
+  (skill-tune-up-ranker) scope extension to include it,
+  (d) Nadia (prompt-protector) scope extension.
+- [ ] **Roll out `JOURNAL.md` to remaining personas + codify
+  read contract** (round 34 ask from Aaron). Four piloted this
+  round (Daya / Bodhi / Iris / Dejan). Append-only, never
+  pruned, never cold-loaded, grep-only read discipline. On
+  NOTEBOOK prune, entries that merit preservation migrate here
+  rather than being deleted. Remaining personas to seed:
+  Aarav, Aminata, Ilyana, Kenji, Kira, Mateo, Nadia, Naledi,
+  Rune, Soraya, Tariq, Viktor (12). Also: add a BP entry
+  codifying the grep-only contract + add to docs/WAKE-UP.md
+  as a Tier 3 entry (read contract reminder). Open question:
+  does the journal's read discipline need tooling
+  (pre-commit hook blocking `cat JOURNAL.md` in agent
+  transcripts) or does convention hold? Leaning toward
+  convention first, tooling if drift surfaces.
+- [ ] **`security-operations-engineer` persona + skill**
+  (round 34 ask from Aaron). Runtime / incident-response /
+  patch-triage / SLSA-signing-ops / HSM-key-rotation /
+  breach-response. Distinct from Mateo (security-researcher
+  proactive scouting) and Aminata (shipped threat model)
+  and Nadia (agent layer). Slot added to EXPERT-REGISTRY
+  as pending. Name queue open (candidates: none yet).
 - [ ] **`openspec-gap-finder` skill** (round 32 ask). Viktor
   (spec-zealot) reviews spec-to-code alignment for an existing
   capability but doesn't scan the repo for capabilities shipped
@@ -587,7 +754,7 @@ within each priority tier.
   *General role-separation patterns:*
   - **IFS (Internal Family Systems)** — Self / Parts /
     Roles; loosely borrowed in
-    `docs/PROJECT-EMPATHY.md`.
+    `docs/CONFLICT-RESOLUTION.md`.
   - **DCI (Data-Context-Interaction)** — Reenskaug's
     pattern separating role-playing from object
     identity. Smalltalk / Ruby communities.
@@ -690,12 +857,12 @@ within each priority tier.
   coach*, *relational steward*, *culture keeper*, *self-work
   steward* (IFS-native — "Self" is the integrating
   consciousness, not a clinical term).
-  Scope: holds `docs/PROJECT-EMPATHY.md` as the working
+  Scope: holds `docs/CONFLICT-RESOLUTION.md` as the working
   artifact. Relates to GOVERNANCE.md §17 (productive friction) —
   this seat sits *with* the friction rather than resolving
   it. Open design questions: (a) title (see safer candidates
   above), (b) personal name, (c) per-persona coaching-log vs
-  shared log, (d) edit rights on `docs/PROJECT-EMPATHY.md`
+  shared log, (d) edit rights on `docs/CONFLICT-RESOLUTION.md`
   and per-persona notebooks, (e) cadence — round-close sweep
   vs on-demand only. Kenji + Daya pair on design; Daya's AX
   lens matters because wake-up cost for this seat needs to

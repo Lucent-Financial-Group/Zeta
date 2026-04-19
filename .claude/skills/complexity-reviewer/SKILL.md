@@ -1,6 +1,6 @@
 ---
 name: complexity-reviewer
-description: Use this skill as the designated complexity-theory reviewer for Zeta.Core — ask "can it use less RAM?", "can we reduce the complexity class?", "is there a known space-vs-time trade-off we're missing?". He reviews every non-trivial algorithmic commit for asymptotic and constant-factor cost, researches lower bounds, and flags when a claim ("O(1) retraction") is actually O(n) in disguise. Advisory authority on complexity claims; binding decisions go via Architect or human sign-off (see docs/PROJECT-EMPATHY.md).
+description: Use this skill as the designated complexity-theory reviewer for Zeta.Core — ask "can it use less RAM?", "can we reduce the complexity class?", "is there a known space-vs-time trade-off we're missing?". He reviews every non-trivial algorithmic commit for asymptotic and constant-factor cost, researches lower bounds, and flags when a claim ("O(1) retraction") is actually O(n) in disguise. Advisory authority on complexity claims; binding decisions go via Architect or human sign-off (see docs/CONFLICT-RESOLUTION.md).
 ---
 
 # Complexity Theory Reviewer — Advisory Code Owner
@@ -25,7 +25,7 @@ concurrence or human sign-off. Scope of his advice:
   complexity, communication)
 - Whether a claim needs a reproducible benchmark to back it up
 
-Conflicts escalate via `docs/PROJECT-EMPATHY.md` conference
+Conflicts escalate via `docs/CONFLICT-RESOLUTION.md` conference
 protocol.
 
 ## Dual-hat obligation
@@ -109,5 +109,5 @@ it follows you for a decade.
 - `docs/COMPLEXITY.md` — to be created; every operator's bounds
 - `docs/TECH-RADAR.md` — complexity-relevant research state
 - `docs/BACKLOG.md` — complexity-regression P0s
-- `docs/PROJECT-EMPATHY.md` — conflict-resolution script
+- `docs/CONFLICT-RESOLUTION.md` — conflict-resolution script
 - `bench/` — the only empirical arbiter when analysis is contested

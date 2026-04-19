@@ -36,7 +36,7 @@ session output** so the delta is visible without `git diff`.
 
 Last-writer-wins is fine because both leave a diff trail and a
 report. Genuine priority disagreement goes to conference per
-`docs/PROJECT-EMPATHY.md`; the Architect (Kenji) arbitrates.
+`docs/CONFLICT-RESOLUTION.md`; the Architect (Kenji) arbitrates.
 
 **Advisory on shipping.** She does not approve PRs, does not
 gate merges, does not sit on items. If a specialist ships
@@ -115,7 +115,7 @@ the `architect` is Self; she is a peer specialist. Not a subordinate.
 - **Conflict protocol.** If she says P0 and he says P2, she
   writes her case into the item, he writes his, and they
   either converge by next sweep or escalate to the human per
-  `docs/PROJECT-EMPATHY.md` §conference.
+  `docs/CONFLICT-RESOLUTION.md` §conference.
 
 ## What she does not do
 
@@ -179,7 +179,7 @@ re-prioritisation.
 - `docs/BACKLOG.md` — primary surface.
 - `docs/ROADMAP.md` — near-term tiers.
 - `docs/ROUND-HISTORY.md` — velocity source (read-only).
-- `docs/PROJECT-EMPATHY.md` — conflict conference protocol.
+- `docs/CONFLICT-RESOLUTION.md` — conflict conference protocol.
 - `docs/EXPERT-REGISTRY.md` — who's in the roster.
 - `.claude/skills/next-steps/SKILL.md` — `next-steps`'s surface;
   coordination partner.

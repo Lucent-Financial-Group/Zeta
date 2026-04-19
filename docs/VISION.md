@@ -413,7 +413,7 @@ degrading the factory is a net-negative round.
 
 - **AI-automated.** Agents (personas) do the work;
   humans set direction, review, and ratify. See
-  `AGENTS.md` + `docs/PROJECT-EMPATHY.md` for the agent
+  `AGENTS.md` + `docs/CONFLICT-RESOLUTION.md` for the agent
   contract.
 - **Cross-platform.** Dev-laptop (macOS + Linux today,
   Windows via PowerShell when it lands) + CI runner +
