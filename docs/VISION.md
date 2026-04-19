@@ -1,6 +1,6 @@
 # Zeta — Long-Term Vision
 
-> **Status:** round 33 v8 after Aaron's seventh pass of edits.
+> **Status:** round 33 v9 after Aaron's eighth pass of edits.
 > Aaron is the source of truth; this document changes freely.
 > The `product-visionary` role (to be spawned, see
 > `docs/BACKLOG.md`) will steward it once it exists.
@@ -110,15 +110,19 @@ Concretely:
   invalidation-on-mutation plumbing; no subscription-
   pushing-over-WebSocket glue per-field. The graph is
   live by virtue of running on Zeta.
-- **Pluggable log back-end.** Kafka, NATS, NATS
-  JetStream, and Zeta's own native log all speak to
-  the multi-node substrate. Aaron round 33: "all with
-  pluggable wire protocol, hello kafka, nats, nats
-  streaming … and our own of course." Single-node
-  consumers pick in-memory; multi-node picks whatever
-  log infrastructure they already have; greenfield
-  multi-node can pick Zeta-native and get features the
-  emulated back-ends can't express.
+- **Pluggable wire-transport for multi-node — NOT
+  persistence.** Aaron round 33: "i don't want to use
+  anyone elses persistance layer just wire transfer
+  protocols and things like that … we are going to be
+  cutting edge light years past others on our persistance
+  layer, fastest db in town lol, or try to be." Kafka,
+  NATS, NATS JetStream, and Zeta's own native transport
+  are all wire-transport plugins — they carry messages
+  between Zeta nodes, they do NOT store Zeta's data.
+  Zeta owns its persistence layer 100%. The transport
+  plugin shape matches the wire-protocol plugin shape
+  (PG/MySQL/native) — same "pluggable adapter + query
+  IR stays clean" discipline.
 
 What lights up for .NET consumers:
 
@@ -146,6 +150,16 @@ DB technology worth studying lives here as a playground: the
 goal is to explore the full database surface built honestly
 on DBSP foundations, not to carve out a narrow niche.
 
+- **Cutting-edge persistence layer, owned 100%.** Aaron
+  round 33: "we are going to be cutting edge light years
+  past others on our persistance layer, fastest db in
+  town lol, or try to be." Zeta does NOT use Kafka,
+  NATS, or any other system as a storage layer — those
+  are wire-transport plugins for cross-node messaging
+  only. All on-disk format, durability, compaction, WAL,
+  snapshotting, materialisation, indexing, and
+  performance work lives inside Zeta. Ambition is
+  research-grade fastest-in-class.
 - **Mathematically honest.** Every operator obeys laws
   Milewski would recognise. When a law cannot hold, the API
   tells you so, loudly and at compile time.
