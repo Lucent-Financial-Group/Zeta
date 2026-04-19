@@ -4,3 +4,11 @@
 # Pin only when we have a reason to pin; unpinned tools track latest.
 
 dotnet-stryker
+# F# analyzers pack — G-Research rules + FSharp.Analyzers.Build
+# MSBuild integration. README.md references `dotnet tool install
+# --global fsharp-analyzers` directly; this manifest makes that
+# install happen automatically via tools/setup/install.sh so
+# `dotnet msbuild /t:AnalyzeFSharpProject` works for every
+# contributor without a separate install step. Bodhi round-34
+# DX audit flagged the tooling-gap.
+fsharp-analyzers

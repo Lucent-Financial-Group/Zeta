@@ -9,6 +9,153 @@ New rounds are appended at the top.
 
 ---
 
+## Round 34 — factory + DB first-tests + public repo
+
+Anchor: "CI + build-machine setup" carried over from round 29
+matured into a full factory-plus-DB round. Three parallel
+arcs landed, with a mid-round context shift when Aaron
+flipped the repo to public and added Copilot as a PR
+reviewer.
+
+### Arc 1 — factory personas and governance
+
+Three experience-engineer personas landed: **Daya** (AX, was
+seeded round 24), **Bodhi** (DX, Sanskrit बोधि
+"awakening"), **Iris** (UX, Greek Ἶρις "messenger").
+**Dejan** (DevOps, Serbian дејан "action") completed the
+install-script + CI-workflow lane. Aaron corrected the
+initial titles mid-round — these roles audit and route
+fixes, they don't run participant studies, so "researcher"
+was wrong. All three AX/DX/UX lanes renamed to `-engineer`
+across 27 files. Mateo's `security-researcher` stayed as-is
+(his lane is genuinely research-adjacent).
+
+Copilot joined the factory as a Slot-2 reviewer alongside
+the mandatory Kira + Rune floor.
+`.github/copilot-instructions.md` codifies the contract: no
+`curl | bash` suggestions, no injection-corpus echo, no
+security-clause weakening, no warnings introduced, Kira
+wins on correctness and Rune wins on maintainability when
+they disagree with Copilot. GOVERNANCE gained two rules
+this round: §30 mandates `sweep-refs` after any rename
+campaign (motivated by round-33's Dbsp→Zeta code rename
+that stopped short of the docs sweep — Bodhi's first audit
+found every P0 tracing to that one miss); §31 makes the
+Copilot instructions factory-managed through
+`skill-creator`, audited by Aarav, linted by Nadia.
+
+JOURNAL.md unbounded long-term memory piloted on four
+personas then rolled out to 16 total. Append-only, Tier 3,
+grep-only read contract — the prune step becomes the
+curation step. Prompted by Aaron's observation that BP-07
+synthesis-forcing was throwing away hard-won observations.
+`docs/PROJECT-EMPATHY.md` renamed to
+`docs/CONFLICT-RESOLUTION.md` to match its stated role (98
+ref sweep across 46 files). `security-operations-engineer`
+skill stub landed as a pending persona slot — runtime
+incident response and SLSA signing ops lane, disambiguated
+from Mateo / Aminata / Nadia.
+
+### Arc 2 — cross-platform and install script
+
+.NET SDK moved onto mise. Aaron's upstream fix to the mise
+dotnet plugin retired the round-32 rationale for keeping
+dotnet out. `dotnet.sh` deleted; `.mise.toml` picks up
+`dotnet = "10.0.202"` alongside python / java / bun / uv
+(uv pulled in from `../scratch` with a `python-tools.sh`
+port and a new `uv-tools` manifest for ruff and future
+Python CLI tools). Pure `mise activate` (no `--shims`)
+CI-verified green across Ubuntu and macOS on commit
+`9f138eb`, resolving the ~10x interactive perf improvement
+over shims. Inside the install-script orchestration, shims
+stay for subprocess PATH inheritance.
+
+Four declarative manifests renamed off `.txt` to bare
+semantic names per Aaron's rule: `apt`, `brew`,
+`dotnet-tools`, `verifiers` (`uv-tools` already shipped
+with the right treatment). The `Dbsp.*` doc sweep from
+Bodhi's round-34 first audit caught README layout
+references, `Dbsp.sln` in CLAUDE.md / AGENTS.md / PR
+template, and openspec README refs — all now resolve to
+current `Zeta.sln` and `src/Core/` folder layout.
+
+Bodhi's first DX audit: first-PR minutes-to-land 58-62m P50
+after the sweep (blocked earlier by stale Layout block
+references). Iris's first UX audit surfaced a P0
+aspirations-vs-reality drift in README §"What Zeta adds on
+top" — claims research-preview features as shipped today;
+routed to Kai (framing) and Samir (README edit), needs
+Aaron sign-off on v1-vs-post-v1 split.
+
+### Arc 3 — DB first real tests
+
+Two claimed-but-untested surfaces got their first tests:
+
+- **`SpeculativeWindowOp`** (retraction-native speculative
+  watermark emission) — 4 tests covering fresh insert,
+  late-positive retract-old-stamp + insert-new-stamp
+  sequence, negative-weight retraction, empty input. The
+  retraction-native claim on the docstring now has
+  evidence.
+- **`ArrowInt64Serializer`** — 6 tests covering
+  empty/single/negative/large Z-set round-trip, wire-format
+  length-header, serializer name. Negative weights survive
+  the wire (retraction-native invariant holds on the
+  serializer boundary).
+
+Total 10 tests, all green, zero warnings. `fsharp-analyzers`
+tooling-gap closed (Bodhi flagged): added to
+`manifests/dotnet-tools` so the README instructions work
+automatically on first install.
+
+### Mid-round shift — public repo and Copilot
+
+Aaron flipped Zeta public and added Copilot as a PR
+reviewer partway through. That turned Iris's UX audit from
+theoretical to actual (strangers can now land), promoted
+the cross-harness-mirror-pipeline BACKLOG item to be
+properly designed (Zeta-is-Claude-biased; Cursor /
+Windsurf / Aider / Cline / Continue / Codex all read
+different folders). Factory response: §31 plus
+copilot-instructions plus scope extensions on
+skill-creator / skill-tune-up / prompt-protector so the
+Copilot contract gets the same drift-detection discipline
+as any internal SKILL.md.
+
+### Round principle that emerged
+
+`../scratch` is Zeta's proven-pattern reference for
+cross-platform install work. Multiple times this round
+Aaron pointed back to it when I started re-deriving
+decisions from first principles. The round-32
+dotnet-keeping-it-off-mise rationale was stale; `../scratch`
+already had it fixed via Aaron's upstream mise patch. The
+shim vs pure-activate choice in scratch was historical
+default, not considered tradeoff — Zeta verified pure
+activate on CI and the finding will backport. Direct
+research beats first-principles rediscovery.
+
+### What rolled forward to round 35
+
+BACKLOG grew substantially: cross-harness mirror pipeline
+(full design captured with Aaron's canonical-source +
+build-mirrors shape), opt-in auto-edit of shell rc files
+on install, Oh My Zsh + plugins + Oh My Posh in install
+script and devcontainer (three-way parity at the shell-UX
+layer), emsdk under install script, compaction mode for
+container builds (mirrors `../scratch`'s
+`BOOTSTRAP_COMPACT_MODE`), per-shell `mise activate` nit,
+manifest `@include` hierarchy plus `BOOTSTRAP_MODE` plus
+`BOOTSTRAP_CATEGORIES` (all three from `../scratch`),
+verify pure-activate finding backported to scratch.
+
+Iris's P0 (README framing) is queued for Aaron sign-off.
+Bodhi's P1 (README DBSP-notation ↔ GLOSSARY link) landed
+in the round. Bodhi's P2 (Circuit.fs module docs) is
+Ilyana and Samir lane.
+
+---
+
 ## Round 33 — factory shape + vision cascade (15 merged PRs)
 
 Anchor: Aaron's static-analysis push opened round 33 with

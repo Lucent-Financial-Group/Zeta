@@ -11,6 +11,85 @@ shipped." **Ordered newest-first** — recent rounds lead,
 older rounds trail below. Entries stay even after the moment
 passes, because the pattern is the value.
 
+## Wins — round 34
+
+### First real tests for claimed-but-untested surfaces
+
+Two F# surfaces shipped with confident docstrings but zero
+test coverage for months: `SpeculativeWindowOp`
+(retraction-native speculative watermark emission; the
+docstring literally calls it paper-worthy) and
+`ArrowInt64Serializer` (the tier-4 Apache Arrow IPC
+serializer). Both were on the P0 harsh-critic carry-over
+list since round 17.
+
+This round landed 10 tests (4 + 6) covering the load-bearing
+retraction-native invariants: late positive inserts at
+eventTime below a prior speculative watermark emit the
+`-Δ` retract + `+Δ` corrected sequence; negative weights
+survive the Arrow wire round-trip without clamping.
+
+**What would have gone wrong without it:** the
+retraction-native claim was load-bearing for the paper
+target (DEBS 2026 / VLDB 2026) with zero code-level
+evidence. A reviewer asking "prove it" had only the
+docstring. Now there's a mechanical test.
+
+**Pattern it teaches:** "add the first real test" beats
+"add comprehensive tests." Four tests is enough to validate
+the claim; the next ten can land later. The gap wasn't
+thoroughness; the gap was zero-to-one.
+
+### `../scratch` as load-bearing reference
+
+Round 34 pointed me back at `../scratch` five separate
+times — each time I was about to re-derive a decision from
+first principles that scratch had already proven. Aaron
+corrected the direction explicitly: "i'm telling you
+../scratch already figured like all the cross platform
+stuff out." The round-32 dotnet-off-mise rationale was
+stale because Aaron had fixed the mise dotnet plugin
+upstream. The shim vs pure-activate choice in scratch was
+historical default, not considered tradeoff — Zeta flipped
+to pure activate and CI verified green.
+
+**What would have gone wrong without it:** hours of
+first-principles re-derivation, producing a less-proven
+answer than scratch's working implementation. Worse,
+silent drift between sibling repos that ought to behave
+identically.
+
+**Pattern it teaches:** when a sibling repo has the same
+problem solved, read it first. Direct research beats
+first-principles rediscovery. Codified as a round
+principle in round-34's ROUND-HISTORY entry.
+
+### Copilot joins the factory
+
+Aaron made the repo public and added Copilot as a PR
+reviewer mid-round. Rather than let Copilot be an ad-hoc
+bolt-on, we made it a first-class factory member inside
+the round it landed: `.github/copilot-instructions.md`
+with hard rules (no `curl | bash`, no injection-corpus
+echo, no security-clause weakening), disambiguation from
+Kira + Rune (Slot-2 floor), GOVERNANCE §31 for
+factory-management, skill-creator / skill-tune-up /
+prompt-protector scope extensions for drift detection.
+
+**What would have gone wrong without it:** Copilot
+suggesting `curl | bash` or approving a warning-introducing
+diff on its first PR pass, undermining the careful
+supply-chain and `TreatWarningsAsErrors` discipline the
+factory already has. Or silent drift as Copilot's
+instructions diverge from the rest of the factory's
+conventions.
+
+**Pattern it teaches:** when a new reviewer joins (human
+or AI), slot them into the existing contract model rather
+than letting them operate outside it. The factory's rules
+are the factory's quality signal; a reviewer outside the
+rules lowers the average.
+
 ## Wins — round 33
 
 ### Direct questions beat abstract scaffolding
