@@ -64,6 +64,42 @@ the sync-fast-path avoids the cost.
 **`TreatWarningsAsErrors` is on** (shared from
 `Directory.Build.props`). A warning is a build break.
 
+## Generic-by-default — and where the facade legitimately specialises
+
+The F# core is generic-by-default (see
+`fsharp-expert/SKILL.md` "Generic-by-default" section). The
+C# facade exists to specialise *only* where Roslyn inference
+can't cleanly consume the parametric F# form. That makes the
+facade a deliberate escape hatch, not a policy exception.
+
+**Default stance.** When adding a facade member, keep the
+generic parameter if Roslyn + IntelliSense handle it well.
+`Zeta.Core.CSharp` consumers should get the same type-level
+flexibility the F# side has.
+
+**Legitimate specialisations.** Limited set; each one cites:
+
+- **Variance seams F# can't express.** `ICovariantSink<out T>`,
+  `IContravariantHashStrategy<in TKey>`,
+  `ICovariantBackingStore<out TKey>` — F# doesn't express
+  `in`/`out` syntactically, so C# declares them and the F#
+  core honours the runtime variance. `Variance.cs` is the
+  canonical example.
+- **Attribute-driven metadata.** BCL or Meziantou attributes
+  that require C# syntax (e.g., `[ThreadStatic]` behaviour
+  nuances, source generators, analyzer-ruled attributes).
+- **Consumer ergonomics the F# shape can't match.** `Option<'T>`
+  exposed as `T?` + `TryGet(out T)`, `Result<'T, 'E>` as
+  `TrySomething(out T, out E)`. The F# API stays generic; the
+  facade paraphrases for Roslyn.
+
+**Anti-pattern.** A facade member that specialises a generic
+F# function to `int64` purely because "it's simpler" —
+without a variance / attribute / ergonomics reason — is
+importing the wrong default. Flag in review; push the
+specialisation back to the F# side (if warranted) or widen
+the facade.
+
 ## F# interop patterns
 
 **`Option<'T>` → C#.** The facade returns `T?` (nullable
