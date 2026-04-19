@@ -133,6 +133,30 @@ Skim:
 
 Cheap checks; early surface of problems.
 
+### 7.5. Check the hygiene portfolio cadence
+
+Five lenses rotate at distinct cadences. At round-open,
+name which are *due* and dispatch or schedule as needed.
+Each lens recommends only; the architect integrates.
+
+- **`factory-audit`** (~10 rounds) — governance coverage,
+  persona coverage, round cadence, memory hygiene,
+  docs landscape.
+- **`factory-balance-auditor`** (5-10 rounds) — authority
+  / compensator symmetry; "what here has no brake?"
+- **`skill-tune-up`** (5-10 rounds) — ranks existing
+  skills across seven criteria (drift, contradiction,
+  staleness, user-pain, bloat, BP drift, portability
+  drift).
+- **`skill-gap-finder`** (5-10 rounds) — absent skills;
+  patterns that should be centralised but aren't.
+- **`project-structure-reviewer`** (3-5 rounds, or
+  post-rename-campaign per GOVERNANCE §30) — physical
+  layout, file placement, naming conventions.
+
+Overlap at the edges is deliberate; union-of-findings is
+richer than any single lens. Parallel-dispatchable.
+
 ### 8. Create the todo list for the round
 
 Use `TodoWrite`. First todo = first concrete step
