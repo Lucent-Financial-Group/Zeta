@@ -1,0 +1,77 @@
+{
+  // Shape mirrors SQLSharp's `.vscode/settings.json` so
+  // contributors get consistent editor behaviour around Zeta's
+  // build outputs + vendored upstreams.
+  "dotnet.defaultSolution": "Zeta.sln",
+
+  "files.exclude": {
+    "**/BenchmarkDotNet.Artifacts/**": true,
+    "**/TestResults/**": true,
+    "**/artifacts/**": true,
+    "**/bin/**": true,
+    "**/obj/**": true,
+    "**/node_modules/**": true,
+    "**/tools/lean4/.lake/**": true,
+    "**/references/upstreams/**": true
+  },
+  "files.watcherExclude": {
+    "**/BenchmarkDotNet.Artifacts/**": true,
+    "**/TestResults/**": true,
+    "**/artifacts/**": true,
+    "**/bin/**": true,
+    "**/obj/**": true,
+    "**/node_modules/**": true,
+    "**/tools/lean4/.lake/**": true,
+    "**/references/upstreams/**": true
+  },
+  "search.exclude": {
+    "**/BenchmarkDotNet.Artifacts/**": true,
+    "**/TestResults/**": true,
+    "**/artifacts/**": true,
+    "**/bin/**": true,
+    "**/obj/**": true,
+    "**/node_modules/**": true,
+    "**/tools/lean4/.lake/**": true,
+    "**/references/upstreams/**": true
+  },
+
+  "FSharp.excludeProjectDirectories": [
+    ".git",
+    "bin",
+    "obj",
+    "node_modules",
+    "tools/lean4/.lake",
+    "references/upstreams"
+  ],
+
+  "shellcheck.customArgs": ["-x"],
+  "shellcheck.useWorkspaceRootAsCwd": true,
+
+  "[fsharp]": {
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4
+  },
+  "[csharp]": {
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4
+  },
+  "[json]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2
+  },
+  "[jsonc]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2
+  },
+  "[yaml]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2
+  },
+  "[markdown]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.formatOnSave": false
+  }
+}

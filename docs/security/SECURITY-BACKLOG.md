@@ -174,28 +174,33 @@ cost) but is still worth shipping eventually.
 - **Rough cost estimate:** S (just add to cadence)
 - **Priority:** P1
 
-### Post-install repo automation: Bun + TypeScript + package.json
+### Post-install repo automation: runtime choice open (research needed)
 
 - **Why deferred:** `tools/setup/install.sh` (bash) owns bootstrap
-  because it can't assume Bun/Node/anything pre-install. After
-  install, Zeta's eventual polyglot repo-automation surface
-  (format-repo, coverage-collect, benchmark-compare, lint
-  orchestration) benefits from a single cross-platform runtime.
-  Aaron: "I used bun and typescript and package.json for repo
-  automation after the point of install … better than maintaining
-  bash and pwsh scripts everywhere." Pattern visible in
-  `../SQLSharp/tools/automation/` and `../scratch`.
+  because it can't assume any runtime pre-install. After install,
+  Zeta's eventual polyglot repo-automation surface (format-repo,
+  coverage-collect, benchmark-compare, lint orchestration)
+  benefits from a single cross-platform runtime. Aaron's prior
+  choice on `../SQLSharp` + `../scratch` was Bun + TypeScript +
+  package.json — it worked, but Aaron is explicitly NOT committed
+  to repeating it: "IDK if I want to stick with this which is
+  why i want the research." Candidates worth comparing include
+  Bun/Node, Deno, Python (already on PATH post-install via mise),
+  .NET console tools (already on PATH), or something else
+  entirely. The constraint is "one runtime handles
+  everything polyglot-post-install, no bash+pwsh parallel twins."
 - **Trigger to revisit:** first post-install automation task that
   would need cross-platform scripting (benchmark comparison,
-  coverage aggregation, format-repo across .fs/.cs/.md/etc., or
-  the first case where bash+pwsh would have to be maintained in
-  parallel).
-- **Rough cost estimate:** M (introduce `bun`/`package.json`
-  at repo root, first TypeScript automation entry point, wire
-  Bun install into `tools/setup/`)
+  coverage aggregation, format-repo across .fs/.cs/.md/etc.).
+  Research round before committing: write a design doc comparing
+  candidate runtimes across cold-start cost, install weight, type
+  safety, ecosystem breadth for lint/format/test orchestration,
+  and maintainability.
+- **Rough cost estimate:** S (research doc) + M (first shipped
+  automation in chosen runtime)
 - **Priority:** P2 (on-demand; not blocking)
-- **Note:** post-install only; install.sh stays bash so the
-  bootstrap can't depend on its own output.
+- **Note:** install.sh stays bash regardless — bootstrap can't
+  depend on its own output.
 
 ### `static-analysis-gap-finder` skill (missing-lint-tool detection)
 
