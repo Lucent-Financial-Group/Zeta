@@ -108,6 +108,47 @@ tooling-gap closed (Bodhi flagged): added to
 `manifests/dotnet-tools` so the README instructions work
 automatically on first install.
 
+### Arc 4 — factory portability discipline
+
+Late-round intervention codified the intent that the software
+factory becomes reusable across projects one day. One rule,
+two scopes:
+
+- **Skills.** `.claude/skills/*/SKILL.md` default to generic;
+  project-specific skills declare `project: zeta` in
+  frontmatter and open with a "Project-specific:" rationale.
+  `skill-creator` gained a "Portability declaration" step in
+  its Proposal workflow plus a checklist item; `skill-tune-up`
+  gained a 7th ranking criterion — "portability drift" —
+  that flags Zeta-isms leaking into undeclared skills AND
+  needless `project: zeta` declarations on otherwise-generic
+  skills.
+- **Build / CI / install scaffolding.** `tools/setup/`,
+  `.github/workflows/`, `.mise.toml`, `Directory.Build.props`
+  default to generic. `devops-engineer` SKILL gained Step 7
+  (portability check) covering file-naming guidance
+  (`zeta-spec-check.yml` over `spec-check.yml`) and scope
+  fencing between generic scaffolding and project hooks.
+
+Two cross-agent standing rules landed in
+`docs/AGENT-BEST-PRACTICES.md` outside the BP-NN list (they
+lack the ≥3-external-source backing that BP promotion
+requires, but apply project-wide to every agent's tool use):
+upstreams-exclusion on every file-iteration command
+(GOVERNANCE §23 sibling-clones produce 10x-100x slower scans
+and off-project noise), and no name attribution in code /
+docs / skills (names live only in `memory/persona/<name>/`).
+Architect reference-patterns section updated to surface the
+new section on cold-start.
+
+Nazar (security-operations-engineer) persona completion: agent
+body and memory stubs seeded, "Aaron" direct-refs replaced
+with "human maintainer" role-ref to match the no-attribution
+rule. Dejan (devops-engineer) same treatment applied. BACKLOG
+logged a deferred starter-template extraction target — lift
+the generic portion into a reusable scaffold so the next
+project inherits the factory without a rewrite.
+
 ### Mid-round shift — public repo and Copilot
 
 Aaron flipped Zeta public and added Copilot as a PR
