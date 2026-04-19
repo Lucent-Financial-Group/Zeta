@@ -295,6 +295,35 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Untested serializer tiers — `SpanSerializer` +
+  `MessagePackSerializer`.** `src/Core/Serializer.fs` defines
+  three tiered serializers with strong docstring claims
+  ("zero-copy by definition" on `SpanSerializer`,
+  "30-60 ns/entry, source-gen AOT-clean" on MessagePack tier)
+  but only `ArrowSerializer` currently has a dedicated test
+  file (`tests/Tests.FSharp/Storage/ArrowSerializer.Tests.fs`
+  — landed round 34 DB Arc). Both unlanded tiers are claims-
+  tester candidates:
+  - `SpanSerializer` — verify zero-copy with an allocation
+    assertion (BenchmarkDotNet MemoryDiagnoser on a tight
+    loop; any boxing or LOH allocation fails the zero-copy
+    claim). Wire format is `[4B count][count × sizeof
+    (ZEntry<'K>) bytes]`; round-trip test on blittable `int`
+    / `int64` / `float` Z-sets; endian behaviour must be
+    single-host-only as documented.
+  - `MessagePackSerializer` — verify the 30-60 ns/entry
+    claim with BenchmarkDotNet; round-trip test on
+    non-blittable shapes (records, strings, nested); verify
+    negative-weight retraction-native invariant holds on
+    the wire.
+
+  Route to claims-tester; effort S per serializer (~2h
+  including a BenchmarkDotNet harness). Worth doing
+  before the query surface round lands because the tiered
+  dispatch (`src/Core/Serializer.fs:28-29`: "auto-detection
+  at Circuit.Build()") is a documented extension point
+  that will rely on these claims being honest.
+
 - [ ] **Ghost personas in EXPERT-REGISTRY.** Seven personas
   appear in `docs/EXPERT-REGISTRY.md` rows with full
   descriptions but have no `.claude/agents/<slug>.md` file
