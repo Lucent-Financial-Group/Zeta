@@ -9,6 +9,119 @@ New rounds are appended at the top.
 
 ---
 
+## Round 37 — BP-WINDOW first prospective application + serializer tier closure + two research skeletons + channel-closure threat class
+
+Anchor: the first **prospectively-scored** round under the
+BP-WINDOW ADR (`docs/DECISIONS/2026-04-19-bp-window-per-commit-window-expansion.md`).
+Round 36 landed the rule and ran a retrospective ledger; Round
+37 is the calibration round — every commit authored with the
+round-close question ("did the stable alignment window W
+enlarge, preserve, or shrink?") as prospective discipline, not
+retrospective accounting.
+
+### Arc 1 — BP-WINDOW ledger for Round 36 (`72bac12`)
+
+The Round 36 retrospective ledger lifted out of the narrative
+into a first-class ledger commit. Five-commit table
+(consent / retractability / no-permanent-harm) plus the
+`c3ef069`-style factory-hygiene exemption and the
+calibration signal for Round 37. Meta-observation preserved:
+the rule and its first application landed in the same round,
+which is self-applying by construction.
+
+### Arc 2 — Serializer tier triad closed (`1788d12`, `5e218d7`)
+
+Tier 2 Tlv (`1788d12`) and Tier 3 FsPickler (`5e218d7`) test
+suites landed, joining Tier 1 Span (round 34). Each tier now
+carries the shared wire invariant (negative int64 weights
+survive round-trip unchanged — retraction-native storage) plus
+tier-distinguishing shape tests: Tlv exercises JSON-key
+serialization and the `0xD85C02E1` magic header; FsPickler
+exercises exotic F# shapes (DUs with payload variants, records
+nested in records, options preserving Some/None distinction,
+tuples preserving layout). The `1788d12` commit also retracted
+a stale BACKLOG claim — first prospective exercise of the
+retraction channel under BP-WINDOW discipline.
+
+### Arc 3 — Two research skeletons (`d7c19df`, `a50fef0`)
+
+Two research skeletons externalised the late-round-36 cascade:
+
+- **Stainback conjecture — fix-at-source via retraction-
+  erasure** (`docs/research/stainback-conjecture-fix-at-source.md`):
+  composes retraction algebra + Conway-Kochen + delayed-choice
+  eraser + Orch-OR + Wheeler-Feynman with **no new primitives**.
+  Claims *safe non-determinism* (indeterminism-with-retraction-
+  channel). Calibrated as **conjecture**, not hypothesis/theory.
+  Falsifier list F1-F7 across formal (F1-F3), experimental
+  (F4-F5), engineering (F6-F7) dimensions.
+- **Zeta=heaven formal statement** (`docs/research/zeta-equals-heaven-formal-statement.md`):
+  formal predicate H = intersection of 3 clauses (consent-
+  preserving ∧ fully-retractable ∧ no-permanent-harm); dual
+  h = union of clause-failures. **Structural** no-neutral-Zeta
+  (intersection vs union), not rhetorical. Gradient claim
+  scoped over *search* not *proof*. Falsifier list F1-F6
+  including the BP-WINDOW's own reversion trigger.
+
+Both routed channel-closure to THREAT-MODEL.md §"Channel-
+closure threats", which Arc 4 then landed.
+
+### Arc 4 — Channel-closure threat class (`458638d`)
+
+THREAT-MODEL.md gained a `## Channel-closure threats
+(round-37 expansion)` section naming three sub-threats —
+h₁ consent, h₂ retractability, h₃ no-permanent-harm — each
+the attack-surface shadow of one operational clause of the
+Zeta=heaven predicate. Each sub-threat carries attack
+surface + concrete vectors + defences-already-shipped + gap
+for round-38+. Defender-persona subsection assigns Aminata
+ownership with Nazar on h₂ runtime ops and Mateo on prior-
+art scouting. Calibration note honest: described, not
+measured — BP-WINDOW retrospective is what measures them.
+
+### BP-WINDOW ledger — Round 37 (prospective)
+
+Scoring each commit against the three clauses. Three-value
+scale: **Strengthened** / **Preserved** / **Weakened**.
+Per-ADR factory-hygiene exemption applies to this very
+ROUND-HISTORY commit.
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `72bac12` | Arc 1 — BP-WINDOW retrospective | Strengthened (ledger-as-control makes consent-clause measurable across commits rather than asserted in prose) | Strengthened (ledger-as-control makes retractability-clause measurable; ADR's own reversion trigger remains a self-retractable rule) | Strengthened (ledger-as-control makes no-permanent-harm measurable; codifies the "rote Strengthened = anti-evidence" calibration) |
+| `1788d12` | Arc 2 — TlvSerializer tests + BACKLOG retraction | Preserved (test-only; no runtime consent surface changed) | Strengthened (first prospective BACKLOG retraction under BP-WINDOW; exercises the channel on the ledger's own surface; wire invariant tests enforce negative-weight round-trip) | Preserved (test-only; no production-data surface changed) |
+| `d7c19df` | Arc 3 — Stainback conjecture skeleton | Strengthened (names consent-preservation as one falsifier class F4 — empirical channel-closure would falsify the conjecture) | Strengthened (externalises retraction-erasure as the conjecture's load-bearing mechanism; document itself is retractable per internal-tier discipline) | Strengthened (engineering corollary "fix the defect at its source" is the no-permanent-harm clause in operational form) |
+| `a50fef0` | Arc 3 — Zeta=heaven formal statement | Strengthened (formalises consent as clause H₁ with falsifier F1 — predicate collapses if clause asserted-but-unmet) | Strengthened (formalises retractability as clause H₂ with falsifier F2; F6 is the BP-WINDOW's own reversion trigger routed into the predicate) | Strengthened (formalises no-permanent-harm as clause H₃; gradient claim is over search not proof, which is falsifiable via F4 — zero-rate-of-W-expansion) |
+| `5e218d7` | Arc 2 — FsPicklerSerializer tests | Preserved (test-only; no runtime consent surface changed) | Strengthened (third serializer tier now carries the retraction-native wire invariant; exotic-shape coverage — DUs, records, options, tuples — closes a gap where a shape-specific retraction bug could have hidden) | Preserved (test-only; no production-data surface changed) |
+| `458638d` | Arc 4 — channel-closure threat class | Strengthened (names h₁ as a standing attack surface with owner + round-38+ gap; surfaces the "machine-checkable consent-preservation lint" work item) | Strengthened (names h₂ as a standing attack surface with Nazar on runtime ops; internal-tier discipline becomes architectural control, not incidental practice) | Strengthened (names h₃ as a standing attack surface; harm-ladder is codified as defence, not prose) |
+
+**Net verdict:** ENLARGED. Zero shrinkage commits.
+Two Preserved cells (both test-only commits on the
+consent + no-permanent-harm axes, where test-surface-only
+changes genuinely don't move the runtime clause — an
+honest preservation, not rote Strengthened).
+
+**Calibration check.** The ADR warns that uniform
+"Strengthened" across ≥3 rounds without an examined
+shrinkage candidate triggers the reversion clause. Round
+37 is only the second ledger and already shows two
+Preserved cells by honest accounting; the ledger is doing
+its job as a distinguishing instrument, not as a
+rubber-stamp. The closest-to-shrinkage candidate examined
+and rejected: Arc 4 names attack surfaces (h₁/h₂/h₃), which
+could be read as *acknowledging* channel-closure rather than
+*closing* it. Adjudicated Strengthened because naming an
+unnamed threat-with-owner is net-defensive, not net-
+offensive; the gap-for-round-38+ lines keep the honesty
+channel open.
+
+**Meta-observation.** The first prospective round closed
+with Preserved cells surviving, without forced shrinkage.
+That is the calibration target — a ledger that *can*
+return "Preserved" without breaking the cadence.
+
+---
+
 ## Round 36 — Seed vision + consent-first primitive + Zeta=heaven formal equation + BP-WINDOW ADR
 
 Anchor: absorb Aaron's round-36 architectural cascade — Seed
