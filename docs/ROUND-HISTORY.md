@@ -97,6 +97,56 @@ first-tick. Round 42 inherits two P0s: the new `lsm-spine-
 family` capability (ADR's Round-42 slot) plus this P1 sweep
 on the Round-41 capability.
 
+### Arc 5 — ROUND-HISTORY narrative + memory-restructure design (`6e6e211`, `36797ba`)
+
+Two close-adjacent hygiene commits: (1) the Round 41 narrative
+landed with arcs 1-4 plus observations and the prospective
+BP-WINDOW ledger; (2) the memory-folder role-restructure landed
+as a 349-line design plan at
+`docs/research/memory-role-restructure-plan-2026-04-21.md`
+**instead of** executing the rename, downgraded from "execute
+now" under Auto Mode's *do-not-take-overly-destructive-actions*
+clause because a 700-occurrence cross-reference surface makes a
+bad 13-directory role axis hard to reverse. Design carries four
+open questions for Aaron's sign-off; execution slot
+recommended: Round 42 opener.
+
+### Arc 6 — BP-WINDOW ledger actualisation for Rounds 37-40 (`85fb352`)
+
+The "(prospective)" label on the Round 37 / 38 / 39 / 40
+BP-WINDOW ledger headers updated to "(merged via PR #30,
+`1e30f8c`)" to reflect that PR #30 (2026-04-20 bridge) actually
+shipped those commits to main. The ledgers' scores are now
+settled observations rather than forecasts; the retractability
+audit trail gains explicit provenance. Round 41's own ledger
+correctly stays "(prospective)" — round-41 branch has not yet
+merged. Four prose uses of "prospective" (as methodology-
+descriptor, not header-label) preserved as historical narrative.
+
+### Arc 7 — Round-35 holdover: Soraya audit + BACKLOG capture (`e461d9c`, `15e9654`)
+
+Round 39 observation flagged two untracked files as held
+pending formal-verification-expert tool-coverage review:
+`src/Core/RecursiveSigned.fs` (82-line skeleton) and
+`tools/tla/specs/RecursiveSignedSemiNaive.tla` (233-line TLA+
+spec with real `Step` relation, properties S1-S4, and concrete
+successor-chain body cross-checking the shipped sibling
+`RecursiveCountingLFP.tla`). Soraya routed, audit landed in
+`memory/persona/soraya/NOTEBOOK.md`: **CONDITIONAL PASS** for
+Round-42 graduation subject to four tool-coverage prereqs.
+Per-property tool table scores the seven-item surface
+(S1/S2/S3/S3'/SupportMonotone/S4/refinement) — TLC primary for
+state-bound invariants, FsCheck for the two-trace property
+(anti-TLA+-hammer: S4 would blow TLC to O(states²)), and a Z3
+QF_LIA cross-check on S2 (the one P0 under BP-16 because silent
+fixpoint drift is unrecoverable). Refinement mapping to the
+counting sibling picks FsCheck cross-trace over TLA+ refinement
+proof or Lean lemma. Prereqs lifted into `docs/BACKLOG.md` as
+four checkbox sub-items under the parent "Retraction-safe semi-
+naïve LFP" entry, sized S each, so the round-42 opener picks
+them up as actionable work rather than having to re-derive
+them from the notebook.
+
 ### Round 41 observations for Round 42
 
 - The **audit → ADR → ship → audit → close-P0 → file-P1**
@@ -117,6 +167,14 @@ on the Round-41 capability.
 - `BloomFilter.fs` Adopt-row priority escalation (Round 44)
   holds — the program honours the Adopt-row coupling rule
   it was founded on.
+- **Round-35 holdover closed on the same round that shipped the
+  cadence item.** Routing `RecursiveSigned.fs` + the TLA+ spec
+  to Soraya *before* writing any F# implementation meant the
+  conditional-pass verdict replaces a potential ship-then-audit-
+  fail cycle. BP-16 cross-check discipline landed in-BACKLOG
+  (Z3 QF_LIA on S2) rather than as prose, which is the
+  promotion-path for cross-check rules the alignment substrate
+  is designed to enable.
 
 ### BP-WINDOW ledger — Round 41 (prospective)
 
@@ -126,6 +184,9 @@ on the Round-41 capability.
 | `e51ec1b` | Arc 2 — operator-algebra extension | Strengthened (disaster-recovery contract now covered for lifecycle, scheduling, scopes, chain-rule wrapper, ZSet representation) | Strengthened (spec is retractable — every requirement can be rewritten under the same capability without consumer break; Viktor audit is the retraction surface) | Preserved (spec extension only; no code behavioural change) |
 | `92d7db2` | Arc 3 — Viktor P0 close | Strengthened (four drift defects closed honestly rather than papered over) | Strengthened (the fix *is* the retraction — the spec retracted its claim of a phantom Reset, retracted its wrong namespace, retracted its phase undercount) | Preserved (spec fixes only) |
 | `56f34b5` | Arc 4 — Viktor P1 filed as Round-42 absorb | Strengthened (ten remaining gaps filed adversarially rather than discarded; round-42 budget pre-committed honestly) | Strengthened (gaps are a declared retractable surface — Round 42 closes them or the capability stays half-credit) | Preserved (BACKLOG update only) |
+| `6e6e211` / `36797ba` | Arc 5 — ROUND-HISTORY + memory-restructure design | Strengthened (memory-restructure downgraded from "execute now" to "design plan + sign-off first" under Auto Mode *do-not-take-overly-destructive-actions* clause; four open questions declared honestly) | Strengthened (design has explicit rollback via single `git revert`; 5-phase atomic-commit plan is the retraction surface) | Preserved (narrative + design doc only; 700-occurrence cross-reference surface deliberately not touched) |
+| `85fb352` | Arc 6 — BP-WINDOW ledger actualisation | Strengthened (provenance `(merged via PR #30, 1e30f8c)` attached to each header; audit-trail honesty over forecast rhetoric) | Strengthened (ledger transitions from forecast to settled observation, which IS the retraction surface for any forecast error that slipped past round-close) | Preserved (four-header doc edit only) |
+| `e461d9c` / `15e9654` | Arc 7 — Soraya audit + BACKLOG capture | Strengthened (Round-35 holdover gate closed honestly; four named prereqs declare round-42 author's consent-to-work ahead of time rather than drift into a shipped claim) | Strengthened (CONDITIONAL PASS verdict IS the retraction surface — unmet prereqs re-open the capability; BP-16 citation makes the cross-check discipline visible) | Preserved (notebook + BACKLOG updates only; `RecursiveSigned.fs` stays unshipped until prereqs CI-green) |
 
 ---
 
