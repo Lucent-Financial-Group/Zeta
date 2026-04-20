@@ -198,6 +198,26 @@ history, not a TODO list.
   at `docs/research/harness-run-2026-04-20-performance-
   analysis-expert.md`. Row stays open; 4 static-top-5
   candidates still pending harness runs.
+- **Progress 2026-04-20 (#2):** Iteration-1 dry-run
+  complete on `reducer` (second candidate; 570 lines,
+  1.9x BP-03 cap). TIED baseline on both evals
+  (quantum-razor-pruning, essential-vs-accidental):
+  10/10 vs 10/10. +29% tokens +30% wall-time with zero
+  pass-rate benefit. No regression — reducer's lighter-
+  touch persona framework (Selector/Maji/Harmonizer/
+  Navigator) did not push output over word caps the way
+  performance-analysis-expert's mandatory sections did.
+  Aarav's SPLIT hypothesis (theory-lane vs applied-lane)
+  NOT confirmed — framework transfers to both lanes at
+  equal cost. Recommended action: OBSERVE with bias
+  toward SHRINK-if-touched; SPLIT ruled out. Empirical
+  data at `docs/research/harness-run-2026-04-20-
+  reducer.md`. Pattern across two candidates: >500-line
+  SKILL.md bodies add ~30% cost overhead uniformly;
+  mandatory-section vs lighter-framework structure
+  determines whether cost translates to pass-rate
+  regression. Row stays open; 3 candidates still
+  pending (`consent-primitives-expert` next).
 
 ### 2026-04-20 (round 42) — GOVERNANCE.md §10 cross-reference in new §11 not verified
 
