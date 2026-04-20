@@ -1006,3 +1006,65 @@ stabilised into BP candidates.
 **Decision:** keep findings in scratch; F7 is a citation
 refresh for BP-11's next edit, not a new rule. F8 and F9
 reinforce existing rules without adding surface.
+
+## 2026-04-20 (round 43) -- live-search batch F10-F12 -- Aarav
+
+Three queries this round, targeted April 2026.
+
+- **F10 -- Anthropic published skill-authoring best-practices
+  page now cites ">= 500 lines recommended split" as the
+  public cap; our BP-03 "~300 lines" is stricter.** Source:
+  `platform.claude.com/docs/en/agents-and-tools/agent-skills/
+  best-practices` (April 2026). Claim: "Keeping SKILL.md
+  body under 500 lines for optimal performance"; progressive
+  disclosure should absorb overflow via bundled files.
+  **Applies to our repo?** Yes but not as a contradiction.
+  Our BP-03 is internally justified (reviewability + one-
+  purpose) and is free to be stricter than Anthropic's
+  public cap. Round-43 harness runs on three >500-line
+  skills (perf-analysis 642, reducer 570, consent-primitives
+  507) tied baseline or regressed at +22-35% cost -- the
+  empirical signal matches Anthropic's cap direction even
+  stronger than our ~300 static rule. **Candidate rule:**
+  none; keep BP-03. **Decision:** stable; no promotion. Note
+  for next BP-03 revision: could add "Anthropic public cap
+  is 500; our ~300 cap is deliberately stricter for
+  reviewability under 200+ skill library."
+
+- **F11 -- Gerund naming for skills is now Anthropic
+  official recommendation.** Source: `platform.claude.com/
+  docs/en/agents-and-tools/agent-skills/best-practices`.
+  Claim: "Use gerund form (verb + -ing) for Skill names,
+  clearly describing the activity." **Applies to our repo?**
+  Partial. Our convention is `<topic>-<role>` (BP-21) and
+  `X-expert` / `X-research` (BP-19), which encode facets,
+  not verb forms. Gerund-naming would conflict with our
+  faceted naming. Example: our `reducer` is a noun;
+  Anthropic would suggest `reducing-complexity` or similar.
+  **Candidate rule:** none. Conflict ruled in favor of
+  BP-19/BP-21 because faceted naming carries more
+  disambiguation signal (expert vs research, theory vs
+  applied) than a verb form. **Decision:** drop; faceted
+  naming wins on our scale.
+
+- **F12 -- Agentic-drift risk is now a 2026 compliance
+  concern (Kyndryl, CIO).** Claim: agentic systems drift
+  subtly over time; policy-as-code is the recommended
+  governance pattern. **Applies to our repo?** Yes, and we
+  already do this: BP-NN registry is policy-as-code for
+  skill behaviour; tune-up cadence is the drift-detection
+  loop. No new rule needed; the round-42 calibration-note
+  (harness-backed vs static ranking) is exactly the drift-
+  detection discipline this external finding validates.
+  **Candidate rule:** none. **Decision:** stable; no
+  promotion. Cite Kyndryl when BP-15 (tune-up rule IDs) is
+  next revised.
+
+**Contradictions with stable BP-NN:** none.
+
+**Candidate promotions flagged to Architect:** zero this round.
+
+**Decision:** three findings, zero promotions, zero
+contradictions. Empirical harness runs this round are the
+load-bearing new signal -- see `docs/research/harness-run-
+2026-04-20-*.md` for the verdicts.
