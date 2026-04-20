@@ -5,8 +5,8 @@ today. Prose bullets, no RFC-2119 keywords; those live in the base `spec.md`.
 
 ## Namespace and assemblies
 
-- Every type in this capability lives in the `Dbsp.Core` namespace, in the
-  `Dbsp.Core` assembly. There is no nested `Algebra` sub-namespace — the
+- Every type in this capability lives in the `Zeta.Core` namespace, in the
+  `Zeta.Core` assembly. There is no nested `Algebra` sub-namespace — the
   algebra lives at the top level so C# callers and F# callers see the same
   simple import surface.
 
