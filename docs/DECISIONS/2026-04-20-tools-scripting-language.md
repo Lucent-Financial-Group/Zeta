@@ -425,6 +425,173 @@ whatever you want to do here at this point"*. The
 architect owns the watching; Aaron owns the sign-off
 if a supersession ADR is proposed.
 
+## Assumptions — registry-compatible block
+
+This ADR makes the following **unstated-at-the-time**
+assumptions explicit as first-class rails. Aaron
+2026-04-20: *"we should probably encode these too in
+case they end up being wrong."* These are the load-
+bearing beliefs that, if one day falsified, would
+regress or invalidate the decision. Same four-field
+shape per
+`feedback_default_on_factory_wide_rules_with_documented_exceptions.md`:
+**id / statement / probe / revisit-trigger** (with
+**plain-language statement** alongside the technical
+one, per the conversational-UX memory — these are
+future UX inventory).
+
+```yaml
+- id: ASM-TOOLS-BUN-TS-STRIP
+  statement: bun runs .ts source files directly by
+    erasing type syntax (no JS emit, no separate
+    build step). The `erasableSyntaxOnly` tsconfig
+    flag and `"type": "module"` with no bundler
+    presume this.
+  plain-language: "Our TypeScript files run straight
+    in bun without a compile step. We never ship a
+    `.js` artefact next to a `.ts` source."
+  confidence: high
+  probe: run `bun tools/invariant-substrates/tally.ts`
+    with no prior build; if it executes, the
+    assumption holds.
+  revisit-trigger: any bun release whose notes
+    announce an eager compile step, OR any error
+    reading "expected .js emit".
+  owner: architect
+
+- id: ASM-TOOLS-BUN-GLOB-DOT-DEFAULT
+  statement: Bun's Glob.scan() excludes dotfile paths
+    by default (discovered 2026-04-20 against
+    tally.sh parity — `.claude/` was invisible
+    without `{ dot: true }`).
+  plain-language: "Any code that walks paths like
+    `.claude/**` with Bun's Glob must opt in to
+    dotfile matching, or it silently finds nothing."
+  confidence: verified (observed 2026-04-20)
+  probe: tally.ts round-43 smoke test is the
+    regression guard; any future bun path-walk in
+    `tools/**` must pass through a dot-aware helper
+    or carry the same inline comment.
+  revisit-trigger: bun changelog entry altering
+    glob defaults OR a tally.ts parity regression.
+  owner: architect
+
+- id: ASM-TOOLS-TYPES-BUN-LAG-OK
+  statement: DefinitelyTyped's `@types/bun` release
+    cadence lags the `bun` runtime by up to one
+    patch release, and this lag does not produce
+    compile errors under our strict config.
+  plain-language: "It's fine for our bun type
+    definitions to be one patch behind the bun
+    runtime — that's normal and won't break
+    compile."
+  confidence: medium
+  probe: run `bun run tsc --noEmit` against any
+    `.ts` script using bun-specific APIs; if the
+    compiler rejects a runtime-valid call,
+    assumption falsified.
+  revisit-trigger: a bun runtime release that
+    breaks a surface `@types/bun` had covered, OR
+    a `@types/bun` release that goes more than one
+    minor version stale relative to bun itself.
+  owner: architect
+
+- id: ASM-TOOLS-ESLINT-BUN-LOADER-COMPAT
+  statement: ESLint 10.x can load `eslint.config.ts`
+    (TypeScript config) natively without a compile
+    step when invoked under bun with `--stdin` /
+    `--flag unstable_native_nodejs_ts_config`
+    equivalent.
+  plain-language: "Our ESLint config can be a `.ts`
+    file; linting doesn't need a pre-build of the
+    config itself."
+  confidence: medium
+  probe: `bun x eslint --help` + `bun x eslint .`
+    against the current `eslint.config.ts`; if the
+    parser rejects TypeScript syntax in the config,
+    assumption falsified.
+  revisit-trigger: ESLint breaking-change note
+    about TS config loading, OR a bun-vs-node
+    divergence in the loader behaviour.
+  owner: architect
+
+- id: ASM-TOOLS-UPSTREAMS-STAY-SIZABLE
+  statement: `references/upstreams/` (~13 GB) and
+    `tools/lean4/.lake/` (~7 GB) remain the
+    performance-critical excludes for every tool
+    that walks the tree. The SQLSharp hardening
+    shape
+    (`defaultRepoPathIgnorePatterns`, doubled root
+    + `**/` variants) continues to be necessary.
+  plain-language: "Our upstream mirrors and Lean
+    build output are huge. Any new tool that reads
+    the whole repo must skip those folders or it
+    will be painfully slow."
+  confidence: high
+  probe: `du -sh references/upstreams tools/lean4/.lake`
+    at any round-close; if either drops below 1 GB,
+    the excludes can relax. Also: any "language
+    server is frozen" pain report.
+  revisit-trigger: Zeta stops mirroring upstreams
+    (unlikely), OR a tool ships that ignores
+    exclude lists (TypeScript LSP, eslint, bun's
+    Glob all respect them today).
+  owner: architect
+
+- id: ASM-TOOLS-MACOS-LINUX-ONLY
+  statement: Zeta's maintainers and CI runners are
+    macOS or Linux. bun's Windows-from-source
+    maturity is not on the critical path.
+  plain-language: "Nobody on this project builds
+    Zeta on Windows. If that changes, the bun
+    decision has to be re-verified."
+  confidence: high
+  probe: survey `git log --format='%ae' | sort -u`
+    vs. maintainer platform inventory; CI runner
+    images in `.github/workflows/**`.
+  revisit-trigger: any Windows-native-build demand
+    from a contributor, OR CI runners shifting to
+    include `windows-latest`.
+  owner: devops-engineer
+
+- id: ASM-TOOLS-SQLSHARP-TRACKS-LATEST
+  statement: SQLSharp (the sibling project) keeps
+    its bun+TS toolchain on current-latest pins.
+    Zeta inheriting sibling pins as a *starting
+    point* (not a conclusion) stays safe so long
+    as this holds. Falsified means Zeta's
+    latest-version audit becomes more work per
+    ADR.
+  plain-language: "We lightly trust that SQLSharp
+    bumps its pins often. If they let theirs drift,
+    we can't use their `package.json` as a
+    starting reference anymore — we have to check
+    every pin from scratch."
+  confidence: medium
+  probe: round-close sweep of SQLSharp's
+    `package.json` vs. vendor-latest; three
+    consecutive rounds of drift falsifies.
+  revisit-trigger: SQLSharp freezes pins for a
+    long window, OR Zeta discovers a sibling pin
+    more than one minor behind latest.
+  owner: architect
+```
+
+These assumption entries are intentionally in the
+shape that the future
+`docs/RAILS/ASM-<id>.md` registry will consume
+(`project_composite_invariants_single_source_of_truth_across_layers.md`).
+Until that registry exists, this inline block is the
+single source-of-truth for these assumptions. When
+the registry lands, each block becomes one
+`docs/RAILS/ASM-<id>.md` file and this section is
+replaced with a list of anchor links. The
+plain-language field is load-bearing for the
+factory-reuse conversational UX
+(`project_factory_conversational_bootstrap_two_persona_ux.md`)
+— future UX consumers read the plain-language
+statement, not the technical one.
+
 ## Scaffold sequence
 
 The bun+TS adoption lands as its own round-43 work
