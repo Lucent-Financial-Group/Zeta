@@ -2229,6 +2229,109 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **OWASP guidance pull-in — cross-referenced with
+  Microsoft SDL.** Aaron 2026-04-20: *"owasp has great
+  guidance let's pull that in too if we don't already in
+  the backlog cross reference microsoft as well"*. Zeta
+  already pulls from the Microsoft SDL checklist
+  (`docs/security/SDL-CHECKLIST.md` and adjacent). OWASP
+  is the complementary open-standards body covering
+  web-app, API, LLM, and supply-chain security with
+  deeper coverage in several areas where the Microsoft
+  SDL is lighter (OWASP Top 10 for LLM Applications,
+  OWASP ASVS, OWASP SAMM, OWASP Dependency-Check /
+  CycloneDX SBOM). Scope: (a) enumerate the OWASP
+  publications that apply to a DBSP kernel + agent
+  factory (likely: ASVS levels 1-2 for public NuGet
+  consumers, LLM Top 10 for the agent layer, SAMM
+  assessment questions as a maturity baseline, Prompt
+  Injection Prevention cheat-sheet already referenced
+  in `skill-tune-up` live-search sources); (b) produce
+  a cross-reference table at
+  `docs/security/owasp-sdl-crosswalk.md` mapping each
+  applicable OWASP requirement to its Microsoft SDL
+  counterpart and to any Zeta-specific artefact
+  (persona, skill, lint, BP-NN rule) that already
+  addresses it; (c) for gaps where neither SDL nor
+  existing Zeta artefacts cover the OWASP requirement,
+  file a P1 or P2 follow-up per gap; (d) schedule a
+  quarterly re-scan cadence so new OWASP releases
+  (LLM Top 10 revisions in particular) do not drift.
+  Owner: Aminata (threat-model-critic) integrates;
+  Nazar (security-operations-engineer) on the SDL-
+  equivalent operational surfaces; Mateo
+  (security-researcher) tracks OWASP publication
+  velocity as part of his CVE / supply-chain scouting;
+  Ilyana gates any public-surface implication.
+  Effort: M (one crosswalk round; gap-follow-ups
+  land in subsequent rounds as sized).
+
+- [ ] **Microsoft Patterns & Practices pull-in — Azure
+  Architecture Center + SFI + AI agent orchestration
+  patterns.** Aaron 2026-04-20: *"See if microsoft
+  patterns and practices is still relevalnt se should
+  pull in their guidance too if sl backlog"*. Yes —
+  Microsoft Patterns & Practices has evolved from the
+  legacy P&P group into several currently-active
+  surfaces at `aka.ms/mspnp` and `learn.microsoft.com`
+  with regular commits through 2026-03 at
+  `github.com/mspnp`. Four surfaces are directly
+  relevant to Zeta:
+  (a) **Azure Architecture Center cloud design
+  patterns** — technology-agnostic patterns catalog
+  (Ambassador, Anti-Corruption Layer, Bulkhead,
+  Cache-Aside, Circuit Breaker, Retry, Saga,
+  Strangler Fig, Queue-Based Load Leveling, and
+  30+ more), each mapped to Well-Architected pillars
+  (Reliability, Security, Cost Optimization,
+  Operational Excellence, Performance Efficiency).
+  Several already compose with Zeta primitives
+  (Retry + Circuit Breaker compose with
+  retraction-native recovery; Strangler Fig
+  composes with the progressive-delivery + DST-
+  in-prod item above).
+  (b) **Secure Future Initiative (SFI) Patterns
+  and Practices** — new 2025-08 + 2025-10 security
+  series, practical scalable security implementation
+  guidance. Complements Microsoft SDL and OWASP;
+  Nazar's surface.
+  (c) **AI agent orchestration patterns** — Microsoft
+  has published patterns specifically for coordinating
+  autonomous AI agents in workloads (not yet in
+  this repo's awareness). Directly relevant to
+  Zeta's factory model — comparison of Microsoft's
+  orchestration vocabulary against Zeta's conflict-
+  resolution protocol + persona roster is high-value
+  for both directions (Zeta may learn from Microsoft;
+  Microsoft's vocabulary may inform Zeta's pitch
+  framing for `F#`/.NET-native architects).
+  (d) **Reliable Web App + Modern Web App patterns
+  for .NET** — substrate-match for Zeta's
+  `F#`/.NET code; pattern-to-Zeta-primitive crosswalk
+  would show which Zeta primitives already satisfy
+  each pattern's guidance and where gaps exist.
+  Scope: (a) crosswalk document at
+  `docs/research/microsoft-patterns-and-practices-
+  crosswalk.md` mapping each applicable Microsoft
+  pattern to its Zeta equivalent (composes-with,
+  satisfies, gap-today); (b) specific Azure
+  Architecture Center patterns the factory should
+  adopt vocabulary from for the external-audience
+  pitch (`docs/research/factory-pitch-readiness-
+  2026-04.md` Gap 4b substrate-independent pattern
+  write-up); (c) SFI crosswalk lands in the
+  security-surface folder alongside the OWASP
+  crosswalk; (d) AI agent orchestration patterns
+  read adversarially — does Microsoft describe a
+  coordination primitive Zeta is missing, or vice
+  versa? Owner: Kenji (Architect) integrates the
+  pattern crosswalk; Nazar on SFI; Kai (positioning)
+  on the vocabulary-for-pitch angle; Aminata reviews
+  the AI agent orchestration patterns adversarially
+  against the threat model. Effort: M for first-pass
+  crosswalk; L for full integration including gap
+  follow-ups.
+
 - [ ] **Progressive delivery + deterministic simulation in
   prod (first-class, side-by-side versions).** Aaron 2026-04-19:
   *"lets teach our software factory to build it like this first
