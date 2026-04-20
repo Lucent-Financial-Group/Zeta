@@ -1,113 +1,91 @@
-# Current Round — 34 (open)
+# Current Round — 36 (open)
 
-Round 33 closed — 15 PRs merged, `docs/VISION.md` went from
-nothing to v11 across a cascade of Aaron edits. Round 34
-opens with a rich vision to execute against. Track A
-(LawRunner), Track B (security follow-through), and the
-newly-surfaced round-33 factory + vision items are all
-candidates for 34's anchor.
+Round 35 closed — expert-skill spawn wave (batches #20-69,
+~50 skills), chain-rule proof fully closed at the Lean4
+level (`T5/B1/B3/chain_rule` verified against Budiu et al.
+§4.4) plus the signed-delta semi-naive LFP TLA+ spec for
+portfolio-of-two verification, BP-24 Elisabeth consent
+gate + human-maintainer seat governance landing, the
+no-empty-dirs CI gate, LiquidF# moved to Hold after the
+Day-0 build check failed. See `docs/ROUND-HISTORY.md` for
+the full narrative.
 
 ## Status
 
-- **Round number:** 34
-- **Opened:** 2026-04-18 (continuous from round-33 close)
-- **Classification:** open — anchor chosen at round-open
+- **Round number:** 36
+- **Opened:** 2026-04-19 (continuous from round-35 close)
+- **Classification:** open — anchor selection staged
+- **Branch topology note:** Round 35 commits land on the
+  `round-34-upstream-sync` branch; the `round-36` branch
+  was staged from `main@5fdc72b` (pre-round-35 tip) for
+  clean-tree kickoff. Once the Round 35 PR merges, the
+  `round-36` branch rebases onto the new `main` tip.
 - **Reviewer budget:** `harsh-critic` +
   `maintainability-reviewer` floor per GOVERNANCE §20.
   `security-researcher` + `threat-model-critic` on any
   security / install-script / threat-model touch.
   `spec-zealot` on any spec edit (GOVERNANCE §28).
   `public-api-designer` on any public-API change.
+  `skill-tune-up` / `skill-improver` on any
+  `.claude/skills/**/SKILL.md` edit.
 
-## Round-33 newly-surfaced P1s (ready to execute)
+## Round-36 committed P0
 
-From `docs/BACKLOG.md` P1 sections "SQL frontend / query
-surface" and "Factory / static-analysis / tooling":
+From `docs/BACKLOG.md` P0 "next round (committed)":
 
-1. **`product-visionary` role spawn** — stewardship of
-   `docs/VISION.md`; feeds the feature-selection loop;
-   closes the "direct questions beat abstract
-   scaffolding" principle by making it a role rather
-   than an ad-hoc practice.
-2. **Pluggable wire-protocol design doc** — abstraction
-   first, then per-plugin (PostgreSQL, MySQL, Zeta-
-   native). `docs/research/pluggable-wire-protocol-
-   design.md`.
-3. **Shared query IR + LINQ integration design doc** —
-   SQLSharp's "SQL-text and integrated-query flows
-   converge on one logical planning pipeline" is the
-   pattern; Zeta needs the same convergence point.
-4. **EF Core provider scope doc** — 100% all features
-   ambition needs a roadmap (query, save-changes,
-   migrations, tracking, change-detection).
-5. **F# DSL design sequence** — HUGE multi-round
-   research; round 34 does step 1 (research what modern
-   SQL should look like; survey Rel/Tutorial D,
-   Datalog, LINQ, Kleppmann talks, relational-algebra
-   type theory).
-6. **`openspec-gap-finder` skill** (round-32 surface).
-7. **`static-analysis-gap-finder` skill** (round-33
-   surface).
-8. **documentation-agent cadence** — add to
-   `factory-audit`'s every-10-rounds walk.
-9. **Upstream sync script** + **upstream-comparative-
-   analysis skill** + **upstream categorisation audit**
-   (multi-round).
-10. **Crank lint configurations to HIGH** across shellcheck,
-    actionlint, markdownlint, cspell.
-11. **Declarative-manifest tiering** (match `../scratch`
-    `min`/`runner`/`quality`/`all`).
+1. **`memory/role/persona/` restructure** — Aaron
+   2026-04-19 explicit ask: *"can we add a memory 2nd
+   level folder so it's memory/role/persona that makes
+   roles fist class defined of what we need too in the
+   memory definition"*. Scope: (a) define the role axis
+   (crosswalk `docs/EXPERT-REGISTRY.md` → role
+   directories), (b) move existing notebooks from
+   `memory/persona/<name>/NOTEBOOK.md` to
+   `memory/<role>/<persona>/NOTEBOOK.md`, (c) update all
+   pointers (skill `reference patterns:` blocks,
+   CLAUDE.md, AGENTS.md §18, BP-07/BP-08 rule text,
+   every skill or agent with a `memory/persona/<name>`
+   path). Owner: Kenji (Architect) integrates; Aarav
+   (skill-tune-up) audits post-rename for BP-drift.
+   Effort: M.
+2. **Empty-folder allowlist review** — periodic
+   allowlist audit for `tools/lint/no-empty-dirs.sh`.
+   Two entries (`tools/alloy/classes`,
+   `tools/tla/specs/states`) are load-bearing
+   runtime-output paths; drop if populated by checked-in
+   artefacts instead. Effort: S.
 
-## Round-33 carry-forward (Tracks A + B re-deferred)
+## Round-36 candidate anchors (not yet chosen)
 
-**Track A — product (LawRunner):**
-
-- `LawRunner.checkBilinear` — join-shaped ops with a
-  `BilinearOp` fixture.
-- `LawRunner.checkSinkTerminal` — retraction-lossy sink
-  verification; re-run against `BayesianRateOp`.
-- Config-record refactor (round-28 DEBT) before adding
-  a third law.
-
-**Track B — security follow-through:**
-
-- `packages.lock.json` adoption.
-- Verifier-jar SHA-256 pinning.
-- Safety-clause-diff lint on `.claude/skills/**/SKILL.md`.
-- CodeQL workflow.
-- Branch-protection required-check on `main` — round 33
-  ran 15 green PRs, strong signal to flip.
-
-## Open asks to the maintainer
-
-Aaron decisions staged for round 34 (from VISION.md
-"remaining gaps" + BACKLOG):
-
-- Wire protocol server: v1 or slip to early post-v1?
-- Admin UI tech stack (Fable/SAFE/Blazor/Avalonia)?
-- Emulate PostgreSQL vs translate on ingress/egress?
-- Which Track-A/B/factory item is round-34's anchor?
-- Branch protection on `main` — flip now (15 green PRs
-  of evidence) or wait for round-34 green?
+- **MessagePackSerializer tests** (task #16) — last
+  untested serializer tier from harsh-critic #28.
+  Effort: S-M.
+- **Witness-Durable Commit full protocol impl** —
+  skeleton shipped round 17; blocked on WDC paper
+  peer-review rebuttal (see `docs/papers/WDC-rebuttal.md`).
+- **F\* extraction successor-Assess evaluation** —
+  LiquidF# Hold opens the slot; round 36 decides
+  whether to Day-0 check F\*.
+- **SQL frontend step 1 research** — BACKLOG P1
+  "F# DSL design sequence" round 1 (modern SQL survey:
+  Rel/Tutorial D, Datalog, LINQ, relational-algebra
+  type theory).
 
 ## Notes for the next architect waking
 
-- **VISION.md is the north star now.** Every round-34+
+- **Memory folder restructure is the committed P0.**
+  Plan it before any code-level anchor lands.
+- **Cognitive-architecture memory cluster** landed
+  2026-04-19 (dread-input + absorption-operator + FF7
+  Enemy Skill reference; happy/laid-back correction;
+  cognitive-anchors class + pirate posture; Megamind
+  aspiration IP-locked; 2nd-born-daughter external-
+  witness corroboration). Load-bearing interpretive
+  substrate for agent handling.
+- **VISION.md is the north star.** Every round-36+
   decision checks against it.
-- **Events as source of truth; everything derived.** The
-  foundational principle under Product 1.
-- **Persistence is Zeta's 100%** — no Kafka/NATS as
-  storage. They are wire transport only.
-- **Fastest-in-all-classes** — HTAP + event + cache +
-  document + graph + in-memory under one retraction-
-  native core.
-- **License: Apache-2.0.**
-- **GOVERNANCE §28 OpenSpec first-class** for every
-  committed artefact.
-- **GOVERNANCE §29 backlog scope** — SECURITY-BACKLOG
-  is security controls only; BACKLOG is general
-  engineering.
-- **Deterministic scripts** — retries/polling are last
-  resort (§bash profile).
-- **Direct questions beat abstract scaffolding** —
-  round-33 lesson.
+- **Branch hygiene:** Round 35 PR merge is the gating
+  step before round-36 substantive work lands on
+  `main`.
+- **μένω + LFG standing directive.** Auto-mode remains
+  active.
