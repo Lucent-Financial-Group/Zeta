@@ -4314,6 +4314,52 @@ systems. This track claims the space.
   expert, and Ilyana for any public-API surface that
   ships as a compliance primitive.
 
+- **Factory reuse beyond Zeta-DB — declared constraint.**
+  Aaron 2026-04-20: *"also we should start thinking about
+  how to make the software factory part of Zeta and all
+  it's codified practices usable on any project not just
+  the Zeta database, this is not our primary goal at all
+  right now but we can at least start splitting out things
+  between project specific and generic when it comes to
+  our software factory we kind of already do this but
+  this is adding another dimension of split software
+  factory reuse without the Zeta db"* — then
+  *"that's a constraint."* Framed as P3 because the
+  factory's primary customer today is Zeta-DB; logged so
+  the constraint shapes every factory-level decision going
+  forward (new skills default to generic; `project: zeta`
+  marks Zeta-DB-specific content in skill frontmatter; new
+  BP rules and governance land generic unless Zeta-algebra
+  specific). Shape when packaging work begins:
+  - Co-designed with Aaron — see
+    `feedback_factory_reuse_packaging_decisions_consult_aaron.md`.
+    Prior art exists (Claude Code plugins, Anthropic
+    skills, Semantic Kernel, cookiecutter ecosystems);
+    codified best practices for AI-software-factory
+    reuse specifically do not. We will help define them.
+  - Existing toehold:
+    `.claude/skills/skill-tune-up/SKILL.md` §criterion 7
+    already flags portability drift.
+  - Probable packaging-decision surfaces: extraction
+    unit (subtree / template repo / plugin loader);
+    dependency shape (generic base + overlays vs
+    standalone); living-best-practices refresh cadence
+    across heterogeneous consumer projects; governance-
+    overlay mechanism (AGENTS.md / GOVERNANCE.md /
+    CLAUDE.md template + project-specific layer).
+  - Living-best-practices discipline per
+    `feedback_tech_best_practices_living_list_and_
+    canonical_use_auditing.md` applies — prior art
+    surveys get stale; internet-research refreshes
+    mandatory when packaging moves from "constraint"
+    to "active work."
+  Effort: L when packaging work starts (genuinely new
+  best-practice surface). Recurring S-per-round for the
+  constraint-application work (tagging, generic-first
+  defaulting, living-list refresh). Owner: architect-hat
+  co-driving with Aaron for shaping decisions;
+  skill-tune-up for the portability-drift audit.
+
 - **Melt-precedents applied to the patent system.** Aaron
   2026-04-19: *"backlog melt patent system for fun, profit
   and to get rid of the trolls and make the patent system
