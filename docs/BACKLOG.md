@@ -1483,6 +1483,265 @@ within each priority tier.
 
 ## P1 — CI / DX follow-ups (after round-29 anchor)
 
+- [ ] **Declarative parity across dev-inner-loop / qa / dev / stage / prod — environment-parity research, time-budgeted (research-first, no implementation tonight).**
+  Aaron (2026-04-20): *"also we want our dev innner loop, qa,
+  dev, stage, prod to all have declarative pairty someting
+  like ArgoCd even for local dev loops i did that before it
+  worked well but all bespoke, maybe workth research for
+  what's out there and update our tech radar"* +
+  *"make sure radar has budget for time"* +
+  *"or it's own backlog item in the backlog"*.
+
+  **The architectural claim (to be verified, then codified):**
+  - The **same declarative description** of an environment
+    (services, secrets, feature flags, resource quotas,
+    network policies, observability wiring) should be valid
+    at every stage — `dev-inner-loop` (laptop, kind), `qa`,
+    `dev`, `stage`, `prod` — with per-stage overlays, not
+    per-stage forks.
+  - Aaron has built this before, bespoke, and it worked. The
+    research question is: **what in the industry reaches
+    that same bar without being bespoke?**
+  - The ambition goes beyond CD-only (which is "how does prod
+    update?"). It's declarative-parity-as-invariant: if the
+    description at `stage` and `prod` diverge, that's a bug
+    — not an accepted cost of the last mile.
+
+  **Why this matters — what the pattern buys us (Aaron
+  2026-04-20: *"this makes everyting provable and easy to
+  track lenage and all that, i'm just super consistent with
+  my patterns i apply them everywhere"*):**
+  - **Provability.** When the environment description lives
+    in git as the single source of truth, every live
+    environment is a *function* of (declaration × overlay ×
+    reconciler state). Drift is a provable fact, not a
+    suspected one. "Did prod match spec at time T?" becomes
+    a SAT problem on the commit graph, not a sleuth job.
+  - **Lineage traceability.** Every environment state has a
+    unique commit hash and reconciliation timestamp. Who
+    changed what, when, under which review, and under which
+    retraction-exception is queryable end-to-end. Same shape
+    as Zeta's retraction-native operator algebra — every
+    state derivable from input history, every change
+    retractable to a prior consistent state.
+  - **Pattern coherence with the rest of the factory.** This
+    is the same declarative-in-git / retractable / lineage-
+    preserved pattern that shows up in:
+    - DBSP operator algebra (D/I/z⁻¹/H; every downstream
+      value is a function of upstream weight-deltas)
+    - `../scratch` bootstrap harness (declarative package
+      manifests, not YAML strings)
+    - CI retractability inventory (Round 38; five retraction
+      classes)
+    - gitops-first observability
+      (`tools/alignment/audit_*.sh`; git-tracked plain-text
+      signals)
+    - `openspec/specs/**` (delete-all-code recovery
+      contract)
+    - preserve-original-and-every-transformation data-value
+      rule (memory `feedback_preserve_original_and_every_
+      transformation.md`)
+
+    The env-parity work isn't a new pattern; it's the same
+    pattern reaching one more surface. That's the coherence
+    property the research has to preserve — candidate tools
+    score higher the more they compose with the existing
+    factory substrate.
+
+  **Candidate tool landscape (for the research to evaluate):**
+  - **GitOps reconcilers**: Argo CD, Flux CD, Rancher Fleet,
+    Jenkins X, CodeFresh GitOps, Weave GitOps.
+  - **Manifest composition / overlays**: Kustomize, Helm +
+    values-per-env, jsonnet (Grafonnet shape), cdk8s, Pulumi
+    (TS/Python/Go — declarative-via-code), Tanka.
+  - **IaC for the non-K8s layer**: Terraform / OpenTofu,
+    Pulumi, Crossplane (K8s-native IaC).
+  - **Local-loop-to-prod-parity tools**: Tilt, Skaffold,
+    DevSpace, Okteto, Garden, Telepresence.
+  - **Policy-as-code alongside manifests**: OPA / Gatekeeper,
+    Kyverno, Conftest.
+  - **Config-as-data / schema-first**: KCL, CUE, Dhall, KRM
+    (K8s Resource Model functions).
+  - **Environment-topology-as-code**: Shipa, Humanitec, Mia-
+    Platform, Port.
+
+  **Research phase — time-budgeted explicitly (this is the
+  Aaron-requested budget):**
+
+  | Phase | Scope | Time budget |
+  |---|---|---|
+  | 1. Landscape scan | Survey of the 30+ candidates above; one-paragraph capsule per tool; reject-criteria applied. | 1 day |
+  | 2. Shortlist deep-dive | Top 4-6 candidates; hands-on kind-cluster reproduction of each; retraction-friendliness scored against Round 38 taxonomy. | 3 days |
+  | 3. Env-parity evaluation | For top 2 finalists: write the same environment spec and reconcile it across inner-loop (kind), stage (kind-in-different-shape), prod-mock (real cloud test account or Kubeadm). Measure parity-diff. | 2 days |
+  | 4. Synthesis + radar update | Single ADR under `docs/DECISIONS/` with the architectural choice; TECH-RADAR updates (Adopt/Trial/Assess/Hold for each finalist); BACKLOG follow-ups for implementation. | 1 day |
+
+  **Total budget: ~7 days (M-to-L).** This is research; no
+  implementation until the ADR lands and the maintainer signs
+  off.
+
+  **Research output shape:**
+  - `docs/research/declarative-env-parity-landscape.md` (phase 1)
+  - `docs/research/declarative-env-parity-shortlist.md` (phase 2)
+  - `docs/research/declarative-env-parity-finalists.md` (phase 3)
+  - `docs/DECISIONS/YYYY-MM-DD-declarative-env-parity.md` (phase 4 ADR)
+  - TECH-RADAR rows for each evaluated tool with `Round: 39+`
+
+  **Explicit non-scope (tonight):**
+  - No tool installation, no kind cluster spin-up.
+  - No `.github/workflows/` changes.
+  - No Helm charts, no Kustomize bases, no Argo CD Application
+    resources.
+  - This entry is a research commission with an explicit time
+    budget, not an implementation ticket.
+
+  **Owner**: Dejan (devops-engineer) leads research; Bodhi
+  (developer-experience-engineer) on dev-inner-loop ergonomics;
+  Naledi (performance-engineer) on reconciliation latency +
+  resource footprint comparison; Nazar (security-operations)
+  on secret-flow-across-envs; Aminata (threat-model-critic)
+  reviews the synthesis ADR. Kenji integrates.
+
+  **Relationship to the CI meta-loop entry immediately below:**
+  that entry is about *pipeline ethos* (real scripts, gitops,
+  retractable CD, worktree inner loop). This entry is about
+  *environment declarative parity* (same spec shape from
+  laptop-kind through prod). They overlap on tool choice
+  (Argo CD / Flux appear in both) but have different
+  decision surfaces. Land them as sibling research tracks;
+  synthesis ADRs can reference each other.
+
+  **Cross-references:**
+  - Sibling entry below: "CI = Continuous Improvement of
+    Continuous Integration — retractable pipeline..."
+  - `docs/research/ci-retractability-inventory.md` (Round 38)
+  - `docs/TECH-RADAR.md` — rows to be added during research
+  - `../scratch/` — the bespoke ethos reference (Aaron's
+    prior work at shape of this)
+
+- [ ] **CI = Continuous Improvement of Continuous Integration — retractable pipeline from dev-worktree through kind-local K8s (research-first, no implementation tonight).**
+  Aaron (2026-04-20): *"our CI is Continious Imporvement of
+  Continuius Integration with retractiable delivers to CD ->
+  Ops -> K8s (kind) for loacal testing with same ethos as
+  ../scrath everything declarative in get even my local dev
+  inner loop is a git work tree probably that seems to be what
+  everyone is standardizing on i do some resarch and educate
+  me on backlog not tonight"*
+
+  **The architectural claim (to be verified, then codified):**
+  - "CI" is a **meta-loop**: Continuous Improvement continuously
+    improves Continuous Integration. The outer loop tunes the
+    inner loop from observability signal.
+  - "CD" must be **retraction-native** — every deploy must be
+    revertable without leaving artefact ambiguity behind.
+    Extends the Round 38 CI retractability inventory
+    (`docs/research/ci-retractability-inventory.md`) downstream
+    into delivery.
+  - **Pipeline shape**: `dev-worktree → CI → CD → Ops → K8s (kind)`.
+    Local inner-loop = git worktree; K8s-in-Docker (`kind`) gives
+    the dev laptop the same cluster shape as prod.
+  - **Ethos**: match `../scratch` — real scripts + real tests
+    over long YAML strings, declarative manifests per package
+    manager, profile/category composition (orthogonal dimensions
+    not flags), platform-default integration (integrate defaults,
+    don't fight them), `mise`-unified runtimes, docker
+    reproductions of the GitHub Actions runners for
+    local/remote parity.
+  - **Everything declarative in git** — extending the gitops
+    pattern (git-first text-based observability; industry-
+    standard term per Weaveworks 2017) from observability to
+    the whole pipeline. Candidate tools: Argo CD, Flux, Jenkins
+    X, FluxCD for reconciliation; Helm / Kustomize for
+    manifest composition; Tekton / Dagger for declarative CI
+    workflows.
+
+  **Research phase (before any implementation):**
+  1. **Worktree-as-inner-loop thesis.** Is the industry actually
+     standardizing on this? Signals to evaluate: Jujutsu (jj) +
+     anonymous-branch workflow, dev containers + worktree
+     composition, GitHub Codespaces + worktree-per-task, AI-
+     agent workflows (Claude Code isolation mode, Cursor
+     background agents) using worktrees for parallel
+     experimentation. If yes: what does the ergonomics look
+     like at scale? (dotfiles sync, tool caching, IDE context
+     switching, branch-protection coupling.)
+  2. **Local K8s options.** `kind` vs `minikube` vs `k3d` vs
+     `k3s` vs `microk8s`. Criteria: cluster startup time,
+     resource footprint, API parity with managed K8s
+     (EKS/AKS/GKE), multi-node support, CNI compatibility,
+     GitOps-tool support.
+  3. **Retraction-native CD.** Which CD systems support
+     retraction as a first-class primitive (not just
+     rollback-as-afterthought)? Argo CD `spec.rollback` +
+     Rollouts, Flux `Kustomization.suspend/resume`, Spinnaker
+     canary + automatic rollback, Octopus Deploy retention
+     policies, Harness self-healing deployments. Score each
+     against the Round 38 retractability taxonomy
+     (revertable-in-git / retryable-idempotently /
+     republishable-with-same-version / genuinely-non-
+     retractable / named-exception).
+  4. **GitOps integration discipline.** Argo CD vs Flux for
+     a project of Zeta's shape. Retraction-friendliness
+     comparison. Secret-management integration (matches the
+     P2 gitops-friendly-key-management ADR thread — git-crypt
+     vs SOPS vs age vs Mozilla SOPS+KMS).
+  5. **Parity with `../scratch` ethos.** What do we borrow
+     verbatim? `mise` as runtime manager is already in the
+     round-29 install script. Declarative manifests per
+     package manager — do we already have this shape for CI
+     runner dependencies, or is there duplication with
+     `tools/setup/`?
+  6. **"Continuous Improvement" as observable loop.** What
+     does the improvement-metric look like? Candidates: build
+     time percentiles, flake rate, time-to-recovery on red
+     main, reviewer-queue depth, retraction-used count. Link
+     to the round-39 tick-loop layer-0 observability work so
+     the outer loop reads signal the inner loop already emits.
+  7. **Research output shape.** One writeup per research
+     question, landing under `docs/research/` as a set
+     (`dev-worktree-inner-loop.md`,
+     `local-k8s-kind-vs-alternatives.md`,
+     `retraction-native-cd.md`,
+     `gitops-pipeline-argocd-vs-flux.md`,
+     `scratch-ethos-port-to-zeta.md`,
+     `ci-as-continuous-improvement-meta-loop.md`). Then a
+     single synthesis ADR under `docs/DECISIONS/` with the
+     architectural decisions, gated by a maintainer
+     conversation.
+
+  **Explicit non-scope (tonight):**
+  - No installation of `kind`, Argo CD, Flux, or any CD system.
+  - No `.github/workflows/` changes.
+  - No worktree-workflow scripts.
+  - No rewrites of `tools/setup/`.
+  - This entry is a research commission, not an implementation
+    ticket.
+
+  **Owner**: Dejan (devops-engineer) leads research; Nazar
+  (security-operations) on secret-management + retraction-
+  native CD sections; Naledi (performance-engineer) on
+  local-K8s benchmark comparison; Aminata (threat-model-
+  critic) reviews the synthesis ADR for attack surface.
+  Architect (Kenji) integrates. Review gate: Ilyana for any
+  public-interface fallout.
+
+  **Effort**: **L** (3+ days of research across six
+  questions); follow-on implementation scoped per question
+  (likely each an M-to-L once we decide).
+
+  **Cross-references:**
+  - `docs/research/ci-retractability-inventory.md` (Round 38) —
+    retractability classification upstream of this entry
+  - `docs/research/build-machine-setup.md` — current install
+    script + CI shape
+  - `../scratch/` — the ethos-reference directory (read-only
+    source of borrowed patterns)
+  - `memory/persona/best-practices-scratch.md` — gitops
+    candidate BP (git-first text-based observability)
+  - P0 "Fully-retractable CI/CD" elsewhere in this file —
+    the implementation parent this research feeds
+  - P2 "Gitops-friendly key management + rotation — ADR
+    first" — the secret-management co-traveller
+
 - [ ] **Full mise migration.** Round 29 adopts `.mise.toml`
   for `dotnet` + `python` only. When a mise plugin exists
   for Lean (elan / lake / lean-toolchain) and for any

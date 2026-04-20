@@ -74,6 +74,7 @@ ThoughtWorks-style radar for the technologies / research / papers
 | Microsoft Threat Modeling Tool | Hold | 15 | Windows-only; parallels-only workflow |
 | FsPickler | Adopt | 13 | Canonical F# pickler |
 | Apache Arrow IPC | Adopt | 13 | `ArrowSerializer.fs` |
+| Declarative environment-parity stack (Argo CD / Flux / Kustomize / Helm / Pulumi / Crossplane / Tilt / Skaffold / Okteto / KCL / CUE / OPA-Gatekeeper / Kyverno candidates) | Assess | 39 | **Time-budgeted research pass.** Aaron 2026-04-20 ask: same declarative spec valid from dev-inner-loop (kind) through qa/dev/stage/prod, non-bespoke. Budget: 7 days split 1d landscape scan -> 3d shortlist deep-dive -> 2d env-parity finalist evaluation -> 1d synthesis ADR. Individual tools graduate to Trial/Adopt/Hold per finalist evaluation. See `docs/BACKLOG.md` P1 "Declarative parity across dev-inner-loop / qa / dev / stage / prod" for the scope; sibling P1 entry on CI meta-loop + retractable CD. |
 
 ### Upstreams / prior art
 
