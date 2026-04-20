@@ -130,17 +130,22 @@ within each priority tier.
   `memory/security/aminata/NOTEBOOK.md`,
   `memory/verification/soraya/NOTEBOOK.md`,
   `memory/architect/kenji/NOTEBOOK.md`. Makes the role taxonomy
-  self-documenting from `ls memory/`. Scope: (a) define the role
-  axis (crosswalk `docs/EXPERT-REGISTRY.md` → role directories);
-  (b) move existing notebooks under their role folder; (c) update
-  all pointers (skill `reference patterns:` blocks, CLAUDE.md,
-  AGENTS.md §18, BP-07/BP-08 rule text if it cites paths, any
-  `memory/persona/<name>` path in agents / skills). Mechanical
-  rename + pointer rewrite; the memory-folder audit should verify
-  completeness before merge. Owner: Kenji (Architect) integrates;
-  Aarav (skill-tune-up) audits post-rename for BP-drift on skills
-  that cited the old path. Effort: M (mechanical but wide surface —
-  every skill that names a notebook needs a pointer update).
+  self-documenting from `ls memory/`. **Round 41 status: design
+  plan landed** at `docs/research/memory-role-restructure-plan-
+  2026-04-21.md` — proposes 13-directory role axis (architect,
+  security, verification, review, experience, api, performance,
+  devops, algebra, skill-ops, maintainer, homage, alignment),
+  crosswalks every current persona, lays out a 5-phase atomic-
+  commit execution plan with 114 files / ~260 hand-written
+  references to update plus 3 phase-4 verification passes.
+  Execution awaits Aaron's sign-off on the role axis (four open
+  questions in §"Open questions for Aaron"). Recommended
+  execution slot: Round 42 opener, after Round 41 PR merges, to
+  keep wide-surface reviews from overlapping. Owner: Kenji
+  integrates; Aarav (skill-tune-up) audits post-rename for BP-
+  drift; Daya (agent-experience-engineer) spot-checks cold-start
+  pointer resolution. Effort: M (2 hours mechanical + wide-
+  surface verification).
 - [x] ✅ **No-empty-dirs gate** — shipped round 35 after Aaron:
   *"we need a build script that will fail the build if it detects an
   empty folder ... we should ci that ... dev scripts for canonical
