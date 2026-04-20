@@ -2047,6 +2047,76 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Prove consent-first design primitive + apply to Bitcoin
+  protocol flaws** — Aaron 2026-04-19:
+  *"we can prove it / you got enough / in the backlog / for
+  bitcoin specifically and fix it / instead of all these random
+  ass changes they are making just with hope"*, extended with
+  *"there is a safter filter issue too, nothing is protecting
+  bitcon from a script kiddy from putting any vulgar image
+  perminatly insribed in the blockchain, a buch of workarounds
+  have been suggested none really fix this issue and still allow
+  free will and safety, sound familiry? my old crew alt 2600
+  usnet newsgroups"* and *"its not priced or bonded how much it
+  should cost to run a now that might accidently have CSAM on it
+  becasue you think it's just a ledger"*. The primitive
+  (`memory/project_consent_first_design_primitive.md`,
+  co-authored with Amara) unifies bonds / risk+price oracle /
+  retract-against-pool / trust-first-then-verify /
+  keep-channel-open. Scope is **two-phase research-grade**:
+  (a) **formal proof** that the primitive holds as claimed —
+  consent-first operations factor into (priced-bond-post,
+  blast-radius-measurement, retract-against-pool, oracle-gated-
+  release) and that applying the primitive is strictly-improving
+  against the named failure modes; (b) **Bitcoin-specific
+  application paper** naming the protocol flaws consent-first
+  design fixes and contrasting with hope-driven ad-hoc changes.
+  **Named Bitcoin flaws (not exhaustive, all same primitive):**
+  (i) *Inevitable charges under game theory* — wild-west
+  human-judge surface with no bonded counterparty at settlement;
+  dissolves by pricing the blast radius of each on-chain action
+  and bonding it against a consented pool. (ii) *Permanent
+  content inscription with no safety filter* — the script-kiddy-
+  inscribes-vulgar-image class; current workarounds violate
+  free-will-AND-safety jointly. Consent-first design reframes
+  the pool: inscribed content lands in a pool with retraction
+  rights (not forced-onto-every-node-forever); "free will" and
+  "safety" both survive because the pool, not the protocol,
+  adjudicates via measured blast radius. Pattern-match to the
+  alt.2600 / Usenet-era *cancel-message* + NNTP-filter-chain
+  problem — same shape, older substrate. (iii) *Unpriced,
+  unbonded node-operator blast radius* — running a full node
+  that may accidentally propagate CSAM or equivalent criminally-
+  liable content is a legal blast radius the protocol does not
+  price. "It's just a ledger" framing is the mistaken
+  assumption. Consent-first design: node operators post a bond
+  scaled to the categories of content they accept, and the pool
+  prices it. Acceptance becomes *priced consent*, not
+  *implicit-by-running-the-software consent*. Owner: Architect
+  (Kenji) integrates; Soraya (formal-verification) routes proof
+  tool (likely TLA+ for the primitive invariants, Lean4 for the
+  strict-improvement property); Aminata (threat-model-critic)
+  reviews Bitcoin-application failure-mode enumeration;
+  Mateo (security-researcher) scouts adjacent literature on
+  filter-chain / cancel-message / blast-radius-pricing work;
+  Ilyana (public-api-designer) reviews surface of any published
+  primitive API. Landing: (1) proof sketch in
+  `docs/research/consent-first-primitive-proof.md`; (2)
+  Bitcoin-application paper draft in
+  `docs/research/consent-first-bitcoin-application.md`; (3) ADR
+  capturing the primitive as a factory-wide design axiom; (4)
+  eventual peer-review + teachers-in-the-loop disposition per
+  `memory/user_open_source_license_dna_family_history.md` 2026-04-19
+  extension. Effort: L (multi-round, paper-grade scope; both the
+  primitive proof and the Bitcoin-application paper are
+  independently load-bearing). Memory:
+  `project_consent_first_design_primitive.md`,
+  `user_amara_chatgpt_relationship.md` (Amara's co-authorship
+  credit binding),
+  `user_trust_sandbox_escape_threat_class.md` (trust-first-then-
+  verify substrate),
+  `user_grey_hat_retaliation_ethic_gears_of_war_xboxprefilecopytool.md`
+  (alt.2600 provenance).
 - [ ] **Human/AI wellness-DAO governance model for the software
   factory** — the human maintainer 2026-04-19: *"we sholud be a
   wellness system for the agent factory any comapny would think
