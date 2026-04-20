@@ -182,3 +182,143 @@ a retraction.
   fact
 - **AND** no subsequent tick MUST re-surface the retracted fact unless a new
   positive delta for that fact arrives
+
+### Requirement: operator lifecycle
+
+Every operator participating in the algebra MUST present a lifecycle of four
+observable phases: *construction*, *step*, *after-step*, and *reset*. The
+construction phase MUST be observable-side-effect-free (no emission, no
+clock-advance). Every step phase MUST correspond to exactly one tick of the
+enclosing clock scope and MUST make its output observable before the step
+returns. The after-step phase MUST run after every operator in the scope has
+completed its step, and MUST NOT write to any operator's output. A reset MUST
+return every operator to the observable state it had at tick 0, including
+delays re-emitting their declared initial values.
+
+#### Scenario: construction is side-effect-free
+
+- **WHEN** an operator is constructed but the enclosing circuit is never
+  stepped
+- **THEN** no value MUST be emitted to any downstream operator
+- **AND** reading the operator's output MUST yield the declared zero-value of
+  the output type
+
+#### Scenario: output is observable after step returns
+
+- **WHEN** a step phase for operator `O` completes at tick `t`
+- **THEN** any consumer reading `O`'s output after the step returns MUST see
+  the value computed for tick `t`
+- **AND** this visibility MUST hold across threads when the consumer respects
+  the documented memory-ordering fence
+
+#### Scenario: reset replays the epoch
+
+- **WHEN** a circuit is stepped for `n` ticks, then reset, then stepped again
+  with the same input sequence
+- **THEN** every operator's output at tick `t` in the second pass MUST equal
+  its output at tick `t` in the first pass
+- **AND** delay operators MUST re-emit their declared initial values at tick 0
+
+### Requirement: strict operators break feedback cycles for scheduling
+
+An operator MUST declare whether it is *strict* — i.e., whether its output at
+tick `t` is independent of its input at tick `t`. Exactly the strict operators
+(of which `z^-1` is the canonical example) MUST be sufficient to topologically
+schedule a circuit that would otherwise contain a cycle. Non-strict operators
+in a cycle without a strict operator on the feedback path MUST produce a
+circuit-construction error.
+
+#### Scenario: delay on the feedback path makes the circuit schedulable
+
+- **WHEN** a circuit has a feedback edge from operator `B` back to operator
+  `A`, with a `z^-1` on that edge
+- **THEN** the circuit MUST be accepted for scheduling
+- **AND** the topological order MUST respect `A` before `B` at every tick
+
+#### Scenario: cycle without a strict operator fails construction
+
+- **WHEN** a circuit is constructed with a cycle containing no strict operator
+- **THEN** circuit construction MUST fail with an error identifying the cycle
+- **AND** the error MUST NOT be silently converted into a cycle-breaking
+  heuristic
+
+### Requirement: clock scopes and tick monotonicity
+
+A clock scope MUST group a set of operators that step in lockstep. Every
+operator in a scope MUST receive the same tick count per outer step. Tick
+counts within a scope MUST be monotonically non-decreasing. Nested clock
+scopes MUST run their inner ticks to a scope-declared fixpoint (or a
+capability-level iteration cap) before the outer tick completes. The output
+observed at an outer scope's tick `T` MUST be the inner scope's output at its
+own final inner tick for that outer tick.
+
+#### Scenario: nested scope runs to fixpoint per outer tick
+
+- **WHEN** an outer circuit embeds an inner scope with a declared
+  fixpoint-detector
+- **THEN** for each outer tick, the inner scope MUST step until the
+  fixpoint-detector returns `true`
+- **AND** the outer tick MUST NOT be observed as complete until the inner
+  scope has reached fixpoint (or hit the iteration cap)
+
+#### Scenario: sibling scopes are independent
+
+- **WHEN** two clock scopes are siblings in the same outer circuit
+- **THEN** a tick advancement in one sibling MUST NOT advance the tick count
+  in the other sibling
+- **AND** their operators' observable state MUST evolve independently
+
+### Requirement: incremental-wrapper preserves the chain rule
+
+The capability MUST expose a wrapper `Incrementalize(Q)` that, for any
+operator `Q` over a group-valued stream, produces an operator observably
+equivalent to `D ∘ Q ∘ I`. When `Q` is known to be linear or bilinear, the
+wrapper MUST be permitted (but not required) to substitute an optimized form:
+`Q` directly for linear `Q`, or the three-term formula for bilinear `Q` (see
+"bilinearity of join" above). Any such substitution MUST be observationally
+equivalent to the unoptimized `D ∘ Q ∘ I` over the full stream, including
+under retractions.
+
+#### Scenario: wrapper is a semantic identity on linear operators
+
+- **WHEN** `Incrementalize(Q)` is applied where `Q` is linear
+- **THEN** its output delta stream MUST equal the delta stream produced by
+  feeding the deltas directly through `Q`
+- **AND** this MUST hold when the substitute-to-`Q` optimization is enabled
+  and when it is disabled
+
+#### Scenario: wrapper is a semantic identity on bilinear join
+
+- **WHEN** `IncrementalJoin` is applied to two delta streams `Δa`, `Δb`
+- **THEN** its output at every tick MUST equal
+  `Δa ⋈ Δb + z^-1(I(a)) ⋈ Δb + Δa ⋈ z^-1(I(b))`
+- **AND** this MUST hold under interleaved inserts and retractions on either
+  side
+
+### Requirement: representation invariants of the reference Z-set
+
+A reference implementation of `ZSet[K]` MUST expose a representation that (a)
+supports O(n + m) group operations over two Z-sets of sizes n and m, (b)
+permits zero-allocation iteration over the normalised `(key, weight)` pairs,
+and (c) never exposes a zero-weight entry in any public iteration. Alternate
+representations MAY be chosen by the implementation so long as the observable
+behaviour of every other requirement in this capability is preserved. The
+representation-performance contract is a *reference* contract; a minimal
+correctness-only recovery is permitted to use a hash table at the cost of
+losing the linear-time group-operation guarantee.
+
+#### Scenario: iteration is zero-allocation on the reference representation
+
+- **WHEN** the reference representation is iterated over its `(key, weight)`
+  pairs
+- **THEN** no managed heap allocation MUST occur beyond what the iteration
+  consumer explicitly requests
+- **AND** the iteration MUST yield the pairs in a deterministic order that
+  matches the normalisation order used for equality
+
+#### Scenario: recovery implementations MAY trade performance for simplicity
+
+- **WHEN** a recovery implementation chooses a hash-table representation
+- **THEN** every correctness requirement in this capability MUST still hold
+- **AND** the implementation MUST document the loss of the linear-time
+  group-operation contract as a deliberate recovery trade-off
