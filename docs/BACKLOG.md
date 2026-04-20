@@ -847,6 +847,36 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Gap 3 closure — memory-file tampering cross-check at
+  session start (round 44 trust-infra thread)** — Aaron
+  2026-04-20 research question: *"can AI trust humans didn't
+  alter the past data too under thier nodes, what gaps exists
+  for AI to trust fully?"* Research response in
+  `docs/research/ai-trust-gaps-in-human-custodied-data.md`
+  ranks Gap 3 (memory-file tampering) as highest priority:
+  memory files live at `~/.claude/projects/<slug>/memory/`
+  under Aaron's user account, so any session's memory could
+  have been edited by hand between sessions and the reading
+  agent cannot tell. **Inventory (this round):** 160/160
+  content-carrying memory files already have an
+  `originSessionId` frontmatter field (MEMORY.md and
+  README.md excluded as non-content); the "free" mitigation
+  in the research doc is therefore **feasible today**. **Work:**
+  (1) write a session-start cross-check script that reads
+  every memory file, collects `originSessionId` values, and
+  compares against the harness's session history — flag any
+  memory whose `originSessionId` is not in the known-session
+  set; (2) handle the 2 memories that pre-date the field (add
+  them to an allowlist or backfill with "unknown-legacy");
+  (3) add a one-line session-open summary "memory integrity
+  check: N files, all `originSessionId` values match known
+  sessions" or the flagged mismatches. Effort: S. Reviewer:
+  Architect (Kenji). Dependencies: none. **Non-goals** this
+  round: cryptographic hash-chain (cheap mitigation, separate
+  row when Gap 3 at-rest integrity becomes pressing),
+  memory-as-Zeta-store dogfood (research direction, long
+  horizon).
+
 - [ ] **Scope-audit skill-gap — every absorbed rule needs
   Zeta-vs-factory-vs-universal scope tag; HUMAN-BACKLOG
   resolution for ambiguity (round 44)** — Aaron 2026-04-20,
