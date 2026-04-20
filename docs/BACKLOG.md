@@ -340,6 +340,40 @@ within each priority tier.
   caller (compile-time phantom type preferred). Optional
   round-42 follow-up: add `PROPERTY EventuallyDone` to the `.cfg`
   for the liveness claim (not a blocker).
+- [ ] **`formal-analysis-gap-finder` round-42 run — verifier-runs-
+  not-just-present lens.** Round-41 Prereq-1 audit surfaced a
+  general drift class distinct from any individual spec: a
+  verifier's *installation artefacts* (jars cached in
+  `.github/workflows/gate.yml`, install hooks in
+  `tools/setup/install.sh`) do not imply the verifier is
+  *exercised* by any CI job. Concrete finding:
+  `tools/tla/specs/RecursiveCountingLFP.tla` has been
+  compile-checkable-only since round 19 (22 rounds of silent
+  drift potential) because no job ever invokes TLC. This is
+  exactly the class `formal-analysis-gap-finder` exists to
+  surface — "properties without a formal artefact" generalises
+  to "formal artefacts without a runtime gate". Scope for the
+  round-42 pass:
+  - Audit every spec under `tools/tla/specs/**`,
+    `proofs/lean/**`, `tools/lean4/**`, `tools/alloy/**`, and
+    any Z3 smt2 artefacts for the presence of a matching CI
+    invocation. Report each orphaned spec as a finding.
+  - Check the reverse direction: does every verifier jar /
+    binary cached or installed have at least one job that runs
+    it? If not, either the jar is dead weight or a spec is
+    missing a gate.
+  - Cross-cite BP-16 (two independent tools on P0 claims) — a
+    spec with no runtime gate cannot participate in a BP-16
+    cross-check even if it exists as a file.
+  - Hand off property-class-to-tool recommendations to Soraya
+    (`formal-verification-expert`) per the skill's standing
+    contract. Do **not** write the spec or the CI job; those
+    are Soraya + DevOps work.
+  Effort: S (advisory pass; one scratchpad write).
+  Schedule: first round-42 slot available after Prereq 1 lands
+  (so the audit sees the corrected state, not the compile-only
+  state). Owner for invocation: Architect. Consumer of findings:
+  Soraya + BACKLOG.
 - [ ] **CQF (Counting Quotient Filter) trial** to replace the
   4-bit counting Bloom saturation issue. Pandey et al. SIGMOD'17.
   Our `CountingBloomFilter` saturates at 15; CQF uses
