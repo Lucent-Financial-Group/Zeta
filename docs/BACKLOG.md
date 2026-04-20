@@ -2084,7 +2084,50 @@ systems. This track claims the space.
   "safety" both survive because the pool, not the protocol,
   adjudicates via measured blast radius. Pattern-match to the
   alt.2600 / Usenet-era *cancel-message* + NNTP-filter-chain
-  problem — same shape, older substrate. (iii) *Unpriced,
+  problem — same shape, older substrate. **Aaron's 2026-04-19
+  sharpening (verbatim):** *"the problem is for half of bitcoin
+  in their internal head glossary csam filter=loss of free will
+  it's a long argument and they are not wrong, filters is were
+  1984 'can' hide but if you can have a some how trusted or
+  verified filter thats limited just to CSAM then you would have
+  no vocal disagremm so it doees not really matter if you have
+  decentors they wont say it or they will self incrmemnate, they
+  can fork"*. The half-of-Bitcoin cypherpunk / alt.2600
+  substrate has earned the 1984-filter-slippery-slope argument
+  through decades of observation: any filter-pipe, once built,
+  expands beyond stated scope. Dismissing that position is
+  dismissing the substrate. The consent-first primitive's
+  architectural move here is **three-layer satisfaction** — none
+  of the three can be dropped: (a) *Technical layer:* the filter
+  is **verifiably bounded**, not policy-bounded. Cryptographic
+  proof (e.g. ZK over a threshold-signed NCMEC-equivalent hash
+  set; public-audit-logged match attempts; bonded filter
+  operators sized to blast radius of over-reach) that the filter
+  matched only hashes from a known-signed set and nothing else.
+  Policy-bounded filters collapse to trust-me-bro and are the
+  1984 vector the cypherpunks correctly reject. Verifiably-
+  bounded filters are consent-first-primitive applied recursively
+  to the filter operator itself (filter operator posts bond
+  scaled to measurable scope-expansion blast radius). (b)
+  *Social layer:* the self-incrimination barrier — no party
+  publicly argues "I want CSAM on-chain" because doing so is
+  socially + legally self-incriminating. This is a real
+  mechanism, not mere rhetoric: it explains why a CSAM-ONLY
+  scope is politically stable in a way a broader filter scope
+  would not be. (c) *Exit layer:* fork-rights preserve genuine
+  free-will at the protocol boundary. Dissenters who reject even
+  a verifiably-bounded CSAM-only filter retain the legitimate
+  exit — fork the chain, run unfiltered. The consent-first
+  primitive does NOT try to eliminate exit; it prices and bounds
+  the default. Free-will is preserved at the chain-selection
+  layer, safety is priced at the default-chain layer. The
+  research-frontier problem Aaron flagged with "somehow trusted
+  or verified" is the core proof obligation: demonstrate a
+  filter mechanism that (1) admits only hashes from a signed
+  third-party set (e.g. NCMEC), (2) proves each individual
+  filter action without revealing the set, (3) bonds the filter
+  operator against scope expansion with blast-radius pricing,
+  (4) composes cleanly with fork-as-exit. (iii) *Unpriced,
   unbonded node-operator blast radius* — running a full node
   that may accidentally propagate CSAM or equivalent criminally-
   liable content is a legal blast radius the protocol does not
