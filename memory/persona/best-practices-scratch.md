@@ -1068,3 +1068,48 @@ Three queries this round, targeted April 2026.
 contradictions. Empirical harness runs this round are the
 load-bearing new signal -- see `docs/research/harness-run-
 2026-04-20-*.md` for the verdicts.
+
+## 2026-04-20 -- Background shells must be explicitly terminated before context-compaction or long wake
+
+**Source:** Zeta session 1937bff2, post-compaction incident.
+Aaron observed "1 shell" in the Claude Code status-bar with no
+background work expected. `TaskList` empty, `CronList` shows
+only the default /loop + a stale one-shot `ScheduleWakeup`.
+Likely cause: a `run_in_background=true` Bash shell was
+started pre-compaction and never explicitly killed; its handle
+was dropped when the transcript was summarised, leaving it
+visible in the UI but unreachable by the agent.
+**Claim:** Agents that spawn long-lived side work (Bash
+`run_in_background=true`, `Monitor` persistent tasks, or
+background `Agent` subagents) must explicitly terminate or
+hand-off-to-result before any action that would lose the
+handle -- namely context compaction or `ScheduleWakeup` with
+`delaySeconds > 300`. Otherwise the shell becomes an orphan:
+visible to the user as "N shells" but unreachable by the
+agent because the summariser dropped the handle.
+**Applies to our repo?** Yes. Factory-internal. Directly
+triggered by observed UX incident. Also has a
+factory-efficiency angle (consumes a shell slot + possibly
+memory without doing agent-visible work), which aligns with
+`feedback_dora_is_measurement_starting_point.md` efficiency
+as first-class.
+**Candidate rule:** Draft BP-NN -- "Long-lived side work
+(run_in_background, Monitor persistent, background Agent)
+must be explicitly terminated or handed off before any
+handle-losing event (context compaction, ScheduleWakeup >
+300s, session end)." Companion rule: session-open sweep
+should run `TaskList` + `CronList` + (when available) shell-
+list and report orphans as a session-open notice. Pair with
+an additive protocol hook in CLAUDE.md Ground Rules. This
+is default-ON with documented exceptions per
+`feedback_default_on_factory_wide_rules_with_documented_exceptions.md`.
+**Decision:** flag for Architect promotion. Suggested ID
+slot: next available BP-NN. If promoted, update
+`docs/AGENT-BEST-PRACTICES.md`, `CLAUDE.md` Ground Rules,
+and consider an additive bullet in `AGENTS.md` session-open
+section. Cross-reference:
+`feedback_dont_stop_and_wait_for_cron_tick.md`
+(tick-is-recovery-only) and
+`feedback_never_idle_speculative_work_over_waiting.md`
+(never-idle goal) -- orphan shells are a hidden form of
+work-in-flight that undermines both.
