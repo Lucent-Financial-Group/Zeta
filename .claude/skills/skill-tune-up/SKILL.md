@@ -241,24 +241,153 @@ it says so first.
 
 ## Interaction with `skill-creator`
 
-This skill produces recommendations; `skill-creator` executes
-them. The two skills are paired: this ranker is the "should we"
-and `skill-creator` is the "how we". Without `skill-creator`, a
-tune-up recommendation has nowhere to land. Without the ranker,
-`skill-creator` has no triage queue.
+Recommendations here are the *should-we*; `skill-creator` is
+the *how-we*. Without it, a tune-up has nowhere to land;
+without the ranker, `skill-creator` has no triage queue.
 
-When a **TUNE** recommendation is specifically about
-description-tuning (triggering clarity, over-broad or under-
-specific `description:` lines), `skill-creator` can in turn
-delegate to the upstream `claude-plugins-official/skill-creator`
-plugin's eval-driven description-optimiser — the plugin ships
-benchmark scripts, a description-optimiser, and a viewer. That
-layered path is documented in
-`.claude/skills/skill-creator/SKILL.md §upstream-pointer`; this
-ranker does not invoke the plugin directly. The bespoke
-workflow (draft / Prompt-Protector review / dry-run / commit)
-remains the gate; the plugin is an optional power-tool on the
-description line.
+General wrapper discipline: a wrapper can be as thick as it
+needs to be. Skill-on-skill wrappers usually end up thin as a
+natural consequence — the wrapped skill already carries a
+body, and duplicating it wastes tokens. Wrappers around
+non-skill artifacts (scripts, docs, schemas, CLI tools) carry
+whatever protocol the artifacts themselves don't encode.
+
+Our `skill-creator` wraps Anthropic's upstream `skill-creator`
+*skill* and ends up naturally thin; that's documented in
+`.claude/skills/skill-creator/SKILL.md §upstream-pointer`.
+`skill-tune-up` wraps the upstream plugin's `scripts/`,
+`eval-viewer/`, `agents/` directories and the Anthropic guide
+PDF under `docs/references/` — none of those are skills, so
+this section carries the full hand-off protocol below.
+
+## The eval-loop hand-off protocol
+
+The upstream plugin at
+`~/.claude/plugins/cache/claude-plugins-official/skill-creator/unknown/skills/skill-creator/`
+ships an eval-driven iteration loop that the Anthropic guide
+(`docs/references/anthropic-skills-guide.md` §"Testing and
+iteration", pp. 14-17) prescribes for any skill with observable
+behaviour. Our wrapper plugs the ranker's top-1 into that loop
+instead of reinventing a local test harness.
+
+### What ships in the upstream plugin
+
+- `scripts/run_eval.py` — execute one eval (one prompt, with
+  or without the skill) and capture outputs + timing.
+- `scripts/run_loop.py` — the full iteration loop (spawn
+  with-skill + baseline subagents, grade, aggregate).
+- `scripts/aggregate_benchmark.py` — produce `benchmark.json`
+  + `benchmark.md` from an iteration's eval directories.
+- `scripts/improve_description.py` — description-line
+  optimiser against trigger-phrase benchmarks (narrow use
+  case; the loop above is the general tool).
+- `scripts/quick_validate.py` — pre-flight validation of a
+  skill's structure and frontmatter.
+- `scripts/package_skill.py` — zips + publishes (not used by
+  the tune-up path; the bespoke workflow commits via git).
+- `eval-viewer/generate_review.py` — static-HTML reviewer for
+  eval outputs side-by-side; emits `feedback.json`.
+- `agents/grader.md`, `agents/analyzer.md`,
+  `agents/comparator.md` — role prompts used by the loop.
+- `references/schemas.md` — JSON schemas for `evals.json`,
+  `benchmark.json`, `eval_metadata.json`, `grading.json`,
+  `feedback.json`.
+
+### When to hand off — the gate
+
+| Recommended action | Effort | Eval loop? | Manual-edit + log? |
+|--------------------|--------|-----------|--------------------|
+| TUNE               | S      | Optional  | Default            |
+| TUNE               | M, L   | Yes       | No                 |
+| SPLIT              | any    | Yes       | No                 |
+| MERGE              | any    | Yes       | No                 |
+| RETIRE             | any    | No        | Yes (log the why)  |
+| HAND-OFF-CONTRACT  | any    | Optional  | Default            |
+| OBSERVE            | any    | No        | No                 |
+
+Rule of thumb: if the change affects triggering behaviour,
+output shape, or instruction-following on an observable task,
+the eval loop runs. If the change is a mechanical rename, a
+broken-link repair, a BP-NN citation refresh, an ASCII-lint
+cleanup, or a typo fix — it goes through the manual-edit +
+justification-log path documented in
+`memory/feedback_skill_edits_justification_log_and_tune_up_cadence.md`
+Rule 1 and lands in `docs/skill-edit-justification-log.md`.
+
+### The wrapper's per-round protocol
+
+On each invocation, after producing the top-5 ranking:
+
+1. **Pick top-1.** If its action is in the "Eval loop? = Yes"
+   row above, continue; otherwise report and stop.
+2. **Drop a hand-off note** in Aarav's notebook naming the
+   top-1 skill, the signal, the recommended action, and the
+   effort. Do NOT edit any SKILL.md.
+3. **Surface the hand-off** to `skill-creator` as the next
+   step — the ranker is advisory; the Architect (Kenji) or a
+   human decides to run the loop. The hand-off naming is:
+   `skill-creator: run eval loop on <skill-name> — action:<X>,
+   effort:<Y>, signal:<Z>, BP:<NN,NN>`.
+4. **Workspace convention** (for `skill-creator`'s use, not
+   the ranker's): `<repo-root>/.claude/skills/<skill-name>-workspace/iteration-N/eval-<id>/{with_skill,without_skill|old_skill}/outputs/`.
+   The workspace is git-ignored by default; pass-rate / token
+   / time deltas are what land in the round-close ledger, not
+   the raw iteration artifacts.
+5. **Read the result back.** Once `skill-creator` runs the
+   loop and reports, Aarav re-reads `benchmark.json` and
+   records in his notebook: pass-rate delta, token delta,
+   wall-time delta, and the user-feedback summary from
+   `feedback.json`. That data influences next round's ranking
+   (a skill that regressed on pass-rate in the last round
+   should rank near the top again until the regression
+   clears).
+
+### Stopping criteria — know when to stop iterating
+
+Borrowed from the Anthropic guide Pattern 3 (p. 23) —
+"Iterative refinement: know when to stop iterating":
+
+- **Stop when pass-rate hits the declared target** in the
+  iteration's `evals.json` assertions (usually 100% on
+  triggering tests, ≥ 80% on functional tests).
+- **Stop when pass-rate plateaus** across two consecutive
+  iterations with no qualitative improvement in the viewer.
+- **Stop when regression appears** on a previously-passing
+  assertion — revert to the prior iteration and rethink.
+- **Stop on effort-S skills after one iteration** — a small
+  skill is not worth more than one eval loop per tune-up
+  round; diminishing returns set in fast.
+
+### Round-close ledger row
+
+On a round that ran the eval loop at least once, the ledger
+gains a `Skill tune-up eval` line of the form:
+
+```
+Skill tune-up eval — <skill-name>: pass-rate <before>% → <after>%
+  (tokens Δ <±N>k, wall-time Δ <±Ns>). Result: [LANDED | REVERTED | DEFERRED]
+```
+
+On a round where no eval loop ran (because the top-1 was in
+the manual-edit row), the existing `Skill tune-up` ledger
+line names the top-1 and the justification-log row instead.
+
+### What this wrapper deliberately does NOT ship
+
+- Its own test harness. The plugin is the engine.
+- Its own benchmark schema. Uses the upstream
+  `references/schemas.md` verbatim.
+- Its own grader / analyzer prompts. Uses upstream
+  `agents/grader.md`, `agents/analyzer.md`,
+  `agents/comparator.md`.
+- Its own trigger-phrase optimiser. Uses upstream
+  `scripts/improve_description.py` when the action is
+  description-line tuning specifically.
+
+If any of those were re-implemented locally, the wrapper
+stopped being a wrapper and started being a fork — which is
+the failure mode Rule 1 (common-entry-point discipline) is
+designed to prevent.
 
 ## Interaction with the Architect
 
@@ -301,3 +430,7 @@ not this skill's.
   (created on first invocation if absent)
 - `docs/ROUND-HISTORY.md` — where his top-5 for each round is
   summarised once executed
+- `docs/references/anthropic-skills-guide.md` + the pinned PDF
+  next to it — the authoritative Anthropic guidance the
+  upstream eval harness implements; cite chapters / page
+  numbers in findings instead of re-deriving the vocabulary.
