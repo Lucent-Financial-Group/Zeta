@@ -65,10 +65,15 @@ when a P0 invariant needs ≥ 2 independent checkers.
 
 Every invariant in every substrate carries a tier:
 
-- **`guess`** — stated belief. No evidence collected. A guess
+- **`hypothesis`** — stated proposition. No evidence
+  collected yet. Falsifiable by construction. A hypothesis
   is not worthless — it externalises Aaron's head-invariant
   as data, which is already the main value. But it cannot
-  carry a P0 claim.
+  carry a P0 claim. (Round 43 rename from the earlier
+  `guess` — research-grade vocabulary for a research-grade
+  substrate. See
+  `docs/DECISIONS/2026-04-20-tools-scripting-language.md`
+  §Terminology note.)
 - **`observed`** — at least one data point, lint hit, audit,
   or harness run supports the invariant. Not mechanical.
 - **`verified`** — a mechanical check or proof enforces the
@@ -77,19 +82,21 @@ Every invariant in every substrate carries a tier:
 
 The tier is visible on every invariant. The substrate also
 carries a **burn-down count** — how many invariants sit at
-each tier. The count is the honest backlog: every `guess` is a
-candidate for promotion to `observed`; every `observed` is a
-candidate for promotion to `verified`. Rounds tick the count
-down.
+each tier. The count is the honest backlog: every
+`hypothesis` is a candidate for promotion to `observed`;
+every `observed` is a candidate for promotion to `verified`.
+Rounds tick the count down.
 
 Aaron's framing (2026-04-20): *"so they are not speculative
 guesses they are confirmed with data, i like data driven
-everything lol."* Guess tier is the start, not the destination.
+everything lol."* The hypothesis tier is the start, not the
+destination.
 
 The first concrete pilot of this pattern is
 `.claude/skills/prompt-protector/skill.yaml` (spec-version
-0.1-draft, round 43): 6 guess, 5 observed, 2 verified, 13
-total. Burn-down targets named.
+0.1-draft, round 43): 5 hypothesis, 6 observed, 2 verified,
+13 total after the round-43 safety-clause promotion. Burn-
+down targets named.
 
 ## Why the factory can succeed where Code Contracts failed
 
@@ -243,18 +250,28 @@ the honest state of the system is visible on every round.
 
 ## Tooling
 
-- **`tools/invariant-substrates/tally.py`** — reads every
+- **`tools/invariant-substrates/tally.ts`** — reads every
   `.claude/skills/*/skill.yaml` and prints a markdown table
   of per-substrate tier counts plus portfolio totals. Use
-  at round-close to see where the guess / observed /
+  at round-close to see where the hypothesis / observed /
   verified totals stand and whether any declared `total`
-  field has drifted from the sum of its tiers. Pure-stdlib
-  Python; no dependencies. Exit codes:
+  field has drifted from the sum of its tiers. bun +
+  TypeScript; builtin-only (Bun `Glob`, `node:fs/promises`,
+  `node:path`, `node:url`); no third-party runtime deps.
+  Accepts both `hypothesis:` and the legacy `guess:` key
+  during the round-43 rename and flags legacy-key hits. Run
+  with `bun run tools/invariant-substrates/tally.ts`. Exit
+  codes:
   - `0` clean
-  - `1` with `--fail-on-no-progress` when any guess entries
-    remain (post-maturity CI flag; not used yet)
+  - `1` with `--fail-on-no-progress` when any hypothesis
+    entries remain (post-maturity CI flag; not used yet)
   - `2` with `--fail-on-mismatch` when any substrate's
     declared total mismatches the sum.
+
+  Language choice recorded in
+  `docs/DECISIONS/2026-04-20-tools-scripting-language.md`.
+  The pre-pivot bash version `tally.sh` was retired in
+  round 43 once `.ts` reached parity.
 
 ## Authorship note
 

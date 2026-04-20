@@ -1,0 +1,40 @@
+[install]
+auto = "disable"
+exact = true
+saveTextLockfile = true
+
+[test]
+timeout = 20000
+coverageSkipTestFiles = true
+# Exclude heavy folders or bun test will walk 20+ GB of upstream clones
+# (references/upstreams), Lake build artefacts (tools/lean4/.lake),
+# and solver JAR stores (tools/alloy, tools/tla). Performance regression
+# lesson inherited from SQLSharp scaffold hardening.
+pathIgnorePatterns = [
+  "**/BenchmarkDotNet.Artifacts/**",
+  "**/TestResults/**",
+  "**/artifacts/**",
+  "**/node_modules/**",
+  "**/references/upstreams/**",
+  "**/bin/**",
+  "**/obj/**",
+  "**/.lake/**",
+  "**/.git/**",
+  "tools/lean4/.lake/**",
+  "tools/alloy/**",
+  "tools/tla/**",
+]
+coveragePathIgnorePatterns = [
+  "**/BenchmarkDotNet.Artifacts/**",
+  "**/TestResults/**",
+  "**/artifacts/**",
+  "**/node_modules/**",
+  "**/references/upstreams/**",
+  "**/bin/**",
+  "**/obj/**",
+  "**/.lake/**",
+  "**/.git/**",
+  "tools/lean4/.lake/**",
+  "tools/alloy/**",
+  "tools/tla/**",
+]

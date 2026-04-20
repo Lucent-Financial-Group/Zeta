@@ -78,3 +78,8 @@ tools/tla/states/
 # and any resulting SKILL.md edits, not the raw iteration
 # artifacts. See docs/references/skill-tune-up-eval-loop.md.
 .claude/skills/*-workspace/
+
+# bun + TypeScript tooling — post-setup scripting surface per
+# docs/DECISIONS/2026-04-20-tools-scripting-language.md. The
+# bun.lock file IS committed; node_modules is not.
+node_modules/

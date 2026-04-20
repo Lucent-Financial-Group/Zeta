@@ -4260,6 +4260,165 @@ systems. This track claims the space.
 
 ## P3 — noted, deferred
 
+- **Conversational bootstrap UX for factory-reuse
+  consumers — two-persona (non-developer + developer)
+  elicitation surface.** Aaron 2026-04-20: *"the end
+  user experience i'm looking for as a consumer of
+  our factory is you just talk to the system about
+  your constrains and invariants and assumptions...
+  we really ahve two end user personas we care about
+  the non developer and the devloper, the devlpoer
+  is going to want to tell you so many invariants
+  and not know all the assumptions they are
+  immplicitly making and just try to drive you to
+  hard... the non developer is going to underspecify
+  everyting so a scary degree... the best user
+  experince for using our factory will handle both.
+  the internace into our factory should just be
+  confersational."* Same-session follow-up: *"that's
+  going to take a bit of design to get right when we
+  want others to start reusing our factory"* —
+  factory-reuse prerequisite, P3, slow burn. Two
+  opposite failure modes on a single conversational
+  surface:
+  - **Non-dev underspecifies** — lacks vocabulary
+    and imagination; "what do you want to do?" is
+    not answerable. Factory drives with questions
+    the user *can* answer and surfaces every
+    decision made on their behalf in plain
+    language.
+  - **Dev over-specifies** — cascades explicit
+    invariants while skipping implicit assumptions;
+    tries to micromanage. Factory absorbs the
+    torrent, names the costs of each over-
+    constraint, and catches the assumptions the dev
+    skipped.
+  Load-bearing primitive: **surfacing assumptions
+  the user is making without knowing it.** Mechanical
+  candidates — rails-checklist gap detection; default-
+  on rule flagging when stated intent conflicts with
+  a factory-wide default; `docs/WONT-DO.md` precedent
+  surfacing; cross-project assumption transfer when
+  the factory has built a close analog before.
+  Directly downstream of the rails-health registry +
+  composite-invariants registry entries below —
+  those are the ontology this UX elicits into. The
+  pair of P3 rails entries are prerequisites; this
+  UX is what consumes them. Aaron himself was Zeta's
+  over-spec bootstrap driver — future consumers
+  won't have his depth, so this UX is what lets the
+  next consumer walk in without the Aaron-level
+  pre-work. Effort: L when executed (multi-round
+  design surface, not a single-round build). Owner:
+  architect-hat; UX-engineer (Iris) when the surface
+  is tangible. Sibling memory:
+  `project_factory_conversational_bootstrap_two_persona_ux.md`.
+
+- **Rails-health registry (constraints + invariants +
+  ASSUMPTIONS as first-class).** Aaron 2026-04-20:
+  *"it should be easy to run a report eventually across
+  all areas of our project and see the assumptions (we
+  should probably encode these too in case they end up
+  being wrong) constrainsts invariants as basically the
+  rails of the system and how good they are holding...
+  no rush on this but could build high confidence in
+  the future of anyone using the software factory that
+  things are going the way they expect."* Followed
+  same day by: *"against this project wide invariant
+  system is low priority and can move slowly there is
+  not a rush here."* Framed as P3 — the individual
+  rules (latest-version, ASCII-clean,
+  `TreatWarningsAsErrors`, `BP-11`,
+  `noUncheckedIndexedAccess`) are **active today**; the
+  *registry* that lists them once and projects them to
+  a health dashboard is the slow-burn construct.
+  Three categories, one new:
+  - **Invariants** — TLA+ / Lean / Z3 / FsCheck /
+    runtime asserts; `tools/invariant-substrates/
+    tally.ts` is the existing inventory toehold.
+  - **Constraints** — type system, strictness flags,
+    eslint rules, `GOVERNANCE.md §N`, OpenSpec
+    behaviour specs.
+  - **Assumptions** — *new category.* Today buried in
+    ADR prose; promote to first-class with
+    frontmatter (`id`, `statement`, `owner`, `probe`,
+    `revisit`, `confidence`). The
+    `docs/DECISIONS/2026-04-20-tools-scripting-language.md`
+    watchlist is the pilot shape.
+  Opportunistic motion: every new ADR sections out
+  "Assumptions" in registry-compatible form; no
+  dedicated round. Eventual deliverable:
+  `docs/RAILS-HEALTH.md` regenerated per round from
+  `docs/RAILS/` + `tally.ts`-style inventory. Effort:
+  L when executed; S per-ADR until then. Owner:
+  architect-hat; rails-health-expert when the surface
+  is large enough to need a dedicated persona.
+  Sibling memories:
+  `project_rails_health_report_constraints_invariants_assumptions.md`,
+  `project_composite_invariants_single_source_of_truth_across_layers.md`.
+
+- **Composite-invariant single-source-of-truth
+  registry (`docs/RAILS/`).** Aaron 2026-04-20:
+  *"plus some iinvariants we shold be able to just
+  list once and not have to repate them everywhere,
+  that whole composite invariant system across all
+  layers is sometime we can build twards."* Same
+  slow-burn clause as the rails-health entry above.
+  Today an invariant like *"Delta is retraction-
+  closed"* lives in TLA+ + Lean + Z3 + F# `Debug.
+  Assert` + FsCheck + ADR prose + `BP-NN`
+  independently — each copy drifts without coupling.
+  Direction is a single authoritative rail per id
+  (`docs/RAILS/INV-<subsystem>-<property>.md`) with
+  frontmatter naming the substrate call-sites
+  (`layers: { tla: ..., lean: ..., z3: ..., runtime:
+  ..., fscheck: ..., docs: ..., bp: ... }`), and
+  composition as conjunction
+  (`INV-DELTA-CORRECT = INV-DELTA-RETRACTION-CLOSED ∧
+  INV-DELTA-MONOTONIC ∧ INV-DELTA-BYTE-IDENTICAL`).
+  Three projection mechanisms, cheapest first: (3)
+  prose-only cite-the-anchor, (2) reference citation
+  + drift-auditor, (1) codegen from YAML to TLA+
+  `INVARIANT` / Lean `theorem` / Z3 `assert` / F#
+  `Debug.Assert`. Start with (3). Toeholds today:
+  `docs/AGENT-BEST-PRACTICES.md BP-NN` (skill-layer
+  rails), `docs/GLOSSARY.md` (vocabulary pattern),
+  `docs/INVARIANT-SUBSTRATES.md` (narrative),
+  `.claude/skills/verification-drift-auditor/` (the
+  drift-detection surface that would consume the
+  registry). Opportunistic forward motion: use
+  stable ids (`INV-<...>`, `CST-<...>`, `ASM-<...>`)
+  when a new rail is named even before the registry
+  directory exists. Effort: L when executed. Owner:
+  architect-hat with Soraya (formal-verification-
+  expert) on substrate citations. Sibling memory:
+  `project_composite_invariants_single_source_of_truth_across_layers.md`.
+
+- **`docs/VERSION-EXCEPTIONS.md` — the named
+  exception list for the latest-version default-on
+  rule.** Aaron 2026-04-20 strengthened the latest-
+  version rule from at-adoption-time to continuous
+  factory-wide: *"like make sure we are using the
+  latest version, that shoud jsut apply everywhere
+  and you override with exceptions."* Shape per
+  `feedback_default_on_factory_wide_rules_with_
+  documented_exceptions.md`: four-field rows
+  (scope / reason / exit-condition / owner). First
+  resident: `@types/bun@1.3.12` vs runtime
+  `bun@1.3.13` (DefinitelyTyped typically lags the
+  bun release by one patch; exception tracked inline
+  in `docs/DECISIONS/2026-04-20-tools-scripting-
+  language.md` pending the shared registry). Audit
+  cadence: every round, diff every pin against
+  vendor latest; non-latest without a carve-out is
+  a P1 rail violation, non-latest with an expired
+  carve-out is a P2. Sibling memory:
+  `feedback_latest_version_on_new_tech_adoption_no_legacy_start.md`.
+  Effort: S for the initial doc shell, ongoing S per
+  round. Owner: architect-hat at round-close;
+  devops-engineer (Dejan) when CI enforcement
+  lands.
+
 - **User-privacy compliance as a slow-burn direction
   (GDPR + CCPA/CPRA + generic).** Aaron 2026-04-20,
   after the consent-primitives-expert harness dry-run:

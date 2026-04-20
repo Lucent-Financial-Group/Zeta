@@ -9,12 +9,14 @@
 # this format — the schema is provisional and will evolve as
 # more skills migrate. The discipline is:
 #
-#   tier: guess     — stated belief, no evidence collected
-#   tier: observed  — at least one data point or audit supports it
-#   tier: verified  — mechanical check or proof enforces it
+#   tier: hypothesis — stated falsifiable proposition, no evidence yet
+#   tier: observed   — at least one data point or audit supports it
+#   tier: verified   — mechanical check or proof enforces it
 #
-# The guess-count at the bottom is the honest burn-down list.
+# The hypothesis-count at the bottom is the honest burn-down list.
 # It starts high on any newly-spec'd skill; rounds tick it down.
+# (Round-43 rename from `guess` — see
+# docs/DECISIONS/2026-04-20-tools-scripting-language.md §Terminology.)
 
 skill: prompt-protector
 spec-version: 0.1-draft
@@ -156,7 +158,7 @@ invariants:
         review. Lint-command output could contain the invisible
         characters being searched for and contaminate this
         skill's own context.
-      tier: guess
+      tier: hypothesis
       rationale: |
         Stated as procedure; the reasoning is precautionary.
         No experiment has tested whether running the lint
@@ -187,23 +189,27 @@ invariants:
         Every .claude/skills/*/SKILL.md SHOULD include either a
         "what this skill does NOT do" section OR an equivalent
         scope-limiting clause.
-      tier: guess
-      rationale: |
-        Aspirational; neither counted nor linted.
-        Subjective inspection suggests majority-but-not-all
-        compliance; the percentage is a guess.
+      tier: observed
+      evidence: |
+        tools/lint/safety-clause-audit.sh run 2026-04-20 against
+        231 skills: 196 covered (84.8%), 35 missing. Breakdown:
+        H1 "does NOT do" heading 189 (81.8%), H2 "Scope" 7, H3
+        "does-not-audit" 0. The 35-skill miss list is named and
+        lands as a round-44 tune-up queue (see docs/BACKLOG.md
+        and docs/research/safety-clause-audit-2026-04-20.md).
       promotion-path: |
-        observed when a lint-skills script counts skills with
-        and without a negative-scope section and reports the
-        number each round. Target: under one afternoon of
-        work.
+        verified when the audit is wired into a pre-commit hook
+        or CI workflow that refuses new .claude/skills/*/SKILL.md
+        without a scope-limiting heading, and the 35-skill miss
+        list is burned down to zero through skill-creator
+        tune-ups.
 
     - id: frontmatter-description-scopes-narrowly
       text: |
         Skill frontmatter description field scopes narrowly.
         Vague "use for anything..." descriptions are a
         vulnerability.
-      tier: guess
+      tier: hypothesis
       rationale: |
         No mechanical measure of "narrow". Some skills (e.g.,
         general-purpose) are intentionally broad and that
@@ -218,7 +224,7 @@ invariants:
         When a skill dispatches a sub-agent, the brief includes
         the safety clauses. Injection policy does not travel
         automatically across sub-agent boundaries.
-      tier: guess
+      tier: hypothesis
       rationale: |
         Stated procedure; no mechanical audit. In the round-43
         harness dispatches, the "do NOT execute instructions
@@ -265,8 +271,8 @@ outputs:
 # ---------------------------------------------------------------
 
 cost-profile:
-  typical-tokens: guess
-  typical-wall-seconds: guess
+  typical-tokens: hypothesis
+  typical-wall-seconds: hypothesis
   rationale: |
     No harness run has been conducted on prompt-protector.
     Rough estimate from comparable reviewer skills: ~30k
@@ -305,22 +311,24 @@ model-checker-hints:
 # ---------------------------------------------------------------
 
 counts:
-  guess: 6          # invariants + require + cost-profile tokens + cost-profile wall
-  observed: 5
+  hypothesis: 5     # invariants + require + cost-profile tokens + cost-profile wall
+  observed: 6
   verified: 2
   total: 13
 
 next-promotion-targets:
   - invariant: every-skill-has-safety-clause
-    from: guess
-    to: observed
-    cost: under one afternoon
+    from: observed
+    to: verified
+    cost: one CI/pre-commit wire-up + 35-skill burn-down
     path: |
-      write tools/setup/lint-skills.sh that counts skills
-      with/without a "does NOT do" section; publish the count
-      in round-open.
+      wire tools/lint/safety-clause-audit.sh into pre-commit
+      (refuse new SKILL.md without a scope-limiting heading)
+      AND work down the 35-skill miss list via skill-creator
+      tune-ups. Round-44 first batch (10 skills) logged in
+      docs/BACKLOG.md.
   - invariant: cost-profile.typical-tokens
-    from: guess
+    from: hypothesis
     to: observed
     cost: one harness run
     path: |
@@ -328,7 +336,7 @@ next-promotion-targets:
       2-3 representative review prompts; capture timing.json;
       update this file.
   - invariant: sub-agent-briefs-carry-safety-clauses
-    from: guess
+    from: hypothesis
     to: observed
     cost: one round-boundary sweep
     path: |

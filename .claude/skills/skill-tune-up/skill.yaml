@@ -2,13 +2,17 @@
 #
 # Paired file: ./SKILL.md (prose body, Claude-facing)
 # This file: tool-facing. Every field either cites evidence or
-# confesses it is still a guess, per Aaron 2026-04-20:
+# confesses it is still a hypothesis, per Aaron 2026-04-20:
 # "data-driven everything". The posture is recorded in
 # docs/INVARIANT-SUBSTRATES.md; this is the second concrete
 # substrate pilot (first was .claude/skills/prompt-protector/
 # skill.yaml, round 43).
 #
 # Schema: draft v0.1 (2026-04-20). Shared with prompt-protector.
+# (Round-43 rename: `guess` → `hypothesis` — research-grade
+# vocabulary for a research-grade substrate. See
+# docs/DECISIONS/2026-04-20-tools-scripting-language.md
+# §Terminology.)
 #
 # Factory-reuse posture (project_factory_reuse_beyond_zeta_
 # constraint.md, 2026-04-20): this skill is intentionally
@@ -250,7 +254,7 @@ invariants:
         criteria: drift, contradiction, staleness, user-pain,
         bloat, best-practice-drift, portability-drift. No
         silent skip.
-      tier: guess
+      tier: hypothesis
       rationale: |
         Stated procedure in SKILL.md §"Ranking criteria".
         Not mechanically enforced; a run could skip a
@@ -311,7 +315,7 @@ invariants:
         Every third invocation of this skill, re-read the
         whole notebook and collapse or delete resolved /
         non-actionable entries.
-      tier: guess
+      tier: hypothesis
       rationale: |
         Stated cadence; not tracked mechanically. No counter
         records "how many invocations since last prune".
@@ -434,14 +438,14 @@ outputs:
 # ---------------------------------------------------------------
 
 cost-profile:
-  typical-tokens: guess
-  typical-wall-seconds: guess
+  typical-tokens: hypothesis
+  typical-wall-seconds: hypothesis
   rationale: |
     Ranker hasn't been measured under the plugin:skill-creator
     eval harness. Rough estimate from comparable reviewer
     skills that do whole-directory sweeps + 3-5 live-search
     calls: ~50-80k tokens, ~90-150s wall-time. These are
-    guesses pending a harness run.
+    hypotheses pending a harness run.
   promotion-path: |
     observed when a plugin:skill-creator harness run produces
     measured mean+stddev on representative ranking prompts
@@ -501,14 +505,14 @@ model-checker-hints:
 # ---------------------------------------------------------------
 
 counts:
-  guess: 3           # seven-criteria-every-skill + prune-every-third + cost-profile (tokens+wall count as one)
+  hypothesis: 3      # seven-criteria-every-skill + prune-every-third + cost-profile (tokens+wall count as one)
   observed: 12
   verified: 5
   total: 20
 
 next-promotion-targets:
   - invariant: seven-criteria-every-skill
-    from: guess
+    from: hypothesis
     to: observed
     cost: under one afternoon
     path: |
@@ -517,7 +521,7 @@ next-promotion-targets:
       for each ranked skill; audit the next 3 ranker outputs
       for tag coverage.
   - invariant: cost-profile.typical-tokens
-    from: guess
+    from: hypothesis
     to: observed
     cost: one harness run
     path: |

@@ -1,0 +1,32 @@
+{
+  "name": "zeta-repo-tooling",
+  "private": true,
+  "packageManager": "bun@1.3.13",
+  "engines": {
+    "bun": ">=1.3.13"
+  },
+  "scripts": {
+    "tally:substrates": "bun ./tools/invariant-substrates/tally.ts",
+    "lint:typescript": "eslint .",
+    "lint:markdown": "markdownlint-cli2",
+    "format:check": "prettier --check \"**/*.{json,jsonc,md,markdown,ts,toml,yml,yaml}\"",
+    "format:write": "prettier --write \"**/*.{json,jsonc,md,markdown,ts,toml,yml,yaml}\"",
+    "typecheck": "tsc --noEmit",
+    "test:typescript": "bun test"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/bun": "1.3.12",
+    "eslint": "10.2.1",
+    "eslint-plugin-sonarjs": "4.0.3",
+    "globals": "17.5.0",
+    "markdownlint-cli2": "0.22.0",
+    "prettier": "3.8.3",
+    "prettier-plugin-toml": "2.0.6",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.59.0"
+  },
+  "overrides": {
+    "smol-toml": "1.6.1"
+  }
+}
