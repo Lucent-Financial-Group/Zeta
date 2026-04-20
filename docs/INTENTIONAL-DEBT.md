@@ -218,6 +218,29 @@ history, not a TODO list.
   determines whether cost translates to pass-rate
   regression. Row stays open; 3 candidates still
   pending (`consent-primitives-expert` next).
+- **Progress 2026-04-20 (#3):** Iteration-1 dry-run
+  complete on `consent-primitives-expert` (third
+  candidate; 507 lines, 1.69x BP-03 cap). TIED baseline
+  on both evals (scope-intersection-algebra, gdpr-audit-
+  collision): 10/10 vs 10/10. +22% tokens +5% wall-time
+  — notably lower wall-time overhead than the prior two
+  candidates. Content divergence is the interesting
+  signal: with-skill and baseline catch **different**
+  failure modes on the GDPR-vs-audit prompt (framework-
+  local PII-in-free-text vs systems-level correlation-
+  re-identification). Neither wholly inferior; skill
+  narrows attention to its own surface. Recommended
+  action: OBSERVE (not SHRINK, not RETIRE) — the
+  507 lines carry distinct technical content per
+  section; pruning risk is content-loss. Empirical data
+  at `docs/research/harness-run-2026-04-20-consent-
+  primitives-expert.md`. Pattern across three
+  candidates: pass-rate delta zero on 6/6 evals; the
+  frontier baseline is too strong for content-graded
+  assertions to discriminate; output character (which
+  failure modes get named) is the qualitative axis the
+  benchmark does not score. Row stays open; 2 static-
+  top-5 candidates still pending.
 
 ### 2026-04-20 (round 42) — GOVERNANCE.md §10 cross-reference in new §11 not verified
 
