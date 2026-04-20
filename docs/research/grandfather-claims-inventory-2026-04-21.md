@@ -103,11 +103,13 @@ Three `[x] ✅` shipped-item entries mention historical `O(·)` values (line 265
 **Live-claim grandfather set: 35 claims** (29 F# docstrings + 3 grey-zone F# code comments + 1 openspec spec + 2 research doc claims).
 
 Surface distribution:
+
 - 32 F# source-file claims (concentrated in `Core/` — 28 claims; 1 in `Bayesian/`; 3 grey-zone comments)
 - 1 `openspec/specs/**` claim
 - 2 `docs/research/**` claims
 
 Complexity-class distribution (rough):
+
 - `O(1)` claims: 10
 - `O(log n)` / `O(log k)` / `O(log N)` claims: 13
 - `O(n)` / `O(n log n)` / `O(n log k)` claims: 7
