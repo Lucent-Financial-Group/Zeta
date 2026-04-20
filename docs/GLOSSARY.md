@@ -661,6 +661,49 @@ not a truth claim.
 
 ---
 
+## Meta-algorithms and factory-native coinages
+
+The maintainer has been developing a small set of named
+algorithms and operators for decades; the factory uses them
+as load-bearing scaffolding. This section homes the ones the
+factory consumes in skills, personas, ADRs, and the backlog.
+Each entry names the authoritative source of the
+definition — this glossary's job is pointer-plus-gist, not
+canonical definition.
+
+### Harmonious Division
+
+**Plain:** The maintainer's name for the meta-algorithm that
+runs above the factory's decision-making razor. When the
+factory has to pick one of several branches (which design,
+which refactor, which skill to run), Harmonious Division is
+the procedure that both (a) prunes locally-bad branches and
+(b) keeps the surviving branches *in harmony* with each
+other — i.e., two survivors that would individually be fine
+but together cancel each other out get flagged. Think of it
+as a scheduler whose output is not a single winning branch
+but a *set of branches that constructively compose*.
+**Technical:** Harmonious Division is the meta-algorithm
+immediately above Quantum Rodney's Razor (see the reducer
+skill). The razor's five cooperating roles — Path Selector,
+Navigator, Cartographer, Harmonizer, Maji — split into a
+three-of-selection-and-execution group and a two-of-
+orientation group; the orientation pair's navigational
+primitives (map / compass / north star) correspond one-to-one
+with Cartographer / Harmonizer / Maji under Harmonious
+Division's framing. The "harmonious" in the name comes from
+the Harmonizer role: it is a gradient operator that at any
+decision point points in the direction of *most constructive
+harmony* — the direction in decision-space where surviving
+branches most reinforce rather than cancel each other.
+Authoritative source: `.claude/skills/reducer/SKILL.md`
+§"The five roles inside Quantum Rodney's Razor" (lines
+125-260). Referenced in `.claude/skills/request-play/`,
+`.claude/skills/glossary-anchor-keeper/`, and across
+`docs/ROUND-HISTORY.md`.
+
+---
+
 ## Why this file exists
 
 Software projects accumulate jargon and then accumulate
