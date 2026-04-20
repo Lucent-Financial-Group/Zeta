@@ -2364,6 +2364,14 @@ systems. This track claims the space.
   the naming-expert and Ilyana (public-API designer) start
   from Aaron's shortlist rather than re-deriving it. No
   effort estimate; pure research-provocation entry.
+  **Round 36 update:** Aaron's "Seed" vision (see
+  `docs/VISION.md` section "Seed — the database BCL
+  microkernel") names the home — `ace` is the microkernel's
+  self-bootstrapping dependency system. The scope ambiguity
+  resolves toward "retraction-native dependency graph" since
+  that matches the Seed microkernel's retraction-native
+  operator algebra. Still P3, still a parking lot, but no
+  longer homeless.
 
 ## ⏭️ Declined
 
