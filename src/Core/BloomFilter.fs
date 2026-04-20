@@ -216,16 +216,24 @@ type BlockedBloomFilter(bucketCount: int, probesPerLookup: int) =
     /// Pick the bucket for this (h1, h2) pair and set its bits.
     /// Kept private because the `(h1, h2)` derivation is the
     /// interesting choice callers make via the typed Add overloads.
+    //
+    // Bucket selection uses the *high* 32 bits of h1. The inner
+    // bit-index sequence in setBucketBits/testBucketBits starts from
+    // `h1` and uses its low 9 bits on the first probe (mask 0x1FF).
+    // Using the high 32 bits of h1 for bucket selection keeps the
+    // bucket index statistically independent of the probe-bit
+    // positions — two keys colliding in a bucket are no longer
+    // correlated into colliding at similar bit positions within it.
     let addPair (h1: uint64) (h2: uint64) =
         let bucketIdx =
-            if isPow2 then int (uint32 h1 &&& bucketMask)
-            else int (uint32 h1 % uint32 bucketCount)
+            if isPow2 then int (uint32 (h1 >>> 32) &&& bucketMask)
+            else int (uint32 (h1 >>> 32) % uint32 bucketCount)
         setBucketBits (bucketIdx * wordsPerBucket) h1 h2
 
     let testPair (h1: uint64) (h2: uint64) : bool =
         let bucketIdx =
-            if isPow2 then int (uint32 h1 &&& bucketMask)
-            else int (uint32 h1 % uint32 bucketCount)
+            if isPow2 then int (uint32 (h1 >>> 32) &&& bucketMask)
+            else int (uint32 (h1 >>> 32) % uint32 bucketCount)
         testBucketBits (bucketIdx * wordsPerBucket) h1 h2
 
     // ── Typed overloads — zero-alloc hot path ──────────────────────

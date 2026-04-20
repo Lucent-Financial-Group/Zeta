@@ -44,6 +44,40 @@ let ``Blocked Bloom FP rate stays below 10% at target p=1%, n=1000`` () =
     (float fps / 10_000.0) |> should lessThan 0.10
 
 
+// ───────────────────────────────────────────────────────────────────
+// Empirical-FPR regression gate. A bucket-selection bug in
+// addPair/testPair (using the same low h1 bits that feed the inner
+// bit-index sequence) caused measured FPR to exceed target by
+// 4.6x-9.8x across N in {10k, 100k, 1M} under disjoint-probe sets.
+// Fix in BloomFilter.fs: select bucket from the high 32 bits of h1
+// so bucket index and first-probe bit position are decorrelated.
+// This test uses the same disjoint-probe construction the
+// failure-detecting harness used (/tmp/bloom_fpr_check.fsx) and
+// asserts measured FPR <= 2 x target at every N, matching the
+// acceptance threshold documented in
+// docs/research/bloom-bench-2026-04.md.
+// ───────────────────────────────────────────────────────────────────
+
+let private measureBlockedFpr (n: int) : float =
+    let bf = BloomFilter.createBlocked n 0.01
+    for i in 0 .. n - 1 do bf.Add (int64 (2 * i))
+    let mutable fps = 0
+    for i in 0 .. n - 1 do
+        if bf.MayContain (int64 (2 * i + 1)) then fps <- fps + 1
+    float fps / float n
+
+[<Theory>]
+[<InlineData 10_000>]
+[<InlineData 100_000>]
+let ``Blocked Bloom measured FPR stays within 2x of target p=0.01`` (n: int) =
+    let rate = measureBlockedFpr n
+    Assert.True(
+        rate <= 0.02,
+        sprintf
+            "measured FPR %.5f exceeds 2x target (0.02) at N=%d; bucket-selection correlation bug has regressed"
+            rate n)
+
+
 // ═══════════════════════════════════════════════════════════════════
 // Zero-allocation hot-path discipline.
 // `BloomHash.pairOf` claims "without heap allocation for every

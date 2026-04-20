@@ -17,35 +17,6 @@ within each priority tier.
 
 ## P0 — next round (committed)
 
-- [ ] **Blocked Bloom filter recalibration — `createBlocked`
-  parameter derivation is miscalibrated** — Round 40 BDN
-  evidence in `docs/research/bloom-bench-2026-04.md` shows
-  measured FPR at 4.6×–9.8× the target `p=0.01` across
-  N ∈ {10k, 100k, 1M}, against an Adopt-gate acceptance
-  threshold of 2×. Throughput and zero-alloc properties are
-  fine; the failure is in `BloomFilter.createBlocked`
-  (`src/Core/BloomFilter.fs:512`) which uses `optimalShape` —
-  the textbook *unblocked* Bloom formula. Putze, Sanders,
-  Singler (*Cache-, hash- and space-efficient Bloom filters*,
-  JEA 2009 §4) show a blocked filter needs ~1.1×–1.2× the
-  unblocked `m` at B=512, p=0.01, because Poisson
-  concentration over per-block occupancies pushes worst-case
-  blocks to ~76% fill factor (vs the 50% classical optimum).
-  Scope: (a) replace `createBlocked`'s parameter path with a
-  block-aware derivation that takes `(n, p, blockBits=512)`
-  and accounts for the Poisson tail per Putze 2007 Table 2;
-  (b) add a property test in `test/Zeta.Tests/` that measures
-  empirical FPR at N ∈ {10k, 100k, 1M} and asserts
-  `measured ≤ 2 × target` — ship the test *red* so the CI
-  gate protects against future regression; (c) re-run
-  `BloomBench` and append passing numbers to
-  `docs/research/bloom-bench-2026-04.md`; (d) flip
-  `docs/TECH-RADAR.md` row 42 Trial→Adopt only when both
-  halves of the Adopt gate (throughput + FPR) have measured
-  evidence. Correctness P0 — a shipped primitive whose
-  documented guarantee doesn't hold is the highest-priority
-  class of bug in this factory. Effort: M.
-
 - [ ] **OpenSpec coverage backfill — delete-all-code recovery
   gap** — Aaron 2026-04-20: *"opensepcs, if I deleted all the
   code right now how easy to recreate based on the openspecs"*.
