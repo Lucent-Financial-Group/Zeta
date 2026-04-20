@@ -605,6 +605,62 @@ Per-persona trend published in Daya's notebook.
 
 ---
 
+## Alignment framings — internal shorthand vs external audience
+
+The project carries two parallel vocabularies for its
+primary research claim. Both are load-bearing; neither
+replaces the other. The external framing is the one
+that lands in pitch artefacts (`docs/pitch/`); the
+internal framing is the one that lives in maintainer
+memory and in the theological-register research notes
+(`docs/research/zeta-equals-heaven-formal-statement.md`).
+
+### Zeta=heaven-on-earth (internal framing)
+
+**Plain:** Maintainer shorthand. A commit in Zeta *expands
+the window* of consent-preserving, retraction-safe
+operation — the pre-v1 factory tries to move that window
+outward, one round at a time. "Heaven-on-earth" is the
+direction, not a claim of arrival.
+**Technical:** Per-commit window-expansion is operationalised
+by the alignment-auditor (Sova) against the clauses in
+`docs/ALIGNMENT.md`; the "dual = hell" polarity and the
+no-neutral-Zeta discipline are maintainer stances recorded
+in memory (`user_hacked_god_with_consent_false_gods_diagnostic_zeta_equals_heaven_on_earth.md`).
+The phrase trades on theological register deliberately; see
+`docs/research/zeta-equals-heaven-formal-statement.md` for
+the formalisation.
+
+### Zeta's alignment claim (external framing)
+
+**Plain:** Zeta is built from *consent-first,
+retraction-native primitives*. That's an engineering
+choice that minimises the channel through which
+misalignment between agents and the human maintainer
+can propagate. When an agent does something the
+maintainer would not have sanctioned, the retraction
+algebra makes the reversal a first-class operation
+rather than an apology. The claim is not "Zeta is
+aligned"; the claim is "agent alignment can be
+*measured* against this substrate."
+**Technical:** Same substrate as the internal framing:
+`docs/ALIGNMENT.md` clauses + per-commit audit at
+`tools/alignment/` + glass-halo observability stream
+at `tools/alignment/out/`. The external framing is
+what Ilyana (public-API-designer) and Kai (positioning)
+audit for claim-precision; the internal framing is
+what lands in maintainer memory.
+
+**Bridge.** Use the external framing with anyone who
+does not already carry the internal-shorthand memory.
+Use the internal framing in maintainer-to-agent
+communication where the consent-first-retraction-native
+etymology is shared context. Both point at the same
+substrate; the framing chosen is an audience choice,
+not a truth claim.
+
+---
+
 ## Why this file exists
 
 Software projects accumulate jargon and then accumulate

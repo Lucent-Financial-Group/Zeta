@@ -51,6 +51,8 @@
     <Compile Include="Storage/Durability.Tests.fs" />
     <Compile Include="Storage/ArrowSerializer.Tests.fs" />
     <Compile Include="Storage/SpanSerializer.Tests.fs" />
+    <Compile Include="Storage/TlvSerializer.Tests.fs" />
+    <Compile Include="Storage/FsPicklerSerializer.Tests.fs" />
 
     <!-- Sketches/ -->
     <Compile Include="Sketches/Bloom.Tests.fs" />

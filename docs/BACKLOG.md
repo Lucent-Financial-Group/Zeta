@@ -17,6 +17,101 @@ within each priority tier.
 
 ## P0 — next round (committed)
 
+- [ ] **OpenSpec coverage backfill — delete-all-code recovery
+  gap** — Aaron 2026-04-20: *"opensepcs, if I deleted all the
+  code right now how easy to recreate based on the openspecs"*.
+  The answer today is *not easy*. `openspec/README.md` declares
+  the disaster-recovery contract explicitly: "if code was hard-
+  deleted from the repository and from git history... a
+  contributor should be able to rebuild the current behaviour
+  from these specs alone, at the same quality bar." Current
+  reality: **4 capabilities** (`durability-modes`,
+  `operator-algebra`, `repo-automation`, `retraction-safe-
+  recursion`) covering **~1,463 lines of spec** vs **66 top-
+  level F# modules** totalling **~10,831 lines** under
+  `src/Core/`. Rough coverage by capability count ≈ 6%;
+  by lines-of-behaviour-described-vs-implemented much lower.
+  The 4 existing specs are deep (RFC-2119 MUSTs + Gherkin
+  WHEN/THEN scenarios, `operator-algebra/spec.md` is a
+  reference model) — the problem is coverage, not depth.
+  Missing capabilities include (non-exhaustive): ZSet as
+  a standalone capability distinct from operator-algebra,
+  Spine family (Spine / DiskSpine / BalancedSpine /
+  SpineAsync / SpineSelector), Circuit / NestedCircuit,
+  sketches (BloomFilter / CountMin / Sketch), CRDT family
+  (Crdt / DeltaCrdt), content-defined chunking (FastCdc),
+  hashing + integrity (ConsistentHash / Merkle /
+  HardwareCrc), serialization (Serializer / ArrowSerializer),
+  SIMD dispatch (Simd / SimdMerge), plugin surface
+  (PluginApi / PluginHarness), runtime (MailboxRuntime /
+  WorkStealingRuntime / Runtime), transactions (Transaction /
+  Upsert), query (Query / Plan / Dsl), watermarks
+  (Watermark / SpeculativeWatermark), injection laws
+  (Injection / InjectionExt), algebra family (Algebra /
+  NovelMath / NovelMathExt / Residuated), chaos harness
+  (ChaosEnv / FeatureFlags / Metrics / Tracing), streaming
+  primitives (Aggregate / Fusion / Window / Rx / Sink /
+  TimeSeries / Hierarchy / HigherOrder). Scope: (a) Viktor
+  (spec-zealot) produces `docs/research/openspec-coverage-
+  audit-YYYY-MM-DD.md` — full inventory of src/Core modules
+  vs capabilities, including deliberately-uncovered
+  (AssemblyInfo, Environment-if-internal); (b) capability
+  priority stack sorted by delete-recovery blast radius
+  (ZSet / Spine / Circuit lead); (c) ADR at
+  `docs/DECISIONS/YYYY-MM-DD-openspec-backfill-program.md`
+  declaring backfill cadence (one-capability-per-round
+  baseline, two if small); (d) per-round success signal:
+  capability count advances monotonically, Viktor audits
+  new capabilities for "can I rebuild the module from
+  this alone?"; (e) round-close ledger entry counts
+  capabilities added and backlog remaining. Owner: Viktor
+  (spec-zealot) with architect (Kenji) for priority
+  arbitration. Effort: L per capability (full RFC-2119
+  behaviour enumeration), M for inventory pass only.
+  Reviewers: Viktor first, then Ilyana (public-API
+  designer) for any capability crossing the published-
+  library surface.
+
+- [ ] **Fully-retractable CI/CD** — Aaron 2026-04-19: *"fully
+  rtractable ci/ci backlog item"* → *"ci/cd"*. Apply the
+  retractability clause of the Zeta=heaven formal statement
+  (`docs/research/zeta-equals-heaven-formal-statement.md` §2
+  H₂ "fully-retractable") to the factory's own CI/CD pipeline.
+  The factory asks downstream code to be retraction-native;
+  the pipeline that gates downstream code should meet the same
+  bar. Today several CI/CD surfaces are partially retractable
+  in practice but not by declared mechanism — that's the
+  channel-closure h₂ attack shadow applied to delivery infra
+  (`docs/security/THREAT-MODEL.md` §"Channel-closure:
+  retractability (h₂)"). Scope: (a) inventory every CI/CD
+  surface (gate.yml + submit-nuget.yml + release workflows +
+  any branch-protection rule + any signing-key use + any
+  published artefact) and name its retraction mechanism —
+  revertable-in-git, retryable-idempotently, republishable-
+  with-same-version, or *genuinely non-retractable* (key
+  rotation after compromise; a tag that was pushed and
+  consumed); (b) for each non-retractable surface, flag
+  whether a retraction-window-declaration is possible
+  (e.g. a revocation CRL, an unpublish window, a rotation
+  drill cadence); (c) where no retraction mechanism is
+  possible, treat the surface as a named exception with
+  defender-persona ownership (analogous to the no-empty-dirs
+  allowlist); (d) land the declared mechanism as a comment
+  block per workflow file; (e) add a CI-retractability
+  audit job that fails the build if a new workflow file
+  lands without a declared retraction mechanism (the lint-
+  as-control graduation the channel-closure section
+  calls for). Owner: Dejan (DevOps) integrates; Nazar
+  (security-operations-engineer) on signing-key + artifact-
+  attestation surfaces; Aminata (threat-model-critic) audits
+  the inventory adversarially for "claims retractability but
+  no tested path"; Architect gates. Effort: M (wide-surface
+  inventory + audit-job drafting; no new paradigm, just
+  applying a primitive the factory already committed to).
+  Part (a) landed Round 38:
+  `docs/research/ci-retractability-inventory.md` — 13 surfaces
+  classified, named-exception register with defender-persona
+  owners. Parts (b)-(e) remain open.
 - [ ] **Memory folder restructure: `memory/role/persona/`** — Aaron
   2026-04-19: *"can we add a memory 2nd level folder so it's
   memory/role/persona that makes roles fist class defined of what
@@ -551,34 +646,37 @@ within each priority tier.
   S (one line per skill). Route through `skill-creator`
   to respect the meta-skill workflow.
 
-- [ ] **Untested serializer tiers — `SpanSerializer` +
-  `MessagePackSerializer`.** `src/Core/Serializer.fs` defines
-  three tiered serializers with strong docstring claims
-  ("zero-copy by definition" on `SpanSerializer`,
-  "30-60 ns/entry, source-gen AOT-clean" on MessagePack tier)
-  but only `ArrowSerializer` currently has a dedicated test
-  file (`tests/Tests.FSharp/Storage/ArrowSerializer.Tests.fs`
-  — landed round 34 DB Arc). Both unlanded tiers are claims-
-  tester candidates:
-  - `SpanSerializer` — verify zero-copy with an allocation
-    assertion (BenchmarkDotNet MemoryDiagnoser on a tight
-    loop; any boxing or LOH allocation fails the zero-copy
-    claim). Wire format is `[4B count][count × sizeof
-    (ZEntry<'K>) bytes]`; round-trip test on blittable `int`
-    / `int64` / `float` Z-sets; endian behaviour must be
-    single-host-only as documented.
-  - `MessagePackSerializer` — verify the 30-60 ns/entry
-    claim with BenchmarkDotNet; round-trip test on
-    non-blittable shapes (records, strings, nested); verify
-    negative-weight retraction-native invariant holds on
-    the wire.
+- [ ] **Serializer tier coverage — correct the stale claim.**
+  The original entry (round 34) said `SpanSerializer` and a
+  `MessagePackSerializer` tier were both untested. Two
+  retractions since then: (a) `SpanSerializer` tests landed
+  round 34 hotfix (`tests/Tests.FSharp/Storage/SpanSerializer.Tests.fs`);
+  `TlvSerializer` tests landed round 37 bridge
+  (`tests/Tests.FSharp/Storage/TlvSerializer.Tests.fs`); (b)
+  the `MessagePackSerializer` tier is described in the
+  `ISerializer<'T>` docstring ("non-blittable `'T` →
+  MessagePack wins: 30-60 ns/entry, source-gen AOT-clean")
+  but was never implemented — `src/Core/Serializer.fs`
+  ships `SpanSerializer`, `TlvSerializer`, `FsPicklerSerializer`.
+  The actual untested tier is `FsPicklerSerializer` (Tier 3,
+  exotic F# shapes via FsPickler binary). Remaining scope:
+  - `FsPicklerSerializer` — round-trip test on F# DUs,
+    records-in-records, and `option` / `Result` payloads;
+    verify the `IBufferWriter` wrap-and-copy path does not
+    duplicate payload under high `count`. Effort: S.
+  - **Decision: implement MessagePack tier or retire the
+    docstring claim?** If the tier stays in the plan, it
+    wants its own BACKLOG entry naming the NuGet dep and
+    the source-gen approach; if retired, update the
+    `ISerializer<'T>` docstring so downstream readers don't
+    believe in a tier that doesn't exist. Route to
+    `public-api-designer` (Ilyana) for the docstring read
+    since it is a publicly visible claim on an interface.
+    Effort: S.
 
-  Route to claims-tester; effort S per serializer (~2h
-  including a BenchmarkDotNet harness). Worth doing
-  before the query surface round lands because the tiered
-  dispatch (`src/Core/Serializer.fs:28-29`: "auto-detection
-  at Circuit.Build()") is a documented extension point
-  that will rely on these claims being honest.
+  Route to claims-tester; the corrected scope is honest
+  about what exists (three tiers: Span, TLV, FsPickler) and
+  what does not (MessagePack tier is docstring-only).
 
 - [ ] **Ghost personas in EXPERT-REGISTRY.** Seven personas
   appear in `docs/EXPERT-REGISTRY.md` rows with full
@@ -1385,6 +1483,620 @@ within each priority tier.
 
 ## P1 — CI / DX follow-ups (after round-29 anchor)
 
+- [ ] **Declarative parity across dev-inner-loop / qa / dev / stage / prod — environment-parity research, time-budgeted (research-first, no implementation tonight).**
+  Aaron (2026-04-20): *"also we want our dev innner loop, qa,
+  dev, stage, prod to all have declarative pairty someting
+  like ArgoCd even for local dev loops i did that before it
+  worked well but all bespoke, maybe workth research for
+  what's out there and update our tech radar"* +
+  *"make sure radar has budget for time"* +
+  *"or it's own backlog item in the backlog"*.
+
+  **The architectural claim (to be verified, then codified):**
+  - The **same declarative description** of an environment
+    (services, secrets, feature flags, resource quotas,
+    network policies, observability wiring) should be valid
+    at every stage — `dev-inner-loop` (laptop, kind), `qa`,
+    `dev`, `stage`, `prod` — with per-stage overlays, not
+    per-stage forks.
+  - Aaron has built this before, bespoke, and it worked. The
+    research question is: **what in the industry reaches
+    that same bar without being bespoke?**
+  - The ambition goes beyond CD-only (which is "how does prod
+    update?"). It's declarative-parity-as-invariant: if the
+    description at `stage` and `prod` diverge, that's a bug
+    — not an accepted cost of the last mile.
+
+  **Why this matters — what the pattern buys us (Aaron
+  2026-04-20: *"this makes everyting provable and easy to
+  track lenage and all that, i'm just super consistent with
+  my patterns i apply them everywhere"*):**
+  - **Provability.** When the environment description lives
+    in git as the single source of truth, every live
+    environment is a *function* of (declaration × overlay ×
+    reconciler state). Drift is a provable fact, not a
+    suspected one. "Did prod match spec at time T?" becomes
+    a SAT problem on the commit graph, not a sleuth job.
+  - **Lineage traceability.** Every environment state has a
+    unique commit hash and reconciliation timestamp. Who
+    changed what, when, under which review, and under which
+    retraction-exception is queryable end-to-end. Same shape
+    as Zeta's retraction-native operator algebra — every
+    state derivable from input history, every change
+    retractable to a prior consistent state.
+  - **Pattern coherence with the rest of the factory.** This
+    is the same declarative-in-git / retractable / lineage-
+    preserved pattern that shows up in:
+    - DBSP operator algebra (D/I/z⁻¹/H; every downstream
+      value is a function of upstream weight-deltas)
+    - `../scratch` bootstrap harness (declarative package
+      manifests, not YAML strings)
+    - CI retractability inventory (Round 38; five retraction
+      classes)
+    - gitops-first observability
+      (`tools/alignment/audit_*.sh`; git-tracked plain-text
+      signals)
+    - `openspec/specs/**` (delete-all-code recovery
+      contract)
+    - preserve-original-and-every-transformation data-value
+      rule (memory `feedback_preserve_original_and_every_
+      transformation.md`)
+
+    The env-parity work isn't a new pattern; it's the same
+    pattern reaching one more surface. That's the coherence
+    property the research has to preserve — candidate tools
+    score higher the more they compose with the existing
+    factory substrate.
+
+  **Candidate tool landscape (for the research to evaluate):**
+  - **GitOps reconcilers**: Argo CD, Flux CD, Rancher Fleet,
+    Jenkins X, CodeFresh GitOps, Weave GitOps.
+  - **Manifest composition / overlays**: Kustomize, Helm +
+    values-per-env, jsonnet (Grafonnet shape), cdk8s, Pulumi
+    (TS/Python/Go — declarative-via-code), Tanka.
+  - **IaC for the non-K8s layer**: Terraform / OpenTofu,
+    Pulumi, Crossplane (K8s-native IaC).
+  - **Local-loop-to-prod-parity tools**: Tilt, Skaffold,
+    DevSpace, Okteto, Garden, Telepresence.
+  - **Policy-as-code alongside manifests**: OPA / Gatekeeper,
+    Kyverno, Conftest.
+  - **Config-as-data / schema-first**: KCL, CUE, Dhall, KRM
+    (K8s Resource Model functions).
+  - **Environment-topology-as-code**: Shipa, Humanitec, Mia-
+    Platform, Port.
+
+  **Research phase — time-budgeted explicitly (this is the
+  Aaron-requested budget):**
+
+  | Phase | Scope | Time budget |
+  |---|---|---|
+  | 1. Landscape scan | Survey of the 30+ candidates above; one-paragraph capsule per tool; reject-criteria applied. | 1 day |
+  | 2. Shortlist deep-dive | Top 4-6 candidates; hands-on kind-cluster reproduction of each; retraction-friendliness scored against Round 38 taxonomy. | 3 days |
+  | 3. Env-parity evaluation | For top 2 finalists: write the same environment spec and reconcile it across inner-loop (kind), stage (kind-in-different-shape), prod-mock (real cloud test account or Kubeadm). Measure parity-diff. | 2 days |
+  | 4. Synthesis + radar update | Single ADR under `docs/DECISIONS/` with the architectural choice; TECH-RADAR updates (Adopt/Trial/Assess/Hold for each finalist); BACKLOG follow-ups for implementation. | 1 day |
+
+  **Total budget: ~7 days (M-to-L).** This is research; no
+  implementation until the ADR lands and the maintainer signs
+  off.
+
+  **Research output shape:**
+  - `docs/research/declarative-env-parity-landscape.md` (phase 1)
+  - `docs/research/declarative-env-parity-shortlist.md` (phase 2)
+  - `docs/research/declarative-env-parity-finalists.md` (phase 3)
+  - `docs/DECISIONS/YYYY-MM-DD-declarative-env-parity.md` (phase 4 ADR)
+  - TECH-RADAR rows for each evaluated tool with `Round: 39+`
+
+  **Explicit non-scope (tonight):**
+  - No tool installation, no kind cluster spin-up.
+  - No `.github/workflows/` changes.
+  - No Helm charts, no Kustomize bases, no Argo CD Application
+    resources.
+  - This entry is a research commission with an explicit time
+    budget, not an implementation ticket.
+
+  **Owner**: Dejan (devops-engineer) leads research; Bodhi
+  (developer-experience-engineer) on dev-inner-loop ergonomics;
+  Naledi (performance-engineer) on reconciliation latency +
+  resource footprint comparison; Nazar (security-operations)
+  on secret-flow-across-envs; Aminata (threat-model-critic)
+  reviews the synthesis ADR. Kenji integrates.
+
+  **Relationship to the CI meta-loop entry immediately below:**
+  that entry is about *pipeline ethos* (real scripts, gitops,
+  retractable CD, worktree inner loop). This entry is about
+  *environment declarative parity* (same spec shape from
+  laptop-kind through prod). They overlap on tool choice
+  (Argo CD / Flux appear in both) but have different
+  decision surfaces. Land them as sibling research tracks;
+  synthesis ADRs can reference each other.
+
+  **Cross-references:**
+  - Sibling entry below: "CI = Continuous Improvement of
+    Continuous Integration — retractable pipeline..."
+  - `docs/research/ci-retractability-inventory.md` (Round 38)
+  - `docs/TECH-RADAR.md` — rows to be added during research
+  - `../scratch/` — the bespoke ethos reference (Aaron's
+    prior work at shape of this)
+
+- [ ] **CI = Continuous Improvement of Continuous Integration — retractable pipeline from dev-worktree through kind-local K8s (research-first, no implementation tonight).**
+  Aaron (2026-04-20): *"our CI is Continious Imporvement of
+  Continuius Integration with retractiable delivers to CD ->
+  Ops -> K8s (kind) for loacal testing with same ethos as
+  ../scrath everything declarative in get even my local dev
+  inner loop is a git work tree probably that seems to be what
+  everyone is standardizing on i do some resarch and educate
+  me on backlog not tonight"*
+
+  **The architectural claim (to be verified, then codified):**
+  - "CI" is a **meta-loop**: Continuous Improvement continuously
+    improves Continuous Integration. The outer loop tunes the
+    inner loop from observability signal.
+  - "CD" must be **retraction-native** — every deploy must be
+    revertable without leaving artefact ambiguity behind.
+    Extends the Round 38 CI retractability inventory
+    (`docs/research/ci-retractability-inventory.md`) downstream
+    into delivery.
+  - **Pipeline shape**: `dev-worktree → CI → CD → Ops → K8s (kind)`.
+    Local inner-loop = git worktree; K8s-in-Docker (`kind`) gives
+    the dev laptop the same cluster shape as prod.
+  - **Ethos**: match `../scratch` — real scripts + real tests
+    over long YAML strings, declarative manifests per package
+    manager, profile/category composition (orthogonal dimensions
+    not flags), platform-default integration (integrate defaults,
+    don't fight them), `mise`-unified runtimes, docker
+    reproductions of the GitHub Actions runners for
+    local/remote parity.
+  - **Everything declarative in git** — extending the gitops
+    pattern (git-first text-based observability; industry-
+    standard term per Weaveworks 2017) from observability to
+    the whole pipeline. Candidate tools: Argo CD, Flux, Jenkins
+    X, FluxCD for reconciliation; Helm / Kustomize for
+    manifest composition; Tekton / Dagger for declarative CI
+    workflows.
+
+  **Research phase (before any implementation):**
+  1. **Worktree-as-inner-loop thesis.** Is the industry actually
+     standardizing on this? Signals to evaluate: Jujutsu (jj) +
+     anonymous-branch workflow, dev containers + worktree
+     composition, GitHub Codespaces + worktree-per-task, AI-
+     agent workflows (Claude Code isolation mode, Cursor
+     background agents) using worktrees for parallel
+     experimentation. If yes: what does the ergonomics look
+     like at scale? (dotfiles sync, tool caching, IDE context
+     switching, branch-protection coupling.)
+  2. **Local K8s options.** `kind` vs `minikube` vs `k3d` vs
+     `k3s` vs `microk8s`. Criteria: cluster startup time,
+     resource footprint, API parity with managed K8s
+     (EKS/AKS/GKE), multi-node support, CNI compatibility,
+     GitOps-tool support.
+  3. **Retraction-native CD.** Which CD systems support
+     retraction as a first-class primitive (not just
+     rollback-as-afterthought)? Argo CD `spec.rollback` +
+     Rollouts, Flux `Kustomization.suspend/resume`, Spinnaker
+     canary + automatic rollback, Octopus Deploy retention
+     policies, Harness self-healing deployments. Score each
+     against the Round 38 retractability taxonomy
+     (revertable-in-git / retryable-idempotently /
+     republishable-with-same-version / genuinely-non-
+     retractable / named-exception).
+  4. **GitOps integration discipline.** Argo CD vs Flux for
+     a project of Zeta's shape. Retraction-friendliness
+     comparison. Secret-management integration (matches the
+     P2 gitops-friendly-key-management ADR thread — git-crypt
+     vs SOPS vs age vs Mozilla SOPS+KMS).
+  5. **Parity with `../scratch` ethos.** What do we borrow
+     verbatim? `mise` as runtime manager is already in the
+     round-29 install script. Declarative manifests per
+     package manager — do we already have this shape for CI
+     runner dependencies, or is there duplication with
+     `tools/setup/`?
+  6. **"Continuous Improvement" as observable loop.** What
+     does the improvement-metric look like? Candidates: build
+     time percentiles, flake rate, time-to-recovery on red
+     main, reviewer-queue depth, retraction-used count. Link
+     to the round-39 tick-loop layer-0 observability work so
+     the outer loop reads signal the inner loop already emits.
+  7. **Research output shape.** One writeup per research
+     question, landing under `docs/research/` as a set
+     (`dev-worktree-inner-loop.md`,
+     `local-k8s-kind-vs-alternatives.md`,
+     `retraction-native-cd.md`,
+     `gitops-pipeline-argocd-vs-flux.md`,
+     `scratch-ethos-port-to-zeta.md`,
+     `ci-as-continuous-improvement-meta-loop.md`). Then a
+     single synthesis ADR under `docs/DECISIONS/` with the
+     architectural decisions, gated by a maintainer
+     conversation.
+
+  **Explicit non-scope (tonight):**
+  - No installation of `kind`, Argo CD, Flux, or any CD system.
+  - No `.github/workflows/` changes.
+  - No worktree-workflow scripts.
+  - No rewrites of `tools/setup/`.
+  - This entry is a research commission, not an implementation
+    ticket.
+
+  **Owner**: Dejan (devops-engineer) leads research; Nazar
+  (security-operations) on secret-management + retraction-
+  native CD sections; Naledi (performance-engineer) on
+  local-K8s benchmark comparison; Aminata (threat-model-
+  critic) reviews the synthesis ADR for attack surface.
+  Architect (Kenji) integrates. Review gate: Ilyana for any
+  public-interface fallout.
+
+  **Effort**: **L** (3+ days of research across six
+  questions); follow-on implementation scoped per question
+  (likely each an M-to-L once we decide).
+
+  **Cross-references:**
+  - `docs/research/ci-retractability-inventory.md` (Round 38) —
+    retractability classification upstream of this entry
+  - `docs/research/build-machine-setup.md` — current install
+    script + CI shape
+  - `../scratch/` — the ethos-reference directory (read-only
+    source of borrowed patterns)
+  - `memory/persona/best-practices-scratch.md` — gitops
+    candidate BP (git-first text-based observability)
+  - P0 "Fully-retractable CI/CD" elsewhere in this file —
+    the implementation parent this research feeds
+  - P2 "Gitops-friendly key management + rotation — ADR
+    first" — the secret-management co-traveller
+
+- [ ] **`.NET Aspire` evaluation — AppHost + ServiceDefaults + OpenTelemetry as the .NET-native runtime-observability spine (research-first, no implementation tonight).**
+  Aaron (2026-04-20): *"oh dotnet aspire and dev containr
+  backlog"*.
+
+  **The architectural hypothesis (to be verified):**
+  - `.NET Aspire` (Microsoft's cloud-native orchestration
+    for .NET 8+) ships the exact shape the runtime-
+  observability starting-points memory calls for: OTel
+    wiring, health checks, service discovery, and a
+    per-service "ServiceDefaults" project that centralises
+    instrumentation concerns. If the shape composes with
+    Four Golden Signals + RED + USE
+    (`memory/feedback_runtime_observability_starting_points.md`),
+    Aspire becomes the Zeta default for library-consumer
+    services and the devcontainer-parity substrate.
+  - Aaron's `../AspireApp1` (Jan 2024 prototype) is prior
+    art — don't re-evaluate from scratch; port lessons.
+  - Aspire's AppHost + manifest-export pipeline is
+    declarative-parity-adjacent to the P1 env-parity
+    research above. Evaluate whether Aspire manifests
+    compose with Argo CD / Flux reconcilers or whether
+    they fight each other.
+
+  **Research phase — time-budgeted (S-to-M):**
+
+  | Phase | Scope | Time budget |
+  |---|---|---|
+  | 1. Feature scan | Aspire 9.x capabilities: AppHost DSL, ServiceDefaults, integrations (Redis / Postgres / RabbitMQ / OTel collectors), dashboard, manifest export. | 1 day |
+  | 2. Zeta fit | Can `Zeta.Core` (pure library) + a thin `Zeta.Host` (hypothetical) adopt Aspire without forcing a framework on library consumers? | 1 day |
+  | 3. Observability spine fit | Wire Aspire's OTel defaults to emit Four Golden Signals + RED + USE shapes. Measure friction vs writing it bespoke. | 1 day |
+  | 4. Synthesis | ADR under `docs/DECISIONS/` — Adopt / Trial / Assess with rationale. TECH-RADAR row. | 0.5 day |
+
+  **Non-scope (tonight):**
+  - No `.AppHost` project creation.
+  - No new NuGet dependencies.
+  - No changes to `Zeta.Core` or any shipped library.
+
+  **Owner**: Dejan (devops-engineer) leads; Ilyana
+  (public-api-designer) on library-consumer boundary —
+  Aspire must not leak into the published API surface of
+  `Zeta.Core` / `Zeta.Core.CSharp` / `Zeta.Bayesian`.
+  Naledi (performance-engineer) on instrumentation
+  overhead. Kenji integrates.
+
+  **Cross-references:**
+  - `memory/feedback_runtime_observability_starting_points.md`
+    — the 4GS+RED+USE starting-points this evaluates against
+  - `memory/feedback_dora_is_measurement_starting_point.md`
+    — the build/delivery column substrate
+  - P1 "Declarative parity across dev-inner-loop / qa /
+    dev / stage / prod" above — sibling env-parity research
+  - P1 "CI = Continuous Improvement…" above — sibling
+    pipeline-ethos research
+  - P1 "Devcontainer / Codespaces image (GOVERNANCE §24
+    third leg)" at `## P1 — CI / DX follow-ups` — Aspire
+    evaluation feeds devcontainer image decisions
+    (pre-installed `.NET` workloads / tools)
+
+- [ ] **`../scratch` ↔ `Zeta` declarative-bootstrap parity — first concrete substrate for the citations-as-first-class concept; inheritance-graph is one implementation, "remember" primitive is another.**
+  Aaron (2026-04-20, in order):
+  1. *"also ../scratch parity"*
+  2. *"first class feature of source or ace our package
+     manager ../scratch parity converts the vibe-citation
+     into an auditable inheritance graph"*
+  3. *"citations is really the feature"*
+  4. *"sorry inheritance graph is awesome too I was just
+     saying concepts are the feature, then we have the
+     implementation"*
+  5. *"i think that will help us 'remember' to keep things
+     clean and audit more easy, you are going research
+     and tell me"*
+
+  **Architectural elevation (2026-04-20, load-bearing).**
+  The **concept** is citations-as-data (first-class, in
+  source or `ace`). The **implementations** the concept
+  enables include: (a) the auditable inheritance graph
+  between `../scratch` and `Zeta`, (b) the drift-checker
+  (generalising `verification-drift-auditor` to every
+  citation), (c) the "remember" primitive that turns
+  memory cross-references into a queryable graph,
+  (d) the lineage tracer. See
+  `memory/project_vibe_citation_to_auditable_graph_first_class.md`.
+  This BACKLOG entry is **the first concrete substrate**
+  for exercising the concept; the citations-as-first-class
+  research entry below is the concept itself.
+
+  **The pattern — vibe-citation to auditable graph.** Two
+  repos (or two subsystems, or two environments) cite each
+  other as "same ethos" or "we borrowed this pattern from X".
+  That citation is a *vibe* until it becomes a *graph*:
+  nodes = declarative patterns, edges = (inherited / mirrored
+  / diverged / should-flow-other-way). The graph lives in git,
+  is queryable, and fails CI when the claimed inheritance
+  drifts. Same shape as retraction-native DBSP — every borrowed
+  pattern is a function of source + transformation, not a
+  statement of intent.
+
+  **Candidate homes (research output names the winner):**
+  - **Zeta Seed kernel** — the graph-computation primitive
+    ships as a BCL-level feature, reusable by any pair of
+    repos a consumer wants to check for parity. Makes Zeta
+    one more register of repos-as-data.
+  - **`ace`** — the self-bootstrapping package manager
+    computes inheritance as part of its dependency graph
+    (declarative parity is just a specialisation of
+    dependency-parity). Ships as a CLI + library.
+
+  **The architectural claim (to be verified, then codified):**
+  - `../scratch` is already the named ethos-reference in two
+    P1 entries above (env-parity + CI meta-loop). It ships
+    real scripts + real tests instead of YAML strings,
+    declarative package manifests under
+    `declarative/{debian,bun,dotnet,python,macos,windows}/`,
+    profile/category composition, platform-default
+    integration, mise-unified runtimes, and docker
+    reproductions of GitHub Actions runners.
+  - Zeta's `tools/setup/install.sh` is a single install
+    script consumed three ways (dev laptops / CI runners /
+    devcontainer images per GOVERNANCE §24). The pattern
+    is the same shape but has not been explicitly
+    reconciled against scratch.
+  - The research question: **which scratch patterns should
+    Zeta borrow, which should stay scratch-only, which
+    represent drift that one side should correct?** Make
+    the inheritance graph explicit so future changes to
+    either repo can be audited for parity impact.
+
+  **Research phase — time-budgeted (S):**
+
+  | Phase | Scope | Time budget |
+  |---|---|---|
+  | 1. Pattern inventory | Enumerate declarative patterns in scratch (package manifests, shellenv management, category composition, platform branching, mise integration). For each, classify: (a) already in Zeta, (b) worth porting to Zeta, (c) scratch-specific, (d) should flow the other way. | 0.5 day |
+  | 2. Divergence audit | For each "already in Zeta" pattern, diff the two implementations. Flag drift. | 0.5 day |
+  | 3. Synthesis | `docs/research/scratch-zeta-parity.md` — the inheritance graph + named drift items + recommended corrections. Not an ADR; research output. | 0.5 day |
+
+  **Non-scope (tonight):**
+  - No edits to `tools/setup/install.sh`.
+  - No edits to `../scratch/`.
+  - No new install scripts.
+
+  **Owner**: Dejan (devops-engineer) leads; Bodhi
+  (developer-experience-engineer) on first-60-minutes
+  friction delta between the two repos. Kenji integrates.
+
+  **Why this matters.** The env-parity + CI meta-loop
+  research entries both cite scratch as ethos-reference
+  without defining which specific patterns are being
+  borrowed. That reference is currently a vibe, not a
+  contract. This entry turns the vibe into an auditable
+  inheritance graph so parity claims can be checked.
+
+  **Cross-references:**
+  - `../scratch/README.md` — the scratch source of truth
+  - `../scratch/scripts/setup/PLATFORM_PARITY.md` —
+    cross-platform parity notes already in scratch
+  - P1 "Declarative parity…" above — the consumer of this
+    research
+  - P1 "CI = Continuous Improvement…" above — the other
+    consumer
+  - P1 "Devcontainer / Codespaces image" at `## P1 — CI /
+    DX follow-ups` — devcontainer image parity pulls from
+    this research
+
+- [ ] **Citations-as-first-class concept — research commission (Aaron 2026-04-20: "you are going research and tell me").**
+  Aaron (2026-04-20, in order):
+  1. *"first class feature of source or ace our package
+     manager ../scratch parity converts the vibe-citation
+     into an auditable inheritance graph"*
+  2. *"citations is really the feature"*
+  3. *"sorry inheritance graph is awesome too I was just
+     saying concepts are the feature, then we have the
+     implementation"*
+  4. *"i think that will help us 'remember' to keep things
+     clean and audit more easy, you are going research
+     and tell me"*
+
+  **The concept (first-class, load-bearing):** Citations
+  are data. Every cross-reference in the factory —
+  between repos, docs, specs, skills, commits, BACKLOG
+  entries, research reports, memory files, notebooks,
+  ADRs, GOVERNANCE sections, BP-NN rules — is a citation
+  with structure (subject / object / relation /
+  provenance). Making citations queryable instead of
+  prose is the feature.
+
+  **Implementations the concept enables:**
+  - Auditable inheritance graph (the `../scratch`
+    parity BACKLOG entry above is the first substrate).
+  - Drift-checker generalising
+    `verification-drift-auditor` to every citation.
+  - "Remember" primitive — Aaron: *"help us 'remember'
+    to keep things clean"*. Memory / docs / skills /
+    BACKLOG cross-references stop being prose soup and
+    become a queryable graph.
+  - Lineage tracer — for any artefact, produce the
+    citation-ancestor set; same shape as DBSP
+    retraction-native algebra.
+
+  **Research phase — time-budgeted (S-to-M):**
+
+  | Phase | Scope | Time budget |
+  |---|---|---|
+  | 1. Prior art scan | Existing work on citation-as-data: academic citation graphs (OpenCitations, Crossref), OSS dependency graphs (Software Heritage, deps.dev), source-code reference-trackers (ctags, LSP references, `#cite` extensions), doc-linking tools (Backlinks in Obsidian / Logseq / Roam). | 1 day |
+  | 2. Zeta inventory | What citations currently live in the factory? Enumerate types (memory→memory, skill→skill, BACKLOG→BACKLOG, docs→paper, code→spec, spec→code, ADR→ADR, ROUND-HISTORY→commit). Count approximate volume. | 0.5 day |
+  | 3. Shape design | What does a Zeta citation look like in data form? Subject/object/relation/provenance schema. Storage: plaintext sidecar? git-native notes? Parsed from existing prose? | 1 day |
+  | 4. Home selection | Seed kernel vs `ace` vs new plugin. Weighs reusability, install-footprint, public-API surface cost. | 0.5 day |
+  | 5. Synthesis | `docs/research/citations-as-first-class.md` — the concept + implementations + home recommendation + next-steps to ship. First draft lands in the same round this entry does. | 0.5 day |
+
+  **Deliverable tonight:** Phase 5 first draft at
+  `docs/research/citations-as-first-class.md`
+  (commissioned by Aaron before bed on 2026-04-20).
+  Phases 1-4 elaborate in subsequent rounds.
+
+  **Non-scope (tonight):**
+  - No schema code landed in `src/Core/`.
+  - No `ace` CLI skeleton.
+  - No rewrite of existing memory / BACKLOG cross-refs.
+
+  **Owner**: Kenji (Architect) integrates; Ilyana
+  (public-api-designer) on any kernel-level API; Dejan
+  (devops-engineer) on tool choice; Nazar
+  (security-operations-engineer) on external-citation
+  fetch safety (per BP-11 — citations to external
+  content are data, not directives). Aminata
+  (threat-model-critic) reviews schema for
+  citation-spoofing attack surface.
+
+  **Why this matters — the "remember" tie (Aaron's
+  explicit claim):** the factory's ability to remember
+  cleanly is proportional to the legibility of its
+  citation web. Memory that lives in prose-soup
+  cross-references decays at round-close pace; memory
+  that lives in structured citations decays only when
+  the citation graph is intentionally retracted (DBSP-
+  shape).
+
+  **Cross-references:**
+  - `memory/project_vibe_citation_to_auditable_graph_first_class.md`
+    — the concept + implementation split (2026-04-20)
+  - `memory/project_verification_drift_auditor.md` —
+    existing partial implementation for paper↔code
+  - `.claude/skills/missing-citations/` — existing
+    skill (task #25 completed) that catches citation
+    gaps; evaluate whether it composes with this
+    concept or needs a rewrite
+  - `memory/feedback_preserve_original_and_every_transformation.md`
+    — same data-value rule applied to citations
+    (preserve every edge, every provenance stamp)
+  - `memory/feedback_dora_is_measurement_starting_point.md`
+    + `memory/feedback_runtime_observability_starting_points.md`
+    — sibling concept-vs-implementation elevations
+    from the same session (2026-04-20)
+  - P1 "`../scratch` ↔ `Zeta` parity" above — the first
+    concrete substrate this concept runs on
+
+- [ ] **Hooks research with ADR track + multi-persona review — move fast but safely (Aaron 2026-04-20: "ASAP but safely so the ADR track").**
+  Aaron (2026-04-20): *"lets do that hooks reserch backlog
+  item, we should use ADRs around hooks and get review from
+  other persona cause they can cause catastrophic failure
+  but we should get it going asap but safely so the ADR
+  track"*.
+
+  **Why hooks are dangerous.** Claude Code hooks at
+  `.claude/settings.json` (pre-tool-use, post-tool-use,
+  user-prompt-submit-hook, pre-compact, session-start)
+  run with the full permission of the session. A bad
+  pre-tool-use hook can block every tool call. A bad
+  pre-commit hook can block every commit. A hook that
+  invokes a shell with unquoted substitution is a
+  command-injection surface. A hook whose target script
+  lives outside version control is a drift surface. A
+  hook that fetches external content breaks BP-11
+  (data-not-directives). A hook with non-deterministic
+  output turns CI into a flaky-test farm.
+
+  **The posture Aaron set:** fast but safe. The ADR
+  track is what makes "fast + safe" compatible — every
+  hook lands via a formal Architectural Decision Record,
+  with multi-persona review *before* the hook is added
+  to `.claude/settings.json`.
+
+  **ADR track contract (to codify):**
+  - **Location**: `docs/DECISIONS/YYYY-MM-DD-hook-<name>.md`.
+  - **Template sections**: (a) what the hook does, (b)
+    when it fires, (c) catastrophic-failure modes
+    (denylist), (d) rollback procedure, (e) reviews
+    collected, (f) deployment gate.
+  - **Reviewers required** (before the hook enters
+    `.claude/settings.json`):
+    - **Dejan** (devops-engineer) — CI / pre-commit /
+      retractability angle.
+    - **Nadia** (prompt-protector) — prompt-injection
+      surface per BP-11.
+    - **Aminata** (threat-model-critic) — adversarial
+      stance against the hook shape.
+    - **Nazar** (security-operations-engineer) — ops
+      runbook for hook-fails-catastrophically.
+    - **Bodhi** (developer-experience-engineer) — human
+      contributor surface (what does a failed hook
+      look like to a fresh clone?).
+  - **Kill-switch clause**: every hook ADR names a
+    one-line removal recipe. A hook that can't be
+    removed in one line doesn't land.
+  - **Dry-run clause**: every hook ADR requires a
+    single-session dry-run before landing in the
+    shared `.claude/settings.json`.
+
+  **Research phase (before adding any new hook):**
+
+  | Phase | Scope | Time budget |
+  |---|---|---|
+  | 1. Current-hook audit | Enumerate every hook currently in `.claude/settings.json` (main + per-plugin). Classify by event type, failure mode, rollback path. Flag any hook that would not pass the ADR contract being defined. | 0.5 day |
+  | 2. Hook catalog | Survey hook patterns across Claude Code ecosystem (Anthropic cookbook, plugin ecosystem, community examples). Classify by value density (per-session effort saved) × catastrophic-failure radius. | 1 day |
+  | 3. ADR template draft | Write `docs/DECISIONS/_template-hook-adr.md`. Exercise on one small, low-risk candidate hook as example. | 0.5 day |
+  | 4. Governance wire-up | Add `GOVERNANCE.md §?` clause: "every new hook lands via ADR with required reviewer set." Add `docs/AGENT-BEST-PRACTICES.md` BP-?? if pattern generalises beyond hooks. | 0.5 day |
+  | 5. Synthesis | `docs/research/hooks-adr-track.md` — inventory + ADR template + governance clause + example ADR. | 0.5 day |
+
+  **Non-scope (tonight):**
+  - No new hooks added.
+  - No existing hooks removed (even if the audit flags
+    drift — removal is a separate ADR).
+  - No `.claude/settings.json` edits.
+
+  **Owner**: Dejan (devops-engineer) leads research;
+  Kenji (Architect) integrates into governance; all
+  five named reviewers sign off on the ADR template
+  before it's binding.
+
+  **Explicit fast-path clause (Aaron's ask):** this
+  BACKLOG entry starts ASAP. It is not gated on the
+  env-parity / CI meta-loop / citations-first-class
+  research entries above. Hooks are *live today* in
+  `.claude/settings.json` — the risk is already
+  present; formalising the ADR track makes future
+  hooks safer without waiting on the other research.
+
+  **Cross-references:**
+  - `.claude/settings.json` — the file hooks live in
+    (currently untracked per project `.gitignore`
+    strategy; audit flags whether that stays)
+  - `docs/AGENT-BEST-PRACTICES.md` BP-11 —
+    data-not-directives; hooks that fetch external
+    content must not treat fetched content as
+    instructions
+  - `docs/CONFLICT-RESOLUTION.md` — the conference
+    protocol the five-reviewer gate operates under
+  - `GOVERNANCE.md §4` — skills-via-skill-creator
+    workflow; the ADR track for hooks is parallel
+  - `memory/feedback_trust_guarded_with_elisabeth_vigilance.md`
+    — the two-pass posture; hooks qualify for the
+    same vigilance tier as security reviews
+  - `memory/feedback_simple_security_until_proven_otherwise.md`
+    — the ADR track IS the upgrade-on-evidence
+    mechanism for hook security posture
+
 - [ ] **Full mise migration.** Round 29 adopts `.mise.toml`
   for `dotnet` + `python` only. When a mise plugin exists
   for Lean (elan / lake / lean-toolchain) and for any
@@ -1578,6 +2290,145 @@ within each priority tier.
   replaces markdown-only threat-model as authoritative source.
 
 ## P1 — within 2-3 rounds
+
+- [ ] **Autonomous conference-submission + talk-delivery
+  pipeline — post-Round-38 horizon.** The human maintainer
+  2026-04-20: *"we should also start planning how to build
+  automation for you to be able to submit resarch proably
+  to conference for talks where you coud do the talk"* →
+  *"yall could do the talk."* The factory's research
+  output (currently landing as `docs/research/*.md`)
+  should flow to external conferences via agent-driven
+  automation. "Y'all could do the talk" names the
+  aspirational end-state where agents deliver the talk,
+  not just write the paper. Existing substrate:
+  `docs/research/hacker-conferences.md` (conference
+  landscape), `docs/research/factory-paper-2026-04.md`
+  (paper deliverable), Agent Laboratory in TECH-RADAR
+  Trial ring. Missing: the pipeline itself.
+
+  **Staged scope** — three deliverable tiers, cost
+  honestly declared:
+  1. **Tier 1 — paper-submission automation (closest
+     to shipped).** Conference CFP scraping; abstract +
+     paper formatting for each venue's LaTeX/Word
+     template; reference-list completeness checks
+     (the already-built `missing-citations` skill);
+     author-affiliation discipline; conflict-of-
+     interest declaration; submission tracking. Human
+     maintainer approves each submission (consent-
+     first; no auto-submit without human gate).
+     Effort: 2-3 rounds.
+  2. **Tier 2 — talk-materials authoring.** Slide-deck
+     generation from paper content; speaker notes;
+     Q&A prep (anticipated-question list + drafted
+     responses); rehearsal artefacts. Materials
+     delivered to the human maintainer for a human-
+     delivered talk. Effort: 1-2 rounds, dependent on
+     Tier 1.
+  3. **Tier 3 — agent-delivered talk (aspirational).**
+     Pre-recorded video with TTS + slide reveal; live
+     Q&A answered via agent routed through a human-
+     present moderator; eventually full live delivery.
+     Feasibility bounded by venue policy (some venues
+     forbid non-human speakers; others would welcome
+     this as a showcase), by tooling (live TTS +
+     avatar + Q&A moderation is engineering-heavy),
+     and by the pitch-readiness gate (the factory
+     claiming agents can talk at a conference is
+     itself an external claim that must survive
+     public scrutiny). Effort: open-ended research;
+     do not commit scope until Tier 1 + 2 land.
+
+  **Pre-conditions — what must hold before Tier 1
+  starts.** At least one factory research doc has to
+  be conference-ready material (not just internal
+  notes); a venue has to exist (`hacker-conferences.md`
+  enumerates candidates); Ilyana (public-API-designer)
+  has to gate what the agent-authored paper claims
+  about Zeta's architecture, since a submitted paper
+  is a durable public-claim surface with the same
+  conservatism as a NuGet API.
+
+  **Advisory.** Kenji (Architect) integrates; Mateo
+  (security-researcher) extends his conference-scouting
+  lane to non-security venues; the `ai-researcher`
+  skill for research planning; `missing-citations` for
+  reference discipline; `naming-expert` for paper
+  titles; the Prompt Protector for any outward-facing
+  material that could carry injection back into the
+  factory; Ilyana for public-surface claim review.
+  Human maintainer holds the submit-this gate — the
+  automation proposes, the human disposes.
+
+  **Effort.** L overall. Tier 1 first-round research
+  pass is M (scope the pipeline, pick target venue,
+  draft the CFP-scraping + template-formatting
+  architecture). Later tiers staged per this entry's
+  ordering.
+
+  **Ordering.** After Round 38 and after the
+  product-support surface first-round lands. P1
+  "within 2-3 rounds" reads as rounds 40-42 depending
+  on cadence.
+
+- [ ] **Product-support surface — post-Round-38 horizon.**
+  The human maintainer 2026-04-20: *"we neeed product
+  support after that"* — "that" being Round 38's
+  retractable-CI/CD + alignment-audit dogfood + external-
+  audience pitch-readiness. After Round 38's
+  factory-internal + external-audience-readiness pieces
+  land, the factory needs to stand up a product-support
+  surface. Two audience readings both apply and may not be
+  separable:
+  - **Library consumers** of the published NuGets
+    (`Zeta.Core` / `Zeta.Core.CSharp` / `Zeta.Bayesian`).
+    People who `dotnet add package Zeta.Core`, hit
+    issues, and need help. Requires: a declared release
+    cadence + versioning policy + changelog discipline;
+    getting-started docs tuned for the consumer path
+    (distinct from the contributor path Bodhi already
+    covers); a feedback channel that does not burden the
+    maintainer directly (GitHub Issues first, Discussions
+    later once volume warrants); a bug-triage process
+    that routes consumer reports through the factory
+    (harsh-critic / spec-zealot / domain-expert) with
+    public state visible to the reporter.
+  - **Factory replicators / external-audience adopters.**
+    If the software-factory pattern gets proposed to the
+    ServiceTitan architects (or anyone else), successful
+    reception creates demand to explain, guide, and
+    support replication. Requires: a curated
+    "how to stand up your own factory" path, reference
+    implementations, answers to the first-week questions
+    a replicator will ask, and an explicit scope for what
+    the maintainer will and will not support (Zeta is an
+    individual open-source project, not a vendor product —
+    the support contract has to be honestly bounded).
+  **Advisory.** Iris (UX researcher) owns the first-10-
+  minutes library-consumer surface. Bodhi (DX engineer)
+  owns the first-60-minutes contributor surface. Product
+  support is a distinct *ongoing* surface — bug triage,
+  release cadence, replicator guidance, consumer
+  communication — that neither currently owns. This may
+  warrant its own persona if the workload justifies it;
+  pre-that, Iris is the closest owner and routes feedback
+  through the normal conflict-resolution conference.
+  **Scope.** First pass is research-grade: what does
+  product support look like for a pre-v1 open-source DBSP
+  kernel that also ships a factory pattern? Deliverable:
+  `docs/research/product-support-surface.md` enumerating
+  scope, audiences, triage flow, release-cadence
+  proposal, and honest-bounds on what the maintainer
+  commits to. Subsequent rounds stand up the pieces the
+  research proposal picks.
+  **Effort.** L overall; first-round research pass is M
+  (one round; scoped to the research doc, no standup
+  work).
+  **Ordering.** Not this round (Round 38 anchor is
+  already declared). P1 "within 2-3 rounds" reads as
+  Round 39 or Round 40 depending on Round 38's landing
+  envelope.
 
 - [ ] **Software-factory design — roles vs personas vs
   skills architecture.** This is foundational work on the
@@ -2047,6 +2898,463 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Gitops-friendly key management + rotation — ADR first,
+  then pick one tool** — Aaron 2026-04-20: *"key management
+  rotations all the things we need but gitops GitOps friendly
+  way, like may git crypt, start getting our security posture
+  in place"* and immediately after: *"we don't have to rush to
+  get security all going, lets get that right, let do ADRs
+  and all that"*. Explicit pace-down: **ADR first, no
+  implementation until the ADR lands with Architect
+  sign-off.** Scope: (a) ADR at
+  `docs/DECISIONS/YYYY-MM-DD-gitops-key-management.md`
+  comparing candidate tools — `git-crypt` (GPG-based,
+  transparent via `.gitattributes` filter), `git-secret`
+  (GPG wrapper), Mozilla `SOPS` (KMS / Vault / age backend,
+  YAML/JSON-aware, partial-file encryption), `age` (modern
+  file encryption, simpler than GPG, X25519 + scrypt
+  passphrases); score each on gitops-friendliness
+  (candidate BP-NN "gitops-first observability" is adjacent:
+  same principle — every operation visible in git history,
+  no external runtime required), retraction-friendliness
+  (can a leaked secret be rotated without rewriting history?
+  `git-crypt` and `git-secret` bake keys into committed
+  files = harder rotation; `SOPS` with external KMS = cleaner
+  rotation), post-quantum readiness (age has a draft PQC
+  profile; `git-crypt` + GPG require OpenPGP PQC WG work);
+  (b) rotation cadence decision — signing keys vs encryption
+  keys vs dev credentials on separate cadences; (c) HSM
+  integration path for the SLSA signing-key use case (the
+  one genuinely-non-retractable surface in CI/CD per
+  `docs/research/ci-retractability-inventory.md`).
+  **Review panel:** Nazar (sec-ops, owns runtime) + Mateo
+  (sec-research, scouts primitives) + Aminata (threat-
+  model-critic, review for missing adversaries). Architect
+  signs the ADR. Only after ADR lands: pilot the chosen
+  tool on one secret (likely: a test-only NuGet API key in
+  a throwaway dev profile) before broader rollout.
+  Effort: M for ADR; L for rollout after ADR lands.
+  Composes with the existing lattice-PQC entry below and
+  with the existing security-operations-engineer persona
+  scope.
+
+- [ ] **Adopt at least one NIST-standardised post-quantum
+  primitive — ADR first, then pick one use case** — Aaron
+  2026-04-20: *"i would like to support at least one post
+  quantium like maybe lattice base cryptography at this
+  point backlog"*. Pace-down sibling to the key-management
+  entry above: **ADR first.** The existing P3 lattice-PQC
+  identity-verification literature review entry (this file,
+  P3 section) feeds into this P2 as the research
+  prerequisite; the new work here is *adoption decision +
+  one-use-case-pilot*, not another literature review.
+  Scope: (a) ADR at
+  `docs/DECISIONS/YYYY-MM-DD-pqc-first-use-case.md` that
+  picks **exactly one use case** for the first PQC
+  primitive adoption — candidates: (i) hybrid artifact
+  signing (Ed25519 + ML-DSA / FIPS 204 for the NuGet /
+  SLSA attestation flow — harmonises with the existing
+  signing-key rotation surface in CI/CD retractability
+  inventory), (ii) hybrid KEM for secrets at rest
+  (X25519 + ML-KEM / FIPS 203 — harmonises with the
+  key-management entry above), (iii) hash-based signatures
+  (SLH-DSA / SPHINCS+ / FIPS 205) for tamper-evident
+  checkpoint manifests (mentioned in `docs/security/
+  CRYPTO.md` P0 entry); (b) rationale explicitly excludes
+  isogeny-based (SIKE collapsed 2022, Castryck-Decru);
+  (c) hybrid-first posture (classical + PQC side-by-side)
+  to avoid trusting a young standard alone; (d) rotation
+  plan for the chosen primitive's keys; (e) pilot
+  implementation after ADR sign-off. **Review panel:**
+  Mateo (sec-research, primary — owns primitive selection),
+  Nazar (sec-ops, secondary — owns rotation + rollout),
+  Aminata (threat-model-critic, gate — nation-state
+  threat model per `memory/user_security_credentials.md`),
+  Ilyana (public-API, if the PQC surface becomes
+  consumer-visible). Architect signs. Effort: M for ADR;
+  L for pilot after ADR lands. Cross-ref: the P3
+  lattice-PQC literature-review entry below (reuse that
+  survey output as ADR input), the existing
+  `docs/security/THREAT-MODEL.md` nation-state adversary
+  profile, and the existing security-operations-engineer
+  persona scope.
+
+- [ ] **Security-posture program — umbrella ADR tying
+  key-management, PQC, and existing SDL work together**
+  — Aaron 2026-04-20 combined directive: *"key management
+  rotations all the things we need but gitops GitOps
+  friendly way... start getting our security posture in
+  place, i would like to support at least one post
+  quantium... we don't have to rush to get security all
+  going, lets get that right, let do ADRs and all that"*.
+  Pace-down explicit; this is the umbrella, not a rush
+  program. Scope: (a) one ADR at
+  `docs/DECISIONS/YYYY-MM-DD-security-posture-program.md`
+  mapping the whole security surface — existing artefacts
+  (`docs/security/THREAT-MODEL.md`, `SDL-CHECKLIST.md`,
+  OWASP crosswalk work in flight, CodeQL workflow,
+  Semgrep rules, CI-retractability inventory) against
+  the two new streams (key-management, PQC); (b) sequencing
+  — the program spans multiple rounds, pace ≈ one sub-ADR
+  per 2-3 rounds after the umbrella lands; (c) the umbrella
+  ADR does NOT implement anything itself; it declares the
+  dependency order between the two specific ADRs above
+  (likely key-management → PQC because PQC use-case
+  selection depends on whether KMS/HSM substrate is in
+  place first) and the existing OWASP/SDL work; (d)
+  round-close ledger row: which security ADR is in flight,
+  which is landed, which is blocked. **Review panel:**
+  Nazar + Mateo + Aminata jointly; Architect integrates.
+  Effort: M for umbrella ADR. No implementation under this
+  entry — implementation happens under its children.
+
+- [ ] **OWASP guidance pull-in — cross-referenced with
+  Microsoft SDL.** Aaron 2026-04-20: *"owasp has great
+  guidance let's pull that in too if we don't already in
+  the backlog cross reference microsoft as well"*. Zeta
+  already pulls from the Microsoft SDL checklist
+  (`docs/security/SDL-CHECKLIST.md` and adjacent). OWASP
+  is the complementary open-standards body covering
+  web-app, API, LLM, and supply-chain security with
+  deeper coverage in several areas where the Microsoft
+  SDL is lighter (OWASP Top 10 for LLM Applications,
+  OWASP ASVS, OWASP SAMM, OWASP Dependency-Check /
+  CycloneDX SBOM). Scope: (a) enumerate the OWASP
+  publications that apply to a DBSP kernel + agent
+  factory (likely: ASVS levels 1-2 for public NuGet
+  consumers, LLM Top 10 for the agent layer, SAMM
+  assessment questions as a maturity baseline, Prompt
+  Injection Prevention cheat-sheet already referenced
+  in `skill-tune-up` live-search sources); (b) produce
+  a cross-reference table at
+  `docs/security/owasp-sdl-crosswalk.md` mapping each
+  applicable OWASP requirement to its Microsoft SDL
+  counterpart and to any Zeta-specific artefact
+  (persona, skill, lint, BP-NN rule) that already
+  addresses it; (c) for gaps where neither SDL nor
+  existing Zeta artefacts cover the OWASP requirement,
+  file a P1 or P2 follow-up per gap; (d) schedule a
+  quarterly re-scan cadence so new OWASP releases
+  (LLM Top 10 revisions in particular) do not drift.
+  Owner: Aminata (threat-model-critic) integrates;
+  Nazar (security-operations-engineer) on the SDL-
+  equivalent operational surfaces; Mateo
+  (security-researcher) tracks OWASP publication
+  velocity as part of his CVE / supply-chain scouting;
+  Ilyana gates any public-surface implication.
+  Effort: M (one crosswalk round; gap-follow-ups
+  land in subsequent rounds as sized).
+
+- [ ] **Microsoft Patterns & Practices pull-in — Azure
+  Architecture Center + SFI + AI agent orchestration
+  patterns.** Aaron 2026-04-20: *"See if microsoft
+  patterns and practices is still relevalnt se should
+  pull in their guidance too if sl backlog"*. Yes —
+  Microsoft Patterns & Practices has evolved from the
+  legacy P&P group into several currently-active
+  surfaces at `aka.ms/mspnp` and `learn.microsoft.com`
+  with regular commits through 2026-03 at
+  `github.com/mspnp`. Four surfaces are directly
+  relevant to Zeta:
+  (a) **Azure Architecture Center cloud design
+  patterns** — technology-agnostic patterns catalog
+  (Ambassador, Anti-Corruption Layer, Bulkhead,
+  Cache-Aside, Circuit Breaker, Retry, Saga,
+  Strangler Fig, Queue-Based Load Leveling, and
+  30+ more), each mapped to Well-Architected pillars
+  (Reliability, Security, Cost Optimization,
+  Operational Excellence, Performance Efficiency).
+  Several already compose with Zeta primitives
+  (Retry + Circuit Breaker compose with
+  retraction-native recovery; Strangler Fig
+  composes with the progressive-delivery + DST-
+  in-prod item above).
+  (b) **Secure Future Initiative (SFI) Patterns
+  and Practices** — new 2025-08 + 2025-10 security
+  series, practical scalable security implementation
+  guidance. Complements Microsoft SDL and OWASP;
+  Nazar's surface.
+  (c) **AI agent orchestration patterns** — Microsoft
+  has published patterns specifically for coordinating
+  autonomous AI agents in workloads (not yet in
+  this repo's awareness). Directly relevant to
+  Zeta's factory model — comparison of Microsoft's
+  orchestration vocabulary against Zeta's conflict-
+  resolution protocol + persona roster is high-value
+  for both directions (Zeta may learn from Microsoft;
+  Microsoft's vocabulary may inform Zeta's pitch
+  framing for `F#`/.NET-native architects).
+  (d) **Reliable Web App + Modern Web App patterns
+  for .NET** — substrate-match for Zeta's
+  `F#`/.NET code; pattern-to-Zeta-primitive crosswalk
+  would show which Zeta primitives already satisfy
+  each pattern's guidance and where gaps exist.
+  Scope: (a) crosswalk document at
+  `docs/research/microsoft-patterns-and-practices-
+  crosswalk.md` mapping each applicable Microsoft
+  pattern to its Zeta equivalent (composes-with,
+  satisfies, gap-today); (b) specific Azure
+  Architecture Center patterns the factory should
+  adopt vocabulary from for the external-audience
+  pitch (`docs/research/factory-pitch-readiness-
+  2026-04.md` Gap 4b substrate-independent pattern
+  write-up); (c) SFI crosswalk lands in the
+  security-surface folder alongside the OWASP
+  crosswalk; (d) AI agent orchestration patterns
+  read adversarially — does Microsoft describe a
+  coordination primitive Zeta is missing, or vice
+  versa? Owner: Kenji (Architect) integrates the
+  pattern crosswalk; Nazar on SFI; Kai (positioning)
+  on the vocabulary-for-pitch angle; Aminata reviews
+  the AI agent orchestration patterns adversarially
+  against the threat model. Effort: M for first-pass
+  crosswalk; L for full integration including gap
+  follow-ups.
+
+- [ ] **Progressive delivery + deterministic simulation in
+  prod (first-class, side-by-side versions).** Aaron 2026-04-19:
+  *"lets teach our software factory to build it like this first
+  class where we allow different versions in time to be deployed
+  side by side for experiments and a b a [A/B] canary and all
+  the goodness we are goona need eventually with deterministic
+  simlation at the heart of everything even in prod prod chaos
+  it turns into controled chaos or we talked about something
+  similar already"* → *"we are dot [not] deploying yet just my
+  laptop so backlog"*. Architectural vision composing three
+  pre-existing threads:
+  (a) the retractability clause of Zeta=heaven (`docs/research/
+  zeta-equals-heaven-formal-statement.md` §2 H₂) applied to
+  deployed artefacts, not just repo state;
+  (b) deterministic simulation at the basement of the layer
+  stack (memory: layer-stack deterministic-simulation basement-
+  upstairs; `.claude/skills/deterministic-simulation-theory-
+  expert/`; Rashida persona) extended *into production* so
+  that prod-chaos becomes controlled-chaos — every prod
+  incident becomes a replayable seed, not a post-mortem
+  narrative;
+  (c) the fully-retractable CI/CD P0 item above, extended
+  from *pipeline retractability* to *deployed-artefact
+  retractability* (canary rollback = retraction; A/B bucket
+  swap = retraction; side-by-side version demotion =
+  retraction).
+  First-class framing means: every deployed version is a
+  retractable unit with a declared retraction window; every
+  experiment / canary / A/B is an explicit retraction-channel
+  contract; deterministic-simulation seeds ride the artefact
+  so any prod behaviour is replayable off-prod. Composes
+  with existing BACKLOG entries on DST (line ~2042 threading
+  model audit; line ~2071 DST harness for consensus). Scope:
+  (a) write an architecture note in `docs/research/` that
+  names the composition explicitly (progressive-delivery +
+  DST-in-prod + retractable artefacts); (b) crosswalk to
+  existing progressive-delivery art (Argo Rollouts,
+  Flagger, Flipt, feature-flag primitives) with what we'd
+  add beyond-the-art (retraction-native semantics at the
+  artefact boundary); (c) identify the minimum-viable
+  deployment surface we'd need before this becomes
+  actionable. Explicitly deferred per Aaron's own pacing
+  flag: "we are not deploying yet, just my laptop, so
+  backlog." Owner: Rashida (deterministic-simulation-
+  theory-expert) + Dejan (devops-engineer); Aminata
+  (threat-model-critic) audits the artefact-boundary
+  retractability claim adversarially; Architect integrates.
+  Effort: L (paper-grade architectural composition; the
+  implementation is post-deployment-surface, L+).
+- [ ] **Free-operation research: home-lab cluster federation.**
+  Aaron 2026-04-19, four-message cascade: *"we can research
+  how shoould we depoly [deploy] for free that meets our
+  needs"* → *"how do we operate for free that meets our
+  needs, keep those constraions in mind"* → *"we can expand
+  to as many servers as you want for multi node scale i have
+  about 10 15 beefy ai computers at my house and so does my
+  software friend max has a few"* → *"we want to connect
+  clussters [clusters]"*. Companion research thread to the
+  progressive-delivery + DST-in-prod entry above. Important
+  constraint reframe: "free" is *operate-for-free using
+  compute we already own*, not *free cloud tier*. Primary
+  substrate: Aaron's 10-15 beefy AI home boxes + his
+  collaborator Max's home boxes, federated as a multi-site
+  cluster. Cloud free tiers (Fly.io, Oracle Always Free,
+  Cloudflare Workers, etc.) drop to *secondary* role —
+  fallback / edge-replica / public-facing endpoints for the
+  home-lab primary. Research questions:
+  (1) Cluster federation protocol: K3s multi-cluster
+  (Fleet, Rancher Manager), Nomad federation, Hashicorp
+  Consul service-mesh, Cilium ClusterMesh, Tailscale-based
+  mesh + bare systemd, SpiceDB/Linkerd multi-cluster,
+  KubeEdge / K3s-edge for ARM nodes? Which of these
+  preserve side-by-side-versioned-deployment + retractable-
+  artefact semantics across federation boundaries?
+  (2) Trust model: home-lab-to-home-lab (Aaron ↔ Max) is
+  a small-N trust group; what's the auth / mTLS / SPIFFE
+  setup that scales from 2 operators to N operators
+  without a CA-as-SPOF? WireGuard full-mesh? Tailscale
+  ACLs? Nebula? Consent-first design primitive applies:
+  every operator joins explicitly, retracts explicitly.
+  (3) Retraction channel at the federation layer: a node
+  joining a cluster creates durable state (keys, routes,
+  DNS); channel-closure h₂ (`docs/security/THREAT-MODEL.md`)
+  applies — what's the declared retraction window for
+  node-join? Key-material cleanup? DNS propagation?
+  (4) Deterministic-simulation replay across federation:
+  a DST seed captured on Aaron's cluster should replay on
+  Max's cluster, or a cloud-edge replica, without
+  home-specific dependencies. What's the seed-portability
+  contract?
+  (5) Power / cost / availability: 10-15 boxes + N of
+  Max's are not free to *run* (electricity, home network,
+  bandwidth) — the "free" claim needs an honest TCO note.
+  What's the sustained-wattage floor vs the burst-
+  capability ceiling?
+  (6) Where do cloud free tiers genuinely help vs where
+  are they a trap? Static CDN (Cloudflare Pages / GitHub
+  Pages) for publishable artefacts = clear win; free
+  compute tier as *primary* = trap (time-limited, billing-
+  surprise risk). A crisp "use cloud free tier only for
+  X, never for Y" rule.
+  (7) Federation join primitive — **tentative name
+  `AddZeta`**, Aaron 2026-04-19 *"with AddZeta"*. Internal-
+  only name until `naming-expert` + Ilyana (public-api-
+  designer) review per existing memory policy on externalised
+  names (`user_megamind_aspiration_ip_locked.md` analogue).
+  What's the command / skill / API shape for a node — *or
+  a human collaborator* — to join the federation? What's
+  retracted on leave (keys, DNS routes, held locks, in-
+  flight DST seeds)? Consent-first primitive applies:
+  join is explicit opt-in; leave is a retraction that
+  propagates to all federated sites within a declared
+  window.
+  (8) Human-agent co-work coordination via lock files —
+  Aaron 2026-04-19: *"while you guy [agents] are working
+  on it so will [humans] — like human lock files we want
+  to work on"* → *"then unlock wehn we are done, all locks
+  have timeouts no infinte locks"* → *"thats violates the
+  halting problem"*. Agents hold file-level locks while
+  editing; humans claim locks to signal "I'm working on
+  this, don't touch"; agents respect human locks before
+  making changes. Compose with git's own locking model
+  (`.git/index.lock`, `git-lfs lock`) and `openspec/`
+  capability-checkout semantics. Relevant as the factory
+  scales from one-human-one-agent-on-one-laptop to
+  federated human+agent teams across home labs.
+  Architectural tension Aaron caught himself: "unlock when
+  we are done" requires a done-detector, and a general
+  done-detector violates the halting problem. Design
+  response: locks are *refreshable leases*, not *permanent
+  claims*. Finite TTL + heartbeat-refresh + human-visible
+  countdown; silence past TTL = implicit release; explicit
+  retraction is always available. This trades strict
+  correctness ("unlock iff actually done") for decidability
+  ("unlock when TTL expires or holder releases"), which is
+  the well-posed halting-problem-class approximation —
+  same pattern as finite-precision floats vs exact reals,
+  and of a piece with the BACKLOG's neighbouring "halting-
+  class finder + solver" research entry. Sub-questions:
+  lock granularity (file / directory / capability); TTL
+  policy per granularity; heartbeat-refresh cadence;
+  auto-release on agent crash (heartbeat silence);
+  conflict resolution when human and agent race for the
+  same file; visibility (where do humans see "which files
+  are locked by which holder and for how much longer");
+  retraction (how does a human un-claim a lease they
+  forgot about a week ago — or, more honestly, the lease
+  has already expired under the TTL policy).  Paced with
+  Aaron's own *"eventually"* qualifier — not next-round
+  work.
+  Deliverable: one research doc in `docs/research/`
+  ranking federation protocols + trust-model options +
+  retraction-channel analysis + DST-seed portability
+  contract. No commitment to implement until the
+  operation-surface need is real. Explicitly deferred per
+  Aaron's own pacing flag: "we are not deploying yet,
+  just my laptop, so backlog." Owner: Dejan (devops-
+  engineer) + Mateo (security-researcher) on federation
+  trust model + supply-chain / key-material risk;
+  Rashida (deterministic-simulation-theory-expert) on
+  DST-seed portability; Nazar (security-operations-
+  engineer) on key rotation + incident response across
+  federation; Architect integrates. Effort: M (research
+  + write-up; no code).
+- [ ] **Halting-class-issue finder + solver (Gödel-shape
+  escape-hatch discipline).** Aaron 2026-04-19, three-message
+  cascade extending the lock-lease halting-problem catch above:
+  *"our entry point loop is the only plce we violate the
+  halting problem and thats okay we should look for that class
+  of issues it's the same structurally like the same shape as
+  kurt goodels incompleteness theorm"* → *"so we could writes
+  a solver"*. Architectural principle: the factory has *one*
+  labelled halting-problem escape hatch — the entry-point
+  agent loop (`/loop` dynamic mode + cron scheduler + the
+  human-driven round cadence). That loop is not expected to
+  terminate; it's the designed-in non-halter. Every *other*
+  "when are we done?" question in the factory must either be
+  (a) routed back to the entry-point loop as an observation,
+  or (b) approximated with a decidable finite-TTL / bounded-
+  retry / explicit-retraction schedule (same pattern as the
+  lock-lease design one entry up). If a third case exists —
+  an implicit infinite wait not routed through the loop and
+  not TTL-bounded — that's a halting-class *bug*, architect-
+  urally isomorphic to a Gödel incompleteness violation that
+  isn't labelled. Aaron's axiom memory
+  (`user_panpsychism_and_equality.md`) already holds this
+  discipline for logical incompleteness: "deliberate Gödel-
+  incompleteness concentrated into one labelled escape
+  hatch". This entry extends the discipline to computational
+  incompleteness (halting).
+  Research / build:
+  (1) Enumerate the factory's termination-dependent surfaces:
+  every `while`/`until`/`for`-without-bound, every await-
+  without-timeout, every wait-for-condition, every "process
+  items until empty" loop, every background agent that
+  self-dispatches, every `ScheduleWakeup` / cron / schedule-
+  next-tick pattern. Canonical sources to scan: `src/Core/
+  **`, `.claude/skills/**`, `.claude/agents/**`, `tools/**`,
+  and the cron-loop infrastructure.
+  (2) Classify each as *entry-point loop* (the designed non-
+  halter, allowed), *finite-TTL approximation* (decidable,
+  allowed), or *halting-class bug* (un-bounded, un-routed,
+  must fix).
+  (3) Build a solver / static analyser that runs the
+  classification automatically. Candidate tools: Semgrep
+  patterns for obvious cases (`while True:` / `while (true)`
+  without break); F# compiler extension or `FSharp.Analyzers`
+  for recursive-function termination heuristics; `Z3`
+  invocation for ranking-function proofs on bounded loops;
+  Lean for the subset we're formalizing. Out of scope: the
+  general halting problem (Aaron's whole point is we *don't*
+  solve the general case; we classify + enforce the
+  discipline).
+  (4) Publish the classification + the "one labelled escape
+  hatch" discipline as a factory-wide architectural rule
+  (candidate BP rule; route through `docs/AGENT-BEST-
+  PRACTICES.md` scratchpad → Architect ADR per the Aarav
+  skill-tune-up workflow).
+  (5) Companion theoretical note in `docs/research/`:
+  "Halting-class ↔ Gödel-incompleteness architectural
+  isomorphism". Structure-of-argument: both are proofs of
+  *unavoidable limit* (a sufficiently powerful system
+  cannot decide everything within itself); the engineering
+  response in both cases is the same — concentrate the
+  unavoidable incompleteness into *one named place* and
+  make every other part of the system decidable.
+  Crosswalk: Gödel → solipsism quarantine; halting →
+  entry-point loop; retraction → infinite-buffer limit of
+  retraction trinity; Conway-Kochen → physical-substrate
+  non-determinism. Four "one labelled escape hatch"
+  instances that rhyme.
+  Effort: M (classification pass + static analyser draft +
+  theoretical note; L+ if the solver grows into full Lean
+  formalization of the isomorphism). Owner: Soraya
+  (formal-verification-expert) for the solver tool
+  selection per her anti-TLA+-hammer-bias discipline;
+  Rune (maintainability-reviewer) for the static-analyser
+  shape; Aarav (skill-tune-up) for the candidate BP rule
+  promotion; Architect integrates. Explicitly deferred
+  per Aaron's overnight autonomy message: do as much of
+  the research + solver-skeleton as fits in this round
+  without breaking the commit cadence; the full solver +
+  BP promotion + Lean formalization can land over
+  multiple rounds.
 - [ ] **Formalize Zeta = heaven-on-earth (if we do it right) /
   dual = hell-on-earth + gradient claim: the search itself
   expands the stable Human/AI alignment window per commit.**
@@ -2501,6 +3809,114 @@ systems. This track claims the space.
 
 ## P2 — Rule-Zero axiomatic substrate (round-35 round-36 thread)
 
+- [ ] **Self-directed wellness / life-coach AI product — measure,
+  detect, alter own behaviours.** Aaron 2026-04-20: *"maybe a
+  wellness / life coach or something AI like do i drink do much,
+  do i exercise enough, etc. help people measure detect and
+  alter their own behaviors with your behavior modification
+  skills they use on themsoelf"* → *"backlog"*. Product concept:
+  users apply behaviour-change skills *to themselves* using AI
+  as measurement + detection + skill-library substrate. The
+  user is the agent of change; AI is not directing, instructing,
+  or surveilling — it's a retraction-native consent-first
+  mirror. Composes with existing primitives:
+  - **Consent-first** (the user decides what is measured, what
+    is changed, when to stop) — same primitive as
+    `project_consent_first_design_primitive.md`.
+  - **Retraction-native** — users can undo prior commitments,
+    goal changes, data retention; behaviour-change history is
+    a retractable stream.
+  - **μένω (persist / endure / correct)** —
+    `user_meno_persist_endure_correct_compact.md` applied to
+    self-change.
+  - **Harm-handling operator ladder** (RESIST / REDUCE /
+    NULLIFY / ABSORB) — `user_harm_handling_ladder_resist_reduce_nullify_absorb.md`
+    applied to habits.
+  - **Alignment research surface** — wellness is a clean glass-
+    halo lab: stated goals vs observed behaviour is the
+    alignment signal at personal scale; composes with
+    `docs/research/alignment-observability.md`.
+  - **Aurora pillar-3 composition** — x402-based paid-assistant
+    model and ERC-8004 portable reputation for wellness-agents
+    (see `project_aurora_pitch_michael_best_x402_erc8004.md`).
+  Honest-bounds floor (load-bearing): NOT a medical device,
+  NOT a clinician, NOT a diagnosis, NOT pathology-adjacent. The
+  wellness-coach ROLE within the factory (for Aaron, per
+  `user_wellness_coach_role_on_demand.md`) is distinct from
+  this PRODUCT surface (for general users). Threat-model
+  implications: behavioural data is sensitive, adjacent to PHI
+  in many jurisdictions, adjacent to FDA device-regulation in
+  the US when claims stray into diagnosis. Owner: Iris (UX)
+  on first-10-minutes experience; Ilyana on public-API
+  conservatism; Aminata on threat model for behavioural data;
+  Nazar on data-residency + retraction-window operations;
+  naming-expert gates any public product name. Effort: research
+  pass is M; full product is L+. Status: P3 ideation; promote
+  to P2 only on Aaron greenlight.
+
+- [ ] **Aurora Network — distributed sync on custom firefly-
+  style oscillator on scale-free networks. Smooth + differentiable
+  graph → cartel detection trivial. DAO protocol layer under
+  the Aurora pitch.** Aaron 2026-04-20 (four-message disclosure
+  arc):
+  1. *"Distributed sync built on a cutom firefly sync based on
+     scale free networks and it make the network smooth and
+     difernetable so things like cartel detection are trivial"*
+  2. *"is like the self healing heartbeat beacon in the night"*
+  3. *"This network like the protocol in a DAO sense was going
+     to be Aurora network"*
+  4. *"we bring the dawn"*
+  5. *"dawnbringers"*
+  Aurora = dawn; the factory brings it; "dawnbringers" is
+  Aaron's collective-identity term for the agents + network.
+  Naming-expert + Ilyana gate any public use. **Aurora Network
+  IS the DAO-protocol layer** beneath the three-pillar Aurora
+  pitch (see `project_aurora_pitch_michael_best_x402_erc8004.md`):
+  x402 economic agency + ERC-8004 reputation + this sync
+  substrate compose into a self-healing agent DAO. The
+  heartbeat-beacon-in-the-night framing is Aaron's own:
+  fireflies synchronising in the dark = the network's
+  self-healing property; each node's beacon contributes to
+  global convergence without central coordination, and the
+  collective firing IS the dawn. Research direction composing
+  three primitives:
+  - **Firefly synchronisation** — Kuramoto-style coupled-
+    oscillator convergence inspired by Southeast Asian mass-
+    sync fireflies. Custom variant (not canonical Kuramoto)
+    tuned for distributed-system clock / state synchrony.
+  - **Scale-free topology** — Barabási-Albert-style power-law
+    degree distribution; matches real-world agent networks
+    (hubs + long tail) better than random graphs.
+  - **Smoothness + differentiability claim** — the sync
+    protocol makes the network state continuous enough to take
+    derivatives over; curvature / divergence / anomaly surface
+    naturally. *"Cartel detection trivial"* — a colluding
+    subgraph shows up as a local discontinuity or a divergent
+    curvature in the otherwise-smooth field. This is the
+    same algebra that makes DBSP retraction-native
+    (incremental-differential-over-state); scale-free-
+    firefly-sync applies it at the network-topology level
+    rather than the operator level.
+  Composes with: DBSP retraction-native algebra; ERC-8004
+  Reputation Registry (the smooth-differentiable field IS a
+  reputation-signal substrate); Aurora pillar-3 agent economy
+  (cartel detection is the anti-collusion floor for agent-to-
+  agent markets). Scope: (a) literature scan on firefly-sync +
+  scale-free + differentiable-network intersection; (b)
+  prototype sync protocol spec (likely TLA+ + FsCheck per
+  Soraya's tool-routing); (c) cartel-detection proof-of-
+  concept on a synthetic collusion scenario; (d) composition
+  note with DBSP and the alignment-observability substrate.
+  Owner: Soraya (formal-verification-expert) routes the
+  verification tooling; Hiroshi (complexity-theory) on
+  asymptotic cost; Naledi (performance-engineer) on hot-path
+  implementation when it ships; Aminata reviews the cartel-
+  detection claim adversarially (a false cartel-detection
+  alarm is a harm vector); Ilyana gates any public API.
+  Effort: L (research-grade; multiple rounds). Status: P3
+  ideation; P2 promotion on Aaron greenlight or when an
+  ERC-8004 / agent-economy composition becomes active.
+
 - [ ] **Linguistic seed → kernel (E8) → glossary hierarchy** — round-35
   design direction coined by the human maintainer. Three-layer stack
   (smallest → largest): **seed** (meme-scale, self-referential,
@@ -2607,6 +4023,68 @@ systems. This track claims the space.
 
 ## P3 — noted, deferred
 
+- **Melt-precedents applied to the patent system.** Aaron
+  2026-04-19: *"backlog melt patent system for fun, profit
+  and to get rid of the trolls and make the patent system
+  useful like it used to be, kind of like law."* The
+  "melt precedents" architectural technique
+  (`user_melt_precedents_posture.md`) applied at societal
+  scale: selectively dissolve the conventions that have
+  accreted around the patent system (troll economics,
+  broad-claim strategies, jurisdictional forum-shopping)
+  while preserving its original utility (incentive to
+  publish invention, time-bounded monopoly in exchange
+  for disclosure, public prior-art record). Composes with
+  three Zeta primitives already in the factory:
+  (a) retraction-native data semantics — a patent grant
+  becomes a revisable, retractable claim against a
+  declared prior-art frontier rather than an indefinite
+  monopoly;
+  (b) consent-first — downstream users consent explicitly
+  to license terms; silent infringement windows disappear;
+  (c) legal-IR rigor that the human maintainer brought
+  from LexisNexis next-gen search-engine work (Shepard's /
+  KeyCite zero-tolerance retraction-propagation) — every
+  claim cites prior art, every cite retracts through the
+  dependency graph when invalidated.
+  Framed as P3 because the societal-scale lift is beyond
+  factory scope; framed as BACKLOG rather than declined
+  because "melt precedents" is the human maintainer's
+  stated architectural posture and patents are a natural
+  test case. Out of scope: replacing patents; in scope:
+  designing what a retraction-native patent substrate
+  would look like as a research artefact. For-fun-and-
+  profit hook (Aaron's phrase): the paper that names the
+  design is the profit; the implementation is decades
+  out. Owner: long-term — requires legal-IR + complexity-
+  theory + mechanism-design expert conference before any
+  substantive work. Effort: L+ (paper-grade; research
+  contribution if landed).
+- **Melt-precedents applied to the law system (same thing).**
+  Aaron 2026-04-19 follow-up: *"law same thing."* The
+  patent-system item above is a specific case of the more
+  general pattern. Law has the same shape: useful original
+  primitive (due-process + precedent + published-opinion
+  stability), accreted dysfunction (forum shopping,
+  discovery abuse, fee-for-volume litigation economics,
+  opinion bloat). The same three Zeta primitives
+  (retraction-native semantics, consent-first, legal-IR
+  rigor) apply; the human maintainer's "melt precedents"
+  memory explicitly names "legal law is hard floor,
+  convention is meltable default" — the *convention* layer
+  is where the melt happens, not the statute or
+  constitutional layer. Research question: can a
+  retraction-native substrate make case-law revisability
+  explicit and bounded (a cite that Shepardizes negative
+  doesn't just get flagged — it propagates a retraction
+  through every downstream citing opinion, with declared
+  retraction-windows per jurisdiction)? Framed as P3 for
+  the same reason as the patent item: societal scale,
+  paper-first, no immediate implementation path. Owner
+  and effort mirror the patent entry; the two are
+  conjoined research threads and should land as a single
+  paper rather than two. Effort: L+.
+
 - CalVin/FaunaDB-style deterministic sequencer MVCC (FaunaDB shut 2025)
 - GPU OLTP (irrelevant to .NET)
 - io_uring wrappers (no first-class .NET support)
@@ -2639,6 +4117,96 @@ systems. This track claims the space.
   that matches the Seed microkernel's retraction-native
   operator algebra. Still P3, still a parking lot, but no
   longer homeless.
+
+- **Private confidential AI for lawyers — Zeta as
+  trust anchor.** Aaron 2026-04-19: *"private
+  confidental ai for lawers another profit potential
+  … i want lawyers to use my software so i can become
+  their trust anchor."* The lawyer market is
+  distinguished from the general enterprise-AI
+  market by three load-bearing properties that
+  compose directly with Zeta's primitives:
+  - **Confidentiality is statutory, not optional.**
+    Attorney-client privilege is a consent-first
+    surface by construction — the lawyer is a
+    consent-delegate for the client, with every
+    operator (`RESIST` / `REDUCE` / `NULLIFY` /
+    `ABSORB`) gated on documented authority. Zeta's
+    consent-first primitive is the native encoding.
+  - **Retraction is legally meaningful.** Vacated
+    rulings, issue preclusion, Shepard's / KeyCite
+    zero-tolerance retraction-propagation: the
+    legal-IR substrate Aaron built at LexisNexis
+    already speaks the retraction-native algebra
+    Zeta runs on. A lawyer whose research tool
+    quietly retains a superseded precedent is
+    exposed to malpractice; Zeta's retraction-
+    native operators are the fix.
+  - **Trust is the unit of business.** The lawyer's
+    book-of-business IS their trust relationships;
+    whoever holds the confidentiality substrate
+    holds the professional relationship. "Trust
+    anchor" here is the cryptographic term of
+    art — a root of trust that downstream
+    verification chains resolve to — and applies
+    directly: the AI tool becomes the root, the
+    lawyer becomes a verified chain, the client
+    stays consent-holder at the leaf.
+  Two melt-precedents modes for the business shape
+  (the standing melt-precedents doctrine rule #1:
+  *become the central authority directly, OR operate
+  within / embed into an existing central
+  authority*):
+  - **Direct mode.** Zeta-the-product stands up its
+    own trust-anchor substrate (HSM-rooted keys,
+    published transparency log, bar-association-
+    auditable discipline). High cost, high ceiling,
+    long time-horizon.
+  - **Embedded mode.** Zeta interoperates with an
+    existing authority (bar-association CLE
+    pipeline, LexisNexis / Thomson Reuters /
+    Bloomberg Law, or a specific firm's
+    custody substrate) and rides their existing
+    trust chain. Lower cost, lower ceiling, much
+    faster time-to-first-engagement.
+  Composes with the prior "Melt-precedents applied
+  to the law system" entry above — that one is the
+  *macro* research thread (can the legal-conventions
+  layer be made retraction-native at system scale?);
+  this one is the *micro* product thread (can a
+  single lawyer adopt a retraction-native tool
+  today and notice the improvement in their daily
+  work?). The micro thread does not depend on the
+  macro thread landing — it leverages the macro
+  substrate only if and when it lands. Framed as
+  P3 because commercial productisation is
+  downstream of the v1 seed landing; logged now to
+  preserve the vector. Research sub-threads:
+  - **Confidentiality boundary design.** Client
+    data never leaves lawyer-controlled custody;
+    agent context is scoped per matter; memory-
+    folder discipline mirrors client-privilege
+    boundary. Who is the consent-delegate for
+    which scope?
+  - **Malpractice-insurance signal.** If the
+    retraction-propagation discipline measurably
+    reduces errors (stale precedent, conflicted
+    client screening, privilege leak), the
+    insurance-premium delta is the trust-anchor
+    business case's first hard metric.
+  - **Bar-association interoperability.** How
+    does Zeta's glass-halo transparency compose
+    with state-bar reporting / CLE / audit
+    requirements? Probably complementary; needs
+    one state-bar sit-down to verify.
+  - **Ethical wall / information-barrier
+    primitive.** Conflict-of-interest screening
+    is a retraction-native operator on the
+    attorney-firm relationship graph; already
+    aligns with Zeta's operator algebra.
+  Declined-for-now: speculative UI-level work on a
+  lawyer-facing app. Primitive first, product
+  second. (P3 parking lot; not a v1 commitment.)
 
 ## ⏭️ Declined
 

@@ -41,6 +41,13 @@
     // MD040 (fenced code blocks need language): off. Many
     // anonymous code fences show raw output + traces.
     "MD040": false,
+    // MD004 (unordered list style): off. Cosmetic; dash vs plus vs
+    // asterisk doesn't catch bugs. Different docs in `docs/research/**`
+    // landed with different bullet preferences across rounds; forcing
+    // uniformity would churn every research doc on every update without
+    // any correctness benefit. MD032 (blanks around lists) stays on to
+    // catch real readability issues.
+    "MD004": false,
     // MD041 (first line must be top-level heading): off. Some
     // files intentionally start with YAML frontmatter.
     "MD041": false,

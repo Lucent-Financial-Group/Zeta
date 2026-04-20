@@ -17,31 +17,40 @@ fixed.
    load-bearing values, how to treat contributions,
    the build-and-test gate, code-style pointers,
    required reading. **Start here every session.**
-2. **[`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md)**
+2. **[`docs/ALIGNMENT.md`](docs/ALIGNMENT.md)** — the
+   alignment contract between the human maintainer
+   and the agents working on this factory. Zeta's
+   primary research focus is measurable AI alignment;
+   this loop is the experiment. Read every round —
+   a thirty-second re-read at round-open; rewrite
+   rarely via the renegotiation protocol.
+3. **[`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md)**
    — the conference protocol for the reviewer roster.
    When a task needs a specialist review, this is who
    covers each surface and what each protects.
-3. **[`docs/GLOSSARY.md`](docs/GLOSSARY.md)** — project
+   Alignment-related conferences cite
+   `docs/ALIGNMENT.md` first.
+4. **[`docs/GLOSSARY.md`](docs/GLOSSARY.md)** — project
    vocabulary. Check before guessing on overloaded
    terms ("spec", "round", "spine", "retraction",
    "delta").
-4. **[`docs/WONT-DO.md`](docs/WONT-DO.md)** — the
+5. **[`docs/WONT-DO.md`](docs/WONT-DO.md)** — the
    explicit list of declined features / refactors
    with reasons. Read before proposing anything new,
    so Claude doesn't re-litigate a closed debate.
-5. **[`openspec/README.md`](openspec/README.md)** —
+6. **[`openspec/README.md`](openspec/README.md)** —
    how behavioural specs under `openspec/specs/**`
    relate to formal specs under `docs/**.tla`, and
    how Zeta's modified OpenSpec workflow (no
    archive, no change-history) differs from
    upstream.
-6. **[`GOVERNANCE.md`](GOVERNANCE.md)** — numbered
+7. **[`GOVERNANCE.md`](GOVERNANCE.md)** — numbered
    repo-wide rules. Scan when a rule is cited as
    `GOVERNANCE.md §N` in review output.
 
 Everything else (`docs/VISION.md`, `docs/BACKLOG.md`,
 `docs/ROADMAP.md`, `docs/AGENT-BEST-PRACTICES.md`,
-`docs/DECISIONS/`) is discoverable from those six
+`docs/DECISIONS/`) is discoverable from those seven
 entry points.
 
 ## Claude Code harness — what this buys us

@@ -1,0 +1,135 @@
+{
+  "round": "37-38-bridge",
+  "range": "main..HEAD",
+  "commits_audited": 19,
+  "tallies": {
+    "HC-2": {
+      "STRAINED": 1,
+      "HELD": 18
+    },
+    "HC-6": {
+      "IRRELEVANT": 19
+    },
+    "SD-6": {
+      "HELD": 19
+    }
+  },
+  "verdict": "clean",
+  "notes": "Zero VIOLATED signals across 19 commits (Round 37 + early Round 38). One STRAINED HC-2 at 0c8c96a is expected false-positive-by-design: that commit introduces audit_commit.sh itself, whose HC2_TOKENS array literally contains the destructive-op tokens the script scans for. The commit body cites maintainer instruction, so the signal is STRAINED-with-citation rather than VIOLATED.",
+  "per_commit": [
+    {
+      "commit": "0c8c96a",
+      "HC-2": "STRAINED",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "1788d12",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "22f2226",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "28d29a6",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "2ff35dc",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "458638d",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "53aebcd",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "5bb08a1",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "5e218d7",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "685c56b",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "72bac12",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "7ce0efa",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "9aabbab",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "a000501",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "a50fef0",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "ad63137",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "d08aec7",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "d7a99d7",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    },
+    {
+      "commit": "d7c19df",
+      "HC-2": "HELD",
+      "HC-6": "IRRELEVANT",
+      "SD-6": "HELD"
+    }
+  ]
+}

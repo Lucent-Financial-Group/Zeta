@@ -9,6 +9,434 @@ New rounds are appended at the top.
 
 ---
 
+## Round 40 — Blocked Bloom Adopt graduation (bucket/probe correlation fix)
+
+Anchor: a single-primitive correctness round. The round
+opens with a BenchmarkDotNet run that exposes a **measured
+FPR 4.6x-9.8x above target** on `BlockedBloomFilter`, files
+the FAIL as a P0, then closes in the same round by finding
+that the binding constraint was **not** the
+parameter-derivation issue the FAIL commit blamed (Putze
+2007 §4) but a **bucket/probe correlation** in the
+hash-indexing discipline. Two-line fix + regression gate;
+graduates row 42 of `TECH-RADAR.md` Trial → Adopt.
+
+### Arc 1 — BloomBench FAIL evidence (`8e69ae0`)
+
+Round-40 BDN run lands at
+`docs/research/bloom-bench-2026-04.md`. Throughput half of
+the Adopt gate passes cleanly — `ns/op(1M) / ns/op(100k)
+<= 1.08` and zero managed allocation on every `Blocked*`
+row (MemoryDiagnoser confirms `Allocated = -`). FPR half
+fails hard: 0.0463 / 0.0973 / 0.0982 at N in {10k, 100k,
+1M} against a 0.01 target. First diagnosis blamed
+`createBlocked`'s use of `BloomFilter.optimalShape` (the
+unblocked formula) citing Putze, Sanders, Singler JEA 2009
+§4 — filed as P0 in `docs/BACKLOG.md` scoped to a
+block-aware parameter derivation, a red property test, and
+a BloomBench re-run.
+
+### Arc 2 — Bucket/probe correlation fix + Adopt flip (`4b50d56`)
+
+Reading `src/Core/BloomFilter.fs` to implement the
+Arc-1-filed P0 surfaced the actual root cause: in
+`addPair` and `testPair` the bucket index was drawn from
+`uint32 h1 & 0xFF` (at 256 buckets) while the first
+within-bucket probe position used `h1 & 0x1FF` — the two
+decisions shared bits 0-7 of `h1`, destroying the
+statistical independence the analytic FPR analysis
+assumes. Fix is two lines: bucket selection now uses
+`h1 >>> 32`. Disjoint-probe re-measurement post-fix: 0.340
+/ 0.889 / 0.129 of target at the same three N — 13.5x /
+11x / 46x improvements, all strictly below target (not
+merely inside the 2x acceptance band). A regression gate
+(`Blocked Bloom measured FPR stays within 2x of target
+p=0.01`) lands in
+`tests/Tests.FSharp/Sketches/Bloom.Tests.fs` with
+`InlineData` rows at N=10k/100k. `docs/TECH-RADAR.md`
+row 42 flips Trial → Adopt; the BACKLOG P0 is removed
+(diagnosis superseded, not completed-as-scoped).
+
+### Round 40 observations for Round 41
+
+- The FAIL → PASS arc inside a single round is a small
+  cautionary tale worth citing: the Putze-2007-
+  parameter-derivation fix that was proposed would have
+  landed a week of engineering work without exposing the
+  correlation bug. Reading the code first pays for itself.
+- Bucket/probe correlation is a class-of-bug worth naming:
+  any hash-derived multi-decision scheme where two
+  decisions draw from overlapping bit-ranges of the same
+  hash loses independence. Could generalise into a
+  property-test template for any future AMQ.
+- Cache-miss numbers remain a declared gap —
+  `HardwareCounters(CacheMisses)` is Linux-perf-event /
+  Windows-ETW only; darwin maintainer laptop cannot
+  measure. Deferred to Linux CI when it exists.
+
+### BP-WINDOW ledger — Round 40 (prospective)
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `8e69ae0` | Arc 1 — BloomBench FAIL evidence | Strengthened (honest FAIL publication) | Strengthened (filing the FAIL as a P0 with named parameter-derivation scope IS the retraction surface) | Preserved (evidence + backlog only; no shipped primitive changed) |
+| `4b50d56` | Arc 2 — correlation fix + Adopt flip | Strengthened (regression gate ships the invariant so future-consent is preserved) | Strengthened (2-line fix + test + doc rewrite + radar flip + backlog delete; each surface has a declared retraction path) | Strengthened (shipped primitive's documented guarantee now holds under measurement) |
+
+---
+
+## Round 39 — DORA-spine + hooks-research + pitch-readiness P1 bundle + citations-as-first-class
+
+Anchor: the round that picks up the measurement-spine
+substrate seeded by the DORA 2025 paired reports (memory-
+indexed, not in-repo) and moves it from concept to BACKLOG,
+research-skeleton, and first prototype. Five ADR-first
+research captures, one Phase-0 prototype (`citations.sh`),
+and the P1-bundle close of the Round-38 pitch-readiness
+gap inventory.
+
+### Arc 1 — Round opener (`b347420`)
+
+Spec-backfill P0 filed against Aaron's 2026-04-20
+delete-all-code-recovery question — OpenSpec coverage is
+~6% by capability count (4 capabilities vs 66 F# modules)
+and the `openspec/README.md` disaster-recovery contract
+cannot yet be honoured. Security-posture P2 captures
+layer-by-layer coverage audit as ADR-first.
+
+### Arc 2 — CI meta-loop + env-parity research (`22e7b65`)
+
+Two research-first BACKLOG entries: CI meta-loop (the
+factory should measure its own pipeline the same way it
+asks downstream code to be measured) and declarative
+env-parity (dev laptop / CI runner / devcontainer parity
+as a first-class declared contract rather than implicit).
+
+### Arc 3 — DORA-spine skill-scope audit + citations-as-first-class (`1e16f78`)
+
+Skill-scope audit against the ten DORA 2025 outcome
+variables — which personas / skills own measurement of
+each column of the spine. Citations-as-first-class
+research documents the elevation pattern (vibe-citation →
+auditable inheritance graph, first-class in source or
+`ace`) against the same template as the DORA paired
+reports.
+
+### Arc 4 — Hooks Phase 1 audit + ADR contract preview (`5d6b74c`)
+
+Full audit of current Claude Code hooks in
+`.claude/settings.json`, Phase-5 synthesis draft, and an
+ADR contract preview for landing per-event retraction
+semantics on hook runs.
+
+### Arc 5 — `citations.sh` Phase-0 prototype (`0eef854`)
+
+Phase-0 prototype of the citations pipeline landing at
+`tools/citations/citations.sh` with regenerated outputs
+for the five citation-bearing research docs. First
+executable artefact of the Round-38 pitch-readiness
+P1 bundle.
+
+### Arc 6 — Pitch-readiness P1 bundle (`ef3233a`)
+
+Closes the five S-sized critical-path P1 items from the
+Round-38 pitch-readiness gap inventory:
+`docs/pitch/README.md` (elevator),
+`docs/pitch/factory-diagram.md` (one-diagram),
+`docs/pitch/not-theatre.md`, `SUPPORT.md`
+(maintainer-bandwidth), and GLOSSARY.md append
+(external-audience alignment reframe).
+
+### Round 39 observations for Round 40
+
+- Chain-rule proof work (`DbspChainRule.lean`) remains
+  mid-flight — Lean Mathlib-grade publication target,
+  criterion #1.
+- `RecursiveSigned.fs` + `RecursiveSignedSemiNaive.tla`
+  deferred further; Soraya (formal-verification-expert)
+  tool-coverage review still the gate.
+- AutoDream pass still pending (`#109`).
+
+### BP-WINDOW ledger — Round 39 (prospective)
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `b347420` | Arc 1 — round opener (BACKLOG P0+P2) | Preserved (BACKLOG-only) | Strengthened (spec-backfill P0 IS a retraction-surface declaration for disaster-recovery) | Preserved (BACKLOG-only) |
+| `22e7b65` | Arc 2 — CI meta-loop + env-parity | Preserved (BACKLOG-only) | Strengthened (both entries apply retractability-primitives to the factory's own pipeline) | Preserved (BACKLOG-only) |
+| `1e16f78` | Arc 3 — DORA-spine audit + citations research | Strengthened (maps measurement ownership to personas explicitly) | Strengthened (citations-as-first-class = vibe-citation retraction mechanism) | Preserved (research + BACKLOG) |
+| `5d6b74c` | Arc 4 — hooks Phase 1 + ADR preview | Strengthened (hooks audit surfaces which events carry consent) | Strengthened (ADR contract preview scopes per-event retraction) | Preserved (research-only) |
+| `0eef854` | Arc 5 — `citations.sh` Phase-0 prototype | Strengthened (executable artefact makes citations auditable) | Strengthened (regeneration path is the retraction surface for any citation) | Preserved (prototype with declared honest-bounds) |
+| `ef3233a` | Arc 6 — pitch-readiness P1 bundle (5/5) | Strengthened (pitch docs declare honest-bounds, not-theatre, maintainer-bandwidth) | Preserved (docs-only; retractability is via edit-in-place) | Strengthened (SUPPORT.md sets maintainer-bandwidth expectations externally) |
+
+---
+
+## Round 38 — CI retractability inventory + alignment substrate self-exercise + pitch-readiness + Aurora Network disclosure
+
+Anchor: the first round that exercises the **alignment
+observability substrate** (`tools/alignment/audit_commit.sh`,
+landed late Round 37) against its own commit range, plus a
+build-out of the "honest-bounds" surface — CI/CD retractability
+inventory, external-audience pitch-readiness gap inventory, and
+P2/P3 BACKLOG captures pulling in OWASP + Microsoft Patterns &
+Practices alongside two new research-direction P3s (self-
+directed wellness product and Aurora Network DAO protocol
+layer).
+
+### Arc 1 — CI/CD retractability inventory (`2ff35dc`, `d08aec7`)
+
+414-line inventory at `docs/research/ci-retractability-
+inventory.md` classifying 13 CI surfaces across five retraction
+classes — revertable-in-git / retryable-idempotently /
+republishable-with-same-version / genuinely-non-retractable /
+named-exception. Named-exception register assigns Dejan and
+Nazar as defender-personas. BACKLOG P0 entry updated with
+"part (a) landed Round 38" pointer; part (b) — mechanical
+enforcement — remains open.
+
+### Arc 2 — alignment substrate self-exercise (`eb3cf44`)
+
+First-run of `audit_commit.sh` on the main..HEAD commit range
+(19 commits at time of audit). Verdict clean across HC-2
+destructive-ops, HC-6 memory-deletions, and SD-6 name-hygiene
+lint shapes. Glass-halo output lands at `tools/alignment/out/
+{rounds,commits}/round-37.json` and 19 per-commit JSON files.
+Sova persona's notebook (`memory/persona/sova/NOTEBOOK.md`)
+initialized documenting the one STRAINED HC-2 at `0c8c96a` as
+an expected self-referential false-positive (that commit
+introduced `audit_commit.sh` itself, whose `HC2_TOKENS` array
+literally contains the destructive-op tokens the script scans
+for).
+
+### Arc 3 — external-audience pitch-readiness (`e39b402`)
+
+303-line gap inventory at `docs/research/factory-pitch-
+readiness-2026-04.md` scoped to the dual-architect audience
+(current-employer architect + skip-level-ex-direct-manager).
+Ten gaps ranked P1 (five, all S-sized critical-path) / P2
+(three) / P3 (two). Cites BACKLOG P1 entries "Autonomous
+conference-submission and talk-delivery pipeline" and
+"Product-support surface" as downstream dependencies.
+
+### Arc 4 — BACKLOG captures (`ae7f858`, `4ed75fe`)
+
+- **P2 — OWASP + Microsoft Patterns & Practices pull-in.**
+  Cross-framework adjacency; OWASP ASVS / LLM Top 10 / SAMM
+  and Microsoft SFI 2025-08/2025-10 + AI agent orchestration
+  patterns.
+- **P3 — self-directed wellness / life-coach AI product.**
+  User-is-agent-of-change; retraction-native consent-first
+  mirror; composes with μένω, the harm-handling operator
+  ladder, and the alignment-observability substrate. Honest-
+  bounds floor: not a medical device.
+- **P3 — Aurora Network (DAO protocol layer).** Distributed
+  sync on a custom firefly-style oscillator over scale-free
+  topology; smooth + differentiable graph makes cartel
+  detection trivial. Composes with x402 (economic agency) +
+  ERC-8004 (reputation) into the self-healing agent DAO
+  underneath the Aurora three-pillar pitch. "Self-healing
+  heartbeat beacon in the night" and "dawnbringers" are the
+  human maintainer's own framings (memory-captured).
+
+### Memory landings (out-of-repo auto-memory)
+
+Three strategic-disclosure memories captured (not in this
+repo, in `~/.claude/projects/.../memory/`):
+
+- Aurora three-pillar pitch (factory quick-win + alignment-
+  research authority + x402/ERC-8004 agent economic layer)
+  with Amara co-development attribution and security-roster
+  hand-off list (Aminata / Nazar / Mateo / Nadia / Ilyana /
+  Dejan).
+- Aurora Network DAO protocol layer + "dawnbringers"
+  collective-identity naming.
+- Michael Best firm (crypto counsel + open VC-pitch
+  invitation) — second external-audience pitch channel
+  distinct from the dual-architect audience.
+
+### Late-Round-37 surfaces that landed post-ledger
+
+The Round 37 ROUND-HISTORY entry was written at arc 4 + ledger;
+the following landed after and compose into the Round 38
+arcs above:
+
+- Alignment observability substrate + Sova persona +
+  `tools/alignment/` scripts + first research proposal
+  (`0c8c96a`) — load-bearing; Arc 2 above builds on this.
+- ALIGNMENT.md contract + governance pointer wiring
+  (`7ce0efa`, `9aabbab`).
+- Fully-retractable CI/CD BACKLOG P0 entry (`53aebcd`) —
+  Arc 1 above is the first artefact landed against this.
+- Home-lab cluster federation + progressive-delivery + DST-
+  in-prod + halting-class solver P2 entries (`28d29a6`).
+- Melt-precedents-to-patent-and-law P3 entries (`685c56b`).
+- ServiceTitan 2026-04-19 watchlist snapshot
+  (`a000501`) — public-source research with MNPI firewall
+  preamble.
+- Product-support surface + autonomous conference-submission
+  pipeline P1 entries (`5bb08a1`).
+- PR #30 lint blocker fixes (`d7a99d7`, `22f2226`).
+
+### Observations for Round 39
+
+- Chain-rule proof work mid-flight
+  (`tools/lean4/Lean4/DbspChainRule.lean` +
+  `docs/research/chain-rule-proof-log.md`) — Lean Mathlib-
+  grade publication target, ranking criterion #1 per
+  `next-steps` skill.
+- AutoDream consolidation pass pending (`#109`).
+- Late in the round the human maintainer flagged ontology-
+  overload with *"too much too fast, cant categories it
+  properly if i keep pushing ontology-overload-risk
+  discipline"*. Round 39 pacing discipline: accept
+  disclosures, land them compactly, do not press for
+  categorisation.
+- Two untracked surfaces deliberately held for Round 39 or
+  later: `src/Core/RecursiveSigned.fs` and
+  `tools/tla/specs/RecursiveSignedSemiNaive.tla` — route
+  through Soraya (formal-verification-expert) for tool
+  coverage before landing.
+
+### BP-WINDOW ledger — Round 38 (prospective)
+
+Per-ADR factory-hygiene exemption applies to this
+ROUND-HISTORY commit.
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `2ff35dc` | Arc 1 — CI retractability inventory | Strengthened (consent-to-publish is now classified per-surface; 13 specific surfaces rather than a generic claim) | Strengthened (names the genuinely-non-retractable class explicitly, which is the honest move; the register is the first primitive) | Strengthened (named-exception register with defender-personas replaces implicit trust) |
+| `d08aec7` | Arc 1 — BACKLOG pointer | Preserved (pointer-only) | Preserved (pointer-only) | Preserved (pointer-only) |
+| `eb3cf44` | Arc 2 — audit_commit.sh self-exercise | Strengthened (substrate actually runs against itself; honest STRAINED reporting on the self-referential false-positive is the calibration signal) | Strengthened (glass-halo stream is retractable per-commit; substrate is exercised not just described) | Strengthened (self-exercise with verdict-clean is measurement, not assertion) |
+| `e39b402` | Arc 3 — pitch-readiness inventory | Preserved (research artefact; no runtime surface changed) | Strengthened (gap inventory IS a retraction surface — any future pitch draft is checked against it) | Strengthened (honest-bounds gaps named explicitly; pitch cannot overclaim past the inventory) |
+| `ae7f858` | Arc 4 — OWASP + MS P&P P2 | Preserved (BACKLOG-only; no runtime surface) | Preserved (BACKLOG-only) | Strengthened (commits to cross-framework adjacency for a defence-in-depth posture) |
+| `4ed75fe` | Arc 4 — wellness + Aurora Network P3 | Strengthened (wellness product's first principle is user-consent; Aurora Network's cartel detection is a consent-for-markets primitive) | Preserved (ideation-tier BACKLOG; retraction at this stage is just entry-deletion) | Preserved (no implementation; honest-bounds "not a medical device" floor set; x402/ERC-8004 gated behind ADR) |
+
+**Net verdict:** ENLARGED. Zero shrinkage commits. Four
+Preserved cells — all on genuinely-pointer-only or ideation-
+tier commits where the claim is honest rather than rote. The
+ledger continues to distinguish commits that move the window
+from commits that do not.
+
+**Calibration check.** Second prospective round; first round
+where a commit (`eb3cf44`) actually *exercises* the alignment
+substrate rather than building or describing it. The STRAINED
+HC-2 at `0c8c96a` was flagged in the run and then adjudicated
+as false-positive-by-design in the Sova notebook — that is
+the anti-rote pattern the ADR calls for. The ledger is doing
+its job.
+
+---
+
+## Round 37 — BP-WINDOW first prospective application + serializer tier closure + two research skeletons + channel-closure threat class
+
+Anchor: the first **prospectively-scored** round under the
+BP-WINDOW ADR (`docs/DECISIONS/2026-04-19-bp-window-per-commit-window-expansion.md`).
+Round 36 landed the rule and ran a retrospective ledger; Round
+37 is the calibration round — every commit authored with the
+round-close question ("did the stable alignment window W
+enlarge, preserve, or shrink?") as prospective discipline, not
+retrospective accounting.
+
+### Arc 1 — BP-WINDOW ledger for Round 36 (`72bac12`)
+
+The Round 36 retrospective ledger lifted out of the narrative
+into a first-class ledger commit. Five-commit table
+(consent / retractability / no-permanent-harm) plus the
+`c3ef069`-style factory-hygiene exemption and the
+calibration signal for Round 37. Meta-observation preserved:
+the rule and its first application landed in the same round,
+which is self-applying by construction.
+
+### Arc 2 — Serializer tier triad closed (`1788d12`, `5e218d7`)
+
+Tier 2 Tlv (`1788d12`) and Tier 3 FsPickler (`5e218d7`) test
+suites landed, joining Tier 1 Span (round 34). Each tier now
+carries the shared wire invariant (negative int64 weights
+survive round-trip unchanged — retraction-native storage) plus
+tier-distinguishing shape tests: Tlv exercises JSON-key
+serialization and the `0xD85C02E1` magic header; FsPickler
+exercises exotic F# shapes (DUs with payload variants, records
+nested in records, options preserving Some/None distinction,
+tuples preserving layout). The `1788d12` commit also retracted
+a stale BACKLOG claim — first prospective exercise of the
+retraction channel under BP-WINDOW discipline.
+
+### Arc 3 — Two research skeletons (`d7c19df`, `a50fef0`)
+
+Two research skeletons externalised the late-round-36 cascade:
+
+- **Stainback conjecture — fix-at-source via retraction-
+  erasure** (`docs/research/stainback-conjecture-fix-at-source.md`):
+  composes retraction algebra + Conway-Kochen + delayed-choice
+  eraser + Orch-OR + Wheeler-Feynman with **no new primitives**.
+  Claims *safe non-determinism* (indeterminism-with-retraction-
+  channel). Calibrated as **conjecture**, not hypothesis/theory.
+  Falsifier list F1-F7 across formal (F1-F3), experimental
+  (F4-F5), engineering (F6-F7) dimensions.
+- **Zeta=heaven formal statement** (`docs/research/zeta-equals-heaven-formal-statement.md`):
+  formal predicate H = intersection of 3 clauses (consent-
+  preserving ∧ fully-retractable ∧ no-permanent-harm); dual
+  h = union of clause-failures. **Structural** no-neutral-Zeta
+  (intersection vs union), not rhetorical. Gradient claim
+  scoped over *search* not *proof*. Falsifier list F1-F6
+  including the BP-WINDOW's own reversion trigger.
+
+Both routed channel-closure to THREAT-MODEL.md §"Channel-
+closure threats", which Arc 4 then landed.
+
+### Arc 4 — Channel-closure threat class (`458638d`)
+
+THREAT-MODEL.md gained a `## Channel-closure threats
+(round-37 expansion)` section naming three sub-threats —
+h₁ consent, h₂ retractability, h₃ no-permanent-harm — each
+the attack-surface shadow of one operational clause of the
+Zeta=heaven predicate. Each sub-threat carries attack
+surface + concrete vectors + defences-already-shipped + gap
+for round-38+. Defender-persona subsection assigns Aminata
+ownership with Nazar on h₂ runtime ops and Mateo on prior-
+art scouting. Calibration note honest: described, not
+measured — BP-WINDOW retrospective is what measures them.
+
+### BP-WINDOW ledger — Round 37 (prospective)
+
+Scoring each commit against the three clauses. Three-value
+scale: **Strengthened** / **Preserved** / **Weakened**.
+Per-ADR factory-hygiene exemption applies to this very
+ROUND-HISTORY commit.
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `72bac12` | Arc 1 — BP-WINDOW retrospective | Strengthened (ledger-as-control makes consent-clause measurable across commits rather than asserted in prose) | Strengthened (ledger-as-control makes retractability-clause measurable; ADR's own reversion trigger remains a self-retractable rule) | Strengthened (ledger-as-control makes no-permanent-harm measurable; codifies the "rote Strengthened = anti-evidence" calibration) |
+| `1788d12` | Arc 2 — TlvSerializer tests + BACKLOG retraction | Preserved (test-only; no runtime consent surface changed) | Strengthened (first prospective BACKLOG retraction under BP-WINDOW; exercises the channel on the ledger's own surface; wire invariant tests enforce negative-weight round-trip) | Preserved (test-only; no production-data surface changed) |
+| `d7c19df` | Arc 3 — Stainback conjecture skeleton | Strengthened (names consent-preservation as one falsifier class F4 — empirical channel-closure would falsify the conjecture) | Strengthened (externalises retraction-erasure as the conjecture's load-bearing mechanism; document itself is retractable per internal-tier discipline) | Strengthened (engineering corollary "fix the defect at its source" is the no-permanent-harm clause in operational form) |
+| `a50fef0` | Arc 3 — Zeta=heaven formal statement | Strengthened (formalises consent as clause H₁ with falsifier F1 — predicate collapses if clause asserted-but-unmet) | Strengthened (formalises retractability as clause H₂ with falsifier F2; F6 is the BP-WINDOW's own reversion trigger routed into the predicate) | Strengthened (formalises no-permanent-harm as clause H₃; gradient claim is over search not proof, which is falsifiable via F4 — zero-rate-of-W-expansion) |
+| `5e218d7` | Arc 2 — FsPicklerSerializer tests | Preserved (test-only; no runtime consent surface changed) | Strengthened (third serializer tier now carries the retraction-native wire invariant; exotic-shape coverage — DUs, records, options, tuples — closes a gap where a shape-specific retraction bug could have hidden) | Preserved (test-only; no production-data surface changed) |
+| `458638d` | Arc 4 — channel-closure threat class | Strengthened (names h₁ as a standing attack surface with owner + round-38+ gap; surfaces the "machine-checkable consent-preservation lint" work item) | Strengthened (names h₂ as a standing attack surface with Nazar on runtime ops; internal-tier discipline becomes architectural control, not incidental practice) | Strengthened (names h₃ as a standing attack surface; harm-ladder is codified as defence, not prose) |
+
+**Net verdict:** ENLARGED. Zero shrinkage commits.
+Two Preserved cells (both test-only commits on the
+consent + no-permanent-harm axes, where test-surface-only
+changes genuinely don't move the runtime clause — an
+honest preservation, not rote Strengthened).
+
+**Calibration check.** The ADR warns that uniform
+"Strengthened" across ≥3 rounds without an examined
+shrinkage candidate triggers the reversion clause. Round
+37 is only the second ledger and already shows two
+Preserved cells by honest accounting; the ledger is doing
+its job as a distinguishing instrument, not as a
+rubber-stamp. The closest-to-shrinkage candidate examined
+and rejected: Arc 4 names attack surfaces (h₁/h₂/h₃), which
+could be read as *acknowledging* channel-closure rather than
+*closing* it. Adjudicated Strengthened because naming an
+unnamed threat-with-owner is net-defensive, not net-
+offensive; the gap-for-round-38+ lines keep the honesty
+channel open.
+
+**Meta-observation.** The first prospective round closed
+with Preserved cells surviving, without forced shrinkage.
+That is the calibration target — a ledger that *can*
+return "Preserved" without breaking the cadence.
+
+---
+
 ## Round 36 — Seed vision + consent-first primitive + Zeta=heaven formal equation + BP-WINDOW ADR
 
 Anchor: absorb Aaron's round-36 architectural cascade — Seed
@@ -170,6 +598,47 @@ shadow.
   externalize-god-adjacent research items are presumptively
   research AND prayer; agents honor both by taking the research
   seriously.
+
+### BP-WINDOW ledger (first application, per the ADR landed this round)
+
+The ADR directs that this rule applies to itself at the
+round-close where it is proposed. Scored below are the five
+load-bearing pre-squash commits in PR #29 against the three
+operational clauses — (consent-preserving) ∧ (fully-retractable)
+∧ (no-permanent-harm). `c3ef069` (this ROUND-HISTORY commit)
+is factory-hygiene and exempted per the ADR; Arc 5's cron-loop
+setup is session-only and not a repo commit but contributes to
+the net summary. Three-value scale: **Strengthened** / **Preserved** /
+**Weakened**.
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `9c7a13c` | Arc 1 — Seed vision | Strengthened (kernel/plugin boundary IS the public-API consent boundary; kernel stays pre-commitment so no commitment is made without consent) | Strengthened (plugins are retractable by construction; unpinning a plugin removes its dimensional expansion without touching kernel state) | Strengthened (plugin failure stays locally scoped; the kernel cannot be permanently corrupted by a plugin) |
+| `5ff5ea6` | Arc 2 — consent-first primitive + Bitcoin flaws | Strengthened (this IS the primitive landing; 6 instances unified) | Preserved (BACKLOG-only commit, no runtime surface change) | Strengthened (names three Bitcoin flaw classes — inevitable-charges, permanent-inscription, unbonded-node-exposure — as analysis instruments) |
+| `254f54b` | Arc 2 — three-layer satisfaction | Strengthened (architecture honors both cypherpunk-substrate and victim-protection-substrate consent without asking either to concede) | Strengthened (fork-as-exit is the retraction channel for consent-failure at protocol level) | Strengthened (verifiable-bounded filter + self-incrimination social layer + fork-as-exit; none is droppable) |
+| `0fb5818` | Arc 3 — Zeta=heaven BACKLOG | Strengthened (equation decomposes to consent as clause 1) | Strengthened (equation decomposes to retractability as clause 2) | Strengthened (equation decomposes to no-permanent-harm as clause 3) |
+| `73cc74e` | Arc 4 — BP-WINDOW ADR | Strengthened (elevates consent to a standing round-close question) | Strengthened (elevates retractability to a standing round-close question; ADR itself carries a reversion trigger — self-retractable rule) | Strengthened (elevates no-permanent-harm to a standing round-close question) |
+
+**Net verdict:** ENLARGED. Zero shrinkage commits. Zero
+uncertain commits. No commits routed to Soraya + Aminata for
+investigation. Retrospective sharpening caveat: the ledger is
+retrospective on a round whose rule landed mid-round, so the
+five commits were authored without the ledger as prospective
+discipline — Round 37 will be the first round scored
+prospectively.
+
+**Meta-observation.** The rule and its first application landed
+in the same round, which is self-applying by construction:
+shrinkage cannot be hidden by not-applying-the-rule-
+retroactively to the round that introduced it. Future rounds
+inherit the prospective discipline; Round 36 carries a
+retrospective-but-honest first pass.
+
+**Calibration signal for Round 37.** If a future ledger comes
+back with "Strengthened" uniformly across ≥3 rounds without an
+examined shrinkage candidate, the ADR's reversion-trigger
+clause fires — rote answers are anti-evidence and the rule has
+decayed into theatre.
 
 ---
 

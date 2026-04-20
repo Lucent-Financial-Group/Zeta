@@ -1,0 +1,7 @@
+{
+  "commit": "0c8c96a",
+  "sha": "0c8c96abe64b090d345c9f523220c3be63caee08",
+  "HC-2": {"signal": "STRAINED", "hits": 12, "cited": 1},
+  "HC-6": {"signal": "IRRELEVANT", "deletions": 0, "cited": 0},
+  "SD-6": {"signal": "HELD", "hits": 0}
+}
