@@ -22,39 +22,69 @@ sticky notes on a wall representing **domain events**,
 **commands**, **aggregates**, **policies**, **read models**,
 and **bounded contexts**.
 
-**Verdict:** *strong fit*, but with a twist — Zeta is **already
+**Verdict:** *strong fit*, and the primary customer is the
+**software-factory part of Zeta** (the generic, reusable part
+— not Zeta the DBSP database). ES's vocabulary is deliberately
+**more generic than Zeta's operator algebra**, which is
+currently biased toward the database domain. That generic
+vocabulary is exactly what the factory needs to be cleanly
+separable from Zeta-the-product.
+
+A secondary (and still strong) fit — Zeta itself is **already
 event-sourced by construction**. The DBSP paper's delta semantics
 are isomorphic to Event Sourcing's event log; Z-set `+k` / `-k`
 entries *are* domain events + retractions; operators *are*
 commands; state-carrying operators (`IntegrateOp`, `FeedbackOp`)
 *are* aggregates; `Nest` sub-circuits *are* bounded contexts.
 
-What Event Storming gives us that we do not already have:
+What Event Storming gives the **software factory** (primary
+customer) that it does not already have:
 
-1. **A shared vocabulary** to talk to people who have not read
-   the DBSP paper. ES is DDD-adjacent and is the default
-   whiteboarding technique in CQRS / Event-Sourcing shops. If
-   Zeta is to be adopted by the DDD / CQRS-ES community, speaking
-   ES is a *social* requirement even when the runtime is purer
-   than anything ES typically produces.
-2. **A discovery protocol** — Big Picture, Process-Level, Software
-   Design — that Zeta currently lacks. Zeta has post-hoc specs
-   (OpenSpec) but no *domain-discovery* workflow. The factory's
-   conversational-bootstrap UX
-   (`memory/project_factory_conversational_bootstrap_two_persona_ux.md`)
-   is the natural home for an ES variant adapted for single-user
-   + factory-agent co-discovery.
-3. **A retroactive teaching surface** — ES is known to be useful
-   for legacy-system reverse-engineering. For Zeta's own docs
-   rewrite ("feels like we started with it in the first place"),
-   ES gives us an ordering: events → commands → aggregates →
-   bounded contexts → read models.
+1. **A domain-generic vocabulary** (events / commands /
+   aggregates / policies / bounded contexts / read models)
+   that lives at a higher level of abstraction than Zeta's
+   operator algebra. The factory is supposed to be reusable
+   across projects (per
+   `memory/project_factory_reuse_beyond_zeta_constraint.md`);
+   ES's vocabulary is the cleanest ready-made abstraction
+   that maps onto any event-driven system — not just databases.
+2. **A greenfield-onboarding protocol.** ES's Big-Picture
+   workshop is explicitly designed for the "we have an idea,
+   now what?" moment — it ships with playbooks of
+   *questions to ask when you don't know what questions to
+   ask*. That is exactly the gap new-project bootstrap
+   currently has: Aaron and a factory agent can describe a
+   domain vaguely, but the factory has no structured prompt
+   ladder to turn vague-intent into a spec. ES provides it.
+3. **A potentially excellent automated UX.** Brandolini's
+   technique is already beloved as a paper-and-whiteboard
+   experience; **an automated variant — stickies that
+   appear as events emerge from chat, colour-coded,
+   timeline-ordered, with the facilitator-agent asking
+   the next question in the playbook — would be "one
+   hell of a UI"** (Aaron, 2026-04-20 late). This is a
+   differentiator for the factory-as-product.
+4. **Factory-skill / Zeta-skill separation leverage.** ES
+   vocabulary reads *zero* like Zeta. Adopting it inside
+   factory skills makes the seam between "factory
+   (portable)" and "Zeta (database-specific)" obvious in
+   the text — every skill that uses the word "event" or
+   "command" is factory-generic; every skill that uses
+   "Z-set" or "operator" or "z⁻¹" is Zeta-specific.
+5. **A retroactive teaching surface for Zeta.** Secondary
+   but real — once the factory speaks ES, Zeta can be
+   described in ES terms to outsiders. For Zeta's own docs
+   rewrite ("feels like we started with it in the first
+   place"), ES gives us an ordering: events → commands →
+   aggregates → bounded contexts → read models.
 
-**Recommendation:** adopt as a *strategy* (per Aaron's Matrix-mode
-framing), absorb via an expert / teacher / auditor skill-group,
-and retroactively edit `docs/VISION.md`, `docs/ALIGNMENT.md`,
-`openspec/specs/operator-algebra/spec.md`, and the conversational-
-bootstrap spec to use ES vocabulary where it adds precision.
+**Recommendation:** adopt as a *strategy* (per Aaron's Matrix-
+mode framing), absorb via an expert / teacher / auditor
+skill-group at the **factory level** (not Zeta level), and
+then layer a Zeta-vocabulary bridge on top. Factory skills
+get the ES vocabulary first; Zeta docs get the ES-bridge
+pass second. This sequencing preserves the factory's
+portability.
 
 ---
 
@@ -208,45 +238,114 @@ absorption (Aaron's explicit framing from this ask).
 
 Persona names deferred to the naming-expert per GOVERNANCE.md.
 
-### 3.3 Retroactive adoption plan
+### 3.3 Retroactive adoption plan — factory-first, Zeta-second
 
-Edit in-place (docs-read-as-current-state per GOVERNANCE.md §2):
+Aaron (2026-04-20 late): *"The factory-vs-Zeta separation
+becomes the load-bearing concern."* Adoption sequencing
+must honour this. ES vocabulary lands **first in factory
+surfaces**, then bridges into Zeta surfaces — never the
+other way around.
 
-1. **`docs/GLOSSARY.md`** — add ES primitives with the mapping
-   table from §2. Cross-reference existing Zeta terms.
-2. **`openspec/specs/operator-algebra/spec.md`** — add an
-   "ES vocabulary" aside near the top so downstream specs can
-   use "domain event," "aggregate," "bounded context" without
-   redefining.
-3. **`docs/VISION.md`** — reframe Zeta's positioning to note
-   that DBSP is event-sourcing-with-retractions, using ES
-   vocabulary.
-4. **`docs/ALIGNMENT.md`** — note that the alignment contract
-   is itself an event log (consent-primitive instances =
-   domain events in a governance bounded context).
-5. **`AGENTS.md`** — one-line pointer to the new skill-group
-   under "agent personas," so future session bootstraps know
-   ES is part of the factory's ubiquitous language.
+**Phase A — Factory (portable) surfaces.** Every skill /
+doc / persona in this list is factory-generic; ES
+vocabulary is native here.
 
-Nothing is rewritten wholesale. ES vocabulary is additive;
-where current prose is precise, it stays.
+1. **Factory skills with no Zeta lean** — audit
+   `.claude/skills/*/SKILL.md` frontmatter. Skills
+   without `project: zeta` declared should already be
+   portable; confirm they use ES-compatible vocabulary
+   where relevant (domain events, commands, bounded
+   contexts).
+2. **Conversational-bootstrap UX skill** (memory-only
+   today) — authored with ES as the explicit discovery
+   protocol. Big-Picture → Process → Software-Design
+   becomes the default question-ladder.
+3. **`docs/AGENTS.md`** — add ES to the universal
+   onboarding handbook as factory-vocabulary; keep
+   Zeta-specific vocabulary cleanly separate.
+4. **`docs/EXPERT-REGISTRY.md`** — new personas
+   (event-storming-expert / -teacher / -auditor)
+   declared at the factory level.
+5. **New "factory-generic" marker skill** (candidate:
+   SKILL authored via `skill-creator`) that audits the
+   Zeta↔factory seam and flags leakage in either
+   direction.
+
+**Phase B — Bridge surfaces.** Docs that serve *both*
+factory consumers and Zeta consumers. ES vocabulary
+goes here as a *bridge layer* — named explicitly as such.
+
+1. **`docs/GLOSSARY.md`** — ES primitives listed as
+   factory-generic vocabulary; Zeta-specific terms
+   (Z-set, operator, retraction, z⁻¹) listed as
+   Zeta-specific vocabulary; the §2 mapping table
+   goes in the glossary as the bridge.
+2. **`docs/ALIGNMENT.md`** — alignment contract framed
+   as a governance event log using ES vocabulary;
+   consent-primitive instances = domain events; the
+   *factory* is the bounded context, Zeta is one of
+   its aggregates.
+
+**Phase C — Zeta-specific surfaces.** ES vocabulary
+only where it adds precision *on top of* the existing
+operator-algebra vocabulary. Zeta's native vocabulary
+wins by default here.
+
+1. **`openspec/specs/operator-algebra/spec.md`** — add
+   an "ES vocabulary bridge" aside near the top so
+   downstream specs can use "domain event," "aggregate,"
+   "bounded context" without redefining — but the spec
+   body continues to speak operator algebra.
+2. **`docs/VISION.md`** — note that Zeta *is* an
+   event-sourcing-with-retractions engine (ES vocabulary
+   used deliberately as a one-line bridge).
+
+Nothing is rewritten wholesale. ES vocabulary is
+additive; where current prose is precise, it stays.
+The factory-vs-Zeta separation is preserved by the
+*phasing*, not by vocabulary gymnastics.
 
 ### 3.4 BACKLOG items
 
-Proposed P1 rows for Round 45 or 46:
+Proposed P1 rows for Round 45 or 46 (ordered by phase):
 
-- **ES-skill-group-001** — Author `event-storming-expert` /
-  `event-storming-teacher` / `event-storming-auditor` personas
-  + `event-storming` capability skill via `skill-creator`.
-  Effort: M.
-- **ES-glossary-001** — Retroactive vocabulary pass on
-  `docs/GLOSSARY.md`, `docs/VISION.md`,
-  `openspec/specs/operator-algebra/spec.md`,
-  `docs/ALIGNMENT.md`. Effort: S.
-- **ES-discovery-001** — Extend conversational-bootstrap UX
-  design (`memory/project_factory_conversational_bootstrap_two_persona_ux.md`)
-  to use ES as the Big-Picture → Process → Software-Design
-  protocol. Effort: M.
+- **ES-factory-skill-group-001 (Phase A)** — Author
+  `event-storming-expert` / `event-storming-teacher` /
+  `event-storming-auditor` personas + `event-storming`
+  capability skill via `skill-creator`. **All four
+  declared factory-generic (no `project: zeta`)** —
+  this is Zeta's first deliberate use of factory-skill
+  portability. Effort: M.
+- **ES-factory-separation-audit-001 (Phase A)** — Audit
+  every skill under `.claude/skills/*/SKILL.md` for
+  Zeta-leakage: skills without `project: zeta` must not
+  hard-code Zeta paths / types / vocabulary unless they
+  are bridging documentation. Flag violators. Effort:
+  S-M depending on findings.
+- **ES-conversational-bootstrap-001 (Phase A)** — Extend
+  conversational-bootstrap UX design
+  (`memory/project_factory_conversational_bootstrap_two_persona_ux.md`)
+  to adopt ES Big-Picture → Process → Software-Design as
+  the default onboarding protocol. The question-ladder
+  ("what happens?" → "who does what?" → "what state
+  holds?") becomes the factory's greenfield-onboarding
+  script. Effort: M.
+- **ES-automated-ui-001 (Phase A, speculative)** —
+  Prototype an automated Event-Storming UI: as a
+  conversation progresses, chat content emits coloured
+  stickies (orange-event, blue-command, pink-aggregate,
+  purple-policy) in a timeline view; facilitator agent
+  asks the next-playbook question. This is the
+  "one-hell-of-a-UI" differentiator. Effort: L;
+  separate research spike first.
+- **ES-bridge-glossary-001 (Phase B)** — Update
+  `docs/GLOSSARY.md` with ES primitives as factory-
+  generic vocabulary and the §2 bridge mapping; update
+  `docs/ALIGNMENT.md` to use ES framing for the
+  governance event log. Effort: S.
+- **ES-zeta-bridge-001 (Phase C)** — Add ES-vocabulary
+  bridge aside to `openspec/specs/operator-algebra/spec.md`
+  and the one-line bridge in `docs/VISION.md`. Effort: S.
 
 ---
 
