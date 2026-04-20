@@ -282,6 +282,48 @@ within each priority tier.
   (1). Plan: ship (2) first as `CountingClosureTable`, land (1)
   after as `RecursiveSignedSemiNaive`. Promotes `ClosureTable` off
   the current O(|integrated closure|) per-iteration fallback.
+
+  **Round 41 status**: Soraya (formal-verification-expert)
+  tool-coverage audit closes the Round-39 holdover gate (see
+  `memory/persona/soraya/NOTEBOOK.md` round-41 entry). The
+  skeleton `src/Core/RecursiveSigned.fs` + TLA+ spec
+  `tools/tla/specs/RecursiveSignedSemiNaive.tla` earn a
+  **CONDITIONAL PASS** for Round-42 graduation subject to four
+  tool-coverage prereqs (listed in priority order):
+  - [ ] **Prereq 1 — TLC CI wire-up.** Add
+    `tools/tla/specs/RecursiveSignedSemiNaive.cfg` to the TLC CI
+    job so S1/S3/S3'/SupportMonotone + TypeOK are checked on every
+    commit. Cheapest of the four; unblocks the rest. Effort: S.
+  - [ ] **Prereq 2 — Z3 QF_LIA lemma for S2 (FixpointAtTerm).**
+    S2 is the one P0 on the spec (silent fixpoint drift
+    corrupts downstream `total`, unrecoverable); BP-16 requires
+    two independent tools on P0 claims, so TLC alone is
+    insufficient. Z3 discharges the pointwise identity
+    `total = Seed + Body(total)` at arbitrary SeedWeight
+    independently of TLC's bounded-state enumeration. Lands in
+    `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`. Effort: S.
+  - [ ] **Prereq 3 — FsCheck property for S4 (sign-distribution).**
+    Two-trace quantification `total(-w) = -total(+w)` is NOT a
+    TLA+ property (TLC would need O(states^2) over the product
+    state space of two runs); FsCheck executes two real runs in
+    milliseconds. Anti-TLA+-hammer per Soraya's audit. Effort: S.
+  - [ ] **Prereq 4 — FsCheck cross-trace refinement
+    (signed vs counting at SeedWeight = 1).** Refinement mapping
+    to the shipped `RecursiveCountingLFP` sibling; runs both
+    combinators on same (seed, body), asserts
+    `counting.closure[k] = signed.total[k]` per tick. Cites BP-16
+    (two independent tools on a P0-adjacent claim). Lives in
+    `tests/Tests.FSharp/Formal/`. Preferred over a TLA+
+    refinement proof (L effort, over-broad) or Lean lemma
+    (no counting counterpart lifted). Effort: S.
+
+  **Round-42 graduation gate**: prereqs 1-4 CI-green **plus** F#
+  implementation landed by round-42 author matching the planned
+  signature in `RecursiveSigned.fs` header, with P1 Z-linearity /
+  P2 sign-distribution / P3 support-monotone enforced at the
+  caller (compile-time phantom type preferred). Optional
+  round-42 follow-up: add `PROPERTY EventuallyDone` to the `.cfg`
+  for the liveness claim (not a blocker).
 - [ ] **CQF (Counting Quotient Filter) trial** to replace the
   4-bit counting Bloom saturation issue. Pandey et al. SIGMOD'17.
   Our `CountingBloomFilter` saturates at 15; CQF uses
