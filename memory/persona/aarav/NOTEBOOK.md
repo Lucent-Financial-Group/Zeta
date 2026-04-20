@@ -116,20 +116,15 @@ Resolved round-18 top-5 entries:
      Effort: M.
    - Carry-over from round 41 -- unchanged.
 
-4. **skill-tune-up (self)** -- priority: P1
-   - Signal: bloat (BP-03, 436 lines, 1.45x cap -- ESCALATED
-     from 303-line marginal violation round 41 after commit
-     `baa423e` retune)
-   - Recommended action: TUNE (extract eval-loop protocol to
-     `docs/references/skill-tune-up-eval-loop.md`) OR ADR
-     declaring non-skill-wrapper exception to BP-03. Effort: S-M.
-   - Rationale: retune rationale (thick wrapper over non-skill
-     artefacts) is explicit and fair in the body, but BP-03 is
-     a stable rule -- rationale does not neutralise a 1.45x
-     breach. Honest self-flag; a ranker publishing BP-03 findings
-     while 1.45x cap himself publishes unenforceable rulings.
-   - Suggested fix: Kenji ADR decision binary (a) extract or
-     (b) exception. BACKLOG P2 entry filed this round.
+4. **skill-tune-up (self)** -- RESOLVED this round via
+   mechanical content extraction (option (b) of the remedy
+   binary). `.claude/skills/skill-tune-up/SKILL.md` 436 ->
+   282 lines; §"The eval-loop hand-off protocol" + template
+   blocks extracted verbatim to
+   `docs/references/skill-tune-up-eval-loop.md`. Under
+   BP-03 300-line cap. Justification row in
+   `docs/skill-edit-justification-log.md` (new file this
+   round). Drops off top-5 next invocation.
 
 5. *(slot 5 empty)* -- claims-tester / complexity-reviewer
    hand-off carry-over RESOLVED via commit `e8ed0db` + ADR
