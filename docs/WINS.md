@@ -11,6 +11,13 @@ shipped." **Ordered newest-first** — recent rounds lead,
 older rounds trail below. Entries stay even after the moment
 passes, because the pattern is the value.
 
+**See also:** [`docs/copilot-wins.md`](copilot-wins.md) — the
+tabular log of catches from the GitHub Copilot PR reviewer.
+Same newest-first discipline, wins only, one row per finding.
+The two files together answer "was having AI reviewers worth
+it?" — this file for the factory's own agents, the sibling
+for the external tool.
+
 ## Wins — round 38
 
 ### Alignment substrate exercised against itself — with honest self-referential STRAINED
