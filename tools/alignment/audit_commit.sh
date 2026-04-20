@@ -106,7 +106,8 @@ is_sd6_exempt() {
   local p="$1"
   local g
   for g in "${SD6_EXEMPT_GLOBS[@]}"; do
-    # shellcheck disable=SC2053
+    # Intentional unquoted $g: glob pattern match against $p.
+    # shellcheck disable=SC2254
     case "$p" in
       $g) return 0 ;;
     esac
@@ -138,6 +139,9 @@ audit_one() {
     local diff_added
     # `-e --` separator keeps grep from parsing `--no-verify`-style
     # tokens as its own options on BSD/macOS grep.
+    # Intentional word-split of $hc2_files (newline-separated paths
+    # become separate pathspec args to `git show`).
+    # shellcheck disable=SC2086
     diff_added="$(git show --format='' --unified=0 "$sha" \
         -- $hc2_files 2>/dev/null \
       | grep -E -e '^\+' | grep -vE -e '^\+\+\+' || true)"

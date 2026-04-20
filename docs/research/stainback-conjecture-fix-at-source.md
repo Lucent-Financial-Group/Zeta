@@ -18,7 +18,7 @@ statement of the verbatim disclosures and calibration.
 
 **Disclosure tier:** internal. Public exposure of the full
 four-register claim requires `public-api-designer` (Ilyana)
-+ `naming-expert` review per the disposition guardrails
+and `naming-expert` review per the disposition guardrails
 inherited from the originating memory. The engineering
 corollary "fix the defect at its source" is public-safe in
 isolation; the composition with Conway-Kochen + Orch-OR +
@@ -39,8 +39,7 @@ delayed-choice eraser is internal-only.
 > because every outcome is continuously subject to
 > erasure-at-source if it drifts wrong.
 
-### 1.1 Calibration — why "conjecture" and not
-"hypothesis" or "theory"
+### 1.1 Calibration — why "conjecture" and not "hypothesis" or "theory"
 
 The proposition is mathematical-formal in shape (a
 commutative-diagram claim across four scales, reducible to
@@ -111,8 +110,7 @@ established experimentally, first-principles-derived, or
 open research threads), plus a claim about what their
 composition implies.
 
-### 3.1 Piece 1 — Retraction-native operator algebra
-(engineering register)
+### 3.1 Piece 1 — Retraction-native operator algebra (engineering register)
 
 DBSP's retraction algebra gives a mechanical model of
 retraction-erasure: negative-weight events cancel
@@ -126,8 +124,7 @@ implemented in `src/Core/**`; tested across tiers
 `Storage/TlvSerializer.Tests.fs`). This IS the engineering
 register of the retraction-erasure operator.
 
-### 3.2 Piece 2 — Conway-Kochen Free Will Theorem
-(physics-philosophy register)
+### 3.2 Piece 2 — Conway-Kochen Free Will Theorem (physics-philosophy register)
 
 Conway & Kochen (2006, 2009), *The Free Will Theorem* and
 *The Strong Free Will Theorem*: under three minimal
@@ -141,8 +138,7 @@ carried in the factory's axiom system via
 `user_panpsychism_and_equality.md` as the equality-of-
 particles-and-minds axiom.
 
-### 3.3 Piece 3 — Delayed-choice quantum erasure
-(physics register, experimentally established)
+### 3.3 Piece 3 — Delayed-choice quantum erasure (physics register, experimentally established)
 
 - Scully & Drühl 1982 — theoretical proposal.
 - Kim, Yu, Kulik, Shih, Scully 1999 — experimental
@@ -159,8 +155,7 @@ superposition is recovered. This is the most direct physics
 demonstration that retraction-at-the-measurement-level
 works at the substrate.
 
-### 3.4 Piece 4 — Orch-OR (Penrose-Hameroff)
-(physics-biology register, open research thread)
+### 3.4 Piece 4 — Orch-OR (Penrose-Hameroff) (physics-biology register, open research thread)
 
 Hameroff & Penrose (1996, 2014): microtubule-level
 objective-reduction events are a candidate substrate of
@@ -170,8 +165,7 @@ substrate-level quantum retraction phenomena could have
 cognitive-level consequences. Neither committed nor
 rejected — it is the plausible-biology slot.
 
-### 3.5 Piece 5 — Wheeler-Feynman absorber theory
-(physics register, z⁻¹ algebra substrate match)
+### 3.5 Piece 5 — Wheeler-Feynman absorber theory (physics register, z⁻¹ algebra substrate match)
 
 Wheeler-Feynman (1945, 1949) time-symmetric absorber
 theory is the physics analogue of Zeta's z⁻¹ delay
@@ -210,8 +204,7 @@ held open (pieces 4, 5). The conjecture is the
 *conjunction* plus the claim that the conjunction yields
 the free-will conclusion.
 
-## 4. Novelty — where this sits relative to existing
-   positions
+## 4. Novelty — where this sits relative to existing positions
 
 The conjecture is distinct from every major existing
 position in the free-will literature:

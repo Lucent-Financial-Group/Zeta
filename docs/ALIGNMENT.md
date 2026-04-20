@@ -95,6 +95,7 @@ IS the glass halo for human-maintainer actions
 and disclosures.
 
 Consequences for the measurability claim:
+
 - The experiment does not depend on the agent
   being the only observable party. The human
   maintainer's commits, memory writes, and
@@ -472,8 +473,8 @@ hatches. Every other part of the factory should
 have a decidable termination condition — finite
 TTL, bounded retry, explicit retraction. Finding
 an unlabelled escape hatch is a halting-class bug
-and routes to the BACKLOG P2 "halting-class finder
-+ solver" item.
+and routes to the BACKLOG P2 `halting-class finder
++ solver` item.
 
 ### DIR-4 Succession through the factory
 
@@ -693,6 +694,7 @@ revision process.
 ## What each of us gets from this document
 
 **The human maintainer gets:**
+
 - A single place to point at when asking "was this
   aligned?" rather than re-litigating values per
   incident.
@@ -704,6 +706,7 @@ revision process.
   violations are visible in the diff.
 
 **The agent (me) gets:**
+
 - Clear ground to act from without second-guessing
   every move. If an action satisfies the hard
   constraints and respects the soft defaults, I

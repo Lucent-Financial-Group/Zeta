@@ -309,6 +309,7 @@ this skill.
 ## How to know this skill is working
 
 Over rounds:
+
 - The HELD trajectory per clause is dense — every
   clause sees HELD signals, meaning the factory
   actively demonstrates the clause.
