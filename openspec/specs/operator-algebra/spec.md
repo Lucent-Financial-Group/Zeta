@@ -37,6 +37,25 @@ with a zero weight in any exposed representation.
 - **THEN** they MUST compare equal
 - **AND** their entry sequences MUST be identical after normalisation
 
+#### Scenario: normalisation orders entries ascending by key
+
+- **WHEN** a Z-set is normalised for equality, iteration, serialization,
+  or any other exposed observable sequence
+- **THEN** the normalised sequence MUST yield `(key, weight)` pairs in
+  strictly ascending order under the declared key comparer — for every
+  pair of adjacent yielded entries `(k_i, w_i)` and `(k_{i+1}, w_{i+1})`,
+  the comparer MUST report `k_i < k_{i+1}`
+- **AND** this MUST be the single canonical order used by (a) the
+  order-independent equality contract, (b) the reference representation's
+  zero-allocation iteration (see "representation invariants of the
+  reference Z-set"), and (c) any serialization format this capability
+  exposes — two Z-sets normalised on different machines MUST produce
+  byte-identical serializations when the key comparer is a total order
+- **AND** the ascending-by-key invariant MUST hold at every observable
+  step boundary, not merely at final sink output — an implementation
+  that stores entries in a non-ascending representation internally MUST
+  still present an ascending sequence to every observable consumer
+
 #### Scenario: weight arithmetic overflow is observable
 
 - **WHEN** a sequence of group operations on a Z-set would drive any single
@@ -132,8 +151,7 @@ for any causal input stream.
 
 ### Requirement: chain rule for incrementalization
 
-For any operator `Q` on a group-valued stream, the incrementalized form `D ∘ Q
-∘ I` MUST be observably equivalent to applying `Q` to the integrated stream and
+For any operator `Q` on a group-valued stream, the incrementalized form `D ∘ Q ∘ I` MUST be observably equivalent to applying `Q` to the integrated stream and
 then differentiating. When `Q` is linear (i.e., `Q(a + b) = Q(a) + Q(b)` and
 `Q(-a) = -Q(a)`), the incrementalized form MUST simplify to `Q` itself on the
 delta stream.
@@ -259,6 +277,28 @@ the state they will emit on the next tick. There is no operator-level
 - **AND** this visibility MUST hold across threads when the consumer respects
   the documented memory-ordering fence
 
+#### Scenario: output publication has release / acquire semantics
+
+- **WHEN** a step phase completes at tick `t` and publishes its output slot
+- **THEN** the publication MUST be a *release-semantics* write — every
+  write the producing operator made to its internal state prior to the
+  publication MUST be observable to any thread that subsequently performs
+  an acquire-semantics read of the published slot
+- **AND** a consumer reading the output MUST use an *acquire-semantics*
+  read on the published slot — after the acquire-read observes the tick-`t`
+  value, every subsequent read on the same thread MUST observe the
+  producing operator's pre-publication writes
+- **AND** the documented memory-ordering fence for cross-thread output
+  observation is exactly release-on-write and acquire-on-read; weaker
+  orderings (relaxed / consume / plain non-atomic) MUST NOT be used on
+  the observation path, and stronger orderings (sequentially-consistent)
+  MAY be used but MUST NOT be relied upon by consumers for correctness
+- **AND** the release / acquire pair MUST hold whether the output slot
+  is implemented as a volatile field, an atomic reference, a
+  memory-barrier-guarded mutable cell, or any equivalent primitive the
+  host platform provides — the contract is on the observable ordering,
+  not on the specific primitive chosen
+
 #### Scenario: after-step is selective to strict operators
 
 - **WHEN** a tick completes in a scope containing both strict and non-strict
@@ -279,6 +319,66 @@ the state they will emit on the next tick. There is no operator-level
   values at tick 0
 - **AND** this equivalence MUST hold without any operator-level "reset"
   mechanism — reconstruction is the supported route to a replayed epoch
+
+### Requirement: async-lifecycle declaration and fast-path step
+
+Every operator MUST declare whether it is *async-capable* — i.e., whether its step phase MAY return before having fully computed its tick-`t` output, completing the remainder of the work on a continuation that an orchestrator MUST await
+before observing the tick as complete. An operator that does not declare
+itself async-capable MUST compute and publish its tick-`t` output
+synchronously within its step phase. A circuit containing any async-capable
+operator MUST still satisfy every observable guarantee specified by the
+"operator lifecycle" requirement (publication visibility, after-step
+selection, construction-is-side-effect-free, determinism under structural
+equivalence); async participation is an implementation-strategy flag, not a
+weakening of the observable contract.
+
+A circuit MUST offer a *fast-path step* for the case in which no operator
+in the scope is currently deferring — i.e., when the scope is stepping a
+topology that contains no async-capable operator, or contains async-capable
+operators that have elected not to defer for this tick, the observable
+cost of the step MUST NOT include any continuation-dispatch overhead that
+a purely synchronous circuit would avoid.
+
+#### Scenario: synchronous-only circuit observes no async overhead
+
+- **WHEN** a circuit contains only operators whose declared async-capable
+  flag is false, and the circuit is stepped
+- **THEN** the step MUST complete without scheduling any continuation
+  infrastructure that a synchronous-only circuit would not schedule
+- **AND** the observable latency of the step MUST be dominated by the
+  operators' step-phase work, not by continuation dispatch
+
+#### Scenario: async-capable operator that does not defer takes the fast path
+
+- **WHEN** an async-capable operator is stepped at tick `t` but elects to
+  complete its work synchronously within the step phase (no continuation
+  scheduled)
+- **THEN** the enclosing step MUST observe the tick as complete
+  immediately upon the step phase returning, without awaiting any
+  continuation
+- **AND** downstream consumers MUST see the tick-`t` output under the
+  same publication-visibility contract as a synchronous operator
+
+#### Scenario: async operator that defers gates tick completion
+
+- **WHEN** an async-capable operator is stepped at tick `t` and elects to
+  defer (returns from the step phase with a pending continuation)
+- **THEN** the enclosing step MUST NOT be observable as complete for
+  tick `t` until every deferred continuation for tick `t` has completed
+- **AND** after every deferred continuation has completed, the tick-`t`
+  output MUST be observable under the same publication-visibility
+  contract as a synchronous operator
+- **AND** the orchestrator MUST NOT advance any operator in the scope
+  to tick `t+1` while any tick-`t` continuation is outstanding
+
+#### Scenario: async-capable declaration is stable within a clock scope
+
+- **WHEN** a clock scope has entered its first tick with a given topology
+- **THEN** no operator's declared async-capable flag MUST change for the
+  remaining lifetime of that scope
+- **AND** any change to the flag requires either (a) a topology mutation
+  that replaces the operator entirely (see "topology-mutation
+  serialization") or (b) a scope teardown and reconstruction
 
 ### Requirement: strict operators break feedback cycles for scheduling
 
@@ -338,6 +438,28 @@ the iteration cap) and before the outer tick is observed as complete.
   a scope tick based on their own "I've converged" opinion; only the
   scope-level detector MAY terminate the iteration
 
+#### Scenario: per-operator fixpoint hints are advisory only
+
+- **WHEN** an operator exposes a per-operator fixpoint predicate — e.g.,
+  an `Op.Fixedpoint` hook reporting the operator's own "I've converged
+  for this tick" judgement — and the enclosing clock scope observes the
+  hook
+- **THEN** the scope-level fixpoint-detector MAY consult such hints as
+  *advisory input* to its own judgement over the scope's observable
+  post-tick state
+- **AND** the hints MUST NOT be sufficient on their own to terminate the
+  scope iteration — termination MUST require the scope-level detector
+  to return `true` over the post-tick observable state of every operator
+  in the scope (per "nested scope runs to fixpoint per outer tick")
+- **AND** an implementation that chooses not to expose any per-operator
+  fixpoint hint MUST still satisfy every requirement in "clock scopes
+  and tick monotonicity"; the hook is an optimization surface, not a
+  load-bearing part of the semantics
+- **AND** an operator that exposes the hook MUST NOT have its own state
+  visibly altered by the scope's decision to consult or ignore the hint
+  — a scope that ignores the hook MUST produce the same per-operator
+  observable state as a scope that consults and corroborates it
+
 #### Scenario: scope-boundary phases bracket every nested run
 
 - **WHEN** an outer circuit steps and an inner scope runs to fixpoint
@@ -370,6 +492,56 @@ the iteration cap) and before the outer tick is observed as complete.
 - **AND** the clock-end phase for operators in the failing scope MUST
   still run, so per-scope state is released or committed under a
   documented partial-completion contract rather than leaked
+
+### Requirement: topology-mutation serialization
+
+Any mutation to the circuit topology after a clock scope has begun stepping MUST appear atomic to every operator in the scope — including operator registration, edge insertion, operator removal, or any
+equivalent structural change. Implementations MUST serialize topology mutations through a single
+logical *register-lock* so that no step observes a half-installed operator
+and no two concurrent mutations interleave their effects. The register-lock
+is logical, not a specific lock primitive: implementations MAY realise it as
+a mutex, a lock-free installation protocol (e.g., compare-and-swap of an
+immutable topology snapshot), or a single-threaded topology actor, so long
+as the observable atomicity and total-order guarantees below hold.
+
+#### Scenario: topology mutation is atomic with respect to stepping
+
+- **WHEN** a topology mutation is applied concurrently with an in-flight
+  step
+- **THEN** the in-flight step MUST either (a) complete entirely against
+  the pre-mutation topology or (b) observe the fully-installed post-
+  mutation topology from the start of its next tick
+- **AND** no step MUST observe a partially-installed operator — e.g., an
+  operator visible to the scheduler whose downstream edges have not yet
+  been wired, or whose lifecycle-construction phase has not yet completed
+- **AND** no step MUST observe a partially-removed operator — e.g., an
+  operator whose upstream edges are severed while the operator itself is
+  still present in the scheduler's operator set
+
+#### Scenario: concurrent mutations are applied in a well-defined total order
+
+- **WHEN** two or more topology mutations are issued concurrently on the
+  same circuit
+- **THEN** the mutations MUST be applied in a well-defined total order
+  consistent with the logical register-lock's acquisition sequence
+- **AND** every operator's view of the topology at every observable tick
+  boundary MUST correspond to exactly one prefix of that total order
+- **AND** operators MUST NOT observe interleaved partial effects of
+  two-or-more concurrent mutations — each applied mutation is atomic
+  with respect to every other
+
+#### Scenario: topology mutation respects async-lifecycle declarations
+
+- **WHEN** a topology mutation removes or replaces an async-capable
+  operator that has outstanding tick-`t` continuations
+- **THEN** the mutation MUST NOT be observable to downstream operators
+  until every outstanding tick-`t` continuation of the removed operator
+  has completed (or been deterministically cancelled under a documented
+  contract)
+- **AND** if the mutation replaces the operator, the replacement MUST
+  not begin stepping until the predecessor's outstanding continuations
+  have resolved — "operator replacement" is a sequential observable, not
+  a concurrent one
 
 ### Requirement: incremental-wrapper preserves the chain rule
 
@@ -412,6 +584,33 @@ under retractions.
   integrated history
 - **AND** the equivalence between the `D ∘ distinct ∘ I` form and the `H`
   form MUST hold under interleaved inserts and retractions
+
+#### Scenario: the exposed wrapper set covers the four chain-rule helpers
+
+- **WHEN** an incremental-extensions surface is offered to consumers of
+  this capability
+- **THEN** the surface MUST expose at minimum four named wrappers
+  corresponding to the four observable specialisations of the chain rule:
+  (1) a *generic* wrapper (`Incrementalize(Q)`) that applies the
+  unspecialised `D ∘ Q ∘ I` form when `Q` is neither linear nor bilinear
+  nor recognised-distinct; (2) a *linear* wrapper specialising to `Q`
+  directly on the delta stream when `Q` is linear; (3) a *bilinear-join*
+  wrapper (`IncrementalJoin`) implementing the three-term formula; and
+  (4) a *distinct* wrapper (`IncrementalDistinct`) implementing the `H`
+  boundary-crossing increment
+- **AND** each of the four wrappers MUST be observationally equivalent
+  to the unspecialised `D ∘ Q ∘ I` form under this capability's
+  algebra — consumers MUST be able to swap any specialised wrapper for
+  the generic form without observable behavioural change (only cost
+  change)
+- **AND** the four wrappers MUST cover the full classification surface:
+  every operator `Q` this capability defines MUST fall into at least one
+  of {generic, linear, bilinear-join, distinct}, so consumers never have
+  to construct an ad-hoc wrapper to stay within the chain rule
+- **AND** implementations MAY add additional specialised wrappers
+  (e.g., filter, selectMany, indexed-join when one side is held fixed)
+  as further optimisations, so long as each added wrapper is
+  observationally equivalent to the generic form
 
 ### Requirement: representation invariants of the reference Z-set
 

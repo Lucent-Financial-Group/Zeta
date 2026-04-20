@@ -50,36 +50,58 @@ within each priority tier.
   (namespace drift, phantom Reset, after-step scope,
   lifecycle phase undercount) all closed. Viktor's 10 P1
   findings deferred to Round 42 — see sub-item below.
+  **Round 43 sweep status:** `circuit-recursion` capability
+  landed (`openspec/specs/circuit-recursion/spec.md`, eight
+  requirements, 17 scenarios) scoped narrowly to the
+  nested-circuit substrate with explicit hand-off to sibling
+  `retraction-safe-recursion` for combinator semantics (which
+  already covered `Recursive` / `RecursiveCounting` /
+  `RecursiveSemiNaive` / feedback cells / fixpoint driver —
+  avoiding duplication). Also closed Viktor's 10
+  operator-algebra P1 findings (see sub-item below).
+  `openspec validate --all --strict`: 6 / 6 pass.
 
-- [ ] **operator-algebra spec: Viktor P1 findings (Round 42
-  absorb)** — Viktor's adversarial audit of the Round 41
-  cadence ship identified ten P1-tier surface gaps that do not
-  block the disaster-recovery bar at capability-close but
-  leave the spec incomplete relative to what a delete-recovery
-  produces. Scope: (a) async lifecycle — the `IsAsync`
-  property and async-fast-path in `Circuit.Step` are unstated;
-  (b) memory-ordering fence — the `[<VolatileField>]`
-  publication contract is named but not precisely pinned
-  (release-on-write, acquire-on-read); (c) register-lock
-  semantics — topology mutations under a single register-lock
-  are unspecified; (d) `IncrementalDistinct` — the fourth
-  chain-rule helper exposed by `IncrementalExtensions` is
-  absent from the spec; (e) ZSet sort invariant — the
-  `ImmutableArray<ZEntry<'K>>` ascending-sorted-by-key
-  invariant is assumed but not declared; (f) Checked
-  arithmetic — the OverflowException contract on weight
-  addition needs explicit mention in "Z-set as a finitely-
-  supported signed multiset"; (g) bilinear-size overflow —
-  the three-term incremental join can temporarily
-  materialise values that exceed the final-result size
-  bound; (h) convergence-vs-cap — nested scopes that hit the
-  iteration cap without reaching fixpoint need a documented
-  failure mode; (i) `Op.Fixedpoint` predicate — the per-
-  operator fixpoint-detection hook is unspecified; (j)
-  `DelayOp` initial-value override on first-tick-after-
-  reconstruction is ambiguous. Owner: Architect drafts,
-  Viktor audits each closure. Effort: M (spec work +
-  scenarios, no code changes). Defers to Round 42.
+- [x] ✅ **operator-algebra spec: Viktor P1 findings (Round
+  43 absorb)** — **shipped round 43** into
+  `openspec/specs/operator-algebra/spec.md`. All ten P1
+  findings closed: (a) async lifecycle — new requirement
+  "async-lifecycle declaration and fast-path step" with four
+  scenarios (synchronous-only no-overhead, declared-but-
+  non-deferring fast path, deferred tick-completion gating,
+  async-capable-flag stable within scope); (b) memory-
+  ordering — new scenario under operator-lifecycle pinning
+  release-on-write / acquire-on-read with explicit rejection
+  of relaxed/consume and non-reliance on SC; (c) register-
+  lock semantics — new requirement "topology-mutation
+  serialization" with three scenarios (atomic w.r.t.
+  stepping, concurrent-mutations total-order, async-
+  lifecycle interaction on removal/replace); (d) four
+  chain-rule helpers — new scenario "the exposed wrapper set
+  covers the four chain-rule helpers" (generic / linear /
+  bilinear-join / distinct), extension surface contract
+  pinned; (e) ZSet sort invariant — new scenario
+  "normalisation orders entries ascending by key" under
+  "Z-set as a finitely-supported signed multiset", tying
+  normalisation order to iteration order and serialization
+  determinism; (f) checked arithmetic — verified already
+  covered by existing "weight arithmetic overflow is
+  observable" scenario; (g) bilinear-size overflow —
+  verified already covered by "intermediate term size may
+  exceed final-delta size" scenario; (h) convergence-vs-cap
+  — verified already covered by "iteration cap without
+  fixpoint is an observable failure" scenario; (i)
+  `Op.Fixedpoint` predicate — new scenario "per-operator
+  fixpoint hints are advisory only" pinning that per-op
+  hints are optimization-only input to the scope-level
+  detector; (j) `DelayOp` post-reconstruction — verified
+  already covered by "reconstruction re-emits the declared
+  initial value" scenario. `openspec validate --all
+  --strict` clean (5 capabilities pass). A pre-existing
+  validator bug — the openspec parser reads only the first
+  physical line of a requirement's intro paragraph for the
+  MUST/SHALL check — was surfaced incidentally and fixed
+  inline on the chain-rule requirement. Build Release
+  remains 0W/0E.
 
 - [x] ✅ **Router-coherence ADR `47d92d8` supersedure — harsh-critic
   findings absorb** — **shipped round 41 in-round** via v2 ADR
