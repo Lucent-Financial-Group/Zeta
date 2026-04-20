@@ -3311,6 +3311,30 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Persona-term migration — rename `memory/persona/` to
+  `memory/experts/`.** Aaron 2026-04-20: *"how do you suggest
+  we distinguish between our end user personas like develpers
+  and non devlopers and the agent personas since it's the same
+  word"*. Round-44 autonomous-loop landed **option (a)** —
+  docs-only disambiguation via `docs/GLOSSARY.md` (`### Persona
+  (overloaded — always qualify)` + `### User persona`) and
+  `memory/feedback_persona_term_disambiguation.md`. The
+  directory rename is the remaining work: touches every
+  expert's auto-injected notebook frontmatter pointer, every
+  skill that references the `memory/persona/<name>/NOTEBOOK.md`
+  path, and any CI / pre-commit hook that globs the tree.
+  **Prerequisite:** a full audit of hard-coded `memory/persona/`
+  paths across `.claude/**`, `docs/**`, `openspec/**`, and
+  `tools/**`. Do as a dedicated round, not opportunistically.
+  Landing surface: a migration ADR at
+  `docs/DECISIONS/YYYY-MM-DD-persona-to-experts-rename.md`
+  plus a single commit doing the atomic rename + pointer
+  rewrites. **Only schedule** if an audit round surfaces
+  enough persona-sense confusion to warrant the cost — per
+  the feedback memory, option (b) "leave as historical
+  artifact" is still live. Effort: M. See
+  `feedback_persona_term_disambiguation.md`.
+
 - [ ] **Gitops-friendly key management + rotation — ADR first,
   then pick one tool** — Aaron 2026-04-20: *"key management
   rotations all the things we need but gitops GitOps friendly

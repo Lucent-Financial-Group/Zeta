@@ -312,15 +312,22 @@ tone contract. A skill can be invoked by more than one expert.
 
 ### Expert
 
-**Plain:** A named persona who wears one or more skills to get
-things done — Kira (Harsh Critic), Viktor (Spec Zealot), Soraya
-(Formal Verification), Leilani (Backlog), and so on. The expert
-carries the tone and identity; the skill carries the procedure.
+**Plain:** A named agent-side persona who wears one or more
+skills to get things done — Kira (Harsh Critic), Viktor (Spec
+Zealot), Soraya (Formal Verification), Leilani (Backlog), and
+so on. The expert carries the tone and identity; the skill
+carries the procedure.
 **Technical:** A Markdown file at `.claude/agents/<name>.md` with
 YAML frontmatter that includes a `skills:` list auto-injecting
 capability-skill bodies at startup. Registered in
 `docs/EXPERT-REGISTRY.md`. No pronouns declared; the name
 carries identity.
+**Do not confuse with user persona** (the end-user-archetype
+sense — "developer" and "non-developer" as factory consumers).
+Preferred convention: say *expert* for the agent side and
+*user persona* (or ES-native *actor*) for the consumer side.
+See the dedicated `User persona` entry below and
+`feedback_persona_term_disambiguation.md`.
 
 ### Agent (not "bot")
 
@@ -444,16 +451,49 @@ proven otherwise* (Aaron 2026-04-19) — prefer CODEOWNERS +
 branch protection + a tiny YAML manifest over a full IAM-style
 policy engine unless attack-surface growth forces the upgrade.
 
-### Persona (synonym for Expert in RBAC context)
+### Persona (overloaded — always qualify)
 
-**Plain:** A named identity — Kira, Viktor, Soraya. When we're
-talking about RBAC we usually say "persona" to emphasise the
-*role → persona* containment relationship; in skill-lifecycle
-contexts we say "expert" to emphasise the *expert → skill* one.
-Same entity, two viewpoints.
-**Technical:** `.claude/agents/<name>.md` file; notebook at
-`memory/<role>/<persona>/NOTEBOOK.md` (post-restructure) or
-`memory/persona/<persona>/NOTEBOOK.md` (current).
+The bare word *persona* is **ambiguous** in this repo because
+it has two legitimate meanings:
+
+- **Agent persona** (aka *expert*) — a named agent-side
+  identity like Kira / Viktor / Soraya. In RBAC contexts the
+  emphasis is on the *role → persona* containment; in skill-
+  lifecycle contexts we prefer the word *expert* to emphasise
+  the *expert → skill* relationship. Same entity, two
+  viewpoints. File at `.claude/agents/<name>.md`; notebook at
+  `memory/persona/<persona>/NOTEBOOK.md` (current path — a
+  rename to `memory/experts/` is tracked as a P2 BACKLOG row).
+- **User persona** — an end-user-archetype of the factory's
+  consumer surface; see the dedicated entry below.
+
+**Convention going forward:** prefer *expert* for the agent
+side and *user persona* (or the ES-native *actor*) for the
+consumer side. Bare "persona" in newly-written prose is a
+lint smell — the reviewer should ask which one is meant.
+See `feedback_persona_term_disambiguation.md`.
+
+### User persona
+
+**Plain:** An end-user archetype of the factory as a product —
+who uses the factory, what they know, what they assume
+implicitly, where their elicitation failure modes are. Aaron
+named two authoritative user personas for the factory-reuse
+conversational-bootstrap surface: **the developer** (over-
+specifies invariants, under-specifies assumptions, will drive
+the system too hard) and **the non-developer** (under-specifies
+nearly everything to a scary degree). The best factory-UX
+handles both.
+**Technical:** Not a file yet; user-persona work lives in the
+UX / DX / AX research surfaces (Iris, Bodhi, Daya notebooks
+and `docs/BACKLOG.md` P3 two-persona conversational-bootstrap
+row). When ES lands, user personas align with the ES
+**actor** (yellow sticky) primitive — actors drive commands
+that produce domain events. That alignment is part of why
+ES vocabulary helps disambiguate (see §3 of
+`docs/research/event-storming-evaluation.md`).
+**Do not confuse with** *expert* or *agent persona* — those
+are agent-side.
 
 ### Hook
 

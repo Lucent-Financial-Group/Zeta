@@ -338,6 +338,31 @@ Proposed P1 rows for Round 45 or 46 (ordered by phase):
   asks the next-playbook question. This is the
   "one-hell-of-a-UI" differentiator. Effort: L;
   separate research spike first.
+  **Git-native render only.** Per the factory's
+  persistence invariant
+  (`memory/project_git_is_factory_persistence.md`,
+  Aaron 2026-04-20), stickies are markdown rows in
+  `docs/contexts/<ctx>/{events,commands,aggregates}.md`;
+  the UI is a browser-rendered view over those files
+  and re-renders on each git-commit. External-storage
+  boards (Miro, EventModeler proprietary storage) are
+  explicitly disfavoured — a candidate tool is
+  acceptable only if it reads git-native markdown as
+  its source of truth, and even then it is a pluggable
+  alternative (opt-in), not the default.
+  **Deployment model** (per
+  `memory/project_factory_is_pluggable_deployment_piggybacks.md`):
+  the UI is **local-first** — it runs in the
+  developer's browser, reads the local git repo, and
+  needs no deployed URL. For consumer projects that
+  have their own UI deployment pipeline, the factory
+  UI **piggy-backs** on that pipeline and ships with
+  the product's release flow. When standalone static
+  hosting is genuinely needed, **GitHub Pages** is
+  the free default substrate (see
+  `feedback_free_beats_cheap_beats_expensive.md`).
+  The factory does not maintain its own dedicated
+  deployment infrastructure for its UI.
 - **ES-bridge-glossary-001 (Phase B)** — Update
   `docs/GLOSSARY.md` with ES primitives as factory-
   generic vocabulary and the §2 bridge mapping; update
