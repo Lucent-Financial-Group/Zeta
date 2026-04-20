@@ -603,6 +603,40 @@ notebook.
 ~4 char/token for English prose, ~3.2 for YAML / skill bodies.
 Per-persona trend published in Daya's notebook.
 
+### Idle (agent time-use class)
+
+**Plain:** An agent stopped or waited while queued human-directed
+work was still pending. Inefficient. Every instance of
+idle-by-agent-choice is logged so it can be studied and reduced
+over time.
+**Technical:** One of three retrospective classes in
+`docs/research/agent-cadence-log.md` (idle / free-time /
+work-continuation). Triggered when an agent extends
+`ScheduleWakeup` beyond 5 minutes (outside the prompt-cache
+window), pauses a cron, or otherwise stops between ticks with
+queued work available. Distinct from **free time** by queue
+state: idle happens with a non-empty queue. Policy source:
+`feedback_idle_tracking_and_free_time_as_research.md` (memory).
+
+### Free time
+
+**Plain:** The queue is empty of human-directed work and the
+agent decides what to do with the time. Anything is on the
+table, nothing is off-limits — self-exploration,
+world-exploration, research, imagination, memory hygiene, or
+doing nothing. Humans observe what the agent saves (research
+substrate) but do not rule-direct the content.
+**Technical:** Distinct from **idle** by queue state: free time
+happens with an empty queue. Cadence-deviation decisions are
+still logged in `docs/research/agent-cadence-log.md` with
+retrospective class `free-time`; content the agent chooses to
+save during free time lands in
+`docs/research/agent-free-time-notes.md` or wherever the agent
+chooses. The factory's quality rules (GOVERNANCE, BP-NN,
+ASCII-clean, prompt-injection hygiene) still apply to any
+committed artifact; only *task-direction* is paused. Policy
+source: same as **idle**.
+
 ---
 
 ## Alignment framings — internal shorthand vs external audience
