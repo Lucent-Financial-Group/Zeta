@@ -268,6 +268,45 @@ ADR; Arc 11 lands the ADR's own within-round commitment
 before round-close. Without Arc 11, Arc 10 would have
 shipped a contract Zeta didn't meet.
 
+### Arc 12 — DORA 2025 reference substrate lands in-tree (`46075d6`)
+
+Two untracked PDFs had been sitting at `docs/2025_*.pdf` since
+2026-04-20 02:13 / 02:17 waiting for a commit decision — the
+primary sources behind the 2026-04-20 memory promotion of DORA
+from external-anchor to *measurement-frame starting point*
+(`feedback_dora_is_measurement_starting_point.md`). `46075d6`
+lands both:
+
+- `docs/2025_state_of_ai_assisted_software_development.pdf`
+  (~15MB, 138 pages) — findings + data report.
+- `docs/2025_dora_ai_capabilities_model.pdf` (~9MB, 94 pages)
+  — framework companion.
+
+License: CC BY-NC-SA 4.0. In-tree placement promotes citation
+anchors from memory-only to repo-local: the Nyquist stability
+criterion (foreword p9 fn 1 — any control system must operate
+at ≥ 2× the speed of the system it controls) becomes the
+theoretical anchor for the CI-meta-loop + retractable-CD P1
+cluster; "AI is an amplifier" becomes an in-repo echo of the
+corporate-religion / sandbox-escape threat class; the
+seven-capability model gives external-audience vocabulary for
+round-audit output (capability #7 "quality internal platforms"
+is the in-flight P1 cluster). The `reference_dora_2025_reports.md`
+memory file stays as the out-of-tree companion pointing at
+these paths.
+
+Pattern this arc surfaces, worth naming: **the `/next-steps`
+ranker's scope explicitly lists `docs/research/` and
+`docs/TECH-RADAR.md` but not `git status --short` for
+untracked files.** Nine consecutive invocations re-rendered
+the same Top-1 (push + PR gated) because the ranker was
+coasting on in-context summary rather than checking the
+working tree. Untracked PDFs sat 18+ hours before this arc
+closed the gap. Candidate skill-tune-up note for Aarav:
+`/next-steps` must run `git status --short` on every
+invocation so dropped-in artefacts surface in the ranking
+before the ninth re-fire, not after.
+
 ### Round 41 observations for Round 42
 
 - The **audit → ADR → ship → audit → close-P0 → file-P1**
@@ -343,6 +382,7 @@ shipped a contract Zeta didn't meet.
 | `4efe545` | Arc 10 — v1 Superseded-by header + Status correction (GOVERNANCE §2 redirect) | Strengthened (supersedure chain now explicitly resolvable: citation chain from CONFLICT-RESOLUTION → v1 → v2 works without silent drift; Status truthfully reflects promulgation state — "Proposed" was factually wrong once v1 was cited as Standing Resolution, per v2's Closure C-P1-4) | Strengthened (Supersedure header is additive; v1 body is not mutated — historical record preserved for the citation graph; the header itself is retractable as a single revert if v2 is later found wrong) | Preserved (single doc edit to v1 ADR only; v1 body text unchanged, no other doc touched; the follow-up `skill-creator` edits to SKILL.md files remain deferred so they target v2 not v1) |
 | `4537365` | Arc 10 — BACKLOG supersedure entry discharged in-round | Strengthened (BACKLOG entry no longer carries the v2 supersedure as a round-42 commitment; `[x] ✅ shipped round 41 in-round` with pointer to v2 + v1-header commits matches the shipped-item convention used elsewhere in the file; follow-up SKILL.md work via `skill-creator` correctly scoped to v2 as intended) | Strengthened (original 10-finding narrative preserved below the closure line for audit trail rather than deleted — discharge is visible without losing the record that motivated the work; single `git revert` on the commit re-opens the entry if v2 is later found wrong) | Preserved (single BACKLOG edit only; no ADR body touched, no SKILL.md touched, no CONFLICT-RESOLUTION row touched; supersedure-chain citation from CONFLICT-RESOLUTION still passes through v1 header to v2) |
 | `d98ef2b` | Arc 11 — grandfather inventory + P2 discharge entry | Strengthened (v2 C-P0-1's within-round commitment honoured; 35 live claims catalogued with Stage-1/Stage-2 = `pre-ADR` tagging; BACKLOG P2 discharge entry codifies one-per-round cadence with Aarav graceful-degradation clause; inventory methodology transparent so future audits can re-verify rather than reconstruct) | Strengthened (inventory row cells explicitly designed to flip `pre-ADR` → output-state on each discharge — retraction is additive update rather than delete-and-rewrite; historical evidence excluded with explicit rationale so re-inclusion is a one-row edit if v2's scope is later tightened) | Preserved (single new research doc + BACKLOG append; no source docstrings edited, no SKILL.md touched, no spec text modified — inventory is descriptive not prescriptive; the pipeline that discharges the inventory does the editing, one claim per round) |
+| `46075d6` | Arc 12 — DORA 2025 reference substrate lands in-tree | Strengthened (memory-only citation anchors promoted to in-repo substrate so ADRs + research docs can cite `docs/2025_*.pdf` rather than a newsletter-gated URL; nine-re-fire `/next-steps` stall surfaced honestly in the arc body as a ranker-scope gap rather than buried in a private retrospective) | Strengthened (PDFs are retractable via single `git rm` if license / size stance later changes; reference nature of the commit means no runtime behaviour or spec body depends on their presence — future retraction is a one-commit operation rather than a cascade) | Preserved (reference-document commit only; no source, spec, skill, ADR, or BACKLOG body touched; CC BY-NC-SA 4.0 obligation documented in the commit message so derived-work constraint is visible at citation time, not discovery time) |
 
 ---
 
