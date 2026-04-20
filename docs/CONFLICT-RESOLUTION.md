@@ -196,6 +196,16 @@ sign-off.
 - **Storage Specialist ↔ Complexity Theory Reviewer** — WDC
   order-of-magnitude claims must be tightened honestly or
   retracted; straw-man benchmark baselines are not acceptable.
+- **Complexity Theory Reviewer ↔ Claims Tester** — every `O(·)`
+  claim in a shipped artefact needs both halves: analytic bound
+  (Complexity Theory Reviewer, on paper) and empirical
+  measurement (Claims Tester, at `n = 10³..10⁶`). Standing
+  resolution: the two-stage pipeline in
+  `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`
+  — analytic-first on new claims; reverse trigger (Claims Tester
+  first) on benchmark surprise. If the two disagree on a
+  reconciliation, the conflict escalates to this document's
+  deadlock clause (human maintainer decides).
 - **Algebra Owner ↔ Maintainability Reviewer** — residuated
   lattices and profunctor optics are beautiful; new contributors
   bounce off. Standing resolution: require a runnable test per
