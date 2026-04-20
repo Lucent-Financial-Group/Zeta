@@ -166,6 +166,49 @@ Decision table names who fires when across six situations.
 Follow-up SKILL.md edits route via `skill-creator`
 (GOVERNANCE §4); not this round's work.
 
+### Arc 9 — Self-correction sweep: prereq-sizing + recurring-audit lens + CONFLICT-RESOLUTION close + ADR adversarial review (`d76a09b`, `2042a85`, `fcfa3d9`, `779d7ef`)
+
+Four commits after Arc 8 run the round's most concentrated
+self-correction sequence. `d76a09b` re-sizes Soraya's Prereq 1
+S → M after an execution-verified audit finds no TLC job in
+`.github/workflows/gate.yml` — only a cache step for the
+verifier jars (`gate.yml` lines 80-89). `RecursiveCountingLFP.tla`
+has shipped since round 19 compile-checkable-only, with no
+*run*-gate against its invariants for 22 rounds. Correcting the
+wrong sizing in the same round it was made is the
+consent-strengthening retraction surface; the alternative
+(carrying a wrong S estimate into round 42) would have lied to
+the round-42 budget. `2042a85` generalises the specific finding
+into a recurring audit lens by filing a `formal-analysis-gap-
+finder` round-42 BACKLOG entry scoped to "verifier-installed ≠
+verifier-runs" across every spec under `tools/tla/specs/**`,
+`proofs/lean/**`, `tools/lean4/**`, `tools/alloy/**`, and Z3
+artefacts — reverse direction: does every jar have a runner
+job. The entry is scheduled to fire *after* Prereq 1 lands so
+the audit sees corrected state rather than the finding that
+motivated it. `fcfa3d9` closes the one of three Arc-8 follow-ups
+that does not need the `skill-creator` workflow (the
+`CONFLICT-RESOLUTION.md` Active-tensions row for Hiroshi ↔
+Daisy), standing the ADR's two-stage pipeline as the canonical
+authority matrix; future PR authors with an `O(·)` claim meet
+the hand-off contract without having to read the ADR first.
+`779d7ef` is the hardest commit to narrate honestly. A Kira
+(harsh-critic) adversarial pass over ADR `47d92d8` — dispatched
+*after* landing, which is the gap the commit names — surfaces
+3 P0 + 5 P1 + 2 P2 substantive findings, including an unscoped
+grandfather clause, table-vs-prose contradiction on the reverse
+trigger, an escalation-evidence loop that Stage-1 output 2
+forbids, no-timebox escalation that reproduces the 23-round-
+stale failure mode the ADR diagnoses, and two advisory skills
+that don't compose to a mandatory pipeline without a binding
+dispatcher. Supersedure over inline-edit is chosen because
+CONFLICT-RESOLUTION already cites `47d92d8` as Standing
+Resolution — inline-editing would break the citation chain;
+supersedure preserves it via GOVERNANCE §2 "Superseded by …"
+header on v1. The round's pattern: Arc 8 lands a correction for
+Aarav's round-18 finding; Arc 9 catches the corrector itself
+under-reviewed. Both self-corrections land before round-close.
+
 ### Round 41 observations for Round 42
 
 - The **audit → ADR → ship → audit → close-P0 → file-P1**
