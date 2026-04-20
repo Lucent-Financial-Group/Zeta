@@ -74,6 +74,8 @@ ThoughtWorks-style radar for the technologies / research / papers
 | Microsoft Threat Modeling Tool | Hold | 15 | Windows-only; parallels-only workflow |
 | FsPickler | Adopt | 13 | Canonical F# pickler |
 | Apache Arrow IPC | Adopt | 13 | `ArrowSerializer.fs` |
+| `.NET Aspire` (AppHost + ServiceDefaults + OpenTelemetry integrations) | Assess | 39 | Aaron 2026-04-20 ask: evaluate as .NET-native runtime-observability spine for the 4GS+RED+USE starting points. Time-budgeted ~3.5d research: feature scan -> Zeta fit (pure-library boundary) -> observability spine fit -> synthesis ADR. Prior art: Aaron's `../AspireApp1` Jan 2024 prototype. Must not leak into `Zeta.Core` public API (Ilyana gate). See `docs/BACKLOG.md` P1 ".NET Aspire evaluation". |
+| `../scratch` declarative-bootstrap harness (package manifests per ecosystem, profile/category composition, mise-unified runtimes, docker reproductions of GHA runners) | Assess | 39 | Named ethos-reference in two P1 BACKLOG entries (env-parity + CI meta-loop) without explicit pattern-inheritance contract. Time-budgeted ~1.5d research pass to classify patterns (already-in-Zeta / worth-porting / scratch-specific / flow-other-way) and produce `docs/research/scratch-zeta-parity.md`. See BACKLOG P1 "`../scratch` ↔ `Zeta` declarative-bootstrap parity". |
 | Declarative environment-parity stack (Argo CD / Flux / Kustomize / Helm / Pulumi / Crossplane / Tilt / Skaffold / Okteto / KCL / CUE / OPA-Gatekeeper / Kyverno candidates) | Assess | 39 | **Time-budgeted research pass.** Aaron 2026-04-20 ask: same declarative spec valid from dev-inner-loop (kind) through qa/dev/stage/prod, non-bespoke. Budget: 7 days split 1d landscape scan -> 3d shortlist deep-dive -> 2d env-parity finalist evaluation -> 1d synthesis ADR. Individual tools graduate to Trial/Adopt/Hold per finalist evaluation. See `docs/BACKLOG.md` P1 "Declarative parity across dev-inner-loop / qa / dev / stage / prod" for the scope; sibling P1 entry on CI meta-loop + retractable CD. |
 
 ### Upstreams / prior art
@@ -96,6 +98,7 @@ ThoughtWorks-style radar for the technologies / research / papers
 | Karpathy autoresearch | Hold | 14 | 200-LOC teaching scaffold; not a research pipeline |
 | CockroachDB Parallel Commits | Assess | 15 | Related work for WDC paper |
 | Aurora Cell Architecture | Assess | 15 | Related work for WDC paper |
+| DORA 2025 — State of AI-assisted Software Development + AI Capabilities Model | Assess | 39 | Two companion PDFs at `docs/2025_state_of_ai_assisted_software_development.pdf` + `docs/2025_dora_ai_capabilities_model.pdf`, CC BY-NC-SA 4.0. Seven-capability amplifier frame; Zeta maps strong on 3-4, partial on 2-3, in-flight on platform-engineering (= tonight's P1 CI-meta-loop + env-parity). Nyquist stability citation (any control system must operate at ≥ 2× the speed of the system it controls) is the theoretical anchor for the retractable-CD backlog entry. Gene Kim foreword; 5000 respondents; "trust but verify" (30% dev distrust of AI code) names the mature-adoption stance aligned with Zeta's honesty-protocol architecture. |
 
 ### Hardware intrinsics / platform
 

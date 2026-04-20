@@ -11,10 +11,35 @@ folder as the experimental loop.
 
 ## Current scripts
 
-| Script               | Clauses measured            | Shape                |
-|----------------------|-----------------------------|----------------------|
-| `audit_commit.sh`    | HC-2, HC-6, SD-6            | Per-commit lint      |
-| `sd6_names.txt`      | SD-6 watchlist (per-host)   | Data (not code)      |
+| Script                | Signal measured                              | Shape                       |
+|-----------------------|----------------------------------------------|-----------------------------|
+| `audit_commit.sh`     | HC-2, HC-6, SD-6 alignment clauses           | Per-commit lint             |
+| `audit_personas.sh`   | Notebook touch + commit mentions             | Per-round persona runtime   |
+| `audit_skills.sh`     | DORA-2025 columns adapted to skill scope     | Per-round skill runtime     |
+| `sd6_names.txt`       | SD-6 watchlist (per-host)                    | Data (not code)             |
+
+The three scripts form the gitops observability trio:
+commit-scope (`audit_commit.sh`), persona-scope
+(`audit_personas.sh`), and skill-scope (`audit_skills.sh`).
+Each emits `--json` / `--md` / `--out DIR` in the same
+shape so downstream tooling can uniform-parse.
+
+The skill-scope script adapts DORA 2025 outcome variables
+to skill runtime per
+`memory/feedback_dora_is_measurement_starting_point.md`:
+
+| DORA column                        | Skill-scope adaptation              |
+|------------------------------------|-------------------------------------|
+| #4 Software delivery throughput    | Notebook + commit mentions in range |
+| #5 Software delivery instability   | File-churn on `SKILL.md` in range   |
+| #7 Individual effectiveness        | Mentioned-but-not-edited proxy      |
+| #9 Friction (lower = better)       | Rounds-since-last owner-notebook    |
+
+The six DORA columns that do not have a reliable
+skill-scope signal today (organizational/team/product
+performance, code quality, valuable work, burnout) emit
+as `-` in the schema rather than inventing numbers —
+honest columns beat filled columns.
 
 More will land as `UNKNOWN` entries in the measurability
 framework graduate to lint-shaped signals. The
@@ -35,6 +60,16 @@ tools/alignment/audit_commit.sh --json
 
 # Write per-commit JSON files to a directory
 tools/alignment/audit_commit.sh --out tools/alignment/out/round-37
+
+# Per-round persona audit
+tools/alignment/audit_personas.sh --round 38 --out tools/alignment/out/round-38
+
+# Per-round skill audit (DORA-columns)
+tools/alignment/audit_skills.sh --round 38 --out tools/alignment/out/round-38
+
+# Skill audit with friction gate — fails if any skill has
+# friction (rounds-since-owner-touched) >= threshold
+tools/alignment/audit_skills.sh --round 38 --gate 10
 ```
 
 Exit codes:

@@ -19,6 +19,47 @@ planning agent can wear it too.
 
 ## The checklist
 
+### 0. Tick-loop — layer-0 observability pre-check
+
+Before any round-open step runs, the architect confirms the
+gitops observability substrate is current. Layer-0 is the
+three per-round audit scripts under `tools/alignment/`:
+
+| Audit                                   | Nominal cadence | Source of truth              |
+|-----------------------------------------|-----------------|------------------------------|
+| `audit_commit.sh` (per-commit clauses)  | every round     | `out/commits/*.json`         |
+| `audit_personas.sh` (persona runtime)   | every round     | `out/round-<N>-personas.md`  |
+| `audit_skills.sh` (DORA-column skills)  | every round     | `out/round-<N>-skills.md`    |
+
+**HARD RULE — 2x cadence stale forces invocation.** If the
+most recent output for any layer-0 audit is missing for
+**two or more rounds** (i.e. `out/` has no file for round
+`N-1` AND `N-2` for that audit), round-open **must** invoke
+the stale audit before proceeding to step 1. The audit runs
+against `main..HEAD` of the *previous* round's PR and the
+output is committed as part of the round-open scaffolding in
+step 9.
+
+Rationale: layer-0 is the only substrate Sova (alignment-
+auditor), Daya (AX-engineer), and the hygiene-portfolio lenses
+(§7.5) have for cross-round drift signal. If layer-0 decays,
+every downstream hygiene check is flying on stale data and the
+tick-loop is silently broken — exactly the failure mode the
+alignment contract (`docs/ALIGNMENT.md`) was meant to make
+visible.
+
+The rule is not a cadence *request* — it is a **gate**.
+Round-open cannot be completed with layer-0 at 2x-stale
+state; the architect must either re-run the audit or file an
+explicit DEBT entry declaring why it cannot run (e.g. tooling
+broken, gitops window misaligned). Silent skipping is not an
+option.
+
+This rule composes with §7.5's hygiene-portfolio cadence: the
+portfolio runs every 5-10 rounds, but **every round** gets a
+layer-0 tick. The tick is cheap (three bash scripts, under 10
+seconds total) and surfaces decay early.
+
 ### 1. Pull main + branch
 
 ```bash

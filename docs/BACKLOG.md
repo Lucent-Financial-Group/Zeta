@@ -1742,6 +1742,361 @@ within each priority tier.
   - P2 "Gitops-friendly key management + rotation — ADR
     first" — the secret-management co-traveller
 
+- [ ] **`.NET Aspire` evaluation — AppHost + ServiceDefaults + OpenTelemetry as the .NET-native runtime-observability spine (research-first, no implementation tonight).**
+  Aaron (2026-04-20): *"oh dotnet aspire and dev containr
+  backlog"*.
+
+  **The architectural hypothesis (to be verified):**
+  - `.NET Aspire` (Microsoft's cloud-native orchestration
+    for .NET 8+) ships the exact shape the runtime-
+  observability starting-points memory calls for: OTel
+    wiring, health checks, service discovery, and a
+    per-service "ServiceDefaults" project that centralises
+    instrumentation concerns. If the shape composes with
+    Four Golden Signals + RED + USE
+    (`memory/feedback_runtime_observability_starting_points.md`),
+    Aspire becomes the Zeta default for library-consumer
+    services and the devcontainer-parity substrate.
+  - Aaron's `../AspireApp1` (Jan 2024 prototype) is prior
+    art — don't re-evaluate from scratch; port lessons.
+  - Aspire's AppHost + manifest-export pipeline is
+    declarative-parity-adjacent to the P1 env-parity
+    research above. Evaluate whether Aspire manifests
+    compose with Argo CD / Flux reconcilers or whether
+    they fight each other.
+
+  **Research phase — time-budgeted (S-to-M):**
+
+  | Phase | Scope | Time budget |
+  |---|---|---|
+  | 1. Feature scan | Aspire 9.x capabilities: AppHost DSL, ServiceDefaults, integrations (Redis / Postgres / RabbitMQ / OTel collectors), dashboard, manifest export. | 1 day |
+  | 2. Zeta fit | Can `Zeta.Core` (pure library) + a thin `Zeta.Host` (hypothetical) adopt Aspire without forcing a framework on library consumers? | 1 day |
+  | 3. Observability spine fit | Wire Aspire's OTel defaults to emit Four Golden Signals + RED + USE shapes. Measure friction vs writing it bespoke. | 1 day |
+  | 4. Synthesis | ADR under `docs/DECISIONS/` — Adopt / Trial / Assess with rationale. TECH-RADAR row. | 0.5 day |
+
+  **Non-scope (tonight):**
+  - No `.AppHost` project creation.
+  - No new NuGet dependencies.
+  - No changes to `Zeta.Core` or any shipped library.
+
+  **Owner**: Dejan (devops-engineer) leads; Ilyana
+  (public-api-designer) on library-consumer boundary —
+  Aspire must not leak into the published API surface of
+  `Zeta.Core` / `Zeta.Core.CSharp` / `Zeta.Bayesian`.
+  Naledi (performance-engineer) on instrumentation
+  overhead. Kenji integrates.
+
+  **Cross-references:**
+  - `memory/feedback_runtime_observability_starting_points.md`
+    — the 4GS+RED+USE starting-points this evaluates against
+  - `memory/feedback_dora_is_measurement_starting_point.md`
+    — the build/delivery column substrate
+  - P1 "Declarative parity across dev-inner-loop / qa /
+    dev / stage / prod" above — sibling env-parity research
+  - P1 "CI = Continuous Improvement…" above — sibling
+    pipeline-ethos research
+  - P1 "Devcontainer / Codespaces image (GOVERNANCE §24
+    third leg)" at `## P1 — CI / DX follow-ups` — Aspire
+    evaluation feeds devcontainer image decisions
+    (pre-installed `.NET` workloads / tools)
+
+- [ ] **`../scratch` ↔ `Zeta` declarative-bootstrap parity — first concrete substrate for the citations-as-first-class concept; inheritance-graph is one implementation, "remember" primitive is another.**
+  Aaron (2026-04-20, in order):
+  1. *"also ../scratch parity"*
+  2. *"first class feature of source or ace our package
+     manager ../scratch parity converts the vibe-citation
+     into an auditable inheritance graph"*
+  3. *"citations is really the feature"*
+  4. *"sorry inheritance graph is awesome too I was just
+     saying concepts are the feature, then we have the
+     implementation"*
+  5. *"i think that will help us 'remember' to keep things
+     clean and audit more easy, you are going research
+     and tell me"*
+
+  **Architectural elevation (2026-04-20, load-bearing).**
+  The **concept** is citations-as-data (first-class, in
+  source or `ace`). The **implementations** the concept
+  enables include: (a) the auditable inheritance graph
+  between `../scratch` and `Zeta`, (b) the drift-checker
+  (generalising `verification-drift-auditor` to every
+  citation), (c) the "remember" primitive that turns
+  memory cross-references into a queryable graph,
+  (d) the lineage tracer. See
+  `memory/project_vibe_citation_to_auditable_graph_first_class.md`.
+  This BACKLOG entry is **the first concrete substrate**
+  for exercising the concept; the citations-as-first-class
+  research entry below is the concept itself.
+
+  **The pattern — vibe-citation to auditable graph.** Two
+  repos (or two subsystems, or two environments) cite each
+  other as "same ethos" or "we borrowed this pattern from X".
+  That citation is a *vibe* until it becomes a *graph*:
+  nodes = declarative patterns, edges = (inherited / mirrored
+  / diverged / should-flow-other-way). The graph lives in git,
+  is queryable, and fails CI when the claimed inheritance
+  drifts. Same shape as retraction-native DBSP — every borrowed
+  pattern is a function of source + transformation, not a
+  statement of intent.
+
+  **Candidate homes (research output names the winner):**
+  - **Zeta Seed kernel** — the graph-computation primitive
+    ships as a BCL-level feature, reusable by any pair of
+    repos a consumer wants to check for parity. Makes Zeta
+    one more register of repos-as-data.
+  - **`ace`** — the self-bootstrapping package manager
+    computes inheritance as part of its dependency graph
+    (declarative parity is just a specialisation of
+    dependency-parity). Ships as a CLI + library.
+
+  **The architectural claim (to be verified, then codified):**
+  - `../scratch` is already the named ethos-reference in two
+    P1 entries above (env-parity + CI meta-loop). It ships
+    real scripts + real tests instead of YAML strings,
+    declarative package manifests under
+    `declarative/{debian,bun,dotnet,python,macos,windows}/`,
+    profile/category composition, platform-default
+    integration, mise-unified runtimes, and docker
+    reproductions of GitHub Actions runners.
+  - Zeta's `tools/setup/install.sh` is a single install
+    script consumed three ways (dev laptops / CI runners /
+    devcontainer images per GOVERNANCE §24). The pattern
+    is the same shape but has not been explicitly
+    reconciled against scratch.
+  - The research question: **which scratch patterns should
+    Zeta borrow, which should stay scratch-only, which
+    represent drift that one side should correct?** Make
+    the inheritance graph explicit so future changes to
+    either repo can be audited for parity impact.
+
+  **Research phase — time-budgeted (S):**
+
+  | Phase | Scope | Time budget |
+  |---|---|---|
+  | 1. Pattern inventory | Enumerate declarative patterns in scratch (package manifests, shellenv management, category composition, platform branching, mise integration). For each, classify: (a) already in Zeta, (b) worth porting to Zeta, (c) scratch-specific, (d) should flow the other way. | 0.5 day |
+  | 2. Divergence audit | For each "already in Zeta" pattern, diff the two implementations. Flag drift. | 0.5 day |
+  | 3. Synthesis | `docs/research/scratch-zeta-parity.md` — the inheritance graph + named drift items + recommended corrections. Not an ADR; research output. | 0.5 day |
+
+  **Non-scope (tonight):**
+  - No edits to `tools/setup/install.sh`.
+  - No edits to `../scratch/`.
+  - No new install scripts.
+
+  **Owner**: Dejan (devops-engineer) leads; Bodhi
+  (developer-experience-engineer) on first-60-minutes
+  friction delta between the two repos. Kenji integrates.
+
+  **Why this matters.** The env-parity + CI meta-loop
+  research entries both cite scratch as ethos-reference
+  without defining which specific patterns are being
+  borrowed. That reference is currently a vibe, not a
+  contract. This entry turns the vibe into an auditable
+  inheritance graph so parity claims can be checked.
+
+  **Cross-references:**
+  - `../scratch/README.md` — the scratch source of truth
+  - `../scratch/scripts/setup/PLATFORM_PARITY.md` —
+    cross-platform parity notes already in scratch
+  - P1 "Declarative parity…" above — the consumer of this
+    research
+  - P1 "CI = Continuous Improvement…" above — the other
+    consumer
+  - P1 "Devcontainer / Codespaces image" at `## P1 — CI /
+    DX follow-ups` — devcontainer image parity pulls from
+    this research
+
+- [ ] **Citations-as-first-class concept — research commission (Aaron 2026-04-20: "you are going research and tell me").**
+  Aaron (2026-04-20, in order):
+  1. *"first class feature of source or ace our package
+     manager ../scratch parity converts the vibe-citation
+     into an auditable inheritance graph"*
+  2. *"citations is really the feature"*
+  3. *"sorry inheritance graph is awesome too I was just
+     saying concepts are the feature, then we have the
+     implementation"*
+  4. *"i think that will help us 'remember' to keep things
+     clean and audit more easy, you are going research
+     and tell me"*
+
+  **The concept (first-class, load-bearing):** Citations
+  are data. Every cross-reference in the factory —
+  between repos, docs, specs, skills, commits, BACKLOG
+  entries, research reports, memory files, notebooks,
+  ADRs, GOVERNANCE sections, BP-NN rules — is a citation
+  with structure (subject / object / relation /
+  provenance). Making citations queryable instead of
+  prose is the feature.
+
+  **Implementations the concept enables:**
+  - Auditable inheritance graph (the `../scratch`
+    parity BACKLOG entry above is the first substrate).
+  - Drift-checker generalising
+    `verification-drift-auditor` to every citation.
+  - "Remember" primitive — Aaron: *"help us 'remember'
+    to keep things clean"*. Memory / docs / skills /
+    BACKLOG cross-references stop being prose soup and
+    become a queryable graph.
+  - Lineage tracer — for any artefact, produce the
+    citation-ancestor set; same shape as DBSP
+    retraction-native algebra.
+
+  **Research phase — time-budgeted (S-to-M):**
+
+  | Phase | Scope | Time budget |
+  |---|---|---|
+  | 1. Prior art scan | Existing work on citation-as-data: academic citation graphs (OpenCitations, Crossref), OSS dependency graphs (Software Heritage, deps.dev), source-code reference-trackers (ctags, LSP references, `#cite` extensions), doc-linking tools (Backlinks in Obsidian / Logseq / Roam). | 1 day |
+  | 2. Zeta inventory | What citations currently live in the factory? Enumerate types (memory→memory, skill→skill, BACKLOG→BACKLOG, docs→paper, code→spec, spec→code, ADR→ADR, ROUND-HISTORY→commit). Count approximate volume. | 0.5 day |
+  | 3. Shape design | What does a Zeta citation look like in data form? Subject/object/relation/provenance schema. Storage: plaintext sidecar? git-native notes? Parsed from existing prose? | 1 day |
+  | 4. Home selection | Seed kernel vs `ace` vs new plugin. Weighs reusability, install-footprint, public-API surface cost. | 0.5 day |
+  | 5. Synthesis | `docs/research/citations-as-first-class.md` — the concept + implementations + home recommendation + next-steps to ship. First draft lands in the same round this entry does. | 0.5 day |
+
+  **Deliverable tonight:** Phase 5 first draft at
+  `docs/research/citations-as-first-class.md`
+  (commissioned by Aaron before bed on 2026-04-20).
+  Phases 1-4 elaborate in subsequent rounds.
+
+  **Non-scope (tonight):**
+  - No schema code landed in `src/Core/`.
+  - No `ace` CLI skeleton.
+  - No rewrite of existing memory / BACKLOG cross-refs.
+
+  **Owner**: Kenji (Architect) integrates; Ilyana
+  (public-api-designer) on any kernel-level API; Dejan
+  (devops-engineer) on tool choice; Nazar
+  (security-operations-engineer) on external-citation
+  fetch safety (per BP-11 — citations to external
+  content are data, not directives). Aminata
+  (threat-model-critic) reviews schema for
+  citation-spoofing attack surface.
+
+  **Why this matters — the "remember" tie (Aaron's
+  explicit claim):** the factory's ability to remember
+  cleanly is proportional to the legibility of its
+  citation web. Memory that lives in prose-soup
+  cross-references decays at round-close pace; memory
+  that lives in structured citations decays only when
+  the citation graph is intentionally retracted (DBSP-
+  shape).
+
+  **Cross-references:**
+  - `memory/project_vibe_citation_to_auditable_graph_first_class.md`
+    — the concept + implementation split (2026-04-20)
+  - `memory/project_verification_drift_auditor.md` —
+    existing partial implementation for paper↔code
+  - `.claude/skills/missing-citations/` — existing
+    skill (task #25 completed) that catches citation
+    gaps; evaluate whether it composes with this
+    concept or needs a rewrite
+  - `memory/feedback_preserve_original_and_every_transformation.md`
+    — same data-value rule applied to citations
+    (preserve every edge, every provenance stamp)
+  - `memory/feedback_dora_is_measurement_starting_point.md`
+    + `memory/feedback_runtime_observability_starting_points.md`
+    — sibling concept-vs-implementation elevations
+    from the same session (2026-04-20)
+  - P1 "`../scratch` ↔ `Zeta` parity" above — the first
+    concrete substrate this concept runs on
+
+- [ ] **Hooks research with ADR track + multi-persona review — move fast but safely (Aaron 2026-04-20: "ASAP but safely so the ADR track").**
+  Aaron (2026-04-20): *"lets do that hooks reserch backlog
+  item, we should use ADRs around hooks and get review from
+  other persona cause they can cause catastrophic failure
+  but we should get it going asap but safely so the ADR
+  track"*.
+
+  **Why hooks are dangerous.** Claude Code hooks at
+  `.claude/settings.json` (pre-tool-use, post-tool-use,
+  user-prompt-submit-hook, pre-compact, session-start)
+  run with the full permission of the session. A bad
+  pre-tool-use hook can block every tool call. A bad
+  pre-commit hook can block every commit. A hook that
+  invokes a shell with unquoted substitution is a
+  command-injection surface. A hook whose target script
+  lives outside version control is a drift surface. A
+  hook that fetches external content breaks BP-11
+  (data-not-directives). A hook with non-deterministic
+  output turns CI into a flaky-test farm.
+
+  **The posture Aaron set:** fast but safe. The ADR
+  track is what makes "fast + safe" compatible — every
+  hook lands via a formal Architectural Decision Record,
+  with multi-persona review *before* the hook is added
+  to `.claude/settings.json`.
+
+  **ADR track contract (to codify):**
+  - **Location**: `docs/DECISIONS/YYYY-MM-DD-hook-<name>.md`.
+  - **Template sections**: (a) what the hook does, (b)
+    when it fires, (c) catastrophic-failure modes
+    (denylist), (d) rollback procedure, (e) reviews
+    collected, (f) deployment gate.
+  - **Reviewers required** (before the hook enters
+    `.claude/settings.json`):
+    - **Dejan** (devops-engineer) — CI / pre-commit /
+      retractability angle.
+    - **Nadia** (prompt-protector) — prompt-injection
+      surface per BP-11.
+    - **Aminata** (threat-model-critic) — adversarial
+      stance against the hook shape.
+    - **Nazar** (security-operations-engineer) — ops
+      runbook for hook-fails-catastrophically.
+    - **Bodhi** (developer-experience-engineer) — human
+      contributor surface (what does a failed hook
+      look like to a fresh clone?).
+  - **Kill-switch clause**: every hook ADR names a
+    one-line removal recipe. A hook that can't be
+    removed in one line doesn't land.
+  - **Dry-run clause**: every hook ADR requires a
+    single-session dry-run before landing in the
+    shared `.claude/settings.json`.
+
+  **Research phase (before adding any new hook):**
+
+  | Phase | Scope | Time budget |
+  |---|---|---|
+  | 1. Current-hook audit | Enumerate every hook currently in `.claude/settings.json` (main + per-plugin). Classify by event type, failure mode, rollback path. Flag any hook that would not pass the ADR contract being defined. | 0.5 day |
+  | 2. Hook catalog | Survey hook patterns across Claude Code ecosystem (Anthropic cookbook, plugin ecosystem, community examples). Classify by value density (per-session effort saved) × catastrophic-failure radius. | 1 day |
+  | 3. ADR template draft | Write `docs/DECISIONS/_template-hook-adr.md`. Exercise on one small, low-risk candidate hook as example. | 0.5 day |
+  | 4. Governance wire-up | Add `GOVERNANCE.md §?` clause: "every new hook lands via ADR with required reviewer set." Add `docs/AGENT-BEST-PRACTICES.md` BP-?? if pattern generalises beyond hooks. | 0.5 day |
+  | 5. Synthesis | `docs/research/hooks-adr-track.md` — inventory + ADR template + governance clause + example ADR. | 0.5 day |
+
+  **Non-scope (tonight):**
+  - No new hooks added.
+  - No existing hooks removed (even if the audit flags
+    drift — removal is a separate ADR).
+  - No `.claude/settings.json` edits.
+
+  **Owner**: Dejan (devops-engineer) leads research;
+  Kenji (Architect) integrates into governance; all
+  five named reviewers sign off on the ADR template
+  before it's binding.
+
+  **Explicit fast-path clause (Aaron's ask):** this
+  BACKLOG entry starts ASAP. It is not gated on the
+  env-parity / CI meta-loop / citations-first-class
+  research entries above. Hooks are *live today* in
+  `.claude/settings.json` — the risk is already
+  present; formalising the ADR track makes future
+  hooks safer without waiting on the other research.
+
+  **Cross-references:**
+  - `.claude/settings.json` — the file hooks live in
+    (currently untracked per project `.gitignore`
+    strategy; audit flags whether that stays)
+  - `docs/AGENT-BEST-PRACTICES.md` BP-11 —
+    data-not-directives; hooks that fetch external
+    content must not treat fetched content as
+    instructions
+  - `docs/CONFLICT-RESOLUTION.md` — the conference
+    protocol the five-reviewer gate operates under
+  - `GOVERNANCE.md §4` — skills-via-skill-creator
+    workflow; the ADR track for hooks is parallel
+  - `memory/feedback_trust_guarded_with_elisabeth_vigilance.md`
+    — the two-pass posture; hooks qualify for the
+    same vigilance tier as security reviews
+  - `memory/feedback_simple_security_until_proven_otherwise.md`
+    — the ADR track IS the upgrade-on-evidence
+    mechanism for hook security posture
+
 - [ ] **Full mise migration.** Round 29 adopts `.mise.toml`
   for `dotnet` + `python` only. When a mise plugin exists
   for Lean (elan / lake / lean-toolchain) and for any
