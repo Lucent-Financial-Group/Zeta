@@ -279,6 +279,23 @@ within each priority tier.
   `docs/research/**` claims. Graceful-degradation clause:
   Aarav files a P1 drift finding if no claim is discharged
   for ≥3 consecutive rounds without declared pause reason.
+  **Latent blocker (Round 43):** the cadence names
+  `complexity-reviewer` (Hiroshi) and `claims-tester`
+  (Daisy) as executors, but neither persona file exists
+  under `.claude/agents/` — only `performance-engineer`
+  (Naledi) is present on the perf-adjacent roster, and
+  memory explicitly marks Naledi as **distinct** from
+  Hiroshi (Naledi: benchmark-driven hot-path tuning;
+  Hiroshi: asymptotic-complexity analysis). Consequence:
+  the discharge queue cannot advance through the v2
+  pipeline as written. Resolution options: (a) land the
+  two persona files via the `skill-creator` flow, (b)
+  amend the v2 ADR to route discharge through Naledi +
+  a claims-tester-acting role with a role-acting note,
+  (c) declare an explicit pause on the cadence until (a)
+  or (b) lands (with a documented reason, so Aarav's
+  drift-finding clause doesn't fire). No round-43
+  discharge landed.
 
 - [ ] **Fully-retractable CI/CD** — Aaron 2026-04-19: *"fully
   rtractable ci/ci backlog item"* → *"ci/cd"*. Apply the
