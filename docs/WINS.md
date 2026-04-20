@@ -1,5 +1,18 @@
 # Wins
 
+**For the sceptic reading this cold:** Zeta is a vibe-coding
+experiment. The human maintainer has 20+ years of professional
+coding experience and has deliberately written *zero* lines of
+code, docs, specs, skills, workflows, or config in this
+repository. Every file under version control is authored by an
+AI agent; the maintainer's contribution is chat-level guidance
+and git authorship of commits whose *content* came from the
+agent roster. The wins below are therefore wins on an all-AI
+codebase — every catch is a catch on code no human has ever
+typed into, in a tree no human has ever audited end-to-end.
+Verifiable via the git log (`Co-Authored-By:` trailers on
+commits name the drafting agent).
+
 Things that worked. Written to celebrate independently, not
 buried in `docs/ROUND-HISTORY.md`. Each entry names what
 happened, what would have gone wrong without it, and what
@@ -14,9 +27,11 @@ passes, because the pattern is the value.
 **See also:** [`docs/copilot-wins.md`](copilot-wins.md) — the
 tabular log of catches from the GitHub Copilot PR reviewer.
 Same newest-first discipline, wins only, one row per finding.
-The two files together answer "was having AI reviewers worth
-it?" — this file for the factory's own agents, the sibling
-for the external tool.
+The two files together answer the Zeta experiment's load-bearing
+question: *can a multi-agent factory plus an external AI
+reviewer carry a research-grade codebase forward with the human
+in a chat-only loop?* This file logs the factory's own agents;
+the sibling logs the external reviewer.
 
 ## Wins — round 38
 

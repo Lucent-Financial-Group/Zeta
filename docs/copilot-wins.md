@@ -9,17 +9,29 @@ referential rule bugs. The wins are tabulated by class and
 each row names the file and line. If you want to verify, the
 raw Copilot review stream is one `gh api` call away (recipe
 below). We do not record fails here; the question is not "is
-the AI infallible" but "is it pulling its weight alongside
-human reviewers", and the answer is audibly yes.
+the AI infallible" but "is it pulling its weight", and the
+answer is audibly yes.
+
+That weight matters more than it first looks, because Zeta is
+a vibe-coding experiment: the human maintainer has 20+ years
+of professional coding experience and has deliberately written
+*zero* lines of code, docs, specs, skills, workflows, or
+config in this repository. Every file under version control is
+authored by an AI agent; the maintainer's contribution is
+chat-level guidance. There is therefore no "other human
+reviewer" on the floor — Copilot's findings are the *only*
+non-roster audit on this tree. Every bug below was caught in
+code no human has ever typed into, in a tree no human has ever
+read end-to-end. That is a materially stronger claim than the
+same log would make on a mixed-authorship repo.
 
 This is one slice of a bigger Zeta experiment: whether an
 external AI reviewer, a roster of named AI personas, and an
 architect agent coordinating them can carry a research-grade
-database-engine project forward without the human maintainer
-having to sit in the loop on every commit. The sibling file
-[`docs/WINS.md`](WINS.md) is the narrative version for the
-factory's own wins; this file is the tabular version for the
-external reviewer's.
+database-engine project forward with the human maintainer in
+a chat-only loop. The sibling file [`docs/WINS.md`](WINS.md)
+is the narrative version for the factory's own wins; this
+file is the tabular version for the external reviewer's.
 
 Append-only; **newest-first** per Zeta convention. One row
 per catch. Wins only — no "considered and rejected"
