@@ -2344,6 +2344,25 @@ systems. This track claims the space.
 - GPU OLTP (irrelevant to .NET)
 - io_uring wrappers (no first-class .NET support)
 - TPM/Intel SGX hardware-attested commits
+- **`ace` — package manager of everything (naming parking lot).**
+  Aaron, 2026-04-19 (paraphrase): "backlog ace the package
+  manager of everything or we could just call it source or tap
+  or root or . lol jk about the last one". Candidate names
+  ranked by the human maintainer: `ace` (preferred; aligns
+  with the factory's handle lineage), `source` (semantically
+  loaded — conflicts with "source of truth" in DBSP
+  terminology), `tap` (collides with Homebrew's tap
+  vocabulary), `root` (collides with filesystem + permission
+  semantics), `.` (joke). Scope intentionally undefined: the
+  word "everything" is the interesting constraint — is this
+  a meta-package-manager (brew/apt/nuget/npm under one
+  surface), a universal artefact resolver (source + binary
+  + skill + persona + spec + dataset + proof), or a
+  retraction-native dependency graph (DBSP-style incremental
+  resolution)? Parked here so when the idea gets promoted
+  the naming-expert and Ilyana (public-API designer) start
+  from Aaron's shortlist rather than re-deriving it. No
+  effort estimate; pure research-provocation entry.
 
 ## ⏭️ Declined
 
