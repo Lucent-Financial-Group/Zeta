@@ -1,0 +1,29 @@
+{
+  "round": "38",
+  "range": "main..HEAD",
+  "roster_total": 20,
+  "roster_touched": 11,
+  "roster_coverage": 0.55,
+  "personas": [
+    {"name": "aarav", "last_round": 0, "staleness_rounds": "-", "commit_mentions": 0, "touched_this_round": 0},
+    {"name": "aaron", "last_round": 0, "staleness_rounds": "-", "commit_mentions": 13, "touched_this_round": 1},
+    {"name": "aminata", "last_round": 32, "staleness_rounds": "6", "commit_mentions": 4, "touched_this_round": 1},
+    {"name": "bodhi", "last_round": 34, "staleness_rounds": "4", "commit_mentions": 1, "touched_this_round": 1},
+    {"name": "daya", "last_round": 34, "staleness_rounds": "4", "commit_mentions": 0, "touched_this_round": 0},
+    {"name": "dejan", "last_round": 29, "staleness_rounds": "9", "commit_mentions": 2, "touched_this_round": 1},
+    {"name": "ilyana", "last_round": 0, "staleness_rounds": "-", "commit_mentions": 7, "touched_this_round": 1},
+    {"name": "iris", "last_round": 34, "staleness_rounds": "4", "commit_mentions": 1, "touched_this_round": 1},
+    {"name": "kenji", "last_round": 22, "staleness_rounds": "16", "commit_mentions": 2, "touched_this_round": 1},
+    {"name": "kira", "last_round": 32, "staleness_rounds": "6", "commit_mentions": 0, "touched_this_round": 0},
+    {"name": "mateo", "last_round": 32, "staleness_rounds": "6", "commit_mentions": 3, "touched_this_round": 1},
+    {"name": "nadia", "last_round": 32, "staleness_rounds": "6", "commit_mentions": 0, "touched_this_round": 0},
+    {"name": "naledi", "last_round": 32, "staleness_rounds": "6", "commit_mentions": 0, "touched_this_round": 0},
+    {"name": "nazar", "last_round": 34, "staleness_rounds": "4", "commit_mentions": 3, "touched_this_round": 1},
+    {"name": "rodney", "last_round": 0, "staleness_rounds": "-", "commit_mentions": 0, "touched_this_round": 0},
+    {"name": "rune", "last_round": 32, "staleness_rounds": "6", "commit_mentions": 0, "touched_this_round": 0},
+    {"name": "soraya", "last_round": 35, "staleness_rounds": "3", "commit_mentions": 2, "touched_this_round": 1},
+    {"name": "sova", "last_round": 0, "staleness_rounds": "-", "commit_mentions": 3, "touched_this_round": 1},
+    {"name": "tariq", "last_round": 0, "staleness_rounds": "-", "commit_mentions": 0, "touched_this_round": 0},
+    {"name": "viktor", "last_round": 32, "staleness_rounds": "6", "commit_mentions": 0, "touched_this_round": 0}
+  ]
+}

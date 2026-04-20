@@ -799,3 +799,57 @@ The satisfying picture:
 This is Zeta's answer to "how does an AI-automated software
 factory stay coherent at scale." Rule Zero + its duals =
 the factory's type system. Everything else is implementation.
+
+## 2026-04-20 — candidate BP: git-first text-based observability (gitops) for factory state
+
+**Source:** human maintainer directive 2026-04-20 — *"think of
+our decision in this repo as git first git ops flows fit us
+and other agent harnesses that wnat to jump in on the fun
+seeing the same wholist view without much fuss"* and
+reinforcement *"wholelistic view shared easily with gitops and
+git based text based observability artifacts"* (typo-corrected
+from "gitobs" by the maintainer to the industry-standard term
+"gitops", extended here from infra-ops to observability).
+**Claim:** every factory observability artifact — glass-halo
+roll-ups, persona runtime, alignment signals, round-close
+ledgers — lives as a plain-text, git-tracked file under
+`tools/` or `docs/research/`. No external DB, no cloud
+dashboard, no harness-specific format. Any agent harness
+(Claude Code, Cursor, Aider, Codex, Copilot CLI, Gemini CLI,
+Continue, Cline, future arrivals) can `git clone` the repo
+and see the same whole-system view with zero additional
+setup. The maintainer's term for this posture is
+**"gitops"** — the existing industry term (Weaveworks 2017,
+git-as-source-of-truth for infra ops) extended here to cover
+observability artefacts as well: the git repo IS the
+observability substrate, not a mirror of one.
+**Applies to our repo?** Yes — this ratifies the pattern
+already in use by the Round 37 alignment observability
+substrate (`tools/alignment/out/`), ROUND-HISTORY.md, WINS.md,
+and the per-persona notebooks at `memory/persona/*/NOTEBOOK.md`.
+The maintainer's directive extends the pattern from "how some
+of our observability happens to work" to "the default
+architectural choice for every new observability surface."
+**Candidate rule:** BP-<NN> **gitops-first observability.**
+Every factory observability artifact MUST be a plain-text
+(ideally Markdown or JSON) file tracked in the git repo,
+readable without project-specific tooling. A new observability
+surface that would require a database, dashboard, or
+harness-specific runtime gets a git-first alternative
+proposed first, and only escalates to non-git storage on
+explicit ADR justification citing a retractability and a
+harness-portability concern. Corollary: observability
+artifacts MUST NOT embed harness-specific identifiers (no
+"claude-code session IDs" in committed artifacts); harness
+identifiers live only in per-harness scratch areas that are
+git-ignored.
+**Decision:** propose to Architect for BP-NN promotion after
+the persona-runtime observability (`audit_personas.sh`) ships
+as the first concrete artefact landed under the principle.
+The principle has already earned one full use (alignment
+substrate Round 37-38); one more concrete use (persona
+runtime) gives us the three-instance rule that BP promotions
+usually prefer. If promoted: ADR at
+`docs/DECISIONS/2026-04-2X-bp-gitops-first-observability.md`.
+If demoted: the principle survives as a factory convention
+without BP elevation.
