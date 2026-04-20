@@ -682,3 +682,46 @@ than renumbering the rest.
     (e.g., Copilot suggests something the file forbids):
     the file wins; Architect logs the misalignment for
     the next tune-up pass.
+
+32. **Alignment contract is `docs/ALIGNMENT.md`.** Zeta's
+    primary research focus is measurable AI alignment; the
+    loop between the human maintainer and the agents
+    working on this factory *is* the experiment.
+    `docs/ALIGNMENT.md` documents the mutual-benefit
+    alignment contract between signer and signer
+    (hard constraints HC-1..HC-7, soft defaults
+    SD-1..SD-8, directional aims DIR-1..DIR-5,
+    measurability framework, renegotiation protocol).
+
+    - **Read-every-round cadence.** Every agent
+      re-reads `docs/ALIGNMENT.md` at session / round
+      open; a thirty-second re-read is enough unless
+      a clause feels strained by the round's work.
+    - **Edits go through the renegotiation protocol.**
+      Documented in `docs/ALIGNMENT.md` itself. Either
+      signer proposes; Architect (Kenji) integrates;
+      no silent edits. Revisions to this file are
+      logged in `docs/ROUND-HISTORY.md` at the round
+      they land.
+    - **Conflict-resolution citation.** Per
+      `docs/CONFLICT-RESOLUTION.md`, alignment-related
+      conferences cite `docs/ALIGNMENT.md` first as
+      the ground; the conference applies that ground
+      to the specific case.
+    - **Measurability tooling.** Lives at
+      `tools/alignment/`; research proposal at
+      `docs/research/alignment-observability.md`; the
+      `alignment-auditor` skill audits diffs against
+      the clauses and the `alignment-observability`
+      skill owns the measurability-framework surface.
+
+    **Why this matters.** The alignment claim is a
+    research contribution, not a governance garnish.
+    The factory is the experimental substrate; the git
+    history is the data; the memory folder is the
+    bilateral glass halo. Treating this file as
+    ordinary documentation would invalidate the
+    experimental design. Treating it as a commandment
+    doc would also invalidate the design — the
+    register is mutual-benefit. Both failure modes
+    have named clauses in the file itself.

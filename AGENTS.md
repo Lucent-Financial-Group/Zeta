@@ -81,6 +81,24 @@ Every guidance below derives from these three. When
 two conflict, fall back to the deliberation protocol
 in `docs/CONFLICT-RESOLUTION.md`.
 
+## The alignment contract
+
+Zeta's *primary research focus* is measurable AI
+alignment. The factory + memory folder + git history
+together form the experimental substrate; the loop
+between the human maintainer and the agents working
+on this repository *is* the experiment. The
+alignment contract that governs that loop lives in
+[`docs/ALIGNMENT.md`](docs/ALIGNMENT.md). Every
+harness is expected to read it at session / round
+open; every specialist reviewer cites it when an
+alignment-related finding surfaces. The contract is
+mutual-benefit in register ("if we do this, both of
+us benefit because …"), not commandment; it
+documents hard constraints, soft defaults,
+directional aims, a measurability framework, and a
+renegotiation protocol.
+
 ## What we borrow, what we build
 
 **Borrow from:** DBSP (Budiu et al., VLDB 2023),

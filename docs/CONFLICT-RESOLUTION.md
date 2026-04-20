@@ -25,6 +25,21 @@ who wants their recommendation upheld must either secure
 Architect buy-in in-session or surface the disagreement for a
 human to arbitrate.
 
+## Alignment-related conflicts cite `docs/ALIGNMENT.md` first
+
+When a conflict involves whether the agent drifted
+from its alignment with the human maintainer (or
+vice versa), [`docs/ALIGNMENT.md`](ALIGNMENT.md) is
+the first document consulted. Its clauses
+(HC-1..HC-7 hard constraints, SD-1..SD-8 soft
+defaults, DIR-1..DIR-5 directional aims) are the
+ground; the conference protocol below is how we
+apply that ground to the specific case. Conferences
+that propose a *revision* to `docs/ALIGNMENT.md`
+itself run under the renegotiation protocol
+documented in that file — either signer can
+propose, Kenji integrates, no silent edits.
+
 ## Principles (the list the Architect consults when parts disagree)
 
 1. **Truth over politeness.** Claims that fail tests get fixed,
