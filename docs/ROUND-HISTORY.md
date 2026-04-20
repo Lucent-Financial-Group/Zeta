@@ -209,6 +209,40 @@ header on v1. The round's pattern: Arc 8 lands a correction for
 Aarav's round-18 finding; Arc 9 catches the corrector itself
 under-reviewed. Both self-corrections land before round-close.
 
+### Arc 10 — In-round supersedure: v2 router-coherence ADR closes all 10 Kira findings (`09f0889`, `4efe545`)
+
+Round 41 closes by executing the round-42 supersedure commitment
+from Arc 9 a round earlier than scheduled. `09f0889` lands
+`docs/DECISIONS/2026-04-21-router-coherence-v2.md` — a 149-line
+ADR that supersedes v1 (`47d92d8`) in the same round and closes
+all 10 Kira findings via named textual closures C-P0-1 through
+C-P2-10. Each closure states the concrete change: grandfather
+clause bounded with Kenji-owned inventory + one-per-round
+discharge (C-P0-1); reverse trigger made unconditional so table
+matches prose (C-P0-2); escalation-evidence exception permits
+Stage-2 under conference protocol with explicit labelling
+(C-P0-3); Status rewritten to "Accepted" to match the Standing
+Resolution citation (C-P1-4); Stage-1 trigger widened to match
+`claims-tester` SKILL.md contract (C-P1-5); decision-table row
+for under-specified docstring now explicit about author-bounce
+and Stage-2 non-firing (C-P1-6); escalation timebox (round +2
+auto-promote to BACKLOG P1) prevents v2 from reproducing the
+23-round-stale failure mode v1 diagnoses (C-P1-7); Kenji named
+as **binding dispatcher** so advisory + advisory composes to a
+mandatory pipeline (C-P1-8); BCL-contract example replaced with
+`ArrayPool<T>.Rent` (C-P2-9); scope-creep paragraph on future
+analyst/falsifier pairs cut (C-P2-10). `4efe545` appends the
+"Superseded by v2" header to v1 per GOVERNANCE §2 so the
+CONFLICT-RESOLUTION Active-tensions citation chain remains
+resolvable, and corrects v1's Status from "Proposed" to
+"Accepted (pre-adversarial-review; superseded by v2 same-round
+after Kira pass)" per Closure C-P1-4. The pattern: Arc 9
+surfaces the under-review; Arc 10 lands the close in the same
+round rather than deferring a known-imperfect artefact to
+round-42. Same-round supersedure is the pattern v1's own
+Escalation clause permits — executing it demonstrates the
+pattern works on a live artefact.
+
 ### Round 41 observations for Round 42
 
 - The **audit → ADR → ship → audit → close-P0 → file-P1**
@@ -280,6 +314,8 @@ under-reviewed. Both self-corrections land before round-close.
 | `fcfa3d9` | CONFLICT-RESOLUTION Hiroshi ↔ Daisy row | Strengthened (ADR 47d92d8's loop closed at the canonical authority matrix; future PR authors with an `O(·)` claim meet the hand-off contract without having to read the ADR first) | Strengthened (standing resolution named in-place — same retraction surface as other Active-tensions rows; if the protocol drifts, it's edited here rather than silently forgotten) | Preserved (single-row doc edit; no SKILL.md touch, so GOVERNANCE §4 skill-creator gate not engaged) |
 | `779d7ef` | Harsh-critic findings on ADR `47d92d8` filed as round-42 supersedure | Strengthened (3 P0 + 5 P1 + 2 P2 adversarial findings surfaced post-landing AND tracked rather than discarded; ADR went in under-reviewed is named honestly in the BACKLOG prose; supersedure chosen over inline-edit because CONFLICT-RESOLUTION citation chain to `47d92d8` is load-bearing) | Strengthened (supersedure IS the retraction surface — v1 remains with "Superseded by …" header per GOVERNANCE §2; Kira audit gate on v2 closes each finding; v1's Standing Resolution citation in CONFLICT-RESOLUTION stays live through the transition) | Preserved (single BACKLOG entry addition; no ADR body edited, no SKILL.md touched, no CONFLICT-RESOLUTION row moved; claims-tester + complexity-reviewer SKILL.md updates explicitly deferred to target v2 rather than v1) |
 | `160fcfa` | Arc 9 — self-correction sweep narrative | Strengthened (narrative-ledger drift closed honestly; four post-Arc-8 primary commits now visible as one coherent self-correction story rather than buried in ledger cells; Arc 8-corrects-Aarav / Arc 9-catches-Arc-8 pattern named rather than implied) | Strengthened (narrative is a single doc edit, revertable in one `git revert`; arc count now matches primary-commit count, which IS the retraction surface for narrative-ledger alignment) | Preserved (single narrative insertion; no observations-section edit, no ledger row moved, no BACKLOG or CONFLICT-RESOLUTION touch) |
+| `09f0889` | Arc 10 — v2 router-coherence ADR (in-round supersedure closing 10 Kira findings) | Strengthened (same-round adversarial-review gate closure on a load-bearing ADR; 3 P0 + 5 P1 + 2 P2 findings each land a named textual closure C-P0-1 … C-P2-10 in v2; Kenji named as binding dispatcher so advisory + advisory composes to mandatory pipeline; escalation timebox prevents v2 from reproducing v1's diagnosed 23-round-stale failure mode) | Strengthened (supersedure IS the retraction — v1 stays in place as historical record; v2 is the operative contract; same-round landing demonstrates v1's own Escalation clause permits the pattern; BACKLOG supersedure entry discharged by this commit) | Preserved (single new ADR file under `docs/DECISIONS/`; no v1 body edited in this commit, no SKILL.md touched, no CONFLICT-RESOLUTION row moved; `claims-tester` + `complexity-reviewer` SKILL.md edits explicitly deferred to `skill-creator` workflow per GOVERNANCE §4, now targeting v2 as intended) |
+| `4efe545` | Arc 10 — v1 Superseded-by header + Status correction (GOVERNANCE §2 redirect) | Strengthened (supersedure chain now explicitly resolvable: citation chain from CONFLICT-RESOLUTION → v1 → v2 works without silent drift; Status truthfully reflects promulgation state — "Proposed" was factually wrong once v1 was cited as Standing Resolution, per v2's Closure C-P1-4) | Strengthened (Supersedure header is additive; v1 body is not mutated — historical record preserved for the citation graph; the header itself is retractable as a single revert if v2 is later found wrong) | Preserved (single doc edit to v1 ADR only; v1 body text unchanged, no other doc touched; the follow-up `skill-creator` edits to SKILL.md files remain deferred so they target v2 not v1) |
 
 ---
 
