@@ -9,7 +9,7 @@
 
 # Tests
 
-<!-- Command run + counts. Prefer `dotnet test Dbsp.sln -c Release`. -->
+<!-- Command run + counts. Prefer `dotnet test Zeta.sln -c Release`. -->
 
 # Validation
 

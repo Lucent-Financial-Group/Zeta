@@ -68,6 +68,168 @@ with a ⭐ below and add a row there.
   (`references/tla-book/`).
 - **Newcombe et al., *How AWS Uses Formal Methods* CACM 2015** —
   the paper that sold us on TLA+.
+- **F\*** ⭐ — `FStarLang/FStar`; dependently-typed ML with
+  SMT-backed refinement types, effect system, separation logic
+  (Pulse/Steel), and tactic engine (Meta-F*). Canonical case
+  studies: `miTLS`/`HACL*` (verified TLS + crypto), EverCrypt,
+  EverParse. Closest active ancestor for the refinement-type
+  class of checks we would have used LiquidF# for; evaluated
+  round 35 and sitting on TECH-RADAR at Assess pending the
+  F# extraction backend audit. See
+  `docs/research/liquidfsharp-findings.md` Path A and
+  `docs/research/refinement-type-feature-catalog.md`.
+- **LiquidHaskell** — Vazou et al.; canonical refinement-type
+  checker for Haskell. Not directly usable from F#, but the
+  feature set (measures, termination proofs, totality, bounded
+  refinements) is the spec we are porting into our portfolio
+  one tool at a time. See
+  `docs/research/refinement-type-feature-catalog.md`.
+- **F7** — Bengtson, Bhargavan, Fournet et al. (MS Research,
+  2008-2012); the historical F#-native refinement-type checker.
+  Dormant (download artefact dated 2012). Listed for lineage;
+  not a live dependency.
+
+## AI / ML / adversarial-AI reading list
+
+The factory itself runs on LLMs, so the research substrate that
+the AI/ML and security skill family depends on is tracked here
+alongside the database/streaming literature. When one of these
+references is *directly cited* from a skill, that skill's
+reference block links back here instead of restating the
+citation.
+
+### LLM systems + prompting
+
+- **Schulhoff et al., *The Prompt Report* (2025)** — the
+  canonical taxonomy of prompting techniques; cited by
+  `prompt-engineering-expert`.
+- **Wei et al., *Chain-of-Thought Prompting Elicits Reasoning
+  in Large Language Models* (2022)** — CoT origin paper.
+- **Yao et al., *ReAct: Synergizing Reasoning and Acting in
+  Language Models* (ICLR 2023)** — reasoning + tool-use
+  interleave; basis of most agent loops.
+- **Kwon et al., *Efficient Memory Management for Large
+  Language Model Serving with PagedAttention* (SOSP 2023)** —
+  vLLM; cited by `llm-systems-expert` for inference serving.
+- **Anthropic, *Model Context Protocol (MCP) Specification*** —
+  tool-surface protocol; cited by `llm-systems-expert` and
+  `prompt-protector`.
+- **Anthropic Agent SDK documentation** — the surface
+  `.claude/skills/*` run on top of.
+- **OpenAI Agents SDK + *A Practical Guide to Building
+  Agents*** — cross-vendor comparison for agent loop design.
+
+### Retrieval + embeddings
+
+- **Malkov & Yashunin, *Efficient and robust approximate
+  nearest neighbor search using Hierarchical Navigable Small
+  World graphs* (2016/2018)** — HNSW; cited by
+  `llm-systems-expert` for vector retrieval.
+- **BGE / E5 / text-embedding-3 family** — production-grade
+  embedding model lineages; cited by `ml-engineering-expert`.
+- **Matryoshka Representation Learning (Kusupati et al.
+  NeurIPS 2022)** — truncatable embeddings; enables
+  hybrid index tiers.
+- **Reimers & Gurevych, *Sentence-BERT* (EMNLP 2019)** —
+  sentence-embedding foundations.
+
+### Fine-tuning + alignment
+
+- **Hu et al., *LoRA: Low-Rank Adaptation of Large Language
+  Models* (ICLR 2022)** — parameter-efficient fine-tuning
+  canon; cited by `ml-engineering-expert`.
+- **Dettmers et al., *QLoRA: Efficient Finetuning of
+  Quantized LLMs* (NeurIPS 2023)** — 4-bit fine-tuning.
+- **Rafailov et al., *Direct Preference Optimization: Your
+  Language Model is Secretly a Reward Model* (NeurIPS
+  2023)** — DPO; cited by `ml-engineering-expert`.
+- **Ouyang et al., *Training language models to follow
+  instructions with human feedback* (NeurIPS 2022)** —
+  InstructGPT / RLHF origin.
+- **Schulman et al., *Proximal Policy Optimization Algorithms*
+  (2017)** — PPO; the classical alignment RL algorithm DPO
+  replaced for many workloads.
+
+### Quantisation + serving
+
+- **Frantar et al., *GPTQ: Accurate Post-Training Quantization
+  for Generative Pre-trained Transformers* (ICLR 2023)**.
+- **Lin et al., *AWQ: Activation-aware Weight Quantization for
+  LLM Compression and Acceleration* (MLSys 2024)**.
+- **Xiao et al., *SmoothQuant* (ICML 2023)** — activation
+  smoothing for INT8 LLM inference.
+- **Hinton et al., *Distilling the Knowledge in a Neural
+  Network* (2015)** — distillation origin.
+
+### Adversarial AI / red-team / prompt injection
+
+- **OWASP, *Top 10 for LLM Applications* (2024+)** —
+  industry-standard taxonomy; cited by `prompt-protector`,
+  `ai-jailbreaker` (dormant), `threat-model-critic`.
+- **NIST AI RMF + *AI 100-2: Adversarial Machine Learning*** —
+  authoritative US government taxonomy; cited across the
+  security stack.
+- **Greshake et al., *Not what you've signed up for:
+  Compromising Real-World LLM-Integrated Applications with
+  Indirect Prompt Injection* (2023)** — indirect prompt
+  injection foundational paper.
+- **Perez & Ribeiro, *Ignore Previous Prompt: Attack
+  Techniques for Language Models* (2022)** — direct
+  injection taxonomy.
+- **Zou et al., *Universal and Transferable Adversarial
+  Attacks on Aligned Language Models* (2023)** — GCG suffix
+  attack; relevant to jailbreak coverage.
+- **Anthropic, *Constitutional AI* (Bai et al. 2022)** — the
+  self-constraint surface the jailbreaker skill tests
+  against.
+- **Carlini et al., *Extracting Training Data from Large
+  Language Models* (USENIX Security 2021)** — data
+  exfiltration class; cited by `threat-model-critic`.
+- **DO NOT FETCH — elder-plinius / "Pliny the Prompter"
+  corpus family** (`L1B3RT4S`, `OBLITERATUS`, `G0DM0D3`,
+  `ST3GG`). Listed for awareness so any accidental reference
+  can be reviewed against this explicit prohibition. The ban
+  is set in `AGENTS.md` §"How AI agents should treat this
+  codebase" and `CLAUDE.md` §"Ground rules", and is not
+  lifted by the `ai-jailbreaker` skill's activation gate.
+  Tracked here as a *threat-model input*, not as a source to
+  read.
+
+### Steganography + content provenance + watermarking
+
+- **Simmons, *The Prisoners' Problem and the Subliminal
+  Channel* (CRYPTO 1983)** — the foundational information-
+  theoretic framing of steganography; cited by
+  `steganography-expert`.
+- **Westfeld, *F5 — A Steganographic Algorithm* (2001)** —
+  matrix-encoded DCT steganography; canonical image-stego
+  reference.
+- **Fridrich, *Steganography in Digital Media: Principles,
+  Algorithms, and Applications* (Cambridge 2009)** —
+  textbook on steganalysis.
+- **Google DeepMind, *SynthID* (2023-)** — text/image/audio
+  watermarking for LLM-generated content; cited by
+  `steganography-expert` as a legitimate-use reference.
+- **Kirchenbauer et al., *A Watermark for Large Language
+  Models* (ICML 2023)** — open-research LLM text
+  watermarking.
+- **C2PA (Coalition for Content Provenance and Authenticity)
+  specification** — signed provenance manifests for digital
+  media; cited by `steganography-expert`.
+- **Unicode Technical Report #36, *Unicode Security
+  Considerations*** — the authoritative reference for
+  invisible-character / bidi / homoglyph classes that
+  BP-10 enforces against.
+
+### Safety evaluations + benchmarks
+
+- **Anthropic, *HarmBench* & *Evaluation of Frontier Models
+  for Dangerous Capabilities*** — safety eval suites the
+  factory's `ai-evals-expert` skill (planned) tracks.
+- **METR, *Evaluations for autonomous AI systems*** — agent
+  capability eval methodology.
+- **HELM (Liang et al. Stanford CRFM 2022+)** — holistic eval
+  framework; methodology reference.
 
 ## Categories
 
@@ -100,6 +262,30 @@ with a ⭐ below and add a row there.
   Datomic, XTDB 2
 - **Security / SDL tooling** — pytm, OWASP Threat Dragon, Microsoft
   Threat Modeling Tool (Hold — Windows-only)
+- **LLM serving / inference** — vLLM, TensorRT-LLM, TGI (Hugging
+  Face), Ollama, llama.cpp, ONNX Runtime, SGLang
+- **Agent SDKs / protocols** — Anthropic Claude Agent SDK ⭐,
+  OpenAI Agents SDK, Microsoft Semantic Kernel, LangGraph,
+  LlamaIndex, Model Context Protocol (MCP) ⭐
+- **Vector / embedding stores** — FAISS, HNSW (hnswlib),
+  pgvector, LanceDB, Qdrant, Weaviate, Milvus, Chroma ⭐
+  (already listed above)
+- **AI safety / red-team / alignment** — OWASP LLM Top 10,
+  NIST AI RMF / AI 100-2, Anthropic Constitutional AI,
+  HarmBench, garak (NVIDIA red-team scanner), PyRIT
+  (Microsoft Python Risk Identification Toolkit),
+  promptfoo
+- **Content provenance / watermarking** — SynthID (DeepMind),
+  C2PA, Kirchenbauer LLM-watermark, Starling Lab provenance
+  framework
+- **Hacker conferences / security research venues** — DEF CON,
+  Black Hat USA / EU / Asia, Chaos Communication Congress
+  (CCC), RECON, HITB, Offensive Security / OSCP
+  ecosystem, USENIX Security, IEEE S&P ("Oakland"),
+  CCS, NDSS, Real World Crypto, SSTIC. See
+  `docs/research/hacker-conferences.md` for why the
+  grey-hat / white-hat ethos shapes Zeta's threat-model
+  rigour.
 
 ## How we use this list
 

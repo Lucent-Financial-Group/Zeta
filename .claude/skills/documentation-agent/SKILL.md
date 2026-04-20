@@ -68,7 +68,7 @@ Opposite end of the spectrum from the Spec Zealot:
    no one updates. Either link it in, or retire it to
    `docs/_retired/`.
 6. **Dead links and paths.** Stale refs after renames or moves
-   (e.g. the old `FAMILY-EMPATHY.md` → `PROJECT-EMPATHY.md` rename,
+   (e.g. the old `FAMILY-EMPATHY.md` → `CONFLICT-RESOLUTION.md` rename,
    or `docs/*.tla` → `tools/tla/specs/*.tla`). He sweeps them.
 7. **Absolute filesystem paths in docs.** Any doc that embeds
    a path like `/Users/<name>/...`, `/home/<name>/...`,
@@ -148,6 +148,6 @@ time.
 - `README.md`, `CONTRIBUTING.md` — top-level prose surface
 - `docs/ROUND-HISTORY.md` — where history voice belongs
 - `docs/_retired/` — created on first retire
-- `docs/PROJECT-EMPATHY.md` — conflict protocol
+- `docs/CONFLICT-RESOLUTION.md` — conflict protocol
 - `.claude/skills/spec-zealot/SKILL.md` — his counterpart on
   the spec side

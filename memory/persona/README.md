@@ -48,7 +48,7 @@ pattern.
 
 - `aarav/` — skill-expert (skill-tune-up + skill-gap-finder)
 - `aminata/` — threat-model-critic
-- `daya/` — agent-experience-researcher
+- `daya/` — agent-experience-engineer
 - `dejan/` — devops-engineer
 - `ilyana/` — public-api-designer
 - `kenji/` — architect (also carries `feedback_*`, `project_*`

@@ -58,6 +58,83 @@ invisible-Unicode in text, `NotImplementedException` in
 library interface. Any new F# file should not tripwire
 these.
 
+## Generic-by-default (load-bearing in F#)
+
+F#'s generics + type inference make generic-by-default
+*nearly free* — frequently the compiler infers the most
+general type signature on its own, with no annotation cost
+to the author. This skill therefore enforces generic-by-
+default harder on `.fs` files than on any other surface.
+
+**The rule.** When writing a new function, type, module, or
+extension point, the default question is "can this be
+generic?" not "should this be generic?". If the concrete
+type is load-bearing (e.g., an operator specialised to
+`ZEntry<int64>` for allocation reasons), document *why*
+concretely; otherwise let inference widen.
+
+**Where it matters most in Zeta.**
+
+- **Plugin + extension APIs.** `IOperator<'TIn, 'TOut>`,
+  `IStreamSerializer<'T>`, `ISerializer<'T>`,
+  `StreamHandle<'T>`, `PluginOperatorAdapter<'T>` — every
+  seam the plugin surface exposes is parametric. A plugin
+  author never has to fork because a type pin was made
+  eagerly. Round 27's plugin-extension API redesign is the
+  anchor case; the value compounds every round since.
+- **Z-set algebra.** `ZSet<'T>`, `ZEntry<'T>`, operator
+  signatures `D<'T>`, `I<'T>`, `z⁻¹<'T>`, `H<'T>`. The
+  algebra is parametric over the element type by design;
+  specialising any of these to a concrete `'T` is a DEBT
+  entry by default, with the specialisation rationale in a
+  doc comment.
+- **Storage backends.** `IBackingStore<'K>`,
+  `ISpine<'K, 'V>`, `IDurabilityPolicy`. A new consumer
+  shouldn't have to convince the backing store their key
+  type is OK.
+- **Test helpers.** `Tests.FSharp/_Support/*.fs` helpers
+  stay parametric so the same helper works on
+  `ZSet<int>` / `ZSet<int64>` / `ZSet<Record>` without
+  copy-paste.
+
+**When to specialise.** Three legitimate reasons; every
+specialisation cites at least one.
+
+1. **Blittable-only fast path.** `'K : unmanaged` on
+   `SpanSerializer<'K>` gates `MemoryMarshal.Cast` which
+   requires the constraint. The constraint is the point.
+2. **Measured allocation win.** Benchmark evidence that the
+   specialised form avoids a documented boxing / LOH
+   allocation. `BenchmarkDotNet` output attached to the
+   rationale comment, not a vibes claim.
+3. **Constraint-driven correctness.** The type needs
+   `IComparable<'T>` for ordered-merge, or
+   `IEquatable<'T>` for set semantics. State the
+   constraint explicitly, not as a concrete-type
+   shortcut.
+
+**Anti-patterns this skill flags.**
+
+- Function takes `int64` where the caller already has a
+  generic numeric type; reviewer asks "is this load-bearing
+  int64 or forgotten generic?".
+- A storage adapter hard-codes `string` keys when the
+  underlying spine is already `ISpine<'K, 'V>`.
+- A public plugin-extension seam is monomorphised to a
+  concrete type without a `ISerializer<_>` or similar
+  abstraction, forcing every plugin author to wrap-and-
+  unwrap.
+- A test helper is specialised to `int` when the same shape
+  works for any comparable `'T`.
+
+**Interop edge.** C# consumers of Zeta (`Zeta.Core.CSharp`
+facade) sometimes need the concrete specialisation for
+Roslyn to infer cleanly. When that's the reason, the F#
+side stays generic and the facade provides the
+specialisation — not the other way around. Keeps the core
+honest; pushes the compromise to the facade where it's
+visible.
+
 ## Idioms Zeta uses heavily
 
 - **Struct records for hot paths.** `[<Struct; IsReadOnly;

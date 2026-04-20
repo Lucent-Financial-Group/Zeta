@@ -111,7 +111,7 @@ threads), this ADR has the design ready. Revisit criteria:
 - A user filing a bug that specifically needs lock-freedom.
 
 The CAS design is captured above verbatim — drop it in, flip a
-feature flag, run `tests/Dbsp.Tests.FSharp/ConcurrencyHarness.fs`
+feature flag, run `tests/Tests.FSharp/ConcurrencyHarness.fs`
 stress tests, ship.
 
 ## Alternatives considered

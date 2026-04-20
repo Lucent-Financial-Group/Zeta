@@ -76,20 +76,48 @@ without running the main body.
 
 ## Packaging & tool management
 
-**Use `uv`, not `pip`.** Zeta's mise installs `uv`
-alongside python; `uv tool install X` is the canonical
-way to add a dev-tool Python package. `uv` is faster
-than pip, understands lockfiles, and is cross-platform.
+**`uv` is the only Python package / tool manager Zeta
+uses.** Every pre-`uv` alternative is a smell on a Zeta
+PR diff — flag and rewrite:
 
-**Add packages to `tools/setup/manifests/` only when we
-genuinely need them project-wide.** A one-off script that
-uses `requests` doesn't need to be a manifest entry; a
-permanent lint gate like Semgrep does.
+| Smell | Replace with |
+|---|---|
+| `pip install <pkg>` | `uv tool install <pkg>` (CLI) or `uv add <pkg>` (in a pyproject) |
+| `pipx install <pkg>` | `uv tool install <pkg>` — same contract, 10-100x faster, one fewer dep |
+| `poetry install` / `poetry add` | `uv sync` / `uv add` — uv reads pyproject natively |
+| `pyenv install 3.X` (as a standalone manager) | `mise install python@3.X` via `.mise.toml` — Zeta's managed runtime. `uv` also installs Python via `uv python install` but we centralize the runtime pin on mise. |
+| `conda install` / `mamba install` | `uv tool install` for CLIs; flag to Kenji if the package genuinely needs conda's C-dep stack (rare at Zeta's scope) |
+| `requirements.txt` without a lockfile | `pyproject.toml` + `uv.lock` |
+| `virtualenv` / `venv` hand-managed | `uv venv` (auto-activated by mise's `python.uv_venv_auto = "source"`) |
+| `pip-tools` / `pip-compile` | `uv lock` — same compile-and-pin semantics, faster |
 
-**No `requirements.txt` yet.** If Python surface grows
-past a couple of tools we'll add a `pyproject.toml` +
-`uv.lock`. Until then, individual `uv tool install X`
-commands in manifests.
+**Why uv wins on every axis.** Rust-implemented; resolves
+10-100x faster than pip/poetry; single tool covers
+`install` + `venv` + `lock` + `tool` (CLI binaries) +
+`python` (interpreter install); cross-platform identical
+behaviour; reproducible via `uv.lock`. `../scratch` ships
+the same uv-first discipline and was the reference that
+seeded Zeta's adoption round 34.
+
+**Zeta's manifest convention.** Declarative CLI-tool
+entries live in [tools/setup/manifests/uv-tools](/tools/setup/manifests/uv-tools);
+[common/python-tools.sh](/tools/setup/common/python-tools.sh)
+runs `uv tool install` over every non-comment non-empty
+line. A one-off script that uses `requests` doesn't need a
+manifest entry; a permanent lint gate like Semgrep does.
+
+**No `requirements.txt` yet.** If the Python surface grows
+past a handful of tools we add a `pyproject.toml` +
+`uv.lock` at repo root. Until then, individual `uv tool
+install X` commands in the `uv-tools` manifest.
+
+**BP-adjacent.** This preference is codified in
+`.github/copilot-instructions.md` "Conventions you must
+respect" so Copilot flags pip / pipx / poetry / conda /
+pyenv / requirements.txt / virtualenv on every PR diff.
+Candidate for BP-18 promotion after round 44 per the
+existing scratchpad path (matches the line-start `+`
+markdown rule).
 
 ## Subprocess hygiene
 

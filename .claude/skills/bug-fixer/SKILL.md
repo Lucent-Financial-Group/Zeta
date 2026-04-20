@@ -67,7 +67,7 @@ Before writing the fix:
   If it crosses three or more (storage + algebra +
   planner; or runtime + operators + infra), this isn't
   just a bug fix — it's an integration decision.
-  Pause and run the `docs/PROJECT-EMPATHY.md`
+  Pause and run the `docs/CONFLICT-RESOLUTION.md`
   conference.
 - If the fix touches a behavioural spec under
   `openspec/specs/**`, flag it for `spec-zealot`
@@ -151,7 +151,7 @@ Most bug fixes stay within this procedure. When the
 fix crosses boundaries, escalate:
 
 - **Integration decision** (fix touches 3+
-  specialist surfaces) → `docs/PROJECT-EMPATHY.md`
+  specialist surfaces) → `docs/CONFLICT-RESOLUTION.md`
   conference. `architect` integrates.
 - **Public API change** → `public-api-designer`
   review before the fix lands.
@@ -184,7 +184,7 @@ fix crosses boundaries, escalate:
 
 - `docs/BUGS.md` — the queue
 - `docs/ROUND-HISTORY.md` — where the fix is narrated
-- `docs/PROJECT-EMPATHY.md` — conference protocol when
+- `docs/CONFLICT-RESOLUTION.md` — conference protocol when
   the fix requires integration decision
 - `GOVERNANCE.md` §20 — reviewer floor
 - `docs/AGENT-BEST-PRACTICES.md` BP-05 (declarative,

@@ -29,13 +29,13 @@ mkdir -p "$ZETA_ENV_DIR"
     echo "eval \"\$($(command -v brew) shellenv)\""
   fi
 
-  if [ -d "$HOME/.dotnet" ]; then
-    echo "export DOTNET_ROOT=\"\$HOME/.dotnet\""
-    # dotnet binary itself + global tools dir
-    echo "case \":\${PATH:-}:\" in"
-    echo "  *:\"\$HOME/.dotnet\":*) ;;"
-    echo "  *) export PATH=\"\$HOME/.dotnet\${PATH:+:\$PATH}\" ;;"
-    echo "esac"
+  # Round-34 flip: dotnet SDK comes from mise (see .mise.toml
+  # `[tools] dotnet`). Mise shims put `dotnet` on PATH via
+  # `mise activate --shims` below. We still add
+  # `$HOME/.dotnet/tools` because `dotnet tool install -g` always
+  # lands globals there — that's a .NET convention independent
+  # of where the SDK lives.
+  if [ -d "$HOME/.dotnet/tools" ]; then
     echo "case \":\${PATH:-}:\" in"
     echo "  *:\"\$HOME/.dotnet/tools\":*) ;;"
     echo "  *) export PATH=\"\$HOME/.dotnet/tools\${PATH:+:\$PATH}\" ;;"
@@ -56,8 +56,15 @@ mkdir -p "$ZETA_ENV_DIR"
     echo "esac"
   fi
 
+  # Pure PATH activation (no --shims) — points PATH directly at
+  # real tool binaries; mise's own docs call this ~10x faster
+  # than shims. Works in a local non-interactive bash test with
+  # BASH_ENV sourcing; CI will be the tiebreaker across the
+  # Ubuntu + macOS matrix. If CI surfaces a step that needs
+  # shims, flip back to `mise activate bash --shims` and file
+  # a DEBT entry explaining which step failed and why.
   if command -v mise >/dev/null 2>&1; then
-    echo "eval \"\$(mise activate bash --shims)\""
+    echo "eval \"\$(mise activate bash)\""
   fi
 } > "$ZETA_ENV_FILE"
 
@@ -74,21 +81,19 @@ if [ -n "${GITHUB_ENV:-}" ] && [ -n "${GITHUB_PATH:-}" ]; then
   echo "BASH_ENV=$ZETA_ENV_FILE" >> "$GITHUB_ENV"
   echo "ENV=$ZETA_ENV_FILE" >> "$GITHUB_ENV"
 
-  # DOTNET_ROOT is worth writing explicitly in GITHUB_ENV so
-  # non-bash tooling (PowerShell on Windows runners, future
-  # Node-based actions) sees it without sourcing the file.
-  if [ -d "$HOME/.dotnet" ]; then
-    echo "DOTNET_ROOT=$HOME/.dotnet" >> "$GITHUB_ENV"
-  fi
-
   # GITHUB_PATH gets the resolvable dirs as a belt-and-braces
-  # fallback for non-bash shells.
-  if [ -d "$HOME/.dotnet" ];       then echo "$HOME/.dotnet" >> "$GITHUB_PATH"; fi
+  # fallback for non-bash shells. dotnet itself comes from mise
+  # shims (round-34 flip), not $HOME/.dotnet.
   if [ -d "$HOME/.dotnet/tools" ]; then echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"; fi
   if [ -d "$HOME/.elan/bin" ];     then echo "$HOME/.elan/bin" >> "$GITHUB_PATH"; fi
   if [ -d "$HOME/.local/bin" ];    then echo "$HOME/.local/bin" >> "$GITHUB_PATH"; fi
 
-  # mise shims (python, etc. — dotnet is NOT in mise per round 32)
+  # mise shims (dotnet + python + java + bun + uv all live here).
+  # Using --shims (not pure PATH activation) for CI reliability:
+  # each `bash -c` step on a runner is a fresh subshell without a
+  # prompt hook to trigger dynamic PATH update. Shims work
+  # without hooks. On a dev laptop, a user can opt into the
+  # ~10x-faster `mise activate` (no --shims) in their own rc file.
   for shim_dir in \
       "$HOME/.local/share/mise/shims" \
       "/opt/homebrew/opt/mise/shims" \
@@ -99,15 +104,30 @@ if [ -n "${GITHUB_ENV:-}" ] && [ -n "${GITHUB_PATH:-}" ]; then
     fi
   done
 
-  echo "✓ BASH_ENV + ENV + DOTNET_ROOT + GITHUB_PATH updated for the remainder of the CI job"
+  echo "✓ BASH_ENV + ENV + GITHUB_PATH updated for the remainder of the CI job"
 fi
 
 # Suggest sourcing the file from common shell rc files on first run.
 # We do NOT auto-edit .zshrc / .bashrc — that's a user-visible edit
 # and should be opt-in. The doc tells users how to wire it.
-cat <<EOF
+cat <<'EOF'
 
 Next step (one-time, local dev only):
-  Add this line to your ~/.zshrc (or ~/.bashrc on Linux):
-    [ -f "\$HOME/.config/zeta/shellenv.sh" ] && . "\$HOME/.config/zeta/shellenv.sh"
+  Paste the line below into all of the following files that
+  exist on your system so every shell variant finds the
+  Zeta toolchain. The block is idempotent — adding it twice
+  is harmless (the `-f` guard skips if the file isn't there).
+
+    [ -f "$HOME/.config/zeta/shellenv.sh" ] && . "$HOME/.config/zeta/shellenv.sh"
+
+  Target files:
+    ~/.zshrc        (zsh interactive shells; macOS default)
+    ~/.bashrc       (bash interactive shells; Linux default)
+    ~/.bash_profile (bash login shells on macOS)
+    ~/.profile      (POSIX fallback; SSH non-interactive)
+
+  Opt-in auto-edit of these files via the install script is
+  BACKLOGged (see docs/BACKLOG.md "Opt-in auto-edit of shell
+  rc files on install"). Until then, paste manually — we
+  deliberately don't touch user rc files without consent.
 EOF

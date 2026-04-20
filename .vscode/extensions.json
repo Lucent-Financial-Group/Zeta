@@ -13,6 +13,12 @@
     "tamasfe.even-better-toml",
     "semgrep.semgrep",
     "jnoortheen.xonsh",
-    "alloy.alloy"
+    "alloy.alloy",
+    "sonarsource.sonarlint-vscode",
+    "jetmartin.bats",
+    "ms-python.python",
+    "charliermarsh.ruff",
+    "alygin.vscode-tlaplus",
+    "leanprover.lean4"
   ]
 }

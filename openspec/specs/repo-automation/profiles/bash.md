@@ -94,8 +94,8 @@ coding package names inline is a smell.
 - **WHEN** an install script needs to install one or more of
   these dependency types
 - **THEN** the package / tool list MUST come from the
-  corresponding manifest (`apt.txt`, `brew.txt`,
-  `dotnet-tools.txt`, `verifiers.txt`)
+  corresponding manifest (`apt`, `brew`,
+  `dotnet-tools`, `verifiers`)
 - **AND** the script MUST skip comment lines (`^#`) and empty
   lines when reading the manifest
 - **AND** the script MUST NOT introduce a parallel hard-coded

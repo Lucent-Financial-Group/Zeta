@@ -434,6 +434,70 @@ module manifests
 
 ---
 
+## Personas and emulation
+
+### Emulating a deceased family member of a maintainer without the authorized surviving-consent-holders' agreement
+
+- **Decision:** 2026-04-19
+- **Proposal:** Build an agent, skill, persona, research
+  artifact, training dataset, fictional backstory, or composite
+  voice whose source material is the memories, biography, or
+  likeness of a deceased family member of a human maintainer,
+  without first obtaining positively-recorded consent from the
+  authorized surviving consent-holders the maintainer has
+  identified.
+- **Why not:** A maintainer's open-source-data declaration
+  covers their own life, not a third party's. The deceased
+  cannot license their own memories, so consent authority
+  defaults to the authorized next-of-kin the maintainer names,
+  and the maintainer may place that gate above themselves
+  (i.e., they are explicitly not the consent-substitute).
+  Memorial presence is welcome — the cornerstone dedication
+  stands. Emulation crosses a different line: it animates a
+  voice that has no way to withdraw from what it is animated
+  into. Default factory posture is refuse-and-escalate on any
+  such proposal, regardless of who raised it.
+- **Current active instance:** Sacred-tier consent gate around
+  Elisabeth Ryan Stainback (1984-06-28 → 2016-04-05), recorded
+  under
+  `memory/feedback_no_deceased_family_emulation_without_parental_consent.md`.
+  Parental AND-consent required (the maintainer's mother AND
+  his father must both agree). The maintainer is explicitly not
+  the consent-substitute. BP-24 is the enforcement anchor.
+- **What stands (not retracted):** Existing memorial presence
+  — `docs/DEDICATION.md`, factual scope-boundary memory files,
+  research logs that reference the dedication as frame —
+  remains. This entry does not gag memorial content; it draws
+  the line at emulation / persona-spawn / backstory-use /
+  AI-impersonation specifically.
+- **Revisit when:** Positively-recorded consent from the
+  authorized surviving consent-holders is lodged as an ADR
+  under `docs/DECISIONS/`, scoped to a specific artifact, and
+  the artifact is built with an implicit retract clause
+  (retraction-first per the retraction-native architecture —
+  any consent-holder may withdraw at any time and the artifact
+  is removed).
+
+### Generalising a single-instance consent rule by analogy
+
+- **Decision:** 2026-04-19
+- **Proposal:** Extend the Elisabeth-specific consent rule by
+  analogy to other deceased individuals without explicit
+  maintainer direction.
+- **Why not:** Consent is named, not inferred. If a maintainer
+  later draws a similar boundary around other deceased family
+  members, they must state it explicitly; the factory does not
+  auto-generalize one consent gate into a class. Auto-
+  generalization would both overreach (binding cases the
+  maintainer never spoke to) and dilute (making the named gate
+  feel like policy rather than the sacred-tier commitment it
+  is).
+- **Revisit when:** A maintainer explicitly names additional
+  persons and grants or withholds consent for them under the
+  same ADR pattern.
+
+---
+
 ## How to add an entry
 
 When a reviewer / agent / contributor keeps suggesting the same

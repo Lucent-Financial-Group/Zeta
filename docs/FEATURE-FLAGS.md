@@ -72,7 +72,7 @@ same round the graduation ships. This rule lives in
 4. Add a row in the **Active flags** table above with a `Since`
    round.
 5. Add a default-off test in
-   `tests/Dbsp.Tests.FSharp/FeatureFlagsTests.fs` (will be
+   `tests/Tests.FSharp/FeatureFlagsTests.fs` (will be
    created on first flag test).
 6. Gate the feature in the calling code with
    `if FeatureFlags.isEnabled Flag.<yours> then ... else ...`

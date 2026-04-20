@@ -33,7 +33,7 @@ echo "Repo root: $REPO_ROOT"
 echo
 
 # ── 1. Required executables on PATH ────────────────────────────────
-echo "[1/5] Required executables on PATH"
+echo "[1/6] Required executables on PATH"
 for cmd in dotnet java git curl mise; do
   if command -v "$cmd" >/dev/null 2>&1; then
     pass "$cmd: $(command -v "$cmd")"
@@ -44,7 +44,7 @@ done
 echo
 
 # ── 2. Verifier jars at canonical locations ─────────────────────────
-echo "[2/5] Verifier jars (canonical locations per manifest)"
+echo "[2/6] Verifier jars (canonical locations per manifest)"
 for jar in "tools/tla/tla2tools.jar" "tools/alloy/alloy.jar"; do
   if [ -f "$REPO_ROOT/$jar" ]; then
     size=$(stat -f%z "$REPO_ROOT/$jar" 2>/dev/null || stat -c%s "$REPO_ROOT/$jar" 2>/dev/null || echo 0)
@@ -60,7 +60,7 @@ done
 echo
 
 # ── 3. Drift check: jars outside canonical locations? ───────────────
-echo "[3/5] Jar-location drift (jars outside canonical tools/)"
+echo "[3/6] Jar-location drift (jars outside canonical tools/)"
 DRIFT_FOUND=0
 for stray in $(find "$REPO_ROOT" \
                     -name "tla2tools*.jar" -o -name "alloy*.jar" \
@@ -93,7 +93,7 @@ fi
 echo
 
 # ── 4. Mise runtimes match .mise.toml ───────────────────────────────
-echo "[4/5] mise runtimes match .mise.toml"
+echo "[4/6] mise runtimes match .mise.toml"
 if command -v mise >/dev/null 2>&1 && [ -f .mise.toml ]; then
   if mise current >/dev/null 2>&1; then
     while IFS= read -r line; do
@@ -108,12 +108,32 @@ fi
 echo
 
 # ── 5. Managed shellenv present ─────────────────────────────────────
-echo "[5/5] Managed shellenv"
+echo "[5/6] Managed shellenv"
 ZETA_ENV_FILE="$HOME/.config/zeta/shellenv.sh"
 if [ -f "$ZETA_ENV_FILE" ]; then
   pass "shellenv at $ZETA_ENV_FILE"
 else
   warn "shellenv missing — run tools/setup/common/shellenv.sh"
+fi
+echo
+
+# ── 6. Repo structure: no unexpected empty directories ──────────────
+# Born round 35. An empty directory in the tracked tree is almost
+# always a forgotten artefact (an agent-created skill folder without a
+# SKILL.md, a research folder with no report). Full check is in
+# `tools/lint/no-empty-dirs.sh`; doctor just runs it and reports.
+echo "[6/6] Repo structure: no unexpected empty directories"
+if [ -x "$REPO_ROOT/tools/lint/no-empty-dirs.sh" ]; then
+  if "$REPO_ROOT/tools/lint/no-empty-dirs.sh" >/dev/null 2>&1; then
+    pass "no-empty-dirs: OK"
+  else
+    # Re-run in list mode for actionable output.
+    "$REPO_ROOT/tools/lint/no-empty-dirs.sh" --list \
+      | sed 's/^/    /'
+    fail "no-empty-dirs: unexpected empty directories — see list above"
+  fi
+else
+  warn "tools/lint/no-empty-dirs.sh not executable — skipping"
 fi
 echo
 

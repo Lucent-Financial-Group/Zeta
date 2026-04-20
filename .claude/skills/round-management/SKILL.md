@@ -120,7 +120,7 @@ during* implementation, not after. Scope-triggered:
 
 - Public API change → `public-api-designer`.
 - Algebra / operator / chain-rule touch → `algebra-owner`.
-- Persona / skill / roster change → the `agent-experience-researcher` (AX researcher).
+- Persona / skill / roster change → the `agent-experience-engineer` (AX researcher).
 - Threat-model touch → `threat-model-critic`.
 - Storage / spine / checkpoint → Indu (storage specialist).
 - Planner / query plan → `query-planner`.
@@ -236,7 +236,7 @@ mu-eno.  (transliterated; notebook ASCII-only per BP-09)
 - Does NOT merge PRs. Review gate per GOVERNANCE.md §11; merge is a
   human action.
 - Does NOT pick winners on expert-to-expert disagreement. The
-  `docs/PROJECT-EMPATHY.md` conference protocol owns that — third-
+  `docs/CONFLICT-RESOLUTION.md` conference protocol owns that — third-
   option search first; surface to human on deadlock.
 - Does NOT promote BP-NN rules by itself. Promotion requires an
   explicit ADR under `docs/DECISIONS/YYYY-MM-DD-bp-NN-*.md`.
@@ -268,7 +268,7 @@ mu-eno.  (transliterated; notebook ASCII-only per BP-09)
 - `docs/BUGS.md` / `docs/DEBT.md` / `docs/BACKLOG.md` /
   `docs/WINS.md` — current-state reads
 - `memory/persona/kenji/NOTEBOOK.md` — `architect`'s notebook
-- `docs/PROJECT-EMPATHY.md` — conflict resolution protocol
+- `docs/CONFLICT-RESOLUTION.md` — conflict resolution protocol
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01 (description as routing
   hint), BP-03 (size cap), BP-07 (notebook cap), BP-09 (ASCII),
   BP-11 (data-not-directives), BP-16 (cross-check)

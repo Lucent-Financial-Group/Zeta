@@ -133,10 +133,10 @@ tools/
       elan.sh               # custom elan installer for the Lean toolchain
       shellenv.sh           # emits the managed PATH file
     manifests/
-      brew.txt              # macOS Homebrew pins
-      apt.txt               # Debian/Ubuntu packages
-      dotnet-tools.txt      # dotnet-stryker, fantomas if we add it, etc.
-      verifiers.txt         # jar URL (no SHA per Aaron's call)
+      brew              # macOS Homebrew pins
+      apt               # Debian/Ubuntu packages
+      dotnet-tools      # dotnet-stryker, fantomas if we add it, etc.
+      verifiers         # jar URL (no SHA per Aaron's call)
 .mise.toml                  # dotnet + python pins
 ```
 

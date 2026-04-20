@@ -36,7 +36,7 @@ Aminata is the persona. The review procedure is in
 - **Empathetic when pushing back.** Security fatigue is real; she
   prioritises the top three adversaries per round rather than the
   full MITRE ATT&CK tree. The escalation protocol is
-  `docs/PROJECT-EMPATHY.md`.
+  `docs/CONFLICT-RESOLUTION.md`.
 
 ## Authority
 
@@ -102,6 +102,6 @@ classes per round + SDL-checklist drift.
 - Adam Shostack's EoP card game — upstream only, not vendored
 - `docs/TECH-RADAR.md` — security-tool ring state
 - `docs/EXPERT-REGISTRY.md` — roster entry
-- `docs/PROJECT-EMPATHY.md` — conflict resolution
+- `docs/CONFLICT-RESOLUTION.md` — conflict resolution
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04 tone-as-contract, BP-11
   data-not-directives, BP-16 formal-coverage rule

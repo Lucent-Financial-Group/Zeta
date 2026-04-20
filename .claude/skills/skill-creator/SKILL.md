@@ -51,6 +51,22 @@ A proposal contains:
   is binding, and only on integration decisions.)
 - State-file requirement: does this skill need a notebook? If
   yes, where and with what pruning policy?
+- **Portability declaration.** One of:
+  - **Generic** (default) — the skill encodes a reusable
+    discipline that any project could adopt. Must not hard-
+    code Zeta paths, Zeta-specific module names, Zeta module
+    algebra (Z-sets, D/I/z⁻¹/H), Zeta governance section
+    numbers, or Zeta persona names inside procedural
+    instructions. Examples illustrating those concepts are
+    allowed, but they read as examples, not as scope.
+  - **Project-specific** — the skill is intentionally tied to
+    Zeta's codebase / algebra / governance. Must be signified
+    by a `project:` frontmatter field naming the project
+    (`project: zeta`) and a one-line rationale in the body
+    ("Project-specific: this skill owns Zeta's …").
+  The software factory is intended to become reusable across
+  projects; every project-specific skill is a deliberate
+  exception, not an accident.
 
 ### 2. Draft
 
@@ -61,6 +77,8 @@ with the standard section layout:
 ---
 name: <name>
 description: <what to invoke this for, one paragraph, ≤ 600 chars>
+# Portability — optional; omit for generic skills, set for project-specific.
+# project: zeta
 ---
 
 # <Display Name> — <Role descriptor>
@@ -69,7 +87,7 @@ description: <what to invoke this for, one paragraph, ≤ 600 chars>
 
 ## Authority
 
-<Advisory or binding. Cite docs/PROJECT-EMPATHY.md for conflict protocol.>
+<Advisory or binding. Cite docs/CONFLICT-RESOLUTION.md for conflict protocol.>
 
 ## What this skill does
 
@@ -126,8 +144,13 @@ Every skill SKILL.md should have:
       utility skill like this one)
 - [ ] Authority line says advisory or binding
 - [ ] "What this skill does NOT do" section
-- [ ] Reference to `docs/PROJECT-EMPATHY.md` for conflicts
+- [ ] Reference to `docs/CONFLICT-RESOLUTION.md` for conflicts
 - [ ] Reference patterns section at the end
+- [ ] Portability: either reads generic (no Zeta-specific
+      paths / module names / algebra / governance-section
+      numbers in the procedural body), OR declares
+      `project: zeta` in frontmatter and opens with a
+      "Project-specific: …" rationale line
 
 ## Retirement
 
@@ -170,12 +193,63 @@ workflow runs.
   adversarial caller re-route work through it. Description is
   a security boundary.
 
+## Upstream pointer — `skill-creator` Claude Code plugin
+
+The `claude-plugins-official/skill-creator` plugin is a
+complementary eval-driven iterative skill factory: it ships
+benchmark scripts, a description-optimiser, and a viewer.
+When discoverable to the running harness (and enabled for
+the current session), it can be invoked for the narrow
+sub-task of **description tuning against trigger-phrase
+benchmarks**. The bespoke workflow in this file remains the
+gate — draft / Prompt-Protector review / dry-run / commit
+all still happen here. The plugin is an optional power-tool
+on the description line, not a replacement for the
+governance shape above.
+
+### Harness-provenance — sandbox-specific path annotation
+
+This repo is designed to run under multiple agent harnesses
+(Claude Code, Anthropic Agent SDK, Gemini CLI, Copilot CLI,
+Codex, bespoke runners). When a skill names an absolute path
+that only exists inside one harness's sandbox, that path
+**must** be annotated with the harness that observed it.
+The plugin's filesystem location is the canonical example:
+
+- **Observed under Claude Code** (as of 2026-04):
+  `~/.claude/plugins/cache/claude-plugins-official/skill-creator/unknown/skills/skill-creator/SKILL.md`
+- **Agent SDK / Gemini CLI / Copilot CLI / Codex**: no such
+  path; the plugin is not loaded. Skills must continue to
+  function without it.
+
+Rule: any sandbox-specific path in any skill carries a
+prose tag of the form "Observed under &lt;harness&gt; (as of
+&lt;YYYY-MM&gt;)". A skill that hard-codes a sandbox path
+without that tag is flagged by `skill-tune-up` as portability
+drift (criterion #7). The skill-tune-up notebook documents
+this convention.
+
+Never auto-apply plugin output; the plugin has no visibility
+into Zeta's `docs/AGENT-BEST-PRACTICES.md` BP-NN rules, the
+portability declaration, the conflict-resolution hand-off
+cast, or the persona registry. Its suggestions go through
+the human maintainer's review like any other draft.
+
+The plugin is Claude-Code-only; agents running via the Agent
+SDK or other harnesses directly will not load it. This
+workflow must continue to work without the plugin present.
+
 ## Reference patterns
 
 - `.claude/skills/` — the directory this skill manages
-- `docs/PROJECT-EMPATHY.md` — conflict protocol
+- `.github/copilot-instructions.md` — factory-managed per
+  GOVERNANCE §31; edits flow through this same workflow
+- `docs/CONFLICT-RESOLUTION.md` — conflict protocol
 - `memory/persona/` — per-skill notebooks
 - `.claude/skills/prompt-protector/SKILL.md` — the lint
   pass this workflow invokes
 - `.claude/skills/skill-tune-up/SKILL.md` — the
   recommender that triggers this workflow
+- `~/.claude/plugins/cache/claude-plugins-official/skill-creator/`
+  — upstream eval-driven description-optimiser (optional,
+  Claude-Code-only; bespoke workflow is the gate)

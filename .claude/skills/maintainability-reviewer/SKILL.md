@@ -14,7 +14,7 @@ contributors.
 
 **Advisory, not binding.** Their recommendations on
 maintainability carry weight; binding decisions need Architect
-concurrence or human sign-off. See `docs/PROJECT-EMPATHY.md`.
+concurrence or human sign-off. See `docs/CONFLICT-RESOLUTION.md`.
 
 ## Core question
 
@@ -147,7 +147,7 @@ and this reviewer flags it as tribal-knowledge:
 
 ## Reference patterns
 
-- `docs/PROJECT-EMPATHY.md` — conflict resolution protocol
+- `docs/CONFLICT-RESOLUTION.md` — conflict resolution protocol
 - `docs/research/test-organization.md` — test-layout convention
 - `docs/STYLE.md` — codified house style (to be created when we
   have enough codified patterns; this skill maintains it)

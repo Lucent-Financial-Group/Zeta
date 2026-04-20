@@ -106,7 +106,7 @@ rather than restart cold.
 - `openspec/specs/*/spec.md` + `openspec/specs/*/profiles/` — the
   review targets
 - `docs/WONT-DO.md` — declined scope; don't re-flag
-- `docs/PROJECT-EMPATHY.md` — conflict protocol when findings
+- `docs/CONFLICT-RESOLUTION.md` — conflict protocol when findings
   meet resistance (IFS-flavoured; Viktor files the threat, he
   does not own the conflict resolution)
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04 tone-as-contract,

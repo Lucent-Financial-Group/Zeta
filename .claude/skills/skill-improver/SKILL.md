@@ -149,5 +149,5 @@ silently rewrite whose-in-charge; she proposes and waits.
 - `memory/persona/skill-improver.md` — her notebook
 - `memory/persona/aarav/NOTEBOOK.md` — his notebook
   (read-only for her)
-- `docs/PROJECT-EMPATHY.md` — conflict protocol when a proposed
+- `docs/CONFLICT-RESOLUTION.md` — conflict protocol when a proposed
   improvement meets resistance from an owner agent

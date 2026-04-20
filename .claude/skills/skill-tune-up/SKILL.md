@@ -27,7 +27,7 @@ exists) and ranks by tune-up urgency. Output is a short list
 (top-N, default 5) with reasoning and explicit recommended
 action from the action-set below.
 
-## Ranking criteria — six, weighted in this order
+## Ranking criteria — eight, weighted in this order
 
 1. **Drift** — does the skill still reference current doc
    paths, current module names, current policy? A skill citing
@@ -46,6 +46,58 @@ action from the action-set below.
    violation is cited by rule ID (e.g. "violates BP-02,
    BP-11"). This criterion is *always checked*, even when the
    skill is otherwise silent.
+7. **Portability drift** — the software factory is intended
+   to become reusable across projects. A skill is expected
+   to be *generic* (reusable on any project) unless it
+   declares `project: zeta` in its frontmatter and opens
+   the body with an explicit "Project-specific: …"
+   rationale. Flag when:
+   - A skill without a `project:` declaration hard-codes
+     Zeta paths (`tools/setup/`, `src/Core/**`,
+     `openspec/specs/**`), Zeta-specific module names or
+     types (`ZSet`, `Spine`, `DiskBackingStore`,
+     `ArrowInt64Serializer`), the Zeta operator algebra
+     (`D`/`I`/`z⁻¹`/`H`, retraction-native), numbered
+     `GOVERNANCE.md` sections, or specific persona names
+     **as scope** rather than as illustration.
+   - A skill *does* declare `project: zeta` but its body
+     is generic enough to be portable — the declaration
+     is then paying a reusability cost without reason.
+     Recommend dropping the declaration.
+   Examples vs. scope is the distinction: "for instance,
+   a Zeta module like `Pipeline`" is example (fine);
+   "audits `src/Core/Pipeline.fs`" is scope (flag unless
+   declared project-specific). This criterion is
+   *always checked*, alongside BP drift.
+8. **Router-coherence drift** — the skill ecosystem only
+   works if the model picking a skill has enough signal to
+   land on the *most specific* one. Two sub-signals, both
+   always checked:
+   - **umbrella-without-narrow-links** — an umbrella /
+     general-purpose skill whose description or body does
+     **not** explicitly name and defer to its narrow
+     siblings. The umbrella then competes with its own
+     narrows instead of routing to them. Example:
+     `mathematics-expert` must list `category-theory-expert`,
+     `measure-theory-and-signed-measures-expert`, etc., in
+     an explicit "When to defer" section. Missing that list
+     is router-coherence drift even when each skill on its
+     own is well-written.
+   - **overlap-without-boundary** — two skills claim
+     adjacent scope without a clear "narrower wins" /
+     "who-does-what" handoff rule. Distinct from criterion
+     #2 (Contradiction): contradiction is two skills
+     claiming the *same* authority; router-coherence drift
+     is two skills plausibly triggering on the *same
+     prompt* with no rule for picking. Example: a
+     `sketch-expert` and an `applied-mathematics-expert`
+     both triggering on "HyperLogLog" without the umbrella
+     stating which owns the call.
+   Recommended action for router-coherence drift is usually
+   **HAND-OFF-CONTRACT** (land an explicit boundary) or
+   **TUNE** (add "When to defer" links to the umbrella).
+   This criterion is *always checked*, alongside BP drift
+   and portability drift.
 
 ## Live-search step — every invocation
 
@@ -129,7 +181,7 @@ Notebook format:
 
 ## Current top-5 (refresh each run)
 1. [skill] — priority: [P0/P1/P2]
-   - Signal: [drift | contradiction | staleness | user-pain | bloat]
+   - Signal: [drift | contradiction | staleness | user-pain | bloat | portability-drift]
    - Action: [TUNE | SPLIT | MERGE | RETIRE | HAND-OFF-CONTRACT | OBSERVE]
    - Effort: [S | M | L]
 
@@ -153,7 +205,8 @@ Notebook format:
 
 1. **<skill-name>** — priority: P0 | P1 | P2
    - Signal: [drift | contradiction | staleness | user-pain |
-     bloat | best-practice-drift]
+     bloat | best-practice-drift | portability-drift |
+     router-coherence-drift]
    - Violates: BP-<NN>[, BP-<NN>]   (only when signal is
      best-practice-drift)
    - Recommended action: [TUNE | SPLIT | MERGE | RETIRE |
@@ -194,6 +247,19 @@ and `skill-creator` is the "how we". Without `skill-creator`, a
 tune-up recommendation has nowhere to land. Without the ranker,
 `skill-creator` has no triage queue.
 
+When a **TUNE** recommendation is specifically about
+description-tuning (triggering clarity, over-broad or under-
+specific `description:` lines), `skill-creator` can in turn
+delegate to the upstream `claude-plugins-official/skill-creator`
+plugin's eval-driven description-optimiser — the plugin ships
+benchmark scripts, a description-optimiser, and a viewer. That
+layered path is documented in
+`.claude/skills/skill-creator/SKILL.md §upstream-pointer`; this
+ranker does not invoke the plugin directly. The bespoke
+workflow (draft / Prompt-Protector review / dry-run / commit)
+remains the gate; the plugin is an optional power-tool on the
+description line.
+
 ## Interaction with the Architect
 
 The ranker's output is advisory to the Architect. The
@@ -214,13 +280,17 @@ not this skill's.
 
 ## Reference patterns
 
-- `docs/PROJECT-EMPATHY.md` — the conference protocol he supports
+- `docs/CONFLICT-RESOLUTION.md` — the conference protocol he supports
 - `docs/EXPERT-REGISTRY.md` — the roster + diversity notes
 - `docs/AGENT-BEST-PRACTICES.md` — the stable `BP-NN` rule list
   he cites in every finding
 - `memory/persona/best-practices-scratch.md` — volatile
   findings from his live-search step
 - `.claude/skills/` — his review surface
+- `.github/copilot-instructions.md` — factory-managed
+  external reviewer contract (GOVERNANCE §31); audit on
+  the same 5-10 round cadence, same BP-NN citation
+  discipline as any `.claude/skills/*/SKILL.md`
 - `.claude/skills/skill-creator/SKILL.md` — the workflow his
   recommendations feed into
 - `.claude/skills/skill-improver/SKILL.md` — `skill-improver`'s surface;

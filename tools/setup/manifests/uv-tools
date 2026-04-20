@@ -1,0 +1,13 @@
+# Python CLI tools managed via `uv tool install`. Installed by
+# `tools/setup/common/python-tools.sh`. One tool per non-comment
+# non-empty line; optional `==X.Y.Z` version qualifier per line.
+#
+# Zeta scope (today): ruff for Python linting of any Python helper
+# scripts that land under `tools/`. Semgrep is NOT here — Semgrep is
+# a dotnet-install-managed dep (see `common/dotnet-tools.sh`) that
+# happens to be written in Python, not a uv-installed tool.
+#
+# Single flat manifest today; `@include` hierarchy (@min in @all)
+# is a BACKLOG P1 item.
+
+ruff

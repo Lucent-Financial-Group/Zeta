@@ -13,7 +13,7 @@ than renumbering the rest.
 1. **Architect is the integration authority.** Specialist
    owners (storage, algebra, planner, complexity,
    threat-model, paper peer review, etc.) are advisory. The
-   Architect integrates via the `docs/PROJECT-EMPATHY.md`
+   Architect integrates via the `docs/CONFLICT-RESOLUTION.md`
    conference protocol; on deadlock the human decides.
 
 2. **Docs read as current state, not history.** Anything in
@@ -76,7 +76,7 @@ than renumbering the rest.
 
 10. **The table is round.** Human contributors and agents
     are peers in conversation; no head of the table. The
-    one asymmetry in `docs/PROJECT-EMPATHY.md` — "on
+    one asymmetry in `docs/CONFLICT-RESOLUTION.md` — "on
     deadlock the human decides" — is about accountability
     for what ships publicly, not everyday hierarchy.
     Disagreements are solved by argument, not seniority.
@@ -168,7 +168,7 @@ than renumbering the rest.
       freshness) disagree about whether a CVE justifies
       a major bump — different risk/reward framings.
 
-    The `docs/PROJECT-EMPATHY.md` conference protocol is
+    The `docs/CONFLICT-RESOLUTION.md` conference protocol is
     for conflicts that need *integration*. Friction that
     should NOT be integrated — where each side is right
     from its own seat — is reported as-is. Round-close
@@ -278,6 +278,22 @@ than renumbering the rest.
     land as DEBT / BUGS entries and feed the next
     round's classification.
 
+    **Copilot is a third reviewer in Slot 2** (round 34+,
+    post-public-repo). Copilot runs a high-recall first
+    pass on every PR — obvious style drift, stale
+    comments, typos, missing null checks, test coverage
+    holes, copy-paste leftovers — and complements rather
+    than replaces the Kira + Rune mandatory floor.
+    Copilot's findings tag P0/P1/P2 on the same scale
+    Kira uses; on disagreement, **Kira wins on
+    correctness, Rune wins on maintainability.** The
+    full Copilot contract is on
+    [`.github/copilot-instructions.md`](/.github/copilot-instructions.md);
+    changes to that file go through the same
+    `skill-creator` workflow as any other agent-
+    instruction change (meta-skill, Prompt Protector
+    lint, dry-run, commit).
+
 21. **Per-persona memory is a real persona-scoped
     directory, not just a notebook.** Each persona has
     its own memory corpus at
@@ -293,7 +309,7 @@ than renumbering the rest.
     **Name-keyed, not role-keyed.** Folders are named
     after the *persona name* (`kenji`, `daya`, `tariq`,
     `ilyana`, `soraya`, `aarav`, etc.), not the role
-    (`architect`, `agent-experience-researcher`). Two
+    (`architect`, `agent-experience-engineer`). Two
     personas sharing a role must not clobber each other's
     memory.
 
@@ -490,7 +506,7 @@ than renumbering the rest.
       personas, for permanence.
     - **Exceptions for meta-skills.** `factory-audit`,
       `skill-gap-finder`, `skill-tune-up`, `skill-
-      improver`, `agent-experience-researcher` — these
+      improver`, `agent-experience-engineer` — these
       meta-skills have personas / the registry IN
       their domain, so discussing the mapping is
       allowed.
@@ -596,3 +612,73 @@ than renumbering the rest.
     items to assess my v1.0 security posture expect
     to see this entry?" If no, it's
     `docs/BACKLOG.md`.
+
+30. **Cross-repo `sweep-refs` after any rename campaign.**
+    When a file, directory, symbol, path, persona name, or
+    skill id is renamed or moved, the same round that lands
+    the rename must also run `grep` across the repo for the
+    old name and update every residual — docs, skill bodies,
+    agent files, notebooks, BACKLOG entries, governance
+    rules. Documented in the `sweep-refs` capability skill
+    (`/.claude/skills/sweep-refs/SKILL.md`).
+
+    **Why this rule.** Round 33 renamed the code layout
+    `Dbsp.*` → `Zeta.*` but stopped short of sweeping the
+    docs. Round 34's Bodhi (developer-experience-engineer)
+    first audit found every P0 traced to that one missed
+    sweep — `src/Dbsp.Core/` paths in README, `Dbsp.sln` in
+    CLAUDE.md / AGENTS.md / PR template. First-PR time-to-
+    land was blocked on the inconsistency. A rename that
+    lands without a sweep creates a 60-minute friction for
+    every new contributor until someone notices.
+
+    **Enforcement.** `round-open-checklist` carries a line
+    item: "did any rename land last round without a paired
+    `sweep-refs` pass?" Architect runs the grep before
+    declaring round-close clean. Surviving residuals land
+    as P0 DEBT entries tagged `rename-drift` and block the
+    next round-close until cleared.
+
+    **Scope note.** This rule does NOT force a sweep on
+    every commit. Only rename / move / retire operations
+    trigger it. A new-file addition does not.
+
+31. **Copilot instructions are factory-managed.**
+    `.github/copilot-instructions.md` is the prompt that
+    shapes every Copilot PR review. It is a factory
+    artifact, not a one-off config:
+
+    - **Edits go through `skill-creator`.** Same 5-step
+      workflow as any other skill: proposal → draft →
+      Prompt-Protector lint → dry-run → commit. No
+      direct ad-hoc edits.
+    - **Aarav (skill-tune-up-ranker) rotates it.** The
+      file is audited on the 5-10 round tune-up cadence
+      alongside every SKILL.md, for drift / BP-NN
+      citation / scope creep / tone-contract actionability.
+    - **Nadia (prompt-protector) lints it.** Every change
+      runs the invisible-Unicode + adversarial-input
+      sweep before commit. The file lives outside
+      `.claude/skills/`, so Nadia's scope explicitly
+      lists `.github/copilot-instructions.md` as a
+      first-class audit target.
+    - **Kenji integrates.** Binding changes on the
+      Copilot contract (new hard rule, reviewer-floor
+      shift, principle edit) need Architect sign-off the
+      same as any governance rule edit.
+
+    **Why this matters.** Copilot reviews every PR as of
+    round 34 (§20 Slot 2 third reviewer). A drifting
+    copilot-instructions.md silently degrades every
+    review — worse than silent skill drift because PRs
+    land on the degraded review. The same discipline
+    that keeps internal SKILL.md files sharp must apply
+    to this one.
+
+    **Disagreement protocol.** Copilot's review findings
+    vs Kira / Rune: handled per §20 — Kira wins on
+    correctness, Rune on maintainability. Copilot
+    findings vs the Copilot instructions themselves
+    (e.g., Copilot suggests something the file forbids):
+    the file wins; Architect logs the misalignment for
+    the next tune-up pass.

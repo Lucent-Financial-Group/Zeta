@@ -1,3 +1,4 @@
+[<Xunit.Collection("TLC")>]
 module Zeta.Tests.Formal.TlcRunnerTests
 #nowarn "0893"
 
@@ -18,7 +19,25 @@ open global.Xunit
 // on PATH, no `tools/tla/tla2tools.jar`) so local dev machines and
 // CI-runners that haven't invoked `tools/setup/install.sh` still
 // get a green `dotnet test`. Matches the AlloyRunnerTests shape.
+//
+// Tests in this module are serialized via the `TLC` xunit
+// collection. TLC dumps counterexample trace files as
+// `<SpecName>_TTrace_YYYY-MM-DD_HH-MM-SS.tla` and matching `.bin`
+// into the specs directory; when xunit runs multiple TLC tests in
+// parallel they race on those trace files — a test cleans up
+// `SpineBalanced_TTrace_*.tla` while its sibling is still writing
+// one, producing first-run flakes. Serializing the module removes
+// the race. Flagged as a known flake in the round-33 carry-over;
+// fixed round 34.
 // ═══════════════════════════════════════════════════════════════════
+
+
+/// xunit collection name — any test type decorated with
+/// `[<Collection("TLC")>]` runs serially with every other member
+/// of the collection. Use this for every TLC test type that reads
+/// or writes files under `tools/tla/specs/`.
+[<CollectionDefinition("TLC", DisableParallelization = true)>]
+type TlcTestCollection () = class end
 
 
 let private repoRoot =

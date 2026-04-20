@@ -1,12 +1,13 @@
 # Runtime pins for tools mise manages on Zeta.
 #
-# .NET SDK is NOT managed by mise here — it's pinned in
-# `global.json` and installed by `tools/setup/common/dotnet.sh`
-# (Microsoft's `dotnet-install.sh`, matching SQLSharp's proven
-# CI pattern). Mise's dotnet plugin uses a non-shim shared
-# `dotnet-root/` layout that fought the in-process PATH story
-# on CI during round 32. One source of truth (global.json), one
-# install path (`~/.dotnet/`).
+# Round 34 late-round flip: .NET SDK moved onto mise. The
+# round-32 rationale for keeping dotnet out of mise (shared
+# `dotnet-root/` layout fighting the in-process PATH story)
+# was resolved upstream — Aaron landed the fix in the mise
+# dotnet plugin itself; homebrew-mise was stale, not the
+# plugin. `../scratch` ships with this shape green. `global.json`
+# stays as the .NET-native pin contract; mise reads the
+# declared version here and installs it via the plugin.
 #
 # Lean stays outside mise until a mise plugin exists (candidate
 # OSS contribution target per GOVERNANCE.md §23) — installed via
@@ -17,7 +18,24 @@
 # `docs/research/build-machine-setup.md` for the full rationale.
 
 [tools]
+# .NET 10 SDK (latest). Kept in sync with `global.json` — Zeta's
+# own `.NET`-native pin contract. Round-34 flip from
+# Microsoft's dotnet-install.sh to mise (see header).
+dotnet = "10.0.202"
 python = "3.14"
+# Java 26 (latest). Round-34 migration: OpenJDK moved off brew
+# and onto mise so all language runtimes share one manager.
+java = "26"
+# Bun pinned. Round-34 seeding for the post-install repo-
+# automation runtime research (BACKLOG P1 "Post-install repo
+# automation: runtime choice open") + future web/UI work.
+# Matches `../scratch`'s install shape.
+bun = "1.3"
+# uv pinned (round-34 pull-in from ../scratch). Manages Python
+# CLI tooling (ruff etc.) via `uv tool install` with
+# reproducible versions across laptops + CI. See BACKLOG
+# "Python tool management via uv tool (from ../scratch)".
+uv = "0.9"
 
 [settings]
 # `python-build-standalone` (upstream for mise's python plugin)
@@ -27,3 +45,6 @@ python = "3.14"
 # security scope treats python-attestation on CI as a post-v1
 # hardening item (`SECURITY-BACKLOG.md`).
 python.github_attestations = false
+# Auto-activate uv-created venvs when mise enters a directory.
+# QoL: `uv run` / venv switching seamless. From ../scratch.
+python.uv_venv_auto = "source"

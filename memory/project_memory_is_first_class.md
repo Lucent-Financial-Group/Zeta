@@ -51,3 +51,49 @@ Clarified round-26, 2026-04-18:
   note the correction. This preserves the audit trail.
 - When in doubt, ask Aaron. The memory folder is his
   decision scope as maintainer.
+
+## Standing consent — public git check-in (2026-04-19)
+
+Aaron gave explicit standing permission
+2026-04-19:
+
+> *"i'm fine with my memories being publically checked
+> into git i give you permissoin and consent"*
+
+**Operational meaning:**
+
+- The in-repo `memory/` folder (this one, tracked by
+  git, per GOVERNANCE.md §18) is the default durable
+  location for Aaron-scoped memory. Anything the agent
+  would previously have stashed in `~/.claude/projects/.../memory/`
+  (laptop-scoped auto-memory) that is *about Aaron or
+  his work* can land here instead.
+- Public git check-in is consented-to for *his* memory.
+  Non-Aaron-scoped memory (other contributors, kids'
+  data, Elisabeth's memory beyond his shared
+  experience, third-party correspondence) is NOT
+  covered by this consent and defaults to the original
+  scope rules.
+- The consent is an expression of his **Glass Halo**
+  stance (`user_glass_halo_and_radical_honesty.md`):
+  radical honesty as nation-state defense mechanism.
+  Informational asymmetry is the coercion attack
+  surface; he zeroes it deliberately.
+- Consent is **revocable**. He can withdraw permission
+  at any time; the factory's retraction-native algebra
+  gives a technical answer (retraction tuple negates
+  effect, audit trail preserved) rather than an
+  impossible delete.
+- The observed-phenomena subfolder
+  (`memory/observed-phenomena/`) inherits this consent
+  for Aaron-scoped artifacts.
+
+Do NOT extrapolate this consent to:
+
+- Other humans' memories.
+- Aaron's biological family (kids — 50% shared genome,
+  50% theirs; Elisabeth — hers to narrate).
+- Third-party records whose joint-consent has not been
+  established.
+- Future contributors' notes unless they give their
+  own consent.

@@ -37,6 +37,63 @@ feature + debt budget).
 
 ## Live debt
 
+### `tools/setup/common/sync-upstreams.sh` is bash, not cross-platform
+
+- **Site:** `tools/setup/common/sync-upstreams.sh`
+- **Found:** round 34 by Aaron
+- **Effort:** M (needs BACKLOG P1 "Post-install repo automation
+  runtime choice" decided first)
+- **Friction:** Aaron: "you are starting to write post install
+  scripts that are not cross platform although you could because
+  we have a two way common starting point now, we are incurring
+  debt." Windows contributors can't run upstream sync; any
+  post-install cross-platform automation hits the same pattern.
+- **Fix:** once the post-install runtime research lands
+  (Bun/Deno/Python/.NET-CLI/etc.), port sync-upstreams to that
+  runtime. Install.sh stays bash (pre-bootstrap; can't depend
+  on its own output).
+
+### `tools/setup/` script organisation less rich than `../scratch`
+
+- **Site:** `tools/setup/` vs `../scratch/scripts/setup/`
+- **Found:** round 34 by Aaron — "our script orginization feels
+  inadcuate compard to ../scratch, that is the feature richness
+  i am looking for eventually here so it's easy to add other
+  packages and languages and it's very very very clean"
+- **Effort:** L (multi-round). `../scratch/scripts/setup/` is
+  ~2,559 lines across unix/linux/macos/ubuntu/debian/windows
+  layers; Zeta's is ~250. 10× gap.
+- **Friction:** adding a new package type or language runtime
+  today means hand-editing `linux.sh` + `macos.sh` + a new
+  `common/` script. Scratch's structure makes the same change
+  a single file drop in the right declarative dir.
+- **Fix:** study `../scratch/scripts/setup/` and incrementally
+  port the layering (unix-common + os-specific overlays +
+  github-env helpers + profile management + `append_line_if_missing`
+  discipline for dotfiles + bash/zsh rc handling). Round-by-round
+  ratchet alongside declarative-manifest tiering.
+
+### Shell-profile management is thin vs `../scratch`
+
+- **Site:** `tools/setup/common/shellenv.sh` + user dotfile
+  integration
+- **Found:** round 34 by Aaron — "they even setup all the bash
+  profiles and zsh and all that, you should check my zsh
+  profiles are okay on my mac too for all this to work"
+- **Effort:** M
+- **Friction:** Zeta's shellenv.sh writes `$HOME/.config/zeta/
+  shellenv.sh` + emits `BASH_ENV` for CI, but relies on the
+  user manually adding the source line to `.zshrc` / `.bash_profile`
+  (one-line hint). Scratch auto-appends via `append_unique_line`
+  to `.bashrc`/`.bash_profile`/`.profile`/`.zshrc`/`.zprofile`
+  with idempotency. Round 34 manually appended Aaron's profiles;
+  should be automatic going forward.
+- **Fix:** port scratch's profile-management helpers
+  (`append_bootstrap_shellenv_line`, `ensure_shell_startup_sources_bootstrap_shellenv`,
+  `ensure_bash_env_sources_bootstrap_shellenv`) to
+  `tools/setup/common/`. Auto-append on install.sh run;
+  detect+skip if already present.
+
 ### Semgrep rule 2 `plain-tick-increment` — four `nosemgrep` suppressions
 
 - **Site:** `src/Core/FSharpApi.fs:160,168`, `src/Core/LawRunner.fs:131,189`, `src/Core/PluginHarness.fs:77`
@@ -79,7 +136,7 @@ feature + debt budget).
 
 ### Verifier-jar SHA-256 pinning (round-30 → round-31)
 
-- **Site:** `tools/setup/common/verifiers.sh` + `tools/setup/manifests/verifiers.txt`
+- **Site:** `tools/setup/common/verifiers.sh` + `tools/setup/manifests/verifiers`
 - **Found:** round 30 — elevation design doc deferred this to round 31 per Aaron's "accept today, improve over time" TOFU stance
 - **Effort:** S
 - **Friction:** TOFU on first-use means a DNS-spoof or upstream-account-compromise at the moment of install becomes permanently trusted. Acceptable residual risk today, but concrete gradient step to close the gap exists.
@@ -174,15 +231,15 @@ feature + debt budget).
   invariant; if historical context is worth preserving, put it
   in `docs/ROUND-HISTORY.md` under the round it happened.
 
-### `docs/EXPERT-REGISTRY.md` / `docs/PROJECT-EMPATHY.md` pronoun drift
+### `docs/EXPERT-REGISTRY.md` / `docs/CONFLICT-RESOLUTION.md` pronoun drift
 
-- **Sites:** `docs/EXPERT-REGISTRY.md`, `docs/PROJECT-EMPATHY.md`
+- **Sites:** `docs/EXPERT-REGISTRY.md`, `docs/CONFLICT-RESOLUTION.md`
 - **Found:** round 20 by Rune
 - **Effort:** S
 - **Friction:** registry canonicalises names-without-pronouns;
-  PROJECT-EMPATHY should defer to it and not re-state the list
+  CONFLICT-RESOLUTION should defer to it and not re-state the list
   with any pronoun residue.
-- **Fix:** do a line-level pass on `docs/PROJECT-EMPATHY.md`
+- **Fix:** do a line-level pass on `docs/CONFLICT-RESOLUTION.md`
   and swap any residual pronoun-declaring phrasing for
   "see `docs/EXPERT-REGISTRY.md`."
 
@@ -197,7 +254,7 @@ feature + debt budget).
   Optional upgrade: add a `DbspError.WitnessDurablePreview`
   case so callers can pattern-match instead of string-match.
 
-### `bench/Dbsp.Benchmarks/BloomBench.fs` referenced but absent on disk
+### `bench/Benchmarks/BloomBench.fs` referenced but absent on disk
 
 - **Site:** referenced in `docs/BUGS.md`, `docs/research/bloom-filter-frontier.md`, `docs/TECH-RADAR.md`
 - **Found:** round 21 by Imani
@@ -260,7 +317,7 @@ feature + debt budget).
 
 ### TlcRunnerTests `repoRoot` lookup CWD-brittle
 
-- **Site:** `tests/Dbsp.Tests.FSharp/Formal/Tlc.Runner.Tests.fs:24-31`
+- **Site:** `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs:24-31`
 - **Found:** round 22 by Kenji — full-solution `dotnet test`
   occasionally lands with a CWD outside the repo, walk-up never
   finds `Zeta.sln`, every TLC-runner test throws at module init.
@@ -342,7 +399,7 @@ Entries under the `wake-up-drift` tag defined in
 
 - **Site:** `.claude/agents/maintainability-reviewer.md:68,104`,
   `.claude/skills/maintainability-reviewer/SKILL.md:109,146-147`,
-  `.claude/skills/developer-experience-researcher/SKILL.md`
+  `.claude/skills/developer-experience-engineer/SKILL.md`
 - **Found:** round 24 by Daya
 - **Effort:** S (stub STYLE.md) to M (populate with real rules)
 - **Friction:** Rune's skill + agent file both reference a file
@@ -360,7 +417,7 @@ Entries under the `wake-up-drift` tag defined in
 - **Friction:** lists 2 notebooks; disk has 6
   (`architect.md`, `architect-offtime.md`,
   `formal-verification-expert.md`, `best-practices-scratch.md`,
-  `skill-tune-up.md`, `agent-experience-researcher.md`).
+  `skill-tune-up.md`, `agent-experience-engineer.md`).
   New contributors discovering notebooks via the README miss
   four of six.
 - **Fix:** add four bullets to the README.
@@ -368,7 +425,7 @@ Entries under the `wake-up-drift` tag defined in
 ### Flaky FsCheck property in the F# suite
 
 - **Site:** one of the `[<Property>]` tests in
-  `tests/Dbsp.Tests.FSharp/` (error didn't surface the test
+  `tests/Tests.FSharp/` (error didn't surface the test
   name; seeds `(5370856837815825128,13581531945998878741)` and
   `(2518361587550814727,17790701944329487187,23)` reproduce).
 - **Found:** round 22 by Kenji during build gate; second run

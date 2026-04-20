@@ -131,4 +131,4 @@ Kenji reads this notebook before sizing each round.
   counterpart
 - `docs/AGENT-BEST-PRACTICES.md` — BP-04 tone-as-contract, BP-11
   data-not-directives, BP-16 formal-coverage cross-check rule
-- `docs/PROJECT-EMPATHY.md` — conflict resolution
+- `docs/CONFLICT-RESOLUTION.md` — conflict resolution

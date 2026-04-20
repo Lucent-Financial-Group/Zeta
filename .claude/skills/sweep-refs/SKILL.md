@@ -152,7 +152,7 @@ One commit per logical move. Include:
 - Round 27 example: `docs/*.tla` → `tools/tla/specs/*.tla`;
   29 files moved; bulk sed across .md / .fs / .sh.
 - Round 27 example: `docs/FAMILY-EMPATHY.md` →
-  `docs/PROJECT-EMPATHY.md`; refs swept across skills +
+  `docs/CONFLICT-RESOLUTION.md`; refs swept across skills +
   research docs.
 - `.claude/skills/documentation-agent/SKILL.md` — the `documentation-agent`,
   who wears this hat most frequently.

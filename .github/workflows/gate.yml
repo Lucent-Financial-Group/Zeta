@@ -85,7 +85,7 @@ jobs:
             tools/alloy
           # Manifest is the single source of truth — cache busts when
           # either URL or (future) SHA changes.
-          key: verifiers-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/verifiers.txt') }}
+          key: verifiers-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/verifiers') }}
 
       - name: Cache NuGet packages
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -214,6 +214,27 @@ jobs:
 
       - name: Run actionlint
         run: ./actionlint -color
+
+  lint-no-empty-dirs:
+    # Fail if a committed directory has no files — almost always a
+    # forgotten artefact (an agent-created skill folder without a
+    # SKILL.md, a research folder with no report). Born round 35 after
+    # Aaron: "we need a build script that will fail the build if it
+    # detects an empty folder". Script under tools/lint/ respects
+    # .gitignore and an explicit allowlist at
+    # tools/lint/no-empty-dirs.allowlist. Upstream mirrors under
+    # references/upstreams/** are excluded by the script itself.
+    # No untrusted input used in run: — only a fixed repo path.
+    name: lint (no empty dirs)
+    timeout-minutes: 3
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run no-empty-dirs
+        run: tools/lint/no-empty-dirs.sh
 
   lint-markdown:
     # markdownlint-cli2 on every .md file outside the ignore list in

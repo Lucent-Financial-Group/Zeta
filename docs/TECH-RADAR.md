@@ -39,7 +39,7 @@ ThoughtWorks-style radar for the technologies / research / papers
 | CRC32C hardware-accelerated | Adopt | 10 | `HardwareCrc.fs` |
 | SIMD merge (AVX2/NEON) | Adopt | 1 | `SimdMerge.fs` |
 | TensorPrimitives for weightedCount | Trial | 11 | `Simd.fs` |
-| Bloom filters (blocked + counting) | Trial | 17 | Shipped in `src/Core/BloomFilter.fs` — blocked + 4-bit counting, XxHash128 Kirsch-Mitzenmacher double-hashing. **Engineering fundamental, not novel research**: Putze 2007 / Fan 1998 / Kirsch-Mitzenmacher 2006 are off the shelf. Promote to Adopt once `bench/Dbsp.Benchmarks/BloomBench.fs` lands with measured FP rate + cache-miss numbers. |
+| Bloom filters (blocked + counting) | Trial | 17 | Shipped in `src/Core/BloomFilter.fs` — blocked + 4-bit counting, XxHash128 Kirsch-Mitzenmacher double-hashing. **Engineering fundamental, not novel research**: Putze 2007 / Fan 1998 / Kirsch-Mitzenmacher 2006 are off the shelf. Promote to Adopt once `bench/Benchmarks/BloomBench.fs` lands with measured FP rate + cache-miss numbers. |
 | Counting Quotient Filter (CQF) | Trial | 18 | Fix for 4-bit counter saturation; natively counts multiplicities → direct Z-weight fit. Pandey et al. SIGMOD'17. |
 | d-left Counting Bloom | Assess | 18 | Half the memory of 4-bit counting Bloom. Bonomi et al. ESA'06. |
 | Cuckoo / Morton filter | Hold | 18 | Deleting a never-inserted item produces a false negative — breaks DBSP retraction-never-seen-item correctness. |
@@ -50,7 +50,8 @@ ThoughtWorks-style radar for the technologies / research / papers
 | Gap-monotone (signed-delta) semi-naïve LFP | Assess | 18 | Research direction — not shown to dominate Feldera VLDB'23 §6.3 `nested_integrate_trace` without a Z-linearity discipline argument. 10-14d impl est. if it proves out. `docs/research/retraction-safe-semi-naive.md`. |
 | Counting algorithm for IVM under retract | Adopt | 19 | Gupta-Mumick-Subrahmanian SIGMOD'93. Shipped as `RecursiveCounting` + `CountingClosureTable` in `Recursive.fs` / `Hierarchy.fs`. Z-linearity precondition required on `body`. |
 | DRed (Delete and Re-derive) | Hold | 18 | Motik et al. AIJ'19 proves it can regress below current `Recursive` baseline on retract-heavy workloads. |
-| LiquidF# refinement types | Assess | 18 | Highest-leverage F#-native proof tool not yet adopted; would catch the off-by-one / bad-index class round after round. |
+| LiquidF# refinement types | Hold | 35 | Round-35 Day-0 evaluation terminated via stop-rule: tool dormant. No currently-maintained F#-native refinement checker exists; F7 (Microsoft Research ancestor) last shipped 2012. Off-by-one / bad-index coverage remains a gap — deferred to FsCheck + Z3 + Lean stack. See `docs/research/liquidfsharp-findings.md`. |
+| F\* extraction to F# | Assess | 35 | Successor path after the LiquidF# Hold. F\* is actively maintained and can extract to F#; a 2-3 week PoC on `FastCdc.fs` is the proposed next move for the off-by-one / bad-index bug class. See `docs/research/liquidfsharp-findings.md` §"Path A". |
 | Dafny / F* / Isabelle / Stainless / P#  | Assess | 18 | Enumerated in `docs/research/proof-tool-coverage.md`; each catches a different bug class. |
 | Category theory as code-contract grammar | Adopt | 12 | `docs/category-theory/` |
 
@@ -64,7 +65,7 @@ ThoughtWorks-style radar for the technologies / research / papers
 | Microsoft Z3 | Adopt | — | `Directory.Packages.props` |
 | BenchmarkDotNet | Adopt | — | `bench/` |
 | Semgrep | Trial | 12 | 12 rules; runs externally |
-| CodeQL | Assess | 9 | SDL practice #9; workflow TBD |
+| CodeQL | Trial | 34 | `.github/workflows/codeql.yml` landed (GitHub-default); tuning drift tracked in codeql-expert skill |
 | Stryker.NET | Trial | 10 | Mutation testing config shipped |
 | Alloy | Assess | 10 | `tools/alloy/specs/Spine.als` |
 | Lean 4 + Mathlib | Assess | 10 | Stub proof `proofs/lean/ChainRule.lean`; full proof 2-week P2 |

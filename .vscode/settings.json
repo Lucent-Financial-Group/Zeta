@@ -47,6 +47,25 @@
   "shellcheck.customArgs": ["-x"],
   "shellcheck.useWorkspaceRootAsCwd": true,
 
+  // SonarLint VS Code extension — exclude generated + vendored
+  // surfaces from analysis so the SonarAnalyzer.CSharp Roslyn
+  // pack (see Directory.Build.props) only scans Zeta's own source.
+  // Matches the files.exclude / search.exclude shape above.
+  "sonarlint.analysisExcludesStandalone": {
+    "**/BenchmarkDotNet.Artifacts/**": true,
+    "**/TestResults/**": true,
+    "**/artifacts/**": true,
+    "**/bin/**": true,
+    "**/obj/**": true,
+    "**/node_modules/**": true,
+    "**/tools/lean4/.lake/**": true,
+    "**/references/upstreams/**": true,
+    "**/.vscode/**": true,
+    "**/.claude/**": true,
+    "**/memory/**": true,
+    "**/docs/**": true
+  },
+
   "[fsharp]": {
     "editor.formatOnSave": true,
     "editor.insertSpaces": true,

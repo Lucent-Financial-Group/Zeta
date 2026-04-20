@@ -6,12 +6,12 @@ today. Prose bullets, no RFC-2119; those live in the base `spec.md`.
 ## Namespace and source files
 
 - Types and the factory live in the `Dbsp.Core` namespace, across:
-  - `src/Dbsp.Core/Durability.fs` — the `DurabilityMode` discriminated union,
+  - `src/Core/Durability.fs` — the `DurabilityMode` discriminated union,
     the `WitnessDurableBackingStore` skeleton, the `DurabilityMode` module
     with `createBackingStore` and `recoveryProperty`.
-  - `src/Dbsp.Core/FeatureFlags.fs` — the `Flag` DU, the `FlagStage` DU, and
+  - `src/Core/FeatureFlags.fs` — the `Flag` DU, the `FlagStage` DU, and
     the `FeatureFlags` module that does the resolution.
-  - `src/Dbsp.Core/DiskSpine.fs` — `IBackingStore<'K>`,
+  - `src/Core/DiskSpine.fs` — `IBackingStore<'K>`,
     `InMemoryBackingStore<'K>`, and `DiskBackingStore<'K>` (which
     `createBackingStore` dispatches to).
   - `docs/FEATURE-FLAGS.md` — the flag reference table every new flag is

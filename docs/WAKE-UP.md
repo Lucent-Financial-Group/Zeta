@@ -70,7 +70,7 @@ Only when the task explicitly requires:
   revisited.
 - `docs/research/*.md` — writeups. When your task is research-
   adjacent.
-- `docs/PROJECT-EMPATHY.md` — conflict protocol. Only when a
+- `docs/CONFLICT-RESOLUTION.md` — conflict protocol. Only when a
   conflict needs resolving; the protocol is IFS-flavoured.
 - `openspec/specs/*/spec.md` — behavioural specs. When you are
   implementing or reviewing a capability.
@@ -105,9 +105,18 @@ These look useful but pay poorly for orientation:
 
 - **Kenji** updates Tier 0 when `AGENTS.md` rules or
   `docs/GLOSSARY.md` canon entries change.
-- **Daya** (agent-experience-researcher) measures cold-start
+- **Daya** (agent-experience-engineer) measures cold-start
   token cost per persona every 5 rounds and proposes edits to
   this file.
+- **Bodhi** (developer-experience-engineer) runs the mirror
+  audit for human contributors — first-60-minutes friction on
+  CONTRIBUTING.md / install / build loop every 5 rounds — and
+  flags a `dx-drift` DEBT entry when the first-PR path breaks.
+- **Iris** (user-experience-engineer) runs the third
+  experience audit for library consumers — first-10-minutes
+  friction on NuGet page / README / public API / sample code
+  every 5 rounds — and flags a `ux-drift` DEBT entry when the
+  first-evaluation path breaks.
 - **Anyone** noticing a stale pointer files a DEBT.md entry with
   the `wake-up-drift` tag.
 

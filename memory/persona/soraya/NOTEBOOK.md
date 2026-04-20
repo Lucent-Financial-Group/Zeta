@@ -8,6 +8,37 @@ is canon (BP-08). This notebook supplements, never overrides.
 
 ---
 
+## Round 35 — verification-drift-auditor skill adopted
+
+New audit surface:
+`.claude/skills/verification-drift-auditor/SKILL.md`.
+Registry at `docs/research/verification-registry.md`.
+
+Motivating case: `Dbsp.ChainRule.chain_rule` in
+`tools/lean4/Lean4/DbspChainRule.lean` was labelled as Budiu
+et al. Proposition 3.2 but actually proved a Theorem 3.3
+corollary (`Dop` = `D ∘ f` on linear operators, not `D ∘ f ∘ I`
+= paper's `Q^Δ`). Caught by human peer-review cross-check
+against arXiv:2203.16684v1 §3; landed four fixes same round
+(rename + Qdelta + chain_rule_proposition_3_2 + registry).
+
+First audit report:
+`docs/research/verification-drift-audit-2026-04-19.md`.
+Cadence: every 5-10 rounds, or on any commit adding a theorem
+/ property / spec with an external citation.
+
+Six drift classes defined (Name, Precondition, Statement,
+Definition, Numbering, Source-decay) and one pre-registration
+class (Class 0). The skill is tool-agnostic: Lean / TLA+ / Z3
+/ FsCheck today, Alloy / F* / Dafny / Stainless / Viper etc.
+as they land in the portfolio.
+
+This skill is Soraya's audit surface — not a new persona. The
+persona is still `formal-verification-expert` (me); the skill
+is a named procedure I run on a cadence.
+
+---
+
 ## Portfolio metric
 
 Reported each invocation:
@@ -21,7 +52,7 @@ Reported each invocation:
 - Numerator: files covered by a CI-gated spec — 4 TLA+ specs
   in gate (`TickMonotonicity`, `OperatorLifecycleRace`,
   `TransactionInterleaving`, `TwoPCSink`) + 8 Z3 pointwise
-  lemmas in `tests/Dbsp.Tests.FSharp/Formal/Z3.Laws.Tests.fs`.
+  lemmas in `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`.
   ≈ 12 artefacts touching ≈ 15 code paths.
 - Denominator: numerator + `docs/BUGS.md` formal-gap entries
   (`InfoTheoreticSharder` missing spec, `RecursiveCounting`

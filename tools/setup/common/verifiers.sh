@@ -14,7 +14,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-MANIFEST="$REPO_ROOT/tools/setup/manifests/verifiers.txt"
+MANIFEST="$REPO_ROOT/tools/setup/manifests/verifiers"
 
 if [ ! -f "$MANIFEST" ]; then
   echo "✓ no verifiers manifest; skipping"

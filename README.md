@@ -16,7 +16,9 @@ references are Zeta. See [docs/NAMING.md](docs/NAMING.md) for the full split.
 DBSP defines a tiny, complete calculus for incremental computation over
 changing relations. Three primitives — delay (`z^-1`), differentiation (`D`),
 and integration (`I`) — together with lifting (`↑`) let you transform *any*
-query `Q` into its incremental form `Q^Δ = D ∘ Q^↑ ∘ I`. Key identities:
+query `Q` into its incremental form `Q^Δ = D ∘ Q^↑ ∘ I`. Plain-English
+definitions for every term here live in
+[docs/GLOSSARY.md](docs/GLOSSARY.md#core-ideas). Key identities:
 
 - `I ∘ D = D ∘ I = id` (bijection on streams)
 - `(Q1 ∘ Q2)^Δ = Q1^Δ ∘ Q2^Δ` (chain rule)
@@ -149,7 +151,7 @@ foreach (var e in view.Current)
 ## Layout
 
 ```
-src/Dbsp.Core/            F# core library
+src/Core/            F# core library
 ├── Algebra.fs            Weight (= int64) and helpers
 ├── Pool.fs               ArrayPool + exact-size allocation helpers
 ├── ZSet.fs               Z-set algebra — add, neg, map, filter, join, distinct
@@ -159,10 +161,10 @@ src/Dbsp.Core/            F# core library
 ├── Operators.fs          Linear/bilinear operators, extension methods
 ├── Handles.fs            Input/output handles (lock-free)
 └── Incremental.fs        Q^Δ = D ∘ Q ∘ I transformation helpers
-tests/Dbsp.Tests.FSharp/  F# tests — xUnit v3 + FsUnit + FsCheck
-tests/Dbsp.Tests.CSharp/  C# tests — xUnit v3
-bench/Dbsp.Benchmarks/    BenchmarkDotNet + MemoryDiagnoser
-samples/Dbsp.Demo/        Working example
+tests/Tests.FSharp/  F# tests — xUnit v3 + FsUnit + FsCheck
+tests/Tests.CSharp/  C# tests — xUnit v3
+bench/Benchmarks/    BenchmarkDotNet + MemoryDiagnoser
+samples/Demo/        Working example
 ```
 
 ## Building and testing
@@ -170,8 +172,8 @@ samples/Dbsp.Demo/        Working example
 ```bash
 dotnet build -c Release
 dotnet test  -c Release
-dotnet run --project samples/Dbsp.Demo -c Release
-dotnet run --project bench/Dbsp.Benchmarks -c Release -- --filter "*"
+dotnet run --project samples/Demo -c Release
+dotnet run --project bench/Benchmarks -c Release -- --filter "*"
 ```
 
 ## Running the F# static analyzers
@@ -182,7 +184,7 @@ Two analyzer packs are wired in: [G-Research.FSharp.Analyzers][gr] and
 
 ```bash
 dotnet tool install --global fsharp-analyzers
-dotnet msbuild src/Dbsp.Core/Dbsp.Core.fsproj \
+dotnet msbuild src/Core/Core.fsproj \
   -t:AnalyzeFSharpProject \
   -p:Configuration=Release \
   -p:FSharpAnalyzersExeHost=

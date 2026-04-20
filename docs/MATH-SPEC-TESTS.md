@@ -10,7 +10,7 @@ F# can express algebraic properties as first-class equations. Running them as pr
 
 | Tool | Job | File |
 |---|---|---|
-| **FsCheck** (FsCheck 3 / FsCheck.Xunit.v3) | Property-based tests over generated inputs | `tests/Dbsp.Tests.FSharp/MathInvariantTests.fs` + others |
+| **FsCheck** (FsCheck 3 / FsCheck.Xunit.v3) | Property-based tests over generated inputs | `tests/Tests.FSharp/MathInvariantTests.fs` + others |
 | **Z3 SMT** (Microsoft.Z3 4.12.2) | Proofs of pointwise axioms over unbounded integers | `tools/Z3Verify/Program.fs` + `tests/.../FormalVerificationTests.fs` |
 | **TLA+/TLC** | Concurrent-protocol + state-machine invariants | `docs/*.tla` (6 specs) |
 | **xUnit** + `FsUnit.Xunit` | Concrete scenarios, boundary cases | throughout |

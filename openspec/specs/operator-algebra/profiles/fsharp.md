@@ -12,11 +12,11 @@ today. Prose bullets, no RFC-2119 keywords; those live in the base `spec.md`.
 
 ## Z-set value type
 
-- `Weight` is an abbreviation for `int64`, defined in `src/Dbsp.Core/Algebra.fs`.
+- `Weight` is an abbreviation for `int64`, defined in `src/Core/Algebra.fs`.
   All Z-set weights are signed 64-bit; checked arithmetic is used on every
   hot-path addition so an overflow is a thrown exception rather than a silent
   wrap.
-- `ZEntry<'K>` in `src/Dbsp.Core/ZSet.fs` is a readonly struct carrying a key
+- `ZEntry<'K>` in `src/Core/ZSet.fs` is a readonly struct carrying a key
   and a weight. The attributes `[<Struct; IsReadOnly; NoComparison>]` keep it
   copy-free when passed via `ReadOnlySpan<'T>` and prevent F#'s structural
   comparison from interfering with the explicit `IComparer<'K>` dispatch used
@@ -43,7 +43,7 @@ today. Prose bullets, no RFC-2119 keywords; those live in the base `spec.md`.
 ## Stream operators and circuits
 
 - `Op` is the abstract base class for every operator, defined in
-  `src/Dbsp.Core/Circuit.fs`. `Op<'T>` carries a typed output slot backed by a
+  `src/Core/Circuit.fs`. `Op<'T>` carries a typed output slot backed by a
   `[<VolatileField>]` so `OutputHandle<'T>.Current` reads see a release-ordered
   publication of each tick's output. The `IsStrict` virtual tells the scheduler
   whether the operator breaks feedback cycles.
@@ -56,7 +56,7 @@ today. Prose bullets, no RFC-2119 keywords; those live in the base `spec.md`.
 
 ## The four primitive operators
 
-- The primitives live in `src/Dbsp.Core/Primitive.fs`:
+- The primitives live in `src/Core/Primitive.fs`:
   - `DelayOp<'T>` is strict. It emits the last tick's input (or the declared
     initial value at tick 0) and captures the current input in `AfterStepAsync`
     for the next tick. The `[<Sealed>]` attribute keeps the devirt path clean.
@@ -68,12 +68,12 @@ today. Prose bullets, no RFC-2119 keywords; those live in the base `spec.md`.
   - `ConstantOp<'T>` publishes a fixed value on every tick.
 - There is no separate `Integrator.fs` or `Feedback.fs` file. `FeedbackOp<'T>`
   — the strict feedback cell used to wire recursive cycles — lives alongside
-  `RecursiveExtensions` in `src/Dbsp.Core/Recursive.fs`, because feedback is
+  `RecursiveExtensions` in `src/Core/Recursive.fs`, because feedback is
   scoped to the recursion capability rather than being a primitive.
 
 ## Chain-rule helpers
 
-- `IncrementalExtensions` in `src/Dbsp.Core/Incremental.fs` implements
+- `IncrementalExtensions` in `src/Core/Incremental.fs` implements
   `Incrementalize`, `IncrementalizeZSet`, `IncrementalJoin`, and
   `IncrementalDistinct`. The file's XML-doc header states the chain-rule
   identity `Q^Δ = D ∘ Q ∘ I` and the three-term bilinear formula for join in

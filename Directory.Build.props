@@ -31,4 +31,15 @@
     <DebugSymbols>true</DebugSymbols>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
+  <!-- C# analyzer packs: applied automatically to every .csproj via
+       MSBuild's project-extension condition. Round-34 wire-in of
+       the pin-only packages (Meziantou was pinned for months but
+       never referenced — Aaron caught it). SonarAnalyzer.CSharp
+       remains pin-only pending the S1905 / S6966 / S2699 cleanup
+       BACKLOG entry (15 findings from a round-34 test build).
+       Meziantou lands this round because its findings are cleaner
+       (verified against local build). -->
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <PackageReference Include="Meziantou.Analyzer" PrivateAssets="all" />
+  </ItemGroup>
 </Project>

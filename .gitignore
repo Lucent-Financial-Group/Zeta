@@ -27,6 +27,13 @@ coverage-summary.json
 
 # Per-user Claude Code harness settings — not shared across contributors.
 .claude/settings.local.json
+
+# Claude Code harness runtime state — per-session process locks and
+# scratch files the harness writes into `.claude/` (scheduled-tasks MCP,
+# session bookkeeping). Not source; regenerated on every session.
+.claude/scheduled_tasks.lock
+.claude/scheduled_tasks.json
+.claude/*.lock
 .DS_Store
 Thumbs.db
 StrykerOutput/
@@ -56,5 +63,9 @@ tools/tla/*.jar
 *_TTrace_*.tla
 *_TTrace_*.bin
 *_TTrace_*.out
+
+# TLC state output directory — created by `java -cp tla2tools.jar tlc2.TLC`
+# with default settings; timestamped subdirs per run. Ephemeral.
+tools/tla/states/
 
 .fake

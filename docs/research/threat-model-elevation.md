@@ -380,7 +380,7 @@ Deferred per Aaron:
    CodeQL workflow.
 6. New Semgrep rule — SHA-pin enforcement on
    `.github/workflows/**`.
-7. `tools/setup/manifests/verifiers.txt` — add
+7. `tools/setup/manifests/verifiers` — add
    SHA-256 column; `tools/setup/common/verifiers.sh`
    — verify after download.
 8. `.mise.toml` trust gate in CI (the backlog item).

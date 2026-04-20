@@ -231,7 +231,7 @@ files we authored, not against secrets; JVM is the trust posture
 for these tools anyway). Revisit when (a) a release-account
 compromise class surfaces in our ecosystem, or (b) upstream
 publishes signed `SHA256SUMS`. **Round-31 improvement:** ship
-SHA-256 pinning via `tools/setup/manifests/verifiers.txt`.
+SHA-256 pinning via `tools/setup/manifests/verifiers`.
 
 **Toolchain installers.** `elan-init.sh@master`,
 Homebrew-install@HEAD, mise@mise.run — same threat class as

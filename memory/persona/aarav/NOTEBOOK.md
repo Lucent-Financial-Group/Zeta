@@ -35,7 +35,7 @@ Running observations (append-dated). Pruned every third session.
 ## Current top-5 (round 18)
 
 1. **product-manager** — P0. Staleness (3 rounds) + drift
-   (old "you are X" voice, no PROJECT-EMPATHY link) + scope
+   (old "you are X" voice, no CONFLICT-RESOLUTION link) + scope
    overlap (with `next-steps` and `architect`).
    Action: run skill-creator to either retire (fold into
    `next-steps`) or narrowly re-scope to

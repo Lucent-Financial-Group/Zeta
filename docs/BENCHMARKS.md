@@ -1,7 +1,7 @@
 # Benchmark Results
 
 All numbers from **Apple M2 Ultra, .NET 10.0.6 ARM64, BenchmarkDotNet 0.15.4**.
-Reproduce with `dotnet run --project bench/Dbsp.Benchmarks -c Release`.
+Reproduce with `dotnet run --project bench/Benchmarks -c Release`.
 
 ## Z-set operations
 
@@ -52,7 +52,7 @@ throughput on a single thread:
 
 That puts us in the same ballpark or ahead on micro-ops. A head-to-head
 Nexmark run against the same dataset would be the fair comparison; our
-Q1-Q8 harness is in `bench/Dbsp.Benchmarks/Nexmark.fs` + `NexmarkFull.fs`
+Q1-Q8 harness is in `bench/Benchmarks/Nexmark.fs` + `NexmarkFull.fs`
 ready for that.
 
 ## Allocation guarantees (zero-alloc paths)

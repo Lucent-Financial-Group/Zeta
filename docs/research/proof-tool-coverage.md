@@ -202,7 +202,7 @@ modes, chain rule pipeline.
 | **P / P#** | State-machine refinement proofs for `Circuit` lifecycle — would subsume `CircuitRegistration.tla` with executable code |
 | **Viper** | Separation-logic proofs of heap-state non-aliasing in SIMD merge + ArrayPool — catches pool-mis-return bugs |
 | **Eldarica / Spacer (Horn)** | Recursive-program invariant synthesis — could auto-derive loop invariants for `BalancedSpine.compactLevel` |
-| **Liquid Haskell / LiquidF#** | Refinement types inline in F# — catches `arr.[i]` out-of-bounds *at compile time* over the whole codebase |
+| **Liquid Haskell / LiquidF#** | ~~Refinement types inline in F# — catches `arr.[i]` out-of-bounds *at compile time* over the whole codebase~~ **Round-35 Hold: tool dormant.** No currently-maintained F#-native refinement checker; F7 (the Microsoft Research ancestor) last shipped 2012. See `docs/research/liquidfsharp-findings.md`. Successor path: F\* extraction to F# (Assess, TECH-RADAR round 35). |
 | **Hypothesis-style coverage-guided fuzz** | Deeper counter-example minimisation than FsCheck's generic shrinker; catches concurrency bugs via state-space exploration |
 | **Mutation testing (Stryker)** | Already configured via `stryker-config.json`, but **not yet run in CI** and no coverage target published — unknown whether our 471 tests survive a realistic mutant kill rate |
 | **CodeQL** | Data-flow / taint analysis (untrusted `File.ReadAllBytes` → parser) — config deferred, listed as P0 in `BACKLOG.md` |
@@ -212,34 +212,51 @@ modes, chain rule pipeline.
 
 ## 7. The 3 tools to add next round — prioritised
 
-### #1 — Finish the Lean 4 + Mathlib chain-rule proof (P2 → ship)
+### #1 — ~~Finish the Lean 4 + Mathlib chain-rule proof~~ **Closed round 35.**
 
-This is the user's "long proof with mathlib" — it's already stubbed,
-needs 2 focused weeks of work, and the result is the **strongest
-verification claim the repo can make**: a machine-checked Lean 4
-proof of `(q₁ ∘ q₂)^Δ = q₁^Δ ∘ q₂^Δ` that can be cited in papers
-(POPL / PLDI target per `ROADMAP.md`).
+Shipped in `tools/lean4/Lean4/DbspChainRule.lean`. All four
+sub-lemmas (T5 `I ∘ D = id`, B1 `linear_commute_I`, B3
+`linear_commute_D`, and `chain_rule` itself) verify under
+Mathlib v4.30.0-rc1 with zero warnings via `lake env lean
+Lean4/DbspChainRule.lean`. B2 (`linear_commute_zInv`) closed
+via the `IsTimeInvariant` structural-axiom formulation.
 
-Concrete steps: (a) run `tools/setup/install.sh` to install
-elan, (b) pin Mathlib in `lakefile.lean`, (c) port the stream +
-group structure, (d) replace `sorry` with the proof, (e) add a
-`lake build` job to CI.
+Two statement-level bugs caught during the proof work
+(recorded in `docs/research/chain-rule-proof-log.md`):
+(a) B1 had a pointwise-linearity leak in the `fun _ => s k`
+form, corrected to `f (I s) = I (f s)`; (b) `chain_rule`
+had an impulse counter-example on the original bilinear
+form, corrected to the classical `Dop (f ∘ g) s = f (Dop g s)`
+that DBSP §4.2 actually proves.
 
 **Bug class it catches that nothing else can:** algebraic-law
 violations missed by every finite-sample property test AND every
 SMT encoding whose background theory is weaker than Mathlib's
-abelian-group / ring hierarchy.
+abelian-group / ring hierarchy. The proof is citable in
+papers (POPL / PLDI target per `ROADMAP.md`).
 
-### #2 — Liquid Haskell / LiquidF# refinement types
+**Follow-on research item:** `chain_rule_poly` over three
+distinct groups (non-endomorphism composition). Tracked in
+the proof log, not blocking.
 
-Refinement types turn every array access, every weight
-addition, and every `List.head` into a compile-time proof
-obligation. The dotnet ecosystem has a **LiquidF#** prototype
-(Microsoft Research) that can be trialled.
+### #2 — ~~Liquid Haskell / LiquidF# refinement types~~ F* extraction to F# (successor)
 
-**Bug class:** off-by-one in SIMD merge, negative-weight violations
-in `Crdt.fs` G-Counter, unchecked `array.[i]` in `FastCdc.fs` —
-the exact class of bugs harsh-critic rounds keep finding.
+**Status (round 35):** the LiquidF# recommendation is
+withdrawn. Day-0 availability check terminated via stop-rule
+— no currently-maintained F#-native refinement checker
+exists. F7 (the Microsoft Research ancestor) last shipped 2012.
+See `docs/research/liquidfsharp-findings.md`.
+
+**Successor path:** F\* is actively maintained and can
+extract to F#. A 2-3 week PoC on `FastCdc.fs` (or `Crdt.fs`)
+is the closest substitute for the original LiquidF# trial.
+Tracked as a round-35 **Assess** row in TECH-RADAR.
+
+**Bug class still uncovered:** off-by-one in SIMD merge,
+negative-weight violations in `Crdt.fs` G-Counter, unchecked
+`array.[i]` in `FastCdc.fs` — the exact class of bugs
+harsh-critic rounds keep finding. Today these land at the
+FsCheck property-test level, not at the type level.
 
 ### #3 — Wire Stryker.NET + Semgrep into CI, plus run PN-Counter/OR-Set/LWW property tests
 

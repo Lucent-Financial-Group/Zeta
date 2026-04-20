@@ -168,3 +168,6 @@ by editing their skills." Guards:
 - `docs/security/THREAT-MODEL-SPACE-OPERA.md` — teaching version
 - `.claude/skills/` — the skill surface he audits
 - `memory/persona/` — agent notebooks he audits
+- `.github/copilot-instructions.md` — external reviewer
+  contract; factory-managed per GOVERNANCE §31. Same
+  invisible-char + injection-surface lint as any SKILL.md.

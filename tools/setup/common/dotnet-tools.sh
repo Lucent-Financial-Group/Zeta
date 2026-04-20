@@ -8,7 +8,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-MANIFEST="$REPO_ROOT/tools/setup/manifests/dotnet-tools.txt"
+MANIFEST="$REPO_ROOT/tools/setup/manifests/dotnet-tools"
 
 if [ ! -f "$MANIFEST" ]; then
   echo "✓ no dotnet-tools manifest; skipping"

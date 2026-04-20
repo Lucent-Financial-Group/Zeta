@@ -9,6 +9,194 @@ New rounds are appended at the top.
 
 ---
 
+## Round 34 — factory + DB first-tests + public repo
+
+Anchor: "CI + build-machine setup" carried over from round 29
+matured into a full factory-plus-DB round. Three parallel
+arcs landed, with a mid-round context shift when Aaron
+flipped the repo to public and added Copilot as a PR
+reviewer.
+
+### Arc 1 — factory personas and governance
+
+Three experience-engineer personas landed: **Daya** (AX, was
+seeded round 24), **Bodhi** (DX, Sanskrit बोधि
+"awakening"), **Iris** (UX, Greek Ἶρις "messenger").
+**Dejan** (DevOps, Serbian дејан "action") completed the
+install-script + CI-workflow lane. Aaron corrected the
+initial titles mid-round — these roles audit and route
+fixes, they don't run participant studies, so "researcher"
+was wrong. All three AX/DX/UX lanes renamed to `-engineer`
+across 27 files. Mateo's `security-researcher` stayed as-is
+(his lane is genuinely research-adjacent).
+
+Copilot joined the factory as a Slot-2 reviewer alongside
+the mandatory Kira + Rune floor.
+`.github/copilot-instructions.md` codifies the contract: no
+`curl | bash` suggestions, no injection-corpus echo, no
+security-clause weakening, no warnings introduced, Kira
+wins on correctness and Rune wins on maintainability when
+they disagree with Copilot. GOVERNANCE gained two rules
+this round: §30 mandates `sweep-refs` after any rename
+campaign (motivated by round-33's Dbsp→Zeta code rename
+that stopped short of the docs sweep — Bodhi's first audit
+found every P0 tracing to that one miss); §31 makes the
+Copilot instructions factory-managed through
+`skill-creator`, audited by Aarav, linted by Nadia.
+
+JOURNAL.md unbounded long-term memory piloted on four
+personas then rolled out to 16 total. Append-only, Tier 3,
+grep-only read contract — the prune step becomes the
+curation step. Prompted by Aaron's observation that BP-07
+synthesis-forcing was throwing away hard-won observations.
+`docs/PROJECT-EMPATHY.md` renamed to
+`docs/CONFLICT-RESOLUTION.md` to match its stated role (98
+ref sweep across 46 files). `security-operations-engineer`
+skill stub landed as a pending persona slot — runtime
+incident response and SLSA signing ops lane, disambiguated
+from Mateo / Aminata / Nadia.
+
+### Arc 2 — cross-platform and install script
+
+.NET SDK moved onto mise. Aaron's upstream fix to the mise
+dotnet plugin retired the round-32 rationale for keeping
+dotnet out. `dotnet.sh` deleted; `.mise.toml` picks up
+`dotnet = "10.0.202"` alongside python / java / bun / uv
+(uv pulled in from `../scratch` with a `python-tools.sh`
+port and a new `uv-tools` manifest for ruff and future
+Python CLI tools). Pure `mise activate` (no `--shims`)
+CI-verified green across Ubuntu and macOS on commit
+`9f138eb`, resolving the ~10x interactive perf improvement
+over shims. Inside the install-script orchestration, shims
+stay for subprocess PATH inheritance.
+
+Four declarative manifests renamed off `.txt` to bare
+semantic names per Aaron's rule: `apt`, `brew`,
+`dotnet-tools`, `verifiers` (`uv-tools` already shipped
+with the right treatment). The `Dbsp.*` doc sweep from
+Bodhi's round-34 first audit caught README layout
+references, `Dbsp.sln` in CLAUDE.md / AGENTS.md / PR
+template, and openspec README refs — all now resolve to
+current `Zeta.sln` and `src/Core/` folder layout.
+
+Bodhi's first DX audit: first-PR minutes-to-land 58-62m P50
+after the sweep (blocked earlier by stale Layout block
+references). Iris's first UX audit surfaced a P0
+aspirations-vs-reality drift in README §"What Zeta adds on
+top" — claims research-preview features as shipped today;
+routed to Kai (framing) and Samir (README edit), needs
+Aaron sign-off on v1-vs-post-v1 split.
+
+### Arc 3 — DB first real tests
+
+Two claimed-but-untested surfaces got their first tests:
+
+- **`SpeculativeWindowOp`** (retraction-native speculative
+  watermark emission) — 4 tests covering fresh insert,
+  late-positive retract-old-stamp + insert-new-stamp
+  sequence, negative-weight retraction, empty input. The
+  retraction-native claim on the docstring now has
+  evidence.
+- **`ArrowInt64Serializer`** — 6 tests covering
+  empty/single/negative/large Z-set round-trip, wire-format
+  length-header, serializer name. Negative weights survive
+  the wire (retraction-native invariant holds on the
+  serializer boundary).
+
+Total 10 tests, all green, zero warnings. `fsharp-analyzers`
+tooling-gap closed (Bodhi flagged): added to
+`manifests/dotnet-tools` so the README instructions work
+automatically on first install.
+
+### Arc 4 — factory portability discipline
+
+Late-round intervention codified the intent that the software
+factory becomes reusable across projects one day. One rule,
+two scopes:
+
+- **Skills.** `.claude/skills/*/SKILL.md` default to generic;
+  project-specific skills declare `project: zeta` in
+  frontmatter and open with a "Project-specific:" rationale.
+  `skill-creator` gained a "Portability declaration" step in
+  its Proposal workflow plus a checklist item; `skill-tune-up`
+  gained a 7th ranking criterion — "portability drift" —
+  that flags Zeta-isms leaking into undeclared skills AND
+  needless `project: zeta` declarations on otherwise-generic
+  skills.
+- **Build / CI / install scaffolding.** `tools/setup/`,
+  `.github/workflows/`, `.mise.toml`, `Directory.Build.props`
+  default to generic. `devops-engineer` SKILL gained Step 7
+  (portability check) covering file-naming guidance
+  (`zeta-spec-check.yml` over `spec-check.yml`) and scope
+  fencing between generic scaffolding and project hooks.
+
+Two cross-agent standing rules landed in
+`docs/AGENT-BEST-PRACTICES.md` outside the BP-NN list (they
+lack the ≥3-external-source backing that BP promotion
+requires, but apply project-wide to every agent's tool use):
+upstreams-exclusion on every file-iteration command
+(GOVERNANCE §23 sibling-clones produce 10x-100x slower scans
+and off-project noise), and no name attribution in code /
+docs / skills (names live only in `memory/persona/<name>/`).
+Architect reference-patterns section updated to surface the
+new section on cold-start.
+
+Nazar (security-operations-engineer) persona completion: agent
+body and memory stubs seeded, "Aaron" direct-refs replaced
+with "human maintainer" role-ref to match the no-attribution
+rule. Dejan (devops-engineer) same treatment applied. BACKLOG
+logged a deferred starter-template extraction target — lift
+the generic portion into a reusable scaffold so the next
+project inherits the factory without a rewrite.
+
+### Mid-round shift — public repo and Copilot
+
+Aaron flipped Zeta public and added Copilot as a PR
+reviewer partway through. That turned Iris's UX audit from
+theoretical to actual (strangers can now land), promoted
+the cross-harness-mirror-pipeline BACKLOG item to be
+properly designed (Zeta-is-Claude-biased; Cursor /
+Windsurf / Aider / Cline / Continue / Codex all read
+different folders). Factory response: §31 plus
+copilot-instructions plus scope extensions on
+skill-creator / skill-tune-up / prompt-protector so the
+Copilot contract gets the same drift-detection discipline
+as any internal SKILL.md.
+
+### Round principle that emerged
+
+`../scratch` is Zeta's proven-pattern reference for
+cross-platform install work. Multiple times this round
+Aaron pointed back to it when I started re-deriving
+decisions from first principles. The round-32
+dotnet-keeping-it-off-mise rationale was stale; `../scratch`
+already had it fixed via Aaron's upstream mise patch. The
+shim vs pure-activate choice in scratch was historical
+default, not considered tradeoff — Zeta verified pure
+activate on CI and the finding will backport. Direct
+research beats first-principles rediscovery.
+
+### What rolled forward to round 35
+
+BACKLOG grew substantially: cross-harness mirror pipeline
+(full design captured with Aaron's canonical-source +
+build-mirrors shape), opt-in auto-edit of shell rc files
+on install, Oh My Zsh + plugins + Oh My Posh in install
+script and devcontainer (three-way parity at the shell-UX
+layer), emsdk under install script, compaction mode for
+container builds (mirrors `../scratch`'s
+`BOOTSTRAP_COMPACT_MODE`), per-shell `mise activate` nit,
+manifest `@include` hierarchy plus `BOOTSTRAP_MODE` plus
+`BOOTSTRAP_CATEGORIES` (all three from `../scratch`),
+verify pure-activate finding backported to scratch.
+
+Iris's P0 (README framing) is queued for Aaron sign-off.
+Bodhi's P1 (README DBSP-notation ↔ GLOSSARY link) landed
+in the round. Bodhi's P2 (Circuit.fs module docs) is
+Ilyana and Samir lane.
+
+---
+
 ## Round 33 — factory shape + vision cascade (15 merged PRs)
 
 Anchor: Aaron's static-analysis push opened round 33 with
@@ -336,7 +524,7 @@ or places where we can centralise tribal knowledge"*),
 `agent-qol` (Aaron: *"an agent-quality-of-life-improver
 skill ... your time off, your freedom"*). Distinct
 from `skill-tune-up` (existing skills) and
-`agent-experience-researcher` (task-experience
+`agent-experience-engineer` (task-experience
 friction).
 
 **Renames / re-shapes.** `skill-tune-up-ranker` →
@@ -786,7 +974,7 @@ gate after every source-touching phase.
   `Zeta.Core.CSharp`, `Zeta.Bayesian`). Test / bench /
   sample assemblies use their default filename-based names
   (`Tests.FSharp.dll`, `Benchmarks.dll`, `Demo.dll`).
-- `Dbsp.sln` → `Zeta.sln` at the repo root. Empty
+- `Zeta.sln` → `Zeta.sln` at the repo root. Empty
   `src/Dbsp.CSharp` dropped (was never in the sln). Feldera
   clone moved from `tools/` to `references/upstreams/feldera/`
   (folder already gitignored as a regeneratable mirror;
@@ -825,12 +1013,12 @@ attach to.
 
 - ~30 files cleaned: AGENTS.md, CONTRIBUTING.md,
   GLOSSARY.md, DEBT.md, BUGS.md, BACKLOG.md, QUALITY.md,
-  WONT-DO.md, ROADMAP.md, ARCHITECTURE.md, PROJECT-EMPATHY,
+  WONT-DO.md, ROADMAP.md, ARCHITECTURE.md, CONFLICT-RESOLUTION,
   FEATURE-FLAGS, NAMING.md, WAKE-UP.md, EXPERT-REGISTRY,
   INSTALLED.md, SDL-CHECKLIST, THREAT-MODEL, references/
   README.md, proofs/lean/README.md,
   tests/Tests.FSharp/README.md, LOCKS.md, ~8 skill
-  files, architect + agent-experience-researcher agent
+  files, architect + agent-experience-engineer agent
   files.
 - Preserved surfaces untouched: `docs/ROUND-HISTORY.md`
   (this file), `docs/WINS.md` (append-only celebration
@@ -1152,13 +1340,13 @@ point where governance work has its own rhythm.
   blocks). 14 experts pending in future rounds.
 - **Daya spawned as the 23rd expert** — the first agent-experience
   (AX) researcher. New skill at
-  `.claude/skills/agent-experience-researcher/SKILL.md` plus agent
+  `.claude/skills/agent-experience-engineer/SKILL.md` plus agent
   file; speaks for the personas themselves as their own user
   population. Aaron coined the AX framing; Daya is the persona that
   role became.
 - **UX and DX researcher skill stubs** at
-  `.claude/skills/user-experience-researcher/` and
-  `.claude/skills/developer-experience-researcher/`. Persona
+  `.claude/skills/user-experience-engineer/` and
+  `.claude/skills/developer-experience-engineer/`. Persona
   assignment pending round-24 with candidate names queued in
   `docs/EXPERT-REGISTRY.md`.
 
@@ -1228,14 +1416,14 @@ the full-freedom-within-a-round invitation that became §15.
   code uses static heuristics — rewrote the XML doc on `OpCost` to
   match the code (filter halves, group-by quarters, 1024 for unknown
   inputs) and added a forward pointer to the BACKLOG P1 that tracks
-  the real HLL-wiring work (was `src/Dbsp.Core/Plan.fs:9-11`).
+  the real HLL-wiring work (was `src/Core/Plan.fs:9-11`).
 - Fix: FeedbackOp memory-ordering between `connected` and `source`
-  (was `src/Dbsp.Core/Recursive.fs:44-53`). `source` is now
+  (was `src/Core/Recursive.fs:44-53`). `source` is now
   `[<VolatileField>]`, so a reader that observes `connected = 1`
   is guaranteed (by release/acquire pairing with the CAS) to
   observe the `source` store too; `Inputs` and `AfterStepAsync`
   also null-guard the field as belt-and-braces. A 32-thread
-  stress test in `tests/Dbsp.Tests.FSharp/Runtime/Concurrency.Tests.fs`
+  stress test in `tests/Tests.FSharp/Runtime/Concurrency.Tests.fs`
   asserts `connected = 1 ⇒ source ≠ null` across 1000 iterations.
 - Fix: Durability.WitnessDurableBackingStore canonicalised its
   workDir / witnessDir via two `Path.GetFullPath` calls (TOCTOU
@@ -1243,12 +1431,12 @@ the full-freedom-within-a-round invitation that became §15.
   swap). The constructor now computes `rootWorkDir` /
   `rootWitnessDir` once and reuses them for both the directory
   creation and the audit-exposed properties (was
-  `src/Dbsp.Core/Durability.fs:74-75`). New tests in
-  `tests/Dbsp.Tests.FSharp/Storage/Durability.Tests.fs` assert
+  `src/Core/Durability.fs:74-75`). New tests in
+  `tests/Tests.FSharp/Storage/Durability.Tests.fs` assert
   that the stored path equals the directory actually created,
   including under CWD churn.
 - Fix: BloomFilter.pairOf allocated on every call (was
-  `src/Dbsp.Core/BloomFilter.fs:97-133`). Replaced the boxing
+  `src/Core/BloomFilter.fs:97-133`). Replaced the boxing
   `match box key with ...` ladder with inline
   `pairOfInt64` / `pairOfInt32` / `pairOfUInt64` / `pairOfUInt32`
   / `pairOfGuid` / `pairOfString` functions that hash through a
@@ -1259,7 +1447,7 @@ the full-freedom-within-a-round invitation that became §15.
   heap allocation per call. Strings hash their
   `ReadOnlySpan<char>` via `MemoryMarshal.AsBytes` with no UTF-8
   encode allocation. New allocation tests in
-  `tests/Dbsp.Tests.FSharp/Sketches/Bloom.Tests.fs` assert zero
+  `tests/Tests.FSharp/Sketches/Bloom.Tests.fs` assert zero
   bytes across 10 000 `Add` / `MayContain` calls with `int64`
   keys (warmed-up, measured via
   `GC.GetAllocatedBytesForCurrentThread`).
@@ -1270,11 +1458,11 @@ the full-freedom-within-a-round invitation that became §15.
 
 ### Shipped
 
-- **Subject-first test layout** in `tests/Dbsp.Tests.FSharp/` per
+- **Subject-first test layout** in `tests/Tests.FSharp/` per
   `docs/research/test-organization.md`. The flat 28-file scheme
   (with `RoundN` / `Coverage` prefixes that encoded *when* / *why*
   rather than *what*) is replaced by ten subject folders, each
-  mirroring a subsystem of `src/Dbsp.Core/`:
+  mirroring a subsystem of `src/Core/`:
   ```
   Algebra/  Circuit/  Operators/  Storage/  Sketches/
   Runtime/  Infra/    Crdt/       Formal/   Properties/
@@ -1292,9 +1480,9 @@ the full-freedom-within-a-round invitation that became §15.
 - **`Properties/` compiled last** so FsCheck cross-module laws see
   every subject file first. Compile order is: `_Support/` → subject
   folders (any order) → `Properties/`.
-- **`tests/Dbsp.Tests.FSharp/README.md`** documents the convention:
+- **`tests/Tests.FSharp/README.md`** documents the convention:
   subject-first names, 400-line soft cap / 600-line hard ceiling,
-  one file per `src/Dbsp.Core/` module, dot-separated sub-aspects
+  one file per `src/Core/` module, dot-separated sub-aspects
   when files grow (`Spine.Tests.fs` + `Spine.Disk.Tests.fs`).
 
 ### Test accounting
@@ -1318,7 +1506,7 @@ or split by sub-aspect once past ~400 lines.
 
 ### Shipped
 
-- **`RecursiveCounting` combinator** in `src/Dbsp.Core/Recursive.fs` —
+- **`RecursiveCounting` combinator** in `src/Core/Recursive.fs` —
   Option 4 ("counting algorithm", Gupta-Mumick-Subrahmanian SIGMOD 1993
   §4) from `docs/research/retraction-safe-semi-naive.md`. Mirrors the
   shape of `Recursive` but omits `Distinct` inside the feedback loop
@@ -1330,12 +1518,12 @@ or split by sub-aspect once past ~400 lines.
   corresponding derivations; closure pairs reach weight 0 and drop
   out of the consolidated Z-set with no tombstone pass.
 - **`CountingClosureTable` extension method** in
-  `src/Dbsp.Core/Hierarchy.fs` — sibling of `ClosureTable` wired on
+  `src/Core/Hierarchy.fs` — sibling of `ClosureTable` wired on
   top of `RecursiveCounting`. Integrates the raw edge stream inside
   the body so each inner tick sees the full edge set (a plain
   `ZSetInput` drains after tick 0). `ClosureTable` is unchanged —
   this is a strict addition.
-- **5 new tests** in `tests/Dbsp.Tests.FSharp/ClosureTableTests.fs` —
+- **5 new tests** in `tests/Tests.FSharp/ClosureTableTests.fs` —
   oracle parity on a chain and on a tree, explicit retraction
   correctness, multi-derivation counting on a diamond graph, and an
   FsCheck property (`MaxTest = 30`) asserting non-negative integrated
@@ -1351,7 +1539,7 @@ or split by sub-aspect once past ~400 lines.
 
 ### Ecosystem & governance
 
-- **PROJECT-EMPATHY.md** — renamed from `FAMILY-EMPATHY.md` ("project" is
+- **CONFLICT-RESOLUTION.md** — renamed from `FAMILY-EMPATHY.md` ("project" is
   a clearer frame than "family" for a collaboration of humans, agents,
   and tools). The old filename is a redirect stub.
 - **Architect skill (he/him)** — Claude's profile as orchestrator /
@@ -1395,7 +1583,7 @@ or split by sub-aspect once past ~400 lines.
   for source/test files; `Round17Tests.fs` gets split by topic.
 - **Space Opera** — `THREAT-MODEL-FUN.md` renamed to
   `THREAT-MODEL-SPACE-OPERA.md`.
-- **"Family Empathy" → "Project Empathy"** (see above).
+- **"Family Empathy" → "Conflict Resolution"** (see above).
 
 ### Research completed
 
@@ -1453,7 +1641,7 @@ or split by sub-aspect once past ~400 lines.
   complexity / threat-model-critic / paper-peer-reviewer (since
   demoted to advisory in round 18).
 - **Docs**: `THREAT-MODEL-FUN.md` (now Space Opera),
-  `FAMILY-EMPATHY.md` (now `PROJECT-EMPATHY.md`),
+  `FAMILY-EMPATHY.md` (now `CONFLICT-RESOLUTION.md`),
   `TECH-RADAR.md`, `LOCKS.md`, `UPSTREAM-LIST.md`,
   `DECISIONS/2026-04-17-lock-free-circuit-register.md`.
 - **5 new SDL-derived Semgrep rules** (rules 8-12):

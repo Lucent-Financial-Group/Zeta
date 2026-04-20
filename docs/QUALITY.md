@@ -38,7 +38,7 @@ a bug.
 - Every `O(·)` complexity claim has a benchmark or a proof. If it's
   measured-under-conditions, the doc says so explicitly.
 - Every performance or allocation win cites before/after evidence from
-  `bench/Dbsp.Benchmarks/` or a focused allocation assertion test. Feel
+  `bench/Benchmarks/` or a focused allocation assertion test. Feel
   is not evidence.
 - Every research-grade claim names its target venue (VLDB / PODS / PLDI
   / NSDI — see `docs/ROADMAP.md`).

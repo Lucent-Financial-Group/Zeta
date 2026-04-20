@@ -1,15 +1,56 @@
-# For most projects, this workflow file will not need changing; you simply need
-# to commit it to your repository.
+# CodeQL semantic static analysis — Zeta-tuned (round 34).
 #
-# You may wish to alter this file to override the set of languages analyzed,
-# or to provide custom queries or build logic.
+# Produces code-scanning alerts under Security -> Code scanning.
+# Triaged by security-researcher (Mateo) per GOVERNANCE §22;
+# runtime alert ops by security-operations-engineer (Nazar).
+# Satisfies SDL practice #9 (Perform Static Analysis Security
+# Testing) for the semantic / taint-flow slice that Semgrep
+# (syntactic) and the F# compiler (type-level) do not cover.
 #
-# ******** NOTE ********
-# We have attempted to detect the languages in your repository. Please check
-# the `language` matrix defined below to confirm you have the correct set of
-# supported CodeQL languages.
+# WHAT THIS DOES DIFFERENTLY FROM THE GITHUB DEFAULT
+# ----------------------------------------------------
+#   1. Dropped the `java-kotlin` matrix cell. Zeta is F#/C#
+#      on .NET 10; there is no Java / Kotlin source.
+#   2. `csharp` leg uses `build-mode: manual` with
+#      `./tools/setup/install.sh` + `dotnet build Zeta.sln`.
+#      The GitHub default was `build-mode: none` (source-only),
+#      which for an F#-first repo via the C# pack means no
+#      MSIL and no F# symbolic info - effectively a no-op.
+#      Manual mode produces a real database against compiled
+#      IL, which catches CLR-level bugs (null deref, unsafe
+#      reflection, SQLi in interop, path traversal).
+#   3. Toolchain install goes through `tools/setup/install.sh`,
+#      not `actions/setup-dotnet`, so CodeQL / dev laptops /
+#      CI / devcontainers all converge on the same .NET SDK
+#      (GOVERNANCE §24 three-way-parity invariant).
+#   4. Query packs scale with the trigger:
+#        PR / push -> security-extended (fast, high-confidence)
+#        schedule  -> security-extended + security-and-quality
+#      Running the full suite on every PR would slow feedback
+#      and explode the alert queue.
+#   5. A config file (.github/codeql/codeql-config.yml) carries
+#      paths-ignore for vendored upstreams, bench harness, and
+#      external-tool trees where any C# is incidental.
+#   6. `concurrency: cancel-in-progress` cuts stale runs on
+#      force-push; 30-minute timeout caps the CodeQL DB-build
+#      tail which is a known flaky source.
 #
-name: "CodeQL Advanced"
+# SECURITY NOTE on `${{ ... }}` expressions
+# ------------------------------------------
+# Every expansion in this file reads from trusted contexts only:
+# `github.event_name`, `github.workflow`, `github.ref`,
+# `runner.os`, `matrix.*`, `hashFiles(...)`. No attacker-
+# controlled fields (`github.event.issue.*`, `github.event.pull_
+# request.title`, `github.head_ref`, commit author fields) are
+# interpolated into `run:` blocks. Injection surface: nil.
+#
+# LANDING TRACE
+# -------------
+#   - .claude/skills/codeql-expert/SKILL.md  §Round-34 drift list
+#   - docs/TECH-RADAR.md                     CodeQL row (Trial)
+#   - docs/BACKLOG.md                        CodeQL entry [~]
+
+name: "CodeQL"
 
 on:
   push:
@@ -17,87 +58,98 @@ on:
   pull_request:
     branches: [ "main" ]
   schedule:
+    # Weekly sweep - Tuesday 06:43 UTC. Cheaper than a full
+    # suite on every push; louder than leaving gaps for a week
+    # of landed PRs to go un-swept with the heavier query pack.
     - cron: '43 6 * * 2'
+
+concurrency:
+  # PR force-push supersedes the previous run. Schedule runs
+  # carry a distinct ref (`refs/heads/main` on cron) so they
+  # don't cancel each other.
+  group: codeql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    # Runner size impacts CodeQL analysis time. To learn more, please see:
-    #   - https://gh.io/recommended-hardware-resources-for-running-codeql
-    #   - https://gh.io/supported-runners-and-hardware-resources
-    #   - https://gh.io/using-larger-runners (GitHub.com only)
-    # Consider using larger runners or machines with greater resources for possible analysis time improvements.
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
     permissions:
-      # required for all workflows
-      security-events: write
-
-      # required to fetch internal or private CodeQL packs
-      packages: read
-
-      # only required for workflows in private repositories
-      actions: read
-      contents: read
+      security-events: write   # upload SARIF
+      packages: read           # fetch private CodeQL packs (future)
+      actions: read            # required by codeql-action
+      contents: read           # checkout
 
     strategy:
       fail-fast: false
       matrix:
         include:
-        - language: actions
-          build-mode: none
-        - language: csharp
-          build-mode: none
-        - language: java-kotlin
-          build-mode: none # This mode only analyzes Java. Set this to 'autobuild' or 'manual' to analyze Kotlin too.
-        # CodeQL supports the following values keywords for 'language': 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'rust', 'swift'
-        # Use `c-cpp` to analyze code written in C, C++ or both
-        # Use 'java-kotlin' to analyze code written in Java, Kotlin or both
-        # Use 'javascript-typescript' to analyze code written in JavaScript, TypeScript or both
-        # To learn more about changing the languages that are analyzed or customizing the build mode for your analysis,
-        # see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning.
-        # If you are analyzing a compiled language, you can modify the 'build-mode' for that language to customize how
-        # your codebase is analyzed, see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages
+          - language: actions
+            build-mode: none
+          - language: csharp
+            build-mode: manual
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
-    # Add any setup steps before running the `github/codeql-action/init` action.
-    # This includes steps like installing compilers or runtimes (`actions/setup-node`
-    # or others). This is typically only required for manual builds.
-    # - name: Setup runtime (example)
-    #   uses: actions/setup-example@v1
+      # ---- Toolchain (csharp leg only) -----------------------
+      # Mirrors gate.yml discipline: one install script, three
+      # consumers (dev laptop / CI / devcontainer). We do NOT
+      # reach for actions/setup-dotnet; doing so would fork CI
+      # from the canonical install path per GOVERNANCE §24.
 
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
-        # If you wish to specify custom queries, you can do so here or in a config file.
-        # By default, queries listed here will override any specified in a config file.
-        # Prefix the list here with "+" to use these queries and those in the config file.
+      - name: Cache NuGet
+        if: matrix.language == 'csharp'
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
+        with:
+          path: |
+            ~/.nuget/packages
+            ~/.local/share/NuGet
+          # Keys on Directory.Packages.props - same as gate.yml.
+          # No restore-keys: a partial hit on a different lock
+          # restores against different resolved versions, which
+          # would drift the CodeQL database from what we ship.
+          key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props') }}
 
-        # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-        # queries: security-extended,security-and-quality
+      - name: Install toolchain (three-way-parity script)
+        if: matrix.language == 'csharp'
+        run: ./tools/setup/install.sh
 
-    # If the analyze step fails for one of the languages you are analyzing with
-    # "We were unable to automatically build your code", modify the matrix above
-    # to set the build mode to "manual" for that language. Then modify this step
-    # to build your code.
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-    - name: Run manual build steps
-      if: matrix.build-mode == 'manual'
-      shell: bash
-      run: |
-        echo 'If you are using a "manual" build mode for one or more of the' \
-          'languages you are analyzing, replace this with the commands to build' \
-          'your code, for example:'
-        echo '  make bootstrap'
-        echo '  make release'
-        exit 1
+      # ---- CodeQL init + query selection ---------------------
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          config-file: ./.github/codeql/codeql-config.yml
+          # PR / push: security-extended only (fast, high-
+          # confidence, security-only).
+          # Schedule: add security-and-quality on top for
+          # breadth. The expression below resolves to the
+          # comma-separated pack list CodeQL's init action
+          # expects.
+          queries: ${{ (github.event_name == 'schedule') && 'security-extended,security-and-quality' || 'security-extended' }}
+
+      # ---- Manual build for csharp ---------------------------
+      # BASH_ENV (emitted by tools/setup/shellenv.sh during the
+      # install step) has already pointed this shell at the
+      # managed shellenv file; no explicit source needed.
+      #
+      # TreatWarningsAsErrors stays ON per Directory.Build.props.
+      # We do not relax it just to get CodeQL past a warning -
+      # a warning is a build break.
+
+      - name: Build (csharp - for CodeQL DB extraction)
+        if: matrix.build-mode == 'manual'
+        run: dotnet build Zeta.sln -c Release
+
+      # ---- Analyze + upload SARIF ----------------------------
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2
+        with:
+          category: "/language:${{ matrix.language }}"

@@ -3,13 +3,16 @@
 # tools/setup/linux.sh — Linux bootstrap path (Debian/Ubuntu for now).
 #
 # Order matters:
-#   1. apt packages from manifests/apt.txt (openjdk, build-essential, curl)
+#   1. apt packages from manifests/apt (build-essential, curl, etc.)
 #   2. mise (via official installer; no apt package yet)
-#   3. common/mise.sh     — pins python (dotnet moved out in round 32)
-#   4. common/dotnet.sh   — installs .NET SDK per global.json
+#   3. common/mise.sh     — installs dotnet/python/java/bun/uv
+#                           per .mise.toml
+#   4. common/python-tools.sh — uv-managed Python CLI tools
+#                              (ruff, etc.) from manifests/uv-tools
 #   5. common/elan.sh     — Lean toolchain
-#   6. common/dotnet-tools.sh — dotnet global tools
-#   7. common/verifiers.sh    — TLA+ + Alloy jars
+#   6. common/dotnet-tools.sh — dotnet global tools from
+#                              manifests/dotnet-tools
+#   7. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
 #   8. common/shellenv.sh     — managed PATH file
 #
 # Non-Debian Linuxes (RHEL/Fedora/Arch/Alpine) are deferred — the
@@ -29,17 +32,23 @@ if ! command -v apt-get >/dev/null 2>&1; then
 fi
 
 # ── 1. apt packages (from manifest) ─────────────────────────────────
-APT_MANIFEST="$SETUP_DIR/manifests/apt.txt"
+APT_MANIFEST="$SETUP_DIR/manifests/apt"
 if [ -f "$APT_MANIFEST" ]; then
-  echo "↓ installing apt packages from $(basename "$APT_MANIFEST")..."
-  # Read non-comment non-empty lines.
-  PKGS=$(grep -vE '^(#|$)' "$APT_MANIFEST" | tr '\n' ' ')
-  # Use sudo only when not already root (CI containers often run as root).
-  SUDO=""
-  if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; fi
-  $SUDO apt-get update -y
-  # shellcheck disable=SC2086
-  $SUDO apt-get install -y --no-install-recommends $PKGS
+  # Extract non-comment non-empty lines via awk (doesn't fail
+  # under pipefail when manifest is all comments — unlike
+  # `grep -vE` which exits 1 on no-match).
+  PKGS="$(awk '!/^[[:space:]]*#/ && NF > 0 { print }' "$APT_MANIFEST" | tr '\n' ' ')"
+  if [ -n "$PKGS" ]; then
+    echo "↓ installing apt packages from $(basename "$APT_MANIFEST")..."
+    # Use sudo only when not already root (CI containers often run as root).
+    SUDO=""
+    if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; fi
+    $SUDO apt-get update -y
+    # shellcheck disable=SC2086
+    $SUDO apt-get install -y --no-install-recommends $PKGS
+  else
+    echo "✓ apt manifest empty; skipping"
+  fi
 fi
 echo "✓ apt packages up to date"
 
@@ -54,16 +63,37 @@ fi
 echo "✓ mise: $(mise --version)"
 
 # ── 3-8. Common steps ───────────────────────────────────────────────
+# mise.sh runs `mise install` from .mise.toml, which now includes
+# dotnet (round-34 flip). No separate dotnet install step needed;
+# mise shims handle PATH. `~/.dotnet/tools` still needs PATH for
+# `dotnet tool install -g` globals — that's dotnet's own convention
+# independent of where the SDK lives. shellenv.sh wires it.
 "$SETUP_DIR/common/mise.sh"
-"$SETUP_DIR/common/dotnet.sh"
 
-# Make ~/.dotnet available for the remainder of this install.sh
-# process so dotnet-tools.sh can find the SDK we just installed.
-# shellenv.sh handles propagation to subsequent shells + CI env.
-export DOTNET_ROOT="$HOME/.dotnet"
-export PATH="$DOTNET_ROOT:$HOME/.dotnet/tools:$PATH"
+# Put mise shims on THIS shell's PATH so subsequent common/*.sh
+# subprocesses (python-tools, dotnet-tools, verifiers) inherit it
+# and can invoke dotnet / uv / bun / java / python from the mise
+# install. mise.sh also tries to export this but it exports inside
+# its own subprocess; parent inherit needs the parent to export.
+for shim_dir in \
+    "$HOME/.local/share/mise/shims" \
+    "/opt/homebrew/opt/mise/shims" \
+    "/opt/homebrew/share/mise/shims"; do
+  if [ -d "$shim_dir" ]; then
+    export PATH="$shim_dir:$PATH"
+    break
+  fi
+done
+
+"$SETUP_DIR/common/python-tools.sh"
+
+# Make ~/.dotnet/tools available for the remainder of this install.sh
+# process so dotnet-tools.sh can install globals (semgrep / stryker)
+# into $HOME/.dotnet/tools and find them on PATH in the same run.
+export PATH="$HOME/.dotnet/tools:$PATH"
 
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"
 "$SETUP_DIR/common/verifiers.sh"
 "$SETUP_DIR/common/shellenv.sh"
+"$SETUP_DIR/common/profile-edit.sh"

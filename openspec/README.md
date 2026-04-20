@@ -103,7 +103,7 @@ these per round):
 - `sketches` — HLL, Count-Min, KLL, Bloom (blocked + counting),
   future CQF
 - `feature-flags` — already in-tree as a standalone module
-  (`src/Dbsp.Core/FeatureFlags.fs`); behavioural spec pending
+  (`src/Core/FeatureFlags.fs`); behavioural spec pending
 - `circuit-scheduling` — topo-sort, strict ops, async fast path
 
 Future profiles (`csharp.md` for the shim, `rust.md`,

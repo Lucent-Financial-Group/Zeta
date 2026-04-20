@@ -1,0 +1,11 @@
+# Debian/Ubuntu apt packages — installed by tools/setup/linux.sh.
+# Add a package by appending a line. Comments start with `#`.
+#
+# System-level packages only. Language runtimes (dotnet, python,
+# java, bun) are pinned via `.mise.toml`, NOT via apt. Round 34
+# migrated OpenJDK off apt onto mise.
+
+build-essential
+curl
+ca-certificates
+git

@@ -1,7 +1,7 @@
 # Test Organization for `Dbsp.Tests.FSharp`
 
 **Status:** proposal (pre-v1, refactor welcome per `AGENTS.md`). Author: architect
-review. Scope: rename + regroup every file under `tests/Dbsp.Tests.FSharp/`.
+review. Scope: rename + regroup every file under `tests/Tests.FSharp/`.
 
 ## 1. Current pain
 
@@ -48,7 +48,7 @@ search time. `Coverage*` names encode *why* (a coverage target) rather than
 ## 3. Proposed layout
 
 ```
-tests/Dbsp.Tests.FSharp/
+tests/Tests.FSharp/
   Algebra/           ZSet.Tests.fs, IndexedZSet.Tests.fs, Weight.Tests.fs,
                      Algebra.Laws.Tests.fs
   Circuit/           Circuit.Tests.fs, NestedCircuit.Tests.fs,
@@ -153,7 +153,7 @@ Ten top-level folders, each with 3–7 files. Each filename names a module in
    each commit moves test-bodies into their new home verbatim. (commits
    8–20)
 5. Delete the empty originals; final `.fsproj` cleanup. (commit 21)
-6. Add `tests/Dbsp.Tests.FSharp/README.md` documenting §3 and §5. (commit 22)
+6. Add `tests/Tests.FSharp/README.md` documenting §3 and §5. (commit 22)
 
 Each commit runs `dotnet test Zeta.sln` — the 447-test gate stays green
 throughout.
