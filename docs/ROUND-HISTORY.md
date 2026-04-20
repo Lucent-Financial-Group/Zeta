@@ -204,6 +204,19 @@ Follow-up SKILL.md edits route via `skill-creator`
   recovery is a design axis, not a one-off; sweep
   infrastructure is subject to the same bitrot it is meant
   to detect on other surfaces.
+- **TLC CI job never existed.** Round-41 close-out tried to
+  size Soraya's Prereq 1 ("Add `RecursiveSignedSemiNaive.cfg`
+  to the TLC CI job") as S-effort. Audit found no TLC job
+  in `.github/workflows/gate.yml` — only a cache step for
+  the verifier jars (lines 80-89). `RecursiveCountingLFP.tla`
+  has shipped since round 19 compile-checkable-only, with no
+  *run*-gate against its invariants for 22 rounds. Prereq 1
+  re-sized M and scope expanded to cover both specs. Signal:
+  verifier-infrastructure-present does not imply
+  verifier-actually-runs; the gap between "jar is on disk"
+  and "job runs the jar on every commit" is a recurring
+  drift class worth a separate audit lens
+  (`formal-analysis-gap-finder` scope, possibly).
 
 ### BP-WINDOW ledger — Round 41 (prospective)
 
