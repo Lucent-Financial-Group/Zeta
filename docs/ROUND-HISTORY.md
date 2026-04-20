@@ -7,6 +7,44 @@ Everywhere else, documents describe current state.
 
 New rounds are appended at the top.
 
+## Contents
+
+Newest first. Anchor links work in markdown renderers that
+slugify `## Round N — <title>` to `#round-n-<title-slug>`.
+
+- [Round 42 — First repeated iteration of Round-41 cadences + vibe-coding external legibility](#round-42--first-repeated-iteration-of-round-41-cadences--vibe-coding-external-legibility)
+- [Round 41 — OpenSpec backfill program founding + first cadence ship](#round-41--openspec-backfill-program-founding--first-cadence-ship)
+- [Round 40 — Blocked Bloom Adopt graduation (bucket/probe correlation fix)](#round-40--blocked-bloom-adopt-graduation-bucketprobe-correlation-fix)
+- [Round 39 — DORA-spine + hooks-research + pitch-readiness P1 bundle + citations-as-first-class](#round-39--dora-spine--hooks-research--pitch-readiness-p1-bundle--citations-as-first-class)
+- [Round 38 — CI retractability inventory + alignment substrate self-exercise + pitch-readiness + Aurora Network disclosure](#round-38--ci-retractability-inventory--alignment-substrate-self-exercise--pitch-readiness--aurora-network-disclosure)
+- [Round 37 — BP-WINDOW first prospective application + serializer tier closure + two research skeletons + channel-closure threat class](#round-37--bp-window-first-prospective-application--serializer-tier-closure--two-research-skeletons--channel-closure-threat-class)
+- [Round 36 — Seed vision + consent-first primitive + Zeta=heaven formal equation + BP-WINDOW ADR](#round-36--seed-vision--consent-first-primitive--zetaheaven-formal-equation--bp-window-adr)
+- [Round 35 — expert-skill spawn wave + chain-rule proof close + BP-24 consent gate](#round-35--expert-skill-spawn-wave--chain-rule-proof-close--bp-24-consent-gate)
+- [Round 34 — factory + DB first-tests + public repo](#round-34--factory--db-first-tests--public-repo)
+- [Round 33 — factory shape + vision cascade (15 merged PRs)](#round-33--factory-shape--vision-cascade-15-merged-prs)
+- [Round 32 — CI parity-swap + memory normalization + v1 security + openspec §28](#round-32--ci-parity-swap--memory-normalization--v1-security--openspec-28)
+- [Round 31 — rest round (maintainer-called)](#round-31--rest-round-maintainer-called)
+- [Round 30 — nation-state + supply-chain threat-model elevation](#round-30--nation-state--supply-chain-threat-model-elevation)
+- [Round 29 — CI pipeline + three-way parity install script, factory-improvement surge](#round-29--ci-pipeline--three-way-parity-install-script-factory-improvement-surge)
+- [Round 28 — FsCheck law runner (Option B), stateful-harness design doc, lean4 cleanup](#round-28--fscheck-law-runner-option-b-stateful-harness-design-doc-lean4-cleanup)
+- [Round 27 — big round: governance §20-§22, plugin API redesign landed, memory moved in-repo](#round-27--big-round-governance-20-22-plugin-api-redesign-landed-memory-moved-in-repo)
+- [Round 26 — first git round, rename tail, specialist dispatch cadence](#round-26--first-git-round-rename-tail-specialist-dispatch-cadence)
+- [Round 25 — Zeta rename arc (no-git), memory policy codified, doc cleanup](#round-25--zeta-rename-arc-no-git-memory-policy-codified-doc-cleanup)
+- [Round 24 — Governance expansion, two new seats, memory-smoothing Part 2](#round-24--governance-expansion-two-new-seats-memory-smoothing-part-2)
+- [Round 23 — Mathlib migration, expert/skill split Part 2, AX discipline spawned](#round-23--mathlib-migration-expertskill-split-part-2-ax-discipline-spawned)
+- [Round 22 — Honesty fixes + expert/skill split push](#round-22--honesty-fixes--expertskill-split-push)
+- [Round 20 — Test-tree subject-first restructure](#round-20--test-tree-subject-first-restructure)
+- [Round 19 — CountingClosureTable / RecursiveCounting](#round-19--countingclosuretable--recursivecounting)
+- [Round 18 — Architect, security, restructure (in progress)](#round-18--architect-security-restructure-in-progress)
+- [Round 17 — storage specialist, BloomFilter, durability skeleton](#round-17--storage-specialist-bloomfilter-durability-skeleton)
+- [Round 16 — SDL / threat model / she-her storage specialist](#round-16--sdl--threat-model--she-her-storage-specialist)
+
+Round 43 (current) is in-flight; the synthesis row lands at
+round-close. When this file hits 5000 lines, split the pre-
+round-N portion into `docs/_archive/ROUND-HISTORY-pre-N.md`
+and leave this file as a rolling window of the most recent
+~20 rounds; no ADR is needed for a mechanical archive move.
+
 ---
 
 ## Round 42 — First repeated iteration of Round-41 cadences + vibe-coding external legibility
