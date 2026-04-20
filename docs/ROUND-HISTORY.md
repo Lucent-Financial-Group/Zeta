@@ -147,6 +147,25 @@ naïve LFP" entry, sized S each, so the round-42 opener picks
 them up as actionable work rather than having to re-derive
 them from the notebook.
 
+### Arc 8 — Router-coherence ADR: claims-tester/complexity-reviewer hand-off (`47d92d8`)
+
+Aarav's (`skill-tune-up`) round-41 catch-up ranking carried a
+round-18 HAND-OFF-CONTRACT finding forward as P1 after 23
+rounds of cadence drift (ranker offline rounds 19-40). The
+finding: `claims-tester` and `complexity-reviewer` both claim
+authority over "is this O(·) claim true?" without an analytic-
+bound → empirical-falsifier contract. Round 41 closes the
+finding via an ADR (`docs/DECISIONS/2026-04-21-router-coherence-
+claims-vs-complexity.md`) that declares a two-stage pipeline:
+Hiroshi (`complexity-reviewer`) proves the analytic bound
+first, Daisy (`claims-tester`) measures at `n ∈ [10³, 10⁶]`
+second; reverse trigger (benchmark surprise flows empirical →
+analytic) closes the loop so implementation drift cannot
+accumulate invisibly against a "provably correct" paper bound.
+Decision table names who fires when across six situations.
+Follow-up SKILL.md edits route via `skill-creator`
+(GOVERNANCE §4); not this round's work.
+
 ### Round 41 observations for Round 42
 
 - The **audit → ADR → ship → audit → close-P0 → file-P1**
@@ -175,6 +194,16 @@ them from the notebook.
   (Z3 QF_LIA on S2) rather than as prose, which is the
   promotion-path for cross-check rules the alignment substrate
   is designed to enable.
+- **A 23-round-stale finding still closed cleanly.** The
+  Aarav round-18 router-coherence drift slept through 23
+  rounds of cadence outage (rounds 19-40) and re-emerged with
+  an intact diagnosis on the round-41 catch-up. The sweep
+  infrastructure itself needed sweeping before its findings
+  could carry — once the ranker re-ran, the original P1
+  landed an ADR the same round. Signal: cadence-outage-
+  recovery is a design axis, not a one-off; sweep
+  infrastructure is subject to the same bitrot it is meant
+  to detect on other surfaces.
 
 ### BP-WINDOW ledger — Round 41 (prospective)
 
@@ -187,6 +216,8 @@ them from the notebook.
 | `6e6e211` / `36797ba` | Arc 5 — ROUND-HISTORY + memory-restructure design | Strengthened (memory-restructure downgraded from "execute now" to "design plan + sign-off first" under Auto Mode *do-not-take-overly-destructive-actions* clause; four open questions declared honestly) | Strengthened (design has explicit rollback via single `git revert`; 5-phase atomic-commit plan is the retraction surface) | Preserved (narrative + design doc only; 700-occurrence cross-reference surface deliberately not touched) |
 | `85fb352` | Arc 6 — BP-WINDOW ledger actualisation | Strengthened (provenance `(merged via PR #30, 1e30f8c)` attached to each header; audit-trail honesty over forecast rhetoric) | Strengthened (ledger transitions from forecast to settled observation, which IS the retraction surface for any forecast error that slipped past round-close) | Preserved (four-header doc edit only) |
 | `e461d9c` / `15e9654` | Arc 7 — Soraya audit + BACKLOG capture | Strengthened (Round-35 holdover gate closed honestly; four named prereqs declare round-42 author's consent-to-work ahead of time rather than drift into a shipped claim) | Strengthened (CONDITIONAL PASS verdict IS the retraction surface — unmet prereqs re-open the capability; BP-16 citation makes the cross-check discipline visible) | Preserved (notebook + BACKLOG updates only; `RecursiveSigned.fs` stays unshipped until prereqs CI-green) |
+| `085c0e3` | Aarav skill-tune-up catch-up (between Arc 7 and Arc 8) | Strengthened (23-round cadence gap closed honestly; round-18 carry-over re-entered top-5 rather than silently dropped) | Strengthened (stale top-5 archived in Pruning log; the ranker's own bitrot surfaces as a declared observation) | Preserved (notebook + scratchpad updates only) |
+| `47d92d8` | Arc 8 — router-coherence ADR | Strengthened (two overlapping skills gain a named hand-off contract; neither's authority is silently diminished) | Strengthened (ADR itself is retractable via normal ADR supersedure; reverse trigger makes empirical contradictions re-engage analytic review rather than quietly accumulate) | Preserved (ADR only; SKILL.md edits deferred to `skill-creator` workflow) |
 
 ---
 
