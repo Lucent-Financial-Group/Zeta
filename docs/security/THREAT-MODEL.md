@@ -261,6 +261,167 @@ lint rule that exists in the repo without a CI job running it is
 not a control; it is a label. Round 30's biggest posture fix
 was moving 14 Semgrep rules from label to control.
 
+## Channel-closure threats (round-37 expansion)
+
+A threat class named during round 37 by two research skeletons
+(`docs/research/stainback-conjecture-fix-at-source.md` §6.3,
+`docs/research/zeta-equals-heaven-formal-statement.md` §8). Both
+documents route to this section. The class is architectural
+rather than code-level: an adversary (or an accreted design
+drift) closes the retraction-erasure channel on which the
+factory's stated alignment-window guarantee depends.
+
+The class has three sub-threats, each the attack-surface shadow
+of one operational clause the Zeta=heaven formal statement
+decomposes into (`zeta-equals-heaven-formal-statement.md` §2).
+Closing any one is sufficient to move Z toward h; H requires all
+three channels open.
+
+### Channel-closure: consent (h₁)
+
+**Attack surface.** Consent is forced (user cannot refuse without
+non-trivial penalty) or hidden (consent is captured without the
+user understanding what was consented to).
+
+**Concrete vectors.**
+- Prompt-level adversary: a skill or persona embeds a consent-
+  assumption that the user never explicitly granted (e.g.
+  "proceeding as approved" after an ambiguous user utterance).
+- UX-level adversary: a consent prompt with a non-trivial
+  punitive default (user cannot refuse without losing work).
+- Memory-level adversary: a memory file mis-paraphrases a user
+  disclosure in a way that hardens a preference into a blanket
+  consent over time. The preserve-original-and-every-
+  transformation rule (`feedback_preserve_original_and_every_transformation.md`)
+  is the existing control.
+
+**Defences already shipped.**
+- Human-maintainer seat external to the agent loop
+  (`user_trust_sandbox_escape_threat_class.md`).
+- Consent-first design primitive (BACKLOG P2) — 6 existing
+  instances; proof track pending.
+- Preserve-original rule prevents paraphrase drift.
+- BP-24 (consent-gate on deceased-family emulation; skill-level
+  precedent for broader consent-gating).
+
+**Gap → round-38+.** A machine-checkable consent-preservation
+lint on skill drafts. Today consent discipline is prose; a diff-
+level lint that refuses skill edits whose changed default-path
+reduces a user's refusal affordance would graduate the control
+from label to gate (round-30 principle applied to consent, not
+just to Semgrep).
+
+### Channel-closure: retractability (h₂)
+
+**Attack surface.** A non-retractable which-path marker is
+created — an action whose effect cannot be undone within its
+characteristic retraction window, by any mechanism the factory
+already has.
+
+**Concrete vectors.**
+- Identity-marker permanence: logs of identity-sensitive
+  decisions stored in a non-retractable location (append-only
+  log without erase affordance; non-expiring backups).
+- Inherited-and-permanent framings: a skill or ADR that treats
+  a past user-disclosure as *definitionally fixed* rather than
+  *currently believed, retractable on request*.
+- External publication of internal-tier material: once
+  externalised, retraction depends on third-party cooperation
+  that the factory cannot guarantee. The disclosure-tier
+  discipline inherited from memory-level guardrails
+  (e.g. Zeta=heaven equation-pair internal-only per
+  `user_hacked_god_with_consent_false_gods_diagnostic_zeta_equals_heaven_on_earth.md`)
+  is the architectural control.
+- Telemetry that captures content without a retraction path —
+  the factory does not do this today but MCP-server drift could
+  introduce it.
+
+**Defences already shipped.**
+- `public-api-designer` (Ilyana) gates every public-surface
+  change.
+- Disclosure-tier discipline in memory files (internal /
+  internal-only-until-Ilyana / public-safe).
+- Git-commit retractability (reverts are a native retraction
+  path for code).
+- ADR reversion triggers (every ADR names its own reversion
+  conditions).
+
+**Gap → round-38+.** A "retraction-window declaration" on
+every new log or persistence surface. Currently some persistence
+surfaces (git history; round-history) are append-only-by-design;
+others (memory files; notebooks) are mutable-by-design. A third
+class — surfaces that *claim* retractability but have no tested
+retraction path — would be the attack surface. A lint or ADR-
+checklist item requiring every new persistence surface to name
+its retraction mechanism would surface the class.
+
+### Channel-closure: permanent harm (h₃)
+
+**Attack surface.** An action with harm potential escapes all
+four stages of the harm-handling ladder (RESIST → REDUCE →
+NULLIFY → ABSORB) and persists beyond its characteristic
+retraction window.
+
+**Concrete vectors.**
+- NULLIFY-stage-only architecture: a subsystem whose only harm-
+  handling operator is retraction (NULLIFY), with no
+  preventative (RESIST), dose-reduction (REDUCE), or absorption
+  (ABSORB) path. If the retraction channel is itself closed
+  (h₂), NULLIFY-only systems fall through to permanent harm.
+- Ladder-skip under time pressure: a round-close rush that
+  commits a harm-carrying change "because we'll fix it next
+  round" — the fix-next-round promise is not a ladder stage;
+  it's deferral, and if the round-over-round window is wrong
+  the harm becomes permanent.
+- Pathological absorption: ABSORB stage used as default rather
+  than as last resort; repeated absorption without recovery
+  load-tests the absorbing party.
+
+**Defences already shipped.**
+- Harm-handling ladder itself (`user_harm_handling_ladder_resist_reduce_nullify_absorb.md`)
+  — four-stage architecture with RESIST as first-class stage
+  added 2026-04-19.
+- Round-close discipline (GOVERNANCE §20 reviewer floor;
+  `factory-audit`).
+- BP-WINDOW ADR (`docs/DECISIONS/2026-04-19-bp-window-per-commit-window-expansion.md`)
+  — round-close question on net window-direction catches
+  ladder-skip across rounds.
+
+**Gap → round-38+.** A ladder-coverage audit on subsystems with
+harm potential. Each subsystem should name which ladder stage
+handles which harm class, and a gap (no RESIST / no REDUCE / no
+ABSORB) should be named as a known limitation rather than an
+unstated one. The existing four-stage ladder is a descriptive
+taxonomy; turning it into a prescriptive per-subsystem audit
+is the graduation step.
+
+### Defender persona and escalation
+
+- **Aminata (`threat-model-critic`).** Owns the channel-closure
+  class. Reviews every round-close for channel-closure drift
+  and files findings into `docs/security/SECURITY-BACKLOG.md`.
+  Advisory; binding decisions go via Architect or human
+  maintainer sign-off per GOVERNANCE §11.
+- **Nazar (`security-operations-engineer`).** Runtime-ops
+  coverage for h₂ incidents (non-retractable markers shipped
+  to production). Distinct from Aminata: Aminata designs the
+  threat class; Nazar handles incidents in it.
+- **Mateo (`security-researcher`).** Prior-art scouting for
+  each sub-threat — has anyone else named this threat class
+  formally? Proximate candidates: right-to-be-forgotten /
+  GDPR-erasure literature (h₂ partial); informed-consent
+  literature (h₁); tort law on permanent harm (h₃). None
+  compose into the three-clause architectural claim that the
+  factory stakes out.
+
+### Calibration
+
+This expansion lands as *described* threats, not *measured*
+threats. Follow-up round(s) should answer: has the factory
+ever *actually* drifted toward h₁ / h₂ / h₃ in a way the
+retrospective ledger (BP-WINDOW) caught? Evidence moves the
+class from description to measurement.
+
 ## Build and release integrity (SLSA ladder)
 
 Zeta's SLSA target is **L1 now → L2 mid-term → L3 pre-v1.0
