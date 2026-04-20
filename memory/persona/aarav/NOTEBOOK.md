@@ -41,6 +41,25 @@ Running observations (append-dated). Pruned every third session.
   architect exercised, claims-tester/complexity-reviewer
   still open, harsh-critic retune held, self-tune never
   executed).
+- 2026-04-20 (round 42) -- per-round cadence. Live-search
+  F7-F9 logged (scratchpad); zero BP candidates. claims-
+  tester / complexity-reviewer carry-over RESOLVED via
+  commit `e8ed0db` + ADR `docs/DECISIONS/2026-04-21-router-
+  coherence-v2.md`; drops off top-5. Self-rank escalates:
+  commit `baa423e` retune grew `skill-tune-up/SKILL.md`
+  303 -> 436 lines (1.45x BP-03 cap). Rationale explicit
+  in the retuned body (thick wrapper over non-skill
+  artefacts -- scripts, PDF, agents/) but BP-03 is stable
+  and cited; rationale does not neutralise a 1.45x breach.
+  Flagged as self-item #4 this round; remedy options are
+  (a) ADR declaring non-skill-wrapper exception to BP-03
+  or (b) extract eval-loop protocol to
+  `docs/references/skill-tune-up-eval-loop.md` and link
+  from SKILL.md. Kenji decides; BACKLOG entry filed this
+  round as P2. Top-5 otherwise unchanged from round 41 --
+  the three other bloat skills still sit above self.
+- Next prune: round 44 (two rounds out per every-third-
+  invocation rule).
 
 ## Pruning log (round 41 catch-up)
 
@@ -60,7 +79,64 @@ Resolved round-18 top-5 entries:
   self-flag is now P1 on BP-03 bloat (303-line file, cap 300),
   not the round-18 "untested" signal.
 
-## Current top-5 (round 41)
+## Current top-5 (round 42)
+
+> **Calibration note (round 42 late, Aaron-correction):**
+> The ranking below uses **static signals only**
+> (BP-03 line-count, BP-NN citation inspection,
+> portability-drift by grep). It is **not
+> harness-backed**. Aaron flagged round 42 that
+> `skill-tune-up` / `skill-expert` rankings should
+> drive the Anthropic `plugin:skill-creator` eval
+> harness (grader / analyzer / comparator /
+> benchmark HTML) rather than guessing by
+> inspection. Memory:
+> `feedback_skill_tune_up_uses_eval_harness_not_static_line_count.md`.
+> **Harness run scheduled for round 43** against
+> the four candidates below; if the benchmark
+> disagrees with the static-signal ranking, the
+> benchmark wins and this top-5 is revised. Static
+> signals still in-scope for portability-drift
+> (criterion #7, static by definition) and
+> notebook observations.
+
+1. **performance-analysis-expert** -- priority: P1
+   - Signal: bloat (BP-03, 642 lines, 2.1x cap)
+   - Recommended action: SPLIT. Effort: M.
+   - Carry-over from round 41 -- unchanged this round.
+
+2. **reducer** -- priority: P1
+   - Signal: bloat (BP-03, 570 lines, 1.9x cap)
+   - Recommended action: SPLIT or TUNE (prune). Effort: M.
+   - Carry-over from round 41 -- unchanged.
+
+3. **consent-primitives-expert** -- priority: P1
+   - Signal: bloat (BP-03, 507 lines, 1.69x cap)
+   - Recommended action: SPLIT honouring BP-23 theory/applied.
+     Effort: M.
+   - Carry-over from round 41 -- unchanged.
+
+4. **skill-tune-up (self)** -- priority: P1
+   - Signal: bloat (BP-03, 436 lines, 1.45x cap -- ESCALATED
+     from 303-line marginal violation round 41 after commit
+     `baa423e` retune)
+   - Recommended action: TUNE (extract eval-loop protocol to
+     `docs/references/skill-tune-up-eval-loop.md`) OR ADR
+     declaring non-skill-wrapper exception to BP-03. Effort: S-M.
+   - Rationale: retune rationale (thick wrapper over non-skill
+     artefacts) is explicit and fair in the body, but BP-03 is
+     a stable rule -- rationale does not neutralise a 1.45x
+     breach. Honest self-flag; a ranker publishing BP-03 findings
+     while 1.45x cap himself publishes unenforceable rulings.
+   - Suggested fix: Kenji ADR decision binary (a) extract or
+     (b) exception. BACKLOG P2 entry filed this round.
+
+5. *(slot 5 empty)* -- claims-tester / complexity-reviewer
+   hand-off carry-over RESOLVED via commit `e8ed0db` + ADR
+   `docs/DECISIONS/2026-04-21-router-coherence-v2.md`.
+   Drops off top-5.
+
+## Current top-5 (round 41, archived)
 
 1. **performance-analysis-expert** -- priority: P1
    - Signal: best-practice-drift, bloat

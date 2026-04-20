@@ -932,3 +932,77 @@ All six findings are "watch" or "route elsewhere."
 **Decision:** keep findings in scratch; revisit round 44 to see
 if F1 (Gotchas) or F4 (router-layer re-validation) have
 stabilised into BP candidates.
+
+## 2026-04-20 -- round 42 live-search pass -- Aarav
+
+**Queries run (3, budget-conscious):**
+
+1. "Anthropic Claude agent skill authoring best practices
+   April 2026" -- returned platform.claude.com skill-authoring
+   best-practices, generativeprogrammer Skill Authoring Patterns,
+   thenewstack "Agent Skills: Anthropic's Next Bid to Define
+   AI Standards", Christian Dussol "6 Principles from
+   Anthropic's Official Skills Guide" (Apr 2026), Tort Mario
+   "Skills for Claude Code: The Ultimate Guide" (Apr 2026).
+2. "OWASP LLM Top 10 2026 update agent skills prompt injection"
+   -- returned OWASP Top 10 for Agentic Applications 2026
+   (ASI01-ASI10), Repello guide 2026, DeepTeam framework,
+   elevateconsult breakdown.
+3. "agent skill wrapper thick vs thin best practices 2026
+   skill composition" -- returned vercel-labs/agent-skills
+   react-best-practices AGENTS.md, fungies.io SKILL.md guide
+   2026, agentskills.io best-practices-for-skill-creators,
+   mgechev/skills-best-practices, Spring AI Agent Skills.
+
+**Findings (3):**
+
+- **F7 -- OWASP ASI01 "Agent Goal Hijack" formalizes
+  prompt-injection + excessive-autonomy compound.** 2026
+  reframes LLM01 (prompt injection) + LLM06 (excessive
+  agency) into a single agentic risk class because
+  autonomous multi-step execution amplifies injection
+  impact. Our BP-11 (data-not-directives) covers the
+  skill-body surface. **Applies to our repo?** Yes,
+  reinforces BP-11 but does not contradict. ASI-prefix
+  numbering is now the canonical citation for agent
+  injection classes. Not a new BP; a citation update
+  when BP-11 is next revised.
+  **Decision:** watch; no promotion. Note for next BP-11
+  revision to cite ASI01.
+
+- **F8 -- "One skill should do one thing well" is now
+  explicit in multiple 2026 skill-authoring guides.**
+  Fungies.io, agentskills.io, mgechev/skills-best-practices
+  all independently name the single-purpose principle.
+  Our BP-03 ("Skill body <= ~300 lines; one purpose per
+  skill") already encodes this. **Applies to our repo?**
+  Yes -- reinforces BP-03 with a second-half sentence
+  ("one purpose per skill") that is currently a
+  dependent clause in BP-03 and could be promoted to its
+  own rule for clarity. Not urgent.
+  **Decision:** stable; no promotion. BP-03 already says
+  this. Noted in case BP-03 splits later.
+
+- **F9 -- Anthropic official "Use Claude to test skills"
+  pattern (Claude A authors, Claude B tests) is now in the
+  official best-practices page, not just the PDF.** This
+  ratifies F3 from Round 41. Round 41 routed it to
+  skill-gap-finder as a candidate skill-exerciser hat;
+  remains a gap-finder signal. **Applies to our repo?**
+  Yes -- we have the upstream eval-loop via the thick
+  `skill-tune-up` wrapper (round-42 retune), which is
+  exactly the Claude-A/Claude-B pattern. No new skill
+  needed after the retune; what was a gap in Round 41
+  may now be closed by the retune itself. Verify next
+  round whether skill-gap-finder still wants to propose
+  skill-exerciser or considers it closed.
+  **Decision:** stable; no promotion. Gap-finder signal
+  possibly closed by baa423e retune.
+
+**Contradictions with stable BP-NN:** none.
+
+**Candidate promotions flagged to Architect:** zero this round.
+
+**Decision:** keep findings in scratch; F7 is a citation
+refresh for BP-11's next edit, not a new rule. F8 and F9
+reinforce existing rules without adding surface.

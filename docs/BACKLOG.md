@@ -938,6 +938,30 @@ within each priority tier.
   to shape the next round's backlog. Effort: S-M per pass;
   parallel-dispatchable.
 
+- [ ] **Resolve `skill-tune-up` BP-03 self-breach.** P2,
+  flagged by Aarav round 42 after commit `baa423e` retuned
+  `.claude/skills/skill-tune-up/SKILL.md` from 303 -> 436
+  lines (1.45x BP-03 300-line cap). The retune's rationale
+  (thick wrapper over non-skill artefacts in `scripts/`,
+  `agents/`, `references/`, plus the Anthropic eval harness)
+  is fair but does not neutralise a stable-rule breach — a
+  ranker that cites BP-03 in findings cannot exceed BP-03
+  himself without publishing unenforceable rulings. Remedy
+  options, binary: (a) Kenji-ADR declaring a non-skill-
+  wrapper exception to BP-03 (clean but introduces a rule-
+  with-an-exception); (b) extract the eval-loop protocol
+  body to `docs/references/skill-tune-up-eval-loop.md` and
+  link from SKILL.md, shrinking the skill file back under
+  300 lines while preserving the retuned workflow. Effort:
+  S-M. Composes with the round-42 skill-eval-tools
+  calibration (memory
+  `feedback_skill_tune_up_uses_eval_harness_not_static_line_count.md`):
+  if the extraction path (b) is chosen, the extracted
+  reference becomes the stable home for the
+  grader/analyzer/comparator wiring Aaron flagged as
+  under-used. Top-of-list for the next skill-creator
+  dispatch touching `skill-tune-up/SKILL.md`.
+
 - [ ] **Factory portability — generic-by-default across
   skills, build, CI, and install scaffolding.** The
   software factory is intended to become reusable across
