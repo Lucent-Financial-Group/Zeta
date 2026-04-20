@@ -290,10 +290,26 @@ within each priority tier.
   `tools/tla/specs/RecursiveSignedSemiNaive.tla` earn a
   **CONDITIONAL PASS** for Round-42 graduation subject to four
   tool-coverage prereqs (listed in priority order):
-  - [ ] **Prereq 1 — TLC CI wire-up.** Add
-    `tools/tla/specs/RecursiveSignedSemiNaive.cfg` to the TLC CI
-    job so S1/S3/S3'/SupportMonotone + TypeOK are checked on every
-    commit. Cheapest of the four; unblocks the rest. Effort: S.
+  - [ ] **Prereq 1 — TLC CI wire-up.** Originally sized S under
+    the assumption of a pre-existing TLC CI job; round-41
+    close-out audit found **no TLC job exists today**.
+    `gate.yml` caches the `tla2tools.jar` + `alloy.jar`
+    artefacts (lines 80-89) and `install.sh` installs them, but
+    nothing runs them. Actual scope: (a) write
+    `tools/tla/run-tlc.sh` driver accepting a spec + `.cfg`
+    pair; (b) add a `tlc` job to `.github/workflows/gate.yml`
+    that runs the driver against BOTH `RecursiveCountingLFP.cfg`
+    (currently unchecked despite being shipped round 19!) AND
+    `RecursiveSignedSemiNaive.cfg` so S1/S3/S3'/SupportMonotone
+    + TypeOK are checked on every commit; (c) handle state-
+    output directory lifecycle (`tools/tla/specs/states/` is
+    already allowlisted in `no-empty-dirs`); (d) wire a concurrency
+    group so TLC doesn't run in parallel with itself on the same
+    spec. **Revised effort: M** (not S). Finding: a TLA+ spec
+    shipped round 19 has been *compile-checkable only* for 22
+    rounds without an explicit run gate — silent drift risk
+    that Prereq 1's existence was meant to catch and did.
+    Unblocks Prereqs 2-4.
   - [ ] **Prereq 2 — Z3 QF_LIA lemma for S2 (FixpointAtTerm).**
     S2 is the one P0 on the spec (silent fixpoint drift
     corrupts downstream `total`, unrecoverable); BP-16 requires
