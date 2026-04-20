@@ -137,7 +137,7 @@ normalize_path() {
   local stack=()
   local comp
   local num_parts=${#parts[@]}
-  [ $num_parts -eq 0 ] && { printf '%s' ""; return; }
+  [ "$num_parts" -eq 0 ] && { printf '%s' ""; return; }
   for comp in "${parts[@]}"; do
     case "$comp" in
       ""|".") ;;
@@ -312,6 +312,9 @@ extract_from_file() {
   done < <(grep -oE '\[[^]]+\]\([^)]+\)' "$subject" 2>/dev/null || true)
 
   # Pattern B — backtick file refs `path/to/file.ext`
+  # shellcheck disable=SC2016 # single-quotes are intentional on the grep
+  # pattern below — the literal backticks and regex `\.` must reach grep
+  # unexpanded by the shell.
   while IFS= read -r target; do
     [ -z "$target" ] && continue
     target="${target#\`}"
