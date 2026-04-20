@@ -117,6 +117,7 @@ scale within its characteristic retraction-window.
 
 **Factory substrate.** Retraction is native to the
 factory's operator algebra at every level:
+
 - Data: DBSP Z-set retraction (negative-weight events).
 - Code: git revert / retraction-safe branches.
 - Architecture: ADR reversion triggers.
@@ -148,6 +149,7 @@ or absorbed — never left as permanent inheritance.
 
 **Ladder.** Each operator handles a different input
 class; they are not hierarchy:
+
 - **RESIST.** Upstream prevention (μένω / daimōnion /
   cognitive-anchors / immune-system analogue).
 - **REDUCE.** Dose reduction when harm cannot be
@@ -171,6 +173,7 @@ retraction-window is a step toward h₃.
 ### 2.4 The dual — h
 
 **h(Z)** ≔ ¬H(Z), decomposed clause-wise:
+
 - **h₁** — force-or-hide-consent operator in use.
 - **h₂** — non-retractable which-path marker created.
 - **h₃** — permanent harm left un-handled.

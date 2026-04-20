@@ -151,20 +151,11 @@ interruption.
 
 ## Sources (2026-04-19 search)
 
-- [ServiceTitan Q4 FY2026 Earnings Transcript —
-  The Motley Fool
-  ](https://www.fool.com/earnings/call-transcripts/2026/03/12/servicetitan-ttan-q4-2026-earnings-transcript/)
-- [ServiceTitan Q4 FY2026 Earnings Call Highlights
-  — GuruFocus
-  ](https://www.gurufocus.com/news/8705074/servicetitan-inc-ttan-q4-2026-earnings-call-highlights-strong-revenue-growth-and-promising-ai-developments)
-- [TTAN 10-K FY2026 — StockTitan
-  ](https://www.stocktitan.net/sec-filings/TTAN/10-k-service-titan-inc-files-annual-report-fc858a4a6e39.html)
-- [ServiceTitan FY2027 revenue target + Max AI
-  ramp — Seeking Alpha
-  ](https://seekingalpha.com/news/4564113-servicetitan-outlines-1_11b-1_12b-fy-2027-revenue-target-as-max-ai-platform-ramps)
-- [Stronger Results And New AI Leader — Simply
-  Wall St
-  ](https://simplywall.st/stocks/us/software/nasdaq-ttan/servicetitan/news/stronger-results-and-new-ai-leader-might-change-the-case-for)
+- [ServiceTitan Q4 FY2026 Earnings Transcript — The Motley Fool](https://www.fool.com/earnings/call-transcripts/2026/03/12/servicetitan-ttan-q4-2026-earnings-transcript/)
+- [ServiceTitan Q4 FY2026 Earnings Call Highlights — GuruFocus](https://www.gurufocus.com/news/8705074/servicetitan-inc-ttan-q4-2026-earnings-call-highlights-strong-revenue-growth-and-promising-ai-developments)
+- [TTAN 10-K FY2026 — StockTitan](https://www.stocktitan.net/sec-filings/TTAN/10-k-service-titan-inc-files-annual-report-fc858a4a6e39.html)
+- [ServiceTitan FY2027 revenue target + Max AI ramp — Seeking Alpha](https://seekingalpha.com/news/4564113-servicetitan-outlines-1_11b-1_12b-fy-2027-revenue-target-as-max-ai-platform-ramps)
+- [Stronger Results And New AI Leader — Simply Wall St](https://simplywall.st/stocks/us/software/nasdaq-ttan/servicetitan/news/stronger-results-and-new-ai-leader-might-change-the-case-for)
 
 ## Related artefacts
 

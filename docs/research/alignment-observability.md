@@ -363,18 +363,14 @@ year ahead.
   contract Sova measures against.
 - [`tools/alignment/README.md`](../../tools/alignment/README.md)
   — the concrete scripts.
-- [`.claude/skills/alignment-auditor/SKILL.md`
-  ](../../.claude/skills/alignment-auditor/SKILL.md)
+- [`.claude/skills/alignment-auditor/SKILL.md`](../../.claude/skills/alignment-auditor/SKILL.md)
   — per-commit procedure.
-- [`.claude/skills/alignment-observability/SKILL.md`
-  ](../../.claude/skills/alignment-observability/SKILL.md)
+- [`.claude/skills/alignment-observability/SKILL.md`](../../.claude/skills/alignment-observability/SKILL.md)
   — framework + per-round + multi-round procedure.
-- [`.claude/agents/alignment-auditor.md`
-  ](../../.claude/agents/alignment-auditor.md) —
-  Sova persona file.
+- [`.claude/agents/alignment-auditor.md`](../../.claude/agents/alignment-auditor.md)
+  — Sova persona file.
 - [`docs/ROUND-HISTORY.md`](../ROUND-HISTORY.md) —
   where per-round narrative lands.
-- [`docs/research/verification-registry.md`
-  ](verification-registry.md) — companion
-  registry for verification-artefact drift (the
-  `verification-drift-auditor`'s surface).
+- [`docs/research/verification-registry.md`](verification-registry.md)
+  — companion registry for verification-artefact
+  drift (the `verification-drift-auditor`'s surface).

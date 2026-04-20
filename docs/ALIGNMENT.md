@@ -473,8 +473,8 @@ hatches. Every other part of the factory should
 have a decidable termination condition — finite
 TTL, bounded retry, explicit retraction. Finding
 an unlabelled escape hatch is a halting-class bug
-and routes to the BACKLOG P2 `halting-class finder
-+ solver` item.
+and routes to the BACKLOG P2 `halting-class finder + solver`
+item.
 
 ### DIR-4 Succession through the factory
 

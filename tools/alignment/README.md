@@ -114,7 +114,7 @@ linting.
 
 The `alignment-auditor` persona (internal
 tentative name **Sova**, pending `naming-expert`
-+ `public-api-designer` review). Edits to the
+and `public-api-designer` review). Edits to the
 measurement shape go through the
 `alignment-observability` skill's framework-
 revision channel, not ad-hoc.
@@ -124,15 +124,11 @@ revision channel, not ad-hoc.
 - [`docs/ALIGNMENT.md`](../../docs/ALIGNMENT.md)
   — the clause contract these scripts measure
   against.
-- [`docs/research/alignment-observability.md`
-  ](../../docs/research/alignment-observability.md)
+- [`docs/research/alignment-observability.md`](../../docs/research/alignment-observability.md)
   — research proposal and companion document.
-- [`.claude/skills/alignment-auditor/SKILL.md`
-  ](../../.claude/skills/alignment-auditor/SKILL.md)
+- [`.claude/skills/alignment-auditor/SKILL.md`](../../.claude/skills/alignment-auditor/SKILL.md)
   — per-commit audit procedure.
-- [`.claude/skills/alignment-observability/SKILL.md`
-  ](../../.claude/skills/alignment-observability/SKILL.md)
+- [`.claude/skills/alignment-observability/SKILL.md`](../../.claude/skills/alignment-observability/SKILL.md)
   — framework + per-round + multi-round procedure.
-- [`.claude/agents/alignment-auditor.md`
-  ](../../.claude/agents/alignment-auditor.md) —
-  Sova persona file.
+- [`.claude/agents/alignment-auditor.md`](../../.claude/agents/alignment-auditor.md)
+  — Sova persona file.
