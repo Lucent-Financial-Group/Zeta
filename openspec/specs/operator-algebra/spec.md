@@ -415,12 +415,15 @@ own final inner tick for that outer tick.
 
 A clock scope MUST also expose two *scope-boundary* lifecycle phases —
 *clock-start* at scope entry and *clock-end* at scope exit — that every
-operator in the scope participates in. On clock-start, each operator MAY
-initialise per-scope state (e.g., the per-outer-tick accumulators of a
-nested-scope integrator). On clock-end, each operator MAY release or commit
-per-scope state. For a nested inner scope, clock-start MUST run before the
-scope's tick 0, and clock-end MUST run after the scope reaches fixpoint (or
-the iteration cap) and before the outer tick is observed as complete.
+operator in the scope participates in. On clock-start, each operator that
+carries state across scope boundaries MUST reset that state to its declared
+scope-initial value (the *strict-operator reset* obligation pinned by
+"strict operators reset cross-scope state on clock-start" below); operators
+that hold no cross-scope state MAY omit non-trivial work in this phase. On
+clock-end, each operator MAY release or commit per-scope state. For a
+nested inner scope, clock-start MUST run before the scope's tick 0, and
+clock-end MUST run after the scope reaches fixpoint (or the iteration cap)
+and before the outer tick is observed as complete.
 
 #### Scenario: nested scope runs to fixpoint per outer tick
 
@@ -471,6 +474,35 @@ the iteration cap) and before the outer tick is observed as complete.
 - **AND** per-scope state established in clock-start MUST be visible for the
   entirety of the inner scope's ticks and MUST be released (or committed) in
   clock-end
+
+#### Scenario: strict operators reset cross-scope state on clock-start
+
+- **WHEN** a strict operator — one whose output at tick `t` is independent
+  of its input at tick `t`, and which therefore latches state across
+  ticks (the canonical example is `z^-1`; feedback-loop accumulators and
+  per-outer-tick integrators are the other common cases) — is embedded
+  in a nested inner scope that runs for more than one outer tick
+- **THEN** on each outer tick the operator MUST observe a clock-start
+  phase that resets any state latched during the prior outer tick to its
+  declared scope-initial value: a `z^-1`-style one-tick-delay MUST
+  re-emit its declared initial value on the first inner tick of each
+  outer tick; a feedback-loop accumulator over the inner scope MUST
+  reset its accumulator to its declared identity before the first inner
+  tick; a per-outer-tick integrator MUST zero its accumulator
+- **AND** the observable output on the first inner tick of outer tick
+  `T+1` MUST NOT depend on any state latched during outer tick `T`'s
+  inner run — this is the "clean tick-0 semantics" required by DBSP
+  nested-scope semantics (Budiu et al. §5-6)
+- **AND** an implementation that silently inherits prior-outer-tick
+  state into the next outer tick's first inner tick MUST be rejected
+  by the capability's own observable tests — the latent-until-nested
+  failure mode (no test exercises the operator inside `Nest(...)`) is
+  NOT an acceptable mitigation; a strict operator MUST reset on
+  clock-start whether or not a current test consumer nests it
+- **AND** an operator that holds no cross-scope state (its output
+  depends only on the current tick's input) MAY no-op in clock-start —
+  the reset obligation applies only to operators that actually latch
+  state across tick boundaries
 
 #### Scenario: sibling scopes are independent
 
