@@ -81,8 +81,17 @@ within each priority tier.
   Viktor audits each closure. Effort: M (spec work +
   scenarios, no code changes). Defers to Round 42.
 
-- [ ] **Router-coherence ADR `47d92d8` supersedure — harsh-critic
-  findings absorb (Round 42)** — Round 41 landed ADR
+- [x] ✅ **Router-coherence ADR `47d92d8` supersedure — harsh-critic
+  findings absorb** — **shipped round 41 in-round** via v2 ADR
+  `docs/DECISIONS/2026-04-21-router-coherence-v2.md` (`09f0889`)
+  + v1 Superseded-by header (`4efe545`). All 10 findings closed
+  via named textual closures C-P0-1 through C-P2-10; Kenji named
+  as binding dispatcher (C-P1-8); escalation timebox prevents
+  reproduction of 23-round-stale failure mode (C-P1-7). Follow-up
+  SKILL.md edits to `claims-tester` + `complexity-reviewer` via
+  `skill-creator` remain round-42 scope, now targeting v2 as
+  intended. Original finding narrative preserved below for audit
+  trail. — Round 41 landed ADR
   `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-
   complexity.md` (Hiroshi analytic ↔ Daisy empirical two-stage
   pipeline) without the adversarial-review gate the project
