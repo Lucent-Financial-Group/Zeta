@@ -2356,9 +2356,10 @@ systems. This track claims the space.
   semantics), `.` (joke). Scope intentionally undefined: the
   word "everything" is the interesting constraint — is this
   a meta-package-manager (brew/apt/nuget/npm under one
-  surface), a universal artefact resolver (source + binary
-  + skill + persona + spec + dataset + proof), or a
-  retraction-native dependency graph (DBSP-style incremental
+  surface), a universal artefact resolver (source and
+  binary and skill and persona and spec and dataset and
+  proof), or a retraction-native dependency graph
+  (DBSP-style incremental
   resolution)? Parked here so when the idea gets promoted
   the naming-expert and Ilyana (public-API designer) start
   from Aaron's shortlist rather than re-deriving it. No
