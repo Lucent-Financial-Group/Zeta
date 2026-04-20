@@ -37,6 +37,122 @@ round-29                      o---o---o---o
 - **Round-close:** PR from `round-N` to `main`; Aaron
   reviews; squash-merge; pull main; delete branch.
 
+## Speculative round-N+1 branch
+
+The round-per-branch model has a dead-zone: while the
+round-N PR sits waiting for Aaron's merge click, no
+round-N+1 work can begin, because there is no round-N+1
+branch to land it on. Round-41-late hit this as a
+28-fire `/next-steps` hold-pattern — an observable
+symptom of a structural gap, not an agent-calibration
+problem.
+
+The fix: once PR-N is CLEAN/MERGEABLE, fork a
+speculative branch immediately from the round-N HEAD.
+This unblocks round-N+1 prep while the merge click
+lives on Aaron's schedule.
+
+### When to fork
+
+Fork the speculative branch when **all** of:
+
+- `gh pr view N --json mergeStateStatus,mergeable`
+  reports `mergeStateStatus: CLEAN` and
+  `mergeable: MERGEABLE`.
+- All required CI checks on PR-N have passed (no
+  red, no pending on the gate).
+- No in-flight changes on round-N that haven't been
+  pushed yet (`git status` clean on round-N).
+
+If any condition fails, the fork is premature — round-N
+is still active and speculative work would fight the
+round-N branch.
+
+### Naming
+
+```
+round-<N+1>-speculative
+```
+
+The `-speculative` suffix is load-bearing: it tells every
+reader (and every agent reading this skill) that the
+branch is *provisional* — round-N may still gain
+commits if review finds something, or the merge may
+land in a different shape than the HEAD the
+speculative branch forked from.
+
+### What is fair game on the speculative branch
+
+- Factory-structure work that does not depend on
+  round-N's final shape (skill amendments via
+  `skill-creator`, branch-convention documentation,
+  BACKLOG P1 entries for follow-up work).
+- Round-N+1 research-doc drafts
+  (`docs/research/**`) that cite stable main-line
+  facts, not round-N-pending facts.
+- Grandfather-claim discharges where the claim is
+  documented against a file already landed on main
+  (not a file introduced by round-N).
+- Next-round skill-creator dispatches for SKILL.md
+  amendments whose target text is already on main.
+
+### What is NOT fair game on the speculative branch
+
+- Anything that assumes round-N's PR lands exactly
+  as-is — if review changes round-N in-flight, the
+  speculative branch needs rebasing and assumption
+  re-checking.
+- Commits to files also modified on round-N (merge
+  conflict risk; better to wait).
+- Starting a second speculative layer
+  (`round-N+2-speculative` off
+  `round-N+1-speculative`) — one layer at a time
+  keeps the rebase tractable.
+
+### Rebase protocol after round-N merges
+
+When PR-N squash-merges to main:
+
+```bash
+git checkout main
+git pull --ff-only
+git checkout round-<N+1>-speculative
+git rebase main
+# Resolve any conflicts (should be minimal if
+# "what is NOT fair game" was respected)
+git push --force-with-lease origin round-<N+1>-speculative
+```
+
+Then rename to drop the `-speculative` suffix (this is
+now the real round-N+1 branch):
+
+```bash
+git branch -m round-<N+1>-speculative round-<N+1>
+git push origin :round-<N+1>-speculative \
+  round-<N+1>:round-<N+1>
+```
+
+### Why force-with-lease, not force
+
+`--force-with-lease` refuses the push if the remote has
+gained commits the local branch doesn't know about. It
+catches the case where another agent (or a future-you)
+pushed to the speculative branch between your fetch and
+your rebase. `--force` without `--lease` silently
+overwrites; that's the kind of history-destruction
+event BP-24 (and basic engineering hygiene) warns
+against.
+
+### Escape valve
+
+If round-N is taking so long to merge that the
+speculative branch is accumulating significant work,
+don't pile more on top; instead open an early PR
+on the speculative branch (still labelled
+`round-<N+1>-speculative` in title) so Aaron can see
+the work-in-flight. The speculative PR converts to the
+real round-N+1 PR on rebase after round-N lands.
+
 ## Branch protection on main
 
 `main` is protected:
