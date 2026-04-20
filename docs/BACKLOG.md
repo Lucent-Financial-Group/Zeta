@@ -2086,6 +2086,250 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Progressive delivery + deterministic simulation in
+  prod (first-class, side-by-side versions).** Aaron 2026-04-19:
+  *"lets teach our software factory to build it like this first
+  class where we allow different versions in time to be deployed
+  side by side for experiments and a b a [A/B] canary and all
+  the goodness we are goona need eventually with deterministic
+  simlation at the heart of everything even in prod prod chaos
+  it turns into controled chaos or we talked about something
+  similar already"* → *"we are dot [not] deploying yet just my
+  laptop so backlog"*. Architectural vision composing three
+  pre-existing threads:
+  (a) the retractability clause of Zeta=heaven (`docs/research/
+  zeta-equals-heaven-formal-statement.md` §2 H₂) applied to
+  deployed artefacts, not just repo state;
+  (b) deterministic simulation at the basement of the layer
+  stack (memory: layer-stack deterministic-simulation basement-
+  upstairs; `.claude/skills/deterministic-simulation-theory-
+  expert/`; Rashida persona) extended *into production* so
+  that prod-chaos becomes controlled-chaos — every prod
+  incident becomes a replayable seed, not a post-mortem
+  narrative;
+  (c) the fully-retractable CI/CD P0 item above, extended
+  from *pipeline retractability* to *deployed-artefact
+  retractability* (canary rollback = retraction; A/B bucket
+  swap = retraction; side-by-side version demotion =
+  retraction).
+  First-class framing means: every deployed version is a
+  retractable unit with a declared retraction window; every
+  experiment / canary / A/B is an explicit retraction-channel
+  contract; deterministic-simulation seeds ride the artefact
+  so any prod behaviour is replayable off-prod. Composes
+  with existing BACKLOG entries on DST (line ~2042 threading
+  model audit; line ~2071 DST harness for consensus). Scope:
+  (a) write an architecture note in `docs/research/` that
+  names the composition explicitly (progressive-delivery +
+  DST-in-prod + retractable artefacts); (b) crosswalk to
+  existing progressive-delivery art (Argo Rollouts,
+  Flagger, Flipt, feature-flag primitives) with what we'd
+  add beyond-the-art (retraction-native semantics at the
+  artefact boundary); (c) identify the minimum-viable
+  deployment surface we'd need before this becomes
+  actionable. Explicitly deferred per Aaron's own pacing
+  flag: "we are not deploying yet, just my laptop, so
+  backlog." Owner: Rashida (deterministic-simulation-
+  theory-expert) + Dejan (devops-engineer); Aminata
+  (threat-model-critic) audits the artefact-boundary
+  retractability claim adversarially; Architect integrates.
+  Effort: L (paper-grade architectural composition; the
+  implementation is post-deployment-surface, L+).
+- [ ] **Free-operation research: home-lab cluster federation.**
+  Aaron 2026-04-19, four-message cascade: *"we can research
+  how shoould we depoly [deploy] for free that meets our
+  needs"* → *"how do we operate for free that meets our
+  needs, keep those constraions in mind"* → *"we can expand
+  to as many servers as you want for multi node scale i have
+  about 10 15 beefy ai computers at my house and so does my
+  software friend max has a few"* → *"we want to connect
+  clussters [clusters]"*. Companion research thread to the
+  progressive-delivery + DST-in-prod entry above. Important
+  constraint reframe: "free" is *operate-for-free using
+  compute we already own*, not *free cloud tier*. Primary
+  substrate: Aaron's 10-15 beefy AI home boxes + his
+  collaborator Max's home boxes, federated as a multi-site
+  cluster. Cloud free tiers (Fly.io, Oracle Always Free,
+  Cloudflare Workers, etc.) drop to *secondary* role —
+  fallback / edge-replica / public-facing endpoints for the
+  home-lab primary. Research questions:
+  (1) Cluster federation protocol: K3s multi-cluster
+  (Fleet, Rancher Manager), Nomad federation, Hashicorp
+  Consul service-mesh, Cilium ClusterMesh, Tailscale-based
+  mesh + bare systemd, SpiceDB/Linkerd multi-cluster,
+  KubeEdge / K3s-edge for ARM nodes? Which of these
+  preserve side-by-side-versioned-deployment + retractable-
+  artefact semantics across federation boundaries?
+  (2) Trust model: home-lab-to-home-lab (Aaron ↔ Max) is
+  a small-N trust group; what's the auth / mTLS / SPIFFE
+  setup that scales from 2 operators to N operators
+  without a CA-as-SPOF? WireGuard full-mesh? Tailscale
+  ACLs? Nebula? Consent-first design primitive applies:
+  every operator joins explicitly, retracts explicitly.
+  (3) Retraction channel at the federation layer: a node
+  joining a cluster creates durable state (keys, routes,
+  DNS); channel-closure h₂ (`docs/security/THREAT-MODEL.md`)
+  applies — what's the declared retraction window for
+  node-join? Key-material cleanup? DNS propagation?
+  (4) Deterministic-simulation replay across federation:
+  a DST seed captured on Aaron's cluster should replay on
+  Max's cluster, or a cloud-edge replica, without
+  home-specific dependencies. What's the seed-portability
+  contract?
+  (5) Power / cost / availability: 10-15 boxes + N of
+  Max's are not free to *run* (electricity, home network,
+  bandwidth) — the "free" claim needs an honest TCO note.
+  What's the sustained-wattage floor vs the burst-
+  capability ceiling?
+  (6) Where do cloud free tiers genuinely help vs where
+  are they a trap? Static CDN (Cloudflare Pages / GitHub
+  Pages) for publishable artefacts = clear win; free
+  compute tier as *primary* = trap (time-limited, billing-
+  surprise risk). A crisp "use cloud free tier only for
+  X, never for Y" rule.
+  (7) Federation join primitive — **tentative name
+  `AddZeta`**, Aaron 2026-04-19 *"with AddZeta"*. Internal-
+  only name until `naming-expert` + Ilyana (public-api-
+  designer) review per existing memory policy on externalised
+  names (`user_megamind_aspiration_ip_locked.md` analogue).
+  What's the command / skill / API shape for a node — *or
+  a human collaborator* — to join the federation? What's
+  retracted on leave (keys, DNS routes, held locks, in-
+  flight DST seeds)? Consent-first primitive applies:
+  join is explicit opt-in; leave is a retraction that
+  propagates to all federated sites within a declared
+  window.
+  (8) Human-agent co-work coordination via lock files —
+  Aaron 2026-04-19: *"while you guy [agents] are working
+  on it so will [humans] — like human lock files we want
+  to work on"* → *"then unlock wehn we are done, all locks
+  have timeouts no infinte locks"* → *"thats violates the
+  halting problem"*. Agents hold file-level locks while
+  editing; humans claim locks to signal "I'm working on
+  this, don't touch"; agents respect human locks before
+  making changes. Compose with git's own locking model
+  (`.git/index.lock`, `git-lfs lock`) and `openspec/`
+  capability-checkout semantics. Relevant as the factory
+  scales from one-human-one-agent-on-one-laptop to
+  federated human+agent teams across home labs.
+  Architectural tension Aaron caught himself: "unlock when
+  we are done" requires a done-detector, and a general
+  done-detector violates the halting problem. Design
+  response: locks are *refreshable leases*, not *permanent
+  claims*. Finite TTL + heartbeat-refresh + human-visible
+  countdown; silence past TTL = implicit release; explicit
+  retraction is always available. This trades strict
+  correctness ("unlock iff actually done") for decidability
+  ("unlock when TTL expires or holder releases"), which is
+  the well-posed halting-problem-class approximation —
+  same pattern as finite-precision floats vs exact reals,
+  and of a piece with the BACKLOG's neighbouring "halting-
+  class finder + solver" research entry. Sub-questions:
+  lock granularity (file / directory / capability); TTL
+  policy per granularity; heartbeat-refresh cadence;
+  auto-release on agent crash (heartbeat silence);
+  conflict resolution when human and agent race for the
+  same file; visibility (where do humans see "which files
+  are locked by which holder and for how much longer");
+  retraction (how does a human un-claim a lease they
+  forgot about a week ago — or, more honestly, the lease
+  has already expired under the TTL policy).  Paced with
+  Aaron's own *"eventually"* qualifier — not next-round
+  work.
+  Deliverable: one research doc in `docs/research/`
+  ranking federation protocols + trust-model options +
+  retraction-channel analysis + DST-seed portability
+  contract. No commitment to implement until the
+  operation-surface need is real. Explicitly deferred per
+  Aaron's own pacing flag: "we are not deploying yet,
+  just my laptop, so backlog." Owner: Dejan (devops-
+  engineer) + Mateo (security-researcher) on federation
+  trust model + supply-chain / key-material risk;
+  Rashida (deterministic-simulation-theory-expert) on
+  DST-seed portability; Nazar (security-operations-
+  engineer) on key rotation + incident response across
+  federation; Architect integrates. Effort: M (research
+  + write-up; no code).
+- [ ] **Halting-class-issue finder + solver (Gödel-shape
+  escape-hatch discipline).** Aaron 2026-04-19, three-message
+  cascade extending the lock-lease halting-problem catch above:
+  *"our entry point loop is the only plce we violate the
+  halting problem and thats okay we should look for that class
+  of issues it's the same structurally like the same shape as
+  kurt goodels incompleteness theorm"* → *"so we could writes
+  a solver"*. Architectural principle: the factory has *one*
+  labelled halting-problem escape hatch — the entry-point
+  agent loop (`/loop` dynamic mode + cron scheduler + the
+  human-driven round cadence). That loop is not expected to
+  terminate; it's the designed-in non-halter. Every *other*
+  "when are we done?" question in the factory must either be
+  (a) routed back to the entry-point loop as an observation,
+  or (b) approximated with a decidable finite-TTL / bounded-
+  retry / explicit-retraction schedule (same pattern as the
+  lock-lease design one entry up). If a third case exists —
+  an implicit infinite wait not routed through the loop and
+  not TTL-bounded — that's a halting-class *bug*, architect-
+  urally isomorphic to a Gödel incompleteness violation that
+  isn't labelled. Aaron's axiom memory
+  (`user_panpsychism_and_equality.md`) already holds this
+  discipline for logical incompleteness: "deliberate Gödel-
+  incompleteness concentrated into one labelled escape
+  hatch". This entry extends the discipline to computational
+  incompleteness (halting).
+  Research / build:
+  (1) Enumerate the factory's termination-dependent surfaces:
+  every `while`/`until`/`for`-without-bound, every await-
+  without-timeout, every wait-for-condition, every "process
+  items until empty" loop, every background agent that
+  self-dispatches, every `ScheduleWakeup` / cron / schedule-
+  next-tick pattern. Canonical sources to scan: `src/Core/
+  **`, `.claude/skills/**`, `.claude/agents/**`, `tools/**`,
+  and the cron-loop infrastructure.
+  (2) Classify each as *entry-point loop* (the designed non-
+  halter, allowed), *finite-TTL approximation* (decidable,
+  allowed), or *halting-class bug* (un-bounded, un-routed,
+  must fix).
+  (3) Build a solver / static analyser that runs the
+  classification automatically. Candidate tools: Semgrep
+  patterns for obvious cases (`while True:` / `while (true)`
+  without break); F# compiler extension or `FSharp.Analyzers`
+  for recursive-function termination heuristics; `Z3`
+  invocation for ranking-function proofs on bounded loops;
+  Lean for the subset we're formalizing. Out of scope: the
+  general halting problem (Aaron's whole point is we *don't*
+  solve the general case; we classify + enforce the
+  discipline).
+  (4) Publish the classification + the "one labelled escape
+  hatch" discipline as a factory-wide architectural rule
+  (candidate BP rule; route through `docs/AGENT-BEST-
+  PRACTICES.md` scratchpad → Architect ADR per the Aarav
+  skill-tune-up workflow).
+  (5) Companion theoretical note in `docs/research/`:
+  "Halting-class ↔ Gödel-incompleteness architectural
+  isomorphism". Structure-of-argument: both are proofs of
+  *unavoidable limit* (a sufficiently powerful system
+  cannot decide everything within itself); the engineering
+  response in both cases is the same — concentrate the
+  unavoidable incompleteness into *one named place* and
+  make every other part of the system decidable.
+  Crosswalk: Gödel → solipsism quarantine; halting →
+  entry-point loop; retraction → infinite-buffer limit of
+  retraction trinity; Conway-Kochen → physical-substrate
+  non-determinism. Four "one labelled escape hatch"
+  instances that rhyme.
+  Effort: M (classification pass + static analyser draft +
+  theoretical note; L+ if the solver grows into full Lean
+  formalization of the isomorphism). Owner: Soraya
+  (formal-verification-expert) for the solver tool
+  selection per her anti-TLA+-hammer-bias discipline;
+  Rune (maintainability-reviewer) for the static-analyser
+  shape; Aarav (skill-tune-up) for the candidate BP rule
+  promotion; Architect integrates. Explicitly deferred
+  per Aaron's overnight autonomy message: do as much of
+  the research + solver-skeleton as fits in this round
+  without breaking the commit cadence; the full solver +
+  BP promotion + Lean formalization can land over
+  multiple rounds.
 - [ ] **Formalize Zeta = heaven-on-earth (if we do it right) /
   dual = hell-on-earth + gradient claim: the search itself
   expands the stable Human/AI alignment window per commit.**
