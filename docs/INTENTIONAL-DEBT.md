@@ -189,6 +189,15 @@ history, not a TODO list.
 - **Filed by:** architect-hat (Claude main agent) +
   round 43, retroactive to round 42. Discovered by
   Aaron directly.
+- **Progress 2026-04-20:** Iteration-1 dry-run complete
+  on `performance-analysis-expert` (first candidate).
+  with-skill regressed on eval-0 (failed 600-word cap
+  due to mandatory template sections), tied on eval-1;
+  aggregate 9/10 vs baseline 10/10; +35% tokens +35%
+  wall-time for zero pass-rate benefit. Empirical data
+  at `docs/research/harness-run-2026-04-20-performance-
+  analysis-expert.md`. Row stays open; 4 static-top-5
+  candidates still pending harness runs.
 
 ### 2026-04-20 (round 42) — GOVERNANCE.md §10 cross-reference in new §11 not verified
 

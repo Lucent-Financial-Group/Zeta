@@ -69,3 +69,12 @@ tools/tla/*.jar
 tools/tla/states/
 
 .fake
+
+# Skill-creator eval-harness workspaces — one per skill under
+# evaluation. Each workspace holds iteration-N/ directories
+# with per-eval subagent outputs + grading + benchmark
+# artifacts. These are regenerated per harness run; the
+# signals that land in-repo are the round-close ledger row
+# and any resulting SKILL.md edits, not the raw iteration
+# artifacts. See docs/references/skill-tune-up-eval-loop.md.
+.claude/skills/*-workspace/
