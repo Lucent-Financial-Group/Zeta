@@ -1,10 +1,9 @@
 # ADR: Router-coherence hand-off contract between `claims-tester` (empirical) and `complexity-reviewer` (analytic) — who owns which half of an O(·) claim, and when work hands off
 
+> **Superseded by** [`docs/DECISIONS/2026-04-21-router-coherence-v2.md`](2026-04-21-router-coherence-v2.md) after Kira (harsh-critic) adversarial pass surfaced 3 P0 + 5 P1 + 2 P2 findings. v1 kept in place per `GOVERNANCE.md §2` so the CONFLICT-RESOLUTION Active-tensions citation chain remains resolvable. Read v2 for the operative contract; v1 below is the historical record.
+
 **Date:** 2026-04-21 (round 41, late)
-**Status:** *Proposed — awaits Architect + human-maintainer
-sign-off. Drafted in response to Aarav's (skill-tune-up)
-round-41 ranking, which carried a round-18 HAND-OFF-CONTRACT
-finding forward as P1 after 23 rounds of cadence drift.*
+**Status:** *Accepted (pre-adversarial-review; superseded by v2 same-round after Kira pass). v1 retained for citation continuity.*
 **Owner (proposed):** Architect (Kenji) integrates; Hiroshi
 (`complexity-reviewer`) and Daisy (`claims-tester`) each
 sign their half of the contract. Advisory signal from
