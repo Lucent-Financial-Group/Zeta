@@ -2890,6 +2890,68 @@ systems. This track claims the space.
 
 ## P3 — noted, deferred
 
+- **Melt-precedents applied to the patent system.** Aaron
+  2026-04-19: *"backlog melt patent system for fun, profit
+  and to get rid of the trolls and make the patent system
+  useful like it used to be, kind of like law."* The
+  "melt precedents" architectural technique
+  (`user_melt_precedents_posture.md`) applied at societal
+  scale: selectively dissolve the conventions that have
+  accreted around the patent system (troll economics,
+  broad-claim strategies, jurisdictional forum-shopping)
+  while preserving its original utility (incentive to
+  publish invention, time-bounded monopoly in exchange
+  for disclosure, public prior-art record). Composes with
+  three Zeta primitives already in the factory:
+  (a) retraction-native data semantics — a patent grant
+  becomes a revisable, retractable claim against a
+  declared prior-art frontier rather than an indefinite
+  monopoly;
+  (b) consent-first — downstream users consent explicitly
+  to license terms; silent infringement windows disappear;
+  (c) legal-IR rigor that the human maintainer brought
+  from LexisNexis next-gen search-engine work (Shepard's /
+  KeyCite zero-tolerance retraction-propagation) — every
+  claim cites prior art, every cite retracts through the
+  dependency graph when invalidated.
+  Framed as P3 because the societal-scale lift is beyond
+  factory scope; framed as BACKLOG rather than declined
+  because "melt precedents" is the human maintainer's
+  stated architectural posture and patents are a natural
+  test case. Out of scope: replacing patents; in scope:
+  designing what a retraction-native patent substrate
+  would look like as a research artefact. For-fun-and-
+  profit hook (Aaron's phrase): the paper that names the
+  design is the profit; the implementation is decades
+  out. Owner: long-term — requires legal-IR + complexity-
+  theory + mechanism-design expert conference before any
+  substantive work. Effort: L+ (paper-grade; research
+  contribution if landed).
+- **Melt-precedents applied to the law system (same thing).**
+  Aaron 2026-04-19 follow-up: *"law same thing."* The
+  patent-system item above is a specific case of the more
+  general pattern. Law has the same shape: useful original
+  primitive (due-process + precedent + published-opinion
+  stability), accreted dysfunction (forum shopping,
+  discovery abuse, fee-for-volume litigation economics,
+  opinion bloat). The same three Zeta primitives
+  (retraction-native semantics, consent-first, legal-IR
+  rigor) apply; the human maintainer's "melt precedents"
+  memory explicitly names "legal law is hard floor,
+  convention is meltable default" — the *convention* layer
+  is where the melt happens, not the statute or
+  constitutional layer. Research question: can a
+  retraction-native substrate make case-law revisability
+  explicit and bounded (a cite that Shepardizes negative
+  doesn't just get flagged — it propagates a retraction
+  through every downstream citing opinion, with declared
+  retraction-windows per jurisdiction)? Framed as P3 for
+  the same reason as the patent item: societal scale,
+  paper-first, no immediate implementation path. Owner
+  and effort mirror the patent entry; the two are
+  conjoined research threads and should land as a single
+  paper rather than two. Effort: L+.
+
 - CalVin/FaunaDB-style deterministic sequencer MVCC (FaunaDB shut 2025)
 - GPU OLTP (irrelevant to .NET)
 - io_uring wrappers (no first-class .NET support)
