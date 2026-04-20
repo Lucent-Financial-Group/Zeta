@@ -9,6 +9,165 @@ New rounds are appended at the top.
 
 ---
 
+## Round 40 — Blocked Bloom Adopt graduation (bucket/probe correlation fix)
+
+Anchor: a single-primitive correctness round. The round
+opens with a BenchmarkDotNet run that exposes a **measured
+FPR 4.6x-9.8x above target** on `BlockedBloomFilter`, files
+the FAIL as a P0, then closes in the same round by finding
+that the binding constraint was **not** the
+parameter-derivation issue the FAIL commit blamed (Putze
+2007 §4) but a **bucket/probe correlation** in the
+hash-indexing discipline. Two-line fix + regression gate;
+graduates row 42 of `TECH-RADAR.md` Trial → Adopt.
+
+### Arc 1 — BloomBench FAIL evidence (`8e69ae0`)
+
+Round-40 BDN run lands at
+`docs/research/bloom-bench-2026-04.md`. Throughput half of
+the Adopt gate passes cleanly — `ns/op(1M) / ns/op(100k)
+<= 1.08` and zero managed allocation on every `Blocked*`
+row (MemoryDiagnoser confirms `Allocated = -`). FPR half
+fails hard: 0.0463 / 0.0973 / 0.0982 at N in {10k, 100k,
+1M} against a 0.01 target. First diagnosis blamed
+`createBlocked`'s use of `BloomFilter.optimalShape` (the
+unblocked formula) citing Putze, Sanders, Singler JEA 2009
+§4 — filed as P0 in `docs/BACKLOG.md` scoped to a
+block-aware parameter derivation, a red property test, and
+a BloomBench re-run.
+
+### Arc 2 — Bucket/probe correlation fix + Adopt flip (`4b50d56`)
+
+Reading `src/Core/BloomFilter.fs` to implement the
+Arc-1-filed P0 surfaced the actual root cause: in
+`addPair` and `testPair` the bucket index was drawn from
+`uint32 h1 & 0xFF` (at 256 buckets) while the first
+within-bucket probe position used `h1 & 0x1FF` — the two
+decisions shared bits 0-7 of `h1`, destroying the
+statistical independence the analytic FPR analysis
+assumes. Fix is two lines: bucket selection now uses
+`h1 >>> 32`. Disjoint-probe re-measurement post-fix: 0.340
+/ 0.889 / 0.129 of target at the same three N — 13.5x /
+11x / 46x improvements, all strictly below target (not
+merely inside the 2x acceptance band). A regression gate
+(`Blocked Bloom measured FPR stays within 2x of target
+p=0.01`) lands in
+`tests/Tests.FSharp/Sketches/Bloom.Tests.fs` with
+`InlineData` rows at N=10k/100k. `docs/TECH-RADAR.md`
+row 42 flips Trial → Adopt; the BACKLOG P0 is removed
+(diagnosis superseded, not completed-as-scoped).
+
+### Round 40 observations for Round 41
+
+- The FAIL → PASS arc inside a single round is a small
+  cautionary tale worth citing: the Putze-2007-
+  parameter-derivation fix that was proposed would have
+  landed a week of engineering work without exposing the
+  correlation bug. Reading the code first pays for itself.
+- Bucket/probe correlation is a class-of-bug worth naming:
+  any hash-derived multi-decision scheme where two
+  decisions draw from overlapping bit-ranges of the same
+  hash loses independence. Could generalise into a
+  property-test template for any future AMQ.
+- Cache-miss numbers remain a declared gap —
+  `HardwareCounters(CacheMisses)` is Linux-perf-event /
+  Windows-ETW only; darwin maintainer laptop cannot
+  measure. Deferred to Linux CI when it exists.
+
+### BP-WINDOW ledger — Round 40 (prospective)
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `8e69ae0` | Arc 1 — BloomBench FAIL evidence | Strengthened (honest FAIL publication) | Strengthened (filing the FAIL as a P0 with named parameter-derivation scope IS the retraction surface) | Preserved (evidence + backlog only; no shipped primitive changed) |
+| `4b50d56` | Arc 2 — correlation fix + Adopt flip | Strengthened (regression gate ships the invariant so future-consent is preserved) | Strengthened (2-line fix + test + doc rewrite + radar flip + backlog delete; each surface has a declared retraction path) | Strengthened (shipped primitive's documented guarantee now holds under measurement) |
+
+---
+
+## Round 39 — DORA-spine + hooks-research + pitch-readiness P1 bundle + citations-as-first-class
+
+Anchor: the round that picks up the measurement-spine
+substrate seeded by the DORA 2025 paired reports (memory-
+indexed, not in-repo) and moves it from concept to BACKLOG
++ research-skeleton + first prototype. Five
+ADR-first research captures, one Phase-0 prototype
+(`citations.sh`), and the P1-bundle close of the Round-38
+pitch-readiness gap inventory.
+
+### Arc 1 — Round opener (`b347420`)
+
+Spec-backfill P0 filed against Aaron's 2026-04-20
+delete-all-code-recovery question — OpenSpec coverage is
+~6% by capability count (4 capabilities vs 66 F# modules)
+and the `openspec/README.md` disaster-recovery contract
+cannot yet be honoured. Security-posture P2 captures
+layer-by-layer coverage audit as ADR-first.
+
+### Arc 2 — CI meta-loop + env-parity research (`22e7b65`)
+
+Two research-first BACKLOG entries: CI meta-loop (the
+factory should measure its own pipeline the same way it
+asks downstream code to be measured) and declarative
+env-parity (dev laptop / CI runner / devcontainer parity
+as a first-class declared contract rather than implicit).
+
+### Arc 3 — DORA-spine skill-scope audit + citations-as-first-class (`1e16f78`)
+
+Skill-scope audit against the ten DORA 2025 outcome
+variables — which personas / skills own measurement of
+each column of the spine. Citations-as-first-class
+research documents the elevation pattern (vibe-citation →
+auditable inheritance graph, first-class in source or
+`ace`) against the same template as the DORA paired
+reports.
+
+### Arc 4 — Hooks Phase 1 audit + ADR contract preview (`5d6b74c`)
+
+Full audit of current Claude Code hooks in
+`.claude/settings.json`, Phase-5 synthesis draft, and an
+ADR contract preview for landing per-event retraction
+semantics on hook runs.
+
+### Arc 5 — `citations.sh` Phase-0 prototype (`0eef854`)
+
+Phase-0 prototype of the citations pipeline landing at
+`tools/citations/citations.sh` with regenerated outputs
+for the five citation-bearing research docs. First
+executable artefact of the Round-38 pitch-readiness
+P1 bundle.
+
+### Arc 6 — Pitch-readiness P1 bundle (`ef3233a`)
+
+Closes the five S-sized critical-path P1 items from the
+Round-38 pitch-readiness gap inventory:
+`docs/pitch/README.md` (elevator),
+`docs/pitch/factory-diagram.md` (one-diagram),
+`docs/pitch/not-theatre.md`, `SUPPORT.md`
+(maintainer-bandwidth), and GLOSSARY.md append
+(external-audience alignment reframe).
+
+### Round 39 observations for Round 40
+
+- Chain-rule proof work (`DbspChainRule.lean`) remains
+  mid-flight — Lean Mathlib-grade publication target,
+  criterion #1.
+- `RecursiveSigned.fs` + `RecursiveSignedSemiNaive.tla`
+  deferred further; Soraya (formal-verification-expert)
+  tool-coverage review still the gate.
+- AutoDream pass still pending (`#109`).
+
+### BP-WINDOW ledger — Round 39 (prospective)
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `b347420` | Arc 1 — round opener (BACKLOG P0+P2) | Preserved (BACKLOG-only) | Strengthened (spec-backfill P0 IS a retraction-surface declaration for disaster-recovery) | Preserved (BACKLOG-only) |
+| `22e7b65` | Arc 2 — CI meta-loop + env-parity | Preserved (BACKLOG-only) | Strengthened (both entries apply retractability-primitives to the factory's own pipeline) | Preserved (BACKLOG-only) |
+| `1e16f78` | Arc 3 — DORA-spine audit + citations research | Strengthened (maps measurement ownership to personas explicitly) | Strengthened (citations-as-first-class = vibe-citation retraction mechanism) | Preserved (research + BACKLOG) |
+| `5d6b74c` | Arc 4 — hooks Phase 1 + ADR preview | Strengthened (hooks audit surfaces which events carry consent) | Strengthened (ADR contract preview scopes per-event retraction) | Preserved (research-only) |
+| `0eef854` | Arc 5 — `citations.sh` Phase-0 prototype | Strengthened (executable artefact makes citations auditable) | Strengthened (regeneration path is the retraction surface for any citation) | Preserved (prototype with declared honest-bounds) |
+| `ef3233a` | Arc 6 — pitch-readiness P1 bundle (5/5) | Strengthened (pitch docs declare honest-bounds, not-theatre, maintainer-bandwidth) | Preserved (docs-only; retractability is via edit-in-place) | Strengthened (SUPPORT.md sets maintainer-bandwidth expectations externally) |
+
+---
+
 ## Round 38 — CI retractability inventory + alignment substrate self-exercise + pitch-readiness + Aurora Network disclosure
 
 Anchor: the first round that exercises the **alignment
