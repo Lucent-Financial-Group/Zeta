@@ -39,7 +39,7 @@ ThoughtWorks-style radar for the technologies / research / papers
 | CRC32C hardware-accelerated | Adopt | 10 | `HardwareCrc.fs` |
 | SIMD merge (AVX2/NEON) | Adopt | 1 | `SimdMerge.fs` |
 | TensorPrimitives for weightedCount | Trial | 11 | `Simd.fs` |
-| Bloom filters (blocked + counting) | Trial | 17 | Shipped in `src/Core/BloomFilter.fs` — blocked + 4-bit counting, XxHash128 Kirsch-Mitzenmacher double-hashing. **Engineering fundamental, not novel research**: Putze 2007 / Fan 1998 / Kirsch-Mitzenmacher 2006 are off the shelf. Promote to Adopt once `bench/Benchmarks/BloomBench.fs` lands with measured FP rate + cache-miss numbers. |
+| Bloom filters (blocked + counting) | Trial | 17 | Shipped in `src/Core/BloomFilter.fs` — blocked + 4-bit counting, XxHash128 Kirsch-Mitzenmacher double-hashing. **Engineering fundamental, not novel research**: Putze 2007 / Fan 1998 / Kirsch-Mitzenmacher 2006 are off the shelf. Round-40 BDN run (`docs/research/bloom-bench-2026-04.md`) measured throughput scales flat across 10× N (ratio ≤ 1.08, zero-alloc confirmed) but **FPR at 4.6×–9.8× target** — `createBlocked` uses unblocked-Bloom parameter derivation and is miscalibrated per Putze 2007 §4. Stays at Trial; Adopt flip blocked on the `createBlocked` recalibration tracked as a P0 in `docs/BACKLOG.md`. |
 | Counting Quotient Filter (CQF) | Trial | 18 | Fix for 4-bit counter saturation; natively counts multiplicities → direct Z-weight fit. Pandey et al. SIGMOD'17. |
 | d-left Counting Bloom | Assess | 18 | Half the memory of 4-bit counting Bloom. Bonomi et al. ESA'06. |
 | Cuckoo / Morton filter | Hold | 18 | Deleting a never-inserted item produces a false negative — breaks DBSP retraction-never-seen-item correctness. |
