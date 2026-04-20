@@ -551,34 +551,37 @@ within each priority tier.
   S (one line per skill). Route through `skill-creator`
   to respect the meta-skill workflow.
 
-- [ ] **Untested serializer tiers — `SpanSerializer` +
-  `MessagePackSerializer`.** `src/Core/Serializer.fs` defines
-  three tiered serializers with strong docstring claims
-  ("zero-copy by definition" on `SpanSerializer`,
-  "30-60 ns/entry, source-gen AOT-clean" on MessagePack tier)
-  but only `ArrowSerializer` currently has a dedicated test
-  file (`tests/Tests.FSharp/Storage/ArrowSerializer.Tests.fs`
-  — landed round 34 DB Arc). Both unlanded tiers are claims-
-  tester candidates:
-  - `SpanSerializer` — verify zero-copy with an allocation
-    assertion (BenchmarkDotNet MemoryDiagnoser on a tight
-    loop; any boxing or LOH allocation fails the zero-copy
-    claim). Wire format is `[4B count][count × sizeof
-    (ZEntry<'K>) bytes]`; round-trip test on blittable `int`
-    / `int64` / `float` Z-sets; endian behaviour must be
-    single-host-only as documented.
-  - `MessagePackSerializer` — verify the 30-60 ns/entry
-    claim with BenchmarkDotNet; round-trip test on
-    non-blittable shapes (records, strings, nested); verify
-    negative-weight retraction-native invariant holds on
-    the wire.
+- [ ] **Serializer tier coverage — correct the stale claim.**
+  The original entry (round 34) said `SpanSerializer` and a
+  `MessagePackSerializer` tier were both untested. Two
+  retractions since then: (a) `SpanSerializer` tests landed
+  round 34 hotfix (`tests/Tests.FSharp/Storage/SpanSerializer.Tests.fs`);
+  `TlvSerializer` tests landed round 37 bridge
+  (`tests/Tests.FSharp/Storage/TlvSerializer.Tests.fs`); (b)
+  the `MessagePackSerializer` tier is described in the
+  `ISerializer<'T>` docstring ("non-blittable `'T` →
+  MessagePack wins: 30-60 ns/entry, source-gen AOT-clean")
+  but was never implemented — `src/Core/Serializer.fs`
+  ships `SpanSerializer`, `TlvSerializer`, `FsPicklerSerializer`.
+  The actual untested tier is `FsPicklerSerializer` (Tier 3,
+  exotic F# shapes via FsPickler binary). Remaining scope:
+  - `FsPicklerSerializer` — round-trip test on F# DUs,
+    records-in-records, and `option` / `Result` payloads;
+    verify the `IBufferWriter` wrap-and-copy path does not
+    duplicate payload under high `count`. Effort: S.
+  - **Decision: implement MessagePack tier or retire the
+    docstring claim?** If the tier stays in the plan, it
+    wants its own BACKLOG entry naming the NuGet dep and
+    the source-gen approach; if retired, update the
+    `ISerializer<'T>` docstring so downstream readers don't
+    believe in a tier that doesn't exist. Route to
+    `public-api-designer` (Ilyana) for the docstring read
+    since it is a publicly visible claim on an interface.
+    Effort: S.
 
-  Route to claims-tester; effort S per serializer (~2h
-  including a BenchmarkDotNet harness). Worth doing
-  before the query surface round lands because the tiered
-  dispatch (`src/Core/Serializer.fs:28-29`: "auto-detection
-  at Circuit.Build()") is a documented extension point
-  that will rely on these claims being honest.
+  Route to claims-tester; the corrected scope is honest
+  about what exists (three tiers: Span, TLV, FsPickler) and
+  what does not (MessagePack tier is docstring-only).
 
 - [ ] **Ghost personas in EXPERT-REGISTRY.** Seven personas
   appear in `docs/EXPERT-REGISTRY.md` rows with full
