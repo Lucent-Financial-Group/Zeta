@@ -194,7 +194,7 @@ row 42 flips Trial → Adopt; the BACKLOG P0 is removed
   Windows-ETW only; darwin maintainer laptop cannot
   measure. Deferred to Linux CI when it exists.
 
-### BP-WINDOW ledger — Round 40 (prospective)
+### BP-WINDOW ledger — Round 40 (merged via PR #30, `1e30f8c`)
 
 | Commit | Arc | Consent | Retractability | No-permanent-harm |
 | --- | --- | --- | --- | --- |
@@ -275,7 +275,7 @@ Round-38 pitch-readiness gap inventory:
   tool-coverage review still the gate.
 - AutoDream pass still pending (`#109`).
 
-### BP-WINDOW ledger — Round 39 (prospective)
+### BP-WINDOW ledger — Round 39 (merged via PR #30, `1e30f8c`)
 
 | Commit | Arc | Consent | Retractability | No-permanent-harm |
 | --- | --- | --- | --- | --- |
@@ -414,7 +414,7 @@ arcs above:
   through Soraya (formal-verification-expert) for tool
   coverage before landing.
 
-### BP-WINDOW ledger — Round 38 (prospective)
+### BP-WINDOW ledger — Round 38 (merged via PR #30, `1e30f8c`)
 
 Per-ADR factory-hygiene exemption applies to this
 ROUND-HISTORY commit.
@@ -514,7 +514,7 @@ ownership with Nazar on h₂ runtime ops and Mateo on prior-
 art scouting. Calibration note honest: described, not
 measured — BP-WINDOW retrospective is what measures them.
 
-### BP-WINDOW ledger — Round 37 (prospective)
+### BP-WINDOW ledger — Round 37 (merged via PR #30, `1e30f8c`)
 
 Scoring each commit against the three clauses. Three-value
 scale: **Strengthened** / **Preserved** / **Weakened**.
