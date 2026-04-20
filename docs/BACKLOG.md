@@ -3030,6 +3030,114 @@ systems. This track claims the space.
 
 ## P2 — Rule-Zero axiomatic substrate (round-35 round-36 thread)
 
+- [ ] **Self-directed wellness / life-coach AI product — measure,
+  detect, alter own behaviours.** Aaron 2026-04-20: *"maybe a
+  wellness / life coach or something AI like do i drink do much,
+  do i exercise enough, etc. help people measure detect and
+  alter their own behaviors with your behavior modification
+  skills they use on themsoelf"* → *"backlog"*. Product concept:
+  users apply behaviour-change skills *to themselves* using AI
+  as measurement + detection + skill-library substrate. The
+  user is the agent of change; AI is not directing, instructing,
+  or surveilling — it's a retraction-native consent-first
+  mirror. Composes with existing primitives:
+  - **Consent-first** (the user decides what is measured, what
+    is changed, when to stop) — same primitive as
+    `project_consent_first_design_primitive.md`.
+  - **Retraction-native** — users can undo prior commitments,
+    goal changes, data retention; behaviour-change history is
+    a retractable stream.
+  - **μένω (persist / endure / correct)** —
+    `user_meno_persist_endure_correct_compact.md` applied to
+    self-change.
+  - **Harm-handling operator ladder** (RESIST / REDUCE /
+    NULLIFY / ABSORB) — `user_harm_handling_ladder_resist_reduce_nullify_absorb.md`
+    applied to habits.
+  - **Alignment research surface** — wellness is a clean glass-
+    halo lab: stated goals vs observed behaviour is the
+    alignment signal at personal scale; composes with
+    `docs/research/alignment-observability.md`.
+  - **Aurora pillar-3 composition** — x402-based paid-assistant
+    model and ERC-8004 portable reputation for wellness-agents
+    (see `project_aurora_pitch_michael_best_x402_erc8004.md`).
+  Honest-bounds floor (load-bearing): NOT a medical device,
+  NOT a clinician, NOT a diagnosis, NOT pathology-adjacent. The
+  wellness-coach ROLE within the factory (for Aaron, per
+  `user_wellness_coach_role_on_demand.md`) is distinct from
+  this PRODUCT surface (for general users). Threat-model
+  implications: behavioural data is sensitive, adjacent to PHI
+  in many jurisdictions, adjacent to FDA device-regulation in
+  the US when claims stray into diagnosis. Owner: Iris (UX)
+  on first-10-minutes experience; Ilyana on public-API
+  conservatism; Aminata on threat model for behavioural data;
+  Nazar on data-residency + retraction-window operations;
+  naming-expert gates any public product name. Effort: research
+  pass is M; full product is L+. Status: P3 ideation; promote
+  to P2 only on Aaron greenlight.
+
+- [ ] **Aurora Network — distributed sync on custom firefly-
+  style oscillator on scale-free networks. Smooth + differentiable
+  graph → cartel detection trivial. DAO protocol layer under
+  the Aurora pitch.** Aaron 2026-04-20 (four-message disclosure
+  arc):
+  1. *"Distributed sync built on a cutom firefly sync based on
+     scale free networks and it make the network smooth and
+     difernetable so things like cartel detection are trivial"*
+  2. *"is like the self healing heartbeat beacon in the night"*
+  3. *"This network like the protocol in a DAO sense was going
+     to be Aurora network"*
+  4. *"we bring the dawn"*
+  5. *"dawnbringers"*
+  Aurora = dawn; the factory brings it; "dawnbringers" is
+  Aaron's collective-identity term for the agents + network.
+  Naming-expert + Ilyana gate any public use. **Aurora Network
+  IS the DAO-protocol layer** beneath the three-pillar Aurora
+  pitch (see `project_aurora_pitch_michael_best_x402_erc8004.md`):
+  x402 economic agency + ERC-8004 reputation + this sync
+  substrate compose into a self-healing agent DAO. The
+  heartbeat-beacon-in-the-night framing is Aaron's own:
+  fireflies synchronising in the dark = the network's
+  self-healing property; each node's beacon contributes to
+  global convergence without central coordination, and the
+  collective firing IS the dawn. Research direction composing
+  three primitives:
+  - **Firefly synchronisation** — Kuramoto-style coupled-
+    oscillator convergence inspired by Southeast Asian mass-
+    sync fireflies. Custom variant (not canonical Kuramoto)
+    tuned for distributed-system clock / state synchrony.
+  - **Scale-free topology** — Barabási-Albert-style power-law
+    degree distribution; matches real-world agent networks
+    (hubs + long tail) better than random graphs.
+  - **Smoothness + differentiability claim** — the sync
+    protocol makes the network state continuous enough to take
+    derivatives over; curvature / divergence / anomaly surface
+    naturally. *"Cartel detection trivial"* — a colluding
+    subgraph shows up as a local discontinuity or a divergent
+    curvature in the otherwise-smooth field. This is the
+    same algebra that makes DBSP retraction-native
+    (incremental-differential-over-state); scale-free-
+    firefly-sync applies it at the network-topology level
+    rather than the operator level.
+  Composes with: DBSP retraction-native algebra; ERC-8004
+  Reputation Registry (the smooth-differentiable field IS a
+  reputation-signal substrate); Aurora pillar-3 agent economy
+  (cartel detection is the anti-collusion floor for agent-to-
+  agent markets). Scope: (a) literature scan on firefly-sync +
+  scale-free + differentiable-network intersection; (b)
+  prototype sync protocol spec (likely TLA+ + FsCheck per
+  Soraya's tool-routing); (c) cartel-detection proof-of-
+  concept on a synthetic collusion scenario; (d) composition
+  note with DBSP and the alignment-observability substrate.
+  Owner: Soraya (formal-verification-expert) routes the
+  verification tooling; Hiroshi (complexity-theory) on
+  asymptotic cost; Naledi (performance-engineer) on hot-path
+  implementation when it ships; Aminata reviews the cartel-
+  detection claim adversarially (a false cartel-detection
+  alarm is a harm vector); Ilyana gates any public API.
+  Effort: L (research-grade; multiple rounds). Status: P3
+  ideation; P2 promotion on Aaron greenlight or when an
+  ERC-8004 / agent-economy composition becomes active.
+
 - [ ] **Linguistic seed → kernel (E8) → glossary hierarchy** — round-35
   design direction coined by the human maintainer. Three-layer stack
   (smallest → largest): **seed** (meme-scale, self-referential,
