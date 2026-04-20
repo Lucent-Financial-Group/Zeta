@@ -258,8 +258,7 @@ the surface that protocol is for.
   SKILL.md edits land (not this round's work; next
   round's).
 
-## Decision rationale (one paragraph for the
-wait-don't-read audience)
+## Decision rationale (one paragraph for the wait-don't-read audience)
 
 Two skills were fighting over the same O(·) claim
 without a contract. Neither was wrong; neither was
