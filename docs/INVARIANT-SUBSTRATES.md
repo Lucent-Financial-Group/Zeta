@@ -241,6 +241,21 @@ the honest state of the system is visible on every round.
   that substrates are up to date and that new layers have
   landed substrates.
 
+## Tooling
+
+- **`tools/invariant-substrates/tally.py`** — reads every
+  `.claude/skills/*/skill.yaml` and prints a markdown table
+  of per-substrate tier counts plus portfolio totals. Use
+  at round-close to see where the guess / observed /
+  verified totals stand and whether any declared `total`
+  field has drifted from the sum of its tiers. Pure-stdlib
+  Python; no dependencies. Exit codes:
+  - `0` clean
+  - `1` with `--fail-on-no-progress` when any guess entries
+    remain (post-maturity CI flag; not used yet)
+  - `2` with `--fail-on-mismatch` when any substrate's
+    declared total mismatches the sum.
+
 ## Authorship note
 
 This doc was landed in round 43 as the explicit, first-class

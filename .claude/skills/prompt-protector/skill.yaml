@@ -21,6 +21,7 @@ spec-version: 0.1-draft
 paired-md: ./SKILL.md
 spec-filed-by: architect-hat (Claude main agent)
 spec-filed-round: 43
+portable: true                  # generic factory skill; injection-lint discipline is not Zeta-DB-specific
 
 # ---------------------------------------------------------------
 # Authority scope — what this skill owns reviewing.
