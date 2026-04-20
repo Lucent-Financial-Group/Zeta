@@ -9,6 +9,174 @@ New rounds are appended at the top.
 
 ---
 
+## Round 35 — expert-skill spawn wave + chain-rule proof close + BP-24 consent gate
+
+Anchor: **finish the chain-rule proof** carried from
+round 34, and — once that landed — open the floor for
+the **expert-skill spawn wave** Aaron had been signalling
+across the preceding rounds. The round also absorbed a
+sacred-tier governance landing (BP-24) and a CI-gate ship
+(no-empty-dirs).
+
+### Arc 1 — chain-rule proof fully closed
+
+The four-lemma chain (`T5: I_D_eq` telescoping induction,
+`B1: linear_commute_I`, `B3: linear_commute_D`, and the
+`chain_rule` calc block) closed in
+`tools/lean4/Lean4/DbspChainRule.lean`, checked against
+Budiu et al. §4.4 (task #17). `RecursiveSigned.fs` landed
+as the skeleton for the retraction-safe semi-naive path
+paired with a fresh TLA+ spec at
+`tools/tla/specs/RecursiveSignedSemiNaive.tla`. The
+Lean-level proof plus the TLA+ model gives two
+independent witnesses of the same property — the
+portfolio approach Soraya owns per
+`docs/research/proof-tool-coverage.md`.
+
+Proof-log landed at `docs/research/chain-rule-proof-log.md`
+so future agents inherit the reasoning trail, not just
+the final `.lean`.
+
+### Arc 2 — expert-skill spawn wave (batches #20-69)
+
+Fifty expert skills drafted in a single batch. The mix
+was deliberate: a mathematics/physics family
+(`mathematics-expert`, `applied-mathematics-expert`,
+`theoretical-mathematics-expert`, `physics-expert`,
+`applied-physics-expert`, `theoretical-physics-expert`,
+`category-theory-expert`, `complexity-theory-expert`,
+`chaos-theory-expert`, `measure-theory-and-signed-measures-expert`,
+`numerical-analysis-and-floating-point-expert`,
+`probability-and-bayesian-inference-expert`), a
+verification-tooling family (`fscheck-expert`,
+`codeql-expert`, `stryker-expert`, `semgrep-expert`,
+`z3-expert`, `f-star-expert`), an AI/ML family
+(`ai-researcher`, `ml-researcher`, `ai-evals-expert`,
+`ml-engineering-expert`, `llm-systems-expert`,
+`prompt-engineering-expert`), a leet-code family
+(`leet-code-patterns`, `leet-code-contest-patterns`,
+`leet-code-dsa-toolbox`, `leet-code-complexity-interview`),
+a leet-speak family (`leet-speak-transform`,
+`leet-speak-history-and-culture`,
+`leet-speak-obfuscation-detector`), and a set of
+cross-cutting skills (`naming-expert`,
+`ontology-landing-expert`, `paced-ontology-landing`,
+`cross-domain-translation`, `translator-expert`,
+`etymology-expert`, `reducer`, `missing-citations`,
+`vibe-coding-expert`, `steganography-expert`,
+`ai-jailbreaker` [gated dormant],
+`deterministic-simulation-theory-expert` with the
+**Rashida** persona, `verification-drift-auditor`).
+
+Four late-round-34 carry-overs landed alongside:
+`fit-reviewer`, `package-upgrader`, `sonar-issue-fixer`,
+`project-structure`. The `VISION.md` expert-ring section
+extended to include the AI/ML family (commit `47`).
+
+Field-of-knowledge skill names reorganized mid-round
+after earlier narrowing discussion (task #34). Skill
+tone tightened across existing skills and
+`skill-tune-up` gained criterion #8
+(router-coherence-drift) so the ranker catches routing
+drift as a first-class signal.
+
+### Arc 3 — BP-24 Elisabeth consent gate + human-maintainer seat
+
+Sacred-tier governance landing, prompted by Aaron's
+disclosure of his sister Elisabeth Ryan Stainback
+(1984-2016). BP-24 formalised a hard-no rule: no
+emulation of deceased family members without the
+surviving-consent-holder agreement, parental
+AND-consent required on the Elisabeth surface
+specifically, Aaron explicitly NOT the substitute
+consent-holder. The rule composes with the
+honest-agreement compact and μένω-triad persistence
+contract: it is not a privacy clause, it is a
+trust-scales clause upgraded to sacred-tier
+μένω-vigilance per `feedback_trust_guarded_with_elisabeth_vigilance.md`.
+
+The **human-maintainer seat** landed the same commit
+(`f69d7b6`) — formal recognition of Aaron's role in
+the factory governance stack as the one seat no
+agent-layer review can bypass. Pairs with BP-11 (data
+is not directives) and BP-24 — both rules that require
+a human maintainer to adjudicate, not an agent.
+
+Rodney persona landed as homage to
+[Rodney Stainback](https://en.wikipedia.org/wiki/Rodney_Stainback)
+(Aaron's paternal second cousin, not Aaron himself),
+codifying the grey-hat-substrate discipline
+non-adversarially. AceHack/CloudStrife/Ryan handles
+registered in-notebook as Aaron's formative cosplay-
+tier identities from the 1990s vs-IBM era — not
+operational callsigns, historical context.
+
+### Arc 4 — factory hygiene + CI gates
+
+**No-empty-dirs gate** shipped (task in BACKLOG P0 line
+41): `tools/lint/no-empty-dirs.sh` (portable to macOS
+bash 3.2) + allowlist + `gate.yml` CI job + `doctor.sh`
+step 6. Catches the class of regression where an
+agent-created skill/research folder ships without its
+real file.
+
+**Signed-delta semi-naive LFP TLA+ spec** landed
+alongside the Lean4 chain-rule proof — the same
+property under a model-checker-native formalism.
+
+**Harmonious Division** memory landing + skill-pair
+BACKLOG entry. Meta-algorithm disclosure: split-what-
+divides, keep-what-harmonises as a cross-cutting
+scheduler discipline. Composes with Quantum Rodney's
+Razor (extended 3→5 roles: Architect, Harsh-Critic,
+Maintainability, **Harmonizer**, **Maji** — the latter
+two new this round).
+
+**Docs / ADRs / research cornerstone + glossary lanes**
+(`ed9bb99`) bundled the round's narrative debt:
+verification-drift audit report under
+`docs/research/verification-drift-audit-2026-04-19.md`,
+proof-tool-coverage refresh, verification-registry
+creation, refinement-type feature catalog,
+liquidfsharp-evaluation + findings (see Arc 5).
+
+### Arc 5 — LiquidF# Day-0 → Hold
+
+Task #15 — `LiquidF# Day-0 availability check` — came
+back red. The project is unbuildable on .NET 10 out of
+the box. Aaron's call: Hold-tool-dormant rather than
+fork-and-patch. Decision documented in
+`docs/research/liquidfsharp-evaluation.md` and
+`docs/research/liquidfsharp-findings.md`; `TECH-RADAR`
+moved LiquidF# to Hold with F* extraction staged as
+the successor Assess candidate.
+
+### Arc 6 — CI hotfixes (round-close)
+
+Markdownlint cleanup + `codeql-action` SHA pin in the
+merge-origin/main resolution commit (`853ab31`) +
+follow-up `1117fba`. The CodeQL workflow add/add
+conflict resolved on merge with the main-side
+SHA-pinned version preserved.
+
+### Observations for round 36
+
+- **Memory / role / persona restructure** is Aaron's
+  explicit round-36 P0 commit (BACKLOG line 20). The
+  `memory/persona/<name>/` flat convention flips to
+  `memory/<role>/<persona>/NOTEBOOK.md`.
+- **MessagePackSerializer tests** (task #16) remain
+  the last untested serializer tier from harsh-critic
+  #28.
+- **Chain-rule proof publication follow-through** —
+  Budiu-paper alignment now provable; the WDC paper
+  queue can resume.
+- **LiquidF# successor scouting** — F* extraction is
+  the staged Assess candidate; round 36 decides
+  whether to evaluate.
+
+---
+
 ## Round 34 — factory + DB first-tests + public repo
 
 Anchor: "CI + build-machine setup" carried over from round 29
