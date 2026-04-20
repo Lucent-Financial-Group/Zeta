@@ -847,6 +847,45 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Matrix-mode skill-group authoring — human-backlog +
+  user-ask-conflict-detector skill-groups (round 44 absorb)**
+  — Aaron 2026-04-20: *"you should have a conflicting asks
+  from user md file somewhere... we proabaly need some skill
+  to look for like user requirements contridictions or
+  something like that"* + generalisation *"i think this a
+  specifc instance of the kind of item that belongs on a
+  human backlog"* + vibe-coding guardrail *"we should be
+  careful what ends up in the human backlog given the vibe
+  coding containt... the primay UX is conversational and
+  our cusotm UI"*. Artifact `docs/HUMAN-BACKLOG.md` landed
+  (category schema: conflict / approval / credential /
+  external-comm / naming / physical / observation / other;
+  rows are agent-authored, human-resolution arrives
+  conversationally, humans never edit the file). **Candidate
+  skill-group membership** (Matrix-mode minimum set):
+    - `user-ask-conflict-detector` — scan MEMORY.md + recent
+      transcripts + artifact files for contradictions among
+      human instructions; file `conflict` rows; never
+      resolve.
+    - `human-backlog-filer` — generic capability that files
+      the non-conflict categories when an agent detects a
+      block on human action (approvals, credentials, external
+      comms, naming, physical, observation).
+    - `human-backlog-teacher` — onboards new agents to the
+      artifact's schema + vibe-coding guardrail + default
+      rules while rows are Open.
+    - `human-backlog-auditor` — periodic sweep of open rows
+      for staleness / dropped-on-floor / drifted-source;
+      dual-writes stale detection into row comments.
+  Effort: M. Reviewers: Iris (UX) for the
+  human-facing surface shape, Daya (AX) for the agent-facing
+  contract. Per
+  `feedback_skill_edits_justification_log_and_tune_up_cadence.md`,
+  skill creation goes through `skill-creator` workflow.
+  Memories: `project_human_backlog_dedicated_artifact.md`,
+  `feedback_user_ask_conflicts_artifact_and_multi_user_ux.md`,
+  `project_zero_human_code_all_content_agent_authored.md`.
+
 - [ ] **Matrix-mode skill-group authoring — Playwright
   (round 44 absorb)** — Aaron 2026-04-20: *"you are
   welcome to use playwright ... make sure we make all the
@@ -3310,6 +3349,34 @@ systems. This track claims the space.
   ongoing.
 
 ## P2 — research-grade
+
+- [ ] **Pluggability-gap audit — tag every `src/Core/**`
+  subsystem as tier-1 (fully pluggable), tier-2 (interface
+  shim), or tier-3 (one-off plumbing).** Aaron 2026-04-20:
+  *"just in generate we should also look for plugabilty
+  gaps, in general where it does not negativly hurt our
+  claim of being the fastest database we should try to
+  make anything that could be pluggable, pluggable, this
+  just sets us up for long term sucess, at least an
+  interface shim if it's not really pluggable, then like
+  plumbling one off stuff is the remainder."* Durable
+  policy in `memory/feedback_pluggability_first_perf_gated.md`.
+  First audit pass: walk `src/Core/**/*.fs`, tag each
+  subsystem's current tier, flag candidates where tier
+  could be raised without perf impact. Perf-gate is
+  measured (benchmark delta) not asserted. Candidate
+  reviewers: Naledi (perf measurement), Hiroshi (complexity),
+  Ilyana (public-API surface). Landing surface:
+  `docs/research/pluggability-audit-YYYY-MM-DD.md` listing
+  (subsystem, current tier, justification, raise-candidate?,
+  effort). From the audit, file P1/P2 BACKLOG rows for
+  the raise-worthy candidates. **Cadenced:** repeat every
+  5-10 rounds; add as criterion to `skill-tune-up` audit.
+  Every new ADR for a subsystem or internal boundary
+  henceforth includes a "Pluggability audit" section
+  answering the tier + justification. Effort: M for first
+  pass; S ongoing per ADR. See
+  `feedback_pluggability_first_perf_gated.md`.
 
 - [ ] **Persona-term migration — rename `memory/persona/` to
   `memory/experts/`.** Aaron 2026-04-20: *"how do you suggest
