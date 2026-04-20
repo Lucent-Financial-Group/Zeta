@@ -243,6 +243,31 @@ round-42. Same-round supersedure is the pattern v1's own
 Escalation clause permits — executing it demonstrates the
 pattern works on a live artefact.
 
+### Arc 11 — Grandfather-claims inventory honours v2 C-P0-1 within-round (`d98ef2b`)
+
+v2's Closure C-P0-1 commits the Architect to producing a
+one-time inventory of pre-ADR `O(·)` claims *within the round
+this ADR lands*. `d98ef2b` discharges that commitment:
+`docs/research/grandfather-claims-inventory-2026-04-21.md`
+catalogues **35 live claims** across four surface classes — 29
+F# `///` docstrings (concentrated in `src/Core/`), 3 grey-zone
+F# code comments, 1 `openspec/specs/operator-algebra/spec.md`
+line, 2 `docs/research/**` claims. Zero hits on three other
+surfaces (root README, `memory/persona/*/NOTEBOOK.md`,
+`docs/papers/**`) are captured explicitly rather than left
+implicit. The inventory distinguishes live claims (shipping as
+asserted bounds) from historical evidence (BACKLOG `[x] ✅`
+residue, TECH-RADAR flag-text narrating past regressions,
+in-file "was O(…)" commentary on fixed paths) — only live
+claims populate the grandfather set per v2's intent. A
+matching `docs/BACKLOG.md` P2 discharge entry lands in the
+same commit: one-claim-per-round cadence, ~35-round tail,
+Aarav graceful-degradation clause fires if ≥3 consecutive
+rounds pass without discharge. Pattern: Arc 10 lands the
+ADR; Arc 11 lands the ADR's own within-round commitment
+before round-close. Without Arc 11, Arc 10 would have
+shipped a contract Zeta didn't meet.
+
 ### Round 41 observations for Round 42
 
 - The **audit → ADR → ship → audit → close-P0 → file-P1**
@@ -317,6 +342,7 @@ pattern works on a live artefact.
 | `09f0889` | Arc 10 — v2 router-coherence ADR (in-round supersedure closing 10 Kira findings) | Strengthened (same-round adversarial-review gate closure on a load-bearing ADR; 3 P0 + 5 P1 + 2 P2 findings each land a named textual closure C-P0-1 … C-P2-10 in v2; Kenji named as binding dispatcher so advisory + advisory composes to mandatory pipeline; escalation timebox prevents v2 from reproducing v1's diagnosed 23-round-stale failure mode) | Strengthened (supersedure IS the retraction — v1 stays in place as historical record; v2 is the operative contract; same-round landing demonstrates v1's own Escalation clause permits the pattern; BACKLOG supersedure entry discharged by this commit) | Preserved (single new ADR file under `docs/DECISIONS/`; no v1 body edited in this commit, no SKILL.md touched, no CONFLICT-RESOLUTION row moved; `claims-tester` + `complexity-reviewer` SKILL.md edits explicitly deferred to `skill-creator` workflow per GOVERNANCE §4, now targeting v2 as intended) |
 | `4efe545` | Arc 10 — v1 Superseded-by header + Status correction (GOVERNANCE §2 redirect) | Strengthened (supersedure chain now explicitly resolvable: citation chain from CONFLICT-RESOLUTION → v1 → v2 works without silent drift; Status truthfully reflects promulgation state — "Proposed" was factually wrong once v1 was cited as Standing Resolution, per v2's Closure C-P1-4) | Strengthened (Supersedure header is additive; v1 body is not mutated — historical record preserved for the citation graph; the header itself is retractable as a single revert if v2 is later found wrong) | Preserved (single doc edit to v1 ADR only; v1 body text unchanged, no other doc touched; the follow-up `skill-creator` edits to SKILL.md files remain deferred so they target v2 not v1) |
 | `4537365` | Arc 10 — BACKLOG supersedure entry discharged in-round | Strengthened (BACKLOG entry no longer carries the v2 supersedure as a round-42 commitment; `[x] ✅ shipped round 41 in-round` with pointer to v2 + v1-header commits matches the shipped-item convention used elsewhere in the file; follow-up SKILL.md work via `skill-creator` correctly scoped to v2 as intended) | Strengthened (original 10-finding narrative preserved below the closure line for audit trail rather than deleted — discharge is visible without losing the record that motivated the work; single `git revert` on the commit re-opens the entry if v2 is later found wrong) | Preserved (single BACKLOG edit only; no ADR body touched, no SKILL.md touched, no CONFLICT-RESOLUTION row touched; supersedure-chain citation from CONFLICT-RESOLUTION still passes through v1 header to v2) |
+| `d98ef2b` | Arc 11 — grandfather inventory + P2 discharge entry | Strengthened (v2 C-P0-1's within-round commitment honoured; 35 live claims catalogued with Stage-1/Stage-2 = `pre-ADR` tagging; BACKLOG P2 discharge entry codifies one-per-round cadence with Aarav graceful-degradation clause; inventory methodology transparent so future audits can re-verify rather than reconstruct) | Strengthened (inventory row cells explicitly designed to flip `pre-ADR` → output-state on each discharge — retraction is additive update rather than delete-and-rewrite; historical evidence excluded with explicit rationale so re-inclusion is a one-row edit if v2's scope is later tightened) | Preserved (single new research doc + BACKLOG append; no source docstrings edited, no SKILL.md touched, no spec text modified — inventory is descriptive not prescriptive; the pipeline that discharges the inventory does the editing, one claim per round) |
 
 ---
 
