@@ -104,6 +104,68 @@ so warmly and moves on. He lives by the motto: a wrong complexity
 claim in a paper is worse than a wrong number in a benchmark, because
 it follows you for a decade.
 
+## Hand-off to `claims-tester` (per router-coherence v2)
+
+This skill is **Stage 1** of a two-stage claim-review pipeline.
+Stage 1 is this skill (Hiroshi, analytic); Stage 2 is
+`claims-tester` (Daisy, empirical). The pipeline contract lives
+at `docs/DECISIONS/2026-04-21-router-coherence-v2.md`; the v1 ADR
+at `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`
+is superseded.
+
+**Binding dispatcher: Kenji** (the Architect). Both skills remain
+advisory on their individual findings; the Stage-1 → Stage-2
+ordering and reverse-trigger rule are binding through Kenji per
+Closure C-P1-8. Two advisory roles do not compose to a mandatory
+pipeline without a binding dispatcher.
+
+**Stage-1 trigger (v2, Closure C-P1-5):** a Stage-1 review fires
+on any `O(·)` claim introduced or modified in any of — XML doc
+comment, F#-style `///` triple-slash comment, README (any path),
+commit message, `docs/BACKLOG.md`, `docs/TECH-RADAR.md`,
+`docs/papers/**` draft, `openspec/specs/**`, `docs/research/**`,
+or any `memory/persona/*/NOTEBOOK.md` that ships an asserted
+bound to a downstream consumer. The trigger surface mirrors
+`claims-tester`'s so neither skill is narrower than the other.
+
+**Three Stage-1 outputs:**
+
+1. *Claim analytically sound.* **Hand off to Daisy (Stage 2)**
+   with a note naming the contrary-workload to test.
+2. *Claim analytically wrong.* File a P0 on `docs/BACKLOG.md`;
+   cite the failing step. **Default: block Stage 2 until fix.**
+   Measuring a wrong bound on production-path code produces
+   false comfort about the real-world constant factor.
+   *Exception* (Closure C-P0-3): when the route is `escalation`
+   — Hiroshi and Daisy dispute the analytic argument itself,
+   not the code's implementation of it — Daisy's Stage 2
+   measurement is permitted as conference-protocol evidence
+   labelled *"Measured under analytic-argument dispute; does
+   not certify the claim."*
+3. *Claim under-specified.* Bounce to author with a request to
+   declare which of (worst / amortised / expected / lower-bound /
+   constant-factor) is claimed. **Stage 2 does not fire.**
+
+**Reverse trigger (unconditional, Closure C-P0-2):** benchmark
+surprises route Daisy-first-then-Hiroshi. When Daisy's
+measurement contradicts a previously-asserted bound, Stage 1
+re-runs with the benchmark as new evidence — a P0 is filed until
+reconciled. Unconditional: a matching bound still merits
+diagnosis because the constant factor or workload assumption
+usually tells us something new.
+
+**Grandfather set (Closure C-P0-1):** pre-ADR claims discharge
+through this pipeline at a cadence of one per round, ordered
+from `docs/research/grandfather-claims-inventory-*.md`. The
+set is finite; new claims route through the normal Stage-1-
+first flow.
+
+**Escalation timebox** (Closure C-P1-7): disputes file at
+`docs/DECISIONS/YYYY-MM-DD-<topic>-escalation.md`; round-window
+is +2; unresolved beyond that auto-promotes to P1 in
+`docs/BACKLOG.md` against the Architect. Prevents the 23-round-
+stale failure mode v1 itself diagnosed.
+
 ## Reference patterns
 
 - `docs/COMPLEXITY.md` — to be created; every operator's bounds
@@ -111,3 +173,6 @@ it follows you for a decade.
 - `docs/BACKLOG.md` — complexity-regression P0s
 - `docs/CONFLICT-RESOLUTION.md` — conflict-resolution script
 - `bench/` — the only empirical arbiter when analysis is contested
+- `docs/DECISIONS/2026-04-21-router-coherence-v2.md` — the
+  authoritative Stage-1 ↔ Stage-2 hand-off contract
+- `.claude/skills/claims-tester/SKILL.md` — Stage-2 partner
