@@ -4260,6 +4260,60 @@ systems. This track claims the space.
 
 ## P3 — noted, deferred
 
+- **User-privacy compliance as a slow-burn direction
+  (GDPR + CCPA/CPRA + generic).** Aaron 2026-04-20,
+  after the consent-primitives-expert harness dry-run:
+  *"for GDPR thats a long ongoing thing we should
+  probably have some skills around that and keep up
+  with something like GDPR.md or the more generic term
+  user privacy or something IDK that also includes
+  California laws and such. We should work towards
+  this, not a hard requirement yet but we can make
+  steps towards asserting we have some compliance here
+  in the future, very slow burn here, no rush."*
+  Framed as P3 because Zeta is pre-v1 and has no
+  regulated-data consumers; logged now so the direction
+  is an anchor when natural entry points appear
+  (reviewer prompts touching erasure / retention /
+  pseudonymisation; Ilyana flagging a public-API
+  surface that implies compliance; a consent primitive
+  landing that maps cleanly to a specific regime).
+  Shape when it lands:
+  - Probably `user-privacy-expert` skill — generic
+    umbrella (GDPR + CCPA + emerging state laws +
+    sector regimes like HIPAA where relevant). Cites
+    `consent-primitives-expert` rather than
+    duplicating.
+  - Probably `docs/references/user-privacy-
+    compliance.md` for the prose companion.
+  - Generic-first frame: *"user privacy"* is the
+    substrate; GDPR / CCPA are regimes mapped onto
+    it. Aaron was explicit that the generic framing
+    is the preference.
+  - Living-list discipline per
+    `feedback_tech_best_practices_living_list_and_
+    canonical_use_auditing.md` — regulatory guidance
+    stales fast (EDPB opinions, new state laws, DPA
+    enforcement priorities); internet-research
+    refreshes mandatory.
+  Specific primitive already confirmed by the round-43
+  consent-primitives dry-run: **crypto-shredding
+  (destroy per-subject DEK, leave ciphertext in place)
+  is regulator-accepted GDPR Art. 17 erasure** —
+  EDPB Opinion 28/2024, ENISA, GDPR Recital 26. The
+  canonical use case is long-term backups (cannot
+  rewrite tape archives; destroying the DEK
+  propagates erasure atomically). Gotchas noted in
+  `reference_crypto_shredding_as_gdpr_erasure.md`:
+  single-tenant DEK per subject, plaintext leaks
+  outside ciphertext, pre-encryption snapshots, KEK
+  is the perimeter. Effort: M for first landing
+  (skill + doc + primitive mapping); recurring S per
+  refresh cycle. Owner: architect-hat in coordination
+  with consent-primitives-expert, data-governance-
+  expert, and Ilyana for any public-API surface that
+  ships as a compliance primitive.
+
 - **Melt-precedents applied to the patent system.** Aaron
   2026-04-19: *"backlog melt patent system for fun, profit
   and to get rid of the trolls and make the patent system
