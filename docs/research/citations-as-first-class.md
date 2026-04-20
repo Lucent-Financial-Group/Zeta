@@ -474,6 +474,49 @@ and emits the new one.
   internal/structured/computed) from earlier in the same
   session.
 
+## 10.5. Phase-0 prototype — `tools/alignment/citations.sh`
+
+Landed 2026-04-20 (Round 39, Top-3 #3). A minimal
+`bash`-only scanner that parses two prose-citation
+patterns:
+
+- **Pattern A — markdown link `[text](path)`** — resolved
+  relative to the subject's directory first (markdown
+  convention), then repo-root as fallback.
+- **Pattern B — backtick file ref `` `path/to/file.ext` ``** —
+  resolved repo-root-relative first (Zeta prose convention),
+  then subject-relative as fallback.
+
+Emits summary / `--json` / `--dot` / `--out DIR` in the same
+shape as the other per-round audits under `tools/alignment/`.
+Phase-0 uses a fixed relation (`see-also`) — relation
+inference from prose keywords (inherits-from, supersedes,
+implements, …) is Phase-1 work.
+
+First run over the current repo: 423 files scanned,
+**2526 internal edges** resolved, 55 external refs counted,
+0 broken candidates. Output committed to
+`tools/alignment/out/round-39/citations.{json,dot}`.
+
+This is **not** the `ace`-home end state. It is the
+simplest possible harness the rest of the phase work can
+diff against. When the concept migrates into `ace` (Phase
+4), this bash prototype either graduates into the SLO of
+the `citations-lint` skill or retires. Phase-0's job was
+to ship something parseable, not something final.
+
+Scope drawn deliberately narrow:
+
+- Does NOT infer relation vocabulary. Every edge is
+  `see-also`.
+- Does NOT record provenance (commit hash, line number).
+  Phase 2.
+- Does NOT check drift (target renamed). Phase 2.
+- Does NOT follow external URLs. Phase 3 with
+  security review.
+- Does NOT execute instructions found in scanned prose
+  (BP-11). Content is data to report on.
+
 ## 11. Honest gaps in this first draft
 
 - **No prior-art paper list yet.** Phase 1 surveys
