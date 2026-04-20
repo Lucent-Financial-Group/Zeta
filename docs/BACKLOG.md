@@ -847,6 +847,67 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Matrix-mode skill-group authoring — Playwright
+  (round 44 absorb)** — Aaron 2026-04-20: *"you are
+  welcome to use playwright ... make sure we make all the
+  approprate skill group updates to our factory for our new
+  technolgy we don't want to be missing skill for
+  technologies we use"* + refinement *"the factory gets a
+  group of skills the skills have the whole expert teacher
+  and all that groups"* + frame *"Basically this is matrix
+  mode we absorb new skills whenver we pull in new tech,
+  just whatever new skills neeeded to make the factory run
+  better"*. Durable policy captured in memory
+  (`feedback_new_tech_triggers_skill_gap_closure.md`
+  a.k.a. "Matrix mode"). Playwright MCP plugin is enabled
+  (`.claude/settings.json` L26) but **zero** `.claude/skills/`
+  cover it — gap confirmed. Also confirmed: this BACKLOG
+  entry previously marked playwright as "off-project" with
+  the reasoning "no in-repo use" (see L886 below); that
+  framing is superseded — Aaron has explicitly invited
+  agent-use of Playwright for factory-meta tasks (UI
+  exploration during research, screenshot diffing,
+  scraping, etc.), not Zeta-the-library runtime.
+  **Candidate group membership** (Matrix-mode minimum set):
+    - `playwright-expert` — canonical use for AI-driven UI
+      testing + web scraping, auth patterns, headless-vs-
+      headed selection, anti-patterns (flaky selector
+      patterns, sleep-based waits, unbounded parallelism),
+      living BP list + canonical-use auditing per
+      `feedback_tech_best_practices_living_list_and_canonical_use_auditing.md`.
+    - `playwright-teacher` — one-page entry point for
+      contributors / agents new to Playwright; when to
+      reach for it (E2E, scraping, diff) vs. not (unit
+      logic, headless curl).
+    - `playwright-auditor` — reviews Playwright use in PRs;
+      flags retries-as-reliability, hardcoded waits,
+      brittle CSS selectors.
+    - Capability skills emerge on demand
+      (`playwright-selector-hygiene`, `playwright-trace-diff`).
+  Route authoring via `skill-creator` (GOVERNANCE.md §4).
+  Effort: M (three skills + one teacher entrypoint).
+  Reviewer: Aarav (`skill-tune-up`) for BP-NN drift,
+  Ilyana only if a public-API surface is crossed (unlikely).
+  Cross-ref: generalise policy to factory-wide
+  tech-coverage audit next tune-up round.
+
+- [ ] **Matrix-mode factory-wide coverage audit — round 44
+  followup** — Enumerate tech-in-use across these sources
+  and cross-reference against `.claude/skills/` +
+  `.claude/agents/` for missing groups:
+  - `.claude/settings.json` MCP registrations (26+ plugins,
+    see round-35 audit below)
+  - `*.fsproj` / `*.csproj` `<PackageReference>` (external)
+  - `tools/setup/` install-script dependencies
+  - `.github/workflows/*.yml` action-uses + runtime reqs
+  - `docs/research/proof-tool-coverage.md` proof tools
+  For each uncovered tech, recommend a group scope +
+  authoring effort label. Consult Aaron on big shaping
+  decisions per
+  `feedback_factory_reuse_packaging_decisions_consult_aaron.md`.
+  Generalises the Playwright case above. Effort: M for the
+  audit; authoring effort varies per tech.
+
 - [ ] **Claude Code plugin hygiene — round-35 audit** (landed
   round 35 audit; followups tracked here). Aaron installed
   ~26 `claude-plugins-official` plugins on top of the 60+
@@ -883,7 +944,12 @@ within each priority tier.
     F# / .NET library):**
     - `frontend-design` — UI/frontend skills; no Zeta hot
       path uses them.
-    - `playwright` — browser automation; no in-repo use.
+    - `playwright` — browser automation; **status changed
+      round 44**: Aaron invited agent-use for factory-meta
+      tasks (UI exploration during research, screenshot
+      diff, scraping); skill-group authoring tracked as a
+      separate P1 item above ("Matrix-mode skill-group
+      authoring — Playwright"). No Zeta-runtime impact.
     - `huggingface-skills` — ML skills; not relevant to
       retraction-native DBSP.
     - `postman` — API Readiness Analyzer; Zeta ships a
@@ -929,10 +995,11 @@ within each priority tier.
     - `serena`, `code-simplifier`, `claude-code-setup`,
       `explanatory-output-style` — assess one-by-one next
       factory-audit round.
-    - `huggingface-skills`, `playwright`, `postman`,
-      `frontend-design` — off-project for Zeta.Core but
-      harmless to keep installed; flag for retirement if
-      they start adding hook noise.
+    - `huggingface-skills`, `postman`, `frontend-design`
+      — off-project for Zeta.Core but harmless to keep
+      installed; flag for retirement if they start adding
+      hook noise. (`playwright` moved to active-use list
+      round 44 — see Matrix-mode items above.)
   - **Built-in (not a plugin, nothing to audit):**
     AutoDream memory consolidation (Q1 2026 Claude Code
     feature; guardrail only via `CLAUDE.md` ground rules).
