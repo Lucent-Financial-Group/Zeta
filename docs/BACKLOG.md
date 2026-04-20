@@ -81,6 +81,83 @@ within each priority tier.
   Viktor audits each closure. Effort: M (spec work +
   scenarios, no code changes). Defers to Round 42.
 
+- [ ] **Router-coherence ADR `47d92d8` supersedure — harsh-critic
+  findings absorb (Round 42)** — Round 41 landed ADR
+  `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-
+  complexity.md` (Hiroshi analytic ↔ Daisy empirical two-stage
+  pipeline) without the adversarial-review gate the project
+  applies to other load-bearing artefacts. Post-landing
+  harsh-critic pass (Kira) surfaced **3 P0 + 5 P1 + 2 P2**
+  substantive findings. Because the ADR is already cited as
+  Standing Resolution in `docs/CONFLICT-RESOLUTION.md`
+  (Hiroshi ↔ Daisy row), inline-editing would invalidate the
+  external reference chain; absorb via supersedure ADR under a
+  new date with explicit "supersedes `47d92d8`" header.
+  Findings to absorb: **P0-1** grandfather clause (§Stage 2
+  trigger list "a claim landed without Stage 1 (grandfathered
+  pre-ADR work)") is unscoped — no inventory, no owner, no
+  cadence for discharging the grandfather set; **P0-2** the
+  decision table row "Performance regression in CI | Daisy
+  (Stage 2) | Hiroshi (Stage 1) **if measurement contradicts
+  bound**" is conditional on Hiroshi re-engagement, but the
+  prose "Reverse trigger" section promises unconditional
+  Stage-1 follow-up — table contradicts prose; **P0-3** Stage-1
+  output 2 ("Claim analytically wrong") forbids Stage-2
+  measurement "until the code is fixed", which blocks the
+  escalation-evidence loop: when Hiroshi and Daisy disagree,
+  the conference protocol needs Daisy's contradictory
+  measurement as evidence, but this clause forbids producing
+  it. **P1-4** Status header says *Proposed — awaits Architect
+  + human-maintainer sign-off* but `docs/CONFLICT-RESOLUTION.md`
+  already cites the ADR as Standing Resolution — the ADR is
+  self-inconsistent about its own promulgation state.
+  **P1-5** Stage-1 trigger list ("XML doc comment, README,
+  `docs/BACKLOG.md`, `docs/TECH-RADAR.md`, paper draft,
+  `openspec/specs/**`") is narrower than what
+  `.claude/skills/claims-tester/SKILL.md` line 3 already
+  promises to cover — the contract narrows one skill's scope
+  without citing the skill's own source. **P1-6** Decision
+  table row "Docstring lacks which bound" has only a Stage-1
+  entry and an em-dash under Stage-2; the prose Stage-1 output
+  3 says "Return to author" — the table loses the
+  author-bounce information. **P1-7** Escalation clause has
+  no timebox; Aarav's own finding the ADR closes sat
+  unresolved for 23 rounds precisely because escalation had
+  no timebox — the ADR reproduces the failure mode it
+  diagnoses. **P1-8** Both skills remain Advisory ("Does not
+  change either skill's tone or reviewer authority. Both
+  remain advisory"); two advisory roles do not compose to a
+  mandatory two-stage pipeline without a binding dispatcher
+  — needs explicit "Architect (Kenji) is the binding
+  dispatcher for this pipeline" clause. **P2-9** Example-bug
+  in the analytic-vs-empirical table (lines 64-66): inner
+  `Dictionary.Remove` is cited as "`O(k)` under adversarial
+  rehashing" but `System.Collections.Generic.Dictionary<K,V>`
+  `Remove` is `O(1)` amortised under the BCL contract; the
+  example is wrong on the standard library. **P2-10**
+  "Precedent for future analyst/falsifier pairs (e.g.
+  `verification-drift-auditor` vs `formal-verification-expert`
+  on spec-to-code claims) — the two-stage pattern is
+  reusable when the same shape appears elsewhere" is scope
+  creep that pre-commits the project to applying the
+  pattern before a second instance actually surfaces.
+  Target: `docs/DECISIONS/2026-04-??-router-coherence-v2.md`
+  supersedes `47d92d8`, closes all 10 findings, keeps the
+  citation chain live by leaving `47d92d8` in place with a
+  "Superseded by …" header appended per `GOVERNANCE.md §2`
+  (edit-in-place for doc state, narrative carried in the new
+  ADR). Owner: Architect drafts; Kira (harsh-critic) audits
+  the supersedure to confirm findings closed; Aarav
+  (skill-tune-up) confirms router-coherence drift stays
+  closed after the two SKILL.md edits land. Effort: M
+  (~200 lines of new ADR prose + one header append + two
+  SKILL.md edits via `skill-creator`). Schedule: Round 42
+  slot after Prereq 1 (TLC wire-up) lands. Cross-ref:
+  supersedure work blocks the claims-tester + complexity-
+  reviewer SKILL.md updates that ADR `47d92d8` follow-up
+  work depends on — those edits should target the v2 ADR,
+  not v1, so supersedure lands first.
+
 - [ ] **Fully-retractable CI/CD** — Aaron 2026-04-19: *"fully
   rtractable ci/ci backlog item"* → *"ci/cd"*. Apply the
   retractability clause of the Zeta=heaven formal statement
