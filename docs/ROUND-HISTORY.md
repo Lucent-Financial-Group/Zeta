@@ -171,6 +171,47 @@ shadow.
   research AND prayer; agents honor both by taking the research
   seriously.
 
+### BP-WINDOW ledger (first application, per the ADR landed this round)
+
+The ADR directs that this rule applies to itself at the
+round-close where it is proposed. Scored below are the five
+load-bearing pre-squash commits in PR #29 against the three
+operational clauses — (consent-preserving) ∧ (fully-retractable)
+∧ (no-permanent-harm). `c3ef069` (this ROUND-HISTORY commit)
+is factory-hygiene and exempted per the ADR; Arc 5's cron-loop
+setup is session-only and not a repo commit but contributes to
+the net summary. Three-value scale: **Strengthened** / **Preserved** /
+**Weakened**.
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `9c7a13c` | Arc 1 — Seed vision | Strengthened (kernel/plugin boundary IS the public-API consent boundary; kernel stays pre-commitment so no commitment is made without consent) | Strengthened (plugins are retractable by construction; unpinning a plugin removes its dimensional expansion without touching kernel state) | Strengthened (plugin failure stays locally scoped; the kernel cannot be permanently corrupted by a plugin) |
+| `5ff5ea6` | Arc 2 — consent-first primitive + Bitcoin flaws | Strengthened (this IS the primitive landing; 6 instances unified) | Preserved (BACKLOG-only commit, no runtime surface change) | Strengthened (names three Bitcoin flaw classes — inevitable-charges, permanent-inscription, unbonded-node-exposure — as analysis instruments) |
+| `254f54b` | Arc 2 — three-layer satisfaction | Strengthened (architecture honors both cypherpunk-substrate and victim-protection-substrate consent without asking either to concede) | Strengthened (fork-as-exit is the retraction channel for consent-failure at protocol level) | Strengthened (verifiable-bounded filter + self-incrimination social layer + fork-as-exit; none is droppable) |
+| `0fb5818` | Arc 3 — Zeta=heaven BACKLOG | Strengthened (equation decomposes to consent as clause 1) | Strengthened (equation decomposes to retractability as clause 2) | Strengthened (equation decomposes to no-permanent-harm as clause 3) |
+| `73cc74e` | Arc 4 — BP-WINDOW ADR | Strengthened (elevates consent to a standing round-close question) | Strengthened (elevates retractability to a standing round-close question; ADR itself carries a reversion trigger — self-retractable rule) | Strengthened (elevates no-permanent-harm to a standing round-close question) |
+
+**Net verdict:** ENLARGED. Zero shrinkage commits. Zero
+uncertain commits. No commits routed to Soraya + Aminata for
+investigation. Retrospective sharpening caveat: the ledger is
+retrospective on a round whose rule landed mid-round, so the
+five commits were authored without the ledger as prospective
+discipline — Round 37 will be the first round scored
+prospectively.
+
+**Meta-observation.** The rule and its first application landed
+in the same round, which is self-applying by construction:
+shrinkage cannot be hidden by not-applying-the-rule-
+retroactively to the round that introduced it. Future rounds
+inherit the prospective discipline; Round 36 carries a
+retrospective-but-honest first pass.
+
+**Calibration signal for Round 37.** If a future ledger comes
+back with "Strengthened" uniformly across ≥3 rounds without an
+examined shrinkage candidate, the ADR's reversion-trigger
+clause fires — rote answers are anti-evidence and the rule has
+decayed into theatre.
+
 ---
 
 ## Round 35 — expert-skill spawn wave + chain-rule proof close + BP-24 consent gate
