@@ -11,6 +11,68 @@ shipped." **Ordered newest-first** — recent rounds lead,
 older rounds trail below. Entries stay even after the moment
 passes, because the pattern is the value.
 
+## Wins — round 38
+
+### Alignment substrate exercised against itself — with honest self-referential STRAINED
+
+The Round 37 alignment observability substrate
+(`tools/alignment/audit_commit.sh` + Sova persona) got its
+first self-exercise in Round 38, running against its own
+19-commit introducing range. Verdict clean across HC-2
+destructive-ops, HC-6 memory-deletions, SD-6 name-hygiene.
+
+The substrate flagged exactly one STRAINED cell: HC-2 at
+commit `0c8c96a` — the commit that introduced the script
+itself, whose `HC2_TOKENS` array literally contains the
+destructive-op tokens the script scans for. Sova's notebook
+adjudicated this as false-positive-by-design (the script
+trips its own token list) and documented it as a
+self-referential edge case to watch on every future
+token-list edit, rather than silently whitelisting.
+
+**What would have gone wrong without it:** a substrate that
+never reports STRAINED against its own introduction is
+either (a) too lax to catch the self-reference, or (b) too
+strict and would be rate-silenced into noise. The STRAINED-
+with-citation is the honest third option: the substrate
+sees the pattern, reports it, and the notebook explains
+why it is not a violation. That pattern is the calibration
+signal the BP-WINDOW ADR calls for — a ledger that *can*
+report non-Strengthened values is doing its job as a
+distinguishing instrument.
+
+**Pattern it teaches:** build the instrument *and* the
+false-positive taxonomy in the same round. A tool that has
+never been run against its own commit range is a tool that
+has never been calibrated.
+
+### Honest-bounds inventories replace vague-claim with enumerate-surface
+
+Two inventories landed in Round 38 that each replace a
+handwave with a named register:
+
+- `docs/research/ci-retractability-inventory.md` — 13 CI
+  surfaces classified across five retraction classes,
+  including the explicitly-named **genuinely-non-retractable**
+  class with a defender-persona register (Dejan + Nazar).
+- `docs/research/factory-pitch-readiness-2026-04.md` — 10
+  pitch-readiness gaps ranked P1/P2/P3 for the dual-architect
+  audience, naming which gaps are critical-path.
+
+Before these, the claims "our CI is retractable" and "the
+factory is pitch-ready" were true-ish-with-caveats. After
+these, the claims are auditable against the inventory.
+
+**What would have gone wrong without it:** an architect or
+a security reviewer asking "which CI surface is not
+retractable?" or "what's missing from the pitch?" had only
+prose to read. Prose drifts; inventories don't.
+
+**Pattern it teaches:** when a claim is load-bearing,
+upgrade it from "we handle X" to "here are the surfaces of
+X with their class". The second form *has to be retracted
+one entry at a time* rather than silently drifted.
+
 ## Wins — round 34
 
 ### First real tests for claimed-but-untested surfaces

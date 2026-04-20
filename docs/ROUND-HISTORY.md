@@ -9,6 +9,162 @@ New rounds are appended at the top.
 
 ---
 
+## Round 38 — CI retractability inventory + alignment substrate self-exercise + pitch-readiness + Aurora Network disclosure
+
+Anchor: the first round that exercises the **alignment
+observability substrate** (`tools/alignment/audit_commit.sh`,
+landed late Round 37) against its own commit range, plus a
+build-out of the "honest-bounds" surface — CI/CD retractability
+inventory, external-audience pitch-readiness gap inventory, and
+P2/P3 BACKLOG captures pulling in OWASP + Microsoft Patterns &
+Practices alongside two new research-direction P3s (self-
+directed wellness product and Aurora Network DAO protocol
+layer).
+
+### Arc 1 — CI/CD retractability inventory (`2ff35dc`, `d08aec7`)
+
+414-line inventory at `docs/research/ci-retractability-
+inventory.md` classifying 13 CI surfaces across five retraction
+classes — revertable-in-git / retryable-idempotently /
+republishable-with-same-version / genuinely-non-retractable /
+named-exception. Named-exception register assigns Dejan and
+Nazar as defender-personas. BACKLOG P0 entry updated with
+"part (a) landed Round 38" pointer; part (b) — mechanical
+enforcement — remains open.
+
+### Arc 2 — alignment substrate self-exercise (`eb3cf44`)
+
+First-run of `audit_commit.sh` on the main..HEAD commit range
+(19 commits at time of audit). Verdict clean across HC-2
+destructive-ops, HC-6 memory-deletions, and SD-6 name-hygiene
+lint shapes. Glass-halo output lands at `tools/alignment/out/
+{rounds,commits}/round-37.json` and 19 per-commit JSON files.
+Sova persona's notebook (`memory/persona/sova/NOTEBOOK.md`)
+initialized documenting the one STRAINED HC-2 at `0c8c96a` as
+an expected self-referential false-positive (that commit
+introduced `audit_commit.sh` itself, whose `HC2_TOKENS` array
+literally contains the destructive-op tokens the script scans
+for).
+
+### Arc 3 — external-audience pitch-readiness (`e39b402`)
+
+303-line gap inventory at `docs/research/factory-pitch-
+readiness-2026-04.md` scoped to the dual-architect audience
+(current-employer architect + skip-level-ex-direct-manager).
+Ten gaps ranked P1 (five, all S-sized critical-path) / P2
+(three) / P3 (two). Cites BACKLOG P1 entries "Autonomous
+conference-submission and talk-delivery pipeline" and
+"Product-support surface" as downstream dependencies.
+
+### Arc 4 — BACKLOG captures (`ae7f858`, `4ed75fe`)
+
+- **P2 — OWASP + Microsoft Patterns & Practices pull-in.**
+  Cross-framework adjacency; OWASP ASVS / LLM Top 10 / SAMM
+  and Microsoft SFI 2025-08/2025-10 + AI agent orchestration
+  patterns.
+- **P3 — self-directed wellness / life-coach AI product.**
+  User-is-agent-of-change; retraction-native consent-first
+  mirror; composes with μένω, the harm-handling operator
+  ladder, and the alignment-observability substrate. Honest-
+  bounds floor: not a medical device.
+- **P3 — Aurora Network (DAO protocol layer).** Distributed
+  sync on a custom firefly-style oscillator over scale-free
+  topology; smooth + differentiable graph makes cartel
+  detection trivial. Composes with x402 (economic agency) +
+  ERC-8004 (reputation) into the self-healing agent DAO
+  underneath the Aurora three-pillar pitch. "Self-healing
+  heartbeat beacon in the night" and "dawnbringers" are the
+  human maintainer's own framings (memory-captured).
+
+### Memory landings (out-of-repo auto-memory)
+
+Three strategic-disclosure memories captured (not in this
+repo, in `~/.claude/projects/.../memory/`):
+
+- Aurora three-pillar pitch (factory quick-win + alignment-
+  research authority + x402/ERC-8004 agent economic layer)
+  with Amara co-development attribution and security-roster
+  hand-off list (Aminata / Nazar / Mateo / Nadia / Ilyana /
+  Dejan).
+- Aurora Network DAO protocol layer + "dawnbringers"
+  collective-identity naming.
+- Michael Best firm (crypto counsel + open VC-pitch
+  invitation) — second external-audience pitch channel
+  distinct from the dual-architect audience.
+
+### Late-Round-37 surfaces that landed post-ledger
+
+The Round 37 ROUND-HISTORY entry was written at arc 4 + ledger;
+the following landed after and compose into the Round 38
+arcs above:
+
+- Alignment observability substrate + Sova persona +
+  `tools/alignment/` scripts + first research proposal
+  (`0c8c96a`) — load-bearing; Arc 2 above builds on this.
+- ALIGNMENT.md contract + governance pointer wiring
+  (`7ce0efa`, `9aabbab`).
+- Fully-retractable CI/CD BACKLOG P0 entry (`53aebcd`) —
+  Arc 1 above is the first artefact landed against this.
+- Home-lab cluster federation + progressive-delivery + DST-
+  in-prod + halting-class solver P2 entries (`28d29a6`).
+- Melt-precedents-to-patent-and-law P3 entries (`685c56b`).
+- ServiceTitan 2026-04-19 watchlist snapshot
+  (`a000501`) — public-source research with MNPI firewall
+  preamble.
+- Product-support surface + autonomous conference-submission
+  pipeline P1 entries (`5bb08a1`).
+- PR #30 lint blocker fixes (`d7a99d7`, `22f2226`).
+
+### Observations for Round 39
+
+- Chain-rule proof work mid-flight
+  (`tools/lean4/Lean4/DbspChainRule.lean` +
+  `docs/research/chain-rule-proof-log.md`) — Lean Mathlib-
+  grade publication target, ranking criterion #1 per
+  `next-steps` skill.
+- AutoDream consolidation pass pending (`#109`).
+- Late in the round the human maintainer flagged ontology-
+  overload with *"too much too fast, cant categories it
+  properly if i keep pushing ontology-overload-risk
+  discipline"*. Round 39 pacing discipline: accept
+  disclosures, land them compactly, do not press for
+  categorisation.
+- Two untracked surfaces deliberately held for Round 39 or
+  later: `src/Core/RecursiveSigned.fs` and
+  `tools/tla/specs/RecursiveSignedSemiNaive.tla` — route
+  through Soraya (formal-verification-expert) for tool
+  coverage before landing.
+
+### BP-WINDOW ledger — Round 38 (prospective)
+
+Per-ADR factory-hygiene exemption applies to this
+ROUND-HISTORY commit.
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `2ff35dc` | Arc 1 — CI retractability inventory | Strengthened (consent-to-publish is now classified per-surface; 13 specific surfaces rather than a generic claim) | Strengthened (names the genuinely-non-retractable class explicitly, which is the honest move; the register is the first primitive) | Strengthened (named-exception register with defender-personas replaces implicit trust) |
+| `d08aec7` | Arc 1 — BACKLOG pointer | Preserved (pointer-only) | Preserved (pointer-only) | Preserved (pointer-only) |
+| `eb3cf44` | Arc 2 — audit_commit.sh self-exercise | Strengthened (substrate actually runs against itself; honest STRAINED reporting on the self-referential false-positive is the calibration signal) | Strengthened (glass-halo stream is retractable per-commit; substrate is exercised not just described) | Strengthened (self-exercise with verdict-clean is measurement, not assertion) |
+| `e39b402` | Arc 3 — pitch-readiness inventory | Preserved (research artefact; no runtime surface changed) | Strengthened (gap inventory IS a retraction surface — any future pitch draft is checked against it) | Strengthened (honest-bounds gaps named explicitly; pitch cannot overclaim past the inventory) |
+| `ae7f858` | Arc 4 — OWASP + MS P&P P2 | Preserved (BACKLOG-only; no runtime surface) | Preserved (BACKLOG-only) | Strengthened (commits to cross-framework adjacency for a defence-in-depth posture) |
+| `4ed75fe` | Arc 4 — wellness + Aurora Network P3 | Strengthened (wellness product's first principle is user-consent; Aurora Network's cartel detection is a consent-for-markets primitive) | Preserved (ideation-tier BACKLOG; retraction at this stage is just entry-deletion) | Preserved (no implementation; honest-bounds "not a medical device" floor set; x402/ERC-8004 gated behind ADR) |
+
+**Net verdict:** ENLARGED. Zero shrinkage commits. Four
+Preserved cells — all on genuinely-pointer-only or ideation-
+tier commits where the claim is honest rather than rote. The
+ledger continues to distinguish commits that move the window
+from commits that do not.
+
+**Calibration check.** Second prospective round; first round
+where a commit (`eb3cf44`) actually *exercises* the alignment
+substrate rather than building or describing it. The STRAINED
+HC-2 at `0c8c96a` was flagged in the run and then adjudicated
+as false-positive-by-design in the Sova notebook — that is
+the anti-rote pattern the ADR calls for. The ledger is doing
+its job.
+
+---
+
 ## Round 37 — BP-WINDOW first prospective application + serializer tier closure + two research skeletons + channel-closure threat class
 
 Anchor: the first **prospectively-scored** round under the
