@@ -31,11 +31,22 @@ Two companion backlogs, different audiences:
 ## Vibe-coding guardrail — what belongs in a row
 
 Per `project_zero_human_code_all_content_agent_authored.md`,
-humans of this factory **never edit files, write markdown,
-commit code, or interact with git themselves**. The primary
-human-facing UX is **conversational** (and, when it ships,
-the factory's **custom UI**). This file is agent-authored
-and agent-maintained; humans read it, they do not edit it.
+humans of this factory **are not required to** edit files,
+write markdown, commit code, or interact with git. The
+primary human-facing UX is **conversational** (and, when it
+ships, the factory's **custom UI**). This file is
+agent-authored and agent-maintained; humans read it, they
+do not edit it.
+
+Humans *may* opt into code contribution via the
+**teaching-track** (see
+`project_teaching_track_for_vibe_coder_contributors.md`) —
+a structured, agent-mediated, mistake-tolerant process
+where the factory teaches a vibe-coder how to contribute
+one lesson at a time. Even on that track, humans do not
+edit `docs/HUMAN-BACKLOG.md` itself; teaching-track
+interactions happen on separate surfaces (branches,
+PRs, chat).
 
 That shapes what a row can legitimately contain:
 

@@ -847,6 +847,60 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Matrix-mode skill-group authoring — onboarding +
+  teaching-track skill-groups (round 44 absorb)** — Aaron
+  2026-04-20: *"we do want to allow developer and
+  non-devlopers who want to check in code to allow it, just
+  nothing we do should require it.  Like imagine having a
+  teaching track for a non-developer vibe coder, what the
+  softwware factory itserlf teaches them to start
+  contributing to the project and become a developer one
+  lession at a time dynamically"* + clarifying *"its like
+  we have onboarding kind of like a thin teaching for those
+  devlopers who already know how to code and just need to
+  learn the specifcs of the software factory and the pojrect
+  that is being built by it and then the teaching track for
+  those who don't know how to code but want to"*. Durable
+  policy captured in `memory/project_teaching_track_for_vibe_coder_contributors.md`
+  and updated `memory/project_zero_human_code_all_content_agent_authored.md`.
+  Two distinct tracks, both opt-in, both agent-mediated,
+  both gated by no-permanent-harm (CI + agent-review +
+  sandbox). **Track A — Onboarding** (thin, existing
+  developers): required reading handshake + first-PR
+  review. Partial prior art in AGENTS.md read-order
+  section. **Track B — Teaching-track** (thick, non-
+  developer vibe-coders): dynamic lesson-by-lesson
+  scaffolding, mistake-tolerant, agent-driven pairing.
+  **Candidate skill-group membership** (Matrix-mode
+  minimum set, shared skills marked *):
+    - `onboarding-expert` — thin-scaffold entry for
+      developers; maps factory+project specifics to the
+      developer's existing mental model.
+    - `onboarding-teacher` — onboards other agents to
+      the onboarding UX shape.
+    - `teaching-track-expert` — canonical use for
+      agent-mediated learning; mistake-response
+      patterns; lesson-sizing heuristics.
+    - `teaching-track-teacher` — onboards other agents
+      to the teaching-track UX.
+    - `teaching-track-auditor` — sweep stalled
+      teaching-track sessions for drifted scope /
+      dropped-on-floor.
+    - `teaching-track-capability` — operational skill
+      agents invoke when entering teaching-track mode.
+    - `human-contribution-reviewer` * — shared across
+      both tracks; reviews human-authored changes as
+      owner-of-codebase not reviewer-on-behalf-of;
+      catches mistakes gently; guards against
+      human-harm including maintainer's own mistakes.
+  Effort: L (two surfaces, two skill groups, new
+  review-as-owner stance). Reviewers: Bodhi (DX) for
+  onboarding shape, Iris (UX) for teaching-track
+  surface, Daya (AX) for agent-side contract.
+  Per `feedback_skill_edits_justification_log_and_tune_up_cadence.md`,
+  all skill creation goes through `skill-creator`
+  workflow.
+
 - [ ] **Matrix-mode skill-group authoring — human-backlog +
   user-ask-conflict-detector skill-groups (round 44 absorb)**
   — Aaron 2026-04-20: *"you should have a conflicting asks
