@@ -185,15 +185,21 @@ a retraction.
 
 ### Requirement: operator lifecycle
 
-Every operator participating in the algebra MUST present a lifecycle of four
-observable phases: *construction*, *step*, *after-step*, and *reset*. The
-construction phase MUST be observable-side-effect-free (no emission, no
-clock-advance). Every step phase MUST correspond to exactly one tick of the
-enclosing clock scope and MUST make its output observable before the step
-returns. The after-step phase MUST run after every operator in the scope has
-completed its step, and MUST NOT write to any operator's output. A reset MUST
-return every operator to the observable state it had at tick 0, including
-delays re-emitting their declared initial values.
+Every operator participating in the algebra MUST present a lifecycle of three
+per-tick observable phases — *construction*, *step*, *after-step* — plus the
+two *scope-boundary* phases *clock-start* and *clock-end* that run when the
+enclosing clock scope opens and closes (see "clock scopes and tick
+monotonicity" below). The construction phase MUST be observable-side-effect-
+free (no emission, no clock-advance). Every step phase MUST correspond to
+exactly one tick of the enclosing clock scope and MUST make its output
+observable before the step returns. The after-step phase MUST run, for every
+*strict* operator in the scope (and only for strict operators), after every
+operator's step for the current tick has completed. The after-step phase
+MUST NOT make new output observable — it is the latch-capture phase used by
+strict operators (e.g., the delay operator) to record their current input as
+the state they will emit on the next tick. There is no operator-level
+"reset" phase; determinism across reconstructions is the equivalent guarantee
+(see scenario below).
 
 #### Scenario: construction is side-effect-free
 
@@ -211,13 +217,26 @@ delays re-emitting their declared initial values.
 - **AND** this visibility MUST hold across threads when the consumer respects
   the documented memory-ordering fence
 
-#### Scenario: reset replays the epoch
+#### Scenario: after-step is selective to strict operators
 
-- **WHEN** a circuit is stepped for `n` ticks, then reset, then stepped again
-  with the same input sequence
-- **THEN** every operator's output at tick `t` in the second pass MUST equal
-  its output at tick `t` in the first pass
-- **AND** delay operators MUST re-emit their declared initial values at tick 0
+- **WHEN** a tick completes in a scope containing both strict and non-strict
+  operators
+- **THEN** the after-step phase MUST be invoked exactly once on every strict
+  operator in the scope
+- **AND** non-strict operators MUST NOT observe an after-step phase
+  (their step phase alone is responsible for publishing their current-tick
+  output)
+
+#### Scenario: determinism under structural equivalence
+
+- **WHEN** two freshly-constructed circuits of the same topological structure
+  are each stepped with the same input sequence from tick 0
+- **THEN** every pair of corresponding operators MUST produce the same output
+  at every tick
+- **AND** delay operators in both circuits MUST emit their declared initial
+  values at tick 0
+- **AND** this equivalence MUST hold without any operator-level "reset"
+  mechanism — reconstruction is the supported route to a replayed epoch
 
 ### Requirement: strict operators break feedback cycles for scheduling
 
@@ -252,6 +271,15 @@ capability-level iteration cap) before the outer tick completes. The output
 observed at an outer scope's tick `T` MUST be the inner scope's output at its
 own final inner tick for that outer tick.
 
+A clock scope MUST also expose two *scope-boundary* lifecycle phases —
+*clock-start* at scope entry and *clock-end* at scope exit — that every
+operator in the scope participates in. On clock-start, each operator MAY
+initialise per-scope state (e.g., the per-outer-tick accumulators of a
+nested-scope integrator). On clock-end, each operator MAY release or commit
+per-scope state. For a nested inner scope, clock-start MUST run before the
+scope's tick 0, and clock-end MUST run after the scope reaches fixpoint (or
+the iteration cap) and before the outer tick is observed as complete.
+
 #### Scenario: nested scope runs to fixpoint per outer tick
 
 - **WHEN** an outer circuit embeds an inner scope with a declared
@@ -260,6 +288,18 @@ own final inner tick for that outer tick.
   fixpoint-detector returns `true`
 - **AND** the outer tick MUST NOT be observed as complete until the inner
   scope has reached fixpoint (or hit the iteration cap)
+
+#### Scenario: scope-boundary phases bracket every nested run
+
+- **WHEN** an outer circuit steps and an inner scope runs to fixpoint
+- **THEN** every operator in the inner scope MUST observe exactly one
+  *clock-start* invocation before the scope's first inner tick
+- **AND** every operator MUST observe exactly one *clock-end* invocation
+  after the scope's final inner tick and before the outer tick is observed
+  as complete
+- **AND** per-scope state established in clock-start MUST be visible for the
+  entirety of the inner scope's ticks and MUST be released (or committed) in
+  clock-end
 
 #### Scenario: sibling scopes are independent
 
