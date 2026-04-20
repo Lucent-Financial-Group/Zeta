@@ -105,7 +105,7 @@ catches worth cataloguing in this log.
 | xref | `docs/research/stainback-conjecture-fix-at-source.md:17` | `Source memory:` points to a user memory file not present under `memory/` |
 | config-drift | `tools/alignment/audit_commit.sh:93` | comment says SD-6 sidecar is "under `memory/persona/`" but `SD6_NAMES_FILE` points to `tools/alignment/sd6_names.txt` |
 | semantic | `tests/Tests.FSharp/Storage/TlvSerializer.Tests.fs:26` | header claims "without reflection-heavy machinery" but implementation uses `System.Text.Json` with default options |
-| shell | `tools/alignment/README.md` | `||` at row starts parses as an extra empty markdown column |
+| shell | `tools/alignment/README.md` | <code>&#124;&#124;</code> at row starts parses as an extra empty markdown column |
 
 ### PR #29 — Round 36 Seed + consent-first primitive + BP-WINDOW
 
@@ -133,7 +133,7 @@ catches worth cataloguing in this log.
 | data-loss | `tools/setup/common/profile-edit.sh:70` | `mktemp + mv` resets file mode to 0600, losing original permissions and ownership |
 | self-ref | `.github/copilot-instructions.md:49` | halt-on-prompt-injection-strings rule self-triggers: any PR touching this file now contains those strings, so review would permanently halt |
 | shell | `tools/setup/macos.sh:101` + `shellenv.sh:105` | shim-path probe misses `/usr/local/...` (Intel macOS) — Intel Macs silently broken |
-| shell | `tools/setup/common/verifiers.sh:20` + `dotnet-tools.sh:14` | `grep -vE '^(#|$)' \| while …` under `set -euo pipefail` fails when manifest is all-comments (grep exits 1) |
+| shell | `tools/setup/common/verifiers.sh:20` + `dotnet-tools.sh:14` | <code>grep -vE '^(#&#124;$)' &#124; while …</code> under `set -euo pipefail` fails when manifest is all-comments (grep exits 1) |
 | xref | `openspec/specs/{operator-algebra,retraction-safe-recursion,durability-modes}/profiles/fsharp.md` | three profiles still say `Dbsp.Core` namespace after the round-33 rename to `Zeta.Core` |
 | config-drift | `.mise.toml:29` vs three docs | pins `java = "26"` while CONTRIBUTING.md + java-expert skill + verifier error message still reference JDK 21 |
 | config-drift | `docs/security/THREAT-MODEL.md:234` | claims "Round-31 SHA-256 pinning via verifiers manifest" but manifest and `common/verifiers.sh` explicitly state TOFU-only |
