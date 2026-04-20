@@ -18,6 +18,59 @@ Newest-first per Zeta convention (`AGENTS.md §2`).
 
 ## Log
 
+### 2026-04-20 — `round-management/SKILL.md` + `holistic-view/SKILL.md` — GOVERNANCE.md §11 citation refresh (debt-intentionality rewrite)
+
+- **Skill:** `.claude/skills/round-management/SKILL.md`,
+  `.claude/skills/holistic-view/SKILL.md`
+- **Round:** 43
+- **Edit type:** BP-NN citation refresh (mechanical) — the
+  cited rule GOVERNANCE.md §11 was rewritten this round
+  from "architect reviews all agent-written code; nobody
+  reviews the architect" to the debt-intentionality
+  invariant per ADR `docs/DECISIONS/2026-04-20-intentional-
+  debt-over-architect-gate.md`. The skills' citations
+  needed to match the new §11 text to avoid contradicting
+  governance.
+- **Line delta:** round-management/SKILL.md — unchanged
+  (one-line citation refresh); holistic-view/SKILL.md —
+  unchanged (two-line citation refresh: frontmatter
+  description + one body line).
+- **Trigger:** ADR landing in round 43 renaming the §11
+  invariant. Grep across `.claude/` surfaced two skill
+  files + one persona file (`.claude/agents/architect.md`;
+  non-skill, not logged here) with stale citations.
+- **Why mechanical, not eval-loop:** Pure BP-NN citation
+  refresh. Triggering behaviour unchanged — the skills
+  still fire on the same conditions. Output shape
+  unchanged — the skills still produce the same kinds
+  of findings. Instruction-following unchanged — the
+  skill body's operational content is preserved
+  verbatim except for the wording of the governance
+  cross-reference, which is the only thing that had to
+  change.
+- **Files touched:**
+  - `.claude/skills/round-management/SKILL.md` — one
+    line edit (§"What this skill does NOT do" bullet
+    3): "Review gate per §11" → "Round-close synthesis
+    per §11 (debt-intentionality invariant)".
+  - `.claude/skills/holistic-view/SKILL.md` — two
+    edits: frontmatter `description` now names
+    "synthesises at round-close per §11 (debt-
+    intentionality invariant)" instead of "owns
+    binding integration per §11"; body §"What
+    wearing this hat does NOT grant" bullet 1 now
+    explains the debt-ledger model instead of "nobody
+    reviews the architect but the architect reviews
+    everyone else".
+- **Hand-off:** Aarav's portability/BP-drift audits on
+  these two skills next invocation should see clean
+  §11 citations. No follow-up work.
+- **Related round-43 artifacts:**
+  - `docs/DECISIONS/2026-04-20-intentional-debt-over-
+    architect-gate.md` — the ADR
+  - `docs/INTENTIONAL-DEBT.md` — the new ledger
+  - GOVERNANCE.md §11 — the rewritten rule itself
+
 ### 2026-04-20 — `skill-tune-up/SKILL.md` — BP-03 self-breach cleanup via content extraction
 
 - **Skill:** `.claude/skills/skill-tune-up/SKILL.md`

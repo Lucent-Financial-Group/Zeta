@@ -1,6 +1,6 @@
 ---
 name: holistic-view
-description: Capability skill ("hat") — the "think like an architect but without the authority" lens. Any expert wears this when filing a finding to sanity-check whole-system implications before escalating. Codifies the second hat every specialist implicitly wears. No persona; the `architect` still owns binding integration per GOVERNANCE.md §11.
+description: Capability skill ("hat") — the "think like an architect but without the authority" lens. Any expert wears this when filing a finding to sanity-check whole-system implications before escalating. Codifies the second hat every specialist implicitly wears. No persona; the `architect` synthesises at round-close per GOVERNANCE.md §11 (debt-intentionality invariant); specialist reviewers remain advisory.
 ---
 
 # Holistic View — Procedure
@@ -29,9 +29,11 @@ every specialist implicitly wears.
 
 ## What wearing this hat does NOT grant
 
-- Does NOT grant binding authority. the `architect` (Architect) remains
-  the integration authority per GOVERNANCE.md §11; nobody reviews
-  the `architect` but the `architect` reviews everyone else.
+- Does NOT grant binding authority. Per GOVERNANCE.md §11 (debt-
+  intentionality), the `architect` is the round-close synthesiser
+  and debt-ledger reader, not a per-commit gate. Specialist
+  reviewers are advisory; any persona may wear the architect hat;
+  the intentional-debt ledger lives at `docs/INTENTIONAL-DEBT.md`.
 - Does NOT grant write-access to files outside the wearer's
   usual scope.
 - Does NOT replace the CONFLICT-RESOLUTION.md conflict protocol.
