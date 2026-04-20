@@ -60,6 +60,13 @@ within each priority tier.
   avoiding duplication). Also closed Viktor's 10
   operator-algebra P1 findings (see sub-item below).
   `openspec validate --all --strict`: 6 / 6 pass.
+  **Viktor adversarial audit verdict: NO** on the
+  "rebuild-from-spec-alone" test — third data-point breaks
+  the two-ship unconditional-rebuild pattern that
+  `operator-algebra` (Round 41) and `lsm-spine-family`
+  (Round 42) established. Pattern was convenient; the specs
+  are not strong enough yet. Findings filed as a Round-44
+  absorb sub-item below.
 
 - [x] ✅ **operator-algebra spec: Viktor P1 findings (Round
   43 absorb)** — **shipped round 43** into
@@ -102,6 +109,69 @@ within each priority tier.
   MUST/SHALL check — was surfaced incidentally and fixed
   inline on the chain-rule requirement. Build Release
   remains 0W/0E.
+
+- [ ] **circuit-recursion + operator-algebra: Viktor P0/P1
+  findings from Round-43-ship adversarial audit (Round 44
+  absorb)** — Viktor's re-audit of commit `ce247a2`
+  delivered a **NO verdict** on the "could I rebuild these
+  modules from these specs alone?" gate. Third data-point
+  breaks the two-ship unconditional-rebuild pattern. **Three
+  P0s**: (1) `src/Core/NestedCircuit.fs:82,94-97` — cap-hit
+  path sets `Converged = false` and *still publishes*
+  `extract()` to the parent stream under the same
+  release/acquire contract as a converged run;
+  `operator-algebra/spec.md:486-488` explicitly forbids
+  this ("rather than silently publishing the state at the
+  cap-th inner tick as if it were the fixpoint"); fix
+  requires `IterateOp.StepAsync` to raise a
+  `Result<_, DbspError>` or throw on cap-hit, and plain
+  `Nest` either removed or routed through the same failure
+  path. (2) `src/Core/Primitive.fs:10-22` (DelayOp) and
+  `src/Core/Recursive.fs:40-85` (FeedbackOp) — no
+  `ClockStart` override; `state` / `initial` survives
+  across outer ticks, breaking DBSP §5-6 inner-scope
+  semantics (`circuit-recursion/spec.md:66-75` observable
+  scenario). Latent today because no test exercises
+  `Delay` / `Integrate` / `Recursive` / `Feedback` inside a
+  `Nest(...)` scope — silently broken the moment a consumer
+  does. (3) **Spec gap** — no requirement states HOW strict
+  operators observe "clean tick-0 semantics" on each outer
+  tick; `operator-algebra/spec.md:420-423` says
+  `ClockStart` **MAY** initialise per-scope state; the
+  observable scenario depends on it being **MUST**. Write
+  a SHALL: strict operators inside a nested scope MUST
+  reset state latched in the prior outer tick to their
+  declared initial value in `ClockStart`. **Six P1s**: (1)
+  `src/Core/Circuit.fs:113-119` `Register` throws after
+  `Build`; `operator-algebra/spec.md:496-519` requires
+  atomic-against-stepping topology mutation — either the
+  spec overstates or the code under-implements. (2) No
+  implementation of async-replacement-waits-for-outstanding-
+  tick-t continuations (`operator-algebra/spec.md:533-544`).
+  (3) `NestedCircuit.fs:22-23,49` — cap default `64` is
+  in-code-documented but absent from
+  `profiles/fsharp.md`; `circuit-recursion/spec.md:138-141`
+  requires public-surface documentation. (4) Two specs
+  disagree on cap-hit semantics: `circuit-recursion` allows
+  passive-observable-handle reading, `operator-algebra`
+  requires active failure — rebuild is non-deterministic.
+  (5) `operator-algebra/spec.md:420-421` "MAY initialise
+  per-scope state" on `ClockStart`/`ClockEnd` is the
+  root-cause wording for the P0-3 spec gap. (6)
+  `profiles/fsharp.md` has no entry for `NestedCircuit` /
+  `IterateOp` / cap-default / `FeedbackOp`-to-requirement
+  mapping. **Three P2s**: complexity belongs in profile
+  not base (`spec.md:615-625`); redundant "including under
+  retractions" clause at `:549-555`; driver-is-linear
+  classification (`circuit-recursion/spec.md:232-265`)
+  lacks observable predicate. **Owner:** Architect drafts
+  closures; Viktor re-audits each. **Effort:** M (spec
+  rewrites + code changes on DelayOp/FeedbackOp/
+  NestedCircuit + profile backfill). **Defers to Round 44.**
+  Full Viktor report captured in session history; verdict
+  string preserved verbatim: *"Third data-point breaks the
+  two-ship pattern. The pattern was convenient. The specs
+  are not strong enough yet."*
 
 - [x] ✅ **Router-coherence ADR `47d92d8` supersedure — harsh-critic
   findings absorb** — **shipped round 41 in-round** via v2 ADR
