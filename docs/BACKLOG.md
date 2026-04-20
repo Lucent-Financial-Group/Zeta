@@ -45,6 +45,41 @@ within each priority tier.
   surface. Effort: L per capability, bounded by the ADR.
   Reviewers: Viktor first, then Ilyana (public-API designer)
   for any capability crossing the published-library surface.
+  **Round 41 sweep status:** `operator-algebra` extension
+  shipped (commits `e51ec1b` + `92d7db2`); Viktor P0 findings
+  (namespace drift, phantom Reset, after-step scope,
+  lifecycle phase undercount) all closed. Viktor's 10 P1
+  findings deferred to Round 42 — see sub-item below.
+
+- [ ] **operator-algebra spec: Viktor P1 findings (Round 42
+  absorb)** — Viktor's adversarial audit of the Round 41
+  cadence ship identified ten P1-tier surface gaps that do not
+  block the disaster-recovery bar at capability-close but
+  leave the spec incomplete relative to what a delete-recovery
+  produces. Scope: (a) async lifecycle — the `IsAsync`
+  property and async-fast-path in `Circuit.Step` are unstated;
+  (b) memory-ordering fence — the `[<VolatileField>]`
+  publication contract is named but not precisely pinned
+  (release-on-write, acquire-on-read); (c) register-lock
+  semantics — topology mutations under a single register-lock
+  are unspecified; (d) `IncrementalDistinct` — the fourth
+  chain-rule helper exposed by `IncrementalExtensions` is
+  absent from the spec; (e) ZSet sort invariant — the
+  `ImmutableArray<ZEntry<'K>>` ascending-sorted-by-key
+  invariant is assumed but not declared; (f) Checked
+  arithmetic — the OverflowException contract on weight
+  addition needs explicit mention in "Z-set as a finitely-
+  supported signed multiset"; (g) bilinear-size overflow —
+  the three-term incremental join can temporarily
+  materialise values that exceed the final-result size
+  bound; (h) convergence-vs-cap — nested scopes that hit the
+  iteration cap without reaching fixpoint need a documented
+  failure mode; (i) `Op.Fixedpoint` predicate — the per-
+  operator fixpoint-detection hook is unspecified; (j)
+  `DelayOp` initial-value override on first-tick-after-
+  reconstruction is ambiguous. Owner: Architect drafts,
+  Viktor audits each closure. Effort: M (spec work +
+  scenarios, no code changes). Defers to Round 42.
 
 - [ ] **Fully-retractable CI/CD** — Aaron 2026-04-19: *"fully
   rtractable ci/ci backlog item"* → *"ci/cd"*. Apply the
