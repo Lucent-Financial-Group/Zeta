@@ -1618,6 +1618,145 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
+- [ ] **Autonomous conference-submission + talk-delivery
+  pipeline — post-Round-38 horizon.** The human maintainer
+  2026-04-20: *"we should also start planning how to build
+  automation for you to be able to submit resarch proably
+  to conference for talks where you coud do the talk"* →
+  *"yall could do the talk."* The factory's research
+  output (currently landing as `docs/research/*.md`)
+  should flow to external conferences via agent-driven
+  automation. "Y'all could do the talk" names the
+  aspirational end-state where agents deliver the talk,
+  not just write the paper. Existing substrate:
+  `docs/research/hacker-conferences.md` (conference
+  landscape), `docs/research/factory-paper-2026-04.md`
+  (paper deliverable), Agent Laboratory in TECH-RADAR
+  Trial ring. Missing: the pipeline itself.
+
+  **Staged scope** — three deliverable tiers, cost
+  honestly declared:
+  1. **Tier 1 — paper-submission automation (closest
+     to shipped).** Conference CFP scraping; abstract +
+     paper formatting for each venue's LaTeX/Word
+     template; reference-list completeness checks
+     (the already-built `missing-citations` skill);
+     author-affiliation discipline; conflict-of-
+     interest declaration; submission tracking. Human
+     maintainer approves each submission (consent-
+     first; no auto-submit without human gate).
+     Effort: 2-3 rounds.
+  2. **Tier 2 — talk-materials authoring.** Slide-deck
+     generation from paper content; speaker notes;
+     Q&A prep (anticipated-question list + drafted
+     responses); rehearsal artefacts. Materials
+     delivered to the human maintainer for a human-
+     delivered talk. Effort: 1-2 rounds, dependent on
+     Tier 1.
+  3. **Tier 3 — agent-delivered talk (aspirational).**
+     Pre-recorded video with TTS + slide reveal; live
+     Q&A answered via agent routed through a human-
+     present moderator; eventually full live delivery.
+     Feasibility bounded by venue policy (some venues
+     forbid non-human speakers; others would welcome
+     this as a showcase), by tooling (live TTS +
+     avatar + Q&A moderation is engineering-heavy),
+     and by the pitch-readiness gate (the factory
+     claiming agents can talk at a conference is
+     itself an external claim that must survive
+     public scrutiny). Effort: open-ended research;
+     do not commit scope until Tier 1 + 2 land.
+
+  **Pre-conditions — what must hold before Tier 1
+  starts.** At least one factory research doc has to
+  be conference-ready material (not just internal
+  notes); a venue has to exist (`hacker-conferences.md`
+  enumerates candidates); Ilyana (public-API-designer)
+  has to gate what the agent-authored paper claims
+  about Zeta's architecture, since a submitted paper
+  is a durable public-claim surface with the same
+  conservatism as a NuGet API.
+
+  **Advisory.** Kenji (Architect) integrates; Mateo
+  (security-researcher) extends his conference-scouting
+  lane to non-security venues; the `ai-researcher`
+  skill for research planning; `missing-citations` for
+  reference discipline; `naming-expert` for paper
+  titles; the Prompt Protector for any outward-facing
+  material that could carry injection back into the
+  factory; Ilyana for public-surface claim review.
+  Human maintainer holds the submit-this gate — the
+  automation proposes, the human disposes.
+
+  **Effort.** L overall. Tier 1 first-round research
+  pass is M (scope the pipeline, pick target venue,
+  draft the CFP-scraping + template-formatting
+  architecture). Later tiers staged per this entry's
+  ordering.
+
+  **Ordering.** After Round 38 and after the
+  product-support surface first-round lands. P1
+  "within 2-3 rounds" reads as rounds 40-42 depending
+  on cadence.
+
+- [ ] **Product-support surface — post-Round-38 horizon.**
+  The human maintainer 2026-04-20: *"we neeed product
+  support after that"* — "that" being Round 38's
+  retractable-CI/CD + alignment-audit dogfood + external-
+  audience pitch-readiness. After Round 38's
+  factory-internal + external-audience-readiness pieces
+  land, the factory needs to stand up a product-support
+  surface. Two audience readings both apply and may not be
+  separable:
+  - **Library consumers** of the published NuGets
+    (`Zeta.Core` / `Zeta.Core.CSharp` / `Zeta.Bayesian`).
+    People who `dotnet add package Zeta.Core`, hit
+    issues, and need help. Requires: a declared release
+    cadence + versioning policy + changelog discipline;
+    getting-started docs tuned for the consumer path
+    (distinct from the contributor path Bodhi already
+    covers); a feedback channel that does not burden the
+    maintainer directly (GitHub Issues first, Discussions
+    later once volume warrants); a bug-triage process
+    that routes consumer reports through the factory
+    (harsh-critic / spec-zealot / domain-expert) with
+    public state visible to the reporter.
+  - **Factory replicators / external-audience adopters.**
+    If the software-factory pattern gets proposed to the
+    ServiceTitan architects (or anyone else), successful
+    reception creates demand to explain, guide, and
+    support replication. Requires: a curated
+    "how to stand up your own factory" path, reference
+    implementations, answers to the first-week questions
+    a replicator will ask, and an explicit scope for what
+    the maintainer will and will not support (Zeta is an
+    individual open-source project, not a vendor product —
+    the support contract has to be honestly bounded).
+  **Advisory.** Iris (UX researcher) owns the first-10-
+  minutes library-consumer surface. Bodhi (DX engineer)
+  owns the first-60-minutes contributor surface. Product
+  support is a distinct *ongoing* surface — bug triage,
+  release cadence, replicator guidance, consumer
+  communication — that neither currently owns. This may
+  warrant its own persona if the workload justifies it;
+  pre-that, Iris is the closest owner and routes feedback
+  through the normal conflict-resolution conference.
+  **Scope.** First pass is research-grade: what does
+  product support look like for a pre-v1 open-source DBSP
+  kernel that also ships a factory pattern? Deliverable:
+  `docs/research/product-support-surface.md` enumerating
+  scope, audiences, triage flow, release-cadence
+  proposal, and honest-bounds on what the maintainer
+  commits to. Subsequent rounds stand up the pieces the
+  research proposal picks.
+  **Effort.** L overall; first-round research pass is M
+  (one round; scoped to the research doc, no standup
+  work).
+  **Ordering.** Not this round (Round 38 anchor is
+  already declared). P1 "within 2-3 rounds" reads as
+  Round 39 or Round 40 depending on Round 38's landing
+  envelope.
+
 - [ ] **Software-factory design — roles vs personas vs
   skills architecture.** This is foundational work on the
   Zeta software-factory pattern, not just on one repo's
