@@ -9,6 +9,395 @@ New rounds are appended at the top.
 
 ---
 
+## Round 42 — First repeated iteration of Round-41 cadences + vibe-coding external legibility
+
+Anchor: Round 41 founded four durable programs — OpenSpec
+backfill (ADR `2026-04-21-openspec-backfill-program`), one-per-
+round grandfather-claims discharge (`2026-04-21-router-
+coherence-v2.md` C-P0-1), router-coherence v2 pipeline
+(`2026-04-21-router-coherence-v2.md`), and per-round ontology-
+home + project-org sweeps (`feedback_ontology_home_check_every_
+round.md`). Round 42 is the first round where every one of those
+cadences *repeats*, which is where a cadence hypothesis earns
+empirical standing. Seven of the ten Round-42 commits execute
+a Round-41 cadence; three are external-legibility work on the
+Zeta-as-vibe-coding-experiment evidence surface (wins logs).
+Infrastructure commit at the head of the round (`fea0d34`)
+unblocks parallel work while PR #31 awaits Aaron's merge click.
+
+### Arc 1 — Speculative round-N+1 branch convention (`fea0d34`)
+
+Round 41's late-arc observation named a real bottleneck: once
+PR-N is CLEAN/MERGEABLE, the branch is logically done but the
+round-N+1 work has no place to land until Aaron clicks merge.
+The round-41-late 28-fire `/next-steps` hold-pattern diagnosed
+the symptom; this commit lands the fix as durable policy in
+`.claude/skills/git-workflow-expert/SKILL.md` (116 lines
+added): fork `round-<N+1>-speculative` from round-N HEAD
+immediately on CLEAN + green CI + clean tree, rebase onto main
+after squash-merge + drop the suffix, explicit fair-game vs
+not-fair-game scope so speculative branches don't destabilise
+artefacts the waiting PR has already promised. First use of the
+convention is this commit itself — landed on `round-42-
+speculative`, forked from `3525631` (round-41 HEAD) while PR
+#31 still waits. Authorised by the post-hoc-notify grant at
+`feedback_fix_factory_when_blocked_post_hoc_notify.md`;
+mechanical additive edit so eval-loop is skipped per Rule 1
+manual-edit justification path.
+
+### Arc 2 — Router-coherence v2 SKILL.md retargets (`e8ed0db`)
+
+Round 41's Arc 10 landed the v2 router-coherence ADR with
+Kenji named as binding dispatcher (Closure C-P1-8); the
+follow-up SKILL.md edits were explicitly deferred to
+`skill-creator` workflow per GOVERNANCE §4. This commit
+discharges that deferral: `complexity-reviewer` (Hiroshi,
+Stage 1 analytic) and `claims-tester` (Daisy, Stage 2
+empirical) both gain mirror-text hand-off sections citing
+v2 as the authoritative pipeline contract. Each skill names
+its trigger surface per C-P1-5 (XML / /// / README / commit
+/ BACKLOG / TECH-RADAR / papers / openspec / research /
+notebooks), three Stage-1 outputs (sound → hand-off, wrong
+→ block-with-escalation-exception, under-specified →
+author-bounce), four Stage-2 triggers (hand-off, grandfather
+inventory, reverse trigger unconditional per C-P0-2,
+escalation-evidence per C-P0-3), three Stage-2 outputs, the
+round +2 auto-promote escalation timebox per C-P1-7, and the
+grandfather set pointer per C-P0-1. Bibliographies
+cross-reference each other plus v2 so either hat reaches the
+partner contract in one click. Invoked via `skill-creator`
+vibe-mode (no evals — mechanical additive edits per Rule 1);
+BP-10 clean across both files.
+
+### Arc 3 — Grandfather discharge #1 — `BetaBernoulli.Observe` (`4f229f0`)
+
+First use of the v2 pipeline on a live grandfather-inventory
+row. Claim #1 at `src/Bayesian/BayesianAggregate.fs:22` —
+Beta-Bernoulli conjugate-update "O(1) per observation"
+docstring — is the lowest-complexity grandfather claim,
+picked deliberately because the inventory promises ~35-round
+tail and the first discharge sets the template. Stage 1
+(Hiroshi, analytic) signs off: worst-case O(1) (two IEEE-754
+fadds + two field writes), amortised O(1), expected O(1),
+Ω(1) lower bound (Pătrașcu-Thorup cell-probe for durable
+write), constant factor ~4 cycles with devirtualisation
+(class is `[<Sealed>]`), zero heap alloc per call. Claim is
+tight — worst-case meets lower bound. Research log at
+`docs/research/claims/bayesian-aggregate-update-o1-2026-04-
+20.md` + inventory row #1 flipped from `pre-ADR/pre-ADR` to
+`sound (2026-04-20, <discharge doc>) / deferred post-merge`.
+Stage 2 (Daisy, empirical) deferred to post-PR-#31-merge
+window per speculative-branch fair-game rules — Stage-2
+execution touches `bench/` + a `src/` docstring tightening
+commit better bundled with other Bayesian-surface work.
+Remaining grandfather claims: 34 of 35; expected-empty round
+at 1-per-round cadence ≈ round 76; Aarav graceful-
+degradation clause (fires if ≥3 consecutive rounds pass
+without discharge) starts counting from next round.
+
+### Arc 4 — `lsm-spine-family` OpenSpec capability (backfill #2) (`8a2a15d`)
+
+Round-42's ADR slot under the OpenSpec backfill program.
+`openspec/specs/lsm-spine-family/spec.md` (412 lines) +
+`profiles/fsharp.md` (213 lines) — 625 lines added —
+backfill the log-structured merge spine family (five variants
++ dispatcher). Eleven requirements cover: delta-stream
+integration, cascade bounded-depth invariant (settle-point
+framing with the 32-level cap scoped to in-memory reference
+variants), spine-equivalence through `Consolidate`,
+retraction-native across tiers, per-tick merge budget with
+caller-pumped `Tick` reporting drained count, identity-keyed
+opaque-handle backing-store (not content-addressable) with
+fail-soft `Release`, disk honesty with crash-consistency
+boundary, async-producer depth-independent on the `Insert`
+hot path, stateless selector with four-case decision matrix,
+observable state machine with `Clear` demoted to optional,
+explicit per-variant thread-safety contract. Profile pins
+module layout, construction signatures, per-variant thread-
+safety, Graham 1969 2× list-scheduling bound for
+`BalancedSpine`, `TryWrite` silent-drop post-dispose disclosed
+as known gap with BACKLOG pointer, stale-read qualifier on
+`SpineAsync` observation methods, `BackedSpine` explicitly not
+bounded by the 32-level cap. Viktor (spec-zealot) adversarial
+audit earned an **unconditional rebuild verdict on the third
+pass** — a rebuilder working from spec+profile alone would
+land at the same variants, constants, and algorithms.
+`openspec validate lsm-spine-family --strict` clean; BP-10
+zero hits; `dotnet build -c Release` clean. Second
+capability under the ADR's one-per-round cadence; the program
+now has two data-points of rhythm execution.
+
+### Arc 5 — TECH-RADAR Trial→Adopt for Residuated + FastCDC (`3976cb3`)
+
+Both rows have been citing closed P0s as open for 25 rounds.
+The round-17 fixes (harsh-critic findings #3, #4, #7, #8 per
+`docs/BACKLOG.md:286-299`) closed the blocking correctness
+bugs but never earned their graduation. `Residuated.fs`: top-2
+cache replaced with `SortedSet` + weight dict; every op
+O(log k), no linear-scan fallback — round-12's "O(1)" claim
+was false under adversarial retract-top workloads, corrected
+"O(log k) genuinely" claim stable 25 rounds
+(`Residuated.fs:39-48` carries the fix-in-code narrative).
+`FastCdc.fs`: persistent `scanCursor` + hash (each byte
+Gear-hashed exactly once across lifetime) closed the O(n²)
+buffer scan; `Buffer.BlockCopy` replaced per-byte
+`ResizeArray.Add` (`FastCdc.fs:68-76`). Paper throughput
+target 1-3 GB/s/core holds. Graduation pattern now matches
+the Bloom Round-40 shape (measured-evidence cite +
+implementation line reference + test-coverage pointer);
+25-round stability window beats any aspirational waiting-list
+— graduation on evidence, not aspiration. Pattern this arc
+surfaces: Adopt-row hygiene needs its own audit lens; "closed
+P0 + waiting-list" is a two-dimensional drift that a single
+BACKLOG sweep misses (the BACKLOG shows the P0 closed, the
+RADAR shows Trial; neither half notices the other is stale).
+Candidate future skill-tune-up note for Aarav.
+
+### Arc 6 — Operator-algebra P1 absorb — 10 findings closed (`1a1802f`)
+
+Viktor's 10 P1 findings filed in Round 41 Arc 4 as a Round-42
+absorb. This commit discharges the absorb at 115 lines
+(spec.md + profile) — no code changes. Spec.md gains seven
+scenarios: (d) `IncrementalDistinct` semantic-identity under
+the incremental wrapper with both D-distinct-I and H
+boundary-crossing forms and their equivalence under
+retractions; (e) ZSet sort invariant as ascending-by-key with
+adjacent-pair comparator predicate tied to equality-
+normalisation; (f) weight-arithmetic overflow as observable
+checked-arithmetic failure with two documented post-failure
+observable states; (g) intermediate term size may exceed
+final-delta size — implementation budgets memory for the sum
+of pre-cancellation term sizes; (h) iteration-cap-without-
+fixpoint as observable failure with scope + cap identification
+and clock-end still runs under a partial-completion contract;
+(i) `Op.Fixedpoint` predicate as scope-level with operators
+forbidden from individually short-circuiting iteration; (j)
+`DelayOp` reconstruction-re-emits-declared-initial-value with
+warm-restart semantics deferred to durability capability. Also
+tightened a P2 deontic collision Viktor flagged: "MUST be
+permitted (but not required)" → "MAY substitute"
+(spec.md:379). Profile gains three findings: (a) `Op<'T>`
+documents `IsAsync` alongside `IsStrict` with `Circuit.Step`
+sync/async fast-path behaviour pinned; (b) `VolatileField`
+release-on-write / acquire-on-read pairing named as the
+memory-ordering fence the base spec's "output observable
+after step returns" refers to; (c) single per-circuit
+register-lock pinned as construction-phase-only, not held on
+the step-hot-path. Viktor adversarial re-audit: complete,
+unconditional rebuild yes, no new P0/P1 surfaced. Round 41's
+"mechanical coupling between capability ship and following
+round's P1 sweep" prediction holds empirically on the second
+round of the program.
+
+### Arc 7 — Ontology-home first slice — Harmonious Division (`db7d45c`)
+
+First increment of the new per-round ontology-home + project-
+org cadence Aaron named this round (memory entry
+`feedback_ontology_home_check_every_round.md`). Small slice
+per round, same cadence shape as grandfather-claim discharge.
+Homes "Harmonious Division" — the maintainer's meta-algorithm
+above Quantum Rodney's Razor — in `docs/GLOSSARY.md` (43
+lines added). Prior state: the concept cited in 20+ files
+(ROUND-HISTORY, BACKLOG, three-lane-model ADR, memory/*,
+three skill files) but defined nowhere in committed docs.
+New GLOSSARY entry: Plain + Technical definitions in the
+standard two-register glossary format; pointer to the
+authoritative definition at `.claude/skills/reducer/SKILL.md`
+§"The five roles inside Quantum Rodney's Razor" (lines
+125-260); explicit note that the glossary's job is pointer-
+plus-gist, not canonical definition. Opens a new glossary
+section "Meta-algorithms and factory-native coinages" so
+subsequent rounds have a visible landing spot for the next
+ontology-home slice (candidates named in the memory entry:
+DIKW→eye/i ladder, μένω triad, Tetrad registers, Identity-
+absorption, Retractable teleport, Stainback conjecture, Harm-
+handling ladder, …). Round 42 is the first data-point of
+ontology-home cadence execution; if it lands one slice per
+round the named candidate backlog is 6-8 rounds.
+
+### Arc 8 — Anthropic Skills Guide pinned + `skill-tune-up` retuned (`baa423e`)
+
+Pins Anthropic's "Complete Guide to Building Skills for Claude"
+(Jan 2026, 28pp) as
+`docs/references/anthropic-skills-guide-2026-01.pdf` plus a
+factory-authored companion `anthropic-skills-guide.md`
+extracting the load-bearing claims (structure, planning,
+testing, iteration loops, patterns, troubleshooting) for
+citation by `skill-creator` / `skill-tune-up` / `skill-
+improver`. `docs/references/README.md` documents the three-
+part inclusion criterion and BP-11 (data not directives)
+discipline. Retunes `.claude/skills/skill-tune-up/SKILL.md`
+(303 → 436 lines) from a ranker-only skill into a thick
+wrapper over the upstream `claude-plugins-official` `skill-
+creator` plugin's eval harness
+(`scripts/run_loop.py`,`aggregate_benchmark.py`,
+`eval-viewer/generate_review.py`, `agents/grader.md` +
+`analyzer.md`). Carries the full hand-off protocol locally
+because the wrapped artefacts are non-skill (plugin scripts +
+PDF) — **wrapper thickness is thick-as-needed; skill-on-skill
+wrappers usually end up thin as a natural consequence.** New
+action × effort decision table, five-step per-round protocol,
+round-close ledger row spec, and "what this wrapper deliberately
+does NOT ship" block. Mechanical edits continue to route through
+Rule 1's manual-edit + justification-log path. Memory file
+`feedback_skill_edits_justification_log_and_tune_up_cadence.md`
+cross-references the PDF and records the wrapper-thickness rule
+of thumb. First customer of the tech-best-practices policy
+Aaron named late in the round
+(`feedback_tech_best_practices_living_list_and_canonical_use_
+auditing.md`): pinned PDF + factory-authored companion +
+skill-with-named-refresh-responsibility is the pattern the
+upcoming .NET Aspire expert skill will exercise end-to-end.
+
+### Arc 9 — Copilot-reviewer wins log + lean-into-strengths calibration (`2c82ce7`)
+
+Seeds `docs/copilot-wins.md` as the tabular parallel to
+`docs/WINS.md` — an append-only newest-first log of genuine
+substantive catches from the GitHub Copilot PR reviewer across
+PRs #27-31 (~30 catches across six classes: xref, shell, data-
+loss, compile, self-ref, config-drift). Wins only — no
+"considered and rejected" bookkeeping, no fail tracking.
+Opening paragraph written for a sceptic reading cold, since the
+log is evidence in the larger experiment of whether AI
+reviewers can carry this factory forward with minimal human-in-
+the-loop time. Adds `.github/copilot-instructions.md` §"Lean
+into what you're demonstrably good at" calibrated against the
+observed wins — the six class bullets name the review classes
+Copilot has pulled ≥5 catches in, and the worth-less-effort
+classes are also named (repeat name-attribution hits within one
+PR, typos inside verbatim-quote blocks). Adds a cross-reference
+banner to `docs/WINS.md` pointing at the Copilot sibling so
+both "was having AI reviewers worth it?" streams are
+discoverable from the same place. Log-maintenance recipe uses
+the correct line-level review-comments endpoint: `gh api
+repos/<owner>/<repo>/pulls/<N>/comments` with a jq filter for
+the `copilot-pull-request-reviewer` bot login (the summary
+`/reviews` endpoint misses the per-line substantive catches
+that populate the log).
+
+### Arc 10 — Zero-human-code invariant named in wins-log openers (`88673f1`)
+
+The wins logs are the sceptic-facing evidence for the Zeta
+experiment. Their Arc-9 openers read in a generic AI-assisted-
+development register, but the actual story is narrower and
+stronger: Aaron has 20+ years of professional coding experience
+and has deliberately written *zero* lines of code, docs, specs,
+skills, workflows, or config on the repo since project start
+(invariant captured at
+`project_zero_human_code_all_content_agent_authored.md`).
+Every bug Copilot flagged was flagged in code no human has ever
+typed into, in a tree no human has ever audited end-to-end —
+that is a materially stronger claim than the same logs make on
+a mixed-authorship repo. Both openers updated to name the
+invariant up front (`docs/WINS.md` + `docs/copilot-wins.md`,
+37 lines added / 10 removed). `docs/WINS.md` broken `(..)`
+link replaced with a concrete provenance pointer ("Verifiable
+via the git log — `Co-Authored-By:` trailers on commits name
+the drafting agent"); the "See also:" block now names the
+Zeta experiment's load-bearing question. `docs/copilot-wins.md`
+removes "alongside human reviewers" as inaccurate and names
+Copilot as "the *only* non-roster audit on this tree". The
+arc closes Round 42's external-legibility theme: the vibe-
+coding pitch earns the word "vibe" honestly only because the
+zero-human-code invariant is maintained; naming it in the
+wins logs is how a sceptic reading cold tests the claim
+against `git log --author=Aaron` (which reflects commit
+authorship, not content authorship — the `Co-Authored-By`
+trailer is the content-authorship source of truth).
+
+### Round 42 observations for Round 43
+
+- **Cadence-repetition hypotheses held.** Seven of ten commits
+  executed Round-41-founded programs (OpenSpec backfill ×1
+  capability, grandfather discharge ×1 claim, router-coherence
+  v2 ×2 skills, Viktor-P1-absorb close ×1, ontology-home ×1
+  slice). One data-point is a coincidence; two is a pattern.
+  The pattern Round 42 establishes: **first-repeat rounds are
+  much cheaper than founding rounds.** Round-41 per-cadence
+  cost was ADR + first-ship + audit + absorb (~200-600
+  lines); Round-42 per-cadence cost was ship + absorb
+  (~100-300 lines). Expected if cadences are well-founded.
+- **Viktor's rebuild-verdict-on-third-pass on `lsm-spine-
+  family`** is the second unconditional pass in two capability
+  ships — slightly stronger signal that the Viktor-gate *as
+  designed* is tight enough to catch real drift without
+  false-failing on first pass. Sample size still 2; not
+  calibrated yet.
+- **External-legibility work pulled late-round budget
+  unexpectedly.** Arcs 9-10 were not on any priority queue
+  entering Round 42; they emerged from Aaron's vibe-coding
+  message carried over from prior session context. Pattern
+  worth naming: *external-audience artefacts drift faster
+  than internal ones because they're not on the /next-steps
+  scan surface.* `docs/WINS.md` and `docs/copilot-wins.md`
+  are now cross-linked + invariant-named — future external-
+  artefact drift should be caught by the Copilot wins-log's
+  own "xref" review class.
+- **Speculative-branch convention earned its first fair-game
+  commit.** Arcs 2-10 all landed on `round-42-speculative`
+  while PR #31 awaited merge. If merge is pending at round-
+  close, this is the full 9-commit validation of the policy
+  without a single conflict with the still-waiting branch.
+  The rebase-onto-main + drop-suffix flip post-merge is the
+  untested half; that runs at PR-#31-merge.
+- **Grandfather discharge is Stage-1-cheap.** Claim #1 took
+  ~300 lines of research doc + inventory row flip, no source
+  touch, Stage-2 deferred. If that shape holds for the
+  bulk of the 34 remaining claims, the ~35-round tail
+  (expected round 76) is realistic; if later claims force
+  Stage-2 execution on the speculative branch (or require
+  Hiroshi escalation under the v2 escalation-evidence
+  exception), the tail lengthens.
+- **Tech-best-practices policy has a first customer.** Arc 8's
+  pattern (pinned PDF + factory-authored companion + skill
+  with named refresh responsibility) is the template the .NET
+  Aspire expert skill is planned to exercise end-to-end. Four
+  open design questions (artefact location, refresh cadence,
+  owner persona, BP-NN promotion timing) await Aaron's steer
+  per the memory entry; Round 43 can proceed on the Aspire
+  expert skill without the questions resolved if the first
+  customer picks workable defaults that later rounds can
+  retroactively apply to sibling expert skills.
+- **Ranker coasting returns.** Two consecutive `/next-steps`
+  invocations produced stable Top-3 output — the intended
+  signal of calibration. The prior round's "ranker coasted for
+  nine re-fires on the same Top-1" failure mode has not yet
+  been patched (no `git status --short` scan in `.claude/
+  skills/next-steps/SKILL.md`); this round's stability was
+  signal-of-correctness not signal-of-drift, but the latent
+  failure mode is still present. Candidate Round-43 skill-
+  tune-up note for Aarav.
+- **5-minute autonomous-loop cron needed explicit correction.**
+  The initial autonomous-loop cron was down-rated to 30 min
+  citing `ScheduleWakeup`'s "idle tick" default (1200-1800s).
+  Aaron corrected to 5-minute cadence specifically because the
+  *primary failure mode is agent-idle-stop* — the cron is a
+  max-idle-recovery-latency bound, not a periodic interrupt
+  (the CronCreate runtime guarantees idle-only firing). Memory
+  entry `feedback_loop_cadence_5min_combats_agent_idle_stop.md`
+  captures the rule + Aaron's verbatim correction so future
+  factory instances don't re-make the mistake. Signal: project-
+  specific scheduling hygiene does not always match generic
+  docstring defaults; the docstring is written for a different
+  failure model.
+
+### BP-WINDOW ledger — Round 42 (prospective)
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `fea0d34` | Arc 1 — speculative round-N+1 branch convention | Strengthened (the fix for Round-41's hold-pattern bottleneck lands as durable SKILL.md policy rather than a repeat-negotiation every round; fair-game scope declared explicitly so the convention does not silently expand) | Strengthened (convention is a 116-line SKILL.md addition revertable in one `git revert`; first use of the convention is this commit itself, so the rollback path is tested before the convention lands) | Preserved (single SKILL.md addition; no source / spec / ADR touched; skill-creator vibe-mode invocation per GOVERNANCE §4) |
+| `e8ed0db` | Arc 2 — router-coherence v2 SKILL.md retargets | Strengthened (Round 41's v2-ADR follow-up deferral discharged via skill-creator per GOVERNANCE §4; Kenji named as binding dispatcher in both skills per Closure C-P1-8 so advisory + advisory composes to mandatory pipeline) | Strengthened (both skills cite v2 as the authoritative pipeline contract with v1 explicitly superseded; the v1→v2 supersedure chain through the Round-41 header remains load-bearing and resolvable) | Preserved (two SKILL.md additions only; no source / spec / ADR body touched; bibliographies cross-reference each other plus v2) |
+| `4f229f0` | Arc 3 — grandfather discharge #1 (Stage 1 only) | Strengthened (first live use of v2 pipeline; Stage-1 analytic sign-off lands as research doc + inventory row flip; Stage-2 deferral declared honestly rather than carried silently as "complete") | Strengthened (inventory row flips `pre-ADR/pre-ADR` → `sound (…) / deferred post-merge` — the flip IS the retraction surface; re-flip on Stage-2 completion is a one-row edit; Aarav graceful-degradation clause starts counting from next round so under-execution surfaces automatically) | Preserved (research doc addition + inventory row flip only; no source docstring edited, no `bench/` touch, no SKILL.md touched; BetaBernoulli.fs:22 docstring remains verbatim pending Stage-2 tightening) |
+| `8a2a15d` | Arc 4 — `lsm-spine-family` OpenSpec capability | Strengthened (Round-42 ADR slot filled under the one-per-round backfill cadence; disaster-recovery contract now covered for the five spine variants + dispatcher; Viktor unconditional-rebuild verdict on third pass means a rebuilder landing at the same variants from spec+profile alone is a tested claim) | Strengthened (625 lines across spec.md + profile.md — each requirement retractable under the capability without consumer break; Viktor audit gate is the retraction surface; `openspec validate --strict` passes so spec is machine-checkable) | Preserved (spec + profile only; no F# source changed; `dotnet build -c Release` clean means shipped code matches the spec's observable contract) |
+| `3976cb3` | Arc 5 — TECH-RADAR Trial→Adopt for Residuated + FastCDC | Strengthened (25-round-stale Trial rows graduate on 25-round stability evidence, not on aspiration; measurement-evidence-first graduation pattern now used on two separate rows beyond Bloom Round-40) | Strengthened (graduation is reversible — rows can flip Adopt→Trial with a single-line edit if a regression surfaces; the `docs/BACKLOG.md:286-299` historical record of the closed P0s remains intact so the graduation's evidence base is auditable) | Preserved (4-line doc edit only; no source / spec / test touched; graduation follows code fix by 25 rounds so shipped behaviour is already Adopt-grade) |
+| `1a1802f` | Arc 6 — operator-algebra P1 absorb (10 findings) | Strengthened (Round-41's round-42-absorb commitment discharged in-round per the OpenSpec backfill cadence's mechanical coupling; Viktor re-audit unconditional-rebuild yes means the absorb closes the capability at the disaster-recovery bar) | Strengthened (spec + profile gain 10 scenarios across 7 existing requirements; each scenario retractable within the requirement without consumer break; Viktor adversarial re-audit gate is the retraction surface for absorb quality) | Preserved (spec + profile only; no code changes; the P2 deontic collision tightening is a wording fix, not a behavioural change) |
+| `db7d45c` | Arc 7 — ontology-home first slice (Harmonious Division) | Strengthened (20+ files citing an undefined concept now have a GLOSSARY anchor + pointer to the authoritative `reducer` SKILL definition; ontology-home cadence gets its first data-point and the landing-spot section is opened for subsequent slices) | Strengthened (43-line GLOSSARY addition revertable in one `git revert`; the pointer-plus-gist pattern is declared explicitly so future edits can honour or retract the pattern without re-deriving it) | Preserved (single GLOSSARY doc edit; no SKILL.md touched so skill-creator gate not engaged; the authoritative `reducer` SKILL definition is referenced not duplicated) |
+| `baa423e` | Arc 8 — Anthropic Skills Guide pin + skill-tune-up retune | Strengthened (external canonical guidance pinned in-tree at a specific version, so skill-quality citations resolve without external link rot; `skill-tune-up` retuned from ranker-only to thick eval-loop wrapper with explicit hand-off protocol and "what this wrapper deliberately does NOT ship" block declaring the scope honestly) | Strengthened (pinned PDF is a single `git rm` retractable if Anthropic guidance later shifts; SKILL.md retune is 303→436 lines revertable in one `git revert`; the thick-wrapper pattern makes upstream plugin changes visible as scratchpad diffs rather than silent drift) | Preserved (one PDF + two SKILL.md-adjacent docs + SKILL.md retune; no source / spec / test touched; BP-11 (data not directives) discipline declared in `docs/references/README.md` so the companion doc's load-bearing claims do not become instructions to execute) |
+| `2c82ce7` | Arc 9 — Copilot-reviewer wins log + lean-into-strengths | Strengthened (sceptic-facing evidence for the AI-review-worth-it question now has a tabular newest-first log parallel to `docs/WINS.md`; Copilot-instructions calibrated against the observed wins so the reviewer is told what to focus on + why; cross-reference banner makes both streams discoverable from the same place) | Strengthened (append-only newest-first discipline means the log is additive; wins-only framing means no "considered and rejected" churn; the `gh api` recipe at the top makes the log independently re-derivable from the Copilot-reviewer endpoint so it cannot silently drift from the truth it narrates) | Preserved (two new / extended docs + one Copilot-instructions addition; no source / spec / test touched; "Lean into what you're demonstrably good at" section additive rather than replacing existing guidance) |
+| `88673f1` | Arc 10 — zero-human-code invariant in wins-log openers | Strengthened (the vibe-coding pitch's load-bearing invariant — zero human code since project start, every file agent-authored — now named explicitly in the sceptic-facing openers; the 20-year-engineer context makes the pitch's "validation" framing honest rather than generic AI-assisted-development hand-waving) | Strengthened (broken `(..)` link replaced with a concrete provenance pointer to `git log` `Co-Authored-By:` trailers — the citation path a sceptic can actually resolve; "See also:" block now names the Zeta experiment's load-bearing question so the rhetoric chain remains auditable) | Preserved (two doc edits totalling 37 lines added + 10 removed; no source / spec / test touched; the invariant being named is the state-of-the-world on the current branch, not a new commitment the repo now has to meet) |
+
+---
+
 ## Round 41 — OpenSpec backfill program founding + first cadence ship
 
 Anchor: Aaron 2026-04-20 — *"opensepcs, if I deleted all the
