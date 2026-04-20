@@ -27,7 +27,7 @@ Status column conventions: **Stage-1** = analytic review by Hiroshi (`complexity
 
 | # | File | Line | Claim (verbatim, trimmed) | Surface kind | Stage-1 | Stage-2 |
 |---|---|---|---|---|---|---|
-| 1 | `src/Bayesian/BayesianAggregate.fs` | 22 | Beta conjugate update "O(1) per observation" | docstring | pre-ADR | pre-ADR |
+| 1 | `src/Bayesian/BayesianAggregate.fs` | 22 | Beta conjugate update "O(1) per observation" | docstring | sound (2026-04-20, `docs/research/claims/bayesian-aggregate-update-o1-2026-04-20.md`) | deferred post-merge |
 | 2 | `src/Core/SpineAsync.fs` | 14 | Steady-state throughput matches sync spine "same O(log n) amortised" | docstring | pre-ADR | pre-ADR |
 | 3 | `src/Core/Merkle.fs` | 13 | "O(log N) path to the root" | docstring | pre-ADR | pre-ADR |
 | 4 | `src/Core/DeltaCrdt.fs` | 14 | Delta ship-size "O(1) bytes instead of O(\|state\|)" | docstring | pre-ADR | pre-ADR |
