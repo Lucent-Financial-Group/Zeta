@@ -9,6 +9,126 @@ New rounds are appended at the top.
 
 ---
 
+## Round 41 — OpenSpec backfill program founding + first cadence ship
+
+Anchor: Aaron 2026-04-20 — *"opensepcs, if I deleted all the
+code right now how easy to recreate based on the openspecs"*.
+The question exposed a gap between the disaster-recovery
+contract `openspec/README.md` commits to (rebuild current
+behaviour from specs alone) and the measured coverage (4
+capabilities / 783 lines of spec.md vs 66 top-level F# modules
+/ 10,839 lines under `src/Core/` — **~6% by capability count,
+~7% by line ratio**). Round 41 founds the backfill program,
+ships the first capability extension, and closes a Viktor
+(spec-zealot) adversarial audit on the ship.
+
+### Arc 1 — Coverage audit + backfill-program ADR (`d435126`)
+
+Inventory lands at `docs/research/openspec-coverage-audit-
+2026-04-21.md` with four-band delete-recovery blast-radius
+classification: **Band 1 MUST BACKFILL** (8 modules / 1,629
+lines — ZSet, Circuit, NestedCircuit, Spine family × 5, plus
+`BloomFilter.fs` elevated for Adopt-row backwards-compat
+coupling), **Band 2 HIGH** (12 modules / 2,008 lines —
+probabilistic sketches, CRDT, serialization, SIMD), **Band 3
+MEDIUM** (45 modules / 6,585 lines — infrastructure), **Band 4
+deliberately uncovered** (`AssemblyInfo.fs`). ADR at
+`docs/DECISIONS/2026-04-21-openspec-backfill-program.md`
+declares one-capability-per-round baseline with three refinements:
+two capabilities allowed on small rounds; paper-grade rounds
+earn half-credit (max 1 per 3 rounds); Adopt-row TECH-RADAR
+rows without spec are implicit backwards-compat hazards and
+force priority escalation (Round 44 → `BloomFilter.fs`). Per-
+capability success signal: Viktor adversarial audit answers
+"could I rebuild this module from this spec alone?" with a
+clear **yes**; **no** re-opens the capability and counts as
+half-credit.
+
+### Arc 2 — `operator-algebra` extension (first cadence ship) (`e51ec1b`)
+
+The Round-41 ADR slot: extend the existing `operator-algebra`
+capability (184 lines) with Band 1 modules that the delete-
+recovery bar demands. Added five requirements: (1) operator
+lifecycle phases; (2) strict operators break feedback cycles
+for scheduling; (3) clock scopes and tick monotonicity; (4)
+`Incrementalize(Q)` wrapper preserves the chain-rule identity
+`Q^Δ = D ∘ Q ∘ I`; (5) representation invariants of the
+reference `ZSet[K]` (O(n+m) group operations, zero-alloc
+iteration, no zero-weight entries exposed). Spec now at
+324 lines. F# profile at `openspec/specs/operator-algebra/
+profiles/fsharp.md` pins the language-specific surface.
+
+### Arc 3 — Viktor P0 close (`92d7db2`)
+
+Viktor's adversarial audit of Arc 2 found four P0-tier
+drift-from-code defects that would ship the wrong system
+under delete-recovery:
+
+1. **Namespace drift.** `profiles/fsharp.md` asserted
+   `Dbsp.Core` throughout; code uses `Zeta.Core`. Fixed via
+   one `replace_all` Edit.
+2. **Phantom Reset method.** The lifecycle requirement named
+   a `reset` phase that does not exist on `Op`. Replaced
+   "reset replays the epoch" scenario with a determinism-
+   under-structural-equivalence property: two freshly-built
+   circuits with identical topology and identical input
+   sequences produce identical outputs at every tick.
+3. **After-step scope.** Spec said after-step runs after
+   every operator in the scope; `Circuit.fs:205-208` only
+   iterates the `strictN` array (strict operators). Fixed
+   wording + added selective-to-strict-operators scenario.
+4. **Lifecycle phase undercount.** Spec claimed four phases
+   (construction / step / after-step / reset); code has
+   five (construction / step / after-step / clock-start /
+   clock-end). Restructured to three per-tick + two scope-
+   boundary phases, extended clock-scopes requirement with
+   the scope-boundary lifecycle contract.
+
+### Arc 4 — Viktor P1 filed as Round-42 absorb (`56f34b5`)
+
+Viktor's 10 P1-tier surface gaps filed as a dedicated P0
+sub-item under the parent backfill entry so they travel with
+the OpenSpec backfill program rather than getting lost:
+async lifecycle, memory-ordering fence, register-lock
+semantics, `IncrementalDistinct` surface, ZSet sort invariant,
+Checked arithmetic, bilinear-size overflow, convergence-vs-
+cap, `Op.Fixedpoint` predicate, `DelayOp` reconstruction-
+first-tick. Round 42 inherits two P0s: the new `lsm-spine-
+family` capability (ADR's Round-42 slot) plus this P1 sweep
+on the Round-41 capability.
+
+### Round 41 observations for Round 42
+
+- The **audit → ADR → ship → audit → close-P0 → file-P1**
+  sequence is the full loop the OpenSpec backfill program
+  calls for, executed end-to-end on a single capability.
+  The per-round load is substantial (~200 lines spec.md +
+  Viktor review + P0 fix commit + P1 filing) but bounded.
+- Filing Viktor P1s as a sub-item under the parent backfill
+  entry (not a standalone line) creates a mechanical
+  coupling: every OpenSpec capability naturally carries a
+  P1-sweep sibling through the following round. The parent
+  entry is growing but accurately models the work.
+- The fourth `IncrementalExtensions` helper
+  (`IncrementalDistinct`) being absent from the extension
+  pass is a cautionary note on spec-write quality: when a
+  spec author names three items from a list of four, that
+  is a spec-drift signal worth auto-linting for.
+- `BloomFilter.fs` Adopt-row priority escalation (Round 44)
+  holds — the program honours the Adopt-row coupling rule
+  it was founded on.
+
+### BP-WINDOW ledger — Round 41 (prospective)
+
+| Commit | Arc | Consent | Retractability | No-permanent-harm |
+| --- | --- | --- | --- | --- |
+| `d435126` | Arc 1 — coverage audit + ADR | Strengthened (banding + per-round cadence declared honestly; no silent drift) | Strengthened (each capability carries Viktor audit gate; failed audits re-open the capability) | Preserved (inventory + ADR only; no shipped primitive changed) |
+| `e51ec1b` | Arc 2 — operator-algebra extension | Strengthened (disaster-recovery contract now covered for lifecycle, scheduling, scopes, chain-rule wrapper, ZSet representation) | Strengthened (spec is retractable — every requirement can be rewritten under the same capability without consumer break; Viktor audit is the retraction surface) | Preserved (spec extension only; no code behavioural change) |
+| `92d7db2` | Arc 3 — Viktor P0 close | Strengthened (four drift defects closed honestly rather than papered over) | Strengthened (the fix *is* the retraction — the spec retracted its claim of a phantom Reset, retracted its wrong namespace, retracted its phase undercount) | Preserved (spec fixes only) |
+| `56f34b5` | Arc 4 — Viktor P1 filed as Round-42 absorb | Strengthened (ten remaining gaps filed adversarially rather than discarded; round-42 budget pre-committed honestly) | Strengthened (gaps are a declared retractable surface — Round 42 closes them or the capability stays half-credit) | Preserved (BACKLOG update only) |
+
+---
+
 ## Round 40 — Blocked Bloom Adopt graduation (bucket/probe correlation fix)
 
 Anchor: a single-primitive correctness round. The round
