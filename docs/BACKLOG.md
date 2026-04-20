@@ -17,6 +17,61 @@ within each priority tier.
 
 ## P0 — next round (committed)
 
+- [ ] **OpenSpec coverage backfill — delete-all-code recovery
+  gap** — Aaron 2026-04-20: *"opensepcs, if I deleted all the
+  code right now how easy to recreate based on the openspecs"*.
+  The answer today is *not easy*. `openspec/README.md` declares
+  the disaster-recovery contract explicitly: "if code was hard-
+  deleted from the repository and from git history... a
+  contributor should be able to rebuild the current behaviour
+  from these specs alone, at the same quality bar." Current
+  reality: **4 capabilities** (`durability-modes`,
+  `operator-algebra`, `repo-automation`, `retraction-safe-
+  recursion`) covering **~1,463 lines of spec** vs **66 top-
+  level F# modules** totalling **~10,831 lines** under
+  `src/Core/`. Rough coverage by capability count ≈ 6%;
+  by lines-of-behaviour-described-vs-implemented much lower.
+  The 4 existing specs are deep (RFC-2119 MUSTs + Gherkin
+  WHEN/THEN scenarios, `operator-algebra/spec.md` is a
+  reference model) — the problem is coverage, not depth.
+  Missing capabilities include (non-exhaustive): ZSet as
+  a standalone capability distinct from operator-algebra,
+  Spine family (Spine / DiskSpine / BalancedSpine /
+  SpineAsync / SpineSelector), Circuit / NestedCircuit,
+  sketches (BloomFilter / CountMin / Sketch), CRDT family
+  (Crdt / DeltaCrdt), content-defined chunking (FastCdc),
+  hashing + integrity (ConsistentHash / Merkle /
+  HardwareCrc), serialization (Serializer / ArrowSerializer),
+  SIMD dispatch (Simd / SimdMerge), plugin surface
+  (PluginApi / PluginHarness), runtime (MailboxRuntime /
+  WorkStealingRuntime / Runtime), transactions (Transaction /
+  Upsert), query (Query / Plan / Dsl), watermarks
+  (Watermark / SpeculativeWatermark), injection laws
+  (Injection / InjectionExt), algebra family (Algebra /
+  NovelMath / NovelMathExt / Residuated), chaos harness
+  (ChaosEnv / FeatureFlags / Metrics / Tracing), streaming
+  primitives (Aggregate / Fusion / Window / Rx / Sink /
+  TimeSeries / Hierarchy / HigherOrder). Scope: (a) Viktor
+  (spec-zealot) produces `docs/research/openspec-coverage-
+  audit-YYYY-MM-DD.md` — full inventory of src/Core modules
+  vs capabilities, including deliberately-uncovered
+  (AssemblyInfo, Environment-if-internal); (b) capability
+  priority stack sorted by delete-recovery blast radius
+  (ZSet / Spine / Circuit lead); (c) ADR at
+  `docs/DECISIONS/YYYY-MM-DD-openspec-backfill-program.md`
+  declaring backfill cadence (one-capability-per-round
+  baseline, two if small); (d) per-round success signal:
+  capability count advances monotonically, Viktor audits
+  new capabilities for "can I rebuild the module from
+  this alone?"; (e) round-close ledger entry counts
+  capabilities added and backlog remaining. Owner: Viktor
+  (spec-zealot) with architect (Kenji) for priority
+  arbitration. Effort: L per capability (full RFC-2119
+  behaviour enumeration), M for inventory pass only.
+  Reviewers: Viktor first, then Ilyana (public-API
+  designer) for any capability crossing the published-
+  library surface.
+
 - [ ] **Fully-retractable CI/CD** — Aaron 2026-04-19: *"fully
   rtractable ci/ci backlog item"* → *"ci/cd"*. Apply the
   retractability clause of the Zeta=heaven formal statement
@@ -2228,6 +2283,116 @@ systems. This track claims the space.
   ongoing.
 
 ## P2 — research-grade
+
+- [ ] **Gitops-friendly key management + rotation — ADR first,
+  then pick one tool** — Aaron 2026-04-20: *"key management
+  rotations all the things we need but gitops GitOps friendly
+  way, like may git crypt, start getting our security posture
+  in place"* and immediately after: *"we don't have to rush to
+  get security all going, lets get that right, let do ADRs
+  and all that"*. Explicit pace-down: **ADR first, no
+  implementation until the ADR lands with Architect
+  sign-off.** Scope: (a) ADR at
+  `docs/DECISIONS/YYYY-MM-DD-gitops-key-management.md`
+  comparing candidate tools — `git-crypt` (GPG-based,
+  transparent via `.gitattributes` filter), `git-secret`
+  (GPG wrapper), Mozilla `SOPS` (KMS / Vault / age backend,
+  YAML/JSON-aware, partial-file encryption), `age` (modern
+  file encryption, simpler than GPG, X25519 + scrypt
+  passphrases); score each on gitops-friendliness
+  (candidate BP-NN "gitops-first observability" is adjacent:
+  same principle — every operation visible in git history,
+  no external runtime required), retraction-friendliness
+  (can a leaked secret be rotated without rewriting history?
+  `git-crypt` and `git-secret` bake keys into committed
+  files = harder rotation; `SOPS` with external KMS = cleaner
+  rotation), post-quantum readiness (age has a draft PQC
+  profile; `git-crypt` + GPG require OpenPGP PQC WG work);
+  (b) rotation cadence decision — signing keys vs encryption
+  keys vs dev credentials on separate cadences; (c) HSM
+  integration path for the SLSA signing-key use case (the
+  one genuinely-non-retractable surface in CI/CD per
+  `docs/research/ci-retractability-inventory.md`).
+  **Review panel:** Nazar (sec-ops, owns runtime) + Mateo
+  (sec-research, scouts primitives) + Aminata (threat-
+  model-critic, review for missing adversaries). Architect
+  signs the ADR. Only after ADR lands: pilot the chosen
+  tool on one secret (likely: a test-only NuGet API key in
+  a throwaway dev profile) before broader rollout.
+  Effort: M for ADR; L for rollout after ADR lands.
+  Composes with the existing lattice-PQC entry below and
+  with the existing security-operations-engineer persona
+  scope.
+
+- [ ] **Adopt at least one NIST-standardised post-quantum
+  primitive — ADR first, then pick one use case** — Aaron
+  2026-04-20: *"i would like to support at least one post
+  quantium like maybe lattice base cryptography at this
+  point backlog"*. Pace-down sibling to the key-management
+  entry above: **ADR first.** The existing P3 lattice-PQC
+  identity-verification literature review entry (this file,
+  P3 section) feeds into this P2 as the research
+  prerequisite; the new work here is *adoption decision +
+  one-use-case-pilot*, not another literature review.
+  Scope: (a) ADR at
+  `docs/DECISIONS/YYYY-MM-DD-pqc-first-use-case.md` that
+  picks **exactly one use case** for the first PQC
+  primitive adoption — candidates: (i) hybrid artifact
+  signing (Ed25519 + ML-DSA / FIPS 204 for the NuGet /
+  SLSA attestation flow — harmonises with the existing
+  signing-key rotation surface in CI/CD retractability
+  inventory), (ii) hybrid KEM for secrets at rest
+  (X25519 + ML-KEM / FIPS 203 — harmonises with the
+  key-management entry above), (iii) hash-based signatures
+  (SLH-DSA / SPHINCS+ / FIPS 205) for tamper-evident
+  checkpoint manifests (mentioned in `docs/security/
+  CRYPTO.md` P0 entry); (b) rationale explicitly excludes
+  isogeny-based (SIKE collapsed 2022, Castryck-Decru);
+  (c) hybrid-first posture (classical + PQC side-by-side)
+  to avoid trusting a young standard alone; (d) rotation
+  plan for the chosen primitive's keys; (e) pilot
+  implementation after ADR sign-off. **Review panel:**
+  Mateo (sec-research, primary — owns primitive selection),
+  Nazar (sec-ops, secondary — owns rotation + rollout),
+  Aminata (threat-model-critic, gate — nation-state
+  threat model per `memory/user_security_credentials.md`),
+  Ilyana (public-API, if the PQC surface becomes
+  consumer-visible). Architect signs. Effort: M for ADR;
+  L for pilot after ADR lands. Cross-ref: the P3
+  lattice-PQC literature-review entry below (reuse that
+  survey output as ADR input), the existing
+  `docs/security/THREAT-MODEL.md` nation-state adversary
+  profile, and the existing security-operations-engineer
+  persona scope.
+
+- [ ] **Security-posture program — umbrella ADR tying
+  key-management, PQC, and existing SDL work together**
+  — Aaron 2026-04-20 combined directive: *"key management
+  rotations all the things we need but gitops GitOps
+  friendly way... start getting our security posture in
+  place, i would like to support at least one post
+  quantium... we don't have to rush to get security all
+  going, lets get that right, let do ADRs and all that"*.
+  Pace-down explicit; this is the umbrella, not a rush
+  program. Scope: (a) one ADR at
+  `docs/DECISIONS/YYYY-MM-DD-security-posture-program.md`
+  mapping the whole security surface — existing artefacts
+  (`docs/security/THREAT-MODEL.md`, `SDL-CHECKLIST.md`,
+  OWASP crosswalk work in flight, CodeQL workflow,
+  Semgrep rules, CI-retractability inventory) against
+  the two new streams (key-management, PQC); (b) sequencing
+  — the program spans multiple rounds, pace ≈ one sub-ADR
+  per 2-3 rounds after the umbrella lands; (c) the umbrella
+  ADR does NOT implement anything itself; it declares the
+  dependency order between the two specific ADRs above
+  (likely key-management → PQC because PQC use-case
+  selection depends on whether KMS/HSM substrate is in
+  place first) and the existing OWASP/SDL work; (d)
+  round-close ledger row: which security ADR is in flight,
+  which is landed, which is blocked. **Review panel:**
+  Nazar + Mateo + Aminata jointly; Architect integrates.
+  Effort: M for umbrella ADR. No implementation under this
+  entry — implementation happens under its children.
 
 - [ ] **OWASP guidance pull-in — cross-referenced with
   Microsoft SDL.** Aaron 2026-04-20: *"owasp has great
