@@ -206,6 +206,8 @@ resolve_citation_target() {
   esac
 
   # Reject ~ (home-dir) references — those point outside the repo.
+  # shellcheck disable=SC2088 # matching the literal tilde character, not
+  # expanding it — this is a reject-filter, not a path resolution.
   case "$target" in
     "~"|"~/"*) return 0 ;;
   esac

@@ -87,11 +87,11 @@ row 42 flips Trial → Adopt; the BACKLOG P0 is removed
 
 Anchor: the round that picks up the measurement-spine
 substrate seeded by the DORA 2025 paired reports (memory-
-indexed, not in-repo) and moves it from concept to BACKLOG
-+ research-skeleton + first prototype. Five
-ADR-first research captures, one Phase-0 prototype
-(`citations.sh`), and the P1-bundle close of the Round-38
-pitch-readiness gap inventory.
+indexed, not in-repo) and moves it from concept to BACKLOG,
+research-skeleton, and first prototype. Five ADR-first
+research captures, one Phase-0 prototype (`citations.sh`),
+and the P1-bundle close of the Round-38 pitch-readiness
+gap inventory.
 
 ### Arc 1 — Round opener (`b347420`)
 
