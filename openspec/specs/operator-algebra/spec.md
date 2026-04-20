@@ -37,6 +37,20 @@ with a zero weight in any exposed representation.
 - **THEN** they MUST compare equal
 - **AND** their entry sequences MUST be identical after normalisation
 
+#### Scenario: weight arithmetic overflow is observable
+
+- **WHEN** a sequence of group operations on a Z-set would drive any single
+  key's accumulated weight outside the signed 64-bit range
+- **THEN** the operation producing the overflow MUST surface a checked-
+  arithmetic failure to its caller rather than silently wrapping around
+  modulo 2^64
+- **AND** the failure MUST NOT corrupt unrelated keys' weights in the same
+  operation — the Z-set observable after the failure MUST be either
+  (a) unchanged from before the failing operation or (b) reflect every
+  non-overflowing update with the overflowing key's weight left at its
+  pre-operation value; implementations MUST pick one of these two
+  behaviours and document it at the profile layer
+
 ### Requirement: Z-set operations form an abelian group under addition
 
 Addition, negation, and subtraction on Z-sets MUST satisfy the abelian-group
@@ -72,6 +86,19 @@ otherwise contain a cycle.
 - **WHEN** the circuit is stepped again with input `x1`
 - **THEN** the delay's output MUST equal `x0`
 - **AND** stepping again with `x2` MUST emit `x1`
+
+#### Scenario: reconstruction re-emits the declared initial value
+
+- **WHEN** a circuit containing a delay is torn down at tick `N ≥ 1` and a
+  fresh circuit of the same topology is constructed
+- **THEN** the fresh delay's output at its own first tick MUST equal the
+  *declared* initial value, NOT the value the prior-lifetime delay would
+  have emitted at tick `N+1`
+- **AND** this MUST hold regardless of how many ticks the prior circuit
+  ran — reconstruction is a clean-state observable, not a warm-restart,
+  and any warm-restart semantics MUST be implemented at a higher
+  capability (e.g., the durability capability) that re-feeds the prior
+  tick's input before the first post-reconstruction step
 
 ### Requirement: integration accumulates by the group operation
 
@@ -142,6 +169,21 @@ relations.
 - **WHEN** either side of an incremental join carries the empty Z-set at tick `t`
   with no prior non-empty history
 - **THEN** the incremental-join output at tick `t` MUST be empty
+
+#### Scenario: intermediate term size may exceed final-delta size
+
+- **WHEN** a three-term incremental join is computed on deltas that trigger
+  cancellation between the three terms (e.g., `Δa ⋈ Δb` produces
+  `(k, +w)` and `Δa ⋈ z^-1(I(b))` produces `(k, -w)` for the same `k`)
+- **THEN** the implementation MUST budget working memory for the sum of the
+  three *pre-cancellation* term sizes rather than the size of the final
+  output delta
+- **AND** the final observable output delta MUST equal the algebraic sum
+  of the three terms (per "incremental join reproduces batch join" above),
+  regardless of the intermediate materialisation strategy
+- **AND** implementations MAY stream or fuse the three terms so long as the
+  final observable output is preserved, but MUST NOT silently truncate
+  intermediate entries based on the final-delta size
 
 ### Requirement: `H` is the boundary-crossing increment of distinct
 
@@ -288,6 +330,13 @@ the iteration cap) and before the outer tick is observed as complete.
   fixpoint-detector returns `true`
 - **AND** the outer tick MUST NOT be observed as complete until the inner
   scope has reached fixpoint (or hit the iteration cap)
+- **AND** the fixpoint-detector MUST be scope-level — attached to the
+  clock scope itself, not to any individual operator — so that the
+  detector sees the post-tick observable state of every operator in the
+  scope rather than a single operator's local state
+- **AND** operators within the scope MUST NOT individually short-circuit
+  a scope tick based on their own "I've converged" opinion; only the
+  scope-level detector MAY terminate the iteration
 
 #### Scenario: scope-boundary phases bracket every nested run
 
@@ -308,14 +357,28 @@ the iteration cap) and before the outer tick is observed as complete.
   in the other sibling
 - **AND** their operators' observable state MUST evolve independently
 
+#### Scenario: iteration cap without fixpoint is an observable failure
+
+- **WHEN** a nested scope steps up to its declared iteration cap without
+  the fixpoint-detector ever returning `true`
+- **THEN** the outer step MUST surface an observable cap-exceeded failure
+  to its caller rather than silently publishing the state at the cap-th
+  inner tick as if it were the fixpoint
+- **AND** the failure MUST identify (a) the scope that failed to converge
+  and (b) the cap that was hit, so the caller can distinguish a
+  configured-too-low cap from a genuine non-convergence
+- **AND** the clock-end phase for operators in the failing scope MUST
+  still run, so per-scope state is released or committed under a
+  documented partial-completion contract rather than leaked
+
 ### Requirement: incremental-wrapper preserves the chain rule
 
 The capability MUST expose a wrapper `Incrementalize(Q)` that, for any
 operator `Q` over a group-valued stream, produces an operator observably
 equivalent to `D ∘ Q ∘ I`. When `Q` is known to be linear or bilinear, the
-wrapper MUST be permitted (but not required) to substitute an optimized form:
-`Q` directly for linear `Q`, or the three-term formula for bilinear `Q` (see
-"bilinearity of join" above). Any such substitution MUST be observationally
+wrapper MAY substitute an optimized form — `Q` directly for linear `Q`, or
+the three-term formula for bilinear `Q` (see "bilinearity of join" above).
+Any such substitution MUST be observationally
 equivalent to the unoptimized `D ∘ Q ∘ I` over the full stream, including
 under retractions.
 
@@ -335,6 +398,21 @@ under retractions.
 - **AND** this MUST hold under interleaved inserts and retractions on either
   side
 
+#### Scenario: wrapper is a semantic identity on distinct
+
+- **WHEN** `IncrementalDistinct` is applied to a delta stream
+- **THEN** its output at every tick MUST equal
+  `D ∘ distinct ∘ I` over the delta stream, where `distinct` is the
+  set-projection that clips every positive integrated weight to `+1`
+  and every non-positive weight to `0`
+- **AND** equivalently, its output at every tick MUST equal the
+  boundary-crossing increment `H(prior integrated history, current delta)`
+  as defined by the "`H` is the boundary-crossing increment of distinct"
+  requirement — work bounded by the delta size, independent of the
+  integrated history
+- **AND** the equivalence between the `D ∘ distinct ∘ I` form and the `H`
+  form MUST hold under interleaved inserts and retractions
+
 ### Requirement: representation invariants of the reference Z-set
 
 A reference implementation of `ZSet[K]` MUST expose a representation that (a)
@@ -353,8 +431,13 @@ losing the linear-time group-operation guarantee.
   pairs
 - **THEN** no managed heap allocation MUST occur beyond what the iteration
   consumer explicitly requests
-- **AND** the iteration MUST yield the pairs in a deterministic order that
-  matches the normalisation order used for equality
+- **AND** the iteration MUST yield the pairs in ascending order by the
+  declared comparer of the key type — i.e., for every pair of adjacent
+  yielded entries `(k_i, w_i)` and `(k_{i+1}, w_{i+1})`, the comparer
+  MUST report `k_i < k_{i+1}`
+- **AND** this ascending-by-key order MUST be the same order used by the
+  normalisation the equality requirement in "Z-set as a finitely-
+  supported signed multiset" depends on
 
 #### Scenario: recovery implementations MAY trade performance for simplicity
 
