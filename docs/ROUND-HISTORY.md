@@ -39,8 +39,8 @@ after squash-merge + drop the suffix, explicit fair-game vs
 not-fair-game scope so speculative branches don't destabilise
 artefacts the waiting PR has already promised. First use of the
 convention is this commit itself — landed on `round-42-
-speculative`, forked from `3525631` (round-41 HEAD) while PR
-#31 still waits. Authorised by the post-hoc-notify grant at
+speculative`, forked from `3525631` (round-41 HEAD) while
+PR #31 still waits. Authorised by the post-hoc-notify grant at
 `feedback_fix_factory_when_blocked_post_hoc_notify.md`;
 mechanical additive edit so eval-loop is skipped per Rule 1
 manual-edit justification path.
@@ -101,7 +101,7 @@ Round-42's ADR slot under the OpenSpec backfill program.
 `openspec/specs/lsm-spine-family/spec.md` (412 lines) +
 `profiles/fsharp.md` (213 lines) — 625 lines added —
 backfill the log-structured merge spine family (five variants
-+ dispatcher). Eleven requirements cover: delta-stream
+plus dispatcher). Eleven requirements cover: delta-stream
 integration, cascade bounded-depth invariant (settle-point
 framing with the 32-level cap scoped to in-memory reference
 variants), spine-equivalence through `Consolidate`,
