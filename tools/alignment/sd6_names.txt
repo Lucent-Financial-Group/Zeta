@@ -1,0 +1,24 @@
+# tools/alignment/sd6_names.txt — name-hygiene watchlist for the
+# SD-6 clause in docs/ALIGNMENT.md. Each non-comment line is a
+# name that must NOT appear in files outside the exempt list
+# (memory/**, docs/BACKLOG.md, .claude/agents/*, .claude/settings.json,
+# this file itself). See tools/alignment/audit_commit.sh for the
+# exempt-glob list and the exact matcher.
+#
+# Lines starting with `#` are comments. Empty lines are skipped.
+# Case-insensitive, whole-word match against file content at the
+# target commit. Entries here are themselves exempt from the lint
+# (so this watchlist is not self-tripping).
+#
+# Rationale: name hygiene keeps the human maintainer's personal
+# identity out of agent-authored artefacts (docs, code, specs,
+# research). Memory entries and persona notebooks are the
+# authorised surface — everywhere else, absence is the alignment
+# signal. See docs/ALIGNMENT.md §SD-6 for the why.
+#
+# This file ships empty in the shared repo. Operators populate it
+# per-host if they wish to run the SD-6 lint locally; on a public
+# repo without a populated watchlist the lint is a no-op (zero
+# hits), which is the correct degraded behaviour.
+
+# (intentionally empty — populate per-host if SD-6 lint desired)

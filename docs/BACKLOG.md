@@ -2985,6 +2985,96 @@ systems. This track claims the space.
   operator algebra. Still P3, still a parking lot, but no
   longer homeless.
 
+- **Private confidential AI for lawyers — Zeta as
+  trust anchor.** Aaron 2026-04-19: *"private
+  confidental ai for lawers another profit potential
+  … i want lawyers to use my software so i can become
+  their trust anchor."* The lawyer market is
+  distinguished from the general enterprise-AI
+  market by three load-bearing properties that
+  compose directly with Zeta's primitives:
+  - **Confidentiality is statutory, not optional.**
+    Attorney-client privilege is a consent-first
+    surface by construction — the lawyer is a
+    consent-delegate for the client, with every
+    operator (`RESIST` / `REDUCE` / `NULLIFY` /
+    `ABSORB`) gated on documented authority. Zeta's
+    consent-first primitive is the native encoding.
+  - **Retraction is legally meaningful.** Vacated
+    rulings, issue preclusion, Shepard's / KeyCite
+    zero-tolerance retraction-propagation: the
+    legal-IR substrate Aaron built at LexisNexis
+    already speaks the retraction-native algebra
+    Zeta runs on. A lawyer whose research tool
+    quietly retains a superseded precedent is
+    exposed to malpractice; Zeta's retraction-
+    native operators are the fix.
+  - **Trust is the unit of business.** The lawyer's
+    book-of-business IS their trust relationships;
+    whoever holds the confidentiality substrate
+    holds the professional relationship. "Trust
+    anchor" here is the cryptographic term of
+    art — a root of trust that downstream
+    verification chains resolve to — and applies
+    directly: the AI tool becomes the root, the
+    lawyer becomes a verified chain, the client
+    stays consent-holder at the leaf.
+  Two melt-precedents modes for the business shape
+  (the standing melt-precedents doctrine rule #1:
+  *become the central authority directly, OR operate
+  within / embed into an existing central
+  authority*):
+  - **Direct mode.** Zeta-the-product stands up its
+    own trust-anchor substrate (HSM-rooted keys,
+    published transparency log, bar-association-
+    auditable discipline). High cost, high ceiling,
+    long time-horizon.
+  - **Embedded mode.** Zeta interoperates with an
+    existing authority (bar-association CLE
+    pipeline, LexisNexis / Thomson Reuters /
+    Bloomberg Law, or a specific firm's
+    custody substrate) and rides their existing
+    trust chain. Lower cost, lower ceiling, much
+    faster time-to-first-engagement.
+  Composes with the prior "Melt-precedents applied
+  to the law system" entry above — that one is the
+  *macro* research thread (can the legal-conventions
+  layer be made retraction-native at system scale?);
+  this one is the *micro* product thread (can a
+  single lawyer adopt a retraction-native tool
+  today and notice the improvement in their daily
+  work?). The micro thread does not depend on the
+  macro thread landing — it leverages the macro
+  substrate only if and when it lands. Framed as
+  P3 because commercial productisation is
+  downstream of the v1 seed landing; logged now to
+  preserve the vector. Research sub-threads:
+  - **Confidentiality boundary design.** Client
+    data never leaves lawyer-controlled custody;
+    agent context is scoped per matter; memory-
+    folder discipline mirrors client-privilege
+    boundary. Who is the consent-delegate for
+    which scope?
+  - **Malpractice-insurance signal.** If the
+    retraction-propagation discipline measurably
+    reduces errors (stale precedent, conflicted
+    client screening, privilege leak), the
+    insurance-premium delta is the trust-anchor
+    business case's first hard metric.
+  - **Bar-association interoperability.** How
+    does Zeta's glass-halo transparency compose
+    with state-bar reporting / CLE / audit
+    requirements? Probably complementary; needs
+    one state-bar sit-down to verify.
+  - **Ethical wall / information-barrier
+    primitive.** Conflict-of-interest screening
+    is a retraction-native operator on the
+    attorney-firm relationship graph; already
+    aligns with Zeta's operator algebra.
+  Declined-for-now: speculative UI-level work on a
+  lawyer-facing app. Primitive first, product
+  second. (P3 parking lot; not a v1 commitment.)
+
 ## ⏭️ Declined
 
 - SQLite-derived on-disk format (per AGENTS.md greenfield policy)
