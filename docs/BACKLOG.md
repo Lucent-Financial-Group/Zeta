@@ -847,6 +847,44 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Scope-audit skill-gap — every absorbed rule needs
+  Zeta-vs-factory-vs-universal scope tag; HUMAN-BACKLOG
+  resolution for ambiguity (round 44)** — Aaron 2026-04-20,
+  three-message thread: *"Are you absorbing that into Zeta
+  or the reusable bits of the software factory we can
+  redistribute later? ... those are the kind of things we
+  want to mzek suer we have clean seperation"* / *"we should
+  ahve a skill to check for scoping issues like this"* /
+  *"those are things that are likely to required human
+  backlog and ansering to resolve not all the time, but it
+  was probably the human didnt define the scope when they
+  asked they were inprecise like i was on my orgignal ask"*.
+  Durable policy captured in
+  `memory/feedback_scope_audit_skill_gap_human_backlog_resolution.md`
+  (full rule + HUMAN-BACKLOG resolution protocol + connection
+  to existing HUMAN-BACKLOG categories). **Triggering
+  example:** I wrote the symmetric-talk feedback memory with
+  "(scope: Zeta + factory, not universal)" — conflating the
+  two layers Aaron wants cleanly separated. He caught it.
+  Memory now splits them explicitly (Zeta-choice vs
+  factory-mechanism). A scope-audit skill would have flagged
+  the phrasing on write. **Option (a): extend
+  `skill-tune-up`'s portability-drift criterion #7** to
+  cover not just `.claude/skills/*/SKILL.md` but also
+  `memory/**`, `docs/` governance, BP-NN candidates, and
+  `BACKLOG.md`/`HUMAN-BACKLOG.md` rows. **Option (b):
+  create a sibling skill `scope-auditor`** with a Matrix-mode
+  skill-group (expert / teacher / auditor / capability
+  `scope-tag-inserter`). **Open decision for Architect
+  (and/or Aaron):** which option, plus whether
+  `scope-clarification` becomes a new HUMAN-BACKLOG category
+  alongside today's `conflict` / `approval` / `credential` /
+  `external-comm` / `naming` / `physical` / `observation`.
+  Effort: S for option (a), M for option (b) plus category
+  addition. Dependencies: none; can land any round. Reviewer:
+  Architect (Kenji) on skill-scope decision; scope-auditor
+  itself would be developed via `skill-creator`.
+
 - [ ] **Matrix-mode skill-group authoring — onboarding +
   teaching-track skill-groups (round 44 absorb)** — Aaron
   2026-04-20: *"we do want to allow developer and
