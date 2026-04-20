@@ -167,6 +167,27 @@ within each priority tier.
   work depends on — those edits should target the v2 ADR,
   not v1, so supersedure lands first.
 
+- [ ] **Grandfather `O(·)` claims discharge — one per round** —
+  35 pre-ADR `O(·)` claims catalogued at
+  `docs/research/grandfather-claims-inventory-2026-04-21.md`
+  per v2 Closure C-P0-1. Cadence: one claim per round through
+  the router-coherence v2 pipeline (Stage 1 analytic by Hiroshi,
+  `complexity-reviewer` → Stage 2 empirical by Daisy,
+  `claims-tester`). On each discharge, the inventory row's
+  Stage-1 and Stage-2 cells flip from `pre-ADR` to the relevant
+  output state (`sound` / `wrong` / `under-specified` /
+  `measurement-matches` / `measurement-contradicts` /
+  `workload-narrowed`). Empty inventory closes the entry
+  (expected round ≈ 76 at one-per-round cadence, sooner under
+  batching). Priority: P2. Effort per claim: S. Total effort:
+  ~35-round tail. Owner: Architect selects the round's claim;
+  Hiroshi + Daisy execute. Surface concentration: 29 F#
+  docstrings (83%), 3 grey-zone F# code comments, 1
+  `openspec/specs/operator-algebra/spec.md` line, 2
+  `docs/research/**` claims. Graceful-degradation clause:
+  Aarav files a P1 drift finding if no claim is discharged
+  for ≥3 consecutive rounds without declared pause reason.
+
 - [ ] **Fully-retractable CI/CD** — Aaron 2026-04-19: *"fully
   rtractable ci/ci backlog item"* → *"ci/cd"*. Apply the
   retractability clause of the Zeta=heaven formal statement
