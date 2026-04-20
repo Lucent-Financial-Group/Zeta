@@ -20,57 +20,31 @@ within each priority tier.
 - [ ] **OpenSpec coverage backfill — delete-all-code recovery
   gap** — Aaron 2026-04-20: *"opensepcs, if I deleted all the
   code right now how easy to recreate based on the openspecs"*.
-  The answer today is *not easy*. `openspec/README.md` declares
-  the disaster-recovery contract explicitly: "if code was hard-
-  deleted from the repository and from git history... a
-  contributor should be able to rebuild the current behaviour
-  from these specs alone, at the same quality bar." Current
-  reality: **4 capabilities** (`durability-modes`,
-  `operator-algebra`, `repo-automation`, `retraction-safe-
-  recursion`) covering **~1,463 lines of spec** vs **66 top-
-  level F# modules** totalling **~10,831 lines** under
-  `src/Core/`. Rough coverage by capability count ≈ 6%;
-  by lines-of-behaviour-described-vs-implemented much lower.
-  The 4 existing specs are deep (RFC-2119 MUSTs + Gherkin
-  WHEN/THEN scenarios, `operator-algebra/spec.md` is a
-  reference model) — the problem is coverage, not depth.
-  Missing capabilities include (non-exhaustive): ZSet as
-  a standalone capability distinct from operator-algebra,
-  Spine family (Spine / DiskSpine / BalancedSpine /
-  SpineAsync / SpineSelector), Circuit / NestedCircuit,
-  sketches (BloomFilter / CountMin / Sketch), CRDT family
-  (Crdt / DeltaCrdt), content-defined chunking (FastCdc),
-  hashing + integrity (ConsistentHash / Merkle /
-  HardwareCrc), serialization (Serializer / ArrowSerializer),
-  SIMD dispatch (Simd / SimdMerge), plugin surface
-  (PluginApi / PluginHarness), runtime (MailboxRuntime /
-  WorkStealingRuntime / Runtime), transactions (Transaction /
-  Upsert), query (Query / Plan / Dsl), watermarks
-  (Watermark / SpeculativeWatermark), injection laws
-  (Injection / InjectionExt), algebra family (Algebra /
-  NovelMath / NovelMathExt / Residuated), chaos harness
-  (ChaosEnv / FeatureFlags / Metrics / Tracing), streaming
-  primitives (Aggregate / Fusion / Window / Rx / Sink /
-  TimeSeries / Hierarchy / HigherOrder). Scope: (a) Viktor
-  (spec-zealot) produces `docs/research/openspec-coverage-
-  audit-YYYY-MM-DD.md` — full inventory of src/Core modules
-  vs capabilities, including deliberately-uncovered
-  (AssemblyInfo, Environment-if-internal); (b) capability
-  priority stack sorted by delete-recovery blast radius
-  (ZSet / Spine / Circuit lead); (c) ADR at
-  `docs/DECISIONS/YYYY-MM-DD-openspec-backfill-program.md`
-  declaring backfill cadence (one-capability-per-round
-  baseline, two if small); (d) per-round success signal:
-  capability count advances monotonically, Viktor audits
-  new capabilities for "can I rebuild the module from
-  this alone?"; (e) round-close ledger entry counts
-  capabilities added and backlog remaining. Owner: Viktor
-  (spec-zealot) with architect (Kenji) for priority
-  arbitration. Effort: L per capability (full RFC-2119
-  behaviour enumeration), M for inventory pass only.
-  Reviewers: Viktor first, then Ilyana (public-API
-  designer) for any capability crossing the published-
-  library surface.
+  **Round 41 program setup landed** as
+  `docs/research/openspec-coverage-audit-2026-04-21.md`
+  (inventory + banding) + `docs/DECISIONS/2026-04-21-openspec-
+  backfill-program.md` (ADR declaring one-capability-per-round
+  baseline with Viktor adversarial-audit gate). Measured
+  coverage: **4 capabilities / 783 lines of spec.md vs 66
+  top-level F# modules / 10,839 lines** under `src/Core/`
+  (~6% by capability count, ~7% by line ratio). Band 1 (MUST
+  BACKFILL) is 8 modules / 1,629 lines — ZSet, Circuit,
+  NestedCircuit, Spine family (5), plus `BloomFilter.fs`
+  elevated for Adopt-row backwards-compatibility coupling.
+  **Remaining work** is per-round capability backfill per the
+  ADR schedule: Round 41 `operator-algebra` extension,
+  Round 42 `lsm-spine-family`, Round 43 `circuit-recursion`,
+  Round 44 `sketches-probabilistic` (Bloom priority),
+  Round 45 `content-integrity`, Round 46 `crdt-family`.
+  Each round adds ≈ 200 lines of spec.md. Per-round success
+  signal: Viktor spec-zealot adversarial audit answers "could
+  I rebuild this module from this spec alone?" with a clear
+  **yes**. Round-close ledger gains an `OpenSpec cadence` line.
+  Owner per round: Architect (Kenji) drafts, Viktor audits,
+  Ilyana reviews capabilities crossing the published-library
+  surface. Effort: L per capability, bounded by the ADR.
+  Reviewers: Viktor first, then Ilyana (public-API designer)
+  for any capability crossing the published-library surface.
 
 - [ ] **Fully-retractable CI/CD** — Aaron 2026-04-19: *"fully
   rtractable ci/ci backlog item"* → *"ci/cd"*. Apply the
