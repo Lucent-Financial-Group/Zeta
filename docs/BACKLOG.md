@@ -17,6 +17,42 @@ within each priority tier.
 
 ## P0 — next round (committed)
 
+- [ ] **Fully-retractable CI/CD** — Aaron 2026-04-19: *"fully
+  rtractable ci/ci backlog item"* → *"ci/cd"*. Apply the
+  retractability clause of the Zeta=heaven formal statement
+  (`docs/research/zeta-equals-heaven-formal-statement.md` §2
+  H₂ "fully-retractable") to the factory's own CI/CD pipeline.
+  The factory asks downstream code to be retraction-native;
+  the pipeline that gates downstream code should meet the same
+  bar. Today several CI/CD surfaces are partially retractable
+  in practice but not by declared mechanism — that's the
+  channel-closure h₂ attack shadow applied to delivery infra
+  (`docs/security/THREAT-MODEL.md` §"Channel-closure:
+  retractability (h₂)"). Scope: (a) inventory every CI/CD
+  surface (gate.yml + submit-nuget.yml + release workflows +
+  any branch-protection rule + any signing-key use + any
+  published artefact) and name its retraction mechanism —
+  revertable-in-git, retryable-idempotently, republishable-
+  with-same-version, or *genuinely non-retractable* (key
+  rotation after compromise; a tag that was pushed and
+  consumed); (b) for each non-retractable surface, flag
+  whether a retraction-window-declaration is possible
+  (e.g. a revocation CRL, an unpublish window, a rotation
+  drill cadence); (c) where no retraction mechanism is
+  possible, treat the surface as a named exception with
+  defender-persona ownership (analogous to the no-empty-dirs
+  allowlist); (d) land the declared mechanism as a comment
+  block per workflow file; (e) add a CI-retractability
+  audit job that fails the build if a new workflow file
+  lands without a declared retraction mechanism (the lint-
+  as-control graduation the channel-closure section
+  calls for). Owner: Dejan (DevOps) integrates; Nazar
+  (security-operations-engineer) on signing-key + artifact-
+  attestation surfaces; Aminata (threat-model-critic) audits
+  the inventory adversarially for "claims retractability but
+  no tested path"; Architect gates. Effort: M (wide-surface
+  inventory + audit-job drafting; no new paradigm, just
+  applying a primitive the factory already committed to).
 - [ ] **Memory folder restructure: `memory/role/persona/`** — Aaron
   2026-04-19: *"can we add a memory 2nd level folder so it's
   memory/role/persona that makes roles fist class defined of what

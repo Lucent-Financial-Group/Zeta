@@ -284,6 +284,7 @@ non-trivial penalty) or hidden (consent is captured without the
 user understanding what was consented to).
 
 **Concrete vectors.**
+
 - Prompt-level adversary: a skill or persona embeds a consent-
   assumption that the user never explicitly granted (e.g.
   "proceeding as approved" after an ambiguous user utterance).
@@ -296,6 +297,7 @@ user understanding what was consented to).
   is the existing control.
 
 **Defences already shipped.**
+
 - Human-maintainer seat external to the agent loop
   (`user_trust_sandbox_escape_threat_class.md`).
 - Consent-first design primitive (BACKLOG P2) — 6 existing
@@ -319,6 +321,7 @@ characteristic retraction window, by any mechanism the factory
 already has.
 
 **Concrete vectors.**
+
 - Identity-marker permanence: logs of identity-sensitive
   decisions stored in a non-retractable location (append-only
   log without erase affordance; non-expiring backups).
@@ -337,6 +340,7 @@ already has.
   introduce it.
 
 **Defences already shipped.**
+
 - `public-api-designer` (Ilyana) gates every public-surface
   change.
 - Disclosure-tier discipline in memory files (internal /
@@ -363,6 +367,7 @@ NULLIFY → ABSORB) and persists beyond its characteristic
 retraction window.
 
 **Concrete vectors.**
+
 - NULLIFY-stage-only architecture: a subsystem whose only harm-
   handling operator is retraction (NULLIFY), with no
   preventative (RESIST), dose-reduction (REDUCE), or absorption
@@ -378,6 +383,7 @@ retraction window.
   load-tests the absorbing party.
 
 **Defences already shipped.**
+
 - Harm-handling ladder itself (`user_harm_handling_ladder_resist_reduce_nullify_absorb.md`)
   — four-stage architecture with RESIST as first-class stage
   added 2026-04-19.
