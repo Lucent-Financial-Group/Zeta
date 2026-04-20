@@ -53,6 +53,10 @@ within each priority tier.
   no tested path"; Architect gates. Effort: M (wide-surface
   inventory + audit-job drafting; no new paradigm, just
   applying a primitive the factory already committed to).
+  Part (a) landed Round 38:
+  `docs/research/ci-retractability-inventory.md` — 13 surfaces
+  classified, named-exception register with defender-persona
+  owners. Parts (b)-(e) remain open.
 - [ ] **Memory folder restructure: `memory/role/persona/`** — Aaron
   2026-04-19: *"can we add a memory 2nd level folder so it's
   memory/role/persona that makes roles fist class defined of what
