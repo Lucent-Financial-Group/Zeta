@@ -4169,6 +4169,31 @@ systems. This track claims the space.
   Composes with the existing lattice-PQC entry below and
   with the existing security-operations-engineer persona
   scope.
+  **Candidate set after 2026-04-21 decisions:**
+  **git-crypt REJECTED 2026-04-21** — Aaron after reading
+  the cartographer pass: *"git crypto no go i read your
+  initial review"*. Encoded in `docs/WONT-DO.md`
+  (*Engineering patterns → git-crypt for secrets
+  management*). `git-secret` is also out by sibling reasoning
+  — same OpenPGP-GPG base, same no-revocation property, same
+  binary-diff problem. **Remaining candidates for the ADR:**
+  SOPS (KMS / Vault / age backend; plaintext keys +
+  encrypted values → review-grade diffs; external KMS →
+  clean rotation) and `age` (modern file encryption; X25519
+  + scrypt; draft PQC profile). ADR scope narrows to these
+  two plus any hybrid posture (one tool for long-lived
+  secrets, another for ephemeral).
+  **Research inputs (rationale kept, decision recorded):**
+  - `docs/research/git-crypt-deep-dive-2026-04-21.md` —
+    cartographer pass on git-crypt, now marked REJECTED at
+    the top. Three values-level mismatches: no access
+    revocation (retraction-mismatch with
+    `docs/CONFLICT-RESOLUTION.md` Value #4), binary diffs
+    break code review, metadata leak by design
+    (`.gitattributes` layout + filenames + commit messages
+    all in plaintext). Kept per Aaron *"keeep the reserach
+    ... so i don't ask you tomorrow"* — the research IS the
+    durable "why we said no" artifact.
 
 - [ ] **Adopt at least one NIST-standardised post-quantum
   primitive — ADR first, then pick one use case** — Aaron

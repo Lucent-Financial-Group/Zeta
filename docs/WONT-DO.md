@@ -139,6 +139,45 @@ Entries are grouped by area. Each entry has:
 - **Revisit when:** Either project ships a license-compatible,
   production-grade, CPU-runnable variant.
 
+### git-crypt for secrets management
+
+- **Decision:** 2026-04-21
+- **Proposal:** Adopt `git-crypt` (GPG / symmetric, AES-256-CTR
+  with SHA-1-HMAC-derived IV) for secrets-at-rest inside the
+  repo — the P2 BACKLOG row *"Gitops-friendly key management
+  + rotation"* named it as one of four candidates alongside
+  `git-secret`, SOPS, and `age`.
+- **Why not:** Three Zeta-values-level mismatches, documented
+  in `docs/research/git-crypt-deep-dive-2026-04-21.md`:
+  1. **No access revocation.** Upstream authors explicit:
+     once a user has the key, they have every historical
+     version of every encrypted file, forever. Opposite of
+     retraction-native (`docs/CONFLICT-RESOLUTION.md` Value
+     #4).
+  2. **Binary diffs break code review.** Encrypted files
+     appear as opaque blobs — reviewers cannot tell a key
+     rotation from a key theft. Breaks the review gate the
+     rest of the factory depends on.
+  3. **Metadata leak by design.** Filenames, commit
+     messages, symlink targets, and `.gitattributes` layout
+     are all in plaintext. A pattern like
+     `secrets/prod.yaml filter=git-crypt` tells the world a
+     `prod.yaml` secret exists; only the contents are hidden.
+  Additional (documented, non-decisive) concerns: pre-v1.0
+  with authors reserving compat-break rights, third-party
+  git-GUI silent-plaintext leaks, non-compressible storage,
+  and no HSM/PQC story. The three values-level mismatches
+  alone are sufficient.
+- **Revisit when:** Upstream adds in-place revocation without
+  history-rewrite, *and* renders encrypted content in
+  review-friendly diffs, *and* ships a filename-protection
+  story. Realistically: never — these are architectural
+  constraints of the design, not missing features. SOPS +
+  KMS (for long-lived secrets) and `age` (for ephemeral /
+  PQC-curious surfaces) remain the candidate set for the
+  eventual ADR; `git-secret` also ruled out by sibling
+  reasoning. Research artifact kept as the rationale.
+
 ---
 
 ## Repo / process
