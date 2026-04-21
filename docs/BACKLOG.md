@@ -2864,23 +2864,23 @@ within each priority tier.
   Trigger: one week of clean CI runs. Required check
   lands once we trust the signal.
 
-  **2026-04-22 audit findings (post-PR-#10):** (primary first)
-  - `Lucent-Financial-Group/Zeta` (**primary**): ruleset `Default`
+  **2026-04-22 audit findings (post-PR-#10):** (upstream first)
+  - `Lucent-Financial-Group/Zeta` (**upstream**): ruleset `Default`
     (id=15256879) exists with 6 rules
     (`deletion`, `non_fast_forward`, `copilot_code_review`,
     `code_quality`, `pull_request`, `required_linear_history`)
-    — but **no `required_status_checks` rule**. Primary-repo
+    — but **no `required_status_checks` rule**. Upstream
     status-check gap is the load-bearing one to close first.
-  - `AceHack/Zeta` (dev-surface fork): zero rulesets
+  - `AceHack/Zeta` (**fork**): zero rulesets
     (`gh api /repos/AceHack/Zeta/rulesets` returns `[]`).
     Every check is advisory. Root cause for PRs #7 + #8
     merging with `lint (markdownlint)` fail; caught by
     strengthen-the-check-not-the-manual-gate rule. Lower
-    priority than primary because dev-surface work flows
-    through the primary's gate at bulk-sync time — but still
-    worth closing to catch red-PRs before they batch.
+    priority than upstream because fork work flows through
+    the upstream's gate at bulk-sync time — but still worth
+    closing to catch red-PRs before they batch.
 
-  **Proposed checks to require (primary first, then dev-surface):**
+  **Proposed checks to require (upstream first, then fork):**
   - `lint (markdownlint)` — fastest signal (<30s); catches
     doc-rot that accumulates silently.
   - `build-and-test (ubuntu-22.04)` — compile/test gate;
