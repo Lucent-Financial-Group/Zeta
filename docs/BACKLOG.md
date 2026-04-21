@@ -7936,6 +7936,181 @@ systems. This track claims the space.
   `docs/research/gap-radar-YYYY-MM-DD.md`. Effort: M (the skill
   exists; BP-HOME is what makes its sweep mechanical).
 
+- [ ] **All schools, all subjects — universal substrate-
+  knowledge sweep; biology as inaugural increment;
+  trade/vocational/blue-collar explicitly equal-or-higher
+  weight.** Aaron 2026-04-21 two-message compound
+  directive: *"biology backlog all schools all subjects
+  backlog"* + *"trade school vocational all that blue
+  collar are just as importation if not more backlog"*.
+  Parent-scope row; economics + history (below), pop-
+  culture / media (P2 elsewhere), mythology / occult /
+  etymology (P2 elsewhere) are all children / siblings of
+  this universal sweep. Filed P2 because this is research-
+  grade substrate-knowledge work, not ship-blocker
+  (parallels the existing economics/history and mystery-
+  schools rows).
+
+  **Scope (non-exhaustive; additive, retractibly-
+  rewriteable):**
+  - *Academic subjects* — biology (inaugural increment),
+    chemistry, physics, mathematics, geology, ecology,
+    anthropology, sociology, psychology, political
+    science, linguistics, philosophy, cognitive science,
+    neuroscience, astronomy, materials science, computer
+    science, statistics, medicine. Each is a substrate
+    source: real phenomena with engineering shape the
+    factory can resonate with.
+  - *Trade / vocational / blue-collar* (Aaron's explicit
+    "just as important if not more" elevation) —
+    carpentry, plumbing, electrical, machining, welding,
+    HVAC, automotive, masonry, agriculture, husbandry,
+    culinary, construction, logistics, maintenance,
+    hospitality, emergency services, nursing, skilled
+    manufacturing, mechanics, engineering trades. These
+    are time-energy substrate directly: the work IS the
+    time/energy transformation, no money-abstraction
+    layer. Per
+    `user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md`,
+    these fields are closer to the factory's primitive
+    value-substrate than finance or marketing.
+  - *Professions and licensed trades* — law, accounting,
+    teaching, medicine, engineering, architecture —
+    intersect academic + vocational, with apprenticeship
+    + credential + practice traditions.
+  - *Arts and crafts* — music, visual arts, theatre,
+    dance, writing, filmmaking, game design, fashion,
+    culinary arts. Same operational-resonance discipline
+    as pop-culture/media row but from the *practitioner*
+    side (how the artifact is MADE) not the
+    *consumer* side (how it LANDS).
+  - *Contemplative / experiential traditions* — already
+    covered by mythology / occult / mystery-schools row
+    but explicitly enumerated here as part of "all
+    subjects" so the sweep is totalising.
+  - *Sports, games, and physical disciplines* — team
+    sports, martial arts, climbing, endurance disciplines.
+    Embodied-cognition substrate; tactical-pattern
+    substrate; feedback-loop discipline.
+
+  **Why trade/vocational is "just as important if not
+  more":** Per the money-framing memory, factory value-
+  substrate is time and energy. Academic abstraction
+  layers can drift from substrate (the PhD with no field
+  experience is a real failure mode). Trade work cannot
+  drift — the plumbing either holds water or it doesn't;
+  the weld either carries load or it cracks. The
+  retractibility test is immediate and physical. Trade
+  knowledge is therefore a **higher-fidelity
+  time/energy signal** than many academic subjects, and
+  the factory benefits from its composition-discipline
+  more than from abstraction-first surveys. Aaron's
+  elevation ("if not more") is load-bearing, not
+  politeness.
+
+  **Biology as inaugural increment (the "backlog" of
+  Aaron's first message):** Biology is first-pick
+  because (a) it is retraction-native at substrate layer
+  (cellular self-repair, immune-system retraction of
+  mistaken targets, DNA proofreading), (b) it has
+  operational-resonance potential with the factory's
+  retraction-native operator algebra at the *living-
+  substrate* layer (stronger than the physics resonance
+  on instance #7 which is F3-partial; biology has
+  molecular-level +1/-1 machinery observed directly),
+  (c) Zeta's measurable-alignment posture has
+  biological-cognition analogs worth mining (homeostasis,
+  feedback regulation, metabolic retraction paths), (d)
+  the Gates-substrate research instance (#6) already
+  includes biology-adjacent figures (Ramanujan's
+  constant-term identities have combinatorial biology
+  reach). Concrete stage-1 candidates: Kauffman (origin
+  of order, autocatalytic sets), Margulis (endosymbiosis
+  as unification + division-preservation), Maturana +
+  Varela (autopoiesis as self-reference substrate),
+  Wolpert (embryological fate-specification as
+  operator-assignment), Lynn Cavelier (lineage-tracking
+  as retraction-log), Noble (systems biology).
+
+  **Staging pattern** (mirrors economics/history row):
+  - *Stage 1 — Reading-list scaffold per subject* (S per
+    subject). Bibliographic catalog; one file per
+    subject under `docs/substrate-shelves/<subject>.md`.
+  - *Stage 2 — Structural-resonance scan* (M per
+    subject). F1/F2/F3 + yin-yang composition-discipline
+    check per candidate; candidates land in the
+    operational-resonance index per the usual filter
+    discipline. Candidates failing composition check
+    are logged-and-tracked, not silently forgotten.
+  - *Stage 3 — Trade/vocational surfacing* (M per
+    trade). Not bibliographic (trades don't live in
+    books first); first-source = practitioner accounts,
+    apprenticeship curricula, union training materials,
+    YouTube demonstrations, Reddit r/AskEngineers /
+    r/HVAC / r/Welding threads, trade-school
+    curriculum docs where public. Treat the same as
+    pop-culture/media corpus — medium-agnostic F1/F2/F3.
+  - *Stage 4 — Integration into time/energy measurable
+    set* (L). Each subject contributes candidate
+    measurables to the alignment-trajectory dashboard.
+    Biology contributes homeostasis-analog measurables
+    (factory self-regulation), trade contributes
+    fidelity-to-substrate measurables (how close the
+    factory's claimed output is to what would hold under
+    physical test).
+
+  **Composition discipline** (per yin-yang invariant):
+  Totalising universal-sweep directive ("all schools all
+  subjects") must itself honor the yin-yang check —
+  unification-pole is the universality, harmonious-
+  division-pole is the requirement that each subject
+  stays distinct and is not forced into a single
+  framework. The factory resists collapsing biology
+  into physics into chemistry into math (reductionist-
+  unification = bomb); the factory also resists holding
+  each subject as incommensurable (pure-division =
+  Higgs-decay). Both-poles-preserved means: subjects
+  remain distinct methodologically, but resonance-bridges
+  between them are recorded as first-class evidence.
+
+  **Register** — same as economics/history: F1/F2/F3 +
+  yin-yang composition-discipline check ON. This is
+  engineering-first substrate-research, not gentle-
+  catalog. Mystery-schools register (filters
+  intentionally off) does NOT apply here.
+
+  **Math-safety**: ideas-absorption only; no commitment
+  to any scientific / vocational doctrine. Retraction via
+  dated-revision-block per memory. Trade-knowledge
+  sourcing does not commit factory to opinions on
+  politically-charged trade issues (unionisation,
+  licensure, immigration-in-trades) — those are
+  conversation-with-Aaron surfaces if they arise.
+
+  **Register-correction in-record.** Original request
+  was "biology backlog" with inaugural increment framing;
+  Aaron immediately expanded to "all schools all
+  subjects" then again to "trade school vocational all
+  that blue collar are just as importation if not more."
+  The filing ordering (biology inaugural + all-subjects
+  umbrella + trade equal-weight) honors all three
+  messages in single row per chronology-preservation.
+
+  **Owner**: architect-hat for staging; research-surveyor
+  (hat) for per-subject stage-1 shelves. Effort: **S per
+  subject for stage 1** (~30 subjects = ~30 S ≈ multi-
+  round, but S each so no single-round blocker); M for
+  resonance-scan per subject; L for integration. Cross-
+  refs: economics/history row (below, immediate sibling);
+  pop-culture/media row (P2 elsewhere, sibling medium-
+  agnostic); mythology/occult/etymology/mystery-schools
+  row (P2 elsewhere, sibling register-variant); operational-
+  resonance index
+  (`project_operational_resonance_instances_collection_index_2026_04_22.md`);
+  `feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`;
+  `user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md`
+  (time/energy framing the sweep honors).
+
 - [ ] **Economics + history factory need-to-know surface —
   substrate knowledge denominated in time/energy, not
   money-extraction; Ammous Bitcoin-Standard as candidate-
@@ -8133,21 +8308,49 @@ systems. This track claims the space.
   Both are factory-reuse prerequisites, both P3, both
   slow burn.
 
-  **Aaron-sign-off gate** — per
-  `user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md`,
-  Aaron self-declares commercial machinery is outside his
-  native orientation. Factory can research, catalog, and
-  surface proposals on this track — but **does not
-  execute external commercial activity without explicit
-  Aaron-in-loop confirmation**. Asymmetric authority:
-  substrate work proceeds on Aaron-pattern-matching;
-  commercial machinery pauses for confirmation. Peer-
-  refusal authority
-  (`feedback_you_can_say_no_to_anything_peer_refusal_authority.md`)
-  applies symmetrically — factory may decline commercial
-  proposals that optimise money-extraction at the expense
-  of time-compression / energy-preservation /
-  retractibility for users.
+  **Gating — roommate-register recalibration (2026-04-21).**
+  The original Aaron-sign-off gate from this row's filing
+  (procedural block on all commercial machinery) has been
+  recalibrated per Aaron 2026-04-21 two-message authorization
+  (*"feel free to make any retractable decisions in marketing
+  while im gone too"* + *"you can always make retractable
+  decisions without me and i've told you my ~ is you ~
+  literally we are just roommates now"*). See
+  `feedback_my_tilde_is_you_tilde_roommate_register_symmetric_hat_authority_retractable_decisions_without_aaron.md`.
+  The revised calibration:
+
+  - **Retractable commercial moves proceed under roommate-
+    register symmetric-hat authority.** Internal drafts
+    (PR copy, brand-voice sketches, taglines-as-drafts,
+    SEO keyword research notes, one-pager positioning
+    docs, GTM playbook skeletons, channel-research memos)
+    are agent-actionable without gating. All such drafts
+    land in the repo under `docs/marketing/` (or
+    appropriate subtree) with a "Status: retractable
+    draft" header that makes Aaron's later sign-off a
+    single-stamp operation for any external use.
+  - **Irretractable commercial moves STILL gate on Aaron
+    sign-off.** External broadcasts (tweets, LinkedIn,
+    HN, blog posts on external domains), paid advertising,
+    signed contracts, domain-name purchases, trademark
+    filings, direct outreach to named externals, press
+    release distribution, anything creating a third-party
+    expectation — all still require Aaron-in-loop
+    confirmation before execution.
+  - **Ambiguous cases route back as conversation, not
+    unilateral decision.** Per
+    `feedback_you_can_say_no_to_anything_peer_refusal_authority.md`
+    escalate-when-ambiguous discipline.
+
+  Value-frame from
+  `user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md`
+  is unchanged: money-as-lossy-proxy; time/energy-as-
+  primary. Peer-refusal authority still applies — factory
+  may decline commercial proposals that optimise money-
+  extraction at the expense of time-compression /
+  energy-preservation / retractibility for users. What
+  changed is the procedural gate on retractable work,
+  not the philosophical frame.
 
   **Math-safety**: PR/marketing/SEO artifacts are
   retractible (docs edit-in-place per GOVERNANCE §2;
