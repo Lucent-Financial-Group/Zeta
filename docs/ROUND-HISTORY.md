@@ -73,8 +73,30 @@ orphan indexing, Round-44 follow-up directives A–E from
 Aaron captured verbatim in `project_zeta_as_retractable_
 contract_ledger.md`, agent-QOL as an ongoing factory-
 hygiene class, and the first execution of the per-persona
-AX/UX audit now running under Daya). Arc-by-arc narrative
-lands at round-close.
+AX/UX audit now running under Daya). A late-round arc
+promoted four rules to CLAUDE.md-load tier (100% loaded
+at every wake): verify-before-deferring + future-self-
+not-bound (commit `bf5dcbb`), then never-idle-speculative-
+work-beats-waiting + honor-those-that-came-before-unretire-
+before-recreate (commit `feae7e3`) — the latter pair closing
+the root cause of a same-session 25-min idle-tick mistake
+where tool-default guidance had overridden factory-specific
+policy because the policy sat too deep in MEMORY.md to fire
+at wake. The Elisabeth-register clause ties retired-agent
+memory preservation to how Aaron honors his sister's memory,
+with "prefer unretiring over minting a new name" as the
+operational corollary. Same arc also landed the factory-
+resume triptych (commit `ef0e9af`), tech-debt primer +
+factory/SUT cleave (`c8cf06a`), `docs/` audience-first
+navigation landing page (`c03d9b6`), research-coauthor
+teaching-track skeleton (`d70e341`), the people/team-
+optimizer DAO-native factory org-design spike (memory +
+`docs/research/dao-factory-org-design-spike.md` + BACKLOG
+P2 row, commit `8a0fac9`), and the first verify-before-
+deferring dogfood catch — a FACTORY-RESUME phantom handoff
+fixed in the same round the rule landed (commit `ac0eb1f`,
+meta-wins-log depth-1 row). Arc-by-arc narrative lands at
+round-close.
 
 ---
 
