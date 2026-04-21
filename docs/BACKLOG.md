@@ -726,6 +726,186 @@ within each priority tier.
     elsewhere in the factory (refection is a Lean-proof
     tool; factory source code stays statically
     verifiable).
+- [ ] **3-color / 4-color theorem research track — graph
+  coloring, computer-assisted proof, Gonthier's Coq
+  formalization, routing to Zeta's formal-verification
+  portfolio.** Aaron 2026-04-21 conversation:
+  *"3 4 color theorm backlog"*. Five-token ask landing
+  two adjacent-but-distinct research threads in one row:
+  (a) **four-color theorem** (every planar graph is
+  4-colorable; Appel-Haken 1976 first major computer-
+  assisted proof; Robertson-Sanders-Seymour-Thomas 1996
+  simplified proof; **Gonthier 2005 Coq formalization** —
+  landmark proof-assistant accomplishment reducing trust
+  to a small kernel), and (b) **3-coloring** (NP-complete
+  decision problem on general graphs; polynomial on
+  restricted classes; boundary with 4-color by the
+  theorem itself on planar graphs).
+
+  **Why this matters to Zeta (F1 engineering-first).**
+  Three converging factory-surface pressures:
+  1. **Formal-verification portfolio routing.** Soraya's
+     routing authority (`.claude/agents/formal-verification-expert.md`)
+     picks Alloy / TLA+ / Z3 / Lean / FsCheck per property
+     class. Graph-coloring is a canonical case study for
+     this routing: the same property (k-colorability) has
+     radically different natural encodings in each tool
+     — Alloy first-order relational (natural), Z3 SMT
+     with bit-vector coloring (fast for small k, bounded
+     graphs), Lean with `Mathlib.Combinatorics.SimpleGraph`
+     + chromatic-number definitions (proof-closure, not
+     just model-finding). The 3/4-color boundary gives a
+     clean worked example of "when does decidability
+     shift the tool choice?" — 3-coloring is NP-complete
+     so SAT/SMT dominates; 4-color on planar is
+     theorem-dependent so Lean/Coq with imported results
+     dominates.
+  2. **Computer-assisted-proof heritage.** Appel-Haken
+     1976 was the first major result where the community
+     had to decide whether a computer-enumerated case
+     analysis counts as a proof — the same epistemic
+     question Zeta's measurable-alignment time-series
+     poses (do computer-observed alignment signals
+     constitute evidence?). Gonthier's 2005 reformalization
+     in Coq closed the loop: the 633 discharging
+     configurations are mechanically checkable, the
+     reducibility predicate is a small trusted kernel, the
+     case-enumeration is reflective. This is the exact
+     shape Zeta's Lean-reflection row (above) is reaching
+     for. The four-color formalization is the canonical
+     pedagogical target for proof-by-reflection.
+  3. **Constraint-satisfaction ↔ planner cost model.**
+     Graph coloring is the paradigmatic CSP. Imani's
+     planner (operator-cost model) already reasons about
+     join-ordering as a CSP; the coloring algorithms
+     (DSATUR, Welsh-Powell, backtracking with
+     constraint-propagation) are structurally cousin to
+     the pipeline-scheduling problems Zeta already solves.
+     Retraction-native twist: can a k-coloring be maintained
+     under additive/subtractive graph deltas without
+     full re-coloring? (The answer, from the streaming-
+     algorithms literature: sometimes yes, with bounded
+     recoloring budget — directly relevant to Zeta's
+     incremental-recomputation discipline.)
+
+  **Scope when landed (staged).**
+  - *Stage 1 — Alloy-scale finite 3-coloring probe:*
+    small `docs/3Coloring.als` modelling a tiny graph +
+    `check NoMonochromaticEdge for 5`. Baseline
+    exercise for Soraya's routing: prove Alloy handles
+    this naturally; prove SAT scales to ~20 vertices;
+    prove TLA+ is *not* the right tool (state-space
+    explosion). Captures routing-calibration evidence.
+    Effort: S.
+  - *Stage 2 — Z3 chromatic-number upper-bound search:*
+    `tools/z3/chromatic.smt2` encoding. Test on
+    benchmark graphs (Petersen graph, Mycielski
+    constructions). Amortizes toward planner-cost-model
+    calibration. Effort: S.
+  - *Stage 3 — Lean 4 + Mathlib chromatic-number
+    reading group:* port a small exercise from
+    `Mathlib.Combinatorics.SimpleGraph.Coloring` into
+    `tools/lean4/Lean4/GraphColoring.lean`. Establishes
+    the Mathlib-onboarding that the Ceramist port row
+    (L599) also requires. Effort: M.
+  - *Stage 4 — four-color case study (Gonthier-
+    following):* read Gonthier's paper; trace how the
+    reducibility predicate and discharging method
+    factor through Coq reflection; produce
+    `docs/research/gonthier-four-color-walkthrough-
+    YYYY-MM-DD.md`. This is the **primary teaching
+    target** — downstream of Stage 1+ of the Lean-
+    reflection row (L604). Effort: L (paper-grade
+    reading, not a proof landing).
+  - *Stage 5 (speculative) — retraction-native
+    incremental coloring:* under graph-delta streams
+    (edge/vertex +1/-1 Z-set weights), what is the
+    cheapest coloring-preservation algorithm?
+    Candidate paper: Bhattacharya-Chakrabarty-Henzinger-
+    Nanongkai 2018 (dynamic graph coloring).
+    Retraction-native framing is unclaimed terrain
+    (candidate edge-flag seed, not staked here —
+    pending Stage 4 completion). Effort: L.
+
+  **Three filters.**
+  - *F1 engineering-first* ✓ — factory already ships
+    formal-verification routing (Soraya), planner CSP
+    machinery (Imani), and Lean trajectory (chain-rule
+    proof). Graph coloring is reached-for via these
+    surfaces independently; the theorems' relevance is
+    noticed after the surfaces exist.
+  - *F2 structural-not-superficial* ✓ — the four-color
+    theorem's Gonthier-formalization structurally
+    matches Zeta's proof-by-reflection ambition at the
+    trusted-kernel + reflective-computation layer, not
+    just nominatively.
+  - *F3 tradition-name-load-bearing* ✓ — Appel-Haken
+    1976 is a textbook watershed in proof epistemology;
+    Gonthier 2005 is a landmark in proof assistants;
+    Birkhoff-Lewis reducibility (1946) is the tradition
+    lineage. Multi-decade institutional practice
+    (Kempe 1879 attempted proof, Heawood 1890 gap-find,
+    Appel-Haken 1976 breakthrough, Robertson et al 1996
+    simplification, Gonthier 2005 formalization) is
+    exactly the tradition-durability signal F3 gates
+    for.
+
+  **Math-safety note.** Ideas-absorption, not code-
+  import. Gonthier's Coq proof is GPL-licensed; if
+  Stage 4 produces reading-notes referencing the
+  proof structure, notes are the factory's own
+  compression. No proof bytes are copied; the
+  `docs/research/` walk-through file is engineering-
+  shape analysis per the same clean-room discipline
+  as the emulator-absorb note. Retractibility
+  preserved — every stage can be retractibly
+  rewritten if a claim turns out wrong.
+
+  **Alternate-reading placeholder.** If Aaron meant
+  something narrower (e.g., just the three-color
+  problem, or just the four-color visualization, or
+  graph-coloring as a motif without the theorems),
+  this row demotes to S-effort scouting. The broad
+  reading (both theorems as formal-verification
+  case-study pair) produces more engineering value
+  and aligns with adjacent committed work (Lean
+  reflection, Mathlib port, planner cost model). Row
+  holds pending correction.
+
+  **Owner.** Soraya (formal-verification-expert) for
+  routing evidence; the Lean-reflection effort owner
+  (per L604) for Stage 4. Kenji schedules.
+
+  **Effort.** S (Stage 1) + S (Stage 2) + M (Stage 3)
+  + L (Stage 4) + L (Stage 5); total multi-round. P2
+  priority — no ship blocks, but Stage 4 is the
+  canonical teaching target for proof-by-reflection
+  discipline.
+
+  **Related.**
+  - L604 Lean reflection row — Stage 4 is downstream
+    of Stage 1+ reflection competence.
+  - L599 Ceramist → Lean Mathlib port — shares the
+    Mathlib-onboarding cost.
+  - `docs/research/chain-rule-proof-log.md` — active
+    formalization ledger.
+  - Isomorphism / homomorphism catalog row (L5699+) —
+    chromatic-polynomial has homomorphism-density
+    structure relevant to the catalog's IF4 filter.
+  - `feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md`
+    — Stage 4 walkthrough is teaching-artifact for
+    proof-by-reflection pedagogy.
+
+  **Does NOT commit to:**
+  - Re-proving the four-color theorem (Gonthier's
+    proof stands; walkthrough is reading-discipline,
+    not re-derivation).
+  - Shipping a graph-coloring module in `src/Core`
+    (unless Stage 5 retraction-native streaming
+    result motivates one — speculative).
+  - Treating graph coloring as foundational to
+    Zeta's algebra (it's case-study surface for
+    routing-calibration, not substrate).
 - [ ] **Probabilistic-data-structure research sweep.** Zeta
   already ships `BloomFilter.fs` + a `CountingBloomFilter`
   and `Sketch.fs` with HLL / CountMin / KLL. The broader
@@ -5085,6 +5265,203 @@ systems. This track claims the space.
   artifacts citing occult candidates without Aaron
   sign-off (ship is a distribution-irreversibility
   event). Log, track, reference freely at research tier.
+
+- [ ] **Mystery schools / comparative religion / history
+  of religion research track — CATALOG-ONLY register,
+  gentle, no claim-staking.** Aaron 2026-04-21
+  conversation: *"mybtery shools comparative relition
+  history of relition all that space, be gentle and
+  catalog i would not try to make claims here but it's
+  up to you, people are very touchy backlog"*. Explicit
+  register guidance embedded: *gentle* + *catalog* +
+  *would-not-try-to-make-claims* + *people-are-very-
+  touchy*. This track **does NOT plant edge-flags** and
+  **does NOT promote candidates to operational-resonance
+  instances without Aaron's explicit per-instance
+  confirm** — the register is intentionally different
+  from the adjacent occult / mythology / etymology
+  tracks which do engage filter-discipline. Here the
+  work is survey + lineage-map + structural-resonance
+  *noting* without F3-grade claim-staking.
+
+  **Three overlapping but distinct scopes.**
+  - *Mystery schools* — ancient initiatory traditions
+    with graded disclosure: Eleusinian (c. 1500 BCE –
+    392 CE, Demeter/Persephone cycle), Dionysian /
+    Orphic (Thrace → Greek → Roman, afterlife
+    doctrines), Mithraic (Roman Empire, 1st–4th c CE,
+    seven grades), Isiac (Egyptian → Hellenistic →
+    Roman), Pythagorean (6th c BCE, number-as-substrate),
+    Samothracian, Hermetic (late-antiquity technical
+    corpus), plus less-canonical continuations via
+    Gnostic / Neoplatonic / medieval-esoteric lineages.
+  - *Comparative religion* — 19th-to-20th-century
+    academic discipline: Max Müller (*Sacred Books of
+    the East*), Friedrich Heiler typology, Mircea
+    Eliade (*Patterns in Comparative Religion*,
+    hierophany / axis mundi / eternal return), Joseph
+    Campbell (monomyth, *Hero with a Thousand Faces*),
+    Georges Dumézil (trifunctional Indo-European
+    theory), Huston Smith (*The World's Religions*),
+    Wilfred Cantwell Smith (*The Meaning and End of
+    Religion*), Wendy Doniger (*The Implied Spider*),
+    Jeffrey Kripal (*The Flip*, *Authors of the
+    Impossible*). Methodological disagreements (Eliade's
+    phenomenology vs. J.Z. Smith's post-structuralist
+    critique *To Take Place*) are themselves
+    catalogable.
+  - *History of religion / Religionsgeschichte* —
+    historical-contextual school: Religionsgeschichtliche
+    Schule (late 19th c Göttingen), Weber's sociology of
+    religion, Durkheim's *Elementary Forms*, Rudolf Otto
+    (*The Idea of the Holy*, numinous), R.C. Zaehner
+    (mystical typology), Karen Armstrong (*A History of
+    God*), Robert Bellah (*Religion in Human Evolution*).
+    Tracks how religions change across time rather than
+    asserting ahistorical essences.
+
+  **Register discipline (Aaron's explicit guidance).**
+  - *Gentle.* Tone is surveying-a-shared-inheritance,
+    not debunking-or-converting. Every tradition gets
+    read on its own terms before any structural match
+    is noted. Aaron's sincere-Christian frame +
+    pluralist-for-others posture
+    (`user_faith_wisdom_and_paths.md`) applies fully.
+  - *Catalog.* Produce lineage-maps + bibliographies +
+    summary of doctrinal positions + scholarly-consensus
+    notes. No filter-application, no operational-
+    resonance promotion, no edge-flag staking.
+  - *No claims.* Even structural-resonance observations
+    land as *"tradition X and factory surface Y happen
+    to share shape Z"* with zero causal / evidential /
+    alignment-signal load. The three filters are
+    **switched off** for this track.
+  - *People are very touchy.* Any artifact from this
+    track that could leave the `memory/` + `docs/`
+    substrate and become outward-facing must go through
+    Aaron sign-off per distribution-irreversibility
+    discipline. Internal-catalog only until explicitly
+    approved for public surface.
+
+  **Scope when landed (staged, all catalog-register).**
+  - *Stage 1 — bibliographic scaffold.* One
+    `docs/research/mystery-schools-catalog-YYYY-MM-DD.md`
+    per tradition-family (Eleusinian, Mithraic, etc.)
+    with primary sources, scholarly secondary sources,
+    modern reception. Pure bibliography + summary.
+    Effort: S per family.
+  - *Stage 2 — comparative-religion framework map.*
+    `docs/research/comparative-religion-methods-YYYY-
+    MM-DD.md` summarizing the Eliade / Campbell /
+    Dumézil / Smith / Kripal methodological landscape
+    without endorsing any school. Effort: M.
+  - *Stage 3 — history-of-religion lineage diagram.*
+    Timeline of major religious formations +
+    cross-influences + historical-context changes,
+    catalog-register only. Effort: M.
+  - *Stage 4 (conditional on explicit Aaron
+    request).* Structural-resonance *notings* — shape
+    Z appears in tradition X and factory surface Y;
+    present as data, not claim. Only landed if
+    Aaron explicitly asks for the noting, per the
+    register guidance. Effort: S per noting.
+
+  **Three filters — intentionally disabled here.** F1
+  engineering-first / F2 structural-not-superficial /
+  F3 tradition-name-load-bearing stay switched off
+  for this track. Filter-discipline is an alignment-
+  signal tool (operational-resonance corpus) and not
+  appropriate in a catalog-only register. The adjacent
+  occult / mythology / etymology tracks ARE filter-
+  gated; this track is intentionally NOT. Re-enabling
+  filters for any specific candidate requires Aaron's
+  explicit per-candidate request.
+
+  **Math-safety.** Retractibility-preserved at every
+  layer: catalog-only material is ideas-absorption
+  (not code, not creed, not commitment); every entry
+  is additive + revision-block-supersede-able; zero
+  distribution-irreversibility events without sign-off.
+  No permanent harm framework per
+  `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`.
+
+  **Teaching discipline** per
+  `feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md`:
+  catalog artifacts are pure teaching-surface for
+  future factory-reuse consumers who may bring their
+  own tradition-frames. Khan-Academy-pedagogy posture
+  (`user_aaron_loves_mr_khan_khan_academy_teaching_admired.md`):
+  free to read, tradition-neutral presentation,
+  additive layering, chronology-preserving.
+
+  **Owner.** Architect (Kenji) schedules; individual
+  stage landings are agent-drafted with Aaron gating
+  any promotion from catalog-register to claim-
+  register. No dedicated persona — scope too wide and
+  too socially-touchy to name a single steward.
+
+  **Effort.** Ongoing, slow-burn. Stage 1 bibliographic
+  scaffolds are S each; Stages 2-3 are M each; Stage 4
+  entries are S each but require per-noting Aaron
+  confirm. P2 priority — not urgent; information-
+  density-gravity is posterior-bump, not forcing-
+  function.
+
+  **Alternate-reading placeholder.** If Aaron meant
+  something narrower (only mystery schools, or only
+  comparative religion as an academic-methodology
+  survey, or only one specific tradition), this row
+  demotes accordingly. Broad reading produces more
+  teaching-artifact value; holds pending correction.
+
+  **Related.**
+  - Occult / Western-esoteric research track (row
+    immediately above, L5113) — filter-gated
+    companion track covering the Renaissance-and-
+    later reception/synthesis lineage downstream of
+    mystery-schools.
+  - Mythology research track (row immediately below,
+    L5269+) — filter-gated companion for bridge/
+    messenger/boundary figures.
+  - Etymology + epistemology research track (L5383+)
+    — linguistic-substrate companion.
+  - Pop-culture / media research track (L5482+) —
+    modern-reception / conspiracy-corpus companion.
+  - Frontier edge-claims BACKLOG row (L4454) —
+    intentionally-separate track; mystery-schools
+    material does NOT feed this unless explicitly
+    promoted per the register discipline.
+  - `user_faith_wisdom_and_paths.md` — Aaron's
+    sincere-Christian-frame + pluralist-for-others
+    posture, which the register discipline honors.
+  - `feedback_pop_culture_media_is_operational_resonance_corpus_multi_medium.md`
+    — the companion track's log-and-track discipline
+    that this track SUPERSEDES (here it's pure
+    catalog, not corpus).
+
+  **Retractibility-protecting constraints.** Does NOT
+  promote catalog entries to operational-resonance
+  instances without Aaron's per-instance confirm; does
+  NOT plant edge-flags derived from this material;
+  does NOT publish public-facing artifacts without
+  Aaron sign-off (distribution-irreversibility); does
+  NOT apply filter-discipline here (register-switch-
+  off is load-bearing); does NOT treat scholarly-
+  disagreements as problems to resolve (they are
+  themselves catalog content). Log, track, reference
+  internally only.
+
+  **Does NOT commit to:**
+  - Any specific tradition as operationally-resonant
+    with factory substrate.
+  - Any scholarly school's methodology as correct.
+  - Any position on truth-claims internal to any
+    tradition (factory stays outside those).
+  - Shipping a public-facing "religions of the world"
+    artifact without Aaron sign-off.
+  - Maintaining every tradition at equal depth
+    (triage by Aaron's expressed interest + factory-
+    surface adjacency).
 
 - [ ] **Mythology research track — operational-resonance
   candidates from world-mythology bridge/messenger/boundary
