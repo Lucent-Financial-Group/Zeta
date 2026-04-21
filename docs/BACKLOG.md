@@ -2865,6 +2865,48 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
+- [ ] **Claude-surface cadenced audit — first full sweep.**
+  Aaron 2026-04-20 late, verbatim: *"part of our stay up to
+  date on everything we should always research claude and
+  claude code and desktop difference an changes on a
+  cadence so we can design our factory for the latest
+  changes and featuers."*
+
+  **Durable policy landed this round** at
+  `memory/feedback_claude_surface_cadence_research.md` +
+  FACTORY-HYGIENE row 38 + living inventory at
+  `docs/CLAUDE-SURFACES.md`. The bootstrap inventory was
+  populated from my existing knowledge plus Aaron's
+  AutoMemory / AutoDream context data.
+
+  **Outstanding work** is the first *full* audit — the
+  bootstrap was partial:
+  1. `.claude/agents/claude-code-guide` runs a structured
+     research sweep against Anthropic docs
+     (`platform.claude.com`, `code.claude.com`,
+     `claude.com/claude-code`, official changelogs, SDK
+     repos) for every surface listed in
+     `docs/CLAUDE-SURFACES.md`.
+  2. Fill gaps in the inventory — adoption statuses for
+     features currently marked `watched` or `untested`;
+     flag features the factory didn't know about.
+  3. Log findings in the `CLAUDE-SURFACES.md` audit-log
+     table.
+  4. File `docs/research/meta-wins-log.md` entries for
+     any pre-existing factory assumption found to have
+     been wrong (the AutoMemory miss is already the
+     first entry).
+  5. Any new feature justifying adoption → ADR if
+     Tier-3; Tier-1/2 edits in place per the tiered
+     envelope.
+
+  **Cadence going forward:** every 5-10 rounds (row 38).
+  This BACKLOG row is specifically the **first full
+  sweep** to complete the bootstrap.
+
+  Effort: S (scoped research, single audit, inventory
+  update). Owner: claude-code-guide persona.
+
 - [ ] **Kanban + Six Sigma factory-process — land the three
   artifacts (research complete).** Aaron 2026-04-20 late:
   *"also khanban is a good practice, i prefer it and
