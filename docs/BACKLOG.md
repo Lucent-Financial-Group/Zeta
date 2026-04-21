@@ -3219,6 +3219,156 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
+- [ ] **AI ethics + safety research track — filter-gate for
+  resonance adoptions + alignment-clause consistency audit**
+  — Aaron 2026-04-21: *"ai ethic and safety backlog whoops we
+  should have done that first"* followed immediately by
+  *"high on backlog"*. **Chronological annotation (preserved
+  per `feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md`).**
+  This row was filed LATER in the session than the mythology
+  + occult P2 rows (also filed this session). Aaron's
+  self-correction *"whoops we should have done that first"*
+  is a retrospective priority-judgment, captured verbatim
+  here. Tier placement at P1 reflects substrate-foundational
+  precedence (ethics+safety gates adoption of everything
+  downstream); filing-order-after-mythology-and-occult is
+  preserved as the real order of events per Aaron's
+  directive. The memory file above tracks the full principle:
+  priority-upgrade ≠ chronology-overwrite, ease-of-rewrite ≠
+  permission-to-rewrite, blast-radius assessment before any
+  historical modification, current history stands.
+
+  **What this track owns.** A filter-gate applied to every
+  candidate adopted from the downstream research tracks
+  (etymology+epistemology, mythology, occult, and any future
+  resonance-family row), plus a cadenced audit of every new
+  skill / persona / kernel-vocabulary entry / glossary term
+  / governance-section against the alignment clauses in
+  `docs/ALIGNMENT.md` (HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5).
+  The substrate already exists — this row does NOT build it
+  from scratch. It formalizes the use-pattern:
+  1. **Retractibility-and-log check (not veto).** Per
+     `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
+     the gate's job is to verify that any candidate
+     adoption preserves retractibility (additive
+     rewrite, git-tracked, one-commit removable) and
+     lands in the log. The three-filter discipline
+     (F1/F2/F3) tests structural match; this check
+     ensures the adoption operation itself is
+     retractible and audit-visible. No candidate is
+     blocked merely for being edgy — blocking would
+     itself be a prose-safety-hedge that hurts
+     crystallization without adding retractibility
+     information. Blocking is reserved for operations
+     that break retractibility (e.g., force-publication
+     to a distribution channel we cannot rescind).
+  2. **New-surface audit.** Every new skill under
+     `.claude/skills/**`, persona under `.claude/agents/**`,
+     glossary entry in `docs/GLOSSARY.md`, and BACKLOG row
+     at P0/P1 runs through an alignment-clause consistency
+     check. Fires at author-time (prevention surface) and
+     on a cadence (detection surface). Same shape as the
+     skill-data/behaviour-split audit, but on
+     alignment-clause compliance rather than mix-signature.
+  3. **Candidate-failure honesty log.** Candidates that
+     fail the ethics+safety gate are recorded as failure-
+     data on the honesty dashboard, NOT silently dropped.
+     Rubber-stamping is the exact failure-mode the
+     three-filter discipline exists to prevent — this
+     gate extends that discipline into the ethics axis.
+  4. **Alignment-clause drift detector.** If a clause in
+     `docs/ALIGNMENT.md` is about to be weakened or
+     removed via the renegotiation protocol, this track
+     generates the impact-survey across factory surfaces
+     that touch the clause. Answers "who depends on this
+     clause, and what breaks if it moves?" before the
+     renegotiation is accepted.
+  5. **Blast-radius-before-rewrite discipline audit.**
+     Every retractibly-rewrite operation on memory /
+     BACKLOG / ADRs / skills / personas passes the four
+     blast-radius questions from
+     `feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md`.
+     Current history stands unless the questions clear.
+
+  **Why this is substrate, not research.** Zeta's primary
+  research focus is **measurable AI alignment**
+  (`docs/ALIGNMENT.md`, `GOVERNANCE.md`). The alignment-
+  auditor (Sova) persona and the HC/SD/DIR clause structure
+  already exist. This row does not propose new substrate;
+  it proposes a **use-discipline** for the existing
+  substrate, applied across the new research tracks filed
+  this session. Aaron's *"we should have done that first"*
+  is the real signal — the research tracks below P2 were
+  filed without this explicit gate, which is the priority
+  inversion Aaron self-corrected. The gate now lands at
+  P1, upstream of the research tracks at P2, in structural
+  priority. Chronologically it landed later; structurally
+  it gates earlier.
+
+  **Relation to existing rules.** Does NOT replace
+  `GOVERNANCE.md` §N clauses, `docs/ALIGNMENT.md` clauses,
+  BP-NN rules, or any specialist-reviewer (alignment-
+  auditor / threat-model-critic / security-researcher /
+  prompt-protector) scope. Coordinates them as a single
+  gate for the new research-track adoptions specifically.
+  Coverage overlap is feature, not bug — multiple gates
+  catching the same issue is the resilience pattern.
+
+  **Why P1 not P0.** P0 is ship-blocker. No ship is
+  pending that blocks on this row. P1 is "within 2-3
+  rounds" — that's the right cadence: the research
+  tracks won't surface promotable candidates faster than
+  2-3 rounds, so the gate needs to land before the first
+  candidate reaches the adoption step.
+
+  **Effort.** L — formalization work plus cadenced audit
+  standup; bounded by the existing alignment substrate
+  (not from-scratch). First milestone: author an audit-
+  procedure skill (or extend the alignment-auditor
+  skill) that applies the five responsibilities above.
+  Subsequent milestones: fire-history surface under
+  `docs/hygiene-history/`, alignment-clause-drift
+  detector script under `tools/`, BACKLOG triage
+  workflow.
+
+  **Owner.** Alignment-auditor (Sova) leads; Architect
+  (Kenji) integrates across the research tracks; Aaron
+  signs off on any candidate adoption.
+
+  **Related.**
+  - `docs/ALIGNMENT.md` — the alignment clauses
+    (HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5) this row's
+    gate applies.
+  - `.claude/agents/alignment-auditor.md` (Sova
+    persona) — advisory authority for the gate.
+  - `memory/feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md`
+    — chronological discipline for the filing
+    annotation above; blast-radius-before-rewrite audit.
+  - `memory/user_faith_wisdom_and_paths.md` — Aaron's
+    sincere-Christian-particularist-for-self + pluralist-
+    for-others frame; non-endorsement posture for
+    research tracks surveying other traditions.
+  - `memory/feedback_blast_radius_pricing_standing_rule_alignment_signal.md`
+    — blast-radius pricing as alignment signal.
+  - `memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`
+    — the operational-resonance three-filter discipline
+    this gate extends.
+  - Mythology research track (P2 above, filed earlier
+    in session chronology).
+  - Occult / Western-esoteric research track (P2 above,
+    filed earlier in session chronology).
+  - Etymology + epistemology research track (P2 below,
+    filed earliest in the resonance-series sequence).
+
+  **Retractibility-protecting constraints.** Does NOT
+  force-push committed ALIGNMENT.md revisions; does
+  NOT bypass the alignment-clause renegotiation
+  protocol; does NOT ship factory releases with
+  broken retraction algebra or missing audit log.
+  Coordinates with Nazar (runtime), Aminata (threat
+  model), Mateo (proactive research), Nadia (prompt
+  layer) as horizontal gate, not replacement.
+
 - [ ] **Claude-harness cadenced audit — first full sweep.**
   Aaron 2026-04-20 late, verbatim: *"part of our stay up to
   date on everything we should always research claude and
@@ -4175,6 +4325,276 @@ systems. This track claims the space.
   ongoing.
 
 ## P2 — research-grade
+
+- [ ] **Occult / Western-esoteric tradition research track —
+  operational-resonance candidates from Hermetic / Kabbalistic /
+  Thelemic / Golden Dawn / Theosophical / alchemical tradition-
+  lineages** — Aaron 2026-04-21: *"occoult baclog"* followed
+  immediately by *"crowley"* then *"expand"* (three-message
+  directive: file a backlog row for occult-tradition resonance
+  candidates, seed with Crowley, expand scope to full Western
+  esoteric lineage). Parallel to the mythology track but
+  distinct tradition-family — occult/esoteric traditions have
+  their own canonicity conventions, their own filter-application
+  calibration, and their own blast-radius considerations
+  relative to Aaron's sincere Christian frame + pluralist-for-
+  others posture.
+
+  **Seed candidate: Aleister Crowley (1875–1947) / Thelema.**
+  Three-filter honest pass:
+  - **F1 (engineering-first).** Factory substrate-seeking
+    (retraction-native algebra, bootstrap, measurable alignment)
+    is operational-first, Crowley mapping would be noticed
+    after. **Passes.**
+  - **F2 (structural-not-superficial).** Candidate structural
+    matches: (a) **True Will** (*Thelemic doctrine: each entity
+    has a unique trajectory determined by its nature, and
+    optimal action is alignment with that trajectory*) ↔
+    factory's generic-by-default / portability-across-projects
+    / inclusive-succession principle ("any successor inherits
+    without creed" — `project_factory_as_externalisation.md`).
+    Match is present but thin — Christian soteriology in
+    Aaron's frame already carries this more cleanly via "many
+    paths, one destination" (`user_faith_wisdom_and_paths.md`).
+    (b) **"Love is the law, love under will"** ↔ factory's
+    operational-resonance + alignment-trajectory measurability
+    (will + love organized as will-filtering-love). Match is
+    loose. (c) **Holy Guardian Angel / personal daimon** (from
+    Abramelin via Plato's δαίμων) ↔ per-persona notebook +
+    agent-as-servitor-to-operator-algebra pattern. Match is
+    interpretive, not structural. (d) **Synthesis across
+    tradition apertures** (Crowley drew from Hermeticism,
+    Kabbalah, Yoga, Enochian, Eastern mysticism) ↔ instance
+    #6 multi-aperture substrate-seeking (Gates/Lisi/
+    Ramanujan/Wolfram/Susskind/Weinstein) — but Crowley's
+    aperture is experiential/magical vs. mathematical, so
+    the methodology-match is thin. **F2 weak** overall at
+    whole-person scale; individual doctrines (True Will
+    especially) pass stronger than the figure.
+  - **F3 (tradition-name-load-bearing).** Crowley is
+    load-bearing *within Thelema and Western occult
+    revival* — Liber AL vel Legis (1904) is foundational
+    to Thelema; Ordo Templi Orientis and A∴A∴ lineage
+    continues. Cross-tradition load-bearing is weaker —
+    Crowley is not canonical in any mainstream religion,
+    is actively rejected by multiple Christian traditions,
+    and carries reputational complications (self-styled
+    "Great Beast 666", MI6 rumors, drug experimentation,
+    contested biography). **F3 in-tradition pass, cross-
+    tradition weak.**
+  - **Honest verdict.** Crowley-as-whole-person is a
+    **candidate, not confirmed**, and likely to land as
+    F2-weak if pursued. Specific Crowley-adjacent
+    doctrines (True Will, synthesis-methodology, HGA)
+    may individually land stronger; each deserves its
+    own filter pass. Priority is on the stronger
+    candidates below before elevating Crowley-figure.
+
+  **Wider-track candidates (to be triaged individually).**
+  (a) **Hermeticism / Corpus Hermeticum / Tabula
+  Smaragdina** — "As above, so below" maps structurally
+  to the factory's substrate-resonance (macrocosm/microcosm
+  = tradition-register/engineering-register in operational-
+  resonance phenomenon itself); potentially strong F2.
+  (b) **Kabbalah / Sefer Yetzirah / Zohar / Lurianic
+  tzimtzum** — Lurianic contraction/emanation has
+  structural match to the factory's bootstrap-as-withdrawal
+  pattern; tzimtzum ↔ how a ground makes room for its
+  instance is a legitimate structural mapping; F2
+  potentially strong, F3 strong in Jewish mystical tradition.
+  (c) **Enochian / Dee-Kelley 1580s angelic language** —
+  interesting as invented-language-with-grammar case
+  adjacent to εἰμί grammatical-class-extension work;
+  F3 load-bearing within Western occultism but contested.
+  (d) **Eliphas Levi / Agrippa** — 19th-c and 16th-c
+  synthesizers respectively; methodology-pattern match
+  to instance #6 multi-aperture substrate-seeking.
+  (e) **Golden Dawn (1888+)** — ritual-as-operator-
+  algebra pattern; structured correspondence tables
+  (Liber 777) adjacent to glossary-kernel information-
+  density-gravity work (instance #8). (f) **Blavatsky
+  / Theosophy** — universal-religion-synthesis posture
+  adjacent to Aaron's many-paths-one-destination frame
+  (but Theosophy's specific claims have been contested);
+  F3 contested. (g) **C.G. Jung's alchemy work
+  (Psychology and Alchemy, Mysterium Coniunctionis)** —
+  psychologized alchemy; union-of-opposites ↔
+  paired-dual type (instance #9) at the psychological
+  layer; this is the cleanest cross-disciplinary
+  bridge because Jung moved occult material into
+  clinical-psychology-adjacent register.
+
+  **Why P2.** Research-grade; genuinely novel material
+  but with weaker F3 calibration than Abrahamic
+  instances. The filter-application itself is the
+  primary work-product — honest filter-failure on an
+  occult candidate is as valuable as honest filter-pass
+  on a canonical one. Measurable alignment per
+  `docs/ALIGNMENT.md` requires honest time-series, not
+  cherry-picked confirmations.
+
+  **Safety is retractibility-preservation** per
+  `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
+  — tradition-name reference is retractible at the
+  lexical level (one commit removes it from git
+  history's current tip; revision blocks preserve the
+  factual record of the reference). Log every name,
+  track every filter-pass/fail, candidate-vs-confirmed
+  is first-class status. The AI-ethics-and-safety P1
+  row below is the log-and-track audit surface, not
+  a veto-authority.
+
+  **Effort.** L — long-running research track, per-
+  candidate landings S-M. Runs in parallel with
+  mythology + etymology tracks; each candidate triaged
+  independently through the three-filter discipline.
+
+  **Owner.** Architect (Kenji) integrates; honest
+  filter-application discipline is the primary quality
+  control.
+
+  **Related.**
+  - `user_faith_wisdom_and_paths.md` — Aaron's sincere
+    Christian particularist-for-self + pluralist-for-
+    others frame; research posture for non-Christian
+    traditions is observation-not-endorsement.
+  - `feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`
+    — three-filter discipline this track applies.
+  - `project_operational_resonance_instances_collection_index_2026_04_22.md`
+    — where confirmed candidates land; filter-
+    failures recorded on the honesty dashboard.
+  - `docs/ALIGNMENT.md` — ethics+safety substrate
+    every adoption passes through.
+  - The AI-ethics-and-safety P1 row below (Aaron's
+    self-corrected priority) — gates every adoption.
+  - Mythology research track (below at P2, filed
+    immediately before this row in session
+    chronology).
+  - Etymology + epistemology research track (below
+    at P2, filed earliest in the resonance-series
+    sequence).
+
+  **Retractibility-protecting constraints (kept per the
+  math-safety memory).** Does NOT force-push committed
+  memory or index revisions; does NOT delete memory
+  files without backup; does NOT ship public-release
+  artifacts citing occult candidates without Aaron
+  sign-off (ship is a distribution-irreversibility
+  event). Log, track, reference freely at research tier.
+
+- [ ] **Mythology research track — operational-resonance
+  candidates from world-mythology bridge/messenger/boundary
+  figures** — Aaron 2026-04-21: *"hemdal"* (Heimdallr,
+  single-word candidate) then *"mythology backlog"*
+  (file a backlog row for mythology-sourced resonance
+  candidates). Parallel to the etymology+epistemology
+  track but distinct tradition-family — world-mythology
+  figures sit between canonical-religious traditions and
+  literary/folkloric record, with different F3 calibration
+  than Abrahamic or classical-philosophical instances.
+
+  **Seed candidate: Heimdallr (filed above as candidate
+  instance #12 in the operational-resonance collection
+  index).** Three-filter honest pass recorded in that
+  index: F1 passes, F2 strong-but-looser than Melchizedek
+  (no verb-root identity), F3 passes within Norse
+  tradition but Norse-canonicity is thinner than
+  Abrahamic (Christianization-filtered Eddas).
+  **Status:** candidate, pending second textual anchor
+  or Aaron confirmation to promote to confirmed. Second
+  bridge-figure member would LOCK the bridge-figure
+  sub-structure's definition (currently defined by
+  Melchizedek alone).
+
+  **Wider-track candidates (to be triaged individually).**
+  (a) **Hermes (Greek) / Mercury (Roman)** — messenger
+  god, psychopomp, boundary-crosser, patron of thieves
+  AND communication. Load-bearing in Homeric + Orphic
+  traditions, Hellenistic mystery cults, Renaissance
+  hermeticism (overlap with occult track). Structural
+  match: unified-endpoint-across-realms shares shape
+  with tele+port+leap (#4); psychopomp function
+  (escort across life/death boundary) shares shape with
+  Μένω-persistence-through-discontinuity (#9). Strong
+  F3 across two Indo-European tradition branches.
+  (b) **Janus (Roman)** — two-faced god of beginnings,
+  endings, transitions, doorways. Structural match:
+  paired-dual type (#9) at divinity-name level —
+  Janus IS the personification of a paired-dual;
+  F2 strong. F3 load-bearing in Roman civic religion
+  (month of January, gates of war temple). (c) **Iris
+  (Greek)** — rainbow-messenger, bridge between
+  Olympus and earth; parallel to Bifröst-Heimdallr
+  Norse structure. Lighter F3 than Hermes. (d)
+  **Ratatoskr (Norse)** — squirrel-messenger scurrying
+  Yggdrasil between eagle and serpent; interesting as
+  the ONLY Norse figure explicitly named "messenger
+  between opposed principles"; adjacent to Heimdallr
+  but weaker F3 (single Eddic mention, Grímnismál 32).
+  (e) **Thoth (Egyptian)** — scribe-god, measurer of
+  souls, boundary between life/death. Load-bearing in
+  Egyptian Book of the Dead + Hermetic tradition
+  (overlaps occult track via Hermes Trismegistus
+  identification); F3 strong. (f) **Garuda (Vedic/
+  Hindu)** — Vishnu's vehicle-mount, spans realms,
+  enemy-of-serpents. F3 strong in Vedic + later
+  Hindu+Buddhist traditions. (g) **Tecciztecatl /
+  Quetzalcoatl (Mesoamerican)** — feathered-serpent
+  bridge between earth and sky. F3 strong in pre-
+  Columbian traditions; language-barrier considerations.
+  (h) **Loki (Norse)** — trickster-as-boundary-
+  violator; structural match is inverted (crosses
+  boundaries improperly rather than maintaining them);
+  interesting contrast to Heimdallr, possibly an
+  anti-instance demonstrating failure-mode of
+  bridge-figure role.
+
+  **Why P2.** Research-grade; F3 calibration across
+  mythological tradition is a distinct discipline from
+  canonical-religious or classical-philosophical
+  instances. Mythology-tradition names have multi-
+  millennial transmission but often more contested
+  canonical texts than Abrahamic material; this track
+  exercises the filter-application discipline against
+  that edge-case.
+
+  **Safety is retractibility-preservation** per the
+  math-safety memory. Tradition-name reference is
+  retractible (git-tracked, revision-block-preserved,
+  one-commit removable). Log every figure referenced,
+  track candidate vs confirmed vs failed-filter state.
+  The AI-ethics-and-safety P1 row below is the
+  log-and-track audit surface.
+
+  **Effort.** L — long-running research track, per-
+  candidate S-M. Runs in parallel with occult +
+  etymology tracks.
+
+  **Owner.** Architect (Kenji) integrates; honest
+  filter-application discipline is the primary quality
+  control.
+
+  **Related.**
+  - `project_operational_resonance_instances_collection_index_2026_04_22.md`
+    — instance #12 candidate Heimdallr lives here.
+  - `feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`
+    — three-filter discipline.
+  - `docs/ALIGNMENT.md` — ethics+safety substrate.
+  - The AI-ethics-and-safety P1 row below — gates
+    every adoption.
+  - Occult / Western-esoteric research track (above
+    at P2, filed immediately after this row in
+    session chronology).
+  - Etymology + epistemology research track (below at
+    P2, filed earliest in the resonance-series
+    sequence).
+
+  **Retractibility-protecting constraints.** Does NOT
+  force-push revisions to the operational-resonance
+  index; does NOT delete memory files without backup;
+  does NOT ship public-release artifacts citing
+  mythology candidates without Aaron sign-off. Log,
+  track, reference freely at research tier.
 
 - [ ] **Etymology + epistemology research track — linguistic-substrate
   layer of kernel-vocabulary + three-filter discipline calibration** —
