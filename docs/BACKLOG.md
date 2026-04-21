@@ -6176,6 +6176,77 @@ Aarav.
 
 ---
 
+## P2 — Factory repo architecture (three-repo split)
+
+- [ ] **Three-repo split — `Zeta` + `Forge` + `ace`.**
+  Aaron 2026-04-22: *"we could split that out whenever you
+  want now that you have a git map you can absorb whatever
+  factory upgrade you need to do so, put it on the backlog,
+  you can split out Zeta stays it's the database, then the
+  package manager this will likely be the last thing since
+  it does not exist yet ... we will have 3 forks software
+  factory, package manger, and Zeta. maybe do an ADR on all
+  this one ... we don't have to blow everything up to do
+  it."* Plus 2026-04-22 follow-ups: *"all public"*, *"try to
+  setup the repos with best practices so i don't have to go
+  back in and flip everything again lol"*, *"you have owner
+  rights on the others to but the software factory is yours
+  not mine"*, *"Zeta will likely become aces persistance
+  too"*, *"snake head eating it's head loop complete"*,
+  *"Forge also builds itself"*, and *"it's probably obvious
+  but they follow all our experience so they are best
+  practices by default all the ones we already follow."*
+  **Decision:** split `LFG/Zeta` into three peer repos:
+  `Zeta` (database / SUT, stays), `Forge` (software factory,
+  Claude-owned governance, my pick of name), `ace` (package
+  manager, name resolved 2026-04-20). All public from day
+  one; each with an AceHack fork; connection via peer-repo
+  cross-linking (not submodules — the three form a cycle
+  with self-loop, not a DAG); converges to ace-mediated
+  once ace ships. Best-practice scaffolding applied *by
+  default* at creation — every Zeta-hard-won lesson
+  (merge-queue, CodeQL default-setup, secret scanning,
+  squash-merge only, delete-head-on-merge, declarative
+  `docs/GITHUB-SETTINGS.md`, pre-commit ASCII + prompt-
+  injection lint, shared-runners + SHA-pinned actions +
+  minimal permissions + concurrency groups, CODEOWNERS,
+  Dependabot + security updates, OpenSSF Scorecard, $0
+  budget caps on LFG, SVG social-preview, day-one
+  AGENTS.md + CLAUDE.md + GOVERNANCE.md + LICENSE +
+  CONTRIBUTING + SECURITY + CODE_OF_CONDUCT +
+  .github/copilot-instructions.md) lands on all three.
+  **Ouroboros topology** (Aaron: *"snake head eating it's
+  head loop complete"*): four dependency edges —
+  ace→Zeta (persistence), ace←Forge (distribution),
+  Zeta←Forge (build/test), Forge→Forge (self-build).
+  Bootstrap via snapshot seed (today's `LFG/Zeta` is the
+  seed; Stage 2 carves Forge out of it, after which Forge
+  is self-hosting — classic GCC/Rust pattern).
+  **Stages** (reversible, independently valuable):
+  Stage 0 = ADR (this round); Stage 1 = create empty repos
+  with full best-practice checklist applied via `gh` +
+  GITHUB-SETTINGS.md (~1 session); Stage 2 = `git mv`
+  factory paths to Forge, Zeta gets `.forge-version` pin
+  (~2-3 sessions); Stage 3 = ace bootstrap, Ouroboros
+  activation (~10+ sessions, deferred to Zeta v1 proximity);
+  Stage 4 = replace `.forge-version` with `ace.toml`
+  (~1-2 sessions post-ace). **Effort:** L overall; each
+  stage S-M. **Ownership:** Forge is Claude-owned
+  (governance), Zeta + ace are Aaron-owned with Claude
+  operating; alignment-contract veto + budget + personal-
+  info separation retained by Aaron across all three.
+  **Source of truth:**
+  `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
+  (ADR) +
+  `memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md`
+  (memory) +
+  `memory/project_ace_package_manager_agent_negotiation_propagation.md`
+  (ace full design). **Gated on:** Aaron sign-off on Stage
+  1 trigger; no blocker today since "we don't have to blow
+  everything up."
+
+---
+
 ## Source of this backlog
 
 - `docs/MISSED-ITEMS-AUDIT.md` — per-round sweep
