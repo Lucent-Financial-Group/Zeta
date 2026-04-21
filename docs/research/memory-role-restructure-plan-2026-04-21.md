@@ -123,7 +123,7 @@ memory/persona/sova/             memory/alignment/sova/
 memory/persona/tariq/            memory/algebra/tariq/
 memory/persona/viktor/           memory/verification/viktor/
 
-memory/persona/README.md         memory/persona-README.md (or moved to memory/README-persona-roles.md)
+memory/persona/README.md         memory/persona-roles-README.md
 memory/persona/best-practices-scratch.md   memory/best-practices-scratch.md (promote to memory/ root; it is shared across roles by design)
 ```
 
@@ -133,10 +133,12 @@ memory/persona/best-practices-scratch.md   memory/best-practices-scratch.md (pro
 
 ```bash
 grep -rln "memory/persona/" --include="*.md" --include="*.json" \
-  --include="*.sh" --include="*.fs" --include="*.cs" . | \
-  grep -v "^./\\.git" | wc -l                     # → 114 files
+  --include="*.sh" --include="*.fs" --include="*.cs" \
+  --exclude-dir=.git --exclude-dir=references . | \
+  wc -l                                           # → 114 files
 grep -rc "memory/persona/" --include="*.md" --include="*.json" \
-  --include="*.sh" . | grep -v ":0$" | \
+  --include="*.sh" --exclude-dir=.git --exclude-dir=references . | \
+  grep -v ":0$" | \
   awk -F: '{s+=$2} END {print s}'                 # → 700 refs
 ```
 
@@ -202,19 +204,26 @@ declare -A ROLES=(
 for persona in "${!ROLES[@]}"; do
   role="${ROLES[$persona]}"
   grep -rl "memory/persona/$persona/" --include="*.md" \
-    --include="*.json" --include="*.sh" --include="*.jsonc" . | \
-    grep -v "^./\\.git" | \
+    --include="*.json" --include="*.sh" --include="*.jsonc" \
+    --exclude-dir=.git --exclude-dir=references . | \
     grep -v "tools/alignment/out/" | \
-    xargs -r sed -i "" "s|memory/persona/$persona/|memory/$role/$persona/|g"
+  while IFS= read -r file; do
+    sed -i.bak "s|memory/persona/$persona/|memory/$role/$persona/|g" "$file" && rm -f "$file.bak"
+  done
 done
 
 # Clean up the flat-file references too
-grep -rl "memory/persona/README\\.md" --include="*.md" . | \
-  xargs -r sed -i "" "s|memory/persona/README\\.md|memory/persona-roles-README.md|g"
+grep -rl "memory/persona/README\\.md" --include="*.md" \
+  --exclude-dir=.git --exclude-dir=references . | \
+while IFS= read -r file; do
+  sed -i.bak "s|memory/persona/README\\.md|memory/persona-roles-README.md|g" "$file" && rm -f "$file.bak"
+done
 grep -rl "memory/persona/best-practices-scratch\\.md" \
-  --include="*.md" --include="*.sh" . | \
-  xargs -r sed -i "" \
-  "s|memory/persona/best-practices-scratch\\.md|memory/best-practices-scratch.md|g"
+  --include="*.md" --include="*.sh" \
+  --exclude-dir=.git --exclude-dir=references . | \
+while IFS= read -r file; do
+  sed -i.bak "s|memory/persona/best-practices-scratch\\.md|memory/best-practices-scratch.md|g" "$file" && rm -f "$file.bak"
+done
 ```
 
 ### Phase 4 — verification passes (five checks)

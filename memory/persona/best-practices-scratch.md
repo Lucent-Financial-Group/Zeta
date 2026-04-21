@@ -271,8 +271,7 @@ Codified meanwhile in `.github/copilot-instructions.md`
 under "Conventions you must respect" so Copilot flags it on
 every PR. Will re-evaluate for BP-17 promotion after round 44.
 
-## 2026-04-19 -- candidate BP: uv-only Python package and tool
-## management
+## 2026-04-19 -- candidate BP: uv-only Python package and tool management
 
 Aaron flagged pip / pipx / poetry / pyenv / conda / requirements.txt
 (no lockfile) / virtualenv as smells on Zeta PRs. uv covers every

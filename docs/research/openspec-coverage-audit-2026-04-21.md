@@ -4,8 +4,8 @@
 **Round:** 41 opener
 **Author:** Architect (Kenji) — dispatched inventory; spec-zealot
 (Viktor) to review adversarially post-land.
-**Triggering question:** Aaron 2026-04-20 — *"opensepcs, if I
-deleted all the code right now how easy to recreate based on the
+**Triggering question:** human maintainer, 2026-04-20 — *"opensepcs,
+if I deleted all the code right now how easy to recreate based on the
 openspecs"*.
 
 ## TL;DR
@@ -39,10 +39,8 @@ openspecs"*.
 
 Source: `ls src/Core/*.fs`, `wc -l src/Core/*.fs`.
 
-See `docs/research/openspec-coverage-audit-2026-04-21-inventory.md`
-(follow-up) for the full 66-row table. Summary by band below;
-the table and Band definitions are this document's load-bearing
-artefact.
+Summary by band below; the Band definitions in this document are
+the load-bearing artefact.
 
 ## Part B — What the 4 existing capabilities cover today
 

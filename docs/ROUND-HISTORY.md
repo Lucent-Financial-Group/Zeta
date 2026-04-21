@@ -693,9 +693,11 @@ for scheduling; (3) clock scopes and tick monotonicity; (4)
 `Incrementalize(Q)` wrapper preserves the chain-rule identity
 `Q^Δ = D ∘ Q ∘ I`; (5) representation invariants of the
 reference `ZSet[K]` (O(n+m) group operations, zero-alloc
-iteration, no zero-weight entries exposed). Spec now at
-324 lines. F# profile at `openspec/specs/operator-algebra/
-profiles/fsharp.md` pins the language-specific surface.
+iteration, no zero-weight entries exposed). Spec size at
+Arc 2 ship (`e51ec1b`) was 324 lines; subsequent Viktor
+closure arcs in this same round grew it further. F# profile
+at `openspec/specs/operator-algebra/profiles/fsharp.md` pins
+the language-specific surface.
 
 ### Arc 3 — Viktor P0 close (`92d7db2`)
 
