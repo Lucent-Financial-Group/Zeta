@@ -2864,19 +2864,23 @@ within each priority tier.
   Trigger: one week of clean CI runs. Required check
   lands once we trust the signal.
 
-  **2026-04-22 audit findings (post-PR-#10):**
-  - `AceHack/Zeta`: zero rulesets
-    (`gh api /repos/AceHack/Zeta/rulesets` returns `[]`).
-    Every check is advisory. Root cause for PRs #7 + #8
-    merging with `lint (markdownlint)` fail; caught by
-    strengthen-the-check-not-the-manual-gate rule.
-  - `Lucent-Financial-Group/Zeta`: ruleset `Default`
+  **2026-04-22 audit findings (post-PR-#10):** (primary first)
+  - `Lucent-Financial-Group/Zeta` (**primary**): ruleset `Default`
     (id=15256879) exists with 6 rules
     (`deletion`, `non_fast_forward`, `copilot_code_review`,
     `code_quality`, `pull_request`, `required_linear_history`)
-    — but **no `required_status_checks` rule**. Same gap.
+    — but **no `required_status_checks` rule**. Primary-repo
+    status-check gap is the load-bearing one to close first.
+  - `AceHack/Zeta` (dev-surface fork): zero rulesets
+    (`gh api /repos/AceHack/Zeta/rulesets` returns `[]`).
+    Every check is advisory. Root cause for PRs #7 + #8
+    merging with `lint (markdownlint)` fail; caught by
+    strengthen-the-check-not-the-manual-gate rule. Lower
+    priority than primary because dev-surface work flows
+    through the primary's gate at bulk-sync time — but still
+    worth closing to catch red-PRs before they batch.
 
-  **Proposed checks to require (both repos, after PR #10 lands):**
+  **Proposed checks to require (primary first, then dev-surface):**
   - `lint (markdownlint)` — fastest signal (<30s); catches
     doc-rot that accumulates silently.
   - `build-and-test (ubuntu-22.04)` — compile/test gate;
@@ -2892,11 +2896,12 @@ within each priority tier.
 
   **API call shape** (per `gh api` map §A.7 or
   `docs/research/github-surface-map-complete-2026-04-22.md`):
-  `PATCH /repos/{owner}/{repo}/rulesets/{id}` for LFG;
-  `POST /repos/AceHack/Zeta/rulesets` to create on AceHack.
-  Requires Aaron sign-off for AceHack (standing settings
-  permission is LFG-specific per
-  `memory/feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md`).
+  `PATCH /repos/Lucent-Financial-Group/Zeta/rulesets/15256879`
+  on the primary; `POST /repos/AceHack/Zeta/rulesets` to create
+  on the dev-surface fork. Standing settings permission is
+  LFG-specific per
+  `memory/feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md`
+  — AceHack ruleset creation requires Aaron sign-off.
 
 ## P0 — Threat-model elevation (round-30 anchor)
 

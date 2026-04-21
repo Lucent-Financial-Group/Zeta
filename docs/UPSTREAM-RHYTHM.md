@@ -8,16 +8,37 @@ configuration (see
 overlay: batched upstream rhythm"). This doc is that
 configuration for Zeta.
 
+## Scope framing — LFG is the primary
+
+**`Lucent-Financial-Group/Zeta` is Zeta's primary repository**:
+the home, the contributor-facing surface, the official
+source-of-truth, the one an external contributor or a search
+engine lands on. Releases, stable URLs, issue numbers, and
+the canonical commit history all live on LFG.
+
+**`AceHack/Zeta` is a cost-optimized dev-surface fork**: where
+the daily agent loop lands intermediate PRs so the billed LFG
+surfaces (Copilot coding-agent, Actions minutes, paid seats)
+aren't charged per-PR. AceHack exists **to feed into LFG**,
+not as a parallel home. When primary-vs-dev-surface disagree,
+LFG wins.
+
+Operationally, the agent loop *targets* AceHack for most PRs
+(see next section); that is a **cost-optimization on top of**
+the primary-LFG framing, not a downgrade of LFG's status.
+
 ## Zeta's choice: batched fork-first rhythm
 
-**Default PR target:** `AceHack/Zeta:main`, not
+**Default PR target for daily agent work:** `AceHack/Zeta:main`
+— the cost-optimized dev-surface — **not** the primary
 `Lucent-Financial-Group/Zeta:main`.
 
 Agents develop on fork feature branches, open PRs against
 `AceHack/Zeta:main`, auto-merge there. AceHack's free-tier
 CI minutes run the gate. Once `AceHack/Zeta:main` is ~10
 commits ahead of `Lucent-Financial-Group/Zeta:main`, **one**
-bulk sync PR lifts all accumulated work into LFG.
+bulk sync PR lifts all accumulated work back into the primary
+(LFG).
 
 ```text
 feature-branches (AceHack)
