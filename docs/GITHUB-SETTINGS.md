@@ -56,18 +56,51 @@ for the framing this pattern belongs to.
 ### Repo-level toggles
 
 - Merge methods: squash on; merge commit and rebase off.
+  (`merge_commit_message` + `merge_commit_title` are still
+  captured even though merge-commit is off — the defaults
+  determine format if we ever flip the toggle on.)
 - Auto-merge enabled; update branch button enabled;
-  auto-delete branch on merge enabled.
+  auto-delete branch on merge enabled;
+  `use_squash_pr_title_as_default` off (explicit PR-title-or-
+  commit-title selection still applies).
+- `allow_forking` on — required for the fork-based PR
+  workflow (see `memory/feedback_fork_based_pr_workflow_for_personal_copilot_usage.md`).
 - Squash commit title: PR title (falls back to commit title
   for single-commit PRs); squash commit message: concatenated
   commit messages.
 - Web commit signoff not required (public repo, pre-v1).
-- Visibility: public.
-- Features enabled: issues, discussions, projects, wiki.
+- Visibility: public. `archived: false`, `disabled: false`,
+  `is_template: false`.
+- Description: "F# implementation of DBSP for .NET 10".
+  Homepage: `https://lucent-financial-group.github.io/Zeta/`.
+- Topics: empty (no classification tags yet).
+- Features enabled: issues, discussions, projects, wiki,
+  downloads, pull-requests, pages.
+- `pull_request_creation_policy: all` — anyone with push
+  access (collaborators + org members per team perms) can
+  open PRs.
+- `custom_properties`: empty object — no org-level custom
+  repo properties set yet.
 - Security-and-analysis: Dependabot security updates enabled;
   secret scanning enabled; secret scanning push-protection
-  enabled; non-provider-pattern scanning and validity checks
-  disabled (higher false-positive rate; revisit post-v1).
+  enabled; non-provider-pattern scanning, AI detection,
+  delegated-alert-dismissal, delegated-bypass, and validity
+  checks all disabled (higher false-positive / seat-cost
+  profile; revisit post-v1).
+
+### Repo security extras
+
+- Vulnerability alerts (Dependabot alerts) enabled.
+- Automated security fixes (Dependabot auto-PRs) enabled,
+  not paused.
+- Private vulnerability reporting enabled — external
+  researchers can open confidential advisories via the
+  Security tab.
+- Interaction limits: none (would be `interaction_limits:
+  {limit, origin, expires_at}` when active — used to rate-
+  limit comment/issue activity during incident response).
+- Autolinks: none — no external issue-tracker linking.
+- Topics: empty — no discovery tags.
 
 ### Rulesets
 

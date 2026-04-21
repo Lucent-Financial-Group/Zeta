@@ -1,22 +1,44 @@
 {
   "repo": {
     "allow_auto_merge": true,
+    "allow_forking": true,
     "allow_merge_commit": false,
     "allow_rebase_merge": false,
     "allow_squash_merge": true,
     "allow_update_branch": true,
+    "archived": false,
+    "custom_properties": {},
     "default_branch": "main",
     "delete_branch_on_merge": true,
+    "description": "F# implementation of DBSP for .NET 10",
+    "disabled": false,
     "has_discussions": true,
+    "has_downloads": true,
     "has_issues": true,
+    "has_pages": true,
     "has_projects": true,
+    "has_pull_requests": true,
     "has_wiki": true,
+    "homepage": "https://lucent-financial-group.github.io/Zeta/",
+    "is_template": false,
+    "merge_commit_message": "PR_TITLE",
+    "merge_commit_title": "MERGE_MESSAGE",
+    "pull_request_creation_policy": "all",
     "security_and_analysis": {
       "dependabot_security_updates": {
         "status": "enabled"
       },
       "secret_scanning": {
         "status": "enabled"
+      },
+      "secret_scanning_ai_detection": {
+        "status": "disabled"
+      },
+      "secret_scanning_delegated_alert_dismissal": {
+        "status": "disabled"
+      },
+      "secret_scanning_delegated_bypass": {
+        "status": "disabled"
       },
       "secret_scanning_non_provider_patterns": {
         "status": "disabled"
@@ -30,9 +52,11 @@
     },
     "squash_merge_commit_message": "COMMIT_MESSAGES",
     "squash_merge_commit_title": "COMMIT_OR_PR_TITLE",
+    "use_squash_pr_title_as_default": false,
     "visibility": "public",
     "web_commit_signoff_required": false
   },
+  "topics": [],
   "rulesets": [
     {
       "conditions": {
@@ -133,6 +157,11 @@
   ],
   "workflows": [
     {
+      "name": ".github/workflows/github-settings-drift.yml",
+      "path": ".github/workflows/github-settings-drift.yml",
+      "state": "active"
+    },
+    {
       "name": "Automatic Dependency Submission",
       "path": "dynamic/dependency-graph/auto-submission",
       "state": "active"
@@ -187,6 +216,18 @@
     "query_suite": "default",
     "state": "not-configured"
   },
+  "security": {
+    "vulnerability_alerts_enabled": true,
+    "automated_security_fixes": {
+      "enabled": true,
+      "paused": false
+    },
+    "private_vulnerability_reporting": {
+      "enabled": true
+    }
+  },
+  "interaction_limits": null,
+  "autolinks": [],
   "counts": {
     "webhooks": 0,
     "deploy_keys": 0,
