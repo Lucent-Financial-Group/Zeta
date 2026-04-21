@@ -2865,6 +2865,66 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
+- [ ] **Kanban + Six Sigma factory-process research — codify
+  Aaron's preferred process-improvement methodologies.**
+  Aaron 2026-04-20 late: *"also khanban is a good practice,
+  i prefer it and six sigma, we should have some skills
+  documents process factory improvments around that we
+  should backlog this research"*.
+
+  **Context:** the factory already does *partial* Kanban
+  (BACKLOG P0/P1/P2/P3 tiers, round-cadence pull-based
+  delivery, ROUND-HISTORY = definition-of-Done) and
+  *partial* Six Sigma (DORA metrics, meta-wins logging,
+  cadenced control-phase hygiene rows). Aaron wants both
+  made **methodology-explicit** rather than ad-hoc so new
+  agents and adopters recognise the frame.
+
+  **Design sketch — research deliverables:**
+  1. Inventory: map each current factory practice to
+     Kanban (visualise / WIP / pull / explicit
+     policies / feedback loops / evolve experimentally)
+     and Six Sigma (DMAIC: Define → Measure →
+     Analyze → Improve → Control).
+  2. Gaps: WIP limits per persona / cadence slot are
+     not explicit; DMAIC-cycle walkthrough is implicit
+     not codified.
+  3. Proposals:
+     - `kanban-flow` skill — codifies WIP limits,
+       swim-lane discipline, pull-based cadence for
+       Architect + agent work queues.
+     - `six-sigma-dmaic` skill — walks a factory
+       improvement through the 5 phases; integrates
+       with DORA (Measure) + meta-wins (Analyze +
+       Improve) + FACTORY-HYGIENE (Control).
+     - Doc: `docs/FACTORY-METHODOLOGIES.md` —
+       one-doc summary naming both methodologies
+       and citing the rows / memories that instance
+       them.
+  4. Anti-pattern guard: no certifications, no ISO
+     theater, no yellow-belt ceremony. Adopt the
+     practices, not the bureaucracy.
+
+  **Memory source:** `user_kanban_six_sigma_process_preference.md`.
+
+  **Placement:** research doc at
+  `docs/research/kanban-six-sigma-factory-process.md`,
+  then design ADRs (one per proposed skill) once the
+  research lands. Both skills are factory-scope
+  (universal — every adopter inherits them).
+
+  **Interaction with other open research:**
+  - `docs/research/hygiene-skill-organisation.md` —
+    Kanban's pull-based cadence framing may help
+    decide which hygiene rows become skills vs
+    checklist-items (pull-triggered = skill;
+    always-on = discipline).
+  - `docs/research/skill-edit-gating-tiers.md` —
+    both new skills would be Tier-3 authoring.
+
+  Effort: M (research spike; rollout is 2 × Tier-3
+  skills + 1 doc, landed over 2-3 subsequent rounds).
+
 - [ ] **Hygiene-skill consolidation research — every row
   a skill, grouped skill, or one general skill with
   classes?** Aaron 2026-04-20 late: *"does every hygene
