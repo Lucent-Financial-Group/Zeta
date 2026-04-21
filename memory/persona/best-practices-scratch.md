@@ -1113,3 +1113,80 @@ section. Cross-reference:
 `feedback_never_idle_speculative_work_over_waiting.md`
 (never-idle goal) -- orphan shells are a hidden form of
 work-in-flight that undermines both.
+
+## 2026-04-20 -- JOURNAL-offload as the prune mechanism at heavy-state caps
+
+**Source:** Daya's first roster-wide AX/UX audit — `docs/
+research/notebook-cap-per-persona-review-2026-04-20.md`
+Pattern E + §5 candidate BP-25. Empirical evidence: Daya's
+own round-44 prune (notebook 4984 -> 1323 words via verbatim
+copy to JOURNAL.md, zero information loss, audit trail
+preserved).
+**Claim:** Persona notebooks exceeding 85% of their declared
+BP-07 cap must offload verbatim history to a sibling
+`JOURNAL.md` (Tier-3, append-only, grep-only) before the
+next substantive entry is written. NOTEBOOK keeps
+current-round + carry-over + trend-summary only.
+**Applies to our repo?** Yes -- exercised by Daya r44;
+pattern generalises to Ilyana (over-cap at 124%) and Tariq
+(near-cap at 95%). Both have no pruning log; both would
+benefit. Currently the pattern is informal.
+**Candidate rule:** BP-25 (slot if promoted) -- "Notebook
+offload at 85%." Draft wording above. Two-stage: (a)
+heavy-state tier notebooks (>= 2550 words at current 3000
+cap, or >= 4250 at proposed 5000 heavy-state cap) MUST
+maintain a sibling `JOURNAL.md`. (b) When NOTEBOOK hits
+85%, verbatim-copy resolved-round entries to JOURNAL,
+collapse in NOTEBOOK to trend-summary + carry-over. No
+information loss is the invariant; the lint is `wc -w`.
+**Decision:** keep watching. Needs >=3 cited authoritative
+sources (Anthropic skill docs on persistent memory; mem0
+best practices on tiered memory; Letta / AutoGen memory
+spec) + 10-round survival before Architect promotion.
+Scratchpad-only until round ~54.
+
+## 2026-04-20 -- Seed-only persona marker suppresses MEMORY/OFFTIME/JOURNAL stub scaffolding
+
+**Source:** Daya's first roster-wide AX/UX audit — Pattern F
++ §5 candidate BP-26. Empirical evidence: 7 of 22 persona
+notebook directories (Aminata, Kira, Mateo, Nadia, Naledi,
+Rune, Viktor) sit at the 96-word seed stub 12+ rounds after
+seed, yet each carries MEMORY.md (~400b), OFFTIME.md
+(~1500b), JOURNAL.md (~1600b) as structural stubs -- ~25 KB
+of zero-signal scaffolding readers cold-load.
+**Claim:** Persona notebooks in seed-only state (zero
+substantive entries post-seed for >= 3 round-blocks of five
+rounds) declare `seed-only: true` in MEMORY.md frontmatter,
+suppress JOURNAL and OFFTIME generation, and are reviewed
+for retire-or-dispatch every factory-hygiene audit.
+**Applies to our repo?** Yes. 7 personas × ~3.5 KB = ~25 KB
+scaffolding tax. BP-07's letter is clean; spirit eroded.
+**Candidate rule:** BP-26 (slot if promoted) -- "Seed-only
+marker." Draft wording above. Pair with FACTORY-HYGIENE row
+31 (invocation-cadence per persona) so seed-only flag is
+*auto-lifted* when the second substantive entry lands.
+**Decision:** keep watching. Paired with BP-25; promote or
+demote as a pair on the round-54 audit.
+
+## 2026-04-20 -- Recurring agent-QOL hygiene class (per-persona AX/UX)
+
+**Source:** Aaron 2026-04-20 directive *"lets make quality
+of life change for them too over time, its like another
+hygene"* + first-pass audit at `docs/research/notebook-cap-
+per-persona-review-2026-04-20.md` + new FACTORY-HYGIENE
+rows 30-34 (this round) + `feedback_agent_qol_as_ongoing_
+hygiene_class.md`.
+**Claim:** Per-persona AX/UX is a first-class recurring
+hygiene class on the same 5-10 round cadence as
+`skill-tune-up`. Daya owns; Aarav promotes candidate BPs;
+Kenji integrates cap-tier ADR.
+**Applies to our repo?** Already landed as factory
+hygiene (rows 30-34). Rule-level encoding would live at
+BP-07-adjacent (cap) or as a new BP-NN (the cadence
+itself).
+**Candidate rule:** likely no new BP needed -- BP-07 +
+FACTORY-HYGIENE rows carry the weight. BP-NN slot reserved
+only if the cap-tier ADR argues for a named rule rather
+than a row.
+**Decision:** observe for 5-10 rounds; promote to BP-NN
+only if the row-based encoding proves insufficient.
