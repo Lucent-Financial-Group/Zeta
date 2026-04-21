@@ -147,17 +147,17 @@ required status checks (strict mode):
 - `lint (markdownlint)`
 
 Note on `build-and-test (macos-14)`: intentionally NOT in the
-required-checks list on LFG. The `gate.yml` workflow computes
-its matrix from `github.repository` at plan time, so the
-macos-14 leg only exists on forks (e.g. `AceHack/Zeta`), not on
-the canonical LFG repo. Cost rationale: macOS runner minutes
-run ≈10× Linux minutes; keeping the canonical-repo gate Linux-
-only while forks retain the full Linux+macOS parity matrix
-buys cross-platform coverage on the contributor side without
-billing it against the canonical-repo cost surface. Reason:
-maintainer 2026-04-21 "Mac is very very expensive to run" +
-"we should leave [LFG's] build as linux only if that's
-possible where acehack also builds mac".
+required-checks list on the canonical repo. The `gate.yml`
+workflow computes its matrix from `github.repository` at plan
+time, so the macos-14 leg only exists on contributor forks, not
+on the canonical repo. Cost rationale: macOS runner minutes run
+≈10× Linux minutes; keeping the canonical-repo gate Linux-only
+while forks retain the full Linux+macOS parity matrix buys
+cross-platform coverage on the contributor side without billing
+it against the canonical-repo cost surface. Reason: maintainer
+2026-04-21 "Mac is very very expensive to run" + "we should
+leave [the canonical repo's] build as linux only if that's
+possible where a contributor fork also builds mac".
 
 Other protections: dismiss stale reviews on; required linear
 history; required conversation resolution; force pushes and
