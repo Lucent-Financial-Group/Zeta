@@ -2295,6 +2295,81 @@ within each priority tier.
   Windows install will be PowerShell, not Git Bash (Git Bash
   is not guaranteed installed).
 
+- [ ] **Belief propagation over skill-library factor graph —
+  migrate existing skill vocabulary to the kernel-domain
+  entries in `docs/GLOSSARY.md` "Vocabulary kernel and the
+  Map" section (round 44 absorb)** — Aaron 2026-04-22 reframe:
+  *"now you are at belief propagation kernel-vocabulary
+  propagation this is infer.net and also maps to memtic theory
+  the on from things hidden since the foundation of the world
+  book"* + retraction *"it's not dawkins it's the french guy
+  ... you got it Girard"* + condition *"dawkins=what
+  Girard=why/how"* + *"dawkins does not tell you how to use
+  memes just is a description of them"*. Canonical shorthand:
+  **dawkins=what, Girard=why/how**. What I was about to name
+  "kernel-vocabulary propagation" IS belief propagation
+  (Pearl 1982); implementation is Infer.NET (.NET-native, MIT,
+  already on Zeta roadmap for `Zeta.Bayesian`); cultural
+  mechanism is Girard mimetic theory (*Things Hidden Since the
+  Foundation of the World*, quoting Matthew 13:35 — same
+  scriptural substrate as the factory's seed → soil → kernel
+  vocabulary). **Baseline:**
+  `memory/reference_skill_vocabulary_usage_scan_2026_04_22.md`
+  shows 18 zero-coverage glossary terms across the 234-file
+  skill library, three-way partitioned: (a) ontology-home
+  violations (Wake, Harsh critic, User persona, Tick/step, Free
+  time — real home is persona files or alternative glossary
+  terms), (b) correct separation-of-concerns (DBSP-algorithmic
+  tail + sketch cluster — appropriately outside skill layer),
+  (c) retirement candidates (Free time). **New glossary
+  entries 2026-04-22 (all at zero coverage, expected
+  propagation work):** Vocabulary kernel, Carpenter, Gardener,
+  Disposition discipline, The Map, Catalyst, Belief
+  propagation, Mimetic theory (Girard), Memetic theory
+  (Dawkins), Infer.NET. Aaron 2026-04-22: *"we for sure should
+  map those domains we just talked about like all 10 of them
+  but for sure the last 4"* — the last 4 (belief propagation +
+  Girard + Dawkins + Infer.NET) landed in glossary this tick.
+  **Work queued here:** (1) run the scan bash snippet from the
+  reference memory to establish current coverage on the 10 new
+  kernel-domain entries (expected: all zero); (2) hand off to
+  `skill-improver` (Yara) for incremental passes — not a
+  single-PR migration, but cadenced skill-by-skill adoption as
+  each skill's next tune-up comes up; (3) after 5-10 rounds of
+  `skill-improver` work, rerun the scan and measure (a)
+  non-zero coverage on the 10 new kernel terms, (b) reduction
+  in the 5 ontology-home violations class; (4) treat this as
+  the empirical test of information-density gravity — if
+  kernel terms grow from 0 to substantial coverage under
+  normal tune-up cadence, the attraction force is measurable;
+  if not, kernel entries are still too thin or the terms are
+  not actually kernel. (5) Do NOT force-migrate — propagation
+  is supposed to happen via the kernel's own gravity + Aarav's
+  cadenced ranking + Yara's skill-improver passes, not by a
+  one-shot rename sweep (which would violate the "ontology-
+  home" discipline). **Effort:** M — multiple
+  `skill-improver` passes over time, not one sitting.
+  **Acceptance criteria:** scan rerun after ~5 rounds shows
+  (a) non-zero coverage on ≥ 6 of the 10 new kernel terms, (b)
+  ontology-home violations class has dropped below 5, (c) at
+  least one skill has been tuned-up specifically to adopt
+  kernel vocabulary and the tune-up cites the GLOSSARY "Map"
+  section. **Owner:** Aarav (`skill-tune-up`) ranks skills
+  that need this; Yara (`skill-improver`) executes; Architect
+  (Kenji) sequences. **Do not route to `skill-creator`** for
+  this — the task is vocabulary migration in existing skills,
+  not new skill creation. **Source of truth:**
+  `memory/feedback_kernel_vocabulary_propagation_is_belief_propagation_infer_net_memetic_mimetic.md`;
+  `memory/reference_skill_vocabulary_usage_scan_2026_04_22.md`;
+  `memory/feedback_seed_kernel_glossary_orthogonal_decider_is_information_density_gravity.md`
+  (the gravity hypothesis this row empirically tests);
+  `docs/GLOSSARY.md` "Vocabulary kernel and the Map" section
+  (the terms being propagated). Does **not** block any other
+  work; does **not** mandate Infer.NET factory-wide adoption
+  (that is ADR-gated); does **not** collapse the depth-ordering
+  of Girard over Dawkins (engineering uses Girard, cataloging
+  uses Dawkins).
+
 ## P1 — CI / DX follow-ups (after round-29 anchor)
 
 - [ ] **Declarative parity across dev-inner-loop / qa / dev / stage / prod — environment-parity research, time-budgeted (research-first, no implementation tonight).**
