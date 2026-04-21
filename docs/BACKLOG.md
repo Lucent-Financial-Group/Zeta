@@ -2865,65 +2865,52 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
-- [ ] **Kanban + Six Sigma factory-process research — codify
-  Aaron's preferred process-improvement methodologies.**
-  Aaron 2026-04-20 late: *"also khanban is a good practice,
-  i prefer it and six sigma, we should have some skills
-  documents process factory improvments around that we
-  should backlog this research"*.
+- [ ] **Kanban + Six Sigma factory-process — land the three
+  artifacts (research complete).** Aaron 2026-04-20 late:
+  *"also khanban is a good practice, i prefer it and
+  six sigma, we should have some skills documents
+  process factory improvments around that we should
+  backlog this research"*.
 
-  **Context:** the factory already does *partial* Kanban
-  (BACKLOG P0/P1/P2/P3 tiers, round-cadence pull-based
-  delivery, ROUND-HISTORY = definition-of-Done) and
-  *partial* Six Sigma (DORA metrics, meta-wins logging,
-  cadenced control-phase hygiene rows). Aaron wants both
-  made **methodology-explicit** rather than ad-hoc so new
-  agents and adopters recognise the frame.
+  **Research landed** at
+  `docs/research/kanban-six-sigma-factory-process.md`.
+  Conclusion: the factory already does partial versions
+  of both; gaps are (a) WIP limits not labelled as such,
+  (b) DMAIC cycle not templated. **Proposed skills
+  rejected as over-built** — the earlier BACKLOG sketch
+  proposed `kanban-flow` + `six-sigma-dmaic` skills;
+  research concluded both are over-engineered for the
+  gap. Aaron's constraint ("adopt practices, not
+  bureaucracy") is load-bearing here.
 
-  **Design sketch — research deliverables:**
-  1. Inventory: map each current factory practice to
-     Kanban (visualise / WIP / pull / explicit
-     policies / feedback loops / evolve experimentally)
-     and Six Sigma (DMAIC: Define → Measure →
-     Analyze → Improve → Control).
-  2. Gaps: WIP limits per persona / cadence slot are
-     not explicit; DMAIC-cycle walkthrough is implicit
-     not codified.
-  3. Proposals:
-     - `kanban-flow` skill — codifies WIP limits,
-       swim-lane discipline, pull-based cadence for
-       Architect + agent work queues.
-     - `six-sigma-dmaic` skill — walks a factory
-       improvement through the 5 phases; integrates
-       with DORA (Measure) + meta-wins (Analyze +
-       Improve) + FACTORY-HYGIENE (Control).
-     - Doc: `docs/FACTORY-METHODOLOGIES.md` —
-       one-doc summary naming both methodologies
-       and citing the rows / memories that instance
-       them.
-  4. Anti-pattern guard: no certifications, no ISO
-     theater, no yellow-belt ceremony. Adopt the
-     practices, not the bureaucracy.
+  **Landed instead — three small artifacts (all Tier-1,
+  effort S):**
+  1. `docs/FACTORY-METHODOLOGIES.md` — one-page
+     reference naming Kanban + Six Sigma as factory
+     methodologies of record, with mappings to current
+     practice. Factory-scope.
+  2. `docs/templates/DMAIC-proposal-template.md` —
+     fillable template for factory-improvement ADRs.
+     Five sections (D/M/A/I/C). Factory-scope.
+  3. `docs/FACTORY-HYGIENE.md` row 37 — WIP-limit
+     discipline (always-on, per-persona cap 3
+     suggested; cross-persona cap 7; over-cap flags
+     to HUMAN-BACKLOG `wip-pressure`).
+
+  **Total skill count delta: 0.** Belt-cert hierarchy,
+  ISO theater, standups, SPC control charts, Kanban
+  tooling — all explicitly rejected.
+
+  **Validates cross-research:** Kanban's
+  pull-triggered-vs-always-on criterion matches the
+  hygiene-consolidation research's "skill vs
+  checklist-item" decision cleanly. The two spikes
+  are congruent; no conflict.
 
   **Memory source:** `user_kanban_six_sigma_process_preference.md`.
 
-  **Placement:** research doc at
-  `docs/research/kanban-six-sigma-factory-process.md`,
-  then design ADRs (one per proposed skill) once the
-  research lands. Both skills are factory-scope
-  (universal — every adopter inherits them).
-
-  **Interaction with other open research:**
-  - `docs/research/hygiene-skill-organisation.md` —
-    Kanban's pull-based cadence framing may help
-    decide which hygiene rows become skills vs
-    checklist-items (pull-triggered = skill;
-    always-on = discipline).
-  - `docs/research/skill-edit-gating-tiers.md` —
-    both new skills would be Tier-3 authoring.
-
-  Effort: M (research spike; rollout is 2 × Tier-3
-  skills + 1 doc, landed over 2-3 subsequent rounds).
+  Effort: S per artifact (three Tier-1 landings
+  bundled in one round).
 
 - [ ] **Hygiene-skill consolidation research — every row
   a skill, grouped skill, or one general skill with
