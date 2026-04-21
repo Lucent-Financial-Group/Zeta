@@ -27,6 +27,31 @@ Operationally, the agent loop *targets* AceHack for most PRs
 (see next section); that is a **cost-optimization on top of**
 the primary-LFG framing, not a downgrade of LFG's status.
 
+## Terminology — what "upstream" means here
+
+In standard Git convention, **"upstream"** is the repository
+you forked *from*, not the fork itself. That convention holds
+for Zeta:
+
+- **LFG/Zeta** is **upstream** of AceHack/Zeta. GitHub's own
+  API reflects this: `POST /repos/AceHack/Zeta/merge-upstream`
+  pulls FROM LFG into AceHack. "Upstream" = the parent.
+- **AceHack/Zeta** is the **fork** (also called the
+  **dev-surface** in this doc). It is **not** upstream. It is
+  downstream of LFG.
+
+The two axes align for Zeta:
+
+| Axis                | LFG/Zeta          | AceHack/Zeta      |
+|---------------------|-------------------|-------------------|
+| Git topology        | upstream          | fork / downstream |
+| Governance / status | primary / home    | dev-surface       |
+
+So "upstream rhythm" in the title of this doc = *the cadence
+at which we push upstream (to LFG)*, not anything about
+AceHack. "Fork-first" = daily agent PRs open against the fork;
+"upstream" = the primary LFG target we batch into.
+
 ## Zeta's choice: batched fork-first rhythm
 
 **Default PR target for daily agent work:** `AceHack/Zeta:main`
