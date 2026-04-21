@@ -35,6 +35,20 @@ etc. The integration-test surface per harness is
 therefore owned by *another* harness, scheduled
 cross-harness.
 
+**Harness vs reviewer robot.** A **harness** loads
+factory artefacts (skills, hooks, persona agents,
+`MEMORY.md`) and executes agent-directed work. The
+capability boundary above applies to harnesses
+because the verifier and the verified are the same
+runtime. A **reviewer robot** (GitHub Copilot code
+review, a linter bot) reads diffs and comments; it
+does not load the factory. Reviewer robots are not
+on the each-tests-own rule — a reviewer robot
+reviewing a harness's integration test is itself
+external verification. Every "GitHub Copilot" entry
+below calls out which product it refers to:
+harness, reviewer robot, or autonomous PR author.
+
 **Triggering discipline:** cadenced audit every
 5-10 rounds per populated harness, owner per
 populated harness. See
@@ -84,9 +98,16 @@ they run.
   Claude Desktop, Agent SDK, API.
 - **Codex** (OpenAI) — stub; priority 1.
 - **Cursor** — stub; priority 1.
-- **GitHub Copilot** — stub; priority 1. Note:
-  `.github/copilot-instructions.md` already exists
-  as factory-managed contract per GOVERNANCE §31.
+- **GitHub Copilot** — umbrella brand for three
+  distinct products, tracked separately:
+  - **Copilot PR code review** (reviewer robot; not
+    a harness) — partially populated via
+    `.github/copilot-instructions.md` (GOVERNANCE §31).
+  - **Copilot in VS Code** (the actual harness) —
+    stub; priority 1. Aaron 2026-04-20: *"we will
+    use vvscode for the rest."*
+  - **Copilot coding agent** (`@copilot` autonomous
+    PR author) — stub; priority 2 watched.
 - **Antigravity** (Google) — stub; priority 2.
   Spelling TBD; Aaron wrote "anitgratify".
 - **Amazon Q Developer / CodeWhisperer** — stub;
@@ -328,48 +349,209 @@ third). Cursor cannot self-verify.
 
 ---
 
-# GitHub Copilot — stub; priority 1
+# GitHub Copilot — three distinct products under one brand
 
-**Status:** stub. Factory has a partial surface
-presence — `.github/copilot-instructions.md` is
-factory-managed per GOVERNANCE §31 and audited
-on the existing skill-file cadence. Full harness
-buildout (running the factory from inside
-Copilot Workspace / Copilot Chat) is immediate-
-queue but not yet done.
+"GitHub Copilot" is a product family. The factory
+tracks each product separately because they have
+different relationships to the factory runtime
+and therefore different capability boundaries.
+Aaron 2026-04-20 corrected an earlier conflation:
+*"Out current copilot stuff is a Github
+integration we need that on our PRs, it's not the
+harness the vscode harness is what needs to test
+it's own entry point … and we will use vvscode
+for the rest."*
 
-**Owner (tentative):** TBD. The existing
-`copilot-instructions.md` audit sits under the
-skill-tune-up cadence; the full harness
-buildout should migrate ownership to a dedicated
-guide.
+---
 
-**Cadence:** `copilot-instructions.md` is
-already audited on the skill-tune-up cadence;
-full-harness inventory audits are every 5-10
-rounds once the harness is populated.
+## GitHub Copilot — PR code review (reviewer robot; NOT a harness)
 
-**Integration-point tests owned by:** Claude Code
-(and any other populated harness) once Copilot
-Workspace runs the factory end-to-end. Copilot
-cannot self-verify its factory integration from
-within itself.
+**Status:** partially populated. This is the
+cloud-side reviewer that reads
+`.github/copilot-instructions.md`, reads a PR
+diff, and leaves inline comments when tagged as
+a reviewer on a PR. The file
+`.github/copilot-instructions.md` is factory-
+managed per GOVERNANCE §31 and audited on the
+skill-file cadence.
+
+**Why this is not a harness:** a reviewer robot
+reads diffs and comments. It does not load
+factory artefacts (skills, hooks, `MEMORY.md`,
+persona agents). The capability-boundary rule
+"a harness cannot self-verify its own factory
+integration because the verifier and the verified
+are the same runtime" does not apply — the PR
+reviewer is not the runtime the factory runs on.
+
+**What it can do:**
+
+- Comment on PRs when requested as a reviewer
+  (via GitHub UI or `gh pr edit --add-reviewer`).
+- Follow the instructions in
+  `.github/copilot-instructions.md`.
+- Leave inline suggestions (human-accepted or
+  human-rejected).
+- Reviewer-authored suggestions can be committed
+  by a maintainer.
+
+**What it cannot do** (honestly, as of 2026-04-20):
+
+- Autonomously open PRs. Opening a PR is the
+  **Copilot coding agent**'s job, a separate
+  product — see below.
+- Self-audit its own surface area and emit a
+  report. It reviews code, it doesn't review
+  itself.
+- Self-repair (fix its own bugs / update its own
+  system prompt). Anthropic's Skill-Creator-style
+  eval loop on Copilot-review behaviour would
+  require an external runner driving diffs at it
+  and grading output; the reviewer itself cannot
+  run that loop on itself.
+- Act on a PR without being tagged for review.
+  It's a request-driven reviewer.
+
+**Owner (interim):** Architect (Kenji). The
+existing `copilot-instructions.md` audit sits
+under the skill-tune-up cadence.
+
+**Cadence:** every 5-10 rounds, alongside
+skill-file audits.
+
+**Integration-point tests owned by:** the human
+maintainer (or a harness that can observe the
+reviewer's comments on a test PR). Reviewer
+output is externally observable — someone opens
+a PR with a known defect, requests Copilot
+review, and grades whether the bot caught it.
+This is *not* blocked by the harness capability
+boundary because the reviewer is not itself
+running the factory.
+
+---
+
+## GitHub Copilot — VS Code extension (harness; priority 1)
+
+**Status:** stub. Factory does not yet run on the
+VS Code Copilot extension. This is the actual
+harness variant of the Copilot brand — a human
+drives VS Code, the Copilot extension loads the
+factory's tree, and agent-directed work executes
+in-extension. Aaron 2026-04-20: *"the vscode
+harness is what needs to test it's own entry
+point … we will use vvscode for the rest."*
+
+**Owner (tentative):** TBD. Same question as
+Codex and Cursor — dedicated guide or shared
+multi-harness guide.
+
+**Cadence:** every 5-10 rounds once populated.
+
+**Integration-point tests owned by:** Claude
+Code (and any other populated harness) once the
+VS Code Copilot extension runs the factory
+end-to-end. This harness **cannot** self-verify
+its factory integration from within itself
+(capability boundary — verifier and verified are
+the same runtime). The PR reviewer product above
+is a *different* runtime and can legitimately
+observe the VS Code harness's PR output
+externally — that's one route to partial
+external verification.
 
 **Known surfaces to inventory when populated:**
 
-- `.github/copilot-instructions.md` (already
-  factory-managed — inventory anchor).
-- Copilot Chat (VS Code / JetBrains / web).
-- Copilot Workspace (agentic mode).
-- Copilot CLI.
+- VS Code Copilot Chat panel.
+- Copilot agent mode (`@workspace`, `@github`,
+  `@terminal`, etc.).
+- `.github/copilot-instructions.md`
+  consumption — the VS Code extension also
+  reads this file (so the factory-managed
+  contract serves both the PR reviewer *and* the
+  VS Code harness; audit needs to respect both
+  audiences).
 - Copilot's model roster (GPT-5, Claude,
-  Gemini, Grok, etc. — multi-model itself).
+  Gemini, Grok — multi-model runtime; factory
+  model-specific assumptions need per-model
+  branching).
+- Extension-level settings, slash commands,
+  custom chat participants, MCP integration
+  story.
+- `.vscode/` conventions that the extension
+  honours.
 
 **Factory-relevant deltas vs Claude Code:**
-Copilot runs multiple underlying models; the
-factory's model-specific assumptions
-(prompt-caching TTL, context window, etc.) will
-need per-model branching when populated.
+
+- Multi-model: prompt-caching assumptions
+  (Claude's 5-min TTL) don't translate to
+  GPT-5, Gemini, etc. Per-model cadence tuning.
+- No skills system analogue as of 2026-04-20 —
+  custom chat participants + agent mode are the
+  closest. The skill-authoring + eval loop is
+  not native; would need factory-side overlay.
+- IDE-native rather than CLI-native; some
+  factory conventions (CronCreate, `!`
+  shell-surface) will not port.
+
+---
+
+## GitHub Copilot — coding agent (`@copilot`) — autonomous PR author; priority 2 watched
+
+**Status:** stub. This is the product that can
+be assigned an issue and will open a draft PR
+with an implementation attempt. Distinct from
+both the PR reviewer above and the VS Code
+extension. Aaron 2026-04-20 speculated about
+*"get[ting] it to start building features in
+there with some facny big suggestions on the
+PR lol, really if that's possible"* — the
+honest answer is that the coding agent can do
+this (it's its job), but that's a separate
+product from the PR reviewer.
+
+**Is it a harness?** Partially. It runs in a
+sandbox Microsoft controls, reads the repo,
+writes code, opens a PR. It *does* load
+factory artefacts if the repo contains them —
+so it's closer to a harness than the PR
+reviewer. But it's not a human-driven runtime
+like VS Code; the interaction model is
+async/async. Classify as a **one-shot agentic
+harness** for inventory purposes, with the
+caveat that factory integration with it is
+different-shaped than with an interactive
+harness.
+
+**Owner (tentative):** TBD.
+
+**Cadence:** every 5-10 rounds once populated.
+
+**Integration-point tests owned by:** another
+harness observing the coding agent's PR
+output. Cross-harness verification applies.
+
+**Known surfaces to inventory when populated:**
+
+- Issue-to-PR workflow (`@copilot` assignee).
+- Repository artefacts it reads
+  (`.github/copilot-instructions.md`,
+  `.github/workflows/`, `AGENTS.md` — it does
+  read AGENTS.md per GitHub's 2025 docs).
+- Sandbox capabilities (network, tools, time
+  budget).
+- PR format conventions it uses.
+
+**Factory-relevant deltas vs Claude Code:**
+
+- One-shot interaction model: no round-over-
+  round memory unless the factory overlays it
+  (the agent has no AutoMemory analogue).
+- Can author PRs without a human in the loop —
+  makes the "every PR has a human author" rule
+  on Zeta a per-product decision (Zeta's
+  current stance: not yet accepted on this
+  repo).
 
 ---
 
@@ -466,6 +648,7 @@ that rise to warrant inclusion.
 |---|---|---|---|
 | 2026-04-20 | main-agent + Aaron (manual kickoff) | Bootstrap inventory. AutoMemory Q1-2026 attribution captured. AutoDream Q1-2026 flag-gate noted. Factory adoption statuses populated for all known surfaces. | This file + `feedback_claude_surface_cadence_research.md` + FACTORY-HYGIENE row 38 + BACKLOG row. |
 | 2026-04-20 | main-agent + Aaron | Multi-harness refactor. Renamed `CLAUDE-SURFACES.md` → `HARNESS-SURFACES.md`. Added stub sections for Codex, Cursor, GitHub Copilot, Antigravity, Amazon Q Developer, Kiro. Codified each-harness-tests-own-integration capability boundary. Kiro added explicitly by Aaron as priority-2 stub, distinct from Amazon Q. | This file + `feedback_multi_harness_support_each_tests_own_integration.md` + FACTORY-HYGIENE row 38 (widened) + BACKLOG row (renamed + new integration-test row). |
+| 2026-04-20 | main-agent + Aaron | Harness vs reviewer-robot split. Corrected earlier conflation: `.github/copilot-instructions.md` governs the **PR code review** product (reviewer robot, not a harness), not the VS Code Copilot extension (which is the actual harness, Aaron: *"we will use vvscode for the rest"*). GitHub Copilot split into three distinct product entries: PR review (reviewer, partial-populated), VS Code extension (harness, priority-1), coding agent (autonomous PR author, priority-2 watched). Capability-boundary rule scoped to harnesses only. | This file + `.github/copilot-instructions.md` + `feedback_multi_harness_support_each_tests_own_integration.md`. |
 
 ---
 
