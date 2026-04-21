@@ -20,14 +20,27 @@
 #   - GitHub Pages config
 #   - CodeQL default-setup state
 #
-# Exit 0 on success; non-zero on any gh call failure.
+# Exit 0 on a successful snapshot (even when some optional endpoints
+# return null — automated-security-fixes, private-vulnerability-reporting,
+# interaction-limits, Pages, and branch protection all tolerate absence
+# and coerce to `null` so the emitted JSON stays shape-stable). Exit 2
+# on CLI-argument errors; non-zero from any required `gh api` call
+# (repo metadata, rulesets, permissions) propagates through
+# command-substitution and will make downstream `jq` fail loudly.
 
 set -uo pipefail
 
-repo="${1:-}"
-if [ "$repo" = "--repo" ]; then
+repo=""
+if [ "${1:-}" = "--repo" ]; then
+  if [ $# -lt 2 ]; then
+    echo "error: --repo requires OWNER/NAME argument" >&2
+    exit 2
+  fi
   repo="$2"
-elif [ -z "$repo" ]; then
+elif [ -n "${1:-}" ]; then
+  repo="$1"
+fi
+if [ -z "$repo" ]; then
   repo="${GH_REPO:-$(gh repo view --json nameWithOwner --jq '.nameWithOwner' 2>/dev/null || true)}"
 fi
 if [ -z "$repo" ]; then
@@ -68,7 +81,8 @@ else
 fi
 
 ruleset_details='[]'
-ruleset_ids=$(gh api "/repos/$repo/rulesets" --jq '.[].id')
+# Sort by id to stabilize output across GitHub-side listing order changes.
+ruleset_ids=$(gh api "/repos/$repo/rulesets" --jq '[.[].id] | sort | .[]')
 for rid in $ruleset_ids; do
   one=$(gh api "/repos/$repo/rulesets/$rid" --jq '{id, name, target, enforcement, conditions, rules: [.rules[] | {type, parameters}]}')
   ruleset_details=$(jq --argjson one "$one" '. + [$one]' <<< "$ruleset_details")

@@ -12,7 +12,7 @@ The machine-readable companion is
 That JSON file is **authoritative** — if this markdown ever
 disagrees with it, the JSON wins and this file gets updated.
 
-Motivation (Aaron 2026-04-21):
+Motivation (human maintainer, 2026-04-21):
 
 > "its nice having the expected settings declarative defined"
 >
@@ -47,9 +47,7 @@ That silent drift is exactly what this system detects.
    with a message explaining *why* the setting changed.
 
 See `docs/FACTORY-HYGIENE.md` row #40 for the full cadence /
-owner / scope specification and
-`memory/feedback_github_settings_as_code_declarative_checked_in_file.md`
-for the framing this pattern belongs to.
+owner / scope specification.
 
 ## What's captured
 
@@ -64,7 +62,9 @@ for the framing this pattern belongs to.
   `use_squash_pr_title_as_default` off (explicit PR-title-or-
   commit-title selection still applies).
 - `allow_forking` on — required for the fork-based PR
-  workflow (see `memory/feedback_fork_based_pr_workflow_for_personal_copilot_usage.md`).
+  workflow (contributors develop on personal forks and submit
+  PRs back to this repo; keeps the base repo's cost surface
+  thin).
 - Squash commit title: PR title (falls back to commit title
   for single-commit PRs); squash commit message: concatenated
   commit messages.
@@ -126,12 +126,14 @@ configurations and Zeta uses *advanced-setup*
 (`.github/workflows/codeql.yml` with `build-mode: manual`
 for csharp + per-language SARIF upload). The rule returned
 NEUTRAL / "1 configuration not found" and blocked PR #42
-despite all advanced-setup sub-jobs passing. See
-`memory/reference_github_code_scanning_ruleset_rule_requires_default_setup.md`
-for the full diagnostic. Re-enabling requires either
-(a) enabling default-setup alongside advanced — unverified
-coexistence, duplicate compute, or (b) discovering whether
-the rule can bind to advanced-setup (untested).
+despite all advanced-setup sub-jobs passing. Diagnostic:
+`gh api /repos/<owner>/<repo>/code-scanning/default-setup
+--jq .state` returns `not-configured` on advanced-only
+setups; the rule requires this state to be `configured`.
+Re-enabling requires either (a) enabling default-setup
+alongside advanced — unverified coexistence, duplicate
+compute, or (b) discovering whether the rule can bind to
+advanced-setup (untested).
 
 ### Classic branch protection (on `main`)
 
@@ -237,8 +239,9 @@ git commit -m "chore(settings): <what changed + why>"
 Unintentional drift (detected by the weekly drift workflow or
 a manual run) is fixed in the opposite direction: revert the
 setting in GitHub, rerun the detector to confirm match, and
-file a `memory/reference_github_*.md` entry if the drift
-source is non-obvious.
+record the drift source in the PR body (or an ADR under
+`docs/DECISIONS/` if the diagnosis is non-trivial and worth
+preserving for future maintainers).
 
 ## Related
 
@@ -249,9 +252,3 @@ source is non-obvious.
 - `.github/workflows/github-settings-drift.yml` — cadence
   workflow.
 - `docs/FACTORY-HYGIENE.md` row #40 — the hygiene row.
-- `memory/feedback_github_settings_as_code_declarative_checked_in_file.md`
-  — the framing / pattern.
-- `memory/reference_github_code_scanning_ruleset_rule_requires_default_setup.md`
-  — why the `code_scanning` ruleset rule is off.
-- `memory/project_zeta_org_migration_to_lucent_financial_group.md`
-  — the migration that triggered this discipline.

@@ -27,8 +27,18 @@ expected="$script_dir/github-settings.expected.json"
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --repo) repo="$2"; shift 2;;
-    --expected) expected="$2"; shift 2;;
+    --repo)
+      if [ $# -lt 2 ]; then
+        echo "error: --repo requires OWNER/NAME argument" >&2
+        exit 2
+      fi
+      repo="$2"; shift 2;;
+    --expected)
+      if [ $# -lt 2 ]; then
+        echo "error: --expected requires PATH argument" >&2
+        exit 2
+      fi
+      expected="$2"; shift 2;;
     *) echo "error: unknown arg: $1" >&2; exit 2;;
   esac
 done

@@ -118,21 +118,17 @@ narrative) + `tools/hygiene/github-settings.expected.json`
 (machine-readable canonical state) +
 `tools/hygiene/check-github-settings-drift.sh` (detector) +
 `.github/workflows/github-settings-drift.yml` (weekly cron
-and PR-triggered cadence). Landed as FACTORY-HYGIENE row #40
-and two companion memories
-(`feedback_github_settings_as_code_declarative_checked_in_file.md`
-and `feedback_blast_radius_pricing_standing_rule_alignment_signal.md`
-— the latter captures Aaron's 2026-04-21 praise
-*"this is great standing rules on blast-radius ops ...
-i'm glad you understand blast radius and pricing the
-blast radius"*, reframing the CLAUDE.md "confirm before
-hard-to-reverse actions" discipline as load-bearing
-rather than overcautious, and as a Zeta product-feature
-signal connecting to the retractable-contract ledger). The
-pattern generalizes beyond GitHub — any click-ops platform
-(AWS / GCP / Slack / org-level settings) gets the same
-markdown-declaration + cadenced-diff treatment when
-adopted.
+and PR-triggered cadence). Landed as FACTORY-HYGIENE row #40.
+Same round: the human maintainer's 2026-04-21 praise — *"this
+is great standing rules on blast-radius ops ... i'm glad you
+understand blast radius and pricing the blast radius"* —
+reframed the CLAUDE.md "confirm before hard-to-reverse
+actions" discipline as load-bearing rather than overcautious,
+and as a Zeta product-feature signal connecting to the
+retractable-contract ledger. The pattern generalizes beyond
+GitHub — any click-ops platform (AWS / GCP / Slack /
+org-level settings) gets the same markdown-declaration +
+cadenced-diff treatment when adopted.
 
 ---
 
