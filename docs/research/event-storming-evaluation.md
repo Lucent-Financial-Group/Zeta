@@ -206,6 +206,7 @@ is the natural host.
 ### 3.1 Verdict: **adopt as a strategy, not a tool.**
 
 ES has no runtime footprint. Adopting it costs:
+
 - One skill-group authoring pass (expert / teacher / auditor).
 - Vocabulary edits across `docs/VISION.md`,
   `docs/ALIGNMENT.md`, `docs/GLOSSARY.md`, and
@@ -213,6 +214,7 @@ ES has no runtime footprint. Adopting it costs:
 - One session-bootstrap pointer in `AGENTS.md` or `CLAUDE.md`.
 
 And pays:
+
 - Immediate communicability to the DDD / CQRS-ES audience
   (Greg Young, Vaughn Vernon, Alberto Brandolini himself are
   all reachable).

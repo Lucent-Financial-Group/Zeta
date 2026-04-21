@@ -39,7 +39,7 @@ load-bearing for the factory's cognitive throughput. If the AI
 is defensively double-checking every human-custodied claim, it
 cannot use those cycles to think about the actual problem.
 
-### The latent-capability hypothesis — what's defensible
+## The latent-capability hypothesis — what's defensible
 
 Aaron flags "hard to explain" — it is. A falsifiable
 decomposition:

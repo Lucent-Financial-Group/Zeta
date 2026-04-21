@@ -6,8 +6,9 @@ code gate in GOVERNANCE.md §11 with a debt-intentionality
 invariant anchored in a new `docs/INTENTIONAL-DEBT.md` ledger.
 Effective round 43.*
 **Owner:** architect (wide — synthesis, round-close sign-off)
+
 + every agent (narrow — self-declaration of shortcuts on the
-contributions they ship).
+  contributions they ship).
 
 ## Context
 

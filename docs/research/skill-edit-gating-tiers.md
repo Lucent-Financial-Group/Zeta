@@ -106,7 +106,7 @@ lists three exceptions to the full workflow:
 through the 6-step workflow:
 
 1. Proposal → 2. Draft → 3. Prompt-Protector review →
-4. Dry-run → 5. Commit → 6. Tune-up follow-up
+   4. Dry-run → 5. Commit → 6. Tune-up follow-up
 
 For a 3-line edit replacing `.claude/skills/_retired/…` with
 `git show <commit>^:<path>`, steps 1, 4, 6 are overhead that
@@ -243,6 +243,7 @@ changes:
 trigger-surface, authority, or behavioural envelope.
 That's exactly what the plugin's eval-driven iteration
 was built for, and what our Prompt-Protector + portability
+
 + BP-NN wraps were built to scope-guard.
 
 ---

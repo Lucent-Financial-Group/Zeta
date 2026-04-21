@@ -29,6 +29,7 @@ that answers the **seven open questions** below and proposes
 actionable design.
 
 Not in scope for the spike:
+
 - Building the people-optimizer skill itself.
 - Assigning any currently-named persona to a team.
 - Picking the standardised vocabulary (that's phase-2 work).
@@ -119,6 +120,7 @@ Not in scope for the spike:
 ### Flip-the-corporate-patterns synthesis
 
 For each pattern above:
+
 - Does it presume a manager class? If yes, is there a
   DAO-native variant that survives manager-removal?
 - Is it git-native-testable before Aurora ships?

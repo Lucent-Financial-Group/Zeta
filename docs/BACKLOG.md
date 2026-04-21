@@ -941,26 +941,26 @@ within each priority tier.
   scaffolding, mistake-tolerant, agent-driven pairing.
   **Candidate skill-group membership** (Matrix-mode
   minimum set, shared skills marked *):
-    - `onboarding-expert` — thin-scaffold entry for
-      developers; maps factory+project specifics to the
-      developer's existing mental model.
-    - `onboarding-teacher` — onboards other agents to
-      the onboarding UX shape.
-    - `teaching-track-expert` — canonical use for
-      agent-mediated learning; mistake-response
-      patterns; lesson-sizing heuristics.
-    - `teaching-track-teacher` — onboards other agents
-      to the teaching-track UX.
-    - `teaching-track-auditor` — sweep stalled
-      teaching-track sessions for drifted scope /
-      dropped-on-floor.
-    - `teaching-track-capability` — operational skill
-      agents invoke when entering teaching-track mode.
-    - `human-contribution-reviewer` * — shared across
-      both tracks; reviews human-authored changes as
-      owner-of-codebase not reviewer-on-behalf-of;
-      catches mistakes gently; guards against
-      human-harm including maintainer's own mistakes.
+  - `onboarding-expert` — thin-scaffold entry for
+    developers; maps factory+project specifics to the
+    developer's existing mental model.
+  - `onboarding-teacher` — onboards other agents to
+    the onboarding UX shape.
+  - `teaching-track-expert` — canonical use for
+    agent-mediated learning; mistake-response
+    patterns; lesson-sizing heuristics.
+  - `teaching-track-teacher` — onboards other agents
+    to the teaching-track UX.
+  - `teaching-track-auditor` — sweep stalled
+    teaching-track sessions for drifted scope /
+    dropped-on-floor.
+  - `teaching-track-capability` — operational skill
+    agents invoke when entering teaching-track mode.
+  - `human-contribution-reviewer` * — shared across
+    both tracks; reviews human-authored changes as
+    owner-of-codebase not reviewer-on-behalf-of;
+    catches mistakes gently; guards against
+    human-harm including maintainer's own mistakes.
   Effort: L (two surfaces, two skill groups, new
   review-as-owner stance). Reviewers: Bodhi (DX) for
   onboarding shape, Iris (UX) for teaching-track
@@ -985,20 +985,20 @@ within each priority tier.
   rows are agent-authored, human-resolution arrives
   conversationally, humans never edit the file). **Candidate
   skill-group membership** (Matrix-mode minimum set):
-    - `user-ask-conflict-detector` — scan MEMORY.md + recent
-      transcripts + artifact files for contradictions among
-      human instructions; file `conflict` rows; never
-      resolve.
-    - `human-backlog-filer` — generic capability that files
-      the non-conflict categories when an agent detects a
-      block on human action (approvals, credentials, external
-      comms, naming, physical, observation).
-    - `human-backlog-teacher` — onboards new agents to the
-      artifact's schema + vibe-coding guardrail + default
-      rules while rows are Open.
-    - `human-backlog-auditor` — periodic sweep of open rows
-      for staleness / dropped-on-floor / drifted-source;
-      dual-writes stale detection into row comments.
+  - `user-ask-conflict-detector` — scan MEMORY.md + recent
+    transcripts + artifact files for contradictions among
+    human instructions; file `conflict` rows; never
+    resolve.
+  - `human-backlog-filer` — generic capability that files
+    the non-conflict categories when an agent detects a
+    block on human action (approvals, credentials, external
+    comms, naming, physical, observation).
+  - `human-backlog-teacher` — onboards new agents to the
+    artifact's schema + vibe-coding guardrail + default
+    rules while rows are Open.
+  - `human-backlog-auditor` — periodic sweep of open rows
+    for staleness / dropped-on-floor / drifted-source;
+    dual-writes stale detection into row comments.
   Effort: M. Reviewers: Iris (UX) for the
   human-facing surface shape, Daya (AX) for the agent-facing
   contract. Per
@@ -1030,21 +1030,21 @@ within each priority tier.
   exploration during research, screenshot diffing,
   scraping, etc.), not Zeta-the-library runtime.
   **Candidate group membership** (Matrix-mode minimum set):
-    - `playwright-expert` — canonical use for AI-driven UI
-      testing + web scraping, auth patterns, headless-vs-
-      headed selection, anti-patterns (flaky selector
-      patterns, sleep-based waits, unbounded parallelism),
-      living BP list + canonical-use auditing per
-      `feedback_tech_best_practices_living_list_and_canonical_use_auditing.md`.
-    - `playwright-teacher` — one-page entry point for
-      contributors / agents new to Playwright; when to
-      reach for it (E2E, scraping, diff) vs. not (unit
-      logic, headless curl).
-    - `playwright-auditor` — reviews Playwright use in PRs;
-      flags retries-as-reliability, hardcoded waits,
-      brittle CSS selectors.
-    - Capability skills emerge on demand
-      (`playwright-selector-hygiene`, `playwright-trace-diff`).
+  - `playwright-expert` — canonical use for AI-driven UI
+    testing + web scraping, auth patterns, headless-vs-
+    headed selection, anti-patterns (flaky selector
+    patterns, sleep-based waits, unbounded parallelism),
+    living BP list + canonical-use auditing per
+    `feedback_tech_best_practices_living_list_and_canonical_use_auditing.md`.
+  - `playwright-teacher` — one-page entry point for
+    contributors / agents new to Playwright; when to
+    reach for it (E2E, scraping, diff) vs. not (unit
+    logic, headless curl).
+  - `playwright-auditor` — reviews Playwright use in PRs;
+    flags retries-as-reliability, hardcoded waits,
+    brittle CSS selectors.
+  - Capability skills emerge on demand
+    (`playwright-selector-hygiene`, `playwright-trace-diff`).
   Route authoring via `skill-creator` (GOVERNANCE.md §4).
   Effort: M (three skills + one teacher entrypoint).
   Reviewer: Aarav (`skill-tune-up`) for BP-NN drift,

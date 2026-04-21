@@ -234,6 +234,7 @@ with a huge-refactor gate:
 ## Options considered
 
 ### Option A — keep `tally.py` in Python
+
 - **Pros:** zero work; stdlib-only today.
 - **Cons:** introduces Python as a new Zeta-authored
   tooling language for structured-text work, directly
@@ -245,6 +246,7 @@ with a huge-refactor gate:
 - **Verdict:** rejected.
 
 ### Option B — rewrite in bash
+
 - **Pros:** matches Zeta's current dominant `tools/`
   language; no new runtime today; aligns with
   SQLSharp's cross-platform shell discipline for
@@ -262,6 +264,7 @@ with a huge-refactor gate:
   Option D).
 
 ### Option C — rewrite in F#/.NET
+
 - **Pros:** principled cross-cutting choice for an
   all-.NET repo; strong typing; no new ecosystem;
   **best existing-tech interop** (direct F# type
@@ -277,6 +280,7 @@ with a huge-refactor gate:
   example); not the post-setup *default*.
 
 ### Option D — adopt bun + TypeScript (match SQLSharp)
+
 - **Pros:** cross-project consistency with SQLSharp,
   which is a real Aaron-level value per
   `feedback_factory_reuse_packaging_decisions_consult_aaron.md`;
@@ -298,6 +302,7 @@ with a huge-refactor gate:
   scripting default.**
 
 ### Option E — PowerShell 7+ cross-platform
+
 - **Pros:** already constrained on Windows pre-setup;
   `pwsh` cross-platform is viable.
 - **Cons:** clunky like bash, weaker type story than

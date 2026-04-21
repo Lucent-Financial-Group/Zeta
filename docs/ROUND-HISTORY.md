@@ -238,10 +238,10 @@ the precedent for how future no-ops are recorded.
 
 ### Round 43 close — what stuck, what filed forward
 
-- **Stuck:** skill-tune-up BP-03 self-breach closed; 
+- **Stuck:** skill-tune-up BP-03 self-breach closed;
   GOVERNANCE §11 debt-intentionality invariant named;
   `INVARIANT-SUBSTRATES.md` founded with two `skill.
-  yaml` pilots; `tally.ts` on bun+TS substrate; 
+  yaml` pilots; `tally.ts` on bun+TS substrate;
   agent-cadence telemetry program founded with two
   no-op retro samples; Aarav's self-flag resolved and
   three new TUNE-S items queued; ADR template updated

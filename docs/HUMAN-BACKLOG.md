@@ -18,6 +18,7 @@ load-bearing design invariants:
 
 `★ Insight ─────────────────────────────────────`
 Two companion backlogs, different audiences:
+
 - `docs/BACKLOG.md` is **agent-facing**: work the factory
   itself can pick up and execute (P0/P1/P2/P3 rows,
   often with "Owner: Architect" style attribution).
