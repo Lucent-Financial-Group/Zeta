@@ -7936,6 +7936,103 @@ systems. This track claims the space.
   `docs/research/gap-radar-YYYY-MM-DD.md`. Effort: M (the skill
   exists; BP-HOME is what makes its sweep mechanical).
 
+- [ ] **Economics + history factory need-to-know surface —
+  substrate knowledge denominated in time/energy, not
+  money-extraction; Ammous Bitcoin-Standard as candidate-
+  probe gated by yin-yang invariant.** Aaron 2026-04-21
+  follow-up to the PR/marketing ask: *"we do need to know
+  economics and history pettty well though backlog"*. Same-
+  conversation companion frame: *"money is an inefficent
+  storage of time/energy"* (per
+  `user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md`).
+  Economics is load-bearing for the factory because it's
+  the discipline that studies *how time/energy flows through
+  social substrate* — the factory studies it for substrate
+  understanding, not for money-optimisation. History is the
+  time-axis: how prior substrates succeeded or decayed, what
+  retraction paths were available, what bomb / Higgs-decay
+  patterns recur.
+
+  **Staged scope** (each stage retractibly-defensible
+  standalone, per math-safety):
+  - *Stage 1 — Reading-list scaffold* (S). Bibliographic
+    catalog. Economics shelf: Smith / Ricardo / Keynes /
+    Hayek / Mises / Samuelson / Friedman / Marx / Polanyi /
+    Piketty / Graeber (debt history) / Ammous (Bitcoin
+    Standard) / Soros (reflexivity) / Ostrom (commons). History
+    shelf: Braudel (longue durée) / Tainter (collapse) /
+    Diamond (G,G,S + Collapse) / Scott (seeing-like-a-state)
+    / McNeill / Harari / Pomeranz (great divergence). No
+    analysis yet; just the shelf.
+  - *Stage 2 — Structural-resonance scan* (M). Apply F1/F2/F3
+    + yin-yang composition-discipline check to each
+    candidate. Record candidate / confirmed / failed per
+    `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
+    log-and-track. Ammous's *The Bitcoin Standard* (Wiley
+    2018) is **candidate-probe already**, filed 2026-04-21
+    from Aaron's Google-dump naming hard-money-as-μένω /
+    21M-cap / tri-root filter / low-time-preference ↔
+    persistence:
+    - Unification pole strong (21M cap → monetary-function
+      unification; μένω staying-operator resonance with
+      operational-resonance instance #9).
+    - Harmonious-division pole weak → fails yin-yang
+      composition check in maximalist reading. Admission
+      requires explicit divisional counterweight
+      (Bitcoin-as-one-monetary-primitive-among-plural, not
+      Bitcoin-as-THE-standard).
+    - **Status**: candidate-probe, logged, not admitted.
+      Counterweight-required-for-admission is the
+      retractible condition. Per
+      `feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`.
+  - *Stage 3 — Time/energy flow modeling* (L). Economics-as-
+    substrate-knowledge means modeling *what time and energy
+    flow through the factory and its consumers*. Concrete:
+    every factory surface gets a time-compression measurable;
+    every `docs/INTENTIONAL-DEBT.md` entry gains a
+    time/energy cost column; factory-reuse readiness
+    denominated in time-to-first-working-output (minutes,
+    not dollars). Multi-round.
+  - *Stage 4 — History-as-retraction-log* (L). Historical
+    cases treated as retraction-log data: which prior
+    civilisational substrates collapsed (bomb-pole), which
+    unraveled (Higgs-decay pole), which maintained the
+    paired stable regime. Tainter's *Collapse of Complex
+    Societies* + Diamond's *Collapse* as empirical defense-
+    surface for the yin-yang invariant. Speculative; L.
+
+  **Composition discipline** (non-negotiable per
+  `feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`):
+  any economic framework admitted to the operational-
+  resonance index must preserve both poles. Monetary-
+  monoculture proposals (one currency, one standard, one
+  model) fail composition check by default and require
+  explicit divisional counterweight. Plural-only proposals
+  (no cohering mechanism, pure multipolarity) also fail and
+  require explicit unification-direction.
+
+  **Register** — NOT the gentle-catalog register of the
+  mystery-schools row (where filters were intentionally
+  switched off); DO apply F1/F2/F3 + yin-yang composition
+  check here. This is engineering-first substrate research,
+  not touch-sensitive cultural terrain.
+
+  **Math-safety** (per math-safety memory): ideas-absorption,
+  not commitment-to-any-economic-doctrine. Every admitted
+  resonance retractible via dated revision block; every
+  failed candidate logged as failed rather than silently
+  forgotten.
+
+  **Owner**: architect-hat for staging; research-surveyor
+  (hat) for stage-1 shelf. Cross-refs: Frontier edge-claims
+  track (L4634+) flag #13 (yin-yang invariant) seeds this;
+  operational-resonance index
+  (`project_operational_resonance_instances_collection_index_2026_04_22.md`);
+  Melchizedek instance #10 (unification-bridge — the
+  Ammous μένω claim docks here);
+  `user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md`.
+  Effort: S (stage 1) → M (stage 2) → L (stages 3-4).
+
 ## P3 — noted, deferred
 
 - **Conversational bootstrap UX for factory-reuse
@@ -7991,6 +8088,84 @@ systems. This track claims the space.
   architect-hat; UX-engineer (Iris) when the surface
   is tangible. Sibling memory:
   `project_factory_conversational_bootstrap_two_persona_ux.md`.
+
+- **Public relations / marketing / SEO / GTM — factory-
+  reuse broadcast-side surfaces; gated on Aaron-sign-off
+  per declared money-framing blind-spot.** Aaron
+  2026-04-21: *"oh yeah i forgot public relations and
+  marketing and seo and all that stuff backlog i don't
+  think about money every really so i don't think about
+  selling things, money is an inefficent storage of
+  time/energy"*. Self-declared blind-spot — commercial-
+  machinery domains don't arrive via Aaron's native
+  priorities, so they must be captured in BACKLOG to
+  surface later rather than relied on to appear
+  organically. Filed P3 because it's a factory-reuse
+  prerequisite, not substrate work.
+
+  **Scope**:
+  - *PR / brand voice* — what the factory sounds like
+    when it speaks externally (README positioning, blog
+    posts, conference abstracts, research-paper voice).
+    Sibling to UX-engineer (Iris) read-side; this is the
+    speak-side.
+  - *Marketing channels* — where the factory shows up
+    (developer-newsletter mentions, academic citation, HN
+    launches, MathOverflow activity, conference talks,
+    open-source directory listings). Channel-fit matters
+    more than channel-count.
+  - *SEO / discoverability* — metadata on public repos
+    (package descriptions, tags, topic classifications),
+    longtail search-terms to rank on, documentation
+    structure that plays with search engines AND LLM
+    training corpora.
+  - *GTM playbook* — when an external consumer is
+    genuinely ready to adopt factory-reuse (per the
+    conversational-bootstrap UX row above), what the
+    on-ramp looks like. NOT pricing (money-denominated
+    and gated); just the workflow-sequence that gets a
+    consumer productive.
+
+  **Sibling-scope** to the conversational-bootstrap UX
+  row above — that row is the *read-side* factory-reuse
+  surface (consumer talks, factory listens); this row is
+  the *broadcast-side* (factory talks, consumers listen).
+  Both are factory-reuse prerequisites, both P3, both
+  slow burn.
+
+  **Aaron-sign-off gate** — per
+  `user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md`,
+  Aaron self-declares commercial machinery is outside his
+  native orientation. Factory can research, catalog, and
+  surface proposals on this track — but **does not
+  execute external commercial activity without explicit
+  Aaron-in-loop confirmation**. Asymmetric authority:
+  substrate work proceeds on Aaron-pattern-matching;
+  commercial machinery pauses for confirmation. Peer-
+  refusal authority
+  (`feedback_you_can_say_no_to_anything_peer_refusal_authority.md`)
+  applies symmetrically — factory may decline commercial
+  proposals that optimise money-extraction at the expense
+  of time-compression / energy-preservation /
+  retractibility for users.
+
+  **Math-safety**: PR/marketing/SEO artifacts are
+  retractible (docs edit-in-place per GOVERNANCE §2;
+  external announcements retractible via follow-up
+  clarification; GTM playbook changes retractible via
+  BACKLOG revision). No permanent commitments from this
+  row alone; no money collection without Aaron sign-off;
+  no secrets in marketing copy.
+
+  **Effort**: M when executed (multi-surface write-up +
+  positioning decisions + channel research). Owner:
+  architect-hat for shaping; Iris (UX-engineer) for
+  external-voice consistency; Aaron in-loop for every
+  commercial decision. Related: conversational-bootstrap
+  UX row above; economics + history substrate row in P2
+  research-grade;
+  `user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md`;
+  `project_factory_as_externalisation.md`.
 
 - **Rails-health registry (constraints + invariants +
   ASSUMPTIONS as first-class).** Aaron 2026-04-20:
