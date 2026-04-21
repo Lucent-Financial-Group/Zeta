@@ -1,5 +1,19 @@
 # git-crypt deep-dive — 2026-04-21
 
+> **Decision (2026-04-21): REJECTED.** Aaron, after reading
+> this research: *"git crypto no go i read your initial
+> review"*. git-crypt is out of the candidate set for Zeta
+> secrets-at-rest. Rejection is encoded in
+> `docs/WONT-DO.md` (*Engineering patterns → git-crypt for
+> secrets management*). This document is **kept as the
+> rationale artifact** — *"keeep the reserach ... so i
+> don't ask you tomorrow"* — so future-self sees the
+> reasoning without re-running it. The remaining candidate
+> set for the eventual ADR is SOPS + KMS (long-lived
+> secrets) and `age` (ephemeral / PQC-curious); `git-secret`
+> is also out by sibling reasoning (same OpenPGP-GPG + no-
+> revocation properties).
+
 **Date:** 2026-04-21
 **Author:** Architect (Kenji) — cartographer pass, not a
 decision. Feeds into the P2 BACKLOG row *"Gitops-friendly key
@@ -7,9 +21,10 @@ management + rotation — ADR first, then pick one tool"*
 (`docs/BACKLOG.md`).
 **Triggering ask:** Aaron, 2026-04-21 — *"while you are here
 reserch gitcrypt for secrets on backlog"*.
-**Status:** Proposed. Input document for
-`docs/DECISIONS/YYYY-MM-DD-gitops-key-management.md` (not
-yet drafted). No implementation without the ADR.
+**Status:** REJECTED 2026-04-21 (see banner above). Rationale
+artifact retained. SOPS / age remain in the candidate set;
+ADR under `docs/DECISIONS/YYYY-MM-DD-gitops-key-management.md`
+not yet drafted.
 
 ## TL;DR
 
