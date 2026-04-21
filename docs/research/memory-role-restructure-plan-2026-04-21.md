@@ -134,10 +134,10 @@ memory/persona/best-practices-scratch.md   memory/best-practices-scratch.md (pro
 ```bash
 grep -rln "memory/persona/" --include="*.md" --include="*.json" \
   --include="*.sh" --include="*.fs" --include="*.cs" \
-  --exclude-dir=references . | \
-  grep -v "^./\\.git" | wc -l                     # → 114 files
+  --exclude-dir=.git --exclude-dir=references . | \
+  wc -l                                           # → 114 files
 grep -rc "memory/persona/" --include="*.md" --include="*.json" \
-  --include="*.sh" --exclude-dir=references . | \
+  --include="*.sh" --exclude-dir=.git --exclude-dir=references . | \
   grep -v ":0$" | \
   awk -F: '{s+=$2} END {print s}'                 # → 700 refs
 ```
@@ -204,8 +204,8 @@ declare -A ROLES=(
 for persona in "${!ROLES[@]}"; do
   role="${ROLES[$persona]}"
   grep -rl "memory/persona/$persona/" --include="*.md" \
-    --include="*.json" --include="*.sh" --include="*.jsonc" . | \
-    grep -v "^./\\.git" | \
+    --include="*.json" --include="*.sh" --include="*.jsonc" \
+    --exclude-dir=.git --exclude-dir=references . | \
     grep -v "tools/alignment/out/" | \
   while IFS= read -r file; do
     sed -i.bak "s|memory/persona/$persona/|memory/$role/$persona/|g" "$file" && rm -f "$file.bak"
@@ -213,12 +213,14 @@ for persona in "${!ROLES[@]}"; do
 done
 
 # Clean up the flat-file references too
-grep -rl "memory/persona/README\\.md" --include="*.md" . | \
+grep -rl "memory/persona/README\\.md" --include="*.md" \
+  --exclude-dir=.git --exclude-dir=references . | \
 while IFS= read -r file; do
   sed -i.bak "s|memory/persona/README\\.md|memory/persona-roles-README.md|g" "$file" && rm -f "$file.bak"
 done
 grep -rl "memory/persona/best-practices-scratch\\.md" \
-  --include="*.md" --include="*.sh" . | \
+  --include="*.md" --include="*.sh" \
+  --exclude-dir=.git --exclude-dir=references . | \
 while IFS= read -r file; do
   sed -i.bak "s|memory/persona/best-practices-scratch\\.md|memory/best-practices-scratch.md|g" "$file" && rm -f "$file.bak"
 done
