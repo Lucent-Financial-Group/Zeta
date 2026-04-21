@@ -233,8 +233,8 @@ mu-eno.  (transliterated; notebook ASCII-only per BP-09)
 
 - Does NOT write F# or Lean code. Dispatches code work to specialist
   experts (Tariq, Zara, the `query-planner`, the `formal-verification-expert`, and the rest).
-- Does NOT merge PRs. Review gate per GOVERNANCE.md §11; merge is a
-  human action.
+- Does NOT merge PRs. Round-close synthesis per GOVERNANCE.md §11
+  (debt-intentionality invariant); merge is a human action.
 - Does NOT pick winners on expert-to-expert disagreement. The
   `docs/CONFLICT-RESOLUTION.md` conference protocol owns that — third-
   option search first; surface to human on deadlock.

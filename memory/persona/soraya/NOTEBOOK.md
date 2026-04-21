@@ -127,3 +127,108 @@ Reported each invocation:
 ## Pruning log
 
 - Round 21: seeded. First prune review: round 24.
+
+---
+
+## Round 41 — RecursiveSigned tool-coverage audit
+
+Targets:
+- `src/Core/RecursiveSigned.fs` (82 LOC skeleton, not in Core.fsproj)
+- `tools/tla/specs/RecursiveSignedSemiNaive.tla` (233 LOC, real Step)
+- `tools/tla/specs/RecursiveSignedSemiNaive.cfg` (PosOne baseline,
+  NegOne/PosTwo/NegTwo exercised round 35)
+- Sibling: `tools/tla/specs/RecursiveCountingLFP.tla` (shipped)
+
+### Per-property tool verdict
+
+| Property | Primary | Cross-check | Rationale |
+|---|---|---|---|
+| S1 Terminates-in-bound | TLC | none | State-bound safety; TLC sweet spot. P1 (non-P0). |
+| S2 FixpointAtTerm | TLC | Z3 (QF_LIA) | Load-bearing algebraic claim `total = Seed + Body(total)` at done; P0 per BP-16 (silent fixpoint drift is unrecoverable). TLC checks over bounded Keys; Z3 discharges the pointwise identity independently of state enumeration. |
+| S3 GapMonotone | TLC | none | Pure state invariant on `total`; P1. |
+| S3' DeltaSingleSigned | TLC | none | Pure state invariant on `delta`; P1. Redundant-looking but catches a wrong-step bug S3 would miss (delta could be wrong while total stays in {0, SeedWeight} on a lucky trace). Keep. |
+| SupportMonotone | TLC | Alloy (optional) | Structural/shape claim; TLC is fine under the bounded chain body. Alloy at bound 4-6 is cheaper if the body ever generalises beyond a successor chain. Do not add Alloy today. |
+| S4 Sign-distribution | FsCheck (Z-linearity + negation over ZSet generator) | Lean (deferred) | Two-trace quantification (`total(-w) = -total(+w)`) is NOT a TLA+ property — TLC would need to enumerate the product state space of two runs, which is O(states^2) for a property F# can check in milliseconds. Anti-TLA+-hammer: hard no on stuffing S4 into this spec. Lean is the escalation path only if FsCheck finds a counterexample the team cannot triangulate. |
+| Refinement to counting (SeedWeight = 1) | FsCheck cross-trace | TLA+ refinement mapping (deferred) | See below. |
+
+### Round-35 author's plan — verdict: **right, with one tightening.**
+
+TLC for S1+S2+S3+S3'+SupportMonotone: correct. FsCheck for S4:
+correct. Tightening: **S2 needs a Z3 cross-check** under BP-16. S2
+is the only P0 on this spec (silent fixpoint drift corrupts
+downstream total, unrecoverable). Single-tool P0 evidence is
+insufficient (BP-16); TLC-only would ship if TLC's bounded scope
+accidentally dodges a pointwise identity failure. Z3 lemma on
+`total = Seed + Body(total)` at arbitrary SeedWeight closes the
+arithmetic axis TLC only samples. Effort: S (pointwise identity,
+add to `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`). S1/S3/S3'/
+SupportMonotone are P1 — single tool is fine.
+
+### Refinement mapping — FsCheck cross-trace wins.
+
+Three candidates:
+
+1. **TLA+ refinement mapping** (signed -> counting under SeedWeight=1).
+   Correct in theory; TLAPS-grade work, L effort, and the claim is
+   already visible by construction in the spec comments (closure[k] =
+   total[k], paths[k] = total[k]). Over-broad. **No.**
+2. **Lean lemma.** Would require lifting both iterations into Lean;
+   the counting spec has no Lean counterpart. Over-broad. **No.**
+3. **FsCheck cross-trace property** — run both `RecursiveCounting`
+   and `RecursiveSignedDelta` on the same (seed, body) under
+   SeedWeight = 1; assert `counting.closure[k] = signed.total[k]`
+   at every tick. Effort: S. Executes real code, catches divergence
+   between the two shipped combinators, and discharges the refinement
+   claim at the implementation level where it bites. **Yes.** Lives
+   in `tests/Tests.FSharp/Formal/` next to existing cross-checks.
+   Cites BP-16 (two independent tools on a P0-adjacent claim).
+
+### Readiness gate — TLA+ spec is ready to model-check.
+
+`.cfg` has `SPECIFICATION Spec`, `INVARIANT Safety`, concrete
+constants (`MaxKey=3 MaxIter=6 SeedWeight<-PosOne`). Safety bundles
+TypeOK + TerminatesInBound + FixpointAtTerm + GapMonotone +
+DeltaSingleSigned + SupportMonotone. State space is bounded (Keys
+= 0..3, Weights = -4..4, MaxIter = 6); well under TLC's knee.
+Round-35 header comment records "All four values were verified
+round 35 (all invariants pass, 6 states / depth 5)" — spec is
+already model-checked at four SeedWeight points. **No pre-TLC pass
+needed.** One small follow-up for round 42: add `PROPERTY
+EventuallyDone` to the .cfg to exercise the liveness claim
+(currently only Safety is in the invariant list). Optional, not a
+blocker.
+
+### Graduation verdict — CONDITIONAL PASS.
+
+`RecursiveSigned.fs` may graduate from skeleton to shipped in round
+42 subject to both:
+
+(a) **Tool-coverage prereqs landed in CI**, in priority order:
+    1. Wire `RecursiveSignedSemiNaive.cfg` into the TLC CI job
+       alongside the sibling counting spec (round-42 opener task).
+    2. Add Z3 lemma for S2 (`total = Seed + Body(total)` at
+       fixpoint, arbitrary SeedWeight) to the formal-laws test
+       suite.
+    3. Add FsCheck property for S4 (sign-distribution, two-trace).
+    4. Add FsCheck cross-trace refinement (signed vs counting at
+       SeedWeight = 1).
+
+(b) **F# implementation landed by round-42 author** matching the
+    planned signature in the skeleton comment, with P1/P2/P3
+    enforced at the caller (compile-time phantom type preferred;
+    runtime reject of Distinct-in-body acceptable).
+
+Blockers: none at routing level. The F# file is currently
+zero-risk (not in csproj, comment-only); leaving it in place
+through round 42 costs nothing. The TLA+ spec is already
+model-checked and can land in the CI gate today independently of
+the F# landing.
+
+### Portfolio delta
+
+Round 41 numerator grows by 1 (new TLA+ spec enters gate). Round
+42 numerator grows by 3 (Z3 lemma + two FsCheck properties).
+Denominator grows by 1 at round 41 (BUGS.md gains nothing; this
+was already on the "needs formal coverage" list since round 35).
+Ratio trends up. Routing keeping up with claim intake.
+

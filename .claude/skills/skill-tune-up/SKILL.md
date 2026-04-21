@@ -171,67 +171,12 @@ across sessions. The file is growing but bounded:
   notebook edit and at pre-commit; any hit blocks notebook edits
   until cleaned.
 
-Notebook format:
-
-```markdown
-# Skill Tune-Up — Notebook
-
-## Running observations
-- YYYY-MM-DD — observation
-
-## Current top-5 (refresh each run)
-1. [skill] — priority: [P0/P1/P2]
-   - Signal: [drift | contradiction | staleness | user-pain | bloat | portability-drift]
-   - Action: [TUNE | SPLIT | MERGE | RETIRE | HAND-OFF-CONTRACT | OBSERVE]
-   - Effort: [S | M | L]
-
-## Self-recommendation
-
-## Pruning log
-```
-
-## Output format
-
-```markdown
-# Skill Tune-Up Ranking — round N
-
-## Live-search summary
-- Queries run: <list>
-- Findings logged to scratchpad: <count> (in
-  memory/persona/best-practices-scratch.md)
-- Candidate promotions flagged to Architect: <count>
-
-## Top-5 skills needing tune-up
-
-1. **<skill-name>** — priority: P0 | P1 | P2
-   - Signal: [drift | contradiction | staleness | user-pain |
-     bloat | best-practice-drift | portability-drift |
-     router-coherence-drift]
-   - Violates: BP-<NN>[, BP-<NN>]   (only when signal is
-     best-practice-drift)
-   - Recommended action: [TUNE | SPLIT | MERGE | RETIRE |
-     HAND-OFF-CONTRACT | OBSERVE]
-   - Effort: S | M | L
-   - Rationale: 1-2 sentences with the concrete evidence.
-   - Suggested fix: one line per violated rule
-     (e.g. "BP-02: add a 'What this skill does NOT do' block").
-
-...
-
-## Notable mentions
-- [skills close to flagging but not there yet]
-
-## Self-recommendation
-- Does this skill itself need tune-up? [yes/no] — concrete
-  signal (including any BP-NN violations found in his own file).
-  Honest answers only; no modesty bias.
-```
-
-Findings that cite `BP-<NN>` IDs are handed off to the Skill
-Improver (Yara) as checkbox work. Findings without a rule-ID
-citation are either (a) evidence that we need a new rule (file
-to scratchpad) or (b) judgement calls that the `skill-improver` handles
-case-by-case.
+Notebook format and the ranking-round output format are
+reference templates — extracted to
+`docs/references/skill-tune-up-eval-loop.md` §"Notebook
+format template" and §"Ranking output format template".
+Read that file when actually writing a notebook entry or
+producing a ranking round's output.
 
 ## Self-recommendation — explicitly allowed
 
@@ -241,24 +186,54 @@ it says so first.
 
 ## Interaction with `skill-creator`
 
-This skill produces recommendations; `skill-creator` executes
-them. The two skills are paired: this ranker is the "should we"
-and `skill-creator` is the "how we". Without `skill-creator`, a
-tune-up recommendation has nowhere to land. Without the ranker,
-`skill-creator` has no triage queue.
+Recommendations here are the *should-we*; `skill-creator` is
+the *how-we*. Without it, a tune-up has nowhere to land;
+without the ranker, `skill-creator` has no triage queue.
 
-When a **TUNE** recommendation is specifically about
-description-tuning (triggering clarity, over-broad or under-
-specific `description:` lines), `skill-creator` can in turn
-delegate to the upstream `claude-plugins-official/skill-creator`
-plugin's eval-driven description-optimiser — the plugin ships
-benchmark scripts, a description-optimiser, and a viewer. That
-layered path is documented in
-`.claude/skills/skill-creator/SKILL.md §upstream-pointer`; this
-ranker does not invoke the plugin directly. The bespoke
-workflow (draft / Prompt-Protector review / dry-run / commit)
-remains the gate; the plugin is an optional power-tool on the
-description line.
+General wrapper discipline: a wrapper can be as thick as it
+needs to be. Skill-on-skill wrappers usually end up thin as a
+natural consequence — the wrapped skill already carries a
+body, and duplicating it wastes tokens. Wrappers around
+non-skill artifacts (scripts, docs, schemas, CLI tools) carry
+whatever protocol the artifacts themselves don't encode.
+
+Our `skill-creator` wraps Anthropic's upstream `skill-creator`
+*skill* and ends up naturally thin; that's documented in
+`.claude/skills/skill-creator/SKILL.md §upstream-pointer`.
+`skill-tune-up` wraps the upstream plugin's `scripts/`,
+`eval-viewer/`, `agents/` directories and the Anthropic guide
+PDF under `docs/references/` — none of those are skills, so
+this section carries the full hand-off protocol below.
+
+## The eval-loop hand-off — pointer
+
+The upstream `plugin:skill-creator` at
+`~/.claude/plugins/cache/claude-plugins-official/skill-creator/`
+ships an eval-driven iteration loop (grader / analyzer /
+comparator agents, `run_loop.py`, `aggregate_benchmark.py`,
+`eval-viewer/generate_review.py`) that Aarav's ranking
+recommendations route into instead of reinventing a local
+harness. The full hand-off protocol — gate table mapping
+recommended-action × effort to eval-loop vs manual-edit,
+per-round hand-off naming, workspace convention, stopping
+criteria, round-close ledger row shape, and the deliberate
+not-reimplemented list — lives at:
+
+**`docs/references/skill-tune-up-eval-loop.md`**
+
+Read that file on any invocation whose top-1 is in an
+eval-loop-required row of the gate table (TUNE-M/L, SPLIT,
+MERGE). For mechanical-edit rows (RETIRE, ASCII-lint
+cleanup, broken-link repair, content-extraction-preserving-
+protocol-verbatim) the justification-log path at
+`docs/skill-edit-justification-log.md` applies — see
+`memory/feedback_skill_edits_justification_log_and_tune_up_cadence.md`
+Rule 1.
+
+The standing rule that ranking claims of "worst-performing"
+require the harness (not static line-count or by-inspection
+analysis) is at
+`memory/feedback_skill_tune_up_uses_eval_harness_not_static_line_count.md`.
 
 ## Interaction with the Architect
 
@@ -301,3 +276,7 @@ not this skill's.
   (created on first invocation if absent)
 - `docs/ROUND-HISTORY.md` — where his top-5 for each round is
   summarised once executed
+- `docs/references/anthropic-skills-guide.md` + the pinned PDF
+  next to it — the authoritative Anthropic guidance the
+  upstream eval harness implements; cite chapters / page
+  numbers in findings instead of re-deriving the vocabulary.

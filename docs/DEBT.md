@@ -1,4 +1,15 @@
-# Technical Debt
+# Technical Debt — live ledger
+
+*This file is the **live ledger** of accidental / unintentional
+technical-debt entries. For the factory-shipped operator
+manual — what debt IS, the full class taxonomy, how the
+factory automates discovery and fixes, and how this doubles
+as AI instructions — see
+[`docs/TECH-DEBT.md`](TECH-DEBT.md) (factory primer) and
+[`docs/SYSTEM-UNDER-TEST-TECH-DEBT.md`](SYSTEM-UNDER-TEST-TECH-DEBT.md)
+(Zeta-specific variant). Both new docs cite entries from this
+ledger as examples; this ledger stays authoritative for
+current state.*
 
 Counterpart to `docs/BUGS.md`. The distinction:
 

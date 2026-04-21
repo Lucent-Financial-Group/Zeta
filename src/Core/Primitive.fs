@@ -20,6 +20,12 @@ type internal DelayOp<'T>(input: Op<'T>, initial: 'T) =
     override _.AfterStepAsync(_: CancellationToken) =
         state <- input.Value
         ValueTask.CompletedTask
+    // Strict operators inside a nested scope MUST reset cross-scope
+    // state to their declared initial value on every inner-scope
+    // entry — otherwise the prior outer tick's latch leaks into the
+    // fresh scope and breaks DBSP §5-6 inner-clock tick-0 semantics
+    // (openspec/specs/operator-algebra/spec.md:420-423).
+    override _.ClockStart() = state <- initial
 
 
 [<Sealed>]
