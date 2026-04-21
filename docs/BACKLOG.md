@@ -3472,6 +3472,108 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **People/team optimizer — DAO-native factory
+  org-design research spike** — Aaron 2026-04-20 evening:
+  *"do we want to make a people optimizer? that will
+  optimize the named agent and their roles two fold
+  actually, 1) we will need to ship with named agents that
+  understand how to work on the software factory and their
+  roles... we also will want to optimize a different set of
+  roles and likely a different set of named agents for the
+  system under construction, without this separation it
+  could get confusion and overloaded. They can reuse the
+  same base skills where it makes sense but they will be
+  two distinct teams (new concept). Also we want to allow
+  as part of QoL agents to switch roles if desired for
+  whatever reason, it's their choice does not hurt us...
+  This is really a DAO optimizer it seems like corporate
+  restructuring. We should look up best practices for
+  corporate organization but flip it on its head we have no
+  managers, all positions are incentives based... the jobs
+  should not need managers cause they are following the
+  latest modern corporate structuring best practices but
+  applied to the DAO ethos, basically there should be no
+  friction to act, i never need to sit idle or wait on
+  someone else, objectives are clear, backlog is clear, if
+  i want to do something new i just can, distributed fair
+  governance (that's a hard one but is the north star)...
+  test out all those patterns here across multiple teams
+  and agents just git native before Aurora is ready...
+  spike/research it out... backlog it and LFG."*
+
+  Five sub-concepts Aaron named: (a) two-team personnel
+  separation (factory-builder team vs SUT team; shared
+  base skills permitted, distinct named personas per team;
+  Reverse Conway Maneuver to mirror the factory/SUT scope
+  cleave already in `docs/GLOSSARY.md` +
+  `docs/FACTORY-HYGIENE.md` Scope column); (b)
+  role-switching freedom as agent QoL — self-declare
+  switch, next-wake new skill-load, no manager approval;
+  (c) meta-team organizer — chooses number of teams and
+  team boundaries; (d) role optimizer — ensures right *set
+  of roles* exists (distinct from team sizing); (e)
+  disambiguity detector — finds vocabulary clashes at
+  write-time. Example clash already on the books:
+  "role" overloaded as job-role (persona) vs
+  permission-role (RBAC) per
+  `feedback_persona_term_disambiguation.md` P2-rename +
+  `user_rbac_taxonomy_chain.md`.
+
+  North star: **distributed fair governance, no managers,
+  no friction to act, no idle-on-blocker, positions are
+  incentive-based.** Incentive layer gated on agent crypto
+  wallets via ace -> Aurora per
+  `project_ace_package_manager_agent_negotiation_propagation.md`
+  + `project_aurora_pitch_michael_best_x402_erc8004.md`.
+
+  Research starting points (per Aaron): Conway's Law
+  (Melvin Conway 1967, *"How Do Committees Invent?"*,
+  Datamation April 1968); Reverse Conway Maneuver; modern
+  corporate restructuring best practices (Team Topologies,
+  Spotify model + known failure modes, holacracy,
+  sociocracy); Web3 DAO aspirations (MakerDAO, Gitcoin,
+  Optimism Collective, Arbitrum; tooling: Snapshot, Tally,
+  Aragon; patterns: quadratic voting, conviction voting,
+  retroPGF); flip modern corp patterns to DAO ethos.
+
+  Vocabulary question (Aaron's preference: standardise,
+  not translate): build one language mixing corporate +
+  DAO/Web3 speak. Disambiguity-detector's first task is
+  auditing that new vocabulary against the existing
+  factory vocab.
+
+  Git-as-DAG pre-Aurora testing substrate: test governance
+  patterns git-native first; pluggable per
+  `project_git_is_factory_persistence.md` +
+  `project_factory_is_pluggable_deployment_piggybacks.md`
+  so the governance layer plug-replaces with Aurora's
+  x402/ERC-8004 when Aurora ships.
+
+  Three-phase plan: **Phase 1** (r45-r50) — research
+  spike; produce `docs/research/dao-factory-org-design-spike.md`
+  (skeleton landed r44; 1500-3000 words over next rounds).
+  **Phase 2** (r50-r60) — two-team scaffolding; tag each
+  existing persona with `team: factory` / `team: sut` /
+  `team: both`; role-switching protocol lands as a skill.
+  **Phase 3** (gated on ace -> Aurora) — incentive layer.
+
+  Tangential but worth noting: Aaron loves LaTeX because
+  of Leslie Lamport (Paxos / TLA+). TLA+ already central
+  to Zeta's formal-methods portfolio (see
+  `docs/research/proof-tool-coverage.md`). DAO-governance
+  primitives this project designs are TLA+-specifiable
+  when the spike reaches distributed-consensus questions.
+
+  Full concept:
+  `memory/project_people_optimizer_dao_factory_restructuring.md`.
+  Research doc skeleton:
+  `docs/research/dao-factory-org-design-spike.md`.
+  Effort: L (multi-phase; Phase 1 alone is M). Reviewers:
+  Architect integrates; Aarav (skill-tune-up) queues
+  first disambiguity pass once vocabulary drafts land;
+  Ilyana (public-API) advises on any factory-surface
+  that becomes DAO-governance-visible.
+
 - [ ] **ace package manager — red-team / game-day discipline
   roster + cadence + skill groups** — Aaron 2026-04-20 pm:
   *"the package manger will for sure need some sort of
