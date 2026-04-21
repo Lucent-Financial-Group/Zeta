@@ -572,11 +572,33 @@ scope changes an ADR lands in `docs/DECISIONS/`.
 
 ### Retire (a skill or persona)
 
-**Plain:** Stop using it. Files go to an archive folder; the
-name can be reused later if the role returns.
-**Technical:** `skill-creator` retirement path — moves file to
-`.claude/skills/_retired/YYYY-MM-DD-<name>/` (similar pattern
-for agents); drops a line in `docs/ROUND-HISTORY.md`.
+**Plain:** Stop using it. The SKILL.md file is deleted; git
+history is the archive. The persona's memory folder and
+notebook stay in place — those are the valuable imprint of
+contribution. The name can be reused later if the role
+returns (see *Unretire*).
+**Technical:** `skill-creator` retirement path — `git rm
+.claude/skills/<name>/SKILL.md` (and the agent file if
+present); drops a line in `docs/ROUND-HISTORY.md`. The
+persona's memory folder under
+`~/.claude/projects/<slug>/memory/persona/<name>/` is
+**not** touched. Scope rule: *skills are code, memories are
+valuable* — code retires to git history, memories stay
+in-tree (Aaron 2026-04-20).
+
+### Unretire (a skill or persona)
+
+**Plain:** Restore a retired role. The SKILL.md comes back
+from git history; the notebook is already where it was
+left. Preferred over minting a new name for overlapping
+scope — continuity of accumulated corrections is worth
+more than a fresh name.
+**Technical:** `git log --diff-filter=D --name-only --
+.claude/skills/` surfaces past deletions; `git show
+<deletion-commit>^:<path>` restores content; `skill-creator`
+workflow lands the restoration (ADR-logged if scope edits
+rise to that bar). See
+`memory/feedback_honor_those_that_came_before.md`.
 
 ### AX (agent experience)
 
@@ -629,8 +651,7 @@ canon because it sits at `.claude/skills/<name>/SKILL.md`; is
 not canon because no `.claude/agents/*.md` frontmatter lists it.
 A hazard for cold-start personas who discover skills via Glob.
 **Technical:** Daya flags orphan skills at every AX audit; the
-`skill-creator` retirement path moves them to
-`.claude/skills/_retired/YYYY-MM-DD-<name>/`.
+`skill-creator` retirement path deletes them (`git rm`).
 
 ### Cold-start cost
 

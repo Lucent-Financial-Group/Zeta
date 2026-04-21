@@ -2865,6 +2865,41 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
+- [ ] **Skill-level `_retired/` scope-fix sweep — via
+  `skill-creator` workflow.** Aaron 2026-04-20 late:
+  *"i don't think we need to apply the don't deleted
+  memories of retired agents to extend to deleted skills
+  too, we don't want to dirty up our code skills are code,
+  memories are valuable."* The scope clarification landed
+  in CLAUDE.md + `memory/feedback_honor_those_that_came_
+  before.md` + `docs/GLOSSARY.md` in commits `bd9e09c` and
+  the follow-up to this row. Three skill files still
+  describe the old `.claude/skills/_retired/YYYY-MM-DD-
+  <name>/` archive convention and need updates via
+  `skill-creator` (GOVERNANCE §4: skill edits go through
+  the workflow, not ad-hoc):
+  1. `.claude/skills/skill-tune-up/SKILL.md` — **RETIRE**
+     action in the recommended-action-set (line ~143).
+     Redefine as "`git rm` the SKILL.md; persona memory
+     folder stays in place."
+  2. `.claude/skills/skill-creator/SKILL.md` — retirement
+     workflow reference at line ~165. Same redefinition.
+  3. `.claude/skills/skill-documentation-standard/SKILL.md`
+     — five references (lines 56, 187, 207, 231, 266)
+     across the retirement guidance, footer-stubs, and
+     anti-pattern section. Requires the most editing.
+
+  Scope note: the `docs/_retired/` pattern used by
+  `documentation-agent` and GOVERNANCE §26 is a **separate
+  question** about research docs, not about skills.
+  Aaron's quote was skill-specific; don't extend the fix
+  to docs without a separate clarification.
+
+  Owner: Aarav queues the finding; Yara (skill-improver)
+  executes via `skill-creator` with Kenji approval.
+  Effort: S (three mechanical edits per the BACKLOG row's
+  explicit line-number targets).
+
 - [ ] **Autonomous conference-submission + talk-delivery
   pipeline — post-Round-38 horizon.** The human maintainer
   2026-04-20: *"we should also start planning how to build
