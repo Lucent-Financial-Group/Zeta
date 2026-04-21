@@ -22,7 +22,13 @@ the skill as Tier-3 work.
 
 Surface: `~/.claude/projects/<slug>/memory/feedback_*.md`
 and `memory/project_*.md` — the memory corpus Aaron's
-agents accumulate across sessions. This is the largest
+agents accumulate across sessions via Anthropic's
+**AutoMemory** Q1-2026 built-in feature
+(`memory/reference_automemory_anthropic_feature.md`).
+The `scope:` tag proposed at
+`docs/research/memory-scope-frontmatter-schema.md` is a
+**factory-overlay** extension on AutoMemory's schema,
+not a replacement. This is the largest
 concentrated scope-ambiguity surface (other surfaces —
 skills, BP-NN rules, ADRs — already have absorb-time
 scope-tagging in their respective `skill-creator` /
