@@ -12,6 +12,8 @@ New rounds are appended at the top.
 Newest first. Anchor links work in markdown renderers that
 slugify `## Round N — <title>` to `#round-n-<title-slug>`.
 
+- [Round 44 — in-flight](#round-44--in-flight)
+- [Round 43 — invariant-substrates program + empirical BP-03 harness evidence + agent-cadence telemetry](#round-43--invariant-substrates-program--empirical-bp-03-harness-evidence--agent-cadence-telemetry)
 - [Round 42 — First repeated iteration of Round-41 cadences + vibe-coding external legibility](#round-42--first-repeated-iteration-of-round-41-cadences--vibe-coding-external-legibility)
 - [Round 41 — OpenSpec backfill program founding + first cadence ship](#round-41--openspec-backfill-program-founding--first-cadence-ship)
 - [Round 40 — Blocked Bloom Adopt graduation (bucket/probe correlation fix)](#round-40--blocked-bloom-adopt-graduation-bucketprobe-correlation-fix)
@@ -39,11 +41,199 @@ slugify `## Round N — <title>` to `#round-n-<title-slug>`.
 - [Round 17 — storage specialist, BloomFilter, durability skeleton](#round-17--storage-specialist-bloomfilter-durability-skeleton)
 - [Round 16 — SDL / threat model / she-her storage specialist](#round-16--sdl--threat-model--she-her-storage-specialist)
 
-Round 43 (current) is in-flight; the synthesis row lands at
+Round 44 (current) is in-flight; the synthesis row lands at
 round-close. When this file hits 5000 lines, split the pre-
 round-N portion into `docs/_archive/ROUND-HISTORY-pre-N.md`
 and leave this file as a rolling window of the most recent
 ~20 rounds; no ADR is needed for a mechanical archive move.
+
+---
+
+## Round 44 — in-flight
+
+Round 44 is in-flight as of 2026-04-20 pm. Synthesis row
+lands at round-close per the file convention (no partial
+synthesis). Commits landed so far span Viktor strict-
+operator `ClockStart` reset fixes (P0-2, P0-3), Event-
+Storming-as-factory-strategy evaluation + ABC-phasing
+template, HUMAN-BACKLOG.md as the dedicated artifact for
+pending-human-action items, the teaching-track + onboarding
+two-track design for human contribution (paired with
+alignment-inversion meta-win), AI-trust-in-human latent-
+capability hypothesis, a scope-audit skill-gap sweep
+cleaving Zeta-specific rules from factory-default rules,
+generic-by-default F#+C# expert skills, SpanSerializer
+zero-copy-tier test coverage, the long-term-rescheduler
+skill for cron durability, BP-11 hardening with an
+external-input-skills clause, and session-close hygiene
+work (Daya NOTEBOOK prune from 4984→1323 words, `docs/
+README.md` 7-audience navigation, AGENTS.md:305 ctfp-
+milewski.pdf pointer drift fix, MEMORY.md compression +
+orphan indexing, Round-44 follow-up directives A–E from
+Aaron captured verbatim in `project_zeta_as_retractable_
+contract_ledger.md`, agent-QOL as an ongoing factory-
+hygiene class, and the first execution of the per-persona
+AX/UX audit now running under Daya). Arc-by-arc narrative
+lands at round-close.
+
+---
+
+## Round 43 — invariant-substrates program + empirical BP-03 harness evidence + agent-cadence telemetry
+
+Anchor: Round 43 is the round where three separate
+programs founded in 41-42 start producing *their first
+empirical signal*. The harness dry-runs on three expert
+skills (performance-analysis, reducer, consent-primitives)
+all return TIED-baseline verdicts with consistent cost
+overhead — the first real evidence that BP-03's thick
+eval-loop-wrapper form is too expensive for dry-runs where
+no eval signal differs. The invariant-substrates program
+founds in this round: `docs/INVARIANT-SUBSTRATES.md` makes
+the posture first-class, `skill.yaml` lands as a
+structured-spec companion on `prompt-protector` and
+`skill-tune-up`, and the `tally.ts` tool ports to a bun+TS
+substrate that amortises across future UI work. Round 43
+also founds the agent-cadence telemetry program —
+idle-vs-free-time gets GLOSSARY entries, a structured
+log at `docs/research/agent-cadence-log.md`, and an
+honest round-close retro documenting two no-op cadence
+ticks rather than papering over them.
+
+### Arc 1 — skill-tune-up BP-03 self-breach close (`52fdd75`)
+
+Round 42's Aarav ranking self-flagged the skill-tune-up
+skill for BP-03 violation (content weight in SKILL.md
+rather than evals). This commit closes the breach by
+extracting content to the notebook + eval-harness surface,
+leaving the SKILL.md pointer-thin. First self-application
+of Aarav's own methodology to Aarav's own skill; the
+recursion is intentional. Eval evidence sits under the
+skill's workspace rather than inlined.
+
+### Arc 2 — GOVERNANCE §11 → debt-intentionality invariant (`7bc01e8`)
+
+Round 42's BP-WINDOW surfaced §11 architect-bottleneck as
+a load-bearing governance clause. This commit promotes the
+clause's *reason* — the architect accepts review debt in
+exchange for a single reviewer-gate — into a named
+invariant, the "debt-intentionality invariant." Future
+governance changes that touch §11 must preserve the
+invariant or explicitly rebut it. Net effect: §11 stops
+being a historical artifact and starts being a first-class
+rail.
+
+### Arc 3 — Three harness dry-runs, TIED baselines (`e10adbb`, `ff57cf7`, `f05731b`)
+
+The performance-analysis-expert dry-run (`e10adbb`)
+returns TIED-baseline — with-skill output matches
+without-skill output, but with +22–30% token cost. Same
+result on reducer (`ff57cf7`) and consent-primitives
+(`f05731b`). Three separate skills, three TIED verdicts,
+consistent cost signature. Collectively: empirical BP-03
+signal that the thick-eval-loop-wrapper form over-engages
+for straightforward questions. The skills work; the
+harness is too expensive to run on every single
+invocation. BP-03 gets a watchlist row; the remediation
+path is either (a) harness skip for dry-runs, (b)
+cheaper-baseline eval substrate, or (c) accept the cost
+as the price of determinism. Decision deferred to Round
+44+ after more samples accrue.
+
+### Arc 4 — Invariant-substrates program founding (`9677569`, `8dba6e4`, `3aca00f`, `c299f3c`)
+
+`INVARIANT-SUBSTRATES.md` (`9677569`) makes the posture
+first-class: skill prose is the low-invariant layer; a
+structured companion `skill.yaml` is the high-invariant
+layer. First substrate pilot on `prompt-protector`
+(`8dba6e4`); second on `skill-tune-up` (`3aca00f`); the
+`tally.ts` tool (`c299f3c`) ports the invariant-counter
+from shell/Python to bun+TS. Program hypothesis: the
+`skill.yaml` format lets evals assert structural
+invariants that prose cannot pin down. Round 43 founds
+the program; graduation happens when a third and fourth
+substrate land and the format stabilises.
+
+### Arc 5 — bun+TS scripting pivot + ADR assumptions block (`437ca76`, `f664a05`)
+
+The invariant-counter pivot from Python to bun+TS
+amortises: Zeta already needs TS for UI work; raising
+the TS-tooling floor eliminates a language from the
+scripts layer. Paired with an ADR-template update that
+adds a first-class `assumptions` block, compatible with
+the rails-registry that `project_composite_invariants_
+single_source_of_truth_across_layers.md` proposes. Net
+effect: scripts-layer language count drops (bash+PS kept
+for zero-prereq pre-install only); ADRs now explicitly
+capture assumptions alongside constraints and
+invariants.
+
+### Arc 6 — Viktor operator-algebra P1 absorb, filed forward (`ce247a2`, `72bf1bb`)
+
+Viktor's spec-drift audit surfaces a circuit-recursion
+capability absence + 10 operator-algebra findings. The
+round-43 capacity decision: file the P1 absorb as
+Round-44 work (`72bf1bb`), land the capability-level
+framing now (`ce247a2`). This is the first explicit
+*forward-filing* of a P1 absorb rather than a defer; the
+distinction is that the receiving round is named and
+scoped, not "some future round." Matches the
+grandfather-discharge cadence established in Round 41.
+
+### Arc 7 — Agent-cadence telemetry + idle-vs-free-time (`5a88b46`, `40b7ff4`, `2a29e5d`)
+
+`docs/research/agent-cadence-log.md` founds (`5a88b46`)
+— the dedicated surface for 5-min-deviation tracking
+per `feedback_idle_tracking_and_free_time_as_research.
+md`. Agent free-time seed notes land (`40b7ff4`) as the
+v0.1 content; GLOSSARY entries for `idle` and
+`free-time` (`2a29e5d`) settle the vocabulary
+(factory-side). The program's hypothesis: 5-min
+deviations from /loop cadence are signal, not noise,
+and tracking them produces a second telemetry axis
+alongside DORA.
+
+### Arc 8 — Aarav skill tune-up ranking (`3012d00`)
+
+Round-43 Aarav ranking: top-5 skills needing tune-up,
+BP-NN citation discipline maintained, self-recommendation
+honoured (Aarav self-flagged in Round 42; Round 43 ranks
+him as TUNE-S effort since the BP-03 breach closed).
+Three new TUNE-S items land in the queue; two
+HAND-OFF-CONTRACT recommendations captured for Kenji.
+
+### Arc 9 — Honest no-op close (`45e4229`)
+
+The close commit documents two no-op cadence ticks —
+moments where the /loop fired and the agent checked
+backlog + cron + notebooks and found nothing ready to
+execute. Rather than manufacture work or paper over the
+gap, the retros land as first-class entries in the
+cadence log. Matches `feedback_dont_stop_and_wait_for_
+cron_tick.md` posture: the aim is tick=no-op, so
+no-ops recorded honestly are a *good* signal. First
+round where the cadence-log carries no-op data; sets
+the precedent for how future no-ops are recorded.
+
+### Round 43 close — what stuck, what filed forward
+
+- **Stuck:** skill-tune-up BP-03 self-breach closed; 
+  GOVERNANCE §11 debt-intentionality invariant named;
+  `INVARIANT-SUBSTRATES.md` founded with two `skill.
+  yaml` pilots; `tally.ts` on bun+TS substrate; 
+  agent-cadence telemetry program founded with two
+  no-op retro samples; Aarav's self-flag resolved and
+  three new TUNE-S items queued; ADR template updated
+  with `assumptions` block.
+- **Empirical signal:** three harness dry-runs returning
+  TIED verdicts at +22–30% cost is the first real BP-03
+  evidence. Watchlist row open; decision deferred to
+  Round 44+ once more samples accrue.
+- **Filed forward to Round 44:** Viktor P1 operator-
+  algebra absorb (10 findings); Hiroshi/Daisy persona
+  gap as grandfather-discharge blocker; circuit-
+  recursion capability follow-through.
+- **Vocabulary settled:** `idle` and `free-time` land in
+  factory GLOSSARY; cadence-log ownership assigned.
 
 ---
 

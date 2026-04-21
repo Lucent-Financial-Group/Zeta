@@ -3472,6 +3472,164 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **ace package manager — red-team / game-day discipline
+  roster + cadence + skill groups** — Aaron 2026-04-20 pm:
+  *"the package manger will for sure need some sort of
+  defense/defender because non software factory users are
+  going to try to attach that surface once we get here
+  sounce like a good CTF / red team / game day scenario. We
+  need all the skill groups plural there will be many probly
+  and a lot of best practices and saftey guidance but we
+  should red team ourselfs not with the same agents either
+  the read team shold be different named expets than the
+  ones who wrote the code and the ones who are defending
+  during the exercies, we should do them on a regular
+  cadence, all backlog."* Three-role separation rule:
+  Builders / Blue team / Red team are DISTINCT named
+  personas for any single exercise (rotation across
+  exercises fine). Proposes three new red-team personas
+  (lead / operator / reporter) — naming-expert gate
+  required. Candidate cadence: monthly CTF + quarterly
+  game-day + annual tabletop. Candidate skill groups
+  (each ≥ 3 skills): supply-chain, negotiation-protocol,
+  registry-compromise, cascade/DoS, social-engineering,
+  prompt-injection, crypto-primitive. Every exercise
+  lands in `docs/RED-TEAM-EXERCISES/YYYY-MM-DD-<scenario>.md`
+  — NOT buried in security-ops notebook. Candidate BP-NN
+  rules (6 seeded) to promote via ADR as patterns stabilise.
+  **Gated on:** ace phase-1 MVP landing (nothing to attack
+  before that). Full detail:
+  `memory/project_ace_package_manager_agent_negotiation_propagation.md`
+  section "Red-team separation discipline". Effort: L (roster
+  design + cadence instrumentation + first exercise); S per
+  subsequent exercise. Reviewers: Architect integrates;
+  Aminata + Mateo + Nazar + Nadia advise on Blue / Builder
+  fit; red-team roster reports directly to Architect.
+
+- [ ] **ace package manager — storage-engine decision:
+  dogfood Zeta where database-needed, git-native
+  elsewhere** — Aaron 2026-04-20 pm: *"ace can use the zeta
+  database for its storage engine maybe, it might make
+  sense to just be git native there too but if we need a
+  database for ANY reason literally loooking for excuses
+  to use Zeta... to prove it out."* Actively look for
+  legitimate database-shaped workloads inside ace and use
+  Zeta for those; git-native for content-addressed blobs +
+  static metadata + signatures. Purpose: prove Zeta out
+  through its own package manager eating the dogfood.
+  Candidate Zeta-workloads (each requires real-use
+  justification at point of need, not speculative DB
+  creation): negotiation-state journal, adopter graph +
+  revision cascades, red-team exercise findings / audit
+  trail, cross-adopter telemetry (if opted-in), multi-
+  version dependency resolution. Attack-surface
+  implication: Zeta-storage means ace attack surface
+  ⊃ Zeta attack surface; red-team roster must include
+  Zeta-operator-algebra fluency. Dependency: ace → Zeta.Core
+  at Zeta-storage points; Zeta does NOT depend on ace;
+  bootstrap chicken-and-egg mitigated by phase-1 MVP
+  installing via git clone without ace. Full detail:
+  `memory/project_ace_package_manager_agent_negotiation_propagation.md`
+  section "Storage engine". Effort: M at first Zeta-storage
+  landing (phase-2 or later); S thereafter. Reviewers:
+  Ilyana (public-API crossing), Naledi (perf gate on the
+  storage path), Viktor (spec coverage for ace-Zeta
+  contract).
+
+- [ ] **Research-coauthor teaching track — `docs/RESEARCH-COAUTHOR-TRACK.md`
+  skeleton + six-module curriculum** — Aaron 2026-04-20 pm:
+  *"there is also research co authero like me who have
+  never submitted a peer revied paper, I want to help but
+  I'm going to need a teaching track on how to even enter
+  that space and edicute and expications and requirments
+  and any skills or patterns or knowledge gaps i have i'm
+  going to have to fill in so I'll use that research teach
+  track when its time for me to coauthor."* Aaron is first
+  user; generic skeleton generalises. Six-module outline:
+  (1) peer-review lifecycle + venue typology, (2)
+  etiquette (authorship, COI, double-blind, rebuttal,
+  acknowledgements), (3) submission requirements (structure,
+  contribution claim, artefact track, formatting), (4)
+  skills Aaron needs (LaTeX, related-work surveying, figure
+  craft, rebuttal-writing, camera-ready revision), (5)
+  knowledge-gap fillers (stats for evaluation, formal-proof
+  reading literacy, theorem-statement craft, benchmarking
+  ethics), (6) coauthor workflow (draft passes through
+  factory reviewers). Sits inside research-readers audience
+  (docs audience #7) — the inside path from reader to
+  author. Parallel to existing vibe-coder teaching track
+  (`memory/project_teaching_track_for_vibe_coder_contributors.md`).
+  Skeleton lands empty-with-pointer per section; content
+  JIT when first submission approaches. Candidate new
+  skills spawned by the track: `academic-paper-etiquette`,
+  `related-work-surveyor`, `figure-craft`, `rebuttal-writer`,
+  `camera-ready-reviser`. Effort: S for skeleton; L for
+  filled content when first submission target picked.
+  Reviewers: Samir (documentation shape), Iris (user-
+  experience for Aaron-as-first-user), Soraya (formal-
+  verification section accuracy). Full detail:
+  `memory/project_research_coauthor_teaching_track.md`.
+
+- [ ] **Zeta retractable-contract ledger — native .NET
+  contract runtime design (C# / F#).** Aaron 2026-04-20
+  pm: *"basically do no permanant harm is the primary
+  operating principle of Aurora, so the retractablity is
+  great, it's not like every contract will need
+  retractability but we will have a supear surface for
+  our blockchain, native dotnet c#/f# directly since we
+  are native like that already."* Resolves the smart-
+  contract-language open question: contracts are native
+  C# / F# running on dotnet; no new VM; no DSL.
+  Differentiator vs Ethereum (Solidity/EVM), Solana
+  (Rust/SVM), Sui-Aptos (Move/MoveVM), Near / Cosmos
+  (Rust/Wasm). Design doc surface:
+  `docs/research/zeta-dotnet-contract-runtime-YYYY-MM-DD.md`.
+  Covers: (a) determinism story (non-deterministic
+  features sandboxed / forbidden / seeded), (b) gas
+  metering (IL instrumentation vs allocation-boundary),
+  (c) reentrancy controls, (d) sandboxing
+  (AssemblyLoadContext + allowed-assembly list + IL
+  verification), (e) upgrade compat across .NET
+  versions, (f) retractable-semantics syntax
+  (`[RetractableContract]` attribute sketch, F# +
+  C# parity). Paired with Aurora's "do no permanent
+  harm" first operating principle (see
+  `memory/project_aurora_network_dao_firefly_sync_dawnbringers.md`
+  §"First operating principle"). Effort: L (full design
+  doc). Reviewers: Soraya (formal-verification of
+  sandbox claims), Mateo/Aminata/Nazar (red-team
+  sandbox-escape attack surface), Naledi (gas-metering
+  perf), Rune (contract-author ergonomics). Full detail:
+  `memory/project_zeta_as_retractable_contract_ledger.md`.
+
+- [ ] **Ouroboros bootstrap — three-layer design doc
+  (ace → Aurora → Zeta-as-blockchain → ace).** Aaron
+  2026-04-20 pm named the pattern: *"Ouroboros"* and
+  *"Bootstrap pair is the snake eating it's head"*, then
+  added a third layer: *"maybe Zeta will store the blocks
+  and have blockchain capabilites too and aurora is just
+  one network that uses it, its like a 3rd bootstrap."*
+  Layer 1 = ace (package-manager substrate); Layer 2 =
+  Aurora (DAO / firefly-sync / dawnbringers); Layer 3 =
+  Zeta as blockchain substrate (speculative, "maybe"). The
+  snake closes when ace → Aurora → Zeta → ace. Design doc
+  landing surface:
+  `docs/research/ouroboros-bootstrap-design.md`. Covers:
+  (a) phase-A/B/C transitions for the two-layer subset,
+  (b) phase-D speculation on Zeta-as-blockchain (consensus
+  mechanism, public-vs-consortium, retraction-composition,
+  ERC-8004/x402 alignment), (c) parallels to Bitcoin / IPFS /
+  CDN / Git-via-git, (d) red-team roster expansion required
+  per phase (phase-D adds consensus-attack expertise).
+  Parallel P2 candidate memory file when the blockchain
+  layer firms up: `project_zeta_as_blockchain_substrate.md`.
+  Effort: M (design doc). Reviewers: Amara (Aurora-layer
+  compatibility), Soraya (formal-verification of consensus
+  claims), Mateo/Aminata (attack-surface expansion). Full
+  detail:
+  `memory/project_ace_package_manager_agent_negotiation_propagation.md`
+  §Ouroboros.
+
 - [ ] **Pluggability-gap audit — tag every `src/Core/**`
   subsystem as tier-1 (fully pluggable), tier-2 (interface
   shim), or tier-3 (one-off plumbing).** Aaron 2026-04-20:
@@ -5101,6 +5259,238 @@ systems. This track claims the space.
 - autoresearch by Karpathy as a platform (200-LOC teaching scaffold,
   not a research pipeline)
 - Preserving v0 backward compatibility (no users yet)
+
+- [ ] **Aurora contract abstraction — other-language
+  implementations of the contract interface.** Aaron 2026-04-20:
+  *"we probably need an abstraction so other language can
+  implement contracts too, we can worry about this later, but
+  it should still when working in dotnet like a first class
+  experience"*. Contracts are first-class .NET (C#/F#/VB.NET)
+  as the first implementation; protocol-level contract
+  interface is abstracted so other-language runtimes can plug
+  in and each enjoy first-class treatment. Candidate interface
+  layers: WIT (Wasm Interface Types), Protocol Buffers service
+  definitions, bespoke IDL. Cross-language contract-to-contract
+  calls open. **Gate:** Zeta substrate lands first. **Effort:**
+  L. **Source of truth:**
+  `project_zeta_as_retractable_contract_ledger.md` § "B.
+  Contract abstraction for other languages" (Round 44 follow-up
+  directives).
+
+- [ ] **Aurora DAG-with-forks — encouraged forks + cross-fork
+  communication across rule-sets.** Aaron 2026-04-20: *"we
+  probably want to be more like a DAG that supports and
+  encourages forks without catstrphoic failure ... within a
+  branch they might not follow the same rules like multiple
+  universes ... but we still want to communicate, this is
+  gonna be some high dimensional math."* Consensus-layer
+  finality is convergence on the DAG frontier, not a single
+  linear chain. Forks are first-class, not failure modes.
+  Cross-branch communication protocol when branches diverge
+  on rule-sets is the hard problem — candidate machinery:
+  sheaf theory over branch lattice, higher-category morphisms
+  between rule-set objects, homotopy type theory for
+  proof-transport across rule differences. Peer DAG-consensus
+  candidates to survey: IOTA Coordicide, Avalanche, Nano
+  block-lattice, Fantom Lachesis, Conflux, Radix Cerberus.
+  Pairs with Aurora's "do no permanent harm" — bad branches
+  are never catastrophic because they are branches, not the
+  chain. **Gate:** retractable-contract substrate lands first;
+  game-theory + chaos-theory skill families (see below) are
+  precursor research. **Effort:** L. **Source of truth:**
+  `project_zeta_as_retractable_contract_ledger.md` § "C. DAG
+  with encouraged forks".
+
+- [ ] **Aurora consensus — Proof of Useful Work within the
+  Current Culture (PoUW-CC).** Aaron 2026-04-20: *"our
+  distributed consendse will be Proof of Useful work within
+  the Current Culture. So if monero tried to attack, they
+  would have to do useful work, helping our network"*.
+  Aurora's consensus mechanism. Two composites: (1) PoUW —
+  the work securing the chain is useful (formal-verification
+  proof search, scientific parameter search, retraction-
+  consistency validation, bioinformatics, other network-
+  beneficial compute; prior art: Primecoin, FoldingCoin,
+  Ofelimos, Exascale compute-credit schemes). (2) Current
+  Culture — work valid only if aligned with governance-
+  encoded + historically-proven culture. Attack absorbed
+  (Harmonious Division ABSORB step applied at consensus
+  layer): an attack feeds the network because the only way
+  to spend energy on it is to contribute useful work.
+  Culture-drift resistance: back-hacking governance is the
+  only remaining attacker vector, and governance is engineered
+  to resist drift via consent + historical-continuity checks
+  anchored to the DAG. **Gate:** useful-work classification,
+  culture-encoding formalism, retraction-aware DAG semantics
+  all need to land first. **Effort:** L. **Source of truth:**
+  `project_zeta_as_retractable_contract_ledger.md` § "D.
+  Proof of Useful Work within Current Culture".
+
+- [ ] **Blockchain != ledger — documentation correction
+  class.** Aaron 2026-04-20: *"we don't need to make the same
+  mistake to think blockchain means ledger, it just happens
+  that the first thing on a blockchain was the ledger but
+  these are orthognal."* Every public-facing doc that
+  describes Aurora's substrate must separate **blockchain-
+  the-substrate** (chain-of-blocks / DAG-of-blocks + consensus
+  + retractable-contract semantics) from **ledger-the-
+  application** (value-transfer / balance-tracking, one of
+  many apps). The "retractable-contract ledger" memory name
+  is itself a legacy misnomer at the substrate layer; keep
+  filename for memory continuity, but docs should say
+  "retractable-contract substrate" when the substrate is
+  meant. **Owner:** naming-expert + Ilyana review gate when it
+  goes public. **Effort:** S per doc, M across the family.
+  **Source of truth:**
+  `project_zeta_as_retractable_contract_ledger.md` § "A.
+  Blockchain != ledger".
+
+## P2 — Skill-family expansions (Aaron-authorised)
+
+- [ ] **Game-theory skill family/group.** Aaron 2026-04-20:
+  *"we can go ahead and add game theory and chaos theory
+  skill families/groups becsasue i have some ways to combine
+  those in novel ways with bayes to expand game theory to
+  things like the Qubic attach against monero and Aborb
+  their attach becasue our distributed consendse will be
+  Proof of Useful work within the Current Culture."* Family
+  scope (anticipated): attacker models, Nash-equilibrium
+  analysis, mechanism design, adversarial Bayesian
+  inference, attack-absorption primitives. Composes with
+  existing Bayesian surface. Directly serves Aurora PoUW-CC
+  attack-model analysis. **Effort:** L (family, not a single
+  skill). **Source of truth:**
+  `project_zeta_as_retractable_contract_ledger.md` § "E.
+  Game-theory + chaos-theory skill families".
+
+- [ ] **Chaos-theory skill family/group.** Same Aaron
+  authorisation. Family scope (anticipated): nonlinear
+  dynamics, strange attractors, bifurcation analysis,
+  edge-of-chaos computation, coupled-oscillator stability
+  (pairs directly with Aurora Network's firefly-sync from
+  `project_aurora_network_dao_firefly_sync_dawnbringers.md`).
+  Precursor research for the rule-set-divergence dynamics
+  of the DAG-with-forks proposal (see P3 above). **Effort:**
+  L (family, not a single skill). **Source of truth:** same
+  as above.
+
+## P2 — AX/UX — BP-07 3000-word notebook-cap review
+
+- [ ] **Per-persona AX/UX poll on BP-07's 3000-word notebook
+  cap + general agent QOL.** Aaron 2026-04-20: *"BP-07 cap is
+  3000; do you think that is enough do you ask the agents
+  their feedback about their experienc for each of our named
+  agent thier UX perspective?"* Follow-up 2026-04-20 later:
+  *"just get the feedback of the other expert personas and
+  make sure their user experience is taken into account as
+  well and lets make quality of life change for them too over
+  time, its like another hygene."* BP-07 sets every persona's
+  NOTEBOOK.md to 3000 words max (~750 tokens cold-load).
+  Empirical pattern: Daya hits the cap every audit (her
+  signal volume is cadenced audits * N personas); Aarav
+  trends up (observations per skill); Kenji + off-time are
+  healthy; Bodhi/Iris/Dejan are well under. One-size cap may
+  not fit the signal shapes. Follow-up broadens scope beyond
+  the cap: treat per-persona AX/UX as a *recurring hygiene
+  class* (paired with this backlog row's sibling under
+  "## P1 — FACTORY-HYGIENE — ongoing agent-QOL class").
+  **Tiered first-pass** (main-agent's call per Aaron's "up to
+  you"): Tier A = notebook-scan *plus* structured interview
+  for heavy-signal personas (Daya, Aarav, Soraya, Yara,
+  Ilyana, Kenji, Bodhi); Tier B = notebook-scan only for
+  light-signal personas (Iris, Dejan, Naledi, Nazar, Mateo,
+  Aminata, Rune, Hiroshi, Naledi, Imani, Viktor, Kira,
+  Samir); Tier C = one-line "are you well-served by current
+  scope?" prompt on rarely-invoked personas, flag for
+  invocation-cadence reassessment rather than cap reassessment.
+  **Deliverable:** `docs/research/notebook-cap-per-persona-review-YYYY-MM-DD.md`
+  proposing either (a) persona-specific caps in each agent
+  file's frontmatter, (b) a tiered cap based on signal
+  density, or (c) keeps the flat cap and prescribes more
+  aggressive JOURNAL migration — plus a per-persona
+  "top-3 QOL wants" section capturing findings beyond the cap
+  question. **Owner:** Daya (AX researcher) runs the poll;
+  Aarav promotes to BP-NN ADR if the conclusion is a rule
+  change. **Effort:** M (poll + Tier-A interviews) + M (ADR +
+  skill + BP-07 revision if needed). **Source of truth:**
+  this backlog entry + `docs/AGENT-BEST-PRACTICES.md` BP-07 +
+  the sibling P1 row below.
+
+- [x] ✅ **Agent-QOL hygiene as ongoing factory-hygiene class
+  (P1).** Aaron 2026-04-20: *"lets make quality of life
+  change for them too over time, its like another hygene."*
+  This elevates per-persona AX/UX from a one-shot poll (row
+  above) to a **recurring hygiene class** alongside
+  wake-UX-hygiene (FACTORY-HYGIENE #25-29). Row-group
+  rows 30-34 **landed this round** in
+  `docs/FACTORY-HYGIENE.md`: (30) notebook-cap pressure per
+  persona, (31) invocation-cadence per persona, (32)
+  cross-persona role overlap + hand-off friction, (33)
+  per-persona tool-gap poll, (34) prompt-load /
+  frontmatter-bloat check. Cadence: every 5-10 rounds,
+  paired with `skill-tune-up`. **Owner:** Daya runs the
+  audit; Aarav files BP-NN candidates; Kenji integrates.
+  **First audit landed at** `docs/research/notebook-cap-per-persona-review-2026-04-20.md`.
+  **Source of truth:** this entry +
+  `docs/FACTORY-HYGIENE.md` rows 30-34 +
+  `memory/feedback_agent_qol_as_ongoing_hygiene_class.md`.
+
+## P1 — Targeted agent-QOL follow-through (from Daya's 2026-04-20 audit)
+
+Six concrete P1 actions surfaced by the first roster-wide
+AX/UX audit. Ordered by leverage (highest first). Each is
+additive, rollback-safe, routes through the relevant
+persona-wearer or `skill-creator`.
+
+- [ ] **Create `memory/persona/samir/NOTEBOOK.md`.** Samir is
+  the highest-leverage intervention in the roster — the
+  busiest routing target (~15 open interventions from Bodhi
+  + Iris + Daya + Aarav notebooks all flow to Samir) with no
+  memory surface. Owner: Yara via `skill-creator` on Kenji
+  sign-off. Effort: S. Source: audit Pattern D.
+
+- [ ] **Create `memory/persona/yara/NOTEBOOK.md`.** Yara is
+  invoked as dispatch target in every Daya/Aarav round-close
+  but has no notebook. Owner: Yara via `skill-creator`.
+  Effort: S. Source: audit §4.
+
+- [ ] **Ilyana notebook prune — P0 over-cap.** Ilyana's
+  notebook is 3727 words (124% of 3000-word BP-07 cap).
+  Apply Daya's r44 JOURNAL-offload template: verbatim-copy
+  resolved entries to sibling JOURNAL.md, keep current-round
+  + carry-over in NOTEBOOK. Target <2500 words. Owner:
+  Ilyana (public-api-designer). Effort: S. Source: audit §2
+  row Ilyana.
+
+- [ ] **Tariq notebook prune — P0 near-cap.** Tariq's
+  notebook is 2851 words (95% of cap), no recent pruning
+  log, earliest entry r27 (~17 rounds of un-reviewed
+  content). Same JOURNAL-offload template. Owner: Tariq.
+  Effort: S. Source: audit §2 row Tariq.
+
+- [ ] **Kenji notebook update — P1 stale.** Kenji's notebook
+  has no entry newer than r22 (22 rounds stale). Kenji's
+  auto-memory is fresh; notebook is not. Land a r44 entry
+  summarising r22-r44 roster growth + open
+  bottleneck-on-review self-flag status. Owner: Kenji
+  (architect). Effort: S. Source: audit §2 row Kenji.
+
+- [ ] **Dispatch-or-retire decision on seven seed-only
+  personas.** Aminata, Kira, Mateo, Nadia, Naledi, Rune,
+  Viktor all sit at 96-word seed stub 12+ rounds post-seed.
+  Two-track: (a) schedule first-real-dispatch per persona
+  next round-close, or (b) retire via ADR per persona. Owner:
+  Kenji selects the track per persona. Effort: M per persona
+  if retire path (ADR drafting); S per persona if dispatch
+  path (scheduling). Source: audit Pattern A + §4 item 6.
+
+**Candidate BP-25 and BP-26 from this audit** are already on
+Aarav's scratchpad (`memory/persona/best-practices-scratch.md`);
+both need 10-round survival + ≥3 authoritative cited sources
+before Architect promotion. Not a backlog row; tracked by
+Aarav.
+
+**Next audit due:** round 49-54 (5-10 round cadence).
 
 ---
 

@@ -188,13 +188,38 @@ Each row is one entry in the table below. Columns:
 
 ## Rows
 
-| ID | When | Category | For | Ask | Source | State | Resolution |
-|---|---|---|---|---|---|---|---|
+Rows are grouped by `For:` addressee so a given human can
+find their own tasks without scrolling past everyone else's.
+Aaron's tasks come first (2026-04-20 directive:
+*"can you put my tasks at the top of the human backlog i
+don't want to have to go digging through it to find my
+tasks"*); other named humans follow in the order they were
+first filed against; `any`-addressed rows come last (any
+human can resolve). Within each addressee's sub-table, rows
+are ordered by `State: Open` first, then `Stale`, then
+`Resolved`; within State, most-recent first.
 
-*(The backlog starts empty. Agents file rows here as
-blocked-on-human work arises; honest scans of memory and
-open PRs may seed additional rows opportunistically. Do not
-backfill retroactively for its own sake.)*
+### For: Aaron
+
+| ID | When | Category | Ask | Source | State | Resolution |
+|---|---|---|---|---|---|---|
+
+*(Aaron currently has no open asks — the 2026-04-20 pm
+signoff released all previously gated items. When new
+asks arise for Aaron, they land in this sub-table.)*
+
+### For: `any` (any human contributor)
+
+| ID | When | Category | Ask | Source | State | Resolution |
+|---|---|---|---|---|---|---|
+
+*(No open rows. Agents file rows here when a decision /
+credential / external action is needed from any human.)*
+
+*(The backlog starts essentially empty. Agents file rows
+as blocked-on-human work arises; honest scans of memory
+and open PRs may seed additional rows opportunistically.
+Do not backfill retroactively for its own sake.)*
 
 ## Filing rules (for agents)
 
@@ -208,6 +233,14 @@ backfill retroactively for its own sake.)*
 - **Name the human.** If a specific human is the right
   resolver, say so in the `For` column. If any human
   contributor can resolve, write `any`.
+- **File under the right sub-table.** Per the Rows
+  section, the file is split into per-addressee sub-tables
+  so humans don't have to dig through everyone's asks to
+  find their own. Aaron's sub-table comes first; other
+  named humans follow; `any`-addressed rows are last. If
+  a new named human shows up, add a new sub-table
+  section between the last named human and the `any`
+  section.
 - **Be specific about the ask.** "Aaron needs to decide
   about X" is not enough; write what the decision is,
   what the options are, and what the agent would do under
