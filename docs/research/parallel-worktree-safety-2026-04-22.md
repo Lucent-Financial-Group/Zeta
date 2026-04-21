@@ -332,8 +332,8 @@ GitHub features this repo does not yet use:
 | Live-lock between PRs (§2.1) | Partial — queue linearizes merge order; no "which first" dance | Scope-overlap registry still needed for *pre-PR* worktree coordination |
 | Merge conflicts (§2.2) | Partial — queue tests against fresh main; surfaces conflicts at queue time | Shared-surface reduction (§9) is still the real fix |
 | Build-speed ceiling (§2.3) | No change — queue serializes; still capped by CI time | Incremental builds / affected-tests-only |
-| Stale branches (§2.4) | Side-benefit — auto-delete on merge still fires; queue enforces clean merges |
-| Bouncing-between-PRs dance | **Full fix** — agent opens PR, `--auto`-merges, moves on |
+| Stale branches (§2.4) | Side-benefit — auto-delete on merge still fires; queue enforces clean merges | Cadenced stale-branch audit still runs |
+| Bouncing-between-PRs dance | **Full fix** — agent opens PR, `--auto`-merges, moves on | — |
 
 **Importantly — merge queue does NOT remove the need for §2.1 scope
 discipline.** Worktree-spawn-time conflicts happen *before* PRs exist;
