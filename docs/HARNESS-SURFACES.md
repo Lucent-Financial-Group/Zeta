@@ -542,6 +542,37 @@ output. Cross-harness verification applies.
   budget).
 - PR format conventions it uses.
 
+**Observed availability on this repo
+(2026-04-21):** the `@copilot` coding agent does
+**not** appear to be assignable on
+`AceHack/Zeta` under its current plan. Empirical
+evidence from Round 44:
+
+- `POST /repos/AceHack/Zeta/issues/32/assignees`
+  with body `{"assignees":["Copilot"]}` returned
+  HTTP 201 with the PR JSON but
+  `"assignees":[]` — silent no-op, not an error.
+- `GET /repos/AceHack/Zeta/suggested_actors?
+  capabilities=can_be_assigned_to_issue`
+  returned HTTP 404 Not Found — the endpoint
+  used to list coding-agent-assignable actors
+  isn't exposed for this repo.
+- Issue-assignees collaborator list shows only
+  `AceHack` (the owner); no bot entries.
+
+**Interpretation (honest, not overclaimed):**
+the coding-agent feature is a plan-gated
+Copilot feature (Copilot Pro+/Enterprise per
+GitHub's 2025 docs). This personal repo does
+not currently expose it via the API surface.
+Whether this is a plan mismatch, a feature-flag
+gate, or a setting we haven't toggled is not
+yet determined — further investigation
+deferred to the round when we have a budget
+decision on Copilot plan upgrades. For now,
+**the coding-agent slot of this inventory is
+fact-tested-unavailable, not aspirational**.
+
 **Factory-relevant deltas vs Claude Code:**
 
 - One-shot interaction model: no round-over-
