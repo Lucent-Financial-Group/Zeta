@@ -46,8 +46,6 @@ repo_json=$(gh api "/repos/$repo" --jq '{
   security_and_analysis
 }')
 
-rulesets_json=$(gh api "/repos/$repo/rulesets" --jq '[.[] | {id, name, target, enforcement}]')
-
 ruleset_details='[]'
 ruleset_ids=$(gh api "/repos/$repo/rulesets" --jq '.[].id')
 for rid in $ruleset_ids; do

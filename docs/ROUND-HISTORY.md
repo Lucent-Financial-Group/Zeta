@@ -118,10 +118,10 @@ narrative) + `tools/hygiene/github-settings.expected.json`
 (machine-readable canonical state) +
 `tools/hygiene/check-github-settings-drift.sh` (detector) +
 `.github/workflows/github-settings-drift.yml` (weekly cron
-+ PR-triggered cadence). Landed as FACTORY-HYGIENE row #40
+and PR-triggered cadence). Landed as FACTORY-HYGIENE row #40
 and two companion memories
 (`feedback_github_settings_as_code_declarative_checked_in_file.md`
-+ `feedback_blast_radius_pricing_standing_rule_alignment_signal.md`
+and `feedback_blast_radius_pricing_standing_rule_alignment_signal.md`
 — the latter captures Aaron's 2026-04-21 praise
 *"this is great standing rules on blast-radius ops ...
 i'm glad you understand blast radius and pricing the
