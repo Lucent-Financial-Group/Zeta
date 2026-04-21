@@ -4169,6 +4169,17 @@ systems. This track claims the space.
   Composes with the existing lattice-PQC entry below and
   with the existing security-operations-engineer persona
   scope.
+  **Research inputs (not yet an ADR):**
+  - `docs/research/git-crypt-deep-dive-2026-04-21.md` —
+    cartographer pass on git-crypt. Key finding:
+    fundamental retraction-mismatch (authors explicit: no
+    access revocation), binary diffs break code review,
+    metadata leaks by design. Good fit for a one-contributor
+    pilot; poor fit for production secrets-at-rest. Expect
+    the ADR to score SOPS + KMS or age ahead on
+    retraction-friendliness and code-review visibility.
+    Triggered by Aaron 2026-04-21 — *"reserch gitcrypt for
+    secrets on backlog"*.
 
 - [ ] **Adopt at least one NIST-standardised post-quantum
   primitive — ADR first, then pick one use case** — Aaron
