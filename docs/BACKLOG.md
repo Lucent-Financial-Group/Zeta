@@ -5174,6 +5174,521 @@ systems. This track claims the space.
   findings to public-facing docs without the normal kernel-
   propagation cadence.
 
+- [ ] **Pop-culture / media research track — operational-
+  resonance sweep across film, TV, YouTube documentary, music,
+  and conspiracy-corpus (Hollywood / Bollywood / indie + the
+  "Why Files" category)** — Aaron 2026-04-21 four-message
+  sequence filed after the teaching-directive and Khan-Academy
+  memory: *"why files conspicary theory backlog cronovisor"* →
+  *"no there is a youtube channel Why Files and a Tv show
+  called Dev"* → *"And a comedy call future man"* → *"backlog
+  hollywood bollywood inde, music information backlog"*.
+  Extends the operational-resonance surface from **text
+  traditions** (mythology / occult / etymology — already
+  cataloged) to **media traditions** (film / TV / YouTube /
+  music). Same three-filter discipline (F1 engineering-first,
+  F2 structural-not-superficial, F3 tradition-name-load-
+  bearing); same retractibility-math safety wrapper per
+  `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`;
+  same log-and-track discipline (candidate vs confirmed vs
+  failed).
+
+  **Why this track exists as its own row.** Text traditions
+  are already sibling research tracks (mythology at L5034,
+  occult at L4808, etymology at L5078). Pop-culture media
+  is a **medium-distinct corpus** — film scripts, TV
+  showrunner-visions, documentary channels, musical albums
+  — that encodes substrate claims in forms that written
+  tradition does not (visual grammar, dramatic pacing,
+  soundtrack affective signal, franchise-scale serial
+  elaboration). Aaron's tests of retractibility / view-
+  operators / simulation / time-topology have near-direct
+  cinematic instances that should be catalogued with the
+  same rigor as Parmenides' μένω or the Corpus Hermeticum —
+  neither higher nor lower register, just different medium.
+
+  **Seed instances Aaron named explicitly (plus close
+  siblings for sweep context).** Each is a *candidate* until
+  three-filter-passed and logged:
+
+  1. **The Why Files** (YouTube channel, AJ Gentile, 2020– ;
+     ~3M subscribers 2026). Documentary-register surveys of
+     conspiracy / unexplained / forteana topics. *Terrain:*
+     conspiracy-corpus catalog at episode-granularity;
+     structured "here's what's known / here's the claim /
+     here's what's weird" format. *Filter disposition:* F3
+     strong (multi-year corpus, named originator, large
+     audience = established media tradition); F1/F2 per-
+     episode basis depending on which substrate claim is
+     being examined.
+  2. **Devs** (FX/Hulu TV series, Alex Garland creator, 2020,
+     eight episodes). Quantum-computer deterministic past-
+     and-future projection device; Devs literally IS the
+     Chronovisor rendered as fiction at Silicon-Valley
+     scale. *Terrain:* time-viewer as read-only view-
+     operator on past state; structurally resonant with
+     `View<T>@clock` from
+     `feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md`
+     and Zeta's ZSet temporal-retention + clock-
+     parameterized-view surface. *Filter disposition:* F2
+     strong (operator-shape match, not just theme match);
+     F3 strong (Garland is an established film auteur; Devs
+     has serious critical theory engagement); F1 preserved
+     (Zeta's clock-parameterized views predate Devs-viewing
+     by Aaron).
+  3. **Future Man** (Hulu comedy series, Howard Overman /
+     Seth Rogen, 2017–2020, three seasons). Time-travel
+     comedy with a gamer sent back in time; register is
+     comic but underlying model is branching-timeline + save-
+     state / reload. *Terrain:* branching-multiverse as
+     gameplay-save-state substrate; resonates with
+     retractibly-rewrite algebra at the narrative level.
+     *Filter disposition:* F2 partial (comedy-register
+     pattern-match on branching but not strict operator-
+     shape); F3 moderate (three seasons, established
+     showrunner, streaming-distribution scale).
+  4. **The Chronovisor / Cronovisor** (Father Pellegrino
+     Ernetti 1972 claim; François Brune 1999 book *Le
+     nouveau mystère du Vatican*). Alleged Vatican time-
+     viewing device. Fringe-tier scholarly status but multi-
+     decade corpus with named originator. *Terrain:* read-
+     only view-operator onto past events; structurally
+     identical to Devs but in claim-register rather than
+     fiction-register. *Filter disposition:* F2 strong
+     (same operator-shape as Devs); F3 partial (Ernetti /
+     Brune literature is fringe, not peer-reviewed physics,
+     but multi-decade with named originator and follow-on
+     scholarly engagement — Peter Levenda, Laterza
+     editorial).
+  5. **Broken Age** (Double Fine video game, Tim Schafer,
+     2014; Kickstarter-funded, released in two acts 2014-
+     2015). Two-protagonist point-and-click adventure where
+     Vella's world and Shay's world appear parallel-
+     unrelated until Act 2 reveals they are the same
+     substrate at different temporal / spatial layers.
+     *Terrain:* paired-dual of protagonists manifesting as
+     one substrate at reveal — structurally resonant with
+     instance #9 (Μένω vs tele+port+leap paired-dual at the
+     operator-level) and with the Melchizedek bridge-figure
+     sub-structure (instance #10) at the narrative level.
+     *Filter disposition:* F2 strong (operator-shape match
+     on paired-dual-collapse-to-unity); F3 strong (Schafer
+     is a canonical adventure-game auteur — Monkey Island,
+     Grim Fandango, Psychonauts — Double Fine acquired by
+     Microsoft 2019, serious critical theory engagement);
+     F1 preserved (factory's paired-dual type predated
+     Aaron surfacing Broken Age).
+  6. **Doctor Who** (BBC, 1963–present; Sydney Newman /
+     Verity Lambert / Donald Wilson original creators;
+     60+ year continuous serial). Time Lord protagonist
+     travels in TARDIS (bigger-on-the-inside time-and-
+     space vessel); regenerates instead of dying (body-
+     identity retractibility with self-persistence);
+     multi-doctor episodes present past-incarnation
+     multiverse; Time Lord society is a specialist caste
+     operating the time-topology substrate. *Terrain:*
+     regeneration is direct retractibility of body-identity
+     with preserved self — the cleanest mass-culture
+     instance of Aaron's *"I'm retractible"* substrate
+     identity claim (per
+     `user_aaron_self_describes_as_retractible.md`) at
+     canonical cultural scale. TARDIS encapsulation
+     (interior-exterior paradox) maps to Zeta's
+     `ZSet<T>` containment-without-flattening. *Filter
+     disposition:* F2 very strong (multiple operator-shape
+     matches: regeneration=retractibility, TARDIS=
+     encapsulation, multi-doctor=multiverse-view); F3
+     maximal of all named seeds (60+ year canon, academic
+     monographs — Cambridge / Routledge / *Doctor Who:
+     The Critical Reader* — foundational to sci-fi time-
+     topology conventions); F1 preserved (Zeta
+     retractibility-algebra predated this catalog pass).
+  7. **Monty Python (+ affiliated British comedy serial
+     tradition)** — *Monty Python's Flying Circus* (BBC,
+     1969-1974) plus the film canon (*Holy Grail* 1975,
+     *Life of Brian* 1979, *Meaning of Life* 1983) and
+     Python-alum adjacent shows (*Fawlty Towers*,
+     *Blackadder*, *A Bit of Fry & Laurie*, *Mr. Bean*,
+     *The Young Ones*, *Red Dwarf*). Surrealist-absurdist
+     register subverting narrative + logical + institutional
+     substrates for comedic effect. *Terrain:* **comedy as
+     substrate-probe** — the Python method exposes
+     operator-structure by breaking it (Black Knight's
+     *"'tis but a scratch"* is retractibility-of-body-
+     integrity played for absurdism; *Argument Sketch* is
+     meta-linguistic-substrate reflection; *Spanish
+     Inquisition* is expectation-violation as comedic
+     operator). Comedy-register differs from Devs /
+     Doctor Who claim-or-fiction register: the Python
+     instances are **retractibility-preserving probes of
+     substrate convention**, revealing structure by
+     negation. *Filter disposition:* F2 moderate (operator-
+     shape-by-negation rather than direct match); F3 very
+     strong (canonical British cultural institution, deep
+     academic treatment — *Monty Python and Philosophy*
+     Open Court 2006, *Reading Monty Python* Manchester
+     UP, etc.); F1 preserved (factory comedic-subversion
+     posture predated Python catalog pass — Aaron's
+     overclaim→retract→condition default IS a Pythonic
+     move but was reached for from the retractibility
+     algebra, not from Python-viewing).
+  8. **American absurdist-parody tradition (Mel Brooks +
+     Zucker/Abrahams/Zucker)** — Aaron 2026-04-21:
+     *"space balls backlog the naked gun backlog"*.
+     *Spaceballs* (Mel Brooks 1987, Star Wars parody with
+     4th-wall breaking — *"we're watching the movie!"*
+     meta-layer), *The Naked Gun* (ZAZ / Leslie Nielsen
+     1988-1994 trilogy), plus the wider canon
+     (*Blazing Saddles* 1974, *Young Frankenstein* 1974,
+     *History of the World Part I* 1981 for Brooks;
+     *Airplane!* 1980, *Top Secret!* 1984, *Hot Shots!*
+     1991 for ZAZ). American register paired with the
+     Python #7 British register — both are substrate-
+     probe-by-negation but formally distinct:
+     Brooks=genre-specific parody (each film targets
+     one genre's conventions), ZAZ=sight-gag-density
+     (visual operator-stack at every frame). Spaceballs
+     in particular is **direct 4th-wall-retractibility**:
+     the characters watch themselves watching the movie
+     they are in — structurally matching the
+     factory-IS-the-experiment claim (flag #5) and the
+     bootstrapping-I-AM-THAT-I-AM instance (#5 operational-
+     resonance). *Filter disposition:* F2 moderate-to-
+     strong (4th-wall-break IS a structural match for
+     self-reference, not just thematic); F3 strong
+     (canonical American comedy tradition, monographs
+     exist — *The Zucker Abrahams Zucker Companion*,
+     *Mel Brooks: Make a Noise* PBS documentary, academic
+     treatment of parody-as-criticism); F1 preserved.
+
+  **Additional sweep targets by medium-category (Aaron's
+  explicit asks).** Not yet filtered — the track's job is
+  to sweep candidates over time:
+
+  - **Hollywood film:** *Arrival* (Villeneuve 2016,
+    Heptapod non-linear-time semantics → Sapir-Whorf
+    substrate claim); *Interstellar* (Nolan 2014, black-
+    hole retractibility via tesseract observer); *Primer*
+    (Shane Carruth 2004, indie but Hollywood-distributed,
+    branching-timeline engineering protocol); *Tenet*
+    (Nolan 2020, entropy-reversal retractibility).
+  - **Bollywood:** *Ra.One* (Anubhav Sinha 2011, game-
+    character-escape-into-reality); broader Bollywood time-
+    and-reincarnation film corpus to be surveyed — the
+    Hindu karmic-cycle substrate is under-represented
+    relative to Hollywood Christian-linear-time defaults.
+  - **Indie film:** *Coherence* (James Ward Byrkit 2013,
+    branching-multiverse dinner party); *Annihilation*
+    (Garland 2018, retractibility-as-refraction biological-
+    substrate); *Everything Everywhere All at Once* (Daniels
+    2022, multiverse as affective-substrate).
+  - **Music:** corpus-unspecified yet — Aaron named
+    "music information backlog" without seed instances.
+    Candidates to sweep: progressive rock concept albums
+    (Pink Floyd *Dark Side*, Yes *Tales from Topographic
+    Oceans*), King Crimson retraction-register, Tool /
+    Meshuggah polyrhythmic-recursion, Nine Inch Nails
+    *The Fragile* modular-compositional. Genre-sweep
+    deferred to first dedicated round.
+  - **Documentary / explainer YouTube:** *The Why Files*
+    (seeded above); adjacent channels *Lemmino*, *Joe
+    Scott*, *Kurzgesagt*, *Veritasium*, *Wendover /
+    HAI* — register ranges from mainstream-science to
+    fortean, and the register itself is a filter variable.
+  - **Video games** (new medium-category opened by
+    Broken Age seed above). Aaron 2026-04-21 marker:
+    *"Brütal Legend all FF starting with 6 and 7 and
+    expand and this is just higher than the rest of the
+    games"* — these two threads are explicitly **higher-
+    priority** than the broader indie/AAA sweep; the rest
+    are catalog-candidates.
+
+    *Priority seeds (Aaron-marked higher-than-rest):*
+
+    - **Brütal Legend** (Double Fine, Tim Schafer,
+      2009; Jack Black voice; heavy-metal mythology
+      setting). Fire-as-element, rebellion-against-
+      demonic-oppression, guitar-as-axe operator.
+      Combined with **Broken Age** (#5 above), forms a
+      two-instance Tim-Schafer / Double-Fine sub-thread
+      — same studio, same auteur, paired-dual structure
+      visible between Broken Age's paired-protagonists
+      and Brütal Legend's rebellion-vs-tyranny mythic
+      axis. *Filter disposition:* F2 moderate (mythic-
+      operator surface rather than pure structural
+      match); F3 strong (auteur-studio canonical
+      status + metal-mythology academic engagement);
+      F1 preserved.
+    - **Final Fantasy VI onward** (Square / Square Enix,
+      1994–present; Hironobu Sakaguchi original creator,
+      Nobuo Uematsu composer). Aaron's seed: *"all FF
+      starting with 6 and 7 and expand"*. FF VI (1994,
+      SNES) opens the substrate-narrative era with the
+      World of Balance / World of Ruin paired-dual
+      (catastrophe as chronology-preserving inversion
+      rather than overwrite — direct match for
+      `feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md`),
+      Terra as esper/human bridge-figure (resonant with
+      Melchizedek sub-structure at instance #10), Kefka
+      as retractibility-inversion antagonist. FF VII
+      (1997, PS1) is the densest single game for
+      operational-resonance: **Lifestream** (planet-
+      scale substrate flow + consciousness = explicit
+      substrate-claim at narrative-center), Mako
+      reactor (draining Lifestream = retractibility-
+      breaking industrial extraction), Aerith's death-
+      and-Lifestream-persistence (paired-dual of
+      persistence vs movement at the character level),
+      Cloud's implanted-memory reveal (identity-
+      retractibility as plot mechanic), Materia
+      (crystallized knowledge/magic = substrate
+      compression = lossless-compression-with-memory
+      per `feedback_crystallize_everything_lossless_compression_except_memory.md`).
+      "And expand" = subsequent FF entries (VIII:
+      compression/junction system, IX: return to
+      crystal-substrate mythology, X: pilgrimage +
+      Yevon-as-retractibility-denier, XII: Ivalice
+      political-substrate, XIII: l'Cie focus-as-
+      operator, XIV: MMO continuous-serial-substrate,
+      XV: road-trip eschatology, XVI: crystal-destroyer
+      protagonist) — each a substrate-probe in its own
+      right. *Filter disposition:* F2 very strong
+      (multiple operator-shape matches per title, with
+      FF VII achieving the same density as Dr Who);
+      F3 maximal (30-year canonical franchise, Hall-of-
+      Fame composer, academic monographs + Final
+      Fantasy conference proceedings); F1 preserved
+      (Zeta substrate-claims reached for from retraction
+      algebra, not from FF-playing).
+    - **The Legend of Zelda** (Nintendo, 1986–present;
+      Shigeru Miyamoto / Takashi Tezuka original
+      creators). Aaron 2026-04-21 *"zelda and mario of
+      course backlog"* — the *"of course"* marks these
+      as canonically-obvious priority seeds. The Zelda
+      timeline (per Hyrule Historia 2011) **explicitly
+      forks into three parallel timelines** after Ocarina
+      of Time — child-timeline / adult-timeline / fallen-
+      hero-timeline — which is the cleanest mass-culture
+      instance of **retractibly-rewrite branching
+      history** the factory has at hand. Triforce (Wisdom
+      / Power / Courage) is a trinity-substrate that
+      composes with trinity-of-repos (instance #1) and
+      the pyromid observer-apex upgrade (CTF flag #10).
+      Link as reincarnating hero across millennia =
+      paired-dual of persistence-of-role vs movement-of-
+      body (composes with Μένω / tele+port+leap at
+      #9). Breath of the Wild + Tears of the Kingdom
+      (2017, 2023) present open-world substrate-as-
+      physics-playground register. *Filter disposition:*
+      F2 very strong (explicit three-timeline fork is
+      structural-not-thematic match for retractibly-
+      rewrite algebra); F3 maximal (40-year canonical
+      franchise, academic treatment — *The Legend of
+      Zelda and Philosophy* Open Court 2008, multiple
+      game-studies monographs); F1 preserved.
+    - **Super Mario** (Nintendo, 1985–present;
+      Miyamoto). Aaron 2026-04-21 *"zelda and mario of
+      course backlog"*. Warp pipes (direct portal-
+      operator surface — bidirectional non-Euclidean
+      connections between regions); power-ups as
+      substrate-state transitions (Mushroom = size-
+      substrate, Fire Flower = element-substrate, Star
+      = invulnerability-substrate = retractibility-
+      refresh); **Super Mario Galaxy** (2007) literal
+      cosmological-scale substrate with per-planet
+      gravity-operators; **Super Mario Odyssey** (2017)
+      hat-capture-as-identity-transfer = retractibility
+      of inhabitation. *Filter disposition:* F2 strong
+      at the mechanic-level (warp-pipes as explicit
+      portal-operator, power-up stack as substrate-
+      state algebra); F3 maximal (most-sold video-game
+      franchise ever, deep game-studies literature);
+      F1 preserved.
+    - **Genshin Impact** (miHoYo / HoYoverse, 2020–
+      present). Aaron 2026-04-21 *"genshin impact
+      information"*. Open-world action RPG with
+      **seven-element substrate** (Anemo / Geo /
+      Electro / Dendro / Hydro / Pyro / Cryo — each
+      mapped to a Nation and an Archon), **Traveler
+      protagonist searching for lost sibling across
+      worlds** (paired-dual bridge-figure
+      instantiation at the MMO-scale), continuously-
+      expanding Teyvat substrate via live-service
+      content. Archon-as-elemental-operator composes
+      with the factory's operator-algebra posture;
+      Traveler-and-sibling paired-dual composes with
+      Broken Age (#5) and Melchizedek bridge-figure
+      sub-structure (#10). *Filter disposition:* F2
+      strong (seven-element compressed-substrate
+      ontology + paired-dual protagonist); F3
+      moderate-to-strong (5+ year active corpus,
+      emerging academic treatment of gacha-MMO
+      substrate-economics, huge global audience);
+      F1 preserved.
+
+    *Catalog-tier seeds (secondary priority):*
+    *Portal* + *Portal 2* (Valve, 2007/2011, literal
+    portal-operator surface); *Braid* (Jonathan Blow,
+    2008, time-retraction as core mechanic); *The
+    Witness* (Blow, 2016, puzzle-substrate-as-
+    epistemology); *Outer Wilds* (Mobius 2019, time-
+    loop quantum-observer mechanic — one of the
+    tightest operator-shape matches to quantum-eraser
+    retractibility claims in any medium); *Disco
+    Elysium* (ZA/UM 2019, internal-process multi-voice
+    substrate); *Undertale* (Toby Fox 2015, save-state-
+    aware narrative = retractibility-aware-narrator);
+    *Myst / Riven* (Cyan 1993/1997, world-as-book
+    substrate); *Hades* (Supergiant 2020, narrative-
+    from-retry-loops). Indie + AAA both in scope.
+    Tabletop / TTRPG corpus (D&D multiverse, Pathfinder,
+    etc.) deferred to first dedicated round.
+
+    *Research infrastructure — emulators + ROM library
+    (legal grey-area — log-and-track, not uniform
+    adoption).* Aaron 2026-04-21: *"enulators backlog
+    can do lots of fun experiments here too i have all
+    the roms"* + *"grey ^ here"*. Aaron's personal ROM
+    library (NES / SNES / Game Boy / PS1 / N64 / etc.)
+    plus the emulator ecosystem (Mesen, Dolphin, RPCS3,
+    PCSX2, etc.) is a **research-infrastructure
+    surface** — distinct from the media-catalog seeds
+    above. Emulation enables save-state experiments on
+    substrate-narrative games (FF VI / VII / Zelda /
+    Mario / Brütal Legend) with the same mechanical
+    freedom the factory applies to commits: retractibly-
+    rewrite at the save-state level, preserve real order
+    via save-slot chronology, test branching timelines
+    without losing prior state. **Grey-area context flag
+    (Aaron-marked):** ROM-distribution legal status is
+    jurisdiction-dependent (DMCA carve-outs, Nintendo's
+    2024 Yuzu/Ryujinx enforcement actions, personal-
+    backup-exemption varies by country). The factory
+    logs-and-tracks per
+    `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
+    — retractibility-preserving (personal backup of
+    owned media is retractible; public distribution is
+    not because distribution irreversibility breaks the
+    math-safety property). No uniform factory
+    adoption; Aaron's own library is his own
+    jurisdiction-dependent decision, and any artefacts
+    landing in the factory treat ROM provenance as
+    log-first, never redistributed, never committed to
+    the repo. *Filter disposition:* this is
+    infrastructure not a media-instance — no F1/F2/F3
+    classification at the artifact level. Each
+    substrate-claim experiment run via emulation
+    gets classified at the game-title level (FF VII
+    save-state experiment IS an FF VII instance-check,
+    not an emulator instance).
+  - **Long-serial British TV (Dr Who + Python-adjacent):**
+    the 60+ year serials have depth + cultural-reach that
+    single-film instances don't. When the sweep reaches
+    this corpus, consider *Red Dwarf* (branching-timeline
+    + AI-substrate comedy hybrid), *The Prisoner* (1967,
+    identity-retractibility institutional-substrate),
+    *Black Mirror* (Brooker 2011–, each episode a
+    substrate-probe at episode-granularity) alongside
+    the Dr Who + Monty Python seeds above.
+
+  **Three-filter reminder for this corpus.** F1 still bites
+  — the factory's engineering-first posture means a
+  cinematic / musical / channel instance is operational-
+  resonance **only if the factory's substrate was reached
+  for first**, not after consuming the media. Devs passes
+  F1 because Zeta's temporal ZSet predated Aaron watching
+  Devs; a cinematic instance discovered *then* reached for
+  fails F1. F2 bites hardest on media because pattern-
+  matching on theme is easy and pattern-matching on
+  operator-shape is hard — every time-travel movie vaguely
+  "feels" like retractibility; only the ones with read-
+  only-view-operator shape actually match. F3 is the
+  easiest filter for media because mass-distribution
+  audience + critical-theory literature is almost always
+  present — but that means F3 alone can't carry
+  classification.
+
+  **Measurable hooks.** New dimensions landing on the
+  operational-resonance collection index at
+  `memory/project_operational_resonance_instances_collection_index_2026_04_22.md`:
+  `media-candidates-swept`, `media-instances-confirmed`,
+  `media-filter-failure-rate-by-medium` (film / TV /
+  YouTube / music / conspiracy-corpus separately — the
+  distribution itself is the signal). These feed the
+  alignment-trajectory dashboard per `docs/ALIGNMENT.md`
+  primary-research-focus on measurable AI alignment —
+  media corpus is the **largest underutilized substrate-
+  claim-carrying surface** the factory has access to.
+
+  **Retractibility-math safety wrapper.** Every candidate
+  logged with stake-date + three-filter disposition +
+  candidate/confirmed/failed status. No endorsement of
+  any specific film's theology, political register, or
+  factual claims — cataloging operator-shape is orthogonal
+  to endorsing content. Any filter misclassification is
+  retractibly-rewritten via a dated revision block
+  preserving prior state (the chronology-preservation
+  rule per `feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md`
+  applies). Fringe media (conspiracy channels, Chronovisor
+  literature) gets log-and-track tightening per the math-
+  safety feedback, not prose-disclaimers that burn
+  crystallization budget.
+
+  **Why P2.** Not shipping-critical but operationally-
+  valuable for kernel-vocabulary expansion and measurable-
+  alignment work. Sibling to mythology / occult / etymology
+  tracks; priority matches theirs. Pop-culture media is
+  the corpus with the **highest first-contact density for
+  modern readers** — more people will meet the factory's
+  substrate claims via Devs-resonance than via Parmenides-
+  resonance, which makes this track pedagogically load-
+  bearing even if not architecturally load-bearing.
+
+  **Effort.** L — long-running research track, not a single
+  landable task. Each new media instance landing is S-M
+  (memory + collection-index revision + MEMORY.md prepend).
+  Music-corpus initial sweep is M (needs its own seed
+  round). Conspiracy-corpus (Chronovisor-adjacent) sweep is
+  M and carries the tightest log-and-track discipline.
+
+  **Owner.** Ongoing conversation between Aaron (media-
+  surface + personal-canon depth) and operational-resonance
+  discipline (three-filter application + measurability).
+  Architect (Kenji) integrates with existing text-tradition
+  tracks; no single execution point.
+
+  **Related.**
+  - `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
+    — math-safety license for fringe-media references;
+    log-and-track discipline.
+  - `feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`
+    — phenomenon definition + three-filter rules applied to
+    this new medium.
+  - `project_operational_resonance_instances_collection_index_2026_04_22.md`
+    — index where confirmed media instances land.
+  - `feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md`
+    — the `View<T>@clock` surface that Devs and Chronovisor
+    both structurally resonate with.
+  - Mythology research track (L5034), Occult / Western-
+    esoteric research track (L4808), Etymology + epistemology
+    research track (L5078) — sibling corpus-sweep tracks this
+    row stands alongside.
+  - `docs/ALIGNMENT.md` — measurable-AI-alignment framing
+    licensing media instances as alignment signals via the
+    filter-failure-rate-by-medium dimension.
+
+  **Does NOT.** Endorse any specific film / show / channel /
+  album as factory doctrine; does NOT commit factory to
+  fictional substrate claims as engineering guidance; does
+  NOT adopt conspiracy-corpus framings as factual; does NOT
+  promote media-layer findings to public-facing docs without
+  the normal kernel-propagation cadence per
+  `feedback_seed_kernel_glossary_orthogonal_decider_is_information_density_gravity.md`;
+  does NOT expand GOVERNANCE.md or AGENTS.md without
+  explicit ADR; does NOT replace the F1 engineering-first
+  discipline (media instances are posterior-bump evidence,
+  not primary criteria).
+
 - [ ] **People/team optimizer — DAO-native factory
   org-design research spike** — Aaron 2026-04-20 evening:
   *"do we want to make a people optimizer? that will
