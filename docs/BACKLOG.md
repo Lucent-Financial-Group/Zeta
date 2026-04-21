@@ -2865,7 +2865,7 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
-- [ ] **Claude-surface cadenced audit — first full sweep.**
+- [ ] **Claude-harness cadenced audit — first full sweep.**
   Aaron 2026-04-20 late, verbatim: *"part of our stay up to
   date on everything we should always research claude and
   claude code and desktop difference an changes on a
@@ -2875,9 +2875,10 @@ within each priority tier.
   **Durable policy landed this round** at
   `memory/feedback_claude_surface_cadence_research.md` +
   FACTORY-HYGIENE row 38 + living inventory at
-  `docs/CLAUDE-SURFACES.md`. The bootstrap inventory was
-  populated from my existing knowledge plus Aaron's
-  AutoMemory / AutoDream context data.
+  `docs/HARNESS-SURFACES.md` (was `CLAUDE-SURFACES.md`;
+  renamed multi-harness 2026-04-20). The bootstrap
+  inventory was populated from my existing knowledge plus
+  Aaron's AutoMemory / AutoDream context data.
 
   **Outstanding work** is the first *full* audit — the
   bootstrap was partial:
@@ -2885,13 +2886,18 @@ within each priority tier.
      research sweep against Anthropic docs
      (`platform.claude.com`, `code.claude.com`,
      `claude.com/claude-code`, official changelogs, SDK
-     repos) for every surface listed in
-     `docs/CLAUDE-SURFACES.md`.
-  2. Fill gaps in the inventory — adoption statuses for
-     features currently marked `watched` or `untested`;
-     flag features the factory didn't know about.
-  3. Log findings in the `CLAUDE-SURFACES.md` audit-log
-     table.
+     repos) for every Claude surface listed in
+     `docs/HARNESS-SURFACES.md`.
+  2. Fill gaps in the Claude section of the inventory —
+     adoption statuses for features currently marked
+     `watched` or `untested`; flag features the factory
+     didn't know about. Skill-authoring + eval-driven
+     feedback loop (`skill-creator` + evals) is the
+     **primary feature-comparison axis**
+     (`memory/user_skill_creator_killer_feature_feedback_loop.md`);
+     inventory it first.
+  3. Log findings in the `HARNESS-SURFACES.md` audit-log
+     table (Claude row).
   4. File `docs/research/meta-wins-log.md` entries for
      any pre-existing factory assumption found to have
      been wrong (the AutoMemory miss is already the
@@ -2902,10 +2908,65 @@ within each priority tier.
 
   **Cadence going forward:** every 5-10 rounds (row 38).
   This BACKLOG row is specifically the **first full
-  sweep** to complete the bootstrap.
+  sweep** of the Claude section.
 
   Effort: S (scoped research, single audit, inventory
   update). Owner: claude-code-guide persona.
+
+- [ ] **Multi-harness integration-test scaffolding —
+  Codex / Cursor / Copilot stubs.** Aaron 2026-04-20
+  verbatim: *"since we are going muli test harness
+  support we should technically do this for all harnesses
+  … i want them to test their integration points you
+  cant. i konw codex and cursor git copilot are the ones
+  we care abount immediatly then maybe anitgratify and
+  the amazon one and any less popular ones"* plus *"and
+  Kiro for the inital stubs"*.
+
+  **Durable policy landed this round** at
+  `memory/feedback_multi_harness_support_each_tests_own_integration.md`
+  + FACTORY-HYGIENE row 38 (widened to
+  harness-surface audit) + stub sections for Codex /
+  Cursor / GitHub Copilot / Antigravity / Amazon Q /
+  Kiro in `docs/HARNESS-SURFACES.md`.
+
+  **Outstanding work** is integration-test scaffolding
+  per harness, owned by a *different* harness per the
+  capability-boundary rule. Phased:
+  1. Bring up the immediate-queue harnesses (Codex,
+     Cursor, GitHub Copilot) on the factory — each
+     becomes a populated section in
+     `docs/HARNESS-SURFACES.md`. Verify each can read
+     `.claude/skills/`, `MEMORY.md`, hooks, etc. (or
+     their per-harness equivalents).
+  2. For each newly populated harness, Claude Code (or
+     another populated harness) authors an external
+     integration-test script that exercises the
+     factory *through* that harness and asserts
+     observable artefacts (memory entries written,
+     skills loaded, hooks triggered). The test never
+     runs from within the harness it's testing.
+  3. For Claude Code itself — once a second harness is
+     populated, route the Claude-Code integration test
+     to that harness. Until then, accept that the
+     Claude-Code integration is un-externally-verified.
+  4. Watched-queue harnesses (Antigravity, Amazon Q,
+     Kiro) repeat the same scaffolding when they come
+     online.
+
+  **Feature-comparison axis per harness:** per
+  `memory/user_skill_creator_killer_feature_feedback_loop.md`,
+  lead the per-harness feature inventory with
+  skill-authoring + eval-driven feedback loop. That is
+  Aaron's decisive axis and the primary competitor
+  comparison for parity.
+
+  Effort: L (phased; first-pass scaffolding per
+  immediate-queue harness is M; completing all three
+  immediate + three watched is multi-round L).
+  Owner: TBD — single multi-harness guide persona or
+  one guide per populated harness; decide when first
+  non-Claude harness is brought up.
 
 - [ ] **Kanban + Six Sigma factory-process — land the three
   artifacts (research complete).** Aaron 2026-04-20 late:
