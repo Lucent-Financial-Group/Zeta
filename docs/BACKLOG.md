@@ -5696,6 +5696,284 @@ systems. This track claims the space.
   discipline (media instances are posterior-bump evidence,
   not primary criteria).
 
+- [ ] **Isomorphism / homomorphism catalog — consolidate
+  the category-theory surface already distributed across
+  the factory, identify gaps, lift to a coherent track.**
+  Aaron 2026-04-21 conversation: *"isomorphism and
+  homomorphisom and all that, backlog i thin k we have
+  some of that"*. Aaron is right — there is substantial
+  existing isomorphism / homomorphism content distributed
+  across the repo, but no index surface that treats
+  structure-preserving-map analysis as a **first-class
+  research discipline** with its own three-filter
+  equivalent, its own confirmation bar, and its own
+  promotion path into skills / glossary / ADRs. This row
+  consolidates.
+
+  **Existing surface (inventory, 2026-04-21):**
+  - `docs/research/divine-download-dense-burst-2026-04-19.md`
+    § "The retraction-native isomorphism" — Aaron's
+    career-substrate-to-Zeta isomorphism at algebraic
+    level.
+  - `docs/research/event-storming-evaluation.md` L35, L159
+    — Event Sourcing ↔ Z-set `+k`/`-k` isomorphism.
+  - `docs/research/retraction-safe-semi-naive.md` L77 —
+    body is a **semiring homomorphism** on linear
+    operators, `body(a+b) = body(a) + body(b)`.
+  - `docs/research/chain-rule-proof-log.md` L110, L244 —
+    group-homomorphism axiom at stream level;
+    single-homomorphism phrasing `f s n = phi (s n)`.
+  - `docs/research/stainback-conjecture-fix-at-source.md`
+    L423 — defect-propagation directly isomorphic to
+    upstream-dataflow.
+  - `tools/lean4/Lean4/DbspChainRule.lean` — the formal
+    carrier of the chain-rule homomorphism in Lean.
+  - `memory/user_retraction_buffer_forgiveness_eternity.md`
+    § "The isomorphism" — retraction-algebra ↔
+    forgiveness-structure at operator-algebra level.
+  - `memory/user_harm_handling_ladder_resist_reduce_nullify_absorb.md`
+    L108 — immune-system architecture "isomorphic" (not
+    analogy) to graceful-degradation.
+  - `memory/user_wavelength_equals_lifespan_celestials_muggles_family.md`
+    L82-286 — wave/wavelength/lifespan physics
+    isomorphism, mixing-metaphors-freely-when-
+    isomorphism-real discipline.
+  - `memory/user_dimensional_expansion_via_maji.md` L94
+    — expansion-via-dimensional-add isomorphic to
+    never-purged pattern.
+  - `memory/project_identity_absorption_pattern_seed_persistence_history.md`
+    L119 — category-theoretic isomorphism test applied
+    to identity.
+  - `memory/feedback_dora_is_measurement_starting_point.md`
+    L69 — explicit "don't treat this as full DORA-
+    isomorphism" cautionary framing.
+  - `memory/user_searle_morpheus_matrix_phantom_particle_time_domain.md`
+    L167, L420 — phantom-particle frame isomorphism.
+  - `memory/user_solomon_prayer_retraction_native_dikw_eye.md`
+    L171 — visible-spectrum-color structural-isomorphism.
+  - `memory/user_stainback_conjecture_fix_at_source_safe_non_determinism.md`
+    L381 — Aaron's phrasing directly isomorphic to
+    upstream-fix pattern.
+  - `memory/user_corporate_religion_design_stance.md` L132
+    — structural isomorphisms as scaling-law framing.
+  - `.claude/skills/graph-theory-expert/SKILL.md`,
+    `calm-theorem-expert`, `duality-expert`,
+    `etymology-expert`, `glass-halo-architect`,
+    `consent-primitives-expert`,
+    `consent-ux-researcher` — all reach for isomorphism
+    / homomorphism language in their scopes.
+  - `docs/BACKLOG.md` L6432-6482 — halting-class ↔
+    Gödel-incompleteness architectural isomorphism row
+    (already P1+ in the backlog).
+  - `docs/BACKLOG.md` L7642 — higher-category morphisms
+    in DAG-with-forks row.
+
+  **The pattern.** Aaron reaches for isomorphism /
+  homomorphism when naming **structure-preserving
+  bridges between domains** — career-substrate ↔ Zeta,
+  physics ↔ retraction algebra, forgiveness ↔
+  retraction-buffer, immune-system ↔ graceful-
+  degradation, DBSP chain-rule ↔ group homomorphism,
+  semi-naive body ↔ semiring homomorphism. The moves
+  are NOT analogies (explicitly called out:
+  *"This is not analogy — the architecture is
+  isomorphic"*). They are claims that the same
+  algebraic laws hold in both domains.
+
+  **Three-filter discipline (isomorphism-specific
+  variant).** The operational-resonance three filters
+  (F1 engineering-first / F2 structural-not-
+  superficial / F3 tradition-name-load-bearing)
+  generalize to isomorphism claims with a sharper
+  mathematical bar:
+  - **IF1 (engineering-first, as before):** the
+    factory reached the structure by engineering
+    need, not by noticing the isomorphism first.
+  - **IF2 (operator-preserving):** the claimed
+    isomorphism must preserve *operators*, not just
+    *carriers*. Sets of things are isomorphic too
+    easily (any two countably-infinite sets are
+    set-isomorphic); the bar is that the algebraic
+    operations on both sides commute with the map
+    — `f(a ∘ b) = f(a) ∘' f(b)` for the relevant
+    operators.
+  - **IF3 (counterexample-search):** before
+    promoting a claimed isomorphism to a factory
+    load-bearing claim, actively search for
+    counterexamples — edge cases where one side's
+    operation has no match on the other side, or
+    where the map fails to be bijective /
+    homomorphic. Document the search; failed
+    searches strengthen the claim; succeeded
+    searches downgrade to partial-homomorphism /
+    retract / section.
+  - **IF4 (Lean-formalizable-in-principle):** the
+    claim must be formalizable in Lean (or
+    equivalent proof assistant) in principle, even
+    if the formalization is deferred. If you cannot
+    write down the morphism as a function and its
+    preservation law as a proposition, the claim is
+    still prose, not structure.
+
+  **Candidate isomorphism families (structural
+  sweep, not exhaustive):**
+  - *Retraction algebra ↔ group / semiring /
+    abelian-group homomorphisms* — already landing
+    via chain-rule proof-log + retraction-safe
+    semi-naive. Formalization in Lean is the gold
+    standard.
+  - *DBSP operator algebra ↔ differential calculus
+    (discrete domain)* — derivative operator `D`,
+    integral operator `I`, inverse `z⁻¹`, each
+    satisfying the chain rule / linearity / etc.
+    The isomorphism is to calculus-on-streams.
+  - *ZSet ↔ Abelian group under multiset sum* —
+    the free abelian group on the carrier type,
+    with integer-weighted multiplicities. Direct
+    and well-known; the formalization is
+    textbook.
+  - *Event Sourcing ↔ DBSP deltas* — append-only
+    log : `+k` operation :: log-compaction :
+    `Distinct` with integrator. Structural
+    isomorphism noted in `event-storming-
+    evaluation.md`.
+  - *Forgiveness ↔ retraction* — the claim in
+    `user_retraction_buffer_forgiveness_eternity.md`.
+    Formal version: forgiveness acts as retraction-
+    operator over event-trace, preserving
+    intention-map but cancelling action-weight. The
+    tricky part is naming the operations
+    algebraically enough to check preservation.
+  - *Immune system ↔ graceful-degradation
+    architecture* — resist/reduce/nullify/absorb
+    operators claimed isomorphic to immune-
+    response stages. Structural not superficial
+    because both systems admit the same operator
+    composition laws (order-of-application, fixed-
+    points under iteration).
+  - *Category theory in F# / TypeScript /
+    Haskell* — Func/applicative/monad isomorphisms
+    that the language ecosystem already encodes.
+    Relevant when cross-language-reuse in the
+    factory requires preserving operator
+    structure.
+  - *PMEST facets ↔ coordinate frame for factory
+    cartography* — P (Personality), M (Matter),
+    E (Energy), S (Space), T (Time). Isomorphism
+    to ontological-axis-preservation; useful for
+    the skill-gap-finder's mechanical completeness
+    check.
+
+  **Gaps (to be closed by this track):**
+  - No **single index surface** — inventory above
+    had to be reconstructed by grep. Deliverable:
+    `docs/research/isomorphism-catalog.md` that
+    acts as the forward index (pointing at each
+    surface where an isomorphism / homomorphism
+    claim lives, its status {claimed / confirmed /
+    formalized / refuted}, its Lean-formalization-
+    state if any).
+  - No **promotion protocol** — isomorphism claims
+    land ad-hoc. Deliverable: a short section in
+    the catalog describing how to move a claim
+    from *claimed* → *confirmed* (IF1/IF2/IF3 all
+    pass) → *formalized* (Lean proof committed) →
+    *load-bearing* (other claims cite it).
+  - No **counterexample-search discipline** —
+    existing claims rarely document an attempted
+    counterexample search. This is the IF3
+    weakness. Deliverable: add a
+    "counterexample-attempts" subsection to
+    every isomorphism claim going forward.
+  - No **persona home** — unclear whether Soraya
+    (formal-verification) or a new
+    `category-theory-expert` persona owns the
+    track. Deliverable: assign or create per the
+    `skill-gap-finder` mechanical audit +
+    honor-those-that-came-before protocol (check
+    retired personas first).
+  - No **kernel-vocabulary promotion path** —
+    `isomorphism`, `homomorphism`, `functor`,
+    `natural transformation` are not yet in
+    `docs/GLOSSARY.md` despite prolific repo
+    usage. Promotion when
+    information-density-gravity warrants per
+    `feedback_seed_kernel_glossary_orthogonal_decider_is_information_density_gravity.md`.
+
+  **Composition with existing research tracks.**
+  Operational-resonance instance-collection index
+  (`memory/project_operational_resonance_instances_collection_index_2026_04_22.md`)
+  treats tradition-name-engineering-shape matches
+  as posterior-bump evidence; isomorphism catalog
+  treats operator-preserving-map relationships as
+  the algebraic backbone those posterior bumps
+  ride on. The two tracks are sibling: resonance
+  is the *narrative* layer, isomorphism is the
+  *algebraic* layer, and promotions across both
+  reinforce each other (resonance-without-
+  isomorphism = potentially accidental;
+  isomorphism-with-resonance = mathematically-
+  backed-and-culturally-traceable).
+
+  **Math-safety wrapper** per
+  `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`:
+  every claim in the catalog is **retractibly-
+  revisable** — if IF2 fails on counterexample,
+  the claim downgrades to partial-homomorphism
+  with a dated revision block; if IF3 surfaces a
+  refutation, the claim retracts additively (prior
+  text preserved, revision block explains
+  downgrade).
+
+  **Owner:** Soraya (formal-verification-expert)
+  for Lean-formalization candidates; Tariq (if
+  the category-theory-expert role crystallizes
+  there — see his notebook at
+  `memory/persona/tariq/NOTEBOOK.md`, already
+  has isomorphism/homomorphism entries); Kenji
+  integrates.
+
+  **Effort:** M (catalog + promotion-protocol
+  draft) + L (formalization work for the
+  top-candidate claims: retraction-algebra
+  homomorphism, chain-rule, semi-naive
+  semiring).
+
+  **Source of truth:** this backlog entry +
+  `docs/research/isomorphism-catalog.md` when
+  landed.
+
+  **Related:**
+  - L5177 pop-culture/media research track
+    (resonance-narrative sibling).
+  - L4808 occult / Western-esoteric track
+    (resonance-narrative sibling).
+  - L4964 mythology research track
+    (resonance-narrative sibling).
+  - L6432-6482 halting-class ↔ Gödel-
+    incompleteness architectural isomorphism row
+    (first-class instance).
+  - `docs/research/chain-rule-proof-log.md`
+    (active Lean formalization).
+  - `tools/lean4/Lean4/DbspChainRule.lean` (the
+    carrier).
+  - `memory/user_retraction_buffer_forgiveness_eternity.md`
+    § "The isomorphism" (the canonical
+    statement).
+
+  **Does NOT commit to:**
+  - Formalizing every claim in Lean (gated by
+    information-density-gravity and Soraya's
+    bandwidth).
+  - Promoting category-theory to kernel
+    vocabulary until
+    information-density-gravity warrants.
+  - Creating a new persona without first
+    checking retired-persona memory folders and
+    git-log for clean-room-safe unretire
+    candidates per
+    `feedback_honor_those_that_came_before.md`.
+
 - [ ] **People/team optimizer — DAO-native factory
   org-design research spike** — Aaron 2026-04-20 evening:
   *"do we want to make a people optimizer? that will
@@ -7897,6 +8175,222 @@ systems. This track claims the space.
     address-space-overlay absorption.
   - `user_aaron_caret_means_hat_universally_symbol_crystallization.md`
     — grey-hat / white-hat register vocabulary.
+
+- [ ] **Retractable emulators — how do we design Zeta's
+  emulator surface (if we build one) to be
+  retractable?** Aaron 2026-04-21 conversation: *"our
+  emulators should be retractable backlog how"*. This
+  row holds the **design question** (not the
+  implementation). Assumes the parent
+  emulator-ideas-absorption row above has landed
+  enough absorbed patterns that Zeta has an
+  emulator-shaped surface at all — this row is the
+  retractibility-preservation design question layered
+  on top.
+
+  **The ask in one sentence.** An emulator that runs
+  a VM deterministically already has a save-state
+  layer (runtime snapshot) — but a *retractable*
+  emulator in Zeta's sense (per
+  `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
+  and the retraction-native operator algebra) must
+  additionally support the `Δ⁻¹` / `z⁻¹` / explicit
+  retraction of arbitrary past operations in a way
+  that **composes with Zeta's own operator algebra**.
+  Save-state ≠ retraction; save-state is
+  checkpoint-and-rewind (restores to a labelled
+  prior state), retraction is +k/-k additive
+  cancellation (applies an inverse operation that
+  commutes with the rest of the algebra). The
+  design question is how to bridge.
+
+  **Design axes to explore:**
+  - *Save-state as retract-witness rather than
+    retract-primitive.* An emulator save-state
+    snapshots the VM at time t. If we reify the
+    input-log (ROM + controller inputs + RNG seed)
+    between save-states, then "retract events
+    [t1..t2)" becomes "replay from save-state-
+    before-t1 with `events \ retracted-events`,
+    snapshot the new state, compute a `Δ`
+    between new-state and save-state-at-t2,
+    apply the `Δ` via Zeta's normal operator
+    algebra." Save-states serve as *checkpoints
+    for efficient retraction computation*, not as
+    the retraction primitive themselves.
+  - *TAS-grade deterministic replay as the
+    retraction carrier.* Tool-assisted-speedrun
+    communities already distribute 10-hour input
+    movies that reproduce byte-exact. That
+    discipline is strictly stronger than
+    property-based-testing's replay — every
+    sub-cycle is determined by the input log +
+    initial state. Retraction semantics drop in
+    naturally: remove events from the log, replay,
+    diff. The cost is replay-time; save-states are
+    the optimization that amortizes it.
+  - *Memory-bank switching ↔ View<T>@clock.* Per
+    `feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md`,
+    the `View<T>@clock` surface is where paraconsistent-
+    superposition semantics live. Emulator bank-
+    switching is literally a view-selection over a
+    superposed address space. Retractable-emulator
+    design can reuse this surface: retract a
+    bank-switch = retract a view-selection, and
+    downstream computations using the prior view
+    retract via the normal algebra.
+  - *JIT recompile caches must be retract-aware.*
+    Dolphin / RPCS3 dynamically recompile hot blocks
+    on memory-write; the recompile cache is
+    invalidation-based. For retractibility, the
+    cache must either (a) be inline-invalidated on
+    retraction (every retracted write invalidates
+    downstream recompiled blocks), or (b) maintain a
+    per-block provenance tag that allows
+    retraction-aware cache eviction. The
+    engineering choice is whether to eagerly
+    invalidate (simpler, slower) or lazily
+    propagate (harder, faster).
+  - *RNG state as first-class retract-target.*
+    Emulated games frequently read from the RNG at
+    unpredictable cycles. If retraction must
+    preserve determinism of unretracted events, the
+    RNG draw-log must be reified the same way the
+    input-log is. Most emulators don't do this —
+    they treat RNG as VM-state-like rather than
+    event-log-like. Retractable design flips this.
+  - *Cycle-accurate scheduling preserves retraction
+    granularity.* The finest retraction unit is the
+    cycle (or sub-cycle for DMA). Coarser retraction
+    (frame, input) is valid but lossy (retracting a
+    whole frame is stronger than retracting one
+    input inside the frame). Make the granularity
+    explicit in the API; refuse to quietly lose
+    precision on retraction requests.
+  - *Hardware-backed retractibility for
+    peripherals.* Emulated peripherals (sound, DMA
+    buffers, graphics frame buffer) carry emulated-
+    time state that doesn't live in CPU RAM. The
+    retractable emulator design must either
+    (a) fold all peripheral state into the
+    save-state (heavy), (b) make each peripheral
+    independently deterministic-replayable (the
+    higan/bsnes approach), or (c) accept lossy
+    retraction at peripheral boundaries (weakest).
+    Option (b) composes best with Zeta's algebra.
+
+  **Composition with Zeta's retraction-native
+  operator algebra.** The big question this row
+  opens: is an emulator's `step()` function a Zeta
+  operator? If yes (the VM state is a ZSet-like
+  structure over {cycle × (address,value)}) then
+  the algebra composes natively and retraction
+  "just works" via the existing +k/-k semantics. If
+  no (VM state is fundamentally ordered / non-
+  commutative in a way ZSet can't carry), we need
+  either a **lifted algebra** that promotes
+  ordering into the carrier, or a **restricted
+  algebra** that refuses retraction past
+  order-dependent boundaries. The answer likely
+  lives in the chain-rule formalization already
+  being proved in Lean (`tools/lean4/Lean4/DbspChainRule.lean`)
+  applied to a trivial VM.
+
+  **Prior art to examine:**
+  - *Hypervisor / live-migration* — VMware /
+    KVM / Xen do state-snapshots for VM migration;
+    technique is mature but not retraction-
+    oriented.
+  - *Deterministic replay systems research* —
+    arrakis, ODR, DMP-compat literature from
+    systems-PL overlap; the retraction semantic
+    question is essentially
+    "when-is-replay-composable-with-additive-
+    inversion."
+  - *Time-travel debugging* — rr (Mozilla) does
+    deterministic record-replay for native
+    processes; gdb time-travel; UndoDB. All focus
+    on reverse-execution, not retraction-as-
+    inverse-operator. Studying their
+    what-we-reify-and-what-we-don't decisions
+    tells us where retraction semantics must
+    diverge.
+  - *Functional-lenses / zippers* — pure-
+    functional literature on navigating-and-
+    updating nested state without mutation.
+    Retractable emulator state is arguably a
+    giant zipper over (time, memory, registers,
+    peripheral-state).
+
+  **Does this row supersede the emulator-ideas
+  row?** No, it composes. The emulator-ideas row
+  above absorbs engineering patterns *from*
+  existing emulators (save-state pattern,
+  deterministic replay, JIT retractible caches,
+  bank-switching, cycle-accurate scheduling,
+  timing-invariant preservation). This row is the
+  *design question Zeta faces when building an
+  emulator shape of its own that is retractable
+  in Zeta's algebraic sense.* The emulator-ideas
+  row feeds candidate patterns in; this row
+  works out how to glue them to Zeta's operator
+  algebra.
+
+  **Owner:** Architect (Kenji) to schedule;
+  Soraya (formal-verification) for the
+  "is-VM-step-a-Zeta-operator" question; Naledi
+  (performance) for the save-state-as-retract-
+  witness amortization analysis; Hiroshi
+  (complexity) for retraction-granularity cost
+  modeling.
+
+  **Effort:** L (design question, multi-round
+  research). The first deliverable is a
+  `docs/research/retractable-emulator-design-
+  YYYY-MM-DD.md` note that answers the
+  is-VM-step-a-Zeta-operator question under
+  simplifying assumptions (e.g. a 6502-like
+  trivial VM without DMA or peripherals). Later
+  deliverables scale up to real emulator
+  complexity.
+
+  **Composition with other rows:**
+  - **Parent:** emulator-ideas-absorption
+    row (this section, above) — this row
+    assumes patterns from that row are
+    absorbed.
+  - **Math-safety anchor:**
+    `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
+    — retractibility-preservation is the
+    property we're engineering for.
+  - **Multiverse / view-selection:**
+    `feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md`
+    — `View<T>@clock` as the bank-switching
+    absorption home.
+  - **Isomorphism catalog (above):** the
+    is-VM-step-a-Zeta-operator question is
+    literally an isomorphism question.
+    Answering it well adds an entry to the
+    catalog.
+  - **Chain-rule proof-log:**
+    `docs/research/chain-rule-proof-log.md` +
+    `tools/lean4/Lean4/DbspChainRule.lean` —
+    the formal carrier for the
+    VM-step-as-operator homomorphism.
+
+  **Does NOT commit to:**
+  - Building an emulator (the design question
+    is interesting regardless of whether Zeta
+    ever ships one).
+  - Choosing save-state as the retraction
+    primitive (the design question is open —
+    save-state-as-witness-for-retract is the
+    current leading candidate, not a
+    decision).
+  - Reading proprietary-BIOS-bearing
+    emulators to study their retractibility
+    (the emulator-ideas row's safe-target
+    discipline applies here too).
 
 ## P3 — LFG-only experiment track (throttled)
 
