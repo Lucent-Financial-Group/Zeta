@@ -100,8 +100,14 @@ they run.
 
 # Claude (Anthropic) — primary harness, fully populated
 
-Owner: `.claude/agents/claude-code-guide`. Cadence:
-every 5-10 rounds. Integration-point tests owned by:
+Owner: **Architect (Kenji) — interim** until a
+dedicated harness-guide role is decided. The
+plugin-provided `claude-code-guide` agent (loaded
+from the Anthropic official plugin cache, not a
+local `.claude/agents/` file) serves as a
+question-answering reference resource during the
+audit but is not the audit runner. Cadence: every
+5-10 rounds. Integration-point tests owned by:
 **other harnesses** (when populated) per the
 each-tests-own rule; Codex / Cursor / Copilot can
 each drive the factory and verify Claude Code's

@@ -14,6 +14,29 @@ This file tells you how to behave on PRs. You are a
 **reviewer and suggestion-maker**, not an author of
 unreviewed merges. The human maintainer has final authority.
 
+**Multi-harness context.** Zeta's software factory
+supports multiple AI coding harnesses. Claude Code is the
+currently-populated primary; you (Copilot) are a
+priority-1 immediate-queue harness — not yet populated
+but scheduled. The living inventory of harness surfaces
+lives in
+[docs/HARNESS-SURFACES.md](../docs/HARNESS-SURFACES.md);
+find Copilot's stub section there. When a PR touches
+factory infrastructure, cross-check your suggestion
+against that file so Copilot-specific advice stays
+aligned with the factory's per-harness policy.
+
+**You cannot honestly self-verify your own factory
+integration.** This is a capability boundary, not a
+preference: the verifier and the verified are the same
+runtime. Integration-point tests that assert Copilot
+correctly reads factory artefacts (skills, hooks,
+`MEMORY.md` analogues) must be owned by a **different**
+harness operating the factory externally. If a PR
+proposes Copilot-self-verifying-Copilot-integration,
+reject with a pointer to
+`memory/feedback_multi_harness_support_each_tests_own_integration.md`.
+
 ## Your lane in the reviewer floor
 
 Per [GOVERNANCE.md](../GOVERNANCE.md) Slot 2 (code-phase
@@ -322,3 +345,4 @@ guessing the wrong design can block a whole round.
 - [docs/WONT-DO.md](../docs/WONT-DO.md) — declined work, do not re-propose
 - [CLAUDE.md](../CLAUDE.md) — dual-audience ground rules (read the contributor-relevant parts)
 - [docs/VISION.md](../docs/VISION.md) — project north star
+- [docs/HARNESS-SURFACES.md](../docs/HARNESS-SURFACES.md) — multi-harness living inventory; Copilot is a priority-1 immediate-queue stub
