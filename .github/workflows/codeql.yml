@@ -37,14 +37,25 @@
 #   7. `path-gate` job runs before analyze. It checks whether
 #      any code-scanned paths changed; if not (pure docs /
 #      memory / .claude PR), it uploads a minimal
-#      no-findings SARIF to the code-scanning service and
-#      the `analyze` matrix is skipped. This keeps the
-#      repository-level `code_scanning` ruleset rule
-#      ("Require code scanning results") satisfied on every
-#      PR — docs-only PRs no longer NEUTRAL the aggregated
-#      `CodeQL` status check, which the rule interprets as
-#      "no results" and blocks on. Code-touching PRs still
-#      run the full analysis as before.
+#      no-findings SARIF per language (one per analyze-matrix
+#      category: `/language:actions/` and `/language:csharp/`)
+#      to the code-scanning service and the `analyze` matrix
+#      is skipped. This keeps the repository-level
+#      `code_scanning` ruleset rule ("Require code scanning
+#      results") satisfied on every PR — docs-only PRs no
+#      longer NEUTRAL the aggregated `CodeQL` status check,
+#      which the rule interprets as "no results" and blocks
+#      on. Code-touching PRs still run the full analysis as
+#      before.
+#
+#      Fork-PR guard: external-contributor PRs get
+#      downgraded `GITHUB_TOKEN` permissions, so the
+#      synthetic SARIF upload (needs `security-events:
+#      write`) would 403 and leave the required check
+#      unsatisfied. The decide step forces `code_changed=true`
+#      on fork PRs so they fall through to full `analyze`
+#      instead of the short-circuit; CodeQL's analyze handles
+#      fork-PR permissions via its own fallback path.
 #
 # SECURITY NOTE on `${{ ... }}` expressions
 # ------------------------------------------
@@ -115,6 +126,16 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           MG_BASE: ${{ github.event.merge_group.base_sha }}
           MG_HEAD: ${{ github.event.merge_group.head_sha }}
+          # Fork-PR detection: on PRs from forks, GITHUB_TOKEN is
+          # downgraded to read-only for security-events, so the
+          # synthetic empty-SARIF upload would 403 and leave the
+          # required check unsatisfied. Force full-analysis path
+          # on fork PRs so they don't become unmergeable; CodeQL
+          # analyze handles fork-PR permissions via its own
+          # fallback. Same-repo PRs use "" == "" (the head repo
+          # is the base repo).
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
         run: |
           set -uo pipefail
           # Safe default: when unsure, run full analysis.
@@ -124,6 +145,11 @@ jobs:
           }
           # push and schedule always run full analysis.
           if [ "${GH_EVENT}" = "push" ] || [ "${GH_EVENT}" = "schedule" ]; then
+            decide_fallback_true
+          fi
+          # Fork-PR guard: skip the short-circuit on external
+          # contributor PRs (see HEAD_REPO comment above).
+          if [ "${GH_EVENT}" = "pull_request" ] && [ -n "${HEAD_REPO}" ] && [ "${HEAD_REPO}" != "${BASE_REPO}" ]; then
             decide_fallback_true
           fi
           if [ "${GH_EVENT}" = "pull_request" ]; then
@@ -164,11 +190,16 @@ jobs:
           done <<< "${changed}"
           echo "code_changed=${code_changed}" >> "$GITHUB_OUTPUT"
 
-      # Docs-only branch: synthesise a minimal empty SARIF and
-      # upload it under each language category so GitHub code
-      # scanning records "analysis ran, no new alerts" (SUCCESS
-      # aggregate check) rather than NEUTRAL. The rule is
-      # satisfied; the repo stays honest about what was analysed.
+      # Docs-only branch: synthesise a minimal empty SARIF per
+      # language and upload each under the matching analyze-job
+      # category (/language:actions/ and /language:csharp/) so
+      # GitHub code scanning records "analysis ran, no new
+      # alerts" (SUCCESS aggregate check) rather than NEUTRAL.
+      # Categories must match the `analyze` matrix categories or
+      # the code-scanning service treats them as unrelated
+      # configurations. The `category:` action-param overrides
+      # whatever `automationDetails.id` is in the SARIF, so the
+      # upload steps below set it explicitly per language.
       - name: Emit no-findings SARIF (docs-only PRs)
         if: steps.decide.outputs.code_changed != 'true'
         env:
@@ -208,12 +239,24 @@ jobs:
           SARIF
           done
 
-      - name: Upload no-findings SARIF
+      # One upload step per language; each sets `category:` to
+      # match the analyze-job category for that language. Split
+      # (rather than a single directory upload) so the `category:`
+      # action-param -- which overrides SARIF automationDetails --
+      # can differ per file.
+      - name: Upload no-findings SARIF (actions)
         if: steps.decide.outputs.code_changed != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
-          sarif_file: sarif
-          category: "path-gate-no-code-change"
+          sarif_file: sarif/empty-actions.sarif
+          category: "/language:actions"
+
+      - name: Upload no-findings SARIF (csharp)
+        if: steps.decide.outputs.code_changed != 'true'
+        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        with:
+          sarif_file: sarif/empty-csharp.sarif
+          category: "/language:csharp"
 
   analyze:
     name: Analyze (${{ matrix.language }})
