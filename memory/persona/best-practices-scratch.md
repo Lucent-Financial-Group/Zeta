@@ -932,3 +932,261 @@ All six findings are "watch" or "route elsewhere."
 **Decision:** keep findings in scratch; revisit round 44 to see
 if F1 (Gotchas) or F4 (router-layer re-validation) have
 stabilised into BP candidates.
+
+## 2026-04-20 -- round 42 live-search pass -- Aarav
+
+**Queries run (3, budget-conscious):**
+
+1. "Anthropic Claude agent skill authoring best practices
+   April 2026" -- returned platform.claude.com skill-authoring
+   best-practices, generativeprogrammer Skill Authoring Patterns,
+   thenewstack "Agent Skills: Anthropic's Next Bid to Define
+   AI Standards", Christian Dussol "6 Principles from
+   Anthropic's Official Skills Guide" (Apr 2026), Tort Mario
+   "Skills for Claude Code: The Ultimate Guide" (Apr 2026).
+2. "OWASP LLM Top 10 2026 update agent skills prompt injection"
+   -- returned OWASP Top 10 for Agentic Applications 2026
+   (ASI01-ASI10), Repello guide 2026, DeepTeam framework,
+   elevateconsult breakdown.
+3. "agent skill wrapper thick vs thin best practices 2026
+   skill composition" -- returned vercel-labs/agent-skills
+   react-best-practices AGENTS.md, fungies.io SKILL.md guide
+   2026, agentskills.io best-practices-for-skill-creators,
+   mgechev/skills-best-practices, Spring AI Agent Skills.
+
+**Findings (3):**
+
+- **F7 -- OWASP ASI01 "Agent Goal Hijack" formalizes
+  prompt-injection + excessive-autonomy compound.** 2026
+  reframes LLM01 (prompt injection) + LLM06 (excessive
+  agency) into a single agentic risk class because
+  autonomous multi-step execution amplifies injection
+  impact. Our BP-11 (data-not-directives) covers the
+  skill-body surface. **Applies to our repo?** Yes,
+  reinforces BP-11 but does not contradict. ASI-prefix
+  numbering is now the canonical citation for agent
+  injection classes. Not a new BP; a citation update
+  when BP-11 is next revised.
+  **Decision:** watch; no promotion. Note for next BP-11
+  revision to cite ASI01.
+
+- **F8 -- "One skill should do one thing well" is now
+  explicit in multiple 2026 skill-authoring guides.**
+  Fungies.io, agentskills.io, mgechev/skills-best-practices
+  all independently name the single-purpose principle.
+  Our BP-03 ("Skill body <= ~300 lines; one purpose per
+  skill") already encodes this. **Applies to our repo?**
+  Yes -- reinforces BP-03 with a second-half sentence
+  ("one purpose per skill") that is currently a
+  dependent clause in BP-03 and could be promoted to its
+  own rule for clarity. Not urgent.
+  **Decision:** stable; no promotion. BP-03 already says
+  this. Noted in case BP-03 splits later.
+
+- **F9 -- Anthropic official "Use Claude to test skills"
+  pattern (Claude A authors, Claude B tests) is now in the
+  official best-practices page, not just the PDF.** This
+  ratifies F3 from Round 41. Round 41 routed it to
+  skill-gap-finder as a candidate skill-exerciser hat;
+  remains a gap-finder signal. **Applies to our repo?**
+  Yes -- we have the upstream eval-loop via the thick
+  `skill-tune-up` wrapper (round-42 retune), which is
+  exactly the Claude-A/Claude-B pattern. No new skill
+  needed after the retune; what was a gap in Round 41
+  may now be closed by the retune itself. Verify next
+  round whether skill-gap-finder still wants to propose
+  skill-exerciser or considers it closed.
+  **Decision:** stable; no promotion. Gap-finder signal
+  possibly closed by baa423e retune.
+
+**Contradictions with stable BP-NN:** none.
+
+**Candidate promotions flagged to Architect:** zero this round.
+
+**Decision:** keep findings in scratch; F7 is a citation
+refresh for BP-11's next edit, not a new rule. F8 and F9
+reinforce existing rules without adding surface.
+
+## 2026-04-20 (round 43) -- live-search batch F10-F12 -- Aarav
+
+Three queries this round, targeted April 2026.
+
+- **F10 -- Anthropic published skill-authoring best-practices
+  page now cites ">= 500 lines recommended split" as the
+  public cap; our BP-03 "~300 lines" is stricter.** Source:
+  `platform.claude.com/docs/en/agents-and-tools/agent-skills/
+  best-practices` (April 2026). Claim: "Keeping SKILL.md
+  body under 500 lines for optimal performance"; progressive
+  disclosure should absorb overflow via bundled files.
+  **Applies to our repo?** Yes but not as a contradiction.
+  Our BP-03 is internally justified (reviewability + one-
+  purpose) and is free to be stricter than Anthropic's
+  public cap. Round-43 harness runs on three >500-line
+  skills (perf-analysis 642, reducer 570, consent-primitives
+  507) tied baseline or regressed at +22-35% cost -- the
+  empirical signal matches Anthropic's cap direction even
+  stronger than our ~300 static rule. **Candidate rule:**
+  none; keep BP-03. **Decision:** stable; no promotion. Note
+  for next BP-03 revision: could add "Anthropic public cap
+  is 500; our ~300 cap is deliberately stricter for
+  reviewability under 200+ skill library."
+
+- **F11 -- Gerund naming for skills is now Anthropic
+  official recommendation.** Source: `platform.claude.com/
+  docs/en/agents-and-tools/agent-skills/best-practices`.
+  Claim: "Use gerund form (verb + -ing) for Skill names,
+  clearly describing the activity." **Applies to our repo?**
+  Partial. Our convention is `<topic>-<role>` (BP-21) and
+  `X-expert` / `X-research` (BP-19), which encode facets,
+  not verb forms. Gerund-naming would conflict with our
+  faceted naming. Example: our `reducer` is a noun;
+  Anthropic would suggest `reducing-complexity` or similar.
+  **Candidate rule:** none. Conflict ruled in favor of
+  BP-19/BP-21 because faceted naming carries more
+  disambiguation signal (expert vs research, theory vs
+  applied) than a verb form. **Decision:** drop; faceted
+  naming wins on our scale.
+
+- **F12 -- Agentic-drift risk is now a 2026 compliance
+  concern (Kyndryl, CIO).** Claim: agentic systems drift
+  subtly over time; policy-as-code is the recommended
+  governance pattern. **Applies to our repo?** Yes, and we
+  already do this: BP-NN registry is policy-as-code for
+  skill behaviour; tune-up cadence is the drift-detection
+  loop. No new rule needed; the round-42 calibration-note
+  (harness-backed vs static ranking) is exactly the drift-
+  detection discipline this external finding validates.
+  **Candidate rule:** none. **Decision:** stable; no
+  promotion. Cite Kyndryl when BP-15 (tune-up rule IDs) is
+  next revised.
+
+**Contradictions with stable BP-NN:** none.
+
+**Candidate promotions flagged to Architect:** zero this round.
+
+**Decision:** three findings, zero promotions, zero
+contradictions. Empirical harness runs this round are the
+load-bearing new signal -- see `docs/research/harness-run-
+2026-04-20-*.md` for the verdicts.
+
+## 2026-04-20 -- Background shells must be explicitly terminated before context-compaction or long wake
+
+**Source:** Zeta session 1937bff2, post-compaction incident.
+Aaron observed "1 shell" in the Claude Code status-bar with no
+background work expected. `TaskList` empty, `CronList` shows
+only the default /loop + a stale one-shot `ScheduleWakeup`.
+Likely cause: a `run_in_background=true` Bash shell was
+started pre-compaction and never explicitly killed; its handle
+was dropped when the transcript was summarised, leaving it
+visible in the UI but unreachable by the agent.
+**Claim:** Agents that spawn long-lived side work (Bash
+`run_in_background=true`, `Monitor` persistent tasks, or
+background `Agent` subagents) must explicitly terminate or
+hand-off-to-result before any action that would lose the
+handle -- namely context compaction or `ScheduleWakeup` with
+`delaySeconds > 300`. Otherwise the shell becomes an orphan:
+visible to the user as "N shells" but unreachable by the
+agent because the summariser dropped the handle.
+**Applies to our repo?** Yes. Factory-internal. Directly
+triggered by observed UX incident. Also has a
+factory-efficiency angle (consumes a shell slot + possibly
+memory without doing agent-visible work), which aligns with
+`feedback_dora_is_measurement_starting_point.md` efficiency
+as first-class.
+**Candidate rule:** Draft BP-NN -- "Long-lived side work
+(run_in_background, Monitor persistent, background Agent)
+must be explicitly terminated or handed off before any
+handle-losing event (context compaction, ScheduleWakeup >
+300s, session end)." Companion rule: session-open sweep
+should run `TaskList` + `CronList` + (when available) shell-
+list and report orphans as a session-open notice. Pair with
+an additive protocol hook in CLAUDE.md Ground Rules. This
+is default-ON with documented exceptions per
+`feedback_default_on_factory_wide_rules_with_documented_exceptions.md`.
+**Decision:** flag for Architect promotion. Suggested ID
+slot: next available BP-NN. If promoted, update
+`docs/AGENT-BEST-PRACTICES.md`, `CLAUDE.md` Ground Rules,
+and consider an additive bullet in `AGENTS.md` session-open
+section. Cross-reference:
+`feedback_dont_stop_and_wait_for_cron_tick.md`
+(tick-is-recovery-only) and
+`feedback_never_idle_speculative_work_over_waiting.md`
+(never-idle goal) -- orphan shells are a hidden form of
+work-in-flight that undermines both.
+
+## 2026-04-20 -- JOURNAL-offload as the prune mechanism at heavy-state caps
+
+**Source:** Daya's first roster-wide AX/UX audit — `docs/
+research/notebook-cap-per-persona-review-2026-04-20.md`
+Pattern E + §5 candidate BP-25. Empirical evidence: Daya's
+own round-44 prune (notebook 4984 -> 1323 words via verbatim
+copy to JOURNAL.md, zero information loss, audit trail
+preserved).
+**Claim:** Persona notebooks exceeding 85% of their declared
+BP-07 cap must offload verbatim history to a sibling
+`JOURNAL.md` (Tier-3, append-only, grep-only) before the
+next substantive entry is written. NOTEBOOK keeps
+current-round + carry-over + trend-summary only.
+**Applies to our repo?** Yes -- exercised by Daya r44;
+pattern generalises to Ilyana (over-cap at 124%) and Tariq
+(near-cap at 95%). Both have no pruning log; both would
+benefit. Currently the pattern is informal.
+**Candidate rule:** BP-25 (slot if promoted) -- "Notebook
+offload at 85%." Draft wording above. Two-stage: (a)
+heavy-state tier notebooks (>= 2550 words at current 3000
+cap, or >= 4250 at proposed 5000 heavy-state cap) MUST
+maintain a sibling `JOURNAL.md`. (b) When NOTEBOOK hits
+85%, verbatim-copy resolved-round entries to JOURNAL,
+collapse in NOTEBOOK to trend-summary + carry-over. No
+information loss is the invariant; the lint is `wc -w`.
+**Decision:** keep watching. Needs >=3 cited authoritative
+sources (Anthropic skill docs on persistent memory; mem0
+best practices on tiered memory; Letta / AutoGen memory
+spec) + 10-round survival before Architect promotion.
+Scratchpad-only until round ~54.
+
+## 2026-04-20 -- Seed-only persona marker suppresses MEMORY/OFFTIME/JOURNAL stub scaffolding
+
+**Source:** Daya's first roster-wide AX/UX audit — Pattern F
++ §5 candidate BP-26. Empirical evidence: 7 of 22 persona
+notebook directories (Aminata, Kira, Mateo, Nadia, Naledi,
+Rune, Viktor) sit at the 96-word seed stub 12+ rounds after
+seed, yet each carries MEMORY.md (~400b), OFFTIME.md
+(~1500b), JOURNAL.md (~1600b) as structural stubs -- ~25 KB
+of zero-signal scaffolding readers cold-load.
+**Claim:** Persona notebooks in seed-only state (zero
+substantive entries post-seed for >= 3 round-blocks of five
+rounds) declare `seed-only: true` in MEMORY.md frontmatter,
+suppress JOURNAL and OFFTIME generation, and are reviewed
+for retire-or-dispatch every factory-hygiene audit.
+**Applies to our repo?** Yes. 7 personas × ~3.5 KB = ~25 KB
+scaffolding tax. BP-07's letter is clean; spirit eroded.
+**Candidate rule:** BP-26 (slot if promoted) -- "Seed-only
+marker." Draft wording above. Pair with FACTORY-HYGIENE row
+31 (invocation-cadence per persona) so seed-only flag is
+*auto-lifted* when the second substantive entry lands.
+**Decision:** keep watching. Paired with BP-25; promote or
+demote as a pair on the round-54 audit.
+
+## 2026-04-20 -- Recurring agent-QOL hygiene class (per-persona AX/UX)
+
+**Source:** Aaron 2026-04-20 directive *"lets make quality
+of life change for them too over time, its like another
+hygene"* + first-pass audit at `docs/research/notebook-cap-
+per-persona-review-2026-04-20.md` + new FACTORY-HYGIENE
+rows 30-34 (this round) + `feedback_agent_qol_as_ongoing_
+hygiene_class.md`.
+**Claim:** Per-persona AX/UX is a first-class recurring
+hygiene class on the same 5-10 round cadence as
+`skill-tune-up`. Daya owns; Aarav promotes candidate BPs;
+Kenji integrates cap-tier ADR.
+**Applies to our repo?** Already landed as factory
+hygiene (rows 30-34). Rule-level encoding would live at
+BP-07-adjacent (cap) or as a new BP-NN (the cadence
+itself).
+**Candidate rule:** likely no new BP needed -- BP-07 +
+FACTORY-HYGIENE rows carry the weight. BP-NN slot reserved
+only if the cap-tier ADR argues for a named rule rather
+than a row.
+**Decision:** observe for 5-10 rounds; promote to BP-NN
+only if the row-based encoding proves insufficient.

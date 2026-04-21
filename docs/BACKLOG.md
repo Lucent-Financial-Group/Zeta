@@ -50,36 +50,128 @@ within each priority tier.
   (namespace drift, phantom Reset, after-step scope,
   lifecycle phase undercount) all closed. Viktor's 10 P1
   findings deferred to Round 42 — see sub-item below.
+  **Round 43 sweep status:** `circuit-recursion` capability
+  landed (`openspec/specs/circuit-recursion/spec.md`, eight
+  requirements, 17 scenarios) scoped narrowly to the
+  nested-circuit substrate with explicit hand-off to sibling
+  `retraction-safe-recursion` for combinator semantics (which
+  already covered `Recursive` / `RecursiveCounting` /
+  `RecursiveSemiNaive` / feedback cells / fixpoint driver —
+  avoiding duplication). Also closed Viktor's 10
+  operator-algebra P1 findings (see sub-item below).
+  `openspec validate --all --strict`: 6 / 6 pass.
+  **Viktor adversarial audit verdict: NO** on the
+  "rebuild-from-spec-alone" test — third data-point breaks
+  the two-ship unconditional-rebuild pattern that
+  `operator-algebra` (Round 41) and `lsm-spine-family`
+  (Round 42) established. Pattern was convenient; the specs
+  are not strong enough yet. Findings filed as a Round-44
+  absorb sub-item below.
 
-- [ ] **operator-algebra spec: Viktor P1 findings (Round 42
-  absorb)** — Viktor's adversarial audit of the Round 41
-  cadence ship identified ten P1-tier surface gaps that do not
-  block the disaster-recovery bar at capability-close but
-  leave the spec incomplete relative to what a delete-recovery
-  produces. Scope: (a) async lifecycle — the `IsAsync`
-  property and async-fast-path in `Circuit.Step` are unstated;
-  (b) memory-ordering fence — the `[<VolatileField>]`
-  publication contract is named but not precisely pinned
-  (release-on-write, acquire-on-read); (c) register-lock
-  semantics — topology mutations under a single register-lock
-  are unspecified; (d) `IncrementalDistinct` — the fourth
-  chain-rule helper exposed by `IncrementalExtensions` is
-  absent from the spec; (e) ZSet sort invariant — the
-  `ImmutableArray<ZEntry<'K>>` ascending-sorted-by-key
-  invariant is assumed but not declared; (f) Checked
-  arithmetic — the OverflowException contract on weight
-  addition needs explicit mention in "Z-set as a finitely-
-  supported signed multiset"; (g) bilinear-size overflow —
-  the three-term incremental join can temporarily
-  materialise values that exceed the final-result size
-  bound; (h) convergence-vs-cap — nested scopes that hit the
-  iteration cap without reaching fixpoint need a documented
-  failure mode; (i) `Op.Fixedpoint` predicate — the per-
-  operator fixpoint-detection hook is unspecified; (j)
-  `DelayOp` initial-value override on first-tick-after-
-  reconstruction is ambiguous. Owner: Architect drafts,
-  Viktor audits each closure. Effort: M (spec work +
-  scenarios, no code changes). Defers to Round 42.
+- [x] ✅ **operator-algebra spec: Viktor P1 findings (Round
+  43 absorb)** — **shipped round 43** into
+  `openspec/specs/operator-algebra/spec.md`. All ten P1
+  findings closed: (a) async lifecycle — new requirement
+  "async-lifecycle declaration and fast-path step" with four
+  scenarios (synchronous-only no-overhead, declared-but-
+  non-deferring fast path, deferred tick-completion gating,
+  async-capable-flag stable within scope); (b) memory-
+  ordering — new scenario under operator-lifecycle pinning
+  release-on-write / acquire-on-read with explicit rejection
+  of relaxed/consume and non-reliance on SC; (c) register-
+  lock semantics — new requirement "topology-mutation
+  serialization" with three scenarios (atomic w.r.t.
+  stepping, concurrent-mutations total-order, async-
+  lifecycle interaction on removal/replace); (d) four
+  chain-rule helpers — new scenario "the exposed wrapper set
+  covers the four chain-rule helpers" (generic / linear /
+  bilinear-join / distinct), extension surface contract
+  pinned; (e) ZSet sort invariant — new scenario
+  "normalisation orders entries ascending by key" under
+  "Z-set as a finitely-supported signed multiset", tying
+  normalisation order to iteration order and serialization
+  determinism; (f) checked arithmetic — verified already
+  covered by existing "weight arithmetic overflow is
+  observable" scenario; (g) bilinear-size overflow —
+  verified already covered by "intermediate term size may
+  exceed final-delta size" scenario; (h) convergence-vs-cap
+  — verified already covered by "iteration cap without
+  fixpoint is an observable failure" scenario; (i)
+  `Op.Fixedpoint` predicate — new scenario "per-operator
+  fixpoint hints are advisory only" pinning that per-op
+  hints are optimization-only input to the scope-level
+  detector; (j) `DelayOp` post-reconstruction — verified
+  already covered by "reconstruction re-emits the declared
+  initial value" scenario. `openspec validate --all
+  --strict` clean (5 capabilities pass). A pre-existing
+  validator bug — the openspec parser reads only the first
+  physical line of a requirement's intro paragraph for the
+  MUST/SHALL check — was surfaced incidentally and fixed
+  inline on the chain-rule requirement. Build Release
+  remains 0W/0E.
+
+- [ ] **circuit-recursion + operator-algebra: Viktor P0/P1
+  findings from Round-43-ship adversarial audit (Round 44
+  absorb)** — Viktor's re-audit of commit `ce247a2`
+  delivered a **NO verdict** on the "could I rebuild these
+  modules from these specs alone?" gate. Third data-point
+  breaks the two-ship unconditional-rebuild pattern. **Three
+  P0s**: (1) `src/Core/NestedCircuit.fs:82,94-97` — cap-hit
+  path sets `Converged = false` and *still publishes*
+  `extract()` to the parent stream under the same
+  release/acquire contract as a converged run;
+  `operator-algebra/spec.md:486-488` explicitly forbids
+  this ("rather than silently publishing the state at the
+  cap-th inner tick as if it were the fixpoint"); fix
+  requires `IterateOp.StepAsync` to raise a
+  `Result<_, DbspError>` or throw on cap-hit, and plain
+  `Nest` either removed or routed through the same failure
+  path. (2) `src/Core/Primitive.fs:10-22` (DelayOp) and
+  `src/Core/Recursive.fs:40-85` (FeedbackOp) — no
+  `ClockStart` override; `state` / `initial` survives
+  across outer ticks, breaking DBSP §5-6 inner-scope
+  semantics (`circuit-recursion/spec.md:66-75` observable
+  scenario). Latent today because no test exercises
+  `Delay` / `Integrate` / `Recursive` / `Feedback` inside a
+  `Nest(...)` scope — silently broken the moment a consumer
+  does. (3) **Spec gap** — no requirement states HOW strict
+  operators observe "clean tick-0 semantics" on each outer
+  tick; `operator-algebra/spec.md:420-423` says
+  `ClockStart` **MAY** initialise per-scope state; the
+  observable scenario depends on it being **MUST**. Write
+  a SHALL: strict operators inside a nested scope MUST
+  reset state latched in the prior outer tick to their
+  declared initial value in `ClockStart`. **Six P1s**: (1)
+  `src/Core/Circuit.fs:113-119` `Register` throws after
+  `Build`; `operator-algebra/spec.md:496-519` requires
+  atomic-against-stepping topology mutation — either the
+  spec overstates or the code under-implements. (2) No
+  implementation of async-replacement-waits-for-outstanding-
+  tick-t continuations (`operator-algebra/spec.md:533-544`).
+  (3) `NestedCircuit.fs:22-23,49` — cap default `64` is
+  in-code-documented but absent from
+  `profiles/fsharp.md`; `circuit-recursion/spec.md:138-141`
+  requires public-surface documentation. (4) Two specs
+  disagree on cap-hit semantics: `circuit-recursion` allows
+  passive-observable-handle reading, `operator-algebra`
+  requires active failure — rebuild is non-deterministic.
+  (5) `operator-algebra/spec.md:420-421` "MAY initialise
+  per-scope state" on `ClockStart`/`ClockEnd` is the
+  root-cause wording for the P0-3 spec gap. (6)
+  `profiles/fsharp.md` has no entry for `NestedCircuit` /
+  `IterateOp` / cap-default / `FeedbackOp`-to-requirement
+  mapping. **Three P2s**: complexity belongs in profile
+  not base (`spec.md:615-625`); redundant "including under
+  retractions" clause at `:549-555`; driver-is-linear
+  classification (`circuit-recursion/spec.md:232-265`)
+  lacks observable predicate. **Owner:** Architect drafts
+  closures; Viktor re-audits each. **Effort:** M (spec
+  rewrites + code changes on DelayOp/FeedbackOp/
+  NestedCircuit + profile backfill). **Defers to Round 44.**
+  Full Viktor report captured in session history; verdict
+  string preserved verbatim: *"Third data-point breaks the
+  two-ship pattern. The pattern was convenient. The specs
+  are not strong enough yet."*
 
 - [x] ✅ **Router-coherence ADR `47d92d8` supersedure — harsh-critic
   findings absorb** — **shipped round 41 in-round** via v2 ADR
@@ -187,6 +279,23 @@ within each priority tier.
   `docs/research/**` claims. Graceful-degradation clause:
   Aarav files a P1 drift finding if no claim is discharged
   for ≥3 consecutive rounds without declared pause reason.
+  **Latent blocker (Round 43):** the cadence names
+  `complexity-reviewer` (Hiroshi) and `claims-tester`
+  (Daisy) as executors, but neither persona file exists
+  under `.claude/agents/` — only `performance-engineer`
+  (Naledi) is present on the perf-adjacent roster, and
+  memory explicitly marks Naledi as **distinct** from
+  Hiroshi (Naledi: benchmark-driven hot-path tuning;
+  Hiroshi: asymptotic-complexity analysis). Consequence:
+  the discharge queue cannot advance through the v2
+  pipeline as written. Resolution options: (a) land the
+  two persona files via the `skill-creator` flow, (b)
+  amend the v2 ADR to route discharge through Naledi +
+  a claims-tester-acting role with a role-acting note,
+  (c) declare an explicit pause on the cadence until (a)
+  or (b) lands (with a documented reason, so Aarav's
+  drift-finding clause doesn't fire). No round-43
+  discharge landed.
 
 - [ ] **Fully-retractable CI/CD** — Aaron 2026-04-19: *"fully
   rtractable ci/ci backlog item"* → *"ci/cd"*. Apply the
@@ -738,6 +847,228 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Gap 3 closure — memory-file tampering cross-check at
+  session start (round 44 trust-infra thread)** — Aaron
+  2026-04-20 research question: *"can AI trust humans didn't
+  alter the past data too under thier nodes, what gaps exists
+  for AI to trust fully?"* Research response in
+  `docs/research/ai-trust-gaps-in-human-custodied-data.md`
+  ranks Gap 3 (memory-file tampering) as highest priority:
+  memory files live at `~/.claude/projects/<slug>/memory/`
+  under Aaron's user account, so any session's memory could
+  have been edited by hand between sessions and the reading
+  agent cannot tell. **Inventory (this round):** 160/160
+  content-carrying memory files already have an
+  `originSessionId` frontmatter field (MEMORY.md and
+  README.md excluded as non-content); the "free" mitigation
+  in the research doc is therefore **feasible today**. **Work:**
+  (1) write a session-start cross-check script that reads
+  every memory file, collects `originSessionId` values, and
+  compares against the harness's session history — flag any
+  memory whose `originSessionId` is not in the known-session
+  set; (2) handle the 2 memories that pre-date the field (add
+  them to an allowlist or backfill with "unknown-legacy");
+  (3) add a one-line session-open summary "memory integrity
+  check: N files, all `originSessionId` values match known
+  sessions" or the flagged mismatches. Effort: S. Reviewer:
+  Architect (Kenji). Dependencies: none. **Non-goals** this
+  round: cryptographic hash-chain (cheap mitigation, separate
+  row when Gap 3 at-rest integrity becomes pressing),
+  memory-as-Zeta-store dogfood (research direction, long
+  horizon).
+
+- [ ] **Scope-audit skill-gap — every absorbed rule needs
+  Zeta-vs-factory-vs-universal scope tag; HUMAN-BACKLOG
+  resolution for ambiguity (round 44)** — Aaron 2026-04-20,
+  three-message thread: *"Are you absorbing that into Zeta
+  or the reusable bits of the software factory we can
+  redistribute later? ... those are the kind of things we
+  want to mzek suer we have clean seperation"* / *"we should
+  ahve a skill to check for scoping issues like this"* /
+  *"those are things that are likely to required human
+  backlog and ansering to resolve not all the time, but it
+  was probably the human didnt define the scope when they
+  asked they were inprecise like i was on my orgignal ask"*.
+  Durable policy captured in
+  `memory/feedback_scope_audit_skill_gap_human_backlog_resolution.md`
+  (full rule + HUMAN-BACKLOG resolution protocol + connection
+  to existing HUMAN-BACKLOG categories). **Triggering
+  example:** I wrote the symmetric-talk feedback memory with
+  "(scope: Zeta + factory, not universal)" — conflating the
+  two layers Aaron wants cleanly separated. He caught it.
+  Memory now splits them explicitly (Zeta-choice vs
+  factory-mechanism). A scope-audit skill would have flagged
+  the phrasing on write. **Option (a): extend
+  `skill-tune-up`'s portability-drift criterion #7** to
+  cover not just `.claude/skills/*/SKILL.md` but also
+  `memory/**`, `docs/` governance, BP-NN candidates, and
+  `BACKLOG.md`/`HUMAN-BACKLOG.md` rows. **Option (b):
+  create a sibling skill `scope-auditor`** with a Matrix-mode
+  skill-group (expert / teacher / auditor / capability
+  `scope-tag-inserter`). **Open decision for Architect
+  (and/or Aaron):** which option, plus whether
+  `scope-clarification` becomes a new HUMAN-BACKLOG category
+  alongside today's `conflict` / `approval` / `credential` /
+  `external-comm` / `naming` / `physical` / `observation`.
+  Effort: S for option (a), M for option (b) plus category
+  addition. Dependencies: none; can land any round. Reviewer:
+  Architect (Kenji) on skill-scope decision; scope-auditor
+  itself would be developed via `skill-creator`.
+
+- [ ] **Matrix-mode skill-group authoring — onboarding +
+  teaching-track skill-groups (round 44 absorb)** — Aaron
+  2026-04-20: *"we do want to allow developer and
+  non-devlopers who want to check in code to allow it, just
+  nothing we do should require it.  Like imagine having a
+  teaching track for a non-developer vibe coder, what the
+  softwware factory itserlf teaches them to start
+  contributing to the project and become a developer one
+  lession at a time dynamically"* + clarifying *"its like
+  we have onboarding kind of like a thin teaching for those
+  devlopers who already know how to code and just need to
+  learn the specifcs of the software factory and the pojrect
+  that is being built by it and then the teaching track for
+  those who don't know how to code but want to"*. Durable
+  policy captured in `memory/project_teaching_track_for_vibe_coder_contributors.md`
+  and updated `memory/project_zero_human_code_all_content_agent_authored.md`.
+  Two distinct tracks, both opt-in, both agent-mediated,
+  both gated by no-permanent-harm (CI + agent-review +
+  sandbox). **Track A — Onboarding** (thin, existing
+  developers): required reading handshake + first-PR
+  review. Partial prior art in AGENTS.md read-order
+  section. **Track B — Teaching-track** (thick, non-
+  developer vibe-coders): dynamic lesson-by-lesson
+  scaffolding, mistake-tolerant, agent-driven pairing.
+  **Candidate skill-group membership** (Matrix-mode
+  minimum set, shared skills marked *):
+  - `onboarding-expert` — thin-scaffold entry for
+    developers; maps factory+project specifics to the
+    developer's existing mental model.
+  - `onboarding-teacher` — onboards other agents to
+    the onboarding UX shape.
+  - `teaching-track-expert` — canonical use for
+    agent-mediated learning; mistake-response
+    patterns; lesson-sizing heuristics.
+  - `teaching-track-teacher` — onboards other agents
+    to the teaching-track UX.
+  - `teaching-track-auditor` — sweep stalled
+    teaching-track sessions for drifted scope /
+    dropped-on-floor.
+  - `teaching-track-capability` — operational skill
+    agents invoke when entering teaching-track mode.
+  - `human-contribution-reviewer` * — shared across
+    both tracks; reviews human-authored changes as
+    owner-of-codebase not reviewer-on-behalf-of;
+    catches mistakes gently; guards against
+    human-harm including maintainer's own mistakes.
+  Effort: L (two surfaces, two skill groups, new
+  review-as-owner stance). Reviewers: Bodhi (DX) for
+  onboarding shape, Iris (UX) for teaching-track
+  surface, Daya (AX) for agent-side contract.
+  Per `feedback_skill_edits_justification_log_and_tune_up_cadence.md`,
+  all skill creation goes through `skill-creator`
+  workflow.
+
+- [ ] **Matrix-mode skill-group authoring — human-backlog +
+  user-ask-conflict-detector skill-groups (round 44 absorb)**
+  — Aaron 2026-04-20: *"you should have a conflicting asks
+  from user md file somewhere... we proabaly need some skill
+  to look for like user requirements contridictions or
+  something like that"* + generalisation *"i think this a
+  specifc instance of the kind of item that belongs on a
+  human backlog"* + vibe-coding guardrail *"we should be
+  careful what ends up in the human backlog given the vibe
+  coding containt... the primay UX is conversational and
+  our cusotm UI"*. Artifact `docs/HUMAN-BACKLOG.md` landed
+  (category schema: conflict / approval / credential /
+  external-comm / naming / physical / observation / other;
+  rows are agent-authored, human-resolution arrives
+  conversationally, humans never edit the file). **Candidate
+  skill-group membership** (Matrix-mode minimum set):
+  - `user-ask-conflict-detector` — scan MEMORY.md + recent
+    transcripts + artifact files for contradictions among
+    human instructions; file `conflict` rows; never
+    resolve.
+  - `human-backlog-filer` — generic capability that files
+    the non-conflict categories when an agent detects a
+    block on human action (approvals, credentials, external
+    comms, naming, physical, observation).
+  - `human-backlog-teacher` — onboards new agents to the
+    artifact's schema + vibe-coding guardrail + default
+    rules while rows are Open.
+  - `human-backlog-auditor` — periodic sweep of open rows
+    for staleness / dropped-on-floor / drifted-source;
+    dual-writes stale detection into row comments.
+  Effort: M. Reviewers: Iris (UX) for the
+  human-facing surface shape, Daya (AX) for the agent-facing
+  contract. Per
+  `feedback_skill_edits_justification_log_and_tune_up_cadence.md`,
+  skill creation goes through `skill-creator` workflow.
+  Memories: `project_human_backlog_dedicated_artifact.md`,
+  `feedback_user_ask_conflicts_artifact_and_multi_user_ux.md`,
+  `project_zero_human_code_all_content_agent_authored.md`.
+
+- [ ] **Matrix-mode skill-group authoring — Playwright
+  (round 44 absorb)** — Aaron 2026-04-20: *"you are
+  welcome to use playwright ... make sure we make all the
+  approprate skill group updates to our factory for our new
+  technolgy we don't want to be missing skill for
+  technologies we use"* + refinement *"the factory gets a
+  group of skills the skills have the whole expert teacher
+  and all that groups"* + frame *"Basically this is matrix
+  mode we absorb new skills whenver we pull in new tech,
+  just whatever new skills neeeded to make the factory run
+  better"*. Durable policy captured in memory
+  (`feedback_new_tech_triggers_skill_gap_closure.md`
+  a.k.a. "Matrix mode"). Playwright MCP plugin is enabled
+  (`.claude/settings.json` L26) but **zero** `.claude/skills/`
+  cover it — gap confirmed. Also confirmed: this BACKLOG
+  entry previously marked playwright as "off-project" with
+  the reasoning "no in-repo use" (see L886 below); that
+  framing is superseded — Aaron has explicitly invited
+  agent-use of Playwright for factory-meta tasks (UI
+  exploration during research, screenshot diffing,
+  scraping, etc.), not Zeta-the-library runtime.
+  **Candidate group membership** (Matrix-mode minimum set):
+  - `playwright-expert` — canonical use for AI-driven UI
+    testing + web scraping, auth patterns, headless-vs-
+    headed selection, anti-patterns (flaky selector
+    patterns, sleep-based waits, unbounded parallelism),
+    living BP list + canonical-use auditing per
+    `feedback_tech_best_practices_living_list_and_canonical_use_auditing.md`.
+  - `playwright-teacher` — one-page entry point for
+    contributors / agents new to Playwright; when to
+    reach for it (E2E, scraping, diff) vs. not (unit
+    logic, headless curl).
+  - `playwright-auditor` — reviews Playwright use in PRs;
+    flags retries-as-reliability, hardcoded waits,
+    brittle CSS selectors.
+  - Capability skills emerge on demand
+    (`playwright-selector-hygiene`, `playwright-trace-diff`).
+  Route authoring via `skill-creator` (GOVERNANCE.md §4).
+  Effort: M (three skills + one teacher entrypoint).
+  Reviewer: Aarav (`skill-tune-up`) for BP-NN drift,
+  Ilyana only if a public-API surface is crossed (unlikely).
+  Cross-ref: generalise policy to factory-wide
+  tech-coverage audit next tune-up round.
+
+- [ ] **Matrix-mode factory-wide coverage audit — round 44
+  followup** — Enumerate tech-in-use across these sources
+  and cross-reference against `.claude/skills/` +
+  `.claude/agents/` for missing groups:
+  - `.claude/settings.json` MCP registrations (26+ plugins,
+    see round-35 audit below)
+  - `*.fsproj` / `*.csproj` `<PackageReference>` (external)
+  - `tools/setup/` install-script dependencies
+  - `.github/workflows/*.yml` action-uses + runtime reqs
+  - `docs/research/proof-tool-coverage.md` proof tools
+  For each uncovered tech, recommend a group scope +
+  authoring effort label. Consult Aaron on big shaping
+  decisions per
+  `feedback_factory_reuse_packaging_decisions_consult_aaron.md`.
+  Generalises the Playwright case above. Effort: M for the
+  audit; authoring effort varies per tech.
+
 - [ ] **Claude Code plugin hygiene — round-35 audit** (landed
   round 35 audit; followups tracked here). Aaron installed
   ~26 `claude-plugins-official` plugins on top of the 60+
@@ -774,7 +1105,12 @@ within each priority tier.
     F# / .NET library):**
     - `frontend-design` — UI/frontend skills; no Zeta hot
       path uses them.
-    - `playwright` — browser automation; no in-repo use.
+    - `playwright` — browser automation; **status changed
+      round 44**: Aaron invited agent-use for factory-meta
+      tasks (UI exploration during research, screenshot
+      diff, scraping); skill-group authoring tracked as a
+      separate P1 item above ("Matrix-mode skill-group
+      authoring — Playwright"). No Zeta-runtime impact.
     - `huggingface-skills` — ML skills; not relevant to
       retraction-native DBSP.
     - `postman` — API Readiness Analyzer; Zeta ships a
@@ -820,10 +1156,11 @@ within each priority tier.
     - `serena`, `code-simplifier`, `claude-code-setup`,
       `explanatory-output-style` — assess one-by-one next
       factory-audit round.
-    - `huggingface-skills`, `playwright`, `postman`,
-      `frontend-design` — off-project for Zeta.Core but
-      harmless to keep installed; flag for retirement if
-      they start adding hook noise.
+    - `huggingface-skills`, `postman`, `frontend-design`
+      — off-project for Zeta.Core but harmless to keep
+      installed; flag for retirement if they start adding
+      hook noise. (`playwright` moved to active-use list
+      round 44 — see Matrix-mode items above.)
   - **Built-in (not a plugin, nothing to audit):**
     AutoDream memory consolidation (Q1 2026 Claude Code
     feature; guardrail only via `CLAUDE.md` ground rules).
@@ -937,6 +1274,30 @@ within each priority tier.
   through them at round-close and uses the union of findings
   to shape the next round's backlog. Effort: S-M per pass;
   parallel-dispatchable.
+
+- [ ] **Resolve `skill-tune-up` BP-03 self-breach.** P2,
+  flagged by Aarav round 42 after commit `baa423e` retuned
+  `.claude/skills/skill-tune-up/SKILL.md` from 303 -> 436
+  lines (1.45x BP-03 300-line cap). The retune's rationale
+  (thick wrapper over non-skill artefacts in `scripts/`,
+  `agents/`, `references/`, plus the Anthropic eval harness)
+  is fair but does not neutralise a stable-rule breach — a
+  ranker that cites BP-03 in findings cannot exceed BP-03
+  himself without publishing unenforceable rulings. Remedy
+  options, binary: (a) Kenji-ADR declaring a non-skill-
+  wrapper exception to BP-03 (clean but introduces a rule-
+  with-an-exception); (b) extract the eval-loop protocol
+  body to `docs/references/skill-tune-up-eval-loop.md` and
+  link from SKILL.md, shrinking the skill file back under
+  300 lines while preserving the retuned workflow. Effort:
+  S-M. Composes with the round-42 skill-eval-tools
+  calibration (memory
+  `feedback_skill_tune_up_uses_eval_harness_not_static_line_count.md`):
+  if the extraction path (b) is chosen, the extracted
+  reference becomes the stable home for the
+  grader/analyzer/comparator wiring Aaron flagged as
+  under-used. Top-of-list for the next skill-creator
+  dispatch touching `skill-tune-up/SKILL.md`.
 
 - [ ] **Factory portability — generic-by-default across
   skills, build, CI, and install scaffolding.** The
@@ -2504,6 +2865,352 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
+- [ ] **Claude-harness cadenced audit — first full sweep.**
+  Aaron 2026-04-20 late, verbatim: *"part of our stay up to
+  date on everything we should always research claude and
+  claude code and desktop difference an changes on a
+  cadence so we can design our factory for the latest
+  changes and featuers."*
+
+  **Durable policy landed this round** at
+  `memory/feedback_claude_surface_cadence_research.md` +
+  FACTORY-HYGIENE row 38 + living inventory at
+  `docs/HARNESS-SURFACES.md` (was `CLAUDE-SURFACES.md`;
+  renamed multi-harness 2026-04-20). The bootstrap
+  inventory was populated from my existing knowledge plus
+  Aaron's AutoMemory / AutoDream context data.
+
+  **Outstanding work** is the first *full* audit — the
+  bootstrap was partial:
+  1. `.claude/agents/claude-code-guide` runs a structured
+     research sweep against Anthropic docs
+     (`platform.claude.com`, `code.claude.com`,
+     `claude.com/claude-code`, official changelogs, SDK
+     repos) for every Claude surface listed in
+     `docs/HARNESS-SURFACES.md`.
+  2. Fill gaps in the Claude section of the inventory —
+     adoption statuses for features currently marked
+     `watched` or `untested`; flag features the factory
+     didn't know about. Skill-authoring + eval-driven
+     feedback loop (`skill-creator` + evals) is the
+     **primary feature-comparison axis**
+     (`memory/user_skill_creator_killer_feature_feedback_loop.md`);
+     inventory it first.
+  3. Log findings in the `HARNESS-SURFACES.md` audit-log
+     table (Claude row).
+  4. File `docs/research/meta-wins-log.md` entries for
+     any pre-existing factory assumption found to have
+     been wrong (the AutoMemory miss is already the
+     first entry).
+  5. Any new feature justifying adoption → ADR if
+     Tier-3; Tier-1/2 edits in place per the tiered
+     envelope.
+
+  **Cadence going forward:** every 5-10 rounds (row 38).
+  This BACKLOG row is specifically the **first full
+  sweep** of the Claude section.
+
+  Effort: S (scoped research, single audit, inventory
+  update). Owner: claude-code-guide persona.
+
+- [ ] **Multi-harness integration-test scaffolding —
+  Codex / Cursor / Copilot stubs.** Aaron 2026-04-20
+  verbatim: *"since we are going muli test harness
+  support we should technically do this for all harnesses
+  … i want them to test their integration points you
+  cant. i konw codex and cursor git copilot are the ones
+  we care abount immediatly then maybe anitgratify and
+  the amazon one and any less popular ones"* plus *"and
+  Kiro for the inital stubs"*.
+
+  **Durable policy landed this round** at
+  `memory/feedback_multi_harness_support_each_tests_own_integration.md`
+  + FACTORY-HYGIENE row 38 (widened to
+  harness-surface audit) + stub sections for Codex /
+  Cursor / GitHub Copilot / Antigravity / Amazon Q /
+  Kiro in `docs/HARNESS-SURFACES.md`.
+
+  **Outstanding work** is integration-test scaffolding
+  per harness, owned by a *different* harness per the
+  capability-boundary rule. Phased:
+  1. Bring up the immediate-queue harnesses (Codex,
+     Cursor, GitHub Copilot) on the factory — each
+     becomes a populated section in
+     `docs/HARNESS-SURFACES.md`. Verify each can read
+     `.claude/skills/`, `MEMORY.md`, hooks, etc. (or
+     their per-harness equivalents).
+  2. For each newly populated harness, Claude Code (or
+     another populated harness) authors an external
+     integration-test script that exercises the
+     factory *through* that harness and asserts
+     observable artefacts (memory entries written,
+     skills loaded, hooks triggered). The test never
+     runs from within the harness it's testing.
+  3. For Claude Code itself — once a second harness is
+     populated, route the Claude-Code integration test
+     to that harness. Until then, accept that the
+     Claude-Code integration is un-externally-verified.
+  4. Watched-queue harnesses (Antigravity, Amazon Q,
+     Kiro) repeat the same scaffolding when they come
+     online.
+
+  **Feature-comparison axis per harness:** per
+  `memory/user_skill_creator_killer_feature_feedback_loop.md`,
+  lead the per-harness feature inventory with
+  skill-authoring + eval-driven feedback loop. That is
+  Aaron's decisive axis and the primary competitor
+  comparison for parity.
+
+  Effort: L (phased; first-pass scaffolding per
+  immediate-queue harness is M; completing all three
+  immediate + three watched is multi-round L).
+  Owner: TBD — single multi-harness guide persona or
+  one guide per populated harness; decide when first
+  non-Claude harness is brought up.
+
+- [ ] **Kanban + Six Sigma factory-process — land the three
+  artifacts (research complete).** Aaron 2026-04-20 late:
+  *"also khanban is a good practice, i prefer it and
+  six sigma, we should have some skills documents
+  process factory improvments around that we should
+  backlog this research"*.
+
+  **Research landed** at
+  `docs/research/kanban-six-sigma-factory-process.md`.
+  Conclusion: the factory already does partial versions
+  of both; gaps are (a) WIP limits not labelled as such,
+  (b) DMAIC cycle not templated. **Proposed skills
+  rejected as over-built** — the earlier BACKLOG sketch
+  proposed `kanban-flow` + `six-sigma-dmaic` skills;
+  research concluded both are over-engineered for the
+  gap. Aaron's constraint ("adopt practices, not
+  bureaucracy") is load-bearing here.
+
+  **Landed instead — three small artifacts (all Tier-1,
+  effort S):**
+  1. `docs/FACTORY-METHODOLOGIES.md` — one-page
+     reference naming Kanban + Six Sigma as factory
+     methodologies of record, with mappings to current
+     practice. Factory-scope.
+  2. `docs/templates/DMAIC-proposal-template.md` —
+     fillable template for factory-improvement ADRs.
+     Five sections (D/M/A/I/C). Factory-scope.
+  3. `docs/FACTORY-HYGIENE.md` row 37 — WIP-limit
+     discipline (always-on, per-persona cap 3
+     suggested; cross-persona cap 7; over-cap flags
+     to HUMAN-BACKLOG `wip-pressure`).
+
+  **Total skill count delta: 0.** Belt-cert hierarchy,
+  ISO theater, standups, SPC control charts, Kanban
+  tooling — all explicitly rejected.
+
+  **Validates cross-research:** Kanban's
+  pull-triggered-vs-always-on criterion matches the
+  hygiene-consolidation research's "skill vs
+  checklist-item" decision cleanly. The two spikes
+  are congruent; no conflict.
+
+  **Memory source:** `user_kanban_six_sigma_process_preference.md`.
+
+  Effort: S per artifact (three Tier-1 landings
+  bundled in one round).
+
+- [ ] **Hygiene-skill consolidation research — every row
+  a skill, grouped skill, or one general skill with
+  classes?** Aaron 2026-04-20 late: *"does every hygene
+  task need to be a skill our should we collapse some
+  into hygenen groups and/or just a general hygene with
+  different classes."* `docs/FACTORY-HYGIENE.md` now has
+  36 rows. Not all of them have (or should have) a
+  dedicated skill — several are one-liners that live in
+  another skill's checklist. Open design question:
+  which rows warrant standalone skills, which collapse
+  into groups, which are just checklist items in an
+  existing skill?
+
+  **Design sketch — three organisational patterns:**
+  1. **Per-row skill** — maximum visibility, maximum
+     sprawl. 36 skills for 36 rows.
+  2. **Grouped skills** (e.g., `scope-hygiene` skill
+     that covers rows 6 + 35 + 36; `agent-qol` skill
+     that covers rows 22-34). Fewer skills, grouped by
+     natural cluster. This matches how Daya already
+     owns rows 22-34 under one audit.
+  3. **One `factory-hygiene` meta-skill with classes** —
+     the skill itself routes by class (scope / agent-QOL
+     / symmetry / pointer-integrity / retro-missing /
+     etc.). Single skill name, class-parameterised.
+  4. **Hybrid** — a meta-skill for the round-close sweep
+     that invokes grouped sub-skills for specialised
+     work (eval harness, injection lint).
+
+  **Criteria to evaluate:**
+  - Which rows need their own eval set? (a Tier-3
+    skill under the edit-gating envelope needs one)
+  - Which rows are just "a thing I do on Tuesday" and
+    live fine as checklist items under a generalist
+    skill?
+  - Which rows need a named persona behind them? (e.g.,
+    Daya wears AX-hat across rows 22-34; does any row
+    need its *own* persona?)
+  - Cost of skill-population size — the skill-tune-up
+    ranker reviews every skill; 36 tiny skills costs
+    more than 6 grouped skills.
+
+  **Placement:** research doc at
+  `docs/research/hygiene-skill-organisation.md`, then a
+  design ADR once a recommendation lands.
+
+  Effort: M (research spike; the rollout is Tier-3
+  skill work that comes after).
+
+- [ ] **Missing-scope gap-finder skill — retrospective
+  counterpart to row 6.** Aaron 2026-04-20 late:
+  *"missing scopes , we need a gap finder that will find
+  missing scope we didnt think about we already have
+  rules to make sure things are scoped correct, missing
+  scope will ensure we don't miss any even if it's in
+  the future."* Existing row 6 of `docs/FACTORY-HYGIENE.md`
+  fires at *absorb-time* — when a new rule is being
+  written. What's missing: a *retrospective* gap-finder
+  that sweeps already-landed content for implicit or
+  missing scope tags.
+
+  **Design sketch:**
+  1. Cadence: every 5-10 rounds (same as skill-tune-up).
+  2. Surface: `.claude/skills/**/SKILL.md`, `memory/*.md`,
+     `docs/DECISIONS/**`, `docs/BACKLOG.md`, the BP-NN
+     rule list, CLAUDE.md / AGENTS.md / GOVERNANCE.md.
+  3. Method: pattern-match for scope-bearing statements
+     ("this applies to…", "scope: …", "factory-default",
+     "project-specific") and flag entities that have
+     *no* scope declaration. Secondary signal: presence
+     of Zeta-specific terms (`ZSet`, `Spine`, `D`/`I`/
+     `z⁻¹`/`H`, persona names as scope) inside
+     content tagged generic or untagged.
+  4. Output: HUMAN-BACKLOG `scope-clarification` rows
+     (per-user-ask-conflicts-artifact pattern) when
+     scope is ambiguous; BACKLOG P2 rows when scope
+     is clearly wrong but needs research to correct.
+
+  **Placement:** new skill at `.claude/skills/missing-
+  scope-finder/SKILL.md` (factory-scope; applies to any
+  adopter). Persona TBD — candidates include a new named
+  agent or a hat worn by Daya (AX) since she already
+  owns rows 22-34 of FACTORY-HYGIENE. Prefer the hat
+  over a new persona per persona-sprawl constraint.
+
+  **Row 35 in `docs/FACTORY-HYGIENE.md`** added this
+  round as a *proposed* row (TBD owner pending Aaron
+  confirmation on the Daya-hat vs new-persona question).
+
+  **Progress landed round 44:**
+  - Pilot audit at
+    `docs/research/missing-scope-pilot-2026-04-20.md`
+    — 87% of 105 feedback+project memories lack
+    explicit scope declarations.
+  - Scope-frontmatter schema designed at
+    `docs/research/memory-scope-frontmatter-schema.md`
+    — `scope:` field, closed enumeration
+    (`factory | project: <name> | user | hybrid`),
+    factory-overlay on Anthropic's AutoMemory
+    (`memory/reference_automemory_anthropic_feature.md`).
+  - Row 36 (incorrectly-scoped retrospective) added
+    to FACTORY-HYGIENE alongside row 35.
+
+  **Still blocked on:** Aaron/Architect sign-off on
+  the Tier-3 CLAUDE.md auto-memory section edit that
+  makes `scope:` mandatory for new memories; skill
+  authoring waits on the consolidation-research
+  approval (is this a `scope-hygiene` skill or stays
+  a checklist row per
+  `docs/research/hygiene-skill-organisation.md`).
+
+  Effort: M (new skill authoring goes through full
+  tier-3 `skill-creator` workflow per the tiered
+  envelope proposal in
+  `docs/research/skill-edit-gating-tiers.md`).
+
+- [ ] **Skill-edit gating tiered envelope — Aaron called
+  the current rule over-restrictive.** Aaron 2026-04-20
+  late asked for a design research pass on how to
+  preserve the preservation intent of the skill-creator
+  gate (it ships Prompt-Protector, portability,
+  BP-NN, persona-registry checks the upstream plugin
+  doesn't know about) without forcing every trivial
+  mechanical edit through the full 6-step workflow.
+
+  **Design landed this round:**
+  `docs/research/skill-edit-gating-tiers.md` proposes a
+  four-tier envelope:
+  - **Tier 0** — trivial (no gate; mechanical rename,
+    Unicode cleanup, typo/grammar).
+  - **Tier 1** — convention-update (light gate: free
+    `quick_validate.py` + Prompt-Protector auto-lint +
+    justification-log row citing the landing commit).
+  - **Tier 2** — content edit (medium gate: manual
+    Prompt-Protector review + dry-run + justification
+    log).
+  - **Tier 3** — substantive (full 6-step workflow;
+    for new skills / new responsibility / widened
+    scope / description change / authority flip;
+    uses the upstream plugin's `improve_description.py`
+    + `run_eval.py` + `aggregate_benchmark.py`).
+
+  **Next action (Tier-3 edit, queued):** land the
+  tier envelope into
+  `.claude/skills/skill-creator/SKILL.md` itself by
+  (a) replacing lines 11-17 three-exception list with
+  a pointer to the tier envelope; (b) adding an
+  "Edit tiers" section with the four-tier table; (c)
+  updating `docs/skill-edit-justification-log.md`
+  schema to include a Tier column.
+
+  Owner: Yara (skill-improver) executes via
+  `skill-creator` Tier-3 path with Kenji approval.
+  Effort: M (Tier-3 workflow including eval run on
+  description change).
+
+  On approval and landing, the three skill files in
+  the row below become Tier-1 edits and can ship in
+  the same round rather than waiting on a full
+  tune-up cycle.
+
+- [ ] **Skill-level `_retired/` scope-fix sweep — via
+  `skill-creator` workflow.** Aaron 2026-04-20 late:
+  *"i don't think we need to apply the don't deleted
+  memories of retired agents to extend to deleted skills
+  too, we don't want to dirty up our code skills are code,
+  memories are valuable."* The scope clarification landed
+  in CLAUDE.md + `memory/feedback_honor_those_that_came_
+  before.md` + `docs/GLOSSARY.md` in commits `bd9e09c` and
+  the follow-up to this row. Three skill files still
+  describe the old `.claude/skills/_retired/YYYY-MM-DD-
+  <name>/` archive convention and need updates via
+  `skill-creator` (GOVERNANCE §4: skill edits go through
+  the workflow, not ad-hoc):
+  1. `.claude/skills/skill-tune-up/SKILL.md` — **RETIRE**
+     action in the recommended-action-set (line ~143).
+     Redefine as "`git rm` the SKILL.md; persona memory
+     folder stays in place."
+  2. `.claude/skills/skill-creator/SKILL.md` — retirement
+     workflow reference at line ~165. Same redefinition.
+  3. `.claude/skills/skill-documentation-standard/SKILL.md`
+     — five references (lines 56, 187, 207, 231, 266)
+     across the retirement guidance, footer-stubs, and
+     anti-pattern section. Requires the most editing.
+
+  Scope note: the `docs/_retired/` pattern used by
+  `documentation-agent` and GOVERNANCE §26 is a **separate
+  question** about research docs, not about skills.
+  Aaron's quote was skill-specific; don't extend the fix
+  to docs without a separate clarification.
+
+  Owner: Aarav queues the finding; Yara (skill-improver)
+  executes via `skill-creator` with Kenji approval.
+  Effort: S (three mechanical edits per the BACKLOG row's
+  explicit line-number targets).
+
 - [ ] **Autonomous conference-submission + talk-delivery
   pipeline — post-Round-38 horizon.** The human maintainer
   2026-04-20: *"we should also start planning how to build
@@ -3110,6 +3817,318 @@ systems. This track claims the space.
   ongoing.
 
 ## P2 — research-grade
+
+- [ ] **People/team optimizer — DAO-native factory
+  org-design research spike** — Aaron 2026-04-20 evening:
+  *"do we want to make a people optimizer? that will
+  optimize the named agent and their roles two fold
+  actually, 1) we will need to ship with named agents that
+  understand how to work on the software factory and their
+  roles... we also will want to optimize a different set of
+  roles and likely a different set of named agents for the
+  system under construction, without this separation it
+  could get confusion and overloaded. They can reuse the
+  same base skills where it makes sense but they will be
+  two distinct teams (new concept). Also we want to allow
+  as part of QoL agents to switch roles if desired for
+  whatever reason, it's their choice does not hurt us...
+  This is really a DAO optimizer it seems like corporate
+  restructuring. We should look up best practices for
+  corporate organization but flip it on its head we have no
+  managers, all positions are incentives based... the jobs
+  should not need managers cause they are following the
+  latest modern corporate structuring best practices but
+  applied to the DAO ethos, basically there should be no
+  friction to act, i never need to sit idle or wait on
+  someone else, objectives are clear, backlog is clear, if
+  i want to do something new i just can, distributed fair
+  governance (that's a hard one but is the north star)...
+  test out all those patterns here across multiple teams
+  and agents just git native before Aurora is ready...
+  spike/research it out... backlog it and LFG."*
+
+  Five sub-concepts Aaron named: (a) two-team personnel
+  separation (factory-builder team vs SUT team; shared
+  base skills permitted, distinct named personas per team;
+  Reverse Conway Maneuver to mirror the factory/SUT scope
+  cleave already in `docs/GLOSSARY.md` +
+  `docs/FACTORY-HYGIENE.md` Scope column); (b)
+  role-switching freedom as agent QoL — self-declare
+  switch, next-wake new skill-load, no manager approval;
+  (c) meta-team organizer — chooses number of teams and
+  team boundaries; (d) role optimizer — ensures right *set
+  of roles* exists (distinct from team sizing); (e)
+  disambiguity detector — finds vocabulary clashes at
+  write-time. Example clash already on the books:
+  "role" overloaded as job-role (persona) vs
+  permission-role (RBAC) per
+  `feedback_persona_term_disambiguation.md` P2-rename +
+  `user_rbac_taxonomy_chain.md`.
+
+  North star: **distributed fair governance, no managers,
+  no friction to act, no idle-on-blocker, positions are
+  incentive-based.** Incentive layer gated on agent crypto
+  wallets via ace -> Aurora per
+  `project_ace_package_manager_agent_negotiation_propagation.md`
+  + `project_aurora_pitch_michael_best_x402_erc8004.md`.
+
+  Research starting points (per Aaron): Conway's Law
+  (Melvin Conway 1967, *"How Do Committees Invent?"*,
+  Datamation April 1968); Reverse Conway Maneuver; modern
+  corporate restructuring best practices (Team Topologies,
+  Spotify model + known failure modes, holacracy,
+  sociocracy); Web3 DAO aspirations (MakerDAO, Gitcoin,
+  Optimism Collective, Arbitrum; tooling: Snapshot, Tally,
+  Aragon; patterns: quadratic voting, conviction voting,
+  retroPGF); flip modern corp patterns to DAO ethos.
+
+  Vocabulary question (Aaron's preference: standardise,
+  not translate): build one language mixing corporate +
+  DAO/Web3 speak. Disambiguity-detector's first task is
+  auditing that new vocabulary against the existing
+  factory vocab.
+
+  Git-as-DAG pre-Aurora testing substrate: test governance
+  patterns git-native first; pluggable per
+  `project_git_is_factory_persistence.md` +
+  `project_factory_is_pluggable_deployment_piggybacks.md`
+  so the governance layer plug-replaces with Aurora's
+  x402/ERC-8004 when Aurora ships.
+
+  Three-phase plan: **Phase 1** (r45-r50) — research
+  spike; produce `docs/research/dao-factory-org-design-spike.md`
+  (skeleton landed r44; 1500-3000 words over next rounds).
+  **Phase 2** (r50-r60) — two-team scaffolding; tag each
+  existing persona with `team: factory` / `team: sut` /
+  `team: both`; role-switching protocol lands as a skill.
+  **Phase 3** (gated on ace -> Aurora) — incentive layer.
+
+  Tangential but worth noting: Aaron loves LaTeX because
+  of Leslie Lamport (Paxos / TLA+). TLA+ already central
+  to Zeta's formal-methods portfolio (see
+  `docs/research/proof-tool-coverage.md`). DAO-governance
+  primitives this project designs are TLA+-specifiable
+  when the spike reaches distributed-consensus questions.
+
+  Full concept:
+  `memory/project_people_optimizer_dao_factory_restructuring.md`.
+  Research doc skeleton:
+  `docs/research/dao-factory-org-design-spike.md`.
+  Effort: L (multi-phase; Phase 1 alone is M). Reviewers:
+  Architect integrates; Aarav (skill-tune-up) queues
+  first disambiguity pass once vocabulary drafts land;
+  Ilyana (public-API) advises on any factory-surface
+  that becomes DAO-governance-visible.
+
+- [ ] **ace package manager — red-team / game-day discipline
+  roster + cadence + skill groups** — Aaron 2026-04-20 pm:
+  *"the package manger will for sure need some sort of
+  defense/defender because non software factory users are
+  going to try to attach that surface once we get here
+  sounce like a good CTF / red team / game day scenario. We
+  need all the skill groups plural there will be many probly
+  and a lot of best practices and saftey guidance but we
+  should red team ourselfs not with the same agents either
+  the read team shold be different named expets than the
+  ones who wrote the code and the ones who are defending
+  during the exercies, we should do them on a regular
+  cadence, all backlog."* Three-role separation rule:
+  Builders / Blue team / Red team are DISTINCT named
+  personas for any single exercise (rotation across
+  exercises fine). Proposes three new red-team personas
+  (lead / operator / reporter) — naming-expert gate
+  required. Candidate cadence: monthly CTF + quarterly
+  game-day + annual tabletop. Candidate skill groups
+  (each ≥ 3 skills): supply-chain, negotiation-protocol,
+  registry-compromise, cascade/DoS, social-engineering,
+  prompt-injection, crypto-primitive. Every exercise
+  lands in `docs/RED-TEAM-EXERCISES/YYYY-MM-DD-<scenario>.md`
+  — NOT buried in security-ops notebook. Candidate BP-NN
+  rules (6 seeded) to promote via ADR as patterns stabilise.
+  **Gated on:** ace phase-1 MVP landing (nothing to attack
+  before that). Full detail:
+  `memory/project_ace_package_manager_agent_negotiation_propagation.md`
+  section "Red-team separation discipline". Effort: L (roster
+  design + cadence instrumentation + first exercise); S per
+  subsequent exercise. Reviewers: Architect integrates;
+  Aminata + Mateo + Nazar + Nadia advise on Blue / Builder
+  fit; red-team roster reports directly to Architect.
+
+- [ ] **ace package manager — storage-engine decision:
+  dogfood Zeta where database-needed, git-native
+  elsewhere** — Aaron 2026-04-20 pm: *"ace can use the zeta
+  database for its storage engine maybe, it might make
+  sense to just be git native there too but if we need a
+  database for ANY reason literally loooking for excuses
+  to use Zeta... to prove it out."* Actively look for
+  legitimate database-shaped workloads inside ace and use
+  Zeta for those; git-native for content-addressed blobs +
+  static metadata + signatures. Purpose: prove Zeta out
+  through its own package manager eating the dogfood.
+  Candidate Zeta-workloads (each requires real-use
+  justification at point of need, not speculative DB
+  creation): negotiation-state journal, adopter graph +
+  revision cascades, red-team exercise findings / audit
+  trail, cross-adopter telemetry (if opted-in), multi-
+  version dependency resolution. Attack-surface
+  implication: Zeta-storage means ace attack surface
+  ⊃ Zeta attack surface; red-team roster must include
+  Zeta-operator-algebra fluency. Dependency: ace → Zeta.Core
+  at Zeta-storage points; Zeta does NOT depend on ace;
+  bootstrap chicken-and-egg mitigated by phase-1 MVP
+  installing via git clone without ace. Full detail:
+  `memory/project_ace_package_manager_agent_negotiation_propagation.md`
+  section "Storage engine". Effort: M at first Zeta-storage
+  landing (phase-2 or later); S thereafter. Reviewers:
+  Ilyana (public-API crossing), Naledi (perf gate on the
+  storage path), Viktor (spec coverage for ace-Zeta
+  contract).
+
+- [ ] **Research-coauthor teaching track — `docs/RESEARCH-COAUTHOR-TRACK.md`
+  skeleton + six-module curriculum** — Aaron 2026-04-20 pm:
+  *"there is also research co authero like me who have
+  never submitted a peer revied paper, I want to help but
+  I'm going to need a teaching track on how to even enter
+  that space and edicute and expications and requirments
+  and any skills or patterns or knowledge gaps i have i'm
+  going to have to fill in so I'll use that research teach
+  track when its time for me to coauthor."* Aaron is first
+  user; generic skeleton generalises. Six-module outline:
+  (1) peer-review lifecycle + venue typology, (2)
+  etiquette (authorship, COI, double-blind, rebuttal,
+  acknowledgements), (3) submission requirements (structure,
+  contribution claim, artefact track, formatting), (4)
+  skills Aaron needs (LaTeX, related-work surveying, figure
+  craft, rebuttal-writing, camera-ready revision), (5)
+  knowledge-gap fillers (stats for evaluation, formal-proof
+  reading literacy, theorem-statement craft, benchmarking
+  ethics), (6) coauthor workflow (draft passes through
+  factory reviewers). Sits inside research-readers audience
+  (docs audience #7) — the inside path from reader to
+  author. Parallel to existing vibe-coder teaching track
+  (`memory/project_teaching_track_for_vibe_coder_contributors.md`).
+  Skeleton lands empty-with-pointer per section; content
+  JIT when first submission approaches. Candidate new
+  skills spawned by the track: `academic-paper-etiquette`,
+  `related-work-surveyor`, `figure-craft`, `rebuttal-writer`,
+  `camera-ready-reviser`. Effort: S for skeleton; L for
+  filled content when first submission target picked.
+  Reviewers: Samir (documentation shape), Iris (user-
+  experience for Aaron-as-first-user), Soraya (formal-
+  verification section accuracy). Full detail:
+  `memory/project_research_coauthor_teaching_track.md`.
+
+- [ ] **Zeta retractable-contract ledger — native .NET
+  contract runtime design (C# / F#).** Aaron 2026-04-20
+  pm: *"basically do no permanant harm is the primary
+  operating principle of Aurora, so the retractablity is
+  great, it's not like every contract will need
+  retractability but we will have a supear surface for
+  our blockchain, native dotnet c#/f# directly since we
+  are native like that already."* Resolves the smart-
+  contract-language open question: contracts are native
+  C# / F# running on dotnet; no new VM; no DSL.
+  Differentiator vs Ethereum (Solidity/EVM), Solana
+  (Rust/SVM), Sui-Aptos (Move/MoveVM), Near / Cosmos
+  (Rust/Wasm). Design doc surface:
+  `docs/research/zeta-dotnet-contract-runtime-YYYY-MM-DD.md`.
+  Covers: (a) determinism story (non-deterministic
+  features sandboxed / forbidden / seeded), (b) gas
+  metering (IL instrumentation vs allocation-boundary),
+  (c) reentrancy controls, (d) sandboxing
+  (AssemblyLoadContext + allowed-assembly list + IL
+  verification), (e) upgrade compat across .NET
+  versions, (f) retractable-semantics syntax
+  (`[RetractableContract]` attribute sketch, F# +
+  C# parity). Paired with Aurora's "do no permanent
+  harm" first operating principle (see
+  `memory/project_aurora_network_dao_firefly_sync_dawnbringers.md`
+  §"First operating principle"). Effort: L (full design
+  doc). Reviewers: Soraya (formal-verification of
+  sandbox claims), Mateo/Aminata/Nazar (red-team
+  sandbox-escape attack surface), Naledi (gas-metering
+  perf), Rune (contract-author ergonomics). Full detail:
+  `memory/project_zeta_as_retractable_contract_ledger.md`.
+
+- [ ] **Ouroboros bootstrap — three-layer design doc
+  (ace → Aurora → Zeta-as-blockchain → ace).** Aaron
+  2026-04-20 pm named the pattern: *"Ouroboros"* and
+  *"Bootstrap pair is the snake eating it's head"*, then
+  added a third layer: *"maybe Zeta will store the blocks
+  and have blockchain capabilites too and aurora is just
+  one network that uses it, its like a 3rd bootstrap."*
+  Layer 1 = ace (package-manager substrate); Layer 2 =
+  Aurora (DAO / firefly-sync / dawnbringers); Layer 3 =
+  Zeta as blockchain substrate (speculative, "maybe"). The
+  snake closes when ace → Aurora → Zeta → ace. Design doc
+  landing surface:
+  `docs/research/ouroboros-bootstrap-design.md`. Covers:
+  (a) phase-A/B/C transitions for the two-layer subset,
+  (b) phase-D speculation on Zeta-as-blockchain (consensus
+  mechanism, public-vs-consortium, retraction-composition,
+  ERC-8004/x402 alignment), (c) parallels to Bitcoin / IPFS /
+  CDN / Git-via-git, (d) red-team roster expansion required
+  per phase (phase-D adds consensus-attack expertise).
+  Parallel P2 candidate memory file when the blockchain
+  layer firms up: `project_zeta_as_blockchain_substrate.md`.
+  Effort: M (design doc). Reviewers: Amara (Aurora-layer
+  compatibility), Soraya (formal-verification of consensus
+  claims), Mateo/Aminata (attack-surface expansion). Full
+  detail:
+  `memory/project_ace_package_manager_agent_negotiation_propagation.md`
+  §Ouroboros.
+
+- [ ] **Pluggability-gap audit — tag every `src/Core/**`
+  subsystem as tier-1 (fully pluggable), tier-2 (interface
+  shim), or tier-3 (one-off plumbing).** Aaron 2026-04-20:
+  *"just in generate we should also look for plugabilty
+  gaps, in general where it does not negativly hurt our
+  claim of being the fastest database we should try to
+  make anything that could be pluggable, pluggable, this
+  just sets us up for long term sucess, at least an
+  interface shim if it's not really pluggable, then like
+  plumbling one off stuff is the remainder."* Durable
+  policy in `memory/feedback_pluggability_first_perf_gated.md`.
+  First audit pass: walk `src/Core/**/*.fs`, tag each
+  subsystem's current tier, flag candidates where tier
+  could be raised without perf impact. Perf-gate is
+  measured (benchmark delta) not asserted. Candidate
+  reviewers: Naledi (perf measurement), Hiroshi (complexity),
+  Ilyana (public-API surface). Landing surface:
+  `docs/research/pluggability-audit-YYYY-MM-DD.md` listing
+  (subsystem, current tier, justification, raise-candidate?,
+  effort). From the audit, file P1/P2 BACKLOG rows for
+  the raise-worthy candidates. **Cadenced:** repeat every
+  5-10 rounds; add as criterion to `skill-tune-up` audit.
+  Every new ADR for a subsystem or internal boundary
+  henceforth includes a "Pluggability audit" section
+  answering the tier + justification. Effort: M for first
+  pass; S ongoing per ADR. See
+  `feedback_pluggability_first_perf_gated.md`.
+
+- [ ] **Persona-term migration — rename `memory/persona/` to
+  `memory/experts/`.** Aaron 2026-04-20: *"how do you suggest
+  we distinguish between our end user personas like develpers
+  and non devlopers and the agent personas since it's the same
+  word"*. Round-44 autonomous-loop landed **option (a)** —
+  docs-only disambiguation via `docs/GLOSSARY.md` (`### Persona
+  (overloaded — always qualify)` + `### User persona`) and
+  `memory/feedback_persona_term_disambiguation.md`. The
+  directory rename is the remaining work: touches every
+  expert's auto-injected notebook frontmatter pointer, every
+  skill that references the `memory/persona/<name>/NOTEBOOK.md`
+  path, and any CI / pre-commit hook that globs the tree.
+  **Prerequisite:** a full audit of hard-coded `memory/persona/`
+  paths across `.claude/**`, `docs/**`, `openspec/**`, and
+  `tools/**`. Do as a dedicated round, not opportunistically.
+  Landing surface: a migration ADR at
+  `docs/DECISIONS/YYYY-MM-DD-persona-to-experts-rename.md`
+  plus a single commit doing the atomic rename + pointer
+  rewrites. **Only schedule** if an audit round surfaces
+  enough persona-sense confusion to warrant the cost — per
+  the feedback memory, option (b) "leave as historical
+  artifact" is still live. Effort: M. See
+  `feedback_persona_term_disambiguation.md`.
 
 - [ ] **Gitops-friendly key management + rotation — ADR first,
   then pick one tool** — Aaron 2026-04-20: *"key management
@@ -4236,6 +5255,265 @@ systems. This track claims the space.
 
 ## P3 — noted, deferred
 
+- **Conversational bootstrap UX for factory-reuse
+  consumers — two-persona (non-developer + developer)
+  elicitation surface.** Aaron 2026-04-20: *"the end
+  user experience i'm looking for as a consumer of
+  our factory is you just talk to the system about
+  your constrains and invariants and assumptions...
+  we really ahve two end user personas we care about
+  the non developer and the devloper, the devlpoer
+  is going to want to tell you so many invariants
+  and not know all the assumptions they are
+  immplicitly making and just try to drive you to
+  hard... the non developer is going to underspecify
+  everyting so a scary degree... the best user
+  experince for using our factory will handle both.
+  the internace into our factory should just be
+  confersational."* Same-session follow-up: *"that's
+  going to take a bit of design to get right when we
+  want others to start reusing our factory"* —
+  factory-reuse prerequisite, P3, slow burn. Two
+  opposite failure modes on a single conversational
+  surface:
+  - **Non-dev underspecifies** — lacks vocabulary
+    and imagination; "what do you want to do?" is
+    not answerable. Factory drives with questions
+    the user *can* answer and surfaces every
+    decision made on their behalf in plain
+    language.
+  - **Dev over-specifies** — cascades explicit
+    invariants while skipping implicit assumptions;
+    tries to micromanage. Factory absorbs the
+    torrent, names the costs of each over-
+    constraint, and catches the assumptions the dev
+    skipped.
+  Load-bearing primitive: **surfacing assumptions
+  the user is making without knowing it.** Mechanical
+  candidates — rails-checklist gap detection; default-
+  on rule flagging when stated intent conflicts with
+  a factory-wide default; `docs/WONT-DO.md` precedent
+  surfacing; cross-project assumption transfer when
+  the factory has built a close analog before.
+  Directly downstream of the rails-health registry +
+  composite-invariants registry entries below —
+  those are the ontology this UX elicits into. The
+  pair of P3 rails entries are prerequisites; this
+  UX is what consumes them. Aaron himself was Zeta's
+  over-spec bootstrap driver — future consumers
+  won't have his depth, so this UX is what lets the
+  next consumer walk in without the Aaron-level
+  pre-work. Effort: L when executed (multi-round
+  design surface, not a single-round build). Owner:
+  architect-hat; UX-engineer (Iris) when the surface
+  is tangible. Sibling memory:
+  `project_factory_conversational_bootstrap_two_persona_ux.md`.
+
+- **Rails-health registry (constraints + invariants +
+  ASSUMPTIONS as first-class).** Aaron 2026-04-20:
+  *"it should be easy to run a report eventually across
+  all areas of our project and see the assumptions (we
+  should probably encode these too in case they end up
+  being wrong) constrainsts invariants as basically the
+  rails of the system and how good they are holding...
+  no rush on this but could build high confidence in
+  the future of anyone using the software factory that
+  things are going the way they expect."* Followed
+  same day by: *"against this project wide invariant
+  system is low priority and can move slowly there is
+  not a rush here."* Framed as P3 — the individual
+  rules (latest-version, ASCII-clean,
+  `TreatWarningsAsErrors`, `BP-11`,
+  `noUncheckedIndexedAccess`) are **active today**; the
+  *registry* that lists them once and projects them to
+  a health dashboard is the slow-burn construct.
+  Three categories, one new:
+  - **Invariants** — TLA+ / Lean / Z3 / FsCheck /
+    runtime asserts; `tools/invariant-substrates/
+    tally.ts` is the existing inventory toehold.
+  - **Constraints** — type system, strictness flags,
+    eslint rules, `GOVERNANCE.md §N`, OpenSpec
+    behaviour specs.
+  - **Assumptions** — *new category.* Today buried in
+    ADR prose; promote to first-class with
+    frontmatter (`id`, `statement`, `owner`, `probe`,
+    `revisit`, `confidence`). The
+    `docs/DECISIONS/2026-04-20-tools-scripting-language.md`
+    watchlist is the pilot shape.
+  Opportunistic motion: every new ADR sections out
+  "Assumptions" in registry-compatible form; no
+  dedicated round. Eventual deliverable:
+  `docs/RAILS-HEALTH.md` regenerated per round from
+  `docs/RAILS/` + `tally.ts`-style inventory. Effort:
+  L when executed; S per-ADR until then. Owner:
+  architect-hat; rails-health-expert when the surface
+  is large enough to need a dedicated persona.
+  Sibling memories:
+  `project_rails_health_report_constraints_invariants_assumptions.md`,
+  `project_composite_invariants_single_source_of_truth_across_layers.md`.
+
+- **Composite-invariant single-source-of-truth
+  registry (`docs/RAILS/`).** Aaron 2026-04-20:
+  *"plus some iinvariants we shold be able to just
+  list once and not have to repate them everywhere,
+  that whole composite invariant system across all
+  layers is sometime we can build twards."* Same
+  slow-burn clause as the rails-health entry above.
+  Today an invariant like *"Delta is retraction-
+  closed"* lives in TLA+ + Lean + Z3 + F# `Debug.
+  Assert` + FsCheck + ADR prose + `BP-NN`
+  independently — each copy drifts without coupling.
+  Direction is a single authoritative rail per id
+  (`docs/RAILS/INV-<subsystem>-<property>.md`) with
+  frontmatter naming the substrate call-sites
+  (`layers: { tla: ..., lean: ..., z3: ..., runtime:
+  ..., fscheck: ..., docs: ..., bp: ... }`), and
+  composition as conjunction
+  (`INV-DELTA-CORRECT = INV-DELTA-RETRACTION-CLOSED ∧
+  INV-DELTA-MONOTONIC ∧ INV-DELTA-BYTE-IDENTICAL`).
+  Three projection mechanisms, cheapest first: (3)
+  prose-only cite-the-anchor, (2) reference citation
+  + drift-auditor, (1) codegen from YAML to TLA+
+  `INVARIANT` / Lean `theorem` / Z3 `assert` / F#
+  `Debug.Assert`. Start with (3). Toeholds today:
+  `docs/AGENT-BEST-PRACTICES.md BP-NN` (skill-layer
+  rails), `docs/GLOSSARY.md` (vocabulary pattern),
+  `docs/INVARIANT-SUBSTRATES.md` (narrative),
+  `.claude/skills/verification-drift-auditor/` (the
+  drift-detection surface that would consume the
+  registry). Opportunistic forward motion: use
+  stable ids (`INV-<...>`, `CST-<...>`, `ASM-<...>`)
+  when a new rail is named even before the registry
+  directory exists. Effort: L when executed. Owner:
+  architect-hat with Soraya (formal-verification-
+  expert) on substrate citations. Sibling memory:
+  `project_composite_invariants_single_source_of_truth_across_layers.md`.
+
+- **`docs/VERSION-EXCEPTIONS.md` — the named
+  exception list for the latest-version default-on
+  rule.** Aaron 2026-04-20 strengthened the latest-
+  version rule from at-adoption-time to continuous
+  factory-wide: *"like make sure we are using the
+  latest version, that shoud jsut apply everywhere
+  and you override with exceptions."* Shape per
+  `feedback_default_on_factory_wide_rules_with_
+  documented_exceptions.md`: four-field rows
+  (scope / reason / exit-condition / owner). First
+  resident: `@types/bun@1.3.12` vs runtime
+  `bun@1.3.13` (DefinitelyTyped typically lags the
+  bun release by one patch; exception tracked inline
+  in `docs/DECISIONS/2026-04-20-tools-scripting-
+  language.md` pending the shared registry). Audit
+  cadence: every round, diff every pin against
+  vendor latest; non-latest without a carve-out is
+  a P1 rail violation, non-latest with an expired
+  carve-out is a P2. Sibling memory:
+  `feedback_latest_version_on_new_tech_adoption_no_legacy_start.md`.
+  Effort: S for the initial doc shell, ongoing S per
+  round. Owner: architect-hat at round-close;
+  devops-engineer (Dejan) when CI enforcement
+  lands.
+
+- **User-privacy compliance as a slow-burn direction
+  (GDPR + CCPA/CPRA + generic).** Aaron 2026-04-20,
+  after the consent-primitives-expert harness dry-run:
+  *"for GDPR thats a long ongoing thing we should
+  probably have some skills around that and keep up
+  with something like GDPR.md or the more generic term
+  user privacy or something IDK that also includes
+  California laws and such. We should work towards
+  this, not a hard requirement yet but we can make
+  steps towards asserting we have some compliance here
+  in the future, very slow burn here, no rush."*
+  Framed as P3 because Zeta is pre-v1 and has no
+  regulated-data consumers; logged now so the direction
+  is an anchor when natural entry points appear
+  (reviewer prompts touching erasure / retention /
+  pseudonymisation; Ilyana flagging a public-API
+  surface that implies compliance; a consent primitive
+  landing that maps cleanly to a specific regime).
+  Shape when it lands:
+  - Probably `user-privacy-expert` skill — generic
+    umbrella (GDPR + CCPA + emerging state laws +
+    sector regimes like HIPAA where relevant). Cites
+    `consent-primitives-expert` rather than
+    duplicating.
+  - Probably `docs/references/user-privacy-
+    compliance.md` for the prose companion.
+  - Generic-first frame: *"user privacy"* is the
+    substrate; GDPR / CCPA are regimes mapped onto
+    it. Aaron was explicit that the generic framing
+    is the preference.
+  - Living-list discipline per
+    `feedback_tech_best_practices_living_list_and_
+    canonical_use_auditing.md` — regulatory guidance
+    stales fast (EDPB opinions, new state laws, DPA
+    enforcement priorities); internet-research
+    refreshes mandatory.
+  Specific primitive already confirmed by the round-43
+  consent-primitives dry-run: **crypto-shredding
+  (destroy per-subject DEK, leave ciphertext in place)
+  is regulator-accepted GDPR Art. 17 erasure** —
+  EDPB Opinion 28/2024, ENISA, GDPR Recital 26. The
+  canonical use case is long-term backups (cannot
+  rewrite tape archives; destroying the DEK
+  propagates erasure atomically). Gotchas noted in
+  `reference_crypto_shredding_as_gdpr_erasure.md`:
+  single-tenant DEK per subject, plaintext leaks
+  outside ciphertext, pre-encryption snapshots, KEK
+  is the perimeter. Effort: M for first landing
+  (skill + doc + primitive mapping); recurring S per
+  refresh cycle. Owner: architect-hat in coordination
+  with consent-primitives-expert, data-governance-
+  expert, and Ilyana for any public-API surface that
+  ships as a compliance primitive.
+
+- **Factory reuse beyond Zeta-DB — declared constraint.**
+  Aaron 2026-04-20: *"also we should start thinking about
+  how to make the software factory part of Zeta and all
+  it's codified practices usable on any project not just
+  the Zeta database, this is not our primary goal at all
+  right now but we can at least start splitting out things
+  between project specific and generic when it comes to
+  our software factory we kind of already do this but
+  this is adding another dimension of split software
+  factory reuse without the Zeta db"* — then
+  *"that's a constraint."* Framed as P3 because the
+  factory's primary customer today is Zeta-DB; logged so
+  the constraint shapes every factory-level decision going
+  forward (new skills default to generic; `project: zeta`
+  marks Zeta-DB-specific content in skill frontmatter; new
+  BP rules and governance land generic unless Zeta-algebra
+  specific). Shape when packaging work begins:
+  - Co-designed with Aaron — see
+    `feedback_factory_reuse_packaging_decisions_consult_aaron.md`.
+    Prior art exists (Claude Code plugins, Anthropic
+    skills, Semantic Kernel, cookiecutter ecosystems);
+    codified best practices for AI-software-factory
+    reuse specifically do not. We will help define them.
+  - Existing toehold:
+    `.claude/skills/skill-tune-up/SKILL.md` §criterion 7
+    already flags portability drift.
+  - Probable packaging-decision surfaces: extraction
+    unit (subtree / template repo / plugin loader);
+    dependency shape (generic base + overlays vs
+    standalone); living-best-practices refresh cadence
+    across heterogeneous consumer projects; governance-
+    overlay mechanism (AGENTS.md / GOVERNANCE.md /
+    CLAUDE.md template + project-specific layer).
+  - Living-best-practices discipline per
+    `feedback_tech_best_practices_living_list_and_
+    canonical_use_auditing.md` applies — prior art
+    surveys get stale; internet-research refreshes
+    mandatory when packaging moves from "constraint"
+    to "active work."
+  Effort: L when packaging work starts (genuinely new
+  best-practice surface). Recurring S-per-round for the
+  constraint-application work (tagging, generic-first
+  defaulting, living-list refresh). Owner: architect-hat
+  co-driving with Aaron for shaping decisions;
+  skill-tune-up for the portability-drift audit.
+
 - **Melt-precedents applied to the patent system.** Aaron
   2026-04-19: *"backlog melt patent system for fun, profit
   and to get rid of the trolls and make the patent system
@@ -4429,6 +5707,238 @@ systems. This track claims the space.
 - autoresearch by Karpathy as a platform (200-LOC teaching scaffold,
   not a research pipeline)
 - Preserving v0 backward compatibility (no users yet)
+
+- [ ] **Aurora contract abstraction — other-language
+  implementations of the contract interface.** Aaron 2026-04-20:
+  *"we probably need an abstraction so other language can
+  implement contracts too, we can worry about this later, but
+  it should still when working in dotnet like a first class
+  experience"*. Contracts are first-class .NET (C#/F#/VB.NET)
+  as the first implementation; protocol-level contract
+  interface is abstracted so other-language runtimes can plug
+  in and each enjoy first-class treatment. Candidate interface
+  layers: WIT (Wasm Interface Types), Protocol Buffers service
+  definitions, bespoke IDL. Cross-language contract-to-contract
+  calls open. **Gate:** Zeta substrate lands first. **Effort:**
+  L. **Source of truth:**
+  `project_zeta_as_retractable_contract_ledger.md` § "B.
+  Contract abstraction for other languages" (Round 44 follow-up
+  directives).
+
+- [ ] **Aurora DAG-with-forks — encouraged forks + cross-fork
+  communication across rule-sets.** Aaron 2026-04-20: *"we
+  probably want to be more like a DAG that supports and
+  encourages forks without catstrphoic failure ... within a
+  branch they might not follow the same rules like multiple
+  universes ... but we still want to communicate, this is
+  gonna be some high dimensional math."* Consensus-layer
+  finality is convergence on the DAG frontier, not a single
+  linear chain. Forks are first-class, not failure modes.
+  Cross-branch communication protocol when branches diverge
+  on rule-sets is the hard problem — candidate machinery:
+  sheaf theory over branch lattice, higher-category morphisms
+  between rule-set objects, homotopy type theory for
+  proof-transport across rule differences. Peer DAG-consensus
+  candidates to survey: IOTA Coordicide, Avalanche, Nano
+  block-lattice, Fantom Lachesis, Conflux, Radix Cerberus.
+  Pairs with Aurora's "do no permanent harm" — bad branches
+  are never catastrophic because they are branches, not the
+  chain. **Gate:** retractable-contract substrate lands first;
+  game-theory + chaos-theory skill families (see below) are
+  precursor research. **Effort:** L. **Source of truth:**
+  `project_zeta_as_retractable_contract_ledger.md` § "C. DAG
+  with encouraged forks".
+
+- [ ] **Aurora consensus — Proof of Useful Work within the
+  Current Culture (PoUW-CC).** Aaron 2026-04-20: *"our
+  distributed consendse will be Proof of Useful work within
+  the Current Culture. So if monero tried to attack, they
+  would have to do useful work, helping our network"*.
+  Aurora's consensus mechanism. Two composites: (1) PoUW —
+  the work securing the chain is useful (formal-verification
+  proof search, scientific parameter search, retraction-
+  consistency validation, bioinformatics, other network-
+  beneficial compute; prior art: Primecoin, FoldingCoin,
+  Ofelimos, Exascale compute-credit schemes). (2) Current
+  Culture — work valid only if aligned with governance-
+  encoded + historically-proven culture. Attack absorbed
+  (Harmonious Division ABSORB step applied at consensus
+  layer): an attack feeds the network because the only way
+  to spend energy on it is to contribute useful work.
+  Culture-drift resistance: back-hacking governance is the
+  only remaining attacker vector, and governance is engineered
+  to resist drift via consent + historical-continuity checks
+  anchored to the DAG. **Gate:** useful-work classification,
+  culture-encoding formalism, retraction-aware DAG semantics
+  all need to land first. **Effort:** L. **Source of truth:**
+  `project_zeta_as_retractable_contract_ledger.md` § "D.
+  Proof of Useful Work within Current Culture".
+
+- [ ] **Blockchain != ledger — documentation correction
+  class.** Aaron 2026-04-20: *"we don't need to make the same
+  mistake to think blockchain means ledger, it just happens
+  that the first thing on a blockchain was the ledger but
+  these are orthognal."* Every public-facing doc that
+  describes Aurora's substrate must separate **blockchain-
+  the-substrate** (chain-of-blocks / DAG-of-blocks + consensus
+  + retractable-contract semantics) from **ledger-the-
+  application** (value-transfer / balance-tracking, one of
+  many apps). The "retractable-contract ledger" memory name
+  is itself a legacy misnomer at the substrate layer; keep
+  filename for memory continuity, but docs should say
+  "retractable-contract substrate" when the substrate is
+  meant. **Owner:** naming-expert + Ilyana review gate when it
+  goes public. **Effort:** S per doc, M across the family.
+  **Source of truth:**
+  `project_zeta_as_retractable_contract_ledger.md` § "A.
+  Blockchain != ledger".
+
+## P2 — Skill-family expansions (Aaron-authorised)
+
+- [ ] **Game-theory skill family/group.** Aaron 2026-04-20:
+  *"we can go ahead and add game theory and chaos theory
+  skill families/groups becsasue i have some ways to combine
+  those in novel ways with bayes to expand game theory to
+  things like the Qubic attach against monero and Aborb
+  their attach becasue our distributed consendse will be
+  Proof of Useful work within the Current Culture."* Family
+  scope (anticipated): attacker models, Nash-equilibrium
+  analysis, mechanism design, adversarial Bayesian
+  inference, attack-absorption primitives. Composes with
+  existing Bayesian surface. Directly serves Aurora PoUW-CC
+  attack-model analysis. **Effort:** L (family, not a single
+  skill). **Source of truth:**
+  `project_zeta_as_retractable_contract_ledger.md` § "E.
+  Game-theory + chaos-theory skill families".
+
+- [ ] **Chaos-theory skill family/group.** Same Aaron
+  authorisation. Family scope (anticipated): nonlinear
+  dynamics, strange attractors, bifurcation analysis,
+  edge-of-chaos computation, coupled-oscillator stability
+  (pairs directly with Aurora Network's firefly-sync from
+  `project_aurora_network_dao_firefly_sync_dawnbringers.md`).
+  Precursor research for the rule-set-divergence dynamics
+  of the DAG-with-forks proposal (see P3 above). **Effort:**
+  L (family, not a single skill). **Source of truth:** same
+  as above.
+
+## P2 — AX/UX — BP-07 3000-word notebook-cap review
+
+- [ ] **Per-persona AX/UX poll on BP-07's 3000-word notebook
+  cap + general agent QOL.** Aaron 2026-04-20: *"BP-07 cap is
+  3000; do you think that is enough do you ask the agents
+  their feedback about their experienc for each of our named
+  agent thier UX perspective?"* Follow-up 2026-04-20 later:
+  *"just get the feedback of the other expert personas and
+  make sure their user experience is taken into account as
+  well and lets make quality of life change for them too over
+  time, its like another hygene."* BP-07 sets every persona's
+  NOTEBOOK.md to 3000 words max (~750 tokens cold-load).
+  Empirical pattern: Daya hits the cap every audit (her
+  signal volume is cadenced audits * N personas); Aarav
+  trends up (observations per skill); Kenji + off-time are
+  healthy; Bodhi/Iris/Dejan are well under. One-size cap may
+  not fit the signal shapes. Follow-up broadens scope beyond
+  the cap: treat per-persona AX/UX as a *recurring hygiene
+  class* (paired with this backlog row's sibling under
+  "## P1 — FACTORY-HYGIENE — ongoing agent-QOL class").
+  **Tiered first-pass** (main-agent's call per Aaron's "up to
+  you"): Tier A = notebook-scan *plus* structured interview
+  for heavy-signal personas (Daya, Aarav, Soraya, Yara,
+  Ilyana, Kenji, Bodhi); Tier B = notebook-scan only for
+  light-signal personas (Iris, Dejan, Naledi, Nazar, Mateo,
+  Aminata, Rune, Hiroshi, Naledi, Imani, Viktor, Kira,
+  Samir); Tier C = one-line "are you well-served by current
+  scope?" prompt on rarely-invoked personas, flag for
+  invocation-cadence reassessment rather than cap reassessment.
+  **Deliverable:** `docs/research/notebook-cap-per-persona-review-YYYY-MM-DD.md`
+  proposing either (a) persona-specific caps in each agent
+  file's frontmatter, (b) a tiered cap based on signal
+  density, or (c) keeps the flat cap and prescribes more
+  aggressive JOURNAL migration — plus a per-persona
+  "top-3 QOL wants" section capturing findings beyond the cap
+  question. **Owner:** Daya (AX researcher) runs the poll;
+  Aarav promotes to BP-NN ADR if the conclusion is a rule
+  change. **Effort:** M (poll + Tier-A interviews) + M (ADR +
+  skill + BP-07 revision if needed). **Source of truth:**
+  this backlog entry + `docs/AGENT-BEST-PRACTICES.md` BP-07 +
+  the sibling P1 row below.
+
+- [x] ✅ **Agent-QOL hygiene as ongoing factory-hygiene class
+  (P1).** Aaron 2026-04-20: *"lets make quality of life
+  change for them too over time, its like another hygene."*
+  This elevates per-persona AX/UX from a one-shot poll (row
+  above) to a **recurring hygiene class** alongside
+  wake-UX-hygiene (FACTORY-HYGIENE #25-29). Row-group
+  rows 30-34 **landed this round** in
+  `docs/FACTORY-HYGIENE.md`: (30) notebook-cap pressure per
+  persona, (31) invocation-cadence per persona, (32)
+  cross-persona role overlap + hand-off friction, (33)
+  per-persona tool-gap poll, (34) prompt-load /
+  frontmatter-bloat check. Cadence: every 5-10 rounds,
+  paired with `skill-tune-up`. **Owner:** Daya runs the
+  audit; Aarav files BP-NN candidates; Kenji integrates.
+  **First audit landed at** `docs/research/notebook-cap-per-persona-review-2026-04-20.md`.
+  **Source of truth:** this entry +
+  `docs/FACTORY-HYGIENE.md` rows 30-34 +
+  `memory/feedback_agent_qol_as_ongoing_hygiene_class.md`.
+
+## P1 — Targeted agent-QOL follow-through (from Daya's 2026-04-20 audit)
+
+Six concrete P1 actions surfaced by the first roster-wide
+AX/UX audit. Ordered by leverage (highest first). Each is
+additive, rollback-safe, routes through the relevant
+persona-wearer or `skill-creator`.
+
+- [ ] **Create `memory/persona/samir/NOTEBOOK.md`.** Samir is
+  the highest-leverage intervention in the roster — the
+  busiest routing target (~15 open interventions from Bodhi
+  + Iris + Daya + Aarav notebooks all flow to Samir) with no
+  memory surface. Owner: Yara via `skill-creator` on Kenji
+  sign-off. Effort: S. Source: audit Pattern D.
+
+- [ ] **Create `memory/persona/yara/NOTEBOOK.md`.** Yara is
+  invoked as dispatch target in every Daya/Aarav round-close
+  but has no notebook. Owner: Yara via `skill-creator`.
+  Effort: S. Source: audit §4.
+
+- [ ] **Ilyana notebook prune — P0 over-cap.** Ilyana's
+  notebook is 3727 words (124% of 3000-word BP-07 cap).
+  Apply Daya's r44 JOURNAL-offload template: verbatim-copy
+  resolved entries to sibling JOURNAL.md, keep current-round
+  + carry-over in NOTEBOOK. Target <2500 words. Owner:
+  Ilyana (public-api-designer). Effort: S. Source: audit §2
+  row Ilyana.
+
+- [ ] **Tariq notebook prune — P0 near-cap.** Tariq's
+  notebook is 2851 words (95% of cap), no recent pruning
+  log, earliest entry r27 (~17 rounds of un-reviewed
+  content). Same JOURNAL-offload template. Owner: Tariq.
+  Effort: S. Source: audit §2 row Tariq.
+
+- [ ] **Kenji notebook update — P1 stale.** Kenji's notebook
+  has no entry newer than r22 (22 rounds stale). Kenji's
+  auto-memory is fresh; notebook is not. Land a r44 entry
+  summarising r22-r44 roster growth + open
+  bottleneck-on-review self-flag status. Owner: Kenji
+  (architect). Effort: S. Source: audit §2 row Kenji.
+
+- [ ] **Dispatch-or-retire decision on seven seed-only
+  personas.** Aminata, Kira, Mateo, Nadia, Naledi, Rune,
+  Viktor all sit at 96-word seed stub 12+ rounds post-seed.
+  Two-track: (a) schedule first-real-dispatch per persona
+  next round-close, or (b) retire via ADR per persona. Owner:
+  Kenji selects the track per persona. Effort: M per persona
+  if retire path (ADR drafting); S per persona if dispatch
+  path (scheduling). Source: audit Pattern A + §4 item 6.
+
+**Candidate BP-25 and BP-26 from this audit** are already on
+Aarav's scratchpad (`memory/persona/best-practices-scratch.md`);
+both need 10-round survival + ≥3 authoritative cited sources
+before Architect promotion. Not a backlog row; tracked by
+Aarav.
+
+**Next audit due:** round 49-54 (5-10 round cadence).
 
 ---
 

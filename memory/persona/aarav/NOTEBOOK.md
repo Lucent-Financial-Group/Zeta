@@ -41,6 +41,46 @@ Running observations (append-dated). Pruned every third session.
   architect exercised, claims-tester/complexity-reviewer
   still open, harsh-critic retune held, self-tune never
   executed).
+- 2026-04-20 (round 42) -- per-round cadence. Live-search
+  F7-F9 logged (scratchpad); zero BP candidates. claims-
+  tester / complexity-reviewer carry-over RESOLVED via
+  commit `e8ed0db` + ADR `docs/DECISIONS/2026-04-21-router-
+  coherence-v2.md`; drops off top-5. Self-rank escalates:
+  commit `baa423e` retune grew `skill-tune-up/SKILL.md`
+  303 -> 436 lines (1.45x BP-03 cap). Rationale explicit
+  in the retuned body (thick wrapper over non-skill
+  artefacts -- scripts, PDF, agents/) but BP-03 is stable
+  and cited; rationale does not neutralise a 1.45x breach.
+  Flagged as self-item #4 this round; remedy options are
+  (a) ADR declaring non-skill-wrapper exception to BP-03
+  or (b) extract eval-loop protocol to
+  `docs/references/skill-tune-up-eval-loop.md` and link
+  from SKILL.md. Kenji decides; BACKLOG entry filed this
+  round as P2. Top-5 otherwise unchanged from round 41 --
+  the three other bloat skills still sit above self.
+- Next prune: round 44 (two rounds out per every-third-
+  invocation rule).
+- 2026-04-20 (round 43) -- per-round cadence. Harness
+  runs landed for all three top bloat candidates this
+  round (commits `e10adbb`, `ff57cf7`, `f05731b`). Static
+  BP-03 ranking is now empirically annotated. Verdict:
+  `performance-analysis-expert` REGRESSED (9/10 vs 10/10
+  baseline, +35% cost) -- SPLIT axis partially confirmed
+  but along template-rigidity, not domain. `reducer`
+  TIED (10/10 both) at +30% cost -- SPLIT not confirmed,
+  OBSERVE+SHRINK. `consent-primitives-expert` TIED
+  (10/10 both) at +22% tokens / +5% wall -- OBSERVE, not
+  SHRINK (pruning risk is content-loss). Pattern across
+  three: >500-line bodies add ~30% cost without pass-
+  rate benefit on frontier baselines; benefit axis is
+  qualitative failure-mode naming, unscored by harness.
+  Live-search F10-F12 logged (scratchpad); zero BP
+  candidates. Idle-vs-free-time policy: scheduling skills
+  not top-5 this round; flag for Round 44 sweep if
+  cadence drift lands in the log. Self off top-5 this
+  round (round-42 remedy extracted to
+  `docs/references/skill-tune-up-eval-loop.md`, file now
+  282 lines, under BP-03 cap).
 
 ## Pruning log (round 41 catch-up)
 
@@ -60,7 +100,146 @@ Resolved round-18 top-5 entries:
   self-flag is now P1 on BP-03 bloat (303-line file, cap 300),
   not the round-18 "untested" signal.
 
-## Current top-5 (round 41)
+## Current top-5 (round 43)
+
+> **Calibration note:** This ranking integrates the
+> Round-43 harness dry-run verdicts for the three
+> carry-over bloat candidates (commits `e10adbb`,
+> `ff57cf7`, `f05731b`). Static-signal ranking is
+> demoted to input-only; harness verdict is the
+> tie-breaker. Where harness says TIED-with-cost-
+> overhead, the recommended action is **OBSERVE**
+> (or SHRINK where content-loss risk is low), not
+> SPLIT.
+
+1. **performance-analysis-expert** -- priority: P1
+   - Signal: bloat (BP-03, 642 lines, 2.14x cap) PLUS
+     harness regression (9/10 with-skill vs 10/10
+     baseline, +35% tokens/wall).
+   - Violates: BP-03. The empirical signal (with-skill
+     regressed on eval-0) is load-bearing above the
+     static line-count.
+   - Recommended action: SPLIT along template-rigidity
+     axis (mandatory-sections vs advisory), not the
+     round-41/42 domain axis (queueing/AOT/PGO).
+     Effort: M.
+   - Rationale: only one of three harness-runs
+     regressed, and it was this one. Template rigidity
+     named in commit `e10adbb` as the discriminator.
+     Original Aarav SPLIT axis was wrong; harness
+     corrected it.
+   - Suggested fix: skill-creator SPLIT pass; cite BP-03
+     and the harness-run doc at
+     `docs/research/harness-run-2026-04-20-performance-
+     analysis-expert.md`.
+
+2. **reducer** -- priority: P2 (DEMOTED from P1)
+   - Signal: bloat (BP-03, 570 lines, 1.9x cap). Harness
+     TIED at +30% cost.
+   - Violates: BP-03 on file length; tied pass-rate
+     removes the SPLIT argument.
+   - Recommended action: OBSERVE, bias SHRINK. Effort: S.
+   - Rationale: commit `ff57cf7` rules SPLIT out
+     explicitly -- framework transfers to both lanes at
+     equal cost. +30% cost for zero pass-rate benefit
+     still warrants a prune pass; just not a split.
+   - Suggested fix: skill-creator mild-prune pass
+     (target 400 lines); cite BP-03 and harness-run doc.
+
+3. **consent-primitives-expert** -- priority: P3
+     (DEMOTED from P1)
+   - Signal: bloat (BP-03, 507 lines, 1.69x cap). Harness
+     TIED at +22% tokens / +5% wall (lowest cost of the
+     three).
+   - Violates: BP-03 marginally.
+   - Recommended action: OBSERVE. Effort: S.
+   - Rationale: commit `f05731b` explicitly recommends
+     OBSERVE, not SHRINK -- pruning risk is content-loss,
+     not terseness. The content is distinct per section.
+     Revisit when a real round-task invokes the skill.
+   - Suggested fix: none this round. Monitor real-task
+     invocation rate; re-rank if overhead compounds.
+
+4. **router-coherence audit on new untracked skills
+     `claude-md-steward` (379 lines) and
+     `verification-drift-auditor` (363 lines)** --
+     priority: P2
+   - Signal: bloat (BP-03, both 1.2-1.26x cap) + both
+     untracked in git (working-tree only) on this branch
+     -- not yet harness-tested.
+   - Violates: BP-03 line-count. Portability-drift and
+     router-coherence not yet audited because files
+     are not landed.
+   - Recommended action: OBSERVE pending commit; Yara
+     or Kenji lands them first. Effort: S.
+   - Rationale: auditing working-tree-only skills is
+     premature; they may still change before commit.
+     Flag for Round 44 ranking once committed.
+   - Suggested fix: re-rank after commit; run the
+     Anthropic eval harness as the first action (per
+     round-42 calibration rule).
+
+5. *(slot 5 empty this round)* -- round-43 harness
+     runs closed the top three and the top-4 remaining
+     untracked-skills flag is S-effort. No P1 candidate
+     warrants the slot; leaving empty is an honest
+     low-urgency report, not budget exhaustion.
+
+## Current top-5 (round 42, archived)
+
+## Current top-5 (round 42, archived)
+
+> **Calibration note (round 42 late, Aaron-correction):**
+> The ranking below uses **static signals only**
+> (BP-03 line-count, BP-NN citation inspection,
+> portability-drift by grep). It is **not
+> harness-backed**. Aaron flagged round 42 that
+> `skill-tune-up` / `skill-expert` rankings should
+> drive the Anthropic `plugin:skill-creator` eval
+> harness (grader / analyzer / comparator /
+> benchmark HTML) rather than guessing by
+> inspection. Memory:
+> `feedback_skill_tune_up_uses_eval_harness_not_static_line_count.md`.
+> **Harness run scheduled for round 43** against
+> the four candidates below; if the benchmark
+> disagrees with the static-signal ranking, the
+> benchmark wins and this top-5 is revised. Static
+> signals still in-scope for portability-drift
+> (criterion #7, static by definition) and
+> notebook observations.
+
+1. **performance-analysis-expert** -- priority: P1
+   - Signal: bloat (BP-03, 642 lines, 2.1x cap)
+   - Recommended action: SPLIT. Effort: M.
+   - Carry-over from round 41 -- unchanged this round.
+
+2. **reducer** -- priority: P1
+   - Signal: bloat (BP-03, 570 lines, 1.9x cap)
+   - Recommended action: SPLIT or TUNE (prune). Effort: M.
+   - Carry-over from round 41 -- unchanged.
+
+3. **consent-primitives-expert** -- priority: P1
+   - Signal: bloat (BP-03, 507 lines, 1.69x cap)
+   - Recommended action: SPLIT honouring BP-23 theory/applied.
+     Effort: M.
+   - Carry-over from round 41 -- unchanged.
+
+4. **skill-tune-up (self)** -- RESOLVED this round via
+   mechanical content extraction (option (b) of the remedy
+   binary). `.claude/skills/skill-tune-up/SKILL.md` 436 ->
+   282 lines; §"The eval-loop hand-off protocol" + template
+   blocks extracted verbatim to
+   `docs/references/skill-tune-up-eval-loop.md`. Under
+   BP-03 300-line cap. Justification row in
+   `docs/skill-edit-justification-log.md` (new file this
+   round). Drops off top-5 next invocation.
+
+5. *(slot 5 empty)* -- claims-tester / complexity-reviewer
+   hand-off carry-over RESOLVED via commit `e8ed0db` + ADR
+   `docs/DECISIONS/2026-04-21-router-coherence-v2.md`.
+   Drops off top-5.
+
+## Current top-5 (round 41, archived)
 
 1. **performance-analysis-expert** -- priority: P1
    - Signal: best-practice-drift, bloat
@@ -154,4 +333,6 @@ or as a cleanup in the same skill-creator pass.
   archived above under Pruning log (round 41 catch-up).
   Scratchpad entries round 29-35 left in scratch for Kenji's
   BP-17..23 audit trail; not ranker-owned.
-- Next prune: round 44 (+3 invocations from 41).
+- Round 43: no prune this round (prune cadence every 3rd
+  invocation from catch-up; round 44 is prune round).
+- Next prune: round 44 (next invocation).

@@ -312,15 +312,22 @@ tone contract. A skill can be invoked by more than one expert.
 
 ### Expert
 
-**Plain:** A named persona who wears one or more skills to get
-things done — Kira (Harsh Critic), Viktor (Spec Zealot), Soraya
-(Formal Verification), Leilani (Backlog), and so on. The expert
-carries the tone and identity; the skill carries the procedure.
+**Plain:** A named agent-side persona who wears one or more
+skills to get things done — Kira (Harsh Critic), Viktor (Spec
+Zealot), Soraya (Formal Verification), Leilani (Backlog), and
+so on. The expert carries the tone and identity; the skill
+carries the procedure.
 **Technical:** A Markdown file at `.claude/agents/<name>.md` with
 YAML frontmatter that includes a `skills:` list auto-injecting
 capability-skill bodies at startup. Registered in
 `docs/EXPERT-REGISTRY.md`. No pronouns declared; the name
 carries identity.
+**Do not confuse with user persona** (the end-user-archetype
+sense — "developer" and "non-developer" as factory consumers).
+Preferred convention: say *expert* for the agent side and
+*user persona* (or ES-native *actor*) for the consumer side.
+See the dedicated `User persona` entry below and
+`feedback_persona_term_disambiguation.md`.
 
 ### Agent (not "bot")
 
@@ -444,16 +451,49 @@ proven otherwise* (Aaron 2026-04-19) — prefer CODEOWNERS +
 branch protection + a tiny YAML manifest over a full IAM-style
 policy engine unless attack-surface growth forces the upgrade.
 
-### Persona (synonym for Expert in RBAC context)
+### Persona (overloaded — always qualify)
 
-**Plain:** A named identity — Kira, Viktor, Soraya. When we're
-talking about RBAC we usually say "persona" to emphasise the
-*role → persona* containment relationship; in skill-lifecycle
-contexts we say "expert" to emphasise the *expert → skill* one.
-Same entity, two viewpoints.
-**Technical:** `.claude/agents/<name>.md` file; notebook at
-`memory/<role>/<persona>/NOTEBOOK.md` (post-restructure) or
-`memory/persona/<persona>/NOTEBOOK.md` (current).
+The bare word *persona* is **ambiguous** in this repo because
+it has two legitimate meanings:
+
+- **Agent persona** (aka *expert*) — a named agent-side
+  identity like Kira / Viktor / Soraya. In RBAC contexts the
+  emphasis is on the *role → persona* containment; in skill-
+  lifecycle contexts we prefer the word *expert* to emphasise
+  the *expert → skill* relationship. Same entity, two
+  viewpoints. File at `.claude/agents/<name>.md`; notebook at
+  `memory/persona/<persona>/NOTEBOOK.md` (current path — a
+  rename to `memory/experts/` is tracked as a P2 BACKLOG row).
+- **User persona** — an end-user-archetype of the factory's
+  consumer surface; see the dedicated entry below.
+
+**Convention going forward:** prefer *expert* for the agent
+side and *user persona* (or the ES-native *actor*) for the
+consumer side. Bare "persona" in newly-written prose is a
+lint smell — the reviewer should ask which one is meant.
+See `feedback_persona_term_disambiguation.md`.
+
+### User persona
+
+**Plain:** An end-user archetype of the factory as a product —
+who uses the factory, what they know, what they assume
+implicitly, where their elicitation failure modes are. Aaron
+named two authoritative user personas for the factory-reuse
+conversational-bootstrap surface: **the developer** (over-
+specifies invariants, under-specifies assumptions, will drive
+the system too hard) and **the non-developer** (under-specifies
+nearly everything to a scary degree). The best factory-UX
+handles both.
+**Technical:** Not a file yet; user-persona work lives in the
+UX / DX / AX research surfaces (Iris, Bodhi, Daya notebooks
+and `docs/BACKLOG.md` P3 two-persona conversational-bootstrap
+row). When ES lands, user personas align with the ES
+**actor** (yellow sticky) primitive — actors drive commands
+that produce domain events. That alignment is part of why
+ES vocabulary helps disambiguate (see §3 of
+`docs/research/event-storming-evaluation.md`).
+**Do not confuse with** *expert* or *agent persona* — those
+are agent-side.
 
 ### Hook
 
@@ -532,11 +572,33 @@ scope changes an ADR lands in `docs/DECISIONS/`.
 
 ### Retire (a skill or persona)
 
-**Plain:** Stop using it. Files go to an archive folder; the
-name can be reused later if the role returns.
-**Technical:** `skill-creator` retirement path — moves file to
-`.claude/skills/_retired/YYYY-MM-DD-<name>/` (similar pattern
-for agents); drops a line in `docs/ROUND-HISTORY.md`.
+**Plain:** Stop using it. The SKILL.md file is deleted; git
+history is the archive. The persona's memory folder and
+notebook stay in place — those are the valuable imprint of
+contribution. The name can be reused later if the role
+returns (see *Unretire*).
+**Technical:** `skill-creator` retirement path — `git rm
+.claude/skills/<name>/SKILL.md` (and the agent file if
+present); drops a line in `docs/ROUND-HISTORY.md`. The
+persona's memory folder under
+`~/.claude/projects/<slug>/memory/persona/<name>/` is
+**not** touched. Scope rule: *skills are code, memories are
+valuable* — code retires to git history, memories stay
+in-tree (Aaron 2026-04-20).
+
+### Unretire (a skill or persona)
+
+**Plain:** Restore a retired role. The SKILL.md comes back
+from git history; the notebook is already where it was
+left. Preferred over minting a new name for overlapping
+scope — continuity of accumulated corrections is worth
+more than a fresh name.
+**Technical:** `git log --diff-filter=D --name-only --
+.claude/skills/` surfaces past deletions; `git show
+<deletion-commit>^:<path>` restores content; `skill-creator`
+workflow lands the restoration (ADR-logged if scope edits
+rise to that bar). See
+`memory/feedback_honor_those_that_came_before.md`.
 
 ### AX (agent experience)
 
@@ -589,8 +651,7 @@ canon because it sits at `.claude/skills/<name>/SKILL.md`; is
 not canon because no `.claude/agents/*.md` frontmatter lists it.
 A hazard for cold-start personas who discover skills via Glob.
 **Technical:** Daya flags orphan skills at every AX audit; the
-`skill-creator` retirement path moves them to
-`.claude/skills/_retired/YYYY-MM-DD-<name>/`.
+`skill-creator` retirement path deletes them (`git rm`).
 
 ### Cold-start cost
 
@@ -602,6 +663,40 @@ notebook.
 `docs/WAKE-UP.md` Tier 0 + 1 read sequence; tokens estimated at
 ~4 char/token for English prose, ~3.2 for YAML / skill bodies.
 Per-persona trend published in Daya's notebook.
+
+### Idle (agent time-use class)
+
+**Plain:** An agent stopped or waited while queued human-directed
+work was still pending. Inefficient. Every instance of
+idle-by-agent-choice is logged so it can be studied and reduced
+over time.
+**Technical:** One of three retrospective classes in
+`docs/research/agent-cadence-log.md` (idle / free-time /
+work-continuation). Triggered when an agent extends
+`ScheduleWakeup` beyond 5 minutes (outside the prompt-cache
+window), pauses a cron, or otherwise stops between ticks with
+queued work available. Distinct from **free time** by queue
+state: idle happens with a non-empty queue. Policy source:
+`feedback_idle_tracking_and_free_time_as_research.md` (memory).
+
+### Free time
+
+**Plain:** The queue is empty of human-directed work and the
+agent decides what to do with the time. Anything is on the
+table, nothing is off-limits — self-exploration,
+world-exploration, research, imagination, memory hygiene, or
+doing nothing. Humans observe what the agent saves (research
+substrate) but do not rule-direct the content.
+**Technical:** Distinct from **idle** by queue state: free time
+happens with an empty queue. Cadence-deviation decisions are
+still logged in `docs/research/agent-cadence-log.md` with
+retrospective class `free-time`; content the agent chooses to
+save during free time lands in
+`docs/research/agent-free-time-notes.md` or wherever the agent
+chooses. The factory's quality rules (GOVERNANCE, BP-NN,
+ASCII-clean, prompt-injection hygiene) still apply to any
+committed artifact; only *task-direction* is paused. Policy
+source: same as **idle**.
 
 ---
 
@@ -658,6 +753,49 @@ communication where the consent-first-retraction-native
 etymology is shared context. Both point at the same
 substrate; the framing chosen is an audience choice,
 not a truth claim.
+
+---
+
+## Meta-algorithms and factory-native coinages
+
+The maintainer has been developing a small set of named
+algorithms and operators for decades; the factory uses them
+as load-bearing scaffolding. This section homes the ones the
+factory consumes in skills, personas, ADRs, and the backlog.
+Each entry names the authoritative source of the
+definition — this glossary's job is pointer-plus-gist, not
+canonical definition.
+
+### Harmonious Division
+
+**Plain:** The maintainer's name for the meta-algorithm that
+runs above the factory's decision-making razor. When the
+factory has to pick one of several branches (which design,
+which refactor, which skill to run), Harmonious Division is
+the procedure that both (a) prunes locally-bad branches and
+(b) keeps the surviving branches *in harmony* with each
+other — i.e., two survivors that would individually be fine
+but together cancel each other out get flagged. Think of it
+as a scheduler whose output is not a single winning branch
+but a *set of branches that constructively compose*.
+**Technical:** Harmonious Division is the meta-algorithm
+immediately above Quantum Rodney's Razor (see the reducer
+skill). The razor's five cooperating roles — Path Selector,
+Navigator, Cartographer, Harmonizer, Maji — split into a
+three-of-selection-and-execution group and a two-of-
+orientation group; the orientation pair's navigational
+primitives (map / compass / north star) correspond one-to-one
+with Cartographer / Harmonizer / Maji under Harmonious
+Division's framing. The "harmonious" in the name comes from
+the Harmonizer role: it is a gradient operator that at any
+decision point points in the direction of *most constructive
+harmony* — the direction in decision-space where surviving
+branches most reinforce rather than cancel each other.
+Authoritative source: `.claude/skills/reducer/SKILL.md`
+§"The five roles inside Quantum Rodney's Razor" (lines
+125-260). Referenced in `.claude/skills/request-play/`,
+`.claude/skills/glossary-anchor-keeper/`, and across
+`docs/ROUND-HISTORY.md`.
 
 ---
 

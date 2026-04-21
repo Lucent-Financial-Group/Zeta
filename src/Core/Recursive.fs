@@ -83,6 +83,17 @@ type FeedbackOp<'T>(initial: 'T) =
             let s = Volatile.Read(&this.source)
             if not (isNull (box s)) then state <- s.Value
         ValueTask.CompletedTask
+    // Strict operators inside a nested scope MUST reset cross-scope
+    // state to their declared initial value on every inner-scope
+    // entry — otherwise the prior outer tick's accumulated `state`
+    // (the producer's last emit) leaks into the fresh scope and
+    // breaks DBSP §5-6 inner-clock tick-0 semantics
+    // (openspec/specs/operator-algebra/spec.md:420-423). Without
+    // this, a `Feedback`/`Recursive`/`RecursiveCounting` inside a
+    // `Nest(...)` would begin each outer tick seeing the prior
+    // tick's final LFP value instead of `initial` — silently
+    // producing semi-naive-like leakage across outer ticks.
+    override _.ClockStart() = state <- initial
 
 
 /// A handle to a feedback cell. Call `Connect` exactly once, after building

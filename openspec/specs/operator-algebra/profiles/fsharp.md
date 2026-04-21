@@ -44,12 +44,33 @@ today. Prose bullets, no RFC-2119 keywords; those live in the base `spec.md`.
 
 - `Op` is the abstract base class for every operator, defined in
   `src/Core/Circuit.fs`. `Op<'T>` carries a typed output slot backed by a
-  `[<VolatileField>]` so `OutputHandle<'T>.Current` reads see a release-ordered
-  publication of each tick's output. The `IsStrict` virtual tells the scheduler
-  whether the operator breaks feedback cycles.
-- `Circuit` is the DAG owner. It holds a register-lock around topology
-  mutations, builds a topological schedule via Kahn's algorithm in `Build`,
-  and requires that every cycle pass through at least one strict operator.
+  `[<VolatileField>]` and exposes two virtual predicates to the scheduler:
+  - `IsStrict : bool` — whether the operator breaks feedback cycles by
+    emitting the prior tick's input; required for any cycle to be accepted
+    by `Circuit.Build`.
+  - `IsAsync : bool` — whether the operator's `StepAsync` genuinely yields
+    (e.g., awaits an I/O completion or a producer channel) versus
+    completing synchronously. Non-async operators return `false` and let
+    `Circuit.Step` take the synchronous fast-path that skips the
+    state-machine box; async operators return `true` and `Circuit.Step`
+    awaits their step task.
+- The `[<VolatileField>]` on the output slot pins the .NET memory-ordering
+  contract: the tick's output write is a *release*-ordered store, and any
+  consumer reading `OutputHandle<'T>.Current` after the step returns issues
+  an *acquire*-ordered load. This is the "documented memory-ordering fence"
+  the base spec refers to in "output is observable after step returns" —
+  the pairing guarantees a cross-thread happens-before from step-writer to
+  post-step reader without an explicit `Thread.MemoryBarrier` call.
+- `Circuit` is the DAG owner. It holds a *register-lock* — a single
+  per-circuit `obj` guarded by `lock` — around every topology mutation
+  (operator registration, edge wiring, scope nesting). The register-lock
+  is held only during construction-phase work; once `Build` is called and
+  the topological schedule is frozen, the lock is not taken on the
+  step-hot-path. This two-phase discipline keeps step latency free of
+  contention while making topology mutations race-free against concurrent
+  builder calls. `Circuit.Build` uses Kahn's algorithm on the frozen
+  topology and requires that every cycle pass through at least one strict
+  operator.
 - `Stream<'T>` is a readonly struct wrapper around an `Op<'T>` — zero-alloc,
   no comparison, no equality; the handle type used by every extension-method
   builder.

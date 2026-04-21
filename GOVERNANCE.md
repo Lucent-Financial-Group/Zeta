@@ -81,13 +81,32 @@ than renumbering the rest.
     for what ships publicly, not everyday hierarchy.
     Disagreements are solved by argument, not seniority.
 
-11. **Architect reviews agent-written code; nobody reviews
-    the Architect.** When another agent writes real code,
-    the architect reads it, gives feedback, and may
-    iterate with the agent until satisfied. Architect-
-    authored code goes in directly. The asymmetry is a
-    velocity choice; humans can always step in and review
-    any code including the architect's.
+11. **Debt-intentionality is the invariant. Accidental
+    debt is the only thing gated.** Every agent that
+    contributes any artifact (code, docs, skills, specs,
+    scripts) owns the long-term maintainability of that
+    artifact. The positive obligation: if you take a
+    shortcut — a quick hack, a deferred refactor, a
+    "do it properly later" — you file a row in
+    `docs/INTENTIONAL-DEBT.md` naming the shortcut, why
+    it was taken, the right long-term solution, the
+    trigger for follow-up, estimated effort, and who
+    filed it, in the same commit as the shortcut. The
+    negative obligation: you do not land *accidental*
+    debt. Discovered post-hoc, accidental debt lands as
+    a retroactive ledger row plus a process note; this
+    is the rule working, not failing. The architect is
+    the **synthesiser** — reads the ledger at round-
+    close, pattern-matches across specialist findings,
+    integrates — not a gate on individual commits. Any
+    persona may wear the architect hat for a review;
+    specialist reviewers (security, performance, public-
+    API, OpenSpec, skills, etc.) remain advisory;
+    Copilot remains the external second-look; humans
+    retain the override seat per §10. See
+    `docs/DECISIONS/2026-04-20-intentional-debt-over-
+    architect-gate.md` for the full rationale and
+    rollback plan.
 
 12. **Bugs before features, and the ratio is explicit.**
     `(open P0 bugs + open P0 debt)` over 5 means the round

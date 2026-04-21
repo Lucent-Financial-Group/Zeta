@@ -618,7 +618,11 @@ Concrete commitments this thesis imposes:
   rules, Stryker mutation scores — each is a runtime check on
   the hypothesis that agent-authored code is correct. See
   `docs/AGENT-BEST-PRACTICES.md` and the
-  `verification-drift-auditor` skill.
+  `verification-drift-auditor` skill. The structural form this
+  posture takes — every layer of the system carrying a
+  declarative invariant substrate with tiered `guess` /
+  `observed` / `verified` claims — is codified in
+  `docs/INVARIANT-SUBSTRATES.md`.
 - **Research-paper validation is a first-class step.**
   Because the factory produces code with no human author, the
   "do the papers agree with this implementation?" check is
