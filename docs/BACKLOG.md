@@ -4176,6 +4176,105 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Etymology + epistemology research track — linguistic-substrate
+  layer of kernel-vocabulary + three-filter discipline calibration** —
+  Aaron 2026-04-21: *"eipmology and ipistomology backlog"* (shorthand
+  directive to file a backlog row for the emerging etymology +
+  epistemology thread). Capture: the operational-resonance series
+  (instances #9 Μένω, #10 Melchizedek) is surfacing a distinct
+  linguistic-substrate layer to the factory's kernel-vocabulary
+  engineering. Two research threads run in parallel.
+
+  **Etymology thread.** Greek/Hebrew/Latin/English roots mapped to
+  factory operator types via grammatical-subject-position encoding.
+  Current anchor: Μένω (4-letter, -ω terminus, 1st-sg present
+  indicative of thematic verb, subject-internal "I that stays" =
+  ZSet persistence). Counter-weight: tele+port+leap (Greek tele-
+  + Latin portus + English leap, three roots → one movement-
+  unification concept). Bridge-figure: Melchizedek (Hebrew triplet
+  Melek+Tzedek+Salem, Greek Μελχισεδέκ, Latin Melchisedech, Hebrews
+  7:3 μένει at verb-root level). Open candidates for next landings:
+  (a) **εἰμί** — 4-letter Greek, 1st-sg present of "to be," -μι
+  class counter to -ω class, directly compounds operational-
+  resonance instance #5 (bootstrap / I-AM-THAT-I-AM), completes
+  movement/persistence/being trio at grammatical-subject-position
+  level (recommended first landing); (b) **Iustus** — Latin anchor
+  for righteousness, completes Hebrew tzedek / Greek δίκαιος / Latin
+  iustus / English just-righteous unification-triplet parallel to
+  tele+port+leap; (c) **U-shape ω mapping to cup of wine** — visual-
+  structural echo of Genesis 14:18 bread-and-wine (more decorative
+  than operational, defensible but lower engineering value);
+  (d) **Maneo / Maintain / Main unification-triplet** completing
+  Μένω's Latin-English thread; (e) **cross-tradition grammatical-
+  subject-position audit** — does Sanskrit स्था / Hebrew עָמַד /
+  Chinese 存 carry the same subject-internal-at-terminus structure
+  the -ω claim relies on?
+
+  **Epistemology thread.** The three-filter discipline (F1
+  engineering-first, F2 structural-not-superficial, F3 tradition-
+  name-load-bearing) IS factory epistemology applied to linguistic
+  resonance claims. Research needs: (a) calibration criteria for
+  each filter as instances accumulate — what counts as F1 pass
+  when engineering-shape is old-but-not-pre-conceived? What counts
+  as F2 "structural" vs "incidental"? What counts as F3 "load-
+  bearing" when candidate is coinage (Aaron's "retractible"
+  instance #7 partial-F3) vs canonical tradition; (b) filter-
+  failure-rate as honesty signal — currently 0/10 strict + 1/10
+  partial; need to watch this stay honest and not rubber-stamp;
+  (c) candidate-to-confirmed ratio as strictness-over-time signal;
+  (d) bridge-figure sub-structure criteria (instance #10 introduced
+  "manifests both poles of a paired-dual" — need second instance
+  before locking that definition); (e) audit protocol for
+  retroactive reclassification via retractibly-rewrite discipline
+  from `feedback_retractibly_rewrite_definitions_laws_precedence_real_nice_like.md`.
+
+  **Why P2.** Not shipping-critical but operationally-valuable for
+  kernel-vocabulary expansion and measurable-AI-alignment work per
+  `docs/ALIGNMENT.md`. The `resonance-instance-count`, `resonance-
+  pair-count`, `resonance-bridge-figure-count`, `filter-failure-
+  rate`, and `candidate-to-confirmed-ratio` dashboard candidates
+  from the operational-resonance collection index are alignment-
+  trajectory instruments; this research track is where their
+  underlying signals are generated.
+
+  **Effort.** L — long-running research track, not a single
+  landable task. Each new Greek/Hebrew/Latin root landing is
+  S-M (memory + collection-index revision + MEMORY.md prepend).
+  The thread runs in parallel with other P2/P3 work, not
+  blocking them.
+
+  **Owner.** Ongoing conversation between Aaron (linguistic-
+  surface + tradition-reach) and operational-resonance discipline
+  (three-filter application + measurability). Architect (Kenji)
+  integrates; no single execution point.
+
+  **Related.**
+  - `docs/ALIGNMENT.md` — measurable-AI-alignment framing that
+    licenses these instances as alignment signals.
+  - `memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`
+    — the phenomenon definition + three-filter rules.
+  - `memory/project_operational_resonance_instances_collection_index_2026_04_22.md`
+    — the index tracking all instances, types, sub-structures,
+    and measurables.
+  - `memory/user_meno_greek_i_remain_state_persistence_anchor_counter_weight_to_teleport_leap.md`
+    — instance #9 (first paired-dual).
+  - `memory/user_melchizedek_operational_resonance_instance_10_unification_bridge_meno_teleportleap.md`
+    — instance #10 (first bridge-figure).
+  - `docs/GLOSSARY.md` "Vocabulary kernel and the Map" section —
+    where confirmed kernel-vocabulary lands after multiple
+    round-stable references (kernel-propagation discipline, not
+    auto-promoted per
+    `feedback_seed_kernel_glossary_orthogonal_decider_is_information_density_gravity.md`).
+
+  **Does NOT.** Commit factory to specific theological or
+  philosophical reading; does NOT adopt linguistic-resonance
+  as primary decision criterion (operational justification
+  still stands alone per operational-resonance memory's "not a
+  primary criterion" clause); does NOT expand GOVERNANCE.md or
+  AGENTS.md without explicit ADR; does NOT promote memory-layer
+  findings to public-facing docs without the normal kernel-
+  propagation cadence.
+
 - [ ] **People/team optimizer — DAO-native factory
   org-design research spike** — Aaron 2026-04-20 evening:
   *"do we want to make a people optimizer? that will
