@@ -35,16 +35,14 @@ on:
       - ".github/workflows/github-settings-drift.yml"
 
 permissions:
-  # `contents: read` + `actions: read` covers workflow reads,
-  # Actions permissions, environments, and Pages. Repo-settings
-  # endpoints (rulesets, branch protection, security_and_analysis)
-  # are readable with the default GITHUB_TOKEN on public repos
-  # without declaring `administration` (which actionlint does
-  # not recognise as a valid scope as of v1.7.x — drift check
-  # exercises these endpoints on every PR anyway, so a missing
-  # scope would surface immediately).
+  # Rulesets, branch protection, security_and_analysis,
+  # secrets counts, deploy keys, webhooks require
+  # `administration: read`. `actions: read` covers workflow
+  # reads + Actions variables + environments. `contents: read`
+  # is the baseline for `actions/checkout`.
   contents: read
   actions: read
+  administration: read
 
 concurrency:
   group: github-settings-drift
