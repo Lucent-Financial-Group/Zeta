@@ -17,7 +17,7 @@ Entries are grouped by area. Each entry has:
 - **Why not** (one or two sentences)
 - **Revisit criteria** (what would flip the decision)
 
-### What the statuses mean
+## What the statuses mean
 
 - **`Rejected`** — considered and turned down for a durable
   architectural, values-level, correctness, or security
