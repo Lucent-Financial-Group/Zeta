@@ -872,9 +872,10 @@ within each priority tier.
   (a) accumulate cadence ≥ 3 snapshots across a span of ≥ 2 LFG
   merges so per-PR burn delta is observable — opportunistic
   snapshots on each LFG merge plus weekly background cadence;
-  (b) author `tools/budget/project-runway.sh` companion that
-  reads the JSONL and projects Stages-1-4 workload against
-  remaining free-credit allowance; (c) file a FACTORY-HYGIENE row
+  (b) ✅ `tools/budget/project-runway.sh` landed — reads the JSONL
+  and projects Stages-1-4 workload; handles N=1 gracefully by
+  reporting "insufficient data — accumulate more snapshots" rather
+  than producing a misleading projection; emits text + JSON; (c) file a FACTORY-HYGIENE row
   for cadenced snapshots once the substrate is exercised enough
   to know the right cadence; (d) revisit for promotion to
   permanent hygiene vs retirement as research artifact after

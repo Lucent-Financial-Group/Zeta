@@ -75,8 +75,21 @@ Each snapshot captures a point-in-time state. Burn rate comes from
    workload (≈N extra PRs / Actions-minutes / Copilot token burn),
    does remaining free-credit allowance cover it? If not, hold
    Stage 1 until (a) the workload estimate shrinks, (b) Aaron
-   tops up free credits via another channel, or (c) we switch to
-   an Actions-minutes-frugal migration shape.
+   tops up free credits via another channel, (c) we switch to
+   an Actions-minutes-frugal migration shape, or (d) Aaron
+   triggers an Enterprise upgrade (the credit-exhaustion
+   escape valve documented in the ADR).
+
+`tools/budget/project-runway.sh` implements this projection. It
+reads `snapshots.jsonl`, computes per-PR burn from the first-vs-last
+snapshot delta, projects against a configurable Stages-1-4 PR count
+(default 20), and emits both human-readable text and JSON. It
+handles N=1 gracefully by reporting *"insufficient data — accumulate
+more snapshots"* rather than producing a misleading projection.
+Flags: `--stages N`, `--copilot-rate USD`, `--actions-free-ms MS`,
+`--json`, `--file PATH`. Default parameters are tuned for
+LFG/Zeta's current plan (Copilot Business $19/seat/mo, Team-plan
+Actions 3000 min/month = 180000000 ms).
 
 ## When to snapshot
 
@@ -138,5 +151,6 @@ Decision deferred to post-Stage-2 review, explicitly.
 - `memory/feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md`
   — LFG paid-plan context
 - `tools/budget/snapshot-burn.sh` — the capture script
+- `tools/budget/project-runway.sh` — the projection companion
 - `tools/hygiene/snapshot-github-settings.sh` — sibling
   declarative-settings-as-code pattern (parallel tool shape)
