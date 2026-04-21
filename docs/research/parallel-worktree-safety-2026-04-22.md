@@ -251,3 +251,193 @@ Aaron 2026-04-22 follow-up, after the factory merged #32/#33/#34/#35 and an auto
 **PR #31 disposition.** This tick did not force-merge PR #31 — the agent-merges-own-PRs directive is scoped to green / no-unresolved-findings state, and #31 has 8 Copilot findings + 5 conflicts + unclear subsumption by #32's scope. The harness permission layer correctly refused the merge flow mid-resolution, flagging it as a shared-repo-state modification requiring precise authorization for this specific PR. Disposition is an Aaron-scoped decision (flagged in the PR's own classification comment: *"does #31 merge as a smaller slice, or close in favour of #32?"*). The stash-and-revisit pattern from §2.4 (stale-branch cleanup preventive+compensating) applies.
 
 The live-lock-between-PRs risk Aaron flagged is *not* structural between PR #31 and PR #32 specifically — it's the general class. If PR #31 and PR #32 both touch `docs/BACKLOG.md` (likely, given BACKLOG.md is the busiest file in the repo), merging PR #32 first means PR #31 needs a rebase; rebasing after PR #32's markdownlint-fix touches BACKLOG.md may or may not conflict. **Action deferred to Aaron** — pushing or merging either PR without his sign-off during map-before-walk is wrong.
+
+## 10. Merge queue + auto-merge — Aaron's structural-fix proposal (2026-04-22)
+
+Aaron 2026-04-22 after reading §1–§9 and the R45–R49 staging:
+
+> *"when you do the parallel research make sure you say in there
+> something to the effect of ask yourself. If I create new PR
+> before the next round while the current one is building that
+> means that new PR is going to have to be rebased at least once
+> when the first one finishes, so you will have to wait then.
+> Ohh duhhhh let me just stop, I'm pretty sure the answer is we
+> need to enable merge queue in git. I've never done that but
+> it's enabled on this project I work on. Then you can use merge
+> queue and the auto complete on the PR to help get them through"*
+
+Two distinct moves packed into this message: a pre-open discipline
+(§10.1) and a structural affordance that largely replaces that
+discipline (§10.2).
+
+### 10.1 Pre-open self-questioning — "ask yourself about the rebase cost"
+
+Before opening a second PR while the first is still building, the
+agent runs a one-question audit:
+
+> **If I open this PR now, will it need a rebase once the current PR merges?**
+
+If yes — and given §9's ranked-by-collision shared-surfaces table,
+for anything touching `docs/BACKLOG.md` or any persona notebook the
+answer is almost always yes — then opening the PR earlier buys
+nothing. The agent still waits for the first merge before the second
+can land cleanly; the waiting just moves from *before-open* to
+*after-rebase*, with extra conflict-resolution tacked on.
+
+**Pre-open checklist (before a parallel PR):**
+
+- **Shared-surface scan.** Does the new PR edit any §9-listed
+  high-collision surface that the in-flight PR also touches?
+  (`docs/BACKLOG.md`, `memory/persona/*/NOTEBOOK.md`,
+  `memory/persona/best-practices-scratch.md`, `openspec/specs/*/spec.md`,
+  date-stamped research docs.) If yes → opening now costs more than
+  waiting.
+- **Scope-isolation check.** If the new PR's scope is orthogonal
+  (different subdirectory, different subsystem, no shared docs),
+  opening now is fine — no rebase in its future.
+- **Default.** *Wait unless isolated.* §9 evidence says shared-write
+  surfaces are more common than scope-isolated ones in this factory
+  today.
+
+### 10.2 Merge queue + auto-merge — the structural fix
+
+Aaron's actual solution bypasses most of the §10.1 discipline via two
+GitHub features this repo does not yet use:
+
+**GitHub merge queue** (branch-protection setting):
+
+- PRs join a queue instead of merging directly.
+- The queue creates a "merge group" branch with (current main + the
+  queued PR's diff) and re-runs required checks on that combined
+  state.
+- If checks pass, merges to main; if fail, the offending PR is
+  booted from the queue and the remaining queued PRs continue.
+- Effect: every merge to main is tested against the *current* main,
+  not a stale snapshot. The queue — not the agent — owns the
+  rebase-on-main logic.
+
+**Auto-merge-on-PR** (per-PR toggle, `gh pr merge --auto`):
+
+- Once enabled on a PR, GitHub merges it automatically when all
+  required checks pass and required reviews complete.
+- Combined with merge queue: enabling auto-merge queues the PR when
+  it goes green.
+- Effect: the agent doesn't manually run `gh pr merge` after every
+  green build — the PR enters the queue on its own.
+
+**What this pair solves, mapped to §2 hazards:**
+
+| §2 hazard | Merge queue + auto-merge | Still required separately |
+|---|---|---|
+| Live-lock between PRs (§2.1) | Partial — queue linearizes merge order; no "which first" dance | Scope-overlap registry still needed for *pre-PR* worktree coordination |
+| Merge conflicts (§2.2) | Partial — queue tests against fresh main; surfaces conflicts at queue time | Shared-surface reduction (§9) is still the real fix |
+| Build-speed ceiling (§2.3) | No change — queue serializes; still capped by CI time | Incremental builds / affected-tests-only |
+| Stale branches (§2.4) | Side-benefit — auto-delete on merge still fires; queue enforces clean merges | Cadenced stale-branch audit still runs |
+| Bouncing-between-PRs dance | **Full fix** — agent opens PR, `--auto`-merges, moves on | — |
+
+**Importantly — merge queue does NOT remove the need for §2.1 scope
+discipline.** Worktree-spawn-time conflicts happen *before* PRs exist;
+the queue only catches conflicts at the final integration step. Two
+agents both editing `docs/BACKLOG.md` in parallel worktrees still
+produce a merge conflict at queue time; the queue just makes the
+firing deterministic.
+
+### 10.3 Action — enable merge queue (2026-04-22, direct)
+
+Aaron 2026-04-22: *"i'm the admin you can toggle it all you want"* —
+standing permission granted; no HB-001 filing needed, admin toggles
+done inline. Discovered state and actions:
+
+**Already on (no action needed):**
+
+- `allow_auto_merge: true` — the per-PR auto-merge button is
+  already exposed.
+- `delete_branch_on_merge: true` — §2.4 preventive is already
+  live; the stale-branch compensating detector (§2.4 compensating)
+  is the only remaining piece from that hazard.
+- `allow_squash_merge: true` + `allow_merge_commit: false` +
+  `allow_rebase_merge: false` — squash-only convention matches
+  the queue's chosen merge method.
+
+**Workflow triggers — prerequisite (2026-04-22 landed):**
+
+Before merge queue can be enabled, the required workflows must
+listen to `merge_group` events, or merges deadlock. Added
+`merge_group:` to the `on:` block of both `.github/workflows/gate.yml`
+(all six required checks) and `.github/workflows/codeql.yml` (best-
+effort though not required). Landed as PR #41 to main.
+
+**Merge queue ruleset config (2026-04-22 landed):**
+
+Created repository ruleset "Merge queue for main":
+
+- Target: `~DEFAULT_BRANCH` (`main`).
+- Rule type: `merge_queue`.
+- `merge_method: SQUASH` — matches current `gh pr merge --squash`
+  convention.
+- `grouping_strategy: ALLGREEN` — safer than `HEADGREEN`; a failing
+  PR in the group fails the whole group rather than partially merging.
+- `min_entries_to_merge: 1`, `max_entries_to_merge: 5`,
+  `min_entries_to_merge_wait_minutes: 5`,
+  `max_entries_to_merge_wait_minutes: 60`,
+  `max_entries_to_build: 5`,
+  `check_response_timeout_minutes: 60` — conservative defaults;
+  revisit after observing a month of queue traffic.
+- Required checks stay the same six classic-branch-protection
+  requires; the queue re-runs them against the merge-group branch.
+
+Once both are enabled, the agent convention shifts from:
+
+> Open PR → wait for CI → manually `gh pr merge`
+
+to:
+
+> Open PR → `gh pr merge --auto --squash` → move on; queue handles
+> the final merge when checks are green.
+
+### 10.4 Why this is cartographer-grade good
+
+Aaron's *"duhhh let me just stop"* reframes the §10.1 discipline from
+"rule agents must internalize" to "structural affordance GitHub
+already provides". That is the **essential-vs-accidental cut**
+(Rodney's Razor, `memory/feedback_kanban_factory_metaphor_blade_crystallize_materia_pipeline.md`)
+applied to the §4 staging: the elaborate scope-overlap-registry in
+§4-R46 remains valuable for *pre-PR worktree-spawn* coordination, but
+the *post-PR merge-order* coordination it also partially addressed
+gets a better structural answer from a GitHub feature that already
+exists and is battle-tested at scale.
+
+### 10.5 Revised §4 staging
+
+- **Round 45 (revised):** HB-001 resolution (merge queue +
+  auto-merge toggles) + GitHub auto-delete-branch setting +
+  cadenced stale-branch audit row. Three admin toggles and one
+  FACTORY-HYGIENE row.
+- **Rounds 46–48:** unchanged from §4 — scope-overlap registry,
+  session-start-from-main rule, tick-history hygiene.
+- **Round 49 — EnterWorktree-default flip** remains conditional on
+  46–48 landing clean. Merge queue does not remove the pre-PR
+  scope-discipline need.
+
+### 10.6 Relationship to the "never merge your own PR without green" rule
+
+The auto-merge shift raises one question the factory should answer
+before flipping the HB-001 toggle: *what counts as "agent self-
+review" when the queue merges automatically?* Today the agent merges
+manually after inspecting `gh pr view` output. With auto-merge, the
+agent never sees the green state before the merge fires. Mitigations:
+
+- **Required checks are the contract.** The six required checks are
+  already the merge gate; auto-merge just removes the manual click.
+  If a check is too weak to auto-merge on, it's too weak to merge on
+  at all — strengthen the check, not the manual-gate discipline.
+- **Copilot-finding awareness.** The factory convention today is to
+  treat open Copilot findings as merge blockers (PR #31's 8 findings
+  were a stated reason for not merging). Before flipping HB-001,
+  codify whether Copilot findings count as required-checks or as
+  advisory-only. If required, add a check that fails the PR when
+  findings are unresolved; if advisory, auto-merge overrides them.
+  Either answer is consistent; the status quo of *treating them as
+  blockers without gating them* is not.
+
+Both mitigations belong to the HB-001 resolution round, not later.

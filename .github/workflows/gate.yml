@@ -34,6 +34,7 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
   push:
     branches: [main]
+  merge_group:
   workflow_dispatch:
 
 permissions:
