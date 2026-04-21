@@ -913,6 +913,36 @@ within each priority tier.
   public endpoints + commits to the fork. Gates three-repo-split
   Stage 1; does not gate anything else.
 
+- [ ] **Graceful-degradation factory-wide audit — apply
+  microservice + UI review lens across all existing tools,
+  scripts, docs, and hygiene checks.** Aaron 2026-04-22:
+  *"Graceful-degradation should be first class in everything
+  we do"* + *"frame it how a microservice and ui would frame
+  graceful degradation not a scientist, they are similar but
+  not 100% overlapping."* The principle is recorded in memory
+  `feedback_graceful_degradation_first_class_everything.md`.
+  The audit work: walk the factory surface (tools/, scripts,
+  hygiene checks, docs that cite live state) and flag places
+  where the current behaviour is crash-on-missing-dep,
+  silent-fabricate-on-partial, or total-fail instead of
+  per-item-bulkheaded / stale-cache-served /
+  partial-response-with-manifest. Fixes land incrementally as
+  per-tool PRs; the audit itself is a hygiene pass. Canonical
+  examples that already do this correctly: `project-runway.sh`
+  (N=1 partial response), `snapshot-burn.sh` (per-repo
+  bulkheads + scope_coverage manifest), `prune-stale-branches.sh`
+  (clean N=0 response). Known violations to start with:
+  scripts that abort on first `gh api` 4xx; docs citing live
+  state without snapshot timestamps; hygiene checks that
+  require all expected files present. Effort: M (factory-wide
+  audit pass, staggered fixes). Owner: Architect; per-tool
+  fixes may route to Dejan (devops) for CI-adjacent scripts.
+  Related: `feedback_graceful_degradation_first_class_everything.md`
+  + `project_local_agent_offline_capable_factory_cartographer_maps_as_skills.md`
+  (factory-scale offline-capable extension of the same
+  principle). No single gate; informs every future tool
+  review.
+
 - [ ] **Complete-GitHub-surface map integration — extend repo-level
   ten-surface playbook up to org / sideways to enterprise / across to
   platform (round 44 absorb)** — Aaron 2026-04-22: *"you mapped out the
@@ -6310,6 +6340,56 @@ Aarav.
   (ace full design). **Gated on:** Aaron sign-off on Stage
   1 trigger; no blocker today since "we don't have to blow
   everything up."
+
+- [ ] **Multi-SUT-scope factory design — one agent instance
+  tracking rules in 3 repos; Forge as command-center +
+  bundled-with-app dual identity.** Aaron 2026-04-22
+  forward-looking directive: *"factory is going to have to
+  get updated to support multiple systems under test scopes
+  while still remaining generic, that's going to be fun,
+  forge will be building itself, ace, and Zeta I can't
+  quite picture in my head how it's all going to come
+  together. but there will be one instance of you who has
+  to keep track of the rules in 3 repos, and we will be
+  booting in forge, we are in Zeta right now. From forge
+  can me like a command center for working on multiple
+  repos at once. But also forget can be bundled with your
+  app like Zeta will be, it's going to be interesting
+  untying those knots."* **Design tensions to resolve in
+  Stage 2+ (after Forge exists):** (1) generic factory +
+  multiple SUT scopes — Forge stays portable while building
+  three specific systems; (2) one agent instance operating
+  across three repo contexts — today sessions boot with
+  Zeta's CLAUDE.md, post-split must be SUT-scope-aware;
+  (3) boot-in-Forge replaces boot-in-Zeta — affects
+  session-slug paths, memory-in-worktree semantics, skill
+  loading; (4) Forge as command-center — multi-repo
+  dashboards, cross-repo hygiene, aggregated CI signal;
+  (5) Forge bundled-with-app — Forge machinery ships inside
+  apps (Zeta, ace, and Forge-itself for self-hosting), the
+  command-center / bundled-dep tension is what Aaron calls
+  *"untying those knots."* **Stage 1 constraint (land
+  during Forge scaffolding, not after):** generic
+  CLAUDE.md / AGENTS.md from day one (not Zeta-specific);
+  portable skill library (project-tagged skills allowed per
+  `.claude/skills/skill-tune-up` portability criterion);
+  multi-repo-aware persistence story (memory dirs, tick
+  history, round history). **Not to implement before
+  Forge exists** — premature multi-SUT design without a
+  working Forge is speculative. **Open questions:**
+  authoritative CLAUDE.md location (Forge-root vs SUT-root
+  vs both depending on entry point); graceful-degradation
+  when peer repos are missing / cloned elsewhere / out of
+  sync; 10-PR upstream rhythm generalization to N SUTs;
+  budget substrate scaling per-SUT vs aggregated;
+  differential-rule-application when same rule applies
+  differently to different SUTs (Zeta F#, ace TBD, Forge
+  Claude-scaffolding). Effort: L (spans Stage 2-4 of the
+  three-repo split). Owner: Architect; unblocked once
+  three-repo-split Stage 1 lands. Source of truth: memory
+  `project_multi_sut_scope_factory_forge_command_center.md`;
+  ADR `2026-04-22-three-repo-split-zeta-forge-ace.md`
+  Stage 2+ sections.
 
 ---
 
