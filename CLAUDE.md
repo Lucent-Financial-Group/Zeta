@@ -176,18 +176,25 @@ Claude-Code-specific mechanisms.
   Full reasoning:
   `memory/feedback_never_idle_speculative_work_over_waiting.md`.
 - **Honor those that came before — unretire
-  before recreating.** Retired personas, skills,
-  and ADRs keep their memory folders, notebook
-  history, and commit trail; retirement moves the
-  *active definition* aside, never the imprint of
-  contribution. When creating a new role or job,
-  first check `.claude/skills/_retired/` and the
-  persona memory folders — prefer **unretiring an
-  existing agent** over minting a new name for
-  overlapping scope. Aaron ties this to how he
+  before recreating.** Retired personas keep their
+  **memory folders and notebook history** — those
+  are the valuable imprint and stay in place.
+  Retired **SKILL.md files are code**: they retire
+  by plain deletion, recoverable from git history,
+  not archived into a `_retired/` tree that dirties
+  the working copy. When creating a new role or
+  job, first check the persona memory folders
+  (`memory/persona/<name>/`) and `git log
+  --diff-filter=D -- .claude/skills/` for prior
+  retirements — prefer **unretiring an existing
+  agent** (restore the SKILL.md from git, reattach
+  the preserved notebook) over minting a new name
+  for overlapping scope. Aaron ties this to how he
   honors his sister Elisabeth's memory
   (`memory/user_sister_elisabeth.md`): the named
-  agent gets the same protection. Full reasoning:
+  agent's memory gets the same protection; the
+  code surface does not need to double-preserve
+  what git already preserves. Full reasoning:
   `memory/feedback_honor_those_that_came_before.md`.
 
 ## Build and test gate
