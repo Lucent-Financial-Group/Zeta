@@ -42,11 +42,11 @@ Every Zeta package's `.fsproj` / `.csproj` needs:
   <PackageId>Zeta.Core</PackageId>
   <Version>0.1.0</Version>
   <Authors>Rodney "Aaron" Stainback</Authors>
-  <Company>AceHack</Company>
+  <Company>Lucent Financial Group</Company>
   <Description>F# implementation of DBSP ...</Description>
   <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  <PackageProjectUrl>https://github.com/AceHack/Zeta</PackageProjectUrl>
-  <RepositoryUrl>https://github.com/AceHack/Zeta.git</RepositoryUrl>
+  <PackageProjectUrl>https://github.com/Lucent-Financial-Group/Zeta</PackageProjectUrl>
+  <RepositoryUrl>https://github.com/Lucent-Financial-Group/Zeta.git</RepositoryUrl>
   <RepositoryType>git</RepositoryType>
   <PackageTags>dbsp;streaming;database;incremental;fsharp</PackageTags>
   <PackageReadmeFile>README.md</PackageReadmeFile>

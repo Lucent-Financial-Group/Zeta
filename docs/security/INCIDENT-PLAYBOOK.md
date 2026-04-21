@@ -366,8 +366,8 @@ trigger Playbook F without a crisp signal.
 
 ## Contact tree
 
-**Primary:** Aaron (human maintainer, AceHack/Zeta on
-GitHub).
+**Primary:** Aaron (human maintainer, Lucent-Financial-
+Group/Zeta on GitHub).
 **Agents:** `threat-model-critic`, `security-researcher`,
 `prompt-protector` for triage support. `architect` for
 integration decisions that span multiple playbooks.
