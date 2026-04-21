@@ -68,6 +68,7 @@ The merge-key machinery disappears because the engine
 deltas, not as new rows to MERGE against old ones.
 
 **What this buys:**
+
 - `ref()` returns a Z-set (or a Z-set view) instead of a
   relation. `{{ is_incremental() }}` guards become unnecessary
   — every ref is always incremental.
@@ -78,6 +79,7 @@ deltas, not as new rows to MERGE against old ones.
   and re-insert" — which is already a first-class Z-set op.
 
 **What this costs:**
+
 - dbt model authors have to stop reasoning in "merge keys +
   guards" and start reasoning in "this is a Z-set transform".
   That's a semantic migration, not a syntactic one.
@@ -110,6 +112,7 @@ transaction-time. No duplicate rows. No author-owned
 snapshot and the live table.
 
 **What this buys:**
+
 - Storage: one copy of the data, bitemporal-indexed, instead
   of a snapshot table growing linearly with change-event
   count.
@@ -120,6 +123,7 @@ snapshot and the live table.
   cannot.
 
 **What this costs:**
+
 - Bitemporal engines are notoriously hard to implement well
   (see Snodgrass "Developing Time-Oriented Database
   Applications in SQL", 2000). Zeta has to actually deliver
@@ -161,6 +165,7 @@ not a test-after-materialize one.
 | Custom singular | Liquid-`F#` predicate over the Z-set + contract-level assertion. |
 
 **What this buys:**
+
 - Shift-left on correctness: violations surface before the
   transformation lands, not after.
 - Cheaper rechecks via delta-awareness: if the delta doesn't
@@ -170,6 +175,7 @@ not a test-after-materialize one.
   refinement types.
 
 **What this costs:**
+
 - Liquid-`F#` is pre-v1; the contract surface isn't shippable
   yet. The mapping is aspirational until skill.yaml + Liquid-
   `F#` bind.
@@ -201,11 +207,13 @@ a more detailed graph. The UX survives; the storage layer
 underneath disappears.
 
 **What this buys:**
+
 - One lineage source-of-truth (the operator graph), not two
   (graph + manifest.json).
 - Operator-level granularity for selection, not model-level.
 
 **What this costs:**
+
 - dbt Cloud's lineage viewer consumes `manifest.json` shape.
   An adapter that *emits* `manifest.json` compatible output
   from Zeta's operator graph is the compatibility bridge —
