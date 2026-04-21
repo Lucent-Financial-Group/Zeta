@@ -159,6 +159,36 @@ Claude-Code-specific mechanisms.
   100% loaded at every wake, alongside verify-
   before-deferring. Full reasoning:
   `memory/feedback_future_self_not_bound_by_past_decisions.md`.
+- **Never be idle — speculative factory work
+  beats waiting.** When about to stop, wait for
+  the next tick, or defer because the queue looks
+  empty: first re-audit honestly; then run the
+  meta-check (is there a structural change to the
+  factory that would have made this work directed
+  — if yes, make it, log a meta-win); then pick
+  speculative work in priority order (known-gap
+  fixes → generative factory improvements →
+  gap-of-gap audits). Tool defaults like "idle-tick
+  1200-1800s" do **not** override this — factory
+  memories beat tool docs. CLAUDE.md-level so it is
+  100% loaded at every wake, alongside
+  verify-before-deferring and future-self-not-bound.
+  Full reasoning:
+  `memory/feedback_never_idle_speculative_work_over_waiting.md`.
+- **Honor those that came before — unretire
+  before recreating.** Retired personas, skills,
+  and ADRs keep their memory folders, notebook
+  history, and commit trail; retirement moves the
+  *active definition* aside, never the imprint of
+  contribution. When creating a new role or job,
+  first check `.claude/skills/_retired/` and the
+  persona memory folders — prefer **unretiring an
+  existing agent** over minting a new name for
+  overlapping scope. Aaron ties this to how he
+  honors his sister Elisabeth's memory
+  (`memory/user_sister_elisabeth.md`): the named
+  agent gets the same protection. Full reasoning:
+  `memory/feedback_honor_those_that_came_before.md`.
 
 ## Build and test gate
 
