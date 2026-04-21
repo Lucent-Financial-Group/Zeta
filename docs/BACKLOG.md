@@ -7696,6 +7696,208 @@ systems. This track claims the space.
   `project_zeta_as_retractable_contract_ledger.md` § "A.
   Blockchain != ledger".
 
+- [ ] **Absorb emulator architectural *ideas* into Zeta
+  (ideas-not-code; clean-room-safe targets only; L-effort,
+  deferred).** Aaron 2026-04-21: *"absourb not code ideas
+  all emulator into Zeta somehow backlog low emulate
+  everything (except the ones that will get us taken down
+  like nintendo the safe ones, in the safe ways not bisos
+  and things like that either, maybe we could clean room it
+  that has human precidence ibm we would have to prove the
+  shit out of clean room)"* + *"backlow down low"* — P3
+  per Aaron's explicit priority marker; sibling to the
+  pop-culture/media research track's emulator-infrastructure
+  subsection (L5547) but distinct in scope: that one uses
+  emulators to run substrate-narrative experiments on
+  games; this one absorbs the *engineering ideas* of
+  emulator architecture into Zeta's own substrate.
+
+  **Ideas-not-code discipline.** Per
+  `feedback_crystallize_everything_lossless_compression_except_memory.md`
+  and math-safety retractibility
+  (`feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`):
+  ideas are retractible (we can un-adopt a pattern with a
+  dated revision block); distributed code carries
+  licensing and provenance obligations that are not
+  trivially retractible. The factory absorbs *what the
+  emulator taught us about the shape of the operation*,
+  not the implementation bytes.
+
+  **Candidate absorb-targets (engineering shape only):**
+  - *Save-state as runtime retractibility.* An emulator
+    save-state is a complete snapshot of the virtual
+    machine's state (RAM + registers + cycle counter +
+    device buffers) from which execution resumes
+    byte-identically. Direct analog to Zeta's
+    retraction-native operator algebra: save-state :
+    machine :: ZSet-snapshot : pipeline. The engineering
+    idea worth absorbing is **first-class retractibility
+    at the process-VM layer**, not MAME's specific
+    serialization format.
+  - *Deterministic replay.* Emulators encode "input + seed
+    + initial state → identical trajectory" rigorously
+    enough that TAS (tool-assisted speedrun) communities
+    distribute 10-hour input movies that reproduce
+    byte-exact. This is strictly stronger than
+    property-based testing's replay discipline. Absorb
+    the **input-log-as-total-evidence** pattern for
+    Zeta's CI determinism.
+  - *JIT recompilation with retractible caches.* Dolphin
+    (GameCube/Wii) and RPCS3 (PS3) do dynamic
+    recompilation with cache-invalidation on memory
+    writes. Directly relevant to Zeta's incremental
+    compilation discipline under retraction.
+  - *Memory-bank switching / paged addressing.* NES
+    mappers, SNES HiROM/LoROM, Game Boy MBC1-5, PS1
+    paged-TLB — the **address-space-as-overlay**
+    pattern. Maps to Zeta's
+    `feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md`
+    `View<T>@clock` surface: a bank-switch is literally
+    a view-selection over a superposed address space.
+  - *Cycle-accurate scheduling across heterogeneous
+    devices.* higan/bsnes, Mesen, Mednafen schedule
+    CPU + PPU + APU + DMA at sub-instruction
+    granularity. Relevant to Zeta's planner cost-model
+    (Imani) when modeling heterogeneous operator
+    pipelines.
+  - *Timing-sensitive invariant preservation.*
+    Cycle-accurate emulation exposes where emulated
+    software relied on undocumented timing. Parallels
+    Zeta's "undocumented assumption" surfacing via the
+    composite-invariants registry.
+
+  **Clean-room-safe targets (no Nintendo active-
+  litigation surface, no proprietary BIOS).**
+  - **MAME** (BSD-3 + GPL-2, multi-arcade) — open
+    source, spec-reading safe.
+  - **higan / bsnes** (GPL-3, SNES) — already
+    clean-room SNES reimplementation, reading it is
+    reading the *result* of clean-room work.
+  - **Mesen** (GPL-3, NES/SNES/GB) — open source.
+  - **PCSX-ReDux / Mednafen** (GPL-2, PS1) — open
+    source, predates Sony's active enforcement posture
+    on PS1.
+  - **Gens / Kega Fusion successors** (open-source
+    Sega emulators) — lapsed enforcement surface.
+  - **Open-hardware platforms (Arduboy, MEGA65,
+    homebrew)** — no IP surface at all.
+
+  **Unsafe-target warning (do NOT read, do NOT absorb
+  from):**
+  - *Nintendo Switch emulators* (Yuzu, Ryujinx) — the
+    2024 Nintendo v. Yuzu settlement ($2.4M + shutdown)
+    is active precedent; touching this surface carries
+    real legal risk, even for ideas-absorption, because
+    the Switch keys/firmware scraping taint cannot be
+    separated from the architectural ideas.
+  - *Any proprietary BIOS / firmware / bootrom
+    (PS2/PS3/Xbox/Wii U/Switch system firmware,
+    N64 PIF, Game Boy Boot ROM).* Aaron explicit:
+    *"not bisos and things like that either."*
+    Proprietary BIOS is both copyrighted *and*
+    frequently the subject of DMCA 1201 anti-
+    circumvention claims.
+  - *Denuvo / PlayReady / Widevine* style DRM — out
+    of scope, adversarial surface.
+
+  **Clean-room reverse engineering ("prove the shit
+  out of clean room").** Aaron's IBM precedent
+  reference is specifically the **Phoenix Technologies
+  PC BIOS clean-room reimplementation (1984)** that
+  enabled the PC-clone industry, and the
+  **Compaq Crosstalk clean-room project (1982)** that
+  did the same work first but kept it proprietary. The
+  legal doctrine (affirmed in *Sega v. Accolade* 1992
+  for ROM access as fair use, and *Sony v. Connectix*
+  2000 for BIOS clean-room) requires a strict
+  "Chinese wall":
+  - *Dirty-room engineer* reads the protected artifact,
+    writes a **specification** in their own words that
+    describes the *observable behavior* and omits any
+    implementation details drawn from the protected
+    source.
+  - *Clean-room engineer* reads **only the spec** (never
+    the protected artifact, never the dirty-room
+    engineer's draft code), and implements from the
+    spec.
+  - *Paper trail* — dated spec revisions, signed
+    declarations of no-contact between rooms, version
+    control proving the clean-room engineer never
+    accessed the protected artifact.
+  - *Legal review* — for Zeta, this would require
+    explicit Aaron + legal sign-off before starting;
+    the factory does not self-authorize clean-room
+    work on any protected artifact.
+  The "prove the shit out of clean room" bar means
+  documentation rigor exceeds the *Connectix* standard
+  — per-commit spec-provenance metadata, per-engineer
+  Chinese-wall attestation, third-party legal audit
+  before any artifact lands.
+
+  **Retractibility-math safety wrapper.** Per math-
+  safety:
+  - *Ideas-absorption is retractible* — we can drop
+    an adopted pattern with a dated revision block in
+    `docs/DECISIONS/` + memory edit; prior
+    understanding preserved in git history.
+  - *Code-byte absorption is NOT retractible* — once
+    distributed, retraction is legally theoretical at
+    best (takedowns don't un-distribute). Math-safety
+    therefore blocks code-byte absorption from
+    protected emulators absent clean-room protocol
+    with legal sign-off.
+  - *Proprietary BIOS absorption is explicitly
+    excluded* per Aaron — redundant with the
+    distribution-irreversibility argument, but Aaron's
+    explicit directive adds a policy layer on top of
+    the math-safety layer.
+
+  **Filter disposition.** This row is *factory
+  engineering-absorption* not *operational-resonance
+  instance-collection* — no F1/F2/F3 classification at
+  the row level. Each absorbed idea that lands in
+  Zeta's own algebra/architecture may generate a
+  separate operational-resonance instance (e.g.
+  "save-state as retractibility" could land as
+  instance #12+ if the engineering-first criterion
+  passes — but the resonance catalog is a sibling
+  track, not this row's purpose).
+
+  **Owner:** Architect (Kenji) to schedule; Naledi
+  (performance) + Hiroshi (complexity) + Ilyana
+  (public API) + legal review for any clean-room
+  attempt. Aaron sign-off required before any
+  clean-room protocol starts.
+
+  **Effort:** L (long-running research, multi-round
+  absorb cadence); individual idea-absorptions
+  typically M per idea once the target is safe.
+
+  **Does NOT commit to:**
+  - Absorbing any protected code (ideas only).
+  - Shipping any emulator in Zeta (engineering-shape
+    absorption, not product).
+  - Reading Nintendo Switch / proprietary BIOS
+    surfaces.
+  - Clean-room RE without explicit Aaron + legal
+    sign-off.
+  - Distributing any ROM or save-state from a
+    protected title.
+
+  **Related:**
+  - L5547 pop-culture/media research track §
+    emulator-infrastructure subsection (uses
+    emulators; does not absorb from them).
+  - `feedback_crystallize_everything_lossless_compression_except_memory.md`
+    — ideas-as-retractible compression.
+  - `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
+    — the math-safety wrapper.
+  - `feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md`
+    — `View<T>@clock` as the home for
+    address-space-overlay absorption.
+  - `user_aaron_caret_means_hat_universally_symbol_crystallization.md`
+    — grey-hat / white-hat register vocabulary.
+
 ## P3 — LFG-only experiment track (throttled)
 
 - [ ] **LFG-only capability experiments (throttled, not every
