@@ -1,0 +1,64 @@
+name: github-settings-drift
+
+# Weekly drift detector for GitHub repo settings that live outside the
+# declarative-in-tree surface (rulesets, branch protection, Actions
+# variables, environments, Pages, CodeQL default-setup state, etc.).
+# Compares live `gh api` output against the checked-in expected snapshot
+# at tools/hygiene/github-settings.expected.json. Drift blocks this
+# workflow; resolve by either reverting the setting in GitHub or
+# re-snapshotting and committing the new expected.
+#
+# Security note (safe-pattern compliance): this workflow only consumes
+# first-party trusted context — `secrets.GITHUB_TOKEN` and
+# `github.repository` (the owner/repo string). No user-authored
+# fields (issue title, PR body, commit message, head_ref, etc.) are
+# referenced. Both trusted values are passed via env: into the run
+# block and quoted there, matching the recommended safe pattern from
+# https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/
+#
+# See docs/GITHUB-SETTINGS.md + docs/FACTORY-HYGIENE.md row #40.
+
+on:
+  schedule:
+    # Weekly Mondays 14:17 UTC — off the hour to avoid the GHA
+    # cron thundering-herd.
+    - cron: "17 14 * * 1"
+  workflow_dispatch: {}
+  # Also run on any change to the expected snapshot or the detector
+  # itself, so a PR that updates expected gets an immediate green
+  # signal that the snapshot matches reality at merge time.
+  pull_request:
+    paths:
+      - "tools/hygiene/github-settings.expected.json"
+      - "tools/hygiene/snapshot-github-settings.sh"
+      - "tools/hygiene/check-github-settings-drift.sh"
+      - ".github/workflows/github-settings-drift.yml"
+
+permissions:
+  contents: read
+  # Need metadata to read rulesets / branch protection / Actions
+  # variables via gh api. GITHUB_TOKEN's default permissions are
+  # sufficient for public-repo settings reads.
+  actions: read
+  administration: read
+
+concurrency:
+  group: github-settings-drift
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: check drift
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+
+      - name: check drift
+        env:
+          # Both values below are first-party trusted context.
+          # No user-authored input is used anywhere in this workflow.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          tools/hygiene/check-github-settings-drift.sh --repo "$GH_REPO"
