@@ -2865,6 +2865,55 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
+- [ ] **Hygiene-skill consolidation research — every row
+  a skill, grouped skill, or one general skill with
+  classes?** Aaron 2026-04-20 late: *"does every hygene
+  task need to be a skill our should we collapse some
+  into hygenen groups and/or just a general hygene with
+  different classes."* `docs/FACTORY-HYGIENE.md` now has
+  36 rows. Not all of them have (or should have) a
+  dedicated skill — several are one-liners that live in
+  another skill's checklist. Open design question:
+  which rows warrant standalone skills, which collapse
+  into groups, which are just checklist items in an
+  existing skill?
+
+  **Design sketch — three organisational patterns:**
+  1. **Per-row skill** — maximum visibility, maximum
+     sprawl. 36 skills for 36 rows.
+  2. **Grouped skills** (e.g., `scope-hygiene` skill
+     that covers rows 6 + 35 + 36; `agent-qol` skill
+     that covers rows 22-34). Fewer skills, grouped by
+     natural cluster. This matches how Daya already
+     owns rows 22-34 under one audit.
+  3. **One `factory-hygiene` meta-skill with classes** —
+     the skill itself routes by class (scope / agent-QOL
+     / symmetry / pointer-integrity / retro-missing /
+     etc.). Single skill name, class-parameterised.
+  4. **Hybrid** — a meta-skill for the round-close sweep
+     that invokes grouped sub-skills for specialised
+     work (eval harness, injection lint).
+
+  **Criteria to evaluate:**
+  - Which rows need their own eval set? (a Tier-3
+    skill under the edit-gating envelope needs one)
+  - Which rows are just "a thing I do on Tuesday" and
+    live fine as checklist items under a generalist
+    skill?
+  - Which rows need a named persona behind them? (e.g.,
+    Daya wears AX-hat across rows 22-34; does any row
+    need its *own* persona?)
+  - Cost of skill-population size — the skill-tune-up
+    ranker reviews every skill; 36 tiny skills costs
+    more than 6 grouped skills.
+
+  **Placement:** research doc at
+  `docs/research/hygiene-skill-organisation.md`, then a
+  design ADR once a recommendation lands.
+
+  Effort: M (research spike; the rollout is Tier-3
+  skill work that comes after).
+
 - [ ] **Missing-scope gap-finder skill — retrospective
   counterpart to row 6.** Aaron 2026-04-20 late:
   *"missing scopes , we need a gap finder that will find

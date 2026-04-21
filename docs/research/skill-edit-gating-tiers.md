@@ -57,27 +57,39 @@ surfacing), `comparator.md` (paired-run comparison),
 **References** (`references/`): `schemas.md` —
 `evals.json` / `grading.json` / `benchmark.json` shapes.
 
-### Factory addition — Zeta's `.claude/skills/skill-creator/SKILL.md`
+### Factory addition — factory-level governance wrap
+
+**Scope: factory-level (universal).** These additions are
+what any project adopting this factory kit inherits — they
+are not Zeta-specific. Zeta is the current reference
+implementation; the *scope* of each row below is the
+factory kit as reusable infrastructure. When the factory
+gets adopted by another project, these wraps come with it;
+only the persona roster and the BP-NN content list change.
+(See `project_factory_reuse_beyond_zeta_constraint.md` and
+`feedback_factory_default_scope_unless_db_specific.md`.)
 
 What our bespoke workflow adds on top of the plugin:
 
-| Addition | What it protects | Who owns it |
+| Addition | What it protects | Factory surface |
 |---|---|---|
 | Prompt-Protector review | Injection resistance, invisible-char lint, over-broad `description:` | `.claude/skills/prompt-protector/SKILL.md` |
-| Portability declaration | Factory-reuse-beyond-Zeta constraint | `project: zeta` frontmatter + §1 of skill-tune-up ranker |
+| Portability declaration | Factory-reuse-beyond-host-project constraint | `project: <name>` frontmatter + §1 of skill-tune-up ranker |
 | BP-NN citation pattern | Stable rule traceability | `docs/AGENT-BEST-PRACTICES.md` |
 | Persona-registry cross-check | No orphan skills; no unregistered persona hats | `docs/EXPERT-REGISTRY.md` |
-| Standard-sections checklist | Consistency across ~180 skills | §"Standard sections checklist" in skill-creator |
+| Standard-sections checklist | Consistency across the skill population | §"Standard sections checklist" in skill-creator |
 | Scope-audit at absorb-time | Factory-default-scope bias enforcement | `feedback_scope_audit_skill_gap_human_backlog_resolution.md` |
 | Skill-edit justification log | Visibility into manual edits | `docs/skill-edit-justification-log.md` |
 | Retirement pattern | `git rm` the SKILL.md; preserve memory folder | `feedback_honor_those_that_came_before.md` |
 | Conflict-resolution hand-off | Specialist coverage map | `docs/CONFLICT-RESOLUTION.md` |
 
-**Observation:** every Zeta addition is *pre-* or
+**Observation:** every factory-level addition is *pre-* or
 *post-behaviour-eval*. None of them replace the eval loop;
 they wrap around it. So the plugin's eval-driven inner loop is
 exactly what we should keep delegating to it; our wrap is the
-outer governance layer.
+outer governance layer. The wrap is **cheap-but-factory-wide**
+— free or near-free checks applied to every skill in the
+population, regardless of which host project is using the kit.
 
 ---
 
