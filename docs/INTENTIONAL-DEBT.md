@@ -1,5 +1,14 @@
 # Intentional-debt ledger
 
+*For the conceptual frame — what tech debt IS, classes,
+how discovery is automated, how this doubles as AI
+instructions — see
+[`docs/TECH-DEBT.md`](TECH-DEBT.md) (factory primer) and
+[`docs/SYSTEM-UNDER-TEST-TECH-DEBT.md`](SYSTEM-UNDER-TEST-TECH-DEBT.md)
+(Zeta-specific). This file remains the declared-shortcut
+ledger; the primer explains how the factory treats
+intentional-vs-accidental debt.*
+
 This file is the factory's first-class record of shortcuts —
 cases where an agent *knowingly* took a quick path instead of
 the right long-term path, and named it as debt in the same
