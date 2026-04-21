@@ -3001,6 +3001,28 @@ within each priority tier.
   round as a *proposed* row (TBD owner pending Aaron
   confirmation on the Daya-hat vs new-persona question).
 
+  **Progress landed round 44:**
+  - Pilot audit at
+    `docs/research/missing-scope-pilot-2026-04-20.md`
+    — 87% of 105 feedback+project memories lack
+    explicit scope declarations.
+  - Scope-frontmatter schema designed at
+    `docs/research/memory-scope-frontmatter-schema.md`
+    — `scope:` field, closed enumeration
+    (`factory | project: <name> | user | hybrid`),
+    factory-overlay on Anthropic's AutoMemory
+    (`memory/reference_automemory_anthropic_feature.md`).
+  - Row 36 (incorrectly-scoped retrospective) added
+    to FACTORY-HYGIENE alongside row 35.
+
+  **Still blocked on:** Aaron/Architect sign-off on
+  the Tier-3 CLAUDE.md auto-memory section edit that
+  makes `scope:` mandatory for new memories; skill
+  authoring waits on the consolidation-research
+  approval (is this a `scope-hygiene` skill or stays
+  a checklist row per
+  `docs/research/hygiene-skill-organisation.md`).
+
   Effort: M (new skill authoring goes through full
   tier-3 `skill-creator` workflow per the tiered
   envelope proposal in
