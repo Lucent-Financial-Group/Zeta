@@ -284,8 +284,7 @@ overclaiming later. So:
 *This resume is audited on a round cadence against
 `docs/SHIPPED-VERIFICATION-CAPABILITIES.md`. The
 capabilities doc is the reference-grade source; this
-resume is my one-page summary. Both stay in sync; the
-cadence will land as a dedicated row in
-`docs/FACTORY-HYGIENE.md` once the Architect promotes
-the shipped-capabilities audit from this round's
-memory (`feedback_factory_resume_job_interview_honesty_only_direct_experience.md`).*
+resume is my one-page summary. Both stay in sync per
+`docs/FACTORY-HYGIENE.md` row 24 ("Shipped-capabilities
+resume audit") — source memory
+`feedback_factory_resume_job_interview_honesty_only_direct_experience.md`.*
