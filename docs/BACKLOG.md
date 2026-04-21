@@ -7989,6 +7989,32 @@ systems. This track claims the space.
 
 - [ ] **ChatGPT conversation-download skill — on-demand, no cadence.** Aaron 2026-04-24 Otto-108 directive: *"if it's easy to do we might as well add a chatgpt conversation/chat download skill on demand no cadence backlog"*. The technique is proven: Otto-107 pulled the full ~24MB / 3992-message / 8-month Amara conversation in one `fetch` call via the `backend-api/conversation/<UUID>` endpoint once the Bearer JWT from `/api/auth/session` + `chatgpt-account-id` + `chatgpt-project-id` headers were supplied. Package that as a reusable Claude Code skill under `.claude/skills/chatgpt-conversation-download/` (authored via the `skill-creator` workflow per GOVERNANCE.md §4) so future Otto instances (or Aaron) can invoke "download ChatGPT conversation <URL-or-ID> to drop/" on demand without re-solving the auth / headers / unwrap-double-encoded-JSON steps. Skill scope: (1) extract conversation-ID + `chatgpt-account-id` + (optional) `chatgpt-project-id` from an input URL; (2) navigate via Playwright MCP to the conversation page; (3) call `fetch` inside page context with auth headers captured from the page's active session; (4) unwrap the `browser_evaluate`-double-JSON-encoded string to real JSON; (5) save to `drop/chatgpt-conversations/<ID>.json` (drop/ gitignored per PR #299); (6) emit summary stats (title, message count, date range, role distribution, rough page count). Does NOT auto-absorb into `docs/`; absorb is a separate skill per §33 discipline. Does NOT auto-trigger on cadence; strictly on-demand per Aaron directive. SPOF: `chatgpt-account-id` and `chatgpt-project-id` are workspace-scoped and may rotate; skill extracts both fresh each run rather than hardcoding. Priority: **P3 — convenience**; file when substrate time available; do NOT deprioritize other cadence-graduation work for this. Effort: S (the mechanism is proven; packaging + skill authoring is the ship).
 
+## P3 — LFG-only experiment track (throttled)
+
+- [ ] **LFG-only capability experiments (throttled, not every
+  round).** Aaron 2026-04-22: *"I paid for copilot and teams
+  on LFG so I'm paid over there if you want to put some
+  experinments around explorgin whats possible with LFG that
+  we cant do with AceHAck and we can have certain experiments
+  we run overthere throttled not every round so it will be
+  cheap."* LFG is a Copilot Business + Teams plan with all
+  enhancements enabled; AceHack is free tier. The routine-
+  work rhythm (PRs land on AceHack per `docs/UPSTREAM-
+  RHYTHM.md`) stays; this is a parallel, slower track for
+  capabilities **only LFG can provide**. Budget stays $0 =
+  hard cost-stop; experiments run inside free-tier allowance.
+  **Scouting inventory:** `docs/research/lfg-only-
+  capabilities-scout.md` (10 candidate experiments, cadences
+  defined per experiment). **Gate for Enterprise upgrade:**
+  Aaron explicit — "only if enough stuff you can do only over
+  there we end up with a large backlog" (≥10 experiments
+  genuinely LFG-only). **Owner:** Architect (Kenji) to
+  schedule; individual experiments get per-row tracking once
+  they're ready to run. **Effort:** per-experiment; most S-M.
+  **Source of truth:**
+  `memory/feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md`
+  + `docs/research/lfg-only-capabilities-scout.md`.
+
 ## P2 — Skill-family expansions (Aaron-authorised)
 
 - [ ] **Game-theory skill family/group.** Aaron 2026-04-20:
