@@ -2865,6 +2865,96 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
+- [ ] **Missing-scope gap-finder skill — retrospective
+  counterpart to row 6.** Aaron 2026-04-20 late:
+  *"missing scopes , we need a gap finder that will find
+  missing scope we didnt think about we already have
+  rules to make sure things are scoped correct, missing
+  scope will ensure we don't miss any even if it's in
+  the future."* Existing row 6 of `docs/FACTORY-HYGIENE.md`
+  fires at *absorb-time* — when a new rule is being
+  written. What's missing: a *retrospective* gap-finder
+  that sweeps already-landed content for implicit or
+  missing scope tags.
+
+  **Design sketch:**
+  1. Cadence: every 5-10 rounds (same as skill-tune-up).
+  2. Surface: `.claude/skills/**/SKILL.md`, `memory/*.md`,
+     `docs/DECISIONS/**`, `docs/BACKLOG.md`, the BP-NN
+     rule list, CLAUDE.md / AGENTS.md / GOVERNANCE.md.
+  3. Method: pattern-match for scope-bearing statements
+     ("this applies to…", "scope: …", "factory-default",
+     "project-specific") and flag entities that have
+     *no* scope declaration. Secondary signal: presence
+     of Zeta-specific terms (`ZSet`, `Spine`, `D`/`I`/
+     `z⁻¹`/`H`, persona names as scope) inside
+     content tagged generic or untagged.
+  4. Output: HUMAN-BACKLOG `scope-clarification` rows
+     (per-user-ask-conflicts-artifact pattern) when
+     scope is ambiguous; BACKLOG P2 rows when scope
+     is clearly wrong but needs research to correct.
+
+  **Placement:** new skill at `.claude/skills/missing-
+  scope-finder/SKILL.md` (factory-scope; applies to any
+  adopter). Persona TBD — candidates include a new named
+  agent or a hat worn by Daya (AX) since she already
+  owns rows 22-34 of FACTORY-HYGIENE. Prefer the hat
+  over a new persona per persona-sprawl constraint.
+
+  **Row 35 in `docs/FACTORY-HYGIENE.md`** added this
+  round as a *proposed* row (TBD owner pending Aaron
+  confirmation on the Daya-hat vs new-persona question).
+
+  Effort: M (new skill authoring goes through full
+  tier-3 `skill-creator` workflow per the tiered
+  envelope proposal in
+  `docs/research/skill-edit-gating-tiers.md`).
+
+- [ ] **Skill-edit gating tiered envelope — Aaron called
+  the current rule over-restrictive.** Aaron 2026-04-20
+  late asked for a design research pass on how to
+  preserve the preservation intent of the skill-creator
+  gate (it ships Prompt-Protector, portability,
+  BP-NN, persona-registry checks the upstream plugin
+  doesn't know about) without forcing every trivial
+  mechanical edit through the full 6-step workflow.
+
+  **Design landed this round:**
+  `docs/research/skill-edit-gating-tiers.md` proposes a
+  four-tier envelope:
+  - **Tier 0** — trivial (no gate; mechanical rename,
+    Unicode cleanup, typo/grammar).
+  - **Tier 1** — convention-update (light gate: free
+    `quick_validate.py` + Prompt-Protector auto-lint +
+    justification-log row citing the landing commit).
+  - **Tier 2** — content edit (medium gate: manual
+    Prompt-Protector review + dry-run + justification
+    log).
+  - **Tier 3** — substantive (full 6-step workflow;
+    for new skills / new responsibility / widened
+    scope / description change / authority flip;
+    uses the upstream plugin's `improve_description.py`
+    + `run_eval.py` + `aggregate_benchmark.py`).
+
+  **Next action (Tier-3 edit, queued):** land the
+  tier envelope into
+  `.claude/skills/skill-creator/SKILL.md` itself by
+  (a) replacing lines 11-17 three-exception list with
+  a pointer to the tier envelope; (b) adding an
+  "Edit tiers" section with the four-tier table; (c)
+  updating `docs/skill-edit-justification-log.md`
+  schema to include a Tier column.
+
+  Owner: Yara (skill-improver) executes via
+  `skill-creator` Tier-3 path with Kenji approval.
+  Effort: M (Tier-3 workflow including eval run on
+  description change).
+
+  On approval and landing, the three skill files in
+  the row below become Tier-1 edits and can ship in
+  the same round rather than waiting on a full
+  tune-up cycle.
+
 - [ ] **Skill-level `_retired/` scope-fix sweep — via
   `skill-creator` workflow.** Aaron 2026-04-20 late:
   *"i don't think we need to apply the don't deleted
