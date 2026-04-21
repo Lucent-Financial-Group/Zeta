@@ -302,9 +302,11 @@ Detail lives in:
 - `docs/FOUNDATIONDB-DST.md` — Will Wilson's
   deterministic simulation testing, adapted for
   Zeta.
-- `docs/category-theory/ctfp-milewski.pdf` —
-  category-theory foundations the operator algebra
-  rests on.
+- `docs/category-theory/README.md` — category-theory
+  foundations the operator algebra rests on. Upstream
+  CTFP sources (Milewski + the .NET port) live under
+  `references/upstreams/` after
+  `tools/setup/common/sync-upstreams.sh` runs.
 - `GOVERNANCE.md` — the numbered repo-wide rules
   themselves.
 
