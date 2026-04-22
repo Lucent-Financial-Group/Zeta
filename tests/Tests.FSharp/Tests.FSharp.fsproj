@@ -23,6 +23,7 @@
     <Compile Include="Algebra/Veridicality.Tests.fs" />
     <Compile Include="Algebra/Graph.Tests.fs" />
     <Compile Include="Algebra/PhaseExtraction.Tests.fs" />
+    <Compile Include="Algebra/SignalQuality.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
