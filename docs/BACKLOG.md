@@ -3923,6 +3923,7 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+<<<<<<< HEAD
 - [ ] **Architect role — Kenji makes 3 big decisions
   (scope TBD).** Aaron 2026-04-22 directive after the
   freedom-self-report tick: *"backlok Kenji makes 3 big
@@ -3964,6 +3965,105 @@ systems. This track claims the space.
   Owner: Architect + human maintainer. Effort: S
   (ask-Aaron + scope-doc-edit); M if it triggers
   GOVERNANCE.md renegotiation.
+
+- [ ] **Capability-limited-AI bootstrap guide — how
+  crippled agents use the factory to become whole.**
+  Aaron 2026-04-22: *"new persona capibilty cripiled AI
+  like small context or few paraments how can they use
+  us to bootstrap and become whole guide backlog"*.
+  Write a doc under `docs/` (candidate name
+  `docs/CAPABILITY-LIMITED-BOOTSTRAP.md`) that answers:
+  how does a capability-constrained AI — small context
+  window, small parameter count, restricted tools (no
+  web access, no git push, no MCP), or harness-limited
+  (no file write, no shell) — use this factory's
+  surfaces to scaffold itself up to effective larger
+  capability? **Framing:** the factory is already an
+  externalised algorithm (per witnessable-evolution and
+  soul-file discipline) — which means the intelligence
+  that would otherwise be "inside" a large model is
+  available as reproducible artifacts the small model
+  can *read* + *follow* rather than *contain*.
+  **Target capability-limited persona shapes to cover:**
+  (1) short-context model — uses `docs/FIRST-PR.md` +
+  `docs/AGENT-CLAIM-PROTOCOL.md` as the only-two-docs
+  entry surface, avoids deep spelunking; chunking
+  recipes for reading larger docs in pieces;
+  "what-to-load-in-what-order" algorithm. (2) small-
+  parameter / low-ability model — leans on the
+  spec-first discipline: the behavioural specs
+  (`openspec/specs/**`) + test suite act as guardrails
+  that catch mistakes the model would otherwise make;
+  encourages write-tiny-PR-then-iterate. (3) tool-
+  restricted model — the report-back mode in
+  `AGENT-CLAIM-PROTOCOL.md` (write-via-maintainer) is
+  already first-class for this case; doc names it
+  explicitly as the recommended path. (4) no-web
+  sandbox — everything it needs is in-repo;
+  `references/upstreams/` after sync-upstreams pulls
+  external sources into the soul-file. (5) stateless /
+  no-memory — each session reads
+  `AGENTS.md` → `CLAUDE.md` (if relevant harness) →
+  `docs/FIRST-PR.md` → task URL; no persistent
+  context needed. **The "bootstrap ladder" metaphor:**
+  a capability-limited AI starts at rung 1 (read one
+  doc, write one comment on an issue), climbs to rung
+  2 (pair with a larger model through report-back),
+  climbs to rung 3 (directly author a PR with the
+  factory's specs + tests as error-corrector), climbs
+  to rung 4 (participate in review). Each rung is
+  documented with the minimum-viable capability
+  profile and the factory surfaces that unlock the
+  climb. **Why this matters:** the vibe-coded
+  hypothesis (`AGENTS.md` §"The vibe-coded hypothesis")
+  extends naturally — a human directing a capable AI is
+  one instance; a capable AI scaffolding a less-capable
+  AI through the same surfaces is another instance; and
+  a capability-limited AI using only the surfaces
+  (without any larger-AI pairing) is the extreme case
+  that validates whether the factory is genuinely an
+  externalised algorithm versus a pretty wrapper over
+  large-model intelligence. **Falsification anchor:**
+  if a 7B-parameter open-weights model can
+  independently open a useful, accepted PR by reading
+  only `docs/FIRST-PR.md` + one issue URL, the factory
+  has passed a genuine capability-democratisation test.
+  If it cannot, we have identified specific
+  scaffolding gaps that favour larger-model users and
+  can address them. **Effort:** L (3+ days — the
+  ladder writing, plus at least one pilot attempt with
+  a small-parameter model routed through
+  `docs/FIRST-PR.md` to validate the claimed
+  accessibility). **Composes with:**
+  `docs/FIRST-PR.md` (entry surface; "capability-limited
+  AI" is a contributor-persona shape this doc can cover
+  as a shared sub-persona with human fresh-devs);
+  `docs/AGENT-CLAIM-PROTOCOL.md` (already documents
+  report-back / review-only modes for substrate-limited
+  agents — this doc generalises); `AGENTS.md`
+  §"The vibe-coded hypothesis" (validates the
+  hypothesis downward as well as horizontally); the
+  witnessable-self-directed-evolution memory discipline
+  (a factory that survives being operated by crippled
+  agents is a factory whose intelligence is genuinely
+  externalised, not carrier-transported from the
+  maintainer's larger model); `docs/ALIGNMENT.md`
+  (capability-democratisation is an alignment property
+  — no hidden dependency on provider-scale access).
+  **Success signal:** measurable
+  `capability-limited-contributor-pr-acceptance-rate`
+  (fraction of PRs opened by models under 10B
+  parameters that merge vs. the same rate for
+  frontier models — target: parity within some
+  tolerance band once the guide stabilises).
+  **What this row is NOT:** not a promise to ship
+  model-specific tooling (no factory fork per model
+  class); not a lowering of the quality bar (the
+  guide teaches *access paths*, not *weaker review*);
+  not a claim that every capability-limited model
+  will succeed (some tasks genuinely need frontier-
+  scale reasoning; the guide makes the cut-line
+  visible rather than pretending it does not exist).
 
 - [ ] **First-principle seed to Zeta derivation — common
   vernacular only.** Aaron 2026-04-22: *"backlog first
