@@ -847,6 +847,77 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Secret-handoff protocol — env-var default + password-
+  manager CLI for stable secrets + Let's-Encrypt/ACME for certs
+  + PKI-bootstrap deferred (round 44 auto-loop-33 absorb)** —
+  maintainer 2026-04-22 auto-loop-33 shape-preference:
+  *"i like env vars and the password manager cli that's pretty
+  cool, I use LastPass do they have a cli, I can setup an account
+  with the 1pass or whatever you showed yesterday, we want to do
+  lets-encrypt and ACME that makes things so sinmple, we can
+  bootstrap PKI another time"*. Triggered by mid-tick inline API-
+  key paste event on the xAI / Grok thread (auto-loop-33 chat),
+  which exposed the factory gap: no documented human-operator →
+  agent secure secret-handoff protocol. Occurrence-1 research
+  anchor already published at
+  `docs/research/secret-handoff-protocol-options-2026-04-22.md`
+  (five-tier taxonomy, rotation/revocation/leak-mode map,
+  explicit three-axis argument for git-crypt being the wrong fit:
+  history-is-forever + key-distribution-isomorphic + wrong-
+  granularity). **Scope confirmed by maintainer:** (a) env-var
+  for ephemeral / dev-loop secrets (tier-1); (b) password-
+  manager CLI (1Password `op` preferred — LastPass dropped due
+  to 2022 vault-exfiltration breach) for stable secrets (tier-3);
+  (c) Let's-Encrypt + ACME for certificate-layer issuance —
+  factory defaults to automated-issuance unless a use-case
+  *specifically* needs a private CA; (d) PKI-bootstrap (root CA
+  ceremony, key-material protection, attestation provisioning,
+  revocation infra) explicitly deferred — scope-tag holds.
+  **Proposed helper shape** from the research doc:
+  `zeta secret {put|get|rotate|list|launch}` with backend
+  selection defaulting to macOS Keychain on darwin / libsecret
+  on linux / 1Password CLI when `ZETA_SECRET_BACKEND=1password`
+  / dotenv when `ZETA_SECRET_BACKEND=dotenv`. `zeta secret
+  launch <cmd>` shells out with secrets injected into env, never
+  written to disk. **Four-phase work queued:** (1) **Codify the
+  protocol** — promote the research doc to
+  `docs/DECISIONS/YYYY-MM-DD-secret-handoff-protocol.md` once a
+  second genuine handoff event occurs (occurrence-2 discipline),
+  or land the ADR immediately if maintainer prefers ahead-of-
+  evidence codification. (2) **1Password account setup** —
+  maintainer-owned, factory can recommend service-account model
+  for CI-side access but maintainer provisions; gates phase 3.
+  (3) **Ship `tools/secrets/zeta-secret.sh`** implementing the
+  command surface + backend dispatch. S-M effort. Keep shape
+  portable across macOS / linux / CI runner / devcontainer per
+  GOVERNANCE §24. (4) **ACME scaffold** — stub factory-side
+  ACME-client wiring (or route through `certbot` / `acme.sh` /
+  `win-acme`) for any use-case that grows out of the factory
+  needing a publicly-trusted cert. Sibling to (3), not blocker.
+  **What this is NOT:** NOT a commitment to ship a PKI this
+  round (PKI-bootstrap deferral intact); NOT a rollout of ACME
+  across factory surfaces (scaffold-on-demand); NOT a
+  replacement for direct-maintainer-paste as an emergency path
+  (tier-5 = incident not protocol, handled via rotate-
+  immediately discipline, already applied to auto-loop-33 xAI
+  paste). **Reviewer routing:** Nazar (security-operations) on
+  the secret-handling surface, Dejan (devops) on the helper-
+  script + CI-runner path, Aminata (threat-model-critic) on
+  the leak-mode matrix, Samir (docs) on the ADR when promoted.
+  **Maintainer-background composition:** the choice of ACME
+  over private-CA is informed by the maintainer's Itron
+  experience authoring nation-state-resistant PKI + secure-
+  boot attestation on the RIVA smart-meter platform (see
+  `memory/user_aaron_itron_pki_supply_chain_secure_boot_background.md`,
+  out-of-repo maintainer context); it is a veteran's judgment
+  that automated-issuance + protocol-driven rotation beats
+  hand-rolled certificate management for every use-case that
+  doesn't *specifically* require a private CA. Effort: M for
+  phases 1+3; S for phase 4 scaffold; L only if maintainer
+  later un-defers PKI-bootstrap. Carrier-channel: this row +
+  the research doc + the maintainer's substrate preference on
+  auto-loop-33 chat.
+
 - [ ] **Dependency update cadence → doc-refresh trigger (round 44
   auto-loop-20 absorb)** — maintainer 2026-04-22 auto-loop-20
   mid-tick directive: *"for our dependencies we need to track
