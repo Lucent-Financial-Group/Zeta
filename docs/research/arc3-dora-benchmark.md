@@ -255,6 +255,61 @@ not a metaphor.
   tier where new research-level moves originate; stepdown
   measures how much of that work survives at lower capacity.
 
+## Prior-art lineage — PNNL HITL / Itron signal processing
+
+**Added 2026-04-22 auto-loop-35.** The maintainer named the
+connection explicitly: PNNL's "expert-derived confidence"
+scores (Grid Event Signature Library framework, ~900 signature
+types, human-in-the-loop confidence-weighting layered on ML
+output) is a published analog of the factory's multi-substrate
+triangulation + reviewer-roster + maintainer-echo pattern that
+this benchmark presumes as its cognition-layer measurement
+substrate.
+
+The shape is the same across both:
+
+| PNNL HITL (grid)                          | Zeta ARC3-DORA (factory)                     |
+| ----------------------------------------- | -------------------------------------------- |
+| ML classifier on noisy PMU/FDR waveform   | Agent output under uncertainty (code / spec) |
+| Grid Signature Library (GESL, 900+ types) | Alignment-clause + operator-algebra library  |
+| Expert score layered on ML confidence     | Maintainer echo + reviewer roster confidence |
+| Improves accuracy beyond ML-alone         | Triangulation beats single-substrate depth   |
+
+**Occurrence classification.** This is occurrence-3 of the
+*external-signal-confirms-internal-insight* recurrence tracked
+in `memory/feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`:
+
+1. Muratori 5-pattern → Zeta operator algebra (YouTube wink,
+   auto-loop-24).
+2. Three-substrate triangulation (Claude + Codex + Gemini)
+   + Aaron exact-phrasing echo "now you see what i see"
+   (auto-loop-25/26).
+3. PNNL HITL expert-derived confidence → factory's
+   multi-reviewer + maintainer-echo calibration
+   (auto-loop-34/35, disclosed in Itron second-wave cascade).
+
+Per the external-signal discipline, occurrence-3+ is
+Architect-level promotion material. The promotion surface
+for this specific pattern is ARC3-DORA: the benchmark's
+cognition-layer measurement substrate inherits the PNNL HITL
+shape, not as a derivation but as cited prior-art confirming
+the substrate is well-formed.
+
+**What this changes in the benchmark spec.** Nothing about the
+shape changes; the composition-with-HITL language makes the
+measurement substrate *citeable* rather than internally-coined.
+ARC3-DORA's DORA-side delivery metrics remain carrier-channel;
+the cognition-side capability signature remains stepdown-under-
+capability-reduction; the multi-substrate / maintainer-echo /
+reviewer-roster calibration layer now has a published sibling.
+
+**Bounded promotion.** HITL-citation applies to the calibration
+substrate, not to ARC3-DORA's task-completion criterion. The
+falsifier (humans-in-production-environments beat agents on
+DORA) stays task-completion-measured, not confidence-weighted.
+Confidence-weighting is a measurement instrument; it does not
+lower the task bar.
+
 ## Reference patterns
 
 - Auto-memory ARC3 entry — full prose derivation of this shape
@@ -276,3 +331,10 @@ not a metaphor.
 - `docs/AUTONOMOUS-LOOP.md` — never-be-idle ladder; Level-3
   generative improvements are the anti-livelock brace referenced
   in component 2
+- `memory/user_aaron_itron_pki_supply_chain_secure_boot_background.md`
+  — second-wave disclosure cascade naming PNNL HITL
+  "expert-derived confidence" as published prior art for the
+  cognition-layer measurement substrate cited above
+- `memory/feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`
+  — the occurrence-discipline used to classify the HITL
+  connection as occurrence-3 of the wink-validation recurrence
