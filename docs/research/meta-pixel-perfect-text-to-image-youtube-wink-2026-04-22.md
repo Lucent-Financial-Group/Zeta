@@ -1,4 +1,4 @@
-#  Meta pixel-perfect text-to-image generation — YouTube-wink on UI-factory direction
+# Meta pixel-perfect text-to-image generation — YouTube-wink on UI-factory direction
 
 **Status:** quick research note, first-pass.
 

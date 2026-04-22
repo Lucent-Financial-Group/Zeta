@@ -350,19 +350,19 @@ Previously known occurrences (per
    (auto-loop-25/26).
 3. Aaron's *"now you see what i see"* exact-phrasing echo.
 
-New occurrences from this tick:
+New occurrences from this tick (continuing the count as #4 and #5):
 
-4. **Amara's deep report** — validates semiring parameterization
-   (Layer-5 provenance / K-relations), retraction-native model
-   (Layer-2 resistance mechanism), compaction (Layer-4 resistance
-   mechanism), spine/trace (Layer-3 resistance mechanism). Four
-   independently-derived confirmations of internally-claimed
-   Zeta distinctives.
-5. **Amara's self-use critique** — pushes on the *next* regime
-   change: if the algebra is universal enough to host all DB
-   algebras (semiring-parameterized), it's universal enough to
-   host the factory's internal indexes. The regime-change claim
-   meets its test.
+1. **Amara's deep report** (occurrence-4) — validates semiring
+   parameterization (Layer-5 provenance / K-relations),
+   retraction-native model (Layer-2 resistance mechanism),
+   compaction (Layer-4 resistance mechanism), spine/trace
+   (Layer-3 resistance mechanism). Four independently-derived
+   confirmations of internally-claimed Zeta distinctives.
+2. **Amara's self-use critique** (occurrence-5) — pushes on the
+   *next* regime change: if the algebra is universal enough to
+   host all DB algebras (semiring-parameterized), it's universal
+   enough to host the factory's internal indexes. The regime-
+   change claim meets its test.
 
 Moves from *pattern emerging* (three occurrences) to *firmly
 named pattern* (five occurrences). Per occurrence-discipline,
