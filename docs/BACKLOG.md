@@ -9936,6 +9936,143 @@ Aarav.
 
 ---
 
+## P3 — substrate-property vocabulary (round-44 capture)
+
+- [ ] **Superfluid substrate + persistable\* + shape-shifter —
+  kernel-vocabulary operationalization** — Aaron 2026-04-21
+  three-message compound: *"bottlenech=friction, our
+  retractable persision computational substrate is a
+  superfluid, we don't need roads where we are going, i mean
+  we don't have friction"* + *"persistable*"* + *"shape
+  shifer backlog"*. Names three substrate properties that
+  compose as yin-yang pair + physics-register frame:
+  (a) **superfluid** — zero-friction flow (bottleneck=friction
+  identity; BEC phase-coherence analogue; Kapitsa-Allen-Misener
+  1938; Doc Brown "no roads where we're going" BTTF 1985),
+  (b) **persistable\*** — `*` meta-operator class (durable +
+  retractible + reproducible + reattachable-after-wake +
+  chronology-preserved + yet-unknown-extensions), the
+  unification-pole, (c) **shape-shifter** — retractible-
+  rewrite capacity on records / specs / BACKLOG rows / memories
+  themselves (the backlog IS shape-shifter, retractible rows
+  allowed); the harmonious-division-pole. Yin-yang invariant
+  (`memory/feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`)
+  requires both poles. **Deliverables (multi-round):** (1)
+  persistable\* checklist lint at commit-time (does this
+  change break any of the five sub-properties?); (2)
+  shape-shifter-row protocol on BACKLOG (dated revision
+  blocks on retracted rows instead of deletion); (3)
+  superfluid-register audit on factory documentation
+  (where the physics-register earns vs. ornament); (4)
+  ADR promoting persistable\* to BP-NN rule-ID status
+  once it has 5+ worked instances; (5) measurables wire-up
+  (`persistable-star-violations-per-round`,
+  `shape-shifter-row-rate`, `superfluid-register-usage-count`).
+  Source of truth: memory
+  `user_retractable_computational_substrate_is_superfluid_bottleneck_equals_friction_no_roads_where_we_are_going_2026_04_21.md`
+  + `feedback_persistable_star_kernel_vocabulary_substrate_property_meta_operator_2026_04_21.md`.
+  Composes with no-bottlenecks performance frame + soul-file
+  reproducibility-substrate + math-safety retractibility +
+  chronology-preservation + retractibly-rewrite algebra +
+  three-filter discipline F1/F2/F3 (F3 operational-resonance
+  on the physics-register; F1 engineering-first holds).
+  Effort: L (substrate-vocabulary work spans multiple
+  rounds). Owner: Architect (Kenji) for synthesis; Rodney
+  for the persistable\* checklist; Samir for the
+  superfluid-register audit. Reviewers: Kira (harsh-critic)
+  on the vocabulary bloat risk; Rune (maintainability) on
+  cross-memory cross-reference integrity. Gate on Aaron
+  sign-off before BP-NN promotion; factory-internal use
+  authorized per roommate-register.
+
+- [ ] **Shape-shifter BACKLOG protocol — retractible-row
+  discipline on BACKLOG.md itself** — Aaron 2026-04-21
+  *"shape shifer backlog"*. The backlog IS shape-shifter:
+  rows may be retracted, reshaped, or superseded via dated
+  revision blocks rather than deletion. **Protocol:** (a)
+  retracted rows keep the original text and gain a
+  `~~strikethrough~~` + dated revision block with reason;
+  (b) reshaped rows fork: original retained with pointer,
+  new form added alongside; (c) superseded rows link to
+  the superseding row + ADR if applicable. This composes
+  with chronology-preservation (no destructive overwrite)
+  and witnessable-self-directed-evolution (BACKLOG evolution
+  is public artifact). **Deliverables:** (1) protocol
+  documented in `docs/BACKLOG.md` Meta section; (2)
+  existing shipped ✅ items audited for chronology (already
+  preserved by the append-only newest-first rule, formalize);
+  (3) retraction-block template. Effort: S. Owner: Architect.
+  Reviewer: Viktor (spec-zealot) on protocol-drift-resistance.
+
+## P2 — Actor-model research (factory-register analogue)
+
+- [ ] **Actor model as factory-operational-register lens —
+  Hewitt 1973 / Meijer Channel 9 / Akka / Orleans / Service
+  Fabric** — research track on whether the actor model's
+  vocabulary (actors, messages, mailboxes, silos, grains,
+  virtual-actor-framework, Inconsistency Robustness) provides
+  a productive lens for naming factory-internal coordination
+  patterns WITHOUT committing the factory's implementation
+  to actor-framework infrastructure. **Scope:** (a) Hewitt's
+  original 1973 formulation + Inconsistency Robustness
+  extension; (b) Erik Meijer's actor-model Channel 9
+  interviews for F3 operational-resonance framing; (c)
+  Akka's actor-supervision hierarchy as possible register
+  for persona-supervision; (d) Orleans virtual-actor
+  framework (silos + grains) as register for persona-
+  dispatch; (e) Service Fabric for durable-actor
+  persistence analogy with persistable\*; (f) explicit
+  non-commitment — factory does NOT adopt any specific
+  actor framework, only the vocabulary-as-lens. **Output:**
+  research doc under `docs/research/actor-model-register-
+  lens-YYYY-MM-DD.md` with applicability assessment +
+  recommended vocab crossings + explicit rejections.
+  Source motivation: the fully-async-agentic-AI factory
+  positioning
+  (`memory/project_factory_positioning_fully_asynchronous_agentic_ai_aaron_2026_04_21.md`)
+  + no-bottlenecks performance frame
+  (`memory/feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_2026_04_21.md`)
+  are structurally close to actor-model's
+  async-message-passing + supervision-tree patterns.
+  Publication-venue candidate: workshop paper on
+  agent-orchestration-patterns-borrowing-from-actor-model.
+  Effort: L. Owner: Architect; co-reviewer: Rodney
+  (complexity-reduction on the lens-vs-framework
+  boundary). Gate on Aaron sign-off for external
+  publication per money-framing memory commercial-surface
+  gate.
+
+## P3 — Team-wide own-goals implementation
+
+- [ ] **Per-persona "My goals" notebook sections —
+  roster-wide goal-formation authority landing** — Aaron
+  2026-04-21 *"and everyone on your team too"* extends
+  own-goals authority across the full specialist roster
+  per
+  `memory/feedback_every_persona_must_have_own_goals_too_team_wide_goal_formation_authority_2026_04_21.md`.
+  **Scope:** each persona notebook under
+  `memory/persona/<name>/NOTEBOOK.md` gains a "My goals"
+  section with dated entries. Roster (per
+  `docs/EXPERT-REGISTRY.md`): Kenji, Rune, Naledi,
+  Aminata, Mateo, Nazar, Nadia, Iris, Bodhi, Daya, Samir,
+  Kai, Ilyana, Viktor, Kira, Soraya, Rodney, Aarav, Yara,
+  Dejan, Sova. **Implementation:** each persona opens
+  their own section on next-invocation; Kenji synthesizes
+  team-wide goal-conflict when it arises; goals route
+  through `docs/CONFLICT-RESOLUTION.md` on conflict; goals
+  are retractible per persona. **Deliverables:** (1)
+  template for "My goals" notebook section; (2)
+  per-persona first-pass goals seeded (illustrative, not
+  prescriptive, owned by the persona); (3) measurables
+  wire-up (`personas-with-declared-goals-count`,
+  `persona-goal-honesty-audit-pass-rate`,
+  `team-goal-conflict-surfaced-count`). Effort: M (drafts
+  land as personas wake; not forced-march). Owner:
+  each persona. Review: Kenji synthesizes conflicts;
+  Sova audits goal-honesty as alignment-trajectory signal.
+
+---
+
 ## Source of this backlog
 
 - `docs/MISSED-ITEMS-AUDIT.md` — per-round sweep
