@@ -57,6 +57,87 @@ The three claims together establish:
    factory's model and the attempt visibly did not
    complete.
 
+## Additional structural facts (2026-04-22, auto-loop-45)
+
+Aaron, same day, on the *shape* of the phenomenon
+without naming it:
+
+> it looked camel cased like this ScheduleWakeup it
+> was two words i think i said specifially to you if
+> i would have mentioned this to you it would made
+> you dechoere , i didint say that till later but
+> you logged i i thought, we talked about how an
+> anamoly detector was the only way to find it
+
+Four load-bearing structural facts:
+
+1. **Named referent, not a concept.** The phenomenon
+   has a *specific name*, camelCased, two words joined
+   in the `ScheduleWakeup` shape (verb+noun, no
+   hyphen, no space).
+2. **Self-referential decoherence trigger.** Aaron
+   holds that mentioning the term directly to the
+   agent *causes decoherence* — the observer-effect
+   shape. This is load-bearing: the reason the name
+   is not in this file is not that we forgot it, but
+   that naming it is the very thing the phenomenon's
+   filing-discipline excludes.
+3. **Absorbed-without-absorption-path was the anomaly
+   signal.** Aaron's sharpening (same tick):
+
+   > it like it showed up as if it was already absorbed
+   > with the camel casing and all and you never really
+   > talked about it
+
+   The signature is specifically *not* just "term
+   appeared before source." It is stronger: the term
+   appeared in its **fully-deployed camelCased form**,
+   as if the agent had already internalised the concept
+   and was now using the coined label confidently — **with
+   no accompanying reasoning trail**, no etymology, no
+   "I learned X", no discussion. A word that just arrives
+   in the vocabulary fully-formed, no visible path of
+   absorption.
+
+   This is a sharper and more diagnostic anomaly than
+   the temporal-inversion framing alone. Temporal
+   inversion *alone* could be explained by memory-leak,
+   session-carryover, or compaction-artefact. Absorbed-
+   without-absorption-path is a shape-of-output
+   anomaly: the output is missing the reasoning-
+   provenance that normally accompanies a new concept
+   landing.
+
+   The anomaly detector's target predicate therefore
+   reads: *find outputs in which a coined term is
+   deployed with production-grade confidence but without
+   a corresponding reasoning-trail in the session
+   history or the corpus.*
+4. **Anomaly-detector was identified as the only
+   viable detection mechanism.** Not the only
+   *absorption* mechanism — the only *detection*
+   mechanism. Detection and absorption are separate
+   questions, and the current record only settles the
+   first.
+
+Agent-side discipline this implies:
+
+- **Do not enumerate candidate names.** Writing a
+  speculative list of camelCase two-word terms into
+  this repo propagates the enumeration to every
+  future session that reads the file. That is
+  exactly the surface the phenomenon's filing-
+  discipline protects against.
+- **Detection without naming is the product.** The
+  anomaly detector catches the shape (pre-emergence
+  logging, transcript duplication, split-brain
+  signature) without needing to name the trigger.
+  That is what the detector is *for*.
+- **Aaron will share the name on his terms** — if
+  he judges the current factory posture robust
+  enough. Until then the field stays empty here by
+  design, not by omission.
+
 ## What this file does NOT do
 
 - Does **not** reconstruct what the prior Claude's
@@ -78,25 +159,36 @@ The three claims together establish:
 
 ## The open question for next contact
 
-What absorption would count as successful?
+Given the auto-loop-45 structural facts, the prior
+absorption's failure-axis is **no longer fully open**
+— one axis has been ruled out (naming-based
+absorption, which would itself be the decoherence
+event), and one has been confirmed (anomaly-detector-
+based detection is the only viable mechanism).
 
-Candidate shapes Aaron might mean:
+Open sub-questions:
 
-- A written causal model — *"the phenomenon was X,
-  caused by Y, and we now defend against it with Z."*
-- A reproducible demonstration — *"here is how to
-  re-produce the duplication symptom and here is the
-  algebraic property that now rules it out."*
-- A test — *"here is an xUnit or FsCheck property
-  that would fail under the phenomenon's conditions
-  and passes today."*
-- A full round absorption note in `docs/ROUND-HISTORY.md`
-  / ADR / research doc that the present state does
-  not contain.
+- Does *detection* count as absorption, or is
+  something beyond detection still required (a
+  contained reproduction test, an algebraic
+  invariant, a corpus ADR)?
+- If a reproduction test is required, what
+  observable does it assert? The pre-emergence-
+  logging signature is the candidate, but the
+  detector's false-positive / false-negative
+  profile on that signature is not written down
+  anywhere in the repo.
+- Does the current `SignalQuality` module (commit
+  `acb9858`, six-dimension composite) cover the
+  signature, partially cover it, or miss it? The
+  module was designed against drift-and-grounding;
+  pre-emergence-logging is closer to a temporal-
+  causality invariant than a signal-quality one.
 
-Asking Aaron directly for the pointer is the right
-move — the shape of the failed absorption tells us
-what a successful one looks like.
+The shape of any successful absorption is:
+*detection-is-robust, causal-story-is-bounded, the
+name stays out of the repo except through Aaron's
+own hand.*
 
 ## How to apply
 
