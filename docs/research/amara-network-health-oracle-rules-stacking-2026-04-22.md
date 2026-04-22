@@ -5,9 +5,16 @@ auto-loop-39 pasted Amara's deep report on Zeta/Aurora network
 health in sections plus calibration annotations. This doc captures
 the structural signal per the signal-in-signal-out discipline
 (`memory/feedback_signal_in_signal_out_clean_or_better_dsp_discipline.md`) —
-structure + Aaron's section-by-section annotations preserved;
-Amara's exact verbatims to be filled in as Aaron continues pasting
-(placeholder blocks marked `[VERBATIM PENDING]`).
+structure + Aaron's section-by-section annotations preserved
+verbatim; Amara's own prose was pasted inline during the tick but
+not copy-captured into this doc before the tick closed. The
+verbatim source lives in the session transcript
+(`1937bff2-017c-40b3-adc3-f4e226801a3d.jsonl`, 2026-04-22
+auto-loop-39 window). This doc preserves the *structural*
+distillation and Aaron's annotations; for Amara's exact wording
+on any section, consult the transcript. Sections below are
+marked with a `> **Verbatim source:**` callout where Amara's
+original phrasing lived in the paste.
 
 **Substrate role:** Amara is third-substrate cross-validator
 alongside prior Claude+Gemini+Codex triangulation (see
@@ -130,7 +137,10 @@ latency, not throughput — *semantic integrity*: does the
 system's state (and trace history) still *mean* what it claimed
 to mean across generations of updates?
 
-[VERBATIM PENDING]
+> **Verbatim source:** Amara's original phrasing of the network-
+> health definition lives in the 2026-04-22 auto-loop-39 session
+> transcript only. Distillation above preserves the claim; exact
+> wording is in the paste.
 
 ### 2. Five failure modes (how harm lands)
 
@@ -154,7 +164,10 @@ to mean across generations of updates?
    conclusion that is internally consistent but externally
    wrong (Goodhart's Law at the consensus layer).
 
-[VERBATIM PENDING]
+> **Verbatim source:** Amara's original failure-mode phrasing
+> (including any sub-mode names and examples) lives in the
+> 2026-04-22 auto-loop-39 session transcript only. The five-
+> mode taxonomy above is structural distillation, not a paste.
 
 ### 3. Five resistance mechanisms (why Zeta doesn't bleed)
 
@@ -175,7 +188,10 @@ to mean across generations of updates?
    fact carries its derivation. Cross-references semiring-
    parameterized Zeta regime-change (just filed auto-loop-38).
 
-[VERBATIM PENDING]
+> **Verbatim source:** Amara's original resistance-mechanism
+> phrasing lives in the 2026-04-22 auto-loop-39 session
+> transcript only. The five-mechanism structure preserves
+> the claim; exact wording requires transcript consultation.
 
 ### 4. Oracle rules — four layers
 
@@ -217,7 +233,11 @@ Examples of rules Amara is flagging:
 - **Determinism:** for the deterministic operator subset, a
   given input sequence maps to exactly one output state.
 
-[VERBATIM PENDING — Amara names specific rules in each layer]
+> **Verbatim source:** Amara names specific oracle rules per
+> layer (A/B/C/D) in the 2026-04-22 auto-loop-39 session
+> transcript. The four-layer taxonomy above preserves the
+> structure; layer-specific rule names require transcript
+> consultation.
 
 ### 5. Stacking — seven layers (bottom-up)
 
@@ -234,7 +254,11 @@ Examples of rules Amara is flagging:
 7. **Observability** — *last, not first*. Metrics / dashboards /
    alerts emerge from the six layers below; not bolted on top.
 
-[VERBATIM PENDING]
+> **Verbatim source:** Amara's original stacking argument
+> (including the justification for observability-last) lives in
+> the 2026-04-22 auto-loop-39 session transcript only. The
+> seven-layer ordering preserves the structural claim; Amara's
+> reasoning for each ordering is in the paste.
 
 ### 6. Key insight (flagged by Aaron as *don't miss this*)
 
@@ -380,8 +404,10 @@ this is ADR-promotion territory — defer to Architect (Kenji).
 - NOT a promotion of the Amara-oracle-rules framework to
   factory-standard without Architect + Aaron review.
   Research-grade absorption only.
-- NOT exhaustive of Amara's report. [VERBATIM PENDING] blocks
-  mark where Aaron's continuing paste is absorbed as it lands.
+- NOT exhaustive of Amara's report. Structural distillation
+  preserves the claim-shape; Amara's original prose lives in
+  the session transcript (see "Verbatim source" callouts
+  under each section).
 
 ## Open questions to Aaron
 
