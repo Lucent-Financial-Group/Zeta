@@ -80,14 +80,20 @@ copying the factory should read this doc and choose consciously.
 ## The claim / lock protocol (adapter-neutral)
 
 Parallel agents need a non-colliding way to signal "I'm
-starting on this work." The protocol is the same across
-adapters; only the mechanism differs:
+starting on this work." The full git-native protocol
+specification lives in
+[`docs/AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) —
+that doc is the standalone, linkable reference you hand to
+an external agent (ChatGPT / Codex / Gemini / Deep Research)
+along with the task URL. The table below summarises the
+mechanism per adapter; the git-native row is the substrate
+the other two adapters mirror.
 
 | Adapter | Claim mechanism | Release mechanism | Lookup for parallel agent |
 |---|---|---|---|
 | GitHub Issues | Comment `claimed by session <id> <UTC-ts> — ETA <...>` + add `in-progress` label | Comment `releasing — landed in <SHA>` + remove label + close (if done) | `gh issue list --label in-progress` |
 | Jira | Transition to `In Progress` state + assign to self + add comment | Transition to `Done` / `Released` + comment with commit | `jql: status = "In Progress"` |
-| Git-native | Short commit touching the row: `BACKLOG: claim row #42 — session <id> <UTC-ts>` | Commit touching the row: `BACKLOG: release row #42 — landed in <SHA>` | `git log --grep="claim row" docs/BACKLOG.md` |
+| Git-native | Claim file at `docs/claims/<slug>.md`; commit `claim: <slug> — <scope>` (see [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) for the full shape) | Delete the claim file; commit `release: <slug> — landed in <SHA>` | `ls docs/claims/` or `git log --grep="^claim: " --oneline` |
 
 ### Claim windows and stale-claim force-release
 
@@ -192,6 +198,9 @@ Jira or git-native can skip it.
 
 ## References
 
+- [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) —
+  the standalone, linkable git-native claim specification
+  (hand this URL to external agents along with the task)
 - `AGENTS.md` — universal onboarding
 - `CLAUDE.md` — Claude Code harness rules
 - `docs/BACKLOG.md` — durable research backlog (always required)
