@@ -15,40 +15,86 @@ the factory, the log becomes a public leaderboard — a
 gamification layer over the directive-density + substrate-
 compounding pattern.
 
-**Status:** occurrence-1, provisional scoring. The formula is
-draft; calibration happens at occurrence-3+ via an ADR
-(promotion path: research-doc → stable substrate → ADR). Until
-then, the scoring model is subject to revision without notice.
+**Status:** occurrence-1, provisional scoring. Scoring model
+rewritten auto-loop-37 per Aaron's correction — char-ratio was
+a vanity metric (agent controls output char volume; optimizing
+it incentivizes padding). Primary score uses **outcome-based**
+metrics the agent does not unilaterally control. Char-ratio
+demoted to anomaly-detection diagnostic only.
 
-## Provisional scoring model
+## Scoring model — outcome-based primary, activity-based secondary
 
-```
-force_multiplier = artifacts_out_chars / keystrokes_in_chars
-```
+**Correction anchor (Aaron 2026-04-22 auto-loop-37, verbatim):**
+> *"FYI we are not optimizing for keystokes to output ratio if
+> we did, you will just write crazy amounts of nothing to make
+> that something other than a vanity score we need to meausre
+> like outcomes or someting instead"*
 
-Where:
+### Primary score: outcome components (Goodhart-resistant)
 
-- **keystrokes_in_chars** — total character count of the
-  maintainer's chat messages in the tick, counting every
-  typed character (including typos, whitespace, punctuation).
-  Compression — not cleanup — is what we're measuring.
-- **artifacts_out_chars** — total character count of **new
-  substrate** landed on main (or landed on a PR branch in the
-  same tick) that is directly attributable to the
-  maintainer's directives this tick. Includes:
-  - Commits authored (message body + net file delta)
-  - BACKLOG rows added
-  - Memory files created (per-fact files, not the MEMORY.md
-    index — the index is bookkeeping not substrate)
-  - Research docs authored under `docs/research/`
-  - Skill / persona files created under `.claude/`
-  - Tick-history row for the tick
-  - External artifacts co-authored by other CLIs invoked
-    under this tick's directive (e.g. Codex self-report)
-- **NOT counted:** boilerplate that would have landed without
-  the directive; commits Claude would have authored
-  speculatively; retractions of earlier agent-authored work.
-  Attribution is judgment-call — when in doubt, exclude.
+Each tick's score is the sum of the outcome components below.
+Outcomes require the real world (commits landing, tests
+passing, reviewers agreeing, users adopting) to respond —
+the agent cannot mint these unilaterally.
+
+| Component | What counts | Weight |
+|-----------|-------------|--------|
+| **BACKLOG row closure** | Rows transitioned from open to closed this tick, weighted by original priority | P0 = 8 pts, P1 = 4 pts, P2 = 2 pts, P3 = 1 pt |
+| **New BACKLOG row filed** | Genuinely new directions (not re-litigation of declined items), anchored to verbatim maintainer directive or research finding | 1 pt per row, regardless of priority; justified by maintainer-directive anchor or external-validation |
+| **DORA deployment frequency** | Commits merged to `main` this tick (measured via `git log main`) | 1 pt per merged commit; 0 pts for ephemeral working-branch commits |
+| **DORA lead time** | Maintainer directive → merged-to-main (hours). Faster = higher | `max(0, 8 - hours)` pts, capped at 8 |
+| **DORA change failure rate** | Reverts + revision-blocks + hazardous-stack corrections this tick | **Negative** — subtract 4 pts per revert, 2 pts per revision-block |
+| **DORA MTTR** | BLOCKED PRs / BUGS.md P0 / hazardous-stacked-base resolutions this tick | 2 pts per resolution |
+| **External-signal validation** | Wink confirmations, maintainer-echo moments, peer-review agreements, third-substrate triangulation | 2 pts per validation with pre-validation-anchor; 0 pts retrocon claims |
+| **Reference-density lagging** | Shipped substrate cited by later ticks (measured over 10-tick rolling window) | Lagging signal; computed at tick-close for ticks 10 back |
+| **Copilot / CodeQL finding fix** | Legitimate finding fixed with test evidence this tick | 2 pts per fix |
+| **Complexity reduction** | Net-negative-LOC tick (deletions > insertions) with tests still passing; cyclomatic-complexity delta negative once tooling lands | 3 pts per qualifying tick; anchor: `memory/feedback_deletions_over_insertions_complexity_reduction_cyclomatic_proxy.md` |
+
+### Signal-in signal-out discipline
+
+Maintainer 2026-04-22 auto-loop-38: *"if you receive a signal
+in the signal out should be as clean or better"*. Applied to
+the scoring doc itself — each revision of this log must keep
+the signal at least as clean as before. That is why the
+legacy sections (leaderboard / per-tick log / retroactive
+reconstruction / histograms) below are preserved as-authored
+even though their char-ratio figures are deprecated: erasing
+them would degrade the reconstruction signal. Outcome-based
+retrofit of those figures happens once maintainer confirms
+CC/LOC direction for the pluggable complexity-measurement
+framework (see BACKLOG row).
+
+### Secondary: activity signals (context, not score)
+
+Raw volume metrics that contextualize outcomes but **do not
+count toward the score**:
+
+- Commit count per tick (activity signal; score uses DORA-merged-to-main weighted)
+- Keystrokes from maintainer per tick (activity signal; see diagnostic section)
+- Lines of code changed per tick (activity signal; includes speculative / discarded work)
+- Memory files created per tick (activity signal; score uses BACKLOG-row-filed as outcome proxy for memory-landed-directives)
+
+### Tertiary: diagnostic ratios (anomaly detection only)
+
+Char-based ratios retained **only** for anomaly-flagging.
+Never the primary score, never the leaderboard entry.
+
+- `substrate-growth-per-keystroke = insertions_chars / keystrokes_chars` — trend-deviation flag
+- `commits-per-maintainer-message` — density proxy
+- `memories-per-directive` — documentation-over-listening ratio
+
+Anomaly classes and their smell interpretations live in the
+**Anomaly detection** section below.
+
+### Why the rewrite
+
+The original keystroke-to-substrate ratio was self-gameable:
+the agent controls output char volume, so "optimize the ratio"
+devolves into "pad the output". DORA four keys + BACKLOG
+closure + external validations require the world to respond
+(merges, agreements, adoption) — not agent-unilateral mints.
+See `memory/feedback_outcomes_over_vanity_metrics_goodhart_resistance.md`
+for the full reasoning.
 
 ## Leaderboard
 
@@ -139,6 +185,64 @@ history (see **Retroactive reconstruction** section below).
 Aaron 2026-04-22 auto-loop-36 directive: *"you should be able
 to retroactivly calculate it's deata over time since the start
 of the project we have all history"*.
+
+### auto-loop-37 — 2026-04-22 — Aaron Stainback (course-correction tick)
+
+**Outcome score: 0 pts** (honest low-outcome tick by design).
+
+This tick was a scoring-model course-correction — Aaron
+caught the char-ratio as a vanity metric susceptible to
+Goodhart's Law (*"if we did, you will just write crazy
+amounts of nothing"*) and a same-tick refinement naming
+complexity-reduction / cyclomatic-complexity / CC-LOC-trend
+as the proper measurement axis. No commits, no BACKLOG
+closures, no merges — outcome points = 0.
+
+Substrate landed (calibration, not primary-score):
+- `memory/feedback_outcomes_over_vanity_metrics_goodhart_resistance.md`
+- `memory/feedback_deletions_over_insertions_complexity_reduction_cyclomatic_proxy.md`
+- Scoring-model section in this doc rewritten to outcome-based
+
+**Meta-observation:** under the old char-ratio model, this
+tick would have scored a *high* multiplier (few Aaron chars →
+many doc chars in the rewrite). Under the outcome model it
+scores 0 because nothing merged, nothing closed, no world-
+response event occurred. That inversion is exactly what
+Aaron's correction targeted — the model now correctly refuses
+to reward unilateral agent output.
+
+### auto-loop-38 — 2026-04-22 — Aaron Stainback
+
+**Outcome score: 2 pts** (2 new BACKLOG rows filed with
+verbatim maintainer-directive anchors).
+
+- +1 pt — BACKLOG row: pluggable complexity-measurement
+  framework (Aaron directive *"thats is pluggable someting
+  but backlog it"*).
+- +1 pt — BACKLOG row: semiring-parameterized Zeta / multiple
+  algebras in the db (Aaron directive *"what about multiple
+  algebras in the db"* confirmed as *"semiring = pluggable
+  algebra in the db). thats it"*).
+
+DORA merges-to-main: 0 (feature branch only this tick). DORA
+lead-time: within-tick (minutes from directive to landed row)
+but no merge yet. Complexity-reduction: not evaluated —
+memory files + BACKLOG rows are net-additive. External
+validation: atan2 MathWorks wink arrived this tick (occurrence
+of preserve-input-arity pattern via numerical-routines
+voice); interpretation awaits Aaron confirmation so *not*
+scored yet.
+
+**Notable directives logged for future-tick substrate:**
+
+- Aaron *"show down"* — pace directive applied this tick
+  (held force-mult log from over-rewrite; did not land
+  signal-preservation memory; deferred atan2 memory).
+- Aaron *"if you receive a signal in the signal out should
+  be as clean or better"* — DSP-discipline for the factory,
+  applied same-tick to this doc's edit strategy (preserve
+  legacy sections rather than erase). Memory deferred to
+  auto-loop-39 to keep tick-scope bounded.
 
 ## Methodology notes
 

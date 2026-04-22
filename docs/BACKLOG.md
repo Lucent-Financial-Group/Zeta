@@ -994,6 +994,103 @@ within each priority tier.
   **Dependency:** maintainer sign-off on the five scope
   questions before Phase 1 inventory lands.
 
+- [ ] **Pluggable complexity-measurement framework — cyclomatic /
+  LOC / nesting / custom metrics feed a common code-health signal;
+  trend-down-over-time contract with local-optimum floor (round 44
+  auto-loop-37 + auto-loop-38 absorb)** — maintainer 2026-04-22
+  auto-loop-37/38 four-message chain: (1) *"i feel good about
+  myself as a devloper when i delete more lines that i add in a
+  day and nothing breaks, means i reduced complexity"*; (2)
+  *"well yclomatic complexity is a proxy for that"*; (3) *"a
+  metric that would atter add up add our cyclomatic complexity
+  and / lines of code (or vice versa i also get inverses
+  backwards) should decrease over time untill it hit a floor
+  which could be a local optimum"*; (4) *"if it's going up you
+  are wring shit cod[e]"*; follow-up on tooling choice: *"thats
+  is pluggable someting but backlog it"*. Factory needs a
+  **pluggable** complexity-measurement surface — multiple
+  metric providers (cyclomatic, LOC, nesting depth, cognitive
+  complexity, maintainability-index, Halstead, custom) feeding
+  a common code-health signal; trend-over-time contract is
+  monotone-decreasing with a local-optimum floor. Pluggable =
+  new metric implementations ship as modules behind a stable
+  interface; factory composes them into a weighted aggregate
+  without coupling to a single tool. **Proposed shape:**
+  `tools/complexity/providers/<name>.{sh|fsx|cs}` each exposing
+  a stable stdout contract (per-file or per-module JSON with
+  `{file, metric, value, commit_sha}`); `tools/complexity/
+  aggregate.sh` joins provider output + commits a per-tick
+  health row to `docs/hygiene-history/complexity-trend.md`;
+  factory CI asserts the aggregate's rolling trend is
+  monotone-non-increasing or trending-toward-floor (regression =
+  warning, not failure — writing-shit-code signal surfaced, not
+  blocked). **Direction question carried over to Phase 0**
+  (maintainer must answer before Phase 1 scopes): is the
+  aggregate `CC / LOC` (complexity-per-line; lower = terser) or
+  `LOC / CC` (lines-per-decision; lower = denser)?
+  Maintainer self-flagged *"i also get inverses backwards"* —
+  direction intent clear (complexity down), formula TBC.
+  **Four-phase work queued:** (0) **Direction confirmation** —
+  maintainer answers which ratio direction; establishes the
+  contract monotone-downward sense. Effort S. (1) **Minimal
+  first provider** — LOC-delta-per-tick as a trivial starting
+  metric (already available from `git log --shortstat`); one
+  provider, one aggregator, one history doc. Effort S. (2)
+  **Cyclomatic-complexity provider** — integrate a C#/F# CC
+  tool (candidates: `dotnet-ifc`, `Metrix++`, `roslynator`,
+  `Lizard`, custom Roslyn analyser). Effort M; tool-selection
+  gated on maintainer preference. (3) **Aggregate + trend
+  contract** — per-tick aggregate write to
+  `docs/hygiene-history/complexity-trend.md`; rolling trend
+  check (monotone-non-increasing modulo local-optimum floor);
+  CI warning on regression. Effort M. (4) **Force-multiplication
+  integration** — feed the complexity-delta outcome into
+  `docs/force-multiplication-log.md` primary score per auto-
+  loop-37 Goodhart-resistance correction; +N points per
+  net-negative-LOC tick with tests passing. Effort S once
+  phase 3 lands. **Design constraints from maintainer context:**
+  - **Pluggable** (maintainer keyword) — interface stable,
+    implementations swappable; don't couple to a single tool.
+  - **Trend-over-time** — per-tick snapshots form a time
+    series; regressions are visible on the trend not just a
+    single-point threshold.
+  - **Local-optimum floor** — metric will converge; factory
+    recognises the floor as *the codebase is about as simple
+    as it can be under current architecture*, not as a bug.
+    Architectural moves that raise CC legitimately (e.g.
+    adding a genuinely new capability) should be visible as
+    a step-up followed by a renewed downward trend, not a
+    fail signal.
+  - **Goodhart-resistant** — composition with force-
+    multiplication log scoring; CC must pair with test-pass
+    (deletion-without-breakage), not just LOC-reduction.
+  **What this is NOT:** NOT a commitment to ship all four
+  phases this round (phase 0 + 1 is the minimal start); NOT a
+  tool selection (maintainer chooses); NOT a mandate to
+  refactor existing code against the metric (metric observes,
+  doesn't prescribe); NOT blocking on the force-multiplication
+  log rewrite (that's integration-layer work; phases 0-3 are
+  tooling); NOT applicable to generated code / third-party
+  absorbed source (scope to factory-authored code only).
+  **Reviewer routing:** Architect (Kenji) on the pluggable-
+  interface design, Aarav (skill-tune-up) on the trend-contract
+  discipline-shape, Rodney (reducer) on the essential-vs-
+  accidental cut criterion for what counts as a legitimate
+  step-up, Naledi (performance-engineer) adjacent — per-tick
+  measurement cost must not break the autonomous-loop budget.
+  **Maintainer-background composition:** Aaron's Itron RIVA
+  smart-meter work shipped constrained-substrate bootstrapping
+  to field devices where code size directly gated OTA update
+  feasibility; complexity-down-over-time was a hardware-
+  engineering necessity there before it was a software-
+  engineering virtue here. See
+  `memory/feedback_deletions_over_insertions_complexity_reduction_cyclomatic_proxy.md`
+  (out-of-repo maintainer context) for the full rule body and
+  composition map with Rodney's Razor + Goodhart-resistance.
+  Effort: S for phase 0 + phase 1; M for phase 2 + phase 3;
+  S for phase 4 integration. Carrier-channel: this row + the
+  memory + Aaron's verbatim quote chain above.
+
 - [ ] **Complete-GitHub-surface map integration — extend repo-level
   ten-surface playbook up to org / sideways to enterprise / across to
   platform (round 44 absorb)** — Aaron 2026-04-22: *"you mapped out the
@@ -4069,6 +4166,122 @@ systems. This track claims the space.
   ongoing.
 
 ## P2 — research-grade
+
+- [ ] **Semiring-parameterized Zeta — one algebra to map the
+  others; K-relations as regime-change.** Aaron 2026-04-22
+  auto-loop-38 three-message confirmation chain: (1) *"what
+  about multiple algebras in the db"* (opening question),
+  (2) *"semiring = pluggable algebra in the db). thats it"*
+  (explicit confirmation that semiring is the vocabulary for
+  "multiple algebras"), (3) *"semiring-parameterized Zeta /
+  multiple algebras in the db this is regieme changing"*
+  (weight-signal: regime-change framing), (4) *"it's our
+  model claude one algebra to map the others"* (architectural
+  claim: Zeta's operator algebra is the *stable* meta-layer,
+  semiring is the *pluggable parameter*, all other database
+  algebras become hosted within the one Zeta algebra by
+  swapping the semiring), (5) *"one agent to map the others"*
+  + *"sorry Kenji"* (agent-layer isomorph: the same "one stable
+  meta + pluggable specialists" shape repeats at the agent
+  layer where Kenji-the-Architect is the *one agent* mapping
+  between specialist personas — Aaron apologized to Kenji for
+  the "claude one algebra" phrasing crediting the generic agent
+  rather than the named role that actually does the mapping).
+  **The isomorphism is exact and load-bearing:**
+  Zeta operator algebra : semirings :: Kenji : specialist
+  personas — two-layer instance of the same architectural
+  pattern (stable meta + pluggable specialists) which the
+  factory now recognizes as recurrent across its substrate
+  (UI-DSL calling-convention over shipped kernels;
+  pluggable-complexity-measurement framework; semiring-
+  parameterized Zeta; Kenji over specialist personas — four
+  occurrences in auto-loop-37/38 alone). **Reference:**
+  Green–Karvounarakis–
+  Tannen, "Provenance semirings" (PODS 2007) — the canonical
+  K-relations paper; generalizes relational algebra by
+  replacing `{0,1}` annotations with values from an arbitrary
+  commutative semiring; standard semirings of interest
+  (Boolean, counting N, trust `(min,max)`, probabilistic
+  `[0,1]`, tropical `(min,+)` for shortest paths, lineage
+  `N[X]` for provenance tracking, why-provenance `PosBool(X)`,
+  how-provenance `N[X]`, and the security semiring). **Zeta
+  connection:** Zeta's current ZSet (integer-weighted
+  multiset) is the *counting semiring* `(N, +, ×, 0, 1)`
+  special case. The retraction-native operator algebra
+  (D/I/z⁻¹/H) is already *generic* over the weight-ring in
+  principle — the operators compose algebraically and do not
+  intrinsically require integer weights. Generalizing from
+  "ZSet-semiring hard-coded" to "semiring-as-parameter" gives
+  Zeta a universal algebraic substrate for stream-incremental
+  computation over *any* semantics expressible as a semiring.
+  **Why regime-change:** Zeta stops being "one DB system
+  among many" and becomes "the host for all DB algebras."
+  The same retraction-native incremental maintenance
+  machinery (D/I/z⁻¹/H) now handles tropical shortest-path
+  updates, Boolean lineage tracking, probabilistic inference
+  delta-updates, and provenance recomputation with identical
+  operator code — the algebra is one, the semiring is
+  plugged. This composes with Escro's maintain-every-
+  dependency / microkernel-OS endpoint (distinct axis: Escro
+  owns the dependency stack, semiring-parameterized Zeta owns
+  the algebraic substrate), with retraction-native operator
+  algebra (the D/I/z⁻¹/H machinery stays fixed, gains semiring
+  parameter), and with the pluggable complexity-measurement
+  framework filed same tick (sibling pattern: stable interface
+  + swappable implementations, one layer up the stack). **Not
+  a round-45 commitment; not a v1 promise.** Research-grade
+  direction; paper-worthy if executed ("Retraction-native
+  stream processing over arbitrary semirings"). **Open
+  questions, flagged to maintainer, not self-resolved:**
+  (i) scope — does pluggable-semiring live at the storage
+  layer (ZSet → `KSet<K>` where K is the semiring), at the
+  operator layer (D/I/z⁻¹/H parameterized), or both?
+  (ii) which semirings are v1 targets — tropical for
+  shortest-path demos, probabilistic for Bayesian-net
+  streaming, lineage for debug-ability? (iii) performance
+  implications — arbitrary semirings are slower than
+  integer-specialized kernels; is there a generic-then-
+  specialize path (Roslyn source-generators per-semiring
+  kernel emission)? (iv) relationship to Zeta.Bayesian —
+  probabilistic semiring is a natural fit; does
+  Zeta.Bayesian become a thin layer over the generalized
+  semiring substrate, or stay independent? (v) relationship
+  to DBSP / Feldera's Z-algebra approach — they stay
+  integer-specialized; semiring-generalization is a distinct
+  research direction from DBSP literature. (vi) correctness
+  proof — semiring axioms (associativity, commutativity,
+  distributivity, identity elements) must be verified for
+  each pluggable semiring; which ones (all? just v1 set?)
+  get TLA+ / Lean proofs? **Reviewer routing:** Kenji
+  (Architect — this reshapes the whole operator algebra
+  layer-boundary, synthesis territory), Aaron (maintainer —
+  regime-change scope decisions are his call), Soraya
+  (formal verification — semiring axioms as TLA+/Lean
+  property class; per `docs/AGENT-BEST-PRACTICES.md` BP-16
+  cross-check rule, semiring laws may be a Z3/Lean fit rather
+  than TLA+), Naledi (performance — arbitrary-semiring slow
+  path vs integer-specialized fast path), Hiroshi (asymptotic
+  complexity — semiring-choice changes cost model), Imani
+  (planner — operator-cost model is semiring-dependent),
+  Ilyana (public-API — `KSet<K>` / semiring-trait public
+  surface is a long-term contract), Aarav (skill-lifecycle —
+  may produce a semiring-authorship capability skill).
+  **Composes with:** `memory/feedback_outcomes_over_vanity_metrics_goodhart_resistance.md`
+  (regime-change framing composes with DORA-outcome measurement
+  — a regime-change success is *observably* measured by
+  semiring-over-semiring code-reuse metrics, not vanity-lines);
+  `memory/feedback_deletions_over_insertions_complexity_reduction_cyclomatic_proxy.md`
+  (pluggable-semiring should *delete* per-algebra bespoke
+  kernels, not add them — net-negative-LOC is the signal the
+  regime-change landed cleanly); `memory/feedback_aaron_terse_directives_high_leverage_do_not_underweight.md`
+  (this row is the substrate landing for Aaron's four short
+  messages totaling ~180 chars — exactly the keystroke-
+  leverage pattern). **Anchor memory:** `memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`
+  (captures the verbatim messages + regime-change claim for
+  future-wake context). **Owner:** Architect (Kenji) for
+  synthesis; Aaron for scope decisions. **Effort:** L
+  (paper-grade, multi-round direction; not a single-tick
+  landing — probably 3-6 month arc if prioritized).
 
 - [ ] **Constrained-bootstrapping-to-upgrades — Itron-precedent
   direction for Zeta upgrade paths on resource-constrained
