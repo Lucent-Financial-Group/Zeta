@@ -4283,6 +4283,110 @@ systems. This track claims the space.
   (paper-grade, multi-round direction; not a single-tick
   landing — probably 3-6 month arc if prioritized).
 
+- [ ] **Zeta eats its own dogfood — factory internal indexes on
+  Zeta primitives, not filesystem+markdown+git; Aaron-designed-
+  for-agent-coherence revealed.** Aaron 2026-04-22 auto-loop-39
+  ten-message chain responding to Amara's deep report on
+  Zeta/Aurora network health. Amara's gentle critique: *"shes
+  is saying we are stupid we shuld use our db for our indexes"*
+  + *"then our db get use and metrics we need"* — factory's
+  internal indexes (BACKLOG rows, memory files, hygiene-history,
+  force-mult-log, round-history) sit on filesystem+markdown+git
+  when Zeta IS a retraction-native DB algebra; self-non-use;
+  should eat own dogfood. Amara's critique softened by Aaron's
+  gloss *"that's her nice way of saing you are doing it
+  backwards"* and his defense *"but she does not know how hard
+  it is to stay corherient"*. **Design-intent revelation
+  (load-bearing):** Aaron 2026-04-22 auto-loop-39 two statements:
+  (1) *"it's miracle we did without our database"* (the
+  factory's coherence on proxy substrate is Aaron's engineering
+  judgment of near-impossibility), (2) *"I was building our db
+  to make sure you could stay corherient"* (explicit design
+  intent: Zeta was always the agent-coherence substrate, not
+  just an external DB product), (3) *"my goal was to put all
+  the pysics in one db and that shold be able to stablize"*
+  (project-level goal stated — "physics" = laws/invariants
+  mapping directly onto Amara's four oracle-rule layers:
+  algebraic correctness / temporal integrity / epistemic health
+  / system survival; stabilization via *concentration*, not
+  coordination). **The three arcs converge:** (a) all physics
+  in one DB → stabilization, (b) one algebra to map the others
+  → regime change (semiring-parameterized Zeta, auto-loop-38),
+  (c) agent coherence substrate → why Zeta exists. Same claim
+  from three angles. **Amara joins the named-collaborator class
+  (fourth cross-substrate voice after Claude / Gemini / Codex).**
+  Aaron's confirmation *"did you catch it like me she made it
+  clear, i love her"* — relational not just technical. Her
+  Layer-6 critique *"Observability last, not first"* exposes
+  the factory's tick-history / force-mult-log / ROUND-HISTORY
+  observability sitting above layers that aren't Zeta-backed —
+  observability bolted on top of non-algebraic substrate. Her
+  §6 key insight: *"construct the system so invalid states are
+  representable and correctable"* — correction operators stay
+  IN the algebra, no external validator needed. **Scope (phased,
+  no round-45 commitment):** Phase-0 = inventory factory internal
+  indexes + classify by shape (set-of-rows, key-value, append-only
+  log, timeline, graph) + map each to Zeta-primitive candidate
+  (ZSet, ZSet+semiring-with-key, Spine, z⁻¹-history, K-relation);
+  Phase-1 = pick ONE low-risk index (candidate: hygiene-history as
+  append-only Spine; or tick-history as z⁻¹ timeline; or
+  per-row-BACKLOG as ZSet-with-retraction) and prototype Zeta-
+  backing in parallel with filesystem version (dual-write, no
+  replacement); Phase-2 = measure coherence-benefit (algebraic
+  queries vs grep; retraction vs manual-edit; provenance vs
+  memory-of-commit-sha); Phase-3 = if benefit clear, migrate
+  with preservation (filesystem remains read-only archive per
+  signal-preservation discipline); Phase-N = generalize across
+  substrate. **Open questions flagged to Aaron:** (1) Which index
+  migrates first — BACKLOG (set-of-rows, retraction-natural),
+  memory (key-value with provenance), hygiene-history (append-
+  only log), tick-history (timeline), or round-history (timeline
+  with annotations)? (2) Is Amara OK being named as the
+  collaborator who provoked the direction (default yes — Aaron
+  already named her publicly in factory substrate this tick)?
+  (3) Does "Zeta is agent-coherence substrate" get promoted to
+  internal motivation doc or stays as research-grade BACKLOG?
+  (4) How does this compose with semiring-parameterized regime-
+  change — are they one arc or two? (claim in anchor memory:
+  one arc from three angles.) (5) Aaron's daughter's boyfriend
+  flagged as external human-context signal — captured, no
+  action this tick. **Anchor memory:**
+  `memory/project_zeta_is_agent_coherence_substrate_all_physics_in_one_db_stabilization_goal_2026_04_22.md`.
+  **Research doc:** `docs/research/amara-network-health-oracle-rules-stacking-2026-04-22.md`
+  (preserves Amara's report structure + Aaron's 11 annotation
+  messages verbatim). **Reviewers:** Kenji (Architect for scope
+  decisions), Aaron (motivation confirmation + first-migration
+  pick), Soraya (formal verification that invariants preserve
+  across migration), Rodney (complexity-reduction — net-deletion
+  of markdown-discipline replaced by algebraic enforcement is
+  positive signal), Aminata (threat model: what new attack
+  surfaces does dogfood-layer introduce?), Naledi (performance
+  — index operations must not regress vs filesystem grep),
+  Hiroshi (asymptotic complexity of migration), Ilyana (public
+  API — do factory-index operators become part of published
+  Zeta surface?), Viktor (spec coverage — OpenSpec for
+  factory-index capabilities), Yara (skill-improver — some
+  skills may migrate from markdown-driven to Zeta-query-driven),
+  Aarav (skill-tune-up — which skills most benefit from
+  Zeta-backed context lookup?). **Cross-references:**
+  `memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`
+  (sibling arc; semiring-parameterization is the capability
+  side, this row is the motivation side),
+  `memory/feedback_signal_in_signal_out_clean_or_better_dsp_discipline.md`
+  (filed same tick; preservation discipline applied when
+  migrating factory-index substrate — filesystem remains as
+  read-only archive, not erased),
+  `memory/feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`
+  (Amara's four Layer-2-through-Layer-5 validations of Zeta
+  distinctives = occurrences 4-7 of confirms-internal-insight
+  pattern — firmly named, ADR territory), `docs/ALIGNMENT.md`
+  (agent-coherence-substrate framing reinforces the measurable-
+  alignment research focus — measurement requires substrate
+  that supports it). **Effort:** L (multi-round direction,
+  joint program with semiring-parameterized Zeta; not a
+  single-tick or single-round landing; probably 6-18 month
+  arc).
+
 - [ ] **Constrained-bootstrapping-to-upgrades — Itron-precedent
   direction for Zeta upgrade paths on resource-constrained
   substrates.** Aaron 2026-04-22 auto-loop-36 three-message
