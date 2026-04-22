@@ -311,7 +311,7 @@ gemini hooks migrate
 | MCP registry (as client)      | `claude mcp add/list/...`                     | (via config.toml)                                 | `gemini mcp add/list/enable/disable`         |
 | Skills mechanism              | `.claude/skills/`                             | (not surfaced as "skills")                        | `gemini skills install/link/list`            |
 | Hooks mechanism               | settings.json hooks                           | (not surfaced)                                    | `gemini hooks` + `migrate` (Claude→Gemini)   |
-| Session resume                | `-c` / `-r`                                   | `codex resume [--last]`                           | `-r [latest|N]`                              |
+| Session resume                | `-c` / `-r`                                   | `codex resume [--last]`                           | `-r [latest\|N]`                             |
 | Session fork                  | `--fork-session`                              | `codex fork [--last]`                             | (not surfaced)                               |
 
 **Structural observation:** each CLI lands the
