@@ -337,6 +337,19 @@ Detail lives in:
   checklist, tick-history append protocol, the
   never-idle priority ladder. Required reading for
   any harness running `/loop` autonomously.
+- `docs/AGENT-CLAIM-PROTOCOL.md` — standalone,
+  linkable git-native claim specification for any
+  external agent picking up a PR task (ChatGPT,
+  Codex, Gemini, Deep Research, human
+  contributor). Hand this URL plus a task URL to an
+  external agent as a one-link onboarding briefing.
+  Platform adapters (GH Issues / Jira / Linear)
+  live in `docs/AGENT-ISSUE-WORKFLOW.md`.
+- `docs/AGENT-ISSUE-WORKFLOW.md` — dual-track
+  principle (active-workflow surface + durable
+  git-history surface) and the three platform
+  adapters. Read at factory setup to pick the
+  active-workflow surface.
 - `docs/category-theory/README.md` — category-theory
   foundations the operator algebra rests on. Upstream
   CTFP sources (Milewski + the .NET port) live under
