@@ -4064,6 +4064,41 @@ systems. This track claims the space.
   will succeed (some tasks genuinely need frontier-
   scale reasoning; the guide makes the cut-line
   visible rather than pretending it does not exist).
+  **Revision 2026-04-22 (same-day):** Aaron extended
+  the rationale: *"in case i evver loose all my money
+  that bootstraping from tiny AI to become the most
+  powerful would sure come in handy to save money"*.
+  This adds a **personal-resilience** axis alongside
+  the capability-democratisation axis. The factory is
+  meant to survive its maintainer losing access to
+  frontier models — if Aaron's circumstances ever
+  force a move to tiny / open-weights / local models,
+  the factory keeps working. Pragmatic test: a
+  ~4-8B-parameter local-inference model
+  (`llama.cpp` / `ollama` / similar) on commodity
+  hardware can still drive meaningful factory work
+  when paired with this bootstrap guide + the
+  soul-file + the test suite as error-corrector.
+  Composes with the soul-file discipline
+  (`user_git_repo_is_factory_soul_file_...`): the
+  soul-file is already designed to germinate a
+  factory from nothing; this BACKLOG row extends the
+  "from nothing" to include "from a tiny model on a
+  laptop." Success signal now has two sub-measures:
+  (a) capability-democratisation (parity across model
+  scales) and (b) personal-resilience
+  (`factory-operability-on-local-open-weights-model`
+  — the factory produces useful PRs when driven by a
+  model Aaron could afford on any plausible budget
+  scenario). The cost-resilience axis also grounds
+  the research contribution: a factory that
+  *requires* frontier access is a pretty-wrapper over
+  a provider's scale; a factory that *survives* tiny
+  models has genuinely externalised intelligence into
+  reproducible substrate. NOT a commitment to
+  build local-model runners (out of scope — users'
+  responsibility); just a commitment to ensure the
+  factory does not gratuitously exclude them.
 
 - [ ] **First-principle seed to Zeta derivation — common
   vernacular only.** Aaron 2026-04-22: *"backlog first
