@@ -5707,6 +5707,47 @@ systems. This track claims the space.
   Composes with the accounting-lag same-tick-mitigation
   discipline (watch-counts land same-tick as the qualifying
   observation, not lagged).
+- [ ] **ARC-3 adversarial self-play as emulator-absorption
+  scoring mechanism — three-role symmetric-quality loop
+  (level-creator / adversary / player); competition pushes
+  field forward; SOTA-changes-daily urgency.** Aaron 2026-04-22
+  auto-loop-43 four-message compressed directive: (1) *"self
+  directe play using arc3 type rules but in an advasarial
+  level/game creator level/game player, this will let us
+  score our absorption of emulators"*, (2) *"and a symmeritc
+  quality loop"*, (3) *"they will naturally push the field
+  forward through compitioon"*, (4) *"state of the art
+  changes everyday"*. ARC-3-style co-evolutionary setup with
+  three self-directed agents — level creator generates novel
+  scenarios, adversary finds exploits in player solutions,
+  player solves (the absorbed emulator). Symmetric quality
+  property: all three roles advance each other via
+  competition, no asymmetric teacher-student. Gives #249
+  emulator substrate research a measurable success signal
+  (until now vibes-based). Same pattern generalises to #242
+  UI-factory frontier-protection (UI-DSL absorption scoring)
+  and #244 ServiceTitan CRM demo (quantitative backbone for
+  "0-to-prod-in-hours" claim). Research doc:
+  `docs/research/arc3-adversarial-self-play-emulator-absorption-scoring-2026-04-22.md`.
+  Memory: `memory/project_arc3_adversarial_self_play_emulator_absorption_scoring_2026_04_22.md`.
+  Six open questions blocking scope-binding: (a) ARC-3
+  literal-vs-inspiration, (b) self-hosted-vs-external,
+  (c) emulator-only vs generalised scope, (d) urgency tier
+  relative to existing P0s, (e) adversary role identity
+  (internal agent / external substrate / security roster
+  wearing adversary hat), (f) "field" scope. NOT round-45
+  implementation commitment; NOT authorization to build
+  speculatively. Precedent literature orientation (not
+  mandate): AlphaZero self-play, POET/Paired Open-Ended
+  Trailblazer (Wang 2019), OMNI (Zhang 2023),
+  adversarial-robustness (Madry / Goodfellow), ARC Prize
+  (Chollet et al.). Scope-binding: Aaron confirmation on
+  the six questions. Effort when binding: L (research-grade,
+  multi-round). Reviewers at binding: Soraya (formal
+  verification — is the symmetric-quality property
+  formally captureable?), Ilyana (public-surface if exposed
+  as API), Kira (harsh-critic on premature-complexity risk).
+
 - [ ] **Semiring-parameterized Zeta — one algebra to map the
   others; K-relations as regime-change.** Aaron 2026-04-22
   auto-loop-38 three-message confirmation chain: (1) *"what
