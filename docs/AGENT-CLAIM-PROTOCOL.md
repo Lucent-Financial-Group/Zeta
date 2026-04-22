@@ -1,7 +1,7 @@
 # Agent Claim Protocol — git-native, platform-optional
 
 **If you've been handed this URL with a task, read the
-[TL;DR](#tl-dr-five-steps) first. The rest of the doc explains
+[TL;DR: five steps](#tldr-five-steps) first. The rest of the doc explains
 the details, but the five steps are enough to start.**
 
 This protocol lets any AI agent (ChatGPT / Codex / Deep
@@ -43,7 +43,7 @@ One URL + one task + one mode-name is the full briefing. The
 agent follows the protocol URL and picks up everything else
 from there.
 
-## TL;DR — five steps
+## TL;DR: five steps
 
 ### 1. Clone and pull
 
