@@ -308,6 +308,55 @@ test in the ARC-3 class shape. The benchmark remains DORA;
 the ARC-3 label is the maintainer's way of saying "this is
 my frontier-test," not a second measurement axis.
 
+**Operational definition of ARC-3-class (maintainer, auto-loop-35):**
+*"ARC3 = hard problem that is [trying to be made] continuously
+testable even though there is 0 formal definition"*. Three
+criteria — all three must hold:
+
+1. **Hard** — frontier-capability test, compounding, not
+   solvable by instruction-following alone.
+2. **Continuously testable** — produces a stream of
+   observations (telemetry, benchmark runs, per-commit
+   signals) rather than a one-shot pass/fail.
+3. **No formal definition** — operationally-grounded
+   (benchmark, telemetry, empirical) rather than
+   theoretically-specified. The absence of a formal
+   definition is a *feature* of the class: the problem
+   resists formalisation, but the measurement pipeline
+   still produces defensible signal.
+
+By this test, DORA-in-production qualifies cleanly — deploy
+frequency / lead time / CFR / MTTR are operationally well-
+defined *as measurements*, but "running a production
+pipeline well" has no closed-form theoretical definition.
+
+**Other Zeta factory surfaces that meet the ARC-3-class test**
+(flagged here; not yet treated as cartridges):
+
+- **Factory autonomy under autonomous-loop substrate** —
+  hard (tick-must-never-stop under genuine work-queue
+  selection); continuously testable (tick-history,
+  round-history, per-commit alignment signals); no formal
+  definition of "autonomous factory operating at target
+  capability."
+- **ALIGNMENT.md measurable primary-research-focus** — hard
+  (alignment has no closed-form specification); continuously
+  testable (per-commit HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5
+  signals, time-series); no formal definition of "aligned
+  AI."
+- **Zero-to-production in 3-4 hours on ServiceTitan demo** —
+  hard (full-stack capability compounded under time
+  pressure); continuously testable (rounds of attempts,
+  per-domain DORA); no formal definition of "production-
+  ready demo."
+
+Each matches the three-criteria ARC-3-class shape. Treating
+them all as ARC-3-class gives the factory a consistent lens
+for frontier-test work and reuses the same measurement
+substrate (HITL expert-derived confidence over agent output,
+graded against the operational metric for the specific
+domain).
+
 The shape is the same across both:
 
 | PNNL HITL (grid)                          | Zeta ARC3-DORA (factory)                     |
