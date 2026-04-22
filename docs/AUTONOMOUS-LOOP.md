@@ -151,6 +151,40 @@ Per the never-idle rule (CLAUDE.md §"Never be idle —
 speculative factory work beats waiting"), the tick does not
 wait for instruction. Priority ladder:
 
+0. **Open-PR hygiene first.** Before picking speculative
+   work, audit the open PR pool via
+   `gh pr list --state open --json number,title,mergeStateStatus,mergeable,isCrossRepository,headRepositoryOwner,autoMergeRequest`.
+   For each open PR:
+   - **Verify fork-status live** (`isCrossRepository` +
+     `headRepositoryOwner.login`) rather than carrying
+     forward stale prior-tick memory. A non-fork PR that a
+     prior tick-history row flagged as "unrefreshable" may
+     actually be fully refreshable on the canonical org.
+   - **If BEHIND + non-fork**, refresh via tmp-worktree-clone
+     + `git merge origin/main` + push. Auto-merge (if armed)
+     proceeds when CI passes.
+   - **If unresolved review threads on a non-fork PR**,
+     triage findings (accept / reject / modify) with
+     principled reasoning per the rejection-grounds catalog
+     accumulated in the tick-history log; resolve threads
+     via GraphQL `resolveReviewThread`.
+   - **If fork-PR** (maintainer's fork owns head-ref),
+     un-refreshable from agent harness without fork-write
+     scope — skip, log as fork-PR-refresh gap.
+   - **Before accepting a Copilot new-content finding on
+     prose-style violations**, run `git blame` on the
+     flagged line numbers. Copilot sees PR diff-context,
+     not repo history-context, and may flag pre-existing
+     content in touched files as new-prose — a blame-check
+     separates new-prose-violations from pre-existing state
+     that happens to appear in the touched-file set.
+
+   Budget: ~2–5 min. If the pool has no BEHIND PRs + no
+   live threads, this step is a no-op. The audit *itself*
+   is the value — observing the pool catches silent
+   refresh-debt accumulation even when nothing needs
+   doing.
+
 1. **Meta-check first.** Is there a structural change to the
    factory that would have made this tick's work directed
    rather than speculative? If yes, make the change and log
