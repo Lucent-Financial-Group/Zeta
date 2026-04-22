@@ -94,3 +94,9 @@ node_modules/
 # Session-scoped `/btw` aside queue at repo root (see
 # .claude/commands/btw.md). Regenerated per session; not source.
 .btw-queue.md
+
+# Playwright MCP scratch logs — per-session console logs + ephemeral
+# scratch files the Playwright MCP writes to the repo-root
+# `.playwright-mcp/` dir (see tool #240 email-provider terrain
+# mapping). Regenerated per session; not source.
+.playwright-mcp/

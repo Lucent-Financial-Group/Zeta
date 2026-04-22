@@ -48,13 +48,20 @@ This matters to agents for three operational reasons:
    `verification-drift-auditor`, `paper-peer-reviewer`,
    `missing-citations` skills.
 
+## The purpose: reproducible stability
+
+Maintainer directive, 2026-04-22:
+
+> is obvious to all personas who come across our
+> project the whole point is reproducable stability
+
 ## What pre-v1 means in practice
 
 - **Large refactors are welcome.** If an abstraction
   isn't paying rent, rip it out. If a file doesn't
   compose well with the rest, redesign it.
 - **Backward compatibility is not a constraint.**
-  Break whatever needs breaking. No downstream
+  Change whatever needs changing. No downstream
   callers will file an issue.
 - **The tests are the contract.** If a change keeps
   the test suite green, the change is acceptable.
@@ -74,8 +81,8 @@ This matters to agents for three operational reasons:
    get fixed, not softened.
 2. **Algebra over engineering.** The Z-set / operator
    laws define the system; implementation serves them.
-3. **Velocity over stability.** Pre-v1. Ship, break,
-   learn.
+3. **Velocity over stability.** Pre-v1. Ship, do no
+   permanent harm, learn.
 
 Every guidance below derives from these three. When
 two conflict, fall back to the deliberation protocol
