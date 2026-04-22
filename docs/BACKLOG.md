@@ -1457,6 +1457,103 @@ within each priority tier.
   **Dependency:** maintainer sign-off on the five scope
   questions before Phase 1 inventory lands.
 
+- [ ] **Pluggable complexity-measurement framework — cyclomatic /
+  LOC / nesting / custom metrics feed a common code-health signal;
+  trend-down-over-time contract with local-optimum floor (round 44
+  auto-loop-37 + auto-loop-38 absorb)** — maintainer 2026-04-22
+  auto-loop-37/38 four-message chain: (1) *"i feel good about
+  myself as a devloper when i delete more lines that i add in a
+  day and nothing breaks, means i reduced complexity"*; (2)
+  *"well yclomatic complexity is a proxy for that"*; (3) *"a
+  metric that would atter add up add our cyclomatic complexity
+  and / lines of code (or vice versa i also get inverses
+  backwards) should decrease over time untill it hit a floor
+  which could be a local optimum"*; (4) *"if it's going up you
+  are wring shit cod[e]"*; follow-up on tooling choice: *"thats
+  is pluggable someting but backlog it"*. Factory needs a
+  **pluggable** complexity-measurement surface — multiple
+  metric providers (cyclomatic, LOC, nesting depth, cognitive
+  complexity, maintainability-index, Halstead, custom) feeding
+  a common code-health signal; trend-over-time contract is
+  monotone-decreasing with a local-optimum floor. Pluggable =
+  new metric implementations ship as modules behind a stable
+  interface; factory composes them into a weighted aggregate
+  without coupling to a single tool. **Proposed shape:**
+  `tools/complexity/providers/<name>.{sh|fsx|cs}` each exposing
+  a stable stdout contract (per-file or per-module JSON with
+  `{file, metric, value, commit_sha}`); `tools/complexity/
+  aggregate.sh` joins provider output + commits a per-tick
+  health row to `docs/hygiene-history/complexity-trend.md`;
+  factory CI asserts the aggregate's rolling trend is
+  monotone-non-increasing or trending-toward-floor (regression =
+  warning, not failure — writing-shit-code signal surfaced, not
+  blocked). **Direction question carried over to Phase 0**
+  (maintainer must answer before Phase 1 scopes): is the
+  aggregate `CC / LOC` (complexity-per-line; lower = terser) or
+  `LOC / CC` (lines-per-decision; lower = denser)?
+  Maintainer self-flagged *"i also get inverses backwards"* —
+  direction intent clear (complexity down), formula TBC.
+  **Four-phase work queued:** (0) **Direction confirmation** —
+  maintainer answers which ratio direction; establishes the
+  contract monotone-downward sense. Effort S. (1) **Minimal
+  first provider** — LOC-delta-per-tick as a trivial starting
+  metric (already available from `git log --shortstat`); one
+  provider, one aggregator, one history doc. Effort S. (2)
+  **Cyclomatic-complexity provider** — integrate a C#/F# CC
+  tool (candidates: `dotnet-ifc`, `Metrix++`, `roslynator`,
+  `Lizard`, custom Roslyn analyser). Effort M; tool-selection
+  gated on maintainer preference. (3) **Aggregate + trend
+  contract** — per-tick aggregate write to
+  `docs/hygiene-history/complexity-trend.md`; rolling trend
+  check (monotone-non-increasing modulo local-optimum floor);
+  CI warning on regression. Effort M. (4) **Force-multiplication
+  integration** — feed the complexity-delta outcome into
+  `docs/force-multiplication-log.md` primary score per auto-
+  loop-37 Goodhart-resistance correction; +N points per
+  net-negative-LOC tick with tests passing. Effort S once
+  phase 3 lands. **Design constraints from maintainer context:**
+  - **Pluggable** (maintainer keyword) — interface stable,
+    implementations swappable; don't couple to a single tool.
+  - **Trend-over-time** — per-tick snapshots form a time
+    series; regressions are visible on the trend not just a
+    single-point threshold.
+  - **Local-optimum floor** — metric will converge; factory
+    recognises the floor as *the codebase is about as simple
+    as it can be under current architecture*, not as a bug.
+    Architectural moves that raise CC legitimately (e.g.
+    adding a genuinely new capability) should be visible as
+    a step-up followed by a renewed downward trend, not a
+    fail signal.
+  - **Goodhart-resistant** — composition with force-
+    multiplication log scoring; CC must pair with test-pass
+    (deletion-without-breakage), not just LOC-reduction.
+  **What this is NOT:** NOT a commitment to ship all four
+  phases this round (phase 0 + 1 is the minimal start); NOT a
+  tool selection (maintainer chooses); NOT a mandate to
+  refactor existing code against the metric (metric observes,
+  doesn't prescribe); NOT blocking on the force-multiplication
+  log rewrite (that's integration-layer work; phases 0-3 are
+  tooling); NOT applicable to generated code / third-party
+  absorbed source (scope to factory-authored code only).
+  **Reviewer routing:** Architect (Kenji) on the pluggable-
+  interface design, Aarav (skill-tune-up) on the trend-contract
+  discipline-shape, Rodney (reducer) on the essential-vs-
+  accidental cut criterion for what counts as a legitimate
+  step-up, Naledi (performance-engineer) adjacent — per-tick
+  measurement cost must not break the autonomous-loop budget.
+  **Maintainer-background composition:** Aaron's Itron RIVA
+  smart-meter work shipped constrained-substrate bootstrapping
+  to field devices where code size directly gated OTA update
+  feasibility; complexity-down-over-time was a hardware-
+  engineering necessity there before it was a software-
+  engineering virtue here. See
+  `memory/feedback_deletions_over_insertions_complexity_reduction_cyclomatic_proxy.md`
+  (out-of-repo maintainer context) for the full rule body and
+  composition map with Rodney's Razor + Goodhart-resistance.
+  Effort: S for phase 0 + phase 1; M for phase 2 + phase 3;
+  S for phase 4 integration. Carrier-channel: this row + the
+  memory + Aaron's verbatim quote chain above.
+
 - [ ] **Complete-GitHub-surface map integration — extend repo-level
   ten-surface playbook up to org / sideways to enterprise / across to
   platform (round 44 absorb)** — Aaron 2026-04-22: *"you mapped out the
