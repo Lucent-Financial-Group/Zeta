@@ -199,6 +199,7 @@ as the proper measurement axis. No commits, no BACKLOG
 closures, no merges — outcome points = 0.
 
 Substrate landed (calibration, not primary-score):
+
 - `memory/feedback_outcomes_over_vanity_metrics_goodhart_resistance.md`
 - `memory/feedback_deletions_over_insertions_complexity_reduction_cyclomatic_proxy.md`
 - Scoring-model section in this doc rewritten to outcome-based
