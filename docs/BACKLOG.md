@@ -726,8 +726,10 @@ within each priority tier.
   Mapping pairs (each a candidate research doc
   under `docs/research/itron-lineage/`):
 
-  1. **PNNL HITL expert-derived confidence → ARC3-DORA
-     cognition-layer measurement substrate.** LANDED
+  1. **PNNL HITL expert-derived confidence → agent-output-
+     under-uncertainty measurement substrate (the layer
+     between agent output and DORA grade, NOT DORA itself;
+     DORA stays objective devops-delivery metrics).** LANDED
      auto-loop-35 in `docs/research/arc3-dora-benchmark.md`
      §Prior-art lineage. Occurrence-3 of wink-validation.
   2. **Disaggregation discipline → ZSet retraction-native

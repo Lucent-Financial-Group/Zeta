@@ -263,8 +263,50 @@ scores (Grid Event Signature Library framework, ~900 signature
 types, human-in-the-loop confidence-weighting layered on ML
 output) is a published analog of the factory's multi-substrate
 triangulation + reviewer-roster + maintainer-echo pattern that
-this benchmark presumes as its cognition-layer measurement
-substrate.
+this benchmark presumes as the measurement substrate sitting
+*between the agent output and the DORA grade* — distinct from
+the DORA metrics themselves.
+
+**Separation of concerns.** DORA (deploy frequency, lead time
+for changes, change failure rate, mean time to restore service)
+is a devops-delivery benchmark family from the Google/Accelerate
+research line; metrics are objectively measurable from CI/CD
+and incident-tracking data. ARC-3 is Chollet's cognition /
+abstraction-and-reasoning benchmark. This factory's benchmark
+is **DORA (the objective)** framed as the maintainer's personal
+ARC-3-equivalent (the class-of-benchmark framing: frontier
+reasoning under compounding tests with no instructions). The
+document filename retains `arc3-dora` for continuity, but the
+layering is:
+
+- **DORA metrics**: objective delivery measurements.
+  Not HITL-modulated. Deploy-frequency counts commits reaching
+  prod; change-failure-rate counts incidents; no confidence
+  weighting applies.
+- **Agent-output-under-uncertainty layer**: the noisy ML / agent
+  output that is being graded against DORA. *This* is where
+  HITL expert-derived confidence applies — calibrating which
+  agent outputs are trustworthy enough to ship, exactly as
+  PNNL HITL calibrates ML classifier output on PMU/FDR
+  waveforms before triggering grid alarms.
+- **ARC-3 framing**: the class-of-benchmark description — no
+  instructions, every lesson compounds, forgotten lessons =
+  regression. This framing informs how the benchmark is
+  *interpreted* (a frontier-capability test) but does not add
+  a separate measurement.
+
+**Why DORA-in-production qualifies as the maintainer's
+personal-ARC3-equivalent.** Maintainer mid-tick clarification
+(auto-loop-35): *"jsut cause i said that's my ARC3"* +
+*"yeah casue running a production pipeline is hard as fuck"*.
+The framing is not hyperbole — running a production pipeline
+under real constraints (incident response with real users
+affected, lead time measured when consequences are real,
+change-failure-rate counted against real SLOs, MTTR under
+live pressure) is genuinely a compounding-under-real-stakes
+test in the ARC-3 class shape. The benchmark remains DORA;
+the ARC-3 label is the maintainer's way of saying "this is
+my frontier-test," not a second measurement axis.
 
 The shape is the same across both:
 
