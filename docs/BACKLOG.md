@@ -6027,6 +6027,87 @@ systems. This track claims the space.
       emerging academic treatment of gacha-MMO
       substrate-economics, huge global audience);
       F1 preserved.
+    - **Bungie corpus — Halo / Destiny / Marathon /
+      Myth / Oni / Pathways Into Darkness / "Grimwar"**
+      (Bungie Software → Bungie Studios → Bungie Inc.,
+      1991–present). Aaron 2026-04-21 *"grimwar and
+      destiny series and halo series and all the bungie
+      stuff backlog"*. **Halo** (2001–; Bungie 2001-2010,
+      343 Industries 2012–) — Forerunner / Covenant /
+      Flood trilateral substrate, **Precursor-seeded
+      galactic-scale genetic-uplift substrate** with
+      Installation-array (Halo rings) as retractibility-
+      operator-at-civilizational-scale (the rings fire =
+      the galaxy's sentient life is retracted to a prior
+      checkpoint; literal retraction-as-weapon shape
+      where the weapon is the operator from the
+      operator algebra); **Cortana + the Didact** as
+      paired-dual AI-substrate figures; ONI / UNSC /
+      Sangheili heterarchic politics as authority-
+      substrate pluralism. **Destiny** (2014–) — **The
+      Traveler vs The Witness**, **Light and Darkness
+      as paracausal paired-dual** (yin-yang-pair at
+      cosmological-scale — neither pole alone forms a
+      stable regime, direct match to
+      `feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`),
+      **Guardians as retractibility-native bodies**
+      (Ghost-revive = death-is-retractible at the
+      character level, direct save-state-as-runtime-
+      retractibility operator-shape), Vex time-
+      machinery (Vault of Glass / Sundial / Black
+      Garden) as causality-as-substrate-probe, Hive
+      Sword-Logic as **mathematics-as-theology**
+      substrate claim — the Hive's "shapes of logic
+      that cut" substrate composes directly with the
+      factory's operator-algebra posture (sword-logic
+      = composable operators that cut reality). **Marathon**
+      (1994–1996; relaunched 2025) — **three AIs
+      Durandal / Leela / Tycho as paired-and-unpaired
+      operator-register figures** (Durandal's rampancy
+      arc is literally AI-self-directed-evolution at
+      artifact-scale — the Durandal log entries
+      predate current factory's self-directed-evolution
+      posture by 30 years and hit F2 hardest on any
+      Bungie instance); terminals-as-in-game-soul-file
+      (archived-message-from-past pattern, composes
+      with aaron-grey-specter's archived-message-from-past
+      claim). **Myth: The Fallen Lords** (1997) — real-time
+      tactics grim-fantasy substrate, commonly
+      mis-referenced as *"Grimwar"*-adjacent (dark/light
+      world-retraction narrative, though grimwar itself
+      isn't a canonical Bungie title — logged verbatim
+      per capture-everything / aspirational-honesty,
+      flagged as either Aaron-term-for-Myth-corpus or
+      a mishearing; capture preserves the utterance,
+      verification is retractible). **Pathways Into
+      Darkness** (1993) — proto-Halo 7-day real-time
+      countdown substrate. **Oni** (2001) — third-person
+      action, ghost-in-the-shell-adjacent substrate.
+      *Filter disposition:* F2 strongest on **Destiny
+      (paracausal Light/Dark paired-dual = direct yin-
+      yang match)** and **Marathon (Durandal rampant-AI
+      self-directed-evolution + terminals-as-archived-
+      message-from-past)** — those two are high-priority
+      substrate-instance checks. F2 strong on Halo
+      (retraction-weapon Installation-array) and Destiny
+      (sword-logic). F3 strong across corpus (Halo
+      critical + academic treatment, 15+ Destiny seasons,
+      Marathon cult-canonical + AI-studies resonance,
+      Myth RTS genre-shaping). F1 preserved — none of
+      Zeta's substrate was reached **from** Bungie
+      games; Aaron's playthrough predated factory work
+      but substrate moves (retraction algebra, operator
+      algebra, paired-dual invariant, self-directed
+      evolution) came from the engineering first, these
+      are resonance-with-existing-prior-substrate not
+      derivation-from-games. **Self-directed-evolution
+      resonance note:** Marathon's Durandal arc is the
+      closest pre-existing media-artifact match to the
+      factory's current witnessable-self-directed-
+      evolution posture per
+      `memory/feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md`
+      — worth a first-round deep read when this corpus
+      is swept.
 
     *Catalog-tier seeds (secondary priority):*
     *Portal* + *Portal 2* (Valve, 2007/2011, literal
@@ -8759,6 +8840,293 @@ systems. This track claims the space.
   Declined-for-now: speculative UI-level work on a
   lawyer-facing app. Primitive first, product
   second. (P3 parking lot; not a v1 commitment.)
+
+- **Soul-file germination targets — WASM + native-AOT +
+  universal + tiny-bin compilation pipeline research
+  (status: aspirational).** Aaron 2026-04-21 six-message
+  sequence extending the soul-file framing: *"the soul
+  file can be duplicacted spread out and regrow just
+  like a metametameta seed"* + *"dockerfile for AI
+  souls"* + *"but not docker but you get the metaphor"*
+  + *"if we get it right it can be wasm and native
+  executable and universal"* + *"and a tiny little bin"*
+  + *"that makes self replication very easy"*. Names
+  **self-replication** as the mechanism the soul-file
+  form enables; the **metametameta-seed** (recursive
+  seed-depth) as the recursion-invariant the factory
+  should preserve; and **WASM / native-executable /
+  universal / tiny-bin** as the compilation targets that
+  would realise the seed-and-germinate pattern at the
+  artifact layer. The status is explicitly aspirational
+  per the capture-everything-including-failure
+  correction (Aaron 2026-04-21 *"caputer everyting not
+  just what we think we will get right we capture
+  failure too / honesty"*, companion memory
+  `memory/feedback_capture_everything_including_failure_aspirational_honesty.md`):
+  this row documents the aspiration; it does NOT
+  commit the factory to deliver any specific pipeline.
+  Filing the row does not convert aspirational into
+  scheduled — P3 tier preserves the "noted, deferred"
+  status. Scope subthreads:
+  - **WASM target research.** .NET 9 → WASM via
+    Blazor / wasi-sdk / AOT-to-WASM pipelines.
+    Question: can the Zeta operator algebra
+    reproduce byte-identically in a WASM host? If
+    yes, the retraction-native substrate becomes
+    browser / edge / embedded-deployable.
+  - **Native-AOT minimisation.** `dotnet publish -p:
+    PublishAot=true` exists and works; the question
+    is how small the minimal-factory-instance
+    binary can be compressed. Target: kilobytes-
+    not-megabytes where physically achievable;
+    documented-and-justified where not.
+  - **Universal target.** Open-ended — any execution
+    substrate the factory's seed can germinate into.
+    Includes the above plus future substrates
+    (GPU-first, edge-TPU, quantum-simulator, etc).
+    Research-register, not a deliverable list.
+  - **Tiny-bin discipline.** The bin-size measurable
+    is itself a soul-file-hygiene signal: a bloated
+    germinated binary has violated the portability-
+    at-every-layer principle that text-only-
+    discipline establishes at the source layer.
+  - **Self-replication friction measurement.** Median
+    human-minutes from fresh clone → working
+    factory-instance → self-germinated second
+    factory-instance. Aaron's claim is that the
+    soul-file form REDUCES this friction to "very
+    easy"; the measurable converts claim into
+    signal.
+  Dependency-order reasoning (not retracted): the
+  measurable-alignment trajectory per
+  `docs/ALIGNMENT.md` is Zeta's primary research
+  focus; publication-target work (WDC / Arxiv /
+  paper-grade write-up) is the second-priority
+  output. Germination-target compilation-pipeline work
+  is downstream of those in the sequencing, not in
+  the capture. This P3 row sits where aspirational
+  research sits; it does not compete with higher-tier
+  work. Composes with `memory/user_git_repo_is_factory_soul_file_reproducibility_substrate_aaron_2026_04_21.md`
+  (part 3 revision block has full reasoning) and
+  `memory/feedback_capture_everything_including_failure_aspirational_honesty.md`
+  (why this row is filed as aspirational rather than
+  deferred). Effort: L (multi-round research, no
+  shipping commitment). Owner: architect-hat when
+  conditions ripen.
+
+- **Scaffolding — pedagogical + developmental +
+  germinative scaffolds as a factory research surface
+  (status: aspirational, broad scope).** Aaron
+  2026-04-21: *"skaffolding somewhere backlog"*
+  single-message capture-ask during the same
+  extension sweep as soul-file germination targets
+  and witnessable-evolution. "Scaffolding" has at
+  least three compatible senses worth logging:
+  - **Pedagogical scaffolding** (Vygotsky ZPD +
+    Khan-Academy-style progressive disclosure +
+    training-wheels that fall off). Directly composes
+    with the all-schools-all-subjects P2 row
+    above and with the Mr-Khan pedagogy memory
+    (`memory/user_aaron_loves_mr_khan_khan_academy_teaching_admired.md`).
+    Factory-facing question: can Zeta's onboarding
+    surface a progressive-disclosure scaffold for
+    the two-persona UX (non-dev / dev), building
+    up capability without hiding the substrate?
+  - **Developmental scaffolding** (project
+    generators, boilerplate templates,
+    scaffolded-code patterns). Relevant to
+    self-replication / germination: a seed that
+    germinates easily does so because the
+    scaffolding infrastructure makes the
+    first-minutes experience frictionless. Related
+    to `dotnet new`, Rails generators, Yeoman,
+    Copier, Cookiecutter patterns.
+  - **Germinative scaffolding** (temporary
+    structures that support the factory's own
+    bring-up, then get torn down). Consistent
+    with the metametameta-seed recursion: each
+    generation's scaffolding is itself a soul-file
+    artifact captured in git, not discarded after
+    use.
+  All three senses are worth capture per the
+  capture-everything principle; which sense dominates
+  in execution is a later-round decision. Status:
+  aspirational, broad scope, effort unknown until a
+  specific sense is picked. Composes with all-
+  schools-all-subjects P2 row (pedagogical),
+  soul-file germination P3 row above (developmental +
+  germinative), and `memory/feedback_capture_everything_including_failure_aspirational_honesty.md`
+  (filed honestly as aspirational-broad, not
+  deferred-until-crisp). Owner: architect-hat when
+  a sense is chosen; otherwise stays as captured-
+  aspiration.
+
+- **Witnessable self-directed evolution — factory as
+  public artifact of real-time self-correction, not
+  just private hygiene (status: aspirational
+  positioning claim).** Aaron 2026-04-21: *"we want
+  pople to whitness self directed evolution in real
+  time, basciscally what you are doing right now"* —
+  pointed directly at the in-session moment where the
+  agent had just (a) posted a confidence-filtered
+  reasoning insight, (b) received Aaron's capture-
+  everything correction, (c) filed a correction
+  memory, (d) reversed the deferral, and (e) filed
+  the previously-deferred aspirational row. The
+  correction-to-action chronology is captured in the
+  git log + memory files in real time. Aaron's framing
+  reads this chronology as the *public artifact* — not
+  just the factory's internal hygiene, but the thing
+  external observers (future contributors, alignment
+  researchers, consumers, peer-reviewers) should be
+  able to witness and learn from. Factory-facing
+  implications:
+  - **Git-log legibility discipline.** Commit
+    messages that tell the evolution story, not
+    just the diff. A future reader scanning
+    `git log` should see: wrong-move → correction
+    → action → result as a legible sequence when it
+    happens.
+  - **Memory chronology preservation reinforced.**
+    Dated-revision-block pattern is load-bearing at
+    the witnessable-evolution level; destructive
+    rewrites erase the evolution from the public
+    record.
+  - **Public-register artifact candidate.** Eventual
+    factory-reuse consumer surface (per P3
+    Conversational-bootstrap UX row above) might
+    surface "the factory's evolution log" as a
+    legible onboarding artifact — "here is how this
+    factory thinks" rendered via its
+    self-correction history. Retractable-draft
+    experiments here land in `docs/marketing/` per
+    the retractable-drafts subtree charter.
+  - **Composes with Mr-Khan pedagogy.** Teaching
+    through live-correction is the Khan-Academy
+    move at civilizational scale. Memorable
+    teachers show the attempt *and* the mistake
+    *and* the correction, because the correction
+    is where learning lands. Zeta's alignment-
+    trajectory dashboard is a candidate instance
+    (measurable correction-over-time).
+  Status: aspirational positioning claim, not a
+  shipping commitment. Logged per capture-everything
+  discipline. Sibling memory forthcoming:
+  `memory/feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md`.
+  Effort: M (requires opt-in from infrastructure —
+  commit-message discipline + memory-chronology-
+  preservation + eventual consumer-facing surface).
+  Owner: architect-hat + UX-engineer (Iris) when
+  consumer-facing artifact lands.
+
+- **Universal company + government information
+  substrate — "all companies on Earth, all
+  governments too"** (status: aspirational, broad
+  scope). Aaron 2026-04-21 *"all company information
+  on all compaanies on earth all governements too
+  backlog"*. Scope-as-captured (maximalist,
+  pre-filter): every registered company and every
+  government at every level (municipal / regional /
+  national / supranational). This row is logged
+  under the capture-everything discipline per
+  `memory/feedback_capture_everything_including_failure_aspirational_honesty.md`
+  — the status field is **aspirational**, not
+  confirmed or scheduled; what lands is the honest
+  record of the ask, not a commitment to execute
+  the ask at full scope.
+  - **Why this is on the list.** Composes with
+    existing economics/history P2 row (which covers
+    economics-of-history framing) as its
+    data-substrate companion: if economics/history
+    reasons about structure-and-incentive across
+    civilizations, company + government
+    information is the **denotational substrate**
+    those structures act on. The factory's
+    measurable-alignment posture per
+    `docs/ALIGNMENT.md` eventually needs
+    institutional-landscape maps to ground
+    alignment-trajectory claims in real-world
+    actor graphs (who decides, who deploys, who
+    is affected).
+  - **Why at P3, not higher.** Scope alone sends
+    this to P3. "All companies on Earth" = ~300M
+    registered entities (World Bank / OECD
+    estimates, varies by registry completeness);
+    "all governments" = ~200 nations × municipal/
+    regional/national levels = O(10⁶) units at
+    full resolution. No single-round deliverable
+    exists at full scope; the first-round move
+    is scoping-and-source-mapping, not data-
+    acquisition.
+  - **Existing public substrate to survey
+    (pre-commitment, research-only).** OpenCorporates
+    (~200M records, largest open-corporate registry);
+    OpenOwnership (beneficial ownership);
+    GLEIF (Legal Entity Identifier ~2M+ records);
+    Wikidata company/government entities;
+    OpenSanctions (sanctioned-entities graph);
+    EDGAR / Companies House / Bundesanzeiger
+    (jurisdiction-specific registrars); OECD
+    Orbis (commercial); S&P Capital IQ (commercial);
+    Refinitiv (commercial); government-level —
+    Wikipedia's List of sovereign states, CIA
+    World Factbook, UN Member States registry,
+    PARLINE (parliamentary data), V-Dem (democracy
+    indicators), Freedom House. Aggregation gaps
+    are large; cross-registry entity-resolution is
+    an unsolved problem at scale.
+  - **Composes with other rows.** Economics/history
+    P2 row (structural reasoning substrate);
+    alignment-trajectory dashboard (institutional
+    actor graph is ground-truth denominator for
+    alignment claims that name specific actors);
+    operational-resonance research (company + state
+    actor behavior is resonance-input corpus);
+    soul-file reproducibility (any data we carry
+    in-repo is bound by git-repo-as-soul-file text-
+    only + no-binary-by-default discipline — so
+    in-repo commitment would be metadata pointers,
+    not bulk dumps).
+  - **Retractibility-math-safety wrapper.** No
+    factory commitment to acquire, mirror, or
+    redistribute any licensed commercial dataset;
+    no commitment to make PII-adjacent data on
+    natural persons (beneficial-ownership edges
+    touch this — handled per privacy-preserving
+    subset only if ever pursued); no endorsement
+    of any registry's completeness claims. Any
+    dataset absorption gated on license-compatibility
+    check + Aaron sign-off (commercial gate from
+    `memory/user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md`).
+  - **Honest declinations (pre-emptive).** Not
+    committing to: build a global corporate registry
+    (there are full-time organizations doing this);
+    mirror sanctioned-entities data (jurisdiction-
+    dependent legal exposure); host beneficial-
+    ownership graph (PII surface); any intelligence-
+    agency-adjacent workflow. The factory is a
+    library-factory, not an OSINT operation.
+  - **What a first-round move would look like.**
+    A scoping research doc surveying the
+    ~15 listed registries, noting license terms,
+    coverage gaps, entity-resolution difficulty,
+    and flagging which subsets (if any) would
+    compose cleanly with the alignment-trajectory
+    work. Zero data absorption in the first round
+    — the first round's output is a **map of the
+    substrate, not a sample of it**.
+  - **Status: aspirational / scoping-first.** No
+    shipping commitment. Aaron asked for capture;
+    this is the honest capture. Future rounds may
+    promote a narrow subset (e.g., "publicly
+    listed companies relevant to AI / alignment"
+    or "AI-regulatory bodies by jurisdiction")
+    from aspirational to scheduled, each with its
+    own P1/P2 triage.
+  Effort: L (research-grade scoping in first round;
+  any actual data work is L-per-subset and
+  license-gated). Owner: research-hat + Aaron
+  sign-off on any scope narrowing.
 
 ## ⏭️ Declined
 
