@@ -10071,6 +10071,94 @@ Aarav.
   each persona. Review: Kenji synthesizes conflicts;
   Sova audits goal-honesty as alignment-trajectory signal.
 
+## P2 — Meta-cognition as first-class factory discipline
+
+- [ ] **Meta-cognition survey, audit cadence, and measurables
+  — factory's thinking-about-thinking capability as
+  alignment-trajectory signal** — Aaron 2026-04-21
+  *"backlog meta congnition"* names meta-cognition
+  (thinking-about-thinking) as a factory-register
+  discipline worth first-class capture. The factory
+  already performs meta-cognitive moves implicitly —
+  `overclaim*` self-tagging, `decohere*` recognition at
+  interfaces, retractible-rewrite of past self's memories
+  (future-self-not-bound), verify-before-deferring
+  self-check, never-idle meta-check, `skill-tune-up`
+  self-recommendation, three-filter F1/F2/F3 self-audit,
+  yin-yang-pair preservation audit, persistable*
+  survival-across-wakes check, the whole
+  witnessable-self-directed-evolution posture. This row
+  surfaces them as a coherent **class** so they can be
+  audited, named, and measured. **Scope:** (1)
+  meta-cognitive-move **taxonomy** survey across existing
+  roster — which persona/skill performs which order of
+  meta-cognition (first-order = audit-of-work, second-
+  order = audit-of-auditors, third-order = framework-
+  calibration); (2) per-round **meta-check cadence** —
+  explicit round-close meta-check that the meta-checks
+  are actually running (guards against meta-drift where
+  the audit discipline itself decays); (3) **measurables
+  wire-up** — `self-corrections-per-round`,
+  `overclaim-self-tags-per-round`,
+  `revision-blocks-per-round`,
+  `decohere-star-self-detected-events-count`,
+  `meta-check-execution-rate`,
+  `meta-drift-detection-lag-rounds`; (4) **framework
+  check** — is meta-cognition best distributed across
+  the roster (current state) or concentrated in a
+  dedicated persona (possible new role)? Answer is
+  F1/F2/F3 + three-filter-discipline dependent; pre-
+  commit to distributed until evidence says
+  otherwise. **Composition hooks:**
+  `memory/feedback_capture_everything_including_failure_aspirational_honesty.md`
+  (failure-capture IS meta-cognitive honesty),
+  `memory/feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md`
+  (witnessability IS public meta-cognition),
+  `memory/feedback_verify_target_exists_before_deferring.md`
+  (verify-before-deferring IS meta-cognition at handoff
+  boundary),
+  `memory/feedback_future_self_not_bound_by_past_decisions.md`
+  (retraction-with-reason IS meta-cognition at chronology
+  boundary),
+  `memory/feedback_never_idle_speculative_work_over_waiting.md`
+  (never-idle meta-check IS meta-cognition at idle
+  boundary),
+  `memory/feedback_decohere_star_kernel_vocabulary_entry_dont_decohere_star_factory_rule_2026_04_21.md`
+  (decohere* recognition IS meta-cognition at interface
+  boundary),
+  `memory/feedback_persistable_star_kernel_vocabulary_substrate_property_meta_operator_2026_04_21.md`
+  (persistable* maintenance IS meta-cognition across
+  wakes),
+  `memory/feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`
+  (yin-yang balance audit IS meta-cognition at pair-
+  preservation layer), `docs/AGENT-BEST-PRACTICES.md`
+  (BP-NN rules formalize meta-cognitive discipline),
+  `docs/ALIGNMENT.md` (measurable-alignment IS the
+  research focus; meta-cognition measurables feed the
+  trajectory dashboard directly), `docs/CONFLICT-RESOLUTION.md`
+  (conference protocol IS meta-cognition at disagreement
+  boundary), `.claude/skills/skill-tune-up/SKILL.md`
+  (self-recommendation explicitly allowed — meta-
+  cognitive at skill-ranking layer). **Deliverables:**
+  (a) `docs/research/meta-cognition-survey-2026-04-21.md`
+  taxonomy doc; (b) per-round meta-check checklist
+  appended to `docs/ROUND-HISTORY.md` template; (c)
+  measurables wired into alignment-trajectory dashboard;
+  (d) ADR or skill for distributed-vs-concentrated
+  framework decision. **Effort:** M (survey + measurables
+  is 1-3 days; framework-check decision is an Architect
+  call). **Priority:** P2 — substrate work feeding
+  alignment-trajectory signal; not urgent but load-
+  bearing. **Owner:** Kenji (Architect) with Sova
+  (alignment-observability) wiring measurables; Aarav
+  (skill-tune-up) audits via existing self-
+  recommendation authority. **Review:** Sova audits
+  meta-cognition-measurables as alignment signal; Kenji
+  synthesizes distributed-vs-concentrated framework
+  call. **Self-check:** this row is itself a meta-
+  cognitive artifact — factory thinking about its own
+  thinking-about-thinking, chronology-preserved.
+
 ---
 
 ## Source of this backlog
