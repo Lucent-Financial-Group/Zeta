@@ -151,7 +151,7 @@ Per the never-idle rule (CLAUDE.md §"Never be idle —
 speculative factory work beats waiting"), the tick does not
 wait for instruction. Priority ladder:
 
-0. **Open-PR hygiene first.** Before picking speculative
+1. **Open-PR hygiene first.** Before picking speculative
    work, audit the open PR pool via
    `gh pr list --state open --json number,title,mergeStateStatus,mergeable,isCrossRepository,headRepositoryOwner,autoMergeRequest`.
    For each open PR:
@@ -189,7 +189,7 @@ wait for instruction. Priority ladder:
    refresh-debt accumulation even when nothing needs
    doing.
 
-0.5. **Drop-zone audit second.** Run `ls -la drop/`. The
+2. **Drop-zone audit second.** Run `ls -la drop/`. The
    maintainer deposits files for absorption there
    (`drop/README.md`). If only the tracked sentinels
    (`README.md`, `.gitignore`) and harmless system files
@@ -205,15 +205,15 @@ wait for instruction. Priority ladder:
    Aaron, not improvise. Policy: per
    `memory/project_aaron_drop_zone_protocol_2026_04_22.md`.
 
-1. **Meta-check first.** Is there a structural change to the
+3. **Meta-check.** Is there a structural change to the
    factory that would have made this tick's work directed
    rather than speculative? If yes, make the change and log
    a meta-win entry (`docs/research/meta-wins-log.md`).
-2. **Known-gap fixes** — items already in `docs/BACKLOG.md`
+4. **Known-gap fixes** — items already in `docs/BACKLOG.md`
    or `docs/DEBT.md` that match this tick's budget.
-3. **Generative factory improvements** — new skills, docs,
+5. **Generative factory improvements** — new skills, docs,
    audit patterns, hygiene sweeps.
-4. **Gap-of-gap audits** — classes of missing checks, not
+6. **Gap-of-gap audits** — classes of missing checks, not
    just missing instances.
 
 Tool defaults like "idle-tick 1200-1800 s" do **not** override
