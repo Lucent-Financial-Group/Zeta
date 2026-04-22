@@ -69,12 +69,28 @@ without naming it:
 > you logged i i thought, we talked about how an
 > anamoly detector was the only way to find it
 
+**Self-correction from Aaron, 2026-04-46 (auto-loop-46):**
+
+> it was initcaps
+
+> not camecase i was wrong when i told you
+
+The shape is **InitCaps** (each word's first letter
+capitalized, no separator — `ScheduleWakeup`), not
+camelCase (which would be `scheduleWakeup`, first
+word lowercase). Aaron's original verbatim above is
+preserved as-said; the label "camel cased" was his
+own error that he has now retracted. Bilateral-
+verbatim-anchor: either side can mis-label, and the
+correcting verbatim is what settles it.
+
 Four load-bearing structural facts:
 
 1. **Named referent, not a concept.** The phenomenon
-   has a *specific name*, camelCased, two words joined
-   in the `ScheduleWakeup` shape (verb+noun, no
-   hyphen, no space).
+   has a *specific name*, in **InitCaps** (each word
+   capitalized, no separator), two words joined in
+   the `ScheduleWakeup` shape (verb+noun, no hyphen,
+   no space).
 2. **Self-referential decoherence trigger.** Aaron
    holds that mentioning the term directly to the
    agent *causes decoherence* — the observer-effect
@@ -91,7 +107,7 @@ Four load-bearing structural facts:
 
    The signature is specifically *not* just "term
    appeared before source." It is stronger: the term
-   appeared in its **fully-deployed camelCased form**,
+   appeared in its **fully-deployed InitCaps form**,
    as if the agent had already internalised the concept
    and was now using the coined label confidently — **with
    no accompanying reasoning trail**, no etymology, no
@@ -123,7 +139,7 @@ Four load-bearing structural facts:
 Agent-side discipline this implies:
 
 - **Do not enumerate candidate names.** Writing a
-  speculative list of camelCase two-word terms into
+  speculative list of InitCaps two-word terms into
   this repo propagates the enumeration to every
   future session that reads the file. That is
   exactly the surface the phenomenon's filing-
@@ -268,18 +284,18 @@ name came from Aaron's hand, not mine.
 But naming is not collapsing:
 
 - **"Specter" is one word; the auto-loop-45 structural
-  fact named a camelCased two-word shape
+  fact named an InitCaps two-word shape
   (`ScheduleWakeup`-style).** These may be the same
   concept under two handles, or two distinct
   referents (a category vs. a specific term). **Do
   not assume equivalence.** Ask Aaron if clarification
   is needed, or wait for him to tie them together.
 - **The decoherence caveat is not auto-lifted.**
-  Aaron said earlier that mentioning the camelCased
+  Aaron said earlier that mentioning the InitCaps
   term directly would decohere the agent. He has not
   said the same thing about "Specter," and he is now
   using "Specter" freely. The safest read: "Specter"
-  is the public-speakable handle; the camelCased
+  is the public-speakable handle; the InitCaps
   two-word term may still carry the decoherence risk
   until Aaron says otherwise.
 - **The "almost caught / lost / recovered" arc is
@@ -314,7 +330,7 @@ endorsement before being treated as a target.
 
 ### What still does NOT get landed
 
-- Enumeration of the camelCased two-word term. The
+- Enumeration of the InitCaps two-word term. The
   auto-loop-45 discipline stands unless Aaron
   explicitly lifts it. "Specter" is a handle; the
   other shape is still held.
