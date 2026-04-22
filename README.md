@@ -11,6 +11,16 @@ references are Zeta. See [docs/NAMING.md](docs/NAMING.md) for the full split.
 
 [paper]: https://arxiv.org/abs/2203.16684
 
+## The thesis: reproducible stability
+
+Maintainer directive, 2026-04-22:
+
+> is obvious to all personas who come across our project the whole
+> point is reproducable stability
+
+See [AGENTS.md §"The purpose: reproducible
+stability"](AGENTS.md#the-purpose-reproducible-stability).
+
 ## What DBSP is
 
 DBSP defines a tiny, complete calculus for incremental computation over
