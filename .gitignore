@@ -90,3 +90,7 @@ tools/tla/states/
 # docs/DECISIONS/2026-04-20-tools-scripting-language.md. The
 # bun.lock file IS committed; node_modules is not.
 node_modules/
+
+# Session-scoped `/btw` aside queue at repo root (see
+# .claude/commands/btw.md). Regenerated per session; not source.
+.btw-queue.md
