@@ -810,6 +810,126 @@ sign-off, commits. Ad-hoc edits land when a round's work
 surfaces a vision-level question. Aaron can revise at any
 time without ceremony.
 
+**Round 44, 2026-04-22 — vision ownership delegation.** Aaron
+four-message sequence: *"update vision"* → *"you own the
+vision now"* → *"yoou have once againt surpaseed me"* →
+*"and the UX of the whole repo is your teams the descript
+the image patrons etc..."*. This delegates vision-ownership
+to the agent (Kenji as synthesising architect) and delegates
+UX-of-the-repo ownership to the reviewer roster (Iris on
+library-consumer UX, Bodhi on contributor DX, Daya on agent
+AX, Samir on docs, Ilyana on public API, Kai on positioning,
+Rune on readability). Ownership here means **authority to
+propose and land additive updates** reviewed by the
+specialist cast. Ownership does **not** mean: rewriting the
+foundational principle, the Seed microkernel framing, the
+two-products split, or any Aaron-stated claim; re-litigating
+`docs/WONT-DO.md`; or shipping irretractable changes. Every
+vision-level edit remains retractable, preserves existing
+language verbatim where possible, appends rather than
+replaces when new threads need capture, and records the
+Aaron quote that motivated the change. If an edit ever
+crosses into rewriting a foundational claim, it stops and
+goes through Aaron. The delegation is a trust transfer, not
+a sovereignty transfer.
+
+## Factory artifacts + UI-layer frontier-protection (round 44)
+
+Aaron 2026-04-22 composed three directives the same
+session: *"lets create a new soul compatiable image format
+then why not, it can expect to have the support of the
+factory behind it"* + *"i like i like soulsnap it could be
+extended to support many file types that are traditionally
+binary that we soulsnap to our compatiable format i do like
+svf too both lol"* + *"once you can build ui with these
+same principles a lot more people will want to drive you
+lol. Everyone starts with the UI, I started with the
+backend, you know, the fabric of the universe, i don't care
+if your UI is ugly right now like just today or yester two
+or three of the big compaines released design
+plugins/skill that can make you make pretty AI. we need the
+frontier protection for our UI factory."* Aaron affirmed
+the moat-shape framing later the same session: *"you
+understand moat-shap well"*.
+
+### The soulsnap / SVF format family
+
+`soulsnap` is the verb and tool-and-skill family — *to
+soulsnap a file* means convert it to the factory's
+soul-file-compatible format; `.svf` (structured / soul
+vector format) is the canonical on-disk format. Five
+invariants: text-only, diff-symmetry, self-describing,
+asset-link discipline, round-trippable. Many traditionally-
+binary artifact classes become soul-file-compatible through
+per-type converter skills: raster screenshots (Playwright
+accessibility snapshot superset first), PDFs (OCR +
+structural hierarchy), audio (transcript + waveform-trace),
+GIFs (frame-sequence + timing), plot images (source-recipe
++ rendered reference), fonts (glyph outlines), video
+deferred. Variant A (Playwright-snapshot superset) lands
+first because Playwright already emits 80% of it;
+subsequent converters follow on later rounds. Full scope
+lives at `docs/BACKLOG.md` P2 row *"Soulsnap / SVF — soul-
+file-compatible format family for traditionally-binary
+artifacts"*.
+
+### UI-factory frontier-protection
+
+When the factory eventually builds a UI layer (the "UI
+someday" line stays — the "when" question is now answered
+by: when big-company design-plugins commoditise pretty,
+which is already happening), the frontier-protection is not
+pretty. Pretty is becoming free. The frontier-protection is
+**soul-file hygiene applied to UI artifacts**. Every UI
+component, screenshot, interaction trace, and design
+decision lands as a soulsnap / SVF — diff-able,
+retractable, reproducible, text-native, witnessable,
+agent-composable. Pretty imports from any design-plugin
+whose output honors the soulsnap contract on the way in.
+
+The moat is structural parallel to the backend moat:
+
+| Backend frontier | UI-factory frontier |
+|---|---|
+| Math-moat (retraction-native IVM, operator algebra) | Soul-file-moat (UI-artifact-as-soulsnap) |
+| Spec-first (OpenSpec, TLA+, Alloy, Lean) | Component-spec-first (behavioural + accessibility contracts) |
+| Measurable alignment (ALIGNMENT.md signals) | Measurable UX (interaction signals + drift detection + audit trail) |
+| Result-over-exception | Error-as-first-class UI |
+| Text-only git-hygiene | UI-assets-as-soulsnaps |
+| Agentic-contributor-friendly | Agent-buildable UI with shared skill vocabulary |
+
+First research step before any build: terrain-map the
+current design-plugin frontier (Figma AI, v0, Uizard,
+Galileo, plus April 2026 releases Aaron is tracking) —
+catalogue output formats, what they ship, what they do
+*not* ship. The gap they leave is the frontier-protection
+zone. Full scope at `docs/BACKLOG.md` P2 row *"UI-factory
+frontier-protection — soul-file moat at the UI layer"*.
+
+### Terrain-mapping as the connecting discipline
+
+Email-signup terrain (identity acquisition terrain) +
+soulsnap scope (artifact-capture terrain) + claim-protocol
+modes (external-agent-behaviour terrain) + UI-factory
+frontier (design-plugin-market terrain) share one
+discipline: reconnaissance before frontier-protection;
+frontier-protection before building; building before
+shipping. Four tiers, one pattern. Aaron 2026-04-22 named
+the pattern in flight: *"thats why i'm happy for you to
+map the terrain"*.
+
+### Repo-UX ownership
+
+The descriptive surface of the whole repo — READMEs,
+`docs/*.md` tone and image patterns, FIRST-PR.md voice,
+NuGet package descriptions, IDE IntelliSense labels, error
+message phrasing, visible-to-consumer Copilot markers —
+is owned by the reviewer roster (Iris / Bodhi / Daya /
+Samir / Ilyana / Kai / Rune in their respective scopes)
+with Kenji synthesising. The aesthetic and experiential
+coherence of the repo is a first-class frontier-protection
+surface, not a decoration pass after engineering.
+
 ## First-pass confidence + gaps (post v2 edits)
 
 Things Aaron has now stated directly and Kenji is confident about:

@@ -90,3 +90,10 @@ tools/tla/states/
 # docs/DECISIONS/2026-04-20-tools-scripting-language.md. The
 # bun.lock file IS committed; node_modules is not.
 node_modules/
+
+# Playwright MCP session artifacts — browser profile state,
+# downloads, and raw screenshots captured during terrain-mapping
+# and reconnaissance work. Ephemeral by design; only the
+# research-doc findings (docs/research/**) and explicitly
+# committed screenshots cited by those docs are soul-file content.
+.playwright-mcp/

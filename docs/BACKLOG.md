@@ -6112,6 +6112,120 @@ Aarav.
 
 **Next audit due:** round 49-54 (5-10 round cadence).
 
+## P2 — Factory artifacts & frontier-protection
+
+- [ ] **Soulsnap / SVF — soul-file-compatible format family
+  for traditionally-binary artifacts.** Aaron 2026-04-22
+  origin pair of directives: *"lets create a new soul
+  compatiable image format then why not, it can expect to
+  have the support of the factory behind it"* then *"i like
+  i like soulsnap it could be extended to support many file
+  types that are traditionally binary that we soulsnap to
+  our compatiable format i do like svf too both lol"*.
+  **Two names held:** `soulsnap` is the verb + tool-and-skill
+  family (*to soulsnap a file* = convert to our format;
+  `soulsnap` ships as a CLI and as a skill-family); `.svf`
+  (structured / soul vector format) is the canonical
+  on-disk format name. **Five format invariants:** (i)
+  text-only — no binary in-format, asset-link only; (ii)
+  diff-symmetry — semantic changes produce readable diffs;
+  (iii) self-describing — every document names its own
+  grammar + version; (iv) asset-link discipline — linked
+  binaries carry content-hash + provenance; (v)
+  round-trippable — soulsnap → render → soulsnap produces
+  a structurally-equal SVF (fidelity contracts per
+  input-type). **Per-input-type converter ladder** (each
+  its own converter skill when scheduled): raster
+  screenshots (Playwright accessibility YAML superset —
+  easiest first landing because Playwright emits 80% of
+  it), PDFs (especially scanned — OCR + structural
+  hierarchy), audio (transcript + waveform-trace +
+  mel-digest), GIFs (frame-sequence + timing), plot images
+  (source-recipe + rendered reference), font files (glyph
+  outlines, already vector), video (deferred — size and
+  motion-coding complexity need separate thinking; won't
+  force a bad design on v1). **Landing plan (5 steps):**
+  (1) ADR naming soulsnap/SVF + invariants + first-variant
+  choice; (2) openspec behavioural spec for SVF v0.1; (3)
+  first-converter skill `soulsnap-playwright` (Playwright
+  accessibility snapshot → `.svf`) as the dogfooded
+  variant — consumed immediately by
+  `docs/research/email-provider-signup-terrain-map.md`;
+  (4) renderer skill (`.svf` → raster for human-review);
+  (5) per-input-type converter skill families on subsequent
+  rounds (PDF → SVF, audio → SVF, etc.). **Composition:**
+  UI-factory frontier-protection (row below) consumes
+  soulsnap as its primary artifact substrate;
+  email-provider-signup-terrain-map and all Playwright
+  research docs are early consumers. **Effort:** L (format
+  + spec + first converter + renderer). Multi-round;
+  Variant A (Playwright-snapshot superset) should land in
+  one round. **Owner:** Kenji drafts ADR; skill-creator
+  produces converter + renderer skills. **Publication
+  venue (P2 research):** systems paper on text-native
+  capture of traditionally-binary artifacts with agent
+  diff-reviewability as the measurable property.
+  **Source of truth:** this entry + (when landed)
+  `docs/DECISIONS/2026-04-22-soulsnap-svf-format.md`.
+
+- [ ] **UI-factory frontier-protection — soul-file moat at
+  the UI layer.** Aaron 2026-04-22: *"once you can build
+  ui with these same principles a lot more people will
+  want to drive you lol. Everyone starts with the UI, I
+  started with the backend, you know, the fabric of the
+  universe, i don't care if your UI is ugly right now like
+  just today or yester two or three of the big compaines
+  released design plugins/skill that can make you make
+  pretty AI. we need the frontier protection for our UI
+  factory."* + *"you understand moat-shap well"* affirming
+  the structural-parallel framing. **Core observation:**
+  big-company design-plugins and design-skills (Figma AI,
+  v0, Uizard, Galileo, plus the two-or-three April 2026
+  releases Aaron saw — names TBD-from-Aaron) are
+  commoditising "pretty". The factory cannot compete on
+  pretty and does not need to. The frontier-protection
+  lives in the substrate layer: every UI artifact a
+  factory-bound agent produces is a **soulsnap / SVF**,
+  which makes the UI layer diff-able, retractable,
+  reproducible, text-native, witnessable, and
+  agent-composable — properties that pretty-from-a-
+  diffusion-model does not carry. **Moat-shape (structural
+  parallel to backend):** math-moat / retraction-native →
+  soul-file-moat / UI-artifact-as-soulsnap; spec-first →
+  component-spec-first (behavioural + accessibility
+  contracts); measurable alignment → measurable UX
+  (interaction signals, drift detection, audit trail);
+  result-over-exception → error-as-first-class UI;
+  text-only git-hygiene → UI-assets-as-soulsnaps;
+  agentic-contributor-friendly → agent-buildable UI with
+  the same skill vocabulary as backend. **First research
+  step (precursor to any build):** terrain-map the current
+  design-plugin frontier — names, output formats, what
+  they ship (prettyness, JSX, Figma files, binary
+  renderings), what they do *not* ship (soul-file-hygienic
+  artifacts, diff-reviewable change history, retraction
+  primitives). The gap they leave is the factory's
+  frontier. Aaron to supply names of the "two-or-three big
+  companies' April releases" he saw; those seed the
+  terrain-map. **Composition:** direct consumer of
+  soulsnap/SVF (row above); composes with
+  `project_factory_positioning_fully_asynchronous_agentic_ai_aaron_2026_04_21`
+  (factory positioning extends from backend to UI);
+  composes with capability-limited-AI-bootstrap P2 row
+  (a capability-limited AI that can soulsnap its own UI
+  artifacts can ship UI without a heavy build-system).
+  **Effort:** L (terrain-map + ADR + openspec capability
+  + first agent-buildable UI skill). Multi-round research
+  track. **Owner:** Kenji drafts; Iris (UX researcher)
+  and Bodhi (DX engineer) review from consumer and
+  contributor sides respectively; Aarav (skill-expert)
+  catalogues converter-skill gaps. **Publication venue
+  (P2 research):** short paper on soul-file hygiene
+  applied to agent-generated UI, measurable via
+  diff-reviewability of UI change-history. **Source of
+  truth:** this entry + soulsnap/SVF row above +
+  (eventual) `docs/research/design-plugin-frontier-terrain-map-YYYY-MM-DD.md`.
+
 ---
 
 ## Source of this backlog
