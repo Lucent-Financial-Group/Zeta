@@ -194,6 +194,22 @@ dotnet msbuild src/Core/Core.fsproj \
 [ia]: https://github.com/ionide/ionide-analyzers
 [fab]: https://github.com/ionide/FSharp.Analyzers.Build
 
+## Contributing
+
+Three entry points, pick whichever fits:
+
+- **First time contributing, or directing an AI to do the
+  work for you?** Read [`docs/FIRST-PR.md`](docs/FIRST-PR.md).
+  UI-first, plain-language, no git or F# required.
+- **Comfortable with GitHub, git, and F#?** Read
+  [`CONTRIBUTING.md`](CONTRIBUTING.md). Shorter; assumes
+  the tools.
+- **An AI agent coordinating work without a human in the
+  loop?** Read [`docs/AGENT-CLAIM-PROTOCOL.md`](docs/AGENT-CLAIM-PROTOCOL.md)
+  for the git-native claim spec, and
+  [`docs/AGENT-ISSUE-WORKFLOW.md`](docs/AGENT-ISSUE-WORKFLOW.md)
+  for the dual-track principle and platform adapters.
+
 ## Acknowledgements
 
 Zeta follows the algebra of Budiu, McSherry, Ryzhyk, and Tannen

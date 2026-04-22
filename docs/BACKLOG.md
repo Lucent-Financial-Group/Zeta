@@ -3965,6 +3965,63 @@ systems. This track claims the space.
   (ask-Aaron + scope-doc-edit); M if it triggers
   GOVERNANCE.md renegotiation.
 
+- [ ] **First-principle seed to Zeta derivation — common
+  vernacular only.** Aaron 2026-04-22: *"backlog first
+  principle seed to zeta derivation using only common
+  venucular"*. Write a doc under `docs/research/` (or
+  promote to `docs/FIRST-PRINCIPLES.md` if it earns a
+  top-level slot) that derives Zeta from first principles
+  using only **common vocabulary** — no "Z-set", no
+  "retraction-native IVM", no "operator algebra", no
+  "DBSP", no "H-function" without first-principle
+  unpacking. The test is: a bright high-school student or
+  someone outside computing can read it top-to-bottom and
+  understand *why* Zeta works. **Starting point:** "data
+  changes; we want to compute things about data; computing
+  from scratch each time is slow; we want a way to update
+  only what changed." From there, derive the chain:
+  sets-with-deletions → signed-counts (what Z-sets are,
+  without naming them) → differences between snapshots
+  (what deltas are) → the three knobs (delay /
+  differentiate / integrate) with plain-English names →
+  the chain rule (why compositions of incremental
+  operators stay incremental) → joins + the bilinear
+  identity → why distinct needs a special H-function.
+  Each technical term is **introduced** at the point the
+  derivation needs it, with the common-vernacular name
+  first and the jargon in parentheses. No forward
+  references to terms not yet derived. **Why this
+  matters:** composes with the vibe-coded-hypothesis
+  (`AGENTS.md` §"The vibe-coded hypothesis") and the
+  freshly-landed `docs/FIRST-PR.md` entry surface — a
+  maintainer who has written zero code directing AI to
+  build a DBSP library is operating exactly at the layer
+  this doc serves. It is also a falsification anchor for
+  the factory's research-grade claims: if the agents
+  cannot re-derive the system in common vernacular, the
+  factory does not actually understand what it is
+  building. **Constraints:** no math notation in
+  prose-body (math goes in inset boxes that readers can
+  skip); no appeal to "the paper" or "the literature"
+  as authority (link in a sidebar, don't lean on it in
+  the derivation); no persona-references (Kenji, Daya,
+  etc.) — personas are factory-internal, the doc is
+  outward-facing. **Effort:** M (1-3 days for the
+  writing, plus a review round from Samir
+  (`documentation-agent`) + Rune (`maintainability-
+  reviewer`) + Iris (`user-experience-engineer`) on
+  whether a reader with the target profile can follow
+  it). **Success signal:** a fresh reader (Iris's
+  10-minutes-in-Iris-mode protocol) can restate the
+  core derivation in their own words after reading
+  once. Composes with `docs/GLOSSARY.md` (glossary is
+  the landing point for terms introduced here). Also
+  composes with `docs/FIRST-PR.md` §"What you do *not*
+  need to worry about" — today the "don't need to
+  understand DBSP" line is a carve-out; when this doc
+  lands, it becomes a "here's where to start if you
+  want to."
+
 - [ ] **Cross-substrate-report accuracy — carrier-channel
   refinement to the measurable spec.** Auto-loop-7 (2026-04-22)
   surfaced a provenance problem in the `cross-substrate-report-
