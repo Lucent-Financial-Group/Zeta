@@ -189,6 +189,22 @@ wait for instruction. Priority ladder:
    refresh-debt accumulation even when nothing needs
    doing.
 
+0.5. **Drop-zone audit second.** Run `ls -la drop/`. The
+   maintainer deposits files for absorption there
+   (`drop/README.md`). If only the tracked sentinels
+   (`README.md`, `.gitignore`) and harmless system files
+   (`.DS_Store`) are present, no-op. If any other file is
+   present, **absorb it this tick** — drop-folder deposits
+   are the closest signal to directed work the factory
+   gets, and ignoring them stacks debt. Absorption
+   procedure: identify kind via the binary-type registry in
+   `drop/README.md`, extract signal-preserving summary to a
+   tracked artifact under `docs/research/` (or
+   topically-appropriate tracked location), delete the
+   original from `drop/`. Unknown binary kinds flag to
+   Aaron, not improvise. Policy: per
+   `memory/project_aaron_drop_zone_protocol_2026_04_22.md`.
+
 1. **Meta-check first.** Is there a structural change to the
    factory that would have made this tick's work directed
    rather than speculative? If yes, make the change and log
