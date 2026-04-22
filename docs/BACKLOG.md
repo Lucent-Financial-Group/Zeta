@@ -4070,6 +4070,68 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Constrained-bootstrapping-to-upgrades — Itron-precedent
+  direction for Zeta upgrade paths on resource-constrained
+  substrates.** Aaron 2026-04-22 auto-loop-36 three-message
+  disclosure: *"we had models running on the edge on the RIVA
+  meter, pre LLM days but some pretty beefy models for a meter
+  at Itron"* + *"My IoT infrcutrue i built at itron was a model
+  distrbution engine over constrainted networks and devices"*
+  + *"see why want to support constrained bootstraping to
+  upgrades"*. Aaron has shipped the server side of exactly this
+  problem class: model-distribution engine over bandwidth-
+  starved RF networks to electric/water/gas smart meters with
+  KB-to-MB RAM and milliwatt power budgets, with PKI + secure-
+  boot attestation baked in. The factory-scale application is
+  **upgrade paths that work when the target substrate is small,
+  intermittently-connected, or capability-limited** — e.g. a
+  Zeta-descended factory running on a Raspberry-Pi-class node,
+  on a ship-with-satellite-link, on a post-apocalypse Chronovisor-
+  style preservation rig, or simply on a fresh developer laptop
+  before it has downloaded the full toolchain. Design pillars
+  implied by the Itron precedent: (a) **delta updates over
+  full pushes** — retraction-native operator algebra is
+  algebraically suited to this (retract what changed, apply
+  delta, not re-ship full state); (b) **bandwidth-budgeted
+  staged rollout** with partial-failure recovery; (c) **signed
+  deltas verified at the edge** (PKI / attestation composing
+  with the secret-handoff and SLSA/sigstore rows); (d)
+  **rollback safety** — an upgrade that bricks a constrained
+  substrate is worse than no upgrade; retraction gives
+  algebraic rollback for free; (e) **capability-stepdown
+  compatible** — per `docs/research/arc3-dora-benchmark.md`,
+  the factory should continue functioning when the cognition
+  layer is ran against a smaller model; the upgrade protocol
+  must carry this gracefully. **Not a round-45 commitment;
+  not an embedded-target promise.** Long-term factory direction;
+  occurrence-1 anchor via Aaron's three-message disclosure.
+  **Open questions, flagged to maintainer, not self-resolved:**
+  (i) scope — Zeta.Core / Escro / factory-metadata: which
+  layer(s) carry constrained-bootstrap discipline first?
+  (ii) minimum substrate target — Pi-class? satellite-linked
+  VM? browser-with-wasm? the answer shapes the benchmark
+  shape. (iii) relationship to `capability-limited AI bootstrap
+  via factory` (existing BACKLOG direction) — same direction
+  different layer, or one is subset of the other? (iv)
+  relationship to secret-handoff protocol, SLSA / sigstore,
+  and the microkernel-OS endpoint of Escro's maintain-every-
+  dep directive (all compose; exact ordering and boundaries
+  TBD). Reviewer routing: Aminata (threat-model — bricking
+  constrained devices is a novel adversary surface), Nazar
+  (secops — signed-delta verification, rollback discipline),
+  Naledi (performance — resource-constrained budgets), Soraya
+  (formal verification — rollback-safety is a TLA+ candidate),
+  Kenji (Architect — layer-boundary synthesis), Aarav (skill-
+  lifecycle — may produce a capability skill for upgrade-plan
+  authorship). Composes with: `memory/user_aaron_itron_pki_supply_chain_secure_boot_background.md`
+  (source-of-truth for the precedent); `memory/project_escro_maintain_every_dependency_microkernel_os_endpoint_grow_our_way_there_2026_04_22.md`
+  (microkernel endpoint is the *target*; constrained-bootstrap
+  is the *path*); `docs/research/arc3-dora-benchmark.md` (the
+  capability-stepdown axis pairs with the bandwidth-stepdown
+  axis). Owner: Architect (Kenji) for synthesis; Aaron for
+  scope decisions. Effort: L (multi-round direction, not a
+  single-tick landing).
+
 - [ ] **Compoundings-per-tick audit — tick-close self-
   diagnostic with confidence-axis failure-mode taxonomy.**
   Recurrence threshold met auto-loop-16/17/18 (2026-04-22):
