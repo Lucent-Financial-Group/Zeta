@@ -4382,10 +4382,51 @@ systems. This track claims the space.
   pattern — firmly named, ADR territory), `docs/ALIGNMENT.md`
   (agent-coherence-substrate framing reinforces the measurable-
   alignment research focus — measurement requires substrate
-  that supports it). **Effort:** L (multi-round direction,
-  joint program with semiring-parameterized Zeta; not a
-  single-tick or single-round landing; probably 6-18 month
-  arc).
+  that supports it). **Germination constraint-frame added
+  auto-loop-39 continuation** (Aaron same-tick follow-ups):
+  (1) *"we can germinate the seed with our tiny bin file
+  database"* + *"no cloud"* + *"local native"* — three hard
+  constraints: no cloud, local-native (NOT SQLite/LMDB/DuckDB/
+  foreign-DB wrapper), germinate-don't-transplant (small-start
+  not big-migration); (2) *"as long as it can invoke the
+  soulfiles that's the only compability"* — narrow
+  compatibility bar, soulfile invocation (soulsnap/SVF #241);
+  (3) *"when it invokes the soul file that's our stored
+  procedure DSL in the DB"* — soulfiles are stored-procedure-
+  class callables authored in a DSL living inside the DB;
+  invocation = DSL-runtime execution, not passive state-load;
+  (4) *"based on reaqtor like closure over our modeles
+  decsions in real time"* — Reaqtor-lineage (De Smet et al.,
+  reaqtive.net, DBSP-ancestry) reaqtive-closure semantics:
+  serialized reaqtive subscription that stays live after
+  invocation and re-emits as DB state evolves under the
+  retraction-native operator algebra. These constraints
+  sharpen Phase-0/1 scope: (a) Phase-0 inventory must
+  classify by shape-AND-DSL-authorability (is the index
+  stored-procedure-materializable?); (b) Phase-1
+  germination-candidate ranking must favor soulfile-store
+  itself as the first index (if soulfile-invocation is the
+  only compatibility bar, the soulfile-store is the most-
+  aligned germination target); (c) cross-substrate-
+  readability tension resolves by keeping git+markdown as
+  read-only mirror next to the tiny-bin-file algebraic-
+  operations layer. Constraint-frame research doc:
+  `docs/research/openai-deep-ingest-cross-substrate-readability-2026-04-22.md`
+  §§ Germination path / Soulfile invocation / DB-is-the-model /
+  Bidirectional absorption. Constraint-frame memory:
+  `memory/project_zeta_self_use_local_native_tiny_bin_file_db_no_cloud_germination_2026_04_22.md`.
+  **DB-is-the-model reframe** (Aaron same-tick): *"im saying
+  our database is the model"* + *"it's just custom built in
+  a different way"* — Zeta DB is same category as LLM weights
+  (compressed/stabilized knowledge representation), constructed
+  algebraically rather than via gradient descent; unifies the
+  three arcs (all-physics / one-algebra / agent-coherence)
+  into one claim; mesa-coherence implication (self-modeling
+  model); ADR-territory flagged to Kenji. Memory:
+  `memory/project_zeta_db_is_the_model_custom_built_differently_regime_reframe_2026_04_22.md`.
+  **Effort:** L (multi-round direction, joint program with
+  semiring-parameterized Zeta; not a single-tick or single-
+  round landing; probably 6-18 month arc).
 
 - [ ] **Constrained-bootstrapping-to-upgrades — Itron-precedent
   direction for Zeta upgrade paths on resource-constrained
