@@ -106,13 +106,13 @@ stub), and Copilot coding agent `@copilot` (autonomous PR
 author, stub) — landing (a) the `docs/HARNESS-SURFACES.md`
 three-product split with explicit capability-boundary
 scoping, (b) the rewritten `.github/copilot-instructions.md`
-self-identifying as a reviewer-robot contract, (c) a
-dedicated harness-vs-reviewer-robot correction section in
-the multi-harness-support feedback record, and (d) PR #32
-against this factory as the first live experiment testing
-what PR Copilot can and cannot do on the factory's own
-documentation (meta-wins-log row `copilot-split`
-classified partial-meta-win pending experiment outcome).
+self-identifying as a reviewer-robot contract, (c) the
+harness-vs-reviewer-robot correction captured in those
+two artifacts, and (d) PR #32 against this factory as the
+first live experiment testing what PR Copilot can and
+cannot do on the factory's own documentation
+(meta-wins-log row `copilot-split` classified
+partial meta-win pending experiment outcome).
 
 A late-round arc landed the **`AceHack/Zeta` →
 `Lucent-Financial-Group/Zeta` org migration** (HB-001
