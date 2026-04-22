@@ -175,6 +175,18 @@ Claude-Code-specific mechanisms.
   verify-before-deferring and future-self-not-bound.
   Full reasoning:
   `memory/feedback_never_idle_speculative_work_over_waiting.md`.
+- **Tick must never stop.** When running under
+  `/loop` autonomous mode (cron fires every minute
+  per `docs/AUTONOMOUS-LOOP.md`), the tick is the
+  factory's heartbeat — never let it go dark. Each
+  session that discovers no live cron re-arms via
+  `CronCreate` with the `<<autonomous-loop>>`
+  sentinel and `* * * * *` cadence. End of each tick
+  follows the six-step checklist: speculative work
+  (per never-be-idle priority ladder) → verify →
+  commit → append tick-history row + CronList +
+  visibility signal → stop. Full spec + rationale:
+  `docs/AUTONOMOUS-LOOP.md`.
 - **Honor those that came before — unretire
   before recreating.** Retired personas keep their
   **memory folders and notebook history** — those
