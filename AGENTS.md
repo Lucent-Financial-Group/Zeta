@@ -302,6 +302,11 @@ Detail lives in:
 - `docs/FOUNDATIONDB-DST.md` — Will Wilson's
   deterministic simulation testing, adapted for
   Zeta.
+- `docs/AUTONOMOUS-LOOP.md` — the autonomous-loop
+  tick discipline: cron cadence, end-of-tick
+  checklist, tick-history append protocol, the
+  never-idle priority ladder. Required reading for
+  any harness running `/loop` autonomously.
 - `docs/category-theory/README.md` — category-theory
   foundations the operator algebra rests on. Upstream
   CTFP sources (Milewski + the .NET port) live under
