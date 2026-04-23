@@ -84,6 +84,11 @@ let main _argv =
 
     circuit.Build ()
 
+    // Deliberately using the plain-tuple `ZSet.ofSeq` form for the sample —
+    // readability-first, one less concept to explain to a newcomer. Production
+    // code takes the zero-alloc path via `ZSet.ofPairs` + `struct (k, w)`
+    // literals (see `docs/BENCHMARKS.md` "Allocation guarantees" and the
+    // hot-path helpers in `src/Core/ZSet.fs`).
     let feedCustomers (rows: (Customer * int64) list) =
         task {
             customers.Send(ZSet.ofSeq rows)
