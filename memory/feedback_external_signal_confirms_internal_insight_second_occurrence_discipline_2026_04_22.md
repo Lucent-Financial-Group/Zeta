@@ -11,7 +11,14 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 for provenance — originSessionId trail + migration
 history. The in-repo copy is the authoritative form going
 forward. Migrated via AutoDream Overlay A
-opportunistic-on-touch; fourth in the 2026-04-23 cadence.
+opportunistic-on-touch; fourth in the 2026-04-23 cadence
+(following PRs #157 / #158 / #159). Qualifies on the same
+criteria: generic factory discipline (second-occurrence-
+discipline applies to any architectural-insight
+confirmation pattern), cited as composes-with from the
+just-migrated signal-in-signal-out memory, no maintainer-
+specific-content blocker. Per-user source retains
+"Migrated to in-repo" marker at top for provenance.
 
 # External-signal-confirms-internal-insight — wink-validation
 
@@ -63,7 +70,7 @@ echo of the factory's own wording is Aaron's
 maintainer-wink — strictly stronger evidence than my own
 internal claim that the insight is structural.
 
-## Why:
+## Why
 
 - **Internally-claimed moats are suspect by default.** A
   factory agent confidently stating *"this is a real moat"*
@@ -120,7 +127,7 @@ internal claim that the insight is structural.
   calibrate their own confidence in factory architectural
   claims rather than inheriting my confidence.
 
-## How to apply:
+## How to apply
 
 - **At occurrence-1 (first external validation of a factory
   architectural insight):** note it in the round-history row
