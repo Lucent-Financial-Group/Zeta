@@ -1310,6 +1310,27 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Live-lock smell cadence (round 44 auto-loop-46 absorb,
+  landed as `tools/audit/live-lock-audit.sh` + hygiene-history log)** —
+  Aaron 2026-04-23: *"on some cadence look at the last few things
+  that went into master and make sure its not overwhelemginly
+  speculative. thats a smell that our software factor is live
+  locked."* Classifies last N commits on `origin/main` into EXT
+  (src/tests/samples/bench), INTL (tick-history/BACKLOG/.claude),
+  SPEC (research/memory/DECISIONS), OTHR. Flags when EXT < 20%.
+  **Inaugural run 2026-04-23:** EXT 0%, INTL 72%, SPEC 16%, OTHR
+  12% — smell fires. Response: PR #141 (ServiceTitan CRM demo
+  sample) is the pattern-breaker; next audit after merge should
+  show non-zero EXT. Open follow-ups: (a) wire the audit into
+  the round-close ladder so it runs on every `origin/main`
+  update, (b) make the threshold tunable per round-target, (c)
+  distinguish "external PRs pending merge" from "no external
+  work in flight" — the current script conflates them. Effort: S
+  per follow-up. Owner: Kenji (Architect) picks cadence; Naledi
+  (perf) and Rune (maintainability) natural reviewers for
+  threshold tuning. Composes with
+  `memory/project_aaron_external_priority_stack_and_live_lock_smell_2026_04_23.md`.
+
 - [ ] **Cadenced self-practices code review — checks against our
   own advertised discipline on a schedule (round 44 auto-loop-46
   absorb)** — Aaron 2026-04-22 auto-loop-46: *"it would be nice
