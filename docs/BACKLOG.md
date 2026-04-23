@@ -3117,6 +3117,53 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
+- [ ] **Factory technology inventory — first-class
+  support for every tech we use.**
+  Aaron 2026-04-23: *"don't forget to map out all our
+  technology so the factory has first class support for
+  everything ... i think i saw you ad docker and postgres
+  and now we may be adding the openai website/ui i think
+  we already have codex cli mapped"*.
+
+  **Observed gap:** the factory uses many technologies
+  (Docker, Postgres, F#, .NET 10, TypeScript, bun,
+  Claude Code, Codex CLI, Gemini CLI, OpenAI web UI,
+  Playwright, Apache Arrow, Lean 4, Z3, TLA+, FsCheck,
+  Alloy, Semgrep, CodeQL, BenchmarkDotNet, GitHub
+  Actions, NuGet, and more) but no single doc
+  inventories them with install path, version pin,
+  authoritative doc URL, expert-skill cross-reference,
+  and TECH-RADAR ring. `docs/HARNESS-SURFACES.md`
+  covers agent harnesses; `docs/TECH-RADAR.md` covers
+  ring adoption; per-tech expert skills cover usage
+  depth. The missing surface is an inventory that ties
+  all three together per-tech.
+
+  **Deliverable:** `docs/FACTORY-TECHNOLOGY-INVENTORY.md`
+  (name TBD) with columns: Technology / Role / Install
+  path / Version pin / Auth-doc URL / Expert skill /
+  TECH-RADAR ring / Notes.
+
+  **Growth cadence:** living inventory updated with
+  each new tech adoption. Should surface cross-platform
+  parity status (row #48) per tech.
+
+  **OpenAI web UI as a new entry.** Aaron 2026-04-23
+  explicitly named adding OpenAI web UI + Playwright as
+  a new technology row. Includes any OpenAI mode/model
+  (deep research, agent mode, others) authorized within
+  Aaron's already-paid subscription, plus Playwright
+  caveats (long-conversation rendering, async loading,
+  UI-change-ongoing maintenance — per the per-user
+  memory at
+  `project_factory_technology_inventory_first_class_support_openai_playwright_hard_2026_04_23.md`).
+
+  **Self-scheduled:** free work under the 2026-04-23
+  scheduling-authority rule.
+
+  **Effort:** M (inventory doc + per-tech row population;
+  living, not one-shot).
+
 - [ ] **Claude-harness cadenced audit — first full sweep.**
   Aaron 2026-04-20 late, verbatim: *"part of our stay up to
   date on everything we should always research claude and
