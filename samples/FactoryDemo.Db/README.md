@@ -17,10 +17,10 @@ for the load-bearing directive.
 
 Two sibling samples, two different audiences:
 
-- `samples/CrmKernel/` (internal-facing) — algebraic substrate
-  demo. ~180-line console F# showing retraction-native Z-set
-  semantics on CRM-shaped data. For factory agents and Zeta
-  library users.
+- `samples/CrmKernel/` (internal-facing, lands in PR #141) —
+  algebraic substrate demo. ~180-line console F# showing
+  retraction-native Z-set semantics on CRM-shaped data. For
+  factory agents and Zeta library users.
 - `samples/FactoryDemo.Db/` (factory-demo-facing) —
   factory-adoption demo. Standard SQL, standard stack, pitches
   the factory. For engineering leadership evaluating
@@ -41,31 +41,52 @@ This directory currently ships only the DB side of the demo:
 - `README.md` — this file.
 
 Frontend + backend land in later PRs once the stack is chosen
-(see `docs/plans/factory-demo-scope.md`).
+(scope doc lands in PR #144).
 
-## How to use
-
-Assuming a local Postgres (docker-compose version TBD):
+## How to use — one command
 
 ```bash
-# 1. Start a throwaway Postgres instance
-docker run --rm -d --name crm-demo -e POSTGRES_PASSWORD=demo \
-    -p 5432:5432 postgres:16
+cd samples/FactoryDemo.Db
+docker-compose up -d                   # start Postgres; schema + seed applied automatically
+bash smoke-test.sh                     # verify seed loaded correctly (optional)
 
-# 2. Create schema + seed data
-psql -h localhost -U postgres -d postgres -f schema.sql
-psql -h localhost -U postgres -d postgres -f seed-data.sql
+# Poke around:
+docker-compose exec db psql -U postgres -c \
+    "SELECT stage, COUNT(*), SUM(amount_cents) / 100 AS total_usd
+     FROM opportunities GROUP BY stage ORDER BY stage;"
 
-# 3. Verify
-psql -h localhost -U postgres -d postgres \
-    -c "SELECT stage, COUNT(*), SUM(amount_cents) / 100 AS total_usd
-        FROM opportunities
-        GROUP BY stage
-        ORDER BY stage;"
+# When done:
+docker-compose down -v                 # stop + wipe volume
 ```
 
-Expected output (rounded): Lead ~10 / $X, Qualified ~7 / $Y,
-Proposal ~7 / $Z, Won ~6 / $W.
+The `docker-compose up -d` command:
+
+1. Pulls `postgres:16-alpine` if not cached
+2. Mounts `schema.sql` + `seed-data.sql` into
+   `docker-entrypoint-initdb.d/` where Postgres auto-applies
+   them at first startup
+3. Exposes port 5432 on localhost
+4. Persists data in a named volume (`factory-demo-db-data`)
+   so restarts keep the data; `down -v` wipes it
+
+**Expected seed** (verified by `smoke-test.sh`):
+Lead: 10 opps / $54K, Qualified: 6 / $42.2K, Proposal: 6 / $57.2K,
+Won: 6 / $26.7K, Lost: 2 / $4.9K. 20 customers total, 2 intentional
+email collisions for the duplicate-review scenario, 33 activity rows.
+
+### Manual alternative (no docker-compose)
+
+If you'd rather run Postgres directly:
+
+```bash
+docker run --rm -d --name factory-demo-db \
+    -e POSTGRES_PASSWORD=demo -p 5432:5432 postgres:16
+psql -h localhost -U postgres -d postgres -f schema.sql
+psql -h localhost -U postgres -d postgres -f seed-data.sql
+```
+
+Same end state, more steps. Prefer `docker-compose` unless you
+have a reason not to.
 
 ## Schema shape (at a glance)
 
@@ -81,9 +102,13 @@ Proposal ~7 / $Z, Won ~6 / $W.
   Note), `notes` (text), `occurred_at` (timestamptz). A
   timeline of interactions per customer.
 
-No views, no stored procedures, no triggers in v0. The demo
-frontend will either query directly or use a thin API layer
-(TBD).
+No views, no stored procedures in v0. One narrow trigger —
+`touch_updated_at` on `customers` + `opportunities` — keeps
+the `updated_at` column accurate on UPDATE without app-layer
+bookkeeping; see `schema.sql`. No app-behavior triggers
+(nothing fires per-row except `updated_at` bookkeeping). The
+demo frontend will either query directly or use a thin API
+layer (TBD).
 
 ## Design notes
 
@@ -97,9 +122,13 @@ frontend will either query directly or use a thin API layer
 - **No soft-deletes in v0.** CRUD-delete for simplicity. The
   demo's "retraction" semantics belong to the internal
   algebraic sample (`samples/CrmKernel/`), not here.
-- **Seed data deterministic.** Re-running `seed-data.sql`
-  replays the same rows. Useful for regression-style
-  demo repeatability.
+- **Seed data shape deterministic.** Re-running `seed-data.sql`
+  replays the same row count, same keys, same amounts, same
+  email collisions. Activity timestamps use `NOW() - INTERVAL
+  'N days'` and therefore drift with wall-clock time on each
+  load — that's intentional (demo data should look recent),
+  not a determinism bug. The shape-deterministic + timestamp-
+  recent combination is what \"demo repeatability\" means here.
 
 ## Open questions
 

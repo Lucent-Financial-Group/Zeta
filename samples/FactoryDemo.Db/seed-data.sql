@@ -1,5 +1,9 @@
--- Factory-demo — deterministic seed data (v0)
--- 20 customers (trades-contractor shaped), 30 opportunities, ~40 activities.
+-- Factory-demo — shape-deterministic seed data (v0)
+-- 20 customers (trades-contractor shaped), 30 opportunities, 33 activities.
+-- Row counts / keys / amounts / email collisions are deterministic across
+-- every load. Activity timestamps use NOW() - INTERVAL 'N days' so the
+-- data looks recent on each load; shape stays the same, absolute times
+-- drift with wall clock. See README §"Seed data shape deterministic".
 -- Two intentional email collisions for the duplicate-review demo scenario.
 -- Idempotent: re-running TRUNCATEs first and re-inserts.
 
