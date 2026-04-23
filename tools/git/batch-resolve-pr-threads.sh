@@ -57,8 +57,10 @@ if ! [[ "$pr_number" =~ ^[0-9]+$ ]]; then
 fi
 
 # Reply templates per class
+# shellcheck disable=SC2016  # Single-quoted reply body contains Markdown backticks that must stay literal (not shell-expanded)
 reply_dangling_ref='Acknowledged and accepted during Phase 1 queue-drain (per Amara'\''s "merge over invent" operational-gap-assessment direction). Referenced artifacts are in-flight across adjacent PRs; cross-PR dangling refs are a known side-effect of stacked-PR state and self-heal as the queue drains. Resolving to unblock merge; opportunistic cleanup of any permanent refs in follow-up tick if gaps remain visible after queue drain.'
 
+# shellcheck disable=SC2016  # Same as above — Markdown backticks in literal reply
 reply_name_attribution='Acknowledged; the name appearance here is legitimate per the named-agents-get-attribution policy (per-user memory `feedback_named_agents_get_attribution_credit_on_everything_2026_04_23.md` + `project_repo_split_provisional_names_frontier_factory_and_peers_2026_04_23.md`). Named personas (Kenji / Amara / Aarav / Rune / Iris / Dejan / Otto / etc.) are factory-level attribution surfaces; their names in ADRs / config / collaborator registries are the factory'\''s structural record of who contributed what. Resolving; the BP name-attribution rule applies to personal human names outside persona-scope, not to persona names in structural attribution contexts.'
 
 # Fetch unresolved threads via GraphQL
@@ -161,8 +163,7 @@ resolve_thread() {
   local reply="$2"
 
   # Escape double quotes for GraphQL (simple — no newlines in templates)
-  local escaped_reply
-  escaped_reply=$(echo "$reply" | sed 's/"/\\"/g')
+  local escaped_reply="${reply//\"/\\\"}"
 
   # Post reply
   gh api graphql -f query="mutation {
