@@ -68,11 +68,11 @@ For each audited file:
 - `docs/BACKLOG.md`
 - `docs/ROADMAP.md`
 - `docs/VISION.md`
-- `.claude/skills/*/SKILL.md` (each)
-- `.claude/agents/*.md` (each)
-- `openspec/**` (structural; library-specific-heavy)
-- `tools/**/*` scripts (some factory, some Zeta-build)
-- `.github/` workflows + config
+- `.claude/skills/*/SKILL.md` (~236 skills, audited summary-level Otto-20 below)
+- `tools/**/*` scripts (audited summary-level Otto-20 below)
+- `.claude/agents/*.md` (batched Otto-19)
+- `openspec/**` (batched Otto-19)
+- `.github/` workflows + config (batched Otto-19)
 
 Not a prescriptive queue; the audit lands as sections
 mature. One or two files per tick is the intended cadence.
@@ -381,6 +381,145 @@ necessarily project-specific — an adopter's declined work
 is unique to their project. Frontier inherits the shape
 template + personas/meta sections; Zeta retains its full
 current entry list as the library's decision record.
+
+## Audit — `.claude/skills/**`
+
+**Overall classification:** **both (coupled)** at the
+directory level, with per-skill classification already
+partially done by the `skill-tune-up` ranker's portability-
+drift criterion (see `.claude/skills/skill-tune-up/SKILL.md`).
+
+**Scope:** 236 skill directories; each typically has a
+`SKILL.md` with frontmatter + body.
+
+**Expected distribution** (per the skill-tune-up portability-
+drift criterion — skills are expected to be *generic by
+default* unless they declare `project: zeta` in frontmatter):
+
+- **factory-generic (majority expected)**: default skill
+  shape; skills that are project-agnostic by design
+  (reducer / skill-creator / prompt-protector /
+  harsh-critic / spec-zealot / naming-expert / round-
+  management / etc.)
+- **`project: zeta` declared** (minority): skills scoped
+  specifically to Zeta's library surface (zset-expert /
+  spine-expert / operator-algebra-expert / etc. — the
+  library-specific reviewer skills)
+- **undeclared but Zeta-coupled** (portability-drift
+  candidates): skills that hard-code Zeta paths without
+  declaring `project: zeta` — these are skill-tune-up's
+  primary targets for flagging
+
+**File location post-split:**
+- Factory-generic skills → Frontier `.claude/skills/**`
+- `project: zeta` skills → Zeta `.claude/skills/**`
+- Portability-drift-flagged skills → split-time review;
+  either generalise or declare-and-move per skill
+
+### Refactor notes
+
+1. Run `skill-tune-up` portability-drift audit across all
+   236 skills BEFORE split execution (gap #1)
+2. Generate per-skill split manifest from the audit
+3. Execute split per manifest
+4. Portability-drift-flagged skills get split-time
+   remediation: either generalise scope (stay Frontier) or
+   declare `project: zeta` (move to Zeta)
+
+Estimated refactor effort: **L** — 236 skills is a lot; per-
+skill classification is mostly mechanical after the audit
+runs but the sheer volume takes time. This should fire as
+a one-time large-batch hygiene pass, not per-tick.
+
+### Classification rationale
+
+`.claude/skills/` is the factory's *capability library* —
+skills encode reusable procedures. By factory design they
+should be project-agnostic unless declared otherwise. The
+audit is essentially running skill-tune-up's existing
+portability-drift criterion at population scale; the tool
+already exists. This is a "ready to execute" audit
+rather than a "design the audit" audit.
+
+**Delegate to skill-tune-up (Aarav)**: when this audit
+fires, it runs Aarav's ranker against the full skill
+population with portability-drift as the primary signal.
+Output is a per-skill split manifest consumable by gap
+#1 execution.
+
+## Audit — `tools/**`
+
+**Overall classification:** **both (coupled)** — mixed
+per-subdirectory.
+
+**Scope:** 13 top-level subdirectories under `tools/`:
+
+| Subdirectory | Class | Notes |
+|---|---|---|
+| `tools/alignment/` | factory-generic | Alignment audit tools |
+| `tools/alloy/` | factory-generic | Alloy formal verification (factory-wide capability) |
+| `tools/audit-packages.sh` | factory-generic | NuGet package audit — Zeta-specific ecosystem but pattern generic |
+| `tools/git/` (push-with-retry.sh) | factory-generic | Generic git wrapper; works in any repo |
+| `tools/hygiene/` | factory-generic | Factory hygiene audit scripts (tick-history bounded-growth / prevention-layer / cross-platform-parity / etc.) |
+| `tools/invariant-substrates/` | **zeta-library-specific** | Zeta's invariant substrates |
+| `tools/lean4/` | factory-generic | Lean4 formal verification (factory-wide capability) |
+| `tools/lint/` | factory-generic | Lint scripts |
+| `tools/profile.sh` | factory-generic | Profile startup script |
+| `tools/setup/` | **both (coupled)** | One-install-script-consumed-three-ways (GOVERNANCE §24). Shape generic; specific installs Zeta-specific (dotnet, openssl, etc.) |
+| `tools/skill-catalog/` | factory-generic | Skill-catalog tooling |
+| `tools/tla/` | factory-generic | TLA+ formal verification (factory-wide capability) |
+| `tools/Z3Verify/` | factory-generic | Z3 SMT verification (factory-wide capability) |
+
+Observation: formal-verification tooling (alloy / lean4 /
+tla / Z3Verify) is uniformly factory-generic — these are
+capabilities the factory inherits for any algebraic
+substrate adopters bring. Hygiene + setup mostly factory-
+generic with project-substitution at runtime.
+
+### Refactor notes
+
+Before split:
+1. Frontier inherits all factory-generic subdirectories:
+   alignment / alloy / audit-packages.sh / git / hygiene /
+   lean4 / lint / profile.sh / skill-catalog / tla /
+   Z3Verify + the shape of setup/
+2. Zeta retains: `invariant-substrates/` + Zeta-specific
+   content in setup/ (.NET SDK install steps etc.)
+3. `tools/setup/` requires a split-time sub-audit to
+   separate "factory-generic-install-shape" from "Zeta-
+   specific-install-content"
+
+Effort: **M** — mostly mechanical (10 of 13 subdirs move
+as-is); setup/ needs per-script review.
+
+### Classification rationale
+
+Formal-verification tooling being factory-generic is load-
+bearing: the factory's research-grade-quality claim rests
+on multi-method formal coverage (BP-16), and those tools
+are a deliverable adopters inherit regardless of their
+specific algebra. Zeta-library-specific tools are narrow
+(invariant-substrates is the clearest zeta-specific case).
+
+## Pattern summary after 20 audits — gap #5 essentially complete
+
+Total tally:
+
+| Class | Count | Surfaces |
+|---|---|---|
+| factory-generic | 6 | GOVERNANCE, AGENT-BEST-PRACTICES, ALIGNMENT, AUTONOMOUS-LOOP, FACTORY-HYGIENE, `.claude/skills/**` (majority expected), `tools/**` (majority subdirs) |
+| both (coupled) | 10 | CLAUDE, AGENTS, CONFLICT-RESOLUTION, WONT-DO, TECH-RADAR, GLOSSARY, `.claude/agents/`, `openspec/`, `.github/`, `tools/setup/` |
+| zeta-library-specific | 5 | ROUND-HISTORY, BACKLOG, ROADMAP, VISION, `tools/invariant-substrates/` |
+
+Gap #5 audit surface essentially complete. Remaining
+next-step: run skill-tune-up portability-drift across
+236 skills (Aarav task), produce per-skill split manifest.
+That's a one-time pre-split hygiene pass, not per-tick
+audit work.
+
+Gap #5 can be marked **SUBSTANTIALLY COMPLETE** pending
+Aarav's skill-tune-up portability audit. Gap #1
+(multi-repo split) is now unblocked by classification.
 
 ## How this audit connects to the multi-repo split
 
