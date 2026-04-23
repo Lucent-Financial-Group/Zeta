@@ -5959,7 +5959,9 @@ systems. This track claims the space.
   / content policies at inference; human-side flags
   content for minors / school-curriculum fit.
 
-  **Composes with**: per-user seed-whimsy memory already
+  **Composes with**: per-user memory
+  `feedback_pinned_random_seeds_containing_69_or_420_when_agent_picks_2026_04_23.md`
+  (at `~/.claude/projects/<slug>/memory/`) already
   captures the high-school-curriculum-friendly target
   with R-rated-when-necessary-for-effect exception; this
   skill is the enforcement surface. Adjacent safety
@@ -5967,19 +5969,21 @@ systems. This track claims the space.
   `docs/AGENT-BEST-PRACTICES.md` content-policy
   substrate.
 
-  **First-pass output**: `{language_rating, concept_ratings
-  (per category), mpaa, esrb, pegi, tv, factory_rating,
-  reasons}`.
+  **First-pass output** (per classified item):
 
-  **Research deliverable first**: `docs/research/age-
-  classification-standard-YYYY-MM-DD.md` before skill
+  ```text
+  { language_rating, concept_ratings (per category),
+    mpaa, esrb, pegi, tv, factory_rating, reasons }
+  ```
+
+  **Research deliverable first**: `docs/research/age-classification-standard-YYYY-MM-DD.md` before skill
   implementation. Covers existing standards' criteria,
   physiology-based standard proposal, rating-axis design,
   edge cases, AI-safety vs human-age-appropriateness
   convergence.
 
   **Scope**: research note first; skill lands after
-  standard stabilises. No adopt commitment. Effort S for
+  standard stabilises. No commitment to adopt. Effort S for
   research; M for skill. Priority P3 per "low backlog
   item".
 
@@ -6046,7 +6050,7 @@ systems. This track claims the space.
 
   Scope: research note under
   `docs/research/uml-modelling-for-the-factory-YYYY-MM-DD.md`
-  when prioritised. No adopt commitment. No deadline.
+  when prioritised. No commitment to adopt. No deadline.
   Effort S for first-pass note; M if adoption is chosen.
 
 - **Conversational bootstrap UX for factory-reuse
