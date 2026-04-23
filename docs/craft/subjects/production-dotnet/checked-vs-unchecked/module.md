@@ -5,10 +5,14 @@
 **Audience:** contributors already comfortable with F# types,
 spans, and Z-set basics; moving from "it compiles" to "it runs
 fast *and* correctly under adversarial input"
-**Prerequisites:** `subjects/zeta/zset-basics/` +
-`subjects/zeta/operator-composition/`; BenchmarkDotNet literacy
+**Prerequisites:** an onboarding-tier Z-set foundation — of the
+planned onboarding modules (zset-basics, retraction-intuition,
+operator-composition, semiring-basics), `retraction-intuition`
+ships on main today as `docs/craft/subjects/zeta/retraction-
+intuition/`; the other three are in-flight PRs. Also assumes
+BenchmarkDotNet literacy.
 **Next suggested:** `subjects/production-dotnet/zero-alloc-hot-
-loops/` (forthcoming)
+loops/` (forthcoming — stubbed in the per-tier README)
 
 ---
 
@@ -95,7 +99,7 @@ benchmark comparing the two:
 
 ```fsharp
 [<MemoryDiagnoser; DisassemblyDiagnoser(maxDepth = 3)>]
-type ChecekedVsUnchecked() =
+type CheckedVsUnchecked() =
     let data = Array.init 100_000_000 (fun i -> int64 i)
 
     [<Benchmark(Baseline = true)>]
@@ -175,13 +179,23 @@ For workload bounds that are not closed-form, a property test
 documents the bound operationally:
 
 ```fsharp
+// Helper mirroring the hot-path shape but over plain int64
+// so the bound test stands alone. The real `sumWeights` in
+// `src/Core/ZSet.fs` takes `ReadOnlySpan<ZEntry<'K>>` and
+// reads `.Weight` per entry; the arithmetic is identical.
+let sumInt64s (span: ReadOnlySpan<int64>) : int64 =
+    let mutable total = 0L
+    for i in 0 .. span.Length - 1 do
+        total <- total + span.[i]   // unchecked; see property below
+    total
+
 [<Property(MaxTest = 10_000)>]
-let ``sumWeights stays in int64 range for bounded inputs``
+let ``sum stays in int64 range for bounded inputs``
     (values: NonEmptyArray<int64>) =
     let bounded =
         values.Get
         |> Array.map (fun x -> x % (1L <<< 40))  // bound magnitude
-    let s = sumWeights (ReadOnlySpan(bounded))
+    let s = sumInt64s (ReadOnlySpan(bounded))
     abs s < (1L <<< 62)  // sum stays 2 bits below MaxValue
 ```
 
@@ -244,21 +258,29 @@ grounds. That is the correct outcome.
 
 ## Composes with
 
-- `subjects/zeta/zset-basics/` — the anchor this module
-  assumes; you need to know what a Z-set weight *is* before
-  reasoning about its overflow behaviour.
-- `subjects/zeta/operator-composition/` — establishes why
-  weight-sum correctness is load-bearing for every
-  downstream operator.
+- `subjects/zeta/retraction-intuition/` — the onboarding-
+  tier module on main that introduces signed weights; the
+  canonical "Z-set weight" vocabulary this module builds on.
+- `subjects/zeta/zset-basics/` (in-flight via PR #200) —
+  the foundational Z-set introduction once it merges; you
+  need to know what a Z-set weight *is* before reasoning
+  about its overflow behaviour.
+- `subjects/zeta/operator-composition/` (in-flight via
+  PR #203) — establishes why weight-sum correctness is
+  load-bearing for every downstream operator.
 - `docs/BACKLOG.md` § "P2 — Production-code performance
   discipline" — the two BACKLOG rows this module supports
   (audit + Craft production-tier ladder).
 - `src/Core/ZSet.fs:227-230` — the canonical rationale
   comment; this module is the pedagogical expansion of that
   comment.
-- `memory/feedback_samples_readability_real_code_zero_alloc_
+- **Out-of-repo** (per-user memory, not yet in-repo)
+  factory-generic memory
+  `feedback_samples_readability_real_code_zero_alloc_
   2026_04_22.md` — the samples-vs-production discipline this
-  production tier extends to pedagogy.
+  production tier extends to pedagogy (candidate for
+  Overlay-A migration when that memory is promoted
+  in-repo).
 - `docs/BENCHMARKS.md` "Allocation guarantees" section — the
   sibling surface where the audit's measurement deliverables
   land.
@@ -303,7 +325,10 @@ After reading, a production-tier reader should be able to:
    accompanying FsCheck property and a bound-argument comment.
 
 If any of those four are shaky, the module failed on that
-axis. Open an issue at `docs/WONT-DO.md` or propose a
-revision — the Craft discipline (bidirectional alignment)
-treats your confusion as evidence the module needs work, not
-evidence that you do.
+axis. Open a GitHub issue (or propose a revision PR) — the
+Craft discipline (bidirectional alignment) treats your
+confusion as evidence the module needs work, not evidence
+that you do. `docs/WONT-DO.md` is the curated list of
+explicitly declined features — not an issue tracker; use
+GitHub issues for the report itself, reserve `WONT-DO.md`
+for declined-with-reason entries once triage concludes.
