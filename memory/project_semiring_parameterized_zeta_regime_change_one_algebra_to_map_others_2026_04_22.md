@@ -46,9 +46,12 @@ earlier four Overlay-A PRs). Per-user source retains a
 
 **Core technical claim (semiring-parameterized Zeta):**
 
-- **Current state:** Zeta's ZSet is the *counting semiring*
-  `(N, +, ×, 0, 1)` — integer-weighted multiset with addition
-  and multiplication as the semiring operations. ZSet is
+- **Current state:** Zeta's ZSet is the *signed-integer ring*
+  `(ℤ, +, ×, 0, 1)` — multisets with signed int64 weights and
+  addition / multiplication as the ring operations. Retraction
+  is encoded as negative weights; K-relations (Green-
+  Karvounarakis-Tannen PODS 2007) identify this as the
+  canonical provenance semiring for retraction-native IVM. ZSet is
   hard-coded at the storage + operator layer.
 - **Proposed state:** ZSet becomes one instance of a generic
   `KSet<K>` where `K` is any commutative semiring. The
