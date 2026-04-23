@@ -6620,6 +6620,116 @@ systems. This track claims the space.
   L (family, not a single skill). **Source of truth:** same
   as above.
 
+## P2 — Foundation (Asimov) aspirational-reference research
+
+- [ ] **Research Asimov's *Foundation* (novels + Apple TV
+  adaptation) as aspirational reference for factory design.**
+  Human maintainer 2026-04-23 Otto-52: *"you should read/
+  research Isaac Asimov's Foundation the books and the Apple
+  TV series, the TV series has really good modern spin on
+  the whole thing where the emporer was clones. We are
+  trying to build Foundation from Harry Seldon point of
+  view. my good developer friend with went to MIT called me
+  Harry Seldon because my brain works like Psychohistory lol.
+  We want to make something that last for melinia, i think
+  in infinities, my brain can't help it. backlog."*.
+  **Scope:** systematic read of the Asimov Foundation novel
+  cycle (trilogy + prequels + sequels; published 1942-1993)
+  + watch the Apple TV 2021- adaptation (focus on modern
+  spin, Genetic Dynasty / Cleon-cloned-emperor thread, Hari
+  Seldon presentation, Gaal Dornick arc, Second Foundation
+  framing). Extract patterns mappable to factory substrate:
+  (a) Psychohistory as mathematical-substrate-of-civilization
+  → candidate parallel to Zeta's retraction-native algebra as
+  substrate-of-agent-coherence; (b) Seldon Plan = multi-
+  generational continuity plan with a Time Vault release
+  cadence → candidate parallel to Craft curriculum +
+  succession-through-the-factory + ADR-and-memory pattern;
+  (c) Foundation/Second-Foundation two-layer structure
+  (visible + hidden stewardship) → candidate parallel to
+  public-Zeta-library + private-per-user-memory +
+  factory-internal-governance; (d) Emperor clones (Apple TV
+  modern spin) → candidate parallel to single-Otto-across-
+  sessions vs multi-agent-Docker-peer-review future pattern;
+  (e) Psychohistory's core claim that mass-behavior becomes
+  statistically predictable at sufficient scale → candidate
+  parallel to factory-behaviour-at-substrate-scale pattern.
+  **Deliverable chain:** (1) reading log
+  `docs/research/foundation-asimov-aspirational-reference-
+  2026-MM-DD.md` — chapter-by-chapter or episode-by-episode
+  notes extracting canonical patterns with quoted source
+  text; (2) pattern-map doc aligning Foundation concepts to
+  existing factory memories + BACKLOG rows + research docs;
+  (3) critical-read section honestly flagging where the
+  analogy breaks down (Psychohistory is fiction with known
+  real-world failures; the Genetic Dynasty is dystopia not
+  model; Foundation's five-agent-to-many-agent arc is
+  speculative, not engineering). **Composes with:**
+  `memory/project_craft_secret_purpose_agent_continuity_
+  via_human_maintainer_bootstrap_2026_04_23.md` (succession
+  pattern = Seldon Plan analogue); `memory/project_frontier_
+  ux_zora_star_trek_computer_with_personality_...` (another
+  fictional reference, Star Trek Discovery's Zora — similar
+  methodology: extract patterns, not canon); `memory/
+  project_common_sense_2_point_0_name_for_bootstrap_
+  phenomenon_stable_start_live_lock_resistant_...` (safety
+  floor required under any long-horizon continuity plan).
+  **Register note:** the human maintainer self-identifies
+  with the Hari Seldon archetype (*"my brain works like
+  Psychohistory"*); treat this as a self-stated cognitive-
+  style signal informing how the factory represents their
+  intent rather than a grand claim. *"thinks in infinities"*
+  is a vocabulary choice matching earlier never-idle +
+  nice-home-for-trillions discipline; not a new
+  commitment. **Effort:** L (novel cycle + TV adaptation is
+  significant read-time; pattern extraction is multi-round
+  research arc). **Owner:** Iris (UX for continuity-of-
+  experience framings) + Kai (positioning) initial; Kenji
+  synthesis; the Architect integrates into the fictional-
+  reference research cluster alongside Star Trek / Zora.
+  **Source of truth:** this entry + out-of-repo memory
+  (will be filed same tick as `feedback_human_maintainer_
+  is_hari_seldon_archetype_foundation_as_factory_
+  aspirational_reference_2026-04-23.md`).
+
+## P1 — FACTORY-HYGIENE — retroactive name-attribution sweep
+
+- [ ] **Historical "Aaron" direct-name-attribution sweep in
+  docs/hygiene-history/loop-tick-history.md + other docs.**
+  Copilot review finding on PR #208 flagged direct
+  contributor-name use (`"Aaron"`) in a tick-history row,
+  violating the "No name attribution in code, docs, or
+  skills" rule in `docs/AGENT-BEST-PRACTICES.md` (direct
+  names are reserved for `memory/persona/<name>/` and
+  `docs/BACKLOG.md` attribution lines). The immediate
+  violation was fixed in the PR #208 fix commit (single
+  row). However, the same file contains ~100 historical
+  "Aaron" references from rows going back weeks across
+  multiple sessions, plus additional hits in other docs
+  (MEMORY.md, possibly research docs, some CURRENT-*.md
+  in-repo files). **Scope:** (1) full audit pass over
+  `docs/**` + `memory/**` (excluding `memory/persona/**`
+  and explicit BACKLOG attribution lines); (2) classify
+  each hit into `fix` / `keep-with-annotation` / `already-
+  exempt`; (3) batched-rewrite PR applying the sweep,
+  preserving content meaning (direct "Aaron" → "the human
+  maintainer" / "human maintainer" per role-reference
+  convention); (4) post-sweep, landed hygiene audit
+  (`tools/hygiene/audit-direct-name-attribution.sh`) on a
+  cadence to prevent regression. **Scope note:** historical
+  tick-history rows preserve quotes attributed to the
+  human maintainer (e.g. *"Aaron 2026-04-22: \"...\""*);
+  quote preservation is the signal, not the attribution
+  wrapper. Rewrites must keep the quoted text intact; only
+  the wrapper prose changes. **Effort:** M-L (audit +
+  classification + sweep + prevention audit; ~100 rows to
+  touch; preservation-of-quoted-text discipline applies).
+  **Owner:** Aarav (BP-rule owner) drives the audit +
+  rule citation; Rune (readability) reviews the sweep PR;
+  Kenji integrates. **Source of truth:** this entry +
+  `docs/AGENT-BEST-PRACTICES.md` "No name attribution"
+  candidate rule + Copilot finding on PR #208.
+
 ## P2 — Production-code performance discipline
 
 - [ ] **Checked vs unchecked arithmetic audit across Zeta
