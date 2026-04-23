@@ -1,17 +1,16 @@
-# ServiceTitan factory-demo — JSON API (C# companion)
+# Factory-demo — JSON API (C#)
 
-**What this is:** The C# version of the ServiceTitan factory-demo
-JSON API. Identical 9 endpoints, identical JSON shapes, identical
-seed data as the F# sibling at `samples/ServiceTitanFactoryApi/`.
+**What this is:** The C# version of the factory-demo JSON API.
+Identical 9 endpoints, identical JSON shapes, identical seed
+data as the F# sibling at `samples/FactoryDemo.Api.FSharp/`.
 Minimal ASP.NET Core, no heavy frameworks.
 
-**Why two versions:** ServiceTitan uses C# for most of their
-backend with zero F# exposure (see
-`memory/project_zeta_f_sharp_reference_c_sharp_and_rust_future_servicetitan_uses_csharp_2026_04_23.md`).
-The C# version minimises adoption friction for the ServiceTitan
-audience. The F# version stays the reference — F# is closer to
-math, so theorems are easier to express. Two languages, one spec,
-one behaviour.
+**Why C# leads:** C# is the more popular language in the .NET
+ecosystem by a wide margin; starting the factory demo in C#
+meets the largest audience where they already are. The F#
+sibling is the reference — F# looks closer to math, so
+theorems over the algebra are easier to express — but the
+demo path-of-least-friction is C#.
 
 **What this demonstrates about the factory:** The factory
 produces code in the target audience's stack. Same CRM-shape,
@@ -22,7 +21,7 @@ to be and language-opinionated where correctness matters.
 ## How to run
 
 ```bash
-dotnet run --project samples/ServiceTitanFactoryApi.CSharp/ServiceTitanFactoryApi.CSharp.csproj
+dotnet run --project samples/FactoryDemo.Api.CSharp/FactoryDemo.Api.CSharp.csproj
 # API on http://localhost:5000 (or whatever ASP.NET picks)
 curl http://localhost:5000/api/pipeline/funnel
 ```
@@ -83,10 +82,8 @@ no docker-compose. All are follow-up PRs.
 
 ## Composes with
 
-- `samples/ServiceTitanFactoryApi/` — the F# sibling; reference
+- `samples/FactoryDemo.Api.FSharp/` — the F# sibling; reference
   behaviour; use it as the algebraic truth when debugging
-- `samples/ServiceTitanFactoryDemo/` — Postgres schema + seed
-  SQL; both APIs will wire to this in v1
-- `docs/plans/servicetitan-crm-ui-scope.md` — overall demo scope
-- `memory/project_zeta_f_sharp_reference_c_sharp_and_rust_future_servicetitan_uses_csharp_2026_04_23.md`
-  — the positioning directive that justifies shipping both
+- `samples/FactoryDemo.Db/` — Postgres schema + seed SQL; both
+  APIs will wire to this in v1
+- `docs/plans/factory-demo-scope.md` — overall demo scope

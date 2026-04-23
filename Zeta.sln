@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ServiceTitanFactoryApi", "samples\ServiceTitanFactoryApi\ServiceTitanFactoryApi.fsproj", "{40534D09-439E-4E5F-9A69-A73844DB674D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceTitanFactoryApi.CSharp", "samples\ServiceTitanFactoryApi.CSharp\ServiceTitanFactoryApi.CSharp.csproj", "{E1F00C7B-E03C-4DA4-8B47-E872973529D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FactoryDemo.Api.CSharp", "samples\FactoryDemo.Api.CSharp\FactoryDemo.Api.CSharp.csproj", "{E1F00C7B-E03C-4DA4-8B47-E872973529D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

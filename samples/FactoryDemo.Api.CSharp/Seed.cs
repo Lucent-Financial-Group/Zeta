@@ -1,9 +1,9 @@
-namespace Zeta.Samples.ServiceTitanFactoryApi;
+namespace Zeta.Samples.FactoryDemo.Api;
 
 /// <summary>
 /// Deterministic in-memory seed data that mirrors
-/// <c>samples/ServiceTitanFactoryDemo/seed-data.sql</c>. Kept parallel to
-/// the F# sibling in <c>samples/ServiceTitanFactoryApi</c> so the same
+/// <c>samples/FactoryDemo.Db/seed-data.sql</c>. Kept parallel to
+/// the F# sibling in <c>samples/FactoryDemo.Api.FSharp</c> so the same
 /// demo scenarios work identically in either language.
 /// </summary>
 public static class Seed

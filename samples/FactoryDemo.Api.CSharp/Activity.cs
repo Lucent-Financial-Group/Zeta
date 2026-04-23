@@ -1,4 +1,4 @@
-namespace Zeta.Samples.ServiceTitanFactoryApi;
+namespace Zeta.Samples.FactoryDemo.Api;
 
 public record Activity(
     long Id,

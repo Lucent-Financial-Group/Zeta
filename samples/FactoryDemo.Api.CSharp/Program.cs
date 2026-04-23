@@ -1,15 +1,17 @@
-using Zeta.Samples.ServiceTitanFactoryApi;
+using Zeta.Samples.FactoryDemo.Api;
 
 // Minimal C# ASP.NET Core Web API serving the seed data for the
-// ServiceTitan factory-demo. Companion to the F# sibling at
-// samples/ServiceTitanFactoryApi — same 9 endpoints, same JSON
+// factory-demo. Companion to the F# sibling at
+// `samples/FactoryDemo.Api.FSharp/` — same 9 endpoints, same JSON
 // shapes, same seed data. Any frontend consumes either one
 // interchangeably.
 //
-// Why both F# and C# versions: the Zeta factory produces code in
-// the target audience's stack. ServiceTitan uses C# with zero F#;
-// the C# version minimises adoption friction while the F# version
-// stays the factory's reference-language baseline.
+// Why both F# and C# versions: the factory produces code in
+// the target audience's stack. Many adopting teams run C# with
+// no F# exposure; the C# version minimises adoption friction
+// while the F# version stays the factory's reference-language
+// baseline (F# looks closer to math, so theorems over the
+// algebra are easier to express there).
 
 // Static endpoint list — extracted to satisfy CA1861 (avoid re-allocating
 // the array on every request to the root endpoint).
@@ -28,7 +30,7 @@ var app = builder.Build();
 
 app.MapGet("/", () => new
 {
-    name = "ServiceTitan factory-demo API (C#)",
+    name = "Factory-demo API (C#)",
     version = "0.0.1",
     endpoints,
 });
