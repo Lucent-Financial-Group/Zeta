@@ -57,8 +57,15 @@ within each priority tier.
   Gap #1 (multi-repo split) unblocked by classification.
   Follow-up: Aarav runs skill-tune-up portability audit
   across 236 `.claude/skills/**` pre-split;
-  (6) persona `.claude/agents/*.md` files reference Zeta-
-  monorepo paths (portability audit pending); (7) tick-history /
+  (6) ~~persona `.claude/agents/*.md` files reference Zeta-
+  monorepo paths~~ — **CLOSED on Otto-21 re-inspection**:
+  subsumed by gap #5 `.claude/agents/**` directory audit
+  (PR #191 Otto-19). All 17 personas classified both-coupled;
+  3-4 carry Zeta-library description refs (architect
+  "Zeta.Core software factory" / public-api-designer specific
+  library list); surgical per-persona edits flagged at split
+  execution. Classification + refactor-note output = the
+  portability audit gap #6 asked for; (7) tick-history /
   fire-history scope-mixed (factory-generic vs Zeta-library-
   specific); (8) ~~FACTORY-HYGIENE rows not generic-vs-specific
   tagged~~ — **CLOSED on Otto-4 re-inspection 2026-04-23**:
