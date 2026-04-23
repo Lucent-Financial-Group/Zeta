@@ -86,8 +86,7 @@ module over time is the deeper signal.
   this is a virtue to record, not to hide. Tick-history already
   logs insertions / deletions per commit — the running delta
   should be surfaced, not buried.
-- **Rodney-skill invocation cadence:** invoke `.claude/skills/
-  rodney/` proactively before large refactors (the skill already
+- **Rodney-skill invocation cadence:** invoke `.claude/skills/reducer/` proactively before large refactors (the skill already
   says this); this memory adds: invoke Rodney when planning a
   feature where a deletion-first alternative might exist. The
   question *"could we delete our way to this outcome?"* is a
