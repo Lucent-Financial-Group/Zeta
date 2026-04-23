@@ -1310,6 +1310,27 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Live-lock smell cadence (round 44 auto-loop-46 absorb,
+  landed as `tools/audit/live-lock-audit.sh` + hygiene-history log)** —
+  Aaron 2026-04-23: *"on some cadence look at the last few things
+  that went into master and make sure its not overwhelemginly
+  speculative. thats a smell that our software factor is live
+  locked."* Classifies last N commits on `origin/main` into EXT
+  (src/tests/samples/bench), INTL (tick-history/BACKLOG/.claude),
+  SPEC (research/memory/DECISIONS), OTHR. Flags when EXT < 20%.
+  **Inaugural run 2026-04-23:** EXT 0%, INTL 72%, SPEC 16%, OTHR
+  12% — smell fires. Response: PR #141 (ServiceTitan CRM demo
+  sample) is the pattern-breaker; next audit after merge should
+  show non-zero EXT. Open follow-ups: (a) wire the audit into
+  the round-close ladder so it runs on every `origin/main`
+  update, (b) make the threshold tunable per round-target, (c)
+  distinguish "external PRs pending merge" from "no external
+  work in flight" — the current script conflates them. Effort: S
+  per follow-up. Owner: Kenji (Architect) picks cadence; Naledi
+  (perf) and Rune (maintainability) natural reviewers for
+  threshold tuning. Composes with
+  `memory/project_aaron_external_priority_stack_and_live_lock_smell_2026_04_23.md`.
+
 - [ ] **Cadenced self-practices code review — checks against our
   own advertised discipline on a schedule (round 44 auto-loop-46
   absorb)** — Aaron 2026-04-22 auto-loop-46: *"it would be nice
@@ -5741,6 +5762,73 @@ systems. This track claims the space.
   Composes with the accounting-lag same-tick-mitigation
   discipline (watch-counts land same-tick as the qualifying
   observation, not lagged).
+- [ ] **Cutting-edge DB gap: learned cost-model framework**
+  (round 44 auto-loop-46 absorb, research anchor:
+  `docs/research/cutting-edge-database-gap-review-2026-04-23.md`
+  §5) — Aaron 2026-04-23 directive to file BACKLOG rows for
+  database gaps where we are not cutting edge. Zeta has no cost
+  model at all: no cardinality estimation, no planner heuristics
+  beyond hand-rolled. A pluggable cost-model framework would
+  compose directly with semiring-parameterized Zeta (the
+  multi-algebra regime change, auto-loop-38) — different
+  semirings have different cost shapes, so a learned cost model
+  could be trained per-semiring. **Research anchors:** Marcus
+  et al., "Bao: Making Learned Query Optimization Practical",
+  VLDB 2021; "LOGER: Toward a Deployable Learned Query
+  Optimizer", VLDB 2023. **First step:** stub a
+  `Zeta.Core.CostModel` interface with `estimate(op: Op<_>) :
+  CostEstimate`, plus a hand-tuned default implementation for
+  the existing operator set. Later: learned-model plug-in via
+  training-trace harness. **Effort:** M-L (research-grade). Not
+  a round-44 commitment; gates on Aaron + Naledi (perf) review.
+
+- [ ] **Cutting-edge DB gap: power-loss simulator for
+  `src/Core/Durability.fs`** (round 44 auto-loop-46 absorb,
+  research anchor: `docs/research/cutting-edge-database-gap-
+  review-2026-04-23.md` §10) — Zeta's `Durability.fs` has
+  mode definitions but no fault-injected validation. TigerBeetle
+  (2024-2026) has set the production gold standard for
+  power-loss-tested journaling; Zeta's durability claims are
+  today only asserted in code, not demonstrated under crash.
+  **Research anchors:** Pillai et al., "All File Systems Are
+  Not Created Equal: On the Complexity of Crafting Crash-
+  Consistent Applications", OSDI 2014 (still canonical);
+  Rosenbaum et al., "Modern Durability for B-Trees", VLDB 2023;
+  TigerBeetle post-mortems (2024-2026 GitHub issues) as applied
+  literature. **First step:** a `CrashTestHarness` that freezes
+  a Spine mid-write, forks the process, and verifies the
+  surviving segment replays to a recoverable state under every
+  durability mode. Composes with existing
+  `DeterministicSimulation` test harness — same spirit, fault
+  injection instead of schedule permutation. **Effort:** M
+  (production-grade requirement, bounded to `Durability.fs` +
+  test harness). Natural reviewers: Soraya (formal-verification
+  routing), Naledi (perf).
+
+- [ ] **Cutting-edge DB gap: object-store-backed Spine (S3 /
+  Azure Blob / GCS)** (round 44 auto-loop-46 absorb, research
+  anchor: `docs/research/cutting-edge-database-gap-review-2026-
+  04-23.md` §1) — Zeta's Spine family (`BalancedSpine`,
+  `DiskSpine`, FastCDC, Merkle) runs on local filesystem only.
+  Delta Lake, Apache Iceberg v2/v3, and Apache Hudi all ship
+  ACID-on-S3 with time-travel, schema evolution, MERGE, and
+  row-level deletes. Zeta's retraction-native algebra *is*
+  MERGE semantics (retraction ARE deletes), so an object-store
+  backing would let Zeta compose with Delta/Iceberg catalogs
+  or replace them. **Research anchors:** Armbrust et al.,
+  "Delta Lake: High-Performance ACID Table Storage over Cloud
+  Object Stores", VLDB 2020; Apache Iceberg v3 spec (2024);
+  Databricks blog, "Liquid Clustering in Delta Lake" (2024). 
+  **First step:** define the `Spine.IStorageBackend` capability
+  interface (Get/Put/Delete/List + range-read), land an
+  `S3SpineBackend` implementation gated behind `PublishAot=false`
+  because AWS SDK has AOT warnings. Gate on
+  `memory/project_zeta_self_use_local_native_tiny_bin_file_db_no_cloud_germination_2026_04_22.md`
+  — Aaron said "no cloud" for factory self-use specifically;
+  this row is for external consumers, not Zeta self-use. **Effort:**
+  L (multi-round). Reviewers: Aaron (scope gate on cloud
+  direction), Ilyana (public-API designer), Naledi (perf).
+
 - [ ] **ARC-3 adversarial self-play as emulator-absorption
   scoring mechanism — three-role symmetric-quality loop
   (level-creator / adversary / player); competition pushes
