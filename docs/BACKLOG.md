@@ -6734,6 +6734,96 @@ systems. This track claims the space.
   2026_04_23.md` (same directive chain) + Copilot finding
   on PR #208 that surfaced the policy ambiguity.
 
+## P1 — Git-native hygiene cadences (Otto-54 directive cluster)
+
+The human maintainer on 2026-04-23 Otto-54 framed three
+linked hygiene asks, anchored on the positioning statement
+*"we are git-native with github as our first host"*. The
+three rows below share the theme that **high-churn shared
+files are friction points** and the factory's git-native
+posture lets git log itself detect and guide the cleanup.
+Keeping them adjacent preserves the directive cluster.
+
+- [ ] **Split `docs/BACKLOG.md` into per-swim-lane files.**
+  Human maintainer 2026-04-23 Otto-54: *"i think i said a
+  while back but it might be benefitial to have multiple
+  backlog files one per swim lane/stream, you can alway use
+  git to find hotspots in files"*. Current state:
+  `docs/BACKLOG.md` is a single ~6800-line file touched by
+  nearly every PR, causing routine merge conflicts (observed
+  on PR #207 / #208 / #210 this session). **Scope:**
+  (1) proposal doc `docs/research/backlog-split-design-2026-
+  MM-DD.md` naming the split axis (swim-lane / stream /
+  priority / subsystem — candidate split on *stream*: core-
+  algebra, formal-spec, samples-demos, craft, hygiene,
+  research, infra, frontier-readiness); (2) migration plan
+  with (a) a root `docs/BACKLOG.md` that becomes an index
+  pointing at the split files, (b) per-stream files like
+  `docs/BACKLOG/core.md`, `docs/BACKLOG/craft.md`, etc., and
+  (c) a coordinated migration PR that existing open PRs
+  know to rebase through; (3) a hygiene audit
+  (`tools/hygiene/audit-backlog-per-swimlane.sh`) that
+  rejects new rows added to the root. **Risk:** every open
+  PR currently touching BACKLOG.md would need rebase; do
+  the split in a quiet window when few PRs are in flight.
+  **Effort:** M (proposal + migration PR + hygiene audit).
+  **Owner:** Kenji (Architect) designs the split axis;
+  Rune readability; Aarav covers the hygiene audit.
+  **Source of truth:** this entry + next-tick per-user
+  memory captures.
+
+- [ ] **CURRENT-`<maintainer>`.md files on a cadence.**
+  Same Otto-54 directive: *"are you keeping current
+  memories updated on a cadence too? will help reduce merge
+  issues"*. Current state: `memory/CURRENT-aaron.md` and
+  `memory/CURRENT-amara.md` (migrated to in-repo via PR
+  #197 per Option D) are updated ad-hoc when directives
+  land, not on a scheduled cadence. **Scope:** (1) add a
+  FACTORY-HYGIENE row defining the cadence (every N ticks
+  or every M new memory entries — decide which trigger in
+  the research doc); (2) author a tool
+  (`tools/hygiene/audit-current-memory-freshness.sh`) that
+  walks the MEMORY.md newest-first index, computes the
+  delta since last CURRENT-*.md update, and flags when
+  distillation is owed; (3) the CURRENT distillation itself
+  stays a human + Otto judgment call — the audit only
+  surfaces freshness gaps, not content. **Why it reduces
+  merge issues:** CURRENT files are per-maintainer
+  projections; keeping them fresh means fewer ad-hoc updates
+  on shared surfaces (MEMORY.md index, BACKLOG, research
+  docs) get pressured into serving as distillation
+  placeholders. **Effort:** S (hygiene row + audit tool +
+  first-run calibration). **Owner:** Daya (AX) for the
+  per-maintainer experience; Kenji integration. **Source
+  of truth:** this entry + `memory/feedback_current_
+  memory_per_maintainer_distillation_pattern_prefer_progress_
+  2026_04_23.md`.
+
+- [ ] **Git-hotspots audit on a cadence.**
+  Otto-54 addendum: *"cadence for checking github hotspots
+  too this is a hygene issues points of friction and
+  bottlenecks, we are frictionless... git hotspots i mean...
+  we are gitnative with github as our first host"*.
+  **Scope:** (1) `tools/hygiene/audit-git-hotspots.sh` that
+  runs a `git log --pretty=format:"%H" --name-only --since=
+  "<window>"` pass, counts touches per file, ranks top-N,
+  and emits a report to `docs/hygiene-history/git-hotspots-
+  YYYY-MM-DD.md` (shape: file | touches | unique authors |
+  PR count | suggested action — split / freeze / audit);
+  (2) add a FACTORY-HYGIENE row pairing it with the
+  BACKLOG-split + CURRENT-cadence rows above as a **friction-
+  detection cluster**; (3) first-run baseline audit in the
+  research doc — expected hotspots include BACKLOG.md,
+  loop-tick-history.md, MEMORY.md, possibly
+  FACTORY-HYGIENE.md. **Philosophy:** *"we are
+  frictionless"* names the goal; hotspots are the
+  measurement; splitting is one remediation tool among
+  several (freeze / archive / split / ADR). **Effort:** S
+  (audit tool + first report + hygiene row). **Owner:**
+  Dejan (DevOps — close to git surface) drives the audit;
+  Aarav reviews the split/freeze recommendations; Kenji
+  integrates actions.
+
 ## P2 — Production-code performance discipline
 
 - [ ] **Checked vs unchecked arithmetic audit across Zeta
