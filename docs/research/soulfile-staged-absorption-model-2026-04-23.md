@@ -134,28 +134,75 @@ promoted back into the compile-time stage on the next
 soulfile release, via AutoDream consolidation cadence
 (see `autodream-extension-and-cadence-2026-04-23.md`).
 
-## Representation candidate — Markdown + frontmatter
+## DSL — restrictive English anchored in the linguistic seed
 
-The simplest representation that matches the DSL claim is
-the existing factory dialect: Markdown + YAML frontmatter
-+ structured cross-references. Properties that make it a
-good fit:
+The human maintainer's 2026-04-23 follow-up clarifies the
+DSL shape: it is **restrictive English** — natural-language
+prose constrained to a grammar the runner can execute —
+not an F# DSL. The target is *"feels like natural English
+even if not exactly English"* with a controlled vocabulary
+where **every word used has an exact definition reachable
+from the linguistic-seed glossary**.
 
-- **Cross-substrate readable** — humans, Claude, Codex,
-  Gemini, downstream tooling all parse it.
-- **Already the factory's authoring medium** — no
-  representation gap between soulfile and source
-  documents.
-- **Absorb-friendly** — inlining new content at
-  compile-time is concatenation + index-rebuild.
-- **Version-controllable** — git of the soulfile itself
-  is a straightforward add.
+Three consequences:
+
+1. **Cross-substrate readable by default.** Humans,
+   Claude, Codex, Gemini, and future agents read the
+   same text. F# DSL would have required every consumer
+   to own F# tooling; restrictive English requires only
+   a parser for the constrained grammar.
+2. **Controlled vocabulary.** The soulfile's word set is
+   the set of terms the linguistic-seed glossary formally
+   defines (formally-verified minimal-axiom
+   self-referential glossary substrate; Lean4-formalisable;
+   smallest-axiom lineage per the maintainer's prior
+   research pointer). New words earn glossary entries
+   first, then enter the DSL — glossary-anchor-keeper
+   discipline applies.
+3. **Composable with Markdown.** Restrictive-English
+   prose embedded in Markdown + frontmatter keeps the
+   existing authoring medium; the runner reads the
+   restrictive-English sentences. The structure layer
+   (Markdown) and the execution layer (restrictive
+   English) are separate concerns.
+
+The runner decides the grammar by being the decider on
+"is this executable?" The linguistic seed decides the
+vocabulary. Neither is the soulfile itself — both serve
+the DSL substrate.
 
 The DB absorb-form (compile-time ingest of the Zeta
 tiny-bin-file DB) needs a structured schema; first-pass
 candidate is a Markdown table plus frontmatter that names
 the semiring, the relations, and the operator-algebra
-axioms in force. Deferred for a follow-up tick.
+axioms in force, with each term defined in the
+linguistic seed. Deferred for a follow-up tick.
+
+## The Soulfile Runner — its own project-under-construction
+
+The maintainer's 2026-04-23 follow-up adds the **Soulfile
+Runner** as a named project-under-construction, sibling to
+Zeta / Aurora / Demos / Factory / Package Manager "ace".
+Design properties:
+
+- **Interprets restrictive-English soulfiles.** Primary
+  responsibility; runs wherever a soulfile is loaded.
+- **Uses Zeta for advanced features.** Basic execution
+  runs on small primitives; retraction-native state,
+  algebraic composition, provenance tracking, K-relations
+  semantics, and temporal operators delegate to Zeta.
+  Clean dependency edge: Runner ⇒ Zeta, not the other
+  way.
+- **All small bins.** Runner output, intermediate state,
+  packaged soulfile artifacts — all small binary
+  artifacts. Composes with the local-native tiny-bin-file
+  discipline.
+- **Own repo when the multi-repo refactor lands.**
+  Interim — lives in the Zeta monorepo alongside the
+  other peer projects until the split.
+
+Implementation is deferred — this research doc is
+design-clarity, not an implementation commit.
 
 ## Composition with already-landed substrate
 
