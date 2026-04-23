@@ -1,13 +1,13 @@
 ---
 name: Signal-in, signal-out — as clean or better; DSP-discipline invariant for transformations across the factory
-description: Aaron 2026-04-22 auto-loop-38 directive *"if you receive a signal in the signal out should be as clean or better"* — DSP framing of a cross-factory discipline: any transformation (doc rewrite, refactor, memory-extension, commit, PR description) must preserve the signal it receives, emitting something equal-or-cleaner rather than lossier. Not "append to everything" — the *signal* is what matters (intent, prior context, anchors, verbatims), not the literal byte-stream. Composes with capture-everything, honor-those-that-came-before, verify-before-deferring. Occurrences recognized: atan2 (preserve input arity while resolving quadrant), retraction-native (preserve sign through incremental maintenance), K-relations (preserve provenance through semiring evaluation), gap-preservation (auto-loop-41 — when recovery is infeasible, name the gap honestly with authoritative-source pointer rather than emit placeholder-pending). Four occurrences = structural-not-stylistic.
+description: The human maintainer 2026-04-22 auto-loop-38 directive *"if you receive a signal in the signal out should be as clean or better"* — DSP framing of a cross-factory discipline: any transformation (doc rewrite, refactor, memory-extension, commit, PR description) must preserve the signal it receives, emitting something equal-or-cleaner rather than lossier. Not "append to everything" — the *signal* is what matters (intent, prior context, anchors, verbatims), not the literal byte-stream. Composes with capture-everything, honor-those-that-came-before, verify-before-deferring. Occurrences recognized: atan2 (preserve input arity while resolving quadrant), retraction-native (preserve sign through incremental maintenance), K-relations (preserve provenance through semiring evaluation), gap-preservation (auto-loop-41 — when recovery is infeasible, name the gap honestly with authoritative-source pointer rather than emit placeholder-pending). Four occurrences = structural-not-stylistic.
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
 **Migrated to in-repo memory/ on 2026-04-23** via the
 first execution of AutoDream Overlay A
-(`docs/research/autodream-extension-and-cadence-2026-04-23.md`).
+(`docs/research/autodream-extension-and-cadence-2026-04-23.md` (lands via PR #155)).
 Content preserved verbatim from the per-user source; the
 per-user source retains a pointer at its top per the
 in-repo-preferred migration discipline
@@ -25,11 +25,11 @@ or better"*
 **Context of arrival:** auto-loop-37 had rewritten
 `docs/force-multiplication-log.md` from char-ratio-scoring
 (vanity) to outcome-scoring (DORA + BACKLOG + external
-validations) per Aaron's Goodhart-resistance correction. The
+validations) per the maintainer's Goodhart-resistance correction. The
 rewrite left the doc in a half-state: new outcome-scoring
 section at top, legacy char-ratio sections below. I considered
 four options (revert / full rewrite / leave / banner+revert)
-and asked Aaron which. His reply was the DSP framing above —
+and asked the maintainer which. His reply was the DSP framing above —
 the signal from the legacy sections (histograms, per-tick
 reconstruction, anomaly-detection utility) is worth preserving,
 not erasing. The "clean or better" part is: the preservation
@@ -55,13 +55,13 @@ it received. Specifically:
 
 **Why (three reinforcing reasons):**
 
-1. **DSP-discipline framing (Aaron's voice).** Signal
+1. **DSP-discipline framing (the maintainer's voice).** Signal
    processing treats signal-preservation as a first-order
    property of transformations. Good filters attenuate noise
    without attenuating signal; good codecs compress without
    losing reconstruction fidelity; good anti-aliasing
    preserves spectrum below Nyquist while suppressing above.
-   The factory is also a signal-processing system — Aaron's
+   The factory is also a signal-processing system — the maintainer's
    directives are signal, the factory's outputs are the
    filtered-but-preserved downstream. Information loss at the
    boundary is a factory failure mode, not a clean-up.
@@ -74,7 +74,7 @@ it received. Specifically:
      resolving the quadrant ambiguity that `atan` alone
      cannot. Cleaner signal (disambiguated quadrant), same
      fundamental arity (angle-from-two-coords). The
-     MathWorks reference Aaron shared as a wink
+     MathWorks reference the maintainer shared as a wink
      (`https://www.mathworks.com/help/matlab/ref/double.atan2.html`)
      sits at occurrence-3 of this pattern for the factory.
    - **Retraction-native operator algebra (Zeta
@@ -153,7 +153,7 @@ it received. Specifically:
 - **Refactors / deletions**: a deletion that is a cleanup
   is positive (Rodney's Razor); a deletion that is
   signal-loss is negative. Test: "if a future-self or
-  Aaron asks where X went, can they find the answer in
+  the maintainer asks where X went, can they find the answer in
   git-log or a pointer?" If yes, the deletion preserved
   signal (via git-history). If no (buried in massive
   diff, no pointer, no commit-body explanation), the
@@ -176,12 +176,12 @@ it received. Specifically:
   without a "moved to X" pointer or a "removed because Y"
   commit-body note. Readers and future-self have no
   reconstruction path.
-- **Lossy summarization**: "Aaron said we should improve
-  the scoring model" (lossy) vs. "Aaron 2026-04-22 auto-
+- **Lossy summarization**: "the maintainer said we should improve
+  the scoring model" (lossy) vs. "the maintainer 2026-04-22 auto-
   loop-37: *'FYI we are not optimizing for keystokes to
   output ratio ...'* + corrections" (preserved).
 - **Flattening compositions**: treating four distinct
-  Aaron messages as one merged claim, losing the chain's
+  multiple distinct messages as one merged claim, losing the chain's
   sequentiality and each message's specific weight.
 - **Over-compression**: replacing a verbatim with a
   paraphrase. The paraphrase is acceptable IN ADDITION to
@@ -286,7 +286,7 @@ named.
 **Cross-references:**
 
 - `docs/force-multiplication-log.md` — the doc whose
-  half-rewritten state triggered Aaron's DSP directive.
+  half-rewritten state triggered the maintainer's DSP directive.
   Legacy sections preserved in the current state per this
   principle.
 - `memory/feedback_outcomes_over_vanity_metrics_goodhart_resistance.md`
@@ -312,4 +312,4 @@ named.
   mathematical apparatus.
 - MathWorks `double.atan2` documentation
   (https://www.mathworks.com/help/matlab/ref/double.atan2.html)
-  — Aaron's wink anchor for the arity-preservation occurrence.
+  — the maintainer's wink anchor for the arity-preservation occurrence.
