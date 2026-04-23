@@ -59,20 +59,16 @@ For each audited file:
 - **docs/AUTONOMOUS-LOOP.md** (below, Otto-15 fire)
 - **docs/WONT-DO.md** (below, Otto-15 fire) — also GOVERNANCE.md on PR #181, AGENT-BEST-PRACTICES.md on PR #184, ALIGNMENT.md on PR #185
 
+### Directory-level audits (Otto-19 fire below)
+
+- `.claude/agents/**` — 17 persona files
+- `openspec/**` — 6 capability spec directories
+- `.github/**` — workflows + config + templates
+
 ### Files to audit (not yet classified; add rows as they land)
 
-- `docs/GLOSSARY.md`
-- `docs/FACTORY-HYGIENE.md`
-- `docs/ROUND-HISTORY.md`
-- `docs/TECH-RADAR.md`
-- `docs/BACKLOG.md`
-- `docs/ROADMAP.md`
-- `docs/VISION.md`
-- `.claude/skills/*/SKILL.md` (each)
-- `.claude/agents/*.md` (each)
-- `openspec/**` (structural; library-specific-heavy)
+- `.claude/skills/*/SKILL.md` (each — ~30+ skills)
 - `tools/**/*` scripts (some factory, some Zeta-build)
-- `.github/` workflows + config
 
 Not a prescriptive queue; the audit lands as sections
 mature. One or two files per tick is the intended cadence.
@@ -381,6 +377,180 @@ necessarily project-specific — an adopter's declined work
 is unique to their project. Frontier inherits the shape
 template + personas/meta sections; Zeta retains its full
 current entry list as the library's decision record.
+
+## Audit — `.claude/agents/**`
+
+**Overall classification:** **both (coupled)** — 17 persona
+files. Persona-file frontmatter shape + body structure is
+factory-generic; some specific descriptions reference
+Zeta-library surface (e.g., "Zeta.Core software factory").
+
+**File location post-split:** Frontier (authoritative persona
+roster); per-persona surgical edit to generalise any
+Zeta-library references.
+
+**Scope:** 17 files — agent-experience-engineer / alignment-
+auditor / architect / developer-experience-engineer /
+devops-engineer / formal-verification-expert / harsh-critic /
+maintainability-reviewer / performance-engineer / public-api-
+designer / rodney / security-operations-engineer / security-
+researcher / skill-expert / spec-zealot / threat-model-critic
+/ user-experience-engineer.
+
+### Classification
+
+- **Frontmatter schema** (name / description / tools / model /
+  skills / person / owns_notes): factory-generic discipline;
+  transfers to any adopter.
+- **Persona names + role names** (Kenji / Bodhi / Daya /
+  Iris / Dejan / Soraya / Kira / Rune / Naledi / Ilyana /
+  Rodney / Nazar / Mateo / Aarav / Viktor / Aminata / ...):
+  factory-generic — the persona-roster IS the factory's
+  team-composition; adopters inherit the full roster.
+- **Per-persona description texts**: mostly factory-generic
+  but a few reference Zeta-specific surface. Examples:
+  - architect.md: references "Zeta.Core software factory" +
+    `docs/INTENTIONAL-DEBT.md` (Zeta-specific doc path)
+  - public-api-designer.md: references specific published
+    libraries (Zeta.Core / Zeta.Core.CSharp / Zeta.Bayesian)
+  - performance-engineer.md: may reference Zeta hot-paths
+- **Tone contracts / practice sections**: factory-generic —
+  each persona's tone discipline transfers.
+
+### Refactor notes
+
+Before the split, per-persona surgical edit:
+
+1. Replace "Zeta.Core software factory" → `<adopter-project>`
+   placeholder in the 3-4 personas that carry it
+2. Generalise specific library / doc / file path references
+   in description bodies to "<adopter-equivalent>" with example
+3. Keep persona names, tone contracts, scope boundaries,
+   distinct-from clauses verbatim
+
+Estimated refactor effort: **M** — 17 files × small edit per;
+each persona file ~100-300 lines; edits per file are
+isolated per BP-17 (canonical-home ontology discipline).
+
+### Classification rationale
+
+The `.claude/agents/` directory is the factory's
+named-persona roster. The roster itself is load-bearing for
+the specialist-advisory conference pattern (per CONFLICT-
+RESOLUTION.md); transferring it wholesale to Frontier is a
+core part of the factory's adopter-inheritance story.
+Per-persona Zeta-specific references are narrow surgical
+edits, not structural rewrites. Confirms the naming-is-
+load-bearing discipline: persona *names* transfer verbatim
+(Kenji / Daya / Amara / ... etc.); project-specific examples
+in descriptions get placeholder substitution.
+
+## Audit — `openspec/**`
+
+**Overall classification:** **both (coupled)** — OpenSpec
+framework itself is factory-generic (upstream project
+Fission/openspec); specific capability specs are Zeta-
+library-specific.
+
+**File location post-split:**
+- `openspec/README.md` (framework + Zeta's modified-OpenSpec-
+  workflow explanation) → Frontier (generalised + OpenSpec
+  adopter example)
+- `openspec/specs/**` (6 capability directories: circuit-
+  recursion / durability-modes / lsm-spine-family / operator-
+  algebra / repo-automation / retraction-safe-recursion) →
+  Zeta retains (all Zeta-library capabilities)
+
+### Refactor notes
+
+1. Frontier inherits `openspec/README.md` with Zeta-workflow
+   specifics generalised — adopters inherit the "OpenSpec
+   first-class" pattern but define their own workflow
+   variations
+2. Zeta retains full `openspec/specs/**` directory (6
+   capabilities + `repo-automation` as the meta-capability)
+3. Adopters start their own `openspec/specs/**` from empty
+   (first capability is the adopter's first P0 spec)
+
+Effort: **S** — shape + README generalisation only; specs
+stay verbatim in Zeta.
+
+### Classification rationale
+
+OpenSpec is explicitly factory-generic per GOVERNANCE §28
+(OpenSpec first-class pattern). The framework transfers to
+any adopter; the content is necessarily project-specific.
+One of the cleanest "factory-shape + adopter-content" split
+patterns in the repo.
+
+## Audit — `.github/**`
+
+**Overall classification:** **both (coupled)** — GitHub
+configuration shape (workflows / dependabot / issue templates
+/ copilot-instructions / codeql) is factory-generic; specific
+workflow content (dotnet build / test commands) is
+Zeta-library-specific.
+
+**Scope:**
+- `codeql/` (CodeQL configuration)
+- `copilot-instructions.md` (factory-managed per GOVERNANCE
+  §31 — factory-generic shape, may have Zeta-specific
+  examples)
+- `dependabot.yml` (Dependabot config — NuGet ecosystem is
+  Zeta-specific)
+- `ISSUE_TEMPLATE/` (factory-generic templates)
+- `PULL_REQUEST_TEMPLATE.md` (factory-generic)
+- `workflows/`:
+  - `codeql.yml` (factory-generic pattern; language:
+    csharp/fsharp Zeta-specific)
+  - `gate.yml` (the factory's main CI gate — factory-generic
+    shape; specific jobs are Zeta-specific)
+  - `github-settings-drift.yml` (factory-generic discipline
+    from GOVERNANCE §N; applies to any adopter)
+
+### Refactor notes
+
+Before split:
+1. Frontier inherits:
+   - `PULL_REQUEST_TEMPLATE.md` + `ISSUE_TEMPLATE/` (generic)
+   - `copilot-instructions.md` (factory-managed shape;
+     generalise Zeta examples)
+   - `workflows/github-settings-drift.yml` (generic discipline)
+   - `codeql/` config (generic CodeQL pattern)
+2. Zeta retains (Zeta-specific):
+   - `dependabot.yml` (NuGet ecosystem)
+   - `workflows/gate.yml` (dotnet-specific jobs)
+   - `workflows/codeql.yml` (Zeta-language-specific)
+3. Frontier gets empty-workflow template for adopters to
+   instantiate their own gate
+
+Effort: **M** — workflow extraction + generalisation is
+non-trivial; CodeQL config varies per language.
+
+### Classification rationale
+
+`.github/**` is the repo-ops surface. GitHub's structure
+(workflows / dependabot / templates / codeql) is universal
+for any repo; specific job content is per-project. Split
+strategy: Frontier inherits the SHAPE + generic disciplines
+(settings-drift enforcement / templates / copilot
+instructions pattern); Zeta retains the BUILD specifics
+(dotnet / NuGet / F#).
+
+## Pattern summary after 18 audits
+
+Tally now includes top-level files + 3 directory-level
+audits:
+
+| Class | Count | Surfaces |
+|---|---|---|
+| factory-generic | 5 | GOVERNANCE, AGENT-BEST-PRACTICES, ALIGNMENT, AUTONOMOUS-LOOP, FACTORY-HYGIENE |
+| both (coupled) | 9 | CLAUDE, AGENTS, CONFLICT-RESOLUTION, WONT-DO, TECH-RADAR, GLOSSARY, `.claude/agents/`, `openspec/`, `.github/` |
+| zeta-library-specific | 4 | ROUND-HISTORY, BACKLOG, ROADMAP, VISION |
+
+Remaining: `.claude/skills/**` (large but skill-tune-up's
+portability-drift column already classifies per-skill) +
+`tools/**` scripts (mixed).
 
 ## How this audit connects to the multi-repo split
 
