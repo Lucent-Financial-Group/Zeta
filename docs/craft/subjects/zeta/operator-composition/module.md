@@ -4,11 +4,14 @@
 **Level:** applied (default) + theoretical (opt-in)
 **Audience:** contributors building / reading Zeta
 pipelines
+
 **Prerequisites:**
+
 - `subjects/zeta/zset-basics/` (Z-sets are what operators
   consume and produce)
 - `subjects/zeta/retraction-intuition/` (operators must
   preserve retraction for IVM to work)
+
 **Next suggested:** `subjects/zeta/semiring-basics/`
 (forthcoming — pluggable algebras behind operators)
 
