@@ -1,7 +1,7 @@
 # Backlog-refactor audit — fire history
 
 Per-fire ledger for FACTORY-HYGIENE row #54 (backlog-refactor
-cadenced audit). Schema per row #44 (date / agent /
+cadenced audit). Schema per row #47 (date / agent /
 pre-count / post-count / passes fired / findings /
 next-expected).
 

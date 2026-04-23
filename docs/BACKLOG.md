@@ -5432,9 +5432,9 @@ systems. This track claims the space.
   a standalone research project, the factory first lands a
   thin **extension-overlay policy** on top of Anthropic's
   feature so upstream upgrades are inherited automatically.
-  See `docs/research/autodream-extension-and-cadence-2026-04-23.md`
+  See `docs/research/autodream-extension-and-cadence-2026-04-23.md` (lands via PR #155)
   (lands via PR #155) and the corresponding
-  `docs/FACTORY-HYGIENE.md` row #53 for the cadenced
+  `docs/FACTORY-HYGIENE.md` row #53 (lands via PR #155) for the cadenced
   enforcement surface. The better-dream-mode research project
   below is now framed as the **more-ambitious second step**:
   if the Anthropic feature proves insufficient for the
