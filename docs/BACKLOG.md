@@ -4192,6 +4192,124 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Factory status UI — static, git-native,
+  GitHub Pages hosted.**
+  The human maintainer 2026-04-23: *"static ui on our
+  github pages that shows factory status things in
+  flight progress, etc anyting else you can make of to
+  help the human drive we can surface thing in the ui
+  like the decions and any decions we would like human
+  feedback on. All this should be able to use our
+  gitnative approach and not really cost anyting i
+  dont think becasue it can just use git for the
+  backend for the ui. backlog this and probaby not a
+  good idea until after the repo split into the
+  different projects."*
+
+  **Goal**: a static UI at the repo's GitHub Pages URL
+  (default `https://lucent-financial-group.github.io/<repo>`)
+  that surfaces factory state to humans:
+  - Things in flight (open PRs, their state)
+  - Decisions made (ADRs under `docs/DECISIONS/`)
+  - Decisions seeking human feedback (HUMAN-BACKLOG
+    Open rows)
+  - Round history / progress ledger
+  - Whatever else helps a human drive the factory
+    without reading raw files
+
+  **Constraint — git-native content + GitHub adapter**:
+  per the plural-host rule (the factory is git-native
+  core + GitHub is the first adapter): the **content
+  feeding the UI** (PRs, ADRs, HUMAN-BACKLOG,
+  CONTRIBUTOR-CONFLICTS, ROUND-HISTORY, hygiene-history)
+  is git-native — lives in the repo regardless of host.
+  The **UI itself is an explicit GitHub adapter**: GitHub
+  Pages is GitHub-native by definition; GitHub Actions
+  regenerates the site on push; GitHub REST API feeds
+  read-only state into the UI. When a second git host
+  (GitLab / Gitea / Bitbucket) eventually activates, a
+  sibling adapter ships (GitLab Pages / Gitea Pages /
+  `bitbucket.io`) against the same git-native content
+  spec. No paid SaaS, no external backend for the
+  current GitHub adapter.
+
+  **Tech choice: bun + TypeScript SSG** (Kenji
+  recommendation, re-examined 2026-04-23 with whole-
+  project consideration):
+
+  The Architect persona (Kenji) previously argued for
+  excluding Jekyll in favor of bun+TypeScript. The
+  maintainer 2026-04-23 asked for a re-evaluation with
+  whole-project consideration:
+
+  - **Cross-platform parity (FACTORY-HYGIENE row #51 — cross-platform parity audit)**
+    — Ruby/Jekyll is painful on Windows; bun is
+    cross-platform-native.
+  - **Post-setup stack default (row #49)** — bun+TS is
+    the factory-aligned choice for any post-setup
+    tooling. Adding a Ruby chain for one surface
+    fragments the stack.
+  - **One-language rule** — the factory already spans
+    F#, C#, TypeScript, bash, PowerShell. Adding Ruby
+    *just for GitHub Pages* would increase
+    language-footprint without proportionate benefit.
+  - **GitHub Pages + Actions build pattern** — widely
+    supported; pre-build with bun in a workflow, publish
+    static output to `gh-pages` branch; works regardless
+    of native-Pages SSG support.
+  - **Rich SSG ecosystem** — bun + Astro / Eleventy /
+    custom are viable; factory can pick the thinnest-
+    substrate one at implementation time.
+
+  Kenji's call stands: bun + TypeScript. No Jekyll as
+  default; Jekyll reconsidered only if a whole-project
+  use case surfaces that isn't served by bun+TS.
+
+  **Sequencing**: the maintainer explicitly said
+  *"probably not a good idea until after the repo
+  split into the different projects."* Multi-repo
+  refactor research (PR #150) is the prerequisite.
+  Once the split lands, each split repo can have its
+  own Pages UI surfacing its own factory-state slice.
+
+  **Read-only first, write-access later** (maintainer
+  2026-04-23 refinement): *"ui will likely need gh, our
+  repo is public so for all the read actions on the ui
+  we are good without permission, for write actions we
+  probably don't need this yet would need whole
+  permission set and resue of the github logins session
+  stuff without a real backend, tricky stuff so
+  readonly to expaned to write access later."* Phase 1
+  of the UI — **read-only** — uses the GitHub REST API
+  against the public repo with no auth (rate-limit
+  applies; acceptable for a status dashboard that
+  updates per-push). Phase 2 — **write actions** (e.g.,
+  human clicks to resolve a HUMAN-BACKLOG row) — would
+  need either GitHub session / OAuth handoff or a thin
+  backend, both of which break the git-native +
+  ~free-to-run constraint as currently understood.
+  Defer Phase 2 until the tradeoff is re-examined.
+
+  **Cross-references**:
+  - `docs/AGENT-GITHUB-SURFACES.md` §Pages
+    (research-gated; this row activates that research)
+  - PR #150 `docs/research/multi-repo-refactor-shapes-2026-04-23.md`
+    (prerequisite)
+  - `docs/HUMAN-BACKLOG.md` (source for
+    decisions-seeking-feedback on the UI)
+  - `docs/DECISIONS/` (source for decisions-made on
+    the UI)
+  - `docs/ROUND-HISTORY.md` (source for round progress)
+  - `docs/hygiene-history/*.md` (source for fire-log
+    surfaces per row #47 — the cadence-history tracking row that defines the per-fire schema)
+
+  **Self-scheduled** when maintainer elevates priority
+  (post-split).
+
+  **Effort**: M for first-pass UI + GitHub Action
+  wiring; L if the UI becomes the primary factory-
+  human-interface surface.
+
 - [ ] **Compoundings-per-tick audit — tick-close self-
   diagnostic with confidence-axis failure-mode taxonomy.**
   Recurrence threshold met auto-loop-16/17/18 (2026-04-22):
