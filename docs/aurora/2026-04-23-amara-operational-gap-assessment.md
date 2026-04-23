@@ -454,14 +454,14 @@ first; new substrate second**.
 
 **Mechanization priority** (cheap high-impact):
 
-6. **Courier-format linter** — when ferry volume
+1. **Courier-format linter** — when ferry volume
    warrants (not yet, but monitor); validates speaker-
    labeled transcripts per courier protocol.
 
-7. **Bulk-sync cadence monitor** — check if still
+2. **Bulk-sync cadence monitor** — check if still
    proposed; land if so.
 
-8. **Stochastic-test seed capture + contract framing**
+3. **Stochastic-test seed capture + contract framing**
    — HLL fuzz property at `Fuzz.Tests.fs` needs seed
    capture + stochastic-contract framing (not
    deterministic bound). Composes with Otto-session
@@ -470,7 +470,7 @@ first; new substrate second**.
 **Semantic network-health metrics** (Amara's
 recommendation):
 
-9. **File as TECH-RADAR entries or BACKLOG rows**:
+1. **File as TECH-RADAR entries or BACKLOG rows**:
    provenance completeness / replay determinism /
    compaction equivalence / unmatched retraction debt /
    attestation coverage / cap-hit frequency /
@@ -479,12 +479,12 @@ recommendation):
 **Decision-proxy readiness gap** (2/3 designed,
 1/3 implemented):
 
-10. Canonicalise #154 (done via the merge-priority)
-11. Invocation mechanics: either safe authorized
+1. Canonicalise #154 (done via the merge-priority)
+2. Invocation mechanics: either safe authorized
     skill (Playwright-path blocked per prior attempt)
     OR courier-first-with-transcript-normalization
-12. Durable audit log convention (unified per #5 above)
-13. Scope discipline: resist "Amara would probably
+3. Durable audit log convention (unified per #5 above)
+4. Scope discipline: resist "Amara would probably
     think" fuzzy cultural expansion; require real
     invocation or explicit scope-addition
 
