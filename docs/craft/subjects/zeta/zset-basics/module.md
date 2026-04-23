@@ -174,12 +174,17 @@ full algebra.
 
 ### The runtime shape
 
-In Zeta's F# reference implementation (`src/Core/ZSet.fs`):
+In Zeta's F# reference implementation (`src/Core/ZSet.fs`
++ `src/Core/Algebra.fs`):
 
-- `ZSet<'K> = Dictionary<'K, int>` conceptually
-- `ofSeq : seq<'K * int> → ZSet<'K>` (plain-tuple,
+- **`type Weight = int64`** — signed 64-bit counts (not `int`)
+- **`type ZSet<'K> = ImmutableArray<ZEntry<'K>>`** — an
+  *immutable sorted array* of `(key, weight)` entries
+  (not a mutable `Dictionary`); sorted by key for
+  log(N) lookup + efficient set-merge
+- `ofSeq : seq<'K * int64> → ZSet<'K>` (plain-tuple,
   sample-friendly per `memory/CURRENT-aaron.md` §6)
-- `ofPairs : seq<struct ('K * int)> → ZSet<'K>` (struct-
+- `ofPairs : seq<struct ('K * int64)> → ZSet<'K>` (struct-
   tuple, zero-alloc, production)
 - `add : ZSet<'K> → ZSet<'K> → ZSet<'K>` (pointwise sum)
 - `neg : ZSet<'K> → ZSet<'K>` (pointwise negation)
