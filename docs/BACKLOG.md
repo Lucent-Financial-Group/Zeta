@@ -6883,6 +6883,92 @@ Keeping them adjacent preserves the directive cluster.
   schema for adversarial-training-corpus risks; Kenji
   synthesizes the dual-use deliverable.
 
+## P1 — Principle-adherence review cadence (Otto-58 new hygiene class)
+
+- [ ] **Principle-adherence review — cadenced agent judgment on
+  whether the factory is actually applying its own principles
+  consistently across code / skills / docs / memory.** Human
+  maintainer 2026-04-23 Otto-58: *"hygene i think but could be
+  more complex cause i think it's not verifable its like an
+  agents review hygene on a cadence for a specific type of
+  thing, this one is look for generalization opportunities in
+  the code, for example the docker for reproducability for
+  multi agent review can be generalize to everyting in the
+  project, all applieas to code skills docs everyting, but
+  seems different that hygene like review candences for
+  different pracitaces we want to promote to make sure we are
+  sticking to our principles"* + *"backlog"*. **Why this is a
+  distinct hygiene class:** existing FACTORY-HYGIENE rows are
+  mostly *mechanically verifiable* (lint / audit script /
+  threshold check); this class is *judgment-based*. A principle
+  like *"Docker-for-reproducibility is a first-host-neutral
+  portability primitive"* (Otto-55/Otto-57) might apply to
+  multi-agent peer-review, but it ALSO applies to Craft module
+  delivery (reproducible module-build envs), to sample projects
+  (reproducible demo envs), to research benchmarks (reproducible
+  measurement envs), to CI (already uses containers), to local
+  dev setup. A cadenced review sweeps the project for *where
+  else a principle applies that we haven't applied it yet*, and
+  surfaces candidates. **Scope:** (1) `docs/research/principle-
+  adherence-review-design-YYYY-MM-DD.md` naming the review
+  shape — which principles, who reviews, cadence, output form;
+  (2) first-pass principle catalogue drawing from existing
+  memory (git-native-first-host, in-repo-first, samples-vs-
+  production, applied-default-theoretical-opt-in, honest-about-
+  error, Codex-as-substantive-reviewer, detect-first-action-
+  second, honor-those-that-came-before, Docker-for-
+  reproducibility, CLI-first-prototyping, etc.); (3) review
+  protocol: for each principle, one agent with the relevant
+  hat sweeps the project looking for generalization
+  opportunities (where the principle applies but isn't applied);
+  output is a ROUND-HISTORY row + BACKLOG rows for each concrete
+  opportunity; (4) candidate cadence: every 10-20 rounds per
+  principle (lower frequency than mechanical audits because
+  judgment-based and lower-urgency); (5) FACTORY-HYGIENE row
+  with principle-per-subtier (not a single blanket row —
+  each principle is its own sub-cadence with its own owner).
+  **Worked example (the one the human maintainer named):**
+  principle = *"Docker for reproducibility"* (currently
+  scoped to multi-agent peer-review per Otto-55/57). Review
+  asks: where else would reproducible-environment shipping
+  reduce friction? Candidates: `.devcontainer/` for
+  contributor onboarding; per-sample Dockerfile for demo
+  reproducibility; benchmark-harness container for
+  `CheckedVsUnchecked` etc. bench reproducibility across
+  hosts; Craft module build env for "run this lesson on any
+  machine". Each candidate becomes a BACKLOG row with an
+  owner + effort; the principle-review output is *the list
+  of candidates*, not the implementation. **Classification
+  (row #50 prevention meta-audit):** **detection-only-
+  justified** — generalization opportunities are inherently
+  post-hoc (you can't author-time prevent a principle from
+  applying somewhere; the application is retrospective).
+  **Composes with:** FACTORY-HYGIENE row #23 (missing-
+  hygiene-class gap-finder) — sibling pattern, but row #23
+  surfaces NEW hygiene classes while this row surfaces
+  generalizations of EXISTING principles; FACTORY-HYGIENE
+  row #22 (symmetry-opportunities) — mirror shape, but
+  symmetry is about pair-completion while principle-
+  adherence is about scope-extension; FACTORY-HYGIENE row
+  #41 (orthogonal-axes audit) — pairs as meta-audit triad;
+  `docs/FACTORY-METHODOLOGIES.md` pull-vs-always-on
+  criterion — principle-adherence review is pull (invoked
+  on cadence), not always-on. **Not in scope:** automated
+  principle extraction from memory (manual first-pass
+  catalogue; automation is a sibling row later if the
+  discipline works); multi-agent Docker-peer-review
+  corollary (that's Otto-52's row, this one names the
+  principle-adherence *pattern* not the Docker-specific
+  instance). **Effort:** M (research doc + first-pass
+  catalogue + review protocol + first run on Docker-for-
+  reproducibility as worked example + FACTORY-HYGIENE row
+  structure). **Owner:** Kenji (Architect) drives the
+  principle catalogue + review-protocol design; Aarav
+  (skill-tune-up hat) runs the first review pass on
+  Docker-reproducibility; Rune (readability) reviews the
+  catalogue for principle-granularity; Daya (AX) reviews
+  the cadence-load-on-agents.
+
 ## P2 — Production-code performance discipline
 
 - [ ] **Checked vs unchecked arithmetic audit across Zeta
