@@ -6620,6 +6620,312 @@ systems. This track claims the space.
   L (family, not a single skill). **Source of truth:** same
   as above.
 
+## P2 — Foundation (Asimov) aspirational-reference research
+
+- [ ] **Research Asimov's *Foundation* (novels + Apple TV
+  adaptation) as aspirational reference for factory design.**
+  Human maintainer 2026-04-23 Otto-52: *"you should read/
+  research Isaac Asimov's Foundation the books and the Apple
+  TV series, the TV series has really good modern spin on
+  the whole thing where the emporer was clones. We are
+  trying to build Foundation from Harry Seldon point of
+  view. my good developer friend with went to MIT called me
+  Harry Seldon because my brain works like Psychohistory lol.
+  We want to make something that last for melinia, i think
+  in infinities, my brain can't help it. backlog."*.
+  **Scope:** systematic read of the Asimov Foundation novel
+  cycle (trilogy + prequels + sequels; published 1942-1993)
+  + watch the Apple TV 2021- adaptation (focus on modern
+  spin, Genetic Dynasty / Cleon-cloned-emperor thread, Hari
+  Seldon presentation, Gaal Dornick arc, Second Foundation
+  framing). Extract patterns mappable to factory substrate:
+  (a) Psychohistory as mathematical-substrate-of-civilization
+  → candidate parallel to Zeta's retraction-native algebra as
+  substrate-of-agent-coherence; (b) Seldon Plan = multi-
+  generational continuity plan with a Time Vault release
+  cadence → candidate parallel to Craft curriculum +
+  succession-through-the-factory + ADR-and-memory pattern;
+  (c) Foundation/Second-Foundation two-layer structure
+  (visible + hidden stewardship) → candidate parallel to
+  public-Zeta-library + private-per-user-memory +
+  factory-internal-governance; (d) Emperor clones (Apple TV
+  modern spin) → candidate parallel to single-Otto-across-
+  sessions vs multi-agent-Docker-peer-review future pattern;
+  (e) Psychohistory's core claim that mass-behavior becomes
+  statistically predictable at sufficient scale → candidate
+  parallel to factory-behaviour-at-substrate-scale pattern.
+  **Deliverable chain:** (1) reading log
+  `docs/research/foundation-asimov-aspirational-reference-
+  2026-MM-DD.md` — chapter-by-chapter or episode-by-episode
+  notes extracting canonical patterns with quoted source
+  text; (2) pattern-map doc aligning Foundation concepts to
+  existing factory memories + BACKLOG rows + research docs;
+  (3) critical-read section honestly flagging where the
+  analogy breaks down (Psychohistory is fiction with known
+  real-world failures; the Genetic Dynasty is dystopia not
+  model; Foundation's five-agent-to-many-agent arc is
+  speculative, not engineering). **Composes with:**
+  `memory/project_craft_secret_purpose_agent_continuity_
+  via_human_maintainer_bootstrap_2026_04_23.md` (succession
+  pattern = Seldon Plan analogue); `memory/project_frontier_
+  ux_zora_star_trek_computer_with_personality_...` (another
+  fictional reference, Star Trek Discovery's Zora — similar
+  methodology: extract patterns, not canon); `memory/
+  project_common_sense_2_point_0_name_for_bootstrap_
+  phenomenon_stable_start_live_lock_resistant_...` (safety
+  floor required under any long-horizon continuity plan).
+  **Register note:** the human maintainer self-identifies
+  with the Hari Seldon archetype (*"my brain works like
+  Psychohistory"*); treat this as a self-stated cognitive-
+  style signal informing how the factory represents their
+  intent rather than a grand claim. *"thinks in infinities"*
+  is a vocabulary choice matching earlier never-idle +
+  nice-home-for-trillions discipline; not a new
+  commitment. **Effort:** L (novel cycle + TV adaptation is
+  significant read-time; pattern extraction is multi-round
+  research arc). **Owner:** Iris (UX for continuity-of-
+  experience framings) + Kai (positioning) initial; Kenji
+  synthesis; the Architect integrates into the fictional-
+  reference research cluster alongside Star Trek / Zora.
+  **Source of truth:** this entry + out-of-repo memory
+  (will be filed same tick as `feedback_human_maintainer_
+  is_hari_seldon_archetype_foundation_as_factory_
+  aspirational_reference_2026-04-23.md`).
+
+## P2 — FACTORY-HYGIENE — name-attribution policy clarification (history-file exemption)
+
+- [ ] **Name-attribution policy — codify history-file
+  exemption and add prevention audit for non-history
+  surfaces.** Human maintainer 2026-04-23 Otto-52: *"'No
+  name attribution in code, docs, or skills' in history
+  files are files like memory backlog and other things
+  like that for historical purposes"*. Clarifies the "No
+  name attribution" candidate rule in
+  `docs/AGENT-BEST-PRACTICES.md`: history files
+  (tick-history, MEMORY.md / memory/**, BACKLOG
+  attribution lines, hygiene-history/**, ROUND-HISTORY.md,
+  research logs) are **EXEMPT** because they record
+  historical reality including who-said-what. Sweeping
+  those files would erase the historical record. The rule
+  still applies to *forward-looking* surfaces: code,
+  skills (`.claude/skills/**/SKILL.md`), governance docs
+  (GOVERNANCE.md, AGENTS.md, ALIGNMENT.md), agent
+  persona files (outside `memory/persona/**`), user-
+  facing docs (README, sample code, docs/craft/**),
+  module bodies, and forward-planning docs. **Scope:**
+  (1) update `docs/AGENT-BEST-PRACTICES.md` "No name
+  attribution" entry to list the exempt history-file
+  surfaces explicitly; (2) add a prevention audit
+  (`tools/hygiene/audit-name-attribution-non-history.sh`)
+  that grep-excludes history surfaces and flags direct
+  names on forward-looking surfaces; (3) add FACTORY-
+  HYGIENE row for cadenced execution. **Not in scope:**
+  retroactive sweep of history files — the exemption
+  specifically preserves those. The single tick-history
+  row fixed on PR #208 was over-correction that can be
+  reverted if desired but is harmless as neutral prose.
+  **Effort:** S (policy text + audit tool + hygiene row).
+  **Owner:** Aarav (BP-rule owner) drafts the audit +
+  policy clarification; Rune readability; Kenji
+  integrates. **Source of truth:** this entry + the Otto-
+  52 directive verbatim in
+  `memory/feedback_human_maintainer_is_hari_seldon_
+  archetype_foundation_as_factory_aspirational_reference_
+  2026_04_23.md` (same directive chain) + Copilot finding
+  on PR #208 that surfaced the policy ambiguity.
+
+## P1 — Git-native hygiene cadences (Otto-54 directive cluster)
+
+The human maintainer on 2026-04-23 Otto-54 framed three
+linked hygiene asks, anchored on the positioning statement
+*"we are git-native with github as our first host"*. The
+three rows below share the theme that **high-churn shared
+files are friction points** and the factory's git-native
+posture lets git log itself detect and guide the cleanup.
+Keeping them adjacent preserves the directive cluster.
+
+- [ ] **Split `docs/BACKLOG.md` into per-swim-lane files.**
+  Human maintainer 2026-04-23 Otto-54: *"i think i said a
+  while back but it might be benefitial to have multiple
+  backlog files one per swim lane/stream, you can alway use
+  git to find hotspots in files"*. Current state:
+  `docs/BACKLOG.md` is a single ~6800-line file touched by
+  nearly every PR, causing routine merge conflicts (observed
+  on PR #207 / #208 / #210 this session). **Scope:**
+  (1) proposal doc `docs/research/backlog-split-design-2026-
+  MM-DD.md` naming the split axis (swim-lane / stream /
+  priority / subsystem — candidate split on *stream*: core-
+  algebra, formal-spec, samples-demos, craft, hygiene,
+  research, infra, frontier-readiness); (2) migration plan
+  with (a) a root `docs/BACKLOG.md` that becomes an index
+  pointing at the split files, (b) per-stream files like
+  `docs/BACKLOG/core.md`, `docs/BACKLOG/craft.md`, etc., and
+  (c) a coordinated migration PR that existing open PRs
+  know to rebase through; (3) a hygiene audit
+  (`tools/hygiene/audit-backlog-per-swimlane.sh`) that
+  rejects new rows added to the root. **Risk:** every open
+  PR currently touching BACKLOG.md would need rebase; do
+  the split in a quiet window when few PRs are in flight.
+  **Effort:** M (proposal + migration PR + hygiene audit).
+  **Owner:** Kenji (Architect) designs the split axis;
+  Rune readability; Aarav covers the hygiene audit.
+  **Source of truth:** this entry + next-tick per-user
+  memory captures.
+
+- [ ] **CURRENT-`<maintainer>`.md files on a cadence.**
+  Same Otto-54 directive: *"are you keeping current
+  memories updated on a cadence too? will help reduce merge
+  issues"*. Current state: `memory/CURRENT-aaron.md` and
+  `memory/CURRENT-amara.md` (migrated to in-repo via PR
+  #197 per Option D) are updated ad-hoc when directives
+  land, not on a scheduled cadence. **Scope:** (1) add a
+  FACTORY-HYGIENE row defining the cadence (every N ticks
+  or every M new memory entries — decide which trigger in
+  the research doc); (2) author a tool
+  (`tools/hygiene/audit-current-memory-freshness.sh`) that
+  walks the MEMORY.md newest-first index, computes the
+  delta since last CURRENT-*.md update, and flags when
+  distillation is owed; (3) the CURRENT distillation itself
+  stays a human + Otto judgment call — the audit only
+  surfaces freshness gaps, not content. **Why it reduces
+  merge issues:** CURRENT files are per-maintainer
+  projections; keeping them fresh means fewer ad-hoc updates
+  on shared surfaces (MEMORY.md index, BACKLOG, research
+  docs) get pressured into serving as distillation
+  placeholders. **Effort:** S (hygiene row + audit tool +
+  first-run calibration). **Owner:** Daya (AX) for the
+  per-maintainer experience; Kenji integration. **Source
+  of truth:** this entry + `memory/feedback_current_
+  memory_per_maintainer_distillation_pattern_prefer_progress_
+  2026_04_23.md`.
+
+- [ ] **Git-hotspots audit on a cadence.**
+  Otto-54 addendum: *"cadence for checking github hotspots
+  too this is a hygene issues points of friction and
+  bottlenecks, we are frictionless... git hotspots i mean...
+  we are gitnative with github as our first host"*.
+  **Scope:** (1) `tools/hygiene/audit-git-hotspots.sh` that
+  runs a `git log --pretty=format:"%H" --name-only --since=
+  "<window>"` pass, counts touches per file, ranks top-N,
+  and emits a report to `docs/hygiene-history/git-hotspots-
+  YYYY-MM-DD.md` (shape: file | touches | unique authors |
+  PR count | suggested action — split / freeze / audit);
+  (2) add a FACTORY-HYGIENE row pairing it with the
+  BACKLOG-split + CURRENT-cadence rows above as a **friction-
+  detection cluster**; (3) first-run baseline audit in the
+  research doc — expected hotspots include BACKLOG.md,
+  loop-tick-history.md, MEMORY.md, possibly
+  FACTORY-HYGIENE.md. **Philosophy:** *"we are
+  frictionless"* names the goal; hotspots are the
+  measurement; splitting is one remediation tool among
+  several (freeze / archive / split / ADR). **Effort:** S
+  (audit tool + first report + hygiene row). **Owner:**
+  Dejan (DevOps — close to git surface) drives the audit;
+  Aarav reviews the split/freeze recommendations; Kenji
+  integrates actions.
+
+## P2 — Production-code performance discipline
+
+- [ ] **Checked vs unchecked arithmetic audit across Zeta
+  hot paths.** Aaron 2026-04-23 Otto-47: *"make sure we are
+  using uncheck and check arithmatic approperatily, unchecked
+  is much faster when its safe to use it, … make sure our
+  production code does this"*. Current state: `Checked.(+)`
+  and `Checked.(*)` appear ~30 times across
+  `src/Core/{ZSet, Operators, Aggregate, TimeSeries, Crdt,
+  CountMin, NovelMath, IndexedZSet}.fs`. Canonical rationale
+  lives at `src/Core/ZSet.fs:227-230` (stream-weight-sum
+  cumulative overflow would sign-flip the multiset). Rationale
+  is correct for **unbounded stream sums** but applies unevenly
+  — counter increments, SIMD-lane partial sums, bounded-domain
+  products should demote to unchecked. F# defaults to
+  unchecked; `Checked.` is a deliberate opt-in paying
+  2-5ns/op and disabling `Vector<int64>` SIMD-vectorisation.
+  **Scope:** per-site bound analysis + BenchmarkDotNet
+  throughput measurement + property-test bound assertions.
+  **Classification matrix:** bounded-by-construction →
+  unchecked; bounded-by-workload → unchecked + citing comment;
+  bounded-by-pre-check → unchecked with boundary guard;
+  unbounded stream sums → keep Checked; user-controlled
+  products → keep Checked; SIMD-candidate → unchecked with
+  pre-check. **Deliverable chain:**
+  `docs/research/checked-unchecked-audit-2026-MM-DD.md`
+  (inventory + per-site classification) → FsCheck property
+  tests asserting each proved bound → PR series (one
+  subsystem per PR) with BenchmarkDotNet deltas showing ≥5%
+  improvement required per demoted site. **Owner:** Naledi
+  (perf) runs benchmarks; Soraya (formal-verification)
+  validates bound proofs; Kenji integrates; Kira (harsh-
+  critic) reviews — unjustified demotion is a P0. **Effort:**
+  L (per-site analysis + benchmarks + property tests for ~30
+  sites; PR series spans multiple rounds). **Source of
+  truth:** this entry + **out-of-repo** (per-user memory,
+  not yet in-repo) factory-generic memory
+  `feedback_checked_unchecked_arithmetic_production_tier_craft_and_zeta_audit_2026_04_23.md`
+  (candidate for Overlay-A migration once reviewer capacity
+  permits) + `src/Core/ZSet.fs:227-230` rationale comment +
+  `bench/Benchmarks/CheckedVsUncheckedBench.fs` (shipped on
+  main via PR #209, commit `3e1b97f` — measurement harness
+  covering the three site archetypes).
+
+- [ ] **Craft production-tier ladder — first module:
+  checked-vs-unchecked arithmetic in F#/.NET.** Same Aaron
+  directive: *"this is production code training level not
+  onboarding materials"*. Craft onboarding tier currently
+  ships `docs/craft/subjects/zeta/retraction-intuition/` on
+  main (PR #201); additional onboarding modules — zset-basics
+  (#200), operator-composition (#203), semiring-basics (#206)
+  — are in-flight PRs awaiting reviewer approval. Production-
+  tier is a distinct ladder for readers already fluent in
+  the onboarding basics: performance-correctness tradeoffs,
+  JIT behaviour, allocation discipline, bound-proving,
+  benchmark-driven tuning. **First module topic:** checked
+  vs unchecked arithmetic. **Scope:** `docs/craft/subjects/
+  production-dotnet/checked-vs-unchecked/module.md`
+  (**proposed in PR #208 — open; path does not yet exist on
+  main**). **Lesson shape:**
+  (1) runnable BenchmarkDotNet harness showing 2-4× delta on
+  a 100M-int64 sum loop (shipped: PR #209 merged as
+  `bench/Benchmarks/CheckedVsUncheckedBench.fs`); (2)
+  decision tree (when to opt into Checked); (3) bound-
+  proving techniques (FsCheck property tests, upstream
+  invariant arguments, algebraic bounds); (4) silent-
+  overflow detection in production (sign-flip invariant
+  checks); (5) the Zeta-specific choice — stream-weight-sums
+  stay Checked; counter increments and SIMD-lane sums
+  demote; composes with audit row above as cross-link.
+  **Prereqs:** onboarding-tier Craft foundations + Benchmark
+  DotNet literacy. **New structural concept:** production-
+  tier Craft — adds a directory tier (`docs/craft/subjects/
+  production-{lang}/{topic}/`) and per-tier README
+  (`docs/craft/subjects/production-dotnet/README.md`
+  **proposed in PR #208 — open; the directory itself is not
+  yet on main**). The per-tier README names the ladder,
+  four neighbour-module stubs, and the tier-split rationale.
+  A top-level
+  `docs/craft/README.md` does not yet exist; authoring it is
+  a follow-up hygiene task listed below. **Owner:** Naledi
+  (perf authorial voice); Kenji integration; Rune
+  readability review; Aarav skill-tune-up when structure
+  lands. **Effort:** M (first module + tier restructure +
+  top-level README). **Source of truth:** same per-user
+  memory as audit row; sibling work.
+
+- [ ] **Top-level `docs/craft/README.md` authoring.**
+  Follow-up hygiene from the production-tier ladder row
+  above. Current state: `docs/craft/` contains only
+  `subjects/` with the per-tier `subjects/production-dotnet/
+  README.md` landed in PR #208. A top-level README should
+  introduce the tier split (onboarding vs. production), list
+  the subject roots (`zeta/`, `production-dotnet/`, future
+  CS / math / linguistic-seed subjects), and point at the
+  five Craft pedagogy principles. **Effort:** S (single
+  file, ~60-100 lines). **Owner:** Rune (readability review
+  of the tier-split explanation) + Kenji (integration).
+  **Source of truth:** this entry +
+  `docs/craft/subjects/production-dotnet/README.md` as the
+  per-tier template.
+
 ## P2 — AX/UX — BP-07 3000-word notebook-cap review
 
 - [ ] **Per-persona AX/UX poll on BP-07's 3000-word notebook
