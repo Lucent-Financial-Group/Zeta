@@ -5425,6 +5425,26 @@ systems. This track claims the space.
   Cadence: 24h + 5 sessions. Consolidation *deletes*
   contradicted facts. See `memory/reference_autodream_feature.md`.
 
+  **Knowledge-absorb update (2026-04-23, first backlog-refactor
+  fire per FACTORY-HYGIENE row #54):** the factory's
+  near-term position on AutoDream has since evolved — rather
+  than building a parallel retraction-native consolidator as
+  a standalone research project, the factory first lands a
+  thin **extension-overlay policy** on top of Anthropic's
+  feature so upstream upgrades are inherited automatically.
+  See `docs/research/autodream-extension-and-cadence-2026-04-23.md` (lands via PR #155)
+  (lands via PR #155) and the corresponding
+  `docs/FACTORY-HYGIENE.md` row #53 (lands via PR #155) for the cadenced
+  enforcement surface. The better-dream-mode research project
+  below is now framed as the **more-ambitious second step**:
+  if the Anthropic feature proves insufficient for the
+  factory's memory discipline even after the four
+  factory-overlay steps (A/B/C/D in the research doc), *then*
+  a retraction-native replacement earns its research weight.
+  Until that signal fires, this row stays queued at its
+  current priority but is no longer the primary AutoDream
+  response.
+
   Zeta already has memory-architecture primitives AutoDream
   does not:
 
