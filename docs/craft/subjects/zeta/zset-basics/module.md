@@ -200,7 +200,7 @@ shared keys interact. For linear queries (`count`, `sum`),
 retraction flows through query pipelines losslessly.
 
 Full treatment in the DBSP paper (Budiu et al. VLDB 2023)
-+ `docs/ARCHITECTURE.md` §operator-algebra.
+and `docs/ARCHITECTURE.md` §operator-algebra.
 
 ### Theoretical prerequisites (if you're going deeper)
 
