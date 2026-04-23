@@ -1,4 +1,4 @@
--- ServiceTitan factory-demo — deterministic seed data (v0)
+-- Factory-demo — deterministic seed data (v0)
 -- 20 customers (trades-contractor shaped), 30 opportunities, ~40 activities.
 -- Two intentional email collisions for the duplicate-review demo scenario.
 -- Idempotent: re-running TRUNCATEs first and re-inserts.

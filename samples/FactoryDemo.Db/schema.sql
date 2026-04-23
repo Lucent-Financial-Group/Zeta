@@ -1,4 +1,4 @@
--- ServiceTitan factory-demo — Postgres schema (v0)
+-- Factory-demo — Postgres schema (v0)
 -- Standard Postgres 14+. Boring by design — the factory story is
 -- the demo, not the database. See README.md for the framing.
 
