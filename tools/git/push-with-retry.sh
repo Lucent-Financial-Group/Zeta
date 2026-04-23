@@ -12,16 +12,33 @@
 # seconds. Manual retry burns tick budget; a one-line helper
 # makes the retry uniform.
 #
-# Open root-cause question: Aaron 2026-04-23 noted the error
-# URL shows `Zeta.git/` with a trailing slash. Local git
-# config has the canonical `.git` form with no trailing
-# slash. The trailing slash in the error may be an artifact
-# of git's URL-error formatter (closing `'` could visually
-# resemble `/`) or a real URL-normalisation inside libcurl.
-# Either way the symptom — transient 5xx on push — is
-# what this script mitigates. If the root cause turns out
-# to be URL-construction, a repo-level fix would supersede
-# this retry wrapper.
+# Root-cause investigation (2026-04-23, per Aaron's DST
+# discipline — retries should be investigated before added,
+# per the per-user memory
+# `feedback_retries_are_non_determinism_smell_DST_holds_investigate_first_2026_04_23.md`):
+#
+# - Local git config is clean: `remote.origin.url =
+#   https://github.com/Lucent-Financial-Group/Zeta.git` with
+#   no trailing slash.
+# - `GIT_TRACE=1 GIT_CURL_VERBOSE=1 git ls-remote origin`
+#   shows the on-wire URL is
+#   `/Lucent-Financial-Group/Zeta.git/git-upload-pack` — the
+#   trailing `.git/` in error messages is `.git/git-upload-pack`
+#   truncated in git's error formatter, not a client-side
+#   URL-construction bug. Aaron's trailing-slash hypothesis
+#   was structural but the `/` is the path separator before
+#   the Git-protocol endpoint, correct per spec.
+# - The HTTP 500 returns directly from GitHub's server and
+#   reproduces intermittently on different commands
+#   (push / ls-remote).
+# - Conclusion: the 500 is a genuinely external GitHub
+#   transient, not a client-side fix we can make. This is
+#   the "real external reasons we can't control" exception
+#   from the DST discipline — retry is legitimate here
+#   after investigation, not as a default reach.
+#
+# If the 500-rate escalates or the investigation surfaces a
+# new root cause, this wrapper should be revisited.
 #
 # Usage: tools/git/push-with-retry.sh [git push args...]
 #   tools/git/push-with-retry.sh
