@@ -4238,6 +4238,24 @@ systems. This track claims the space.
   Once the split lands, each split repo can have its
   own Pages UI surfacing its own factory-state slice.
 
+  **Read-only first, write-access later** (maintainer
+  2026-04-23 refinement): *"ui will likely need gh, our
+  repo is public so for all the read actions on the ui
+  we are good without permission, for write actions we
+  probably don't need this yet would need whole
+  permission set and resue of the github logins session
+  stuff without a real backend, tricky stuff so
+  readonly to expaned to write access later."* Phase 1
+  of the UI — **read-only** — uses the GitHub REST API
+  against the public repo with no auth (rate-limit
+  applies; acceptable for a status dashboard that
+  updates per-push). Phase 2 — **write actions** (e.g.,
+  human clicks to resolve a HUMAN-BACKLOG row) — would
+  need either GitHub session / OAuth handoff or a thin
+  backend, both of which break the git-native +
+  ~free-to-run constraint as currently understood.
+  Defer Phase 2 until the tradeoff is re-examined.
+
   **Cross-references**:
   - `docs/AGENT-GITHUB-SURFACES.md` §Pages
     (research-gated; this row activates that research)
