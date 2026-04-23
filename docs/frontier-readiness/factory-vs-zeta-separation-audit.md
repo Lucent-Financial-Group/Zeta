@@ -53,17 +53,15 @@ For each audited file:
 
 ### Files audited
 
-- **CLAUDE.md** (below, this seed fire)
+- **CLAUDE.md** (below, seed fire)
 - **AGENTS.md** (below, Otto-9 fire)
-- **docs/CONFLICT-RESOLUTION.md** (below, Otto-12 fire) — note: GOVERNANCE.md audit landing separately via PR #181
+- **docs/CONFLICT-RESOLUTION.md** (below, Otto-12 fire)
+- **docs/AUTONOMOUS-LOOP.md** (below, Otto-15 fire)
+- **docs/WONT-DO.md** (below, Otto-15 fire) — also GOVERNANCE.md on PR #181, AGENT-BEST-PRACTICES.md on PR #184, ALIGNMENT.md on PR #185
 
 ### Files to audit (not yet classified; add rows as they land)
 
-- `docs/ALIGNMENT.md`
-- `docs/AGENT-BEST-PRACTICES.md`
 - `docs/GLOSSARY.md`
-- `docs/WONT-DO.md`
-- `docs/AUTONOMOUS-LOOP.md`
 - `docs/FACTORY-HYGIENE.md`
 - `docs/ROUND-HISTORY.md`
 - `docs/TECH-RADAR.md`
@@ -283,6 +281,106 @@ section which is entirely project-specific by nature. Both
 surgically extract. The rest of the persona roster is
 already factory-generic by design (named personas with
 generic scopes applicable to any factory adopter).
+
+## Audit — docs/AUTONOMOUS-LOOP.md
+
+**Overall classification:** **factory-generic** — Otto's own
+operating spec is purely Claude Code harness discipline with
+no Zeta-library content.
+
+**File location post-split:** Frontier as-is.
+
+**Length:** 483 lines. **9 sections.**
+
+### Section-by-section breakdown
+
+| Section | Class | Notes |
+|---|---|---|
+| Preamble (tick cadence, self-direction) | factory-generic | Universal autonomous-loop framing. |
+| "Mechanism — native Claude Code scheduled tasks" | factory-generic | `CronCreate` / `CronList` / `CronDelete` — Claude Code v2.1.72+ native tools; ralph-loop plugin differentiation. All harness-level. |
+| "The registered tick" | factory-generic | `<<autonomous-loop>>` sentinel + `* * * * *` cadence. |
+| "The every-tick checklist" | factory-generic | Triage / audit / commit / tick-history / CronList / visibility. Universal loop discipline. |
+| "Escalation on failure" | factory-generic |  |
+| "Session-restart recovery" | factory-generic | Session-compaction + re-armed-cron discipline. |
+| "What this discipline does NOT do" | factory-generic | Scope-boundary discipline. |
+| "Related artifacts" | factory-generic (file-path pointers transfer) |  |
+| "History" | factory-generic | Evolution log of the loop discipline. |
+
+### Refactor notes
+
+Before the split: **zero** substantive edits required. The
+spec is pure Claude Code harness discipline; Frontier
+adopters using Claude Code inherit verbatim. Adopters using
+a different harness (Codex, Gemini, etc.) would need an
+equivalent spec — but that's content creation for them, not
+content extraction from Zeta.
+
+Estimated refactor effort: **~0** (zero). The cleanest
+factory-generic file audited so far.
+
+### Classification rationale
+
+AUTONOMOUS-LOOP.md is Otto's own spec — the cron-tick
+discipline that runs the factory's self-direction. The spec
+is Claude Code harness-level by design; no Zeta-library
+content appears anywhere. Adopters get this file verbatim
+and their autonomous-loop runs the same way.
+
+## Audit — docs/WONT-DO.md
+
+**Overall classification:** **both (coupled)** — the
+declined-work-log shape is factory-generic (entry template,
+status vocabulary, revisit criteria); the specific entries
+are heavily Zeta-library-specific (algorithm decisions,
+engineering patterns, DBSP-library out-of-scope items).
+
+**File location post-split:** Template (shape + preamble +
+status vocab + entry schema) → Frontier. Zeta-specific
+entries → Zeta repo's own WONT-DO.md at split time.
+
+**Length:** 626 lines. **6 top-level sections.**
+
+### Section-by-section breakdown
+
+| Section | Class | Notes |
+|---|---|---|
+| Preamble + "What the statuses mean" | factory-generic | Entry shape, status vocabulary (Rejected / Declined / Deprecated / Superseded), revisit criteria, ADR-lineage note. |
+| "Algorithms / operators" | zeta-library-specific | Entries like "Cuckoo / Morton filter as a replacement for counting Bloom" — specific Zeta algorithm decisions. |
+| "Engineering patterns" | zeta-library-specific (mostly) | Likely Zeta-specific engineering decisions (exception handling / async patterns / wire format / etc.). Needs entry-by-entry review to confirm all; may contain a few factory-shape entries. |
+| "Repo / process" | **both** | Repo / process decisions range from factory-generic (CI policy / merge-gate patterns) to Zeta-specific (openspec structure decisions). Entry-by-entry mixed. |
+| "Out-of-scope for a DBSP library" | zeta-library-specific | Explicitly scoped to DBSP library domain by section name. Full Zeta. |
+| "Personas and emulation" | factory-generic | Persona-framework decisions (emulation scope, conflict-handling) transfer to any adopter running named personas. |
+| "How to add an entry" | factory-generic | Meta-instructional. |
+
+### Refactor notes
+
+Before the split, extraction strategy:
+
+1. **Frontier WONT-DO.md template**: preamble + status
+   vocabulary + "How to add an entry" + empty top-level
+   section stubs for categories (Algorithms / Engineering /
+   Repo / Personas / ...); adopters fill in their own
+   entries.
+2. **Zeta repo WONT-DO.md**: current full content; retains
+   all entries as the Zeta-library decision record.
+3. **"Repo / process" section** needs entry-by-entry review:
+   some entries (CI policy, merge-gate patterns) move to
+   Frontier template as generic examples; some stay in
+   Zeta.
+
+Estimated refactor effort: **M** — extraction + per-entry
+review of "Repo / process" section. Preamble + shape transfer
+is trivial.
+
+### Classification rationale
+
+WONT-DO.md is a decision-log substrate. The shape (entry
+template, ADR-vocab statuses) is factory-generic and is a
+standard adopter-inheritance pattern. The content is
+necessarily project-specific — an adopter's declined work
+is unique to their project. Frontier inherits the shape
+template + personas/meta sections; Zeta retains its full
+current entry list as the library's decision record.
 
 ## How this audit connects to the multi-repo split
 
