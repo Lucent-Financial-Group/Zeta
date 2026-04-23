@@ -2321,18 +2321,24 @@ within each priority tier.
 
   Per the DST discipline
   (`memory/feedback_retries_are_non_determinism_smell_DST_holds_investigate_first_2026_04_23.md`
-  — per-user), retries are a non-determinism smell. A
-  flaky property test is genuine non-determinism; the
-  investigation should answer:
+  — per-user) + the human maintainer 2026-04-23
+  follow-up *"pinned seeds is from DST ... to make them
+  deterministic"*: **pinned seeds are the DST-aligned
+  resolution**, not retry-until-green. The investigation
+  should answer:
 
   1. **Is the error bound formula correct?** HLL has a
      known standard-error of `1.04 / sqrt(m)` where `m`
      is the number of registers. The test bound should
      reflect that + a factor for confidence interval.
   2. **Is the test seeded deterministically?** FsCheck
-     supports explicit seeds; a flaky property under
-     random seeds should be seed-pinned + the failing
-     seed captured for regression.
+     supports explicit seeds (`[<Property(Replay = ...)>]`
+     or configured via `PropertyAttribute`). **Per the
+     maintainer: pinned seeds ARE the DST resolution** —
+     a flaky property under random seeds should be
+     seed-pinned + the failing seed captured for
+     regression. "Retry until green" is the non-DST path
+     and is explicitly rejected.
   3. **Is it actually a real regression?** The test
      was passing recently (session PRs earlier today ran
      CI green on this check). Bisect against recent
