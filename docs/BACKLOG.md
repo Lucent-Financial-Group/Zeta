@@ -4242,7 +4242,7 @@ systems. This track claims the space.
   maintainer 2026-04-23 asked for a re-evaluation with
   whole-project consideration:
 
-  - **Cross-platform parity (FACTORY-HYGIENE row #48)**
+  - **Cross-platform parity (FACTORY-HYGIENE row #51 — cross-platform parity audit)**
     — Ruby/Jekyll is painful on Windows; bun is
     cross-platform-native.
   - **Post-setup stack default (row #49)** — bun+TS is
@@ -4301,7 +4301,7 @@ systems. This track claims the space.
     the UI)
   - `docs/ROUND-HISTORY.md` (source for round progress)
   - `docs/hygiene-history/*.md` (source for fire-log
-    surfaces per row #44)
+    surfaces per row #47 — the cadence-history tracking row that defines the per-fire schema)
 
   **Self-scheduled** when maintainer elevates priority
   (post-split).
