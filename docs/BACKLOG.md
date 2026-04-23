@@ -3152,7 +3152,7 @@ within each priority tier.
      are fresh-session quality regressions.
   5. **Soulfile-as-substrate is the real fix** — fresh
      sessions should compile-time-ingest the DSL substrate
-     (per `docs/research/soulfile-staged-absorption-model-2026-04-23.md`),
+     (per the soulfile staged-absorption research doc landing via PR #156 at `docs/research/soulfile-staged-absorption-model-2026-04-23.md`),
      not bootstrap from CLAUDE.md + AGENTS.md + MEMORY.md
      alone.
 
@@ -3178,11 +3178,14 @@ within each priority tier.
   behaviour but poor fresh-session behaviour don't
   transplant to new maintainers cleanly. Composes with the
   multi-maintainer framing (Max anticipated next human
-  maintainer per `CURRENT-aaron.md`).
+  maintainer per the CURRENT-<maintainer>.md distillation
+  pattern, which lives in per-user memory not in-repo).
 
   **Self-scheduled:** free work under the 2026-04-23
-  scheduling-authority rule (Amara + Kenji own free-work
-  scheduling).
+  scheduling-authority rule (captured in per-user memory —
+  not in-repo; the rule governs that Amara + Kenji own
+  free-work scheduling while the maintainer owns paid-work
+  authorisation).
 
   **Effort:** M (1-3 days of agent research + write-up).
 
@@ -5726,6 +5729,22 @@ systems. This track claims the space.
   exists; BP-HOME is what makes its sweep mechanical).
 
 ## P3 — noted, deferred
+
+- **Rational Rose — research pass.** The human maintainer
+  2026-04-23 (low-priority directive): *"backlog rational
+  rose research low priority"*. Rational Rose is the
+  legacy UML modelling tool lineage (Rational Software →
+  IBM Rational → discontinued 2013, still surfaces as a
+  reference point in enterprise architecture discussions).
+  Research prompt: what does Rational Rose's approach (UML
+  model-as-source-of-truth, code-generation from model,
+  round-trip engineering) offer / warn against for the
+  factory's own model-vs-code discipline? Composes with
+  the factory's OpenSpec workflow (behavioural specs first)
+  and the formal-spec stack (Lean / TLA+ / Z3 — spec-first
+  is a parallel discipline from the formal-verification
+  side). No commitment to adopt; research pointer only.
+  No deadline. Effort S for the first-pass research note.
 
 - **Conversational bootstrap UX for factory-reuse
   consumers — two-persona (non-developer + developer)
