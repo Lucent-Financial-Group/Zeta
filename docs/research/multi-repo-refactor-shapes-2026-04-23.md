@@ -1,14 +1,15 @@
 # Multi-repo refactor — candidate shapes for the factory / library / research split
 
 **Date:** 2026-04-23
-**Status:** Research doc — preparing the consultation Aaron's
+**Status:** Research doc — preparing the consultation the human maintainer's
 2026-04-20 framing requires before big packaging decisions
-land (per `memory/feedback_factory_reuse_packaging_decisions_consult_aaron.md`).
-**Triggered by:** Aaron 2026-04-23: *"we can even wait on the
+land (per the per-user memory rule on factory-reuse packaging
+decisions requiring maintainer consultation).
+**Triggered by:** The human maintainer 2026-04-23: *"we can even wait on the
 demo until we have refactored into our multi repo shape, you
 remember that right? That seems very structural and like we
 should do it sooner rather than later, but it's up to you."*
-**Request:** Aaron's review of the options + trade-offs below,
+**Request:** The human maintainer's review of the options + trade-offs below,
 toward a decision on the split shape.
 
 ## Why this matters
@@ -119,7 +120,7 @@ split:
 | `AGENTS.md`, `CLAUDE.md`, `GOVERNANCE.md` | 100% | — | — |
 | `docs/ALIGNMENT.md`, `docs/AGENT-BEST-PRACTICES.md`, `docs/AUTONOMOUS-LOOP.md` | 100% | — | — |
 | `docs/ARCHITECTURE.md`, `docs/MATH-SPEC-TESTS.md`, `docs/VISION.md` | — | 100% | — |
-| `docs/aurora/` | — | — | 100% |
+| `docs/aurora/` (lands via PR #144) | — | — | 100% |
 | `docs/research/` | ~50% | ~50% | — |
 | `memory/*.md` | ~40% | ~50% | ~10% |
 | `src/`, `tests/`, `bench/` | — | 100% | — |
@@ -303,7 +304,7 @@ process + versioning discipline + marketplace setup).
 | Preserves customization | — | — | ✓ | ✓ | ✓✓ |
 | Mature tooling exists | ✓ | ✓ | ✓ | ✓ | ✗ |
 | Suits Aurora's collaborator model | — | — | ✓ | — | ✓ |
-| Current-Aaron-to-solo-adopter friction | low | medium | low | — | medium |
+| Current-maintainer-to-solo-adopter friction | low | medium | low | — | medium |
 
 ## My recommendation
 
@@ -345,7 +346,7 @@ repo she can read end-to-end without Zeta-library noise.
 
 ## Alternative reasonable paths
 
-If Aaron disagrees with my sequencing, the most reasonable
+If the human maintainer disagrees with my sequencing, the most reasonable
 alternates:
 
 - **D → C directly.** Skip template-repo; invest in
@@ -353,12 +354,12 @@ alternates:
   adopters to prefer explicit version-pinning.
 - **E directly (skip D).** Commit to overlay now if we're
   confident the tool investment pays off. Fits if there's
-  a specific near-term adopter Aaron knows about.
+  a specific near-term adopter the human maintainer knows about.
 - **D permanently.** Never extract; always monorepo. Fits
   if the factory-reuse-beyond-Zeta goal is de-prioritised
   or delayed substantially.
 
-## Questions for Aaron
+## Questions for the human maintainer
 
 1. **Sequencing preference** — D-then-A-then-E, or something
    else? Your call; I'm flexible on this.
@@ -385,19 +386,15 @@ alternates:
 
 ## Composes with
 
-- `memory/feedback_factory_reuse_packaging_decisions_consult_aaron.md`
-  (the rule that required this research doc before any
-  shaping move lands)
-- `memory/project_factory_reuse_beyond_zeta_constraint.md`
-  (the underlying constraint — factory should be
-  reusable)
-- `memory/feedback_open_source_repo_demos_stay_generic_not_company_specific_2026_04_23.md`
-  (open-source posture — any factory extraction should
-  preserve this)
-- `memory/project_lfg_is_demo_facing_acehack_is_cost_cutting_internal_2026_04_23.md`
-  (LFG is demo-facing; extracted factory lives in LFG)
-- `docs/aurora/collaborators.md` (Aurora collaborator
-  model influences where `zeta-aurora` lives)
+- Per-user memory (not in-repo; lives under
+  `~/.claude/projects/<slug>/memory/`) — the rules that
+  required this research doc before any shaping move
+  lands, and the underlying constraint that the factory
+  should be reusable beyond Zeta. Open-source and
+  LFG-is-demo-facing posture also tracked there.
+- `docs/aurora/collaborators.md` (lands via PR #144;
+  Aurora collaborator model influences where
+  `zeta-aurora` lives)
 - `docs/HUMAN-BACKLOG.md` — HB items that may change
   structure once the split lands
 - `README.md` performance-design table (stays with the
