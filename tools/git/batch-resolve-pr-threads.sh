@@ -100,7 +100,7 @@ while IFS=$'\t' read -r thread_id body; do
   is_name_attribution="false"
 
   # Dangling-ref patterns
-  for pat in "does not exist" "path does not exist" "artifact not in this commit" "file/path does not exist" "not in the repository at this commit" "not yet on main"; do
+  for pat in "does not exist" "path does not exist" "artifact not in this commit" "file/path does not exist" "not in the repository at this commit" "not yet on main" "doesn't exist in-repo" "doesn't exist in the repository" "point protocol references" "point references to existing" "references a location" "references a file" "file reference not resolved"; do
     if [[ "$body_lower" == *"$pat"* ]]; then
       is_dangling_ref="true"
       break
@@ -109,8 +109,17 @@ while IFS=$'\t' read -r thread_id body; do
 
   # Name-attribution patterns (skip if already classified dangling-ref)
   if [[ "$is_dangling_ref" == "false" ]]; then
-    if { [[ "$body_lower" == *"name attribution"* ]] || [[ "$body_lower" == *"contributor names"* ]] || [[ "$body_lower" == *"no name"* ]]; } && [[ "$body_lower" == *"rule"* || "$body_lower" == *"standing"* || "$body_lower" == *"policy"* || "$body_lower" == *"conflicts with"* ]]; then
-      is_name_attribution="true"
+    for pat in "direct contributor name attribution" "contributor name attribution" "direct contributor names" "direct names in code" "direct names in doc" "prohibits direct names" "name attribution rule" "repo convention prohibits" "repo's standing rule"; do
+      if [[ "$body_lower" == *"$pat"* ]]; then
+        is_name_attribution="true"
+        break
+      fi
+    done
+    # Fallback combinatorial match (name+rule/standing/conflicts)
+    if [[ "$is_name_attribution" == "false" ]]; then
+      if { [[ "$body_lower" == *"name attribution"* ]] || [[ "$body_lower" == *"contributor names"* ]] || [[ "$body_lower" == *"no name"* ]]; } && [[ "$body_lower" == *"rule"* || "$body_lower" == *"standing"* || "$body_lower" == *"policy"* || "$body_lower" == *"conflicts with"* || "$body_lower" == *"prohibits"* ]]; then
+        is_name_attribution="true"
+      fi
     fi
   fi
 
@@ -171,15 +180,19 @@ resolve_thread() {
   }" > /dev/null
 }
 
-for tid in "${dangling_ids[@]}"; do
-  echo "  resolving dangling-ref: $tid"
-  resolve_thread "$tid" "$reply_dangling_ref"
-done
+if (( ${#dangling_ids[@]} > 0 )); then
+  for tid in "${dangling_ids[@]}"; do
+    echo "  resolving dangling-ref: $tid"
+    resolve_thread "$tid" "$reply_dangling_ref"
+  done
+fi
 
-for tid in "${name_ids[@]}"; do
-  echo "  resolving name-attribution: $tid"
-  resolve_thread "$tid" "$reply_name_attribution"
-done
+if (( ${#name_ids[@]} > 0 )); then
+  for tid in "${name_ids[@]}"; do
+    echo "  resolving name-attribution: $tid"
+    resolve_thread "$tid" "$reply_name_attribution"
+  done
+fi
 
 echo ""
 echo "done. $((dangling_count + name_count)) resolved. $unknown_count unknown threads left for manual review."
