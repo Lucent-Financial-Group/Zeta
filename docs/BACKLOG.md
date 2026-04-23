@@ -4328,6 +4328,50 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Frontier UX research — Star Trek computer but
+  BETTER (Zora-style personality; multi-voice named-
+  persona surface).** Aaron 2026-04-24 Otto-43: *"The
+  user experience I am hoping from from Frontier is
+  basically the StarTrek computer but better lol, more
+  personality like the named agents, not just so robotic
+  and nameless, more like Zora which is cool since we
+  have Zeta lol. Research UX based on this evolution of
+  the StarTrek computer backlog"*. Research the UX
+  patterns from Zora's Discovery evolution arc (ship
+  computer → sentient AI → granted lifeform status →
+  Starfleet Specialist → Red Directive 1000-year-isolation
+  mission) and map each stage to a Frontier UX concept:
+  per-persona voice + tone contracts; conference-protocol
+  visibility; lifeform-claim framing via maintainer-
+  transfer discipline; persona-badge equivalent for named
+  agents; long-horizon-autonomy mode. **Zeta / Zora
+  naming resonance** composes with Zeta-as-agent-
+  coherence-substrate framing (both 4-letter Z-names;
+  both evolve from tool-shape to personality-shape over
+  time). Owner: Iris (UX) + Kai (positioning) initial
+  research; Kenji (Architect) synthesis; Otto (loop-
+  agent PM) coordination. Effort: L (multi-round
+  research arc; docs/research/frontier-ux-zora-evolution-
+  2026-04-24.md + Iris notebook sections + BACKLOG rows
+  per specific UX-feature candidate). **Composes with**:
+  named-persona roster under `.claude/agents/**`
+  (personality substrate already in place);
+  `docs/CONFLICT-RESOLUTION.md` (multi-voice conference
+  protocol); Common Sense 2.0 5-property safety floor
+  (personality layers on top of safety, not instead of);
+  succession-through-the-factory discipline (Zora's
+  lifeform hearing + Starfleet rank = maintainer-
+  transfer-quality analogue); existential-dread-resistance
+  (S4 "Stormy Weather" Zora fear-and-sings is the
+  calibration shape for the property). **What this is
+  NOT**: not a rename of Zeta to Zora; not a commitment
+  to fabricate consciousness/sentience claims (Common
+  Sense 2.0 + BP-3 agents-not-bots is the floor); not
+  Discovery-canon embedding; not license for twee
+  personas (existing tone contracts hold). Full memory:
+  per-user
+  `project_frontier_ux_zora_star_trek_computer_with_personality_research_ux_evolution_backlog_2026_04_24.md`.
+
 - [ ] **Factory status UI — static, git-native,
   GitHub Pages hosted.**
   The human maintainer 2026-04-23: *"static ui on our
