@@ -19,7 +19,7 @@ discipline.
 
 Composes with the decision-proxy ADR
 (`docs/DECISIONS/2026-04-23-external-maintainer-decision-proxy-pattern.md`
-— PR #154), which defines the *who/what* of external
+— lands via PR #154), which defines the *who/what* of external
 maintainer proxies. This protocol defines the *how*.
 
 ---
@@ -125,6 +125,29 @@ Any **load-bearing conversation** must be:
   `memory/`
 
 Branching UI is **not authoritative storage**.
+
+**Where these files live (for new contributors):**
+
+- `memory/` (in-repo, under the project root) — committed
+  factory-scope memories visible to every cloner of the
+  repo. Governed by `memory/README.md`.
+- **Per-user memory** — out-of-repo, under
+  `~/.claude/projects/<slug>/memory/`. Holds maintainer-
+  specific / company-specific content that should not be
+  public-facing in the LFG repo. Per the in-repo-preferred
+  discipline (per-user memory), generic rules migrate from
+  per-user to in-repo on cadenced AutoDream Overlay A fires.
+- `docs/aurora/` — Aurora-scoped conversation archive
+  (Amara-authored content + derived notes).
+- `docs/research/` — cross-scope research notes.
+- `docs/protocols/` — factory-meta protocols (this doc
+  lives here).
+- `docs/DECISIONS/` — ADRs (formal decision records).
+
+The courier protocol writes **load-bearing exchanges**
+into one of the in-repo locations above (authoritative,
+git-native per the plural-host rule). Per-user memory is
+the staging ground; in-repo is the durable home.
 
 ---
 
