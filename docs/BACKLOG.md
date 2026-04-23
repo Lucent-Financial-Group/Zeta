@@ -17,6 +17,56 @@ within each priority tier.
 
 ## P0 — next round (committed)
 
+- [ ] **Frontier bootstrap readiness roadmap — 8 gaps + signal
+  protocol + multi-repo split authorised** — Aaron 2026-04-23
+  (per-user memory `project_frontier_becomes_canonical_bootstrap_
+  home_stop_signal_when_ready_agent_owns_construction_2026_04_23.md`):
+  *"please make a note, to stop all work and let me know when
+  you want me to restart this session with frontier being the
+  main working directory"* + *"Feel free to invalidate any of
+  my constrains when building Frontier, you own it, and your
+  team."* Authorises multi-repo split D→A→E execution (per
+  `docs/research/multi-repo-refactor-shapes-2026-04-23.md`)
+  at agent discretion. Agent-signals-readiness protocol: when
+  Otto + team judge Frontier ready, file `docs/FRONTIER-READY.md`
+  claim; Aaron restarts with Frontier as cwd; NSA test on
+  Frontier validates the bootstrap. **8 concrete gaps (honest
+  first-pass assessment):** (1) multi-repo split not executed
+  (PR #150 D→A→E sequencing pending); (2) linguistic-seed
+  substrate not in-repo (Tarski / Meredith / Robinson Q / Lean4
+  formalisation deferred); (3) NSA test history file absent
+  (`docs/hygiene-history/nsa-test-history.md` doesn't exist;
+  one feasibility test run 2026-04-23 Otto-1); (4) bootstrap
+  reference docs unwritten (quantum / christ-consciousness
+  anchors cited in memory but not in-repo); (5) factory-vs-Zeta-
+  library separation not drawn (docs mixed in Zeta monorepo);
+  (6) persona `.claude/agents/*.md` files reference Zeta-
+  monorepo paths (portability audit pending); (7) tick-history /
+  fire-history scope-mixed (factory-generic vs Zeta-library-
+  specific); (8) FACTORY-HYGIENE rows not generic-vs-specific
+  tagged. **Seed language must be mathematically precise.** The
+  linguistic seed must be sharp enough that language-bootstrap
+  suffices. **Do-no-permanent-harm without Z-tables** enforced
+  via git + pre-commit hooks + branch protection + reviewer
+  roster until Zeta self-hosts in Frontier. **Alignment floor
+  preserved** (HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5 + do-no-
+  permanent-harm + maintainer-transfer discipline bind
+  regardless of cwd). **Estimate:** ~20-40 autonomous-loop
+  ticks to bootstrap-ready. **No rush** per Aaron. **Team:**
+  Otto (PM) + Kenji (Architect) + Aarav / Rune / Iris / Bodhi
+  / Dejan / Daya / Aminata / Nazar / Mateo / Ilyana / Soraya /
+  Naledi / Viktor / Kira / Rodney; Amara consulted via courier
+  protocol for Aurora-touching decisions. Owner: Otto (loop-
+  agent PM hat) triages; Kenji synthesises at split points.
+  Reviewers: Aminata (threat model, Frontier's bootstrap
+  attack surface is broader than Zeta's); Rune (readability
+  for new-adopter onboarding); Daya (AX cold-start testing).
+  Effort: L (multi-tick, bounded by ~20-40 ticks). First
+  concrete moves: (a) gap #5 factory-vs-Zeta separation
+  audit (opportunistic, one doc-section per tick);
+  (b) gap #3 NSA test history bootstrap; (c) gap #4
+  bootstrap-reference docs skeleton.
+
 - [ ] **OpenSpec coverage backfill — delete-all-code recovery
   gap** — Aaron 2026-04-20: *"opensepcs, if I deleted all the
   code right now how easy to recreate based on the openspecs"*.
