@@ -6655,42 +6655,69 @@ systems. This track claims the space.
   critic) reviews — unjustified demotion is a P0. **Effort:**
   L (per-site analysis + benchmarks + property tests for ~30
   sites; PR series spans multiple rounds). **Source of
-  truth:** this entry +
-  `memory/feedback_checked_unchecked_arithmetic_production_tier_craft_and_zeta_audit_2026_04_24.md`
-  + `src/Core/ZSet.fs:227-230` rationale comment.
+  truth:** this entry + per-user memory
+  `feedback_checked_unchecked_arithmetic_production_tier_craft_and_zeta_audit_2026_04_23.md`
+  (factory-generic; candidate for Overlay-A migration to
+  in-repo `memory/` once reviewer capacity permits) +
+  `src/Core/ZSet.fs:227-230` rationale comment +
+  `bench/Benchmarks/CheckedVsUncheckedBench.fs` (PR #209,
+  merged — measurement harness covering the three site
+  archetypes).
 
 - [ ] **Craft production-tier ladder — first module:
   checked-vs-unchecked arithmetic in F#/.NET.** Same Aaron
   directive: *"this is production code training level not
-  onboarding materials"*. Craft currently has onboarding-tier
-  only (zset-basics / retraction-intuition /
-  operator-composition / semiring-basics — anchor-metaphor,
-  applied-default-theoretical-opt-in). Production-tier is a
-  distinct ladder for readers already fluent in the
-  onboarding basics: performance-correctness tradeoffs, JIT
-  behaviour, allocation discipline, bound-proving,
+  onboarding materials"*. Craft onboarding tier currently
+  ships `docs/craft/subjects/zeta/retraction-intuition/` on
+  main (PR #201); additional onboarding modules — zset-basics
+  (#200), operator-composition (#203), semiring-basics (#206)
+  — are in-flight PRs awaiting reviewer approval. Production-
+  tier is a distinct ladder for readers already fluent in
+  the onboarding basics: performance-correctness tradeoffs,
+  JIT behaviour, allocation discipline, bound-proving,
   benchmark-driven tuning. **First module topic:** checked
   vs unchecked arithmetic. **Scope:** `docs/craft/subjects/
-  production-dotnet/checked-vs-unchecked/module.md`.
-  **Lesson shape:** (1) runnable BenchmarkDotNet harness
-  showing 2-4× delta on a 100M-int64 sum loop; (2) decision
-  tree (when to opt into Checked); (3) bound-proving
-  techniques (FsCheck property tests, upstream invariant
-  arguments, algebraic bounds); (4) silent-overflow
-  detection in production (sign-flip invariant checks); (5)
-  the Zeta-specific choice — stream-weight-sums stay
-  Checked; counter increments and SIMD-lane sums demote;
-  composes with audit row above as cross-link. **Prereqs:**
-  zset-basics + operator-composition onboarding modules +
-  BenchmarkDotNet literacy. **New structural concept:**
-  production-tier Craft — adds a directory tier
-  (`docs/craft/subjects/production-{lang}/{topic}/`) and
-  README section explaining the onboarding→production split.
-  **Owner:** Naledi (perf authorial voice); Kenji
-  integration; Rune readability review; Aarav skill-
-  tune-up when structure lands. **Effort:** M (first module
-  + tier restructure + README update). **Source of truth:**
-  same memory as audit row; sibling work.
+  production-dotnet/checked-vs-unchecked/module.md` (landed
+  in PR #208 — awaiting reviewer approval). **Lesson shape:**
+  (1) runnable BenchmarkDotNet harness showing 2-4× delta on
+  a 100M-int64 sum loop (shipped: PR #209 merged as
+  `bench/Benchmarks/CheckedVsUncheckedBench.fs`); (2)
+  decision tree (when to opt into Checked); (3) bound-
+  proving techniques (FsCheck property tests, upstream
+  invariant arguments, algebraic bounds); (4) silent-
+  overflow detection in production (sign-flip invariant
+  checks); (5) the Zeta-specific choice — stream-weight-sums
+  stay Checked; counter increments and SIMD-lane sums
+  demote; composes with audit row above as cross-link.
+  **Prereqs:** onboarding-tier Craft foundations + Benchmark
+  DotNet literacy. **New structural concept:** production-
+  tier Craft — adds a directory tier (`docs/craft/subjects/
+  production-{lang}/{topic}/`) and per-tier README
+  (`docs/craft/subjects/production-dotnet/README.md`
+  landed in PR #208 naming the ladder, four neighbour-module
+  stubs, and the tier-split rationale). A top-level
+  `docs/craft/README.md` does not yet exist; authoring it is
+  a follow-up hygiene task listed below. **Owner:** Naledi
+  (perf authorial voice); Kenji integration; Rune
+  readability review; Aarav skill-tune-up when structure
+  lands. **Effort:** M (first module + tier restructure +
+  top-level README). **Source of truth:** same per-user
+  memory as audit row; sibling work.
+
+- [ ] **Top-level `docs/craft/README.md` authoring.**
+  Follow-up hygiene from the production-tier ladder row
+  above. Current state: `docs/craft/` contains only
+  `subjects/` with the per-tier `subjects/production-dotnet/
+  README.md` landed in PR #208. A top-level README should
+  introduce the tier split (onboarding vs. production), list
+  the subject roots (`zeta/`, `production-dotnet/`, future
+  CS / math / linguistic-seed subjects), and point at the
+  five Craft pedagogy principles. **Effort:** S (single
+  file, ~60-100 lines). **Owner:** Rune (readability review
+  of the tier-split explanation) + Kenji (integration).
+  **Source of truth:** this entry +
+  `docs/craft/subjects/production-dotnet/README.md` as the
+  per-tier template.
 
 ## P2 — AX/UX — BP-07 3000-word notebook-cap review
 
