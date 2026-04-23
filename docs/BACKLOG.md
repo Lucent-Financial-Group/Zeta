@@ -4217,10 +4217,21 @@ systems. This track claims the space.
   - Whatever else helps a human drive the factory
     without reading raw files
 
-  **Constraint — git-native / ~free-to-run**: no paid
-  SaaS, no external backend. The static site regenerates
-  from repo content on push via a GitHub Action. Git
-  is the backend.
+  **Constraint — git-native content + GitHub adapter**:
+  per the plural-host rule (the factory is git-native
+  core + GitHub is the first adapter): the **content
+  feeding the UI** (PRs, ADRs, HUMAN-BACKLOG,
+  CONTRIBUTOR-CONFLICTS, ROUND-HISTORY, hygiene-history)
+  is git-native — lives in the repo regardless of host.
+  The **UI itself is an explicit GitHub adapter**: GitHub
+  Pages is GitHub-native by definition; GitHub Actions
+  regenerates the site on push; GitHub REST API feeds
+  read-only state into the UI. When a second git host
+  (GitLab / Gitea / Bitbucket) eventually activates, a
+  sibling adapter ships (GitLab Pages / Gitea Pages /
+  `bitbucket.io`) against the same git-native content
+  spec. No paid SaaS, no external backend for the
+  current GitHub adapter.
 
   **Tech choice: bun + TypeScript SSG** (Kenji
   recommendation, re-examined 2026-04-23 with whole-
