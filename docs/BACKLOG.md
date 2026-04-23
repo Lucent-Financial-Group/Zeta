@@ -4222,18 +4222,37 @@ systems. This track claims the space.
   from repo content on push via a GitHub Action. Git
   is the backend.
 
-  **Tech choice: bun + TypeScript SSG** (maintainer
-  2026-04-23 directive overriding prior ambivalence):
-  *"i'm fine with either but last time you push me hard
-  away from jekyll that i think we only need typescript
-  bun based and no jekyll unless you tell me
-  otherwise."* No Jekyll. No Hugo / Astro / Eleventy
-  (open candidates but not default). Bun + TypeScript
-  composes with FACTORY-HYGIENE row #49 (post-setup
-  stack bun+TS default) — factory-aligned path. If a
-  compelling reason to revisit Jekyll surfaces during
-  research, it lands as an ADR with explicit rationale;
-  default is bun+TS.
+  **Tech choice: bun + TypeScript SSG** (Kenji
+  recommendation, re-examined 2026-04-23 with whole-
+  project consideration):
+
+  The Architect persona (Kenji) previously argued for
+  excluding Jekyll in favor of bun+TypeScript. The
+  maintainer 2026-04-23 asked for a re-evaluation with
+  whole-project consideration:
+
+  - **Cross-platform parity (FACTORY-HYGIENE row #48)**
+    — Ruby/Jekyll is painful on Windows; bun is
+    cross-platform-native.
+  - **Post-setup stack default (row #49)** — bun+TS is
+    the factory-aligned choice for any post-setup
+    tooling. Adding a Ruby chain for one surface
+    fragments the stack.
+  - **One-language rule** — the factory already spans
+    F#, C#, TypeScript, bash, PowerShell. Adding Ruby
+    *just for GitHub Pages* would increase
+    language-footprint without proportionate benefit.
+  - **GitHub Pages + Actions build pattern** — widely
+    supported; pre-build with bun in a workflow, publish
+    static output to `gh-pages` branch; works regardless
+    of native-Pages SSG support.
+  - **Rich SSG ecosystem** — bun + Astro / Eleventy /
+    custom are viable; factory can pick the thinnest-
+    substrate one at implementation time.
+
+  Kenji's call stands: bun + TypeScript. No Jekyll as
+  default; Jekyll reconsidered only if a whole-project
+  use case surfaces that isn't served by bun+TS.
 
   **Sequencing**: the maintainer explicitly said
   *"probably not a good idea until after the repo
