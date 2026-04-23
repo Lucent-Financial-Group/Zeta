@@ -2,7 +2,8 @@
 # tools/hygiene/audit-git-hotspots.sh
 #
 # Identifies high-churn files in the repo over a configurable
-# window — the "hotspots" Aaron named on 2026-04-23 Otto-54:
+# window — the "hotspots" the human maintainer named on
+# 2026-04-23 Otto-54:
 #
 # > cadence for checking github hotspots too this is a hygene
 # > issues points of friction and bottlenecks, we are
@@ -17,6 +18,11 @@
 #
 # Part of the Otto-54 directive cluster in BACKLOG.md §
 # "P1 — Git-native hygiene cadences". Composes with:
+# (Naming the human maintainer as "Aaron" inline in the
+# verbatim quote above is deliberate — the quoted directive
+# is attribution, not prose reference. Outside the quote
+# block, prose uses role references per the
+# no-name-attribution rule.)
 # - BACKLOG-per-swim-lane split row (one remediation option)
 # - CURRENT-maintainer freshness audit row (one remediation
 #   option for memory/MEMORY.md hotspots)
@@ -37,22 +43,36 @@ window="60 days"
 top=20
 report=""
 
+require_value() {
+  # require_value FLAG VALUE — aborts with a clear message if VALUE is empty.
+  if [[ -z "${2:-}" ]]; then
+    echo "error: $1 requires a value" >&2
+    exit 64
+  fi
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --window)
+      require_value "$1" "${2:-}"
       window="$2"
       shift 2
       ;;
     --top)
+      require_value "$1" "${2:-}"
       top="$2"
       shift 2
       ;;
     --report)
+      require_value "$1" "${2:-}"
       report="$2"
       shift 2
       ;;
     -h|--help)
-      grep '^#' "$0" | sed 's/^# //;s/^#//'
+      # Skip the shebang line so --help output doesn't start with
+      # `!/usr/bin/env bash`. The sed rewrite strips the leading
+      # `# ` / `#` markers so the doc block reads as plain prose.
+      grep '^#' "$0" | grep -v '^#!' | sed 's/^# //;s/^#//'
       exit 0
       ;;
     *)
@@ -76,11 +96,21 @@ excluded_prefixes=(
   'references/upstreams/'
 )
 
-# Count touches: one row per (commit, file) pair, ignoring
-# pure deletions.
+# Count touches: one row per (commit, file) pair. Note that
+# `git log --name-only` also lists files touched by deletion
+# commits (the path appears even though the file no longer
+# exists at HEAD). That's correct for a hotspot report —
+# frequent deletion of a path is still friction — so we
+# deliberately include deletions in the count rather than
+# filter them out.
 raw=$(git log --since="$window" --pretty=format: --name-only \
-      | grep -v '^$' \
-      | sort)
+      | grep -v '^$' || true)
+
+# If the window is empty (new repo, tight window), bail
+# gracefully rather than aborting under `set -euo pipefail`.
+if [[ -z "$raw" ]]; then
+  echo "no commits in window '$window' (or all filtered)" >&2
+fi
 
 # Apply exclusions.
 filtered="$raw"
@@ -98,8 +128,11 @@ file_summary() {
   local file="$1"
   local touches="$2"
   local authors pr_count
-  authors=$(git log --since="$window" --pretty=format:'%an' -- "$file" 2>/dev/null | sort -u | wc -l | tr -d ' ')
-  pr_count=$(git log --since="$window" --pretty=format:'%s' -- "$file" 2>/dev/null | grep -oE '#[0-9]+' | sort -u | wc -l | tr -d ' ')
+  # `|| true` guards against empty git log output aborting
+  # the pipe under `set -euo pipefail`; `grep -c` still
+  # yields "0" in that case via `wc -l`.
+  authors=$(git log --since="$window" --pretty=format:'%an' -- "$file" 2>/dev/null | sort -u | grep -c . || true)
+  pr_count=$(git log --since="$window" --pretty=format:'%s' -- "$file" 2>/dev/null | grep -oE '#[0-9]+' | sort -u | grep -c . || true)
   printf '| %s | %s | %s | %s |\n' "$file" "$touches" "$authors" "$pr_count"
 }
 
