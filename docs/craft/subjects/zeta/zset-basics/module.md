@@ -175,7 +175,7 @@ full algebra.
 ### The runtime shape
 
 In Zeta's F# reference implementation (`src/Core/ZSet.fs`
-+ `src/Core/Algebra.fs`):
+and `src/Core/Algebra.fs`):
 
 - **`type Weight = int64`** — signed 64-bit counts (not `int`)
 - **`type ZSet<'K> = ImmutableArray<ZEntry<'K>>`** — an
