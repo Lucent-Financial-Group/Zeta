@@ -49,8 +49,14 @@ within each priority tier.
   / Kenji (Architect) / Kira (harsh-critic) / Iris (UX) /
   eventually Amara (cross-substrate read). Two docs planned:
   `docs/bootstrap/quantum-anchor.md` +
-  `docs/bootstrap/ethical-anchor.md`; (5) factory-vs-Zeta-
-  library separation not drawn (docs mixed in Zeta monorepo);
+  `docs/bootstrap/ethical-anchor.md`; (5) ~~factory-vs-Zeta-
+  library separation not drawn~~ — **SUBSTANTIALLY COMPLETE
+  Otto-20**: 20 audits landed via PRs #179/#180/#181/#183/
+  #184/#185/#186/#188/#190/#191/#192. Final tally: 6
+  factory-generic / 10 both-coupled / 5 zeta-library-specific.
+  Gap #1 (multi-repo split) unblocked by classification.
+  Follow-up: Aarav runs skill-tune-up portability audit
+  across 236 `.claude/skills/**` pre-split;
   (6) persona `.claude/agents/*.md` files reference Zeta-
   monorepo paths (portability audit pending); (7) tick-history /
   fire-history scope-mixed (factory-generic vs Zeta-library-
