@@ -12,10 +12,9 @@
 # seconds. Manual retry burns tick budget; a one-line helper
 # makes the retry uniform.
 #
-# Root-cause investigation (2026-04-23, per Aaron's DST
-# discipline — retries should be investigated before added,
-# per the per-user memory
-# `feedback_retries_are_non_determinism_smell_DST_holds_investigate_first_2026_04_23.md`):
+# Root-cause investigation (2026-04-23, per the DST discipline
+# — retries should be investigated before added, per the
+# per-user memory on DST retries-are-non-determinism-smell):
 #
 # - Local git config is clean: `remote.origin.url =
 #   https://github.com/Lucent-Financial-Group/Zeta.git` with
@@ -25,9 +24,10 @@
 #   `/Lucent-Financial-Group/Zeta.git/git-upload-pack` — the
 #   trailing `.git/` in error messages is `.git/git-upload-pack`
 #   truncated in git's error formatter, not a client-side
-#   URL-construction bug. Aaron's trailing-slash hypothesis
-#   was structural but the `/` is the path separator before
-#   the Git-protocol endpoint, correct per spec.
+#   URL-construction bug. The maintainer's trailing-slash
+#   hypothesis was structural but the `/` is the path
+#   separator before the Git-protocol endpoint, correct per
+#   spec.
 # - The HTTP 500 returns directly from GitHub's server and
 #   reproduces intermittently on different commands
 #   (push / ls-remote).
@@ -46,36 +46,68 @@
 #
 # Exit codes:
 #   0   push succeeded (possibly after retries)
-#   1   push failed after all retries OR non-transient error
+#   1   all retries exhausted on transient 5xx
+#   2   environment validation failed (non-integer env value)
+#   N   non-transient error — propagates `git push`'s own
+#       exit code
 #
 # Environment:
-#   GIT_PUSH_MAX_ATTEMPTS  override retry count (default 3)
+#   GIT_PUSH_MAX_ATTEMPTS  override retry count (default 3;
+#                          must be a positive integer)
 #   GIT_PUSH_BACKOFF_S     override initial backoff seconds
-#                          (default 2; doubles each retry)
+#                          (default 2; doubles each retry;
+#                          must be a non-negative integer)
 
 set -euo pipefail
 
+# Validate env values as integers before any arithmetic
+# contexts fire (otherwise set -e would kill the script
+# with a confusing message).
+int_re='^[0-9]+$'
 max_attempts="${GIT_PUSH_MAX_ATTEMPTS:-3}"
 backoff="${GIT_PUSH_BACKOFF_S:-2}"
+if ! [[ "$max_attempts" =~ $int_re ]] || (( max_attempts < 1 )); then
+  echo "push-with-retry: GIT_PUSH_MAX_ATTEMPTS must be a positive integer; got '$max_attempts'" >&2
+  exit 2
+fi
+if ! [[ "$backoff" =~ $int_re ]]; then
+  echo "push-with-retry: GIT_PUSH_BACKOFF_S must be a non-negative integer; got '$backoff'" >&2
+  exit 2
+fi
+
+# Temp-file lifecycle. Single tmp file reused across attempts,
+# cleaned up on EXIT (normal or signal — addresses the
+# Ctrl-C / SIGTERM leak case).
+tmp_stderr="$(mktemp)"
+cleanup() {
+  rm -f "$tmp_stderr"
+}
+trap cleanup EXIT
 
 attempt=1
 while (( attempt <= max_attempts )); do
-  tmp_stderr="$(mktemp)"
-  if git push "$@" 2> >(tee "$tmp_stderr" >&2); then
-    rm -f "$tmp_stderr"
+  # Capture git push's exit code directly. Use `set +e`
+  # locally so non-zero exit doesn't terminate the script
+  # (set -e would kill us otherwise) AND so $? is the push's
+  # exit code, not an if-compound return value.
+  set +e
+  git push "$@" 2> >(tee "$tmp_stderr" >&2)
+  exit_code=$?
+  set -e
+
+  if (( exit_code == 0 )); then
     exit 0
   fi
 
-  exit_code=$?
-
   # Only retry on transient 5xx errors from the remote.
   if grep -qE "(500|502|503|504|Internal Server Error|Bad Gateway|Service Unavailable|Gateway Timeout)" "$tmp_stderr"; then
-    rm -f "$tmp_stderr"
     if (( attempt < max_attempts )); then
       echo "push-with-retry: transient 5xx on attempt $attempt/$max_attempts; retrying in ${backoff}s..." >&2
       sleep "$backoff"
       backoff=$(( backoff * 2 ))
       attempt=$(( attempt + 1 ))
+      # Clear the tmp file for the next attempt.
+      : > "$tmp_stderr"
       continue
     fi
     echo "push-with-retry: failed after $max_attempts attempts on transient 5xx" >&2
@@ -83,7 +115,7 @@ while (( attempt <= max_attempts )); do
   fi
 
   # Non-transient error (auth / protected branch / hook /
-  # divergence / etc.) — propagate immediately, do not retry.
-  rm -f "$tmp_stderr"
+  # divergence / etc.) — propagate git push's own exit code,
+  # do not retry.
   exit "$exit_code"
 done
