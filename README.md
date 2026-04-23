@@ -90,7 +90,7 @@ correctly under the paper's rules.
 ## Quick tour
 
 ```fsharp
-open Dbsp.Core
+open Zeta.Core
 
 let circuit = Circuit.create ()
 let orders = circuit.ZSetInput<string * int64> ()
@@ -113,7 +113,7 @@ for e in view.Current do
 And the same thing, C#-side:
 
 ```csharp
-using Dbsp.Core;
+using Zeta.Core;
 
 var circuit = new Circuit();
 var orders = circuit.ZSetInput<(string, long)>();
