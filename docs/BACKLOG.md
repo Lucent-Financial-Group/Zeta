@@ -6623,7 +6623,7 @@ systems. This track claims the space.
 ## P2 — Production-code performance discipline
 
 - [ ] **Checked vs unchecked arithmetic audit across Zeta
-  hot paths.** Aaron 2026-04-24 Otto-47: *"make sure we are
+  hot paths.** Aaron 2026-04-23 Otto-47: *"make sure we are
   using uncheck and check arithmatic approperatily, unchecked
   is much faster when its safe to use it, … make sure our
   production code does this"*. Current state: `Checked.(+)`
@@ -6655,14 +6655,14 @@ systems. This track claims the space.
   critic) reviews — unjustified demotion is a P0. **Effort:**
   L (per-site analysis + benchmarks + property tests for ~30
   sites; PR series spans multiple rounds). **Source of
-  truth:** this entry + per-user memory
+  truth:** this entry + **out-of-repo** (per-user memory,
+  not yet in-repo) factory-generic memory
   `feedback_checked_unchecked_arithmetic_production_tier_craft_and_zeta_audit_2026_04_23.md`
-  (factory-generic; candidate for Overlay-A migration to
-  in-repo `memory/` once reviewer capacity permits) +
-  `src/Core/ZSet.fs:227-230` rationale comment +
-  `bench/Benchmarks/CheckedVsUncheckedBench.fs` (PR #209,
-  merged — measurement harness covering the three site
-  archetypes).
+  (candidate for Overlay-A migration once reviewer capacity
+  permits) + `src/Core/ZSet.fs:227-230` rationale comment +
+  `bench/Benchmarks/CheckedVsUncheckedBench.fs` (shipped on
+  main via PR #209, commit `3e1b97f` — measurement harness
+  covering the three site archetypes).
 
 - [ ] **Craft production-tier ladder — first module:
   checked-vs-unchecked arithmetic in F#/.NET.** Same Aaron
@@ -6677,8 +6677,9 @@ systems. This track claims the space.
   JIT behaviour, allocation discipline, bound-proving,
   benchmark-driven tuning. **First module topic:** checked
   vs unchecked arithmetic. **Scope:** `docs/craft/subjects/
-  production-dotnet/checked-vs-unchecked/module.md` (landed
-  in PR #208 — awaiting reviewer approval). **Lesson shape:**
+  production-dotnet/checked-vs-unchecked/module.md`
+  (**proposed in PR #208 — open; path does not yet exist on
+  main**). **Lesson shape:**
   (1) runnable BenchmarkDotNet harness showing 2-4× delta on
   a 100M-int64 sum loop (shipped: PR #209 merged as
   `bench/Benchmarks/CheckedVsUncheckedBench.fs`); (2)
@@ -6694,8 +6695,10 @@ systems. This track claims the space.
   tier Craft — adds a directory tier (`docs/craft/subjects/
   production-{lang}/{topic}/`) and per-tier README
   (`docs/craft/subjects/production-dotnet/README.md`
-  landed in PR #208 naming the ladder, four neighbour-module
-  stubs, and the tier-split rationale). A top-level
+  **proposed in PR #208 — open; the directory itself is not
+  yet on main**). The per-tier README names the ladder,
+  four neighbour-module stubs, and the tier-split rationale.
+  A top-level
   `docs/craft/README.md` does not yet exist; authoring it is
   a follow-up hygiene task listed below. **Owner:** Naledi
   (perf authorial voice); Kenji integration; Rune

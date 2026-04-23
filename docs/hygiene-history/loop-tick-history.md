@@ -34,6 +34,16 @@ record.
 - **notes** — free-form one-line: re-arm flag, cadence
   changes, session-boundary markers, anomalies.
 
+### On `auto-loop-N` numbering
+
+The `auto-loop-N` tag inside the action-summary is a
+per-session counter, not a globally monotonic identifier.
+Session compaction and restart can reset the counter;
+ticks from different sessions can share or overlap
+numbers. When auditing, rely on the UTC timestamp (the
+first column) as the canonical ordering key; `auto-loop-N`
+is a within-session sequence tag only.
+
 ## Why this exists
 
 Aaron 2026-04-22: *"you might as well right a history record
