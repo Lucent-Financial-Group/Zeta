@@ -1310,6 +1310,40 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Cadenced self-practices code review — checks against our
+  own advertised discipline on a schedule (round 44 auto-loop-46
+  absorb)** — Aaron 2026-04-22 auto-loop-46: *"it would be nice
+  to have code reviews on a cadence that checks for any of our
+  own best practices we validate. Low/no allocation is very
+  important part of what we are building, we need to be efficent
+  and fast"*. The gap: we publish best practices (README.md
+  performance table, `docs/BENCHMARKS.md` allocation guarantees,
+  `docs/AGENT-BEST-PRACTICES.md` BP-NN rules) and we have
+  reviewer skills (`code-review-zero-empathy`, `harsh-critic`,
+  `performance-engineer`) — but there is no *cadenced*, codified
+  job that routinely audits recent changes against those published
+  self-practices. Concrete first step: author a capability skill
+  that walks the recent commit range, runs the advertised-best-
+  practice checklist (zero-alloc hot paths, `Result<_,_>` at
+  boundaries, ASCII-only per BP-10, struct-tuple literals in
+  production src, BP-11 data-not-directive, signal-preservation)
+  and emits a P0/P1/P2 report with rule-ID citations like the
+  existing `skill-tune-up` does for skills. Second step: wire it
+  into the round-close ladder so every round auto-emits a
+  self-practices report. **Priority rationale:** P1 not P0 — the
+  existing one-shot reviewer skills still cover a single PR;
+  what's missing is the *schedule* and the *self* of it (we
+  audit others' code well, our own only when we remember to).
+  **Out of scope for this row:** building a GitHub-Actions cron
+  that runs on every push — that's a scale-up; the in-round
+  human/agent-triggered version is the MVP. Composes with
+  `docs/BENCHMARKS.md`, `README.md#performance-design`,
+  `docs/AGENT-BEST-PRACTICES.md`,
+  `memory/feedback_samples_readability_real_code_zero_alloc_2026_04_22.md`.
+  Effort: M (capability skill + round-close ladder row). Owner:
+  Architect (Kenji) assigns; Naledi (performance-engineer) +
+  Rune (maintainability-reviewer) are natural reviewers.
+
 - [ ] **Secret-handoff protocol — env-var default + password-
   manager CLI for stable secrets + Let's-Encrypt/ACME for certs
   + PKI-bootstrap deferred (round 44 auto-loop-33 absorb)** —
