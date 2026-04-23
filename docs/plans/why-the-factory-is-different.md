@@ -13,8 +13,7 @@ thing.
 
 ---
 
-## What people typically know about AI in engineering (the
-common priors)
+## What people typically know about AI in engineering (the common priors)
 
 - **"AI helps developers write code faster."** True for IDE
   assistants (Copilot, Cursor, Tabnine). They accelerate human
