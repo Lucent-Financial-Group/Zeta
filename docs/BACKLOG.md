@@ -6692,43 +6692,47 @@ systems. This track claims the space.
   is_hari_seldon_archetype_foundation_as_factory_
   aspirational_reference_2026-04-23.md`).
 
-## P1 — FACTORY-HYGIENE — retroactive name-attribution sweep
+## P2 — FACTORY-HYGIENE — name-attribution policy clarification (history-file exemption)
 
-- [ ] **Historical "Aaron" direct-name-attribution sweep in
-  docs/hygiene-history/loop-tick-history.md + other docs.**
-  Copilot review finding on PR #208 flagged direct
-  contributor-name use (`"Aaron"`) in a tick-history row,
-  violating the "No name attribution in code, docs, or
-  skills" rule in `docs/AGENT-BEST-PRACTICES.md` (direct
-  names are reserved for `memory/persona/<name>/` and
-  `docs/BACKLOG.md` attribution lines). The immediate
-  violation was fixed in the PR #208 fix commit (single
-  row). However, the same file contains ~100 historical
-  "Aaron" references from rows going back weeks across
-  multiple sessions, plus additional hits in other docs
-  (MEMORY.md, possibly research docs, some CURRENT-*.md
-  in-repo files). **Scope:** (1) full audit pass over
-  `docs/**` + `memory/**` (excluding `memory/persona/**`
-  and explicit BACKLOG attribution lines); (2) classify
-  each hit into `fix` / `keep-with-annotation` / `already-
-  exempt`; (3) batched-rewrite PR applying the sweep,
-  preserving content meaning (direct "Aaron" → "the human
-  maintainer" / "human maintainer" per role-reference
-  convention); (4) post-sweep, landed hygiene audit
-  (`tools/hygiene/audit-direct-name-attribution.sh`) on a
-  cadence to prevent regression. **Scope note:** historical
-  tick-history rows preserve quotes attributed to the
-  human maintainer (e.g. *"Aaron 2026-04-22: \"...\""*);
-  quote preservation is the signal, not the attribution
-  wrapper. Rewrites must keep the quoted text intact; only
-  the wrapper prose changes. **Effort:** M-L (audit +
-  classification + sweep + prevention audit; ~100 rows to
-  touch; preservation-of-quoted-text discipline applies).
-  **Owner:** Aarav (BP-rule owner) drives the audit +
-  rule citation; Rune (readability) reviews the sweep PR;
-  Kenji integrates. **Source of truth:** this entry +
-  `docs/AGENT-BEST-PRACTICES.md` "No name attribution"
-  candidate rule + Copilot finding on PR #208.
+- [ ] **Name-attribution policy — codify history-file
+  exemption and add prevention audit for non-history
+  surfaces.** Human maintainer 2026-04-23 Otto-52: *"'No
+  name attribution in code, docs, or skills' in history
+  files are files like memory backlog and other things
+  like that for historical purposes"*. Clarifies the "No
+  name attribution" candidate rule in
+  `docs/AGENT-BEST-PRACTICES.md`: history files
+  (tick-history, MEMORY.md / memory/**, BACKLOG
+  attribution lines, hygiene-history/**, ROUND-HISTORY.md,
+  research logs) are **EXEMPT** because they record
+  historical reality including who-said-what. Sweeping
+  those files would erase the historical record. The rule
+  still applies to *forward-looking* surfaces: code,
+  skills (`.claude/skills/**/SKILL.md`), governance docs
+  (GOVERNANCE.md, AGENTS.md, ALIGNMENT.md), agent
+  persona files (outside `memory/persona/**`), user-
+  facing docs (README, sample code, docs/craft/**),
+  module bodies, and forward-planning docs. **Scope:**
+  (1) update `docs/AGENT-BEST-PRACTICES.md` "No name
+  attribution" entry to list the exempt history-file
+  surfaces explicitly; (2) add a prevention audit
+  (`tools/hygiene/audit-name-attribution-non-history.sh`)
+  that grep-excludes history surfaces and flags direct
+  names on forward-looking surfaces; (3) add FACTORY-
+  HYGIENE row for cadenced execution. **Not in scope:**
+  retroactive sweep of history files — the exemption
+  specifically preserves those. The single tick-history
+  row fixed on PR #208 was over-correction that can be
+  reverted if desired but is harmless as neutral prose.
+  **Effort:** S (policy text + audit tool + hygiene row).
+  **Owner:** Aarav (BP-rule owner) drafts the audit +
+  policy clarification; Rune readability; Kenji
+  integrates. **Source of truth:** this entry + the Otto-
+  52 directive verbatim in
+  `memory/feedback_human_maintainer_is_hari_seldon_
+  archetype_foundation_as_factory_aspirational_reference_
+  2026_04_23.md` (same directive chain) + Copilot finding
+  on PR #208 that surfaced the policy ambiguity.
 
 ## P2 — Production-code performance discipline
 
