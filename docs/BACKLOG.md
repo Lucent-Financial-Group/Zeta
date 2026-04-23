@@ -4192,6 +4192,72 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Factory status UI — static, git-native,
+  GitHub Pages hosted.**
+  The human maintainer 2026-04-23: *"static ui on our
+  github pages that shows factory status things in
+  flight progress, etc anyting else you can make of to
+  help the human drive we can surface thing in the ui
+  like the decions and any decions we would like human
+  feedback on. All this should be able to use our
+  gitnative approach and not really cost anyting i
+  dont think becasue it can just use git for the
+  backend for the ui. backlog this and probaby not a
+  good idea until after the repo split into the
+  different projects."*
+
+  **Goal**: a static UI at the repo's GitHub Pages URL
+  (default `https://lucent-financial-group.github.io/<repo>`)
+  that surfaces factory state to humans:
+  - Things in flight (open PRs, their state)
+  - Decisions made (ADRs under `docs/DECISIONS/`)
+  - Decisions seeking human feedback (HUMAN-BACKLOG
+    Open rows)
+  - Round history / progress ledger
+  - Whatever else helps a human drive the factory
+    without reading raw files
+
+  **Constraint — git-native / ~free-to-run**: no paid
+  SaaS, no external backend. The static site regenerates
+  from repo content on push via a GitHub Action. Git
+  is the backend.
+
+  **Tech candidates (deferred decision)**: Jekyll
+  (GitHub Pages default), Hugo, Astro, Eleventy, bun-
+  based custom SSG. Per `docs/AGENT-GITHUB-SURFACES.md`
+  Pages row (research-gated) + FACTORY-HYGIENE row #48
+  (post-setup stack — bun+TS default): bun-based is the
+  factory-aligned choice; Jekyll is GitHub's path of
+  least resistance. Final call waits for the research
+  doc.
+
+  **Sequencing**: the maintainer explicitly said
+  *"probably not a good idea until after the repo
+  split into the different projects."* Multi-repo
+  refactor research (PR #150) is the prerequisite.
+  Once the split lands, each split repo can have its
+  own Pages UI surfacing its own factory-state slice.
+
+  **Cross-references**:
+  - `docs/AGENT-GITHUB-SURFACES.md` §Pages
+    (research-gated; this row activates that research)
+  - PR #150 `docs/research/multi-repo-refactor-shapes-2026-04-23.md`
+    (prerequisite)
+  - `docs/HUMAN-BACKLOG.md` (source for
+    decisions-seeking-feedback on the UI)
+  - `docs/DECISIONS/` (source for decisions-made on
+    the UI)
+  - `docs/ROUND-HISTORY.md` (source for round progress)
+  - `docs/hygiene-history/*.md` (source for fire-log
+    surfaces per row #44)
+
+  **Self-scheduled** when maintainer elevates priority
+  (post-split).
+
+  **Effort**: M for first-pass UI + GitHub Action
+  wiring; L if the UI becomes the primary factory-
+  human-interface surface.
+
 - [ ] **Compoundings-per-tick audit — tick-close self-
   diagnostic with confidence-axis failure-mode taxonomy.**
   Recurrence threshold met auto-loop-16/17/18 (2026-04-22):
