@@ -4222,14 +4222,18 @@ systems. This track claims the space.
   from repo content on push via a GitHub Action. Git
   is the backend.
 
-  **Tech candidates (deferred decision)**: Jekyll
-  (GitHub Pages default), Hugo, Astro, Eleventy, bun-
-  based custom SSG. Per `docs/AGENT-GITHUB-SURFACES.md`
-  Pages row (research-gated) + FACTORY-HYGIENE row #48
-  (post-setup stack — bun+TS default): bun-based is the
-  factory-aligned choice; Jekyll is GitHub's path of
-  least resistance. Final call waits for the research
-  doc.
+  **Tech choice: bun + TypeScript SSG** (maintainer
+  2026-04-23 directive overriding prior ambivalence):
+  *"i'm fine with either but last time you push me hard
+  away from jekyll that i think we only need typescript
+  bun based and no jekyll unless you tell me
+  otherwise."* No Jekyll. No Hugo / Astro / Eleventy
+  (open candidates but not default). Bun + TypeScript
+  composes with FACTORY-HYGIENE row #49 (post-setup
+  stack bun+TS default) — factory-aligned path. If a
+  compelling reason to revisit Jekyll surfaces during
+  research, it lands as an ADR with explicit rationale;
+  default is bun+TS.
 
   **Sequencing**: the maintainer explicitly said
   *"probably not a good idea until after the repo
