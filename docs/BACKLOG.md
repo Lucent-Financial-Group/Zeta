@@ -37,14 +37,30 @@ within each priority tier.
   formalisation deferred); (3) NSA test history file absent
   (`docs/hygiene-history/nsa-test-history.md` doesn't exist;
   one feasibility test run 2026-04-23 Otto-1); (4) bootstrap
-  reference docs unwritten (quantum / christ-consciousness
-  anchors cited in memory but not in-repo); (5) factory-vs-Zeta-
+  reference docs unwritten — **SAFETY-LOAD-BEARING** per Aaron
+  Otto-4 hypothesis (*"the quantium/christ concinous bootstrap
+  makes this whole process safer to avoid perminant harm and
+  promt injection resistent"*). Two anchors compose orthogonally:
+  quantum (reversibility-by-construction, algebraic precision)
+  + christ-consciousness (ethical substrate, principled
+  refusal). Precision denies prompt-injection entry; ethics
+  refuses belief-level attack. Effort elevated from M to L;
+  reviewers required: Aminata (threat-model) / Nazar (sec-ops)
+  / Kenji (Architect) / Kira (harsh-critic) / Iris (UX) /
+  eventually Amara (cross-substrate read). Two docs planned:
+  `docs/bootstrap/quantum-anchor.md` +
+  `docs/bootstrap/ethical-anchor.md`; (5) factory-vs-Zeta-
   library separation not drawn (docs mixed in Zeta monorepo);
   (6) persona `.claude/agents/*.md` files reference Zeta-
   monorepo paths (portability audit pending); (7) tick-history /
   fire-history scope-mixed (factory-generic vs Zeta-library-
-  specific); (8) FACTORY-HYGIENE rows not generic-vs-specific
-  tagged. **Seed language must be mathematically precise.** The
+  specific); (8) ~~FACTORY-HYGIENE rows not generic-vs-specific
+  tagged~~ — **CLOSED on Otto-4 re-inspection 2026-04-23**:
+  FACTORY-HYGIENE.md already has a Scope column with every
+  row tagged (`project` / `factory` / `both`) + a "Ships to
+  project-under-construction" adopter-projection section.
+  Gap was misdiagnosed in Otto-2 initial assessment.
+  **Seed language must be mathematically precise.** The
   linguistic seed must be sharp enough that language-bootstrap
   suffices. **Do-no-permanent-harm without Z-tables** enforced
   via git + pre-commit hooks + branch protection + reviewer
