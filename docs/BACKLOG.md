@@ -5935,6 +5935,9 @@ systems. This track claims the space.
   > like that seems like what many of the human
   > classifactions are on"*
 
+  > *"i tried to also say psychology lol i also like
+  > physiology too"*
+
   **Two-axis classification**: **language** (profanity,
   slurs, suggestive terms) + **concepts** (violence, sex,
   drugs, themes, behaviours, ideology exposure). Most
@@ -5947,7 +5950,7 @@ systems. This track claims the space.
   strands simultaneously — existing human standards
   (MPAA G/PG/PG-13/R/NC-17, ESRB E/E10+/T/M/AO, PEGI
   3/7/12/16/18, TV Y/Y7/G/PG/14/MA) AND a new
-  physiology / research-based standard the factory can
+  psychology + physiology / research-based standard the factory can
   evolve (developmental-psychology + reading-comprehension
   + cognitive-load + media-effect literature).
 
