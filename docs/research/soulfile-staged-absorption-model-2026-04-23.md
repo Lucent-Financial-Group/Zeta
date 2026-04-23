@@ -218,7 +218,7 @@ design-clarity, not an implementation commit.
   compile-time-eligible; per-user content stays runtime.
   The pushback-on-soulfile-bloat criterion applies at the
   migration step, not the absorb step.
-- **Zeta self-use germination** (auto-loop-39 directive) —
+- **Zeta self-use germination** (the maintainer's self-use-DB directive, captured in per-user memory) —
   the tiny-bin-file DB is the mandatory compile-time
   ingest target. Soulfile compile-time work is how this
   directive lands for agent-transportable substrate.
@@ -261,11 +261,17 @@ design-clarity, not an implementation commit.
    on-demand? First-pass recommendation: on-demand +
    tagged releases, no fixed cadence.
 
+**Per-user memory references** (below and throughout) live
+in per-user memory at `~/.claude/projects/<slug>/memory/`,
+not in the in-repo `memory/` tree. Citations are provenance
+reference; they intentionally do not resolve as in-repo
+paths.
+
 ## Composes with
 
 - `docs/research/autodream-extension-and-cadence-2026-04-23.md`
   (runtime → compile-time promotion via consolidation)
-- `docs/research/multi-repo-refactor-shapes-2026-04-23.md`
+- `docs/research/multi-repo-refactor-shapes-2026-04-23.md` (lands via PR #150)
   (the refactor shapes that determine which repos are
   compile-time ingest sources)
 - `docs/research/stacking-risk-decision-framework.md`
