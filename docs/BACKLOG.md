@@ -65,9 +65,19 @@ within each priority tier.
   "Zeta.Core software factory" / public-api-designer specific
   library list); surgical per-persona edits flagged at split
   execution. Classification + refactor-note output = the
-  portability audit gap #6 asked for; (7) tick-history /
-  fire-history scope-mixed (factory-generic vs Zeta-library-
-  specific); (8) ~~FACTORY-HYGIENE rows not generic-vs-specific
+  portability audit gap #6 asked for; (7) ~~tick-history /
+  fire-history scope-mixed~~ — **CLOSED on Otto-23
+  re-inspection**: same pattern as ROUND-HISTORY.md
+  (classified zeta-library-specific in Otto-18 audit).
+  The fire-log FILES are project-specific by nature (each
+  project has its own session history); the SCHEMA +
+  DISCIPLINE (append-only, schema per row, cadenced firing)
+  are factory-generic and transfer via
+  `docs/AUTONOMOUS-LOOP.md` + the hygiene-history-schema
+  pattern already established. Post-split: Zeta retains its
+  tick-history / fire-history files as-is; Frontier gets
+  empty-template files + schema preamble. Adopters populate
+  their own fire-logs from tick 1; (8) ~~FACTORY-HYGIENE rows not generic-vs-specific
   tagged~~ — **CLOSED on Otto-4 re-inspection 2026-04-23**:
   FACTORY-HYGIENE.md already has a Scope column with every
   row tagged (`project` / `factory` / `both`) + a "Ships to
