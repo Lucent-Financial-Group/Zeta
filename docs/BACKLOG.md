@@ -2309,6 +2309,56 @@ within each priority tier.
 
 ## P1 — CI / DX follow-ups (after round-29 anchor)
 
+- [ ] **HLL property-test flakiness — investigate before
+  retry (DST discipline).** Observed 2026-04-23 (auto-loop-88):
+  `Zeta.Tests.Properties.FuzzTests.fuzz: HLL estimate
+  within theoretical error bound` failed in CI on PR #159
+  (gh run 24849954881 / build-and-test ubuntu-22.04 /
+  FsCheck.Xunit.PropertyFailedException). The failing PR
+  only touches `memory/*.md` files — unrelated to the
+  test. Failure is inherited from the main-branch state
+  at rebase time.
+
+  Per the DST discipline
+  (`memory/feedback_retries_are_non_determinism_smell_DST_holds_investigate_first_2026_04_23.md`
+  — per-user), retries are a non-determinism smell. A
+  flaky property test is genuine non-determinism; the
+  investigation should answer:
+
+  1. **Is the error bound formula correct?** HLL has a
+     known standard-error of `1.04 / sqrt(m)` where `m`
+     is the number of registers. The test bound should
+     reflect that + a factor for confidence interval.
+  2. **Is the test seeded deterministically?** FsCheck
+     supports explicit seeds; a flaky property under
+     random seeds should be seed-pinned + the failing
+     seed captured for regression.
+  3. **Is it actually a real regression?** The test
+     was passing recently (session PRs earlier today ran
+     CI green on this check). Bisect against recent
+     commits to identify when it started failing.
+  4. **What's the cost of re-running?** If the failure
+     is a genuine edge-case at one seed in ten thousand,
+     re-run succeeds. But DST discipline says investigate
+     first: understand WHY this seed fails before
+     accepting "flaky = retry."
+
+  **Deliverable**: research note under
+  `docs/research/hll-property-test-flakiness-YYYY-MM-DD.md`
+  naming the cause + fix (either tighten bound, pin
+  seed, or fix the HLL implementation). No deadline; but
+  the test is currently blocking session PRs from
+  merging until re-run passes.
+
+  **Effort**: S if the bound formula is wrong (tighten +
+  rerun); M if it's a genuine implementation edge case
+  requiring investigation.
+
+  **Composes with**: the DST retry-is-smell memory; the
+  samples-readability-real-code-zero-alloc memory (HLL
+  is library-internal, so low-alloc + correctness are
+  library-scope).
+
 - [ ] **Declarative parity across dev-inner-loop / qa / dev / stage / prod — environment-parity research, time-budgeted (research-first, no implementation tonight).**
   Aaron (2026-04-20): *"also we want our dev innner loop, qa,
   dev, stage, prod to all have declarative pairty someting
@@ -3116,6 +3166,78 @@ within each priority tier.
   replaces markdown-only threat-model as authoritative source.
 
 ## P1 — within 2-3 rounds
+
+- [ ] **Fresh-session quality research — close the gap
+  between fresh and resumed Claude sessions.**
+  Aaron 2026-04-23 observation: *"i tried a fresh session
+  instead of resuming form the existing, its not as goona,
+  maybe do some research on yourself on how to make sure
+  fresh cluade sessions are as good as you, backlog item"*.
+
+  **Observed phenomenon:** resumed Claude Code sessions on
+  this project operate at a noticeably higher quality than
+  fresh-session starts, despite fresh sessions loading the
+  same CLAUDE.md + AGENTS.md + MEMORY.md index. Something
+  the resumed session has that fresh sessions don't
+  recover cleanly.
+
+  **Candidate causes to investigate:**
+  1. **Context-accumulation compounding** — resumed
+     sessions have accumulated reasoning, tool-use
+     patterns, and per-tick calibrations in their own
+     context window that MEMORY.md / CLAUDE.md do not
+     capture.
+  2. **Session-specific prompt-cache warmth** — resumed
+     sessions hit cached prompt prefixes; fresh sessions
+     pay cold-start cost on every tool schema / system
+     prompt chunk.
+  3. **Per-session calibration loss** — fresh sessions
+     don't know about mid-session directive shifts the
+     resumed session absorbed (e.g., today's
+     scheduling-authority sharpening; the in-repo-preferred
+     discipline before its memory landed).
+  4. **CURRENT-<maintainer>.md pattern coverage gaps** —
+     the per-maintainer distillation files are designed
+     exactly for fresh-session orientation; gaps in them
+     are fresh-session quality regressions.
+  5. **Soulfile-as-substrate is the real fix** — fresh
+     sessions should compile-time-ingest the DSL substrate
+     (per the soulfile staged-absorption research doc landing via PR #156 at `docs/research/soulfile-staged-absorption-model-2026-04-23.md`),
+     not bootstrap from CLAUDE.md + AGENTS.md + MEMORY.md
+     alone.
+
+  **Deliverables:**
+  1. Diagnostic protocol — run a fresh session through a
+     benchmark set (same prompts the resumed session has
+     handled well) and capture specifically what degrades.
+  2. Gap-analysis against AutoMemory + AutoDream — what
+     Anthropic's features don't yet cover that the resumed
+     session's advantage comes from.
+  3. Recommendations — concrete factory-overlay improvements
+     to `CURRENT-<maintainer>.md` pattern, in-repo memory
+     migration discipline, or soulfile compile-time-ingest
+     design that would narrow the gap.
+  4. Research landing under `docs/research/fresh-vs-resumed-session-quality-gap-YYYY-MM-DD.md`.
+
+  **Scope:** research-grade, not implementation. Factory
+  discipline improvements flow from the findings but are
+  separate ADR-gated work.
+
+  **Priority:** P1 because fresh-session quality is a
+  scaling property — factories with excellent resumed-session
+  behaviour but poor fresh-session behaviour don't
+  transplant to new maintainers cleanly. Composes with the
+  multi-maintainer framing (Max anticipated next human
+  maintainer per the CURRENT-<maintainer>.md distillation
+  pattern, which lives in per-user memory not in-repo).
+
+  **Self-scheduled:** free work under the 2026-04-23
+  scheduling-authority rule (captured in per-user memory —
+  not in-repo; the rule governs that Amara + Kenji own
+  free-work scheduling while the maintainer owns paid-work
+  authorisation).
+
+  **Effort:** M (1-3 days of agent research + write-up).
 
 - [ ] **Factory technology inventory — first-class
   support for every tech we use.**
@@ -4116,6 +4238,124 @@ systems. This track claims the space.
   ongoing.
 
 ## P2 — research-grade
+
+- [ ] **Factory status UI — static, git-native,
+  GitHub Pages hosted.**
+  The human maintainer 2026-04-23: *"static ui on our
+  github pages that shows factory status things in
+  flight progress, etc anyting else you can make of to
+  help the human drive we can surface thing in the ui
+  like the decions and any decions we would like human
+  feedback on. All this should be able to use our
+  gitnative approach and not really cost anyting i
+  dont think becasue it can just use git for the
+  backend for the ui. backlog this and probaby not a
+  good idea until after the repo split into the
+  different projects."*
+
+  **Goal**: a static UI at the repo's GitHub Pages URL
+  (default `https://lucent-financial-group.github.io/<repo>`)
+  that surfaces factory state to humans:
+  - Things in flight (open PRs, their state)
+  - Decisions made (ADRs under `docs/DECISIONS/`)
+  - Decisions seeking human feedback (HUMAN-BACKLOG
+    Open rows)
+  - Round history / progress ledger
+  - Whatever else helps a human drive the factory
+    without reading raw files
+
+  **Constraint — git-native content + GitHub adapter**:
+  per the plural-host rule (the factory is git-native
+  core + GitHub is the first adapter): the **content
+  feeding the UI** (PRs, ADRs, HUMAN-BACKLOG,
+  CONTRIBUTOR-CONFLICTS, ROUND-HISTORY, hygiene-history)
+  is git-native — lives in the repo regardless of host.
+  The **UI itself is an explicit GitHub adapter**: GitHub
+  Pages is GitHub-native by definition; GitHub Actions
+  regenerates the site on push; GitHub REST API feeds
+  read-only state into the UI. When a second git host
+  (GitLab / Gitea / Bitbucket) eventually activates, a
+  sibling adapter ships (GitLab Pages / Gitea Pages /
+  `bitbucket.io`) against the same git-native content
+  spec. No paid SaaS, no external backend for the
+  current GitHub adapter.
+
+  **Tech choice: bun + TypeScript SSG** (Kenji
+  recommendation, re-examined 2026-04-23 with whole-
+  project consideration):
+
+  The Architect persona (Kenji) previously argued for
+  excluding Jekyll in favor of bun+TypeScript. The
+  maintainer 2026-04-23 asked for a re-evaluation with
+  whole-project consideration:
+
+  - **Cross-platform parity (FACTORY-HYGIENE row #51 — cross-platform parity audit)**
+    — Ruby/Jekyll is painful on Windows; bun is
+    cross-platform-native.
+  - **Post-setup stack default (row #49)** — bun+TS is
+    the factory-aligned choice for any post-setup
+    tooling. Adding a Ruby chain for one surface
+    fragments the stack.
+  - **One-language rule** — the factory already spans
+    F#, C#, TypeScript, bash, PowerShell. Adding Ruby
+    *just for GitHub Pages* would increase
+    language-footprint without proportionate benefit.
+  - **GitHub Pages + Actions build pattern** — widely
+    supported; pre-build with bun in a workflow, publish
+    static output to `gh-pages` branch; works regardless
+    of native-Pages SSG support.
+  - **Rich SSG ecosystem** — bun + Astro / Eleventy /
+    custom are viable; factory can pick the thinnest-
+    substrate one at implementation time.
+
+  Kenji's call stands: bun + TypeScript. No Jekyll as
+  default; Jekyll reconsidered only if a whole-project
+  use case surfaces that isn't served by bun+TS.
+
+  **Sequencing**: the maintainer explicitly said
+  *"probably not a good idea until after the repo
+  split into the different projects."* Multi-repo
+  refactor research (PR #150) is the prerequisite.
+  Once the split lands, each split repo can have its
+  own Pages UI surfacing its own factory-state slice.
+
+  **Read-only first, write-access later** (maintainer
+  2026-04-23 refinement): *"ui will likely need gh, our
+  repo is public so for all the read actions on the ui
+  we are good without permission, for write actions we
+  probably don't need this yet would need whole
+  permission set and resue of the github logins session
+  stuff without a real backend, tricky stuff so
+  readonly to expaned to write access later."* Phase 1
+  of the UI — **read-only** — uses the GitHub REST API
+  against the public repo with no auth (rate-limit
+  applies; acceptable for a status dashboard that
+  updates per-push). Phase 2 — **write actions** (e.g.,
+  human clicks to resolve a HUMAN-BACKLOG row) — would
+  need either GitHub session / OAuth handoff or a thin
+  backend, both of which break the git-native +
+  ~free-to-run constraint as currently understood.
+  Defer Phase 2 until the tradeoff is re-examined.
+
+  **Cross-references**:
+  - `docs/AGENT-GITHUB-SURFACES.md` §Pages
+    (research-gated; this row activates that research)
+  - PR #150 `docs/research/multi-repo-refactor-shapes-2026-04-23.md`
+    (prerequisite)
+  - `docs/HUMAN-BACKLOG.md` (source for
+    decisions-seeking-feedback on the UI)
+  - `docs/DECISIONS/` (source for decisions-made on
+    the UI)
+  - `docs/ROUND-HISTORY.md` (source for round progress)
+  - `docs/hygiene-history/*.md` (source for fire-log
+    surfaces per row #47 — the cadence-history tracking row that defines the per-fire schema)
+
+  **Self-scheduled** when maintainer elevates priority
+  (post-split).
+
+  **Effort**: M for first-pass UI + GitHub Action
+  wiring; L if the UI becomes the primary factory-
+  human-interface surface.
 
 - [ ] **Compoundings-per-tick audit — tick-close self-
   diagnostic with confidence-axis failure-mode taxonomy.**
@@ -5400,6 +5640,26 @@ systems. This track claims the space.
   Cadence: 24h + 5 sessions. Consolidation *deletes*
   contradicted facts. See `memory/reference_autodream_feature.md`.
 
+  **Knowledge-absorb update (2026-04-23, first backlog-refactor
+  fire per FACTORY-HYGIENE row #54):** the factory's
+  near-term position on AutoDream has since evolved — rather
+  than building a parallel retraction-native consolidator as
+  a standalone research project, the factory first lands a
+  thin **extension-overlay policy** on top of Anthropic's
+  feature so upstream upgrades are inherited automatically.
+  See `docs/research/autodream-extension-and-cadence-2026-04-23.md` (lands via PR #155)
+  (lands via PR #155) and the corresponding
+  `docs/FACTORY-HYGIENE.md` row #53 (lands via PR #155) for the cadenced
+  enforcement surface. The better-dream-mode research project
+  below is now framed as the **more-ambitious second step**:
+  if the Anthropic feature proves insufficient for the
+  factory's memory discipline even after the four
+  factory-overlay steps (A/B/C/D in the research doc), *then*
+  a retraction-native replacement earns its research weight.
+  Until that signal fires, this row stays queued at its
+  current priority but is no longer the primary AutoDream
+  response.
+
   Zeta already has memory-architecture primitives AutoDream
   does not:
 
@@ -5704,6 +5964,141 @@ systems. This track claims the space.
   exists; BP-HOME is what makes its sweep mechanical).
 
 ## P3 — noted, deferred
+
+- **Language + concepts age-classification skill.** The
+  human maintainer 2026-04-23 (two-message directive):
+
+  > *"we should probably have some language age
+  > classification skill probably based on our own
+  > statendard we come up with that make sense for AI
+  > and huamsn both, and like the existing human ones,
+  > so it's easy to know what's safer for what age range
+  > based on existing human standards and a new evolving
+  > standard that is more logical and based on real
+  > physisolgy with evidense and research we can do, low
+  > backlog item."*
+
+  > *"it's probably concepts too not just the language
+  > like that seems like what many of the human
+  > classifactions are on"*
+
+  > *"i tried to also say psychology lol i also like
+  > physiology too"*
+
+  **Two-axis classification**: **language** (profanity,
+  slurs, suggestive terms) + **concepts** (violence, sex,
+  drugs, themes, behaviours, ideology exposure). Most
+  existing human standards (MPAA / ESRB / PEGI / TV
+  ratings) are primarily concept-based — the skill
+  should be too.
+
+  **Goal**: classify any text / content / docs / code /
+  memory-entry by age-appropriateness along two output
+  strands simultaneously — existing human standards
+  (MPAA G/PG/PG-13/R/NC-17, ESRB E/E10+/T/M/AO, PEGI
+  3/7/12/16/18, TV Y/Y7/G/PG/14/MA) AND a new
+  psychology + physiology / research-based standard the factory can
+  evolve (developmental-psychology + reading-comprehension
+  + cognitive-load + media-effect literature).
+
+  **Bi-audience target**: works for AI and humans both.
+  AI-side flags content that might violate safety training
+  / content policies at inference; human-side flags
+  content for minors / school-curriculum fit.
+
+  **Composes with**: per-user memory
+  `feedback_pinned_random_seeds_containing_69_or_420_when_agent_picks_2026_04_23.md`
+  (at `~/.claude/projects/<slug>/memory/`) already
+  captures the high-school-curriculum-friendly target
+  with R-rated-when-necessary-for-effect exception; this
+  skill is the enforcement surface. Adjacent safety
+  skills `prompt-protector` / `ai-jailbreaker`.
+  `docs/AGENT-BEST-PRACTICES.md` content-policy
+  substrate.
+
+  **First-pass output** (per classified item):
+
+  ```text
+  { language_rating, concept_ratings (per category),
+    mpaa, esrb, pegi, tv, factory_rating, reasons }
+  ```
+
+  **Research deliverable first**: `docs/research/age-classification-standard-YYYY-MM-DD.md` before skill
+  implementation. Covers existing standards' criteria,
+  physiology-based standard proposal, rating-axis design,
+  edge cases, AI-safety vs human-age-appropriateness
+  convergence.
+
+  **Scope**: research note first; skill lands after
+  standard stabilises. No commitment to adopt. Effort S for
+  research; M for skill. Priority P3 per "low backlog
+  item".
+
+- **Rational Rose — research pass.** The human maintainer
+  2026-04-23 (low-priority directive): *"backlog rational
+  rose research low priority"*. Rational Rose is the
+  legacy UML modelling tool lineage (Rational Software →
+  IBM Rational → discontinued 2013, still surfaces as a
+  reference point in enterprise architecture discussions).
+  Research prompt: what does Rational Rose's approach (UML
+  model-as-source-of-truth, code-generation from model,
+  round-trip engineering) offer / warn against for the
+  factory's own model-vs-code discipline? Composes with
+  the factory's OpenSpec workflow (behavioural specs first)
+  and the formal-spec stack (Lean / TLA+ / Z3 — spec-first
+  is a parallel discipline from the formal-verification
+  side). No commitment to adopt; research pointer only.
+  No deadline. Effort S for the first-pass research note.
+
+- **Is UML modelling useful for the factory, and what
+  tools would it require us to map?** The human
+  maintainer 2026-04-23: *"backlog is uml modeling
+  useful for the factory and what tools would it
+  require us map?"*. Two-question research pointer:
+
+  1. **Utility question**: does the factory benefit
+     from UML modelling? The factory's current
+     discipline is spec-as-source-of-truth via
+     OpenSpec (behavioural specs) + formal specs (TLA+,
+     Lean, Z3, FsCheck, Alloy). UML's class / sequence
+     / state / activity / deployment diagrams overlap
+     those roles partially — where do they add value
+     the factory doesn't already have?
+  2. **Tooling-map question**: if we do adopt UML, what
+     tools would the factory need to inventory? The
+     factory-technology-inventory (PR #170) already
+     tracks language / runtime / data / harness /
+     verification / static-analysis / CI rows; adding
+     UML would add a modelling-tools row-set covering:
+     - **Diagram editors** (PlantUML, Mermaid, draw.io,
+       Structurizr, Rational Rose lineage — see the
+       Rational Rose P3 row)
+     - **Text-based formats** (PlantUML / Mermaid /
+       Structurizr DSL are Markdown-compatible and
+       git-native; fit row #49 post-setup stack)
+     - **Model-to-code round-trip** (if we want
+       code-generation from model)
+     - **Model-vs-code drift detection** — parallel to
+       `verification-drift-auditor` but for UML
+
+  Composes with the adjacent Rational Rose P3 row (in-repo
+  via PR #163; sits immediately above this row), `docs/FACTORY-TECHNOLOGY-INVENTORY.md`
+  (lands via PR #170; target inventory surface), the
+  OpenSpec workflow, and the formal-spec stack.
+
+  **First-pass recommendation** (to be validated by the
+  research pass): **Mermaid** is the factory-aligned
+  lightweight default — git-native, renders in GitHub,
+  zero toolchain. **PlantUML** adds expressiveness but
+  needs Java. **Structurizr** adds architecture-as-code
+  framing. Heavy UML tools (Rational Rose / Enterprise
+  Architect / MagicDraw) are likely over-scoped for a
+  factory that already has formal-spec discipline.
+
+  Scope: research note under
+  `docs/research/uml-modelling-for-the-factory-YYYY-MM-DD.md`
+  when prioritised. No commitment to adopt. No deadline.
+  Effort S for first-pass note; M if adoption is chosen.
 
 - **Conversational bootstrap UX for factory-reuse
   consumers — two-persona (non-developer + developer)
