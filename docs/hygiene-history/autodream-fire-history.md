@@ -9,6 +9,7 @@ Authoritative policy:
 `docs/research/autodream-extension-and-cadence-2026-04-23.md`.
 
 Upstream feature references:
+
 - `~/.claude/projects/<slug>/memory/reference_autodream_feature.md`
 - `~/.claude/projects/<slug>/memory/reference_automemory_anthropic_feature.md`
 
