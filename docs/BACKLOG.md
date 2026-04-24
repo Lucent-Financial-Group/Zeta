@@ -5833,6 +5833,120 @@ systems. This track claims the space.
   the git-as-DB-interface row below, and Otto-274
   progressive-adoption-staircase.
 
+- [ ] **Mode 2 UI architecture split — admin UI vs
+  factory-ops-dashboard vs web-facing Frontier-UI;
+  research required + maintainer review.** Maintainer
+  2026-04-24 directive (verbatim):
+
+  > *"so mode 2 is the ssms/pgadmin ui for mode 1 and
+  > the operations dashboard for the factory too both?
+  > or we split into two uis right? IDK we needs some
+  > clean dependences splits research here, i'd like to
+  > review tooo when its done."*
+
+  Three candidate UI surfaces have surfaced in the
+  2026-04-24 directives so far (see the rows above and
+  the rename row in #393):
+
+  - **Frontier-UI / kernel-A + kernel-B (web-facing
+    public surface)** — public-user-facing surface,
+    "Star-Trek-computer-but-better"-class. Per the
+    rename directive: farm-related kernel-A +
+    carpentry-related kernel-B. Audience: end-users
+    consuming Zeta as a product.
+  - **SSMS/pgAdmin-class admin UI** — database
+    operator surface. Audience: database
+    administrators, query-optimizer reviewers,
+    multi-node topology managers.
+  - **Factory operations dashboard** — Zeta-the-
+    factory-not-Zeta-the-product surface. Audience:
+    factory maintainers (the human maintainer + Otto
+    + future contributors). PR queue, build state,
+    round progress, research absorbs, hygiene-history,
+    counterweight-audit reports, agent dispatch,
+    drain-log visualizer.
+
+  **Loop-agent preliminary read** (subject to
+  maintainer review):
+
+  - Frontier-UI is **definitely separate** — its
+    audience is end-users, not operators. Different
+    UX language, different feature set, different
+    deploy cadence (public-facing → conservative;
+    factory-internal → fast iteration). Keeping it
+    distinct preserves the rename-directive's two
+    seed-extension kernels (kernel-A farm + kernel-B
+    carpentry) that shrink-over-time.
+  - **Admin UI vs factory-ops-dashboard is the
+    interesting split.** Two readings:
+    - **Reading A — single surface, modular tabs.**
+      Mode 2 is one app; admin and factory-ops are
+      modules within it. Cheapest to ship; some UX
+      coherence risk (the audiences are different
+      enough that a shared chrome may feel forced).
+      Composes with the bootstrap thesis (one
+      browser-only artifact serves both).
+    - **Reading B — two surfaces, shared component
+      library.** Admin UI and factory-ops-dashboard
+      are distinct Mode 2 apps that share a
+      component library (auth, navigation, theme,
+      query widget, plan inspector). More UX
+      coherence per audience; higher engineering
+      cost; both ship from the same monorepo.
+  - **My preliminary recommendation: Reading B**
+    (two surfaces, shared library). Audiences differ
+    enough that forcing one chrome harms both. The
+    shared component library captures the
+    composability-cost gain without the
+    audience-blur risk. The admin UI ships with
+    Mode 1 binary (operator-side); the factory-ops
+    dashboard ships at the factory-maintainer level
+    (Otto + human maintainer access only). Frontier-
+    UI stays its own app (already separate by
+    rename-directive).
+
+  **Three-app architecture (Reading B, expanded):**
+  - **App A — Frontier-UI (kernel-A/kernel-B)**:
+    public; web-facing; conservative deploy.
+  - **App B — Admin UI (Mode-1-bundled)**: ships
+    with Mode 1 single-file binary; operator
+    audience; database-management-class UX.
+  - **App C — Factory ops dashboard**:
+    factory-maintainer audience; PR/build/round/
+    drain-log/counterweight-audit visualizer.
+  - **Shared library**: WASM-F# component primitives
+    (auth, theme, query widget, plan inspector,
+    multi-node topology view, retraction-aware
+    delta visualizer).
+
+  **Research scope (Phase 0, output:
+  `docs/research/mode-2-ui-architecture-split-2026.md`):**
+  - Map audience needs per app (interviews / persona
+    sketches).
+  - Identify shared primitives vs app-specific
+    surfaces.
+  - Decide chrome strategy (one shell with tabs vs
+    three shells).
+  - Define dependency boundaries — what each app
+    pulls from the shared library, what it owns.
+  - Enumerate Mode 1 vs Mode 2 distribution per app
+    (admin UI is Mode-1-bundled; ops dashboard might
+    be either; Frontier-UI is web-only).
+  - Propose recommendation; flag tradeoffs;
+    explicitly mark "maintainer review required
+    before any UI implementation work starts."
+
+  Priority P3 / way-backlog (no UI implementation
+  before this research lands and maintainer reviews);
+  effort M (research doc) + L+ (each app once design
+  approved). Composes with the rename directive
+  (Frontier-UI naming), the Mode 1 admin UI row, the
+  protocol-upgrade row (any of the three apps may
+  use the upgraded fast protocol once connected to
+  a Mode 1 backend), `user-experience-engineer`
+  (audience research), `developer-experience-engineer`
+  (factory-ops UX), Otto-275 log-don't-implement.
+
 - [ ] **Named-permissions registry — per-contributor
   scoped permission grants for factory agents.**
   Maintainer 2026-04-24 directive (verbatim):
