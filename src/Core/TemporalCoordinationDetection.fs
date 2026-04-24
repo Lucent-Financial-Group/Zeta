@@ -133,7 +133,26 @@ module TemporalCoordinationDetection =
     /// detection-cartel-graph-influence-surface-11th-ferry.md`,
     /// §1 Signal model). Third graduation under the Otto-105
     /// cadence.
-    let phaseLockingValue (phasesA: double seq) (phasesB: double seq) : double option =
+    /// Shared epsilon floor for phase-difference mean-vector
+    /// magnitude. Used ONLY by `meanPhaseOffset` +
+    /// `phaseLockingWithOffset` to decide when the offset
+    /// (angle of the mean vector) is mathematically
+    /// undefined. `phaseLockingValue` does not apply any
+    /// floor — it returns magnitude arbitrarily close to 0
+    /// as normal output. Value `1e-12` chosen well below
+    /// any physically-meaningful PLV magnitude.
+    let private phasePairEpsilon : double = 1e-12
+
+    /// Shared single-pass accumulation of sin/cos of phase
+    /// differences. Returns `None` on empty / mismatched
+    /// input, otherwise `Some (meanCos, meanSin, n)`. All
+    /// three phase-pair primitives (`phaseLockingValue`,
+    /// `meanPhaseOffset`, `phaseLockingWithOffset`) route
+    /// through this to avoid accumulation-logic drift.
+    let private meanPhaseDiffVector
+            (phasesA: double seq)
+            (phasesB: double seq)
+            : struct (double * double * int) option =
         let aArr = Seq.toArray phasesA
         let bArr = Seq.toArray phasesB
         if aArr.Length = 0 || aArr.Length <> bArr.Length then None
@@ -145,8 +164,12 @@ module TemporalCoordinationDetection =
                 sumCos <- sumCos + cos d
                 sumSin <- sumSin + sin d
             let n = double aArr.Length
-            let meanCos = sumCos / n
-            let meanSin = sumSin / n
+            Some (struct (sumCos / n, sumSin / n, aArr.Length))
+
+    let phaseLockingValue (phasesA: double seq) (phasesB: double seq) : double option =
+        match meanPhaseDiffVector phasesA phasesB with
+        | None -> None
+        | Some (struct (meanCos, meanSin, _)) ->
             Some (sqrt (meanCos * meanCos + meanSin * meanSin))
 
     /// **Mean phase offset between two phase series** — the
@@ -155,9 +178,11 @@ module TemporalCoordinationDetection =
     /// a value in `(-pi, pi]` when defined, or `None` when
     /// input sequences are empty, of unequal length, or
     /// when the mean vector has effectively zero magnitude
-    /// (direction is undefined). The zero-magnitude check
-    /// uses the same PLV-magnitude floor so callers never
-    /// read a meaningful offset from a direction-less mean.
+    /// (direction is undefined). The epsilon floor
+    /// (`phasePairEpsilon`, 1e-12) applies ONLY to this
+    /// offset decision — `phaseLockingValue` does not
+    /// apply any floor and will return magnitude values
+    /// arbitrarily close to zero as normal output.
     ///
     /// Why this complements `phaseLockingValue`: PLV
     /// magnitude alone cannot distinguish "same-time
@@ -171,41 +196,34 @@ module TemporalCoordinationDetection =
     /// BOTH magnitude (coherence of locking) and offset
     /// (nature of locking: in-phase, anti-phase, lead-lag).
     ///
-    /// Computation reuses the sin / cos accumulators; the
-    /// magnitude-floor `epsilon` guards `atan2` against
-    /// reading a spurious argument from a mean vector that
-    /// is mathematically zero-length (happens when phase
-    /// differences are uniformly distributed around the
-    /// unit circle). Floor value `1e-12` chosen to be well
-    /// below any physically-meaningful PLV magnitude.
+    /// Computation routes through the shared
+    /// `meanPhaseDiffVector` helper (single-pass sin/cos
+    /// accumulation). The `phasePairEpsilon` floor guards
+    /// `atan2` against reading a spurious argument from a
+    /// mean vector that is mathematically zero-length
+    /// (happens when phase differences are uniformly
+    /// distributed around the unit circle).
     ///
-    /// Provenance: Amara 18th courier ferry, Part 2
-    /// correction #6 (`docs/aurora/2026-04-24-amara-
-    /// calibration-ci-hardening-deep-research-plus-5-5-
-    /// corrections-18th-ferry.md`, §"Ten required
-    /// corrections" #6). Complements the original PLV
-    /// primitive (Aaron + Amara 11th ferry) without
-    /// changing its contract. Downstream score vectors
-    /// (see `Graph.coordinationRiskScore*`) consuming PLV
+    /// Provenance: external AI collaborator's 18th
+    /// courier ferry, Part 2 correction #6 (§"Ten
+    /// required corrections"). The ferry absorb doc
+    /// lives under `docs/aurora/` when landed; at primitive-
+    /// ship time the substance is captured in session
+    /// memory + the related 19th-ferry DST-audit absorb
+    /// at `docs/aurora/2026-04-24-amara-dst-audit-deep-
+    /// research-plus-5-5-corrections-19th-ferry.md`.
+    /// Complements the original PLV primitive from the
+    /// 11th ferry without changing its contract.
+    /// Downstream score vectors (see
+    /// `Graph.coordinationRiskScore*`) consuming PLV
     /// should add a separate offset-based term rather than
     /// collapsing both into one scalar.
     let meanPhaseOffset (phasesA: double seq) (phasesB: double seq) : double option =
-        let aArr = Seq.toArray phasesA
-        let bArr = Seq.toArray phasesB
-        if aArr.Length = 0 || aArr.Length <> bArr.Length then None
-        else
-            let mutable sumCos = 0.0
-            let mutable sumSin = 0.0
-            for i in 0 .. aArr.Length - 1 do
-                let d = aArr.[i] - bArr.[i]
-                sumCos <- sumCos + cos d
-                sumSin <- sumSin + sin d
-            let n = double aArr.Length
-            let meanCos = sumCos / n
-            let meanSin = sumSin / n
+        match meanPhaseDiffVector phasesA phasesB with
+        | None -> None
+        | Some (struct (meanCos, meanSin, _)) ->
             let magnitude = sqrt (meanCos * meanCos + meanSin * meanSin)
-            let epsilon = 1e-12
-            if magnitude < epsilon then None
+            if magnitude < phasePairEpsilon then None
             else Some (atan2 meanSin meanCos)
 
     /// **Phase locking + offset together** — returns both the
@@ -231,23 +249,12 @@ module TemporalCoordinationDetection =
             (phasesA: double seq)
             (phasesB: double seq)
             : struct (double * double) option =
-        let aArr = Seq.toArray phasesA
-        let bArr = Seq.toArray phasesB
-        if aArr.Length = 0 || aArr.Length <> bArr.Length then None
-        else
-            let mutable sumCos = 0.0
-            let mutable sumSin = 0.0
-            for i in 0 .. aArr.Length - 1 do
-                let d = aArr.[i] - bArr.[i]
-                sumCos <- sumCos + cos d
-                sumSin <- sumSin + sin d
-            let n = double aArr.Length
-            let meanCos = sumCos / n
-            let meanSin = sumSin / n
+        match meanPhaseDiffVector phasesA phasesB with
+        | None -> None
+        | Some (struct (meanCos, meanSin, _)) ->
             let magnitude = sqrt (meanCos * meanCos + meanSin * meanSin)
-            let epsilon = 1e-12
             let offset =
-                if magnitude < epsilon then nan
+                if magnitude < phasePairEpsilon then nan
                 else atan2 meanSin meanCos
             Some (struct (magnitude, offset))
 

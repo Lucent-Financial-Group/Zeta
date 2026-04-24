@@ -271,14 +271,21 @@ let ``phaseLockingWithOffset magnitude matches phaseLockingValue`` () =
     // the caller happened to invoke.
     let a = [ 0.1; 0.4; 0.9; 1.3; 1.7 ]
     let b = [ 0.2; 0.5; 0.95; 1.4; 1.8 ]
-    let magnitudeFromPair =
-        match TemporalCoordinationDetection.phaseLockingWithOffset a b with
-        | Some (struct (m, _)) -> m
-        | None -> -1.0
-    let magnitudeFromPlv =
-        TemporalCoordinationDetection.phaseLockingValue a b
-        |> Option.defaultValue -1.0
-    Math.Round(magnitudeFromPair, 12) |> should equal (Math.Round(magnitudeFromPlv, 12))
+    // Explicit pattern-match + fail on None rather than
+    // using sentinel -1.0 with Option.defaultValue. Prior
+    // sentinel form would silently pass the equality
+    // assertion if BOTH primitives returned None, masking
+    // a real regression. Per reviewer thread 59WGi9:
+    // report the actual regression, don't paper over it.
+    match TemporalCoordinationDetection.phaseLockingWithOffset a b,
+          TemporalCoordinationDetection.phaseLockingValue a b with
+    | Some (struct (magnitudeFromPair, _)), Some magnitudeFromPlv ->
+        Math.Round(magnitudeFromPair, 12)
+        |> should equal (Math.Round(magnitudeFromPlv, 12))
+    | None, _ ->
+        failwith "phaseLockingWithOffset returned None on valid input"
+    | _, None ->
+        failwith "phaseLockingValue returned None on valid input"
 
 [<Fact>]
 let ``phaseLockingWithOffset flags zero-magnitude with nan offset`` () =
