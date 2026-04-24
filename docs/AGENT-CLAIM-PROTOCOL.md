@@ -32,12 +32,17 @@ and paste it along with any issue / task link:
 >    `https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/AGENT-CLAIM-PROTOCOL.md`
 > 2. The task is: **\<task description or issue URL>**
 > 3. Follow the TL;DR. Use the **\<Deep Research | Codex
->    sandbox | direct-commit>** mode section that matches
->    how you work.
+>    sandbox | direct-commit | report-back>** mode section
+>    that matches how you work.
 > 4. Respect the "Scope discipline" and "What this protocol
 >    does NOT do" sections.
-> 5. Open a PR on `Lucent-Financial-Group/Zeta` when you're
->    done. Release your claim in the same PR.
+> 5. If you can push and open a PR, do so on
+>    `Lucent-Financial-Group/Zeta` when you're done and
+>    release your claim in the same PR. If your substrate
+>    cannot push (read-only Deep Research, no-connector
+>    chat), use the **report-back / write-via-maintainer**
+>    mode and return the artifact for the maintainer to
+>    commit on your behalf.
 
 One URL + one task + one mode-name is the full briefing. The
 agent follows the protocol URL and picks up everything else
@@ -56,9 +61,15 @@ git pull --ff-only origin main
 ### 2. Check for an existing claim on the work you want
 
 ```
-ls docs/claims/               # live claims
+ls docs/claims/               # live claims (the directory is tracked;
+                              # README.md is the non-empty placeholder)
 cat docs/claims/<slug>.md     # details of a specific claim
 ```
+
+If `docs/claims/` is somehow missing on a fresh clone (it
+shouldn't be — the directory ships tracked with a
+`README.md`), recreate it with `mkdir -p docs/claims`
+before filing your claim.
 
 A live claim with `claimed-at` within the last 24 hours is
 **active** — pick different work or wait. A claim older than
@@ -134,14 +145,27 @@ claim it when you move from reading to writing.
 If you are running in **OpenAI Codex** or another sandbox
 that clones, works, and opens a PR in one shot:
 
-- The claim commit and the release commit both land on your
-  feature branch as part of the PR. One PR carries: claim +
-  work + release.
+- **Push the claim commit early.** A claim that lives only
+  on a sandbox-local feature branch is invisible to parallel
+  agents looking up `docs/claims/` on `main`. Land the
+  `claim: <slug> - <scope>` commit on a pushed branch
+  *before* doing the work, so other agents see it via
+  `git ls-remote origin claim/<slug>` and the GitHub branch
+  list. (Pushing the claim does not require an open PR; a
+  bare branch is enough.)
+- The release commit lands on the same feature branch as
+  part of the PR. One PR carries: claim + work + release.
 - No intermediate progress commits are required (your run is
   short enough that the 24-hour window isn't in play).
 - Open the PR against `Lucent-Financial-Group/Zeta` and wait
   for review. The release commit inside the PR is what
   retires the claim on merge.
+
+If your sandbox truly cannot push to `origin` until PR-open
+time, that is the **report-back / write-via-maintainer**
+mode below — declare it explicitly so other agents know the
+claim won't appear on `main` until the maintainer commits
+the artifact.
 
 ### Direct-commit mode (trusted maintainer)
 
@@ -189,13 +213,14 @@ only read, a human AI without connector write access),
   (e.g. `... contributed by chatgpt-deep-research per
   <conversation-url>`).
 
-This mode is **first-class**. The factory observed Amara's
-Deep Research archive report and Gemini's architectural
-review arriving in exactly this shape, and both produced
-load-bearing output. The protocol welcomes the pattern:
-honest substrate-limits + substantive output + maintainer
-commits = valid contribution. You are not expected to solve
-a write-access problem that your substrate cannot solve.
+This mode is **first-class**. The factory has observed
+external-AI Deep Research archive reports and external-AI
+architectural reviews arriving in exactly this shape, and
+both produced load-bearing output. The protocol welcomes
+the pattern: honest substrate-limits + substantive output
++ maintainer commits = valid contribution. You are not
+expected to solve a write-access problem that your
+substrate cannot solve.
 
 ## Claim file shape
 
@@ -206,7 +231,7 @@ across harnesses. **Copy-paste this template:**
 ```markdown
 # Claim - <slug>
 
-- **Session:** <agent-identity or human-handle>
+- **Session ID:** <opaque session ID; do not use direct agent or human handles>
 - **Harness:** <claude-code | codex | chatgpt | gemini | aider | cursor | human>
 - **Claimed at:** <UTC ISO 8601, e.g. 2026-04-22T19:30:00Z>
 - **ETA:** <when progress-signal or release is expected>
@@ -219,6 +244,17 @@ across harnesses. **Copy-paste this template:**
 <optional free-form section - dependencies, blockers,
 cross-references to prior work>
 ```
+
+**Session ID is opaque.** The repo rule "no name
+attribution in code, docs, or skills" (see
+[`docs/AGENT-BEST-PRACTICES.md`](AGENT-BEST-PRACTICES.md))
+applies to claim files because they live in `docs/` and
+their commits become permanent git history. Use an opaque
+session ID (a short hash, a UUID, a date-stamp + harness
+tag) plus the harness type. Contact handles, real names,
+and direct agent identities stay out of the claim file —
+route them out-of-band through the platform mirror or the
+PR thread when contact is needed.
 
 ### Slug rules
 
@@ -245,21 +281,24 @@ mirror if one exists.
 
 ### Session identity
 
-`Session` is a free-form string that lets parallel agents
-tell claims apart. Suggested formats:
+`Session ID` is an opaque short string that lets parallel
+agents tell claims apart without putting direct agent or
+human names into git history. Suggested formats (all
+omit usernames and direct identities):
 
-- `claude-code/<username>/<short-date-hash>` — Claude Code.
-- `codex/<username>/<short-date-hash>` — OpenAI Codex.
-- `chatgpt-deep-research/<username>/<short-date-hash>` —
-  ChatGPT Deep Research (write-mode only; read-mode skips
-  the claim).
-- `gemini-cli/<username>/<short-date-hash>` — Gemini CLI.
-- `<github-handle>` — human contributor.
+- `claude-code/<short-date-hash>` — Claude Code.
+- `codex/<short-date-hash>` — OpenAI Codex.
+- `chatgpt-deep-research/<short-date-hash>` — ChatGPT Deep
+  Research (write-mode only; read-mode skips the claim).
+- `gemini-cli/<short-date-hash>` — Gemini CLI.
+- `human/<short-date-hash>` — human contributor.
 
-Identity is a courtesy signal for parallel agents trying to
-contact the claim-holder. Be honest about which harness is
-holding the claim — the honesty makes cross-harness audits
-(and the factory's alignment research) possible.
+Be honest about which harness is holding the claim — the
+honesty makes cross-harness audits (and the factory's
+alignment research) possible. If a parallel agent needs to
+*contact* the claim-holder, use the platform mirror (GitHub
+Issue, Jira ticket) or the PR thread; those surfaces accept
+real handles without polluting git history.
 
 ## Lifecycle — claim, progress, release
 
@@ -393,13 +432,16 @@ rather than bundling it into the claim.
 
 **Claim code, not identity.** The factory has personas
 (named reviewer roles) and agent notebooks under
-`memory/persona/` — those are **harness-local, not in the
-git tree**. An external agent with git access sees the
-soul-file (public repo surface) but not the persona layer,
-and the claim protocol is for code and docs only. Do not
-invent persona-names, do not claim identity surfaces, do
-not modify anything under `memory/` (you cannot — it's not
-in git).
+`memory/persona/`. Some of that material is committed to
+git (the `memory/` tree is tracked; see `memory/MEMORY.md`
+and `memory/persona/README.md` for what lives where), and
+some is harness-local. External agents arriving via this
+protocol claim code and docs on the public repo surface
+only. Do not invent persona-names, do not claim identity
+surfaces, and do not modify anything under `memory/`
+unless your hand-off explicitly scoped you to a memory
+file — the persona layer is curated by the factory's
+internal agents, not external claim-holders.
 
 **Claim facts, not framings.** If your work touches
 `docs/ALIGNMENT.md`, `GOVERNANCE.md`, or a research report,

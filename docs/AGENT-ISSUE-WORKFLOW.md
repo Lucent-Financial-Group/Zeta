@@ -61,12 +61,24 @@ picked at setup time:
   private / air-gapped work.
 - Requirements: none beyond git.
 - In this mode the in-repo markdown files (`docs/BACKLOG.md`,
-  `docs/BUGS.md`, `docs/HUMAN-BACKLOG.md`) are the **only**
-  surface; "active workflow" state lives in commit messages
-  and row-level status markers (`[in-progress 2026-04-22 by
-  session X]`, `[blocked on ...]`, `[done in SHA]`).
-- Claims happen via short status-marker commits that are
-  visible to parallel agents running `git log docs/BACKLOG.md`.
+  `docs/BUGS.md`, `docs/HUMAN-BACKLOG.md`) are the durable
+  backlog surface; "active workflow" state lives in commit
+  messages and the row-level status indicators those rows
+  carry (`[blocked on ...]`, `[done in SHA]`).
+- Claims happen via the **git-native claim protocol** — the
+  authoritative substrate specified in
+  [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md): a
+  per-claim file at `docs/claims/<slug>.md` plus
+  `claim:` / `progress:` / `release:` commits on a branch
+  visible to `origin`. Parallel agents discover live claims
+  via `ls docs/claims/` or
+  `git log --grep="^claim: " --oneline`.
+- Backlog row markers (`[in-progress ...]`, `[blocked ...]`)
+  remain useful as **row-local annotations** on the durable
+  backlog row, but they are not the locking mechanism — the
+  claim file is. Adopters who want backlog-only claims (no
+  separate `docs/claims/` directory) can document that
+  divergence in their own ADR.
 
 ### Choosing at setup
 
@@ -93,7 +105,7 @@ the other two adapters mirror.
 |---|---|---|---|
 | GitHub Issues | Comment `claimed by session <id> <UTC-ts> — ETA <...>` + add `in-progress` label | Comment `releasing — landed in <SHA>` + remove label + close (if done) | `gh issue list --label in-progress` |
 | Jira | Transition to `In Progress` state + assign to self + add comment | Transition to `Done` / `Released` + comment with commit | `jql: status = "In Progress"` |
-| Git-native | Claim file at `docs/claims/<slug>.md`; commit `claim: <slug> — <scope>` (see [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) for the full shape) | Delete the claim file; commit `release: <slug> — landed in <SHA>` | `ls docs/claims/` or `git log --grep="^claim: " --oneline` |
+| Git-native | Claim file at `docs/claims/<slug>.md` (directory tracked, `README.md` placeholder); commit `claim: <slug> - <scope>` (see [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) for the full shape) | Delete the claim file; commit `release: <slug> - landed in <SHA>` | `ls docs/claims/` or `git log --grep="^claim: " --oneline` |
 
 ### Claim windows and stale-claim force-release
 
