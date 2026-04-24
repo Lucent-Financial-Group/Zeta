@@ -381,3 +381,71 @@ let ``coordinationRiskScore is near zero when attacked == baseline`` () =
         Graph.coordinationRiskScore 0.5 0.5 1e-9 500 50 g g
         |> Option.defaultValue nan
     abs score |> should (be lessThan) 0.2
+
+
+// ─── coordinationRiskScoreRobust + RobustStats.robustZScore ─────────
+
+[<Fact>]
+let ``robustZScore returns None on empty baseline`` () =
+    RobustStats.robustZScore [] 1.0 |> should equal (None: double option)
+
+[<Fact>]
+let ``robustZScore of measurement equal to baseline median is 0`` () =
+    // Baseline [1,2,3,4,5]; median = 3; measurement 3 → z = 0
+    let z = RobustStats.robustZScore [1.0; 2.0; 3.0; 4.0; 5.0] 3.0 |> Option.defaultValue 999.0
+    abs z |> should (be lessThan) 1e-9
+
+[<Fact>]
+let ``robustZScore scales MAD by 1.4826 for Gaussian consistency`` () =
+    // Baseline [1,2,3,4,5]; median=3; MAD=1; scale = 1.4826.
+    // Measurement 4: z = (4-3)/1.4826 ≈ 0.674.
+    let z = RobustStats.robustZScore [1.0; 2.0; 3.0; 4.0; 5.0] 4.0 |> Option.defaultValue 0.0
+    abs (z - 0.6744763) |> should (be lessThan) 0.001
+
+[<Fact>]
+let ``coordinationRiskScoreRobust fires strongly on cartel-injected graph`` () =
+    // Gather baseline samples: 5 sparse graphs with varying
+    // small lambdas and modularities. Build each as a slightly
+    // perturbed 5-node random graph.
+    let rng = System.Random(42)
+    let baselineGraphs =
+        [| for _ in 1 .. 5 ->
+               [ for _ in 1 .. 5 do
+                     let s = rng.Next(5)
+                     let t = rng.Next(5)
+                     if s <> t then yield (s, t, 1L) ]
+               |> Graph.fromEdgeSeq |]
+    let baselineLambdas =
+        baselineGraphs
+        |> Array.choose (fun g -> Graph.largestEigenvalue 1e-9 200 g)
+    let baselineQs =
+        baselineGraphs
+        |> Array.choose (fun g ->
+            let p = Graph.labelPropagation 30 g
+            Graph.modularityScore p g)
+    // Now build the attacked graph with K4 cartel.
+    let cartelEdges = [
+        for s in [6; 7; 8; 9] do
+            for t in [6; 7; 8; 9] do
+                if s <> t then yield (s, t, 10L)
+    ]
+    let attacked =
+        [ yield! [(0, 1, 1L); (1, 2, 1L); (3, 4, 1L)]
+          yield! cartelEdges ]
+        |> Graph.fromEdgeSeq
+    let risk =
+        Graph.coordinationRiskScoreRobust
+            0.5 0.5 1e-9 500 50
+            baselineLambdas baselineQs attacked
+        |> Option.defaultValue 0.0
+    // Robust score: we expect a clear positive signal when
+    // lambda and/or Q jumps substantially beyond the baseline
+    // MAD. With K4 injected, lambda_attacked is much larger
+    // than any baseline value.
+    risk |> should (be greaterThan) 1.0
+
+[<Fact>]
+let ``coordinationRiskScoreRobust returns None when baselines empty`` () =
+    let g = Graph.fromEdgeSeq [ (1, 2, 1L); (2, 1, 1L) ]
+    Graph.coordinationRiskScoreRobust 0.5 0.5 1e-9 200 30 [||] [||] g
+    |> should equal (None: double option)

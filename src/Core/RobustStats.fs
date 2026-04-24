@@ -100,3 +100,48 @@ module RobustStats =
                     let threshold = 3.0 * max d MadFloor
                     let kept = arr |> Array.filter (fun x -> abs (x - m) <= threshold)
                     median kept
+
+    /// **Robust z-score.** Given a `baseline` distribution
+    /// and a `measurement`, return
+    /// `(measurement - median(baseline)) / (1.4826 * MAD(baseline))`.
+    /// The 1.4826 constant scales MAD to be consistent with
+    /// the standard deviation of a normal distribution (so
+    /// robust z-scores are directly comparable to ordinary
+    /// z-scores when the baseline actually IS normal).
+    ///
+    /// Returns `None` when the baseline is empty. When
+    /// MAD collapses to zero (every baseline value
+    /// identical), `MadFloor` is substituted so the
+    /// function returns `Some` finite value rather than
+    /// `None` or infinity — the floor reflects "scale is
+    /// below epsilon" rather than "scale is undefined."
+    /// Per Copilot review thread 59VhYb: the earlier doc
+    /// contradicted the implementation by claiming None
+    /// on MAD=0; the implementation is the contract.
+    ///
+    /// Why robust z-scores for adversarial data: ordinary
+    /// z-scores assume Gaussian baseline; an attacker can
+    /// poison a ~normal distribution by adding a few outliers
+    /// that inflate the standard deviation, making subsequent
+    /// real attacks look "within one sigma" and evade
+    /// detection. Median+MAD survives ~50% adversarial
+    /// outliers.
+    ///
+    /// Provenance: Amara 17th-ferry Part 2 correction #4
+    /// (robust statistics for adversarial data in
+    /// CoordinationRiskScore composition).
+    let robustZScore (baseline: double seq) (measurement: double) : double option =
+        // Materialize the baseline once. `median` + `mad`
+        // both need to walk the sequence; re-enumerating
+        // `double seq` costs O(n) twice AND can yield
+        // inconsistent results if the seq is lazy/non-
+        // repeatable (Copilot review thread 59VhYq).
+        let baselineArr = Seq.toArray baseline
+        match median baselineArr with
+        | None -> None
+        | Some med ->
+            match mad baselineArr with
+            | None -> None
+            | Some m ->
+                let scale = 1.4826 * max m MadFloor
+                Some ((measurement - med) / scale)
