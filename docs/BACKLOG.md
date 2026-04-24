@@ -1231,8 +1231,8 @@ within each priority tier.
     balance data) that game studios pay serious money
     for.
 
-  **Research deliverable:** `docs/research/server-
-  meshing-spacetimedb-comparison-zeta-sharding-fit.md`.
+  **Research deliverable:**
+  `docs/research/server-meshing-spacetimedb-comparison-zeta-sharding-fit.md`.
   Deep dive with sections:
 
   1. Server Meshing architecture (static vs dynamic,
@@ -1266,14 +1266,22 @@ within each priority tier.
   esports / mobile persistent / VR-social) with
   specific value propositions per segment.
 
-  **IP discipline (unchanged from Otto-175c pattern):**
+  **IP discipline (unchanged from Otto-175c pattern).**
+  Research uses public-domain framing ONLY; Star-Citizen
+  and SpacetimeDB names appear here and in the research
+  memo as industry-landscape references (reviewer /
+  comparison targets), NOT as factory-adoption of those
+  marks. Specifically:
 
-  - No Star-Citizen trademarked content ingested.
-  - No CIG proprietary architecture documents (beyond
-    publicly-released Inside-Star-Citizen + RSI blog
-    content).
-  - No SpacetimeDB proprietary code ingested (though
-    SpacetimeDB is Apache-2 licensed so public code
+  - No ingestion of Cloud Imperium Games proprietary
+    content (leaked dev blogs, non-public design docs,
+    closed-beta material). Public content — Inside-Star-
+    Citizen videos, RSI-Comm-Link blog posts, published
+    marketing + roadmap — is research-permitted.
+  - No ingestion of SpacetimeDB proprietary code or docs
+    beyond what's published under their Apache-2 license
+    at `clockworklabs/SpacetimeDB`. Public code study +
+    architecture-paper reading is research-permitted.
     study is fine).
   - No positioning of factory as CIG-adjacent or
     SpacetimeDB-adjacent in public branding;
@@ -1289,11 +1297,16 @@ within each priority tier.
   L (subsequent design ADR when sharding graduates).
   Composes with: the existing Bitemporal row (above) +
   Columnar storage row (above) + Pluggable wire-
-  protocol row (line ~754) + Regular-database façade
-  row (above) + Otto-175c starship-franchise-mapping
-  row (Star Citizen personal expertise compose). Waits
-  on: Zeta multi-node foundation (currently unshipped;
-  referenced in Amara 10th + 11th ferries).
+  protocol row (around line 830) + Regular-database
+  façade row (above) + Otto-175c starship-franchise-
+  mapping row (Star Citizen thematic research row
+  filed in PR #351; landed on main). Waits on Zeta
+  multi-node foundation (currently unshipped; prior
+  Amara ferries referencing the multi-node future are
+  archived under `docs/aurora/2026-04-24-amara-*.md`
+  — the 11th-ferry-Temporal-Coordination-Detection +
+  12th-ferry-Executive-Summary cross-references are
+  the relevant priors).
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
