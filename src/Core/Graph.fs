@@ -170,3 +170,62 @@ module Graph =
             if s = n then acc <- acc + entry.Weight
             if t = n then acc <- acc + entry.Weight
         acc
+
+    /// `map f g` — relabel nodes via `f`. The resulting graph
+    /// preserves edge multiplicity: `(s, t, w)` becomes
+    /// `(f s, f t, w)`. Collisions (two edges mapping to the
+    /// same `(f s, f t)` pair) sum their weights via the
+    /// underlying ZSet consolidation.
+    ///
+    /// Operator-algebra composition: wraps `ZSet.map` with a
+    /// projection over the node-tuple. The "tight-with-ZSet"
+    /// property (ADR Otto-121) is manifest here — we don't
+    /// reimplement map; we project through it.
+    let map (f: 'N -> 'M) (g: Graph<'N>) : Graph<'M> when 'M : comparison =
+        { Edges = ZSet.map (fun (s, t) -> (f s, f t)) g.Edges }
+
+    /// `filter predicate g` — keep only edges where
+    /// `predicate (source, target)` is true. Weights are
+    /// preserved for kept edges.
+    ///
+    /// Operator-algebra composition: delegates to `ZSet.filter`
+    /// directly; no graph-specific logic.
+    let filter (predicate: 'N * 'N -> bool) (g: Graph<'N>) : Graph<'N> =
+        { Edges = ZSet.filter predicate g.Edges }
+
+    /// `distinct g` — collapse each edge's multiplicity to
+    /// exactly `1` if it has positive total weight, `0`
+    /// otherwise (dropping anti-edges).
+    ///
+    /// Rationale: when downstream code wants "set semantics"
+    /// over edges (does edge `(s, t)` exist vs. does it have
+    /// multiplicity 7), `distinct` collapses the multi-graph
+    /// into a simple graph. Implemented as `ZSet.distinct`
+    /// wrapped over the edge ZSet.
+    ///
+    /// Note: `distinct` drops negative-weight anti-edges. A
+    /// graph with `(1,2)` at weight `-3` becomes empty after
+    /// distinct. This is the correct set-semantics answer —
+    /// an edge with negative multiplicity "doesn't exist" as
+    /// a positive set member.
+    let distinct (g: Graph<'N>) : Graph<'N> =
+        { Edges = ZSet.distinct g.Edges }
+
+    /// `union a b` — add all edge weights between two graphs.
+    /// An edge present in both sums the weights; an edge in
+    /// only one is preserved at its own weight.
+    ///
+    /// Delegates to `ZSet.add`. The retraction-native semantics
+    /// carry through: a graph containing `(1,2, -5)` (an
+    /// anti-edge) unioned with `(1,2, 5)` cancels cleanly.
+    let union (a: Graph<'N>) (b: Graph<'N>) : Graph<'N> =
+        { Edges = ZSet.add a.Edges b.Edges }
+
+    /// `difference a b` — subtract graph `b` from graph `a`.
+    /// Equivalent to `union a (negate b)`.
+    ///
+    /// Delegates to `ZSet.sub`. Useful for counterfactuals:
+    /// "what does `graph minus suspected-cartel-edges` look
+    /// like?"
+    let difference (a: Graph<'N>) (b: Graph<'N>) : Graph<'N> =
+        { Edges = ZSet.sub a.Edges b.Edges }

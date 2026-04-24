@@ -163,3 +163,86 @@ let ``fromEdgeSeq drops zero-weight triples`` () =
         ]
     Graph.edgeCount g |> should equal 1
     Graph.edgeWeight 2 3 g |> should equal 1L
+
+
+// ─── map / filter / distinct / union / difference ─────────
+
+[<Fact>]
+let ``map relabels nodes via the projection`` () =
+    let g = Graph.fromEdgeSeq [ (1, 2, 3L); (2, 3, 1L) ]
+    let g' = Graph.map (fun n -> n * 10) g
+    Graph.edgeWeight 10 20 g' |> should equal 3L
+    Graph.edgeWeight 20 30 g' |> should equal 1L
+
+[<Fact>]
+let ``map collisions sum weights via underlying ZSet consolidation`` () =
+    // Two edges (1,2) and (3,4) both map to ("same", "same").
+    // The underlying ZSet consolidates them.
+    let g = Graph.fromEdgeSeq [ (1, 2, 3L); (3, 4, 5L) ]
+    let g' = Graph.map (fun _ -> "collapsed") g
+    Graph.edgeWeight "collapsed" "collapsed" g' |> should equal 8L
+    Graph.edgeCount g' |> should equal 1
+
+[<Fact>]
+let ``filter keeps only edges matching the predicate`` () =
+    let g =
+        Graph.fromEdgeSeq [
+            (1, 2, 3L)
+            (2, 3, 1L)
+            (3, 1, 5L)
+        ]
+    let g' = Graph.filter (fun (s, _) -> s > 1) g
+    Graph.edgeCount g' |> should equal 2
+    Graph.edgeWeight 2 3 g' |> should equal 1L
+    Graph.edgeWeight 3 1 g' |> should equal 5L
+    Graph.edgeWeight 1 2 g' |> should equal 0L
+
+[<Fact>]
+let ``distinct collapses multi-edges to multiplicity 1`` () =
+    let (g1, _) = Graph.addEdge 1 2 3L Graph.empty
+    let (g2, _) = Graph.addEdge 1 2 4L g1
+    // Now (1,2) has weight 7
+    Graph.edgeWeight 1 2 g2 |> should equal 7L
+    let g' = Graph.distinct g2
+    Graph.edgeWeight 1 2 g' |> should equal 1L
+
+[<Fact>]
+let ``distinct drops anti-edges (negative-weight entries)`` () =
+    // An anti-edge has negative multiplicity; set semantics say
+    // it "doesn't exist" as a positive set member.
+    let (g, _) = Graph.removeEdge 1 2 3L Graph.empty
+    Graph.edgeWeight 1 2 g |> should equal -3L
+    let g' = Graph.distinct g
+    Graph.edgeWeight 1 2 g' |> should equal 0L
+
+[<Fact>]
+let ``union sums edge weights across graphs`` () =
+    let a = Graph.fromEdgeSeq [ (1, 2, 3L); (2, 3, 1L) ]
+    let b = Graph.fromEdgeSeq [ (1, 2, 5L); (3, 4, 2L) ]
+    let u = Graph.union a b
+    Graph.edgeWeight 1 2 u |> should equal 8L
+    Graph.edgeWeight 2 3 u |> should equal 1L
+    Graph.edgeWeight 3 4 u |> should equal 2L
+
+[<Fact>]
+let ``difference subtracts b from a (retraction-native)`` () =
+    let a = Graph.fromEdgeSeq [ (1, 2, 5L); (2, 3, 3L) ]
+    let b = Graph.fromEdgeSeq [ (1, 2, 2L); (3, 4, 1L) ]
+    let d = Graph.difference a b
+    Graph.edgeWeight 1 2 d |> should equal 3L      // 5 - 2
+    Graph.edgeWeight 2 3 d |> should equal 3L      // preserved
+    Graph.edgeWeight 3 4 d |> should equal -1L     // anti-edge
+
+[<Fact>]
+let ``union then difference recovers original (retraction conservation across operators)`` () =
+    // The same algebraic invariant from single-edge mutations,
+    // demonstrated across whole-graph operators. Union-with-b
+    // followed by difference-with-b restores the original
+    // (modulo consolidation metadata).
+    let a = Graph.fromEdgeSeq [ (1, 2, 5L); (2, 3, 3L) ]
+    let b = Graph.fromEdgeSeq [ (1, 2, 2L); (3, 4, 7L) ]
+    let combined = Graph.union a b
+    let restored = Graph.difference combined b
+    Graph.edgeWeight 1 2 restored |> should equal 5L
+    Graph.edgeWeight 2 3 restored |> should equal 3L
+    Graph.edgeWeight 3 4 restored |> should equal 0L
