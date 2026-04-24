@@ -67,7 +67,11 @@ For each audited file:
 - **docs/ROUND-HISTORY.md** (below, Otto-18 fire)
 - **docs/BACKLOG.md** (below, Otto-18 fire)
 - **docs/ROADMAP.md** (below, Otto-18 fire)
-- **docs/VISION.md** (below, Otto-18 fire) — also GOVERNANCE.md on PR #181, AGENT-BEST-PRACTICES.md on PR #184, ALIGNMENT.md on PR #185, TECH-RADAR.md + FACTORY-HYGIENE.md on PR #188
+- **docs/VISION.md** (below, Otto-18 fire)
+- **docs/TECH-RADAR.md** — audited on sibling PR #188 (classification recorded there; no `## Audit —` section in this file pending that merge)
+- **docs/FACTORY-HYGIENE.md** — audited on sibling PR #188 (classification recorded there; no `## Audit —` section in this file pending that merge)
+
+Cross-PR audits that duplicate in-file coverage: GOVERNANCE (also on PR #181), AGENT-BEST-PRACTICES (also on PR #184), ALIGNMENT (also on PR #185) — the in-file `## Audit —` sections for these three are the authoritative classification; the sibling PRs are redundant or superseded.
 
 ### Files to audit (not yet classified; add rows as they land)
 
@@ -890,12 +894,25 @@ Total: 5 + 6 + 4 = **15** top-level files audited out of
 `openspec/**`, `tools/**`, and `.github/**` directory-level
 surfaces (each a multi-file audit).
 
-**Note on cross-PR audits:** Three of the 15 audits (ALIGNMENT,
-TECH-RADAR, FACTORY-HYGIENE) land in sibling PRs (#185, #188)
-rather than this file; tracking is via the "Files audited"
-list above (line-item pointers to each PR). The classification
-counts in this summary assume those PRs merge; if they close
-without merging, this summary should be refreshed.
+**Note on cross-PR audits:** 13 of the 15 audits have
+dedicated `## Audit —` sections in this file; 2 (TECH-RADAR,
+FACTORY-HYGIENE) land only in sibling PR #188 with no
+section in this file yet. The pattern-summary counts above
+assume that sibling PR merges; if #188 closes without
+merging, this summary should be refreshed (count drops to
+13 audits: 4 factory-generic, 5 both-coupled, 4
+zeta-library-specific).
+
+Mechanical-verification deficit flagged: a reader cannot
+`grep '^## Audit —'` this file and reproduce the 15-count
+— only 13. The deeper "each file-level summary should be
+mechanically consistent with its own in-file sections"
+discipline is tracked in `docs/BACKLOG.md` row
+*"Separation-audit cross-PR rollup — mechanically verify
+pattern-summary counts against in-file `## Audit — ...`
+sections"* (P2 research-grade; three options: wait for
+#188 to merge, per-PR summary-row landings, or tooling diff
+check).
 
 ## How this audit connects to the multi-repo split
 
