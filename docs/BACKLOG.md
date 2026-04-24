@@ -2468,6 +2468,137 @@ within each priority tier.
 
 ## P1 — CI / DX follow-ups (after round-29 anchor)
 
+- [ ] **PR-resolve-loop skill — automate the full
+  close-the-PR cycle (CI-failures + review-conversations
+  + agent-comment preservation + auto-merge arm) so Otto
+  doesn't ship-and-pray.** Maintainer Otto-204: *"you
+  need some pr resolve loop that will handled everyting
+  needed to take a pr to compelteion so you don't ahve
+  to keep figuion it out"* + Otto-204b conversation-
+  preservation clarifier: *"we are saving you resolution
+  to all the comments and we expect those to be
+  execellent don't take shortcuts on the feedback, do
+  the right long term thing or backlog the right thing
+  and not it on the comment. We want to save both sides
+  of the conversation."*
+
+  **Context.** Otto's ship-rate exceeded CI-drain-rate
+  across Otto-157..188, producing 136-open-PR
+  saturation state (Otto-171 queue-saturation memory).
+  Otto-200..203 observed main frozen 6+ ticks at #355.
+  Otto-204 investigation discovered the real blocker
+  was NOT CI queue but accumulated unresolved review-
+  threads + unfixed lint failures that armed-auto-merge
+  could not overcome. Each individual PR needs active
+  management; passive arming is insufficient.
+
+  **Scope:** new skill at `.claude/skills/pr-resolve-
+  loop/SKILL.md` encoding the full PR-close cycle:
+
+  1. **CI-status check** — `gh pr checks <N>`; if any
+     required check failed, fetch the failure log, fix
+     locally, commit+push.
+  2. **Review-thread enumeration** — `gh api graphql`
+     for reviewThreads; for each unresolved thread:
+     - Read the reviewer's finding + severity.
+     - Decide: fix-now OR file-BACKLOG-row-and-note OR
+       counter-argue-with-rationale.
+     - Post a reply on the thread explaining the
+       decision + commit SHA where fix landed (if
+       applicable).
+     - Resolve the thread via GraphQL
+       `resolveReviewThread` ONLY after the reply is
+       posted (per Otto-204b "save both sides of the
+       conversation" discipline).
+     - If deferring: leave the thread unresolved with
+       explicit breadcrumb-reply + filed BACKLOG row
+       ID.
+  3. **Name-attribution lint** — before any commit on a
+     branch touching factory-produced docs, grep for
+     "Aaron" / direct-contributor-names in the diff;
+     replace with "maintainer" idiom unless the file
+     is an audit-trail surface (commit messages, tick-
+     history, memory files — all history-exempt per
+     loop-tick-history 2026-04-22).
+  4. **Conversation-preservation hook** — every reply
+     + resolve operation logs to `artifacts/pr-
+     discussions/PR-<N>-conversation-log.json` so the
+     git-native preservation directive (Otto-150..154,
+     PR #335) captures both-sides-of-conversation
+     automatically rather than relying on GitHub-only
+     storage.
+  5. **Auto-merge re-arm** — once all required threads
+     resolved + all required checks green +
+     `mergeStateStatus: MERGEABLE` (not BEHIND, DIRTY,
+     or BLOCKED), re-arm `gh pr merge --auto --squash`.
+  6. **Loop-exit criteria** — skill terminates when
+     either (a) PR merges, (b) a thread has a decision
+     blocked on maintainer input (escalate, don't
+     loop), or (c) all reachable fixes have landed and
+     remaining blockers are external (CI-side flake,
+     GitHub-side transient).
+
+  **Invocation modes:**
+
+  - `pr-resolve-loop <PR-number>` — drive a single PR
+    to completion or blocker.
+  - `pr-resolve-loop --all-owned` — iterate across all
+    PRs where Otto is the commit author; most-recent-
+    first.
+  - `pr-resolve-loop --dry-run` — print the plan
+    without acting.
+
+  **Non-goals:**
+
+  - NOT an auto-merge-bypass. The skill doesn't override
+    branch protection; it honors the 5 required checks
+    + review-resolution gate faithfully.
+  - NOT a shortcut around reviewer intent. Per
+    Otto-204b: the skill MUST post substantive replies,
+    not mark-resolved-and-move-on.
+  - NOT a retry-loop on external CI flake. When a test
+    flakes 3× in a row, the skill escalates (files
+    BACKLOG row + notifies maintainer) rather than
+    retrying indefinitely.
+  - NOT an opener of new PRs. Strictly a resolver of
+    already-opened PRs.
+
+  **Composes with:**
+
+  - Otto-171 queue-saturation-throttle memory — this
+    skill is the active-management counterpart to the
+    ship-throttle discipline.
+  - PR-preservation P2→P1 BACKLOG row (PR #335, Otto-
+    150..154) — the conversation-preservation hook
+    uses the preservation workflow's schema.
+  - `@codex review` + Copilot-reviewer-connector patterns
+    — the skill handles both agent-reviewer styles
+    uniformly.
+  - `tools/hygiene/audit-git-hotspots.sh` (PR #213) —
+    complementary; hotspots tells us WHICH files to
+    split; this skill tells us HOW to close PRs.
+  - BACKLOG-split Phase-1a (PR #354) — the first PR
+    where active-management discipline was applied;
+    debt-ledger-of-what-was-learned.
+
+  **Priority P1 CI/DX.** Effort: M (skill design +
+  scripting) + S (invocation convention docs) + S
+  (`@mentioning` review-reply template bank).
+  Dependencies: ideally after PR #335 (conversation-
+  preservation mechanism) so the hook has a target to
+  write to, but the skill can initially store
+  conversation logs in a Phase-0 local path if #335
+  lands later.
+
+  **Learning captured Otto-204:** active PR management
+  has 10-20× higher ROI than opening new PRs when the
+  queue is saturated. The factory's observation of
+  "queue unchanged 136" for 6+ ticks was misread as
+  "stuck"; the underlying reality was "every PR has 5-
+  15 unresolved review-threads + silent lint failures
+  that auto-merge cannot see past." This skill
+  internalizes that learning.
+
 - [ ] **HLL property-test flakiness — investigate before
   retry (DST discipline).** Observed 2026-04-23 (auto-loop-88):
   `Zeta.Tests.Properties.FuzzTests.fuzz: HLL estimate
