@@ -20,6 +20,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Bayesian.Tests", "tests\Bay
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Feldera.Bench", "bench\Feldera.Bench\Feldera.Bench.fsproj", "{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FactoryDemo.Api.FSharp", "samples\FactoryDemo.Api.FSharp\FactoryDemo.Api.FSharp.fsproj", "{40534D09-439E-4E5F-9A69-A73844DB674D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40534D09-439E-4E5F-9A69-A73844DB674D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40534D09-439E-4E5F-9A69-A73844DB674D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40534D09-439E-4E5F-9A69-A73844DB674D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40534D09-439E-4E5F-9A69-A73844DB674D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
