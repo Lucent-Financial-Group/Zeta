@@ -41,15 +41,15 @@ is added.
 |---|---|---|---|---|---|---|---|
 | .NET 10 (F# + C#) | Primary language runtime for `src/Core`, tests, benchmarks | `tools/setup/install.sh` via mise (`tools/setup/common/mise.sh` + `.mise.toml`) | `global.json` (SDK pin) + `.mise.toml` | [dotnet.microsoft.com](https://dotnet.microsoft.com/) | `fsharp-expert`, `csharp-expert` | Adopt | F# is the reference implementation per `memory/CURRENT-aaron.md` §5 |
 | Rust | Future-Zeta target (not in-tree today) | TBD | TBD | [rust-lang.org](https://www.rust-lang.org/) | none yet | Assess | Anticipated per `memory/CURRENT-aaron.md` §5 |
-| bun + TypeScript | Post-setup scripting default (per row #49) | `tools/setup/install.sh` pulls bun | `package.json` (packageManager + deps) | [bun.sh](https://bun.sh) | `typescript-expert` | Adopt | Post-setup default per `docs/POST-SETUP-SCRIPT-STACK.md`; no `bun.lock` committed yet (pin via `package.json`) |
+| bun + TypeScript | Post-setup scripting default (per row #49) | `tools/setup/install.sh` pulls bun | `package.json` `packageManager` (`bun@1.3.13`) + dependency pins | [bun.sh](https://bun.sh) | `typescript-expert` | Trial | Post-setup default per `docs/POST-SETUP-SCRIPT-STACK.md`; TECH-RADAR ring: Trial (graduation criteria documented there). |
 | bash + PowerShell | Pre-setup scripts (`tools/setup/**` only) | OS-provided | N/A | N/A | `bash-expert`, `powershell-expert` | Adopt | Dual-authored per row #51 cross-platform parity |
 
 ### Data infrastructure
 
 | Technology | Role | Install path | Version pin | Auth doc | Expert skill | TECH-RADAR ring | Notes |
 |---|---|---|---|---|---|---|---|
-| Postgres | Sample app backend (FactoryDemo) | standard image pull at demo-run time (docker) | image pin in demo compose (when docker-compose lands) | [postgresql.org](https://www.postgresql.org/docs/) | `postgresql-expert`, `relational-database-expert` | Adopt | CRM-shaped demo substrate; docker-compose landing per future sample-refresh tick |
-| Docker + docker-compose | Containerisation for demo + dev env | `tools/setup/install.sh` checks for Docker | N/A (OS install) | [docs.docker.com](https://docs.docker.com/) | `docker-expert` | Adopt | Used by FactoryDemo + future devcontainer |
+| Postgres | Sample app backend (FactoryDemo) | OS package install / standard image pull at demo-run time | not yet pinned in-repo (docker-compose pending; tracked as follow-up) | [postgresql.org](https://www.postgresql.org/docs/) | `postgresql-expert`, `relational-database-expert` | Adopt | CRM-shaped demo substrate referenced from `samples/FactoryDemo.Api.FSharp/` and `samples/FactoryDemo.Api.CSharp/`; docker-compose landing per future sample-refresh tick |
+| Docker + docker-compose | Containerisation for demo + dev env | Manual / OS package install | N/A (OS install) | [docs.docker.com](https://docs.docker.com/) | `docker-expert` | Adopt | Used by FactoryDemo + future devcontainer; setup scripts do not currently detect or install Docker |
 | Apache Arrow | Columnar serialization for Zeta ZSet IPC | NuGet package pinned in `.csproj` | `Directory.Packages.props` | [arrow.apache.org](https://arrow.apache.org/) | `serialization-and-wire-format-expert`, `columnar-storage-expert` | Adopt | Core to `ArrowSerializer.fs` |
 
 ### Agent harnesses
@@ -58,9 +58,9 @@ is added.
 |---|---|---|---|---|---|---|---|
 | Claude Code | Primary agent harness for factory work | User-installed CLI | skill-loaded automatically | [docs.claude.com](https://docs.claude.com/en/docs/claude-code) | `claude-md-steward` + `docs/HARNESS-SURFACES.md` rows | Adopt | See HARNESS-SURFACES for feature-level detail |
 | Codex CLI | Secondary agent harness (OpenAI) | Independent install | N/A | [github.com/openai/codex](https://github.com/openai/codex) | referenced in `docs/HARNESS-SURFACES.md` | Trial | Mapped in `docs/research/openai-codex-cli-capability-map.md` |
-| Gemini CLI | Tertiary agent harness (Google) | Independent install | N/A | [github.com/google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) | referenced in `docs/HARNESS-SURFACES.md` | Trial | Capability-map doc queued (not yet in `docs/research/`) |
-| OpenAI web UI (via Playwright) | Amara ferry transport per `docs/protocols/cross-agent-communication.md` | bun + @playwright/test | `package.json` | [openai.com](https://openai.com/) + [playwright.dev](https://playwright.dev/) | none yet (candidate skill) | Trial | PR #165 BACKLOG notes Playwright caveats (long-conversation rendering, async loading, ongoing UI-change maintenance). Any OpenAI mode/model authorized within Aaron's already-paid subscription (deep research, agent mode, etc.) |
-| Playwright | Browser automation for web UI integration (OpenAI, email signup research) | bun + `@playwright/test` | `package.json` (no separate lock file committed) | [playwright.dev](https://playwright.dev/) | none yet (candidate skill) | Adopt | Constrained by courier protocol + two-layer authorization model; scraping/export only, not primary review signal |
+| Gemini CLI | Tertiary agent harness (Google) | Independent install | N/A | [github.com/google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) | referenced in `docs/HARNESS-SURFACES.md` | Trial | Mapped in `docs/research/gemini-cli-capability-map.md` |
+| OpenAI web UI (via Playwright) | Amara ferry transport per `docs/protocols/cross-agent-communication.md` | Plugin-enabled only via `.claude/settings.json`; no repo-local Playwright package install | N/A (no repo-local Playwright dependency in `package.json`) | [openai.com](https://openai.com/) + [playwright.dev](https://playwright.dev/) | none yet (candidate skill) | Trial | PR #165 BACKLOG notes Playwright caveats (long-conversation rendering, async loading, ongoing UI-change maintenance). Any OpenAI mode/model authorized within the human maintainer's already-paid subscription (deep research, agent mode, etc.) |
+| Playwright | Browser automation for web UI integration (OpenAI, email signup research) | Plugin-enabled only via `.claude/settings.json` (no `@playwright/test` dependency in `package.json`) | N/A | [playwright.dev](https://playwright.dev/) | none yet (candidate skill) | Trial | Constrained by courier protocol + two-layer authorization model; scraping/export only, not primary review signal |
 
 ### Formal verification + testing
 
@@ -72,15 +72,15 @@ is added.
 | Alloy 6 | Lightweight formal specs | `tools/setup/install.sh` pulls Alloy JARs | pinned in setup | [alloytools.org](https://alloytools.org/) | `alloy-expert` | Adopt | Specs under `tools/alloy/` |
 | FsCheck | F# property-based testing | NuGet package | `Directory.Packages.props` | [fscheck.github.io](https://fscheck.github.io/FsCheck/) | `fscheck-expert` | Adopt | Property suite integrated with CI |
 | xUnit | Concrete-scenario test framework | NuGet package | `Directory.Packages.props` | [xunit.net](https://xunit.net/) | covered in `tests/` conventions | Adopt | Primary test runner for `tests/*.Tests` |
-| Stryker.NET | Mutation testing | `tools/setup/manifests/dotnet-tools` (global tool manifest installed by setup) | version pin in setup manifest | [stryker-mutator.io](https://stryker-mutator.io/docs/stryker-net/introduction/) | `stryker-expert` | Adopt | No GitHub Actions job invokes Stryker currently (run manually or via local dotnet-tools); CI-wiring is follow-up work |
+| Stryker.NET | Mutation testing | `tools/setup/manifests/dotnet-tools` (global tool manifest installed by setup) | unversioned in setup manifest (tracks latest) | [stryker-mutator.io](https://stryker-mutator.io/docs/stryker-net/introduction/) | `stryker-expert` | Trial | No GitHub Actions job invokes Stryker currently (run manually or via local dotnet-tools); CI-wiring is follow-up work. TECH-RADAR ring: Trial. |
 | BenchmarkDotNet | Benchmark runner | NuGet package | `Directory.Packages.props` | [benchmarkdotnet.org](https://benchmarkdotnet.org/) | `benchmark-authoring-expert` | Adopt | `bench/` projects |
 
 ### Static analysis + security
 
 | Technology | Role | Install path | Version pin | Auth doc | Expert skill | TECH-RADAR ring | Notes |
 |---|---|---|---|---|---|---|---|
-| Semgrep | Lightweight pattern-matching static analysis | `tools/setup/install.sh` pulls semgrep | pinned in setup | [semgrep.dev](https://semgrep.dev/) | `semgrep-expert`, `semgrep-rule-authoring` | Adopt | `.semgrep.yml` 14 custom rules |
-| CodeQL | Semantic static analysis | GitHub-hosted | workflow pin | [codeql.github.com](https://codeql.github.com/) | `codeql-expert` | Adopt | `.github/workflows/codeql.yml` |
+| Semgrep | Lightweight pattern-matching static analysis | CI-installed via `pip install semgrep` in `.github/workflows/gate.yml` | workflow pin in `.github/workflows/gate.yml` | [semgrep.dev](https://semgrep.dev/) | `semgrep-expert`, `semgrep-rule-authoring` | Trial | Custom rules defined in `.semgrep.yml`. TECH-RADAR ring: Trial. |
+| CodeQL | Semantic static analysis | GitHub-hosted | workflow pin | [codeql.github.com](https://codeql.github.com/) | `codeql-expert` | Trial | `.github/workflows/codeql.yml`. TECH-RADAR ring: Trial. |
 | Roslyn analyzers | C# analyzers | NuGet package | `Directory.Packages.props` | [learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/overview) | `roslyn-analyzers-expert`, `csharp-analyzers-expert` | Adopt | Wired via `Directory.Build.props` |
 | F# analyzers | F# analyzers | NuGet package | `Directory.Packages.props` | [fsharp.github.io/FSharp.Analyzers.SDK](https://fsharp.github.io/FSharp.Analyzers.SDK/) | `fsharp-analyzers-expert` | Adopt | Wired via project files |
 | markdownlint-cli2 | Markdown lint | CI-installed | workflow pin | [github.com/DavidAnson/markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2) | (none; see `memory/MEMORY-AUTHOR-TEMPLATE.md` for five recurring classes) | Adopt | Runs on every PR via `.github/workflows/gate.yml` |
@@ -91,13 +91,13 @@ is added.
 
 | Technology | Role | Install path | Version pin | Auth doc | Expert skill | TECH-RADAR ring | Notes |
 |---|---|---|---|---|---|---|---|
-| GitHub Actions | CI/CD orchestration | `.github/workflows/*.yml` | workflow-level SHA pins (actions pinned to commit SHAs per workflow-injection safe-patterns per FACTORY-HYGIENE row #43) | [docs.github.com/actions](https://docs.github.com/en/actions) | `github-actions-expert` | Adopt | Gate workflow, CodeQL, auto-merge |
+| GitHub Actions | CI/CD orchestration | `.github/workflows/*.yml` | full-length commit SHA pins on action refs in workflow files | [docs.github.com/actions](https://docs.github.com/en/actions) | `github-actions-expert` | Adopt | Gate workflow, CodeQL, auto-merge. Workflow-injection safe-patterns audited under FACTORY-HYGIENE row #43. |
 | NuGet | .NET package ecosystem | `dotnet` CLI | `Directory.Packages.props` for lib pins | [learn.microsoft.com/en-us/nuget](https://learn.microsoft.com/en-us/nuget/) | `nuget-publishing-expert` | Adopt | Zeta.Core shipped as NuGet; `package-auditor` skill audits |
 
 ## Open follow-ups
 
 1. **Additional rows** — this first-pass covers ~26 techs; the full footprint includes more (Bayesian probability libs, custom SIMD intrinsics, profiling tools, etc.). Land on future fires.
-2. **Cross-platform parity column** — row #48's output should feed a per-tech status column (mac/windows/linux/WSL). Deferred until the parity-enforcement work lands.
+2. **Cross-platform parity column** — row #51's output should feed a per-tech status column (mac/windows/linux/WSL). Deferred until the parity-enforcement work lands.
 3. **Version-pin automation** — the "Version pin" column is currently prose; could be pulled from the authoritative files (`global.json`, `Directory.Packages.props`, `package.json`, etc.) by a script. Deferred.
 4. **OpenAI mode/model inventory** — deep research, agent mode, normal GPT-N models; a nested list under the OpenAI row would surface which modes are in use for which factory workflows. Deferred to the first real OpenAI-UI Playwright fire.
 5. **Quantum-resistant crypto column** — Aaron 2026-04-23: *"any crypto graphy we decide to use should be quantium resisten, even one place we don't use it could be a place for attack, we really don't have much any encryption yet so this is just a note for the future when we do"*. The factory currently has minimal crypto in-tree; when cryptographic primitives land, every row that uses them MUST be PQC (per NIST FIPS 203/204/205/206 — Kyber / Dilithium / Falcon / SPHINCS+). A "PQC-clean?" column should be added when crypto becomes a material part of the factory substrate, and classical-crypto adoption requires an explicit exception + ADR. Full PQC mandate rationale in the factory's cryptography-policy memory (migration to in-repo via the in-repo-first policy cadence).
