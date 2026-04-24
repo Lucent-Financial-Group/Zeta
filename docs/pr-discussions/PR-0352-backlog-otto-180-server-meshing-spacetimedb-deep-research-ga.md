@@ -1,13 +1,15 @@
 ---
 pr_number: 352
 title: "backlog: Otto-180 Server Meshing + SpacetimeDB deep research \u2014 game-industry competitive angle"
-author: AceHack
-state: OPEN
-created_at: 2026-04-24T10:14:31Z
-head_ref: backlog/otto-180-server-meshing-spacetime-db-research
-base_ref: main
-archived_at: 2026-04-24T11:22:13Z
-archive_tool: tools/pr-preservation/archive-pr.sh
+author: "AceHack"
+state: "MERGED"
+created_at: "2026-04-24T10:14:31Z"
+merged_at: "2026-04-24T12:55:11Z"
+closed_at: "2026-04-24T12:55:11Z"
+head_ref: "backlog/otto-180-server-meshing-spacetime-db-research"
+base_ref: "main"
+archived_at: "2026-04-24T14:38:16Z"
+archive_tool: "tools/pr-preservation/archive-pr.sh"
 ---
 
 # PR #352: backlog: Otto-180 Server Meshing + SpacetimeDB deep research — game-industry competitive angle
@@ -64,7 +66,7 @@ P2 research-grade at line ~921 (end of "## P2 — Post-v1 query-surface research
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `55ce0fac69`
-
+    
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -77,10 +79,8 @@ Here are some automated review suggestions for this pull request.
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
-
-
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-
+            
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T10:18:05Z)
@@ -119,7 +119,7 @@ _(no body)_
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `44825a88fc`
-
+    
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -132,11 +132,19 @@ Here are some automated review suggestions for this pull request.
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
-
-
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-
+            
 </details>
+
+### COMMENTED — @AceHack (2026-04-24T12:53:32Z)
+
+_(no body)_
+
+### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T12:56:16Z)
+
+## Pull request overview
+
+Copilot reviewed 1 out of 1 changed files in this pull request and generated 3 comments.
 
 ## Review threads
 
@@ -212,7 +220,7 @@ The cross-reference “Pluggable wire-protocol row (line ~754)” appears to poi
 
 Fixed in 44825a8: corrected `line ~754` to `around line 830` — the wire-protocol row's actual current location. Verified via `grep -n '^- \[ \] \*\*Pluggable wire-protocol'` before commit.
 
-### Thread 6: docs/BACKLOG.md:1082 (unresolved)
+### Thread 6: docs/BACKLOG.md:1082 (resolved)
 
 **@chatgpt-codex-connector** (2026-04-24T11:14:47Z):
 
@@ -221,3 +229,43 @@ Fixed in 44825a8: corrected `line ~754` to `around line 830` — the wire-protoc
 This note points readers to `docs/aurora/2026-04-24-amara-*.md` for the “11th-ferry” and “12th-ferry” priors, but those artifacts are not present under `docs/aurora` (only 17th/19th ferry files exist), and a repo-wide search does not find matching 11th/12th aurora docs. That makes the provenance trail in this backlog item non-actionable for anyone trying to follow the cited priors; please update the reference to existing files or adjust the claim.
 
 Useful? React with 👍 / 👎.
+
+**@AceHack** (2026-04-24T12:53:32Z):
+
+Fixed in 255ac9a. Dropped the forward-looking `docs/aurora/2026-04-24-amara-*.md` path and rephrased to name the priors by ferry number (11th-Temporal-Coordination-Detection, 12th-Executive-Summary) with explicit "pending absorb (not yet landed under `docs/aurora/`)" framing — survives absorb-PR renames and doesn't send readers to a missing path.
+
+### Thread 7: docs/BACKLOG.md:1303 (unresolved)
+
+**@copilot-pull-request-reviewer** (2026-04-24T12:56:15Z):
+
+The cross-reference `Pluggable wire-protocol row (around line 830)` is out of date: that row currently starts at line 1056 in this file. Suggest either updating the line number to the current location or replacing the fragile line-number reference with a stable identifier (e.g., the row title) to avoid repeated drift as BACKLOG.md grows.
+```suggestion
+  protocol row (above) + Regular-database façade row
+  (above) + Otto-175c starship-franchise-mapping row
+  (Star Citizen thematic research row filed in PR
+  #351; landed on main). Waits on Zeta
+```
+
+### Thread 8: docs/BACKLOG.md:1309 (unresolved)
+
+**@copilot-pull-request-reviewer** (2026-04-24T12:56:15Z):
+
+The references to `11th-ferry-Temporal-Coordination-Detection` and `12th-ferry-Executive-Summary` don’t resolve to any existing docs under `docs/aurora/` in the repo. Please either link to the concrete existing Amara ferry docs you mean (file paths) or remove/rename these identifiers so the backlog entry doesn’t contain dangling xrefs.
+```suggestion
+  Amara ferry material referencing the multi-node
+  future is the relevant prior, but that material is
+  still pending absorb and has not yet landed under
+  `docs/aurora/`).
+```
+
+### Thread 9: docs/BACKLOG.md:1285 (unresolved)
+
+**@copilot-pull-request-reviewer** (2026-04-24T12:56:16Z):
+
+Wording in the SpacetimeDB IP-discipline bullet is internally inconsistent: it says "SpacetimeDB proprietary code" but the next clause frames the allowed scope as the public Apache-2 repo. Consider rephrasing to "non-public/private SpacetimeDB materials" (and explicitly allow Apache-2 repo + published docs) to avoid implying the Apache-2 code is proprietary.
+```suggestion
+  - No ingestion of non-public/private SpacetimeDB
+    materials. Public Apache-2-licensed code at
+    `clockworklabs/SpacetimeDB`, plus published docs and
+    architecture-paper reading, is research-permitted.
+```

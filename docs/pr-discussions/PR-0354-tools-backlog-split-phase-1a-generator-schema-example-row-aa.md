@@ -1,13 +1,13 @@
 ---
 pr_number: 354
 title: "tools: backlog split Phase 1a \u2014 generator + schema + example row (Aaron Otto-181, 3rd ask)"
-author: AceHack
-state: OPEN
-created_at: 2026-04-24T10:27:07Z
-head_ref: tools/backlog-split-phase-1a-generator-plus-schema
-base_ref: main
-archived_at: 2026-04-24T11:22:01Z
-archive_tool: tools/pr-preservation/archive-pr.sh
+author: "AceHack"
+state: "OPEN"
+created_at: "2026-04-24T10:27:07Z"
+head_ref: "tools/backlog-split-phase-1a-generator-plus-schema"
+base_ref: "main"
+archived_at: "2026-04-24T14:38:18Z"
+archive_tool: "tools/pr-preservation/archive-pr.sh"
 ---
 
 # PR #354: tools: backlog split Phase 1a — generator + schema + example row (Aaron Otto-181, 3rd ask)
@@ -80,7 +80,7 @@ Aaron Otto-182: *"can you ask codex too?"* — inviting `@codex review` below.
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `6a447ee234`
-
+    
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -93,10 +93,8 @@ Here are some automated review suggestions for this pull request.
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
-
-
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-
+            
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T10:31:29Z)
@@ -176,7 +174,7 @@ _(no body)_
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9bf3d09ff1`
-
+    
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -189,10 +187,8 @@ Here are some automated review suggestions for this pull request.
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
-
-
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-
+            
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T11:06:51Z)

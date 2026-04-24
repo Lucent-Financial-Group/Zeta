@@ -6,7 +6,7 @@ state: "OPEN"
 created_at: "2026-04-24T11:23:49Z"
 head_ref: "tools/pr-preservation-phase-2-minimal"
 base_ref: "main"
-archived_at: "2026-04-24T13:21:06Z"
+archived_at: "2026-04-24T14:37:52Z"
 archive_tool: "tools/pr-preservation/archive-pr.sh"
 ---
 
@@ -81,7 +81,7 @@ Scope out of this PR per maintainer *"make sure you backlog then to a proper lon
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `cc217ae031`
-
+    
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -94,10 +94,8 @@ Here are some automated review suggestions for this pull request.
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
-
-
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-
+            
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T11:28:45Z)
@@ -134,9 +132,103 @@ Copilot reviewed 12 out of 12 changed files in this pull request and generated 7
 | docs/pr-discussions/PR-0336-docs-ksk-naming-definition-doc-canonical-expansion-locked-ot.md | Backfilled archive for PR #336 discussion content. |
 </details>
 
+### COMMENTED — @AceHack (2026-04-24T13:22:23Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T13:22:26Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T13:22:28Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T13:22:30Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T13:22:32Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T13:22:34Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T13:22:36Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T13:22:38Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T13:22:41Z)
+
+_(no body)_
+
+### COMMENTED — @chatgpt-codex-connector (2026-04-24T13:26:42Z)
+
+### 💡 Codex Review
+
+Here are some automated review suggestions for this pull request.
+
+**Reviewed commit:** `66e48f0630`
+    
+
+<details> <summary>ℹ️ About Codex in GitHub</summary>
+<br/>
+
+[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+- Open a pull request for review
+- Mark a draft as ready
+- Comment "@codex review".
+
+If Codex has suggestions, it will comment; otherwise it will react with 👍.
+
+
+Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
+            
+</details>
+
+### COMMENTED — @AceHack (2026-04-24T13:41:33Z)
+
+_(no body)_
+
+### COMMENTED — @chatgpt-codex-connector (2026-04-24T13:45:51Z)
+
+### 💡 Codex Review
+
+Here are some automated review suggestions for this pull request.
+
+**Reviewed commit:** `dfc8ef554f`
+    
+
+<details> <summary>ℹ️ About Codex in GitHub</summary>
+<br/>
+
+[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+- Open a pull request for review
+- Mark a draft as ready
+- Comment "@codex review".
+
+If Codex has suggestions, it will comment; otherwise it will react with 👍.
+
+
+Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
+            
+</details>
+
+### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T13:47:03Z)
+
+## Pull request overview
+
+Copilot reviewed 14 out of 14 changed files in this pull request and generated 7 comments.
+
 ## Review threads
 
-### Thread 1: tools/pr-preservation/archive-pr.sh:60 (unresolved)
+### Thread 1: tools/pr-preservation/archive-pr.sh:60 (resolved)
 
 **@chatgpt-codex-connector** (2026-04-24T11:25:56Z):
 
@@ -146,7 +238,11 @@ The archive query hard-limits review threads and nested comments (`first: 100` /
 
 Useful? React with 👍 / 👎.
 
-### Thread 2: tools/pr-preservation/archive-pr.sh:107 (unresolved)
+**@AceHack** (2026-04-24T13:22:23Z):
+
+Fixed in 66e48f063082045871fb7d970bdb6fe213633524. The archive query now paginates all three top-level connections (reviewThreads / reviews / comments) via cursor loops in the Python driver, plus paginates per-thread comments when `comments.pageInfo.hasNextPage` is set. No silent truncation remaining. End-to-end test against PR #357 itself captures all 9 threads (see docs/pr-discussions/PR-0357-...md written by the new code).
+
+### Thread 2: tools/pr-preservation/archive-pr.sh:107 (resolved)
 
 **@chatgpt-codex-connector** (2026-04-24T11:25:56Z):
 
@@ -156,19 +252,31 @@ The script assumes `d['data']['repository']['pullRequest']` is always present an
 
 Useful? React with 👍 / 👎.
 
-### Thread 3: tools/pr-preservation/archive-pr.sh:49 (unresolved)
+**@AceHack** (2026-04-24T13:22:26Z):
+
+Fixed in 66e48f063082045871fb7d970bdb6fe213633524. Now detect `pullRequest is None` in two places: (1) in the Python fetch driver right after the first GraphQL call, emitting a clear "not found / private / access denied" diagnostic and exiting 2; (2) again in the standalone validation pass before the formatter runs. Formatter also retains a defensive guard. Smoke-tested: `./tools/pr-preservation/archive-pr.sh 99999` exits 2 cleanly with "Could not resolve to a PullRequest".
+
+### Thread 3: tools/pr-preservation/archive-pr.sh:49 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:28:44Z):
 
 P0: With `set -e`, if `gh api graphql` exits non-zero (auth failure, network error), the script aborts immediately and never reaches the intended “fetch failed …” diagnostics / exit-code mapping. Wrap the `gh api graphql … > "$TMP"` call in an explicit error-handling block so failures produce a clear message and the documented exit code (2).
 
-### Thread 4: tools/pr-preservation/archive-pr.sh:108 (unresolved)
+**@AceHack** (2026-04-24T13:22:28Z):
+
+Fixed in 66e48f063082045871fb7d970bdb6fe213633524. The fetch block is now wrapped in `set +e` / explicit `FETCH_RC=$?` / `set -e` so a non-zero gh exit no longer aborts before the diagnostic path. On failure we print "fetch failed for PR #$PR (exit $FETCH_RC)" and exit 2 per the header docstring.
+
+### Thread 4: tools/pr-preservation/archive-pr.sh:108 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:28:44Z):
 
 P0: The JSON check only validates that the response is parseable JSON; GraphQL error payloads (or `pullRequest: null`) will pass this check and then the Python block will crash on `d['data']...` / `pr.get(...)` with a stack trace. Detect `errors` in the response and/or a null `pullRequest` and exit 2 with a concise error message (e.g., not found / permission / auth).
 
-### Thread 5: tools/pr-preservation/archive-pr.sh:47 (unresolved)
+**@AceHack** (2026-04-24T13:22:30Z):
+
+Fixed in 66e48f063082045871fb7d970bdb6fe213633524. The fetch driver now rejects top-level `errors` and `pullRequest: null` before any field access, and a separate shell-side validation pass re-checks both conditions before the formatter runs. The formatter itself also guards (belt and suspenders). No more TypeError stack traces on invalid PRs.
+
+### Thread 5: tools/pr-preservation/archive-pr.sh:47 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:28:44Z):
 
@@ -185,13 +293,21 @@ gh api graphql -F owner="$OWNER" -F name="$REPO_NAME" -F number="$PR" -f query='
     repository(owner: $owner, name: $name) {
 ```
 
-### Thread 6: tools/pr-preservation/archive-pr.sh:90 (unresolved)
+**@AceHack** (2026-04-24T13:22:32Z):
+
+Fixed in 66e48f063082045871fb7d970bdb6fe213633524. Owner/name now come from `gh repo view --json nameWithOwner -q .nameWithOwner` at runtime, passed as GraphQL `$owner`/`$name` variables. If gh cannot resolve the repo, we hard-fail with exit 1 rather than silently falling back ("never silently wrong" — factory rule). Works from forks and after rename.
+
+### Thread 6: tools/pr-preservation/archive-pr.sh:90 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:28:44Z):
 
 P1: The script and header comment say it writes “all review threads + reviews + comments”, but the GraphQL query is capped at `reviewThreads(first: 100)`, per-thread `comments(first: 50)`, `reviews(first: 50)`, and `comments(first: 100)` with no pagination. Either implement pagination (pageInfo/endCursor loops) or record in the output/frontmatter that results may be truncated at these limits.
 
-### Thread 7: tools/pr-preservation/archive-pr.sh:134 (unresolved)
+**@AceHack** (2026-04-24T13:22:34Z):
+
+Fixed in 66e48f063082045871fb7d970bdb6fe213633524 (option: implement pagination, not update README to advertise truncation). All three top-level connections and per-thread comments now paginate via cursor loops. README updated to note pagination is in place so there is no gap between "captures all review threads + reviews + comments" claim and actual behaviour.
+
+### Thread 7: tools/pr-preservation/archive-pr.sh:134 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:28:45Z):
 
@@ -209,13 +325,21 @@ lines.append(f'base_ref: {json.dumps(pr.get("baseRefName") or "")}')
 lines.append(f'archived_at: {json.dumps(archived_at)}')
 ```
 
-### Thread 8: tools/pr-preservation/README.md:33 (unresolved)
+**@AceHack** (2026-04-24T13:22:36Z):
+
+Fixed in 66e48f063082045871fb7d970bdb6fe213633524. Added a `yaml_quote()` helper that wraps `json.dumps()` (double-quoted YAML strings with JSON-compatible escaping is valid YAML 1.2). Applied to every string-valued frontmatter field: title / author / state / created_at / merged_at / closed_at / head_ref / base_ref / archived_at / archive_tool. Only `pr_number` (integer) stays bare. Refs with `#` or `:` now parse cleanly.
+
+### Thread 8: tools/pr-preservation/README.md:33 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:28:45Z):
 
 P0: README says archives are written to `docs/pr-discussions/PR-<N>-<slug>.md`, but the script actually writes `PR-<N>` zero-padded to 4 digits (e.g., `PR-0356-...`). Update the documented filename pattern so operators can reliably locate files and avoid accidental duplicates.
 
-### Thread 9: docs/pr-discussions/PR-0352-backlog-otto-180-server-meshing-spacetimedb-deep-research-ga.md:68 (unresolved)
+**@AceHack** (2026-04-24T13:22:38Z):
+
+Fixed in 66e48f063082045871fb7d970bdb6fe213633524 — chose option A (update README to match script). Documented filename shape is now `PR-<NNNN>-<slug>.md` with zero-padding to four digits, explicitly called out in the Usage section with the rationale (lex-sort == num-sort for PR #0001..#9999). Picked this direction because the 10 backfilled files already use zero-padding and renaming them would churn cross-references and git history.
+
+### Thread 9: docs/pr-discussions/PR-0352-backlog-otto-180-server-meshing-spacetimedb-deep-research-ga.md:68 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:28:45Z):
 
@@ -223,3 +347,113 @@ P0: The backfilled `docs/pr-discussions/*.md` files include whitespace-only line
 ```suggestion
 
 ```
+
+**@AceHack** (2026-04-24T13:22:41Z):
+
+Fixed in 66e48f063082045871fb7d970bdb6fe213633524. Ran `find docs/pr-discussions -name '*.md' -exec perl -i -pe 's/[ \t]+$//' {} +` across all existing archives — MD009 clean (grep-verified: zero trailing-whitespace lines remaining). Also added an inline trailing-whitespace strip inside the archive writer itself so future archive runs stay clean without needing the post-hoc sweep.
+
+### Thread 10: tools/pr-preservation/archive-pr.sh:212 (resolved)
+
+**@chatgpt-codex-connector** (2026-04-24T13:26:42Z):
+
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Avoid re-fetching full payload on each pagination step**
+
+`paginate_top_level` always reissues the monolithic `QUERY`, so every extra page for one connection (e.g., `reviewsAfter`) also re-downloads page 1 of `reviewThreads` and `comments` (including nested thread comments from `comments(first: 100)`). On busy PRs this multiplies GraphQL cost and can hit API resource/rate limits before archival completes, even though pagination logic itself is correct. Splitting pagination into connection-specific queries (or otherwise avoiding refetch of unrelated connections) would prevent fetch failures under high-volume PRs.
+
+Useful? React with 👍 / 👎.
+
+**@AceHack** (2026-04-24T13:41:33Z):
+
+Codex P2 acknowledged and scoped, landed as a P2 research-grade BACKLOG row rather than an inline fix on this PR.
+
+**Three-outcome decision (Otto-226 / Otto-227, option 2 = narrow-fix + backlog):**
+
+- The finding is correct: `paginate_top_level` in `tools/pr-preservation/archive-pr.sh` reissues the full monolithic `QUERY` on every page, so walking extra pages of one connection (e.g. `reviewThreads`) re-fetches the full `reviews` + `pullRequest` payload. Works correctly; wastes GraphQL rate budget on PRs with many threads.
+- A proper fix is a ~30-60 LOC refactor: split the single `QUERY` into per-connection GraphQL fragments (one per `reviewThreads`, `reviews`, `comments-per-thread`) with separate cursors, compose results client-side, preserve the end-to-end archive format. That scope is beyond a single review-response commit, and risks regressing the self-hosting smoke test we just validated.
+- This PR keeps the current pagination shape. The refactor is queued as a P2 row at end of `## P2 — research-grade` in `docs/BACKLOG.md`, scope locked, citing this thread.
+
+**Commit:** dfc8ef554f094a32bf54356bd2a1b1029064b13c
+**BACKLOG row:** `docs/BACKLOG.md` — *"PR-archive pagination refactor — per-connection cursor pagination, not whole-query refetch"* (end of `## P2 — research-grade`)
+
+Resolving.
+
+### Thread 11: tools/pr-preservation/archive-pr.sh:390 (unresolved)
+
+**@chatgpt-codex-connector** (2026-04-24T13:45:51Z):
+
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve trailing whitespace in archived discussion text**
+
+The formatter rewrites every output line with `rstrip()`, which removes trailing spaces from PR bodies/reviews/comments before writing the archive. This changes markdown semantics in real cases (for example, GitHub comments that use two trailing spaces for hard line breaks), so the generated file is no longer a faithful audit copy of the original discussion. Since this tool is explicitly for durable preservation, this normalization should not be applied to user-authored text.
+
+Useful? React with 👍 / 👎.
+
+### Thread 12: tools/pr-preservation/archive-pr.sh:390 (unresolved)
+
+**@copilot-pull-request-reviewer** (2026-04-24T13:47:01Z):
+
+The output normalization only strips trailing whitespace; several generated archives (including the backfilled ones in this PR) contain 3+ consecutive blank lines (e.g., around <details> blocks), which will trip markdownlint MD012 because `docs/pr-discussions/**` is not in the markdownlint ignore list. Consider adding a safe normalization step that collapses multiple consecutive blank lines (or alternatively add `docs/pr-discussions/**` to `.markdownlint-cli2.jsonc` ignores) and then regenerate the backfilled archives so CI stays green.
+```suggestion
+content = '\n'.join(line.rstrip() for line in content.split('\n'))
+# Collapse excessive blank-line runs so generated archives
+# do not trip markdownlint MD012.
+normalized_lines = []
+blank_run = 0
+for line in content.split('\n'):
+    if line == '':
+        blank_run += 1
+    else:
+        blank_run = 0
+    if blank_run <= 2:
+        normalized_lines.append(line)
+content = '\n'.join(normalized_lines).rstrip() + '\n'
+```
+
+### Thread 13: tools/pr-preservation/archive-pr.sh:60 (unresolved)
+
+**@copilot-pull-request-reviewer** (2026-04-24T13:47:02Z):
+
+The repo-detection comment says the script "falls back" to Lucent-Financial-Group/Zeta if `gh repo view` fails, but the implementation hard-fails with exit 1 and does not provide any fallback. Please align the comment with actual behavior (or implement the documented fallback) so operators aren’t misled.
+
+### Thread 14: tools/pr-preservation/archive-pr.sh:50 (unresolved)
+
+**@copilot-pull-request-reviewer** (2026-04-24T13:47:02Z):
+
+`PR` is taken verbatim from argv and then `int(os.environ['PR'])` is called in the Python fetch driver. If the user passes a non-integer (or whitespace), this will raise a Python traceback and be reported as a generic “fetch failed … exit 1” with exit code 2. Consider validating `PR` is an integer in the shell before invoking Python and exiting 1 with a clear usage/error message.
+```suggestion
+PR="$1"
+if ! [[ "$PR" =~ ^[0-9]+$ ]]; then
+  echo "error: PR number must be a non-empty integer" >&2
+  echo "usage: $0 <PR-number>" >&2
+  exit 1
+fi
+```
+
+### Thread 15: docs/pr-discussions/PR-0354-tools-backlog-split-phase-1a-generator-schema-example-row-aa.md:87 (unresolved)
+
+**@copilot-pull-request-reviewer** (2026-04-24T13:47:02Z):
+
+This archived PR discussion includes multiple consecutive blank lines (e.g., between “**Reviewed commit:** …” and the following `<details>` block). With the current `.markdownlint-cli2.jsonc` config, MD012 (no multiple consecutive blank lines) will run on `docs/pr-discussions/**` and may fail CI. If the archive format is intended to be lint-clean, regenerate archives after adjusting the archiver to collapse excess blank lines; otherwise consider excluding `docs/pr-discussions/**` from markdownlint.
+
+### Thread 16: tools/pr-preservation/README.md:115 (unresolved)
+
+**@copilot-pull-request-reviewer** (2026-04-24T13:47:02Z):
+
+README lists a `bash 4+` dependency, but `archive-pr.sh` doesn’t appear to rely on bash-4-only features (and macOS still ships bash 3.2 by default). Either (a) enforce the version at runtime (fail fast with a helpful message), or (b) relax the documented requirement to just `bash` if bash 3.x is sufficient.
+```suggestion
+- `bash`, POSIX `mktemp`
+```
+
+### Thread 17: tools/pr-preservation/README.md:7 (unresolved)
+
+**@copilot-pull-request-reviewer** (2026-04-24T13:47:03Z):
+
+The intro paragraph says the tool writes `docs/pr-discussions/PR-<N>-<slug>.md`, but later the Usage section specifies the zero-padded `PR-<NNNN>-<slug>.md` naming. Please make the intro consistent with the actual filename format to avoid operators looking for the wrong path.
+```suggestion
+`docs/pr-discussions/PR-<NNNN>-<slug>.md` for durable
+```
+
+### Thread 18: tools/pr-preservation/archive-pr.sh:25 (unresolved)
+
+**@copilot-pull-request-reviewer** (2026-04-24T13:47:03Z):
+
+Header comment still describes the output path as `docs/pr-discussions/PR-<N>-<slug>.md`, but the implementation writes `PR-{number:04d}-...` (zero-padded to 4 digits). Consider updating the header comment so it matches the actual filename format (and the README’s `PR-<NNNN>-...` wording).

@@ -16,7 +16,7 @@
 # Usage:
 #   tools/pr-preservation/archive-pr.sh <PR-number>
 #
-# Output: writes docs/pr-discussions/PR-<N>-<slug>.md with
+# Output: writes docs/pr-discussions/PR-<NNNN>-<slug>.md with
 # YAML frontmatter (pr_number, title, author, merged_at,
 # state, archived_at) + all review threads + reviews +
 # general PR comments. PR numbers are zero-padded to four
@@ -39,6 +39,17 @@
 #   - `set -e`-safe capture of `gh api graphql` exit code
 #     so "fetch failed" diagnostics actually print.
 #   - YAML string values quoted (refs can contain `#` / `:`).
+# Review-thread drain Otto-234 fixes (PR #357, second pass):
+#   - Validate `PR` argv is a positive integer in the shell
+#     (avoids Python traceback + generic "exit 2" diagnostic).
+#   - Stop stripping trailing whitespace from archived text:
+#     markdown uses `"  \n"` as a hard-line-break, and this
+#     tool preserves a faithful audit copy.
+#   - Collapse runs of 3+ blank lines to 2 so the generated
+#     archives stay clean under markdownlint MD012.
+#   - README + header comment now match the implementation's
+#     zero-padded `PR-<NNNN>-<slug>.md` filename shape and
+#     document `bash` (not `bash 4+`) as the dependency.
 
 set -euo pipefail
 
@@ -48,12 +59,21 @@ if [ $# -lt 1 ]; then
 fi
 
 PR="$1"
+# Validate PR is a positive integer before invoking Python.
+# Prevents a Python traceback + generic "fetch failed exit 2"
+# when the operator passes a typo or non-integer arg.
+if ! [[ "$PR" =~ ^[0-9]+$ ]]; then
+  echo "error: PR number must be a non-empty positive integer (got: '$PR')" >&2
+  echo "usage: $0 <PR-number>" >&2
+  exit 1
+fi
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 
 # Dynamic owner / name — works from forks or after rename.
-# Falls back to Lucent-Financial-Group/Zeta only if the
-# detection command itself fails (e.g. not inside a repo
-# gh recognises). Never silently wrong.
+# Requires `gh repo view` to succeed; the script hard-fails
+# with exit 1 rather than silently defaulting to a baked-in
+# NWO (better to fail loud than archive to the wrong repo
+# path on a fork).
 REPO_NWO="$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || true)"
 if [ -z "${REPO_NWO}" ]; then
   echo "error: could not detect repo via 'gh repo view'. Is gh authenticated and this a GitHub repo?" >&2
@@ -385,9 +405,23 @@ if comments:
         lines.append('')
 
 content = '\n'.join(lines).rstrip() + '\n'
-# Strip trailing whitespace on every line — markdownlint
-# MD009 + keeps backfilled archives clean.
-content = '\n'.join(line.rstrip() for line in content.split('\n'))
+# Preserve trailing whitespace on user-authored text:
+# markdown uses two trailing spaces as a hard-line-break,
+# and this tool's purpose is a faithful audit copy.
+# We DO collapse runs of 3+ consecutive blank lines down
+# to 2 so markdownlint MD012 stays green on the generated
+# archives (the source content sometimes has 3+ blank
+# lines around <details> blocks).
+collapsed = []
+blank_run = 0
+for raw_line in content.split('\n'):
+    if raw_line == '':
+        blank_run += 1
+    else:
+        blank_run = 0
+    if blank_run <= 2:
+        collapsed.append(raw_line)
+content = '\n'.join(collapsed).rstrip() + '\n'
 with open(path, 'w', encoding='utf-8') as f:
     f.write(content)
 print(f'wrote {path} ({len(content)} bytes, {len(threads)} threads, {len(reviews)} reviews, {len(comments)} comments)')

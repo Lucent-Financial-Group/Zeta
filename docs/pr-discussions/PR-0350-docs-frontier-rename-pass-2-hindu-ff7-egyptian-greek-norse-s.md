@@ -1,15 +1,15 @@
 ---
 pr_number: 350
 title: "docs: Frontier rename pass-2 (Hindu/FF7/Egyptian/Greek/Norse) + Scientology research BACKLOG (Otto-175)"
-author: AceHack
-state: MERGED
-created_at: 2026-04-24T10:03:56Z
-merged_at: 2026-04-24T10:05:31Z
-closed_at: 2026-04-24T10:05:31Z
-head_ref: docs/frontier-rename-pass-2-plus-scientology-backlog
-base_ref: main
-archived_at: 2026-04-24T11:22:16Z
-archive_tool: tools/pr-preservation/archive-pr.sh
+author: "AceHack"
+state: "MERGED"
+created_at: "2026-04-24T10:03:56Z"
+merged_at: "2026-04-24T10:05:31Z"
+closed_at: "2026-04-24T10:05:31Z"
+head_ref: "docs/frontier-rename-pass-2-plus-scientology-backlog"
+base_ref: "main"
+archived_at: "2026-04-24T14:38:16Z"
+archive_tool: "tools/pr-preservation/archive-pr.sh"
 ---
 
 # PR #350: docs: Frontier rename pass-2 (Hindu/FF7/Egyptian/Greek/Norse) + Scientology research BACKLOG (Otto-175)
@@ -59,7 +59,7 @@ Pass-2 doc under `docs/research/`. Scientology row at END of P2 research-grade s
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `40c8793eea`
-
+    
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -72,10 +72,8 @@ Here are some automated review suggestions for this pull request.
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
-
-
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-
+            
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T10:08:03Z)

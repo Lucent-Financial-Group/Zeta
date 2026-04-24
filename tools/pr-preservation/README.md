@@ -4,7 +4,7 @@ Minimal implementation (Otto-207) of the PR-preservation
 BACKLOG directive (Otto-150..154, PR #335). Fetches a PR's
 review threads, reviews, and general comments via
 `gh api graphql` and writes them to
-`docs/pr-discussions/PR-<N>-<slug>.md` for durable
+`docs/pr-discussions/PR-<NNNN>-<slug>.md` for durable
 audit-trail storage outside of GitHub.
 
 ## Scope of this Phase-0 / minimal tool
@@ -112,7 +112,8 @@ Tracked on the PR-preservation BACKLOG row. Phases:
 
 - `gh` CLI authenticated
 - `python3` (stdlib only)
-- `bash 4+`, POSIX `mktemp`
+- `bash`, POSIX `mktemp` (the script uses no bash-4-only
+  features; macOS default `bash` 3.2 is fine)
 
 No external Python packages; no `yq` required.
 
