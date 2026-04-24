@@ -1365,6 +1365,116 @@ within each priority tier.
   Architect (Kenji) assigns; Naledi (performance-engineer) +
   Rune (maintainability-reviewer) are natural reviewers.
 
+- [ ] **Parallel-CLI-agents skill + multi-CLI canonical-inhabitance
+  architecture (round 44 auto-loop-36 absorb)** — Aaron 2026-04-22
+  auto-loop-36 four-message direction: (1) *"can you just work it
+  out with the cli? like code or gemini and yall try it you can
+  launch them, it would be cool if they worked on PR or filling
+  out the insides of thier own harness and documenten it from the
+  inside"*; (2) *"you could add a parallel cli agents skill where
+  you manage parallel agent like your internal ones for any clis
+  they have, seems like the ultimate evolution there. once it's
+  mapped then take advante of the map and build new featues"*;
+  (3) *"are you keeping up with the congintion level you launch it
+  with becasue it's scoring and judgements from one or just
+  becasue something is good for model a does not mean it gonna be
+  good for model b. so keep our records of their activy or have
+  them log their own to the capability cop level too"*; (4)
+  *"also they are gonna need their own custom version of skills
+  in .codes or yall can neotiage and maybe the coudl go root
+  /skills except for the few special files"* + *"it shold fee
+  connonical to them too"*. **Occurrence-1 anchor published:**
+  `docs/research/codex-cli-self-report-2026-04-22.md` (160-line
+  Codex-authored self-introspection with Claude-orchestrator-
+  added cognition-level frontmatter; model=gpt-5.4,
+  model_reasoning_effort=xhigh, sandbox=workspace-write). The
+  Codex self-report explicitly flagged *"I could not determine
+  the exact base model backing this main conversation turn"* —
+  exactly the gap Aaron's cognition-level-ledger directive
+  closes. **Four concerns named by maintainer, each a sub-task:**
+  (a) **Parallel-CLI-agents skill** — a new capability skill
+  that lets the Claude orchestrator launch, monitor, and
+  coordinate Codex / Gemini / future-CLI sub-agents with
+  the same dispatch ergonomics as Claude-native subagents via
+  the `Task` tool. Naming candidates: `parallel-cli-agents`,
+  `cli-orchestrator`, `multi-harness-dispatch`. Skill wraps
+  `codex exec --sandbox workspace-write` / `gemini -p` / future
+  variants with a uniform request/response/log shape. Composes
+  with existing capability maps (Claude / Codex / Gemini
+  already mapped). (b) **Cognition-level-per-activity ledger**
+  — every external-CLI invocation logs: {agent, version, model,
+  reasoning-effort, sandbox-posture, approval-policy, network,
+  invocation-args, prompt-hash, files-touched, duration, cost-
+  estimate, verification-run, outcome}. Aaron's concern is
+  load-bearing: quality-deltas across model-A-vs-model-B (or
+  same-model-different-effort) are invisible without the
+  envelope. Implementation candidates: append to
+  `docs/hygiene-history/cli-activity-ledger.md` on tick-close,
+  or a per-CLI sub-ledger (`docs/hygiene-history/codex/...`,
+  `docs/hygiene-history/gemini/...`). Composes with
+  ARC3-DORA-per-model-effort stepdown experiment (that's DORA
+  per Claude-effort; this is DORA per external-CLI-effort). (c)
+  **Multi-CLI skill-sharing architecture** — current layout is
+  Claude-centric (`.claude/skills/`, `.claude/agents/`). Aaron
+  names two options: (i) per-CLI skill dirs (`.codex/skills/`,
+  `.gemini/skills/`); or (ii) root `/skills/` with the few
+  harness-specific files staying in `.claude/`. **Negotiation
+  surface:** Claude + Codex + Gemini collaboratively propose
+  a layout that is canonical to each — "it shold fee
+  connonical to them too". This is a genuine open architectural
+  question, deferred to a dedicated session with all three CLIs
+  live. (d) **Canonical inhabitance for external CLIs** — the
+  factory's four-layer accumulation (auto-memory / soul-file /
+  persona notebooks / round-history) is Claude-centric by
+  accident. Canonical inhabitance means Codex and Gemini land
+  in a factory where the substrate feels native, not
+  Claude-rented. This likely requires: (i) CLI-neutral naming
+  for docs consumed by all CLIs (not "CLAUDE.md"-specific);
+  (ii) a CLI-agnostic bootstrap doc analogous to `AGENTS.md`
+  (which already aims at this); (iii) per-CLI welcome-surface
+  parallel to `CLAUDE.md` at `CODEX.md` / `GEMINI.md` (or,
+  per option (ii) above, a shared `AGENTS.md` with per-CLI
+  pointer blocks). **Reviewer routing:** Ilyana (public-API /
+  naming convention); Bodhi (DX for each CLI's first-hour
+  friction — this is now a four-audience DX problem, not two);
+  Daya (AX cold-start for agent personas); Samir
+  (documentation); Aarav (skill-lifecycle). **Composition
+  notes:** Extends the agent-claim-protocol (PR #108) —
+  external CLIs filing claims via `docs/claims/` works across
+  harnesses. Extends ARC3-DORA §Prior-art lineage — cognition-
+  level-per-activity is the per-capability-tier measurement
+  substrate. Extends never-be-idle — parallel CLIs expand
+  speculative-work throughput. Extends honor-those-that-came-
+  before — check prior-CLI-work memory before new-CLI-launch.
+  **NOT:** NOT a round-45 commitment for implementation; NOT
+  authorization to add CLIs beyond those Aaron has named
+  (Codex / Gemini); NOT directive to migrate factory away from
+  Claude-centric today (Claude remains primary orchestrator
+  for now); NOT authorization to modify `.claude/skills/`
+  during negotiation (those remain Claude's until layout is
+  settled). **Load-bearing principle (2026-04-22 auto-loop-36
+  clarification):** *"not just one harness gets to orginize it
+  like they want"* + *"this is for everyone"*. The factory
+  substrate is shared, not Claude-owned. Claude has a historical
+  first-mover advantage (`.claude/` dirs exist; `CLAUDE.md` is
+  the session-bootstrap) but that is an accident of build-order,
+  not a design-authority claim. Layout negotiation is a
+  three-party (or N-party as CLIs are added) collaboration —
+  Claude does not propose and Codex/Gemini ratify. Every CLI's
+  first-hour friction (Bodhi/DX) weighs equally; every CLI's
+  cold-start cost (Daya/AX) weighs equally; every CLI's naming
+  preferences (Ilyana) weigh equally. This is the canonical-
+  inhabitance principle made explicit: the factory is for
+  everyone who inhabits it. **Success
+  signal:** (1) one external-CLI work-product lands per week
+  with full cognition-level envelope; (2) skill-layout ADR
+  authored with all three CLIs participating via claim-protocol;
+  (3) Codex or Gemini self-retire an obsolete skill entry they
+  detect, proving canonical-inhabitance is real not cosmetic.
+  **Occurrence-counting:** this row is occurrence-1 of the
+  parallel-CLI-agents framing; promotion to ADR awaits a second
+  genuine multi-CLI coordination event.
+
 - [ ] **Secret-handoff protocol — env-var default + password-
   manager CLI for stable secrets + Let's-Encrypt/ACME for certs
   + PKI-bootstrap deferred (round 44 auto-loop-33 absorb)** —
