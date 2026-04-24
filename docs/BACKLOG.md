@@ -5800,6 +5800,136 @@ systems. This track claims the space.
   live Zeta instance on mainnet without Aminata
   threat-model sign-off on the network-exposure surface
   (Phase 2 only).
+- [ ] **Git-as-first-class-DB-interface — Zeta commands
+  ≈ git commands where semantics align.** Maintainer
+  2026-04-24 directive (verbatim, low-priority backlog):
+
+  > *"we want to have first class git inteface into our
+  > database, so our database can handle all / most git
+  > command, way backlog."*
+
+  Scope: an interface adapter that exposes Zeta DB
+  operations through git's command surface where
+  semantics align — `commit` = transaction boundary,
+  `branch` = isolated workspace, `merge` = multi-writer
+  reconciliation, `log` = history / retraction trail,
+  `diff` = delta query, `tag` = named-checkpoint,
+  `stash` = pending-write buffer, `cherry-pick` =
+  selective transaction replay. Z-set retraction-native
+  semantics map cleanly onto git's
+  immutable-history-with-revertible-deltas model.
+  Explicit mapping table needed (not every git command
+  has a Zeta analogue — `gc` / `fsck` are git-internal).
+  Composes with Otto-243 (git-native memory-sync — proves
+  substrate-level fit) and the WASM/git-storage row
+  below. Adds ONE entry-point; existing SQL / operator-
+  algebra / LINQ surfaces stay authoritative. Priority
+  P3 / way-backlog per maintainer; effort M+L. Composes
+  with `git-workflow-expert`.
+
+- [ ] **WASM-F# + git-as-storage-plugin — browser-only
+  bootstrap mode (zero server, zero install).**
+  Maintainer 2026-04-24 directive (verbatim,
+  way-back-backlog stretch goal):
+
+  > *"a storage plugin for our db that saves to git
+  > commonds lol. this will let me compile as wasm our
+  > f# and run our database enginge in the ui and it
+  > calls out to git for the actual operations? Am i
+  > dreaming for this second one? We should research it
+  > but it's a huge stretch way back backlog for the
+  > 2nd one."*
+
+  **Maintainer's framing question:** *"This complets
+  our bootstrap without requirments really i think? you
+  tell me."*
+
+  **Loop-agent assessment** (captured for future
+  reference; subject to maintainer challenge):
+
+  - **Yes, this completes the zero-server bootstrap —
+    via a different axis than Mode 1.** Both modes are
+    zero-install:
+    - **Mode 1** — full backend via tiny-seed AoT-
+      compiled or single-file JIT builds. Standalone
+      executable; NO .NET preinstall required. Just
+      download + run. (Maintainer correction
+      2026-04-24: existing planning is for tiny-seed
+      AoT + single-file JIT, not framework-dependent
+      builds.)
+    - **Mode 2** — browser-only via WASM-F# + any git
+      remote. NO executable to download (browser
+      handles WASM); NO server to run.
+    Browsers are universal; git remotes are commodity
+    (GitHub/GitLab free tier; self-hosted git is
+    trivial). Mode 2 is "even more zero" only in the
+    sense that there's no artifact to download — both
+    modes are install-free at the user-experience
+    level.
+  - **Not a dream — coherent stretch.** Pieces compose:
+    - WASM-F# is real today via Blazor WebAssembly +
+      Fable. Performance workable for non-hot-path;
+      hot-path needs in-browser cache.
+    - `isomorphic-git` brings the git protocol to the
+      browser; pairs with WASM-F#.
+    - Z-set entries serialize as commit blobs / tree
+      objects; retractions = `git revert` or branch
+      reset.
+    - Multi-writer = git's branch-and-merge model
+      (CRDT-friendly under Z-set semantics).
+    - Composes with Otto-243 (git-native memory-sync)
+      as precursor pattern.
+  - **Wild bit is performance.** Git ops NOT fast
+    enough for DB hot-path reads. But for **durable
+    writes + cross-machine sync + audit trail**, git
+    is genuinely good. Mode 2 architecture is
+    "browser viewer + git-backed durable substrate;
+    hot-path lives in browser memory" — not "every
+    read hits git".
+  - **Strong fit with Otto-274 progressive-adoption-
+    staircase Level 0** — "open a tab; no install" is
+    the lowest-friction adoption rung the factory has
+    yet articulated.
+  - **Real risk: write-amplification.** Every Zeta
+    write becomes a git commit. High-throughput
+    streams (e.g. blockchain ingest) would saturate
+    any git remote. Mode 2 suits LOW-VOLUME workloads
+    (per-user notebooks, factory memory sync,
+    configuration, knowledge bases). Mode 1 stays
+    load-bearing for production / streaming.
+
+  **Phased approach** (when this row activates):
+  - **Phase 0** — feasibility research: WASM-F#
+    runtime cost, isomorphic-git API surface, write
+    batching strategies, hot-path cache shape. Output:
+    `docs/research/wasm-fsharp-git-storage-feasibility.md`.
+  - **Phase 1** — proof-of-concept: minimal in-browser
+    Zeta with git-backed Z-set storage on a single
+    test workload (personal notebook). No streaming,
+    no multi-user.
+  - **Phase 2** — multi-user via git branches; merge
+    semantics for concurrent writes; conflict
+    resolution UX.
+  - **Phase 3** — production-mode hardening: write
+    batching, hot-path cache eviction, server-fallback
+    for high-throughput.
+
+  Priority P3 / way-back-backlog per maintainer;
+  effort L+ (research) + L (POC) + L (production).
+  **Does NOT authorize** starting POC code without
+  Phase-0 feasibility doc landing first. **Does NOT
+  authorize** declaring Mode 2 production-ready
+  without empirical write-throughput + read-latency
+  measurements + Aminata threat-model sign-off on the
+  exposed-git-remote attack surface.
+
+  Composes with the git-as-DB-interface row above
+  (sister; same direction), `wasm` (no skill exists yet
+  — gap), `fsharp-expert`, `git-workflow-expert`,
+  `crdt-expert`, Otto-243 (git-native memory-sync
+  precursor), Otto-274 (progressive-adoption-staircase
+  Level 0 candidate), Otto-275 (log-don't-implement —
+  capture, do not start POC).
 
 - [ ] **Land per-maintainer CURRENT-memory ADR + companion
   feedback memory.** PR #153 landed the CLAUDE.md fast-path
