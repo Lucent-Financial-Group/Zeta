@@ -130,11 +130,16 @@ shot port to work.
 - `-o, --output-format {text|json|stream-json}` — machine-
   readable output for agent-to-agent orchestration. `stream-json`
   is useful when a wrapping agent needs incremental output.
-- `-w, --worktree [name]` — **built-in git worktree isolation.**
-  Start the session in a new worktree; auto-generated name if
-  none given. Relevant because the human maintainer flagged
-  worktree-mode testing as part of the Gemini onboarding
-  directive.
+- `-w, --worktree [name]` — **built-in git worktree isolation
+  (experimental, feature-gated).** Start the session in a new
+  worktree; auto-generated name if none given. The flag itself
+  is only honoured when the `experimental.worktrees` setting
+  is enabled (see
+  `geminicli.com/docs/cli/git-worktrees/` — added in v0.37.0,
+  2026-04-08). Without that setting the CLI rejects the flag.
+  Relevant because the human maintainer flagged worktree-mode
+  testing as part of the Gemini onboarding; any factory
+  integration needs to enable the feature gate up front.
 - `-s, --sandbox` — sandbox-mode toggle.
 - `-y, --yolo` — auto-approve all tools. Equivalent to Claude
   Code's full-auto.
@@ -185,13 +190,19 @@ Extensions live at:
 
 ```
 ~/.gemini/extensions/<name>/
-    gemini-extension.json      # manifest
-    skills/                    # bundled skills (optional)
-    commands/                  # custom commands (optional)
-    .mcp.json                  # MCP server registrations
-    hooks.json                 # hook registrations
-    prompts/                   # bundled prompts
+    gemini-extension.json      # manifest + mcpServers field
+    skills/<name>/SKILL.md     # bundled skills (optional)
+    commands/*.toml            # TOML custom commands (optional)
+    hooks/hooks.json           # hook definitions (optional)
+    policies/*.toml            # policy files auto-loaded (optional)
+    prompts/                   # bundled prompts (optional)
 ```
+
+Note: MCP server definitions live inside `gemini-extension.json`
+under the top-level `mcpServers` field — there is no
+standalone `.mcp.json`. Hooks live in `hooks/hooks.json`, not
+at the root. Per the extension reference
+(`geminicli.com/docs/extensions/reference/`).
 
 ## Key differences vs. Claude Code and Codex
 
@@ -202,7 +213,7 @@ Extensions live at:
 | Hook migration tool | N/A | N/A | `gemini hooks migrate` (FROM Claude) |
 | Built-in worktree | external (`--add-dir` + manual) | N/A | `-w, --worktree [name]` |
 | Plan mode | `--permission-mode plan` | N/A (yet) | `--approval-mode plan` |
-| Output format | `--output-format json` | text-mostly | `-o {text\|json\|stream-json}` |
+| Output format | `--output-format json` | text-mostly | `-o` with `text`, `json`, or `stream-json` |
 | Policy engine | skills + hooks | sandbox + policy-dirs | first-class `--policy` + `--admin-policy` |
 | Agent-coord bus | N/A | N/A | `--acp` (experimental) |
 
@@ -217,10 +228,10 @@ factory, the Gemini port may be mechanical.
 
 ## Factory integration — shape suggestions (deferred design)
 
-Per the human maintainer's Otto-215 directive that
-factory-authored plugins must live in-source and target
-eventual cross-marketplace publication, Gemini integration
-follows the existing pattern:
+Per the standing factory direction that in-source is the
+home for factory-authored plugins (supporting eventual cross-
+marketplace publication), Gemini integration follows the
+existing pattern:
 
 1. Factory skills land at `.agents/skills/<skill>/SKILL.md`
    (cross-harness alias — one copy serves Claude Code + Codex +
