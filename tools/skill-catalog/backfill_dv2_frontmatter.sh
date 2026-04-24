@@ -115,7 +115,6 @@ compute_load_datetime() {
 }
 
 # compute_last_updated FILE -> YYYY-MM-DD of most-recent commit touching it
-# shellcheck disable=SC2329  # kept as a documented helper alongside compute_load_datetime; called externally / future-use
 compute_last_updated() {
   local file="$1"
   git log -1 --format='%ai' -- "$file" 2>/dev/null | awk '{print $1}'
@@ -157,7 +156,9 @@ process_one() {
     inject+=("load_datetime: \"$(compute_load_datetime "$file")\"")
   fi
   if ! field_present "last_updated" "$file"; then
-    inject+=("last_updated: \"${TODAY}\"")
+    local last_updated
+    last_updated="$(compute_last_updated "$file")"
+    inject+=("last_updated: \"${last_updated:-$TODAY}\"")
   fi
   if ! field_present "status" "$file"; then
     inject+=("status: active")
