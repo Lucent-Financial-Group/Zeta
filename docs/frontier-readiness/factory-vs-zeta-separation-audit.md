@@ -765,6 +765,7 @@ term entries (IVM, DBSP, Z-set, retraction, Spine, etc.)
 are Zeta-library-specific content.
 
 **File location post-split:** Frontier (format + preamble
+
 + the-rule-for-this-file + "spec has two meanings" framing
 pattern); Zeta retains specific term entries.
 
@@ -887,6 +888,7 @@ Effort: **S**.
 
 Total: 5 + 6 + 4 = **15** top-level files audited out of
 ~16. Remaining: the `.claude/skills/**` + `.claude/agents/**`
+
 + `openspec/**` + `tools/**` + `.github/**` directory-level
 surfaces (each a multi-file audit).
 
