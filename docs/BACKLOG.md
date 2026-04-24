@@ -2159,8 +2159,9 @@ within each priority tier.
 
   **Scope limits of the refinement:**
 
-  - Does NOT commit Otto to cede control. Otto remains primary while Aaron is in Claude Code (which is now). Async-mode Codex work only starts when Aaron is in Codex; Otto doesn't dispatch Codex work unilaterally.
-  - Does NOT authorise Codex session to edit `.claude/skills/` or any Otto-owned substrate. Symmetric: Otto should not edit Codex's own-harness substrate.
+  - Does NOT commit Otto to cede control. Otto remains primary while Aaron is in Claude Code (which is now). **Otto DOES dispatch Codex async work** — the primary coordinates; Aaron-harness-context determines which agent is primary at any given moment. Aaron Otto-79 correction: *"you do dispatch codex work, i will just switch whenver i feel like it once it's ready, i'll just go back and fourth from time to time probably when new models come out, you guys need to know when one is primary based on the harness im in and just do the right things so it's not an issue when you launch in tandem/async with you."*
+  - **Tandem / simultaneous launch is out-of-scope today; explicit Aaron opt-in required for a future test.** Aaron Otto-79: *"I won't launch both of you at the same unless i say, this is a future test to see if you can run indenpendenty without interference, but for now one of your will be the corrdinator at a time based on the harness i'm in."*
+  - Does NOT authorise Codex session to **edit** `.claude/skills/` or any Otto-owned substrate. Symmetric: Otto does not **edit** Codex's own-harness substrate. **BUT** — cross-harness **review** and **question-asking** are explicitly encouraged. Aaron Otto-79: *"yall should review each other and ask questions to better understand eachs others harness form the inside to improve our cross harness support."* The distinction is edit-not vs read-and-comment-yes — same shape as peer code review between humans: reviewer reads, comments, asks; author owns the edit.
   - Does NOT require harness-swap for Otto. The arc supports either-primary-any-time, not forced migration.
   - Does NOT bypass the harness-choice ADR (Stage 5) — that's still the decision surface when asymmetries warrant a reset.
 
