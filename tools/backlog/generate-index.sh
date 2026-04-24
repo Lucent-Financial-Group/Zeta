@@ -6,8 +6,8 @@
 # parses YAML frontmatter, emits a short-pointer index
 # sorted by (priority, id).
 #
-# Origin: Aaron Otto-181 directive to split BACKLOG.md. See
-# docs/research/backlog-split-design-otto-181.md for the
+# Origin: maintainer Otto-181 directive to split BACKLOG.md.
+# See docs/research/backlog-split-design-otto-181.md for the
 # design spec.
 #
 # Usage:
@@ -46,12 +46,14 @@ extract_field() {
   local file="$1"
   local field="$2"
   awk -v field="$field" '
-    BEGIN { in_fm = 0; found = "" }
-    /^---$/ { in_fm = !in_fm; next }
-    in_fm && $1 == field ":" {
-      # Grab everything after "field:"
+    BEGIN { state = 0; found = "" }   # 0=before, 1=inside, 2=after
+    /^---$/ {
+      if (state == 0) { state = 1; next }
+      if (state == 1) { state = 2; next }    # Codex P1: stop after closing
+    }
+    state == 1 && $1 == field ":" {
       sub(/^[^:]+:[[:space:]]*/, "")
-      gsub(/^"|"$/, "")
+      gsub(/^"|"$|^[[:space:]]*\x27|\x27[[:space:]]*$/, "")  # Codex P1: handle both " and '\''
       found = $0
     }
     END { print found }
@@ -101,7 +103,6 @@ HEADER
 
     # shellcheck disable=SC2013
     for file in $files; do
-      rel="${file#${REPO_ROOT}/}"
       link_path="backlog/${tier}/$(basename "$file")"
 
       id=$(extract_field "$file" "id")
@@ -125,8 +126,11 @@ HEADER
 FOOTER
 }
 
-# Generate into a temp file, then do the right thing.
-tmpout="$(mktemp)"
+# Generate into a temp file in the same directory as the
+# target so mv is a same-filesystem atomic rename. Copilot
+# P1: /tmp may be a different filesystem → mv falls back to
+# copy+unlink, not atomic.
+tmpout="$(mktemp "${INDEX_PATH}.tmp.XXXXXX")"
 trap 'rm -f "$tmpout"' EXIT
 generate > "$tmpout"
 

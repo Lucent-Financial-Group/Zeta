@@ -3,7 +3,7 @@
 Companion to `docs/backlog/` (per-row YAML-frontmatter files)
 and the generated `docs/BACKLOG.md` index.
 
-Origin: Aaron Otto-181 directive to split `docs/BACKLOG.md`
+Origin: maintainer Otto-181 directive to split `docs/BACKLOG.md`
 to eliminate the positional-append conflict cascade
 documented in Otto-171 queue-saturation memory. Design spec:
 `docs/research/backlog-split-design-otto-181.md`.
@@ -38,7 +38,7 @@ status: open
 title: Server Meshing and SpacetimeDB deep research
 tier: research-grade
 effort: L
-directive: Aaron Otto-180
+directive: maintainer Otto-180
 created: 2026-04-24
 last_updated: 2026-04-24
 composes_with:
@@ -62,7 +62,7 @@ tags: [game-industry, sharding, multi-node]
 | `title`        | yes      | string       | Short index-display title. |
 | `tier`         | no       | string       | Free-form; e.g. `research-grade`, `active-substrate`. |
 | `effort`       | no       | `S` / `M` / `L` | Size estimate. |
-| `directive`    | no       | string       | Origin reference; e.g. `Aaron Otto-180`, `Amara 18th ferry #4`. |
+| `directive`    | no       | string       | Origin reference; e.g. `maintainer Otto-180`, `Amara 18th ferry #4`. |
 | `created`      | yes      | YYYY-MM-DD   | First-landing date. |
 | `last_updated` | yes      | YYYY-MM-DD   | Updated on every content edit. |
 | `composes_with`| no       | list of `B-NNNN` | Cross-references; strict-lint-candidate Phase-2+. |
@@ -129,7 +129,7 @@ delete the file.
 ## Cross-references
 
 - `docs/research/backlog-split-design-otto-181.md` — full
-  design spec + 6 open questions Aaron's call on (some
+  design spec + 6 open questions the maintainer's call on (some
   answered by reasonable defaults in this phase).
 - `memory/feedback_aaron_asked_for_backlog_split_three
   _times_hot_file_detector_pr_213_exists_*.md` — context
