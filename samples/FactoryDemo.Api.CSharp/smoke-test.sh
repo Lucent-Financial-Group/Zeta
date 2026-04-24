@@ -36,7 +36,20 @@ dotnet build "$PROJECT" -c Release --nologo -v quiet >/dev/null
 # runs and writes into the host's system temp dir (honouring `$TMPDIR` when
 # set, falling back to `/tmp`). The path is printed on both failure and
 # success so the log is always discoverable.
-LOG_FILE=$(mktemp -t factory-demo-api-csharp.XXXXXX.log)
+#
+# mktemp portability: GNU (Linux) and BSD (macOS) have incompatible
+# invocations. GNU accepts `--tmpdir <template>` and XXXXXX mid-template;
+# BSD (macOS) requires `XXXXXX` to be the TAIL of the template and
+# rejects `--tmpdir` outright. Template `factory-demo-api-csharp.XXXXXX`
+# with XXXXXX at the end works on both; the `.log` extension is added
+# after the rename (portable since every POSIX shell has `mv`).
+TMP_BASE="${TMPDIR:-/tmp}"
+# Strip trailing slash so the join doesn't produce `//` that some tools
+# mishandle (harmless but uglies up the diagnostic path).
+TMP_BASE="${TMP_BASE%/}"
+_LOG_TMP=$(mktemp "${TMP_BASE}/factory-demo-api-csharp.XXXXXX")
+LOG_FILE="${_LOG_TMP}.log"
+mv "${_LOG_TMP}" "${LOG_FILE}"
 echo "Starting API on ${URL} (server log: ${LOG_FILE})..."
 
 # Run in background; capture PID so we can stop it on exit.

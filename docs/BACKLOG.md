@@ -9542,6 +9542,51 @@ Aarav.
 
 ---
 
+## P2 — FactoryDemo C# sample — deterministic smoke-test startup
+
+- [ ] **Smoke-test port allocation — replace random-in-range
+  with OS-assigned ephemeral port.** Codex P2 on PR #147:
+  `samples/FactoryDemo.Api.CSharp/smoke-test.sh` currently
+  picks a port from `5100-5499` via `RANDOM`, assumes it is
+  free, and fails with an address-in-use error if the port
+  is already occupied (parallel CI jobs, local services,
+  another smoke run). This creates flaky false negatives
+  unrelated to API correctness. **Scope:** two viable
+  approaches — (a) bind `--urls "http://127.0.0.1:0"` and
+  parse the chosen port from the Kestrel startup line in
+  the log file, or (b) pre-probe ports in the range with
+  `nc -z` / `/dev/tcp` and retry until one is free.
+  Approach (a) is preferred (truly deterministic; no race
+  window between probe and bind). Sibling
+  `samples/FactoryDemo.Api.FSharp/smoke-test.sh` has the
+  same issue and should be fixed in parallel. **Effort:**
+  S (shell-only, maybe 20 lines across both scripts plus a
+  log-line parser). **Owner:** devops-engineer. **Source:**
+  Codex thread `PRRT_kwDOSF9kNM59gdjf` on PR #147.
+
+## P2 — FactoryDemo C# sample — solution project-type GUID hygiene
+
+- [ ] **Align `FactoryDemo.Api.CSharp` project-type GUID
+  with other SDK-style C# projects.** Copilot finding on
+  PR #147: `Zeta.sln` lists `FactoryDemo.Api.CSharp` under
+  the legacy C# project-type GUID
+  `{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}` while every
+  other SDK-style C# project (`Core.CSharp`,
+  `Tests.CSharp`, `Core.CSharp.Tests`) uses the modern
+  SDK-style GUID `{9A19103F-16F7-4668-BE54-9A1E7A4F7556}`.
+  Mixing GUIDs can confuse solution-filter tooling and
+  Visual-Studio solution-node grouping; the `.csproj`
+  itself is already `<Project Sdk="Microsoft.NET.Sdk.Web">`
+  so the legacy GUID is purely cosmetic drift from the
+  initial `dotnet new` template. **Scope:** change the
+  single GUID in `Zeta.sln` line 32; verify `dotnet
+  build -c Release` stays at 0W/0E. **Effort:** XS
+  (single-line GUID swap). **Owner:** devops-engineer or
+  msbuild-expert. **Source:** Copilot thread
+  `PRRT_kwDOSF9kNM59geKB` on PR #147.
+
+---
+
 ## Source of this backlog
 
 - `docs/MISSED-ITEMS-AUDIT.md` — per-round sweep
