@@ -909,7 +909,7 @@ discipline is tracked in `docs/BACKLOG.md` row
 *"Separation-audit cross-PR rollup — mechanically verify
 pattern-summary counts against in-file `## Audit — ...`
 sections"* (P2 research-grade; three options: wait for
-#188 to merge, per-PR summary-row landings, or tooling diff
+`#188` to merge, per-PR summary-row landings, or tooling diff
 check).
 
 ## How this audit connects to the multi-repo split
