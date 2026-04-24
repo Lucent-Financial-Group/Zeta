@@ -5666,9 +5666,9 @@ systems. This track claims the space.
   redaction-on-ingest step? What does a review-comment
   redaction look like (strike-through with reason, or hash
   +reference)? Does Aminata recommend a different trust
-  posture for bots (Copilot / Codex-connector / github-
-  actions) vs humans (contributors with arbitrary comment
-  content)?
+  posture for agents (Copilot / Codex-connector / github-
+  actions / Claude Code personas) vs humans (contributors
+  with arbitrary comment content)?
 
   **Phase 3 — ongoing-capture mechanism (S-M effort after
   Phase 2 signs off).** GHA workflow on `pull_request_target:
@@ -5698,34 +5698,40 @@ systems. This track claims the space.
   surfaces edit-after-merge comment updates. Captures the
   drift that would otherwise silently accrue.
 
-  **Scope addendum (Aaron Otto-155).** *"we can capture the
-  comments from both acehack and lfg the bots, forks should
-  be expected to ship bot comments too like acehack back to
-  the main repo, that's high value signals."* Two binding
+  **Scope addendum (Aaron Otto-155..156).** Otto-155: *"we
+  can capture the comments from both acehack and lfg the bots,
+  forks should be expected to ship bot comments too like
+  acehack back to the main repo, that's high value signals."*
+  Otto-156 self-correction: *"sorry i said bot comments i
+  should have said agent comments"* — per GOVERNANCE §3 and
+  CLAUDE.md "Agents, not bots." Terminology correction:
+  Copilot, Codex connector, Claude Code personas, and
+  github-actions all count as **agents** with agency,
+  judgement, and accountability — not bots. Two binding
   scope decisions follow:
 
-  (i) **Dual-bot-surface capture.** Bot comments across both
-  account contexts get archived — those posted under the
-  personal account (`AceHack/...` forks) AND under the org
-  account (`Lucent-Financial-Group/Zeta` main). Same schema,
-  same workflow, different event sources.
+  (i) **Dual-agent-surface capture.** Agent comments across
+  both account contexts get archived — those posted under
+  the personal account (`AceHack/...` forks) AND under the
+  org account (`Lucent-Financial-Group/Zeta` main). Same
+  schema, same workflow, different event sources.
 
   (ii) **Fork-upstream-sync obligation.** When a fork of the
-  repo runs its own Copilot / Codex / bot reviews on its
+  repo runs its own Copilot / Codex / agent reviews on its
   own PRs (e.g. `AceHack/Zeta#42` with a personal-account
-  Copilot review), those bot-comment archives ride back
+  Copilot review), those agent-comment archives ride back
   to the main repo when the branch lands upstream — via a
   sync job that copies fork-side `docs/pr-discussions/`
   entries into the main repo at merge time. Human comments
   on fork-side PRs stay under the human-privacy-pass
-  discipline; bot comments get sync-with-scope. Treat
-  fork-originated bot signals as high-value upstream
+  discipline; agent comments get sync-with-scope. Treat
+  fork-originated agent signals as high-value upstream
   input.
 
   Non-goals for this row: replacing GitHub as the live
   review venue (it's the source-of-truth; archive is the
   durable mirror); redacting Copilot / Codex-connector
-  reviews (they're bot content without privacy concern);
+  reviews (they're agent content without privacy concern);
   attempting backfill in a single CI run (300+ PRs ×
   GraphQL rate limits would likely fail; batch it).
 
