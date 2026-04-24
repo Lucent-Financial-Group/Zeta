@@ -4764,8 +4764,10 @@ systems. This track claims the space.
   user-facing UI layer name:
   - Primary UX design doc:
     `docs/research/frontier-ux-zora-evolution-2026-04-24.md`
-  - BACKLOG row ~4381 / ~4408 — "Frontier UI" + "Otto-63
-    Frontier burn-rate-UI" cross-refs
+  - "Frontier UI" + Frontier burn-rate-UI concept,
+    cross-referenced in the plugin-inventory row below
+    (no standalone BACKLOG row yet — the concept lives in
+    memory pointers and is referenced inline here)
   - Memory pointer (concrete file in
     `memory/MEMORY.md`):
     `memory/feedback_aaron_dont_wait_on_approval_log_decisions_frontier_ui_is_his_review_surface_2026_04_24.md`
@@ -4850,8 +4852,9 @@ systems. This track claims the space.
     below) — cross-reference update post-rename.
   - Aurora / Zeta / KSK naming triangle — rename slots
     into this ecosystem without adding a fourth brand
-    (see `docs/definitions/KSK.md`, Amara 5th / 7th /
-    16th ferries).
+    (see `docs/definitions/KSK.md` (proposed, landing via
+    the "KSK naming definition doc" BACKLOG row above),
+    Amara 5th / 7th / 16th ferries).
   - DST + Cartel-Lab + Veridicality internal module
     names — unaffected (not public-UI).
 
@@ -4880,7 +4883,7 @@ systems. This track claims the space.
 
   1. **`zeta-codex-plugin`** (the Otto-103 A/B/C question). In-tree manifest at `.codex-plugin/plugin.json` pointing at existing `.codex/skills/**` (Option B from Otto-103) is the likely shape if we ship this. Aaron's call per Otto-103 specific-ask.
   2. **`zeta-claude-plugin`** (parallel for Claude Code). Currently Zeta's `.claude/skills/**` is unbundled; a `.claude-plugin/plugin.json` at repo root would make the skill suite installable as a single plugin. Useful for other projects that want to consume Zeta's skill library.
-  3. **`frontier-UI-plugin`** (speculative; ties to the Otto-63 Frontier burn-rate-UI row). Plugin that surfaces Zeta's factory state (tick-history / memory-index / alignment-trajectory-plot / PR-queue-health) to the Frontier UI surface. Requires the Frontier UI to exist first; not a near-term deliverable.
+  3. **`frontier-UI-plugin`** (speculative; ties to the Frontier burn-rate-UI concept cross-referenced in the Frontier-naming-conflict row above). Plugin that surfaces Zeta's factory state (tick-history / memory-index / alignment-trajectory-plot / PR-queue-health) to the Frontier UI surface. Requires the Frontier UI to exist first; not a near-term deliverable.
   4. **`zeta-decision-proxy-plugin`** (PR #222 decision-proxy-evidence schema). Plugin exposing the `docs/decision-proxy-evidence/` substrate as first-class tooling for any agent (Otto / future Codex Otto / Aminata / etc.) that needs to file evidence records.
   5. **`zeta-drift-detector-plugin`** (future; depends on the provenance-aware-bullshit-detector implementation from 8th-ferry arc landing). Plugin wrapping SD-9 + DRIFT-TAXONOMY pattern 5 + citations-as-first-class + the bullshit-detector. Would give any agent a `$drift-check` invocation.
 
@@ -4907,7 +4910,7 @@ systems. This track claims the space.
   - **`.claude/skills/**` (~200 skills)** — largest factory-authored skill surface; classification matrix in Phase 1 decides how it gets plugin-wrapped (if at all).
   - **`~/.claude/settings.json` `enabledPlugins`** — inspected via project settings; third-party plugin consumption separate from factory-authored output.
   - **GOVERNANCE.md §4 skill-creator workflow** — skill authoring discipline; plugin authoring discipline is parallel.
-  - **Otto-63 Frontier burn-rate-UI** row — plugin #3 (`frontier-UI-plugin`) ties directly; dependent on Frontier UI existing.
+  - **Frontier burn-rate-UI concept** (cross-referenced in the Frontier-naming-conflict row above; no standalone BACKLOG row yet) — plugin #3 (`frontier-UI-plugin`) ties directly; dependent on Frontier UI existing.
   - **Otto-79 cross-harness-edit-no** — each harness's plugins live in its own substrate (`.claude-plugin/` vs `.codex-plugin/`); factory discipline applies to both independently.
 
   **Scope limits:**
