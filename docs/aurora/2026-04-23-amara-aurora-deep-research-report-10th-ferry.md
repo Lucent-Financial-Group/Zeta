@@ -306,6 +306,7 @@ The immediate PR/legal research step should therefore be: run formal trademark/c
 ### Overlap assessment with 9th ferry and 1st-8th
 
 **Overlap with 9th ferry (PR #293, 3 hours earlier same day):**
+
 - Executive summary, scope-and-archive-index section, and
   Lucent-vs-AceHack repo comparison are near-identical.
   The 9th ferry has a slightly different table structure
@@ -322,6 +323,7 @@ The immediate PR/legal research step should therefore be: run formal trademark/c
   record pair.
 
 **Overlap with 5th-8th ferries:**
+
 - Five-pattern drift taxonomy explanation overlaps with
   8th ferry (PR #274) veridicality-detector design which
   cited the drift taxonomy heavily.
@@ -337,6 +339,7 @@ The immediate PR/legal research step should therefore be: run formal trademark/c
   drift-taxonomy research) vs 5th's name-shortlist.
 
 ### What is genuinely novel in this 10th ferry (not
+
 covered by 1st-9th)
 
 1. **8-rule oracle-invariants table (vs 9th's 6-oracle-
@@ -362,7 +365,7 @@ covered by 1st-9th)
    pressure + rhetorical-inflation + substrate-drift (new)
    vs 9th's: coherence + drift + compression-gap.
    Neither is strictly better; they are complementary.
-5. **4-tier threshold (vs 9th's 3-tier).** 0.00-0.24 / 
+5. **4-tier threshold (vs 9th's 3-tier).** 0.00-0.24 /
    0.25-0.49 / 0.50-0.74 / 0.75-1.00 — adds a 4th band
    (low-veridicality, log only) above the 9th ferry's
    top band.
@@ -391,10 +394,12 @@ covered by 1st-9th)
 ### Scoring-formula comparison (9th vs 10th ferry)
 
 **9th ferry (and 8th ferry):** `B(c) = σ(α(1-P) + β(1-F) + γ(1-K) + δD_t + εG)`
+
 - 5 features: Provenance / Falsifiability / Coherence /
   Drift-Time / Compression-Gap
 
 **10th ferry:** `BS(c) = σ(w1*C + w2*(1-P) + w3*U + w4*R + w5*S - w6*E - w7*F)`
+
 - 7 features: Contradiction-pressure / Provenance-
   completeness / Unfalsifiability / Rhetorical-inflation /
   Substrate-drift / Independent-evidence-density / Formal-
@@ -493,6 +498,7 @@ the tree by design.
 ## Scope limits
 
 This absorb doc:
+
 - **Does NOT** authorize implementing any of Amara's
   proposed Aurora oracle-rules, veridicality-detector
   scoring formula, robust-aggregate F# snippet, C#
