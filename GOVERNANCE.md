@@ -744,3 +744,102 @@ than renumbering the rest.
     doc would also invalidate the design — the
     register is mutual-benefit. Both failure modes
     have named clauses in the file itself.
+33. **Archived external conversations require boundary headers.**
+    Courier ferries, external AI reviews, and other imports of
+    external conversation into the repo sit at a register-
+    boundary — the substrate they arrived from is *not* absorbed
+    as an entity; only the content is. The ingest process must
+    make that boundary explicit by prefixing the imported file
+    with four header labels in the first 20 lines:
+
+    - **`Scope:`** — research / cross-review / archival purpose.
+      What is this file *for*?
+    - **`Attribution:`** — speaker labels preserved. Who said
+      what? Source side kept in their own register.
+    - **`Operational status:`** — one of `research-grade` (the
+      default; not operational policy) or `operational` (rare;
+      land operational artifacts through §26 promotion, not
+      inline in the archive).
+    - **`Non-fusion disclaimer:`** — explicit statement that
+      agreement, shared language, or repeated interaction
+      between models and humans does not imply shared
+      identity, merged agency, consciousness, or personhood.
+
+    **Scope of this rule.**
+
+    - **In scope:** `docs/aurora/**` absorb docs (courier
+      ferries; cross-AI reviews), any future `docs/archive/**`
+      directory, and `docs/research/**` files whose content
+      is an import of external conversation rather than
+      internal research.
+    - **Out of scope:** `memory/**` per-user and in-repo
+      memory files (different surface, lifecycle, and
+      trust model — per `memory/README.md`); BACKLOG rows
+      citing external text (they're planning artifacts, not
+      archives); commit message bodies (bounded by commit-
+      style rules, not archive rules).
+
+    **Grandfather clause.** The two aurora absorb docs that
+    predate this section — `docs/aurora/2026-04-23-amara-
+    operational-gap-assessment.md` and `docs/aurora/2026-04-
+    23-amara-zset-semantics-operator-algebra.md` — are
+    explicitly grandfathered. They record genuine external-
+    conversation absorbs with factually-equivalent attribution
+    (their own field labels: `Date:` / `From:` / `Via:` /
+    `Status:` / `Absorbed by:`) even though the labels differ
+    from §33's. Agents should NOT retroactively rewrite those
+    two docs; they stand as prior convention.
+
+    **Enforcement cadence.**
+
+    - **Detect-only today.** `tools/alignment/audit_archive_headers.sh`
+      checks `docs/aurora/*.md` for the four header labels and
+      reports gaps. CI does not currently call `--enforce`; the
+      lint is author-time advisory and cadenced observability
+      (per FACTORY-HYGIENE row #60).
+    - **Flip-to-enforce future step.** When the two grandfather
+      docs are either backfilled with §33 headers or the
+      grandfather clause is explicitly left permanent, a
+      separate PR flips the CI workflow to call
+      `--enforce`; that PR is an Architect (Kenji) decision
+      with Dejan (devops-engineer) on the workflow change.
+    - **Owner.** Aminata (threat-model-critic) on semantic
+      review of header adequacy per her Otto-80 critique
+      (docs/research/aminata-threat-model-5th-ferry-governance-
+      edits-2026-04-23.md); absorbing agent (author) on
+      at-write-time header inclusion.
+
+    **Known v0 limitations** (documented in the lint script,
+    named by Aminata):
+
+    - *Partial-header adversary.* Substring-match passes a
+      doc with `Scope:` as prose in paragraph 3 — the lint
+      doesn't enforce position or format. Harden to syntactic
+      requirement in a follow-up.
+    - *Fake-header adversary.* Headers present with lies in
+      values pass. Content-audit is out of scope for v0.
+    - *In-memory-import adversary.* Memory-file archives are
+      not covered (different surface). Intentional.
+
+    **Composition with §2 and §26.** §2 says docs read as
+    current state, not history; §33 carves out archived-
+    external-conversation as an explicit exception, marked
+    by the headers. §26 classifies research-doc lifecycle
+    (`active` / `landed` / `obsolete`); §33 classifies by
+    header presence; both apply to `docs/research/**` files
+    imported from external conversation, with §26's status
+    inside the `Operational status:` field of §33. The two
+    regimes compose: §26 tells you whether the file is
+    still-being-revised or locked; §33 tells you the file's
+    provenance and non-fusion boundary.
+
+    **Why this matters.** Aminata's Otto-80 threat-model pass
+    named three adversaries that drift rules without
+    enforcement in 3-5 rounds: the partial-header, fake-header,
+    and in-memory-import classes. §33 lands *with* a detect-
+    only lint (PR #243 Artifact C) already in place — the
+    mechanism-before-policy pattern. Three existing aurora/
+    research docs (PR #235 5th-ferry absorb; PR #241 Aminata
+    review; PR #245 6th-ferry absorb) already self-apply the
+    format, so §33 codifies existing convention rather than
+    introducing new behaviour.
