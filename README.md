@@ -90,7 +90,7 @@ correctly under the paper's rules.
 ## Quick tour
 
 ```fsharp
-open Dbsp.Core
+open Zeta.Core
 
 let circuit = Circuit.create ()
 let orders = circuit.ZSetInput<string * int64> ()
@@ -103,17 +103,20 @@ let totals =
 
 let view = circuit.Output(circuit.IntegrateZSet totals)
 
-orders.Send(ZSet.ofKeys [ "alice", 100L ; "bob", 50L ])
-do! circuit.StepAsync ()
+async {
+    orders.Send(ZSet.ofKeys [ "alice", 100L ; "bob", 50L ])
+    do! circuit.StepAsync () |> Async.AwaitTask
 
-for e in view.Current do
-    printfn "%A -> weight %d" e.Key e.Weight
+    for e in view.Current do
+        printfn "%A -> weight %d" e.Key e.Weight
+}
+|> Async.RunSynchronously
 ```
 
 And the same thing, C#-side:
 
 ```csharp
-using Dbsp.Core;
+using Zeta.Core;
 
 var circuit = new Circuit();
 var orders = circuit.ZSetInput<(string, long)>();
