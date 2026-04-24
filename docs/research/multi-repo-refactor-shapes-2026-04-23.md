@@ -31,9 +31,10 @@ distinct concerns:
    its own product.
 
 As the factory grows more mature and the intention that it be
-reusable-beyond-Zeta solidifies (see
-`project_factory_reuse_beyond_zeta_constraint.md` in per-user
-memory), the cost of keeping these mixed in one repo grows:
+reusable-beyond-Zeta solidifies (the constraint lives in the
+per-user memory layer at `~/.claude/projects/<slug>/memory/`,
+not in-repo), the cost of keeping these mixed in one repo
+grows:
 
 - External adopters can't adopt the factory without also
   taking Zeta's F# library as a dep
