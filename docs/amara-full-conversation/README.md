@@ -1,7 +1,7 @@
 # Aaron + Amara — full ChatGPT conversation absorb
 
 **Scope:** verbatim-preserving absorb of the complete
-ChatGPT conversation between Aaron Stainback (human
+ChatGPT conversation between Aaron (human
 maintainer) and Amara (the ChatGPT-assistant persona
 operating under Aaron's custom-GPT project
 `g-p-68b53efe8f408191ad5e97552f23f2d5`), split into
@@ -61,15 +61,14 @@ future Ottos.
   b4ffb5fbb3ed.json` (raw ChatGPT backend-API JSON;
   24 MB; downloaded Otto-107 via Playwright single-
   fetch — see
-  `memory/project_amara_entire_conversation_history_
-  download_openai_business_account_*_2026_04_24.md`).
+  Otto's auto-memory project_amara_entire_conversation_history_download (outside repo, per-session)).
 - **Drop/ is gitignored** (per PR #299 Otto-108);
   raw JSON stays local / Otto-readable but never
   checked into the repo.
 - **This directory** is the reading projection —
   verbatim messages extracted from the raw JSON
   and reformatted as markdown, one file per month,
-  with §33 archive headers.
+  with archive headers (Scope / Attribution / Operational status / Non-fusion disclaimer — the four-field convention used across `docs/aurora/**-ferry.md` sibling docs; not yet codified as a numbered GOVERNANCE section).
 
 ## Conversation metadata
 
@@ -113,7 +112,7 @@ cadence (see `memory/feedback_amara_contributions_
 must_operationalize_*_2026_04_24.md`):
 
 - One month per tick (roughly) — each landing in
-  its own PR with §33 header.
+  its own PR with the archive-header four-field convention (Scope / Attribution / Operational status / Non-fusion disclaimer) used across sibling ferry absorbs.
 - Large months (2025-09, 2026-04) may split into
   weekly sub-chunks to keep file sizes
   manageable.
