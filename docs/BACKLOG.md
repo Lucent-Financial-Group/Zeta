@@ -1147,6 +1147,167 @@ within each priority tier.
   ClickHouse, Feldera. Priority post-v1 — v1 ships
   row-oriented Spine first, columnar follows.
 
+- [ ] **Server Meshing + SpacetimeDB — deep research on
+  cross-shard communication patterns for Zeta's multi-node
+  DB backend; game-industry competitive angle.** Aaron
+  Otto-180 directive: *"also backlog server mesh from star
+  citizen, our db backend when we shard it should support
+  this style of cross shard communication like server mesh,
+  it's amamzing actually, i think space time db is similar
+  too or not it might be orthogonal but we want to support
+  these use cases in our backend too. do deep reserach
+  here, this could get us lots of customers in the game
+  industruy if we can compete with server mess/space time
+  db"*.
+
+  **CIG / RSI attribution context (Aaron supplied):**
+  Cloud Imperium Games (CIG) develops Star Citizen +
+  Squadron 42. Roberts Space Industries (RSI) is CIG's
+  publishing / marketing / official-web subsidiary (also
+  an in-game ship manufacturer in the lore). Founded
+  April 2012 by Chris Roberts (Wing Commander series).
+  Multiple studios including Cloud Imperium Games Texas
+  LLC + Foundry 42 drive persistent-universe development.
+  Crowdfunded MMO; immersive first-person space
+  simulator.
+
+  **Two architectures to research (likely orthogonal per
+  Aaron's correct intuition):**
+
+  1. **Server Meshing (CIG / Star Citizen).** Distributed
+     simulation across multiple game servers that stitch
+     together a single persistent universe. Entities /
+     state / physics propagate across server boundaries
+     as players move between meshed servers; authority
+     over entities hands off between servers
+     transparently. Public sources: CIG "Inside Star
+     Citizen" video series, Star Citizen Wiki, Cloud
+     Imperium engineering blog posts, RSI comm-links.
+     Dynamic Server Meshing (the full vision) as opposed
+     to Static Server Meshing (the incremental milestone
+     CIG has been shipping) — both need research.
+
+  2. **SpacetimeDB (Clockwork Labs).** Relational DB +
+     game-server hybrid. Server logic lives inside the
+     DB as "reducers" (stored-procedure-like functions);
+     clients connect directly to the DB which runs
+     authoritative game logic + persistence. Pitch: no
+     separate game server; "the database IS the server."
+     Claims: 1000x cheaper + faster than traditional MMO
+     backend architecture. Open-source at
+     `clockworklabs/SpacetimeDB`.
+
+  **Why orthogonal:** Server Meshing is horizontal-
+  scaling across many game servers; SpacetimeDB is
+  vertical-integration of DB-plus-server into one
+  process. Both solve the same problem (MMO-scale
+  persistent-state-plus-low-latency-gameplay) but at
+  different architectural layers. Zeta's DBSP substrate
+  could in principle support EITHER pattern (or both):
+
+  - Zeta-as-SpacetimeDB-analog: DBSP operators as
+    reducer-equivalents; retraction-native algebra
+    handles client rollbacks cleanly.
+  - Zeta-as-Server-Meshing-substrate: the sharding
+    layer (when it graduates from current single-node)
+    carries the cross-shard entity-handoff + state-
+    propagation semantics natively because Zeta events
+    are already signed-weight ZSet deltas.
+
+  **Competitive differentiator for Zeta:**
+
+  - **Retraction-native semantics.** Both Server Meshing
+    and SpacetimeDB have to solve "what happens when an
+    authoritative server decides a past event didn't
+    happen" (lag compensation, rollback netcode, failed
+    transactions). Zeta's retraction-native algebra
+    answers this natively by design, not as a bolted-
+    on correction layer.
+  - **Time-travel queries** (from the Bitemporal row
+    above) compose with persistent-universe debugging
+    / replay / match-review.
+  - **Columnar storage** (adjacent row above) serves
+    analytics workloads (telemetry, economy metrics,
+    balance data) that game studios pay serious money
+    for.
+
+  **Research deliverable:**
+  `docs/research/server-meshing-spacetimedb-comparison-zeta-sharding-fit.md`.
+  Deep dive with sections:
+
+  1. Server Meshing architecture (static vs dynamic,
+     entity handoff mechanics, state-replication model,
+     known failure modes, public roadmap).
+  2. SpacetimeDB architecture (reducer model, Wasm
+     execution, replication strategy, subscription
+     model, pricing model).
+  3. Zeta sharding design-fit: how DBSP + retraction
+     + ZSet-algebra compose with each pattern.
+  4. Competitive positioning: which game-industry
+     customer segments would prefer each pattern +
+     where Zeta's differentiators (retraction-native,
+     columnar, bitemporal, F#/.NET ecosystem) win.
+  5. Integration scenarios: "Zeta beneath
+     SpacetimeDB" (Zeta as the DBSP engine under
+     SpacetimeDB's reducer interface) vs "Zeta
+     replaces SpacetimeDB" vs "Zeta + Server Meshing
+     layer" — non-exhaustive.
+
+  **Customer-industry angle (Aaron's framing):**
+  *"this could get us lots of customers in the game
+  industruy if we can compete with server mess/space
+  time db"*. Game-industry buyers care about
+  persistent-universe scale, anti-cheat (deterministic
+  replay under retraction is a natural win), economy
+  simulation, and per-region latency. Zeta's
+  differentiators map onto all four. Research memo
+  should surface 3-5 named studio-types
+  (MMO developers / simulation games / competitive
+  esports / mobile persistent / VR-social) with
+  specific value propositions per segment.
+
+  **IP discipline (unchanged from Otto-175c pattern).**
+  Research uses public-domain framing ONLY; Star-Citizen
+  and SpacetimeDB names appear here and in the research
+  memo as industry-landscape references (reviewer /
+  comparison targets), NOT as factory-adoption of those
+  marks. Specifically:
+
+  - No ingestion of Cloud Imperium Games proprietary
+    content (leaked dev blogs, non-public design docs,
+    closed-beta material). Public content — Inside-Star-
+    Citizen videos, RSI-Comm-Link blog posts, published
+    marketing + roadmap — is research-permitted.
+  - No ingestion of SpacetimeDB proprietary code or docs
+    beyond what's published under their Apache-2 license
+    at `clockworklabs/SpacetimeDB`. Public code study +
+    architecture-paper reading is research-permitted.
+    study is fine).
+  - No positioning of factory as CIG-adjacent or
+    SpacetimeDB-adjacent in public branding;
+    technical-substrate comparison is permitted as
+    engineering-landscape reference.
+  - No reproduction of paid industry-analyst reports
+    (Gartner / Forrester MMO-infra coverage, if any)
+    without licensed access.
+
+  **Priority P2 research-grade** (post-v1 scope; single-
+  node Zeta ships first; multi-node + sharding follow);
+  effort L (deep comparative architecture research) +
+  L (subsequent design ADR when sharding graduates).
+  Composes with: the existing Bitemporal row (above) +
+  Columnar storage row (above) + Pluggable wire-
+  protocol row (around line 830) + Regular-database
+  façade row (above) + Otto-175c starship-franchise-
+  mapping row (Star Citizen thematic research row
+  filed in PR #351; landed on main). Waits on Zeta
+  multi-node foundation (currently unshipped; prior
+  Amara ferries referencing the multi-node future (the
+  11th-ferry-Temporal-Coordination-Detection + 12th-
+  ferry-Executive-Summary cross-references) are the
+  relevant priors; both are pending absorb (not yet
+  landed under `docs/aurora/`).
+
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
 - [ ] **Secret-handoff protocol — env-var default + password-
