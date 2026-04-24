@@ -243,3 +243,167 @@ Branch was rebased from its original tip (`a63405b` plus the merge of `1956fb1`)
 - mergeable: MERGEABLE (target after the force-push triggers GitHub recompute)
 - Auto-merge armed: pre-existing
 - Pushed SHAs: `541e7b7` (drain commit) on top of the three rebased PR commits
+
+---
+
+## Drain pass: 2026-04-24 (round 2 — 9 threads after late re-review)
+
+After the round-1 drain pushed `541e7b7`, late Copilot + Copilot-PR-reviewer re-review opened 9 new threads on the same surfaces. Branch was rebased onto fresh `origin/main` cleanly (six commits replayed, no conflicts). All 9 threads landed in a single drain commit.
+
+### Thread R2-1 — `PRRT_kwDOSF9kNM59iAuY`
+
+- **Reviewer:** Copilot
+- **File:line:** `docs/AGENT-CLAIM-PROTOCOL.md:386`
+- **Outcome:** FIX
+
+#### Original comment
+
+> P1: The co-claim example reintroduces `Session` (not `Session ID`) and uses direct identifiers (`agent-A`, `agent-B`), which conflicts with the template and the surrounding guidance to keep session identifiers opaque and avoid direct handles in claim files. Update the example to use `Session ID` (or a `Sessions:` field) and show opaque IDs instead of names.
+
+#### Reply
+
+> Fixed. The co-claim example now uses `Sessions:` with opaque session IDs (`sess_7f3a9c2d`, `sess_b84e1a6f`) and an explicit pointer to the `Session ID` template field's no-direct-handle rule. Matches the renamed template field from round 1 thread `PRRT_kwDOSF9kNM58syOc`.
+
+---
+
+### Thread R2-2 — `PRRT_kwDOSF9kNM59iAul`
+
+- **Reviewer:** Copilot
+- **File:line:** `docs/AGENT-ISSUE-WORKFLOW.md:75`
+- **Outcome:** FIX
+
+#### Original comment
+
+> P0: The git-native adapter lookup/release guidance suggests `ls docs/claims/` and `git log --grep=...` as ways for parallel agents to discover live claims. But the git-native protocol described here creates claims on pushed branches (e.g., `claim/<slug>`), so `ls` on a checkout of `main` won't show active claims, and `git log` without `--all/--remotes` won't search remote branch histories. Update this section/table to point at remote-branch discovery (e.g., listing `origin/claim/*` and showing claim files from those refs).
+
+#### Reply
+
+> Fixed. The "(3) Git-native only" prose now says discovery uses `git fetch origin && git branch -r --list 'origin/claim/*'` for active claims plus `git show origin/claim/<slug>:docs/claims/<slug>.md` to read a claim's contents. `ls docs/claims/` is reframed as the merged-but-not-released view, not the active-claim view. Composes with R2-3 (the table row).
+
+---
+
+### Thread R2-3 — `PRRT_kwDOSF9kNM59iAuv`
+
+- **Reviewer:** Copilot
+- **File:line:** `docs/AGENT-ISSUE-WORKFLOW.md:108`
+- **Outcome:** FIX
+
+#### Original comment
+
+> P0: This table row's lookup guidance (`ls docs/claims/` or `git log --grep=...`) won't let a parallel agent see live claims if claims are held on remote `claim/<slug>` branches (as in `AGENT-CLAIM-PROTOCOL.md`). Consider changing the lookup to explicitly list remote `claim/*` branches and to read claim files from those remote refs.
+
+#### Reply
+
+> Fixed. The git-native row's "Claim mechanism" cell now spells out the `claim/<slug>` branch + push-to-`origin` requirement, and the "Lookup for parallel agent" cell now reads `git fetch origin && git branch -r --list 'origin/claim/*'` (active claims) plus `ls docs/claims/` (claims merged to `main`). Composes with R2-2.
+
+---
+
+### Thread R2-4 — `PRRT_kwDOSF9kNM59iAuy`
+
+- **Reviewer:** Copilot
+- **File:line:** `docs/claims/README.md:17`
+- **Outcome:** FIX
+
+#### Original comment
+
+> P1: "Look for live claims: `ls docs/claims/`" will only show claim files present in the currently checked-out branch. If the protocol uses pushed `claim/<slug>` branches to hold active claims, this command on `main` will not show live claims. Consider updating this README to describe how to list remote `origin/claim/*` branches and view `docs/claims/<slug>.md` from those refs.
+
+#### Reply
+
+> Fixed. The README's "How to use" list now leads with `git fetch origin && git branch -r --list 'origin/claim/*'` for active claims, `git show origin/claim/<slug>:docs/claims/<slug>.md` for reading a specific active claim, and reframes `ls docs/claims/` / `cat` as the merged-claim view. Filing-a-new-claim guidance now requires a `claim/<slug>` branch.
+
+---
+
+### Thread R2-5 — `PRRT_kwDOSF9kNM59iAu3`
+
+- **Reviewer:** Copilot
+- **File:line:** `docs/FIRST-PR.md:241`
+- **Outcome:** FIX
+
+#### Original comment
+
+> P1: This section links to `../memory/feedback_engage_substantively_no_dismissive_closing_with_silencing_shadow_2026_04_21.md` and then states "that file is not in the repo". The file appears to exist in-repo under `memory/` (and is indexed from `memory/MEMORY.md`), so the note is misleading and may cause readers to ignore a valid reference. Either drop the "not in the repo" claim, or rewrite to accurately explain visibility/scope (e.g., if some harnesses don't ship `memory/`).
+
+#### Reply
+
+> Fixed. The note now correctly states the file is in-repo under `memory/` and indexed from `memory/MEMORY.md`, with a softened caveat that some harnesses may not surface the path by default. Verified the file exists at `memory/feedback_engage_substantively_no_dismissive_closing_with_silencing_shadow_2026_04_21.md`.
+
+---
+
+### Thread R2-6 — `PRRT_kwDOSF9kNM59iAu8`
+
+- **Reviewer:** Copilot
+- **File:line:** `docs/AGENT-CLAIM-PROTOCOL.md:67`
+- **Outcome:** FIX
+
+#### Original comment
+
+> P0: The TL;DR "check for existing claim" commands only inspect the working tree on `main` (`ls docs/claims/` / `cat docs/claims/<slug>.md`). But per step 3 you create/push the claim on a remote branch (`claim/<slug>`), so a fresh clone of `main` will not contain active claim files. This makes the primary collision-avoidance step ineffective. Update step 2 to discover remote claim branches (e.g., list `origin/claim/*`) and to read claim files directly from those refs (e.g., via `git show origin/claim/<slug>:docs/claims/<slug>.md`) instead of `cat` on `main`.
+
+#### Reply
+
+> Fixed. TL;DR step 2 now leads with `git fetch origin` to refresh remote refs, then lists both active claims (`git branch -r --list 'origin/claim/*'`) and merged claims (`ls docs/claims/`), and shows reading active claims via `git show origin/claim/<slug>:docs/claims/<slug>.md` alongside `cat docs/claims/<slug>.md` for already-merged claims. The collision-avoidance step now actually finds active claims.
+
+---
+
+### Thread R2-7 — `PRRT_kwDOSF9kNM59iAvD`
+
+- **Reviewer:** Copilot
+- **File:line:** `docs/AGENT-CLAIM-PROTOCOL.md:325`
+- **Outcome:** FIX
+
+#### Original comment
+
+> P1: This paragraph says to look for an existing claim file on `main`, but claims are pushed to `origin` on a branch and may never land on `main` (claim + release can both be inside the same PR). As written, `git pull` on `main` won't reveal active claims. Consider changing this to check for an existing remote `claim/<slug>` branch (or other protocol-defined remote refs) instead of checking `main` for the file.
+
+#### Reply
+
+> Fixed. The "Claim commit details" pre-commit-check paragraph now uses `git fetch origin` + `git ls-remote --heads origin "claim/<slug>"` (active claims) plus `git show "origin/main:docs/claims/<slug>.md"` (merged-but-not-released claims). Both lookups are spelled out so an agent on a fresh checkout doesn't miss active claims still in flight.
+
+---
+
+### Thread R2-8 — `PRRT_kwDOSF9kNM59iBdM`
+
+- **Reviewer:** Copilot
+- **File:line:** `docs/AGENT-CLAIM-PROTOCOL.md:330`
+- **Outcome:** FIX
+
+#### Original comment
+
+> **P1: Enforce single claim ref for slug uniqueness**
+>
+> This allows claim commits to live on arbitrary branches (`claim/<slug>`, `feat/<thing>`, etc.), which breaks the lock guarantee described later: `git push` only updates the refspec you push, so two agents can each push `docs/claims/<slug>.md` on different remote branches without a non-fast-forward conflict and both think they hold the claim. Fresh evidence vs. the earlier thread is that the new text explicitly permits non-`claim/<slug>` branches, so the push-time lock disappears.
+
+#### Reply
+
+> Fixed. The "Claim commit details" paragraph now requires the claim commit to land on `claim/<slug>` specifically — that's the branch name that gives push-time slug uniqueness via non-fast-forward rejection. Work commits move to a separate working branch after the claim lands; the `claim/<slug>` branch stays as the lock until release. The previous "feature branch / work branch / speculative branch" wording is replaced with the explicit reasoning for why an arbitrary branch name fails the lock.
+
+---
+
+### Thread R2-9 — `PRRT_kwDOSF9kNM59iBdO`
+
+- **Reviewer:** Copilot
+- **File:line:** `docs/FIRST-PR.md:134`
+- **Outcome:** FIX
+
+#### Original comment
+
+> **P2: Replace named reviewers with role references**
+>
+> This introduces direct reviewer names in a docs surface, which conflicts with the documented rule in `docs/AGENT-BEST-PRACTICES.md` ("No name attribution in code, docs, or skills" outside carve-outs). Keeping personal names here creates policy drift and unnecessary churn whenever reviewer rosters change; this section should use stable role references and keep identity details in the registry link.
+
+#### Reply
+
+> Fixed in three places. The introductory paragraph at line 132 is rewritten to use role refs (harsh-critic, maintainability reviewer, documentation agent) with the EXPERT-REGISTRY link as the canonical name source. Line 214's GOVERNANCE §20 reference now reads "harsh-critic + maintainability reviewers" instead of named individuals. Line 258's "What this doc is NOT" bullet now reads "the harsh-critic role" instead of a direct name. Matches the AGENT-BEST-PRACTICES.md "No name attribution in code, docs, or skills" rule.
+
+---
+
+## Round-2 rebase summary
+
+Branch was rebased onto fresh `origin/main` (`134a68d`). Six commits replayed cleanly with no merge conflicts. The round-2 drain commit lands on top of those six.
+
+## Round-2 final state
+
+- Unresolved threads: 0 (target after force-push)
+- mergeable: MERGEABLE (target after the force-push triggers GitHub recompute)
+- Auto-merge armed: pre-existing

@@ -129,11 +129,12 @@ shape is:
    into your AI and say "fix this" — the loop is the
    loop.
 
-The team's reviewers are named — Kira (harsh-critic),
-Rune (maintainability), Samir (documentation), and
-several others. Full list at
-[`docs/EXPERT-REGISTRY.md`](EXPERT-REGISTRY.md). Their
-tone varies; none of them are rude to contributors,
+The team's reviewers are organised by role — a harsh-critic,
+a maintainability reviewer, a documentation agent, and
+several others. Each role has a stable identity in the
+expert registry; the registry is where direct names live.
+Full list at [`docs/EXPERT-REGISTRY.md`](EXPERT-REGISTRY.md).
+Their tone varies; none of them are rude to contributors,
 human or AI.
 
 ## What "claiming" means and why you (probably) do not need to think about it
@@ -211,10 +212,10 @@ it for everyone else.
   for you or tell you which existing test to follow
   as a template.
 - **You do not need to pass the reviewer floor alone.**
-  GOVERNANCE §20 requires at least Kira +
-  Rune on code landings — but those reviewers run
-  automatically on agents' behalf. You do not invoke
-  them.
+  GOVERNANCE §20 requires at least the harsh-critic +
+  maintainability reviewers on code landings — but those
+  reviewers run automatically on agents' behalf. You do
+  not invoke them.
 - **You do not need to know what a "round" is.** The
   round model is a factory-internal cadence. Your PR
   is a PR.
@@ -235,10 +236,11 @@ it for everyone else.
   penalises dismissive-closes, not honest "I do not
   understand" questions — see
   [`memory/feedback_engage_substantively_no_dismissive_closing_with_silencing_shadow_2026_04_21.md`](../memory/feedback_engage_substantively_no_dismissive_closing_with_silencing_shadow_2026_04_21.md)
-  for the discipline (that file is not in the repo;
-  it lives in the maintainer's agent memory —
-  mentioned here so you know the principle is
-  codified).
+  for the discipline (the file is in-repo under
+  `memory/` and indexed from `memory/MEMORY.md`,
+  though some harnesses may not surface that path
+  by default — mentioned here so you know the
+  principle is codified).
 
 ## What this doc is NOT
 
@@ -255,9 +257,9 @@ it for everyone else.
   [`docs/WONT-DO.md`](WONT-DO.md).
 - **Not a promise that reviewers will be gentle on
   the code itself.** Reviewers are gentle with
-  *contributors*; they are direct with *code*. Kira
-  never compliments code; that is a feature of the
-  role, not hostility toward you.
+  *contributors*; they are direct with *code*. The
+  harsh-critic role never compliments code; that is a
+  feature of the role, not hostility toward you.
 
 ## If you got this far and want more
 

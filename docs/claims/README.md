@@ -11,11 +11,22 @@ where `<slug>` follows the slug rules in the protocol
 
 ## How to use
 
-- **Look for live claims:** `ls docs/claims/`
-- **Read a specific claim:** `cat docs/claims/<slug>.md`
+- **Look for live claims:** active claims live on pushed
+  `claim/<slug>` branches (not yet merged to `main`).
+  Refresh remote refs and list them:
+  `git fetch origin && git branch -r --list 'origin/claim/*'`.
+  `ls docs/claims/` only shows claims that have been
+  merged to the current branch.
+- **Read a specific claim:** view the file from the
+  remote claim ref —
+  `git show origin/claim/<slug>:docs/claims/<slug>.md`
+  (active claim) or `cat docs/claims/<slug>.md` (claim
+  already on this branch).
 - **File a new claim:** create `docs/claims/<slug>.md`
   using the [claim file template](../AGENT-CLAIM-PROTOCOL.md#claim-file-shape)
-  and commit `claim: <slug> - <one-line scope>`
+  on a `claim/<slug>` branch and commit
+  `claim: <slug> - <one-line scope>`, then push to
+  `origin`.
 - **Release a claim:** delete the file in the same PR
   that lands the work
 

@@ -60,10 +60,27 @@ git pull --ff-only origin main
 
 ### 2. Check for an existing claim on the work you want
 
+Claim files live on pushed `claim/<slug>` branches (see
+step 3) — they may not yet be merged to `main`. To see
+*all* live claims, refresh remote refs and list both the
+working tree (claims that have already merged or are
+still tracked on `main`) and remote claim branches:
+
 ```
-ls docs/claims/               # live claims (the directory is tracked;
-                              # README.md is the non-empty placeholder)
-cat docs/claims/<slug>.md     # details of a specific claim
+git fetch origin                                              # refresh remote refs
+ls docs/claims/                                               # claims visible on the
+                                                              # current checkout (the
+                                                              # directory is tracked;
+                                                              # README.md is the
+                                                              # non-empty placeholder)
+git branch -r --list 'origin/claim/*'                         # remote claim branches —
+                                                              # active claims pushed
+                                                              # but not yet merged
+git show origin/claim/<slug>:docs/claims/<slug>.md            # details of a specific
+                                                              # remote claim
+cat docs/claims/<slug>.md                                     # details of a claim that
+                                                              # is already on this
+                                                              # branch
 ```
 
 If `docs/claims/` is somehow missing on a fresh clone (it
@@ -320,16 +337,33 @@ git log --grep="^claim: \|^progress: \|^release: " --oneline
 
 ### Claim commit details
 
-Before committing, `git pull --ff-only origin main` to see
-any recently-filed claims. If a claim file with your target
-slug already exists on `main`, pick a different slug or
-coordinate with the existing claim.
+Before committing, refresh remote refs and check whether
+`origin` already has a `claim/<slug>` branch (or a claim
+file on `main`) for your target slug:
 
-The claim commit can sit on a feature branch
-(`claim/<slug>`), a work branch (`feat/<thing>`), or a
-speculative branch — what matters is that the commit
-reaches `origin` promptly. Until you push, parallel agents
-don't see the claim.
+```
+git fetch origin
+git ls-remote --heads origin "claim/<slug>"
+git show "origin/main:docs/claims/<slug>.md" 2>/dev/null
+```
+
+If either lookup returns a hit, pick a different slug or
+coordinate with the existing claim — `main`-side claims
+are merged-but-not-released claims; `claim/<slug>`-branch
+hits are active claims still in flight.
+
+The claim commit **must** land on a branch named
+`claim/<slug>` so the slug-uniqueness lock works. Pushing
+the claim file on an arbitrary branch name (`feat/<thing>`,
+a speculative branch, etc.) does not reserve the slug:
+`git push` only updates the refspec you push, so two
+agents can each push `docs/claims/<slug>.md` on different
+remote branches and neither push fails. Use
+`claim/<slug>` so the second pusher gets a non-fast-forward
+rejection and discovers the existing claim. After the
+claim lands, work commits can move to a separate working
+branch (`feat/<thing>`); the `claim/<slug>` branch stays
+as the lock until release.
 
 ### Progress signal details
 
@@ -380,10 +414,11 @@ enforces coordination for us:
 
 If both agents genuinely want to collaborate on the same
 work, they add each other as sessions in a single claim
-file:
+file (use opaque session IDs, not direct agent or human
+handles, per the `Session ID` template field):
 
 ```markdown
-- **Session:** agent-A, agent-B (co-claim 2026-04-22T19:30:00Z)
+- **Sessions:** sess_7f3a9c2d, sess_b84e1a6f (co-claim 2026-04-22T19:30:00Z)
 ```
 
 ## Stale claims and force-release

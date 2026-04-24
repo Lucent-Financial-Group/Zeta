@@ -69,10 +69,15 @@ picked at setup time:
   authoritative substrate specified in
   [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md): a
   per-claim file at `docs/claims/<slug>.md` plus
-  `claim:` / `progress:` / `release:` commits on a branch
-  visible to `origin`. Parallel agents discover live claims
-  via `ls docs/claims/` or
-  `git log --grep="^claim: " --oneline`.
+  `claim:` / `progress:` / `release:` commits on a
+  `claim/<slug>` branch pushed to `origin`. Parallel
+  agents discover live claims by listing remote claim
+  branches (`git fetch origin &&
+  git branch -r --list 'origin/claim/*'`) and reading
+  the claim file directly from the remote ref
+  (`git show origin/claim/<slug>:docs/claims/<slug>.md`);
+  `ls docs/claims/` on `main` only shows merged-but-not-
+  released claims, not active ones still in flight.
 - Backlog row markers (`[in-progress ...]`, `[blocked ...]`)
   remain useful as **row-local annotations** on the durable
   backlog row, but they are not the locking mechanism — the
@@ -105,7 +110,7 @@ the other two adapters mirror.
 |---|---|---|---|
 | GitHub Issues | Comment `claimed by session <id> <UTC-ts> — ETA <...>` + add `in-progress` label | Comment `releasing — landed in <SHA>` + remove label + close (if done) | `gh issue list --label in-progress` |
 | Jira | Transition to `In Progress` state + assign to self + add comment | Transition to `Done` / `Released` + comment with commit | `jql: status = "In Progress"` |
-| Git-native | Claim file at `docs/claims/<slug>.md` (directory tracked, `README.md` placeholder); commit `claim: <slug> - <scope>` (see [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) for the full shape) | Delete the claim file; commit `release: <slug> - landed in <SHA>` | `ls docs/claims/` or `git log --grep="^claim: " --oneline` |
+| Git-native | Claim file at `docs/claims/<slug>.md` on a `claim/<slug>` branch pushed to `origin` (directory tracked on `main`, `README.md` placeholder); commit `claim: <slug> - <scope>` (see [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) for the full shape) | Delete the claim file; commit `release: <slug> - landed in <SHA>` | `git fetch origin && git branch -r --list 'origin/claim/*'` (active claims) plus `ls docs/claims/` (claims merged to `main`) |
 
 ### Claim windows and stale-claim force-release
 
