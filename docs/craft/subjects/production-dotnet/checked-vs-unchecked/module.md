@@ -8,11 +8,11 @@ fast *and* correctly under adversarial input"
 **Prerequisites:** an onboarding-tier Z-set foundation — of the
 planned onboarding modules (zset-basics, retraction-intuition,
 operator-composition, semiring-basics), `retraction-intuition`
-ships on main today as `docs/craft/subjects/zeta/retraction-
-intuition/`; the other three are in-flight PRs. Also assumes
-BenchmarkDotNet literacy.
-**Next suggested:** `subjects/production-dotnet/zero-alloc-hot-
-loops/` (forthcoming — stubbed in the per-tier README)
+ships on main today as `subjects/zeta/retraction-intuition/`;
+the other three are in-flight PRs. Also assumes BenchmarkDotNet
+literacy.
+**Next suggested:** `subjects/production-dotnet/zero-alloc-hot-loops/`
+(forthcoming — stubbed in the per-tier README)
 
 ---
 
@@ -37,10 +37,10 @@ because `Vector<int64>` does not exist with checked semantics.
 
 **But if you drop `Checked.` carelessly, a cumulative weight
 sum can sign-flip your entire multiset** (this is the
-canonical Zeta hazard documented at `src/Core/ZSet.fs:227-
-230`). The production-tier question is never "checked vs.
-unchecked in the abstract" — it is "can we prove the bound,
-and if yes, does the measurement earn the demotion?"
+canonical Zeta hazard documented at `src/Core/ZSet.fs:227-230`).
+The production-tier question is never "checked vs. unchecked
+in the abstract" — it is "can we prove the bound, and if yes,
+does the measurement earn the demotion?"
 
 ---
 
@@ -50,9 +50,9 @@ and if yes, does the measurement earn the demotion?"
 
 - F# operators `+`, `-`, `*` on integer types are **unchecked
   by default** — silent wraparound on overflow.
-- `Checked.(+)`, `Checked.(-)`, `Checked.(*)`,
-  `Checked.( ~-)` from `Microsoft.FSharp.Core.Operators.
-  Checked` opt in to `OverflowException` on overflow.
+- `Checked.(+)`, `Checked.(-)`, `Checked.(*)`, `Checked.( ~-)`
+  from `Microsoft.FSharp.Core.Operators.Checked` opt in to
+  `OverflowException` on overflow.
 - There is no `checked { }` / `unchecked { }` block in F# —
   the choice is per-call-site via qualifier.
 - The project-wide `<CheckForOverflowUnderflow>` MSBuild
@@ -70,7 +70,7 @@ deciding whether to use `Checked.`:
 | Class | Definition | Default |
 |---|---|---|
 | **Bounded-by-construction** | The type system or a compile-time constant proves overflow impossible (e.g. `byte + byte → int32`). | unchecked (F# default) |
-| **Bounded-by-workload** | An invariant of the running system proves the sum cannot reach `MaxValue` within any reasonable lifetime (e.g. a counter incrementing once per op, `int64` range, sub-exaflop workload). | unchecked + citing comment |
+| **Bounded-by-workload** | A **hard**, stated invariant of the running system proves the sum cannot reach `MaxValue` — e.g. a loop counter with a known iteration cap, a cell count multiplied by a per-cell cap. "Unlikely within a reasonable lifetime" is not a bound; it is a vibe. | unchecked + comment stating the numeric cap |
 | **Bounded-by-pre-check** | A cheap upstream guard makes overflow impossible inside the hot loop (the guard is outside the loop). | unchecked inside loop; check at boundary |
 | **Unbounded stream sum** | A cumulative value over an unbounded stream — no bound is provable because the stream never ends. | **keep `Checked.`** |
 | **User-controlled product** | A product of two caller-provided values that a hostile caller could pick adversarially. | **keep `Checked.`** |
@@ -78,8 +78,8 @@ deciding whether to use `Checked.`:
 
 ### Decision tree (read top to bottom)
 
-1. Is the bound provable by the **type system** (e.g. `byte +
-   byte` cannot overflow `int32`)? → **unchecked.**
+1. Is the bound provable by the **type system** (e.g.
+   `byte + byte` cannot overflow `int32`)? → **unchecked.**
 2. Is the bound provable by an **upstream pre-check** (e.g. a
    `guard` that refuses inputs past a threshold)? → **unchecked
    inside the loop; keep the pre-check outside.**
@@ -87,51 +87,74 @@ deciding whether to use `Checked.`:
    counter monotonic, lifetime < 2^63 ops)? → **unchecked with
    a citing comment pointing at the invariant.**
 4. Is the loop **SIMD-vectorisable** and the width would
-   material-ise a measured speedup? → **unchecked; detect
-   overflow at the block boundary** (compare sum-of-absolutes
-   pre-vs-post, or watch for sign-flip).
+   material-ise a measured speedup? → **unchecked in the inner
+   loop; detect overflow with a sound technique at the block
+   boundary** — see "Sound SIMD overflow detection" below.
+   Sign-flip or sum-of-absolutes pre/post are **not** sound
+   (overflow can occur an even number of times mid-block and
+   still land on a plausibly-signed, plausibly-small result).
 5. Otherwise — `Checked.` stays.
 
 ### The measurement gate
 
-Before landing any demotion, produce a BenchmarkDotNet micro-
-benchmark comparing the two:
+Before landing any demotion, produce a BenchmarkDotNet
+micro-benchmark comparing the two. The real harness for
+this module lives at `bench/Benchmarks/CheckedVsUncheckedBench.fs`;
+it uses `[<Params(...)]` + `[<GlobalSetup>]` across three
+sizes (1M / 10M / 100M) so the default `dotnet run` does not
+force an ~800 MB allocation. The shape is:
 
 ```fsharp
-[<MemoryDiagnoser; DisassemblyDiagnoser(maxDepth = 3)>]
-type CheckedVsUnchecked() =
-    let data = Array.init 100_000_000 (fun i -> int64 i)
+[<MemoryDiagnoser>]
+type CheckedVsUncheckedOps() =
+    [<DefaultValue(false)>] val mutable private data: int64 array
+
+    [<Params(1_000_000, 10_000_000, 100_000_000)>]
+    member val Size = 0 with get, set
+
+    [<GlobalSetup>]
+    member this.Setup() = this.data <- Array.init this.Size int64
 
     [<Benchmark(Baseline = true)>]
-    member _.Checked () =
+    member this.SumScalarChecked () =
         let mutable total = 0L
-        for i in 0 .. data.Length - 1 do
-            total <- Checked.(+) total data.[i]
+        let d = this.data
+        for i in 0 .. d.Length - 1 do
+            total <- Checked.(+) total d.[i]
         total
 
     [<Benchmark>]
-    member _.Unchecked () =
+    member this.SumScalarUnchecked () =
         let mutable total = 0L
-        for i in 0 .. data.Length - 1 do
-            total <- total + data.[i]
+        let d = this.data
+        for i in 0 .. d.Length - 1 do
+            total <- total + d.[i]
         total
 ```
 
 A demotion that does not deliver ≥ 5 % measured improvement
-on this workload is not worth the correctness risk. Small
-speedups on cold paths do not justify giving up overflow
-detection; in that case the `Checked.` stays.
+at the audit's target size (100 M) is not worth the
+correctness risk. Small speedups on cold paths do not
+justify giving up overflow detection; in that case the
+`Checked.` stays. Read the full harness (including the
+unrolled and merge-like scenarios) at the path above before
+proposing a new demotion.
 
 ### Silent-overflow detection in production
 
 Even with a proved bound, belt-and-braces discipline says you
 should be able to catch a bound violation in production
-without crashing:
+without crashing. F# `assert` is compiled out in Release
+builds (and throws when enabled) so it is **not** a production
+detection mechanism — what follows are runtime-always checks
+that record telemetry rather than abort:
 
-- **Invariant assertions at stream boundaries** — when a
-  computed total leaves a hot path, assert `total >= 0L`
-  (or whatever sign invariant holds). The assertion is free;
-  the information is not.
+- **Invariant checks at stream boundaries** — when a computed
+  total leaves a hot path, test `total >= 0L` (or whatever
+  sign invariant holds) with a plain `if` and emit a metric +
+  structured log on failure. Do not use `assert`; the check
+  must run in Release. Optionally trip a circuit-breaker to
+  reject further input until the invariant is re-established.
 - **Metric sensors** — emit `max(abs(intermediate))` as a
   per-operator metric. A silent wraparound appears as a
   sudden jump from near-`MaxValue` to deeply-negative.
@@ -140,6 +163,36 @@ without crashing:
   directly. If the production code ever reaches those
   magnitudes in the wild, the tests have validated the
   behaviour.
+
+### Sound SIMD overflow detection
+
+Sign-flip watching and sum-of-absolutes pre/post are **not**
+sound overflow detectors for a block of `int64` additions.
+An even number of overflows inside a block can leave the final
+scalar inside any range you care to pick, so neither the sign
+nor the magnitude tells you whether arithmetic stayed within
+`Int64`. Use one of these instead:
+
+- **Wider accumulator per block** — accumulate into `Int128`
+  (`System.Int128` on .NET 7+) or two `Int64` halves (a
+  carry-propagating pair). The SIMD inner loop stays on
+  `Vector<int64>`; the reduce step widens. Overflow is
+  impossible until the wider type saturates, and bounds on
+  the wider type are far easier to prove.
+- **Per-block magnitude cap** — pre-check that the block's
+  `max(abs(value))` multiplied by block length cannot reach
+  `Int64.MaxValue`. The check runs once per block, not once
+  per element; its cost is amortised across the vectorised
+  body.
+- **Periodic checked reduce** — after every K blocks (K
+  chosen so K·blockSize·maxElem < 2^63 stays true) reduce
+  the vector accumulator back to a scalar using `Checked.(+)`
+  and reset. One scalar `Checked.(+)` per K blocks is
+  typically free against the SIMD speedup.
+
+Pick the technique that matches the bound shape you can
+actually prove. "Sign-flip check" is a folklore heuristic,
+not an overflow detector.
 
 ---
 
@@ -159,8 +212,8 @@ let inline sum2 (a: byte) (b: byte) = int32 a + int32 b
 
 ### 2. Algebraic bound argument
 
-Cite a workload invariant in a comment. Example (`Z-set
-weight sum on a windowed stream with max window size W`):
+Cite a workload invariant in a comment. Example
+(`Z-set weight sum on a windowed stream with max window size W`):
 
 ```fsharp
 // Bound: a window holds at most W entries, each with
@@ -189,20 +242,41 @@ let sumInt64s (span: ReadOnlySpan<int64>) : int64 =
         total <- total + span.[i]   // unchecked; see property below
     total
 
+// Length cap + per-element cap must be picked so that
+// lengthCap * elemCap < 2^63. With elemCap = 2^40 we need
+// lengthCap < 2^23 (8 388 608) to keep the true sum inside
+// Int64. The property enforces BOTH caps and verifies the
+// unchecked fold agrees with a BigInteger reference fold
+// (no wraparound masquerading as a "small" result).
 [<Property(MaxTest = 10_000)>]
-let ``sum stays in int64 range for bounded inputs``
+let ``unchecked sum equals BigInteger sum for bounded inputs``
     (values: NonEmptyArray<int64>) =
+    let lengthCap = 1 <<< 20    // ~1M entries
+    let elemCap = 1L <<< 40
+    let raw = values.Get
+    let truncated =
+        if raw.Length <= lengthCap then raw
+        else raw.[.. lengthCap - 1]
     let bounded =
-        values.Get
-        |> Array.map (fun x -> x % (1L <<< 40))  // bound magnitude
-    let s = sumInt64s (ReadOnlySpan(bounded))
-    abs s < (1L <<< 62)  // sum stays 2 bits below MaxValue
+        truncated
+        |> Array.map (fun x -> x % elemCap)
+    let sUnchecked = sumInt64s (ReadOnlySpan<int64>(bounded))
+    let sReference =
+        bounded
+        |> Array.fold (fun acc x -> acc + bigint x) 0I
+    // Both bounds together guarantee the true sum fits int64
+    // (|sum| < 2^60), so equality is the correctness signal.
+    bigint sUnchecked = sReference
 ```
 
-The property codifies "inputs bounded at 2^40, sum bounded at
-2^62" — a demotion to unchecked is justified under that
-contract. If production ever violates the contract, the
-workload invariant is wrong, not the code.
+The property codifies the joint bound "length ≤ 2^20 AND per-
+element magnitude ≤ 2^40 → true sum fits int64" and cross-checks
+the unchecked fold against a wider-type reference. If either
+cap is lifted without re-proving the bound, the property will
+fire — a silent wraparound would make the `int64` fold disagree
+with the `bigint` reference. A demotion to unchecked is justified
+only under a contract that names both caps; the property is the
+contract, not the assertion.
 
 ---
 
@@ -227,27 +301,41 @@ processing 1 B retractions/s would reach `Int64.MaxValue` in
 construction library should not have a silent time-horizon
 bug. **This site stays `Checked.`**.
 
-Candidate demotions from the same file that merit per-site
-analysis under the audit (`docs/BACKLOG.md` P2 — Production-
-code performance discipline):
+Candidate sites from the same neighbourhood that merit per-
+site analysis under the audit (`docs/BACKLOG.md` § "P2 —
+Production-code performance discipline") — exact line numbers
+drift as the surrounding code evolves; treat the file-level
+references as the invariant and re-locate by symbol name:
 
-- `src/Core/ZSet.fs:289-295` — **SIMD-candidate**. Loop-
-  unrolled 4× partial sums. `Vector<int64>` could replace
-  the four scalar adders at 2-4× throughput; but the
-  overflow-detection-at-block-boundary pattern is needed
-  to preserve the Z-set weight invariant.
-- `src/Core/NovelMath.fs:87` — **Bounded-by-workload**. A
-  counter `count <- Checked.(+) count 1L`. Bound:
-  "incrementing once per tropical-semiring element takes
-  longer than the universe has existed at any achievable ops/
-  s". Demote with a comment citing the invariant.
-- `src/Core/CountMin.fs:77` — **Bounded-by-workload** with a
-  soft cap. Count-Min counters are by construction small;
-  workload-bounded by Sketch accuracy parameters. Demote
-  with bound citation.
-- `src/Core/Aggregate.fs:30` — **Unbounded stream sum** in
-  the group-sum case. Keep `Checked.` — class matches
-  ZSet.fs:227.
+- `src/Core/ZSet.fs` merge-inner loop around the
+  `Checked.(+) sa.[i].Weight sb.[j].Weight` site —
+  **SIMD-candidate**. Loop-unrolled partial sums;
+  `Vector<int64>` could replace the scalar adders at 2-4×
+  throughput under a **sound** block-boundary overflow
+  technique (see "Sound SIMD overflow detection" above).
+  Sign-flip heuristics do not qualify.
+- `src/Core/NovelMath.fs` KLL `Add` counter — **Unbounded
+  stream sum**. `KllSketch.Add` has no hard iteration cap;
+  it is called once per ingested item on an unbounded
+  stream. "Longer than the universe" is not a bound — the
+  same argument retires `Checked.` from `ZSet.fs:227-230`,
+  which we explicitly refuse to do. **Keep `Checked.`**.
+- `src/Core/CountMin.fs` cell-increment site — **Unbounded
+  stream sum**. `CountMinSketch.Add` takes a caller-supplied
+  `int64 weight` with no numeric cap and is called once per
+  stream item. Sketch accuracy parameters bound *error*,
+  not *counter magnitude* — a single adversarial weight
+  plus enough calls reaches `Int64.MaxValue`. **Keep
+  `Checked.`** pending a separately-proved ingest-rate /
+  weight-magnitude contract the code actually enforces.
+- `src/Core/Aggregate.fs` group-sum site — **Unbounded
+  stream sum**. Keep `Checked.` — class matches
+  `ZSet.fs:227-230`.
+
+Sites that remain plausible demotion candidates need a hard
+numeric bound, not a plausibility argument. The audit's job
+is to produce that bound (or keep `Checked.`), not to demote
+on aesthetic grounds.
 
 **The audit is not "demote everything"; it is "classify
 every site and demote only what passes the measurement gate."**
@@ -276,11 +364,10 @@ grounds. That is the correct outcome.
   comment.
 - **Out-of-repo** (per-user memory, not yet in-repo)
   factory-generic memory
-  `feedback_samples_readability_real_code_zero_alloc_
-  2026_04_22.md` — the samples-vs-production discipline this
-  production tier extends to pedagogy (candidate for
-  Overlay-A migration when that memory is promoted
-  in-repo).
+  `feedback_samples_readability_real_code_zero_alloc_2026_04_22.md`
+  — the samples-vs-production discipline this production
+  tier extends to pedagogy (candidate for Overlay-A migration
+  when that memory is promoted in-repo).
 - `docs/BENCHMARKS.md` "Allocation guarantees" section — the
   sibling surface where the audit's measurement deliverables
   land.
@@ -301,8 +388,8 @@ grounds. That is the correct outcome.
   Demoting without the test is a latent regression.
 - **Not onboarding material.** A reader who does not yet
   understand what a `ZEntry<'K>` is will not benefit from
-  this module — they will return to `subjects/zeta/zset-
-  basics/` first.
+  this module — they will return to
+  `subjects/zeta/zset-basics/` first.
 - **Not micro-optimisation for its own sake.** The
   measurement gate (≥ 5 % improvement) is load-bearing. A
   demotion that saves 1 % on a cold path is not worth the
