@@ -168,3 +168,80 @@ root like the sibling `docs/research/...` entry. Local audit
 after the fix: 454 refs checked, 454 resolved, 0 broken.
 Commit `b4ff814` pushed on top of the main CI fix commit
 `1cacebe`.
+
+## Rebase pass — 2026-04-24 post-#144 DIRTY clear
+
+PR #144 (Aurora transfer absorb) landed on `main` and
+dirtied this branch. `mergeStateStatus` flipped from `CLEAN`
+back to `DIRTY`; 0 unresolved threads, 0 failing checks —
+pure merge-conflict drain.
+
+**Conflicts resolved** (11 files):
+
+- Append-only / audit-trail files taken from `main` side
+  (`--ours` in rebase semantics) per Otto-229 discipline:
+  `.gitignore`, `docs/AUTONOMOUS-LOOP.md`,
+  `docs/BACKLOG.md`, `docs/force-multiplication-log.md`,
+  `docs/hygiene-history/loop-tick-history.md`,
+  `docs/research/amara-network-health-oracle-rules-stacking-2026-04-22.md`,
+  `drop/README.md`.
+- Code files taken from `main` side as well:
+  `Zeta.sln`, `src/Core/SignalQuality.fs`,
+  `tests/Tests.FSharp/Algebra/SignalQuality.Tests.fs`.
+  Rationale: `SignalQuality.fs` and its tests already
+  landed on `main` via #144 + subsequent review-drain
+  commits (fe156aa, 1ab9351, 44654ec), carrying strict
+  superset improvements — empty-string returns `0.5` +
+  `Pass` severity, NaN weight-poisoning guard in composite
+  math, length-direct read of `MemoryStream` (no
+  `.ToArray()` allocation), weight > 0L filter on grounding
+  / falsifiability predicates, and IP-strip language
+  cleanup. The PR branch carried the pre-drain variant;
+  `main` is strictly ahead.
+- `Zeta.sln`: `main` already has a `ServiceTitanCrm`
+  project entry using the same project GUID
+  (`{D44AB9CA-F491-41F4-96CE-B061238F3D6E}`) the PR's
+  `CrmKernel` entry would have introduced. Taking `main`
+  keeps the non-conflicting `ServiceTitanCrm` entry.
+- `samples/CrmKernel/` directory (added by the PR's first
+  commit) removed via `git rm -rf` — superseded by
+  `samples/ServiceTitanCrm/` which already lives on `main`
+  with the same content modulo the `CrmKernel ->
+  ServiceTitanCrm` rename. Keeping the `CrmKernel`
+  directory would duplicate source at the filesystem level
+  and cause a project-GUID collision in the solution.
+
+**Net result:** The first PR commit (`fee44e4`, the
+substantive `samples: CrmKernel + SignalQuality` patch)
+became empty after resolution and was dropped by
+`git rebase --continue`. The three CI-fix commits
+(`1cacebe`, `b4ff814`, `baaad9d`) rebased cleanly (one
+more tick-history conflict resolved identically with
+`--ours`) and retain their content.
+
+**Build + test after rebase:**
+
+- `dotnet build -c Release` — `0 Warning(s)`, `0 Error(s)`
+  (Build succeeded; 15.26s).
+- `dotnet test Zeta.sln -c Release --no-build` — all four
+  test assemblies pass:
+  - Core.CSharp.Tests: 2 / 2 passed
+  - Bayesian.Tests: 8 / 8 passed
+  - Tests.CSharp: 8 / 8 passed
+  - Tests.FSharp: 694 / 695 passed (1 skipped — the
+    pre-existing `RecursiveCountingMultiSeedTests` skip
+    that is unrelated to this PR)
+
+**Branch state:** 4 commits ahead of origin/main
+(`7b34dc6 ci: fix PR #141 markdownlint MD056 + MEMORY.md
+paired-edit`, `f195804 ci: fix reference-existence path`,
+`20de672 ci: document reference-existence follow-up`, plus
+the rebase-pass log-update commit landing this section).
+`--force-with-lease` push follows. Expect
+`mergeStateStatus` to flip `DIRTY → CLEAN` once refs
+update and CI greens.
+
+**Constraints honoured:** no new PRs opened, no merge
+triggered (auto-merge armed via Otto-224 from the earlier
+open-PR pass), no review-thread edits, build + test gate
+clean, no symlinks introduced.
