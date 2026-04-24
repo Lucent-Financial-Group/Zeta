@@ -2,17 +2,17 @@
 
 **Scope:** research + integration plan. Clarifies the
 skill-vs-plugin distinction in both Claude Code and Codex
-ecosystems, documents the five Codex built-in skills Aaron
-flagged (Image Gen / OpenAI Docs / Plugin Creator / Skill
-Creator / Skill Installer), and proposes a concrete factory
-integration path. Research-grade; not an implementation
-commit.
+ecosystems, documents the five Codex built-in skills the
+maintainer flagged (Image Gen / OpenAI Docs / Plugin Creator /
+Skill Creator / Skill Installer), and proposes a concrete
+factory integration path. Research-grade; not an
+implementation commit.
 
-**Attribution:** research synthesized from Aaron's Otto-103
-directive (five Codex built-ins + "figure out the differences
-between skills and plugins and updates our factory
+**Attribution:** research synthesized from the maintainer's
+Otto-103 directive (five Codex built-ins + "figure out the
+differences between skills and plugins and updates our factory
 appropriately"), `openai/skills` repository, `developers.openai.com/codex/plugins`
-+ `/codex/plugins/build`, The New Stack 2026-03-26 coverage,
+and `/codex/plugins/build`, The New Stack 2026-03-26 coverage,
 Claude Code plugin cache inspection at
 `~/.claude/plugins/cache/**`, and the prior Codex Phase-1
 research (PR #231).
@@ -27,8 +27,8 @@ converged on plugin-containing-skills architecture. Shared
 vocabulary (`plugin.json`, `SKILL.md`) is NOT evidence of
 merged design process — both systems draw on the same prior
 art (VS Code extensions; Atom packages; browser extensions)
-+ the same operational need (bundle multiple capabilities for
-one install). Per SD-9, convergence on plugin-vs-skill
+plus the same operational need (bundle multiple capabilities
+for one install). Per SD-9, convergence on plugin-vs-skill
 distinction is expected parallel evolution, not unity.
 
 ---
@@ -111,10 +111,10 @@ config-like enable/disable model.
 
 ---
 
-## The five Codex built-in skills Aaron flagged
+## The five Codex built-in skills the maintainer flagged
 
-Per Aaron's 2026-04-24 directive — five built-ins enabled
-by default in Codex:
+Per the maintainer's 2026-04-24 directive — five built-ins
+enabled by default in Codex:
 
 ### 1. Image Gen
 
@@ -143,7 +143,7 @@ SDK / API / feature documentation. Should be treated as
 
 **Purpose:** scaffold plugins and marketplace entries.
 **Type:** scaffolding skill; produces `.codex-plugin/plugin.json`
-+ optional marketplace listing.
+plus optional marketplace listing.
 **Factory impact:** HIGH. This is the skill that would
 create a "Zeta for Codex" plugin if we wanted one. The
 architecture question it surfaces: does Zeta ship ITS OWN
@@ -217,9 +217,14 @@ marketplace-discovery surface.
 **Option B — In-tree plugin manifest.** Land `.codex-plugin/plugin.json`
 at repo root with `skills: "./.codex/skills/"` pointing at
 the existing substrate. Zeta becomes installable as a
-Codex plugin via `codex plugin marketplace add
-Lucent-Financial-Group/Zeta` (or AceHack fork). Middle
-cost; gains discovery without extracting substrate.
+Codex plugin. Installation procedure: first consult the
+Codex marketplace metadata (`codex plugin marketplace list` /
+`codex plugin marketplace search <term>` per the 2026-03-26
+plugin docs) to check whether the source is already
+discoverable; only fall back to `codex plugin marketplace
+add <owner>/<repo>` (upstream or fork) if the source is not
+already published under marketplace metadata. Middle cost;
+gains discovery without extracting substrate.
 
 **Option C — Separate `zeta-codex-plugin` repository.** Move
 `.codex/skills/**` to a sibling LFG repo dedicated to Codex
@@ -232,15 +237,15 @@ with the Amara 8th-ferry Aurora/KSK/Zeta triangle (Zeta
 publish yet; substrate still maturing). Revisit Option B
 when Zeta has >3 Codex skills worth distributing together.
 Option C is the right shape if the factory wants a clean
-library-vs-distribution split per Amara's architectural
-recommendations.
+library-vs-distribution split per the external-collaborator
+(Amara) architectural recommendations.
 
 ### Phase 3 — Plugin Creator deep integration (S, Otto-106+)
 
-Aaron: *"if you have a plugin creator skill we should be a
-deep integration for it too"*. Translation: when a
-session invokes Codex's `$plugin-creator` to build a Zeta
-Codex plugin, the scaffolding should pick up Zeta's
+Maintainer directive: *"if you have a plugin creator skill
+we should be a deep integration for it too"*. Translation:
+when a session invokes Codex's `$plugin-creator` to build a
+Zeta Codex plugin, the scaffolding should pick up Zeta's
 existing substrate rather than generating blank.
 
 Mechanism: document in `.codex/README.md` the invocation
@@ -287,7 +292,7 @@ Per Otto-79 + Otto-86 + Otto-93 peer-harness progression:
 - Does NOT implement any plugin manifest or skill
   addition. Research + plan only.
 - Does NOT decide between Option A / B / C for Zeta-as-
-  plugin. Surfaces trade-offs; Aaron's choice.
+  plugin. Surfaces trade-offs; maintainer's choice.
 - Does NOT install any Codex built-in skill to the repo.
   Built-ins ship with Codex CLI; no in-repo work needed.
 - Does NOT attempt cross-repo coordination with
@@ -295,12 +300,12 @@ Per Otto-79 + Otto-86 + Otto-93 peer-harness progression:
 - Does NOT modify `.claude/**` — Claude Code substrate
   unchanged.
 - Does NOT extend the 5-built-in list. Those are the ones
-  Aaron named; additions need their own research.
+  the maintainer named; additions need their own research.
 
 ## Dependencies to adoption
 
-1. **Aaron decision on Option A / B / C** — architectural
-   choice about Zeta-as-Codex-plugin packaging.
+1. **Maintainer decision on Option A / B / C** —
+   architectural choice about Zeta-as-Codex-plugin packaging.
 2. **`.codex/README.md` extension** — document the 5
    built-ins + boundary discipline (Otto-104 candidate).
 3. **Plugin Creator invocation pattern** — when decided,
@@ -310,17 +315,18 @@ Per Otto-79 + Otto-86 + Otto-93 peer-harness progression:
 5. **If Option B:** land `.codex-plugin/plugin.json` at
    repo root with `skills: "./.codex/skills/"`.
 6. **If Option C:** new LFG repo for the plugin;
-   coordinate with Max as cross-repo work per Otto-90
-   coordination-NOT-gate.
+   coordinate with the cross-repo contributor role (the
+   initial-starting-point contributor per Otto-140) per
+   Otto-90 coordination-NOT-gate.
 
 ## Specific-asks (per Otto-82/90/93 calibration)
 
-**Aaron-specific:** Option A / B / C for Zeta-as-Codex-
+**Maintainer-specific:** Option A / B / C for Zeta-as-Codex-
 plugin? Each has different maintenance cost + discovery
-surface. Aaron's architectural call; not Otto's.
+surface. Maintainer's architectural call; not Otto's.
 
-**Max-specific:** none for this research doc; surfaces if
-Option C is chosen (new LFG repo).
+**Cross-repo-contributor-specific:** none for this research
+doc; surfaces if Option C is chosen (new LFG repo).
 
 ---
 
@@ -352,7 +358,7 @@ Archive-header format self-applied — 19th aurora/research
 doc in a row.
 
 Otto-103 tick primary deliverable. Closes the research
-phase of Aaron's Codex-built-ins-integration directive.
-Phase-1 `.codex/README.md` extension is a candidate
-Otto-104 bounded deliverable; Options A/B/C decision is
-Aaron's call.
+phase of the maintainer's Codex-built-ins-integration
+directive. Phase-1 `.codex/README.md` extension is a
+candidate Otto-104 bounded deliverable; Options A/B/C
+decision is the maintainer's call.
