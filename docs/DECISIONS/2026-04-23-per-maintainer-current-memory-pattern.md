@@ -141,10 +141,18 @@ Each CURRENT file:
 - **On session wake,** read CURRENT-<maintainer>.md files
   first for the maintainers currently active in this
   session. They're the fast path to "what's in force."
-- **When in doubt between two rules,** CURRENT wins.
+- **When in doubt between CURRENT and an *older* raw
+  memory,** CURRENT wins. When a *newer* raw memory
+  (post-dating the CURRENT section's last-refresh date)
+  contradicts a CURRENT rule, the newer memory wins
+  until CURRENT catches up — per the Precedence section
+  above. Check dates before applying.
 - **After landing a new memory that updates a rule,**
   update CURRENT in the same tick. Skipping this is
-  a lying-by-omission failure mode.
+  a lying-by-omission failure mode — and it leaves the
+  newer-memory-wins exception load-bearing for any agent
+  that wakes between the memory landing and CURRENT
+  catching up.
 
 ## What this changes for maintainers
 
