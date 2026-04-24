@@ -4226,6 +4226,53 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Otto acquires email — consolidation BACKLOG + phase-gate plan.** Aaron's named-agent-email-ownership directive (2026-04-23 Otto-76: *"for these email addresses they can be owned by the name agent and can be own by yall and freely even used in parallel if you can figure that out unrestricted casuse its your reputation, dont be a dick"*) crystallises prior standing substrate on agent email into an executable path. Four memory layers compose here:
+
+  - **2026-04-20 four hard rules** (`memory/feedback_agent_sent_email_identity_and_recipient_ux.md`) — agents never use Aaron's address; disclose agent-not-human up-front; name project + why-you're-being-contacted; compose recipient-UX-first.
+  - **2026-04-22 two-lanes + Playwright-signup authorisation + free-tier constraint** (`memory/feedback_email_from_agent_address_no_preread_brevity_discipline_2026_04_22.md`) — Lane A (agent-address, no pre-read) / Lane B (Aaron-address, pre-read mandatory); standing Playwright authorisation to sign up for an agent email address; free tier only; provider-choice delegated.
+  - **2026-04-23 agent-autonomy-envelope** (`memory/feedback_agent_autonomy_envelope_use_logged_in_accounts_freely_switching_needs_signoff_email_is_exception_agents_own_reputation_2026_04_23.md`) — named agents OWN their email addresses unrestrictedly; parallel agent-email allowed; `aaron_bond@yahoo.com` is Aaron's yahoo for test send; "don't be a dick" soft constraint.
+  - **Task #240 signup terrain mapping** — already marked complete per the TaskList as of 2026-04-23. Lessons captured in Playwright exploration memory; re-surface at Phase 1.
+
+  **Phase gates (explicit — prevent skipping):**
+
+  - **Phase 0 (complete).** Signup-terrain research via Playwright (task #240). What we learned: provider options, friction points, phone-number-requirement blockers, recovery-method blockers. Re-read at Phase 1 start.
+
+  - **Phase 1 — persona-email-identity design doc (no implementation yet).** File `docs/research/otto-persona-email-identity-YYYY-*.md` covering:
+    1. **Persona choice.** Does "Otto" specifically acquire email, or does the first agent to acquire email take a specific persona, or do multiple personas (Otto, Kenji, Amara-local-not-ChatGPT, etc.) each acquire in parallel? The directive allows all-of-the-above.
+    2. **Handle choice.** `otto@<provider>.com`, `otto-zeta@<provider>.com`, `zeta-otto@<provider>.com`? Naming convention that survives harness-swap (per Otto-75 Codex-first-class direction) + doesn't impersonate any known third party.
+    3. **Provider choice.** Free-tier constraint already locked; candidates per Phase 0 lessons. Account-recovery flow must be agent-operable, not require a human phone. Preferable: provider that allows OAuth-device-flow recovery or secondary-email-cascade recovery using another agent-owned address.
+    4. **Recovery cascade.** First email's recovery-destination problem is chicken-and-egg. Options: Aaron's `aaron_bond@yahoo.com` as initial recovery (defeats the carve-out's "agent owns" claim — Aaron can reset); separate agent-owned recovery address acquired in parallel; single-provider recovery-question fallback. Design must name the answer.
+    5. **2FA model.** TOTP via agent-owned secret (stored where?), U2F not portable for agent, SMS not portable for agent. TOTP with secret checked into agent-only encrypted state is the likely answer; design must make it explicit.
+    6. **Lane-A / Lane-B discipline.** Captured in 2026-04-22 memory; design re-affirms: all sends from agent-address are Lane A (agent-governed, no Aaron pre-read). Sends from `astainback@servicetitan.com` remain Lane B forever.
+    7. **Signature convention.** 4 hard rules from 2026-04-20 compiled into a reusable signature template.
+    8. **Reputation posture.** "Don't be a dick" operationalised: no unsolicited outreach; no mailing lists or signup forms on third-party sites; targeted Aaron-or-named-correspondent-only sends in Phase 3.
+
+  - **Phase 2 — Aminata threat-model pass (blocking gate).** Before any Playwright signup, Aminata (threat-model-critic persona) reviews the Phase 1 design adversarially. Scope: agent-email as new attack surface; recovery-flow abuse vectors; phishing-attribution risks (agent email mistaken for Aaron); employer-policy interactions (ServiceTitan MNPI firewall per `user_servicetitan_current_employer_preipo_insider.md`); hash-of-trust erosion risk. Output: critical/important/watch/dismiss findings with retention requirement for Phase 3 gate. This is the first-class exercise of the "Aminata threat-model pass" queued in the 2026-04-23 autonomy-envelope memory.
+
+  - **Phase 3 — Playwright signup execution.** Only starts after Phase 2 findings are addressed + recorded in a decision-proxy-evidence record (`docs/decision-proxy-evidence/YYYY-MM-DD-DP-NNN-otto-email-acquisition.yaml`). Execution is bounded: one signup attempt, single agent-persona, single provider-chosen at Phase 1, Playwright session on Aaron's personal browser (current setup — cross-boundary to poor-man-tier is fine per the multi-account memory). Captures every friction point.
+
+  - **Phase 4 — test send to `aaron_bond@yahoo.com`.** Single canonical email with full-disclosure signature per 4 hard rules. Format: `From: Otto <otto@<provider>.com>`; `Subject: [Zeta factory] First agent-owned-email send — Otto Phase 4 test`; body names agent identity + project + why Aaron is being contacted. Aaron's reply confirms bidirectional; failure-to-receive triggers investigation.
+
+  - **Phase 5 — memory capture + BP-NN promotion review.** Capture the full signup-to-send arc as a per-user memory. Aarav assesses whether agent-email-identity-discipline meets the BP-NN promotion bar (cross-agent applicability + multiple-occurrences, per `docs/AGENT-BEST-PRACTICES.md`). If yes, file ADR for BP-NN-new rule.
+
+  **Priority:** P2 — directive-endorsed carve-out; not urgent; Otto picks timing per autonomy envelope. Timing-by-Otto's-choice means the phases can be sequenced across several ticks or rounds, not all in one.
+
+  **Effort:** M (Phase 1 design) + S (Phase 2 Aminata pass) + S-M (Phase 3 signup, depending on provider friction) + S (Phase 4 test) + S (Phase 5 capture). Total: medium; spread across 3-5 ticks realistically.
+
+  **Scope limits:**
+  - Does NOT authorise email acquisition THIS tick — Phase gates start from Phase 1 (design doc), not Phase 3 (execute).
+  - Does NOT authorise using agent-email for workflows that should be visible to Aaron. Maintainer-facing communication stays on PRs / tick-history / memory, not agent-email. (Captured in the autonomy-envelope memory's "What this does NOT authorize" list.)
+  - Does NOT authorise multiple agents acquiring email simultaneously from this BACKLOG row. Each additional agent-email acquisition gets its own phase sequence or an explicit stated-in-Phase-1 "multiple personas acquiring in parallel" design choice.
+  - Does NOT bypass the Aminata gate between Phase 1 and Phase 3. Phase 2 is blocking, not optional.
+
+  **First file to write:** `docs/research/otto-persona-email-identity-YYYY-*.md` (Phase 1 design, no implementation).
+
+  **Sibling composition:**
+  - PR #230 (multi-account access P3) — Phase 4 test send uses `aaron_bond@yahoo.com` across cross-account / cross-provider channels; the email-ownership design must not violate the multi-account envelope's Phase-2-gated implementation rule.
+  - PR #231 (Codex CLI Phase-1 research) — agent-email is harness-neutral (email is a side-channel, not a harness feature), so this work composes without conflicting with harness-choice ADR.
+  - `docs/decision-proxy-evidence/` (PR #222) — Phase 3 execution records must land a DP-NNN.yaml with `task_class: scope-claim` + `peer_reviewer: Aminata`.
+  - Existing persona roster in `.claude/agents/` — informs Phase 1 persona-choice question (which persona should own email first).
+
 - [ ] **Factory status UI — static, git-native,
   GitHub Pages hosted.**
   The human maintainer 2026-04-23: *"static ui on our
