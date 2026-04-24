@@ -554,17 +554,17 @@ current entry list as the library's decision record.
 
 ## Audit — docs/ALIGNMENT.md
 
-**Overall classification:** **mixed (mostly factory-generic,
-with narrow adopter-specific + both-coupled rows)** — the
-alignment contract between human maintainer and agents is
-structurally instructional and transfers wholesale to any
-factory adopter, but two rows contain `Zeta` as a substituted
-project name (**both** — research-claim framing + DIR-1) and
-one row is **adopter-specific** (Signatures block). The split
-execution therefore takes the "both" refactor path, not the
-pure factory-generic-files-move path: the project-name
-substitutions and signature template-ification land before
-the file itself moves to Frontier.
+**Overall classification:** **both (coupled)** — mostly
+factory-generic, with narrow adopter-specific + both-coupled
+rows. The alignment contract between human maintainer and
+agents is structurally instructional and transfers wholesale
+to any factory adopter, but two rows contain `Zeta` as a
+substituted project name (**both** — research-claim framing +
+DIR-1) and one row is **adopter-specific** (Signatures
+block). The split execution therefore takes the "both"
+refactor path, not the pure factory-generic-files-move path:
+the project-name substitutions and signature template-ification
+land before the file itself moves to Frontier.
 
 **File location post-split:** Frontier as the template, after
 the refactor below lands; each adopter substitutes their
@@ -589,7 +589,7 @@ SD-1..SD-9, DIR-1..DIR-5).
 | HC-6 Memory folder is earned, not edited | factory-generic | Memory discipline. |
 | HC-7 Sacred-tier protections | factory-generic | Protected-artifact pattern. |
 | SD-1..SD-9 Soft defaults | factory-generic | All instructional content (honesty register / peer register / μένω surfacing / preservation / precise language / name hygiene / generic-by-default / result-over-exception / agreement-is-signal-not-proof). |
-| DIR-1 `<Project>` = heaven-on-earth per-commit gradient | **both** | Substance is factory-generic (consent-preserving / fully-retractable / no-permanent-harm pole). `Zeta` as subject is adopter-substitutable. In Frontier: `<Project>` placeholder. |
+| DIR-1 `Zeta` = heaven-on-earth per-commit gradient | **both** | Substance is factory-generic (consent-preserving / fully-retractable / no-permanent-harm pole). Current source names `Zeta` as the subject; in Frontier, substitute the `<Project>` placeholder. |
 | DIR-2..DIR-5 Directional | factory-generic | Window-expansion / escape-hatch / succession / co-authorship. All universal. |
 | "Measurability — what we count" | factory-generic | Measurement framework for the research claim; the specific metrics transfer. |
 | "Renegotiation protocol" | factory-generic | Clause-revision mechanism. |
@@ -620,17 +620,17 @@ template-ify signatures section.
 ### Classification rationale
 
 ALIGNMENT.md is the factory's alignment-contract substrate.
-20 clauses are all structurally instructional (hard
+21 clauses are all structurally instructional (hard
 constraints / soft defaults / directional aims). Substance
 transfers to any factory adopter; only the project name +
 signatures + a few verbatim-quote attributions are adopter-
 specific. Confirms the rule-substrate-instructional
 hypothesis: instructional rule substrates are structurally
-factory-generic by design. The overall class is **mixed**
-because the narrow substitutions (project-name `both` rows +
-adopter-specific Signatures row) route the file through
-the "both" refactor path at split time — not because the
-substance is non-generic.
+factory-generic by design. The overall class is **both
+(coupled)** because the narrow substitutions (project-name
+`both` rows + adopter-specific Signatures row) route the
+file through the "both" refactor path at split time — not
+because the substance is non-generic.
 
 ## How this audit connects to the multi-repo split
 
