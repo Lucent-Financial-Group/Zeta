@@ -62,6 +62,11 @@ let ``Consistent-hash bucket skew is material on Zipfian keys`` () =
     printfn "Jump ratio on Zipf(s=1.2): %.3f" ratio
 
 
+// DST-exempt: uses `HashCode.Combine` which is process-randomized
+// per-run. Flake analysis + fix pipeline tracked in docs/BACKLOG.md
+// "SharderInfoTheoreticTests 'Uniform traffic' flake" row. DST
+// marker convention + lint rule: docs/BACKLOG.md "DST-marker
+// convention + lint rule" row (Aaron 2026-04-24 directive).
 [<Fact>]
 let ``InfoTheoreticSharder does not make skew worse`` () =
     // 100k Zipf keys, 16 shards. Observe then query with the MI-sharder.
