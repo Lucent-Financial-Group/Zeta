@@ -44,6 +44,23 @@ numbers. When auditing, rely on the UTC timestamp (the
 first column) as the canonical ordering key; `auto-loop-N`
 is a within-session sequence tag only.
 
+### On snapshot pinning
+
+Per Amara's 4th-ferry absorb (PR #221) and Otto-70
+scaffolding (PR <this-pr>): when a tick's action is
+proxy-significant or settings-changing, the `notes`
+column can include a brief snapshot fingerprint
+(CLAUDE.md SHA, model snapshot). For session-level
+state — model swap, compaction boundary, significant
+memory migration — use the dedicated sidecar file
+[`session-snapshots.md`](./session-snapshots.md) instead
+of inline. Capture helper at
+[`tools/hygiene/capture-tick-snapshot.sh`](../../tools/hygiene/capture-tick-snapshot.sh)
+prints a YAML fragment. Snapshot pinning in tick-history
+rows is **optional** — don't slow the autonomous-loop
+tick-close for every fire; pin when the action warrants
+audit.
+
 ## Why this exists
 
 Aaron 2026-04-22: *"you might as well right a history record
