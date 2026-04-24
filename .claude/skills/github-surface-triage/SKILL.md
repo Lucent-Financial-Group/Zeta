@@ -277,7 +277,7 @@ load-bearing for greps on archived fire-history).
   (shape definitions, rationale, Aaron directive quotes)
 - `docs/AGENT-ISSUE-WORKFLOW.md` — abstract dual-track
   principle for issues (GitHub / Jira / git-native)
-- `docs/FACTORY-HYGIENE.md` row #45 — ten-surface triage
+- `docs/FACTORY-HYGIENE.md` row #48 — ten-surface triage
   cadence + fire-history requirement
 - `docs/hygiene-history/pr-triage-history.md`
 - `docs/hygiene-history/issue-triage-history.md`

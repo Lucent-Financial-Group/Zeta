@@ -71,7 +71,7 @@ picked at setup time:
 ### Choosing at setup
 
 The canonical setup script under `tools/setup/` currently does
-not prompt for this. A **BACKLOG row is open** to add the
+not prompt for this. **TODO:** file a BACKLOG row to add the
 prompt: "Which issue tracker will this project use?
 [GitHub Issues / Jira / git-native] — agent workflow defaults
 adapt." Until that lands, Zeta's default is (1) and adopters

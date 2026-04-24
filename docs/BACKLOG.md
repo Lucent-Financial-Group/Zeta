@@ -7999,12 +7999,12 @@ systems. This track claims the space.
   we run overthere throttled not every round so it will be
   cheap."* LFG is a Copilot Business + Teams plan with all
   enhancements enabled; AceHack is free tier. The routine-
-  work rhythm (PRs land on AceHack per `docs/UPSTREAM-
-  RHYTHM.md`) stays; this is a parallel, slower track for
-  capabilities **only LFG can provide**. Budget stays $0 =
-  hard cost-stop; experiments run inside free-tier allowance.
-  **Scouting inventory:** `docs/research/lfg-only-
-  capabilities-scout.md` (10 candidate experiments, cadences
+  work rhythm (PRs land on AceHack per
+  `docs/UPSTREAM-RHYTHM.md`) stays; this is a parallel, slower
+  track for capabilities **only LFG can provide**. Budget stays
+  $0 = hard cost-stop; experiments run inside free-tier
+  allowance. **Scouting inventory:**
+  `docs/research/lfg-only-capabilities-scout.md` (10 candidate experiments, cadences
   defined per experiment). **Gate for Enterprise upgrade:**
   Aaron explicit — "only if enough stuff you can do only over
   there we end up with a large backlog" (≥10 experiments

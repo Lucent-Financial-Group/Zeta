@@ -86,7 +86,7 @@ AceHack) processes the queue. LFG is **not involved**.
 # Precondition: AceHack/Zeta:main is ahead of
 # Lucent-Financial-Group/Zeta:main by ~10 commits.
 # Check:
-gh api /repos/AceHack/Zeta/compare/main...Lucent-Financial-Group:Zeta:main \
+gh api /repos/AceHack/Zeta/compare/main...Lucent-Financial-Group:main \
   --jq '.status,.ahead_by,.behind_by'
 # Expected: "behind" / 0 / N  -- means LFG is behind AceHack by N.
 
