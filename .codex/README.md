@@ -1,7 +1,7 @@
 # Codex CLI harness substrate (`.codex/`)
 
 Parallel to `.claude/` — Codex-specific substrate for the
-factory. Per Otto-79 refinement of the first-class-Codex-CLI
+factory. Per tick-79 refinement of the first-class-Codex-CLI
 BACKLOG row: *"each harness owns its own named loop agent"*
 and *"each harness authors its own skill files"*. This
 directory is Codex's substrate; Claude Code's lives at
@@ -22,26 +22,26 @@ directory is Codex's substrate; Claude Code's lives at
 ```
 
 The OpenAI Skill Creator produces skill bundles matching the
-layout above; skills land in `.codex/skills/` when Aaron or a
-Codex CLI session adds them.
+layout above; skills land in `.codex/skills/` when the human
+maintainer or a Codex CLI session adds them.
 
 ## Current skills
 
 | Skill | Source | Purpose |
 |---|---|---|
-| [`idea-spark`](skills/idea-spark/) | Aaron 2026-04-24 Otto-102 (via OpenAI Skill Creator, skill.zip in drop/) | Sample skill; brainstorming + idea-development helper |
+| [`idea-spark`](skills/idea-spark/) | human-maintainer paste 2026-04-24 loop-agent tick 102 (via OpenAI Skill Creator, skill.zip in drop/) | Sample skill; brainstorming + idea-development helper |
 
-## Otto / Claude Code boundary
+## Loop-agent / Claude Code boundary
 
-Otto (Claude Code loop agent) does **not** edit files under
+The Claude Code loop agent does **not** edit files under
 `.codex/skills/` as part of its normal work. A future Codex
-CLI session authors + maintains Codex skills. Otto's
-initial landing of `idea-spark` here is a **substrate setup
-action** — not an ongoing edit-responsibility claim. Per
-Otto-79 cross-session-review-yes-cross-edit-no discipline:
-Otto can read this directory and comment on substrate
-quality in PR reviews, but a Codex CLI session owns the
-edits.
+CLI session authors + maintains Codex skills. The loop
+agent's initial landing of `idea-spark` here is a **substrate
+setup action** — not an ongoing edit-responsibility claim.
+Per the tick-79 cross-session-review-yes-cross-edit-no
+discipline: the Claude Code loop agent can read this
+directory and comment on substrate quality in PR reviews,
+but a Codex CLI session owns the edits.
 
 ## Bootstrap story
 
@@ -50,47 +50,47 @@ When a Codex CLI session first opens Zeta, it reads
 provides the universal handbook. This `.codex/README.md` is
 the Codex-harness-specific entry-point, parallel to
 `CLAUDE.md` for Claude Code. Future Codex-CLI sessions can
-expand this README with session-bootstrap content as Otto's
-Claude Code first-class-Codex research (PR #231) described.
+expand this README with session-bootstrap content as the
+Claude Code loop-agent's first-class-Codex research (PR #231)
+described.
 
 ## Skill authorship convention
 
 - **For Codex CLI sessions:** use the OpenAI Skill Creator
   (or equivalent Codex-native tooling) to author new skills.
   Land in `.codex/skills/<name>/` via normal PR flow.
-- **For Aaron:** land skills produced by the OpenAI Skill
-  Creator by unzipping bundle contents into
+- **For the human maintainer:** land skills produced by the
+  OpenAI Skill Creator by unzipping bundle contents into
   `.codex/skills/<name>/` and opening a PR — same pattern
   as this initial landing.
-- **For Otto:** do NOT author `.codex/skills/**` content
-  directly. If a Claude-Code-side skill would benefit from a
-  Codex counterpart, file a BACKLOG row describing the need;
-  Codex owns the authoring.
+- **For the Claude Code loop-agent:** do NOT author
+  `.codex/skills/**` content directly. If a Claude-Code-side
+  skill would benefit from a Codex counterpart, file a
+  BACKLOG row describing the need; Codex owns the authoring.
 
 ## Related substrate
 
 - [`.claude/skills/`](../.claude/skills/) — Claude Code's
   parallel skill substrate.
 - [`docs/BACKLOG.md`](../docs/BACKLOG.md) — the
-  first-class-Codex-CLI row (PR #228 + Otto-78 refinement PR
-  #236 + Otto-79 refinement PR #236 amendments + Otto-86
+  first-class-Codex-CLI row (PR #228 + tick-78 refinement PR
+  #236 + tick-79 refinement PR #236 amendments + tick-86
   peer-harness progression PR #255) names the
   6-stage arc that this `.codex/` directory is substrate-
   support for.
-- [`docs/research/codex-cli-first-class-2026-04-23.md`](../docs/research/codex-cli-first-class-2026-04-23.md)
-  — Phase-1 Codex CLI research (PR #231); identifies the
-  cron / scheduled-task gap that remains when Otto-in-Codex
-  operates.
+- [`docs/research/openai-codex-cli-capability-map.md`](../docs/research/openai-codex-cli-capability-map.md)
+  — Codex CLI capability map; catalogs surface area of the
+  OpenAI Codex CLI harness relative to Claude Code.
 
 ## Provenance
 
-Initial landing: Aaron 2026-04-24 Otto-102 tick. Aaron paste
-message: *"there are files in the drop including a skill
-created with the openai skill creator so it seems like codex
-should use this and integrate with this like you did with
-your skill creator please absorb and delete/remove items
-from the drop folder, there is a sample skill in tere
-created by the oopenai skill creator too"*.
+Initial landing: human-maintainer paste 2026-04-24 loop-agent
+tick 102. Paste message: *"there are files in the drop
+including a skill created with the openai skill creator so it
+seems like codex should use this and integrate with this like
+you did with your skill creator please absorb and
+delete/remove items from the drop folder, there is a sample
+skill in tere created by the oopenai skill creator too"*.
 
 The `idea-spark` skill is a sample generated by the OpenAI
 Skill Creator — functional content (brainstorming helper)
