@@ -587,3 +587,121 @@ module Graph =
                 | Some zLambda, Some zQ ->
                     Some (alpha * zLambda + beta * zQ)
                 | _ -> None
+
+    /// **Internal density of a node subset S.**
+    ///
+    /// Ratio of total internal edge weight (symmetrized) to the
+    /// maximum possible number of ordered pairs within S. High
+    /// internal-density indicates a tight sub-cluster.
+    ///
+    /// Formula:
+    /// ```
+    ///   InternalDensity(S) = sum_{i,j in S} w_ij / (|S| * (|S| - 1))
+    /// ```
+    /// with `|S| * (|S| - 1)` ordered-pair count (directed graph
+    /// convention; includes both (i, j) and (j, i)). For an
+    /// undirected graph where each edge appears in both
+    /// directions, this matches the mean per-pair edge weight.
+    ///
+    /// Returns `None` when `|S| < 2` (density undefined on a
+    /// singleton or empty set).
+    ///
+    /// Provenance: Amara 17th-ferry Part 2 correction #3 —
+    /// replaces muddy "subgraph entropy collapse" with
+    /// explicit cohesion measures used in the cartel-detection
+    /// literature (Wachs & Kertész 2019).
+    let internalDensity (subset: Set<'N>) (g: Graph<'N>) : double option =
+        let size = subset.Count
+        if size < 2 then None
+        else
+            let mutable acc = 0.0
+            let span = g.Edges.AsSpan()
+            for k in 0 .. span.Length - 1 do
+                let entry = span.[k]
+                let (s, t) = entry.Key
+                if subset.Contains s && subset.Contains t then
+                    acc <- acc + double entry.Weight
+            let pairs = double size * double (size - 1)
+            Some (acc / pairs)
+
+    /// **Exclusivity of a node subset S.**
+    ///
+    /// Ratio of internal edge weight (within S) to the total
+    /// outgoing weight from S (internal + boundary). A cartel
+    /// that interacts heavily within itself and avoids outsiders
+    /// has exclusivity near 1; a well-integrated community has
+    /// exclusivity near its relative weight share.
+    ///
+    /// Formula:
+    /// ```
+    ///   Exclusivity(S) = sum_{i, j in S} w_ij /
+    ///                   sum_{i in S, j in V} w_ij
+    /// ```
+    ///
+    /// Returns `Some x` in `[0.0, 1.0]` when defined; `None`
+    /// when S is empty or S has no outgoing edges (denominator
+    /// would be zero).
+    let exclusivity (subset: Set<'N>) (g: Graph<'N>) : double option =
+        if subset.Count = 0 then None
+        else
+            let mutable internalWeight = 0.0
+            let mutable totalWeight = 0.0
+            let span = g.Edges.AsSpan()
+            for k in 0 .. span.Length - 1 do
+                let entry = span.[k]
+                let (s, t) = entry.Key
+                let w = double entry.Weight
+                if subset.Contains s then
+                    totalWeight <- totalWeight + w
+                    if subset.Contains t then
+                        internalWeight <- internalWeight + w
+            if totalWeight = 0.0 then None
+            else Some (internalWeight / totalWeight)
+
+    /// **Conductance of a node subset S.**
+    ///
+    /// Classical cut-to-volume ratio measuring how well S
+    /// isolates from the rest of the graph. Low conductance
+    /// means tight isolation (cartel-like); high conductance
+    /// means the cut is large relative to the smaller side's
+    /// volume.
+    ///
+    /// Formula:
+    /// ```
+    ///   Conductance(S) = cut(S, V \ S) / min(vol(S), vol(V \ S))
+    /// ```
+    /// where:
+    /// * `cut(S, V\S)` = sum of edge weights crossing the
+    ///   boundary (summed in one direction; symmetrized)
+    /// * `vol(S)` = sum of edge weights incident on S (internal
+    ///   counted twice — once per endpoint — per standard
+    ///   conductance definition)
+    ///
+    /// Returns `Some c` in `[0.0, 1.0]` (approximately) when
+    /// both sides of the bisection have non-zero volume;
+    /// `None` for degenerate cases (S is empty, S is the full
+    /// node set, or both volumes are zero).
+    let conductance (subset: Set<'N>) (g: Graph<'N>) : double option =
+        if subset.Count = 0 then None
+        else
+            let allNodes = nodes g
+            if subset.Count = allNodes.Count then None
+            else
+                let mutable cut = 0.0
+                let mutable volS = 0.0
+                let mutable volRest = 0.0
+                let span = g.Edges.AsSpan()
+                for k in 0 .. span.Length - 1 do
+                    let entry = span.[k]
+                    let (s, t) = entry.Key
+                    let w = double entry.Weight
+                    let sIn = subset.Contains s
+                    let tIn = subset.Contains t
+                    if sIn then volS <- volS + w
+                    if tIn then volS <- volS + w
+                    if not sIn then volRest <- volRest + w
+                    if not tIn then volRest <- volRest + w
+                    if sIn <> tIn then cut <- cut + w
+                let denom = min volS volRest
+                if denom <= 0.0 then None
+                else Some (cut / denom)

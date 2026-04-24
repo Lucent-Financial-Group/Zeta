@@ -449,3 +449,86 @@ let ``coordinationRiskScoreRobust returns None when baselines empty`` () =
     let g = Graph.fromEdgeSeq [ (1, 2, 1L); (2, 1, 1L) ]
     Graph.coordinationRiskScoreRobust 0.5 0.5 1e-9 200 30 [||] [||] g
     |> should equal (None: double option)
+
+
+// ─── internalDensity / exclusivity / conductance ─────────
+
+[<Fact>]
+let ``internalDensity returns None for subset of size < 2`` () =
+    let g = Graph.fromEdgeSeq [ (1, 2, 1L); (2, 1, 1L) ]
+    Graph.internalDensity (Set.singleton 1) g |> should equal (None: double option)
+    Graph.internalDensity Set.empty g |> should equal (None: double option)
+
+[<Fact>]
+let ``internalDensity of K3 clique is high`` () =
+    // K3 with weight 10: three pairs, each appearing both
+    // directions, so 6 ZSet entries of weight 10. Sum = 60.
+    // |S|*(|S|-1) = 6. Density = 10.0.
+    let edges = [
+        (1, 2, 10L); (2, 1, 10L)
+        (2, 3, 10L); (3, 2, 10L)
+        (3, 1, 10L); (1, 3, 10L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let density =
+        Graph.internalDensity (Set.ofList [1; 2; 3]) g
+        |> Option.defaultValue 0.0
+    abs (density - 10.0) |> should (be lessThan) 1e-9
+
+[<Fact>]
+let ``exclusivity is 1 for an isolated subset`` () =
+    // A K3 clique with no external edges: all weight is
+    // internal. Exclusivity = 1.
+    let edges = [
+        (1, 2, 5L); (2, 1, 5L)
+        (2, 3, 5L); (3, 2, 5L)
+        (3, 1, 5L); (1, 3, 5L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let e =
+        Graph.exclusivity (Set.ofList [1; 2; 3]) g
+        |> Option.defaultValue 0.0
+    abs (e - 1.0) |> should (be lessThan) 1e-9
+
+[<Fact>]
+let ``exclusivity is lower when subset has external edges`` () =
+    // K3 clique on {1,2,3} + one external edge (3, 4). Total
+    // outgoing from S = 6 internal edges (weight 5 each = 30)
+    // + 1 external (weight 1) = 31. Internal = 30. Exclusivity
+    // = 30/31 ≈ 0.968.
+    let edges = [
+        (1, 2, 5L); (2, 1, 5L)
+        (2, 3, 5L); (3, 2, 5L)
+        (3, 1, 5L); (1, 3, 5L)
+        (3, 4, 1L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let e =
+        Graph.exclusivity (Set.ofList [1; 2; 3]) g
+        |> Option.defaultValue 0.0
+    e |> should (be lessThan) 1.0
+    e |> should (be greaterThan) 0.9
+
+[<Fact>]
+let ``conductance is low for well-isolated subset`` () =
+    // Two K3 cliques connected by one thin edge. Each K3 has
+    // tight internal volume; the cut is small. Conductance
+    // should be low.
+    let edges = [
+        (1, 2, 10L); (2, 1, 10L); (2, 3, 10L); (3, 2, 10L); (3, 1, 10L); (1, 3, 10L)
+        (4, 5, 10L); (5, 4, 10L); (5, 6, 10L); (6, 5, 10L); (6, 4, 10L); (4, 6, 10L)
+        (3, 4, 1L); (4, 3, 1L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let c =
+        Graph.conductance (Set.ofList [1; 2; 3]) g
+        |> Option.defaultValue nan
+    // Small cut (2 units) relative to volume (~60); conductance
+    // should be well below 0.1.
+    c |> should (be lessThan) 0.1
+
+[<Fact>]
+let ``conductance is None for empty or full-graph subset`` () =
+    let g = Graph.fromEdgeSeq [ (1, 2, 1L); (2, 1, 1L) ]
+    Graph.conductance Set.empty g |> should equal (None: double option)
+    Graph.conductance (Set.ofList [1; 2]) g |> should equal (None: double option)
