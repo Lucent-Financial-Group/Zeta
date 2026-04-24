@@ -19,6 +19,7 @@
     <Compile Include="Algebra/IndexedZSet.Tests.fs" />
     <Compile Include="Algebra/RobustStats.Tests.fs" />
     <Compile Include="Algebra/TemporalCoordinationDetection.Tests.fs" />
+    <Compile Include="Algebra/Veridicality.Tests.fs" />
 
     <!-- Circuit/ -->
     <Compile Include="Circuit/Circuit.Tests.fs" />
