@@ -2117,6 +2117,55 @@ within each priority tier.
   **Priority:** P1 (strategic, not urgent). Research tick (S) should land within 5-10 ticks; full integration is L and spread across the next few rounds as Codex CLI capabilities clarify.
 
   **First file to write:** `docs/research/codex-cli-first-class-2026-*.md` (the research tick).
+
+  **Otto-78 refinement — parallel-design + primary-switch-by-Aaron-context + symmetric-feature-parity:**
+
+  Aaron 2026-04-23 Otto-78 message 1: *"you should let the codex cli design all it's own skill files in a parallel mode where it can run asyncroyncly to you cause it wont be touching the same files only it's own skill files, that way it's skills will be first classs for it, inluding any extensions of it's own harness it should research it own harness current features on a cadence like you too so we can have the wrappers for both of you with like the built in loops,, memory enahancements and all other harness features that can be helpful like maybe hooks whatever, you can also keep up with a asymerty of features between the two harnesses too. backlog but seems pretty cool."*
+
+  Aaron 2026-04-23 Otto-78 message 2 (primary-switch clarification): *"only one will be the primary either you or codex which ever one i'm in at the time like i'm in you now so you are primay the async nature is controlled by you but if i'm in codex roles are reverse so its got to have all your fancyness and skills."* + *"backlog"*.
+
+  **The shape of the model (Aaron's design):**
+
+  1. **Two peer harnesses, not primary-secondary.** Claude Code and Codex CLI are each first-class. The existing 5-stage arc above (research matrix → gap closures → bootstrap doc → Otto-in-Codex test → harness-choice ADR) gets **extended** by this refinement, not replaced.
+
+  2. **Context-contingent primary:** whichever harness Aaron is actively working in is the **primary** at that moment. The *other* harness runs in **async mode**, controlled-by-primary. When Aaron switches, roles swap. This is a session-wide property, not a configuration flag.
+
+  3. **Symmetric feature inventory:** both harnesses need equivalent capability ("all your fancyness and skills"). Asymmetries in native-harness capability (e.g., Claude Code's `CronCreate` vs. Codex CLI's equivalent) are tracked explicitly so neither harness is stuck second-class.
+
+  4. **Codex CLI designs its own skill files in parallel.** A Codex CLI session should do its own skill-file research / design / iteration **without Otto's hands on it**. The asymmetry is good — Codex's skill files live where Codex reads them (not `.claude/skills/`), and Codex knows best what shape its skill system wants. Prevents Otto-mediated translation errors.
+
+  5. **Each harness researches its own harness capabilities on a cadence** (same shape as Otto's current web-search of Claude Code features). Codex CLI session researches Codex CLI updates; Claude Code session researches Claude Code updates. Output: harness-specific feature wrappers so built-in loops + memory enhancements + hooks + other affordances stay current on each side.
+
+  6. **Asymmetry tracking:** both harnesses maintain a parity inventory (what does the other one have that we don't?). New features in one harness land as research items for the other; the parity gap gets tracked explicitly so neither drifts behind unknowingly.
+
+  **Operational sequence (this is a revision of the earlier 5-stage arc; compose rather than replace):**
+
+  - **Stage 1** (this file, landed as PR #231 2026-04-23) — Otto researches Codex CLI from Otto-side. This arc continues.
+  - **Stage 1b — Codex CLI researches Claude Code from Codex-side.** New stage. When Aaron enters a Codex CLI session, the Codex agent runs an analogous research tick on Claude Code capabilities. Output: `docs/research/claude-code-first-class-from-codex-YYYY-*.md` (under whatever Codex's substrate convention becomes). Mirrors Stage 1 but with roles inverted.
+  - **Stage 2 (joint)** — parity matrix combines both sides' research; asymmetries flagged explicitly.
+  - **Stage 3 (each own surface)** — Codex CLI designs its own skill files / wrappers / tick loop in its own tree; Otto designs Claude-Code-specific wrappers on Claude Code side. Neither agent edits the other's substrate.
+  - **Stage 4 (synchronization cadence)** — both sides run a periodic harness-features-research tick; asymmetry inventory updated; the non-primary harness is async-controlled by the currently-active primary for synchronisation work.
+  - **Stage 5 (harness-choice ADR, as originally planned)** — per harness-choice-is-revisitable Aaron framing, the ADR names the current primary but explicitly supports swapping.
+
+  **Why this matters (Aaron's concrete framing):** Codex CLI session-as-primary is not hypothetical — Aaron will be in Codex CLI sometimes. When he is, the Codex session should have full peer capability (same cadence quality, same memory access, same PR-landing discipline, same tick-history hygiene). Otto shouldn't be "the only one who can run the factory"; nor should Codex be stuck as a stripped-down port.
+
+  **Relationship to existing rows / memories:**
+
+  - Composes with existing 5-stage arc **above in this row** (extension, not replacement).
+  - Composes with **cross-harness-mirror-pipeline** (round 34 below) — that one distributes skill files to many harnesses via a canonical source; this refinement says each peer harness **authors its own skill files**, so mirror-pipeline may apply only to *shared universal skills* (like `AGENTS.md` discipline), not harness-specific ones.
+  - Composes with **multi-account access design P3** (PR #230) — primary/async switching is account-aware in future.
+  - Composes with **first-class-Codex Phase-1 research** (PR #231) — Stage 1 of that feeds into this refinement's joint parity matrix.
+  - Composes with `memory/project_first_class_codex_cli_session_experience_parallel_to_nsa_harness_roster_portability_by_design_2026_04_23.md` — the NSA-style first-class roster now formally includes the primary-switch property.
+
+  **Scope limits of the refinement:**
+
+  - Does NOT commit Otto to cede control. Otto remains primary while Aaron is in Claude Code (which is now). Async-mode Codex work only starts when Aaron is in Codex; Otto doesn't dispatch Codex work unilaterally.
+  - Does NOT authorise Codex session to edit `.claude/skills/` or any Otto-owned substrate. Symmetric: Otto should not edit Codex's own-harness substrate.
+  - Does NOT require harness-swap for Otto. The arc supports either-primary-any-time, not forced migration.
+  - Does NOT bypass the harness-choice ADR (Stage 5) — that's still the decision surface when asymmetries warrant a reset.
+
+  **First file to add for the refinement:** this BACKLOG update itself, plus a matching research-doc reference once a Codex CLI session executes Stage 1b.
+
 - [ ] **Cross-harness mirror pipeline** (round 34 ask from
   Aaron). Zeta is currently Claude-Code-biased
   (`.claude/skills/`, `.claude/agents/`). Real contributors
