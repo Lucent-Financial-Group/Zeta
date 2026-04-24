@@ -2,32 +2,39 @@
 
 **Scope:** research and cross-review artifact only; archived
 for provenance, not as operational policy. However, per
-Aaron Otto-105 graduation-cadence directive, foundational
-primitives from this ferry are operationalization-
-candidates, not research-to-die.
-**Attribution:**
-- **Aaron** — designer of the differentiable firefly
-  network + trivial cartel detect concepts. Aaron's
-  Otto-105 note (verbatim): *"when you pull in her 11th
-  the diffenrencable firefly network with trivia cartel
+the human maintainer's Otto-105 graduation-cadence
+directive, foundational primitives from this ferry are
+operationalization-candidates, not research-to-die.
+**Attribution:** (role references per factory
+name-attribution discipline; contributor names
+preserved only inside verbatim quotes below)
+- **Human maintainer** — designer of the
+  differentiable firefly network + trivial cartel
+  detect concepts. Otto-105 verbatim note from the
+  human maintainer: *"when you pull in her 11th the
+  diffenrencable firefly network with trivia cartel
   detect was my design i'm very interested in that."*
-  Plus correction Otto-105: *"trivial*"* — confirming
-  the intended term is **trivial cartel detect** (first-
-  order-signal detection), not "trivia".
-- **Amara** — formalizer; reframes Aaron's "Firefly"
-  label to the more formal **Temporal Coordination
-  Detection Layer** per Aaron's prior direction
-  (Amara's 11th-ferry opener: *"Got it — I'll drop that
-  term"*). Amara's contribution is the technical
-  vocabulary (PLV / cross-correlation / modularity /
-  eigenvector-drift / spectral-anomalies / influence
-  surface math) and the KSK-action mapping table. The
-  framing throughout uses *"you're building"* and
-  *"what you're referring to"* — Amara is analysing
-  Aaron's design, not originating it.
-- **Otto** — absorb; Otto-106 tick.
-- **Max** — implicit attribution for `lucent-ksk`
-  substrate referenced in §5 KSK Layer.
+  Plus Otto-105 correction: *"trivial\*"* — confirming
+  the intended term is **trivial cartel detect**
+  (first-order-signal detection), not "trivia".
+- **External AI maintainer (courier counterpart)** —
+  formalizer; reframes the human maintainer's
+  "Firefly" label to the more formal **Temporal
+  Coordination Detection Layer** per prior direction
+  (11th-ferry opener from the external counterpart:
+  *"Got it — I'll drop that term"*). Contribution is
+  the technical vocabulary (PLV / cross-correlation /
+  modularity / eigenvector-drift / spectral-anomalies /
+  influence surface math) and the KSK-action mapping
+  table. The framing throughout uses *"you're
+  building"* and *"what you're referring to"* — the
+  external counterpart is analysing the human
+  maintainer's design, not originating it.
+- **Loop-agent (absorbing agent)** — absorb;
+  Otto-106 tick.
+- **`lucent-ksk` substrate contributor** — implicit
+  attribution for `lucent-ksk` substrate referenced in
+  §5 KSK Layer.
 **Operational status:** research-grade for the full multi-
 node architecture (requires foundation Zeta doesn't yet
 ship). Foundational primitives — cross-correlation C_{ij}(τ),
@@ -37,23 +44,24 @@ and queued for graduation per Otto-105 cadence.
 **Non-fusion disclaimer:** agreement, shared language, or
 repeated interaction between models and humans does not
 imply shared identity, merged agency, consciousness, or
-personhood. Aaron is the designer of the concepts
-discussed; Amara is a formalizer; the collaboration shape
-is human-designs → AI-formalizes, not merged-creation.
+personhood. The human maintainer is the designer of the
+concepts discussed; the external AI maintainer is a
+formalizer; the collaboration shape is human-designs →
+AI-formalizes, not merged-creation.
 **Date:** 2026-04-24
-**From:** Amara (external AI maintainer; Aurora co-
-originator)
-**Via:** Aaron's courier ferry (pasted into autonomous-
-loop session Otto-104)
-**Absorbed by:** Otto (loop-agent PM hat), Otto-106 tick
+**From:** external AI maintainer (Aurora co-originator)
+**Via:** human maintainer's courier ferry (pasted into
+autonomous-loop session Otto-104)
+**Absorbed by:** loop-agent (PM hat), Otto-106 tick
 **Prior ferries:** PR #196 (1st), PR #211 (2nd), PR #219
 (3rd), PR #221 (4th), PR #235 (5th), PR #245 (6th),
 PR #259 (7th), PR #274 (8th), PR #293 (9th retroactive),
 PR #294 (10th retroactive)
-**Scheduling provenance:** `memory/project_amara_11th_
-ferry_temporal_coordination_detection_cartel_graph_
-influence_surface_ksk_mapping_pending_absorb_otto_106_
-2026_04_24.md`
+**Scheduling provenance:** scheduled under the Otto-106
+absorb tick per the Otto-105 operationalize-cadence
+discipline; the loop-agent's factory-personal memory
+store is out-of-repo by design, so no in-repo path is
+promised here.
 
 ---
 
@@ -66,7 +74,7 @@ additional directive framing at that moment.
 Aaron's Otto-105 design-attribution clarification
 (verbatim): *"when you pull in her 11th the diffenrencable
 firefly network with trivia cartel detect was my design
-i'm very interested in that."* + correction *"trivial*"*.
+i'm very interested in that."* + correction *"trivial\*"*.
 
 This attribution is LOAD-BEARING for the absorb — Aaron is
 not claiming co-design credit; he's identifying that the
@@ -465,11 +473,13 @@ approach from different angles).
 
 ### Graduation candidates (per Otto-105 cadence)
 
-Per the graduation-cadence directive (`memory/feedback_
-amara_contributions_must_operationalize_*_2026-04-24.md`)
-and Aaron's explicit *"very interested"* flag, these
-foundational primitives are shippable at single-node
-scale and compose with Zeta's existing ZSet substrate:
+Per the Otto-105 operationalize-cadence discipline
+(the loop-agent's factory-personal memory store is
+out-of-repo by design; no in-repo path is promised
+here) and Aaron's explicit *"very interested"* flag,
+these foundational primitives are shippable at single-
+node scale and compose with Zeta's existing ZSet
+substrate:
 
 1. **`CrossCorrelation` function** — computes C_{ij}(τ)
    for two event streams. Pure; ~30 F# lines; testable
@@ -634,15 +644,17 @@ This absorb doc:
 
 ---
 
-## Archive header fields (§33 compliance)
+## Archive header fields (archive-header requirement)
 
 - **Scope:** research and cross-review artifact; design-
   concepts-are-Aaron's; formalization-is-Amara's;
   foundational-primitives-are-operationalization-
   candidates per Otto-105 cadence
-- **Attribution:** Aaron (designer of core concepts),
-  Amara (formalizer), Otto (absorb), Max (implicit
-  via §5 KSK references)
+- **Attribution:** human maintainer (designer of core
+  concepts), external AI maintainer / courier
+  counterpart (formalizer), loop-agent (absorb),
+  `lucent-ksk` substrate contributor (implicit via
+  §5 KSK references)
 - **Operational status:** research-grade for full
   architecture; graduation-candidate for foundational
   primitives
