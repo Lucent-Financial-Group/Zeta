@@ -2,10 +2,13 @@ module Zeta.Samples.ServiceTitanFactoryApi.Seed
 
 open System
 
-// Deterministic in-memory seed data that mirrors
-// `samples/ServiceTitanFactoryDemo/seed-data.sql`. Kept parallel so the
-// same demo scenarios work whether the backing store is Postgres
-// (production-shape) or this in-memory fallback (zero-dependency).
+// Deterministic in-memory seed data for the factory-demo. This file
+// is the canonical seed source today — the Postgres-backed sample
+// (with schema.sql / seed-data.sql) is a v1 follow-up; when that
+// lands, this seed will mirror it 1:1 for parity testing. The C#
+// sibling at `samples/FactoryDemo.Api.CSharp/Seed.cs` mirrors this
+// shape so the same demo scenarios run identically in either
+// language.
 
 type Customer =
     { Id: int64

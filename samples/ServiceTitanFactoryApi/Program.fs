@@ -39,12 +39,18 @@ let main args =
     let app = builder.Build()
 
     // Trivial root — lets a browser confirm the API is up.
+    // Advertise all 9 concrete endpoints including the parameterised
+    // `{id}` routes so the root is an honest index of what `/` serves,
+    // matching the table in the README.
     app.MapGet("/", Func<_>(fun () ->
         {| name = "ServiceTitan factory-demo API"
            version = "0.0.1"
            endpoints =
                [ "/api/customers"
+                 "/api/customers/{id}"
+                 "/api/customers/{id}/activities"
                  "/api/opportunities"
+                 "/api/opportunities/{id}"
                  "/api/activities"
                  "/api/pipeline/funnel"
                  "/api/pipeline/duplicates" ] |} :> obj))

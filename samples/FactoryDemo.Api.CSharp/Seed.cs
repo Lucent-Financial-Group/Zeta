@@ -1,10 +1,13 @@
 namespace Zeta.Samples.FactoryDemo.Api;
 
 /// <summary>
-/// Deterministic in-memory seed data that mirrors
-/// <c>samples/FactoryDemo.Db/seed-data.sql</c>. Kept parallel to
-/// the F# sibling in <c>samples/FactoryDemo.Api.FSharp</c> so the same
-/// demo scenarios work identically in either language.
+/// Deterministic in-memory seed data for the factory-demo.
+/// The canonical seed source is the F# sibling's
+/// <c>samples/ServiceTitanFactoryApi/Seed.fs</c> (same data, F# records);
+/// this file mirrors that shape 1:1 in C# records. When the Postgres
+/// backing sample lands (tracked in <c>docs/BACKLOG.md</c> under the
+/// factory-demo rows), that sample's <c>schema.sql</c> / seed script
+/// becomes the upstream truth and both language samples will mirror it.
 /// </summary>
 public static class Seed
 {

@@ -7,16 +7,15 @@ the demo's seed data as JSON. Stack-independent — any frontend
 **What this is NOT:** A pitch for Zeta as a data store. Backend
 is in-memory (v0) and will be swapped to Postgres (v1) without
 changing the public API contract. The **software factory is the
-demo**, not the database layer. See
-`memory/feedback_servicetitan_demo_sells_software_factory_not_zeta_database_2026_04_23.md`.
+demo**, not the database layer.
 
 ## Why this sample exists
 
-The ServiceTitan factory-adoption demo needs a JSON API that any
-frontend choice can consume. Aaron's decision on
-Blazor-vs-React-vs-other (see `docs/plans/servicetitan-crm-ui-scope.md`)
-is TBD; this API ships now so the backend is not on the critical
-path when the frontend choice is made.
+The factory-adoption demo needs a JSON API that any frontend choice
+can consume. The frontend-framework decision (Blazor vs React vs
+other) belongs to the human maintainer and is still TBD; this API
+ships now so the backend is not on the critical path when the
+frontend choice is made.
 
 ## How to run
 
@@ -47,7 +46,9 @@ All responses are JSON.
 
 ## V0 seed data
 
-`Seed.fs` mirrors `samples/ServiceTitanFactoryDemo/seed-data.sql`:
+`Seed.fs` is the canonical in-memory seed (a Postgres-backed sibling
+`schema.sql` / `seed-data.sql` is a v1 follow-up; this file will
+mirror it 1:1 when it lands):
 
 - 20 customers (trades contractors — plumbing, HVAC, electric, roofing, etc.)
 - 30 opportunities across 5 stages (Lead, Qualified, Proposal, Won, Lost)
@@ -58,8 +59,8 @@ Seed is deterministic — restarting the server replays the same data.
 
 ## What v1 adds
 
-- Postgres backing (Npgsql) wired against
-  `samples/ServiceTitanFactoryDemo/schema.sql`
+- Postgres backing (Npgsql) wired against a sibling sample's
+  `schema.sql` (tracked in `docs/BACKLOG.md`)
 - CRUD endpoints (POST / PUT / DELETE) — v0 is read-only
 - docker-compose for one-command Postgres + API
 - Environment-variable configuration for connection string
