@@ -751,6 +751,232 @@ within each priority tier.
   then `openspec/specs/f-dsl-surface/` once shape
   stabilizes.
 
+- [ ] **Per-entry-point F# DSLs + industry-standard surfaces
+  where they exist (HUGE, multi-round).** Aaron Otto-139
+  directive: *"we shuld make f# dsl for all these entry
+  points and if there are standards like SQL but specific
+  to these entry poionts we should support those too,
+  backlog"* + Otto-146 clarifier *"i know there are graph
+  standards"*. Scope: every primary entry-point surface of
+  Zeta gets a first-class F# DSL (computation-expression
+  builder + operators) + a compatibility layer for the
+  industry-standard query language in its category when one
+  exists. Coverage matrix (not exhaustive):
+  - **Relational** — F# `query { }` (LINQ-compatible, already
+    partial) + SQL-compatible surface (already in roadmap
+    via row 733). Standard: **ISO SQL**.
+  - **Graph** — F# `graph { }` CE over the Graph substrate
+    (`src/Core/Graph.fs`). Standards: **ISO/IEC 39075:2024
+    (GQL)** — Graph Query Language, first ISO graph-query
+    standard, openCypher lineage; **Cypher** (openCypher,
+    Neo4j, Memgraph);
+    **Gremlin** (Apache TinkerPop traversal algebra);
+    **SPARQL** (W3C, for RDF/linked-data); **Datalog**
+    (Souffle, Datomic's Datalog). Pick one primary
+    (probably GQL as forward-looking ISO standard; Cypher
+    as de-facto lingua franca); make others opt-in
+    translation surfaces where tractable.
+  - **Temporal / event-stream** — F# `stream { }` CE over
+    TemporalCoordinationDetection primitives. Standards:
+    **Esper EPL**, **Apache Flink SQL**, **Calcite
+    streaming SQL**. Less crystallized than SQL/GQL.
+  - **Time-series / signal** — F# `signal { }` CE over the
+    signal-processing primitives (FFT, Hilbert, windowing).
+    Standards: less uniform — **InfluxDB Flux**, **PromQL**
+    (point-query), **KQL** (Azure Kusto), **TQL** (MIT
+    time-series query). Worth surveying.
+  - **Veridicality / bullshit-detection** — F# `claim { }`
+    CE over `Claim<'T>` / `Provenance`. No industry
+    standard; Zeta-native surface is appropriate here.
+  - **Cartel / network-integrity** — F# `detect { }` CE over
+    `Graph.coordinationRiskScore*` / `labelPropagation` /
+    cohesion primitives. No industry standard.
+  - **KSK (Kinetic Safeguard Kernel) authorization** — F#
+    `authorize { }` CE over the k1/k2/k3 tier + revocable-
+    budget + multi-party-consent primitives. No industry
+    standard; XACML / OPA Rego are adjacent but not fits.
+  Design goals: (a) every DSL has tight algebraic
+  integration with the substrate it targets (no
+  "untyped-string-to-operator" middlemen); (b) retraction-
+  native semantics (Otto-73) bubble through the DSL — any
+  query is also a retraction subscription; (c) standards
+  compatibility is *translation* to Zeta-native, not
+  emulation-at-runtime — the parser emits Zeta operator
+  algebra. Research sequence: (1) survey standards for each
+  surface; (2) decide which get first-class translation;
+  (3) design computation-expression builder shape
+  per-surface; (4) consolidate cross-cutting features into
+  a container-DSL pattern (see next row); (5)
+  implementation in graduation cadence per surface.
+  Priority P1 post-v1-roadmap; effort L (multi-round, per
+  surface). Composes with the "F# DSL reimagining SQL"
+  row (P1 SQL-frontend section) and "LINQ integration"
+  row (same section) and the "KSK naming definition doc"
+  row (P2 research-grade section — title anchors instead
+  of brittle line numbers).
+
+- [ ] **F# DSL composition + container-DSL pattern — all Zeta
+  DSLs first-class composable.** Aaron Otto-147 directive:
+  *"does f# allow dsl composition? if so we should make
+  sure all our dsl are first class composable (maybe
+  requires a container dsl, IDK, i'm just guessing)"*.
+  **Short answer: YES, F# supports DSL composition; Aaron's
+  "container DSL" guess is exactly the right pattern name.**
+  F# mechanisms that support composition:
+  1. **Nested computation expressions** — one CE body can
+     contain another (`async { let! x = task { ... } in ... }`
+     works with `TaskBuilder.Bind` overloads). Any CE
+     builder exposing `Bind : M<'a> -> ('a -> M<'b>) -> M<'b>`
+     can accept *other* monadic values via `Bind` overloads.
+  2. **`MergeSources` + applicative composition** (F# 5+) —
+     combines independent computations within a single
+     active computation-expression builder that defines
+     compatible `Source` / `MergeSources` members. Enables
+     `let! x = g and! y = v and! z = s` where g / v / s
+     return values of types the surrounding builder knows
+     how to merge. Mixing fundamentally different DSL
+     builders (graph + veridicality + signal) in one
+     `and!` chain is NOT what MergeSources does — that
+     requires the container-DSL pattern in the next row
+     (top-level `zeta { }` CE with child-builder
+     delegation via its own `Source` overloads).
+  3. **Custom operations** (`[<CustomOperation>]`) — the
+     keyword-like syntax inside `query { }` / `graph { }`.
+     Operations can delegate to child-builder results.
+  4. **Builder delegation** — a container builder's `Yield`
+     or `Bind` method can accept values from child builders
+     and fold them into a container state.
+  5. **Implicit yields** (`AllowIntoPattern` +
+     `[<CustomOperation(... , IsLikeZip=true)>]`) — lets
+     multiple child-builder results flow through container
+     combinators without explicit ceremony.
+  6. **Prior art proving it works**: FParsec's combinator
+     parsers compose across F# code cleanly; Giraffe's HTTP
+     handler DSL composes with its response-writing DSL;
+     SAFE Stack composes Elmish + Saturn + Feliz DSLs.
+  **Container-DSL design for Zeta** (implementation plan):
+  - Top-level `zeta { }` container CE with operators:
+    - `from graph (g : GraphBuilder)`
+    - `from claims (c : VeridicalityBuilder)`
+    - `from stream (s : StreamBuilder)`
+    - `from signal (s : SignalBuilder)`
+    - `from authorize (a : AuthorizeBuilder)`
+    - `from detect (d : DetectBuilder)`
+    - `project (...)` / `where (...)` / `order by (...)` —
+      generic cross-DSL combinators.
+  - Each child builder stays usable standalone; `zeta { }`
+    composes results via `MergeSources` + folded state.
+  - Operator-name collisions resolved by prefix
+    disambiguation (`graph.map`, `signal.map`) or by
+    builder-scoped shadowing at the nested CE level.
+  - Retraction-native semantics preserved: if any child
+    surface retracts, the container re-runs downstream
+    combinators incrementally (Otto-73 compliance).
+  Design questions the research round answers:
+  (a) is a single container CE enough, or do we need tiered
+  containers (one per domain, e.g. `analysis { }` for
+  `graph + claims + signal`, `governance { }` for
+  `authorize + detect`)? (b) what is the minimum F#
+  language-version floor (5+ for `MergeSources`; 6+ for
+  some applicative affordances)? (c) do we expose the
+  container as a user-facing surface or only as internal
+  plumbing? Aaron's intuition ("maybe requires a container
+  dsl") maps to well-established F# patterns — this is a
+  tractable design problem, not open research. Priority P1
+  post-v1-roadmap; effort M (design) + L (implementation
+  across all child DSLs). Composes with the per-entry-point
+  DSL row (above) — they land as a paired design.
+
+- [ ] **LINQ-compatible entry points for C# consumers on every
+  F# DSL surface.** Aaron Otto-148 directive: *"can we
+  linquify in a clever way those entiry points too?
+  backlog"*. Scope: every F# DSL from the per-entry-point
+  row above gets a matching LINQ-provider / `IQueryable<T>`
+  surface so C# consumers (dominant .NET consumer
+  population) can use query syntax natively:
+  - **Relational** — `IQueryable<T>` + EF Core provider
+    (already in roadmap via row 719). Maps directly to
+    Zeta operators.
+  - **Graph** — `IGraphQueryable<TNode, TEdge>` or
+    `IQueryable<GraphResult>` over `Graph<'N>`. Cypher /
+    GQL translation on top. Maps graph traversal DSL
+    primitives to LINQ method-chain form.
+  - **Temporal / event-stream** — `IStreamQueryable<T>`
+    over event windows. Reactive Extensions (`IObservable<T>`)
+    is adjacent prior art; Rx-LINQ already exists in
+    `System.Reactive.Linq`.
+  - **Time-series / signal** — `ISignalQueryable<T>` over
+    sample sequences.
+  - **Veridicality** — `IClaimQueryable<T>` over
+    `Claim<T>` sequences with provenance + anti-consensus
+    predicates.
+  Design goals: (a) clever mapping — use F# computation
+  expressions + `query` translator to auto-generate LINQ
+  method-chain equivalents where feasible, not hand-written
+  mirrors per-surface; (b) SDK-consumer ergonomics — C# gets
+  the same power F# does, without F# prerequisite; (c)
+  expression-tree preservation — LINQ method chains lower to
+  the SAME Zeta operator algebra as the F# DSL, not an
+  intermediate C#-flavored algebra (one IR per surface); (d)
+  retraction-native semantics surface through Rx-style
+  `IObservable<Delta<T>>` on the LINQ side. Research
+  questions: (1) is auto-generation from the F# CE viable,
+  or does every surface need a hand-written LINQ provider?
+  (2) how do custom operations on F# CE (e.g. `where`,
+  `match`, `trace`) translate to LINQ method names
+  (`.Where`, `.Match`, `.Trace`)? (3) expression-tree
+  inspection vs opaque-method-call hand-off. Priority P1
+  post-v1-roadmap; effort L (per-surface LINQ-provider
+  implementation after core F# DSL stabilizes). Composes
+  with per-entry-point DSL row + container-DSL row + row
+  719 LINQ integration.
+
+- [ ] **Signal-processing primitives — FFT, Hilbert transform,
+  windowing, filters.** Aaron Otto-149 standing approval:
+  *"When Zeta gains signal-processing primitives add them
+  whenever, approved, backlog"*. Immediate motivation:
+  Amara 17th-ferry correction #5 (event-to-phase pipeline)
+  asked for Hilbert-based phase extraction (Option B); Otto
+  shipped Options A (`epochPhase`) + C (`interEventPhase`)
+  in PR #332 but deferred Option B pending FFT. With
+  standing approval, Otto may land these primitives
+  whenever a graduation cadence window opens, without
+  per-primitive design-review cycle. Scope:
+  - **FFT / IFFT** — radix-2 Cooley-Tukey for powers of 2;
+    Bluestein / mixed-radix for arbitrary N. F#-native or
+    via `MathNet.Numerics` binding. Returns
+    `Complex[]`.
+  - **Hilbert transform** — analytic-signal construction
+    via FFT (zero negative-freq bins, IFFT back). Enables
+    instantaneous-phase extraction (Option B for phase
+    pipeline).
+  - **Windowing** — Hann, Hamming, Blackman-Harris,
+    Tukey, Kaiser. For short-time FFT + spectral leakage
+    mitigation.
+  - **Digital filters** — FIR (convolution), IIR
+    (Butterworth, Chebyshev, Bessel). Low/high/band pass.
+  - **Auto-correlation / cross-correlation via FFT** —
+    FFT-based speedup for existing `crossCorrelation` when
+    sequences are long.
+  - **Spectrogram / STFT** — windowed FFT over a sliding
+    window.
+  - **Phase-locking value via Hilbert** — the Option B
+    pipeline unblocked by this row.
+  Placement: `src/Core/SignalProcessing.fs` (new module) +
+  integration into `src/Core/PhaseExtraction.fs`
+  (`hilbertPhase`) + possibly `src/Core/Graph.fs`
+  (FFT-accelerated spectral radius for very large graphs).
+  Dependencies: `MathNet.Numerics` likely; if already in
+  Zeta deps, zero added surface; else adds one NuGet
+  reference. Test strategy: known-analytic-pair tests (e.g.
+  FFT of `cos(kt)` → two-spike at ±k); invariance tests
+  (IFFT ∘ FFT = id within tolerance). Priority P2 research-
+  grade (standing approval; lands when cadence permits);
+  effort M (per primitive cluster). Composes with Amara
+  17th-ferry correction #5, `PhaseExtraction.fs`
+  (PR #332), `TemporalCoordinationDetection.fs` long-
+  sequence speedup opportunity.
+
 - [ ] **Parser technology for external language / flavor /
   dialect surfaces — F# parser combinators (FParsec) first,
   ANTLR as fallback.** Aaron Otto-160 directive: *"maybe
@@ -4482,7 +4708,7 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
-- [ ] **KSK naming definition doc — `docs/definitions/KSK.md` to stabilize what "KSK" means in this project.** Amara 2026-04-24 (16th courier ferry, GPT-5.5 Thinking): *"'KSK' has multiple possible meanings in your ecosystem: DNSSEC-style Key Signing Key, your emerging Kinetic Safeguard Kernel / trust-anchor idea, maybe broader 'ceremony + root-of-trust + governance key' structure. That ambiguity is not fatal, but it needs a repo doc that says: 'In this project, KSK means X. It is inspired by Y, but not identical to Y.' Otherwise future readers will get confused."* Factory references KSK across 5th / 7th / 12th / 14th / 16th ferries + Otto-77 Max `lucent-ksk` repo attribution. Proposed doc scope: (1) "In this project, KSK means..." definitional anchor; (2) "Inspired by..." (DNSSEC / DNSCrypt / threshold-sig ceremonies); (3) "NOT identical to..." (e.g., DNSSEC KSK signs zone-keys; Zeta KSK is about governance/consent quorum); (4) cross-refs to 5 ferries elaborating the architecture; (5) relationship to Max's `lucent-ksk` — the term may already have canonical meaning there which Zeta respects. **Coordination required:** Max per Otto-77 attribution + Aaron per Otto-90 cross-repo rule. Otto drafts; Max + Aaron approve before it lands. Priority P3 convenience; effort S (doc) + S (cross-repo coordination). Composes with Otto-108 single-team-until-interfaces-harden guidance.
+- [ ] **KSK naming definition doc — `docs/definitions/KSK.md` leading with canonical expansion `KSK = Kinetic Safeguard Kernel`.** **Authority: Aaron Otto-140 rewrite approved; Max attribution preserved as initial-starting-point contributor (Otto-77).** Amara 2026-04-24 (16th courier ferry, GPT-5.5 Thinking) flagged the naming ambiguity: *"'KSK' has multiple possible meanings: DNSSEC-style Key Signing Key, your emerging Kinetic Safeguard Kernel / trust-anchor idea, maybe broader 'ceremony + root-of-trust + governance key' structure."* Aaron Otto-142..145 (self-correcting Otto-141 typo "SDK") canonicalized: *"kinetic safeguare Kernel, i did the wrong name / it is what amara said / kinetic safeguard kernel"* — matches Amara's 5th and 16th ferry phrasing. Doc scope: (1) lead sentence *"KSK = Kinetic Safeguard Kernel. 'Kernel' here is safety-kernel / security-kernel sense (Anderson 1972, Saltzer-Schroeder reference-monitor, aviation safety-kernel) — a small trusted enforcement core, **NOT OS-kernel-mode** (not ring 0, not Linux/Windows kernel)"*; (2) "Inspired by..." DNSSEC KSK / DNSCrypt / threshold-sig ceremonies / security-kernel lineage; (3) "NOT identical to..." OS kernel, DNSSEC KSK (signs zone keys); (4) cross-refs to 5 ferries elaborating architecture; (5) Max attribution: *"Initial starting point committed by Max under Aaron's direction in LFG/lucent-ksk; substrate is Aaron+Amara's concept, completely rewritable."* (Otto-140 lifted the Max-coordination gate; Otto-77 attribution stands.) Priority P2 research-grade (elevated from P3); effort S (doc) — coordination overhead removed. Composes with Amara 17th-ferry correction #7 (now resolved), Otto-77 Max attribution, Otto-90 Aaron+Max-not-gates, Otto-140..145 Aaron canonical expansion + gate-lift, Otto-108 single-team-until-interfaces-harden.
 
 - [ ] **Git-native PR-conversation preservation — extract PR review threads + comments to git-tracked files on merge.** Aaron 2026-04-24 Otto-113 directive: *"you probably need to resolve and save the conversations on the PRs to git for gitnative presevration"*. Currently PR review threads (Copilot / Codex connector / human reviewer comments) live GitHub-side only; if repo is mirrored / forked / GitHub has an outage / repo is migrated, the conversation substrate is lost. For glass-halo transparency + retractability, PR discussions belong in-repo. Proposed mechanism: workflow (or post-merge skill) that fetches all review threads + general PR comments for a merged PR, serialises them as markdown at `docs/pr-discussions/PR-<number>-<slug>.md` with attribution (reviewer id/bot), timestamps, thread structure, and resolution status. Scope: (1) design PR-discussion schema + file shape; (2) fetch-on-merge mechanism (GHA workflow using `gh api graphql`); (3) privacy pass (strip anything sensitive from reviewer comments); (4) backfill historical PRs or declare cutover-forward. Priority P2 research-grade; effort S (mechanism) + M (backfill if chosen). Composes with Otto-113 bootstrap-attempt-1 memory + docs-lint/memory-no-lint policy (discussions go in docs/) + the ChatGPT-download-skill (PR #300) pattern.
 
