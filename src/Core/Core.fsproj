@@ -39,6 +39,7 @@
     <Compile Include="Merkle.fs" />
     <Compile Include="Residuated.fs" />
     <Compile Include="Aggregate.fs" />
+    <Compile Include="RobustStats.fs" />
     <Compile Include="Window.fs" />
     <Compile Include="Advanced.fs" />
     <Compile Include="Fusion.fs" />
