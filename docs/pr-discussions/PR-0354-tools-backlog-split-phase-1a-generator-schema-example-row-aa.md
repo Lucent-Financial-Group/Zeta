@@ -80,7 +80,7 @@ Aaron Otto-182: *"can you ask codex too?"* — inviting `@codex review` below.
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `6a447ee234`
-    
+
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -96,7 +96,7 @@ If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-            
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T10:31:29Z)
@@ -176,7 +176,7 @@ _(no body)_
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9bf3d09ff1`
-    
+
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -192,7 +192,7 @@ If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-            
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T11:06:51Z)

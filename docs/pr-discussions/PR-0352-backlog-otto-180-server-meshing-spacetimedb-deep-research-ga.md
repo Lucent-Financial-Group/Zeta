@@ -64,7 +64,7 @@ P2 research-grade at line ~921 (end of "## P2 — Post-v1 query-surface research
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `55ce0fac69`
-    
+
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -80,7 +80,7 @@ If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-            
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T10:18:05Z)
@@ -119,7 +119,7 @@ _(no body)_
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `44825a88fc`
-    
+
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -135,7 +135,7 @@ If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-            
+
 </details>
 
 ## Review threads

@@ -28,8 +28,17 @@ this tick with Phase-0-shipped state + remaining phases).
 tools/pr-preservation/archive-pr.sh <PR-number>
 ```
 
-Writes `docs/pr-discussions/PR-<N>-<slug>.md`. Re-running
+Writes `docs/pr-discussions/PR-<NNNN>-<slug>.md` — the PR
+number is zero-padded to four digits (e.g. `PR-0357-...`)
+so archives sort lexicographically in the same order as
+they sort numerically up to PR #9999. Re-running
 overwrites the file with current PR state.
+
+The archive tool paginates all three connections
+(`reviewThreads`, `reviews`, `comments`) plus per-thread
+comments, so PRs with more than 100 threads or threads
+with more than 100 comments are captured in full rather
+than silently truncated.
 
 ## Output schema
 
