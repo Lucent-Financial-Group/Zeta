@@ -37,8 +37,8 @@ What is NOT in scope this delta:
 ## C1 response — new §"Reviewer-cone overlap" section
 
 **Proposed addition to the base design (appended after
-§5 output types, before §"Addressing the 3 CRITICAL
-concerns at write-time"):**
+the Output types section, before the "Addressing the 3
+CRITICAL concerns at write-time" section):**
 
 > ## Reviewer-cone overlap — a fundamental limitation, not a closable gap
 >
@@ -192,9 +192,9 @@ after §5 output types:**
 >
 > **v0 output types — not-yet-reachable:**
 >
-> - `likely confabulated` — requires G_evidence fail-to-
->   RED which is impossible while G_evidence is advisory-
->   only. The output type will become reachable when
+> - `likely confabulated` — requires G_evidence fail-to-RED
+>   which is impossible while G_evidence is advisory-only.
+>   The output type will become reachable when
 >   independent-oracle substrate ships (v1 scope shifts to
 >   5-gate; corresponding implementation PR documents the
 >   transition).
@@ -236,10 +236,12 @@ specifies these three additive changes:
    code `likely confabulated` explicit.
 
 When the v1 delta lands as a PR modifying
-`docs/research/provenance-aware-bullshit-detector-2026-04-23.md`,
-the three changes land together. This doc (the v1-
-CRITICAL-only delta) is the design-rationale companion
-naming which findings drive which changes.
+`docs/research/provenance-aware-bullshit-detector-2026-04-23.md`
+(base design file, in PR #282 — not yet on main at time of
+this delta's writing), the three changes land together.
+This doc (the v1-CRITICAL-only delta) is the design-
+rationale companion naming which findings drive which
+changes.
 
 ---
 
