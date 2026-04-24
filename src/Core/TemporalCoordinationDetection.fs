@@ -127,12 +127,12 @@ module TemporalCoordinationDetection =
     /// reveal themselves through preserved phase structure, and
     /// vice versa. Detectors compose both.
     ///
-    /// Provenance: primitive from Aaron's differentiable firefly
-    /// network design, formalized in Amara's 11th courier ferry
-    /// (`docs/aurora/2026-04-24-amara-temporal-coordination-
-    /// detection-cartel-graph-influence-surface-11th-ferry.md`,
-    /// §1 Signal model). Third graduation under the Otto-105
-    /// cadence.
+    /// Provenance: primitive from the human maintainer's
+    /// differentiable firefly-network design, formalized in an
+    /// external AI collaborator's 11th courier ferry (§1 Signal
+    /// model; ferry content tracked in the Otto-105 operationalize
+    /// queue, see `memory/MEMORY.md` "Amara's 11th ferry"). Third
+    /// graduation under the Otto-105 cadence.
     /// Shared epsilon floor for phase-difference mean-vector
     /// magnitude. Used ONLY by `meanPhaseOffset` +
     /// `phaseLockingWithOffset` to decide when the offset
@@ -175,7 +175,9 @@ module TemporalCoordinationDetection =
     /// **Mean phase offset between two phase series** — the
     /// argument (angle) of the same mean complex phase-
     /// difference vector whose magnitude is the PLV. Returns
-    /// a value in `(-pi, pi]` when defined, or `None` when
+    /// a value in `[-pi, pi]` (the full `System.Math.Atan2`
+    /// range, which includes both endpoints under IEEE-754
+    /// signed-zero semantics) when defined, or `None` when
     /// input sequences are empty, of unequal length, or
     /// when the mean vector has effectively zero magnitude
     /// (direction is undefined). The epsilon floor
