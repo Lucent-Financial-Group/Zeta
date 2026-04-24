@@ -523,8 +523,12 @@ let ``conductance is low for well-isolated subset`` () =
     let c =
         Graph.conductance (Set.ofList [1; 2; 3]) g
         |> Option.defaultValue nan
-    // Small cut (2 units) relative to volume (~60); conductance
-    // should be well below 0.1.
+    // Small cut (2 units) relative to subset volume (~122)
+    // under the implemented directed-edge incident-weight
+    // definition (each internal directed edge contributes to
+    // volS twice — once per endpoint — so K3 with 6 directed
+    // weight-10 edges = 120 internal + 2 boundary = 122);
+    // conductance should be well below 0.1.
     c |> should (be lessThan) 0.1
 
 [<Fact>]

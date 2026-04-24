@@ -590,26 +590,29 @@ module Graph =
 
     /// **Internal density of a node subset S.**
     ///
-    /// Ratio of total internal edge weight (symmetrized) to the
-    /// maximum possible number of ordered pairs within S. High
-    /// internal-density indicates a tight sub-cluster.
+    /// Ratio of total internal edge weight, summed exactly as
+    /// stored in the directed edge set, to the maximum possible
+    /// number of ordered pairs within S. High internal-density
+    /// indicates a tight sub-cluster.
     ///
     /// Formula:
     /// ```
-    ///   InternalDensity(S) = sum_{i,j in S} w_ij / (|S| * (|S| - 1))
+    ///   InternalDensity(S) = sum_{(i,j) in E, i in S, j in S, i <> j} w_ij
+    ///                        / (|S| * (|S| - 1))
     /// ```
-    /// with `|S| * (|S| - 1)` ordered-pair count (directed graph
-    /// convention; includes both (i, j) and (j, i)). For an
-    /// undirected graph where each edge appears in both
-    /// directions, this matches the mean per-pair edge weight.
+    /// where `|S| * (|S| - 1)` is the count of ordered pairs
+    /// `(i, j)` with `i in S`, `j in S`, `i <> j` (directed graph
+    /// convention; self-loops `i = i` are excluded from both the
+    /// numerator and the denominator so the formula matches the
+    /// implementation). For an undirected graph where each edge
+    /// appears in both directions, this matches the mean per-pair
+    /// edge weight. Edge weights are summed as stored in the
+    /// directed edge set; no `(w_ij + w_ji) / 2` symmetrization
+    /// step is applied — callers that want a symmetrized variant
+    /// should materialize it before calling.
     ///
     /// Returns `None` when `|S| < 2` (density undefined on a
     /// singleton or empty set).
-    ///
-    /// Provenance: Amara 17th-ferry Part 2 correction #3 —
-    /// replaces muddy "subgraph entropy collapse" with
-    /// explicit cohesion measures used in the cartel-detection
-    /// literature (Wachs & Kertész 2019).
     let internalDensity (subset: Set<'N>) (g: Graph<'N>) : double option =
         let size = subset.Count
         if size < 2 then None
@@ -619,7 +622,7 @@ module Graph =
             for k in 0 .. span.Length - 1 do
                 let entry = span.[k]
                 let (s, t) = entry.Key
-                if subset.Contains s && subset.Contains t then
+                if s <> t && subset.Contains s && subset.Contains t then
                     acc <- acc + double entry.Weight
             let pairs = double size * double (size - 1)
             Some (acc / pairs)
@@ -638,9 +641,17 @@ module Graph =
     ///                   sum_{i in S, j in V} w_ij
     /// ```
     ///
-    /// Returns `Some x` in `[0.0, 1.0]` when defined; `None`
-    /// when S is empty or S has no outgoing edges (denominator
-    /// would be zero).
+    /// **Input contract.** The result is in `[0.0, 1.0]` only
+    /// when all outgoing edge weights from S are non-negative.
+    /// `Graph` weights are signed (retractions / anti-edges are
+    /// legal), so callers that need the bounded-ratio guarantee
+    /// must materialize a non-negative-weight view first
+    /// (filter or `max 0L` per-edge); on signed weights the
+    /// ratio can fall outside `[0, 1]` or change sign as the
+    /// signs of numerator and denominator diverge.
+    ///
+    /// Returns `Some x` when defined; `None` when S is empty or
+    /// the outgoing-weight denominator is zero.
     let exclusivity (subset: Set<'N>) (g: Graph<'N>) : double option =
         if subset.Count = 0 then None
         else
@@ -671,21 +682,25 @@ module Graph =
     ///   Conductance(S) = cut(S, V \ S) / min(vol(S), vol(V \ S))
     /// ```
     /// where:
-    /// * `cut(S, V\S)` = sum of edge weights crossing the
-    ///   boundary (summed in one direction; symmetrized)
-    /// * `vol(S)` = sum of edge weights incident on S (internal
-    ///   counted twice — once per endpoint — per standard
-    ///   conductance definition)
+    /// * `cut(S, V\S)` = sum over every directed edge `(s, t)`
+    ///   in `g.Edges` whose endpoints lie on opposite sides of
+    ///   the partition (no symmetrization step; if both
+    ///   `(s, t)` and `(t, s)` cross the boundary, each is
+    ///   counted once)
+    /// * `vol(S)` = sum of directed edge weights incident on
+    ///   nodes in S; an internal edge `(s, t)` with both
+    ///   `s, t in S` is counted twice — once per endpoint —
+    ///   per the standard conductance definition
     ///
     /// Returns `Some c` in `[0.0, 1.0]` (approximately) when
     /// both sides of the bisection have non-zero volume;
-    /// `None` for degenerate cases (S is empty, S is the full
-    /// node set, or both volumes are zero).
+    /// `None` for degenerate cases (S is empty, S equals the
+    /// full node set, or both volumes are zero).
     let conductance (subset: Set<'N>) (g: Graph<'N>) : double option =
         if subset.Count = 0 then None
         else
             let allNodes = nodes g
-            if subset.Count = allNodes.Count then None
+            if subset = allNodes then None
             else
                 let mutable cut = 0.0
                 let mutable volS = 0.0
