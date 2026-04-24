@@ -3953,6 +3953,146 @@ within each priority tier.
 
   **Effort:** M (1-3 days of agent research + write-up).
 
+- [ ] **Uptime / HA metrics — deploy-something-somewhere
+  to collect time-series history.** Human-maintainer
+  2026-04-22 directive extending the ARC3 /
+  DORA-in-production programme: *"uptime high avialablty
+  metrics is something we need history of which means we
+  need to deoply someting somewhere so we can collet
+  data"*. The factory has been
+  pure-code + pure-doc so far with no deployed runtime —
+  this row crosses that boundary. **Early-start-matters**
+  is the priority driver: a month of uptime history
+  requires a month of uptime, regardless of capability.
+  P1 not because urgent-to-complete but urgent-to-begin.
+  **Minimal viable deployment, free-tier-only per prior
+  directive** (*"and free i'm not paying for infrustra
+  yet"* from the outbound-email memo):
+  - (i) *What to deploy* — three candidates: (a) the
+    ServiceTitan demo itself (elegant — one artifact
+    doubles as the demo fixture AND the uptime fixture,
+    lets DORA four keys attach to the same thing the
+    factory is presenting); (b) a tiny `/health` API
+    service unrelated to the demo (isolates infra-
+    measurement from demo-quality concerns but duplicates
+    effort); (c) a static docs site (cheapest, least
+    failure-mode-diversity for DORA measurement). **Flag
+    to Aaron** — (a) is the elegant composition but
+    couples presentation-risk to measurement-need; (b)
+    is the honest split but two things to maintain.
+    **Flag to human maintainer** — decision gate before
+    ADR.
+  - (ii) *Where to deploy* — free-tier PaaS candidates
+    (verify pricing at selection time — free-tier terms
+    drift): Cloudflare Workers (edge, free tier with
+    generous daily-request quota, fast cold-start), GitHub
+    Pages (static only, free with documented soft caps on
+    bandwidth / site size / build minutes — not literally
+    "unlimited"), Vercel/Netlify (generous free tiers for
+    static + serverless-functions, commercial-use terms
+    vary). Render free tier sleeps after idle which would
+    confound uptime data (disqualifying). Railway offers a
+    `Serverless` sleep mode that is opt-in rather than
+    mandatory; still usable if sleep stays off, but
+    account-level credit caps apply. Fly.io's official
+    pricing moved free allowances to legacy-only / new
+    organizations are pay-as-you-go — treat as
+    disqualified for the free-tier-only constraint unless
+    legacy-org status is confirmed. **Flag to Aaron** —
+    Cloudflare Workers is the cleanest free-tier candidate
+    with no forced-sleep and no commercial-use gating for
+    small fixtures.
+  - (iii) *How to monitor* — external monitor pointing at
+    the deployment; free-tier candidates (verify current
+    terms at selection time): UptimeRobot (50 monitors,
+    5-min interval, free-plan retention is ~3 months per
+    current plan docs — earlier "13mo" figure was stale;
+    longer retention requires paid tier or exporting via
+    API), Better Stack (10 monitors free), self-hosted
+    Prometheus + external blackbox-exporter (needs a
+    second host → disqualified for free-tier-only
+    constraint). **Commercial-use gate** — UptimeRobot /
+    Better Stack free tiers have historically restricted
+    commercial / revenue-linked use; re-check terms before
+    pointing at any ServiceTitan-demo-linked fixture, or
+    pick a plan that explicitly permits business use.
+    **Recommend** UptimeRobot as first-cut for
+    non-commercial scope: 5-min interval is enough
+    resolution for availability-% and MTTR; periodic API
+    export preserves history beyond the free retention
+    window. Export target is a research doc under
+    `docs/research/` (landing path TBD alongside the
+    deployment spec ADR — do not pre-commit to a specific
+    filename until the ADR chooses it; the ARC3
+    cross-tier DORA comparison is the intended reader).
+  - (iv) *DORA four-keys mapping* — Deployment frequency
+    = **deploy events** per period (one deploy event may
+    bundle multiple commits; counting commits-to-
+    production overcounts when a deploy ships several
+    and undercounts when a deploy ships none, skewing
+    cross-tier comparison); Lead time = commit → deployed
+    wall-clock (this is where the commit-to-deploy
+    mapping stays load-bearing); Change failure rate =
+    % deploys triggering uptime-degradation; MTTR = time
+    from first-fail-alert to uptime-recovered. Each of
+    the four is computable from the deployment
+    pipeline's deploy-event log + commit-to-deploy
+    mapping + the external monitor's downtime log. No
+    extra instrumentation needed beyond the deployment
+    itself + the monitor + a minimal deploy-event record
+    (timestamp + commit SHA shipped).
+  - (v) *Signing authority / secrets* — deployment
+    requires account creation on the chosen PaaS. Per
+    the outbound-email memo, human-maintainer Lane-B is
+    pre-read-mandatory today; sign-up needs the human
+    maintainer in the loop for phone-recovery /
+    password-storage / ownership artifacts. **This row
+    does not include account creation** — flagged as a
+    dependency, not done. The Playwright-terrain-map
+    spike (task #240) may produce signup paths for this
+    when it resumes.
+
+  **Composition with prior memories / rows:**
+  - Extends the ARC3 / DORA-in-production programme —
+    uptime data is the first axis where "in production"
+    stops being a label and starts being a measurement.
+    (Programme context lives in per-maintainer
+    out-of-repo memory; no committed in-repo citation
+    exists yet — this row establishes the in-repo
+    anchor, and the ADR under `docs/DECISIONS/` will
+    carry the canonical reference once landed.)
+  - Composes with ServiceTitan demo row — if the demo is
+    the deployment, the demo-target also gains a live-URL
+    deliverable that the human maintainer can share
+    pre-presentation.
+  - Composes with free-tier / no-paid-infra constraint
+    from the outbound-email memo.
+  - Composes with the capability-stepdown experimental
+    plan — each tier-phase can claim its own section of
+    uptime history; the tier-tag in
+    `docs/hygiene-history/loop-tick-history.md`
+    correlates to the uptime-degradation-periods in
+    the monitor log.
+  - Composes with the alignment-observability framework
+    — uptime is a durable ALIGNMENT trajectory signal
+    orthogonal to per-commit HC/SD/DIR measurables.
+
+  **Suggested first-step** once the human maintainer
+  picks (i) and (ii): ship a deployment spec ADR under
+  `docs/DECISIONS/` naming the chosen PaaS + monitor +
+  health-endpoint shape; land a minimal "Hello, Zeta"
+  deploy; point the monitor at it; start the clock.
+  Effort: S for first-cut spec; M for first live deploy
+  (+ account setup latency); then T+24 minimum before
+  any DORA signal is measurable.
+
+  **Owner:** DevOps persona (Dejan) + human maintainer
+  for account-creation + signing authority. Advisory
+  from architect (Kenji) on scope and threshold. Effort:
+  S (this row is mostly scope + flag-questions); real
+  deployment work is M-L depending on the human
+  maintainer's choices.
+
 - [ ] **Claude-harness cadenced audit — first full sweep.**
   Aaron 2026-04-20 late, verbatim: *"part of our stay up to
   date on everything we should always research claude and
