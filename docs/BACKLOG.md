@@ -5638,6 +5638,45 @@ systems. This track claims the space.
   (`docs/pr-preservation/**` is the new history-class
   member that triggered this).
 
+- [ ] **`install.sh --lint-only` fast-path OR lint-job
+  cache backport — lint-job 5-min timeout risk when
+  full-install runs on cold runner.** Copilot P0 on PR
+  #375 (Thread `PRRT_kwDOSF9kNM59hqnf`,
+  `.github/workflows/gate.yml:243`): `lint (shellcheck)`
+  and `lint (actionlint)` now run the full
+  `./tools/setup/install.sh` before the actual lint
+  command, but the job timeout is still 5 minutes and
+  there are NO cache restore steps in these jobs (unlike
+  `build-and-test` which caches `~/.local/share/mise`).
+  `install.sh` installs mise + all runtimes/tools in
+  `.mise.toml` (dotnet, python, java, bun, uv, lint
+  tools), which on a cold runner is unlikely to complete
+  in 5 min, making the required lint checks prone to
+  timeout flakes. Two mitigation paths:
+  (a) **Backport the cache block** from `build-and-test`
+  to the `lint (shellcheck)` and `lint (actionlint)`
+  jobs (copy the `actions/cache` step keyed on
+  `.mise.toml` + `runner.os` + `runner.arch`). Zero API
+  change; reduces cold-runner risk; steady-state after
+  first green main run is fast.
+  (b) **Add `install.sh --lint-only` flag** that
+  installs ONLY the lint tool the job actually needs
+  (`actionlint` / `shellcheck` via mise) rather than
+  the full declarative manifest. Touches the
+  three-way-parity script's API surface (dev laptop /
+  CI runner / devcontainer) and wants a dedicated
+  review per GOVERNANCE §24.
+  Priority P2 hygiene (not blocking PR #375; mise-cache
+  on build-and-test jobs warm-starts the runtime cache
+  for subsequent runs); effort S (option a) or S+S
+  (option b with devops-engineer review). Composes with
+  GOVERNANCE §24 three-way-parity install-script
+  discipline and Otto-213 (runner-version-freshness).
+  **Does NOT authorize** extending PR #375's scope to
+  include either fix — the narrow thread-drain
+  resolution is BACKLOG-and-resolve per Otto-236; fix
+  lands in a dedicated follow-up PR.
+
 - [ ] **Tier the missing-file search-surfaces list by
   usefulness.** PR #391 landed an organized-by-class list
   in `docs/FACTORY-DISCIPLINE.md` (six classes: in-tree /
