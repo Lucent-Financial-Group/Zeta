@@ -235,8 +235,12 @@ module SignalQuality =
             else float grounded / float total
 
     /// Proportion of claims that satisfy a caller-provided grounding
-    /// predicate. Weight-zero entries are ignored (they are the
-    /// retraction-algebra's equivalent of "no claim").
+    /// predicate. Only **currently-asserted** claims (`Weight > 0L`)
+    /// count. Weight-zero entries (clean cancellation) and
+    /// over-retracted entries (`Weight < 0L`) are ignored — the
+    /// former are "no claim"; the latter are contradictions already
+    /// captured by `consistencyMeasure`, so counting them here would
+    /// double-penalise the stream and inflate suspicion.
     let groundingWith (predicate: string -> bool) (claims: ZSet<string>) : float =
         let span = claims.AsSpan()
         if span.IsEmpty then 1.0
@@ -244,7 +248,7 @@ module SignalQuality =
             let mutable grounded = 0
             let mutable total = 0
             for i = 0 to span.Length - 1 do
-                if span.[i].Weight <> 0L then
+                if span.[i].Weight > 0L then
                     total <- total + 1
                     if predicate span.[i].Key then grounded <- grounded + 1
             if total = 0 then 1.0
@@ -272,7 +276,12 @@ module SignalQuality =
     // ───────────────────────────────────────────────────────────────
 
     /// Proportion of claims that satisfy a caller-provided
-    /// falsifiability predicate. Weight-zero entries are ignored.
+    /// falsifiability predicate. Only **currently-asserted** claims
+    /// (`Weight > 0L`) count. Weight-zero entries (clean cancellation)
+    /// and over-retracted entries (`Weight < 0L`) are ignored —
+    /// over-retractions are the algebraic consistency signal already
+    /// handled by `consistencyMeasure` and must not double-penalise
+    /// falsifiability.
     let falsifiabilityWith (predicate: string -> bool) (claims: ZSet<string>) : float =
         let span = claims.AsSpan()
         if span.IsEmpty then 1.0
@@ -280,7 +289,7 @@ module SignalQuality =
             let mutable falsifiable = 0
             let mutable total = 0
             for i = 0 to span.Length - 1 do
-                if span.[i].Weight <> 0L then
+                if span.[i].Weight > 0L then
                     total <- total + 1
                     if predicate span.[i].Key then falsifiable <- falsifiable + 1
             if total = 0 then 1.0

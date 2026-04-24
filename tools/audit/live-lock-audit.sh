@@ -23,8 +23,27 @@ set -euo pipefail
 WINDOW="${1:-25}"
 THRESHOLD_EXT_PCT="${LIVELOCK_MIN_EXT_PCT:-20}"  # minimum healthy external-commit %
 
+# Validate WINDOW is a positive integer. Without this, a caller passing
+# a non-integer (or 0 / negative) would either error cryptically inside
+# `git log -"$WINDOW"` or silently process zero commits.
+if ! [[ "$WINDOW" =~ ^[1-9][0-9]*$ ]]; then
+    echo "usage: $0 [N]" >&2
+    echo "error: WINDOW must be a positive integer, got '$WINDOW'." >&2
+    exit 2
+fi
+
 # Fetch so we are measuring against a fresh view, not stale local.
 git fetch origin main --quiet 2>/dev/null || true
+
+# Verify origin/main resolves before we try to read from it. A shallow
+# clone, missing remote, or failed fetch would otherwise cause the
+# `git log` below to yield zero commits and this script to report
+# healthy — silently disabling the live-lock gate in CI.
+if ! git rev-parse --verify --quiet origin/main >/dev/null; then
+    echo "error: cannot resolve origin/main (shallow clone, missing remote, or failed fetch)." >&2
+    echo "refusing to report audit result — unresolved ref cannot be treated as healthy." >&2
+    exit 2
+fi
 
 ext=0
 intl=0
@@ -54,8 +73,11 @@ done < <(git log origin/main -"$WINDOW" --format="%H")
 
 total=$((ext + intl + spec + other))
 if [ "$total" -eq 0 ]; then
-    echo "No commits found in window."
-    exit 0
+    # Unreachable under normal use (origin/main is resolved above and
+    # WINDOW is a positive integer). If it does fire, treat it as an
+    # error — zero commits is not a healthy audit result.
+    echo "error: no commits found in window of $WINDOW on origin/main." >&2
+    exit 2
 fi
 
 ext_pct=$(( 100 * ext / total ))

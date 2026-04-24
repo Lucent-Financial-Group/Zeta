@@ -202,8 +202,8 @@ wait for instruction. Priority ladder:
    tracked artifact under `docs/research/` (or
    topically-appropriate tracked location), delete the
    original from `drop/`. Unknown binary kinds flag to
-   Aaron, not improvise. Policy: per
-   `memory/project_aaron_drop_zone_protocol_2026_04_22.md`.
+   the human maintainer, not improvise. Policy: per
+   the drop-zone protocol memory entry.
 
 3. **Meta-check.** Is there a structural change to the
    factory that would have made this tick's work directed
