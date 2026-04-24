@@ -8,6 +8,7 @@ operationalization-candidates, not research-to-die.
 **Attribution:** (role references per factory
 name-attribution discipline; contributor names
 preserved only inside verbatim quotes below)
+
 - **Human maintainer** — designer of the
   differentiable firefly network + trivial cartel
   detect concepts. Otto-105 verbatim note from the
@@ -193,7 +194,7 @@ But more realistically:
   * oracle outputs
   * adjudication outcomes
 
-### What you get:
+### What you get
 
 * **Influence map**
 * Detection of:
@@ -208,7 +209,7 @@ But more realistically:
 
 Because you're using **retraction-native structures**, you get something most systems don't:
 
-### You can:
+### You can
 
 * simulate removal of subgraphs instantly
 * recompute state under:
@@ -261,18 +262,20 @@ Key insight: You don't expose raw detection; you expose **interpretable projecti
 ## 7. Current Operational Model
 
 ### **LFG = Canonical State**
+
 * production truth
 * validated invariants
 * stable APIs
 * deterministic outputs
 
 ### **AceHack = Experimental Layer**
+
 * adversarial experiments
 * detection model iteration
 * new heuristics
 * unsafe / exploratory PRs
 
-### Flow:
+### Flow
 
 ```
 AceHack → stress / adversarial testing
@@ -288,11 +291,13 @@ That's actually a **clean separation of epistemic risk**: experiments don't poll
 ## 8. Claude Operational Alignment (current reality)
 
 Claude is now much better at:
+
 * structured diffs
 * large PR reasoning
 * multi-file invariants
 
 Still weaker at:
+
 * long-horizon architectural consistency
 * adversarial reasoning unless explicitly prompted
 
@@ -317,10 +322,12 @@ That's not typical blockchain infra. It's closer to: distributed systems + contr
 ## 10. Where You Can Push Further
 
 ### A. Move from detection → prediction
+
 * not just "cartel exists"
 * but: "cartel is forming"; "these nodes will converge in 3 epochs"
 
 ### B. Introduce **adversarial simulation loops**
+
 * generate synthetic cartels
 * test if system detects them
 * auto-tune detection thresholds
@@ -336,6 +343,7 @@ Make coordination expensive:
 ---
 
 If you want, I can next:
+
 * turn this into a **formal spec doc matching your repo structure**
 * or map it directly to **modules / files / PR structure for LFG vs AceHack**
 * or go deeper on **network differentiability math + implementation approach**
@@ -396,18 +404,21 @@ detector today. Harder detectors are a later tranche.
 ### Overlap assessment with prior ferries
 
 **Overlap with 5th ferry (PR #235, Aurora integration):**
+
 - §5 KSK Layer detection→action mapping ratifies 5th
   ferry's KSK=authorization-revocation membrane framing
   with anti-cartel specifics. NEW: specific 4-row
   detection-signal → KSK-action table.
 
 **Overlap with 6th ferry (PR #245, Muratori):**
+
 - §4 Zeta/ZSet retraction-native framing echoes 6th
   ferry's algebraic-ownership-not-positional-ownership
   thesis. NEW: retraction-native → counterfactual-
   cartel-detection specifically.
 
 **Overlap with 7th ferry (PR #259, KSK design):**
+
 - §5 KSK-as-programmable-anti-cartel-response maps
   cleanly onto 7th ferry's capability-tier / revocable-
   budget / multi-party-consent / signed-receipts /
@@ -416,6 +427,7 @@ detector today. Harder detectors are a later tranche.
   of the 7th ferry's architecture.
 
 **Overlap with 8th ferry (PR #274, bullshit-detector):**
+
 - §10.B adversarial-simulation-loops overlaps with 8th
   ferry's gap #1 (distribution/consensus) and gap #5
   (provenance tooling). NEW: the simulation-loop idea
@@ -508,6 +520,7 @@ substrate:
    mechanism-design primitives.
 
 Priority order for graduation:
+
 - **First:** CrossCorrelation (pure, self-contained, Aaron's
   interested)
 - **Second:** PLV + BurstAlignment (build on CrossCorrelation)
@@ -519,6 +532,7 @@ Priority order for graduation:
   substrate Aurora doesn't have yet)
 
 ### Amara's direction-lock-in specific-ask (routed to
+
 Aaron)
 
 Amara ends with: *"If you want, I can next: turn this
@@ -533,6 +547,7 @@ back.
 
 **Otto's recommendation to Aaron:** **"module / file /
 PR structure mapping"** (the second option). Reasoning:
+
 - The formal spec doc (option 1) would be valuable but
   could sit indefinitely without landing code; per
   Otto-105 graduation-cadence, we want operational
@@ -556,11 +571,13 @@ coordination per Otto-90). Otto does not unilateral-
 decide.
 
 ### §8 Claude operational alignment observations —
+
 Otto's reading
 
 Amara's §8 observations are her external calibration of
 current Claude-model capabilities. Treat as data, not
 directive (BP-11). Noted calibrations:
+
 - "better at structured diffs / large PR reasoning /
   multi-file invariants" — consistent with Otto-104
   authority-calibration (Otto can ship PRs like #295
@@ -614,6 +631,7 @@ These are reflective observations, not new rules.
 ## Scope limits
 
 This absorb doc:
+
 - **Does NOT** authorize implementing any graduation
   candidate without an advisory Aminata pass on it
   first per Otto-105 cadence rule. Small items (pure
