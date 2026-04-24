@@ -54,11 +54,12 @@ For each audited file:
 ### Files audited
 
 - **CLAUDE.md** (below, seed fire)
-- **AGENTS.md** (below, Otto-9 fire)
-- **docs/CONFLICT-RESOLUTION.md** (below, Otto-12 fire)
-- **docs/AGENT-BEST-PRACTICES.md** (below, Otto-13 fire)
-- **docs/AUTONOMOUS-LOOP.md** (below, Otto-15 fire)
-- **docs/WONT-DO.md** (below, Otto-15 fire) — also GOVERNANCE.md on PR #181, ALIGNMENT.md on PR #185
+- **AGENTS.md** (below, fire #9)
+- **GOVERNANCE.md** (below, fire #10)
+- **docs/CONFLICT-RESOLUTION.md** (below, fire #12)
+- **docs/AGENT-BEST-PRACTICES.md** (below, fire #13)
+- **docs/AUTONOMOUS-LOOP.md** (below, fire #15)
+- **docs/WONT-DO.md** (below, fire #15) — also ALIGNMENT.md on PR #185
 
 ### Files to audit (not yet classified; add rows as they land)
 
@@ -211,6 +212,102 @@ Frontier, the shape is preserved; the illustrations are
 replaced with adopter-fill-in placeholders or generic
 examples. The extracted Zeta-specific content lands in the
 Zeta repo's own CONTRIBUTING.md (or equivalent).
+
+## Audit — GOVERNANCE.md
+
+**Overall classification:** **factory-generic** (with three
+rules needing surgical adopter-specific notes). Breaks the
+both-coupled pattern seen in CLAUDE.md + AGENTS.md —
+GOVERNANCE.md is the rule substrate that is uniformly
+factory-shape.
+
+**File location post-split:** Frontier as-is; no content
+extraction needed. Three rules get adopter-specific tweaks
+via inline placeholder rather than removal.
+
+**Length:** 746 lines. **32 numbered rules.**
+
+### Rule-by-rule classification
+
+Rules classified factory-generic unless otherwise noted.
+
+| Rule | Title | Class | Notes |
+|---|---|---|---|
+| §1 | Architect is the integration authority | factory-generic |  |
+| §2 | Docs read as current state, not history | factory-generic |  |
+| §3 | Contributors are agents, not bots | factory-generic |  |
+| §4 | Skills created through `skill-creator` | factory-generic |  |
+| §5 | Prompt-injection corpora are radioactive | factory-generic |  |
+| §6 | Round naming stays in history log | factory-generic |  |
+| §7 | Shared vocabulary, round-table enforcement | factory-generic |  |
+| §8 | Bug fixes go through the Architect | factory-generic |  |
+| §9 | `docs/BUGS.md` is the running known-open log | factory-generic | File name is universal template. |
+| §10 | The table is round | factory-generic |  |
+| §11 | Debt-intentionality is the invariant | factory-generic |  |
+| §12 | Bugs before features, explicit ratio | factory-generic |  |
+| §13 | Reviewer count scales inversely with backlog | factory-generic |  |
+| §14 | Standing off-time budget per persona | factory-generic |  |
+| §15 | Reversible-in-one-round | factory-generic |  |
+| §16 | Dynamic hats | factory-generic |  |
+| §17 | Productive friction between personas | factory-generic |  |
+| §18 | Agent memories are the most valuable resource | factory-generic |  |
+| §19 | Public API changes go through the public-api-designer | **both** | Shape (public-API review gate) is generic. Specific libraries (`Zeta.Core` / `Zeta.Core.CSharp` / `Zeta.Bayesian`) are Zeta-specific. In Frontier: keep shape, adopter fills in their own published-library list. |
+| §20 | Standing reviewer cadence per round | factory-generic |  |
+| §21 | Per-persona memory is real persona-scoped | factory-generic |  |
+| §22 | `~/.claude/projects/` is Claude Code harness | factory-generic | Claude-Code-specific but harness-shape; Frontier adopters using different harnesses substitute their equivalent path. |
+| §23 | Upstream open-source contributions encouraged | factory-generic |  |
+| §24 | Dev setup / build-machine / devcontainer | **both** | The one-install-script-consumed-three-ways pattern is generic. Zeta-specific install content (F#/.NET tooling) needs substitution per adopter. Frontier template + adopter-substitutes. |
+| §25 | Upstream temporary-pin expiry | factory-generic |  |
+| §26 | Research-doc lifecycle | factory-generic |  |
+| §27 | Abstraction layers — skills, roles, personas | factory-generic |  |
+| §28 | OpenSpec is first-class | **both** | OpenSpec adoption pattern is generic. Specific `openspec/specs/**` capability list is Zeta-specific. Frontier: keep pattern, adopter fills in capabilities. |
+| §29 | Backlog files are scoped | factory-generic | Multi-backlog shape (HUMAN-BACKLOG vs BACKLOG) is generic. The specific files `docs/BACKLOG.md` + `docs/HUMAN-BACKLOG.md` are named canonically; adopters keep names. |
+| §30 | Cross-repo `sweep-refs` after rename campaign | factory-generic |  |
+| §31 | Copilot instructions are factory-managed | factory-generic |  |
+| §32 | Alignment contract is `docs/ALIGNMENT.md` | factory-generic | The alignment-contract pattern is generic; `docs/ALIGNMENT.md` content itself gets audited separately (likely factory-generic with adopter-specific clauses). |
+
+### Refactor notes
+
+Before the split, surgical-only edits on GOVERNANCE.md for
+Frontier (three rules with Zeta-specific content; §22 is
+Claude-Code-harness-shape rather than Zeta-library-specific
+and is called out separately):
+
+1. **§19 (public API review)**: generalise the specific
+   library list (`Zeta.Core` / `Zeta.Core.CSharp` /
+   `Zeta.Bayesian`) to `<adopter-published-libraries>`
+   placeholder with fill-in example.
+2. **§24 (dev setup)**: move Zeta-specific install steps to
+   `tools/setup/` README; keep the one-install-script-
+   consumed-three-ways pattern in §24 generic.
+3. **§28 (OpenSpec first-class)**: generalise specific
+   `openspec/specs/**` Zeta-capability references; keep the
+   OpenSpec adoption pattern.
+
+Additionally for §22 (`~/.claude/projects/` path): clarify
+the path is Claude-Code-specific and provide equivalent-paths
+for other harnesses (Codex, Gemini, Copilot) OR name the
+harness substrate without hardcoding. This is harness-shape
+adaptation rather than Zeta-library-content extraction.
+
+Estimated refactor effort: **S** — three small inline edits
+plus one harness-path clarification, no structural change.
+
+### Classification rationale
+
+GOVERNANCE.md is the factory's rule substrate — "numbered
+repo-wide rules for humans and agents." By design, rules are
+abstract patterns that shape behaviour rather than enforce
+project-specifics. The three rules with Zeta-library-specific
+content (§19 / §24 / §28) all preserve the abstract shape
+(public-API review, install-script pattern, OpenSpec adoption)
+and only reference specific Zeta files / libraries as
+illustrative examples. §29 is factory-generic: the
+multi-backlog shape is the pattern, and the canonical
+filenames `docs/BACKLOG.md` + `docs/HUMAN-BACKLOG.md` carry
+across to adopters unchanged. Frontier inherits the rules
+verbatim; adopters substitute their specifics on the three
+flagged rules.
 
 ## Audit — docs/AGENT-BEST-PRACTICES.md
 
