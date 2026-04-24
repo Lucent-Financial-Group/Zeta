@@ -576,9 +576,9 @@ SD-1..SD-9, DIR-1..DIR-5).
 
 ## Audit — docs/TECH-RADAR.md
 
-**Overall classification:** **both (coupled)** — ThoughtWorks-
-style radar framework is factory-generic; entry rows are
-heavily Zeta-library-specific.
+**Overall classification:** **both (coupled)** — ThoughtWorks-style
+radar framework is factory-generic; entry rows are heavily
+Zeta-library-specific.
 
 **File location post-split:** Frontier (shape + Legend + Ring
 vocab + Usage pattern); Zeta repo keeps current entry rows.
