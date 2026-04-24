@@ -215,8 +215,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Installs shellcheck via mise (pinned in .mise.toml). Single
+        # source of truth — the same version on dev laptops + CI
+        # runners. Prior step relied on shellcheck shipping pre-
+        # installed on ubuntu-22.04, which broke parity (dev machines
+        # may have a different version) and wouldn't survive newer
+        # runner images like ubuntu-slim that don't ship shellcheck.
+        run: ./tools/setup/install.sh
+
       - name: Run shellcheck
-        # shellcheck ships pre-installed on ubuntu-22.04 runners.
         # Scope: Zeta's own scripts under `tools/setup/` only —
         # `tools/lean4/.lake/packages/**` is Lean/Mathlib vendored
         # code not governed by Zeta standards.
@@ -252,15 +260,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Download actionlint (pinned)
-        # Download directly from the rhysd/actionlint release; SHA
-        # pin in the install script below. Avoids a third-party
-        # action just to install a linter.
-        run: |
-          set -euo pipefail
-          ACTIONLINT_VERSION="1.7.12"
-          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v${ACTIONLINT_VERSION}/scripts/download-actionlint.bash) "${ACTIONLINT_VERSION}"
-          ./actionlint --version
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Installs actionlint via mise (pinned in .mise.toml). Single
+        # source of truth — the same version flows to dev laptops and
+        # CI. Replaces a prior inline `Download actionlint (pinned)`
+        # step whose version was maintained separately from the
+        # declarative pin.
+        run: ./tools/setup/install.sh
 
       - name: Run actionlint
         # -ignore 'unknown permission scope "administration"' is a
@@ -272,7 +278,7 @@ jobs:
         # list. Remove when actionlint catches up. See:
         # https://github.com/rhysd/actionlint/issues (search
         # "administration permission").
-        run: ./actionlint -color -ignore 'unknown permission scope "administration"'
+        run: actionlint -color -ignore 'unknown permission scope "administration"'
 
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
