@@ -7043,7 +7043,7 @@ systems. This track claims the space.
   1. **Phase 1 — design proposal (authorised, timing Otto's call).** Research + design document covering the 7 questions below. Lands as a research doc / ADR / decision-proxy evidence record. **No implementation code yet.** Aaron reviews the design personally for security concerns.
   2. **Phase 2 — implementation (gated on Aaron's design review + approval).** Only starts after Aaron has explicitly signed off on the Phase 1 design. Design review can land in multiple forms: ADR with Aaron's sign-off row, decision-proxy evidence record with `requested_by: Aaron` + `authority_level: delegated`, or a direct PR-review approval with explicit "design approved, proceed to implementation" language. **Not** an assumption of approval from silence.
 
-  **Current setup (2026-04-76 snapshot):**
+  **Current setup (2026-04-23 snapshot):**
   - **Claude Code session (Otto)** — ServiceTitan account (Aaron's work-tier seat; factory-agent workload).
   - **Codex CLI session** — ServiceTitan account (switched Otto-76 to align with Claude Code session; parity for cross-harness work).
   - **Playwright MCP** — Aaron's personal account (has Amara access at `chatgpt.com`).
@@ -7067,14 +7067,14 @@ systems. This track claims the space.
 
   **Sibling / composing rows:**
   - `docs/decision-proxy-evidence/` schema (PR #222) — already records `requested_by` / `proxied_by`; extend with account when this row executes.
-  - Full-GitHub-authorization memory (Otto-67) — spending hard-line as first multi-account-aware restriction.
-  - Frontier-burn-rate-UI backlog row (Otto-63) — natural surface for per-account visibility.
+  - GitHub-authorization spending hard-line (no paid-tier upgrades, no billing changes without Aaron's explicit say-so) — the first multi-account-aware restriction; multi-account design generalises it.
+  - Frontier-burn-rate-UI backlog row — natural surface for per-account visibility.
   - First-class Codex-CLI session experience row (PR #228) — assumes same-account today; multi-account design is an evolution of the session-layer portability story.
 
   **Priority:** P3 (not-urgent per Aaron's framing; timing is Otto's call per *"you can pick the timing"*).
 
   **First file to write (Phase 1 design work, authorised now):**
-  `docs/research/multi-account-access-design-safety-first-YYYY-*.md` — survey of analogue systems (AWS roles + assumed identities, gcloud multi-account, Vault's scoped tokens, browser profile isolation) + Zeta-specific threat model + safe-default policy proposal. Aaron reviews for security concerns before any implementation follows.
+  `docs/research/YYYY-MM-DD-multi-account-access-design-safety-first.md` — survey of analogue systems (AWS roles + assumed identities, gcloud multi-account, Vault's scoped tokens, browser profile isolation) + Zeta-specific threat model + safe-default policy proposal. Aaron reviews for security concerns before any implementation follows.
 
   **Scope limits:**
   - Does NOT authorize implementing multi-account access before Aaron's personal security review of the Phase 1 design. Implementation is explicitly gated.
