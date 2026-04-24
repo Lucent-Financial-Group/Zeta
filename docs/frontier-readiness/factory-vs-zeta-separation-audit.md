@@ -627,8 +627,8 @@ signatures + a few verbatim-quote attributions are adopter-
 specific. Confirms the rule-substrate-instructional
 hypothesis: instructional rule substrates are structurally
 factory-generic by design. The overall class is **mixed**
-because the narrow substitutions (project-name `both` rows
-+ adopter-specific Signatures row) route the file through
+because the narrow substitutions (project-name `both` rows +
+adopter-specific Signatures row) route the file through
 the "both" refactor path at split time — not because the
 substance is non-generic.
 
