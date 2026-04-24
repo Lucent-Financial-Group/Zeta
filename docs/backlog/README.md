@@ -27,8 +27,11 @@ docs/backlog/
 
 ## Current state — Phase 1a
 
-Tooling + schema landed; no row files exist yet. Phase 2 will
-migrate existing `docs/BACKLOG.md` content into per-row files.
-Until Phase 2 lands, the single-file `docs/BACKLOG.md` remains
-the authoritative source of rows; this directory + its
-generator exist to provide the target structure.
+Tooling + schema landed. One placeholder row (`B-0001`)
+exists to exercise the generator against non-empty input;
+it is not substantive backlog content. Phase 2 will migrate
+the existing 6100-line `docs/BACKLOG.md` content into per-row
+files starting at `B-0002`. Until Phase 2 lands, the single-
+file `docs/BACKLOG.md` remains the authoritative source of
+substantive backlog rows; this directory + its generator
+exist to provide the target structure + schema demonstration.

@@ -70,18 +70,29 @@ tags: [game-industry, sharding, multi-node]
 
 ## Adding a new row
 
+Phase 1a (current): create the file manually at
+`docs/backlog/P<tier>/B-NNNN-<slug>.md` with the frontmatter
+below. Phase 1b will ship a `new-row.sh` scaffolder that
+auto-assigns `NNNN` and pre-fills the frontmatter template;
+this README is forward-referencing that scaffolder but
+neither the script nor its invocation is available until
+Phase 1b lands.
+
+Phase 1b target usage (not functional yet):
+
 ```bash
 tools/backlog/new-row.sh --priority P2 --slug server-meshing-research
 ```
 
-Creates `docs/backlog/P2/B-NNNN-server-meshing-research.md`
+Will create `docs/backlog/P2/B-NNNN-server-meshing-research.md`
 with pre-filled frontmatter. `NNNN` auto-assigned as the
 next unused integer across all priorities.
 
 Edit the file to add your content + fill optional
 frontmatter. Commit the new file. The generator
-regenerates `docs/BACKLOG.md` at pre-commit (or via
-`tools/backlog/generate-index.sh` manually).
+regenerates `docs/BACKLOG.md` via
+`tools/backlog/generate-index.sh` manually until Phase 1b
+adds the pre-commit hook.
 
 ## Regenerating the index
 
@@ -89,10 +100,12 @@ regenerates `docs/BACKLOG.md` at pre-commit (or via
 tools/backlog/generate-index.sh
 ```
 
-Walks `docs/backlog/**/*.md`, parses frontmatter via
-`yq` or a lightweight awk fallback, emits
+Walks `docs/backlog/**/*.md`, parses frontmatter via an
+inline awk parser (no external `yq` dependency), emits
 `docs/BACKLOG.md` sorted by (priority ascending, id
-ascending).
+ascending). Phase 1a uses pure awk to minimize toolchain
+surface; if `yq`-style nested-key queries become necessary,
+that's a Phase 1b upgrade.
 
 ## CI drift check
 
@@ -131,11 +144,13 @@ delete the file.
 - `docs/research/backlog-split-design-otto-181.md` — full
   design spec + 6 open questions the maintainer's call on (some
   answered by reasonable defaults in this phase).
-- `memory/feedback_aaron_asked_for_backlog_split_three
-  _times_hot_file_detector_pr_213_exists_*.md` — context
-  on the 3rd-ask + hot-file-detector.
 - `tools/hygiene/audit-git-hotspots.sh` (PR #213,
-  BEHIND) — the detector that identified BACKLOG.md as
-  the hotspot.
+  BEHIND as of Phase-1a) — the detector that identified
+  BACKLOG.md as the repo's top hotspot, explicitly naming
+  "BACKLOG-per-swim-lane split" as a remediation option.
+  Context on why the split-as-remediation was filed lives
+  in the factory's session-memory substrate; the
+  detector's own header comment is the primary
+  cross-reference for this PR's scope.
 - `.github/workflows/memory-index-integrity.yml` —
   precedent for the drift-CI pattern.

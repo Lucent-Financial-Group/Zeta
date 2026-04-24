@@ -20,8 +20,10 @@
 #   1  environment / dependency error
 #   2  drift detected (--check mode only)
 #
-# Dependencies: bash 4+, awk, sort, diff. Optional: `yq` for
-# richer frontmatter parsing; falls back to awk if absent.
+# Dependencies: bash 4+, POSIX awk, sort, diff, find, mktemp.
+# No external `yq` required; inline awk parser handles the
+# flat frontmatter schema. `yq` integration is a Phase 1b
+# upgrade path if nested frontmatter queries become needed.
 
 set -euo pipefail
 
