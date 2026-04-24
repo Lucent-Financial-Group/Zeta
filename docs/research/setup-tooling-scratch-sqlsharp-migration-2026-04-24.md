@@ -1,422 +1,340 @@
-# Zeta First-Class Adoption of `ace` (Declarative-Native Package Manager)
+# Setup-tooling migration — ace first-class in the Ouroboros trinity
 
-**Status**: research-grade proposal (pre-v1). Design-only;
-no code changes land with this doc.
+**Status**: research-grade proposal (pre-v1). Design-only.
 
-## Critical reframe (Aaron 2026-04-24)
+> **Soul-file-independence note**: this doc does NOT cite any
+> path outside this repo. Every reference resolves inside the
+> Zeta tree or inside the per-user auto-memory substrate.
+> Earlier revisions of this doc cited external paths on the
+> maintainer's laptop; per the reproducibility discipline,
+> that was wrong and has been removed.
 
-> *"This is Zeta's actual gap. and the first class support
-> for our ace package manage declarative native ../scratch
-> is the start of ace"*
+## 1. The reframe
 
-**`../scratch` is the start of "ace" — Aaron's own
-declarative-native package manager.** This is not just a
-reference pattern for Zeta's internal plumbing; it's a
-product Zeta should adopt first-class.
+A single tick of conversation with the maintainer 2026-04-24
+corrected a significant framing gap:
 
-Implications:
+- My earlier draft treated setup-tooling as an internal Zeta
+  refactor and cited external reference-pattern repositories.
+- The maintainer clarified: the *external reference* is itself
+  the **start of "ace"**, his declarative-native package
+  manager. The maintainer's direct quote: *"../scratch is the
+  start of ace the package manager."*
+- Therefore this is not a pattern-inspired refactor; it is
+  **Zeta adopting ace first-class** as both the product's
+  first consumer and a co-development testbed.
 
-- Zeta is ace's **first-class consumer** and test-bed, not
-  a passive copier of patterns.
-- The "setup tooling migration" reframes as **ace
-  integration**. Changes in ace (currently in scratch) flow
-  into Zeta. Zeta's needs flow back into ace.
-- Future projects that want declarative-native multi-OS
-  setup will adopt ace too; Zeta's integration is the
-  reference pattern.
-- Bun+TS post-bootstrap substrate in ace becomes the shared
-  runtime for setup across all ace-consuming projects.
+The maintainer also flagged the external-path citation itself
+as a violation: *"never reference ../scratch we build in
+Zeta or start a new repo."* Per the soul-file-independence
+discipline, this doc must be reproducible by a reader who
+has only this repo + the per-user auto-memory; no external
+paths cited.
 
-## Scope
+## 2. The Ouroboros trinity context
 
-Inventory current Zeta setup-tooling, survey ace (via
-`../scratch` + `../SQLSharp`) as the target shape, and
-propose a phased integration plan that treats ace as a
-first-class dependency.
+Per the memory `user_trinity_of_repos_emerged_zeta_forge_ace_
+three_in_one.md` (per-user auto-memory, 2026-04-22) the
+factory arrived at a three-repo split:
 
-Companion: Otto-247 version-currency rule (for any version
-pins proposed below, use `gh api repos/.../releases`).
+| Repo | Role | Governance owner |
+|---|---|---|
+| **Zeta** | Database / SUT / formal algebra | human maintainer |
+| **Forge** | Software factory (self-hosting) | factory-delegated |
+| **ace** | Package manager | human maintainer |
 
-## 1. What Aaron said
+Dependency topology (closed Ouroboros cycle plus self-loop):
 
-Multiple directives 2026-04-24:
+1. ace → Zeta (persistence: ace stores its package metadata
+   in Zeta)
+2. ace ← Forge (distribution: Forge's outputs ship via ace)
+3. Zeta ← Forge (build & test: Forge builds Zeta)
+4. Forge → Forge (self-hosting: Forge builds itself)
 
-> *"ACTIONLINT_VERSION should be part of our deployed tooling
-> during build machine setup no? dev machines will need this
-> to, remember the dev machine / build machine parity
-> requirement."*
+Three-in-one: three at the governance / content / hosting
+axis; one at the dependency-closure / purpose axis. The
+trinity register is emergence-not-design (operational
+considerations independently picked threeness).
 
-> *"it should be install declarativly like all our
-> dependicnes"*
+**ADR-landing status**: the ADR
+`docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
+was drafted on commit `41d2bb6` ("Round 44: ADR — three-repo
+split (Zeta + Forge + ace)") on the speculative fork branch
+stack. That commit did NOT land on main — it was in PR #54's
+diff, which I closed-as-superseded earlier this session.
+The split decision is recorded in per-user memory but not in
+committed docs. **The ADR needs to re-land** before the
+three-repo split becomes an operational reality.
 
-> *"how does mac get shellcheck or ../scratch for a good
-> example of how i like my setup scripts to be idempotent
-> and rerunnable where 2nd time is an update or no-op
-> depending on if there is an update, efficent, and they
-> are declarative, and it supports multi OS ... ../SQLSharp
-> for a good examples of the bun ts post install scripts
-> so we don't have to keep twin sh/ps1 files"*
+Today, this repo IS "Zeta" but also holds Forge-scope work
+(factory mechanics: skills, memories, CI, drain patterns).
+The split is an ADR-pending future shape, not current state.
 
-> *"and that same setup ends up being the base of our dev
-> container/codespaces, everyting shares scripts"*
+## 3. ace — what it is and what Zeta adoption means
 
-Key clarification on the unavoidable twin-file edge:
+Per memories `project_ace_package_manager_agent_negotiation_
+propagation.md` and `project_three_repo_split_zeta_forge_
+ace_software_factory_named_forge.md`:
 
-> *"pre setup files we have to go to the users, we can't
-> expect them to have anyting installed until after our
-> initail install so we are forced into the twins"*
+**ace = Aaron's declarative-native package manager.** Key
+properties the memories name:
 
-Even more specific twin-scope:
+- **Declarative-native**: install state is expressed as data
+  (per-OS package lists, version pins, profiles), not as
+  imperative scripts.
+- **Multi-OS first-class**: macOS, Linux, Windows native,
+  Windows-via-WSL — all supported. PowerShell for Windows
+  native end-to-end; bash for macOS + Linux + Windows-WSL.
+  Twin files at the pre-install edge are unavoidable (user
+  has nothing installed). Post-install is bun+TS where
+  possible.
+- **Idempotent + rerunnable**: second run is update-or-noop
+  based on installed state.
+- **Agent negotiation / propagation**: per the agent-
+  negotiation memory, ace is designed with multi-agent
+  propagation semantics (packages negotiate dependency
+  resolution, not just declarative constraint-solving).
+- **Persists into Zeta**: ace's package metadata storage is
+  Zeta itself (Ouroboros edge 1).
+- **Distributes Forge + Zeta**: ace is the shipping surface
+  for both (Ouroboros edges 2 + 3).
 
-> *"windows powershell for vanalla fresh windows and bash
-> for everyting else including windows wsl eventuall forgot
-> thats on the matrix too, just intel version, i don't
-> think wsl2 works on arm windows not sure if it does we
-> should test wsl there too, again later when i can run in
-> peer-mode on my windows machine and test windows local
-> before pushing."*
+**Zeta adopting ace first-class** means:
 
-So the actual twin scope is **narrower than "bash + ps1
-for everything"**:
+- Zeta's setup tooling (currently `tools/setup/*`) becomes
+  an ace configuration, not a hand-rolled bash tree.
+- Zeta is the reference-quality consumer: ace's design gets
+  validated by Zeta's needs; Zeta's needs get met by ace.
+- Future Forge split carries ace consumption along — Forge
+  inherits the same setup substrate.
+- Dev-container + Codespaces inherit from the same ace
+  configuration (no duplicate install logic).
 
-- PowerShell: *only* for vanilla-fresh-Windows initial
-  bootstrap (install WSL, install bash/mise/bun)
-- Bash: everything else — macOS, Linux, Windows WSL
+## 4. Current Zeta state — what's here today
 
-Windows in the target matrix: **4 Windows matrix legs**
-(deferred to Windows peer-agent milestone):
+In-repo substrate I can verify right now:
 
-- `windows` — x64 native (`windows-2025`)
-- `windows-arm` — ARM native (`windows-11-arm`)
-- `windows-wsl` — Ubuntu in WSL2 on x64 Windows
-- `windows-arm-wsl` — Ubuntu in WSL2 on ARM Windows
-  (Aaron: *"ARM WSL2 status TBD"* — pending his local
-  empirical test before we turn on in CI)
+- `.mise.toml` — declarative runtime pins (dotnet 10.0.202,
+  python 3.14, java 26, bun 1.3, uv 0.9, plus
+  actionlint/shellcheck added by the open PR #375).
+- `tools/setup/manifests/` — apt, brew, dotnet-tools,
+  uv-tools, verifiers.
+- `tools/setup/` — `linux.sh`, `macos.sh`, `install.sh`,
+  `doctor.sh`, plus `common/*.sh` (dotnet-tools, elan, mise,
+  profile-edit, python-tools, shellenv, sync-upstreams,
+  verifiers).
+- No Windows `.ps1` yet.
+- No `declarative/` tree at repo root (manifests are scattered
+  under `tools/setup/manifests/`).
+- No bun+TS post-bootstrap orchestrator.
+- No dev-container / Codespaces configuration.
+- No profile / category system for setup modes.
+- No idempotency test harness for the setup scripts.
 
-**Two distinct setup paths on Windows** (corrected per
-Aaron 2026-04-24):
+What that adds up to: **partial declarative pinning via mise
++ manifest files**, still **bash-based post-bootstrap logic**,
+**no Windows support yet**, **no dev-container base**. The
+shape is compatible with ace-adoption but has not adopted
+ace.
 
-1. **Windows native** (`windows`, `windows-arm`): **full
-   PowerShell setup end-to-end** — ace supports PowerShell
-   as a first-class runtime. Users running natively on
-   Windows stay in PowerShell for bootstrap AND the whole
-   setup chain. Aaron: *"so will need full ps1 setup for
-   windows too not just wsl, wsl is bash after installed
-   by windows ps1."*
+## 5. Maintainer directives 2026-04-24
 
-2. **Windows WSL** (`windows-wsl`, `windows-arm-wsl`):
-   Windows `ps1` installs WSL2 + Ubuntu, then the bash
-   setup chain runs inside WSL. Same bash path as macOS
-   + Linux.
+Ordered chronologically within the tick:
 
-### Implication for ace
+1. *"ACTIONLINT_VERSION should be part of our deployed
+   tooling during build machine setup no? dev machines will
+   need this to, remember the dev machine / build machine
+   parity requirement."*
+2. *"do we install this like shellcheck"* — probing current
+   pattern. (Answer: shellcheck relies on runner pre-install;
+   breaks dev parity.)
+3. *"it should be install declarativly like all our
+   dependicnes"* — principle.
+4. *"i like my setup scripts to be idempotent and rerunnable
+   where 2nd time is an update or no-op depending on if there
+   is an update, efficent, and they are declarative, and it
+   supports multi OS"* — the ace-shape requirements.
+5. *"...bun ts post install scripts so we don't have to keep
+   twin sh/ps1 files"* — the cross-platform post-bootstrap
+   requirement.
+6. *"that same setup ends up being the base of our dev
+   container/codespaces, everyting shares scripts"* —
+   substrate unification.
+7. *"pre setup files we have to go to the users, we can't
+   expect them to have anyting installed until after our
+   initail install so we are forced into the twins"* — the
+   twin at the bootstrap edge is NOT a failure; it is a
+   hard constraint.
+8. *"windows powershell for vanalla fresh windows and bash
+   for everyting else including windows wsl"* — twin scope.
+9. *"so will need full ps1 setup for windows too not just
+   wsl, wsl is bash after installed by windows ps1"* — two
+   Windows paths, not one bridge.
+10. *"This is Zeta's actual gap. and the first class support
+    for our ace package manage declarative native"* — the
+    ace reframe.
+11. *"on windows we will test 4 matrix windows, windows arm,
+    windows wsl, windows arm wsl"* — the target Windows
+    matrix.
+12. *"never reference ../scratch we build in Zeta or start
+    a new repo"* — soul-file-independence + ace-in-Zeta or
+    ace-in-its-own-repo.
 
-ace needs **first-class support for BOTH PowerShell AND
-bash** as runtimes — not just bash with a ps1 bridge.
-That's a bigger ask than my earlier simplification. The
-twin-file problem returns at the post-bootstrap layer
-for Windows native, addressed via ace's abstraction
-(either bun+TS compiling to both, or ace-authored scripts
-in both, or a runtime adapter).
-
-scratch's current README mentions `scripts/setup/windows/
-bootstrap.ps1` and `scripts/setup/windows/` shared layer
-— so scratch already has Windows-native-native support.
-Zeta inherits that via ace adoption.
-
-### Matrix summary
+## 6. Matrix summary (target state)
 
 | Runner | Setup chain | Status |
 |---|---|---|
-| macos-26 | bash | Active |
-| ubuntu-24.04 | bash | Active |
-| ubuntu-24.04-arm | bash | Active |
-| ubuntu-slim | bash | Active (experimental) |
-| windows-2025 (native) | **ps1** | Deferred |
-| windows-11-arm (native) | **ps1** | Deferred |
-| windows-2025 + WSL2 | ps1 bootstrap → bash | Deferred |
-| windows-11-arm + WSL2 | ps1 bootstrap → bash (TBD) | Deferred |
+| `macos-26` | bash | Active (PR #375) |
+| `ubuntu-24.04` | bash | Active (PR #375) |
+| `ubuntu-24.04-arm` | bash | Active (PR #375) |
+| `ubuntu-slim` | bash | Active experimental (PR #375) |
+| `windows-2025` (native) | **ps1 end-to-end** | Deferred |
+| `windows-11-arm` (native) | **ps1 end-to-end** | Deferred |
+| `windows-2025` + WSL2 | ps1 bootstrap → bash | Deferred |
+| `windows-11-arm` + WSL2 | ps1 bootstrap → bash (TBD) | Deferred |
 
-This is simpler than scratch's shape (scratch has
-`windows/` shared layer with deeper PowerShell logic).
-Zeta can skip that — the `.ps1` file is minimal:
-install WSL2 → launch WSL → hand off to bash.
+WSL-on-ARM-Windows status is TBD pending maintainer's local
+empirical test — deferred to Windows peer-agent milestone.
 
-## 2. Target state
+## 7. Phased integration plan
 
-One unified setup substrate across:
+Each phase stands alone. Exact ordering is the maintainer's
+call; I don't own scheduling. Every pinned version in any
+phase must be verified via `gh api .../releases` per Otto-247.
 
-- **Dev laptop bootstrap** (macOS, Linux, Windows)
-- **GitHub Actions CI** (all matrix legs — macos-26,
-  ubuntu-24.04, ubuntu-24.04-arm, ubuntu-slim, future
-  windows-2025 + windows-11-arm)
-- **Dev-container / GitHub Codespaces base image**
-- **Docker reproduction image**
+### Phase -1 — actionlint + shellcheck declarative (shipping)
 
-All four share the same declarative data + the same
-post-bootstrap scripts. Only the pre-bootstrap entry
-twins differ (forced by "user has nothing installed yet").
+Already landed on PR #375 branch: both added to `.mise.toml`.
+Cross-OS via mise registry. This is the immediate parity fix.
 
-## 3. Reference-pattern inventory
+### Phase 0 — land the three-repo-split ADR
 
-### `../scratch` pattern
+`docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
+re-lands on main (it was lost when PR #54 closed). Establishes
+the operational-level record that the Ouroboros trinity exists
+as the target architecture. Does not split the repos yet;
+just records the decision to split.
 
-Per `../scratch/README.md`:
+Effort: S (1 day). Doc-only, small diff.
 
-**Pre-bootstrap entries (twin bash/ps1 — FORCED)**:
-- `scripts/setup/ubuntu/bootstrap.sh`
-- `scripts/setup/ubuntu/wsl.sh`
-- `scripts/setup/macos/bootstrap.sh`
-- `scripts/setup/windows/bootstrap.ps1`
+### Phase 1 — declarative tree split
 
-Rationale: the user has nothing installed. A native shell
-(bash on Unix, PowerShell on Windows) is the minimum-viable
-surface before the bootstrap lands mise / bun / node.
-
-**Shared layers (per-OS family)**:
-- `scripts/setup/unix/` — shared across macOS + Ubuntu + WSL
-- `scripts/setup/debian/` — Debian-family (Ubuntu, WSL)
-- `scripts/setup/windows/` — Windows-only
-- `scripts/setup/ubuntu/`, `scripts/setup/macos/` — OS-specific
-
-**Declarative data (separated from logic)**:
-- `declarative/debian/apt/*.apt` — apt-package lists
-- `declarative/bun/global/*.bun-global` — global bun tools
-- Likely `declarative/macos/brew/*.brew` + more
-
-**Profile / category system**:
-- `BOOTSTRAP_MODE=minimum` (fast path, default)
-- `BOOTSTRAP_MODE=all` (full runner-style toolchain)
-- `BOOTSTRAP_CATEGORIES="quality database"` orthogonal
-  categories: `cli`, `native-build`, `database`, `quality`,
-  `runner` (Linux-only runner-style extras)
-
-**Idempotent by design**: re-run is update-or-noop based
-on installed state.
-
-### `../SQLSharp` pattern (bun+TS post-bootstrap)
-
-Per my survey of `../SQLSharp/`:
-
-- `scripts/setup/{dev,github,repo}/` subcategorization
-- bun+TS orchestration for cross-OS post-bootstrap work
-  (avoids maintaining twin sh + ps1 files for everything
-  downstream of "bun is installed")
-- Example surfaces: `scripts/setup/dev/` (dev-only tools),
-  `scripts/setup/github/` (GitHub API scripts),
-  `scripts/setup/repo/` (repo-level config)
-
-The split: **bash/ps1 bootstrap** → installs bun → **bun+TS
-for everything after**.
-
-## 4. Current Zeta state — gap analysis
-
-### What Zeta has today
-
-- **Declarative tool pins**: `.mise.toml` (dotnet, python,
-  java, bun, uv). PR #375 extends with `actionlint` and
-  `shellcheck`.
-- **Declarative manifests**: `tools/setup/manifests/{apt,
-  brew,dotnet-tools,uv-tools,verifiers}`.
-- **Per-OS bootstrap twins (FORCED, correct)**:
-  `tools/setup/linux.sh`, `tools/setup/macos.sh`. (No
-  `windows.ps1` yet — HB-005 territory.)
-- **Shared common layer**: `tools/setup/common/*.sh`
-  (dotnet-tools.sh, elan.sh, mise.sh, profile-edit.sh,
-  python-tools.sh, shellenv.sh, sync-upstreams.sh,
-  verifiers.sh).
-- **Install entrypoint**: `tools/setup/install.sh` + doctor.sh.
-
-### What Zeta lacks vs target
-
-1. **Top-level `declarative/` directory** — data is currently
-   scattered across `.mise.toml` + `tools/setup/manifests/`.
-   Scratch's `declarative/<os>/<pkg-manager>/*.list` shape
-   is cleaner and scales to multi-OS.
-
-2. **bun+TS post-bootstrap orchestrator** — no bun+TS
-   scripts under `scripts/setup/` yet. Post-bootstrap
-   work still done in bash (`tools/setup/common/*.sh`).
-   Consequence: every cross-OS behaviour needs
-   bash+PowerShell pairs when Windows lands.
-
-3. **Profile / category system** — no `BOOTSTRAP_MODE` or
-   `BOOTSTRAP_CATEGORIES`. Everything is one install.sh
-   that does all-or-nothing.
-
-4. **Dev-container / Codespaces base** — no `.devcontainer/`
-   directory pinned to the same install substrate.
-   Adding one today would duplicate install logic.
-
-5. **Windows pre-bootstrap twin** — no `tools/setup/
-   windows.ps1` yet. Gated on the Windows-peer-agent
-   milestone (HB-005-adjacent).
-
-6. **Idempotency testing** — install scripts don't have an
-   explicit "second-run is no-op" test surface today.
-
-## 5. Phased migration proposal
-
-Each phase ships on its own PR. Phases are ordered so each
-stands alone (earlier phases don't block later ones).
-
-### Phase 0 — Declarative split (low risk)
-
-Move `.mise.toml` tool section and `tools/setup/manifests/`
-content into a top-level `declarative/` tree:
+Move the pin data out of `.mise.toml` + `tools/setup/manifests/`
+into a top-level `declarative/` tree:
 
 ```
 declarative/
-├── macos/
-│   └── brew/packages.brew
-├── debian/
-│   └── apt/packages.apt
-├── unix/
-│   └── mise/tools.toml   # shared dotnet/python/bun/uv/actionlint/shellcheck
-├── windows/              # future
-│   └── winget/packages.winget
-└── all/
-    ├── dotnet-tools/packages.dotnet-tools
-    └── uv-tools/packages.uv-tools
+├── macos/brew/packages.brew
+├── debian/apt/packages.apt
+├── unix/mise/tools.toml       (mirrored to root .mise.toml)
+├── windows/winget/packages.winget  (stub, Phase 4)
+└── all/{dotnet-tools,uv-tools}/*
 ```
 
-`tools/setup/common/*.sh` scripts continue to read these
-manifests but from the new paths. `.mise.toml` at repo
-root can symlink-content (or just re-export) from
-`declarative/unix/mise/tools.toml` — mise needs `.mise.toml`
-at repo root for auto-activation to work.
+`tools/setup/common/*.sh` reads from new paths. `.mise.toml`
+at repo root stays (required for mise auto-activation) as
+a symlink or generated-copy of `declarative/unix/mise/tools.toml`.
 
-Effort: S (1 day). Mechanical move + path updates.
+Effort: S (1 day). Mechanical.
 
-### Phase 1 — bun+TS post-bootstrap scaffold
+### Phase 2 — bun+TS post-bootstrap scaffold
 
-Add `scripts/setup/` with a minimal bun+TS orchestrator that
-replaces the post-bootstrap logic currently in
-`tools/setup/common/*.sh`. Initial scope:
+Add `scripts/setup/` with a bun+TS orchestrator replacing
+`tools/setup/common/*.sh`. Pre-bootstrap (`tools/setup/linux.sh`,
+`macos.sh`, future `windows.ps1`) installs mise + bun and
+hands off:
 
-- `scripts/setup/postBootstrap.ts` — main orchestrator
-- `scripts/setup/lib/mise.ts` — calls `mise install`
-- `scripts/setup/lib/brew.ts` — reads `declarative/macos/
-  brew/packages.brew`, installs via `brew bundle` or loop
-- `scripts/setup/lib/apt.ts` — reads `declarative/debian/
-  apt/packages.apt`, installs via `apt install`
-- `scripts/setup/lib/verifiers.ts` — downloads TLC + Alloy
-  jars (currently `tools/setup/common/verifiers.sh`)
-
-Pre-bootstrap (`tools/setup/linux.sh`, `tools/setup/macos.sh`)
-remains bash — installs mise + bun, then hands off:
 ```bash
 bun run scripts/setup/postBootstrap.ts
 ```
 
-Effort: M (2-3 days). Rewrite existing bash common/ into TS.
+Effort: M (2-3 days). The bun+TS substrate becomes ace's
+shared post-bootstrap runtime.
 
-### Phase 2 — Profiles and categories
+### Phase 3 — profiles and categories
 
-Add `BOOTSTRAP_MODE` and `BOOTSTRAP_CATEGORIES` to the TS
-orchestrator. Categories match scratch's shape (cli,
-native-build, database, quality, runner).
+`BOOTSTRAP_MODE=minimum|all` + orthogonal `BOOTSTRAP_CATEGORIES`
+(`cli`, `native-build`, `database`, `quality`, `runner`).
 
-Effort: S (1 day). Pure TS logic on top of Phase 1.
+Effort: S (1 day).
 
-### Phase 3 — Dev-container base
+### Phase 4 — dev-container + Codespaces base
 
-Add `.devcontainer/devcontainer.json` + `.devcontainer/
-Dockerfile`. The Dockerfile runs
-`tools/setup/linux.sh` (same as CI). The same image
-backs Codespaces.
+`.devcontainer/devcontainer.json` + `.devcontainer/Dockerfile`
+that run `tools/setup/linux.sh` → same image backs Codespaces.
 
-Effort: M (2 days). Test in Codespaces + local
-`docker run`.
+Effort: M (2 days).
 
-### Phase 4 — Windows pre-bootstrap
+### Phase 5 — Windows pre-bootstrap + full Windows native
 
-Add `tools/setup/windows.ps1` (FORCED twin at the edge).
-Parallel to `linux.sh` + `macos.sh` shape. Installs mise
-+ bun via winget / choco, then hands off to the same
-`bun run scripts/setup/postBootstrap.ts`.
+Add `tools/setup/windows.ps1` (FORCED twin at the edge). Two
+code paths:
 
-Effort: M (2-3 days). Windows-specific testing; composes
-with HB-005 AceHack-mirror-LFG work.
+1. **Windows native**: full ps1 end-to-end — installs
+   ace-native-on-Windows, handles everything in PowerShell.
+2. **Windows WSL**: ps1 installs WSL2 + Ubuntu, hands off to
+   the bash chain inside WSL (same as macOS + Linux).
 
-### Phase 5 — Idempotency test harness
+Effort: M-L (3-5 days). Composes with Windows-peer-agent
+milestone for CI enablement.
 
-Add a test target (`bun test scripts/setup/idempotency`)
-that runs the bootstrap twice and asserts the second run
-is a no-op (file hashes unchanged, no brew/apt install
-commands executed on run 2). Captures the
-"idempotent by design" discipline.
+### Phase 6 — idempotency test harness
 
-Effort: S (1 day). Already-green once Phase 1 lands.
+`bun test scripts/setup/idempotency` — runs the full
+bootstrap twice, asserts second-run-is-noop.
 
-## 6. Non-migration alternatives considered
+Effort: S (1 day). Once Phase 2 lands, this is mostly
+harness code.
 
-- **Status quo + add shellcheck/actionlint to mise**:
-  already shipped via PR #375. Delivers the immediate
-  parity fix but doesn't address the bigger vision.
-  Not mutually exclusive with ace adoption — call this
-  Phase -1.
-- **Adopt scratch wholesale via `git subtree pull`**:
-  reconsidered in light of the ace reframe. If scratch
-  becomes the ace repo, a consumer pattern emerges:
-  scratch publishes ace as a package; Zeta depends on it
-  as a normal dependency. Subtree sync would be wrong —
-  Zeta wants ace-as-dependency, not ace-copied-in.
-- **Zeta forks ace into its own tree**: ruled out —
-  splits the ace codebase, creates drift between
-  first-class consumer and product.
-- **Use a tool like Dependabot for version updates**:
-  orthogonal — Dependabot complements declarative pinning,
-  doesn't replace it.
+## 8. Open questions for the maintainer
 
-## 7. What this doc does NOT authorize
+1. **ace repo location**: since the maintainer said
+   "we build in Zeta or start a new repo" — which? Start
+   a new repo for ace (giving it the independence the ADR
+   envisions) OR host early ace work inside Zeta with a
+   later extraction when ready?
+2. **ADR re-land timing**: does the three-repo-split ADR
+   land now (Phase 0) or wait until other Round-44
+   speculative-branch content re-lands?
+3. **Phase-0-to-Phase-1 ordering**: can Phase 1 (declarative
+   tree split) happen before ADR re-land, or are they
+   coupled?
+4. **Phase 5 Windows**: begin in parallel with the Windows
+   peer-agent harness work or after?
+5. **Contribution flow**: when Zeta's ace consumption reveals
+   an ace design gap, does it land in Zeta as a local override
+   until the ace-repo-of-record catches up, or immediately
+   upstream to the ace repo?
 
-- Does NOT authorize executing any of these phases this
-  round. Each phase is its own PR with its own review cycle.
-- Does NOT authorize renaming `tools/setup/` to `scripts/
-  setup/` without migration plan — cross-reference audit
-  (skills, agents, docs that cite the old path) must run
-  first.
-- Does NOT authorize pinning versions in `declarative/` that
-  violate Otto-247 version-currency — every pinned version
-  must be verified via authoritative source (`gh api
-  .../releases` for GitHub-hosted tools, `npm view <pkg>`
-  for npm, etc).
-- Does NOT supersede the forced-twin discipline for
-  pre-bootstrap entries. Bash + PowerShell at the edge is
-  correct; bun+TS for everything after bootstrap is the
-  unification target.
+## 9. Composes with
 
-## 8. Open questions for Aaron
+- `user_trinity_of_repos_emerged_zeta_forge_ace_three_in_one.md`
+  (auto-memory) — the three-in-one framing.
+- `project_ace_package_manager_agent_negotiation_propagation.md`
+  (auto-memory) — ace's negotiation / propagation semantics.
+- `project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md`
+  (auto-memory) — the operational three-repo design.
+- `feedback_bootstrapping_divine_downloading_factory_learns_from_self.md`
+  (auto-memory) — Forge self-hosting = the Ouroboros self-loop.
+- Otto-247 version-currency (CLAUDE.md-level rule) — every
+  pin in every phase verified via authoritative source.
+- Otto-248 never-ignore-flakes (CLAUDE.md-level rule) — Phase 6
+  idempotency test harness enforces it.
+- GOVERNANCE.md §24 three-way-parity (dev laptop, CI runner,
+  devcontainer).
+- HB-005 AceHack-mirror-LFG (adjacent Windows bootstrap).
 
-1. **ace productization timing**: is ace shipping as a
-   standalone package (npm / bun / cargo / binary) before
-   Zeta adopts it, or does Zeta adopt via repo-relative
-   path (`../scratch`) and graduate to the published
-   package later?
-2. **ace repo future**: does `../scratch` stay as the ace
-   repo, or get renamed/relocated? Zeta's integration
-   path depends on the stable source URL.
-3. **Timing for Phase 0**: start immediately (while drain
-   completes in parallel), or wait for HB-002 per-row
-   BACKLOG split to land first?
-4. **Phase-1 bun+TS scope**: rewrite all of
-   `tools/setup/common/*.sh` at once, or incrementally
-   by file?
-5. **dev-container base image**: Ubuntu 24.04 or a specific
-   vendor-curated base (Microsoft's devcontainer/images)?
-6. **ace-in-Zeta contribution flow**: when Zeta's adoption
-   reveals an ace gap, does Zeta file PRs to scratch/ace
-   or use a Zeta-local override until ace catches up?
+## 10. What this doc does NOT authorize
 
-## 9. References
-
-- `../scratch/README.md` — canonical scratch pattern
-- `../scratch/declarative/` — per-OS data layer example
-- `../SQLSharp/scripts/setup/{dev,github,repo}/` — bun+TS
-  post-bootstrap
-- `tools/setup/` (current Zeta) — what migrates
-- `.mise.toml` (current) — declarative tool pins
-- GOVERNANCE.md §24 — three-way-parity requirement
-- Otto-247 version-currency (CLAUDE.md-level rule)
-- HB-005 AceHack-mirror-LFG (adjacent Windows bootstrap)
+- Does NOT execute any phase.
+- Does NOT re-reference external paths. If a future revision
+  needs to cite ace source, it cites the ace repo of record
+  (when it exists) by URL, not by local filesystem path.
+- Does NOT commit to the trinity-register mapping of Father /
+  Son / Spirit to specific repos — the structural three-in-one
+  is load-bearing; role assignments are the maintainer's call
+  per the per-user memory.
+- Does NOT supersede forced-twin discipline at pre-bootstrap
+  edge.
+- Does NOT pin versions without Otto-247 verification via
+  `gh api .../releases` or equivalent authoritative source.
