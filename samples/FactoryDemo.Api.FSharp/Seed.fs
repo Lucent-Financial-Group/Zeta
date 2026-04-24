@@ -46,7 +46,7 @@ let customers : Customer list =
           Address = address
           CreatedAt = ago 120
           UpdatedAt = ago 1 }
-    // Email collision #1: Alice Plumbing (1) and Aaron Smith (13) share alice@acme.example.
+    // Email collision #1: Alice Plumbing (1) and Acme Contact (13) share alice@acme.example.
     // Email collision #2: Bob HVAC (5) and Quincy Assistant (19) share bob@trades.example.
     [ mk 1L  "Alice Plumbing LLC"        "alice@acme.example"    "555-0101" "123 Elm St, Portland OR"
       mk 2L  "Benson Roofing"             "benson@roof.example"   "555-0102" "45 Oak Ave, Seattle WA"
@@ -60,7 +60,7 @@ let customers : Customer list =
       mk 10L "Iron Tree Electric"         "iron@tree.example"     "555-0110" "17 Spruce St, Salem OR"
       mk 11L "Jackson Pool Services"      "jackson@pools.example" "555-0111" "600 Lake Rd, Reno NV"
       mk 12L "Klein Garage Doors"         "klein@doors.example"   "555-0112" "44 4th Ave, Medford OR"
-      mk 13L "Aaron Smith (new contact)"  "alice@acme.example"    "555-0113" "123 Elm St, Portland OR"
+      mk 13L "Acme Contact (new lead)"    "alice@acme.example"    "555-0113" "123 Elm St, Portland OR"
       mk 14L "Lakeview Solar"             "lakeview@solar.example" "555-0114" "250 Shore Dr, Bellevue WA"
       mk 15L "Mountain Well Drilling"     "mountain@wells.example" "555-0115" "12 Ridge Rd, Coeur dAlene ID"
       mk 16L "Nightingale Security"       "ngale@secure.example"  "555-0116" "88 Watch Way, Vancouver WA"

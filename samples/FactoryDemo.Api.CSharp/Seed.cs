@@ -31,7 +31,7 @@ public static class Seed
         new(10, "Iron Tree Electric",         "iron@tree.example",        "555-0110", "17 Spruce St, Salem OR",        Ago(120), Ago(1)),
         new(11, "Jackson Pool Services",      "jackson@pools.example",    "555-0111", "600 Lake Rd, Reno NV",          Ago(120), Ago(1)),
         new(12, "Klein Garage Doors",         "klein@doors.example",      "555-0112", "44 4th Ave, Medford OR",        Ago(120), Ago(1)),
-        new(13, "Aaron Smith (new contact)",  "alice@acme.example",       "555-0113", "123 Elm St, Portland OR",       Ago(120), Ago(1)),
+        new(13, "Acme Contact (new lead)",    "alice@acme.example",       "555-0113", "123 Elm St, Portland OR",       Ago(120), Ago(1)),
         new(14, "Lakeview Solar",             "lakeview@solar.example",   "555-0114", "250 Shore Dr, Bellevue WA",     Ago(120), Ago(1)),
         new(15, "Mountain Well Drilling",     "mountain@wells.example",   "555-0115", "12 Ridge Rd, Coeur dAlene ID",  Ago(120), Ago(1)),
         new(16, "Nightingale Security",       "ngale@secure.example",     "555-0116", "88 Watch Way, Vancouver WA",    Ago(120), Ago(1)),
