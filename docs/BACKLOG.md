@@ -5800,6 +5800,89 @@ systems. This track claims the space.
   live Zeta instance on mainnet without Aminata
   threat-model sign-off on the network-exposure surface
   (Phase 2 only).
+- [ ] **Mode 1 admin UI — SSMS/pgAdmin-class local
+  management UI for Zeta.** Maintainer 2026-04-24
+  directive (verbatim):
+
+  > *"for mode 1 we want a front end ui like ssms/pgadmin
+  > but really designed for us"*
+
+  Distinct from the Frontier-UI / kernel-A/kernel-B
+  web-facing surface (per the 2026-04-24 rename
+  directive). This is the **operator/admin local UI** —
+  desktop-class management surface modelled on SQL
+  Server Management Studio + pgAdmin but designed
+  idiomatically for Zeta's substrate (Z-set
+  retraction-native semantics, operator-algebra
+  composition, multi-node distributed-state, the git
+  interface, etc.). Scope: query workbench, schema
+  browser, connection manager, retraction-native delta
+  visualizer, plan inspector for the query optimizer,
+  multi-node topology view, ontology browser per
+  paced-ontology-landing, stream/pipeline live view.
+
+  Two-UI architecture going forward:
+  - **Web-facing Frontier-UI (kernel-A/kernel-B)** —
+    public-user-facing surface.
+  - **Local admin UI (this row)** — operator/admin
+    surface, ships with Mode 1 single-file binary.
+
+  Priority P3 / way-backlog (UX + design lead time);
+  effort L (full app). Composes with the Mode 1
+  bootstrap thesis (single-file AoT/JIT executable),
+  the git-as-DB-interface row below, and Otto-274
+  progressive-adoption-staircase.
+
+- [ ] **Native F# git implementation — Zeta IS the git
+  client/server (no external git needed).** Maintainer
+  2026-04-24 directive (verbatim):
+
+  > *"we want to have a full git implimentation in f#
+  > where we don't even need the git client, we are
+  > also the git client and it stores into our database
+  > for mode 1. just another interface like SQL"*
+
+  Zeta-native git implementation in F# — full git
+  protocol (object format, pack files, refs, index,
+  smart-HTTP / SSH transport, push/pull negotiation,
+  upload-pack / receive-pack server side). Storage
+  lands in Zeta's database (Mode 1) — git objects
+  serialize as Z-set entries with commit/tree/blob
+  ontology. Pairs with the WASM/git-storage row below
+  for Mode 2 (where isomorphic-git is the browser-side
+  client).
+
+  **Symmetric architecture:**
+  - **Mode 1** — native F# git impl + Zeta DB storage.
+    Zeta talks git natively to other peers. No external
+    git binary required.
+  - **Mode 2** — WASM-F# + isomorphic-git in browser +
+    git remote (could be ANOTHER Zeta-Mode-1 instance
+    serving git).
+
+  **Composition gain:** any Zeta Mode 1 instance can
+  serve as a git remote for any Zeta Mode 2 browser
+  client. The factory becomes self-hosting of its own
+  git ecosystem — `git push my-zeta main` = pushing to
+  Zeta's DB via Zeta's own git server.
+
+  **"just another interface like SQL"** — maintainer's
+  framing. Git is one of several first-class
+  protocols on top of Zeta's substrate, alongside SQL,
+  operator algebra, LINQ, GraphQL (future), etc.
+  Implementation effort is L+ (the git protocol is
+  large but fully specified; Z-set
+  retraction-native semantics map cleanly).
+
+  Priority P3 / way-backlog per maintainer; effort L+
+  (full git protocol coverage). Composes with the
+  git-as-DB-interface row below (sister; same
+  direction), the WASM/git-storage row (companion for
+  Mode 2), `fsharp-expert`, `git-workflow-expert`,
+  `serialization-and-wire-format-expert`. Composes
+  with `networking-expert` for the HTTP/SSH transport
+  layer.
+
 - [ ] **Git-as-first-class-DB-interface — Zeta commands
   ≈ git commands where semantics align.** Maintainer
   2026-04-24 directive (verbatim, low-priority backlog):

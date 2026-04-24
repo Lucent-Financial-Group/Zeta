@@ -37,6 +37,39 @@ Maintainer punchline 2026-04-24:
 
 > *"so both require 0"*
 
+Maintainer follow-up 2026-04-24 (expanding Mode 1):
+
+> *"for mode 1 we want a front end ui like ssms/pgadmin
+> but really designed for us. also we want to have a
+> full git implimentation in f# where we don't even
+> need the git client, we are also the git client and
+> it stores into our database for mode 1. just another
+> interface like SQL"*
+
+Two pieces in the follow-up:
+
+1. **Mode 1 admin UI** — SSMS/pgAdmin-class local
+   management UI for Zeta. Distinct from the
+   web-facing Frontier-UI (kernel-A/kernel-B per the
+   2026-04-24 rename directive). This is the
+   operator/admin desktop-class surface, ships with
+   the Mode 1 single-file binary. Two-UI architecture
+   confirmed: web-facing (Frontier) + local-admin
+   (this).
+2. **Native F# git implementation** — Zeta IS the git
+   client AND server. No external git binary
+   required. Git objects (commit/tree/blob) serialize
+   as Z-set entries with retraction-native semantics.
+   Maintainer framing: *"just another interface like
+   SQL"* — git is one of several first-class protocols
+   on top of Zeta's substrate.
+
+**Symmetric architecture gain:** any Zeta Mode 1
+instance can serve as a git remote for any Zeta Mode 2
+browser client. `git push my-zeta main` = pushing to
+Zeta's DB via Zeta's own git server. The factory
+becomes self-hosting of its own git ecosystem.
+
 ## The bootstrap thesis (confirmed)
 
 **Both modes require zero install at the user-experience
