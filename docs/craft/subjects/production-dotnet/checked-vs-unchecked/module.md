@@ -87,7 +87,7 @@ deciding whether to use `Checked.`:
    counter monotonic, lifetime < 2^63 ops)? → **unchecked with
    a citing comment pointing at the invariant.**
 4. Is the loop **SIMD-vectorisable** and the width would
-   material-ise a measured speedup? → **unchecked in the inner
+   materialise a measured speedup? → **unchecked in the inner
    loop; detect overflow with a sound technique at the block
    boundary** — see "Sound SIMD overflow detection" below.
    Sign-flip or sum-of-absolutes pre/post are **not** sound
