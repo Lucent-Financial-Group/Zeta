@@ -542,10 +542,14 @@ module Graph =
     /// where `Z(x; baseline) = (x - median(baseline)) /
     /// (1.4826 * MAD(baseline))`.
     ///
-    /// Caller provides `baselineLambdas` + `baselineQs` — arrays
-    /// of metric values computed across many known-null
-    /// baseline samples. The distributions calibrate thresholds
-    /// from data rather than hard-coding them.
+    /// Caller provides `baselineLambdas` + `baselineQs` —
+    /// sequences of metric values computed across many
+    /// known-null baseline samples. The `double seq` type
+    /// is materialized once inside `robustZScore` (see
+    /// RobustStats), so callers may pass arrays, lists,
+    /// or any `seq` form without re-enumeration cost. The
+    /// distributions calibrate thresholds from data rather
+    /// than hard-coding them.
     ///
     /// Returns `None` when any underlying computation is
     /// undefined (empty baselines, iteration failure, etc.).
@@ -556,9 +560,11 @@ module Graph =
     /// signals with shipped primitives. Additional terms land
     /// as their primitives mature.
     ///
-    /// Provenance: Amara 17th-ferry Part 2 correction #4
-    /// (robust z-scores for adversarial data) + corrected
-    /// composite-score formula. Otto 18th graduation.
+    /// Provenance: external AI collaborator's 17th
+    /// courier ferry Part 2 correction #4 (robust
+    /// z-scores for adversarial data) plus the corrected
+    /// composite-score formula. Eighteenth graduation
+    /// under the Otto-105 cadence.
     let coordinationRiskScoreRobust
             (alpha: double)
             (beta: double)

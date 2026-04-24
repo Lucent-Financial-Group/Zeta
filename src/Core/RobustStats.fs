@@ -109,12 +109,15 @@ module RobustStats =
     /// robust z-scores are directly comparable to ordinary
     /// z-scores when the baseline actually IS normal).
     ///
-    /// Returns `None` when the baseline is empty or when
-    /// `MAD(baseline) = 0` (every baseline value identical —
-    /// no scale to standardize against, except for floor-
-    /// protection via `MadFloor`). When MAD collapses to zero,
-    /// the floor is used so the function returns a defined
-    /// value rather than infinity.
+    /// Returns `None` when the baseline is empty. When
+    /// MAD collapses to zero (every baseline value
+    /// identical), `MadFloor` is substituted so the
+    /// function returns `Some` finite value rather than
+    /// `None` or infinity — the floor reflects "scale is
+    /// below epsilon" rather than "scale is undefined."
+    /// Per Copilot review thread 59VhYb: the earlier doc
+    /// contradicted the implementation by claiming None
+    /// on MAD=0; the implementation is the contract.
     ///
     /// Why robust z-scores for adversarial data: ordinary
     /// z-scores assume Gaussian baseline; an attacker can
@@ -128,10 +131,16 @@ module RobustStats =
     /// (robust statistics for adversarial data in
     /// CoordinationRiskScore composition).
     let robustZScore (baseline: double seq) (measurement: double) : double option =
-        match median baseline with
+        // Materialize the baseline once. `median` + `mad`
+        // both need to walk the sequence; re-enumerating
+        // `double seq` costs O(n) twice AND can yield
+        // inconsistent results if the seq is lazy/non-
+        // repeatable (Copilot review thread 59VhYq).
+        let baselineArr = Seq.toArray baseline
+        match median baselineArr with
         | None -> None
         | Some med ->
-            match mad baseline with
+            match mad baselineArr with
             | None -> None
             | Some m ->
                 let scale = 1.4826 * max m MadFloor
