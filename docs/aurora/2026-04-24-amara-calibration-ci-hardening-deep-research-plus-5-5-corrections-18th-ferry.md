@@ -93,12 +93,13 @@ Otto-158 execution of that scheduled absorb.
 ## Part 1 verbatim — Deep Research: Calibration & CI Hardening
 
 The following is preserved verbatim from Amara's 18th-ferry
-drop. Preservation is deliberate: factory policy is to
-preserve external-conversation content verbatim rather than
-paraphrase (GOVERNANCE §33); corrections are tracked in
-Part 2 below. Where the text cites sources (e.g. "【10†L189-
-L198】"), those are Amara's internal citation markers and
-are kept intact.
+drop. Preservation is deliberate: factory convention across
+`docs/aurora/**` is to preserve external-conversation
+content verbatim rather than paraphrase, with corrections
+tracked separately (Part 2 below) and policy-pointer in
+`CLAUDE.md` ground rules. Where the text cites sources
+(e.g. "【10†L189-L198】"), those are Amara's internal
+citation markers and are kept intact.
 
 > **Executive Summary:** We found that the "toy cartel
 > detector" prototype has been implemented and tested, but
@@ -619,15 +620,16 @@ vocabulary Otto adopts:
 - **Stage 6 (enforcement candidate)** — not yet; needs
   due-process policy + red-team review.
 
-**PR #323 does not canonicalize from `tests/Simulation/`
-to `src/Core/NetworkIntegrity/` until Stage 4 evidence
+**PR #323 does not canonicalize from
+`tests/Tests.FSharp/Simulation/` to
+`src/Core/NetworkIntegrity/` until Stage 4 evidence
 exists.** Aaron Otto-136 previously articulated this from
 a different angle: *"keep #323 conceptually accepted, but
 do not canonicalize until the sharder test is seed-
 locked/recalibrated."* The two constraints compose: #323
-stays in `tests/Simulation/` until (a) sharder flake is
-fixed (Aaron) + (b) calibration + scenario suite evidence
-accumulates (Amara 18th-ferry).
+stays in `tests/Tests.FSharp/Simulation/` until (a)
+sharder flake is fixed (Aaron) + (b) calibration +
+scenario suite evidence accumulates (Amara 18th-ferry).
 
 ### KSK naming doc alignment
 
@@ -717,26 +719,31 @@ repo-surface commitment.
 
 ## Cross-references
 
-- **Amara 17th ferry** (PR #330) — the prior ferry, also
-  deep-research + 5.5-pass two-part format. This 18th
-  ferry continues the pattern: Amara drafts, then
-  verifies herself with a second model pass.
-- **Amara 16th ferry** (PR via `docs/aurora/
-  2026-04-24-amara-gpt-5-5-thinking-zeta-as-aurora-
-  spine-16th-ferry.md`) — where Amara first raised the
-  KSK naming ambiguity; this ferry's advisory-only
-  flow presumes KSK is the named kernel from Otto-157.
-- **Amara 15th ferry** (PR via `docs/aurora/
-  2026-04-24-amara-conversational-progress-check-toy-
-  cartel-pressure-15th-ferry.md`) — where Amara first
-  issued the theory-cathedral warning; this 18th ferry
-  notes the warning is "meaningfully reduced" by
-  PR #323.
-- **Otto-140..145** (`memory/feedback_ksk_naming_
-  unblocked_aaron_directed_rewrite_authority_max_
-  initial_starting_point_2026_04_24.md`) — KSK canonical
-  expansion locked to "Kinetic Safeguard Kernel" (safety-
-  kernel sense, not OS-kernel).
+- **Amara 17th ferry** (PR #330,
+  `docs/aurora/2026-04-24-amara-cartel-lab-
+  implementation-closure-plus-5-5-thinking-verification-
+  17th-ferry.md`) — the prior ferry, also deep-research
+  + 5.5-pass two-part format. This 18th ferry continues
+  the pattern: Amara drafts, then verifies herself with
+  a second model pass.
+- **Amara 16th ferry** (raised the KSK naming ambiguity
+  that Otto-140..145 closed; not present as a dedicated
+  `docs/aurora/**` absorb in this snapshot, content
+  flowed into Otto-157 KSK definition work). This
+  ferry's advisory-only flow presumes KSK is the named
+  kernel from Otto-157.
+- **Amara 15th ferry** (the theory-cathedral warning
+  thread; not present as a dedicated `docs/aurora/**`
+  absorb in this snapshot, warning lineage continues
+  in 13th + 17th ferries). This 18th ferry notes the
+  warning is "meaningfully reduced" by PR #323.
+- **Otto-140..145** — KSK canonical expansion locked
+  to "Kinetic Safeguard Kernel" (safety-kernel sense,
+  not OS-kernel). Lineage captured across
+  `memory/MEMORY.md` index entries; the standalone
+  `feedback_ksk_naming_*.md` filename referenced by an
+  earlier draft of this doc was not the eventual
+  landing path.
 - **`docs/definitions/KSK.md`** (Otto-157 / PR #336) —
   authoritative KSK definition; this ferry's §G flow
   builds on it.
@@ -762,9 +769,16 @@ repo-surface commitment.
   (Aaron Otto-149 standing approval): FFT + Hilbert +
   windowing + filters. Enables correction 6 full
   implementation.
-- **GOVERNANCE §33** — external-conversation archive-
-  header requirement; this doc follows the four-field
-  header.
+- **External-conversation archive-header convention** —
+  this doc follows the four-field header (Scope /
+  Attribution / Operational status / Non-fusion
+  disclaimer) used across `docs/aurora/**`. The
+  numbered-rule cite previously here ("GOVERNANCE §33")
+  pre-dated landing; the rule is currently captured by
+  the convention-in-practice across sibling ferry
+  absorbs and is referenced from `CLAUDE.md`.
 - **CLAUDE.md** — verify-before-deferring (the cross-
-  reference list above is verified against actual PR
-  numbers + file paths).
+  reference list above is intended as a set of PR / file
+  / memory anchors and is rechecked against the tree at
+  drain-time; some anchors may resolve to ferry-time
+  state rather than current head).
