@@ -55,7 +55,13 @@ extract_field() {
     }
     state == 1 && $1 == field ":" {
       sub(/^[^:]+:[[:space:]]*/, "")
-      gsub(/^"|"$|^[[:space:]]*\x27|\x27[[:space:]]*$/, "")  # Codex P1: handle both " and '\''
+      # Copilot P1: POSIX-awk compatibility — use octal \047 (single-quote)
+      # rather than hex \x27 which is not portable across POSIX awk
+      # implementations (notably macOS awk).
+      gsub(/^"|"$|^[[:space:]]*\047|\047[[:space:]]*$/, "")  # Codex P1: handle both " and '\''
+      # Codex P2: trim trailing whitespace so `status: closed   ` still
+      # matches the `closed)` case in generate().
+      sub(/[[:space:]]+$/, "")
       found = $0
     }
     END { print found }
@@ -89,9 +95,11 @@ HEADER
   for tier in P0 P1 P2 P3; do
     section_dir="${BACKLOG_DIR}/${tier}"
     [ -d "$section_dir" ] || continue
-    files=$(find "$section_dir" -maxdepth 1 -name 'B-*.md' -type f 2>/dev/null | sort)
-    [ -n "$files" ] || continue
-
+    # Codex P2: iterate via NUL-delimited find+sort | while read to avoid
+    # shell word-splitting on whitespace in filenames. Handles paths
+    # containing spaces without breaking into multiple tokens.
+    has_files=0
+    section_label=""
     case "$tier" in
       P0) section_label="## P0 — critical / blocking" ;;
       P1) section_label="## P1 — within 2-3 rounds" ;;
@@ -99,12 +107,14 @@ HEADER
       P3) section_label="## P3 — convenience / deferred" ;;
     esac
 
-    echo ""
-    echo "$section_label"
-    echo ""
+    while IFS= read -r -d '' file; do
+      if [ "$has_files" -eq 0 ]; then
+        echo ""
+        echo "$section_label"
+        echo ""
+        has_files=1
+      fi
 
-    # shellcheck disable=SC2013
-    for file in $files; do
       link_path="backlog/${tier}/$(basename "$file")"
 
       id=$(extract_field "$file" "id")
@@ -119,7 +129,7 @@ HEADER
 
       printf -- "- %s **[%s](%s)** %s\n" \
         "$checkbox" "$id" "$link_path" "$title"
-    done
+    done < <(find "$section_dir" -maxdepth 1 -name 'B-*.md' -type f -print0 2>/dev/null | sort -z)
   done
 
   cat <<'FOOTER'
@@ -156,10 +166,10 @@ case "$mode" in
   write)
     # Phase-1a safety guard: refuse to overwrite an
     # existing BACKLOG.md that has substantial content
-    # (i.e. the 6100-line monolith that Phase 2 will
-    # migrate). Until Phase 2 migrates content into
-    # per-row files, generator --write would destroy
-    # the real backlog.
+    # (i.e. the pre-split monolithic backlog that
+    # Phase 2 will migrate). Until Phase 2 migrates
+    # content into per-row files, generator --write
+    # would destroy the real backlog.
     #
     # Override with BACKLOG_WRITE_FORCE=1 when Phase 2
     # migration PR intentionally regenerates the index.

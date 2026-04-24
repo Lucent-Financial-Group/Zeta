@@ -23,7 +23,7 @@ tools/
   backlog/
     README.md                    ← this file
     generate-index.sh            ← regenerates docs/BACKLOG.md
-    new-row.sh                   ← scaffolds a new row file
+    new-row.sh                   ← scaffolds a new row file (Phase 1b)
 ```
 
 ## Per-row file schema
@@ -144,13 +144,14 @@ delete the file.
 - `docs/research/backlog-split-design-otto-181.md` — full
   design spec + 6 open questions the maintainer's call on (some
   answered by reasonable defaults in this phase).
-- `tools/hygiene/audit-git-hotspots.sh` (PR #213,
-  BEHIND as of Phase-1a) — the detector that identified
-  BACKLOG.md as the repo's top hotspot, explicitly naming
-  "BACKLOG-per-swim-lane split" as a remediation option.
-  Context on why the split-as-remediation was filed lives
-  in the factory's session-memory substrate; the
-  detector's own header comment is the primary
-  cross-reference for this PR's scope.
+- Hot-file-detector tooling (unmerged at the time of
+  this Phase-1a PR; recovery path: `git log
+  --diff-filter=A --all -- tools/hygiene/` if it lands
+  later) — the detector flagged `docs/BACKLOG.md` as
+  the repo's top hotspot and named "BACKLOG-per-swim-
+  lane split" as a remediation option. The design
+  rationale for this PR does not depend on that
+  script being present in tree; the driver was
+  maintainer Otto-181 directly.
 - `.github/workflows/memory-index-integrity.yml` —
   precedent for the drift-CI pattern.
