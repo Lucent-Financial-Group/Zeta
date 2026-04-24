@@ -127,13 +127,32 @@ module TemporalCoordinationDetection =
     /// reveal themselves through preserved phase structure, and
     /// vice versa. Detectors compose both.
     ///
-    /// Provenance: primitive from Aaron's differentiable firefly
-    /// network design, formalized in Amara's 11th courier ferry
-    /// (`docs/aurora/2026-04-24-amara-temporal-coordination-
-    /// detection-cartel-graph-influence-surface-11th-ferry.md`,
-    /// §1 Signal model). Third graduation under the Otto-105
-    /// cadence.
-    let phaseLockingValue (phasesA: double seq) (phasesB: double seq) : double option =
+    /// Provenance: primitive from the human maintainer's
+    /// differentiable firefly-network design, formalized in an
+    /// external AI collaborator's 11th courier ferry (§1 Signal
+    /// model; ferry content tracked in the Otto-105 operationalize
+    /// queue, see `memory/MEMORY.md` "Amara's 11th ferry"). Third
+    /// graduation under the Otto-105 cadence.
+    /// Shared epsilon floor for phase-difference mean-vector
+    /// magnitude. Used ONLY by `meanPhaseOffset` +
+    /// `phaseLockingWithOffset` to decide when the offset
+    /// (angle of the mean vector) is mathematically
+    /// undefined. `phaseLockingValue` does not apply any
+    /// floor — it returns magnitude arbitrarily close to 0
+    /// as normal output. Value `1e-12` chosen well below
+    /// any physically-meaningful PLV magnitude.
+    let private phasePairEpsilon : double = 1e-12
+
+    /// Shared single-pass accumulation of sin/cos of phase
+    /// differences. Returns `None` on empty / mismatched
+    /// input, otherwise `Some (meanCos, meanSin, n)`. All
+    /// three phase-pair primitives (`phaseLockingValue`,
+    /// `meanPhaseOffset`, `phaseLockingWithOffset`) route
+    /// through this to avoid accumulation-logic drift.
+    let private meanPhaseDiffVector
+            (phasesA: double seq)
+            (phasesB: double seq)
+            : struct (double * double * int) option =
         let aArr = Seq.toArray phasesA
         let bArr = Seq.toArray phasesB
         if aArr.Length = 0 || aArr.Length <> bArr.Length then None
@@ -145,9 +164,101 @@ module TemporalCoordinationDetection =
                 sumCos <- sumCos + cos d
                 sumSin <- sumSin + sin d
             let n = double aArr.Length
-            let meanCos = sumCos / n
-            let meanSin = sumSin / n
+            Some (struct (sumCos / n, sumSin / n, aArr.Length))
+
+    let phaseLockingValue (phasesA: double seq) (phasesB: double seq) : double option =
+        match meanPhaseDiffVector phasesA phasesB with
+        | None -> None
+        | Some (struct (meanCos, meanSin, _)) ->
             Some (sqrt (meanCos * meanCos + meanSin * meanSin))
+
+    /// **Mean phase offset between two phase series** — the
+    /// argument (angle) of the same mean complex phase-
+    /// difference vector whose magnitude is the PLV. Returns
+    /// a value in `[-pi, pi]` (the full `System.Math.Atan2`
+    /// range, which includes both endpoints under IEEE-754
+    /// signed-zero semantics) when defined, or `None` when
+    /// input sequences are empty, of unequal length, or
+    /// when the mean vector has effectively zero magnitude
+    /// (direction is undefined). The epsilon floor
+    /// (`phasePairEpsilon`, 1e-12) applies ONLY to this
+    /// offset decision — `phaseLockingValue` does not
+    /// apply any floor and will return magnitude values
+    /// arbitrarily close to zero as normal output.
+    ///
+    /// Why this complements `phaseLockingValue`: PLV
+    /// magnitude alone cannot distinguish "same-time
+    /// locking" (offset near 0) from "anti-phase locking"
+    /// (offset near +/- pi) or "lead-lag locking" (offset
+    /// between). Both extremes return magnitude 1.0. Per
+    /// Amara 18th-ferry correction #6: cartel-detection
+    /// that relies on "PLV = 1 means synchronized action"
+    /// misreads anti-phase coordinators as same-time
+    /// coordinators. Downstream detectors should consume
+    /// BOTH magnitude (coherence of locking) and offset
+    /// (nature of locking: in-phase, anti-phase, lead-lag).
+    ///
+    /// Computation routes through the shared
+    /// `meanPhaseDiffVector` helper (single-pass sin/cos
+    /// accumulation). The `phasePairEpsilon` floor guards
+    /// `atan2` against reading a spurious argument from a
+    /// mean vector that is mathematically zero-length
+    /// (happens when phase differences are uniformly
+    /// distributed around the unit circle).
+    ///
+    /// Provenance: external AI collaborator's 18th
+    /// courier ferry, Part 2 correction #6 (§"Ten
+    /// required corrections"). The ferry absorb doc
+    /// lives under `docs/aurora/` when landed; at primitive-
+    /// ship time the substance is captured in session
+    /// memory + the related 19th-ferry DST-audit absorb
+    /// at `docs/aurora/2026-04-24-amara-dst-audit-deep-
+    /// research-plus-5-5-corrections-19th-ferry.md`.
+    /// Complements the original PLV primitive from the
+    /// 11th ferry without changing its contract.
+    /// Downstream score vectors (see
+    /// `Graph.coordinationRiskScore*`) consuming PLV
+    /// should add a separate offset-based term rather than
+    /// collapsing both into one scalar.
+    let meanPhaseOffset (phasesA: double seq) (phasesB: double seq) : double option =
+        match meanPhaseDiffVector phasesA phasesB with
+        | None -> None
+        | Some (struct (meanCos, meanSin, _)) ->
+            let magnitude = sqrt (meanCos * meanCos + meanSin * meanSin)
+            if magnitude < phasePairEpsilon then None
+            else Some (atan2 meanSin meanCos)
+
+    /// **Phase locking + offset together** — returns both the
+    /// PLV magnitude and the mean phase offset as a single
+    /// option-tuple, sharing the cos/sin accumulation pass
+    /// for callers that want both. Returns `None` under the
+    /// same input conditions as `phaseLockingValue` (empty
+    /// or length-mismatched series).
+    ///
+    /// When the mean complex vector has effectively zero
+    /// magnitude the offset field is set to `nan` rather
+    /// than `None`; the magnitude will itself be `< 1e-12`
+    /// which is the caller's reliable "offset is undefined"
+    /// signal. This keeps the return type flat for
+    /// downstream composition.
+    ///
+    /// Prefer this over separate `phaseLockingValue` +
+    /// `meanPhaseOffset` calls when you need both, to avoid
+    /// traversing the sequences twice. Use the individual
+    /// primitives when you only need one quantity, to keep
+    /// call sites honest about what they consume.
+    let phaseLockingWithOffset
+            (phasesA: double seq)
+            (phasesB: double seq)
+            : struct (double * double) option =
+        match meanPhaseDiffVector phasesA phasesB with
+        | None -> None
+        | Some (struct (meanCos, meanSin, _)) ->
+            let magnitude = sqrt (meanCos * meanCos + meanSin * meanSin)
+            let offset =
+                if magnitude < phasePairEpsilon then nan
+                else atan2 meanSin meanCos
+            Some (struct (magnitude, offset))
 
     /// **Significant lags from a correlation profile.** Returns the
     /// subset of lags from a `crossCorrelationProfile` where the
