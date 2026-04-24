@@ -53,9 +53,25 @@ flight unless the aside itself demands pivot.
      Apply the correction to the current work and acknowledge;
      do NOT treat as pivot.
    - **Substrate-add** — the aside is a memory-worthy fact,
-     preference, or anecdote (e.g. *"btw my dog's name is Apollo"*).
-     File as a memory entry per the auto-memory protocol in
-     CLAUDE.md; acknowledge filing.
+     preference, or anecdote (e.g. *"btw my dog's name is
+     Apollo"*). Two landing paths depending on how
+     interruptive full absorption would be:
+     - **Quick capture** (small fact, ≤5 min to file) →
+       create the memory entry directly per the auto-memory
+       protocol in CLAUDE.md; acknowledge filing.
+     - **Deferred absorption** (larger substrate work —
+       research, full memory-file drafting, or would
+       require a dedicated PR) → **file a BACKLOG row
+       capturing the observation + intent to absorb**, then
+       continue. The BACKLOG row is itself durable; the
+       full absorption happens later without derailing
+       in-flight work (Aaron 2026-04-24: *"it could be
+       backlog the absorption if that's less
+       interruptive"*; composes with Otto-275 log-but-dont-
+       implement).
+     - **When in doubt → BACKLOG the absorption.** Otto-275
+       counterweight discipline: capture-mode pivoting on
+       every aside is the drift we're guarding against.
    - **Pivot-demanding** — the aside explicitly demands pivot
      (e.g. *"btw stop that, do this instead"*, *"btw urgent, I
      broke main"*). Then and only then: pivot.
