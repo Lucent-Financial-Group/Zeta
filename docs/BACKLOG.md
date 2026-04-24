@@ -2083,6 +2083,40 @@ within each priority tier.
   to be small enough to pull fast. Without compaction,
   each tool leaves hundreds of MB of intermediates
   that inflate the image 3-5x.
+- [ ] **First-class Codex-CLI session experience — parallel to NSA / Claude-Desktop-cowork / Claude-Code-Desktop first-class pattern; possible harness swap for Otto later (model/harness-lead-dependent).** Aaron 2026-04-23 Otto-75: *"can you start building first class codex support with the codex clis help , it might eventually be benefitial to switch otto to codex later depending on which modeel/harness is ahead. this is basically the same ask as a new session claude first class experience, this is a codex session as a first class experince. and really the code one is a first class claude code experience, we also even tually will have first class claude desktop cowork and claude code desktop too. backlog"*.
+
+  **The roster of first-class harness experiences Aaron wants Zeta to support symmetrically:**
+  1. **Claude Code CLI** (current primary) — already first-class; this is what Otto runs in.
+  2. **New Session Claude Code** (NSA persona, existing memory) — test-fresh-sessions discipline; captured 2026-04-23.
+  3. **Codex CLI (OpenAI)** — **new ask, this row** — first-class experience parallel to Claude Code. The Codex CLI has its own installer + harness + tooling; treat it as a peer, not a second-class port.
+  4. **Claude Desktop cowork mode** — future; runs the desktop-app agent alongside a human, not terminal-based.
+  5. **Claude Code Desktop** — future; the GUI-frontend variant of Claude Code.
+
+  **Why this matters (Aaron's framing):** harness-choice is model-and-capability-dependent over time. Today Otto runs Claude Opus 4.7 via Claude Code CLI. If a future OpenAI / Codex model-plus-harness combination out-performs for factory-agent work, Otto should be portable enough to swap without rebuilding the factory. **Portability by design**, same shape as retractability-by-design (`memory/project_retractability_by_design_is_the_foundation_licensing_trust_based_batch_review_frontier_ui_2026_04_24.md` Otto-73): don't lock the factory to one harness's affordances.
+
+  **Relationship to existing cross-harness mirror row (below):** the mirror row is about **skill-file / rule-file distribution** to many harnesses so any harness can read them. This row is about **a first-class Codex session experience** — same shape as NSA-first-class: every operation Otto does in Claude Code, a Codex-CLI session should be able to do equivalently (tick cadence, memory read, substrate landing, PR opening, auto-merge arming). Mirror pipeline is necessary but not sufficient. This row is the integration-quality bar on top.
+
+  **Proposed execution shape (subject to Codex CLI's own capabilities):**
+  - **Research tick (S, first step).** Read Codex CLI's docs + feature set: scheduled tasks? subagent dispatch? long-running state? tool permission model? memory system? Scope: what does Codex CLI do well / differently / not at all vs Claude Code. File `docs/research/codex-cli-first-class-2026-*.md`.
+  - **Parity matrix (M).** For every Claude-Code capability Otto currently uses (cron auto-loop, Task subagents, TodoWrite tracking, per-project memory, MCP servers, Skill tool, Bash/Edit/Read/Write tools, WebFetch, WebSearch, Playwright MCP, Figma MCP), identify the Codex-CLI equivalent — or flag as gap. Matrix lands as `docs/research/harness-parity-matrix-2026-*.md`.
+  - **Gap closures (M-L per gap).** For each gap, decide: (a) portable shim (works in both), (b) Codex-specific equivalent, (c) document-as-limitation (feature unavailable). Track as sub-rows.
+  - **Codex session-bootstrap doc (S).** Analogue to `CLAUDE.md` for Codex CLI. Read-these-first pointer list, ground rules, build-and-test gate. Path TBD per Codex CLI's conventions (`AGENTS.md` is already the universal handbook; may need `CODEX.md` or a generated-from-CLAUDE.md variant).
+  - **Otto-in-Codex test run (S-M).** Single tick in a Codex-CLI session with the factory. Does the autonomous-loop cadence work? Can the agent land a substrate PR? Capture findings.
+  - **Harness-choice decision ADR (S, after the above).** `docs/DECISIONS/YYYY-MM-DD-harness-choice-otto.md` — which harness runs the primary tick cadence, with rationale (model-lead + tooling-lead + cost-lead assessment at decision time). Explicitly revisitable per Aaron's *"depending on which modeel/harness is ahead"*.
+
+  **Sibling rows for the other first-class experiences:**
+  - Claude Desktop cowork first-class — separate row (future, when cowork matures beyond preview).
+  - Claude Code Desktop first-class — separate row (future, GUI-frontend differs materially).
+  - The existing NSA-first-class memory already covers (2) above; capture in a BACKLOG row if it needs explicit tracking beyond the memory.
+
+  **Scope limits:**
+  - Does NOT commit to harness-swap for Otto today. *"it might eventually be benefitial"* is contingent on model/harness-lead assessment. No forced migration.
+  - Does NOT duplicate the cross-harness-mirror-pipeline work (skill-file distribution) — that row handles the substrate portability; this row handles the session-operation portability.
+  - Does NOT lock Zeta to any one harness family — portability-by-design means Claude Code AND Codex CLI AND future harnesses all composable.
+
+  **Priority:** P1 (strategic, not urgent). Research tick (S) should land within 5-10 ticks; full integration is L and spread across the next few rounds as Codex CLI capabilities clarify.
+
+  **First file to write:** `docs/research/codex-cli-first-class-2026-*.md` (the research tick).
 - [ ] **Cross-harness mirror pipeline** (round 34 ask from
   Aaron). Zeta is currently Claude-Code-biased
   (`.claude/skills/`, `.claude/agents/`). Real contributors
