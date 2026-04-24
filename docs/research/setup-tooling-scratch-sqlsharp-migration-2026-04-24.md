@@ -16,17 +16,19 @@ corrected a significant framing gap:
 
 - My earlier draft treated setup-tooling as an internal Zeta
   refactor and cited external reference-pattern repositories.
-- The maintainer clarified: the *external reference* is itself
-  the **start of "ace"**, his declarative-native package
-  manager. The maintainer's direct quote: *"../scratch is the
-  start of ace the package manager."*
+- The maintainer clarified that the external reference is
+  itself the **start of "ace"**, his declarative-native
+  package manager. The maintainer's direct quote (external
+  repo path redacted per soul-file-independence discipline):
+  *"[external reference] is the start of ace the package
+  manager."*
 - Therefore this is not a pattern-inspired refactor; it is
   **Zeta adopting ace first-class** as both the product's
   first consumer and a co-development testbed.
 
 The maintainer also flagged the external-path citation itself
-as a violation: *"never reference ../scratch we build in
-Zeta or start a new repo."* Per the soul-file-independence
+as a violation: *"never reference [external reference] we
+build in Zeta or start a new repo."* Per the soul-file-independence
 discipline, this doc must be reproducible by a reader who
 has only this repo + the per-user auto-memory; no external
 paths cited.
@@ -176,9 +178,9 @@ Ordered chronologically within the tick:
 11. *"on windows we will test 4 matrix windows, windows arm,
     windows wsl, windows arm wsl"* — the target Windows
     matrix.
-12. *"never reference ../scratch we build in Zeta or start
-    a new repo"* — soul-file-independence + ace-in-Zeta or
-    ace-in-its-own-repo.
+12. *"never reference [external reference] we build in Zeta
+    or start a new repo"* — soul-file-independence +
+    ace-in-Zeta or ace-in-its-own-repo.
 
 ## 6. Matrix summary (target state)
 
