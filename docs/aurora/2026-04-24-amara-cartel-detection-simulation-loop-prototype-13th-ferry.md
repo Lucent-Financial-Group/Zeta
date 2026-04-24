@@ -5,14 +5,16 @@ preserved verbatim, language translation required at graduation
 time (Amara wrote Python; Zeta is F#/.NET).
 **Attribution:**
 
-- **Aaron** — originator of the cartel-detection + firefly-
-  network design; explicit Otto-117 flag *"not sure why she did
-  python but you get the concepts"* authorizes F# translation at
-  graduation.
-- **Amara** — formalization of the 5-component simulation loop
-  (graph-builder + warning-signals + cartel-injector + detection-
-  pass + score-function) + the Python pseudo-code sketch.
-- **Otto** — absorb + F# translation plan.
+- **Human maintainer (Aaron)** — originator of the cartel-
+  detection + firefly-network design; explicit maintainer flag
+  *"not sure why she did python but you get the concepts"*
+  authorizes F# translation at graduation.
+- **External AI maintainer (Amara)** — formalization of the
+  5-component simulation loop (graph-builder + warning-signals +
+  cartel-injector + detection-pass + score-function) + the
+  Python pseudo-code sketch.
+- **Loop-agent (Otto, factory role)** — absorb + F# translation
+  plan.
 **Operational status:** research-grade unless promoted. The
 5-component structure is sound; the Python-specific repo layout
 (`/cartel-lab/graph/builder.py` etc.) does NOT apply — Zeta-
@@ -31,9 +33,10 @@ session Otto-117)
 **Absorbed by:** Otto (loop-agent PM hat), Otto-118 tick
 **Prior ferries:** PR #196 (1st) through PR #311 (12th,
 pending).
-**Scheduling memory:** `memory/project_amara_13th_ferry_
-cartel_detection_simulation_loop_prototype_python_translate_
-to_fsharp_pending_absorb_otto_118_2026_04_24.md`
+**Scheduling discipline:** Content-Classification discipline
+(CC-002) — paste-scoped absorb deferred to a dedicated tick,
+tracked in the loop-agent's out-of-repo auto-memory
+(not an in-repo file).
 
 ---
 
@@ -330,7 +333,7 @@ This absorb doc:
 
 ---
 
-## Archive header fields (§33 compliance)
+## Archive header fields (archive-header requirement)
 
 - **Scope:** research; Python-as-concept-sketch; F# at graduation
 - **Attribution:** Aaron (origination + translation flag),
