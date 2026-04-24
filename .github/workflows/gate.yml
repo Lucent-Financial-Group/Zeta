@@ -4,8 +4,12 @@
 # and every push to main, plus workflow_dispatch for manual triage.
 #
 # Discipline (design doc: docs/research/ci-workflow-design.md, Aaron-
-# reviewed 2026-04-18; parity-swap landed round 32):
-#   - Runners digest-pinned (ubuntu-22.04, macos-14), not -latest.
+# reviewed 2026-04-18; parity-swap landed round 32; matrix refresh
+# 2026-04-24 per PR #375):
+#   - Runners pinned to explicit versions (not -latest). Active build-
+#     and-test matrix: macos-26, ubuntu-24.04, ubuntu-24.04-arm. Lint
+#     jobs pinned to ubuntu-22.04 (short-lived, OS-independent work).
+#     Windows legs deferred to peer-harness milestone.
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
 #     trailing `# vX.Y.Z` comments for humans.
 #   - permissions: contents: read at the workflow level; no job
@@ -52,15 +56,18 @@ jobs:
     # so the prior fork/LFG cost-opt split (which kept macOS off LFG)
     # no longer applies.
     #
-    # Active legs (4):
+    # Active legs (3):
     #   - macos-26          macOS 26, Apple Silicon M1 (3 CPU, 7 GB)
     #   - ubuntu-24.04      Ubuntu 24.04 LTS x64 (4 CPU, 16 GB)
-    #   - ubuntu-slim       Ubuntu slim x64 (1 CPU, 5 GB) — tight
-    #                       memory envelope; watch `dotnet build`
-    #                       OOM on warm cache misses. Fall-back
-    #                       plan if flaky: drop from matrix and
-    #                       surface as nightly-only.
     #   - ubuntu-24.04-arm  Ubuntu 24.04 LTS arm64 (4 CPU, 16 GB)
+    #
+    # Not a fit: `ubuntu-slim` (1 vCPU, 5 GB RAM, hard 15-minute job
+    # timeout per GitHub's runner reference, GA'd 2026-01-22). The
+    # full `dotnet build` + `dotnet test` on Zeta.sln does not fit
+    # that envelope — single-CPU runners are intended for lightweight
+    # automation, not heavyweight CI gates. Excluded from the matrix
+    # entirely. Reference:
+    # https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
     #
     # Deferred legs (commented, enable when Windows peer-harness
     # milestone ships — maintainer's Windows machine available for
@@ -83,7 +90,6 @@ jobs:
         os:
           - macos-26
           - ubuntu-24.04
-          - ubuntu-slim
           - ubuntu-24.04-arm
           # Deferred until Windows peer-harness milestone:
           # - windows-2025

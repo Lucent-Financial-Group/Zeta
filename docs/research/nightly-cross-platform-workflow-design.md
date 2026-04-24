@@ -6,11 +6,12 @@ standard GitHub-hosted runners are free for public
 repositories, so the macOS-pricing concern that drove
 the "scheduled, not per-PR" design no longer applies.
 `gate.yml` runs the full active matrix per-PR (macos-26,
-ubuntu-24.04, ubuntu-slim, ubuntu-24.04-arm) with
-Windows deferred to the peer-agent milestone. See the
-CI matrix PR on main. This doc is preserved for the
-reasoning trail; do not revive it without re-evaluating
-the free-runner-for-public-repos pricing context.
+ubuntu-24.04, ubuntu-24.04-arm) with Windows deferred
+to the peer-agent milestone. See the CI matrix PR
+[Lucent-Financial-Group/Zeta#375](https://github.com/Lucent-Financial-Group/Zeta/pull/375).
+This doc is preserved for the reasoning trail; do not
+revive it without re-evaluating the free-runner-for-
+public-repos pricing context.
 
 **Original status:** research-grade proposal (pre-v1). Scope:
 design-only — no workflow file lands with this doc; the
