@@ -5604,6 +5604,40 @@ systems. This track claims the space.
   prose. Companion feedback memory captures the original
   human-maintainer framing.
 
+- [ ] **Land an explicit list of history-class files
+  (carve-out registry).** Maintainer 2026-04-24 directive
+  triggered by PR #375 thread on `docs/pr-preservation/375-drain-log.md`:
+  *"first names are fine in history like files is this a
+  history like file / make sure to add an explicit list of
+  history files including this one now somewhere backlog"*.
+  The "No name attribution in code, docs, or skills" rule
+  in `docs/AGENT-BEST-PRACTICES.md` (around BP-284) carves
+  out history files but the carve-out has no enumeration —
+  reviewer bots (and fresh-session subagents) cannot
+  mechanically tell whether a given file qualifies, which
+  produced the false-positive on #375. Scope: (1) add an
+  explicit list under the rule body in
+  `docs/AGENT-BEST-PRACTICES.md` enumerating the
+  history-class roots —
+  `docs/hygiene-history/**`,
+  `docs/ROUND-HISTORY.md`,
+  `docs/DECISIONS/**`,
+  `docs/pr-preservation/**` (Otto-250 PR-preservation),
+  `docs/aurora/**` (verbatim ferry absorbs),
+  `docs/research/**` (verbatim research absorbs),
+  `memory/**` (per-fact memory entries with provenance);
+  (2) add the same enumerated list to
+  `docs/FACTORY-DISCIPLINE.md` so subagents reading the
+  agent-visible rule index see it; (3) add a one-line
+  decision rule for ambiguous future files
+  ("the file's purpose IS the audit trail" → history-class).
+  Priority P2 hygiene; effort S (single-PR doc edit
+  across two files). Composes with Otto-237 IP-discipline
+  adoption-vs-mention (registries need specifics to be
+  enforceable) and Otto-250 PR-preservation
+  (`docs/pr-preservation/**` is the new history-class
+  member that triggered this).
+
 - [ ] **Tier the missing-file search-surfaces list by
   usefulness.** PR #391 landed an organized-by-class list
   in `docs/FACTORY-DISCIPLINE.md` (six classes: in-tree /
