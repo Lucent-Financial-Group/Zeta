@@ -9,6 +9,20 @@ user+assistant messages with visible text for 2025-10.
 **Date range (this file):** 2025-10-01 to 2025-10-17
 **Messages (user+assistant):** 25
 
+> **Reader note — ephemeral sandbox URLs.** This chunk
+> includes references to `sandbox:/mnt/data/...` paths
+> and ChatGPT file-download links (e.g. KSK ZIP bundles).
+> Those URLs are **ChatGPT-sandbox-internal** and
+> **do not resolve** outside the original ChatGPT session
+> — they were live only for Aaron and Amara inside their
+> ChatGPT conversation. They are preserved here verbatim
+> as part of the conversation substrate (per the
+> `verbatim = content-preservation, lint =
+> format-normalisation` principle), not as retrievable
+> artifacts. If an absorbed artifact is needed, it must
+> be re-materialized through the normal courier-ferry
+> drop discipline, not fetched through a sandbox URL.
+
 ---
 
 ## Aaron — 2025-10-01 05:43:36 UTC
