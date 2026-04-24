@@ -1,6 +1,6 @@
 # PR #375 — drain log
 
-Per Aaron directive 2026-04-24: maintain a per-thread record of
+Per human maintainer directive 2026-04-24: maintain a per-thread record of
 reviewer comments, outcomes, and replies for every drain pass on
 this PR so the audit trail survives the `resolveReviewThread`
 mutation that hides threads from default GitHub UI views.
