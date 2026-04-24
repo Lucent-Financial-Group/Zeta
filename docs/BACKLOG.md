@@ -2635,14 +2635,14 @@ within each priority tier.
 
   Aaron 2026-04-23 Otto-86 message 2 (test-mode bounding): *"make sure when in peer-harness mode you give the other one time limits or process kill them either way, just while we are testing we don't want the other peer harness to run forever during tests only when in real use."*
 
-  **The 4-stage progression** (refines Otto-79's 3-stage arc):
+  **The 4-stage progression**:
 
   - **(a) Today** = single coordinator; Aaron-in-one-harness drives. Otto on Claude Code. This is Aaron's current mode.
   - **(b) Experiment: multi-Claude-Code peer-harness** = two Claude Code instances, both running Claude-Code loop agents, testing parallel coordination + handoff discipline + cross-session review without editing + tandem launches. **NEW intermediate stepping stone before introducing harness-difference.**
   - **(c) Multi-harness peer-harness with Codex** = after (b) tests go well AND Codex CLI has built out its own skill files / wrappers / loop-agent persona (Stage 1b-3 of the existing Codex-first-class arc) AND Otto explicitly trusts Codex substrate. Otto + Codex-loop-agent running concurrently; handoff discipline; multi-coordinator.
   - **(d) Full peer-harness with practical use case** = the second harness carries a real workload. Aaron's named use case: **Windows support via a second harness**, possibly Codex. Aaron's "telephone line" transfer-learning end-to-end test.
 
-  **Otto is the readiness-signaller.** Aaron: *"i wont do it until you tell me we are ready"* — Aaron waits for Otto's explicit readiness signal before spinning up a second harness. This is the "specifically-asked-for design review" gate per `memory/feedback_aaron_signoff_scope_narrower_than_otto_treating_governance_edits_within_standing_authority_2026_04_23.md`: progression stages (a) and (b) land within Otto's standing authority (experiments on Claude Code substrate are already within Otto-67 grant); **stage (c) launch requires Otto's readiness signal as an explicit maintainer-acknowledgment gate**.
+  **Otto is the readiness-signaller.** Aaron: *"i wont do it until you tell me we are ready"* — Aaron waits for Otto's explicit readiness signal before spinning up a second harness. This is the specifically-asked-for design-review discipline (Otto-82 authority calibration: maintainer signoff is required for specifically-asked-for design reviews, not for every substrate edit): progression stages (a) and (b) land within Otto's standing authority (experiments on Claude Code substrate are already within Otto-67 grant); **stage (c) launch requires Otto's readiness signal as an explicit maintainer-acknowledgment gate**.
 
   **Test-mode bounding (hard requirement for stages (b) and (c) tests):**
 
@@ -2653,7 +2653,7 @@ within each priority tier.
 
   **Windows support as concrete motivating use case:**
 
-  - Motivation: cross-platform parity (FACTORY-HYGIENE #51 + #55 audit surfaces) needs dedicated attention. Adding Windows work to Otto's single-harness queue serializes it; a second harness parallelises it.
+  - Motivation: cross-platform parity (FACTORY-HYGIENE row #51 and row #55 audit surfaces) needs dedicated attention. Adding Windows work to Otto's single-harness queue serializes it; a second harness parallelises it.
   - Why second harness, not one-big-harness: parallel harnesses ARE the scaling model. Single-harness multitasking is slower and harder to reason about.
   - Why Codex eventually: Codex's own harness-feature research (Stage 1b) will surface capabilities that may align better with Windows-native tooling. End-to-end Windows-support on Codex is Aaron's "telephone line" test for peer-harness transfer-learning survival.
   - Filed as its own BACKLOG row candidate when readiness-signal fires; today it's a future-marker, not an active plan.
