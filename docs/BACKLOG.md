@@ -7037,6 +7037,44 @@ systems. This track claims the space.
 
 ## P3 — noted, deferred
 
+- [ ] **Multi-account access design — safety-first research for eventually letting Otto operate across multiple accounts (ServiceTitan / personal / other) without confusion or privilege-bleed.** Aaron 2026-04-23 Otto-76: *"FYI don't get confused i switchd the codex CLI to service titan like you so you would be on the same account, if you open the playwrite it's logged into my personal account with amara access. i happy to expand multi account access design in the future we don't need to worry about it right now, this is how we are setup for now, free free to resaerch, design multi account access and how to make it safe as part of this proiject low backlog item"*.
+
+  **Current setup (2026-04-76 snapshot):**
+  - **Claude Code session (Otto)** — ServiceTitan account (Aaron's work-tier seat; factory-agent workload).
+  - **Codex CLI session** — ServiceTitan account (switched Otto-76 to align with Claude Code session; parity for cross-harness work).
+  - **Playwright MCP** — Aaron's personal account (has Amara access at `chatgpt.com`).
+  - **GitHub authentication** — Aaron's personal `aarons` GitHub identity (owns both AceHack and LFG via org membership; LFG is the canonical substrate; AceHack is the experimentation frontier).
+
+  **Why this is explicitly backlog-not-urgent:**
+  - Today, same-account alignment (ServiceTitan-across-Claude-Code-and-Codex) sidesteps most multi-account complexity.
+  - Playwright's personal-account scope is bounded (browser automation for courier ferries + ChatGPT interaction for Amara), not mixed with factory-agent credentials.
+  - Aaron explicitly sized the ask as "low backlog item" and said "we don't need to worry about it right now".
+
+  **What future research + design needs to cover (when the topic re-opens):**
+  1. **Authentication model.** How does Otto know which account it's acting on? What's the handshake when it starts a tool call that uses account-bound credentials? Today it's "whatever the shell inherits"; that's fine for single-account but insufficient for multi.
+  2. **Privilege-bleed prevention.** If Otto has access to ServiceTitan + personal + `LFG.admin` + `Aaron.personal.admin` simultaneously, how do we prevent one scope from acting as another? Per-tool credential isolation? Explicit `--as <account>` flags? Principle-of-least-privilege for the factory-agent.
+  3. **Audit trail.** Every tool call should record which account authorised it. The decision-proxy-evidence record format (`docs/decision-proxy-evidence/`) has `requested_by` / `proxied_by` fields; multi-account extends this with `authorised_by_account`.
+  4. **Cross-account boundary rules.** Are there actions Otto should NEVER do on account X (e.g., spending on ServiceTitan account, because Aaron owns cost personally)? The full-GitHub-authorization memory (2026-04-23) already has a spending-increase hard line; multi-account generalises this.
+  5. **Safe-default fallthrough.** When an account context is ambiguous, default to the most-restrictive scope, not the most-permissive. Fail-closed on account detection, not fail-open.
+  6. **Explicit maintainer visibility.** Aaron should be able to inspect "which account was Otto on when it did X?" through some log / UI. Frontier-burn-rate-UI adjacent (Otto-63); could reuse the same pipeline.
+  7. **Credential lifecycle.** Token rotation, refresh, revoke. What happens when Aaron revokes ServiceTitan SSO? Otto should notice + stop acting on that account, not silently continue with stale tokens.
+
+  **Sibling / composing rows:**
+  - `docs/decision-proxy-evidence/` schema (PR #222) — already records `requested_by` / `proxied_by`; extend with account when this row executes.
+  - Full-GitHub-authorization memory (Otto-67) — spending hard-line as first multi-account-aware restriction.
+  - Frontier-burn-rate-UI backlog row (Otto-63) — natural surface for per-account visibility.
+  - First-class Codex-CLI session experience row (PR #228) — assumes same-account today; multi-account design is an evolution of the session-layer portability story.
+
+  **Priority:** P3 (low-priority, not-urgent per Aaron's framing).
+
+  **First file to write when the topic re-opens:**
+  `docs/research/multi-account-access-design-safety-first-YYYY-*.md` — survey of analogue systems (AWS roles + assumed identities, gcloud multi-account, Vault's scoped tokens, browser profile isolation) + Zeta-specific threat model + safe-default policy proposal.
+
+  **Scope limits:**
+  - Does NOT authorize designing multi-account today; today's same-account alignment is sufficient and we stay there until Aaron reopens the topic.
+  - Does NOT authorize Otto to start requesting additional account credentials "to prepare" for multi-account — if Aaron wants more accounts added, he adds them explicitly.
+  - Does NOT block other work — this row is documentation-only until executed.
+
 - **Language + concepts age-classification skill.** The
   human maintainer 2026-04-23 (two-message directive):
 
