@@ -1384,7 +1384,7 @@ within each priority tier.
   in .codes or yall can neotiage and maybe the coudl go root
   /skills except for the few special files"* + *"it shold fee
   connonical to them too"*. **Occurrence-1 anchor published:**
-  `docs/research/codex-cli-self-report-2026-04-22.md` (162-line
+  `docs/research/codex-cli-self-report-2026-04-22.md` (160-line
   Codex-authored self-introspection with Claude-orchestrator-
   added cognition-level frontmatter; model=gpt-5.4,
   model_reasoning_effort=xhigh, sandbox=workspace-write). The
