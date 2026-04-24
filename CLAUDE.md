@@ -85,7 +85,9 @@ These are the knobs this repo actually uses:
   **Fast-path on wake:** read any
   `CURRENT-<maintainer>.md` files (one per human or
   external-AI maintainer; filename uses a role-ref
-  per BP-284, not a real name) in
+  placeholder per the "No name attribution in code,
+  docs, or skills" rule in
+  `docs/AGENT-BEST-PRACTICES.md`, not a real name) in
   `~/.claude/projects/<slug>/memory/` *before* the
   raw `feedback_*.md` / `project_*.md` log. CURRENT
   files are the distilled currently-in-force
