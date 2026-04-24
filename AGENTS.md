@@ -198,6 +198,29 @@ These apply to any AI harness.
   workflow at `docs/DECISIONS/YYYY-MM-DD-*.md`
   rather than burying the rationale in a commit
   message.
+- When an agent ingests an external conversation —
+  courier ferry, cross-AI review, ChatGPT paste,
+  other-harness transcript — the absorb lands
+  research-grade, not operational. Concretely:
+  the absorb doc carries `GOVERNANCE.md §33`
+  archive headers including
+  `Operational status: research-grade`, and its
+  content does not become factory policy until a
+  separate promotion step lands a current-state
+  artifact (an operational doc edited in place per
+  §2, an ADR under `docs/DECISIONS/`, a
+  `GOVERNANCE.md §N` numbered rule, or a
+  `docs/AGENT-BEST-PRACTICES.md` BP-NN promotion).
+  §26's research-doc lifecycle classifier
+  (active / landed / obsolete) applies to the
+  promoted current-state artifact, not to the
+  absorb itself. Worked example: the drift-taxonomy
+  promotion from
+  `docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`
+  (research-grade absorb) to
+  `docs/DRIFT-TAXONOMY.md` (operational one-page
+  field guide) — the absorb stayed in-place as
+  provenance; the promotion is the ratification.
 
 ## Build and test gate
 
