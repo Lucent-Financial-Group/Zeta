@@ -14,11 +14,30 @@ open System
 /// downstream detectors can compose both and catch cartels that
 /// flatten one register while preserving the other.
 ///
-/// All entry points return `Option`-wrapped values rather than
-/// sentinels; `None` means the input did not satisfy the math
-/// (empty, length-mismatched, degenerate-variance, or zero-
-/// magnitude mean vector). Silent truncation or nan-propagation
-/// would invite subtle detection bugs downstream.
+/// Two return-shape families live here:
+///
+/// * Single-value primitives — `crossCorrelation`,
+///   `phaseLockingValue`, `meanPhaseOffset`,
+///   `phaseLockingWithOffset` — return `Option`-wrapped values.
+///   `None` means the input could not satisfy the math (details
+///   per function; covers empty, length-mismatched where the
+///   function requires equal length, degenerate-variance, and
+///   zero-magnitude mean vector). Silent nan-propagation would
+///   invite subtle detection bugs downstream, so these primitives
+///   refuse rather than fabricate.
+/// * Profile / array primitives — `crossCorrelationProfile`,
+///   `significantLags`, `burstAlignment` — return plain arrays.
+///   Per-element defined-ness is carried inside each element
+///   (the `double option` slot in a profile entry; absence from
+///   the significant-lags list).
+///
+/// Note on length semantics: `crossCorrelation` tolerates
+/// mismatched lengths — it computes over the overlap window at
+/// the given lag and returns `None` only when that window is
+/// too short or has zero variance. The phase-pair primitives
+/// (`phaseLockingValue`, `meanPhaseOffset`,
+/// `phaseLockingWithOffset`) require equal lengths and return
+/// `None` otherwise.
 [<AutoOpen>]
 module TemporalCoordinationDetection =
 
@@ -142,7 +161,8 @@ module TemporalCoordinationDetection =
 
     /// **Mean phase offset between two phase series** — the
     /// argument (angle) of the same mean complex phase-difference
-    /// vector whose magnitude is `phaseLockingValue`. Returns a
+    /// vector whose magnitude is the PLV (i.e. the value returned
+    /// by `phaseLockingValue` on the same inputs). Returns a
     /// value in `[-pi, pi]` (the full `System.Math.Atan2` range,
     /// which includes both endpoints under IEEE-754 signed-zero
     /// semantics) when defined, or `None` when input sequences are
