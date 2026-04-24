@@ -526,3 +526,58 @@ module Graph =
             let modularityShift = qAttacked - qBaseline
             Some (alpha * spectralGrowth + beta * modularityShift)
         | _ -> None
+
+    /// **Robust-z-score variant of coordinationRiskScore.**
+    ///
+    /// Upgrades the MVP composite from raw linear differences
+    /// (per PR #328) to robust standardized scores per Amara
+    /// 17th-ferry correction #4 (robust statistics for
+    /// adversarial data).
+    ///
+    /// Formula:
+    /// ```
+    ///   risk = alpha * Z(λ₁_attacked; baselineLambdas)
+    ///        + beta  * Z(Q_attacked;  baselineQs)
+    /// ```
+    /// where `Z(x; baseline) = (x - median(baseline)) /
+    /// (1.4826 * MAD(baseline))`.
+    ///
+    /// Caller provides `baselineLambdas` + `baselineQs` — arrays
+    /// of metric values computed across many known-null
+    /// baseline samples. The distributions calibrate thresholds
+    /// from data rather than hard-coding them.
+    ///
+    /// Returns `None` when any underlying computation is
+    /// undefined (empty baselines, iteration failure, etc.).
+    ///
+    /// Future expansion: the full 6-term CoordinationRiskScore
+    /// from Amara's 17th ferry adds Sync_S + Exclusivity_S +
+    /// Influence_S terms. This MVP covers λ₁ + Q — the two
+    /// signals with shipped primitives. Additional terms land
+    /// as their primitives mature.
+    ///
+    /// Provenance: Amara 17th-ferry Part 2 correction #4
+    /// (robust z-scores for adversarial data) + corrected
+    /// composite-score formula. Otto 18th graduation.
+    let coordinationRiskScoreRobust
+            (alpha: double)
+            (beta: double)
+            (eigenTol: double)
+            (eigenIter: int)
+            (lpIter: int)
+            (baselineLambdas: double seq)
+            (baselineQs: double seq)
+            (attacked: Graph<'N>)
+            : double option =
+        match largestEigenvalue eigenTol eigenIter attacked with
+        | None -> None
+        | Some lambdaAttacked ->
+            let partition = labelPropagation lpIter attacked
+            match modularityScore partition attacked with
+            | None -> None
+            | Some qAttacked ->
+                match RobustStats.robustZScore baselineLambdas lambdaAttacked,
+                      RobustStats.robustZScore baselineQs qAttacked with
+                | Some zLambda, Some zQ ->
+                    Some (alpha * zLambda + beta * zQ)
+                | _ -> None

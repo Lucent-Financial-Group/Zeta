@@ -100,3 +100,39 @@ module RobustStats =
                     let threshold = 3.0 * max d MadFloor
                     let kept = arr |> Array.filter (fun x -> abs (x - m) <= threshold)
                     median kept
+
+    /// **Robust z-score.** Given a `baseline` distribution
+    /// and a `measurement`, return
+    /// `(measurement - median(baseline)) / (1.4826 * MAD(baseline))`.
+    /// The 1.4826 constant scales MAD to be consistent with
+    /// the standard deviation of a normal distribution (so
+    /// robust z-scores are directly comparable to ordinary
+    /// z-scores when the baseline actually IS normal).
+    ///
+    /// Returns `None` when the baseline is empty or when
+    /// `MAD(baseline) = 0` (every baseline value identical —
+    /// no scale to standardize against, except for floor-
+    /// protection via `MadFloor`). When MAD collapses to zero,
+    /// the floor is used so the function returns a defined
+    /// value rather than infinity.
+    ///
+    /// Why robust z-scores for adversarial data: ordinary
+    /// z-scores assume Gaussian baseline; an attacker can
+    /// poison a ~normal distribution by adding a few outliers
+    /// that inflate the standard deviation, making subsequent
+    /// real attacks look "within one sigma" and evade
+    /// detection. Median+MAD survives ~50% adversarial
+    /// outliers.
+    ///
+    /// Provenance: Amara 17th-ferry Part 2 correction #4
+    /// (robust statistics for adversarial data in
+    /// CoordinationRiskScore composition).
+    let robustZScore (baseline: double seq) (measurement: double) : double option =
+        match median baseline with
+        | None -> None
+        | Some med ->
+            match mad baseline with
+            | None -> None
+            | Some m ->
+                let scale = 1.4826 * max m MadFloor
+                Some ((measurement - med) / scale)
