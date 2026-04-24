@@ -55,17 +55,20 @@ Response should assume the user wants ideas around journaling and produce severa
 ## Naming and Positioning
 
 For naming tasks:
+
 - Generate names in clusters: clear, evocative, playful, premium, and weird.
 - Include a one-line rationale for the strongest 3 names.
 - Do not claim domain or trademark availability unless specifically checked with an external tool.
 
 For positioning tasks:
+
 - Write one plain-English positioning sentence.
 - Then write three variants: practical, emotional, and punchy.
 
 ## Experiments
 
 When the idea needs validation, use the tiny experiment template from `references/idea-patterns.md`:
+
 - Hypothesis
 - Setup
 - Success signal
