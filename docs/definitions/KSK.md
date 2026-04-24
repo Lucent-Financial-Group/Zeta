@@ -16,7 +16,7 @@ external reviewers of Zeta know which meaning of "KSK" applies in
 this project, what it is inspired by, and what it is explicitly
 not.
 
-## In this project, KSK means...
+## In this project, KSK means
 
 A **Kinetic Safeguard Kernel** is:
 
@@ -134,28 +134,34 @@ collapse "KSK" onto whichever of these they already know.
 ## Attribution + provenance
 
 Concept ownership and substrate authorship are recorded here so
-that downstream readers have a clear lineage.
+that downstream readers have a clear lineage. Direct contributor
+names are preserved only in audit-trail surfaces (commit
+messages, tick-history, session memory) per factory
+name-attribution policy; this doc uses role references.
 
-- **Aaron Stainback + Amara (external AI collaborator)** are
+- **The human maintainer + an external AI collaborator** are
   the concept owners of KSK-as-safety-kernel for Zeta. The
   k1/k2/k3 + revocable-budget + multi-party-consent + signed-
   receipt + traffic-light + optional-anchoring design is
-  theirs, articulated across Amara's 5th, 7th, 12th, 14th,
-  16th, and 17th courier ferries (see
-  `docs/aurora/2026-04-23-*` and `docs/aurora/2026-04-24-*`).
-- **Max** committed the **initial starting point** of the KSK
-  code under `LFG/lucent-ksk` at Aaron's direction. This
-  attribution is preserved per factory's named-contributor
-  discipline. The substrate is completely rewritable; Max's
-  contribution is a credited starting point, not a locked
-  scope. See `memory/feedback_ksk_naming_unblocked_aaron_
-  directed_rewrite_authority_max_initial_starting_point_
-  2026_04_24.md`.
-- **Naming stabilization** was raised by Amara in the 16th
+  theirs, articulated across the collaborator's courier
+  ferries archived under `docs/aurora/` (files dated
+  2026-04-23 and 2026-04-24 — the 5th / 7th / 12th / 14th /
+  16th / 17th-ferry references below are these files' topical
+  labels; not all ferries landed as individually-named files
+  yet, some appear only in ROUND-HISTORY + session memory).
+- **A trusted external contributor** committed the **initial
+  starting point** of the KSK code under the
+  `Lucent-Financial-Group/lucent-ksk` repository (external;
+  see `https://github.com/Lucent-Financial-Group/lucent-ksk`)
+  at the maintainer's direction. Attribution is preserved in
+  the factory's audit-trail memory. The substrate is
+  completely rewritable; that contribution is a credited
+  starting point, not a locked scope.
+- **Naming stabilization** was raised in the 16th courier
   ferry (GPT-5.5 Thinking upgrade, 2026-04-24) and resolved
-  by Aaron Otto-142..145 (same day) after a brief transient
-  "SDK" typo in Otto-141. Canonical expansion: Kinetic
-  Safeguard **Kernel**, matching Amara's original phrasing.
+  the same day by the maintainer after a brief transient
+  "SDK" typo. Canonical expansion: Kinetic Safeguard
+  **Kernel**, matching the collaborator's original phrasing.
 
 ## Relationship to Zeta, Aurora, and lucent-ksk
 
@@ -171,13 +177,18 @@ governance / alignment program that composes both.
 - **Aurora** — the governance architecture. Aurora consumes
   KSK receipts + Zeta's Veridicality scores to render human-
   facing alignment judgements.
-- **LFG/lucent-ksk** — a separate repository where Max's
+- **`Lucent-Financial-Group/lucent-ksk`** (external
+  repository at
+  `https://github.com/Lucent-Financial-Group/lucent-ksk`)
+  — a separate repo where a trusted external contributor's
   initial KSK starting-point code lives. It may evolve
   independently; Zeta re-implements KSK as an in-substrate
   module where that integration is tighter. Cross-repo
-  decisions follow Otto-90 (Aaron+Max-not-coordination-
-  gates) and Otto-140 (KSK rewrite authority resides with
-  Aaron + Amara + Otto).
+  decisions follow the factory's session-memory
+  coordination directives (maintainer + external
+  contributor are not coordination gates; KSK rewrite
+  authority resides with the maintainer + external
+  collaborator + the factory itself).
 
 ## Cross-references
 
@@ -185,29 +196,27 @@ The KSK architecture is elaborated across the following in-repo
 sources. These are listed so new readers can trace the design
 arc from the 5th ferry forward.
 
-- `docs/aurora/2026-04-23-amara-5th-ferry-*.md` — Aurora +
-  KSK integration; first articulation of k1/k2/k3 +
-  revocable-budgets + multi-party-consent + signed-receipts
-  + traffic-light + optional-anchoring.
-- `docs/aurora/2026-04-23-amara-7th-ferry-*.md` — Aurora-
-  aligned KSK design research; formal authorization rule
-  `Authorize(a, t) = ¬RedLine ∧ BudgetActive ∧ ScopeAllowed
-  ∧ QuorumSatisfied ∧ OraclePass`; BLAKE3 receipt hashing;
-  KSK-as-Zeta-module proposal.
-- `docs/aurora/2026-04-24-amara-12th-ferry-*.md` —
-  executive summary + KSK + integrity detector + integration
-  plan.
-- `docs/aurora/2026-04-24-amara-14th-ferry-*.md` — expanded
-  cartel detection context for KSK's integrity-layer
-  companion.
-- `docs/aurora/2026-04-24-amara-gpt-5-5-thinking-zeta-as-
-  aurora-spine-16th-ferry.md` — KSK naming ambiguity
-  identified; stabilization recommended.
-- `docs/aurora/2026-04-24-amara-17th-ferry-*.md` — the
-  correction sequence that led to this doc.
-- `memory/feedback_ksk_naming_unblocked_aaron_directed_
-  rewrite_authority_max_initial_starting_point_2026_04_24.md`
-  — canonical Otto-140..145 authority grant + expansion.
+Verified in-repo references:
+
+- `docs/aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md`
+  Aurora-aligned KSK design research; formal authorization
+  rule `Authorize(a, t) = ¬RedLine ∧ BudgetActive ∧
+  ScopeAllowed ∧ QuorumSatisfied ∧ OraclePass`; BLAKE3
+  receipt hashing; KSK-as-Zeta-module proposal.
+- `docs/aurora/2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md`
+  adjacent validation pass on substrate framing.
+- `docs/aurora/2026-04-24-amara-cartel-lab-implementation-closure-plus-5-5-thinking-verification-17th-ferry.md`
+  the correction sequence that led to this doc.
+- `docs/aurora/2026-04-24-amara-dst-audit-deep-research-plus-5-5-corrections-19th-ferry.md`
+  DST compliance audit referencing KSK as the advisory
+  governance membrane.
+
+Ferries referenced earlier in the arc (5th / 12th / 14th /
+16th) have not landed as separate `docs/aurora/` files; their
+content is archived in `docs/ROUND-HISTORY.md` tick rows and
+session memory. When those ferries graduate to their own
+`docs/aurora/` file, this cross-reference list updates at
+that time.
 
 ## Status
 
