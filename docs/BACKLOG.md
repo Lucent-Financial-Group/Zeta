@@ -1302,11 +1302,11 @@ within each priority tier.
   mapping row (Star Citizen thematic research row
   filed in PR #351; landed on main). Waits on Zeta
   multi-node foundation (currently unshipped; prior
-  Amara ferries referencing the multi-node future are
-  archived under `docs/aurora/2026-04-24-amara-*.md`
-  — the 11th-ferry-Temporal-Coordination-Detection +
-  12th-ferry-Executive-Summary cross-references are
-  the relevant priors).
+  Amara ferries referencing the multi-node future (the
+  11th-ferry-Temporal-Coordination-Detection + 12th-
+  ferry-Executive-Summary cross-references) are the
+  relevant priors; both are pending absorb (not yet
+  landed under `docs/aurora/`).
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
