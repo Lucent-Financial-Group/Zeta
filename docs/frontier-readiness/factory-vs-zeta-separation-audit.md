@@ -765,9 +765,8 @@ term entries (IVM, DBSP, Z-set, retraction, Spine, etc.)
 are Zeta-library-specific content.
 
 **File location post-split:** Frontier (format + preamble
-
-+ the-rule-for-this-file + "spec has two meanings" framing
-pattern); Zeta retains specific term entries.
+plus the-rule-for-this-file and "spec has two meanings"
+framing pattern); Zeta retains specific term entries.
 
 **Length:** approximately 840 lines. Large vocabulary.
 
@@ -887,10 +886,16 @@ Effort: **S**.
 | zeta-library-specific | 4 | ROUND-HISTORY, BACKLOG, ROADMAP, VISION |
 
 Total: 5 + 6 + 4 = **15** top-level files audited out of
-~16. Remaining: the `.claude/skills/**` + `.claude/agents/**`
-
-+ `openspec/**` + `tools/**` + `.github/**` directory-level
+~16. Remaining: the `.claude/skills/**`, `.claude/agents/**`,
+`openspec/**`, `tools/**`, and `.github/**` directory-level
 surfaces (each a multi-file audit).
+
+**Note on cross-PR audits:** Three of the 15 audits (ALIGNMENT,
+TECH-RADAR, FACTORY-HYGIENE) land in sibling PRs (#185, #188)
+rather than this file; tracking is via the "Files audited"
+list above (line-item pointers to each PR). The classification
+counts in this summary assume those PRs merge; if they close
+without merging, this summary should be refreshed.
 
 ## How this audit connects to the multi-repo split
 
