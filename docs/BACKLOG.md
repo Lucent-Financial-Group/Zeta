@@ -4275,6 +4275,71 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Frontier plugin inventory + in-source discipline — catalogue the plugins Zeta's factory needs for the Frontier UI + substrate (both `.claude-plugin/` and `.codex-plugin/`), restructure around the new skill-vs-plugin best practices, and enforce that all plugins land in-source rather than in harness-local sandboxes.** Aaron 2026-04-24 Otto-103 directive: *"we should backlog what plugins we need for frontier, seems like a big opportunity to restruture for new best practices and everyting else, we also wanna make sure our plugins are making it into source and not some harness sandbox. backlog."*
+
+  **Context.** After session restart Aaron flagged five Codex built-in skills (Image Gen / OpenAI Docs / Plugin Creator / Skill Creator / Skill Installer) + asked Otto to figure out skills-vs-plugins distinction. Otto-103 research (PR #290, `docs/research/codex-builtins-skills-vs-plugins-factory-integration-2026-04-24.md`) established: **plugin = distribution/installation unit (JSON manifest + bundle); skill = single capability unit (SKILL.md)**. Plugins are containers; skills are contents. This row goes further — catalogue what plugins the factory itself needs.
+
+  **Aaron Otto-103 refinement (same tick as the `backlog` directive):** *"the plugins are probabaly just some sort of continer of our exsiting skills based on some orginalizaion groups but i don't really know you can reasarsh and do whatever is best if there are best practices see if there is a open ai plugin guide or anthropic plugin design guide, we should map it out well and if there are not best practices we will define them lol."* This refinement (a) confirms the container-of-skills framing from Otto-103 research, (b) explicitly authorises web-research on OpenAI + Anthropic plugin-design guides as Phase 1 input, and (c) gives Otto permission to DEFINE best practices (factory-level ADR) if upstream guidance is thin. Research phase MUST cite upstream guides where they exist and propose-a-standard-for-debate where they don't — cross-reference Claude Code + Codex official docs, `openai/skills` repo, Anthropic developer platform, any OWASP / NIST plugin-security norms, and the skill-vs-plugin conclusions from Otto-103.
+
+  **The in-source-not-sandbox discipline (hard requirement).**
+
+  Harness-local plugin caches — `~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/` for Claude Code, Codex's equivalents — are per-user / per-machine ephemeral state. Aaron's directive: **Zeta-authored plugins live in the Zeta repo**, not in those caches. Concrete implications:
+
+  1. Any plugin the factory authors + maintains must have its manifest (`.claude-plugin/plugin.json` or `.codex-plugin/plugin.json`) + its bundle contents (`skills/**`, `commands/**`, `agents/**`, `.mcp.json`, `.app.json`) checked into the Zeta repo.
+  2. Enabling a factory-authored plugin via `~/.claude/settings.json` `enabledPlugins` or the Codex marketplace pointing at the repo counts as in-source discipline — the manifest + bundle MUST be in the repo, not just the enable-row.
+  3. Third-party plugins consumed by the factory (e.g., the Anthropic-distributed ones Zeta currently has enabled in `.claude/settings.json`) STAY third-party-source; this discipline is about factory-AUTHORED plugins.
+  4. A migration path exists for any factory-authored content currently living only in a harness-local sandbox: move it to `.claude/skills/**` + `.claude-plugin/plugin.json` (or `.codex/skills/**` + `.codex-plugin/plugin.json`) and open a PR.
+
+  **Candidate plugin inventory for the factory.**
+
+  This row intentionally does NOT pre-commit to what plugins should exist — that's the research + Aaron-review part. Initial candidates to research:
+
+  1. **`zeta-codex-plugin`** (the Otto-103 A/B/C question). In-tree manifest at `.codex-plugin/plugin.json` pointing at existing `.codex/skills/**` (Option B from Otto-103) is the likely shape if we ship this. Aaron's call per Otto-103 specific-ask.
+  2. **`zeta-claude-plugin`** (parallel for Claude Code). Currently Zeta's `.claude/skills/**` is unbundled; a `.claude-plugin/plugin.json` at repo root would make the skill suite installable as a single plugin. Useful for other projects that want to consume Zeta's skill library.
+  3. **`frontier-UI-plugin`** (speculative; ties to the Otto-63 Frontier burn-rate-UI row). Plugin that surfaces Zeta's factory state (tick-history / memory-index / alignment-trajectory-plot / PR-queue-health) to the Frontier UI surface. Requires the Frontier UI to exist first; not a near-term deliverable.
+  4. **`zeta-decision-proxy-plugin`** (PR #222 decision-proxy-evidence schema). Plugin exposing the `docs/decision-proxy-evidence/` substrate as first-class tooling for any agent (Otto / future Codex Otto / Aminata / etc.) that needs to file evidence records.
+  5. **`zeta-drift-detector-plugin`** (future; depends on the provenance-aware-bullshit-detector implementation from 8th-ferry arc landing). Plugin wrapping SD-9 + DRIFT-TAXONOMY pattern 5 + citations-as-first-class + the bullshit-detector. Would give any agent a `$drift-check` invocation.
+
+  **Research phase tasks (before any plugin lands):**
+
+  1. **Read `openai/skills` + `developers.openai.com/codex/plugins/build`** + Claude Code plugin docs + Anthropic plugin-design guide (if one exists) thoroughly — already partially done in Otto-103; expand. Per Aaron's Otto-103 refinement, if no authoritative guide exists on either side, Phase 1 proposes a factory-level best-practices ADR for debate. Cite upstream where it exists; propose-a-standard where it doesn't.
+  2. **Audit existing `.claude/skills/**` and `.codex/skills/**`** — classify each into "wants its own plugin", "belongs in an existing plugin", "stays as bare skill". Output: classification matrix.
+  3. **Map factory needs to plugin candidates.** Where does each of the 5 candidates above fit on the A/B/C axis (no-plugin / in-tree-manifest / separate-repo)?
+  4. **Discipline audit.** Survey whether any factory-authored content currently lives ONLY in a harness-local sandbox. If yes, file migration PRs.
+  5. **Best-practices restructure proposal.** Per Aaron's "big opportunity to restructure for new best practices and everything else" — what else should move to plugin-shape that's currently unstructured? ADR candidates for each.
+
+  **Phase gates (like PR #230 / PR #239 / PR #233 pattern):**
+
+  - **Phase 1 — design doc** (authorised, timing Otto's call): `docs/research/factory-plugin-inventory-and-restructure-plan-YYYY-*.md` with classification matrix + 5-candidate plugin inventory + best-practices-restructure proposal.
+  - **Phase 2 — Aminata threat-model pass** (BLOCKING): plugins as attack surface (supply-chain / permission-escalation / dependency-on-sandboxed-state); in-source discipline as compensating control.
+  - **Phase 3 — Aaron personal review** (BLOCKING): Aaron reviews design + picks the plugins to actually build + signs off on restructure scope. Aaron Otto-103: *"backlog"* = file-and-get-reviewed-later-at-Frontier-UI per Otto-72 pattern; Phase 3 gate is Aaron-specifically-asked-for-design-review per Otto-82 calibration.
+  - **Phase 4 — implementation** (gated on Phases 2+3): per-plugin PRs landing `.claude-plugin/plugin.json` / `.codex-plugin/plugin.json` manifests + bundle content + migration from any sandboxed locations + DP-NNN.yaml evidence records.
+  - **Phase 5 — enforcement** (long-term): CI check for "no factory-authored content in harness-local sandbox" (detect-only first, enforce later per the established Zeta hygiene pattern).
+
+  **Composes with:**
+
+  - **Otto-103 research (PR #290)** — skills-vs-plugins distinction established there is load-bearing here.
+  - **Otto-102 `.codex/skills/idea-spark` + `.codex/README.md`** — first concrete `.codex/**` content; this row considers whether it graduates into a plugin.
+  - **`.claude/skills/**` (~200 skills)** — largest factory-authored skill surface; classification matrix in Phase 1 decides how it gets plugin-wrapped (if at all).
+  - **`~/.claude/settings.json` `enabledPlugins`** — inspected via project settings; third-party plugin consumption separate from factory-authored output.
+  - **GOVERNANCE.md §4 skill-creator workflow** — skill authoring discipline; plugin authoring discipline is parallel.
+  - **Otto-63 Frontier burn-rate-UI** row — plugin #3 (`frontier-UI-plugin`) ties directly; dependent on Frontier UI existing.
+  - **Otto-79 cross-harness-edit-no** — each harness's plugins live in its own substrate (`.claude-plugin/` vs `.codex-plugin/`); factory discipline applies to both independently.
+
+  **Scope limits:**
+
+  - Does NOT commit to implementing any specific plugin today; Phase 1 design doc surfaces candidates, Phase 3 Aaron-review picks which to build.
+  - Does NOT override third-party-plugin consumption (still fine to enable Anthropic-distributed plugins via `enabledPlugins`).
+  - Does NOT force existing `.claude/skills/**` or `.codex/skills/**` into plugin-wrappers automatically; classification matrix decides case-by-case.
+  - Does NOT authorize deleting any existing harness-sandbox content before confirming factory-authored content has an in-source-repo home.
+  - Does NOT weaken GOVERNANCE.md §4 skill-creator workflow — plugins compose around skills, not replace them.
+
+  **First file to write (Phase 1):** `docs/research/factory-plugin-inventory-and-restructure-plan-YYYY-*.md`.
+
+  **Priority:** P2 — research-grade. Timing Otto's call; Aaron's review at Phase 3 gate per Otto-82 calibration.
+
+  **Effort:** M (Phase 1 design) + S (Phase 2 Aminata pass) + S (Phase 3 Aaron review cycle) + M-per-plugin (Phase 4 implementation, scaled by candidate count) + S (Phase 5 enforcement CI). Total medium-to-large; spread across multiple ticks / rounds.
+
 - [ ] **Otto acquires email — consolidation BACKLOG + phase-gate plan.** Aaron's named-agent-email-ownership directive (2026-04-23 Otto-76: *"for these email addresses they can be owned by the name agent and can be own by yall and freely even used in parallel if you can figure that out unrestricted casuse its your reputation, dont be a dick"*) crystallises prior standing substrate on agent email into an executable path. Four memory layers compose here:
 
   - **2026-04-20 four hard rules** (`memory/feedback_agent_sent_email_identity_and_recipient_ux.md`) — agents never use Aaron's address; disclose agent-not-human up-front; name project + why-you're-being-contacted; compose recipient-UX-first.
