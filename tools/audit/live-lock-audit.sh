@@ -53,8 +53,16 @@ lines=""
 
 while IFS= read -r sha; do
     [ -z "$sha" ] && continue
-    files=$(git show --stat --format="" "$sha" 2>/dev/null \
-        | awk 'NF>2 && !/^ +[0-9]+ file/ {print $1}')
+    # First-parent semantics on merge commits: a merge commit's
+    # "landing" content is what came in from the feature branch,
+    # not the union of both parents. Using `-m --first-parent`
+    # yields only the diff against parent 1 so merges classify by
+    # what they actually *introduced* to origin/main, preventing
+    # the `-m` union from pulling in files only on the other
+    # parent and inflating (or deflating) EXT/INTL/SPEC ratios
+    # (Codex P1 on PR #147).
+    files=$(git log -1 -m --first-parent --name-only --format= "$sha" 2>/dev/null \
+        | grep -v '^$' || true)
     subj=$(git log -1 --format="%s" "$sha" | cut -c1-72)
 
     src=$(printf '%s\n' "$files" | grep -cE "^(src/|tests/|samples/|bench/)" || true)

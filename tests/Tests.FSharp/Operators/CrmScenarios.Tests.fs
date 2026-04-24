@@ -6,7 +6,7 @@ open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
 
-// Scenario tests mirroring `samples/ServiceTitanCrm` but as xUnit
+// Scenario tests mirroring `samples/CrmSample` but as xUnit
 // assertions. Validates that Zeta's algebraic operations give the
 // correct CRM-shaped answers for each scenario in the demo. Lives
 // under Operators/ because each test exercises one or more operators

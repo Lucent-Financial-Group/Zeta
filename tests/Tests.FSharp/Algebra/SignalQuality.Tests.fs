@@ -11,8 +11,12 @@ open Zeta.Core
 // ═══════════════════════════════════════════════════════════════════
 
 [<Fact>]
-let ``compressionRatio on empty string returns neutral 0.5`` () =
-    SignalQuality.compressionRatio "" |> should (equalWithin 1e-9) 0.5
+let ``compressionRatio on empty string returns neutral 0.0`` () =
+    // Empty input short-circuits to 0.0 (neutral Pass) — the gzip
+    // header would otherwise dominate for any below-threshold input
+    // and deterministically score every short string as maximally
+    // suspicious. See `compressionMinInputBytes` docstring.
+    SignalQuality.compressionRatio "" |> should (equalWithin 1e-9) 0.0
 
 
 [<Fact>]
@@ -25,6 +29,9 @@ let ``compressionRatio on highly-repetitive text is low`` () =
 
 [<Fact>]
 let ``compressionRatio is clamped into the unit interval`` () =
+    // Short input (26 bytes < 64-byte threshold) short-circuits to
+    // 0.0; the invariant under test is the interval, which 0.0
+    // satisfies.
     let text = "abcdefghijklmnopqrstuvwxyz"
     let ratio = SignalQuality.compressionRatio text
     ratio |> should be (greaterThanOrEqualTo 0.0)

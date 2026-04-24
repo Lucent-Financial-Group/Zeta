@@ -150,45 +150,77 @@ module SignalQuality =
     // high ratio = noisy.
     // ───────────────────────────────────────────────────────────────
 
+    /// Minimum input length at which the gzip compression ratio
+    /// carries meaningful signal. Below this threshold the gzip
+    /// header + trailer overhead (~20 bytes) dominates the output
+    /// size and the ratio is deterministically close to `1.0` — so
+    /// the dimension would report maximum suspicion for any short
+    /// legitimate string, producing spurious Quarantine verdicts
+    /// unrelated to content quality. `compressionRatio` short-
+    /// circuits to `0.0` (neutral) below this bound.
+    ///
+    /// Chosen conservatively: gzip header = 10 B, trailer = 8 B,
+    /// minimum deflate block overhead adds a few more. 64 bytes
+    /// leaves enough payload that even incompressible random data
+    /// lands near 1.0 honestly, while structured text clearly
+    /// beats the header. Callers measuring intentionally short
+    /// signals should not rely on the Compression dimension.
+    ///
+    /// Marked `private` because it is an internal tuning constant
+    /// for the Compression dimension, not part of the supported
+    /// `SignalQuality` API surface. If a future caller needs the
+    /// threshold as a public hook (e.g. to assert parity with a
+    /// sibling measure), the right move is a dedicated accessor
+    /// with a stable contract rather than leaking the raw binding.
+    let private compressionMinInputBytes = 64
+
     /// Compression ratio `|compress(x)| / |x|` using gzip as a
-    /// Kolmogorov-complexity proxy. Returns `0.5` for the empty
-    /// string — this is the genuine neutral under `severityOfScore`
-    /// (Warn band at `0.30-0.60`). Returning `1.0` would contradict
-    /// the neutrality intent by classifying empty input as
-    /// Quarantine. Clamped to `[0.0, 1.0]` — a well-behaved
-    /// compressor cannot exceed the input length for realistic
-    /// inputs, but tiny strings can expand slightly under the gzip
+    /// Kolmogorov-complexity proxy. Returns `0.0` (neutral) for
+    /// empty and below-threshold inputs (under `compressionMinInputBytes`
+    /// UTF-8 bytes) — see the threshold docstring for rationale on
+    /// the short-input short-circuit. Clamped to `[0.0, 1.0]` — a
+    /// well-behaved compressor cannot exceed the input length for
+    /// realistic inputs, but tiny strings can expand under the gzip
     /// header overhead; the clamp keeps the return value in the
     /// interval the composite math assumes.
     let compressionRatio (text: string) : float =
-        if String.IsNullOrEmpty text then 0.5
+        if String.IsNullOrEmpty text then 0.0
         else
             let raw = Encoding.UTF8.GetBytes text
-            use out = new MemoryStream()
-            // Inner scope forces the GZipStream to flush / dispose
-            // before we read `out.Length`, so we can measure the
-            // compressed payload without materialising it via
-            // `ToArray()` (per review feedback: avoid the byte-copy
-            // just to read the length).
-            (use gz = new GZipStream(out, CompressionLevel.Optimal, leaveOpen = true)
-             gz.Write(raw, 0, raw.Length))
-            let ratio = float out.Length / float raw.Length
-            if ratio < 0.0 then 0.0
-            elif ratio > 1.0 then 1.0
-            else ratio
+            if raw.Length < compressionMinInputBytes then 0.0
+            else
+                use out = new MemoryStream()
+                // Inner scope forces the GZipStream to flush / dispose
+                // before we read `out.Length`, so we can measure the
+                // compressed payload without materialising it via
+                // `ToArray()` (per review feedback: avoid the byte-copy
+                // just to read the length).
+                (use gz = new GZipStream(out, CompressionLevel.Optimal, leaveOpen = true)
+                 gz.Write(raw, 0, raw.Length))
+                let ratio = float out.Length / float raw.Length
+                if ratio < 0.0 then 0.0
+                elif ratio > 1.0 then 1.0
+                else ratio
 
     /// Compression-dimension measure. Suspicion score is the
     /// compression ratio directly — high ratio means low structural
     /// regularity, which is a bullshit signal in the spec's framing.
+    /// Evidence reports the UTF-8 byte length (the quantity the
+    /// `compressionMinInputBytes` threshold actually gates on), not
+    /// `text.Length` (chars), so the short-circuit path and the
+    /// evidence units agree for non-ASCII inputs.
     let compressionMeasure : IQualityMeasure<string> =
         { new IQualityMeasure<string> with
             member _.Dimension = Compression
             member _.Measure(text: string) =
                 let ratio = compressionRatio text
+                let bytes =
+                    if isNull text then 0
+                    else Encoding.UTF8.GetByteCount text
                 { Dimension = Compression
                   Severity = severityOfScore ratio
                   Score = ratio
-                  Evidence = sprintf "gzip-ratio=%.3f (len=%d)" ratio (if isNull text then 0 else text.Length) } }
+                  Evidence = sprintf "gzip-ratio=%.3f (bytes=%d)" ratio bytes } }
 
 
     // ───────────────────────────────────────────────────────────────
