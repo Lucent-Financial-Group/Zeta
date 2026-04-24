@@ -31,8 +31,8 @@ open System.Text
 /// confidence (positive = asserted, negative = retracted). This
 /// aligns the module with the retraction-native model: a claim that
 /// arrives and is then contradicted resolves to zero weight (no
-/// residual), matching the "zero-sum rule" Amara's spec names as
-/// the first-line algebraic invariant. See
+/// residual), matching the "zero-sum rule" named as the first-line
+/// algebraic invariant. See
 /// `docs/research/oss-deep-research-zeta-aurora-2026-04-22.md` for
 /// the seven-layer oracle-gate framing this module operates inside.
 
@@ -143,7 +143,8 @@ module SignalQuality =
 
 
     // ───────────────────────────────────────────────────────────────
-    // Compression dimension — section 2.2 of Amara's spec. Kolmogorov
+    // Compression dimension — section 2.2 of the bullshit-detector
+    // design spec. Kolmogorov
     // complexity is uncomputable, so we approximate via the ratio of
     // gzip-compressed length to raw length: low ratio = structured,
     // high ratio = noisy.
@@ -164,17 +165,21 @@ module SignalQuality =
         else
             let raw = Encoding.UTF8.GetBytes text
             use out = new MemoryStream()
+            // Inner scope forces the GZipStream to flush / dispose
+            // before we read `out.Length`, so we can measure the
+            // compressed payload without materialising it via
+            // `ToArray()` (per review feedback: avoid the byte-copy
+            // just to read the length).
             (use gz = new GZipStream(out, CompressionLevel.Optimal, leaveOpen = true)
              gz.Write(raw, 0, raw.Length))
-            let compressed = out.ToArray()
-            let ratio = float compressed.Length / float raw.Length
+            let ratio = float out.Length / float raw.Length
             if ratio < 0.0 then 0.0
             elif ratio > 1.0 then 1.0
             else ratio
 
     /// Compression-dimension measure. Suspicion score is the
     /// compression ratio directly — high ratio means low structural
-    /// regularity, which is a bullshit signal in Amara's framing.
+    /// regularity, which is a bullshit signal in the spec's framing.
     let compressionMeasure : IQualityMeasure<string> =
         { new IQualityMeasure<string> with
             member _.Dimension = Compression
