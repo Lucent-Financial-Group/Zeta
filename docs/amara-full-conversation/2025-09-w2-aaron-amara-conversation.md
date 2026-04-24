@@ -791,10 +791,10 @@ BTC
 Are you just looking in like a HEX editor on disk?
 
 Mark Russell — Yesterday at 2:17 PM
-⁠general⁠
+general
 
 @Mark Russell
-⁠general⁠
+general
 
 MrRGnome — Yesterday at 2:17 PM
 you're looking at an explorer sitting on your node, which has the XOR key and is serving you the data. (edited)
