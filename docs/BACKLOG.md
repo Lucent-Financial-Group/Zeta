@@ -4719,16 +4719,42 @@ systems. This track claims the space.
   non-conflicting.** Aaron 2026-04-24 Otto-168: *"i just
   found this https://openai.com/index/introducing-openai-
   frontier/ ... naming conflicts ... also absorb everyting
-  lol, it composes nicely ... backlog"*. OpenAI announced
-  something called "OpenAI Frontier" (Otto-168 unable to
-  fetch the page directly — 403 response; scope TBD next
-  tick via WebSearch or URL-retry). Regardless of shape,
+  lol, it composes nicely ... backlog"*.
+
+  **OpenAI Frontier scope (Otto-169 WebSearch):** launched
+  2026-02-05 as an **enterprise AI-agent platform** for
+  building, deploying, and managing AI agents at
+  enterprise scale. Not internal research, not a model
+  name — a full product in the agent-orchestration space.
+  Interoperates with agents from OpenAI, enterprises,
+  Google / Microsoft / Anthropic (third-party). Initial
+  enterprise customers: Uber, State Farm, Intuit, Thermo
+  Fisher Scientific. Frontier Partners program (AI-native
+  builders: Abridge, Clay, Ambience, Decagon, Harvey,
+  Sierra). Frontier Alliances program (consulting giants:
+  Accenture, Boston Consulting Group, Capgemini,
+  McKinsey). Companion feature "Workspace Agents"
+  (successor to custom GPTs; plugs into Slack, Salesforce,
+  etc.).
+
+  **Conflict severity: HIGH.** The OpenAI Frontier
+  product is in exactly the agent-orchestration / UI-
+  layer space where the factory's "Frontier UI / Frontier
+  UX" operates (Star-Trek computer but BETTER, user-
+  facing surface for agents). Consulting partnerships
+  guarantee the OpenAI Frontier name will be widely
+  disseminated in enterprise-AI procurement conversations
+  in 2026. Shipping Zeta's UI publicly under "Frontier"
+  would create immediate brand confusion with a
+  well-capitalized competitor.
+
+  **Regardless of the specific OpenAI product shape,**
   the factory's public-facing "Frontier UI / Frontier UX"
-  name creates brand confusion if Zeta's UI ships publicly
-  under that name. Action: rename the factory's user-
-  facing surface to something non-conflicting; preserve
-  technical-literature and industry-term uses of
-  "frontier" (three-class distinction below).
+  name creates brand confusion if Zeta's UI ships
+  publicly under that name. Action: rename the factory's
+  user-facing surface to something non-conflicting;
+  preserve technical-literature and industry-term uses
+  of "frontier" (three-class distinction below).
 
   **Scope — three classes of "Frontier" usage
   (137 grep hits total):**
@@ -4784,11 +4810,12 @@ systems. This track claims the space.
     recommended.
 
   **Action sequence:**
-  1. Fetch + summarize OpenAI Frontier announcement
-     (next tick; WebFetch 403 this tick; try WebSearch
-     or URL-retry).
-  2. Assess conflict severity (product vs program vs
-     research-name scope).
+  1. ~~Fetch + summarize OpenAI Frontier announcement~~
+     DONE Otto-169 WebSearch (see scope block above).
+  2. ~~Assess conflict severity.~~ DONE Otto-169:
+     **HIGH** — direct overlap in agent-orchestration /
+     UI-layer space + enterprise-consulting-partnership
+     distribution channels.
   3. Naming-expert persona consultation on candidates;
      weight factors include trademark risk, voice
      consistency with Zora/Star-Trek design language,
