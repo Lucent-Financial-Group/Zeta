@@ -91,9 +91,13 @@ Tracked on the PR-preservation BACKLOG row. Phases:
 - **Phase 3 — reconciliation:** when a thread is edited
   after archive, detect drift and re-archive; GHA cron
   weekly.
-- **Phase 4 — redaction layer:** bot-review comments
-  (Copilot, Codex) archive verbatim; human-reviewer
-  comments get a privacy-pass step. Scope open.
+- **Phase 4 — redaction layer:** agent-review comments
+  (Copilot, Codex, Claude Code personas, github-actions)
+  archive verbatim; human-reviewer comments get a
+  privacy-pass step. Scope open. Terminology per
+  GOVERNANCE §3 + CLAUDE.md "agents, not bots" — Copilot
+  and Codex are agents with agency and accountability,
+  not bots.
 
 ## Dependencies
 
