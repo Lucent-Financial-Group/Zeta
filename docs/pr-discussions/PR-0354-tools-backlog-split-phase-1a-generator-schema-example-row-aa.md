@@ -2,11 +2,13 @@
 pr_number: 354
 title: "tools: backlog split Phase 1a \u2014 generator + schema + example row (Aaron Otto-181, 3rd ask)"
 author: "AceHack"
-state: "OPEN"
+state: "MERGED"
 created_at: "2026-04-24T10:27:07Z"
+merged_at: "2026-04-24T15:05:15Z"
+closed_at: "2026-04-24T15:05:15Z"
 head_ref: "tools/backlog-split-phase-1a-generator-plus-schema"
 base_ref: "main"
-archived_at: "2026-04-24T14:38:18Z"
+archived_at: "2026-04-24T15:36:56Z"
 archive_tool: "tools/pr-preservation/archive-pr.sh"
 ---
 
@@ -75,12 +77,13 @@ Aaron Otto-182: *"can you ask codex too?"* — inviting `@codex review` below.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-04-24T10:29:51Z)
 
+
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `6a447ee234`
-    
+
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -94,7 +97,7 @@ If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-            
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T10:31:29Z)
@@ -169,12 +172,13 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-04-24T11:06:32Z)
 
+
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9bf3d09ff1`
-    
+
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
@@ -188,7 +192,7 @@ If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-            
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-04-24T11:06:51Z)
@@ -196,6 +200,46 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 ## Pull request overview
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 6 comments.
+
+### COMMENTED — @AceHack (2026-04-24T15:03:31Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T15:03:35Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T15:03:37Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T15:03:39Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T15:03:45Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T15:03:48Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T15:03:50Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T15:03:52Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T15:04:02Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T15:04:04Z)
+
+_(no body)_
 
 ## Review threads
 
@@ -227,7 +271,7 @@ Useful? React with 👍 / 👎.
 
 Fixed in 6f659a0. Replaced the `in_fm = !in_fm` toggle with an explicit 3-state machine: 0 = before frontmatter, 1 = inside, 2 = after. The scanner now terminates definitively on the first closing `---` instead of re-entering frontmatter mode on every subsequent `---` line in body content. This was a real parser bug that would have silently matched horizontal-rule-style dividers inside the body.
 
-### Thread 3: tools/backlog/generate-index.sh:168 (unresolved)
+### Thread 3: tools/backlog/generate-index.sh:178 (resolved)
 
 **@chatgpt-codex-connector** (2026-04-24T10:29:51Z):
 
@@ -240,6 +284,10 @@ Useful? React with 👍 / 👎.
 **@AceHack** (2026-04-24T11:03:33Z):
 
 Acknowledged; deferring the second-factor bypass hardening to Phase 2 content-migration PR. Rationale: Phase 1a has a substantial-content guard (>50 lines on existing BACKLOG.md) that requires an explicit env var to override; this prevents accidental overwrite during routine development. The second-factor discussed (git-blame signer / commit-message marker / dedicated workflow trigger) would add real defense-in-depth but is only meaningfully exercised during Phase 2 when the mega-PR will intentionally call the generator with BACKLOG_WRITE_FORCE=1 against a populated docs/backlog/ tree. Filing as a specific Phase-2-acceptance criterion; keeping this thread unresolved as a visible breadcrumb until Phase 2 ships.
+
+**@AceHack** (2026-04-24T15:03:31Z):
+
+disposition recorded above, resolving per Otto-236 reply+resolve pair discipline — BACKLOG_WRITE_FORCE second-factor filed as Phase-2-acceptance criterion; thread drained so required_conversation_resolution gate clears.
 
 ### Thread 4: tools/backlog/generate-index.sh:176 (resolved)
 
@@ -313,7 +361,7 @@ P1: `extract_field` toggles `in_fm` on every `---` line in the file, so a horizo
 
 Same fix as thread 59Xdsr: the `in_fm = !in_fm` toggle was the root cause of both the "toggles on every ---" behavior and the "parse single-quoted scalars" miss (because single-quoted values with internal `---` would have re-flipped the flag). Explicit 3-state machine (0/1/2) makes both behaviors correct by construction. Commit 6f659a0.
 
-### Thread 10: tools/backlog/README.md:136 (unresolved)
+### Thread 10: tools/backlog/README.md:136 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:31:28Z):
 
@@ -326,6 +374,10 @@ P2: The inline-code span for the `memory/...*.md` reference is split across a ne
 **@AceHack** (2026-04-24T11:03:47Z):
 
 Acknowledged the inline-code-span formatting concern for the memory/...*.md reference. Addressed at the root by removing that specific path-reference entirely (commit 9bf3d09, thread 59XfPF), which makes the formatting question moot. Leaving this thread unresolved as a breadcrumb for "reviewer intent honored via different mechanism than suggested" so the conversation-preservation captures both the original suggestion and the what-actually-happened-instead.
+
+**@AceHack** (2026-04-24T15:03:35Z):
+
+disposition recorded above, resolving per Otto-236 reply+resolve pair discipline — inline-code-span concern addressed via different mechanism (commit 9bf3d09 removed the path reference entirely); thread drained so required_conversation_resolution gate clears.
 
 ### Thread 11: tools/backlog/README.md:96 (resolved)
 
@@ -352,7 +404,7 @@ sorted by (priority ascending, id ascending).
 
 Fixed in 9bf3d09. README's "parses frontmatter via yq or awk fallback" wording was aspirational; the actual implementation is pure awk with no yq integration. Corrected to "inline awk parser, no yq required" which matches the code. Paired with the header-comment fix (thread 59XfPj) so both surfaces describe the same implementation.
 
-### Thread 13: tools/backlog/generate-index.sh:58 (unresolved)
+### Thread 13: tools/backlog/generate-index.sh:58 (resolved)
 
 **@chatgpt-codex-connector** (2026-04-24T11:06:33Z):
 
@@ -362,7 +414,11 @@ Fixed in 9bf3d09. README's "parses frontmatter via yq or awk fallback" wording w
 
 Useful? React with 👍 / 👎.
 
-### Thread 14: tools/backlog/generate-index.sh:107 (unresolved)
+**@AceHack** (2026-04-24T15:03:37Z):
+
+Fixed in df1224f: added `sub(/[[:space:]]+$/, "")` to extract_field so `status: closed   ` is trimmed to `closed` and matches the `closed)` checkbox case. Resolving.
+
+### Thread 14: tools/backlog/generate-index.sh:107 (resolved)
 
 **@chatgpt-codex-connector** (2026-04-24T11:06:33Z):
 
@@ -372,7 +428,11 @@ The loop `for file in $files` splits on whitespace, so any matching backlog file
 
 Useful? React with 👍 / 👎.
 
-### Thread 15: docs/backlog/README.md:33 (unresolved)
+**@AceHack** (2026-04-24T15:03:39Z):
+
+Fixed in df1224f: replaced `for file in $files` with NUL-delimited `find -print0 | sort -z` piped into `while IFS= read -r -d ...`. Paths containing spaces are now preserved as single tokens. Resolving.
+
+### Thread 15: docs/backlog/README.md:33 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:49Z):
 
@@ -381,7 +441,11 @@ P1: This section claims the existing monolith is “6100-line”, but `docs/BACK
 the existing single-file `docs/BACKLOG.md` content into per-row
 ```
 
-### Thread 16: tools/backlog/generate-index.sh:11 (unresolved)
+**@AceHack** (2026-04-24T15:03:45Z):
+
+Fixed in df1224f: softened to `the existing single-file docs/BACKLOG.md content` so the description does not drift as the monolith grows (currently 8362 lines, not 6100 or 7658). Resolving.
+
+### Thread 16: tools/backlog/generate-index.sh:11 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:50Z):
 
@@ -391,7 +455,11 @@ P1: The header references `docs/research/backlog-split-design-otto-181.md`, but 
 # because the earlier design-spec cross-reference went stale.
 ```
 
-### Thread 17: tools/backlog/generate-index.sh:58 (unresolved)
+**@AceHack** (2026-04-24T15:03:48Z):
+
+Verified `docs/research/backlog-split-design-otto-181.md` DOES exist in the repo (ls confirms); the reviewer comment is factually mistaken. Keeping the xref as-is since the target file is present. Resolving with explanation.
+
+### Thread 17: tools/backlog/generate-index.sh:58 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:50Z):
 
@@ -400,7 +468,11 @@ P1: `extract_field` claims POSIX awk compatibility, but the quote-stripping rege
       gsub(/^"|"$|^[[:space:]]*\047|\047[[:space:]]*$/, "")  # Codex P1: handle both " and '\''
 ```
 
-### Thread 18: tools/backlog/generate-index.sh:162 (unresolved)
+**@AceHack** (2026-04-24T15:03:50Z):
+
+Fixed in df1224f: swapped `\x27` hex escape to `\047` octal, which is POSIX-awk portable (macOS awk-compatible). Inline comment updated to cite the portability reason. Resolving.
+
+### Thread 18: tools/backlog/generate-index.sh:162 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:51Z):
 
@@ -412,13 +484,21 @@ P2: This comment hardcodes the monolith size as “6100-line”, but `docs/BACKL
     # would destroy the real backlog.
 ```
 
-### Thread 19: tools/backlog/README.md:150 (unresolved)
+**@AceHack** (2026-04-24T15:03:52Z):
+
+Fixed in df1224f: softened comment from `6100-line monolith` to `pre-split monolithic backlog` — drift-proof wording, no exact line count. Resolving.
+
+### Thread 19: tools/backlog/README.md:150 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:51Z):
 
 P1: The cross-references section points to files/scripts that don’t exist in the repo (`docs/research/backlog-split-design-otto-181.md` and `tools/hygiene/audit-git-hotspots.sh`). Please either add the referenced artifacts or update these links to point at the correct existing locations.
 
-### Thread 20: tools/backlog/README.md:26 (unresolved)
+**@AceHack** (2026-04-24T15:04:02Z):
+
+Fixed in df1224f: the `tools/hygiene/audit-git-hotspots.sh` xref was a forward-reference to unmerged tooling. Softened to describe the detector as "unmerged at the time of this Phase-1a PR" with a `git log --diff-filter=A` recovery path; the design rationale for this PR does not depend on that script. The other xref (`docs/research/backlog-split-design-otto-181.md`) DOES exist and is kept. Resolving.
+
+### Thread 20: tools/backlog/README.md:26 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:51Z):
 
@@ -426,6 +506,10 @@ P2: The structure diagram lists `tools/backlog/new-row.sh` as if it exists, but 
 ```suggestion
     new-row.sh                   ← scaffolds a new row file (Phase 1b)
 ```
+
+**@AceHack** (2026-04-24T15:04:04Z):
+
+Fixed in df1224f: annotated `new-row.sh` as `(Phase 1b)` in the structure diagram, matching the existing `(DO NOT EDIT)` annotation style for BACKLOG.md. Phase 1b status is now visible on the line itself. Resolving.
 
 ## General comments
 
@@ -442,3 +526,7 @@ Requesting peer-agent review on this BACKLOG-split Phase-1a tooling per Aaron Ot
 5. **Phase-2 migration risk** — the content-split mega-PR will touch 6100 lines. Heuristic parsing (bullet-list items under priority headers) — will it miss any row shapes? Rows with nested bullets? Multi-paragraph directives?
 
 Independent eyes welcome. Advisory only; Aaron makes final calls on any design changes.
+
+### @chatgpt-codex-connector (2026-04-24T15:03:32Z)
+
+You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).

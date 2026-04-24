@@ -30,8 +30,8 @@
 #   2  PR fetch failed (auth / network / GraphQL errors / not found)
 #
 # Review-thread drain Otto-226 fixes (PR #357):
-#   - Pagination + truncation warning for threads (>100) and
-#     per-thread comments (>100).
+#   - Pagination for threads (>100) and per-thread comments
+#     (>100).
 #   - Top-level `errors` and `pullRequest: null` detection
 #     before dereferencing (both Python and shell paths).
 #   - Dynamic owner/name from `gh repo view` (works from
@@ -60,6 +60,20 @@
 #     switched `.strip()` to `.rstrip('\n')` for review /
 #     thread-comment / general-comment bodies so indented
 #     code blocks and bullets survive the round-trip.
+# Review-thread drain Otto-236 fixes (PR #357, fourth pass):
+#   - Header "truncation warning" claim removed — the
+#     implementation paginates, never emits a warning, so the
+#     comment now describes actual behaviour.
+#   - PR-description body now uses `.rstrip('\n')` instead of
+#     `.rstrip()` so a hard-line-break on the last line of
+#     the description is preserved.
+#   - End-of-file content join uses `.rstrip('\n')` instead
+#     of `.rstrip()` so end-of-file hard-line-breaks survive.
+#   - Whitespace-only lines (e.g. indented connector output
+#     with only spaces/tabs, and no preceding text) are
+#     normalized to empty so markdownlint MD009 stays clean.
+#     Lines with any non-whitespace character keep trailing
+#     whitespace intact (two-space hard-line-breaks).
 
 set -euo pipefail
 
@@ -381,7 +395,10 @@ body = pr.get('body') or ''
 if body.strip():
     lines.append('## PR description')
     lines.append('')
-    lines.append(body.rstrip())
+    # Preserve trailing whitespace on the last line (markdown two-space
+    # hard-line-break); only strip trailing newlines so the next
+    # section header is spaced correctly.
+    lines.append(body.rstrip('\n'))
     lines.append('')
 
 reviews = (pr.get('reviews') or {}).get('nodes', [])
@@ -437,24 +454,37 @@ if comments:
         lines.append(body_text)
         lines.append('')
 
-content = '\n'.join(lines).rstrip() + '\n'
 # Preserve trailing whitespace on user-authored text:
 # markdown uses two trailing spaces as a hard-line-break,
 # and this tool's purpose is a faithful audit copy.
+# Only strip trailing newlines at end-of-file (not spaces),
+# so an end-of-file hard-line-break survives.
+content = '\n'.join(lines).rstrip('\n') + '\n'
 # We DO collapse runs of 3+ consecutive blank lines down
 # to 2 so markdownlint MD012 stays green on the generated
 # archives (the source content sometimes has 3+ blank
 # lines around <details> blocks).
+# We ALSO normalize whitespace-only lines (e.g. '    ' from
+# Codex connector comments) to empty so they do not trip
+# markdownlint MD009. A line containing only spaces/tabs
+# has no meaningful trailing whitespace to preserve — it
+# cannot be a hard-line-break since there is no preceding
+# text on the same line. Lines with any non-whitespace
+# character keep their trailing whitespace intact.
 collapsed = []
 blank_run = 0
 for raw_line in content.split('\n'):
+    # Normalize whitespace-only lines to empty without touching
+    # inline trailing whitespace on lines that contain text.
+    if raw_line and raw_line.strip() == '':
+        raw_line = ''
     if raw_line == '':
         blank_run += 1
     else:
         blank_run = 0
     if blank_run <= 2:
         collapsed.append(raw_line)
-content = '\n'.join(collapsed).rstrip() + '\n'
+content = '\n'.join(collapsed).rstrip('\n') + '\n'
 with open(path, 'w', encoding='utf-8') as f:
     f.write(content)
 print(f'wrote {path} ({len(content)} bytes, {len(threads)} threads, {len(reviews)} reviews, {len(comments)} comments)')
