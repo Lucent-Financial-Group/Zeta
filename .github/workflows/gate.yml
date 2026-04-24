@@ -258,7 +258,7 @@ jobs:
         # action just to install a linter.
         run: |
           set -euo pipefail
-          ACTIONLINT_VERSION="1.7.11"
+          ACTIONLINT_VERSION="1.7.12"
           bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v${ACTIONLINT_VERSION}/scripts/download-actionlint.bash) "${ACTIONLINT_VERSION}"
           ./actionlint --version
 
