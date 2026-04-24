@@ -217,14 +217,18 @@ marketplace-discovery surface.
 **Option B — In-tree plugin manifest.** Land `.codex-plugin/plugin.json`
 at repo root with `skills: "./.codex/skills/"` pointing at
 the existing substrate. Zeta becomes installable as a
-Codex plugin. Installation procedure: first consult the
-Codex marketplace metadata (`codex plugin marketplace list` /
-`codex plugin marketplace search <term>` per the 2026-03-26
-plugin docs) to check whether the source is already
-discoverable; only fall back to `codex plugin marketplace
-add <owner>/<repo>` (upstream or fork) if the source is not
-already published under marketplace metadata. Middle cost;
-gains discovery without extracting substrate.
+Codex plugin. Installation procedure: first browse the
+Codex plugin directory via the TUI (`codex`, then the
+`/plugins` slash-command) to check whether the source is
+already discoverable; if it is, install from there. Only
+fall back to `codex plugin marketplace add <owner>/<repo>`
+(upstream or fork) if the source is not already published
+under marketplace metadata. Note: the `codex plugin
+marketplace` CLI verbs are `add` / `upgrade` / `remove`
+only per `codex --help` + `codex plugin --help`;
+`list` / `search` are not supported on the CLI and live in
+the `/plugins` TUI directory instead. Middle cost; gains
+discovery without extracting substrate.
 
 **Option C — Separate `zeta-codex-plugin` repository.** Move
 `.codex/skills/**` to a sibling LFG repo dedicated to Codex
