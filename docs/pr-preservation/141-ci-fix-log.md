@@ -245,3 +245,51 @@ update and CI greens.
 triggered (auto-merge armed via Otto-224 from the earlier
 open-PR pass), no review-thread edits, build + test gate
 clean, no symlinks introduced.
+
+---
+
+## 2026-04-24T post-rebase review-drain pass (2 new threads)
+
+After the #144 merge + earlier rebase pass, Copilot and
+Codex re-reviewed the branch and raised two new threads
+against `src/Core/SignalQuality.fs`. The file was reverted
+to its pre-fix shape by an earlier cherry-pick sequence
+(the `e206b69` fixes referenced in the resolved threads
+are no longer present in this branch's history), so the
+two new threads are a legitimate re-raise and need the
+fixes re-applied here.
+
+**Thread 1 — P0 (Copilot):** `open System.Runtime.CompilerServices`
+at line 8 is unused; with `TreatWarningsAsErrors` on this
+will fail the build on `FS1182` (unused open).
+**Fix:** removed the unused `open`. The module never
+referenced any symbol from `System.Runtime.CompilerServices`
+(no `[<MethodImpl>]`, no `[<Extension>]` on a module that
+needed it — the extension-style `compressionMeasure`-etc.
+entry points are regular `let`-bound functions).
+
+**Thread 2 — P2 (Codex):** `composite` silently ignores
+negative weights. `sumWeighted <- sumWeighted + w * f.Score`
+with `w = 0.0` and `f.Score = NaN` produces NaN (because
+`0.0 * NaN = NaN`); with negative `w` the dimension
+participates in an inverted direction. Reconcile to one
+consistent rule.
+**Fix:** gated the inner loop on `w > 0.0` and, inside
+that guard, separated the NaN branch (flips `sawNaN`
+without touching the accumulators) from the valid-score
+branch (adds to both `sumWeighted` and `sumWeights`).
+Negative weights and `0.0` weights now explicitly do not
+participate — documented in the docstring as "Weight
+semantics" so callers can see the contract without
+reading code. This matches the documented "missing /
+ignored dimensions contribute 0" behavior and prevents
+silent corruption on misconfigured weight maps.
+
+**Build:** `dotnet build -c Release` → 0 Warning(s)
+0 Error(s).
+
+**Branch state:** push `--force-with-lease` follows.
+Auto-merge armed from prior pass; no new PR opened.
+Constraints preserved (no symlinks, append-only audit
+trail, reply+resolve per thread, role-ref attribution in
+docstring).
