@@ -5833,6 +5833,74 @@ systems. This track claims the space.
   the git-as-DB-interface row below, and Otto-274
   progressive-adoption-staircase.
 
+- [ ] **Ouroboros bootstrap — meta-thesis +
+  connection-map work for the 2026-04-24 cluster.**
+  Maintainer 2026-04-24 directive (verbatim):
+
+  > *"oraborus bootstraping exact integrations and
+  > connections and all that to make sure we can do it
+  > right"*
+
+  Meta-thesis: **the system bootstraps itself**. Native
+  F# git impl stores its own commits as Z-sets in its
+  own database. Permissions registry tracks the
+  authority for its own creation. Memory-sync uses
+  memory-sync. Mode 2 hosts the factory dashboard that
+  operates on Mode 2. Bootstrap-thesis changes land as
+  retraction-native deltas in our own substrate. Test
+  using ourselves. Three load-bearing properties:
+  provenance is closed under the substrate; every
+  integration is testable from the inside;
+  self-consistency is a detectable invariant.
+
+  **Cardano pedagogy double-meaning preserved** — the
+  Cardano consensus protocol is called Ouroboros (most
+  formally-verified deployed PoS); when the
+  blockchain-ingest work activates, the protocol
+  research reinforces the bootstrap thesis at a
+  different level (same self-referential property,
+  same name). Naming overlap is intentional, not
+  accidental.
+
+  **Connection-map work** (Phase 0 deliverable, owed
+  before any new architecture lands):
+  `docs/research/ouroboros-bootstrap-connection-map-2026.md`
+  — directed graph of factory components (Mode 1
+  binary / Mode 2 WASM / native git impl / admin UI /
+  factory ops dashboard / Frontier-UI / permission
+  registry / memory-sync / etc) with edges as
+  explicit integration contracts (wire protocols,
+  file formats, authority dependencies). Self-loops
+  in the graph ARE the Ouroboros closures — must be
+  explicitly identified and justified.
+
+  **Maintainer's standard:** *"exact integrations and
+  connections to make sure we can do it right"* —
+  implementation work on any 2026-04-24 directive
+  should not start without the integration shape
+  drawn. Hand-waved "Mode 2 talks to Mode 1 somehow"
+  is insufficient.
+
+  **Composes with all 2026-04-24 directives in the
+  same session:** the rename (#393), blockchain
+  ingest (#394), Mode 1 admin UI + native F# git +
+  protocol upgrade + permissions registry + UI split
+  (this PR / #395). Companion memory file
+  `memory/feedback_ouroboros_bootstrap_self_reference_meta_thesis_2026_04_24.md`
+  captures verbatim directive + the bootstrap
+  property's three load-bearing claims + composition
+  with each peer directive.
+
+  Priority P2 hygiene (gates implementation of the
+  others); effort M (connection-map research doc) +
+  S (cross-link from the other 2026-04-24 rows) +
+  ongoing (every new architecture row should declare
+  its closure stance). Composes with
+  `holistic-view`, `glass-halo-architect`,
+  `category-theory-expert` (for the formal
+  closure-property framing), Otto-275
+  log-don't-implement.
+
 - [ ] **Mode 2 UI architecture split — admin UI vs
   factory-ops-dashboard vs web-facing Frontier-UI;
   research required + maintainer review.** Maintainer
