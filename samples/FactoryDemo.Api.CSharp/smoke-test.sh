@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Factory-demo C# API smoke test — exercises all 9 endpoints and validates
-# the JSON-shape contract. Exits 0 on pass, 1 on any failure.
+# Factory-demo C# API smoke test — exercises all 8 API endpoints plus the
+# root `/` index and validates the JSON-shape contract. Exits 0 on pass, 1
+# on any failure.
 #
 # Usage:
 #   bash samples/FactoryDemo.Api.CSharp/smoke-test.sh
@@ -30,11 +31,16 @@ URL="http://localhost:${PORT}"
 
 echo "Building API..."
 dotnet build "$PROJECT" -c Release --nologo -v quiet >/dev/null
-echo "Starting API on ${URL}..."
+
+# Per-run server log — mktemp avoids collisions across concurrent smoke-test
+# runs and works on hosts without a writable `/tmp`. Path is printed on both
+# failure and success so the log is always discoverable.
+LOG_FILE=$(mktemp -t factory-demo-api-csharp.XXXXXX.log)
+echo "Starting API on ${URL} (server log: ${LOG_FILE})..."
 
 # Run in background; capture PID so we can stop it on exit.
 dotnet run --project "$PROJECT" -c Release --no-build --urls "$URL" \
-    > /tmp/factory-demo-api-csharp.log 2>&1 &
+    > "$LOG_FILE" 2>&1 &
 API_PID=$!
 
 cleanup() {
@@ -52,8 +58,8 @@ for _ in {1..20}; do
 done
 
 if ! curl -sf "${URL}/" >/dev/null 2>&1; then
-    echo "API did not come up within budget. Log:" >&2
-    cat /tmp/factory-demo-api-csharp.log >&2
+    echo "API did not come up within budget. Server log at ${LOG_FILE}:" >&2
+    cat "$LOG_FILE" >&2
     exit 1
 fi
 
@@ -120,9 +126,9 @@ fi
 
 echo ""
 if [ "$fail" -eq 0 ]; then
-    echo "All checks passed."
+    echo "All checks passed. Server log: ${LOG_FILE}"
     exit 0
 else
-    echo "One or more checks failed — see /tmp/factory-demo-api-csharp.log for server output."
+    echo "One or more checks failed — see ${LOG_FILE} for server output."
     exit 1
 fi

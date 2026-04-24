@@ -2,7 +2,7 @@ using Zeta.Samples.FactoryDemo.Api;
 
 // Minimal C# ASP.NET Core Web API serving the seed data for the
 // factory-demo. Companion to the F# sibling at
-// `samples/ServiceTitanFactoryApi/` — same 9 endpoints, same JSON
+// `samples/FactoryDemo.Api.FSharp/` — same 9 endpoints, same JSON
 // shapes, same seed data. Any frontend consumes either one
 // interchangeably.
 //
@@ -14,9 +14,9 @@ using Zeta.Samples.FactoryDemo.Api;
 // algebra are easier to express there).
 
 // Static endpoint list — extracted to satisfy CA1861 (avoid re-allocating
-// the array on every request to the root endpoint). Advertises all 9
-// concrete endpoints including the parameterised `{id}` routes so the
-// root is an honest index of what `/` is actually serving.
+// the array on every request to the root endpoint). Advertises all 8 API
+// endpoints besides `/` itself, including the parameterised `{id}` routes,
+// so the root is an honest index of what the API is actually serving.
 string[] endpoints =
 [
     "/api/customers",

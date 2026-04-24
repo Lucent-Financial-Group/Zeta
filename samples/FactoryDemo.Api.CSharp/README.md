@@ -2,7 +2,7 @@
 
 **What this is:** The C# version of the factory-demo JSON API.
 Identical 9 endpoints, identical JSON shapes, identical seed
-data as the F# sibling at `samples/ServiceTitanFactoryApi/`.
+data as the F# sibling at `samples/FactoryDemo.Api.FSharp/`.
 Minimal ASP.NET Core, no heavy frameworks.
 
 **Why C# leads:** C# is the more popular language in the .NET
@@ -82,7 +82,7 @@ no docker-compose. All are follow-up PRs.
 
 ## Composes with
 
-- `samples/ServiceTitanFactoryApi/` — the F# sibling; reference
+- `samples/FactoryDemo.Api.FSharp/` — the F# sibling; reference
   behaviour; use it as the algebraic truth when debugging
 - A Postgres-backed sibling sample (schema + seed SQL) is a v1
   follow-up tracked in `docs/BACKLOG.md`; both API samples will

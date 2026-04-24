@@ -3,7 +3,7 @@ namespace Zeta.Samples.FactoryDemo.Api;
 /// <summary>
 /// Deterministic in-memory seed data for the factory-demo.
 /// The canonical seed source is the F# sibling's
-/// <c>samples/ServiceTitanFactoryApi/Seed.fs</c> (same data, F# records);
+/// <c>samples/FactoryDemo.Api.FSharp/Seed.fs</c> (same data, F# records);
 /// this file mirrors that shape 1:1 in C# records. When the Postgres
 /// backing sample lands (tracked in <c>docs/BACKLOG.md</c> under the
 /// factory-demo rows), that sample's <c>schema.sql</c> / seed script
