@@ -197,7 +197,7 @@ Extensions live at:
 | Hook migration tool | N/A | N/A | `gemini hooks migrate` (FROM Claude) |
 | Built-in worktree | external (`--add-dir` + manual) | N/A | `-w, --worktree [name]` |
 | Plan mode | `--permission-mode plan` | N/A (yet) | `--approval-mode plan` |
-| Output format | `--output-format json` | text-mostly | `-o {text|json|stream-json}` |
+| Output format | `--output-format json` | text-mostly | `-o {text\|json\|stream-json}` |
 | Policy engine | skills + hooks | sandbox + policy-dirs | first-class `--policy` + `--admin-policy` |
 | Agent-coord bus | N/A | N/A | `--acp` (experimental) |
 
@@ -261,8 +261,7 @@ no-sandbox diff carved into a single tool invocation.
    Copilot-LFG-budget lesson: budget caps are real per-
    harness.
 
-## Not yet verified (durable-discipline: web-search at
-implementation time, not from this snapshot)
+## Not yet verified — web-search at implementation time
 
 - Current **latest** Gemini CLI version. This map is 0.39.1 as
   of 2026-04-24; version-numbers-websearch discipline
