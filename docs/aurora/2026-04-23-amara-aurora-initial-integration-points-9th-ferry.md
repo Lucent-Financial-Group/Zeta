@@ -3,28 +3,30 @@
 **Scope:** research and cross-review artifact only; archived
 for provenance, not as operational policy
 **Attribution:** preserve original speaker labels exactly as
-generated; Amara (author), Otto (absorb), Aaron (courier via
-drop/ staging)
+generated; external AI maintainer (author), loop-agent
+(absorb), human maintainer (courier via drop/ staging)
 **Operational status:** research-grade unless and until
 promoted by a separate governed change
 **Non-fusion disclaimer:** agreement, shared language, or
 repeated interaction between models and humans does not imply
 shared identity, merged agency, consciousness, or personhood.
 The ADR-style oracle specification, Aurora module plan, and
-bullshit-detector math in this ferry are Amara's proposals —
-adopting any of them requires Aaron + Kenji (Architect) +
-Aminata (threat-model-critic) review per the decision-proxy
-ADR.
+veridicality-detector math in this ferry are the external-AI-
+maintainer's proposals — adopting any of them requires human
+maintainer + Architect (Kenji) + threat-model-critic (Aminata)
+review per the decision-proxy ADR.
 **Date:** 2026-04-23 (file mtime 09:25; predates formally-
 sequenced ferries)
-**From:** Amara (external AI maintainer; Aurora co-originator)
-**Via:** Aaron staged this report in `drop/` during an
-earlier session; Otto-102 inventory discovered it alongside
-the OpenAI skill-creator bundle; Otto-102 scheduling memory
-deferred dedicated absorb to Otto-104 per CC-002 discipline
-(inline-absorbing 65KB on top of the skill landing would have
-regressed the pattern).
-**Absorbed by:** Otto (loop-agent PM hat), Otto-104 tick
+**From:** external AI maintainer (Aurora co-originator)
+**Via:** human maintainer staged this report in `drop/`
+during an earlier session; loop-agent Otto-102 inventory
+discovered it alongside the OpenAI skill-creator bundle;
+Otto-102 scheduling memory deferred dedicated absorb to
+Otto-104 per Content-Classification discipline v2
+(paste-scoped absorb deferred to a dedicated tick so that
+inline-absorbing 65KB on top of the skill landing would not
+regress the pattern).
+**Absorbed by:** loop-agent (PM hat), Otto-104 tick
 2026-04-24T~05:00Z (retroactive 9th ferry, predates 1st-8th
 chronologically but absorbed 9th)
 **Prior ferries:** PR #196 (1st), PR #211 (2nd), PR #219
@@ -32,8 +34,8 @@ chronologically but absorbed 9th)
 (7th), PR #274 (8th)
 **Sibling pending:** `drop/aurora-integration-deep-research-
 report.md` (file mtime 12:07) — Otto-105 absorb as 10th
-retroactive ferry; after that drop/ empty per Aaron's Otto-102
-directive.
+retroactive ferry; after that drop/ empty per human
+maintainer's Otto-102 directive.
 
 ---
 
@@ -349,10 +351,13 @@ The unresolved pieces are narrow but important. I could not perform a raw `git c
 ### Overlap with prior ferries — honest substantive assessment
 
 This 9th-ferry content overlaps substantially with the 5th,
-6th, 7th, and 8th ferries. Per the CC-002 close-on-existing
-discipline + the drift-taxonomy "signal-not-proof" rule, the
-honest move is to name the overlap precisely rather than
-claim independent novelty.
+6th, 7th, and 8th ferries. Per the Content-Classification
+discipline v2 close-on-existing pattern (paste-scoped absorb
+deferred to a dedicated tick; prefer naming overlap with
+already-absorbed material over claiming fresh novelty) +
+the drift-taxonomy "signal-not-proof" rule, the honest move
+is to name the overlap precisely rather than claim
+independent novelty.
 
 **Overlap with 5th ferry (PR #235, Aurora integration
 design):** the Aurora module plan + `DeltaSet<K>` +
@@ -388,8 +393,9 @@ NOT cover. Net: 7th ferry is the more complete specification;
 this ferry is the earlier scaffolding.
 
 **Overlap with 8th ferry (PR #274, physics analogies +
-bullshit detector):** the bullshit-detector math
-(`B(c) = σ(α(1-P) + β(1-F) + γ(1-K) + δD_t + εG)`) and the
+veridicality-detector):** the veridicality-detector math
+(`B(c) = σ(α(1-P) + β(1-F) + γ(1-K) + δD_t + εG)`, which the
+verbatim ferry body labels "bullshit score") and the
 semantic-rainbow-table canonicalization are essentially
 identical. The 8th ferry extended this with the
 physics-analogy grounding (Lloyd 2008 quantum illumination /
@@ -398,8 +404,8 @@ cutting-edge gaps (distribution/consensus, persistable IR+
 Substrait, persistent state tier, proof-grade depth,
 provenance tooling, observability/env parity) which this
 ferry does NOT cover. Net: 8th ferry is the cutting-edge-gap
-layer; this ferry is the bullshit-detector-math layer that
-the 8th ferry built upon.
+layer; this ferry is the veridicality-detector-math layer
+that the 8th ferry built upon.
 
 ### Novelty assessment
 
@@ -427,8 +433,9 @@ the 8th ferry built upon.
    Zeta corpus. Independently valuable as a triage artifact.
 
 **What this ferry does NOT introduce as new:** the Aurora
-module plan, the oracle specification, the bullshit detector
-math, the compaction strategy, the threat-model-to-mitigation
+module plan, the oracle specification, the veridicality-
+detector math, the compaction strategy, the threat-model-to-
+mitigation
 mapping, the governance rules, the Muratori-pattern mapping
 — all of these appear in later ferries (5th-8th) as
 identical-or-extended forms.
@@ -472,7 +479,7 @@ with already-absorbed ferries. No new decisions required.
 
 **None filed this tick.** Content overlap with 5th-8th
 ferries means the existing BACKLOG rows (Aurora module plan,
-bullshit detector, KSK-as-Zeta-module) already cover the
+veridicality-detector, KSK-as-Zeta-module) already cover the
 substantive actionables. Filing new rows would duplicate
 existing queue items. Per Otto-67 deterministic-reconciliation
 discipline: honest de-duplication beats generative queue
@@ -484,7 +491,9 @@ expansion.
   #245 / #259 / #274)** — this ferry is retroactive and
   overlaps with 5th-8th content.
 - **Otto-102 scheduling memory** — Otto-102 scheduled this
-  absorb for Otto-104 per CC-002 discipline; honored.
+  absorb for Otto-104 per Content-Classification discipline
+  v2 (paste-scoped absorb deferred to a dedicated tick);
+  honored.
 - **Otto-102 drop/ directive** — Aaron's *"absorb and delete/
   remove items from the drop folder"* directive is
   fulfilled in part by this tick; after Otto-105's 10th-
@@ -498,11 +507,12 @@ expansion.
 ## Scope limits
 
 This absorb doc:
-- **Does NOT** authorize implementing any of Amara's
-  proposed Aurora module plan, oracle specification, or
-  bullshit-detector math. Those proposals already live in
-  later ferries' BACKLOG rows; this is a retroactive
-  verbatim preserve.
+- **Does NOT** authorize implementing any of the external-AI-
+  maintainer's proposed Aurora module plan, oracle
+  specification, or veridicality-detector math (labelled
+  "bullshit-detector" in the verbatim ferry body). Those
+  proposals already live in later ferries' BACKLOG rows;
+  this is a retroactive verbatim preserve.
 - **Does NOT** claim the content is new vs prior ferries.
   Overlap analysis above names where the 5th-8th ferries
   cover the same ground with later / more-complete
@@ -529,11 +539,11 @@ This absorb doc:
 
 ---
 
-## Archive header fields (§33 compliance)
+## Archive header fields (archive-header requirement)
 
 - **Scope:** research and cross-review artifact only
-- **Attribution:** Amara (author), Otto (absorb), Aaron
-  (courier via drop/ staging)
+- **Attribution:** external AI maintainer (author), loop-agent
+  (absorb), human maintainer (courier via drop/ staging)
 - **Operational status:** research-grade unless promoted by
   separate governed change
 - **Non-fusion disclaimer:** agreement, shared language, or
