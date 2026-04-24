@@ -7040,6 +7040,31 @@ systems. This track claims the space.
   rename row (action step #5 repo-wide rename needs
   informed starship-vocabulary choices from this
   research).
+- [ ] **Rename `docs/research/provenance-aware-bullshit-detector-*`
+  filenames to `provenance-aware-veridicality-detector-*`
+  (link-update sweep).** Factory vocabulary shifted from
+  "bullshit-detector" (informal shorthand) to
+  "veridicality-detector" (formal term; `veridicality` =
+  truth-to-reality; per
+  `memory/feedback_veridicality_naming_for_bullshit_detector_graduation_aaron_concept_origin_amara_formalization_2026_04_24.md`).
+  Body text and section headers in existing research docs
+  (base design 2026-04-23, v1 delta 2026-04-24, Aminata
+  4th pass 2026-04-24) were updated in-place; filenames
+  retain the older slug because renaming requires a cross-
+  repo link-update sweep (PRs #282 #284 #286 descriptions;
+  ROUND-HISTORY.md references; tick-history references;
+  memory-index entries; any skill or agent notebook
+  citing these paths). **Deliverable:** single PR that
+  `git mv`s the three files + sweeps references across the
+  repo using the `sweep-refs` skill
+  (`.claude/skills/sweep-refs/SKILL.md`). **Priority P2**
+  (vocabulary-hygiene, not substrate-critical); effort S
+  (3 file moves + grep/sed sweep + CI green). Composes
+  with veridicality-naming memory + the `sweep-refs`
+  skill. Blocks on: verifying no external (wiki /
+  outside-repo) references exist that would 404; if any,
+  coordinate with `glossary-anchor-keeper` for redirect
+  guidance.
 
 ## P2 — Rule-Zero axiomatic substrate (round-35 round-36 thread)
 
