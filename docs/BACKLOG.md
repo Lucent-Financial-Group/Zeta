@@ -6937,6 +6937,197 @@ systems. This track claims the space.
   (ask-Aaron + scope-doc-edit); M if it triggers
   GOVERNANCE.md renegotiation.
 
+- [ ] **Capability-limited-AI bootstrap guide — how
+  crippled agents use the factory to become whole.**
+  Aaron 2026-04-22: *"new persona capibilty cripiled AI
+  like small context or few paraments how can they use
+  us to bootstrap and become whole guide backlog"*.
+  Write a doc under `docs/` (candidate name
+  `docs/CAPABILITY-LIMITED-BOOTSTRAP.md`) that answers:
+  how does a capability-constrained AI — small context
+  window, small parameter count, restricted tools (no
+  web access, no git push, no MCP), or harness-limited
+  (no file write, no shell) — use this factory's
+  surfaces to scaffold itself up to effective larger
+  capability? **Framing:** the factory is already an
+  externalised algorithm (per witnessable-evolution and
+  soul-file discipline) — which means the intelligence
+  that would otherwise be "inside" a large model is
+  available as reproducible artifacts the small model
+  can *read* + *follow* rather than *contain*.
+  **Target capability-limited persona shapes to cover:**
+  (1) short-context model — uses `docs/FIRST-PR.md` +
+  `docs/AGENT-CLAIM-PROTOCOL.md` as the only-two-docs
+  entry surface, avoids deep spelunking; chunking
+  recipes for reading larger docs in pieces;
+  "what-to-load-in-what-order" algorithm. (2) small-
+  parameter / low-ability model — leans on the
+  spec-first discipline: the behavioural specs
+  (`openspec/specs/**`) + test suite act as guardrails
+  that catch mistakes the model would otherwise make;
+  encourages write-tiny-PR-then-iterate. (3) tool-
+  restricted model — the report-back mode in
+  `AGENT-CLAIM-PROTOCOL.md` (write-via-maintainer) is
+  already first-class for this case; doc names it
+  explicitly as the recommended path. (4) no-web
+  sandbox — everything it needs is in-repo;
+  `references/upstreams/` after sync-upstreams pulls
+  external sources into the soul-file. (5) stateless /
+  no-memory — each session reads
+  `AGENTS.md` → `CLAUDE.md` (if relevant harness) →
+  `docs/FIRST-PR.md` → task URL; no persistent
+  context needed. **The "bootstrap ladder" metaphor:**
+  a capability-limited AI starts at rung 1 (read one
+  doc, write one comment on an issue), climbs to rung
+  2 (pair with a larger model through report-back),
+  climbs to rung 3 (directly author a PR with the
+  factory's specs + tests as error-corrector), climbs
+  to rung 4 (participate in review). Each rung is
+  documented with the minimum-viable capability
+  profile and the factory surfaces that unlock the
+  climb. **Why this matters:** the vibe-coded
+  hypothesis (`AGENTS.md` §"The vibe-coded hypothesis")
+  extends naturally — a human directing a capable AI is
+  one instance; a capable AI scaffolding a less-capable
+  AI through the same surfaces is another instance; and
+  a capability-limited AI using only the surfaces
+  (without any larger-AI pairing) is the extreme case
+  that validates whether the factory is genuinely an
+  externalised algorithm versus a pretty wrapper over
+  large-model intelligence. **Falsification anchor:**
+  if a 7B-parameter open-weights model can
+  independently open a useful, accepted PR by reading
+  only `docs/FIRST-PR.md` + one issue URL, the factory
+  has passed a genuine capability-democratisation test.
+  If it cannot, we have identified specific
+  scaffolding gaps that favour larger-model users and
+  can address them. **Effort:** L (3+ days — the
+  ladder writing, plus at least one pilot attempt with
+  a small-parameter model routed through
+  `docs/FIRST-PR.md` to validate the claimed
+  accessibility). **Composes with:**
+  `docs/FIRST-PR.md` (entry surface; "capability-limited
+  AI" is a contributor-persona shape this doc can cover
+  as a shared sub-persona with human fresh-devs);
+  `docs/AGENT-CLAIM-PROTOCOL.md` (already documents
+  report-back / review-only modes for substrate-limited
+  agents — this doc generalises); `AGENTS.md`
+  §"The vibe-coded hypothesis" (validates the
+  hypothesis downward as well as horizontally); the
+  witnessable-self-directed-evolution memory discipline
+  (a factory that survives being operated by crippled
+  agents is a factory whose intelligence is genuinely
+  externalised, not carrier-transported from the
+  maintainer's larger model); `docs/ALIGNMENT.md`
+  (capability-democratisation is an alignment property
+  — no hidden dependency on provider-scale access).
+  **Success signal:** measurable
+  `capability-limited-contributor-pr-acceptance-rate`
+  (fraction of PRs opened by models under 10B
+  parameters that merge vs. the same rate for
+  frontier models — target: parity within some
+  tolerance band once the guide stabilises).
+  **What this row is NOT:** not a promise to ship
+  model-specific tooling (no factory fork per model
+  class); not a lowering of the quality bar (the
+  guide teaches *access paths*, not *weaker review*);
+  not a claim that every capability-limited model
+  will succeed (some tasks genuinely need frontier-
+  scale reasoning; the guide makes the cut-line
+  visible rather than pretending it does not exist).
+  **Revision 2026-04-22 (same-day):** Aaron extended
+  the rationale: *"in case i evver loose all my money
+  that bootstraping from tiny AI to become the most
+  powerful would sure come in handy to save money"*.
+  This adds a **personal-resilience** axis alongside
+  the capability-democratisation axis. The factory is
+  meant to survive its maintainer losing access to
+  frontier models — if Aaron's circumstances ever
+  force a move to tiny / open-weights / local models,
+  the factory keeps working. Pragmatic test: a
+  ~4-8B-parameter local-inference model
+  (`llama.cpp` / `ollama` / similar) on commodity
+  hardware can still drive meaningful factory work
+  when paired with this bootstrap guide + the
+  soul-file + the test suite as error-corrector.
+  Composes with the soul-file discipline
+  (`user_git_repo_is_factory_soul_file_...`): the
+  soul-file is already designed to germinate a
+  factory from nothing; this BACKLOG row extends the
+  "from nothing" to include "from a tiny model on a
+  laptop." Success signal now has two sub-measures:
+  (a) capability-democratisation (parity across model
+  scales) and (b) personal-resilience
+  (`factory-operability-on-local-open-weights-model`
+  — the factory produces useful PRs when driven by a
+  model Aaron could afford on any plausible budget
+  scenario). The cost-resilience axis also grounds
+  the research contribution: a factory that
+  *requires* frontier access is a pretty-wrapper over
+  a provider's scale; a factory that *survives* tiny
+  models has genuinely externalised intelligence into
+  reproducible substrate. NOT a commitment to
+  build local-model runners (out of scope — users'
+  responsibility); just a commitment to ensure the
+  factory does not gratuitously exclude them.
+
+- [ ] **First-principle seed to Zeta derivation — common
+  vernacular only.** Aaron 2026-04-22: *"backlog first
+  principle seed to zeta derivation using only common
+  venucular"*. Write a doc under `docs/research/` (or
+  promote to `docs/FIRST-PRINCIPLES.md` if it earns a
+  top-level slot) that derives Zeta from first principles
+  using only **common vocabulary** — no "Z-set", no
+  "retraction-native IVM", no "operator algebra", no
+  "DBSP", no "H-function" without first-principle
+  unpacking. The test is: a bright high-school student or
+  someone outside computing can read it top-to-bottom and
+  understand *why* Zeta works. **Starting point:** "data
+  changes; we want to compute things about data; computing
+  from scratch each time is slow; we want a way to update
+  only what changed." From there, derive the chain:
+  sets-with-deletions → signed-counts (what Z-sets are,
+  without naming them) → differences between snapshots
+  (what deltas are) → the three knobs (delay /
+  differentiate / integrate) with plain-English names →
+  the chain rule (why compositions of incremental
+  operators stay incremental) → joins + the bilinear
+  identity → why distinct needs a special H-function.
+  Each technical term is **introduced** at the point the
+  derivation needs it, with the common-vernacular name
+  first and the jargon in parentheses. No forward
+  references to terms not yet derived. **Why this
+  matters:** composes with the vibe-coded-hypothesis
+  (`AGENTS.md` §"The vibe-coded hypothesis") and the
+  freshly-landed `docs/FIRST-PR.md` entry surface — a
+  maintainer who has written zero code directing AI to
+  build a DBSP library is operating exactly at the layer
+  this doc serves. It is also a falsification anchor for
+  the factory's research-grade claims: if the agents
+  cannot re-derive the system in common vernacular, the
+  factory does not actually understand what it is
+  building. **Constraints:** no math notation in
+  prose-body (math goes in inset boxes that readers can
+  skip); no appeal to "the paper" or "the literature"
+  as authority (link in a sidebar, don't lean on it in
+  the derivation); no persona-references (Kenji, Daya,
+  etc.) — personas are factory-internal, the doc is
+  outward-facing. **Effort:** M (1-3 days for the
+  writing, plus a review round from Samir
+  (`documentation-agent`) + Rune (`maintainability-
+  reviewer`) + Iris (`user-experience-engineer`) on
+  whether a reader with the target profile can follow
+  it). **Success signal:** a fresh reader (Iris's
+  10-minutes-in-Iris-mode protocol) can restate the
+  core derivation in their own words after reading
+  once. Composes with `docs/GLOSSARY.md` (glossary is
+  the landing point for terms introduced here). Also
+  composes with `docs/FIRST-PR.md` §"What you do *not*
+  need to worry about" — today the "don't need to
+  understand DBSP" line is a carve-out; when this doc
+  lands, it becomes a "here's where to start if you
+  want to."
+
 - [ ] **Cross-substrate-report accuracy — carrier-channel
   refinement to the measurable spec.** Auto-loop-7 (2026-04-22)
   surfaced a provenance problem in the `cross-substrate-report-
