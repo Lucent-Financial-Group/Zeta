@@ -143,3 +143,28 @@ On push:
 Auto-merge is already armed on this PR per Otto-224
 discipline; CI clearance should flip the state and land the
 merge without manual intervention.
+
+## Follow-up — reference-existence link-path fix
+
+First push surfaced a sibling check that the original two
+failures masked:
+
+- `lint memory/MEMORY.md reference-existence` — FAIL
+  (`observed-phenomena/2026-04-19-transcript-duplication-
+  splitbrain-hypothesis.md -> ... (not found)`).
+
+**Root cause:** `tools/hygiene/audit-memory-references.sh`
+resolves link targets containing `/` as cwd-relative (from
+repo root), not relative to the `memory/` base dir. The
+existing `](docs/research/...)` precedent in MEMORY.md
+demonstrates the convention — slash-paths must resolve from
+repo root. My new link used the bare
+`](observed-phenomena/...)` form which fails that
+resolution.
+
+**Fix applied:** Rewrote the link target to
+`](memory/observed-phenomena/...)` so it resolves from repo
+root like the sibling `docs/research/...` entry. Local audit
+after the fix: 454 refs checked, 454 resolved, 0 broken.
+Commit `b4ff814` pushed on top of the main CI fix commit
+`1cacebe`.
