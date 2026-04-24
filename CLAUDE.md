@@ -83,20 +83,16 @@ These are the knobs this repo actually uses:
   MEMORY.md earned) is encoded in
   `.claude/skills/claude-md-steward/`.
   **Fast-path on wake:** read any
-  `CURRENT-<maintainer>.md` files (for example,
-  `CURRENT-jane-doe.md`) in
+  `CURRENT-<maintainer>.md` files (one per human or
+  external-AI maintainer; filename uses a role-ref
+  per BP-284, not a real name) in
   `~/.claude/projects/<slug>/memory/` *before* the
   raw `feedback_*.md` / `project_*.md` log. CURRENT
   files are the distilled currently-in-force
-  projection per maintainer (one per human /
-  external-AI maintainer). They win on conflict with
-  older raw memories. Pattern specified in the
-  companion ADR under `docs/DECISIONS/` (the
-  `per-maintainer-current-memory-pattern` entry;
-  grep the DECISIONS directory for the current
-  filename). Individual CURRENT files themselves
-  live per-user (not in-repo), per the in-repo /
-  per-user split documented in the ADR.
+  projection per maintainer; they win on conflict
+  with older raw memories. Individual CURRENT files
+  live per-user (not in-repo) — same per-user split
+  as the rest of `~/.claude/projects/<slug>/memory/`.
   **Same-tick update discipline:** when a new memory
   lands that updates a rule in a CURRENT file, edit
   CURRENT in the same tick. Skipping is
