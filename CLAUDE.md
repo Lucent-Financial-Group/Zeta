@@ -185,6 +185,22 @@ Claude-Code-specific mechanisms.
   verify-before-deferring and future-self-not-bound.
   Full reasoning:
   `memory/feedback_never_idle_speculative_work_over_waiting.md`.
+- **Version currency — search first, training data
+  is stale.** Whenever Claude sees, proposes, or
+  references a version number (runner image,
+  language runtime, framework, OS, CLI tool, GitHub
+  Action, model ID, package pin), Claude MUST
+  `WebSearch` for the current version before
+  asserting it's current. Training-data cutoff
+  (Jan 2026) makes default version knowledge
+  stale within weeks. Applies when the claim is
+  load-bearing (recommendation, code / CI /
+  config / user-facing output) — not passive
+  reading of existing code. CLAUDE.md-level so it
+  is 100% loaded at every wake, alongside
+  verify-before-deferring, future-self-not-bound,
+  and never-be-idle. Full reasoning:
+  `memory/feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`.
 - **Tick must never stop.** When running under
   `/loop` autonomous mode (cron fires every minute
   per `docs/AUTONOMOUS-LOOP.md`), the tick is the
