@@ -42,8 +42,11 @@ not a single system:
    Gates autonomy through capability tiers (k1/k2/k3),
    revocable budgets, multi-party consent, signed receipts,
    visibility lanes, traffic-light escalation, optional
-   blockchain anchoring. Credit to **max** for the original
-   KSK design and development-guide work.
+   blockchain anchoring. Original KSK design and development-
+   guide work attributed to the initial-starting-point
+   contributor to `lucent-ksk`; concept ownership per Otto-140
+   is Aaron + Amara, with that starting-point preserved in
+   git lineage.
 
 3. **Aurora (vision / architecture layer).** Ties Zeta and
    KSK together into a coherent story. Consent + retraction
@@ -97,9 +100,9 @@ Aurora-layer substrate is preserved here per [`GOVERNANCE.md §33`](../../GOVERN
 |---|---|---|
 | [`2026-04-23-amara-operational-gap-assessment.md`](2026-04-23-amara-operational-gap-assessment.md) | 1st (PR #196) | Otto-24 |
 | [`2026-04-23-amara-zset-semantics-operator-algebra.md`](2026-04-23-amara-zset-semantics-operator-algebra.md) | 2nd | Otto-54 |
-| `2026-04-23-amara-decision-proxy-technical-review.md` | 3rd (PR #219) | Otto-59 |
-| `2026-04-23-amara-memory-drift-alignment-claude-to-memories-drift.md` | 4th (PR #221) | Otto-67 |
-| `2026-04-23-amara-zeta-ksk-aurora-validation-5th-ferry.md` | 5th (PR #235) | Otto-78 |
+| `2026-04-23-amara-decision-proxy-technical-review.md` | 3rd (PR #219) — **planned, not yet landed on this branch** | Otto-59 |
+| `2026-04-23-amara-memory-drift-alignment-claude-to-memories-drift.md` | 4th (PR #221) — **planned, not yet landed on this branch** | Otto-67 |
+| `2026-04-23-amara-zeta-ksk-aurora-validation-5th-ferry.md` | 5th (PR #235) — **planned, not yet landed on this branch** | Otto-78 |
 | [`2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md`](2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md) | 6th (PR #245) | Otto-82 |
 
 The first two absorb docs predate `GOVERNANCE.md §33` and use

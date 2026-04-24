@@ -7,13 +7,14 @@ quantum-sensing literature from software analogy so the latter
 can borrow carefully without contaminating the former.
 
 **Attribution:** analogy-boundaries framing distilled from
-Amara's 8th courier ferry
-(`docs/aurora/2026-04-23-amara-physics-analogies-semantic-indexing-cutting-edge-gaps-8th-ferry.md`,
-PR #274) §"Quantum radar and the physics-based material that
-is missing"; primary-source citations (Lloyd 2008, Tan et al,
-2023 Nature Physics, 2024 engineering review, standard radar
-range equation) preserved from Amara's ferry. Otto-97
-authored this extraction + the explicit boundary discipline.
+Amara's 8th courier ferry (absorb doc planned at
+`docs/aurora/2026-04-23-amara-physics-analogies-semantic-indexing-cutting-edge-gaps-8th-ferry.md`
+via PR #274; not yet landed on this branch) §"Quantum radar
+and the physics-based material that is missing"; primary-
+source citations (Lloyd 2008, Tan et al, 2023 Nature Physics,
+2024 engineering review, standard radar range equation)
+preserved from Amara's ferry. Otto-97 authored this extraction
++ the explicit boundary discipline.
 
 **Operational status:** research-grade. Will never graduate
 to operational policy in the form "Zeta uses quantum radar."
@@ -35,9 +36,10 @@ on what that literature says is baseline, not unity.
 **This document MUST NOT be cited as authorisation to
 describe Zeta or Aurora as "quantum-powered," "quantum-
 inspired truth sensing," "quantum-enabled anything." The
-2024 engineering review Amara references (preserved in
+2024 engineering review Amara references (planned absorb at
 `docs/aurora/2026-04-23-amara-physics-analogies-semantic-
-indexing-cutting-edge-gaps-8th-ferry.md`) caps microwave
+indexing-cutting-edge-gaps-8th-ferry.md` via PR #274; not
+yet landed) caps microwave
 quantum-radar range at <1 km typical and argues practical
 microwave QR is not competitive with classical radar for
 conventional long-range aircraft detection. Any operational
@@ -321,9 +323,10 @@ tick.
 
 ## Sibling context
 
-- **8th-ferry absorb** (PR #274,
-  `docs/aurora/2026-04-23-amara-physics-analogies-semantic-indexing-cutting-edge-gaps-8th-ferry.md`)
-  — source of the analogy framing.
+- **8th-ferry absorb** — planned at
+  `docs/aurora/2026-04-23-amara-physics-analogies-semantic-indexing-cutting-edge-gaps-8th-ferry.md`
+  via PR #274 (not yet landed on this branch); source of
+  the analogy framing.
 - **TECH-RADAR quantum illumination row** (PR #276)
   carries the Assess + Hold-note that this doc narrates.
 - **Semantic-canonicalization research doc** (candidate
