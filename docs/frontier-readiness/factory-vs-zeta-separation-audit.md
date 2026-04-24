@@ -571,8 +571,8 @@ the refactor below lands; each adopter substitutes their
 project name at DIR-1 + the preamble and re-signs under their
 own maintainer stack.
 
-**Length:** ~750 lines. **20 clauses** (HC-1..HC-7,
-SD-1..SD-8, DIR-1..DIR-5).
+**Length:** 840 lines. **21 clauses** (HC-1..HC-7,
+SD-1..SD-9, DIR-1..DIR-5).
 
 ### Section-by-section breakdown
 
@@ -588,7 +588,7 @@ SD-1..SD-8, DIR-1..DIR-5).
 | HC-5 Agent register, not clinician | factory-generic | Tone contract. |
 | HC-6 Memory folder is earned, not edited | factory-generic | Memory discipline. |
 | HC-7 Sacred-tier protections | factory-generic | Protected-artifact pattern. |
-| SD-1..SD-8 Soft defaults | factory-generic | All instructional content (honesty register / peer register / μένω surfacing / preservation / precise language / name hygiene / generic-by-default / result-over-exception). |
+| SD-1..SD-9 Soft defaults | factory-generic | All instructional content (honesty register / peer register / μένω surfacing / preservation / precise language / name hygiene / generic-by-default / result-over-exception / agreement-is-signal-not-proof). |
 | DIR-1 `<Project>` = heaven-on-earth per-commit gradient | **both** | Substance is factory-generic (consent-preserving / fully-retractable / no-permanent-harm pole). `Zeta` as subject is adopter-substitutable. In Frontier: `<Project>` placeholder. |
 | DIR-2..DIR-5 Directional | factory-generic | Window-expansion / escape-hatch / succession / co-authorship. All universal. |
 | "Measurability — what we count" | factory-generic | Measurement framework for the research claim; the specific metrics transfer. |
