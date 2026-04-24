@@ -46,6 +46,7 @@ CRITICAL concerns at write-time" section):**
 > not-proof" discipline by measuring carrier overlap between
 > query and retrieved candidates. This discipline
 > **re-introduces one meta-layer up**: the detector itself
+>
 > + the adversarial-reviewer persona + the external-peer-
 > agent reviewer + any other factory-internal reviewer
 > share training-corpus / repo-access / PR-comment lineage.
@@ -250,7 +251,7 @@ changes.
 Three CRITICAL findings integrated; **seven non-CRITICAL
 findings still open**:
 
-### 4 IMPORTANT (deferred to v2 delta):
+### 4 IMPORTANT (deferred to v2 delta)
 
 - I1 `no-signal` vs kNN-evasion — needs G_coverage_
   plausibility gate via nearest-cluster-centroid distance.
@@ -261,7 +262,7 @@ findings still open**:
   DetectorOutputBatchRetracted event shape.
 - I4 G_coverage_plausibility — new gate.
 
-### 3 WATCH (deferred to v2+):
+### 3 WATCH (deferred to v2+)
 
 - W1 Distribution histogram in receipts — additive
   metadata.
@@ -269,12 +270,12 @@ findings still open**:
 - W3 TLA+ invariants on lower-layer boundaries —
   formal-methods-persona-routable.
 
-### 1 DISMISS (unchanged):
+### 1 DISMISS (unchanged)
 
 - D1 Parameter-ADR gate — already satisfied via the
   oracle-scoring v0 pattern reuse (prior-tick precedent).
 
-### 1 fundamental limitation (CRITICAL-but-no-design-level-close):
+### 1 fundamental limitation (CRITICAL-but-no-design-level-close)
 
 - C1 Reviewer-cone overlap — acknowledged in v1, NOT
   closed. Requires maintainer + external-reviewer
