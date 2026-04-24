@@ -2,7 +2,6 @@
 name: Git-native memory approach — relocate memory into repo (already done at `memory/` root not `.claude/memory/`), pre-commit hook auto-stages memory changes, **custom Git merge driver** handles AutoDream append-conflicts via `.gitattributes`, **`git rev-parse HEAD` commit-hash replaces `originSessionId` provenance**; architectural tension with Otto-242 sidecar pattern (competing philosophies not composable layers); caveat on CLAUDE.md-redirecting-AutoMemory claim (likely wrong for Anthropic native); Aaron Otto-243 third Google-Search-AI share; 2026-04-24
 description: Aaron Otto-243 asked *"how do i make all this git native instead"* after Otto-242 sidecar-pattern share. Google Search AI proposed four-part git-native architecture: (1) in-repo memory folder + CLAUDE.md rule, (2) pre-commit hook auto-stages memory, (3) custom git merge driver for AutoDream conflict handling via `.gitattributes`, (4) git commit hash replaces session-id for provenance. Architectural TENSION with Otto-242 sidecar: sidecar says memory is machine-local state (gitignored bookmark), git-native says memory IS source code (everything tracked). Not composable — two competing philosophies. Aaron's actual repo already committed to a hybrid: in-repo `memory/` mirror exists at repo root, Anthropic native AutoMemory continues writing to global `~/.claude/...`.
 type: project
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 ## Aaron's question and the proposal
 

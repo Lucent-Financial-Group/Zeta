@@ -2,7 +2,6 @@
 name: Memory-sync sidecar pattern (`.memory-sync-state.json`) + AutoDream/AutoMemory Q1 2026 compatibility — SHA-256-hash ledger, machine-local (gitignored), community tools `perfectra1n/claude-code-sync` + `claude-memory-sync`, sync consolidated not raw, lock-check before push, ignore-deletions-by-default; upgrades Otto-114 memory-sync design from abstract to concrete implementation target; Aaron Otto-242 larger Google-Search-AI share; 2026-04-24
 description: Aaron Otto-242 shared a substantial Google Search AI research packet on memory-sync patterns that materially upgrades the Otto-114 "ongoing memory-sync mechanism" BACKLOG row. Confirms `originSessionId` is third-party convention not native Claude Code (already in Otto-241 memory). Adds concrete sidecar-file shape (SHA-256 + last_sync + processed_files), community tool recommendations, AutoDream/AutoMemory Q1 2026 interaction notes, and implementation tips (lock-check, ignore-deletions, sync-consolidated-not-raw). This memory captures that research for when Otto-114 executes.
 type: project
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 ## The full substrate Aaron shared
 

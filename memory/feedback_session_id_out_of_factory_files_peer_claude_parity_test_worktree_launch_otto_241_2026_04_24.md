@@ -2,7 +2,6 @@
 name: Three-part discipline update — (1) remove session-id (`originSessionId:` frontmatter) from factory files so writer-IDs don't collide across sessions; (2) peer-Claude parity test — a fresh Claude Code session (no prior memory, just CLAUDE.md + AGENTS.md + in-repo `memory/` + skills) must be as effective as the current session; (3) launch Claude Code with `-w` (worktree mode) by default for better isolated parallel work; Aaron Otto-241; 2026-04-24
 description: Aaron Otto-241 three-part directive in response to Otto-240 same-machine-two-Claudes discussion. (1) self-enforced constraint — no two Claude sessions share a session-id, so session-id should not be baked into factory files (my `originSessionId:` frontmatter pattern violates this). (2) peer-Claude-parity — the factory's effectiveness must be externalisable to in-repo substrate (skills, AGENTS.md, CLAUDE.md, memory/) so a fresh Claude session is as effective as a long-running one. (3) `-w` worktree-mode launch — Aaron's reading suggests worktree isolation gives better parallel-work results, analog to the subagent `isolation: "worktree"` pattern at the main-session layer.
 type: feedback
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 ## The three parts
 

@@ -2,7 +2,6 @@
 name: Per-named-agent memory architecture research — Aaron asked "how would per-named-agent memories change things" and "please research this one a lot"; **EMPIRICAL FINDING: the repo already has this**, per-persona directories under `memory/persona/<name>/` with `NOTEBOOK.md` + `MEMORY.md` + `OFFTIME.md` per persona (18+ personas live: aarav, aaron, aminata, bodhi, daya, dejan, ilyana, iris, kenji, kira, mateo, nadia, naledi, nazar, rodney, rune, soraya, sova, viktor); shared cross-role scratchpad at root (`best-practices-scratch.md` = functional GLOBAL_CONTEXT.md); Google Search AI proposal is partial rediscovery + some new primitives (per-persona merge drivers, identity header, writes-own-reads-all formal enforcement) worth considering; Aaron Otto-245 2026-04-24
 description: Aaron Otto-245 fourth Google Search AI share on per-named-agent memory architecture. Quality assessment: what Google AI proposed is already partially built in the repo — per-persona `memory/persona/<name>/` directories exist, formalized in `memory/persona/README.md` (promoted from Kenji-only to every persona in round 32). Google AI's genuinely new contributions: (1) per-persona merge drivers via `.gitattributes` glob patterns, (2) identity header `[AgentName: CommitHash]` (composes with Otto-243 `repoSha:`), (3) formal writes-own-reads-all boundary lint, (4) per-persona AutoDream triggers. Requires the no-symlink rule from Otto-244.
 type: project
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 ## What Aaron asked
 

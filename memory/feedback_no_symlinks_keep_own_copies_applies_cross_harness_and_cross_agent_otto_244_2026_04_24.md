@@ -2,7 +2,6 @@
 name: Hard veto — NO SYMLINKS. Aaron has tried symlinks before, they're unreliable. Applies broadly: cross-harness skill placement (Claude Code + Codex + Gemini canonical skill homes), per-agent memory folders, any "shared content across multiple homes" scenario. Rule: keep own copies. "Own version" per harness. Composes with Otto-227 behaviour/data split (SKILL.md bodies per harness, shared data in `docs/`); extends to per-named-agent memory under `.claude/agents/<name>/`. Aaron Otto-244 after Google Search AI fourth share proposed symlink hybrid; 2026-04-24
 description: Aaron Otto-244 gave a hard durable veto on symlinks as a cross-reference mechanism — "i don't like the symlink option, it's not reliable we already tried it, this is another one where claude just needs to keep it's own version." Scope: any scenario where same content needs to appear in multiple places (cross-harness skill placement, per-agent memory cross-refs, cross-tree mirrors). Rule: copy, don't symlink. "Own version" per consumer. Composes with Otto-227 behaviour/data split.
 type: feedback
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 ## The rule
 

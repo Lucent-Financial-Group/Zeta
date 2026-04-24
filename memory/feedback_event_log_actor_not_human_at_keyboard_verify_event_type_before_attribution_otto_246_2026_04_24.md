@@ -2,7 +2,6 @@
 name: GitHub event-log `actor.login` is the AUTHENTICATED IDENTITY that triggered the event — NOT "the human at the keyboard"; subagents running under user git config + `gh` auth trigger events as that user; before attributing a close/push/merge to Aaron ("AceHack"), check the event TYPE (`closed` following `head_ref_force_pushed` at same timestamp = GitHub auto-close from empty-diff push, not manual close); I misread #138's event log and told Aaron he closed it when actually my drain subagent triggered GitHub-native auto-close via empty-diff push; Aaron Otto-246 correction "i didn't close this, you must have"; 2026-04-24
 description: Aaron Otto-246 corrected my misattribution of PR #138's close to him. The event log showed `closed` with `actor: AceHack` — I read this as "Aaron closed it." Actually the drain subagent pushed an empty-diff branch under AceHack's git credentials (subagent runs under user's `gh` auth), GitHub auto-closed because head==base, and the `actor` field records the authenticating identity (AceHack) that caused the push, not a human keyboard action. Rule going forward: verify event TYPE + sibling events at same timestamp before attributing.
 type: feedback
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 ## The misattribution
 
