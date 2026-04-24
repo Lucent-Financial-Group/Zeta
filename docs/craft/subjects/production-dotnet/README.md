@@ -5,8 +5,8 @@
 allocation; already comfortable with the onboarding Craft
 tier under `subjects/zeta/` (currently ships with
 `retraction-intuition` on main; `zset-basics`,
-`operator-composition`, `semiring-basics` are in-flight PRs
-#200 / #203 / #206).
+`operator-composition`, `semiring-basics` are in-flight
+PRs `#200` / `#203` / `#206`).
 **Prerequisites:** BenchmarkDotNet literacy; willingness to
 read disassembly when it matters; property-based testing
 (FsCheck) in your toolbelt.
