@@ -60,9 +60,9 @@ For each audited file:
 - **docs/AGENT-BEST-PRACTICES.md** (below, fire #13)
 - **docs/ALIGNMENT.md** (below, fire #14)
 - **docs/AUTONOMOUS-LOOP.md** (below, fire #15)
-- **docs/WONT-DO.md** (below, fire #15) — also ALIGNMENT.md on PR #185
+- **docs/WONT-DO.md** (below, fire #15) — also docs/ALIGNMENT.md on PR #185
 - **docs/TECH-RADAR.md** (below, fire #16)
-- **docs/FACTORY-HYGIENE.md** (below, fire #16) — also AGENT-BEST-PRACTICES.md on PR #184, ALIGNMENT.md on PR #185
+- **docs/FACTORY-HYGIENE.md** (below, fire #16) — also docs/AGENT-BEST-PRACTICES.md on PR #184, docs/ALIGNMENT.md on PR #185
 
 ### Files to audit (not yet classified; add rows as they land)
 
@@ -661,12 +661,19 @@ because the substance is non-generic.
 Before split:
 
 1. Frontier inherits Legend + Usage + empty Rings table
-   stubs (Techniques / Tools sections).
+   stubs for all current Rings sections (Techniques,
+   Tools / infra, Upstreams / prior art, Hardware
+   intrinsics / platform).
 2. Zeta retains full current entry rows as the library's
    technology-research record.
-3. Tools/infra section has mixed entries — move
-   factory-generic entries to Frontier as examples;
-   Zeta-specific entries stay.
+3. Tools/infra section has mixed entries — **copy** (do
+   not move) factory-generic entries to Frontier as
+   examples. Canonical ownership of each carried row is
+   **Frontier** (the factory-generic example ring),
+   with Zeta's Tools/infra table as a decision record
+   that may reference them. No row is removed from
+   Zeta during split; duplication is intentional so
+   Zeta's historical radar record stays complete.
 
 Effort: **S** — mostly extraction; shape transfer is trivial.
 
