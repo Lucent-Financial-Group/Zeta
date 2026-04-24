@@ -3,6 +3,7 @@ module Zeta.Tests.Algebra.GraphTests
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
+open Zeta.Core.StakeCovariance
 
 
 // ─── empty + basic accessors ─────────
@@ -449,3 +450,94 @@ let ``coordinationRiskScoreRobust returns None when baselines empty`` () =
     let g = Graph.fromEdgeSeq [ (1, 2, 1L); (2, 1, 1L) ]
     Graph.coordinationRiskScoreRobust 0.5 0.5 1e-9 200 30 [||] [||] g
     |> should equal (None: double option)
+
+
+// ─── internalDensity / exclusivity / conductance ─────────
+
+[<Fact>]
+let ``internalDensity returns None for subset of size < 2`` () =
+    let g = Graph.fromEdgeSeq [ (1, 2, 1L); (2, 1, 1L) ]
+    Graph.internalDensity (Set.singleton 1) g |> should equal (None: double option)
+
+[<Fact>]
+let ``internalDensity of K3 clique is high`` () =
+    let edges = [
+        (1, 2, 10L); (2, 1, 10L)
+        (2, 3, 10L); (3, 2, 10L)
+        (3, 1, 10L); (1, 3, 10L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let density =
+        Graph.internalDensity (Set.ofList [1; 2; 3]) g
+        |> Option.defaultValue 0.0
+    abs (density - 10.0) |> should (be lessThan) 1e-9
+
+[<Fact>]
+let ``exclusivity is 1 for isolated K3`` () =
+    let edges = [
+        (1, 2, 5L); (2, 1, 5L); (2, 3, 5L); (3, 2, 5L)
+        (3, 1, 5L); (1, 3, 5L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let e = Graph.exclusivity (Set.ofList [1; 2; 3]) g |> Option.defaultValue 0.0
+    abs (e - 1.0) |> should (be lessThan) 1e-9
+
+[<Fact>]
+let ``conductance is low for well-isolated subset`` () =
+    let edges = [
+        (1, 2, 10L); (2, 1, 10L); (2, 3, 10L); (3, 2, 10L); (3, 1, 10L); (1, 3, 10L)
+        (4, 5, 10L); (5, 4, 10L); (5, 6, 10L); (6, 5, 10L); (6, 4, 10L); (4, 6, 10L)
+        (3, 4, 1L); (4, 3, 1L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let c = Graph.conductance (Set.ofList [1; 2; 3]) g |> Option.defaultValue nan
+    c |> should (be lessThan) 0.1
+
+
+// ─── StakeCovariance ─────────
+
+[<Fact>]
+let ``windowedDeltaCovariance returns None on too-small series`` () =
+    windowedDeltaCovariance 5 [| 1.0; 2.0 |] [| 1.0; 2.0 |]
+    |> should equal (None: double option)
+
+[<Fact>]
+let ``windowedDeltaCovariance detects synchronized motion`` () =
+    // Two nodes moving stakes in perfect lockstep should show
+    // positive covariance near the variance of each.
+    let a = [| 1.0; -1.0; 1.0; -1.0; 1.0 |]
+    let b = [| 1.0; -1.0; 1.0; -1.0; 1.0 |]  // identical
+    let cov = windowedDeltaCovariance 5 a b |> Option.defaultValue 0.0
+    cov |> should (be greaterThan) 0.5
+
+[<Fact>]
+let ``windowedDeltaCovariance detects anti-correlated motion`` () =
+    // One moving up, other moving down in lockstep: negative
+    // covariance.
+    let a = [| 1.0; -1.0; 1.0; -1.0; 1.0 |]
+    let b = [| -1.0; 1.0; -1.0; 1.0; -1.0 |]
+    let cov = windowedDeltaCovariance 5 a b |> Option.defaultValue 0.0
+    cov |> should (be lessThan) -0.5
+
+[<Fact>]
+let ``covarianceAcceleration = 2nd difference of covariance series`` () =
+    // Covariances 0.0 → 0.5 → 2.0 gives acceleration
+    // 2.0 - 2*0.5 + 0.0 = 1.0
+    let a = covarianceAcceleration (Some 2.0) (Some 0.5) (Some 0.0)
+    a |> Option.defaultValue 0.0 |> should equal 1.0
+
+[<Fact>]
+let ``covarianceAcceleration returns None when any input missing`` () =
+    covarianceAcceleration (Some 1.0) None (Some 0.0)
+    |> should equal (None: double option)
+
+[<Fact>]
+let ``aggregateAcceleration averages across pairs`` () =
+    let pairs =
+        Map.ofList [
+            ((1, 2), 1.0)
+            ((1, 3), 3.0)
+            ((2, 3), 5.0)
+        ]
+    let agg = aggregateAcceleration pairs |> Option.defaultValue 0.0
+    abs (agg - 3.0) |> should (be lessThan) 1e-9
