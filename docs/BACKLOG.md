@@ -5646,7 +5646,73 @@ systems. This track claims the space.
 
 - [ ] **Schema-as-Graph — entire database schema as first-class typed graph.** Aaron 2026-04-24 Otto-127: *"would it be possible to have a graph view of the entire table and relations so the whole schema is first class i the graph plus we could have special edge node whatever else we need entities if needed for more fidelity than reguarl sql table structrue and relationships allow. backlog"*. Natural extension of Graph substrate (PR #317 + #324). Scope: (1) schema-node types — Table/Column/Index/Constraint/View/StoredProcedure/Trigger; (2) schema-edge types — ForeignKey/Contains/References/DependsOn/InheritsFrom; (3) custom entity types beyond SQL — Domain/Aggregate/EventStream/Retraction (first-class "removed" with timestamp)/Provenance; (4) round-trip SQL↔Graph invariants; (5) bidirectional — Graph mutations emit DDL; DDL mutates Graph. Schema-change-over-time = Graph event stream w/ retraction-native. Aminata BP-11 threat-pass. Priority P2; effort M+M+L.
 
-- [ ] **Git-native PR-conversation preservation — extract PR review threads + comments to git-tracked files on merge.** Aaron 2026-04-24 Otto-113 directive: *"you probably need to resolve and save the conversations on the PRs to git for gitnative presevration"*. Currently PR review threads (Copilot / Codex connector / human reviewer comments) live GitHub-side only; if repo is mirrored / forked / GitHub has an outage / repo is migrated, the conversation substrate is lost. For glass-halo transparency + retractability, PR discussions belong in-repo. Proposed mechanism: workflow (or post-merge skill) that fetches all review threads + general PR comments for a merged PR, serialises them as markdown at `docs/pr-discussions/PR-<number>-<slug>.md` with attribution (reviewer id/bot), timestamps, thread structure, and resolution status. Scope: (1) design PR-discussion schema + file shape; (2) fetch-on-merge mechanism (GHA workflow using `gh api graphql`); (3) privacy pass (strip anything sensitive from reviewer comments); (4) backfill historical PRs or declare cutover-forward. Priority P2 research-grade; effort S (mechanism) + M (backfill if chosen). Composes with Otto-113 bootstrap-attempt-1 memory + docs-lint/memory-no-lint policy (discussions go in docs/) + the ChatGPT-download-skill (PR #300) pattern.
+- [ ] **Git-native PR-conversation preservation — extract PR review threads + comments to git-tracked files on merge, PLUS backfill of all historical PRs.** **Priority: P1 (elevated from P2 per Aaron Otto-151..153).** Aaron Otto-113 originating directive: *"you probably need to resolve and save the conversations on the PRs to git for gitnative presevration"*. Aaron Otto-150..153 follow-up burst ratifying priority + scope: *"you are still capturing all the PR reviews from copilot and your responses to gitnative right? / that's high signaldata we should get on that pretty quickly i think / can you post fill by going through all the old PRs and all the threads/conversations? / back fill i mean"* — then course-correction *"no not that quick / do it the right way / i just mean pritorize the right way"* confirming the ask is **appropriate prioritization, not rushed shipping**. Current status: NOT running; no workflow archives review threads; no `docs/pr-discussions/` directory exists. Currently PR review threads (Copilot / Codex connector / human reviewer comments) live GitHub-side only; if repo is mirrored / forked / GitHub has an outage / repo is migrated, the conversation substrate is lost. For glass-halo transparency + retractability, PR discussions belong in-repo. This is high-signal data (Copilot's actual critiques of the factory's code; Otto's replies showing reasoning patterns; human-contributor thought process). Proposed phased landing:
+
+  **Phase 1 — design (this tick or next, S effort).** Decide:
+  (a) file-per-PR vs index-plus-per-thread; (b) markdown
+  schema (YAML frontmatter fields: `pr_number`, `pr_title`,
+  `pr_author`, `merged_at`, `scope`, `privacy_pass`); (c) slug
+  collision rules; (d) idempotent-update semantics when a
+  resolved thread is reopened or a comment is edited
+  post-merge; (e) who authors the archive commits (GHA bot vs
+  human-contributor-attributed).
+
+  **Phase 2 — privacy review (Aminata threat-model pass,
+  blocking).** Questions: what classes of content in a
+  reviewer comment could be sensitive (credentials
+  accidentally pasted, customer data, internal-only URLs,
+  names of external organizations)? Is the privacy pass a
+  manual-review-then-merge step or an automated
+  redaction-on-ingest step? What does a review-comment
+  redaction look like (strike-through with reason, or hash
+  +reference)? Does Aminata recommend a different trust
+  posture for bots (Copilot / Codex-connector / github-
+  actions) vs humans (contributors with arbitrary comment
+  content)?
+
+  **Phase 3 — ongoing-capture mechanism (S-M effort after
+  Phase 2 signs off).** GHA workflow on `pull_request_target:
+  closed` with `merged == true`, fetches threads via `gh api
+  graphql`, writes to `docs/pr-discussions/PR-<N>-<slug>.md`
+  on a dedicated branch, opens an auto-archive PR. Safe-
+  pattern compliance per FACTORY-HYGIENE row #43 (SHA-pinned
+  actions, explicit minimal `permissions:`, values via `env:`
+  with quoting — and notably, title/body references cannot
+  flow directly into shell; fetch title via `gh api
+  /repos/.../pulls/<N>` INSIDE the workflow rather than from
+  the `github.event` payload to avoid injection-hook
+  triggers; Otto-154 learned this).
+
+  **Phase 4 — backfill (M effort after Phase 3 is proven on
+  live PRs).** Per-PR script that walks all merged PRs in
+  priority order (richest-review-content first — PRs with
+  Copilot comments, PRs with Codex-connector comments,
+  bulk-change PRs, then routine PRs), applies the Phase-2
+  privacy pass, commits archives in batches (e.g. 20 PRs
+  per commit) to keep diffs reviewable. Budget: expect
+  ~300+ merged PRs historically.
+
+  **Phase 5 — ongoing-reconciliation hygiene (S effort, after
+  Phase 4).** Periodic audit (weekly GHA cron) that checks
+  all merged PRs have an archive file; flags divergences;
+  surfaces edit-after-merge comment updates. Captures the
+  drift that would otherwise silently accrue.
+
+  Non-goals for this row: replacing GitHub as the live
+  review venue (it's the source-of-truth; archive is the
+  durable mirror); redacting Copilot / Codex-connector
+  reviews (they're bot content without privacy concern);
+  attempting backfill in a single CI run (300+ PRs ×
+  GraphQL rate limits would likely fail; batch it).
+
+  Effort: S (Phase 1 design) + M (Phase 2 threat-review +
+  Phase 3 workflow) + M (Phase 4 backfill) + S (Phase 5
+  hygiene). Cumulative: L. Lands across multiple ticks;
+  Phase 1 can go this tick or next; later phases land when
+  ready. Composes with Otto-113 bootstrap-attempt-1 memory +
+  Otto-150..154 burst + docs-lint/memory-no-lint policy
+  (discussions go in docs/) + ChatGPT-download-skill
+  (PR #300) pattern + Aminata threat-model authority.
 
 - [ ] **Ongoing memory-sync mechanism — keep in-repo `memory/` mirrored with auto-memory writes during each Otto tick.** Aaron 2026-04-24 Otto-113 directive *"our memories should all be checked in now"* + Otto-114 confirmation that in-repo memory/ is the natural home for ALL memory types. Otto-113 one-shot sync (PR #307) mirrored 439 files. Going forward, every Otto tick that writes to `~/.claude/projects/.../memory/` should also land new/updated files in-repo `memory/` with matching MEMORY.md pointer update (per memory-index-integrity + memory-reference-existence-lint workflows). Proposed mechanisms: (a) end-of-tick skill that rsyncs new memories to a branch + PRs them; (b) direct-to-repo writes with auto-memory as read-cache; (c) GHA cron periodic sync. Initial preference: (a) for CLI-tool compatibility today, (b) long-term. Also includes path-unification design (decide whether to deprecate the `~/.claude/projects/...` path for this project entirely or keep as staging). Priority P2 research-grade; effort S (rsync skill) + M (direct-write tooling). Composes with `memory/feedback_natural_home_of_memories_is_in_repo_now_all_types_*.md` (Otto-114 policy) + PR #307 one-shot sync + memory-index-integrity workflow.
 
