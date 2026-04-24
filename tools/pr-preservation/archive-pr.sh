@@ -74,6 +74,16 @@
 #     normalized to empty so markdownlint MD009 stays clean.
 #     Lines with any non-whitespace character keep trailing
 #     whitespace intact (two-space hard-line-breaks).
+# Review-thread drain Otto-241 fix (PR #357, fifth pass):
+#   - Blank-line-run collapse + whitespace-only normalization
+#     are now SKIPPED inside fenced code blocks (``` / ~~~).
+#     Fenced blocks are where user-authored 3+ blank-line
+#     runs and leading whitespace are intentional (logs,
+#     templates, preformatted output); markdownlint MD012
+#     already exempts fenced code from the "no multiple
+#     consecutive blank lines" rule, so audit fidelity wins
+#     inside fences. Outside fences, MD012/MD009 hygiene
+#     still applies to tool-generated scaffolding.
 
 set -euo pipefail
 
@@ -471,11 +481,39 @@ content = '\n'.join(lines).rstrip('\n') + '\n'
 # cannot be a hard-line-break since there is no preceding
 # text on the same line. Lines with any non-whitespace
 # character keep their trailing whitespace intact.
+#
+# Codex P1 audit-fidelity carve-out (PR #357 thread on
+# blank-line collapse): inside fenced code blocks (```),
+# user-authored content must survive verbatim — fenced
+# blocks are where 3+ consecutive blank lines are
+# intentional (logs, templates, preformatted output),
+# and markdownlint MD012 already exempts fenced code
+# from the "no multiple consecutive blank lines" rule
+# by design. So we toggle code-fence state as we scan
+# and skip the collapse + whitespace-only normalization
+# inside fenced regions. Outside fences, MD012/MD009
+# hygiene still applies to tool-generated scaffolding.
 collapsed = []
 blank_run = 0
+in_fence = False
 for raw_line in content.split('\n'):
-    # Normalize whitespace-only lines to empty without touching
-    # inline trailing whitespace on lines that contain text.
+    # Detect fenced-code-block boundaries (``` or ~~~ at
+    # the start of a line, ignoring leading whitespace).
+    stripped = raw_line.lstrip()
+    if stripped.startswith('```') or stripped.startswith('~~~'):
+        in_fence = not in_fence
+        blank_run = 0
+        collapsed.append(raw_line)
+        continue
+    if in_fence:
+        # Inside a fenced block: preserve verbatim.
+        # No whitespace-only normalization, no blank-run
+        # collapse. This is the audit-fidelity path.
+        collapsed.append(raw_line)
+        continue
+    # Outside fences: normalize whitespace-only lines to empty
+    # without touching inline trailing whitespace on lines
+    # that contain text.
     if raw_line and raw_line.strip() == '':
         raw_line = ''
     if raw_line == '':
