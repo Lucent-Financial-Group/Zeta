@@ -199,46 +199,55 @@ harness asked whether it could see the skill by name:
 | OpenAI Codex 0.124.0 | n/a (uses `.codex/`) | **YES** (verified) | `codex exec "Do you see a skill named 'agents-only-prove'?"` returned `YES` |
 | Gemini CLI 0.39.1 | n/a (uses `.gemini/`) | **YES** (verified) | `gemini --skip-trust -p "..."` returned `YES` |
 
-Implication: **until all three harnesses support a common
-home, keep each skill in its harness's canonical directory**
-(the human maintainer's 2026-04-24 policy call). The
-`.agents/` path is real for Codex + Gemini today, and is
-additive for the two that honour it; Claude Code's absence
-from that set means `.agents/skills/` is NOT a single-copy
-cross-harness solution right now.
+Implication: `.agents/skills/` is real for Codex + Gemini
+today and is the shared path for those two. Claude Code
+doesn't honor `.agents/skills/` yet, so it needs its own
+copy in `.claude/skills/` (or a symlink to the `.agents/`
+version) until it joins the convention.
 
-## Generic vs. harness-specific skills
+## Generic vs. harness-specific skills (2026-04-24 policy)
 
 Two classes of skill, two placement rules:
 
 - **Generic skills** — domain capabilities any harness-agnostic
   reader can execute (F# style guide, cartel detection math,
-  BACKLOG authoring discipline). Per the canonical-home policy,
-  each harness gets its own copy in its canonical directory:
-  `.claude/skills/<name>/`, `.codex/skills/<name>/`,
-  `.gemini/skills/<name>/`. Apply the **behaviour / data
-  split** the factory uses for skills: the SKILL.md bodies
-  carry the *behaviour* (what to do, per-harness tool calls,
-  per-harness phrasing tweaks) — thinner than holding the
-  underlying data, but not so thin they just proxy somewhere
-  else. The *data* (rule tables, worked examples, reference
-  material, citation blocks, domain definitions) lives in
-  shared `docs/` content that every SKILL.md references. Net
-  result: three near-duplicate behaviour bodies, one shared
-  data source. Maintenance burden drops to the behaviour
-  diffs only.
-- **Harness-specific skills** — skills that wrap or extend
-  one harness's features (Claude Code hook helpers, Gemini
-  extension-validate wrappers, Codex `agents/openai.yaml`
-  authoring helpers). Place at the harness's canonical
-  directory ONLY. Do not duplicate — the body references
-  features other harnesses don't have.
+  BACKLOG authoring discipline). Use `.agents/skills/` for
+  the harnesses that honor it, plus a Claude Code copy:
+  - `.agents/skills/<name>/SKILL.md` — Codex + Gemini read
+    this directly. Single file serves both.
+  - `.claude/skills/<name>/SKILL.md` — Claude Code reads
+    this. May be a distinct file (if Claude-specific tool-
+    syntax tweaks are warranted) or a symlink to
+    `../../.agents/skills/<name>/` (if the body truly
+    doesn't diverge — Claude Code follows the symlink
+    because the symlink itself is under its canonical dir).
 
-The factory's prior experience ("we tried earlier and had
-issue with skills not in the canonical home for the harness")
-reinforces the conservative placement rule. Revisit once
-Claude Code joins the `.agents/skills/` convention (watch
-the Claude Code changelog).
+  Apply the **behaviour / data split**: the SKILL.md bodies
+  carry the *behaviour* (what to do, which tools to call,
+  per-harness tool-syntax or phrasing tweaks when needed) —
+  thinner than holding the underlying data, but not so thin
+  they just proxy elsewhere. The *data* (rule tables, worked
+  examples, reference material, citation blocks, domain
+  definitions) lives in shared `docs/` content that every
+  SKILL.md references. Net cost: two near-duplicate
+  behaviour bodies (`.agents/` + `.claude/`), one shared
+  data source.
+
+- **Harness-specific skills** — skills that wrap or extend
+  ONE harness's features (Claude Code `/loop` companion,
+  Gemini `extensions validate` wrapper, Codex
+  `agents/openai.yaml` authoring helper). Place in that
+  harness's canonical directory ONLY — explicitly NOT in
+  `.agents/skills/`. Per the human maintainer: *"skills that
+  directly extend the harness, they should be in connonical
+  since they are not generic skills"*. Putting them under
+  `.agents/` would mis-advertise their portability to
+  sessions that can't use them.
+
+Revisit once Claude Code adopts `.agents/skills/` — at that
+point generic skills collapse to a single `.agents/` copy
+and the `.claude/skills/` duplicate comes out (watch the
+Claude Code changelog).
 
 Extensions live at:
 
