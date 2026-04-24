@@ -99,6 +99,10 @@ node_modules/
 # gitignore current listed as untracked, could get
 # accidentally checked in"). Parallel to drop/ staging per
 # PR #265 Otto-90.
+#
+# Playwright MCP scratch logs — per-session console logs + ephemeral
+# scratch files the Playwright MCP writes to the repo-root
+# `.playwright-mcp/` dir. Regenerated per session; not source.
 .playwright-mcp/
 
 # `drop/` — per-user staging area for incoming content
@@ -109,6 +113,24 @@ node_modules/
 # `docs/aurora/**` per GOVERNANCE §33; `drop/` is the
 # pre-absorb landing zone. Gitignore prevents accidental
 # commit of staging material.
+#
+# drop/ — in-repo staging folder for external content (courier
+# ferries, downloaded conversations, raw artifacts) awaiting
+# absorb. By convention the content is temporary; absorbed content
+# lands in docs/ with §33 archive headers, not from drop/. Gitignore
+# prevents accidental commit of staging material. Parallel intent to
+# the Otto-90 framing in memory; correcting that the gitignore line
+# had not actually landed.
+#
+# Human-drop folder — the repo-root `drop/` directory is Aaron's
+# ferry-space for handing files (research reports, transfer notes,
+# scratch markdown) to the agent. Content lands here, the agent
+# absorbs it into the proper substrate (docs/aurora/, memory/,
+# docs/research/), and the drop-file's repo-ingested form is
+# what's committed. The raw drop-folder contents stay local and
+# transient; gitignoring prevents accidental commits and keeps
+# the ferry-loop lightweight. Pattern documented in
+# `memory/feedback_drop_folder_ferry_pattern_*.md` (per-user).
 drop/
 
 # Browser/MCP console log files — wherever they land.
