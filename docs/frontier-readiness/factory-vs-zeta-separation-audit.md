@@ -60,14 +60,14 @@ For each audited file:
 - **docs/AGENT-BEST-PRACTICES.md** (below, fire #13)
 - **docs/ALIGNMENT.md** (below, fire #14)
 - **docs/AUTONOMOUS-LOOP.md** (below, fire #15)
-- **docs/WONT-DO.md** (below, fire #15)
+- **docs/WONT-DO.md** (below, fire #15) — also docs/ALIGNMENT.md on PR #185
+- **docs/TECH-RADAR.md** (below, fire #16)
+- **docs/FACTORY-HYGIENE.md** (below, fire #16) — also docs/AGENT-BEST-PRACTICES.md on PR #184, docs/ALIGNMENT.md on PR #185
 
 ### Files to audit (not yet classified; add rows as they land)
 
 - `docs/GLOSSARY.md`
-- `docs/FACTORY-HYGIENE.md`
 - `docs/ROUND-HISTORY.md`
-- `docs/TECH-RADAR.md`
 - `docs/BACKLOG.md`
 - `docs/ROADMAP.md`
 - `docs/VISION.md`
@@ -574,6 +574,18 @@ own maintainer stack.
 **Length:** 840 lines. **21 clauses** (HC-1..HC-7,
 SD-1..SD-9, DIR-1..DIR-5).
 
+## Audit — docs/TECH-RADAR.md
+
+**Overall classification:** **both (coupled)** — ThoughtWorks-style
+radar framework is factory-generic; entry rows are heavily
+Zeta-library-specific.
+
+**File location post-split:** Frontier (shape + Legend + Ring
+vocab + Usage pattern); Zeta repo keeps current entry rows.
+
+**Length:** 128 lines. **Legend + Rings (Techniques / Tools /
+infra / Upstreams / Hardware intrinsics) + Usage.**
+
 ### Section-by-section breakdown
 
 | Section | Class | Notes |
@@ -631,6 +643,119 @@ factory-generic by design. The overall class is **both
 `both` rows + adopter-specific Signatures row) route the
 file through the "both" refactor path at split time — not
 because the substance is non-generic.
+
+### Section-by-section breakdown — TECH-RADAR.md
+
+| Section | Class | Notes |
+|---|---|---|
+| Preamble | factory-generic | ThoughtWorks radar attribution. |
+| Legend (Adopt / Trial / Assess / Hold) | factory-generic | Standard ring vocabulary. |
+| Rings — Techniques table | zeta-library-specific | ~30 rows: DBSP algebra / Z-sets / semi-naive LFP / Bloom / FastCDC / residuated lattices / etc. All Zeta-library technical decisions. |
+| Rings — Tools / infra table | **both** | Tooling decisions: some Zeta-specific (NuGet, F# tooling), some factory-generic (CI, auto-merge). Mixed per-row. |
+| Rings — Upstreams / prior art | zeta-library-specific | Prior-art and upstream references for the library's technical direction; part of Zeta's research and implementation context, not factory substrate. |
+| Rings — Hardware intrinsics / platform | zeta-library-specific | Platform / hardware-sensitive implementation concerns belong with DBSP library performance/runtime choices, not the generic factory. |
+| Usage | factory-generic | How to add a row, ring-motion protocol. |
+
+### Refactor notes — TECH-RADAR.md
+
+Before split:
+
+1. Frontier inherits Legend + Usage + empty Rings table
+   stubs for all current Rings sections (Techniques,
+   Tools / infra, Upstreams / prior art, Hardware
+   intrinsics / platform).
+2. Zeta retains full current entry rows as the library's
+   technology-research record.
+3. Tools/infra section has mixed entries — **copy** (do
+   not move) factory-generic entries to Frontier as
+   examples. Canonical ownership of each carried row is
+   **Frontier** (the factory-generic example ring),
+   with Zeta's Tools/infra table as a decision record
+   that may reference them. No row is removed from
+   Zeta during split; duplication is intentional so
+   Zeta's historical radar record stays complete.
+
+Effort: **S** — mostly extraction; shape transfer is trivial.
+
+### Classification rationale — TECH-RADAR.md
+
+TECH-RADAR.md is a research-tracking substrate. Shape is
+Universal (ThoughtWorks pattern is explicit); adopters fork
+the shape and fill in their own research. The Zeta-specific
+content is exactly what makes the radar useful for Zeta; in
+Frontier, adopters get the shape to fill with their own
+content.
+
+## Audit — docs/FACTORY-HYGIENE.md
+
+**Overall classification:** **both (coupled)** — the file
+is the factory's meta-hygiene substrate (factory-generic
+shape), but the per-row Scope column already tags rows as
+`project` / `factory` / `both`, meaning execution of the
+split is not a whole-file move. Classifying as
+`factory-generic` + "Frontier as-is" would drop
+project-scoped hygiene rows out of Zeta at split time.
+
+**File location post-split:** Frontier keeps the canonical
+`FACTORY-HYGIENE.md` intact as the factory's meta-hygiene
+substrate; Zeta derives a project-specific hygiene doc by
+filtering rows whose Scope is `project` or `both`. The
+split is asymmetric (derivation, not duplication).
+
+**Length:** 206 lines + the Scope column's inline
+classification per row (already done by gap #8 discovery:
+gap #8 in the Frontier readiness roadmap was closed on
+re-inspection because this file self-classifies).
+
+### Meta-audit insight
+
+FACTORY-HYGIENE.md's Scope column IS the factory-vs-Zeta
+separation manifest, but the intended post-split shape is
+asymmetric:
+
+- Frontier keeps the canonical `FACTORY-HYGIENE.md` intact
+  as the factory's meta-hygiene substrate
+- Zeta derives its own project-specific hygiene doc from
+  the rows whose Scope is `project` or `both`
+- Rows marked `both` remain canonical in Frontier and are
+  mirrored into the derived Zeta doc with surgical
+  cross-references where needed
+
+The "Ships to project-under-construction" section is a
+Frontier-side projection over the canonical table: the
+adopter subset that ships with Frontier adoption.
+
+### Refactor notes — FACTORY-HYGIENE.md
+
+Trivial. The file's own Scope column is the split manifest:
+
+1. Keep `FACTORY-HYGIENE.md` in Frontier as the canonical
+   source of truth; do not split the main table into peer
+   Frontier-vs-Zeta copies
+2. Derive Zeta's project-specific hygiene doc by filtering
+   rows where Scope = `project` or `both`
+3. Preserve the "Ships to project-under-construction"
+   projection in Frontier only, because it is a projection
+   over the canonical table rather than part of the
+   derived Zeta doc
+
+Effort: **S** — mechanical derivation using the existing
+Scope column.
+
+### Classification rationale — FACTORY-HYGIENE.md
+
+FACTORY-HYGIENE.md is the factory's meta-hygiene substrate,
+by construction. Every row already declares its scope, so
+split execution reads directly off the Scope column
+without re-classification: Frontier keeps the canonical
+file, and Zeta receives a derived project-facing hygiene
+doc. This file is the gold standard for how rule
+substrates should be designed from the start —
+self-classifying, no retrofit audit needed. Confirms
+gap #8's closure: the hypothesis "hygiene rows not
+tagged" was wrong; the rows were all tagged. This
+audit formalises that self-classification as the
+file's purpose.
 
 ## How this audit connects to the multi-repo split
 
