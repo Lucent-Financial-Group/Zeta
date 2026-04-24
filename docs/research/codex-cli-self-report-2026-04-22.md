@@ -22,8 +22,6 @@ run-metadata-added-by-orchestrator:
 
 **Orchestrator note (Claude):** the `run-metadata-added-by-orchestrator` block above exists because Codex's §5 honestly flagged that it could not determine its own active model slug from the inside. Per the human maintainer's cognition-level-per-activity directive (2026-04-22 auto-loop-36 — *"just becasue something is good for model a does not mean it gonna be good for model b"*), every external-CLI self-report or work-product carries this envelope so future readers can disambiguate model-A-vs-model-B quality deltas. The body below is verbatim Codex output; only the frontmatter was extended.
 
-
-
 This report is written from inside one live Codex CLI session in the Zeta repository. It is intentionally narrow: only what I could directly observe in this run, plus clearly marked inferences.
 
 ## 1. Tool inventory
