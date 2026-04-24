@@ -50,6 +50,16 @@
 #   - README + header comment now match the implementation's
 #     zero-padded `PR-<NNNN>-<slug>.md` filename shape and
 #     document `bash` (not `bash 4+`) as the dependency.
+# Review-thread drain Otto-235 fixes (PR #357, third pass):
+#   - PR number is the canonical archive key: on re-archive,
+#     detect an existing `PR-<NNNN>-*.md` file and reuse its
+#     path regardless of current title, so title edits update
+#     in place rather than orphaning the old slug. New PRs
+#     still land at `PR-<NNNN>-<slug>.md`.
+#   - Preserve leading whitespace in archived body text:
+#     switched `.strip()` to `.rstrip('\n')` for review /
+#     thread-comment / general-comment bodies so indented
+#     code blocks and bullets survive the round-trip.
 
 set -euo pipefail
 
@@ -322,7 +332,23 @@ os.makedirs(out_dir, exist_ok=True)
 # Zero-pad to 4 digits — aligns with README's documented
 # filename shape (e.g. PR-0357-...). Sorts lexicographically
 # == numerically for PR #0001..#9999.
-path = os.path.join(out_dir, f'PR-{number:04d}-{slug}.md')
+#
+# Idempotency: the PR number is the canonical key. If an
+# archive for this PR already exists (any slug), reuse its
+# path so title edits update in place rather than orphaning
+# the old slug. Only when there is no prior archive do we
+# mint a new `PR-<NNNN>-<slug>.md` file.
+import glob as _glob
+existing = sorted(_glob.glob(os.path.join(out_dir, f'PR-{number:04d}-*.md')))
+if existing:
+    # Reuse the first match (deterministic by sort). If
+    # somehow multiple stale files exist for the same PR
+    # number, we overwrite the earliest-sorting one and
+    # leave the rest untouched — operator can clean up by
+    # hand; refusing to silently delete preserves audit.
+    path = existing[0]
+else:
+    path = os.path.join(out_dir, f'PR-{number:04d}-{slug}.md')
 
 archived_at = datetime.datetime.utcnow().isoformat(timespec='seconds') + 'Z'
 
@@ -366,10 +392,13 @@ if reviews:
         author = (r.get('author') or {}).get('login') or 'unknown'
         state = r.get('state') or 'COMMENTED'
         submitted = r.get('submittedAt') or ''
-        body_text = (r.get('body') or '').strip()
+        # Preserve leading whitespace: only strip trailing newlines.
+        # Indented code blocks / nested bullets in review bodies must
+        # survive the archive round-trip.
+        body_text = (r.get('body') or '').rstrip('\n')
         lines.append(f'### {state} — @{author} ({submitted})')
         lines.append('')
-        lines.append(body_text if body_text else '_(no body)_')
+        lines.append(body_text if body_text.strip() else '_(no body)_')
         lines.append('')
 
 threads = (pr.get('reviewThreads') or {}).get('nodes', [])
@@ -385,7 +414,9 @@ if threads:
         for c in (t.get('comments') or {}).get('nodes', []):
             author = (c.get('author') or {}).get('login') or 'unknown'
             when = c.get('createdAt') or ''
-            body_text = (c.get('body') or '').strip()
+            # Preserve leading whitespace: only strip trailing newlines
+            # so indented code blocks in review-thread comments survive.
+            body_text = (c.get('body') or '').rstrip('\n')
             lines.append(f'**@{author}** ({when}):')
             lines.append('')
             lines.append(body_text)
@@ -398,7 +429,9 @@ if comments:
     for c in comments:
         author = (c.get('author') or {}).get('login') or 'unknown'
         when = c.get('createdAt') or ''
-        body_text = (c.get('body') or '').strip()
+        # Preserve leading whitespace: only strip trailing newlines so
+        # indented code blocks in general PR comments survive.
+        body_text = (c.get('body') or '').rstrip('\n')
         lines.append(f'### @{author} ({when})')
         lines.append('')
         lines.append(body_text)

@@ -6,7 +6,7 @@ state: "OPEN"
 created_at: "2026-04-24T11:23:49Z"
 head_ref: "tools/pr-preservation-phase-2-minimal"
 base_ref: "main"
-archived_at: "2026-04-24T14:37:52Z"
+archived_at: "2026-04-24T14:49:33Z"
 archive_tool: "tools/pr-preservation/archive-pr.sh"
 ---
 
@@ -75,6 +75,7 @@ Scope out of this PR per maintainer *"make sure you backlog then to a proper lon
 ## Reviews
 
 ### COMMENTED — @chatgpt-codex-connector (2026-04-24T11:25:56Z)
+
 
 ### 💡 Codex Review
 
@@ -170,6 +171,7 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-04-24T13:26:42Z)
 
+
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
@@ -198,6 +200,7 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-04-24T13:45:51Z)
 
+
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
@@ -225,6 +228,63 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 ## Pull request overview
 
 Copilot reviewed 14 out of 14 changed files in this pull request and generated 7 comments.
+
+### COMMENTED — @AceHack (2026-04-24T14:38:59Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T14:39:07Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T14:39:11Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T14:39:15Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T14:39:21Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T14:39:23Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T14:39:25Z)
+
+_(no body)_
+
+### COMMENTED — @AceHack (2026-04-24T14:39:27Z)
+
+_(no body)_
+
+### COMMENTED — @chatgpt-codex-connector (2026-04-24T14:42:54Z)
+
+
+### 💡 Codex Review
+
+Here are some automated review suggestions for this pull request.
+
+**Reviewed commit:** `a5331f79e5`
+    
+
+<details> <summary>ℹ️ About Codex in GitHub</summary>
+<br/>
+
+[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+- Open a pull request for review
+- Mark a draft as ready
+- Comment "@codex review".
+
+If Codex has suggestions, it will comment; otherwise it will react with 👍.
+
+
+Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
+            
+</details>
 
 ## Review threads
 
@@ -339,7 +399,7 @@ P0: README says archives are written to `docs/pr-discussions/PR-<N>-<slug>.md`, 
 
 Fixed in 66e48f063082045871fb7d970bdb6fe213633524 — chose option A (update README to match script). Documented filename shape is now `PR-<NNNN>-<slug>.md` with zero-padding to four digits, explicitly called out in the Usage section with the rationale (lex-sort == num-sort for PR #0001..#9999). Picked this direction because the 10 backfilled files already use zero-padding and renaming them would churn cross-references and git history.
 
-### Thread 9: docs/pr-discussions/PR-0352-backlog-otto-180-server-meshing-spacetimedb-deep-research-ga.md:68 (resolved)
+### Thread 9: docs/pr-discussions/PR-0352-backlog-otto-180-server-meshing-spacetimedb-deep-research-ga.md:70 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T11:28:45Z):
 
@@ -352,7 +412,7 @@ P0: The backfilled `docs/pr-discussions/*.md` files include whitespace-only line
 
 Fixed in 66e48f063082045871fb7d970bdb6fe213633524. Ran `find docs/pr-discussions -name '*.md' -exec perl -i -pe 's/[ \t]+$//' {} +` across all existing archives — MD009 clean (grep-verified: zero trailing-whitespace lines remaining). Also added an inline trailing-whitespace strip inside the archive writer itself so future archive runs stay clean without needing the post-hoc sweep.
 
-### Thread 10: tools/pr-preservation/archive-pr.sh:212 (resolved)
+### Thread 10: tools/pr-preservation/archive-pr.sh:232 (resolved)
 
 **@chatgpt-codex-connector** (2026-04-24T13:26:42Z):
 
@@ -377,7 +437,7 @@ Codex P2 acknowledged and scoped, landed as a P2 research-grade BACKLOG row rath
 
 Resolving.
 
-### Thread 11: tools/pr-preservation/archive-pr.sh:390 (unresolved)
+### Thread 11: tools/pr-preservation/archive-pr.sh:390 (resolved)
 
 **@chatgpt-codex-connector** (2026-04-24T13:45:51Z):
 
@@ -387,7 +447,11 @@ The formatter rewrites every output line with `rstrip()`, which removes trailing
 
 Useful? React with 👍 / 👎.
 
-### Thread 12: tools/pr-preservation/archive-pr.sh:390 (unresolved)
+**@AceHack** (2026-04-24T14:38:59Z):
+
+Fixed in a5331f7. Dropped the per-line `rstrip()` normalization so trailing whitespace (e.g. markdown two-space hard-line-breaks) is preserved verbatim — the archive is a faithful audit copy again. Ran into a tension with a sibling thread on this same line (MD012 blank-line runs) so also added a blank-line-run collapse that normalizes 3+ blank lines to 2 without touching in-line trailing whitespace.
+
+### Thread 12: tools/pr-preservation/archive-pr.sh:390 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T13:47:01Z):
 
@@ -408,13 +472,21 @@ for line in content.split('\n'):
 content = '\n'.join(normalized_lines).rstrip() + '\n'
 ```
 
-### Thread 13: tools/pr-preservation/archive-pr.sh:60 (unresolved)
+**@AceHack** (2026-04-24T14:39:07Z):
+
+Fixed in a5331f7. Added the blank-line-run collapse you suggested (3+ consecutive blank lines -> 2) so archives stay clean under markdownlint MD012 without needing to ignore `docs/pr-discussions/**`. Also regenerated the three backfilled archives that were tripping MD012 (PR-0350, PR-0352, PR-0354) — they're now clean. Kept user-authored trailing whitespace preserved (markdown two-space hard-line-breaks) per the sibling thread.
+
+### Thread 13: tools/pr-preservation/archive-pr.sh:80 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T13:47:02Z):
 
 The repo-detection comment says the script "falls back" to Lucent-Financial-Group/Zeta if `gh repo view` fails, but the implementation hard-fails with exit 1 and does not provide any fallback. Please align the comment with actual behavior (or implement the documented fallback) so operators aren’t misled.
 
-### Thread 14: tools/pr-preservation/archive-pr.sh:50 (unresolved)
+**@AceHack** (2026-04-24T14:39:11Z):
+
+Fixed in a5331f7. The comment used to say "falls back" but the implementation hard-fails with exit 1 — updated the comment to match actual behavior: requires `gh repo view` to succeed, no silent fallback to a baked-in NWO. Rationale: better to fail loud than archive to the wrong repo path on a fork.
+
+### Thread 14: tools/pr-preservation/archive-pr.sh:61 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T13:47:02Z):
 
@@ -428,13 +500,21 @@ if ! [[ "$PR" =~ ^[0-9]+$ ]]; then
 fi
 ```
 
-### Thread 15: docs/pr-discussions/PR-0354-tools-backlog-split-phase-1a-generator-schema-example-row-aa.md:87 (unresolved)
+**@AceHack** (2026-04-24T14:39:15Z):
+
+Fixed in a5331f7. Applied your suggested shell-side integer validation (regex `^[0-9]+$`) before invoking Python. Now a non-integer arg exits 1 with a clear "PR number must be a non-empty positive integer" message instead of a Python traceback mapped to exit 2. Verified: `./archive-pr.sh not-an-int` exits 1 with the usage line.
+
+### Thread 15: docs/pr-discussions/PR-0354-tools-backlog-split-phase-1a-generator-schema-example-row-aa.md:87 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T13:47:02Z):
 
 This archived PR discussion includes multiple consecutive blank lines (e.g., between “**Reviewed commit:** …” and the following `<details>` block). With the current `.markdownlint-cli2.jsonc` config, MD012 (no multiple consecutive blank lines) will run on `docs/pr-discussions/**` and may fail CI. If the archive format is intended to be lint-clean, regenerate archives after adjusting the archiver to collapse excess blank lines; otherwise consider excluding `docs/pr-discussions/**` from markdownlint.
 
-### Thread 16: tools/pr-preservation/README.md:115 (unresolved)
+**@AceHack** (2026-04-24T14:39:21Z):
+
+Fixed in a5331f7. Added the blank-line-run collapse to the archiver (3+ -> 2) and regenerated this archive (PR-0354) along with PR-0350 and PR-0352 — all three were tripping MD012. Verified with a grep for `\\n\\n\\n\\n` across `docs/pr-discussions/*.md`: zero matches after regeneration.
+
+### Thread 16: tools/pr-preservation/README.md:115 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T13:47:02Z):
 
@@ -443,7 +523,11 @@ README lists a `bash 4+` dependency, but `archive-pr.sh` doesn’t appear to rel
 - `bash`, POSIX `mktemp`
 ```
 
-### Thread 17: tools/pr-preservation/README.md:7 (unresolved)
+**@AceHack** (2026-04-24T14:39:23Z):
+
+Fixed in a5331f7 — relaxed the documented dependency to `bash` with a note that the script uses no bash-4-only features and macOS default bash 3.2 is fine. Chose option (b) per your suggestion; adding a runtime version check would be extra complexity with no payoff since the script genuinely doesn't need 4+.
+
+### Thread 17: tools/pr-preservation/README.md:7 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T13:47:03Z):
 
@@ -452,8 +536,36 @@ The intro paragraph says the tool writes `docs/pr-discussions/PR-<N>-<slug>.md`,
 `docs/pr-discussions/PR-<NNNN>-<slug>.md` for durable
 ```
 
-### Thread 18: tools/pr-preservation/archive-pr.sh:25 (unresolved)
+**@AceHack** (2026-04-24T14:39:25Z):
+
+Fixed in a5331f7. README intro now says `docs/pr-discussions/PR-<NNNN>-<slug>.md` (zero-padded four digits) — matches the Usage section and the implementation.
+
+### Thread 18: tools/pr-preservation/archive-pr.sh:25 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T13:47:03Z):
 
 Header comment still describes the output path as `docs/pr-discussions/PR-<N>-<slug>.md`, but the implementation writes `PR-{number:04d}-...` (zero-padded to 4 digits). Consider updating the header comment so it matches the actual filename format (and the README’s `PR-<NNNN>-...` wording).
+
+**@AceHack** (2026-04-24T14:39:27Z):
+
+Fixed in a5331f7. Header comment block now documents the zero-padded `PR-<NNNN>-<slug>.md` filename shape, matching the implementation's `f'PR-{number:04d}-{slug}.md'` and the README.
+
+### Thread 19: tools/pr-preservation/archive-pr.sh:325 (unresolved)
+
+**@chatgpt-codex-connector** (2026-04-24T14:42:54Z):
+
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use PR number as stable archive filename key**
+
+The output path is keyed by a slug derived from the current PR title, so re-archiving after a title edit writes a second file instead of updating the existing archive for that PR number. This leaves stale duplicates (`PR-####-old-title.md` plus `PR-####-new-title.md`) and breaks the expected one-record-per-PR behavior for reconciliation/backfill workflows.
+
+Useful? React with 👍 / 👎.
+
+### Thread 20: tools/pr-preservation/archive-pr.sh:369 (unresolved)
+
+**@chatgpt-codex-connector** (2026-04-24T14:42:54Z):
+
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve leading whitespace in archived comment bodies**
+
+Comment/review text is normalized with `.strip()`, which removes leading spaces and leading blank lines from user-authored content before writing the archive. This is lossy for markdown that intentionally starts with indentation (for example indented code blocks) and undermines the script’s preservation/audit goal; the same pattern is used for thread and general comments as well.
+
+Useful? React with 👍 / 👎.
