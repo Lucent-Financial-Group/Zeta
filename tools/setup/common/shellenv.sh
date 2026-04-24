@@ -39,10 +39,10 @@ mkdir -p "$ZETA_ENV_DIR"
   # Remove once upstream `dotnet/runtime` ships a fix.
   # Per Otto-248 DST discipline: flakes are bugs; this is the
   # mitigation layer while the upstream fix lands.
-  echo 'if [ "$(uname -s)" = "Darwin" ] && [ "$(uname -m)" = "arm64" ]; then'
-  echo '  # .NET 10 Server GC workaround — Apple Silicon crash (Otto-248)'
-  echo '  export DOTNET_gcServer=0'
-  echo 'fi'
+  echo "if [ \"\$(uname -s)\" = \"Darwin\" ] && [ \"\$(uname -m)\" = \"arm64\" ]; then"
+  echo "  # .NET 10 Server GC workaround — Apple Silicon crash (Otto-248)"
+  echo "  export DOTNET_gcServer=0"
+  echo "fi"
 
   # Round-34 flip: dotnet SDK comes from mise (see .mise.toml
   # `[tools] dotnet`). Mise shims put `dotnet` on PATH via
