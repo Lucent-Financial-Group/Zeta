@@ -48,7 +48,7 @@ pasted Otto-136 as short-message framing)
 **Absorbed by:** Otto (loop-agent PM hat), Otto-136
 tick
 **Prior ferries:** PR #196 (1st) through PR #322 /
-# 324 / #329 (15th graduation set).
+`#324` / `#329` (15th graduation set).
 **Scheduling memory:** `memory/project_amara_17th_
 ferry_cartel_lab_implementation_closure_plus_5_5_
 thinking_verification_corrections_pending_absorb_otto_
