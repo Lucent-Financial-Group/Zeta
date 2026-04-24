@@ -2468,6 +2468,76 @@ within each priority tier.
 
 ## P1 — CI / DX follow-ups (after round-29 anchor)
 
+- [ ] **Enable macOS CI leg on canonical
+  `Lucent-Financial-Group/Zeta` — Aaron Otto-161
+  directive, PENDING VERIFICATION.** Aaron Otto-161
+  2026-04-24: *"we can enable mac everywhere now,
+  since its no cost for open source projects if you
+  are absoutly sure, lfg too"*.
+  **Current state:** `.github/workflows/gate.yml` line
+  77 gates the macOS matrix leg to contributor forks
+  only via `github.repository == 'Lucent-Financial-
+  Group/Zeta'`; canonical repo builds ubuntu-22.04
+  only. Comment block lines 49-71 cite prior maintainer
+  directive (2026-04-21 *"Mac is very very expensive
+  to run"*). Otto-161 reverses that prior directive,
+  conditioned on the no-cost-for-public-repos claim.
+  **Verification gap (Otto-163 research):** repo is
+  confirmed public. GitHub docs state *"GitHub Actions
+  usage is free for standard GitHub-hosted runners in
+  public repositories"* but do NOT explicitly list
+  macos-14 / macos-latest as "standard"; the same docs
+  list macOS at $0.062/min under the pricing table,
+  which suggests macOS may be treated as
+  premium/larger rather than standard. Otto-163
+  reached two GitHub docs pages and could not
+  definitively confirm macOS runners are free-for-
+  public. **Action sequence:**
+  1. **Verify pricing definitively.** Either Aaron
+     confirms from his own knowledge / recent policy
+     announcement, OR Otto reaches a primary-source
+     GitHub blog post / announcement naming
+     `macos-14` / `macos-latest` as standard-runner-
+     free-for-public.
+  2. **Update gate.yml matrix.** One-line change at
+     line 77: replace the `fromJSON` conditional with
+     a static `["ubuntu-22.04", "macos-14"]`. Update
+     the comment block (lines 49-71) to cite Otto-161
+     + verification source. Branch-protection
+     required-checks list must also add
+     `build-and-test (macos-14)` (workflow edit alone
+     is not enough; repo settings need updating via
+     `gh api` or UI).
+  3. **Same change on `LFG/lucent-ksk`.** Cross-repo
+     per Otto-140 rewrite authority; Max attribution
+     preserved. Run the same verification first; the
+     same pricing policy applies.
+  4. **Monitor CI throughput.** Adding macOS matrix
+     doubles CI slots per PR; with a 16-PR saturated
+     queue (Otto-162 snapshot), this may worsen
+     throughput. Plan a rollback path (revert the
+     one-line change) if throughput regresses
+     measurably.
+  5. **Document the decision.** Update
+     `docs/FACTORY-HYGIENE.md` row #51 "Enforcement
+     deferred" language — once macOS is enabled,
+     enforcement in the audit can flip from
+     detect-only to `--enforce` mode.
+  **Priority P1 CI/DX**; effort S (one-line workflow +
+  one-line branch-protection update per repo) after
+  verification clears. Composes with FACTORY-HYGIENE
+  row #51 (cross-platform parity audit), Otto-140 KSK
+  rewrite authority, Otto-90 no-coordination-gate with
+  Aaron/Max, prior 2026-04-21 "Mac is expensive"
+  directive (reversed by Otto-161). **Does NOT**
+  authorize shipping without verification. **Does
+  NOT** authorize removing ubuntu-22.04 leg (macOS is
+  additive, not replacement). **Does NOT** authorize
+  skipping the corresponding branch-protection update
+  (workflow-only landing = toothless gate). **Does
+  NOT** authorize LFG/lucent-ksk changes without
+  running the same verification first.
+
 - [ ] **HLL property-test flakiness — investigate before
   retry (DST discipline).** Observed 2026-04-23 (auto-loop-88):
   `Zeta.Tests.Properties.FuzzTests.fuzz: HLL estimate
