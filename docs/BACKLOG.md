@@ -4717,9 +4717,10 @@ systems. This track claims the space.
 - [ ] **"Frontier" naming conflict with OpenAI Frontier
   — rename factory's UI-layer "Frontier" to something
   non-conflicting.** Aaron 2026-04-24 Otto-168: *"i just
-  found this https://openai.com/index/introducing-openai-
-  frontier/ ... naming conflicts ... also absorb everyting
-  lol, it composes nicely ... backlog"*.
+  found this
+  https://openai.com/index/introducing-openai-frontier/
+  ... naming conflicts ... also absorb everyting lol, it
+  composes nicely ... backlog"*.
 
   **OpenAI Frontier scope (Otto-169 WebSearch):** launched
   2026-02-05 as an **enterprise AI-agent platform** for
@@ -4761,12 +4762,13 @@ systems. This track claims the space.
 
   (a) **CONFLICTING (must rename).** Factory's public-
   user-facing UI layer name:
-  - `docs/research/frontier-ux-zora-evolution-2026-04-24
-    .md` — primary UX design doc
+  - Primary UX design doc:
+    `docs/research/frontier-ux-zora-evolution-2026-04-24.md`
   - BACKLOG row ~4381 / ~4408 — "Frontier UI" + "Otto-63
     Frontier burn-rate-UI" cross-refs
-  - `memory/feedback_aaron_dont_wait_on_approval_log_
-    decisions_frontier_ui_is_his_review_surface_*.md`
+  - Memory pointer (concrete file in
+    `memory/MEMORY.md`):
+    `memory/feedback_aaron_dont_wait_on_approval_log_decisions_frontier_ui_is_his_review_surface_2026_04_24.md`
     and siblings
 
   (b) **TECHNICAL-LITERATURE (keep).** "Frontier" as
@@ -4841,15 +4843,15 @@ systems. This track claims the space.
 
   **Composition (per Aaron "composes nicely").**
   Composes with:
-  - `docs/research/frontier-ux-zora-evolution-2026-04-
-    24.md` — primary rename target; "Zora" in filename
-    is one candidate.
+  - Primary rename target — "Zora" in filename is one
+    candidate:
+    `docs/research/frontier-ux-zora-evolution-2026-04-24.md`
   - BACKLOG "Frontier plugin inventory" row (directly
     below) — cross-reference update post-rename.
-  - Aurora / Zeta / KSK naming triangle (`docs/
-    definitions/KSK.md`, Amara 5th/7th/16th ferries) —
-    rename slots into this ecosystem without adding a
-    fourth brand.
+  - Aurora / Zeta / KSK naming triangle — rename slots
+    into this ecosystem without adding a fourth brand
+    (see `docs/definitions/KSK.md`, Amara 5th / 7th /
+    16th ferries).
   - DST + Cartel-Lab + Veridicality internal module
     names — unaffected (not public-UI).
 
