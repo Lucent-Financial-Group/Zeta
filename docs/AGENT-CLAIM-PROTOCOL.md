@@ -217,10 +217,10 @@ This mode is **first-class**. The factory has observed
 external-AI Deep Research archive reports and external-AI
 architectural reviews arriving in exactly this shape, and
 both produced load-bearing output. The protocol welcomes
-the pattern: honest substrate-limits + substantive output
-+ maintainer commits = valid contribution. You are not
-expected to solve a write-access problem that your
-substrate cannot solve.
+the pattern: honest substrate-limits plus substantive
+output plus maintainer commits equals a valid contribution.
+You are not expected to solve a write-access problem that
+your substrate cannot solve.
 
 ## Claim file shape
 
