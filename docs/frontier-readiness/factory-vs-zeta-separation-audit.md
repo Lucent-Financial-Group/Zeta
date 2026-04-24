@@ -67,11 +67,9 @@ For each audited file:
 - **docs/ROUND-HISTORY.md** (below, Otto-18 fire)
 - **docs/BACKLOG.md** (below, Otto-18 fire)
 - **docs/ROADMAP.md** (below, Otto-18 fire)
-- **docs/VISION.md** (below, Otto-18 fire)
-- **docs/TECH-RADAR.md** — audited on sibling PR #188 (classification recorded there; no `## Audit —` section in this file pending that merge)
-- **docs/FACTORY-HYGIENE.md** — audited on sibling PR #188 (classification recorded there; no `## Audit —` section in this file pending that merge)
+- **docs/VISION.md** (below, Otto-18 fire) — also GOVERNANCE.md on PR #181, AGENT-BEST-PRACTICES.md on PR #184, ALIGNMENT.md on PR #185, TECH-RADAR.md + FACTORY-HYGIENE.md on PR #188
 
-Cross-PR audits that duplicate in-file coverage: GOVERNANCE (also on PR #181), AGENT-BEST-PRACTICES (also on PR #184), ALIGNMENT (also on PR #185) — the in-file `## Audit —` sections for these three are the authoritative classification; the sibling PRs are redundant or superseded.
+Cross-PR audits that duplicate in-file coverage: GOVERNANCE (also on PR #181), AGENT-BEST-PRACTICES (also on PR #184), ALIGNMENT (also on PR #185), TECH-RADAR + FACTORY-HYGIENE (PR #188, now merged and recorded in-file) — the in-file `## Audit —` sections are the authoritative classification.
 
 ### Files to audit (not yet classified; add rows as they land)
 
