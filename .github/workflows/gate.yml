@@ -56,17 +56,23 @@ jobs:
     # so the prior fork/LFG cost-opt split (which kept macOS off LFG)
     # no longer applies.
     #
-    # Active legs (3):
+    # Active legs (4):
     #   - macos-26          macOS 26, Apple Silicon M1 (3 CPU, 7 GB)
     #   - ubuntu-24.04      Ubuntu 24.04 LTS x64 (4 CPU, 16 GB)
     #   - ubuntu-24.04-arm  Ubuntu 24.04 LTS arm64 (4 CPU, 16 GB)
-    #
-    # Not a fit: `ubuntu-slim` (1 vCPU, 5 GB RAM, hard 15-minute job
-    # timeout per GitHub's runner reference, GA'd 2026-01-22). The
-    # full `dotnet build` + `dotnet test` on Zeta.sln does not fit
-    # that envelope — single-CPU runners are intended for lightweight
-    # automation, not heavyweight CI gates. Excluded from the matrix
-    # entirely. Reference:
+    #   - ubuntu-slim       Ubuntu slim x64 (1 vCPU, 5 GB RAM;
+    #                       15-minute job timeout per GitHub's
+    #                       runner reference). EXPERIMENTAL leg
+    #                       per maintainer directive 2026-04-24:
+    #                       "ubuntu-slim lets just try and see,
+    #                       we can give i more than 15 i want to
+    #                       see how small we can handle". The
+    #                       full `dotnet build` + `dotnet test`
+    #                       may not fit the 15-min job timeout;
+    #                       if it consistently times out or OOMs,
+    #                       either remove from matrix or shift to
+    #                       a minimal lint-only task set.
+    #                       Reference:
     # https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
     #
     # Deferred legs (commented, enable when Windows peer-harness
@@ -91,6 +97,7 @@ jobs:
           - macos-26
           - ubuntu-24.04
           - ubuntu-24.04-arm
+          - ubuntu-slim  # experimental; fail-fast:false; not in required-checks
           # Deferred until Windows peer-harness milestone:
           # - windows-2025
           # - windows-11-arm
