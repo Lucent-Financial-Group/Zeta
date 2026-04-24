@@ -23,6 +23,7 @@
     <Compile Include="Algebra/Veridicality.Tests.fs" />
     <Compile Include="Algebra/Graph.Tests.fs" />
     <Compile Include="Algebra/PhaseExtraction.Tests.fs" />
+    <Compile Include="Algebra/SignalQuality.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
@@ -45,6 +46,7 @@
     <Compile Include="Operators/Differentiate.Tests.fs" />
     <Compile Include="Operators/RecursiveCounting.MultiSeed.Tests.fs" />
     <Compile Include="Operators/RecursiveSemiNaive.Boundary.Tests.fs" />
+    <Compile Include="Operators/CrmScenarios.Tests.fs" />
 
     <!-- Storage/ -->
     <Compile Include="Storage/Spine.Tests.fs" />

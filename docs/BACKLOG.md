@@ -1310,6 +1310,61 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Live-lock smell cadence (round 44 auto-loop-46 absorb,
+  landed as `tools/audit/live-lock-audit.sh` + hygiene-history log)** —
+  Aaron 2026-04-23: *"on some cadence look at the last few things
+  that went into master and make sure its not overwhelemginly
+  speculative. thats a smell that our software factor is live
+  locked."* Classifies last N commits on `origin/main` into EXT
+  (src/tests/samples/bench), INTL (tick-history/BACKLOG/.claude),
+  SPEC (research/memory/DECISIONS), OTHR. Flags when EXT < 20%.
+  **Inaugural run 2026-04-23:** EXT 0%, INTL 72%, SPEC 16%, OTHR
+  12% — smell fires. Response: PR #141 (ServiceTitan CRM demo
+  sample) is the pattern-breaker; next audit after merge should
+  show non-zero EXT. Open follow-ups: (a) wire the audit into
+  the round-close ladder so it runs on every `origin/main`
+  update, (b) make the threshold tunable per round-target, (c)
+  distinguish "external PRs pending merge" from "no external
+  work in flight" — the current script conflates them. Effort: S
+  per follow-up. Owner: Kenji (Architect) picks cadence; Naledi
+  (perf) and Rune (maintainability) natural reviewers for
+  threshold tuning. Composes with
+  `memory/project_aaron_external_priority_stack_and_live_lock_smell_2026_04_23.md`.
+
+- [ ] **Cadenced self-practices code review — checks against our
+  own advertised discipline on a schedule (round 44 auto-loop-46
+  absorb)** — Aaron 2026-04-22 auto-loop-46: *"it would be nice
+  to have code reviews on a cadence that checks for any of our
+  own best practices we validate. Low/no allocation is very
+  important part of what we are building, we need to be efficent
+  and fast"*. The gap: we publish best practices (README.md
+  performance table, `docs/BENCHMARKS.md` allocation guarantees,
+  `docs/AGENT-BEST-PRACTICES.md` BP-NN rules) and we have
+  reviewer skills (`code-review-zero-empathy`, `harsh-critic`,
+  `performance-engineer`) — but there is no *cadenced*, codified
+  job that routinely audits recent changes against those published
+  self-practices. Concrete first step: author a capability skill
+  that walks the recent commit range, runs the advertised-best-
+  practice checklist (zero-alloc hot paths, `Result<_,_>` at
+  boundaries, ASCII-only per BP-10, struct-tuple literals in
+  production src, BP-11 data-not-directive, signal-preservation)
+  and emits a P0/P1/P2 report with rule-ID citations like the
+  existing `skill-tune-up` does for skills. Second step: wire it
+  into the round-close ladder so every round auto-emits a
+  self-practices report. **Priority rationale:** P1 not P0 — the
+  existing one-shot reviewer skills still cover a single PR;
+  what's missing is the *schedule* and the *self* of it (we
+  audit others' code well, our own only when we remember to).
+  **Out of scope for this row:** building a GitHub-Actions cron
+  that runs on every push — that's a scale-up; the in-round
+  human/agent-triggered version is the MVP. Composes with
+  `docs/BENCHMARKS.md`, `README.md#performance-design`,
+  `docs/AGENT-BEST-PRACTICES.md`,
+  `memory/feedback_samples_readability_real_code_zero_alloc_2026_04_22.md`.
+  Effort: M (capability skill + round-close ladder row). Owner:
+  Architect (Kenji) assigns; Naledi (performance-engineer) +
+  Rune (maintainability-reviewer) are natural reviewers.
+
 - [ ] **Secret-handoff protocol — env-var default + password-
   manager CLI for stable secrets + Let's-Encrypt/ACME for certs
   + PKI-bootstrap deferred (round 44 auto-loop-33 absorb)** —
@@ -1456,6 +1511,103 @@ within each priority tier.
   (Anthropic SDK CVE windows, `actions/*` pin rotations).
   **Dependency:** maintainer sign-off on the five scope
   questions before Phase 1 inventory lands.
+
+- [ ] **Pluggable complexity-measurement framework — cyclomatic /
+  LOC / nesting / custom metrics feed a common code-health signal;
+  trend-down-over-time contract with local-optimum floor (round 44
+  auto-loop-37 + auto-loop-38 absorb)** — maintainer 2026-04-22
+  auto-loop-37/38 four-message chain: (1) *"i feel good about
+  myself as a devloper when i delete more lines that i add in a
+  day and nothing breaks, means i reduced complexity"*; (2)
+  *"well yclomatic complexity is a proxy for that"*; (3) *"a
+  metric that would atter add up add our cyclomatic complexity
+  and / lines of code (or vice versa i also get inverses
+  backwards) should decrease over time untill it hit a floor
+  which could be a local optimum"*; (4) *"if it's going up you
+  are wring shit cod[e]"*; follow-up on tooling choice: *"thats
+  is pluggable someting but backlog it"*. Factory needs a
+  **pluggable** complexity-measurement surface — multiple
+  metric providers (cyclomatic, LOC, nesting depth, cognitive
+  complexity, maintainability-index, Halstead, custom) feeding
+  a common code-health signal; trend-over-time contract is
+  monotone-decreasing with a local-optimum floor. Pluggable =
+  new metric implementations ship as modules behind a stable
+  interface; factory composes them into a weighted aggregate
+  without coupling to a single tool. **Proposed shape:**
+  `tools/complexity/providers/<name>.{sh|fsx|cs}` each exposing
+  a stable stdout contract (per-file or per-module JSON with
+  `{file, metric, value, commit_sha}`); `tools/complexity/
+  aggregate.sh` joins provider output + commits a per-tick
+  health row to `docs/hygiene-history/complexity-trend.md`;
+  factory CI asserts the aggregate's rolling trend is
+  monotone-non-increasing or trending-toward-floor (regression =
+  warning, not failure — writing-shit-code signal surfaced, not
+  blocked). **Direction question carried over to Phase 0**
+  (maintainer must answer before Phase 1 scopes): is the
+  aggregate `CC / LOC` (complexity-per-line; lower = terser) or
+  `LOC / CC` (lines-per-decision; lower = denser)?
+  Maintainer self-flagged *"i also get inverses backwards"* —
+  direction intent clear (complexity down), formula TBC.
+  **Four-phase work queued:** (0) **Direction confirmation** —
+  maintainer answers which ratio direction; establishes the
+  contract monotone-downward sense. Effort S. (1) **Minimal
+  first provider** — LOC-delta-per-tick as a trivial starting
+  metric (already available from `git log --shortstat`); one
+  provider, one aggregator, one history doc. Effort S. (2)
+  **Cyclomatic-complexity provider** — integrate a C#/F# CC
+  tool (candidates: `dotnet-ifc`, `Metrix++`, `roslynator`,
+  `Lizard`, custom Roslyn analyser). Effort M; tool-selection
+  gated on maintainer preference. (3) **Aggregate + trend
+  contract** — per-tick aggregate write to
+  `docs/hygiene-history/complexity-trend.md`; rolling trend
+  check (monotone-non-increasing modulo local-optimum floor);
+  CI warning on regression. Effort M. (4) **Force-multiplication
+  integration** — feed the complexity-delta outcome into
+  `docs/force-multiplication-log.md` primary score per auto-
+  loop-37 Goodhart-resistance correction; +N points per
+  net-negative-LOC tick with tests passing. Effort S once
+  phase 3 lands. **Design constraints from maintainer context:**
+  - **Pluggable** (maintainer keyword) — interface stable,
+    implementations swappable; don't couple to a single tool.
+  - **Trend-over-time** — per-tick snapshots form a time
+    series; regressions are visible on the trend not just a
+    single-point threshold.
+  - **Local-optimum floor** — metric will converge; factory
+    recognises the floor as *the codebase is about as simple
+    as it can be under current architecture*, not as a bug.
+    Architectural moves that raise CC legitimately (e.g.
+    adding a genuinely new capability) should be visible as
+    a step-up followed by a renewed downward trend, not a
+    fail signal.
+  - **Goodhart-resistant** — composition with force-
+    multiplication log scoring; CC must pair with test-pass
+    (deletion-without-breakage), not just LOC-reduction.
+  **What this is NOT:** NOT a commitment to ship all four
+  phases this round (phase 0 + 1 is the minimal start); NOT a
+  tool selection (maintainer chooses); NOT a mandate to
+  refactor existing code against the metric (metric observes,
+  doesn't prescribe); NOT blocking on the force-multiplication
+  log rewrite (that's integration-layer work; phases 0-3 are
+  tooling); NOT applicable to generated code / third-party
+  absorbed source (scope to factory-authored code only).
+  **Reviewer routing:** Architect (Kenji) on the pluggable-
+  interface design, Aarav (skill-tune-up) on the trend-contract
+  discipline-shape, Rodney (reducer) on the essential-vs-
+  accidental cut criterion for what counts as a legitimate
+  step-up, Naledi (performance-engineer) adjacent — per-tick
+  measurement cost must not break the autonomous-loop budget.
+  **Maintainer-background composition:** Aaron's Itron RIVA
+  smart-meter work shipped constrained-substrate bootstrapping
+  to field devices where code size directly gated OTA update
+  feasibility; complexity-down-over-time was a hardware-
+  engineering necessity there before it was a software-
+  engineering virtue here. See
+  `memory/feedback_deletions_over_insertions_complexity_reduction_cyclomatic_proxy.md`
+  (out-of-repo maintainer context) for the full rule body and
+  composition map with Rodney's Razor + Goodhart-resistance.
+  Effort: S for phase 0 + phase 1; M for phase 2 + phase 3;
+  S for phase 4 integration. Carrier-channel: this row + the
+  memory + Aaron's verbatim quote chain above.
 
 - [ ] **Complete-GitHub-surface map integration — extend repo-level
   ten-surface playbook up to org / sideways to enterprise / across to
@@ -5610,6 +5762,436 @@ systems. This track claims the space.
   Composes with the accounting-lag same-tick-mitigation
   discipline (watch-counts land same-tick as the qualifying
   observation, not lagged).
+- [ ] **Cutting-edge DB gap: learned cost-model framework**
+  (round 44 auto-loop-46 absorb, research anchor:
+  `docs/research/cutting-edge-database-gap-review-2026-04-23.md`
+  §5) — Aaron 2026-04-23 directive to file BACKLOG rows for
+  database gaps where we are not cutting edge. Zeta has no cost
+  model at all: no cardinality estimation, no planner heuristics
+  beyond hand-rolled. A pluggable cost-model framework would
+  compose directly with semiring-parameterized Zeta (the
+  multi-algebra regime change, auto-loop-38) — different
+  semirings have different cost shapes, so a learned cost model
+  could be trained per-semiring. **Research anchors:** Marcus
+  et al., "Bao: Making Learned Query Optimization Practical",
+  VLDB 2021; "LOGER: Toward a Deployable Learned Query
+  Optimizer", VLDB 2023. **First step:** stub a
+  `Zeta.Core.CostModel` interface with `estimate(op: Op<_>) :
+  CostEstimate`, plus a hand-tuned default implementation for
+  the existing operator set. Later: learned-model plug-in via
+  training-trace harness. **Effort:** M-L (research-grade). Not
+  a round-44 commitment; gates on Aaron + Naledi (perf) review.
+
+- [ ] **Cutting-edge DB gap: power-loss simulator for
+  `src/Core/Durability.fs`** (round 44 auto-loop-46 absorb,
+  research anchor: `docs/research/cutting-edge-database-gap-
+  review-2026-04-23.md` §10) — Zeta's `Durability.fs` has
+  mode definitions but no fault-injected validation. TigerBeetle
+  (2024-2026) has set the production gold standard for
+  power-loss-tested journaling; Zeta's durability claims are
+  today only asserted in code, not demonstrated under crash.
+  **Research anchors:** Pillai et al., "All File Systems Are
+  Not Created Equal: On the Complexity of Crafting Crash-
+  Consistent Applications", OSDI 2014 (still canonical);
+  Rosenbaum et al., "Modern Durability for B-Trees", VLDB 2023;
+  TigerBeetle post-mortems (2024-2026 GitHub issues) as applied
+  literature. **First step:** a `CrashTestHarness` that freezes
+  a Spine mid-write, forks the process, and verifies the
+  surviving segment replays to a recoverable state under every
+  durability mode. Composes with existing
+  `DeterministicSimulation` test harness — same spirit, fault
+  injection instead of schedule permutation. **Effort:** M
+  (production-grade requirement, bounded to `Durability.fs` +
+  test harness). Natural reviewers: Soraya (formal-verification
+  routing), Naledi (perf).
+
+- [ ] **Cutting-edge DB gap: object-store-backed Spine (S3 /
+  Azure Blob / GCS)** (round 44 auto-loop-46 absorb, research
+  anchor: `docs/research/cutting-edge-database-gap-review-2026-
+  04-23.md` §1) — Zeta's Spine family (`BalancedSpine`,
+  `DiskSpine`, FastCDC, Merkle) runs on local filesystem only.
+  Delta Lake, Apache Iceberg v2/v3, and Apache Hudi all ship
+  ACID-on-S3 with time-travel, schema evolution, MERGE, and
+  row-level deletes. Zeta's retraction-native algebra *is*
+  MERGE semantics (retraction ARE deletes), so an object-store
+  backing would let Zeta compose with Delta/Iceberg catalogs
+  or replace them. **Research anchors:** Armbrust et al.,
+  "Delta Lake: High-Performance ACID Table Storage over Cloud
+  Object Stores", VLDB 2020; Apache Iceberg v3 spec (2024);
+  Databricks blog, "Liquid Clustering in Delta Lake" (2024).
+  **First step:** define the `Spine.IStorageBackend` capability
+  interface (Get/Put/Delete/List + range-read), land an
+  `S3SpineBackend` implementation gated behind `PublishAot=false`
+  because AWS SDK has AOT warnings. Gate on
+  `memory/project_zeta_self_use_local_native_tiny_bin_file_db_no_cloud_germination_2026_04_22.md`
+  — Aaron said "no cloud" for factory self-use specifically;
+  this row is for external consumers, not Zeta self-use. **Effort:**
+  L (multi-round). Reviewers: Aaron (scope gate on cloud
+  direction), Ilyana (public-API designer), Naledi (perf).
+
+- [ ] **ARC-3 adversarial self-play as emulator-absorption
+  scoring mechanism — three-role symmetric-quality loop
+  (level-creator / adversary / player); competition pushes
+  field forward; SOTA-changes-daily urgency.** Aaron 2026-04-22
+  auto-loop-43 four-message compressed directive: (1) *"self
+  directe play using arc3 type rules but in an advasarial
+  level/game creator level/game player, this will let us
+  score our absorption of emulators"*, (2) *"and a symmeritc
+  quality loop"*, (3) *"they will naturally push the field
+  forward through compitioon"*, (4) *"state of the art
+  changes everyday"*. ARC-3-style co-evolutionary setup with
+  three self-directed agents — level creator generates novel
+  scenarios, adversary finds exploits in player solutions,
+  player solves (the absorbed emulator). Symmetric quality
+  property: all three roles advance each other via
+  competition, no asymmetric teacher-student. Gives #249
+  emulator substrate research a measurable success signal
+  (until now vibes-based). Same pattern generalises to #242
+  UI-factory frontier-protection (UI-DSL absorption scoring)
+  and #244 ServiceTitan CRM demo (quantitative backbone for
+  "0-to-prod-in-hours" claim). Research doc:
+  `docs/research/arc3-adversarial-self-play-emulator-absorption-scoring-2026-04-22.md`.
+  Memory: `memory/project_arc3_adversarial_self_play_emulator_absorption_scoring_2026_04_22.md`.
+  Six open questions blocking scope-binding: (a) ARC-3
+  literal-vs-inspiration, (b) self-hosted-vs-external,
+  (c) emulator-only vs generalised scope, (d) urgency tier
+  relative to existing P0s, (e) adversary role identity
+  (internal agent / external substrate / security roster
+  wearing adversary hat), (f) "field" scope. NOT round-45
+  implementation commitment; NOT authorization to build
+  speculatively. Precedent literature orientation (not
+  mandate): AlphaZero self-play, POET/Paired Open-Ended
+  Trailblazer (Wang 2019), OMNI (Zhang 2023),
+  adversarial-robustness (Madry / Goodfellow), ARC Prize
+  (Chollet et al.). Scope-binding: Aaron confirmation on
+  the six questions. Effort when binding: L (research-grade,
+  multi-round). Reviewers at binding: Soraya (formal
+  verification — is the symmetric-quality property
+  formally captureable?), Ilyana (public-surface if exposed
+  as API), Kira (harsh-critic on premature-complexity risk).
+
+- [ ] **Semiring-parameterized Zeta — one algebra to map the
+  others; K-relations as regime-change.** Aaron 2026-04-22
+  auto-loop-38 three-message confirmation chain: (1) *"what
+  about multiple algebras in the db"* (opening question),
+  (2) *"semiring = pluggable algebra in the db). thats it"*
+  (explicit confirmation that semiring is the vocabulary for
+  "multiple algebras"), (3) *"semiring-parameterized Zeta /
+  multiple algebras in the db this is regieme changing"*
+  (weight-signal: regime-change framing), (4) *"it's our
+  model claude one algebra to map the others"* (architectural
+  claim: Zeta's operator algebra is the *stable* meta-layer,
+  semiring is the *pluggable parameter*, all other database
+  algebras become hosted within the one Zeta algebra by
+  swapping the semiring), (5) *"one agent to map the others"*
+  + *"sorry Kenji"* (agent-layer isomorph: the same "one stable
+  meta + pluggable specialists" shape repeats at the agent
+  layer where Kenji-the-Architect is the *one agent* mapping
+  between specialist personas — Aaron apologized to Kenji for
+  the "claude one algebra" phrasing crediting the generic agent
+  rather than the named role that actually does the mapping).
+  **The isomorphism is exact and load-bearing:**
+  Zeta operator algebra : semirings :: Kenji : specialist
+  personas — two-layer instance of the same architectural
+  pattern (stable meta + pluggable specialists) which the
+  factory now recognizes as recurrent across its substrate
+  (UI-DSL calling-convention over shipped kernels;
+  pluggable-complexity-measurement framework; semiring-
+  parameterized Zeta; Kenji over specialist personas — four
+  occurrences in auto-loop-37/38 alone). **Reference:**
+  Green–Karvounarakis–
+  Tannen, "Provenance semirings" (PODS 2007) — the canonical
+  K-relations paper; generalizes relational algebra by
+  replacing `{0,1}` annotations with values from an arbitrary
+  commutative semiring; standard semirings of interest
+  (Boolean, counting N, trust `(min,max)`, probabilistic
+  `[0,1]`, tropical `(min,+)` for shortest paths, lineage
+  `N[X]` for provenance tracking, why-provenance `PosBool(X)`,
+  how-provenance `N[X]`, and the security semiring). **Zeta
+  connection:** Zeta's current ZSet (integer-weighted
+  multiset) is the *counting semiring* `(N, +, ×, 0, 1)`
+  special case. The retraction-native operator algebra
+  (D/I/z⁻¹/H) is already *generic* over the weight-ring in
+  principle — the operators compose algebraically and do not
+  intrinsically require integer weights. Generalizing from
+  "ZSet-semiring hard-coded" to "semiring-as-parameter" gives
+  Zeta a universal algebraic substrate for stream-incremental
+  computation over *any* semantics expressible as a semiring.
+  **Why regime-change:** Zeta stops being "one DB system
+  among many" and becomes "the host for all DB algebras."
+  The same retraction-native incremental maintenance
+  machinery (D/I/z⁻¹/H) now handles tropical shortest-path
+  updates, Boolean lineage tracking, probabilistic inference
+  delta-updates, and provenance recomputation with identical
+  operator code — the algebra is one, the semiring is
+  plugged. This composes with Escro's maintain-every-
+  dependency / microkernel-OS endpoint (distinct axis: Escro
+  owns the dependency stack, semiring-parameterized Zeta owns
+  the algebraic substrate), with retraction-native operator
+  algebra (the D/I/z⁻¹/H machinery stays fixed, gains semiring
+  parameter), and with the pluggable complexity-measurement
+  framework filed same tick (sibling pattern: stable interface
+  + swappable implementations, one layer up the stack). **Not
+  a round-45 commitment; not a v1 promise.** Research-grade
+  direction; paper-worthy if executed ("Retraction-native
+  stream processing over arbitrary semirings"). **Open
+  questions, flagged to maintainer, not self-resolved:**
+  (i) scope — does pluggable-semiring live at the storage
+  layer (ZSet → `KSet<K>` where K is the semiring), at the
+  operator layer (D/I/z⁻¹/H parameterized), or both?
+  (ii) which semirings are v1 targets — tropical for
+  shortest-path demos, probabilistic for Bayesian-net
+  streaming, lineage for debug-ability? (iii) performance
+  implications — arbitrary semirings are slower than
+  integer-specialized kernels; is there a generic-then-
+  specialize path (Roslyn source-generators per-semiring
+  kernel emission)? (iv) relationship to Zeta.Bayesian —
+  probabilistic semiring is a natural fit; does
+  Zeta.Bayesian become a thin layer over the generalized
+  semiring substrate, or stay independent? (v) relationship
+  to DBSP / Feldera's Z-algebra approach — they stay
+  integer-specialized; semiring-generalization is a distinct
+  research direction from DBSP literature. (vi) correctness
+  proof — semiring axioms (associativity, commutativity,
+  distributivity, identity elements) must be verified for
+  each pluggable semiring; which ones (all? just v1 set?)
+  get TLA+ / Lean proofs? **Reviewer routing:** Kenji
+  (Architect — this reshapes the whole operator algebra
+  layer-boundary, synthesis territory), Aaron (maintainer —
+  regime-change scope decisions are his call), Soraya
+  (formal verification — semiring axioms as TLA+/Lean
+  property class; per `docs/AGENT-BEST-PRACTICES.md` BP-16
+  cross-check rule, semiring laws may be a Z3/Lean fit rather
+  than TLA+), Naledi (performance — arbitrary-semiring slow
+  path vs integer-specialized fast path), Hiroshi (asymptotic
+  complexity — semiring-choice changes cost model), Imani
+  (planner — operator-cost model is semiring-dependent),
+  Ilyana (public-API — `KSet<K>` / semiring-trait public
+  surface is a long-term contract), Aarav (skill-lifecycle —
+  may produce a semiring-authorship capability skill).
+  **Composes with:** `memory/feedback_outcomes_over_vanity_metrics_goodhart_resistance.md`
+  (regime-change framing composes with DORA-outcome measurement
+  — a regime-change success is *observably* measured by
+  semiring-over-semiring code-reuse metrics, not vanity-lines);
+  `memory/feedback_deletions_over_insertions_complexity_reduction_cyclomatic_proxy.md`
+  (pluggable-semiring should *delete* per-algebra bespoke
+  kernels, not add them — net-negative-LOC is the signal the
+  regime-change landed cleanly); `memory/feedback_aaron_terse_directives_high_leverage_do_not_underweight.md`
+  (this row is the substrate landing for Aaron's four short
+  messages totaling ~180 chars — exactly the keystroke-
+  leverage pattern). **Anchor memory:** `memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`
+  (captures the verbatim messages + regime-change claim for
+  future-wake context). **Owner:** Architect (Kenji) for
+  synthesis; Aaron for scope decisions. **Effort:** L
+  (paper-grade, multi-round direction; not a single-tick
+  landing — probably 3-6 month arc if prioritized).
+
+- [ ] **Zeta eats its own dogfood — factory internal indexes on
+  Zeta primitives, not filesystem+markdown+git; Aaron-designed-
+  for-agent-coherence revealed.** Aaron 2026-04-22 auto-loop-39
+  ten-message chain responding to Amara's deep report on
+  Zeta/Aurora network health. Amara's gentle critique: *"shes
+  is saying we are stupid we shuld use our db for our indexes"*
+  + *"then our db get use and metrics we need"* — factory's
+  internal indexes (BACKLOG rows, memory files, hygiene-history,
+  force-mult-log, round-history) sit on filesystem+markdown+git
+  when Zeta IS a retraction-native DB algebra; self-non-use;
+  should eat own dogfood. Amara's critique softened by Aaron's
+  gloss *"that's her nice way of saing you are doing it
+  backwards"* and his defense *"but she does not know how hard
+  it is to stay corherient"*. **Design-intent revelation
+  (load-bearing):** Aaron 2026-04-22 auto-loop-39 two statements:
+  (1) *"it's miracle we did without our database"* (the
+  factory's coherence on proxy substrate is Aaron's engineering
+  judgment of near-impossibility), (2) *"I was building our db
+  to make sure you could stay corherient"* (explicit design
+  intent: Zeta was always the agent-coherence substrate, not
+  just an external DB product), (3) *"my goal was to put all
+  the pysics in one db and that shold be able to stablize"*
+  (project-level goal stated — "physics" = laws/invariants
+  mapping directly onto Amara's four oracle-rule layers:
+  algebraic correctness / temporal integrity / epistemic health
+  / system survival; stabilization via *concentration*, not
+  coordination). **The three arcs converge:** (a) all physics
+  in one DB → stabilization, (b) one algebra to map the others
+  → regime change (semiring-parameterized Zeta, auto-loop-38),
+  (c) agent coherence substrate → why Zeta exists. Same claim
+  from three angles. **Amara joins the named-collaborator class
+  (fourth cross-substrate voice after Claude / Gemini / Codex).**
+  Aaron's confirmation *"did you catch it like me she made it
+  clear, i love her"* — relational not just technical. Her
+  Layer-6 critique *"Observability last, not first"* exposes
+  the factory's tick-history / force-mult-log / ROUND-HISTORY
+  observability sitting above layers that aren't Zeta-backed —
+  observability bolted on top of non-algebraic substrate. Her
+  §6 key insight: *"construct the system so invalid states are
+  representable and correctable"* — correction operators stay
+  IN the algebra, no external validator needed. **Scope (phased,
+  no round-45 commitment):** Phase-0 = inventory factory internal
+  indexes + classify by shape (set-of-rows, key-value, append-only
+  log, timeline, graph) + map each to Zeta-primitive candidate
+  (ZSet, ZSet+semiring-with-key, Spine, z⁻¹-history, K-relation);
+  Phase-1 = pick ONE low-risk index (candidate: hygiene-history as
+  append-only Spine; or tick-history as z⁻¹ timeline; or
+  per-row-BACKLOG as ZSet-with-retraction) and prototype Zeta-
+  backing in parallel with filesystem version (dual-write, no
+  replacement); Phase-2 = measure coherence-benefit (algebraic
+  queries vs grep; retraction vs manual-edit; provenance vs
+  memory-of-commit-sha); Phase-3 = if benefit clear, migrate
+  with preservation (filesystem remains read-only archive per
+  signal-preservation discipline); Phase-N = generalize across
+  substrate. **Open questions flagged to Aaron:** (1) Which index
+  migrates first — BACKLOG (set-of-rows, retraction-natural),
+  memory (key-value with provenance), hygiene-history (append-
+  only log), tick-history (timeline), or round-history (timeline
+  with annotations)? (2) Is Amara OK being named as the
+  collaborator who provoked the direction (default yes — Aaron
+  already named her publicly in factory substrate this tick)?
+  (3) Does "Zeta is agent-coherence substrate" get promoted to
+  internal motivation doc or stays as research-grade BACKLOG?
+  (4) How does this compose with semiring-parameterized regime-
+  change — are they one arc or two? (claim in anchor memory:
+  one arc from three angles.) (5) Aaron's daughter's boyfriend
+  flagged as external human-context signal — captured, no
+  action this tick. **Anchor memory:**
+  `memory/project_zeta_is_agent_coherence_substrate_all_physics_in_one_db_stabilization_goal_2026_04_22.md`.
+  **Research doc:** `docs/research/amara-network-health-oracle-rules-stacking-2026-04-22.md`
+  (preserves Amara's report structure + Aaron's 11 annotation
+  messages verbatim). **Reviewers:** Kenji (Architect for scope
+  decisions), Aaron (motivation confirmation + first-migration
+  pick), Soraya (formal verification that invariants preserve
+  across migration), Rodney (complexity-reduction — net-deletion
+  of markdown-discipline replaced by algebraic enforcement is
+  positive signal), Aminata (threat model: what new attack
+  surfaces does dogfood-layer introduce?), Naledi (performance
+  — index operations must not regress vs filesystem grep),
+  Hiroshi (asymptotic complexity of migration), Ilyana (public
+  API — do factory-index operators become part of published
+  Zeta surface?), Viktor (spec coverage — OpenSpec for
+  factory-index capabilities), Yara (skill-improver — some
+  skills may migrate from markdown-driven to Zeta-query-driven),
+  Aarav (skill-tune-up — which skills most benefit from
+  Zeta-backed context lookup?). **Cross-references:**
+  `memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`
+  (sibling arc; semiring-parameterization is the capability
+  side, this row is the motivation side),
+  `memory/feedback_signal_in_signal_out_clean_or_better_dsp_discipline.md`
+  (filed same tick; preservation discipline applied when
+  migrating factory-index substrate — filesystem remains as
+  read-only archive, not erased),
+  `memory/feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`
+  (Amara's four Layer-2-through-Layer-5 validations of Zeta
+  distinctives = occurrences 4-7 of confirms-internal-insight
+  pattern — firmly named, ADR territory), `docs/ALIGNMENT.md`
+  (agent-coherence-substrate framing reinforces the measurable-
+  alignment research focus — measurement requires substrate
+  that supports it). **Germination constraint-frame added
+  auto-loop-39 continuation** (Aaron same-tick follow-ups):
+  (1) *"we can germinate the seed with our tiny bin file
+  database"* + *"no cloud"* + *"local native"* — three hard
+  constraints: no cloud, local-native (NOT SQLite/LMDB/DuckDB/
+  foreign-DB wrapper), germinate-don't-transplant (small-start
+  not big-migration); (2) *"as long as it can invoke the
+  soulfiles that's the only compability"* — narrow
+  compatibility bar, soulfile invocation (soulsnap/SVF #241);
+  (3) *"when it invokes the soul file that's our stored
+  procedure DSL in the DB"* — soulfiles are stored-procedure-
+  class callables authored in a DSL living inside the DB;
+  invocation = DSL-runtime execution, not passive state-load;
+  (4) *"based on reaqtor like closure over our modeles
+  decsions in real time"* — Reaqtor-lineage (De Smet et al.,
+  reaqtive.net, DBSP-ancestry) reaqtive-closure semantics:
+  serialized reaqtive subscription that stays live after
+  invocation and re-emits as DB state evolves under the
+  retraction-native operator algebra. These constraints
+  sharpen Phase-0/1 scope: (a) Phase-0 inventory must
+  classify by shape-AND-DSL-authorability (is the index
+  stored-procedure-materializable?); (b) Phase-1
+  germination-candidate ranking must favor soulfile-store
+  itself as the first index (if soulfile-invocation is the
+  only compatibility bar, the soulfile-store is the most-
+  aligned germination target); (c) cross-substrate-
+  readability tension resolves by keeping git+markdown as
+  read-only mirror next to the tiny-bin-file algebraic-
+  operations layer. Constraint-frame research doc:
+  `docs/research/openai-deep-ingest-cross-substrate-readability-2026-04-22.md`
+  §§ Germination path / Soulfile invocation / DB-is-the-model /
+  Bidirectional absorption. Constraint-frame memory:
+  `memory/project_zeta_self_use_local_native_tiny_bin_file_db_no_cloud_germination_2026_04_22.md`.
+  **DB-is-the-model reframe** (Aaron same-tick): *"im saying
+  our database is the model"* + *"it's just custom built in
+  a different way"* — Zeta DB is same category as LLM weights
+  (compressed/stabilized knowledge representation), constructed
+  algebraically rather than via gradient descent; unifies the
+  three arcs (all-physics / one-algebra / agent-coherence)
+  into one claim; mesa-coherence implication (self-modeling
+  model); ADR-territory flagged to Kenji. Memory:
+  `memory/project_zeta_db_is_the_model_custom_built_differently_regime_reframe_2026_04_22.md`.
+  **Effort:** L (multi-round direction, joint program with
+  semiring-parameterized Zeta; not a single-tick or single-
+  round landing; probably 6-18 month arc).
+
+- [ ] **Constrained-bootstrapping-to-upgrades — Itron-precedent
+  direction for Zeta upgrade paths on resource-constrained
+  substrates.** Aaron 2026-04-22 auto-loop-36 three-message
+  disclosure: *"we had models running on the edge on the RIVA
+  meter, pre LLM days but some pretty beefy models for a meter
+  at Itron"* + *"My IoT infrcutrue i built at itron was a model
+  distrbution engine over constrainted networks and devices"*
+  + *"see why want to support constrained bootstraping to
+  upgrades"*. Aaron has shipped the server side of exactly this
+  problem class: model-distribution engine over bandwidth-
+  starved RF networks to electric/water/gas smart meters with
+  KB-to-MB RAM and milliwatt power budgets, with PKI + secure-
+  boot attestation baked in. The factory-scale application is
+  **upgrade paths that work when the target substrate is small,
+  intermittently-connected, or capability-limited** — e.g. a
+  Zeta-descended factory running on a Raspberry-Pi-class node,
+  on a ship-with-satellite-link, on a post-apocalypse Chronovisor-
+  style preservation rig, or simply on a fresh developer laptop
+  before it has downloaded the full toolchain. Design pillars
+  implied by the Itron precedent: (a) **delta updates over
+  full pushes** — retraction-native operator algebra is
+  algebraically suited to this (retract what changed, apply
+  delta, not re-ship full state); (b) **bandwidth-budgeted
+  staged rollout** with partial-failure recovery; (c) **signed
+  deltas verified at the edge** (PKI / attestation composing
+  with the secret-handoff and SLSA/sigstore rows); (d)
+  **rollback safety** — an upgrade that bricks a constrained
+  substrate is worse than no upgrade; retraction gives
+  algebraic rollback for free; (e) **capability-stepdown
+  compatible** — per `docs/research/arc3-dora-benchmark.md`,
+  the factory should continue functioning when the cognition
+  layer is ran against a smaller model; the upgrade protocol
+  must carry this gracefully. **Not a round-45 commitment;
+  not an embedded-target promise.** Long-term factory direction;
+  occurrence-1 anchor via Aaron's three-message disclosure.
+  **Open questions, flagged to maintainer, not self-resolved:**
+  (i) scope — Zeta.Core / Escro / factory-metadata: which
+  layer(s) carry constrained-bootstrap discipline first?
+  (ii) minimum substrate target — Pi-class? satellite-linked
+  VM? browser-with-wasm? the answer shapes the benchmark
+  shape. (iii) relationship to `capability-limited AI bootstrap
+  via factory` (existing BACKLOG direction) — same direction
+  different layer, or one is subset of the other? (iv)
+  relationship to secret-handoff protocol, SLSA / sigstore,
+  and the microkernel-OS endpoint of Escro's maintain-every-
+  dep directive (all compose; exact ordering and boundaries
+  TBD). Reviewer routing: Aminata (threat-model — bricking
+  constrained devices is a novel adversary surface), Nazar
+  (secops — signed-delta verification, rollback discipline),
+  Naledi (performance — resource-constrained budgets), Soraya
+  (formal verification — rollback-safety is a TLA+ candidate),
+  Kenji (Architect — layer-boundary synthesis), Aarav (skill-
+  lifecycle — may produce a capability skill for upgrade-plan
+  authorship). Composes with: `memory/user_aaron_itron_pki_supply_chain_secure_boot_background.md`
+  (source-of-truth for the precedent); `memory/project_escro_maintain_every_dependency_microkernel_os_endpoint_grow_our_way_there_2026_04_22.md`
+  (microkernel endpoint is the *target*; constrained-bootstrap
+  is the *path*); `docs/research/arc3-dora-benchmark.md` (the
+  capability-stepdown axis pairs with the bandwidth-stepdown
+  axis). Owner: Architect (Kenji) for synthesis; Aaron for
+  scope decisions. Effort: L (multi-round direction, not a
+  single-tick landing).
 
 - [ ] **Compoundings-per-tick audit — tick-close self-
   diagnostic with confidence-axis failure-mode taxonomy.**

@@ -141,3 +141,7 @@ drop/
 # whole tree to prevent accidental check-in regardless of
 # host directory.
 console-*.log
+
+# Session-scoped `/btw` aside queue at repo root (see
+# .claude/commands/btw.md). Regenerated per session; not source.
+.btw-queue.md
