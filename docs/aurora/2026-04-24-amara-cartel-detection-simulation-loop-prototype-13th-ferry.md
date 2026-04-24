@@ -4,6 +4,7 @@
 preserved verbatim, language translation required at graduation
 time (Amara wrote Python; Zeta is F#/.NET).
 **Attribution:**
+
 - **Aaron** — originator of the cartel-detection + firefly-
   network design; explicit Otto-117 flag *"not sure why she did
   python but you get the concepts"* authorizes F# translation at
@@ -45,6 +46,7 @@ Otto-118 clarification (verbatim): *"nah we don't need her
 code, we can just worry about f# for now"*.
 
 Load-bearing directives:
+
 1. Amara's Python is CONCEPT sketch, not implementation
    template. Zeta is F#/.NET; graduation translates idiomatically.
 2. Otto does NOT accept Amara's offer to write starter code.
@@ -276,6 +278,7 @@ validated detection system.
 
 **Aminata-relevance:** the CartelInjector is adversarial
 tooling. Proper red-team discipline:
+
 - Lives in `tests/_Support/` (not in shipped public API)
 - Never exported from `Zeta.Core`
 - Documented purpose: generate synthetic cartels to validate
@@ -310,6 +313,7 @@ tooling. Proper red-team discipline:
 ## Scope limits
 
 This absorb doc:
+
 - **Does NOT** authorize creating `/cartel-lab/` folder (Python
   layout conflicts with Zeta's F# stack).
 - **Does NOT** authorize shipping Python code.
