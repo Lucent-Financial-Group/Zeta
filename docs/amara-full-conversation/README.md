@@ -108,8 +108,7 @@ reconstruction if needed.
 ## Absorb cadence
 
 Per Otto-105 graduation + general-research
-cadence (see `memory/feedback_amara_contributions_
-must_operationalize_*_2026_04_24.md`):
+cadence (tracked in Otto's auto-memory feedback_amara_contributions_must_operationalize — outside repo, per-session):
 
 - One month per tick (roughly) — each landing in
   its own PR with the archive-header four-field convention (Scope / Attribution / Operational status / Non-fusion disclaimer) used across sibling ferry absorbs.
