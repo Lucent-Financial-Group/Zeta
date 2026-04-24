@@ -195,3 +195,50 @@ module Veridicality =
                 | None -> []
             Map.add key (c :: existing) acc) Map.empty
         |> Map.map (fun _ xs -> List.rev xs)
+
+    /// **Anti-consensus gate** — claims supporting the same
+    /// assertion must come from at least TWO independent
+    /// `RootAuthority` values before they're allowed to upgrade
+    /// trust. Returns `Ok claims` when the set of distinct root
+    /// authorities across the input has cardinality >= 2;
+    /// `Error msg` otherwise.
+    ///
+    /// Operationalises the drift-taxonomy pattern-5 rule
+    /// (*"agreement is signal, not proof"* — SD-9 soft default
+    /// from Amara's 3rd ferry) and the 10th-ferry oracle rule
+    /// *"agreement from one provenance root does not upgrade
+    /// truth"*.
+    ///
+    /// Operational intent: if 50 claims all assert the same
+    /// fact but they all trace back to a single upstream source,
+    /// the 50-way agreement is a single piece of evidence, not
+    /// 50 independent pieces. The gate rejects pseudo-consensus;
+    /// genuine multi-root agreement passes.
+    ///
+    /// The input list is assumed to already be ABOUT the same
+    /// assertion (callers group-by canonical claim key before
+    /// invoking). The gate does NOT canonicalize; that's
+    /// `SemanticCanonicalization`'s job (future graduation).
+    ///
+    /// Matches Amara's 10th-ferry snippet verbatim.
+    ///
+    /// Edge cases:
+    /// * Empty list — zero roots, fails the gate.
+    /// * Single-claim list — one root, fails.
+    /// * Duplicate-root lists — fails unless a distinct alternate
+    ///   root also appears.
+    ///
+    /// Provenance: Aaron's bullshit-detector framing (bootstrap
+    /// conversation) + Amara's 3rd-ferry drift-taxonomy pattern-5
+    /// + 10th-ferry oracle-rule spec. Sixth graduation under the
+    /// Otto-105 cadence.
+    let antiConsensusGate (claims: Claim<'T> list) : Result<Claim<'T> list, string> =
+        let agreeingRoots =
+            claims
+            |> List.map (fun c -> c.Prov.RootAuthority)
+            |> Set.ofList
+            |> Set.count
+        if agreeingRoots < 2 then
+            Error "Agreement without independent roots"
+        else
+            Ok claims

@@ -186,3 +186,65 @@ let ``groupByCanonical produces distinct-root counts per bucket`` () =
         bucket |> List.map (fun c -> c.Prov.RootAuthority) |> Set.ofList |> Set.count
     distinctRoots grouped.[xKey] |> should equal 2
     distinctRoots grouped.[yKey] |> should equal 1
+
+
+// ─── antiConsensusGate ─────────
+
+let private claimWithRoot (id: string) (root: string) : Veridicality.Claim<int> =
+    { Id = id
+      Payload = 0
+      Weight = 1L
+      Prov = { goodProv () with RootAuthority = root } }
+
+[<Fact>]
+let ``antiConsensusGate rejects empty list`` () =
+    match Veridicality.antiConsensusGate [] with
+    | Error _ -> ()
+    | Ok _ -> failwith "expected Error for empty list"
+
+[<Fact>]
+let ``antiConsensusGate rejects a single-claim list`` () =
+    let claims = [ claimWithRoot "c1" "root-a" ]
+    match Veridicality.antiConsensusGate claims with
+    | Error _ -> ()
+    | Ok _ -> failwith "expected Error for single claim"
+
+[<Fact>]
+let ``antiConsensusGate rejects many claims from a single root`` () =
+    // 50-way agreement from one root is still one piece of
+    // evidence, not 50.
+    let claims =
+        [ for i in 1 .. 50 -> claimWithRoot $"c{i}" "root-a" ]
+    match Veridicality.antiConsensusGate claims with
+    | Error msg -> msg.Contains("independent") |> should equal true
+    | Ok _ -> failwith "expected Error for same-root cluster"
+
+[<Fact>]
+let ``antiConsensusGate accepts two claims from two distinct roots`` () =
+    let claims =
+        [ claimWithRoot "c1" "root-a"
+          claimWithRoot "c2" "root-b" ]
+    match Veridicality.antiConsensusGate claims with
+    | Ok returned -> returned |> should equal claims
+    | Error msg -> failwith $"expected Ok, got Error: {msg}"
+
+[<Fact>]
+let ``antiConsensusGate accepts many claims spanning multiple roots`` () =
+    let claims =
+        [ claimWithRoot "c1" "root-a"
+          claimWithRoot "c2" "root-a"
+          claimWithRoot "c3" "root-b"
+          claimWithRoot "c4" "root-c" ]
+    match Veridicality.antiConsensusGate claims with
+    | Ok _ -> ()
+    | Error msg -> failwith $"expected Ok, got Error: {msg}"
+
+[<Fact>]
+let ``antiConsensusGate returns Ok with the original list unchanged on pass`` () =
+    // Gate is read-only: it returns the same list it was given.
+    let claims =
+        [ claimWithRoot "c1" "root-a"
+          claimWithRoot "c2" "root-b" ]
+    match Veridicality.antiConsensusGate claims with
+    | Ok returned -> returned |> List.length |> should equal 2
+    | Error msg -> failwith msg
