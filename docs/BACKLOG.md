@@ -5698,6 +5698,30 @@ systems. This track claims the space.
   surfaces edit-after-merge comment updates. Captures the
   drift that would otherwise silently accrue.
 
+  **Scope addendum (Aaron Otto-155).** *"we can capture the
+  comments from both acehack and lfg the bots, forks should
+  be expected to ship bot comments too like acehack back to
+  the main repo, that's high value signals."* Two binding
+  scope decisions follow:
+
+  (i) **Dual-bot-surface capture.** Bot comments across both
+  account contexts get archived — those posted under the
+  personal account (`AceHack/...` forks) AND under the org
+  account (`Lucent-Financial-Group/Zeta` main). Same schema,
+  same workflow, different event sources.
+
+  (ii) **Fork-upstream-sync obligation.** When a fork of the
+  repo runs its own Copilot / Codex / bot reviews on its
+  own PRs (e.g. `AceHack/Zeta#42` with a personal-account
+  Copilot review), those bot-comment archives ride back
+  to the main repo when the branch lands upstream — via a
+  sync job that copies fork-side `docs/pr-discussions/`
+  entries into the main repo at merge time. Human comments
+  on fork-side PRs stay under the human-privacy-pass
+  discipline; bot comments get sync-with-scope. Treat
+  fork-originated bot signals as high-value upstream
+  input.
+
   Non-goals for this row: replacing GitHub as the live
   review venue (it's the source-of-truth; archive is the
   durable mirror); redacting Copilot / Codex-connector
