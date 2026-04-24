@@ -298,7 +298,7 @@ RDMA-native transport should be the baseline, not an afterthought.
 **State of art:** TigerBeetle's power-loss-tested journaling is
 the 2026 gold standard for single-node OLTP. ZFS (via `zvol`) +
 ZIL is a lower-level alternative. Linux's io_uring `IORING_SETUP_IOPOLL`
-+ `IORING_FEAT_NATIVE_WORKERS` cut fsync latency 2-3x vs classic.
+plus `IORING_FEAT_NATIVE_WORKERS` cut fsync latency 2-3x vs classic.
 
 **Zeta today:** `Durability.fs` has a framework with multiple
 modes. Witness-Durable Commit is skeleton only. fsync discipline

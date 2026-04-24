@@ -5818,7 +5818,7 @@ systems. This track claims the space.
   or replace them. **Research anchors:** Armbrust et al.,
   "Delta Lake: High-Performance ACID Table Storage over Cloud
   Object Stores", VLDB 2020; Apache Iceberg v3 spec (2024);
-  Databricks blog, "Liquid Clustering in Delta Lake" (2024). 
+  Databricks blog, "Liquid Clustering in Delta Lake" (2024).
   **First step:** define the `Spine.IStorageBackend` capability
   interface (Get/Put/Delete/List + range-read), land an
   `S3SpineBackend` implementation gated behind `PublishAot=false`
