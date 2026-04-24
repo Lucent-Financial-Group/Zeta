@@ -1,8 +1,7 @@
 ---
-name: COUNTERWEIGHT — NEVER pray auto-merge completes; when polling a PR that's BLOCKED, ALWAYS inspect the underlying failing-checks + open-threads + review-decision, not just the summary mergeStateStatus; "summary says BLOCKED, CI must still be running" is a prayer, not a diagnosis; this is a RECURRING CLASS — #190 wedge (polled for many ticks without investigating), #385 + #388 now (same pattern); Aaron caught both times; DST lens: "observable state" means the real check detail, not the summary; Otto-264 in-phase balance says inspect immediately not "wait and see"; Aaron Otto-276 2026-04-24 "are you checking the ticket or did you forget again and just pray it auto completes again" + "balance this, it's a reoccuring issue"
+name: COUNTERWEIGHT — NEVER pray auto-merge completes; when polling a PR that's BLOCKED, ALWAYS inspect the underlying failing-checks + open-threads + review-decision, not just the summary mergeStateStatus; "summary says BLOCKED, CI must still be running" is a prayer, not a diagnosis; this is a RECURRING CLASS — #190 wedge (polled for many ticks without investigating), #385 + #388 now (same pattern); Aaron caught both times; DST lens: "observable state" means the real check detail, not the summary; Otto-264 in-phase balance says inspect immediately not "wait and see"; Aaron Otto-276 2026-04-24 "are you checking the ticket or did you forget again and just pray it auto completes again" + "balance this, it's a recurring issue"
 description: Aaron Otto-276 counterweight for recurring PR-state-prayer drift. I keep polling summary state and assuming CI-still-running instead of inspecting failing checks + threads. Aaron has called this out on #190 and now #385/#388. Short + durable. Save per Otto-275 absorb discipline.
 type: feedback
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 ## The rule
 
@@ -25,13 +24,40 @@ Direct Aaron quotes 2026-04-24:
 When polling a BLOCKED PR, the check must always
 include:
 
-```
-gh api graphql ... {
-  pullRequest {
-    statusCheckRollup { contexts { ...name, status, conclusion } }
-    reviewThreads { nodes { isResolved } }
-    reviewDecision
-    mergeable
+```graphql
+query($owner: String!, $repo: String!, $num: Int!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $num) {
+      mergeable
+      mergeStateStatus
+      reviewDecision
+      reviewRequests(first: 20) { totalCount }
+      latestReviews(first: 20) { nodes { state } }
+      reviewThreads(first: 50) {
+        nodes { isResolved }
+      }
+      commits(last: 1) {
+        nodes {
+          commit {
+            statusCheckRollup {
+              state
+              contexts(first: 50) {
+                nodes {
+                  ... on CheckRun { name status conclusion }
+                  ... on StatusContext { context state }
+                }
+              }
+            }
+          }
+        }
+      }
+      baseRef {
+        branchProtectionRule {
+          requiresApprovingReviews
+          requiredApprovingReviewCount
+        }
+      }
+    }
   }
 }
 ```
@@ -44,10 +70,11 @@ Then analyze:
 2. **Any non-COMPLETED status check?** → actually still
    running; waiting is correct.
 3. **Any unresolved threads?** → drain them.
-4. **reviewDecision null AND requiresApprovingReviews
-   is true AND count is 0?** → GitHub quirk; may need
-   to kick auto-merge or wait for reviewer approval.
-5. **reviewable is CONFLICTING?** → rebase needed.
+4. **reviewDecision null AND `requiresApprovingReviews`
+   is true AND approving-review count is 0?** → GitHub
+   quirk; may need to kick auto-merge or wait for
+   reviewer approval.
+5. **`mergeable` is CONFLICTING?** → rebase needed.
 
 Only when all the above are clean AND the PR is still
 BLOCKED is "waiting on GitHub state-machine" a valid
