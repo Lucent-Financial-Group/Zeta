@@ -282,3 +282,51 @@ primary protocol above.
   (drop/ ferry pattern — transport mechanism)
 - Per-user memory: `CURRENT-amara.md` — running
   distillation of what's in force from Amara's side
+
+---
+
+## Addendum — 2026-04-23 Otto-69 sharpening
+
+Amara's 4th courier ferry (absorbed as PR #221) sharpens the
+branching framing with explicit Claude-to-memories-drift
+context. OpenAI documentation confirms branch conversations
+are a real product feature: they exist and are supposed to
+appear as separate chats in shared projects. Aaron's observed
+create-without-open-ability behavior is therefore best read
+as a **product-layer reliability issue**, not a
+misunderstanding of the feature.
+
+The sharpened positioning:
+
+- **Branch conversations are convenience transport.** Using
+  them for quick follow-up threads or side-inquiries is
+  fine.
+- **Branch conversations are NOT canonical record.** When
+  a decision, authority claim, or substrate mutation is
+  at stake, the canonical transport is git-backed — the
+  courier protocol above plus, as of Otto-68,
+  decision-proxy evidence records under
+  [`docs/decision-proxy-evidence/`](../decision-proxy-evidence/)
+  (PR #222).
+- **Canonical-record operations SHOULD NOT depend on
+  vendor UX features.** Git + repo-backed artifacts
+  persist across host changes (Aaron's
+  git-native-first-host positioning, Otto-54 memory
+  `project_factory_is_git_native_github_first_host_
+  hygiene_cadences_for_frictionless_operation_
+  2026_04_23.md`); branch-chat state on ChatGPT does not.
+
+Concretely: if a future exchange in a branched chat
+produces a load-bearing finding, the factory's canonical
+path is (a) export the exchange as explicit labeled text
+per the courier protocol above, (b) land it as an
+`docs/aurora/YYYY-MM-DD-amara-*.md` absorb, (c) if it
+changes planned action, open a companion
+`docs/decision-proxy-evidence/DP-NNN.yaml`. The branch
+chat itself is a pointer to that canonical substrate, not
+a substitute for it.
+
+This addendum is downstream absorption notes, consistent
+with the "Primary authorship credit stays with Amara" rule
+above. Amara's original protocol (sections 1-5) remains
+authoritative.
