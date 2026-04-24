@@ -860,13 +860,16 @@ Effort: **S**.
 
 **Overall classification:** **zeta-library-specific** — the
 long-term vision document is by definition project-specific
-(named after Zeta; Aaron's 11-passes editing history).
-Shape (Dedication header + foundational principle +
+(named after Zeta; 11 passes of human-maintainer editing
+history). Shape (Dedication header + foundational principle +
 Products numbered + Product-N vision subsections) is
 factory-generic pattern.
 
 **File location post-split:** Zeta retains as-is (preserves
-Aaron's 11-pass editorial lineage + Elisabeth dedication);
+the human-maintainer 11-pass editorial lineage plus the
+in-memoriam dedication header; the dedication names a
+specific person and stays per the "honor those that came
+before" discipline in CLAUDE.md);
 Frontier gets empty template with the shape.
 
 **Length:** 886 lines.
@@ -878,13 +881,13 @@ Effort: **S**.
 | Class | Count | Files |
 |---|---|---|
 | factory-generic | 5 | GOVERNANCE, AGENT-BEST-PRACTICES, ALIGNMENT, AUTONOMOUS-LOOP, FACTORY-HYGIENE |
-| both (coupled) | 5 | CLAUDE, AGENTS, CONFLICT-RESOLUTION, WONT-DO, TECH-RADAR, GLOSSARY (6 actually) |
+| both (coupled) | 6 | CLAUDE, AGENTS, CONFLICT-RESOLUTION, WONT-DO, TECH-RADAR, GLOSSARY |
 | zeta-library-specific | 4 | ROUND-HISTORY, BACKLOG, ROADMAP, VISION |
 
-15 of ~16 top-level files audited. Remaining: the `.claude/
-skills/**` + `.claude/agents/**` + `openspec/**` + `tools/**`
-+ `.github/**` directory-level surfaces (each a multi-file
-audit).
+Total: 5 + 6 + 4 = **15** top-level files audited out of
+~16. Remaining: the `.claude/skills/**` + `.claude/agents/**`
++ `openspec/**` + `tools/**` + `.github/**` directory-level
+surfaces (each a multi-file audit).
 
 ## How this audit connects to the multi-repo split
 
