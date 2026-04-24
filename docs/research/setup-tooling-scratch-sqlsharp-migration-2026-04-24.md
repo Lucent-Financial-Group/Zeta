@@ -83,9 +83,8 @@ for everything"**:
   bootstrap (install WSL, install bash/mise/bun)
 - Bash: everything else — macOS, Linux, Windows WSL
 
-Windows WSL is in the target matrix. Updated 2026-04-24
-per Aaron: **4 Windows matrix legs** (deferred to Windows
-peer-agent milestone):
+Windows in the target matrix: **4 Windows matrix legs**
+(deferred to Windows peer-agent milestone):
 
 - `windows` — x64 native (`windows-2025`)
 - `windows-arm` — ARM native (`windows-11-arm`)
@@ -94,14 +93,49 @@ peer-agent milestone):
   (Aaron: *"ARM WSL2 status TBD"* — pending his local
   empirical test before we turn on in CI)
 
-Once the Windows user is in WSL, they run the same bash
-scripts as macOS + Linux. **No bash↔ps1 twin post-
-bootstrap. ps1 is literally just the "install WSL"
-handoff.** For `windows-wsl` / `windows-arm-wsl` matrix
-legs, the CI workflow opens a WSL shell inside the
-Windows runner and runs the bash bootstrap path. WSL legs
-share the bash post-bootstrap with macOS + Linux legs —
-only the initial runner boot differs.
+**Two distinct setup paths on Windows** (corrected per
+Aaron 2026-04-24):
+
+1. **Windows native** (`windows`, `windows-arm`): **full
+   PowerShell setup end-to-end** — ace supports PowerShell
+   as a first-class runtime. Users running natively on
+   Windows stay in PowerShell for bootstrap AND the whole
+   setup chain. Aaron: *"so will need full ps1 setup for
+   windows too not just wsl, wsl is bash after installed
+   by windows ps1."*
+
+2. **Windows WSL** (`windows-wsl`, `windows-arm-wsl`):
+   Windows `ps1` installs WSL2 + Ubuntu, then the bash
+   setup chain runs inside WSL. Same bash path as macOS
+   + Linux.
+
+### Implication for ace
+
+ace needs **first-class support for BOTH PowerShell AND
+bash** as runtimes — not just bash with a ps1 bridge.
+That's a bigger ask than my earlier simplification. The
+twin-file problem returns at the post-bootstrap layer
+for Windows native, addressed via ace's abstraction
+(either bun+TS compiling to both, or ace-authored scripts
+in both, or a runtime adapter).
+
+scratch's current README mentions `scripts/setup/windows/
+bootstrap.ps1` and `scripts/setup/windows/` shared layer
+— so scratch already has Windows-native-native support.
+Zeta inherits that via ace adoption.
+
+### Matrix summary
+
+| Runner | Setup chain | Status |
+|---|---|---|
+| macos-26 | bash | Active |
+| ubuntu-24.04 | bash | Active |
+| ubuntu-24.04-arm | bash | Active |
+| ubuntu-slim | bash | Active (experimental) |
+| windows-2025 (native) | **ps1** | Deferred |
+| windows-11-arm (native) | **ps1** | Deferred |
+| windows-2025 + WSL2 | ps1 bootstrap → bash | Deferred |
+| windows-11-arm + WSL2 | ps1 bootstrap → bash (TBD) | Deferred |
 
 This is simpler than scratch's shape (scratch has
 `windows/` shared layer with deeper PowerShell logic).
