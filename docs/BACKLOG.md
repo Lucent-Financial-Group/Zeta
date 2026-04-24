@@ -4318,6 +4318,19 @@ Landed in task #261 bundle.
 
 ## P2 — hygiene refinements (Otto-254/255/256/260/263)
 
+- [ ] **`StakeCovariance` file split** — move the
+  `StakeCovariance` module out of `src/Core/Graph.fs`
+  and into its own `src/Core/StakeCovariance.fs`.
+  Per-concept-per-file convention matches the rest
+  of `src/Core/` (e.g. `RobustStats.fs`,
+  `TemporalCoordinationDetection.fs`). PR #331 dropped
+  `[<AutoOpen>]` on the module to mitigate the
+  immediate `Zeta.Core` namespace-pollution concern;
+  the file split is the cleaner long-term layout.
+  See PR #331 thread 2 (`PRRT_kwDOSF9kNM59VZ22`) and
+  `docs/pr-preservation/331-drain-log.md`.
+  Effort: S refactor.
+
 - [ ] **Roll-forward default (Otto-254) standing
   reminder** — revert is the exception (credential leak,
   destructive prod break, PII, maintainer directive);
