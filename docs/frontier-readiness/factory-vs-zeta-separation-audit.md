@@ -768,7 +768,7 @@ are Zeta-library-specific content.
 + the-rule-for-this-file + "spec has two meanings" framing
 pattern); Zeta retains specific term entries.
 
-**Length:** 814 lines. Large vocabulary.
+**Length:** approximately 840 lines. Large vocabulary.
 
 ### Classification
 
@@ -791,16 +791,17 @@ Effort: **S** — shape extraction; entries stay in Zeta.
 
 **Overall classification:** **zeta-library-specific** — by
 design this file is historical narrative of Zeta's specific
-rounds. The *discipline* (round-narrative append-only,
-"docs elsewhere are current-state") is factory-generic
-(established in GOVERNANCE §2 + §6), but the file's content
-is purely Zeta project history.
+rounds. The separation between round-history narrative here
+and current-state documentation elsewhere is factory-generic
+in shape (the file's own preamble is the authoritative
+source for the newest-first / append-only convention), but
+this file's content is purely Zeta project history.
 
 **File location post-split:** Zeta repo retains as-is
 (historical record); Frontier gets empty template with
 preamble + append-only rule as an adopter template.
 
-**Length:** 3559 lines — large history.
+**Length:** approximately 3560 lines — large history.
 
 ### Refactor notes
 
@@ -814,7 +815,7 @@ Effort: **S** (shape extraction).
 ## Audit — docs/BACKLOG.md
 
 **Overall classification:** **zeta-library-specific** — the
-file contains ~6700 lines of specific-project BACKLOG rows
+file contains thousands of lines of specific-project BACKLOG rows
 (P0/P1/P2/P3). The *shape* (priority tiers, one-row-per-item,
 newest-first-within-tier, legend + appendix) is factory-
 generic (GOVERNANCE §29 scopes the file).
@@ -823,7 +824,7 @@ generic (GOVERNANCE §29 scopes the file).
 gets empty template with preamble + priority-tier legend +
 example-row framework.
 
-**Length:** 6761 lines.
+**Length:** approximately 8500 lines (size grows tick-by-tick; see BACKLOG split design doc for the per-row-file migration).
 
 ### Refactor notes
 
@@ -852,7 +853,7 @@ backlog" sibling-scope convention).
 **File location post-split:** Zeta retains; Frontier gets
 empty template.
 
-**Length:** 177 lines.
+**Length:** approximately 178 lines.
 
 Effort: **S**.
 
@@ -872,7 +873,7 @@ specific person and stays per the "honor those that came
 before" discipline in CLAUDE.md);
 Frontier gets empty template with the shape.
 
-**Length:** 886 lines.
+**Length:** approximately 887 lines.
 
 Effort: **S**.
 
