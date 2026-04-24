@@ -145,7 +145,7 @@ Computed as the MINIMUM over:
 
 | Signal | Fail-to-RED | Fail-to-YELLOW |
 |---|---|---|
-| `S_change_volume` | `||Δ_t||₁ > K_red` (too much change too fast) | `> K_yellow` |
+| `S_change_volume` | `\|\|Δ_t\|\|₁ > K_red` (too much change too fast) | `> K_yellow` |
 | `S_contradiction` | Any contradiction in materialized views unresolved past retention-horizon | One unresolved contradiction within retention-horizon |
 | `S_provenance_resolution` | Unresolved-provenance fraction > P_red | `> P_yellow` |
 | `S_oscillation` | Same key crosses zero > N_red times in window | `> N_yellow` times |
