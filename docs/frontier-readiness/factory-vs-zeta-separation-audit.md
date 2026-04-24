@@ -883,34 +883,29 @@ Effort: **S**.
 
 | Class | Count | Files |
 |---|---|---|
-| factory-generic | 5 | GOVERNANCE, AGENT-BEST-PRACTICES, ALIGNMENT, AUTONOMOUS-LOOP, FACTORY-HYGIENE |
-| both (coupled) | 6 | CLAUDE, AGENTS, CONFLICT-RESOLUTION, WONT-DO, TECH-RADAR, GLOSSARY |
+| factory-generic | 4 | GOVERNANCE, AGENT-BEST-PRACTICES, AUTONOMOUS-LOOP, FACTORY-HYGIENE |
+| both (coupled) | 7 | CLAUDE, AGENTS, CONFLICT-RESOLUTION, WONT-DO, TECH-RADAR, GLOSSARY, ALIGNMENT |
 | zeta-library-specific | 4 | ROUND-HISTORY, BACKLOG, ROADMAP, VISION |
 
-Total: 5 + 6 + 4 = **15** top-level files audited out of
+Total: 4 + 7 + 4 = **15** top-level files audited out of
 ~16. Remaining: the `.claude/skills/**`, `.claude/agents/**`,
 `openspec/**`, `tools/**`, and `.github/**` directory-level
 surfaces (each a multi-file audit).
 
-**Note on cross-PR audits:** 13 of the 15 audits have
-dedicated `## Audit —` sections in this file; 2 (TECH-RADAR,
-FACTORY-HYGIENE) land only in sibling PR #188 with no
-section in this file yet. The pattern-summary counts above
-assume that sibling PR merges; if #188 closes without
-merging, this summary should be refreshed (count drops to
-13 audits: 4 factory-generic, 5 both-coupled, 4
-zeta-library-specific).
-
-Mechanical-verification deficit flagged: a reader cannot
-`grep '^## Audit —'` this file and reproduce the 15-count
-— only 13. The deeper "each file-level summary should be
-mechanically consistent with its own in-file sections"
+**Mechanical-verification status:** all 15 audits now have
+dedicated `## Audit —` sections in this file (TECH-RADAR +
+FACTORY-HYGIENE merged in via PR #188; ALIGNMENT in-file is
+authoritative per its own `## Audit —` section above which
+classifies it as **both (coupled)**, not factory-generic). A
+reader can `grep '^## Audit —'` this file and reproduce the
+15-count directly. The deeper "each file-level summary should
+be mechanically consistent with its own in-file sections"
 discipline is tracked in `docs/BACKLOG.md` row
 *"Separation-audit cross-PR rollup — mechanically verify
 pattern-summary counts against in-file `## Audit — ...`
-sections"* (P2 research-grade; three options: wait for
-`#188` to merge, per-PR summary-row landings, or tooling diff
-check).
+sections"* — the residual concern is now tooling (option c:
+automated diff check), since the wait-for-merge option (a)
+has resolved itself.
 
 ## How this audit connects to the multi-repo split
 
