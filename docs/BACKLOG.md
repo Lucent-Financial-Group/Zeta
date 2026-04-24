@@ -4363,6 +4363,33 @@ Landed in task #261 bundle.
   `memory/feedback_best_of_both_worlds_*_otto_263_*`.
   Effort: S doc landing.
 
+- [ ] **`/btw` pattern evangelism + durable-queue fix** —
+  Aaron 2026-04-24: *"as long as this is durable conversation
+  this is great, we need to make sure this is pushed on
+  maintainers in the claude ide or others similar thing if
+  they have it, this is crutial to not divert your
+  attention."* Two linked items:
+  (1) **Evangelize the `/btw` skill pattern** to other
+  Claude Code users + Claude IDE maintainers + other AI
+  harnesses — package as adoption-staircase Level 0
+  artifact (Otto-274); documentation + upstream
+  feature-request; attention-preservation is the
+  load-bearing rationale (every non-/btw aside is a full
+  context-switch that displaces in-flight work; /btw is
+  1-line absorb + continue per Otto-275).
+  (2) **Fix the `/btw` skill's durability gap** —
+  current procedure routes directive-queued items to
+  `.btw-queue.md` (gitignored, session-scoped) OR
+  TodoWrite (session-scoped). Neither survives a fresh
+  session. Revise procedure: directive-queued items also
+  get a **docs/BACKLOG.md** row AND / OR an in-repo
+  **memory/** entry (both committed, durable across
+  sessions). Classification ladder: if the aside is
+  ephemeral context for this session only → TodoWrite /
+  `.btw-queue.md` fine; if the aside is a future-session
+  nudge → MUST land durably in BACKLOG or memory.
+  Effort: S skill-edit + M evangelism artifact.
+
 ## P1 — within 2-3 rounds
 
 - [ ] **Fresh-session quality research — close the gap
