@@ -11,10 +11,10 @@ in the prior recovery pass (`docs/pr-preservation/329-recovery-log.md`);
 this drain pass started clean — `git rebase origin/main` reported
 "Successfully rebased and updated" with no conflicts to resolve.
 
-Per the PR-preservation discipline (Otto-250: PR review comments
-+ responses + resolutions are high-quality training signals):
-full per-thread record with verbatim reviewer text, outcome,
-verbatim reply, and resolution commit SHA.
+Per the PR-preservation discipline (Otto-250: PR review
+comments, responses, and resolutions are high-quality training
+signals): full per-thread record with verbatim reviewer text,
+outcome, verbatim reply, and resolution commit SHA.
 
 Resolution commit: `0dbaddd39b6ea3c685937ec840361780a035032c`
 ("core: drain Graph cohesion-primitives review threads (#329)").
