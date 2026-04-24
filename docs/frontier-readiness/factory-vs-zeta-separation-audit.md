@@ -659,6 +659,7 @@ because the substance is non-generic.
 ### Refactor notes — TECH-RADAR.md
 
 Before split:
+
 1. Frontier inherits Legend + Usage + empty Rings table
    stubs (Techniques / Tools sections).
 2. Zeta retains full current entry rows as the library's
@@ -743,11 +744,11 @@ without re-classification: Frontier keeps the canonical
 file, and Zeta receives a derived project-facing hygiene
 doc. This file is the gold standard for how rule
 substrates should be designed from the start —
-self-classifying, no retrofit audit needed. Confirms gap
-#8's closure: the hypothesis "hygiene rows not tagged"
-was wrong; the rows were all tagged. This audit
-formalises that self-classification as the file's
-purpose.
+self-classifying, no retrofit audit needed. Confirms
+gap #8's closure: the hypothesis "hygiene rows not
+tagged" was wrong; the rows were all tagged. This
+audit formalises that self-classification as the
+file's purpose.
 
 ## How this audit connects to the multi-repo split
 
