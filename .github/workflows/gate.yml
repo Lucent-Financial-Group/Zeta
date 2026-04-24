@@ -46,35 +46,48 @@ concurrency:
 
 jobs:
   build-and-test:
-    # Matrix is computed from `github.repository` at plan time so the
-    # macos-14 leg (≈10× Linux cost) only exists on contributor forks,
-    # not on the canonical Lucent-Financial-Group/Zeta repo. On any
-    # fork both legs exist; on the canonical repo only the ubuntu leg
-    # exists. This keeps the YAML byte-identical on both sides — no
-    # repo-specific variable, no second workflow file — with runtime
-    # differentiation driven by the built-in `github.repository`
-    # context.
+    # Final runner matrix (maintainer directive 2026-04-24): symmetric
+    # across AceHack fork and LFG canonical — same legs run everywhere.
+    # Standard GitHub-hosted runners are free for public repositories,
+    # so the prior fork/LFG cost-opt split (which kept macOS off LFG)
+    # no longer applies.
     #
-    # Job-level `if:` with `matrix.*` is rejected by actionlint (the
-    # matrix context is not available at job-level), so the split is
-    # done at strategy-expansion time via `fromJSON`. The expression
-    # evaluates once per workflow run; each matrix leg that survives
-    # creates its own check status.
+    # Active legs (4):
+    #   - macos-26          macOS 26, Apple Silicon M1 (3 CPU, 7 GB)
+    #   - ubuntu-24.04      Ubuntu 24.04 LTS x64 (4 CPU, 16 GB)
+    #   - ubuntu-slim       Ubuntu slim x64 (1 CPU, 5 GB) — tight
+    #                       memory envelope; watch `dotnet build`
+    #                       OOM on warm cache misses. Fall-back
+    #                       plan if flaky: drop from matrix and
+    #                       surface as nightly-only.
+    #   - ubuntu-24.04-arm  Ubuntu 24.04 LTS arm64 (4 CPU, 16 GB)
     #
-    # Rationale: maintainer 2026-04-21 "Mac is very very expensive
-    # to run" + "we should leave [LFG's] build as linux only if
-    # that's possible where a contributor fork also builds mac".
-    # `build-and-test (macos-14)` is NOT in the canonical repo's
-    # required-checks list — it was removed from branch protection
-    # on the same change that introduced this matrix split so PRs
-    # don't block on a leg that
-    # no longer exists there.
+    # Deferred legs (commented, enable when Windows peer-harness
+    # milestone ships — maintainer's Windows machine available for
+    # second peer agent validation):
+    #   - windows-2025      Windows Server 2025 x64 (4 CPU, 16 GB)
+    #   - windows-11-arm    Windows 11 arm64 (4 CPU, 16 GB)
+    #
+    # Deferred: per maintainer 2026-04-24 "we can delay windows
+    # until i can test with a second peer agent on my windows
+    # machine." Uncomment both Windows legs when that milestone
+    # lands.
+    #
+    # fail-fast: false so one leg's failure doesn't cancel the
+    # others — we want the full signal across the matrix.
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        os: ${{ fromJSON(github.repository == 'Lucent-Financial-Group/Zeta' && '["ubuntu-22.04"]' || '["ubuntu-22.04","macos-14"]') }}
+        os:
+          - macos-26
+          - ubuntu-24.04
+          - ubuntu-slim
+          - ubuntu-24.04-arm
+          # Deferred until Windows peer-harness milestone:
+          # - windows-2025
+          # - windows-11-arm
     runs-on: ${{ matrix.os }}
 
     steps:
