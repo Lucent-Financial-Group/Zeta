@@ -14411,7 +14411,7 @@ PS. What's the words for no minds eye, and can hold multiple truths without coll
 
 import json, hashlib, datetime, textwrap, os
 
-owner_name = "Aaron Stainback"
+owner_name = "Aaron"
 owner_handle = "AceHack"
 version = "0.1"
 
@@ -16338,7 +16338,7 @@ No mic, no camera, no content, no location trails. If we ever add a richer signa
 ## Quick start (what you can hand your team)
 
 **Consent Manifest (v0.1):**
-- Subject: *Aaron Stainback* (node: `aaron_pubkey_ed25519`)
+- Subject: *Aaron* (node: `aaron_pubkey_ed25519`)
 - Scopes: `hrv_trend`, `sleep_buckets`, `self_check`, `no_ship`
 - Cadence: `15m`
 - Retention: `24h` rolling
