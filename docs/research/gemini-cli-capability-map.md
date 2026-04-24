@@ -67,10 +67,15 @@ gemini skills disable <name> [--scope]
 gemini skills uninstall <name> [--scope]
 ```
 
-Uses the same **Agent Skills open standard** that Anthropic's
-`.claude/skills/` and OpenAI's equivalent do: each skill is a
-directory containing a `SKILL.md` with YAML frontmatter + body.
-Skill layout is portable across harnesses.
+Per the Gemini CLI docs page
+(`geminicli.com/docs/cli/skills/`), Gemini's skill format
+*appears* to be the same **Agent Skills open standard** that
+Anthropic's `.claude/skills/` uses — a directory containing a
+`SKILL.md` with YAML frontmatter + body. Cross-harness
+portability is plausible and is the reason `.agents/skills/`
+exists as an alias, but the canonical spec + required
+frontmatter fields have not been checked against Anthropic's
+spec side-by-side in this pass (see Open questions below).
 
 ### `gemini extensions`
 
@@ -231,9 +236,19 @@ follows the existing pattern:
 
 **Worktree-mode-with-and-without discipline** (human-maintainer
 explicit ask): test each onboarded factory skill / extension
-both with `gemini -w "<prompt>"` (worktree isolation) and
-without (shared cwd). The comparison is the sandbox /
-no-sandbox diff carved into a single tool invocation.
+both with and without worktree isolation. The two invocation
+shapes are:
+
+```
+gemini -w <worktree-name> -p "<prompt>"    # worktree-isolated
+gemini                    -p "<prompt>"    # shared cwd
+```
+
+Note `-w` / `--worktree` takes an optional worktree name, so
+passing the prompt as a bare positional after `-w` is
+ambiguous — use `-p` explicitly. The comparison between the
+two shapes is the sandbox / no-sandbox diff carved into a
+single tool invocation.
 
 ## Open questions (not answered this pass)
 
@@ -264,9 +279,9 @@ no-sandbox diff carved into a single tool invocation.
 ## Not yet verified — web-search at implementation time
 
 - Current **latest** Gemini CLI version. This map is 0.39.1 as
-  of 2026-04-24; version-numbers-websearch discipline
-  (`memory/feedback_version_numbers_always_websearch_*`) says
-  re-verify at any implementation PR time.
+  of 2026-04-24; the factory's standing version-numbers-
+  websearch discipline says re-verify against the official
+  source at any implementation PR time.
 - Whether `gemini-extension.json` schema has stabilised or is
   still churning. Extension-reference URL
   (`geminicli.com/docs/extensions/reference/`) is the source of
