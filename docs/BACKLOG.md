@@ -4714,6 +4714,122 @@ systems. This track claims the space.
 
 - [ ] **Ongoing memory-sync mechanism — keep in-repo `memory/` mirrored with auto-memory writes during each Otto tick.** Aaron 2026-04-24 Otto-113 directive *"our memories should all be checked in now"* + Otto-114 confirmation that in-repo memory/ is the natural home for ALL memory types. Otto-113 one-shot sync (PR #307) mirrored 439 files. Going forward, every Otto tick that writes to `~/.claude/projects/.../memory/` should also land new/updated files in-repo `memory/` with matching MEMORY.md pointer update (per memory-index-integrity + memory-reference-existence-lint workflows). Proposed mechanisms: (a) end-of-tick skill that rsyncs new memories to a branch + PRs them; (b) direct-to-repo writes with auto-memory as read-cache; (c) GHA cron periodic sync. Initial preference: (a) for CLI-tool compatibility today, (b) long-term. Also includes path-unification design (decide whether to deprecate the `~/.claude/projects/...` path for this project entirely or keep as staging). Priority P2 research-grade; effort S (rsync skill) + M (direct-write tooling). Composes with `memory/feedback_natural_home_of_memories_is_in_repo_now_all_types_*.md` (Otto-114 policy) + PR #307 one-shot sync + memory-index-integrity workflow.
 
+- [ ] **"Frontier" naming conflict with OpenAI Frontier
+  — rename factory's UI-layer "Frontier" to something
+  non-conflicting.** Aaron 2026-04-24 Otto-168: *"i just
+  found this https://openai.com/index/introducing-openai-
+  frontier/ ... naming conflicts ... also absorb everyting
+  lol, it composes nicely ... backlog"*. OpenAI announced
+  something called "OpenAI Frontier" (Otto-168 unable to
+  fetch the page directly — 403 response; scope TBD next
+  tick via WebSearch or URL-retry). Regardless of shape,
+  the factory's public-facing "Frontier UI / Frontier UX"
+  name creates brand confusion if Zeta's UI ships publicly
+  under that name. Action: rename the factory's user-
+  facing surface to something non-conflicting; preserve
+  technical-literature and industry-term uses of
+  "frontier" (three-class distinction below).
+
+  **Scope — three classes of "Frontier" usage
+  (137 grep hits total):**
+
+  (a) **CONFLICTING (must rename).** Factory's public-
+  user-facing UI layer name:
+  - `docs/research/frontier-ux-zora-evolution-2026-04-24
+    .md` — primary UX design doc
+  - BACKLOG row ~4381 / ~4408 — "Frontier UI" + "Otto-63
+    Frontier burn-rate-UI" cross-refs
+  - `memory/feedback_aaron_dont_wait_on_approval_log_
+    decisions_frontier_ui_is_his_review_surface_*.md`
+    and siblings
+
+  (b) **TECHNICAL-LITERATURE (keep).** "Frontier" as
+  established term in timely-dataflow / differential-
+  dataflow / DBSP academic lineage:
+  - `docs/WATERMARK-RESEARCH.md` — Timely-Dataflow
+    antichain frontier + `Frontier<int64>` type
+  - `docs/research/retraction-safe-semi-naive.md` —
+    "frontier/partial-order composition (Naiad §3)"
+  - `docs/research/bloom-filter-frontier.md` — "research
+    frontier" = cutting-edge-design-space metaphor
+
+  (c) **INDUSTRY-TERM (keep).** "Frontier model" /
+  "frontier LLM" / "frontier moves fast" — generic AI-
+  industry vocabulary:
+  - `docs/research/harness-run-*.md` "frontier-model
+    baselines"
+  - `docs/research/claude-cli-capability-map.md`
+    "frontier research" tier descriptor
+  - `docs/research/hacker-conferences.md` "frontier LLM
+    red-team work"
+  - `memory/feedback_frontier_confidence_*` — frontier-
+    environment confidence (different sense entirely)
+
+  **Rename candidates (Otto proposes; naming-expert
+  persona + Aaron final call):**
+  - **Zora** — already in UX design doc filename
+    (`frontier-ux-zora-evolution`); inherits directly;
+    preserves Star-Trek-computer-but-BETTER design
+    language.
+  - **Starboard** — Star Trek bridge-facing term +
+    navigation nod; Zeta-native coinage.
+  - **Bridge** — simple, Star-Trek-adjacent, no known
+    major product conflict.
+  - **Horizon** — thematic sibling to "Frontier";
+    Windows NT Horizon VDI minor conflict.
+  - **Vantage** — clean of conflicts; less thematic.
+  - **Aurora** — already in factory naming triangle
+    (Aurora+Zeta+KSK); conflating could leak UI into
+    governance-layer conceptual space. Not
+    recommended.
+
+  **Action sequence:**
+  1. Fetch + summarize OpenAI Frontier announcement
+     (next tick; WebFetch 403 this tick; try WebSearch
+     or URL-retry).
+  2. Assess conflict severity (product vs program vs
+     research-name scope).
+  3. Naming-expert persona consultation on candidates;
+     weight factors include trademark risk, voice
+     consistency with Zora/Star-Trek design language,
+     alignment with Aurora/Zeta/KSK naming triangle.
+  4. Aaron final call on new name.
+  5. Repo-wide rename PR: UX design doc + BACKLOG rows
+     + memory pointer updates. Class (b) + (c) usages
+     untouched.
+  6. Memory entry locking the new name canonically +
+     archiving the "Frontier" period as pre-Otto-168
+     history.
+
+  **Non-actions:**
+  - Do NOT rename technical-literature "frontier"
+    usages (broader community vocabulary).
+  - Do NOT rename industry-term "frontier model" /
+    "frontier LLM" usages.
+  - Do NOT ship the rename same-tick as discovery.
+    Naming decisions that affect public branding
+    deserve deliberate treatment.
+  - Do NOT unilaterally pick a name from Otto's
+    candidate list. Aaron is the concept owner.
+
+  **Composition (per Aaron "composes nicely").**
+  Composes with:
+  - `docs/research/frontier-ux-zora-evolution-2026-04-
+    24.md` — primary rename target; "Zora" in filename
+    is one candidate.
+  - BACKLOG "Frontier plugin inventory" row (directly
+    below) — cross-reference update post-rename.
+  - Aurora / Zeta / KSK naming triangle (`docs/
+    definitions/KSK.md`, Amara 5th/7th/16th ferries) —
+    rename slots into this ecosystem without adding a
+    fourth brand.
+  - DST + Cartel-Lab + Veridicality internal module
+    names — unaffected (not public-UI).
+
+  Priority P1 (active brand conflict); effort S
+  (rename PR) + S (naming-expert) + S (OpenAI Frontier
+  scope research).
+
 - [ ] **Frontier plugin inventory + in-source discipline — catalogue the plugins Zeta's factory needs for the Frontier UI + substrate (both `.claude-plugin/` and `.codex-plugin/`), restructure around the new skill-vs-plugin best practices, and enforce that all plugins land in-source rather than in harness-local sandboxes.** Aaron 2026-04-24 Otto-103 directive: *"we should backlog what plugins we need for frontier, seems like a big opportunity to restruture for new best practices and everyting else, we also wanna make sure our plugins are making it into source and not some harness sandbox. backlog."*
 
   **Context.** After session restart Aaron flagged five Codex built-in skills (Image Gen / OpenAI Docs / Plugin Creator / Skill Creator / Skill Installer) + asked Otto to figure out skills-vs-plugins distinction. Otto-103 research (PR #290, `docs/research/codex-builtins-skills-vs-plugins-factory-integration-2026-04-24.md`) established: **plugin = distribution/installation unit (JSON manifest + bundle); skill = single capability unit (SKILL.md)**. Plugins are containers; skills are contents. This row goes further — catalogue what plugins the factory itself needs.
