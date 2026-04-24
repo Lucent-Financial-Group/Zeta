@@ -40,7 +40,7 @@ open System.Text
 /// Which quality dimension a finding reports on. Dimensions are
 /// orthogonal axes — high quality on one dimension does not
 /// guarantee high quality on another, which is why the composite
-/// score is a weighted sum, not an AND.
+/// score is a weighted mean, not an AND.
 type QualityDimension =
     /// Compression ratio — proxy for Kolmogorov complexity relative
     /// to length. Content with low ratio (compresses well) tends to
@@ -102,8 +102,9 @@ type QualityFinding = {
 
 
 /// A composite assessment across multiple dimensions. `Composite` is
-/// the weighted sum of per-dimension scores; callers supply the
-/// weights via `composite`.
+/// the weighted mean of per-dimension scores (sum of weighted scores
+/// divided by sum of weights); callers supply the weights via
+/// `composite`.
 type QualityScore = {
     Composite: float
     Findings: QualityFinding list
@@ -149,14 +150,17 @@ module SignalQuality =
     // ───────────────────────────────────────────────────────────────
 
     /// Compression ratio `|compress(x)| / |x|` using gzip as a
-    /// Kolmogorov-complexity proxy. Returns `1.0` for the empty
-    /// string (neutral). Clamped to `[0.0, 1.0]` — a well-behaved
+    /// Kolmogorov-complexity proxy. Returns `0.5` for the empty
+    /// string — this is the genuine neutral under `severityOfScore`
+    /// (Warn band at `0.30-0.60`). Returning `1.0` would contradict
+    /// the neutrality intent by classifying empty input as
+    /// Quarantine. Clamped to `[0.0, 1.0]` — a well-behaved
     /// compressor cannot exceed the input length for realistic
     /// inputs, but tiny strings can expand slightly under the gzip
     /// header overhead; the clamp keeps the return value in the
     /// interval the composite math assumes.
     let compressionRatio (text: string) : float =
-        if String.IsNullOrEmpty text then 1.0
+        if String.IsNullOrEmpty text then 0.5
         else
             let raw = Encoding.UTF8.GetBytes text
             use out = new MemoryStream()
@@ -389,10 +393,11 @@ module SignalQuality =
 
 
     // ───────────────────────────────────────────────────────────────
-    // Composite — weighted sum across dimensions. Weights do not need
-    // to sum to 1; callers pick a normalisation that suits their
-    // scoring convention. Missing dimensions (no finding supplied)
-    // contribute 0 to the composite.
+    // Composite — weighted mean across dimensions (sum of weighted
+    // scores divided by sum of weights). Weights do not need to sum
+    // to 1; the mean normalisation handles that. Missing dimensions
+    // (no finding supplied) contribute 0 to the numerator and nothing
+    // to the denominator.
     // ───────────────────────────────────────────────────────────────
 
     /// Default uniform weights — every dimension weighted 1.0.
