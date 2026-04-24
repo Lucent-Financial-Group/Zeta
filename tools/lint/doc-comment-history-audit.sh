@@ -32,8 +32,8 @@
 # allowlisting the file.
 #
 # Only scans COMMENT LINES (lines whose first non-whitespace is one
-# of `///`, `//`, `#`, `<!--`). Prose matching in code bodies is not
-# a concern — if a flagged token appears in a string literal or
+# of `///`, `//`, `#`). Prose matching in code bodies is not a
+# concern — if a flagged token appears in a string literal or
 # variable name that's a separate conversation.
 #
 # Usage:
@@ -67,10 +67,15 @@ BASELINE_FILE="tools/lint/doc-comment-history-audit.baseline"
 MODE="${1:-check}"
 
 # ---- Token list --------------------------------------------------------------
-# Extended-regex alternation. Word-boundary anchors keep single-word
-# tokens from matching substrings so that real English words
-# containing the token as a substring are not flagged.
-TOKEN_PATTERN='(\bOtto-[0-9]+\b|\bAmara\b|\bAaron\b|\bferry\b|\bcourier\b|\bgraduation\b|Provenance:|Attribution:)'
+# Alternation of tokens. Word-boundary handling is done inside awk
+# (portable across GNU awk and BSD awk) rather than via `\b`, which
+# is not portable in ERE (`grep -E`) — BSD grep treats `\b` as a
+# literal `b`, silently missing matches on macOS. The awk loop in
+# `collect_violations` checks that the character before and after
+# each match is a non-word character (`[^A-Za-z0-9_]`) for tokens
+# that need word-boundary protection. Tokens ending in `:` (e.g.
+# `Provenance:`, `Attribution:`) do not need a trailing boundary.
+TOKEN_PATTERN='(Otto-[0-9]+|Amara|Aaron|ferry|courier|graduation|Provenance:|Attribution:)'
 
 # ---- Files to scan -----------------------------------------------------------
 scan_files() {
@@ -87,32 +92,81 @@ scan_files() {
 }
 
 # ---- Violation extraction ----------------------------------------------------
-# For each file: extract comment lines only (leading `///`, `//`, `#`,
-# `<!--`), then grep for token matches. Emit `file:line:token` tuples.
-#
-# Note: we match the first token found per line. Multiple tokens on
-# one line count as one violation — fixing the line fixes all tokens
-# on it.
+# For each file: extract comment lines only (leading `///`, `//`, `#`),
+# match tokens from TOKEN_PATTERN with explicit word-boundary checks
+# (for portability between GNU awk and BSD awk — `\b` is not portable
+# in POSIX ERE), and emit `file:line:token1,token2,...` tuples where
+# the token list is sorted + deduplicated. Emitting every token per
+# line (not just the first) ensures the baseline comparison in
+# default mode catches the case where a baselined line gains a new
+# forbidden token — the record changes, and the new record is flagged.
 collect_violations() {
-  local file line token match matches
+  local file
   while IFS= read -r file; do
-    # Extract comment lines only (F# `///`, F#/C# `//`, shell `#`,
-    # not shebang `#!`), then grep for history tokens. Capture
-    # the result in a var so an empty grep (no matches) does not
-    # trip `set -e` / `pipefail` on the outer loop.
-    matches=$(awk '
-      /^[[:space:]]*\/\/\// { print NR":"$0; next }
-      /^[[:space:]]*\/\// && !/^[[:space:]]*\/\/\// { print NR":"$0; next }
-      /^[[:space:]]*#[^!]/ { print NR":"$0; next }
-      /^[[:space:]]*#$/ { print NR":"$0; next }
-    ' "$file" | grep -E "$TOKEN_PATTERN" || true)
-    [ -z "$matches" ] && continue
-    while IFS= read -r match; do
-      line="${match%%:*}"
-      # Extract the first matching token for reporting.
-      token=$(printf '%s' "$match" | grep -oE "$TOKEN_PATTERN" | head -n 1)
-      printf '%s:%s:%s\n' "$file" "$line" "$token"
-    done <<< "$matches"
+    awk -v pat="$TOKEN_PATTERN" -v fname="$file" '
+      # Is this a comment line? (F# ///, F#/C# //, shell # but not
+      # shebang #!).
+      function is_comment_line(s) {
+        if (s ~ /^[[:space:]]*\/\/\//) return 1
+        if (s ~ /^[[:space:]]*\/\//) return 1
+        if (s ~ /^[[:space:]]*#!/) return 0
+        if (s ~ /^[[:space:]]*#/) return 1
+        return 0
+      }
+      # Non-word char boundary check: given position p in string s,
+      # return 1 if char at p is a non-word character (or position
+      # is out of bounds). Word chars are [A-Za-z0-9_].
+      function is_boundary(s, p,    c) {
+        if (p < 1 || p > length(s)) return 1
+        c = substr(s, p, 1)
+        return (c !~ /[A-Za-z0-9_]/)
+      }
+      {
+        if (!is_comment_line($0)) next
+        # Collect all token matches on the line with explicit
+        # word-boundary validation. Tokens ending in ":" skip the
+        # trailing boundary check (the ":" already isolates them).
+        rest = $0
+        offset = 0
+        delete seen
+        n = 0
+        while (match(rest, pat)) {
+          start = RSTART
+          len = RLENGTH
+          tok = substr(rest, start, len)
+          absstart = offset + start
+          absend = absstart + len - 1
+          trailing_needs_boundary = (substr(tok, len, 1) != ":")
+          if (is_boundary($0, absstart - 1) && \
+              (!trailing_needs_boundary || is_boundary($0, absend + 1))) {
+            if (!(tok in seen)) {
+              seen[tok] = 1
+              tokens[++n] = tok
+            }
+          }
+          # Advance past this match to find further tokens on the
+          # same line.
+          rest = substr(rest, start + len)
+          offset = offset + start + len - 1
+        }
+        if (n == 0) next
+        # Sort tokens and join with comma (insertion sort — n is
+        # tiny, typically 1).
+        for (i = 2; i <= n; i++) {
+          key = tokens[i]
+          j = i - 1
+          while (j >= 1 && tokens[j] > key) {
+            tokens[j+1] = tokens[j]
+            j--
+          }
+          tokens[j+1] = key
+        }
+        joined = tokens[1]
+        for (i = 2; i <= n; i++) joined = joined "," tokens[i]
+        printf "%s:%d:%s\n", fname, NR, joined
+        delete tokens
+      }
+    ' "$file"
   done < <(scan_files)
 }
 
