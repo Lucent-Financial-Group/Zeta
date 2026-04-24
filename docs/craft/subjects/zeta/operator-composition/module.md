@@ -7,8 +7,11 @@ pipelines
 
 **Prerequisites:**
 
-- `subjects/zeta/zset-basics/` (Z-sets are what operators
-  consume and produce)
+- `subjects/zeta/zset-basics/` (forthcoming — Z-sets are
+  what most operators consume and produce; until that
+  module lands, see `docs/ARCHITECTURE.md` and
+  `openspec/specs/operator-algebra/spec.md` for the
+  Z-set definition)
 - `subjects/zeta/retraction-intuition/` (operators must
   preserve retraction for IVM to work)
 
@@ -26,11 +29,16 @@ don't re-engineer the studs each time; you rely on them
 being compatible.
 
 A **Zeta operator** is a LEGO block for data pipelines.
-Its *studs* are the input Z-sets (and shapes) it accepts;
-its *sockets* are the output Z-sets it produces. Because
-every operator consumes Z-sets and emits Z-sets, any
-operator can snap downstream of any other — provided the
-types match.
+Its *studs* are the typed inputs it accepts; its
+*sockets* are the typed outputs it produces. Many core
+operators transform `Stream<ZSet<_>>` to
+`Stream<ZSet<_>>`, but composition is more general: one
+operator can snap downstream of another whenever the
+upstream operator's output type matches the downstream
+operator's input type. Some operators (for example
+`count`, `sum`) emit scalar streams (`Stream<int64>`)
+rather than Z-set streams; these compose with operators
+that accept scalars.
 
 **Composition is the act of snapping blocks together.**
 A pipeline is a stack of blocks; the stack computes the
@@ -72,10 +80,17 @@ Zeta ships a small core that covers most pipelines:
 | `D` (delta) | Extract the change (insertions + retractions) from a Z-set stream | Z-set(t) | ΔZ-set(t) |
 | `I` (integral) | Reconstruct state by accumulating changes | ΔZ-set(t) | Z-set(t) |
 | `z⁻¹` (delay) | Hold last-tick value; one-step lookback | Z-set(t) | Z-set(t-1) |
-| `H` (hierarchy) | Nest one pipeline inside another | ZSet-of-pipelines | Composed pipeline |
+| `H` (`distinct^Δ`) | Incremental-distinct boundary-crossing operator (per `openspec/specs/operator-algebra/spec.md`) | ΔZ-set(t) | ΔZ-set(t) (with multiplicities clamped to {0,1}) |
 | `filter` | Keep only entries satisfying a predicate | Z-set(t) | Z-set(t) |
 | `map` | Transform keys via a function | Z-set(t) | Z-set(t) |
 | `count` | Sum weights to a scalar | Z-set(t) | ℤ |
+
+Note: nested / recursive composition (one pipeline as
+an element of another's input) is provided via the
+`NestedCircuit.Nest` APIs and the
+`circuit-recursion` / `retraction-safe-recursion` specs,
+not via `H`. See the "Nested / recursive circuits"
+section in the theoretical track below.
 
 Each input-type matches the previous operator's output-
 type. Snap them.
@@ -86,22 +101,37 @@ A common pattern — "count the running total of apples
 sold today, with retractions applied":
 
 ```fsharp
-// Pipeline composition (conceptually):
-input
-|> filter (fun k -> k.category = "fruit")
-|> filter (fun k -> k.name = "apple")
-|> count
-|> I  // integrate over time
+// Pipeline composition using the real F# surface
+// (Pipeline is [<RequireQualifiedAccess>] and each
+// function takes the Circuit as its first argument).
+let c = circuit  // a Zeta.Core Circuit value
+
+// Apples-only filter, integrated as a Z-set stream:
+let applesOverTime =
+    input
+    |> Zeta.Core.Pipeline.filter c (fun k -> k.category = "fruit")
+    |> Zeta.Core.Pipeline.filter c (fun k -> k.name = "apple")
+    |> Zeta.Core.Pipeline.integrate c   // Z-set integral
+
+// Running scalar count of the integrated apples Z-set:
+let runningCount =
+    applesOverTime
+    |> Zeta.Core.Pipeline.count c       // Stream<int64>
 ```
 
-Each `|>` is a LEGO snap. Each step's output Z-set
-becomes the next step's input Z-set. No hand-written
-glue code; the type-checker enforces the sockets line
-up.
+Each `|>` is a LEGO snap. Each step's output type
+becomes the next step's input type. Note the order:
+`integrate` is a Z-set-to-Z-set operator
+(`Stream<ZSet<_>> -> Stream<ZSet<_>>`), so it must run
+*before* `count` collapses the Z-set to a scalar; once
+you have a `Stream<int64>`, the Z-set-typed operators
+no longer apply. No hand-written glue code; the
+type-checker enforces the sockets line up.
 
-**When retraction arrives**, each block forwards the
-negative weight through. The `count` stays exact; the
-`I` integrates over time correctly; the whole pipeline
+**When retraction arrives**, each Z-set block forwards
+the negative weight through. The `integrate` step folds
+the deltas into running state correctly; downstream
+scalar aggregations stay exact; the whole pipeline
 "just works."
 
 ### Why composition — compared to alternatives
@@ -127,9 +157,14 @@ Three self-check questions:
    If you hit a type error, the blocks don't snap —
    fix the mismatch; don't bolt on glue.
 2. **Is each block retraction-preserving?** Check the
-   operator's documentation; if "retract-safe" is
-   absent or qualified, your pipeline needs explicit
-   care.
+   operator's documentation against the
+   retraction-safety constraints in the
+   `retraction-intuition` module and
+   `openspec/specs/operator-algebra/spec.md`. If the
+   operator's documented semantics do not preserve
+   retraction (or only preserve it under qualifications
+   such as time-invariance or z-linearity), your
+   pipeline needs explicit care.
 3. **Would you be comfortable swapping any one block
    for its replacement?** If yes, the composition is
    honouring LEGO-style modularity. If you'd have to
@@ -146,8 +181,12 @@ Before the next module, you should be able to answer:
   composition mechanism for Zeta operators? (Hint: each
   operator's output type is what the next one consumes.)
 - Give an example pipeline where `filter` comes *before*
-  `count`. Give an example where `map` comes *after*
-  `count`. Why do the positions matter?
+  `count`. Then explain why a `map` *after* `count`
+  cannot type-check against the documented F# surface
+  (`Pipeline.count` produces `Stream<int64>` while
+  `Pipeline.map` consumes `Stream<ZSet<_>>`) — what
+  does this tell you about the order in which scalar
+  aggregations and Z-set transformations must appear?
 - What happens downstream when an operator in the middle
   of a pipeline receives a retraction (negative-weight
   entry)? Do the downstream operators need to know they
@@ -192,9 +231,15 @@ basis of Zeta's query-plan optimiser.
 
 - **D ∘ I = I ∘ D = id** (integral and delta invert each
   other; the algebra's fundamental theorem)
-- **D ∘ (Q_1 ∘ Q_2) = (D ∘ Q_1) ∘ Q_2** if `Q_2` is
-  time-invariant (delta distributes through composition
-  under mild conditions)
+- **Q^Δ = D ∘ Q ∘ I** (the incremental form of any
+  query `Q`; this is the rewrite the optimiser uses to
+  turn a batch query into one whose work-per-tick is
+  proportional to the change size — see
+  `src/Core/Incremental.fs`)
+- **D ∘ Q = Q ∘ D** when `Q` is a time-invariant linear
+  operator (delta commutes with such `Q`; this is the
+  non-trivial commutation law; bare associativity of
+  composition is not what enables incrementalisation)
 - **I ∘ (Q_1 + Q_2) = (I ∘ Q_1) + (I ∘ Q_2)** (integral
   is linear)
 
@@ -221,13 +266,19 @@ Not every Zeta operator composes trivially. Specifically:
    semirings; see the semiring-basics module
    (forthcoming) for the parameterised picture.
 
-### Hierarchical composition (`H`)
+### Nested / recursive circuits
 
-The `H` operator composes pipelines as values — one
-pipeline becomes an element of another's input Z-set. This
-is how Zeta handles nested aggregations, group-by-of-
-group-by, and recursive queries. The theoretical
-treatment is in:
+Zeta supports composing pipelines as values — one
+pipeline becomes an element of another's input Z-set,
+and circuits can refer to themselves through a feedback
+loop. This is how Zeta handles nested aggregations,
+group-by-of-group-by, and recursive queries. The
+implementation lives behind `NestedCircuit.Nest` (see
+`src/Core/NestedCircuit.fs`); the `H` symbol from the
+operator table above is reserved for incremental
+distinct (`distinct^Δ`) per
+`openspec/specs/operator-algebra/spec.md`. The
+theoretical treatment of nesting / recursion is in:
 
 - `openspec/specs/circuit-recursion/spec.md`
 - `openspec/specs/retraction-safe-recursion/spec.md`
@@ -281,13 +332,3 @@ treatment is in:
 
 **Module passes both directions.**
 
----
-
-## Attribution
-
-Otto (loop-agent PM hat) authored v0. Third Craft module
-(after zset-basics + retraction-intuition). Content
-accuracy review: future Soraya (formal-verification) for
-categorical + stream-algebra passes; Hiroshi (complexity-
-theory) for incremental-maintenance analysis; Kira
-(harsh-critic) for normal code-accuracy pass.
