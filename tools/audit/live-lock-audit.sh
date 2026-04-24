@@ -23,8 +23,26 @@ set -euo pipefail
 WINDOW="${1:-25}"
 THRESHOLD_EXT_PCT="${LIVELOCK_MIN_EXT_PCT:-20}"  # minimum healthy external-commit %
 
+# Validate WINDOW as a positive integer (Copilot review PR #143, Otto-thread-drain).
+# Non-integer / zero / negative input produces a confusing git error downstream;
+# fail fast with a usage hint instead.
+if ! printf '%s' "$WINDOW" | grep -qE '^[1-9][0-9]*$'; then
+    echo "usage: $(basename "$0") [N]" >&2
+    echo "  N must be a positive integer (default 25); got: '$WINDOW'" >&2
+    exit 2
+fi
+
 # Fetch so we are measuring against a fresh view, not stale local.
 git fetch origin main --quiet 2>/dev/null || true
+
+# Hard-fail if origin/main cannot be resolved — otherwise the audit silently
+# reports "No commits found" and exits 0, which looks healthy (Codex P2 review
+# PR #143, Otto-thread-drain).
+if ! git rev-parse --verify --quiet origin/main >/dev/null; then
+    echo "error: origin/main could not be resolved — cannot audit." >&2
+    echo "  ensure 'origin' remote exists and 'main' branch is fetchable." >&2
+    exit 3
+fi
 
 ext=0
 intl=0
@@ -34,8 +52,11 @@ lines=""
 
 while IFS= read -r sha; do
     [ -z "$sha" ] && continue
-    files=$(git show --stat --format="" "$sha" 2>/dev/null \
-        | awk 'NF>2 && !/^ +[0-9]+ file/ {print $1}')
+    # Use diff-tree --name-only for canonical, non-truncated paths. --stat
+    # shortens long names with "..." and can misformat renames "old => new",
+    # which would skew EXT/INTL/SPEC classification (Codex P1 + Copilot PR #143,
+    # Otto-thread-drain).
+    files=$(git diff-tree --no-commit-id --name-only -r "$sha" 2>/dev/null)
     subj=$(git log -1 --format="%s" "$sha" | cut -c1-72)
 
     src=$(printf '%s\n' "$files" | grep -cE "^(src/|tests/|samples/|bench/)" || true)

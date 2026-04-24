@@ -7,8 +7,10 @@ screenshot, a PDF, a zip, without any discussion beforehand.
 The agent audits this folder at **every tick-open** and
 absorbs anything new.
 
-This file is the protocol. It is the **only** file in
-`drop/` that git tracks. Everything else gets gitignored so
+This file is the protocol. Together with `drop/.gitignore`,
+it is one of only two tracked files in `drop/` — the README
+documents intent, the `.gitignore` enforces the
+track-nothing-else rule. Everything else gets gitignored so
 deposits never enter history.
 
 ## Design rationale — one tracked sentinel, everything else ignored

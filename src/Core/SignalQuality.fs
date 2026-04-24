@@ -235,8 +235,12 @@ module SignalQuality =
             else float grounded / float total
 
     /// Proportion of claims that satisfy a caller-provided grounding
-    /// predicate. Weight-zero entries are ignored (they are the
-    /// retraction-algebra's equivalent of "no claim").
+    /// predicate. Only positive-weight claims count toward the
+    /// denominator: weight-zero entries are cleanly-cancelled
+    /// ("no claim"), and negative-weight entries are
+    /// over-retractions (surfaced by the consistency dimension,
+    /// not counted as live assertions here — Codex P2 review
+    /// PR #143, Otto-thread-drain).
     let groundingWith (predicate: string -> bool) (claims: ZSet<string>) : float =
         let span = claims.AsSpan()
         if span.IsEmpty then 1.0
@@ -244,7 +248,7 @@ module SignalQuality =
             let mutable grounded = 0
             let mutable total = 0
             for i = 0 to span.Length - 1 do
-                if span.[i].Weight <> 0L then
+                if span.[i].Weight > 0L then
                     total <- total + 1
                     if predicate span.[i].Key then grounded <- grounded + 1
             if total = 0 then 1.0
@@ -272,7 +276,9 @@ module SignalQuality =
     // ───────────────────────────────────────────────────────────────
 
     /// Proportion of claims that satisfy a caller-provided
-    /// falsifiability predicate. Weight-zero entries are ignored.
+    /// falsifiability predicate. Only positive-weight claims count
+    /// (same rationale as `groundingWith`: over-retractions are
+    /// consistency-dimension signals, not live assertions).
     let falsifiabilityWith (predicate: string -> bool) (claims: ZSet<string>) : float =
         let span = claims.AsSpan()
         if span.IsEmpty then 1.0
@@ -280,7 +286,7 @@ module SignalQuality =
             let mutable falsifiable = 0
             let mutable total = 0
             for i = 0 to span.Length - 1 do
-                if span.[i].Weight <> 0L then
+                if span.[i].Weight > 0L then
                     total <- total + 1
                     if predicate span.[i].Key then falsifiable <- falsifiable + 1
             if total = 0 then 1.0
