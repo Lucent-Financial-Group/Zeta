@@ -39,7 +39,10 @@ Each entry follows the schema:
 ```text
 ### <relative path>
 
-- **Entropy class:** <one of the 12 DST entropy classes>
+- **Entropy class:** <one or more of the 12 DST entropy
+  classes, comma- or `+`-separated when a site genuinely
+  crosses multiple (e.g. a network boundary whose only
+  retry policy is itself a distinct entropy source)>
 - **Scope:** main-path / tools-path / samples-path / tests-path
 - **Classification:** ACCEPTED_BOUNDARY
 - **Rationale:** 1-3 sentences on why simulation does not
@@ -118,11 +121,15 @@ Each entry follows the schema:
 Boundaries identified by the Amara 19th-ferry entropy-
 source scan (Part 1 §2) but not yet formally registered:
 
-- `DiskBackingStore.fs` — currently BLOCKER (not
-  ACCEPTED_BOUNDARY). PR 5 of the 19th-ferry revised
-  roadmap wires it through `ISimulationFs` instead of
-  registering it as a boundary. Classification changes
-  from BLOCKER to SIMULATED when PR 5 lands.
+- `DiskBackingStore.fs` (planned, not yet landed in
+  `src/` — referenced here as the target of PR 5 of the
+  19th-ferry revised roadmap) — will be classified BLOCKER
+  on landing and immediately migrated to SIMULATED via
+  `ISimulationFs` (also planned, not yet landed). The
+  BLOCKER → SIMULATED transition is the PR 5 body of
+  work; this registry entry is the forward-looking
+  placeholder so the accepted-boundary scan has a row to
+  compare against when the code arrives.
 - Future network I/O for multi-node scenarios — also
   BLOCKER until PR 8 simulates it.
 - All other 12 entropy sources in §2 report "not found
