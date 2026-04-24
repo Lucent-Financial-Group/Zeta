@@ -5646,159 +5646,6 @@ systems. This track claims the space.
 
 - [ ] **Schema-as-Graph — entire database schema as first-class typed graph.** Aaron 2026-04-24 Otto-127: *"would it be possible to have a graph view of the entire table and relations so the whole schema is first class i the graph plus we could have special edge node whatever else we need entities if needed for more fidelity than reguarl sql table structrue and relationships allow. backlog"*. Natural extension of Graph substrate (PR #317 + #324). Scope: (1) schema-node types — Table/Column/Index/Constraint/View/StoredProcedure/Trigger; (2) schema-edge types — ForeignKey/Contains/References/DependsOn/InheritsFrom; (3) custom entity types beyond SQL — Domain/Aggregate/EventStream/Retraction (first-class "removed" with timestamp)/Provenance; (4) round-trip SQL↔Graph invariants; (5) bidirectional — Graph mutations emit DDL; DDL mutates Graph. Schema-change-over-time = Graph event stream w/ retraction-native. Aminata BP-11 threat-pass. Priority P2; effort M+M+L.
 
-- [ ] **Git-native PR-conversation preservation — extract PR review threads + comments to git-tracked files on merge, PLUS backfill of all historical PRs.** **Priority: P1 (elevated from P2 per Aaron Otto-151..153).** Aaron Otto-113 originating directive: *"you probably need to resolve and save the conversations on the PRs to git for gitnative presevration"*. Aaron Otto-150..153 follow-up burst ratifying priority + scope: *"you are still capturing all the PR reviews from copilot and your responses to gitnative right? / that's high signaldata we should get on that pretty quickly i think / can you post fill by going through all the old PRs and all the threads/conversations? / back fill i mean"* — then course-correction *"no not that quick / do it the right way / i just mean pritorize the right way"* confirming the ask is **appropriate prioritization, not rushed shipping**. Current status: NOT running; no workflow archives review threads; no `docs/pr-discussions/` directory exists. Currently PR review threads (Copilot / Codex connector / human reviewer comments) live GitHub-side only; if repo is mirrored / forked / GitHub has an outage / repo is migrated, the conversation substrate is lost. For glass-halo transparency + retractability, PR discussions belong in-repo. This is high-signal data (Copilot's actual critiques of the factory's code; Otto's replies showing reasoning patterns; human-contributor thought process). Proposed phased landing:
-
-  **Phase 1 — design (this tick or next, S effort).** Decide:
-  (a) file-per-PR vs index-plus-per-thread; (b) markdown
-  schema (YAML frontmatter fields: `pr_number`, `pr_title`,
-  `pr_author`, `merged_at`, `scope`, `privacy_pass`); (c) slug
-  collision rules; (d) idempotent-update semantics when a
-  resolved thread is reopened or a comment is edited
-  post-merge; (e) who authors the archive commits (GHA bot vs
-  human-contributor-attributed).
-
-  **Phase 2 — privacy review (Aminata threat-model pass,
-  blocking).** Questions: what classes of content in a
-  reviewer comment could be sensitive (credentials
-  accidentally pasted, customer data, internal-only URLs,
-  names of external organizations)? Is the privacy pass a
-  manual-review-then-merge step or an automated
-  redaction-on-ingest step? What does a review-comment
-  redaction look like (strike-through with reason, or hash
-  +reference)? Does Aminata recommend a different trust
-  posture for agents (Copilot / Codex-connector / github-
-  actions / Claude Code personas) vs humans (contributors
-  with arbitrary comment content)?
-
-  **Phase 3 — ongoing-capture mechanism (S-M effort after
-  Phase 2 signs off).** GHA workflow with:
-
-  ```yaml
-  on:
-    pull_request_target:
-      types: [closed]
-  ```
-
-  Job gates on `if: github.event.pull_request.merged == true`.
-  Fetches threads via `gh api graphql`, writes to
-  `docs/pr-discussions/PR-<N>-<slug>.md` on a dedicated
-  branch, opens an auto-archive PR.
-
-  **Security constraints for `pull_request_target`**
-  (known GitHub Actions footgun — elevated permissions +
-  access to secrets on base-branch code, but the trigger
-  FIRES for PRs from forks; the well-known exploit is
-  checking out PR-head and executing its code with the
-  elevated permissions):
-
-  - MUST NOT `actions/checkout` the PR head (`refs/pull/<N>/
-    merge` or `head.ref`). Check out the base ref only;
-    the archive content is fetched via `gh api graphql`
-    against the already-merged PR state, not by running
-    PR code.
-  - MUST NOT use `${{ github.event.pull_request.title }}` /
-    `.body` / `.head.ref` / `.head.label` / etc. in any
-    `run:` step. Fetch title via `gh api /repos/.../pulls/
-    <N>` INSIDE the workflow (Otto-154 learned this via
-    injection-hook false-positive). Or write the archive
-    with only `number`-keyed fields and derive the slug
-    from the fetched JSON, not from event payload.
-  - MUST declare minimal `permissions:` (just `contents:
-    write` for the archive branch + `pull-requests: write`
-    to open the auto-archive PR). No `actions:`, no
-    `id-token:`, no `deployments:`.
-  - SHOULD pin all `actions/*` to commit SHA per FACTORY-
-    HYGIENE row #43.
-
-  **Docs/memory lint policy reference** (cited in the
-  Non-goals section below): the "docs-lint / memory-
-  no-lint" split is the convention documented in
-  `memory/feedback_docs_linted_memory_not_otto_decides_
-  where_external_content_lives_2026_04_24.md` + enforced
-  by `.markdownlint-cli2.jsonc` (which excludes
-  `memory/**` via ignore patterns). This PR's discussion-
-  archive output lives in `docs/pr-discussions/` which
-  IS subject to markdownlint; memory/ continues to be
-  ignored.
-
-  **Phase 4 — backfill (M effort after Phase 3 is proven on
-  live PRs).** Per-PR script that walks all merged PRs in
-  priority order (richest-review-content first — PRs with
-  Copilot comments, PRs with Codex-connector comments,
-  bulk-change PRs, then routine PRs), applies the Phase-2
-  privacy pass, commits archives in batches (e.g. 20 PRs
-  per commit) to keep diffs reviewable. Budget: expect
-  ~300+ merged PRs historically.
-
-  **Phase 5 — ongoing-reconciliation hygiene (S effort, after
-  Phase 4).** Periodic audit (weekly GHA cron) that checks
-  all merged PRs have an archive file; flags divergences;
-  surfaces edit-after-merge comment updates. Captures the
-  drift that would otherwise silently accrue.
-
-  **Scope addendum (Aaron Otto-155..156).** Otto-155: *"we
-  can capture the comments from both acehack and lfg the bots,
-  forks should be expected to ship bot comments too like
-  acehack back to the main repo, that's high value signals."*
-  Otto-156 self-correction: *"sorry i said bot comments i
-  should have said agent comments"* — per GOVERNANCE §3 and
-  CLAUDE.md "Agents, not bots." Terminology correction:
-  Copilot, Codex connector, Claude Code personas, and
-  github-actions all count as **agents** with agency,
-  judgement, and accountability — not bots. Two binding
-  scope decisions follow:
-
-  (i) **Dual-agent-surface capture.** Agent comments across
-  both account contexts get archived — those posted under
-  the personal account (`AceHack/...` forks) AND under the
-  org account (`Lucent-Financial-Group/Zeta` main). Same
-  schema, same workflow, different event sources.
-
-  (ii) **Fork-upstream-sync obligation.** When a fork of the
-  repo runs its own Copilot / Codex / agent reviews on its
-  own PRs (e.g. `AceHack/Zeta#42` with a personal-account
-  Copilot review), those agent-comment archives ride back
-  to the main repo when the branch lands upstream — via a
-  sync job that copies fork-side `docs/pr-discussions/`
-  entries into the main repo at merge time. Human comments
-  on fork-side PRs stay under the human-privacy-pass
-  discipline; agent comments get sync-with-scope. Treat
-  fork-originated agent signals as high-value upstream
-  input.
-
-  Non-goals for this row:
-
-  - Replacing GitHub as the live review venue (it's the
-    source-of-truth; archive is the durable mirror).
-  - Attempting historical backfill in a single CI run
-    (300+ PRs × GraphQL rate limits would likely fail —
-    batch it; see Phase 4 for batch strategy).
-  - Assuming agent-authored content is privacy-trivial.
-    Earlier phrasing said agent reviews had "no privacy
-    concern"; that was wrong and contradicted Phase 2's
-    explicit privacy-review scope. Copilot / Codex /
-    Claude Code personas can echo secrets (pasted by
-    humans into a PR description or reviewer reply),
-    internal-only URLs, customer identifiers, or other
-    sensitive substrate the human reviewer dropped into
-    the conversation unaware. Phase 2's privacy pass
-    evaluates ALL archived content — agent-authored
-    included — for redaction need. The trust-posture
-    default for agent content IS higher (no hand-typed
-    free-form prose = lower leak rate) but not
-    zero-risk. Aminata threat-review sets the posture
-    per content source; this row does not pre-commit to
-    "agent content archives verbatim without review."
-
-  Effort: S (Phase 1 design) + M (Phase 2 threat-review +
-  Phase 3 workflow) + M (Phase 4 backfill) + S (Phase 5
-  hygiene). Cumulative: L. Lands across multiple ticks;
-  Phase 1 can go this tick or next; later phases land when
-  ready. Composes with Otto-113 bootstrap-attempt-1 memory +
-  Otto-150..154 burst + docs-lint/memory-no-lint policy
-  (discussions go in docs/) + ChatGPT-download-skill
-  (PR #300) pattern + Aminata threat-model authority.
-
 - [ ] **Ongoing memory-sync mechanism — keep in-repo `memory/` mirrored with auto-memory writes during each Otto tick.** Aaron 2026-04-24 Otto-113 directive *"our memories should all be checked in now"* + Otto-114 confirmation that in-repo memory/ is the natural home for ALL memory types. Otto-113 one-shot sync (PR #307) mirrored 439 files. Going forward, every Otto tick that writes to `~/.claude/projects/.../memory/` should also land new/updated files in-repo `memory/` with matching MEMORY.md pointer update (per memory-index-integrity + memory-reference-existence-lint workflows). Proposed mechanisms: (a) end-of-tick skill that rsyncs new memories to a branch + PRs them; (b) direct-to-repo writes with auto-memory as read-cache; (c) GHA cron periodic sync. Initial preference: (a) for CLI-tool compatibility today, (b) long-term. Also includes path-unification design (decide whether to deprecate the `~/.claude/projects/...` path for this project entirely or keep as staging). Priority P2 research-grade; effort S (rsync skill) + M (direct-write tooling). Composes with `memory/feedback_natural_home_of_memories_is_in_repo_now_all_types_*.md` (Otto-114 policy) + PR #307 one-shot sync + memory-index-integrity workflow.
 
 - [ ] **"Frontier" naming conflict with OpenAI Frontier
@@ -9730,6 +9577,165 @@ Keeping them adjacent preserves the directive cluster.
   archive tool; Mateo (security-researcher) reviews the
   schema for adversarial-training-corpus risks; Kenji
   synthesizes the dual-use deliverable.
+
+- [ ] **Git-native PR-conversation preservation — extract PR review threads + comments to git-tracked files on merge, PLUS backfill of all historical PRs.** **Priority: P1 (elevated from P2 per Aaron Otto-151..153; relocated from `## P2 — research-grade` to this `## P1 — Git-native hygiene cadences` section per #335 review thread on internal-priority-vs-section consistency).** Aaron Otto-113 originating directive: *"you probably need to resolve and save the conversations on the PRs to git for gitnative presevration"*. Aaron Otto-150..153 follow-up burst ratifying priority + scope: *"you are still capturing all the PR reviews from copilot and your responses to gitnative right? / that's high signaldata we should get on that pretty quickly i think / can you post fill by going through all the old PRs and all the threads/conversations? / back fill i mean"* — then course-correction *"no not that quick / do it the right way / i just mean pritorize the right way"* confirming the ask is **appropriate prioritization, not rushed shipping**. Current status: NOT running; no workflow archives review threads; no `docs/pr-discussions/` directory exists. Currently PR review threads (Copilot / Codex connector / human reviewer comments) live GitHub-side only; if repo is mirrored / forked / GitHub has an outage / repo is migrated, the conversation substrate is lost. For glass-halo transparency + retractability, PR discussions belong in-repo. This is high-signal data (Copilot's actual critiques of the factory's code; Otto's replies showing reasoning patterns; human-contributor thought process). Proposed phased landing:
+
+  **Phase 1 — design (this tick or next, S effort).** Decide:
+  (a) file-per-PR vs index-plus-per-thread; (b) markdown
+  schema (YAML frontmatter fields: `pr_number`, `pr_title`,
+  `pr_author`, `merged_at`, `scope`, `privacy_pass`); (c) slug
+  collision rules; (d) idempotent-update semantics when a
+  resolved thread is reopened or a comment is edited
+  post-merge; (e) who authors the archive commits (GHA bot vs
+  human-contributor-attributed).
+
+  **Phase 2 — privacy review (Aminata threat-model pass,
+  blocking).** Questions: what classes of content in a
+  reviewer comment could be sensitive (credentials
+  accidentally pasted, customer data, internal-only URLs,
+  names of external organizations)? Is the privacy pass a
+  manual-review-then-merge step or an automated
+  redaction-on-ingest step? What does a review-comment
+  redaction look like (strike-through with reason, or hash
+  and reference)? Does Aminata recommend a different trust
+  posture for agents (Copilot / Codex-connector / github-
+  actions / Claude Code personas) vs humans (contributors
+  with arbitrary comment content)?
+
+  **Phase 3 — ongoing-capture mechanism (S-M effort after
+  Phase 2 signs off).** GHA workflow with:
+
+  ```yaml
+  on:
+    pull_request_target:
+      types: [closed]
+  ```
+
+  Job gates on `if: github.event.pull_request.merged == true`.
+  Fetches threads via `gh api graphql`, writes to
+  `docs/pr-discussions/PR-<N>-<slug>.md` on a dedicated
+  branch, opens an auto-archive PR.
+
+  **Security constraints for `pull_request_target`**
+  (known GitHub Actions footgun — elevated permissions +
+  access to secrets on base-branch code, but the trigger
+  FIRES for PRs from forks; the well-known exploit is
+  checking out PR-head and executing its code with the
+  elevated permissions). The reviewer-suggested safer
+  alternatives — `push` on `main` after merge, or a
+  `workflow_run` chain from a CI workflow that ran on the
+  merge commit — remain on the table for Phase 1 design;
+  the constraints below apply if `pull_request_target` is
+  the chosen mechanism:
+
+  - MUST NOT `actions/checkout` the PR head (`refs/pull/<N>/
+    merge` or `head.ref`). Check out the base ref only;
+    the archive content is fetched via `gh api graphql`
+    against the already-merged PR state, not by running
+    PR code.
+  - MUST NOT use `${{ github.event.pull_request.title }}` /
+    `.body` / `.head.ref` / `.head.label` / etc. in any
+    `run:` step. Fetch title via `gh api /repos/.../pulls/
+    <N>` INSIDE the workflow (Otto-154 learned this via
+    injection-hook false-positive). Or write the archive
+    with only `number`-keyed fields and derive the slug
+    from the fetched JSON, not from event payload.
+  - MUST declare minimal `permissions:` (just `contents:
+    write` for the archive branch + `pull-requests: write`
+    to open the auto-archive PR). No `actions:`, no
+    `id-token:`, no `deployments:`.
+  - SHOULD pin all `actions/*` to commit SHA per FACTORY-
+    HYGIENE row #43.
+
+  **Docs/memory lint policy reference** (cited in the
+  Non-goals section below): the "docs-lint / memory-
+  no-lint" split is the convention documented in
+  [`memory/feedback_docs_linted_memory_not_otto_decides_where_external_content_lives_2026_04_24.md`](../memory/feedback_docs_linted_memory_not_otto_decides_where_external_content_lives_2026_04_24.md)
+  and enforced by `.markdownlint-cli2.jsonc` (which
+  excludes `memory/**` via ignore patterns). This PR's
+  discussion-archive output lives in `docs/pr-discussions/`
+  which IS subject to markdownlint; memory/ continues to
+  be ignored.
+
+  **Phase 4 — backfill (M effort after Phase 3 is proven on
+  live PRs).** Per-PR script that walks all merged PRs in
+  priority order (richest-review-content first — PRs with
+  Copilot comments, PRs with Codex-connector comments,
+  bulk-change PRs, then routine PRs), applies the Phase-2
+  privacy pass, commits archives in batches (e.g. 20 PRs
+  per commit) to keep diffs reviewable. Budget: expect
+  ~300+ merged PRs historically.
+
+  **Phase 5 — ongoing-reconciliation hygiene (S effort, after
+  Phase 4).** Periodic audit (weekly GHA cron) that checks
+  all merged PRs have an archive file; flags divergences;
+  surfaces edit-after-merge comment updates. Captures the
+  drift that would otherwise silently accrue.
+
+  **Scope addendum (Aaron Otto-155..156).** Otto-155: *"we
+  can capture the comments from both acehack and lfg the bots,
+  forks should be expected to ship bot comments too like
+  acehack back to the main repo, that's high value signals."*
+  Otto-156 self-correction: *"sorry i said bot comments i
+  should have said agent comments"* — per GOVERNANCE §3 and
+  CLAUDE.md "Agents, not bots." Terminology correction:
+  Copilot, Codex connector, Claude Code personas, and
+  github-actions all count as **agents** with agency,
+  judgement, and accountability — not bots. Two binding
+  scope decisions follow:
+
+  (i) **Dual-agent-surface capture.** Agent comments across
+  both account contexts get archived — those posted under
+  the personal account (`AceHack/...` forks) AND under the
+  org account (`Lucent-Financial-Group/Zeta` main). Same
+  schema, same workflow, different event sources.
+
+  (ii) **Fork-upstream-sync obligation.** When a fork of the
+  repo runs its own Copilot / Codex / agent reviews on its
+  own PRs (e.g. `AceHack/Zeta#42` with a personal-account
+  Copilot review), those agent-comment archives ride back
+  to the main repo when the branch lands upstream — via a
+  sync job that copies fork-side `docs/pr-discussions/`
+  entries into the main repo at merge time. Human comments
+  on fork-side PRs stay under the human-privacy-pass
+  discipline; agent comments get sync-with-scope. Treat
+  fork-originated agent signals as high-value upstream
+  input.
+
+  Non-goals for this row:
+
+  - Replacing GitHub as the live review venue (it's the
+    source-of-truth; archive is the durable mirror).
+  - Attempting historical backfill in a single CI run
+    (300+ PRs × GraphQL rate limits would likely fail —
+    batch it; see Phase 4 for batch strategy).
+  - Assuming agent-authored content is privacy-trivial.
+    Earlier phrasing said agent reviews had "no privacy
+    concern"; that was wrong and contradicted Phase 2's
+    explicit privacy-review scope. Copilot / Codex /
+    Claude Code personas can echo secrets (pasted by
+    humans into a PR description or reviewer reply),
+    internal-only URLs, customer identifiers, or other
+    sensitive substrate the human reviewer dropped into
+    the conversation unaware. Phase 2's privacy pass
+    evaluates ALL archived content — agent-authored
+    included — for redaction need. The trust-posture
+    default for agent content IS higher (no hand-typed
+    free-form prose = lower leak rate) but not
+    zero-risk. Aminata threat-review sets the posture
+    per content source; this row does not pre-commit to
+    "agent content archives verbatim without review."
+
+  Effort: S (Phase 1 design) + M (Phase 2 threat-review +
+  Phase 3 workflow) + M (Phase 4 backfill) + S (Phase 5
+  hygiene). Cumulative: L. Lands across multiple ticks;
+  Phase 1 can go this tick or next; later phases land when
+  ready. Composes with Otto-113 bootstrap-attempt-1 memory +
+  Otto-150..154 burst + the docs-lint/memory-no-lint policy
+  cited in the "Docs/memory lint policy reference" block
+  above (discussions go in `docs/`, which is markdownlint-
+  enforced; `memory/` is excluded) + ChatGPT-download-skill
+  (PR #300) pattern + Aminata threat-model authority.
 
 ## P2 — BP-25 promotion candidate — live-state-before-policy
 
