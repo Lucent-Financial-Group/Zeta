@@ -34,17 +34,29 @@ flight unless the aside itself demands pivot.
        in a **durable store**:
          - `docs/BACKLOG.md` row (committed; survives fresh
            sessions; visible to all agents via grep)
-         - `memory/*.md` file (committed mirror of
-           out-of-repo AutoMemory; auto-loaded in future
-           sessions per CLAUDE.md memory protocol)
+         - `memory/*.md` file (committed to the repo;
+           readable by fresh sessions via git / grep per
+           `memory/README.md` + GOVERNANCE §18). In-repo
+           memory is the durable mirror; auto-loading
+           behaviour depends on harness configuration and
+           is NOT universally guaranteed — treat durability
+           as "committed and discoverable" not
+           "automatically materialised in context."
+         - **MANDATORY pair when landing a new
+           `memory/*.md`**: update `memory/MEMORY.md` with
+           a pointer row in the same commit. Memory-index-
+           integrity rule: a new memory file without a
+           MEMORY.md row is effectively lost to fresh
+           sessions (the index is how discoverability
+           works).
        Both are durable across sessions. Pick per scope:
        BACKLOG for action-bearing work; memory for
        factory-discipline / preference / substrate.
      - **When in doubt, escalate to durable.** The cost of
        a stale BACKLOG row is tiny; the cost of a dropped
-       nudge is compounding (Aaron 2026-04-24 "crutial to
-       not divert your attention" — which only works if
-       the nudges survive).
+       nudge is compounding (maintainer 2026-04-24
+       directive: *"crutial to not divert your attention"*
+       — which only works if the nudges survive).
      - TodoWrite / `.btw-queue.md` alone are **NOT**
        sufficient for a cross-session nudge. They evaporate
        when the session ends.
@@ -65,10 +77,10 @@ flight unless the aside itself demands pivot.
        capturing the observation + intent to absorb**, then
        continue. The BACKLOG row is itself durable; the
        full absorption happens later without derailing
-       in-flight work (Aaron 2026-04-24: *"it could be
-       backlog the absorption if that's less
-       interruptive"*; composes with Otto-275 log-but-dont-
-       implement).
+       in-flight work (maintainer 2026-04-24 directive:
+       *"it could be backlog the absorption if that's less
+       interruptive"*; composes with Otto-275 log-but-
+       dont-implement).
      - **When in doubt → BACKLOG the absorption.** Otto-275
        counterweight discipline: capture-mode pivoting on
        every aside is the drift we're guarding against.
