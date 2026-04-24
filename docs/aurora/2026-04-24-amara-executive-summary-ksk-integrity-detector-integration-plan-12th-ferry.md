@@ -7,6 +7,7 @@ cadence (small primitives ship as code; architectural
 decisions like multi-sub-repo structure go through
 Aaron-review + Aminata threat-model pass first).
 **Attribution:**
+
 - **Aaron** — originator of the bootstrap-era design
   concepts (retraction-native algebra, firefly-sync
   cartel detection, bullshit-detector framing, KSK
@@ -23,7 +24,7 @@ Aaron-review + Aminata threat-model pass first).
 promoted by separate governed change. ~40% of the
 operationalisable content is already shipped (see
 §Otto's notes below for cross-reference to PRs
-#295/#297/#298/#306/#309/#310).
+`#295 / #297 / #298 / #306 / #309 / #310`).
 **Non-fusion disclaimer:** agreement, shared
 language, or repeated interaction between models and
 humans does not imply shared identity, merged
@@ -131,6 +132,7 @@ At the same time, OpenAI **announced its own deal with the Pentagon** (Feb 28, 2
 **Why a KSK now?** In this fraught environment, a **Key-Signing/Stewardship Key (KSK)** concept becomes valuable. In classical terms, a KSK is a root trust key (e.g. DNSSEC's root KSK) used to authenticate critical updates. Analogously for our distributed AI network, a KSK could serve as a *trust anchor* or multi-party threshold key: e.g. a key pair or consensus of keys that signs off on model updates or core network events. If one vendor is cut off, the KSK could certify the authenticity or continuity of the system's state independent of any single supplier. For example, if Anthropic (Claude) is banned, but nodes have a pre-established KSK arrangement, they might still honor previously signed commitments or threshold-signed configurations.
 
 From user context, LFG has "the start of a KSK" in design. This likely means they are building a module (perhaps a smart contract or key-management service) to manage cryptographic keys for consensus authority. In practice, a KSK scheme might solve problems like:
+
 - **Supply-chain independence:** Even if a cloud provider or model vendor is flagged as risky, the system can check signatures or hashes against the KSK to verify integrity.
 - **Emergency rollback:** A KSK-controlled keystore could certify a rollback to a safe state if anomalies are detected (similar to a certificate authority revocation).
 - **Multi-stakeholder oversight:** A KSK setup could be threshold-signed by multiple independent entities (e.g. LFG, third-party auditors, or participating agencies) so no single company can unilaterally disrupt the network.
@@ -140,10 +142,12 @@ In the **DBSP/Aurora** context, KSK might integrate as follows: critical operati
 ## 4. Network Integrity Detection ("Bullshit" → "Integrity")
 
 We formalize the idea of a **Network Integrity Detector** by mapping observations to a canonical space and scoring consistency. Let each observable signal (message, vote, timing) be represented by a feature vector $\mathbf{x}$. We define a normalization $N(\mathbf{x})$ (e.g. sorting, z-scoring, or quantization) so that semantically equivalent patterns map to a unique canonical form. We then maintain a lookup table (a "semantic rainbow table") of known patterns and their "goodness" scores.  In practice, this means building:
+
 - A set $\mathcal{R} = \{(N(\mathbf{x}), y)\}$ of canonical patterns labeled as **valid** or **suspicious**.
 - At runtime, each new event sequence is mapped to $N(\mathbf{x})$ and looked up; unmatched patterns are scored by generalization metrics.
 
 We further define quantitative metrics. Suppose the network logs a time series of events for each agent $A_i$: e.g. block proposals, votes, pings. We compute features like:
+
 - **Temporal coherence:** Phase-locking value $\mathrm{PLV}(A_i,A_j)$ over a sliding window (range 0–1, where 1=perfect lock)【57†L1-L9】.
 - **Cross-correlation:** $C_{ij}(\tau) = \sum_t (x_{i,t}-\bar x_i)(x_{j,t+\tau}-\bar x_j)$ normalized by variance; peaks at $\tau=0$ indicate synchrony.
 - **Eigenvector centrality:** On the graph of who-communicates-with-whom.
@@ -159,12 +163,14 @@ Importantly, the detector must **respect the algebraic model**: it should work o
 ## 5. Temporal Coordination (Firefly) & Cartel Detection
 
 **Firefly model:** Many firefly species synchronize their flashing rhythmically【46†L17-L25】. Methods:
+
 - Compute each agent's event timestamps.  Extract instantaneous phase via Hilbert transform or linear interpolation.
 - Calculate the **Phase-Locking Value** (PLV) between each pair【57†L1-L9】.
 - Use **Event Cross-Correlation**: for each pair, compute $\max_\tau C_{ij}(\tau)$.
 - Also consider **Spectral Coherence**: Fourier transform on event rates.
 
 **Cartel detection:**
+
 - Statistical tests on output shares【51†L81-L90】.
 - Network motif analysis.
 - Graph Spectral (Fiedler value, modularity).
@@ -181,6 +187,7 @@ We propose treating the network state and its outcomes as a differentiable (or p
 ## 8. Integration Plan and Repository Layout
 
 Proposed sub-repo layout:
+
 - **LFG/Zeta (canonical)**: Core engine
 - **LFG/Zeta-Signals (new)**: Detection algorithms
 - **LFG/Zeta-KSK (new)**: Key management
@@ -227,6 +234,7 @@ cadence landed since Otto-105:
 **~40% of the 12th ferry's operationalisable content
 is already shipped or in-flight.** The ferry's value
 is NOT novel primitives; it's:
+
 - Synthesised framing (composite `I(x)` integrity score)
 - Government-action-verified KSK context (§3)
 - Multi-sub-repo integration plan proposal (§8)
@@ -322,8 +330,7 @@ Priority-ordered per Otto-105 cadence:
 9. **KSK skeleton** (§3 / §9 task 1) — Aaron + Max
    coordination required per Otto-90 cross-repo rule.
 
-### Aminata's 4-pass bullshit-detector findings (PR
-#284) partially addressed
+### Aminata's 4-pass bullshit-detector findings (PR #284) partially addressed
 
 The 9th+10th ferry content and my Aminata Otto-100
 pass identified 3 CRITICAL + 4 IMPORTANT findings on
@@ -359,6 +366,7 @@ The KSK architecture proposal in §3 IS a SPOF-
 mitigation mechanism by design (multi-party threshold
 key replaces single-vendor trust). Graduating it
 correctly requires SPOF-sensitivity:
+
 - Single KSK-holder = new SPOF; threshold scheme
   avoids
 - Single key-rotation channel = SPOF; need multiple
@@ -373,6 +381,7 @@ ferry §3 provides the political context.
 ## Scope limits
 
 This absorb doc:
+
 - **Does NOT** authorize implementing the 4-sub-repo
   split unilaterally. §8 requires Aaron-review per
   Otto-90 cross-repo coordination.
