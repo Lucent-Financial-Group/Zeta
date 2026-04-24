@@ -181,6 +181,127 @@ let ``phaseLockingValue handles single-element series`` () =
     TemporalCoordinationDetection.phaseLockingValue a b
     |> Option.map (fun v -> Math.Round(v, 9))
     |> should equal (Some 1.0)
+
+// ─── meanPhaseOffset ─────────
+
+[<Fact>]
+let ``meanPhaseOffset of identical phase series is 0`` () =
+    let phases = [ 0.0; 0.5; 1.0; 1.5; 2.0 ]
+    TemporalCoordinationDetection.meanPhaseOffset phases phases
+    |> Option.map (fun v -> Math.Round(v, 9))
+    |> should equal (Some 0.0)
+
+[<Fact>]
+let ``meanPhaseOffset with constant pi/4 offset returns -pi/4`` () =
+    // b = a + pi/4, so phase difference a - b = -pi/4.
+    // atan2 reads the mean vector angle; the sign is the
+    // *difference* direction, consistent with PLV's
+    // a-minus-b convention.
+    let a = [ 0.0; 0.3; 0.6; 0.9; 1.2 ]
+    let offset = Math.PI / 4.0
+    let b = a |> List.map (fun x -> x + offset)
+    TemporalCoordinationDetection.meanPhaseOffset a b
+    |> Option.map (fun v -> Math.Round(v, 9))
+    |> should equal (Some (Math.Round(-offset, 9)))
+
+[<Fact>]
+let ``meanPhaseOffset distinguishes anti-phase from in-phase`` () =
+    // This is the 18th-ferry correction #6 regression test.
+    // Two series with pi offset have PLV = 1 (perfectly
+    // locked), but the offset tells us they are ANTI-phase,
+    // not same-time. Downstream detectors that rely on
+    // PLV = 1 => synchronized would misclassify this.
+    let a = [ 0.0; 0.5; 1.0; 1.5 ]
+    let b = a |> List.map (fun x -> x + Math.PI)
+    let antiPhaseOffset =
+        TemporalCoordinationDetection.meanPhaseOffset a b
+        |> Option.defaultValue 0.0
+    // a - b = -pi for every element; atan2(0, -1) = pi
+    Math.Round(abs antiPhaseOffset, 6) |> should equal (Math.Round(Math.PI, 6))
+
+    // Same-time locking has offset near 0 — contrast case
+    let c = a |> List.map id
+    TemporalCoordinationDetection.meanPhaseOffset a c
+    |> Option.map (fun v -> Math.Round(v, 9))
+    |> should equal (Some 0.0)
+
+[<Fact>]
+let ``meanPhaseOffset is None when mean vector has zero magnitude`` () =
+    // Uniformly-distributed phase differences sum to the
+    // zero vector; direction is undefined, so None.
+    let n = 360
+    let a = [ for _ in 0 .. n - 1 -> 0.0 ]
+    let b = [ for i in 0 .. n - 1 -> 2.0 * Math.PI * double i / double n ]
+    TemporalCoordinationDetection.meanPhaseOffset a b
+    |> should equal (None: double option)
+
+[<Fact>]
+let ``meanPhaseOffset of empty series is None`` () =
+    TemporalCoordinationDetection.meanPhaseOffset [] []
+    |> should equal (None: double option)
+
+[<Fact>]
+let ``meanPhaseOffset on mismatched-length series is None`` () =
+    let a = [ 0.0; 0.5; 1.0 ]
+    let b = [ 0.0; 0.5 ]
+    TemporalCoordinationDetection.meanPhaseOffset a b
+    |> should equal (None: double option)
+
+// ─── phaseLockingWithOffset ─────────
+
+[<Fact>]
+let ``phaseLockingWithOffset returns magnitude and offset together`` () =
+    let a = [ 0.0; 0.3; 0.6; 0.9; 1.2 ]
+    let offset = Math.PI / 6.0
+    let b = a |> List.map (fun x -> x + offset)
+    match TemporalCoordinationDetection.phaseLockingWithOffset a b with
+    | Some (struct (magnitude, observedOffset)) ->
+        Math.Round(magnitude, 9) |> should equal 1.0
+        Math.Round(observedOffset, 9) |> should equal (Math.Round(-offset, 9))
+    | None ->
+        failwith "expected Some tuple"
+
+[<Fact>]
+let ``phaseLockingWithOffset magnitude matches phaseLockingValue`` () =
+    // Consistency property: the magnitude field must be
+    // identical (within FP rounding) to the standalone
+    // phaseLockingValue result. If the two primitives
+    // disagree, downstream score vectors will silently
+    // carry inconsistent values depending on which primitive
+    // the caller happened to invoke.
+    let a = [ 0.1; 0.4; 0.9; 1.3; 1.7 ]
+    let b = [ 0.2; 0.5; 0.95; 1.4; 1.8 ]
+    let magnitudeFromPair =
+        match TemporalCoordinationDetection.phaseLockingWithOffset a b with
+        | Some (struct (m, _)) -> m
+        | None -> -1.0
+    let magnitudeFromPlv =
+        TemporalCoordinationDetection.phaseLockingValue a b
+        |> Option.defaultValue -1.0
+    Math.Round(magnitudeFromPair, 12) |> should equal (Math.Round(magnitudeFromPlv, 12))
+
+[<Fact>]
+let ``phaseLockingWithOffset flags zero-magnitude with nan offset`` () =
+    // Zero-magnitude mean vector: magnitude near 0, offset = nan.
+    // Caller's reliable "offset is undefined" signal is the
+    // near-zero magnitude, not the nan per se.
+    let n = 360
+    let a = [ for _ in 0 .. n - 1 -> 0.0 ]
+    let b = [ for i in 0 .. n - 1 -> 2.0 * Math.PI * double i / double n ]
+    match TemporalCoordinationDetection.phaseLockingWithOffset a b with
+    | Some (struct (magnitude, offset)) ->
+        magnitude |> should (be lessThan) 1e-9
+        System.Double.IsNaN(offset) |> should equal true
+    | None ->
+        failwith "expected Some tuple with nan offset on zero-magnitude mean"
+
+[<Fact>]
+let ``phaseLockingWithOffset returns None on empty or mismatched inputs`` () =
+    TemporalCoordinationDetection.phaseLockingWithOffset [] []
+    |> should equal (None: struct (double * double) option)
+    TemporalCoordinationDetection.phaseLockingWithOffset [ 0.0 ] [ 0.0; 1.0 ]
+    |> should equal (None: struct (double * double) option)
+
 // ─── significantLags ─────────
 
 [<Fact>]

@@ -149,6 +149,108 @@ module TemporalCoordinationDetection =
             let meanSin = sumSin / n
             Some (sqrt (meanCos * meanCos + meanSin * meanSin))
 
+    /// **Mean phase offset between two phase series** — the
+    /// argument (angle) of the same mean complex phase-
+    /// difference vector whose magnitude is the PLV. Returns
+    /// a value in `(-pi, pi]` when defined, or `None` when
+    /// input sequences are empty, of unequal length, or
+    /// when the mean vector has effectively zero magnitude
+    /// (direction is undefined). The zero-magnitude check
+    /// uses the same PLV-magnitude floor so callers never
+    /// read a meaningful offset from a direction-less mean.
+    ///
+    /// Why this complements `phaseLockingValue`: PLV
+    /// magnitude alone cannot distinguish "same-time
+    /// locking" (offset near 0) from "anti-phase locking"
+    /// (offset near +/- pi) or "lead-lag locking" (offset
+    /// between). Both extremes return magnitude 1.0. Per
+    /// Amara 18th-ferry correction #6: cartel-detection
+    /// that relies on "PLV = 1 means synchronized action"
+    /// misreads anti-phase coordinators as same-time
+    /// coordinators. Downstream detectors should consume
+    /// BOTH magnitude (coherence of locking) and offset
+    /// (nature of locking: in-phase, anti-phase, lead-lag).
+    ///
+    /// Computation reuses the sin / cos accumulators; the
+    /// magnitude-floor `epsilon` guards `atan2` against
+    /// reading a spurious argument from a mean vector that
+    /// is mathematically zero-length (happens when phase
+    /// differences are uniformly distributed around the
+    /// unit circle). Floor value `1e-12` chosen to be well
+    /// below any physically-meaningful PLV magnitude.
+    ///
+    /// Provenance: Amara 18th courier ferry, Part 2
+    /// correction #6 (`docs/aurora/2026-04-24-amara-
+    /// calibration-ci-hardening-deep-research-plus-5-5-
+    /// corrections-18th-ferry.md`, §"Ten required
+    /// corrections" #6). Complements the original PLV
+    /// primitive (Aaron + Amara 11th ferry) without
+    /// changing its contract. Downstream score vectors
+    /// (see `Graph.coordinationRiskScore*`) consuming PLV
+    /// should add a separate offset-based term rather than
+    /// collapsing both into one scalar.
+    let meanPhaseOffset (phasesA: double seq) (phasesB: double seq) : double option =
+        let aArr = Seq.toArray phasesA
+        let bArr = Seq.toArray phasesB
+        if aArr.Length = 0 || aArr.Length <> bArr.Length then None
+        else
+            let mutable sumCos = 0.0
+            let mutable sumSin = 0.0
+            for i in 0 .. aArr.Length - 1 do
+                let d = aArr.[i] - bArr.[i]
+                sumCos <- sumCos + cos d
+                sumSin <- sumSin + sin d
+            let n = double aArr.Length
+            let meanCos = sumCos / n
+            let meanSin = sumSin / n
+            let magnitude = sqrt (meanCos * meanCos + meanSin * meanSin)
+            let epsilon = 1e-12
+            if magnitude < epsilon then None
+            else Some (atan2 meanSin meanCos)
+
+    /// **Phase locking + offset together** — returns both the
+    /// PLV magnitude and the mean phase offset as a single
+    /// option-tuple, sharing the cos/sin accumulation pass
+    /// for callers that want both. Returns `None` under the
+    /// same input conditions as `phaseLockingValue` (empty
+    /// or length-mismatched series).
+    ///
+    /// When the mean complex vector has effectively zero
+    /// magnitude the offset field is set to `nan` rather
+    /// than `None`; the magnitude will itself be `< 1e-12`
+    /// which is the caller's reliable "offset is undefined"
+    /// signal. This keeps the return type flat for
+    /// downstream composition.
+    ///
+    /// Prefer this over separate `phaseLockingValue` +
+    /// `meanPhaseOffset` calls when you need both, to avoid
+    /// traversing the sequences twice. Use the individual
+    /// primitives when you only need one quantity, to keep
+    /// call sites honest about what they consume.
+    let phaseLockingWithOffset
+            (phasesA: double seq)
+            (phasesB: double seq)
+            : struct (double * double) option =
+        let aArr = Seq.toArray phasesA
+        let bArr = Seq.toArray phasesB
+        if aArr.Length = 0 || aArr.Length <> bArr.Length then None
+        else
+            let mutable sumCos = 0.0
+            let mutable sumSin = 0.0
+            for i in 0 .. aArr.Length - 1 do
+                let d = aArr.[i] - bArr.[i]
+                sumCos <- sumCos + cos d
+                sumSin <- sumSin + sin d
+            let n = double aArr.Length
+            let meanCos = sumCos / n
+            let meanSin = sumSin / n
+            let magnitude = sqrt (meanCos * meanCos + meanSin * meanSin)
+            let epsilon = 1e-12
+            let offset =
+                if magnitude < epsilon then nan
+                else atan2 meanSin meanCos
+            Some (struct (magnitude, offset))
+
     /// **Significant lags from a correlation profile.** Returns the
     /// subset of lags from a `crossCorrelationProfile` where the
     /// absolute correlation meets or exceeds `threshold`. `None`
