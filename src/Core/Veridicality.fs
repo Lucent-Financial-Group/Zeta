@@ -119,3 +119,79 @@ module Veridicality =
     /// takes a claim rather than bare provenance.
     let validateClaim (c: Claim<'T>) : bool =
         validateProvenance c.Prov
+
+    /// **CanonicalClaimKey** — the "aboutness" fingerprint
+    /// of a claim. Two claims with the same key assert the
+    /// same proposition (possibly from different sources,
+    /// possibly with different weights/retractions). Two
+    /// claims with different keys assert different
+    /// propositions.
+    ///
+    /// Derived from Amara's 8th / 10th ferry spec
+    /// `K(c) = hash(subject, predicate, object, time-scope,
+    /// modality, provenance-root, evidence-class)`, with
+    /// a deliberate divergence: this key EXCLUDES
+    /// `provenance-root` and `evidence-class`. Rationale:
+    /// the key's purpose here is to GROUP claims about the
+    /// same proposition across sources so that
+    /// `antiConsensusGate` can then check independent-root
+    /// cardinality. Including `provenance-root` in the key
+    /// would defeat that grouping. If a future use-case
+    /// needs dedupe-by-identical-source semantics, add a
+    /// separate 7-field `SourceScopedCanonicalClaimKey`
+    /// type rather than expanding this one.
+    type CanonicalClaimKey =
+        { Subject: string
+          Predicate: string
+          Object: string
+          TimeScope: string
+          Modality: string }
+
+    /// Extract a canonical claim key from a claim, given a
+    /// user-supplied payload-to-SPO projector. The projector
+    /// is where domain-specific semantics live: callers parse
+    /// their payload (string / record / AST / etc.) into the
+    /// 5-field canonical shape. This module does not prescribe
+    /// how to canonicalize natural-language strings into SPO
+    /// triples — that's a downstream concern (NLP / structural
+    /// parsing / etc.) and different domains call it
+    /// differently.
+    ///
+    /// Normalization is the projector's responsibility too:
+    /// lowercasing, trimming, unit-unification, alias-resolving
+    /// — all happen in the projector before it returns the
+    /// canonical 5-tuple. This module just projects.
+    let canonicalKey
+            (project: 'T -> string * string * string * string * string)
+            (c: Claim<'T>)
+            : CanonicalClaimKey =
+        let (subject, predicate, obj, timeScope, modality) = project c.Payload
+        { Subject = subject
+          Predicate = predicate
+          Object = obj
+          TimeScope = timeScope
+          Modality = modality }
+
+    /// Group claims by canonical key. Two claims end up in
+    /// the same bucket iff their projectors produce the same
+    /// 5-tuple. Downstream code (e.g. `antiConsensusGate`)
+    /// then operates per-bucket to check multi-root
+    /// independence. Input order is preserved within each
+    /// bucket.
+    ///
+    /// Returns a `Map<CanonicalClaimKey, Claim<'T> list>`.
+    /// Empty input → empty map. The per-bucket list order
+    /// matches the input order (Map.add + List.rev pattern).
+    let groupByCanonical
+            (project: 'T -> string * string * string * string * string)
+            (claims: Claim<'T> seq)
+            : Map<CanonicalClaimKey, Claim<'T> list> =
+        claims
+        |> Seq.fold (fun acc c ->
+            let key = canonicalKey project c
+            let existing =
+                match Map.tryFind key acc with
+                | Some xs -> xs
+                | None -> []
+            Map.add key (c :: existing) acc) Map.empty
+        |> Map.map (fun _ xs -> List.rev xs)
