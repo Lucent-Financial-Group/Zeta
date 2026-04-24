@@ -6024,6 +6024,102 @@ systems. This track claims the space.
   is canonical-home-auditor-protected; the skill must
   not rename or soften it.
 
+- [ ] **Scientology thematic research — PUBLIC-DOMAIN-ONLY,
+  thematic-inspiration-only (no trademarked-term adoption,
+  no leaked-paid-content ingestion).** Aaron Otto-175
+  directive (verbatim, preserved for scope discipline):
+  *"backlog research the el ron hubburt and all this books
+  and therapy alternatives and the e machines or whatever
+  they are called in scientology for auditing, OT levels
+  and researchs much of their hierarchy that is publically
+  avialable, i have all their paid content but they are
+  like nintendo and sony they don't fuck around, i'm not
+  putting their paid material here, it was leaked a long
+  time ago. But we can get thematic ideas from here if
+  Starboard is our now"*.
+
+  **Context.** Starboard was picked Otto-175 as the
+  Frontier-UI rename (Aaron Otto-168 naming-conflict
+  resolution). Aaron noted the nautical Starboard name
+  creates a thematic resonance with Scientology's
+  nautical vocabulary (Sea Org / Commodore-era Hubbard /
+  auditing-at-sea). This row captures the research scope
+  for pulling further thematic inspiration while
+  preserving strict IP discipline.
+
+  **Research scope (public-domain-only):**
+  - L. Ron Hubbard biography (Wikipedia-level public info;
+    not copyrighted biographical works).
+  - Public-knowledge Scientology history + organizational
+    structure (Sea Org, Commodore period).
+  - Publicly-known vocabulary / concepts: E-meter (a.k.a.
+    electropsychometer), auditing (generic term), OT
+    level numbering (public-knowledge hierarchy tier
+    count), "Clear" state (branded; excluded from adoption
+    per §3 non-adoption list).
+  - "Therapy alternatives" framing — publicly-discussed
+    parallels (Dianetics' relationship to psychoanalysis
+    / behaviorism era; popular-press coverage of
+    Scientology's non-psychiatric positioning).
+  - Publicly-released critical literature (Jon Atack /
+    Lawrence Wright / Janet Reitman / Bent Corydon / ex-
+    member memoirs released by mainstream publishers).
+  - Public-record legal documents (IRS 1993 ruling, court
+    filings released into public record, FBI files
+    available under FOIA).
+
+  **Strict non-adoption list:**
+  - No Scientology-registered trademarks (Scientology,
+    Dianetics, Operating Thetan, Clear, Bridge to Total
+    Freedom, E-meter-as-registered-compound, specific OT-
+    level titles).
+  - No leaked / pirated paid content (Class VIII course
+    packs, OT-level confidential materials, NED / NOTs
+    scriptures, Hubbard's confidential administrative
+    directives). "Available online because leaked" does
+    NOT qualify. If Aaron's explicit IP boundary on his
+    own copy applies, it applies to factory research too.
+  - No Scientology organizational-art / logos / symbols
+    (cross-in-circle, OT symbol, various seals).
+  - No positioning of factory as Scientology-adjacent in
+    public branding or marketing.
+
+  **What the research IS for:**
+  - Thematic vocabulary inspiration (nautical-era
+    discipline, measurement-as-observation metaphor,
+    "audit the state you can't see" framing —
+    parallels to Zeta's algebraic-substrate-observes-
+    hidden-state discipline).
+  - Historical case study of a self-referential
+    organization that embedded its origin
+    (ship-at-sea-era) into its vocabulary — parallel
+    to how factory-history embeds via memory / tick-
+    history / persona-notebooks.
+  - Risk-surface reading: what does it look like when an
+    organization enforces strict trademarks + pursues
+    critics? Factory's glass-halo transparency is the
+    opposite posture; the Scientology case is useful as
+    the NOT-THIS reference point.
+
+  **Deliverable:** research memo at
+  `docs/research/scientology-thematic-notes-public-
+  domain-only.md` (new file). Scope + non-adoption list +
+  thematic extractions. No trademark violations, no
+  leaked content, no PII. Aminata threat-model pass
+  required before landing if Otto produces anything
+  beyond generic encyclopedic summary (guard against
+  inadvertent IP ingestion or cultural-sensitivity
+  issues).
+
+  **Priority P3 convenience** (factory-interesting
+  thematic enrichment, not substrate-critical); effort
+  S (research memo) + S (Aminata threat-pass).
+  Composes with `docs/research/frontier-rename-name-
+  pass-2-otto-175.md` §4 (Scientology-thematic notes
+  already scoped there at outline level) + Otto-168
+  Frontier rename row + Otto-175 Starboard-confirmed
+  picks.
+
 ## P2 — Rule-Zero axiomatic substrate (round-35 round-36 thread)
 
 - [ ] **Self-directed wellness / life-coach AI product — measure,
