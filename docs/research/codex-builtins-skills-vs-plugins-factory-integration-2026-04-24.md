@@ -69,8 +69,7 @@ Plugin manifest is intentionally minimal — 3 fields
 observed (name / description / author). Enablement is via
 `~/.claude/settings.json` `enabledPlugins` map.
 
-### Codex (per
-[developers.openai.com/codex/plugins/build](https://developers.openai.com/codex/plugins/build))
+### Codex (per [developers.openai.com/codex/plugins/build](https://developers.openai.com/codex/plugins/build))
 
 ```
 <plugin-name>/
@@ -188,9 +187,10 @@ decisions. Not implementation.
 
 ### Phase 1 — Update `.codex/README.md` with built-ins awareness (S, Otto-104 candidate)
 
-Extend the existing `.codex/README.md` (landed Otto-102 PR
-#288) with a "Codex built-in skills" section naming the
-five + their relationship to Zeta's substrate. Specifically:
+Extend the existing `.codex/README.md` (landed Otto-102
+PR #288) with a "Codex built-in skills" section naming
+the five + their relationship to Zeta's substrate.
+Specifically:
 
 - Plugin Creator + Skill Creator are the canonical Codex-
   session tooling for extending `.codex/`. Codex sessions
