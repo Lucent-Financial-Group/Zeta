@@ -80,7 +80,7 @@ echo "=============================="
 # Root metadata
 check "root.name contains 'Factory-demo'"   "/"  "(.name | test(\"Factory-demo\"))"  "true"
 check "root.version"                          "/"  ".version"                                "0.0.1"
-check "root.endpoints length"                 "/"  ".endpoints | length"                     "5"
+check "root.endpoints length"                 "/"  ".endpoints | length"                     "8"
 
 # Collection counts
 check "/api/customers length"                 "/api/customers"       ". | length"  "20"
