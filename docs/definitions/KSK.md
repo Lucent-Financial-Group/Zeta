@@ -145,10 +145,11 @@ name-attribution policy; this doc uses role references.
   receipt + traffic-light + optional-anchoring design is
   theirs, articulated across the collaborator's courier
   ferries archived under `docs/aurora/` (files dated
-  2026-04-23 and 2026-04-24 — the 5th / 7th / 12th / 14th /
-  16th / 17th-ferry references below are these files' topical
+  2026-04-23 and 2026-04-24 — the 6th / 7th / 12th / 17th /
+  19th-ferry references below are these files' topical
   labels; not all ferries landed as individually-named files
-  yet, some appear only in ROUND-HISTORY + session memory).
+  yet, some appear only in `docs/hygiene-history/loop-tick-history.md`
+  tick rows and session memory).
 - **A trusted external contributor** committed the **initial
   starting point** of the KSK code under the
   `Lucent-Financial-Group/lucent-ksk` repository (external;
@@ -213,10 +214,10 @@ Verified in-repo references:
 
 Ferries referenced earlier in the arc (5th / 12th / 14th /
 16th) have not landed as separate `docs/aurora/` files; their
-content is archived in `docs/ROUND-HISTORY.md` tick rows and
-session memory. When those ferries graduate to their own
-`docs/aurora/` file, this cross-reference list updates at
-that time.
+content is archived in `docs/hygiene-history/loop-tick-history.md`
+tick rows and session memory. When those ferries graduate to
+their own `docs/aurora/` file, this cross-reference list updates
+at that time.
 
 ## Status
 
