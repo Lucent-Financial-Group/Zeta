@@ -5833,6 +5833,161 @@ systems. This track claims the space.
   the git-as-DB-interface row below, and Otto-274
   progressive-adoption-staircase.
 
+- [ ] **Named-permissions registry — per-contributor
+  scoped permission grants for factory agents.**
+  Maintainer 2026-04-24 directive (verbatim):
+
+  > *"we shoud probbably have a list of named
+  > permissions you might need and thier names and
+  > descriptions and which ones are active for which
+  > contributro. this in not super safe yet but we can
+  > nake it more safe over time."*
+
+  Scope: a registry that names every operational
+  authority the factory agents might need (admin-level
+  GitHub ops, secret access, branch-protection edits,
+  repo settings PATCH, ruleset CRUD, workflow dispatch,
+  etc.) and tracks which contributor has granted which
+  named permission to which agent role. Iterative
+  hardening — start permissive, layer on confirmation
+  / quorum / time-bounded grants over time.
+
+  **Inaugural named permission:** `github-admin`
+  granted by the human maintainer 2026-04-24 to the
+  loop-agent role (Otto). Captured durably in
+  `memory/feedback_github_admin_authority_grant_to_loop_agent_2026_04_24.md`
+  per the maintainer's "save as durable" directive.
+
+  **Initial draft of named permissions** (this list
+  expands as new authorities get exercised):
+
+  - `github-admin` — branch protection PATCH, repo
+    settings PATCH, ruleset CRUD, workflow dispatch.
+    Granted to: loop-agent (2026-04-24, durable).
+    Excludes: org-level admin, repo deletion, member
+    management, force-push to main, bypass branch
+    protection on a single PR.
+  - `github-org-admin` — org-level settings + member
+    management. NOT granted yet.
+  - `github-secrets` — Actions secrets and Dependabot
+    secrets read/write. NOT granted yet.
+  - `force-push-main` — bypass branch protection for
+    emergency cases. NOT granted yet (preserve linear
+    history discipline).
+  - `nuget-publish` — push packages to nuget.org under
+    Lucent identity. NOT granted yet.
+  - `slsa-signing-key` — sign release artifacts. NOT
+    granted yet (requires HSM).
+  - `external-network-egress-broad` — fetch from
+    arbitrary URLs (beyond the prompt-protector
+    allowlist). NOT granted yet.
+
+  **Registry shape (proposed):**
+
+  Live at `docs/AUTHORITY-REGISTRY.md` (factory-
+  authored; current-state doc). One section per named
+  permission with: name, description, scope (in/out
+  of), granted-to (contributor → agent-role), grant
+  date, durability (session / cross-session), audit
+  link (memory file or commit). One section per
+  agent-role rolling-up which permissions it has.
+
+  **Iterative hardening path:**
+  - Phase 0 — registry exists (this row's first
+    deliverable); no enforcement, just documentation.
+  - Phase 1 — agent self-checks the registry before
+    attempting an admin operation.
+  - Phase 2 — commit-message / PR-description
+    citation requirement (the action commit names the
+    grant).
+  - Phase 3 — time-bounded grants (e.g.
+    `github-admin` expires every 30 days; maintainer
+    re-grants).
+  - Phase 4 — quorum requirements for high-risk
+    permissions (e.g. force-push needs both
+    maintainer + threat-model-reviewer sign-off).
+  - Phase 5 — Aminata threat-model integration: each
+    permission has a documented adversarial scenario
+    + mitigation.
+
+  Maintainer is explicit that this is NOT super safe
+  YET — the gain comes from iterative hardening.
+  Capture-the-grant-and-cite-it discipline beats
+  silent expansion of authority.
+
+  Priority P2 hygiene; effort S (Phase 0 registry doc)
+  + S (Phase 1 self-check) + M (Phase 2 citation
+  enforcement) + L (Phases 3-5 hardening). Composes
+  with `governance-expert`, `threat-model-critic`,
+  `security-operations-engineer`, GOVERNANCE.md
+  numbered rules section.
+
+- [ ] **Mode 2 → Mode 1 protocol-upgrade negotiation —
+  start with git, upgrade to a faster protocol for
+  hot-path backend comm.** Maintainer 2026-04-24
+  directive (verbatim):
+
+  > *"we could use mode 2 as our ui and have it auto
+  > netogatie protocol upgrade to a better protocol that
+  > git to whatever we want for hight speed communicaiton
+  > with out backend i think thats cleans"*
+
+  Architectural pattern: ALPN-style / HTTP-Upgrade-style
+  protocol negotiation. Mode 2 (browser WASM) opens with
+  git as the **lowest-common-denominator bootstrap
+  protocol** (every Zeta instance speaks git natively per
+  the row above). Once the connection is established and
+  both sides confirm capability, negotiate an upgrade to
+  a faster Zeta-specific binary protocol for hot-path
+  traffic (high-throughput streaming, low-latency reads,
+  bulk pull/push). Git stays as fallback / audit-trail
+  /durable-substrate path.
+
+  **Why this is clean:**
+  - Cold-start: any browser + any git remote → instant
+    bootstrap (no protocol negotiation cost paid until
+    you have a connection).
+  - Warm-state: protocol-upgraded comm is fast (binary
+    framing, no commit-object overhead, streaming
+    semantics, server-push for live updates).
+  - Backwards-compatible: an ungraded peer (e.g. an
+    actual git client, not a Zeta peer) still works —
+    it never asks for the upgrade.
+  - Audit-trail: even after upgrade, the durable layer
+    can checkpoint back to git on cadence (every N
+    operations or every commit boundary), so the git
+    history remains the canonical durable substrate.
+
+  **Reference patterns:**
+  - HTTP `Upgrade:` header + 101 Switching Protocols.
+  - ALPN over TLS (HTTP/2 negotiation).
+  - Postgres wire-protocol startup-message + protocol-
+    version negotiation.
+  - WebSocket initial-HTTP-handshake-then-upgrade.
+
+  **Capability advertisement:** standard pattern is for
+  the server to advertise capabilities in its first
+  response (e.g. git's `capabilities^{}` ref or
+  `command=ls-refs` advertisement); Zeta extends this
+  to include a `zeta-fast-v1` capability. Client opts
+  into upgrade by sending the corresponding header on
+  next request.
+
+  **Composes with:**
+  - The native F# git implementation row above (where
+    Zeta IS the git client/server) — the upgrade
+    capability gets advertised by Zeta's git server.
+  - The WASM-F# + git-as-storage row below (Mode 2's
+    starting position).
+  - `networking-expert`, `serialization-and-wire-format-expert`,
+    `streaming-incremental-expert`.
+
+  Priority P3 / way-backlog (depends on the native git
+  impl row landing first); effort M (capability
+  advertisement + upgrade dance) + L (the actual fast
+  protocol design + implementation). Composes with
+  Otto-275 log-don't-implement.
+
 - [ ] **Native F# git implementation — Zeta IS the git
   client/server (no external git needed).** Maintainer
   2026-04-24 directive (verbatim):

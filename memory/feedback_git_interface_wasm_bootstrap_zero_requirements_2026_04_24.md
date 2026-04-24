@@ -70,6 +70,42 @@ browser client. `git push my-zeta main` = pushing to
 Zeta's DB via Zeta's own git server. The factory
 becomes self-hosting of its own git ecosystem.
 
+Maintainer follow-up 2026-04-24 (after Mode 1 admin UI
++ native F# git impl):
+
+> *"we could use mode 2 as our ui and have it auto
+> netogatie protocol upgrade to a better protocol that
+> git to whatever we want for hight speed communicaiton
+> with out backend i think thats cleans"*
+
+**Mode 2 → Mode 1 protocol-upgrade negotiation.** Mode
+2 (browser WASM UI) opens with git as the
+lowest-common-denominator bootstrap protocol. Once the
+connection establishes and both sides confirm
+capability, negotiate an upgrade to a faster
+Zeta-specific binary protocol for hot-path traffic
+(streaming, low-latency reads, bulk pull/push). Git
+stays as fallback / audit-trail / durable-substrate.
+ALPN-style / HTTP-Upgrade-style pattern.
+
+**Why this is clean:**
+- Cold-start: zero protocol negotiation cost paid
+  until you have a connection.
+- Warm-state: upgraded comm is fast.
+- Backwards-compatible: an actual git client (not a
+  Zeta peer) still works — never asks for upgrade.
+- Audit-trail: durable layer can checkpoint to git
+  on cadence; git history stays canonical.
+
+This combines Mode 2 (browser-only UX) with Mode 1
+(native server) into a coherent client-server
+architecture where the WASM frontend talks to a Mode 1
+backend over an upgraded fast protocol AFTER the
+git-bootstrap handshake. Three architectural slots:
+1. Browser UI (Mode 2 WASM-F#)
+2. Backend server (Mode 1 native F#)
+3. Wire protocol (git → upgraded fast binary)
+
 ## The bootstrap thesis (confirmed)
 
 **Both modes require zero install at the user-experience
