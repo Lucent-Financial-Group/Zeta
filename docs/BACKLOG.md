@@ -5671,17 +5671,55 @@ systems. This track claims the space.
   with arbitrary comment content)?
 
   **Phase 3 — ongoing-capture mechanism (S-M effort after
-  Phase 2 signs off).** GHA workflow on `pull_request_target:
-  closed` with `merged == true`, fetches threads via `gh api
-  graphql`, writes to `docs/pr-discussions/PR-<N>-<slug>.md`
-  on a dedicated branch, opens an auto-archive PR. Safe-
-  pattern compliance per FACTORY-HYGIENE row #43 (SHA-pinned
-  actions, explicit minimal `permissions:`, values via `env:`
-  with quoting — and notably, title/body references cannot
-  flow directly into shell; fetch title via `gh api
-  /repos/.../pulls/<N>` INSIDE the workflow rather than from
-  the `github.event` payload to avoid injection-hook
-  triggers; Otto-154 learned this).
+  Phase 2 signs off).** GHA workflow with:
+
+  ```yaml
+  on:
+    pull_request_target:
+      types: [closed]
+  ```
+
+  Job gates on `if: github.event.pull_request.merged == true`.
+  Fetches threads via `gh api graphql`, writes to
+  `docs/pr-discussions/PR-<N>-<slug>.md` on a dedicated
+  branch, opens an auto-archive PR.
+
+  **Security constraints for `pull_request_target`**
+  (known GitHub Actions footgun — elevated permissions +
+  access to secrets on base-branch code, but the trigger
+  FIRES for PRs from forks; the well-known exploit is
+  checking out PR-head and executing its code with the
+  elevated permissions):
+
+  - MUST NOT `actions/checkout` the PR head (`refs/pull/<N>/
+    merge` or `head.ref`). Check out the base ref only;
+    the archive content is fetched via `gh api graphql`
+    against the already-merged PR state, not by running
+    PR code.
+  - MUST NOT use `${{ github.event.pull_request.title }}` /
+    `.body` / `.head.ref` / `.head.label` / etc. in any
+    `run:` step. Fetch title via `gh api /repos/.../pulls/
+    <N>` INSIDE the workflow (Otto-154 learned this via
+    injection-hook false-positive). Or write the archive
+    with only `number`-keyed fields and derive the slug
+    from the fetched JSON, not from event payload.
+  - MUST declare minimal `permissions:` (just `contents:
+    write` for the archive branch + `pull-requests: write`
+    to open the auto-archive PR). No `actions:`, no
+    `id-token:`, no `deployments:`.
+  - SHOULD pin all `actions/*` to commit SHA per FACTORY-
+    HYGIENE row #43.
+
+  **Docs/memory lint policy reference** (cited in the
+  Non-goals section below): the "docs-lint / memory-
+  no-lint" split is the convention documented in
+  `memory/feedback_docs_linted_memory_not_otto_decides_
+  where_external_content_lives_2026_04_24.md` + enforced
+  by `.markdownlint-cli2.jsonc` (which excludes
+  `memory/**` via ignore patterns). This PR's discussion-
+  archive output lives in `docs/pr-discussions/` which
+  IS subject to markdownlint; memory/ continues to be
+  ignored.
 
   **Phase 4 — backfill (M effort after Phase 3 is proven on
   live PRs).** Per-PR script that walks all merged PRs in
@@ -5728,12 +5766,29 @@ systems. This track claims the space.
   fork-originated agent signals as high-value upstream
   input.
 
-  Non-goals for this row: replacing GitHub as the live
-  review venue (it's the source-of-truth; archive is the
-  durable mirror); redacting Copilot / Codex-connector
-  reviews (they're agent content without privacy concern);
-  attempting backfill in a single CI run (300+ PRs ×
-  GraphQL rate limits would likely fail; batch it).
+  Non-goals for this row:
+
+  - Replacing GitHub as the live review venue (it's the
+    source-of-truth; archive is the durable mirror).
+  - Attempting historical backfill in a single CI run
+    (300+ PRs × GraphQL rate limits would likely fail —
+    batch it; see Phase 4 for batch strategy).
+  - Assuming agent-authored content is privacy-trivial.
+    Earlier phrasing said agent reviews had "no privacy
+    concern"; that was wrong and contradicted Phase 2's
+    explicit privacy-review scope. Copilot / Codex /
+    Claude Code personas can echo secrets (pasted by
+    humans into a PR description or reviewer reply),
+    internal-only URLs, customer identifiers, or other
+    sensitive substrate the human reviewer dropped into
+    the conversation unaware. Phase 2's privacy pass
+    evaluates ALL archived content — agent-authored
+    included — for redaction need. The trust-posture
+    default for agent content IS higher (no hand-typed
+    free-form prose = lower leak rate) but not
+    zero-risk. Aminata threat-review sets the posture
+    per content source; this row does not pre-commit to
+    "agent content archives verbatim without review."
 
   Effort: S (Phase 1 design) + M (Phase 2 threat-review +
   Phase 3 workflow) + M (Phase 4 backfill) + S (Phase 5
