@@ -41,12 +41,9 @@ maintainer's Otto-102 directive.
 
 ## Preamble context — why this is retroactive
 
-The 8 formally-sequenced ferries (PRs #196, #211, #219, #221,
-#235, #245, #259, #274) all arrived via live courier-paste
-into Otto's autonomous-loop session. This ferry, by contrast,
-was staged into `drop/` at session boundary (file mtime
-2026-04-23 09:25, BEFORE Otto-24's 1st-ferry absorb landed
-mid-session). Aaron's Otto-102 directive *"absorb and
+The 8 formally-sequenced ferries (PRs #196, #211, #219, #221, #235, #245, #259, #274) all arrived via live courier-paste into Otto's autonomous-loop session. This ferry, by contrast, was staged into `drop/` at session
+boundary (file mtime 2026-04-23 09:25, BEFORE Otto-24's 1st-ferry absorb
+landed mid-session). Aaron's Otto-102 directive *"absorb and
 delete/remove items from the drop folder"* surfaced it for
 retroactive absorb.
 
@@ -104,7 +101,7 @@ The repo-to-Aurora mapping table below is the core transfer artifact.
 | `ZSet.add / neg / sub / scale` | Semiring/group operations over signed multiplicities. fileciteturn30file0 | `DeltaAlgebra` | Centralize all state mutation through algebraic combinators. |
 | `Delay / Integrate / Differentiate` | DBSP stream primitives `z^-1`, `I`, `D`. fileciteturn32file0 | `TickDelay<T>`, `Integrate<T>`, `Differentiate<T>` | Expose as first-class runtime nodes, not helper utilities. |
 | `IncrementalJoin` | Bilinear three-term incremental join rule. fileciteturn31file0 | `JoinDelta<A,B,K,C>` | Implement directly for cross-claim correlation and evidence joins. |
-| `distinctIncremental` | Boundary-crossing `H` function with work bounded by `|Δ|`. fileciteturn30file0 | `BoundaryCrossingDistinct<K>` | Use for dedup, novelty alerts, and contradiction entry/exit detection. |
+| `distinctIncremental` | Boundary-crossing `H` function with work bounded by `\|Δ\|`. fileciteturn30file0 | `BoundaryCrossingDistinct<K>` | Use for dedup, novelty alerts, and contradiction entry/exit detection. |
 | `Spine<'K>` / `TraceHandle` | Levelled LSM-like storage for accumulated deltas. fileciteturn33file0 | `AuroraTraceSpine<K>` | Use levelled immutable batches; compaction merges by policy, not ad hoc cleanup. |
 | `Circuit` / `Op` / `Stream` | Deterministic tick scheduler with explicit async fast-path boundary. fileciteturn35file0 | `AuroraRuntime`, `Node<T>`, `Channel<T>` | Preserve determinism; put async only at source/sink boundaries. |
 | `Result<_, DbspError>` | User-visible errors as values, not exceptions. fileciteturn12file0 fileciteturn27file0 | `Result<T, AuroraError>` | Hard rule at public boundaries. |
@@ -507,6 +504,7 @@ expansion.
 ## Scope limits
 
 This absorb doc:
+
 - **Does NOT** authorize implementing any of the external-AI-
   maintainer's proposed Aurora module plan, oracle
   specification, or veridicality-detector math (labelled
