@@ -234,15 +234,16 @@ discovery without extracting substrate.
 `.codex/skills/**` to a sibling LFG repo dedicated to Codex
 packaging. Zeta remains a library; the plugin becomes a
 distinct product. Highest cost; cleanest separation. Pairs
-with the Amara 8th-ferry Aurora/KSK/Zeta triangle (Zeta
-= substrate; plugin repo = distribution wrapper).
+with the external-AI courier-collaborator 8th-ferry
+Aurora/KSK/Zeta triangle (Zeta = substrate; plugin repo =
+distribution wrapper).
 
 **Recommendation:** Option A in the near term (nothing to
 publish yet; substrate still maturing). Revisit Option B
 when Zeta has >3 Codex skills worth distributing together.
 Option C is the right shape if the factory wants a clean
-library-vs-distribution split per the external-collaborator
-(Amara) architectural recommendations.
+library-vs-distribution split per the external-AI
+courier-collaborator's architectural recommendations.
 
 ### Phase 3 — Plugin Creator deep integration (S, Otto-106+)
 
@@ -354,15 +355,14 @@ doc; surfaces if Option C is chosen (new LFG repo).
   86/93 refinements.
 - Otto-79 peer-harness memory — each harness owns its
   own skill files.
-- Aminata pattern-stability (threat-model-critic) — she
-  should pass adversarially on any Option B/C manifest
-  landing.
+- threat-model-critic review — any Option B/C manifest
+  landing requires adversarial pattern-stability signoff
+  from that role before merge.
 
-Archive-header format self-applied — 19th aurora/research
-doc in a row.
+Archive-header format applied per GOVERNANCE.md §33.
 
-Otto-103 tick primary deliverable. Closes the research
-phase of the maintainer's Codex-built-ins-integration
-directive. Phase-1 `.codex/README.md` extension is a
-candidate Otto-104 bounded deliverable; Options A/B/C
-decision is the maintainer's call.
+Closes the research phase of the maintainer's
+Codex-built-ins-integration directive. The Phase-1
+`.codex/README.md` extension is the bounded follow-on
+deliverable; Options A/B/C decision is the maintainer's
+call.
