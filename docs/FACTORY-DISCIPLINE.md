@@ -247,6 +247,164 @@ memories.
 
 ---
 
+### missing-file search surfaces
+
+When a file, target, or reference appears "missing"
+(verify-before-deferring per `CLAUDE.md`, Otto-257
+recovery, Otto-230 fresh-session quality-gap), search
+across these classes before declaring loss. Subagents
+in particular cannot see most agent-state surfaces, so
+the list also doubles as a coverage map for what
+authoritative state lives where.
+
+**In-tree (working copy):**
+
+- Untracked scratch dirs surfaced by `git status` —
+  e.g. `drop/`, `.playwright-mcp/`.
+- Subagent worktrees: actual checkouts at
+  `.claude/worktrees/agent-<id>/` PLUS git metadata at
+  `.git/worktrees/<name>/`. Authoritative listing is
+  `git worktree list`. After a manual delete of the
+  working-copy path, run `git worktree prune` to clear
+  the orphaned metadata.
+- `.gitignore`d sidecars: `.btw-queue.md` (session-scope
+  TodoWrite alternative), `.memory-sync-state.json`
+  (Otto-242 sync ledger).
+- Sparse-checked-out siblings (e.g. `../runtime` for
+  dotnet/runtime offline navigation).
+
+**Git-managed but not on `main`:**
+
+- Other branches: `git log --all -- <path>` /
+  `git branch -a --contains <sha>`.
+- Stashes: `git stash list` + `git stash show -p
+  stash@{N}`.
+- Reflog: `git reflog` (orphans pre-force-push or
+  pre-`reset --hard`).
+- Dangling objects: `git fsck --lost-found` (commits
+  and blobs no ref points at).
+- Deleted-in-history: `git log --diff-filter=D --all --
+  <path>` to find the commit that deleted it.
+- Renamed: `git log --follow <path>` /
+  `git log --find-renames=N`.
+- Tags: `git tag -l` + `git show <tag>` — a tag can
+  point at a commit no branch reaches.
+- Notes: `git notes list` — git-notes attached to
+  commits; not visible in `git log` by default.
+- Submodules: `.gitmodules` + `git submodule status` —
+  embedded sub-repos with their own histories.
+- Bundles: `*.bundle` files in-tree — portable git
+  archives that may carry orphan history.
+- Hooks: `.git/hooks/` (local) vs `tools/git/hooks/`
+  (committed) — Zeta keeps committed hooks
+  installable; the local copy may be stale.
+
+**In-repo factory state:**
+
+- `memory/persona/<name>/NOTEBOOK.md` and
+  `OFFTIME.md` — per-persona scratchpads, separate
+  from the canonical `memory/feedback_*.md` store.
+- `docs/hygiene-history/` — append-only audit trail
+  (per Otto-229; never edit prior rows).
+- `docs/hygiene-history/tick-history/` — per-writer
+  tick files when multi-instance lands (Otto-240).
+- `docs/pr-preservation/` — drain-logs and PR
+  conversation extraction (Otto-250).
+- `docs/research/` — courier-ferry research and
+  research-grade reports (Aurora absorbs).
+- `docs/ROUND-HISTORY.md` and `docs/DECISIONS/` —
+  history docs (vs current-state docs); a fact may
+  live in an ADR rather than the live spec.
+
+**GitHub-side (not yet preserved in-repo):**
+
+- Open PRs: `gh pr list` + `gh pr diff <n>` (content
+  may live on a feature branch awaiting merge).
+- Closed-not-merged PRs (Otto-264 row tracks recovery
+  of 14 such branches).
+- Forks (contributor forks pre-PR; Aaron's fork +
+  others).
+- PR review threads / comments — Otto-113 + Otto-250
+  git-native PR-preservation owe extraction; until
+  those land, the discussion substrate lives
+  GitHub-side only.
+- GitHub Discussions and Wiki — covered by the
+  `github-surface-triage` capability skill.
+- Issues with attached files.
+- Actions artifacts: `gh run download <run-id>` for
+  CI-uploaded outputs.
+- Releases (release-attached binaries / assets).
+
+**Out-of-repo agent state:**
+
+- Anthropic per-project AutoMemory at
+  `~/.claude/projects/<slug>/memory/` — invisible to
+  subagents (Otto-230 visibility gap). Per
+  `GOVERNANCE.md` §18 the in-repo `memory/` tree is
+  canonical; the global path is staging.
+- Anthropic global skills: `~/.claude/skills/`.
+- Plugin caches: `~/.claude/plugins/cache/`.
+- Other harness state: Codex `.codex_index/`, Gemini
+  `.gemini/`.
+- Live cron / RemoteTrigger / CronCreate jobs —
+  authoritative listing via `CronList`; a scheduled
+  task may exist as state without a file in-repo.
+- Sibling LFG repos: `lucent-ksk`, other org repos —
+  content referenced from Zeta may live in a sibling
+  repo (Zeta is not the only repo in the org).
+- GitHub gists owned by the user — referenced in
+  research notes; tied to user identity, not repo.
+
+**Local-machine substrates:**
+
+- macOS Time Machine + APFS local snapshots —
+  `tmutil listlocalsnapshots /` lists APFS-level
+  snapshots that may contain a recently-deleted file.
+- Trash: `~/.Trash/` (per-volume `/Volumes/*/.Trashes/`
+  for external drives) — recently deleted files.
+- IDE local-history surfaces: `.vscode/.history/` (VS
+  Code History extension), `.idea/shelf/` and
+  `.idea/workspace.xml` (JetBrains LocalHistory),
+  `.vs/` (Visual Studio).
+- Filesystem-extended attributes: `xattr -l <path>`
+  for macOS metadata, `mdfind` for Spotlight index
+  (find files by content even after rename).
+- Devcontainer / Docker volumes — if the repo is run
+  in a containerised dev env, Docker-managed volumes
+  hold state outside the working tree.
+- Terminal scrollback / shell history (`~/.zsh_history`
+  for zsh) — last-resort recovery of a recently-typed
+  inline content.
+
+**External substrates (pre-absorption):**
+
+- Courier-ferry imports (research from peer harnesses
+  not yet absorbed via PR).
+- External-conversation transcripts pre-archive-header
+  per `GOVERNANCE.md` §33.
+- Local diagnostic reports
+  (`~/Library/Logs/DiagnosticReports/` for the .NET
+  GC SIGSEGV `.ips` files referenced in the
+  Apple-Silicon backlog row).
+
+**Index-integrity check that bites:**
+
+- A file in `memory/*.md` without a pointer row in
+  `memory/MEMORY.md` is invisible to fresh sessions
+  even when it exists on disk. The index IS the
+  discovery mechanism. Always pair the file landing
+  with the index row in the same commit.
+
+**Source:** Aaron 2026-04-24 quiz directive *"wherever
+are all the places you could look for missing files /
+we should probably keep a list check in somewhere"*.
+Composes with Otto-230 (fresh-session-quality-gap),
+Otto-264 (LOST-branch recovery), Otto-242 (sidecar
+pattern), Otto-250 (PR-preservation), and the
+`verify-before-deferring` rule in `CLAUDE.md`.
+
+---
+
 ## What this file is NOT
 
 - Not authoritative. The in-repo `memory/feedback_*.md`
