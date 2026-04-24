@@ -3923,7 +3923,6 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
-<<<<<<< HEAD
 - [ ] **Architect role — Kenji makes 3 big decisions
   (scope TBD).** Aaron 2026-04-22 directive after the
   freedom-self-report tick: *"backlok Kenji makes 3 big
