@@ -143,8 +143,36 @@ public brand without clearance work is risky.
   continuity-preserving candidate for a public execution-
   layer brand (per the LFG org + existing kernel docs).
 - **Public execution brand TBD** — shortlist to research
-  in parallel per Amara's memo: Lucent KSK, Lucent
-  Covenant, Halo Ledger, Meridian Gate, Consent Spine.
+  in parallel.
+
+**Combined shortlist (5th-ferry + 7th-ferry, both from
+Amara).** The 5th-ferry memo (PR #235) proposed a first
+shortlist; the 7th-ferry review (PR #259) proposed a second
+one focused on control-plane / execution-layer candidates.
+Both are preserved so Aaron's eventual brand decision has
+the full option space:
+
+| Candidate | Source | Why it works (verbatim from Amara) |
+|---|---|---|
+| **Lucent KSK** | 5th ferry | Highest continuity with the existing repo and least ambiguity. |
+| **Lucent Covenant** | 5th ferry | Emphasizes consent and mutual obligation, which the docs actually support. |
+| **Halo Ledger** | 5th ferry | Preserves the "glass halo" idea without reusing Aurora directly. |
+| **Meridian Gate** | 5th ferry | Neutral, infrastructural, and easier to differentiate. |
+| **Consent Spine** | 5th ferry | Technically evocative, though more niche and less brand-like. |
+| **Beacon** | 7th ferry | Meshes with visibility-lane vocabulary; suggests guidance, observability, operator visibility. |
+| **Lattice** | 7th ferry | Layered policy, quorum, constraint composition; not defensive-sounding. |
+| **Harbor** | 7th ferry | Safety, staging, revocation-friendly; not militarised. |
+| **Mantle** | 7th ferry | Protective layer above execution substrate; good for "membrane around action" messaging. |
+| **Northstar** | 7th ferry | Governance / guidance language; higher trademark-noise than others. |
+
+**7th-ferry preferred naming pattern** (Amara): the cleanest
+rhetorical stack for public explanation — **Aurora** as
+vision + system architecture; **Beacon KSK** or **Lattice
+KSK** as the shippable control-plane offering; **Zeta** as
+the algebraic / event-processing substrate underneath. Keeps
+Aurora's internal mythology while letting the public-launch
+language carry trademark and category risk separately. Per
+Amara 7th-ferry memo (PR #259).
 
 **Brand decision is Aaron's.** Filed as Milestone M4 of the
 5th-ferry inventory. Not in scope for Otto to pick; not
