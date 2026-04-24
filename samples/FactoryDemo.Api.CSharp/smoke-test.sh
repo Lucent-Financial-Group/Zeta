@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Factory-demo C# API smoke test — exercises all 8 API endpoints plus the
-# root `/` index and validates the JSON-shape contract. Exits 0 on pass, 1
-# on any failure.
+# Factory-demo C# API smoke test — exercises all 9 endpoints (`/` plus
+# the 8 `/api/*` routes) and validates the JSON-shape contract. Exits 0
+# on pass, 1 on any failure.
 #
 # Usage:
 #   bash samples/FactoryDemo.Api.CSharp/smoke-test.sh
@@ -33,8 +33,9 @@ echo "Building API..."
 dotnet build "$PROJECT" -c Release --nologo -v quiet >/dev/null
 
 # Per-run server log — mktemp avoids collisions across concurrent smoke-test
-# runs and works on hosts without a writable `/tmp`. Path is printed on both
-# failure and success so the log is always discoverable.
+# runs and writes into the host's system temp dir (honouring `$TMPDIR` when
+# set, falling back to `/tmp`). The path is printed on both failure and
+# success so the log is always discoverable.
 LOG_FILE=$(mktemp -t factory-demo-api-csharp.XXXXXX.log)
 echo "Starting API on ${URL} (server log: ${LOG_FILE})..."
 
@@ -86,7 +87,7 @@ echo "=============================="
 # Root metadata
 check "root.name contains 'Factory-demo'"   "/"  "(.name | test(\"Factory-demo\"))"  "true"
 check "root.version"                          "/"  ".version"                                "0.0.1"
-check "root.endpoints length"                 "/"  ".endpoints | length"                     "8"
+check "root.endpoints length"                 "/"  ".endpoints | length"                     "9"
 
 # Collection counts
 check "/api/customers length"                 "/api/customers"       ". | length"  "20"

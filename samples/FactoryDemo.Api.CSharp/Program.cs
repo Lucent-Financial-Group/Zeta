@@ -14,11 +14,15 @@ using Zeta.Samples.FactoryDemo.Api;
 // algebra are easier to express there).
 
 // Static endpoint list — extracted to satisfy CA1861 (avoid re-allocating
-// the array on every request to the root endpoint). Advertises all 8 API
-// endpoints besides `/` itself, including the parameterised `{id}` routes,
-// so the root is an honest index of what the API is actually serving.
+// the array on every request to the root endpoint). Advertises all 9
+// endpoints including `/` and the parameterised `{id}` routes, so the
+// root is an honest index of what the API is actually serving. Matches
+// the F# sibling's list exactly (parity guarantee: same 9 endpoints,
+// same order) — any frontend consumes either implementation without
+// seeing a different endpoint set at `/`.
 string[] endpoints =
 [
+    "/",
     "/api/customers",
     "/api/customers/{id}",
     "/api/customers/{id}/activities",
