@@ -248,3 +248,39 @@ let ``antiConsensusGate returns Ok with the original list unchanged on pass`` ()
     match Veridicality.antiConsensusGate claims with
     | Ok returned -> returned |> List.length |> should equal 2
     | Error msg -> failwith msg
+
+[<Fact>]
+let ``antiConsensusGate does NOT count empty RootAuthority as a distinct root`` () =
+    // Degenerate/missing RootAuthority values must be filtered
+    // before counting distinct roots — otherwise an empty string
+    // would inflate the anti-consensus count and let a single-
+    // source cluster pass the gate.
+    let claims =
+        [ claimWithRoot "c1" "root-a"
+          claimWithRoot "c2" "" ]
+    match Veridicality.antiConsensusGate claims with
+    | Error _ -> ()
+    | Ok _ -> failwith "expected Error when the only 'second root' is empty"
+
+[<Fact>]
+let ``antiConsensusGate does NOT count whitespace RootAuthority as a distinct root`` () =
+    // Whitespace-only RootAuthority values are treated the same
+    // as empty — they don't count toward the distinct-root total.
+    let claims =
+        [ claimWithRoot "c1" "root-a"
+          claimWithRoot "c2" "   " ]
+    match Veridicality.antiConsensusGate claims with
+    | Error _ -> ()
+    | Ok _ -> failwith "expected Error when the only 'second root' is whitespace"
+
+[<Fact>]
+let ``antiConsensusGate skips empty RootAuthority but still passes on two valid roots`` () =
+    // Empty-root claims are silently skipped; remaining valid
+    // roots are counted. Two valid distinct roots → pass.
+    let claims =
+        [ claimWithRoot "c1" "root-a"
+          claimWithRoot "c2" ""
+          claimWithRoot "c3" "root-b" ]
+    match Veridicality.antiConsensusGate claims with
+    | Ok _ -> ()
+    | Error msg -> failwith $"expected Ok (two valid distinct roots), got Error: {msg}"
