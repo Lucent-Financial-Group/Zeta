@@ -337,6 +337,13 @@ Detail lives in:
   checklist, tick-history append protocol, the
   never-idle priority ladder. Required reading for
   any harness running `/loop` autonomously.
+- `docs/FIRST-PR.md` — first-class entry point for
+  fresh contributors and vibe coders (humans
+  directing an AI to do the writing). UI-first, no
+  git / F# / terminal required. Read this before
+  `CONTRIBUTING.md` if you are new to the project,
+  new to open source, or directing an AI through a
+  GitHub web-UI session.
 - `docs/AGENT-CLAIM-PROTOCOL.md` — standalone,
   linkable git-native claim specification for any
   external agent picking up a PR task (ChatGPT,
