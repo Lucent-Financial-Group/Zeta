@@ -589,9 +589,11 @@ module Graph =
                 | _ -> None
 
     /// **Internal density of a node subset S.** Ratio of
-    /// internal edge weight to max ordered-pair count.
-    /// Per Amara 17th-ferry correction #3. Returns None when
-    /// |S| < 2.
+    /// internal edge weight to max ordered-pair count
+    /// `|S|·(|S|-1)`, which counts ordered distinct pairs
+    /// only. Self-loops (`s = t`) are excluded from the
+    /// numerator to keep the metric consistent with that
+    /// denominator. Returns None when |S| < 2.
     let internalDensity (subset: Set<'N>) (g: Graph<'N>) : double option =
         let size = subset.Count
         if size < 2 then None
@@ -601,7 +603,7 @@ module Graph =
             for k in 0 .. span.Length - 1 do
                 let entry = span.[k]
                 let (s, t) = entry.Key
-                if subset.Contains s && subset.Contains t then
+                if s <> t && subset.Contains s && subset.Contains t then
                     acc <- acc + double entry.Weight
             let pairs = double size * double (size - 1)
             Some (acc / pairs)
@@ -628,12 +630,17 @@ module Graph =
 
     /// **Conductance of a node subset S.** cut(S, V\S) /
     /// min(vol(S), vol(V\S)). Low = tight isolation. Returns
-    /// None on empty, full, or zero-volume degenerate cases.
+    /// None on empty, full (S ⊇ V), or zero-volume degenerate
+    /// cases. The full-subset check intersects S with the
+    /// graph's node set rather than comparing cardinalities,
+    /// because S may contain nodes that don't appear in any
+    /// edge — count equality alone is not set equality.
     let conductance (subset: Set<'N>) (g: Graph<'N>) : double option =
         if subset.Count = 0 then None
         else
             let allNodes = nodes g
-            if subset.Count = allNodes.Count then None
+            let inGraph = Set.intersect subset allNodes
+            if inGraph.Count = allNodes.Count then None
             else
                 let mutable cut = 0.0
                 let mutable volS = 0.0
@@ -656,11 +663,11 @@ module Graph =
 
 
 /// **StakeCovariance — windowed pairwise stake-motion
-/// covariance + acceleration (Amara 17th-ferry correction #4).**
+/// covariance + acceleration.**
 ///
-/// Addresses the ambiguity in Amara's Part 1 `C(t) =
-/// Cov({s_i(t)}, {s_j(t)})` which is undefined at a single
-/// timepoint. Correct formulation uses stake-delta series
+/// Cross-sectional covariance `C(t) = Cov({s_i(t)},
+/// {s_j(t)})` is undefined at a single timepoint. The
+/// well-defined formulation uses the stake-delta series
 /// `Δs_i(t) = s_i(t) - s_i(t-1)` and computes covariance over
 /// a sliding window:
 ///
@@ -675,35 +682,47 @@ module Graph =
 /// acceleration in pairwise covariance, catching cartels that
 /// coordinate economically even when their graph structure
 /// looks ordinary.
-[<AutoOpen>]
 module StakeCovariance =
 
-    /// Pairwise covariance of stake-delta series over the
-    /// trailing `windowSize` values. Returns None when either
-    /// series has fewer than `windowSize` points or when a
-    /// degenerate case (zero variance, insufficient samples)
-    /// makes covariance undefined.
+    /// Pairwise (population) covariance of stake-delta series
+    /// over the trailing `windowSize` values. Divides by
+    /// `windowSize` (population covariance) — appropriate when
+    /// the window IS the population for that point in time, not
+    /// a sample drawn from a larger one.
+    ///
+    /// Returns None only when `windowSize < 2`, when the two
+    /// series have different lengths, or when either series has
+    /// fewer than `windowSize` points. Equal lengths are
+    /// required so the trailing window aligns by time index in
+    /// both series; mismatched lengths are an alignment error,
+    /// not a silent-truncate.
+    ///
+    /// Constant or otherwise zero-covariance windows return
+    /// `Some 0.0` — covariance is well-defined and zero in
+    /// those cases, not undefined.
     let windowedDeltaCovariance
             (windowSize: int)
             (deltasA: double[])
             (deltasB: double[])
             : double option =
-        let n = min deltasA.Length deltasB.Length
-        if windowSize < 2 || n < windowSize then None
+        if deltasA.Length <> deltasB.Length then None
         else
-            let start = n - windowSize
-            let mutable meanA = 0.0
-            let mutable meanB = 0.0
-            for i in 0 .. windowSize - 1 do
-                meanA <- meanA + deltasA.[start + i]
-                meanB <- meanB + deltasB.[start + i]
-            meanA <- meanA / double windowSize
-            meanB <- meanB / double windowSize
-            let mutable cov = 0.0
-            for i in 0 .. windowSize - 1 do
-                cov <- cov + (deltasA.[start + i] - meanA) *
-                             (deltasB.[start + i] - meanB)
-            Some (cov / double windowSize)
+            let n = deltasA.Length
+            if windowSize < 2 || n < windowSize then None
+            else
+                let start = n - windowSize
+                let mutable meanA = 0.0
+                let mutable meanB = 0.0
+                for i in 0 .. windowSize - 1 do
+                    meanA <- meanA + deltasA.[start + i]
+                    meanB <- meanB + deltasB.[start + i]
+                meanA <- meanA / double windowSize
+                meanB <- meanB / double windowSize
+                let mutable cov = 0.0
+                for i in 0 .. windowSize - 1 do
+                    cov <- cov + (deltasA.[start + i] - meanA) *
+                                 (deltasB.[start + i] - meanB)
+                Some (cov / double windowSize)
 
     /// 2nd-difference acceleration `A_ij(t) = C(t) - 2·C(t-1) + C(t-2)`
     /// given three consecutive covariance values. Returns None when
@@ -720,14 +739,18 @@ module StakeCovariance =
 
     /// Aggregate pairwise acceleration across a candidate subset
     /// using the symmetric mean `A_S(t) = (2 / |S|(|S|-1)) · Σ_{i<j}
-    /// A_ij(t)`. Input map: (i, j) with i < j → acceleration value.
-    /// Returns None when the input map is empty or has no valid
-    /// entries.
-    let aggregateAcceleration
-            (pairAccelerations: Map<int * int, double>)
+    /// A_ij(t)`. Input map: `(i, j)` with `i < j` → acceleration
+    /// value. Generic over the node-key type so the API stays
+    /// consistent with `Graph<'N>`. Returns None when the input
+    /// map is empty.
+    let aggregateAcceleration<'N when 'N : comparison>
+            (pairAccelerations: Map<'N * 'N, double>)
             : double option =
         if pairAccelerations.IsEmpty then None
         else
-            let values = pairAccelerations |> Map.toSeq |> Seq.map snd |> Seq.toArray
-            let sum = values |> Array.sum
-            Some (sum / double values.Length)
+            let sum, count =
+                pairAccelerations
+                |> Map.fold
+                    (fun (s, c) _ value -> s + value, c + 1)
+                    (0.0, 0)
+            Some (sum / double count)

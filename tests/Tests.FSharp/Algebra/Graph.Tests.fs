@@ -3,6 +3,7 @@ module Zeta.Tests.Algebra.GraphTests
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
+open Zeta.Core.StakeCovariance
 
 
 // ─── empty + basic accessors ─────────
@@ -494,8 +495,6 @@ let ``conductance is low for well-isolated subset`` () =
 
 
 // ─── StakeCovariance ─────────
-
-open Zeta.Core.StakeCovariance
 
 [<Fact>]
 let ``windowedDeltaCovariance returns None on too-small series`` () =
