@@ -5,7 +5,7 @@
 #
 # Discipline (design doc: docs/research/ci-workflow-design.md, Aaron-
 # reviewed 2026-04-18; parity-swap landed round 32):
-#   - Runners digest-pinned (ubuntu-22.04, macos-14), not -latest.
+#   - Runners use -latest tags (maintainer Otto-212 discipline).
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
 #     trailing `# vX.Y.Z` comments for humans.
 #   - permissions: contents: read at the workflow level; no job
@@ -46,35 +46,58 @@ concurrency:
 
 jobs:
   build-and-test:
-    # Matrix is computed from `github.repository` at plan time so the
-    # macos-14 leg (≈10× Linux cost) only exists on contributor forks,
-    # not on the canonical Lucent-Financial-Group/Zeta repo. On any
-    # fork both legs exist; on the canonical repo only the ubuntu leg
-    # exists. This keeps the YAML byte-identical on both sides — no
-    # repo-specific variable, no second workflow file — with runtime
-    # differentiation driven by the built-in `github.repository`
-    # context.
+    # Matrix covers three standard GitHub-hosted runners
+    # (all free on public repos per the Otto-210 URL:
+    # https://docs.github.com/en/actions/how-tos/write-workflows/choose-where-workflows-run/choose-the-runner-for-a-job#standard-github-hosted-runners-for-public-repositories
+    # exact quote: "Use of the standard GitHub-hosted
+    # runners is free and unlimited on public
+    # repositories."):
     #
-    # Job-level `if:` with `matrix.*` is rejected by actionlint (the
-    # matrix context is not available at job-level), so the split is
-    # done at strategy-expansion time via `fromJSON`. The expression
-    # evaluates once per workflow run; each matrix leg that survives
-    # creates its own check status.
+    #   - ubuntu-slim        minimal Linux x64 image,
+    #                        standard runner (faster
+    #                        boot than ubuntu-24.04 for
+    #                        jobs that don't need the
+    #                        full image)
+    #   - ubuntu-24.04       Linux x64, standard runner
+    #                        (latest GA Ubuntu LTS as of
+    #                        2026-04-24 per GitHub docs)
+    #   - ubuntu-24.04-arm   Linux arm64, standard runner
+    #                        (no -latest rolling arm tag
+    #                        exists yet; 24.04-arm is
+    #                        current)
+    #   - macos-26           macOS 26 Tahoe on Apple
+    #                        Silicon (arm64), standard
+    #                        runner, GA'd 2026-02-26 per
+    #                        GitHub changelog. Explicitly
+    #                        NOT macos-*-intel (that's
+    #                        the Intel family); we want
+    #                        M1 per maintainer Otto-211.
     #
-    # Rationale: maintainer 2026-04-21 "Mac is very very expensive
-    # to run" + "we should leave [LFG's] build as linux only if
-    # that's possible where a contributor fork also builds mac".
-    # `build-and-test (macos-14)` is NOT in the canonical repo's
-    # required-checks list — it was removed from branch protection
-    # on the same change that introduced this matrix split so PRs
-    # don't block on a leg that
-    # no longer exists there.
+    # Windows coverage deferred per maintainer Otto-211
+    # directive ("windows will come later on both zeta
+    # and acehack"). When it lands, add windows-latest
+    # to the matrix above.
+    #
+    # Compounding discipline (maintainer Otto-212): use
+    # `-latest` tags where available instead of pinning
+    # to a version — avoids creating upgrade debt every
+    # time the runner image rolls forward. The `ubuntu-
+    # 24.04-arm` exception is because no rolling arm
+    # alias exists.
+    #
+    # Pricing history: earlier "Mac is very expensive"
+    # (2026-04-21) + Otto-164 "macOS NOT free" findings
+    # were INCORRECT. Otto-210 primary-source check
+    # confirmed standard runners free-for-public
+    # including macOS. See feedback_macos_is_free_on_
+    # public_repos_otto_164_verification_was_wrong_*
+    # memory for the correction trail.
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        os: ${{ fromJSON(github.repository == 'Lucent-Financial-Group/Zeta' && '["ubuntu-22.04"]' || '["ubuntu-22.04","macos-14"]') }}
+        os: [ubuntu-slim, ubuntu-24.04, ubuntu-24.04-arm, macos-26]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -152,7 +175,7 @@ jobs:
     # elevation design (docs/research/threat-model-elevation.md).
     name: lint (semgrep)
     timeout-minutes: 10
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -183,14 +206,14 @@ jobs:
     # See openspec/specs/static-analysis/profiles/shell.md.
     name: lint (shellcheck)
     timeout-minutes: 5
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Run shellcheck
-        # shellcheck ships pre-installed on ubuntu-22.04 runners.
+        # shellcheck ships pre-installed on ubuntu-24.04 runners.
         # Scope: Zeta's own scripts under `tools/setup/` only —
         # `tools/lean4/.lake/packages/**` is Lean/Mathlib vendored
         # code not governed by Zeta standards.
@@ -220,7 +243,7 @@ jobs:
     # github-actions.md.
     name: lint (actionlint)
     timeout-minutes: 5
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -260,7 +283,7 @@ jobs:
     # No untrusted input used in run: — only a fixed repo path.
     name: lint (no empty dirs)
     timeout-minutes: 3
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -276,7 +299,7 @@ jobs:
     # See openspec/specs/static-analysis/profiles/markdown.md.
     name: lint (markdownlint)
     timeout-minutes: 5
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
