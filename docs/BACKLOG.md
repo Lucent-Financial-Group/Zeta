@@ -4325,6 +4325,51 @@ systems. This track claims the space.
   - `docs/decision-proxy-evidence/` (PR #222) — Phase 3 execution records must land a DP-NNN.yaml with `task_class: scope-claim` + `peer_reviewer: Aminata`.
   - Existing persona roster in `.claude/agents/` — informs Phase 1 persona-choice question (which persona should own email first).
 
+- [ ] **Agent-email password storage — secure multi-contributor access design (P3; design-authorised, implementation gated on Aaron security review).** Aaron 2026-04-23 Otto-79: *"you can just save passwords for you agent emails out of repo for now in plain text cause that's easy but we need research on how to securly save this in a way where multiple contributors can access the passwords for the agents emails security because without, the passwords will likely need to be soul file even IDK or host level, if its repo level secure it seems like that's the soulfile, if it's host level secure GitHub then that's not the soul file also have to think about reuse and forking and someone forking does not need to be able to send eamils as the agents and non contributors don't need to be able to clone and send emails as the agents the secrets need to be scope to the contributors so maybe the host integration for secrets might be esier than gitnative but hmm i would love a git native way.. This is another one i would like to review the designs as well."*
+
+  **Short-term operational posture:** out-of-repo plain-text storage is acceptable for agent-email passwords **today**, while the Otto-acquires-email phases (PR #233) are still in Phase 1 design. Scope-bounded convenience, not a long-term solution.
+
+  **Hard design requirements:**
+
+  1. **Multi-contributor access.** Multiple contributors (human + agent) need to read the password(s).
+  2. **Fork-safe.** Forks MUST NOT gain send-as-agent ability.
+  3. **Clone-safe.** Non-contributor clones MUST NOT gain send-as-agent ability.
+  4. **Contributor-scoped secrets.** Scope = current contributors, not arbitrary readers.
+  5. **Git-native preferred; host-native acceptable.** Aaron's preference is git-native (soulfile-style). Design must compare both.
+  6. **Aaron security-review gate.** Implementation gated on Aaron's personal review — identical shape to PR #230 multi-account gate.
+
+  **Three design paths to compare in Phase 1 doc:**
+
+  - **Path A — git-native / soulfile-style.** Repo-level encrypted secret blob that unlocks for contributors only. Requires: per-contributor key management, soulfile-compatible crypto (hypothetical DSL extension per PR #156 soulfile staged-absorption model), fork-block mechanism (fork clones the blob but cannot decrypt it). **Pro:** native substrate, no external dep. **Con:** soulfile-crypto doesn't exist yet; co-gates on the Soulfile Runner project (separate memory row).
+  - **Path B — host-native secrets.** GitHub Actions secrets / org-level secrets / Vault-as-a-service. Scoped to org membership; fork gets code but not secrets. **Pro:** operationally deployable today. **Con:** host-lock-in; Aaron's stated preference is git-native.
+  - **Path C — hybrid.** Host-native for initial Phase-3 operation (PR #233 signup execution); planned migration path to git-native once soulfile-crypto is available.
+
+  **Phase gates (PR #230 / PR #233 shape):**
+
+  1. **Phase 1** — design doc authorised (timing Otto's call): `docs/research/agent-email-password-storage-safety-first-YYYY-*.md` with Path-A vs B vs C + threat model + recommendation.
+  2. **Phase 2** — Aminata threat-model pass (BLOCKING): fork-leak / clone-leak / insider-abuse / key-rotation / multi-contributor collusion.
+  3. **Phase 3** — Aaron personal security review (BLOCKING): Aaron reads + approves-or-revise-requests.
+  4. **Phase 4** — implementation (gated on Phases 2+3): secret-store wiring / fork-block test / contributor-enum integration / key-rotation runbook / DP-NNN.yaml evidence record.
+  5. **Phase 5** — migration from temp-plain-text if used: delete / rotate / capture transition memory.
+
+  **Scope limits:**
+
+  - Does NOT authorise implementation before Phases 2+3 close.
+  - Does NOT weaken any PR #233 Otto-acquires-email constraint.
+  - Does NOT design a fork-unblock mechanism (forks correctly get no secret access).
+  - Does NOT authorise using the plain-text store for credentials other than the agent-personas' email passwords.
+
+  **Composes with:**
+
+  - **PR #233 Otto acquires email** — this row answers Phase 1 question 3 (recovery cascade) + 4 (provider choice) in the password-handling dimension. PR #233 Phase 3 depends on this row's mechanism being ready.
+  - **PR #230 multi-account P3** — identical two-phase shape + poor-man-tier composability.
+  - **Soulfile Runner** (`memory/feedback_soulfile_dsl_is_restrictive_english_runner_is_own_project_uses_zeta_small_bins_2026_04_23.md`) — Path A depends on soulfile-crypto primitives from Runner.
+  - **Agent autonomy envelope** memory (Otto-76) — email carve-out is the authorising parent; this row is the "how do agents hold those credentials securely" sub-question.
+
+  **First file to write:** `docs/research/agent-email-password-storage-safety-first-YYYY-*.md`.
+
+  **Priority:** P3. Design-authorised. Aaron security-review-required before implementation. Timing Otto's call.
+
 - [ ] **Factory status UI — static, git-native,
   GitHub Pages hosted.**
   The human maintainer 2026-04-23: *"static ui on our
