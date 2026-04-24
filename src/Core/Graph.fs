@@ -170,3 +170,104 @@ module Graph =
             if s = n then acc <- acc + entry.Weight
             if t = n then acc <- acc + entry.Weight
         acc
+
+    /// **Modularity score (Q) for a node partition.**
+    ///
+    /// Newman's modularity measures how well a partition of
+    /// nodes into groups captures community structure: high
+    /// values (> 0.3-0.4) indicate dense within-group edges and
+    /// sparse across-group edges, i.e. a strong community
+    /// structure; values near 0 indicate random-looking edge
+    /// distribution. Negative values indicate within-group
+    /// sparsity BELOW the random baseline (rare).
+    ///
+    /// Formula:
+    /// ```
+    ///   Q = (1 / 2m) * sum over i,j of
+    ///        [ A[i,j] - (k_i * k_j) / (2m) ] * delta(c_i, c_j)
+    /// ```
+    /// where:
+    /// - `A[i,j]` is the symmetrized edge weight
+    /// - `k_i = sum_j A[i,j]` (weighted degree of node i)
+    /// - `m = (1/2) * sum_{i,j} A[i,j]` (total edge weight; /2
+    ///   because each undirected edge counts twice in the sum)
+    /// - `c_i` is the community label of node i
+    /// - `delta(c_i, c_j) = 1` iff `c_i = c_j`
+    ///
+    /// Returns `Some Q` when modularity is defined; `None`
+    /// when the graph is empty or every node is unassigned.
+    /// Nodes missing from `partition` are treated as singleton
+    /// groups (each in a unique trivial community).
+    ///
+    /// **Cartel-detection use:** after injecting a cartel
+    /// clique into a baseline, running a community detector
+    /// (e.g. Louvain — future graduation) on the attacked
+    /// graph produces a partition; the resulting modularity
+    /// jumps relative to the baseline's partition. This
+    /// primitive computes Q GIVEN a partition; the detector
+    /// produces the partition.
+    ///
+    /// **MVP note:** this function computes Q for a CALLER-
+    /// supplied partition. A full-fidelity detection pipeline
+    /// needs (Louvain | Girvan-Newman | spectral-clustering)
+    /// to produce the partition, plus a null-baseline to
+    /// calibrate the modularity threshold. Those are separate
+    /// graduations.
+    ///
+    /// Provenance: 11th ferry §2 (community modularity) + 13th
+    /// ferry metrics + 14th ferry alert row "Modularity Q jump
+    /// > 0.1 or Q > 0.4". Implementation Otto (11th graduation).
+    let modularityScore
+            (partition: Map<'N, int>)
+            (g: Graph<'N>)
+            : double option =
+        let nodeList = nodes g |> Set.toList
+        let n = nodeList.Length
+        if n = 0 then None
+        else
+            let idx =
+                nodeList
+                |> List.mapi (fun i node -> node, i)
+                |> Map.ofList
+            // Symmetrized adjacency A_sym[i,j] = (A[i,j] + A[j,i]) / 2
+            let adj = Array2D.create n n 0.0
+            let span = g.Edges.AsSpan()
+            for k in 0 .. span.Length - 1 do
+                let entry = span.[k]
+                let (s, t) = entry.Key
+                let i = idx.[s]
+                let j = idx.[t]
+                adj.[i, j] <- adj.[i, j] + double entry.Weight
+            let sym = Array2D.create n n 0.0
+            for i in 0 .. n - 1 do
+                for j in 0 .. n - 1 do
+                    sym.[i, j] <- (adj.[i, j] + adj.[j, i]) / 2.0
+            // Weighted degree k_i = sum_j A_sym[i, j]
+            let k = Array.create n 0.0
+            for i in 0 .. n - 1 do
+                let mutable acc = 0.0
+                for j in 0 .. n - 1 do
+                    acc <- acc + sym.[i, j]
+                k.[i] <- acc
+            // 2m = sum of all degrees (undirected)
+            let twoM =
+                let mutable acc = 0.0
+                for i in 0 .. n - 1 do
+                    acc <- acc + k.[i]
+                acc
+            if twoM = 0.0 then None
+            else
+                // Community label per node: partition lookup, or
+                // node-index-based-singleton when missing
+                let community i =
+                    let node = nodeList.[i]
+                    match Map.tryFind node partition with
+                    | Some c -> c
+                    | None -> -(i + 1)  // unique negative = singleton
+                let mutable q = 0.0
+                for i in 0 .. n - 1 do
+                    for j in 0 .. n - 1 do
+                        if community i = community j then
+                            let expected = (k.[i] * k.[j]) / twoM
+                            q <- q + (sym.[i, j] - expected)
+                Some (q / twoM)

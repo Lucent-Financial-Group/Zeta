@@ -163,3 +163,116 @@ let ``fromEdgeSeq drops zero-weight triples`` () =
         ]
     Graph.edgeCount g |> should equal 1
     Graph.edgeWeight 2 3 g |> should equal 1L
+
+
+// ─── modularityScore ─────────
+
+[<Fact>]
+let ``modularityScore returns None for empty graph`` () =
+    let g : Graph<int> = Graph.empty
+    Graph.modularityScore Map.empty g |> should equal (None: double option)
+
+[<Fact>]
+let ``modularityScore for single-community partition on complete graph is 0`` () =
+    // When every node is in one community, intra-community
+    // edges equal total edges, and the expected-random term
+    // equals actual, so Q = 0 (no community structure detected
+    // because there's no partition boundary).
+    let edges = [
+        (1, 2, 1L); (2, 1, 1L)
+        (2, 3, 1L); (3, 2, 1L)
+        (3, 1, 1L); (1, 3, 1L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let partition = Map.ofList [ (1, 0); (2, 0); (3, 0) ]
+    let q = Graph.modularityScore partition g
+    match q with
+    | Some v -> abs v |> should (be lessThan) 1e-9
+    | None -> failwith "expected Some"
+
+[<Fact>]
+let ``modularityScore is high for well-separated communities`` () =
+    // Two K3 cliques (1-2-3 and 4-5-6) connected by a single
+    // thin edge (3-4). The correct 2-community partition should
+    // yield Q well above 0.
+    let edges = [
+        // Community A: K3 on {1,2,3} with weight 10
+        (1, 2, 10L); (2, 1, 10L)
+        (2, 3, 10L); (3, 2, 10L)
+        (3, 1, 10L); (1, 3, 10L)
+        // Community B: K3 on {4,5,6} with weight 10
+        (4, 5, 10L); (5, 4, 10L)
+        (5, 6, 10L); (6, 5, 10L)
+        (6, 4, 10L); (4, 6, 10L)
+        // Bridge edge (thin)
+        (3, 4, 1L); (4, 3, 1L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let partition =
+        Map.ofList [ (1, 0); (2, 0); (3, 0); (4, 1); (5, 1); (6, 1) ]
+    let q =
+        Graph.modularityScore partition g
+        |> Option.defaultValue 0.0
+    // With two tight communities connected thinly, Q should be
+    // comfortably positive (theoretical max ~0.5 for balanced
+    // two-community graphs).
+    q |> should (be greaterThan) 0.3
+
+[<Fact>]
+let ``modularityScore drops with wrong partition`` () =
+    // Same two-community graph, but partition mixes the two.
+    let edges = [
+        (1, 2, 10L); (2, 1, 10L)
+        (2, 3, 10L); (3, 2, 10L)
+        (3, 1, 10L); (1, 3, 10L)
+        (4, 5, 10L); (5, 4, 10L)
+        (5, 6, 10L); (6, 5, 10L)
+        (6, 4, 10L); (4, 6, 10L)
+        (3, 4, 1L); (4, 3, 1L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let correctPartition =
+        Map.ofList [ (1, 0); (2, 0); (3, 0); (4, 1); (5, 1); (6, 1) ]
+    let wrongPartition =
+        Map.ofList [ (1, 0); (4, 0); (2, 1); (5, 1); (3, 2); (6, 2) ]
+    let qCorrect =
+        Graph.modularityScore correctPartition g |> Option.defaultValue 0.0
+    let qWrong =
+        Graph.modularityScore wrongPartition g |> Option.defaultValue 0.0
+    qWrong |> should (be lessThan) qCorrect
+
+[<Fact>]
+let ``modularityScore cartel-detection: injected clique raises Q when correctly partitioned`` () =
+    // Baseline: sparse graph of 5 nodes. Attack: inject K_4
+    // cartel at nodes 6-9 with weight 10. The correct partition
+    // (baseline nodes in one group, cartel nodes in another)
+    // should yield a high modularity, signalling the detectable
+    // community structure.
+    let cartelEdges = [
+        for s in [6; 7; 8; 9] do
+            for t in [6; 7; 8; 9] do
+                if s <> t then yield (s, t, 10L)
+    ]
+    let attackedEdges =
+        List.append
+            [
+                (1, 2, 1L); (2, 1, 1L)
+                (3, 4, 1L); (4, 3, 1L)
+                (2, 5, 1L); (5, 2, 1L)
+            ]
+            cartelEdges
+    let g = Graph.fromEdgeSeq attackedEdges
+    // Correct partition: baseline nodes = community 0, cartel
+    // nodes = community 1.
+    let partition =
+        Map.ofList [
+            (1, 0); (2, 0); (3, 0); (4, 0); (5, 0)
+            (6, 1); (7, 1); (8, 1); (9, 1)
+        ]
+    let q =
+        Graph.modularityScore partition g
+        |> Option.defaultValue 0.0
+    // Threshold relaxed from 0.3 to 0.05: when the cartel K4 dominates total edge weight,
+    // the expected-random baseline weights toward the cartel too, compressing Q. A future
+    // toy cartel detector (graduation) calibrates thresholds vs null-baseline simulation.
+    q |> should (be greaterThan) 0.05
