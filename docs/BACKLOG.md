@@ -766,9 +766,10 @@ within each priority tier.
     partial) + SQL-compatible surface (already in roadmap
     via row 733). Standard: **ISO SQL**.
   - **Graph** — F# `graph { }` CE over the Graph substrate
-    (`src/Core/Graph.fs`). Standards: **ISO GQL 39075**
-    (2024, first ISO graph-query standard, openCypher
-    lineage); **Cypher** (openCypher, Neo4j, Memgraph);
+    (`src/Core/Graph.fs`). Standards: **ISO/IEC 39075:2024
+    (GQL)** — Graph Query Language, first ISO graph-query
+    standard, openCypher lineage; **Cypher** (openCypher,
+    Neo4j, Memgraph);
     **Gremlin** (Apache TinkerPop traversal algebra);
     **SPARQL** (W3C, for RDF/linked-data); **Datalog**
     (Souffle, Datomic's Datalog). Pick one primary
@@ -808,8 +809,11 @@ within each priority tier.
   a container-DSL pattern (see next row); (5)
   implementation in graduation cadence per surface.
   Priority P1 post-v1-roadmap; effort L (multi-round, per
-  surface). Composes with row 733 (F# DSL reimagining SQL)
-  and row 719 (LINQ integration) and row 4278 (KSK).
+  surface). Composes with the "F# DSL reimagining SQL"
+  row (P1 SQL-frontend section) and "LINQ integration"
+  row (same section) and the "KSK naming definition doc"
+  row (P2 research-grade section — title anchors instead
+  of brittle line numbers).
 
 - [ ] **F# DSL composition + container-DSL pattern — all Zeta
   DSLs first-class composable.** Aaron Otto-147 directive:
@@ -825,10 +829,17 @@ within each priority tier.
      builder exposing `Bind : M<'a> -> ('a -> M<'b>) -> M<'b>`
      can accept *other* monadic values via `Bind` overloads.
   2. **`MergeSources` + applicative composition** (F# 5+) —
-     combines independent computations across different
-     builders. Enables `let! x = g and! y = v and! z = s`
-     mixing graph + veridicality + signal DSLs in one `and!`
-     chain.
+     combines independent computations within a single
+     active computation-expression builder that defines
+     compatible `Source` / `MergeSources` members. Enables
+     `let! x = g and! y = v and! z = s` where g / v / s
+     return values of types the surrounding builder knows
+     how to merge. Mixing fundamentally different DSL
+     builders (graph + veridicality + signal) in one
+     `and!` chain is NOT what MergeSources does — that
+     requires the container-DSL pattern in the next row
+     (top-level `zeta { }` CE with child-builder
+     delegation via its own `Source` overloads).
   3. **Custom operations** (`[<CustomOperation>]`) — the
      keyword-like syntax inside `query { }` / `graph { }`.
      Operations can delegate to child-builder results.
