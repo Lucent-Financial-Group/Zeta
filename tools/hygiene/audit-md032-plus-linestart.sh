@@ -78,8 +78,8 @@ plus_marker_re='^ {0,3}\+ '
 
 # Iterate tracked `.md` files via NUL-delimited read — matches
 # the sibling hygiene-script convention (audit-cross-platform-
-# parity.sh, audit-memory-references.sh) and is safe for paths
-# containing spaces / tabs / newlines.
+# parity.sh, audit-post-setup-script-stack.sh) and is safe for
+# paths containing spaces / tabs / newlines.
 while IFS= read -r -d '' file; do
   if [[ "$file" =~ $exclude_pattern ]]; then
     continue
