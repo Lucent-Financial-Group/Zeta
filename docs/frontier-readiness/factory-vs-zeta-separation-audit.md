@@ -583,8 +583,8 @@ heavily Zeta-library-specific.
 **File location post-split:** Frontier (shape + Legend + Ring
 vocab + Usage pattern); Zeta repo keeps current entry rows.
 
-**Length:** 122 lines. **Legend + Rings (Techniques / Tools /
-infra) + Usage.**
+**Length:** 128 lines. **Legend + Rings (Techniques / Tools /
+infra / Upstreams / Hardware intrinsics) + Usage.**
 
 ### Section-by-section breakdown
 
@@ -652,6 +652,8 @@ because the substance is non-generic.
 | Legend (Adopt / Trial / Assess / Hold) | factory-generic | Standard ring vocabulary. |
 | Rings — Techniques table | zeta-library-specific | ~30 rows: DBSP algebra / Z-sets / semi-naive LFP / Bloom / FastCDC / residuated lattices / etc. All Zeta-library technical decisions. |
 | Rings — Tools / infra table | **both** | Tooling decisions: some Zeta-specific (NuGet, F# tooling), some factory-generic (CI, auto-merge). Mixed per-row. |
+| Rings — Upstreams / prior art | zeta-library-specific | Prior-art and upstream references for the library's technical direction; part of Zeta's research and implementation context, not factory substrate. |
+| Rings — Hardware intrinsics / platform | zeta-library-specific | Platform / hardware-sensitive implementation concerns belong with DBSP library performance/runtime choices, not the generic factory. |
 | Usage | factory-generic | How to add a row, ring-motion protocol. |
 
 ### Refactor notes — TECH-RADAR.md
@@ -678,16 +680,21 @@ content.
 
 ## Audit — docs/FACTORY-HYGIENE.md
 
-**Overall classification:** **factory-generic** (self-
-classifying) — the file IS a meta-audit of the factory's
-hygiene discipline, and already has a Scope column per row
-declaring project / factory / both. The shape + content are
-purely factory-generic.
+**Overall classification:** **both (coupled)** — the file
+is the factory's meta-hygiene substrate (factory-generic
+shape), but the per-row Scope column already tags rows as
+`project` / `factory` / `both`, meaning execution of the
+split is not a whole-file move. Classifying as
+`factory-generic` + "Frontier as-is" would drop
+project-scoped hygiene rows out of Zeta at split time.
 
-**File location post-split:** Frontier as-is with trivial
-adopter-fill-in of project-scoped rows.
+**File location post-split:** Frontier keeps the canonical
+`FACTORY-HYGIENE.md` intact as the factory's meta-hygiene
+substrate; Zeta derives a project-specific hygiene doc by
+filtering rows whose Scope is `project` or `both`. The
+split is asymmetric (derivation, not duplication).
 
-**Length:** 203 lines + the Scope column's inline
+**Length:** 206 lines + the Scope column's inline
 classification per row (already done by gap #8 discovery:
 gap #8 in the Frontier readiness roadmap was closed on
 re-inspection because this file self-classifies).
@@ -695,39 +702,52 @@ re-inspection because this file self-classifies).
 ### Meta-audit insight
 
 FACTORY-HYGIENE.md's Scope column IS the factory-vs-Zeta
-separation done inline per hygiene-row:
+separation manifest, but the intended post-split shape is
+asymmetric:
 
-- Rows marked `factory` → move to Frontier verbatim
-- Rows marked `project` → move to Zeta's own hygiene doc
-- Rows marked `both` → replicate in both repos with
-  surgical cross-references
+- Frontier keeps the canonical `FACTORY-HYGIENE.md` intact
+  as the factory's meta-hygiene substrate
+- Zeta derives its own project-specific hygiene doc from
+  the rows whose Scope is `project` or `both`
+- Rows marked `both` remain canonical in Frontier and are
+  mirrored into the derived Zeta doc with surgical
+  cross-references where needed
 
-The "Ships to project-under-construction" section projects
-the adopter subset that ships with Frontier adoption.
+The "Ships to project-under-construction" section is a
+Frontier-side projection over the canonical table: the
+adopter subset that ships with Frontier adoption.
 
 ### Refactor notes — FACTORY-HYGIENE.md
 
 Trivial. The file's own Scope column is the split manifest:
 
-1. Filter rows where Scope = `factory` or `both` → Frontier
-2. Filter rows where Scope = `project` or `both` → Zeta
+1. Keep `FACTORY-HYGIENE.md` in Frontier as the canonical
+   source of truth; do not split the main table into peer
+   Frontier-vs-Zeta copies
+2. Derive Zeta's project-specific hygiene doc by filtering
+   rows where Scope = `project` or `both`
 3. Preserve the "Ships to project-under-construction"
-   projection in Frontier as the canonical adopter subset
+   projection in Frontier only, because it is a projection
+   over the canonical table rather than part of the
+   derived Zeta doc
 
-Effort: **S** — mechanical filtering using existing Scope
-column.
+Effort: **S** — mechanical derivation using the existing
+Scope column.
 
 ### Classification rationale — FACTORY-HYGIENE.md
 
 FACTORY-HYGIENE.md is the factory's meta-hygiene substrate,
-by construction. Every row already declares its scope; the
-split-execution plan reads directly off the Scope column.
-This file is the gold standard for how rule substrates
-should be designed from the start — self-classifying, no
-retrofit audit needed. Confirms gap #8's closure: the
-hypothesis "hygiene rows not tagged" was wrong; the rows
-were all tagged. This audit formalises the self-
-classification as the file's purpose.
+by construction. Every row already declares its scope, so
+split execution reads directly off the Scope column
+without re-classification: Frontier keeps the canonical
+file, and Zeta receives a derived project-facing hygiene
+doc. This file is the gold standard for how rule
+substrates should be designed from the start —
+self-classifying, no retrofit audit needed. Confirms gap
+#8's closure: the hypothesis "hygiene rows not tagged"
+was wrong; the rows were all tagged. This audit
+formalises that self-classification as the file's
+purpose.
 
 ## How this audit connects to the multi-repo split
 
