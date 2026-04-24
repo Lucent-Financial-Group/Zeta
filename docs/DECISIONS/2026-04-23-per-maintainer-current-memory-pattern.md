@@ -62,10 +62,11 @@ Analogous shape to git: raw memories are the commit log
 
 ### Location
 
-Per Otto-113/114 ("our memories should all be checked
-in now"), `memory/` is **in-repo**. CURRENT files
-therefore live at **both** locations during the
-current transition:
+Per `GOVERNANCE.md` §22 (in-repo memory canonical
+location) — restated by Otto-113/114 ("our memories
+should all be checked in now") — `memory/` is
+**in-repo**. CURRENT files therefore live at **both**
+locations during the current transition:
 
 - **In-repo:** `memory/CURRENT-<maintainer-name>.md`
   — committed alongside the raw memory log under
