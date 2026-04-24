@@ -83,7 +83,7 @@ Otto-157 tick landed (in order):
 Adding an 18th-ferry full absorb on top of four landed
 PRs regresses CC-002 (close-on-existing). Precedent for
 scheduling a dedicated absorb: PRs #196, #211, #219,
-#221, #235, #245, #259, #330 (7th, 8th, 9th, 11th,
+PR #221, #235, #245, #259, #330 (7th, 8th, 9th, 11th,
 12th, 13th, 14th, 17th ferries all dedicated-absorbed
 one tick after their ferry drop). This doc is the
 Otto-158 execution of that scheduled absorb.
