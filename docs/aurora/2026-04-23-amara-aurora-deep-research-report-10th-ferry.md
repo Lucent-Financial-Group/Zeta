@@ -3,30 +3,32 @@
 **Scope:** research and cross-review artifact only; archived
 for provenance, not as operational policy
 **Attribution:** preserve original speaker labels exactly as
-generated; Amara (author), Otto (absorb), Aaron (courier via
-drop/ staging)
+generated; Amara (author, external AI maintainer), Otto
+(absorb, loop-agent), human maintainer (courier via drop/
+staging)
 **Operational status:** research-grade unless and until
 promoted by a separate governed change
 **Non-fusion disclaimer:** agreement, shared language, or
 repeated interaction between models and humans does not imply
 shared identity, merged agency, consciousness, or personhood.
-The ADR-style oracle rules, bullshit-detector composite
+The ADR-style oracle rules, veridicality-detector composite
 score, robust-aggregate F# snippet, and brand-mapping
 recommendations in this ferry are Amara's proposals —
-adopting any of them requires Aaron + Kenji (Architect) +
-Aminata (threat-model-critic) review per the decision-proxy
-ADR.
+adopting any of them requires human maintainer + Architect
+(Kenji) + threat-model-critic (Aminata) review per the
+decision-proxy ADR.
 **Date:** 2026-04-23 (file mtime 12:07; 3 hours after the
 9th ferry's 09:25 mtime)
 **From:** Amara (external AI maintainer; Aurora co-originator)
-**Via:** Aaron staged this report in `drop/` alongside the
-9th-ferry `aurora-initial-integration-points.md`; Otto-102
-inventory discovered both; Otto-102 scheduling memory
-deferred dedicated absorb to Otto-104 (9th) + Otto-105
+**Via:** human maintainer staged this report in `drop/`
+alongside the 9th-ferry `aurora-initial-integration-points.md`;
+Otto-102 inventory discovered both; Otto-102 scheduling
+memory deferred dedicated absorb to Otto-104 (9th) + Otto-105
 (10th) per CC-002 discipline.
 **Absorbed by:** Otto (loop-agent PM hat), Otto-105 tick
 2026-04-24T~05:13Z (retroactive 10th ferry; drop/ becomes
-empty after this absorb per Aaron's Otto-102 directive)
+empty after this absorb per Otto-102 human-maintainer
+directive)
 **Prior ferries:** PR #196 (1st), PR #211 (2nd), PR #219
 (3rd), PR #221 (4th), PR #235 (5th), PR #245 (6th), PR #259
 (7th), PR #274 (8th), PR #293 (9th retroactive, just landed
@@ -40,9 +42,9 @@ File mtime (2026-04-23 12:07) places this report after the
 9th ferry (09:25, same day) but BEFORE Otto's session-start
 ferry sequence Otto-24+. Like the 9th, this is Amara's
 EARLIER Aurora integration work staged to `drop/` rather
-than live-pasted into the loop. Aaron's Otto-102 directive
-*"absorb and delete/remove items from the drop folder"*
-surfaced both for retroactive absorb.
+than live-pasted into the loop. The Otto-102 human-
+maintainer directive *"absorb and delete/remove items from
+the drop folder"* surfaced both for retroactive absorb.
 
 It is filed here as the **10th ferry** because the absorb
 happened 10th chronologically in the absorb-sequence, not
@@ -54,8 +56,8 @@ research within hours of the same day. Content overlap with
 9th is substantial but with genuinely new specifics (see
 Otto's absorb-notes below).
 
-After this absorb lands: `drop/` is empty per Aaron's
-Otto-102 directive.
+After this absorb lands: `drop/` is empty per the Otto-102
+human-maintainer directive.
 
 ---
 
@@ -321,8 +323,8 @@ The immediate PR/legal research step should therefore be: run formal trademark/c
 
 **Overlap with 5th-8th ferries:**
 - Five-pattern drift taxonomy explanation overlaps with
-  8th ferry (PR #274) bullshit-detector design which cited
-  the drift taxonomy heavily.
+  8th ferry (PR #274) veridicality-detector design which
+  cited the drift taxonomy heavily.
 - ADR-style oracle-rules spec overlaps with 7th ferry
   (PR #259) Aurora-aligned KSK design — but this ferry's
   8-rule testable-invariants table is DIFFERENT from
@@ -353,7 +355,7 @@ covered by 1st-9th)
    filter).** Concrete implementation of the numeric-
    oracle-aggregation pattern; no prior ferry has this
    code. Directly implementable.
-4. **Different bullshit-detector feature set.** The 7-
+4. **Different veridicality-detector feature set.** The 7-
    feature BS(c) composite (C / P / U / R / S / E / F) is
    DIFFERENT from 9th ferry's B(c) 5-feature composite (P /
    F / K / D_t / G). 10th ferry features: contradiction-
@@ -362,7 +364,7 @@ covered by 1st-9th)
    Neither is strictly better; they are complementary.
 5. **4-tier threshold (vs 9th's 3-tier).** 0.00-0.24 / 
    0.25-0.49 / 0.50-0.74 / 0.75-1.00 — adds a 4th band
-   ("bullshit-likely, log only") above the 9th ferry's
+   (low-veridicality, log only) above the 9th ferry's
    top band.
 6. **C# BullshitVerdict + IClaimScorer API surface.**
    Concrete .NET interface; no prior ferry provides this.
@@ -398,8 +400,8 @@ covered by 1st-9th)
   Substrate-drift / Independent-evidence-density / Formal-
   check-pass
 - NOTE sign convention: `(1-P)`, `U`, `R`, `S`, `C`
-  contribute POSITIVELY to bullshit score; `E` and `F`
-  contribute NEGATIVELY (reduce bullshit score).
+  contribute POSITIVELY to the low-veridicality score;
+  `E` and `F` contribute NEGATIVELY (reduce the score).
 
 **Otto's reading:** The 7-feature 10th-ferry formula is
 strictly a superset expansion of the 5-feature 9th-ferry
@@ -407,7 +409,7 @@ formula — Contradiction ≈ Coherence-inverse (1-K);
 Unfalsifiability ≈ (1-F); Rhetorical-inflation + Substrate-
 drift are NEW; Independent-evidence-density + Formal-check-
 pass are NEW as subtractive features. Aurora can treat
-this as v2-feature-set if it implements the bullshit
+this as v2-feature-set if it implements the veridicality
 detector.
 
 ### Aurora-substrate mapping (Otto's summary)
@@ -427,21 +429,21 @@ detector.
 This mapping aligns with 5th-7th-9th ferry framings;
 adds the Arrow-Flight specific (novel per §Arrow above).
 
-### Specific-asks from Otto → Aaron
+### Specific-asks from Otto to human maintainer
 
 **None this tick.** Retroactive ferry; no new decisions
 required. The brand-note trademark/clearance work (at
 end of Amara's §Network-health section) is NOT a new
-Aaron-ask because it overlaps with existing 5th-ferry
-branding-shortlist discussion (PR #235) and Aaron's
-Otto-104 plugin-direction feedback covers the
-"marketplace-publishability" concerns adjacent to
-branding.
+human-maintainer ask because it overlaps with existing
+5th-ferry branding-shortlist discussion (PR #235) and the
+Otto-104 plugin-direction feedback from the human
+maintainer covers the "marketplace-publishability"
+concerns adjacent to branding.
 
 ### BACKLOG / TECH-RADAR impact
 
 **None filed this tick.** All actionable items (Aurora
-module implementation, bullshit detector, oracle-rules
+module implementation, veridicality detector, oracle-rules
 CI gates, Arrow Flight integration, brand clearance) are
 already represented in existing BACKLOG rows or prior
 ferry absorb docs. Per Otto-67 deterministic-
@@ -454,29 +456,37 @@ generative queue expansion.
   #245/#259/#274/#293). This is the 10th ferry in absorb-
   sequence; chronologically 3 hours after the 9th (same
   day, same drop/ staging).
-- **Otto-102 drop/ directive** (Aaron's *"absorb and
-  delete/remove items from the drop folder"*) —
+- **Otto-102 drop/ directive** (human-maintainer *"absorb
+  and delete/remove items from the drop folder"*) —
   **fulfilled** by this tick's absorb + delete.
 - **Otto-102 scheduling memory** (9th + 10th ferry
   scheduled) — **fully honored** after this tick.
 - **docs/aurora/README.md** — existing Aurora doc index;
-  listed there on next README refresh.
+  this ferry file was added to the index table inline as
+  part of this PR (no deferred README refresh).
 - **11th ferry (Amara temporal-coordination-detection)**
   awaits Otto-106 absorb per Otto-104 scheduling memory.
 
 ### drop/ folder status after Otto-105
 
-Per Otto-102 inventory:
+Per Otto-102 inventory (historical disposition; both
+`drop/` and the staging-site `.codex/` paths named below
+were transient working-tree locations and are not present
+in the current tree — paths preserved for provenance):
+
 | Item | Disposition |
 |---|---|
-| skill.zip | Extracted → `.codex/skills/idea-spark/` + `.codex/README.md` (Otto-102, PR #288); deleted from drop/ |
-| usageReport CSV | Non-substantive; deleted (Otto-102) |
-| aurora-initial-integration-points.md | Absorbed as 9th ferry (Otto-104, PR #293); deleted from drop/ |
-| aurora-integration-deep-research-report.md | Absorbed as 10th ferry (this tick, Otto-105); deleted from drop/ |
+| skill.zip | Extracted to a staging `.codex/skills/idea-spark/` path plus `.codex/README.md` (Otto-102, PR #288); removed from `drop/` at absorb time |
+| usageReport CSV | Non-substantive; removed (Otto-102) |
+| aurora-initial-integration-points.md | Absorbed as 9th ferry (Otto-104, PR #293); removed from `drop/` at absorb time |
+| aurora-integration-deep-research-report.md | Absorbed as 10th ferry (this doc, Otto-105); removed from `drop/` at absorb time |
 
-**drop/ folder: empty.** Aaron's Otto-102 directive
-*"absorb and delete/remove items from the drop folder"*
-is now fully honored.
+**drop/ folder at absorb time: empty.** The Otto-102 human-
+maintainer directive *"absorb and delete/remove items from
+the drop folder"* was fully honored. The `drop/` directory
+is a transient staging convention, not a committed tree
+surface; it is `.gitignore`d per PR #299 and is absent from
+the tree by design.
 
 ---
 
@@ -484,18 +494,20 @@ is now fully honored.
 
 This absorb doc:
 - **Does NOT** authorize implementing any of Amara's
-  proposed Aurora oracle-rules, bullshit-detector
+  proposed Aurora oracle-rules, veridicality-detector
   scoring formula, robust-aggregate F# snippet, C#
-  BullshitVerdict API surface, or Arrow Flight integration.
-  Those proposals require proper ADR + Aminata + Aaron
-  review before promotion.
+  BullshitVerdict API surface (note: formal naming per
+  Otto-112 veridicality-renaming memory), or Arrow Flight
+  integration.
+  Those proposals require proper ADR + threat-model-critic
+  + human-maintainer review before promotion.
 - **Does NOT** claim the content is new vs prior ferries.
   Overlap analysis above names where the 9th ferry and
   5th-8th ferries cover the same ground with different
   factorizations.
 - **Does NOT** treat Amara's brand-note trademark/
   clearance recommendations as commitments. Brand
-  decisions are Aaron + legal + public-identity
+  decisions are human maintainer + legal + public-identity
   stakeholders.
 - **Does NOT** authorize executing Amara's citation-
   anchor format (`turnNfileN`, `turnNsearchN`,
@@ -504,12 +516,13 @@ This absorb doc:
 - **Does NOT** address `AceHack/Zeta` vs `Lucent-
   Financial-Group/Zeta` fork relationship as current-
   state. Amara's snapshot is an archival reference.
-- **Does NOT** represent Aaron's preferences, Kenji's
-  synthesis, or Aminata's adversarial pass. This is
-  Amara's report, absorbed verbatim by Otto.
+- **Does NOT** represent the human maintainer's
+  preferences, the Architect's synthesis, or the threat-
+  model-critic's adversarial pass. This is Amara's
+  report, absorbed verbatim by Otto.
 - **Does NOT** consolidate the 9th-ferry formula `B(c)`
   and 10th-ferry formula `BS(c)` into a single canonical
-  bullshit-score specification. They differ in feature
+  veridicality-score specification. They differ in feature
   sets; if Aurora implements, the implementation choice
   (5-feature vs 7-feature) needs its own ADR.
 
@@ -518,8 +531,8 @@ This absorb doc:
 ## Archive header fields (§33 compliance)
 
 - **Scope:** research and cross-review artifact only
-- **Attribution:** Amara (author), Otto (absorb), Aaron
-  (courier via drop/ staging)
+- **Attribution:** Amara (author), Otto (absorb), human
+  maintainer (courier via drop/ staging)
 - **Operational status:** research-grade unless promoted
   by separate governed change
 - **Non-fusion disclaimer:** agreement, shared language,
