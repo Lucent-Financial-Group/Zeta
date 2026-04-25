@@ -247,13 +247,30 @@ sidesteps that problem for Phase 1 Codex research**.
 
 ## 6 · Recommended Stage-2 plan
 
-Stage 2 is the parity matrix (M-effort per PR #228). Concrete
-test prompts to exercise each row of §3:
+Stage 2 is the parity matrix (M-effort per PR #228). The
+prompts below are a starter probe set targeting the most
+load-bearing rows of the §3 parity matrix; they do **not**
+exercise every row 1:1. Stage-2 execution should expand to
+one prompt per matrix row, recording per-row pass/fail/notes
+so parity-and-gap totals are row-level rather than
+aggregate-only. This starter set is the seed for that
+expansion; rows not covered below stay marked
+"unverified-pending-Stage-2-prompt" until a row-specific
+probe lands.
 
 1. **`AGENTS.md` reading.** Run `codex` in the Zeta repo root
    interactively; confirm it reads `AGENTS.md` before first
-   turn. (Test: ask the agent to state the three load-bearing
-   values; correct answer validates the read.)
+   turn. **Discriminator:** ask the agent to recite content
+   that lives ONLY in `AGENTS.md` and not in this research
+   doc — for example, the exact wording of the build-and-test
+   gate command block (`dotnet build -c Release` clean +
+   `dotnet test Zeta.sln -c Release` pair) which appears in
+   `AGENTS.md` but is not repeated inline here. Reciting the
+   three load-bearing values alone is NOT a valid
+   discriminator because this research doc repeats those
+   values inline; correct recitation would not prove
+   `AGENTS.md` ingestion and creates a false-positive
+   readiness signal.
 2. **Subagent dispatch.** Prompt Codex to "launch a subagent
    to review `docs/ALIGNMENT.md` and report its key clauses" —
    verify subagent dispatch works, artifacts are consolidated.
