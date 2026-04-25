@@ -169,7 +169,7 @@ priority label preserved, section now matches the maintainer's
 > **P2 Badge**  Require updating both .mise.toml and global.json
 >
 > The new "preferred update path" says to edit `.mise.toml`
-> "(or `global.json`)`, but this repo's .NET pinning contract
+> "(or `global.json`), but this repo's .NET pinning contract
 > requires those two files to stay in sync. If a contributor
 > follows this wording and updates only one file, `install.sh`
 > and SDK resolution can diverge, producing pin drift or build
