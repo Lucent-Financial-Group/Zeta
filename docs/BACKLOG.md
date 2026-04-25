@@ -10210,7 +10210,7 @@ systems. This track claims the space.
      Human peer review is additional-trust, not an
      additional required gate — substrate does not
      have to wait on a human to be canonical. Aaron
-     autonomous-loop 2026-04-25 clarification:
+     autonomous-loop 2026-04-24 clarification:
      *"agent peer review is enough to graduate it"*.
      Disclosure tag: `(peer-reviewed; canonical)` or
      no tag (canonical-when-reviewed is the default).
@@ -10714,7 +10714,7 @@ systems. This track claims the space.
   reference_ entries; the CURRENT file itself isn't a
   new indexable memory. Modifying CURRENT shouldn't
   require a MEMORY.md edit, but today it does (hit on
-  PR #412 2026-04-25, worked around by adding a dated
+  PR #412 2026-04-24, worked around by adding a dated
   "refreshed" note to MEMORY.md's fast-path line).
 
   **Scope:**
