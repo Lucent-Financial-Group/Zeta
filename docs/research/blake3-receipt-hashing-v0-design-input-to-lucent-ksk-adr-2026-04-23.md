@@ -140,11 +140,17 @@ h_r = BLAKE3(
 ```
 
 **Canonical encoding (`encode(·)`).** Raw concatenation of
-variable-length fields is ambiguous and opens a length-
-extension / boundary-shift adversary surface (an attacker
-could partition `"AB" ∥ "CD"` and `"A" ∥ "BCD"` to the same
-input bytes). v0 binds an explicit canonical encoding for
-each field, in the order listed:
+variable-length fields is ambiguous and opens a boundary-
+shift / collision-by-reframing adversary surface (an
+attacker could partition `"AB" ∥ "CD"` and `"A" ∥ "BCD"` to
+the same input bytes; both yield identical hashes despite
+representing different field assignments). Note: this is
+*not* a BLAKE3 length-extension attack — BLAKE3's tree-hash
+construction with finalisation flags is not vulnerable to
+length-extension the way SHA-256 / MD5 are. The risk here
+is purely the encoding ambiguity at the input layer. v0
+binds an explicit canonical encoding for each field, in the
+order listed:
 
 - `hash_version`: 1-byte unsigned integer (versions
   `0x00`-`0xFF` reserved; `0x01` = this scheme).
@@ -162,10 +168,10 @@ each field, in the order listed:
   disambiguates boundaries unambiguously.
 
 This is the v0 binding. Future schemes (`hash_version >=
-0x02`) may pick different framing (e.g. CBOR, Protobuf, or
-domain-separated TLV per RFC 8949 §3.1), and the version
-prefix tells verifiers which framing applies — so the
-binding is forward-compatible.
+0x02`) may pick different framing (e.g. CBOR per RFC 8949,
+Protobuf, or a domain-separated TLV scheme), and the
+version prefix tells verifiers which framing applies — so
+the binding is forward-compatible.
 
 Changes from Amara's 7th-ferry proposal:
 
