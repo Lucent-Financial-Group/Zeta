@@ -117,27 +117,51 @@ From the oracle-scoring design (PR #266):
 > + forensic-friendly + closes the parameter-fitting-
 > adversary cost delta.
 
-So the v0 input set extends to 8 fields.
+So the v0 input set extends to 9 fields.
 
 ---
 
 ## Proposed v0 scheme (design input for lucent-ksk ADR)
 
-### Hash input set (8 fields)
+### Hash input set (9 fields)
 
 ```text
 h_r = BLAKE3(
-  hash_version
-  ∥ h_inputs
-  ∥ h_actions
-  ∥ h_outputs
-  ∥ budget_id
-  ∥ policy_version
-  ∥ parameter_file_sha
-  ∥ approval_set_commitment
-  ∥ node_id
+  encode(hash_version)
+  ∥ encode(h_inputs)
+  ∥ encode(h_actions)
+  ∥ encode(h_outputs)
+  ∥ encode(budget_id)
+  ∥ encode(policy_version)
+  ∥ encode(parameter_file_sha)
+  ∥ encode(approval_set_commitment)
+  ∥ encode(node_id)
 )
 ```
+
+**Canonical encoding (`encode(·)`).** Raw concatenation of
+variable-length fields is ambiguous and opens a length-
+extension / boundary-shift adversary surface (an attacker
+could partition `"AB" ∥ "CD"` and `"A" ∥ "BCD"` to the same
+input bytes). v0 binds an explicit canonical encoding for
+each field, in the order listed:
+
+- `hash_version`: 1-byte unsigned integer (versions
+  `0x00`-`0xFF` reserved; `0x01` = this scheme).
+- `h_inputs` / `h_actions` / `h_outputs` / `parameter_file_sha`
+  / `approval_set_commitment`: 32-byte fixed-width BLAKE3
+  digests (no length prefix needed — every value is exactly
+  32 bytes).
+- `budget_id` / `policy_version` / `node_id`: variable-length
+  identifiers encoded as `len:u32-be ∥ bytes` length-prefix
+  framing. The 4-byte big-endian length disambiguates
+  boundaries unambiguously.
+
+This is the v0 binding. Future schemes (`hash_version >=
+0x02`) may pick different framing (e.g. CBOR, Protobuf, or
+domain-separated TLV per RFC 8949 §3.1), and the version
+prefix tells verifiers which framing applies — so the
+binding is forward-compatible.
 
 Changes from Amara's 7th-ferry proposal:
 
@@ -233,7 +257,7 @@ scope-wise):
   the hash.
 - Residual risk: if the `hash_version` registry itself is
   compromised (bad actor registers a weak algorithm as
-  v0x02), the scheme is broken. Mitigation: the registry
+  `0x02`), the scheme is broken. Mitigation: the registry
   is a lucent-ksk governance artifact, not a per-node
   config; modifying it requires a governance-layer
   decision. Parallel to the `parameter_file_sha` rule.
@@ -282,7 +306,7 @@ In order of leverage (same pattern as oracle-scoring v0):
    form-factor if lucent-ksk doesn't have a `docs/
    DECISIONS/` pattern yet.
 3. **`hash_version` registry landing in lucent-ksk** —
-   governance artifact; first v0x01 entry.
+   governance artifact; first `0x01` entry.
 4. **`parameter_file_sha` registry landing** — parallel
    governance artifact; binds Zeta-module parameter files
    to specific SHAs.
