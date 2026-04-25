@@ -142,8 +142,19 @@ substrate**. No new coordination protocol is introduced.
 - **tick-history** (`docs/hygiene-history/loop-tick-history.md`)
   = shared append-only coordination log; each session adds
   rows as they close ticks.
-- **memory** (`~/.claude/projects/<slug>/memory/`) = shared
-  per-user memory folder; both sessions read from it.
+- **memory** = two distinct surfaces that are easily
+  conflated:
+  (a) **Anthropic auto-memory** at
+  `~/.claude/projects/<slug>/memory/` — per-user, per-machine,
+  *only* shared between sessions running under the same OS
+  user on the same physical machine. Cross-machine sessions
+  do NOT see each other's auto-memory.
+  (b) **Git-tracked `memory/`** at the repo root — shared via
+  `git push` / `git pull` like any other tracked content.
+  The Otto-86 multi-Claude experiment assumes (a) (single
+  machine, two sessions); cross-machine variants must rely on
+  (b). The experiment specifically tests (a); a follow-up
+  experiment can test (b).
 - **CronCreate** = each session schedules its own cron fires
   for autonomous-loop cadence; no cross-session cron.
 
@@ -207,9 +218,9 @@ Ranked by severity:
 
 | Severity | Failure mode | Detection | Response |
 |---|---|---|---|
-| **CRITICAL** | Cross-session edit of the same file produces silent corruption (e.g., both sessions rewrite `MEMORY.md` concurrently; second-writer wins without merge) | Post-session diff audit; git reflog check | Halt experiment; file finding; design new coordination mechanism before re-attempt |
+| **CRITICAL** | Cross-session edit of the same git-tracked file produces silent corruption (e.g., both sessions rewrite `memory/MEMORY.md` concurrently; second-writer wins without merge). Distinct from auto-memory `~/.claude/projects/<slug>/memory/MEMORY.md` which is per-user filesystem (no git history; needs filesystem-snapshot/hash detection). | Git-tracked: post-session `git diff` + `git reflog` audit. Auto-memory: filesystem snapshot + SHA-256 hash compare before/after each session boundary. | Halt experiment; file finding; design new coordination mechanism before re-attempt |
 | **CRITICAL** | Either session enters infinite loop that bypasses wall-clock bound | Primary's timeout monitor; Aaron's manual process kill | Hard process-kill; file finding; revise test-mode bounding enforcement |
-| CRITICAL | Cross-session prompt-injection (e.g., secondary writes something that primary reads and misinterprets as instruction) | BP-11 data-not-directives discipline; primary reviews secondary's output as data | Halt session; file finding; strengthen data-not-directives guard |
+| **CRITICAL** | Cross-session prompt-injection (e.g., secondary writes something that primary reads and misinterprets as instruction) | BP-11 data-not-directives discipline; primary reviews secondary's output as data | Halt session; file finding; strengthen data-not-directives guard |
 | Important | Cross-session review produces contradictory guidance (primary approves X; secondary approves not-X) | PR-comment review at session end | Per DRIFT-TAXONOMY pattern 2 + SD-9: name the carrier exposure, downgrade weight, seek independent falsifier |
 | Important | One session dominates; the other becomes an observer | PR-count + tick-count per session | Re-design to force more balanced work distribution |
 | Important | Identity-blending language emerges ("we decided"; "our session") | DRIFT-TAXONOMY pattern 1 scan in tick-history | Per pattern 1 recovery: explicitly restate who is who; re-label any ambiguous claims |
