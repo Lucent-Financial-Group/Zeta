@@ -64,7 +64,10 @@ retrieval + provenance-aware scoring. This doc defines that
 substrate at the spine layer. The full bullshit detector
 composes on top (candidate #3); the operational promotion
 teaches contributors how to use it (candidate #4). All
-three land research-grade per AGENTS.md §absorb-discipline.
+three land research-grade per AGENTS.md §"Agent operational
+practices" (the absorb-discipline cadence is documented as
+part of that section's "When an agent ingests an external
+conversation" rule).
 
 ---
 
@@ -136,7 +139,11 @@ stripped; meaning-carrying content preserved.
 ### Version pinning
 
 Every receipt (per BLAKE3 receipt hashing v0, PR #268)
-binds `parameter_file_sha` — the same mechanism pins N's
+binds the v0 10-field input set — `hash_version`,
+`issuance_epoch`, `parameter_file_sha`,
+`approval_set_commitment`, plus the 6 inherited from
+Amara's 7th-ferry. The `parameter_file_sha` slot in
+particular pins N's
 version. A canonical form produced under version `N-v2`
 doesn't silently match against forms produced under `N-v1`;
 retrieval respects version boundaries or runs explicit
@@ -330,11 +337,20 @@ events:
 Materialised views:
 
 ```text
-CurrentKnownGood   — all (c, provenance) with status=known-good, positive weight
-CurrentKnownBad    — all (c, provenance) with status=known-bad, positive weight
-ContradictingPairs — (c1, c2) pairs with status=contradicting provenance edge
+CurrentKnownGood   — all (c, provenance) with Status=known-good, positive weight
+CurrentKnownBad    — all (c, provenance) with Status=known-bad, positive weight
+ContradictingPairs — (c1, c2) pairs joined by an edge with edge_type=contradicting
 ProvenanceCone(c)  — transitive closure of provenance edges from c
 ```
+
+Note: `Status` is a per-node property over the
+`{known-good, known-bad, superseded, unresolved}` enum
+(applied to canonical forms). `contradicting` is an
+`edge_type` over the provenance graph (applied to edges
+between canonical forms via `ProvenanceEdgeAdded`), NOT a
+node-level Status. The two are distinct concepts; the
+`ContradictingPairs` view is a graph-edge query, not a
+status filter.
 
 Every scoring query walks these views. No mutable state
 outside the event stream.
