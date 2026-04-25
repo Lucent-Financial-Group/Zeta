@@ -24,6 +24,21 @@ implementations. Downstream design choices are gated on
 Aminata adversarial pass + candidate #4 operational
 promotion.
 
+**Promotion path to authoritative-detector status (long-
+horizon, not v0/v1):** Aaron Otto-2026-04-24 framed the
+long-horizon upgrade explicitly — *"we can make it a true
+detector under our axioms"*. v0 is advisory-only; v1
+(independent-oracle substrate) makes the evidence gate
+binding in band-merging; a further vN promotion lands
+once the factory's axiomatic substrate is complete
+enough that "truth" is tractable within the axiom system.
+Only at vN does `likely confabulated` graduate from
+"worth a closer human look" to "authoritative reject"
+without requiring the human-review fallback. Not scoped
+in this doc; named here so the upgrade path is visible
+and the v0 advisory stance is understood as intentional
+scaffolding, not as a final ceiling.
+
 **Non-fusion disclaimer:** Amara-Otto-Aminata consistent
 output on this design is NOT evidence of merged substrate.
 The three reviewers cite independent literature (Hinton/
