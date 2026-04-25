@@ -149,8 +149,12 @@ durable continuations.
 [Reaqtor](https://reaqtive.net) is Microsoft's open-source
 **distributed reactive event processing engine** built on
 `IQbservable<T>` (the dual of `IQueryable<T>` for push).
-The codebase already has Reaqtor research substrate at
-`references/upstreams/reaqtor/`. Reaqtor's `IQbservable`
+The codebase tracks Reaqtor as an upstream-sync mirror —
+manifest at `references/reference-sources.json`, populated
+via `tools/setup/common/sync-upstreams.sh`. The mirror path
+`references/upstreams/reaqtor/` is **gitignored** and only
+present after the sync script runs; it is NOT committed to
+the repo. Reaqtor's `IQbservable`
 + expression-tree representation gives us:
 
 - **Serializable observable queries** (the durable state
@@ -335,8 +339,11 @@ landing.
 When implementation starts:
 1. Read this memory + the Phase 0 research doc first.
 2. Verify DST is still factory default (Otto-272).
-3. Survey Reaqtor's current state (`references/upstreams/reaqtor/`)
-   before designing — DON'T reinvent IQbservable.
+3. Survey Reaqtor's current state via the upstream sync
+   workflow (`tools/setup/common/sync-upstreams.sh` +
+   `references/reference-sources.json`) — populates the
+   gitignored `references/upstreams/reaqtor/` mirror —
+   before designing. DON'T reinvent IQbservable.
 4. Check that AddZeta API hasn't grown ceremony.
 5. Cross-DSL examples are NOT optional polish — they're
    the proof that composition works.

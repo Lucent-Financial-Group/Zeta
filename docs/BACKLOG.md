@@ -5770,8 +5770,11 @@ systems. This track claims the space.
   **Stream composition:** DI inject `IZetaStream<T>` and
   combine with LINQ/Rx in user code. Sequential-looking
   reads compile to distributed Rx with durable
-  continuations. Reaqtor substrate
-  (`references/upstreams/reaqtor/`) provides the
+  continuations. Reaqtor is available via the upstream-
+  sync workflow (manifest `references/reference-sources.json`
+  + script `tools/setup/common/sync-upstreams.sh`); the
+  populated mirror at `references/upstreams/reaqtor/` is
+  gitignored and only present after sync. Reaqtor's
   IQbservable serialization machinery — DON'T reinvent.
 
   **Microkernel preparation:** maintainer-explicit:
