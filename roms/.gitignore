@@ -6,13 +6,30 @@
 # license verification.
 #
 # Track only:
-#   - README.md  (the protocol doc — what's safe, what isn't)
-#   - .gitignore (this file)
+#   - `.gitignore` (this file) — root-level gate
+#   - `README.md` (top-level protocol doc)
+#   - directory structure (manufacturer/platform hierarchy)
+#   - per-directory `README.md` sentinels (explain what
+#     each folder accepts — branch folders enumerate
+#     children, leaf folders accept ROMs per the top-level
+#     protocol)
 #
-# Everything else is ignored. ROMs are added by the human
-# maintainer per the protocol in README.md, used by the
-# emulator runtime locally, and never committed.
+# Everything else — ROM files, BIOS dumps, save states,
+# screenshots, patches, ANY binary — is ignored regardless
+# of subdirectory depth. ROMs are added by the human
+# maintainer per the protocol in `roms/README.md`, used by
+# the emulator runtime locally, and never committed.
+#
+# Gitignore mechanics:
+# - `*` at the top ignores every file at this level.
+# - `!*/` re-includes directories so git recurses into them.
+# - `!**/README.md` re-includes a README.md at ANY depth
+#   (per-folder sentinels — the thing Aaron asked for in
+#    "sentinel per ROM folder").
+# - `!**/.gitignore` allows per-dir gitignore overrides if
+#   a subfolder ever needs different rules (none do today).
 
 *
-!.gitignore
-!README.md
+!*/
+!**/README.md
+!**/.gitignore
