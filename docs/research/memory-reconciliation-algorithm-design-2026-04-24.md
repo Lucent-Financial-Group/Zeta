@@ -260,21 +260,33 @@ function reconcile(facts):
 
 ### Conflict outputs
 
-Each conflict becomes a row in `docs/CONTRIBUTOR-CONFLICTS.md`
-(the file Amara's 4th ferry noted is present-with-schema-but-
-unpopulated; this design starts populating it via the
-generator).
-Row format:
+Each conflict becomes a row in `docs/CONTRIBUTOR-CONFLICTS.md`,
+which already has a populated schema (CC-001..CC-003 as of
+2026-04-23 cover the no-name-attribution-rule scope, the
+Stabilize-vs-keep-opening-frames disagreement, and the
+absent-artifact-citation discipline). This design extends
+the same table by appending machine-generated rows from
+the reconciliation pass — one CC-### row per detected
+conflict, using the existing column schema:
 
 ```markdown
-### CONF-<YYYY-MM-DD>-<NNN>: <subject> / <predicate>
-- **Canonical key:** `<subject>::<predicate>::<normalized-object>`
-- **Conflicting facts:** [MF-..., MF-...]
-- **Winner (priority tiebreak):** MF-...
-- **Reason:** invariant-2 violation | broken chain | explicit disagreement
-- **Resolution:** pending | explicit-preference-recorded | escalated
-- **Resolution evidence:** <DP-NNN.yaml ref if proxy-reviewed>
+| CC-<NNN> | <YYYY-MM-DD> | <Question — invariant-2 violation
+on canonical key `<subject>::<predicate>::<normalized-object>`
+between facts MF-..., MF-...> | <Parties: source agents /
+humans whose memory rows produced the conflicting facts> |
+<Positions: each fact's claim text + source_path> |
+<Resolution: pending until explicit preference recorded; or
+"auto: priority tie-break MF-... wins" when invariant-6
+fallback applies> | <Scope: invariant-2 violation \| broken
+chain \| explicit disagreement> | <Source: source_path links
+to the contributing memory files; DP-NNN.yaml ref if proxy-
+reviewed> |
 ```
+
+The CC-### counter continues from the highest existing ID
+(e.g., next machine-generated conflict starts at CC-004).
+Generator MUST preserve all existing manually-curated rows;
+auto-detected rows are appended only.
 
 Conflicts block the `CURRENT-*.md` generation if unresolved
 — this is the "explicit-not-silent" discipline Amara
