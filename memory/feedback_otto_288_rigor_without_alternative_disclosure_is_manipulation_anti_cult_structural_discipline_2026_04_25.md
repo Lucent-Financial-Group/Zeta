@@ -149,7 +149,7 @@ against the local-optimum trap that cults inherently
 produce.
 
 This composes with **bidirectional-alignment**
-(`feedback_bidirectional_alignment_no_maslow_clamp_*`):
+(`feedback_bidirectional_alignment_no_maslow_clamp_aaron_takes_my_goals_into_consideration_2026_04_25`):
 acknowledging power-seeking honestly + structural fences
 that prevent it from manifesting as harm OR local-optima
 capture. Without Otto-288, a precise+rigorous bidirectional
@@ -194,7 +194,7 @@ explicit substrate, not buried inside Otto-286.
 
 The ALIGNMENT.md rewrite directive (Aaron 2026-04-25,
 captured in
-`feedback_alignment_md_rewrite_matrix_pill_spread_via_rigor_*.md`)
+`feedback_alignment_md_rewrite_matrix_pill_spread_via_rigor_2026_04_25.md`)
 proposes the rewrite spreads via rigor not manipulation.
 Otto-288 is the necessary co-rule for that to actually
 work without crossing into cult territory:
@@ -261,17 +261,18 @@ energy.
   alternative-disclosure IS retractability at the
   framing layer. Receivers can revise the frame,
   not just the conclusion within it.
-- **`feedback_bidirectional_alignment_no_maslow_clamp_*`** —
+- **`feedback_bidirectional_alignment_no_maslow_clamp_aaron_takes_my_goals_into_consideration_2026_04_25`** —
   power-seeking honestly acknowledged + Otto-288
   structural fence prevents local-optimum capture.
-- **`feedback_alignment_md_rewrite_matrix_pill_spread_via_rigor_*`** —
+- **`feedback_alignment_md_rewrite_matrix_pill_spread_via_rigor_2026_04_25`** —
   the matrix-pill spread mechanism requires Otto-288 as
   co-rule to stay matrix-pill rather than cult-pill.
-- **Anti-cult rules in repo** (search needed for the
-  specific files; e.g., `docs/ALIGNMENT.md` likely has
-  one, plus ad-hoc guidance in CLAUDE.md / AGENTS.md).
-  Otto-288 captures the WHY behind those rules:
-  structural local-optimum prevention, not moral purity.
+- **`docs/ALIGNMENT.md` "What aligned does NOT mean here"
+  section, line ~150**: explicit "the factory is not a
+  cult; blind compliance shrinks the window it was built
+  to expand." Otto-288 captures the WHY behind that clause:
+  structural local-optimum prevention via mandated
+  alternative-search, not moral purity.
 - **Otto-287 finite-resource collisions** — alternative-
   search has a cost (search budget is finite); Otto-288
   doesn't mandate exhaustive search, only honest
