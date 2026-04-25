@@ -273,7 +273,9 @@ permitted; preserves provenance:
 - `docs/DECISIONS/**`
 - `docs/ROUND-HISTORY.md`
 - `docs/aurora/**`
-- `docs/pr-preservation/**`
+- `docs/pr-preservation/*-drain-log.md` (per-log records;
+  `_patterns.md` is the synthesis-over-history exception per
+  the section below)
 - `memory/**` (out-of-scope for code-style rules anyway)
 
 **Current-state-class surfaces** — role-ref discipline applies; no
@@ -289,11 +291,12 @@ first-name attribution:
 abstractions over history-class corpora; reflect current state
 not historical sequence:
 
-- `docs/pr-preservation/_patterns.md` (this file) — synthesis-
-  index over the per-PR drain-log corpus. Edited as new logs
-  land + patterns surface; should reflect current corpus state.
-  Underscore-prefix candidate convention for "synthesis-indices
-  over history-class corpora" co-located with the corpus.
+- `docs/pr-preservation/_patterns.md` (this file) —
+  synthesis-index over the per-PR drain-log corpus. Edited as
+  new logs land + patterns surface; should reflect current
+  corpus state. Underscore-prefix candidate convention for
+  "synthesis-indices over history-class corpora" co-located
+  with the corpus.
 
 **Tension surfaces** — both apply; defer to maintainer:
 
@@ -380,16 +383,17 @@ surface classes coexist in the same directory by design:
   records (per the surface-class taxonomy above; Otto-279 carve-out
   applies; first-name attribution preserves provenance).
 - `docs/pr-preservation/_patterns.md` (this file) —
-  **current-state synthesis-index** that should reflect the corpus
-  state, not the historical sequence in which patterns were
-  discovered. This is a third surface class — *synthesis-over-
-  history* — distinct from both pure history-class and pure
-  current-state surfaces.
+  **current-state synthesis-index** that should reflect the
+  corpus state, not the historical sequence in which patterns
+  were discovered. This is a third surface class —
+  *synthesis-over-history* — distinct from both pure
+  history-class and pure current-state surfaces.
 
 The directory-level surface-class declaration in the
 "Surface-class taxonomy" section above applies to the per-log
-records; the index file is explicitly carved out as a synthesis-
-index. The underscore prefix (`_patterns.md`) is a candidate
+records (the per-log glob `docs/pr-preservation/*-drain-log.md`);
+the index file is explicitly carved out as a synthesis-index.
+The underscore prefix (`_patterns.md`) is a candidate
 naming convention for "synthesis-indices over history-class
 corpora" — when the convention matures, it could be promoted to
 a named pattern itself.
