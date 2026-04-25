@@ -218,5 +218,8 @@ it as a BACKLOG item, consult the memory substrate, fix it.
   feature branch)
 - `tools/audit/live-lock-audit.sh` — the factory-health audit
   this doc references
-- `samples/FactoryDemo.Db/` + `samples/FactoryDemo.Api.FSharp/` +
+- `samples/FactoryDemo.Api.FSharp/` +
   `samples/FactoryDemo.Api.CSharp/` — the concrete demo
+  (the `samples/FactoryDemo.Db/` companion is not yet
+  landed in main; it's tracked under the FactoryDemo
+  BACKLOG arc and will appear here once it lands)
