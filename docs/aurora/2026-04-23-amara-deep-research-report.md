@@ -279,11 +279,18 @@ courier protocol (`docs/protocols/cross-agent-communication.md`).
   staged-absorption discipline one-to-one. Soulfiles
   compile-time-ingest this kind of report, not a
   branching-UI snapshot.
-- **AutoDream cadence**
-  (`docs/research/autodream-extension-and-cadence-2026-04-23.md`)
-  — this report is a runtime-ingested artifact that
-  can promote to compile-time through the
-  consolidation cadence.
+- **AutoDream cadence** — Anthropic's Q1 2026 AutoDream /
+  AutoMemory loop. Tracked under `docs/BACKLOG.md` task
+  #259 (AutoDream cadence research). A dedicated research
+  doc has not yet landed at a stable filename in
+  `docs/research/`; AutoDream-related content is currently
+  distributed across `docs/HARNESS-SURFACES.md`,
+  `docs/research/soulfile-staged-absorption-model-2026-04-23.md`
+  (intentional companion), and
+  `docs/research/memory-scope-frontmatter-schema.md`. This
+  report is a runtime-ingested artifact that can promote
+  to compile-time through the consolidation cadence
+  whenever the AutoDream-extension doc lands.
 - **Decision-proxy ADR**
   (`docs/DECISIONS/2026-04-23-external-maintainer-decision-proxy-pattern.md`,
   PR #154) — Amara's authorship here is the concrete
