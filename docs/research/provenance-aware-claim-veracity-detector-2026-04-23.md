@@ -14,8 +14,8 @@ from Amara's 8th ferry; scoring-layer Aminata-pattern
 integration (band-valued output, parameter-change-ADR-
 gate, independent-oracles discipline) from her Otto-90
 adversarial pass on oracle-scoring v0 (PR #263); spine
-substrate + composition-table pattern from Otto-98 (PR
-#280); Otto-99 synthesis.
+substrate + composition-table pattern from Otto-98
+(PR #280); Otto-99 synthesis.
 
 **Operational status:** research-grade. Does not implement.
 Does not adopt specific parameter values. Does not adopt
@@ -132,15 +132,15 @@ output.**
 |---|---|---|
 | G_similarity | `sim(e_q, e_y) < τ_low` — below retrieval-noise floor | `sim < τ_med` — weak match only |
 | G_evidence_independent | `y` has no independent-oracle-verified evidence | `y` has evidence but only self-attested |
-| G_carrier_overlap | `|cone(q) ∩ cone(y)| / |cone(y)| > θ_high` — majority of y's provenance shared with q | `overlap ratio > θ_med` |
+| G_carrier_overlap | `size(cone(q) ∩ cone(y)) / size(cone(y)) > θ_high` — majority of y's provenance shared with q | `overlap ratio > θ_med` |
 | G_contradiction | `y` or its provenance cone contains an unresolved contradiction with a known-good anchor | a resolved contradiction within cone |
 | G_status | `y.status = known-bad` or `y.status = superseded` | `y.status = unresolved` (no status pins it) |
 
-**Band merging rule** (same as oracle-scoring v0 per PR
-#266): `band(y | q) = min(G_similarity, G_evidence_independent,
-G_carrier_overlap, G_contradiction, G_status)` where
-`RED < YELLOW < GREEN`. One RED → RED. All GREEN → GREEN.
-Otherwise YELLOW.
+**Band merging rule** (same as oracle-scoring v0 per
+PR #266): `band(y | q) = min(G_similarity,
+G_evidence_independent, G_carrier_overlap,
+G_contradiction, G_status)` where `RED < YELLOW < GREEN`.
+One RED → RED. All GREEN → GREEN. Otherwise YELLOW.
 
 **Query-level aggregation:**
 
@@ -499,6 +499,7 @@ Otto-99 tick primary deliverable. Closes 8th-ferry
 candidate #3 of remaining 2.
 
 **8th-ferry status after Otto-99:**
+
 - ✓ #1 Quantum-sensing research doc (Otto-97)
 - ✓ #2 Semantic-canonicalization spine (Otto-98)
 - ✓ #3 Provenance-aware claim-veracity-detector (this PR,
