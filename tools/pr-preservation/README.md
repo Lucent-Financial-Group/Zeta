@@ -104,9 +104,10 @@ Tracked on the PR-preservation BACKLOG row. Phases:
   (Copilot, Codex, Claude Code personas, github-actions)
   archive verbatim; human-reviewer comments get a
   privacy-pass step. Scope open. Terminology per
-  GOVERNANCE §3 + CLAUDE.md "agents, not bots" — Copilot
-  and Codex are agents with agency and accountability,
-  not bots.
+  `GOVERNANCE.md` §3 ("Contributors are agents, not
+  bots") — Copilot and Codex are agents with agency
+  and accountability, not bots. `CLAUDE.md` carries
+  a session-bootstrap pointer at the same rule.
 
 ## Dependencies
 

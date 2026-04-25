@@ -101,7 +101,15 @@ if ! [[ "$PR" =~ ^[0-9]+$ ]]; then
   echo "usage: $0 <PR-number>" >&2
   exit 1
 fi
-REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+# Require an actual git checkout. `gh repo view` can succeed
+# outside a checkout (via `gh repo set-default` / an auth'd
+# session pointing at a remote), which would cause the
+# archive to be written to a bogus REPO_ROOT derived from
+# `pwd`. Hard-fail if we aren't inside a git working tree.
+if ! REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"; then
+  echo "error: not inside a git working tree. Archive-pr.sh must run from a Zeta checkout so the docs/pr-discussions/ output lives in the right repo." >&2
+  exit 1
+fi
 
 # Dynamic owner / name — works from forks or after rename.
 # Requires `gh repo view` to succeed; the script hard-fails
@@ -120,7 +128,10 @@ export REPO_ROOT PR REPO_OWNER REPO_NAME
 OUT_DIR="${REPO_ROOT}/docs/pr-discussions"
 mkdir -p "$OUT_DIR"
 
-TMP="$(mktemp)"
+# Use an explicit template so mktemp works on both GNU
+# coreutils (Linux) and BSD mktemp (macOS) — plain `mktemp`
+# with no argument fails on BSD.
+TMP="$(mktemp -t zeta-archive-pr.XXXXXX)"
 trap 'rm -f "$TMP"' EXIT
 
 # Paginated fetch: drive it from Python (single interpreter,
@@ -497,37 +508,53 @@ collapsed = []
 blank_run = 0
 in_fence = False
 fence_marker = None  # '`' or '~' — opener type must match closer
+fence_length = 0     # opener run length — closer must be >= this
 for raw_line in content.split('\n'):
     # Detect fenced-code-block boundaries (``` or ~~~ at
     # the start of a line, ignoring leading whitespace).
-    # Per CommonMark, the closing fence must use the SAME
-    # marker character as the opener (backticks close
-    # backticks; tildes close tildes). Previously the
-    # detector flipped on any fence-shaped line, which
-    # would prematurely close a backtick fence on a tilde
-    # line (and vice versa).
+    # Per CommonMark §4.5:
+    #   - Closing fence must use the SAME marker character
+    #     as the opener (backticks close backticks;
+    #     tildes close tildes).
+    #   - Closing fence must be AT LEAST AS LONG as the
+    #     opener. An opener of 4 backticks needs a
+    #     closer of 4+ backticks; 3 backticks inside a
+    #     4-backtick fence is content, not a closer.
+    #     This is how CommonMark lets you nest fences —
+    #     a longer opener contains shorter fence-shaped
+    #     lines as literal content.
     stripped = raw_line.lstrip()
     marker = None
+    marker_len = 0
     if stripped.startswith('```'):
         marker = '`'
+        marker_len = len(stripped) - len(stripped.lstrip('`'))
     elif stripped.startswith('~~~'):
         marker = '~'
+        marker_len = len(stripped) - len(stripped.lstrip('~'))
     if marker is not None:
         if not in_fence:
+            # Opening fence: record marker + length so the
+            # closer can be matched strictly.
             in_fence = True
             fence_marker = marker
+            fence_length = marker_len
             blank_run = 0
             collapsed.append(raw_line)
             continue
-        if marker == fence_marker:
+        if marker == fence_marker and marker_len >= fence_length:
+            # Closing fence: same marker, length >= opener.
             in_fence = False
             fence_marker = None
+            fence_length = 0
             blank_run = 0
             collapsed.append(raw_line)
             continue
-        # Different-marker fence line inside an open fence:
-        # fall through to the in_fence verbatim branch so
-        # the line is preserved without flipping state.
+        # Fence-shaped line that isn't a valid closer
+        # (wrong marker, or shorter than the opener):
+        # fall through to the in_fence verbatim branch
+        # so the line is preserved as content without
+        # flipping state.
     if in_fence:
         # Inside a fenced block: preserve verbatim.
         # No whitespace-only normalization, no blank-run
