@@ -1,10 +1,13 @@
 # Secret-handoff protocol — options analysis for human-operator → agent
 
-**Status:** first-pass, 2026-04-22, auto-loop-33. Not a BACKLOG
-row yet — maintainer explicitly scoped this as in-chat
-analysis pending shape preference. Published here so the
-reasoning is auditable outside the chat transcript and
-survives transcript rotation.
+**Status:** first-pass, 2026-04-22, auto-loop-33. Originally
+scoped as in-chat analysis pending shape preference; a
+BACKLOG row has since landed in `docs/BACKLOG.md` (Secret-
+handoff protocol — env-var default + password-…) pointing at
+this doc. The doc itself remains design-input research, not
+final-form spec; the BACKLOG row tracks the implementation
+work. Published here so the reasoning is auditable outside
+the chat transcript and survives transcript rotation.
 
 **Triggering event:** auto-loop-31 tick had maintainer paste
 an xAI API key inline after the Grok CLI OAuth flow blocked
@@ -117,8 +120,10 @@ read -rs -p "xAI key: " key
 printf '%s' "$key" | security add-generic-password -s zeta-xai -a "$USER" -w
 unset key
 
-# Each session (launcher):
-export XAI_API_KEY=$(security find-generic-password -s zeta-xai -a "$USER" -w)
+# Each session (launcher) — quote the substitution so any
+# whitespace / glob chars / newlines in the retrieved value
+# don't get word-split or expanded:
+export XAI_API_KEY="$(security find-generic-password -s zeta-xai -a "$USER" -w)"
 claude
 
 # Rotate:
@@ -140,8 +145,10 @@ On Linux with `libsecret`:
 # Once (store):
 secret-tool store --label="Zeta xAI" service zeta-xai
 
-# Each session:
-export XAI_API_KEY=$(secret-tool lookup service zeta-xai)
+# Each session (quote the command substitution — handles
+# whitespace / glob chars / newlines in the retrieved value;
+# closely related to shellcheck SC2046 for unquoted $(...)):
+export XAI_API_KEY="$(secret-tool lookup service zeta-xai)"
 ```
 
 **Properties:** encrypted at rest by the OS, gated by login
@@ -167,8 +174,10 @@ op item create --category=api-credential --title='Zeta xAI' \
     "credential[password]=$key"
 unset key
 
-# Each session:
-export XAI_API_KEY=$(op read "op://Private/Zeta xAI/credential")
+# Each session (quote the command substitution — handles
+# whitespace / glob chars / newlines in the retrieved value;
+# closely related to shellcheck SC2046 for unquoted $(...)):
+export XAI_API_KEY="$(op read "op://Private/Zeta xAI/credential")"
 ```
 
 Note: avoid `credential=<paste-key-here>` literal forms in
