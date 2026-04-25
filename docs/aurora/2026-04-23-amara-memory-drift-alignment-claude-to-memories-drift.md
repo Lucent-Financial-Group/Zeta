@@ -85,8 +85,8 @@ Determinize, Week 4 Govern, Week 5-6 Assure).
 | Export/backup verification | Assure | Restore-from-scratch test on the in-repo memory substrate | M | P2 |
 
 **Priority rationale:** Stabilize items are S-effort and
-unblock the rest — pin snapshots + proxy-consult evidence
-+ branch-chat non-canonical = three quick wins that shift
+unblock the rest — pin snapshots + proxy-consult evidence +
+branch-chat non-canonical = three quick wins that shift
 every subsequent work unit's operational floor upward.
 
 ---
