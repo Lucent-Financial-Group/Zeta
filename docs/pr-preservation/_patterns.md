@@ -370,28 +370,31 @@ Discussion + commit SHA where fix landed.
 > verbatim quote of the reply that resolved the thread.
 ```
 
-**Abbreviated Otto-268 shape** (used across drain-logs #437-#465
-landed during the 2026-04-25 backfill wave):
+**Abbreviated Otto-268 shape** (used across the 2026-04-25 backfill
+wave; in-tree examples at `docs/pr-preservation/421-drain-log.md`,
+`docs/pr-preservation/422-drain-log.md`,
+`docs/pr-preservation/423-drain-log.md`):
 
 ```markdown
-### Thread N — `:LINE` — short description (Reviewer P-class)
+### Thread N — short description
 
 - Reviewer: <handle>
-- Thread ID: `PRRT_...`
 - Severity: P0/P1/P2
+- Finding: short prose summary of the reviewer's concern.
 - Outcome: **CLASS** — short prose explanation. Commit `SHA`.
 ```
 
-The abbreviated shape preserves Thread ID + severity + outcome
-class + commit SHA but compresses verbatim reviewer/reply text into
-short prose. Substance is preserved; the multi-section structure
-and verbatim preservation are not.
+The abbreviated shape preserves key metadata (reviewer, severity,
+outcome class, commit SHA) and a paraphrased Finding bullet, but
+verbatim original-comment + verbatim reply text are NOT preserved.
+Multi-section structure, file:line locator, and Thread ID are also
+typically omitted vs the canonical Otto-250 shape.
 
 **Maintainer-decision pending** — three options:
 
-(a) **Rewrite** the 22+ Otto-268-wave drain-logs to canonical
-shape with verbatim reviewer/reply. Highest faithfulness; high
-churn (~5-8 hours).
+(a) **Rewrite** the abbreviated-shape drain-logs from the
+2026-04-25 backfill wave to canonical shape with verbatim
+reviewer/reply. Highest faithfulness; high churn (~5-8 hours).
 
 (b) **Accept divergence** — document both shapes here as valid
 (this section); keep abbreviated shape for low-thread-count or
