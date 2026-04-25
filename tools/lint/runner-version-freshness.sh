@@ -54,6 +54,23 @@ if ! REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"; then
   echo "ERROR: not inside a git working tree" >&2
   exit 1
 fi
+
+# Normalize CLI args to absolute paths BEFORE `cd`, so paths
+# given relative to the caller's cwd survive the chdir into
+# REPO_ROOT. Without this, `script.sh ./foo.yml` from outside
+# REPO_ROOT would error after the cd because `./foo.yml` no
+# longer resolves.
+if [ $# -gt 0 ]; then
+  abs_args=()
+  for arg in "$@"; do
+    case "$arg" in
+      /*) abs_args+=("$arg") ;;
+      *)  abs_args+=("$PWD/$arg") ;;
+    esac
+  done
+  set -- "${abs_args[@]}"
+fi
+
 cd "$REPO_ROOT"
 
 # Allow-list verified 2026-04-24. Source URL:
@@ -183,6 +200,9 @@ nonword_end='([^A-Za-z0-9_]|$)'
 
 fail=0       # 1 = stale / rolling / not-allow-listed label
 env_error=0  # 1 = unreadable file or other env/usage problem
+warn=0       # 1 = allow-list LAST_VERIFIED is stale (>30d)
+             # MUST be initialized before the final `[ "$warn" = "1" ]`
+             # check; under `set -u`, an unset var would abort.
 
 for file in "${files[@]}"; do
   # Verify file exists and is readable. Without this, the
@@ -195,21 +215,15 @@ for file in "${files[@]}"; do
     env_error=1
     continue
   fi
-  # Two-pass YAML comment stripping. Both grep and sed must
-  # tolerate "no match" without aborting under set -euo
-  # pipefail:
-  #   - `grep -vE '^[[:space:]]*#'` exits 1 if EVERY line is
-  #     a comment (no output). `|| true` neutralises that
-  #     into exit 0.
-  #   - The `sed` second pass always emits its input, so
-  #     the whole pipeline's exit code is sed's, not grep's.
-  #     But `set -o pipefail` propagates the leftmost non-
-  #     zero, so we still need the `|| true` on the grep
-  #     side to be safe.
+  # Two-pass YAML comment stripping. The `grep -vE`-pass exits
+  # 1 if EVERY line is a comment (no output); under
+  # `set -o pipefail` that would propagate as the pipeline's
+  # exit code, even though "no output" is a normal outcome.
+  # Group ONLY the grep with `|| true` so a real `sed` failure
+  # (missing tool, unsupported `-E`) still surfaces.
   uncommented="$(
-    grep -vE '^[[:space:]]*#' "$file" \
-      | sed -E 's/[[:space:]]+#.*$//' \
-      || true
+    { grep -vE '^[[:space:]]*#' "$file" || true; } \
+      | sed -E 's/[[:space:]]+#.*$//'
   )"
   # Extract lines that look like runner-label references,
   # then grep for any STALE_LABEL with portable word-
@@ -240,17 +254,59 @@ for file in "${files[@]}"; do
   # This catches future-stale labels (e.g., `ubuntu-30.04`
   # invented after this script was last verified) that
   # don't appear in the explicit STALE_LABELS subset.
-  allowed_pattern="$(IFS='|'; echo "${ALLOWED_LABELS[*]}")"
-  rolling_or_allowed="${allowed_pattern}|${rolling_pattern}"
-  # Extract the value after `runs-on:`, then check whether
-  # it's on the union of allowed + rolling lists. Skip
-  # expression-form labels (`${{ ... }}`) which the workflow
-  # author explicitly templated.
-  unknown_hits="$(printf '%s\n' "$uncommented" \
+  #
+  # Escape ALLOWED + ROLLING labels for ERE alternation —
+  # labels like `ubuntu-24.04` contain `.` which is an ERE
+  # wildcard; without escaping, typos like `ubuntu-24x04`
+  # would slip through as "allow-listed".
+  escaped_allowed=()
+  for label in "${ALLOWED_LABELS[@]}"; do
+    escaped_allowed+=("$(escape_for_regex "$label")")
+  done
+  allowed_pattern="$(IFS='|'; echo "${escaped_allowed[*]}")"
+  escaped_rolling=()
+  for label in "${ROLLING_ALIASES[@]}"; do
+    escaped_rolling+=("$(escape_for_regex "$label")")
+  done
+  escaped_rolling_pattern="$(IFS='|'; echo "${escaped_rolling[*]}")"
+  rolling_or_allowed="${allowed_pattern}|${escaped_rolling_pattern}"
+  # Validate both direct scalar `runs-on:` labels and matrix
+  # list entries (the same `matrix_prefix` form used for
+  # stale/rolling above). Skip expression-form labels
+  # (`${{ ... }}`) which the workflow author explicitly
+  # templated — those are validated via the matrix entries
+  # they expand from.
+  scalar_unknown="$(printf '%s\n' "$uncommented" \
     | grep -nE 'runs-on:[[:space:]]*[A-Za-z0-9_-][A-Za-z0-9._-]*' \
     | grep -vE 'runs-on:[[:space:]]*\$\{\{' \
     | grep -vE "runs-on:[[:space:]]*(${rolling_or_allowed})($|[[:space:]]|#)" \
     || true)"
+  # Matrix list entries: `- ubuntu-24.04` / `- "ubuntu-24.04"`.
+  # Looks at lines under a `matrix:` block; we approximate by
+  # scanning every list entry that names an OS-like label
+  # (contains a digit) and checking the literal label against
+  # the allow-list. False-positive risk: arbitrary list
+  # entries with digits get checked — labels like `ci-1.0` in
+  # an unrelated matrix would fire. Mitigation: this is an
+  # advisory not-on-allow-list check, not a hard reject.
+  #
+  # The exclude filters use a "line-number-aware" prefix
+  # `(^|^[0-9]+:)` because grep -n prepends `<linenum>:` to
+  # each line; an unprefixed `^` anchor would not match.
+  matrix_prefix_ln='(^|^[0-9]+:)[[:space:]]*-[[:space:]]+(['"'"'"]?)'
+  matrix_unknown="$(printf '%s\n' "$uncommented" \
+    | grep -nE "${matrix_prefix}[A-Za-z][A-Za-z0-9._-]*[0-9][A-Za-z0-9._-]*" \
+    | grep -vE "${matrix_prefix_ln}(${rolling_or_allowed})(['\"]?)([[:space:]]|$|#)" \
+    | grep -vE "${matrix_prefix_ln}(${stale_pattern})" \
+    || true)"
+  unknown_hits="${scalar_unknown}"
+  if [ -n "$matrix_unknown" ]; then
+    if [ -n "$unknown_hits" ]; then
+      unknown_hits="${unknown_hits}"$'\n'"${matrix_unknown}"
+    else
+      unknown_hits="${matrix_unknown}"
+    fi
+  fi
   if [ -n "$unknown_hits" ]; then
     echo "NOT-ON-ALLOW-LIST RUNNER LABEL(S) in $file (label is neither stale nor allowed; allow-list may need refresh):"
     printf '%s\n' "$unknown_hits" | sed 's/^/  /'
