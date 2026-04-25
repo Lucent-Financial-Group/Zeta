@@ -204,9 +204,16 @@ Changes from Amara's 7th-ferry proposal:
 ### Signature structure (rotation-aware)
 
 ```text
-σ_agent = Sign_{sk_agent}(agent_key_version ∥ h_r)
-σ_node  = Sign_{sk_node }(node_key_version  ∥ h_r)
+σ_agent = Sign_{sk_agent}(encode_u32_be(agent_key_version) ∥ h_r)
+σ_node  = Sign_{sk_node }(encode_u32_be(node_key_version)  ∥ h_r)
 ```
+
+**Encoding for `*_key_version`.** The key-version is a 4-byte
+big-endian unsigned integer (`u32-be`). Versions number
+monotonically from 1; version 0 is reserved for "uninitialised"
+and never used in signed receipts. Fixed-width keeps the
+prepended bytes unambiguous (no length prefix needed since
+every version is exactly 4 bytes).
 
 The key-version is **inside the signed message** (prepended
 to `h_r` before signing) — not unsigned metadata alongside.
@@ -261,9 +268,19 @@ scope-wise):
    This prevents an attacker from forging receipts under
    an old, weaker scheme that has been retired but is
    still mechanically recognised by older verifier
-   software. Historical receipts under the deprecated
-   version remain verifiable for audit; new receipts
-   under it are refused.
+   software. **Issuance-epoch gate:** the deprecation
+   policy MUST distinguish receipts by their issuance
+   epoch, not by the verification timestamp. Receipts
+   issued *before* a `hash_version` was deprecated remain
+   valid for audit / replay (replay-determinism preserves
+   historical receipts under their then-current scheme);
+   receipts that *claim* an issuance epoch *after* the
+   deprecation cutoff under a deprecated `hash_version`
+   are rejected. The lucent-ksk policy registry stores
+   `(version, deprecated_after_epoch)` tuples; the
+   verifier checks the receipt's claimed issuance epoch
+   against the registry's deprecation epoch for that
+   version.
 3. A receipt with a `parameter_file_sha` that the
    consumer can't resolve to actual parameter values MUST
    cause the same halt-and-report. (Fail-closed on
