@@ -1,7 +1,7 @@
 ---
 name: truth
 defined-by: Tarski's semantic definition of truth (1933/1944)
-formalised: plain-English + mathematical sketch; Lean4 formalisation deferred
+formalised: draft
 dependencies: []
 ---
 
@@ -41,9 +41,9 @@ The left side uses `T` applied to a *name* (quoted
 string) of the sentence; the right side uses the sentence
 itself as asserted in the metalanguage.
 
-This is the **T-schema** (or Convention T). A truth-
-definition is adequate when every instance of the T-schema
-is a theorem of the metalanguage.
+This is the **T-schema** (or Convention T). A
+truth-definition is adequate when every instance of the
+T-schema is a theorem of the metalanguage.
 
 **Crucial Tarski theorem**: `L` cannot define its own
 truth predicate (under mild assumptions). Truth is
@@ -55,18 +55,35 @@ language that defines its own truth.
 ## Lean4 formalisation
 
 ```lean4
--- Deferred. First-pass sketch:
--- In Lean4, `Prop` plays the role of sentences; the
--- metalanguage is Lean's type theory itself. The T-schema
--- is built into the proof assistant:
---   theorem T_schema : ∀ (p : Prop), (p = p) ↔ p
--- Formalising Tarski's hierarchy (object-language L ⊂ M ⊂ ...)
--- requires encoding syntax + quotation + reflection. Mathlib
--- has partial substrate (Tarski-Vaught test, elementary
--- substructure) but no closed "Tarski's truth" theorem
--- module as of writing.
+-- Deferred — draft sketch only.
+--
+-- In Lean4, `Prop` directly embodies the T-schema:
+-- a proposition `p : Prop` IS its own truth condition.
+-- You don't prove "T(p) ↔ p" in Lean's logic; you prove
+-- `p` itself, and the act of producing a proof IS the
+-- truth-witness. This is why Lean's type theory works
+-- as a metalanguage for this term — Tarski's hierarchy
+-- (object-language L ⊂ metalanguage M ⊂ ...) collapses
+-- to a single layer when the object-language is Prop and
+-- the metalanguage is the type theory above it.
+--
+-- A *reflective* truth predicate that talks about a
+-- closed object-language (separate syntax, separate
+-- quotation, separate evaluation) requires explicit
+-- syntactic encoding in Lean. Mathlib has partial
+-- substrate (Tarski-Vaught test, elementary substructure)
+-- but no closed "Tarski's truth" theorem module as of
+-- 2026-04-23.
+--
 -- Full formalisation: follow-on work per
 -- `docs/linguistic-seed/README.md` §growth-discipline.
+-- Deliberately NOT included here: the earlier draft
+-- attempted `theorem T_schema : ∀ (p : Prop), (p = p) ↔ p`
+-- which is logically incorrect — `(p = p)` is provable
+-- for every p, so the equivalence reduces to "True ↔ p"
+-- which is false for unprovable p. The error is fixed
+-- by recognising that Lean's Prop already IS the
+-- T-schema; no theorem needs to be proven about it.
 ```
 
 ## Grounding point (per Otto-21 Craft discipline)
@@ -150,5 +167,5 @@ correspondence definition.
 The correspondence property of an assertion with what is
 the case, definable only in a richer metalanguage
 (Tarski). The factory uses it operationally, not
-philosophically: an assertion is true when the-thing-it-
-asserts is what's actually happening.
+philosophically: an assertion is true when
+the-thing-it-asserts is what's actually happening.
