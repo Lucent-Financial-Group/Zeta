@@ -125,12 +125,12 @@ caught that debt plus a few inline-code / casing issues.
 
 **Outcome:** FIX — title + stale references updated.
 
-**Reply:** Fixed — title updated to "three-persona Chinese Wall
-+ factory-standards pass" to match the methodology body (which
-already expanded to three-persona per Aaron's Otto-2026-04-24
-refinement). Sibling "two-persona workflow end-to-end" in the
-scope section also updated to "three-persona workflow".
-Resolved.
+**Reply:** Fixed — title updated to "three-persona Chinese
+Wall plus factory-standards pass" to match the methodology
+body (which already expanded to three-persona per Aaron's
+Otto-2026-04-24 refinement). Sibling "two-persona workflow
+end-to-end" in the scope section also updated to
+"three-persona workflow". Resolved.
 
 ---
 
@@ -238,7 +238,11 @@ carried through the prose.
 
 #404 rebased twice through conflicts in `docs/BACKLOG.md`
 (primary hot file during this session as P3 rows accumulated).
-Resolution recipe: `sed -i '' '/^<<<<<<< HEAD$/d;/^=======$/d;/^>>>>>>> /d' docs/BACKLOG.md`
+Resolution recipe (BSD sed / macOS):
+`sed -i '' '/^<<<<<<< HEAD$/d;/^=======$/d;/^>>>>>>> /d' docs/BACKLOG.md`.
+GNU sed (Linux CI / most dev laptops) needs the empty
+backup-suffix argument OMITTED:
+`sed -i '/^<<<<<<< HEAD$/d;/^=======$/d;/^>>>>>>> /d' docs/BACKLOG.md`.
 — strip markers keeping both sides for append-only files. Per
 Otto-228 drain-axis discipline + Otto-229 append-only.
 
