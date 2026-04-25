@@ -10274,9 +10274,10 @@ systems. This track claims the space.
   - Otto-237 mention-vs-adoption discipline (same
     shape: committed ≠ authoritative, adoption is a
     separate gate).
-- [ ] **Clean-room BIOS factory workflow — two-persona
-  Chinese Wall methodology, tractable-platforms-only
-  pilot.** Aaron autonomous-loop 2026-04-24 (verbatim):
+- [ ] **Clean-room BIOS factory workflow — three-persona
+  Chinese Wall + factory-standards pass, tractable-
+  platforms-only pilot.** Aaron autonomous-loop
+  2026-04-24 (verbatim):
 
   > *"i could get bios and you do both side with different
   > personas one is dirty with existing bios writes specs
@@ -10390,26 +10391,35 @@ systems. This track claims the space.
     canonical Phoenix spec is the template — describe
     behavior at API / state-machine level, no bit
     patterns, no register labels that mirror source
-    names, no pseudocode. Needs a `writing-clean-room-
-    specs-skill` if this becomes routine.
+    names, no pseudocode. Needs a
+    `writing-clean-room-specs-skill` (skill name on
+    a single line so the inline-code identifier
+    renders and is copy-searchable) if this becomes
+    routine.
   - **Legal documentation trail**: timestamped commit
     history + session-isolation records need to form an
     auditable paper trail. Each committed spec carries
-    its own provenance frontmatter — fields like
-    `Clean-room stage: specifier` / `Reader-persona:
-    <harness + session id>` / `Source material: <public
-    docs listed>` / `Proprietary BIOS access: yes|no
-    + date range` — defined fresh for this workflow
+    its own provenance frontmatter with fields listed
+    on individual lines so inline-code spans render
+    cleanly (HTML-safe; placeholders use `PLACEHOLDER`
+    style rather than `<...>` which markdown can treat
+    as raw HTML):
+    - `Clean-room-stage: specifier`
+    - `Reader-persona: HARNESS_NAME + SESSION_ID`
+    - `Source-material: PUBLIC_DOCS_LIST`
+    - `Proprietary-BIOS-access: yes|no + DATE_RANGE`
+
+    These fields are defined fresh for this workflow
     rather than reused from the archive-header norm
-    for external conversations (different artifact
+    for external conversations — different artifact
     class, different field semantics, so reusing the
     existing header shape would just confuse both
-    surfaces).
+    surfaces.
 
   **Scope of this BACKLOG row:** ONE pilot on a simple
   platform (recommend Atari 5200 — small BIOS, excellent
   public docs, well-understood hardware) proving out the
-  two-persona workflow end-to-end. The pilot's success
+  three-persona workflow end-to-end. The pilot's success
   criterion is a committed `docs/clean-room/atari-5200/`
   tree with spec.md + implementation.asm (or .fs / .rs
   etc) that boots a test cartridge in an Atari 5200
@@ -10529,7 +10539,7 @@ systems. This track claims the space.
 
   - Retro preservation → feasible for simple BIOSes
     (Atari 5200 / 7800 / Lynx / Intellivision /
-    Colecovision) — weeks per platform. Viable today
+    ColecoVision) — weeks per platform. Viable today
     once the `#404` pilot proves the workflow.
   - Orphaned-hardware drivers → feasible per-contract;
     customer supplies the hardware + docs; factory
