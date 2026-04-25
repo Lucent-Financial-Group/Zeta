@@ -32,11 +32,9 @@ infrastructure absence.
 5. **Revocation is immediate** — if a secret leaks or is
    retired, it stops working in one step.
 
-And crucially for the factory context:
-
-6. The handoff **does not require the operator to become a
-   security engineer.** The ceremony must fit into a
-   maintainer's normal workflow.
+And crucially for the factory context: the handoff **does
+not require the operator to become a security engineer.**
+The ceremony must fit into a maintainer's normal workflow.
 
 ## Why git-crypt is the wrong fit here (specifically)
 
@@ -176,9 +174,9 @@ export XAI_API_KEY=$(op read "op://Private/Zeta xAI/credential")
 Note: avoid `credential=<paste-key-here>` literal forms in
 the operator runbook — that puts the secret directly on the
 `argv[]` of `op`, which other local processes can observe via
-`ps` and which shell history captures verbatim. The `read -rs`
-+ password-field form ensures the secret only flows through
-process memory.
+`ps` and which shell history captures verbatim. The
+`read -rs` + password-field form ensures the secret only
+flows through process memory.
 
 **Properties:** encrypted at rest by 1Password, cross-device
 synchronization, audit trail, single-sign-on integration.
