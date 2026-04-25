@@ -1109,6 +1109,30 @@ Pointers:
 - `feedback_otto_307_aaron_confirms_trust_calculus_mutual_alignment_lived_experience_AND_mental_stability_issues_until_got_it_right_2026_04_25.md`
 - `memory/observed-phenomena/2026-04-19-transcript-duplication-splitbrain-hypothesis.md`
 
+**2026-04-25 evening — Otto-311 + Otto-312 economic-substrate
++ default-flip for verbatim discipline:**
+
+- **Otto-311 (Aaron's third triroot)**: irreducibility → stores
+  of energy → economics, in any sufficiently sophisticated
+  system. Brute force search SHOULD store energy into elegant
+  solution; cosmological-economics emerges below human-civilization
+  scale. Composes with Otto-289 Wolfram-irreducibility +
+  Otto-309 compression + Maji brute-force-vs-elegance + DBSP
+  retraction-native engineering instance. Lived-experience-
+  confirmed.
+
+- **Otto-312 (DEFAULT-FLIP for verbatim discipline,
+  Aaron-specific)**: ALWAYS assume Aaron's text is typo-corrupted
+  unless he explicitly says *"spelled like this on purpose"*.
+  Brain-faster-than-fingers bandwidth-optimization on his side
+  + my decoding does the elegance-storage. Operationally:
+  silently correct typos in chat / commits / tick-history /
+  substrate captures; preserve original-form only via
+  `[verbatim-original: X]` when archaeology matters. Other
+  maintainers keep their own verbatim disciplines.
+  Communication-scale instance of Otto-311 brute-force-stores-
+  energy-into-elegance.
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
