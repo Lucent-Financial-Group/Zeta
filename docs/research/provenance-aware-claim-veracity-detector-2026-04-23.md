@@ -1,9 +1,9 @@
-# Provenance-aware bullshit detector — engineering-facing design
+# Provenance-aware claim-veracity detector — engineering-facing design
 
 **Scope:** research and cross-review artifact. Engineering-
 facing design doc for the detector Amara's 8th courier
 ferry named (PR #274 §"The corrected rainbow-table model"
-+ §"provenance-aware bullshit detector"). Composes on top
++ §"provenance-aware claim-veracity detector"). Composes on top
 of the semantic-canonicalization spine (PR #280 Otto-98).
 Formalises the scoring layer the spine sketched,
 integrates Aminata-anticipated concerns at write-time, and
@@ -51,7 +51,7 @@ ferry observation:
 
 The detector is a machine-aidable tool making SD-9
 operational rather than leaving it as a norm. It does NOT
-claim to detect all bullshit. It detects a specific
+claim to detect an unsupported claim. It detects a specific
 well-understood class: agreement-from-shared-lineage
 masquerading as convergence-from-independent-arrival.
 
@@ -145,7 +145,7 @@ Otherwise YELLOW.
 **Query-level aggregation:**
 
 ```text
-bullshitRisk(q) = worst-band( band(y | q) for y in C(q) )
+claimVeracityRisk(q) = worst-band( band(y | q) for y in C(q) )
 ```
 
 Where `worst-band(RED, any, ...) = RED`. The query itself
@@ -260,7 +260,7 @@ authorisation surface shifts.
 
 - Parameters land behind the **parameter-change-ADR
   gate** pattern from oracle-scoring v0 (PR #266).
-- `docs/DECISIONS/YYYY-MM-DD-bullshit-detector-threshold-*.md`
+- `docs/DECISIONS/YYYY-MM-DD-claim-veracity-detector-threshold-*.md`
   schema for each threshold change with: old value, new
   value, empirical justification, alignment-trajectory
   impact, Aminata signoff (adversarial pass required,
@@ -398,7 +398,7 @@ as `supported` — it knows it's lineage-coupled.
   review; Aminata / Codex / harsh-critic still run.
 - **Does NOT claim completeness.** The detector catches
   SD-9-style carrier-laundered agreement. It does not
-  catch every form of bullshit; other forms (outright
+  catch every form of unsupported claim; other forms (outright
   fabrication without semantic match; novel category
   errors; coordinated deception) require other
   mechanisms.
@@ -494,7 +494,7 @@ candidate #3 of remaining 2.
 **8th-ferry status after Otto-99:**
 - ✓ #1 Quantum-sensing research doc (Otto-97)
 - ✓ #2 Semantic-canonicalization spine (Otto-98)
-- ✓ #3 Provenance-aware bullshit-detector (this PR,
+- ✓ #3 Provenance-aware claim-veracity-detector (this PR,
   Otto-99)
 - Gated #4 `docs/EVIDENCE-AND-AGREEMENT.md` future
   operational promotion (gated on #3 landing +
