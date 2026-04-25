@@ -37,8 +37,8 @@ Companion to:
 - [`docs/research/openai-codex-cli-capability-map.md`](./openai-codex-cli-capability-map.md)
   — OpenAI Codex CLI map (v0.122.0, verified).
 - `docs/research/gemini-cli-capability-map.md` — Gemini CLI
-  map (currently on PR #122, not yet merged to `main`; treat as
-  forthcoming sibling).
+  map (landed in main; sibling pre-install sketch using the
+  same template).
 
 This doc is **descriptive**, not prescriptive.
 
