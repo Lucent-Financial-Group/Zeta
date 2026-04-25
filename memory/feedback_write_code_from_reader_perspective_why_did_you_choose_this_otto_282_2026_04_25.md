@@ -109,6 +109,103 @@ This is true even for the original author six months later —
 **you are also a future reader of your own code**, and you
 will not remember the rationale unless you wrote it down.
 
+## The mental-load-optimization framing — and the gate
+
+Aaron's deeper framing 2026-04-25 (immediately after the
+in-place rule above):
+
+> *"basically if a human can't answer why they want to
+> refactor until they can, this is a mental load
+> optimization."*
+
+The why-comment rule is best understood as a **cognitive
+externalization**: the rationale moves from in-head working
+memory (volatile, scarce, paid by every visitor) into the
+file (durable, free-on-read). The author pays the cost once;
+every future reader reads the result for free. That is the
+optimization.
+
+But the framing also implies a **gate on action**:
+
+> *"if a human can't answer why they want to refactor
+> [...] until they can"*
+
+If you cannot articulate the reason for a change to
+yourself, you cannot articulate it for the reader either.
+The act of writing the why-comment is also a forcing
+function: if writing the comment surfaces *"I actually
+don't know why I'm doing this"*, the right move is to
+stop and re-evaluate, not to ship the change with a
+hand-wavy comment.
+
+This refines Otto-282 from *"comment your why"* to
+**"if you cannot answer your own why, do not make the
+change"** — and the comment is the proof that the why
+exists. No comment + no good reason = the change is
+premature.
+
+Two failure modes the gate prevents:
+
+- **Cargo-cult refactor** — "this looks cleaner" with no
+  articulable reason. Gate fails (no why); should not
+  ship.
+- **Activity-as-progress** — making changes to feel
+  productive when no actual problem exists. Gate fails
+  (no why); should not ship.
+
+## The deeper framing — "makes sense" = "I can predict"
+
+Aaron pushed the framing one step deeper 2026-04-25:
+
+> *"if a human can answer why then they can more easily
+> predict future outcomes and hold potential behavior
+> outcomes in their mind because 'it makes sense' they
+> understand why, something making sense and understanding
+> why are two closely related human concepts."*
+
+Translation: **"makes sense" and "understand why" are the
+same cognitive primitive** — both describe the state of
+having a *predictive model* of the code. When a reader
+understands why a choice was made, they can hold the
+*space of consequences* in working memory — they can
+predict how the code will behave on inputs the test suite
+never covered, predict where it will break under future
+load, predict which surrounding changes are safe and
+which aren't.
+
+Without the why, the reader has only the *what* —
+syntax + behavior on the cases they ran. They can describe
+the code but they cannot *predict* it. Surrounding code
+changes feel unsafe because every modification is a leap.
+The cognitive load of working in the file is high because
+each line carries an unsourced "trust me" that the reader
+has to either accept blind or re-derive from scratch.
+
+This is the deeper economic argument: **every line of code
+the reader genuinely understands the why of is a line whose
+neighborhood they can confidently change.** Lines without a
+clear why are blast-radius constraints — you can read them
+but you can't safely move around them. The why-comment
+isn't just a convenience; it's the substrate that lets a
+maintainer *act* in the code at all.
+
+Composes with intentional-debt and "do nothing if nothing
+is broken" feedback rules: the why-comment is the
+entry-point check that the change is intentional rather
+than reflexive. The author's pre-commit moment of *"can I
+write a sentence saying why this change exists?"* is the
+optimization — once the rationale is articulated, the
+reader inherits a model of the code, not just a description
+of it.
+
+The cognitive economics summary:
+
+| Reader has  | Reader can do                       |
+| ----------- | ----------------------------------- |
+| WHAT only   | Read; describe behavior on tested cases |
+| WHY too     | Predict; safely change surrounding code |
+| Neither     | Avoid the file; cargo-cult around it |
+
 ## What this rule SUBSUMES (consolidation)
 
 This is a general principle that several earlier rules were
