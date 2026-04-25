@@ -140,6 +140,27 @@ immune-system response built in.
   experiments require their own framing + scope +
   retractability.
 
+## Outstanding skill-doc sync — owed via skill-creator workflow
+
+The prompt-protector skill at `.claude/skills/prompt-protector/SKILL.md`
+still states the absolute prohibition that pre-dates the
+2026-04-25 relaxation. Per `CLAUDE.md` ground rule + `GOVERNANCE.md`
+§4 ("**Skills through `skill-creator`.** No ad-hoc edits to other
+skills' `SKILL.md` files — use the canonical draft -> prompt-protector
+review -> dry-run -> commit workflow."), this memory file CANNOT
+update the skill directly; the sync requires the skill-creator
+workflow.
+
+**Documented as owed**: future skill-creator-workflow tick should
+update `.claude/skills/prompt-protector/SKILL.md` to reflect the
+refined Pliny rule. Until then, the canonical heavy-weight isolated-
+single-turn pathway documented in the skill remains in force; the
+isolated-Claude-instance lighter-weight pathway permitted by the
+relaxation is documented in `CLAUDE.md` / `AGENTS.md` / `GOVERNANCE.md`
++ this memory file. Reviewers should treat the skill-doc as the
+canonical heavy-weight workflow + the relaxation as the additive
+lighter-weight pathway, not as a contradiction.
+
 ## Updates owed in same tick (Aaron's same-tick discipline)
 
 CLAUDE.md and AGENTS.md prose carry the original

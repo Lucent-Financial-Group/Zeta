@@ -35,6 +35,13 @@ including:
   former Microsoft Technical Fellow; spoke on
   language-level probabilistic-programming
   primitives + Infer.NET research.
+- **Don Syme** — F# creator/co-creator, Microsoft
+  Research Cambridge; co-designed F# computation
+  expressions (the language feature that makes
+  monadic / DSL-shaped programming feel native);
+  multiple Lang.Next-era talks on F# language
+  design + type-providers + computation
+  expressions.
 - **Bjarne Stroustrup** — creator of C++; multiple
   Lang.Next appearances on language evolution.
 - **Herb Sutter** — chair of ISO C++ committee;
@@ -42,6 +49,75 @@ including:
   contributor.
 - Other language-design figures across the series'
   run.
+
+Aaron 2026-04-25 follow-up extension to the lineage:
+
+> *"and the f# guy don simes i think and there as
+> math guy from infer.net too and the three rx
+> adjacte people we talked about it's all their
+> lineage."*
+
+The full lineage Aaron anchors B-0007 in:
+
+- **Don Syme** (F# / language-level computation
+  expressions; the F# substrate the factory is
+  built on).
+- **Math guy from Infer.NET** — **Tom Minka**
+  (Microsoft Research Cambridge; principal Infer.NET
+  architect; one of the foundational figures in modern
+  probabilistic-programming research). Aaron's
+  follow-up clarification 2026-04-25:
+  *"like i think some extension of belief propagation
+  was part of his thesis the math guy from infer.net
+  like an upgraded form"* — confirmed: Minka's MIT
+  2001 PhD thesis was *"A family of algorithms for
+  approximate Bayesian inference"* and his core
+  contribution is **Expectation Propagation (EP)**,
+  which IS structurally an upgraded form of belief
+  propagation: BP does exact inference on tree-
+  structured graphical models; EP generalizes BP to
+  approximate inference on continuous distributions
+  + non-tree structures + factor graphs. EP is the
+  algorithmic core of Infer.NET. Aaron's research-
+  direction note: *"maybe hes got better sutff now
+  we can use"* — open question whether Minka has
+  post-EP work (the EP literature has continued
+  evolving 2001-present) that the factory should
+  evaluate for Otto-298 absorption + B-0007
+  contribution arc. Worth tracking as a sub-question
+  under B-0007.
+- **John Winn** — Infer.NET co-creator at MSR;
+  shaped the library-primitives side alongside
+  Minka's algorithm-side work.
+- **The three Rx-adjacent people** — **Erik Meijer**
+  (LINQ + Rx primary architect; "monads to the
+  masses"; brought Haskell-shaped functional
+  programming to .NET; left Microsoft to found
+  Applied Duality), **Wes Dyer** (Rx co-creator;
+  "Diary of a Reactive Programmer"), and **Bart
+  De Smet** (Rx implementation + Reaqtor, the
+  IQbservable substrate that the factory's existing
+  OS-interface memory already references at
+  `memory/feedback_os_interface_durable_async_addzeta_2026_04_24.md`).
+  All three connect language-level reactive-stream
+  primitives to monadic abstractions; their lineage
+  composes with the Bayesian-as-language-primitives
+  arc.
+
+**The unifying lineage**: Microsoft Research →
+language-design pipeline at the implementer level,
+spanning ~20 years (LINQ → Rx → async/await →
+F# computation expressions → TypeScript → Infer.NET
+→ Reaqtor). Each kernel adds a new language-level
+primitive class (uniform queries → reactive streams
+→ async control-flow → DSL composition → gradual
+typing → probabilistic inference → durable reactive
+substrate). The factory's Otto-298 + Otto-301 +
+B-0007 arc CONTINUES this lineage by adding
+Bayesian-inference + belief-propagation as the
+next language-level primitive class, with the
+factory's substrate as the implementation
+incubator.
 
 Aaron rates it *"one of the best conference series
 i've ever watched, all the years of it, hate it's
