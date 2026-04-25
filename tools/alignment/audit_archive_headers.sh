@@ -14,9 +14,9 @@
 #
 # The tool is deliberately *detect-only* at v0. Running
 # `--enforce` makes it exit non-zero on any missing header,
-# but CI does not currently call that flag — Aminata's Otto-80
-# threat-model pass flagged proposed §33 as IMPORTANT-not-
-# CRITICAL pending Aaron signoff on the governance edit
+# but CI does not currently call that flag — the threat-model
+# reviewer flagged proposed §33 as IMPORTANT-not-CRITICAL
+# pending human-maintainer signoff on the governance edit
 # itself. This tool is the mechanism that will back §33 if /
 # when it lands; it also provides detect-only signal today
 # so drift is visible before enforcement.
@@ -30,12 +30,19 @@
 #
 # Exit codes:
 #   0   All archive docs have all four headers (or --enforce unset).
-#   2   One or more archive docs missing header(s) and --enforce set.
-#   64  Script error / missing dependency / bad args.
+#   1   One or more archive docs missing header(s) and --enforce set.
+#   2   Script error / missing dependency / bad args.
+#
+# Exit-code shape matches sibling `tools/alignment/audit_*.sh`
+# scripts: `1` is a content-level signal (under --enforce / --gate),
+# `2` is a script-error / dependency-missing / bad-arg signal.
 #
 # Scope:
-# - Default path: `docs/aurora/` — every `.md` file is treated
-#   as archive-of-external-conversation and checked.
+# - Default path: `docs/aurora/` — every `.md` file under that
+#   tree (recursive; `**/*.md`) is treated as archive-of-external-
+#   conversation and checked. A `references/` subfolder is
+#   excluded by convention because it is bibliographic substrate,
+#   not absorb content.
 # - `--path DIR` overrides to check a different archive root
 #   (e.g. `docs/research/` would apply only if research docs
 #   were the scope; v0 leaves this for explicit opt-in).
@@ -43,19 +50,20 @@
 # Not in scope (v0):
 # - Content-level validation of header values. A doc with
 #   `Scope: research` as prose in paragraph 3 technically
-#   passes; this is the partial-header-adversary Aminata
-#   flagged. Harden via syntactic requirement (header must
-#   appear in the first N lines + as a definition-list item
-#   or bold label) in a follow-up.
+#   passes; this is the partial-header adversary flagged in
+#   the threat-model review. Harden via syntactic requirement
+#   (header must appear in the first N lines + as a
+#   definition-list item or bold label) in a follow-up.
 # - Cross-repo checks (KSK / lucent-ksk cross-references).
 # - Memory-file archive-header checks. Memory lives under
-#   `~/.claude/projects/<slug>/memory/` (per-user, not
-#   in-repo). In-repo `memory/` is a different surface; this
-#   tool does not assume it covers archive content.
+#   the per-user harness path (not in-repo). In-repo
+#   `memory/` is a different surface; this tool does not
+#   assume it covers archive content.
 #
-# Reference: `docs/research/aminata-threat-model-5th-ferry-governance-edits-2026-04-23.md`
-# (PR #241) — Aminata's analysis of why this lint matters for
-# §33 not to decay within 3-5 rounds.
+# Threat-model context for the §33 decay-without-lint risk
+# lives in the threat-model reviewer's research note
+# (see PR #241). This script is the lint-companion that
+# closes that risk.
 
 set -euo pipefail
 
@@ -74,13 +82,13 @@ while [[ $# -gt 0 ]]; do
     --path)
       if [[ -z "${2:-}" ]]; then
         echo "audit_archive_headers: --path requires a directory" >&2
-        exit 64
+        exit 2
       fi
       target_path="$2"; shift 2 ;;
     --out)
       if [[ -z "${2:-}" ]]; then
         echo "audit_archive_headers: --out requires a directory" >&2
-        exit 64
+        exit 2
       fi
       out_dir="$2"; shift 2 ;;
     -h|--help)
@@ -88,13 +96,13 @@ while [[ $# -gt 0 ]]; do
       exit 0 ;;
     *)
       echo "audit_archive_headers: unknown arg: $1" >&2
-      exit 64 ;;
+      exit 2 ;;
   esac
 done
 
 if [[ ! -d "$target_path" ]]; then
   echo "audit_archive_headers: target path not found: $target_path" >&2
-  exit 64
+  exit 2
 fi
 
 # The four required headers. Each pattern matches the label in
@@ -107,16 +115,20 @@ declare -a HEADER_LABELS=(
   'Non-fusion disclaimer:'
 )
 
-# Collect archive files (ASCII sort for stable output).
+# Collect archive files recursively (ASCII sort for stable
+# output). Recursive scan matches the documented scope
+# (`docs/aurora/**/*.md`) so nested topic / dated subfolders
+# are not silently skipped. `references/` is excluded because
+# it is the bibliography substrate, not absorb content.
 # Use a while-read loop instead of mapfile so the tool runs on
 # bash 3.2 (macOS default) as well as bash 4+.
 archive_files=()
 while IFS= read -r f; do
   archive_files+=("$f")
-done < <(find "$target_path" -maxdepth 1 -type f -name '*.md' | sort)
+done < <(find "$target_path" -type f -name '*.md' -not -path "$target_path/references/*" | sort)
 
 if [[ ${#archive_files[@]} -eq 0 ]]; then
-  echo "audit_archive_headers: no .md files in $target_path" >&2
+  echo "audit_archive_headers: no .md files under $target_path" >&2
   exit 0
 fi
 
@@ -152,7 +164,11 @@ for file in "${archive_files[@]}"; do
 
   if [[ -n "$out_dir" ]]; then
     # Per-file JSON (same shape as audit_commit.sh / audit_personas.sh).
-    file_base=$(basename "$file" .md)
+    # Encode subdirectory path in the output filename so a recursive
+    # scan over nested folders does not collide on basename.
+    rel_path="${file#$target_path/}"
+    file_base="${rel_path%.md}"
+    file_base="${file_base//\//__}"
     out_file="$out_dir/${file_base}.json"
     {
       echo "{"
@@ -195,7 +211,7 @@ fi
 
 # Exit code discipline
 if [[ $files_missing_headers -gt 0 ]] && $enforce; then
-  exit 2
+  exit 1
 fi
 
 exit 0
