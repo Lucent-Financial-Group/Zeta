@@ -299,7 +299,7 @@ BP drift.
   - `docs/aurora/**` — courier-ferry archive
   - `docs/pr-preservation/**` — PR conversation archive
   - `docs/hygiene-history/**` — tick-history + drain-logs
-  - `WINS.md` — historical wins log
+  - `docs/WINS.md` — historical wins log
   - commit messages, PR titles + bodies — git-native
     history (record-of-truth, not factory-doc surfaces)
 
@@ -321,7 +321,20 @@ BP drift.
   `docs/*.tla`), behavioural docs (`AGENTS.md`,
   `GOVERNANCE.md`, this file, `docs/CONFLICT-RESOLUTION.md`,
   `docs/GLOSSARY.md`, `docs/WONT-DO.md`), threat models,
-  READMEs, public-facing prose. The factory reads stable
+  READMEs, public-facing prose. **Roster-mapping
+  carve-out**: governance / instructions files
+  (`AGENTS.md`, `GOVERNANCE.md`,
+  `docs/CONFLICT-RESOLUTION.md`, this file,
+  `.github/copilot-instructions.md`) MAY contain a
+  one-time persona-to-role mapping ("the harsh-critic
+  is named Kira; the maintainability-reviewer is named
+  Rune; the architect is named Kenji") because consumers
+  of those files need to resolve role-refs to
+  persona-names to do their job. The carve-out covers
+  roster-mapping ONLY — body-prose attribution
+  ("Kira said X" / "Rune added this fix") remains
+  forbidden on current-state surfaces; use the role-ref
+  ("the harsh-critic said X"). The factory reads stable
   across contributor turnover on reusable surfaces;
   attribution survives on history surfaces; names do not
   bleed between the two. Comms-hygiene sweep is logged

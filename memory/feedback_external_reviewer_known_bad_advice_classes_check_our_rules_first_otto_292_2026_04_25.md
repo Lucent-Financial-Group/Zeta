@@ -131,7 +131,7 @@ and `.github/copilot-instructions.md`):
 `docs/research/**`, `docs/ROUND-HISTORY.md`,
 `docs/DECISIONS/**`, `docs/aurora/**`,
 `docs/pr-preservation/**`, `docs/hygiene-history/**`,
-`WINS.md`, commit messages, PR titles + bodies.
+`docs/WINS.md`, commit messages, PR titles + bodies.
 
 ### B-2. Strip IP / public-info MENTION in research docs
 

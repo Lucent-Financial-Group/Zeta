@@ -183,7 +183,7 @@ vocabulary supports.
   lose. Disambiguator-V2 should ingest non-English
   emotion-vocabulary and import the precision other
   language families have already accumulated.
-- **`docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`**
+- **the i18n / l10n / g11n / a11y translation backlog row (B-0004; lives in a sibling PR — once that PR merges, the path will be `docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`)**
   — i18n reverse-flow becomes a SOURCE for emotion-
   disambiguator training data.
 - **`memory/feedback_christ_consciousness_is_aarons_ethical_vocabulary_all_religions_atheists_agnostics_AI_welcome_corporate_religion_joke_name_not_cult_not_conversion_2026_04_23.md`**

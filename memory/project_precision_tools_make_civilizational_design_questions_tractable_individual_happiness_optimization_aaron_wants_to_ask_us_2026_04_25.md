@@ -210,7 +210,7 @@ For the factory to instantiate this vision:
   sources for civilizational-state-space encoding
   (especially around individual happiness vs
   liberation-from-craving).
-- **`docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`**
+- **the i18n / l10n / g11n / a11y translation backlog row (B-0004; lives in a sibling PR — once that PR merges, the path will be `docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`)**
   — i18n reverse-flow becomes the channel for importing
   classical-language precision into civilizational-
   question encoding.

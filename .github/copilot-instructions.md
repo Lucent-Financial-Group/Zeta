@@ -293,7 +293,7 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   - `docs/aurora/**` — courier-ferry archive
   - `docs/pr-preservation/**` — PR conversation archive
   - `docs/hygiene-history/**` — tick-history + drain-logs
-  - `WINS.md` — historical wins log
+  - `docs/WINS.md` — historical wins log
   - commit messages, PR titles + bodies — git-native
     history (record-of-truth, not factory docs)
 
@@ -305,7 +305,18 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   `docs/AGENT-BEST-PRACTICES.md`,
   `docs/CONFLICT-RESOLUTION.md`, `docs/GLOSSARY.md`,
   `docs/WONT-DO.md`), threat models, READMEs,
-  public-facing prose. **Reviewer note:** when reviewing
+  public-facing prose. **Roster-mapping carve-out:**
+  governance / instructions files (this file, AGENTS.md,
+  GOVERNANCE.md, CONFLICT-RESOLUTION.md) MAY contain a
+  one-time persona-to-role mapping ("the harsh-critic
+  is named Kira; the maintainability-reviewer is named
+  Rune; the architect is named Kenji") because
+  consumers of those files need to resolve role
+  references to persona-names to do their job. The
+  carve-out covers roster-mapping ONLY — body-prose
+  attribution ("Kira said X" / "Rune added this fix")
+  remains forbidden on these files; use the role-ref
+  ("the harsh-critic said X"). **Reviewer note:** when reviewing
   a diff under a history-surface path above, do **not**
   flag first-name attribution — the file's job is to
   preserve who-said-what for the record. On any other
