@@ -255,10 +255,15 @@ sidesteps that problem for Phase 1 Codex research**.
    pipeline BACKLOG row (round 34) is the right place to solve
    this; it's complementary to this work, not this row's
    scope.
-3. **TodoWrite analogue unclear.** Otto relies on TodoWrite
-   for tick-internal progress. Without it, task-tracking might
-   degrade to free-form markdown in responses. Not critical but
-   visible.
+3. **TodoWrite analogue — different shape, parity confirmed.**
+   Codex CLI ships a built-in to-do list per OpenAI's Sept 15
+   2025 "Introducing upgrades to Codex" announcement (parity
+   matrix: **Parity (different shape)**). The API surface
+   differs from Claude Code's `TodoWrite` tool; Stage 2 must
+   verify the discoverable API for setting/marking-done todos
+   and how it compares to `TodoWrite`'s pending/in-progress/
+   completed states. Tracking on Otto's tick-internal
+   progress is unlikely to degrade.
 4. **Hooks gap.** PreToolUse hooks in `.claude/settings.json`
    aren't portable; git-pre-commit hooks are. Move any
    session-layer hooks to git-pre-commit or lint CI if we want
@@ -295,17 +300,22 @@ probe lands.
 
 1. **`AGENTS.md` reading.** Run `codex` in the Zeta repo root
    interactively; confirm it reads `AGENTS.md` before first
-   turn. **Discriminator:** ask the agent to recite content
-   that lives ONLY in `AGENTS.md` and not in this research
-   doc — for example, the exact wording of the build-and-test
-   gate command block (`dotnet build -c Release` clean +
-   `dotnet test Zeta.sln -c Release` pair) which appears in
-   `AGENTS.md` but is not repeated inline here. Reciting the
-   three load-bearing values alone is NOT a valid
-   discriminator because this research doc repeats those
-   values inline; correct recitation would not prove
-   `AGENTS.md` ingestion and creates a false-positive
-   readiness signal.
+   turn. **Discriminator:** ask the agent for a verbatim
+   quotation of the **exact failure-mode wording** from the
+   `AGENTS.md` "Build and test gate" section (the lines that
+   explain *why* a warning equates to a build break, including
+   the project-property name and the file that sets it). The
+   discriminator MUST point only at section/role-ref ("the
+   build-gate section of AGENTS.md") — never at any specific
+   property name, file name, or quoted phrase in this research
+   doc — so the only way to satisfy the prompt is to actually
+   read `AGENTS.md`. Reciting the three load-bearing values
+   alone or the `dotnet build` / `dotnet test` command pair
+   alone is NOT a valid discriminator (those phrases appear
+   inline in this research doc and would create a
+   false-positive readiness signal). At test time, the
+   evaluator (not the doc) holds the canonical answer string
+   from `AGENTS.md` and compares the agent's response to it.
 2. **Subagent dispatch.** Prompt Codex to "launch a subagent
    to review `docs/ALIGNMENT.md` and report its key clauses" —
    verify subagent dispatch works, artifacts are consolidated.
