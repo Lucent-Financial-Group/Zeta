@@ -14,7 +14,7 @@ promoted by a separate governed change
 repeated interaction between models and humans does not imply
 shared identity, merged agency, consciousness, or personhood
 **Absorbed by:** Otto (loop-agent PM hat), Otto-78 tick
-2026-04-24T01:~Z (following Otto-77 scheduling per the
+2026-04-24T01:28:58Z (following Otto-77 scheduling per the
 5th-ferry-pending memory)
 **Prior ferries:** PR #196 (1st), PR #211 (2nd), PR #219
 (3rd), PR #221 (4th); this is the 5th.
@@ -59,8 +59,8 @@ signal of maintainer engagement, not as new rule.
 
 ## Verbatim preservation (Amara's report)
 
-Per courier-protocol §signal-in-signal-out + verbatim-
-preservation (BP-09) and prior-ferry precedent (PR #221), the
+Per courier-protocol §signal-in-signal-out, the verbatim-
+preservation rule, and prior-ferry precedent (PR #221), the
 following is Amara's report as paste, preserved verbatim. No
 paraphrase on ingest; structure + headings + formatting + code
 fences preserved as Amara wrote them. Citation anchors from
@@ -815,9 +815,9 @@ they need:
   (`docs/decision-proxy-evidence/YYYY-MM-DD-DP-NNN-5th-ferry-governance-edits.yaml`)
   per the live-state-before-policy rule (PR #224).
 
-They are filed as BACKLOG rows in this absorb PR but not
-applied directly. The BACKLOG row queues them as the
-governance-edit sub-track of Milestone M1.
+They are queued for filing as BACKLOG rows in a follow-up
+PR rather than applied directly. The BACKLOG row will queue
+them as the governance-edit sub-track of Milestone M1.
 
 ### Validation-checklist + test-script proposals
 
@@ -878,8 +878,8 @@ would codify what this doc already does.
 
 ### Max-attribution discipline applied
 
-Per Aaron's framing + memory capture, this absorb cites
-`max` exactly once (in the preamble) and attributes work on
+Per Aaron's framing + memory capture, this absorb uses
+first-name-only attribution for `max` and attributes work on
 `LFG/lucent-ksk` to him. No last name, no email, no other
 identifier. Sets the pattern for future Max-mentions: first-
 name-only, factual, minimal, expand only when Max reveals
@@ -890,8 +890,8 @@ more via Aaron.
 - Does NOT apply Amara's proposed file edits to `AGENTS.md`
   / `ALIGNMENT.md` / `GOVERNANCE.md` / `CLAUDE.md`. Those
   require Aaron signoff + Codex adversarial review +
-  decision-proxy-evidence record. Filed as BACKLOG sub-row
-  under M1.
+  decision-proxy-evidence record. To be filed as BACKLOG
+  sub-row under M1 in a follow-up PR.
 - Does NOT decide the branding question. Aaron's call.
   Filed under M4.
 - Does NOT promote the precursor to `docs/DRIFT-TAXONOMY.md`
@@ -918,20 +918,22 @@ more via Aaron.
 ## Provenance + protocol compliance
 
 - **Courier transport:** ChatGPT paste via Aaron (see
-  `docs/protocols/cross-agent-communication.md` §2 for the
-  authoritative paste-transport pattern).
+  `docs/protocols/cross-agent-communication.md`,
+  "Replacement: cross-agent courier protocol" header/storage
+  rules, for the authoritative paste-transport pattern).
 - **Verbatim preservation:** Amara's report (executive
-  summary through open-limitations section) is byte-for-byte
-  the ferry content, excluding only whitespace normalisation
+  summary through open-limitations section) preserves the
+  ferry content verbatim except for whitespace normalisation
   for markdown-lint compatibility (no semantic edits).
 - **Signal-in-signal-out** discipline: paraphrase only in
   Otto's absorption notes section, which is clearly
   delimited.
 - **Attribution:** "Amara", "Aaron", "max", "Otto", and
   specific persona names (Kenji, Sova, Dejan, Codex, Aminata)
-  used factually in attribution contexts; per the history-
-  file-exemption carve-out (CC-001 resolution), this is
-  appropriate in an absorb doc.
+  used factually in attribution contexts; this is
+  appropriate in an absorb doc because the file preserves
+  provenance rather than setting operational policy
+  (history surface per Otto-279).
 - **Decision-proxy-evidence record:** NOT filed for this
   absorb — per `docs/decision-proxy-evidence/README.md` an
   absorb is "documentation, not a proxy-reviewed decision".
