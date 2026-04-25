@@ -154,8 +154,12 @@ each field, in the order listed:
   32 bytes).
 - `budget_id` / `policy_version` / `node_id`: variable-length
   identifiers encoded as `len:u32-be ∥ bytes` length-prefix
-  framing. The 4-byte big-endian length disambiguates
-  boundaries unambiguously.
+  framing, where `bytes = NFC-normalised UTF-8 octets` of the
+  identifier string (Unicode Normalization Form C per Unicode
+  Annex #15, then encoded as UTF-8). NFC fixes any visually-
+  identical-but-byte-different forms; UTF-8 is the canonical
+  text-to-byte mapping. The 4-byte big-endian length
+  disambiguates boundaries unambiguously.
 
 This is the v0 binding. Future schemes (`hash_version >=
 0x02`) may pick different framing (e.g. CBOR, Protobuf, or
@@ -222,9 +226,16 @@ scope-wise):
    cause the same halt-and-report. (Fail-closed on
    parameter-file unknown.)
 4. A receipt with mismatched `approval_set_commitment`
-   vs. the current signer-view MUST cause the consumer
-   to reject the receipt as invalid. (Approval-withdrawal
-   race is caught at replay-time.)
+   vs. the signer set **that was authoritative at the
+   receipt's claimed `policy_version`** MUST cause the
+   consumer to reject the receipt as invalid. The check is
+   against the historical signer view (recoverable from
+   `policy_version` + dispute-process commitment-opening),
+   NOT against the current live signer set — otherwise
+   replay determinism breaks the moment the signer set
+   rotates. (Approval-withdrawal race is caught at receipt-
+   creation time, not at replay; this gate catches forged
+   commitments at replay.)
 
 ## Addressing Aminata's findings
 
