@@ -37,6 +37,7 @@ new outcome class: **DEFERRED-TO-MAINTAINER**.
 
 #### Thread 2 — `docs/bootstrap/quantum-anchor.md:61` — Same memory file (Copilot)
 
+- Reviewer: copilot-pull-request-reviewer
 - Thread ID: `PRRT_kwDOSF9kNM59QE1w`
 - Severity: P1
 - Outcome: **FIX** — combined with Thread 1; same single-line
@@ -44,6 +45,7 @@ new outcome class: **DEFERRED-TO-MAINTAINER**.
 
 #### Thread 3 — `docs/bootstrap/README.md:26` — Three memory citations missing `memory/` prefix + ellipsis stand-ins (Copilot)
 
+- Reviewer: copilot-pull-request-reviewer
 - Thread ID: `PRRT_kwDOSF9kNM59QE1X`
 - Severity: P1
 - Finding: README cited
@@ -155,10 +157,8 @@ new outcome class: **DEFERRED-TO-MAINTAINER**.
 All 15 threads resolved (3 FIX at SHA `bf81687`, 7
 STALE-RESOLVED-BY-REALITY [Threads 4-9 + 10], 5
 DEFERRED-TO-MAINTAINER [Threads 11-15]). PR auto-merge
-SQUASH armed; CI cleared; merge pending. (The drain-session
-header above said "14 unresolved at drain start" — that was
-a count-off-by-one-on-DEFERRED-bucket; the body's grouped
-totals are authoritative: 3+7+5=15.)
+SQUASH armed; CI cleared; merge pending. Body grouped totals
+(3+7+5=15) match the drain-start header.
 
 Drained by: Otto, post-summary autonomous-loop continuation, cron
 heartbeat `f38fa487` (`* * * * *`).
