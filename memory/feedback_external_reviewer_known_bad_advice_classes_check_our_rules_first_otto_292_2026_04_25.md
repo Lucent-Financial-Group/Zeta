@@ -142,9 +142,13 @@ reference," "remove `MobiGlas`."
 Zeta avoids) with MENTION (which Zeta preserves —
 Wikipedia heuristic).
 
-**Override:** Otto-237 mention-vs-adoption distinction.
-Memory:
-`memory/feedback_ip_discipline_adoption_vs_mention_dont_strip_public_info_otto_237_2026_04_24.md`.
+**Override:** Otto-237 mention-vs-adoption distinction
+(surfaced in `memory/MEMORY.md` and the per-maintainer
+`memory/CURRENT-aaron.md` distillation; cross-referenced
+from `memory/feedback_definitional_precision_changes_future_without_war_otto_286_2026_04_25.md`;
+no dedicated body file at `memory/` root yet — owed
+if/when promoted from the index entry to a standalone
+memory).
 
 ### B-3. Edit prior rows in append-only history
 
