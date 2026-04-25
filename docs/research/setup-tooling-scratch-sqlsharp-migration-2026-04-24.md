@@ -235,11 +235,11 @@ into a top-level `declarative/` tree:
 
 ```
 declarative/
-├── macos/brew/packages.brew
-├── debian/apt/packages.apt
+├── macos/brew
+├── debian/apt
 ├── unix/mise/tools.toml       (mirrored to root .mise.toml)
-├── windows/winget/packages.winget  (stub, Phase 4)
-└── all/{dotnet-tools,uv-tools}/*
+├── windows/winget             (stub, Phase 4)
+└── all/{dotnet-tools,uv-tools}
 ```
 
 `tools/setup/common/*.sh` reads from new paths. `.mise.toml`
