@@ -105,7 +105,7 @@ When the OS-interface emulator implementation activates
 
 ## Removed platforms (no viable open-source BIOS alternative)
 
-Per Aaron's directive (autonomous-loop, 2026-04-24):
+Per the human maintainer directive during an autonomous-loop session (2026-04-24):
 
 > *"if there are any you need bios files you can't create
 > yourself lets remove those"* + *"just keep the ones you

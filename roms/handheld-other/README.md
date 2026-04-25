@@ -19,7 +19,7 @@ as a load path, point it at a specific child instead.
 
 ## Why a branch-folder sentinel exists
 
-Aaron asked (autonomous-loop, 2026-04-24):
+The human maintainer directed during an autonomous-loop session (2026-04-24):
 
 > *"but if per folder should not say empty when it has
 > subfolders"*
