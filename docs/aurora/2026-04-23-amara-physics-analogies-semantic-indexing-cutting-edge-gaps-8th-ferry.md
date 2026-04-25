@@ -283,8 +283,14 @@ received power scales as
 P_r = (P_t · G_t · G_r · λ² · σ) / ((4π)³ · R_t² · R_r² · L)
 ```
 
+(Reading the symbols: `λ` = wavelength, `σ` = radar cross-
+section, `π` ≈ 3.14159, `R_t` / `R_r` = transmitter / receiver
+range, `L` = system loss factor. Standard radar-equation
+notation; the equation block is verbatim from Amara's ferry.)
+
 and therefore in the monostatic case the return falls with
-`R⁻⁴`. That means any story about miraculous long-range
+`R^-4` (R to the negative fourth power). That means any
+story about miraculous long-range
 recovery has to fight a very steep physical loss law.
 citeturn12search2
 
@@ -746,13 +752,19 @@ promotion target + 5 TECH-RADAR row additions:
    first-class + alignment-observability. File as candidate
    BACKLOG row.
 
-3. **Provenance-aware-bullshit-detector research doc** (M).
-   `docs/research/provenance-aware-bullshit-detector.md` —
-   engineering-facing; inputs + pipeline + retrieval +
+3. **Provenance-aware claim-veracity-detector research doc**
+   (M). `docs/research/provenance-aware-claim-veracity-detector-2026-04-23.md`
+   — engineering-facing; inputs + pipeline + retrieval +
    provenance cone + independence penalty + contradiction
-   weighting + 5 output types (supported / lineage-coupled
-   / plausible-unresolved / likely-confabulated / known-bad-
-   pattern). File as candidate BACKLOG row.
+   weighting + 6 output types (supported / lineage-coupled /
+   plausible-unresolved / likely-confabulated / known-bad-
+   pattern + `no-signal` for retrieval-empty). File as
+   candidate BACKLOG row. (Note: original Otto-95-era
+   placeholder used "bullshit detector" as Amara's
+   colloquial framing; the canonical factory vocabulary is
+   "provenance-aware claim-veracity detector" or
+   "Veridicality Score" — both per the post-Otto-67 rename
+   discipline. Doc landed in main 2026-04-23.)
 
 4. **Future operational promotion — `docs/EVIDENCE-AND-
    AGREEMENT.md`** (deferred; post-3-research-docs). Teaches
