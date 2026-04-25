@@ -133,8 +133,8 @@ In-repo substrate I can verify right now:
 - No profile / category system for setup modes.
 - No idempotency test harness for the setup scripts.
 
-What that adds up to: **partial declarative pinning via mise
-+ manifest files**, still **bash-based post-bootstrap logic**,
+What that adds up to: **partial declarative pinning** via mise
+plus manifest files, still **bash-based post-bootstrap logic**,
 **no Windows support yet**, **no dev-container base**. The
 shape is compatible with ace-adoption but has not adopted
 ace.
