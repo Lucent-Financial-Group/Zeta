@@ -6358,6 +6358,108 @@ systems. This track claims the space.
   precursor), Otto-274 (progressive-adoption-staircase
   Level 0 candidate), Otto-275 (log-don't-implement —
   capture, do not start POC).
+- [ ] **Closure-table hardening for fast-git — pluggable
+  hierarchical index supporting full filesystem-class
+  workloads.** Maintainer 2026-04-24 directive (verbatim):
+
+  > *"our hierarchy closure table or whatever we called it
+  > is going to have to get hardened to support a full
+  > filesystem basically to support fast git i think, at
+  > least we will need this hierarciacal index for fast
+  > lookups and efficent storage we can make and interface
+  > and plug in somethign faster than the closer table if
+  > needed this was the first abstraciton i thought of.
+  > i've not looked at space or time tradeoffs. backlog
+  > research"*
+
+  **Context.** The native F# git implementation
+  (`#395` cluster) needs a hierarchical index over
+  filesystem-class data: tree objects nest blobs, blobs
+  nest in directories, directories nest in directories,
+  every commit references a root tree. Git operations
+  fan out massively over this hierarchy (`git log -- path`,
+  `git diff` on subtrees, `git ls-tree`, `git
+  cat-file`, `git fast-import`). Without an
+  efficient hierarchical index, native git
+  performance won't compete with libgit2 / cgit.
+
+  Maintainer's first-abstraction-thought: extend the
+  existing closure-table primitive to handle
+  filesystem-shape workloads. Make it
+  **plug-pointable** so a faster implementation can
+  swap in if profiling shows the closure-table is the
+  bottleneck.
+
+  **Research scope (Phase 0):**
+  - Survey closure-table state-of-the-art for
+    deep/wide hierarchies (filesystem trees can be
+    100k+ files deep / wide). Reference patterns:
+    nested-set / materialized-path / closure-table /
+    ltree (Postgres) / B-tree-prefix-index / radix-trie.
+    Compare space (storage cost per descendant
+    relationship) vs time (lookup / update / range-query).
+    Map each to git's actual workload distribution
+    (read-heavy: `ls-tree` + `cat-file` are far more
+    common than `commit-tree`).
+  - Survey alternative substrates worth interface-
+    compatibility for swap-in:
+    - **B-trees (page-oriented)** — proven at fs scale
+      (ZFS / btrfs / NTFS).
+    - **Radix tries** — Patricia / HAMT / CRDT-tree;
+      good for prefix-style path queries.
+    - **Verkle trees / Merkle Patricia tries** —
+      cryptographically-verifiable, important for
+      git's content-addressed model + future Aurora
+      integration.
+    - **Dolt / TerminusDB substrates** — these
+      systems already speak git-style commits over a
+      versioned-DB model; their internal hierarchical
+      indexes are direct evidence of feasibility.
+  - Define the interface that the closure-table
+    currently exposes vs the interface a "fast" index
+    would need (what's the minimal `IHierarchicalIndex`
+    contract that supports git's operation set?).
+  - Empirical: pick a representative repo's tree
+    (Linux kernel? Chromium? Zeta itself?) and
+    benchmark the current closure-table at scale to
+    establish the baseline.
+  - Output: `docs/research/closure-table-hardening-
+    fast-git-2026.md` with: state-of-the-art survey
+    (table of trade-offs), Zeta-specific workload
+    map, proposed `IHierarchicalIndex` interface,
+    baseline benchmark, recommended implementation
+    path (harden current closure-table OR swap to
+    alternative substrate).
+
+  **Composes with:**
+  - **Native F# git implementation** (#395 cluster) —
+    primary consumer of the index.
+  - **Mode 2 protocol-upgrade negotiation** (#395) —
+    upgraded fast protocol can leverage faster index.
+  - **Ouroboros bootstrap** (#395 meta-thesis) — the
+    git impl uses the index to store its own commits
+    in the same database; index correctness is part
+    of the closure proof.
+  - **Blockchain ingest** (#394) — chain blocks form
+    their own hierarchy (block header → transactions
+    → logs); same index abstraction may serve both
+    git AND blockchain workloads.
+
+  Priority P2 research-grade; effort M (Phase 0
+  research + benchmark) + L (implementation if
+  hardening path chosen) OR L+L (if substrate-swap
+  path chosen). Composes with `database-systems-expert`,
+  `storage-specialist`, `key-value-store-expert`,
+  `crdt-expert`, `category-theory-expert` (the
+  hierarchical index is structurally an Ouroboros
+  closure property — this row's existence is itself
+  the meta-thesis at work).
+
+  **Does NOT authorize** starting implementation
+  without Phase 0 research landing. **Does NOT
+  authorize** declaring closure-table sufficient
+  without empirical benchmarks at filesystem scale
+  (100k+ files).
 
 - [ ] **Land per-maintainer CURRENT-memory ADR + companion
   feedback memory.** PR #153 landed the CLAUDE.md fast-path
