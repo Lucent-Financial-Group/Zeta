@@ -84,10 +84,13 @@ Determinize, Week 4 Govern, Week 5-6 Assure).
 | Provenance evidence bundles | Assure | PROV / in-toto / SLSA attestations on proxy-mediated decisions | L | P3 |
 | Export/backup verification | Assure | Restore-from-scratch test on the in-repo memory substrate | M | P2 |
 
-**Priority rationale:** Stabilize items are S-effort and
-unblock the rest — pin snapshots + proxy-consult evidence +
-branch-chat non-canonical = three quick wins that shift
-every subsequent work unit's operational floor upward.
+**Priority rationale:** Two of the three Stabilize items are
+S-effort (snapshot pinning + branch-chat non-canonical
+framing); the third (decision-proxy evidence artifact) is
+M-effort but is the gating piece — without an evidence
+artifact, the "live-state-before-policy" Determinize-tier
+gate can't be enforced. Together these three Stabilize items
+shift every subsequent work unit's operational floor upward.
 
 ---
 
@@ -148,8 +151,15 @@ review:
 
 ### 2. Memory reconciliation algorithm
 
+> **Note:** the path comment below names a *proposed*
+> in-repo target (`tools/memory/reconcile.py`); no such file
+> exists in the repo today. The artifact is preserved here
+> verbatim as Amara wrote it; landing it as actual code is
+> downstream factory work tracked under the BACKLOG row that
+> consumes this ferry.
+
 ```python
-# tools/memory/reconcile.py
+# tools/memory/reconcile.py  (PROPOSED — does not yet exist)
 from dataclasses import dataclass
 from typing import Iterable
 
@@ -212,9 +222,17 @@ def main():
 
 ### 3. CI guardrail set
 
+> **Note:** the script name below is a *proposed* in-repo
+> target (`tools/hygiene/check-memory-loop.sh`); no such file
+> exists in the repo today (current scripts are
+> `audit-*.sh`). The shape is preserved here verbatim as
+> Amara wrote it; landing it as actual code is downstream
+> factory work tracked under the BACKLOG row that consumes
+> this ferry.
+
 ```bash
 #!/usr/bin/env bash
-# tools/hygiene/check-memory-loop.sh
+# tools/hygiene/check-memory-loop.sh  (PROPOSED — does not yet exist)
 set -euo pipefail
 
 echo "Checking for duplicate memory index titles..."
