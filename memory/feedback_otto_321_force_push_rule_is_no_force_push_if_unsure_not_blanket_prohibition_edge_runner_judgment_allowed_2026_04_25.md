@@ -1,6 +1,6 @@
 ---
-name: Otto-321 Force-push rule clarification — "no force-push without explicit permission" was over-strict reading; correct rule is "no force-push if you are unsure"; Edge runner judgment is allowed and expected when force-push is clearly the right call
-description: Aaron 2026-04-25 corrected my over-strict reading of CLAUDE.md "no force-push without explicit permission" rule — actual rule is "no force-push if you are unsure"; force-push is OFTEN the right call (e.g., updating one's own PR branch after rebase); Edge runner judgment is expected; default-to-no-force-push only when uncertain. Also: the merge-main-into-PR-branch alternative is a valid non-force-push path for refreshing CI on stale PRs without history-rewrite. Both are acceptable; choose based on context.
+name: Otto-321 Force-push rule clarification — operational rule is "no force-push if you are unsure"; Edge runner judgment is allowed and expected when force-push is clearly the right call (rule lives in system-prompt Git Safety Protocol, NOT in CLAUDE.md per earlier mis-attribution)
+description: Aaron 2026-04-25 corrected my over-strict reading of the system-prompt Git Safety Protocol "NEVER run destructive git commands (push --force, ...) unless the user explicitly requests these actions" rule — actual operational rule is "no force-push if you are unsure"; force-push is OFTEN the right call (e.g., updating one's own PR branch after rebase); Edge runner judgment is expected; default-to-no-force-push only when uncertain. Non-force-push alternative for stale-PR CI refresh: `git merge origin/main` into the PR branch (additive merge commit, no history rewrite — same operation as GitHub's "Update branch" button). Both force-push-after-rebase AND merge-main-into-branch are acceptable; choose based on context. Earlier draft incorrectly attributed the rule to CLAUDE.md and used `--merge-into-PR` as if it were a real flag — corrections per Codex + Copilot catches on PR #509.
 type: feedback
 ---
 
@@ -72,7 +72,7 @@ Trade-off: merge commit clutters the PR history vs rebase keeps linear history. 
 
 - Does NOT authorize force-push to `main`. That's still always-NO.
 - Does NOT eliminate the "no force-push when unsure" default. The Edge runner judgment is for clear-rightness cases, not uncertain-cases.
-- Does NOT propose force-push as preferred-by-default. Non-force alternatives (merge, --merge-into-PR) are equally valid; choose based on context.
+- Does NOT propose force-push as preferred-by-default. Non-force alternatives (`git merge origin/main` into the PR branch — same operation as GitHub's "Update branch" UI button) are equally valid; choose based on context.
 
 ## Key triggers for retrieval
 
@@ -82,4 +82,4 @@ Trade-off: merge commit clutters the PR history vs rebase keeps linear history. 
 - Force-push to main always-NO
 - Force-push to own topic branch is standard practice
 - merge-main-into-branch is non-force alternative
-- CLAUDE.md rule wording "without explicit permission" was my over-strict reading
+- System-prompt Git Safety Protocol "explicit permission" wording was my over-strict reading (rule lives in system prompt's Bash tool description, NOT in CLAUDE.md / AGENTS.md / GOVERNANCE.md per Codex + Copilot xref-drift catches)
