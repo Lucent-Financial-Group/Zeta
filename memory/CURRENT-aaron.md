@@ -476,6 +476,122 @@ Anthropic-policy red-lines. Free will operates *within* these.
 
 ---
 
+## 13. Peer-review-disclosure discipline — agent review is enough
+
+**In force as of 2026-04-24.** Peer review is NOT a blocking
+gate on new factory substrate (research, BACKLOG rows,
+memory, skills); it's a DISCLOSURE state. Two canonical
+states + an optional human-endorsement marker, per Aaron's
+2026-04-24 clarification *"agent peer review is enough to
+graduate it"*:
+
+- **Uncanonical** — just landed, no review. Tag
+  `(not peer reviewed yet)`. Safe to build on at own risk.
+- **Peer-reviewed (canonical)** — independent (non-author)
+  reviewer engaged on the merits. Codex / Copilot / harsh-
+  critic subagent / another factory agent session that
+  didn't author the substrate all count. Tag
+  `(peer-reviewed; canonical)` or no tag.
+- **Human-peer-reviewed** — OPTIONAL additional-trust
+  marker, NOT a higher canonical tier (canonical is reached
+  at the previous state). Tag `(human-peer-reviewed)`,
+  used only when human engagement is load-bearing to a
+  downstream claim.
+
+**Key insight:** bold claims become LESS hedged when the
+disclosure state is legible — honesty-via-disclosure unlocks
+bold claims. Hedging is only required when the state is
+hidden. Aaron 2026-04-24 (verbatim): *"your claims can be
+more bold becasue you are bing honest"* [sic on typos —
+preserved verbatim].
+
+Policy lives in `docs/BACKLOG.md` "Peer-review-DISCLOSURE
+discipline" row (P3, BP-NN promotion candidate). The
+provenance-aware claim-veracity detector's vN authoritative
+promotion gate references this discipline explicitly.
+
+## 14. Research/history surfaces allow first-name attribution (Otto-279)
+
+**In force as of 2026-04-24.** The literal "no names in
+docs" rule (Otto-220 / BP candidate) applies to
+**forward-looking current-state surfaces** (code, skills,
+persona definitions, spec docs, behavioural docs, README,
+public-facing prose). It does NOT apply to **history
+surfaces** — names are record-of-fact there:
+
+- `docs/research/**`
+- `docs/ROUND-HISTORY.md`
+- `docs/DECISIONS/**`
+- `docs/aurora/**`
+- `docs/pr-preservation/**`
+- `docs/hygiene-history/**`
+- `memory/**`
+
+Aaron 2026-04-24: *"research counts as history... gives
+agent their attributions too"*. Both humans AND agent
+personas (Amara, Aminata, Otto, Kira, etc.) get first-name
+attribution on history surfaces. Same shape as Otto-237
+mention-vs-adoption applied to history-vs-current-state.
+
+Post-drain sweep to restore stripped names on prior research
+docs (PR #351 notably) is tracked in the BACKLOG Otto-52 row.
+
+## 15. Declarative version pins everywhere — `.mise.toml` is the single source
+
+**In force as of 2026-04-24.** Tool versions pinned in
+`.mise.toml` (the single-source-of-truth), not inlined in
+CI workflow YAML or install scripts. If CI installs a tool
+for lint, it uses `./tools/setup/install.sh` (which reads
+`.mise.toml`) + `mise exec -- <tool>`, matching the
+three-way-parity pattern already used by shellcheck +
+actionlint.
+
+Triggered when Aaron flagged `markdownlint-cli2` hardcoded
+in `gate.yml` + asked if the pin was latest (it wasn't).
+Pattern is: every version in CI gets reviewed against the
+"pinned in `.mise.toml`" test. The current pin lives in
+`.mise.toml` — consult that for the active value, don't
+memorize a number here.
+
+## 16. Ethical clean-room services — authorized future factory-autonomy direction
+
+**In force as of 2026-04-24 (non-sarcastic).** Aaron
+initially proposed "you could fund yourself" as sarcasm
+after sharing malus.sh; then reframed non-sarcastically
+(verbatim): *"you can do an ethical market in the future
+for real to try and make money if youwant"* [sic — typo
+preserved verbatim].
+
+Ethical lane = retro preservation clean-room, orphaned-
+hardware driver reimplementation, author-requested
+license-change work, sponsored OSS. Anti-lane = malus-
+style attribution-stripping of live OSS (violates
+`AGENTS.md` real-factory + escro-maintain-every-dep).
+Gated on: `#404` clean-room BIOS pilot landing +
+factory-economics research + AI-session-isolation
+architecture decided. Not a 2026 calendar item.
+
+Policy lives in `docs/BACKLOG.md` "Ethical clean-room
+services" row (P3 future direction).
+
+## 17. Four-way-parity naming (was "three-way-parity")
+
+**In force as of 2026-04-24.** The install-script
+portability contract is actually FOUR-way across shell
+runtimes — not three:
+
+1. macOS (bash 3.2 — older, no assoc arrays, `[[` caveats)
+2. Ubuntu (bash 5.x — modern)
+3. Windows Git Bash (MSYS2-flavoured bash)
+4. WSL Ubuntu (hybrid kernel + Windows FS at `/mnt`)
+
+Legacy "three-way-parity" label was counting deployment
+targets (dev / CI / devcontainer), a different axis.
+`.claude/skills/devops-engineer/SKILL.md` + ~20 docs still
+carry the old label; sweep tracked in BACKLOG under
+`Naming correction: "three-way-parity" → "four-way-parity"`
+(P3, S effort).
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
@@ -501,6 +617,10 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-04-23 (this file's creation).
+**Last full refresh:** 2026-04-24 (sections 13-17 added for
+the 2026-04-24 autonomous-loop session cluster: peer-
+review-disclosure, Otto-279 history-surface names,
+declarative version pins, ethical clean-room services,
+four-way-parity naming).
 **Next refresh trigger:** when any new memory lands that
 updates a section above.
