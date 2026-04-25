@@ -3,8 +3,8 @@
 **Scope:** research and cross-review artifact. Defines the
 **technical spine** for what the 8th-ferry-corrected
 "rainbow table" framing actually is: canonicalization +
-semantic hashing + approximate nearest-neighbour retrieval
-+ provenance-aware scoring, all wrapped in Zeta's
+semantic hashing + approximate nearest-neighbour retrieval +
+provenance-aware scoring, all wrapped in Zeta's
 retraction-native algebra. Does NOT define the full
 provenance-aware bullshit detector (that's 8th-ferry
 candidate #3); defines the substrate it builds on.
@@ -494,6 +494,7 @@ candidate #2 of 3 remaining (after Otto-96 TECH-RADAR
 batch + Otto-97 quantum-sensing research doc).
 
 Remaining 8th-ferry candidates:
+
 - #3 Provenance-aware bullshit-detector research doc
   (M; composes on top of this spine)
 - #4 `docs/EVIDENCE-AND-AGREEMENT.md` future operational
