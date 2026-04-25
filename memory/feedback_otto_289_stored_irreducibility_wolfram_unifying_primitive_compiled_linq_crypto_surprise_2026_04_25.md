@@ -86,6 +86,102 @@ the computation has been done, the result is cached, and
 the cache's value depends on the receiver/attacker not
 being able to redo the computation cheaply.
 
+## Rodney's Razor as the operational test for irreducibility
+
+Aaron 2026-04-25 (clarifying turtle-down):
+
+> *"rodney's razor is my attempt to precisely define
+> irreducibility even taken into account godel's
+> incompleteness by pigeonholing it like we've already
+> done in other places."*
+
+> *"if rodney's razor splits it it was not irreducible."*
+
+Rodney's Razor (defined in
+`memory/project_rodneys_razor.md`) is Aaron's externalised
+Occam's razor with three preservation constraints (essential
+complexity, logical depth, effective complexity). The
+quantum version enumerates branches of pending decisions
+and prunes dominated ones.
+
+Aaron's claim: Rodney's Razor IS the operational definition
+of irreducibility under bounded scope.
+
+**The constructive test:**
+
+```
+try to apply Rodney's Razor:
+  if it splits cleanly without violating
+  (essential / depth / effective) preservation
+  → the thing was reducible (had separable structure;
+     the apparent complexity was accidental, not essential)
+  if it cannot split without violating preservation
+  → the thing is irreducible WITHIN the scope of those
+     three constraints
+```
+
+This sidesteps Wolfram's qualitative "no shortcut exists"
+(hard to test directly, ties to undecidability per Gödel)
+by making decidability **bounded-scope**: within the
+bounded scope of "what Rodney's Razor preserves", split-or-
+not is decidable. We accept bounded-scope decidability
+rather than chasing unbounded undecidability.
+
+The "pigeonholing" technique:
+
+- Gödel says: any sufficiently powerful formal system has
+  true statements it cannot prove.
+- Wolfram says: many computations have no shortcut.
+- Both produce undecidability in the unbounded case.
+- Rodney's Razor accepts a *bounded* scope (the three
+  preservation constraints) and asks: within this scope,
+  can the thing be split? That's a decidable question.
+- If it splits within the bounded scope, the thing is
+  reducible WITHIN that scope. (It might still be
+  irreducible under a different scope, but that's a
+  separate question.)
+- If it can't split within the bounded scope, the thing
+  is irreducible WITHIN that scope.
+- The unbounded undecidability is sidestepped because
+  we're not asking the unbounded question.
+
+This is the same trick used elsewhere in the factory
+("pigeonholing it like we've already done in other
+places") — accept bounded-scope decidability rather than
+chasing unbounded universals.
+
+**Connection back to Otto-289 hypothesis:**
+
+If Rodney's Razor is the operational test for
+irreducibility, then to verify the unification claim
+(compiled LINQ + crypto + surprise + Otto-287 friction
+all share the same primitive), apply Rodney's Razor to
+each domain:
+
+- Can compiled LINQ be split into "the work that's stored"
+  and "the work that's separable"? If yes, the stored part
+  is the irreducible primitive in this scope.
+- Can a crypto key be split into "the irreducible search
+  work" and "the trivial cache read"? If yes, same
+  primitive.
+- Can rigor-without-disclosure surprise be split into
+  "the irreducible search the presenter did" and "the
+  presented answer"? If yes, same primitive.
+- Can Otto-287 friction be split into "irreducible
+  resource cost" and "demand fluctuation"? If yes, same
+  primitive.
+
+If Rodney's Razor splits each into the same shape — a
+preserved "irreducibility core" plus separable accidents
+— the unification is supported. If the cores have
+different shapes after Razor application, the unification
+fails or needs refinement.
+
+This is the **research-direction operationalisation** for
+Otto-289 verification: apply Rodney's Razor to each domain
+and check whether the irreducibility cores share a
+formal description.
+
 ## Information-theoretic Shannon + Bayesian as special cases
 
 If Otto-289 is right, the framings I used in Otto-288 are
