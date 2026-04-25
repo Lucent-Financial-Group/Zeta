@@ -107,10 +107,12 @@ memory permanence, and lesson integration.
 
 - A live-lock-smell audit (ratio of product motion vs
   process motion; see `tools/audit/live-lock-audit.sh`) is
-  currently run on demand by operators. Promoting it to a
-  cadenced row in `docs/FACTORY-HYGIENE.md` and wiring
-  per-commit CI / hook integration are separate BACKLOG
-  items.
+  currently run on demand by operators. Round-close cadence
+  wiring, threshold tuning, and PR-in-flight class are
+  follow-ups tracked in the existing live-lock BACKLOG row
+  (`docs/BACKLOG.md` lines 1313-1328); promotion to a
+  cadenced `docs/FACTORY-HYGIENE.md` row composes with that
+  same row.
 - Every lesson learned from a failure mode is filed into
   `docs/hygiene-history/*.md` for future consultation.
 - Alignment is an observable — Zeta's primary research
