@@ -11087,9 +11087,7 @@ systems. This track claims the space.
   `docs/aurora/**`, `docs/pr-preservation/**`,
   `docs/hygiene-history/**`, `memory/**` — and confirm
   agent-persona names are AS allowed as human names there.
-  Memory: `memory/feedback_research_counts_as_history_
-  first_name_attribution_for_humans_and_agents_otto_279_
-  2026_04_24.md`.
+  Memory: [`memory/feedback_research_counts_as_history_first_name_attribution_for_humans_and_agents_otto_279_2026_04_24.md`](../memory/feedback_research_counts_as_history_first_name_attribution_for_humans_and_agents_otto_279_2026_04_24.md).
 
 ## P1 — Git-native hygiene cadences (Otto-54 directive cluster)
 
