@@ -103,15 +103,41 @@ jobs:
             # not error out. So we explicitly require id+status+title
             # extraction to succeed for every row file, with non-empty
             # values, before declaring "parseable".
+            #
+            # Frontmatter-scoped extraction (chatgpt-codex P2 follow-up
+            # review): the awk match is restricted to lines BETWEEN the
+            # opening and closing `---` markers, mirroring
+            # tools/backlog/generate-index.sh's extract_field state
+            # machine. Without this scope, a row with malformed
+            # frontmatter could falsely pass if the body happened to
+            # contain `id:` / `status:` / `title:` text (e.g., in a
+            # code block or example). The frontmatter-scoped match
+            # closes that hole.
+            extract_frontmatter_field() {
+              local file="$1" field="$2"
+              awk -v field="$field" '
+                BEGIN { state = 0 }
+                /^---$/ {
+                  if (state == 0) { state = 1; next }
+                  if (state == 1) { exit }
+                }
+                state == 1 && $0 ~ "^"field":[[:space:]]+" {
+                  sub("^"field":[[:space:]]+", "")
+                  print
+                  exit
+                }
+              ' "$file"
+            }
+
             row_count=0
             bad_count=0
             while IFS= read -r -d '' row; do
               row_count=$((row_count + 1))
-              id=$(awk '/^id:[[:space:]]+/{sub(/^id:[[:space:]]+/,""); print; exit}' "$row")
-              status=$(awk '/^status:[[:space:]]+/{sub(/^status:[[:space:]]+/,""); print; exit}' "$row")
-              title=$(awk '/^title:[[:space:]]+/{sub(/^title:[[:space:]]+/,""); print; exit}' "$row")
+              id=$(extract_frontmatter_field "$row" "id")
+              status=$(extract_frontmatter_field "$row" "status")
+              title=$(extract_frontmatter_field "$row" "title")
               if [ -z "$id" ] || [ -z "$status" ] || [ -z "$title" ]; then
-                echo "  bad: $row (missing id/status/title)" >&2
+                echo "  bad: $row (missing id/status/title in frontmatter)" >&2
                 bad_count=$((bad_count + 1))
               fi
             done < <(find docs/backlog -type f -name 'B-*.md' -print0)
