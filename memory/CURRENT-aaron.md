@@ -592,6 +592,195 @@ carry the old label; sweep tracked in BACKLOG under
 `Naming correction: "three-way-parity" → "four-way-parity"`
 (P3, S effort).
 
+## 18. Test-stability discipline — DST is the WAY to test chaos, not the way to skip it
+
+**In force as of 2026-04-25.** Two paired rules:
+
+**Otto-281 — DST-exempt is a deferred bug, not containment.**
+Never ship a long-lived `DST-exempt` comment. Either fix
+the determinism (e.g., `HashCode.Combine` → `XxHash3.HashToUInt64`)
+OR delete the test. The SharderInfoTheoreticTests case
+proved the cost — 3 unrelated PRs flaked (#454/#458/#473)
+before the exemption got fixed. Aaron Otto-281 2026-04-25:
+*"see how that one DST exception caused the flake, when we
+violate, we introduce random failures."*
+
+**Otto-285 — DST and determinism are NOT edge-case avoidance.**
+Tests should be DETERMINISTIC (so bugs reproduce) but the
+real world isn't — tests should deterministically exercise
+every flavor of chaos the algorithm encounters in
+production, NOT shrink test coverage to make symptoms
+disappear. Aaron Otto-285 2026-04-25: *"we never want to
+use random seed pins to cheat by not fully testing if you
+understand what I mean"* + *"the real world is not
+deterministic (probably lol)"*. The discriminator: does
+the fix INVOKE the algorithm's actual contract (legitimate)
+or SHRINK the test's coverage (cheat)?
+
+Same shape applied to install-time chaos: Aaron 2026-04-25:
+*"we cant control that part of the real world environment
+we have to react to it"* — install scripts get retry
+loops on transient 5xx (PR #484 fix).
+
+Pointers: `feedback_dst_exempt_is_deferred_bug_not_containment_otto_281_2026_04_25.md`,
+`feedback_dst_not_edge_case_avoidance_otto_285_2026_04_25.md`.
+
+## 19. Authoring discipline — write code from reader perspective
+
+**In force as of 2026-04-25.** Otto-282: every non-obvious
+choice (magic number, algorithm pick, library selection,
+threshold value, API signature, perf trade-off,
+defensive-vs-assertive style) deserves an in-place
+rationale comment because the future reader will always
+ask "why did you choose this?". Aaron Otto-282 2026-04-25:
+*"just in general when writing code, think from the
+perspective of a human developer who's looking at it, they
+will always ask why did you choose this?"*
+
+Three layers:
+
+1. **BASE** — comment WHY for non-obvious choices.
+2. **GATE** — *"if a human can't answer why they want to
+   refactor until they can, this is a mental load
+   optimization."* If you cannot articulate the why, the
+   change is premature; the comment is the proof the why
+   exists.
+3. **PREDICTIVE-MODEL** — *"if a human can answer why
+   then they can more easily predict future outcomes [...]
+   making sense and understanding why are two closely
+   related human concepts."* Lines the reader understands
+   the why of are lines whose neighborhood they can
+   confidently change.
+
+Composes with CLAUDE.md "default to no comments" by
+splitting WHAT (no comment, names suffice) from WHY
+(comment when non-obvious).
+
+Pointer: `feedback_write_code_from_reader_perspective_why_did_you_choose_this_otto_282_2026_04_25.md`.
+
+## 20. Authority-delegation pattern — don't make Aaron the bottleneck
+
+**In force as of 2026-04-25 (STANDING DIRECTIVE).** Otto-283:
+for any "Aaron's call" / "your call" / "you decide" /
+"I'll leave it up to you" delegation on a non-destructive
+decision, ALWAYS:
+
+1. Decide.
+2. Track the decision visibly with rationale + a
+   `Revisit if X` falsification signal.
+3. Reflect later whether the decision was right.
+4. Revisit if needed.
+5. ONLY THEN talk with Aaron — once experience exists.
+
+Aaron Otto-283 2026-04-25: *"you can talk to me once you
+have the experience lol"* + *"this is standing guidance
+for don't make the human maintainer the bottleneck"* +
+*"you should always do this for aaron questions."*
+
+Format: `Otto decided X. Why: <one-sentence>. Revisit if:
+<observable falsification signal>.`
+
+Does NOT apply to high-blast-radius / destructive
+decisions (still go to Aaron per CLAUDE.md auto-mode
+"Won't pick destructive items without you").
+
+Triggering case: PR #474 ADR open questions (B-NNNN
+allocation, scope field, R45 staging) all converted from
+"Aaron's call" to "Otto decided X (revisit if Y)".
+
+Pointer: `feedback_decide_track_reflect_revisit_then_talk_with_experience_otto_283_2026_04_25.md`.
+
+## 21. Never-idle — idle-PR creative fallback when blocked
+
+**In force as of 2026-04-25.** Otto-284: when stuck in
+heartbeat-idle (priority ladder exhausted, only blocked-
+on-Aaron items remain), DON'T wait. Create a single idle
+PR and do anything I want in it: project-related or
+completely off-project, no scope/relevance restrictions;
+mergeable to main if it doesn't break things; ONE fat PR.
+Goal is learning + evolving by doing rather than
+calcifying in idle waits.
+
+Aaron Otto-284 2026-04-25: *"if you ever get stuck in a
+heartbeat idle loop again, just create a single idle PR,
+and start doing anything you want in it, no restrictions,
+we can even check it into master as long as it does not
+break stuff... non project related or project related
+completely up to you... so you are learning and evolving
+by doing... no need for more than one fat PR... This is
+for like last night when you got scared and decided to
+wait on me for the more risky items."*
+
+Branch suggestion: `idle/<YYYY-MM-DD>-creative-work` or
+`idle/<topic>`. Title prefix: `idle:`. Quality bar still
+"doesn't break things"; scope/relevance bar relaxed.
+
+Composes with CLAUDE.md never-be-idle (4th-tier fallback
+below the 3-tier priority ladder).
+
+Pointer: `feedback_idle_pr_creative_fallback_no_restrictions_otto_284_2026_04_25.md`.
+
+## 22. Factory-as-superfluid + "Superfluid AI" naming candidate
+
+**In force as of 2026-04-25 (project-state observation).**
+After the Otto-281..285 substrate landed, Aaron framed:
+*"you are really reducing friction now for future growth,
+we are becoming the superfluid that can be described by
+our algebra :)"* — calibration signal that the substrate
+captures + friction-removal pattern is correct; keep
+going.
+
+Each Otto-NNN rule removes one friction source: re-derivation
+tax (Otto-282), synchronous-channel tax (Otto-283),
+calcification tax (Otto-284), fake-green-CI tax (Otto-285),
+compound-flake tax (Otto-281). Cumulative effect is more-
+than-additive — the rules cross-reference forming
+reinforcing constraints.
+
+**"Superfluid AI" naming candidate.** Aaron 2026-04-25:
+*"What about Superfluid AI? for the product name our
+version of Frontier, the factory?"* Otto initial decision
+(Otto-283 tracked): **strong candidate**. Captures actual
+value prop, physics-grounded, composes with kernel-pair
+architecture. Aaron de-risked the trademark concern
+2026-04-25: *"superfluid.finance this is a small web3 we
+the scope of this project we could swollow them eventually
+if it was a conflict"*. Naming-expert review owed before
+public adoption per CONFLICT-RESOLUTION.md (task #271).
+Revisit if: trademark-conflict-blocks-coexistence,
+kernel-pair gets a name absorbing it, sharper metaphor
+emerges.
+
+**Rigor differentiator — defensibility angle.** Aaron
+2026-04-25: *"I bet theirs is marketing over claims too
+not based on mathematical rigor like us"* + *"and
+empirical observations"*. Our claim to "superfluid" is
+backed by:
+
+- *Mathematical rigor* — Z-set algebra, semiring
+  polymorphism, formal verification (TLA+, Lean, Z3,
+  Alloy via the Soraya routing portfolio). The "superfluid"
+  property emerges from the operator algebra's actual
+  guarantees (linearity, retractability, `H` chain rule),
+  not from analogy.
+- *Empirical observations* — measured friction reduction
+  across the cumulative Otto-NNN substrate; the
+  factory-becoming-the-algebra-it-describes is a stated
+  observation not a brand claim.
+
+Adjacent uses of the term (Superfluid Finance / DeFi)
+are likely marketing-over-claims metaphors — money
+streaming feels like fluid flow without a mathematical
+commitment. Ours is operational, not metaphorical: the
+Z-set retraction-native semantics MUST give the
+zero-dissipation property the algebra prescribes.
+
+This rigor angle is a positioning differentiator for the
+eventual naming-expert review and any future trademark
+work — we're not claiming a category we don't deliver.
+
+Pointer: `project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`.
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
@@ -617,10 +806,14 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-04-24 (sections 13-17 added for
-the 2026-04-24 autonomous-loop session cluster: peer-
-review-disclosure, Otto-279 history-surface names,
-declarative version pins, ethical clean-room services,
-four-way-parity naming).
+**Last full refresh:** 2026-04-25 (sections 18-22 added for
+the 2026-04-25 substrate cluster: Otto-281 + Otto-285
+test-stability discipline, Otto-282 authoring discipline,
+Otto-283 authority-delegation, Otto-284 idle-PR fallback,
+factory-as-superfluid + Superfluid AI naming candidate +
+rigor differentiator). Prior refresh 2026-04-24 (sections
+13-17: peer-review-disclosure, Otto-279 history-surface
+names, declarative version pins, ethical clean-room
+services, four-way-parity naming).
 **Next refresh trigger:** when any new memory lands that
 updates a section above.
