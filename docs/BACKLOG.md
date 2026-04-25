@@ -10199,31 +10199,39 @@ systems. This track claims the space.
   1. **Uncanonical** — just landed, no review yet.
      Safe to build on at your own risk; claims hedged.
      Disclosure tag: `(not peer reviewed yet)`.
-  2. **Agent-peer-reviewed (not human-reviewed)** —
-     Codex / Copilot / harsh-critic / another factory
-     agent session has engaged with the substrate on
-     its merits as an independent (non-author)
-     reviewer. Disclosure tag: `(agent-peer-reviewed;
-     not human-reviewed)` — distinct from stage 1 so
-     downstream readers can tell which review has
-     happened. **Claims can be bolder** at this stage
-     *precisely because* the disclosure makes the
-     honesty legible — hedging is only required when
-     the disclosure state is hidden.
-  3. **Human-peer-reviewed (fully canonical)** —
-     Aaron or another human maintainer has engaged
-     with the substrate. Fully authoritative.
+  2. **Peer-reviewed (canonical)** — an independent
+     (non-author) reviewer has engaged with the
+     substrate on its merits. Agent peer review
+     (Codex, Copilot, harsh-critic subagent, another
+     factory agent session that didn't author this
+     substrate) is ENOUGH to graduate to canonical.
+     Human peer review is additional-trust, not an
+     additional required gate — substrate does not
+     have to wait on a human to be canonical. Aaron
+     autonomous-loop 2026-04-25 clarification:
+     *"agent peer review is enough to graduate it"*.
      Disclosure tag: `(peer-reviewed; canonical)` or
-     no tag (canonical is the default-when-reviewed
-     baseline).
+     no tag (canonical-when-reviewed is the default).
+  3. **Human-peer-reviewed (canonical + human-endorsed)**
+     — Aaron or another human maintainer has
+     additionally engaged with the substrate. Doesn't
+     elevate the canonical status (stage 2 is already
+     canonical); it's a separate additional-trust
+     marker for substrate that has crossed the
+     human-eye threshold. Disclosure tag:
+     `(human-peer-reviewed)`, optional — omit unless
+     human engagement is load-bearing to a downstream
+     claim.
 
   The risk profile matters: agents rewrite code fast,
-  so the cost of building on tentative-canonical
-  substrate and then retracting is small. Blocking
-  everything on full human review would serialize the
-  factory through a human bottleneck; disclosed
-  tentative-canonical unblocks parallel work while
-  keeping the audit trail honest.
+  so the cost of building on peer-reviewed-but-not-
+  human-endorsed substrate and then retracting is
+  small. Requiring human review to graduate would
+  serialize the factory through a human bottleneck
+  — unsustainable and unnecessary since agent peer
+  review catches most of what review catches.
+  Agent-peer-review-is-enough keeps the factory
+  parallel without lowering the review bar.
 
   The mechanic becomes "disclose the review state,
   don't hide it" rather than "block until reviewed".
