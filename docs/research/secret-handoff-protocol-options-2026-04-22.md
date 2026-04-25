@@ -66,7 +66,7 @@ three axes:
 3. **Wrong granularity.** git-crypt encrypts at file-path
    granularity. The use case is secret-per-service-per-
    rotation, not secret-per-repo-path. Modelling the
-   former in the former is possible but awkward.
+   former in the latter is possible but awkward.
 
 Mozilla SOPS (with age or GPG recipients) has the same
 history-is-forever problem but nicer multi-recipient
@@ -111,8 +111,13 @@ rotated keys it's acceptable, for stable keys it's annoying
 On macOS:
 
 ```bash
-# Once (store):
-security add-generic-password -s zeta-xai -a "$USER" -w
+# Once (store): read the secret without echo, then pipe to
+# `security` via -w on stdin. The bare `-w` (no value) makes
+# security read the password from stdin so it never appears
+# on the command line / process list / shell history.
+read -rs -p "xAI key: " key
+printf '%s' "$key" | security add-generic-password -s zeta-xai -a "$USER" -w
+unset key
 
 # Each session (launcher):
 export XAI_API_KEY=$(security find-generic-password -s zeta-xai -a "$USER" -w)
@@ -120,8 +125,16 @@ claude
 
 # Rotate:
 security delete-generic-password -s zeta-xai -a "$USER"
-security add-generic-password -s zeta-xai -a "$USER" -w
+read -rs -p "new xAI key: " key
+printf '%s' "$key" | security add-generic-password -s zeta-xai -a "$USER" -w
+unset key
 ```
+
+Note: invoking `security add-generic-password ... -w` *without*
+the password on stdin will prompt interactively on recent
+macOS, but on older releases / non-interactive shells it
+fails. Piping via `printf '%s'` is the portable form, and
+keeps the key out of `argv[]`, `ps`, and shell history.
 
 On Linux with `libsecret`:
 
@@ -149,13 +162,23 @@ helper (proposed below) can paper over that.
 ### Tier 3 — 1Password CLI `op` (if the operator uses 1Password)
 
 ```bash
-# Once (create item in the 1Password app or via op):
+# Once (create item — read the key without echo so it never
+# lands in shell history or `ps`):
+read -rs -p "xAI key: " key
 op item create --category=api-credential --title='Zeta xAI' \
-    credential=<paste-key-here>
+    "credential[password]=$key"
+unset key
 
 # Each session:
 export XAI_API_KEY=$(op read "op://Private/Zeta xAI/credential")
 ```
+
+Note: avoid `credential=<paste-key-here>` literal forms in
+the operator runbook — that puts the secret directly on the
+`argv[]` of `op`, which other local processes can observe via
+`ps` and which shell history captures verbatim. The `read -rs`
++ password-field form ensures the secret only flows through
+process memory.
 
 **Properties:** encrypted at rest by 1Password, cross-device
 synchronization, audit trail, single-sign-on integration.
@@ -268,9 +291,16 @@ zeta secret launch claude             # exports configured keys, launches agent
 
 **For the xAI key from auto-loop-31 (already pasted, rotating tomorrow):**
 
-1. Do nothing with it — the factory already treated it as
-   zero-persistence. When maintainer rotates it, the
-   artifact in the transcript becomes a dead key.
+1. **Revoke immediately, then rotate.** The key is already
+   exposed in a chat transcript on disk. "Wait until tomorrow
+   to rotate" leaves a known-exposed credential live for a
+   full cycle — the right posture is to revoke first (so the
+   exposed value can't be used) and issue a replacement on
+   the same step. Maintainer revokes via the xAI dashboard;
+   the transcript artifact then references a dead key, which
+   is the safe end state. Earlier framing ("do nothing,
+   rotation tomorrow handles it") under-weighted the
+   exposure window.
 2. Drop Grok from the substrate map until a cleaner handoff
    path exists. Claude + Codex + Gemini is a sufficient
    three-substrate triangulation.
