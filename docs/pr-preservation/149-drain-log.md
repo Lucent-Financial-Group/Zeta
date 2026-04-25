@@ -270,8 +270,7 @@ consistent and the convention matches the rest of the repo.
 
 ## Resolution commit
 
-See the `fix: PR #149 drain — date-placeholder consistency
-+ resolved-link prose updates` commit on this branch for
+See the `fix: PR #149 drain — date-placeholder consistency and resolved-link prose updates` commit on this branch for
 the landed changes. Threads 1 / 2 / 3 / 5 / 7 resolve via
 prose fixes; threads 4 / 6 are BACKLOG+RESOLVE because the
 referenced files now exist in main after rebase (the
