@@ -27,7 +27,7 @@
     <PackageVersion Include="coverlet.collector" Version="10.0.0" />
     <PackageVersion Include="coverlet.msbuild" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Z3" Version="4.12.2" />
-    <PackageVersion Include="System.IO.Hashing" Version="10.0.6" />
+    <PackageVersion Include="System.IO.Hashing" Version="10.0.7" />
     <PackageVersion Include="System.Reactive" Version="6.1.0" />
     <PackageVersion Include="System.Numerics.Tensors" Version="10.0.6" />
     <PackageVersion Include="FsPickler" Version="5.3.2" />
