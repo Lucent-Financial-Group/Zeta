@@ -282,13 +282,20 @@ BP drift.
   repos land per GOVERNANCE §23, so the cost compounds.
 
 - **No name attribution in code, docs, or skills — names
-  are confined to a closed enumeration of history/research
-  locations, no bleeding (Otto-279 + a follow-on
-  clarification from the human maintainer).** Direct names
-  (human or agent persona) appear ONLY on the **closed
-  list** of history/research surfaces below; the list is an
-  enumeration, not a permissive default. Anything outside
-  the list uses role-refs.
+  appear on a closed list of history/research surfaces
+  PLUS a roster-mapping carve-out in governance /
+  instructions files; everywhere else uses role-refs
+  (Otto-279 + a follow-on clarification from the human
+  maintainer).** Direct names (human or agent persona)
+  appear in TWO categories: (a) the **closed list** of
+  history/research surfaces below — the file's job is to
+  preserve who-said-what for the record, names belong
+  there; and (b) the **roster-mapping carve-out** in
+  governance / instructions files (defined further down
+  in this rule) — these files MAY contain a one-time
+  persona-to-role mapping because consumers need to
+  resolve role-refs to persona-names to do their job.
+  Anywhere outside both categories uses role-refs.
 
   - `memory/**` — factory-wide memory + persona notebooks
   - `docs/BACKLOG.md` — root index

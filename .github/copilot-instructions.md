@@ -303,17 +303,24 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   (grep), or the Grep tool's equivalent path filter. Applies
   to every agent in this factory, not just Copilot.
 - **No name attribution in code, docs, or skills — names
-  are confined to specific history/research locations,
-  with no bleeding (Otto-279 + a follow-on clarification
-  from the human maintainer).** Direct names (human or
-  agent persona) appear ONLY on the **closed enumeration**
-  of history/research surfaces below; everywhere else,
-  role-refs ("human maintainer," "architect," "harsh
-  critic," "documentation shepherd" — generic role labels
-  that map to a stable role rather than a specific
-  contributor or persona). The list is an enumeration, not
-  a permissive default — anything not on the list uses
-  role-refs.
+  appear on a closed list of history/research surfaces
+  PLUS a roster-mapping carve-out in governance /
+  instructions files; everywhere else uses role-refs
+  (Otto-279 + a follow-on clarification from the human
+  maintainer).** Direct names (human or agent persona)
+  appear in TWO categories: (a) the **closed enumeration**
+  of history/research surfaces below — the file's job is
+  to preserve who-said-what for the record, names belong
+  there; and (b) the **roster-mapping carve-out** in
+  governance / instructions files (defined further down
+  in this rule) — these files MAY contain a one-time
+  persona-to-role mapping because consumers need to
+  resolve role-refs to persona-names to do their job.
+  Anywhere outside both categories uses role-refs
+  ("human maintainer," "architect," "harsh critic,"
+  "documentation shepherd" — generic role labels that
+  map to a stable role rather than a specific contributor
+  or persona).
 
   - `memory/**` — factory-wide memory + persona notebooks
   - `docs/BACKLOG.md` — root index
