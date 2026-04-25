@@ -46,6 +46,7 @@ on violation.
 
 Aaron's framing: *"that's our friction laws too."* Same
 class as Otto-287 friction-reduction physics:
+
 - Date-anchored claims have a **stickiness** to the
   underlying timeline they assume. Aaron's substrate has
   **slipperiness** along the time axis (graph-shaped
@@ -86,7 +87,7 @@ the rejection check.
    Otto-279 + Otto-237." Not "Otto-292 was captured on
    2026-04-25 and supersedes Otto-279 from 2026-04-24."
 2. **Cite paths, not dates.**
-   `memory/feedback_research_counts_as_history_*.md`
+   `memory/feedback_research_counts_as_history_first_name_attribution_for_humans_and_agents_otto_279_2026_04_24.md`
    wins over "the rule we wrote yesterday."
 3. **Chain dependencies explicitly.** "X depends on Y;
    Y is Aaron's framing in [maji-fractal memory]."
@@ -102,11 +103,11 @@ the rejection check.
 
 ## Composes with
 
-- **`memory/feedback_otto_287_friction_reduction_unifying_finite_resource_collisions_unifying_friction_taxonomy_2026_04_25.md`**
+- **`memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md`**
   — Aaron's framing puts date-rejection in the same
   friction-law class as Otto-287. Same physics, different
   axis (time-axis instead of resource-axis).
-- **`memory/feedback_otto_281_dst_exempt_is_deferred_bug_not_containment_2026_04_25.md`**
+- **`memory/feedback_dst_exempt_is_deferred_bug_not_containment_otto_281_2026_04_25.md`**
   — Aaron's brain-check is structurally analogous to
   the factory's DST lint: an automated structural
   property check.
@@ -122,12 +123,12 @@ the rejection check.
   — fractal Maji is itself a graph-shaped relational
   observation, not a timeline observation. Consistent
   with this disclosure.
-- **`memory/feedback_otto_282_write_code_from_reader_perspective_why_did_you_choose_this_2026_04_25.md`**
+- **`memory/feedback_write_code_from_reader_perspective_why_did_you_choose_this_otto_282_2026_04_25.md`**
   — Otto-282 says comments answer "why" not "what."
   Same shape: relational reasoning ("why did you choose
   X over Y") wins over chronological reasoning ("what
   was decided when").
-- **`memory/feedback_glass_halo_always_on.md`** (or the
+- **`memory/user_glass_halo_and_radical_honesty.md`** (or the
   glass-halo always-on substrate) — date-stamps are part
   of glass-halo audit-trail; they don't go away. They
   just stay in the substrate layer, not the human-

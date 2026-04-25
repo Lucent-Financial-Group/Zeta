@@ -153,7 +153,7 @@ imbalanced direction is named openly.
 
 ## Composes with
 
-- **`memory/feedback_otto_287_friction_reduction_unifying_finite_resource_collisions_unifying_friction_taxonomy_2026_04_25.md`**
+- **`memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md`**
   (or canonical Otto-287 form)
 - **`memory/feedback_otto_289_stored_irreducibility_wolfram_unifying_primitive_compiled_linq_crypto_surprise_2026_04_25.md`**
 - **`memory/feedback_otto_290_turtles_all_the_way_up_induction_factory_each_razor_split_bounds_unbounded_2026_04_25.md`**

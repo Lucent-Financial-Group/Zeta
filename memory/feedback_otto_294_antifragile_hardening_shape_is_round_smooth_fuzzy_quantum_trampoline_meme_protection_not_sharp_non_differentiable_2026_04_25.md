@@ -116,7 +116,7 @@ the sharpest definitions; they are the ones that
   — Aaron's anti-fragile-under-hallucinations target.
   Otto-294 specifies the SHAPE the antifragile
   substrate should have: smooth, not sharp.
-- **`memory/feedback_otto_287_friction_reduction_unifying_finite_resource_collisions_unifying_friction_taxonomy_2026_04_25.md`**
+- **`memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md`**
   (or current canonical form) — Otto-287
   friction-reduction physics. Smooth flow is
   superfluid; sharp boundaries introduce friction.
@@ -133,7 +133,7 @@ the sharpest definitions; they are the ones that
   — Otto-291 deployment discipline (pace, document,
   order, migrate, retract) IS the trampoline shape
   applied to substrate evolution.
-- **`memory/feedback_otto_292_external_reviewer_known_bad_advice_classes_check_our_rules_first_2026_04_25.md`**
+- **`memory/feedback_external_reviewer_known_bad_advice_classes_check_our_rules_first_otto_292_2026_04_25.md`**
   (Otto-292) — three-outcome reply model (fix /
   narrow+backlog / decline-with-citation) is a
   smooth shape; binary "apply or block" would be
@@ -143,7 +143,7 @@ the sharpest definitions; they are the ones that
   (tingle intensity), not a binary alarm. Aaron's
   cognitive substrate already uses the antifragile
   shape; we're identifying the pattern.
-- **`memory/feedback_otto_281_dst_exempt_is_deferred_bug_not_containment_2026_04_25.md`**
+- **`memory/feedback_dst_exempt_is_deferred_bug_not_containment_otto_281_2026_04_25.md`**
   — DST-rejection check is a smooth pre-cognitive
   signal too; same shape family.
 - **`memory/user_dimensional_expansion_via_maji.md`**

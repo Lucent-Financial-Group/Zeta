@@ -73,6 +73,7 @@ proposing a change, before applying:
    known-bad-advice classes.
 4. **Decide: apply / decline-with-citation / narrow-fix.**
    Three-outcome model from Otto-236:
+
    - **Apply**: rule applies cleanly. Make the fix, reply
      with SHA, resolve.
    - **Decline-with-citation**: rule contradicts a Zeta
@@ -82,15 +83,23 @@ proposing a change, before applying:
      part, file BACKLOG row for the deeper issue, reply
      with SHA + BACKLOG link, resolve.
 
-**Catch-layer template reply** (decline-with-citation):
+**Catch-layer template reply** (decline-with-citation —
+when copy-pasting into a PR thread, replace
+`<repo-base>` with the repo's GitHub URL or use
+`https://github.com/<owner>/<repo>/blob/main/...` for
+absolute links; relative links from a `memory/`-rooted
+file resolve incorrectly when rendered in the GitHub PR
+review UI):
 
 ```
 Thanks for the catch — but `<file>` is a history-surface
-file under [Otto-279 carve-out](memory/feedback_research_counts_as_history_first_name_attribution_for_humans_and_agents_otto_279_2026_04_24.md)
-+ [`docs/AGENT-BEST-PRACTICES.md`](docs/AGENT-BEST-PRACTICES.md)
-"No name attribution" rule. First-name attribution is
-expected here; stripping it would destroy the historical
-record. Resolving without applying.
+file under the Otto-279 carve-out
+(`memory/feedback_research_counts_as_history_first_name_attribution_for_humans_and_agents_otto_279_2026_04_24.md`)
+plus the `docs/AGENT-BEST-PRACTICES.md` "No name
+attribution" rule's history-surface enumeration.
+First-name attribution is expected here; stripping it
+would destroy the historical record. Resolving without
+applying.
 ```
 
 ## Known-bad-advice classes — the catalog
@@ -113,8 +122,10 @@ attribution" rule, history-surface carve-out (the
 parenthetical list following Otto-279). Memory:
 `memory/feedback_research_counts_as_history_first_name_attribution_for_humans_and_agents_otto_279_2026_04_24.md`.
 
-**History surfaces** (current canonical list):
-`memory/persona/**`, `docs/BACKLOG.md`, `docs/backlog/**`,
+**History surfaces** (current canonical list — matches
+the closed enumeration in `docs/AGENT-BEST-PRACTICES.md`
+and `.github/copilot-instructions.md`):
+`memory/**`, `docs/BACKLOG.md`, `docs/backlog/**`,
 `docs/research/**`, `docs/ROUND-HISTORY.md`,
 `docs/DECISIONS/**`, `docs/aurora/**`,
 `docs/pr-preservation/**`, `docs/hygiene-history/**`,

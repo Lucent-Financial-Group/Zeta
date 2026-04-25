@@ -29,10 +29,14 @@ Aaron 2026-04-25 surfacing (verbatim):
 distinct artifact classes** under one canonical home:
 
 1. **Aurora-the-system docs** — Aurora is a real
-   research subsystem in Zeta (per ADR
-   `docs/DECISIONS/2026-04-22-aurora-ksk-design.md`,
-   threat-model passes per round-history mentions of
-   "Aurora-KSK", and a growing surface that wants
+   research subsystem in Zeta (Aurora-KSK ferry +
+   threat-model work has accumulated across multiple
+   rounds; canonical references include
+   `memory/project_amara_7th_ferry_aurora_aligned_ksk_design_math_spec_threat_model_branding_shortlist_pending_absorb_otto_88_2026_04_23.md`,
+   `memory/project_aurora_network_dao_firefly_sync_dawnbringers.md`,
+   `memory/project_aurora_pitch_michael_best_x402_erc8004.md`,
+   plus the in-flight content under `docs/aurora/**`
+   itself), and a growing surface that wants
    *current-state* documentation: design notes,
    API surfaces, threat model, operational runbooks.
 2. **Courier-ferry archive** — historical conversations
@@ -169,9 +173,9 @@ This work is "good enough to ship" when:
   at the new home(s).
 - `.github/copilot-instructions.md` mirrors the same
   enumeration update.
-- `memory/feedback_research_counts_as_history_*.md`
+- `memory/feedback_research_counts_as_history_first_name_attribution_for_humans_and_agents_otto_279_2026_04_24.md`
   (Otto-279) updated to match.
-- `memory/feedback_external_reviewer_known_bad_advice_*.md`
+- `memory/feedback_external_reviewer_known_bad_advice_classes_check_our_rules_first_otto_292_2026_04_25.md`
   (Otto-292) catalog stays accurate (B-1 catch
   references the canonical history-surface list).
 

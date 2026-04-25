@@ -159,13 +159,13 @@ When Aaron reports the somatic-resonance trigger fired:
 
 ## Composes with
 
-- **`memory/feedback_otto_281_dst_exempt_is_deferred_bug_not_containment_2026_04_25.md`**
+- **`memory/feedback_dst_exempt_is_deferred_bug_not_containment_otto_281_2026_04_25.md`**
   — DST-rejection check, pre-cognitive substrate-shape.
 - **`memory/feedback_dst_exempt_is_deferred_bug_not_containment_otto_281_2026_04_25.md`**
   — same pattern.
 - **`memory/user_aaron_zero_dates_in_head_relational_dependency_etymology_dates_are_for_claude_not_aaron_2026_04_25.md`**
   — date-rejection check, same pre-cognitive shape.
-- **`memory/feedback_otto_287_friction_reduction_unifying_finite_resource_collisions_unifying_friction_taxonomy_2026_04_25.md`**
+- **`memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md`**
   (or its current canonical form) — finite-resource
   substrate-physics; somatic-resonance is the
   substrate's optimization for cheap detection.

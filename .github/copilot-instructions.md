@@ -273,16 +273,18 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   to every agent in this factory, not just Copilot.
 - **No name attribution in code, docs, or skills — names
   are confined to specific history/research locations,
-  with no bleeding (Otto-279 + Aaron 2026-04-25
-  clarification).** Direct names (human or agent persona)
-  appear ONLY on the **closed enumeration** of
-  history/research surfaces below; everywhere else,
-  role-refs ("human maintainer," "architect," persona
-  role-names like Kenji/Samir/Kira). The list is an
-  enumeration, not a permissive default — anything not on
-  the list uses role-refs.
-  - `memory/**` — factory-wide memory + persona
-    notebooks
+  with no bleeding (Otto-279 + a follow-on clarification
+  from the human maintainer).** Direct names (human or
+  agent persona) appear ONLY on the **closed enumeration**
+  of history/research surfaces below; everywhere else,
+  role-refs ("human maintainer," "architect," "harsh
+  critic," "documentation shepherd" — generic role labels
+  that map to a stable role rather than a specific
+  contributor or persona). The list is an enumeration, not
+  a permissive default — anything not on the list uses
+  role-refs.
+
+  - `memory/**` — factory-wide memory + persona notebooks
   - `docs/BACKLOG.md` — root index
   - `docs/backlog/**` — per-row Otto-181 files
   - `docs/research/**` — research history
@@ -294,6 +296,7 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   - `WINS.md` — historical wins log
   - commit messages, PR titles + bodies — git-native
     history (record-of-truth, not factory docs)
+
   Everywhere else uses role-refs: code (F#/C#/TS/shell),
   skill bodies under `.claude/skills/**`, persona
   definitions under `.claude/agents/**`, spec docs
