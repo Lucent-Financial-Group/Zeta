@@ -47,7 +47,25 @@
     // their own hygiene pass; the archive output is not author-
     // controlled prose.
     "docs/pr-discussions/**",
-    "docs/pr-preservation/**"
+    "docs/pr-preservation/**",
+    // Aurora ferry absorbs (`docs/aurora/2026-*-amara-*.md`) are
+    // verbatim courier-protocol preservation of Amara's deepresearch
+    // ferry reports per Otto-227 verbatim-preservation discipline.
+    // Each absorb has a "## Verbatim preservation (Amara's report)"
+    // section containing Amara's report as paste, including AI-tool
+    // citation anchors (`citeturn…file…`/`citeturn…search…`),
+    // wrap points that hit CommonMark special characters (`+ ...`/
+    // `- ...` line-leading), and ordered-list numbering preserved
+    // across heading breaks. Reformatting the verbatim content to
+    // satisfy MD032/MD029/etc. would violate Otto-227
+    // signal-in-signal-out discipline — same policy that already
+    // covers `docs/amara-full-conversation/**`. Ignore is scoped to
+    // the named ferry-absorb pattern only; non-Amara, non-ferry
+    // docs in `docs/aurora/` (README.md, collaborators.md, the
+    // initial-operations-integration plan, the codex-4 peer-review
+    // archive, the transfer-report which has its own lint-compliance
+    // carve-out, etc.) stay linted.
+    "docs/aurora/2026-*-amara-*.md"
   ],
   "noBanner": true,
   "noProgress": true,
