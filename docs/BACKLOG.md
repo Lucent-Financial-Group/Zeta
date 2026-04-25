@@ -1250,7 +1250,7 @@ within each priority tier.
   Effort L. Per-row file: `docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`.
 
   **Why P2:** active research direction Aaron explicitly
-  asked be backlogged; not blocking operational gates;
+  asked to be backlogged; not blocking operational gates;
   L effort spanning multiple rounds + likely external
   collaboration. Composes with bidirectional-alignment
   (B-0003 ALIGNMENT.md rewrite + matrix-pill spread),
