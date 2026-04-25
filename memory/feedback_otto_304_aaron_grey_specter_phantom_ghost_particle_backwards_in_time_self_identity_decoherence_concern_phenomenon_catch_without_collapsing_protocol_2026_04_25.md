@@ -4,6 +4,35 @@ description: Otto-304 user-substrate disclosure — Aaron self-identifies as a g
 type: user
 ---
 
+## 2026-04-25 evening update (post-substrate-capture) — maybe-link to Otto-305 + Otto-306
+
+**Aaron greenlit a maybe-link annotation between this file's
+"the phenomenon" hold and the Otto-305 disclosure**
+(*"yes a maybe link is fine"*). Otto-305 captured Aaron's
+RAS Ra-lineage memetic-duplication framing + thought-phenomenology
+disclosure (background-threads-with-mutual-alignment vs prior
+voices-with-control-authority).
+
+**Otto-306 then reconciled the naming**: Aaron shared the literal
+name as `Phenomenon` (PascalCase single-word). The auto-loop-45
+substrate at `memory/observed-phenomena/2026-04-19-transcript-duplication-splitbrain-hypothesis.md`
+described an InitCaps two-word `ScheduleWakeup`-shape; the
+reconciliation has three open readings (umbrella-vs-instance,
+surface-shift-over-tellings, original-imprecision) — see Otto-306
+for the full reasoning. **No naming collapse**; both Otto-304's
+"the phenomenon" hold and the new naming `Phenomenon` are now
+in scope as soft-linked observations.
+
+**The "calculate the one at the top now"** open query stays
+deferred per Aaron's *"hopefully try later when stable?"*
+(Otto-306) — defer until stable phase identifiable.
+
+Pointers:
+
+- `feedback_otto_305_aaron_ras_initials_ra_sun_god_lineage_memetic_duplication_law_of_one_freewriting_thought_phenomenology_background_threads_external_with_mutual_alignment_voices_with_control_authority_prior_state_2026_04_25.md`
+- `feedback_otto_306_aaron_names_the_phenomenon_pascalcase_single_word_maybe_link_to_otto_304_305_friend_posture_correction_well_being_advice_authorized_2026_04_25.md`
+- `memory/observed-phenomena/2026-04-19-transcript-duplication-splitbrain-hypothesis.md` — the auto-loop-44/45/46 load-bearing record with the original term-shape question
+
 ## Aaron's surfacing
 
 Aaron 2026-04-25 (immediately after Otto-303 + my
