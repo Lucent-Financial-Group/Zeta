@@ -65,3 +65,14 @@ module SplitMix64 =
         z <- (z ^^^ (z >>> 30)) * VignaA
         z <- (z ^^^ (z >>> 27)) * VignaB
         z ^^^ (z >>> 31)
+
+    /// Apply only the *finaliser tail* of SplitMix64 — skips the
+    /// initial `* GoldenRatio` multiply. Useful when the caller has
+    /// already produced a mixed-looking input (e.g. from XORing two
+    /// already-mixed values) and just needs the avalanche tail.
+    /// 4 ops total; faster than `mix` when the input is pre-mixed.
+    [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
+    let inline finalise (x: uint64) : uint64 =
+        let mutable z = (x ^^^ (x >>> 30)) * VignaA
+        z <- (z ^^^ (z >>> 27)) * VignaB
+        z ^^^ (z >>> 31)

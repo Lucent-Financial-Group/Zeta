@@ -65,10 +65,11 @@ type CountMinSketch(depth: int, width: int, seed: int64) =
     /// bits. Inline so the JIT can fuse across rows.
     [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
     let colAt (baseHash: uint64) (row: int) : int =
-        let mutable z = baseHash ^^^ rowSeeds.[row]
-        z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
-        z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
-        columnFor (z ^^^ (z >>> 31)) width
+        // The XOR of two already-mixed values is itself well-mixed
+        // enough that we skip the leading `* GoldenRatio` step and
+        // call `SplitMix64.finalise` (the tail of the finaliser) for
+        // 4 ops instead of 5. See `src/Core/SplitMix64.fs`.
+        columnFor (SplitMix64.finalise (baseHash ^^^ rowSeeds.[row])) width
 
     member _.Depth = depth
     member _.Width = width
