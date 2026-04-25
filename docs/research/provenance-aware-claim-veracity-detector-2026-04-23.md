@@ -249,9 +249,14 @@ known-bad) plus a sixth **retrieval-empty** output type
 - Action (v1): hard-halt on any action depending on the
   claim; flag for human review; do not propagate.
 - Action (v0): confabulation-shape surfaces as advisory
-  metadata on whatever other band the query lands in;
-  human review treats the signal as authoritative
-  pre-v1 even though it isn't in-band-classifier-yet.
+  metadata on whatever other band the query lands in.
+  The signal is **advisory, not authoritative** —
+  research-grade WIP, not a real claim-veracity oracle.
+  Downstream consumers treat it as "worth a closer
+  human look," not as a verdict. Authoritative
+  treatment is gated on v1 + subsequent reviewer
+  passes establishing the signal actually means what
+  it claims to mean.
 
 ### 5. `known-bad pattern`
 
