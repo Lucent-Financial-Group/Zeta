@@ -184,14 +184,23 @@ Ordered chronologically within the tick:
 
 ## 6. Matrix summary (target state)
 
+**Note:** this is the **proposed/future** matrix authored
+under PR #375 (the four-runner CI gate matrix). The current
+in-tree workflow `.github/workflows/gate.yml` still uses
+`ubuntu-22.04` for its main jobs and `macos-14` for fork
+runs; the labels below describe the post-#375 state, not
+present-day truth. Until #375 (or its successor) lands and
+the gate flips, treat this table as the target shape rather
+than the active configuration.
+
 | Runner | Setup chain | Status |
 |---|---|---|
-| `macos-26` | bash | Active (PR #375) |
-| `ubuntu-24.04` | bash | Active (PR #375) |
-| `ubuntu-24.04-arm` | bash | Active (PR #375) |
-| `ubuntu-slim` | bash | Active experimental (PR #375) |
-| `windows-2025` (native) | **ps1 end-to-end** | Deferred |
-| `windows-11-arm` (native) | **ps1 end-to-end** | Deferred |
+| `macos-26` | bash | Proposed (PR #375) |
+| `ubuntu-24.04` | bash | Proposed (PR #375) |
+| `ubuntu-24.04-arm` | bash | Proposed (PR #375) |
+| `ubuntu-slim` | bash | Proposed experimental (PR #375) |
+| `windows-2025` (native) | **ps1 end-to-end** | Deferred (assumes future GitHub-hosted Windows runner availability) |
+| `windows-11-arm` (native) | **ps1 end-to-end** | Deferred (assumes future arm64 Windows runner availability) |
 | `windows-2025` + WSL2 | ps1 bootstrap → bash | Deferred |
 | `windows-11-arm` + WSL2 | ps1 bootstrap → bash (TBD) | Deferred |
 
@@ -235,7 +244,13 @@ declarative/
 
 `tools/setup/common/*.sh` reads from new paths. `.mise.toml`
 at repo root stays (required for mise auto-activation) as
-a symlink or generated-copy of `declarative/unix/mise/tools.toml`.
+a generated copy of `declarative/unix/mise/tools.toml` —
+NOT a symlink. The repo has an explicit no-symlinks
+discipline (Otto-244 + `docs/research/build-machine-setup.md`
+"No symlink"); symlinks are also brittle on Windows. Either
+make `.mise.toml` the canonical source and generate the
+declarative variant from it, or vice-versa, but ship both
+as real files kept in sync via tooling.
 
 Effort: S (1 day). Mechanical.
 
@@ -318,10 +333,14 @@ harness code.
   (auto-memory) — the operational three-repo design.
 - `feedback_bootstrapping_divine_downloading_factory_learns_from_self.md`
   (auto-memory) — Forge self-hosting = the Ouroboros self-loop.
-- Otto-247 version-currency (CLAUDE.md-level rule) — every
-  pin in every phase verified via authoritative source.
-- Otto-248 never-ignore-flakes (CLAUDE.md-level rule) — Phase 6
-  idempotency test harness enforces it.
+- Otto-247 version-currency
+  (`memory/feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`;
+  CLAUDE.md "Version currency" bullet captures the rule
+  shape) — every pin in every phase verified via
+  authoritative source.
+- Otto-248 never-ignore-flakes
+  (`memory/feedback_never_ignore_a_flake_otto_248_2026_04_24.md`)
+  — Phase 6 idempotency test harness enforces it.
 - GOVERNANCE.md §24 three-way-parity (dev laptop, CI runner,
   devcontainer).
 - HB-005 AceHack-mirror-LFG (adjacent Windows bootstrap).
