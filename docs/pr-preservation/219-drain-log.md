@@ -96,8 +96,8 @@ two Otto-279 history-surface name-attribution responses.
 - Finding: text said review should add a "fifth phase" but described
   it as "Phase 6 — catalogue-expansion" after listing 5 existing
   phases.
-- Outcome: **FIX** — reworded to "sixth phase ... five phases total"
-  + new phase correctly numbered Phase 6. Commit `fdad14f`.
+- Outcome: **FIX** — reworded to "sixth phase ... after five existing
+  phases" + new phase correctly numbered Phase 6. Commit `fdad14f`.
 
 ### Thread 9 — `:141` — "Aaron" name in section header (Copilot)
 
