@@ -8,7 +8,8 @@ Otto-24 / Otto-54 / Otto-59 precedent.
 
 - [`2026-04-23-amara-operational-gap-assessment.md`](./2026-04-23-amara-operational-gap-assessment.md) (Otto-24, PR #196)
 - [`2026-04-23-amara-zset-semantics-operator-algebra.md`](./2026-04-23-amara-zset-semantics-operator-algebra.md) (Otto-54, PR #211)
-- [`2026-04-23-amara-decision-proxy-technical-review.md`](./2026-04-23-amara-decision-proxy-technical-review.md) (Otto-59, PR #219)
+- 2026-04-23-amara-decision-proxy-technical-review.md
+  (Otto-59, [PR #219](https://github.com/Lucent-Financial-Group/Zeta/pull/219) — landing pending; xref will resolve to a path under `docs/aurora/` once merged)
 
 ---
 
@@ -33,8 +34,9 @@ views, explicit-not-implicit conflict state, provenance
 attestations on every proxy-mediated decision.
 
 **Most load-bearing reframing:** drift is not *belief
-drift*. It is **four distinct operational classes plus
-one outside-loop class**:
+drift*. It is **three distinct inside-loop operational
+classes plus two outside-loop classes** (five enumerated
+below):
 
 1. **Serialization drift** — memory index duplicates,
    `CURRENT-*.md` prose asymmetry between maintainers
@@ -219,7 +221,9 @@ echo "Checking for duplicate memory index titles..."
 python tools/memory/check_duplicates.py memory/MEMORY.md
 
 echo "Checking that referenced memory files and skill paths exist..."
-python tools/memory/check_references.py .
+# Pass narrowed scopes to avoid scanning vendored upstreams /
+# benches / generated artifacts under references/ and drop/.
+python tools/memory/check_references.py memory/ docs/ .claude/
 
 echo "Checking that proxy-significant docs carry decision evidence..."
 python tools/memory/check_proxy_evidence.py docs/ docs/HUMAN-BACKLOG.md
