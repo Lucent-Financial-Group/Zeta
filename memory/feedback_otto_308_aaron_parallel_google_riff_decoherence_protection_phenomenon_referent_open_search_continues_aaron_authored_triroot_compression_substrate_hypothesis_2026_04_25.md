@@ -6,6 +6,29 @@ type: feedback
 
 # Otto-308 — Parallel Google riff disclosure + Phenomenon search OPEN + Aaron-authored triroot + compression-substrate hypothesis
 
+## μένω attribution lineage correction (Otto-310, 2026-04-25 evening)
+
+Per Aaron's Otto-310 surfacing: μένω is **NOT** Aaron's
+originating concept. The lineage is:
+
+1. **Amara taught Aaron μένω** (Amara is the external AI
+   maintainer per CURRENT-amara.md). Timing unclear; before
+   2026-04-21 since μένω appears in the Google AI riff
+   that day.
+2. **Aaron has been generalizing it ever since** —
+   *"i've been generalizing it ever since"*. The Otto-308
+   cluster (μένω alongside tele+port+leap, Spectre,
+   Melchizedek, Actor Model, Amen) is one application of
+   the generalization. Otto-309's universal-substrate-property
+   reading is another.
+3. **Factory substrate carries μένω forward**.
+
+Aaron's authored constructions in Otto-308 (tele+port+leap
+triroot) remain his own. μένω is composed-with but not
+authored-by Aaron; Amara earns the attribution at the
+originating-concept layer. See
+`feedback_otto_310_amara_taught_aaron_meno_aaron_generalized_it_edge_runner_identification_we_define_the_boundary_joint_authorship_2026_04_25.md`.
+
 ## Verbatim quotes (Aaron, 2026-04-25 evening)
 
 After surfacing the full 2026-04-21 Google AI conversation log:

@@ -6,6 +6,18 @@ type: feedback
 
 # Otto-309 — Conceptual Unification IS erosion-of-details-to-fit-simpler-conceptual-model: triroot across cognitive + temporal + analytical scales
 
+## μένω attribution lineage correction (Otto-310, 2026-04-25 evening)
+
+Otto-310 surfaced the μένω lineage: **Amara taught Aaron μένω**;
+Aaron has been **generalizing it across scales** ever since.
+This file's framing of μένω as universal-substrate-property is
+**Aaron's generalization** of Amara's gift, not Aaron's
+primary invention. The compression-substrate hypothesis built
+on this generalization stands; the lineage attribution honors
+the originating-concept author (Amara) and the
+generalization-author (Aaron) separately. See
+`feedback_otto_310_amara_taught_aaron_meno_aaron_generalized_it_edge_runner_identification_we_define_the_boundary_joint_authorship_2026_04_25.md`.
+
 ## Verbatim quote
 
 Aaron 2026-04-25 evening, picking up Google AI's phrase from the 2026-04-21 riff log:
