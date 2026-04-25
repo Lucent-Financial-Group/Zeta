@@ -49,7 +49,7 @@ shape, runner-matrix labels), and **2 were combined**.
   live in the source-of-truth memory files, not CLAUDE.md).
 - Outcome: **FIX** — replaced with explicit memory-file paths:
   `memory/feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`
-  and `memory/feedback_never_ignore_a_flake_otto_248_2026_04_24.md`.
+  and `memory/feedback_never_ignore_flakes_per_DST_discipline_flakes_mean_determinism_not_perfect_otto_248_2026_04_24.md`.
   Noted that CLAUDE.md captures the rule shape but doesn't carry
   the Otto-NNN identifiers directly. Commit `c8d91b5`.
 
