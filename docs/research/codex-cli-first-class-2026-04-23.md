@@ -186,7 +186,7 @@ and Codex-specific.
 | WebFetch / WebSearch | Web search integration advertised | **Parity** | Codex advertises "up-to-date information retrieval" during tasks. |
 | MCP server support | `[mcp_servers]` TOML config | **Parity (richer)** | Codex's per-tool approval mode is stricter than Claude Code's MCP permissioning — plays well with BP-11 data-not-directives. |
 | WebFetch on private/authenticated URLs | Unchanged — same constraint; use MCP | **Parity** | Neither harness fetches authenticated URLs directly; both rely on MCP servers. |
-| `CronCreate` / `ScheduleWakeup` (loop autonomy) | Not documented | **Likely gap** | The autonomous-loop cadence (minutely `<<autonomous-loop>>` fire) has no Codex-CLI equivalent surfaced in the docs. **This is the biggest single gap** for Otto-in-Codex; the entire `/loop` auto-mode depends on cron. Stage 2 must verify whether Codex Cloud background tasks cover this. |
+| `CronCreate` / `ScheduleWakeup` (loop autonomy) | Codex Cloud thread automations (per [`developers.openai.com/codex/app/automations`](https://developers.openai.com/codex/app/automations)) | **Partial (different surface)** | Codex Cloud has a documented scheduling primitive: thread automations support custom cron syntax, minute-based intervals (heartbeat-style recurring wake-ups attached to a thread), and daily/weekly schedules. Functionally equivalent to Claude Code's `CronCreate` / `ScheduleWakeup` for the autonomous-loop cadence, but on a different surface (Codex Cloud rather than the local CLI session). Stage-2 must verify the API surface for arming/listing automations from agent prompts. The local `codex` CLI itself does not expose a `cron` primitive — the cloud is the equivalent surface. |
 | Plan Mode | `plan_mode_reasoning_effort` config | **Parity** | Named differently; same concept. |
 | Output styles (e.g., explanatory) | Not documented; may go via system-prompt override | **Gap (minor)** | Factory-side impact is small; output styles are Claude-Code-session features, not substrate. |
 | Hooks (`.claude/settings.json` PreToolUse, UserPromptSubmit) | `notify` hook + shell-only PreToolUse (per OpenAI release notes for `rust-v0.117.0`, March 26 2026, [openai/codex#15211](https://github.com/openai/codex/pull/15211)) | **Partial (narrowing)** | Codex now has shell-only PreToolUse alongside the existing `notify` hook for turn completion. UserPromptSubmit and other Claude-Code-specific hook types are still gaps. Zeta's ASCII-clean pre-commit + prompt-injection lints run via git-pre-commit (harness-neutral) so the gap-impact on Zeta substrate is small. SessionStart hooks (e.g., for output style) still have no Codex equivalent. |
@@ -202,18 +202,25 @@ and Codex-specific.
 
 - Parity: 11 (TodoWrite reclassified Gap → Parity (different shape)
   per OpenAI's Sept 15 2025 Codex CLI to-do-list announcement)
-- Partial: 4
-- Gap: 3 (of which 1 — cron/autonomous-loop — is critical)
+- Partial: 5 (cron/autonomous-loop reclassified Likely-gap →
+  Partial (different surface) per
+  `developers.openai.com/codex/app/automations` thread-automation
+  primitive)
+- Gap: 2 (no longer including cron — autonomous-loop is reachable
+  via Codex Cloud thread automations)
 - Codex-specific: 2
 
 (Score subject to Stage 2 verification — these are first-pass
 counts based on documentation review, not behavioral tests.)
 
-For a *first-class* Otto experience in Codex CLI, the 1
-critical gap (no equivalent of `CronCreate` / `/loop`
-autonomous mode) is the blocker. Without it, Otto in Codex is
-a manual session; with it, Otto can run the same heartbeat
-cadence.
+For a *first-class* Otto experience, the autonomous-loop
+cadence has a different-surface partial via Codex Cloud thread
+automations (cron syntax + minute intervals per
+[`developers.openai.com/codex/app/automations`](https://developers.openai.com/codex/app/automations)).
+Otto-in-Codex parity is therefore reachable, but the surface
+shifts from local-CLI cron to cloud-thread automations. Stage
+2 must verify the agent-facing API surface for arming/listing
+automations.
 
 ---
 
@@ -240,18 +247,20 @@ sidesteps that problem for Phase 1 Codex research**.
 
 ## 5 · Gap analysis — critical vs. nice-to-have
 
-**Critical (blocks Otto-in-Codex parity):**
+**High-priority (was the leading parity question, now reframed):**
 
-1. **No `CronCreate` / `ScheduleWakeup` equivalent.** The
-   entire autonomous-loop cadence depends on minutely cron
-   fires with the `<<autonomous-loop>>` sentinel. Without a
-   Codex-CLI way to schedule wake-ups, Otto-in-Codex is
-   reactive-only (waits for Aaron to kick the next tick). This
-   is the single most important Stage 2 question: **does Codex
-   Cloud offer a scheduled-task primitive?** If yes, parity is
-   reachable. If no, Codex-in-Otto mode runs as a non-loop
-   harness for now, with the /loop cadence retained in Claude
-   Code.
+1. **`CronCreate` / `ScheduleWakeup` reaches parity via Codex
+   Cloud thread automations.** Codex Cloud's documented
+   automations primitive (per
+   [`developers.openai.com/codex/app/automations`](https://developers.openai.com/codex/app/automations))
+   covers custom cron syntax, minute-based heartbeat
+   intervals, and daily/weekly schedules. The autonomous-loop
+   cadence (minutely `<<autonomous-loop>>` fire) is functionally
+   reachable, but the surface shifts from local-CLI cron to
+   cloud-thread automations. Stage-2 must verify the
+   agent-facing API for arming/listing automations from a
+   Codex prompt and confirm the heartbeat-style minute interval
+   matches Claude Code's `* * * * *` cadence.
 
 **Important (meaningful friction, workarounds exist):**
 
@@ -327,12 +336,22 @@ probe lands.
 3. **MCP-server invocation.** Register a no-op MCP server in
    `~/.codex/config.toml` and verify `approval_mode` gates
    trigger.
-4. **Cron / scheduled-task research.** The critical gap. Read
-   Codex Cloud docs specifically on scheduled task
-   primitives; file the outcome.
-5. **`codex exec` non-interactive.** Run
-   `codex exec "list the top 5 open PRs on LFG"` and compare
-   output shape to Claude Code's one-shot invocation.
+4. **Cron / scheduled-task research.** Verify the Codex Cloud
+   thread-automations API surface (per
+   [`developers.openai.com/codex/app/automations`](https://developers.openai.com/codex/app/automations))
+   for arming/listing minute-interval automations from an agent
+   prompt; confirm the heartbeat cadence matches Claude Code's
+   `* * * * *` `<<autonomous-loop>>` fire shape.
+5. **`codex exec` non-interactive.** Run a **repo-local probe**
+   that doesn't depend on external services or credentials —
+   for example, `codex exec "count the .fs files under
+   src/Core/ and report the count and the longest filename"`.
+   Compare output shape to Claude Code's one-shot invocation.
+   Avoid prompts that hit GitHub / network / external auth
+   (e.g., "list the top 5 open PRs on LFG"), since failures
+   from missing credentials, repo visibility, or network
+   policy would look like `codex exec` parity failures even
+   when non-interactive mode works.
 6. **Git-worktree subagent.** Test isolation: "open a
    subagent in an isolated worktree and have it modify a
    single line; verify the main session doesn't see the
