@@ -5827,7 +5827,7 @@ systems. This track claims the space.
   - **Local admin UI (this row)** — operator/admin
     surface, ships with Mode 1 single-file binary.
 
-  Priority P3 / way-backlog (UX + design lead time);
+  Priority P2 / research-grade (UX + design lead time);
   effort L (full app). Composes with the Mode 1
   bootstrap thesis (single-file AoT/JIT executable),
   the git-as-DB-interface row below, and Otto-274
@@ -6132,7 +6132,7 @@ systems. This track claims the space.
   - Warm-state: protocol-upgraded comm is fast (binary
     framing, no commit-object overhead, streaming
     semantics, server-push for live updates).
-  - Backwards-compatible: an ungraded peer (e.g. an
+  - Backwards-compatible: an unupgraded peer (e.g. an
     actual git client, not a Zeta peer) still works —
     it never asks for the upgrade.
   - Audit-trail: even after upgrade, the durable layer
@@ -6250,7 +6250,7 @@ systems. This track claims the space.
 - [ ] **WASM-F# + git-as-storage-plugin — browser-only
   bootstrap mode (zero server, zero install).**
   Maintainer 2026-04-24 directive (verbatim,
-  way-back-backlog stretch goal):
+  long-horizon research stretch goal):
 
   > *"a storage plugin for our db that saves to git
   > commonds lol. this will let me compile as wasm our
@@ -6287,9 +6287,15 @@ systems. This track claims the space.
     modes are install-free at the user-experience
     level.
   - **Not a dream — coherent stretch.** Pieces compose:
-    - WASM-F# is real today via Blazor WebAssembly +
-      Fable. Performance workable for non-hot-path;
-      hot-path needs in-browser cache.
+    - WASM-F# in the browser is real today via Blazor
+      WebAssembly (the .NET runtime compiled to
+      WebAssembly, hosting F# directly). Fable is a
+      separate F#→JavaScript option (not a WASM runtime)
+      and is listed only as the alternative if a JS
+      target is preferred over .NET-on-WASM. Mode 2's
+      intended approach is Blazor WASM. Performance
+      workable for non-hot-path; hot-path needs
+      in-browser cache.
     - `isomorphic-git` brings the git protocol to the
       browser; pairs with WASM-F#.
     - Z-set entries serialize as commit blobs / tree
@@ -6334,7 +6340,9 @@ systems. This track claims the space.
     batching, hot-path cache eviction, server-fallback
     for high-throughput.
 
-  Priority P3 / way-back-backlog per maintainer;
+  Priority P2 / research-grade per maintainer
+  (long-horizon stretch goal — section placement
+  matches);
   effort L+ (research) + L (POC) + L (production).
   **Does NOT authorize** starting POC code without
   Phase-0 feasibility doc landing first. **Does NOT

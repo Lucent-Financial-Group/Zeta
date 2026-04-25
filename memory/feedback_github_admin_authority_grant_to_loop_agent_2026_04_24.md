@@ -87,7 +87,9 @@ Not a bug — defense in depth.
 - **Otto-244 no-symlinks** (cross-cutting authority
   pattern — different domain but same "named-policy
   with explicit scope" shape).
-- **GOVERNANCE §31** factory-managed external surfaces.
+- **GOVERNANCE** — factory-managed external surfaces
+  discipline (the broader pattern; GOVERNANCE §31
+  itself is specifically the Copilot-instructions case).
 - **Aminata threat-model** — any expansion of granted
   permissions deserves an adversarial review pass.
 

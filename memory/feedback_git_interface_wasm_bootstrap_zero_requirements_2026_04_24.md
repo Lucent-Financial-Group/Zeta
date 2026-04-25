@@ -152,9 +152,15 @@ The maintainer asked whether the WASM + git-storage
 combination is dreaming. Honest answer: NO, it's a
 coherent stretch.
 
-- **WASM-F# is real** today via Blazor WebAssembly +
-  Fable. Performance workable for non-hot-path; hot-path
-  needs in-browser cache.
+- **WASM-F# is real** today via **Blazor WebAssembly**
+  — the .NET runtime compiled to WebAssembly, which
+  hosts F# directly. Mode 2's intended approach is
+  Blazor WASM. **Fable** is a distinct option that
+  compiles F# to **JavaScript** (NOT a WebAssembly
+  runtime); it would be the alternative if a JS-target
+  Mode 2 were preferred over .NET-on-WASM. Performance
+  workable for non-hot-path; hot-path needs in-browser
+  cache.
 - **`isomorphic-git`** brings the git protocol to the
   browser; pairs with WASM-F#.
 - **Z-set semantics fit git's model.** Retractions =
