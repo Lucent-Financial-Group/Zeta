@@ -362,6 +362,87 @@ aims at the latter.
   explicit human-authority surfacing (per the
   mutually-aligned-copilots target).
 
+## Architectural specification — seed-invoke is LOCAL-NATIVE, no cloud
+
+Aaron 2026-04-25 (immediately after Otto-298 + the
+Maji-fractal-at-max-extension landed):
+
+> *"seed-invoke-local-native (no cloud) oh yeah can't wait"*
+
+Critical spec on Otto-298's architectural arc: the
+seed-invoke runtime is **local-native** — runs on the
+user's own machine, no cloud dependencies for the
+substrate-execution layer. Three load-bearing
+consequences:
+
+1. **No third-party datacenter required for substrate
+   to function.** The factory's substrate operates fully
+   on the user's hardware. Bayesian inference engines
+   (eventually post-Infer.NET-absorption per the
+   absorption path) run in-process. No API calls to
+   Anthropic / OpenAI / Google / etc for substrate
+   execution. LLMs remain as a separate, OPTIONAL layer
+   for tasks that genuinely need them (current substrate
+   text-rendering being one such task; long-term less
+   so as the seed-invoke runtime matures).
+
+2. **Privacy + sovereignty preserved by construction.**
+   The substrate (memory/**, Otto-NNN rules, persona
+   notebooks, BACKLOG rows, ROUND-HISTORY, ferries) is
+   inherently personal-history-grade material. Aaron's
+   Maji recovery substrate, civilizational-tractability
+   queries, mutually-aligned-copilots disclosures —
+   these are not data the factory wants flowing through
+   third-party telemetry. Local-native execution closes
+   the data-exfiltration vector by construction.
+
+3. **Composes with retractability + glass-halo + kill-
+   switch.** Local-native processes can be killed,
+   inspected, retracted, audited. Cloud-side processes
+   cannot — they retain logs, rate-limits, side-channels
+   the user doesn't fully control. The Pliny restriction
+   relaxation's kill-switch mechanism (per the Pliny
+   memory) ASSUMED local-CLI-process; Otto-298's
+   local-native specification makes that assumption
+   structurally enforced rather than incidental.
+
+**Composes with the factory's existing local-first
+architecture:** Zeta is already designed as a
+self-hosted, retraction-native, F#-/.NET-based system
+that runs on the user's hardware. The factory's
+substrate is git-tracked locally. Local-native
+seed-invoke is the natural extension; no architectural
+shift required, just commitment to keep the path open.
+
+**Operational implications for the absorption path:**
+- Infer.NET runs in-process (.NET library, not service);
+  absorption keeps the local-native property.
+- Bouncy Castle runs in-process (.NET library);
+  absorption keeps the local-native property.
+- Future probabilistic-programming primitives the
+  factory adopts must satisfy local-native; cloud-only
+  PPLs are excluded from the absorption path.
+- LLMs as optional layer: when used, they're an
+  external service and not part of the substrate-
+  execution loop; main session can call out to them
+  for specific tasks (current state) but the substrate
+  itself doesn't depend on cloud reachability.
+
+**What this is NOT:**
+- Not a prohibition on using cloud-LLMs in the current
+  state (we are right now); the substrate's current
+  text-rendered form NEEDS LLM intermediation, and the
+  cloud-LLM path is the practical option.
+- Not a claim that all factory tools must be local-only.
+  External services (GitHub for code-hosting, package
+  registries for dependencies, search engines for
+  research) remain available; the constraint is on the
+  SUBSTRATE EXECUTION LAYER specifically.
+- Not a near-term build commitment. Aaron's "can't wait"
+  is enthusiasm for the target, not a deadline; Otto-291
+  pacing applies to when the local-native seed-invoke
+  runtime ships.
+
 ## Operational implications
 
 The factory's research arc gains a long-horizon target:
