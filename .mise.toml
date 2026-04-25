@@ -21,7 +21,7 @@
 # .NET 10 SDK (latest). Kept in sync with `global.json` — Zeta's
 # own `.NET`-native pin contract. Round-34 flip from
 # Microsoft's dotnet-install.sh to mise (see header).
-dotnet = "10.0.202"
+dotnet = "10.0.203"
 python = "3.14"
 # Java 26 (latest). Round-34 migration: OpenJDK moved off brew
 # and onto mise so all language runtimes share one manager.
