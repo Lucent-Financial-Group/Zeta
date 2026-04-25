@@ -12758,6 +12758,60 @@ Aarav.
   msbuild-expert. **Source:** Copilot thread
   `PRRT_kwDOSF9kNM59geKB` on PR #147.
 
+## P2 — DST-compatible HashDoS-resistant Shard.OfKey research (Otto-281 follow-up)
+
+- [ ] **Investigate whether `Shard.OfKey` can be redesigned to be
+  DST-compatible AND retain HashDoS defence simultaneously.**
+  Current state (post Otto-281 audit): `OfKey` uses
+  `HashCode.Combine(key, Shard.Salt)` which is process-randomized
+  for security (anti-hash-flooding) and therefore NOT
+  cross-process deterministic; tests use `OfFixed` /
+  `OfFixedBytes` (deterministic XxHash3) for DST-compatibility
+  and accept the separation. Aaron 2026-04-25 directive:
+  *"backlog if we can keep all performance and tradeoffs we
+  wanting and design it in a different way that is DST
+  compatable and safe. We may already be there, 1 is a good
+  choice, but we should just backlog that research."*
+
+  **Research questions:**
+
+  - Can a **per-test-suite-pinned salt** combined with a
+    deterministic mixer (XxHash3 instead of `HashCode.Combine`)
+    deliver both HashDoS defence in production and DST
+    determinism in tests, via a single API?
+  - Does the production HashDoS posture actually require
+    *runtime-randomized* salt, or is a **per-deployment static
+    salt** (set at process start from secret config) sufficient
+    against the attacker model? If the latter, tests can run
+    with a fixed salt without weakening production.
+  - Is `HashCode.Combine` strictly required for HashDoS defence,
+    or is the *salt-mixed-into-deterministic-XxHash* sufficient?
+    The attacker doesn't know the salt; XxHash on
+    `(salt-bytes ⊕ key-bytes)` is just as hard to attack as
+    HashCode.Combine without leaking the salt.
+  - What's the perf cost of `XxHash3.HashToUInt64` vs
+    `HashCode.Combine` on the hot path? Earlier perf concern
+    on `Sketch.fs::Add` was Gen-0 allocations per Add (`new
+    byte[]`); a stack-allocated `Span<byte>` for 4-byte
+    primitive keys avoids that entirely.
+
+  **If the research lands "yes":** unify `OfKey` and `OfFixed`
+  into a single `OfKey(key, shards, ?salt)` that is both
+  cross-process-deterministic-given-salt AND HashDoS-resistant.
+  Tests pass `salt: 0u`; production reads salt from process
+  config.
+
+  **If the research lands "no":** keep the current two-API
+  design (option 1 from the Otto-281 PR triage). Document the
+  trade-off as final; this BACKLOG row resolves to a decision
+  ADR.
+
+  **Effort:** S (research-only; design doc + benchmark
+  comparison; no shipped code unless conclusion is "yes").
+  **Owner:** performance-engineer + security-researcher
+  (cross-cut). **Composes with:** Otto-281 audit, Otto-272
+  DST-everywhere, GOVERNANCE §threat-model section on HashDoS.
+
 ---
 
 ## Source of this backlog

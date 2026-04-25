@@ -27,6 +27,7 @@
     <Compile Include="FeatureFlags.fs" />
     <Compile Include="Simd.fs" />
     <Compile Include="HardwareCrc.fs" />
+    <Compile Include="SplitMix64.fs" />
     <Compile Include="Sketch.fs" />
     <Compile Include="CountMin.fs" />
     <Compile Include="BloomFilter.fs" />
