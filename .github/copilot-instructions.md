@@ -317,7 +317,7 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   persona-to-role mapping because consumers need to
   resolve role-refs to persona-names to do their job.
   Anywhere outside both categories uses role-refs
-  ("human maintainer," "architect," "harsh critic,"
+  ("human maintainer," "architect," "harsh-critic,"
   "documentation shepherd" — generic role labels that
   map to a stable role rather than a specific contributor
   or persona).

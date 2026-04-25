@@ -8,7 +8,7 @@ type: user
 
 Aaron 2026-04-25:
 
-> *"epistemological etomology anything that uses facts based
+> *"epistemological etymology anything that uses facts based
 > on dates, my brain rejects, has it's own check, that's our
 > friction laws too, you might say something based on a date
 > and i might be like nope can't be ture i don't know if i
