@@ -8,6 +8,41 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "deps:"
+    # Group related NuGet updates into a single PR. Per Aaron Otto-280
+    # 2026-04-25 directive: ungrouped per-package PRs add noise to the
+    # drain queue when several packages bump in the same week. Grouping
+    # cuts the queue depth + lets a single CI run cover the cluster.
+    # Major bumps still open as individual PRs so they get scrutiny.
+    groups:
+      # System.* / Microsoft.* runtime libraries usually bump together
+      # on .NET servicing rolls (e.g., 10.0.6 to 10.0.7 across
+      # System.Numerics.Tensors / System.IO.Hashing / etc.).
+      dotnet-runtime:
+        patterns:
+          - "System.*"
+          - "Microsoft.*"
+        update-types:
+          - "patch"
+          - "minor"
+      # F# / xUnit / FsCheck / analyzer ecosystem.
+      fsharp-and-tooling:
+        patterns:
+          - "FSharp.*"
+          - "FsCheck*"
+          - "xunit*"
+          - "Meziantou.*"
+          - "Mono.*"
+        update-types:
+          - "patch"
+          - "minor"
+      # Catch-all minor/patch group for anything else; majors still
+      # open as individual PRs.
+      nuget-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -17,3 +52,12 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "deps:"
+    # Group third-party action SHA-pins into a single PR per week
+    # rather than one PR per action. Same Otto-280 rationale.
+    groups:
+      github-actions-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
