@@ -24,10 +24,13 @@ the repo itself lean.
 
 ## How the mirror is regenerated
 
-`references/reference-sources.json` is the canonical list. A sync
-script reads it and clones (or pulls) each entry under
-`references/upstreams/<project-name>/`. See [`references/README.md`](../README.md)
-for the current invocation.
+`references/reference-sources.json` is the canonical list.
+[`tools/setup/common/sync-upstreams.sh`](../../tools/setup/common/sync-upstreams.sh)
+reads it and clones (or pulls) each entry under
+`references/upstreams/<project-name>/`. The sync script is invoked
+by `tools/setup/install.sh` and can also be run standalone. See
+[`references/README.md`](../README.md) for the broader references
+layout.
 
 ## Why the sentinel pair
 
