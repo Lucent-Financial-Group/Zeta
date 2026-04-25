@@ -40,6 +40,7 @@ state when only one BACKLOG row exists for live-lock cadence work.
 
 ### Thread 1.2 — `:112` — Same finding (Copilot P1)
 
+- Reviewer: copilot-pull-request-reviewer
 - Thread ID: `PRRT_kwDOSF9kNM59kG0t`
 - Severity: P1
 - Outcome: **FIX (combined with 1.1)** — same fix as Thread 1.1;
@@ -56,12 +57,15 @@ state when only one BACKLOG row exists for live-lock cadence work.
 - Finding: my prior reword said "Promoting it to a cadenced row ...
   AND wiring per-commit CI / hook integration are separate BACKLOG
   items" (plural). But the only live-lock backlog entry is
-  `docs/BACKLOG.md` lines 1313-1328, which tracks a single row with
+  `docs/BACKLOG.md` Live-lock-smell cadence row (currently around L1452 in the P1 tooling section; line numbers drift, so the stable identifier is the heading 'Live-lock smell cadence (round 44 auto-loop-46 absorb, landed as `tools/audit/live-lock-audit.sh` + hygiene-history log)'), which tracks a single row with
   follow-ups around round-close wiring, threshold tuning, and
   PR-in-flight class. One row, multiple sub-items — not "separate
   BACKLOG items."
 - Outcome: **FIX** — reworded to point at the actual single
-  existing BACKLOG row (`docs/BACKLOG.md` L1313-1328) and name its
+  existing BACKLOG row (`docs/BACKLOG.md` Live-lock-smell cadence
+  heading; was L1313-1328 at drain time, has since drifted to ~L1452
+  per the stable-identifier-vs-line-number-xref pattern) and name
+  its
   existing sub-items: round-close cadence wiring, threshold tuning,
   PR-in-flight class. Promoting to a cadenced
   `docs/FACTORY-HYGIENE.md` row composes with that same row rather
