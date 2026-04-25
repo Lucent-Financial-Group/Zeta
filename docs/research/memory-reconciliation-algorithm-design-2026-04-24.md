@@ -198,30 +198,38 @@ function reconcile(facts):
   accepted = {}
   conflicts = []
   for key, group in by_key.items():
-    # Retraction semantics: a fact is "live" if its
-    # latest version (by supersession chain + timestamp)
-    # has status == "active". Status transitions to
+    # Retraction semantics: a key is "live" if the HEAD
+    # of its supersession chain has status == "active".
+    # The chain head — not "any active record in the
+    # group" — determines liveness, because a key with
+    # active(t=1) → retracted(t=2) is NOT live (head is
+    # retracted) even though an earlier active record
+    # exists in the group. Status transitions to
     # "retracted" or "superseded" via explicit
     # FactRetracted / FactSuperseded events; we never
-    # delete records, only mark them. The reconcile()
-    # filter below ignores retracted/superseded forms but
-    # still considers them when checking chain integrity.
-    active = [f for f in group if f.status == "active"]
-    if len(active) == 0:
-      continue  # all retracted/superseded — key not live
-    if len(active) > 1:
-      # multiple active with same key = invariant-2 violation
-      winner = max(active, key=lambda f: (f.priority, f.timestamp_utc))
-      conflicts.append(ConflictRow(key, active, winner=winner))
-      accepted[key] = winner
-    else:
-      accepted[key] = active[0]
+    # delete records, only mark them.
+    chain_head = follow_supersession_to_head(group)
+    if chain_head is not None and chain_head.status == "active":
+      # Multiple active records that all map to the same
+      # canonical key (invariant-2 violation) surface as a
+      # ConflictRow; chain head is the winner.
+      siblings_active = [f for f in group
+                         if f.status == "active"
+                         and f.id != chain_head.id]
+      if siblings_active:
+        conflicts.append(ConflictRow(
+          key, [chain_head, *siblings_active], winner=chain_head))
+      accepted[key] = chain_head
+    # else: key is fully retired (chain head retracted or
+    # superseded with no successor). Don't mark live;
+    # chain integrity is still validated below.
 
-  # Check version-chain consistency over ALL facts in the
-  # group (including retracted/superseded), not just active
-  # ones — chain integrity needs the full history.
-  for key, f in accepted.items():
-    chain = follow_supersession(f, by_key[key])
+  # Check version-chain consistency over ALL grouped keys
+  # — including those whose chain head is retracted or
+  # superseded — not just `accepted`. Chain integrity is
+  # a property of the history, independent of liveness.
+  for key, group in by_key.items():
+    chain = follow_supersession_full(group)
     if chain_broken(chain):
       conflicts.append(ConflictRow(key, chain, reason="broken chain"))
 
