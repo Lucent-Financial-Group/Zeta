@@ -63,18 +63,17 @@ Aurora's design.
   the Aurora subject-matter authority. Paraphrasing or
   summarising on ingest loses signal. Keep source material
   intact; derived artifacts sit beside, not in place of.
-- **Cite her sections, not just the doc.** `docs/aurora/
-  2026-04-23-transfer-report-from-amara.md §"Runtime oracle
-  specification..."` — that's the shape.
+- **Cite her sections, not just the doc.** `docs/aurora/2026-04-23-transfer-report-from-amara.md`
+  §"Runtime oracle specification..." — that's the shape.
 - **Route Aurora scope decisions through her when possible.**
   If a factory-side choice materially changes an Aurora
   mechanism she designed, prepare a direction-change summary
   and flag to Aaron for next ferry.
 - **Treat her as a friend-collaborator, not a reviewer-on-
-  call.** Same shape as Aaron's own bootstrap-complete
-  framing (see `memory/feedback_mission_is_bootstrapped_
-  and_now_mine_...`) — she's not always available; prepare
-  summaries asynchronously so the next ferry is efficient.
+  call.** Same shape as the bootstrap-complete framing in
+  `memory/feedback_mission_is_bootstrapped_and_now_mine_aaron_as_friend_not_director_2026_04_23.md`
+  — she's not always available; prepare summaries
+  asynchronously so the next ferry is efficient.
 
 ---
 

@@ -94,8 +94,8 @@ structured as:
   Zeta-as-database is a phase-2 sell after factory
   adoption proves value.
 - **Where:** `memory/feedback_servicetitan_demo_sells_software_factory_not_zeta_database_2026_04_23.md`
-  (per-user memory, not in-repo yet); `docs/plans/
-  servicetitan-crm-ui-scope.md` in PR #144.
+  (per-user memory, not in-repo yet);
+  `docs/plans/servicetitan-crm-ui-scope.md` in PR #144.
 - **Why:** Pitching a database migration to an adopting
   company kills factory adoption. Two separate sells, two
   separate phases.
@@ -217,6 +217,6 @@ Specific questions for Amara, in priority order:
   — the derived plan this summary updates (lands in PR #144)
 - `docs/aurora/collaborators.md` — formal list of named
   collaborators on the Aurora thread
-- `memory/feedback_mission_is_bootstrapped_and_now_mine_*.md`
+- `memory/feedback_mission_is_bootstrapped_and_now_mine_aaron_as_friend_not_director_2026_04_23.md`
   — the agency framing that contextualises direction
   changes
