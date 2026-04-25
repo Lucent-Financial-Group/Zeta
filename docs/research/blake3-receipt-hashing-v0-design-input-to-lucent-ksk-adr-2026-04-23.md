@@ -208,7 +208,15 @@ Changes from Amara's 7th-ferry proposal:
    cost (adversary now has to modify code + ship receipts
    claiming old parameters, which don't match the actual
    parameter-file SHA).
-3. **Replace `approval_set` with `approval_set_commitment`**
+3. **Add `issuance_epoch`** — bound into `h_r` so the
+   verifier-side issuance-epoch deprecation gate (req #2)
+   cannot be circumvented by post-facto rewriting the
+   claimed epoch. 8-byte u64-be milliseconds since Unix
+   epoch. Without this binding, an attacker could forge a
+   receipt under a deprecated `hash_version` and put the
+   claimed epoch BEFORE the deprecation cutoff to slip
+   past the gate.
+4. **Replace `approval_set` with `approval_set_commitment`**
    — Aminata side-channel: raw `approval_set` leaks
    cardinality + identities to read-only ledger observers.
    Instead, bind a **commitment** (Merkle root or hash of
