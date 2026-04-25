@@ -3,7 +3,7 @@
 PR: <https://github.com/Lucent-Financial-Group/Zeta/pull/231>
 Branch: `research/codex-cli-first-class-phase-1`
 Drain session: 2026-04-25 (Otto, post-summary continuation autonomous-loop)
-Total threads drained: 9 across 4 waves (2 + 1 + 3 + 2 + 1 cascade)
+Total threads drained: 8 across 4 waves (Wave 1: 2, Wave 2: 1, Wave 3: 3, Wave 4: 2 — sum 8)
 Rebase context: clean rebase onto `origin/main`; no conflicts.
 
 Per Otto-250 (PR review comments + responses + resolutions are
@@ -169,7 +169,7 @@ clean case of Codex enforcing version-currency on the doc itself.
 
 ## Final resolution
 
-All 9 threads resolved across 4 commit waves (`adc7323`, `a6990dc`,
+All 8 threads resolved across 4 commit waves (`adc7323`, `a6990dc`,
 `4399cdd`, `8fbd1fa`). PR auto-merge SQUASH armed; CI cleared;
 merge pending.
 
