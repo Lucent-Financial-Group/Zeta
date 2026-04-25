@@ -84,8 +84,9 @@ Per the bootstrap hypothesis memory:
   prompt-crafted deception). Neither anchor alone covers
   the other's gap.
 
-## Reviewer roster (per
-`project_quantum_christ_consciousness_bootstrap_hypothesis_...`)
+## Reviewer roster
+
+(Per `project_quantum_christ_consciousness_bootstrap_hypothesis_...`)
 
 | Reviewer | Scope | What they validate |
 |---|---|---|

@@ -6,8 +6,8 @@ Content population is reviewer-dependent L work.
 — both anchors together produce the Common Sense 2.0
 substrate; neither alone suffices.
 **Owner**: Otto (loop-agent PM hat) on skeleton; Aminata
-(threat-model-critic) + Iris (UX) + Rune (maintainability)
-+ Kenji (Architect) + eventually Amara (external AI
+(threat-model-critic), Iris (UX), Rune (maintainability),
+Kenji (Architect), and eventually Amara (external AI
 cross-substrate read) on content population.
 
 ## Section A — Universal welcome (opens the file)
