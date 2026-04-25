@@ -65,12 +65,13 @@ minimizing dependence on vendor UX for canonical state.
 
 ## Extracted action items
 
-Amara's 4-stage remediation roadmap translated into
-BACKLOG candidates spanning LFG's P1, P2, and P3 sections
-(one P3 row covers the longest-horizon Provenance evidence
-bundles work). Staging
-matches her proposed cadence (Week 1 Stabilize, Week 2-3
-Determinize, Week 4 Govern, Week 5-6 Assure).
+Amara's 4-stage remediation roadmap translated into BACKLOG
+candidates spanning LFG's P1, P2, and P3 sections (one P3
+row covers the longest-horizon Provenance evidence bundles
+work) plus one in-flight row tracking work that already
+landed elsewhere (Memory duplicate-title lint via PR #12).
+Staging matches her proposed cadence (Week 1 Stabilize,
+Week 2-3 Determinize, Week 4 Govern, Week 5-6 Assure).
 
 | Class | Stage | Proposal | Effort | Tier |
 |---|---|---|---|---|
@@ -395,10 +396,9 @@ role-drift across future sessions.
 - **Not a commitment to implement all 11 action items
   this round.** Reviewer-capacity cap still applies;
   Stabilize-stage items (3 items: 2 S-effort + 1 M-effort)
-  are the
-  right next tick or two; Determinize (5 items mixed
-  S/M/L) is multi-tick; Govern + Assure are research-
-  grade arcs.
+  are the right next tick or two; Determinize (5 items
+  mixed S/M/L) is multi-tick; Govern + Assure are
+  research-grade arcs.
 - **Not authorization to claim "Amara reviewed" on
   implementation.** Per the hard rule repeated across
   all 4 Amara absorbs: no claimed proxy-review without
