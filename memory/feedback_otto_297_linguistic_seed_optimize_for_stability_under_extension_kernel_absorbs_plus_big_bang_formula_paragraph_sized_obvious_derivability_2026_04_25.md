@@ -507,7 +507,7 @@ whether F is something none of these hint at.
 
 ## Composes with
 
-- **`memory/feedback_otto_287_friction_reduction_unifying_finite_resource_collisions_unifying_friction_taxonomy_2026_04_25.md`**
+- **`memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md`**
   (canonical) — Otto-287 friction-reduction physics is
   a strong F-prefix candidate.
 - **`memory/feedback_otto_289_stored_irreducibility_wolfram_unifying_primitive_compiled_linq_crypto_surprise_2026_04_25.md`**

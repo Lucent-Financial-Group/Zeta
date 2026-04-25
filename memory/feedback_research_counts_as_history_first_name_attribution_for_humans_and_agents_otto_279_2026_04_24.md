@@ -78,8 +78,25 @@ enumeration in `docs/AGENT-BEST-PRACTICES.md` and
   250) — preserves who-said-what verbatim
 - `docs/hygiene-history/**` — tick-history + drain-logs are
   append-only history surfaces (Otto-229)
+- `docs/WINS.md` — historical wins log
 - (commit messages, git log, GitHub PR titles/bodies) — not
   factory-doc surfaces but record-of-truth
+
+**Roster-mapping carve-out** (added to canonical
+enumeration in `docs/AGENT-BEST-PRACTICES.md` +
+`.github/copilot-instructions.md`): governance /
+instructions files (`AGENTS.md`, `GOVERNANCE.md`,
+`docs/CONFLICT-RESOLUTION.md`,
+`docs/AGENT-BEST-PRACTICES.md`,
+`.github/copilot-instructions.md`) MAY contain a
+one-time persona-to-role mapping ("the harsh-critic
+is named Kira; the maintainability-reviewer is named
+Rune; the architect is named Kenji") because consumers
+need to resolve role-refs to persona-names to do their
+job. The carve-out covers roster-mapping ONLY —
+body-prose attribution ("Kira said X" / "Rune added
+this fix") remains forbidden on these current-state
+surfaces; use the role-ref ("the harsh-critic said X").
 
 ## Surfaces where role-refs are still preferred
 
