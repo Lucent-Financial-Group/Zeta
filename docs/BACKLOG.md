@@ -10710,8 +10710,8 @@ systems. This track claims the space.
   (`memory/README.md`, `memory/persona/**`, `memory/MEMORY.md`
   itself) misses `memory/CURRENT-*.md`. CURRENT files
   are per-maintainer distillations of memories that are
-  ALREADY indexed under their own feedback_ / project_ /
-  reference_ entries; the CURRENT file itself isn't a
+  ALREADY indexed under their own `feedback_` / `project_` /
+  `reference_` entries; the CURRENT file itself isn't a
   new indexable memory. Modifying CURRENT shouldn't
   require a MEMORY.md edit, but today it does (hit on
   PR #412 2026-04-24, worked around by adding a dated
