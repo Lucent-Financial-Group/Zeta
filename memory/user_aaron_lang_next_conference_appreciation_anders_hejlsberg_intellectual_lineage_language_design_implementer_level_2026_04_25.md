@@ -31,17 +31,25 @@ featuring keynotes + panels with language designers
 including:
 
 - **Anders Hejlsberg** — creator of Turbo Pascal,
-  Delphi, C#, F# (with Don Syme), TypeScript;
-  former Microsoft Technical Fellow; spoke on
-  language-level probabilistic-programming
-  primitives + Infer.NET research.
-- **Don Syme** — F# creator/co-creator, Microsoft
-  Research Cambridge; co-designed F# computation
+  Delphi, C#, and TypeScript; Microsoft Technical
+  Fellow; language-design lead for Microsoft's
+  general-purpose languages; spoke on language-level
+  probabilistic-programming primitives + Infer.NET
+  research at Lang.Next. (Note: F# was created
+  separately by Don Syme — see below — not by
+  Hejlsberg; the factual error of attributing F# to
+  Hejlsberg was caught by Codex on PR #506 and
+  corrected. Hejlsberg's involvement with F# was as
+  Microsoft's overall language-architect during F#'s
+  development, not as designer.)
+- **Don Syme** — F# **primary designer**, Microsoft
+  Research Cambridge; designed F# computation
   expressions (the language feature that makes
   monadic / DSL-shaped programming feel native);
   multiple Lang.Next-era talks on F# language
   design + type-providers + computation
-  expressions.
+  expressions. The factory's F#-first substrate
+  sits directly on Syme's work.
 - **Bjarne Stroustrup** — creator of C++; multiple
   Lang.Next appearances on language evolution.
 - **Herb Sutter** — chair of ISO C++ committee;

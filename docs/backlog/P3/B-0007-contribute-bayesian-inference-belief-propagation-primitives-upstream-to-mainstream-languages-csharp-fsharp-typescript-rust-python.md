@@ -101,15 +101,23 @@ Three structural reasons this is the right shape:
    TypeScript / Rust / Python, that's evidence of
    metaverse-drift; if they can, that's reality-check
    confirmation.
-3. **Hejlsberg's prior art is the reference target.**
-   Anders Hejlsberg (creator of C#, F#, TypeScript)
-   spoke about probabilistic-programming + Bayesian-
-   inference as language-level primitives at Lang.Next
-   conferences. His Infer.NET work at Microsoft
-   Research is the canonical prior art the factory's
-   absorption + contribution path builds on. Aligning
-   with Hejlsberg's framing keeps the contribution
-   work composable with the broader language-design
+3. **The Microsoft Research language-design lineage is
+   the reference target.** Anders Hejlsberg (creator of
+   C# and TypeScript; Microsoft technical-fellow-level
+   language-design lead) spoke about probabilistic-
+   programming + Bayesian-inference as language-level
+   primitives at Lang.Next conferences. F# was created
+   separately by **Don Syme** at Microsoft Research
+   Cambridge — Syme is the primary F# designer; the
+   factory's F#-first substrate sits directly on
+   Syme's work. Tom Minka's Infer.NET (also Microsoft
+   Research) is the canonical prior art the factory's
+   absorption + contribution path builds on for the
+   Bayesian-inference algorithmic side. Aligning with
+   the broader Hejlsberg + Syme + Minka + Winn lineage
+   (per `memory/user_aaron_lang_next_conference_appreciation_anders_hejlsberg_intellectual_lineage_language_design_implementer_level_2026_04_25.md`'s
+   five-axis lineage map) keeps the contribution work
+   composable with the broader language-design
    community.
 
 ## Why this is P3 (not P2/P1/P0)
