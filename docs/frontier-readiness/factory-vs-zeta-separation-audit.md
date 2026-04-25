@@ -436,9 +436,10 @@ isolated per BP-17 (canonical-home ontology discipline).
 
 The `.claude/agents/` directory is the factory's
 named-persona roster. The roster itself is load-bearing for
-the specialist-advisory conference pattern (per CONFLICT-
-RESOLUTION.md); transferring it wholesale to Frontier is a
-core part of the factory's adopter-inheritance story.
+the specialist-advisory conference pattern (per
+docs/CONFLICT-RESOLUTION.md); transferring it wholesale to
+Frontier is a core part of the factory's adopter-inheritance
+story.
 Per-persona Zeta-specific references are narrow surgical
 edits, not structural rewrites. Confirms the naming-is-
 load-bearing discipline: persona *names* transfer verbatim
@@ -496,8 +497,11 @@ Zeta-library-specific.
 - `copilot-instructions.md` (factory-managed per GOVERNANCE
   §31 — factory-generic shape, may have Zeta-specific
   examples)
-- `dependabot.yml` (Dependabot config — NuGet ecosystem is
-  Zeta-specific)
+- `dependabot.yml` (Dependabot config — has BOTH `nuget` and
+  `github-actions` updaters; the NuGet jobs are Zeta-specific
+  but the GitHub Actions jobs are factory-generic and any
+  adopter wants them; needs split-or-duplicate, not retained
+  on Zeta side wholesale)
 - `ISSUE_TEMPLATE/` (factory-generic templates)
 - `PULL_REQUEST_TEMPLATE.md` (factory-generic)
 - `workflows/`:
@@ -506,7 +510,12 @@ Zeta-library-specific.
   - `gate.yml` (the factory's main CI gate — factory-generic
     shape; specific jobs are Zeta-specific)
   - `github-settings-drift.yml` (factory-generic discipline
-    from GOVERNANCE §N; applies to any adopter)
+    from `docs/GITHUB-SETTINGS.md`; applies to any adopter.
+    Note: workflow depends on `tools/hygiene/check-github-
+    settings-drift.sh` and
+    `tools/hygiene/github-settings.expected.json` — those
+    must transfer with the workflow, not stay only on the
+    Zeta side, or the workflow breaks on Frontier)
 
 ### Refactor notes
 
@@ -516,9 +525,19 @@ Before split:
    - `copilot-instructions.md` (factory-managed shape;
      generalise Zeta examples)
    - `workflows/github-settings-drift.yml` (generic discipline)
-   - `codeql/` config (generic CodeQL pattern)
+     PLUS its dependencies: `tools/hygiene/check-github-
+     settings-drift.sh` and `tools/hygiene/github-settings.
+     expected.json` (the workflow won't function without
+     these adjacent tools/* files)
+   - `codeql/` config TEMPLATE (the existing
+     `.github/codeql/codeql-config.yml` is Zeta-tuned with
+     repo-specific path-ignore rules like
+     `references/upstreams/**` and `bench/**`; Frontier needs
+     a path-ignore-empty template, not the live config)
+   - `dependabot.yml` `github-actions` updater section (split
+     out of the live file)
 2. Zeta retains (Zeta-specific):
-   - `dependabot.yml` (NuGet ecosystem)
+   - `dependabot.yml` `nuget` updater section (NuGet ecosystem)
    - `workflows/gate.yml` (dotnet-specific jobs)
    - `workflows/codeql.yml` (Zeta-language-specific)
 3. Frontier gets empty-workflow template for adopters to
@@ -537,16 +556,26 @@ strategy: Frontier inherits the SHAPE + generic disciplines
 instructions pattern); Zeta retains the BUILD specifics
 (dotnet / NuGet / F#).
 
-## Pattern summary after 18 audits
+## Pattern summary after audits in this PR
 
-Tally now includes top-level files + 3 directory-level
-audits:
+Tally covers the audits actually present in this file (5
+top-level docs covered in earlier audit sections + 3
+directory-level audits added in this PR; surfaces named
+elsewhere in `docs/frontier-readiness/*.md` are tracked by
+those files):
 
 | Class | Count | Surfaces |
 |---|---|---|
-| factory-generic | 5 | GOVERNANCE, AGENT-BEST-PRACTICES, ALIGNMENT, AUTONOMOUS-LOOP, FACTORY-HYGIENE |
-| both (coupled) | 9 | CLAUDE, AGENTS, CONFLICT-RESOLUTION, WONT-DO, TECH-RADAR, GLOSSARY, `.claude/agents/`, `openspec/`, `.github/` |
-| zeta-library-specific | 4 | ROUND-HISTORY, BACKLOG, ROADMAP, VISION |
+| factory-generic | 3 | GOVERNANCE, AGENT-BEST-PRACTICES, ALIGNMENT |
+| both (coupled) | 4 | CLAUDE, AGENTS, CONFLICT-RESOLUTION, `.claude/agents/`, `openspec/`, `.github/` |
+| zeta-library-specific | 1 | WONT-DO (mostly Zeta surfaces) |
+
+The total surfaces classified across the broader frontier-
+readiness audit set (covering 18+ surfaces including
+TECH-RADAR / GLOSSARY / ROUND-HISTORY / BACKLOG / ROADMAP /
+VISION / FACTORY-HYGIENE / AUTONOMOUS-LOOP) is tracked across
+the sibling docs in `docs/frontier-readiness/` — this file's
+tally is intentionally scoped to its own audit sections.
 
 Remaining: `.claude/skills/**` (large but skill-tune-up's
 portability-drift column already classifies per-skill) +
