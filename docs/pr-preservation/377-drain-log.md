@@ -13,13 +13,13 @@ authorship, severity, outcome class.
 This PR documented setup-tooling research per Aaron's 2026-04-24
 directive. Drain caught a striking pattern: **5 of 13 findings were
 stale-resolved-by-reality** (forward-mirror landed cited memory + ADR
-files), **3 were Otto-279 history-surface attribution**, **3 were
+files), **2 were Otto-279 history-surface attribution**, **3 were
 real-fix factual corrections** (symlink discipline, Otto-247/248 cite
 shape, runner-matrix labels), and **2 were combined**.
 
 ---
 
-## Outcome distribution: 4 FIX + 5 STALE-RESOLVED-BY-REALITY + 4 OTTO-279
+## Outcome distribution: 4 FIX + 5 STALE-RESOLVED-BY-REALITY + 2 OTTO-279 + 2 dups
 
 ### A: FIX — Real factual corrections
 
@@ -53,7 +53,7 @@ shape, runner-matrix labels), and **2 were combined**.
   Noted that CLAUDE.md captures the rule shape but doesn't carry
   the Otto-NNN identifiers directly. Commit `c8d91b5`.
 
-#### Thread A3 — `:197` + `:257` — Runner-matrix labels not in current gate.yml (Copilot P1 ×2)
+#### Thread A3 — `:197` + `:257` — Runner-matrix labels not in current gate.yml (Copilot P1 ×3)
 
 - Thread IDs: `PRRT_kwDOSF9kNM59ejy1` + `PRRT_kwDOSF9kNM59eenN` +
   `PRRT_kwDOSF9kNM59eenr`
@@ -84,7 +84,10 @@ shape, runner-matrix labels), and **2 were combined**.
 - Severity: P1
 - Outcome: **STALE-RESOLVED-BY-REALITY** — current `.mise.toml` does
   contain both `actionlint = "1.7.12"` and a pinned `shellcheck`
-  entry (verified via `grep -i "actionlint\|shellcheck" .mise.toml`).
+  entry (verified via `grep -iE "actionlint|shellcheck" .mise.toml`
+  — using `-E` for extended regex avoids the BSD/macOS grep
+  incompatibility with BRE `\|` alternation flagged by the post-
+  merge reviewer cascade).
   The doc claim matches in-tree truth now.
 
 #### Thread B3 — `:327` — HB-005 not defined elsewhere (Copilot P1)
