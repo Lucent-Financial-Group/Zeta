@@ -89,12 +89,10 @@ type RendezvousHash(bucketSeeds: uint64 array) =
 
     /// Convenience constructor with deterministic per-slot seeds.
     static member Create(bucketCount: int) : RendezvousHash =
+        // SplitMix64 the slot index to get decorrelated per-slot
+        // seeds. See `src/Core/SplitMix64.fs` for the rationale.
         let seeds =
-            Array.init bucketCount (fun i ->
-                let mutable z = uint64 i * 0x9E3779B97F4A7C15UL
-                z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
-                z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
-                z ^^^ (z >>> 31))
+            Array.init bucketCount (fun i -> SplitMix64.mix (uint64 i))
         RendezvousHash seeds
 
     interface IConsistentHash with
@@ -170,10 +168,8 @@ type MementoHash() =
                     let struct (workingCount, _) = entry
                     // Hash `(key ⊕ b)` into `[0, workingCount)` using a
                     // SplitMix64 mixer — the paper's standard choice.
-                    let mutable z = (key ^^^ uint64 b) * 0x9E3779B97F4A7C15UL
-                    z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
-                    z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
-                    z <- z ^^^ (z >>> 31)
+                    // See `src/Core/SplitMix64.fs` for constant rationale.
+                    let z = SplitMix64.mix (key ^^^ uint64 b)
                     let mutable d = int ((uint64 (uint32 z) * uint64 (uint32 workingCount)) >>> 32)
                     // Follow chains of subsequently-removed buckets.
                     let mutable entry2 = struct (0, 0)

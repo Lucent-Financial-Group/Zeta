@@ -41,10 +41,15 @@ type CountMinSketch(depth: int, width: int, seed: int64) =
     let rowSeeds =
         Array.init depth (fun i ->
             // Splat seed through SplitMix to get independent-looking
-            // row seeds. Cheap and deterministic for replay.
-            let mutable z = uint64 seed * 0x9E3779B97F4A7C15UL ^^^ (uint64 i * 0xBF58476D1CE4E5B9UL)
-            z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
-            z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
+            // row seeds. Cheap and deterministic for replay. Custom
+            // initial mix (`seed * GoldenRatio XOR i * VignaA`)
+            // preserved verbatim instead of factoring through
+            // `SplitMix64.mix` to keep exact downstream byte-for-byte
+            // determinism on existing CMS estimates. See
+            // `src/Core/SplitMix64.fs` for the constant rationale.
+            let mutable z = uint64 seed * SplitMix64.GoldenRatio ^^^ (uint64 i * SplitMix64.VignaA)
+            z <- (z ^^^ (z >>> 30)) * SplitMix64.VignaA
+            z <- (z ^^^ (z >>> 27)) * SplitMix64.VignaB
             z ^^^ (z >>> 31))
 
     [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
@@ -79,12 +84,10 @@ type CountMinSketch(depth: int, width: int, seed: int64) =
     /// Convenience: hash `value` with `HashCode.Combine` then add.
     member this.Add(value: 'T, weight: int64) =
         // SplitMix the 32-bit .NET hash to 64-bit — same mixer as
-        // `HyperLogLog.Add`; no alloc.
+        // `HyperLogLog.Add`; no alloc. See `src/Core/SplitMix64.fs`
+        // for the constant rationale.
         let h32 = HashCode.Combine value |> uint64
-        let mutable z = h32 * 0x9E3779B97F4A7C15UL
-        z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
-        z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
-        this.Add(z ^^^ (z >>> 31), weight)
+        this.Add(SplitMix64.mix h32, weight)
 
     /// Hash a byte span directly for higher-entropy keys.
     member this.AddBytes(bytes: ReadOnlySpan<byte>, weight: int64) =
@@ -101,11 +104,10 @@ type CountMinSketch(depth: int, width: int, seed: int64) =
         if result = Int64.MaxValue then 0L else result
 
     member this.Estimate(value: 'T) : int64 =
+        // Same SplitMix64 mixer as `Add(value, weight)` for hash
+        // consistency. See `src/Core/SplitMix64.fs`.
         let h32 = HashCode.Combine value |> uint64
-        let mutable z = h32 * 0x9E3779B97F4A7C15UL
-        z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
-        z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
-        this.Estimate(z ^^^ (z >>> 31))
+        this.Estimate(SplitMix64.mix h32)
 
     /// Median-row estimate — robust to retractions. At the cost of a
     /// `depth`-sized sort per query, gives an unbiased estimator even

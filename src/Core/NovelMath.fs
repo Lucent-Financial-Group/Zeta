@@ -150,11 +150,10 @@ type HyperMinHash(logBuckets: int) =
         if packed > slots.[bucket] then slots.[bucket] <- packed
 
     member _.Add(value: 'T) =
+        // SplitMix64 the 32-bit .NET hash to 64-bit. See
+        // `src/Core/SplitMix64.fs` for the constant rationale.
         let h32 = HashCode.Combine value |> uint64
-        let mutable z = h32 * 0x9E3779B97F4A7C15UL
-        z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
-        z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
-        addHash (z ^^^ (z >>> 31))
+        addHash (SplitMix64.mix h32)
 
     /// Cardinality estimate — HLL-compatible formula over the rank
     /// portion of each slot.
