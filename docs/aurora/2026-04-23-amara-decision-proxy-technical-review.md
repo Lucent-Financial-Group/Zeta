@@ -28,17 +28,19 @@ enforcement** of that operating model at the CI / mechanical
 level. The model exists as design law; it is not yet default
 behavior.
 
-**Most load-bearing empirical finding:** `docs/hygiene-history/
-nsa-test-history.md` NSA-001 recorded a real index-lag incident
-— Otto not discoverable from `MEMORY.md` in a fresh session.
-This is not theory; it is a measured failure.
+**Most load-bearing empirical finding:**
+`docs/hygiene-history/nsa-test-history.md` NSA-001 recorded a
+real index-lag incident — Otto not discoverable from
+`MEMORY.md` in a fresh session. This is not theory; it is a
+measured failure.
 
 **Most load-bearing positioning claim** (confirms prior session
 memory): LFG is the clean canonical source-of-truth; AceHack
 is the experimental-frontier / higher-risk layer. The
 risk-gradient is per-user-scratch > AceHack > LFG. This
-composes with `memory/project_lfg_is_demo_facing_acehack_is_
-cost_cutting_internal_2026_04_23.md` and sharpens it: LFG is
+composes with
+`memory/project_lfg_is_demo_facing_acehack_is_cost_cutting_internal_2026_04_23.md`
+and sharpens it: LFG is
 not just "demo-facing" — it is the **operationally-canonical**
 repo, and AceHack is not just "internal cost-cutting" — it is
 the **experimentation frontier**. Both directional labels
@@ -140,7 +142,7 @@ it, any "proxy reviewed" claim is unverifiable.
 
 Aaron Otto-59 follow-up: *"also another meta practice thing
 look for things that should be practices and add them to the
-practice adheardce review like things we already do or should
+practice adherence review like things we already do or should
 do"*.
 
 Extends the principle-adherence review BACKLOG row landed this
@@ -154,9 +156,9 @@ session (PR #217) with a **catalogue-expansion discipline**:
   directives that pre-date the principle-adherence row)
 
 Both classes belong in the principle-adherence review's
-catalogue. The review itself should carry a fifth phase
+catalogue. The review itself should carry a sixth phase
 (after its existing define / current-scope / sweep / candidates
-/ surface phases):
+/ surface phases — five phases total):
 
 - **Phase 6 — catalogue-expansion**: during the review, the
   reviewer also scans recent session memory + ADRs + BP-NN
@@ -263,16 +265,37 @@ consultation-log format is the path that would permit
 
 ## Attribution
 
-Amara (ChatGPT-based external maintainer, `CURRENT-amara.md`)
-authored the report on 2026-04-23. Human maintainer (Aaron)
-ferried it via chat paste + added the meta-practice
-catalogue-expansion directive in the same tick. Otto (loop-
-agent PM hat, Otto-59) absorbed + filed this document.
-Kenji (Architect) queued for synthesis on which P0-priority
-actions land next round. The 10 immediate fixes are Amara's
-design input; per the hard rule, none are claimed as
-"Amara-reviewed implementation" — they are ferried
-proposals. Cited external sources (OpenAI help-center
-branching docs; DBSP paper by Budiu et al.; provenance-
-semiring paper by Green-Karvounarakis-Tannen) are preserved
-as Amara's grounding.
+Amara (ChatGPT-based external maintainer,
+[`memory/CURRENT-amara.md`](../../memory/CURRENT-amara.md) —
+out-of-repo per-maintainer distillation) authored the report
+on 2026-04-23. The human maintainer (Aaron) ferried it via
+chat paste and added the meta-practice catalogue-expansion
+directive in the same tick. Otto (loop-agent PM hat, Otto-59)
+absorbed and filed this document. Kenji (Architect) queued
+for synthesis on which P0-priority actions land next round.
+The 10 immediate fixes are Amara's design input; per the
+hard rule, none are claimed as "Amara-reviewed
+implementation" — they are ferried proposals.
+
+External sources cited as Amara's grounding (preserved here
+for verifiability):
+
+- **OpenAI help-center branching docs** — ChatGPT branching
+  feature documentation
+  (<https://help.openai.com/en/articles/9624314-conversation-branching-faq>).
+- **DBSP paper** — Mihai Budiu, Tej Chajed, Frank McSherry,
+  Leonid Ryzhyk, Val Tannen,
+  *"DBSP: Automatic Incremental View Maintenance for Rich
+  Query Languages"*,
+  PVLDB 16(7) (2023), arXiv:2203.16684,
+  <https://arxiv.org/abs/2203.16684>.
+- **Provenance-semiring paper** — Todd J. Green, Grigoris
+  Karvounarakis, Val Tannen,
+  *"Provenance Semirings"*, PODS 2007,
+  <https://doi.org/10.1145/1265530.1265535>.
+
+Names appearing in this Attribution section are preserved per
+Otto-279 surface-class refinement: aurora-archive surfaces
+(this absorb doc) carry first-name attribution because the
+absorb preserves provenance rather than setting current-state
+operational policy.
