@@ -75,8 +75,8 @@ and anti-compliance-theatre measurement surfaces.
 `docs/research/citations-as-first-class.md` proposes typed
 citations, provenance, drift checking, and a lineage tracer.
 Put together, those three documents already imply the right
-structure: **canonicalization + retrieval + provenance graph
-+ independence penalty + reproducibility score**.
+structure: **canonicalization + retrieval + provenance
+graph + independence penalty + reproducibility score**.
 fileciteturn87file0L1-L1 fileciteturn82file0L1-L1
 fileciteturn83file0L1-L1
 
@@ -795,8 +795,8 @@ content; no governance-edit register.
 
 This absorb doc begins with the four §33 header fields.
 13th aurora/research doc in a row to self-apply the format.
-The `tools/alignment/audit_archive_headers.sh` lint (PR
-#243) passes this file.
+The `tools/alignment/audit_archive_headers.sh` lint
+(landed via PR #243) passes this file.
 
 ### Max attribution — no direct reference this ferry
 
