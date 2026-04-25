@@ -81,8 +81,9 @@ slippage failure modes:
 - **All-expand**: MEMORY.md grows unbounded, cross-
   references decay, the index can't be loaded,
   navigation breaks. *This is the current state* —
-  MEMORY.md is at 539 lines / ~400KB, well over the
-  cap; compression is owed.
+  MEMORY.md sits at roughly 540 lines / ~400KB at this
+  memory's authoring (drifts a few lines per session as
+  entries land); well over the cap; compression is owed.
 - **All-compress**: no new kernels accepted, ferry
   imports rejected, Otto-NNN sequence frozen, the
   substrate ossifies into a finished artifact.

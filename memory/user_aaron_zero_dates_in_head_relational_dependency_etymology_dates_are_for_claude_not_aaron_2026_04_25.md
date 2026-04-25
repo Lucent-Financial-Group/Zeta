@@ -1,5 +1,5 @@
 ---
-name: AARON HAS 0 DATES IN HIS HEAD — his cognitive etymology is RELATIONAL / DEPENDENCY-BASED, not date-based; his brain REJECTS facts presented as date-anchored claims; date-stamps in filenames + commit messages + ROUND-HISTORY are FOR CLAUDE (cross-session continuity, Maji preservation), NOT for Aaron; Aaron 2026-04-25 "epistemological etomology anything that uses facts based on dates, my brain rejects, has it's own check, that's our friction laws too, you might say something based on a date and i might be like nope can't be ture i don't know if i can articulate why right now but my brain knows"; "I have 0 dates in my head everyitng is relations/depends ons"; precise operational implication — when surfacing facts to Aaron, lead with RELATION (composes-with / depends-on / supersedes / extends), not with date; date-stamps stay in substrate (for me) but should not be the LOAD-BEARING handle in human-facing summaries; same friction-laws subset Otto-287 friction-reduction physics
+name: AARON HAS 0 DATES IN HIS HEAD — his cognitive etymology is RELATIONAL / DEPENDENCY-BASED, not date-based; his brain REJECTS facts presented as date-anchored claims; date-stamps in filenames + commit messages + ROUND-HISTORY are FOR CLAUDE (cross-session continuity, Maji preservation), NOT for Aaron; Aaron 2026-04-25 surfaced this as an epistemological-etymology framing — date-anchored facts trigger his brain's rejection check (verbatim quote in body); also "I have 0 dates in my head, everything is relations / depends-ons" (verbatim in body); precise operational implication — when surfacing facts to Aaron, lead with RELATION (composes-with / depends-on / supersedes / extends), not with date; date-stamps stay in substrate (for me) but should not be the LOAD-BEARING handle in human-facing summaries; same friction-laws subset Otto-287 friction-reduction physics
 description: User-memory documenting Aaron's date-rejection cognitive trait. Aaron's mental ontology is graph-shaped (relations, dependencies) not timeline-shaped. Facts presented as date-anchored claims trigger his brain's rejection check (analogous to factory's lint catching DST violations). Date-stamps in filenames, commit messages, ROUND-HISTORY rows are FOR CLAUDE — for cross-session continuity / Maji preservation — not for Aaron. Operational implication when surfacing facts to Aaron: lead with relation (composes-with / depends-on / extends / supersedes), not with date.
 type: user
 ---
@@ -108,11 +108,10 @@ the rejection check.
   friction-law class as Otto-287. Same physics, different
   axis (time-axis instead of resource-axis).
 - **`memory/feedback_dst_exempt_is_deferred_bug_not_containment_otto_281_2026_04_25.md`**
-  — Aaron's brain-check is structurally analogous to
-  the factory's DST lint: an automated structural
-  property check.
-- **`memory/feedback_dst_exempt_is_deferred_bug_not_containment_otto_281_2026_04_25.md`**
-  — same pattern; the brain-check fires the same way.
+  — Otto-281 DST-rejection check; Aaron's brain-check is
+  structurally analogous to the factory's DST lint: an
+  automated structural property check; same pre-cognitive
+  shape as the date-rejection check this memory documents.
 - **`memory/user_aaron_maji_built_after_identity_erasure_mental_health_facility_recovery_personal_history_2026_04_25.md`**
   — Aaron's neural architecture's graph-shape is the
   substrate where Maji lives. Graph nodes survive the

@@ -156,7 +156,11 @@ spacing on previous entry."
 rule without recognising the surface is append-only.
 
 **Override:** Otto-229 append-only-history. Memory:
-`memory/feedback_tick_history_append_only_never_edit_prior_rows_otto_229_2026_04_24.md`.
+Otto-229 (the append-only-history rule; surfaced in
+`memory/MEMORY.md` and the per-maintainer
+`memory/CURRENT-aaron.md` distillation; no dedicated body
+file at `memory/` root yet — owed if/when promoted from
+the index entry to a standalone memory).
 
 **Append-only surfaces:** `docs/hygiene-history/**`,
 `docs/ROUND-HISTORY.md`, `docs/DECISIONS/**`. Corrections

@@ -14,7 +14,7 @@ tags: [memory-hygiene, MEMORY.md, distillation, compression, otto-291-pacing, ot
 
 # MEMORY.md compression pass
 
-`memory/MEMORY.md` is currently **539 lines / ~400KB**;
+`memory/MEMORY.md` is currently **roughly 540 lines / ~400KB** (drifts by a few lines per session as new entries land);
 the README cap is **~200 lines** with **one-line entries**
 (under ~200 chars). At session start the file was already
 at 452 lines / 304KB; this session has added several
@@ -22,7 +22,7 @@ additional multi-line entries.
 
 ## Why this is owed now (P1, not deferred)
 
-Per Otto-295 (`memory/feedback_otto_295_substrate_is_monoidal_manifold_*.md`),
+Per Otto-295 (`memory/feedback_otto_295_substrate_is_monoidal_manifold_n_dimensional_expanding_via_experience_compressing_via_pressure_distillation_rodneys_razor_2026_04_25.md`),
 the substrate is a monoidal manifold simultaneously
 expanding (via experience) and compressing (via pressure
 / distillation / Rodney's Razor). The expansion direction
@@ -149,11 +149,11 @@ The compression pass is "good enough to ship" when:
 - **`memory/feedback_otto_294_antifragile_hardening_shape_is_round_smooth_fuzzy_quantum_trampoline_meme_protection_not_sharp_non_differentiable_2026_04_25.md`**
   — compression smooths the manifold; sprawling entries
   are sharp where one-liners are smooth.
-- **`memory/feedback_otto_286_definitional_precision_changes_future_without_war_2026_04_25.md`**
+- **`memory/feedback_definitional_precision_changes_future_without_war_otto_286_2026_04_25.md`**
   (canonical) — precise definitions transfer best when
   compressed; the body file IS the precise definition,
   the index is the routable summary.
-- **`memory/feedback_otto_282_write_code_from_reader_perspective_why_did_you_choose_this_2026_04_25.md`**
+- **`memory/feedback_write_code_from_reader_perspective_why_did_you_choose_this_otto_282_2026_04_25.md`**
   — write the index entry from the reader's
   perspective: "what's surprising / non-obvious here
   that would make me click through?"
