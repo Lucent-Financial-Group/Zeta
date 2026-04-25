@@ -10179,8 +10179,11 @@ systems. This track claims the space.
   "authoritative". Aaron's rule names an intermediate
   state the factory doesn't yet formally mark:
   committed-and-real-but-not-yet-final-canonical.
-  Peer review is the gate that promotes substrate
-  from the intermediate state to final-canonical.
+  Peer review is the *disclosure transition* that
+  moves substrate from the intermediate state to
+  fully-canonical. Per the refinement below, it is
+  NOT a gate — nothing is blocked; only the
+  disclosure note changes.
 
   **Refinement (Aaron autonomous-loop 2026-04-24, same
   session):** binary canonical / not-canonical is too
@@ -10195,19 +10198,24 @@ systems. This track claims the space.
 
   1. **Uncanonical** — just landed, no review yet.
      Safe to build on at your own risk; claims hedged.
+     Disclosure tag: `(not peer reviewed yet)`.
   2. **Agent-peer-reviewed (not human-reviewed)** —
      Codex / Copilot / harsh-critic / another factory
-     agent has engaged with the substrate on its
-     merits. Marked with something like
-     `canonical: pending-human-review` or just
-     `(not peer reviewed)` disclosure. **Claims can
-     be bolder** at this stage *precisely because*
-     the disclosure makes the honesty legible —
-     hedging is only required when the gate state
-     is hidden.
+     agent session has engaged with the substrate on
+     its merits as an independent (non-author)
+     reviewer. Disclosure tag: `(agent-peer-reviewed;
+     not human-reviewed)` — distinct from stage 1 so
+     downstream readers can tell which review has
+     happened. **Claims can be bolder** at this stage
+     *precisely because* the disclosure makes the
+     honesty legible — hedging is only required when
+     the disclosure state is hidden.
   3. **Human-peer-reviewed (fully canonical)** —
      Aaron or another human maintainer has engaged
      with the substrate. Fully authoritative.
+     Disclosure tag: `(peer-reviewed; canonical)` or
+     no tag (canonical is the default-when-reviewed
+     baseline).
 
   The risk profile matters: agents rewrite code fast,
   so the cost of building on tentative-canonical
@@ -10217,7 +10225,7 @@ systems. This track claims the space.
   tentative-canonical unblocks parallel work while
   keeping the audit trail honest.
 
-  The mechanic becomes "disclose the gate state,
+  The mechanic becomes "disclose the review state,
   don't hide it" rather than "block until reviewed".
 
   **Applies to:**
@@ -10263,12 +10271,18 @@ systems. This track claims the space.
     a badge on the first line of a substrate file.
     Small, visible, and consistent is better than
     exhaustive.
-  - What counts as "agent-peer-reviewed"? External
-    reviewer (Codex, Copilot, harsh-critic subagent,
-    another factory agent session) that actually
-    engaged with the substrate on its merits, not
-    rubber-stamped. Rubber-stamps don't clear the
-    disclosure.
+  - What counts as "agent-peer-reviewed"? Independent
+    (non-author) reviewer — another AI session that did
+    NOT produce the substrate under review. Concrete
+    examples: Codex or Copilot external-bot reviews on
+    the PR; a harsh-critic subagent dispatched against
+    the substrate; a fresh Claude Code session reading
+    the substrate cold. The criterion is reviewer
+    *independence from authorship*, not "external to
+    the factory" — another factory agent session is
+    fine as a reviewer as long as it wasn't the author
+    of the substrate being reviewed. Rubber-stamps
+    don't clear the disclosure.
   - What counts as "human-peer-reviewed"? A human
     maintainer (Aaron today; other human contributors
     if/when they land) that engaged with the substrate
