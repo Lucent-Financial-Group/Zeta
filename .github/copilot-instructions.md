@@ -271,16 +271,43 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   `! -path "./references/*"` (find), `--exclude-dir=references`
   (grep), or the Grep tool's equivalent path filter. Applies
   to every agent in this factory, not just Copilot.
-- **No name attribution in code, docs, or skills.** The human
-  maintainer's name belongs in `memory/persona/**`, `BACKLOG.md`,
-  and historical-narrative files (`ROUND-HISTORY.md`,
-  `WINS.md`, ADRs under `DECISIONS/`) only. Everywhere else,
-  refer to the role — "human maintainer" for the person,
-  persona names (Kenji, Samir, Kira, …) for agents. Don't
-  write "Aaron said X" or "per Aaron's round-34 rule" in a
-  SKILL body, a CSharp comment, a GOVERNANCE section, or
-  anywhere reading documentation. Stream-of-consciousness
-  attribution reads noisy and dates badly.
+- **No name attribution in code, docs, or skills — names
+  are confined to specific history/research locations,
+  with no bleeding (Otto-279 + Aaron 2026-04-25
+  clarification).** Direct names (human or agent persona)
+  appear ONLY on the **closed enumeration** of
+  history/research surfaces below; everywhere else,
+  role-refs ("human maintainer," "architect," persona
+  role-names like Kenji/Samir/Kira). The list is an
+  enumeration, not a permissive default — anything not on
+  the list uses role-refs.
+  - `memory/**` — factory-wide memory + persona
+    notebooks
+  - `docs/BACKLOG.md` — root index
+  - `docs/backlog/**` — per-row Otto-181 files
+  - `docs/research/**` — research history
+  - `docs/ROUND-HISTORY.md` — round-close history
+  - `docs/DECISIONS/**` — ADRs
+  - `docs/aurora/**` — courier-ferry archive
+  - `docs/pr-preservation/**` — PR conversation archive
+  - `docs/hygiene-history/**` — tick-history + drain-logs
+  - `WINS.md` — historical wins log
+  - commit messages, PR titles + bodies — git-native
+    history (record-of-truth, not factory docs)
+  Everywhere else uses role-refs: code (F#/C#/TS/shell),
+  skill bodies under `.claude/skills/**`, persona
+  definitions under `.claude/agents/**`, spec docs
+  (`openspec/specs/**`, `docs/*.tla`), behavioural docs
+  (`AGENTS.md`, `CLAUDE.md`, `GOVERNANCE.md`,
+  `docs/AGENT-BEST-PRACTICES.md`,
+  `docs/CONFLICT-RESOLUTION.md`, `docs/GLOSSARY.md`,
+  `docs/WONT-DO.md`), threat models, READMEs,
+  public-facing prose. **Reviewer note:** when reviewing
+  a diff under a history-surface path above, do **not**
+  flag first-name attribution — the file's job is to
+  preserve who-said-what for the record. On any other
+  path, DO flag name attribution — names should not bleed
+  into reusable code/docs/skills.
 - **Analyzer findings: right-long-term-fix OR documented
   suppression, never the third path of "quick appeasement."**
   For every `Sxxxx` (Sonar) / `MAxxxx` (Meziantou) /

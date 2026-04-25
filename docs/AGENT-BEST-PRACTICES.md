@@ -281,15 +281,40 @@ BP drift.
   tree is expected to grow as more upstream reference
   repos land per GOVERNANCE §23, so the cost compounds.
 
-- **No name attribution in code, docs, or skills.** Direct
-  names of contributors (human or agent) appear only in
-  persona memory directories (`memory/persona/<name>/`) and
-  optionally `docs/BACKLOG.md` when a specific request is
-  captured. Code / docs / skill bodies use role-refs
-  ("human maintainer", "architect", "security researcher")
-  so the factory reads stable across contributor turnover.
-  Comms-hygiene sweep is logged under Samir's lane in
-  `docs/BACKLOG.md`.
+- **No name attribution in code, docs, or skills — names
+  are confined to a closed enumeration of history/research
+  locations, no bleeding (Otto-279 + Aaron 2026-04-25
+  clarification).** Direct names (human or agent persona)
+  appear ONLY on the **closed list** of history/research
+  surfaces below; the list is an enumeration, not a
+  permissive default. Anything outside the list uses
+  role-refs.
+  - `memory/**` — factory-wide memory + persona notebooks
+  - `docs/BACKLOG.md` — root index
+  - `docs/backlog/**` — per-row Otto-181 files
+  - `docs/research/**` — research history
+  - `docs/ROUND-HISTORY.md` — round-close history
+  - `docs/DECISIONS/**` — ADRs
+  - `docs/aurora/**` — courier-ferry archive
+  - `docs/pr-preservation/**` — PR conversation archive
+  - `docs/hygiene-history/**` — tick-history + drain-logs
+  - `WINS.md` — historical wins log
+  - commit messages, PR titles + bodies — git-native
+    history (record-of-truth, not factory-doc surfaces)
+
+  Everywhere else uses role-refs ("human maintainer,"
+  "architect," "security researcher," persona role-names):
+  code, skill bodies under `.claude/skills/**`, persona
+  definitions under `.claude/agents/**`, spec docs
+  (`openspec/specs/**`, `docs/*.tla`), behavioural docs
+  (`AGENTS.md`, `GOVERNANCE.md`, this file,
+  `docs/CONFLICT-RESOLUTION.md`, `docs/GLOSSARY.md`,
+  `docs/WONT-DO.md`), threat models, READMEs,
+  public-facing prose. The factory reads stable across
+  contributor turnover on reusable surfaces; attribution
+  survives on history surfaces; names do not bleed
+  between the two. Comms-hygiene sweep is logged under
+  Samir's lane in `docs/BACKLOG.md`.
 
 ---
 

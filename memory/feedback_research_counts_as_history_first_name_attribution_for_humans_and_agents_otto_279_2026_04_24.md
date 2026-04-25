@@ -58,7 +58,10 @@ Per Aaron's directive, the canonical list extends from
 "only persona memory + optionally BACKLOG" to:
 
 - `memory/persona/<name>/` — always (canonical persona home)
-- `docs/BACKLOG.md` — when capturing a specific request
+- `docs/BACKLOG.md` — root index when capturing a specific request
+- `docs/backlog/**` — per-row backlog files (Otto-181 schema:
+  `B-NNNN-*.md` with `directive: maintainer Aaron <date>` and
+  body attribution); same history class as the root index
 - `docs/research/**` — research docs are history (Otto-279)
 - `docs/ROUND-HISTORY.md` — round-close history
 - `docs/DECISIONS/**` — ADRs are historical decisions
@@ -66,6 +69,8 @@ Per Aaron's directive, the canonical list extends from
   per GOVERNANCE §33)
 - `docs/pr-preservation/**` — PR conversation archive (Otto-
   250) — preserves who-said-what verbatim
+- `docs/hygiene-history/**` — tick-history + drain-logs are
+  append-only history surfaces (Otto-229)
 - (commit messages, git log, GitHub PR titles/bodies) — not
   factory-doc surfaces but record-of-truth
 
