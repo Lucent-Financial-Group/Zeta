@@ -1,9 +1,13 @@
-# ADR 2026-04-22: BACKLOG.md restructure (per-row OR swim-lane file split)
+# ADR 2026-04-22: BACKLOG.md per-row-file restructure
 
-**Status:** Proposed — swim-lane variant currently leading per Aaron
-2026-04-25; per-row variant retained as fallback.
-**Decision date:** 2026-04-22 (per-row variant) / 2026-04-25 (swim-lane
-variant added as primary candidate).
+**Status:** Accepted — per-row, priority-in-frontmatter (Otto
+2026-04-25 decision after Aaron delegated the call:
+*"i'll leaf it up to you if you want per row for backlog... it's
+your ownership so you make the finial decision"*).
+**Decision date:** 2026-04-22 (per-row variant proposed) /
+2026-04-25 (swim-lane considered, rename-ceremony objection
+dropped, decision finalised in favour of per-row
+priority-in-frontmatter).
 **Deciders:** Human maintainer (Aaron); Architect (Kenji) integrates; Iris / Bodhi review UX of the file layout.
 **Triggered by:** PR #31 merge-tangle incident (2026-04-22 autonomous-loop tick). See `docs/research/parallel-worktree-safety-2026-04-22.md` §9 — the 5-file conflict table ranked `docs/BACKLOG.md` as the P0 shared-write high-churn surface. Identified as the highest-ROI preventive mitigation before the R45 EnterWorktree factory-default flip.
 
@@ -227,14 +231,42 @@ zero-tooling property is strictly better. Pick based on
 whether the factory wants to spend the tooling budget here
 or elsewhere.
 
-**Maintainer's current lean** (Aaron 2026-04-25): no strong
-preference between per-row and swim-lane — happy with
-either. Per-row is the original ADR direction; swim-lane
-was floated as a lighter alternative; both end up in the
-same collision-avoidance neighbourhood after R45. The
-implementation PR may pick either; this ADR no longer
-ranks them. **Status: both variants viable; implementation
-PR picks one and migrates.**
+**Decision** (Otto 2026-04-25, owning the call after Aaron
+delegated): **per-row, priority-in-frontmatter.** Reasoning:
+
+1. **Pattern consistency.** Every other "many-rows-each-evolves-
+   independently" surface in the factory is per-row — memory
+   (one file per fact), ADRs (one file per decision), drain
+   logs (one file per PR), skills (one folder per skill). The
+   holdouts (BACKLOG, ROUND-HISTORY) have different access
+   patterns — ROUND-HISTORY is justifiably monolithic
+   (chronological / sequential reads), but BACKLOG is
+   priority-organized, and the per-row argument that won
+   everywhere else applies cleanly here.
+
+2. **Filename-IS-index at the per-row level** (Aaron's
+   framing). The filename `<topic>-<owner-ref>.md` encodes the
+   row's discoverability natively; no need to scan-and-extract
+   from a multi-row file.
+
+3. **Tooling burden is bounded.** Index script + frontmatter
+   parser is approximately 200 lines, one-time build. The
+   factory has equivalent tooling already for memories.
+
+4. **Mark-as-done = move-or-delete-file**, much cleaner than
+   "delete a 50-line section from a 1000-line swim-lane
+   file" without disturbing surrounding rows or generating
+   noisy diffs.
+
+5. **Collision avoidance** is strictly better than swim-lane.
+   Post-R45 EnterWorktree default-flip, the parallel-branch
+   count grows; per-row keeps each row's edits independent.
+
+Swim-lane is a viable second-best, retained in the
+trade-off matrix above as documentation of the alternative
+considered. If the per-row tooling investment proves
+larger than expected, swim-lane remains an acceptable
+fallback.
 
 3. **Status-quo with shared-editor discipline (lock the file
    during a tick).** *Rejected:* incompatible with the
