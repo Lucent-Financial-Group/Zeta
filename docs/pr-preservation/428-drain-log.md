@@ -35,10 +35,10 @@ and merge.
   shifted after parent's authoring window.
 - Outcome: **FIX** — cross-reference text updated to match current
   Gemini capability map state. Same class as the parity-matrix
-  cross-references on #231 (Codex CLI parity matrix vs `docs/
-  research/openai-codex-cli-capability-map.md`); the multi-CLI
-  capability-map family forms a related-document cluster where
-  cross-references need joint maintenance.
+  cross-references on #231 (Codex CLI parity matrix vs
+  `docs/research/openai-codex-cli-capability-map.md`); the
+  multi-CLI capability-map family forms a related-document cluster
+  where cross-references need joint maintenance.
 
 ---
 
@@ -46,9 +46,11 @@ and merge.
 
 1. **Cross-capability-map xref consistency is its own class.**
    The repo has a growing family of CLI capability maps:
-   - `docs/research/codex-cli-first-class-2026-04-23.md` (Codex)
-   - `docs/research/openai-codex-cli-capability-map.md` (Codex
-     deeper)
+   - `docs/research/openai-codex-cli-capability-map.md` (Codex —
+     in-tree)
+   - `docs/research/codex-cli-first-class-2026-04-23.md` (Codex
+     deeper context — pending merge of PR #231 at the time of
+     this drain-log; will be in-tree once that PR lands)
    - Grok CLI capability map (#126 parent)
    - Gemini capability map (this xref's target)
    - Claude Code capability surfaces (CLAUDE.md / AGENTS.md)
