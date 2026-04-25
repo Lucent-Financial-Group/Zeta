@@ -10707,8 +10707,9 @@ systems. This track claims the space.
   to be paired with a `memory/MEMORY.md` edit in the same
   PR. The intent is real — new session memories must
   have index pointers — but the trigger-exemption list
-  (`memory/README.md`, `memory/persona/**`, `memory/MEMORY.md`
-  itself) misses `memory/CURRENT-*.md`. CURRENT files
+  (`memory/README.md`, `memory/persona/*`, `memory/MEMORY.md`
+  itself — matching the single-star pattern the workflow
+  actually uses) misses `memory/CURRENT-*.md`. CURRENT files
   are per-maintainer distillations of memories that are
   ALREADY indexed under their own `feedback_` / `project_` /
   `reference_` entries; the CURRENT file itself isn't a
@@ -10730,9 +10731,11 @@ systems. This track claims the space.
     `memory/CURRENT-aaron.md` should pass without
     touching MEMORY.md.
   - Leave the core NSA-001 guard intact — any new
-    `memory/feedback_*.md` / `project_*.md` /
-    `user_*.md` / `reference_*.md` still requires a
-    paired MEMORY.md index pointer.
+    `memory/feedback_*.md` / `memory/project_*.md` /
+    `memory/user_*.md` / `memory/reference_*.md` still
+    requires a paired MEMORY.md index pointer. (Directory
+    prefix spelled consistently on each for clarity since
+    all four live at the same depth.)
 
   **Not in scope:**
 
