@@ -271,58 +271,134 @@ cadence tick.
 ### Thread 10 — `PRRT_kwDOSF9kNM59iyox` — G_carrier_overlap divide-by-zero on empty cone
 
 - Reviewer: `copilot-pull-request-reviewer`
+- Path: `docs/research/provenance-aware-claim-veracity-detector-2026-04-23.md:135`
 - Severity: P1
 
-**Summary:** `cone(y)` is defined as "things y cites/derives-
-from" which can be empty; `size(cone(q) ∩ cone(y)) /
-size(cone(y))` is undefined when `size(cone(y)) = 0`.
+**Original comment (verbatim):**
+
+> P1: `G_carrier_overlap` defines `size(cone(q) ∩ cone(y)) /
+> size(cone(y))`, but `provenance cone(y)` is defined as
+> "things y cites/derives-from", which can be empty (no
+> citations). That makes the overlap ratio undefined / a
+> divide-by-zero in any implementation. Please define the
+> empty-cone behavior explicitly (e.g., treat empty cone as
+> overlap=0, or define the cone as including `y` itself so
+> the denominator is never 0).
 
 **Outcome:** FIX in #405 — `overlap(q, y) = 0` when
 `size(cone(y)) = 0`, else the ratio.
+
+**Reply:** Addressed in follow-up
+[#405](https://github.com/Lucent-Financial-Group/Zeta/pull/405)
+(`2eac738e7b9b3cef5de3d156d8e4cfe6ac9cdee2`) — `G_carrier_overlap`
+now explicitly defines `overlap(q, y) = 0` when
+`size(cone(y)) = 0`, else the ratio. Empty-cone candidates pass
+the overlap gate trivially (no shared lineage to suspect).
+Table cell updated accordingly. (Codex later flagged in #424
+that empty-cone-passes-trivially still leaks into v0-evidence-
+advisory GREEN; final state in #424 fails the gate YELLOW
+on empty cone.)
 
 ---
 
 ### Thread 11 — `PRRT_kwDOSF9kNM59iyo7` — band-merging internally contradictory (5 gates vs 4)
 
 - Reviewer: `copilot-pull-request-reviewer`
+- Path: `docs/research/provenance-aware-claim-veracity-detector-2026-04-23.md:148`
 - Severity: P1
 
-**Summary:** Scoring section defined `min(...)` with
-`G_evidence_independent` but Concern 1 said it was advisory
-and didn't participate. Request to reconcile in scoring
-itself.
+**Original comment (verbatim):**
+
+> P1: The scoring section defines band-merging as
+> `min(..., G_evidence_independent, ...)` with "5 gates per
+> candidate", but later (Concern 1) states
+> `G_evidence_independent` is advisory-only and does *not*
+> participate in band-merging until an independent-oracle
+> substrate exists (v0 ships as a 4-gate min). Please
+> reconcile in the scoring definition itself (e.g., describe
+> v0 vs v1 merge rules there) so the spec isn't internally
+> contradictory.
 
 **Outcome:** FIX in #405 — split into `band_v0` (4 gates,
 shipping) and `band_v1` (5 gates, ADR-gated post-promotion).
+
+**Reply:** Addressed in follow-up
+[#405](https://github.com/Lucent-Financial-Group/Zeta/pull/405)
+(`2eac738e7b9b3cef5de3d156d8e4cfe6ac9cdee2`) — reconciled v0 vs
+v1 merge rules in the scoring section itself. v0 (shipping)
+ships with 4 gates (`G_similarity` + `G_carrier_overlap` +
+`G_contradiction` + `G_status`); `G_evidence_independent` is
+advisory metadata only. v1 (gated on independent-oracle
+substrate landing) adds the evidence gate back into band-
+merging via an ADR-gated promotion. Query-level aggregation
+and output-type #1 ('supported') updated to reference 'all
+included gates GREEN — 4 for v0, 5 for v1'.
 
 ---
 
 ### Thread 12 — `PRRT_kwDOSF9kNM59iyo_` — "5 output types" header vs `no-signal` 6th
 
 - Reviewer: `copilot-pull-request-reviewer`
+- Path: `docs/research/provenance-aware-claim-veracity-detector-2026-04-23.md:221`
 - Severity: P2
 
-**Summary:** Section titled "5 output types" but also defines
-`no-signal` as a sixth output when retrieval is empty.
+**Original comment (verbatim):**
+
+> P2: This section is titled "## 5 output types" but also
+> defines an additional explicit `no-signal` output-type when
+> retrieval is empty. That makes the contract look like 6
+> possible outputs. Consider renaming the section (or
+> explicitly calling out `no-signal` as a 6th output type) to
+> keep the output-type count consistent for implementers and
+> readers.
 
 **Outcome:** FIX in #405 — renamed section to "6 output types
 (Amara's 5-type set + `no-signal`)" and explicitly numbered
 the retrieval-empty case as #6.
+
+**Reply:** Addressed in follow-up
+[#405](https://github.com/Lucent-Financial-Group/Zeta/pull/405)
+(`2eac738e7b9b3cef5de3d156d8e4cfe6ac9cdee2`) — section renamed
+from "5 output types" to "6 output types (Amara's 5-type set +
+`no-signal`)" and numbered the retrieval-empty case explicitly
+as #6. Implementer reading the header now sees the full
+output-type cardinality (no surprise 6th case buried in a
+Default/unknown-band subsection).
 
 ---
 
 ### Thread 13 — `PRRT_kwDOSF9kNM59iypE` — Concern 2 leftover α/β/γ/δ from pre-band formulation
 
 - Reviewer: `copilot-pull-request-reviewer`
+- Path: `docs/research/provenance-aware-claim-veracity-detector-2026-04-23.md:261`
 - Severity: P1
 
-**Summary:** Concern 2 still named α/β/γ/δ weights from the
-original weighted-sum score; band classifier replaced those
-in the scoring section.
+**Original comment (verbatim):**
+
+> P1: Concern 2 discusses parameter-fitting over `α/β/γ/δ`
+> weights, but the scoring section states the design
+> replaces the weighted-sum score with a band classifier and
+> later says "no linear combination of ordinal signals."
+> Unless `α/β/γ/δ` still exist as internal/non-authoritative
+> signals, this reads like a leftover from the pre-band
+> formulation. Please either remove `α/β/γ/δ` from the
+> parameter-gating discussion or explain precisely where
+> those weights still apply in the band-based design (and
+> what changing them would affect).
 
 **Outcome:** FIX in #405 — Concern 2 rewritten to name band-
 classifier thresholds (τ_low, τ_med, θ_high, θ_med) as the
 actual parameter-fitting surface.
+
+**Reply:** Addressed in follow-up
+[#405](https://github.com/Lucent-Financial-Group/Zeta/pull/405)
+(`2eac738e7b9b3cef5de3d156d8e4cfe6ac9cdee2`) — Concern 2
+rewritten to name actual band-classifier parameters (τ_low,
+τ_med, θ_high, θ_med, per-gate semantics) as the parameter-
+fitting surface. α/β/γ/δ references noted as pre-band-
+weighted-sum scaffolding that's kept in 'What this doc does
+NOT do' for eventual v2 hybrid behind the same ADR gate — so
+they don't read as authoritative v0/v1 parameters.
 
 ---
 
@@ -332,13 +408,29 @@ actual parameter-fitting surface.
 - Path: `docs/BACKLOG.md:6937`
 - Severity: P1
 
-**Summary:** BACKLOG Otto-279 memory reference was split
-across three lines (unclickable) AND the file didn't exist
-in in-repo `memory/` (only in global AutoMemory tree).
+**Original comment (verbatim):**
+
+> P1: The BACKLOG entry references a memory file
+> `memory/feedback_research_counts_as_history_..._otto_279_2026_04_24.md`,
+> but that filename doesn't appear to exist anywhere under
+> `memory/` (and the backticked path is currently broken
+> across multiple lines, making it harder to copy/paste).
+> Please update this to the exact existing memory filename
+> (single-line `memory/<file>.md` path), or add the missing
+> memory file in this PR if it's intended to be introduced
+> here.
 
 **Outcome:** FIX in #405 — path collapsed to single markdown
 link + memory file copied into in-repo `memory/` (Otto-114
 memory-sync forward-mirror pattern).
+
+**Reply:** Addressed in follow-up
+[#405](https://github.com/Lucent-Financial-Group/Zeta/pull/405)
+(`2eac738e7b9b3cef5de3d156d8e4cfe6ac9cdee2`) — memory-file path
+collapsed to single-line markdown link AND the file is now
+copied into in-repo `memory/` (forward mirror of the Otto-114
+memory-sync pattern). The BACKLOG link now resolves to
+`memory/feedback_research_counts_as_history_first_name_attribution_for_humans_and_agents_otto_279_2026_04_24.md`.
 
 ---
 
