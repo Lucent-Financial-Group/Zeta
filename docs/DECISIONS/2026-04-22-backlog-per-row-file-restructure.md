@@ -206,29 +206,35 @@ for safety on bulk operations (migration, tier sweeps).
 | Axis | Per-row priority-in-path | Per-row priority-in-frontmatter | Swim-lane (10 files) |
 |---|---|---|---|
 | Filename grep-ability | High (path reveals priority) | High (topic+owner-ref grep) | Medium (one swim-lane = grep target) |
-| Priority-shift cost | Move file across dirs | Frontmatter edit | Section reorder within file |
 | File count | 150+ | 150+ | ~10 |
 | Collision avoidance | Near-zero (filename disambiguates) | Near-zero (filename disambiguates) | Medium (same swim-lane still collides) |
 | Tooling cost | Index script | Index script + frontmatter parser | Minimal (concat-and-scan) |
 | Discoverability | Directory walk + index | Index file required | Direct filename = topic |
 
-**Real trade-off:** tooling-investment-now (per-row, max
-collision-avoidance) vs simpler-grep-now (swim-lane, pays the
-shared-write cost). Both are viable. Initial argument that
-per-row was strictly worse than swim-lane was overstated —
-per-row with priority-in-frontmatter avoids the rename
-ceremony and keeps filename-IS-index. The choice depends on
-whether the tooling investment is worth the merge-conflict
-avoidance the factory expects to gain post-R45 EnterWorktree
-default-flip.
+**Note on priority-shift cost** (Aaron 2026-04-25): a file
+rename and an in-place edit are the same cost — both are a
+single git operation, both are tracked by similarity
+detection. The "rename ceremony" objection in earlier ADR
+revisions was non-substantive and is dropped. Whether
+priority lives in the path or in frontmatter, a P3→P1 shift
+is one edit either way.
 
-**Maintainer's current lean** (Aaron 2026-04-25): swim-lane
-preferred for the *initial* implementation because the
-tooling investment for per-row is non-trivial and swim-lane
-captures most of the collision-avoidance benefit at lower
-cost. Per-row priority-in-frontmatter remains a viable
-follow-up if swim-lane collision rate proves insufficient.
-**Status: under active evaluation; both variants alive.**
+**Real trade-off:** tooling-investment-now (per-row, max
+collision-avoidance) vs simpler-grep-now (swim-lane, pays
+the shared-write cost). Both are viable. Per-row's
+collision-avoidance is strictly better; swim-lane's
+zero-tooling property is strictly better. Pick based on
+whether the factory wants to spend the tooling budget here
+or elsewhere.
+
+**Maintainer's current lean** (Aaron 2026-04-25): no strong
+preference between per-row and swim-lane — happy with
+either. Per-row is the original ADR direction; swim-lane
+was floated as a lighter alternative; both end up in the
+same collision-avoidance neighbourhood after R45. The
+implementation PR may pick either; this ADR no longer
+ranks them. **Status: both variants viable; implementation
+PR picks one and migrates.**
 
 3. **Status-quo with shared-editor discipline (lock the file
    during a tick).** *Rejected:* incompatible with the
