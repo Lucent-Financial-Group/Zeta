@@ -50,7 +50,7 @@ In uncertainty cases: ASK or use a non-force-push alternative.
 
 ## Non-force-push alternative for stale PRs
 
-`git merge origin/main` into the PR branch creates a merge commit that brings the branch up-to-date with current main. CI runs against the merged state. No history rewrite. Standard "Update branch" GitHub UI button.
+`git fetch origin main` then `git merge origin/main` into the PR branch creates a merge commit that brings the branch up-to-date with current main. CI runs against the merged state. No history rewrite. Same operation as GitHub's "Update branch" UI button. **Critical**: must `git fetch origin main` FIRST — `git merge origin/main` only uses the existing local ref, so a stale local `origin/main` would merge an out-of-date base. (Codex catch on PR #509 — real bug class.)
 
 Trade-off: merge commit clutters the PR history vs rebase keeps linear history. Both are valid; choose based on team preference. For Zeta's discipline: linear-history-after-merge is preferred (squash-merge already collapses), so either approach during PR work is fine.
 
