@@ -10274,6 +10274,131 @@ systems. This track claims the space.
   - Otto-237 mention-vs-adoption discipline (same
     shape: committed ≠ authoritative, adoption is a
     separate gate).
+- [ ] **Clean-room BIOS factory workflow — two-persona
+  Chinese Wall methodology, tractable-platforms-only
+  pilot.** Aaron autonomous-loop 2026-04-24 (verbatim):
+
+  > *"i could get bios and you do both side with different
+  > personas one is dirty with existing bios writes specs
+  > and the other is clean and only reads specs (I think
+  > that's right keep me honest)"* + *"backlog is if its
+  > feesable"*
+
+  **Feasibility triage (this backlog row covers FEASIBLE
+  only):**
+
+  - **Feasible — PILOT candidates (public-spec-already-
+    exists path, no proprietary-BIOS-read required):**
+    Atari 5200, Atari 7800, Atari Lynx, Intellivision
+    (Mattel Exec ROM), ColecoVision. Each has published
+    hardware docs (nocash-style / dev-manuals / reverse-
+    engineered community refs) at a specification level
+    that a clean-room implementer could work from without
+    needing the proprietary BIOS ever enter the loop.
+    Weeks-per-platform engineering scope. Factory can
+    absorb one pilot.
+  - **Theoretically feasible, practically deferred until
+    emulation is a first-class workload:** Sony PS1, Sega
+    Saturn, SNK Neo Geo. Specs available but non-trivial
+    (months-per-platform); clean-room pays only if we're
+    scaling to emulator substrate. Gated on: emulator-
+    workload becoming a named factory milestone.
+  - **Not feasible at factory scope:** Sony PS2, Microsoft
+    Xbox (MCPX has anti-RE countermeasures), Nintendo
+    GameCube. Years-of-work per platform for teams larger
+    than this factory. Don't commit.
+
+  **Methodology (Chinese Wall — same shape Compaq used
+  for PC BIOS in 1982, Phoenix Technologies for multiple
+  platforms since):**
+
+  1. **Dirty persona** (specifier / reader) — Aaron's
+     legitimately-acquired BIOS + public docs; writes
+     behavioral spec: syscall table, memory map, boot
+     sequence, register conventions, error states. Spec
+     lives in `docs/clean-room/<platform>/spec.md` and
+     IS committed. Reader notes are NEVER committed.
+  2. **Clean persona** (implementer) — has never seen
+     the proprietary BIOS or the dirty persona's reading
+     notes. Reads only the committed spec. Writes
+     implementation from scratch, language-appropriate.
+  3. **Firewall enforcement** — dirty + clean personas
+     run as separate AI sessions (different harness
+     logins or isolated memory scopes) so context cannot
+     leak. Aaron polices the boundary. Any context-
+     contamination incident retires that clean persona's
+     output.
+
+  **Open-design questions before the pilot lands:**
+
+  - **AI-session isolation mechanism**: how do we
+    provably keep the clean persona's context free of
+    dirty-persona notes? Options: (a) completely
+    separate harnesses (Codex for dirty, Claude for
+    clean, or vice-versa); (b) per-project memory
+    scoping with a "clean-only" tag; (c) scratch-org
+    for the clean team. (a) is cheapest + most
+    defensible.
+  - **Spec-shape discipline**: what abstraction level
+    avoids code-leakage without being useless? The
+    canonical Phoenix spec is the template — describe
+    behavior at API / state-machine level, no bit
+    patterns, no register labels that mirror source
+    names, no pseudocode. Needs a `writing-clean-room-
+    specs-skill` if this becomes routine.
+  - **Legal documentation trail**: timestamped commit
+    history + session-isolation records need to form an
+    auditable paper trail. GOVERNANCE §33-style archive
+    headers apply: each spec names `Scope: clean-room
+    specifier output`, `Attribution: <who read the
+    BIOS>`, etc.
+
+  **Scope of this BACKLOG row:** ONE pilot on a simple
+  platform (recommend Atari 5200 — small BIOS, excellent
+  public docs, well-understood hardware) proving out the
+  two-persona workflow end-to-end. The pilot's success
+  criterion is a committed `docs/clean-room/atari-5200/`
+  tree with spec.md + implementation.asm (or .fs / .rs
+  etc) that boots a test cartridge in an Atari 5200
+  emulator.
+
+  **Not in scope:**
+
+  - Clean-room BIOS for complex platforms (PS2, Xbox,
+    GCN) — not-feasible, per triage above.
+  - A general-purpose "clean-room BIOS for every removed
+    platform" campaign — scope-creep. Pilot one, review,
+    decide.
+  - Emulator development itself — separate roadmap.
+  - Legal review by outside counsel — outside factory
+    scope; Aaron's call if/when the pilot's output ever
+    ships publicly.
+
+  **Effort:** L (large, 2-4 weeks calendar for the
+  pilot) for Atari 5200 specifically; other simple
+  platforms similar scale each.
+
+  **Dependencies:**
+
+  - Emulator substrate direction being a named factory
+    milestone (currently P3 aspirational per the emulator-
+    runs-on-OS-interface BACKLOG rows).
+  - AI-session isolation mechanism decided (architecture
+    question; blocks the pilot).
+
+  **Composes with:**
+
+  - `roms/README.md` — "removed platforms" list; this
+    workflow is the path to re-adding any of them.
+  - OS-interface durable-async roadmap (emulators are
+    the canonical workload proving it out).
+  - GOVERNANCE §33 archive-header discipline (auditable
+    provenance trail is same shape).
+
+  **Memory:** methodology captured in-tick in agent
+  response 2026-04-24; no separate memory file until
+  pilot work starts (don't pre-commit to doctrine for
+  speculative work).
 
 - [ ] **User-mode filesystem driver interface — Zeta as
   a mountable FS via FUSE / WinFsp / macFUSE; research
