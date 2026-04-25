@@ -108,7 +108,7 @@ REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 # with exit 1 rather than silently defaulting to a baked-in
 # NWO (better to fail loud than archive to the wrong repo
 # path on a fork).
-REPO_NWO="$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || true)"
+REPO_NWO="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)"
 if [ -z "${REPO_NWO}" ]; then
   echo "error: could not detect repo via 'gh repo view'. Is gh authenticated and this a GitHub repo?" >&2
   exit 1
@@ -496,15 +496,38 @@ content = '\n'.join(lines).rstrip('\n') + '\n'
 collapsed = []
 blank_run = 0
 in_fence = False
+fence_marker = None  # '`' or '~' — opener type must match closer
 for raw_line in content.split('\n'):
     # Detect fenced-code-block boundaries (``` or ~~~ at
     # the start of a line, ignoring leading whitespace).
+    # Per CommonMark, the closing fence must use the SAME
+    # marker character as the opener (backticks close
+    # backticks; tildes close tildes). Previously the
+    # detector flipped on any fence-shaped line, which
+    # would prematurely close a backtick fence on a tilde
+    # line (and vice versa).
     stripped = raw_line.lstrip()
-    if stripped.startswith('```') or stripped.startswith('~~~'):
-        in_fence = not in_fence
-        blank_run = 0
-        collapsed.append(raw_line)
-        continue
+    marker = None
+    if stripped.startswith('```'):
+        marker = '`'
+    elif stripped.startswith('~~~'):
+        marker = '~'
+    if marker is not None:
+        if not in_fence:
+            in_fence = True
+            fence_marker = marker
+            blank_run = 0
+            collapsed.append(raw_line)
+            continue
+        if marker == fence_marker:
+            in_fence = False
+            fence_marker = None
+            blank_run = 0
+            collapsed.append(raw_line)
+            continue
+        # Different-marker fence line inside an open fence:
+        # fall through to the in_fence verbatim branch so
+        # the line is preserved without flipping state.
     if in_fence:
         # Inside a fenced block: preserve verbatim.
         # No whitespace-only normalization, no blank-run
