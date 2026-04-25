@@ -8,19 +8,27 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "deps:"
-    # Group related NuGet updates into a single PR. Per Aaron Otto-280
-    # 2026-04-25 directive: ungrouped per-package PRs add noise to the
-    # drain queue when several packages bump in the same week. Grouping
-    # cuts the queue depth + lets a single CI run cover the cluster.
-    # Major bumps still open as individual PRs so they get scrutiny.
+    # Group related NuGet updates into a single PR. Per maintainer
+    # Otto-280 2026-04-25 directive: ungrouped per-package PRs add
+    # noise to the drain queue when several packages bump in the same
+    # week. Grouping cuts the queue depth + lets a single CI run cover
+    # the cluster. Major bumps still open as individual PRs so they
+    # get scrutiny.
     groups:
       # System.* / Microsoft.* runtime libraries usually bump together
       # on .NET servicing rolls (e.g., 10.0.6 to 10.0.7 across
       # System.Numerics.Tensors / System.IO.Hashing / etc.).
+      # `exclude-patterns` keeps unrelated `Microsoft.*` packages
+      # (`Microsoft.NET.Test.Sdk` is a test harness; `Microsoft.Z3` is
+      # an SMT solver) out of the runtime rollup so they fall through
+      # to `nuget-minor-patch` instead of being mis-bundled.
       dotnet-runtime:
         patterns:
           - "System.*"
           - "Microsoft.*"
+        exclude-patterns:
+          - "Microsoft.NET.Test.Sdk"
+          - "Microsoft.Z3"
         update-types:
           - "patch"
           - "minor"
@@ -53,7 +61,7 @@ updates:
     commit-message:
       prefix: "deps:"
     # Group third-party action SHA-pins into a single PR per week
-    # rather than one PR per action. Same Otto-280 rationale.
+    # rather than one PR per action. Same maintainer Otto-280 rationale.
     groups:
       github-actions-minor-patch:
         patterns:
