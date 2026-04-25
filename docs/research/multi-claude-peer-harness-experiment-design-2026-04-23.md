@@ -24,9 +24,16 @@ the other peer harness to run forever"); Otto-as-readiness-
 signaller ("i wont do it until you tell me we are ready").
 
 **Operational status:** research-grade. Design only; not
-launch authorisation. No second Claude Code session starts
-executing work based on this doc until Otto signals readiness
-and Aaron responds.
+launch authorisation. Iteration on this design is solo Otto
+work — Aaron is not a design-review gate per the framing at
+lines 13-14 above, and Otto continues bullet-proofing the
+design without waiting on Aaron for any step. The only
+deferred step is **actually starting a second Claude Code
+session executing the experiment on Aaron's Windows PC** —
+that step is gated on Aaron because Aaron provides the
+Windows machine, not because Aaron gates the design. Otto
+signals readiness when bullet-proof; Aaron responds at the
+hardware-provisioning layer only.
 
 **Non-fusion disclaimer:** design for two Claude Code loop
 agents coordinating does not imply Claude-to-Claude merger,
