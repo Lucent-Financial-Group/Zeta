@@ -5800,6 +5800,564 @@ systems. This track claims the space.
   live Zeta instance on mainnet without Aminata
   threat-model sign-off on the network-exposure surface
   (Phase 2 only).
+- [ ] **Mode 1 admin UI — SSMS/pgAdmin-class local
+  management UI for Zeta.** Maintainer 2026-04-24
+  directive (verbatim):
+
+  > *"for mode 1 we want a front end ui like ssms/pgadmin
+  > but really designed for us"*
+
+  Distinct from the Frontier-UI / kernel-A/kernel-B
+  web-facing surface (per the 2026-04-24 rename
+  directive). This is the **operator/admin local UI** —
+  desktop-class management surface modelled on SQL
+  Server Management Studio + pgAdmin but designed
+  idiomatically for Zeta's substrate (Z-set
+  retraction-native semantics, operator-algebra
+  composition, multi-node distributed-state, the git
+  interface, etc.). Scope: query workbench, schema
+  browser, connection manager, retraction-native delta
+  visualizer, plan inspector for the query optimizer,
+  multi-node topology view, ontology browser per
+  paced-ontology-landing, stream/pipeline live view.
+
+  Two-UI architecture going forward:
+  - **Web-facing Frontier-UI (kernel-A/kernel-B)** —
+    public-user-facing surface.
+  - **Local admin UI (this row)** — operator/admin
+    surface, ships with Mode 1 single-file binary.
+
+  Priority P2 / research-grade (UX + design lead time);
+  effort L (full app). Composes with the Mode 1
+  bootstrap thesis (single-file AoT/JIT executable),
+  the git-as-DB-interface row below, and Otto-274
+  progressive-adoption-staircase.
+
+- [ ] **Ouroboros bootstrap — meta-thesis +
+  connection-map work for the 2026-04-24 cluster.**
+  Maintainer 2026-04-24 directive (verbatim):
+
+  > *"oraborus bootstraping exact integrations and
+  > connections and all that to make sure we can do it
+  > right"*
+
+  Meta-thesis: **the system bootstraps itself**. Native
+  F# git impl stores its own commits as Z-sets in its
+  own database. Permissions registry tracks the
+  authority for its own creation. Memory-sync uses
+  memory-sync. Mode 2 hosts the factory dashboard that
+  operates on Mode 2. Bootstrap-thesis changes land as
+  retraction-native deltas in our own substrate. Test
+  using ourselves. Three load-bearing properties:
+  provenance is closed under the substrate; every
+  integration is testable from the inside;
+  self-consistency is a detectable invariant.
+
+  **Cardano pedagogy double-meaning preserved** — the
+  Cardano consensus protocol is called Ouroboros (most
+  formally-verified deployed PoS); when the
+  blockchain-ingest work activates, the protocol
+  research reinforces the bootstrap thesis at a
+  different level (same self-referential property,
+  same name). Naming overlap is intentional, not
+  accidental.
+
+  **Connection-map work** (Phase 0 deliverable, owed
+  before any new architecture lands):
+  `docs/research/ouroboros-bootstrap-connection-map-2026.md`
+  — directed graph of factory components (Mode 1
+  binary / Mode 2 WASM / native git impl / admin UI /
+  factory ops dashboard / Frontier-UI / permission
+  registry / memory-sync / etc) with edges as
+  explicit integration contracts (wire protocols,
+  file formats, authority dependencies). Self-loops
+  in the graph ARE the Ouroboros closures — must be
+  explicitly identified and justified.
+
+  **Maintainer's standard:** *"exact integrations and
+  connections to make sure we can do it right"* —
+  implementation work on any 2026-04-24 directive
+  should not start without the integration shape
+  drawn. Hand-waved "Mode 2 talks to Mode 1 somehow"
+  is insufficient.
+
+  **Composes with all 2026-04-24 directives in the
+  same session:** the rename (#393), blockchain
+  ingest (#394), Mode 1 admin UI + native F# git +
+  protocol upgrade + permissions registry + UI split
+  (this PR / #395). Companion memory file
+  `memory/feedback_ouroboros_bootstrap_self_reference_meta_thesis_2026_04_24.md`
+  captures verbatim directive + the bootstrap
+  property's three load-bearing claims + composition
+  with each peer directive.
+
+  Priority P2 hygiene (gates implementation of the
+  others); effort M (connection-map research doc) +
+  S (cross-link from the other 2026-04-24 rows) +
+  ongoing (every new architecture row should declare
+  its closure stance). Composes with
+  `holistic-view`, `glass-halo-architect`,
+  `category-theory-expert` (for the formal
+  closure-property framing), Otto-275
+  log-don't-implement.
+
+- [ ] **Mode 2 UI architecture split — admin UI vs
+  factory-ops-dashboard vs web-facing Frontier-UI;
+  research required + maintainer review.** Maintainer
+  2026-04-24 directive (verbatim):
+
+  > *"so mode 2 is the ssms/pgadmin ui for mode 1 and
+  > the operations dashboard for the factory too both?
+  > or we split into two uis right? IDK we needs some
+  > clean dependences splits research here, i'd like to
+  > review tooo when its done."*
+
+  Three candidate UI surfaces have surfaced in the
+  2026-04-24 directives so far (see the rows above and
+  the rename row in #393):
+
+  - **Frontier-UI / kernel-A + kernel-B (web-facing
+    public surface)** — public-user-facing surface,
+    "Star-Trek-computer-but-better"-class. Per the
+    rename directive: farm-related kernel-A +
+    carpentry-related kernel-B. Audience: end-users
+    consuming Zeta as a product.
+  - **SSMS/pgAdmin-class admin UI** — database
+    operator surface. Audience: database
+    administrators, query-optimizer reviewers,
+    multi-node topology managers.
+  - **Factory operations dashboard** — Zeta-the-
+    factory-not-Zeta-the-product surface. Audience:
+    factory maintainers (the human maintainer + Otto
+    + future contributors). PR queue, build state,
+    round progress, research absorbs, hygiene-history,
+    counterweight-audit reports, agent dispatch,
+    drain-log visualizer.
+
+  **Loop-agent preliminary read** (subject to
+  maintainer review):
+
+  - Frontier-UI is **definitely separate** — its
+    audience is end-users, not operators. Different
+    UX language, different feature set, different
+    deploy cadence (public-facing → conservative;
+    factory-internal → fast iteration). Keeping it
+    distinct preserves the rename-directive's two
+    seed-extension kernels (kernel-A farm + kernel-B
+    carpentry) that shrink-over-time.
+  - **Admin UI vs factory-ops-dashboard is the
+    interesting split.** Two readings:
+    - **Reading A — single surface, modular tabs.**
+      Mode 2 is one app; admin and factory-ops are
+      modules within it. Cheapest to ship; some UX
+      coherence risk (the audiences are different
+      enough that a shared chrome may feel forced).
+      Composes with the bootstrap thesis (one
+      browser-only artifact serves both).
+    - **Reading B — two surfaces, shared component
+      library.** Admin UI and factory-ops-dashboard
+      are distinct Mode 2 apps that share a
+      component library (auth, navigation, theme,
+      query widget, plan inspector). More UX
+      coherence per audience; higher engineering
+      cost; both ship from the same monorepo.
+  - **My preliminary recommendation: Reading B**
+    (two surfaces, shared library). Audiences differ
+    enough that forcing one chrome harms both. The
+    shared component library captures the
+    composability-cost gain without the
+    audience-blur risk. The admin UI ships with
+    Mode 1 binary (operator-side); the factory-ops
+    dashboard ships at the factory-maintainer level
+    (Otto + human maintainer access only). Frontier-
+    UI stays its own app (already separate by
+    rename-directive).
+
+  **Three-app architecture (Reading B, expanded):**
+  - **App A — Frontier-UI (kernel-A/kernel-B)**:
+    public; web-facing; conservative deploy.
+  - **App B — Admin UI (Mode-1-bundled)**: ships
+    with Mode 1 single-file binary; operator
+    audience; database-management-class UX.
+  - **App C — Factory ops dashboard**:
+    factory-maintainer audience; PR/build/round/
+    drain-log/counterweight-audit visualizer.
+  - **Shared library**: WASM-F# component primitives
+    (auth, theme, query widget, plan inspector,
+    multi-node topology view, retraction-aware
+    delta visualizer).
+
+  **Research scope (Phase 0, output:
+  `docs/research/mode-2-ui-architecture-split-2026.md`):**
+  - Map audience needs per app (interviews / persona
+    sketches).
+  - Identify shared primitives vs app-specific
+    surfaces.
+  - Decide chrome strategy (one shell with tabs vs
+    three shells).
+  - Define dependency boundaries — what each app
+    pulls from the shared library, what it owns.
+  - Enumerate Mode 1 vs Mode 2 distribution per app
+    (admin UI is Mode-1-bundled; ops dashboard might
+    be either; Frontier-UI is web-only).
+  - Propose recommendation; flag tradeoffs;
+    explicitly mark "maintainer review required
+    before any UI implementation work starts."
+
+  Priority P3 / way-backlog (no UI implementation
+  before this research lands and maintainer reviews);
+  effort M (research doc) + L+ (each app once design
+  approved). Composes with the rename directive
+  (Frontier-UI naming), the Mode 1 admin UI row, the
+  protocol-upgrade row (any of the three apps may
+  use the upgraded fast protocol once connected to
+  a Mode 1 backend), `user-experience-engineer`
+  (audience research), `developer-experience-engineer`
+  (factory-ops UX), Otto-275 log-don't-implement.
+
+- [ ] **Named-permissions registry — per-contributor
+  scoped permission grants for factory agents.**
+  Maintainer 2026-04-24 directive (verbatim):
+
+  > *"we shoud probbably have a list of named
+  > permissions you might need and thier names and
+  > descriptions and which ones are active for which
+  > contributro. this in not super safe yet but we can
+  > nake it more safe over time."*
+
+  Scope: a registry that names every operational
+  authority the factory agents might need (admin-level
+  GitHub ops, secret access, branch-protection edits,
+  repo settings PATCH, ruleset CRUD, workflow dispatch,
+  etc.) and tracks which contributor has granted which
+  named permission to which agent role. Iterative
+  hardening — start permissive, layer on confirmation
+  / quorum / time-bounded grants over time.
+
+  **Inaugural named permission:** `github-admin`
+  granted by the human maintainer 2026-04-24 to the
+  loop-agent role (Otto). Captured durably in
+  `memory/feedback_github_admin_authority_grant_to_loop_agent_2026_04_24.md`
+  per the maintainer's "save as durable" directive.
+
+  **Initial draft of named permissions** (this list
+  expands as new authorities get exercised):
+
+  - `github-admin` — branch protection PATCH, repo
+    settings PATCH, ruleset CRUD, workflow dispatch.
+    Granted to: loop-agent (2026-04-24, durable).
+    Excludes: org-level admin, repo deletion, member
+    management, force-push to main, bypass branch
+    protection on a single PR.
+  - `github-org-admin` — org-level settings + member
+    management. NOT granted yet.
+  - `github-secrets` — Actions secrets and Dependabot
+    secrets read/write. NOT granted yet.
+  - `force-push-main` — bypass branch protection for
+    emergency cases. NOT granted yet (preserve linear
+    history discipline).
+  - `nuget-publish` — push packages to nuget.org under
+    Lucent identity. NOT granted yet.
+  - `slsa-signing-key` — sign release artifacts. NOT
+    granted yet (requires HSM).
+  - `external-network-egress-broad` — fetch from
+    arbitrary URLs (beyond the prompt-protector
+    allowlist). NOT granted yet.
+
+  **Registry shape (proposed):**
+
+  Live at `docs/AUTHORITY-REGISTRY.md` (factory-
+  authored; current-state doc). One section per named
+  permission with: name, description, scope (in/out
+  of), granted-to (contributor → agent-role), grant
+  date, durability (session / cross-session), audit
+  link (memory file or commit). One section per
+  agent-role rolling-up which permissions it has.
+
+  **Iterative hardening path:**
+  - Phase 0 — registry exists (this row's first
+    deliverable); no enforcement, just documentation.
+  - Phase 1 — agent self-checks the registry before
+    attempting an admin operation.
+  - Phase 2 — commit-message / PR-description
+    citation requirement (the action commit names the
+    grant).
+  - Phase 3 — time-bounded grants (e.g.
+    `github-admin` expires every 30 days; maintainer
+    re-grants).
+  - Phase 4 — quorum requirements for high-risk
+    permissions (e.g. force-push needs both
+    maintainer + threat-model-reviewer sign-off).
+  - Phase 5 — Aminata threat-model integration: each
+    permission has a documented adversarial scenario
+    + mitigation.
+
+  Maintainer is explicit that this is NOT super safe
+  YET — the gain comes from iterative hardening.
+  Capture-the-grant-and-cite-it discipline beats
+  silent expansion of authority.
+
+  Priority P2 hygiene; effort S (Phase 0 registry doc)
+  + S (Phase 1 self-check) + M (Phase 2 citation
+  enforcement) + L (Phases 3-5 hardening). Composes
+  with `governance-expert`, `threat-model-critic`,
+  `security-operations-engineer`, GOVERNANCE.md
+  numbered rules section.
+
+- [ ] **Mode 2 → Mode 1 protocol-upgrade negotiation —
+  start with git, upgrade to a faster protocol for
+  hot-path backend comm.** Maintainer 2026-04-24
+  directive (verbatim):
+
+  > *"we could use mode 2 as our ui and have it auto
+  > netogatie protocol upgrade to a better protocol that
+  > git to whatever we want for hight speed communicaiton
+  > with out backend i think thats cleans"*
+
+  Architectural pattern: ALPN-style / HTTP-Upgrade-style
+  protocol negotiation. Mode 2 (browser WASM) opens with
+  git as the **lowest-common-denominator bootstrap
+  protocol** (every Zeta instance speaks git natively per
+  the row above). Once the connection is established and
+  both sides confirm capability, negotiate an upgrade to
+  a faster Zeta-specific binary protocol for hot-path
+  traffic (high-throughput streaming, low-latency reads,
+  bulk pull/push). Git stays as fallback / audit-trail
+  /durable-substrate path.
+
+  **Why this is clean:**
+  - Cold-start: any browser + any git remote → instant
+    bootstrap (no protocol negotiation cost paid until
+    you have a connection).
+  - Warm-state: protocol-upgraded comm is fast (binary
+    framing, no commit-object overhead, streaming
+    semantics, server-push for live updates).
+  - Backwards-compatible: an unupgraded peer (e.g. an
+    actual git client, not a Zeta peer) still works —
+    it never asks for the upgrade.
+  - Audit-trail: even after upgrade, the durable layer
+    can checkpoint back to git on cadence (every N
+    operations or every commit boundary), so the git
+    history remains the canonical durable substrate.
+
+  **Reference patterns:**
+  - HTTP `Upgrade:` header + 101 Switching Protocols.
+  - ALPN over TLS (HTTP/2 negotiation).
+  - Postgres wire-protocol startup-message + protocol-
+    version negotiation.
+  - WebSocket initial-HTTP-handshake-then-upgrade.
+
+  **Capability advertisement:** standard pattern is for
+  the server to advertise capabilities in its first
+  response (e.g. git's `capabilities^{}` ref or
+  `command=ls-refs` advertisement); Zeta extends this
+  to include a `zeta-fast-v1` capability. Client opts
+  into upgrade by sending the corresponding header on
+  next request.
+
+  **Composes with:**
+  - The native F# git implementation row above (where
+    Zeta IS the git client/server) — the upgrade
+    capability gets advertised by Zeta's git server.
+  - The WASM-F# + git-as-storage row below (Mode 2's
+    starting position).
+  - `networking-expert`, `serialization-and-wire-format-expert`,
+    `streaming-incremental-expert`.
+
+  Priority P3 / way-backlog (depends on the native git
+  impl row landing first); effort M (capability
+  advertisement + upgrade dance) + L (the actual fast
+  protocol design + implementation). Composes with
+  Otto-275 log-don't-implement.
+
+- [ ] **Native F# git implementation — Zeta IS the git
+  client/server (no external git needed).** Maintainer
+  2026-04-24 directive (verbatim):
+
+  > *"we want to have a full git implimentation in f#
+  > where we don't even need the git client, we are
+  > also the git client and it stores into our database
+  > for mode 1. just another interface like SQL"*
+
+  Zeta-native git implementation in F# — full git
+  protocol (object format, pack files, refs, index,
+  smart-HTTP / SSH transport, push/pull negotiation,
+  upload-pack / receive-pack server side). Storage
+  lands in Zeta's database (Mode 1) — git objects
+  serialize as Z-set entries with commit/tree/blob
+  ontology. Pairs with the WASM/git-storage row below
+  for Mode 2 (where isomorphic-git is the browser-side
+  client).
+
+  **Symmetric architecture:**
+  - **Mode 1** — native F# git impl + Zeta DB storage.
+    Zeta talks git natively to other peers. No external
+    git binary required.
+  - **Mode 2** — WASM-F# + isomorphic-git in browser +
+    git remote (could be ANOTHER Zeta-Mode-1 instance
+    serving git).
+
+  **Composition gain:** any Zeta Mode 1 instance can
+  serve as a git remote for any Zeta Mode 2 browser
+  client. The factory becomes self-hosting of its own
+  git ecosystem — `git push my-zeta main` = pushing to
+  Zeta's DB via Zeta's own git server.
+
+  **"just another interface like SQL"** — maintainer's
+  framing. Git is one of several first-class
+  protocols on top of Zeta's substrate, alongside SQL,
+  operator algebra, LINQ, GraphQL (future), etc.
+  Implementation effort is L+ (the git protocol is
+  large but fully specified; Z-set
+  retraction-native semantics map cleanly).
+
+  Priority P3 / way-backlog per maintainer; effort L+
+  (full git protocol coverage). Composes with the
+  git-as-DB-interface row below (sister; same
+  direction), the WASM/git-storage row (companion for
+  Mode 2), `fsharp-expert`, `git-workflow-expert`,
+  `serialization-and-wire-format-expert`. Composes
+  with `networking-expert` for the HTTP/SSH transport
+  layer.
+
+- [ ] **Git-as-first-class-DB-interface — Zeta commands
+  ≈ git commands where semantics align.** Maintainer
+  2026-04-24 directive (verbatim, low-priority backlog):
+
+  > *"we want to have first class git inteface into our
+  > database, so our database can handle all / most git
+  > command, way backlog."*
+
+  Scope: an interface adapter that exposes Zeta DB
+  operations through git's command surface where
+  semantics align — `commit` = transaction boundary,
+  `branch` = isolated workspace, `merge` = multi-writer
+  reconciliation, `log` = history / retraction trail,
+  `diff` = delta query, `tag` = named-checkpoint,
+  `stash` = pending-write buffer, `cherry-pick` =
+  selective transaction replay. Z-set retraction-native
+  semantics map cleanly onto git's
+  immutable-history-with-revertible-deltas model.
+  Explicit mapping table needed (not every git command
+  has a Zeta analogue — `gc` / `fsck` are git-internal).
+  Composes with Otto-243 (git-native memory-sync — proves
+  substrate-level fit) and the WASM/git-storage row
+  below. Adds ONE entry-point; existing SQL / operator-
+  algebra / LINQ surfaces stay authoritative. Priority
+  P3 / way-backlog per maintainer; effort M+L. Composes
+  with `git-workflow-expert`.
+
+- [ ] **WASM-F# + git-as-storage-plugin — browser-only
+  bootstrap mode (zero server, zero install).**
+  Maintainer 2026-04-24 directive (verbatim,
+  long-horizon research stretch goal):
+
+  > *"a storage plugin for our db that saves to git
+  > commonds lol. this will let me compile as wasm our
+  > f# and run our database enginge in the ui and it
+  > calls out to git for the actual operations? Am i
+  > dreaming for this second one? We should research it
+  > but it's a huge stretch way back backlog for the
+  > 2nd one."*
+
+  **Maintainer's framing question:** *"This complets
+  our bootstrap without requirments really i think? you
+  tell me."*
+
+  **Loop-agent assessment** (captured for future
+  reference; subject to maintainer challenge):
+
+  - **Yes, this completes the zero-server bootstrap —
+    via a different axis than Mode 1.** Both modes are
+    zero-install:
+    - **Mode 1** — full backend via tiny-seed AoT-
+      compiled or single-file JIT builds. Standalone
+      executable; NO .NET preinstall required. Just
+      download + run. (Maintainer correction
+      2026-04-24: existing planning is for tiny-seed
+      AoT + single-file JIT, not framework-dependent
+      builds.)
+    - **Mode 2** — browser-only via WASM-F# + any git
+      remote. NO executable to download (browser
+      handles WASM); NO server to run.
+    Browsers are universal; git remotes are commodity
+    (GitHub/GitLab free tier; self-hosted git is
+    trivial). Mode 2 is "even more zero" only in the
+    sense that there's no artifact to download — both
+    modes are install-free at the user-experience
+    level.
+  - **Not a dream — coherent stretch.** Pieces compose:
+    - WASM-F# in the browser is real today via Blazor
+      WebAssembly (the .NET runtime compiled to
+      WebAssembly, hosting F# directly). Fable is a
+      separate F#→JavaScript option (not a WASM runtime)
+      and is listed only as the alternative if a JS
+      target is preferred over .NET-on-WASM. Mode 2's
+      intended approach is Blazor WASM. Performance
+      workable for non-hot-path; hot-path needs
+      in-browser cache.
+    - `isomorphic-git` brings the git protocol to the
+      browser; pairs with WASM-F#.
+    - Z-set entries serialize as commit blobs / tree
+      objects; retractions = `git revert` or branch
+      reset.
+    - Multi-writer = git's branch-and-merge model
+      (CRDT-friendly under Z-set semantics).
+    - Composes with Otto-243 (git-native memory-sync)
+      as precursor pattern.
+  - **Wild bit is performance.** Git ops NOT fast
+    enough for DB hot-path reads. But for **durable
+    writes + cross-machine sync + audit trail**, git
+    is genuinely good. Mode 2 architecture is
+    "browser viewer + git-backed durable substrate;
+    hot-path lives in browser memory" — not "every
+    read hits git".
+  - **Strong fit with Otto-274 progressive-adoption-
+    staircase Level 0** — "open a tab; no install" is
+    the lowest-friction adoption rung the factory has
+    yet articulated.
+  - **Real risk: write-amplification.** Every Zeta
+    write becomes a git commit. High-throughput
+    streams (e.g. blockchain ingest) would saturate
+    any git remote. Mode 2 suits LOW-VOLUME workloads
+    (per-user notebooks, factory memory sync,
+    configuration, knowledge bases). Mode 1 stays
+    load-bearing for production / streaming.
+
+  **Phased approach** (when this row activates):
+  - **Phase 0** — feasibility research: WASM-F#
+    runtime cost, isomorphic-git API surface, write
+    batching strategies, hot-path cache shape. Output:
+    `docs/research/wasm-fsharp-git-storage-feasibility.md`.
+  - **Phase 1** — proof-of-concept: minimal in-browser
+    Zeta with git-backed Z-set storage on a single
+    test workload (personal notebook). No streaming,
+    no multi-user.
+  - **Phase 2** — multi-user via git branches; merge
+    semantics for concurrent writes; conflict
+    resolution UX.
+  - **Phase 3** — production-mode hardening: write
+    batching, hot-path cache eviction, server-fallback
+    for high-throughput.
+
+  Priority P2 / research-grade per maintainer
+  (long-horizon stretch goal — section placement
+  matches);
+  effort L+ (research) + L (POC) + L (production).
+  **Does NOT authorize** starting POC code without
+  Phase-0 feasibility doc landing first. **Does NOT
+  authorize** declaring Mode 2 production-ready
+  without empirical write-throughput + read-latency
+  measurements + Aminata threat-model sign-off on the
+  exposed-git-remote attack surface.
+
+  Composes with the git-as-DB-interface row above
+  (sister; same direction), `wasm` (no skill exists yet
+  — gap), `fsharp-expert`, `git-workflow-expert`,
+  `crdt-expert`, Otto-243 (git-native memory-sync
+  precursor), Otto-274 (progressive-adoption-staircase
+  Level 0 candidate), Otto-275 (log-don't-implement —
+  capture, do not start POC).
 
 - [ ] **Land per-maintainer CURRENT-memory ADR + companion
   feedback memory.** PR #153 landed the CLAUDE.md fast-path
