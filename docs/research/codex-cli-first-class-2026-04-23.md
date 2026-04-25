@@ -136,9 +136,40 @@ rules"*) from earlier rounds.
 ## 3 · Capability-parity first-pass matrix
 
 Rows Otto routinely exercises in Claude Code; column 2 is the
-Codex-CLI equivalent; column 3 is `parity | partial | gap` with
-a short note. **This is a first-pass; a proper matrix (Stage 2)
-should run each cell against a small test prompt.**
+Codex-CLI equivalent; column 3 is the row's status (taxonomy
+below) with a short note. **This is a first-pass; a proper
+matrix (Stage 2) should run each cell against a small test
+prompt.**
+
+Status taxonomy used in the table below:
+
+- **Parity** — direct equivalent exists; same shape.
+- **Parity (richer)** — direct equivalent + Codex offers more
+  (e.g., richer per-tool approval).
+- **Parity (different shape)** — equivalent functionality
+  available but reached via a different surface (e.g., GitHub
+  PR review vs. in-CLI agent).
+- **Parity+** — Codex strictly more capable (e.g., image
+  generation in-CLI vs. image input only).
+- **Partial** — equivalent partially covers the use case;
+  gaps documented in Note.
+- **Different shape, functional** — same functional category,
+  different file format / surface (e.g., SQLite vs. Markdown
+  per-fact memory).
+- **Gap** — no Codex equivalent currently surfaced.
+- **Gap (minor)** — minor user-visible gap with low
+  factory-side impact.
+- **Gap (opaque)** — undocumented behavior; Stage 2 must
+  test.
+- **Likely gap** — strong evidence of gap; Stage 2 must
+  confirm.
+- **Codex-specific** — Codex exposes a primitive Claude Code
+  doesn't.
+
+Score-summary counts at the bottom of the table aggregate
+into headline buckets: Parity (any "Parity*" status), Partial
+/ Different-shape, Gap (any "Gap*" or "Likely gap" status),
+and Codex-specific.
 
 | Claude Code (Otto usage) | Codex CLI equivalent | Status | Note |
 |---|---|---|---|
@@ -155,10 +186,10 @@ should run each cell against a small test prompt.**
 | Plan Mode | `plan_mode_reasoning_effort` config | **Parity** | Named differently; same concept. |
 | Output styles (e.g., explanatory) | Not documented; may go via system-prompt override | **Gap (minor)** | Factory-side impact is small; output styles are Claude-Code-session features, not substrate. |
 | Hooks (`.claude/settings.json` PreToolUse, UserPromptSubmit) | `notify` hook for turn completion; no PreToolUse equivalent | **Partial** | Zeta's ASCII-clean pre-commit + prompt-injection lints run via git-pre-commit, not via Claude Code hooks — so those are harness-neutral. Session-side hooks (SessionStart for output style) have no Codex equivalent. |
-| Slash commands (`/loop`, `/fast`, `/help`, `/status-line-setup`) | `/model` + plan-mode commands | **Partial** | Codex exposes fewer user-visible slash commands; project-specific ones (e.g., Zeta's `/loop`) need re-authoring or re-routing through `codex exec`. |
+| Slash commands (`/loop`, `/fast`, `/help`, `/status-line-setup`) | `-m` / `--model`, profiles, plan-mode commands | **Partial** | Codex exposes fewer user-visible slash commands; model selection is via `-m` / `--model` flags + `--profile` (per `docs/research/openai-codex-cli-capability-map.md`), not via a `/model` slash command. Project-specific commands (e.g., Zeta's `/loop`) need re-authoring or re-routing through `codex exec`. |
 | `Task` with `isolation: "worktree"` | Built-in worktree support | **Parity** | Codex advertises worktrees as a first-class subagent feature. |
 | Session compaction | Not documented | **Gap (opaque)** | Codex's handling of long sessions is unclear; Stage 2 must test. |
-| Code-review agent | Native "separate agent before commit" feature | **Parity (different shape)** | Codex integrates review into the CLI workflow directly; Zeta's equivalent is Codex-as-PR-reviewer on GitHub + `/ultrareview` + harsh-critic persona. Composes. |
+| Code-review agent | Native "separate agent before commit" feature | **Parity (different shape)** | Codex integrates review into the CLI workflow directly; Zeta's equivalent is Codex-as-PR-reviewer on GitHub + the harsh-critic persona under `.claude/skills/code-review-zero-empathy/`. (Note: `/ultrareview` is a Claude Code platform feature surfaced in the harness's session prompt, not a Zeta-defined command — repo-wide search finds no in-tree definition. Listed here for surface-mapping context only; not an in-repo entrypoint.) Composes. |
 | Image input / image generation | Native | **Parity+** | Codex exposes image generation in-CLI; Claude Code accepts image input only. |
 | Background macOS Computer Use | Native | **Codex-specific** | No Claude Code equivalent; relevant if Zeta ever wants agent-run GUI tests. Not urgent for Otto. |
 | Cloud-backed runtime | Codex Cloud | **Codex-specific** | May subsume the cron-gap by running long-lived agents in cloud; Stage 2 needs to verify. |
