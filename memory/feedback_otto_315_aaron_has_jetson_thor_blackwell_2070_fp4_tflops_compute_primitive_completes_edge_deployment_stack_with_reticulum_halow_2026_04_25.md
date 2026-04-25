@@ -1,5 +1,5 @@
 ---
-name: Otto-315 Aaron has NVIDIA NVIDIA Thor (Blackwell GPU, 2070 FP4 TFLOPS, 128GB memory, 1TB NVMe) — compute primitive completes the edge-AI-deployment stack alongside Otto-314 RNS+HaLow networking primitive; Otto-301 hardware-bootstrap fully available
+name: Otto-315 Aaron has NVIDIA Thor (Blackwell GPU, 2070 FP4 TFLOPS, 128GB memory, 1TB NVMe) — compute primitive completes the edge-AI-deployment stack alongside Otto-314 RNS+HaLow networking primitive; Otto-301 hardware-bootstrap fully available
 description: Aaron 2026-04-25 evening — "i also have a nvidia i also have a thor newer than jetson". NVIDIA Thor is NVIDIA's August 2025 platform: Blackwell GPU architecture, 2070 FP4 TFLOPS AI compute (7.5x Jetson Orin), 128GB unified memory (2x Orin AGX), 1TB integrated NVMe, 3.5x greater energy efficiency than prior generation. Designed for physical AI / humanoid robotics / real-time generative AI on edge. Combined with Otto-314 RNS+HaLow networking, Aaron has a complete edge-AI-deployment stack — network primitive + compute primitive + identity primitive — all in his hands today. Otto-301 hardware-bootstrap target is no longer a research-horizon; the substrate is assembled. Composes with Otto-301 + Otto-314 + Otto-298 substrate-IS-itself + B-0008 slim/embedded deployment profile + Frontier UI deployment options.
 type: feedback
 ---
@@ -37,7 +37,7 @@ Combined with Otto-314 RNS+HaLow, Aaron's hardware portfolio now covers ALL laye
 | Network (physical) | 802.11ah HaLow Sub-1GHz Wi-Fi | ✓ Has |
 | Network (logical) | Reticulum Network Stack (RNS) | ✓ Has (software, runs on any node) |
 | Identity | RNS Destination Hash (cryptographic) | ✓ Has (derived from keys) |
-| Compute | NVIDIA NVIDIA Thor (Blackwell, 2070 FP4 TFLOPS) | ✓ Has |
+| Compute | NVIDIA Thor (Blackwell, 2070 FP4 TFLOPS) | ✓ Has |
 | Storage | NVIDIA Thor 1TB NVMe | ✓ Has (integrated) |
 | Power | HaLow low-power radio + Thor energy efficiency | ✓ Has |
 
