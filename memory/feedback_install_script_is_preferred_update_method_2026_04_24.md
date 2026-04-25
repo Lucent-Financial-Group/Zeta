@@ -21,8 +21,17 @@ with the `DOTNET_gcServer=0` Otto-248 workaround.
 
 **Preferred update path:**
 
-1. Edit pin in `.mise.toml` (or `global.json` for SDK
-   selection).
+1. Edit the pin in **both** `.mise.toml` **and**
+   `global.json` for any .NET SDK bump. These two
+   files are the .NET pinning contract — they MUST
+   stay in sync. `.mise.toml` drives the
+   `tools/setup/install.sh` install path; `global.json`
+   drives runtime SDK resolution. Editing one without
+   the other produces pin drift: `install.sh` installs
+   one version, `dotnet` invocations resolve a
+   different one, build fails or worse silently
+   diverges from CI. (For non-.NET tools the contract
+   is `.mise.toml` alone — `global.json` is .NET-only.)
 2. Run `tools/setup/install.sh` from repo root.
 3. Verify with `mise exec -- dotnet --version` (or
    equivalent for other tools).
@@ -57,7 +66,7 @@ If your laptop deviates from the install-script path,
 **you lose the parity guarantee**. CI sees a different
 toolchain than your laptop. Reproducible-stability
 (the project's load-bearing thesis from
-`docs/AGENTS.md`) breaks.
+`AGENTS.md`) breaks.
 
 ## Verified on 2026-04-24
 

@@ -5996,103 +5996,6 @@ systems. This track claims the space.
   empirical evidence that mixed-DSL queries hit ALL
   applicable indexes (no full-scan fallback for
   composed leaves).
-- [ ] **User-mode filesystem driver interface — Zeta as
-  a mountable FS via FUSE / WinFsp / macFUSE; research
-  first; composes with eventual microkernel + all-
-  dotnet/F# direction.** Maintainer 2026-04-24
-  directive (verbatim, way-back-backlog):
-
-  > *"back back log file system driven interface like
-  > whatever is modern for linux and windows and mac
-  > user mode file system driver interface is fine and
-  > expected. resersh first of course, this will help
-  > when we go to microkernal all dotnet f#"*
-
-  Scope: expose Zeta's substrate (Z-set tables,
-  hierarchical index, native git, blockchain blocks,
-  etc.) as a **mountable filesystem** via the modern
-  user-mode filesystem driver interfaces:
-  - **Linux**: FUSE (libfuse / fuse3) — well-trodden;
-    rust-fuse, dotnet-fuse bindings exist.
-  - **Windows**: WinFsp — modern user-mode FS for
-    Windows (Cygwin / Git-for-Windows ship FUSE
-    compatibility on top of WinFsp).
-  - **macOS**: macFUSE (formerly OSXFUSE), or modern
-    FSKit on macOS 26+ (System Extension class —
-    Apple's official FUSE replacement).
-
-  **Why this composes with the architecture:**
-  - **Mode 1 single-binary** can mount the running
-    Zeta instance as `/mnt/zeta` — every Z-set table,
-    every git ref, every blockchain block becomes a
-    file/directory readable by `ls`, `cat`, `grep`.
-  - **Native F# git impl** + **closure-table
-    hardening** + **cross-DSL composability** all
-    project naturally onto FS semantics: git tree
-    objects ARE directories, blobs ARE files, refs
-    ARE symlinks.
-  - **Microkernel + all-dotnet/F# trajectory** —
-    maintainer's note: this preps for the future
-    microkernel where everything is dotnet/F#. A
-    user-mode FS interface is the right cross-language
-    boundary even before the microkernel arrives.
-  - **Ouroboros bootstrap closure** — a Zeta instance
-    can mount itself, and another Zeta peer can `cp -r
-    /mnt/peer-zeta/.git/` to clone the source-of-truth
-    using regular FS tools. Self-referential by design.
-
-  **Phase 0 research** (before any code):
-  - State-of-the-art user-mode FS interfaces per OS:
-    FUSE3 API (Linux), WinFsp API (Windows), macFUSE
-    + FSKit (macOS 26+), Plan 9 / 9P fallback option.
-  - .NET / F# bindings per platform; gaps where we'd
-    have to write the binding ourselves.
-  - Interface that makes sense for Zeta — what's the
-    minimal `IZetaFilesystem` contract that supports
-    mounting ZSets / git / blockchain / arbitrary
-    operator-algebra views?
-  - Platform parity strategy: same Zeta server speaks
-    FUSE on Linux, WinFsp on Windows, FSKit/macFUSE on
-    macOS, with a single F# implementation behind a
-    platform-shim layer.
-  - Microkernel integration plan: when we go all-
-    dotnet/F# at the microkernel level, this user-mode
-    FS API becomes the kernel-mode FS API — same
-    contract, different implementation tier.
-  - Output: `docs/research/user-mode-fs-driver-interface-2026.md`.
-
-  **Composes with:**
-  - **Native F# git implementation** (#395 cluster) —
-    git tree → directory; blob → file.
-  - **Closure-table hardening** (#396) — the
-    hierarchical index this FS layer hits.
-  - **Cross-DSL composability** (#397) — FS
-    operations are another DSL that composes with SQL
-    / operator-algebra / git via the same substrate.
-  - **Blockchain ingest** (#394) — `/mnt/zeta/btc/blocks/<height>`
-    is a natural mount point.
-  - **Ouroboros bootstrap meta-thesis** (#395) — the
-    FS interface IS an Ouroboros closure (Zeta
-    mountable as itself).
-  - **Aurora microkernel direction** (long-horizon)
-    — the user-mode FS API today becomes the
-    microkernel FS API tomorrow.
-
-  Priority P3 / way-back-backlog per maintainer;
-  effort L+ (research) + L+L+L (per-platform binding,
-  bootstrap implementation, hardening). Composes with
-  `file-system-persistence-expert`,
-  `networking-expert` (9P fallback), `bash-expert`
-  + `powershell-expert` (mount script wrappers),
-  `threat-model-critic` (FS exposure surface
-  analysis), Otto-275 log-don't-implement.
-
-  **Does NOT authorize** starting implementation
-  before Phase 0 research lands. **Does NOT
-  authorize** declaring FS interface "stable" without
-  Aminata threat-model sign-off on the
-  filesystem-namespace exposure surface (mount points
-  are an attack surface).
 
 - [ ] **Blockchain block ingestion — first-class BTC /
   ETH / SOL streaming into Zeta's distributed database;
@@ -10056,6 +9959,104 @@ systems. This track claims the space.
   exists; BP-HOME is what makes its sweep mechanical).
 
 ## P3 — noted, deferred
+
+- [ ] **User-mode filesystem driver interface — Zeta as
+  a mountable FS via FUSE / WinFsp / macFUSE; research
+  first; composes with eventual microkernel + all-
+  dotnet/F# direction.** Maintainer 2026-04-24
+  directive (verbatim, way-back-backlog):
+
+  > *"back back log file system driven interface like
+  > whatever is modern for linux and windows and mac
+  > user mode file system driver interface is fine and
+  > expected. resersh first of course, this will help
+  > when we go to microkernal all dotnet f#"*
+
+  Scope: expose Zeta's substrate (Z-set tables,
+  hierarchical index, native git, blockchain blocks,
+  etc.) as a **mountable filesystem** via the modern
+  user-mode filesystem driver interfaces:
+  - **Linux**: FUSE (libfuse / fuse3) — well-trodden;
+    rust-fuse, dotnet-fuse bindings exist.
+  - **Windows**: WinFsp — modern user-mode FS for
+    Windows (Cygwin / Git-for-Windows ship FUSE
+    compatibility on top of WinFsp).
+  - **macOS**: macFUSE (formerly OSXFUSE), or modern
+    FSKit on macOS 26+ (System Extension class —
+    Apple's official FUSE replacement).
+
+  **Why this composes with the architecture:**
+  - **Mode 1 single-binary** can mount the running
+    Zeta instance as `/mnt/zeta` — every Z-set table,
+    every git ref, every blockchain block becomes a
+    file/directory readable by `ls`, `cat`, `grep`.
+  - **Native F# git impl** + **closure-table
+    hardening** + **cross-DSL composability** all
+    project naturally onto FS semantics: git tree
+    objects ARE directories, blobs ARE files, refs
+    ARE symlinks.
+  - **Microkernel + all-dotnet/F# trajectory** —
+    maintainer's note: this preps for the future
+    microkernel where everything is dotnet/F#. A
+    user-mode FS interface is the right cross-language
+    boundary even before the microkernel arrives.
+  - **Ouroboros bootstrap closure** — a Zeta instance
+    can mount itself, and another Zeta peer can `cp -r
+    /mnt/peer-zeta/.git/` to clone the source-of-truth
+    using regular FS tools. Self-referential by design.
+
+  **Phase 0 research** (before any code):
+  - State-of-the-art user-mode FS interfaces per OS:
+    FUSE3 API (Linux), WinFsp API (Windows), macFUSE
+    + FSKit (macOS 26+), Plan 9 / 9P fallback option.
+  - .NET / F# bindings per platform; gaps where we'd
+    have to write the binding ourselves.
+  - Interface that makes sense for Zeta — what's the
+    minimal `IZetaFilesystem` contract that supports
+    mounting ZSets / git / blockchain / arbitrary
+    operator-algebra views?
+  - Platform parity strategy: same Zeta server speaks
+    FUSE on Linux, WinFsp on Windows, FSKit/macFUSE on
+    macOS, with a single F# implementation behind a
+    platform-shim layer.
+  - Microkernel integration plan: when we go all-
+    dotnet/F# at the microkernel level, this user-mode
+    FS API becomes the kernel-mode FS API — same
+    contract, different implementation tier.
+  - Output: `docs/research/user-mode-fs-driver-interface-2026.md`.
+
+  **Composes with:**
+  - **Native F# git implementation** (#395 cluster) —
+    git tree → directory; blob → file.
+  - **Closure-table hardening** (#396) — the
+    hierarchical index this FS layer hits.
+  - **Cross-DSL composability** (#397) — FS
+    operations are another DSL that composes with SQL
+    / operator-algebra / git via the same substrate.
+  - **Blockchain ingest** (#394) — `/mnt/zeta/btc/blocks/<height>`
+    is a natural mount point.
+  - **Ouroboros bootstrap meta-thesis** (#395) — the
+    FS interface IS an Ouroboros closure (Zeta
+    mountable as itself).
+  - **Aurora microkernel direction** (long-horizon)
+    — the user-mode FS API today becomes the
+    microkernel FS API tomorrow.
+
+  Priority P3 / way-back-backlog per maintainer;
+  effort L+ (research) + L+L+L (per-platform binding,
+  bootstrap implementation, hardening). Composes with
+  `file-system-persistence-expert`,
+  `networking-expert` (9P fallback), `bash-expert`
+  + `powershell-expert` (mount script wrappers),
+  `threat-model-critic` (FS exposure surface
+  analysis), Otto-275 log-don't-implement.
+
+  **Does NOT authorize** starting implementation
+  before Phase 0 research lands. **Does NOT
+  authorize** declaring FS interface "stable" without
+  Aminata threat-model sign-off on the
+  filesystem-namespace exposure surface (mount points
+  are an attack surface).
 
 - [ ] **Rename Starboard → farm-related seed-extension
   kernel; pair with carpentry-related second seed-extension
