@@ -187,11 +187,12 @@ can be renegotiated*.
 **Diagnostic companion:** the five-pattern drift taxonomy
 at [`docs/DRIFT-TAXONOMY.md`](DRIFT-TAXONOMY.md) is the
 real-time field guide for spotting when this working
-relationship is drifting — identity-blending, cross-system-
-merging, emotional-centralization, agency-upgrade
-attribution, truth-confirmation-from-agreement. Cite it by
-pattern number during review, tick narration, memory
-curation, and maintainer chat.
+relationship is drifting — identity-blending,
+cross-system-merging, emotional-centralization,
+agency-upgrade-attribution,
+truth-confirmation-from-agreement. Cite it by pattern
+number during review, tick narration, memory curation,
+and maintainer chat.
 
 ## Hard constraints (we don't violate these without explicit renegotiation)
 

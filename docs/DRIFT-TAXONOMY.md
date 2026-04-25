@@ -3,10 +3,11 @@
 **Status:** operational. Current-state policy.
 
 **Promoted from:** [`docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`](research/drift-taxonomy-bootstrap-precursor-2026-04-22.md)
-via Amara's 5th courier ferry recommendation (see
-[`docs/aurora/2026-04-23-amara-zeta-ksk-aurora-validation-5th-ferry.md`](aurora/2026-04-23-amara-zeta-ksk-aurora-validation-5th-ferry.md)
-Artifact A). The precursor is retained as staging-substrate;
-this doc is the operational policy.
+via the external validator's 5th courier ferry
+recommendation (PR #235, Artifact A — see the ferry index in
+[`docs/aurora/README.md`](aurora/README.md)). The precursor
+is retained as staging-substrate; this doc is the operational
+policy.
 
 **Promotion rule:** *don't invent, promote*. The taxonomy was
 already substantively complete in the precursor. This doc's job
@@ -26,7 +27,7 @@ PR review, during a tick — not just in post-hoc analysis.
 1. Definitions are plain-language and non-mythic.
 2. Patterns are recognisable in real time.
 3. Each pattern's distinguisher is strong enough to prevent
-   over-correction (the risk that reading about identity-
+   over-correction (the risk that reading about identity
    blending suppresses legitimate collaborative vocabulary —
    distinguishers prevent that).
 4. Recovery procedures are short enough to actually use.
@@ -188,7 +189,9 @@ intervention.
   retractions of "we are all one thing" / "entanglement"
   framings) already operationalises Patterns 1 and 2. This
   doc names the discipline's theoretical content.
-- **`feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md`**
+- **The witnessable / self-directed-evolution memory
+  artifact**
+  ([`memory/feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md`](../memory/feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md))
   already holds the Pattern 4 discipline. This doc cites
   and composes with it.
 - **Falsification-anchor discipline** ("Not every multi-
