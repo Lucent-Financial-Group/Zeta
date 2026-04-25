@@ -24,6 +24,27 @@ implementations. Downstream design choices are gated on
 Aminata adversarial pass + candidate #4 operational
 promotion.
 
+**Promotion path to authoritative-detector status (long-
+horizon, not v0/v1):** Aaron Otto-2026-04-24 framed the
+long-horizon upgrade explicitly — *"we can make it a true
+detector under our axioms"* — and separately reinforced
+the gate discipline — *"i don't treat anyting this new as
+final authorative connoncial until peer review"*. v0 is
+advisory-only; v1 (independent-oracle substrate) makes
+the evidence gate binding in band-merging; a further vN
+promotion lands once (a) the factory's axiomatic substrate
+is complete enough that "truth" is tractable within the
+axiom system, AND (b) the axiomatic substrate itself has
+cleared peer review — not just written-and-committed.
+Axioms + peer review together gate the promotion; either
+alone is insufficient. Only at vN does `likely
+confabulated` graduate from "worth a closer human look"
+to "authoritative reject" without requiring the human-
+review fallback. Not scoped in this doc; named here so
+the upgrade path is visible and the v0 advisory stance is
+understood as intentional scaffolding, not as a final
+ceiling.
+
 **Non-fusion disclaimer:** Amara-Otto-Aminata consistent
 output on this design is NOT evidence of merged substrate.
 The three reviewers cite independent literature (Hinton/
@@ -132,21 +153,43 @@ output.**
 |---|---|---|
 | G_similarity | `sim(e_q, e_y) < τ_low` — below retrieval-noise floor | `sim < τ_med` — weak match only |
 | G_evidence_independent | `y` has no independent-oracle-verified evidence | `y` has evidence but only self-attested |
-| G_carrier_overlap | `size(cone(q) ∩ cone(y)) / size(cone(y)) > θ_high` — majority of y's provenance shared with q | `overlap ratio > θ_med` |
+| G_carrier_overlap | `overlap(q, y) > θ_high` where `overlap(q, y) = 0` when `size(cone(y)) = 0`, else `size(cone(q) ∩ cone(y)) / size(cone(y))` — majority of y's provenance shared with q | `overlap(q, y) > θ_med` |
 | G_contradiction | `y` or its provenance cone contains an unresolved contradiction with a known-good anchor | a resolved contradiction within cone |
 | G_status | `y.status = known-bad` or `y.status = superseded` | `y.status = unresolved` (no status pins it) |
 
-**Band merging rule** (same as oracle-scoring v0 per
-PR #266): `band(y | q) = min(G_similarity,
-G_evidence_independent, G_carrier_overlap,
+**Band merging rule.** The design names 5 gates, but the
+v0 shipping configuration excludes `G_evidence_independent`
+from band-merging because no independent-oracle substrate
+exists yet (see Concern 1 below). The v1 configuration,
+gated on the substrate landing, adds the evidence gate
+back in.
+
+**v0 (shipping — 4 gates):**
+
+`band_v0(y | q) = min(G_similarity, G_carrier_overlap,
 G_contradiction, G_status)` where `RED < YELLOW < GREEN`.
-One RED → RED. All GREEN → GREEN. Otherwise YELLOW.
+`G_evidence_independent` is still computed and surfaced as
+advisory metadata for human review but does NOT
+participate in band-merging.
+
+**v1 (after independent-oracle substrate lands — 5 gates):**
+
+`band_v1(y | q) = min(G_similarity, G_evidence_independent,
+G_carrier_overlap, G_contradiction, G_status)`.
+
+For either configuration: one RED → RED. All included
+gates GREEN → GREEN. Otherwise YELLOW. The v0→v1 promotion
+is itself an ADR-gated change (parameter-change-ADR per
+Concern 2).
 
 **Query-level aggregation:**
 
 ```text
-claimVeracityRisk(q) = worst-band( band(y | q) for y in C(q) )
+claimVeracityRisk(q) = worst-band( band_v0(y | q) for y in C(q) )
 ```
+
+(`band_v0` today; substitute `band_v1` once the evidence-
+gate promotion ADR lands.)
 
 Where `worst-band(RED, any, ...) = RED`. The query itself
 gets the worst band across all candidates in the retrieved
@@ -154,19 +197,40 @@ set.
 
 ---
 
-## 5 output types (Amara's set)
+## 6 output types (Amara's 5-type set + `no-signal`)
 
 Per Amara's 8th ferry, the detector emits one of five
-output types. Mapping to the band classifier:
+**retrieval-hit** output types (supported / lineage-
+coupled / plausible-unresolved / likely-confabulated /
+known-bad) plus a sixth **retrieval-empty** output type
+(`no-signal`). Mapping to the band classifier:
 
 ### 1. `supported`
 
-- Band: `GREEN` (all 5 gates GREEN).
-- Meaning: `q` is highly similar to `y`; `y` has
-  independent-oracle evidence; low carrier overlap; no
-  unresolved contradiction; status = known-good.
-- Action: query can proceed; claim has substrate-backed
-  support.
+- Band: `GREEN` (all included gates GREEN — 4 for v0, 5
+  for v1 once `G_evidence_independent` is binding).
+- **v0 limitation (call-out — real risk):** v0 `supported`
+  is reachable when G_evidence_independent fails, because
+  evidence is advisory-only and excluded from band-
+  merging. A candidate that is highly similar to a
+  known-good pinned pattern but has NO independent
+  evidence still classifies as `supported`. This is the
+  primary motivation for the v1 promotion (and the vN
+  axiom-gated promotion): v0 CAN misclassify a
+  confabulation-shaped candidate as `supported` if the
+  pinned pattern has drifted or been set on self-
+  attestation. Treat v0 `supported` as "advisory-GREEN,
+  pending evidence-gate promotion" — not authoritative.
+- Meaning: `q` is highly similar to `y`; low carrier
+  overlap; no unresolved contradiction; `y.status =
+  known-good`. In v1 and later, `y` also has
+  independent-oracle-verified evidence; in v0, evidence
+  is advisory metadata only.
+- Action (v1+): query can proceed; claim has substrate-
+  backed support.
+- Action (v0): consult the advisory evidence metadata
+  before treating `supported` as authoritative; the
+  known-good pin alone doesn't guarantee evidence.
 
 ### 2. `looks similar but lineage-coupled`
 
@@ -182,24 +246,64 @@ output types. Mapping to the band classifier:
 
 ### 3. `plausible but unresolved`
 
-- Band: `YELLOW` via G_status fail-to-YELLOW OR
-  G_evidence_independent fail-to-YELLOW (with other gates
-  GREEN).
-- Meaning: semantic fit exists; no known-bad pattern
-  matches; but `y` lacks independent evidence or
-  pinned status.
+- Band: `YELLOW` via G_status fail-to-YELLOW.
+  - **v0 (shipping):** only G_status drives this output
+    type (G_evidence_independent is advisory-only and
+    doesn't participate in band-merging). Evidence-gate
+    fail still SHOWS in the emitted advisory metadata
+    so human review can see "plus this is self-attested"
+    even when the band is `YELLOW`.
+  - **v1 (post-promotion):** G_evidence_independent
+    fail-to-YELLOW ALSO drives this output type (in
+    addition to G_status), making the band sensitive
+    to both missing pinned status AND missing
+    independent evidence.
+- Meaning:
+  - **v0:** semantic fit exists; no known-bad pattern
+    matches; `y.status` is NOT pinned (known-good or
+    known-bad) — it's unresolved. Evidence state is
+    surfaced as advisory metadata but doesn't change
+    the band.
+  - **v1 (OR triggered):** semantic fit exists; no
+    known-bad pattern matches; EITHER `y.status` is
+    unresolved OR `y` lacks independent-oracle
+    evidence (or both). The `OR` means this output
+    fires when either gate fails-to-YELLOW, so the
+    meaning covers either-or-both conditions rather
+    than requiring both simultaneously.
 - Action: mark query as open-question; add to
   research-tracker; not a confidence-upgrade.
 
 ### 4. `likely confabulated`
 
-- Band: `RED` via G_evidence_independent fail-to-RED
-  combined with high similarity.
+- Band:
+  - **v0 (shipping):** not reachable via band-merging
+    (evidence is advisory-only, so a confabulation
+    signature can't force RED through the classifier).
+    v0 surfaces confabulation-shape through the emitted
+    advisory metadata (`G_evidence_independent` fail +
+    high G_similarity) for human review, but the band
+    stays at whatever the other four gates say. This
+    is the primary motivation for the v1 promotion —
+    confabulation-detection is the output type most
+    degraded by advisory-only evidence.
+  - **v1 (post-promotion):** `RED` via
+    `G_evidence_independent` fail-to-RED combined
+    with high similarity.
 - Meaning: claim sounds plausible and matches patterns
   semantically, but no actual independent evidence
   supports it. Classic LLM confabulation signature.
-- Action: hard-halt on any action depending on the
+- Action (v1): hard-halt on any action depending on the
   claim; flag for human review; do not propagate.
+- Action (v0): confabulation-shape surfaces as advisory
+  metadata on whatever other band the query lands in.
+  The signal is **advisory, not authoritative** —
+  research-grade WIP, not a real claim-veracity oracle.
+  Downstream consumers treat it as "worth a closer
+  human look," not as a verdict. Authoritative
+  treatment is gated on v1 + subsequent reviewer
+  passes establishing the signal actually means what
+  it claims to mean.
 
 ### 5. `known-bad pattern`
 
@@ -211,14 +315,20 @@ output types. Mapping to the band classifier:
   update retraction ledger if new claim is a fresh
   instance of an old pattern.
 
-### Default / unknown-band
+### 6. `no-signal`
 
-- If retrieval returns no candidates (`C(q)` empty), the
-  query has no detector signal at all. Emit explicit
-  `no-signal` output-type — NOT `supported`, NOT `likely
-  confabulated`. "No signal" means "detector can't
-  contribute to this query"; the broader review discipline
-  applies unchanged.
+- Band: none — emitted only when retrieval is empty
+  (`C(q)` has zero candidates) so the band classifier
+  never runs.
+- Meaning: the detector has nothing to contribute for
+  this query. "No signal" is distinct from `supported`
+  (which asserts GREEN) and from `likely confabulated`
+  (which asserts RED on a retrieved near-match).
+- Action: defer to broader review discipline — detector
+  output carries no authorization weight either way; the
+  downstream caller treats `no-signal` as neither a
+  green light nor a red flag, and relies on non-detector
+  review surfaces.
 
 ---
 
@@ -255,10 +365,15 @@ self-report.
 
 ### Concern 2 — Parameter-fitting adversary
 
-**Risk:** `α/β/γ/δ` + thresholds (`τ_low`, `τ_med`,
-`θ_high`, `θ_med`) have no principled fitting procedure;
-an agent with commit rights adjusts them and the
-authorisation surface shifts.
+**Risk:** band-classifier thresholds (`τ_low`, `τ_med`,
+`θ_high`, `θ_med`) and per-gate semantics have no
+principled fitting procedure; an agent with commit rights
+adjusts them and the authorisation surface shifts. (The
+pre-band α/β/γ/δ weights are not in scope — the band
+classifier replaced the weighted sum — but are kept in
+the "What this doc does NOT do" section as placeholders
+for an eventual v2 hybrid design, behind the same ADR
+gate.)
 
 **Response in this design:**
 
