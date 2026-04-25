@@ -40,8 +40,10 @@ the Zeta rule, resolve the thread, do not apply**.
 
 ## Why
 
-- I stripped `Aaron` name attribution from
-  `docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`
+- I stripped `Aaron` name attribution from a
+  `docs/backlog/**` row (the i18n / l10n / g11n / a11y
+  translation row, landing in a sibling PR — once that PR
+  merges, the path will be `docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`)
   per a Copilot review thread, despite Otto-279
   (`memory/feedback_research_counts_as_history_first_name_attribution_for_humans_and_agents_otto_279_2026_04_24.md`)
   explicitly authorizing first-name attribution on
