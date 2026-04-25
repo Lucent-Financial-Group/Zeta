@@ -11,15 +11,18 @@ high-quality training signals): full per-thread record with reviewer
 authorship, severity, outcome class.
 
 This PR documented setup-tooling research per Aaron's 2026-04-24
-directive. Drain caught a striking pattern: **5 of 13 findings were
-stale-resolved-by-reality** (forward-mirror landed cited memory + ADR
-files), **2 were Otto-279 history-surface attribution**, **3 were
-real-fix factual corrections** (symlink discipline, Otto-247/248 cite
-shape, runner-matrix labels), and **2 were combined**.
+directive. Counting by thread-ID, the 13 threads break down as: **5
+STALE-RESOLVED-BY-REALITY** (forward-mirror landed cited memory +
+ADR files; 4 unique findings + 1 dup of B3), **2 OTTO-279
+history-surface attribution**, and **6 FIX** threads covering **3
+unique factual corrections** (symlink discipline, Otto-247/248 cite
+shape, runner-matrix labels) where the 3 extra threads are
+duplicate reviewer comments on the same already-fixed findings,
+combined into one fix commit.
 
 ---
 
-## Outcome distribution: 4 FIX + 5 STALE-RESOLVED-BY-REALITY + 2 OTTO-279 + 2 dups
+## Outcome distribution (counted by thread-ID): 6 FIX + 5 STALE-RESOLVED-BY-REALITY + 2 OTTO-279 = 13 threads (9 unique findings: 3 FIX + 4 STALE + 2 OTTO-279; 4 of the 13 thread-IDs are duplicate reviewer comments on already-classified findings)
 
 ### A: FIX — Real factual corrections
 
@@ -161,8 +164,10 @@ shape, runner-matrix labels), and **2 were combined**.
 
 ## Final resolution
 
-All 13 threads resolved at SHA `c8d91b5` (4 FIX + 5
-STALE-RESOLVED-BY-REALITY + 2 OTTO-279 SURFACE-CLASS + 2 dups).
+All 13 threads resolved at SHA `c8d91b5` (counted by thread-ID:
+6 FIX + 5 STALE-RESOLVED-BY-REALITY + 2 OTTO-279 SURFACE-CLASS;
+9 unique findings + 4 duplicate reviewer threads on
+already-classified findings).
 PR auto-merge SQUASH armed; CI cleared; merge pending.
 
 Drained by: Otto, post-summary autonomous-loop continuation, cron
