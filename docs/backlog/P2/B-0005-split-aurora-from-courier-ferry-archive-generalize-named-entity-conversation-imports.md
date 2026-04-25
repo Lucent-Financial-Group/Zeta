@@ -130,6 +130,7 @@ named entities from outside Zeta**:
 - Future cross-harness imports
 
 These all share:
+
 - Append-only history shape
 - First-name (or role-name) attribution preserved
 - Archive-header discipline (`Scope:`, `Attribution:`,
@@ -147,6 +148,7 @@ distinct from:
 - Research syntheses (`docs/research/**`)
 
 Possible naming options (Architect picks):
+
 - `docs/courier/**` — references the courier-ferry
   pattern; reads as "transport of messages."
 - `docs/cross-ai-imports/**` — explicit about the
