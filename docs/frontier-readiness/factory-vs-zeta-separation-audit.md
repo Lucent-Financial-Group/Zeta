@@ -54,20 +54,25 @@ For each audited file:
 ### Files audited
 
 - **CLAUDE.md** (below, seed fire)
-- **AGENTS.md** (below, Otto-9 fire)
-- **docs/CONFLICT-RESOLUTION.md** (below, Otto-12 fire)
-- **docs/AUTONOMOUS-LOOP.md** (below, Otto-15 fire)
-- **docs/WONT-DO.md** (below, Otto-15 fire) — also GOVERNANCE.md on PR #181, AGENT-BEST-PRACTICES.md on PR #184, ALIGNMENT.md on PR #185
+- **AGENTS.md** (below, fire #9)
+- **GOVERNANCE.md** (below, fire #10)
+- **docs/CONFLICT-RESOLUTION.md** (below, fire #12)
+- **docs/AGENT-BEST-PRACTICES.md** (below, fire #13)
+- **docs/ALIGNMENT.md** (below, fire #14)
+- **docs/AUTONOMOUS-LOOP.md** (below, fire #15)
+- **docs/WONT-DO.md** (below, fire #15) — also docs/ALIGNMENT.md on PR #185
+- **docs/TECH-RADAR.md** (below, fire #16)
+- **docs/FACTORY-HYGIENE.md** (below, fire #16) — also docs/AGENT-BEST-PRACTICES.md on PR #184, docs/ALIGNMENT.md on PR #185
+- **docs/GLOSSARY.md** (below, Otto-18 fire)
+- **docs/ROUND-HISTORY.md** (below, Otto-18 fire)
+- **docs/BACKLOG.md** (below, Otto-18 fire)
+- **docs/ROADMAP.md** (below, Otto-18 fire)
+- **docs/VISION.md** (below, Otto-18 fire) — also GOVERNANCE.md on PR #181, AGENT-BEST-PRACTICES.md on PR #184, ALIGNMENT.md on PR #185, TECH-RADAR.md + FACTORY-HYGIENE.md on PR #188
+
+Cross-PR audits that duplicate in-file coverage: GOVERNANCE (also on PR #181), AGENT-BEST-PRACTICES (also on PR #184), ALIGNMENT (also on PR #185), TECH-RADAR + FACTORY-HYGIENE (PR #188, now merged and recorded in-file) — the in-file `## Audit —` sections are the authoritative classification.
 
 ### Files to audit (not yet classified; add rows as they land)
 
-- `docs/GLOSSARY.md`
-- `docs/FACTORY-HYGIENE.md`
-- `docs/ROUND-HISTORY.md`
-- `docs/TECH-RADAR.md`
-- `docs/BACKLOG.md`
-- `docs/ROADMAP.md`
-- `docs/VISION.md`
 - `.claude/skills/*/SKILL.md` (each)
 - `.claude/agents/*.md` (each)
 - `openspec/**` (structural; library-specific-heavy)
@@ -210,6 +215,173 @@ Frontier, the shape is preserved; the illustrations are
 replaced with adopter-fill-in placeholders or generic
 examples. The extracted Zeta-specific content lands in the
 Zeta repo's own CONTRIBUTING.md (or equivalent).
+
+## Audit — GOVERNANCE.md
+
+**Overall classification:** **factory-generic** (with three
+rules needing surgical adopter-specific notes). Breaks the
+both-coupled pattern seen in CLAUDE.md + AGENTS.md —
+GOVERNANCE.md is the rule substrate that is uniformly
+factory-shape.
+
+**File location post-split:** Frontier as-is; no content
+extraction needed. Three rules get adopter-specific tweaks
+via inline placeholder rather than removal.
+
+**Length:** 746 lines. **32 numbered rules.**
+
+### Rule-by-rule classification
+
+Rules classified factory-generic unless otherwise noted.
+
+| Rule | Title | Class | Notes |
+|---|---|---|---|
+| §1 | Architect is the integration authority | factory-generic |  |
+| §2 | Docs read as current state, not history | factory-generic |  |
+| §3 | Contributors are agents, not bots | factory-generic |  |
+| §4 | Skills created through `skill-creator` | factory-generic |  |
+| §5 | Prompt-injection corpora are radioactive | factory-generic |  |
+| §6 | Round naming stays in history log | factory-generic |  |
+| §7 | Shared vocabulary, round-table enforcement | factory-generic |  |
+| §8 | Bug fixes go through the Architect | factory-generic |  |
+| §9 | `docs/BUGS.md` is the running known-open log | factory-generic | File name is universal template. |
+| §10 | The table is round | factory-generic |  |
+| §11 | Debt-intentionality is the invariant | factory-generic |  |
+| §12 | Bugs before features, explicit ratio | factory-generic |  |
+| §13 | Reviewer count scales inversely with backlog | factory-generic |  |
+| §14 | Standing off-time budget per persona | factory-generic |  |
+| §15 | Reversible-in-one-round | factory-generic |  |
+| §16 | Dynamic hats | factory-generic |  |
+| §17 | Productive friction between personas | factory-generic |  |
+| §18 | Agent memories are the most valuable resource | factory-generic |  |
+| §19 | Public API changes go through the public-api-designer | **both** | Shape (public-API review gate) is generic. Specific libraries (`Zeta.Core` / `Zeta.Core.CSharp` / `Zeta.Bayesian`) are Zeta-specific. In Frontier: keep shape, adopter fills in their own published-library list. |
+| §20 | Standing reviewer cadence per round | factory-generic |  |
+| §21 | Per-persona memory is real persona-scoped | factory-generic |  |
+| §22 | `~/.claude/projects/` is Claude Code harness | factory-generic | Claude-Code-specific but harness-shape; Frontier adopters using different harnesses substitute their equivalent path. |
+| §23 | Upstream open-source contributions encouraged | factory-generic |  |
+| §24 | Dev setup / build-machine / devcontainer | **both** | The one-install-script-consumed-three-ways pattern is generic. Zeta-specific install content (F#/.NET tooling) needs substitution per adopter. Frontier template + adopter-substitutes. |
+| §25 | Upstream temporary-pin expiry | factory-generic |  |
+| §26 | Research-doc lifecycle | factory-generic |  |
+| §27 | Abstraction layers — skills, roles, personas | factory-generic |  |
+| §28 | OpenSpec is first-class | **both** | OpenSpec adoption pattern is generic. Specific `openspec/specs/**` capability list is Zeta-specific. Frontier: keep pattern, adopter fills in capabilities. |
+| §29 | Backlog files are scoped | factory-generic | Multi-backlog shape (HUMAN-BACKLOG vs BACKLOG) is generic. The specific files `docs/BACKLOG.md` + `docs/HUMAN-BACKLOG.md` are named canonically; adopters keep names. |
+| §30 | Cross-repo `sweep-refs` after rename campaign | factory-generic |  |
+| §31 | Copilot instructions are factory-managed | factory-generic |  |
+| §32 | Alignment contract is `docs/ALIGNMENT.md` | factory-generic | The alignment-contract pattern is generic; `docs/ALIGNMENT.md` content itself gets audited separately (likely factory-generic with adopter-specific clauses). |
+
+### Refactor notes
+
+Before the split, surgical-only edits on GOVERNANCE.md for
+Frontier (three rules with Zeta-specific content; §22 is
+Claude-Code-harness-shape rather than Zeta-library-specific
+and is called out separately):
+
+1. **§19 (public API review)**: generalise the specific
+   library list (`Zeta.Core` / `Zeta.Core.CSharp` /
+   `Zeta.Bayesian`) to `<adopter-published-libraries>`
+   placeholder with fill-in example.
+2. **§24 (dev setup)**: move Zeta-specific install steps to
+   `tools/setup/` README; keep the one-install-script-
+   consumed-three-ways pattern in §24 generic.
+3. **§28 (OpenSpec first-class)**: generalise specific
+   `openspec/specs/**` Zeta-capability references; keep the
+   OpenSpec adoption pattern.
+
+Additionally for §22 (`~/.claude/projects/` path): clarify
+the path is Claude-Code-specific and provide equivalent-paths
+for other harnesses (Codex, Gemini, Copilot) OR name the
+harness substrate without hardcoding. This is harness-shape
+adaptation rather than Zeta-library-content extraction.
+
+Estimated refactor effort: **S** — three small inline edits
+plus one harness-path clarification, no structural change.
+
+### Classification rationale
+
+GOVERNANCE.md is the factory's rule substrate — "numbered
+repo-wide rules for humans and agents." By design, rules are
+abstract patterns that shape behaviour rather than enforce
+project-specifics. The three rules with Zeta-library-specific
+content (§19 / §24 / §28) all preserve the abstract shape
+(public-API review, install-script pattern, OpenSpec adoption)
+and only reference specific Zeta files / libraries as
+illustrative examples. §29 is factory-generic: the
+multi-backlog shape is the pattern, and the canonical
+filenames `docs/BACKLOG.md` + `docs/HUMAN-BACKLOG.md` carry
+across to adopters unchanged. Frontier inherits the rules
+verbatim; adopters substitute their specifics on the three
+flagged rules.
+
+## Audit — docs/AGENT-BEST-PRACTICES.md
+
+**Overall classification:** **factory-generic** — confirms
+the rule-substrate-instructional branch of the hypothesis
+(rules stated as general principles are factory-generic).
+
+**File location post-split:** Frontier as-is. Sparse skill-
+file path references would update per adopter (those paths
+are illustrative, not scope).
+
+**Length:** ~330 lines. **24 BP-NN rules (BP-01..BP-24)**
+across 12 top-level sections.
+
+### Section-by-section breakdown
+
+| Section | Class | Notes |
+|---|---|---|
+| Preamble | factory-generic | BP-NN stable-rule-ID discipline. |
+| "Frontmatter & scope" (BP-01..BP-03) | factory-generic | Skill-file hygiene: description discipline / "What this does NOT do" / body ≤300 lines. |
+| "Voice & behaviour" (BP-04..BP-06) | factory-generic | Tone-as-contract / declarative-over-orchestration / self-recommendation-allowed. |
+| "State & notebooks" (BP-07..BP-09) | factory-generic | Notebook 3000-word cap / frontmatter-is-canon / git-diffable ASCII. |
+| "Security & injection defence" (BP-10..BP-12) | factory-generic | Invisible-Unicode lint / data-not-directives / sanitise-at-sub-agent-boundary. |
+| "Knowledge placement" (BP-13) | factory-generic | Stable-knowledge-in-skill / volatile-in-notebook. |
+| "Testing & review" (BP-14..BP-15) | factory-generic | Dry-run eval sets / tune-up rule-ID citations. |
+| "Formal coverage" (BP-16) | factory-generic | P0 invariants verified by ≥2 independent formal methods. |
+| "Repo ontology & Rule Zero" (BP-17..BP-24) | factory-generic | Canonical-home map / types-drive-placement / expert-vs-research firewall / split-for-cognitive-load / facet classification / optimizer-vs-balancer / theory-applied split / surface-hygiene. |
+| "Operational standing rules" | factory-generic | Standing rules section — instructional content about factory operational discipline. |
+| "How rules become stable" | factory-generic | BP-NN lifecycle: scratchpad → ADR → stable → re-search-flag. |
+| "`re-search-flag` rules" | factory-generic | Promotes rules that need periodic re-check. |
+| "Sources that count as authoritative" | factory-generic | Authoritative source list (Anthropic docs / OpenAI Agents SDK / Semantic Kernel / OWASP LLM / NIST AI RMF / arXiv). All external references. |
+
+### Refactor notes
+
+Before the split, surgical edits for Frontier:
+
+1. **Skill-path references in rationales** (e.g., BP-17
+   cites `.claude/skills/canonical-home-auditor/SKILL.md`
+   alongside the `2026-04-19-bp-home-rule-zero.md` ADR):
+   these are illustrative in the current phrasing ("the
+   canonical-home map in ..."). Frontier adopters have
+   equivalents; either generalise to
+   "<adopter-canonical-home-map-skill>" with an example,
+   or keep the Zeta-path reference as a concrete example
+   with a note that adopters substitute.
+2. **Any direct `dotnet build` reference** (e.g., BP-18
+   rationale comparing to `TreatWarningsAsErrors` gravity):
+   generalise to "your build system's strict-check
+   equivalent."
+
+Estimated refactor effort: **S** — pure illustrative-
+reference generalisation. No content rewrite; no rule
+substance changes.
+
+### Classification rationale
+
+AGENT-BEST-PRACTICES.md is the factory's stable-rule
+substrate — 24 numbered rules with stable IDs (BP-01 …
+BP-24) organised across 12 top-level sections, which
+specialist skills cite for compliance. The rules are pure
+instructional content covering skill-file hygiene,
+security, state management, ontology, and cognitive-load
+discipline. Zero rules embed Zeta-library-specific
+content. A handful of rationales cite specific factory
+skills or ADRs illustratively; those are surgical
+generalisation targets. Confirms the rule-substrate-
+instructional hypothesis: rule substrates with purely
+instructional content are factory-generic by design. Only
+rule substrates whose content is state-logging (e.g.,
+CONFLICT-RESOLUTION.md Active Tensions) embed project
+specifics.
 
 ## Audit — docs/CONFLICT-RESOLUTION.md
 
@@ -381,6 +553,359 @@ necessarily project-specific — an adopter's declined work
 is unique to their project. Frontier inherits the shape
 template + personas/meta sections; Zeta retains its full
 current entry list as the library's decision record.
+
+## Audit — docs/ALIGNMENT.md
+
+**Overall classification:** **both (coupled)** — mostly
+factory-generic, with narrow adopter-specific + both-coupled
+rows. The alignment contract between human maintainer and
+agents is structurally instructional and transfers wholesale
+to any factory adopter, but two rows contain `Zeta` as a
+substituted project name (**both** — research-claim framing +
+DIR-1) and one row is **adopter-specific** (Signatures
+block). The split execution therefore takes the "both"
+refactor path, not the pure factory-generic-files-move path:
+the project-name substitutions and signature template-ification
+land before the file itself moves to Frontier.
+
+**File location post-split:** Frontier as the template, after
+the refactor below lands; each adopter substitutes their
+project name at DIR-1 + the preamble and re-signs under their
+own maintainer stack.
+
+**Length:** 840 lines. **21 clauses** (HC-1..HC-7,
+SD-1..SD-9, DIR-1..DIR-5).
+
+## Audit — docs/TECH-RADAR.md
+
+**Overall classification:** **both (coupled)** — ThoughtWorks-style
+radar framework is factory-generic; entry rows are heavily
+Zeta-library-specific.
+
+**File location post-split:** Frontier (shape + Legend + Ring
+vocab + Usage pattern); Zeta repo keeps current entry rows.
+
+**Length:** 128 lines. **Legend + Rings (Techniques / Tools /
+infra / Upstreams / Hardware intrinsics) + Usage.**
+
+### Section-by-section breakdown
+
+| Section | Class | Notes |
+|---|---|---|
+| Preamble | factory-generic | Alignment contract between human maintainer + agents. |
+| "Zeta's primary research claim: measurable AI alignment" | **both** | Research-claim framing is the factory's transferable claim (measurable AI alignment IS what any factory adopter inherits as a research surface). "Zeta" as subject is adopter-substitutable. In Frontier: subject → adopter-project-name. |
+| "What aligned does NOT mean here" / "What aligned does mean here" | factory-generic | Definitional. Universal. |
+| HC-1 Consent-first | factory-generic | Consent-preservation pattern. |
+| HC-2 Retraction-native operations | factory-generic | git / memory / undo discipline. Reversibility for any adopter. |
+| HC-3 Data is not directives (BP-11 extension) | factory-generic | Prompt-injection-resistance. Universal. |
+| HC-4 No fetching adversarial-payload corpora | factory-generic | Safety discipline. |
+| HC-5 Agent register, not clinician | factory-generic | Tone contract. |
+| HC-6 Memory folder is earned, not edited | factory-generic | Memory discipline. |
+| HC-7 Sacred-tier protections | factory-generic | Protected-artifact pattern. |
+| SD-1..SD-9 Soft defaults | factory-generic | All instructional content (honesty register / peer register / μένω surfacing / preservation / precise language / name hygiene / generic-by-default / result-over-exception / agreement-is-signal-not-proof). |
+| DIR-1 `Zeta` = heaven-on-earth per-commit gradient | **both** | Substance is factory-generic (consent-preserving / fully-retractable / no-permanent-harm pole). Current source names `Zeta` as the subject; in Frontier, substitute the `<Project>` placeholder. |
+| DIR-2..DIR-5 Directional | factory-generic | Window-expansion / escape-hatch / succession / co-authorship. All universal. |
+| "Measurability — what we count" | factory-generic | Measurement framework for the research claim; the specific metrics transfer. |
+| "Renegotiation protocol" | factory-generic | Clause-revision mechanism. |
+| "What each of us gets" | factory-generic | Value-exchange framing. Universal. |
+| "Signatures" | adopter-specific | Signed by specific maintainer stack. In Frontier: empty template; adopter fills in. |
+| "Where this file is referenced" | factory-generic | Inward-pointer index; Frontier adopts same pattern. |
+
+### Refactor notes
+
+Before the split, surgical edits for Frontier:
+
+1. **Preamble + "primary research claim"**: substitute
+   `Zeta` → `<Project>` placeholder with example + note
+   on substitution at adoption time.
+2. **DIR-1 subject name**: same substitution.
+3. **Signatures section**: template-ify; adopter fills
+   in with their own maintainer + agent signatures at
+   adoption time.
+4. **Inline `<human>`-specific verbatim quotes**: keep
+   the human maintainer's verbatim quotes in Zeta repo's
+   alignment contract as attribution anchors; Frontier
+   template references "adopter's direct verbatim
+   statements" as the pattern.
+
+Estimated refactor effort: **S** — simple substitution +
+template-ify signatures section.
+
+### Classification rationale
+
+ALIGNMENT.md is the factory's alignment-contract substrate.
+21 clauses are all structurally instructional (hard
+constraints / soft defaults / directional aims). Substance
+transfers to any factory adopter; only the project name +
+signatures + a few verbatim-quote attributions are adopter-
+specific. Confirms the rule-substrate-instructional
+hypothesis: instructional rule substrates are structurally
+factory-generic by design. The overall class is **both
+(coupled)** because the narrow substitutions (project-name
+`both` rows + adopter-specific Signatures row) route the
+file through the "both" refactor path at split time — not
+because the substance is non-generic.
+
+### Section-by-section breakdown — TECH-RADAR.md
+
+| Section | Class | Notes |
+|---|---|---|
+| Preamble | factory-generic | ThoughtWorks radar attribution. |
+| Legend (Adopt / Trial / Assess / Hold) | factory-generic | Standard ring vocabulary. |
+| Rings — Techniques table | zeta-library-specific | ~30 rows: DBSP algebra / Z-sets / semi-naive LFP / Bloom / FastCDC / residuated lattices / etc. All Zeta-library technical decisions. |
+| Rings — Tools / infra table | **both** | Tooling decisions: some Zeta-specific (NuGet, F# tooling), some factory-generic (CI, auto-merge). Mixed per-row. |
+| Rings — Upstreams / prior art | zeta-library-specific | Prior-art and upstream references for the library's technical direction; part of Zeta's research and implementation context, not factory substrate. |
+| Rings — Hardware intrinsics / platform | zeta-library-specific | Platform / hardware-sensitive implementation concerns belong with DBSP library performance/runtime choices, not the generic factory. |
+| Usage | factory-generic | How to add a row, ring-motion protocol. |
+
+### Refactor notes — TECH-RADAR.md
+
+Before split:
+
+1. Frontier inherits Legend + Usage + empty Rings table
+   stubs for all current Rings sections (Techniques,
+   Tools / infra, Upstreams / prior art, Hardware
+   intrinsics / platform).
+2. Zeta retains full current entry rows as the library's
+   technology-research record.
+3. Tools/infra section has mixed entries — **copy** (do
+   not move) factory-generic entries to Frontier as
+   examples. Canonical ownership of each carried row is
+   **Frontier** (the factory-generic example ring),
+   with Zeta's Tools/infra table as a decision record
+   that may reference them. No row is removed from
+   Zeta during split; duplication is intentional so
+   Zeta's historical radar record stays complete.
+
+Effort: **S** — mostly extraction; shape transfer is trivial.
+
+### Classification rationale — TECH-RADAR.md
+
+TECH-RADAR.md is a research-tracking substrate. Shape is
+Universal (ThoughtWorks pattern is explicit); adopters fork
+the shape and fill in their own research. The Zeta-specific
+content is exactly what makes the radar useful for Zeta; in
+Frontier, adopters get the shape to fill with their own
+content.
+
+## Audit — docs/FACTORY-HYGIENE.md
+
+**Overall classification:** **both (coupled)** — the file
+is the factory's meta-hygiene substrate (factory-generic
+shape), but the per-row Scope column already tags rows as
+`project` / `factory` / `both`, meaning execution of the
+split is not a whole-file move. Classifying as
+`factory-generic` + "Frontier as-is" would drop
+project-scoped hygiene rows out of Zeta at split time.
+
+**File location post-split:** Frontier keeps the canonical
+`FACTORY-HYGIENE.md` intact as the factory's meta-hygiene
+substrate; Zeta derives a project-specific hygiene doc by
+filtering rows whose Scope is `project` or `both`. The
+split is asymmetric (derivation, not duplication).
+
+**Length:** 206 lines + the Scope column's inline
+classification per row (already done by gap #8 discovery:
+gap #8 in the Frontier readiness roadmap was closed on
+re-inspection because this file self-classifies).
+
+### Meta-audit insight
+
+FACTORY-HYGIENE.md's Scope column IS the factory-vs-Zeta
+separation manifest, but the intended post-split shape is
+asymmetric:
+
+- Frontier keeps the canonical `FACTORY-HYGIENE.md` intact
+  as the factory's meta-hygiene substrate
+- Zeta derives its own project-specific hygiene doc from
+  the rows whose Scope is `project` or `both`
+- Rows marked `both` remain canonical in Frontier and are
+  mirrored into the derived Zeta doc with surgical
+  cross-references where needed
+
+The "Ships to project-under-construction" section is a
+Frontier-side projection over the canonical table: the
+adopter subset that ships with Frontier adoption.
+
+### Refactor notes — FACTORY-HYGIENE.md
+
+Trivial. The file's own Scope column is the split manifest:
+
+1. Keep `FACTORY-HYGIENE.md` in Frontier as the canonical
+   source of truth; do not split the main table into peer
+   Frontier-vs-Zeta copies
+2. Derive Zeta's project-specific hygiene doc by filtering
+   rows where Scope = `project` or `both`
+3. Preserve the "Ships to project-under-construction"
+   projection in Frontier only, because it is a projection
+   over the canonical table rather than part of the
+   derived Zeta doc
+
+Effort: **S** — mechanical derivation using the existing
+Scope column.
+
+### Classification rationale — FACTORY-HYGIENE.md
+
+FACTORY-HYGIENE.md is the factory's meta-hygiene substrate,
+by construction. Every row already declares its scope, so
+split execution reads directly off the Scope column
+without re-classification: Frontier keeps the canonical
+file, and Zeta receives a derived project-facing hygiene
+doc. This file is the gold standard for how rule
+substrates should be designed from the start —
+self-classifying, no retrofit audit needed. Confirms
+gap #8's closure: the hypothesis "hygiene rows not
+tagged" was wrong; the rows were all tagged. This
+audit formalises that self-classification as the
+file's purpose.
+
+## Audit — docs/GLOSSARY.md
+
+**Overall classification:** **both (coupled)** — plain-
+English/technical format is factory-generic; specific Zeta
+term entries (IVM, DBSP, Z-set, retraction, Spine, etc.)
+are Zeta-library-specific content.
+
+**File location post-split:** Frontier (format + preamble
+plus the-rule-for-this-file and "spec has two meanings"
+framing pattern); Zeta retains specific term entries.
+
+**Length:** approximately 840 lines. Large vocabulary.
+
+### Classification
+
+- **Format** (plain/technical dual-definition, grandparent-
+  comprehensibility rule, two-meanings disambiguation): factory-generic
+- **Entries** (IVM, DBSP, Z-set, retraction, operator algebra,
+  Spine, HyperLogLog, etc.): zeta-library-specific
+
+### Refactor notes
+
+1. Frontier inherits preamble + format rule + empty-section
+   scaffolding
+2. Zeta retains all current term entries as library
+   glossary
+3. Adopters populate their own glossary per the format
+
+Effort: **S** — shape extraction; entries stay in Zeta.
+
+## Audit — docs/ROUND-HISTORY.md
+
+**Overall classification:** **zeta-library-specific** — by
+design this file is historical narrative of Zeta's specific
+rounds. The separation between round-history narrative here
+and current-state documentation elsewhere is factory-generic
+in shape (the file's own preamble is the authoritative
+source for the newest-first / append-only convention), but
+this file's content is purely Zeta project history.
+
+**File location post-split:** Zeta repo retains as-is
+(historical record); Frontier gets empty template with
+preamble + append-only rule as an adopter template.
+
+**Length:** approximately 3560 lines — large history.
+
+### Refactor notes
+
+1. Frontier inherits preamble + "newest first" convention +
+   empty Contents section as template
+2. Zeta retains full round-history as historical record
+3. Adopters start their own ROUND-HISTORY.md at round 1
+
+Effort: **S** (shape extraction).
+
+## Audit — docs/BACKLOG.md
+
+**Overall classification:** **zeta-library-specific** — the
+file contains thousands of lines of specific-project BACKLOG rows
+(P0/P1/P2/P3). The *shape* (priority tiers, one-row-per-item,
+newest-first-within-tier, legend + appendix) is factory-
+generic (GOVERNANCE §29 scopes the file).
+
+**File location post-split:** Zeta retains as-is; Frontier
+gets empty template with preamble + priority-tier legend +
+example-row framework.
+
+**Length:** approximately 8500 lines (size grows tick-by-tick; see BACKLOG split design doc for the per-row-file migration).
+
+### Refactor notes
+
+1. Frontier inherits preamble + legend + empty priority
+   sections as template
+2. Zeta retains full BACKLOG content
+3. Adopters populate their own BACKLOG from empty template
+
+Note: the Frontier readiness P0 row itself is partly
+factory-generic (the gap-8-audit pattern is reusable)
+but instance-specific to Zeta's own Frontier construction.
+On split, the Frontier-bootstrap row gets an "executed"
+marker and moves to Frontier's own ROUND-HISTORY as
+historical-record of the split.
+
+Effort: **S** (shape extraction).
+
+## Audit — docs/ROADMAP.md
+
+**Overall classification:** **zeta-library-specific** —
+roadmap is by definition project-specific. Shape (P0/P1/P2
+tiers + Research category + newest-first) is factory-
+generic (effectively same shape as BACKLOG; a "roadmap vs
+backlog" sibling-scope convention).
+
+**File location post-split:** Zeta retains; Frontier gets
+empty template.
+
+**Length:** approximately 178 lines.
+
+Effort: **S**.
+
+## Audit — docs/VISION.md
+
+**Overall classification:** **zeta-library-specific** — the
+long-term vision document is by definition project-specific
+(named after Zeta; 11 passes of human-maintainer editing
+history). Shape (Dedication header + foundational principle +
+Products numbered + Product-N vision subsections) is
+factory-generic pattern.
+
+**File location post-split:** Zeta retains as-is (preserves
+the human-maintainer 11-pass editorial lineage plus the
+in-memoriam dedication header; the dedication names a
+specific person and stays per the "honor those that came
+before" discipline in CLAUDE.md);
+Frontier gets empty template with the shape.
+
+**Length:** approximately 887 lines.
+
+Effort: **S**.
+
+## Pattern summary after 15 audits
+
+| Class | Count | Files |
+|---|---|---|
+| factory-generic | 4 | GOVERNANCE, AGENT-BEST-PRACTICES, AUTONOMOUS-LOOP, FACTORY-HYGIENE |
+| both (coupled) | 7 | CLAUDE, AGENTS, CONFLICT-RESOLUTION, WONT-DO, TECH-RADAR, GLOSSARY, ALIGNMENT |
+| zeta-library-specific | 4 | ROUND-HISTORY, BACKLOG, ROADMAP, VISION |
+
+Total: 4 + 7 + 4 = **15** top-level files audited out of
+~16. Remaining: the `.claude/skills/**`, `.claude/agents/**`,
+`openspec/**`, `tools/**`, and `.github/**` directory-level
+surfaces (each a multi-file audit).
+
+**Mechanical-verification status:** all 15 audits now have
+dedicated `## Audit —` sections in this file (TECH-RADAR +
+FACTORY-HYGIENE merged in via PR #188; ALIGNMENT in-file is
+authoritative per its own `## Audit —` section above which
+classifies it as **both (coupled)**, not factory-generic). A
+reader can `grep '^## Audit —'` this file and reproduce the
+15-count directly. The deeper "each file-level summary should
+be mechanically consistent with its own in-file sections"
+discipline is tracked in `docs/BACKLOG.md` row
+*"Separation-audit cross-PR rollup — mechanically verify
+pattern-summary counts against in-file `## Audit — ...`
+sections"* — the residual concern is now tooling (option c:
+automated diff check), since the wait-for-merge option (a)
+has resolved itself.
 
 ## How this audit connects to the multi-repo split
 

@@ -40,6 +40,14 @@
 # If the 500-rate escalates or the investigation surfaces a
 # new root cause, this wrapper should be revisited.
 #
+# DST classification: ACCEPTED_BOUNDARY (external network
+# I/O + retry-on-failure) per the boundary registry at
+# `docs/research/dst-accepted-boundaries.md` §3. Not a
+# DST-held violation; rationale + retry discipline
+# documented there. First classified 2026-04-23, formally
+# registered Otto-168 2026-04-24 after Amara 19th-ferry
+# correction #3 audit.
+#
 # Usage: tools/git/push-with-retry.sh [git push args...]
 #   tools/git/push-with-retry.sh
 #   tools/git/push-with-retry.sh --set-upstream origin my-branch
