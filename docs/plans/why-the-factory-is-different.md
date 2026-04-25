@@ -105,11 +105,12 @@ memory permanence, and lesson integration.
 
 ### "Full autonomy is for sandboxed toys" → the factory is production-posture by default
 
-- A cadenced live-lock-smell audit (ratio of product motion
-  vs process motion; see `tools/audit/live-lock-audit.sh`)
-  measures the factory at round close. Operators run it on
-  demand or on the cadence row in `docs/FACTORY-HYGIENE.md`;
-  per-commit CI / hook wiring is a separate BACKLOG item.
+- A live-lock-smell audit (ratio of product motion vs
+  process motion; see `tools/audit/live-lock-audit.sh`) is
+  currently run on demand by operators. Promoting it to a
+  cadenced row in `docs/FACTORY-HYGIENE.md` and wiring
+  per-commit CI / hook integration are separate BACKLOG
+  items.
 - Every lesson learned from a failure mode is filed into
   `docs/hygiene-history/*.md` for future consultation.
 - Alignment is an observable — Zeta's primary research
