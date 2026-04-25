@@ -126,8 +126,9 @@ Rules (applied in order):
 2. Replace whitespace sequences with single space
 3. Strip leading/trailing whitespace
 4. Remove markdown emphasis markers (`**`, `*`, `_`, backticks)
-5. Normalize smart quotes (`"` / `"` / `'` / `'`) to plain
-   ASCII (`"` / `'`)
+5. Normalize smart/curly quotes (left-double U+201C, right-
+   double U+201D, left-single U+2018, right-single U+2019)
+   to plain ASCII straight quotes (`"` and `'`)
 6. Collapse repeated punctuation (`!!!` → `!`)
 7. Strip trailing punctuation (`.`, `!`, `?`, `;`, `,`)
 
@@ -180,19 +181,34 @@ Pseudocode (language-agnostic):
 
 ```
 function reconcile(facts):
-  # Group by canonical key
-  by_key = {}
+  # Group by canonical key. Use defaultdict(list) so the
+  # first append() initialises the bucket; equivalent to
+  # `if k not in by_key: by_key[k] = []` then append.
+  by_key = defaultdict(list)
   for f in facts:
+    # Stable fact identity is (id) — fact-IDs are unique.
+    # The (subject, predicate, canonical_key(object)) tuple
+    # is the *grouping* key (multiple distinct facts may
+    # share it under invariant #2's collision case below);
+    # do NOT confuse the two.
     k = (f.subject, f.predicate, canonical_key(f.object))
     by_key[k].append(f)
 
-  # Per-key: pick the winner, detect conflicts
+  # Per-key: pick the winner, detect conflicts.
   accepted = {}
   conflicts = []
   for key, group in by_key.items():
+    # Retraction semantics: a fact is "live" if its
+    # latest version (by supersession chain + timestamp)
+    # has status == "active". Status transitions to
+    # "retracted" or "superseded" via explicit
+    # FactRetracted / FactSuperseded events; we never
+    # delete records, only mark them. The reconcile()
+    # filter below ignores retracted/superseded forms but
+    # still considers them when checking chain integrity.
     active = [f for f in group if f.status == "active"]
     if len(active) == 0:
-      continue  # all retracted/superseded
+      continue  # all retracted/superseded — key not live
     if len(active) > 1:
       # multiple active with same key = invariant-2 violation
       winner = max(active, key=lambda f: (f.priority, f.timestamp_utc))
@@ -201,7 +217,9 @@ function reconcile(facts):
     else:
       accepted[key] = active[0]
 
-  # Check version-chain consistency
+  # Check version-chain consistency over ALL facts in the
+  # group (including retracted/superseded), not just active
+  # ones — chain integrity needs the full history.
   for key, f in accepted.items():
     chain = follow_supersession(f, by_key[key])
     if chain_broken(chain):
@@ -213,7 +231,9 @@ function reconcile(facts):
 ### Conflict outputs
 
 Each conflict becomes a row in `docs/CONTRIBUTOR-CONFLICTS.md`
-(the file Amara's 4th ferry noted is empty but should be used).
+(the file Amara's 4th ferry noted is present-with-schema-but-
+unpopulated; this design starts populating it via the
+generator).
 Row format:
 
 ```markdown
@@ -264,10 +284,11 @@ set.
 ### `MEMORY.md` index generation
 
 Accept facts where `source_kind == "memory"`; emit
-newest-first list of `(source_path, first-sentence-of-object, tags)`
-tuples. Cap at configurable size (default: 250 entries or 30KB,
-whichever smaller — matches the FACTORY-HYGIENE row #11 cap with
-headroom).
+newest-first list of `(source_path, first-sentence-of-object,
+tags)` tuples. Cap at configurable size (default: 250 entries
+or 24,000 bytes — strictly under the FACTORY-HYGIENE row #11
+24,976-byte hard cap, with ~1KB headroom for any header /
+index annotations the generator writes around the entry list).
 
 Older entries move to dated archive files
 `memory/MEMORY-ARCHIVE-YYYY-MM.md`. Ordering + link integrity
