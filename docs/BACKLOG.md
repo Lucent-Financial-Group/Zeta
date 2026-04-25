@@ -10010,9 +10010,8 @@ systems. This track claims the space.
       structural AST queries beyond ctags; already used
       by Claude-Code-adjacent tools.
     - CodeQL database — `docs/INSTALLED.md` lists
-      CodeQL CLI as pending install (`brew install
-      codeql`); when it lands the local DB format is
-      queryable.
+      CodeQL CLI as pending install (`brew install codeql`);
+      when it lands the local DB format is queryable.
   - **Full-text search (docs, skills, research, memory):**
     - SQLite FTS5 — zero-op, ships with SQLite,
       adequate for < 100 k docs.
@@ -10090,9 +10089,8 @@ systems. This track claims the space.
     thing a local graph DB could make tractable.
   - `docs/INSTALLED.md` CodeQL CLI pending-install row
     (CodeQL's local DB format is a candidate for the
-    code-indexing surface; the BACKLOG.md "CodeQL
-    workflow" entry near line 4167 covers the CI side
-    only).
+    code-indexing surface; the BACKLOG.md **CodeQL
+    workflow** checkbox item covers the CI side only).
 
   **Effort:** M (research-pass + shortlist + integration
   sketch for 2-to-3 candidates). No implementation in
