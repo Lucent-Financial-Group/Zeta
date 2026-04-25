@@ -173,14 +173,26 @@ for file in "${files[@]}"; do
     fail=1
     continue
   fi
-  # Strip YAML comment-only lines (first non-whitespace
-  # char is `#`) so stale labels mentioned in comments
-  # don't trigger false positives.
-  uncommented="$(grep -vE '^[[:space:]]*#' "$file" || true)"
+  # Two-pass YAML comment stripping:
+  # 1. Drop full-line comments (first non-whitespace = `#`).
+  # 2. Strip trailing comments — anything after a ` #` (with
+  #    a leading space, the YAML-spec comment-start
+  #    sentinel) on lines that aren't already comment-only.
+  #    Conservative: doesn't try to handle `#` inside
+  #    quoted strings (rare in workflow YAML); tolerates
+  #    the corner case at the cost of an occasional false
+  #    positive.
+  uncommented="$(
+    grep -vE '^[[:space:]]*#' "$file" \
+      | sed -E 's/[[:space:]]+#.*$//'
+  )"
   # Extract lines that look like runner-label references,
-  # then grep for any STALE_LABEL with portable
-  # word-boundaries.
-  matches="$(printf '%s\n' "$uncommented" | grep -nE "runs-on:|(^|[^A-Za-z0-9_])os:|^[[:space:]]*-[[:space:]]+(${stale_pattern})" || true)"
+  # then grep for any STALE_LABEL with portable word-
+  # boundaries. Matrix-entry prefilter accepts both bare
+  # `- <label>` AND quoted `- "<label>"` / `- '<label>'`
+  # forms (common YAML matrix syntax).
+  matrix_prefix='^[[:space:]]*-[[:space:]]+(['"'"'"]?)'
+  matches="$(printf '%s\n' "$uncommented" | grep -nE "runs-on:|(^|[^A-Za-z0-9_])os:|${matrix_prefix}(${stale_pattern})" || true)"
   hits="$(printf '%s\n' "$matches" | grep -E "${nonword_start}(${stale_pattern})${nonword_end}" || true)"
   if [ -n "$hits" ]; then
     echo "STALE RUNNER LABEL(S) in $file:"
@@ -189,7 +201,7 @@ for file in "${files[@]}"; do
   fi
   # Same scan against rolling-alias forbidden list.
   rolling_pattern="$(IFS='|'; echo "${ROLLING_ALIASES[*]}")"
-  rolling_matches="$(printf '%s\n' "$uncommented" | grep -nE "runs-on:|(^|[^A-Za-z0-9_])os:|^[[:space:]]*-[[:space:]]+(${rolling_pattern})" || true)"
+  rolling_matches="$(printf '%s\n' "$uncommented" | grep -nE "runs-on:|(^|[^A-Za-z0-9_])os:|${matrix_prefix}(${rolling_pattern})" || true)"
   rolling_hits="$(printf '%s\n' "$rolling_matches" | grep -E "${nonword_start}(${rolling_pattern})${nonword_end}" || true)"
   if [ -n "$rolling_hits" ]; then
     echo "ROLLING-ALIAS RUNNER LABEL(S) in $file (use a pinned version per repo convention):"
