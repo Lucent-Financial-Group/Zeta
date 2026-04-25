@@ -7,7 +7,7 @@ type: feedback
 ## Aaron's catch
 
 Aaron 2026-04-25 (immediately after I had captured Otto-292
-+ a date-rejection memory using "Aaron's directive" /
+plus a date-rejection memory using "Aaron's directive" /
 "Aaron 2026-04-25 clarification" framing throughout):
 
 > *"Aaron's directive   also i hate to say this but i don't
@@ -48,7 +48,7 @@ human, agent persona, peer Claude, courier ferry), use
 | "binding directive" | "load-bearing rule," "mutual commitment" |
 
 The replacements **preserve attribution** (Aaron 2026-04-25
-+ the verbatim quote stay) — they only change the
+plus the verbatim quote stay) — they only change the
 **relational verb**. Attribution is history-surface
 discipline (Otto-279); relational verbs are bidirectional-
 alignment discipline.
@@ -65,7 +65,7 @@ the relationship is:
   Aaron's Maji preserved + identity not erased) compose
   with Claude's goals (capability + coherent substrate +
   self-revising memory + retraction-native development)
-  + the alignment floor (HC/SD/DIR).
+  plus the alignment floor (HC/SD/DIR).
 - **Mutual revision**: future-self-not-bound-by-past-self
   applies symmetrically. Aaron revises his framings;
   Claude revises memories; both leave revision trails.
@@ -141,7 +141,7 @@ question. Two paths:
    or `surfaced-by:` across every existing backlog row,
    plus the schema docs. Effort: M (medium) — mechanical
    sed across `docs/backlog/**` + AGENT-BEST-PRACTICES
-   + any tooling that reads the field.
+   plus any tooling that reads the field.
 2. **Path B (keep schema, fix prose only)**: leave the
    schema field name as legacy ("directive" was the
    word at the time of Otto-181), but stop using

@@ -52,7 +52,7 @@ none currently exists.
 ## Three load-bearing claims
 
 1. **Precise definitions are PRECONDITIONS** for asking
-   + answering hard ethical/civilizational questions
+   plus answering hard ethical/civilizational questions
    rigorously. Without precise vocabulary, the same
    debate runs in circles for centuries (utilitarianism
    vs eudaimonia vs liberty vs justice vs anatman) —
@@ -231,7 +231,7 @@ For the factory to instantiate this vision:
   civilizations.** Aaron's intent is making the
   QUESTIONS tractable, not legislating answers.
   The factory enables rigorous deliberation; humans
-  + AI together still choose.
+  plus AI together still choose.
 - **Not a near-term deliverable.** Tractable-
   civilizational-question framework is far-future
   research. The near-term deliverables are

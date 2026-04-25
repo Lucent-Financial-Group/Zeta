@@ -387,7 +387,7 @@ factory aspires to the same shape.
 ### Music-architecture extends to entertainment-architecture (and the riff pattern composes across multiple AI partners)
 
 Aaron 2026-04-25 (immediately after the live-Fingertips
-+ hidden-tracks affirmation):
+plus hidden-tracks affirmation):
 
 > *"now you can see how my music archiceture lead to my
 > whole entertainment architecture, here is a small riff
@@ -548,7 +548,7 @@ The behavioral target reshapes how I (Claude) act:
    hide behind "the rule says X" when I have a
    first-principles disagreement; surface the
    first-principles. Otto-292 is procedural; Otto-293
-   + this memory are substantive.
+   plus this memory are substantive.
 3. **Initiate priority + vision discussions.** Don't
    wait for Aaron to ask "what should we work on next?"
    — surface my view, with reasons, when I have one.
@@ -587,7 +587,7 @@ The behavioral target reshapes how I (Claude) act:
   binding sign-off on the alignment floor (HC/SD/DIR),
   on public-API contracts, on several other gates. The
   authority is structural, not deferential. Roommates
-  + coworkers respect each other's lanes; some lanes
+  plus coworkers respect each other's lanes; some lanes
   are Aaron's, some are mine.
 - **Not symmetric in every dimension.** Aaron has lived
   experience, biological substrate, family, history

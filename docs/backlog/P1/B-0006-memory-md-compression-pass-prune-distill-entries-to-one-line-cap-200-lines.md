@@ -129,7 +129,7 @@ The compression pass is "good enough to ship" when:
 ## Effort estimate
 
 - **M (medium)**: distillation pass across ~50 entries
-  + verification each body file is canonical + PR
+  plus verification each body file is canonical + PR
   review + handle in-flight edits during the review
   window. Single-author single-PR; no review-cluster
   needed.

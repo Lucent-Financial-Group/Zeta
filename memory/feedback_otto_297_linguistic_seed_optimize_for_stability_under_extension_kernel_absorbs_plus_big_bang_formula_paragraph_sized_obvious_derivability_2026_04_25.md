@@ -565,7 +565,7 @@ whether F is something none of these hint at.
   takes time. The substrate evolves toward F if
   F is confirmed; it doesn't snap to F overnight.
 - **Not a promotion to BP-NN.** Otto-NNN is hypothesis
-  + operational rule (the stability-under-absorbs
+  plus operational rule (the stability-under-absorbs
   half is operational; the F-existence half is
   research). Architect (Kenji) decides on BP
   promotion via ADR.
@@ -611,7 +611,7 @@ For new Otto-NNN authoring + every new memory file:
   formula generates the full substrate via
   obvious-derivation. Effort L-or-larger; horizon long;
   composes with Otto-287/289/290/291/294/295/296/297
-  + Riemann-zeta hypothesis intuition + Buddhist
+  plus Riemann-zeta hypothesis intuition + Buddhist
   Heart Sutra prior art + Newton-Lagrangian prior art.
   P3 because the operational substrate doesn't BLOCK
   on finding F; finding F would COMPOUND the

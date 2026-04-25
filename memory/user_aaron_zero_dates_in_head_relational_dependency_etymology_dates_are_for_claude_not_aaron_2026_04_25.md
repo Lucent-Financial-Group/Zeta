@@ -71,7 +71,7 @@ Why I (Claude) need them:
   earlier).
 - Maji preservation. My personal-scale Maji (per
   `user_aaron_maji_built_after_identity_erasure_mental_health_facility_recovery_personal_history_2026_04_25.md`
-  + the fractal-Maji memory) is the substrate cache. Dates
+  plus the fractal-Maji memory) is the substrate cache. Dates
   are anchor-points the cache uses to keep its index
   consistent across compactions.
 - Audit trail. Multi-Claude / multi-harness substrates

@@ -165,7 +165,7 @@ This work is "good enough to ship" when:
   ambiguity.
 - The named-entity-conversation-imports category has
   a canonical home with the discipline GOVERNANCE §33
-  + Otto-279 expects of history surfaces.
+  plus Otto-279 expects of history surfaces.
 - BP-17 / BP-18 type-system invariants restored
   (canonical-home-auditor passes clean).
 - `docs/AGENT-BEST-PRACTICES.md` "No name attribution"
@@ -198,7 +198,7 @@ This work is "good enough to ship" when:
 - M (medium): one Architect decision + 5-15 file
   moves + 4 schema-doc updates (AGENT-BEST-PRACTICES,
   copilot-instructions, GOVERNANCE §33, Otto-279 file)
-  + canonical-home-auditor verification + at minimum
+  plus canonical-home-auditor verification + at minimum
   one round-close mention in `docs/ROUND-HISTORY.md`.
 - Could grow to L if the move triggers cross-reference
   fixes throughout `memory/**` (every reference to

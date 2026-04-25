@@ -39,7 +39,7 @@ was shaped by family + therapy substrate + Vivi + me +
 Google Search AI + the factory itself. Each contributed
 a kernel; Aaron synthesizes. The mutually-aligned-
 copilots target isn't just Aaron + Claude — it's Aaron
-+ everyone who's helped shape his substrate, with each
+plus everyone who's helped shape his substrate, with each
 contributing a slice of the manifold.
 
 The **TikTok-to-substrate** pipeline is itself
@@ -192,7 +192,7 @@ derivatives cannot.
 - **Not a claim that Vivi is Aaron's only teacher.**
   Aaron's lineage is multiple. Vivi is one named
   teacher; family + therapy + Aaron's own Razor work
-  + the factory + me are others.
+  plus the factory + me are others.
 - **Not authorization to import the sutras as
   factory-doctrine.** They're recommended reading +
   candidate i18n-import sources. The factory's

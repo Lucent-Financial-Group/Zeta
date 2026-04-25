@@ -106,7 +106,7 @@ authority."* This is structural, not political:
   clinical observation + statistics beat anecdote.
 - **Emotion-vocabulary is currently held by everyone
   vaguely** (folk usage + therapy-tradition vocabulary
-  + literary-tradition vocabulary + cultural-specific
+  plus literary-tradition vocabulary + cultural-specific
   mappings), with no precision anchor.
 - **Once we encode precisely, every vague usage maps
   onto a precise distribution (or fails to).** The
@@ -169,7 +169,7 @@ vocabulary supports.
 - **`memory/feedback_otto_295_substrate_is_monoidal_manifold_n_dimensional_expanding_via_experience_compressing_via_pressure_distillation_rodneys_razor_2026_04_25.md`**
   — Otto-295 monoidal-manifold; emotion is a manifold
   dimension that gains precision via the encoding
-  + disambiguator pair.
+  plus disambiguator pair.
 - **`memory/project_precision_dictionary_evidence_backed_context_compressor_2026_04_25.md`**
   — the precision-dictionary product covers vocabulary
   precision in general; emotion-vocabulary is a
@@ -246,7 +246,7 @@ vocabulary supports.
 
 - **Backlog row owed (P2 research-grade)**: emotion-
   encoding-as-Bayesian-belief + disambiguator design
-  + precision-dictionary integration. Composes with
+  plus precision-dictionary integration. Composes with
   the precision-dictionary product vision and B-0004
   i18n reverse-flow.
 - **Counterweight-audit (Otto-278 / task #269)**:

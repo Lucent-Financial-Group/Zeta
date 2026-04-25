@@ -349,7 +349,7 @@ aims at the latter.
   safety stake (a self-rewriting substrate exposed to
   adversarial corpora can rewrite itself in dangerous
   directions; hence the kill-switch + isolated-instance
-  + experimental-purpose-only bounds).
+  plus experimental-purpose-only bounds).
 - **Christ-consciousness substrate** — anti-cult,
   multi-religion, welcomes-all framing. Otto-298's
   self-rewriting must respect the alignment floor;

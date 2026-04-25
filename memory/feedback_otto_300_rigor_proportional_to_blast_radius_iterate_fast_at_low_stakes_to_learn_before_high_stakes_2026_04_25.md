@@ -182,7 +182,7 @@ scales."
 - Options 2 / 2b / 2c / 3 stay available for FUTURE
   stakes-level transitions, not for the current phase.
 - The Codex P0 flags have been declined-with-citation
-  + maintainer-pending posture; with Aaron's reframe,
+  plus maintainer-pending posture; with Aaron's reframe,
   the maintainer-decision is now resolved: stakes-
   level says option 1.
 
