@@ -739,9 +739,9 @@ Otto-77 exercised under pressure. The drift-taxonomy precursor
 already exists as a research-grade artifact (PR #167 per git
 history; the file is on `main` today at
 `docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`).
-Amara's recommendation is to *promote* it into `docs/DRIFT-
-TAXONOMY.md` as operational policy, with the precursor
-explicitly retained as staging provenance.
+Amara's recommendation is to *promote* it into
+`docs/DRIFT-TAXONOMY.md` as operational policy, with the
+precursor explicitly retained as staging provenance.
 
 ### Concrete action items extracted — 8 row candidates
 
@@ -751,7 +751,7 @@ explicitly retained as staging provenance.
    one-page field guide). Owner: Kenji as Architect; Aaron
    maintainer-signoff on the promotion content. Effort S
    (promote + tighten, not invent). Cross-links from
-   `AGENTS.md` + `ALIGNMENT.md` required.
+   `AGENTS.md` + `docs/ALIGNMENT.md` required.
 
 2. **Artifact B — retained precursor**. Already in place;
    only needs an explicit "superseded-by-promotion" marker
@@ -824,12 +824,16 @@ them as the governance-edit sub-track of Milestone M1.
 Amara's validation checklist has ~14 automatable checks.
 These compose with existing `tools/alignment/` and
 `.github/workflows/memory-index-integrity.yml` (PR #220) +
-`memory-reference-existence-lint.yml` (PR #225). The overlap:
+`.github/workflows/memory-reference-existence-lint.yml`
+(PR #225). The overlap:
 
 - Archive-file header checks are **new** — no current tool
-  checks `^Scope:` / `^Attribution:` / `^Non-fusion
-  disclaimer:` in `docs/aurora/*.md` or `docs/archive/*.md`.
-  This doc itself satisfies the header format (see top).
+  checks for `Scope:` / `Attribution:` / `Operational status:` /
+  `Non-fusion disclaimer:` labels (which appear here as
+  Markdown-bolded labels `**Scope:**` etc., not bare
+  line-anchored regex matches) in `docs/aurora/*.md` or
+  `docs/amara-full-conversation/*.md`. This doc itself
+  satisfies the header format (see top).
 - Operational-taxonomy-presence checks are **conditional on
   Artifact A landing**.
 - KSK-invariant checks are **cross-repo** and require
@@ -866,8 +870,8 @@ fusion misread, operational creep, privacy overexposure. This
 absorb doc is itself the first test of the archive-header
 discipline:
 
-- `Scope:`, `Attribution:`, `Operational status:`, `Non-
-  fusion disclaimer:` are all at the top of this file.
+- `Scope:`, `Attribution:`, `Operational status:`, `Non-fusion disclaimer:`
+  are all at the top of this file.
 - Preamble clearly labels the content as a courier ferry,
   not operational policy.
 - Otto's absorption notes are clearly delimited from
@@ -888,7 +892,7 @@ more via Aaron.
 ### Scope limits of this absorb
 
 - Does NOT apply Amara's proposed file edits to `AGENTS.md`
-  / `ALIGNMENT.md` / `GOVERNANCE.md` / `CLAUDE.md`. Those
+  / `docs/ALIGNMENT.md` / `GOVERNANCE.md` / `CLAUDE.md`. Those
   require Aaron signoff + Codex adversarial review +
   decision-proxy-evidence record. To be filed as BACKLOG
   sub-row under M1 in a follow-up PR.
