@@ -4476,16 +4476,17 @@ Landed in task #261 bundle.
   **Class B — count-vs-list cardinality** (5 observed PRs:
   #191, #219, #430, #85, #426). Doc claims "N drift classes /
   phases / audits / items / PRs" but the enumerated list has
-  a different cardinality. Lint: regex on `\b\d+\s+(items|
-  phases|audits|drift classes|PRs|tests|fixes)\b` patterns +
-  count surrounding list cardinality + warn on mismatch.
+  a different cardinality. Lint: regex on `\b\d+\s+(items|phases|audits|drift classes|PRs|tests|fixes)\b`
+  patterns + count surrounding list cardinality + warn on
+  mismatch.
 
   **Class C — pipe-in-Markdown-table-row** (3+ observed PRs).
   Inline code spans containing `|` inside a Markdown table
   row get parsed as column separators, breaking the table
-  structure + markdownlint MD056. Lint: regex check on
-  markdown table rows for unescaped `|` inside code spans;
-  suggest backslash-escape or alternative wording.
+  structure + markdownlint `MD056/table-column-count`.
+  Lint: regex check on markdown table rows for unescaped `|`
+  inside code spans; suggest backslash-escape or
+  alternative wording.
 
   **Effort: M.** Each class is ~20-50 lines of regex + test
   cases. Could land as three separate scripts under
@@ -4496,9 +4497,10 @@ Landed in task #261 bundle.
   `docs/pr-preservation/_patterns.md`. Composes with the
   related-document-cluster manifest (Class D candidate from
   multi-CLI capability-map family), shellcheck-rule-ID
-  precision (Class E candidate), stable-identifier-vs-line-
-  number xref (Class F candidate) — all observed but at lower
-  density; promote when density justifies.
+  precision (Class E candidate),
+  stable-identifier-vs-line-number xref (Class F candidate)
+  — all observed but at lower density; promote when density
+  justifies.
 
 - [ ] **`StakeCovariance` file split** — move the
   `StakeCovariance` module out of `src/Core/Graph.fs`
