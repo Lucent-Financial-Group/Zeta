@@ -1,5 +1,4 @@
-# Semirings — the recipe template Zeta plugs different
-"arithmetics" into
+# Semirings — the recipe template Zeta plugs different "arithmetics" into
 
 **Subject:** zeta
 **Level:** applied (default) + theoretical (opt-in)
@@ -7,14 +6,19 @@
 "multiple algebras in one database"
 **Prerequisites:**
 
-- `subjects/zeta/zset-basics/` (ℤ-with-retraction is the
-  signed-integer case; this module shows why it's just
-  one of many)
-- `subjects/zeta/operator-composition/` (operators
-  compose the same way across different arithmetics)
+- `subjects/zeta/zset-basics/` (forthcoming — ℤ-with-
+  retraction is the signed-integer case; this module shows
+  why it's just one of many. Until that module lands, the
+  retraction-intuition module at `subjects/zeta/retraction-intuition/`
+  covers the prereq material.)
+- [`subjects/zeta/operator-composition/`](../operator-composition/module.md)
+  (operators compose the same way across different
+  arithmetics)
 
-**Next suggested:** `subjects/cs/databases/` (forthcoming
-— where Zeta fits among database paradigms)
+**Next suggested:** `subjects/cs/databases/` (forthcoming —
+where Zeta fits among database paradigms; the `subjects/cs/`
+tree itself is not yet present, so this is a forward
+reference to a planned-but-not-landed module)
 
 ---
 
@@ -65,7 +69,7 @@ You've been using Z-sets (the **signed-integer semiring**
 | **𝔹 (Boolean)** | OR (either-or) | AND (both-and) | Plain sets; presence/absence only |
 | **Tropical (min-plus)** | Take minimum | Add | Shortest paths between nodes |
 | **Max-plus** | Take maximum | Add | Longest / critical-path times |
-| **Probabilistic ([0,1] fuzzy)** | Take maximum | Multiply | Possibility distributions |
+| **Possibilistic / fuzzy ([0,1])** | Take maximum | Multiply | Possibility distributions (max-times; not probability accumulation) |
 | **Provenance** | Join witnesses | Combine witnesses | Which source contributed |
 
 ### Real-world examples — when each fits
@@ -85,7 +89,13 @@ only the semiring parameter changes.
 F# signature (sketch — actual APIs are an active-
 development surface):
 
-```fsharp
+```text
+// SHAPE SKETCH (pseudocode, not valid F# — uses
+// mathematical type names ℤ/ℕ/𝔹 and a hypothetical
+// `ISemiring` interface that does not exist in `src/`
+// today; see the research memory for the actual
+// proposed API surface):
+
 // Instead of hard-coding ℤ:
 type ZSet<'K> = ...
 
@@ -96,7 +106,11 @@ type SemiringSet<'K, 'S when 'S :> ISemiring> = ...
 count : SemiringSet<'K, ℤ> -> int64          // retractable count
 count : SemiringSet<'K, ℕ> -> uint64         // plain count
 count : SemiringSet<'K, 𝔹> -> bool           // is-any-present
-count : SemiringSet<'K, Tropical> -> float   // minimum cost
+
+// Note: in Zeta's actual NovelMath.fs, Tropical results
+// would be `TropicalWeight` (backed by int64 with
+// Int64.MaxValue as +∞), not `float`:
+count : SemiringSet<'K, Tropical> -> TropicalWeight   // minimum cost
 ```
 
 See the semiring-parameterised-Zeta research memory
@@ -178,9 +192,15 @@ every `a ∈ R`, there exists `-a ∈ R` such that
 `a + (-a) = 0`.
 
 Retraction in Z-sets depends on ℤ being a ring, not
-just a semiring. Pure-semiring-based K-relations (per
-Green-Karvounarakis-Tannen PODS 2007) support
-lineage / provenance / counting but not retraction.
+just a semiring. K-relations (per Green-Karvounarakis-
+Tannen PODS 2007) over a semiring **without additive
+inverses** (ℕ, 𝔹, lineage, ℕ[X] provenance, tropical,
+max-plus, possibilistic) support lineage / provenance /
+counting but not retraction. K-relations over a
+**ring** (ℤ — additive inverses available) DO support
+retraction; this is exactly what Zeta uses. Rings are
+semirings, so the distinction is "pure-semiring-without-
+additive-inverses" vs "ring".
 
 ### Canonical semirings in data systems
 
@@ -189,11 +209,11 @@ lineage / provenance / counting but not retraction.
 | Signed integers | ℤ | + | × | 0 | 1 | Yes (ring) |
 | Counting | ℕ | + | × | 0 | 1 | No (no negatives) |
 | Boolean | {T, F} | ∨ | ∧ | F | T | N/A (can't "retract") |
-| Tropical | ℝ ∪ {+∞} | min | + | +∞ | 0 | No (min has no additive inverse) |
+| Tropical (Zeta) | ℤ ∪ {+∞} | min | + | +∞ | 0 | No (min has no additive inverse). Note: Zeta's `TropicalWeight` in `src/Core/NovelMath.fs` is backed by `int64` with `Int64.MaxValue` as +∞; the math definition extends to ℝ ∪ {+∞}, but Zeta's implementation uses ℤ. |
 | Max-plus | ℝ ∪ {-∞} | max | + | -∞ | 0 | No |
-| Fuzzy | [0, 1] | max | × | 0 | 1 | No |
-| Lineage | 2^X (subsets of source tuples) | ∪ | ∩ | ∅ | X | N/A |
-| Provenance | N[X] (polynomials) | + | × | 0 | 1 | Depends on coefficient ring |
+| Possibilistic / fuzzy | [0, 1] | max | × | 0 | 1 | No |
+| Lineage (Boolean witness sets, GKT form) | 2^X (subsets of source tuples) | ∪ | ∪ | ∅ | X | N/A — both addition (union of relations) and multiplication (join: combine evidence from both input tuples) use set-union; the multiplicative identity X is the "all-source-tuples" universe so multiplying by 1 is a no-op. (An alternative formulation uses ∩ for multiplication; that's `Why(X)` provenance, distinct from Boolean lineage. The choice depends on whether you want "any source contributing" or "all sources contributing" tracked downstream.) |
+| Provenance | N[X] (polynomials over ℕ) | + | × | 0 | 1 | No (N[X] coefficients are ℕ — non-negative; no additive inverses available). For retractable provenance, use ℤ[X] (polynomials over ℤ) instead. |
 
 ### The K-relations framework (Green-Karvounarakis-Tannen 2007)
 
@@ -208,10 +228,15 @@ in terms of semiring `+` and `×`:
 - **projection** uses `+` (aggregate / marginalise)
 - **selection** uses multiplication-by-0-or-1 (mask)
 
-GKT proved that every relational-algebra result over
+GKT proved that every **positive** relational-algebra
+result (selection, projection, union, natural join, where
+the operators are sums and products of input weights) over
 K-relations is **semiring-homomorphic** — changing the
-semiring gives a systematic reinterpretation of the
-query.
+semiring gives a systematic reinterpretation of the query.
+The homomorphism does NOT extend to relational difference /
+set-difference, which requires additive inverses
+(rings, not pure semirings); negative tuple-handling on
+those operators must be re-derived per ring.
 
 ### Zeta's regime-change claim (Otto-session memory)
 
@@ -265,8 +290,14 @@ instances.
   requires ring-structure, not just semiring
 - `subjects/zeta/operator-composition/` — same operators
   compose across different semirings
-- `docs/TECH-RADAR.md` — Tropical semiring Adopt (ring
-  11); residuated lattices Adopt; provenance deferred
+- `docs/TECH-RADAR.md` — Tropical semiring Adopt (round
+  11); residuated lattices Adopt. (Note: tech-radar table
+  columns are Technique | Ring | Round | Notes; the "11" is
+  the Round column. Provenance does not yet have a tech-
+  radar row; if/when it lands, the row will join the
+  Tropical / residuated-lattices entries. For now, treat
+  provenance as not-yet-on-tech-radar rather than
+  "deferred".)
 - `docs/ALIGNMENT.md` HC-2 — retraction-native
   operations (strictly applies to ring-based; documented
   for other semirings)
@@ -275,8 +306,11 @@ instances.
 - `src/Core/NovelMath.fs` — tropical semiring
   implementation
 - `src/Core/NovelMathExt.fs` — research-grade extensions
-- Per-user memory
-  `project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`
+- In-repo memory
+  [`memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`](../../../../../memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md)
+  — semiring-parameterised-Zeta regime-change framing
+  (in-repo per Otto-114 forward-mirror, not per-user
+  Anthropic AutoMemory).
   — full regime-change research framing
 
 ---
