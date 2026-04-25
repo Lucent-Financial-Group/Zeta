@@ -523,29 +523,27 @@ for raw_line in content.split('\n'):
     #     This is how CommonMark lets you nest fences —
     #     a longer opener contains shorter fence-shaped
     #     lines as literal content.
-    # Per CommonMark §4.5: a fence line allows up to 3 spaces
-    # of indentation. 4+ spaces makes the line an indented-code-
-    # block, not a fence. Use lstrip() with a count cap to
-    # respect that limit — count leading spaces, treat as fence
-    # only if <= 3.
-    leading_spaces = len(raw_line) - len(raw_line.lstrip(' '))
-    if leading_spaces > 3:
-        # 4+ space indent: this is an indented code block, not
-        # a fence. Fall through to the in_fence / outside-fence
-        # branches as content.
-        stripped = raw_line  # untouched; no fence detection
-        marker = None
-        marker_len = 0
-    else:
-        stripped = raw_line.lstrip()
-        marker = None
-        marker_len = 0
-        if stripped.startswith('```'):
+    # Per CommonMark §4.5: opening fence permits up to 3
+    # *spaces* of indentation. 4+ spaces makes the line an
+    # indented-code-block, not a fence. Tabs are NOT space-
+    # equivalent here — a tab pushes column >= 4 = indented-
+    # code-block territory, and a tab-indented fence-shaped
+    # line is content, not a fence. Count literal leading
+    # spaces only (lstrip(' '), not bare lstrip() which would
+    # also consume tabs), enforce the <= 3 cap, AND reject any
+    # tab in the prefix.
+    leading_space_count = len(raw_line) - len(raw_line.lstrip(' '))
+    leading_chars = raw_line[:leading_space_count]
+    after_spaces = raw_line[leading_space_count:]
+    marker = None
+    marker_len = 0
+    if leading_space_count <= 3 and '\t' not in leading_chars:
+        if after_spaces.startswith('```'):
             marker = '`'
-            marker_len = len(stripped) - len(stripped.lstrip('`'))
-        elif stripped.startswith('~~~'):
+            marker_len = len(after_spaces) - len(after_spaces.lstrip('`'))
+        elif after_spaces.startswith('~~~'):
             marker = '~'
-            marker_len = len(stripped) - len(stripped.lstrip('~'))
+            marker_len = len(after_spaces) - len(after_spaces.lstrip('~'))
     if marker is not None:
         if not in_fence:
             # Opening fence: record marker + length so the
