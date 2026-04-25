@@ -2,8 +2,9 @@
 
 PR: <https://github.com/Lucent-Financial-Group/Zeta/pull/427>
 Branch: `drain/133-followup-bash-quoting-status-banner`
-Drain session: 2026-04-25 (Otto, sustained-drain-wave during maintainer-
-asleep window; pre-summary-checkpoint earlier in this session)
+Drain session: 2026-04-25 (Otto, sustained-drain-wave during
+maintainer-asleep window; pre-summary-checkpoint earlier in this
+session)
 Thread count at drain: small follow-up; reviewer findings on the parent
 #133 secret-handoff-protocol-options PR cascaded post-merge into this
 follow-up.
