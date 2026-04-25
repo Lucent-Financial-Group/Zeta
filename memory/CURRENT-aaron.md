@@ -779,7 +779,7 @@ This rigor angle is a positioning differentiator for the
 eventual naming-expert review and any future trademark
 work — we're not claiming a category we don't deliver.
 
-Pointer: `project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md` (lands with PR #485).
+Pointer: `project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`.
 
 ## How this file stays accurate
 
@@ -806,10 +806,14 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-04-24 (sections 13-17 added for
-the 2026-04-24 autonomous-loop session cluster: peer-
-review-disclosure, Otto-279 history-surface names,
-declarative version pins, ethical clean-room services,
-four-way-parity naming).
+**Last full refresh:** 2026-04-25 (sections 18-22 added for
+the 2026-04-25 substrate cluster: Otto-281 + Otto-285
+test-stability discipline, Otto-282 authoring discipline,
+Otto-283 authority-delegation, Otto-284 idle-PR fallback,
+factory-as-superfluid + Superfluid AI naming candidate +
+rigor differentiator). Prior refresh 2026-04-24 (sections
+13-17: peer-review-disclosure, Otto-279 history-surface
+names, declarative version pins, ethical clean-room
+services, four-way-parity naming).
 **Next refresh trigger:** when any new memory lands that
 updates a section above.
