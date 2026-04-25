@@ -523,15 +523,29 @@ for raw_line in content.split('\n'):
     #     This is how CommonMark lets you nest fences —
     #     a longer opener contains shorter fence-shaped
     #     lines as literal content.
-    stripped = raw_line.lstrip()
-    marker = None
-    marker_len = 0
-    if stripped.startswith('```'):
-        marker = '`'
-        marker_len = len(stripped) - len(stripped.lstrip('`'))
-    elif stripped.startswith('~~~'):
-        marker = '~'
-        marker_len = len(stripped) - len(stripped.lstrip('~'))
+    # Per CommonMark §4.5: a fence line allows up to 3 spaces
+    # of indentation. 4+ spaces makes the line an indented-code-
+    # block, not a fence. Use lstrip() with a count cap to
+    # respect that limit — count leading spaces, treat as fence
+    # only if <= 3.
+    leading_spaces = len(raw_line) - len(raw_line.lstrip(' '))
+    if leading_spaces > 3:
+        # 4+ space indent: this is an indented code block, not
+        # a fence. Fall through to the in_fence / outside-fence
+        # branches as content.
+        stripped = raw_line  # untouched; no fence detection
+        marker = None
+        marker_len = 0
+    else:
+        stripped = raw_line.lstrip()
+        marker = None
+        marker_len = 0
+        if stripped.startswith('```'):
+            marker = '`'
+            marker_len = len(stripped) - len(stripped.lstrip('`'))
+        elif stripped.startswith('~~~'):
+            marker = '~'
+            marker_len = len(stripped) - len(stripped.lstrip('~'))
     if marker is not None:
         if not in_fence:
             # Opening fence: record marker + length so the
