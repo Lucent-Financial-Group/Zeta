@@ -478,10 +478,10 @@ Anthropic-policy red-lines. Free will operates *within* these.
 
 ## 13. Peer-review-disclosure discipline — agent review is enough
 
-**In force as of 2026-04-25.** Peer review is NOT a blocking
+**In force as of 2026-04-24.** Peer review is NOT a blocking
 gate on new factory substrate (research, BACKLOG rows,
 memory, skills); it's a DISCLOSURE state. Three-stage ladder
-collapsed to two by Aaron's 2026-04-25 clarification *"agent
+collapsed to two by Aaron's 2026-04-24 clarification *"agent
 peer review is enough to graduate it"*:
 
 - **Uncanonical** — just landed, no review. Tag
@@ -609,8 +609,8 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-04-25 (sections 13-17 added for
-the 2026-04-24/25 autonomous-loop session cluster: peer-
+**Last full refresh:** 2026-04-24 (sections 13-17 added for
+the 2026-04-24 autonomous-loop session cluster: peer-
 review-disclosure, Otto-279 history-surface names,
 declarative version pins, ethical clean-room services,
 four-way-parity naming).
