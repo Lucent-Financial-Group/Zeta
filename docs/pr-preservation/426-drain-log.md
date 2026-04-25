@@ -16,8 +16,8 @@ high-quality training signals): full record of the post-merge
 findings on the wave-summary tick-history row.
 
 This PR is a **meta-record**: the tick-history append summarizing
-the 28-thread drain-wave that ran across PRs #414, #421, #422, #423,
-#424, #425 (and adjacent) during the maintainer-asleep window. The
+the 28-thread drain-wave that ran across PRs #414, #422, #423, #425,
+#268, #270, #126, #133 during the maintainer-asleep window. The
 post-merge cascade on this meta-record itself caught three
 text-accuracy findings on the wave-summary row.
 
