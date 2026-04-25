@@ -47,26 +47,28 @@ LAST_VERIFIED="2026-04-24"
 VERIFY_URL="https://docs.github.com/en/actions/how-tos/write-workflows/choose-where-workflows-run/choose-the-runner-for-a-job#standard-github-hosted-runners-for-public-repositories"
 
 ALLOWED_LABELS=(
-  # Linux x64 — latest LTS + slim variant
+  # Pinned major-OS-version labels per repo convention —
+  # the rolling -latest aliases (ubuntu-latest /
+  # windows-latest / macos-latest) are explicitly NOT in
+  # the allow-list. Pinned labels make CI reproducibility
+  # auditable; rolling aliases silently drift when GitHub
+  # rotates the underlying image.
+
+  # Linux x64
   "ubuntu-slim"
-  "ubuntu-latest"
   "ubuntu-24.04"
 
-  # Linux arm64 — no -latest alias exists yet; pin to
-  # latest specific version available
+  # Linux arm64 — pin to latest specific version available
   "ubuntu-24.04-arm"
 
-  # Windows x64 — latest GA + rolling alias + 2025 vs
-  # vs2026 variant
-  "windows-latest"
+  # Windows x64 — latest GA + 2025 vs vs2026 variant
   "windows-2025"
   "windows-2025-vs2026"
 
   # Windows arm64
   "windows-11-arm"
 
-  # macOS arm64 (Apple Silicon) — latest GA + rolling
-  "macos-latest"
+  # macOS arm64 (Apple Silicon) — latest GA
   "macos-26"
 
   # macOS Intel — latest GA
@@ -76,6 +78,17 @@ ALLOWED_LABELS=(
   # allowed-by-convention when the self-hosted pool is
   # configured. Add here if needed with comment
   # justifying the exception.
+)
+
+# Rolling aliases — explicitly forbidden in the repo
+# convention (CI-reproducibility-by-pinning). These are
+# tracked separately from STALE_LABELS so a contributor
+# typing `ubuntu-latest` gets a distinct error from a
+# stale-version error.
+ROLLING_ALIASES=(
+  "ubuntu-latest"
+  "windows-latest"
+  "macos-latest"
 )
 
 STALE_LABELS=(
@@ -129,27 +142,58 @@ if [ "${#files[@]}" -eq 0 ]; then
 fi
 
 # Build regex alternation of stale labels for one grep.
-stale_pattern="$(IFS='|'; echo "${STALE_LABELS[*]}")"
+# Escape regex metachars (. + * ? ( ) [ ] { } | \ /) in
+# labels so `ubuntu-22.04` matches literally, not
+# `ubuntu-22<any-char>04`.
+escape_for_regex() {
+  printf '%s' "$1" | sed -e 's#[][\\.*^$+?(){}|/]#\\&#g'
+}
+escaped_stales=()
+for label in "${STALE_LABELS[@]}"; do
+  escaped_stales+=("$(escape_for_regex "$label")")
+done
+stale_pattern="$(IFS='|'; echo "${escaped_stales[*]}")"
+
+# Portable word-boundaries: BSD grep (macOS default) and
+# POSIX ERE do not honor `\b`. Express boundary via
+# explicit non-word character classes that work in both
+# GNU and BSD grep.
+nonword_start='([^A-Za-z0-9_]|^)'
+nonword_end='([^A-Za-z0-9_]|$)'
 
 fail=0
 warn=0
 
 for file in "${files[@]}"; do
-  # Extract lines that look like runner-label references.
-  # Match:
-  #   runs-on: <label>
-  #   runs-on: ${{ matrix.os }}  (ignored — the matrix
-  #                                content is where the
-  #                                labels live)
-  #   os: [label1, label2, ...]
-  #   - <label> (inside a matrix list continuation)
-  #
-  # Then grep for any STALE_LABEL in those lines.
-  matches="$(grep -nE "runs-on:|\bos:\b|- ${stale_pattern}" "$file" 2>/dev/null || true)"
-  hits="$(echo "$matches" | grep -E "\b(${stale_pattern})\b" || true)"
+  # Verify file exists and is readable. Without this, the
+  # grep below would silently swallow a missing-file error
+  # and report 'ok' for nothing-actually-linted.
+  if [ ! -r "$file" ]; then
+    echo "ERROR: cannot read $file (does not exist or unreadable)" >&2
+    fail=1
+    continue
+  fi
+  # Strip YAML comment-only lines (first non-whitespace
+  # char is `#`) so stale labels mentioned in comments
+  # don't trigger false positives.
+  uncommented="$(grep -vE '^[[:space:]]*#' "$file" || true)"
+  # Extract lines that look like runner-label references,
+  # then grep for any STALE_LABEL with portable
+  # word-boundaries.
+  matches="$(printf '%s\n' "$uncommented" | grep -nE "runs-on:|(^|[^A-Za-z0-9_])os:|^[[:space:]]*-[[:space:]]+(${stale_pattern})" || true)"
+  hits="$(printf '%s\n' "$matches" | grep -E "${nonword_start}(${stale_pattern})${nonword_end}" || true)"
   if [ -n "$hits" ]; then
     echo "STALE RUNNER LABEL(S) in $file:"
-    echo "$hits" | sed 's/^/  /'
+    printf '%s\n' "$hits" | sed 's/^/  /'
+    fail=1
+  fi
+  # Same scan against rolling-alias forbidden list.
+  rolling_pattern="$(IFS='|'; echo "${ROLLING_ALIASES[*]}")"
+  rolling_matches="$(printf '%s\n' "$uncommented" | grep -nE "runs-on:|(^|[^A-Za-z0-9_])os:|^[[:space:]]*-[[:space:]]+(${rolling_pattern})" || true)"
+  rolling_hits="$(printf '%s\n' "$rolling_matches" | grep -E "${nonword_start}(${rolling_pattern})${nonword_end}" || true)"
+  if [ -n "$rolling_hits" ]; then
+    echo "ROLLING-ALIAS RUNNER LABEL(S) in $file (use a pinned version per repo convention):"
+    printf '%s\n' "$rolling_hits" | sed 's/^/  /'
     fail=1
   fi
 done
@@ -173,10 +217,12 @@ if [ "$fail" = "1" ]; then
 fi
 
 if [ "$warn" = "1" ]; then
-  # Warn-only exit: CI can be configured to treat exit 3
-  # as fail-soft if the allow-list freshness is itself
-  # a hard requirement.
-  exit 3
+  # Header documents the freshness check as warning-only;
+  # the warning has already been printed to stderr by
+  # _verify_age_ok. Exit 0 so this path doesn't fail CI;
+  # operators see the warning and bump LAST_VERIFIED on
+  # the next refresh tick.
+  exit 0
 fi
 
 echo "ok: all workflow runner labels are current (verified $LAST_VERIFIED)"
