@@ -66,7 +66,9 @@ minimizing dependence on vendor UX for canonical state.
 ## Extracted action items
 
 Amara's 4-stage remediation roadmap translated into
-BACKLOG candidates for LFG's P1-P2 sections. Staging
+BACKLOG candidates spanning LFG's P1, P2, and P3 sections
+(one P3 row covers the longest-horizon Provenance evidence
+bundles work). Staging
 matches her proposed cadence (Week 1 Stabilize, Week 2-3
 Determinize, Week 4 Govern, Week 5-6 Assure).
 
@@ -94,7 +96,7 @@ shift every subsequent work unit's operational floor upward.
 
 ---
 
-## Amara's 5 implementation artifacts — preserved verbatim
+## Amara's 5 implementation artifacts — preserved with proposal-flag annotations
 
 ### 1. Decision-proxy evidence record
 
@@ -279,7 +281,7 @@ bot reminder, or pre-commit hook.
 
 | Risk | Likelihood | Impact | Immediate control |
 |---|---|---|---|
-| Proxy consult skipped because implicit | High | High | Mandatory `decision-proxy-consult` artifact |
+| Proxy consult skipped because implicit | High | High | Mandatory `decision-proxy-evidence` artifact |
 | Memory index drift + duplication | High | High | Duplicate-title lint + existence check + generated views |
 | Model / prompt drift across Claude variants | High | High | Pin snapshot models + record prompt-bundle hash |
 | Branch-chat transport loss | Medium-High | High | Treat branch chats as convenience only |
@@ -317,7 +319,7 @@ This composes tightly with three earlier session memories:
 Three prior memories point the same direction Amara
 points. The 4th ferry is ratification, not new direction.
 
-### On the four drift classes
+### On the five drift classes (3 inside-loop + 2 outside-loop)
 
 **Serialization drift** is already partly addressed:
 
@@ -392,7 +394,8 @@ role-drift across future sessions.
 
 - **Not a commitment to implement all 11 action items
   this round.** Reviewer-capacity cap still applies;
-  Stabilize-stage items (4 S-effort items) are the
+  Stabilize-stage items (3 items: 2 S-effort + 1 M-effort)
+  are the
   right next tick or two; Determinize (5 items mixed
   S/M/L) is multi-tick; Govern + Assure are research-
   grade arcs.
