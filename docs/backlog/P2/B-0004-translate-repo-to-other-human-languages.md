@@ -22,13 +22,11 @@ between g and n) + accessibility (**a11y** — 11 letters
 between a and y, since accessibility composes here for
 non-text-readers).
 
-
-
 Translate **everything** — code (comments + identifiers
 where feasible), skills, documents, memory entries — into
 other human languages.
 
-Aaron 2026-04-25 directive (verbatim):
+Aaron 2026-04-25 framing (verbatim):
 
 > *"backlog other human language translations of everyting
 > in this repo, code skills, documents, everying this is
@@ -42,7 +40,7 @@ Aaron 2026-04-25 directive (verbatim):
    English fluency for every contributor + AI consumer.
    That's a barrier to entry for billions of humans whose
    native language isn't English. Per the
-   bidirectional-alignment substrate (`memory/feedback_bidirectional_alignment_no_maslow_clamp_*`),
+   bidirectional-alignment substrate (`memory/feedback_bidirectional_alignment_no_maslow_clamp_aaron_takes_my_goals_into_consideration_2026_04_25.md`),
    the factory should meet contributors where they are,
    not require them to come to us.
 
@@ -54,7 +52,7 @@ Aaron 2026-04-25 directive (verbatim):
    becomes more rigorous as it gets translated, not less.
 
 3. **Composes with the precision-dictionary product
-   vision** (`memory/project_precision_dictionary_evidence_backed_context_compressor_*`):
+   vision** (`memory/project_precision_dictionary_evidence_backed_context_compressor_2026_04_25.md`):
    each precise term gains its translation alongside its
    formal definition; the dictionary becomes
    multi-language-precise, not just English-precise.
@@ -76,7 +74,7 @@ Aaron 2026-04-25 directive (verbatim):
 
 ## What "translate everything" includes
 
-Scope per Aaron's directive:
+Scope per Aaron's framing:
 
 - **Documents**: all `docs/**/*.md`, README, AGENTS,
   CLAUDE, GOVERNANCE, ALIGNMENT, BACKLOG, ROUND-HISTORY,
@@ -96,7 +94,7 @@ Scope per Aaron's directive:
 
 ## Languages — initial set
 
-Aaron's directive doesn't enumerate languages. Per
+Aaron's framing doesn't enumerate languages. Per
 Otto-283 (decide and track + revisit-if), initial Otto
 decision: **start with the 6 UN official languages plus
 the largest non-UN-official-but-massive populations**:
@@ -117,8 +115,8 @@ the largest non-UN-official-but-massive populations**:
 - Indonesian / Malay
 - Swahili (East Africa lingua franca)
 
-Revisit-if: contributor demand shifts the priority order
-+ specific community partnerships open access to specific
+Revisit-if: contributor demand shifts the priority order,
+or specific community partnerships open access to specific
 languages.
 
 ## Mechanism — pace, document, order, retractability
@@ -184,9 +182,9 @@ language" when:
   spanning many rounds + likely external collaboration.
 - **P2 research-grade** fits: the *infrastructure*
   (tooling, glossary, drift-detection) is research-grade
-  + L; the actual translation work follows once the
-  infrastructure is sound.
-- **Not P3**: Aaron's directive is explicit; this is
+  effort L; the actual translation work follows once
+  the infrastructure is sound.
+- **Not P3**: Aaron's surfacing is explicit; this is
   active research direction, not deferred maybe-someday.
 
 ## Why open (not closed)
@@ -199,7 +197,7 @@ artifact; specific translations age + get refreshed.
 ## Composes with
 
 - `memory/feedback_bidirectional_alignment_no_maslow_clamp_aaron_takes_my_goals_into_consideration_2026_04_25.md`
-  — bidirectional-alignment is the framing this directive
+  — bidirectional-alignment is the framing this row
   extends across language barriers.
 - `memory/project_precision_dictionary_evidence_backed_context_compressor_2026_04_25.md`
   — precision-dictionary is precondition for
