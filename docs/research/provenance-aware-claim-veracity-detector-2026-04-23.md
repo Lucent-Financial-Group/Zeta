@@ -1,13 +1,13 @@
 # Provenance-aware claim-veracity detector — engineering-facing design
 
 **Scope:** research and cross-review artifact. Engineering-
-facing design doc for the detector Amara's 8th courier
-ferry named (PR #274 §"The corrected rainbow-table model"
-+ §"provenance-aware claim-veracity detector"). Composes on top
-of the semantic-canonicalization spine (PR #280 Otto-98).
-Formalises the scoring layer the spine sketched,
-integrates Aminata-anticipated concerns at write-time, and
-names the 5 output types from Amara's ferry.
+facing design doc for the detector Amara's 8th courier ferry
+named (PR #274 §"The corrected rainbow-table model" and
+§"provenance-aware claim-veracity detector"). Composes on
+top of the semantic-canonicalization spine (PR #280 Otto-98).
+Formalises the scoring layer the spine sketched, integrates
+Aminata-anticipated concerns at write-time, and names the 5
+output types from Amara's ferry.
 
 **Attribution:** output-type shape + score formulation
 from Amara's 8th ferry; scoring-layer Aminata-pattern
@@ -137,7 +137,7 @@ output.**
 | G_status | `y.status = known-bad` or `y.status = superseded` | `y.status = unresolved` (no status pins it) |
 
 **Band merging rule** (same as oracle-scoring v0 per PR
-#266): `band(y | q) = min(G_similarity, G_evidence,
+#266): `band(y | q) = min(G_similarity, G_evidence_independent,
 G_carrier_overlap, G_contradiction, G_status)` where
 `RED < YELLOW < GREEN`. One RED → RED. All GREEN → GREEN.
 Otherwise YELLOW.
@@ -183,7 +183,8 @@ output types. Mapping to the band classifier:
 ### 3. `plausible but unresolved`
 
 - Band: `YELLOW` via G_status fail-to-YELLOW OR
-  G_evidence fail-to-YELLOW (with other gates GREEN).
+  G_evidence_independent fail-to-YELLOW (with other gates
+  GREEN).
 - Meaning: semantic fit exists; no known-bad pattern
   matches; but `y` lacks independent evidence or
   pinned status.
@@ -192,8 +193,8 @@ output types. Mapping to the band classifier:
 
 ### 4. `likely confabulated`
 
-- Band: `RED` via G_evidence fail-to-RED combined with
-  high similarity.
+- Band: `RED` via G_evidence_independent fail-to-RED
+  combined with high similarity.
 - Meaning: claim sounds plausible and matches patterns
   semantically, but no actual independent evidence
   supports it. Classic LLM confabulation signature.
@@ -231,23 +232,26 @@ self-report.
 
 **Response in this design:**
 
-- `G_evidence_independent` gate explicitly requires
-  **independent-oracle-verified** evidence for GREEN.
-  Self-attested evidence fails to YELLOW (one gate
-  down) by design.
+- `G_evidence_independent` is **conditionally enforced**:
+  - **Once an independent-oracle substrate exists** (see
+    candidates below), the gate is binding — it requires
+    independent-oracle-verified evidence for GREEN, and
+    self-attested evidence fails to YELLOW.
+  - **Until that substrate exists**, the gate is **advisory
+    only**: the `β·evidence` signal is emitted to
+    observability but does NOT participate in band-merging.
+    The v0 detector ships as "semantic + carrier +
+    contradiction + status" mechanical (4-gate min) with
+    "evidence" surfaced as advisory signal for human review.
+- The transition from advisory to binding is itself an
+  ADR-gated change (parameter-change-ADR pattern, Concern 2
+  below) so the authorisation surface shift is logged.
 - Independent-oracle candidates: passing tests (not
   agent-written assertions); citable external sources
   (peer-reviewed papers, RFC documents); reproducible
   measurements (benchmark output captured in CI);
   concrete PR links (a merged PR is evidence; a
   proposed-in-PR-pending is self-attested-pending).
-- Until an independent-oracle substrate exists, the
-  `β·evidence` signal is **advisory only** — it is
-  emitted to observability but does NOT block band
-  elevation to GREEN. Shapes the detector's v0 into
-  "semantic + carrier + contradiction + status"
-  mechanical + "evidence" as advisory signal for human
-  review.
 
 ### Concern 2 — Parameter-fitting adversary
 
@@ -295,9 +299,11 @@ The `PatternLedger`'s status-pinning (`known-good`,
 sufficient to distinguish**. A pattern pinned `known-bad`
 by the agent that also authored `q` is susceptible to
 same-agent-self-reinforcement drift. Mitigation: every
-status-pin event in the PatternLedger carries
-`pinned_by` + `pinned_reason` + optional `second-reviewer`
-fields per the decision-proxy-evidence schema (PR #222).
+status-pin event in the PatternLedger carries decision-
+proxy-evidence fields per `docs/decision-proxy-evidence/_template.yaml`
+— minimally `requested_by`, `proxied_by`, `decision_summary`,
+and the `review.peer_reviewer` block when peer review is
+required (PR #221 schema, PR #222 ADR).
 
 ---
 
@@ -478,8 +484,9 @@ it; the pass will inform v1 revisions.
   structure.
 - **SD-9** (`docs/ALIGNMENT.md`) — detector is SD-9's
   mechanical implementation.
-- **DRIFT-TAXONOMY pattern 5** — detector is pattern-5
-  detection engine.
+- **DRIFT-TAXONOMY pattern 5** (precursor doc:
+  [`docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`](drift-taxonomy-bootstrap-precursor-2026-04-22.md))
+  — detector is pattern-5 detection engine.
 - **citations-as-first-class** — provenance graph the
   detector consumes.
 - **KSK-as-Zeta-module 7th ferry** (PR #259) — event+view
