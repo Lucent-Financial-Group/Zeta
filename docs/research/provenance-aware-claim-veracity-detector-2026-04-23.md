@@ -209,12 +209,28 @@ known-bad) plus a sixth **retrieval-empty** output type
 
 - Band: `GREEN` (all included gates GREEN — 4 for v0, 5
   for v1 once `G_evidence_independent` is binding).
+- **v0 limitation (call-out — real risk):** v0 `supported`
+  is reachable when G_evidence_independent fails, because
+  evidence is advisory-only and excluded from band-
+  merging. A candidate that is highly similar to a
+  known-good pinned pattern but has NO independent
+  evidence still classifies as `supported`. This is the
+  primary motivation for the v1 promotion (and the vN
+  axiom-gated promotion): v0 CAN misclassify a
+  confabulation-shaped candidate as `supported` if the
+  pinned pattern has drifted or been set on self-
+  attestation. Treat v0 `supported` as "advisory-GREEN,
+  pending evidence-gate promotion" — not authoritative.
 - Meaning: `q` is highly similar to `y`; low carrier
-  overlap; no unresolved contradiction; status = known-
-  good. In v1, `y` also has independent-oracle-verified
-  evidence; in v0, evidence is advisory metadata only.
-- Action: query can proceed; claim has substrate-backed
-  support.
+  overlap; no unresolved contradiction; `y.status =
+  known-good`. In v1 and later, `y` also has
+  independent-oracle-verified evidence; in v0, evidence
+  is advisory metadata only.
+- Action (v1+): query can proceed; claim has substrate-
+  backed support.
+- Action (v0): consult the advisory evidence metadata
+  before treating `supported` as authoritative; the
+  known-good pin alone doesn't guarantee evidence.
 
 ### 2. `looks similar but lineage-coupled`
 
@@ -242,9 +258,19 @@ known-bad) plus a sixth **retrieval-empty** output type
     addition to G_status), making the band sensitive
     to both missing pinned status AND missing
     independent evidence.
-- Meaning: semantic fit exists; no known-bad pattern
-  matches; but `y` lacks pinned status (both versions)
-  and, in v1, also lacks independent evidence.
+- Meaning:
+  - **v0:** semantic fit exists; no known-bad pattern
+    matches; `y.status` is NOT pinned (known-good or
+    known-bad) — it's unresolved. Evidence state is
+    surfaced as advisory metadata but doesn't change
+    the band.
+  - **v1 (OR triggered):** semantic fit exists; no
+    known-bad pattern matches; EITHER `y.status` is
+    unresolved OR `y` lacks independent-oracle
+    evidence (or both). The `OR` means this output
+    fires when either gate fails-to-YELLOW, so the
+    meaning covers either-or-both conditions rather
+    than requiring both simultaneously.
 - Action: mark query as open-question; add to
   research-tracker; not a confidence-upgrade.
 
