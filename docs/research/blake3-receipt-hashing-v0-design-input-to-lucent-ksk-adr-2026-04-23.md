@@ -117,7 +117,13 @@ From the oracle-scoring design (PR #266):
 > forensic-friendly + closes the parameter-fitting-
 > adversary cost delta.
 
-So the v0 input set extends to 9 fields.
+Combined with Aminata's binding additions named earlier:
+Amara's 7th-ferry proposal had 7 base fields (`h_inputs`,
+`h_actions`, `h_outputs`, `budget_id`, `policy_version`,
+`approval_set_commitment`, `node_id`); v0 adds
+`hash_version` (cryptographic-agility prefix) and now
+`parameter_file_sha` (oracle-scoring binding above), so the
+v0 input set extends to **9 fields total**.
 
 ---
 
@@ -198,19 +204,41 @@ Changes from Amara's 7th-ferry proposal:
 ### Signature structure (rotation-aware)
 
 ```text
-σ_agent = Sign_{sk_agent, agent_key_version}(h_r)
-σ_node  = Sign_{sk_node,  node_key_version}(h_r)
+σ_agent = Sign_{sk_agent}(agent_key_version ∥ h_r)
+σ_node  = Sign_{sk_node }(node_key_version  ∥ h_r)
+```
+
+The key-version is **inside the signed message** (prepended
+to `h_r` before signing) — not unsigned metadata alongside.
+This authenticates the version: an attacker cannot strip the
+correct version off a receipt and reuse the signature against
+a different declared version, because the verifier
+recomputes the signing input by binding the declared version
+to `h_r` before checking the signature. Verification:
+
+```text
+verify(σ_agent, pk_agent_at(agent_key_version), agent_key_version ∥ h_r)
+verify(σ_node,  pk_node_at(node_key_version),   node_key_version  ∥ h_r)
 ```
 
 Changes:
 
-- **Bind `agent_key_version` + `node_key_version` into
-  the signature tuple** — enables per-key-rotation without
-  breaking historical receipts. When an agent rotates
-  keys, old receipts remain verifiable against the old
-  key version; new receipts use the new version.
+- **Bind `agent_key_version` + `node_key_version` into the
+  signed message** — enables per-key-rotation without
+  breaking historical receipts. When an agent rotates keys,
+  old receipts remain verifiable against the old key version
+  (because the verifier looks up `pk_agent_at(version)`);
+  new receipts use the new version.
+- **Restrict NEW receipts to non-retired key versions.** A
+  separate registry of retired key versions (lucent-ksk
+  governance artifact) blocks creation of new receipts under
+  retired versions. Historical receipts under retired
+  versions remain verifiable (replay-determinism) but the
+  signing path refuses to produce more under the same
+  retired version. Same shape as `hash_version`'s deprecated-
+  list (below).
 - **Signature algorithm is NOT fixed to Ed25519 in this
-  doc** — the hash_version prefix indicates which
+  doc** — the `hash_version` prefix indicates which
   algorithm pair is in use. v0 assumes Ed25519 but the
   scheme supports later upgrade.
 
@@ -225,8 +253,17 @@ scope-wise):
    produce the same materialised views byte-for-byte.
 2. A receipt with a `hash_version` the consumer doesn't
    recognise MUST cause the consumer to halt-and-report,
-   not silently accept or silently reject. (Fail-closed
-   on algorithm unknown.)
+   not silently accept or silently reject. (Fail-closed on
+   algorithm unknown.) Additionally, the consumer MUST
+   consult a `hash_version` policy registry (lucent-ksk
+   governance artifact) and reject receipts whose
+   `hash_version` is *deprecated* — even if recognised.
+   This prevents an attacker from forging receipts under
+   an old, weaker scheme that has been retired but is
+   still mechanically recognised by older verifier
+   software. Historical receipts under the deprecated
+   version remain verifiable for audit; new receipts
+   under it are refused.
 3. A receipt with a `parameter_file_sha` that the
    consumer can't resolve to actual parameter values MUST
    cause the same halt-and-report. (Fail-closed on
