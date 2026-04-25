@@ -36,9 +36,10 @@ Companion to:
   — Claude Code CLI map (v2.1.116, verified).
 - [`docs/research/openai-codex-cli-capability-map.md`](./openai-codex-cli-capability-map.md)
   — OpenAI Codex CLI map (v0.122.0, verified).
-- `docs/research/gemini-cli-capability-map.md` — Gemini CLI
-  map (landed in main; sibling pre-install sketch using the
-  same template).
+- [`docs/research/gemini-cli-capability-map.md`](./gemini-cli-capability-map.md)
+  — Gemini CLI map (v0.39.1, verified). The Grok map below
+  is the only pre-install sketch in this set; Claude /
+  Codex / Gemini siblings are all verified.
 
 This doc is **descriptive**, not prescriptive.
 
