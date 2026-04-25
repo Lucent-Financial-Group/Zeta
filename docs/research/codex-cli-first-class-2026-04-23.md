@@ -50,7 +50,12 @@ CLI in the 2026 coding-agent landscape.
 - `codex` — interactive terminal UI.
 - `codex exec` — non-interactive scripting mode (equivalent to
   Claude Code's one-shot Bash invocation of a prompt).
-- `/model` — model switcher (GPT-5.4 / GPT-5.3-Codex / others).
+- `-m` / `--model <MODEL>` — model selector (e.g. `o3` and
+  whichever current OpenAI model roster is live; consult
+  `docs/research/openai-codex-cli-capability-map.md` §"Model
+  selection" for the canonical surface). Codex uses
+  config-driven profiles via `-p` / `--profile` rather than
+  a discrete-effort-tier enumeration.
 - Subagent dispatch + parallel execution + git worktrees.
 - MCP server support with per-tool approval modes.
 - Web search integration.
@@ -91,8 +96,11 @@ onboarding handbook. The relevant lines of `CLAUDE.md`:
 When a Codex CLI session opens Zeta, it will read `AGENTS.md`
 by default. `AGENTS.md` already contains:
 
-- The three load-bearing values (retraction-native / alignment-
-  contract / operator-algebra).
+- The three load-bearing values per `AGENTS.md` §"The three
+  load-bearing values" (truth-over-politeness / algebra-
+  over-engineering / velocity-over-stability). Distinct from
+  the alignment-contract / operator-algebra / retraction-
+  native technical pillars also documented in `AGENTS.md`.
 - Build-and-test gate (`dotnet build -c Release` clean, full
   test suite).
 - Required reading list (`docs/ALIGNMENT.md` /
@@ -111,8 +119,10 @@ specifics).
 
 This is a materially better position than the BACKLOG row
 assumed. Zeta is already ~60% first-class-Codex-ready by
-accident of adopting `AGENTS.md` as canonical in
-`GOVERNANCE.md` §N from earlier rounds.
+accident of adopting `AGENTS.md` as canonical (see
+`GOVERNANCE.md` preamble: *"`AGENTS.md` carries the
+philosophy, values, and onboarding; this file carries the
+rules"*) from earlier rounds.
 
 ---
 
