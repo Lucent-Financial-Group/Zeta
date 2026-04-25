@@ -70,8 +70,9 @@ CLI in the 2026 coding-agent landscape.
 - SQLite state DB (`sqlite_home` config / `CODEX_SQLITE_HOME`
   env).
 - `[mcp_servers]` table mirrors Claude Code's MCP registry with
-  richer per-tool approval controls (`approval_mode =
-  "approve" | "prompt"` default + per-tool override).
+  richer per-tool approval controls. Server-wide default uses
+  `default_tools_approval_mode`; `approval_mode` is the
+  per-tool override key (per `openai/codex` config docs).
 - `[notice]` for UI prompt suppression; `notify` hook when a
   turn completes.
 - `plan_mode_reasoning_effort` — Plan Mode analogue.
@@ -103,10 +104,16 @@ by default. `AGENTS.md` already contains:
   native technical pillars also documented in `AGENTS.md`.
 - Build-and-test gate (`dotnet build -c Release` clean, full
   test suite).
-- Required reading list (`docs/ALIGNMENT.md` /
-  `docs/CONFLICT-RESOLUTION.md` / `docs/GLOSSARY.md` /
-  `docs/WONT-DO.md` / `openspec/README.md` /
-  `GOVERNANCE.md`).
+- References to the substrate doc tree (`GOVERNANCE.md`,
+  `docs/ALIGNMENT.md`, `docs/CONFLICT-RESOLUTION.md`,
+  `docs/GLOSSARY.md`, `docs/WONT-DO.md`,
+  `docs/AGENT-BEST-PRACTICES.md`). The full ordered required-
+  reading list including `openspec/README.md` lives in
+  `CLAUDE.md`'s "Read these, in this order" section, not in
+  `AGENTS.md` directly — readiness analysis below treats
+  Codex as inheriting the AGENTS.md references plus needing
+  to follow the same ordered-list pattern when its own
+  `CODEX.md` lands.
 - "Agents, not bots" discipline.
 - Factory-structure pointers to `.claude/`, `docs/`, `src/`,
   `openspec/`.
