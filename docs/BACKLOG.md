@@ -10146,6 +10146,29 @@ systems. This track claims the space.
 
 ## P3 — noted, deferred
 
+- [ ] **Otto-287 Noether-style formalization — quantify
+  cognitive Lagrangian + identify continuous symmetries +
+  derive conserved currents.** Aaron 2026-04-25 directive:
+  *"backlog ongoing research here to formalize this
+  conservation law analogously."* Source: Otto-287
+  (`memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md`)
+  proposed all friction sources are finite-resource
+  collisions; Aaron asked whether this generalizes to a
+  physics-style conservation law analogous to Noether's
+  theorem. Soft analogy is substantive (constrained-
+  optimization-produces-structure shape, meta-conservation
+  of rule-form, cognitive-effort-redirection); strict
+  Noether-style derivation is open research. Four steps
+  owed: (1) define cognitive action $S = \int (W - F) \, dt$
+  with quantified work-output and friction-cost rates;
+  (2) identify continuous symmetries (time-translation,
+  reader-identity, resource-type); (3) derive Noether
+  currents; (4) symmetry-breaking analysis. Effort L,
+  research-grade. **Acceptance signal:** new substrate
+  rules become DERIVABLE from the formalism rather than
+  intuited. Per-row file: `docs/backlog/P3/B-0002-otto-287-noether-formalization.md`.
+  Research direction: `docs/research/otto-287-noether-formalization-2026-04-25.md`.
+
 - [ ] **Local-DB shortlist for factory indexing / search
   (code, docs, skills, memory) — research-lane, pick the
   two-to-three bets we'd actually integrate.** Human
