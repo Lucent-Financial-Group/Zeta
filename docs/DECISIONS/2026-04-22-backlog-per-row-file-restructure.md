@@ -1,7 +1,9 @@
-# ADR 2026-04-22: BACKLOG.md per-row-file restructure
+# ADR 2026-04-22: BACKLOG.md restructure (per-row OR swim-lane file split)
 
-**Status:** Proposed
-**Decision date:** 2026-04-22
+**Status:** Proposed — swim-lane variant currently leading per Aaron
+2026-04-25; per-row variant retained as fallback.
+**Decision date:** 2026-04-22 (per-row variant) / 2026-04-25 (swim-lane
+variant added as primary candidate).
 **Deciders:** Human maintainer (Aaron); Architect (Kenji) integrates; Iris / Bodhi review UX of the file layout.
 **Triggered by:** PR #31 merge-tangle incident (2026-04-22 autonomous-loop tick). See `docs/research/parallel-worktree-safety-2026-04-22.md` §9 — the 5-file conflict table ranked `docs/BACKLOG.md` as the P0 shared-write high-churn surface. Identified as the highest-ROI preventive mitigation before the R45 EnterWorktree factory-default flip.
 
@@ -181,6 +183,37 @@ for safety on bulk operations (migration, tier sweeps).
    tiers. *Rejected:* still conflicts heavily on P0 (busiest
    tier) and on tier-migration boundaries. Does not help the
    parallel-branch-growth R45 scaling problem.
+
+5. **Swim-lane file split (per-domain / per-owner)**, e.g.
+   `docs/backlog/security.md`, `docs/backlog/factory-demo.md`,
+   `docs/backlog/research.md`, `docs/backlog/ci.md`,
+   `docs/backlog/governance.md`, etc. *(Aaron 2026-04-25
+   alternative.)* **Trade-off vs per-row:**
+   - **Discoverability**: better. ~10-15 swim-lane files vs
+     ~150+ per-row files; each swim-lane is grep-able as a
+     single coherent topic; no need to scan a directory tree
+     to find "all P1s in security".
+   - **Collision avoidance**: medium. Edits within the same
+     swim-lane still collide; cross-swim-lane edits don't.
+     Per-row is strictly better on this axis (filename
+     disambiguates).
+   - **Tooling cost**: lower. Scripts scan a small fixed set
+     of swim-lane files (concatenate or read-each); no
+     dynamic directory walk; index-file generation simpler.
+   - **Reordering / re-prioritization**: per-row requires
+     filename-encoded tier moves; swim-lane keeps tier
+     ordering as section headers within a swim-lane file
+     (lighter ceremony).
+   - **Round-by-round growth**: a swim-lane file grows
+     linearly with new rows in that domain; per-row file
+     count grows linearly with row count regardless of
+     domain. Swim-lane is structurally bounded by domain
+     count, which grows much slower.
+   **Maintainer's current lean** (Aaron 2026-04-25): swim-lane
+   over per-row. The implementation PR may land swim-lane
+   first; per-row stays as a future option if collision rate
+   under swim-lane proves insufficient. **Status: under active
+   evaluation; not rejected.**
 
 3. **Status-quo with shared-editor discipline (lock the file
    during a tick).** *Rejected:* incompatible with the
