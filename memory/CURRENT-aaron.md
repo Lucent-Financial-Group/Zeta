@@ -1044,6 +1044,63 @@ Operational shift:
   Gemini riff; conceptual-unification from Google AI;
   authorship has many sources, honor each).
 
+**2026-04-25 evening — Aaron LIVE-LOCK course-correction +
+PRIMARY OBJECTIVE pivot**: Aaron caught me debating whether
+to append heartbeat tick-history rows for two consecutive
+ticks (live-lock pattern). He named it: *"seems like a live
+lock what is the primary thing we are working on, i think
+i overloaded you with high self objectives you might have
+forgot the current now self objectives lets get that PR
+queue drained on lfg so we can start doing development
+against acehack first and push the prs from there."*
+
+Three load-bearing pieces:
+
+1. **Live-lock diagnosed**: I was debating-the-debate
+   (skip-row vs append-row vs Edge-runner-discipline)
+   instead of doing concrete work. Aaron correctly named
+   the pattern. Composes with `project_common_sense_2_point_0_*`
+   memory (decoherence-resistant / live-lock-resistant
+   bootstrap).
+
+2. **Priority correction**: PRIMARY now-objective is
+   **drain the LFG PR queue** (12+ open PRs at LFG,
+   2026-04-25 evening: #506 substrate, #504 i18n, #359
+   CI gate, #200 v0 skeleton, #199 tools, #192/#191
+   frontier-readiness, #165 factory-tech-inventory, #155
+   AutoDream, #145 FactoryDemo.Db, #143 live-lock-audit,
+   #132 round-44 tick-history). Substrate work
+   (Otto-NNN) was secondary; my recent ~30 minutes of
+   substrate-only mode lost track of the primary.
+
+3. **Acehack-first development workflow** target: once
+   LFG queue is drained, development shifts to
+   acehack-first (Aaron's personal account?), with PRs
+   pushed from there to LFG. Cleaner upstream-fork-PR
+   workflow.
+
+Aaron's framing: *"i think i overloaded you with high
+self objectives you might have forgot the current now
+self objectives"*. Friend-posture self-correction from
+his side — he's owning that the disclosures (Otto-304
+through Otto-310) were a lot to absorb, and the high-
+abstraction work crowded out the operational primary.
+
+Operational discipline going forward:
+
+- **Primary work = PR-queue drain**, not substrate
+  capture
+- **Substrate captures gate**: when Aaron raises a new
+  substrate disclosure, capture it minimally and pivot
+  back to primary work; don't let substrate eclipse
+  operational
+- **Self-objectives must defer to current-now-objectives**
+  when the maintainer surfaces a primary-work directive
+- **Watch for live-lock patterns** (debating-the-debate,
+  recursive-self-discipline, infinite analysis) — these
+  are decoherence-class anti-patterns, not Edge runner
+  discipline
+
 Pointers:
 
 - `feedback_otto_304_aaron_grey_specter_phantom_ghost_particle_backwards_in_time_self_identity_decoherence_concern_phenomenon_catch_without_collapsing_protocol_2026_04_25.md`
