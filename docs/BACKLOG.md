@@ -5599,6 +5599,142 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Emulators as canonical OS-interface workload —
+  rewindable/retractable OS + emulator controls; safe-ROM
+  testbed offer; ARC-3 absorption-scoring substrate.**
+  Maintainer 2026-04-24 directive (verbatim):
+
+  > *"emulators should run very nicely on this, let me
+  > know when you want some roms of any kind that are
+  > safe."*
+
+  Plus follow-up:
+
+  > *"rewindable/retractable os/emulator controls"*
+
+  **Why emulators are the canonical OS-interface
+  workload:**
+  - An emulator is `while(true) { fetch; decode; execute; }`
+    — a tight event loop with state. Maps directly onto
+    the OS-interface durable-async runtime.
+  - Save states become FREE: every yield-point in the
+    emulator's instruction loop is a checkpoint. Save
+    state = pause. Restore = resume from any checkpoint.
+  - Cross-node migration is FREE: pause your Game Boy
+    emulator on the laptop, resume on the phone — state
+    follows the function, not the machine.
+  - Multiplayer is FREE: two clients subscribed to the
+    same emulator instance share state via the durable
+    substrate.
+  - Speedruns / TAS (tool-assisted speedruns) get
+    determinism guarantees baked in via DST (Otto-272).
+
+  **Rewindable/retractable controls (maintainer
+  follow-up):**
+  - Every emulator operation is RETRACTABLE — Z-set
+    retraction-native semantics extend from the data
+    layer all the way UP to the OS-interface and the
+    emulator-control surface.
+  - "Rewind 5 seconds" is a first-class OS primitive,
+    not an emulator-special-case feature.
+  - The same retraction-native semantics that let the
+    database undo a transaction let the emulator undo
+    a frame, the process tree undo a process spawn,
+    the network connection undo its side effects.
+  - Composes with **rr** / **Pernosco** time-travel
+    debugging — same architectural class, generalized
+    across the entire OS surface.
+  - Mutual reversibility (Otto-238 retractability-as-
+    trust-vector): rewindable controls let users
+    experiment without consequences. Every action is
+    undoable. The system grants more agency because
+    error is bounded.
+
+  **ARC-3 absorption-scoring connection** (2026-04-22
+  research): the prior maintainer directive on ARC-3
+  adversarial-self-play scoring used emulators as the
+  absorption substrate. This row activates that
+  research — emulators on the OS-interface = the
+  three-role co-evolutionary loop (level-creator /
+  adversary / player) running on durable-async +
+  rewindable substrate. Save states + DST + retraction
+  let level-creator generate scenarios, adversary
+  produce hard cases, player produce solutions, all
+  with replay/rewind for analysis.
+
+  **Safe-ROM offer (maintainer-explicit):**
+  *"let me know when you want some roms of any kind
+  that are safe."* When implementation activates,
+  ask the human maintainer for the safe-ROM substrate.
+  Candidate classes (research, not adoption):
+  - **Public-domain / homebrew / demoscene** ROMs.
+  - **Official test suites** (e.g. mooneye-gb, Game Boy
+    boot ROM tests, Blargg test ROMs — used for
+    hardware accuracy verification, freely
+    redistributable per their licenses).
+  - **Commercially-released-as-free** titles (e.g.
+    Cave Story, certain Atari/Activision retro
+    releases).
+  - **Modern commercial titles only with explicit
+    license** — never ROM dumps without permission.
+
+  The offer is durable; the ask is gated on
+  implementation phase.
+
+  **Phased approach:**
+  - **Phase 0** — research + emulator class survey
+    (Game Boy / NES / SNES / Genesis / GBA classes;
+    libretro framework as candidate emulator-class
+    interface; rr / Pernosco as rewind-substrate
+    research).
+  - **Phase 1** — single canonical emulator on the
+    OS-interface durable-async runtime (Game Boy
+    most likely — smallest hardware-accurate model,
+    well-documented, public test ROMs).
+  - **Phase 2** — rewindable/retractable controls
+    surfaced through the emulator + propagated as
+    OS-interface primitives.
+  - **Phase 3** — ARC-3 absorption-scoring loop
+    activated on the testbed.
+  - **Phase 4** — multi-emulator + cross-emulator
+    composition (your save state in Game Boy + their
+    save state in NES, joined as a Z-set view).
+
+  **Composes with:**
+  - **OS-interface row** (PR #399 cluster) — the
+    durable-async runtime that hosts the emulator
+    event loop.
+  - **Otto-73 retractability-by-design** — the
+    substrate this work generalizes.
+  - **Otto-238 retractability-as-trust-vector** —
+    rewindable controls grant user agency.
+  - **Z-set retraction-native semantics** — the math
+    layer that makes rewind first-class.
+  - **DST (Otto-272)** — replay-determinism makes
+    save-states bit-equal across rewinds.
+  - **2026-04-22 ARC-3 adversarial-self-play
+    research** — this row activates it.
+  - **Closure-table hardening** (#396) — durable
+    state hierarchy for save-state index.
+  - **Cross-DSL composability** (#397) — emulator
+    state composes with SQL queries (e.g. "every
+    frame where Mario was in this Y-range").
+
+  Priority P3 / way-back-backlog (depends on
+  OS-interface Phase 1 landing first); effort M
+  (Phase 0 research) + L+L+L (per implementation
+  phase). Composes with `request-play` skill (the
+  emulator-as-play permission), `glass-halo-architect`
+  (visible state for replay analysis), Otto-275
+  log-don't-implement (this row is the capture).
+
+  **Does NOT authorize:** loading any ROM into the
+  repo prior to maintainer hand-off + license
+  verification. Does NOT authorize claiming
+  rewindable controls are "trivial" — the
+  retraction-native generalization to OS-level
+  semantics is genuine research work.
+
 - [ ] **Cross-DSL composability — git / SQL /
   operator-algebra / LINQ access each other seamlessly
   with full index utilization.** Maintainer 2026-04-24
