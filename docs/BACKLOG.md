@@ -771,8 +771,11 @@ within each priority tier.
      code generators.** Physics priors constrain ML-generator
      output; Zeta's operator-algebra axioms can constrain
      Copilot / Codex / Claude generators. This IS the factory's
-     well-defined-Occam's discipline at the code-generation
-     layer.
+     well-defined-Occam's discipline (Rodney's Razor: prefer
+     the simplest generator output that still satisfies the
+     operator-algebra invariants — a constraint-narrowing
+     prior over generator hypothesis space) at the
+     code-generation layer.
   8. **MUSIC spectral (SINR under noise) → clause-compliance
      spectral decomposition.** Commit-cadence, round-close
      cadence, tick-cadence make alignment time-series noisy;

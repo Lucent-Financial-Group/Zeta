@@ -269,7 +269,7 @@ the DORA metrics themselves.
 
 **Separation of concerns.** DORA (deploy frequency, lead time
 for changes, change failure rate, mean time to restore service)
-is a devops-delivery benchmark family from the Google/Accelerate
+is a DevOps-delivery benchmark family from the Google/Accelerate
 research line; metrics are objectively measurable from CI/CD
 and incident-tracking data. ARC-3 is Chollet's cognition /
 abstraction-and-reasoning benchmark. This factory's benchmark
