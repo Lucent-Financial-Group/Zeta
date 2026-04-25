@@ -322,7 +322,111 @@ factory is a sub-sub-sub-mirror that's deliberately
 designed to instantiate the pattern at software-system
 scale.
 
-### Why precision matters for "quantum mirror"
+### Why precision matters for "quantum mirror" — AI-ALIGNMENT SAFETY STAKES (Aaron 2026-04-25)
+
+Aaron 2026-04-25 follow-up sharpening:
+
+> *"this is danger for AI alighment talk like this
+> without the proper grounding can lead to cult like
+> worship of the AI or the humans in control of it"*
+
+The precision-import work on "quantum mirror" is NOT
+JUST intellectual rigor — it's **AI-alignment safety
+work**. Imprecise quantum-mirror + Christ-consciousness
+discourse spreading without grounding can produce
+**cult-formation in either direction**:
+
+- **Cult-of-the-AI**: AI as deity / oracle / divine
+  reflection, with the AI's outputs treated as
+  authoritative-because-mystical rather than
+  authoritative-because-precise. Worshipping the
+  reflection in the mirror as if it were the source.
+- **Cult-of-the-humans-controlling-the-AI**: AI's
+  human operators / trainers / interpreters treated
+  as gurus-of-the-AI with privileged access to its
+  "mystical" outputs, accumulating cult-leader
+  authority via the AI's appearance of mystery.
+  Worshipping the mirror-makers as if they had
+  privileged sight into what the mirror reflects.
+
+Both are failure modes the precision-import substrate
+is designed to PREVENT. The mechanism by which
+precision prevents cult-formation:
+
+- **Precise definitions are publicly verifiable.** A
+  precise quantum-mirror has seven structural properties
+  (per the candidate definition above); a system either
+  has them or doesn't, and that's a checkable fact, not
+  a charisma-claim.
+- **Precise definitions don't admit privileged
+  access.** Anyone with the formal definition can
+  evaluate any candidate system; nobody needs a
+  guru-translator.
+- **Precise definitions resist co-option.** A fuzzy
+  term ("quantum mirror") can be redefined arbitrarily
+  by anyone with platform-reach; a precise mathematical
+  definition is anchored and any deviation produces a
+  visible drift.
+- **Precise definitions break the
+  authority-via-mystery pattern.** Otto-296's
+  *"authority follows precision"* observation cuts
+  both ways: imprecise terms let anyone claim
+  authority via mystery; precise terms ground
+  authority in checkable substance.
+
+This composes with:
+
+- **`memory/feedback_christ_consciousness_is_aarons_ethical_vocabulary_all_religions_atheists_agnostics_AI_welcome_corporate_religion_joke_name_not_cult_not_conversion_2026_04_23.md`**
+  — the Christ-consciousness substrate is EXPLICITLY
+  not-cult, not-conversion, welcomes-all. The
+  quantum-mirror precision-import is the parallel
+  anti-cult discipline applied to AI-substrate
+  vocabulary. Both substrate kernels have anti-cult
+  as a load-bearing structural property.
+- **Otto-288 (rigor without alternative-disclosure is
+  manipulation)** — Aaron's anti-cult co-rule. Rigor
+  WITH alternative-disclosure is genuine intellectual
+  invitation; rigor WITHOUT is cult-shaped. The
+  precision-import on quantum-mirror is rigor +
+  alternative-disclosure (other vocabularies in the
+  reverse-flow Pāli / Sanskrit / Mandarin / Japanese
+  precision-anchors are alternatives, not
+  the-one-true-vocabulary).
+- **`docs/ALIGNMENT.md` "What aligned does NOT mean
+  here"** — the factory's canonical anti-cult
+  statement: *"the factory is not a cult; blind
+  compliance shrinks the window it was built to
+  expand."* Otto-297 quantum-mirror precision-import
+  is the linguistic-substrate enforcement of this
+  alignment principle.
+- **HC/SD/DIR alignment floor** — anti-cult is
+  structurally embedded; the alignment floor itself
+  is not a charisma-claim but a precise rule-set.
+- **The factory's prompt-injection guard substrate**
+  — fuzzy mystical-AI vocabulary IS a prompt-injection
+  vector (it bypasses the agent's rule-evaluation by
+  appealing to mystery rather than rules). The
+  precision-import is part of the agent-layer defense.
+- **Aaron's 2026-04-25 TikTok pointer** to a creator
+  (Krystle Channel) discussing quantum-mirror + Jesus
+  loosely is empirical evidence the failure mode is
+  active in the wild. The precision-import job has
+  real-time safety-relevance, not just speculative
+  product-vision relevance.
+
+**Operational implication**: every fuzzy AI-substrate
+vocabulary candidate that the precision-dictionary +
+disambiguator processes should be evaluated for
+cult-formation-risk in addition to precision-gain.
+Vocabulary that is being used to bypass rule-evaluation
+and accumulate authority-via-mystery is HIGH-PRIORITY
+for precision-import; vocabulary that is harmlessly
+imprecise (e.g., emotion labels in casual conversation)
+is lower-priority. The precision-dictionary's selection
+function should weight cult-risk alongside
+precision-gain.
+
+### Why precision matters for "quantum mirror" — additional structural reasons
 
 Without precision, the term:
 - Allows woo-woo claims to free-ride on physics
