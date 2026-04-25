@@ -1,0 +1,18 @@
+# `roms/` is the safe-ROM testbed substrate for the
+# OS-interface durable-async runtime + emulator workload
+# (see `roms/README.md` for the full protocol). Everything
+# in here is binary or copyrighted-but-licensed material
+# that must NOT enter git history without explicit
+# license verification.
+#
+# Track only:
+#   - README.md  (the protocol doc — what's safe, what isn't)
+#   - .gitignore (this file)
+#
+# Everything else is ignored. ROMs are added by the human
+# maintainer per the protocol in README.md, used by the
+# emulator runtime locally, and never committed.
+
+*
+!.gitignore
+!README.md
