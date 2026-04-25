@@ -351,8 +351,8 @@ jobs:
         # version on dev laptops + CI runners. Prior step hardcoded
         # the version in this workflow (0.18.1) which drifted
         # behind the pin discipline the rest of the lints use and
-        # violated Aaron's "update declarativly everywhere"
-        # directive (2026-04-24).
+        # violated the human maintainer's "update declaratively
+        # everywhere" directive (2026-04-24).
         run: ./tools/setup/install.sh
 
       - name: Run markdownlint
