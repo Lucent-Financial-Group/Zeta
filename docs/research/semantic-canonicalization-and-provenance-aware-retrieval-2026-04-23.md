@@ -233,10 +233,16 @@ downstream tuning question.
 
 ```text
 RetrievalIndex:
-  insert(c, e, metadata)     -- add canonical form + representation + provenance
+  insert(c, e, metadata)         -- add canonical form + representation + provenance
   query(e, k) -> [(c, e, metadata, sim)]  -- top-k by similarity
-  remove(c)                  -- retraction-native
-  replay(events) -> Index    -- deterministic rebuild from event stream
+  remove(c, metadata)            -- retraction-native; keys on full insertion
+                                    identity (c, metadata) so multiple distinct
+                                    insertions of the same canonical form under
+                                    different provenance can be retracted
+                                    independently. Removing a single insertion
+                                    decrements the weighted sum for (c) by 1
+                                    rather than nuking all (c) entries.
+  replay(events) -> Index        -- deterministic rebuild from event stream
 ```
 
 `remove(c)` is not a tombstone; it's a negative-weight
