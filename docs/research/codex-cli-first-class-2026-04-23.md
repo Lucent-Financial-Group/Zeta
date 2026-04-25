@@ -88,7 +88,7 @@ first. **Zeta's setup already has both, and the `CLAUDE.md`
 explicitly delegates to `AGENTS.md`** as the universal
 onboarding handbook. The relevant lines of `CLAUDE.md`:
 
-> 1. **[`AGENTS.md`](AGENTS.md)** — the universal
+> 1. **[`AGENTS.md`](../../AGENTS.md)** — the universal
 >    onboarding handbook. Pre-v1 status, the three
 >    load-bearing values, how to treat contributions,
 >    the build-and-test gate, code-style pointers,
