@@ -166,7 +166,7 @@ for file in "${archive_files[@]}"; do
     # Per-file JSON (same shape as audit_commit.sh / audit_personas.sh).
     # Encode subdirectory path in the output filename so a recursive
     # scan over nested folders does not collide on basename.
-    rel_path="${file#$target_path/}"
+    rel_path="${file#"$target_path"/}"
     file_base="${rel_path%.md}"
     file_base="${file_base//\//__}"
     out_file="$out_dir/${file_base}.json"
