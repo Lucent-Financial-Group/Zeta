@@ -3,8 +3,10 @@
 PR: <https://github.com/Lucent-Financial-Group/Zeta/pull/135>
 Branch: `auto-loop-35-itron-signal-arc3-hitl-mapping`
 Drain session: 2026-04-25 (Otto, post-summary continuation autonomous-loop)
-Thread count at drain start: 10 unresolved (Codex P2 + Copilot mix), 1 P1
-post-merge cascade thread, 3 P2 follow-up cascade threads
+Thread count at drain start: 10 unresolved at first-wave (Codex P2 +
+Copilot mix); the post-merge cascade then surfaced 3 more threads
+(1 Codex P1 + 2 Copilot P2). Total drained across both waves: 13
+threads.
 Rebase context: clean rebase onto `origin/main`; no conflicts.
 
 Per Otto-250 (PR review comments + responses + resolutions are
@@ -65,7 +67,7 @@ reviewer authorship, outcome class, and resolution path.
 
 ---
 
-## Second-wave drain (1 P1 + 3 P2 post-merge cascade)
+## Second-wave drain (1 Codex P1 + 2 Copilot P2 post-merge cascade — 3 threads total)
 
 ### Thread A — `docs/research/arc3-dora-benchmark.md:285` — DORA canonical definitions (Codex P1)
 
@@ -115,8 +117,8 @@ reviewer authorship, outcome class, and resolution path.
    policy distinction + carve-out citation. Discipline reads as one-line
    answer to recurring concern.
 
-2. **Stale-resolved-by-reality at ~70% on this PR.** 7 of 14 total
-   threads (10 first-wave + 4 second-wave) were "doc claims X, but X
+2. **Stale-resolved-by-reality at ~54% on this PR.** 7 of 13 total
+   threads (10 first-wave + 3 second-wave) were "doc claims X, but X
    is actually true now per Otto-114 forward-mirror" or "fix already
    landed in a downstream commit." The reply pattern is verify-with-
    evidence + resolve, not re-fix.
@@ -130,9 +132,10 @@ reviewer authorship, outcome class, and resolution path.
 
 ## Final resolution
 
-All 14 threads resolved (10 first-wave merged at SHA `fbd9284`, then
-4 second-wave at `bccfd2b`). PR auto-merge SQUASH armed throughout;
-both BLOCKED states cleared via CI; PR merged at `49f7ebc` to main.
+All 13 threads resolved (10 first-wave merged at SHA `fbd9284`, then
+3 second-wave at `bccfd2b` — one Codex P1 plus two Copilot P2). PR
+auto-merge SQUASH armed throughout; both BLOCKED states cleared via
+CI; PR merged at `49f7ebc` to main.
 
 Drained by: Otto, post-summary autonomous-loop continuation, cron
 heartbeat `f38fa487` (`* * * * *`).
