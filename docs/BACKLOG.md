@@ -4457,6 +4457,51 @@ Landed in task #261 bundle.
 
 ## P2 — hygiene refinements (Otto-254/255/256/260/263)
 
+- [ ] **Doc-lint suite — recurring drain-finding classes
+  promoted to pre-commit automation.** The
+  `docs/pr-preservation/*-drain-log.md` corpus has surfaced
+  three findings classes at high enough observation density
+  that pre-commit-lint automation is high-leverage. See
+  `docs/pr-preservation/_patterns.md` for the full pattern
+  index + per-class observation citations.
+
+  **Class A — inline-code-span line-wrap** (4 observed PRs:
+  #191, #195, #219, #423). Backtick spans that cross a
+  newline render as two adjacent code spans rather than one
+  path/command. Lint: regex check for backtick spans crossing
+  newlines in `*.md` files. Fix template: reflow to single
+  line OR convert to a markdown link with the full path on
+  one line.
+
+  **Class B — count-vs-list cardinality** (5 observed PRs:
+  #191, #219, #430, #85, #426). Doc claims "N drift classes /
+  phases / audits / items / PRs" but the enumerated list has
+  a different cardinality. Lint: regex on `\b\d+\s+(items|phases|audits|drift classes|PRs|tests|fixes)\b`
+  patterns + count surrounding list cardinality + warn on
+  mismatch.
+
+  **Class C — pipe-in-Markdown-table-row** (3+ observed PRs).
+  Inline code spans containing `|` inside a Markdown table
+  row get parsed as column separators, breaking the table
+  structure + markdownlint `MD056/table-column-count`.
+  Lint: regex check on markdown table rows for unescaped `|`
+  inside code spans; suggest backslash-escape or
+  alternative wording.
+
+  **Effort: M.** Each class is ~20-50 lines of regex + test
+  cases. Could land as three separate scripts under
+  `tools/lint/` or one combined `tools/lint/doc-lint.sh`.
+  Wire into pre-commit hook + `.github/workflows/gate.yml`
+  per the existing lint-script convention. Verifies against
+  the per-class observation citations in
+  `docs/pr-preservation/_patterns.md`. Composes with the
+  related-document-cluster manifest (Class D candidate from
+  multi-CLI capability-map family), shellcheck-rule-ID
+  precision (Class E candidate),
+  stable-identifier-vs-line-number xref (Class F candidate)
+  — all observed but at lower density; promote when density
+  justifies.
+
 - [ ] **`StakeCovariance` file split** — move the
   `StakeCovariance` module out of `src/Core/Graph.fs`
   and into its own `src/Core/StakeCovariance.fs`.
