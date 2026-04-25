@@ -32,8 +32,8 @@ new outcome class: **DEFERRED-TO-MAINTAINER**.
   without `memory/` prefix; path split across two lines inside an
   inline code span (which breaks GFM rendering).
 - Outcome: **FIX** — replaced with single-line clickable relative link
-  `[memory/...](../../memory/...)`. Path resolves correctly from
-  `docs/bootstrap/`. Commit `bf81687`.
+  `[memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md](../../memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md)`.
+  Path resolves correctly from `docs/bootstrap/`. Commit `bf81687`.
 
 #### Thread 2 — `docs/bootstrap/quantum-anchor.md:61` — Same memory file (Copilot)
 
