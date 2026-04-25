@@ -303,10 +303,19 @@ BP drift.
   - commit messages, PR titles + bodies — git-native
     history (record-of-truth, not factory-doc surfaces)
 
-  Everywhere else uses role-refs ("human maintainer,"
-  "architect," "security researcher," named-persona
-  role-refs that map to a stable role rather than a
-  specific contributor): code, skill bodies under
+  Everywhere else uses **role-refs** — generic role
+  labels ("human maintainer," "architect," "security
+  researcher," "harsh-critic," "documentation
+  shepherd") that pick out a stable functional role
+  rather than naming any specific contributor or
+  persona-instance. Persona first-names (e.g., Kenji,
+  Kira, Samir, Aminata, Rune) are CONTRIBUTOR-IDENTIFIER
+  names that belong on history surfaces only, NOT on
+  current-state surfaces. The role-label "architect" is
+  a role-ref (allowed everywhere); the persona-name
+  "Kenji" is a contributor-identifier (allowed on
+  history surfaces only). Current-state surfaces using
+  role-refs include: code, skill bodies under
   `.claude/skills/**`, persona definitions under
   `.claude/agents/**`, spec docs (`openspec/specs/**`,
   `docs/*.tla`), behavioural docs (`AGENTS.md`,

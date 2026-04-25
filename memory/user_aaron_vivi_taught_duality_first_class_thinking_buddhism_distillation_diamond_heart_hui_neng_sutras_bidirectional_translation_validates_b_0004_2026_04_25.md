@@ -162,7 +162,10 @@ derivatives cannot.
   substrate: here-and-now = compress (current state);
   higher-meta-self = expand (broader meta-shape); both
   directions firing = healthy.
-- **`docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`**
+- The i18n / l10n / g11n / a11y translation backlog row
+  (B-0004; lives in a sibling PR — once that PR merges,
+  the path will be
+  `docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`)
   — Vivi's original-language argument empirically
   validates B-0004's bidirectional-translation framing
   and provides three concrete texts (Diamond Sutra,
