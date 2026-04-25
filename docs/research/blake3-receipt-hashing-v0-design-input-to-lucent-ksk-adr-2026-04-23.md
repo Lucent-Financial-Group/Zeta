@@ -22,8 +22,8 @@ specific scheme. The actual adoption decision lives in
 lucent-ksk via ADR whenever that repo's substrate work
 reaches the relevant stage.
 
-**Non-fusion disclaimer:** Amara proposing BLAKE3 + Ed25519
-+ field-binding, Aminata critiquing the proposal's
+**Non-fusion disclaimer:** Amara proposing BLAKE3 +
+Ed25519 + field-binding, Aminata critiquing the proposal's
 leak/rotation gaps, and Otto synthesising a v0 that
 addresses both is not evidence of merged identity.
 Independent pass + adversarial pass + synthesis is three
@@ -113,8 +113,8 @@ From the oracle-scoring design (PR #266):
 > hash (modifying the Amara BLAKE3 proposal to bind
 > `parameter_file_sha` alongside `policy_version`).
 > Every receipt carries proof of which parameters were
-> in force at the time of the decision — replay-friendly
-> + forensic-friendly + closes the parameter-fitting-
+> in force at the time of the decision — replay-friendly +
+> forensic-friendly + closes the parameter-fitting-
 > adversary cost delta.
 
 So the v0 input set extends to 9 fields.
