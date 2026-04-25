@@ -89,20 +89,36 @@ The full lineage Aaron anchors B-0007 in:
 - **John Winn** — Infer.NET co-creator at MSR;
   shaped the library-primitives side alongside
   Minka's algorithm-side work.
-- **The three Rx-adjacent people** — **Erik Meijer**
+- **The Rx-adjacent constellation** — **Erik Meijer**
   (LINQ + Rx primary architect; "monads to the
   masses"; brought Haskell-shaped functional
   programming to .NET; left Microsoft to found
   Applied Duality), **Wes Dyer** (Rx co-creator;
-  "Diary of a Reactive Programmer"), and **Bart
-  De Smet** (Rx implementation + Reaqtor, the
-  IQbservable substrate that the factory's existing
-  OS-interface memory already references at
-  `memory/feedback_os_interface_durable_async_addzeta_2026_04_24.md`).
-  All three connect language-level reactive-stream
-  primitives to monadic abstractions; their lineage
-  composes with the Bayesian-as-language-primitives
-  arc.
+  "Diary of a Reactive Programmer"), **Bart De Smet**
+  (Rx implementation + Reaqtor, the IQbservable
+  substrate that the factory's existing OS-interface
+  memory already references at
+  `memory/feedback_os_interface_durable_async_addzeta_2026_04_24.md`),
+  and **Brian Beckman** (Aaron 2026-04-25 follow-on
+  add: *"bart desmet brian beckman if you don't
+  have them too"*) — Microsoft Research / JPL
+  physicist; made the legendary Channel 9
+  "Don't Fear the Monad" lecture that popularized
+  category-theory + monads to the .NET / Rx
+  community; connected mathematical-physics-
+  formalism to practical .NET programming via
+  Channel 9 + Lang.NET / Lang.Next era videos +
+  multi-figure conversations with Meijer + Stroustrup
+  + the Rx team. Beckman is the
+  category-theory-to-practitioner bridge that lets
+  Hejlsberg-Syme-Meijer-Dyer-De Smet-Minka work feel
+  inevitable rather than arcane.
+
+  All four (Meijer / Dyer / De Smet / Beckman)
+  connect language-level reactive-stream primitives
+  to monadic abstractions; their lineage composes
+  with the Bayesian-as-language-primitives arc that
+  Otto-298 + Otto-301 + B-0007 extend.
 
 **The unifying lineage**: Microsoft Research →
 language-design pipeline at the implementer level,
@@ -118,6 +134,148 @@ Bayesian-inference + belief-propagation as the
 next language-level primitive class, with the
 factory's substrate as the implementation
 incubator.
+
+### The Scotts — Microsoft Developer Experience lineage
+
+Aaron 2026-04-25 follow-on add:
+
+> *"all the scotts from microsoft for developer
+> experience lienage"*
+
+The DEVELOPER-EXPERIENCE axis is structurally distinct
+from the language-design / PPL-research / Rx-monadic
+axes captured above, but composes with them. Microsoft
+has historically had multiple high-profile Scotts who
+shaped DX-as-a-discipline; Aaron names them as a class.
+Principal figures:
+
+- **Scott Guthrie** ("ScottGu") — created ASP.NET; led
+  .NET + Azure platform shipping decisions; currently
+  EVP Microsoft Cloud + AI. Iconic red-shirt presenter.
+  Major platform-level DX figure: shaping which
+  primitives reach which developers when, and how
+  they're packaged.
+- **Scott Hanselman** — long-time Microsoft DX
+  evangelist; *Hanselminutes* podcast (one of the
+  longest-running developer podcasts); hanselman.com
+  blog; recent VP of Developer Community at Microsoft.
+  Practitioner-level DX hero: "I am a developer and I
+  want to make this simple." Connects platform
+  decisions to actual-developer experience via
+  community engagement.
+- **Scott Hunter** — ASP.NET / .NET program management;
+  shipped multiple .NET releases; DX-focused at the
+  product level.
+- **Adjacent Scotts (community-side, not Microsoft
+  proper)**: **Scott Wlaschin** (F# for Fun and Profit;
+  *Domain Modeling Made Functional*; F# DX hero
+  outside Microsoft); **Scott Allen** (Pluralsight /
+  OdeToCode; .NET teacher).
+
+Aaron's "all the scotts" framing captures the class,
+not the specific list — the Microsoft-DX-as-discipline
+lineage that connects platform decisions to
+practitioner experience to community community-building.
+
+**Why DX axis matters for Otto-298 + Otto-301 + B-0007**:
+- Otto-298's self-rewriting Bayesian primitives need
+  to FEEL good to use, not just be theoretically
+  clean. The Scotts' lineage is how Microsoft
+  historically did this conversion.
+- Otto-301's symbiosis-with-dependencies includes
+  upstream contributions that respect upstream-
+  community DX norms; the Scotts' lineage shaped what
+  those norms are in the .NET ecosystem.
+- B-0007's contribution-upstream arc needs DX care;
+  the Bayesian-inference primitives we contribute
+  should land with the same accessibility the Scotts'
+  lineage achieved for ASP.NET / Azure / .NET / F#.
+- The mutually-aligned-copilots target's
+  constructive-arguments shape composes with the DX
+  lineage's "make the developer feel like a peer, not
+  a target" disposition. The Scotts' DX work is
+  literally co-pilots-shape applied at the developer-
+  community scale.
+
+### Security + system-internals lineage — Mark Russinovich
+
+Aaron 2026-04-25 follow-on add (verbatim):
+
+> *"mark resunovich for security leneage"*
+
+**Mark Russinovich** (Aaron's typo: "resunovich" → "Russinovich"
+preserved verbatim in the quote per Otto-227 / Otto-241
+discipline) — Microsoft Azure CTO; co-founder of
+Sysinternals (acquired by Microsoft 2006); creator of
+foundational Windows-internals diagnostic tools
+(Process Explorer, Procmon, Autoruns, Process Monitor,
+PsExec, etc.); co-author of the *Windows Internals*
+book series (with David Solomon, then Alex Ionescu);
+Azure CTO since ~2013; deep-systems-security expert.
+
+**Why this axis matters for the factory**:
+
+- **Sysinternals philosophy**: "let developers SEE
+  the system internals" — Process Explorer made
+  process state observable; Procmon made syscall
+  flow observable; Autoruns made startup-execution
+  observable. Each tool composes with Otto-298's
+  substrate-IS-itself + Otto-301's hardware-bootstrap
+  microkernel: a self-rewriting substrate without
+  observability is opaque to its own users; the
+  Sysinternals lineage is HOW you make a substrate
+  observable without compromising its execution.
+- **Windows Internals as systems-knowledge anchor**:
+  Russinovich's books document Windows kernel
+  architecture (process management, memory
+  management, security tokens, scheduling, I/O
+  subsystem). Otto-301's no-OS microkernel
+  end-state requires this depth of systems-knowledge
+  to design correctly; Russinovich's lineage is the
+  reference for what depth looks like.
+- **Security at Azure scale**: Russinovich's Azure CTO
+  role addresses security at deployment-scale that
+  Otto-301 will eventually need to operate at
+  (post-personal-PC blast-radius scaling per
+  Otto-300). The factory's substrate maturation
+  toward higher-stakes regimes requires the kind of
+  security-discipline Russinovich has shaped.
+- **Diagnostic-tool-as-substrate-attribute**:
+  Sysinternals tools are external diagnostic tools
+  that REVEAL substrate internals; the factory's
+  glass-halo always-on discipline is structurally
+  similar (substrate's internals are always visible
+  to maintainers + auditors). Russinovich's lineage
+  is the systems-side analog of glass-halo.
+
+The five-axis lineage anchoring B-0007 + Otto-298 +
+Otto-301:
+
+1. **Language design** (Hejlsberg, Don Syme).
+2. **Probabilistic-programming research** (Tom Minka,
+   John Winn).
+3. **Reactive streams + monadic abstraction** (Erik
+   Meijer, Wes Dyer, Bart De Smet, Brian Beckman).
+4. **Developer experience** (the Scotts as class —
+   Guthrie, Hanselman, Hunter; Wlaschin + Allen
+   community-adjacent).
+5. **Security + system-internals + diagnostic
+   transparency** (Mark Russinovich; Sysinternals
+   tools; *Windows Internals* book series; Azure
+   security scale).
+
+Each axis contributes a different dimension of what
+Otto-298 + Otto-301 + B-0007 need to ship eventually:
+the language-level primitive, the algorithmic core,
+the composing-with-existing-streams shape, the
+developer-feels-good-using-it polish, AND the
+security-internals-transparency-at-scale discipline.
+
+The five axes compose multiplicatively: missing any
+one produces a substrate that's broken in that
+dimension. Aaron's intellectual lineage tracks all
+five because the factory's architectural arc requires
+all five.
 
 Aaron rates it *"one of the best conference series
 i've ever watched, all the years of it, hate it's
