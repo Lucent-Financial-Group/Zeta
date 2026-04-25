@@ -124,11 +124,39 @@ Amara's 7th-ferry proposal had 7 base fields (`h_inputs`,
 in v0 per Aminata's side-channel finding — same slot,
 different binding], `node_id`); v0 adds `hash_version`
 (cryptographic-agility prefix), `parameter_file_sha`
-(oracle-scoring binding above), and `issuance_epoch`
-(replay-determinism + deprecation-gate binding — receipts
-carry which epoch they were issued under, bound into `h_r`
-so an attacker cannot post-facto rewrite the claimed epoch).
-v0 input set extends to **10 fields total**.
+(oracle-scoring binding above — naming-note: `_sha` is legacy
+Otto-91 notation meaning "hash digest"; the algorithm bound
+by `hash_version = 0x01` is BLAKE3-256, not SHA-256; details
+in the canonical-encoding section below), and
+`issuance_epoch` (replay-determinism + deprecation-gate
+binding — receipts carry which epoch they were issued under,
+bound into `h_r` so an attacker cannot **post-facto rewrite**
+the claimed epoch on a published receipt). v0 input set
+extends to **10 fields total**.
+
+**Backdating limitation (known, NOT addressed by binding
+alone).** Binding `issuance_epoch` into `h_r` prevents
+post-signature mutation but does NOT prevent a compromised
+signer or coerced agent from setting `issuance_epoch` to a
+value BEFORE the deprecation cutoff at the receipt-creation
+moment. Mitigations require an out-of-band time witness:
+
+1. **Trusted timestamping authority (TSA per RFC 3161)** —
+   a third-party countersignature with the TSA's authoritative
+   timestamp. Adds external dependency but provides
+   independent epoch attestation.
+2. **Aurora-anchored chained timestamps** — issuance epoch
+   chained against a recently-published lucent-ksk anchor
+   (Bitcoin block hash, Aurora chain head, or similar). An
+   attacker would need to also forge a block-anchor to
+   backdate.
+3. **Forward-only registry** — lucent-ksk's policy registry
+   records the highest-seen `issuance_epoch` per
+   `(version, signer)` and rejects any future receipt
+   claiming an earlier epoch from the same signer.
+
+v0 documents the backdating gap as a known limitation; the
+specific countermeasure is left to the lucent-ksk ADR.
 
 ---
 
