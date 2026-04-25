@@ -109,9 +109,10 @@ flags and subcommands will exist.
 - **Runtime:** Bun (per `bun.lock` + typical Bun/OpenTUI
   pairing).
 
-**Structural observation:** the Coinbase AgentKit + payments
-+ wallet + verify modules make Grok CLI a **payments-aware
-agent runtime**, not just a chat CLI. This is a capability
+**Structural observation:** the Coinbase AgentKit +
+payments + wallet + verify modules make Grok CLI a
+**payments-aware agent runtime**, not just a chat CLI. This
+is a capability
 class Claude Code and Codex do NOT currently ship — relevant
 if the factory later wants to run crypto-rails agent
 experiments.
