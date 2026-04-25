@@ -35,8 +35,10 @@ with the `DOTNET_gcServer=0` Otto-248 workaround.
 2. Run `tools/setup/install.sh` from repo root.
 3. Verify with `mise exec -- dotnet --version` (or
    equivalent for other tools).
-4. Run the build gate:
-   `DOTNET_gcServer=0 dotnet build Zeta.sln -c Release`
+4. Run the build gate via mise to avoid SDK pin drift
+   (a legacy/Homebrew `dotnet` earlier on PATH would
+   silently bypass the `.mise.toml` pin):
+   `DOTNET_gcServer=0 mise exec -- dotnet build Zeta.sln -c Release`
    (Otto-248 workaround until the .NET 10 GC SIGSEGV
    on Apple Silicon is fixed upstream).
 

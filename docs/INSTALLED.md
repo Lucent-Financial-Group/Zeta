@@ -84,7 +84,15 @@ audit is idempotent; `⚠ bump available` lines are actionable.
 brew install openjdk@21             # Java for TLC / Alloy
 brew install rustup && rustup-init   # Rust for Feldera
 # .NET SDK + dotnet-stryker + TLC + Alloy + elan:
-bash tools/setup/install.sh         # reads .mise.toml + global.json pins
+./tools/setup/install.sh            # reads .mise.toml + global.json pins
+                                    # (CI-parity form; same as `bash tools/...`
+                                    # but catches missing exec-bit / shebang
+                                    # issues early)
+
+# Source the managed shellenv so DOTNET_gcServer=0 (Otto-248
+# Apple-Silicon GC workaround), PATH, and other vars are
+# active in this shell:
+. "$HOME/.config/zeta/shellenv.sh"
 
 # Project packages:
 mise exec -- dotnet restore Zeta.sln
