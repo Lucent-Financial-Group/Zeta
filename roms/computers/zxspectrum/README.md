@@ -42,8 +42,7 @@ Forbidden (do not drop here):
 ## Gitignore behaviour
 
 Every file in this folder except this `README.md` is
-gitignored via the root `roms/.gitignore` rule (`*` +
-`!*/` + `!**/README.md`). Drop ROMs confidently — git will
+gitignored via the root `roms/.gitignore` rule (`*` + `!*/` + `!/README.md` + `!/*/README.md` + `!/*/*/README.md`). Drop ROMs confidently — git will
 not accidentally track them.
 
 ## Cross-refs
