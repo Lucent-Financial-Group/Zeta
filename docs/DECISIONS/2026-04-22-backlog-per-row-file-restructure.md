@@ -10,7 +10,9 @@
 `docs/BACKLOG.md` is the single-source-of-truth backlog for the
 Zeta factory. It is append-only, organized newest-first within
 four priority tiers (P0/P1/P2/P3), and currently spans
-**5,957 lines** in one file.
+**~6k lines** in one file (live count drifts as the backlog
+grows; this ADR uses the order-of-magnitude figure to avoid
+staleness).
 
 Every autonomous-loop tick touches it. Every round-close touches
 it. Every cadenced audit touches it. Every persona that proposes
@@ -31,8 +33,9 @@ side (merge-conflict resolution) becomes the tax that kills the
 promised preventive-paired-with-compensating discipline.
 
 A **per-row-file restructure** converts `docs/BACKLOG.md` from a
-single 5,957-line text file into an **index file** plus one
-file per backlog row under `docs/backlog/<tier>/<id>.md`.
+single ~6k-line text file into an **index file** plus one
+file per backlog row under `docs/backlog/<tier>/<slug>-<YYYY-MM-DD>.md`
+(the `<slug>-<YYYY-MM-DD>` filename stem IS the row's `id`).
 Add-a-row becomes "create a new file" (zero collision — filename
 disambiguates); edit-a-row becomes "edit one small file" (low
 collision — only branches actually touching that row conflict);
@@ -65,9 +68,17 @@ docs/
     │   ├── ...
     ├── P3/
     │   ├── ...
-    └── shipped/
+    ├── shipped/
+    │   └── <tier>-<slug>-<YYYY-MM-DD>.md
+    └── declined/
         └── <tier>-<slug>-<YYYY-MM-DD>.md
 ```
+
+**Note on PR description vs ADR path:** if the linked PR
+description references `docs/backlog-rows/`, that wording is
+historical; the canonical directory adopted in this ADR is
+`docs/backlog/`. Reconcile any downstream references to the
+ADR path.
 
 ### Per-row file shape
 
@@ -136,8 +147,12 @@ One-shot migration round:
 ### Authoring rules after migration
 
 - **Add a row:** create a new file under `docs/backlog/<tier>/`.
-  Never edit the index directly to add — regenerate or hand-
-  append the index line.
+  The index `docs/BACKLOG.md` is regenerated from row files —
+  treat existing index entries as read-only (don't hand-edit
+  them); a new row's index line may be appended in the same
+  PR as the row file, or left to the next regeneration. Index
+  ordering / formatting is generator output, not authoring
+  surface.
 - **Edit a row:** edit the row file. Update the `updated:`
   field. Append a `History` entry if the edit is non-trivial.
 - **Ship a row:** move the file to `docs/backlog/shipped/`
@@ -230,8 +245,8 @@ for safety on bulk operations (migration, tier sweeps).
 Per `docs/research/parallel-worktree-safety-2026-04-22.md` §9
 revised staging:
 
-- **Round 45 (this restructure, pre-R45-flip):** land this ADR +
-  the migration PR + the index lint. Single-purpose round —
+- **Round 45 (this restructure, pre-R45-flip):** land this ADR,
+  the migration PR, and the index lint. Single-purpose round —
   no new reducer-agent parallelism yet.
 - **Round 46 (R45 original intent):** EnterWorktree factory-default
   flip for reducer-agent class, with the now-shrunk
@@ -272,8 +287,11 @@ discipline fails without this restructure.
    call.
 2. **Script ownership** — does the migration script live in
    `tools/backlog/` or in the ADR itself as a code block?
-   (Convention: one-shot migration scripts live under
-   `tools/migrations/YYYY-MM-DD-<name>/`.)
+   (Proposed convention for this ADR: if we keep one-shot
+   migration scripts as separate artifacts, place them under
+   `tools/migrations/YYYY-MM-DD-<name>/` — that subtree does
+   not yet exist in the repo, so adopting it requires creating
+   the directory as part of the implementation PR.)
 3. **Order within a tier** — the current monolithic file is
    "newest-first within each priority tier". The index file
    inherits that; the row files carry dates in frontmatter.
