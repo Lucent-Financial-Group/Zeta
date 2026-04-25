@@ -120,20 +120,26 @@ From the oracle-scoring design (PR #266):
 Combined with Aminata's binding additions named earlier:
 Amara's 7th-ferry proposal had 7 base fields (`h_inputs`,
 `h_actions`, `h_outputs`, `budget_id`, `policy_version`,
-`approval_set_commitment`, `node_id`); v0 adds
-`hash_version` (cryptographic-agility prefix) and now
-`parameter_file_sha` (oracle-scoring binding above), so the
-v0 input set extends to **9 fields total**.
+`approval_set` [raw, replaced by `approval_set_commitment`
+in v0 per Aminata's side-channel finding — same slot,
+different binding], `node_id`); v0 adds `hash_version`
+(cryptographic-agility prefix), `parameter_file_sha`
+(oracle-scoring binding above), and `issuance_epoch`
+(replay-determinism + deprecation-gate binding — receipts
+carry which epoch they were issued under, bound into `h_r`
+so an attacker cannot post-facto rewrite the claimed epoch).
+v0 input set extends to **10 fields total**.
 
 ---
 
 ## Proposed v0 scheme (design input for lucent-ksk ADR)
 
-### Hash input set (9 fields)
+### Hash input set (10 fields)
 
 ```text
 h_r = BLAKE3(
   encode(hash_version)
+  ∥ encode(issuance_epoch)
   ∥ encode(h_inputs)
   ∥ encode(h_actions)
   ∥ encode(h_outputs)
@@ -160,10 +166,21 @@ order listed:
 
 - `hash_version`: 1-byte unsigned integer (versions
   `0x00`-`0xFF` reserved; `0x01` = this scheme).
+- `issuance_epoch`: 8-byte unsigned big-endian integer
+  (`u64-be`), milliseconds since Unix epoch. Bound into
+  `h_r` so the verifier-side issuance-epoch deprecation
+  gate (req #2) cannot be circumvented by post-facto
+  rewriting the claimed epoch on a forged receipt.
 - `h_inputs` / `h_actions` / `h_outputs` / `parameter_file_sha`
-  / `approval_set_commitment`: 32-byte fixed-width BLAKE3
+  / `approval_set_commitment`: 32-byte fixed-width BLAKE3-256
   digests (no length prefix needed — every value is exactly
-  32 bytes).
+  32 bytes). Note: `parameter_file_sha` is named after the
+  legacy Otto-91 oracle-scoring naming (`_sha` historically
+  meant "hash digest" in that context). The actual algorithm
+  bound by `hash_version = 0x01` is BLAKE3-256, not SHA-256.
+  Future schemes may select a different digest algorithm
+  via the `hash_version` registry; the field name stays for
+  backward-compatibility with Otto-91 prose.
 - `budget_id` / `policy_version` / `node_id`: variable-length
   identifiers encoded as `len:u32-be ∥ bytes` length-prefix
   framing, where `bytes = NFC-normalised UTF-8 octets` of the
