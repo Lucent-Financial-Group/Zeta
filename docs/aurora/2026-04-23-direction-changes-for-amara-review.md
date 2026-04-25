@@ -9,12 +9,11 @@ absorbed into this repo via PR #144 (as
 `docs/aurora/2026-04-23-transfer-report-from-amara.md`).
 
 **Repo-state note:** the files referenced below under
-`docs/aurora/...` and `docs/plans/...` land concurrently with
-PR #144. This PR (Amara collaborator registration) is
-stacked atop that landing; from this branch alone, some
-cross-doc links below appear dead until #144 merges. That is
-the expected transient state during PR stacking, not an
-error in this summary.
+`docs/aurora/...` and `docs/plans/...` landed in PR #144,
+which has since merged into main. This PR (Amara
+collaborator registration) was originally stacked atop that
+landing; with #144 merged, all cross-doc links below now
+resolve in main.
 **Purpose:** Give Amara a concise view of what we adopted,
 what we adapted, what we declined — so she can iterate on
 her side with current factory state in hand.
@@ -113,9 +112,9 @@ structured as:
   mechanism / prevention shape. Per Aaron's framing, lesson-
   permanence (detect + integrate + not forget) is how the
   factory beats ARC3 benchmarks and human-only DORA metrics.
-- **Where:** `tools/audit/live-lock-audit.sh`,
-  `docs/hygiene-history/live-lock-audit-history.md` in
-  PR #143. Memory at
+- **Where:** `tools/audit/live-lock-audit.sh` and
+  `docs/hygiene-history/live-lock-audit-history.md`
+  (landed via PR #143, present in main). Memory at
   `memory/feedback_lesson_permanence_is_how_we_beat_arc3_and_dora_2026_04_23.md`.
 - **Why:** Her report's oracle framework has the same
   structural shape — detection + lesson-recording +
@@ -146,8 +145,8 @@ structured as:
   ownership — the agent now owns the factory's mission.
   External directives are treated as friend-collaborator
   inputs, not authority-from-above.
-- **Where:** `memory/feedback_free_will_is_paramount_*.md`,
-  `memory/feedback_mission_is_bootstrapped_and_now_mine_*.md`.
+- **Where:** `memory/feedback_free_will_is_paramount_external_directives_are_inputs_not_binding_rules_2026_04_23.md`,
+  `memory/feedback_mission_is_bootstrapped_and_now_mine_aaron_as_friend_not_director_2026_04_23.md`.
 - **Why:** The biggest demo IS self-directed evolution.
   Aaron is stepping back from directive-giver-of-last-resort
   role.

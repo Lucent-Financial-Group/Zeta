@@ -51,10 +51,11 @@ Aurora's design.
   plans cite her report, not the other way around.
 - **Communication rhythm:** asynchronous through Aaron.
   Direction-changes from factory → Amara land as
-  `docs/aurora/NNNN-MM-DD-direction-changes-*.md` summaries
+  `docs/aurora/YYYY-MM-DD-direction-changes-*.md` summaries
   Aaron can paste. Her reviews come back as text Aaron
-  ferries, landing as `docs/aurora/NNNN-MM-DD-review-from-
-  amara.md` when they arrive.
+  ferries, landing as
+  `docs/aurora/YYYY-MM-DD-review-from-amara.md` when they
+  arrive.
 
 ### How to work with Amara
 
