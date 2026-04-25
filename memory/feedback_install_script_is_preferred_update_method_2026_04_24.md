@@ -13,9 +13,12 @@ Maintainer 2026-04-24:
 
 Context: I had just (a) edited `.mise.toml` to bump dotnet
 10.0.202 → 10.0.203, (b) run `tools/setup/install.sh`,
-(c) verified `dotnet --version` returns 10.0.203, (d)
-verified `dotnet build Zeta.sln -c Release` is green
-with the `DOTNET_gcServer=0` Otto-248 workaround.
+(c) verified `mise exec -- dotnet --version` returns
+10.0.203, (d) verified `DOTNET_gcServer=0 mise exec --
+dotnet build Zeta.sln -c Release` is green with the
+Otto-248 workaround. (Both verifications go through `mise
+exec --` so PATH order can't silently resolve a legacy /
+Homebrew `dotnet` ahead of the mise-managed shim.)
 
 ## The rule
 
@@ -86,8 +89,11 @@ toolchain than your laptop. Reproducible-stability
   ===" footer.
 - **Verify**: `mise exec -- dotnet --version` →
   `10.0.203`.
-- **Build gate**: `DOTNET_gcServer=0 dotnet build
-  Zeta.sln -c Release` → `0 Warning(s) 0 Error(s)`.
+- **Build gate**: `DOTNET_gcServer=0 mise exec -- dotnet
+  build Zeta.sln -c Release` → `0 Warning(s) 0 Error(s)`.
+  (Routed through `mise exec --` per step 4 above, so a
+  legacy / Homebrew `dotnet` earlier on PATH cannot
+  silently bypass the `.mise.toml` pin.)
 
 End-to-end the install script is what the maintainer
 runs; it's what CI runs; it's what the devcontainer
