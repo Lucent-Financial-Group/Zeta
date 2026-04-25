@@ -198,10 +198,17 @@ itself is ADR-gated per Concern 2. Resolved.
 **Reply:** Cross-ref repointed in `0f0f406` to the existing
 precursor doc
 `docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`
-(option b). Top-level `docs/DRIFT-TAXONOMY.md` is still scoped
-for a future round; the precursor doc is the current
-authoritative source for pattern 5 detection language.
-Resolved.
+(option b).
+
+_Historical note (captured during drain-log review
+2026-04-24):_ at the time of the original drain reply
+(Otto-NNN, mid-session) the top-level `docs/DRIFT-TAXONOMY.md`
+was still scoped for a future round, so the precursor doc
+was the current authoritative source for pattern 5
+detection language. The top-level doc has since landed and
+is marked operational in main; future research docs should
+cite `docs/DRIFT-TAXONOMY.md` directly and keep the
+precursor doc linked only for historical lineage. Resolved.
 
 ---
 
