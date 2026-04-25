@@ -259,9 +259,9 @@ not a metaphor.
 
 **Added 2026-04-22 auto-loop-35.** The maintainer named the
 connection explicitly: PNNL's "expert-derived confidence"
-scores (Grid Event Signature Library framework, ~900 signature
-types, human-in-the-loop confidence-weighting layered on ML
-output) is a published analog of the factory's multi-substrate
+scoring framework (Grid Event Signature Library, ~900
+signature types, human-in-the-loop confidence-weighting
+layered on ML output) is a published analog of the factory's multi-substrate
 triangulation + reviewer-roster + maintainer-echo pattern that
 this benchmark presumes as the measurement substrate sitting
 *between the agent output and the DORA grade* — distinct from
@@ -388,7 +388,7 @@ the substrate is well-formed.
 
 **What this changes in the benchmark spec.** Nothing about the
 shape changes; the composition-with-HITL language makes the
-measurement substrate *citeable* rather than internally-coined.
+measurement substrate *citable* rather than internally-coined.
 ARC3-DORA's DORA-side delivery metrics remain carrier-channel;
 the cognition-side capability signature remains stepdown-under-
 capability-reduction; the multi-substrate / maintainer-echo /
