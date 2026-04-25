@@ -5599,9 +5599,9 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
-- [ ] **Cross-DSL composability — git / SQL / operator-
-  algebra / LINQ access each other seamlessly with
-  full index utilization.** Maintainer 2026-04-24
+- [ ] **Cross-DSL composability — git / SQL /
+  operator-algebra / LINQ access each other seamlessly
+  with full index utilization.** Maintainer 2026-04-24
   directive (verbatim):
 
   > *"i would love to be able to see git as composable
@@ -5621,10 +5621,10 @@ systems. This track claims the space.
      (`query-optimizer-expert`) which sees the full
      mixed-DSL AST.
   3. **Hit indexes** for each constituent DSL (the
-     hierarchical index from the closure-table-
-     hardening row, the row-index from SQL, the
-     operator-algebra's incremental view materialized,
-     etc.).
+     hierarchical index from the
+     closure-table-hardening row, the row-index from
+     SQL, the operator-algebra's incremental view
+     materialized, etc.).
   4. **Execute** with retraction-native semantics
      preserved end-to-end (a git-revert in the input
      stream produces a Z-set retraction in the output).
@@ -5645,9 +5645,9 @@ systems. This track claims the space.
     cross-translation matrix between DSL ASTs).
   - **Plan-time optimizer** that sees the mixed
     expression and chooses the right index per leaf.
-    Composes with `query-planner` + `query-optimizer-
-    expert` + `binder-expert` (need a `binder-cross-dsl`
-    capability).
+    Composes with `query-planner` +
+    `query-optimizer-expert` + `binder-expert` (need a
+    `binder-cross-dsl` capability).
   - **Adapter pattern** between DSLs at the algebraic
     layer — the operator algebra's D/I/z⁻¹/H operators
     must commute with git's commit/branch/merge AND
@@ -5660,9 +5660,15 @@ systems. This track claims the space.
     boundary.
 
   **Composes with (load-bearing):**
-  - **Closure-table hardening** (`docs/BACKLOG.md`
-    same section) — the hierarchical index this query
-    layer hits.
+  - **Closure-table hierarchical index** — the
+    `Hierarchy.fs` closure-table operator
+    (`src/Core/Hierarchy.fs`) plus the "Closure-table
+    over DBSP" research row in this same `docs/BACKLOG.md`
+    under `## Research projects` (paper-grade target:
+    "first retraction-native incremental transitive
+    closure with tropical-semiring shortest-path free
+    variant"). The hierarchical index this query layer
+    hits.
   - **Native F# git implementation** (#395) — git as
     first-class DSL.
   - **Mode 2 protocol-upgrade negotiation** (#395) —
@@ -5674,7 +5680,7 @@ systems. This track claims the space.
   - **Semiring-parameterized Zeta substrate** — the
     "one algebra to map the others" frame from the
     2026-04-22 maintainer auto-loop-38 thread (memory:
-    `project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`).
+    `memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`).
     This row is a direct application of that
     research-changing claim: if the operator algebra
     is parameterized by a semiring, every other DSL's
