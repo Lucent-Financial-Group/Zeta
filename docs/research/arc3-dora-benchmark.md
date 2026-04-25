@@ -280,9 +280,13 @@ document filename retains `arc3-dora` for continuity, but the
 layering is:
 
 - **DORA metrics**: objective delivery measurements.
-  Not HITL-modulated. Deploy-frequency counts commits reaching
-  prod; change-failure-rate counts incidents; no confidence
-  weighting applies.
+  Not HITL-modulated. Deployment frequency counts deployments
+  to production; change failure rate is the ratio of failed
+  deployments over total deployments; no confidence weighting
+  applies. (Per the canonical Google/Accelerate DORA
+  definitions — distinct from commit / raw-incident counts,
+  which would skew cross-run comparison under different batch
+  sizes.)
 - **Agent-output-under-uncertainty layer**: the noisy ML / agent
   output that is being graded against DORA. *This* is where
   HITL expert-derived confidence applies — calibrating which
