@@ -5,11 +5,19 @@
 axis before migration PR
 **Supersedes:** none
 **Backlog row:** `docs/BACKLOG.md` § "P1 — Git-native hygiene
-cadences (Otto-54 directive cluster)" — row 1, "Split
-`docs/BACKLOG.md` into per-swim-lane files"
-**Companion memory:** `memory/project_factory_is_git_native_github_
-first_host_hygiene_cadences_for_frictionless_operation_2026_04_23.md`
-(out-of-repo)
+cadences (Otto-54 directive cluster)" — row "Split
+`docs/BACKLOG.md` into per-swim-lane files" (the BACKLOG row
+names a placeholder doc-path of `docs/research/backlog-split-
+design-2026-MM-DD.md`; this doc landed at
+`docs/research/backlog-swim-lane-split-design-2026-04-23.md`
+to use the precise factual descriptor "swim-lane split" — the
+BACKLOG row's path placeholder will resolve to this filename
+in any subsequent backlog refactor pass).
+**Companion memory:** Author's per-user Anthropic AutoMemory
+entry on the git-native factory-as-host directive cluster.
+This is an out-of-repo per-user artifact (not under
+`memory/`); cited here for context only, not as a path
+readers can resolve.
 
 ---
 
@@ -19,8 +27,12 @@ Human-maintainer Otto-54: *"it might be benefitial to have multiple
 backlog files one per swim lane/stream, you can alway use git to find
 hotspots in files... will help reduce merge issues i think."*
 
-First-run git-hotspots audit (`docs/hygiene-history/git-hotspots-
-2026-04-23.md`, FACTORY-HYGIENE row #57) measured the claim:
+The first-run git-hotspots audit landed in
+[`docs/hygiene-history/git-hotspots-2026-04-23.md`](../hygiene-history/git-hotspots-2026-04-23.md)
+(detection-only artifact — no FACTORY-HYGIENE row owns the
+audit cadence as of this writing; the audit ran once at
+Otto-54 directive landing and the file is the durable
+record). It measured the claim:
 
 | file | touches | PRs |
 |---|---:|---:|
