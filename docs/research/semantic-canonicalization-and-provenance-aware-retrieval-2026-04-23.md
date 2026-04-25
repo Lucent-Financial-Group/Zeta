@@ -88,7 +88,7 @@ score(y | q) = α·sim(e_q, e_y)
 
 Four layers with explicit separation:
 
-1. **Canonicalisation (N)** — strip irrelevant surface
+1. **Canonicalization (N)** — strip irrelevant surface
    variation.
 2. **Representation (φ)** — semantic hashing and/or dense
    embedding.
@@ -105,7 +105,7 @@ candidate #3.
 
 ---
 
-## Layer 1 — Canonicalisation N(x)
+## Layer 1 — Canonicalization N(x)
 
 ### Purpose
 
@@ -119,10 +119,10 @@ stripped; meaning-carrying content preserved.
 
 | Property | Statement |
 |---|---|
-| **Idempotent** | N(N(x)) = N(x). Running canonicalisation twice is the same as once. |
+| **Idempotent** | N(N(x)) = N(x). Running canonicalization twice is the same as once. |
 | **Deterministic** | Same x → same N(x), always. Required for replay determinism. |
 | **Meaning-preserving** | Two inputs that a human would call "the same claim" canonicalise to the same output (ideally) or at least to outputs that a downstream embedding places close together. |
-| **Version-pinned** | N has a version; canonical forms carry that version in provenance. Changing N is a governance-edit, not a commits-file-change. |
+| **Version-pinned** | N has a version; canonical forms carry that version in provenance. Changing N requires a governance / ADR-gated update — not a routine code edit — because it invalidates every existing canonical form computed under the prior version. |
 
 ### What N does NOT do
 
@@ -133,7 +133,7 @@ stripped; meaning-carrying content preserved.
   identical canonical form. "Zeta is a DBSP implementation"
   vs "Zeta implements DBSP" may canonicalise to different
   forms; kNN retrieval + embedding space closes the gap.
-- N does NOT validate content. Canonicalisation is
+- N does NOT validate content. Canonicalization is
   structural; validity lives at the scoring layer.
 
 ### Version pinning
@@ -156,7 +156,7 @@ cross-version reconciliation.
   (not for display); preserve surface form in provenance.
 - **For structured claims:** sort keys alphabetically;
   normalise whitespace in values; version-tag the schema.
-- **For code / diffs:** AST-level canonicalisation (format
+- **For code / diffs:** AST-level canonicalization (format
   + rename-collapse + comment-strip for similarity; keep
   literal for provenance).
 
@@ -245,8 +245,11 @@ RetrievalIndex:
   replay(events) -> Index        -- deterministic rebuild from event stream
 ```
 
-`remove(c)` is not a tombstone; it's a negative-weight
-event in the same algebra as insert. This is the
+`remove(c, metadata)` is not a tombstone; it's a negative-
+weight event in the same algebra as insert, keyed on the
+full insertion identity `(c, metadata)` so retractions
+target a specific insertion rather than nuking all
+insertions of the same canonical form. This is the
 retraction-native integration: the retrieval index IS a
 Zeta-module materialised view over the event stream
 `{insert, remove}`, not a separate mutable structure. Same
@@ -334,11 +337,24 @@ PatternLedger_t ∈ Z[CanonicalForm × Provenance × Status]
 
 events:
   PatternInserted(c, provenance, status)
-  PatternRetracted(c, provenance)
+  PatternRetracted(c, provenance, status)
   PatternSuperseded(c_old, c_new, reason)
   ProvenanceEdgeAdded(c_from, c_to, edge_type)
-  ProvenanceEdgeRemoved(c_from, c_to)
+  ProvenanceEdgeRemoved(c_from, c_to, edge_type)
 ```
+
+Note: `PatternRetracted` and `ProvenanceEdgeRemoved` carry
+the same identity tuple as their corresponding insert
+events — `(c, provenance, status)` for patterns,
+`(c_from, c_to, edge_type)` for edges. This preserves the
+negative-weight-retraction symmetry of the Z-set algebra:
+a retract event is the additive inverse of the insert
+event with the same identity, so the algebra stays
+balanced. Without `status` on PatternRetracted, a retract
+of a `known-good` insertion would also nuke a sibling
+`known-bad` insertion of the same `(c, provenance)` —
+wrong granularity. Same logic for `edge_type` symmetry on
+provenance-edge events.
 
 Materialised views:
 
@@ -389,7 +405,7 @@ No new substrate added; existing pieces compose.
 - **Does NOT commit to HNSW specifically.** HNSW is the
   default proposal; alternatives interchange behind the
   interface. Choice is downstream.
-- **Does NOT commit to canonicalisation specifics.** N's
+- **Does NOT commit to canonicalization specifics.** N's
   properties are the commitment; implementation per input-
   type is downstream.
 - **Does NOT formalise the scoring layer.** That's
@@ -417,7 +433,7 @@ In priority order:
    formalises the scoring layer on top of this spine.
 3. **Candidate #4 docs/EVIDENCE-AND-AGREEMENT.md** —
    operational contributor guidance using the detector.
-4. **Parameter choices** for canonicalisation per input-
+4. **Parameter choices** for canonicalization per input-
    type (natural-language / structured / code).
 5. **Embedding-model choice** with explicit latency +
    quality + cost tradeoff ADR.
