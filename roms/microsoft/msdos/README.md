@@ -1,15 +1,14 @@
 # `roms/microsoft/msdos/` — MS-DOS (PC gaming pre-Windows) (1981)
 
-DOSBox is the canonical runtime
+DOSBox is self-contained — its own DOS-equivalent ships in the emulator
 
 ## What to drop here
 
 ROM / disc image / cassette dump files for **MS-DOS (PC gaming pre-Windows)**.
-Common extensions: see the emulator core's documentation
-for your chosen runtime. The directory slug `msdos` matches
-the EmulationStation / libretro convention (under the
-`microsoft/` manufacturer branch, so the fully-qualified path
-matches a common layout emulator frontends expect).
+Common extensions: see the emulator core's documentation.
+The directory slug `msdos` matches the EmulationStation /
+libretro convention so emulator frontends that auto-scan
+the tree recognize this path.
 
 ## License-safety gate — this is a leaf folder
 
@@ -30,18 +29,18 @@ Forbidden (do not drop here):
 
 - ROM dumps of commercial cartridges / discs without
   license.
-- BIOS dumps from retail hardware.
 - Anything whose provenance is uncertain — "uncertain"
   defaults to "not allowed".
 
 ## Gitignore behaviour
 
 Every file in this folder except this `README.md` is
-gitignored via the root `roms/.gitignore` rule (`*` + `!*/`
-+ `!**/README.md`). Drop ROMs confidently — git will not
-accidentally track them.
+gitignored via the root `roms/.gitignore` rule (`*` +
+`!*/` + `!**/README.md`). Drop ROMs confidently — git will
+not accidentally track them.
 
 ## Cross-refs
 
-- `roms/README.md` — top-level protocol.
+- `roms/README.md` — top-level protocol + the list of
+  platforms removed for BIOS reasons.
 - `roms/microsoft/README.md` — the branch folder listing this platform alongside siblings.

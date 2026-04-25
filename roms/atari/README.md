@@ -5,13 +5,10 @@ enumerates platforms grouped under the Atari label. It
 is **not empty** — it contains one subfolder per supported
 platform, each with its own sentinel `README.md`.
 
-## Children (7 platforms)
+## Children (4 platforms)
 
 - [`2600/`](2600/) — Atari 2600 (VCS) (1977)
-- [`5200/`](5200/) — Atari 5200 (1982)
-- [`7800/`](7800/) — Atari 7800 (1986)
 - [`800/`](800/) — Atari 800 / 8-bit computer family (1979)
-- [`lynx/`](lynx/) — Atari Lynx (1989)
 - [`jaguar/`](jaguar/) — Atari Jaguar (1993)
 - [`st/`](st/) — Atari ST (1985)
 
@@ -30,8 +27,17 @@ Aaron asked (autonomous-loop, 2026-04-24):
 
 Translation: branch folders need their own sentinel prose
 so the tree self-documents — opening `atari/README.md`
-tells a maintainer or fresh agent which platforms live under
-this label and where to drop files.
+tells a maintainer or fresh agent which platforms live
+under this label and where to drop files.
+
+## Why some Atari platforms are missing
+
+The tree only keeps platforms where **emulator code alone
+(plus any bundled clean-room open-source BIOS) + a
+safe-to-redistribute ROM** is enough to boot something.
+Atari platforms that require proprietary BIOS / firmware
+/ OS ROMs with no viable open-source alternative were
+removed — see `roms/README.md` for the full removal list.
 
 ## License-safety gate
 
@@ -42,8 +48,6 @@ tree.
 
 ## Cross-refs
 
-- `roms/README.md` — top-level protocol + the sentinel-pair
-  pattern rationale (parity with `drop/` and
-  `references/upstreams/`).
+- `roms/README.md` — top-level protocol + the removal list.
 - `roms/atari/<platform>/README.md` — the leaf sentinel for
   each child platform.

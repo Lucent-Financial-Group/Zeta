@@ -5,13 +5,10 @@ enumerates platforms grouped under the Vintage home computers label. It
 is **not empty** — it contains one subfolder per supported
 platform, each with its own sentinel `README.md`.
 
-## Children (5 platforms)
+## Children (2 platforms)
 
-- [`apple2/`](apple2/) — Apple II (1977)
-- [`amstradcpc/`](amstradcpc/) — Amstrad CPC (1984)
 - [`msx/`](msx/) — MSX (1983)
 - [`zxspectrum/`](zxspectrum/) — Sinclair ZX Spectrum (1982)
-- [`bbcmicro/`](bbcmicro/) — BBC Micro (1981)
 
 ## What to drop here
 
@@ -28,8 +25,17 @@ Aaron asked (autonomous-loop, 2026-04-24):
 
 Translation: branch folders need their own sentinel prose
 so the tree self-documents — opening `computers/README.md`
-tells a maintainer or fresh agent which platforms live under
-this label and where to drop files.
+tells a maintainer or fresh agent which platforms live
+under this label and where to drop files.
+
+## Why some Vintage home computers platforms are missing
+
+The tree only keeps platforms where **emulator code alone
+(plus any bundled clean-room open-source BIOS) + a
+safe-to-redistribute ROM** is enough to boot something.
+Vintage home computers platforms that require proprietary BIOS / firmware
+/ OS ROMs with no viable open-source alternative were
+removed — see `roms/README.md` for the full removal list.
 
 ## License-safety gate
 
@@ -40,8 +46,6 @@ tree.
 
 ## Cross-refs
 
-- `roms/README.md` — top-level protocol + the sentinel-pair
-  pattern rationale (parity with `drop/` and
-  `references/upstreams/`).
+- `roms/README.md` — top-level protocol + the removal list.
 - `roms/computers/<platform>/README.md` — the leaf sentinel for
   each child platform.

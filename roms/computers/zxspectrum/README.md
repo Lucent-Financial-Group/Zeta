@@ -5,11 +5,17 @@ UK 8-bit
 ## What to drop here
 
 ROM / disc image / cassette dump files for **Sinclair ZX Spectrum**.
-Common extensions: see the emulator core's documentation
-for your chosen runtime. The directory slug `zxspectrum` matches
-the EmulationStation / libretro convention (under the
-`computers/` manufacturer branch, so the fully-qualified path
-matches a common layout emulator frontends expect).
+Common extensions: see the emulator core's documentation.
+The directory slug `zxspectrum` matches the EmulationStation /
+libretro convention so emulator frontends that auto-scan
+the tree recognize this path.
+
+## BIOS / firmware status
+
+Open Source Speccy ROM is a clean-room alternative to the original Sinclair 48K ROM; works for most games. This is why this platform remains in the
+tree — no proprietary firmware is required to boot a ROM
+here, the emulator code (plus its bundled open-source
+clean-room BIOS where applicable) is sufficient.
 
 ## License-safety gate — this is a leaf folder
 
@@ -30,18 +36,18 @@ Forbidden (do not drop here):
 
 - ROM dumps of commercial cartridges / discs without
   license.
-- BIOS dumps from retail hardware.
 - Anything whose provenance is uncertain — "uncertain"
   defaults to "not allowed".
 
 ## Gitignore behaviour
 
 Every file in this folder except this `README.md` is
-gitignored via the root `roms/.gitignore` rule (`*` + `!*/`
-+ `!**/README.md`). Drop ROMs confidently — git will not
-accidentally track them.
+gitignored via the root `roms/.gitignore` rule (`*` +
+`!*/` + `!**/README.md`). Drop ROMs confidently — git will
+not accidentally track them.
 
 ## Cross-refs
 
-- `roms/README.md` — top-level protocol.
+- `roms/README.md` — top-level protocol + the list of
+  platforms removed for BIOS reasons.
 - `roms/computers/README.md` — the branch folder listing this platform alongside siblings.

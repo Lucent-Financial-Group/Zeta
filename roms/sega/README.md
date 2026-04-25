@@ -5,14 +5,11 @@ enumerates platforms grouped under the Sega label. It
 is **not empty** — it contains one subfolder per supported
 platform, each with its own sentinel `README.md`.
 
-## Children (8 platforms)
+## Children (5 platforms)
 
 - [`mastersystem/`](mastersystem/) — Sega Master System (1985)
 - [`megadrive/`](megadrive/) — Sega Mega Drive / Genesis (1988)
 - [`sega32x/`](sega32x/) — Sega 32X (1994)
-- [`segacd/`](segacd/) — Sega CD / Mega-CD (1991)
-- [`saturn/`](saturn/) — Sega Saturn (1994)
-- [`dreamcast/`](dreamcast/) — Sega Dreamcast (1998)
 - [`gamegear/`](gamegear/) — Sega Game Gear (1990)
 - [`sg1000/`](sg1000/) — Sega SG-1000 (1983)
 
@@ -31,8 +28,17 @@ Aaron asked (autonomous-loop, 2026-04-24):
 
 Translation: branch folders need their own sentinel prose
 so the tree self-documents — opening `sega/README.md`
-tells a maintainer or fresh agent which platforms live under
-this label and where to drop files.
+tells a maintainer or fresh agent which platforms live
+under this label and where to drop files.
+
+## Why some Sega platforms are missing
+
+The tree only keeps platforms where **emulator code alone
+(plus any bundled clean-room open-source BIOS) + a
+safe-to-redistribute ROM** is enough to boot something.
+Sega platforms that require proprietary BIOS / firmware
+/ OS ROMs with no viable open-source alternative were
+removed — see `roms/README.md` for the full removal list.
 
 ## License-safety gate
 
@@ -43,8 +49,6 @@ tree.
 
 ## Cross-refs
 
-- `roms/README.md` — top-level protocol + the sentinel-pair
-  pattern rationale (parity with `drop/` and
-  `references/upstreams/`).
+- `roms/README.md` — top-level protocol + the removal list.
 - `roms/sega/<platform>/README.md` — the leaf sentinel for
   each child platform.

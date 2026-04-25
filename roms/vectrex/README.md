@@ -1,21 +1,23 @@
 # `roms/vectrex/` — GCE Vectrex (1982)
 
-vector-graphics console with built-in CRT
+vector-graphics console
 
 ## What to drop here
 
-ROM / disc image / disk image files for **GCE Vectrex**.
+ROM / disc image / game-data files for **GCE Vectrex**.
 This platform doesn't cluster cleanly under a
-manufacturer-branch (it's a one-off or a cross-manufacturer
-standard), so it lives at the top level.
+manufacturer branch, so it lives at the top level.
+
+## BIOS / firmware status
+
+Minestorm firmware ships bundled with most emulators. This platform remains in the tree because
+no proprietary firmware is required beyond emulator code.
 
 ## License-safety gate — this is a leaf folder
 
-See `roms/README.md` for the redistribution protocol. Short
-version: only public-domain / homebrew / licensed-as-free
-material is allowed here. ROM dumps of retail commercial
-software without explicit redistribution rights are
-forbidden.
+See `roms/README.md` for the redistribution protocol.
+Short version: only public-domain / homebrew /
+licensed-as-free material is allowed here.
 
 ## Gitignore behaviour
 
@@ -24,4 +26,5 @@ gitignored. Drop files confidently.
 
 ## Cross-refs
 
-- `roms/README.md` — top-level protocol.
+- `roms/README.md` — top-level protocol + the list of
+  platforms removed for BIOS reasons.
