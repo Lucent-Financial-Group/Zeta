@@ -3,7 +3,7 @@
 PR: <https://github.com/Lucent-Financial-Group/Zeta/pull/195>
 Branch: `frontier-readiness/bootstrap-reference-docs-skeleton`
 Drain session: 2026-04-25 (Otto, post-summary continuation autonomous-loop)
-Thread count at drain start: 14 unresolved (Codex P2 + Copilot P1/P2)
+Thread count at drain start: 15 unresolved (Codex P2 + Copilot P1/P2)
 Rebase context: clean rebase onto `origin/main`; no conflicts.
 
 Per Otto-250 (PR review comments + responses + resolutions are
@@ -84,7 +84,7 @@ new outcome class: **DEFERRED-TO-MAINTAINER**.
 
 ### Outcome class C: DEFERRED-TO-MAINTAINER (NEW PATTERN)
 
-#### Threads 11-14 — Maintainer-name attribution in bootstrap/ docs (Copilot, multiple)
+#### Threads 11-15 — Maintainer-name attribution in bootstrap/ docs (Copilot, multiple)
 
 - Thread IDs: `PRRT_kwDOSF9kNM59N2kN` (README L12),
   `PRRT_kwDOSF9kNM59PiCX` (ethical-anchor L82),
@@ -152,9 +152,13 @@ new outcome class: **DEFERRED-TO-MAINTAINER**.
 
 ## Final resolution
 
-All 14 threads resolved (3 FIX at SHA `bf81687`, 6
-STALE-RESOLVED-BY-REALITY, 5 DEFERRED-TO-MAINTAINER). PR auto-merge
-SQUASH armed; CI cleared; merge pending.
+All 15 threads resolved (3 FIX at SHA `bf81687`, 7
+STALE-RESOLVED-BY-REALITY [Threads 4-9 + 10], 5
+DEFERRED-TO-MAINTAINER [Threads 11-15]). PR auto-merge
+SQUASH armed; CI cleared; merge pending. (The drain-session
+header above said "14 unresolved at drain start" — that was
+a count-off-by-one-on-DEFERRED-bucket; the body's grouped
+totals are authoritative: 3+7+5=15.)
 
 Drained by: Otto, post-summary autonomous-loop continuation, cron
 heartbeat `f38fa487` (`* * * * *`).
