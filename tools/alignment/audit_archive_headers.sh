@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
 # tools/alignment/audit_archive_headers.sh — archive-header
-# discipline lint (Amara 5th-ferry Artifact C, detect-only v0).
+# discipline lint (5th-ferry Artifact C, detect-only v0).
 #
 # Checks every `docs/aurora/**/*.md` absorb doc for the four
-# archive-header fields proposed in Amara's 5th ferry
-# (§33 candidate, PR #235 absorb):
+# archive-header fields proposed in the 5th-ferry external-
+# research absorb (§33 candidate, PR #235 absorb):
 #
 #   Scope:               research / cross-review / archival purpose
 #   Attribution:         speaker labels preserved
@@ -23,7 +23,7 @@
 #
 # Usage:
 #   tools/alignment/audit_archive_headers.sh                    # detect-only
-#   tools/alignment/audit_archive_headers.sh --enforce          # exit 2 on gap
+#   tools/alignment/audit_archive_headers.sh --enforce          # exit 1 on gap
 #   tools/alignment/audit_archive_headers.sh --path DIR         # custom path
 #   tools/alignment/audit_archive_headers.sh --json             # JSON output
 #   tools/alignment/audit_archive_headers.sh --out DIR          # per-file JSON
@@ -55,10 +55,15 @@
 #   (header must appear in the first N lines + as a
 #   definition-list item or bold label) in a follow-up.
 # - Cross-repo checks (KSK / lucent-ksk cross-references).
-# - Memory-file archive-header checks. Memory lives under
-#   the per-user harness path (not in-repo). In-repo
-#   `memory/` is a different surface; this tool does not
-#   assume it covers archive content.
+# - Memory-file archive-header checks. The repo's canonical
+#   agent memory surface is in-repo `memory/` (see
+#   `memory/README.md` and `GOVERNANCE.md` §18), but this
+#   audit intentionally does not cover that surface. Memory
+#   files use their own discipline (canonical index +
+#   per-fact files); they are not archive-of-external-
+#   conversation content. A separate per-user harness-local
+#   staging path also exists out-of-tree but is not in scope
+#   for this lint either.
 #
 # Threat-model context for the §33 decay-without-lint risk
 # lives in the threat-model reviewer's research note
@@ -100,6 +105,16 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# Normalise target_path: strip any trailing slashes so the
+# downstream `-not -path "$target_path/references/*"` pattern
+# matches whether the caller passed `docs/aurora` or
+# `docs/aurora/`. Without this, `docs/aurora//references/*`
+# fails to match anything, and the references/ exclusion
+# silently breaks.
+while [[ "$target_path" == */ && "$target_path" != "/" ]]; do
+  target_path="${target_path%/}"
+done
+
 if [[ ! -d "$target_path" ]]; then
   echo "audit_archive_headers: target path not found: $target_path" >&2
   exit 2
@@ -115,8 +130,9 @@ declare -a HEADER_LABELS=(
   'Non-fusion disclaimer:'
 )
 
-# Collect archive files recursively (ASCII sort for stable
-# output). Recursive scan matches the documented scope
+# Collect archive files recursively (forced C-locale sort for
+# byte-order stable output regardless of LANG/LC_ALL in the
+# caller env). Recursive scan matches the documented scope
 # (`docs/aurora/**/*.md`) so nested topic / dated subfolders
 # are not silently skipped. `references/` is excluded because
 # it is the bibliography substrate, not absorb content.
@@ -125,7 +141,7 @@ declare -a HEADER_LABELS=(
 archive_files=()
 while IFS= read -r f; do
   archive_files+=("$f")
-done < <(find "$target_path" -type f -name '*.md' -not -path "$target_path/references/*" | sort)
+done < <(find "$target_path" -type f -name '*.md' -not -path "$target_path/references/*" | LC_ALL=C sort)
 
 if [[ ${#archive_files[@]} -eq 0 ]]; then
   echo "audit_archive_headers: no .md files under $target_path" >&2
@@ -165,9 +181,18 @@ for file in "${archive_files[@]}"; do
   if [[ -n "$out_dir" ]]; then
     # Per-file JSON (same shape as audit_commit.sh / audit_personas.sh).
     # Encode subdirectory path in the output filename so a recursive
-    # scan over nested folders does not collide on basename.
+    # scan over nested folders does not collide on basename. The
+    # encoding must be INJECTIVE so distinct source paths cannot map
+    # to the same output filename: an earlier slash->'__' replacement
+    # collided when a literal '__' already appeared in the path
+    # (e.g. `a/b__c.md` and `a__b/c.md` both became `a__b__c.json`).
+    # Fix: first percent-encode any literal '_' to '_5F' so the
+    # `_` byte never appears in the encoded form; then map path
+    # separator '/' to '__'. The encoding round-trips and is
+    # collision-free.
     rel_path="${file#"$target_path"/}"
     file_base="${rel_path%.md}"
+    file_base="${file_base//_/_5F}"
     file_base="${file_base//\//__}"
     out_file="$out_dir/${file_base}.json"
     {
