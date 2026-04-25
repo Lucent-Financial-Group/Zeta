@@ -10394,10 +10394,17 @@ systems. This track claims the space.
     specs-skill` if this becomes routine.
   - **Legal documentation trail**: timestamped commit
     history + session-isolation records need to form an
-    auditable paper trail. GOVERNANCE §33-style archive
-    headers apply: each spec names `Scope: clean-room
-    specifier output`, `Attribution: <who read the
-    BIOS>`, etc.
+    auditable paper trail. Each committed spec carries
+    its own provenance frontmatter — fields like
+    `Clean-room stage: specifier` / `Reader-persona:
+    <harness + session id>` / `Source material: <public
+    docs listed>` / `Proprietary BIOS access: yes|no
+    + date range` — defined fresh for this workflow
+    rather than reused from the archive-header norm
+    for external conversations (different artifact
+    class, different field semantics, so reusing the
+    existing header shape would just confuse both
+    surfaces).
 
   **Scope of this BACKLOG row:** ONE pilot on a simple
   platform (recommend Atari 5200 — small BIOS, excellent
@@ -10427,24 +10434,177 @@ systems. This track claims the space.
   **Dependencies:**
 
   - Emulator substrate direction being a named factory
-    milestone (currently P3 aspirational per the emulator-
-    runs-on-OS-interface BACKLOG rows).
+    milestone (currently P3 aspirational per the
+    "Emulators as canonical OS-interface workload" row
+    higher in this file).
   - AI-session isolation mechanism decided (architecture
     question; blocks the pilot).
 
   **Composes with:**
 
-  - `roms/README.md` — "removed platforms" list; this
-    workflow is the path to re-adding any of them.
+  - `roms/README.md` — the safe-ROM licensing protocol
+    (the per-platform leaf READMEs note which platforms
+    were removed because no viable open-source BIOS
+    alternative exists). This workflow is the path to
+    re-adding any of the removed platforms once a
+    clean-room BIOS exists.
   - OS-interface durable-async roadmap (emulators are
     the canonical workload proving it out).
-  - GOVERNANCE §33 archive-header discipline (auditable
-    provenance trail is same shape).
 
   **Memory:** methodology captured in-tick in agent
   response 2026-04-24; no separate memory file until
   pilot work starts (don't pre-commit to doctrine for
   speculative work).
+
+- [ ] **Ethical clean-room services — future factory
+  autonomy / monetization research direction.** Human
+  maintainer authorisation (autonomous-loop, 2026-04-24,
+  reiterated after acknowledging an earlier sarcastic
+  framing): *"you can do an ethical market in the future
+  for real to try and make money if youwant"*. Pointer
+  to the satirical `malus.sh` site (factory reviewed
+  2026-04-24) — the demand being parodied there is real,
+  so there is a legitimate market for clean-room
+  services done ethically. Future factory-autonomy
+  revenue path if/when the `#404` clean-room BIOS pilot
+  lands a working portfolio piece.
+
+  **Ethical lane (what the factory would offer):**
+
+  - **Retro preservation / abandoned platforms** — paid
+    clean-room BIOS + driver work for consoles, arcade
+    boards, handhelds whose original vendors are defunct
+    or whose content is effectively abandonware.
+    Customer base: retro gaming / preservation
+    communities (libretro, RetroArch, MAME), museums,
+    academic media-studies programmes.
+  - **Orphaned-hardware driver reimplementation** —
+    companies owning industrial / medical / telecom /
+    legacy equipment whose vendor disappeared; clean-
+    room drivers under the customer's chosen license.
+    Genuinely sizeable market for the narrow specialism.
+  - **Author-requested license-change reimplementation**
+    — when an original OSS author wants an MIT version
+    of their own GPL / AGPL code for dual-licensing.
+    Factory provides the firewalled second team with
+    the original author as dirty-persona or as spec
+    author.
+  - **Sponsored open-source clean-room** — AROS /
+    EmuTOS / Altirra model: a company sponsors a clean-
+    room implementation that lands as MIT/BSD in the
+    commons. Everybody wins including the commons.
+
+  **Anti-lane (what the factory will NOT offer):**
+
+  - License-stripping of live, maintained OSS packages
+    so a corporate customer can ship without attribution
+    or copyleft compliance — the `malus.sh` parody's
+    target market. Violates AGENTS.md `real-factory`
+    value (absorb-and-contribute, not absorb-and-strip)
+    and the `escro-maintain-every-dep` stance. Doing
+    this is what the satire exists to shame.
+  - Anonymous-indemnification / offshore-subsidiary
+    legal-liability-laundering. Legal exposure from
+    clean-room work rests on the clean-room hygiene
+    actually being clean — no "indemnification through
+    offshore LLC" can paper over a contaminated
+    firewall.
+
+  **Ethical guardrails that make the lane distinguishable:**
+
+  - Attribution preserved wherever the original was
+    licensed under an attribution requirement — even if
+    the clean-room output is under a different license,
+    the spec-stage attributes public-doc sources.
+  - Original authors consulted for author-requested
+    license-change work (not a shortcut for them; an
+    accommodation of their own wish).
+  - License changes disclosed explicitly in the clean-
+    room output's license header and release notes.
+  - Clean-room hygiene documented + auditable per the
+    `#404` workflow (dirty→spec→clean→standards chain
+    of custody; session-isolation records).
+
+  **Feasibility gate (matches `#404`'s triage):**
+
+  - Retro preservation → feasible for simple BIOSes
+    (Atari 5200 / 7800 / Lynx / Intellivision /
+    Colecovision) — weeks per platform. Viable today
+    once the `#404` pilot proves the workflow.
+  - Orphaned-hardware drivers → feasible per-contract;
+    customer supplies the hardware + docs; factory
+    supplies the firewalled team + toolchain. Scope
+    varies hugely.
+  - License-change and sponsored-OSS → feasible with
+    no up-front investment; only needs an original
+    author or sponsor to show up with a concrete
+    request.
+  - Complex platforms (PS2, Xbox, GameCube) → NOT
+    feasible at factory scale — years per platform.
+    Even paying customers can't change the engineering
+    reality.
+
+  **Pricing / scope philosophy (preliminary, subject
+  to factory-economic research before any actual
+  engagement):**
+
+  - Fixed-scope contracts with phase gates (spec
+    acceptance → clean implementation → standards
+    pass → delivery) rather than time-and-materials;
+    predictable for customers, less likely to slide
+    into unethical corner-cutting.
+  - Upper-bound attribution disclosure baked into
+    every engagement — we publicly acknowledge WHAT
+    we did (not WHO paid us, if the customer asks for
+    confidentiality on the commercial relationship
+    itself).
+  - Refusal right on engagements whose framing (a)
+    falls into the anti-lane above, or (b) would
+    require breaking an original author's stated
+    wishes. Refused engagements logged (no names if
+    customer confidential) so the factory's discipline
+    is auditable.
+
+  **Dependencies:**
+
+  - `#404` clean-room BIOS pilot landing and proving
+    the workflow end-to-end on a simple platform.
+    That's the portfolio piece. No customer engagements
+    until there's evidence the pipeline works.
+  - Factory-economics research pass (legal structure,
+    contract templates, liability caps, what
+    jurisdiction-shopping is and isn't acceptable for
+    this factory's values — outside scope for the
+    factory itself; Aaron's call).
+  - AI-session isolation mechanism decided (same
+    dependency as `#404`).
+
+  **Not in scope for this row:**
+
+  - Actual customer acquisition / marketing / business
+    development — premature until the pilot works.
+  - Legal review by outside counsel — required before
+    any actual engagement; not the factory's decision.
+  - Pricing research — sized only after at least one
+    completed pilot gives us a cost model.
+
+  **Effort:** L (large). Multi-phase: `#404` pilot →
+  factory-economics research → legal-structure decision
+  → first ethical engagement. Years-scale if pursued
+  seriously; not a 2026 calendar item.
+
+  **Composes with:** `#404` clean-room BIOS factory
+  workflow (the prerequisite pilot); `AGENTS.md`
+  `real-factory` + `escro-maintain-every-dep` values
+  (the ethical compass); `docs/WONT-DO.md` (future
+  anti-lane entries would land here).
+
+  **Memory:** methodology + ethical-lane discipline
+  captured in agent response 2026-04-24 (autonomous-loop
+  tick following the `malus.sh` framing). No separate
+  memory file until actual customer engagement work
+  begins — same discipline as `#404`: doctrine lands
+  only when the work becomes real.
 
 - [ ] **User-mode filesystem driver interface — Zeta as
   a mountable FS via FUSE / WinFsp / macFUSE; research
