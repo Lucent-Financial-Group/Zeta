@@ -209,24 +209,49 @@ known-bad) plus a sixth **retrieval-empty** output type
 
 ### 3. `plausible but unresolved`
 
-- Band: `YELLOW` via G_status fail-to-YELLOW OR
-  G_evidence_independent fail-to-YELLOW (with other gates
-  GREEN).
+- Band: `YELLOW` via G_status fail-to-YELLOW.
+  - **v0 (shipping):** only G_status drives this output
+    type (G_evidence_independent is advisory-only and
+    doesn't participate in band-merging). Evidence-gate
+    fail still SHOWS in the emitted advisory metadata
+    so human review can see "plus this is self-attested"
+    even when the band is `YELLOW`.
+  - **v1 (post-promotion):** G_evidence_independent
+    fail-to-YELLOW ALSO drives this output type (in
+    addition to G_status), making the band sensitive
+    to both missing pinned status AND missing
+    independent evidence.
 - Meaning: semantic fit exists; no known-bad pattern
-  matches; but `y` lacks independent evidence or
-  pinned status.
+  matches; but `y` lacks pinned status (both versions)
+  and, in v1, also lacks independent evidence.
 - Action: mark query as open-question; add to
   research-tracker; not a confidence-upgrade.
 
 ### 4. `likely confabulated`
 
-- Band: `RED` via G_evidence_independent fail-to-RED
-  combined with high similarity.
+- Band:
+  - **v0 (shipping):** not reachable via band-merging
+    (evidence is advisory-only, so a confabulation
+    signature can't force RED through the classifier).
+    v0 surfaces confabulation-shape through the emitted
+    advisory metadata (`G_evidence_independent` fail +
+    high G_similarity) for human review, but the band
+    stays at whatever the other four gates say. This
+    is the primary motivation for the v1 promotion —
+    confabulation-detection is the output type most
+    degraded by advisory-only evidence.
+  - **v1 (post-promotion):** `RED` via
+    `G_evidence_independent` fail-to-RED combined
+    with high similarity.
 - Meaning: claim sounds plausible and matches patterns
   semantically, but no actual independent evidence
   supports it. Classic LLM confabulation signature.
-- Action: hard-halt on any action depending on the
+- Action (v1): hard-halt on any action depending on the
   claim; flag for human review; do not propagate.
+- Action (v0): confabulation-shape surfaces as advisory
+  metadata on whatever other band the query lands in;
+  human review treats the signal as authoritative
+  pre-v1 even though it isn't in-band-classifier-yet.
 
 ### 5. `known-bad pattern`
 

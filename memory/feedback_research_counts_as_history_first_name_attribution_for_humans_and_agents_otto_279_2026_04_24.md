@@ -2,7 +2,6 @@
 name: research counts as history — first-name attribution allowed (humans AND agents)
 description: Otto-279 policy correction — `docs/research/` is a HISTORY surface (sibling to `docs/ROUND-HISTORY.md`, `docs/DECISIONS/`), not a current-state surface; first-name attribution IS appropriate there for humans (Aaron) AND agents (Amara, Aminata, Otto, Kira, etc.); AGENT-BEST-PRACTICES "no names in docs" rule needs `docs/research/` carve-out; sweep existing research docs that had names stripped by subagents (e.g. on #282 #351); BACKLOGGED for post-drain to avoid churn.
 type: feedback
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 Aaron Otto-279, 2026-04-24, while draining #282 thread on
 name-attribution Copilot review:
