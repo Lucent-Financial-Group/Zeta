@@ -360,12 +360,14 @@ Otto does NOT hand off when:
 ## What the hand-off IS and IS NOT
 
 **It IS:**
+
 - Otto tells Aaron (in chat) "the design is bullet-proof; run
   `[instructions]` on your Windows PC when convenient."
 - Aaron runs it once on his Windows PC.
 - Aaron reports what happened (pass / fail / surprises).
 
 **It is NOT:**
+
 - A design-review gate — Aaron is not reviewing the design
   BEFORE Otto iterates; Otto iterates solo.
 - A launch gate — Aaron isn't signalling "yes launch the
