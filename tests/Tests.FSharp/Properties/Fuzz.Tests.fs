@@ -227,9 +227,21 @@ let ``fuzz: integrate then differentiate is identity for any linear pipeline`` (
 let ``fuzz: HLL estimate within theoretical error bound`` (n: PositiveInt) =
     // For 14 logBuckets, expected error ≈ 1.04 / √(2^14) ≈ 0.81%; we allow
     // 3% to cover tail variance.
+    //
+    // **Otto-281 fix:** earlier this test called `hll.Add i` directly,
+    // which routes through `HashCode.Combine` — process-randomized by
+    // .NET design. Different CI processes produced different bucket-
+    // landings for the same int, occasionally pushing the estimate past
+    // the 4% tolerance and flaking the test (e.g., #480 ubuntu-24.04
+    // run 24932270073). Per Otto-281 (DST-exempt is deferred bug, fix
+    // the determinism not the comment), we route int keys through
+    // `AddBytes` with a canonical 4-byte representation — same hash
+    // distribution properties HLL needs, deterministic across runs.
     let count = min n.Get 5_000
     let hll = HyperLogLog 14
-    for i in 1 .. count do hll.Add i
+    for i in 1 .. count do
+        let bytes = BitConverter.GetBytes i
+        hll.AddBytes (ReadOnlySpan bytes)
     let est = float (hll.Estimate())
     let err = abs (est - float count) / float count
     err < 0.04
