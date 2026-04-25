@@ -374,21 +374,55 @@ discipline fails without this restructure.
   revisited — either the per-row granularity is wrong, or
   the conflict pattern is elsewhere.
 
-## Open questions
+## Decisions tracked (Otto-283 — decided + revisit-if signals)
 
-1. **`B-NNNN` allocation strategy at migration** — newest-first
-   within each tier means the ID order matches monolith
-   reading order. Should we instead allocate IDs by date
-   ascending so older rows get lower numbers? Aaron's call.
-   (Default if no answer: newest-first within tier; matches
-   the existing single example file `B-0001-...`.)
-2. **`scope: factory | zeta | shared`** — was proposed in
-   earlier ADR drafts but is *not* in the Otto-181 schema.
-   If we want it, file a Phase 1b directive to extend the
-   parser; otherwise the existing `tags:` array can carry
-   `scope-factory` / `scope-zeta` tag values.
-3. **Concurrent-migration with R45 original intent** — Aaron
-   may prefer to land the restructure *and* the reducer-agent
-   flip in the same round, trusting the restructure to absorb
-   the parallelism tax live. Staging recommendation above is
-   conservative (separate rounds) but not load-bearing.
+Per Otto-283 standing directive ("don't make the human
+maintainer the bottleneck — decide, track, revisit later
+with experience"), the following calls are decided in this
+ADR. Each carries a falsification signal that should
+trigger revisit if observed. Aaron retains override
+authority at any time.
+
+1. **`B-NNNN` allocation strategy at migration.**
+   **Otto decided: date-ascending** — older rows get lower
+   numbers, so `B-0001` is the oldest live row and the
+   newest row at migration time gets the highest ID.
+   *Why:* date-ascending matches the natural append-order
+   of the monolithic file (which was newest-on-top within
+   each tier, but globally an append log of decisions over
+   time); it also makes the ID range a chronological index
+   that is stable as rows ship/decline. *Revisit if:* the
+   bulk-migration script reveals N tied dates within a
+   tier (no monotone date order recoverable), or if
+   newest-first proves materially easier on grep-by-recency
+   (likely false — `last_updated` field is the recency
+   signal, not the ID).
+
+2. **`scope: factory | zeta | shared` field.**
+   **Otto decided: tags array (`scope-factory` /
+   `scope-zeta` / `scope-shared`)** — do NOT extend the
+   Otto-181 schema with a dedicated `scope` field. *Why:*
+   the existing parser handles `tags:` natively; adding a
+   frontmatter field requires parser re-engineering for
+   negligible query-ergonomics gain. Tag-based queries
+   (`grep -l "scope-factory" docs/backlog/**/*.md`) are
+   the same shape as field-based queries. *Revisit if:*
+   tag noise grows past ~12 distinct scope values (then
+   `scope:` becomes a useful enum constraint), or if the
+   factory-vs-zeta scope distinction becomes load-bearing
+   for a generated dashboard / report (then the field's
+   schema-level guarantee matters).
+
+3. **Concurrent-migration with R45 original intent.**
+   **Otto decided: separate rounds** (this ADR ships R45,
+   reducer-agent flip moves to R46). *Why:* the
+   migration PR is the largest mechanical PR the factory
+   will land (~350 new files); landing it concurrently
+   with a parallelism flip multiplies blast-radius without
+   evidence the combined change is safer. Conservative
+   staging is cheaper than an entangled rollback.
+   *Revisit if:* the migration PR proves trivial in
+   practice (sub-15-minute review, mechanical) AND the
+   R45 flip is blocked on a reason that this ADR's
+   restructure already solves (then concurrent landing is
+   the safer move).
