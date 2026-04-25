@@ -331,3 +331,123 @@ commutation `D o Q = Q o D`.
 - Unresolved threads: 0 (target)
 - mergeStateStatus: target MERGEABLE
 - Auto-merge: armed at drain start; preserved through push.
+
+---
+
+# Drain pass: 2026-04-24 (round 2 — 7 threads)
+
+After round-1 push, a late Copilot re-review opened seven NEW
+unresolved threads (CI was still SUCCESS, auto-merge still armed).
+This appended section logs the round-2 drain. Per Otto-229 the
+round-1 sections above are not edited; this section stands as a
+correction-and-extension companion.
+
+Drain session: 2026-04-24 (drain-subagent round 2)
+Thread count at drain start: 7 unresolved (Copilot late re-review)
+Axes drained: review threads only. CI still SUCCESS at drain
+start; rebase onto `origin/main` was clean (5-commit replay, no
+append-only collisions).
+
+## Thread R2-1 — `docs/pr-preservation/203-drain-log.md:142` — round-1 grep claim disputed
+
+- Thread ID: `PRRT_kwDOSF9kNM59iLLJ`
+- Severity: P1
+
+### Outcome
+
+BACKLOG+RESOLVE — round-1 claim verified accurate against
+current branch state. The round-1 narrative said `grep -n '^||'`
+returns no matches and the file at HEAD uses single-pipe table
+syntax. Re-running `grep -nE '^\|\|'` and `grep -nE '\|\|'` on
+the rebased branch confirms zero matches; `od -c` on the operator
+table at lines 78-86 shows single `|` separators. The Copilot
+reviewer appears to have been looking at a stale render or
+earlier draft. Per Otto-229 the round-1 section is append-only
+and stays as written; this round-2 entry is the correction-row
+record.
+
+## Thread R2-2 — `docs/craft/subjects/zeta/operator-composition/module.md:83` — operator-table `||` claim
+
+- Thread ID: `PRRT_kwDOSF9kNM59iLLT`
+- Severity: P1
+
+### Outcome
+
+BACKLOG+RESOLVE. Same finding as R2-1: the operator table at
+line 78-86 uses single-pipe Markdown syntax already; `grep`
+plus `od -c` verification on the rebased branch shows zero
+double-pipe rows. No edit needed against current content.
+
+## Thread R2-3 — `docs/craft/subjects/zeta/operator-composition/module.md:145` — alternatives-table `||` claim
+
+- Thread ID: `PRRT_kwDOSF9kNM59iLLV`
+- Severity: P1
+
+### Outcome
+
+BACKLOG+RESOLVE. Same finding as R2-1/R2-2. The alternatives
+table at lines 139-144 uses single-pipe Markdown syntax. No
+edit needed.
+
+## Thread R2-4 — `docs/craft/subjects/zeta/operator-composition/module.md:93` — `NestedCircuit.Nest` API surface
+
+- Thread ID: `PRRT_kwDOSF9kNM59iLLa`
+- Severity: P1
+
+### Outcome
+
+FIX in this round-2 commit. The note below the operator table
+now points readers at `Circuit.Nest` / `Circuit.NestWithHandle`
+extension methods and explicitly cites the
+`NestedCircuitExtensions` static class in
+`src/Core/NestedCircuit.fs` as the implementation site. The
+prior `NestedCircuit.Nest` wording is replaced; readers can now
+locate the API.
+
+## Thread R2-5 — `docs/craft/subjects/zeta/operator-composition/module.md:312` — Composes-with mislabels NestedCircuit.fs
+
+- Thread ID: `PRRT_kwDOSF9kNM59iLLd`
+- Severity: P1
+
+### Outcome
+
+FIX in this round-2 commit. The "Composes with" bullet for
+`src/Core/NestedCircuit.fs` no longer reads "hierarchical
+composition (H operator)". It now reads "nested / recursive
+composition via `Circuit.Nest` / `Circuit.NestWithHandle`
+extension methods (NOT the `H` operator; `H` = `distinct^Δ`
+per the operator-algebra spec)". The semantic mismatch with
+the spec's `H = distinct^Δ` definition is removed.
+
+## Thread R2-6 — `docs/craft/subjects/zeta/operator-composition/module.md:233` — `D ∘ I = I ∘ D = id` precondition
+
+- Thread ID: `PRRT_kwDOSF9kNM59iLLf`
+- Severity: P2
+
+### Outcome
+
+FIX in this round-2 commit. The bullet now reads "For causal
+streams with a declared zero at `t=0`, D ∘ I = I ∘ D = id" with
+a pointer to `openspec/specs/operator-algebra/spec.md` for the
+precondition. The unconditional reading is no longer offered.
+
+## Thread R2-7 — `docs/craft/subjects/zeta/operator-composition/module.md:311` — Composes-with H-mislabel duplicate of R2-5
+
+- Thread ID: `PRRT_kwDOSF9kNM59iLLs`
+- Severity: P1
+
+### Outcome
+
+FIX in this round-2 commit (same fix as R2-5). The "Composes
+with" entry that previously labeled `src/Core/NestedCircuit.fs`
+as "hierarchical composition (H operator)" was rewritten to
+reflect that nesting / recursion goes via
+`Circuit.Nest` / `Circuit.NestWithHandle` extension methods and
+that `H` is reserved for `distinct^Δ` per the operator-algebra
+spec.
+
+## End-of-round-2 state
+
+- Unresolved threads: 0 (target)
+- mergeStateStatus: target MERGEABLE
+- Auto-merge: still armed.

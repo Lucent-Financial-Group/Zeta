@@ -87,7 +87,9 @@ Zeta ships a small core that covers most pipelines:
 
 Note: nested / recursive composition (one pipeline as
 an element of another's input) is provided via the
-`NestedCircuit.Nest` APIs and the
+`Circuit.Nest` / `Circuit.NestWithHandle` extension
+methods (implemented in `src/Core/NestedCircuit.fs`
+under `NestedCircuitExtensions`) and the
 `circuit-recursion` / `retraction-safe-recursion` specs,
 not via `H`. See the "Nested / recursive circuits"
 section in the theoretical track below.
@@ -229,8 +231,11 @@ basis of Zeta's query-plan optimiser.
 
 ### Key identities
 
-- **D ∘ I = I ∘ D = id** (integral and delta invert each
-  other; the algebra's fundamental theorem)
+- **For causal streams with a declared zero at `t=0`,
+  D ∘ I = I ∘ D = id** (integral and delta invert each
+  other on that domain; the algebra's fundamental
+  theorem — see `openspec/specs/operator-algebra/spec.md`
+  for the precondition)
 - **Q^Δ = D ∘ Q ∘ I** (the incremental form of any
   query `Q`; this is the rewrite the optimiser uses to
   turn a batch query into one whose work-per-tick is
@@ -307,8 +312,11 @@ theoretical treatment of nesting / recursion is in:
   architectural treatment
 - `src/Core/Circuit.fs` — reference implementation of
   composition
-- `src/Core/NestedCircuit.fs` — hierarchical
-  composition (H operator)
+- `src/Core/NestedCircuit.fs` — nested / recursive
+  composition via `Circuit.Nest` /
+  `Circuit.NestWithHandle` extension methods (NOT the
+  `H` operator; `H` = `distinct^Δ` per the operator-
+  algebra spec)
 - `openspec/specs/operator-algebra/spec.md` — formal
   spec of the composable operator substrate
 - `openspec/specs/circuit-recursion/spec.md` — recursive
