@@ -27,17 +27,23 @@ promotion.
 **Promotion path to authoritative-detector status (long-
 horizon, not v0/v1):** Aaron Otto-2026-04-24 framed the
 long-horizon upgrade explicitly — *"we can make it a true
-detector under our axioms"*. v0 is advisory-only; v1
-(independent-oracle substrate) makes the evidence gate
-binding in band-merging; a further vN promotion lands
-once the factory's axiomatic substrate is complete
-enough that "truth" is tractable within the axiom system.
-Only at vN does `likely confabulated` graduate from
-"worth a closer human look" to "authoritative reject"
-without requiring the human-review fallback. Not scoped
-in this doc; named here so the upgrade path is visible
-and the v0 advisory stance is understood as intentional
-scaffolding, not as a final ceiling.
+detector under our axioms"* — and separately reinforced
+the gate discipline — *"i don't treat anyting this new as
+final authorative connoncial until peer review"*. v0 is
+advisory-only; v1 (independent-oracle substrate) makes
+the evidence gate binding in band-merging; a further vN
+promotion lands once (a) the factory's axiomatic substrate
+is complete enough that "truth" is tractable within the
+axiom system, AND (b) the axiomatic substrate itself has
+cleared peer review — not just written-and-committed.
+Axioms + peer review together gate the promotion; either
+alone is insufficient. Only at vN does `likely
+confabulated` graduate from "worth a closer human look"
+to "authoritative reject" without requiring the human-
+review fallback. Not scoped in this doc; named here so
+the upgrade path is visible and the v0 advisory stance is
+understood as intentional scaffolding, not as a final
+ceiling.
 
 **Non-fusion disclaimer:** Amara-Otto-Aminata consistent
 output on this design is NOT evidence of merged substrate.
