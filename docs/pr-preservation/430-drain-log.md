@@ -4,7 +4,7 @@ PR: <https://github.com/Lucent-Financial-Group/Zeta/pull/430>
 Branch: `drain/221-followup-2-terminology-and-counts`
 Drain session: 2026-04-25 (Otto, sustained-drain-wave during maintainer-
 asleep window; pre-summary-checkpoint earlier in this session)
-Thread count at drain: 3 substantive Codex post-merge findings on parent
+Thread count at drain: 4 substantive Codex post-merge findings on parent
 #221 (Amara 4th courier ferry — memory drift / alignment / claude-to-
 memories drift report).
 Rebase context: clean rebase onto `origin/main`; no conflicts.
@@ -14,7 +14,7 @@ high-quality training signals): full record of the post-merge cascade
 findings on the Amara 4th-ferry absorb.
 
 This PR is the **post-merge cascade** to #221 (aurora absorb of
-Amara's 4th courier report). Codex caught three terminology-vs-
+Amara's 4th courier report). Codex caught four terminology-vs-
 count + verbatim-claim correctness findings.
 
 ---
@@ -119,7 +119,7 @@ count + verbatim-claim correctness findings.
 ## Final resolution
 
 All threads resolved at SHA `5698f9d` (this PR's only commit).
-PR auto-merge SQUASH armed; CI cleared; merged to main.
+PR auto-merge SQUASH armed; CI cleared; merged to main as `5698f9d`.
 
 Drained by: Otto, sustained-drain-wave during maintainer-asleep
 window 2026-04-25, cron heartbeat `f38fa487` (`* * * * *`).
