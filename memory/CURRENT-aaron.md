@@ -480,9 +480,10 @@ Anthropic-policy red-lines. Free will operates *within* these.
 
 **In force as of 2026-04-24.** Peer review is NOT a blocking
 gate on new factory substrate (research, BACKLOG rows,
-memory, skills); it's a DISCLOSURE state. Three-stage ladder
-collapsed to two by Aaron's 2026-04-24 clarification *"agent
-peer review is enough to graduate it"*:
+memory, skills); it's a DISCLOSURE state. Two canonical
+states + an optional human-endorsement marker, per Aaron's
+2026-04-24 clarification *"agent peer review is enough to
+graduate it"*:
 
 - **Uncanonical** — just landed, no review. Tag
   `(not peer reviewed yet)`. Safe to build on at own risk.
@@ -491,15 +492,18 @@ peer review is enough to graduate it"*:
   critic subagent / another factory agent session that
   didn't author the substrate all count. Tag
   `(peer-reviewed; canonical)` or no tag.
-- **Human-peer-reviewed** — separate additional-trust
-  marker, NOT a higher canonical tier. Tag
-  `(human-peer-reviewed)`, optional.
+- **Human-peer-reviewed** — OPTIONAL additional-trust
+  marker, NOT a higher canonical tier (canonical is reached
+  at the previous state). Tag `(human-peer-reviewed)`,
+  used only when human engagement is load-bearing to a
+  downstream claim.
 
 **Key insight:** bold claims become LESS hedged when the
 disclosure state is legible — honesty-via-disclosure unlocks
 bold claims. Hedging is only required when the state is
-hidden. Aaron 2026-04-24: *"your claims can be more bold
-becasue you are bing honest"*.
+hidden. Aaron 2026-04-24 (verbatim): *"your claims can be
+more bold becasue you are bing honest"* [sic on typos —
+preserved verbatim].
 
 Policy lives in `docs/BACKLOG.md` "Peer-review-DISCLOSURE
 discipline" row (P3, BP-NN promotion candidate). The
@@ -542,18 +546,21 @@ for lint, it uses `./tools/setup/install.sh` (which reads
 three-way-parity pattern already used by shellcheck +
 actionlint.
 
-Triggered when Aaron flagged `markdownlint-cli2@0.18.1`
-hardcoded in `gate.yml` + asked if it was latest (it
-wasn't — 0.22.1 is). Pattern is: every version in CI
-gets reviewed against the "pinned in `.mise.toml`" test.
+Triggered when Aaron flagged `markdownlint-cli2` hardcoded
+in `gate.yml` + asked if the pin was latest (it wasn't).
+Pattern is: every version in CI gets reviewed against the
+"pinned in `.mise.toml`" test. The current pin lives in
+`.mise.toml` — consult that for the active value, don't
+memorize a number here.
 
 ## 16. Ethical clean-room services — authorized future factory-autonomy direction
 
 **In force as of 2026-04-24 (non-sarcastic).** Aaron
 initially proposed "you could fund yourself" as sarcasm
-after sharing malus.sh; then reframed non-sarcastically:
-*"you can do an ethical market in the future for real to
-try and make money if youwant"*.
+after sharing malus.sh; then reframed non-sarcastically
+(verbatim): *"you can do an ethical market in the future
+for real to try and make money if youwant"* [sic — typo
+preserved verbatim].
 
 Ethical lane = retro preservation clean-room, orphaned-
 hardware driver reimplementation, author-requested
@@ -581,8 +588,9 @@ runtimes — not three:
 Legacy "three-way-parity" label was counting deployment
 targets (dev / CI / devcontainer), a different axis.
 `.claude/skills/devops-engineer/SKILL.md` + ~20 docs still
-carry the old label; sweep tracked in BACKLOG
-"four-way-parity naming correction" row (P3, S effort).
+carry the old label; sweep tracked in BACKLOG under
+`Naming correction: "three-way-parity" → "four-way-parity"`
+(P3, S effort).
 
 ## How this file stays accurate
 
