@@ -11064,6 +11064,33 @@ systems. This track claims the space.
   2026_04_23.md` (same directive chain) + Copilot finding
   on PR #208 that surfaced the policy ambiguity.
 
+  **Otto-279 reinforcement (2026-04-24, post-drain):**
+  Aaron re-confirmed during #282 thread drain that
+  `docs/research/**` is a HISTORY surface and first-name
+  attribution applies to BOTH humans (Aaron, etc.) AND
+  agents (Amara, Aminata, Otto, Kira, Dejan, etc.). Same
+  shape as Otto-237 mention-vs-adoption applied to
+  history-vs-current-state. Reverted name-stripping edits
+  on #282 mid-tick when policy was re-clarified.
+  **Post-drain scope additions:**
+  (4) Audit recent research docs where subagents stripped
+  names per the literal rule: PR #351 (anthropic-prompt-
+  engineering-best-practices), PR #282 (provenance-aware
+  claim-veracity-detector — already preserved this round),
+  and any other research-doc PRs that landed during the
+  rule's literal-interpretation window. Restore stripped
+  names where they were record-of-fact (who-said-what)
+  rather than current-state references.
+  (5) Update the "history surfaces" exemption list to
+  explicitly include: `docs/research/**`,
+  `docs/ROUND-HISTORY.md`, `docs/DECISIONS/**`,
+  `docs/aurora/**`, `docs/pr-preservation/**`,
+  `docs/hygiene-history/**`, `memory/**` — and confirm
+  agent-persona names are AS allowed as human names there.
+  Memory: `memory/feedback_research_counts_as_history_
+  first_name_attribution_for_humans_and_agents_otto_279_
+  2026_04_24.md`.
+
 ## P1 — Git-native hygiene cadences (Otto-54 directive cluster)
 
 The human maintainer on 2026-04-23 Otto-54 framed three
