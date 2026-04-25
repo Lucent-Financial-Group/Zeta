@@ -9,8 +9,15 @@ fence-detection logic.
 Rebase context: clean rebase onto `origin/main`; no conflicts.
 
 Per Otto-250 (PR review comments + responses + resolutions are
-high-quality training signals): full record of the CommonMark
-parser-correctness fix.
+high-quality training signals): abbreviated Otto-268-wave record
+of the CommonMark parser-correctness fix. The abbreviated shape
+preserves reviewer/severity/outcome/commit metadata but does NOT
+preserve verbatim original-comment + reply text — see
+`docs/pr-preservation/_patterns.md` "Otto-250-canonical vs
+Otto-268-abbreviated shape divergence" for the full divergence
+framing and the canonical-shape contrast (e.g.
+`docs/pr-preservation/108-drain-log.md` /
+`docs/pr-preservation/395-drain-log.md`).
 
 This PR is the **post-merge cascade** to #357 (which introduced
 fence-detection logic for some markdown-aware operation). The
