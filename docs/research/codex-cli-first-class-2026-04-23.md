@@ -33,12 +33,14 @@ Rust, actively developed. Positioned parallel to Claude Code
 CLI in the 2026 coding-agent landscape.
 
 **Install:**
+
 - `npm install -g @openai/codex`
 - `brew install --cask codex`
 - Direct binary download per platform (`macOS arm64/x86_64`,
   `Linux x86_64/arm64`).
 
 **Authentication:**
+
 - ChatGPT account sign-in (Plus / Pro / Business / Edu /
   Enterprise) **or** an OpenAI API key.
 - Per Aaron's Otto-76 clarification
@@ -47,6 +49,7 @@ CLI in the 2026 coding-agent landscape.
   account as the Claude Code session — deliberately.
 
 **Key surfaces:**
+
 - `codex` — interactive terminal UI.
 - `codex exec` — non-interactive scripting mode (equivalent to
   Claude Code's one-shot Bash invocation of a prompt).
@@ -66,6 +69,7 @@ CLI in the 2026 coding-agent landscape.
   commit / push).
 
 **Config surface:**
+
 - `~/.codex/config.toml` (TOML).
 - SQLite state DB (`sqlite_home` config / `CODEX_SQLITE_HOME`
   env).
@@ -195,6 +199,7 @@ and Codex-specific.
 | Cloud-backed runtime | Codex Cloud | **Codex-specific** | May subsume the cron-gap by running long-lived agents in cloud; Stage 2 needs to verify. |
 
 **Running gap score after first-pass:**
+
 - Parity: 11 (TodoWrite reclassified Gap → Parity (different shape)
   per OpenAI's Sept 15 2025 Codex CLI to-do-list announcement)
 - Partial: 4
@@ -250,12 +255,12 @@ sidesteps that problem for Phase 1 Codex research**.
 
 **Important (meaningful friction, workarounds exist):**
 
-2. **Skills aren't directly portable.** `.claude/skills/` is
+1. **Skills aren't directly portable.** `.claude/skills/` is
    Claude-Code-specific. The existing cross-harness-mirror-
    pipeline BACKLOG row (round 34) is the right place to solve
    this; it's complementary to this work, not this row's
    scope.
-3. **TodoWrite analogue — different shape, parity confirmed.**
+2. **TodoWrite analogue — different shape, parity confirmed.**
    Codex CLI ships a built-in to-do list per OpenAI's Sept 15
    2025 "Introducing upgrades to Codex" announcement (parity
    matrix: **Parity (different shape)**). The API surface
@@ -264,16 +269,16 @@ sidesteps that problem for Phase 1 Codex research**.
    and how it compares to `TodoWrite`'s pending/in-progress/
    completed states. Tracking on Otto's tick-internal
    progress is unlikely to degrade.
-4. **Hooks gap.** PreToolUse hooks in `.claude/settings.json`
+3. **Hooks gap.** PreToolUse hooks in `.claude/settings.json`
    aren't portable; git-pre-commit hooks are. Move any
    session-layer hooks to git-pre-commit or lint CI if we want
    them harness-neutral.
 
 **Nice-to-have (low friction, low impact):**
 
-5. Output-style / explanatory-mode parity.
-6. Session compaction behaviour parity.
-7. Slash-command name-parity (Zeta's `/loop` etc.).
+1. Output-style / explanatory-mode parity.
+2. Session compaction behaviour parity.
+3. Slash-command name-parity (Zeta's `/loop` etc.).
 
 **Codex-specific we don't need today:**
 
