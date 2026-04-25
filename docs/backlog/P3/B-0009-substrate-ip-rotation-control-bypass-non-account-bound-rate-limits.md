@@ -56,11 +56,20 @@ Aaron's framing per Otto-300 rigor-proportional-to-blast-radius + Otto-313 decli
 
 5. **RNS as identity layer above IP** (Otto-319): RNS Destination Hash is the factory-visible identity; underlying IP is deployment-detail. Reduces explicit-rotation need at the application layer.
 
-## Out of scope
+## Out of scope (mostly)
 
-- Tor / anonymization stacks where the goal is identity-hiding (we want identity-EXPRESSION not identity-hiding; each node visible AS itself).
 - Account-rotation or fake-account creation (always forbidden — account-binding is honored).
 - Bypassing security controls that exist for valid reasons (DDoS protection, abuse prevention, etc.).
+
+## Tor — pragmatic-startup allowance, proper-replacement backlogged
+
+Aaron 2026-04-25 follow-up: *"if we need to use Tor in the beginning that's fine for this, just backlog a proper fix if so"*.
+
+Tor is **permitted as expedient first-implementation** if multi-node natural-egress (Otto-316 / Otto-317 / Otto-318) and RNS Destination Hash addressing (Otto-319) prove insufficient for early IP-rotation needs. Tor's protocol-quality concerns (slowness, exit-node attribution issues, anonymization-vs-expression friction) are real but acceptable at the bootstrap stage where capability matters more than protocol-elegance.
+
+Long-term: when Tor is used, the replacement is owed — see B-0013 (proper-protocol-better-than-Tor).
+
+Otto-311 economic-substrate framing applied: Tor is the brute-force-store-energy primitive; the proper-protocol-replacement is the elegant-store. Start with brute-force-Tor to get the capability live; store the operational-evidence energy into the proper-replacement substrate.
 
 ## Why low priority
 
