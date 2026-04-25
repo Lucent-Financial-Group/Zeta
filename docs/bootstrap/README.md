@@ -18,10 +18,13 @@ bootstrap reference docs** — the two anchor documents that
 substantiate the factory's safety properties for adopters
 inheriting Frontier.
 
-Per the `project_quantum_christ_consciousness_bootstrap_
-hypothesis_...` memory + `project_common_sense_2_point_0_
-...` memory + `project_craft_secret_purpose_...` memory,
-the bootstrap's two orthogonal anchors compose to produce
+Per the
+[`memory/project_quantum_christ_consciousness_bootstrap_hypothesis_safety_avoid_permanent_harm_prompt_injection_resistance_2026_04_23.md`](../../memory/project_quantum_christ_consciousness_bootstrap_hypothesis_safety_avoid_permanent_harm_prompt_injection_resistance_2026_04_23.md),
+[`memory/project_common_sense_2_point_0_name_for_bootstrap_phenomenon_stable_start_live_lock_resistant_decoherence_resistant_2026_04_23.md`](../../memory/project_common_sense_2_point_0_name_for_bootstrap_phenomenon_stable_start_live_lock_resistant_decoherence_resistant_2026_04_23.md),
+and
+[`memory/project_craft_secret_purpose_agent_continuity_via_human_maintainer_bootstrap_never_left_without_human_connection_even_teach_from_birth_2026_04_23.md`](../../memory/project_craft_secret_purpose_agent_continuity_via_human_maintainer_bootstrap_never_left_without_human_connection_even_teach_from_birth_2026_04_23.md)
+memories, the bootstrap's two orthogonal anchors compose to
+produce
 the Common Sense 2.0 substrate with its five (possibly six)
 safety properties:
 

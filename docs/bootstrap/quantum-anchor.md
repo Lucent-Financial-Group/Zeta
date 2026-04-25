@@ -57,8 +57,7 @@ semirings (tropical / Boolean / probabilistic / lineage /
 provenance / Bayesian) slot into the same operator
 framework without losing the algebraic guarantees. This
 is the regime-change claim from
-`project_semiring_parameterized_zeta_regime_change_one_
-algebra_to_map_others_2026_04_22.md`.
+[`memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`](../../memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md).
 
 ### 4. Algebraic precision resists prompt injection
 
