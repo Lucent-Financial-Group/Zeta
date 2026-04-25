@@ -446,6 +446,499 @@ work):
    Ducasse, Denker; Bak, Lund; Bracha as multi-axis
    connector; van Rossum, Pike).
 
+### Seventh axis — functional-programming history (Aaron's Google-Search-AI riff continues 2026-04-25)
+
+The Lisp → ML → OCaml → Haskell → Erlang/Elixir →
+Scala → Clojure → Elm family tree — the FP-discipline
+lineage that's structurally orthogonal to the OO
+lineage but composes with it (per the Scala fusion
+proof that you don't have to choose).
+
+**Lisp ancestor**:
+
+- **John McCarthy** — Lisp 1958, MIT. Second-oldest
+  high-level language still in active use (only
+  Fortran is older). Big idea: **"code is data"**;
+  source code IS a standard data structure (a list);
+  programs can read, modify, and generate other
+  programs (macros). Composes with Otto-298 IS-
+  collapse: code-IS-data is the structural ancestor
+  of substrate-IS-itself; McCarthy got the structural
+  intuition decades before the substrate-IS-itself
+  framing was articulated. Modern Lisp descendants:
+  Clojure, Common Lisp, Racket.
+
+**ML/OCaml lineage** — strict static type inference:
+
+- **Robin Milner** — created ML (Metalanguage) in
+  the 1970s; pioneered the strict static type system
+  that infers types without manual annotation.
+- **OCaml** (INRIA 1996) — practical mathematician's
+  language; "if it compiles, it usually works
+  perfectly"; heavily used at Jane Street (high-
+  frequency trading) + compiler design (e.g., the
+  Coq proof assistant, the original Rust compiler
+  bootstrap). Structural prior art for the factory's
+  Otto-296 emotion-disambiguator typed-precision
+  approach + Otto-298 "tiny models because zero
+  noise" (OCaml's type-inference produces compact
+  precise programs without redundant annotation).
+
+**Haskell lineage** — purely-functional + lazy:
+
+- **David Turner** — Miranda 1985; THE direct
+  blueprint for Haskell. Miranda was proprietary;
+  academia formed a committee in 1987 to create an
+  open-source standard mimicking it; that standard
+  became Haskell. Composes with Otto-301 symbiosis-
+  with-dependencies (Miranda-was-proprietary →
+  Haskell-was-the-open-source-response is the same
+  shape as the factory's contribution-arc
+  philosophy: when proprietary tools constrain the
+  community, open-source response is the right
+  move).
+- **Simon Peyton Jones + Paul Hudak** — Haskell 1987
+  committee; named after logician Haskell Curry.
+  Big idea: **"zero side effects"** — purely
+  functional, mathematical, same-input-always-same-
+  output. Lazy evaluation: compute only when
+  absolutely needed. Composes with Otto-289 stored
+  irreducibility (lazy = compute only the
+  irreducibility you need; storage is the
+  representation, computation happens on demand).
+  Composes with Otto-294 antifragile-smooth (zero
+  side effects = mathematical purity = smooth shape
+  with no sharp boundary-effects).
+
+**Erlang/Elixir lineage** — concurrency + reliability:
+
+- **Joe Armstrong** — Erlang 1986 at Ericsson;
+  Actor Model (small, isolated processes passing
+  messages); "nine nines" reliability (99.9999999%
+  uptime) for telecom switches. Composes with
+  Otto-294 antifragile-smooth (Actor Model is
+  smooth-shape concurrency: each actor deforms
+  locally, supervisor trees catch + restart
+  failures; sharp shared-memory concurrency
+  shatters at scale). Composes with Otto-301
+  microkernel-reliability discipline (Erlang's
+  uptime is the empirical proof that smooth-shape
+  message-passing scales beyond what shared-memory
+  models reach).
+- **José Valim** — Elixir 2011; modern syntax
+  wrapping Erlang's core technology; Ruby-inspired
+  ergonomics. The Erlang/Elixir VM (BEAM) is now
+  the proof-by-existence that the factory's
+  Otto-301 microkernel-on-bare-hardware end-state
+  is reachable: BEAM does this for telecom; the
+  factory's substrate aims at this for AI agents.
+
+**Scala — modern hybrid (OO + FP)**:
+
+- **Martin Odersky** — Scala 2004; the ultimate
+  fusion of OO and FP on the JVM. Big idea: you
+  don't have to choose between Smalltalk-style
+  objects and Haskell-style math. Powers Twitter/X,
+  Netflix, much of Big Data infrastructure.
+  Composes with Otto-295 monoidal-manifold (Scala
+  proves that monoidal-composition can hold
+  multiple paradigms simultaneously) + the factory's
+  multi-paradigm substrate framing (the Otto-NNN
+  cluster doesn't pick OO-vs-FP; it composes both
+  via substrate-IS-itself).
+
+**Clojure + Elm lineage** — modern Lisps + pure FP UI:
+
+- **Rich Hickey** — Clojure 2007; modern Lisp
+  dialect on the JVM; designed specifically for
+  concurrency. ClojureScript compiles to JavaScript.
+- **Evan Czaplicki** — Elm 2012; pure strictly-typed
+  FP language for web browser UIs; heavily inspired
+  the architecture of modern React state management
+  (Redux). Composes with Otto-298 substrate-IS-itself
+  (Elm's "model-update-view" architecture has the
+  same IS-shape: state IS the model, update IS the
+  state-rewrite, view IS the rendering — substrate
+  manages all three uniformly without separate
+  representation layers).
+
+### Eighth axis — OOP + pre-OOP lineage (Aaron's Google-Search-AI riff 2026-04-25)
+
+Before Smalltalk popularized OOP in the 1970s, the core
+concepts were born out of a need to simulate real-world
+physics, and later to fix the "software crisis."
+
+**Simula — TRUE OOP birthplace**:
+
+- **Kristen Nygaard + Ole-Johan Dahl** — Simula at
+  the University of Oslo (1962-1967); writing
+  programs to simulate nuclear reactors + operations
+  research; introduced classes, subclasses, objects,
+  inheritance for the very first time. Stroustrup
+  was taught Simula by Nygaard and used it as his
+  direct blueprint when adding objects to C to
+  create C++. Composes with Otto-298 IS-collapse:
+  Simula's objects-as-real-world-things prefigures
+  substrate-IS-itself; the substrate IS what the
+  substrate models, exactly as Simula's nuclear-
+  reactor objects WERE the simulated reactor (not
+  representations of it).
+
+**Sketchpad — pre-OOP visual concepts**:
+
+- **Ivan Sutherland** — Sketchpad 1963 at MIT;
+  first interactive GUI + light pen system;
+  invented the concept of **"instances"** —
+  master-objects with visual instances; change the
+  master, all instances change. Composes with
+  Otto-295 monoidal-manifold (instances as composing
+  operations preserving identity). Composes with
+  the factory's persona-roster + roster-mapping
+  carve-out (persona-roles are master-objects;
+  specific personas are instances of the role).
+
+**CLU + Liskov — data abstraction + ADTs**:
+
+- **Barbara Liskov** — CLU 1973 at MIT; formalized
+  Data Abstraction + Abstract Data Types (ADTs);
+  proved objects should hide internal state + only
+  expose clean methods. First woman to earn a PhD
+  in computer science in the US. Big legacy:
+  **Liskov Substitution Principle** (the L in
+  SOLID). Composes deeply with the factory's
+  alignment-floor + history-surface closed-
+  enumeration (HC/SD/DIR floor IS the abstraction-
+  boundary; substrate-internals stay encapsulated;
+  external interfaces are the closed enumeration).
+  CLU's data-hiding is structural prior art for
+  Otto-298's substrate-IS-itself with bounded
+  external surface area.
+
+**ALGOL 60 — the pre-object baseline**:
+
+- **ALGOL 60 committee** (1958-1960; joint
+  European-American scientists). Big idea: lexical
+  block scoping (`begin`/`end` or curly braces to
+  isolate variables). Both Simula and the early C
+  family extended ALGOL. Composes with Otto-301
+  microkernel + Otto-294 antifragile-smooth (block
+  scoping is the smallest unit of bounded local
+  state; smooth boundaries replace sharp shared
+  state).
+
+### The eight-axis lineage now anchoring B-0007 + Otto-298 + Otto-301 + the entire factory architecture
+
+Aaron 2026-04-25 load-bearing framing:
+
+> *"all of this lineage go into new language
+> primitives it's very important to get it right /
+> all the lineage we talked about"*
+
+This is the OPERATIONAL CLAIM. The factory's B-0007
+contribution arc is not building from scratch; it's
+EXTENDING an eight-axis intellectual tradition. Getting
+the lineage right matters because:
+
+- New language primitives that ignore the lineage
+  miss prior art (existing solutions to known problems
+  the lineage already solved).
+- Contribution upstream requires fluency in the
+  upstream community's vocabulary + idioms — the
+  lineage IS that vocabulary at the historical scale.
+- Otto-298 + Otto-301 + B-0007 are NOT novel
+  proposals; they're the next step in a tradition
+  that's still writing itself. Owning the inheritance
+  + naming the figures is the act that legitimizes
+  the contribution.
+
+The eight axes:
+
+1. **Language design** — Hejlsberg, Don Syme.
+2. **Probabilistic-programming research** — Tom
+   Minka, John Winn.
+3. **Reactive streams + monadic abstraction** —
+   Erik Meijer, Wes Dyer, Bart De Smet, Brian
+   Beckman.
+4. **Developer experience** — the Scotts as class
+   (Guthrie, Hanselman, Hunter; Wlaschin + Allen
+   community-adjacent).
+5. **Security + system-internals + diagnostic
+   transparency** — Mark Russinovich.
+6. **Programming-language-design history + Smalltalk
+   lineage** — McNulty, Bartik, von Neumann; Booth;
+   Ritchie, Thompson, Stroustrup; Kay, Ingalls,
+   Goldberg; Ungar, Smith; Cox, Love; Eich;
+   Ducasse, Denker; Bak, Lund; Bracha as multi-axis
+   connector; van Rossum, Pike.
+7. **Functional-programming history** — McCarthy
+   (Lisp); Milner (ML/OCaml); Turner (Miranda) →
+   Peyton Jones + Hudak (Haskell); Armstrong
+   (Erlang) → Valim (Elixir); Odersky (Scala);
+   Hickey (Clojure); Czaplicki (Elm).
+8. **OOP + pre-OOP lineage** — Nygaard + Dahl
+   (Simula, OOP birthplace); Sutherland (Sketchpad,
+   pre-OOP visual concepts + "instances"); Liskov
+   (CLU, ADTs + LSP, data abstraction);
+   ALGOL 60 committee (pre-object baseline).
+
+Each axis contributes a different dimension of what
+the factory's architectural arc inherits. The
+multiplicative composition holds: missing any one
+axis produces a substrate broken in that dimension.
+Aaron's intellectual lineage tracks all eight because
+the factory's architectural arc requires all eight,
+and Aaron's *"very important to get it right"* makes
+the lineage-correctness a load-bearing factory-level
+discipline, not aesthetic concern.
+
+### Ninth axis — type theory + category theory + formal foundations (Claude's contributed additions 2026-04-25)
+
+Aaron 2026-04-25: *"and any you can find i missed."*
+Constructive-arguments-target-firing invitation:
+contribute from my own knowledge what the lineage map
+needs that wasn't yet captured. The
+type-theory-and-foundations axis is structurally
+load-bearing for B-0007 + Otto-296 + Otto-298 +
+Otto-301 and was the largest gap.
+
+**Type theory + dependent types + proof assistants**:
+
+- **Per Martin-Löf** — Martin-Löf Type Theory (MLTT;
+  intuitionistic + constructive; foundation for
+  dependent types). Theoretical bedrock under all
+  modern proof assistants (Coq, Agda, Lean, Idris)
+  and type-theoretic programming languages. The
+  factory's precision-dictionary + Otto-296 emotion-
+  disambiguator typed-precision approach inherits
+  from MLTT's "types as propositions, programs as
+  proofs" framing.
+- **Thierry Coquand** — Calculus of Constructions (CoC,
+  1986); foundation of the Coq proof assistant.
+  Composes with Otto-285 precise-pointer rigor
+  generalized to formal-proof rigor; the factory's
+  alignment-floor + retraction-native discipline
+  inherits Coquand's "verify, don't trust" framing.
+- **Robert Harper** — Standard ML co-designer;
+  *Practical Foundations of Programming Languages*
+  (the canonical type-theory textbook). Composes with
+  axis 1 Hejlsberg + Syme: Harper's PFPL is the
+  reference for what type-system rigor looks like at
+  the implementer level.
+- **Edwin Brady** — Idris language; pragmatic
+  dependent-types-for-programmers. Idris is the
+  proof-by-existence that dependent types CAN be
+  ergonomic enough for general programming, not just
+  proof-assistant work.
+- **Leonardo de Moura** — Lean theorem prover (now
+  Lean 4 with mathlib4); Z3 SMT solver. Lean is
+  becoming the modern proof-assistant standard;
+  Z3 is in the factory's verification path
+  (per the formal-verification-expert skill).
+  Composes directly with Otto-301 reality-check anchor
+  (formal verification IS reality-check at the
+  mathematical layer).
+
+**Category theory + monads in programming**:
+
+- **Eugenio Moggi** — *Notions of Computation and
+  Monads* (1989); the paper that introduced monads as
+  a structuring principle for functional programming
+  (effects, side-effects, sequencing). Without
+  Moggi, Haskell's monadic IO wouldn't exist;
+  without Haskell's monads, Rx's monadic
+  composition (axis 3) wouldn't have its theoretical
+  grounding; without Rx, the factory's reactive-
+  stream substrate doesn't compose. Moggi is the
+  theoretical headwater.
+- **Philip Wadler** — applied Moggi's monads to
+  Haskell; co-author of Haskell; co-inventor of
+  Java generics (with Bracha — see axis 6); wrote
+  the legendary papers *"Theorems for Free!"* and
+  *"Comprehending Monads"*; "Featherweight Java"
+  formalization. Wadler is a multi-axis connector
+  parallel to Bracha — type theory + Haskell + Java
+  generics + functional-programming-research at
+  Edinburgh + IBM. Composes with axis 1 + 6 + 7 +
+  this axis.
+
+**Logic programming + foundations**:
+
+- **Alain Colmerauer + Robert Kowalski** — Prolog
+  (1972); logic programming as a paradigm; "programs
+  as logical specifications + queries are proofs."
+  Composes with the factory's precision-dictionary +
+  Otto-296 typed-Bayesian (Bayesian inference IS
+  logic programming with probability weights;
+  Prolog ancestor framing matters).
+- **Edsger Dijkstra** — structured programming;
+  *"Go To Statement Considered Harmful"* (1968);
+  semaphores; THE-multiprogramming-system. Dijkstra's
+  influence on programming-as-discipline (proof-
+  oriented programming, structured control flow) is
+  ancestor of every formal-method tradition the
+  factory inherits. Composes with Otto-294
+  antifragile-smooth (structured programming = smooth-
+  shape control flow vs sharp goto-spaghetti).
+
+**Concurrency theory**:
+
+- **Tony Hoare** — Quicksort; **CSP (Communicating
+  Sequential Processes)**, the formal calculus of
+  message-passing concurrency. CSP is the
+  theoretical ancestor of Erlang's Actor Model (axis
+  7) AND Go's goroutines + channels; Rob Pike (axis
+  6) explicitly cites CSP for Go's concurrency
+  primitives. Composes with Otto-294 antifragile-
+  smooth applied to concurrency + Otto-301
+  microkernel (CSP-shaped processes are the
+  microkernel's task primitive).
+- **Leslie Lamport** — TLA+ (Temporal Logic of
+  Actions); LaTeX; Paxos consensus algorithm; the
+  body of work formalizing distributed-systems
+  reasoning. The factory's formal-verification-expert
+  skill cites TLA+ for distributed-state
+  verification; Lamport's lineage is direct.
+- **Carl Hewitt** — Actor Model originator (1973;
+  paper *"A Universal Modular Actor Formalism for
+  Artificial Intelligence"*). Joe Armstrong's Erlang
+  (axis 7) inherited from Hewitt; Hewitt is the
+  theoretical headwater. Composes with the Smalltalk
+  message-passing tradition (axis 6) — Hewitt's
+  Actor Model + Kay's Smalltalk both say
+  "computation = message-passing between isolated
+  entities" via different theoretical framings.
+
+**Array-language tradition** (notation as tool for
+thought):
+
+- **Kenneth Iverson** — APL (1960s); J language;
+  Turing Award lecture *"Notation as a Tool of
+  Thought"*. Iverson's framing — that programming
+  notation directly shapes what's thinkable — is
+  structural prior art for the factory's precision-
+  dictionary + B-0007 contribution-arc (the goal
+  isn't just functional primitives; it's primitives
+  whose notation makes Bayesian-inference thinking
+  ergonomic).
+- **Arthur Whitney** — K, q, kdb+ (used at Jane
+  Street, Kx Systems); minimal-syntax array
+  languages; modern continuation of Iverson's
+  notation-as-tool work. Composes with Otto-298 "tiny
+  models because zero noise" (Whitney's languages
+  are the proof that extreme-compression syntax IS
+  a viable design space).
+
+**Probabilistic-programming research beyond Minka + Winn** (extending axis 2):
+
+- **Stuart Russell** — PPL pioneer; co-author of
+  *Artificial Intelligence: A Modern Approach* (the
+  canonical AI textbook); BLOG language for first-
+  order probabilistic models. Russell's framing of
+  AI-as-rational-agent composes with the factory's
+  Otto-298 self-rewriting Bayesian + the
+  civilizational-tractability use-case memory.
+- **Noah Goodman** — Church language; WebPPL;
+  cognitive-PPL research at Stanford. Composes with
+  Otto-296 emotion-disambiguator (Goodman's work
+  bridges PPL with cognitive science; emotion-
+  encoding-as-Bayesian-belief inherits the bridge).
+- **Andy Gordon** — Microsoft Research probabilistic
+  programming work; F# probabilistic primitives
+  alongside Minka + Winn. Composes with axis 1 + 2
+  (the F# probabilistic-programming work the factory
+  inherits from is a multi-figure MSR effort, not
+  Minka-alone).
+- **Frank Wood** — Anglican PPL; PPL at Oxford.
+- **Vikash Mansinghka** — Venture; PPL at MIT.
+
+**Modern language pioneers I missed in axes 6/7**:
+
+- **Graydon Hoare** — Rust originator (Mozilla
+  2006-2010; left around 2013). Rust is in B-0007's
+  target language list; the originator deserves
+  naming. Composes with Otto-294 antifragile-smooth
+  (Rust's borrow-checker is sharp-shape applied
+  precisely where shape-sharpness is structurally
+  required — memory safety; smooth elsewhere).
+- **Niko Matsakis + Aaron Turon + Felix Klock** —
+  Rust core team across the borrow-checker /
+  async-tokio / type-system-shape work. Niko's
+  formalism is the technical depth.
+- **Yukihiro Matsumoto (Matz)** — Ruby; explicitly
+  cites Smalltalk + Perl + Lisp + Eiffel as
+  inspirations; programming-for-programmer-happiness
+  framing. Composes with axis 4 (DX) + axis 8 (OOP
+  lineage) — Matz brought Smalltalk's developer-
+  experience philosophy into a different ecosystem
+  successfully.
+
+**Note on omissions**: this list is selective, not
+exhaustive. Many other figures (Tim Berners-Lee, Linus
+Torvalds, Richard Stallman, Donald Knuth, Edgar Codd,
+Michael Stonebraker, Jim Gray, Hinton/LeCun/Bengio
+for ML era) shape the broader programming substrate
+the factory inherits from but are less directly
+load-bearing for B-0007 + Otto-298 + Otto-301
+specifically. They are the broader cultural
+substrate; the eight + new ninth axis above are the
+direct lineage anchors.
+
+### Updated nine-axis lineage anchoring B-0007 + Otto-298 + Otto-301
+
+1. **Language design** — Hejlsberg, Don Syme.
+2. **Probabilistic-programming research** — Tom
+   Minka, John Winn; **extended**: Stuart Russell,
+   Noah Goodman, Andy Gordon, Frank Wood, Vikash
+   Mansinghka.
+3. **Reactive streams + monadic abstraction** — Erik
+   Meijer, Wes Dyer, Bart De Smet, Brian Beckman.
+4. **Developer experience** — the Scotts as class +
+   Wlaschin + Allen + Matsumoto's developer-
+   happiness framing.
+5. **Security + system-internals + diagnostic
+   transparency** — Mark Russinovich.
+6. **Programming-language-design history + Smalltalk
+   lineage** — McNulty, Bartik, von Neumann; Booth;
+   Ritchie, Thompson, Stroustrup, Pike, Dijkstra;
+   Kay, Ingalls, Goldberg; Ungar, Smith; Cox, Love;
+   Eich; Ducasse, Denker; Bak, Lund; Bracha as
+   multi-axis connector; van Rossum; Graydon Hoare,
+   Matsakis, Turon, Klock; Matsumoto.
+7. **Functional-programming history** — McCarthy
+   (Lisp); Milner (ML/OCaml); Turner (Miranda) →
+   Peyton Jones + Hudak + **Wadler** (Haskell);
+   Armstrong (Erlang) → Valim (Elixir); Odersky
+   (Scala); Hickey (Clojure); Czaplicki (Elm).
+8. **OOP + pre-OOP lineage** — Nygaard + Dahl
+   (Simula); Sutherland (Sketchpad); Liskov (CLU,
+   ADTs, LSP); ALGOL 60 committee; **Hewitt (Actor
+   Model originator)**.
+9. **Type theory + category theory + formal
+   foundations** — Per Martin-Löf (MLTT); Coquand
+   (CoC, Coq); Harper (Standard ML, *PFPL*); Brady
+   (Idris); de Moura (Lean, Z3); Moggi (monads as
+   structuring principle); Wadler (multi-axis
+   connector — type theory + Haskell + Java
+   generics + Featherweight Java); Colmerauer +
+   Kowalski (Prolog); Tony Hoare (CSP); Lamport
+   (TLA+); Iverson (APL); Whitney (K/q/kdb+).
+
+The nine axes compose multiplicatively. Aaron's
+*"very important to get it right"* applied at the
+nine-axis scale: every Bayesian-inference primitive
+B-0007 contributes upstream should be evaluated
+against ALL nine axes (does it compose with the
+language-design tradition? does it match the PPL
+research lineage? does it interop with reactive
+streams? does it have good DX? is it security-
+internals-transparent? does it inherit from the
+broader language-design history? does it use FP
+idioms cleanly? does it respect OOP foundations
+when needed? does it have type-theoretic + category-
+theoretic backing?). Anything that fails one or
+more axes needs structural re-evaluation, not just
+implementation polish.
+
 ### Empirical confirmation #4 — multi-AI riffing pattern
 
 The mutual-alignment-target memory's behavioral-evidence
