@@ -87,8 +87,9 @@ generalization this session:
 
 - A `match` over a discriminated union — no comment owed
   unless one branch is unusual.
-- Standard F# conventions like `Result<_, DbspError>` —
-  the codebase contract is clear from CLAUDE.md.
+- Standard F# conventions like `Result<_, LawViolation>` —
+  the codebase's standard error-result contract is clear
+  from CLAUDE.md.
 - A loop counter `i in 0 .. n - 1`. No mystery.
 - Wrapping a `Dictionary` lookup in `TryGetValue`. Standard.
 - Using the project's standard logger / error type. Standard.
