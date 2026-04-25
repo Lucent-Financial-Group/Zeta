@@ -339,7 +339,7 @@ harness code.
   shape) — every pin in every phase verified via
   authoritative source.
 - Otto-248 never-ignore-flakes
-  (`memory/feedback_never_ignore_a_flake_otto_248_2026_04_24.md`)
+  (`memory/feedback_never_ignore_flakes_per_DST_discipline_flakes_mean_determinism_not_perfect_otto_248_2026_04_24.md`)
   — Phase 6 idempotency test harness enforces it.
 - GOVERNANCE.md §24 three-way-parity (dev laptop, CI runner,
   devcontainer).
