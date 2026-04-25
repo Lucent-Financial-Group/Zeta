@@ -44,35 +44,56 @@ branch-conflict against the same file, and the compensating
 side (merge-conflict resolution) becomes the tax that kills the
 promised preventive-paired-with-compensating discipline.
 
-## Existing substrate (Otto-181 prior work)
+## Existing substrate (Otto-181 Phase 1a prior work)
 
-This ADR builds on prior Otto-181 work, **not** a green-field
-design. The substrate already in tree:
+This ADR builds on prior Otto-181 Phase 1a work, **not** a
+green-field design. The current state — Phase 1a as
+documented in `docs/backlog/README.md` — is:
 
 - **Design spec:** `docs/research/backlog-split-design-otto-181.md`
-  — Aaron Otto-181 directive, full 6-question structural review.
+  — Aaron Otto-181 directive, full 6-question structural
+  review.
 - **Index generator:** `tools/backlog/generate-index.sh` —
-  walks `docs/backlog/P<tier>/B-<NNNN>-<slug>.md`, parses
-  frontmatter, emits sorted index. Has `--check` and
-  `--stdout` modes.
+  walks `docs/backlog/P<tier>/B-<NNNN>-<slug>.md` files,
+  extracts the three index-relevant fields (`id`, `status`,
+  `title`) from frontmatter, emits a per-tier index sorted
+  by `id` with `[ ]` (open) / `[x]` (closed) checkboxes.
+  Has `--check` and `--stdout` modes. **The full per-row
+  schema documented below is convention/documentation —
+  the generator only enforces id/status/title.**
 - **Tooling README:** `tools/backlog/README.md` — schema
-  definition + how-to.
+  documentation + workflow.
 - **Per-row directory tree:** `docs/backlog/P0/`,
-  `docs/backlog/P1/`, `docs/backlog/P2/`, `docs/backlog/P3/`,
-  with `docs/backlog/README.md` carrying the schema.
-- **One example row already migrated:**
-  `docs/backlog/P2/B-0001-example-schema-self-reference.md` —
-  proves the round-trip works.
+  `docs/backlog/P1/`, `docs/backlog/P2/`, `docs/backlog/P3/`
+  exist as placeholder directories. Only `P2/` currently
+  contains a file — `B-0001-example-schema-self-reference.md`
+  — which is a placeholder row exercising the generator on
+  non-empty input. Schema reference lives in
+  `docs/backlog/README.md`.
+- **`docs/BACKLOG.md` is currently still the monolithic
+  authoritative backlog** at ~12,800 lines. The Phase 1a
+  generator can write to it, but Phase 2 has not run, so
+  the substantive content has not yet moved into per-row
+  files.
 
-What is **not** yet in tree:
+What is **not** yet in tree (this ADR's owed phases):
 
-- Bulk migration of the remaining ~350 rows from
-  `docs/BACKLOG.md` into per-row files.
-- A drift-check lint (`tools/backlog/lint-index.sh`) that
-  enforces row-files ↔ index parity at pre-commit time.
-  *(Note: `generate-index.sh --check` already provides drift
-  detection; a wrapper invokable from pre-commit is the gap.)*
-- Path-pattern updates in `AGENTS.md`, `CLAUDE.md`,
+- **Phase 2 — bulk migration** of the remaining ~350 rows
+  from `docs/BACKLOG.md` into per-row files starting at
+  `B-0002`, then run `generate-index.sh` to overwrite
+  `docs/BACKLOG.md` as the generated index.
+- **Phase 1b — `tools/backlog/new-row.sh`**: scaffolder
+  invocable as `tools/backlog/new-row.sh --priority P2
+  --slug <slug>` per `docs/backlog/README.md`'s quick
+  reference. Manual file creation works in the interim
+  but the scaffolder reduces error rate.
+- **Phase 1c — `tools/backlog/lint-index.sh`**: pre-commit
+  wrapper around `generate-index.sh --check` that catches
+  index drift at commit time rather than at next-tick.
+  *(Note: `generate-index.sh --check` itself already
+  provides drift detection; the wrapper is the
+  pre-commit-hook surface.)*
+- **Path-pattern updates** in `AGENTS.md`, `CLAUDE.md`,
   `docs/AGENT-BEST-PRACTICES.md`, and skill files that
   currently reference `docs/BACKLOG.md` as a grep target.
 
@@ -84,41 +105,47 @@ What is **not** yet in tree:
 Otto-181 schema and tooling as-is — this ADR is *not*
 proposing a competing design.
 
-### Directory shape (already in tree)
+### Directory shape (post-migration target)
 
 ```text
 docs/
-  BACKLOG.md                          # generated index (DO NOT EDIT)
+  BACKLOG.md                          # generated index post-Phase-2 (DO NOT EDIT once Phase 2 lands)
   backlog/
-    README.md                         # schema + how-to
-    P0/B-<NNNN>-<slug>.md             # one file per row
+    README.md                         # schema + how-to (Phase 1a, exists)
+    P0/B-<NNNN>-<slug>.md             # one file per row (Phase 2 fills these)
     P1/B-<NNNN>-<slug>.md
-    P2/B-<NNNN>-<slug>.md
+    P2/B-<NNNN>-<slug>.md             # currently has B-0001 example only
     P3/B-<NNNN>-<slug>.md
 tools/
   backlog/
-    README.md                         # tooling README (already exists)
-    generate-index.sh                 # regenerates docs/BACKLOG.md (already exists)
-    new-row.sh                        # row-scaffold helper (Phase 1b — owed)
-    lint-index.sh                     # pre-commit drift check (Phase 1c — owed)
+    README.md                         # tooling README (Phase 1a, exists)
+    generate-index.sh                 # regenerates docs/BACKLOG.md (Phase 1a, exists)
+    new-row.sh                        # row-scaffold helper (Phase 1b — OWED)
+    lint-index.sh                     # pre-commit drift check (Phase 1c — OWED)
 ```
 
-### Per-row file shape (Otto-181 schema, already in tree)
+`docs/BACKLOG.md` becomes "DO NOT EDIT" only **after Phase 2
+ships**. Until then, it remains the monolithic authoritative
+file and is hand-edited as today.
+
+### Per-row file shape (Otto-181 schema)
+
+The schema documented in `docs/backlog/README.md` and
+`tools/backlog/README.md`, exemplified by
+`docs/backlog/P2/B-0001-example-schema-self-reference.md`:
 
 ```markdown
 ---
-id: B-<NNNN>
-priority: P0 | P1 | P2 | P3
-status: open | shipped | declined
-title: <one-line title>
-tier: research-grade | shippable | hygiene | spec
+id: B-<NNNN>                          # parsed by generator (index id)
+priority: P0 | P1 | P2 | P3           # documented; mirrored by directory
+status: open | closed                 # parsed by generator (open=[ ], closed=[x])
+title: <one-line title>               # parsed by generator (index display)
+tier: research-grade | shippable | hygiene | spec | ...
 effort: S | M | L
-directive: <provenance — e.g., "maintainer Otto-180">
+directive: <provenance — e.g., "maintainer Otto-181 (BACKLOG split Phase 1a)">
 created: YYYY-MM-DD
 last_updated: YYYY-MM-DD
-composes_with:
-  - B-<NNNN>
-  - B-<NNNN>
+composes_with: []                     # array of B-<NNNN> ids; may be empty
 tags: [<topic>, <topic>]
 ---
 
@@ -127,12 +154,20 @@ tags: [<topic>, <topic>]
 <body — same prose as current BACKLOG.md row body>
 ```
 
-The schema fields above are **what `tools/backlog/generate-index.sh`
-already parses**. This ADR aligns with the existing parser; it
-does not introduce new fields. (Earlier draft revisions of this
-ADR proposed `tier`, `owner`, `updated`, `scope`, which did not
-match the real schema and would have required parser
-re-engineering — corrected per copilot review on PR #474.)
+**What the generator currently parses vs documents:** only
+`id`, `status`, and `title` are read by
+`tools/backlog/generate-index.sh` for the index line. The
+remaining fields (`priority`, `tier`, `effort`, `directive`,
+`created`, `last_updated`, `composes_with`, `tags`) are
+**convention-enforced documentation**, not parser-validated.
+Phase 1b/1c work may extend the parser to validate them; this
+ADR does not require it.
+
+(Earlier draft revisions of this ADR proposed `owner`, `updated`,
+`scope` and `status: open|shipped|declined`, which do not match
+the real schema. Corrected per copilot review on PR #474:
+`status` is `open | closed`; "shipped"/"declined" is captured
+via the row body's history section, not a status enum value.)
 
 ### Index file shape (already in tree)
 
@@ -167,12 +202,16 @@ Two-phase migration relative to the existing substrate:
   `docs/BACKLOG.md`. The index is generator output, not an
   authoring surface.
 - **Edit a row:** edit the row file. Bump `last_updated:`.
-- **Ship a row:** flip `status:` from `open` to `shipped` or
-  `declined`. (Existing tooling does not yet move the file
-  between directories on status change; that's a Phase 1b
-  refinement if folder-as-status proves desirable.)
+- **Close a row** (ship / decline / supersede): flip
+  `status:` from `open` to `closed`. The generator marks
+  closed rows with `[x]` in the index. Capture *why* it
+  closed (shipped via PR #NNN, declined per Otto-NNN,
+  superseded by B-NNNN) in the row body's prose, since
+  `status:` itself is binary.
 - **Tier-change:** move the file between `P<tier>/`
-  directories and update `priority:` in the frontmatter.
+  directories. The frontmatter `priority:` field is
+  documentation only (parser does not enforce); update it
+  for human readers.
 
 ### Index regeneration
 
