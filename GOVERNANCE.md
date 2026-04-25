@@ -792,25 +792,32 @@ than renumbering the rest.
 
     **Enforcement cadence.**
 
-    - **Detect-only today.** `tools/alignment/audit_archive_headers.sh`
-      checks `docs/aurora/*.md` for the four header labels and
-      reports gaps. CI does not currently call `--enforce`; the
-      lint is author-time advisory and cadenced observability
-      (per FACTORY-HYGIENE row #60).
-    - **Flip-to-enforce future step.** When the two grandfather
-      docs are either backfilled with §33 headers or the
-      grandfather clause is explicitly left permanent, a
-      separate PR flips the CI workflow to call
-      `--enforce`; that PR is an Architect (Kenji) decision
-      with Dejan (devops-engineer) on the workflow change.
-    - **Owner.** Aminata (threat-model-critic) on semantic
-      review of header adequacy per her Otto-80 critique
+    - **Detect-only today.** Header checking for
+      `docs/aurora/*.md` is author-time advisory: absorbing
+      agents include the four header labels at write time, and
+      reviewers spot gaps during PR review. A dedicated lint
+      script (e.g. `tools/alignment/audit_archive_headers.sh`)
+      and a corresponding `docs/FACTORY-HYGIENE.md` row are
+      not yet landed; both are tracked as follow-up work and
+      must ship together with their cross-references in the
+      same change-set so this section does not point at
+      missing artifacts.
+    - **Flip-to-enforce future step.** When (a) the lint script
+      lands, (b) the FACTORY-HYGIENE row lands, and (c) the
+      two grandfather docs are either backfilled with §33
+      headers or the grandfather clause is explicitly left
+      permanent, a separate PR flips the CI workflow to
+      enforcing mode; that PR is an Architect decision with
+      the devops-engineer role on the workflow change.
+    - **Owner.** The threat-model-critic role on semantic
+      review of header adequacy per the Otto-80 critique
       (docs/research/aminata-threat-model-5th-ferry-governance-
       edits-2026-04-23.md); absorbing agent (author) on
       at-write-time header inclusion.
 
-    **Known v0 limitations** (documented in the lint script,
-    named by Aminata):
+    **Known v0 limitations** (named by the
+    threat-model-critic role in the Otto-80 pass; will be
+    documented inline in the lint script when it lands):
 
     - *Partial-header adversary.* Substring-match passes a
       doc with `Scope:` as prose in paragraph 3 — the lint
@@ -827,19 +834,30 @@ than renumbering the rest.
     by the headers. §26 classifies research-doc lifecycle
     (`active` / `landed` / `obsolete`); §33 classifies by
     header presence; both apply to `docs/research/**` files
-    imported from external conversation, with §26's status
-    inside the `Operational status:` field of §33. The two
-    regimes compose: §26 tells you whether the file is
-    still-being-revised or locked; §33 tells you the file's
-    provenance and non-fusion boundary.
+    imported from external conversation, but they describe
+    different axes and carry different value sets. §33's
+    `Operational status:` field stays strictly
+    `research-grade` / `operational` per the field
+    definition above. §26's lifecycle classifier
+    (`active` / `landed` / `obsolete`) is recorded
+    separately — either inline as the existing §26
+    convention dictates or under a distinct
+    `Lifecycle status:` line — and is **not** crammed into
+    §33's `Operational status:` value set. The two regimes
+    compose: §26 tells you whether the file is
+    still-being-revised or locked; §33 tells you the
+    file's provenance and non-fusion boundary.
 
-    **Why this matters.** Aminata's Otto-80 threat-model pass
-    named three adversaries that drift rules without
-    enforcement in 3-5 rounds: the partial-header, fake-header,
-    and in-memory-import classes. §33 lands *with* a detect-
-    only lint (PR #243 Artifact C) already in place — the
-    mechanism-before-policy pattern. Three existing aurora/
-    research docs (PR #235 5th-ferry absorb; PR #241 Aminata
-    review; PR #245 6th-ferry absorb) already self-apply the
-    format, so §33 codifies existing convention rather than
-    introducing new behaviour.
+    **Why this matters.** The threat-model-critic role's
+    Otto-80 pass named three adversaries that drift rules
+    without enforcement in 3-5 rounds: the partial-header,
+    fake-header, and in-memory-import classes. §33 lands as
+    policy first; the detect-only lint and corresponding
+    FACTORY-HYGIENE row are tracked as follow-up work and
+    must land together so the cross-references in
+    "Enforcement cadence" above resolve. Three existing
+    aurora/research docs (PR #235 5th-ferry absorb; PR #241
+    threat-model-critic review; PR #245 6th-ferry absorb)
+    already self-apply the four-header format, so §33
+    codifies existing convention rather than introducing new
+    behaviour.
