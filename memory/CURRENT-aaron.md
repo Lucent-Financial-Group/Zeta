@@ -622,8 +622,8 @@ Same shape applied to install-time chaos: Aaron 2026-04-25:
 we have to react to it"* — install scripts get retry
 loops on transient 5xx (PR #484 fix).
 
-Pointers: `memory/feedback_dst_exempt_is_deferred_bug_not_containment_otto_281_2026_04_25.md`,
-`memory/feedback_dst_not_edge_case_avoidance_otto_285_2026_04_25.md`.
+Pointers: `feedback_dst_exempt_is_deferred_bug_not_containment_otto_281_2026_04_25.md`,
+`feedback_dst_not_edge_case_avoidance_otto_285_2026_04_25.md`.
 
 ## 19. Authoring discipline — write code from reader perspective
 
@@ -656,7 +656,7 @@ Composes with CLAUDE.md "default to no comments" by
 splitting WHAT (no comment, names suffice) from WHY
 (comment when non-obvious).
 
-Pointer: `memory/feedback_write_code_from_reader_perspective_why_did_you_choose_this_otto_282_2026_04_25.md`.
+Pointer: `feedback_write_code_from_reader_perspective_why_did_you_choose_this_otto_282_2026_04_25.md`.
 
 ## 20. Authority-delegation pattern — don't make Aaron the bottleneck
 
@@ -688,7 +688,7 @@ Triggering case: PR #474 ADR open questions (B-NNNN
 allocation, scope field, R45 staging) all converted from
 "Aaron's call" to "Otto decided X (revisit if Y)".
 
-Pointer: `memory/feedback_decide_track_reflect_revisit_then_talk_with_experience_otto_283_2026_04_25.md`.
+Pointer: `feedback_decide_track_reflect_revisit_then_talk_with_experience_otto_283_2026_04_25.md`.
 
 ## 21. Never-idle — idle-PR creative fallback when blocked
 
@@ -718,7 +718,7 @@ Branch suggestion: `idle/<YYYY-MM-DD>-creative-work` or
 Composes with CLAUDE.md never-be-idle (4th-tier fallback
 below the 3-tier priority ladder).
 
-Pointer: `memory/feedback_idle_pr_creative_fallback_no_restrictions_otto_284_2026_04_25.md`.
+Pointer: `feedback_idle_pr_creative_fallback_no_restrictions_otto_284_2026_04_25.md`.
 
 ## 22. Factory-as-superfluid + "Superfluid AI" naming candidate
 
@@ -779,7 +779,7 @@ This rigor angle is a positioning differentiator for the
 eventual naming-expert review and any future trademark
 work — we're not claiming a category we don't deliver.
 
-Pointer: `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`.
+Pointer: `project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md` (lands with PR #485).
 
 ## How this file stays accurate
 
