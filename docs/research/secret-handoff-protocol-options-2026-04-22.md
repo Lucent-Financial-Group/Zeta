@@ -145,7 +145,9 @@ On Linux with `libsecret`:
 # Once (store):
 secret-tool store --label="Zeta xAI" service zeta-xai
 
-# Each session (quote the substitution per shellcheck SC2086):
+# Each session (quote the command substitution — handles
+# whitespace / glob chars / newlines in the retrieved value;
+# closely related to shellcheck SC2046 for unquoted $(...)):
 export XAI_API_KEY="$(secret-tool lookup service zeta-xai)"
 ```
 
@@ -172,7 +174,9 @@ op item create --category=api-credential --title='Zeta xAI' \
     "credential[password]=$key"
 unset key
 
-# Each session (quote the substitution per shellcheck SC2086):
+# Each session (quote the command substitution — handles
+# whitespace / glob chars / newlines in the retrieved value;
+# closely related to shellcheck SC2046 for unquoted $(...)):
 export XAI_API_KEY="$(op read "op://Private/Zeta xAI/credential")"
 ```
 
