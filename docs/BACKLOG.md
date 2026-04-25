@@ -10308,9 +10308,9 @@ systems. This track claims the space.
     GameCube. Years-of-work per platform for teams larger
     than this factory. Don't commit.
 
-  **Methodology (Chinese Wall — same shape Compaq used
-  for PC BIOS in 1982, Phoenix Technologies for multiple
-  platforms since):**
+  **Methodology (three-persona Chinese Wall + factory-
+  standards pass — Aaron Otto-2026-04-24 refinement to
+  the classical Compaq / Phoenix two-team model):**
 
   1. **Dirty persona** (specifier / reader) — Aaron's
      legitimately-acquired BIOS + public docs; writes
@@ -10318,16 +10318,62 @@ systems. This track claims the space.
      sequence, register conventions, error states. Spec
      lives in `docs/clean-room/<platform>/spec.md` and
      IS committed. Reader notes are NEVER committed.
-  2. **Clean persona** (implementer) — has never seen
-     the proprietary BIOS or the dirty persona's reading
-     notes. Reads only the committed spec. Writes
-     implementation from scratch, language-appropriate.
-  3. **Firewall enforcement** — dirty + clean personas
+  2. **Clean persona** (implementer / reference) — has
+     never seen the proprietary BIOS or the dirty
+     persona's reading notes. Reads only the committed
+     spec. Writes implementation from scratch, language-
+     appropriate. **Output treated as SUBPAR reference**,
+     not as factory-ready code — clean persona has no
+     factory memory (no Zeta idioms, no BP rules, no
+     operator-algebra conventions, no Result-type
+     discipline, no F# style guide awareness).
+  3. **Standards persona** (re-implementer / factory-
+     quality pass) — Aaron's refinement per autonomous-
+     loop 2026-04-24: *"if this works it will really be
+     a 3 person casue we are not going to take code
+     directly that was missing our best practice
+     guidance becasue it's missing our memories, we
+     would treat output as subpar and rewrire using our
+     standards"*. Reads ONLY the clean persona's output
+     (never the BIOS, never the dirty notes). Re-writes
+     the reference implementation to Zeta standards:
+     applies `.claude/skills/fsharp-expert/` idioms,
+     operator-algebra discipline, `Result<_, DbspError>`
+     error surfacing, AGENT-BEST-PRACTICES BP-NN rules,
+     and the factory's memory-accumulated knowledge of
+     how Zeta code should be shaped.
+  4. **Firewall enforcement** — dirty + clean personas
      run as separate AI sessions (different harness
      logins or isolated memory scopes) so context cannot
-     leak. Aaron polices the boundary. Any context-
-     contamination incident retires that clean persona's
-     output.
+     leak. Standards persona is memory-equipped (full
+     Zeta context) but sees ONLY clean output, never the
+     BIOS or dirty notes. Aaron polices the boundary.
+     Any context-contamination incident retires that
+     clean persona's output.
+
+  **Why the third persona matters (and why it doesn't
+  break clean-room legal defensibility):**
+
+  - Without it, clean output is technically-correct but
+    stylistically orphaned from Zeta — doesn't use our
+    persistence patterns, doesn't follow our error-
+    handling surface, doesn't integrate with the
+    operator algebra, doesn't match the F#/.NET
+    conventions the rest of the factory uses. Landing
+    that code as-is poisons the codebase's consistency.
+  - The standards pass is NOT reverse-engineering or
+    spec-reading — it's conventional code review /
+    rewrite operating on known-good clean-room output.
+    The clean-room firewall (dirty → spec → clean)
+    remains intact; the standards pass happens fully
+    downstream of the firewall.
+  - Chain integrity stays one-way: dirty → spec →
+    clean → standards. Each stage sees only its
+    predecessor's cleaned output, never upstream
+    artifacts. Standards persona seeing clean output
+    is equivalent to any Zeta maintainer seeing
+    upstream library code — routine, not firewall-
+    breaking.
 
   **Open-design questions before the pilot lands:**
 
