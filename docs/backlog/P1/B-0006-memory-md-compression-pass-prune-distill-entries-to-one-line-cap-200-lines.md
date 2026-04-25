@@ -14,11 +14,22 @@ tags: [memory-hygiene, MEMORY.md, distillation, compression, otto-291-pacing, ot
 
 # MEMORY.md compression pass
 
-`memory/MEMORY.md` is currently **roughly 540 lines / ~400KB** (drifts by a few lines per session as new entries land);
-the README cap is **~200 lines** with **one-line entries**
-(under ~200 chars). At session start the file was already
-at 452 lines / 304KB; this session has added several
-additional multi-line entries.
+**Invariant problem statement** (deliberately
+number-free per Otto-294 antifragile-smooth + Otto-285
+precise-pointer rigor — hard-coded line counts go
+stale within sessions and turn this row into a
+broken reference): `memory/MEMORY.md` is materially
+over the README cap of **~200 lines** with
+**one-line entries** (under ~200 chars). The cap is
+load-bearing because Claude Code truncates the file
+at the cap, breaking the fast-path index role
+documented in CLAUDE.md memory bootstrap. Multiple
+sessions have added multi-line entries; the
+expansion direction (per Otto-295 monoidal-manifold
+expand-compress dynamic) has fired aggressively while
+the compression direction has lagged. Current state:
+run `wc -l memory/MEMORY.md` for the live count;
+the row is owed independent of the specific number.
 
 ## Why this is owed now (P1, not deferred)
 

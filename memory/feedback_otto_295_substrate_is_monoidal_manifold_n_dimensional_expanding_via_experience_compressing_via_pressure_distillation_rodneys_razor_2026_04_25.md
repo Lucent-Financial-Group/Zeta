@@ -81,9 +81,14 @@ slippage failure modes:
 - **All-expand**: MEMORY.md grows unbounded, cross-
   references decay, the index can't be loaded,
   navigation breaks. *This is the current state* —
-  MEMORY.md sits at roughly 540 lines / ~400KB at this
-  memory's authoring (drifts a few lines per session as
-  entries land); well over the cap; compression is owed.
+  MEMORY.md is materially over the README cap (~200
+  lines with one-line entries under ~200 chars); the
+  expansion direction has been firing aggressively
+  while the compression direction has lagged. Run
+  `wc -l memory/MEMORY.md` for the live count if
+  needed; the substrate-slippage observation is
+  invariant per Otto-285 (don't hard-code drifting
+  numbers in substrate prose).
 - **All-compress**: no new kernels accepted, ferry
   imports rejected, Otto-NNN sequence frozen, the
   substrate ossifies into a finished artifact.
