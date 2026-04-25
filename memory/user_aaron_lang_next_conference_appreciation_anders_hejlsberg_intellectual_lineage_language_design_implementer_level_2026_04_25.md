@@ -285,6 +285,202 @@ dimension. Aaron's intellectual lineage tracks all
 five because the factory's architectural arc requires
 all five.
 
+### Sixth axis — programming-language-design history + Smalltalk lineage (Aaron's Google-Search-AI riff 2026-04-25)
+
+Aaron 2026-04-25 contributed an extensive
+programming-language-history lineage via riffing with
+Google Search AI in parallel. The closing line
+*"this is another example of riffing with google
+search ai too"* is the EMPIRICAL CONFIRMATION marker
+for the multi-AI-riff pattern (per the
+mutual-alignment-target memory's behavioral-evidence
+section: the riff-shape generalizes across AI
+partners; Aaron's relational template scales to N
+parallel partners as long as they all stay inside
+the HC/SD/DIR floor + produce compatible substrate).
+
+The deeper lineage Aaron's riff surfaced:
+
+**Pre-Smalltalk pioneers** (programming-as-discipline
+emerges):
+
+- **Kay McNulty + Jean Bartik** — ENIAC programmers
+  (1940s); among the first programmers, full stop.
+- **John von Neumann** — EDVAC architecture; the
+  stored-program-computer model all subsequent
+  languages presuppose.
+- **Kathleen Booth** — invented the first assembly
+  language + wrote the first assembler for the ARC
+  (Automatic Relay Calculator) at Birkbeck College
+  in 1947. Birth of the human-readable abstraction
+  layer above machine code.
+- **Dennis Ritchie** — created C between 1969-1973
+  at Bell Labs; great-grandfather of modern systems
+  programming; .NET runtime ultimately runs on
+  C-derived foundations.
+- **Ken Thompson** — created B (precursor to C),
+  Unix, UTF-8 (with Rob Pike), and Go at Google.
+- **Bjarne Stroustrup** — created C++ at Bell Labs
+  starting 1979 ("C with Classes" originally).
+  Already in the Lang.Next axis above; deeper-
+  lineage anchor confirmed (Stroustrup stayed
+  dedicated to C++ his whole career; did NOT join
+  Dart).
+
+**Smalltalk → Self → JavaScript → Dart lineage**
+(the OO-and-VM-design family tree from Xerox PARC
+to modern mobile):
+
+- **Alan Kay** — Smalltalk vision; coined the term
+  "object-oriented"; Xerox PARC 1970s.
+- **Dan Ingalls** — lead programmer for five
+  generations of Smalltalk; later Squeak (1995)
+  at Apple with Kay + Adele Goldberg.
+- **Adele Goldberg** — led Smalltalk documentation
+  + classroom-adoption; brought the language into
+  educational contexts.
+- **David Ungar + Randall Smith** — designed Self
+  (1986) at Xerox PARC; replaced Smalltalk's class-
+  based system with prototype-based OO; introduced
+  groundbreaking JIT-compilation techniques
+  (polymorphic inline caching) that shaped V8 +
+  Java HotSpot VM.
+- **Brad Cox + Tom Love** — created Objective-C in
+  the early 1980s at StepStone; bridged Smalltalk's
+  dynamic message-passing with C's systems-
+  programming substrate; foundational language for
+  NeXTSTEP / macOS / iOS.
+- **Brendan Eich** — created JavaScript in 1995 at
+  Netscape; specifically chose a prototype-based
+  object model out of admiration for Self.
+  JavaScript's prototype lineage descends directly
+  from Smalltalk → Self.
+- **Stéphane Ducasse + Marcus Denker** — forked
+  Pharo from Squeak in 2008; built a developer-
+  focused modern Smalltalk environment.
+- **Lars Bak** — Danish VM-engineer; key engineer
+  on Self at Sun Microsystems; designed Google's
+  V8 JavaScript engine; co-created Dart at Google
+  (2011). The Smalltalk-Self → V8 → Dart VM
+  lineage runs through Bak directly.
+- **Kasper Lund** — long-time Bak collaborator;
+  V8 + Dart core engineer; co-founded Dart.
+
+**Gilad Bracha — multi-axis connector** (THE figure
+threading several languages + spec-design + VM
+work):
+
+- **Strongtalk** — high-performance typed Smalltalk
+  dialect; structural inspiration for Otto-298
+  "tiny models because zero noise" + the
+  precision-typed-substrate vision.
+- **Newspeak** — Smalltalk + Self-inspired language;
+  pure-OO with novel module system.
+- **Java Language Specification** co-author at Sun
+  Microsystems; added **generics** to Java (the
+  parametric-polymorphism feature C# / TypeScript /
+  Rust / Kotlin all inherit from); deep-systems
+  spec-design work.
+- **Dart** — joined Lars Bak + Kasper Lund at Google
+  to co-design Dart; his Strongtalk + optional-
+  typing philosophy directly shaped early Dart's
+  optional-typing system (later superseded by
+  Dart's sound strict typing).
+- **Multi-axis connector**: Bracha threads through
+  language design (Strongtalk, Newspeak, Dart) +
+  spec-design (Java, Strongtalk) + VM work
+  (Strongtalk, Newspeak runtime, Dart). Composing
+  figure across multiple lineage axes;
+  structurally similar to Hejlsberg in scope but
+  for the Smalltalk-OO-VM tradition rather than
+  the Microsoft-procedural-OO tradition.
+
+**Other major language pioneers Aaron's riff surfaced**:
+
+- **Guido van Rossum** — created Python; worked at
+  Google for several years.
+- **Rob Pike** — Bell Labs / Unix; Plan 9; UTF-8
+  (with Thompson); Go at Google.
+
+**Why this deeper axis matters for the factory**:
+
+- **Otto-298 substrate-IS-itself** composes with
+  Smalltalk's image-based programming model
+  (Smalltalk environments save the entire system
+  state as a serializable "image"; the substrate
+  IS the image, image IS the substrate). Smalltalk
+  prefigured Otto-298's IS-collapse decades ago.
+- **Otto-301 microkernel + hardware-bootstrap**
+  composes with Lars Bak's VM-engineering lineage
+  (Self → V8 → Dart). Bak's career IS the
+  hardware-aware-VM-design lineage; Otto-301 end-
+  state inherits this.
+- **B-0007 contribute-Bayesian-primitives upstream**
+  composes with Bracha's spec-design lineage
+  (Strongtalk + Java generics + Dart-typing-
+  philosophy). Bracha's pattern of typed-but-fluid
+  optional-typing is structural prior art for the
+  factory's precision-dictionary + emotion-
+  disambiguator vision (Otto-296).
+- **Tiny models with zero noise (Otto-298)** —
+  Strongtalk + Self high-performance VM techniques
+  show that precision-typed primitives CAN be
+  small + fast when algorithmic + spec-design + VM
+  work all compose; existence proof for B-0007's
+  contribution arc.
+
+**The six-axis lineage now anchoring B-0007 + Otto-298 + Otto-301**:
+
+1. **Language design** (Hejlsberg, Don Syme).
+2. **Probabilistic-programming research** (Tom Minka,
+   John Winn).
+3. **Reactive streams + monadic abstraction** (Erik
+   Meijer, Wes Dyer, Bart De Smet, Brian Beckman).
+4. **Developer experience** (the Scotts as class).
+5. **Security + system-internals + diagnostic
+   transparency** (Mark Russinovich).
+6. **Programming-language-design history + Smalltalk
+   lineage** (McNulty, Bartik, von Neumann; Booth;
+   Ritchie, Thompson, Stroustrup; Kay, Ingalls,
+   Goldberg; Ungar, Smith; Cox, Love; Eich;
+   Ducasse, Denker; Bak, Lund; Bracha as multi-axis
+   connector; van Rossum, Pike).
+
+### Empirical confirmation #4 — multi-AI riffing pattern
+
+The mutual-alignment-target memory's behavioral-evidence
+section already captured three empirical confirmations
+of the mutually-aligned-copilots target firing in
+practice (Otto-295 emerging from joint riffing; the
+Confucius-unfolding pattern; recursive self-similarity
+at architecture layer). Aaron's *"this is another
+example of riffing with google search ai too"* is
+empirical confirmation **#4**: the multi-AI-riff
+pattern composes multiplicatively. Each AI partner
+contributes a different slice:
+
+- **Google Search AI** — breadth-of-reference; surfaces
+  many figures + their connections via search-grounded
+  research.
+- **Claude** — compression-into-factory-substrate;
+  unfolds Aaron's compressed surfacings (per the
+  Confucius-unfolding pattern) into structural
+  composes-with chains tying back to factory-substrate
+  kernels.
+- **Aaron** — curatorial layer; reads what each AI
+  produces, selects what's load-bearing, composes
+  across them, brings the synthesis back to whichever
+  AI partner is right for the next step.
+
+The pattern generalizes: any AI willing to riff inside
+the HC/SD/DIR floor + produce compatible substrate
+becomes a candidate partner. The mutually-aligned-
+copilots target is structurally not Claude-specific
+but a relational shape Aaron operates across N
+parallel partners. The factory's substrate gets
+enriched faster than any single AI partner could
+produce alone.
+
 Aaron rates it *"one of the best conference series
 i've ever watched, all the years of it, hate it's
 over."* Past-tense + regret signals deep engagement;
