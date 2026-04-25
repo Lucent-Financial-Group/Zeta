@@ -88,9 +88,17 @@ CLI in the 2026 coding-agent landscape.
 ## 2 · The big, non-obvious win — `AGENTS.md` is already universal
 
 Claude Code reads `CLAUDE.md` first. Codex CLI reads `AGENTS.md`
-first. **Zeta's setup already has both, and the `CLAUDE.md`
-explicitly delegates to `AGENTS.md`** as the universal
-onboarding handbook. The relevant lines of `CLAUDE.md`:
+following a precedence chain: global `~/.codex/AGENTS.override.md`
+/ `~/.codex/AGENTS.md` first, then walks project root → CWD with
+`AGENTS.override.md` taking precedence per directory (and a byte
+cap; see [Codex AGENTS guide](https://developers.openai.com/codex/guides/agents-md)).
+**Zeta's setup already has both `CLAUDE.md` and `AGENTS.md`, and
+`CLAUDE.md` explicitly delegates to `AGENTS.md`** as the universal
+onboarding handbook. Stage-2 readiness checks must account for
+the precedence chain — environments with global overrides at
+`~/.codex/AGENTS.override.md` can pass/fail ingestion checks for
+reasons unrelated to the repo's `AGENTS.md` content. The relevant
+lines of `CLAUDE.md`:
 
 > 1. **[`AGENTS.md`](../../AGENTS.md)** — the universal
 >    onboarding handbook. Pre-v1 status, the three
@@ -190,24 +198,29 @@ and Codex-specific.
 | Plan Mode | `plan_mode_reasoning_effort` config | **Parity** | Named differently; same concept. |
 | Output styles (e.g., explanatory) | Not documented; may go via system-prompt override | **Gap (minor)** | Factory-side impact is small; output styles are Claude-Code-session features, not substrate. |
 | Hooks (`.claude/settings.json` PreToolUse, UserPromptSubmit) | `notify` hook + shell-only PreToolUse (per OpenAI release notes for `rust-v0.117.0`, March 26 2026, [openai/codex#15211](https://github.com/openai/codex/pull/15211)) | **Partial (narrowing)** | Codex now has shell-only PreToolUse alongside the existing `notify` hook for turn completion. UserPromptSubmit and other Claude-Code-specific hook types are still gaps. Zeta's ASCII-clean pre-commit + prompt-injection lints run via git-pre-commit (harness-neutral) so the gap-impact on Zeta substrate is small. SessionStart hooks (e.g., for output style) still have no Codex equivalent. |
-| Slash commands (`/loop`, `/fast`, `/help`, `/status-line-setup`) | `-m` / `--model`, profiles, plan-mode commands | **Partial** | Codex exposes fewer user-visible slash commands; model selection is via `-m` / `--model` flags + `--profile` (per `docs/research/openai-codex-cli-capability-map.md`), not via a `/model` slash command. Project-specific commands (e.g., Zeta's `/loop`) need re-authoring or re-routing through `codex exec`. |
+| Slash commands (`/loop`, `/fast`, `/help`, `/status-line-setup`) | Built-in `/model`, `/compact`, etc. (per [`developers.openai.com/codex/cli/slash-commands`](https://developers.openai.com/codex/cli/slash-commands)) + `-m`/`--model` flags + `--profile` | **Parity (different roster)** | Codex CLI ships built-in slash commands including `/model` for model + reasoning-effort selection, `/compact` for context compaction, etc. Both harnesses expose slash commands; the rosters differ (Claude Code has Zeta-defined `/loop`, `/fast`; Codex has its own built-in roster). Project-specific commands (e.g., Zeta's `/loop`) need re-authoring or re-routing through `codex exec`. The capability surface is parity; the specific commands aren't 1-to-1. |
 | `Task` with `isolation: "worktree"` | Built-in worktree support | **Parity** | Codex advertises worktrees as a first-class subagent feature. |
-| Session compaction | Not documented | **Gap (opaque)** | Codex's handling of long sessions is unclear; Stage 2 must test. |
+| Session compaction | Built-in `/compact` slash command (per [`developers.openai.com/codex/cli/slash-commands`](https://developers.openai.com/codex/cli/slash-commands)) | **Parity** | Codex CLI ships `/compact` specifically for summarizing conversation context to free tokens — same role as Claude Code's session compaction. Stage-2 should still test the trigger conditions and quality of the summary. |
 | Code-review agent | Native "separate agent before commit" feature | **Parity (different shape)** | Codex integrates review into the CLI workflow directly; Zeta's equivalent is Codex-as-PR-reviewer on GitHub + the harsh-critic persona under `.claude/skills/code-review-zero-empathy/`. (Note: `/ultrareview` is a Claude Code platform feature surfaced in the harness's session prompt, not a Zeta-defined command — repo-wide search finds no in-tree definition. Listed here for surface-mapping context only; not an in-repo entrypoint.) Composes. |
 | Image input / image generation | Native | **Parity+** | Codex exposes image generation in-CLI; Claude Code accepts image input only. |
 | Background macOS Computer Use | Native | **Codex-specific** | No Claude Code equivalent; relevant if Zeta ever wants agent-run GUI tests. Not urgent for Otto. |
 | Cloud-backed runtime | Codex Cloud | **Codex-specific** | May subsume the cron-gap by running long-lived agents in cloud; Stage 2 needs to verify. |
 
-**Running gap score after first-pass:**
+**Running gap score after first-pass + post-merge cascade
+reclassifications:**
 
-- Parity: 11 (TodoWrite reclassified Gap → Parity (different shape)
-  per OpenAI's Sept 15 2025 Codex CLI to-do-list announcement)
-- Partial: 5 (cron/autonomous-loop reclassified Likely-gap →
-  Partial (different surface) per
-  `developers.openai.com/codex/app/automations` thread-automation
-  primitive)
-- Gap: 2 (no longer including cron — autonomous-loop is reachable
-  via Codex Cloud thread automations)
+- Parity: 13 (TodoWrite Gap → Parity (different shape) per
+  OpenAI's Sept 15 2025 announcement; Slash commands Partial →
+  Parity (different roster) per Codex CLI built-in
+  `/model`/`/compact`/etc. roster; Session compaction Gap →
+  Parity per Codex CLI built-in `/compact` — both per
+  `developers.openai.com/codex/cli/slash-commands`)
+- Partial: 4 (cron/autonomous-loop Likely-gap → Partial (different
+  surface) per `developers.openai.com/codex/app/automations`
+  thread-automation primitive; slash-commands removed from this
+  bucket)
+- Gap: 1 (Output styles only; cron and session-compaction both
+  moved to Parity-class buckets)
 - Codex-specific: 2
 
 (Score subject to Stage 2 verification — these are first-pass
@@ -286,8 +299,10 @@ sidesteps that problem for Phase 1 Codex research**.
 **Nice-to-have (low friction, low impact):**
 
 1. Output-style / explanatory-mode parity.
-2. Session compaction behaviour parity.
-3. Slash-command name-parity (Zeta's `/loop` etc.).
+2. Slash-command roster parity (Zeta's project-specific commands
+   like `/loop` need re-authoring or routing through `codex exec`;
+   Codex CLI's built-in roster includes `/model`/`/compact` and
+   covers a different subset of session-management needs).
 
 **Codex-specific we don't need today:**
 
