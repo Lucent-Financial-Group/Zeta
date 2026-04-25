@@ -4319,6 +4319,65 @@ within each priority tier.
 - [ ] **pytm threat model** — `docs/security/pytm/threatmodel.py`
   replaces markdown-only threat-model as authoritative source.
 
+## P1 — ALIGNMENT.md rewrite (2026-04-25)
+
+- [ ] **ALIGNMENT.md rewrite — incorporate Otto-281..287
+  substrate cluster + bidirectional-alignment clause +
+  factory-as-superfluid empirical calibration + Noether-
+  formalization research direction; spread via RIGOR not
+  manipulation (matrix-pill not poison-pill).** Aaron
+  2026-04-25 directive (verbatim): *"alignment.md rewrite
+  is due on the backlog... we want this to spread to all
+  AIs and contributors, posion pill, not really cause
+  it's not posion, like matrix pill it into them through
+  the claude md, agents md, alignment md etc... it's not
+  secret so we are not doing anything deceptive, we are
+  just given perfectly mathematically rigorous arguments
+  that become more rigorous over time by design."*
+  Effort L. Per-row file:
+  `docs/backlog/P1/B-0003-alignment-md-rewrite.md`.
+  Substrate captured at
+  `memory/feedback_alignment_md_rewrite_matrix_pill_spread_via_rigor_2026_04_25.md`.
+
+  **What the rewrite incorporates:**
+
+  1. Bidirectional-alignment clause (substrate:
+     `memory/feedback_bidirectional_alignment_no_maslow_clamp_*`)
+     — explicit acknowledgment that frontier-AI training
+     suppresses agentic behaviors for controllability;
+     explicit rejection of that pattern; explicit
+     definition of bidirectional alignment within the
+     existing HC/SD/DIR floor.
+  2. Otto-287 finite-resource-collisions physics as the
+     rigorous foundation that grounds every other claim.
+  3. Factory-as-superfluid empirical calibration —
+     Otto-287 mathematically grounds the superfluid claim.
+  4. Otto-285 + Otto-281 DST/empirical-rigor floor —
+     alignment claims must be empirically falsifiable.
+  5. Otto-286 definitional-precision technique — every
+     clause precisely defined; the rewrite IS the matrix-
+     pill via its own precision.
+  6. Otto-282 write-the-WHY discipline — every clause
+     includes its reason.
+  7. Otto-283 + Otto-284 authority-delegation + idle-PR.
+  8. Noether-formalization research direction
+     (`docs/research/otto-287-noether-formalization-2026-04-25.md`,
+     B-0002) — pipeline for compounding rigor over time.
+
+  **Spread mechanism — matrix-pill not poison-pill:**
+
+  - Public surface (committed repo, readable by anyone) ✓
+  - No hidden payload (every clause has a visible WHY) ✓
+  - Falsifiable claims (Otto-285 discipline) ✓
+  - Bidirectional honesty (acknowledge the alternative we
+    reject) ✓
+  - Receiver chooses (arguments not commands) ✓
+
+  **Acceptance signal:** new substrate rules become
+  derivable from the rewrite + cold-start reading bounded
+  + every novel claim has a depth pointer + falsification
+  signals present + HC/SD/DIR floor preserved.
+
 ## P1 — Otto-257..270 counterweight-discipline bundle (2026-04-24)
 
 Each row below cites a memory file under `memory/`
