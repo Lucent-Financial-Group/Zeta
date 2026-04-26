@@ -8,6 +8,50 @@ configuration (see
 overlay: batched upstream rhythm"). This doc is that
 configuration for Zeta.
 
+## Terminology — three surfaces, two vocabularies
+
+Zeta has **three surfaces**, each named in its own canonical
+vocabulary. No invented labels.
+
+Two of the three come from git (the repo axis):
+
+- **upstream** — `Lucent-Financial-Group/Zeta`. The parent
+  repo. Where releases, stable URLs, issue numbers, and the
+  social / governance edge live.
+- **fork** — `AceHack/Zeta`. The fork the human maintainer
+  develops on day-to-day. Lower CI cost, faster iteration;
+  upstream surfaces (Copilot coding-agent, Actions minutes,
+  paid seats) aren't charged per-PR there.
+
+The third comes from testing/QA vocabulary (the role axis):
+
+- **system under test (SUT)** — the Zeta product itself:
+  `src/**`, `openspec/specs/**`, `tools/tla/specs/**.tla`
+  (the TLA+ formal specs the product must satisfy — SUT
+  by role even though they live under `tools/`), tests,
+  libraries, the retractable-contract ledger. Distinct from
+  the **factory** (the tooling that builds and tests the SUT:
+  `.claude/**`, agents, skills, most of `tools/**`,
+  `docs/hygiene-history/**`). Both upstream and fork contain
+  SUT content and factory content; the SUT/factory distinction
+  is *not* about which repo or directory hosts the bits but
+  about what role the bits play. (Worked example: TLA+ specs
+  live under `tools/` by location but are SUT by role; most
+  of the rest of `tools/` is factory by role.)
+
+The three surfaces compose: SUT and factory both live inside
+either upstream or fork; the rhythm described in this doc
+governs only the **upstream ↔ fork** cadence, not the
+**SUT ↔ factory** boundary (that lives in
+`docs/FACTORY-METHODOLOGIES.md` and the people-optimizer
+notes).
+
+The fork exists to feed into upstream. When fork-vs-upstream
+disagree on anything (scope, contents, governance), upstream
+wins.
+
+Lineage: this section adapts AceHack commit `268100a` (Round 44 — *"3 surfaces, not 2"*) into the upstream LFG version per the option-c rewrite-into-current-architecture sync discipline (`docs/sync/acehack-to-lfg-cherry-pick-audit-2026-04-26.md`). The AceHack commit's substantive contribution was the three-surfaces vocabulary; this version preserves LFG's existing wording around upstream/fork while adding the SUT/factory orthogonality framing.
+
 ## Zeta's choice: batched fork-first rhythm
 
 **Default PR target:** `AceHack/Zeta:main`, not
