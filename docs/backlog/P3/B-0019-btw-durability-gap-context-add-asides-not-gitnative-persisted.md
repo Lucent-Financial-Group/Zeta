@@ -73,6 +73,7 @@ Some context-adds are obviously durable-worthy (factual research info, foundatio
 ## Effort estimate
 
 **S (small)** — any of the four options is < 1 day:
+
 - Option 1: edit /btw skill body (escalation rule).
 - Option 2: create `memory/btw-log.md` + edit /btw skill body to append.
 - Option 3: edit /btw skill body to document the tradeoff.
@@ -98,6 +99,7 @@ When Aaron picks an option (or signals "leave as is"):
 ## Done when
 
 Either:
+
 - Aaron picks one of the fix-shape options + it lands, OR
 - Aaron explicitly signals "leave /btw as is; the gap is acceptable" + this row closes with that decision recorded
 
