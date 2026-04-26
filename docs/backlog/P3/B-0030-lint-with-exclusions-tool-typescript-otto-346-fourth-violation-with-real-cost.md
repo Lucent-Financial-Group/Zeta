@@ -21,6 +21,7 @@ Aaron 2026-04-26 caught the pattern AND named the cost:
 > *"this is like the python smell but with python and this one had a real cost it forgot to ignore upstram so it took like a minute to run instead of a few seconds, if it was cononalized in code like in ../scratch it would never forget to exclude directoris like our references (not upstream that's proabalby a bad name i randomly chose, we should rectify to avoid wars/confusion becasue im using upstream incorrectly)"*
 
 This is **Otto-346 violation #4** this session:
+
 1. PR #541 — sort-tick-history-canonical.py (Python tool extracted)
 2. PR #542 — fix-markdown-md032-md026.py (Python tool extracted)
 3. B-0028 — gh-pr-state-summary tool (TS target; awaiting first-migration unblock)
@@ -31,11 +32,13 @@ The differentiating factor: **this one had measurable cost**. Slow run (~60s) wh
 ## What the tool would do
 
 **Problem class**: ad-hoc invocations of markdownlint (or other lint tools) on `**/*.md` patterns lack ergonomic defaults for repo-specific exclusions. Each inline use forgets:
+
 - `references/` directory (vendored / mirrored upstream code we don't own)
 - `tools/lean4/.lake/packages/` (Lean dependencies)
 - Other generated / vendored / archive directories
 
 **Tool behavior** (proposed):
+
 - `tools/hygiene/lint-md-with-exclusions.ts [paths...]` — wrap markdownlint-cli2 with repo-aware default exclusions
 - `--strict` — fail on any violation (default)
 - `--summary` — print only error counts per file, not full output
@@ -51,6 +54,7 @@ The differentiating factor: **this one had measurable cost**. Slow run (~60s) wh
 - `tools/hygiene/check-tick-history-order.sh` + `check-no-conflict-markers.sh` — sibling architectural shape (shell now; eventual TS rewrite per B-0015)
 
 The cumulative `tools/hygiene/` post-install batch awaiting TS migration:
+
 - B-0027 (markdown-table-cell-count fix tool — owed-build, TS target)
 - B-0028 (gh-pr-state-summary — owed-build, TS target)
 - B-0030 (this row — lint-with-exclusions — owed-build, TS target)
@@ -102,6 +106,7 @@ Four instances in one session is enough signal to *actually start the first sibl
 ## Owed work cluster after this row
 
 The post-install TS-migration batch:
+
 - B-0015 batch-resolve-pr-threads.sh → TS (P2)
 - B-0027 markdown-table-cell-count tool → TS (P3)
 - B-0028 gh-pr-state-summary tool → TS (P3)
