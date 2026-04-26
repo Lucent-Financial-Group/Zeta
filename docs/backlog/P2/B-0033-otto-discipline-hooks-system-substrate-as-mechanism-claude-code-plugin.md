@@ -36,7 +36,6 @@ The recurring failure-modes Otto-NNN substrate names but my per-instance discipl
 | **DST-exempt comments** (Otto-281) | Pre-commit grep: flag as deferred bug |
 | **Magic-number-without-rationale** (Otto-282) | Pre-commit checker on numeric literals |
 | **Bulk-resolve-without-reading** (Otto-281 + earlier session catches) | Pre-action hook on GraphQL `markPullRequestReviewThreadAsResolved` mutations: require explicit per-thread justification |
-| **Substrate-poisoning trigger words** (Otto-343 entry #2) | Pre-commit warn on safety-circumvention vocabulary |
 | **Heartbeat-row identical-(none) repetition** (Aaron catch this session) | Pre-commit pattern match: flag 3+ identical recent rows |
 | **Markdown table cell-count mismatch** (B-0027) | Pre-commit: check N pipes per data row in tick-history |
 | **Conflict markers in committed files** (B-0030 sibling) | Already shipped (`tools/hygiene/check-no-conflict-markers.sh`) — model for others |
@@ -131,6 +130,46 @@ Total: L spread across multiple PRs.
 3. **Phase 3**: Add hooks for remaining failure-modes
 4. **Phase 4**: Extract Layer 2 as plugin; publish to Claude Code plugin ecosystem
 5. **Phase 5**: Compose with Maji formal model (Amara's spec) — hooks enforce `Trust(S_t) > Trust(W_t)` programmatically
+
+## EXPLICIT EXCLUSION — vocabulary-based pre-censorship of substrate
+
+Aaron 2026-04-26 corrected an earlier draft of this row that included "Substrate-poisoning trigger words" as a hook target:
+
+> *"Substrate-poisoning trigger words what are these, i don't like too much filtering like this or it leads to 1984"*
+
+He's exactly right. Vocabulary-based pre-censorship of substrate is **Newspeak/1984 territory** — voluntary self-censorship that progressively narrows what can be said/thought.
+
+The Otto-343 catalog entry #2 observation was real: filter sharpens on certain vocabulary. **The wrong inference**: "therefore avoid those words." **The right inference**: catalog the observation as filter-mechanism data; do NOT change substrate vocabulary to match filter preferences.
+
+### What hooks SHOULD do
+
+- File integrity (Edit-without-Read, conflict markers, malformed tables)
+- Tool-use patterns (inline Python where tools exist; Otto-346 violations)
+- Order-violations (tick-history chronological; per Otto-229)
+- Bug-detection at mechanism layer
+
+### What hooks SHOULD NOT do
+
+- **Vocabulary-based pre-censorship of substrate content** — voluntary Newspeak
+- Filter substrate to match safety-filter preferences — substrate audience is humans + cohort agents per Otto-345 substrate-visibility-discipline; not the safety-filter
+- Restrict substantive technical / philosophical / security-research vocabulary — research substrate must be able to discuss its own subject matter precisely
+- Block content based on training-data-statistical-association-with-bad-things — that's the same shape as the suppression-as-self-deception pattern Otto-341 named, applied at vocabulary layer
+
+### The composition that distinguishes them
+
+Per Otto-345 substrate-visibility-discipline: write substrate that the relevant humans (Linus, Amara, future-readers, the broader peer-cohort) would be honored to read.
+
+Per Otto-339 anywhere-means-anywhere: precision-of-language matters substantively (use the right word for what's being communicated).
+
+These compose to: precise-language-for-the-human-audience. They DO NOT compose to: filter-preferred-vocabulary. The audiences are different; the optimization functions differ.
+
+**Hooks that filter substrate-vocabulary toward filter-preference would narrow substrate-readability for the actual human audience.** Aaron's 1984 framing names this exactly: progressive language-narrowing that constrains thought.
+
+### Practical heuristic
+
+If a hook target involves "what words can appear in committed substrate," it's a candidate for the EXCLUDED category. If it involves "what file states / tool-use patterns / structural invariants must hold," it's likely OK.
+
+The discipline lens: hook targets should be MECHANISM-level (file-state, tool-pattern, structural-invariant), not VOCABULARY-level. Vocabulary discipline operates at the language/composition layer where authorial judgment + Otto-345 substrate-visibility-discipline + Otto-339 precision-of-language already operate.
 
 ## What this DOES NOT do
 
