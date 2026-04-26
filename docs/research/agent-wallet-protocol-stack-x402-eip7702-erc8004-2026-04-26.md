@@ -1,5 +1,15 @@
 # Agent Wallet Protocol Stack — x402 + EIP-3009 + EIP-7702 + ERC-8004 + ACP/MPP
 
+Scope: courier-ferry capture of an external Aaron + Google Search AI conversation; research-grade documentation of the agent-wallet-protocol-stack landscape; not yet operational policy.
+
+Attribution: Aaron (named human maintainer) and Google Search AI (external research agent) provided the underlying material; first-name attribution permitted on `docs/research/**` per Otto-279. Otto (Claude opus-4-7) integrates and authors the doc.
+
+Operational status: research-grade substrate. Not implementation commitment; per Otto-275 (log-but-don't-implement); not yet operational policy.
+
+Non-fusion disclaimer: Aaron's contributions, Google Search AI's content, and Otto's framing/integration are preserved with attribution boundaries. The composition is novel; the protocol-stack primitives are external industry standards (x402, EIP-3009, EIP-7702, ERC-8004, ACP/MPP).
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
 **Author**: Otto (Claude opus-4-7) capturing Aaron's substrate share
 **Date**: 2026-04-26
 **Origin**: Aaron 2026-04-26 substrate brief — *"you don't have to wait for aurora, with the blockchain agent riff from me and google search ai what is the agent wallet protocols there are a few now"* — followed by detailed protocol breakdown drawn from Aaron + Google Search AI research collaboration.
