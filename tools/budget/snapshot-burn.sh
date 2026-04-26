@@ -3,16 +3,17 @@
 # append it to docs/budget-history/snapshots.jsonl as a single JSON
 # line. Append-only; git is the time-series storage.
 #
-# Why this exists: Aaron 2026-04-22 scoped the three-repo-split Stage 1
-# gate as evidence-based budget tracking — *"i want evidence based
-# budgiting so you might have to build some observaiblity first or run
-# some gh commands even if gh commands work we want some amount of
-# price history in git, maybe just looking like before and after PRs
-# on LFG and those measurements might be enough"*. The live cost graphs
-# on github.com are for humans and disappear the moment we stop
-# looking; the factory needs persisted evidence to project mid-swap
-# credit-exhaustion risk. See docs/budget-history/README.md for the
-# methodology + projection approach.
+# Why this exists: the human maintainer 2026-04-22 scoped the
+# three-repo-split Stage 1 gate as evidence-based budget tracking —
+# *"i want evidence based budgiting so you might have to build some
+# observaiblity first or run some gh commands even if gh commands
+# work we want some amount of price history in git, maybe just
+# looking like before and after PRs on LFG and those measurements
+# might be enough"*. The live cost graphs on github.com are for
+# humans and disappear the moment we stop looking; the factory needs
+# persisted evidence to project mid-swap credit-exhaustion risk.
+# See docs/budget-history/README.md for the methodology + projection
+# approach.
 #
 # Usage:
 #   tools/budget/snapshot-burn.sh              # append a snapshot
@@ -21,9 +22,10 @@
 #
 # Scopes required (current gh token has these): read:org, repo, workflow.
 # admin:org scope would unlock /settings/billing/{actions,packages,
-# shared-storage} too — if Aaron runs `gh auth refresh -s admin:org`
-# we can add those axes (see tools/budget/README notes), but the
-# script is designed to work without them.
+# shared-storage} too — if the human maintainer runs
+# `gh auth refresh -s admin:org` we can add those axes (see
+# tools/budget/README notes), but the script is designed to work
+# without them.
 #
 # Exit codes: 0 success, 2 on CLI-argument errors, non-zero if any
 # required gh/jq step fails.
@@ -80,10 +82,18 @@ for r in "${repos[@]}"; do
     api_warnings=$((api_warnings + 1))
   fi
   per_run="$(echo "$runs_json" | jq -c '[.workflow_runs[] | {id, name, conclusion, run_started_at, updated_at}]')"
-  # Use mapfile to avoid word-splitting / globbing on $run_ids (Codex P0 finding NM59qAlk).
-  mapfile -t run_id_list < <(echo "$runs_json" | jq -r '.workflow_runs[].id')
+  # Read into array via while-read for portability — `mapfile -t` is bash >=4
+  # only and macOS ships bash 3.2 (Codex P2 NM59qH2J). The redirected pipe
+  # into `done < <(...)` keeps the loop in the parent shell so the array
+  # survives. Avoids word-splitting / globbing on $run_ids (Codex P0
+  # NM59qAlk).
+  run_id_list=()
+  while IFS= read -r line; do
+    run_id_list+=("$line")
+  done < <(echo "$runs_json" | jq -r '.workflow_runs[].id')
   timings="[]"
-  for id in "${run_id_list[@]}"; do
+  for id in "${run_id_list[@]:-}"; do
+    [ -z "$id" ] && continue
     if ! t="$(gh api "/repos/${r}/actions/runs/${id}/timing" 2>/dev/null)"; then
       echo "warning: gh api /repos/${r}/actions/runs/${id}/timing failed; using empty timing" >&2
       t='{}'
@@ -143,7 +153,15 @@ snapshot="$(jq -n \
     }
   }')"
 
-line="$(echo "$snapshot" | jq -c '.')"
+if ! line="$(echo "$snapshot" | jq -c '.' 2>&1)"; then
+  echo "error: failed to compact snapshot to JSONL — refusing to append" >&2
+  echo "jq stderr: $line" >&2
+  exit 1
+fi
+if [ -z "$line" ] || [ "$line" = "null" ]; then
+  echo "error: snapshot compaction produced empty/null output — refusing to append" >&2
+  exit 1
+fi
 
 if [ "$dry_run" = "true" ]; then
   echo "$line" | jq '.'

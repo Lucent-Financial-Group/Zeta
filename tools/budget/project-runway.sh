@@ -5,12 +5,13 @@
 # works with N=1 (reports "insufficient data for delta; baseline
 # only"), grows more useful as cadence accumulates.
 #
-# Aaron 2026-04-22: *"i want evidence based budgiting ... we want
-# some amount of price history in git ... If i need more credits i
-# can buy enterprise"*. This script is the projection layer that
-# turns persisted history into a decision-ready summary for Aaron.
-# It never initiates an upgrade — it only surfaces the projection
-# so Aaron's call is evidence-driven.
+# Human maintainer note, 2026-04-22: *"i want evidence based
+# budgiting ... we want some amount of price history in git ...
+# If i need more credits i can buy enterprise"*. This script is
+# the projection layer that turns persisted history into a
+# decision-ready summary for the human maintainer. It never
+# initiates an upgrade — it only surfaces the projection so the
+# human maintainer's call is evidence-driven.
 #
 # Usage:
 #   tools/budget/project-runway.sh
@@ -47,6 +48,21 @@ copilot_rate=19
 actions_free_ms=180000000
 emit_json="false"
 
+# require_int FLAG_NAME VALUE — exit 2 with documented CLI-error code if
+# VALUE is not a non-negative integer. Catches bad input at parse time
+# so the documented "exit 2 on CLI-argument errors" contract holds even
+# when an arithmetic-using flag receives a non-numeric value (Codex P2
+# NM59qF00 + NM59qH2H, Copilot P1 NM59qGJ-).
+require_int() {
+  local flag="$1"
+  local val="$2"
+  case "$val" in
+    ''|*[!0-9]*)
+      echo "error: $flag requires a non-negative integer (got: '$val')" >&2
+      exit 2 ;;
+  esac
+}
+
 while [ $# -gt 0 ]; do
   case "$1" in
     --file)
@@ -54,12 +70,15 @@ while [ $# -gt 0 ]; do
       file="$2"; shift 2 ;;
     --stages)
       if [ $# -lt 2 ]; then echo "error: --stages requires INT" >&2; exit 2; fi
+      require_int "--stages" "$2"
       stages="$2"; shift 2 ;;
     --copilot-rate)
       if [ $# -lt 2 ]; then echo "error: --copilot-rate requires USD" >&2; exit 2; fi
+      require_int "--copilot-rate" "$2"
       copilot_rate="$2"; shift 2 ;;
     --actions-free-ms)
       if [ $# -lt 2 ]; then echo "error: --actions-free-ms requires INT" >&2; exit 2; fi
+      require_int "--actions-free-ms" "$2"
       actions_free_ms="$2"; shift 2 ;;
     --json) emit_json="true"; shift ;;
     -h|--help)
@@ -237,7 +256,7 @@ fi
 cat <<OUT
   Copilot projected USD (single span):           \$$copilot_projected_usd
 
-Aaron-decision surface
+Human-maintainer-decision surface
 ----------------------
 OUT
 
@@ -252,12 +271,12 @@ else
   echo "  Gate conditions (see ADR §Blockers):"
   echo "    (1) N>=3 samples:                 $( [ "$n" -ge 3 ] && echo yes || echo no )"
   echo "    (2) projection computed:          yes"
-  echo "    (3) Aaron has seen projection:    (surface via Architect)"
+  echo "    (3) human maintainer has seen projection:    (surface via Architect)"
   echo ""
   echo "  If Actions projection shows EXCEEDS, the escape valves are:"
   echo "    - Shrink Stage 1-4 workload (reduce --stages parameter)"
   echo "    - Wait for next free-credit cycle"
-  echo "    - Aaron-decision: Enterprise upgrade (Trigger B per memory"
+  echo "    - Human-maintainer decision: Enterprise upgrade (Trigger B per memory"
   echo "      feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md)"
 fi
 
