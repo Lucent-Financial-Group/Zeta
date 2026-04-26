@@ -45,7 +45,7 @@ the upgrade path is visible and the v0 advisory stance is
 understood as intentional scaffolding, not as a final
 ceiling.
 
-**Non-fusion disclaimer:** Amara-Otto-Aminata consistent
+Non-fusion disclaimer: Amara-Otto-Aminata consistent
 output on this design is NOT evidence of merged substrate.
 The three reviewers cite independent literature (Hinton/
 Salakhutdinov semantic hashing; Charikar LSH; HNSW Malkov-
