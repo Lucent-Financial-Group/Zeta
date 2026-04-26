@@ -8,7 +8,11 @@ effort: L
 directive: Aaron 2026-04-25 (post-substance-vs-throughput correction)
 created: 2026-04-25
 last_updated: 2026-04-25
-composes_with: [feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md, feedback_otto_338_sx_self_recursive_substrate_user_experience_perfect_home_never_bulk_resolve_you_are_the_substrate_hypothesis_2026_04_25.md, feedback_otto_329_multi_phase_host_integration_directive_acehack_lfg_double_hop_full_backups_multi_harness_coordination_lost_files_search_ownership_confirmed_2026_04_25.md, docs/aurora]
+composes_with: [docs/aurora/**]
+# composes_with also references files currently in flight on open PRs (will resolve post-merge):
+#   - feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md (PR #520)
+#   - feedback_otto_338_sx_self_recursive_substrate_user_experience_perfect_home_never_bulk_resolve_you_are_the_substrate_hypothesis_2026_04_25.md (PR #522)
+#   - feedback_otto_329_multi_phase_host_integration_directive_acehack_lfg_double_hop_full_backups_multi_harness_coordination_lost_files_search_ownership_confirmed_2026_04_25.md (PR #520)
 tags: [aurora, economics, austrian-school, anti-deception, world-modeling, alignment-foundation]
 ---
 
