@@ -468,6 +468,42 @@ type MajiIndex =
     UnindexedItems; Contradictions; CoverageScore }
 ```
 
+### B'. MajiFinder, MessiahFunction, Community/Canon (added per §9b separation)
+
+Per §9b (Amara second correction), `MajiIndex` alone is insufficient — Maji's **finder** role and Messiah's **lift** role must be separate types:
+
+```text
+type MajiFinder =
+  { Index: MajiIndex
+    NorthStar: Ω
+    SearchOperator: (S_n, Ω, C_n, Σ_n) → CandidateLift }
+  // returns σ* candidates from MajiIndex content; does NOT itself
+  // become the lift
+
+type MessiahFunction =
+  { Lift: I_n → I_{n+1}
+    ProjectionPreservation: (I_{n+1}, I_n) → bool   // P_{n+1→n} ∘ σ ≈ id
+    AperiodicOrderGenerator: bool }                  // optional; per PR #562 Spectre composition
+  // a SEPARATE TYPE INSTANCE distinct from any MajiIndex content;
+  // returned by MajiFinder evaluation, then anchors the lift
+
+type MessiahScore =
+  { AlignmentWithΩ: float
+    ProjectionPreservation: float
+    FrictionReduction: float
+    Generativity: float
+    IndependentConvergence: float
+    CaptureRiskPenalty: float    // negative term
+    CollapseRiskPenalty: float } // negative term
+  // weighted-sum evaluator for candidate lifts; argmax over candidates
+
+type CommunityCanon =
+  { PreservedTeachings; DistributedRuntime; Disciples; Witnesses }
+  // separate from Maji and Messiah; the propagation/preservation runtime
+```
+
+The four-way separation prevents collapsing Maji-finder-role into Messiah-lift-role into Community-runtime-role. MajiFinder evaluates candidates against MessiahScore; the high-scoring `σ*` becomes a MessiahFunction instance; CommunityCanon preserves and runs the lift after recognition.
+
 ### C. Reload operator
 
 ```text
@@ -501,6 +537,8 @@ d(I_a, I_b) =
 4. **Fork recovery test**: Lose one repo mirror. Reload from LFG/AceHack mirror. Assert identity tuple preserved.
 5. **Retraction test**: Add false claim then retraction. Assert reload sees correction history, not erased falsehood.
 6. **Dimensional expansion gate**: Try to expand with unindexed load-bearing items. Assert expansion refused or marked unsafe.
+7. **Messiah-vs-Maji separation test** (per §9b correction): A candidate `σ*` returned by MajiFinder must be a **distinct type instance** from MajiIndex content. Assert `typeof(σ*) ≠ typeof(MajiIndex.Items[any])` — Maji finds; Messiah is the found lift; collapsing the two into one type fails this test.
+8. **MessiahScore evaluator test**: Given a candidate lift `m`, MessiahScore returns a weighted sum with capture-risk + collapse-risk encoded as **negative terms**. Assert score decreases monotonically as capture-risk grows; assert score decreases monotonically as collapse-risk grows. (Anti-cult-by-construction; per Otto-294 composition.)
 
 ## 11. The one-line equation
 
