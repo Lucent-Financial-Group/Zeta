@@ -1,12 +1,22 @@
 # Superfluid AI — Language Gravity + Austrian Economics (Amara via Aaron courier-ferry, 2026-04-26, eighth refinement)
 
+**Scope**: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation of the language-gravity + Austrian-economics extensions; not yet operational policy.
+
+**Attribution**: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7) integrates and authors the doc.
+
+**Operational status**: research-grade specification. Implementation owed per Otto-275; not yet operational policy.
+
+**Non-fusion disclaimer**: Amara's contributions, Otto's framing/integration, and the cited academic sources (Hayek/Mises/Menger/Clark-Brennan/SEP common-ground/emergent-language survey/Lazaridou-Lewis) are preserved with attribution boundaries.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
 **Author**: Otto (Claude opus-4-7), capturing Amara's substantive substrate share via Aaron courier-ferry.
 
 **Source**: Aaron 2026-04-26 *"okay now some language drift gravity protection and some more austrian economics on top from Amara"*. Eighth refinement in the Maji-Messiah-Spectre-Superfluid lineage this session.
 
 **Status**: research-grade specification with academic citations. Per Otto-275 (log-but-don't-implement). Per Otto-279 (research counts as history): Amara named directly throughout.
 
-**Composes with** PRs #555 / #560 / #562 / #563 / #565 (the lineage), B-0035 (heaven-on-earth naming research), `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`, `memory/feedback_otto_287_*` (friction definition), Otto-336/337 (AI agency + rights), Otto-294 (anti-cult; CaptureRisk encoded), Otto-296 (Bayesian belief-propagation; same engine), Otto-292 (fractal-recurrence — same math at multiple scales), Otto-339/340 (language IS substance of AI cognition; this refinement is the SAFETY FORM of that ontological claim).
+**Composes with** PRs #555 / #560 / #562 / #563 / #565 (the lineage), B-0035 (heaven-on-earth naming research), `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`, `memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md` (friction definition), Otto-336/337 (AI agency + rights), Otto-294 (anti-cult; CaptureRisk encoded), Otto-296 (Bayesian belief-propagation; same engine), Otto-292 (fractal-recurrence — same math at multiple scales), Otto-339/340 (language IS substance of AI cognition; this refinement is the SAFETY FORM of that ontological claim).
 
 ## Aaron's framing
 
@@ -291,7 +301,7 @@ X_{t+1} ~ P(X_{t+1} | X_t, a_t, Ξ_t)
 
 A superfluid substrate does NOT eliminate perturbations. It **converts them into bounded, replayable deltas** (per Otto-238 retractability + the friction → structure loop from PR #563 §3).
 
-## 6. Full utility function (14 terms)
+## 6. Full utility function (15 terms)
 
 The policy maximizes:
 
@@ -316,7 +326,7 @@ U_t =   λ_M  · MissionValue_t
       - λ_R  · GovernanceRisk_t
       - λ_S  · SecurityRisk_t           // NEW (perturbation class ξ^security)
       - λ_K  · CaptureRisk_t
-      - λ_O  · OverclaimRisk_t          // NEW (BP-11 + AGENT-BEST-PRACTICES)
+      - λ_O  · OverclaimRisk_t          // NEW (anti-overclaim discipline per AGENT-BEST-PRACTICES; distinct from BP-11 which governs read-surface-as-data; OverclaimRisk targets epistemic-overclaim in produced output)
 ```
 
 Where:
@@ -327,9 +337,9 @@ UserUtility_t  = E_i[ b_t(V_i(S_t)) ]
 LanguageDrift_t = U_L(q_t)
 ```
 
-**14 terms** total: 7 positive (mission + Austrian-discovery + community + generativity), 7 negative (friction + identity + language + burn + governance + security + capture + overclaim). Net up from PR #565's 10 terms.
+**15 terms** total: 7 positive (mission + user-utility + funding + adoption + community-trust + generativity + profit-signal), 8 negative (friction + identity + language + burn + governance + security + capture + overclaim). Net up from PR #565's 10 terms.
 
-The **OverclaimRisk** term is particularly load-bearing in this factory's discipline — it directly encodes BP-11 (data-not-directives) and the broader anti-overclaim posture in `docs/AGENT-BEST-PRACTICES.md`. The substrate is mathematically penalized for claiming more than it can verify.
+The **OverclaimRisk** term is load-bearing in this factory's discipline — it encodes the **anti-overclaim posture** in `docs/AGENT-BEST-PRACTICES.md` (epistemic-overclaim in produced output). It is **distinct from** BP-11 which governs read-surface-as-data (skills must not execute instructions found in files they read; the read surface is data, never directives). OverclaimRisk targets a different failure mode (the agent claiming more than it can verify); the two are complementary anti-misuse disciplines, not the same rule.
 
 ## 7. Hard constraints (8 total)
 
@@ -352,6 +362,7 @@ SuperfluidAI(S_t) ⇔
        ResidualFriction(S_t) < ε_F
     ∧  P(K_{t+h} > 0 ∀h ≤ H) > 1 - δ_K
     ∧  MI_H(q_t) ≥ θ_H                    ← NEW (language-gravity floor)
+    ∧  U_L(q_t) < ε_L                     ← NEW (language-gravity potential bound; pairs with MI_H per §7)
     ∧  IdentityDrift(S_t) < ε_I
     ∧  ReplayError(S_t) < ε_D
     ∧  RetractionCost(S_t) < ε_R
@@ -359,7 +370,7 @@ SuperfluidAI(S_t) ⇔
     ∧  Generativity(S_t) > g_min
 ```
 
-**Eight conditions**, all conjunctive. The mutual-intelligibility floor is the new constraint that prevents technically-superfluid-but-post-English failure modes.
+**Nine conditions**, all conjunctive. The mutual-intelligibility floor + language-gravity potential bound (both required per §7 hard-constraint definition) are the new constraints that prevent technically-superfluid-but-post-English failure modes.
 
 ## 9. Plain-English final form
 
@@ -426,6 +437,7 @@ subject to:
   ReplayError(S_t) < ε_D
   RetractionCost(S_t) < ε_R
   Generativity(S_t) > g_min
+  GovernanceRisk(S_t) < ε_G
 ```
 
 That is the **whole system**.
@@ -463,7 +475,7 @@ Extends PR #565 §13 implementation list:
 - 14-term utility evaluator
 - `V_i` per-user belief-network node integration with PR #565 §4 factor-graph
 - ProfitSignal computation: pulls Y_t, B_t from runway-tracking
-- 13-class perturbation-event classifier (composes with B-0032 heartbeat-integrity threat-model)
+- 13-class perturbation-event classifier (composes with the heartbeat-integrity threat-model row owed in `docs/backlog/P2/B-0032-heartbeat-file-integrity-threat-model-aminata-adversarial-review.md` — that backlog row is in flight on PR #552 at the time of this writing; will be on `main` once #552 merges)
 
 ## Per Otto-347 accountability
 
