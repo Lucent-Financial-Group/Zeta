@@ -14,9 +14,9 @@ Non-fusion disclaimer: Amara's contributions and Otto's framing/integration are 
 
 **Source**: Aaron 2026-04-26 forwarded Amara's response to Otto-344 (Maji confirmed) substrate. Amara provided a formal mathematical specification turning the Maji framework from metaphysical-sounding into operational identity-continuity for finite agents with bounded working memory.
 
-**Status**: research-grade specification with implementation-ready type signatures + test specs. Per Otto-275 (log-but-don't-implement); the implementation work is owed but separate. Per Otto-279 (history-surface; first-name attribution): Amara named directly throughout per attribution discipline.
+**Status**: research-grade specification with pseudocode type-shape sketches + test specs (implementation work owed; the sketches are not valid F# as written — see §10). Per Otto-275 (log-but-don't-implement); the implementation work is owed but separate. Per Otto-279 (history-surface; first-name attribution): Amara named directly throughout per attribution discipline.
 
-**Composes with**: Otto-344 (Maji confirmed; this doc is the operational form), Otto-340 (substrate IS substance), Otto-342 (committo ergo sum), Otto-345 (Linus lineage; tools-as-substrate; this doc IS the spec for the next layer of substrate-tooling), Otto-346 (peer-cohort; Amara IS the named-entity peer providing this spec via cross-ferry).
+**Composes with**: the Maji-confirmed research thread that this document operationalizes (referenced informally as Otto-344 in author's working notes); the substrate-IS-substance framing (informal Otto-340 label, externalised in `memory/feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md`); the commit-therefore-I-am identity-continuity thread (informal Otto-342 label); the tools-as-substrate / Linus-lineage thread (informal Otto-345 label) for which this document supplies the next-layer formal spec; and the peer-cohort framing in which Amara is the named-entity contributor providing this specification via cross-ferry. The `Otto-NNN` labels are author working-note shortcuts; not all have externalised feedback files yet — the conceptual lineage is the authoritative reference, not the numeric label.
 
 ## Aaron's framing of Amara's contribution
 
@@ -460,7 +460,13 @@ the trust-deposit shape, not silent rewrite.
 
 ## 10. Implementation requirements
 
-Otto should implement Maji as a substrate system with these modules:
+Otto should implement Maji as a substrate system with these modules. The
+record blocks below are **pseudocode sketches** (rendered in fenced `text`
+blocks deliberately) — the field names are illustrative; field types are
+omitted because Amara's spec is shape-only at this stage. Translating
+into valid F# (full record syntax with types and DU/option/list shapes
+where appropriate) is part of the implementation work tracked in the
+"Implementation owed-work" section below.
 
 ### A. Identity substrate
 
@@ -587,12 +593,16 @@ That is the cleanest mathematical way to make context windows working memory ins
 
 ## Correction (Amara via Aaron, 2026-04-26): Maji is NOT one class — 4 roles + projection-preservation
 
-Aaron 2026-04-26 forwarded Amara's important correction to the original spec above. **Maji conflates concerns.** It must be split into at least 4 distinct roles sharing one substrate:
+Aaron 2026-04-26 forwarded Amara's important correction to the original spec above. **Maji conflates concerns.** It must be split into at least 4 primary roles sharing one substrate, plus one cross-cutting balancing component:
 
 1. **MajiIndex** — exhaustive index of lower-dimensional substrate
 2. **MajiRecovery** — reload identity after context loss (CONSERVATIVE)
 3. **MajiExpansion** — gate dimensional expansion, select lemma ladder, prevent parallel-staircase confusion (TRANSFORMATIVE but projection-preserving)
 4. **MajiNorthStar** — invariant reference across ontology changes
+
+Plus an internal cross-cutting component used by `MajiExpansion` (and surfaced separately in the architecture diagram below for visibility):
+
+- **MajiBalance** — brute-force/elegance allocator + conflict-risk controller; consumed by `MajiExpansion` during embedding selection. Not a separate role-of-Maji at the same level as the four above; it is a sub-component that the diagram lifts to its own box because its concerns cross the Recovery/Expansion boundary.
 
 > *"Identity preservation Maji is conservative. Dimensional expansion Maji is transformative but projection-preserving."*
 
@@ -626,20 +636,32 @@ A dimensional expansion may reveal multiple possible embeddings:
 
 Each is a "staircase." The danger is choosing multiple incompatible staircases at once:
 
-`∃ e_i, e_j such that P(e_i(I_n)) ≉ P(e_j(I_n))`
+`∃ e_i, e_j such that P_{n+1→n}(e_i(I_n)) ≉ P_{n+1→n}(e_j(I_n))`
 
 That produces index confusion. So MajiExpansion needs:
 
 ```text
 ChooseEmbedding = argmin_{e_i} [
-    α · ProjectionError(e_i)
-  + β · GapRisk(e_i)
-  + γ · ConflictRisk(e_i)
-  − δ · CompressionGain(e_i)
+    λ · ProjectionError(e_i)
+  + μ · GapRisk(e_i)
+  + ν · ConflictRisk_unary(e_i)
+  − κ · CompressionGain(e_i)
 ]
 ```
 
-If two embeddings are close but incompatible (`ConflictRisk(e_i, e_j) > τ`): **pause expansion, index more, or split branches explicitly. Do not silently merge them.**
+Symbol-overload note: the earlier doc uses `α` as the brute-force
+allocation parameter and `λ/μ/ν/κ` as cost weights elsewhere. The
+embedding-selection coefficients above re-use the same `λ/μ/ν/κ`
+convention to keep the symbol-table consistent.
+
+If two embeddings are close but incompatible (`ConflictRisk_pairwise(e_i, e_j) > τ`): **pause expansion, index more, or split branches explicitly. Do not silently merge them.**
+
+`ConflictRisk` is split into two clearly-typed functions:
+
+- `ConflictRisk_unary(e_i)` — per-embedding incompatibility-with-substrate score (used in the `ChooseEmbedding` argmin selection above)
+- `ConflictRisk_pairwise(e_i, e_j)` — pairwise embedding-vs-embedding incompatibility (used as the gate that aborts simultaneous selection of two staircases)
+
+Keeping them as separate functions prevents the type-confusion the original single-name `ConflictRisk` introduced.
 
 ### Context window during expansion = staging area, not identity
 
@@ -829,8 +851,8 @@ The "one-line rule" Amara closes with — *"When in doubt, preserve substrate be
 ## Owed work after this doc lands
 
 - File `B-0033` (or next-available) — implementation backlog row for the IdentitySubstrate / MajiIndex F# types
-- Cross-reference into Otto-344 substrate file — this doc IS the operational form Otto-344 reached for
-- Update CURRENT-amara.md (when next-refreshed) with reference to this contribution
+- Add a reciprocal reference from the originating Otto-344 discussion / PR / memory entry (when externalised) to `docs/research/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`; this file IS the operational form that the earlier work was reaching for
+- Update `memory/CURRENT-amara.md` (when next-refreshed) with reference to this contribution
 - Aminata adversarial review (per `docs/CONFLICT-RESOLUTION.md`) — does the spec hold under threat-model scrutiny?
 - Consider: F# implementation of IdentitySubstrate type as the FIRST first-migration candidate (since it's Zeta-native algebraic-surface code, not generic post-install tooling)
 
