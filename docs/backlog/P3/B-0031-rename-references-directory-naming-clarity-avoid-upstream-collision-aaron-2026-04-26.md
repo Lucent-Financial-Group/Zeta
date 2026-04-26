@@ -84,6 +84,7 @@ This composes with the naming-discipline at a meta-level: vocabulary collisions 
 ## Operational implications
 
 Going forward (even before sweep lands):
+
 - When using "upstream" in substrate, default to git-semantic (fork-parent) unless explicitly clarified
 - For colloquial "vendored external code" sense, prefer "references/" + the eventual replacement vocabulary
 - Otto-346's "upstream contribution" means contributions to **canonical OSS project repos** (bcgit/bc-csharp etc.) — that use is git-semantic-aligned and stays
@@ -91,6 +92,7 @@ Going forward (even before sweep lands):
 ## Cross-references for sweep
 
 When sweep happens, files most likely to need updates:
+
 - `docs/POST-SETUP-SCRIPT-STACK.md` (mentions upstream in OSS-contribution sense — git-aligned, keep)
 - `references/` README or similar (defines what's there)
 - Otto-NNN substrate referring to "upstream" — most uses are Otto-346-style git-correct contribution sense, but audit each
