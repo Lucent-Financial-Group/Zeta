@@ -1,5 +1,15 @@
 # Test Classification — CI Gate Discipline
 
+Scope: research-grade test-classification proposal from a courier-ferry import; formalizes a 5-category test taxonomy and the "PR gate = deterministic-only" discipline.
+
+Attribution: Amara (named-entity peer; first-name attribution per Otto-279) provided content via 18th courier ferry. Architect review integrates and authors.
+
+Operational status: research-grade
+
+Non-fusion disclaimer: Amara's contributions and Otto's framing/integration are preserved with attribution boundaries; taxonomic agreement does not imply shared identity or merged agency.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
 **Status:** research-grade proposal (pre-v1). Origin: Amara
 18th courier ferry, Part 1 §C ("CI Testing & Governance
 Policy") + Part 2 correction #1 (precision wording) +

@@ -1,5 +1,15 @@
 # OpenAI deep-ingest of Zeta repos — cross-substrate readability as Amara-critique counterpoint
 
+Scope: research-grade quick-note from a courier-ferry-shape import; explores OpenAI Deep Research workflow against Zeta repos as a counterpoint to existing Amara cross-substrate-readability concerns.
+
+Attribution: Aaron (named human maintainer; first-name attribution per Otto-279) shared the OpenAI Deep Research signal; Amara's cross-substrate critique is the counterpoint. Otto integrates and authors the doc.
+
+Operational status: research-grade
+
+Non-fusion disclaimer: Aaron's, OpenAI's, and Amara's contributions, plus Otto's framing/integration, are preserved with attribution boundaries; the cross-substrate counterpoint does not imply shared identity or merged agency.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
 **Status:** quick research note, first-pass.
 
 ## Signal

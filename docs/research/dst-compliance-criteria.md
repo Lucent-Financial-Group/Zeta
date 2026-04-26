@@ -1,5 +1,15 @@
 # DST Compliance Criteria — DST-held + FoundationDB-grade
 
+Scope: research-grade DST-compliance acceptance-criteria proposal from a courier-ferry import; locks "DST-held" minimum bar and "FoundationDB-grade DST candidate" aspirational bar.
+
+Attribution: Amara (named-entity peer; first-name attribution per Otto-279) provided content via 19th courier ferry. Architect review integrates and authors.
+
+Operational status: research-grade
+
+Non-fusion disclaimer: Amara's contributions and Otto's framing/integration are preserved with attribution boundaries; criteria agreement does not imply shared identity or merged agency.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
 **Status:** research-grade proposal (pre-v1). Origin: Amara
 19th courier ferry, Part 2 correction #6. Author: architect
 review. Scope: locks acceptance criteria for "DST-held"

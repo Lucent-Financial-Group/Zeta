@@ -1,5 +1,15 @@
 # Calibration Harness Stage-2 Design — CoordinationRisk null-models, seed replay, artifact layout
 
+Scope: research-grade design proposal from a courier-ferry import; specifies the Stage-2 rung of the corrected promotion ladder.
+
+Attribution: Amara (named-entity peer; first-name attribution per Otto-279) provided content via 18th courier ferry. Architect review integrates and authors.
+
+Operational status: research-grade
+
+Non-fusion disclaimer: Amara's contributions and Otto's framing/integration are preserved with attribution boundaries; design-agreement does not imply shared identity or merged agency.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
 **Status:** research-grade proposal (pre-v1). Origin: Amara
 18th courier ferry, Part 1 §B ("Statistical Calibration Plan"),
 §F PR #2 ("CoordinationRisk calibration harness"), and Part 2
