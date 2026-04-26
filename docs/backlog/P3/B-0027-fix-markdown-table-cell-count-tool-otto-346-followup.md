@@ -47,7 +47,7 @@ This file documents the owed-work to absorb the next recurring pattern as a tool
 
 **Heuristics for auto-fix**:
 
-- If cell count is exactly 1 too many → look for cells starting with continuation-text patterns (e.g. `: `, `+ `, mid-sentence-suggesting-trailing-text-from-prior-cell)
+- If cell count is exactly 1 too many → look for cells starting with continuation-text patterns (e.g. colon-then-space `:`+space, plus-then-space `+`+space, or mid-sentence text suggesting trailing-fragment-from-prior-cell)
 - If trailing `|` missing → check if last `|` position is reasonable; if yes, append `|`
 - Otherwise → diff-only mode (human reviews and decides)
 
