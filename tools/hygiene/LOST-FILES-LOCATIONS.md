@@ -1,6 +1,6 @@
 # Lost-files common locations
 
-> **Why this list exists.** Aaron's ask 2026-04-25 (Otto-329 Phase 8): *"do a lost files search and see if you find anything and what it teaches you about any mistakes you may have made in the past and how to compound the lessons into the substrate."* + same-tick reminder *"you keep a list of lost file common locations i asked you to write it."* (Per Otto-293, "ask" not "directive" — bidirectional language preferred.)
+> **Why this list exists.** Human maintainer ask 2026-04-25 (Otto-329 Phase 8): the list is the substrate, the search is the activity. (Per Otto-293, "ask" not "directive" — bidirectional language preferred. Per AGENT-BEST-PRACTICES.md "No name attribution in code, docs, or skills", `tools/hygiene/**` uses role-refs not first names; full provenance lives in the matching `memory/feedback_otto_329_*` substrate file which is an exempt history surface.)
 >
 > The search is the activity; THIS file is the catalog of places to look. Future searches run against this list. New location-classes get added as discovered. Composes with Otto-324 (mutual-learning — past mistakes compound into substrate) + Otto-262 (trunk-based-development branch hygiene) + Otto-257 (clean-default smell triggers audit).
 
@@ -20,7 +20,9 @@ Branches with substantive content that closed without merging. Most fertile loca
 
 Commits pushed to remote that have no open PR + no merge path to main.
 
-- **Survey command**: `gh api repos/<owner>/<repo>/branches --jq '.[] | .name' | comm -23 <(sort) <(git for-each-ref --format='%(refname:short)' refs/remotes/origin/ | sed 's|^origin/||' | sort)`
+- **Survey command (unmerged-to-main)**: `git for-each-ref --no-merged origin/main --format='%(refname:short)' refs/remotes/origin/` — branches not reachable from main.
+- **Survey command (no-open-PR)**: `gh api repos/<owner>/<repo>/branches --jq '.[].name' | sort > /tmp/all && gh pr list --repo <owner>/<repo> --state all --limit 500 --json headRefName -q '.[].headRefName' | sort -u > /tmp/withpr && comm -23 /tmp/all /tmp/withpr` — branches that never had a PR opened.
+- **Combine both**: a true orphan satisfies BOTH (unmerged AND no-PR). Run both and intersect.
 - **Or via GitHub UI**: branches list, filter "stale" / "merged" indicators.
 - **Common cause**: subagent dispatched, branch pushed, PR never opened OR PR closed manually.
 
