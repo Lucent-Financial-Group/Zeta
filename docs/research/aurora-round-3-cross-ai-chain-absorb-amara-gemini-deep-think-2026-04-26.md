@@ -252,9 +252,11 @@ This is Zeta-native analogue of Reactive Message Passing: observation delta → 
 Multiple approximation families typed by safety role:
 
 #### 6.1 Belief propagation
+
 Discrete/local cases: `q_t(Z) ≈ BP(G_t, O_{≤t})`. Use when factor graph is discrete or small enough for exact-ish message passing.
 
 #### 6.2 EP-style conservative approximation
+
 Mixed discrete/continuous risk gates: `q_t(Z) ≈ EP(G_t, O_{≤t})`. EP retains sufficient moments: `q_t(Z) ∈ Q`, `q_t = argmin_{q ∈ Q} D_approx(p || q)`.
 
 Operationally Zeta should not require literal Infer.NET EP. It should require **conservative posterior semantics**:
@@ -263,6 +265,7 @@ Operationally Zeta should not require literal Infer.NET EP. It should require **
 - `R_upper_a = μ_a + z_α σ_a` — the critical-gate quantity
 
 #### 6.3 VMP-style approximation
+
 Allowed for non-critical tracking only. Use for: dashboards, trend tracking, language style, non-blocking summaries. Do NOT use VMP as sole basis for `PermanentHarmRisk`, `ImmuneRisk`, `CultureCaptureRisk` because mode-seeking / variance-shrinking can understate tail risk. Infer.NET docs note VMP can narrow distributions and become over-confident around one peak.
 
 #### 6.4 Probabilistic circuits for hard gates
@@ -492,6 +495,7 @@ Fast subtraction (O(1)) where algebraically safe. Checkpoint rollback + fast-for
 ### Bounded approximations
 
 #### Spectral graph surveillance
+
 ```
 ρ(A_t) ≈ PowerIteration(A_t, v_{t-1}; k_ρ)
 λ_2(L_t) ≈ WarmStartedFiedler(L_t, u_{t-1}; k_2)
@@ -499,12 +503,14 @@ Fast subtraction (O(1)) where algebraically safe. Checkpoint rollback + fast-for
 Fixed iteration budget prevents algorithmic DoS.
 
 #### Anti-ossification belief diffusion
+
 ```
 q_{t+1}^{prior} = Diffuse(q_t, Δt · Σ_drift)
 where Σ_drift = diag(σ_1², ..., σ_D²)
 ```
 
 #### OOD surrogate gate
+
 ```
 OOD(a) = 1 ⟺ Σ_i ((φ_i(a) - μ_i)² / (σ_i² + ε)) > θ_OOD
 ```
