@@ -443,14 +443,14 @@ That is the **whole system**.
 
 The verification list across PR #555 / #560 / #562 / #563 / #565 + this doc:
 
-(items 1-16 carried forward from prior PRs; new items 17-22 below)
+Items 1-16 carry forward from prior PRs; the six new items below extend the cumulative list as items 17-22:
 
-17. **Mutual-intelligibility measurement**: how to compute `MI_H(q_t)` operationally? Synthetic-human-reader model? Periodic human-review surveys?
-18. **Gravity-well anchor weighting**: who decides `w_a` per anchor? README weight vs. ADR weight vs. glossary weight?
-19. **`q_H` operational definition**: human-English distribution as what — corpus-based? maintainer-style-based? CommonMark-compliant?
-20. **Austrian-belief-graph implementation**: factor-graph with `V_i` nodes per user; what's the data-engineering surface for `O_t^market`?
-21. **OverclaimRisk operationalization**: how to detect overclaim? BP-11 lint? semantic-drift detector? Aminata-review pipeline?
-22. **Language-drift early-warning**: what observable predicts `MI_H` falling below `θ_H`? Glossary-distance growth? PR-comment-length-trend? Reviewer-puzzlement signal?
+- **Item 17 — Mutual-intelligibility measurement**: how to compute `MI_H(q_t)` operationally? Synthetic-human-reader model? Periodic human-review surveys?
+- **Item 18 — Gravity-well anchor weighting**: who decides `w_a` per anchor? README weight vs. ADR weight vs. glossary weight?
+- **Item 19 — `q_H` operational definition**: human-English distribution as what — corpus-based? maintainer-style-based? CommonMark-compliant?
+- **Item 20 — Austrian-belief-graph implementation**: factor-graph with `V_i` nodes per user; what's the data-engineering surface for `O_t^market`?
+- **Item 21 — OverclaimRisk operationalization**: how to detect overclaim? BP-11 lint? semantic-drift detector? Aminata-review pipeline?
+- **Item 22 — Language-drift early-warning**: what observable predicts `MI_H` falling below `θ_H`? Glossary-distance growth? PR-comment-length-trend? Reviewer-puzzlement signal?
 
 ## Implementation owed
 
