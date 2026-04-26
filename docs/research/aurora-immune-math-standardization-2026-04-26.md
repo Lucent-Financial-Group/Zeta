@@ -67,8 +67,10 @@ S_{t+1} = S_t ⊕ Retract(x)    (retraction is forward event, not deletion)
 I_t = N(LoadBearing(S_t))
 Ctx_t ≠ I_t                    (context window IS NOT identity; Ctx_t renamed
                                  from prior W_t to avoid symbol collision with
-                                 graph weight set W_t in the network tuple
-                                 N_t = (V_t, E_t, W_t, φ_t) — Copilot finding)
+                                 graph-weight set in the network tuple.
+                                 Round-3 then renamed graph-weight to ω_t —
+                                 N_t = (V_t, E_t, ω_t, φ_t) — eliminating
+                                 residual collision.)
 ```
 
 ### 2.2 Capabilities as sets (Deep Think + Amara correction)

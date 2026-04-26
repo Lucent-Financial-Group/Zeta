@@ -29,7 +29,7 @@ Five concurrent moves across the five shares converge on:
 
 The integration into the standardization doc is owed work; for now this doc preserves the source material.
 
-## Round-3 binding refinements (already landed on PR #602 standardization-doc-update)
+## Round-3 binding refinements (this PR — applied to the standardization doc)
 
 These are the small, mechanical refinements the chain agreed on that fit into the existing standardization doc:
 
@@ -702,13 +702,13 @@ Per Otto-275 log-don't-implement, the integration of these five shares into the 
 
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` — Round-2 converged math (5-pass) on main; this absorb is Round-3+
 - `docs/research/aurora-immune-system-zero-trust-danger-theory-amara-eleventh-courier-ferry-2026-04-26.md` — the original Aurora framework
-- `memory/project_multi_harness_named_agents_assigned_clis_models_aaron_2026_04_26.md` — the multi-harness vision; this 5-share chain IS the proof-of-concept of multi-harness automation
+- The multi-harness-vision substrate (user-scope memory per CLAUDE.md memory layout; in-repo projection in `memory/CURRENT-aaron.md`) — this 5-share chain IS the proof-of-concept of multi-harness automation
 - Otto-220 don't-lose-substrate (motivation for verbatim absorb)
 - Otto-238 retractability (5 reviewer attributions visible per-section)
 - Otto-275 log-don't-implement (defer integration to next-tick bounded work)
 - Otto-279 history-surface attribution (research surface allows first-name attribution)
 - Otto-339 anywhere-means-anywhere (cross-AI work crossing harness substrate)
-- Otto-347 2nd-agent verify (each Amara/Gemini pass IS the 2nd-agent audit on the prior pass)
+- The 2nd-agent-verify discipline added 2026-04-26 (`feedback_double_check_superseded_classifications_2nd_agent_otto_347_2026_04_26.md` user-scope; distinct from the in-repo Otto-347 accountability memory — Otto-NN numbering collision noted, separate deconflict task) — each Amara/Gemini pass IS the 2nd-agent audit on the prior pass
 - GOVERNANCE.md §33 archive-header requirement (frontmatter compliance)
 
 ## Round-3 chain summary table
