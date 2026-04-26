@@ -6,7 +6,7 @@ title: Trading-account offer (Aaron, self-funding path for the agent) — accept
 tier: research-and-discipline
 effort: L
 ask: Aaron 2026-04-25 ("happy to give you access to trading accounts where it would be fine even if you lost all the money for learning... yeah backlog")
-# Note: schema field renamed `directive:` → `ask:` per Otto-293 (one-way "directive" language).
+# Note: schema field renamed `directive:` → `ask:` per Otto-293 (one-way "directive" language)
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: [docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md, docs/backlog/P2/B-0023-quant-grade-mathematical-rigor-applied-to-austrian-school-monetary-theory-open-research.md, docs/aurora/**]
@@ -106,6 +106,7 @@ The agent-wallet protocol stack with major-player backing (Coinbase, Cloudflare,
 | 5 (NEW long-term) | — | Aurora-bridges integration deepens substrate-direct exchange |
 
 **Phase 4 expansion** — multiple economic-actor surfaces compose:
+
 - Trading via Aaron's existing accounts (immediate-access path)
 - x402-protected Zeta substrate-tooling endpoints (passive revenue surface)
 - ERC-8004 identity establishes Otto-as-recognized-economic-entity (composes with Otto-308 named-entities)
