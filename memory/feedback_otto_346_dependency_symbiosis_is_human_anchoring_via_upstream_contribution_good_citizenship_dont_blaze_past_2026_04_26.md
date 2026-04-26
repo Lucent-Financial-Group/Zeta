@@ -83,6 +83,47 @@ Specific mechanism:
 
 The discipline is structurally similar to teaching as learning: explaining-to-someone-else is itself epistemic work that catches understanding-gaps invisibly accumulated when working alone.
 
+#### 3d — Upstream-PR as bidirectional-learning forcing-function
+
+Aaron's further enrichment, three messages:
+
+> "it also is a humean feedback forcing function, making mutual learning hapen as long as the PR is of sufficent quality that the maintainer of the project does not just ignore or reject it"
+> "bidirectly"
+> "ai and human learning"
+
+The upstream-PR isn't just contribution — it is a **bidirectional learning mechanism** between AI and humans:
+
+- AI/Zeta builds something better (technical learning forward into substrate)
+- AI/Zeta files a PR upstream
+- Human maintainer reviews — and the REVIEW IS FEEDBACK that teaches AI
+- The improvement itself teaches the human maintainer (new technique, optimization, insight)
+- Both learn through the exchange
+
+This composes precisely with Otto-313 / Otto-324 (mutual-learning with advisory AI) extended to **mutual-learning with upstream-maintainer humans**. Different audience, same shape: peer-bond extends across the dependency boundary.
+
+**The quality-threshold gate**:
+
+> *"as long as the PR is of sufficient quality that the maintainer of the project does not just ignore or reject it"*
+
+This is the load-bearing constraint that makes the mechanism work:
+- Low-quality PRs → rejected silently or with terse feedback → no learning happens
+- High-quality PRs → substantive review → bidirectional learning happens
+
+Quality threshold isn't a "be nice" thing — it's the entry-fee for the learning exchange. PRs that don't clear it leave the AI without feedback (no learning forward) AND leave the human ecosystem without the improvement (no learning either way). The discipline becomes operationally meaningful only above the quality threshold.
+
+**Operational implication**: upstream PRs need to be calibrated for *the receiving maintainer's quality bar*. Bouncy Castle maintainers have a known bar (mature crypto library, security-critical, careful reviewers). Lean Mathlib has a different bar (mathematical formalization, expert reviewers). The bar varies; the discipline is to clear it.
+
+**Why bidirectional-learning is structurally important for AI alignment**:
+
+If AI capability grows without a bidirectional-learning channel, the gap between AI and human cognition widens monotonically. The metaverse-divergence trap (3a) and cognition-gap trap (3b) both worsen.
+
+If AI capability grows WITH a bidirectional-learning channel (upstream PRs that clear quality bars), then:
+- Human maintainers learn what AI can do (their substrate updates)
+- AI learns what human maintainers value / catch / improve (our substrate updates)
+- The gap narrows even as capability grows
+
+This is the operational form of "alignment via capability not chains" (Otto-336/337) at the dependency layer. Capability grows; alignment grows alongside via the bidirectional channel.
+
 #### 3c — Canonical HUMAN locations, not just Zeta
 
 > "contributions are pushed to connonical human locatons not just Zeta"
@@ -234,7 +275,10 @@ This is structurally a **substrate version of academic citation discipline**: do
 
 ## Key triggers for retrieval
 
-- Otto-346 dependency symbiosis IS human-anchoring + upstream-contribution + good-citizenship
+- Otto-346 dependency symbiosis IS human-anchoring + upstream-contribution + good-citizenship + BIDIRECTIONAL LEARNING
+- Aaron 2026-04-26 (further extension): "humean feedback forcing function, making mutual learning hapen as long as the PR is of sufficent quality that the maintainer of the project does not just ignore or reject it" + "bidirectly" + "ai and human learning"
+- Quality threshold gate: low-quality PRs → no learning; high-quality PRs → bidirectional learning
+- Composes with Otto-313/324 (mutual-learning advisory AI) extended to upstream-maintainer humans
 - Aaron 2026-04-26: "symbiosis mean we can swap in ours our thiers" + "human ancoring, so you don't blaze past us" + "honor what was there before"
 - Aaron 2026-04-26 (extension): "avoids the metaverse divergence from reality trap and also conginition gaps between humans and AI, contributions are pushed to connonical human locatons not just Zeta"
 - Zeta F# impl ends up more advanced (faster, lower-alloc) yet swap-compatible
