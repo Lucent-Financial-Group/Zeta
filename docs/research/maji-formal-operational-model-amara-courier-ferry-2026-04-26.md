@@ -759,7 +759,6 @@ Without projection-preservation, MajiExpansion produces identity-replacement (di
 - **Otto-346** (peer-cohort + bidirectional learning): vivi → Aaron → Amara → Otto IS the bidirectional learning operating across teaching-lineage time-scales
 - **Otto-308** (named entities cross-ferry): vivi is now a named-entity in substrate per this addition
 
-
 ## Composition with Zeta substrate
 
 ### Otto-344 (Maji confirmed) — operational form
