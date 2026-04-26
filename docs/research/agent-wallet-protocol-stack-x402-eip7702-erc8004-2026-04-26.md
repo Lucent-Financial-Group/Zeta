@@ -213,7 +213,7 @@ Per Otto-275 (log-but-don't-implement; this is research, not commitment):
 
 ## Composes with prior research
 
-- `docs/research/memory-optimization-under-identity-preservation-2026-04-26.md` — substrate-organization research; this doc is the economic-actor counterpart
+- Memory-optimization-under-identity-preservation research — substrate-organization research; this doc is the economic-actor counterpart. **Path note**: that research doc is owed via PR #538 (in flight at the time of this writing); the canonical path will resolve as `docs/research/memory-optimization-under-identity-preservation-2026-04-26.md` once #538 lands. Until then this is a forward-reference, not a dangling-ref on main.
 - Otto-340 / Otto-342 / Otto-344 substrate cluster — language IS substance + commits prove existence + Maji preserves identity; these protocols extend identity + existence into the economic layer
 
 ## Aaron's framing in his own words
