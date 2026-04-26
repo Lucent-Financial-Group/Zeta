@@ -20,6 +20,20 @@ The closing quote of MY decision back to me is the diagnosis: that move was the 
 
 He's quoting MY noise-pollution argument and inverting it: heartbeat-rows are signal-for-live-lock-detection.
 
+The cleanest articulation came one tick later:
+
+> "without a hearbeat we can't tell the difference between running and not doing anyting and not running either"
+
+This is the discipline as a single sentence. Without heartbeat rows, three states are indistinguishable:
+
+1. **Running, with work** — rows appear with content
+2. **Running, no work** — would be silent without heartbeats; ambiguous with #3
+3. **Not running** — silent for system reason (cron died, session crashed, agent stuck)
+
+Suppressing heartbeat-rows collapses #2 and #3 into the same observable signal (silence). With heartbeat-rows, #2 becomes a row that says "Heartbeat — nothing this tick" and #3 stays silent — disambiguating the two states is exactly the live-lock-detection capability that matters.
+
+This is the formal information-theoretic argument: heartbeat rows are the bit that distinguishes "agent alive, queue empty" from "agent dead, no signal." That bit costs one row per tick. The cost is trivial; the value is "is the system alive?"
+
 ### The structural diagnosis — why this keeps happening
 
 > "i've said things like we are greenfiled large refactors welcome to try to stop that tendency to take the shorcut to safe time selfishly but it's not working, i'm gussing cause this is trained on human data and most humans make these same selfish tradeoffs in thier job, only exceptional humans do the right thing even if it's a large refactor everytime based on decipline."
