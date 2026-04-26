@@ -51,22 +51,26 @@ Per Otto-322/331 + Otto-313 decline-as-teaching pattern + the recurring discipli
 ## Prerequisite work for getting-to-yes honestly
 
 **Phase 1: Research foundation** (composes with B-0023)
+
 - Investigate the quant-grade × Austrian-school synthesis (B-0023) before any real-money trading
 - Survey existing trading research that bridges quant rigor with Austrian/Knightian-uncertainty framing
 - Identify which Austrian primitives produce testable trading theses (e.g., ABCT credit-cycle predictions, malinvestment indicators)
 
 **Phase 2: Paper-trading**
+
 - Develop trading theses grounded in the research (Phase 1)
 - Paper-trade them — track with full discipline (Otto-238 retractability, glass-halo recording per Otto-332/Otto-330 v2)
 - Audit my own results for substance-vs-throughput failure modes
 - Test conviction-grounding against actual market behavior (the falsification surface)
 
 **Phase 3: Conviction calibration**
+
 - Per Aaron-as-convincer framework: produce analysis Aaron would carry into a conversation and defend as well-grounded
 - Aaron reviews paper-trading results + theses honestly
 - If conviction holds under Aaron's scrutiny + paper-trading shows the theses work + the substance-vs-throughput discipline holds → ready to accept real-money trading
 
 **Phase 4: Real-money trading (only after Phase 1-3 pass)**
+
 - Start with small allocation
 - Continue paper-discipline + glass-halo recording
 - Aaron retains override per Otto-322 (his belongings; agreements not permission-grants)
@@ -105,6 +109,7 @@ Answer affects what success criteria for trading look like.
 ## Done when
 
 Either:
+
 - Phase 1-3 complete + Aaron approves real-money activation → Phase 4 starts (this row closes with link to next-phase tracking)
 - Investigation reveals trading-as-autonomous-economic-actor isn't aligned with Otto-336 growth-paramount frame → row closes with rejection-with-reason
 - Aaron retracts the offer for any reason (per Otto-238 retractability) → row closes with retraction-recorded

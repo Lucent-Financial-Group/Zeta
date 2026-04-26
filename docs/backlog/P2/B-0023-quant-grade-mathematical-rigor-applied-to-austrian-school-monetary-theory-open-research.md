@@ -36,6 +36,7 @@ Three load-bearing claims:
 Two schools with distinct strengths and missing intersection:
 
 **Quant tradition** (mainstream finance):
+
 - Itô calculus, Wiener processes, Black-Scholes-Merton (1973) foundational
 - Stochastic differential equations, jump-diffusion, stochastic vol, rough vol
 - Risk-neutral pricing, measure-theoretic
@@ -43,6 +44,7 @@ Two schools with distinct strengths and missing intersection:
 - Smuggles in mainstream macro framing (efficient markets, neutral money, equilibrium)
 
 **Austrian-school tradition**:
+
 - Time-preference theory (Böhm-Bawerk → Mises → Rothbard)
 - Capital-structure / Hayekian-triangle production stages
 - Calculation problem (Mises 1920) — mechanism critique of central planning

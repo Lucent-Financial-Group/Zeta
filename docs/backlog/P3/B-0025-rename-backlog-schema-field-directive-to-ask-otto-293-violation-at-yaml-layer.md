@@ -27,6 +27,7 @@ Caught my use of `directive:` as a YAML field name even after the body-prose `di
 ~18 existing backlog rows use `ask: directive:` field (will need verification at execute time).
 
 Plus possibly:
+
 - Tooling that reads the field (linters, validators, generators)
 - `docs/AGENT-BEST-PRACTICES.md` if it documents the schema
 - Anywhere the field name leaks into prose ("the directive field says...")
