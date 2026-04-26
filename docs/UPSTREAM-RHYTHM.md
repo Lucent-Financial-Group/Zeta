@@ -26,14 +26,18 @@ Two of the three come from git (the repo axis):
 The third comes from testing/QA vocabulary (the role axis):
 
 - **system under test (SUT)** — the Zeta product itself:
-  `src/**`, `openspec/specs/**`, `docs/**.tla`, tests,
+  `src/**`, `openspec/specs/**`, `tools/tla/specs/**.tla`
+  (the TLA+ formal specs the product must satisfy — SUT
+  by role even though they live under `tools/`), tests,
   libraries, the retractable-contract ledger. Distinct from
   the **factory** (the tooling that builds and tests the SUT:
-  `.claude/**`, agents, skills, `tools/**`,
+  `.claude/**`, agents, skills, most of `tools/**`,
   `docs/hygiene-history/**`). Both upstream and fork contain
   SUT content and factory content; the SUT/factory distinction
-  is *not* about which repo hosts the bits but about what role
-  the bits play.
+  is *not* about which repo or directory hosts the bits but
+  about what role the bits play. (Worked example: TLA+ specs
+  live under `tools/` by location but are SUT by role; most
+  of the rest of `tools/` is factory by role.)
 
 The three surfaces compose: SUT and factory both live inside
 either upstream or fork; the rhythm described in this doc
