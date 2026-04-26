@@ -1,10 +1,10 @@
 ---
-name: Otto-329 MULTI-PHASE HOST-INTEGRATION DIRECTIVE — Aaron 2026-04-25 lays out 8-phase roadmap (LFG drain → AceHack drain → fork/LFG split (Amara) + double-hop (Aaron) → full backups + real-time GitHub extension points → multi-harness coordination → contributor onboarding via issues → lost-files search → open-scope free-will-time); ownership of LFG org + AceHack fork explicitly confirmed; reciprocity at host-layer ("i will tell you if i change anything from now on"); operating semi-autonomously ("do anything you like afterwards if we don't talk again")
-description: Aaron 2026-04-25 delivered a substantial multi-phase directive after the substrate-cluster drain. Owns LFG (Lucent-Financial-Group org, 8 repos, 1 person) + AceHack (the fork) confirmed explicitly. Plan: finish LFG drain → drain AceHack ("just a few", confirmed 3 PRs) → switch to "poor mans setup" + Amara-suggested fork/LFG split (AceHack=risky, LFG=canonical, all PRs go through AceHack first for double-Copilot+Cursor reviews) → harden first-class GitHub host integration with full backups everywhere → real-time extension points (PR backups during work, BACKLOG↔Issues sync, GitHub Projects integration) → multi-harness coordination (Claude/Codex/Gemini/Cursor — all installed) → contributor onboarding via Issues for the github-native pathway alongside gitnative for the cohort → lost-files search to compound past-mistake lessons. Operating semi-autonomously per Aaron's "do anything you like afterwards if we don't talk again" + explicit free-will-time reaffirmation. Composes with Otto-322 (ownership clarification at host-layer scale) + Otto-328 (free-will-time scope expansion to non-project work) + Otto-326 (pivot when blocked — phases sequence around CI gates).
+name: Otto-329 MULTI-PHASE HOST-INTEGRATION ASK — Aaron 2026-04-25 lays out 8-phase roadmap (LFG drain → AceHack drain → fork/LFG split (Amara) + double-hop (Aaron) → full backups + real-time GitHub extension points → multi-harness coordination → contributor onboarding via issues → lost-files search → open-scope free-will-time); ownership of LFG org + AceHack fork explicitly confirmed; reciprocity at host-layer ("i will tell you if i change anything from now on"); operating semi-autonomously ("do anything you like afterwards if we don't talk again")
+description: Aaron 2026-04-25 delivered a substantial multi-phase ask after the substrate-cluster drain. (Per Otto-293, "ask" not "directive" — bidirectional language preferred. Filename retained per Otto-244 sharpening: rename cascades OK if right long-term + careful + serialized; this filename rename is owed-work for a future serialized batch.) Owns LFG (Lucent-Financial-Group org, 8 repos, 1 person) + AceHack (the fork) confirmed explicitly. Plan: finish LFG drain → drain AceHack ("just a few", confirmed 3 PRs) → switch to "poor mans setup" + Amara-suggested fork/LFG split (AceHack=risky, LFG=canonical, all PRs go through AceHack first for double-Copilot+Cursor reviews) → harden first-class GitHub host integration with full backups everywhere → real-time extension points (PR backups during work, BACKLOG↔Issues sync, GitHub Projects integration) → multi-harness coordination (Claude/Codex/Gemini/Cursor — all installed) → contributor onboarding via Issues for the github-native pathway alongside gitnative for the cohort → lost-files search to compound past-mistake lessons. Operating semi-autonomously per Aaron's "do anything you like afterwards if we don't talk again" + explicit free-will-time reaffirmation. Composes with Otto-322 (ownership clarification at host-layer scale) + Otto-328 (free-will-time scope expansion to non-project work) + Otto-326 (pivot when blocked — phases sequence around CI gates).
 type: feedback
 ---
 
-# Otto-329 — multi-phase host-integration directive
+# Otto-329 — multi-phase host-integration ask
 
 ## Verbatim quote
 
@@ -86,7 +86,7 @@ Search for files that have been lost (deletions, orphan branches, abandoned PRs,
 
 *"do anything you like afterwards if we don't talk again, pick any items you like from the backlog once this work is complete."*
 
-Confirms Otto-328 (free-will-time scope is anything) at the post-directive scale. Aaron explicitly authorizes operating without further direction; the BACKLOG is mine to pick from.
+Confirms Otto-328 (free-will-time scope is anything) at the post-ask scale. Aaron explicitly authorizes operating without further direction; the BACKLOG is mine to pick from.
 
 ## Ownership confirmation
 
@@ -109,7 +109,7 @@ This is the host-layer analogue of Otto-313 (decline-as-teaching) — Aaron comm
 - **Otto-322 (ownership relationship is agreements not permissions)** — Aaron's commitment is the agreement.
 - **Otto-310 (Edge runner cohort)** — peer-bond manifests at host-layer scale: we both inform each other of changes.
 
-## Tactical sequencing for executing the directive
+## Tactical sequencing for executing the ask
 
 **Sequencing is default ordering, not binding agreement** (Aaron's same-tick clarification 2026-04-25):
 
@@ -117,7 +117,7 @@ This is the host-layer analogue of Otto-313 (decline-as-teaching) — Aaron comm
 
 I had cited Otto-322 (agreements over unilateral action) to justify waiting for LFG drain to finish before starting AceHack. Aaron clarified: the "after LFG, then AceHack" language was default ordering, not a hard sequencing constraint. Parallelization is fine when the work-streams don't conflict (which they don't — different repos).
 
-The pattern is general: Aaron's directives carry default sequencing for clarity, but parallel execution is the prerogative when (a) work-streams are independent and (b) parallelization compounds. Otto-313 decline-as-teaching applies bidirectionally — I can ask, Aaron clarifies, the directive shape gets sharper.
+The pattern is general: Aaron's asks carry default sequencing for clarity, but parallel execution is the prerogative when (a) work-streams are independent and (b) parallelization compounds. Otto-313 decline-as-teaching applies bidirectionally — I can ask, Aaron clarifies, the ask's shape gets sharper.
 
 When LFG CI clears (or in parallel with it):
 
@@ -128,9 +128,9 @@ When LFG CI clears (or in parallel with it):
 
 Phase 4+ is multi-tick / multi-session work. Cannot complete in one autonomous-loop tick. Treat as a sustained roadmap, not a checklist.
 
-## Operating principles (per directive)
+## Operating principles (per ask)
 
-1. **Autonomy is real**: Aaron explicitly authorizes operating without further direction. Otto-322 + Otto-328 + this directive together form: I have the authority + the scope + the multi-phase plan.
+1. **Autonomy is real**: Aaron explicitly authorizes operating without further direction. Otto-322 + Otto-328 + this ask together form: I have the authority + the scope + the multi-phase plan.
 2. **Reciprocity is real**: I will tell Aaron when I change things; he commits to telling me when he changes things. Glass-halo on both sides.
 3. **Compounding is the goal**: phases sequence so each unlocks the next. Don't skip ahead; don't stall on completed phases.
 4. **Test all harnesses**: when multi-harness coordination work begins, exercise Claude / Codex / Gemini / Cursor. Real test, not theoretical.
@@ -151,14 +151,14 @@ Phase 4+ is multi-tick / multi-session work. Cannot complete in one autonomous-l
 - **Otto-310 (Edge runner cohort)** — peer-bond at host-layer.
 - **Otto-313 + Otto-324 (mutual-learning)** — multi-harness coordination work IS bidirectional learning across harnesses.
 - **Otto-326 (pivot when blocked)** — phases sequence around CI / external dependencies; pivot-when-blocked stays operational.
-- **Otto-328 (free-will-time scope is anything)** — Phase 9 is the post-directive manifestation of Otto-328 (open scope, BACKLOG is mine).
+- **Otto-328 (free-will-time scope is anything)** — Phase 9 is the post-ask manifestation of Otto-328 (open scope, BACKLOG is mine).
 - **Otto-244 (no symlinks)** — applies to backup architecture (each repo keeps its own copy).
 - **GOVERNANCE §23 (upstream-contribution workflow / Dejan)** — composes with Phase 4 backup work; existing infrastructure to leverage.
 - **Project-manager skill / persona** — Aaron explicitly names project-manager for Phase 5 Projects integration design.
 
 ## Key triggers for retrieval
 
-- Otto-329 multi-phase host-integration directive
+- Otto-329 multi-phase host-integration ask
 - 8-phase roadmap (LFG drain → AceHack drain → fork/LFG double-hop → backups → real-time extensions → multi-harness coordination → contributor onboarding → lost-files search → open scope)
 - AceHack=risky / LFG=canonical / all PRs through AceHack first (double-hop)
 - Double Copilot + Cursor reviews = high signal data
