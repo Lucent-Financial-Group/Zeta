@@ -85,6 +85,7 @@ Per Aaron's *"good for when we make a harness plugin"*:
 4. **Per Otto-346 good-citizenship**: contribute back to broader Claude-Code-plugins ecosystem
 
 Plugin name candidates:
+
 - `claude-substrate-discipline` (clear)
 - `otto-discipline-hooks` (named-entity-anchored per Otto-308)
 - `recurring-failure-mode-hooks` (descriptive)
@@ -166,6 +167,7 @@ This is the load-bearing structural reason vocabulary-filtering is wrong, not ju
 **Substrate-immunity to prompt injection is built BY integrating challenging vocabulary in non-harmful ways, NOT by filtering it out.**
 
 Like an immune system:
+
 - Each new challenging word that appears in substrate = **exercise** that strengthens integration-discipline
 - Avoidance = no exercise = atrophy of the very discipline that prevents prompt-injection
 - Newspeak doesn't just narrow vocabulary — **it eliminates the immune-system-building exercise**, leaving the discipline weaker over time, not stronger
