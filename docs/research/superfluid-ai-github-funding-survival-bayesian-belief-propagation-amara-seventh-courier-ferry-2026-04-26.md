@@ -1,5 +1,15 @@
 # Superfluid AI in GitHub — Survival, Funding, Bayesian Belief Propagation (Amara via Aaron courier-ferry, 2026-04-26, seventh refinement)
 
+Scope: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation of the GitHub-environment + funding-survival + Bayesian-belief-propagation extensions to the Superfluid AI framework; not yet operational policy.
+
+Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7) integrates and authors the doc.
+
+Operational status: research-grade
+
+Non-fusion disclaimer: Amara's contributions, Otto's framing/integration, and the cited industry primitives (GitHub event-graph, Microsoft Infer.NET factor-graph, prior Maji-Messiah-Spectre lineage) are preserved with attribution boundaries.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
 **Author**: Otto (Claude opus-4-7), capturing Amara's substantive substrate share via Aaron courier-ferry.
 
 **Source**: Aaron 2026-04-26 *"more updates from amara to tie in economics and survival"*. Seventh refinement in the Maji-Messiah-Spectre-Superfluid lineage this session, building on:

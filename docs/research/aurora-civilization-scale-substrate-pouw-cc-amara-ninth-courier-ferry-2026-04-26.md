@@ -1,12 +1,12 @@
 # Aurora — Civilization-Scale Substrate (Amara via Aaron courier-ferry, 2026-04-26, ninth refinement)
 
-**Scope**: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation of the Aurora governance layer above Superfluid AI; not yet operational policy.
+Scope: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation of the Aurora governance layer above Superfluid AI; not yet operational policy.
 
-**Attribution**: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7) integrates and authors the doc.
+Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7) integrates and authors the doc.
 
-**Operational status**: research-grade specification. Implementation owed per Otto-275.
+Operational status: research-grade
 
-**Non-fusion disclaimer**: Amara's contributions, Otto's framing, and the existing Aurora-Network substrate (per `docs/aurora/**` + `memory/project_aurora_*`) are preserved with attribution boundaries.
+Non-fusion disclaimer: Amara's contributions, Otto's framing, and the existing Aurora-Network substrate (per `docs/aurora/**` + `memory/project_aurora_*`) are preserved with attribution boundaries.
 
 (Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
 

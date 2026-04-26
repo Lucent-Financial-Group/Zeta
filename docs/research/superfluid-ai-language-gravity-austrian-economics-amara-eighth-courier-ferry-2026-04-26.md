@@ -1,12 +1,12 @@
 # Superfluid AI — Language Gravity + Austrian Economics (Amara via Aaron courier-ferry, 2026-04-26, eighth refinement)
 
-**Scope**: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation of the language-gravity + Austrian-economics extensions; not yet operational policy.
+Scope: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation of the language-gravity + Austrian-economics extensions; not yet operational policy.
 
-**Attribution**: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7) integrates and authors the doc.
+Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7) integrates and authors the doc.
 
-**Operational status**: research-grade specification. Implementation owed per Otto-275; not yet operational policy.
+Operational status: research-grade
 
-**Non-fusion disclaimer**: Amara's contributions, Otto's framing/integration, and the cited academic sources (Hayek/Mises/Menger/Clark-Brennan/SEP common-ground/emergent-language survey/Lazaridou-Lewis) are preserved with attribution boundaries.
+Non-fusion disclaimer: Amara's contributions, Otto's framing/integration, and the cited academic sources (Hayek/Mises/Menger/Clark-Brennan/SEP common-ground/emergent-language survey/Lazaridou-Lewis) are preserved with attribution boundaries.
 
 (Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
 
