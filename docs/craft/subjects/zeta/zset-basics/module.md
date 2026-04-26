@@ -5,8 +5,8 @@
 **Audience:** new contributors / library consumers /
 anyone evaluating Zeta
 **Prerequisites:** none — this is an entry module
-**Next suggested:** `subjects/zeta/retraction-intuition/`
-(forthcoming)
+**Next suggested:**
+[`subjects/zeta/retraction-intuition/module.md`](../retraction-intuition/module.md)
 
 ---
 
@@ -70,15 +70,15 @@ read from and write to. Two common operations:
 **Insert** — "one more of this item":
 
 ```fsharp
-// F# (reference)
-let zs = ZSet.ofSeq [ "apple", 1; "banana", 2 ]
+// F# (reference) — note `1L` / `2L`: weights are `int64`
+let zs = ZSet.ofSeq [ "apple", 1L; "banana", 2L ]
 // zs now has: apple=1, banana=2
 ```
 
 **Retract** — "one less of this item":
 
 ```fsharp
-let zs2 = ZSet.ofSeq [ "apple", -1 ]
+let zs2 = ZSet.ofSeq [ "apple", -1L ]
 // zs2 now has: apple=-1   (the negative is the "clicking down")
 ```
 
@@ -86,8 +86,10 @@ When you **add** two Z-sets together, the counts combine:
 
 ```fsharp
 ZSet.add zs zs2
-// result: apple=0, banana=2
-// The apple's +1 and -1 cancelled cleanly — no more apples.
+// result: banana=2   (apple's +1 and -1 cancelled to zero,
+//                     and zero-weight entries are dropped
+//                     by `add` — `ZSet.lookup "apple" _`
+//                     returns 0L)
 ```
 
 Items with count zero are effectively gone. No ceremony,
@@ -120,7 +122,7 @@ Before the next module, you should be able to answer:
   sign) would fail and a Z-set would succeed.
 
 If those are clear, proceed to
-`subjects/zeta/retraction-intuition/` when it lands.
+[`subjects/zeta/retraction-intuition/module.md`](../retraction-intuition/module.md).
 
 ---
 
@@ -148,6 +150,19 @@ These turn `ZSet K` into an **abelian group**:
 - Commutative: `f + g = g + f`
 - Identity: the zero function (`0(k) = 0 ∀k`)
 - Inverse: `f + (-f) = 0`
+
+**Ideal model vs implementation caveat.** The laws above
+hold over `ℤ` (unbounded signed integers). The runtime
+weight type is `int64`, and `ZSet.add` / `ZSet.neg` use
+checked arithmetic (`Checked.(+)`, `Checked.(-)`) — so at
+the boundaries of `int64` (overflow / `Int64.MinValue`
+negation), an `OverflowException` is thrown rather than
+silently wrapping. Closure / total-inverse hold for the
+ideal model `ZSet K` as defined; the implementation is
+faithful in the non-overflowing range and fails loudly
+outside it. Verification artifacts that depend on the
+abelian-group laws should either bound weights inside
+the safe range or model the overflow behaviour explicitly.
 
 ### The signed-integer-semiring connection
 
@@ -177,19 +192,40 @@ full algebra.
 In Zeta's F# reference implementation (`src/Core/ZSet.fs`
 and `src/Core/Algebra.fs`):
 
-- **`type Weight = int64`** — signed 64-bit counts (not `int`)
-- **`type ZSet<'K> = ImmutableArray<ZEntry<'K>>`** — an
-  *immutable sorted array* of `(key, weight)` entries
-  (not a mutable `Dictionary`); sorted by key for
-  log(N) lookup + efficient set-merge
-- `ofSeq : seq<'K * int64> → ZSet<'K>` (plain-tuple,
+- **`type Weight = int64`** — signed 64-bit counts (not
+  `int`); see `src/Core/Algebra.fs`
+- **`type ZSet<'K when 'K : comparison>`** — a `struct`
+  wrapper containing an internal
+  `entries : ImmutableArray<ZEntry<'K>>` field. The array
+  is held sorted-ascending by key with no zero-weight
+  entries (an invariant the public constructors
+  preserve). It is *not* a type alias for
+  `ImmutableArray<...>` and *not* a mutable
+  `Dictionary<'K, int>`. Sorted-by-key gives log(N)
+  binary-search lookup + linear merge for `add`
+- The `'K : comparison` constraint is required so the
+  sorted-array invariant + binary-search lookup work for
+  arbitrary key types
+- `ofSeq : seq<'K * Weight> → ZSet<'K>` (plain-tuple,
   sample-friendly per `memory/CURRENT-aaron.md` §6)
-- `ofPairs : seq<struct ('K * int64)> → ZSet<'K>` (struct-
-  tuple, zero-alloc, production)
-- `add : ZSet<'K> → ZSet<'K> → ZSet<'K>` (pointwise sum)
-- `neg : ZSet<'K> → ZSet<'K>` (pointwise negation)
-- Storage: columnar via Apache Arrow for IPC /
-  persistence
+- `ofPairs : seq<struct ('K * Weight)> → ZSet<'K>`
+  (struct-tuple, C#-friendly low-ceremony builder; note
+  the current implementation pipes through `Seq.map ...
+  |> ofSeq`, so it allocates an iterator/closure — it is
+  not a zero-allocation construction path)
+- `add : ZSet<'K> → ZSet<'K> → ZSet<'K>` (pointwise
+  checked sum; drops zero-weight entries)
+- `neg : ZSet<'K> → ZSet<'K>` (pointwise checked negation)
+- In-memory storage: an `ImmutableArray<ZEntry<'K>>` per
+  the struct above. **Apache Arrow is not the in-memory
+  representation** — it is one of several optional
+  serialization paths (`ArrowInt64Serializer` in
+  `src/Core/ArrowSerializer.fs`), used for specific
+  workloads and key types. Default persistence and IPC
+  go through `Checkpoint.toBytes` / `Checkpoint.ofBytes`
+  JSON blobs (`src/Core/DiskSpine.fs`,
+  `src/Core/Transaction.fs`) and `Serializer.auto`
+  defaults to TLV.
 
 ### Proof sketch — why retraction-native IVM works
 
@@ -205,7 +241,7 @@ shared keys interact. For linear queries (`count`, `sum`),
 retraction flows through query pipelines losslessly.
 
 Full treatment in the DBSP paper (Budiu et al. VLDB 2023)
-and `docs/ARCHITECTURE.md` §operator-algebra.
+and `openspec/specs/operator-algebra/`.
 
 ### Theoretical prerequisites (if you're going deeper)
 
@@ -231,8 +267,7 @@ if demand surfaces. Backwards-chain from this one.
   z⁻¹, H)" is Adopt; Z-sets are the substrate those
   operators read/write
 - `src/Core/ZSet.fs` — reference implementation
-- Per-user memory
-  `project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`
+- `memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`
   — the regime-level "one algebra, pluggable semirings"
   framing
 
