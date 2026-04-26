@@ -60,7 +60,7 @@ Both must be snapshotted; missing either gives an incomplete picture and re-crea
 - **For "is my PR currently blocked on stale-base?"** — read the live snapshot (`strict: false` -> answer: no, not blocked on staleness today).
 - **For "should the repo be blocking on stale-base?"** — read the canonical baseline (`strict: true` -> answer: yes, by declared policy). The drift is open work; file as a settings-sync task or fix directly when authorised.
 
-Future re-snapshots of these files (Otto-329 Phase 4 follow-up: `tools/hygiene/check-branch-protection-snapshot-stale.sh`) should reconcile this divergence either by aligning live state to the baseline or by updating the baseline if the policy intent has changed.
+Future re-snapshots of these files (Otto-329 Phase 4 follow-up: a planned `tools/hygiene/check-branch-protection-snapshot-stale.sh` lint, NOT YET in repo) should reconcile this divergence either by aligning live state to the baseline or by updating the baseline if the policy intent has changed.
 
 ## AceHack (AceHack/Zeta) main branch — actual gates
 
@@ -90,7 +90,7 @@ The two queries below produce **different output formats** intentionally — Ste
 # Step 1 — output: object {review, fails, running, success}
 gh pr view <N> --repo <owner/repo> --json statusCheckRollup,reviewDecision --jq '{
   review: .reviewDecision,
-  fails: ([.statusCheckRollup[] | select(.conclusion=="FAILURE")] | length),
+  fails: ([.statusCheckRollup[] | select(.conclusion=="FAILURE" or .conclusion=="CANCELLED" or .conclusion=="TIMED_OUT" or .conclusion=="ACTION_REQUIRED" or .conclusion=="STARTUP_FAILURE")] | length),
   running: ([.statusCheckRollup[] | select(.status=="IN_PROGRESS" or .status=="QUEUED")] | length),
   success: ([.statusCheckRollup[] | select(.conclusion=="SUCCESS")] | length)
 }'
@@ -136,13 +136,13 @@ gh api repos/AceHack/Zeta/branches/main/protection | python3 -m json.tool > docs
 # Update the "Last snapshot" date above + edit the LFG / AceHack tables if rules changed
 ```
 
-Future automation: `tools/hygiene/check-branch-protection-snapshot-stale.sh` warns if any of the 4 JSON files are >30 days old. Owed work.
+**Future automation (planned, NOT YET in repo):** a `tools/hygiene/check-branch-protection-snapshot-stale.sh` lint that warns if any of the 4 JSON files are >30 days old. Owed work; see Otto-329 Phase 4 follow-up tasks.
 
 ## Composes with
 
 - **Otto-329 Phase 4** (full backups including host-layer settings) — this file is one step toward full Phase 4
 - **Otto-341** (mechanism over vigilance) — substrate-as-mechanism, not memory-as-reminder
 - **Otto-247** (training-data defaults drift) — the failure mode this file prevents
-- **`memory/feedback_blocked_status_is_not_review_gating_check_status_checks_failure_first_otto_live_lock_2026_04_26.md`** — the live-lock memory this file structurally supports
+- **Per-user memory** `feedback_blocked_status_is_not_review_gating_check_status_checks_failure_first_otto_live_lock_2026_04_26.md` (lives at `~/.claude/projects/<slug>/memory/`, NOT mirrored in repo `memory/` — per-Claude-Code-user-instance scope) — the live-lock memory this file structurally supports
 - **`docs/GITHUB-SETTINGS.md`** — the existing settings-discipline doc that flagged classic branch protection as a separate axis; this file completes the snapshot
 - **AGENTS.md** required-reading section (separate update owed) — should reference this file so agent cold-start encounters it
