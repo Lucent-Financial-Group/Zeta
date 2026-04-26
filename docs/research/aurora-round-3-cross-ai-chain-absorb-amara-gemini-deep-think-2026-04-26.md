@@ -159,6 +159,7 @@ So the new canonical sentence is:
 `O_t = (S_t, I_t, Ctx_t, C_t, L_t, N_t, K_t, B_t, M_t, D_t)`
 
 where:
+
 - `S_t ∈ S` — Zeta substrate
 - `I_t ∈ I` — identity state
 - `Ctx_t ∈ X` — context window / working memory
@@ -175,10 +176,12 @@ Important rename: `Ctx_t ≠ W_t` because `W_t` collides with graph weight notat
 ### 2. Zeta substrate and identity
 
 Append-only and retraction-native:
+
 - `S_{t+1} = S_t ⊕ Δ_t`
 - `S_{t+1} = S_t ⊕ Retract(x)` (or where group-like inverse: `S_{t+1} = S_t ⊕ (-Δ_t)`)
 
 Identity is not the current context window:
+
 - `I_t = N_I(LoadBearing(S_t))` where `N_I : S → I`
 - Working memory: `Ctx_t = Retrieve_K(S_t, q_t)` where K is context budget, q_t is current task
 - Therefore: `Ctx_t ≠ I_t` — context can compact; identity must reload
@@ -188,6 +191,7 @@ Maji recovery: `R_Maji(S_t, q_t) → (I'_t, Ctx'_t, Π'_t)` with preservation `d
 ### 3. Network state
 
 `N_t = (V_t, E_t, ω_t, φ_t)` where:
+
 - `V_t = nodes`
 - `E_t = edges`
 - `ω_t : E_t → ℝ_{≥0}` (graph-weight function; no W_t)
@@ -201,6 +205,7 @@ Oscillator/firefly sync:
 Global coherence: `R(t) e^{i·Ψ(t)} = (1/|V_t|) Σ_{j ∈ V_t} e^{i·φ_j(t)}`
 
 Cartel/capture risk uses both adjacency and Laplacian spectra:
+
 - `A_t` = weighted adjacency
 - `L_t = D_t - A_t`
 - `ρ(A_t)` = spectral radius
@@ -253,6 +258,7 @@ Discrete/local cases: `q_t(Z) ≈ BP(G_t, O_{≤t})`. Use when factor graph is d
 Mixed discrete/continuous risk gates: `q_t(Z) ≈ EP(G_t, O_{≤t})`. EP retains sufficient moments: `q_t(Z) ∈ Q`, `q_t = argmin_{q ∈ Q} D_approx(p || q)`.
 
 Operationally Zeta should not require literal Infer.NET EP. It should require **conservative posterior semantics**:
+
 - `μ_a = E_{q_t}[R_a]`, `σ_a² = V_{q_t}[R_a]`
 - `R_upper_a = μ_a + z_α σ_a` — the critical-gate quantity
 
@@ -262,6 +268,7 @@ Allowed for non-critical tracking only. Use for: dashboards, trend tracking, lan
 #### 6.4 Probabilistic circuits for hard gates
 
 For hard safety gates, tractable circuit semantics:
+
 - `C_PC` = probabilistic circuit
 - `CircuitEval_PC(a) = P(Y = 1 | a, O_{≤t})`
 - Hard gate: `Gate_hard(a) = 1 ⟺ CircuitEval_PC(a) < θ_hard`
@@ -291,6 +298,7 @@ Prevents the immune system from becoming infinitely certain and blind to slow cu
 ### 9. Epistemic fallback gate
 
 If uncertainty is too high, do not accept.
+
 - `μ_a = E_{q_t}[R(a, Z)]`, `σ_a² = V_{q_t}[R(a, Z)]`
 - `TriggerMC(a) = 1 ⟺ σ_a² > θ_var`
 - `OracleReview(a) = 1 ⟺ ¬Converged(q_t) ∨ OOD(a) = 1`
@@ -307,6 +315,7 @@ NCSC-style axiom: **LLM does not enforce a reliable instruction/data boundary.**
 Token taint: `τ(x) ∈ {trusted, user, external, retrieved, tool, unknown}`.
 
 Capability sets:
+
 - `cap_allowed(y) = cap_requester ∩ cap_source ∩ cap_policy ∩ cap_session`
 - `Execute(y) = 1 ⟺ cap_req(y) ⊆ cap_allowed(y) ∧ R_upper_y < θ_R ∧ Gate_hard(y) = 1`
 - Privilege demotion: `Privilege(LLM(u)) ⊆ Privilege(u)`
@@ -409,6 +418,7 @@ OOD(a) = 1 ⟺ Mahalanobis(φ(a), μ_{q_t}, Σ_{q_t}) > θ_OOD
 ### LaTeX syntax corrections
 
 Amara's output dropped underscores/braces. Examples:
+
 - `\mathcal{F}t` → `\mathcal{F}_t`
 - `\mathbb{E}{q_t}` → `\mathbb{E}_{q_t}`
 - `z\alpha` → `z_\alpha`
@@ -454,12 +464,14 @@ Define `FeatureSet_Zeta = {append-only deltas, retractions, deterministic replay
 ### Allowed commit-path complexity
 
 Every operation must guarantee one of:
+
 - O(1) — constant time (precompiled capability boolean mask)
 - O(log_B N) — tree traversals (B-tree / LSM-tree)
 - O(k) — fixed/budgeted iterations where k is strict hardware constant
 - O(k|E_Δ|) — graph operations strictly over **changed edges**, not full graph
 
 **Strictly forbidden on hot path:**
+
 - O(|V|³) exact eigensolves or matrix inversions
 - Dynamic factor-graph recompilation (topology must use static boolean masks)
 - Exact partition functions or exact joint likelihoods for OOD detection
@@ -587,6 +599,7 @@ Diagonal/block-diagonal Mahalanobis: `OOD(a) = 1 ⟺ Σ_i ((φ_i(a) - μ_i)² / 
 The review is good but doesn't go far enough. Add: **No unbounded work on the commit path.**
 
 Every commit-path operation must have one of:
+
 - O(1)
 - O(log_B N)
 - O(k) with fixed k
@@ -670,9 +683,11 @@ minimize latency and maximize throughput for FeatureSet_Zeta
 Per Otto-275 log-don't-implement, the integration of these five shares into the current standardization doc + companion docs is OWED work, not done here. Concrete next-tick tasks:
 
 1. **Update `aurora-immune-math-standardization-2026-04-26.md`** with the binding refinements from §1-§5 above:
+
    - §3 (network state): `N_t = (V_t, E_t, ω_t, φ_t)` with `ω_t : E_t → ℝ_{≥0}` (DONE in this PR's type-table updates)
    - §6 (NEW computational inference architecture): hot-path / calibration-path partition with full anchor-stack framing (factor graphs root, EP layer, RMP streaming, Probabilistic Circuits hard gates) + Round-3 Amara binding (Infer.NET as anchor not dependency, conservative posterior bounds, drop O(1) overclaim) + Round-3 Gemini Deep Think speed traps with patches (warm-started spectral, retraction fork, topology masks, time-scaled diagonal diffusion, Mahalanobis OOD) + Round-3 Amara review-of-review corrections (O(k|E|) precision, retraction-fork-by-inference-type, performance doctrine "no unbounded work on commit path")
    - §7 (NEW): Performance Doctrine — Blade vs Brain (Data Plane vs Control Plane), TigerBeetle / FoundationDB / Differential Dataflow / RocksDB anchor mapping, allowed commit-path complexity table, forbidden hot-path work list, FeatureSet_Zeta scoping
+
 2. **New companion doc:** `docs/research/zeta-aurora-performance-doctrine-blade-vs-brain-2026-04-26.md` — full Performance Doctrine extracted as standalone reference (the Gemini Deep Think share #2 + Amara share #3 corrections together).
 3. **New companion doc:** `docs/research/zeta-inference-anchor-stack-2026-04-26.md` — full anchor-stack reference (8 anchors: factor graphs, EP, model-based ML, RMP, TrueSkill 2, BP-with-Strings, Enterprise Alexandria, Probabilistic Circuits) with citations.
 4. **TaskCreate** the integration work as task #N+1 with clear scope (bounded per-tick, not bulk).
