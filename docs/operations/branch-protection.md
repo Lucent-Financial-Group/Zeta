@@ -45,7 +45,7 @@ Both must be snapshotted; missing either gives an incomplete picture and re-crea
     ]
 ```
 
-### To merge a PR on LFG main, ALL of these must clear:
+### To merge a PR on LFG main, ALL of these must clear
 
 1. **All required_status_checks PASS** (specific list above; ubuntu-slim is NOT required, macos-26 IS required) — from classic protection
 2. **`code_quality: all`** rule from rulesets (broader CI gate)
