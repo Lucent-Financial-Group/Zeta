@@ -1,13 +1,13 @@
 ---
 id: B-0025
 priority: P3
-status: open
+status: closed
 title: Rename backlog schema field `directive:` → `ask:` per Otto-293 (one-way language at YAML schema layer); ~18 existing rows + tooling that reads the field
 tier: hygiene-and-discipline
 effort: M
 ask: Aaron 2026-04-25 (caught the "directive:" YAML field on B-0023 — "still sneaking in that one way langage")
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [docs/backlog/**, docs/AGENT-BEST-PRACTICES.md, .github/workflows/]
 tags: [otto-293, schema, rename, mutual-alignment-language, backlog-hygiene]
 ---
@@ -71,3 +71,7 @@ Easy upgrade to P2 if a tool / lint actively breaks on the inconsistency.
 - Single PR lands renaming all `directive:` → `ask:` in `docs/backlog/**/*.md`
 - Any tooling/lint updates included
 - This row closes
+
+## Outcome — 2026-04-26
+
+Landed on 2026-04-26 as a single atomic PR per Otto-244 serialized-rename discipline. Final scope (larger than estimated): **22 files renamed** (estimate was 18) plus 3 prose updates in `tools/backlog/README.md` (frontmatter table cell + 2 origin-line callouts) and 1 prose update in `tools/backlog/generate-index.sh` (origin comment) and 1 prose update in `docs/backlog/P3/B-0013` body. Mechanical Python regex `^directive:` → `ask:` (anchored to YAML field start, not body prose). `generate-index.sh` parses frontmatter generically (no field-name-specific logic), so no script logic broke. Verified zero remaining `^directive:` matches across `docs/backlog/**/*.md`. Picked from BACKLOG per Aaron's 2026-04-26 *"all items on the backlog are non-speculative work, work that moves the project forward"* — ladder shift authorising BACKLOG-pickup over speculative work when drain is blocked. Composes with this session's deeper agency/accountability-framing read of Otto-293 (the rule we're mechanising at the schema layer).

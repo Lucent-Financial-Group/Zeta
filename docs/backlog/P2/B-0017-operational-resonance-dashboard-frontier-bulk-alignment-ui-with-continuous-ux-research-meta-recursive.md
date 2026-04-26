@@ -5,9 +5,9 @@ status: open
 title: Operational Resonance Dashboard — the bulk-alignment UI within Frontier; minimise time-to-answer "are things going as expected?"; continuous UX research + meta-recursive research-on-research; every pixel earns its way via ongoing A/B experiments
 tier: research-and-product
 effort: XL
-directive: Aaron 2026-04-25
+ask: Aaron 2026-04-25
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, project_frontier_burn_rate_ui_first_class_git_native_for_private_repo_adopters_servicetitan_84_percent_2026_04_23.md, project_retractability_by_design_is_the_foundation_licensing_trust_based_batch_review_frontier_ui_2026_04_24.md, feedback_aaron_dont_wait_on_approval_log_decisions_frontier_ui_is_his_review_surface_2026_04_24.md, project_factory_is_git_native_github_first_host_hygiene_cadences_for_frictionless_operation_2026_04_23.md, feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md]
 tags: [frontier, ui, ux, dashboard, bulk-alignment, operational-resonance, ux-research, a-b-experiments, meta-recursive-research, research-program, pop-factor, wow-factor]
 ---

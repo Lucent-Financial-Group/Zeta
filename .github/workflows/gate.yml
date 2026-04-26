@@ -72,7 +72,7 @@ concurrency:
 
 jobs:
   build-and-test:
-    # Final runner matrix (maintainer directive 2026-04-24): symmetric
+    # Final runner matrix (maintainer ask 2026-04-24): symmetric
     # across AceHack fork and LFG canonical — same legs run everywhere.
     # Standard GitHub-hosted runners are free for public repositories,
     # so the prior fork/LFG cost-opt split (which kept macOS off LFG)
@@ -88,7 +88,7 @@ jobs:
     #                       configurable `timeout-minutes` value.
     #                       Raising `timeout-minutes` has no
     #                       effect on this leg). EXPERIMENTAL leg
-    #                       per maintainer directive 2026-04-24:
+    #                       per maintainer ask 2026-04-24:
     #                       try it and see how small a runner can
     #                       handle the Zeta workload. Because the
     #                       15-minute cap is fixed at the runner
@@ -409,7 +409,7 @@ jobs:
         # the version in this workflow (0.18.1) which drifted
         # behind the pin discipline the rest of the lints use and
         # violated the human maintainer's "update declaratively
-        # everywhere" directive (2026-04-24).
+        # everywhere" ask (2026-04-24).
         run: ./tools/setup/install.sh
 
       - name: Run markdownlint

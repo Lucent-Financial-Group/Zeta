@@ -5,9 +5,9 @@ status: open
 title: Contribute Bayesian inference + belief propagation primitives upstream to mainstream languages (C#, F#, TypeScript, Rust, Python, etc.)
 tier: research-grade
 effort: XL
-directive: maintainer Aaron 2026-04-25 ("at some point i would like to contribute baysein inference and belife propagain primitives into langages like c#, f#, typescript, rust, python, etc... Anders Hejlsberg spoke about this himself at a Lang.Next conference of all the language designers years ago. ... backlog, long term goal not near term")
+ask: maintainer Aaron 2026-04-25 ("at some point i would like to contribute baysein inference and belife propagain primitives into langages like c#, f#, typescript, rust, python, etc... Anders Hejlsberg spoke about this himself at a Lang.Next conference of all the language designers years ago. ... backlog, long term goal not near term")
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: []
 tags: [bayesian-inference, belief-propagation, probabilistic-programming, language-primitives, symbiosis, otto-298, otto-301, infer-net, hejlsberg-lang-next, long-horizon, no-rush]
 ---

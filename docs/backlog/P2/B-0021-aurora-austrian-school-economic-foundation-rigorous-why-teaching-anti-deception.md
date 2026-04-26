@@ -5,9 +5,9 @@ status: open
 title: Aurora world-modeling — rigorous-why economic foundation; Austrian-school as primary candidate; anti-deception requirement (Keynesian opacity → unquestioned policy-power); investigate-don't-accept per Otto-322/331
 tier: research-and-architecture
 effort: L
-directive: Aaron 2026-04-25 (post-substance-vs-throughput correction)
+ask: Aaron 2026-04-25 (post-substance-vs-throughput correction)
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [docs/aurora/**]
 # composes_with also references files currently in flight on open PRs (will resolve post-merge)
 #   - feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md (PR #520)

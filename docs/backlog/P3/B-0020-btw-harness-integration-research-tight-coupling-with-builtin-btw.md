@@ -5,9 +5,9 @@ status: open
 title: /btw harness-integration research — does our /btw integrate tightly with each harness's built-in btw equivalent? Claude Code / Codex / Gemini / Cursor surveys + tight-coupling design
 tier: research-and-discipline
 effort: M
-directive: Aaron 2026-04-25 (/btw aside)
+ask: Aaron 2026-04-25 (/btw aside)
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [.claude/commands/btw.md, B-0019-btw-durability-gap-context-add-asides-not-gitnative-persisted.md, feedback_otto_329_multi_phase_host_integration_directive_acehack_lfg_double_hop_full_backups_multi_harness_coordination_lost_files_search_ownership_confirmed_2026_04_25.md]
 tags: [btw, harness-integration, multi-harness, claude-code, codex, gemini, cursor, research]
 ---

@@ -5,9 +5,9 @@ status: open
 title: Red-team / offensive-security library for game-days + CTF — code, tools, skills so red-team exercises aren't one-sided against blue-team-heavy factory
 tier: security-research
 effort: L
-directive: Aaron 2026-04-25 ("red team during game days will need a library of code, tools, skills eventually too, CTF would be one sided without it")
+ask: Aaron 2026-04-25 ("red team during game days will need a library of code, tools, skills eventually too, CTF would be one sided without it")
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: []
 tags: [security, red-team, offensive-security, ctf, game-days, blue-team-balance, responsible-use]
 ---

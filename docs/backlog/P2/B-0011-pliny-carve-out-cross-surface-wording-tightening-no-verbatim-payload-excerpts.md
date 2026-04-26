@@ -5,9 +5,9 @@ status: open
 title: Pliny carve-out cross-surface wording tightening — explicit "no verbatim payload excerpts" across CLAUDE.md + AGENTS.md + GOVERNANCE.md §5 + Pliny memory file
 tier: governance
 effort: S
-directive: Copilot review on PR #506 (Otto-313 teaching-decline disposition)
+ask: Copilot review on PR #506 (Otto-313 teaching-decline disposition)
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [feedback_pliny_corpus_restriction_relaxed_isolated_instances_allowed_for_experiments_kill_switch_safety_2026_04_25.md, feedback_otto_300_rigor_proportional_to_blast_radius_iterate_fast_at_low_stakes_to_learn_before_high_stakes_2026_04_25.md]
 tags: [governance, pliny-corpus, safety, prompt-injection, carve-out-tightening]
 ---
