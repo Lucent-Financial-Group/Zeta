@@ -109,7 +109,7 @@ for file in "$RESEARCH_DIR"/*.md; do
   if [[ ${#missing[@]} -gt 0 ]]; then
     violations=$((violations + 1))
     violation_files+=("$file")
-    echo "VIOLATION: ${file#$REPO_ROOT/} missing §33 labels: ${missing[*]}" >&2
+    echo "VIOLATION: ${file#"$REPO_ROOT/"} missing §33 labels: ${missing[*]}" >&2
   fi
 done
 
