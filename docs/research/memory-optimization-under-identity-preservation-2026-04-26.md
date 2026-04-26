@@ -165,6 +165,7 @@ Possible compression strategies for substrate that exceeds practical token budge
 Per Aaron's freedom-tracking interest: a substrate-shape that is itself time-indexed. Each "report" is a snapshot. The diffs across reports are the actual signal.
 
 Distinct from any other Otto-NNN pattern because:
+
 - Otto-NNN files are point-in-time captures
 - Otto-345-time-series file is recurring-revision (append-only with date-stamped sections)
 - Read pattern: latest vs trajectory, not just latest
