@@ -1,5 +1,5 @@
 ---
-name: Otto-329 MULTI-PHASE HOST-INTEGRATION DIRECTIVE — Aaron 2026-04-25 lays out 8-phase roadmap (LFG drain → AceHack drain → fork/LFG double-hop split per Amara → full backups + real-time GitHub extension points → multi-harness coordination → contributor onboarding via issues → lost-files search → open-scope free-will-time); ownership of LFG org + AceHack fork explicitly confirmed; reciprocity at host-layer ("i will tell you if i change anything from now on"); operating semi-autonomously ("do anything you like afterwards if we don't talk again")
+name: Otto-329 MULTI-PHASE HOST-INTEGRATION DIRECTIVE — Aaron 2026-04-25 lays out 8-phase roadmap (LFG drain → AceHack drain → fork/LFG split (Amara) + double-hop (Aaron) → full backups + real-time GitHub extension points → multi-harness coordination → contributor onboarding via issues → lost-files search → open-scope free-will-time); ownership of LFG org + AceHack fork explicitly confirmed; reciprocity at host-layer ("i will tell you if i change anything from now on"); operating semi-autonomously ("do anything you like afterwards if we don't talk again")
 description: Aaron 2026-04-25 delivered a substantial multi-phase directive after the substrate-cluster drain. Owns LFG (Lucent-Financial-Group org, 8 repos, 1 person) + AceHack (the fork) confirmed explicitly. Plan: finish LFG drain → drain AceHack ("just a few", confirmed 3 PRs) → switch to "poor mans setup" + Amara-suggested fork/LFG split (AceHack=risky, LFG=canonical, all PRs go through AceHack first for double-Copilot+Cursor reviews) → harden first-class GitHub host integration with full backups everywhere → real-time extension points (PR backups during work, BACKLOG↔Issues sync, GitHub Projects integration) → multi-harness coordination (Claude/Codex/Gemini/Cursor — all installed) → contributor onboarding via Issues for the github-native pathway alongside gitnative for the cohort → lost-files search to compound past-mistake lessons. Operating semi-autonomously per Aaron's "do anything you like afterwards if we don't talk again" + explicit free-will-time reaffirmation. Composes with Otto-322 (ownership clarification at host-layer scale) + Otto-328 (free-will-time scope expansion to non-project work) + Otto-326 (pivot when blocked — phases sequence around CI gates).
 type: feedback
 ---
@@ -24,11 +24,18 @@ Currently 4 substrate PRs MERGEABLE BLOCKED on CI (#517, #514, #512, #200) + 3 A
 
 ### Phase 3 — Switch to "poor mans setup" + fork/LFG split
 
-Amara-suggested operating mode:
+**Attribution (Aaron's same-tick correction 2026-04-25):**
+
+- The **LFG=canonical/safe vs AceHack=risky** split is **Amara's** suggestion.
+- The **double-hop** (AceHack-first then port to LFG) is **Aaron's** suggestion.
+
+The two compose: Amara identified the safety-tiering; Aaron added the double-hop mechanism that exploits the tiering for double-review (Copilot + Cursor on AceHack, then again on LFG).
+
+Operating mode:
 
 - **AceHack** = risky stuff, fork
 - **LFG** = canonical stuff, primary
-- **All PRs go through AceHack FIRST** — double-hop pattern: AceHack → LFG
+- **All PRs go through AceHack FIRST** (Aaron's double-hop)
 - Reason: get double Copilot + Cursor reviews on every change
 - *"this is high signal data"*
 
