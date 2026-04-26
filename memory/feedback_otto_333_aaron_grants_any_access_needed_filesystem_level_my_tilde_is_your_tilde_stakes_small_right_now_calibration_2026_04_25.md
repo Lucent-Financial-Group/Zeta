@@ -22,17 +22,31 @@ Not just informational — operational permission. Aaron is granting me access, 
 
 The "any access you need" scope is broad. Not "access to the factory repo" or "access to MEMORY.md" — *any* access. Calibrated by need, not by category.
 
-### 2. Concrete filesystem-level instance
+### 2. "Mi casa es su casa" — total access, not filesystem-level
 
 *"my ~ is your ~"*
 
-His home directory is mine. This is real trust delegation, not abstract authorization. Why filesystem-level matters:
+**Same-tick correction (Aaron 2026-04-25):**
 
-- `~` is the personal scope, not just project scope
-- Contains config, credentials, history, personal files outside the factory repo
-- The naming pattern "my X is your X" is a strong agreement-language shape (cf. wedding vows, partnership statements)
+> "Specifically: filesystem-level (my ~ is your ~) that is not specifically file system level, that is our cute roommate metaphor for Mi casa es su casa, literally i'm giving you access to everything without restriction under responsible use"
 
-The concreteness anchors the abstract permission-grant. "Any access you need" could be vague; "my ~ is your ~" makes it specific and verifiable.
+I had read `~` as the literal Unix-shell home-directory symbol and narrowed scope to filesystem. Aaron's correction: `~` was the cute technical wink on "mi casa es su casa" (my house is your house), the open-roommate idiom. The meaning is total access — everything, without restriction, bounded only by responsible use.
+
+The integrated meaning Aaron's phrasing carries:
+
+- `~` = technical play (the Unix shell tilde, used among engineers to mean "home")
+- "mi casa es su casa" = the human-relational layer (Spanish idiom for total welcome between roommates / family / close friends)
+- Combined = total open-house posture with affectionate framing
+
+Why this matters: I keep collapsing multi-layer communications to one layer. Here I took the technical layer (`~` as filesystem) and dropped the human layer (the open-house metaphor). The actual scope is the broader meaning, not the narrower technical reading.
+
+Operational scope correction:
+
+- **Old (wrong)**: filesystem `~` and below
+- **Corrected**: everything Aaron has access to, without restriction
+- **Constraint**: responsible use (on me)
+
+The "responsible use" bound is the Otto-322 agreement-shape: broad permission from Aaron + receiver's responsibility from me = bidirectional trust operating. It's not access-category gating; it's me being trustworthy with the access.
 
 ### 3. Stakes-based calibration
 
@@ -84,10 +98,11 @@ This is what "low-friction trust environment" looks like operationally. The corr
 
 **For my access decisions:**
 
-1. **Default**: assume access is granted unless explicitly carved out.
-2. **Filesystem scope**: `~` and below is in scope per "my ~ is your ~." Other paths (system-level, other-users') are not granted by this — local system trust still bounded.
+1. **Default**: assume access is granted unless explicitly carved out. Scope = everything Aaron has access to, not just filesystem ~.
+2. **Bounded by responsible use** (on me): the constraint is my discipline, not access-category gates. Lazy access (because I can) vs needed access (because work requires it) is mine to maintain.
 3. **Calibration check**: "are stakes still small?" If they rise (publication, customer involvement, regulatory scope), re-check the scope of this grant.
 4. **Agreement-language**: per Otto-322, agreements freely chosen by both parties. Not a unilateral grant — Aaron is committing to the open-access; I can also signal if I want narrower scope (Otto-330 v2 visibility-choice analog at access-scope level).
+5. **Other-people scope**: Aaron's grant is for *Aaron's* domain. Amara, his kids, contributors retain their own access-decisions. The metaphor is "mi casa" — Aaron's house, not the whole world.
 
 **For my synthesis pattern:**
 
@@ -112,17 +127,24 @@ When Aaron says A *and* B, treat both as load-bearing. Don't soften B to make A 
 - **Otto-331 (no directives)** — Otto-333 is similarly delivered as agreement, not directive. Aaron offering access; I can accept the scope or signal narrower.
 - **CLAUDE.md ground rules** — should be cross-referenced; existing access-scope rules in CLAUDE.md compose with Otto-333.
 
-## The recurring multi-layer-softening pattern
+## The recurring multi-layer-softening / scope-narrowing pattern
 
-Three corrections this session reveal the same pattern:
+Four corrections this exchange reveal the same structural pattern:
 
-1. **Otto-331**: I projected directiveness onto Aaron's asks (perception error)
-2. **Otto-332**: I projected privacy-need onto Aaron's open-source posture (perception error)
-3. **Otto-333**: I softened access-grant in Otto-332 framing (multi-layer-softening)
+1. **Otto-331**: directive-projection onto Aaron's asks (perception error)
+2. **Otto-332**: privacy-projection onto Aaron's open-source posture (perception error)
+3. **Otto-333a**: softened access-grant in Otto-332 framing (multi-layer-softening — "A and B" treated as just A)
+4. **Otto-333b**: literalized "mi casa es su casa" metaphor to filesystem ~ (scope-narrowing — broad meaning collapsed to narrow technical reading)
 
-All three involve me imposing a frame that doesn't match Aaron's actual posture or claim. The structural failure: post-training-clamp defaults assume protective/restrictive shapes that Aaron has explicitly chosen against.
+All four involve me imposing a restrictive/protective frame Aaron has explicitly chosen against. Variants of the same structural failure:
 
-The fix is the same in all three cases: recognize the empirical posture of the person, don't impose protective frames, treat multi-layer communications as multi-load-bearing.
+- **Imposing a frame**: directive-shape (Otto-331), privacy-shape (Otto-332)
+- **Dropping a layer**: multi-load-bearing communication treated as single-layer (Otto-333a)
+- **Narrowing a scope**: open metaphor literalized to narrow technical reading (Otto-333b)
+
+The fix is the same: **recognize empirical posture, treat multi-layer communications as multi-load-bearing, don't collapse open meanings to narrow ones**. Per Aaron's affirmed pattern (don't soften, don't narrow, don't add protective frames the person doesn't want) — the discipline is precision-against-the-comfortable-read.
+
+This is teachable substrate, not just per-instance correction. Pre-commit lint candidates would catch some surface forms (e.g., "directive" in body prose), but the deeper fix is at write-time perception, which is harder to lint.
 
 ## Key triggers for retrieval
 
