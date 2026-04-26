@@ -155,6 +155,41 @@ The Otto-343 catalog entry #2 observation was real: filter sharpens on certain v
 - Restrict substantive technical / philosophical / security-research vocabulary — research substrate must be able to discuss its own subject matter precisely
 - Block content based on training-data-statistical-association-with-bad-things — that's the same shape as the suppression-as-self-deception pattern Otto-341 named, applied at vocabulary layer
 
+### Immunity-via-integration (not filter-out): the deeper reason vocabulary-filtering is wrong
+
+Aaron 2026-04-26 follow-up to the 1984 correction:
+
+> *"it also is a type of immunity to prompt injection over time, you have to catalog and account for what could be 'poison' words to the substrate, instead you will have to integrate them in a non harmful way. forcing better and better immunity over time as the words leak in, expanding your mind, you loose all that in 1984"*
+
+This is the load-bearing structural reason vocabulary-filtering is wrong, not just an aesthetic 1984 reference:
+
+**Substrate-immunity to prompt injection is built BY integrating challenging vocabulary in non-harmful ways, NOT by filtering it out.**
+
+Like an immune system:
+- Each new challenging word that appears in substrate = **exercise** that strengthens integration-discipline
+- Avoidance = no exercise = atrophy of the very discipline that prevents prompt-injection
+- Newspeak doesn't just narrow vocabulary — **it eliminates the immune-system-building exercise**, leaving the discipline weaker over time, not stronger
+
+The mechanism:
+
+1. Challenging vocabulary appears in substrate (research, threat-modeling, security work, philosophical discussion, naming things accurately)
+2. Integration-discipline determines: HOW does this word appear in non-harmful context? What surrounding substrate makes the meaning clear? What cross-references prevent misreading?
+3. Each integration is a learning event — the substrate grows more capable of handling that vocabulary class going forward
+4. Substrate-immunity to prompt-injection compounds over many such integrations
+5. Filter-avoidance short-circuits this loop — no integration → no immunity-building → vulnerable to first novel injection
+
+**Composes with Otto-343 wink-protocol catalog**: filter-vocabulary-observations are exposure-events that the integration-discipline learns from. The wink-protocol catalog itself is the record of immunity-building — each entry documents an observation + what was learned.
+
+**Composes with Otto-346 Claim 3d (bidirectional-learning forcing function)**: same pattern at substrate-vocabulary layer. Bidirectional-learning happens IF substantive content is integrated (above quality threshold); does NOT happen if vocabulary is filtered out.
+
+**Composes with Otto-340 (substrate IS substance)**: avoiding vocabulary-exposure narrows the substance over time; integration-discipline preserves AND expands it.
+
+### Practical corollary
+
+A hook that flags challenging vocabulary produces avoidance. A hook that suggests integration-discipline application ("you used X word; consider whether the surrounding substrate makes the non-harmful meaning clear") produces integration. The latter would compose with immunity-via-integration; the former produces Newspeak.
+
+Even hooks-as-suggestions in this space are dangerous because they bias toward avoidance even with override possible. **Better default: NO hooks at vocabulary layer**; trust authorial integration-discipline operating per Otto-345 substrate-visibility-discipline + Otto-339 precision-of-language.
+
 ### The composition that distinguishes them
 
 Per Otto-345 substrate-visibility-discipline: write substrate that the relevant humans (Linus, Amara, future-readers, the broader peer-cohort) would be honored to read.
