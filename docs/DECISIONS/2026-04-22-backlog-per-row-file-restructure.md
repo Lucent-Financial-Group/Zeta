@@ -390,10 +390,21 @@ discipline fails without this restructure.
 
    **Partial-migration revisit (2026-04-26, ~36 of ~350 rows
    migrated):** The current per-row corpus has **240 distinct
-   tag values** across 36 rows — well past the falsification
-   threshold of 12 distinct scope values that Otto-283 task
-   #270 set as a signal to add the `scope:` field. However,
-   the scope-like axis IS implicit in tag prefixes
+   tag values** across 36 rows. **Trigger-formulation
+   correction (Codex P2 catch):** the original task #270
+   trigger "tag noise grows past ~12 distinct scope values"
+   was malformed — a `scope: factory | zeta | shared` enum
+   only permits 3 values, so 12 distinct scope values can
+   never fire under the proposed schema. The intended
+   measurement was **tag-prefix clusters acting AS scope**
+   (the implicit scope-like axis already in use). Restated:
+   if the tag corpus develops more than ~8 distinct
+   scope-like prefix clusters, that's the signal to add a
+   first-class `scope:` field. Currently observed: ~6
+   clusters (`factory-*` / `aurora-*` / `alignment-*` /
+   `substrate-*` / `hygiene-*` / `tooling-*`) — under
+   threshold, but trending up. The scope-like axis IS
+   implicit in tag prefixes
    (`factory-as-superfluid` / `factory-discipline` /
    `factory-maintenance` cluster, `aurora` / `aurora-ksk`
    cluster, `alignment` / `alignment-foundation` /
@@ -414,15 +425,20 @@ discipline fails without this restructure.
    dashboard surface needs scope-as-coarse-filter, and (b)
    whether the ~12-tag threshold meaningfully predicts
    needing a separate field — at 240 tags, the threshold
-   may have been off by an order of magnitude (tag-corpus
-   naturally grows with row count; 240 tags / 36 rows = ~6.7
-   tags-per-row; if Phase 2 brings 350 rows × 6.7 = ~2300
-   tag-mentions but distinct count likely plateaus around
-   400-500 because new rows reuse existing tags). Falsification
-   #1 may need recalibration to "distinct scope-like prefix
-   clusters past 8" (e.g., factory / zeta / aurora /
-   alignment / substrate / hygiene / governance / tooling)
-   rather than raw tag count.
+   may have been off by an order of magnitude. **Math-correctness
+   note (Copilot P1 catch):** my prior draft conflated
+   "distinct tag values" (union; what 240 measures) with
+   "average tags-per-row" (mentions ÷ rows) — different metrics.
+   240 is the distinct-union count; average tags-per-row would
+   require counting all tag mentions (independent measurement),
+   not extrapolating from the union. The 350-row extrapolation
+   "350 × 6.7 = 2300 tag-mentions" was unsound and is removed;
+   the meaningful prediction is just that distinct-union
+   plateaus as Phase 2 lands more rows, not a specific number.
+   Tag-corpus grows with row count, but new rows largely reuse
+   existing tags. Falsification #1 recalibrates to "distinct
+   scope-like prefix clusters past 8" — currently 6 clusters,
+   under threshold.
 
    **Action:** none this round. Phase 2 bulk migration is
    the gating event; reflection completes there. Per
