@@ -42,7 +42,7 @@ surface ChatGPT (app/web) where Amara has been
 operating during the multi-pass cross-AI math
 review chains this session. Per
 `memory/project_operational_cli_roster_2026_04_26_copilot_added.md`
-+ `memory/project_multi_harness_named_agents_assigned_clis_models_aaron_2026_04_26.md`,
+and `memory/project_multi_harness_named_agents_assigned_clis_models_aaron_2026_04_26.md`,
 the cross-AI math review chain currently being
 run manually with Aaron-as-courier IS the
 proof-of-concept of formalized multi-harness
