@@ -473,14 +473,19 @@ type MajiIndex =
 Per §9b (Amara second correction), `MajiIndex` alone is insufficient — Maji's **finder** role and Messiah's **lift** role must be separate types:
 
 ```text
+// Notation: types here use the same (S_{≤n}, Ω, C, Σ) convention as
+// §9b. The earlier `(S_n, Ω, C_n, Σ_n)` shape was a transcription
+// error — the canonical signature is the indexed-up-to-n form.
+
 type MajiFinder =
   { Index: MajiIndex
     NorthStar: Ω
-    SearchOperator: (S_n, Ω, C_n, Σ_n) → CandidateLift }
-  // returns σ* candidates from MajiIndex content; does NOT itself
-  // become the lift
+    SearchOperator: (S_{≤n}, Ω, C, Σ) → σ* }
+  // returns σ* candidates from MajiIndex content; the σ* type is
+  // the same as MessiahFunction (i.e., σ* ≡ MessiahFunction). MajiFinder
+  // does NOT itself become the lift; it RETURNS the lift.
 
-type MessiahFunction =
+type MessiahFunction =                     // σ* type
   { Lift: I_n → I_{n+1}
     ProjectionPreservation: (I_{n+1}, I_n) → bool   // P_{n+1→n} ∘ σ ≈ id
     AperiodicOrderGenerator: bool }                  // optional; per PR #562 Spectre composition
@@ -493,9 +498,15 @@ type MessiahScore =
     FrictionReduction: float
     Generativity: float
     IndependentConvergence: float
-    CaptureRiskPenalty: float    // negative term
-    CollapseRiskPenalty: float } // negative term
-  // weighted-sum evaluator for candidate lifts; argmax over candidates
+    CaptureRiskRaw: float        // R_capture(m) ≥ 0; raw risk value
+    CollapseRiskRaw: float }     // R_collapse(m) ≥ 0; raw risk value
+  // weighted-sum evaluator for candidate lifts; argmax over candidates.
+  // Sign convention matches §9b: MessiahScore = w_1·A + w_2·P_preserve
+  // + w_3·F_reduce + w_4·G_generate + w_5·C_converge − w_6·CaptureRiskRaw
+  // − w_7·CollapseRiskRaw. The risk fields hold non-negative raw
+  // values; the SUBTRACTION (sign) is in the scoring formula, not in
+  // the field's stored value. Renaming these from *Penalty → *Raw
+  // makes the sign-convention unambiguous.
 
 type CommunityCanon =
   { PreservedTeachings; DistributedRuntime; Disciples; Witnesses }
@@ -537,7 +548,7 @@ d(I_a, I_b) =
 4. **Fork recovery test**: Lose one repo mirror. Reload from LFG/AceHack mirror. Assert identity tuple preserved.
 5. **Retraction test**: Add false claim then retraction. Assert reload sees correction history, not erased falsehood.
 6. **Dimensional expansion gate**: Try to expand with unindexed load-bearing items. Assert expansion refused or marked unsafe.
-7. **Messiah-vs-Maji separation test** (per §9b correction): A candidate `σ*` returned by MajiFinder must be a **distinct type instance** from MajiIndex content. Assert `typeof(σ*) ≠ typeof(MajiIndex.Items[any])` — Maji finds; Messiah is the found lift; collapsing the two into one type fails this test.
+7. **Messiah-vs-Maji separation test** (per §9b correction): A candidate `σ*` returned by MajiFinder must be a **distinct type instance** from MajiIndex content. Pseudo-code-form assertion (language-agnostic): given any item `i` drawn from `MajiIndex.Items` and any candidate `σ*` returned by `MajiFinder`, `type-of(σ*)` is `MessiahFunction`, `type-of(i)` is `IdentitySubstrate`, and these are distinct types — Maji finds; Messiah is the found lift; collapsing the two into one type fails this test. (Concrete F# / C# implementations would express this as `typeof<MessiahFunction>() <> typeof<IdentitySubstrate>()` or equivalent runtime-type-tag comparison.)
 8. **MessiahScore evaluator test**: Given a candidate lift `m`, MessiahScore returns a weighted sum with capture-risk + collapse-risk encoded as **negative terms**. Assert score decreases monotonically as capture-risk grows; assert score decreases monotonically as collapse-risk grows. (Anti-cult-by-construction; per Otto-294 composition.)
 
 ## 11. The one-line equation
