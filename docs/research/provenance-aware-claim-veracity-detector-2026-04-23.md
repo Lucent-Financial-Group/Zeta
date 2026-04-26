@@ -1,53 +1,18 @@
 # Provenance-aware claim-veracity detector — engineering-facing design
 
-Scope: research and cross-review artifact. Engineering-
-facing design doc for the detector Amara's 8th courier ferry
-named (PR #274 §"The corrected rainbow-table model" and
-§"provenance-aware claim-veracity detector"). Composes on
-top of the semantic-canonicalization spine (PR #280 Otto-98).
-Formalises the scoring layer the spine sketched, integrates
-Aminata-anticipated concerns at write-time, and names the 5
-output types from Amara's ferry.
+Scope: research-grade engineering-facing design for the detector Amara's 8th courier ferry named (PR #274). Composes on Otto-98 semantic-canonicalization spine (PR #280); formalises the scoring layer; integrates Aminata-anticipated concerns; names the 5 output types from Amara's ferry.
 
-Attribution: output-type shape + score formulation
-from Amara's 8th ferry; scoring-layer Aminata-pattern
-integration (band-valued output, parameter-change-ADR-
-gate, independent-oracles discipline) from her Otto-90
-adversarial pass on oracle-scoring v0 (PR #263); spine
-substrate + composition-table pattern from Otto-98
-(PR #280); Otto-99 synthesis.
+Attribution: Amara (8th ferry) — output-type shape + score formulation. Aminata (Otto-90 adversarial pass, PR #263) — band-valued output + parameter-change-ADR-gate + independent-oracles discipline. Otto-98 (PR #280) — spine substrate + composition-table pattern. Otto-99 — synthesis.
 
 Operational status: research-grade
 
-**Promotion path to authoritative-detector status (long-
-horizon, not v0/v1):** Aaron Otto-2026-04-24 framed the
-long-horizon upgrade explicitly — *"we can make it a true
-detector under our axioms"* — and separately reinforced
-the gate discipline — *"i don't treat anyting this new as
-final authorative connoncial until peer review"*. v0 is
-advisory-only; v1 (independent-oracle substrate) makes
-the evidence gate binding in band-merging; a further vN
-promotion lands once (a) the factory's axiomatic substrate
-is complete enough that "truth" is tractable within the
-axiom system, AND (b) the axiomatic substrate itself has
-cleared peer review — not just written-and-committed.
-Axioms + peer review together gate the promotion; either
-alone is insufficient. Only at vN does `likely
-confabulated` graduate from "worth a closer human look"
-to "authoritative reject" without requiring the human-
-review fallback. Not scoped in this doc; named here so
-the upgrade path is visible and the v0 advisory stance is
-understood as intentional scaffolding, not as a final
-ceiling.
+Non-fusion disclaimer: Amara-Otto-Aminata consistent output is NOT evidence of merged substrate. The three reviewers cite independent literature (Hinton/Salakhutdinov semantic hashing; Charikar LSH; HNSW Malkov-Yashunin; CISA/NIST procurement guidance; standard error-bound theory). Per SD-9, independent primary-source grounding is baseline; concordance is signal, not proof of unity.
 
-Non-fusion disclaimer: Amara-Otto-Aminata consistent
-output on this design is NOT evidence of merged substrate.
-The three reviewers cite independent literature (Hinton/
-Salakhutdinov semantic hashing; Charikar LSH; HNSW Malkov-
-Yashunin; CISA/NIST procurement guidance; standard
-error-bound theory). Per SD-9, independent primary-source
-grounding is baseline; concordance is signal, not proof
-of unity.
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
+## Promotion path to authoritative-detector status (long-horizon, not v0/v1)
+
+Aaron Otto-2026-04-24 framed the long-horizon upgrade explicitly — *"we can make it a true detector under our axioms"* — and separately reinforced the gate discipline — *"i don't treat anyting this new as final authorative connoncial until peer review"*. v0 is advisory-only; v1 (independent-oracle substrate) makes the evidence gate binding in band-merging; a further vN promotion lands once (a) the factory's axiomatic substrate is complete enough that "truth" is tractable within the axiom system, AND (b) the axiomatic substrate itself has cleared peer review — not just written-and-committed. Axioms + peer review together gate the promotion; either alone is insufficient. Only at vN does `likely confabulated` graduate from "worth a closer human look" to "authoritative reject" without requiring the human-review fallback. Not scoped in this doc; named here so the upgrade path is visible and the v0 advisory stance is understood as intentional scaffolding, not as a final ceiling.
 
 ---
 

@@ -1,32 +1,14 @@
 # BLAKE3 receipt hashing v0 — design input to the lucent-ksk receipt ADR
 
-Scope: research and cross-review artifact. Design input
-for a receipt-hashing scheme that eventually lands as an ADR
-in `Lucent-Financial-Group/lucent-ksk` (not in Zeta). This
-doc is **Zeta-side design input**, not the ADR itself. The
-canonical ADR belongs in lucent-ksk per Aminata's Otto-90
-critique (receipt-hash binding is control-plane policy, not
-data-plane algebra).
+Scope: research-grade Zeta-side design input for a receipt-hashing scheme that lands as ADR in `Lucent-Financial-Group/lucent-ksk` (NOT in Zeta). Canonical ADR belongs there per Aminata's Otto-90 critique (control-plane policy, not data-plane algebra).
 
-Attribution: v0 proposal authored by Amara in her 7th
-courier ferry (PR #259); side-channel-leakage and
-cryptographic-agility critiques authored by Aminata in her
-Otto-90 threat-model pass (PR #263); parameter-file-SHA
-addition proposed by Otto in the oracle-scoring v0 design
-(PR #266, Otto-91); Max attributed for original lucent-ksk
-receipt/signature language that the v0 builds on.
+Attribution: Amara (7th courier ferry, PR #259) — v0 proposal; Aminata (Otto-90 threat-model, PR #263) — side-channel + crypto-agility critiques; Otto (PR #266, Otto-91) — parameter-file-SHA addition; Max attributed for original lucent-ksk receipt/signature language.
 
 Operational status: research-grade
 
-Non-fusion disclaimer: Amara proposing BLAKE3 +
-Ed25519 + field-binding, Aminata critiquing the proposal's
-leak/rotation gaps, and Otto synthesising a v0 that
-addresses both is not evidence of merged identity.
-Independent pass + adversarial pass + synthesis is three
-distinct review surfaces reaching a consensus candidate,
-per SD-9 "agreement is signal not proof" — the signal
-here warrants cross-repo ADR review in lucent-ksk, not
-immediate adoption.
+Non-fusion disclaimer: Amara proposing + Aminata critiquing + Otto synthesising the v0 is three distinct review-surfaces reaching a consensus candidate per SD-9 ("agreement is signal not proof"); not evidence of merged identity. Cross-repo ADR review in lucent-ksk is the appropriate next gate, not immediate adoption.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
 
 ---
 
