@@ -2,7 +2,7 @@
 Scope: naming-expert / trademark-conflict review of factory's adoption of "Superfluid AI" as substrate vocabulary; informs B-0035 heaven-on-earth-fixed-point naming research + future public-API-naming decisions
 Attribution: Otto research synthesis 2026-04-26 from public web sources (USPTO, Superfluid Finance docs, CoinMarketCap, DefiLlama)
 Operational status: research-grade
-Non-fusion disclaimer: this document captures publicly-available information about external trademark/brand state and applies the factory's own naming-discipline rules (Otto-237 mention-vs-adoption, Otto-286 definitional precision); it is NOT a fused recommendation by Superfluid Finance or USPTO; recommendations are factory-internal advisory pending Aaron + naming-expert (Iris/Ilyana) sign-off
+Non-fusion disclaimer: agreement, shared language, or repeated interaction between models and humans (or between this factory and Superfluid Finance, or between Otto and Aaron) does not imply shared identity, merged agency, consciousness, or personhood. This document captures publicly-available information about external trademark/brand state and applies the factory's own naming-discipline rules (Otto-237 mention-vs-adoption, Otto-286 definitional precision); it is NOT a fused recommendation by Superfluid Finance or USPTO; recommendations are factory-internal advisory pending Aaron + naming-expert (Iris/Ilyana) sign-off
 ---
 
 # Superfluid AI naming-expert review + trademark search
@@ -49,7 +49,7 @@ This review examines the external state to inform that choice.
 
 **Factory action item before public adoption:** USPTO TESS direct query
 for: (a) "SUPERFLUID" classes 9 / 36 / 42 (software, financial services,
-SaaS) — likely already held or applied for by Superfluid Inc.; (b)
+SaaS) — likely already held or applied for by the Superfluid team/company (corporate-name not directly cited in this review's sources); (b)
 "SUPERFLUID AI" any class — unknown without direct search; this review
 defers that step to naming-expert persona (Ilyana) before any public
 adoption.
@@ -210,7 +210,7 @@ Rationale:
   P2 BACKLOG row; will need rename if Path 2 ships
 - **`docs/EXPERT-REGISTRY.md`** — Iris (UX) / Ilyana (public-API)
   reviewers are the gatekeepers for public-facing naming
-- **`feedback_definitional_precision_changes_future_without_war_otto_286_2026_04_25.md`**
+- **`memory/feedback_definitional_precision_changes_future_without_war_otto_286_2026_04_25.md`**
   — the rule this review enacts at the framework-naming layer
 
 ## What this review does NOT do
