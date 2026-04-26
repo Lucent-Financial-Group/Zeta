@@ -387,6 +387,48 @@ discipline fails without this restructure.
    If we want it, file a Phase 1b directive to extend the
    parser; otherwise the existing `tags:` array can carry
    `scope-factory` / `scope-zeta` tag values.
+
+   **Partial-migration revisit (2026-04-26, ~36 of ~350 rows
+   migrated):** The current per-row corpus has **240 distinct
+   tag values** across 36 rows — well past the falsification
+   threshold of 12 distinct scope values that Otto-283 task
+   #270 set as a signal to add the `scope:` field. However,
+   the scope-like axis IS implicit in tag prefixes
+   (`factory-as-superfluid` / `factory-discipline` /
+   `factory-maintenance` cluster, `aurora` / `aurora-ksk`
+   cluster, `alignment` / `alignment-foundation` /
+   `alignment-substrate` cluster, `substrate-as-mechanism`
+   / `substrate-as-revenue-surface` / `substrate-poisoning`
+   cluster). The tags-only approach is functioning at
+   partial-migration scale — none of the operational
+   workflows (PR review, BACKLOG-pickup per Aaron's
+   "non-speculative work" rule, hot-file-detector audits)
+   have hit the "factory-vs-zeta scope distinction is
+   load-bearing for a generated dashboard / report"
+   trigger from task #270.
+
+   **Provisional finding:** tags-only approach is **holding**
+   at partial-migration scale. Final reflection deferred
+   until bulk migration completes (Phase 2 ships all ~350
+   rows). At that point: re-check (a) whether any reporting/
+   dashboard surface needs scope-as-coarse-filter, and (b)
+   whether the ~12-tag threshold meaningfully predicts
+   needing a separate field — at 240 tags, the threshold
+   may have been off by an order of magnitude (tag-corpus
+   naturally grows with row count; 240 tags / 36 rows = ~6.7
+   tags-per-row; if Phase 2 brings 350 rows × 6.7 = ~2300
+   tag-mentions but distinct count likely plateaus around
+   400-500 because new rows reuse existing tags). Falsification
+   #1 may need recalibration to "distinct scope-like prefix
+   clusters past 8" (e.g., factory / zeta / aurora /
+   alignment / substrate / hygiene / governance / tooling)
+   rather than raw tag count.
+
+   **Action:** none this round. Phase 2 bulk migration is
+   the gating event; reflection completes there. Per
+   Otto-283 standing directive (`memory/feedback_decide_track_reflect_revisit_then_talk_with_experience_otto_283_2026_04_25.md`):
+   decided, tracked, partially reflected, full revisit when
+   bulk migration ships.
 3. **Concurrent-migration with R45 original intent** — Aaron
    may prefer to land the restructure *and* the reducer-agent
    flip in the same round, trusting the restructure to absorb
