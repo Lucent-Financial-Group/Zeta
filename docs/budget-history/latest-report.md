@@ -80,4 +80,3 @@ Caveats
 - Wrapper: `tools/budget/daily-cost-report.sh` (this run)
 - Capture script: `tools/budget/snapshot-burn.sh`
 - Projection script: `tools/budget/project-runway.sh`
-
