@@ -126,10 +126,34 @@ while IFS= read -r -d '' file; do
     fi
   done
 
-  if [[ ${#missing[@]} -gt 0 ]]; then
+  # Operational-status VALUE validation per GOVERNANCE.md §33 lines
+  # 777-780: enum is strict — `research-grade` or `operational`,
+  # nothing else. Free-form values (e.g. `research-grade specification
+  # with implementation-ready type signatures...`) violate the spec
+  # and would fail downstream tooling that parses this field.
+  #
+  # Codex P2 finding (PR #572 review): catch the value-discipline at
+  # lint-time, not only label-presence.
+  bad_value=""
+  if echo "$header_region" | grep -q '^Operational status:'; then
+    op_line=$(echo "$header_region" | grep -m1 '^Operational status:')
+    # Strict-enum regex: anchored to start, ends after the enum token.
+    # Trailing whitespace tolerated (markdownlint may strip it
+    # anyway).
+    if ! echo "$op_line" | grep -qE '^Operational status: (research-grade|operational)\s*$'; then
+      bad_value="$op_line"
+    fi
+  fi
+
+  if [[ ${#missing[@]} -gt 0 || -n "$bad_value" ]]; then
     violations=$((violations + 1))
     violation_files+=("$file")
-    echo "VIOLATION: ${file#"$REPO_ROOT/"} missing §33 labels: ${missing[*]}" >&2
+    if [[ ${#missing[@]} -gt 0 ]]; then
+      echo "VIOLATION: ${file#"$REPO_ROOT/"} missing §33 labels: ${missing[*]}" >&2
+    fi
+    if [[ -n "$bad_value" ]]; then
+      echo "VIOLATION: ${file#"$REPO_ROOT/"} Operational-status value not enum-strict (must be 'research-grade' or 'operational' alone): ${bad_value}" >&2
+    fi
   fi
 done < <(find "$RESEARCH_DIR" -type f -name '*.md' -print0)
 
