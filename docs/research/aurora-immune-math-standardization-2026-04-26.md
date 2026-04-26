@@ -41,7 +41,7 @@ This document is the strict canonicalization. Five sections (the original four p
 | `L_t` | language state | distribution over emission strategies |
 | `N_t = (V_t, E_t, W_t, φ_t)` | network/consensus graph | nodes / edges / weights / oscillator phases |
 | `B_t : 2^X → [0,1]` | belief distribution | `B_t(X) = P(X \| O_{≤t}, a_{<t})` |
-| `M_t = M_t^archive ∪ M_t^active` | immune memory partition | archive = immutable regression fixtures (canonical attacks); active = decaying live detector weights (per Round-2 Amara: prevent immune bloat) |
+| `M_t = M_t^archive ∪ M_t^active` | immune memory partition | archive = immutable regression fixtures (canonical attacks); active = weighted multiset of detectors `{(d_j, n_j(t))}` so scalar multiplication `(1 − δ_decay) · M_t^active` acts elementwise on the `n_j(t)` weights (per Round-2 Amara: prevent immune bloat; per Copilot: type-consistency for scalar-on-set) |
 | `D_t` | detector repertoire | `n_j(t) ∈ ℕ_0` per detector population |
 | `cap : Subject → 2^Action` | capability | **SET, not scalar.** Use `⊆` and `∩`, never `≤` or `min` |
 | `ImmuneRisk : Antigen → [0,1]` | bounded real | sigmoid output |
@@ -65,7 +65,10 @@ This document is the strict canonicalization. Five sections (the original four p
 S_{t+1} = S_t ⊕ Δ_t
 S_{t+1} = S_t ⊕ Retract(x)    (retraction is forward event, not deletion)
 I_t = N(LoadBearing(S_t))
-W_t ≠ I_t                      (context window IS NOT identity)
+Ctx_t ≠ I_t                    (context window IS NOT identity; Ctx_t renamed
+                                 from prior W_t to avoid symbol collision with
+                                 graph weight set W_t in the network tuple
+                                 N_t = (V_t, E_t, W_t, φ_t) — Copilot finding)
 ```
 
 ### 2.2 Capabilities as sets (Deep Think + Amara correction)
