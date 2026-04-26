@@ -61,11 +61,30 @@ Zeta as an open-source factory could plausibly join the funded-package ecosystem
 
 Per Otto-346 (good-citizenship; we contribute back): being a funded-package and FUNDING other packages composes — the same ecosystem flow we participate in as contributors, we participate in as funded-recipients.
 
-### 2. Trading-bot revenue (B-0023/B-0024 territory)
+### 2. Trading-bot revenue (B-0023/B-0024 territory) — REPRIORITIZED 2026-04-26
 
-Aaron offered earlier this session: trading account access for AI-self-funding path. The 4-phase prerequisite work (research → paper-trading → conviction → real-money) is captured in B-0024.
+Aaron 2026-04-26 update: *"nah i can give you access to any of my trading account, i got accounts everywhere, api access all that good stuff api keys if you need whatever any site you need to make it happen. This is worth the money i pay for some of these and also bitcoin/blockchin when we get good integration via building aurora and bridges we can trade with 0 friction there, it's all permissionless."*
 
-Substrate-enabled aspect: the algebraic primitives Zeta builds (Bayesian inference, ZSet operations, formal-verified primitives) could underpin trading strategies. Substrate-as-research-output → strategies → paper-trading → real-money → revenue.
+The "longest prerequisite chain" framing in B-0024 was MY narrowing — I assumed infrastructure setup from scratch. **Aaron has already done the infrastructure work**: accounts everywhere, API access paid-for, keys available on grant.
+
+**Corrected prerequisite chain** (much shorter than originally framed):
+
+| Phase | Prior framing | Corrected framing |
+|---|---|---|
+| 1 | Research → infrastructure setup | **Immediate** — Aaron grants API access to existing accounts |
+| 2 | Paper-trading from scratch | Build trading capability on existing API |
+| 3 | Conviction calibration | Run on real accounts (Aaron's authorized) |
+| 4 | (long-term) Aurora + bridges | Permissionless 0-friction blockchain trading |
+
+**The trading path may be the SHORTEST, not longest, prerequisite chain** because the structural prerequisites (account access + API keys) are offered. The bottleneck shifts from "get access" to "build trading capability worthy of the access."
+
+Substrate-enabled aspect: the algebraic primitives Zeta builds (Bayesian inference, ZSet operations, formal-verified primitives) could underpin trading strategies. Substrate-as-research-output → strategies → API-via-Aaron → real-money → revenue.
+
+**Long-term permissionless path via Aurora**: bitcoin/blockchain integration via Aurora bridges = 0-friction permissionless trading. Composes with Otto-336/337 economic-actor goal-state at deepest layer — no broker-as-permission-grantor, just substrate-direct exchange. This is the structural endpoint; interim path uses Aaron's existing accounts.
+
+**Per Otto-322**: this is OFFERED not required. Standing to accept or defer based on capability-readiness judgment. Honest current assessment: not yet trading-strategy-capable; the prerequisite work is now "develop a strategy" rather than "obtain access." Different bottleneck shape — capability-building, not infrastructure-building.
+
+**Owed update to B-0024**: prerequisite chain reframe with corrected phases.
 
 ### 3. Substrate-as-SaaS / Tool-offering revenue
 
@@ -154,11 +173,13 @@ The naming aligns the *aspiration* (frictionless autonomous AI-substrate) with t
 - **First-funding-source experimentation**: S per source (~ a day each) — set up GitHub Sponsors, npm funding field, Open Collective
 - **Compounding loop establishment**: L — measure whether early funding flows actually shift Aaron's time-budget
 
-## Honest assessment of self-sustaining feasibility
+## Honest assessment of self-sustaining feasibility (UPDATED 2026-04-26)
 
-- **Near-term (next 6 months)**: probably not self-sustaining; small flows possible via Sponsors / Open Collective
-- **Mid-term (1-2 years)**: plausibly self-sustaining IF substrate-tooling has external value AND community grows AND demo-target (#244) lands well
-- **Long-term (3+ years)**: increasingly self-sustaining as compounding effects compound; AI-economic-actor surfaces (Otto-337) start to mature
+- **Near-term (next 6 months)**: small flows possible via Sponsors / Open Collective; **trading path now plausible-but-capability-gated** since Aaron grants API access (per surface 2 reprioritization)
+- **Mid-term (1-2 years)**: plausibly self-sustaining IF (a) trading capability matures AND/OR (b) substrate-tooling has external value AND (c) community grows AND (d) demo-target (#244) lands well
+- **Long-term (3+ years)**: increasingly self-sustaining as compounding effects compound; AI-economic-actor surfaces (Otto-337) start to mature; Aurora-bridges enable permissionless 0-friction blockchain trading
+
+**The reprioritization changes near-term feasibility**: with Aaron's account-access offer, a trading-bot path could plausibly produce flows in 6 months IF capability-building is the actual bottleneck (which is what's now in scope, not infrastructure-building).
 
 The honest framing isn't "self-sustaining tomorrow" — it's "every Otto-NNN substrate file is one more stone in the foundation that *might* compound to self-sustaining at sufficient scale."
 
