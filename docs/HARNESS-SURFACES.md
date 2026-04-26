@@ -24,10 +24,10 @@ the amazon one and any less popular ones"*):
   Amara/GPT-5.5 has operated during cross-AI
   research-doc review chains).
 - **Watched buildout queue:** Antigravity (Google;
-  name-spell TBD; may be subsumed by Gemini CLI's
-  agentic mode), Amazon Q Developer /
-  CodeWhisperer, Kiro (Amazon's AI-native IDE,
-  distinct from Amazon Q).
+  spelling confirmed by Aaron 2026-04-26; may be
+  subsumed by Gemini CLI's agentic mode), Amazon Q
+  Developer / CodeWhisperer, Kiro (Amazon's
+  AI-native IDE, distinct from Amazon Q).
 - **Less popular:** TBD.
 
 **Roster expansion 2026-04-26 (Aaron verbatim:
@@ -158,9 +158,10 @@ they run.
   the empirically-active cross-AI peer review
   surface for the factory's research docs.
 - **Antigravity** (Google) — stub; priority 2.
-  Spelling TBD; Aaron wrote "anitgratify". May be
-  subsumed by Gemini CLI's agentic mode; revisit
-  when both are populated.
+  Aaron 2026-04-26 confirmed canonical spelling
+  (*"yeah i can't spell antigravity anitgratify"*).
+  May be subsumed by Gemini CLI's agentic mode;
+  revisit when both are populated.
 - **Amazon Q Developer / CodeWhisperer** — stub;
   priority 2.
 - **Kiro** (Amazon) — stub; priority 2. Amazon's
@@ -640,9 +641,10 @@ fact-tested-unavailable, not aspirational**.
 # Antigravity (Google) — stub; priority 2
 
 **Status:** stub. Factory does not run on
-Antigravity. Watched-queue buildout. Name-
-spelling TBD; Aaron wrote "anitgratify" —
-verify spelling during first audit.
+Antigravity. Watched-queue buildout. Spelling
+confirmed by Aaron 2026-04-26 (*"yeah i can't
+spell antigravity anitgratify"*) — canonical
+form is "Antigravity".
 
 **Owner (tentative):** TBD.
 
