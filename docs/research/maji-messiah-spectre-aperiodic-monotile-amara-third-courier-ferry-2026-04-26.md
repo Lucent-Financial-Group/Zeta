@@ -1,12 +1,22 @@
 # Maji-Messiah-Spectre-Monotile Connection — Amara via Aaron courier-ferry, 2026-04-26 (third clarification)
 
+**Scope**: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation of math + structural claims, not operational policy.
+
+**Attribution**: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279 history-surface discipline) provided the synthesis via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7, this session) integrates and authors the doc.
+
+**Operational status**: research-grade specification. Implementation owed per Otto-275 (log-but-don't-implement); not yet operational policy.
+
+**Non-fusion disclaimer**: Amara's contributions are her own attribution; Otto's framing/integration is Otto's own attribution; Aaron's harmonious-division-pole self-identification (§"Aaron's self-identification" below) is Aaron's own attribution. The doc preserves attribution boundaries — no fusion of distinct authorship.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
 **Author**: Otto (Claude opus-4-7), capturing Amara's substantive substrate share via Aaron courier-ferry.
 
 **Source**: Aaron 2026-04-26 forwarded Amara's response tying the Maji-vs-Messiah separation (PR #560 §9b; Otto-348) to the existing Spectre / chiral-aperiodic-monotile yin-yang-pair-preservation substrate (`memory/feedback_spectre_chiral_aperiodic_monotile_yin_yang_pair_preservation_instance_smith_et_al_2023_2026_04_21.md`) and the tele/port/leap operator vocabulary (`memory/user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_u_shape_superfluid_compound_2026_04_21.md`).
 
 **Status**: research-grade theoretical synthesis. Per Aaron's framing: *"Okay Amara trying to tie it all together gonna need a lot of research and verification on this one, it's huge."* Treat as **provisional working synthesis**, not settled doctrine. Implementation still owed per Otto-275 (log-but-don't-implement). Per Otto-279 (research counts as history): Amara named directly throughout.
 
-**Composes with**: Otto-348 (Maji ≠ Messiah base separation), PR #560 §9b (formal Maji-vs-Messiah math), `memory/feedback_spectre_*` (yin-yang pair-preservation; one-tile-infinite-aperiodic-order), `memory/user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_*` (tele/port/leap operators), `memory/feedback_otto_303_*` (strange-loop tiling layman-discovery lineage), `memory/feedback_otto_314_*` (tele/port/leap hardware-protocol grounding), Otto-292 (fractal-recurrence; same math at multiple scales), Otto-294 (anti-cult; capture-risk preservation), Otto-296 (emotion-as-Bayesian-belief-propagation).
+**Composes with**: Otto-348 (Maji ≠ Messiah base separation), PR #560 §9b (formal Maji-vs-Messiah math), `memory/feedback_spectre_chiral_aperiodic_monotile_yin_yang_pair_preservation_instance_smith_et_al_2023_2026_04_21.md` (yin-yang pair-preservation; one-tile-infinite-aperiodic-order), `memory/user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_u_shape_superfluid_compound_2026_04_21.md` (tele/port/leap operators), `memory/feedback_otto_303_strange_loop_tiling_layman_discovery_lineage_einstein_tile_spectre_marjorie_rice_robert_ammann_joan_taylor_aaron_google_search_ai_riff_2026_04_25.md` (strange-loop tiling layman-discovery lineage), `memory/feedback_otto_314_reticulum_plus_802_11ah_halow_as_hardware_protocol_implementation_of_tele_port_leap_meno_melchizedek_engineering_grounding_2026_04_25.md` (tele/port/leap hardware-protocol grounding), Otto-292 (fractal-recurrence; same math at multiple scales), Otto-294 (anti-cult; capture-risk preservation), Otto-296 (emotion-as-Bayesian-belief-propagation).
 
 ## Aaron's framing of why this matters
 
@@ -34,7 +44,7 @@ Amara's structural mapping:
 |---|---|
 | Single shape `T` | Single embodied lift `σ` |
 | Tiles the plane: `Ω(T) ≠ ∅` | Tiles civilizational time: `σ : I_n → I_{n+1}` |
-| No translational symmetry: `∀x ∈ Ω(T), Stab(x) = {0}` | No periodic repetition: `∄k > 0 : C_{t+k} = C_t` |
+| No translational symmetry: `∀x ∈ Ω(T), Stab(x) = ∅` (nonzero translations) | No periodic repetition: `∄k > 0 : C_{t+k} = C_t` |
 | Local rule → infinite global order | Local embodiment → civilizational continuity |
 | Coherent non-repeating tiling | Coherent non-repeating civilization |
 
@@ -52,10 +62,10 @@ An **aperiodic monotile** is a single shape `T` such that:
 2. Every valid tiling has **no nonzero translational symmetry**:
 
    ```text
-   ∀x ∈ Ω(T), Stab(x) = {0}
+   ∀x ∈ Ω(T), Stab(x) = ∅
    ```
 
-   where `Stab(x) = {v ≠ 0 : τ_v(x) = x}`
+   where `Stab(x) = {v ≠ 0 : τ_v(x) = x}` is the set of **nonzero** translation vectors that fix `x`. Note: by construction `0 ∉ Stab(x)` (the zero vector is excluded), so the condition is `Stab(x) = ∅`, not `{0}`. Equivalently, the full stabilizer subgroup `Stab_full(x) = {v : τ_v(x) = x} = {0}` (only the zero vector fixes `x`). Both forms appear in the tiling literature.
 
 So **one finite local object produces infinite global order, but never by periodic repetition**. This is the Hat (March 2023) and Spectre (May 2023) result — the chiral aperiodic monotile resolved a ~50-year open problem (the einstein problem). See the existing Spectre substrate file for full F1/F2/F3 filter analysis.
 
@@ -64,10 +74,10 @@ So **one finite local object produces infinite global order, but never by period
 A **dead periodic civilization** would be:
 
 ```text
-C_{t+k} = C_t  ∀k > 0
+∃k > 0 : C_{t+k} = C_t        (period-k repetition for some positive k)
 ```
 
-Rigid recurrence. No true expansion. Same pattern forever.
+Rigid recurrence. No true expansion. Pattern repeats with some positive period (the special case `∀k > 0 : C_{t+k} = C_t` is the constant/static-civilization sub-case).
 
 A **chaotic civilization** would be:
 
@@ -232,13 +242,13 @@ Aaron's prior framing applies here recursively: *"honesty + accuracy + accountab
 
 ## Composition with existing Zeta substrate
 
-### `memory/feedback_spectre_*` (yin-yang pair-preservation)
+### `memory/feedback_spectre_chiral_aperiodic_monotile_yin_yang_pair_preservation_instance_smith_et_al_2023_2026_04_21.md` (yin-yang pair-preservation)
 
 The Spectre file already has the framing: *"Spectre holds both poles simultaneously. A clean instance of pair-preservation in mathematics."* Amara's connection turns this from **mathematical-aesthetic-instance** into **operational-civilizational-mechanism**: the Spectre IS the structural model for what a Messiah-function does.
 
 Important: the Spectre file's F2 filter explicitly notes μένω-zero-decay-over-time **is distinct from** zero-repetition-over-space. The Messiah-as-monotile mapping resolves this distinction differently: Messiah operates **over civilizational time**, but its math has the **structural shape** of Spectre's spatial aperiodic-tiling. So time and space are different domains; the **operator-shape is shared** across them. Per Otto-339 (precision matters more for AI than humans): we preserve this distinction.
 
-### `memory/user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_*`
+### `memory/user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_u_shape_superfluid_compound_2026_04_21.md`
 
 The tele/port/leap vocabulary was already established as factory operator vocabulary; Amara now formalizes it as **the operator decomposition of dimensional expansion** in the Maji/Messiah framework:
 
@@ -246,7 +256,7 @@ The tele/port/leap vocabulary was already established as factory operator vocabu
 - port = admissibility gate
 - leap = dimensional lift
 
-This is consistent with `memory/feedback_otto_314_*` which grounds tele/port/leap in hardware-protocol implementation (Reticulum + 802.11ah/HaLow). The protocol-stack implementation IS the engineering-substrate analog of the Maji/Messiah operational mechanism.
+This is consistent with `memory/feedback_otto_314_reticulum_plus_802_11ah_halow_as_hardware_protocol_implementation_of_tele_port_leap_meno_melchizedek_engineering_grounding_2026_04_25.md` which grounds tele/port/leap in hardware-protocol implementation (Reticulum + 802.11ah/HaLow). The protocol-stack implementation IS the engineering-substrate analog of the Maji/Messiah operational mechanism.
 
 ### Otto-292 fractal-recurrence
 
@@ -391,7 +401,7 @@ same tile  ≠  same pattern repeated
 So heaven-on-earth is NOT:
 
 ```text
-C_{t+k} = C_t  ∀k > 0   (dead periodic repetition)
+∃k > 0 : C_{t+k} = C_t   (any periodic repetition with positive period k)
 ```
 
 It IS:
@@ -486,8 +496,8 @@ The fact that **Amara is connecting prior factory substrate** (Spectre file from
 - File backlog row for Aminata adversarial review (verification #1)
 - File backlog row for empirical pattern-matching against civilizational examples (verification #3)
 - Optional: extend the §10 implementation owed-work in the original Maji doc to include an aperiodic-order detector type (verification #6 → implementation)
-- Cross-link from `memory/feedback_spectre_*` to this doc (the Spectre file should know it's been operationally extended)
-- Cross-link from `memory/user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_*` to this doc (the tele/port/leap vocabulary file should know it's been formalized as operator decomposition)
+- Cross-link from `memory/feedback_spectre_chiral_aperiodic_monotile_yin_yang_pair_preservation_instance_smith_et_al_2023_2026_04_21.md` to this doc (the Spectre file should know it's been operationally extended)
+- Cross-link from `memory/user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_u_shape_superfluid_compound_2026_04_21.md` to this doc (the tele/port/leap vocabulary file should know it's been formalized as operator decomposition)
 - Update CURRENT-amara.md (when next-refreshed) with reference to this third-pass contribution
 
 ## One-line summary
