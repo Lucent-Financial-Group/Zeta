@@ -4,7 +4,7 @@ PR: <https://github.com/Lucent-Financial-Group/Zeta/pull/607>
 Branch: `tick-history/2026-04-26T13-39Z`
 Outcome class: **CLOSED-NOT-MERGED** (superseded; 2nd-agent verified)
 Drain session: 2026-04-26 (Otto, autonomous-loop continuation)
-Total threads drained: minimal (close-and-reopen happened quickly)
+Total threads drained: 0 (close-and-reopen happened quickly; no review activity beyond CI lint pass)
 Rebase context: closed before review activity beyond CI lint pass.
 
 Per Otto-250 + task #268 backfill. This drain-log composes with
@@ -84,6 +84,6 @@ Two tick-history rows added:
 - Otto-250 PR-reviews-as-training-signals
 - Otto-347 (rule that caught the chain-supersession loss via 2nd-agent)
 - 618-drain-log.md (the consolidated-backfill that absorbed this PR)
-- 625 (the recovery PR that landed 13:38Z + 13:52Z back on main)
+- #625 (the recovery PR that landed 13:38Z + 13:52Z back on main)
 - Otto-348 verify-substrate-exists (the discipline this PR's
   13:38Z row documents)
