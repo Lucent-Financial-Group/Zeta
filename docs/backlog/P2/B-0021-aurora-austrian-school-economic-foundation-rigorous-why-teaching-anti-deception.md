@@ -68,6 +68,35 @@ Aaron explicitly modeled this discipline with the Saifedean recommendation: inve
 
 What economic-modeling primitives let Aurora **catch lies** about money / policy / value at the language-layer (per Otto-335)? Whatever passes that bar is the foundation. Austrian-school is the strongest single candidate; the right answer might be Austrian-school + complementary frameworks (post-Keynesian instability, public-choice incentive analysis) for cross-checking.
 
+## Methodology note — apply factory tools to the field, not just consume it
+
+Aaron 2026-04-25 (after honest engagement with Austrian-school weaknesses):
+
+> "sounds like some precise definitions and rodenys razer could genuinelly move this field forward then"
+
+The factory has discipline-tools that contested fields chronically under-deploy on themselves:
+
+- **Otto-286 definitional precision** — most "predictive failures" of Austrian-school dissolve under precise definitions: *what* was predicted (timing? magnitude? mechanism?), *under what assumptions*, *with what falsification criteria*. Separates "framework wrong" from "framework right but prediction misapplied."
+- **Otto-335 anti-deception (alignment at language layer)** — extending the same discipline that catches AI-human misframing to economic-school confusion. The Keynesian-opacity charge IS an Otto-335 claim at the economic-teaching surface.
+- **Rodney's Razor** (factory complexity-reduction persona / `reducer` skill):
+  - **Standard form (well-defined Occam's)**: applied to shipped Austrian artifacts (papers, predictions, policy recommendations) — which sub-frameworks survive precise-definition + falsification-criteria cleanup, which are essential-vs-accidental complexity?
+  - **Quantum form (possibility-space pruning)**: applied to pending decisions about which Austrian sub-school to lean on. Maybe both deductive-praxeology AND empirical-economics are valid in different domains; the contestation is itself a definitional confusion that pruning the possibility-space resolves.
+
+### What this looks like operationally for the investigation:
+
+1. **Definitional pass on Austrian disagreements** — Mises vs Rothbard vs Hayek on capital theory / fractional-reserve / methodology. Catalog where they're using the same word for different concepts (resolvable via precise definitions) vs genuine substantive disagreement (preserve as branch-points, don't polish away).
+2. **Falsification-criteria pass on Austrian predictions** — separate predictions that were wrong from predictions that were right-but-misapplied from predictions that the framework actually never made (often attributed to it).
+3. **Praxeology rigor pass** — precise definition of "rigor" in deductive-from-axioms context vs empirical-testing context. Both are kinds of rigor; the question is which is appropriate for which sub-claim.
+4. **Cross-school definitional bridge** — what does "money supply" / "interest rate" / "capital" mean in Austrian vs Post-Keynesian vs complexity-economics? Precise-definition catalog enables cross-school dialogue that the field currently can't have.
+
+### Positioning implication
+
+This methodology-stance shifts Aurora from **consumer of an econ-school** (pick one, build on it) to **potential contributor to the field** (apply alignment-discipline tools to the contested-foundations question). The substrate Aaron's been engineering — Otto-286 definitional precision, Otto-335 anti-deception alignment, Rodney's Razor complexity-reduction — are exactly the tools contested fields chronically under-deploy on themselves.
+
+The Austrian framework benefits *most* from this treatment because it's the school with the strongest mechanism-teaching commitments + the cleanest theoretical core. Mainstream Keynesian (and Modern Monetary Theory variants) would benefit too but face deeper definitional tangles that may not survive Rodney-Razor cleanup at all.
+
+Per Otto-322/331 — this is hypothesis-not-conclusion. Aaron framed it as "could genuinely move this field forward" — could, not would. The methodology owed before Aurora commits to a specific framework choice.
+
 ## Why P2 (not P0/P1/P3)
 
 - **Not P0/P1**: Aurora world-modeling is post-drain (Otto-329 Phase 4+). No active blocker.
