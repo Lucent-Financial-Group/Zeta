@@ -19,6 +19,7 @@ tags: [otto-346, recurring-pattern, missing-primitive, tooling-extraction, markd
 Aaron 2026-04-26 caught me using inline Python heredoc to truncate a corrupted tick-history row IMMEDIATELY AFTER shipping the Otto-346 principle and two tools embodying it.
 
 The relapse pattern:
+
 - Shipped Otto-346 principle: *"in python shape should be a queue that we are missing substrate primitives"* — recurring dynamic Python signals missing primitive
 - Shipped PR #541 (sort-tick-history-canonical.py) absorbing the recurring sort pattern
 - Shipped PR #542 (fix-markdown-md032-md026.py) absorbing the recurring MD032/MD026 fix pattern
@@ -30,6 +31,7 @@ This file documents the owed-work to absorb the next recurring pattern as a tool
 ## What the tool would do
 
 **Problem class**: markdown table row has wrong cell count due to:
+
 - Botched merge resolution (commit titles leaked into cell content)
 - Accidental unescaped `|` in cell content (literal `|` requires `\|` in markdown table syntax)
 - Multi-line cell content (markdown tables don't support; cells must be single line)
@@ -37,12 +39,14 @@ This file documents the owed-work to absorb the next recurring pattern as a tool
 **Markdownlint flags**: MD055 (table-pipe-style), MD056 (table-column-count)
 
 **Tool behavior** (proposed):
+
 - Identify rows with wrong cell count given the table's expected schema
 - For each violation, identify candidate corruption points (extra `|`, missing trailing `|`)
 - Offer auto-fix with confirmation OR generate diff for human review
 - `--auto` flag for mechanical fixes when corruption shape is unambiguous
 
 **Heuristics for auto-fix**:
+
 - If cell count is exactly 1 too many → look for cells starting with continuation-text patterns (e.g. `: `, `+ `, mid-sentence-suggesting-trailing-text-from-prior-cell)
 - If trailing `|` missing → check if last `|` position is reasonable; if yes, append `|`
 - Otherwise → diff-only mode (human reviews and decides)
@@ -52,6 +56,7 @@ This file documents the owed-work to absorb the next recurring pattern as a tool
 MD032 (blank lines around lists) is mechanical: insert blank line before/after list block. Unambiguous.
 
 MD055/MD056 (table cell count) requires:
+
 - Knowing the table's expected schema (varies per table)
 - Identifying which `|` is the spurious one (multiple plausible candidates)
 - Risk of removing legitimate content if the heuristic is wrong
@@ -100,6 +105,7 @@ The training-data default Aaron diagnosed in Otto-341 (humans take the shortcut 
 ## Operational implication for tool-extraction discipline
 
 Before writing `python3 << 'PYEOF'`, ask:
+
 1. *Have I done this exact shape before?* (recurrence check)
 2. *Could I plausibly do it again?* (forward-look check)
 3. *Is the operation mechanical enough to capture as a tool?* (extractability check)
