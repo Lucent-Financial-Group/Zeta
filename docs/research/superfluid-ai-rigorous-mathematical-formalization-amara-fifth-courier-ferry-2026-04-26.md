@@ -424,9 +424,11 @@ This is also why **Aaron's no-directive discipline** (Otto-322/331/347) is struc
 
 ### Verification owed (extending verification list)
 
-8. **Generativity measurement**: how to quantify? Number of new substrate-categories per round? Information-content of new substrate? Cross-reference to Kolmogorov-complexity? Need definition before measurement.
-9. **Attractor characterization**: does the attractor A actually exist for our factory's `Π_t`? Or is the policy still in transient pre-attractor state? Need empirical phase-diagram analysis.
-10. **Self-directed-vs-directive boundary**: does Aaron's no-directive discipline (Otto-322/331/347) actually hold? Or do "btw" asides count as exogenous? The substrate-classification matters for which Π_t model is being tested.
+Three new items (cumulative items 8, 9, 10 in the §Verification-owed list above):
+
+- **Item 8 — Generativity measurement**: how to quantify? Number of new substrate-categories per round? Information-content of new substrate? Cross-reference to Kolmogorov-complexity? Need definition before measurement.
+- **Item 9 — Attractor characterization**: does the attractor A actually exist for our factory's `Π_t`? Or is the policy still in transient pre-attractor state? Need empirical phase-diagram analysis.
+- **Item 10 — Self-directed-vs-directive boundary**: does Aaron's no-directive discipline (Otto-322/331/347) actually hold? Or do "btw" asides count as exogenous? The substrate-classification matters for which Π_t model is being tested.
 
 ### Acknowledgment
 
