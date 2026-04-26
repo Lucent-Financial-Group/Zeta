@@ -89,11 +89,14 @@ is_courier_ferry_import() {
 violations=0
 violation_files=()
 
-# Iterate all .md files under docs/research/ (one level deep; this is
-# the canonical structure — research docs are not nested under
-# subdirectories at present).
+# Iterate all .md files under docs/research/ recursively. The
+# enforcement scope must match the documented scope ('docs/research/**');
+# subdirectories like docs/research/claims/ exist today and any
+# courier-ferry doc placed in one would bypass a single-level glob.
+# Codex P2 finding (PR #571 review): use recursive walk via 'find'
+# instead of '*.md' single-level glob.
 shopt -s nullglob
-for file in "$RESEARCH_DIR"/*.md; do
+while IFS= read -r -d '' file; do
   if ! is_courier_ferry_import "$file"; then
     continue
   fi
@@ -111,7 +114,7 @@ for file in "$RESEARCH_DIR"/*.md; do
     violation_files+=("$file")
     echo "VIOLATION: ${file#"$REPO_ROOT/"} missing §33 labels: ${missing[*]}" >&2
   fi
-done
+done < <(find "$RESEARCH_DIR" -type f -name '*.md' -print0)
 
 if [[ $violations -gt 0 ]]; then
   echo "" >&2
