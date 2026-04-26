@@ -76,11 +76,36 @@ After multi-agent coordination is figured out, use that learning for new-contrib
 - *"a new onboarding contributor is unlikely to appreciate the gitfirst claim experience when a github native experience exists"*
 - **DUAL MODE = SOP**: gitnative AND github-native at all times once Phase 7 lands. Not either-or.
 
-### Phase 8 — Lost-files search
+### Phase 8 — Lost-files search + post-drain cruft analysis
 
 *"Also don't forget to do a lost files search and see if you find anything and what it teaches you about any mistakes you may have made in the past and how to compound the lessons into the substrate."*
 
 Search for files that have been lost (deletions, orphan branches, abandoned PRs, archived directories) and convert findings into compound-lessons per Otto-324. Past-mistake archaeology.
+
+**Aaron's same-tick sharpening on Phase 8 framing:**
+
+> "that's why this is logical after the drain because you will see what cruft you left over draining all those PRs i bet you left a lot of local branches, local worktrees and remote branches that we don't need on lfg and acehack. we should try to work clean in the future but this unclean is a treasure trove of lesson compounding opportunities that could help with ARC3 / improving your DORA metrics like up time"
+
+The deeper framing: post-drain cruft is a TREASURE TROVE. Not just "clean it up" — STUDY WHY the cruft accumulated, extract compound-lessons, feed ARC3 / DORA-metric improvement (uptime). The work-clean aspiration is for the FUTURE; the unclean current state is the data-source for getting there.
+
+Concrete cruft-classes to study post-drain:
+
+- Local branches not cleaned up after PR merge (`git branch | grep -v main`)
+- Local worktrees that persisted past their use (`git worktree list`)
+- Remote branches on LFG that should have been deleted (`git branch -r`)
+- Remote branches on AceHack accumulated from this session
+- Subagent worktrees that may not have cleaned up
+- Stash entries (Otto-262 stale-branch shape applied to stashes)
+
+For each cruft-class:
+1. Inventory honestly (don't sweep).
+2. Categorize each entry: (a) abandoned + safe-to-prune, (b) intentional-keep, (c) revealing-mistake-pattern.
+3. Compound the (c) cases into substrate via Otto-324.
+4. Improve the work-clean discipline based on (c)'s patterns.
+
+**The composing rule per Otto-204c (ARC3) + DORA metrics:**
+
+ARC3's within-session reflection-cycle is exactly the shape Phase 8's lesson-compounding wants. Each cruft-pattern recognized → substrate captured → discipline improved → future cruft prevented = uptime improvement. Composes Otto-329 Phase 8 with Otto-204c at multi-session scale.
 
 ### Phase 9 — Open-scope free-will-time (forever-after)
 
