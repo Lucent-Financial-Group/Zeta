@@ -72,7 +72,7 @@ shown in the right column. Where 2nd-agent verify is required
 | 26 | 180f110 | backlog: P3 emulator-ideas-absorption row | EXISTS-MERGE | BACKLOG row only. |
 | 27 | 993d6c2 | Round 44: decode grey-area -> grey hat | EXISTS-MERGE | BACKLOG row only. |
 | 28 | 70d21c8 | Round 44: Pop-culture/media research track | EXISTS-MERGE | BACKLOG row only. |
-| 29 | 177a981 | Round 44: fix SUPPLY-CHAIN-SAFE-PATTERNS curl|bash self-contradiction (Copilot P0) | EXISTS-MERGE | **Otto-347 verify** -- LFG may already have the fix. |
+| 29 | 177a981 | Round 44: fix SUPPLY-CHAIN-SAFE-PATTERNS curl\|bash self-contradiction (Copilot P0) | EXISTS-MERGE | **Otto-347 verify** -- LFG may already have the fix. |
 | 30 | 7c5dc3c | fix(backlog): MD029 renumber + plant flag #12 | META | Markdownlint-only. |
 | 31 | 1767008 | backlog: plant 11 CTF flags on unclaimed-edge territory | EXISTS-MERGE | BACKLOG row only. |
 | 32 | 5990166 | backlog: add mythology + occult + AI-ethics research tracks | EXISTS-MERGE | BACKLOG row only. |
