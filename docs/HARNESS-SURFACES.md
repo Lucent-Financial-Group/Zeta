@@ -17,12 +17,38 @@ the amazon one and any less popular ones"*):
 - **Primary (populated):** Claude (Anthropic —
   model, Code CLI, Desktop, Agent SDK, API).
 - **Immediate buildout queue:** Codex (OpenAI),
-  Cursor, GitHub Copilot.
+  Cursor, GitHub Copilot, **Gemini CLI** (Google;
+  Pro / Deep Think modes), **GitHub Copilot CLI**
+  (per Aaron 2026-04-26 install), **ChatGPT
+  (app/web)** (cross-AI courier surface where
+  Amara/GPT-5.5 has operated during cross-AI
+  research-doc review chains).
 - **Watched buildout queue:** Antigravity (Google;
-  name-spell TBD), Amazon Q Developer /
+  name-spell TBD; may be subsumed by Gemini CLI's
+  agentic mode), Amazon Q Developer /
   CodeWhisperer, Kiro (Amazon's AI-native IDE,
   distinct from Amazon Q).
 - **Less popular:** TBD.
+
+**Roster expansion 2026-04-26 (Aaron verbatim:
+*"i also installed the copilot cli as another one
+you can access, so now gemini, codex, copilot,
+cursor, and yourself. I thinik that's all but you
+can tell me if I missed any we talked about
+already."*):** Aaron's listed CLIs (5) — Claude
+Code (Otto), Gemini CLI, Codex CLI, Copilot CLI
+(newly installed), Cursor — plus the implicit 6th
+surface ChatGPT (app/web) where Amara has been
+operating during the multi-pass cross-AI math
+review chains this session. Per
+`memory/project_operational_cli_roster_2026_04_26_copilot_added.md`
++ `memory/project_multi_harness_named_agents_assigned_clis_models_aaron_2026_04_26.md`,
+the cross-AI math review chain currently being
+run manually with Aaron-as-courier IS the
+proof-of-concept of formalized multi-harness
+factory automation; the bottleneck is the
+courier, the fix is mechanical (assign CLI/model
+handles to existing named personas).
 
 **Each-harness-tests-own-integration rule.** A
 harness cannot honestly test its own integration
@@ -99,7 +125,13 @@ they run.
   Claude Desktop, Agent SDK, API.
 - **Codex** (OpenAI) — stub; priority 1.
 - **Cursor** — stub; priority 1.
-- **GitHub Copilot** — umbrella brand for three
+- **Gemini CLI** (Google) — stub; priority 1.
+  Aaron-installed as of 2026-04-26 listing.
+  Pro and Deep Think modes both available; Deep
+  Think delivered Round-2 canonical synthesis
+  in the 5-pass Aurora math review chain
+  (`docs/research/aurora-immune-math-standardization-2026-04-26.md`).
+- **GitHub Copilot** — umbrella brand for four
   distinct products, tracked separately:
   - **Copilot PR code review** (reviewer robot; not
     a harness) — partially populated via
@@ -107,10 +139,28 @@ they run.
   - **Copilot in VS Code** (the actual harness) —
     stub; priority 1. Aaron 2026-04-20: *"we will
     use vvscode for the rest."*
+  - **Copilot CLI** (`gh copilot` / `copilot` CLI) —
+    stub; priority 1. Aaron 2026-04-26 install. Adds
+    a manual CLI handle for Copilot's GitHub-native
+    review surface (pre-push local review possible)
+    alongside the existing `review_on_push: true` bot
+    integration.
   - **Copilot coding agent** (`@copilot` autonomous
     PR author) — stub; priority 2 watched.
+- **ChatGPT** (OpenAI app/web) — stub; priority 1.
+  6th surface in Aaron's multi-harness roster
+  (implicit, per cross-AI math review chains this
+  session). Distinct from Codex CLI even though
+  both are OpenAI: ChatGPT is the conversational
+  app frontend where named-entity peer **Amara
+  (GPT-5.5)** has been operating; Codex is the
+  agentic CLI tool. Amara-on-ChatGPT pattern is
+  the empirically-active cross-AI peer review
+  surface for the factory's research docs.
 - **Antigravity** (Google) — stub; priority 2.
-  Spelling TBD; Aaron wrote "anitgratify".
+  Spelling TBD; Aaron wrote "anitgratify". May be
+  subsumed by Gemini CLI's agentic mode; revisit
+  when both are populated.
 - **Amazon Q Developer / CodeWhisperer** — stub;
   priority 2.
 - **Kiro** (Amazon) — stub; priority 2. Amazon's
