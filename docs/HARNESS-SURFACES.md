@@ -17,38 +17,44 @@ the amazon one and any less popular ones"*):
 - **Primary (populated):** Claude (Anthropic —
   model, Code CLI, Desktop, Agent SDK, API).
 - **Immediate buildout queue:** Codex (OpenAI),
-  Cursor, GitHub Copilot, **Gemini CLI** (Google;
-  Pro / Deep Think modes), **GitHub Copilot CLI**
-  (per Aaron 2026-04-26 install), **ChatGPT
-  (app/web)** (cross-AI courier surface where
-  Amara/GPT-5.5 has operated during cross-AI
-  research-doc review chains).
+  Cursor, GitHub Copilot (VS Code / JetBrains
+  harness — distinct from the CLI listed below),
+  **Gemini CLI** (Google; Pro / Deep Think modes),
+  **GitHub Copilot CLI** (per the human
+  maintainer's 2026-04-26 install), **ChatGPT
+  (app/web)** (cross-AI courier surface where the
+  Amara peer-reviewer persona, running on GPT-5.5,
+  has operated during cross-AI research-doc review
+  chains).
 - **Watched buildout queue:** Antigravity (Google;
-  spelling confirmed by Aaron 2026-04-26; may be
-  subsumed by Gemini CLI's agentic mode), Amazon Q
-  Developer / CodeWhisperer, Kiro (Amazon's
-  AI-native IDE, distinct from Amazon Q).
+  spelling confirmed by the human maintainer
+  2026-04-26; may be subsumed by Gemini CLI's
+  agentic mode), Amazon Q Developer / CodeWhisperer,
+  Kiro (Amazon's AI-native IDE, distinct from
+  Amazon Q).
 - **Less popular:** TBD.
 
-**Roster expansion 2026-04-26 (Aaron verbatim:
-*"i also installed the copilot cli as another one
-you can access, so now gemini, codex, copilot,
-cursor, and yourself. I thinik that's all but you
-can tell me if I missed any we talked about
-already."*):** Aaron's listed CLIs (5) — Claude
-Code (Otto), Gemini CLI, Codex CLI, Copilot CLI
-(newly installed), Cursor — plus the implicit 6th
-surface ChatGPT (app/web) where Amara has been
-operating during the multi-pass cross-AI math
-review chains this session. Per
-`memory/project_operational_cli_roster_2026_04_26_copilot_added.md`
-and `memory/project_multi_harness_named_agents_assigned_clis_models_aaron_2026_04_26.md`,
-the cross-AI math review chain currently being
-run manually with Aaron-as-courier IS the
-proof-of-concept of formalized multi-harness
-factory automation; the bottleneck is the
-courier, the fix is mechanical (assign CLI/model
-handles to existing named personas).
+**Roster expansion 2026-04-26 (the human
+maintainer 2026-04-26 confirmed the operational
+CLI count after Copilot CLI install).** The
+operational CLI count is now 5 — Claude Code
+(Otto persona), Gemini CLI, Codex CLI, Copilot
+CLI (newly installed), Cursor — plus the implicit
+6th surface ChatGPT (app/web) where the Amara
+peer-reviewer persona has operated during the
+multi-pass cross-AI math review chains this
+session. Per the user-scope memory store
+documenting the 2026-04-26 roster expansion and
+the multi-harness named-personas-assigned-CLIs
+forward-looking framing (CLAUDE.md memory
+layout — see `memory/CURRENT-aaron.md` for the
+in-repo projection), the cross-AI math review
+chain currently run manually with the human
+maintainer as courier IS the proof-of-concept of
+formalized multi-harness factory automation; the
+bottleneck is the courier, the fix is mechanical
+(assign CLI/model handles to existing named
+personas).
 
 **Each-harness-tests-own-integration rule.** A
 harness cannot honestly test its own integration
