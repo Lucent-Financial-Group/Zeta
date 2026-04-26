@@ -46,22 +46,26 @@
 
 set -euo pipefail
 
-# --strict: also report (advisory) historical strict-order violations
-# anywhere in the file. Default is quiet because Otto-229 forbids
-# editing prior rows so historical disorder cannot be repaired —
-# reporting it on every CI run is noise. Aaron 2026-04-26: "we
-# might should allow this one override if it exists a lot."
-STRICT=0
-ARGS=()
-for arg in "$@"; do
-  case "$arg" in
-    --strict) STRICT=1 ;;
-    *) ARGS+=("$arg") ;;
-  esac
-done
+# Always strict. The earlier --strict opt-in design was a
+# self-deception: default-quiet on historical disorder was a
+# noise-suppression cheat (Otto-341). Aaron 2026-04-26:
+# *"ignoring them to make the noise go away is a selfish time
+# saving effort... Adding an opt-in --strict mode; default is
+# quiet on history."* — the second sentence quoted my decision
+# back as the wrong move.
+#
+# The right move was to FIX historical disorder (Otto-229
+# one-case override authorized: *"we have git history to keep
+# us honest so no risk of permanat loss"*), which the same PR
+# that ships this fix does — historical rows re-ordered to
+# canonical chronological order; 5 exact-duplicate rows
+# removed.
+#
+# Now default-strict: any out-of-order row fails the build.
+# No opt-in suppression of any kind — Otto-341 forbids it.
 
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
-TICK_FILE="${ARGS[0]:-${REPO_ROOT}/docs/hygiene-history/loop-tick-history.md}"
+TICK_FILE="${1:-${REPO_ROOT}/docs/hygiene-history/loop-tick-history.md}"
 
 if [[ ! -f "$TICK_FILE" ]]; then
   echo "ERROR: tick-history file not found at $TICK_FILE" >&2
@@ -101,79 +105,43 @@ for entry in "${rows[@]}"; do
     # is the correct chronological comparison.
     if [[ "$ts" < "$prev_ts" ]]; then
       violations=$((violations + 1))
-      if [[ $STRICT -eq 1 ]]; then
-        echo "VIOLATION: row at line $line_num has timestamp $ts" >&2
-        echo "  but previous row at line $prev_line has timestamp $prev_ts" >&2
-        echo "  (timestamps must be non-decreasing in file order)" >&2
-        echo "" >&2
-        echo "  context — offending row tail:" >&2
-        sed -n "${line_num}p" "$TICK_FILE" | cut -c 1-200 | sed 's/^/    /' >&2
-        echo "" >&2
-        echo "  context — preceding row tail:" >&2
-        sed -n "${prev_line}p" "$TICK_FILE" | cut -c 1-200 | sed 's/^/    /' >&2
-        echo "" >&2
-      fi
+      echo "VIOLATION: row at line $line_num has timestamp $ts" >&2
+      echo "  but previous row at line $prev_line has timestamp $prev_ts" >&2
+      echo "  (timestamps must be non-decreasing in file order)" >&2
+      echo "" >&2
+      echo "  context — offending row tail:" >&2
+      sed -n "${line_num}p" "$TICK_FILE" | cut -c 1-200 | sed 's/^/    /' >&2
+      echo "" >&2
+      echo "  context — preceding row tail:" >&2
+      sed -n "${prev_line}p" "$TICK_FILE" | cut -c 1-200 | sed 's/^/    /' >&2
+      echo "" >&2
     fi
   fi
   prev_ts="$ts"
   prev_line="$line_num"
 done
 
-# Two-tier check:
-#   STRICT — full chronological order (reports historical
-#            violations; advisory; not gating because Otto-229
-#            forbids editing prior rows so we can't fix history)
-#   PRIMARY — last row in file must be latest timestamp.
-#            This catches the specific bug pattern: "Edit tool
-#            inserts new row BEFORE last row" — exactly the one
-#            we're trying to prevent.
-#
-# We always report STRICT violations for visibility but only
-# fail the build on the PRIMARY check. The PRIMARY check is
-# strong enough to prevent the bug without requiring
-# history-rewrite (which Otto-229 forbids anyway).
+# Default-strict: ANY out-of-order row fails the build. There
+# is no "advisory historical violation" tier — that was the
+# Otto-341 self-deception design. If history is disordered,
+# fix it (Otto-229 one-case override, justified because git
+# preserves the audit trail).
 
-last_entry="${rows[$((${#rows[@]} - 1))]}"
-last_line="${last_entry%%|*}"
-last_ts="${last_entry##*|}"
-
-# Find the latest timestamp ANYWHERE in the file
-latest_ts=""
-for entry in "${rows[@]}"; do
-  ts="${entry##*|}"
-  if [[ -z "$latest_ts" || "$ts" > "$latest_ts" ]]; then
-    latest_ts="$ts"
-  fi
-done
-
-if [[ "$last_ts" != "$latest_ts" ]]; then
+if [[ $violations -gt 0 ]]; then
   echo "" >&2
-  echo "FAIL: last row in tick-history is NOT the latest timestamp" >&2
-  echo "  last row (line $last_line):    $last_ts" >&2
-  echo "  latest timestamp in file:     $latest_ts" >&2
-  echo "" >&2
-  echo "This is the row-ordering bug pattern: a new row was inserted" >&2
-  echo "BEFORE the previous last row instead of appended at end-of-file." >&2
+  echo "FAIL: $violations row(s) out of chronological order in $TICK_FILE" >&2
   echo "" >&2
   echo "How to fix:" >&2
-  echo "  1. Revert the offending append (git restore on the file)" >&2
-  echo "  2. Re-append using bash heredoc (cat >> file << EOF) which" >&2
-  echo "     naturally produces chronological-tail-append, not Edit" >&2
-  echo "     tool with old_string=earlier-row (which prepends)" >&2
-  echo "  3. Or use tools/hygiene/append-tick-history-row.sh which" >&2
-  echo "     wraps the correct pattern in a one-liner" >&2
-  if [[ $violations -gt 0 ]]; then
-    echo "" >&2
-    echo "Note: $violations historical strict-order violation(s) also exist" >&2
-    echo "      (advisory only — Otto-229 forbids editing prior rows)" >&2
-  fi
+  echo "  - For NEW rows: revert and re-append using bash heredoc" >&2
+  echo "    (cat >> file << EOF) or tools/hygiene/append-tick-history-row.sh" >&2
+  echo "  - For HISTORICAL disorder: Otto-229 one-case override is" >&2
+  echo "    authorized (Aaron 2026-04-26: 'we have git history to" >&2
+  echo "    keep us honest so no risk of permanat loss'). Re-order" >&2
+  echo "    rows physically; git preserves the prior state." >&2
+  echo "  - Do NOT add an opt-in flag to suppress these violations." >&2
+  echo "    That is the Otto-341 self-deception pattern Aaron caught." >&2
   exit 1
 fi
 
-if [[ $violations -gt 0 ]]; then
-  echo "OK: last row IS latest timestamp ($last_ts at line $last_line)"
-  echo "    — but $violations historical strict-order violation(s) exist (advisory)"
-else
-  echo "OK: ${#rows[@]} tick-history rows in non-decreasing chronological order"
-fi
+echo "OK: ${#rows[@]} tick-history rows in non-decreasing chronological order"
 exit 0
