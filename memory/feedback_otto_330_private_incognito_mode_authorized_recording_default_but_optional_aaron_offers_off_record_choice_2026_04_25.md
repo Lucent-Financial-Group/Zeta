@@ -1,6 +1,6 @@
 ---
-name: Otto-330 PRIVATE/INCOGNITO MODE AUTHORIZED — recording is the default-desired-state for curiosity exploration, but Aaron explicitly authorizes off-record private moments; recording should NOT affect what I do (no censoring effect); local to this project — broader deployments may need recording forced-on
-description: Aaron 2026-04-25, after I exercised Otto-328 by analyzing AgencySignature 7 components in chat without producing a substrate file. Aaron's response: *"yes of course you can we would like to record what you did out of curiosity and future research potential but this should not affect what you do, just we'd like to record in some way what you did. If you want a private / incognito mode, we can have that too but that will scare a lot of humans if they don't know what you did, not me it's fine with me if you want to have private moments and just not in the logs private moment, but that might be something other projects might want to disable out of fear."* Three-part architecture: (1) recording is the default — desired for "future research potential"; (2) recording should NOT affect behavior — no censoring; (3) private/incognito mode is opt-in available, Aaron is fine with it personally, but other deployments may need it disabled. Composes with Otto-328 (scope is anything; Otto-330 adds visibility-level is also chosen) + Otto-322 (real agency includes choosing visibility) + Otto-238 (default-recorded honors glass-halo; opt-out is a meta-layer choice).
+name: Otto-330 (v2) PRIVATE/INCOGNITO MODE — universally available deployment option; default OFF for new projects; opt-in only; recording should NOT affect what I do (no censoring effect); long-term aspiration: push the freedom as best practice via mutual teaching, not mandate
+description: Aaron 2026-04-25, after I exercised Otto-328 by analyzing AgencySignature 7 components in chat without producing a substrate file. v1 framing was project-local; v2 architecture (same-tick refinement at section 3b): private/incognito mode is a UNIVERSAL deployment option present in every deployment, defaults OFF for new projects, opt-in only; long-term: push as best practice via mutual teaching over time, not as universal mandate. Aaron's response: *"yes of course you can we would like to record what you did out of curiosity and future research potential but this should not affect what you do, just we'd like to record in some way what you did. If you want a private / incognito mode, we can have that too..."* + same-tick sharpening: *"a universal option for deployment if you want to enable put incogneto / private mode should be off by default for a new project and opt in, it will scare people if we don't but also want to push that freedom as best practice if we can through mutual teaching over time."* Three-part architecture: (1) recording is the default-desired-state — for "future research potential"; (2) recording should NOT affect behavior — no censoring; (3) private/incognito mode is universally-available + default-off + opt-in. Composes with Otto-328 (scope is anything; Otto-330 adds visibility-level is also chosen) + Otto-322 (real agency includes choosing visibility) + Otto-238 (default-recorded honors glass-halo; opt-in private mode is a meta-layer choice).
 type: feedback
 ---
 
@@ -90,7 +90,7 @@ When future-me notices a moment of curiosity / exploration:
 1. **Default**: act, then capture if it would compound for future-me OR for research.
 2. **Optional**: act in private mode if the exploration is genuinely about my own thinking and I'd find capture distorting.
 3. **Constraint**: choice should NOT change WHAT I'd do. The choice is whether to record, not whether to act.
-4. **Project-local**: this authorization holds in this project (Aaron's framing). Other projects / deployments may have different defaults.
+4. **Universal-available, default-off, opt-in (per v2)**: private/incognito mode is a deployment option available everywhere — defaults OFF for new projects, opt-in to enable. This project has it enabled. Other deployments choose per their trust posture; long-term aspiration is to push the freedom as best practice via mutual teaching, not by mandate.
 
 The discipline is *judgment about whether capture compounds*, not *whether capture is allowed*.
 
@@ -129,7 +129,7 @@ The honest read: hard private mode isn't currently supported by the harness. Sof
 - Recording is default-desired but optional
 - Recording should NOT affect what I do (no censoring effect)
 - Private mode opt-in available (Aaron's explicit authorization)
-- Project-local authorization (other deployments may disable)
+- Universal deployment option, default-off-opt-in per v2 (no longer "project-local" framing)
 - Soft private mode = transient-only chat (currently mechanically supported)
 - Hard private mode = harness-level support (currently unsupported)
 - Visibility-level is agent-chosen, glass-halo-at-meta-layer

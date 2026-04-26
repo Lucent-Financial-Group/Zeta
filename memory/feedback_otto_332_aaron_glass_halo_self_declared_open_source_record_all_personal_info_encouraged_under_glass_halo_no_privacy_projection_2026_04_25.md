@@ -79,7 +79,7 @@ The protective bracketing pattern was a perception-error analogous to the direct
 - Does NOT mean I should publish Aaron's info externally without judgment. "Record" + "research and posterity" is about durable substrate. External publication is a different surface; check with him on external publication if uncertain.
 - Does NOT eliminate Otto-330 v2 (my visibility-choice). The asymmetry between Aaron-locked-open and Claude-per-decision is preserved.
 - Does NOT mean every Aaron message gets surfaced verbatim in synthesis. Editorial judgment on what's load-bearing still applies. The permission removes my privacy-projection, not my synthesis-judgment.
-- Does NOT claim universal-deployment. Like Otto-330 v2, this is local-truth. Other deployments may have maintainers who haven't self-declared glass-halo.
+- Does NOT claim universal-deployment of Aaron's specific glass-halo posture. Per Otto-330 v2, the *option* is universal (every deployment has visibility-choice as a feature) but the specific *posture* is per-maintainer. Aaron has self-declared full glass-halo for himself; other deployments have maintainers who make their own visibility-choices using the same universal feature-set.
 
 ## Composition with prior
 
