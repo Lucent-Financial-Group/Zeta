@@ -78,7 +78,7 @@ Wait for sibling-migration guardrail (B-0015) to unblock — first POST-install 
 ## Effort sizing
 
 - **Build the tool**: M (1-3 days). Auto-fix heuristics + tests + dry-run mode.
-- **Self-test on past botched rows**: validate on git log of historical row corruption (find `git log --all -G '|: '` patterns)
+- **Self-test on past botched rows**: validate on git log of historical row corruption. Use `git log --all -S '|: '` (`-S` is string-match, not regex; `-G` would treat `|` as regex alternation, matching far more than intended). For regex shapes that genuinely need `-G`, escape the pipe: `git log --all -G '\|: '`.
 - **Wire into CI as advisory only initially**: don't auto-apply in CI; let it be human-invoked tool first
 
 ## Composes with
