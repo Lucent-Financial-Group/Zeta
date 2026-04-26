@@ -45,8 +45,27 @@ Exit codes:
 
 import argparse
 import re
+import subprocess
 import sys
 from pathlib import Path
+
+
+def repo_root() -> Path | None:
+    """Resolve the repo root via `git rev-parse --show-toplevel`.
+
+    Mirrors sibling hygiene scripts so that running this tool from a
+    subdirectory still resolves the default `--file` correctly. Returns
+    None if not in a git repo (caller falls back to CWD)."""
+    try:
+        out = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return Path(out.stdout.strip())
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
 
 
 def find_separator_line(lines: list[str]) -> int | None:
@@ -96,15 +115,46 @@ def sort_canonical(text: str) -> tuple[str, dict]:
     data = lines[sep_idx + 1 :]
 
     data_rows: list[tuple[str, int, str]] = []
+    unmatched_table_rows: list[tuple[int, str]] = []
     for original_index, line in enumerate(data):
         if not line.strip():
             continue
         ts = get_timestamp(line)
         if ts:
             data_rows.append((ts, original_index, line))
+        elif line.lstrip().startswith("|"):
+            # Looks like a table row but no timestamp matched —
+            # schema drift or malformed row. Refuse to silently drop;
+            # caller decides whether to fail or skip after seeing
+            # the count.
+            unmatched_table_rows.append((original_index, line))
 
     rows_in = len(data_rows)
     original_order = [line for _, _, line in data_rows]
+
+    # P0 guard: if the data region has table-shaped lines but zero
+    # match the timestamp regex, the schema has drifted and the
+    # naive write-back would wipe the table. Refuse.
+    if rows_in == 0 and unmatched_table_rows:
+        raise ValueError(
+            f"schema drift: {len(unmatched_table_rows)} table-shaped row(s) "
+            f"found but ZERO matched the ISO-8601 timestamp regex. "
+            f"Refusing to write — would wipe tick-history. "
+            f"First unmatched row at data-line {unmatched_table_rows[0][0]}: "
+            f"{unmatched_table_rows[0][1][:120]}"
+        )
+
+    # P1 guard: any unmatched table row is a discipline violation;
+    # silently dropping rows is exactly the failure mode this script
+    # is supposed to prevent. Surface and refuse.
+    if unmatched_table_rows:
+        first = unmatched_table_rows[0]
+        raise ValueError(
+            f"refusing to drop {len(unmatched_table_rows)} unmatched "
+            f"table row(s); per Otto-229 (append-only discipline) the "
+            f"sort tool must not silently lose rows. "
+            f"First unmatched at data-line {first[0]}: {first[1][:120]}"
+        )
 
     # Stable sort by (timestamp, original_index) so ties preserve
     # input order. ISO-8601 strings sort lex == chronological.
@@ -146,7 +196,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
+    # Resolve --file relative to repo root when it is a relative path,
+    # so the tool works the same whether invoked from repo root or any
+    # subdirectory. Sibling hygiene scripts share this convention.
     p = Path(args.file)
+    if not p.is_absolute():
+        root = repo_root()
+        if root is not None:
+            p = root / args.file
     if not p.exists():
         print(f"ERROR: file not found: {p}", file=sys.stderr)
         return 1
