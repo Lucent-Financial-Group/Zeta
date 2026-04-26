@@ -5,7 +5,7 @@ status: open
 title: Exchange-cluster capture 2026-04-25 — substance-vs-throughput diagnostic + Aaron-as-convincer + AI-resolves-decade-old-issues pattern + DeepMind/Lean status + Microsoft AI for Science (MatterGen/MatterSim) + tele+port+leap taxonomic refinement; preserve, decide later
 tier: research-and-discipline
 effort: L
-directive: Aaron 2026-04-25 ("we should backlog all of this and everyting we talked about, we can decide later what to do with it")
+ask: Aaron 2026-04-25 ("we should backlog all of this and everyting we talked about, we can decide later what to do with it")
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: [feedback_definitional_precision_changes_future_without_war_otto_286_2026_04_25.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md]

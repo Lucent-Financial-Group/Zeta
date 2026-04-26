@@ -6,7 +6,7 @@
 # parses YAML frontmatter, emits a short-pointer index
 # sorted by (priority, id).
 #
-# Origin: maintainer Otto-181 directive to split BACKLOG.md.
+# Origin: maintainer Otto-181 ask to split BACKLOG.md.
 # See docs/research/backlog-split-design-otto-181.md for the
 # design spec.
 #

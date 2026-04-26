@@ -5,7 +5,7 @@ status: open
 title: Example row — self-reference demonstrating the per-row-file schema
 tier: research-grade
 effort: S
-directive: maintainer Otto-181 (BACKLOG split Phase 1a)
+ask: maintainer Otto-181 (BACKLOG split Phase 1a)
 created: 2026-04-24
 last_updated: 2026-04-24
 composes_with: []

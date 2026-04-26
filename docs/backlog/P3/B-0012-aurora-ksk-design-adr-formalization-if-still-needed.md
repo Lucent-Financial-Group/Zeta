@@ -5,7 +5,7 @@ status: open
 title: Land `docs/DECISIONS/2026-04-22-aurora-ksk-design.md` ADR if still needed (currently dangling reference in some legacy citations)
 tier: docs
 effort: M
-directive: Codex review on PR #506 (Otto-313 teaching-decline disposition)
+ask: Codex review on PR #506 (Otto-313 teaching-decline disposition)
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: []

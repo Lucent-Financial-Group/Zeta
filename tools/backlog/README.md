@@ -3,7 +3,7 @@
 Companion to `docs/backlog/` (per-row YAML-frontmatter files)
 and the generated `docs/BACKLOG.md` index.
 
-Origin: maintainer Otto-181 directive to split `docs/BACKLOG.md`
+Origin: maintainer Otto-181 ask to split `docs/BACKLOG.md`
 to eliminate the positional-append conflict cascade
 documented in Otto-171 queue-saturation memory. Design spec:
 `docs/research/backlog-split-design-otto-181.md`.
@@ -38,7 +38,7 @@ status: open
 title: Server Meshing and SpacetimeDB deep research
 tier: research-grade
 effort: L
-directive: maintainer Otto-180
+ask: maintainer Otto-180
 created: 2026-04-24
 last_updated: 2026-04-24
 composes_with:
@@ -62,7 +62,7 @@ tags: [game-industry, sharding, multi-node]
 | `title`        | yes      | string       | Short index-display title. |
 | `tier`         | no       | string       | Free-form; e.g. `research-grade`, `active-substrate`. |
 | `effort`       | no       | `S` / `M` / `L` | Size estimate. |
-| `directive`    | no       | string       | Origin reference; e.g. `maintainer Otto-180`, `Amara 18th ferry #4`. |
+| `ask`          | no       | string       | Origin reference; e.g. `maintainer Otto-180`, `Amara 18th ferry #4`. Per Otto-293 mutual-alignment language ("ask" not "directive"). |
 | `created`      | yes      | YYYY-MM-DD   | First-landing date. |
 | `last_updated` | yes      | YYYY-MM-DD   | Updated on every content edit. |
 | `composes_with`| no       | list of `B-NNNN` | Cross-references; strict-lint-candidate Phase-2+. |

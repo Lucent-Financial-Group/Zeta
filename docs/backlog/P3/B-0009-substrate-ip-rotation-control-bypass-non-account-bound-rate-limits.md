@@ -5,7 +5,7 @@ status: open
 title: Substrate-controlled visible IP — bypass non-account-bound rate limits responsibly across deployment surfaces (own up to it, don't hide the framing)
 tier: ops-infrastructure
 effort: L
-directive: Aaron 2026-04-25 ("bypass/evade it is kind of that — we don't need to hide it, just own up to it; we are using it responsibly")
+ask: Aaron 2026-04-25 ("bypass/evade it is kind of that — we don't need to hide it, just own up to it; we are using it responsibly")
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: [feedback_otto_314_reticulum_plus_802_11ah_halow_as_hardware_protocol_implementation_of_tele_port_leap_meno_melchizedek_engineering_grounding_2026_04_25.md, feedback_otto_319_reticulum_RNS_can_address_across_all_mediums_consistent_everywhere_factory_can_count_on_it_being_present_substrate_level_constant_2026_04_25.md, feedback_otto_300_rigor_proportional_to_blast_radius_iterate_fast_at_low_stakes_to_learn_before_high_stakes_2026_04_25.md, feedback_otto_313_aaron_decline_replies_are_teaching_opportunities_for_advisory_AI_reviewers_never_cheap_dismissal_only_long_term_with_backlog_row_references_2026_04_25.md]

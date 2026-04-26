@@ -5,7 +5,7 @@ status: open
 title: Translate repo (code, skills, documents, memory) into other human languages — inclusivity + meeting humans at their starting point + bidirectional-alignment through learning + education + teaching that's bidirectional
 tier: research-grade
 effort: L
-directive: maintainer Aaron 2026-04-25
+ask: maintainer Aaron 2026-04-25
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: [B-0003]

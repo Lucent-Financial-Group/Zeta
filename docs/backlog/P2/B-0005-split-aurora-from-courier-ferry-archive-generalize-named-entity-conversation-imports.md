@@ -5,7 +5,7 @@ status: open
 title: Split `docs/aurora/**` from courier-ferry archive — generalize "historical conversations imported from other AI systems / courier transport of messages between named entities" into its own directory
 tier: research-grade
 effort: M
-directive: maintainer Aaron 2026-04-25
+ask: maintainer Aaron 2026-04-25
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: []

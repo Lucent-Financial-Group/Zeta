@@ -5,7 +5,7 @@ status: open
 title: Aurora world-modeling — rigorous-why economic foundation; Austrian-school as primary candidate; anti-deception requirement (Keynesian opacity → unquestioned policy-power); investigate-don't-accept per Otto-322/331
 tier: research-and-architecture
 effort: L
-directive: Aaron 2026-04-25 (post-substance-vs-throughput correction)
+ask: Aaron 2026-04-25 (post-substance-vs-throughput correction)
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: [docs/aurora/**]

@@ -5,7 +5,7 @@ status: open
 title: Migrate tools/git/batch-resolve-pr-threads.sh to bun+TS once a sibling post-setup tool migrates first
 tier: ops
 effort: S
-directive: PR #199 review feedback (Copilot P0 exception-label requirement) + sibling-migration guardrail per docs/POST-SETUP-SCRIPT-STACK.md
+ask: PR #199 review feedback (Copilot P0 exception-label requirement) + sibling-migration guardrail per docs/POST-SETUP-SCRIPT-STACK.md
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: [docs/POST-SETUP-SCRIPT-STACK.md]

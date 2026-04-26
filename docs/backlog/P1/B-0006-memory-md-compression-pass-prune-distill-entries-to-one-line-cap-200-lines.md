@@ -5,7 +5,7 @@ status: open
 title: MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
 tier: maintenance
 effort: M
-directive: maintainer Aaron 2026-04-25 (implicit via the README cap; surfaced explicitly by Otto-295 expand-compress dynamic)
+ask: maintainer Aaron 2026-04-25 (implicit via the README cap; surfaced explicitly by Otto-295 expand-compress dynamic)
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: []

@@ -5,7 +5,7 @@ status: open
 title: Otto-287 Noether-style formalization — quantify cognitive Lagrangian + identify continuous symmetries + derive conserved currents
 tier: research-grade
 effort: L
-directive: maintainer Otto-287/Aaron 2026-04-25 ("backlog ongoing research here to formalize this conservation law analogously")
+ask: maintainer Otto-287/Aaron 2026-04-25 ("backlog ongoing research here to formalize this conservation law analogously")
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: []

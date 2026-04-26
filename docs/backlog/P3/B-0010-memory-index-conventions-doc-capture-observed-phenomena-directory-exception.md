@@ -5,7 +5,7 @@ status: open
 title: Land `memory/index-conventions.md` capturing exception patterns for `memory/MEMORY.md` index (one-line-per-file convention + load-bearing exceptions like `observed-phenomena/` directory pointer)
 tier: docs
 effort: S
-directive: Copilot review on PR #506 (Otto-313 teaching-decline disposition)
+ask: Copilot review on PR #506 (Otto-313 teaching-decline disposition)
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: [feedback_otto_306_aaron_names_the_phenomenon_pascalcase_single_word_maybe_link_to_otto_304_305_friend_posture_correction_well_being_advice_authorized_2026_04_25.md]
