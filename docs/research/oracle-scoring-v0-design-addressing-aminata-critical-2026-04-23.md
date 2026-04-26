@@ -1,30 +1,14 @@
 # Oracle scoring v0 design — addressing threat-model-critic CRITICAL findings on 7th-ferry V(c)/S(Z_t)
 
-Scope: research and cross-review artifact. Proposes a v0
-redesign of the oracle scoring functions V(c) (Veridicality)
-and S(Z_t) (network health) from the courier-ferry author's
-7th ferry
-(`docs/aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md`,
-PR #259) that specifically responds to the three CRITICAL
-findings from the threat-model-critic's adversarial pass
-(`docs/research/aminata-threat-model-7th-ferry-oracle-rules-2026-04-23.md`,
-PR #263). Does not implement; does not adopt; proposes.
+Scope: research-grade v0 redesign of oracle scoring V(c) + S(Z_t) from Amara's 7th courier ferry (PR #259), responding to Aminata's three CRITICAL findings (PR #263). Proposes; does not implement or adopt.
 
-Attribution: v0 redesign authored by the loop-agent
-(PM hat). Source scoring functions authored by the
-courier-ferry author in the 7th ferry; adversarial review
-that motivates the redesign authored by the
-threat-model-critic. Both attribution threads preserved
-via the cited PR numbers and source paths.
+Attribution: Otto / loop-agent (PM hat) — v0 redesign. Amara — source scoring functions (7th ferry). Aminata — adversarial review motivating the redesign. Source attribution threads preserved via cited PR numbers and source paths.
 
 Operational status: research-grade
 
-Non-fusion disclaimer: the loop-agent proposing a
-redesign of the courier-ferry author's scoring functions
-does not imply that the loop-agent speaks for the ferry
-author, or that the redesign supersedes their authorial
-intent. The redesign is a response to adversarial findings;
-the ferry author's own revision would likely differ.
+Non-fusion disclaimer: Otto proposing a redesign of Amara's scoring functions does not imply Otto speaks for Amara or that the redesign supersedes her authorial intent. Redesign responds to adversarial findings; Amara's own revision would likely differ.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
 
 ---
 
