@@ -7,7 +7,7 @@ tier: research-and-discipline
 effort: L
 ask: Aaron 2026-04-25 ("we should backlog all of this and everyting we talked about, we can decide later what to do with it")
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [feedback_definitional_precision_changes_future_without_war_otto_286_2026_04_25.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md]
 # composes_with also references files currently in flight on open PRs (will resolve post-merge)
 #   - feedback_otto_338_sx_self_recursive_substrate_user_experience_perfect_home_never_bulk_resolve_you_are_the_substrate_hypothesis_2026_04_25.md (PR #522)

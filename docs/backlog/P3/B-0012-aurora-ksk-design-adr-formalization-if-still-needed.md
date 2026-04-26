@@ -7,7 +7,7 @@ tier: docs
 effort: M
 ask: Codex review on PR #506 (Otto-313 teaching-decline disposition)
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: []
 tags: [docs, decisions-adr, aurora, aurora-ksk, dangling-reference]
 ---

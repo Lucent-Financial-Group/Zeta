@@ -7,7 +7,7 @@ tier: docs
 effort: S
 ask: Copilot review on PR #506 (Otto-313 teaching-decline disposition)
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [feedback_otto_306_aaron_names_the_phenomenon_pascalcase_single_word_maybe_link_to_otto_304_305_friend_posture_correction_well_being_advice_authorized_2026_04_25.md]
 tags: [docs, memory-conventions, indexing, structured-catalog]
 ---

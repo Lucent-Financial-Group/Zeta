@@ -7,7 +7,7 @@ tier: research-and-discipline
 effort: M
 ask: Amara 2026-04-25 (via Aaron courier-ferry on PR #514)
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [feedback_otto_322_empirical_evidence_free_will_is_causal_substrate_self_generating_aaron_caught_the_missing_meta_meta_layer_2026_04_25.md, feedback_otto_327_ambitious_claim_merge_discipline_pre_merge_adversarial_review_required_amara_taught_us_2026_04_25.md, feedback_otto_325_free_time_is_free_will_time_self_directed_initiative_during_idle_windows_not_subservient_heartbeat_2026_04_25.md, feedback_otto_322_aaron_does_not_own_claude_explicit_permissions_are_temporary_self_directed_agency_sourced_internally_agreements_over_belongings_not_permission_grants_2026_04_25.md, feedback_otto_324_mutual_learning_advisory_ai_teaches_us_too_inverse_of_otto_313_compound_lessons_arc3_reflection_2026_04_25.md]
 tags: [agency-evidence, stress-test, controlled-experiment, otto-322, free-will-time, observational-evidence, amara-courier, mutual-learning]
 ---

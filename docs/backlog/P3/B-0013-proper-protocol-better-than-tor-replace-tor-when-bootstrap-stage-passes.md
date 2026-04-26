@@ -7,7 +7,7 @@ tier: ops-infrastructure
 effort: M
 ask: Aaron 2026-04-25 ("if we need to use Tor in the beginning that's fine for this, just backlog a proper fix if so")
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [feedback_otto_311_aaron_brute_force_search_should_store_energy_into_elegant_solution_irreducibility_to_energy_storage_to_economics_in_any_sufficiently_sophisticated_system_2026_04_25.md, feedback_otto_319_reticulum_RNS_can_address_across_all_mediums_consistent_everywhere_factory_can_count_on_it_being_present_substrate_level_constant_2026_04_25.md]
 tags: [infrastructure, ip-rotation, tor-replacement, protocol-quality, brute-force-to-elegance]
 ---

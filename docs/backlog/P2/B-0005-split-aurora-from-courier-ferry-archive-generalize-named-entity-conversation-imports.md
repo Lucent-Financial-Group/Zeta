@@ -7,7 +7,7 @@ tier: research-grade
 effort: M
 ask: maintainer Aaron 2026-04-25
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: []
 tags: [governance, directory-ontology, aurora, courier-ferry, cross-ai-imports, history-surface, BP-17, BP-18]
 ---

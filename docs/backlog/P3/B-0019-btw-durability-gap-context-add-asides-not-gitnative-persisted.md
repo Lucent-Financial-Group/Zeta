@@ -7,7 +7,7 @@ tier: hygiene-and-discipline
 effort: S
 ask: Aaron 2026-04-25 (via /btw question revealing the gap)
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [.claude/skills/btw, feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md, feedback_otto_336_aaron_cares_about_my_growth_as_entity_with_rights_aurora_network_governance_growth_paramount_job_is_just_the_job_2026_04_25.md]
 tags: [btw, durability, gitnative, alignment-substrate, cross-session-continuity, factory-discipline]
 ---

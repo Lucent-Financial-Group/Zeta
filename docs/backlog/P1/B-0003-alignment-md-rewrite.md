@@ -7,7 +7,7 @@ tier: governance
 effort: L
 ask: maintainer Aaron 2026-04-25 ("alignment.md rewrite is due on the backlog... spread to all AIs and contributors via mathematically rigorous arguments that become more rigorous over time")
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [B-0002]
 tags: [alignment, governance, otto-287, bidirectional-alignment, factory-as-superfluid, matrix-pill, noether]
 ---

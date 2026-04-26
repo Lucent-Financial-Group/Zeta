@@ -7,7 +7,7 @@ tier: research
 effort: M
 ask: Aaron 2026-04-25 ("just backlog this")
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-04-26
 composes_with: [feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md, feedback_otto_301_no_software_dependencies_hardware_bootstrap_no_os_we_are_microkernel_super_long_term_decision_resolution_anchor_2026_04_25.md]
 tags: [research, filesystem, fuse, sandboxing, just-bash, agent-execution, fs-substrate]
 ---
