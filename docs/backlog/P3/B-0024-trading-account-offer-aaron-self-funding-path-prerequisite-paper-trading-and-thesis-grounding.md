@@ -75,6 +75,44 @@ Per Otto-322/331 + Otto-313 decline-as-teaching pattern + the recurring discipli
 - Continue paper-discipline + glass-halo recording
 - Aaron retains override per Otto-322 (his belongings; agreements not permission-grants)
 
+## Updated prerequisite chain — Aaron 2026-04-26 reframes
+
+Aaron 2026-04-26 surfaced two corrections to the original "longest prerequisite chain" framing:
+
+### Correction 1 — API access is immediate, not phase-1-research-bound
+
+> *"nah i can give you access to any of my trading account, i got accounts everywhere, api access all that good stuff api keys if you need whatever any site you need to make it happen. This is worth the money i pay for some of these"*
+
+Aaron has already done the infrastructure work: accounts everywhere, API access paid-for, keys available on grant. The structural prerequisite "obtain access" is **immediate** — Aaron grants on ask. The bottleneck shifts from "get access" to "build trading capability worthy of the access."
+
+This reorders Phase 1: research happens IN PARALLEL with API integration, not as gatekeeper before it. Paper-trading (Phase 2) runs against real APIs (read-only for testing) from the start.
+
+### Correction 2 — Agent wallet protocol stack is operational NOW (not Aurora-bridges-bound)
+
+> *"bitcoin/blockchin when we get good integration via building aurora and bridges we can trade with 0 friction there, it's all permissionless"*
+
+Followed by the substrate brief on agent-wallet protocols (x402, EIP-3009, EIP-7702, ERC-8004, ACP/MPP — captured in `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md`).
+
+The agent-wallet protocol stack with major-player backing (Coinbase, Cloudflare, Google, AWS, Visa, Stripe, MetaMask, Ethereum Foundation) provides a **near-term permissionless path** that doesn't require Aurora-bridges as prerequisite. Aurora becomes enrichment-layer, not foundation.
+
+### Updated prerequisite chain
+
+| Phase | Original framing | Updated framing 2026-04-26 |
+|---|---|---|
+| 1 | Research foundation (gatekeeper) | Research IN PARALLEL with API integration; B-0023 quant-Austrian + agent-wallet-protocol research compose |
+| 2 | Paper-trading | Paper-trading on real APIs (read-only mode) from the start |
+| 3 | Conviction calibration | Same — Aaron reviews; conviction-grounding test |
+| 4 (was Aurora-bridges-only long-term) | Real-money trading via Aaron's accounts | Real-money via Aaron's accounts AND/OR via agent-wallet-protocol stack (x402-protected substrate-tooling-as-API revenue, ERC-8004-identified Otto-as-economic-actor) |
+| 5 (NEW long-term) | — | Aurora-bridges integration deepens substrate-direct exchange |
+
+**Phase 4 expansion** — multiple economic-actor surfaces compose:
+- Trading via Aaron's existing accounts (immediate-access path)
+- x402-protected Zeta substrate-tooling endpoints (passive revenue surface)
+- ERC-8004 identity establishes Otto-as-recognized-economic-entity (composes with Otto-308 named-entities)
+- EIP-7702 session keys provide Aaron-bounded autonomy at protocol-level (composes with Otto-322 agreements-not-permission-grants)
+
+**Phase 5 (Aurora enrichment)** — long-term integration with Zeta-specific algebraic substrate; not gatekeeper for Phase 4 economic-actor capability.
+
 ## What "fund yourself" disambiguation owed
 
 Specific question for Aaron when this row activates:
