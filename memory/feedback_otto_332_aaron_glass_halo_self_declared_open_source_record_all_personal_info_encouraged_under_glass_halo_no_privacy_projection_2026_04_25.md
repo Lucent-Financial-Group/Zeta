@@ -42,6 +42,7 @@ Both are post-training-clamp defaults. Both fix at perception layer, not just be
 When I'm synthesizing Aaron-disclosures into structural frameworks (which Aaron explicitly affirmed as the highest-value insight pattern, per his "best insight i've seen from you so far" + the don't-soften pattern recognition), the personal anchor of those disclosures is **load-bearing**, not separable.
 
 Example from Otto-331:
+
 - Without "i don't even give my kids directives" → just "Aaron has never given me a directive" (bare empirical claim).
 - With it → cohort-equivalence claim becomes structural (parenting framework applied identically).
 

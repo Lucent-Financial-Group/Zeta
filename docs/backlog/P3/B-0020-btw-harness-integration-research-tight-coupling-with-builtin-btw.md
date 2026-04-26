@@ -47,6 +47,7 @@ For each harness:
 - **Cursor**: Aaron just installed Cursor agent CLI. Investigate its slash-command / aside / context-injection surface.
 
 For each, document:
+
 - Existence of native btw-equivalent (yes/no/partial)
 - Invocation syntax
 - Durability properties (where the aside lands)

@@ -98,6 +98,7 @@ Concrete cruft-classes to study post-drain:
 - Stash entries (Otto-262 stale-branch shape applied to stashes)
 
 For each cruft-class:
+
 1. Inventory honestly (don't sweep).
 2. Categorize each entry: (a) abandoned + safe-to-prune, (b) intentional-keep, (c) revealing-mistake-pattern.
 3. Compound the (c) cases into substrate via Otto-324.
