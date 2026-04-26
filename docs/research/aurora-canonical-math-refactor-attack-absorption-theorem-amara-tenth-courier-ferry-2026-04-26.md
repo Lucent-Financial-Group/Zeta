@@ -503,7 +503,10 @@ The "18 cited sources" referenced throughout this doc draw from the following pr
 ### Selfish mining / cross-ledger consensus attack
 
 - Eyal, I. & Sirer, E. G. (2013). *Majority Is Not Enough: Bitcoin Mining is Vulnerable*. Communications of the ACM. [Canonical URL: <https://cacm.acm.org/research/majority-is-not-enough/>]
-- Qubic/Monero event coverage (2025-08): GlobeNewswire press release on the Qubic 51% takeover demo; CoinDesk reporting on the cross-ledger incentive scheme; RIAT Institute critical analysis disputing the sustained-majority claim. [Canonical URLs: <https://www.globenewswire.com/news-release/2025/08/12/3132053/...>; <https://www.coindesk.com/business/2025/08/12/...>; <https://riat.at/qubic-attack-on-xmr-monero-no-51-attack-proven/>]
+- Qubic/Monero event coverage (2025-08):
+  - GlobeNewswire (2025-08-12): "Qubic Overtakes Monero's Hash Rate in Live '51% Takeover' Demo, Showcasing Real-World Power of Useful Proof of Work." [Canonical URL: <https://www.globenewswire.com/news-release/2025/08/12/3132053/0/en/qubic-overtakes-monero-s-hash-rate-in-live-51-takeover-demo-showcasing-real-world-power-of-useful-proof-of-work.html>]
+  - CoinDesk (2025-08-12): "Qubic Claims Majority Control of Monero Hashrate, Raising 51% Attack Fears." [Canonical URL: <https://www.coindesk.com/business/2025/08/12/qubic-claims-majority-control-of-monero-hashrate-raising-51-attack-fears>]
+  - RIAT Institute (2025): "Qubic Attack on XMR Monero was NOT a 51% Attack" — critical analysis disputing the sustained-majority claim. [Canonical URL: <https://riat.at/qubic-attack-on-xmr-monero-no-51-attack-proven/>]
 
 ### Proof of useful work
 
