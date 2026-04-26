@@ -64,6 +64,17 @@ MD055/MD056 (table cell count) requires:
 - Does NOT auto-fix every table issue — only the recognizable shapes
 - Does NOT promise correctness on ambiguous cases — degrade gracefully to diff-only
 
+## Implementation target — TypeScript not Python
+
+Per Aaron 2026-04-26 priority bump on B-0015: *"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol"* + *"our post install code"*.
+
+This tool (when built) should be TypeScript via Bun, not Python. It's a POST-install tool (runs in dev environments where Bun is available), per the pre/post-install distinction Aaron clarified:
+
+- POST-install (this tool): TypeScript, single cross-platform script, first-class typing
+- PRE-install (`tools/setup/install.sh`): shell + PowerShell, runs before Bun is available
+
+Wait for sibling-migration guardrail (B-0015) to unblock — first POST-install tool migrates to TS, then this one batches with the follow-on group. Until then, if the recurring pattern needs absorbing urgently, file an interim Python tool with explicit "TS-rewrite owed" header per the existing `bun+TS migration candidate` exception-label pattern in `docs/POST-SETUP-SCRIPT-STACK.md`.
+
 ## Effort sizing
 
 - **Build the tool**: M (1-3 days). Auto-fix heuristics + tests + dry-run mode.
