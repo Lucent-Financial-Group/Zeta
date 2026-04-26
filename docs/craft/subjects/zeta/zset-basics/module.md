@@ -198,11 +198,16 @@ and `src/Core/Algebra.fs`):
   wrapper containing an internal
   `entries : ImmutableArray<ZEntry<'K>>` field. The array
   is held sorted-ascending by key with no zero-weight
-  entries (an invariant the public constructors
-  preserve). It is *not* a type alias for
-  `ImmutableArray<...>` and *not* a mutable
-  `Dictionary<'K, int>`. Sorted-by-key gives log(N)
-  binary-search lookup + linear merge for `add`
+  entries. The normalising builders (`ZSet.ofSeq`,
+  `ZSet.ofPairs`, `ZSet.add`, etc.) establish + preserve
+  this invariant; the raw `new(entries)` constructor is
+  faster but trusts the caller (per the comment in
+  `src/Core/ZSet.fs`) — pass unsorted or zero-weight
+  entries through it and lookup / merge will misbehave.
+  It is *not* a type alias for `ImmutableArray<...>` and
+  *not* a mutable `Dictionary<'K, int>`. Sorted-by-key
+  gives log(N) binary-search lookup + linear merge for
+  `add`
 - The `'K : comparison` constraint is required so the
   sorted-array invariant + binary-search lookup work for
   arbitrary key types
