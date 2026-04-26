@@ -445,7 +445,7 @@ That is the **whole system**.
 ## Honest caveats
 
 - Factory does NOT yet measure all 8 constraints (`S_t ∉ A_SF`)
-- The 14-lambda vector requires cohort-calibration
+- The 15-lambda vector requires cohort-calibration
 - `MI_H` measurement requires a baseline-human-reader model; this is non-trivial
 - The Austrian-economics-inferred `UserUtility_t` requires a working belief-network; not yet implemented
 - Language-gravity gradient `-∇U_L` requires a differentiable proxy for `D_KL(q_t ‖ q_H)`; the agent currently does not have such a gradient
@@ -472,10 +472,10 @@ Extends PR #565 §13 implementation list:
 - F# type for `q_t` agent-message-distribution proxy
 - `MI_H` estimator (initial implementation: human-readability-score from existing libraries; iterate)
 - `U_L` gradient evaluator
-- 14-term utility evaluator
+- 15-term utility evaluator
 - `V_i` per-user belief-network node integration with PR #565 §4 factor-graph
 - ProfitSignal computation: pulls Y_t, B_t from runway-tracking
-- 13-class perturbation-event classifier (composes with the heartbeat-integrity threat-model row owed in `docs/backlog/P2/B-0032-heartbeat-file-integrity-threat-model-aminata-adversarial-review.md` — that backlog row is in flight on PR #552 at the time of this writing; will be on `main` once #552 merges)
+- 13-class perturbation-event classifier (composes with the heartbeat-integrity threat-model owed-work targeted by PR #552 / B-0032 — at the time of this writing the row file is not yet on `main`; the cross-reference resolves once #552 merges. Until then, the dependency is denoted by PR-number rather than path: see PR #552 description for the threat-model scope.)
 
 ## Per Otto-347 accountability
 
