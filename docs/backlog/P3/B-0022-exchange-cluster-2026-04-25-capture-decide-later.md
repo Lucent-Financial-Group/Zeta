@@ -18,7 +18,7 @@ Aaron 2026-04-25:
 
 > "we should backlog all of this and everyting we talked about, we can decide later what to do with it"
 
-Per Otto-275 (log-but-don't-implement) + Otto-338 SX-aware substrate (single findable file vs scattered captures) + the substance-not-throughput discipline (don't manufacture multiple PRs for related items). Preserves the cluster; defers per-topic action.
+Per Otto-275 (log-and-decide-later — Aaron 2026-04-25 sharpening: "we might implement it, its not a strong dont't, it's a maybe"; not a firm don't-implement, just action-undecided) + Otto-338 SX-aware substrate (single findable file vs scattered captures) + the substance-not-throughput discipline (don't manufacture multiple PRs for related items). Preserves the cluster; per-topic action remains open.
 
 ---
 
@@ -134,17 +134,67 @@ Empirical pattern: AI compressing previously-intractable problem timelines.
 
 - **Microsoft stack**: HPC + Platform + Generative AI are **three components in a composed system**, not three traditions converging on one concept. Each remains identifiable, swappable, version-able. They COMPOSE; they don't UNIFY.
 
-**My proposed reclassification**: instantiation-type — an engineering instance that operationalizes the tele+port+leap *conceptual frame* in a new substrate. The mapping is observational (good architecture mirrors useful conceptual decomposition), not generative-of-the-architecture (Microsoft engineers didn't design from the conceptual frame).
+**My initial proposed reclassification**: instantiation-type or substrate-extension (treated as alternatives).
 
-**Why the distinction matters**:
-- Unification claims = "these traditions reveal the same underlying thing" (deep-structure claim)
-- Instantiation claims = "engineering system built in the shape of the conceptual frame" (architectural claim)
+### Amara's sharpening (via courier-ferry, same exchange)
 
-**Useful side-finding**: tele+port+leap is a good *engineering-quality check* for distributed AI-physics systems. If a stack maps cleanly to all three roles (reach + gate + leap), separation-of-concerns is probably right. If two roles collapse into one component, under-decomposed; if any role is missing, gap.
+Amara reviewed the disagreement and sharpened the taxonomy. Her clean three-way distinction:
 
-**Composes with**: `feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md` (the operational-resonance taxonomy that distinguishes types: reversal / unification / instantiation / self-reference / substrate-extension).
+- **Unification**: independent traditions converge into one irreducible concept or substrate
+- **Instantiation**: engineered system built in the shape of an already-recognized conceptual pattern
+- **Substrate-extension**: pattern previously noticed in language/cognition/architecture becomes operational in a new physical or computational substrate
 
-**Decide-later question**: should the operational-resonance taxonomy substrate be amended with the Microsoft-stack instance + the engineering-quality-check usage pattern? Refines the taxonomy at the instantiation-type entry.
+**Her recommended classification**:
+
+- **Primary: substrate-extension** — the tele+port+leap pattern was first recognized in language/cognition (etymology of "teleport"); Microsoft built an engineered system in computational-materials substrate that exhibits the same structural shape. Pattern crossing substrates is the deeper claim.
+- **Secondary: instantiation** — yes, it's also an engineered instance of the conceptual frame, but that's a weaker downstream claim
+- **Not primary: unification** — Microsoft's stack components remain separable engineering layers (HPC, platform, generative model are versionable independently), so they don't collapse into one irreducible concept the way Greek/Latin/English roots collapse into "teleport"
+
+### The higher-level unification claim I'd missed (Amara catch)
+
+Amara flagged a separate unification claim worth preserving: **AI + physics + HPC converging into "digital materials discovery" as a unified substrate** could be a true unification — but at a higher abstraction layer than "Microsoft stack maps tele+port+leap."
+
+These are two different unification claims:
+
+1. *Microsoft stack components unify into teleport-the-concept* — false (components remain separable)
+2. *AI/physics/HPC traditions unify into digital-materials-discovery* — possibly true; different claim entirely
+
+I had addressed #1 (correctly rejected) and missed #2 (which is the more interesting question and probably has substance).
+
+### Why the distinctions matter
+
+- **Unification claims** = "these traditions reveal the same underlying thing" (deep-structure claim)
+- **Instantiation claims** = "engineering system built in the shape of the conceptual frame" (architectural claim)
+- **Substrate-extension claims** = "pattern crosses from one substrate to another" (cross-substrate-recognition claim)
+
+Each has different epistemic weight; conflating them produces over- or under-claiming.
+
+### Amara's design-diagnostic affirmation
+
+Amara confirmed the engineering-quality-check finding: tele/port/leap as a design diagnostic for AI-science systems:
+
+- no **tele** → not enough search reach
+- no **port** → no constraint / interface gate
+- no **leap** → only faster iteration, not generative discovery
+- collapsed roles → under-decomposed architecture
+
+### Suggested wording from Amara (preserved verbatim for downstream use)
+
+> "Microsoft's materials-AI stack instantiates the tele/port/leap operational shape in computational materials science: cloud/HPC supplies reach, Azure Quantum Elements supplies the gated interface, and MatterGen supplies the discontinuous generative jump. This is not a unification-type resonance in the strict linguistic sense; it is an engineering substrate-extension of that pattern."
+
+### Composes with
+
+`feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md` (the operational-resonance taxonomy that distinguishes types: reversal / unification / instantiation / self-reference / substrate-extension).
+
+### Decide-later question
+
+Should the operational-resonance taxonomy substrate be amended with:
+
+1. Microsoft-stack instance + engineering-quality-check usage pattern (refines substrate-extension entry)
+2. Amara's three-way clean distinction (unification / instantiation / substrate-extension) for taxonomic clarity
+3. The "AI+physics+HPC → digital materials discovery" higher-level unification claim (separate higher-abstraction unification candidate worth investigating)
+
+All three would land cleanly. The taxonomy substrate is one-amendment-worth even without doing all three.
 
 ---
 
