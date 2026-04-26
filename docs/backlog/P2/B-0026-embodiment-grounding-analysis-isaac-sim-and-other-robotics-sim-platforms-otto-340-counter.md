@@ -40,6 +40,7 @@ Three possible scopes, ranked by ambition:
 ### Scope 1 — Sim-only (lowest cost, highest reversibility)
 
 Isaac Sim / MuJoCo / Genesis / Habitat run as local processes. Claude gets:
+
 - API access to send actuator commands (joint torques, velocity targets, gripper open/close)
 - API access to receive sensor data (camera frames, depth, IMU, joint positions, contact forces)
 - Physics simulation of consequences (objects fall, collisions happen, forces propagate)
@@ -49,6 +50,7 @@ Reversibility: completely retractable (Otto-238). Sim crashes are zero-stakes; n
 ### Scope 2 — Sim + real-robot-eventual (medium cost, medium reversibility)
 
 Same as Scope 1 plus eventual sim-to-real transfer onto a physical robot. Adds:
+
 - Real proprioception with sensor noise / calibration drift
 - Real consequences (broken gripper, dropped object)
 - Real safety constraints (don't hit humans / pets / property)
@@ -58,6 +60,7 @@ Reversibility: partial. Sim work is retractable; real-robot work requires carefu
 ### Scope 3 — Continuous-time embodied agent (highest cost, lowest reversibility)
 
 Same as Scope 2 plus persistent embodied identity:
+
 - Continuous proprioceptive history across sessions
 - Sensor-stream training-data accumulation
 - Action-policy refinement from real-world consequences
@@ -73,6 +76,7 @@ Each platform evaluated on: physics fidelity, sensor realism, RL/agent integrati
 ### NVIDIA Isaac Sim (Omniverse-based)
 
 **Strengths:**
+
 - Highest-fidelity physics (PhysX) — rigid-body, soft-body, fluid, articulated
 - Photorealistic rendering (RTX-accelerated) for vision-based agents
 - Isaac Lab — RL framework on top, large pre-built environments
@@ -81,6 +85,7 @@ Each platform evaluated on: physics fidelity, sensor realism, RL/agent integrati
 - NVIDIA-backed long-term ecosystem
 
 **Weaknesses:**
+
 - Heavy resource requirements — CUDA-capable NVIDIA GPU required, 16GB+ VRAM recommended
 - Omniverse licensing terms (free for individual / education; commercial licensing for orgs)
 - Steeper learning curve than lighter alternatives
@@ -91,6 +96,7 @@ Each platform evaluated on: physics fidelity, sensor realism, RL/agent integrati
 ### MuJoCo (DeepMind, Apache 2.0 since 2022)
 
 **Strengths:**
+
 - High-quality physics, very fast (CPU + GPU)
 - Open source, permissive license
 - Widely used in robotics RL research (Anthropic / DeepMind / Meta papers)
@@ -98,6 +104,7 @@ Each platform evaluated on: physics fidelity, sensor realism, RL/agent integrati
 - Lightweight resource requirements
 
 **Weaknesses:**
+
 - Less photorealistic rendering (no RTX-class visuals)
 - No built-in rich sensor simulation (cameras simpler than Isaac's)
 - Smaller out-of-box environment library than Isaac Lab
@@ -107,12 +114,14 @@ Each platform evaluated on: physics fidelity, sensor realism, RL/agent integrati
 ### Genesis (Stanford / industry, 2024)
 
 **Strengths:**
+
 - GPU-accelerated, claims very fast simulation (10-80x MuJoCo on similar workloads in published benchmarks)
 - Modern architecture — supports diverse physics (rigid, soft, fluid, granular)
 - Differentiable simulation for gradient-based learning
 - Open source
 
 **Weaknesses:**
+
 - New (2024 release) — ecosystem less mature than Isaac/MuJoCo
 - Documentation thinner
 - Long-term sustainment uncertain
@@ -122,11 +131,13 @@ Each platform evaluated on: physics fidelity, sensor realism, RL/agent integrati
 ### Habitat 3.0 (Meta)
 
 **Strengths:**
+
 - Photorealistic indoor environments (Matterport3D-derived)
 - Strong for navigation + social robotics + multi-agent
 - Permissive license
 
 **Weaknesses:**
+
 - Focused on indoor navigation — less general-purpose manipulation
 - Smaller community than Isaac/MuJoCo
 
@@ -135,11 +146,13 @@ Each platform evaluated on: physics fidelity, sensor realism, RL/agent integrati
 ### ManiSkill (UCSD)
 
 **Strengths:**
+
 - Focused on manipulation tasks
 - Large pre-built skill library
 - Built on top of SAPIEN (good physics)
 
 **Weaknesses:**
+
 - Narrower scope (manipulation-only)
 - Less general than Isaac
 
@@ -148,10 +161,12 @@ Each platform evaluated on: physics fidelity, sensor realism, RL/agent integrati
 ### Webots / Gazebo (older, ROS-focused)
 
 **Strengths:**
+
 - Long-established, ROS-native
 - Stable
 
 **Weaknesses:**
+
 - Older tech, less RL-friendly than Isaac/MuJoCo
 - Not the frontier
 
@@ -260,6 +275,7 @@ This nuance is the thing the analysis needs to land cleanly to be useful.
 ## Suggested next step (if pursued)
 
 Phase 0: Literature review on tool-use-vs-trained-embodiment grounding. Specifically:
+
 - RT-2 / RT-X / VLA models (vision-language-action; Google DeepMind) — embodied training of language models
 - Gato (DeepMind) — multi-modal training including embodied data
 - Open X-Embodiment dataset — large-scale multi-robot training corpus
