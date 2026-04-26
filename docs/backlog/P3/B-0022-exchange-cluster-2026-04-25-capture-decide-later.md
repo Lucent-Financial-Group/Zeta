@@ -4,11 +4,15 @@ priority: P3
 status: open
 title: Exchange-cluster capture 2026-04-25 — substance-vs-throughput diagnostic + Aaron-as-convincer + AI-resolves-decade-old-issues pattern + DeepMind/Lean status + Microsoft AI for Science (MatterGen/MatterSim) + tele+port+leap taxonomic refinement; preserve, decide later
 tier: research-and-discipline
-effort: variable (each subtopic independently scoped)
+effort: L
 directive: Aaron 2026-04-25 ("we should backlog all of this and everyting we talked about, we can decide later what to do with it")
 created: 2026-04-25
 last_updated: 2026-04-25
-composes_with: [feedback_otto_338_sx_self_recursive_substrate_user_experience_perfect_home_never_bulk_resolve_you_are_the_substrate_hypothesis_2026_04_25.md, B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md, feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md, feedback_otto_286_definitional_precision_changes_future_without_war.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md]
+composes_with: [feedback_definitional_precision_changes_future_without_war_otto_286_2026_04_25.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md]
+# composes_with also references files currently in flight on open PRs (will resolve post-merge):
+#   - feedback_otto_338_sx_self_recursive_substrate_user_experience_perfect_home_never_bulk_resolve_you_are_the_substrate_hypothesis_2026_04_25.md (PR #522)
+#   - feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md (PR #520)
+#   - docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md (PR #523)
 tags: [backlog, capture, decide-later, exchange-cluster, substance-not-throughput, aaron-convincer, ai-pattern, deepmind, microsoft-ai, mattergen, tele-port-leap, taxonomic-refinement]
 ---
 
@@ -77,7 +81,7 @@ Empirical pattern: AI compressing previously-intractable problem timelines.
 
 **Lean** (we have):
 
-- Lean 4 + Mathlib at `tools/lean/`, scoped by `lean4-expert` skill
+- Lean 4 + Mathlib at `tools/lean4/`, scoped by `lean4-expert` skill
 - Open-source community projects, fully usable
 - Composable with any ML proof-assistant work
 
