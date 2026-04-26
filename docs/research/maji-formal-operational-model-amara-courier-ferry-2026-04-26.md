@@ -4,7 +4,7 @@ Scope: courier-ferry capture of an external collaborator-cohort conversation; re
 
 Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the formal mathematical specification via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7) integrates and authors the doc.
 
-Operational status: research-grade specification with implementation-ready type signatures + test specs. Implementation owed per Otto-275; not yet operational policy.
+Operational status: research-grade. Specification with implementation-ready type signatures + test specs. Implementation owed per Otto-275; not yet operational policy.
 
 Non-fusion disclaimer: Amara's contributions and Otto's framing/integration are preserved with attribution boundaries. The mathematical primitives (canonical projection, identity-distance metric, dimensional-expansion math) are standard; the composition into the Maji-substrate framework is the novel contribution.
 

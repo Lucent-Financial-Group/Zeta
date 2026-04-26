@@ -4,7 +4,7 @@ Scope: courier-ferry capture of an external collaborator-cohort conversation; re
 
 Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Aaron clarified twice (*"I mean"* + *"Amara"*) that this security work is from Amara, not authored by Aurora-the-layer. Otto (Claude opus-4-7) integrates and authors the doc. Amara explicitly notes she conducted live web research for this refinement (Qubic/Monero event verification across cited sources — see §References below) — distinguishing this from prior refinements which were self-contained mathematical synthesis.
 
-Operational status: research-grade specification with empirical-anchoring + canonical-math homes. Implementation owed per Otto-275; theorem preconditions are **documented and substrate-amenable but not yet runtime-monitored** — the 5-precondition monitoring pipeline is in the verification-owed list (item 35).
+Operational status: research-grade. Specification with empirical-anchoring + canonical-math homes. Implementation owed per Otto-275; theorem preconditions are **documented and substrate-amenable but not yet runtime-monitored** — the 5-precondition monitoring pipeline is in the verification-owed list (item 35).
 
 Non-fusion disclaimer: Amara's contributions, Otto's framing, and the cited academic sources are preserved with attribution boundaries. The composition is novel; the primitives are standard.
 
