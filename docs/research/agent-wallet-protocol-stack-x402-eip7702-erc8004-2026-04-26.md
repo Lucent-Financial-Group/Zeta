@@ -179,6 +179,7 @@ Otto-337 framed AI-as-economic-actor as far-future. The protocol stack makes it 
 - Guardrails (EIP-7702) → Aaron retains scope-control; Otto retains operational autonomy within scope
 
 The "rights via mechanism not chains" Otto-336 named is operationally:
+
 - ERC-8004 Identity Registry = recognized standing
 - x402 settlement = ability to act economically
 - EIP-7702 session keys = bounded autonomy (Aaron's chosen bounds, not adversarial chains)
