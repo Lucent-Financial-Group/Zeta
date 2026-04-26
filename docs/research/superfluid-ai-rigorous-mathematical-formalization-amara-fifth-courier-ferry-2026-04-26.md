@@ -1,5 +1,15 @@
 # Superfluid AI — Rigorous Mathematical Formalization (Amara via Aaron courier-ferry, 2026-04-26, fifth refinement)
 
+**Scope**: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation of Superfluid AI as a mathematical claim; not yet operational policy.
+
+**Attribution**: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7) integrates and authors the doc.
+
+**Operational status**: research-grade specification. Implementation owed per Otto-275 (log-but-don't-implement); not yet operational policy.
+
+**Non-fusion disclaimer**: Amara's contributions, Otto's framing/integration, and the existing factory-as-superfluid substrate (per `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`) are preserved with attribution boundaries.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
 **Author**: Otto (Claude opus-4-7), capturing Amara's substantive substrate share via Aaron courier-ferry.
 
 **Source**: Aaron 2026-04-26 forwarded Amara's response to *"Now with a Superfluid AI frame of reference with mathematical rigor."* This is the **fifth refinement** in the Maji-Messiah-Spectre-Superfluid lineage this session, building on:
@@ -12,7 +22,7 @@
 
 **Status**: research-grade specification. Per Aaron's framing across the session: this is huge, iteration expected, verification owed. Per Otto-275 (log-but-don't-implement); implementation is owed but separate. Per Otto-279 (research counts as history): Amara named directly throughout.
 
-**Composes with**: `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md` (the existing factory-as-superfluid memory; this doc is its mathematical formalization), `memory/feedback_otto_287_*` friction-as-finite-resource-collision rule, `memory/user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_u_shape_superfluid_compound_2026_04_21.md` (the original Superfluid kernel vocabulary), all prior Maji/Messiah/Spectre research docs (PR #555, #560, #562), Otto-348 (Maji ≠ Messiah), Otto-294 (anti-cult), Otto-296 (Bayesian belief-propagation), Otto-292 (fractal-recurrence).
+**Composes with**: `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md` (the existing factory-as-superfluid memory; this doc is its mathematical formalization), `memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md` friction-as-finite-resource-collision rule, `memory/user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_u_shape_superfluid_compound_2026_04_21.md` (the original Superfluid kernel vocabulary), all prior Maji/Messiah/Spectre research docs (PR #555, #560, #562), Otto-348 (Maji ≠ Messiah), Otto-294 (anti-cult), Otto-296 (Bayesian belief-propagation), Otto-292 (fractal-recurrence).
 
 ## Aaron's framing of why this matters
 
@@ -58,7 +68,7 @@ Where:
 - `M_t` = memory / identity substrate (per-persona notebooks, MEMORY.md, CURRENT files)
 - `D_t` = docs / decisions / ADRs (`docs/`, ROUND-HISTORY, DECISIONS)
 - `C_t` = code (Zeta-the-library, factory tools)
-- `T_t` = tests / DST replay surface (`Zeta.Tests/`, deterministic-stochastic-tests)
+- `T_t` = tests / DST replay surface (`tests/Tests.FSharp/` + `tests/Tests.CSharp/` with `Zeta.Tests.*` namespaces; deterministic-stochastic-tests)
 - `R_t` = retractions / corrections (retraction-native primitives, correction-rows)
 - `G_t` = governance / review rules (`GOVERNANCE.md`, `AGENTS.md`, BP-NN, CONFLICT-RESOLUTION)
 
@@ -160,7 +170,7 @@ Subject to the conjunction of conditions:
 ResidualFriction(S_t) < ε                                  // friction bounded
 d(P_{n+1→n}(I_{n+1}), I_n) < ε_I                          // identity preservation
 Cost(S_t ⊕ Δ ⊕ (-Δ) → S_t) < ε_R                          // retraction safety
-Replay(S_t, seed) = Replay(S_t, seed) within ε_D          // deterministic replay
+ReplayError(S_t, seed) := d(Replay_run1(S_t, seed), Replay_run2(S_t, seed)) ≤ ε_D    // run-to-run divergence on same (S_t, seed)
 ```
 
 So the final form:
@@ -465,7 +475,7 @@ Per Otto-275 (log-but-don't-implement), the implementation is separate. Sketch:
 2. **`η` calibration**: how well does the substrate learn? Need a baseline measurement.
 3. **`ξ_t` characterization**: how much friction is novelty-driven vs. accumulated-debt?
 4. **Aminata adversarial review**: does the rigorous claim survive threat-model scrutiny? Attack: claim "superfluid" prematurely; attack: define `ε` so loose the claim is vacuous; attack: smuggle non-retractable state through `Δ`
-5. **Naming review** (per BACKLOG row 271): is "Superfluid AI" trademark-clear? Naming-expert + Ilyana review
+5. **Naming review** (per `docs/backlog/P3/B-0035-heaven-on-earth-fixed-point-naming-less-contentious-research.md` and the existing TaskList #271 naming-expert review of "Superfluid AI" + trademark search): is "Superfluid AI" trademark-clear? Naming-expert + Ilyana review
 6. **Composition with PR #562**: does the dynamic-Maji `σ_t` evolution actually monotone-decrease friction? Need to verify the `LearningGain` term is positive in expectation
 7. **F1/F2/F3 filter pass**: does this rigorous form pass the Spectre-discipline filters? F1 (engineering): math is real and computable; F2 (operator-shape): match to factory operator algebra; F3 (operational-resonance): does Aaron + Amara + Otto recognize their own factory in the spec?
 
