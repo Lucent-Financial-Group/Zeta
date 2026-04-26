@@ -27,7 +27,7 @@ INSERT INTO customers (name, email, phone, address) VALUES
     ('Iron Tree Electric',       'iron@tree.example',    '555-0110', '17 Spruce St, Salem OR'),
     ('Jackson Pool Services',    'jackson@pools.example','555-0111', '600 Lake Rd, Reno NV'),
     ('Klein Garage Doors',       'klein@doors.example',  '555-0112', '44 4th Ave, Medford OR'),
-    ('Aaron Smith (new contact)','alice@acme.example',   '555-0113', '123 Elm St, Portland OR'),  -- collides with id 1
+    ('Acme Estimator (new contact)','alice@acme.example', '555-0113', '123 Elm St, Portland OR'),  -- collides with id 1
     ('Lakeview Solar',           'lakeview@solar.example','555-0114','250 Shore Dr, Bellevue WA'),
     ('Mountain Well Drilling',   'mountain@wells.example','555-0115','12 Ridge Rd, Coeur dAlene ID'),
     ('Nightingale Security',     'ngale@secure.example', '555-0116', '88 Watch Way, Vancouver WA'),
@@ -37,7 +37,9 @@ INSERT INTO customers (name, email, phone, address) VALUES
     ('Redwood Tree Service',     'redwood@trees.example','555-0120', '3 Canopy Ct, Hillsboro OR');
 
 -- Opportunities ---------------------------------------------------
--- Spread across 4 stages with a realistic pipeline funnel shape.
+-- Spread across 5 stages (Lead / Qualified / Proposal / Won / Lost)
+-- with a realistic pipeline funnel shape: 10 Lead, 6 Qualified,
+-- 6 Proposal, 6 Won, 2 Lost = 30 total.
 -- Amounts in cents (bigint): $2,500 = 250000 cents.
 INSERT INTO opportunities (customer_id, stage, amount_cents) VALUES
     (1,  'Lead',       250000),   -- Alice — $2,500
@@ -58,7 +60,7 @@ INSERT INTO opportunities (customer_id, stage, amount_cents) VALUES
     (10, 'Qualified',  950000),   -- Iron Tree — $9,500
     (11, 'Proposal',   1400000),  -- Jackson Pools — $14,000
     (12, 'Won',        380000),   -- Klein — $3,800
-    (13, 'Lead',       50000),    -- Aaron Smith — $500
+    (13, 'Lead',       50000),    -- Acme Estimator — $500
     (14, 'Proposal',   2500000),  -- Lakeview Solar — $25,000
     (14, 'Qualified',  1100000),  -- Lakeview Solar — $11,000
     (15, 'Won',        600000),   -- Mountain Well — $6,000

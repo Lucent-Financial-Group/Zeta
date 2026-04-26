@@ -38,8 +38,26 @@ fi
 
 fail=0
 
+# run_psql captures stderr to a temp file so callers can surface psql
+# errors on failure (otherwise `set -euo pipefail` + a silent stderr
+# redirect produces an empty got= and a hard-to-diagnose failure).
 run_psql() {
-    docker-compose exec -T db psql -U postgres -tAX -c "$1" 2>/dev/null | tr -d '[:space:]'
+    local stderr_file
+    stderr_file=$(mktemp)
+    local out rc
+    if out=$(docker-compose exec -T db psql -U postgres -tAX -c "$1" 2>"$stderr_file"); then
+        rc=0
+    else
+        rc=$?
+    fi
+    LAST_PSQL_STDERR=$(cat "$stderr_file")
+    rm -f "$stderr_file"
+    if [ "$rc" -ne 0 ]; then
+        # Print stderr to our stderr so the failing check has context.
+        printf '%s\n' "$LAST_PSQL_STDERR" >&2
+    fi
+    printf '%s' "$out" | tr -d '[:space:]'
+    return "$rc"
 }
 
 check() {
@@ -47,11 +65,16 @@ check() {
     local sql="$2"
     local expected="$3"
     local actual
-    actual=$(run_psql "$sql")
+    # Tolerate non-zero psql exit so we can print expected vs got + stderr,
+    # rather than tripping `set -e` and aborting before the FAIL line.
+    actual=$(run_psql "$sql") || true
     if [ "$actual" = "$expected" ]; then
         printf "  OK   %-40s (%s)\n" "$label" "$actual"
     else
         printf "  FAIL %-40s expected=%s got=%s\n" "$label" "$expected" "$actual"
+        if [ -n "${LAST_PSQL_STDERR:-}" ]; then
+            printf "       psql stderr: %s\n" "$LAST_PSQL_STDERR"
+        fi
         fail=1
     fi
 }
@@ -62,7 +85,7 @@ echo "=========================="
 check "customer row count"              "SELECT COUNT(*) FROM customers;"              "20"
 check "opportunity row count"           "SELECT COUNT(*) FROM opportunities;"          "30"
 check "activity row count"              "SELECT COUNT(*) FROM activities;"             "33"
-check "duplicate-email customer pairs"  "SELECT COUNT(*) FROM (SELECT email FROM customers GROUP BY email HAVING COUNT(*) > 1) s;"  "2"
+check "duplicate-email groups"          "SELECT COUNT(*) FROM (SELECT email FROM customers GROUP BY email HAVING COUNT(*) > 1) s;"  "2"
 check "Lead-stage opportunity count"    "SELECT COUNT(*) FROM opportunities WHERE stage = 'Lead';"     "10"
 check "Won-stage opportunity count"     "SELECT COUNT(*) FROM opportunities WHERE stage = 'Won';"      "6"
 check "Lost-stage opportunity count"    "SELECT COUNT(*) FROM opportunities WHERE stage = 'Lost';"     "2"

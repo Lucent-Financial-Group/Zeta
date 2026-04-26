@@ -17,8 +17,8 @@ for the load-bearing directive.
 
 Two sibling samples, two different audiences:
 
-- `samples/CrmKernel/` (internal-facing, lands in PR #141) —
-  algebraic substrate demo. ~180-line console F# showing
+- `samples/CrmSample/` (internal-facing) —
+  algebraic substrate demo. Console F# showing
   retraction-native Z-set semantics on CRM-shaped data. For
   factory agents and Zeta library users.
 - `samples/FactoryDemo.Db/` (factory-demo-facing) —
@@ -36,8 +36,9 @@ This directory currently ships only the DB side of the demo:
 - `schema.sql` — Postgres DDL for customers, opportunities,
   activities (email/call/SMS events).
 - `seed-data.sql` — deterministic seed: 20 customers, 30
-  opportunities across 4 stages, 2-3 intentional email
-  duplicates, some recent activity history.
+  opportunities across 5 stages (Lead / Qualified /
+  Proposal / Won / Lost), 2 intentional email duplicate
+  groups, some recent activity history.
 - `README.md` — this file.
 
 Frontend + backend land in later PRs once the stack is chosen
@@ -121,7 +122,7 @@ layer (TBD).
   trigger per table.
 - **No soft-deletes in v0.** CRUD-delete for simplicity. The
   demo's "retraction" semantics belong to the internal
-  algebraic sample (`samples/CrmKernel/`), not here.
+  algebraic sample (`samples/CrmSample/`), not here.
 - **Seed data shape deterministic.** Re-running `seed-data.sql`
   replays the same row count, same keys, same amounts, same
   email collisions. Activity timestamps use `NOW() - INTERVAL
