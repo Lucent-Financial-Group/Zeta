@@ -8,7 +8,7 @@ effort: M
 ask: Otto observation 2026-04-26 — §33 archive header was the most-common review finding across the 11-Amara-refinement courier-ferry lineage this session (PRs #560 / #562 / #563 / #565 / #566 / #568 / #569 / #570 / #553 each retrofitted post-review). Per Otto-346 (recurring pattern → substrate primitive missing) + Otto-341 (mechanism over vigilance), the structural fix is a CI lint that catches the violation pre-merge.
 created: 2026-04-26
 last_updated: 2026-04-26
-composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, feedback_otto_229_tick_history_append_only_never_edit_prior_rows_otto_229_2026_04_24.md]
+composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, GOVERNANCE.md-section-33-archive-header-discipline, tools/hygiene/check-tick-history-order.sh]
 tags: [hygiene-tooling, lint-discipline, otto-346-recurring-pattern-to-substrate-primitive, governance-section33, courier-ferry-imports, archive-header-discipline, mechanism-over-vigilance]
 ---
 

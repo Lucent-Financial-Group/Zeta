@@ -22,13 +22,16 @@
 # What this checks:
 #   For every file under `docs/research/**.md` that matches the
 #   courier-ferry import pattern (filename or content contains
-#   "courier-ferry" / "via Aaron" / "external conversation"):
+#   "courier-ferry" / "cross-substrate" / "external conversation"):
 #   - First 20 lines contain ALL four required §33 labels:
 #     * `Scope:` (literal label, NOT bold-styled `**Scope**:`)
 #     * `Attribution:`
 #     * `Operational status:`
 #     * `Non-fusion disclaimer:`
-#   - Reports the first failing file with a diagnostic
+#   - Reports every failing file with a per-file diagnostic line, then
+#     a summary line with the total count. Multi-violation reporting is
+#     intentional: agents can fix all violations in a single pass instead
+#     of running the lint repeatedly to discover them serially.
 #   - Exits non-zero on any failure
 #
 # What this does NOT do:
@@ -71,16 +74,30 @@ required_labels=(
 )
 
 # A courier-ferry / external-conversation import is identified by
-# common-marker patterns in filename or first-200-line content. Empty
-# match = file is NOT in scope, skip silently.
+# specific structural-marker patterns in filename or first-20-line
+# content. Patterns are role-ref-based (NOT name-attribution) per
+# the "No name attribution in code, docs, or skills" rule:
+# we look for the structural-shape markers like 'courier-ferry'
+# and 'cross-substrate', not personal names. Empty match = file is
+# NOT in scope, skip silently.
+#
+# Content signals are scoped to the first 20 lines (the §33 header
+# region itself) to AVOID false positives where a doc merely
+# mentions an external system in its body. The narrow lookback
+# also makes the lint cheaper.
 is_courier_ferry_import() {
   local file="$1"
-  # Filename signals
-  if [[ "$file" =~ courier-ferry|amara-via|aaron-share|cross-substrate ]]; then
+  # Filename signals — structural markers only (no personal names)
+  if [[ "$file" =~ courier-ferry|cross-substrate|external-import|cross-ferry ]]; then
     return 0
   fi
-  # Content signals (within first 200 lines to avoid scanning whole file)
-  if head -200 "$file" 2>/dev/null | grep -qiE 'courier.ferry|via [A-Z][a-z]+ courier|external conversation|external collaborator|google search ai|chatgpt'; then
+  # Content signals scanned in the §33 header region (first 20 lines).
+  # Patterns target structural phrases — courier-ferry process,
+  # external-conversation status — NOT mere mentions of external
+  # systems. Matches like 'chatgpt' / 'google search ai' alone are
+  # too broad and produce false positives on internal research docs
+  # (Copilot P0 finding: PR #571 review).
+  if head -20 "$file" 2>/dev/null | grep -qiE 'courier.ferry|external conversation|external collaborator|external research agent|courier-ferry capture'; then
     return 0
   fi
   return 1
