@@ -325,8 +325,8 @@ jobs:
     # timestamp). This catches the recurring row-ordering bug
     # where the Edit tool's old_string=existing-line pattern
     # inserts the new row BEFORE the matched line, producing
-    # reverse-chronological order. Aaron 2026-04-26 asked for
-    # structural prevention after I caught this bug at least
+    # reverse-chronological order. Maintainer 2026-04-26 asked for
+    # structural prevention after the bug was caught at least
     # three times across recent ticks. The check is the
     # "fail-fast at commit/push time" mechanism that doesn't
     # rely on each agent's vigilance — Otto-339 anywhere-means-
@@ -346,7 +346,7 @@ jobs:
 
   lint-no-conflict-markers:
     # Fail if any committed file contains git merge-conflict markers
-    # (`<<<<<<<`, `=======`, `>>>>>>>`). Aaron 2026-04-26 ask:
+    # (`<<<<<<<`, `=======`, `>>>>>>>`). Maintainer 2026-04-26 ask:
     # *"maybe we should hygene for <<<<<<< HEAD and >>>>>>> ======= things
     # like that in our files incase we ever accidently botch a merge,
     # happens to the best of us humans too."*
@@ -373,8 +373,8 @@ jobs:
     # docs/research/** is missing the GOVERNANCE.md §33 4-field archive
     # boundary header in the first 20 lines, OR if its 'Operational
     # status:' value is not enum-strict ('research-grade' or
-    # 'operational'). Otto observation 2026-04-26: §33 archive header
-    # was the most-common review finding across the 11-Amara-refinement
+    # 'operational'). Factory observation 2026-04-26: §33 archive header
+    # was the most-common review finding across the 11-refinement
     # courier-ferry lineage this session — every PR retrofitted post-
     # review.
     #
