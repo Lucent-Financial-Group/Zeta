@@ -39,6 +39,7 @@ This is the SAME Otto-346 pattern I named earlier this session and shipped two t
 **Problem class**: parse `gh` CLI JSON output to extract specific PR fields (status checks, merge state, review state, branch protection, etc.). I keep writing inline `python3 -c` heredocs to do this.
 
 **Tool behavior** (proposed):
+
 - `tools/git/pr-state-summary.ts <pr-number>` — concise summary of one PR
 - `tools/git/pr-state-summary.ts --all` — all open PRs in queue
 - `tools/git/pr-state-summary.ts <pr> --failures` — list only failing CI checks
@@ -46,6 +47,7 @@ This is the SAME Otto-346 pattern I named earlier this session and shipped two t
 - TypeScript via Bun; uses `gh` CLI under the hood + native fetch as fallback
 
 **Composition with sibling tools**:
+
 - `tools/hygiene/sort-tick-history-canonical.py` (PR #541) — sibling extraction (Python interim)
 - `tools/hygiene/fix-markdown-md032-md026.py` (PR #542) — sibling extraction (Python interim)
 - This is the THIRD recurring-pattern extraction this session; the cumulative count IS the signal that B-0015 (P2 TS migration) needs to actually start shipping
@@ -57,6 +59,7 @@ Per Aaron's 2026-04-26 priority bump on B-0015 (P3 → P2):
 > *"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol ... our post install code"*
 
 Tools in `tools/git/` and `tools/hygiene/` are POST-install (run after Bun is available). Per the TS-migration plan:
+
 - POST-install scripts target = TypeScript via Bun
 - PRE-install scripts (`tools/setup/install.sh`) = shell + PowerShell (stay)
 
@@ -67,6 +70,7 @@ This tool is POST-install (developer machine + CI runner already have Bun). Type
 **Strong candidate for first POST-install bun+TS migration** (sibling to B-0027, alternative to B-0015's batch-resolve-pr-threads.sh):
 
 Pros:
+
 - Small (~80-150 lines TS)
 - Pure logic (gh CLI input → parsed output)
 - High recurrence (I keep needing it)
@@ -78,6 +82,7 @@ Vs B-0015 (batch-resolve-pr-threads.sh, 390 lines bash with discipline already e
 Vs B-0027 (markdown-table-cell-count fix tool, not yet built): similar size, but B-0028 is *immediately useful* for the live drain-cadence Aaron + I are operating in, while B-0027 is reactive-only.
 
 **Recommendation**: B-0028 might be the right first POST-install TS migration because:
+
 1. Smallest scope
 2. Highest recurrence rate (I use this daily during drain operations)
 3. Establishes precedent quickly
@@ -92,6 +97,7 @@ Vs B-0027 (markdown-table-cell-count fix tool, not yet built): similar size, but
 ## Meta-observation captured for substrate
 
 **This is the THIRD instance** of Otto-346 (recurring dynamic = missing primitive) catching me this session:
+
 1. PR #541 — sort-tick-history-canonical (extracted)
 2. PR #542 — fix-markdown-md032-md026 (extracted)
 3. **B-0028 (this row)** — gh-pr-state-summary (owed)
@@ -118,6 +124,7 @@ The pattern Aaron is catching is real and recurring. Per Otto-341 + Otto-346 hon
 ## Owed work cluster
 
 The cumulative TS-migration owed-work this session has reached:
+
 - B-0015 batch-resolve-pr-threads.sh → TS (P2)
 - B-0027 markdown-table-cell-count tool → TS (P3)
 - B-0028 gh-pr-state-summary tool → TS (P3, this row)
