@@ -121,12 +121,16 @@ while IFS= read -r -d '' file; do
   header_region=$(head -20 "$file")
   missing=()
   for label in "${required_labels[@]}"; do
-    if ! echo "$header_region" | grep -qF "$label"; then
+    # Anchor label search to start-of-line. The labels are positional
+    # — they should be at start-of-line, not buried mid-line. A fixed-
+    # string search would accept `- Operational status:` (mid-list-item)
+    # which is structurally wrong (Copilot P1 finding: PR #575 review).
+    if ! echo "$header_region" | grep -qE "^$label"; then
       missing+=("$label")
     fi
   done
 
-  # Operational-status VALUE validation per GOVERNANCE.md §33 lines
+  # Operational status VALUE validation per GOVERNANCE.md §33 lines
   # 777-780: enum is strict — `research-grade` or `operational`,
   # nothing else. Free-form values (e.g. `research-grade specification
   # with implementation-ready type signatures...`) violate the spec
@@ -135,12 +139,13 @@ while IFS= read -r -d '' file; do
   # Codex P2 finding (PR #572 review): catch the value-discipline at
   # lint-time, not only label-presence.
   bad_value=""
-  if echo "$header_region" | grep -q '^Operational status:'; then
-    op_line=$(echo "$header_region" | grep -m1 '^Operational status:')
-    # Strict-enum regex: anchored to start, ends after the enum token.
-    # Trailing whitespace tolerated (markdownlint may strip it
-    # anyway).
-    if ! echo "$op_line" | grep -qE '^Operational status: (research-grade|operational)\s*$'; then
+  if echo "$header_region" | grep -qE '^Operational status:'; then
+    op_line=$(echo "$header_region" | grep -m1 -E '^Operational status:')
+    # Strict-enum regex anchored to start AND end. Use POSIX ERE
+    # character class [[:space:]]* — `\s` is NOT POSIX ERE; with
+    # `grep -E` `\s` matches a literal `s`, not whitespace (Copilot
+    # P0 finding: PR #575 review).
+    if ! echo "$op_line" | grep -qE '^Operational status: (research-grade|operational)[[:space:]]*$'; then
       bad_value="$op_line"
     fi
   fi
@@ -152,7 +157,7 @@ while IFS= read -r -d '' file; do
       echo "VIOLATION: ${file#"$REPO_ROOT/"} missing §33 labels: ${missing[*]}" >&2
     fi
     if [[ -n "$bad_value" ]]; then
-      echo "VIOLATION: ${file#"$REPO_ROOT/"} Operational-status value not enum-strict (must be 'research-grade' or 'operational' alone): ${bad_value}" >&2
+      echo "VIOLATION: ${file#"$REPO_ROOT/"} 'Operational status:' value not enum-strict (must be 'research-grade' or 'operational' alone): ${bad_value}" >&2
     fi
   fi
 done < <(find "$RESEARCH_DIR" -type f -name '*.md' -print0)
