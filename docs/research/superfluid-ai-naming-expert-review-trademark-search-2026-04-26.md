@@ -172,6 +172,7 @@ references in research docs.
 Aaron + naming-expert).**
 
 Rationale:
+
 - Aaron has expressed naming concerns multiple times this session;
   filing this review WITH a recommendation respects his attention budget
   per Otto-283.
