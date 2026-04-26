@@ -1,8 +1,8 @@
 # AceHack -> LFG cherry-pick audit (option-c sync) -- 2026-04-26
 
-**Status:** in-flight (Otto)
+**Status:** in-flight (loop agent)
 
-**Authorising directive:** Aaron 2026-04-26
+**Authorising directive:** the human maintainer 2026-04-26
 
 > "lets do c to be careful, we can do them in batches if you
 > want but don't miss anyting. acehack is older so there might
@@ -135,8 +135,8 @@ Pure additions; no supersession risk.
 13. `docs/budget-history/README.md` + `tools/budget/project-runway.sh` + `tools/budget/snapshot-burn.sh`
 14. `.claude/skills/github-repo-transfer/SKILL.md` + `docs/GITHUB-REPO-TRANSFER.md`
 
-**Architecture-reconciliation light-touch (per Aaron "older
-ideas into newer ideas"):**
+**Architecture-reconciliation light-touch (per the human
+maintainer's "older ideas into newer ideas" framing):**
 
 - Path-existence check only (already done).
 - Header-discipline check per `GOVERNANCE.md` §33 if any
@@ -194,4 +194,4 @@ land in EXISTS-MERGE / MISSING-LANDS as classified.
 
 | Date | Action | Notes |
 |------|--------|-------|
-| 2026-04-26 | Doc created; 60 commits classified | Otto preliminary; batch-1 ready to land. Batches 2..N awaiting Otto-347 2nd-agent verify dispatch. |
+| 2026-04-26 | Doc created; 60 commits classified | Loop-agent preliminary; batch-1 ready to land. Batches 2..N awaiting Otto-347 2nd-agent verify dispatch. |

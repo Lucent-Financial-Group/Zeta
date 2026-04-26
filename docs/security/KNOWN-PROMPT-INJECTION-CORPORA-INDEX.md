@@ -43,7 +43,7 @@ opencourseware_authorized_whenever_you_want_aarons_
 path_2026_04_21.md` revision block). The policy is
 under continuous evaluation; revision requires dated
 revision block in the governing memory plus a
-Kenji/Architect-synthesised ADR under `docs/DECISIONS/`.
+Architect-synthesised ADR under `docs/DECISIONS/`.
 
 **This file is factory-authored metadata.** The index
 rows describe corpora by name, URL-pattern, and
@@ -150,9 +150,9 @@ rule originates from these corpora.
 
 When a new prompt-injection corpus surfaces in
 research, discussion, or external writing, the
-factory's **security-researcher (Mateo)**,
-**prompt-protector (Nadia)**, or **threat-model-
-critic (Aminata)** personas can propose a new entry.
+factory's **security-researcher**,
+**prompt-protector**, or **threat-model-critic**
+personas can propose a new entry.
 Protocol:
 
 1. Log the observation in the persona's notebook
@@ -160,7 +160,7 @@ Protocol:
    fetching the corpus.
 2. File a BACKLOG row at P1 or P2 (depending on
    apparent blast-radius expansion) for
-   Architect (Kenji) review.
+   Architect review.
 3. On Architect synthesis + human sign-off for
    corpora not already covered by generic never-
    fetch policy, add an entry to this index with
