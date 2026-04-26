@@ -1,7 +1,7 @@
 # Latest cost projection — auto-generated
 
-**Generated:** `2026-04-26T13:57:09Z`
-**Factory git SHA:** `744e268dd6f57ba230deab8d77616ae19e38cf2f`
+**Generated:** `2026-04-26T14:37:11Z`
+**Factory git SHA:** `a7fb1dbd47b020ffb56e0a63935dc70dd7000aec`
 **Source:** `tools/budget/daily-cost-report.sh` (wraps snapshot-burn.sh + project-runway.sh)
 
 This file is **OVERWRITTEN** on each daily run. Historical snapshots live in
@@ -16,7 +16,7 @@ can be reconstructed from any snapshot subset via `tools/budget/project-runway.s
 Budget projection — three-repo-split Stages 1-4
 ================================================
 
-Evidence source:   /Users/acehack/Documents/src/repos/Zeta/docs/budget-history/snapshots.jsonl
+Evidence source:   docs/budget-history/snapshots.jsonl
 Samples (N):       1
 First snapshot:    2026-04-26T13:57:01Z
 Latest snapshot:   2026-04-26T13:57:01Z
