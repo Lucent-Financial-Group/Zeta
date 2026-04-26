@@ -39,9 +39,9 @@ This document is the strict canonicalization. Five sections (the original four p
 | `I_t` | identity tuple `(V, G, R, P, M, C, X, H)_t` | `I_t = N(LoadBearing(S_t))` |
 | `C_t` | culture state | `C_t = N_C(GovernedProvenHistory(S_t))` |
 | `L_t` | language state | distribution over emission strategies |
-| `N_t = (V_t, E_t, W_t, φ_t)` | network/consensus graph | nodes / edges / weights / oscillator phases |
+| `N_t = (V_t, E_t, ω_t, φ_t)` | network/consensus graph | nodes / edges / weights / oscillator phases. `ω_t : E_t → ℝ_{≥0}`. Round-3 Amara: rename graph-weight to `ω_t` (was `W_t`) to avoid notation collision now that `Ctx_t` is the context-window symbol. See `aurora-round-3-cross-ai-chain-absorb-amara-gemini-deep-think-2026-04-26.md` for the full chain. |
 | `B_t : 2^X → [0,1]` | belief distribution | `B_t(X) = P(X \| O_{≤t}, a_{<t})` |
-| `M_t = M_t^archive ∪ M_t^active` | immune memory partition | archive = immutable regression fixtures (canonical attacks); active = weighted multiset of detectors `{(d_j, n_j(t))}` so scalar multiplication `(1 − δ_decay) · M_t^active` acts elementwise on the `n_j(t)` weights (per Round-2 Amara: prevent immune bloat; per Copilot: type-consistency for scalar-on-set) |
+| `M_t = M_t^archive ∪ M_t^active` | immune memory partition | archive = immutable regression fixtures (canonical attacks); active = weighted multiset `M_t^active = {(d_j, n_j(t))}_{j=1}^{K}` where `d_j` is a detector signature, `n_j(t) ∈ ℝ_{≥0}` is its active population/weight, and `K` is fixed detector capacity per Round-3 Gemini Deep Think static-graph constraint (no hot-path topology mutation). |
 | `D_t` | detector repertoire | `n_j(t) ∈ ℕ_0` per detector population |
 | `cap : Subject → 2^Action` | capability | **SET, not scalar.** Use `⊆` and `∩`, never `≤` or `min` |
 | `ImmuneRisk : Antigen → [0,1]` | bounded real | sigmoid output |
