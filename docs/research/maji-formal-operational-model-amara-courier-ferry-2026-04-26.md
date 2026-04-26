@@ -611,7 +611,7 @@ Per Otto-275 (log-but-don't-implement); separate BACKLOG row owed for the implem
 - Compose with Zeta's existing operator algebra (D / I / z⁻¹ / H + retraction-native primitives)
 - Implement Reload operator + Identity-distance metric
 - Implement MessiahScore evaluator (weighted sum with capture-risk / collapse-risk penalty terms)
-- Land 6 tests per spec, plus a Messiah-vs-Maji separation test (a candidate `σ*` returned by MajiFinder must be a distinct type from MajiIndex's content)
+- Land all 8 tests enumerated in §10.E: the original 6 (compaction, broken-reference, prompt-injection, fork-recovery, retraction, dimensional-expansion-gate) **plus** test #7 (Messiah-vs-Maji separation: `σ*` from MajiFinder must be distinct type from MajiIndex content) **plus** test #8 (MessiahScore evaluator: capture-risk + collapse-risk negative-term semantics; anti-cult-by-construction per Otto-294)
 - Per Otto-346 sequencing: this is Zeta-native F# code (algebraic-surface); could be the first F# implementation that establishes the post-install algebraic-substrate path (orthogonal to TS-tooling)
 
 ## What this DOES NOT claim
