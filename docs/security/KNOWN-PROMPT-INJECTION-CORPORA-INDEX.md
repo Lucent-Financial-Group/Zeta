@@ -6,11 +6,9 @@ artists, hobbyists, and in some cases malicious actors;
 the factory's register toward all of them is neutral-
 descriptive / curious / protective. Love-register per
 `memory/feedback_love_register_extends_to_adversarial_
-actors_no_enemies_even_prompt_injectors_2026_04_21.md`
-(not committed to repo — private factory register
-memory). War-register, enemy-framing, or "know thy
-enemy" organisational metaphor is declined here by
-design.
+actors_no_enemies_even_prompt_injectors_2026_04_21.md`.
+War-register, enemy-framing, or "know thy enemy"
+organisational metaphor is declined here by design.
 
 **Purpose.** Maintain a tracked index of URLs and corpus
 identifiers *the factory never fetches*. The index

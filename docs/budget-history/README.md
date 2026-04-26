@@ -38,7 +38,7 @@ commits are the time-axis. Each snapshot contains:
 | Field | Source | Scope | What it tells us |
 | --- | --- | --- | --- |
 | `ts` | local wall clock (UTC) | — | When the snapshot was taken |
-| `factory_git_sha` | `git rev-parse HEAD` | — | AceHack fork commit at snapshot time |
+| `factory_git_sha` | `git rev-parse HEAD` | — | git SHA at snapshot time (whichever repo / fork the script runs in) |
 | `org` | literal | — | Which org this covers |
 | `note` | optional `--note` flag | — | Human annotation for unusual snapshots |
 | `copilot_billing.seat_breakdown.total` | `/orgs/<org>/copilot/billing` | `read:org` | Total paid Copilot seats |

@@ -1,7 +1,7 @@
 # Positioning draft — 2026-04-21
 
 **Status: retractable draft.** Internal candidate, awaiting
-Aaron sign-off for any external use. Lives in this subtree per
+human-maintainer sign-off for any external use. Lives in this subtree per
 `docs/marketing/README.md`.
 
 ## The one-line attempt
@@ -78,7 +78,7 @@ notes below.)
 ## Voice — candidate brand-voice sketches
 
 Three voices to test; none committed. Picking one will
-happen in a later round with Aaron's input.
+happen in a later round with the human maintainer's input.
 
 ### Candidate A — the quiet craftsman
 
@@ -136,20 +136,20 @@ Each retractable; none committed:
 
 Per the P3 BACKLOG row's "marketing channels" sub-scope;
 this is where the factory *might* eventually show up,
-logged for Aaron sign-off before any actual outreach:
+logged for human-maintainer sign-off before any actual outreach:
 
 - **F# for Fun and Profit** — community blog with
   architectural reach; a guest post on retraction-native
   IVM would hit the Scott Wlaschin-adjacent audience.
 - **.NET Conf / F# Online** — conference abstracts are
-  Aaron-sign-off irretractable (abstracts commit to
+  human-maintainer-sign-off irretractable (abstracts commit to
   delivery); drafting abstract text here is retractable.
 - **Arxiv (cs.DB + cs.LG)** — research-register channel;
   a paper-grade write-up of the retraction-native
   operator algebra is already on the BACKLOG
   (`docs/research/factory-paper-2026-04.md`).
 - **Hacker News** — launch-register channel;
-  timing-sensitive, Aaron-sign-off-required.
+  timing-sensitive, human-maintainer-sign-off-required.
 - **r/fsharp + r/dotnet** — smaller community register.
 - **NuGet package metadata** — SEO-adjacent;
   irretractable-once-published (each version's metadata
@@ -184,7 +184,7 @@ No commitment to target any of these keywords in
 published metadata; just the inventory for eventual
 selection.
 
-## What happens when Aaron wakes
+## What happens when the human maintainer wakes
 
 This draft is ready for sign-off on any of the following:
 
@@ -199,11 +199,11 @@ This draft is ready for sign-off on any of the following:
   go / no-go / defer.
 - **Sign-off on NuGet metadata changes** — retractable
   drafting here is complete; any actual metadata edit is
-  Aaron's call because each version's metadata is
+  the human maintainer's call because each version's metadata is
   immutable post-publish.
 
 No commitments are made by this draft existing. All
-items above are retractable until Aaron stamps
+items above are retractable until the human maintainer stamps
 something specifically.
 
 ## Cross-references

@@ -1,7 +1,7 @@
 # Market research draft — 2026-04-21
 
 **Status: retractable draft.** Internal candidate, awaiting
-Aaron sign-off for any external use. Lives in
+human-maintainer sign-off for any external use. Lives in
 `docs/marketing/` per the subtree's README governance
 (retractable-under-roommate-register; revert + dated
 revision block is sufficient to undo).
@@ -173,7 +173,7 @@ vocabulary isn't there.
 
 **Acquisition angle:** technical-credibility content
 (F# Advent posts, Strange-Loop-style talks, the
-`DBSP` mathematical framing). Aaron's Strange-Loop
+`DBSP` mathematical framing). the human maintainer's Strange-Loop
 expert-register (per `memory/user_aaron_high_school_
 ocw_self_taught_stanford_mit_lisp_aspiration_2026_
 04_21.md`) is a real asset here; this is exactly the
@@ -235,7 +235,7 @@ conference (FSharpConf) submissions.
 
 ## Section 3 — Where "crystallise into small binary seed" changes the market frame
 
-This is the non-obvious part. Aaron 2026-04-21:
+This is the non-obvious part. the human maintainer 2026-04-21:
 *"the soul file can be duplicacted spread out and
 regrow just like a metametameta seed ... it can be
 wasm and native executable and universal ... and a
@@ -274,7 +274,7 @@ compilation-pipeline work. Filed as P3 in
 A factory that fits in a small binary and reproduces
 itself from the seed is its own market category. The
 closest analogue is *container image* (Docker / OCI),
-but the Aaron-retracted "not-docker" framing
+but the human-maintainer-retracted "not-docker" framing
 (per the soul-file memory) insists this is
 declarative-reproducible-build at the *computation*
 layer, not container layer.
@@ -358,7 +358,7 @@ crystallise-to-binary-seed program, not present-tense.
   Materialize / Feldera today. Those are mature
   commercial / reference products; Zeta is a library
   in-flight. Landscape placement ≠ market readiness.
-- NOT public-facing without Aaron sign-off per the
+- NOT public-facing without human-maintainer sign-off per the
   marketing-subtree governance.
 
 ---
@@ -383,7 +383,7 @@ priority order:
    substitute. Retractable.
 5. **Do not broadcast this draft externally** — marketing
    subtree is retractable internal-only; external use
-   requires Aaron sign-off per subtree governance.
+   requires human-maintainer sign-off per subtree governance.
 
 ---
 
@@ -397,7 +397,7 @@ priority order:
 - **`memory/feedback_my_tilde_is_you_tilde_roommate_
   register_symmetric_hat_authority_retractable_decisions_
   without_aaron.md`** — authorization for retractable
-  marketing work without Aaron sign-off per item.
+  marketing work without human-maintainer sign-off per item.
 - **`memory/user_git_repo_is_factory_soul_file_
   reproducibility_substrate_aaron_2026_04_21.md`** —
   soul-file / metametameta-seed / crystallise-to-
@@ -414,7 +414,7 @@ priority order:
 
 ## Revision history
 
-- **2026-04-21.** First write. Triggered by Aaron
+- **2026-04-21.** First write. Triggered by the human maintainer
   2026-04-21 *"someone wantedd to do market research"*
   + *"learning and teaching and crystalsing into the
   small binary seed"* directive after soul-file-
