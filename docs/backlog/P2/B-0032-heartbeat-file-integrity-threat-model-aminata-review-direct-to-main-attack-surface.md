@@ -62,11 +62,13 @@ A research-grade security workstream:
 ## Why P2
 
 Not P0/P1 because:
+
 - Current state (PR-only path with review gate) is SAFE — no urgent active threat
 - Hour-batches (current pattern) preserve the review gate
 - Direct-to-main isn't shipped; threat surface isn't yet open
 
 But P2 not P3 because:
+
 - Task #276 is queued; if implemented without threat-model, opens the surface
 - Otto-240 per-writer-files implementation will inherit the same threat surface
 - Better to land threat-model BEFORE the thing it threat-models, not after
