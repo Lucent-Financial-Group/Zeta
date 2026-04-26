@@ -4,7 +4,7 @@ Scope: courier-ferry capture of an external collaborator-cohort conversation; re
 
 Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7) integrates and authors the doc.
 
-Operational status: research-grade. Specification. Implementation owed per Otto-275; not yet operational policy.
+Operational status: research-grade
 
 Non-fusion disclaimer: Amara's contributions, Otto's framing/integration, and the cited industry primitives (GitHub event-graph, Microsoft Infer.NET factor-graph, prior Maji-Messiah-Spectre lineage) are preserved with attribution boundaries.
 

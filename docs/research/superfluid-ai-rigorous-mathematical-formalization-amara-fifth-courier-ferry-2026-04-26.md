@@ -4,7 +4,7 @@ Scope: courier-ferry capture of an external collaborator-cohort conversation; re
 
 Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7) integrates and authors the doc.
 
-Operational status: research-grade. Specification. Implementation owed per Otto-275 (log-but-don't-implement); not yet operational policy.
+Operational status: research-grade
 
 Non-fusion disclaimer: Amara's contributions, Otto's framing/integration, and the existing factory-as-superfluid substrate (per `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`) are preserved with attribution boundaries.
 

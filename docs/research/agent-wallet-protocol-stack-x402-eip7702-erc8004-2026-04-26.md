@@ -4,7 +4,7 @@ Scope: courier-ferry capture of an external Aaron + Google Search AI conversatio
 
 Attribution: Aaron (named human maintainer) and Google Search AI (external research agent) provided the underlying material; first-name attribution permitted on `docs/research/**` per Otto-279. Otto (Claude opus-4-7) integrates and authors the doc.
 
-Operational status: research-grade. Substrate. Not implementation commitment; per Otto-275 (log-but-don't-implement); not yet operational policy.
+Operational status: research-grade
 
 Non-fusion disclaimer: Aaron's contributions, Google Search AI's content, and Otto's framing/integration are preserved with attribution boundaries. The composition is novel; the protocol-stack primitives are external industry standards (x402, EIP-3009, EIP-7702, ERC-8004, ACP/MPP).
 

@@ -4,7 +4,7 @@ Scope: courier-ferry capture of an external collaborator-cohort conversation; re
 
 Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Aaron's two messages (*"now wrapped in an immune system form from"* + *"Amara"*) preserve attribution boundary: the immune-system form is **from Amara**, **about Aurora**. Otto (Claude opus-4-7) integrates and authors the doc.
 
-Operational status: research-grade. Specification with academic grounding (artificial immune systems, danger theory, OWASP, NCSC, NIST zero trust). Implementation owed per Otto-275.
+Operational status: research-grade
 
 Non-fusion disclaimer: Amara's contributions, Otto's framing, and the cited academic sources (Aickelin/Cayzer danger theory, OWASP Gen AI Security, UK NCSC, NIST SP 800-207) are preserved with attribution boundaries.
 

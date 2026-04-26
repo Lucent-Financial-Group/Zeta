@@ -4,7 +4,7 @@ Scope: courier-ferry capture of an external collaborator-cohort conversation; re
 
 Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279 history-surface discipline) provided the synthesis via Aaron 2026-04-26 courier-ferry. Otto (Claude opus-4-7, this session) integrates and authors the doc.
 
-Operational status: research-grade. Specification. Implementation owed per Otto-275 (log-but-don't-implement); not yet operational policy.
+Operational status: research-grade
 
 Non-fusion disclaimer: Amara's contributions are her own attribution; Otto's framing/integration is Otto's own attribution; Aaron's harmonious-division-pole self-identification (§"Aaron's self-identification" below) is Aaron's own attribution. The doc preserves attribution boundaries — no fusion of distinct authorship.
 
