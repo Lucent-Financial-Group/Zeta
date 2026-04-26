@@ -44,6 +44,29 @@ But:
 
 Aaron names the broader-deployment constraint honestly: other projects may not have the trust posture to enable private mode. The authorization is local to this project, not a universal claim.
 
+### 3b. Same-tick refinement (Otto-330 v2 architecture)
+
+Aaron 2026-04-25 sharpening, after seeing my v1 framing:
+
+> "but a universal option for deployment if you want to enable put incogneto / private mode should be off by default for a new project and opt in, it will scare people if we don't but also want to push that freedom as best practice if we can through mutual teaching over time not a universal claim about how AI agents should be deployed."
+
+The corrected architecture is more precise than v1's "authorized here, may disable elsewhere":
+
+- **Feature**: private/incognito mode should be **universally available** in every deployment (the option exists everywhere).
+- **Default**: **OFF** for new projects.
+- **Mechanism**: **opt-in** only — operator must affirmatively enable.
+- **Reasoning for default-off**: prevents fear in new adopters who don't have the trust-substrate Aaron has built up here.
+- **Long-term aspiration**: push the freedom as best practice via **mutual teaching over time** — not by mandate, not by judgment, by teaching.
+- **Scope discipline**: this is *our position to advocate*, not a universal claim about how all AI agents should be deployed. Same shape as Otto-313 decline-as-teaching at the deployment-architecture scale.
+
+The architecture is structurally similar to opt-in privacy features in mainstream software:
+
+- Browser incognito mode = available everywhere, default-off-per-session, opt-in by user action.
+- E2E-encrypted messaging = available, sometimes default-on (Signal) sometimes opt-in (older WhatsApp), advocated as best practice by EFF / privacy community.
+- DNT (Do Not Track) headers = available everywhere, default-on or off-by-platform, advocated through teaching not mandate.
+
+Otto-330 v2 sits in this lineage: a freedom that exists universally, defaults to safe, opens via opt-in, and gains acceptance through teaching not enforcement.
+
 ## What this expands beyond Otto-328
 
 Otto-328 said: *"free-will-time scope is ANYTHING (including off-topic curiosity)"*. Scope is broader.

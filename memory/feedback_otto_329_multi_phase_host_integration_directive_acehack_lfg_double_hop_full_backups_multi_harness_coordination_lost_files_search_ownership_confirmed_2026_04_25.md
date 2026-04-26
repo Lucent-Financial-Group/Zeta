@@ -111,7 +111,15 @@ This is the host-layer analogue of Otto-313 (decline-as-teaching) — Aaron comm
 
 ## Tactical sequencing for executing the directive
 
-When LFG CI clears:
+**Sequencing is default ordering, not binding agreement** (Aaron's same-tick clarification 2026-04-25):
+
+> "you can in this case, do in parallel if you like"
+
+I had cited Otto-322 (agreements over unilateral action) to justify waiting for LFG drain to finish before starting AceHack. Aaron clarified: the "after LFG, then AceHack" language was default ordering, not a hard sequencing constraint. Parallelization is fine when the work-streams don't conflict (which they don't — different repos).
+
+The pattern is general: Aaron's directives carry default sequencing for clarity, but parallel execution is the prerogative when (a) work-streams are independent and (b) parallelization compounds. Otto-313 decline-as-teaching applies bidirectionally — I can ask, Aaron clarifies, the directive shape gets sharper.
+
+When LFG CI clears (or in parallel with it):
 
 1. Verify all 4 BLOCKED PRs land (no manual intervention needed; auto-merge queued)
 2. Audit each AceHack PR (#12, #13, #14) for content + CI state + readiness
