@@ -95,8 +95,8 @@ first_ts="$(echo "$first" | jq -r '.ts')"
 last_ts="$(echo "$last" | jq -r '.ts')"
 last_copilot_seats="$(echo "$last" | jq -r '.copilot_billing.seat_breakdown.total // 0')"
 last_plan="$(echo "$last" | jq -r '.copilot_billing.plan_type // "unknown"')"
-last_total_ms="$(echo "$last" | jq -r '[.repos[].agg.total_duration_ms // 0] | add')"
-last_recent_merged="$(echo "$last" | jq -r '[.repos[].pr.recent_merged // 0] | add')"
+last_total_ms="$(echo "$last" | jq -r '([.repos[].agg.total_duration_ms // 0] | add) // 0')"
+last_recent_merged="$(echo "$last" | jq -r '([.repos[].pr.recent_merged // 0] | add) // 0')"
 last_sha="$(echo "$last" | jq -r '.factory_git_sha')"
 
 # Delta computation requires N >= 2.
@@ -104,8 +104,8 @@ delta_available="false"
 per_pr_ms="null"
 pr_delta="0"
 if [ "$n" -ge 2 ]; then
-  first_total_ms="$(echo "$first" | jq -r '[.repos[].agg.total_duration_ms // 0] | add')"
-  first_recent_merged="$(echo "$first" | jq -r '[.repos[].pr.recent_merged // 0] | add')"
+  first_total_ms="$(echo "$first" | jq -r '([.repos[].agg.total_duration_ms // 0] | add) // 0')"
+  first_recent_merged="$(echo "$first" | jq -r '([.repos[].pr.recent_merged // 0] | add) // 0')"
   # Note: recent_merged is a rolling-window count (last 10), not a
   # cumulative count. A robust per-PR-burn calc needs a cumulative
   # PR counter. For now use the naive proxy: if last_total_ms
@@ -123,7 +123,7 @@ fi
 # Actions: projected_ms = per_pr_ms * stages; remaining = free_ms - cumulative_billable.
 # Copilot: constant $copilot_rate/month per seat; migration-span-months * seats * rate.
 # Conservative bound: use last snapshot billable counters (sum of all OS) for cumulative.
-last_billable_ms="$(echo "$last" | jq -r '[.repos[] | .agg.billable_ubuntu_ms + .agg.billable_macos_ms + .agg.billable_windows_ms] | add')"
+last_billable_ms="$(echo "$last" | jq -r '([.repos[] | (.agg.billable_ubuntu_ms // 0) + (.agg.billable_macos_ms // 0) + (.agg.billable_windows_ms // 0)] | add) // 0')"
 remaining_free_ms=$((actions_free_ms - last_billable_ms))
 projected_actions_ms=0
 actions_fit="unknown (N<2)"

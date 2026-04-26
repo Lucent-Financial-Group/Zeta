@@ -72,23 +72,38 @@ copilot_raw="$(gh api "/orgs/${org}/copilot/billing" 2>/dev/null || echo "{}")"
 #    capture run_duration_ms because it is the consumption signal
 #    regardless of who is being billed.
 repo_stats=""
+api_warnings=0
 for r in "${repos[@]}"; do
-  runs_json="$(gh api "/repos/${r}/actions/runs?per_page=20" 2>/dev/null || echo '{"workflow_runs":[]}')"
+  if ! runs_json="$(gh api "/repos/${r}/actions/runs?per_page=20" 2>/dev/null)"; then
+    echo "warning: gh api /repos/${r}/actions/runs failed; using empty workflow_runs" >&2
+    runs_json='{"workflow_runs":[]}'
+    api_warnings=$((api_warnings + 1))
+  fi
   per_run="$(echo "$runs_json" | jq -c '[.workflow_runs[] | {id, name, conclusion, run_started_at, updated_at}]')"
-  run_ids="$(echo "$runs_json" | jq -r '.workflow_runs[].id')"
+  # Use mapfile to avoid word-splitting / globbing on $run_ids (Codex P0 finding NM59qAlk).
+  mapfile -t run_id_list < <(echo "$runs_json" | jq -r '.workflow_runs[].id')
   timings="[]"
-  for id in $run_ids; do
-    t="$(gh api "/repos/${r}/actions/runs/${id}/timing" 2>/dev/null || echo '{}')"
+  for id in "${run_id_list[@]}"; do
+    if ! t="$(gh api "/repos/${r}/actions/runs/${id}/timing" 2>/dev/null)"; then
+      echo "warning: gh api /repos/${r}/actions/runs/${id}/timing failed; using empty timing" >&2
+      t='{}'
+      api_warnings=$((api_warnings + 1))
+    fi
     timings="$(echo "$timings" | jq --argjson entry "{\"id\":$id,\"timing\":$t}" '. + [$entry]')"
   done
+  # Default `add` to 0 on empty array (Codex/Copilot P0 findings NM59qAlL/NM59qAlX).
   agg="$(echo "$timings" | jq '
     { total_runs: length,
-      total_duration_ms: ([.[].timing.run_duration_ms // 0] | add),
-      billable_ubuntu_ms: ([.[].timing.billable.UBUNTU.total_ms // 0] | add),
-      billable_macos_ms: ([.[].timing.billable.MACOS.total_ms // 0] | add),
-      billable_windows_ms: ([.[].timing.billable.WINDOWS.total_ms // 0] | add) }')"
-  pr_stats="$(gh api "/repos/${r}/pulls?state=closed&per_page=10" 2>/dev/null \
-    | jq '[.[] | select(.merged_at != null)] | { recent_merged: length, last_merged_at: (.[0].merged_at // null) }' || echo '{}')"
+      total_duration_ms: (([.[].timing.run_duration_ms // 0] | add) // 0),
+      billable_ubuntu_ms: (([.[].timing.billable.UBUNTU.total_ms // 0] | add) // 0),
+      billable_macos_ms: (([.[].timing.billable.MACOS.total_ms // 0] | add) // 0),
+      billable_windows_ms: (([.[].timing.billable.WINDOWS.total_ms // 0] | add) // 0) }')"
+  if ! pr_raw="$(gh api "/repos/${r}/pulls?state=closed&per_page=10" 2>/dev/null)"; then
+    echo "warning: gh api /repos/${r}/pulls failed; using empty pr_stats" >&2
+    pr_raw='[]'
+    api_warnings=$((api_warnings + 1))
+  fi
+  pr_stats="$(echo "$pr_raw" | jq '[.[] | select(.merged_at != null)] | { recent_merged: length, last_merged_at: (.[0].merged_at // null) }')"
   entry="$(jq -n --arg repo "$r" \
                  --argjson agg "$agg" \
                  --argjson runs "$per_run" \
@@ -101,6 +116,9 @@ for r in "${repos[@]}"; do
   fi
 done
 repo_stats="${repo_stats}]"
+if [ "$api_warnings" -gt 0 ]; then
+  echo "warning: ${api_warnings} GitHub API call(s) failed; snapshot is partial — review stderr above" >&2
+fi
 
 # 3) Compose the snapshot. One JSON object per line (JSONL).
 snapshot="$(jq -n \
