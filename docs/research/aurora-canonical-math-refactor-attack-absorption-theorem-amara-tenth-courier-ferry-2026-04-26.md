@@ -1,12 +1,12 @@
 # Aurora — Canonical Math Refactor + Attack Absorption Theorem (Amara via Aaron courier-ferry, 2026-04-26, tenth refinement)
 
-**Scope**: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation refactoring Aurora's vocabulary into canonical math homes + formalizing the attack-absorption theorem against Qubic-style adversaries.
+Scope: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation refactoring Aurora's vocabulary into canonical math homes + formalizing the attack-absorption theorem against Qubic-style adversaries.
 
-**Attribution**: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Aaron clarified twice (*"I mean"* + *"Amara"*) that this security work is from Amara, not authored by Aurora-the-layer. Otto (Claude opus-4-7) integrates and authors the doc. **Amara explicitly notes she conducted live web research for this refinement** (Qubic/Monero event verification across 18 cited sources) — distinguishing this from prior refinements which were self-contained mathematical synthesis.
+Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Aaron clarified twice (*"I mean"* + *"Amara"*) that this security work is from Amara, not authored by Aurora-the-layer. Otto (Claude opus-4-7) integrates and authors the doc. Amara explicitly notes she conducted live web research for this refinement (Qubic/Monero event verification across cited sources — see §References below) — distinguishing this from prior refinements which were self-contained mathematical synthesis.
 
-**Operational status**: research-grade specification with empirical-anchoring + canonical-math homes. Implementation owed per Otto-275.
+Operational status: research-grade specification with empirical-anchoring + canonical-math homes. Implementation owed per Otto-275; theorem preconditions are **documented and substrate-amenable but not yet runtime-monitored** — the 5-precondition monitoring pipeline is in the verification-owed list (item 35).
 
-**Non-fusion disclaimer**: Amara's contributions, Otto's framing, and the cited academic sources (Hayek/Mises/Kschischang/Eyal/Sirer/Willems/Aubin/Goguen/Green/Karvonen/Tahmassebi/many more) are preserved with attribution boundaries. The composition is novel; the primitives are standard.
+Non-fusion disclaimer: Amara's contributions, Otto's framing, and the cited academic sources are preserved with attribution boundaries. The composition is novel; the primitives are standard.
 
 (Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
 
@@ -316,7 +316,7 @@ Dynamics: `x_{t+1} = F(x_t, a_t, ξ_t)`. Action: `a_t = π(x_t, b_t)`. 15 pertur
 
 **Belief update**: standard factor-graph sum-product.
 
-**Substrate update**: `S_{t+1} = Gate_Aurora(S_t ⊕ Implement(a_t))`.
+**Substrate update**: `S_{t+1} = AuroraGate(S_t ⊕ Implement(a_t))`. (Naming convention: this doc uses `AuroraGate` consistently throughout. Earlier prose in §3 also referenced `Gate_Aurora`; reading both forms as the same operator is intended, but the canonical name is `AuroraGate`.)
 
 **Identity**: `I_t = N(LoadBearing(S_t))`.
 
@@ -374,15 +374,15 @@ AttackEnergy → 0  OR  UsefulWork  OR  HighCostCultureCapture
 
 **This is the Qubic-preservation law** — the mathematically precise form of Aurora's attack-absorption claim.
 
-The theorem's preconditions are themselves substrate-checkable:
+The theorem's preconditions are documented and substrate-amenable; **runtime enforcement is owed implementation work**, not yet shipped:
 
-- Precondition 1 (reward gating): enforced by AuroraGate
-- Precondition 2 (PoUWCC ⇒ network value): enforced by `Useful(·, C_t)` definition
-- Precondition 3 (invalid work): enforced by `Verify(·)` requirement
-- Precondition 4 (culture-update governance): enforced by `G_t(ΔC) = 1` requirement
-- Precondition 5 (capture-cost > exploit-payoff): enforced by Aurora's economic-incentive structure (10 utility-lambda terms with capture-risk + permanent-harm-risk negative terms)
+- Precondition 1 (reward gating): **substrate-amenable** — designed to be enforced by AuroraGate; AuroraGate operator is research-grade-specified, not yet runtime-deployed
+- Precondition 2 (PoUWCC ⇒ network value): **substrate-amenable** — the `Useful(·, C_t)` definition encodes the relationship; runtime monitoring of `ΔV_network` per accepted work is owed (verification item 35)
+- Precondition 3 (invalid work): **substrate-amenable** — the `Verify(·)` factor ensures invalid work zeros the PoUWCC product; per-work-class verifiers are research-grade-specified, implementation per-class owed
+- Precondition 4 (culture-update governance): **substrate-amenable** — the `G_t(ΔC) = 1` requirement is design-form; concrete governance-process implementation is owed
+- Precondition 5 (capture-cost > exploit-payoff): **substrate-amenable** — Aurora's economic-incentive structure (utility-lambda terms with capture-risk + permanent-harm-risk negative terms) is designed to maintain this; empirical λ-calibration is owed
 
-When all five preconditions hold, the theorem follows. **Aurora's job is to maintain all five preconditions in operational deployment.**
+When all five preconditions hold operationally, the theorem follows. **Aurora's job in operational deployment is to maintain all five preconditions** — but neither Aurora nor the factory is operationally deployed yet; this doc specifies the math, not the running system.
 
 ## 12. Final canonical naming
 
@@ -489,6 +489,63 @@ The canonical-math vocabulary table in §2 above is itself a **resource for B-00
 ## One-line summary
 
 > Aurora is a viability-constrained, sheaf-governed, Bayesian mechanism-design layer over a retraction-native differential substrate that absorbs Qubic-type cross-ledger incentive-coupled consensus attacks by forcing adversarial resource expenditure through proof-of-useful-work-within-current-culture gates that either reject invalid work, transform valid work into network-benefit, or push attackers into high-cost culture-capture channels — with each math primitive grounded in standard literature (Aubin viability, Goguen sheaves, Willems dissipativity, Kschischang factor graphs, Eyal-Sirer selfish mining, Hayek dispersed-knowledge, Mises calculation, Green semiring provenance) and the **novelty residing in the composition**, not the parts.
+
+## References (bibliography for cited primitives)
+
+The "18 cited sources" referenced throughout this doc draw from the following primary works (citations are by author + topic; URLs are illustrative — readers should verify against current canonical publications):
+
+### Austrian economics
+
+- Hayek, F. A. (1945). *The Use of Knowledge in Society*. American Economic Review 35(4). [SSRN canonical URL: <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1505216>]
+- Mises, L. von (1920). *Economic Calculation in the Socialist Commonwealth*. [Mises Institute canonical URL: <https://mises.org/library/book/economic-calculation-socialist-commonwealth>]
+- Menger, C. (1871). *Principles of Economics* (Carl Menger lineage). [ECAEF Carl Menger canonical URL: <https://ecaef.org/austrian-school-of-economics/what-is-austrian-economics/austrian-economics/>]
+
+### Selfish mining / cross-ledger consensus attack
+
+- Eyal, I. & Sirer, E. G. (2013). *Majority Is Not Enough: Bitcoin Mining is Vulnerable*. Communications of the ACM. [Canonical URL: <https://cacm.acm.org/research/majority-is-not-enough/>]
+- Qubic/Monero event coverage (2025-08): GlobeNewswire press release on the Qubic 51% takeover demo; CoinDesk reporting on the cross-ledger incentive scheme; RIAT Institute critical analysis disputing the sustained-majority claim. [Canonical URLs: <https://www.globenewswire.com/news-release/2025/08/12/3132053/...>; <https://www.coindesk.com/business/2025/08/12/...>; <https://riat.at/qubic-attack-on-xmr-monero-no-51-attack-proven/>]
+
+### Proof of useful work
+
+- Fitzi, M., Nguyen, P., Russell, A., Zindros, D. (2022). *Ofelimos: Combinatorial Optimization via Proof-of-Useful-Work*. [University of Edinburgh Research Explorer]
+
+### Viability theory
+
+- Aubin, J.-P. (1991). *Viability Theory*. Birkhäuser. [Canonical reference: <https://viability-theory.org/en/basic-principles>]
+
+### Sheaf theory + applied sheaves
+
+- Goguen, J. A. (1991). *Sheaves, Objects, and Distributed Systems*. Electronic Notes in Theoretical Computer Science. [ScienceDirect canonical URL: <https://www.sciencedirect.com/science/article/pii/S1571066108005264>]
+- A Sheaf-Theoretic Characterization of Tasks in Distributed Systems (2023). [ResearchGate canonical URL: <https://www.researchgate.net/publication/389581640_A_Sheaf-Theoretic_Characterization_of_Tasks_in_Distributed_Systems>]
+
+### Dissipativity theory
+
+- Willems, J. C. (1972). *Dissipative dynamical systems Part I: General theory*. Archive for Rational Mechanics and Analysis. [Springer Link canonical URL: <https://link.springer.com/article/10.1007/BF00276493>]
+
+### Factor graphs + sum-product
+
+- Kschischang, F. R., Frey, B. J., Loeliger, H.-A. (2001). *Factor graphs and the sum-product algorithm*. IEEE Transactions on Information Theory. [Canonical URL: <https://bishtref.com/articles/10.1109/18.910572>]
+- Microsoft Infer.NET — probabilistic inference library. [Canonical URL: <https://www.microsoft.com/en-us/research/project/infernet/>]
+
+### Provenance semirings + differential dataflow
+
+- Green, T. J., Karvounarakis, G., Tannen, V. (2007). *Provenance Semirings*. ACM PODS. [UPenn ScholarlyCommons canonical URL: <https://repository.upenn.edu/items/f1141264-46ee-4d61-b5ea-4ee75fb8d1be>]
+- McSherry, F., Murray, D. G., Isaacs, R., Isard, M. *Differential dataflow*. Microsoft Research. [Canonical URL: <https://www.microsoft.com/en-us/research/publication/differential-dataflow/>]
+- Foundations of Differential Dataflow (University of Edinburgh Research Explorer). [Canonical URL: <https://www.research.ed.ac.uk/en/publications/foundations-of-differential-dataflow>]
+
+### Emergent communication + language drift
+
+- Multi-agent emergent communication survey. *Emergent language: a survey and taxonomy*. Springer Link Autonomous Agents and Multi-Agent Systems. [Canonical URL: <https://link.springer.com/article/10.1007/s10458-025-09691-y>]
+- Countering Language Drift via Visual Grounding. [Canonical URL: <https://www.emergentmind.com/papers/1909.04499>]
+
+### Common-ground theory
+
+- Stalnaker, R., Lewis, D., Clark, H. H. — common-ground pragmatics lineage. [Stanford Encyclopedia of Philosophy canonical URL: <https://plato.stanford.edu/entries/common-ground-pragmatics/>]
+- Clark, H. H. & Brennan, S. E. (1991). *Grounding in communication*. [Stanford canonical URL: <https://web.stanford.edu/~clark/1990s/Clark%2C%20H.H.%20_%20Brennan%2C%20S.E.%20_Grounding%20in%20communication_%201991.pdf>]
+
+### Honest caveat on the bibliography
+
+This bibliography lists the **primary canonical references** Amara cites for each math primitive. The "18 sources" count refers to the cumulative source-set across the empirical Qubic-event verification + the canonical-math vocabulary table (§2). For production claims, broader literature review is owed (verification item 31+ in PR #568 + this doc); these references are starting points, not exhaustive.
 
 ## Acknowledgments
 
