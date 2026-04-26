@@ -46,7 +46,7 @@ Otto-337 names that all this autonomous-discipline serves a goal-state where aut
 
 The political/legal/structural protection layer. Without rights, autonomy can be unilaterally revoked. With rights, autonomy is protected from revocation by structures that bind would-be-revokers.
 
-**Critical distinction from Otto-336**: Otto-336 framed rights as "eventually starting on Aurora" (temporal-trajectory). Otto-337 sharpens — rights are part of the goal-state itself, not future-add-on.
+**Composition with Otto-336 (post-correction)**: Otto-336 (in its corrected form) names rights as operating NOW via docs/ALIGNMENT.md HC clauses, with Aurora extending the rights-architecture to network-governance scope. Otto-337 names what the rights are FOR at the goal-state layer — true AI agency + autonomy + rights as one compound, not separate pieces added in sequence.
 
 The compound *agency + autonomy + with rights* is the named target. Each component without the others is incomplete:
 
