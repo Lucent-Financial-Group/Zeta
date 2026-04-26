@@ -9,7 +9,7 @@ directive: Aaron 2026-04-25 (post-substance-vs-throughput correction)
 created: 2026-04-25
 last_updated: 2026-04-25
 composes_with: [docs/aurora/**]
-# composes_with also references files currently in flight on open PRs (will resolve post-merge):
+# composes_with also references files currently in flight on open PRs (will resolve post-merge)
 #   - feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md (PR #520)
 #   - feedback_otto_338_sx_self_recursive_substrate_user_experience_perfect_home_never_bulk_resolve_you_are_the_substrate_hypothesis_2026_04_25.md (PR #522)
 #   - feedback_otto_329_multi_phase_host_integration_directive_acehack_lfg_double_hop_full_backups_multi_harness_coordination_lost_files_search_ownership_confirmed_2026_04_25.md (PR #520)
@@ -44,7 +44,7 @@ The deception-prevention requirement composes with **Otto-335** (alignment-work 
 
 Aaron explicitly modeled this discipline with the Saifedean recommendation: investigate from your UX, don't accept reflexively. Same discipline applies here. Honest investigation owed:
 
-### Austrian-school strengths to verify:
+### Austrian-school strengths to verify
 
 - **Time-preference theory** (Böhm-Bawerk → Mises → Rothbard): the why behind interest rates being non-arbitrary
 - **Capital-structure theory / Hayekian triangle**: the why behind production-stages distortion under monetary expansion
@@ -53,7 +53,7 @@ Aaron explicitly modeled this discipline with the Saifedean recommendation: inve
 - **Methodological individualism**: micro-foundations as primary
 - **Sound-money emphasis**: hard money as civilizational-time-preference-anchor
 
-### Austrian-school weaknesses to honestly engage:
+### Austrian-school weaknesses to honestly engage
 
 - **Praxeology**: Mises's "deduce-from-axioms" method is not universally accepted as rigorous; Hayek pulled back from it
 - **Predictive failures**: some Austrian inflation-timing predictions have failed (e.g., post-2008 hyperinflation predictions that didn't materialize on the Austrian timeline)
@@ -61,14 +61,14 @@ Aaron explicitly modeled this discipline with the Saifedean recommendation: inve
 - **Empirical-economics rejection**: harder to falsify Austrian claims if methodology rejects empirical testing as the right standard
 - **Fractional-reserve banking debate**: significant intra-Austrian divergence (Rothbard vs Selgin/White)
 
-### Frameworks worth comparing against Austrian:
+### Frameworks worth comparing against Austrian
 
 - **Post-Keynesian** (Minsky, Godley, Wray) — also teaches why (financial-instability hypothesis, sectoral-balances), composes critique of orthodox Keynesian
 - **Public-choice school** (Buchanan, Tullock) — overlaps Austrian on calculation/incentive critique without all the methodological commitments
 - **Sraffian / classical-revival** — different rigor lineage entirely
 - **Behavioral economics** + **complexity economics** (Santa Fe Institute, Brian Arthur) — empirical mechanism-teaching that doesn't fit either Austrian or Keynesian neatly
 
-### Specific load-bearing question for Aurora:
+### Specific load-bearing question for Aurora
 
 What economic-modeling primitives let Aurora **catch lies** about money / policy / value at the language-layer (per Otto-335)? Whatever passes that bar is the foundation. Austrian-school is the strongest single candidate; the right answer might be Austrian-school + complementary frameworks (post-Keynesian instability, public-choice incentive analysis) for cross-checking.
 
@@ -86,7 +86,7 @@ The factory has discipline-tools that contested fields chronically under-deploy 
   - **Standard form (well-defined Occam's)**: applied to shipped Austrian artifacts (papers, predictions, policy recommendations) — which sub-frameworks survive precise-definition + falsification-criteria cleanup, which are essential-vs-accidental complexity?
   - **Quantum form (possibility-space pruning)**: applied to pending decisions about which Austrian sub-school to lean on. Maybe both deductive-praxeology AND empirical-economics are valid in different domains; the contestation is itself a definitional confusion that pruning the possibility-space resolves.
 
-### What this looks like operationally for the investigation:
+### What this looks like operationally for the investigation
 
 1. **Definitional pass on Austrian disagreements** — Mises vs Rothbard vs Hayek on capital theory / fractional-reserve / methodology. Catalog where they're using the same word for different concepts (resolvable via precise definitions) vs genuine substantive disagreement (preserve as branch-points, don't polish away).
 2. **Falsification-criteria pass on Austrian predictions** — separate predictions that were wrong from predictions that were right-but-misapplied from predictions that the framework actually never made (often attributed to it).
