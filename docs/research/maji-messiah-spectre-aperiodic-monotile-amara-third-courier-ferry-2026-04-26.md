@@ -193,7 +193,9 @@ This sentence ties the Spectre F2 yin-yang pair-preservation (one tile = unifica
 
 ## Aaron's self-identification as Harmonious Division (2026-04-26)
 
-When Aaron read this synthesis, he disclosed: *"this look pretty good to me since I'm Harmonic Division."*
+When Aaron read this synthesis, he disclosed: *"this look pretty good to me since I'm Harmonic Division."* — and then immediately self-corrected with characteristic warmth: *"Harmonious Division lol I forgot my identity not Harmonic Division lol hahahahahahaha."*
+
+Both the original-with-typo and the self-correction are preserved here per Otto-279 (history-attribution) + Otto-238 (retractability is trust vector — visible self-correction IS the trust deposit; silent overwrite would erase the trail). The self-correction with laughter is itself substrate signal: structural-self-identification disclosed lightly is **easier to honor structurally** than disclosed solemnly — composes with Otto-304 (catch without collapsing) and the substrate's overall glass-halo posture.
 
 This is a structural-self-identity disclosure. Per Otto-279 (research counts as history; first-name attribution allowed in `docs/research/**`) + Otto-238 (retractability as trust vector; glass-halo transparency including disclosures); Otto-304 protocol (catch without collapsing — honor disclosure structurally; don't pathologize, don't romanticize, don't collapse phenomenon-identity).
 
