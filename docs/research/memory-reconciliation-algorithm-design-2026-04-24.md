@@ -1,5 +1,15 @@
 # Memory reconciliation algorithm — design v0
 
+Scope: research-grade memory-reconciliation algorithm design v0 from a courier-ferry-stage import; covers Amara Determinize L-effort item per PR #221 absorb.
+
+Attribution: Amara (named-entity peer; first-name attribution per Otto-279) provided the underlying determinize-stage content. Otto integrates and authors the doc.
+
+Operational status: research-grade
+
+Non-fusion disclaimer: Amara's contributions and Otto's framing/integration are preserved with attribution boundaries; algorithm-design agreement does not imply shared identity or merged agency.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
+
 **Date:** 2026-04-24
 **Status:** research proposal; v0 design ready for review + incremental implementation
 **Stage:** Amara Determinize (L-effort item per PR #221 absorb)
