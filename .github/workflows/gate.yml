@@ -75,6 +75,30 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # Dynamic matrix for build-and-test: PR events get Linux only
+  # (production build path); push-to-main / schedule /
+  # workflow_dispatch get the full set including macos-26
+  # (developer-experience verification). Standard GitHub-hosted
+  # runners are free for public repos so the post-merge run has no
+  # cost downside.
+  matrix-setup:
+    name: matrix setup
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    outputs:
+      os: ${{ steps.set.outputs.os }}
+    steps:
+      - id: set
+        shell: bash
+        run: |
+          if [ "${GH_EVENT}" = "pull_request" ]; then
+            echo 'os=["ubuntu-24.04","ubuntu-24.04-arm"]' >> "$GITHUB_OUTPUT"
+          else
+            echo 'os=["ubuntu-24.04","ubuntu-24.04-arm","macos-26"]' >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_EVENT: ${{ github.event_name }}
+
   build-and-test:
     # Final runner matrix (maintainer ask 2026-04-24): symmetric
     # across AceHack fork and LFG canonical — same legs run everywhere.
@@ -116,20 +140,23 @@ jobs:
     #
     # fail-fast: false so one leg's failure doesn't cancel the
     # others — we want the full signal across the matrix.
+    #
+    # Per-PR / per-merge cadence split (maintainer 2026-04-27):
+    # - macos-26: developer-experience verification, NOT prod build.
+    #   Runs only on push-to-main + schedule + workflow_dispatch.
+    #   Same rationale as the Analyze (csharp) move below.
+    # - ubuntu-24.04 + ubuntu-24.04-arm: production build path; runs
+    #   on every PR + push-to-main.
+    # The matrix is built dynamically by `matrix-setup` so PR runs
+    # only get the Linux legs while push-to-main / schedule /
+    # workflow_dispatch run all three.
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
+    needs: matrix-setup
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - macos-26
-          - ubuntu-24.04
-          - ubuntu-24.04-arm
-          # ubuntu-slim moved to .github/workflows/low-memory.yml
-          # per maintainer 2026-04-27 — see header comment for rationale.
-          # Deferred until Windows peer-harness milestone:
-          # - windows-2025
-          # - windows-11-arm
+        os: ${{ fromJson(needs.matrix-setup.outputs.os) }}
     runs-on: ${{ matrix.os }}
 
     steps:
