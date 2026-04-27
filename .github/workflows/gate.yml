@@ -123,7 +123,10 @@ jobs:
           - macos-26
           - ubuntu-24.04
           - ubuntu-24.04-arm
-          - ubuntu-slim  # experimental; fail-fast:false; not currently required-check (viability TBD)
+          # ubuntu-slim moved to .github/workflows/nightly-low-memory.yml
+          # per maintainer 2026-04-27 — runs on push-to-main + nightly +
+          # workflow_dispatch; removed here to avoid duplicate CI on
+          # every merge (per Codex P2 review on LFG #644).
           # Deferred until Windows peer-harness milestone:
           # - windows-2025
           # - windows-11-arm
