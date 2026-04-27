@@ -86,40 +86,19 @@ These are the knobs this repo actually uses:
   `CURRENT-<maintainer>.md` files (one per human or
   external-AI maintainer) in
   `~/.claude/projects/<slug>/memory/` *before* the
-  raw `feedback_*.md` / `project_*.md` log. The
-  filename takes a real name in two cases — the
-  first-party human maintainer on his own user-scope
-  (`CURRENT-aaron.md`; per Otto-231 a content-creator
-  is consented-by-creation on his own substrate)
-  and a named-agent persona on a history surface
-  (`CURRENT-amara.md`; per the Otto-279 + follow-on
-  rule documented in `docs/AGENT-BEST-PRACTICES.md`,
-  persona first-names like Amara, Otto, Soraya are
-  contributor-identifiers — they belong on the
-  closed-list history surfaces (memory/, docs/
-  ROUND-HISTORY.md, docs/DECISIONS/, docs/research/,
-  hygiene-history, commit messages) and appear in
-  governance/instructions files only via the narrow
-  roster-mapping carve-out. The CURRENT-* files live
-  under `~/.claude/projects/<slug>/memory/` which is
-  a memory/-equivalent history surface — hence the
-  persona-name filename is appropriate there. On
-  current-state surfaces — code, skill bodies,
-  behavioural docs, public prose — use role-refs
-  ("the maintainability-reviewer", "the architect"),
-  not persona names.). Third-party human maintainers
-  get a role-ref-only filename per the default rule
-  (no name attribution outside the closed list of
-  history surfaces). CURRENT files are the distilled
-  currently-in-force projection per maintainer; they
-  win on conflict with older raw memories. Individual
-  CURRENT files live per-user (not in-repo) — same
-  per-user split as the rest of
-  `~/.claude/projects/<slug>/memory/`.
-  **Same-tick update discipline:** when a new memory
-  lands that updates a rule in a CURRENT file, edit
-  CURRENT in the same tick. Skipping is
-  lying-by-omission.
+  raw `feedback_*.md` / `project_*.md` log. CURRENT
+  files are the distilled currently-in-force
+  projection per maintainer; they win on conflict
+  with older raw memories. Filename conventions and
+  the closed-list-history-surface carve-out for
+  named-maintainer filenames are documented in
+  `memory/README.md` and
+  `docs/AGENT-BEST-PRACTICES.md` (look for the
+  `CURRENT-*` filename rule and the BP-NN entry on
+  name-attribution surfaces). **Same-tick update
+  discipline:** when a new memory lands that updates
+  a rule in a CURRENT file, edit CURRENT in the same
+  tick. Skipping is lying-by-omission.
 - **Session compaction** — the harness summarises
   old messages as it approaches context limits.
   Important decisions go to committed docs (ADRs

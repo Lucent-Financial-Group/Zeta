@@ -177,8 +177,11 @@ jobs:
           # build props, the GitHub Actions workflows that
           # CodeQL's `actions` language leg covers, the
           # CodeQL workflow/config themselves (a change to
-          # either MUST rerun the real analysis), and the
-          # toolchain install script (affects the csharp build).
+          # either MUST rerun the real analysis), the
+          # toolchain install script (affects the csharp build),
+          # plus Python and JavaScript/TypeScript sources for
+          # the `python` and `javascript-typescript` analyze
+          # legs.
           #
           # Note: `case` pattern `*` matches across `/` in bash,
           # so `src/*` covers any depth under `src/`.
@@ -186,11 +189,18 @@ jobs:
           while IFS= read -r f; do
             [ -z "${f}" ] && continue
             case "${f}" in
-              src/*|test/*) code_changed=true ;;
+              # `tools/*` covers `tools/setup/*`, `tools/budget/*`,
+              # etc. — `*` after the slash matches across slashes
+              # in case patterns. Earlier branches kept a separate
+              # `tools/setup/*` line; collapsed here per shellcheck
+              # SC2222 (later pattern shadowed by earlier one).
+              src/*|test/*|tools/*) code_changed=true ;;
               *.cs|*.fs|*.fsproj|*.csproj|*.sln) code_changed=true ;;
+              *.py|pyproject.toml|requirements*.txt) code_changed=true ;;
+              *.js|*.jsx|*.ts|*.tsx|*.mjs|*.cjs) code_changed=true ;;
+              package.json|package-lock.json|tsconfig*.json) code_changed=true ;;
               Directory.Build.props|Directory.Packages.props) code_changed=true ;;
               .github/workflows/*|.github/codeql/*) code_changed=true ;;
-              tools/setup/*) code_changed=true ;;
             esac
             [ "${code_changed}" = "true" ] && break
           done <<< "${changed}"
@@ -198,14 +208,19 @@ jobs:
 
       # Docs-only branch: synthesise a minimal empty SARIF per
       # language and upload each under the matching analyze-job
-      # category (/language:actions/ and /language:csharp/) so
+      # category (/language:actions/, /language:csharp/,
+      # /language:python/, /language:javascript-typescript/) so
       # GitHub code scanning records "analysis ran, no new
       # alerts" (SUCCESS aggregate check) rather than NEUTRAL.
       # Categories must match the `analyze` matrix categories or
       # the code-scanning service treats them as unrelated
       # configurations. The `category:` action-param overrides
       # whatever `automationDetails.id` is in the SARIF, so the
-      # upload steps below set it explicitly per language.
+      # upload steps below set it explicitly per language. The
+      # `lang` loop must include every category the `analyze`
+      # matrix covers — otherwise the per-language code-scanning
+      # checks for the missing legs go NEUTRAL on docs-only PRs
+      # and trip the `code_quality` ruleset rule.
       - name: Emit no-findings SARIF (docs-only PRs)
         if: steps.decide.outputs.code_changed != 'true'
         env:
@@ -213,7 +228,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p sarif
-          for lang in actions csharp; do
+          for lang in actions csharp python javascript-typescript; do
             cat > "sarif/empty-${lang}.sarif" <<SARIF
           {
             "version": "2.1.0",
@@ -263,6 +278,20 @@ jobs:
         with:
           sarif_file: sarif/empty-csharp.sarif
           category: "/language:csharp"
+
+      - name: Upload no-findings SARIF (python)
+        if: steps.decide.outputs.code_changed != 'true'
+        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        with:
+          sarif_file: sarif/empty-python.sarif
+          category: "/language:python"
+
+      - name: Upload no-findings SARIF (javascript-typescript)
+        if: steps.decide.outputs.code_changed != 'true'
+        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        with:
+          sarif_file: sarif/empty-javascript-typescript.sarif
+          category: "/language:javascript-typescript"
 
   analyze:
     name: Analyze (${{ matrix.language }})
