@@ -181,11 +181,18 @@ jobs:
           } > "$BODY_FILE"
 
           # Look for an existing comment containing the marker.
-          # `gh pr view --json comments` returns id + body for
-          # every issue-comment on the PR.
-          existing_id=$(gh pr view "$PR_NUMBER" \
-              --json comments \
-              --jq ".comments[] | select(.body | contains(\"$MARKER\")) | .id" \
+          # Per Codex review on LFG #649 (P1): `gh pr view --json
+          # comments` returns GraphQL node IDs (e.g. `IC_xxx`), but
+          # the PATCH endpoint at `/repos/.../issues/comments/{id}`
+          # requires the REST integer comment_id. Using the node ID
+          # 404s and breaks the anti-spam edit-in-place behavior on
+          # synchronized PRs. Fix: query the REST API directly via
+          # `gh api repos/.../issues/{pr}/comments` which returns the
+          # integer `id` field that PATCH accepts.
+          existing_id=$(gh api \
+              "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+              --paginate \
+              --jq ".[] | select(.body | contains(\"$MARKER\")) | .id" \
               | head -n 1 || true)
 
           if [ -n "$existing_id" ]; then
