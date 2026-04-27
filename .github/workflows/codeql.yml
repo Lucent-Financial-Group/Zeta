@@ -86,6 +86,12 @@ on:
     # of landed PRs to go un-swept with the heavier query pack.
     - cron: '43 6 * * 2'
 
+# Top-level token permissions — least-privilege default per
+# Scorecard TokenPermissionsID. Per-job blocks below escalate
+# to specific scopes only where needed.
+permissions:
+  contents: read
+
 concurrency:
   # PR force-push supersedes the previous run. Schedule runs
   # carry a distinct ref (`refs/heads/main` on cron) so they
