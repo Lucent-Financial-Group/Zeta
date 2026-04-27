@@ -47,6 +47,34 @@ Aaron's framing: when the peer-mode agent comes online, Windows infrastructure s
 
 Stage 2 is the next concrete unit of work. It's deferrable per Aaron ("not rush"); land when convenient or let the peer-agent draft and Otto review.
 
+## Reference patterns to study (NOT copy verbatim)
+
+Aaron 2026-04-27: *"when doing windows make sure to look at ../scratch they have good practices and are tested working"* — followed by *"understand it don't copy the code verbatium, you probably know that by know i'm just being repetivie to make sure"*.
+
+`../scratch` (laptop-only, Aaron's adjacent project — see the laptop-only-source-integration memory) has a mature PowerShell-based Windows setup pattern that's worth studying:
+
+- `../scratch/scripts/setup/windows/bootstrap.ps1` — entry point (PowerShell sibling of our bash `install.sh`)
+- `../scratch/scripts/setup/windows/{common,profiles,github-env,bun-tools,choco,dotnet,git,gnupg,mise,powershell-modules,python-tools,vs-build-tools}.ps1` — per-component installers, dot-sourced from bootstrap with idempotent `_LOADED` guards
+- `../scratch/declarative/windows/{choco,powershell,vs}` — declarative-state manifests (parallel to our `tools/setup/manifests/`)
+- `../scratch/scripts/test/run-pester.ps1` + `../scratch/scripts/test/run-powershell-lint.ps1` — Pester unit tests + PowerShell linting
+- `../scratch/docker/github-windows-latest/bootstrap.ps1` — containerised Windows-latest CI bootstrap
+
+**Pattern shapes to absorb (not lines):**
+
+- `Set-StrictMode -Version Latest` + `$ErrorActionPreference = 'Stop'` at every script head — the Windows equivalent of `set -euo pipefail`
+- `$script:NAME_LOADED` idempotent guard so dot-sourced scripts can be re-entered safely (parallel to bash `[ -n "${VAR:-}" ] && return` patterns we already use)
+- Decomposition into small per-component files (`choco.ps1`, `dotnet.ps1`, `mise.ps1`) rather than one monolithic script — same shape as our `tools/setup/common/*.sh`
+- Path-entry collection via a list-builder pattern (`Get-WindowsBootstrapManagedPathEntries`) — the PowerShell equivalent of our `tools/setup/common/shellenv.sh` PATH composition
+- Tested with Pester (real CI assertions, not just "did the script run") — Zeta's equivalent would be wiring `tools/setup/install.ps1` exit code into the gate.yml Windows leg
+
+**What this means in practice for Stage 2:**
+
+Per the laptop-only-source-integration rule (Tactic A "port the feature" vs Tactic B "write detailed design"): for Windows install, Tactic A applies — port the bootstrap pattern + decomposition shape into Zeta's `tools/setup/` (with file names matching Zeta's bash conventions: `tools/setup/install.ps1`, `tools/setup/windows.ps1`, `tools/setup/common/*.ps1` siblings of the existing `*.sh` files). The `../scratch` reference goes away when Stage 2 lands in-repo.
+
+**Aaron's "understand don't copy" framing:**
+
+The pattern is rich; the literal code may not fit (Zeta uses different toolchain pins, different `.mise.toml`, different per-step semantics). Read for shape. Verbatim copy would inflate the repo with code that doesn't compose with what's already here.
+
 ## Composes with
 
 - **CI cadence split memory** (`feedback_ci_cadence_split_per_pr_fast_per_merge_slow_aaron_2026_04_27.md`) — the broader CI design this trajectory sits inside
