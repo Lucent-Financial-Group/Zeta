@@ -90,11 +90,13 @@ These are the knobs this repo actually uses:
   files are the distilled currently-in-force
   projection per maintainer; they win on conflict
   with older raw memories. Filename conventions and
+  the per-maintainer pattern itself are documented
+  in
+  `docs/DECISIONS/2026-04-23-per-maintainer-current-memory-pattern.md`;
   the closed-list-history-surface carve-out for
-  named-maintainer filenames are documented in
-  `memory/README.md` and the "No name attribution in
-  code, docs, or skills" rule in
-  `docs/AGENT-BEST-PRACTICES.md` (rule lineage
+  named-maintainer filenames is documented in the
+  "No name attribution in code, docs, or skills"
+  rule in `docs/AGENT-BEST-PRACTICES.md` (rule lineage
   Otto-279 + follow-on maintainer clarification).
   **Same-tick update
   discipline:** when a new memory lands that updates
@@ -144,9 +146,15 @@ Claude-Code-specific mechanisms.
   is forbidden. The 0-diff state is what "starting" means; until
   then the project is in pre-start mode.
   Full reasoning + lineage in
-  `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`,
-  `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md`,
-  and the Mirror→Beacon vocabulary upgrade protocol in
+  `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`
+  and
+  `memory/feedback_zero_diff_means_both_content_and_commits_cognitive_load_for_future_changes_2026_04_27.md`
+  (which supersedes the earlier
+  `feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md`
+  by refining the rule to cover both content-diff
+  AND commit-divergence axes; the older note is kept
+  as historical lineage). Mirror→Beacon vocabulary
+  upgrade protocol in
   `memory/feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md`.
 - **Agents, not bots.** Every AI in this repo
   carries agency, judgement, and accountability.

@@ -191,9 +191,18 @@ substantially clearer for each cluster.
 
 ## Current scope (2026-04-27 grep)
 
-- **`../scratch` references:** 22 files, ~80 lines
-- **`../SQLSharp` references:** 14 files, ~45 lines
-- **Total:** 36 unique files, 125 grep hits
+> **Counts drift as new substrate lands.** Numbers below are
+> a dated snapshot from `git grep -l -- '../scratch' && git grep -l -- '../SQLSharp'`
+> run on 2026-04-27 against the PR-651 branch tip
+> (`acehack/sync-to-lfg-batch-650-2026-04-27`). The
+> authoritative current count is whatever `git grep` reports
+> at the moment of reading; do not treat the snapshot as
+> still-current after substrate lands. Re-run the same
+> commands to refresh.
+
+- **`../scratch` references:** 22 files, ~80 lines (snapshot 2026-04-27)
+- **`../SQLSharp` references:** 14 files, ~45 lines (snapshot 2026-04-27)
+- **Total:** 36 unique files, 125 grep hits (snapshot 2026-04-27)
 
 Files with `../scratch` references (top-level):
 

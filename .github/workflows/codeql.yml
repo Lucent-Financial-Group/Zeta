@@ -115,8 +115,10 @@ jobs:
     permissions:
       contents: read
       security-events: write
+      actions: read
     outputs:
       code_changed: ${{ steps.decide.outputs.code_changed }}
+      is_fork_pr: ${{ steps.decide.outputs.is_fork_pr }}
     steps:
       - name: Checkout (full history for diff)
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
@@ -144,9 +146,15 @@ jobs:
           BASE_REPO: ${{ github.repository }}
         run: |
           set -uo pipefail
+          # Default fork-PR flag false; set true if this is an
+          # external-contributor PR. Used downstream to gate the
+          # baseline-SARIF emit/upload steps off fork PRs whose
+          # GITHUB_TOKEN cannot write security-events (would 403).
+          is_fork_pr=false
           # Safe default: when unsure, run full analysis.
           decide_fallback_true() {
             echo "code_changed=true" >> "$GITHUB_OUTPUT"
+            echo "is_fork_pr=${is_fork_pr}" >> "$GITHUB_OUTPUT"
             exit 0
           }
           # push and schedule always run full analysis.
@@ -154,8 +162,11 @@ jobs:
             decide_fallback_true
           fi
           # Fork-PR guard: skip the short-circuit on external
-          # contributor PRs (see HEAD_REPO comment above).
+          # contributor PRs (see HEAD_REPO comment above). Mark
+          # is_fork_pr so the baseline-SARIF steps below skip
+          # (their upload would 403 on the read-only fork token).
           if [ "${GH_EVENT}" = "pull_request" ] && [ -n "${HEAD_REPO}" ] && [ "${HEAD_REPO}" != "${BASE_REPO}" ]; then
+            is_fork_pr=true
             decide_fallback_true
           fi
           if [ "${GH_EVENT}" = "pull_request" ]; then
@@ -205,6 +216,7 @@ jobs:
             [ "${code_changed}" = "true" ] && break
           done <<< "${changed}"
           echo "code_changed=${code_changed}" >> "$GITHUB_OUTPUT"
+          echo "is_fork_pr=${is_fork_pr}" >> "$GITHUB_OUTPUT"
 
       # Aggregate-CodeQL baseline: synthesise a minimal empty SARIF
       # per language and upload each under the matching analyze-job
@@ -236,6 +248,13 @@ jobs:
       # `lang` loop must include every category the `analyze`
       # matrix covers.
       - name: Emit no-findings SARIF (aggregate-CodeQL baseline)
+        # Skip on fork PRs: their GITHUB_TOKEN cannot write
+        # security-events, so the upload steps below would 403
+        # and fail the workflow before `analyze` could run. The
+        # full `analyze` matrix is forced on fork PRs (see decide
+        # step) and uploads via its own pull_request_target /
+        # CodeQL-fallback path, so the baseline is unnecessary.
+        if: steps.decide.outputs.is_fork_pr != 'true'
         env:
           HEAD_SHA_ENV: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha || github.sha }}
         run: |
@@ -289,24 +308,28 @@ jobs:
       # action-param -- which overrides SARIF automationDetails --
       # can differ per file.
       - name: Upload no-findings SARIF (actions)
+        if: steps.decide.outputs.is_fork_pr != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/empty-actions.sarif
           category: "/language:actions"
 
       - name: Upload no-findings SARIF (csharp)
+        if: steps.decide.outputs.is_fork_pr != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/empty-csharp.sarif
           category: "/language:csharp"
 
       - name: Upload no-findings SARIF (python)
+        if: steps.decide.outputs.is_fork_pr != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/empty-python.sarif
           category: "/language:python"
 
       - name: Upload no-findings SARIF (javascript-typescript)
+        if: steps.decide.outputs.is_fork_pr != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/empty-javascript-typescript.sarif
@@ -315,6 +338,7 @@ jobs:
       - name: Upload no-findings SARIF (java-kotlin)
         # No Java/Kotlin source in this repo, but main's history
         # carries the configuration; satisfy the sticky expectation.
+        if: steps.decide.outputs.is_fork_pr != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/empty-java-kotlin.sarif
