@@ -78,7 +78,13 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:
-  group: low-memory
+  # Per-commit concurrency group: every push to main gets its own slot
+  # so no run is silently replaced by a newer one (per Codex P2 +
+  # Copilot P1 review on LFG #644). On schedule/workflow_dispatch the
+  # SHA is whatever main is pointing at when the run starts; two such
+  # runs against the same SHA queue (cancel-in-progress: false) — the
+  # right behaviour, since the second run has nothing new to check.
+  group: low-memory-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:
