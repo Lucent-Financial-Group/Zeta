@@ -303,8 +303,8 @@ than going file-by-file blindly.
 
 The integration work completes when:
 
-- `git grep -- '../scratch'` returns zero matches
-- `git grep -- '../SQLSharp'` returns zero matches
+- `git grep -- '../scratch'` returns zero matches *outside* the closed-list history surfaces (memory/, docs/ROUND-HISTORY.md, docs/DECISIONS/, docs/research/, docs/hygiene-history/, this file itself)
+- `git grep -- '../SQLSharp'` returns zero matches *outside* the same closed-list history surfaces
 - Every feature/idea/enhancement that WAS referenced is
   EITHER (a) shipped in the repo, OR (b) documented in the
   repo with enough detail to be rebuilt without reading
@@ -396,9 +396,12 @@ feature clusters: (1) toolchain/setup, (2) CI/repo-
 automation, (3) research/design hints.
 
 Effort: L (3+ days). Done = `git grep -- '../scratch'`
-and `git grep -- '../SQLSharp'` both return zero matches,
-and every previously-referenced feature is either shipped
-or design-documented in-repo.
+and `git grep -- '../SQLSharp'` both return zero matches
+*outside the closed-list history surfaces* (memory/, docs/
+ROUND-HISTORY.md, docs/DECISIONS/, docs/research/, docs/
+hygiene-history/, this file itself), and every previously-
+referenced feature is either shipped or design-documented
+in-repo.
 
 Composes Otto-275 (log-but-don't-implement; default to
 design when uncertain) + Otto-323/346 (these are NOT
