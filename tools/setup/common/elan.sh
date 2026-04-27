@@ -22,16 +22,21 @@ if ! command -v elan >/dev/null 2>&1; then
   ELAN_INIT_SHA256="4bacca9502cb89736fe63d2685abc2947cfbf34dc87673504f1bb4c43eda9264"
   ELAN_INIT_URL="https://raw.githubusercontent.com/leanprover/elan/${ELAN_INIT_COMMIT}/elan-init.sh"
   ELAN_INIT_TMP="$(mktemp)"
+  # Always clean up the tmp file, even on failure (download error, SHA
+  # mismatch, installer non-zero exit). `set -euo pipefail` would
+  # otherwise leak the file on any failure path.
+  trap 'rm -f "${ELAN_INIT_TMP}"' EXIT
   curl -fsSL "${ELAN_INIT_URL}" -o "${ELAN_INIT_TMP}"
   # Portable SHA256 verification: sha256sum (Linux/git-bash/WSL) or
-  # shasum -a 256 (macOS default). Per Otto-235 4-shell target.
+  # shasum -a 256 (macOS default). Per the 4-shell portability target
+  # (macOS bash 3.2 / Ubuntu / git-bash / WSL).
   if command -v sha256sum >/dev/null 2>&1; then
     echo "${ELAN_INIT_SHA256}  ${ELAN_INIT_TMP}" | sha256sum -c -
   else
     echo "${ELAN_INIT_SHA256}  ${ELAN_INIT_TMP}" | shasum -a 256 -c -
   fi
   sh "${ELAN_INIT_TMP}" -y --default-toolchain none
-  rm -f "${ELAN_INIT_TMP}"
+  # Tmp file cleanup happens via the EXIT trap above.
 fi
 
 # Source the elan env file for the remainder of this script run; also

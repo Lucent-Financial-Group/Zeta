@@ -66,7 +66,7 @@ node = "22"
 # lint:markdown`. Both pins point at the same version.
 "npm:markdownlint-cli2" = "0.22.1"
 # semgrep: SAST linter (the 14 rules in `.semgrep.yml`). Pinned
-# here per Aaron 2026-04-27 three-way-parity invariant — dev
+# here per the three-way-parity invariant (GOVERNANCE §24) — dev
 # laptops + CI runners + devcontainers should all install
 # semgrep through the same `tools/setup/install.sh` rather than
 # CI fetching its own copy via `actions/setup-python` + pip.

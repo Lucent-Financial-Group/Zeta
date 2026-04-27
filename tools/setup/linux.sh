@@ -65,17 +65,29 @@ if ! command -v mise >/dev/null 2>&1; then
   MISE_VERSION="v2026.4.24"
   MISE_SHA256_X64="de2f924940c29b8983035833e2fb3a50092c5794562ca0dcd0cf87b40cae2c58"
   MISE_SHA256_ARM64="cf5f4899c3f1b56239d2eedf173c68c47b7db95400c4fa1b61e943dee4965727"
+  MISE_SHA256_ARMV7="2e122fd8bec64f86449872c633e47023b56416f887e4646307ad176baae3bfa9"
+  # The previous `curl mise.run | sh` shape supported armv7 implicitly
+  # (the installer auto-detects). Preserve that here — no Zeta CI leg
+  # uses armv7 today, but dev laptops on a Raspberry Pi 4 in 32-bit
+  # mode or older single-board computers do, and the cost of carrying
+  # the case is tiny (one extra SHA256 to bump per release).
   case "$(uname -m)" in
-    x86_64|amd64)  MISE_ARCH=x64;  MISE_SHA256="${MISE_SHA256_X64}"   ;;
-    aarch64|arm64) MISE_ARCH=arm64; MISE_SHA256="${MISE_SHA256_ARM64}" ;;
+    x86_64|amd64)  MISE_ARCH=x64;    MISE_SHA256="${MISE_SHA256_X64}"   ;;
+    aarch64|arm64) MISE_ARCH=arm64;  MISE_SHA256="${MISE_SHA256_ARM64}" ;;
+    armv7l|armv7)  MISE_ARCH=armv7;  MISE_SHA256="${MISE_SHA256_ARMV7}" ;;
     *) echo "error: unsupported arch $(uname -m) for mise install" >&2; exit 1 ;;
   esac
   MISE_TARBALL="mise-${MISE_VERSION}-linux-${MISE_ARCH}.tar.gz"
   MISE_URL="https://github.com/jdx/mise/releases/download/${MISE_VERSION}/${MISE_TARBALL}"
   MISE_TMP="$(mktemp -d)"
+  # Always clean up the tmp dir, even on failure (download error, SHA
+  # mismatch, tar extract failure). `set -euo pipefail` would otherwise
+  # leak the directory on any failure path.
+  trap 'rm -rf "${MISE_TMP}"' EXIT
   curl -fsSL "${MISE_URL}" -o "${MISE_TMP}/${MISE_TARBALL}"
   # Portable SHA256 verification: sha256sum (Linux) or shasum (macOS,
-  # though linux.sh runs on Linux only). Per Otto-235 4-shell target.
+  # though linux.sh runs on Linux only). Per the 4-shell portability
+  # target (macOS bash 3.2 / Ubuntu / git-bash / WSL).
   if command -v sha256sum >/dev/null 2>&1; then
     echo "${MISE_SHA256}  ${MISE_TMP}/${MISE_TARBALL}" | sha256sum -c -
   else
@@ -84,7 +96,7 @@ if ! command -v mise >/dev/null 2>&1; then
   tar -C "${MISE_TMP}" -xzf "${MISE_TMP}/${MISE_TARBALL}"
   mkdir -p "${HOME}/.local/bin"
   mv "${MISE_TMP}/mise/bin/mise" "${HOME}/.local/bin/mise"
-  rm -rf "${MISE_TMP}"
+  # Tmp dir cleanup happens via the EXIT trap above.
   # The installer puts mise at $HOME/.local/bin/mise; ensure we can
   # invoke it for the remainder of this script run.
   export PATH="${HOME}/.local/bin:${PATH}"
