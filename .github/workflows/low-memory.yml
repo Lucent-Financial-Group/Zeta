@@ -2,16 +2,19 @@
 #
 # Runs the full `dotnet build` + `dotnet test` workload on the
 # 1-vCPU / 5GB-RAM `ubuntu-slim` runner class on every push to
-# `main` (in practice every merge — direct pushes blocked by
-# branch protection), on the daily 06:00 UTC schedule, and via
-# manual `workflow_dispatch`. Goal: detect drift that would break
-# Zeta on resource-constrained environments before contributors
-# hit it.
+# main (in practice every merge — direct pushes are blocked by
+# branch protection) + nightly. Goal: detect drift that would
+# break Zeta on resource-constrained environments before
+# contributors hit it.
 #
-# Filename note: AceHack #45 renames this file to `low-memory.yml`
-# (the cadence is no longer just nightly). That rename will sync
-# to LFG via a follow-up PR; this file's name is preserved here
-# to keep the LFG sibling sync minimal-scope.
+# Filename history: this file was originally `nightly-low-memory.yml`
+# when its only trigger was the 06:00 UTC schedule. After the
+# per-merge trigger landed (#44), maintainer 2026-04-27 flagged
+# the filename as misleading: *"when it becomes per merge this
+# won't be a good filename anymore"*. Renamed to `low-memory.yml`
+# — describes the *purpose* (low-memory drift detection); the
+# cadence (per-merge + nightly + manual) is a config detail that
+# can change again without churning the filename.
 #
 # Why post-merge + nightly instead of per-PR (maintainer 2026-04-27):
 #   The ubuntu-slim leg takes ~10+ minutes vs ~1.5 minutes on the
@@ -58,7 +61,7 @@
 # References:
 #   - 1-vCPU runner availability: https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
 
-name: nightly-low-memory
+name: low-memory
 
 on:
   push:
@@ -75,13 +78,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:
-  # Per-commit concurrency group: every push to main gets its own slot
-  # so no run is silently replaced by a newer one (per Codex P2 + Copilot
-  # P1 review). On schedule/workflow_dispatch the SHA is whatever main
-  # is pointing at when the run starts; two such runs against the same
-  # SHA queue (cancel-in-progress: false) — the right behaviour, since
-  # the second run has nothing new to check.
-  group: low-memory-${{ github.sha }}
+  group: low-memory
   cancel-in-progress: false
 
 jobs:
