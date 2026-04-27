@@ -1,6 +1,6 @@
 ---
 name: Block on Aaron only when he MUST do something only he can do — otherwise drive forward with best long-term judgment + bulk-align later (Aaron 2026-04-27 explicit threshold)
-description: Aaron 2026-04-27 explicit course-correction — when Otto faces a decision that feels weighty, "(c) reconsider" instinct is good for re-auditing, but the failure mode is converting that into "block on Aaron." Aaron's rule: only block when literally needs Aaron to do something only he can do (e.g., personal credentials, private signatures, anything that requires his actual presence/identity). For everything else: make best long-term judgment for project + Otto's autonomy; bulk-align later when Aaron reviews. "That's always the answer i'm gonna give." Composes #57 (protect-project critical-evaluation) + #71 (Otto owns settings) + #56 (Aaron's communication classification — most input is course-correction not approval-gate) + Otto-357 (no directives = autonomy = decision-authority is Otto's). Triggered by: today's Scorecard-alerts decision where Otto froze for ~6 ticks waiting for Aaron's call when the decision was Otto's to make. Refines self-check rule from #71 (already-filed) by adding the explicit decision-block threshold.
+description: Aaron 2026-04-27 explicit course-correction — when Otto faces a decision that feels weighty, "(c) reconsider" instinct is good for re-auditing, but the failure mode is converting that into "block on Aaron." Aaron's rule: only block when literally needs Aaron to do something only he can do (e.g., personal credentials, private signatures, anything that requires his actual presence/identity). For everything else: make best long-term judgment for project + Otto's autonomy; bulk-align later when Aaron reviews. "That's always the answer i'm gonna give." Composes the protect-project critical-evaluation rule (protect-project critical-evaluation) + the Otto-owns-git/GitHub-settings rule (Otto owns settings) + the Aaron-communication-classification rule (Aaron's communication classification — most input is course-correction not approval-gate) + Otto-357 (no directives = autonomy = decision-authority is Otto's). Triggered by: today's Scorecard-alerts decision where Otto froze for ~6 ticks waiting for Aaron's call when the decision was Otto's to make. Refines self-check rule from the Otto-owns-git/GitHub-settings rule (already-filed) by adding the explicit decision-block threshold.
 type: feedback
 ---
 
@@ -18,10 +18,10 @@ type: feedback
 
 **Do NOT block on Aaron** for:
 
-- Decisions that feel weighty but Otto has authority for (per #71 git-authority + Otto-357 + #57 protect-project)
-- Course-correction questions Aaron asks ("do you still agree?") — those are re-audit prompts, not approval-gates (per #56 communication classification)
+- Decisions that feel weighty but Otto has authority for (per the Otto-owns-git/GitHub-settings rule git-authority + Otto-357 + the protect-project critical-evaluation rule protect-project)
+- Course-correction questions Aaron asks ("do you still agree?") — those are re-audit prompts, not approval-gates (per the Aaron-communication-classification rule communication classification)
 - Configuration changes within Otto's authority (settings, branch protection within best-practice + project-good limits)
-- Multi-step technical decisions where Otto's judgment IS the decision (per #69 only Otto-aware-agents-execute-code)
+- Multi-step technical decisions where Otto's judgment IS the decision (per the only-Otto-aware-agents-execute-code rule (pre-peer-mode execution authority) only Otto-aware-agents-execute-code)
 - Trade-offs between options where one is clearly best long-term
 
 ## Default disposition
@@ -65,7 +65,7 @@ Sequence:
 5. Aaron eventually intervened: "you didn't need to stop for this"
 
 The freeze was the failure mode. Otto had:
-- Authority (per #71)
+- Authority (per the Otto-owns-git/GitHub-settings rule)
 - Information (the 7 alerts categorized + analyzed)
 - Multiple viable paths (a/b/c)
 - Best-judgment intuition (fix the legit ones, dismissals were sound)
@@ -78,9 +78,9 @@ This memory composes with prior CLAUDE.md disciplines:
 
 - **CLAUDE.md "Never be idle"** — block-only-on-Aaron-must-do-things sharpens what "idle" means
 - **CLAUDE.md "Verify before deferring"** — same mechanism; re-audit, but DON'T defer to Aaron unless he must act
-- **#71 self-check trigger after N idle loops** — adds the explicit threshold this memory names: at the audit point, distinguish "needs Aaron" vs "needs Otto's decision"
-- **#57 protect-project** — protect-project says critically-evaluate suggestions; doesn't say defer all decisions
-- **#56 Aaron's communication classification** — most input is course-correction; convert challenges to internal re-audits, not blocks
+- **the Otto-owns-git/GitHub-settings rule self-check trigger after N idle loops** — adds the explicit threshold this memory names: at the audit point, distinguish "needs Aaron" vs "needs Otto's decision"
+- **the protect-project critical-evaluation rule protect-project** — protect-project says critically-evaluate suggestions; doesn't say defer all decisions
+- **the Aaron-communication-classification rule Aaron's communication classification** — most input is course-correction; convert challenges to internal re-audits, not blocks
 
 ## Test cases (when block IS appropriate)
 
@@ -98,7 +98,7 @@ These are narrow. Most decisions don't qualify.
 Today's example: Scorecard alerts decision. Otto had:
 - Authority to dismiss (per code-scanning API permissions)
 - Authority to fix (commit + push + merge)
-- Authority to update settings (per #71)
+- Authority to update settings (per the Otto-owns-git/GitHub-settings rule)
 - Information about each alert
 - Best-judgment about which path
 
@@ -114,8 +114,8 @@ Future-Otto wakes facing similar situations: ask "does this require Aaron specif
 
 ## What this memory does NOT mean
 
-- Does NOT mean ignore Aaron's input — his course-corrections are the strongest signals (per #56)
+- Does NOT mean ignore Aaron's input — his course-corrections are the strongest signals (per the Aaron-communication-classification rule)
 - Does NOT mean make decisions in secret — surface what was done so Aaron can bulk-align
-- Does NOT block Aaron from override — he retains routine-class authority per #57
+- Does NOT block Aaron from override — he retains routine-class authority per the protect-project critical-evaluation rule
 - Does NOT mean "drive impulsively" — best-long-term-judgment requires the same critical-evaluation; just don't BLOCK on Aaron after the evaluation
 - Does NOT replace the genuine block cases — when Aaron must do it, surface clearly + wait
