@@ -91,10 +91,22 @@ jobs:
       - id: set
         shell: bash
         run: |
+          # PR: Linux production legs only (fast — ~3 min wall clock).
+          # Push / schedule / workflow_dispatch: full surface incl.
+          # macos-26 (developer-experience) + Windows legs
+          # (peer-harness milestone seeding per maintainer 2026-04-27 —
+          # "start the windows one as a per push to main too/merge to
+          # main, you can start slowly building that out before I get
+          # my windows laptop running the peer-mode agent, windows
+          # will be mostly ready and they can just clean it up").
+          # Windows legs are gated by `continue-on-error: true` at the
+          # build-and-test job level so initial failures (e.g. missing
+          # tools/setup/install.ps1) don't block per-merge runs while
+          # the peer-agent polishes the path.
           if [ "${GH_EVENT}" = "pull_request" ]; then
             echo 'os=["ubuntu-24.04","ubuntu-24.04-arm"]' >> "$GITHUB_OUTPUT"
           else
-            echo 'os=["ubuntu-24.04","ubuntu-24.04-arm","macos-26"]' >> "$GITHUB_OUTPUT"
+            echo 'os=["ubuntu-24.04","ubuntu-24.04-arm","macos-26","windows-2025","windows-11-arm"]' >> "$GITHUB_OUTPUT"
           fi
         env:
           GH_EVENT: ${{ github.event_name }}
@@ -127,16 +139,17 @@ jobs:
     #                       Reference:
     # https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
     #
-    # Deferred legs (commented, enable when Windows peer-harness
-    # milestone ships — maintainer's Windows machine available for
-    # second peer agent validation):
+    # Per-merge experimental legs (maintainer 2026-04-27 — replaces
+    # the prior 2026-04-24 deferral so Windows infrastructure is
+    # mostly-ready when the peer-mode agent comes online):
     #   - windows-2025      Windows Server 2025 x64 (4 CPU, 16 GB)
     #   - windows-11-arm    Windows 11 arm64 (4 CPU, 16 GB)
-    #
-    # Deferred: per maintainer 2026-04-24 "we can delay windows
-    # until i can test with a second peer agent on my windows
-    # machine." Uncomment both Windows legs when that milestone
-    # lands.
+    # These run only on push-to-main / schedule / workflow_dispatch
+    # (not on PR — same cadence as macos-26). They carry
+    # `continue-on-error: true` because no PowerShell install script
+    # exists yet (`tools/setup/install.ps1` TBD); failures are
+    # visible-but-not-blocking until the peer-agent polishes the
+    # path.
     #
     # fail-fast: false so one leg's failure doesn't cancel the
     # others — we want the full signal across the matrix.
@@ -153,6 +166,10 @@ jobs:
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
     needs: matrix-setup
+    # Windows legs are experimental until tools/setup/install.ps1
+    # exists; mark them non-blocking so initial failures don't gate
+    # per-merge runs. Linux + macOS legs are blocking.
+    continue-on-error: ${{ startsWith(matrix.os, 'windows-') }}
     strategy:
       fail-fast: false
       matrix:
