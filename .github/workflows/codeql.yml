@@ -206,23 +206,36 @@ jobs:
           done <<< "${changed}"
           echo "code_changed=${code_changed}" >> "$GITHUB_OUTPUT"
 
-      # Docs-only branch: synthesise a minimal empty SARIF per
-      # language and upload each under the matching analyze-job
+      # Aggregate-CodeQL baseline: synthesise a minimal empty SARIF
+      # per language and upload each under the matching analyze-job
       # category (/language:actions/, /language:csharp/,
       # /language:python/, /language:javascript-typescript/) so
-      # GitHub code scanning records "analysis ran, no new
-      # alerts" (SUCCESS aggregate check) rather than NEUTRAL.
+      # GitHub code scanning records "analysis ran, no new alerts"
+      # (SUCCESS aggregate check) rather than NEUTRAL.
+      #
+      # Why this runs UNCONDITIONALLY (not gated on docs-only):
+      # The aggregate `CodeQL` status check is set when path-gate's
+      # SARIF uploads complete, BEFORE the matrix `analyze` jobs
+      # finish. If we only emit on docs-only PRs, code-changed PRs
+      # leave the aggregate without input → NEUTRAL → trips the
+      # `code_quality` ruleset rule even though all per-language
+      # `Analyze (X)` checks pass. By emitting empty SARIF
+      # unconditionally, the aggregate gets a clean baseline early.
+      # The matrix analyses' REAL SARIF is uploaded later under the
+      # same `(commit, ref, category, tool)` key and replaces the
+      # empty baseline (per GitHub's SARIF-replace-by-key rule),
+      # so any real findings still surface as code-scanning alerts.
+      # The `code_quality severity:all` rule gates on alerts, not on
+      # the aggregate status, so real findings still block merges.
+      #
       # Categories must match the `analyze` matrix categories or
       # the code-scanning service treats them as unrelated
       # configurations. The `category:` action-param overrides
       # whatever `automationDetails.id` is in the SARIF, so the
       # upload steps below set it explicitly per language. The
       # `lang` loop must include every category the `analyze`
-      # matrix covers — otherwise the per-language code-scanning
-      # checks for the missing legs go NEUTRAL on docs-only PRs
-      # and trip the `code_quality` ruleset rule.
-      - name: Emit no-findings SARIF (docs-only PRs)
-        if: steps.decide.outputs.code_changed != 'true'
+      # matrix covers.
+      - name: Emit no-findings SARIF (aggregate-CodeQL baseline)
         env:
           HEAD_SHA_ENV: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha || github.sha }}
         run: |
@@ -266,28 +279,24 @@ jobs:
       # action-param -- which overrides SARIF automationDetails --
       # can differ per file.
       - name: Upload no-findings SARIF (actions)
-        if: steps.decide.outputs.code_changed != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/empty-actions.sarif
           category: "/language:actions"
 
       - name: Upload no-findings SARIF (csharp)
-        if: steps.decide.outputs.code_changed != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/empty-csharp.sarif
           category: "/language:csharp"
 
       - name: Upload no-findings SARIF (python)
-        if: steps.decide.outputs.code_changed != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/empty-python.sarif
           category: "/language:python"
 
       - name: Upload no-findings SARIF (javascript-typescript)
-        if: steps.decide.outputs.code_changed != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/empty-javascript-typescript.sarif
