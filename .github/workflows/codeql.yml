@@ -279,6 +279,10 @@ jobs:
             build-mode: none
           - language: csharp
             build-mode: manual
+          - language: python
+            build-mode: none
+          - language: javascript-typescript
+            build-mode: none
 
     steps:
       - name: Checkout
