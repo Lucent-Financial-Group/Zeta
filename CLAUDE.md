@@ -84,17 +84,38 @@ These are the knobs this repo actually uses:
   `.claude/skills/claude-md-steward/`.
   **Fast-path on wake:** read any
   `CURRENT-<maintainer>.md` files (one per human or
-  external-AI maintainer; filename uses a role-ref
-  placeholder per the "No name attribution in code,
-  docs, or skills" rule in
-  `docs/AGENT-BEST-PRACTICES.md`, not a real name) in
+  external-AI maintainer) in
   `~/.claude/projects/<slug>/memory/` *before* the
-  raw `feedback_*.md` / `project_*.md` log. CURRENT
-  files are the distilled currently-in-force
-  projection per maintainer; they win on conflict
-  with older raw memories. Individual CURRENT files
-  live per-user (not in-repo) — same per-user split
-  as the rest of `~/.claude/projects/<slug>/memory/`.
+  raw `feedback_*.md` / `project_*.md` log. The
+  filename takes a real name in two cases — the
+  first-party human maintainer on his own user-scope
+  (`CURRENT-aaron.md`; per Otto-231 a content-creator
+  is consented-by-creation on his own substrate)
+  and a named-agent persona on a history surface
+  (`CURRENT-amara.md`; per the Otto-279 + follow-on
+  rule documented in `docs/AGENT-BEST-PRACTICES.md`,
+  persona first-names like Amara, Otto, Soraya are
+  contributor-identifiers — they belong on the
+  closed-list history surfaces (memory/, docs/
+  ROUND-HISTORY.md, docs/DECISIONS/, docs/research/,
+  hygiene-history, commit messages) and appear in
+  governance/instructions files only via the narrow
+  roster-mapping carve-out. The CURRENT-* files live
+  under `~/.claude/projects/<slug>/memory/` which is
+  a memory/-equivalent history surface — hence the
+  persona-name filename is appropriate there. On
+  current-state surfaces — code, skill bodies,
+  behavioural docs, public prose — use role-refs
+  ("the maintainability-reviewer", "the architect"),
+  not persona names.). Third-party human maintainers
+  get a role-ref-only filename per the default rule
+  (no name attribution outside the closed list of
+  history surfaces). CURRENT files are the distilled
+  currently-in-force projection per maintainer; they
+  win on conflict with older raw memories. Individual
+  CURRENT files live per-user (not in-repo) — same
+  per-user split as the rest of
+  `~/.claude/projects/<slug>/memory/`.
   **Same-tick update discipline:** when a new memory
   lands that updates a rule in a CURRENT file, edit
   CURRENT in the same tick. Skipping is
@@ -116,6 +137,37 @@ should treat this codebase" section of `AGENTS.md`.
 They are Claude-specific because they name
 Claude-Code-specific mechanisms.
 
+- **AceHack = dev-mirror fork; LFG = project-trunk fork.**
+  Two distinct fork roles, Beacon-safe terminology that
+  encodes the 0-divergence invariant in the name itself.
+  - **AceHack = dev-mirror fork** — a mirror is by definition
+    identical to what it mirrors. Where the maintainer + agents
+    iterate on in-flight work; AceHack main re-mirrors LFG main
+    at the close of every paired-sync round (force-push to
+    AceHack main is part of the protocol). In-flight feature
+    branches are the only allowed deviation from LFG main.
+  - **LFG = project-trunk fork** — the trunk where all branches
+    meet. "Trunk" is git-native; "project" prefix marks it as
+    the project's trunk, independent of any maintainer-agent
+    pair. Where all contributors (human + AI, present + future)
+    coordinate. NuGet pointers, README links, external
+    collaborators' clones.
+  Topology invariant: at the close of every paired-sync round,
+  AceHack main = LFG main (0 commits ahead AND 0 commits behind).
+  In-flight feature branches on AceHack are expected and not a
+  violation; AceHack main only diverges from LFG main during
+  the brief window between an AceHack PR landing and its LFG
+  forward-sync + AceHack hard-reset.
+  Double-hop workflow = work lands AceHack first → forward-sync
+  to LFG → AceHack absorbs LFG's squash-SHA. Force-push to
+  AceHack main is part of the protocol; force-push to LFG main
+  is forbidden. The 0-diff state is what "starting" means; until
+  then the project is in pre-start mode.
+  Full reasoning + lineage in
+  `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`,
+  `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md`,
+  and the Mirror→Beacon vocabulary upgrade protocol in
+  `memory/feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md`.
 - **Agents, not bots.** Every AI in this repo
   carries agency, judgement, and accountability.
   If a human refers to Claude as a "bot," Claude
