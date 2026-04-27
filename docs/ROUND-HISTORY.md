@@ -98,6 +98,24 @@ fixed in the same round the rule landed (commit `ac0eb1f`,
 meta-wins-log depth-1 row). Arc-by-arc narrative lands at
 round-close.
 
+A further arc separated the four distinct products under
+the GitHub Copilot brand that the factory had been
+conflating — Copilot PR code review (a reviewer robot, not
+a harness), Copilot in VS Code (the actual harness variant,
+stub), Copilot coding agent `@copilot` (autonomous PR
+author, stub), and Copilot CLI (`gh copilot` / `copilot`,
+terminal harness; later expansion) — landing (a) the
+`docs/HARNESS-SURFACES.md` multi-product split with explicit
+capability-boundary
+scoping, (b) the rewritten `.github/copilot-instructions.md`
+self-identifying as a reviewer-robot contract, (c) the
+harness-vs-reviewer-robot correction captured in those
+two artifacts, and (d) PR #32 against this factory as the
+first live experiment testing what PR Copilot can and
+cannot do on the factory's own documentation
+(meta-wins-log row `copilot-split` classified
+partial meta-win pending experiment outcome).
+
 A late-round arc landed the **`AceHack/Zeta` →
 `Lucent-Financial-Group/Zeta` org migration** (HB-001
 resolved via `POST /repos/AceHack/Zeta/transfer` with
