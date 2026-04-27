@@ -194,7 +194,7 @@ jobs:
               # in case patterns. Earlier branches kept a separate
               # `tools/setup/*` line; collapsed here per shellcheck
               # SC2222 (later pattern shadowed by earlier one).
-              src/*|test/*|tools/*) code_changed=true ;;
+              src/*|tests/*|tools/*) code_changed=true ;;
               *.cs|*.fs|*.fsproj|*.csproj|*.sln) code_changed=true ;;
               *.py|pyproject.toml|requirements*.txt) code_changed=true ;;
               *.js|*.jsx|*.ts|*.tsx|*.mjs|*.cjs) code_changed=true ;;

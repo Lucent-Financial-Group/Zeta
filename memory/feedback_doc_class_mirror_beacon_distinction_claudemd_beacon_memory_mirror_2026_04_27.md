@@ -38,7 +38,7 @@ Aaron's response: *"good insight"* + filing instruction.
 
 **Discipline:**
 - **Lineage-preserving.** Verbatim quotes, dated, attributed.
-- **Personal names allowed** (subject to consent rules — first-party-creator carve-out for Aaron, named-agent role-refs for Otto/Amara/etc., role-ref defaults for third parties per BP-24).
+- **Personal names allowed** (subject to consent rules — first-party-creator carve-out for Aaron, named-agent role-refs for Otto/Amara/etc., role-ref defaults for third parties per the "No name attribution in code, docs, or skills" rule in `docs/AGENT-BEST-PRACTICES.md` — rule lineage Otto-279 + follow-on maintainer clarification).
 - **Session narrative welcome.** "Aaron offered three options" / "Otto initially leaned A" / "evidence from this session" all belong here.
 - **Why-and-when, not just what.** The Mirror file is where future-Otto looks to understand the *reasoning*, not just the *rule*.
 

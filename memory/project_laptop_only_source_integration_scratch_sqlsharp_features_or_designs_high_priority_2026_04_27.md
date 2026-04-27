@@ -303,8 +303,8 @@ than going file-by-file blindly.
 
 The integration work completes when:
 
-- `git grep -- '../scratch'` returns zero matches *outside* the BP-24 closed-list history surfaces (`memory/**`, `docs/BACKLOG.md`, `docs/backlog/**`, `docs/research/**`, `docs/ROUND-HISTORY.md`, `docs/DECISIONS/**`, `docs/aurora/**`, `docs/pr-preservation/**`, `docs/hygiene-history/**`, `docs/WINS.md`, commit messages + PR bodies — see `docs/AGENT-BEST-PRACTICES.md` BP-24 for the canonical list, this file is on the list as `memory/**`)
-- `git grep -- '../SQLSharp'` returns zero matches *outside* the same BP-24 closed-list history surfaces
+- `git grep -- '../scratch'` returns zero matches *outside* the closed-list history surfaces (`memory/**`, `docs/BACKLOG.md`, `docs/backlog/**`, `docs/research/**`, `docs/ROUND-HISTORY.md`, `docs/DECISIONS/**`, `docs/aurora/**`, `docs/pr-preservation/**`, `docs/hygiene-history/**`, `docs/WINS.md`, commit messages + PR bodies — see the "No name attribution in code, docs, or skills" rule in `docs/AGENT-BEST-PRACTICES.md` for the canonical list; rule lineage Otto-279 + follow-on maintainer clarification; this file lands on the list as `memory/**`)
+- `git grep -- '../SQLSharp'` returns zero matches *outside* the same closed-list history surfaces
 - Every feature/idea/enhancement that WAS referenced is
   EITHER (a) shipped in the repo, OR (b) documented in the
   repo with enough detail to be rebuilt without reading
@@ -397,16 +397,18 @@ automation, (3) research/design hints.
 
 Effort: L (3+ days). Done = `git grep -- '../scratch'`
 and `git grep -- '../SQLSharp'` both return zero matches
-*outside the BP-24 closed-list history surfaces*
-(`memory/**`, `docs/BACKLOG.md`, `docs/backlog/**`,
-`docs/research/**`, `docs/ROUND-HISTORY.md`,
-`docs/DECISIONS/**`, `docs/aurora/**`,
-`docs/pr-preservation/**`, `docs/hygiene-history/**`,
-`docs/WINS.md`, plus commit messages + PR bodies — see
-`docs/AGENT-BEST-PRACTICES.md` BP-24 for the canonical
-list, this file is on the list as `memory/**`), and every
-previously-referenced feature is either shipped or
-design-documented in-repo.
+*outside the closed-list history surfaces* (`memory/**`,
+`docs/BACKLOG.md`, `docs/backlog/**`, `docs/research/**`,
+`docs/ROUND-HISTORY.md`, `docs/DECISIONS/**`,
+`docs/aurora/**`, `docs/pr-preservation/**`,
+`docs/hygiene-history/**`, `docs/WINS.md`, plus commit
+messages + PR bodies — see the "No name attribution in
+code, docs, or skills" rule in
+`docs/AGENT-BEST-PRACTICES.md` for the canonical list;
+rule lineage Otto-279 + follow-on maintainer
+clarification; this file lands on the list as
+`memory/**`), and every previously-referenced feature is
+either shipped or design-documented in-repo.
 
 Composes Otto-275 (log-but-don't-implement; default to
 design when uncertain) + Otto-323/346 (these are NOT

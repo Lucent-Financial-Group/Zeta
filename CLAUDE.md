@@ -92,10 +92,11 @@ These are the knobs this repo actually uses:
   with older raw memories. Filename conventions and
   the closed-list-history-surface carve-out for
   named-maintainer filenames are documented in
-  `memory/README.md` and
-  `docs/AGENT-BEST-PRACTICES.md` (look for the
-  `CURRENT-*` filename rule and the BP-NN entry on
-  name-attribution surfaces). **Same-tick update
+  `memory/README.md` and the "No name attribution in
+  code, docs, or skills" rule in
+  `docs/AGENT-BEST-PRACTICES.md` (rule lineage
+  Otto-279 + follow-on maintainer clarification).
+  **Same-tick update
   discipline:** when a new memory lands that updates
   a rule in a CURRENT file, edit CURRENT in the same
   tick. Skipping is lying-by-omission.
