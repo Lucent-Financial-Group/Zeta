@@ -137,4 +137,4 @@ When picking this up:
 3. PATH-RENAME for `docs/plans/servicetitan-crm-ui-scope.md` requires both `git mv` AND body rewrite + xref updates.
 4. FACTORY-DISCIPLINE.md needs careful line-by-line — preserve structural disclosure (funding chain) while removing brand-bleed (demo / sample naming).
 5. Re-run the audit command after each batch of changes to track progress.
-6. Final state: zero matches in live-repo scope.
+6. Final state: **all matches correctly-named for context** (pitch-target / funding-disclosure / memory-pointer / historical) — NOT zero matches. The naive zero-target was the over-correction the context-sensitive rule was designed to prevent (see Outcome section above).

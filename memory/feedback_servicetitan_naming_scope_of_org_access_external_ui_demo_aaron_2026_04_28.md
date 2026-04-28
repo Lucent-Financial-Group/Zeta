@@ -89,14 +89,29 @@ one such customer (named in pitch, not in sample).
 ServiceTitan trades on the public market under the ticker
 **TTAN**. This means:
 
-- All disclosures about them are **public information** (no
-  insider-information concern from Aaron).
-- Otto can reference them in research, pitch-prep, target-
-  audience analysis, and competitive positioning without
-  ethical / legal concerns about confidentiality.
+- **Information they have published** (10-K filings, earnings
+  calls, public press releases, public product docs, public
+  job postings, public conference talks) is public information
+  Otto can cite freely.
+- **Material non-public information (MNPI) STILL exists** at
+  every public company: internal strategy, internal financials
+  not yet disclosed, internal customer details, internal
+  product plans, internal architecture, internal team
+  decisions. These are NOT public just because the company is
+  public-listed.
+- Otto can reference ServiceTitan in research, pitch-prep,
+  target-audience analysis, and competitive positioning
+  **using public sources only**. Public-source citation is
+  required for any specific factual claim.
 - The funding-chain disclosure (Aaron's employment) is
   appropriate for public-facing docs because public companies
   expect employee-of-X disclosure as normal.
+
+The distinction matters for Aaron-as-employee: he's bound NOT
+to share MNPI even though the company is public. Public
+listing doesn't dissolve the boundary; it just identifies the
+company as one whose disclosures-already-made are public-by-
+definition.
 
 ## Why both rules together
 

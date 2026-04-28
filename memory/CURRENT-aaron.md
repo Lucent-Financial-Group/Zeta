@@ -1539,7 +1539,7 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-04-28 (sections 26-30 added for
+**Last full refresh:** 2026-04-28 (sections 26-31 added for
 the 2026-04-28 LFG #661 incident cluster: speculation-rule +
 EVIDENCE-BASED labeling discipline, JVM language preference
 Kotlin > Scala > Java per B-0075, dependency-honesty rule —
@@ -1547,6 +1547,10 @@ managed runtimes get scanned like every other surface, plus
 §29 threading-lineage Albahari + Toub + Fowler — never
 gut-instinct on threading code, plus §30 TypeScript/Bun is
 the factory tooling default with AI/ML carve-out — step out
+carefully; plus §31 Authority rule (default to reversible
+preservation; escalate only irreversible loss) — Amara via
+Aaron 2026-04-28, the autonomous-decision-default rule
+operationalizing Otto-357 autonomy first-class
 on TypeScript carefully). Prior
 refresh 2026-04-25 evening (sections 23-25: Otto-300 rigor-
 proportional-to-blast-radius, standing research-authorization
