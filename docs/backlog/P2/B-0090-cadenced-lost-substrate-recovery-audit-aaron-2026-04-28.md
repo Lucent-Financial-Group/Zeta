@@ -119,7 +119,7 @@ individual classification:
 
 1. `ci/final-matrix-macos-26-ubuntu-24-plus-arm-plus-slim` — 1 NEW file in 10-file branch. Likely `nightly-low-memory.yml` or similar matrix work; check if superseded by current `low-memory.yml` (renamed per Aaron 2026-04-27).
 2. `feat/graph-cohesion-exclusivity-conductance` — 1 NEW file in 3-file branch. Graph-algorithm work; check against current Aurora substrate + `feat/graph-cohesion-conductance-plus-windowed-stake-covariance` (companion branch, 0 NEW).
-3. `feat/live-lock-audit-and-db-gaps` — 2 NEW files (`samples/ServiceTitanCrm/Program.fs`, `samples/ServiceTitanCrm/ServiceTitanCrm.fsproj`). Likely intentionally OBSOLETE per task #244 ("Factory-demo — renamed from ServiceTitan"); confirm.
+3. `feat/live-lock-audit-and-db-gaps` — 2 NEW files in `samples/<retired-CRM-naming>/` (early-iteration sample dir using brand-bleed naming that's been deprecated per the external-UI-demo discipline; see `memory/feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`). Likely intentionally OBSOLETE per task #244 (Factory-demo — generic-name rename); confirm.
 
 Each becomes a sibling backlog row when scoping firms up.
 
