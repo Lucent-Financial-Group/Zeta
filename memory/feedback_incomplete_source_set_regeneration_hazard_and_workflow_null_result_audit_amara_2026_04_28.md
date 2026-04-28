@@ -160,8 +160,7 @@ modes; the control invokes them in order.
 
 ### Promotion to tier-1 cheap-prevention scan (Amara 2026-04-28T20:18Z)
 
-**Promoted class name:** **Scheduled Workflow Null-Result
-Hygiene Scan**.
+**Promoted class name:** **Scheduled Workflow Null-Result Hygiene Scan**.
 
 After the class found two real bugs in its first hour
 (B-0085 budget-cadence-cron-vs-deadline + B-0087
@@ -179,8 +178,12 @@ surface.
 > every null/failure result. No unclassified scheduled
 > workflow silence is allowed.*
 
-**Classification labels** (every `gh run list` result must
-sort into one):
+**Classification labels** — when auditing a scheduled
+workflow, every empty/failure result for that workflow
+(e.g. `gh run list --workflow=<path>` returning `[]`,
+or last-run `conclusion=failure`) must sort into ONE of
+the labels below. The labels classify the *workflow's
+null/failure situation*, not individual runs:
 
 - **known row** — already filed as B-NNNN; row ID cited.
 - **too-new-to-fire** — workflow file's first-commit-date
