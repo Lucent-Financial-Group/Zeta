@@ -34,6 +34,34 @@ Aaron 2026-04-28T18:55Z verbatim:
 > list updates if that's how it works, we can backlog this but hight
 > priortiy right after the 0/0/0 starting point"*
 
+## Ownership rationale (Aaron verbatim 2026-04-28T18:58Z)
+
+> *"basically some roms i own becasue i bought the same i can share
+> with you locally but we can't check into git, only certain ones are
+> license safe or it's expired or whatever. those can get checked in,
+> the more realish games will only be on local maintainers computers
+> and each will likely have their own set."*
+
+This articulates the established personal-use vs distribution legal
+boundary:
+
+- **Aaron owns the ROMs (bought them)** → personal-use copies are
+  legal between him and the local agent on his machine.
+- **Distribution via git** would create a redistribution path → only
+  license-cleared ROMs (public domain, homebrew with permissive
+  license, copyright-expired, explicit-license-commercial) can ship
+  in the tracked `roms-safe/` folder.
+- **Per-maintainer local ROM sets**: the gitignored `roms/` folder
+  is local to each maintainer's machine. Each maintainer will have
+  their own set based on what they personally own.
+- **The safe folder is the SHARED canonical surface**: only ROMs that
+  every maintainer can legally use (regardless of what they personally
+  own) live in `roms-safe/`.
+
+This split is exactly what the existing `roms/.gitignore` +
+`roms/atari/2600/README.md` license-safety-gate enforces. B-0083
+operationalizes the split by adding the safe-folder + the tooling.
+
 ## Current state (verified 2026-04-28T18:53Z)
 
 - **3461 files** in `roms/atari/2600/` — mix of `.bin` and `.zip`,
