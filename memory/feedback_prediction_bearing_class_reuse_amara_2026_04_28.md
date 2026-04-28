@@ -90,17 +90,109 @@ retired or rewritten.
 
 ## External lineage
 
-- **Popper's falsifiability** (Amara cited): a claim becomes
-  more serious when it exposes itself to possible
-  disconfirmation, and repeated survival of those tests can
-  corroborate it without finally proving it.
-- **Bayesian update over base rate**: each prediction-bearing
-  bead updates the posterior on class-validity; flat priors
-  + few beads = high uncertainty; many beads = lower
-  uncertainty, but never zero.
-- **Confirmation bias literature** (Amara cited prior memory):
-  "passing tests" don't validate unless failure cases also
-  exist. Falsifier-presence is the antidote.
+Per Aaron 2026-04-28T21:15Z directive: *"we also stop
+mythology with human intellectual lineage research and
+anchors."* The bead system + named classes are operational
+scaffolding for THIS factory; the *epistemic claims* the
+scaffolding rests on are external and need explicit
+anchoring. Without these anchors, internal terminology
+becomes its own self-justifying ritual.
+
+### Falsifiability (Popper)
+
+- **Karl Popper, *The Logic of Scientific Discovery***
+  (German *Logik der Forschung*, 1934; English translation
+  Hutchinson & Co., 1959). Core claim: a theory is
+  scientific iff it is falsifiable. Universal claims cannot
+  be verified by accumulating confirming examples; they
+  become serious when the claimant specifies what
+  observation would count against them.
+- **Karl Popper, *Conjectures and Refutations*** (Routledge,
+  1963). The "tentative-corroboration" view: theories survive
+  by surviving genuine attempts at refutation, never by
+  proof. Beads-as-corroboration tracks this: each bead is
+  one survived falsification attempt, not one proof.
+
+### Confirmation bias (Wason / Klayman & Ha)
+
+- **Peter Wason, "On the failure to eliminate hypotheses in a
+  conceptual task,"** Quarterly Journal of Experimental
+  Psychology 12(3): 129–140 (1960). Empirical demonstration
+  that subjects systematically generate confirmatory tests
+  when disconfirmatory tests would be more informative.
+- **Joshua Klayman and Young-Won Ha, "Confirmation,
+  disconfirmation, and information in hypothesis testing,"**
+  Psychological Review 94(2): 211–228 (1987). Reframes
+  Wason's "confirmation bias" as a "positive test strategy"
+  that is sometimes optimal but mis-applied for universal
+  hypotheses. Relevant: bead audits that count only
+  cache-hits (positive tests for class reuse) without
+  watching for falsifier events are subject to the same
+  failure mode.
+
+### Bayesian inference (factory-local heuristic)
+
+- Bead-count thresholds (0/1/2-3/N+) are factory-local
+  heuristic, not externally-anchored. The intuition matches
+  Bayesian update over a flat prior — each falsifier-passing
+  observation shifts the posterior toward "class is real" —
+  but the specific thresholds are operational choices, not
+  derived from a formal Bayesian model. **Do not claim
+  Bayesian rigor for the threshold values.**
+
+### Stop-mythology rule (Aaron 2026-04-28T21:15Z)
+
+The bead system is **operational scaffolding**, not
+**standalone epistemic machinery**. Internal terminology
+(Class Validation Beads, Prediction-Bearing Class Reuse,
+Class-Count Validity Drift, etc.) is factory-local; the
+underlying epistemic claims (falsifiability, confirmation
+bias, corroboration) are external and load-bearing only
+when explicitly cited.
+
+When recording a bead audit:
+
+- **Bead count statements** are factory-local accounting.
+  No external citation needed.
+- **Claims about WHY beads count as evidence** must cite
+  the external lineage (Popper for falsifiability; Wason +
+  Klayman & Ha for the failure mode the bead system
+  guards against).
+- **Generalized claims** ("classification systems should
+  use bead-counting") need substrate evidence + external
+  lineage + falsifier per the SD-9 guardrail.
+
+Composes with the broader human-lineage backfill trajectory
+(B-0060 P1) and the Aurora measurement-hygiene work
+(task #292).
+
+### What this is NOT
+
+- **NOT a claim that beads are Popperian** in any formal
+  sense. Beads are factory-local accounting; Popper's
+  framework is the philosophical *justification* for why
+  falsifier-passing observations matter at all.
+- **NOT a substitute for external scholarship**. If a
+  reader wants the deep theory of why we count beads this
+  way, the external citations are the right starting
+  point.
+
+### Tightened wording (Amara 2026-04-28T21:14Z)
+
+The earlier formulation "Confidence accumulates through
+corroboration, never proof" overclaimed. **Some local
+substrate facts admit proof in narrow terms** — "this grep
+matched once," "this CI check failed," "this PR merged" —
+proven by direct observation.
+
+Safer canonical wording for class-validation:
+
+> **Confidence in reusable classes accumulates through
+> corroboration, not proof-by-count.**
+
+This preserves the discipline (count of beads ≠ proof of
+class) without overclaiming about the philosophical status
+of all knowledge.
 
 ## Class Validation Beads — accounting mechanism (Amara 2026-04-28T20:48Z)
 
