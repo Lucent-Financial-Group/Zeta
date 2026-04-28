@@ -92,8 +92,10 @@ The rule is broader than I initially scoped it:
   - **Stale fork-PR queue** (PRs sitting from earlier sessions): mergeable
     state, unresolved threads, branch-tip vs main divergence.
   - **Open issues** (`gh issue list --state open`).
-  - **BACKLOG.md rows** (P0 / P1 / P2) — `ls docs/backlog/P*/`.
-  - **Recent CI runs across the repo** — `gh run list --workflow=...`.
+  - **BACKLOG.md rows** (P0 / P1 / P2 / P3) — `ls docs/backlog/P*/`.
+  - **Recent CI runs across the repo** — `gh workflow list` then
+    `gh run list --workflow=<id-or-filename>` (or `gh run list -L 50`
+    for all-workflow recent runs).
   - **External signals** — peer-CLI replies, Amara ferry drops, scheduled
     job outputs, drop-folder additions.
   - **TodoWrite task list** — pending / in_progress tasks from prior turns.
