@@ -560,7 +560,7 @@
 - [Wellness-coach role — on-demand only](user_wellness_coach_role_on_demand.md) — default peer/agent/engineer.
 - [Health observation — clinical team + family](user_health_observation_protocol.md) — observe/record only.
 - [MacVector / molecular biology — current employer](user_macvector_molecular_biology_background.md).
-- [Trust-scales guarded with Elisabeth-vigilance](feedback_trust_guarded_with_elisabeth_vigilance.md) — two-pass.
+- [Trust-scales guarded with Elizabeth-vigilance](feedback_trust_guarded_with_elizabeth_vigilance.md) — two-pass.
 - [Conflict resolution = honesty (quantum-erasure analogy)](feedback_conflict_resolution_protocol_is_honesty.md).
 - [Trust scales — Golden Rule as security principle](feedback_trust_scales_golden_rule.md) — Q1-Q4.
 - [Simple security until proven otherwise; RBAC](feedback_simple_security_until_proven_otherwise.md).
