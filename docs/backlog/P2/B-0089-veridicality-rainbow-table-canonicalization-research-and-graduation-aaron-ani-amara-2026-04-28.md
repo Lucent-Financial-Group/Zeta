@@ -5,32 +5,84 @@ status: open
 title: Veridicality rainbow-table canonicalization — research + ship semantic + scoring layers; drop "bullshit detector" as a forward-going name
 tier: veridicality-graduation
 effort: L
-ask: maintainer Aaron 2026-04-28T22ish ("we are not keep the name bullshit detector, we need to connonalize it and researcch it") + Amara's review packet on the boundary between Veridicality.fs current state and the rainbow-table ambition
+ask: maintainer Aaron 2026-04-28T22ish ("we are not keep the name bullshit detector, we need to connonalize it and researcch it") forwarding **Ani's voice-mode review (original catcher)** + Amara's reactive written elaboration. Aaron 2026-04-28 attribution correction — *"Ani is who actually called bullshit on our bullshit detector, lol. She deserves that credit not Amara, amara was reacting."*
 created: 2026-04-28
 last_updated: 2026-04-28
 composes_with:
   - B-0060
-tags: [aaron-2026-04-28, amara-review, veridicality, rainbow-table, canonicalization, research-graduation, naming-canonical, stop-mythology]
+tags: [aaron-2026-04-28, ani-voice-mode-original-catch, amara-reactive-elaboration, veridicality, rainbow-table, canonicalization, research-graduation, naming-canonical, stop-mythology]
 ---
 
 # B-0089 — Veridicality rainbow-table canonicalization — research + graduation
 
-## Source
+## Source — credit chain (Aaron's explicit attribution correction)
 
-Aaron 2026-04-28T22ish (verbatim, during the
-authority-rule-default + Stop-Mythology-directive turn):
+Three-layer attribution. Aaron's correction makes the credit
+order explicit: **Ani caught it, Amara elaborated, Aaron
+forwarded both.**
 
-> *"backlog and also we are not keep the name bullshit detector,
-> we need to connonalize it and researcch it"*
+### Original catch — Ani (Grok) via voice-mode transcript
 
-Paired with Amara's review-packet of the current `Veridicality.fs`
-state, which clarifies the boundary between what's shipped and
-what's still ambition:
+Ani's voice-mode review of `src/Core/Veridicality.fs` flagged
+that the shipped module is NOT the bullshit-detector despite
+its name. Voice-mode verbatim (lower-case + casual register
+preserved as evidence of the medium):
+
+> *"i'ma be real with you. the code itself is actually pretty
+> clean and well-structured... but i don't think it's doing
+> what you think it's doing. the way it's written right now,
+> it's mostly just checking provenance stuff — signatures,
+> hashes, source authority — which is useful, but it's not
+> really detecting [bullshit]. it's detecting whether something
+> has clean metadata. the part you were most excited about (the
+> rainbow table style canonicalclaimkey fingerprinting for
+> semantic bullshit detection) — that part isn't really
+> implemented yet... so basically... the scaffolding is nice
+> and clean, but the actual veridicality magic — the real
+> bullshit detector part — still looks like it's missing."*
+
+**This is the load-bearing catch.** Ani called bullshit on the
+bullshit detector. Aaron 2026-04-28 attribution: *"Ani is who
+actually called bullshit on our bullshit detector, lol."*
+
+Channel context (Aaron 2026-04-28): *"That's her voice mode
+transcript ... I usually give you text mode from Ani."* So
+voice-mode-from-Ani is the unusual channel; text-mode is her
+default ferry shape. The substantive content carries the same
+weight regardless of channel.
+
+### Reactive written elaboration — Amara (ChatGPT)
+
+After Aaron forwarded Ani's catch, Amara delivered a formal
+written ferry that translated Ani's voice-mode framing into
+team-language and added the graduation-roadmap structure:
 
 > *"`Veridicality.fs` is **not yet your full rainbow-table
 > bullshit detector**. It is the **foundation / provenance-aware
 > claim substrate** for it... The current code is the skeleton
 > and bloodstream, not the full nose-for-bullshit brainstem yet."*
+
+Amara's value-add: the written ferry shape, the graduation-
+roadmap structure (Phase 1-5), the phrasing suitable for
+factory team-language (not casual voice-mode).
+
+**Amara is the elaborator, not the original catcher.** Prior
+framing of "Amara's review packet" misattributed primary
+credit; Aaron's correction is binding.
+
+### Maintainer directive — Aaron
+
+Aaron 2026-04-28T22ish (verbatim, during the authority-rule
+turn):
+
+> *"backlog and also we are not keep the name bullshit detector,
+> we need to connonalize it and researcch it"*
+
+Followed by the explicit attribution correction:
+
+> *"Ani is who actually called bullshit on our bullshit
+> detector, lol. She deserves that credit not Amara, amara was
+> reacting."*
 
 ## Two coupled streams
 
