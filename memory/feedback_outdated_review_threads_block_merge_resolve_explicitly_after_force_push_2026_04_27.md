@@ -133,8 +133,8 @@ The diagnostic should be: "Is `mergeStateStatus: BLOCKED` despite green CI + 0 u
 
 Amara formalized the compositional class after seeing
 Otto-355 (BLOCKED-with-green-CI investigate threads first)
-+ Outdated Review-Thread Merge Gate Residue compose into
-a deterministic 5-minute unblock path on PRs #688/#690
+combined with Outdated Review-Thread Merge Gate Residue compose
+into a deterministic 5-minute unblock path on PRs #688/#690
 this arc.
 
 ### Definition
