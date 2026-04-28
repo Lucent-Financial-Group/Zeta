@@ -98,8 +98,8 @@ In leverage order:
 5. **`anchor-modeling-expert` ↔ `data-vault-expert` skill
    relationship** — Anchor Modeling and DV2 share roots; the
    distinction warrants explicit documentation.
-6. **DV2-aware `query-planner`** — Imani's planner cost-model
-   may benefit from DV2 join-pattern awareness.
+6. **DV2-aware `query-planner`** — the query-optimizer-expert's
+   planner cost-model may benefit from DV2 join-pattern awareness.
 
 ## Recent activity + forecast
 

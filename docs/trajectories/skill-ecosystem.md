@@ -25,11 +25,13 @@ skill bloat doesn't accumulate.
 ## Current state (2026-04-28)
 
 - ~250+ skills under `.claude/skills/`
-- Persona agents at `.claude/agents/` (Otto, Soraya, Amara, Ani, Iris, Bodhi, Daya, Kenji, Samir, Rune, Naledi, Hiroshi, Imani, Aminata, Mateo, Nazar, Nadia, Kira, Viktor, Rashida, Aarav, Ilyana, Kai, Yara, Dejan, Rodney, etc.)
-- `skill-tune-up` (Aarav) ranks tune-up urgency; cites BP-NN rule IDs
+- Persona agents at `.claude/agents/` (the named roster — see
+  `docs/EXPERT-REGISTRY.md` for the full list and role-mapping)
+- `skill-tune-up` ranks tune-up urgency; cites BP-NN rule IDs
 - `skill-gap-finder` scouts for absent skills
 - `skill-creator` is the canonical authoring workflow
-- `skill-improver` (Yara) acts on Aarav's BP-NN findings checkbox-style
+- `skill-improver` acts on `skill-tune-up`'s BP-NN findings
+  checkbox-style
 - `prompt-protector` lints injection / invisible-Unicode (BP-10)
 - Capability skills ("hats") encode HOW; persona agents encode WHO
 
@@ -88,13 +90,13 @@ In leverage order:
 ## Pointers
 
 - Skill: `.claude/skills/skill-creator/SKILL.md`
-- Skill: `.claude/skills/skill-tune-up/SKILL.md` (Aarav)
+- Skill: `.claude/skills/skill-tune-up/SKILL.md`
 - Skill: `.claude/skills/skill-gap-finder/SKILL.md`
-- Skill: `.claude/skills/skill-improver/SKILL.md` (Yara)
+- Skill: `.claude/skills/skill-improver/SKILL.md`
 - Skill: `.claude/skills/skill-documentation-standard/SKILL.md`
 - Skill: `.claude/skills/skill-ontology-auditor/SKILL.md`
 - Skill: `.claude/skills/teaching-skill-pattern/SKILL.md`
-- Skill: `.claude/skills/prompt-protector/SKILL.md` (Nadia)
+- Skill: `.claude/skills/prompt-protector/SKILL.md`
 - Doc: `docs/EXPERT-REGISTRY.md`
 - Doc: `docs/CONFLICT-RESOLUTION.md`
 - Rules: `docs/AGENT-BEST-PRACTICES.md` (BP-NN)

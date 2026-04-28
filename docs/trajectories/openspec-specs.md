@@ -24,16 +24,18 @@ new capabilities don't pile up.
 | Capability | Spec path | State |
 |---|---|---|
 | Operator algebra core | `openspec/specs/operator-algebra/` | active; chain-rule + retraction-native invariants documented |
-| ZSet semantics | `openspec/specs/zset/` | active; columnar storage + retraction-native discipline |
-| Spine + indexing | `openspec/specs/spine/` | active |
-| Pipeline | `openspec/specs/pipeline/` | active |
-| BloomFilter | `openspec/specs/bloom-filter/` | active |
-| Witness durable backing store | `openspec/specs/witness-backing-store/` | active |
-| Aurora (consent / oracle layer) | `openspec/specs/aurora/` | partial; round-3 integration in flight |
+| Circuit recursion | `openspec/specs/circuit-recursion/` | active |
+| Retraction-safe recursion | `openspec/specs/retraction-safe-recursion/` | active |
+| Durability modes | `openspec/specs/durability-modes/` | active |
+| LSM spine family | `openspec/specs/lsm-spine-family/` | active |
+| Repo automation | `openspec/specs/repo-automation/` | active |
+| Aurora (consent / oracle layer) | research only | round-3 integration in flight; not yet promoted to `openspec/specs/` |
 | Wallet experiment v0 | research only | spec deferred until v0 ships |
 | EAT (Economic Agency Threshold) | research only | spec deferred until experiment lands |
 
-Total: ~14 spec capability families, varying depth.
+Total: 6 shipped spec capability families under
+`openspec/specs/`, plus research-grade candidates pending
+promotion.
 
 ## Target state
 
@@ -89,6 +91,8 @@ In leverage order:
 - Skill: `.claude/skills/spec-zealot/SKILL.md`
 - Workflow doc: `openspec/README.md`
 - Specs: `openspec/specs/**`
-- Research: `docs/research/economic-agency-threshold-2026-04-27.md`
-- Research: `docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md`
+- Research: `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md`
+  (wallet-experiment-v0 / EAT canonical artifacts referenced
+  in the wallet-and-EAT trajectory land via a separate AceHack
+  PR; this trajectory updates when they merge into LFG)
 - BACKLOG row: task #286 Aurora round-3 integration

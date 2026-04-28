@@ -21,7 +21,7 @@ go stale on industry-current tools.
 | Tool | Surface | State | Coverage |
 |---|---|---|---|
 | **CodeQL** (advanced workflow) | F#/C# IL via `tools/setup/install.sh` + `dotnet build`; actions; python; javascript-typescript | active (codeql.yml re-enabled 2026-04-28) | `security-extended` on PR + push; `security-extended,security-and-quality` on schedule |
-| **Semgrep** | F#/C#/YAML via `.semgrep.yml` (14 custom rules) | active (`lint (semgrep)`) | rules: pool-rent-unguarded-multiply, plain-tick-increment, path-combine-without-canonicalize, file-read-without-size-cap, process-start-in-core, system-random-in-security-context, invisible-unicode-in-text, unsafe-deserialisation, gha-action-mutable-tag, notimplementedexception-in-library-interface |
+| **Semgrep** | F#/C#/YAML via `.semgrep.yml` (16 custom rules) | active (`lint (semgrep)`) | rules: pool-rent-unguarded-multiply, plain-tick-increment, boolean-flag-without-cas, path-combine-without-canonicalize, lock-across-await, public-mutable-field, unchecked-weight-multiply, unsafe-deserialisation, file-read-without-size-cap, process-start-in-core, activator-from-string, system-random-in-security-context, invisible-unicode-in-text, notimplementedexception-in-library-interface, gha-action-mutable-tag, gha-untrusted-in-run-line |
 | **Roslyn analyzers** | C# (limited; Zeta is F#-first) | bundled with `dotnet build` | default + `Microsoft.CodeAnalysis.NetAnalyzers` |
 | **F# analyzers** | F# via FSharpAnalyzers | configured but light | TODO: enumerate active rules |
 | **actionlint** | `.github/workflows/*.yml` | active (`lint (actionlint)`) | full rule set |

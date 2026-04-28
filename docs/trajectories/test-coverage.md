@@ -24,7 +24,9 @@ DST-everywhere holds.
 ## Current state (2026-04-28)
 
 - **Test surfaces**:
-  - Unit tests under `tests/Zeta.Core.Tests/`
+  - Unit tests under `tests/Tests.FSharp/`,
+    `tests/Tests.CSharp/`, `tests/Core.CSharp.Tests/`,
+    and `tests/Bayesian.Tests/`
   - Property-based tests via FsCheck
   - Mutation testing configured via Stryker.NET (cadence not
     yet active — see ci-infrastructure trajectory)
@@ -102,7 +104,8 @@ In leverage order:
 - Skill: `.claude/skills/fscheck-expert/SKILL.md`
 - Skill: `.claude/skills/stryker-expert/SKILL.md`
 - Skill: `.claude/skills/claims-tester/SKILL.md`
-- Code: `tests/Zeta.Core.Tests/`
+- Code: `tests/Tests.FSharp/`, `tests/Tests.CSharp/`,
+  `tests/Core.CSharp.Tests/`, `tests/Bayesian.Tests/`
 - Workflow: `.github/workflows/gate.yml` (build-and-test legs)
 - Workflow: `.github/workflows/low-memory.yml` (ubuntu-slim)
 - BACKLOG: task #244 factory-demo

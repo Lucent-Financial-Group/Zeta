@@ -105,7 +105,9 @@ In leverage order:
 - Memory: `memory/feedback_per_insight_attribution_discipline_*.md`
 - Memory: `memory/feedback_ferry_agents_substrate_providers_not_executors_*.md`
 - Memory: `memory/feedback_only_otto_aware_agents_execute_code_pre_peer_mode_*.md`
-- Tooling: `tools/peer-call/grok.sh`, `tools/peer-call/gemini.sh`, `tools/peer-call/codex.sh`
+- Tooling: `tools/peer-call/grok.sh` (canonical peer-call
+  pattern; sibling scripts for other harnesses are not yet
+  in-tree)
 - Archive: `docs/aurora/` (ferry archive)
 - BACKLOG: task #273 (history-of-named-entity-conversations directory)
 - BACKLOG: task #286 (Aurora Round-3 integration)

@@ -30,7 +30,7 @@ GOVERNANCE.md represent current truth.
 | `AGENTS.md` | active, refreshed regularly; load-bearing for fresh sessions |
 | `CLAUDE.md` | active; just absorbed visibility-constraint, version-currency, never-idle, future-self disciplines as wake-time rules |
 | `GOVERNANCE.md` | active; numbered §1..§33 rule blocks; cited extensively |
-| `ALIGNMENT.md` | active; HC-1..HC-7, SD-1..SD-9, DIR-1..DIR-5 alignment contract |
+| `docs/ALIGNMENT.md` | active; HC-1..HC-7, SD-1..SD-9, DIR-1..DIR-5 alignment contract |
 | `docs/BACKLOG.md` | active; per-priority sections; 26+ PR touches/30 days, swim-lane split proposed (research doc 2026-04-23) |
 | `docs/ROUND-HISTORY.md` | active; appended each round |
 | `docs/DECISIONS/` | active; ADRs for major architectural calls |
@@ -50,9 +50,9 @@ GOVERNANCE.md represent current truth.
 ## Target state
 
 - New-contributor first-60-minutes friction is low (DX trajectory
-  intersects this — Bodhi audits).
+  intersects this — the developer-experience-engineer audits).
 - New-library-consumer first-10-minutes friction is low (UX
-  trajectory intersects — Iris audits).
+  trajectory intersects — the user-experience-engineer audits).
 - Hot-file audit catches stale claims before they propagate.
 - Memorial / personal-substrate surfaces (DEDICATION.md, sister
   memory file, etc.) are accurate per memorial-class discipline.
@@ -102,11 +102,11 @@ In leverage order:
 
 ## Pointers
 
-- Skill: `.claude/skills/documentation-agent/SKILL.md` (Samir)
+- Skill: `.claude/skills/documentation-agent/SKILL.md`
 - Skill: `.claude/skills/skill-tune-up/SKILL.md`
-- Skill: `.claude/skills/maintainability-reviewer/SKILL.md` (Rune)
-- Skill: `.claude/skills/developer-experience-engineer/SKILL.md` (Bodhi)
-- Skill: `.claude/skills/user-experience-engineer/SKILL.md` (Iris)
+- Skill: `.claude/skills/maintainability-reviewer/SKILL.md`
+- Skill: `.claude/skills/developer-experience-engineer/SKILL.md`
+- Skill: `.claude/skills/user-experience-engineer/SKILL.md`
 - Skill: `.claude/skills/glossary-anchor-keeper/SKILL.md`
 - Skill: `.claude/skills/canonical-home-auditor/SKILL.md`
 - Workflow: `.github/workflows/memory-reference-existence-lint.yml`

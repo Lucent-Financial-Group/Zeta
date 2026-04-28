@@ -29,8 +29,8 @@ across commits/rounds; drift surfaces fast.
   direction-rules)
 - `alignment-auditor` agent — per-commit pass, produces signals
 - `alignment-observability` agent — multi-round time-series owner
-- Drift Taxonomy (Pattern 1-5) documented per
-  `docs/research/drift-taxonomy.md`
+- Drift Taxonomy (Pattern 1-5) documented in
+  `docs/DRIFT-TAXONOMY.md` (canonical)
 - Carrier-laundering protection (SD-9) — recalibrated 2026-04-27
   for cross-model review chains
 - HC-2 retraction-native invariant — load-bearing for wallet
@@ -90,7 +90,8 @@ In leverage order:
 - Doc: `docs/ALIGNMENT.md`
 - Skill: `.claude/skills/alignment-auditor/SKILL.md`
 - Skill: `.claude/skills/alignment-observability/SKILL.md`
-- Research: `docs/research/drift-taxonomy.md`
+- Doc: `docs/DRIFT-TAXONOMY.md` (canonical drift-pattern registry)
+- Research: `docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`
 - Research: `docs/research/economic-agency-threshold-2026-04-27.md`
 - BACKLOG: task #292 Otto-350 evidence collection
 

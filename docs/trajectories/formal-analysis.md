@@ -17,17 +17,17 @@ coverage as the system grows; don't go stale.
   Mathlib lemma growth.
 - **Per-claim**: when a paper draft, ADR, or core algebra change
   asserts a property, the formal-analysis trajectory routes it
-  to the right tool (Soraya's `formal-verification-expert`
-  routing per BP-16).
+  to the right tool (the `formal-verification-expert` routing
+  per BP-16).
 
 ## Current state (2026-04-28)
 
 | Tool | Surface | State | Coverage |
 |---|---|---|---|
-| **TLA+ / TLC** | distributed protocols, retraction semantics, consensus, ordering | 18 specs under `tools/TLA/*.tla` | active; specs reviewed per round; TLC model-checks on PR |
-| **Lean 4 + Mathlib** | proofs about operator algebra (DBSP chain rule, retraction homomorphisms, Stainback conjecture) | tools/lean4/Lean4/DbspChainRule.lean and others | active; chain-rule proof landed; Stainback conjecture in flight |
-| **Z3 (SMT)** | decision-procedure verification at `tools/Z3/*.smt2` | active | per-property; bounded |
-| **Alloy 6** | structural / relational specs | tools/alloy/*.als | active; per-spec |
+| **TLA+ / TLC** | distributed protocols, retraction semantics, consensus, ordering | 17 specs under `tools/tla/specs/*.tla` | active; specs reviewed per round; TLC model-checks on PR |
+| **Lean 4 + Mathlib** | proofs about operator algebra (DBSP chain rule, retraction homomorphisms, Stainback conjecture) | `tools/lean4/Lean4/DbspChainRule.lean` and others | active; chain-rule proof landed; Stainback conjecture in flight |
+| **Z3 (SMT)** | decision-procedure verification via the F# harness at `tools/Z3Verify/` | active | per-property; bounded |
+| **Alloy 6** | structural / relational specs | `tools/alloy/specs/*.als` (currently `Spine.als` + `InfoTheoreticSharder.als`) | active; per-spec |
 | **F\*** | dependent-type proofs (research) | scouting only | not yet adopted |
 | **FsCheck** | property-based F# tests | active (test suite) | core algebra invariants + edge-case suites |
 | **Stryker** | mutation testing as proof-coverage proxy | configured; not yet on cadence | F# + C# |
@@ -37,8 +37,9 @@ coverage as the system grows; don't go stale.
 
 - Every property class in Zeta's load-bearing claims has a
   formal-verification artifact (proof, model-check, property test).
-- Soraya's routing matrix (TLA+ vs Z3 vs Lean vs Alloy vs FsCheck
-  vs Stryker) is documented + applied per claim.
+- The formal-verification-expert routing matrix (TLA+ vs Z3 vs
+  Lean vs Alloy vs FsCheck vs Stryker) is documented + applied
+  per claim.
 - Mathlib coverage of Zeta-relevant lemmas is tracked; ports/PRs
   upstream when we land Zeta-side proofs.
 - Reflection-cost in Lean is mechanizable (B-0050 trajectory) so
@@ -54,10 +55,10 @@ In leverage order:
    ratio. Staged 5-stage trajectory in the BACKLOG row.
 2. **Stainback conjecture full formalization** — chain-rule lemma
    landed; rest of the conjecture in flight.
-3. **Cross-check triage rule (BP-16)** — Soraya's portfolio view
-   needs to be applied per-property; some properties currently
-   only have one tool's proof when two would catch different
-   classes of error.
+3. **Cross-check triage rule (BP-16)** — the formal-verification
+   portfolio view needs to be applied per-property; some
+   properties currently only have one tool's proof when two
+   would catch different classes of error.
 4. **Mathlib upstream contributions** — we've landed proofs that
    may be Mathlib-worthy; need a triage pass for upstream-port
    candidates per the upstream-contribution discipline.
@@ -71,7 +72,7 @@ In leverage order:
 - 2026-04-27: chain-rule Lean proof landed (`tools/lean4/Lean4/DbspChainRule.lean`).
 - 2026-04-26: B-0048 retraction-algebra isomorphism work.
 - 2026-04-26: B-0051 isomorphism catalog with IF1-IF4 grading.
-- 2026-04-25: Soraya formal-verification-expert hat fully
+- 2026-04-25: formal-verification-expert hat fully
   documented in `.claude/agents/formal-verification-expert.md`.
 
 **Forecast (next 1-3 months):**
@@ -86,7 +87,7 @@ In leverage order:
 
 ## Pointers
 
-- Skill: `.claude/skills/formal-verification-expert/SKILL.md` (Soraya, routing)
+- Skill: `.claude/skills/formal-verification-expert/SKILL.md` (routing)
 - Skill: `.claude/skills/lean4-expert/SKILL.md`
 - Skill: `.claude/skills/tla-expert/SKILL.md`
 - Skill: `.claude/skills/z3-expert/SKILL.md`
@@ -96,7 +97,7 @@ In leverage order:
 - Skill: `.claude/skills/f-star-expert/SKILL.md`
 - BACKLOG: B-0048, B-0050, B-0051
 - Decision: `docs/DECISIONS/` (see formal-verification ADRs)
-- Verification audit: `docs/research/verification-drift-audit.md`
+- Verification audit: `docs/research/verification-drift-audit-2026-04-19.md`
 
 ## Research / news cadence
 
@@ -112,9 +113,9 @@ External tracking required — this is an active-tracking trajectory.
 | F* releases (research) | Dependent-type proof system; scouting candidate | Quarterly |
 | VLDB / SIGMOD / POPL / PLDI papers | Streaming, IVM, formal-verification, distributed-protocols research | Per-conference (~3 / year) |
 | FsCheck releases | Property-based testing improvements | Per-release |
-| BP-16 cross-check triage rule (internal) | Soraya's portfolio routing — re-evaluated as new tools land | Continuous |
+| BP-16 cross-check triage rule (internal) | formal-verification-expert portfolio routing — re-evaluated as new tools land | Continuous |
 
 Findings capture: when a paper / tool / Mathlib lemma supports
 a Zeta-side proof, file a BACKLOG row + research-doc absorb +
-cite this trajectory. Soraya's `formal-verification-expert`
-routing matrix gets updated.
+cite this trajectory. The `formal-verification-expert` routing
+matrix gets updated.

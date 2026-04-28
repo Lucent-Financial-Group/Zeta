@@ -17,8 +17,8 @@ catalog without contradicting prior ones.
 ## Cadence
 
 - **Per-claim**: when a claim is asserted in code/spec/research,
-  it routes through Soraya for tool selection (BP-16) and lands
-  in the theorem catalog.
+  it routes through the formal-verification-expert for tool
+  selection (BP-16) and lands in the theorem catalog.
 - **Per-Mathlib-update**: when Mathlib gains a relevant lemma,
   Zeta-side proof-port candidate.
 - **Per-paper**: when a paper-grade write-up is in flight, the
@@ -35,7 +35,7 @@ catalog without contradicting prior ones.
   isomorphism candidate
 - **Stainback conjecture** — chain-rule lemma landed; rest in
   flight
-- **Z-set algebra** — `src/Zeta.Core/ZSet.fs`; columnar storage;
+- **Z-set algebra** — `src/Core/ZSet.fs`; columnar storage;
   retraction discipline
 - **Operator algebra reviewer**: `algebra-owner` skill (binding
   on operator-algebra changes)
@@ -102,7 +102,7 @@ In leverage order:
 - Skill: `.claude/skills/streaming-incremental-expert/SKILL.md`
 - Skill: `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md`
 - Skill: `.claude/skills/duality-expert/SKILL.md`
-- Code: `src/Zeta.Core/` (operator algebra + ZSet)
+- Code: `src/Core/` (operator algebra + ZSet)
 - Spec: `openspec/specs/operator-algebra/`
 - Proofs: `tools/lean4/Lean4/`
 - BACKLOG: B-0048, B-0050, B-0051

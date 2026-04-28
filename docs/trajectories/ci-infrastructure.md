@@ -122,7 +122,7 @@ In leverage order:
 
 ## Pointers
 
-- Skill: `.claude/skills/devops-engineer/SKILL.md` (Dejan)
+- Skill: `.claude/skills/devops-engineer/SKILL.md`
 - Skill: `.claude/skills/github-actions-expert/SKILL.md`
 - Skill: `.claude/skills/codeql-expert/SKILL.md`
 - Skill: `.claude/skills/semgrep-expert/SKILL.md`

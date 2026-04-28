@@ -25,11 +25,15 @@ each stage gates the next.
 
 ## Current state (2026-04-28)
 
-- **EAT canonical packet**: `docs/research/economic-agency-threshold-2026-04-27.md`
+- **EAT canonical packet** (pending merge in AceHack PR #72;
+  not yet on LFG main): `docs/research/economic-agency-threshold-2026-04-27.md`
   — 23-section absorb of multi-AI review chain (Ani-Grok →
-  Amara-ChatGPT → Gemini-r1-Pro → Claude-Opus-online → Otto)
-- **Wallet v0 operational spec**: `docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md`
+  Amara-ChatGPT → Gemini-r1-Pro → Claude-Opus-online → factory-side)
+- **Wallet v0 operational spec** (pending merge in AceHack PR #72;
+  not yet on LFG main): `docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md`
   — 16-section implementation-design companion
+- **Currently on LFG main**: only the wallet-protocol-stack
+  research absorb at `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md`
 - **Staged ladder** (EAT §3): initiative → initiative-inside-task →
   substrate-protective-initiative → budgeted-economic-agency →
   accountable-resource-control → independent-resource-channels →
