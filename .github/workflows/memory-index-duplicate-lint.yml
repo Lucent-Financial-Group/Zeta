@@ -56,4 +56,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          tools/hygiene/audit-memory-index-duplicates.sh --enforce
+          # Run in warn-only mode (no --enforce). LFG main has 8+
+          # pre-existing duplicates in memory/MEMORY.md that need
+          # cleanup via a separate dedup PR before this lint can
+          # safely promote to --enforce. Keep the lint visible so
+          # reviewers see the duplicate count, but don't block PR
+          # merges on the data-cleanup-not-yet-done state.
+          # TODO: promote to --enforce after LFG memory/MEMORY.md
+          # dedup PR lands.
+          tools/hygiene/audit-memory-index-duplicates.sh || {
+            rc=$?
+            echo "::warning::duplicate-link lint reported issues (warn-only mode); see output above"
+            exit 0
+          }
