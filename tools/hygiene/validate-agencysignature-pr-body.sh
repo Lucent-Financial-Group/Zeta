@@ -95,11 +95,13 @@ if [ -n "$last_trailer_line" ]; then
   if [ -z "$tail_lineno" ]; then
     last_trailer_key="$(printf '%s\n' "$last_trailer_line" | cut -d: -f1)"
     if [ -n "$last_trailer_key" ]; then
-      # Use awk with literal-prefix match to avoid regex injection if the
-      # key contains BRE/ERE metacharacters (defensive — git interpret-trailers
-      # normalizes keys but parseable PR-body input is untrusted).
+      # Use awk with literal-prefix + case-insensitive match. Avoids
+      # regex injection if the key contains BRE/ERE metacharacters,
+      # AND honours RFC-822 case-insensitive trailer-key semantics
+      # (git interpret-trailers normalizes case on parse but the
+      # underlying stripped input may carry the original case).
       tail_lineno="$(printf '%s\n' "$stripped" \
-        | awk -v k="${last_trailer_key}:" 'index($0, k) == 1 { print NR }' \
+        | awk -v k="${last_trailer_key}:" '{ if (index(tolower($0), tolower(k)) == 1) print NR }' \
         | tail -1)"
     fi
   fi
