@@ -92,3 +92,22 @@ In leverage order:
 - Workflow: `.github/workflows/gate.yml` (lint legs)
 - Config: `.semgrep.yml`
 - Custom CodeQL config: `.github/codeql/codeql-config.yml`
+
+## Research / news cadence
+
+External tracking required — this is an active-tracking trajectory.
+
+| Source | What to watch | Cadence |
+|---|---|---|
+| GitHub CodeQL Advanced Security | New query packs, language-version updates, default-suite changes | Monthly |
+| Semgrep Registry | New rule packs, community rules, breaking changes in pattern syntax (Semgrepignore v2 surfaced 2026-04 deprecation warnings) | Monthly |
+| ast-grep + biome releases | Adoption candidates; multi-language pattern matching (faster Semgrep alternative); Biome for JS/TS | Quarterly |
+| Stryker.NET releases | Mutation testing improvements, threshold defaults | Quarterly |
+| Sonatype CVE feed | Dependency vulnerabilities affecting NuGet pins | Real-time (alerts) |
+| Roslyn analyzers + FSharpAnalyzers releases | New diagnostic IDs, bug fixes | Per-release notes |
+| OWASP Top 10 + OWASP LLM Top 10 | New attack classes informing custom rule authorship | Quarterly |
+| NIST AI RMF + AI 100-2 | AI-specific risk management standards; informs alignment-related static-analysis | Quarterly |
+
+Findings capture: when a new tool / rule / CVE class warrants
+adoption, file a BACKLOG row + cite this trajectory in the row.
+The trajectory's "What's left" updates on adoption.

@@ -45,6 +45,13 @@ Optional sections:
 
 - **Pointers** — related skills, BACKLOG rows, ADRs, memories.
 - **Decisions log** — major direction calls, with dates.
+- **Research / news cadence** — for trajectories that depend on
+  *external* state evolution (new tools, papers, standards,
+  attack classes, model releases). Each active-tracking
+  trajectory documents what sources to monitor, how often, and
+  how findings get captured into the trajectory state.
+  Trajectories without this section are internal-discipline-
+  driven (no external research dependence).
 
 ## Active trajectories
 
@@ -57,6 +64,14 @@ Optional sections:
 | Memory hygiene | [memory-hygiene.md](trajectories/memory-hygiene.md) | Otto + claude-md-steward | per-memory-file (paired with index); monthly index audit | 2026-04-28 |
 | Skill ecosystem | [skill-ecosystem.md](trajectories/skill-ecosystem.md) | Aarav (skill-tune-up) + Yara (skill-improver) | per-5-10-rounds tune-up; per-gap-finder invocation | 2026-04-28 |
 | CI/CD infrastructure | [ci-infrastructure.md](trajectories/ci-infrastructure.md) | Dejan (devops-engineer) + Otto | per-workflow-edit; per-incident; weekly cost/duration review | 2026-04-28 |
+| AI alignment measurability | [ai-alignment-measurability.md](trajectories/ai-alignment-measurability.md) | Otto + alignment-auditor + alignment-observability | per-commit signals; per-round synthesis; quarterly methodology | 2026-04-28 |
+| Threat model + SDL | [threat-model-and-sdl.md](trajectories/threat-model-and-sdl.md) | Aminata + Mateo + Nazar + Nadia | per-commit (skills); quarterly adversarial review; per-CVE | 2026-04-28 |
+| AceHack ↔ LFG sync | [acehack-lfg-sync.md](trajectories/acehack-lfg-sync.md) | Otto + maintainer | per-PR-merge; per-paired-sync-round (0/0/0 reach); daily divergence | 2026-04-28 |
+| Cost monitoring | [cost-monitoring.md](trajectories/cost-monitoring.md) | Otto | weekly snapshot (cadence workflow); monthly runway; per-PR burn-effect | 2026-04-28 |
+| Cross-AI ferry coordination | [cross-ai-ferry-coordination.md](trajectories/cross-ai-ferry-coordination.md) | Otto + ferry-roster | per-ferry-landing; per-model-release; convergence-stop on cycles | 2026-04-28 |
+| Performance + benchmarks | [performance-and-benchmarks.md](trajectories/performance-and-benchmarks.md) | Naledi (performance-engineer) | per-PR (perf-touching); P1+ regression binding; quarterly hot-path audit | 2026-04-28 |
+| DBSP operator algebra | [dbsp-operator-algebra.md](trajectories/dbsp-operator-algebra.md) | algebra-owner + Soraya (formal routing) | per-claim; per-Mathlib-update; per-paper-stage | 2026-04-28 |
+| Tech radar | [tech-radar.md](trajectories/tech-radar.md) | tech-radar-owner | per-decision; per-evidence; quarterly review; per-batch | 2026-04-28 |
 
 (Add a row when a new trajectory lands; never remove rows —
 retired trajectories get a "Retired" status in the file head.)

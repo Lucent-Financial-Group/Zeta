@@ -97,3 +97,24 @@ In leverage order:
 - BACKLOG: B-0048, B-0050, B-0051
 - Decision: `docs/DECISIONS/` (see formal-verification ADRs)
 - Verification audit: `docs/research/verification-drift-audit.md`
+
+## Research / news cadence
+
+External tracking required — this is an active-tracking trajectory.
+
+| Source | What to watch | Cadence |
+|---|---|---|
+| Mathlib4 (Lean) | New lemma additions relevant to Zeta's algebra (DBSP / retraction-native semantics / measure theory / category theory) | Monthly |
+| Lean 4 release notes | Language features, tactic improvements, performance, breaking changes | Per-release |
+| TLA+ / TLC release notes | Tooling updates, new patterns | Quarterly |
+| Z3 release notes | Decision procedure capabilities, performance | Quarterly |
+| Alloy 6 release notes | Language features, model checking improvements | Quarterly |
+| F* releases (research) | Dependent-type proof system; scouting candidate | Quarterly |
+| VLDB / SIGMOD / POPL / PLDI papers | Streaming, IVM, formal-verification, distributed-protocols research | Per-conference (~3 / year) |
+| FsCheck releases | Property-based testing improvements | Per-release |
+| BP-16 cross-check triage rule (internal) | Soraya's portfolio routing — re-evaluated as new tools land | Continuous |
+
+Findings capture: when a paper / tool / Mathlib lemma supports
+a Zeta-side proof, file a BACKLOG row + research-doc absorb +
+cite this trajectory. Soraya's `formal-verification-expert`
+routing matrix gets updated.
