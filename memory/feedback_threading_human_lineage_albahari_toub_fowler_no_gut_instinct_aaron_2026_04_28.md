@@ -130,6 +130,52 @@ The future of Zeta — distributed query execution, multi-shard
 operators, parallel materialization — will all touch threading
 code. Every such PR cites the specific reference; no shortcuts.
 
+## Modern .NET 10 + C# 14 update — Gemini Pro Deep Research (2026-04-28 absorb)
+
+Aaron 2026-04-28 ferry-shared a Gemini Pro Deep Research output
+modernizing Albahari's classic guidance against the .NET 10 +
+C# 14 release window. Absorbed verbatim with §33 archive header
+at:
+
+`docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`
+
+Key updates that supersede / extend Albahari's classic patterns:
+
+- **`System.Threading.Lock` (C# 13/14)** replaces Monitor-based
+  `lock(object)`. The compiler routes through `EnterScope()`
+  returning a stack-allocated ref struct — zero GC overhead.
+  Casting a `Lock` instance to `object` degrades back to Monitor;
+  the compiler warns. Use `private readonly System.Threading.Lock _lock = new();`
+  pattern for new code.
+- **Thread Pool segregation** — Worker threads (synchronous code)
+  vs I/O Completion threads (async I/O). ASP.NET Core borrows /
+  yields from the pool dynamically; never spawn a raw `Thread` for
+  per-request work.
+- **JIT deabstraction + delegate stack allocation** — .NET 10's
+  expanded escape analysis can stack-allocate closures + delegates
+  when the runtime proves no `this` reference escapes. Closure-heavy
+  concurrent code now bypasses GC entirely for the transient state.
+- **Cooperative shutdown via `CancellationToken`** replaces
+  `Thread.Abort()` (which destroyed process state); foreground /
+  background distinction is largely obsolete in modern app design.
+- **`SemaphoreSlim(1,1)`** replaces `ReaderWriterLockSlim` for
+  async-safe locking — RWLockSlim is thread-affine and throws when
+  `await` resumes on a different thread; SemaphoreSlim has native
+  `WaitAsync()`.
+- **`System.Threading.Channels`** replaces `Monitor.Wait`/`Pulse` for
+  producer/consumer pipelines (Fowler's primitive — async-native,
+  bounded/unbounded, backpressure-aware).
+
+Read the full Gemini doc for deep-dives on the async state machine
+mechanics, ValueTask vs Task tradeoffs, IAsyncEnumerable streaming,
+hardware-accelerated parallel data processing, and modern memory
+model semantics.
+
+**Verify currency** (Otto-247) on each pattern when adopting — .NET
+evolves recommended patterns each release; Toub's yearly
+"Performance Improvements in .NET N" posts are the canonical
+empirical record.
+
 ## Composes with
 
 - `feedback_speculation_leads_investigation_not_defines_root_cause_aaron_2026_04_28.md`
