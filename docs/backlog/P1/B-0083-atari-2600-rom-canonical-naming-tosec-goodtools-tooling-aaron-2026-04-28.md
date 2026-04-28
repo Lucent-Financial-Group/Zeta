@@ -145,26 +145,92 @@ right after the 0/0/0 starting point"*. Decoded:
      only, no distribution) so future-Otto knows what's available
      for testing.
 
-## Tooling design — replicate, don't depend on TOSEC binary
+## Tooling design — dependency-first, replicate-as-fallback (Aaron 2026-04-28T18:59Z)
 
-The TOSEC reference tool (`TOSECdev/tosec-cli`) is .NET
-Framework-based and may not run cleanly on Mac. The Good-Tools EXE
-is Windows-only. **Don't depend on either binary**; instead:
+Aaron verbatim: *"TOSEC/Good we can pull as dependences too and use
+the same consume goodcitizen staces as all of our other dependencies
+i just don't know if these are cross platform."*
 
-- **Build a pure-Python (or pure-bash) tool** that:
-  1. Downloads the latest TOSEC Atari 2600 datfile (XML) from
-     a versioned URL (or mirrors it locally per the version-
-     currency Otto-247 discipline — search for latest before
-     asserting which version).
-  2. Parses the XML, builds a `dict[sha1] = (canonical_name,
-     license_class, ...)`.
-  3. For each file in `roms/atari/2600/`, computes SHA1, looks
-     up, renames + moves.
-  4. Refresh-on-demand: re-pulls the datfile, re-runs against
-     the folder, finds newly-recognized ROMs.
+**Preferred path: pull TOSEC/Good Tools (or a cross-platform equivalent)
+as a dependency.** This composes with the existing absorb-and-contribute
+discipline (`memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`):
+use community tools, contribute back upstream when we find bugs or
+want improvements, don't reinvent unnecessarily.
+
+### Cross-platform tool research (preliminary, expand on pickup)
+
+- **TOSEC reference tools** (, ):
+  -  is Windows-only (no Mac/Linux build).
+  -  is .NET Framework — Mac-via-mono possible but flaky.
+  - **Likely NOT directly usable on Mac.**
+- **GoodTools (Cowering)**:
+  - Windows-only EXE distributions.
+  - **Not cross-platform.**
+- **RomVault** (.NET 6+, cross-platform):
+  - Confirmed Mac/Linux support via dotnet runtime.
+  - Mature ROM-management tool, datfile-driven.
+  - **Strong candidate for primary dependency.**
+- **Romulus** (Java, cross-platform):
+  - JVM-based, runs on Mac.
+  - Older project; less active.
+- **retool** (Python, cross-platform):
+  - Active Python project for ROM filtering by datfile.
+  - Pip-installable; Mac-friendly.
+  - **Strong candidate for scripting integration.**
+- **Mednafen toolchain** + custom datfile-parsing scripts.
+
+### Recommended approach (pickup-time decision tree)
+
+1. **Try RomVault first** (managed via mise / dotnet pin per
+   the existing dependency-consumption pattern). If it works
+   cross-platform and we can drive it headlessly, this is
+   the cleanest path.
+2. **Fall back to retool** (Python pip dependency) if
+   RomVault doesn't headless-script cleanly.
+3. **Fall back to build-our-own** (pure-Python in `tools/roms/`)
+   ONLY if neither above tool fits the factory shape. This is
+   the last resort — the algorithm is straightforward
+   (SHA1/MD5/CRC32 lookup against datfile XML) but maintaining
+   our own datfile-parser is ongoing-work we'd rather not own.
+
+### Datfile-as-dependency
+
+Either path needs the actual TOSEC + GoodA26 datfiles. Approach:
+1. Pin the datfile version in our dependency-manifest (similar
+   to how `.mise.toml` pins runtime versions).
+2. Download from canonical sources (TOSECdev.org / archived
+   GoodSets mirrors).
+3. Refresh on a cadence (similar to budget-snapshot-cadence) —
+   when TOSEC publishes a new datfile, re-pin + re-run.
+4. Verify via SHA256 of the datfile itself per the
+   pin-with-checksum pattern (Otto-247 + the threading-lineage
+   citing-discipline).
+
+### Build-our-own fallback (only if dependency path fails)
+
 - **Live in `tools/roms/`** (new factory tooling subdirectory).
-- **Schedule via existing GHA cadence** (similar to budget-snapshot-
-  cadence pattern) for periodic refresh on TOSEC datfile updates.
+- Pure-Python or pure-bash; no external runtime beyond what
+  `.mise.toml` already pins.
+- Algorithm:
+  1. Download TOSEC datfile (XML) from versioned URL.
+  2. Parse XML, build `dict[sha1] = (canonical_name,
+     license_class, ...)`.
+  3. For each file in `roms/atari/2600/`, compute SHA1, lookup,
+     rename + move per classification.
+  4. Refresh-on-demand: re-pull datfile, re-run against folder.
+- **Schedule via existing GHA cadence** (similar to
+  budget-snapshot-cadence pattern) for periodic datfile refresh.
+
+### Good-citizen contribution path
+
+Per `memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`:
+when we use TOSEC/RomVault/retool, we contribute back. Specifically:
+- Bug reports for Mac-specific issues we hit.
+- Documentation improvements if their docs missed something.
+- New datfile entries we generate (e.g. for safe-folder homebrew
+  ROMs Aaron classifies).
+- Financial support (small-donor tier) if the project accepts it
+  per Aaron's funding posture (`feedback_absorb_and_contribute_*`).
 
 ## Folder structure proposal
 
