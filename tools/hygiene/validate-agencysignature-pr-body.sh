@@ -95,10 +95,12 @@ if [ -n "$last_trailer_line" ]; then
   if [ -z "$tail_lineno" ]; then
     last_trailer_key="$(printf '%s\n' "$last_trailer_line" | cut -d: -f1)"
     if [ -n "$last_trailer_key" ]; then
+      # Use awk with literal-prefix match to avoid regex injection if the
+      # key contains BRE/ERE metacharacters (defensive — git interpret-trailers
+      # normalizes keys but parseable PR-body input is untrusted).
       tail_lineno="$(printf '%s\n' "$stripped" \
-        | grep -nE "^${last_trailer_key}:" \
-        | tail -1 \
-        | cut -d: -f1)"
+        | awk -v k="${last_trailer_key}:" 'index($0, k) == 1 { print NR }' \
+        | tail -1)"
     fi
   fi
   if [ -z "$tail_lineno" ]; then
