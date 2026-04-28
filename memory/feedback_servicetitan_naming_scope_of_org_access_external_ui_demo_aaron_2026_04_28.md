@@ -125,22 +125,101 @@ Aaron's CRM team at ServiceTitan IS the **named adoption
 target** for the factory / Superfluid AI work. The demo was
 targeted to them specifically because:
 
-1. Aaron's affiliation (CRM team member) gives Otto insider-
-   user understanding of CRM workflows.
-2. ServiceTitan is a publicly-traded SaaS company with real
-   CRM substrate that maps to the factory's surface.
-3. Aaron's pitch path: when the factory is ready, pitch to
-   his boss → pitch to the team → adoption.
+1. Aaron's industry-general SaaS / CRM engineering experience
+   (true at any CRM SaaS company) informs the demo's
+   CRM-shape design choices.
+2. ServiceTitan is a publicly-traded SaaS company; its
+   public-disclosure materials (10-K, investor calls, public
+   product docs, press, public job postings) are valid
+   research sources for pitch positioning.
+3. Aaron's pitch path: when the factory is ready, pitch
+   internally → adoption decision lives with his team and
+   leadership.
 
 This means:
 
-- Research on ServiceTitan as a candidate factory/Superfluid-
-  AI user is **encouraged** (it's the adoption target).
-- Pitch-prep substrate (positioning, demo features, integration
-  patterns) properly names them.
+- Research on ServiceTitan as a candidate factory / Superfluid
+  AI user is encouraged, **using public sources only**.
+- Pitch-prep substrate (industry-general CRM patterns,
+  factory positioning, public-research-derived integration
+  patterns) properly names them as the public target.
 - Forward-going code/sample naming stays generic so the work
-  is reusable beyond the specific adoption target — but the
-  pitch context names them precisely.
+  is reusable beyond the specific pitch target.
+
+## Word-choice rule — avoid "insider" register
+
+> *"i know CRM workflows is not insider information but you
+> said the word insider, it's just uncomfortable"*
+> — Aaron 2026-04-28
+
+CRM workflow knowledge IS industry-general (true at any CRM
+SaaS company); not insider information. But the word
+"insider" carries legal-register weight ("non-public
+material information" in SEC-compliance contexts) that's
+out-of-place when describing Aaron's industry-general
+expertise.
+
+**Avoid in connection with Aaron's affiliation:**
+
+- "insider" / "insider-user" / "insider knowledge"
+- "privileged access" (in the employer-information sense)
+- "internal-only knowledge" (when describing what Aaron
+  brings to the demo)
+
+**Use instead:**
+
+- "industry-general experience"
+- "professional experience"
+- "domain expertise"
+- "SaaS / CRM engineering background"
+- "industry-typical patterns"
+
+The substance (Aaron knows CRM patterns from working in the
+space) is preserved without the loaded register. The fix is
+word-level, not concept-level.
+
+**Why this matters even though no actual insider info is
+involved:** word choice shapes the agency model (per the
+input-is-not-directive rule's framing). Using "insider" for
+industry-general expertise creates ambiguity about what
+Aaron's role IS in the substrate, and creates pressure
+toward solicitation patterns that could later cross the line.
+Better to keep the register clean by default.
+
+## Insider-information prohibition (keeps rule, loses heavy register)
+
+Even though Aaron's CRM-workflow knowledge isn't insider
+information, the **prohibition stands** as a guardrail:
+
+- **Otto must not solicit ServiceTitan-specific internal
+  details** (workflows, internal tools, customer data,
+  roadmaps not in public filings, internal architecture,
+  internal team-level decisions) from Aaron.
+- **Aaron is bound** by his employer's policies + applicable
+  securities law not to share material non-public information
+  about a publicly-traded employer.
+- **The repo is public** — anything written here is
+  public-facing; encoding = disclosure.
+- **Public sources are the substrate** — 10-K, investor
+  calls, public product docs, press releases, public job
+  postings, public conference talks. Cite the source.
+
+Otto enforces this by:
+
+- Auditing own writing for register that implies non-public
+  access (the "insider" word being the most obvious flag).
+- Reframing "Aaron's understanding gives Otto..." to
+  "industry-general SaaS engineering experience informs..."
+  before commit.
+- Refusing to encode ServiceTitan-specifics if they
+  inadvertently appear in chat — naming the issue rather
+  than capturing.
+
+External lineage (Tier 2):
+- SEC Rule 10b-5 (Securities Exchange Act of 1934, anti-fraud
+  / insider-trading prohibition).
+- Regulation FD (17 CFR § 243.100-243.103, Fair Disclosure).
+- ServiceTitan public listing: NASDAQ TTAN.
 
 ## Audit findings (2026-04-28)
 
