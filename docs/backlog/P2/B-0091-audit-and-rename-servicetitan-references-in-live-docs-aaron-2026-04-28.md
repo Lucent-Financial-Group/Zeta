@@ -62,17 +62,17 @@ rg -i 'service ?titan' \
 
 ### BODY-REWORD (1 — reusable surface)
 
-3. **`samples/FactoryDemo.Db/README.md`** — generic-sample README. Reusable beyond pitch target. Action: rewrite to "external UI demo" / "external CRM API demo" so the sample reads as reusable.
+3. **`samples/FactoryDemo.Db/README.md`** — generic-sample README. Inspected 2026-04-28: the only ServiceTitan reference is a memory-file path pointer (`memory/feedback_servicetitan_demo_sells_software_factory_not_zeta_database_2026_04_23.md`) — HISTORICAL-POINTER, not brand-bleed. Memory file paths are preserved per the no-churn-history rule. **Reclassified KEEP-NAME-AS-MEMORY-POINTER.**
 
 ### MIXED (1 — line-by-line inspection)
 
-4. **`docs/FACTORY-DISCIPLINE.md`** — governance / contributor doc. Where it's naming the demo → generic. Where it's structural disclosure of funding chain / org-access scope → preserve precisely.
+4. **`docs/FACTORY-DISCIPLINE.md`** — governance / contributor doc. Inspected 2026-04-28: line ~197 cites "unlimited Copilot via ServiceTitan billing" — this is **structural funding-chain disclosure** (the rule explicitly preserves this), not brand-bleed. **Reclassified KEEP-AS-DISCLOSURE.**
 
-### PER-ROW inspection (3 — context depends on row)
+### PER-ROW inspection (3 — context depends on row; inspected 2026-04-28)
 
-5. **`docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`** — UI dashboard row. Inspect: pitch context or generic?
-6. **`docs/backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`** — already partially-fixed in this session's commit (removed brand-bleed from "renamed from ServiceTitan"). Verify clean.
-7. **`docs/backlog/P3/B-0008-investigate-ci-macos-slim-nightly-move-if-doubles-pr-wait-time.md`** — CI row. Inspect.
+5. **`docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`** — UI dashboard row. ServiceTitan refs are memory-file path pointers in `composes_with:` + body (`project_frontier_burn_rate_ui_first_class_git_native_for_private_repo_adopters_servicetitan_84_percent_2026_04_23.md`). HISTORICAL-POINTER. **Reclassified KEEP-NAME-AS-MEMORY-POINTER.**
+6. **`docs/backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`** — already fixed in this session's commit. Verified clean (no brand-bleed; only memory-file pointer references remain).
+7. **`docs/backlog/P3/B-0008-investigate-ci-macos-slim-nightly-move-if-doubles-pr-wait-time.md`** — CI row. ServiceTitan refs are memory-file path pointers (same `project_frontier_burn_rate_ui_first_class_..._servicetitan_84_percent_*.md` cited). HISTORICAL-POINTER. **Reclassified KEEP-NAME-AS-MEMORY-POINTER.**
 
 ### AGGREGATE (1 — regenerate last)
 
@@ -90,13 +90,25 @@ rg -i 'service ?titan' \
 
 ## Acceptance
 
-- [ ] KEEP-NAME files (2) verified correctly named (pitch context); only unrelated brand-bleed (if any) cleaned.
-- [ ] BODY-REWORD file (1) uses generic naming.
-- [ ] PER-ROW files (3) inspected and reclassified to KEEP-NAME or BODY-REWORD per their actual context.
-- [ ] MIXED file (FACTORY-DISCIPLINE) preserves funding-chain + org-access-scope disclosure precisely; demo-naming generic where used.
-- [ ] BACKLOG.md regenerated AFTER all per-row updates land (source-set-regeneration-hazard rule).
-- [ ] No new ServiceTitan references introduced in **non-pitch / non-disclosure** contexts (rule encoded in memory; future Otto applies).
-- [ ] Final audit shows: matches in live-repo scope are LIMITED to legitimate pitch-target / disclosure / historical contexts. **The acceptance metric is "all remaining matches are correctly-named for context," not "zero matches."**
+- [x] KEEP-NAME files (2 pitch-context) verified — `docs/plans/servicetitan-crm-ui-scope.md` + `docs/pitch/README.md` correctly named (pitch target).
+- [x] BODY-REWORD file (1) inspected — `samples/FactoryDemo.Db/README.md` only has a memory-path pointer; HISTORICAL-POINTER, not brand-bleed.
+- [x] PER-ROW files (3) inspected — B-0017, B-0090, B-0008 all reclassified KEEP-NAME-AS-MEMORY-POINTER (memory-file paths preserved).
+- [x] MIXED file (FACTORY-DISCIPLINE) inspected — funding-chain disclosure ("unlimited Copilot via ServiceTitan billing") correctly preserved.
+- [ ] BACKLOG.md regenerated — DEFERRED (no per-row content rewrites needed; aggregate doesn't need refresh).
+- [ ] No new ServiceTitan references introduced in **non-pitch / non-disclosure** contexts (rule encoded in memory; future Otto applies — covered by B-0092 trajectories).
+- [x] Final audit completed: all 12 matches in live-repo scope are correctly-named for context. **Acceptance metric satisfied: "all remaining matches are correctly-named for context," not "zero matches."**
+
+## Outcome (2026-04-28 inspection)
+
+After per-row inspection, **0 files needed active rewriting**. The naive initial audit ("8 active-rewrite") over-counted by treating memory-file path pointers + funding-chain disclosure as brand-bleed. The context-sensitive rule classifies them correctly:
+
+- 2 files: pitch-context (KEEP-NAME)
+- 4 files: memory-file path pointers (KEEP-NAME-AS-MEMORY-POINTER; preserved per no-churn-history)
+- 1 file: funding-chain disclosure (KEEP-AS-DISCLOSURE)
+- 1 file: prior-fix verified clean
+- 4 files: historical narrative + generated artifacts (preserved per no-churn-history)
+
+**This row can be marked COMPLETE.** Forward-going discipline is encoded in the rule memory + B-0092 trajectories. No active rewrites needed.
 
 ## Why P2
 
