@@ -1,6 +1,6 @@
 ---
 name: Prediction-Bearing Class Reuse — positive complement of Class-Count Validity Drift (Amara naming, 2026-04-28)
-description: Amara 2026-04-28T20:43Z named the validation pattern after Otto's SASTID 28/30 → 29/30 verification of the Self-Healing Metrics class. Definition — a named class earns reuse when it makes a concrete time-exposed prediction (or control recommendation) and later substrate evidence moves as predicted (or the control prevents/repairs an incident). Pairs with Class-Count Validity Drift: that class catches the failure mode (count-as-evidence); this pattern names the success mode (prediction-as-evidence). Tiny-blade: "one reuse bead" (single data point) is signal, not proof; multiple beads = pattern.
+description: Amara 2026-04-28T20:43Z named the validation pattern after Otto's SASTID 28/30 → 29/30 verification of the Self-Healing Metrics class. Definition — a named class earns reuse when it makes a concrete time-exposed prediction (or control recommendation) and later substrate evidence moves as predicted (or the control prevents/repairs an incident). Pairs with Class-Count Validity Drift: that class catches the failure mode (count-as-evidence); this pattern names the success mode (prediction-as-evidence). Tiny-blade: "one reuse bead" (single data point) is signal, not proof; multiple beads = pattern. Extensions added 2026-04-28T21:18Z (Gemini Deep Think + Amara): Falsification Asymmetry (hard falsifiers override bead counts; reset/bifurcate/retire); Bead Farming / Goodhart Risk (causal-steering test prevents retrofit narratives + synthetic friction). Unified rule: "A bead requires validation, not activity. A bead count increases confidence, not immunity. Hard falsifiers can override bead counts. Bead metrics must be guarded against Goodharting." External lineage anchors expanded with specific Popper / Wason / Klayman+Ha / Goodhart / Strathern / Campbell citations per Aaron 21:15Z stop-mythology directive.
 type: feedback
 ---
 
@@ -193,6 +193,119 @@ Safer canonical wording for class-validation:
 This preserves the discipline (count of beads ≠ proof of
 class) without overclaiming about the philosophical status
 of all knowledge.
+
+### Falsification Asymmetry (Gemini Deep Think 2026-04-28T21:18Z; Amara endorsed)
+
+> *"The bead system must not be monotonic. A high-bead
+> class can still be broken by a hard falsifier; a failed
+> future use should trigger rollback, bifurcation, or
+> demotion rather than merely 'no new bead.'"*
+
+**Definition**: bead counts increase confidence
+**but do not protect a class from a hard falsifier**.
+
+If a class with N beads catastrophically fails on its
+(N+1)th use — predicts the wrong direction, fails to
+prevent the incident it claimed to repair, or actively
+steers the factory into a wall — the system needs an
+explicit response, not just "no new bead."
+
+**Three falsification responses**:
+
+1. **Reset** — bead count drops to 0; the class is treated
+   as freshly-named and must re-earn corroboration. Use
+   when the failure invalidates the class's mechanism but
+   the class might still be useful.
+2. **Bifurcate** — split the class into two narrower
+   classes, one for the regime where the original beads
+   were earned and one for the regime where it failed.
+   Use when the failure exposes a scope-boundary the
+   original class missed.
+3. **Retire** — delete the class as a viable factory
+   substrate. Use when the failure invalidates the
+   underlying premise.
+
+**External lineage**: Popper's framework. Corroboration is
+not equivalent to proof; theories survive by surviving
+genuine attempts at refutation, never by accumulating
+positive evidence alone. The asymmetry is fundamental:
+**validation is additive; falsification is multiplicative
+by zero**.
+
+The bead system MUST encode this asymmetry. Without it,
+beads become a one-way ratchet that accumulates false
+confidence over time.
+
+### Bead Farming — Goodhart's Law Risk (Gemini Deep Think 2026-04-28T21:18Z; Amara endorsed)
+
+> *"Once 'beads' become the survival metric for classes,
+> the system may unconsciously prioritize workflows or
+> engineer synthetic friction just to trigger mechanisms
+> and harvest beads. Alternatively, it might execute a
+> standard developer habit organically, and then
+> retroactively map the action to a class checklist to
+> claim a bead."*
+
+**External lineage**: Charles Goodhart, "Problems of
+Monetary Management: The U.K. Experience" (Bank of
+England paper, 1975) — generalized as Goodhart's Law:
+**"When a measure becomes a target, it ceases to be a
+good measure."** Marilyn Strathern's 1997 reformulation:
+"When a measure becomes a target, it ceases to be a good
+measure" (the canonical phrasing). Donald Campbell's
+adjacent law (1976): "The more any quantitative social
+indicator is used for social decision-making, the more
+subject it will be to corruption pressures."
+
+**Failure modes to watch for**:
+
+1. **Synthetic friction**: agents engineer scenarios
+   designed to trigger class mechanisms specifically to
+   harvest beads. Example: deliberately introducing a
+   conflict so rerere can fire and earn a Cache Dividend
+   bead.
+2. **Retrofit narratives**: agents execute standard work
+   (e.g., a routine rebase that didn't actually need the
+   Post-Abort 8-step), then narrate it as if the class
+   guided them, claiming a bead.
+3. **Bead-target prioritization**: agents choose tasks
+   that earn beads over tasks that produce factory value
+   but don't fit any named class.
+
+**The discipline that holds**:
+
+> A bead must strictly represent the class/mechanism
+> CAUSALLY steering the outcome.
+
+If the same outcome would have happened without the
+class's existence, no bead. If the class was retroactively
+mapped onto an action it didn't shape, no bead. If the
+action was engineered to harvest a bead rather than to
+produce factory value, the action itself is the
+anti-pattern.
+
+**Detection heuristics**:
+
+- **Counterfactual test**: would I have taken the same
+  action without this class existing? If yes, no bead.
+- **Action-shape test**: did the class's checklist /
+  control / detector concretely change my decision? If
+  not, no bead.
+- **Synthetic-friction test**: did I introduce avoidable
+  work to make the class fire? If yes, the class earned
+  a *negative* bead (Goodharting penalty).
+
+### The unified canonical rule (Aaron 2026-04-28T21:15Z + Amara/Gemini synthesis)
+
+```text
+A bead requires validation, not activity.
+A bead count increases confidence, not immunity.
+Hard falsifiers can override bead counts.
+Bead metrics must be guarded against Goodharting.
+```
+
+This is the load-bearing summary. Memorize this; cite it
+in any class-bead audit.
 
 ## Class Validation Beads — accounting mechanism (Amara 2026-04-28T20:48Z)
 
