@@ -186,17 +186,25 @@ the labels below. The labels classify the *workflow's
 null/failure situation*, not individual runs:
 
 - **known row** — already filed as B-NNNN; row ID cited.
-- **too-new-to-fire** — workflow file's first-commit-date
+- **too-new-to-fire** (Q1) — workflow file's first-commit-date
   is after the most recent natural cron firing slot.
-- **disabled / non-default-branch** — workflow disabled
-  by GHA after inactivity, OR file lives on a non-default
-  branch where scheduled triggers don't fire.
-- **cron mismatch** — cron syntax is malformed OR cron
-  doesn't fit the deployment context (e.g. workflow
-  needs daily fire but cron is weekly).
-- **wrong workflow identifier** — `--workflow=` filter
-  used a name/path/ID that doesn't match how this
-  workflow registers.
+- **non-default-branch** (Q2) — workflow file lives on a
+  non-default branch where scheduled triggers don't fire.
+- **disabled** (Q3) — workflow disabled by GHA after
+  inactivity (60+ days no commits to the workflow); `gh run
+  list --all` may show prior runs the default filter hides.
+- **cron mismatch** (Q4) — cron syntax is malformed OR cron
+  doesn't fit the deployment context (e.g. workflow needs
+  daily fire but cron is weekly; or cron interpreted as
+  local time when GHA uses UTC).
+- **event-trigger incompatible** (Q5) — the workflow's
+  trigger doesn't fire under the deployment context (e.g.
+  `pull_request_target` from external forks lacks
+  permissions; `workflow_run` upstream never fires;
+  `schedule` needs default-branch).
+- **wrong workflow identifier** (Q6) — `--workflow=` filter
+  used a name/path/ID that doesn't match how this workflow
+  registers.
 - **uncaptured gap** — none of the above; file new B-NNNN
   row this tick.
 
@@ -218,9 +226,14 @@ classes.
 
 **Where this fits in task #269:**
 
-- Phase 1 (existing shell tooling): walk all
-  `.github/workflows/*.yml`, run `gh run list`, classify
-  every null/failure into the 6 labels.
+- Phase 1 (existing shell tooling): walk **scheduled**
+  workflows in `.github/workflows/*.yml` (those with
+  `on.schedule`), run `gh run list`, classify every
+  null/failure into the 7-label set + uncaptured-gap.
+  Non-scheduled workflows have different null-result
+  semantics (e.g. `pull_request`-only workflows
+  legitimately have empty `gh run list` until a PR fires
+  them) and require their own audit class.
 - Phase 2 (existing skill wrapper): skill invokes the
   script + summarizes findings + files uncaptured-gap
   rows automatically.
