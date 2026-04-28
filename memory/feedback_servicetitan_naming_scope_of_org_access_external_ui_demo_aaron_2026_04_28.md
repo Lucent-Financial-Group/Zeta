@@ -216,6 +216,7 @@ Otto enforces this by:
   than capturing.
 
 External lineage (Tier 2):
+
 - SEC Rule 10b-5 (Securities Exchange Act of 1934, anti-fraud
   / insider-trading prohibition).
 - Regulation FD (17 CFR § 243.100-243.103, Fair Disclosure).
@@ -356,6 +357,7 @@ When asked "what's Aaron's day job":
 > have org rights to their github only the lfg."*
 
 Translation:
+
 - Forward-going code / demo / sample naming → generic.
 - Structural disclosure (day job, funding chain, org-access
   scope) → preserved precisely.

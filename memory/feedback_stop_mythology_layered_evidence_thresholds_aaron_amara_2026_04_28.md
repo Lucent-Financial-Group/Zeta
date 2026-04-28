@@ -60,6 +60,7 @@ a formal name (Veridicality) AND gave the rule itself a Beacon-
 safe operational name (Stop Mythology).
 
 The original "bullshit detector" term remains preserved in:
+
 - Research docs (`docs/research/provenance-aware-bullshit-detector-*`)
 - Aurora ferries 7/8/9/10 (research substrate, not renamed)
 - The 8th-ferry memory (`memory/project_amara_8th_ferry_*_bullshit_detector_*`)
@@ -80,6 +81,7 @@ substrate evidence (commits, files, test results, logs).
 External lineage is NOT required.
 
 Examples:
+
 - "PR #80 is on AceHack main but not LFG main." → check via
   `git merge-base --is-ancestor`. Substrate = git refs.
 - "Class-Count Validity Drift earned a bead." → check via
@@ -96,6 +98,7 @@ distributed systems, or any other domain where the broader
 literature has authority — needs an external citation.
 
 Examples:
+
 - "Goodhart's Law applies to commit counts as alignment
   metrics." → cite Goodhart (1975), Strathern (1997).
 - "Tail-recursion optimization was named in the 1970s." →

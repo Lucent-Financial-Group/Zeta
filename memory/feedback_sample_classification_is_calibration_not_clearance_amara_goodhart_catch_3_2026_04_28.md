@@ -27,6 +27,7 @@ factory's terminal-progress signal is the rubric quality
 (145→23→4 reduction), not pre-rubric line count.
 
 External lineage:
+
 - **Six Sigma** (Smith / Motorola, 1986) — process capability
   comes from upstream-precision investment, not downstream
   defect-counting.
@@ -48,6 +49,7 @@ forward-syncs; the SHAs differ but the tree-state largely
 converges.
 
 External lineage:
+
 - **Goodhart's Law** (Goodhart 1975, Strathern 1997 reframing):
   "When a measure becomes a target, it ceases to be a good
   measure." Commit count was a measure that became a target.
@@ -61,6 +63,7 @@ ALREADY-COVERED → tree is mostly cleared."
 classified) **OR** explicit loss-acceptance per file.
 
 The sample missed:
+
 - gate.yml PR #80 (`2791c28`) cache + retry + ubuntu-bump work
   — substantial unique AceHack content that LFG lacks.
 - codeql-config.yml B-0073 obj/bin ignores (Codex caught this).
@@ -69,6 +72,7 @@ The sample missed:
   the mirror contract").
 
 External lineage:
+
 - **Sampling theory** (Cochran 1977, *Sampling Techniques*):
   representative samples estimate population parameters;
   they do not certify population properties. A sample-based
@@ -107,6 +111,7 @@ When making a binary clearance claim about a population
    "Tree is cleared" requires the full 59 audited.
 
 This applies to:
+
 - Tree-diff readiness for hard-reset (this case).
 - Queue-drain readiness for declaring a queue empty.
 - Alert-clearance readiness for declaring CVE-free.

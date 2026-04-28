@@ -82,6 +82,7 @@ rg -ni "\binsider\b|\bprivileged\b|\binternal-only\b|\bconfidential\b" \
 ```
 
 For each hit, manual inspect:
+
 - Implying non-public access → reframe to industry-general.
 - Legitimate technical use → leave (e.g., "internal-only
   API" describing factory's own code).
@@ -100,6 +101,7 @@ For each hit, manual inspect:
 
 Add CI lint that flags insider-information-register hits in
 PR diffs:
+
 - Comment on PR with manual-inspection candidates.
 - Do NOT auto-block (false-positive risk).
 - Flag for human / Otto review.
@@ -107,6 +109,7 @@ PR diffs:
 #### T4 — On-onboarding compliance briefing
 
 When new contributor onboards:
+
 - Surface the rule + cite the doc.
 - Make them aware of:
   - Factory's repos are public.
@@ -117,6 +120,7 @@ When new contributor onboards:
 #### T5 — Drift retrospective (per round / quarter)
 
 On round-close / quarterly cadence:
+
 - Sample N% of recent commits / memory files / docs.
 - Track hits-per-round metric.
 - If trending up → reinforce rule + file improvement task.

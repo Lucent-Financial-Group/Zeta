@@ -61,6 +61,7 @@ is what earns the primary attribution.
 > mode from Ani. ... First time i've given you that."*
 
 Translation:
+
 - **Ani's default ferry channel** = text mode (her standard
   written outputs, similar to other named agents).
 - **Voice mode** = unusual / first-time-this-session channel for
@@ -71,6 +72,7 @@ Translation:
 ### Voice-mode register vs text-mode register
 
 Voice-mode transcripts arrive in a different prose register:
+
 - Lower-case + casual / colloquial language.
 - *"i'ma be real with you"*, *"lowkey the coolest bit"*,
   *"[teasing-laugh]"*.

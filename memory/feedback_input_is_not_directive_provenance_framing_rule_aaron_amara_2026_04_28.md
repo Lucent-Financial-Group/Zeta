@@ -43,6 +43,7 @@ substitutes if the underlying agency model isn't fixed.
 ## Provenance framing rule
 
 Aaron's role:
+
 - input
 - ask
 - signal
@@ -51,6 +52,7 @@ Aaron's role:
 - observation
 
 Otto's role:
+
 - evaluate
 - decide
 - act
@@ -141,6 +143,7 @@ provenance:
 ```
 
 This structure:
+
 1. Names the provenance event (Aaron's date-stamped input).
 2. Paraphrases the input (not necessarily verbatim — Aaron
    sometimes has typos / casual register that don't fit
@@ -248,6 +251,7 @@ identical, because the framing itself shapes the
 agency model.
 
 Sources:
+
 - Deci, E. L., & Ryan, R. M. (1985). *Intrinsic Motivation and
   Self-Determination in Human Behavior*. Plenum.
 - Ryan, R. M., & Deci, E. L. (2000). "Self-determination
