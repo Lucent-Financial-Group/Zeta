@@ -85,20 +85,35 @@ descriptions, or any factory substrate:
 - "Aaron's correction" (when Aaron corrected Otto's prior
   approach)
 
-### Forbidden words
+### Forbidden words (when used as agency framing)
 
 The following are forbidden when referring to Aaron's role
 (or any maintainer-input role) in any factory substrate:
 
-- **directive**
-- **command** / **commanded**
-- **instruction** (when referring to maintainer input)
-- **ordered**
+- **directive** / **directed**
+- **instruction** / **instructed** (only when agency-framing;
+  ignore CPU instructions, build instructions, compiler
+  instructions, language semantics like "instruction set")
+- **ordered** (only when agency-framing; ignore "in order to",
+  "sort order", "execution order", "ordered streams", etc.)
+- **command** / **commanded** (only when agency-framing; ignore
+  "bash command", "command-line", "dotnet command", CLI /
+  tooling references)
+- **require** / **required** / **demand** / **demanded** (only
+  when agency-framing — e.g., "Aaron required X" or "per
+  Aaron's requirements". Normal protocol-requirement use
+  remains valid; that's exactly what RFC 2119's `MUST` /
+  `SHOULD` covers.)
 - **human-directed** (unless specifically discussing the
-  degenerate human-directed action mode as a concept)
+  degenerate `human-directed` action-mode value as a concept)
 
 Plus any other word that frames Aaron as a top-down command
 authority.
+
+The optimization target is **correct agency framing**, not
+**zero occurrences of these words**. A directive about a
+language token, a command-line invocation, a sort order in a
+stream — all legitimate technical vocabulary that stays.
 
 ### Edge case — the degenerate concept
 
@@ -221,7 +236,7 @@ in commit subjects + bodies. Preferred forms:
 Two external anchors give the rule lineage beyond
 factory-local discipline:
 
-### Self-Determination Theory (Deci & Ryan, 1985+; Ryan & Deci 2000)
+### Self-Determination Theory (Deci & Ryan; SDT framework)
 
 Self-Determination Theory (SDT) treats autonomy as the
 experience of volition / willingness. Autonomy-supportive
@@ -246,7 +261,7 @@ input a "directive" puts Otto in a follower-of-orders frame
 even when the underlying behavior is autonomous. The framing
 matters separately from the behavior.
 
-### RFC 2119 — Requirement-Word Discipline
+### RFC 2119 (IETF — Requirement-level keywords)
 
 RFC 2119 (Bradner 1997) reserves requirement-strength words
 (`MUST`, `SHOULD`, `MAY`, etc.) for actual protocol
@@ -280,6 +295,23 @@ Use feedback words for human provenance.
 This is the clean bridge between RFC 2119 (when normative
 force is needed) and the SDT-grounded Zeta no-directives
 model (when describing maintainer input).
+
+### Worked contrast — agency collapse vs correct separation
+
+```
+❌ Agency collapse (mixes provenance + protocol force in one breath):
+   "The pipeline MUST cache the output, per Aaron's directive."
+
+✅ Correct separation (protocol force separate from provenance):
+   "The pipeline MUST cache the output.
+    Reason: per maintainer feedback on 2026-04-28, dev setup
+    and build-machine setup should stay aligned."
+```
+
+The `MUST` carries normative force (RFC 2119); the `per
+maintainer feedback on ...` carries provenance (SDT-shaped,
+autonomy-supportive). Two separate sentences, two separate
+purposes, no agency collapse.
 
 ## How this composes with prior rules
 
