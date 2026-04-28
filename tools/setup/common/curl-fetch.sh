@@ -149,10 +149,38 @@
 if [[ -z "${_CURL_FETCH_LOADED:-}" ]]; then
 _CURL_FETCH_LOADED=1
 
+# Feature-detect --retry-all-errors support. The flag was added in
+# curl 7.71.0 (2020-06-24); older OS-provided curl builds (notably
+# pre-2020 LTS distros, some embedded environments, some older macOS
+# system curl) reject it as an unknown option and fail the entire
+# call. This helper is sourced from install.sh BEFORE any toolchain
+# manager has put a newer curl on PATH, so the OS-provided curl IS
+# what runs first. Memoised so the `curl --help` probe runs once per
+# shell, not once per call.
+_curl_fetch_supports_retry_all_errors() {
+  if [[ -z "${_CURL_FETCH_SUPPORTS_RETRY_ALL_ERRORS:-}" ]]; then
+    if curl --help all 2>/dev/null | grep -Fq -- '--retry-all-errors'; then
+      _CURL_FETCH_SUPPORTS_RETRY_ALL_ERRORS=1
+    else
+      _CURL_FETCH_SUPPORTS_RETRY_ALL_ERRORS=0
+    fi
+  fi
+  [[ "${_CURL_FETCH_SUPPORTS_RETRY_ALL_ERRORS}" == "1" ]]
+}
+
 # File-output variant — safe with --retry-all-errors because
-# curl restarts the output file from scratch on each retry.
+# curl restarts the output file from scratch on each retry. Falls
+# back to plain --retry / --retry-delay on older curl builds that
+# don't support --retry-all-errors (curl < 7.71.0). The fallback
+# loses the "retry on HTTP 5xx without Retry-After" coverage but
+# keeps the connect/DNS/408/429/5xx-with-Retry-After retry behaviour
+# that bare --retry already provides.
 curl_fetch() {
-  curl -fsSL --retry 5 --retry-delay 2 --retry-all-errors "$@"
+  local -a retry_args=(--retry 5 --retry-delay 2)
+  if _curl_fetch_supports_retry_all_errors; then
+    retry_args+=(--retry-all-errors)
+  fi
+  curl -fsSL "${retry_args[@]}" "$@"
 }
 
 # Streamed variant — NO --retry, NO --retry-all-errors.

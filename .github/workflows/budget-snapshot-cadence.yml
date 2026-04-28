@@ -240,12 +240,20 @@ jobs:
             echo "Co-authored-by: Otto <noreply@anthropic.com>"
           } > /tmp/pr-body.md
 
+          # NOTE: --label "agent-otto" was previously added here for
+          # host-native attribution but the labels API is part of the
+          # Issues API. Adding it would require widening permissions to
+          # `issues: write`, which this workflow doesn't currently grant
+          # (and shouldn't widen casually for a single host-native nice-
+          # to-have when the AgencySignature commit-trailer-block already
+          # covers the attribution at the git-native layer). Labeling is
+          # deferred to a maintainer / human pass through the queue, or
+          # to a future workflow with an explicit `issues: write` scope.
           gh pr create \
             --base main \
             --head "$branch" \
             --title "ops(budget): cadence snapshot $ts (task #297)" \
-            --body-file /tmp/pr-body.md \
-            --label "agent-otto"
+            --body-file /tmp/pr-body.md
 
           # Intentional: no `gh pr merge --auto` here. See header
           # comment §"Auto-merge limitation" — GITHUB_TOKEN-created
