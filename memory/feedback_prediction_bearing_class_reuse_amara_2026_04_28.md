@@ -102,6 +102,93 @@ retired or rewritten.
   "passing tests" don't validate unless failure cases also
   exist. Falsifier-presence is the antidote.
 
+## Class Validation Beads — accounting mechanism (Amara 2026-04-28T20:48Z)
+
+**System name:** **Class Validation Beads**.
+
+Amara formalized the bead-count itself as a named accounting
+system after seeing it operationalized in this memory.
+
+### Definition (Amara verbatim)
+
+> A class validation bead is one substrate-backed instance
+> where the class:
+>
+> - made a prediction that later moved in the expected
+>   direction,
+> - repaired or prevented a future incident,
+> - was reused by a detector/control,
+> - or survived a stated falsifier.
+
+### Bead-count states
+
+```text
+0 beads = named, not yet validated (honest middle state)
+1 bead  = local falsifier-passing signal
+2-3     = recurring signal, starting to look pattern-like
+N >> 3  = established factory substrate
+```
+
+### Tiny-blade (Amara prescribed): Popper-vs-beads separation
+
+> *"Popper supplies the falsifier lineage; beads are the
+> factory-local accounting mechanism."*
+
+Critical separation to preserve:
+
+- **External lineage (Popper falsifiability)**: the
+  philosophical foundation that makes falsifier-passing
+  observation count as evidence at all. Cite Popper,
+  confirmation-bias literature, Bayesian update — these
+  are EXTERNAL anchors per Beacon-safe discipline (B-0060
+  human-lineage external-anchor backfill).
+- **Bead accounting (factory-local)**: the operational
+  metric we use INSIDE Zeta to track validation
+  accumulation. NOT a claim about the world; a claim
+  about THIS factory's own validation events.
+
+Don't conflate the two. External lineage gives the WHY (why
+falsifier-passing observation matters); beads give the HOW
+(operational accounting inside Zeta). The factory-local
+metric needs no external citation; the philosophical claim
+does.
+
+### Connection to B-0060 (external human-lineage anchoring)
+
+Aaron 2026-04-28T20:48Z prefatory ask: *"we are going to
+need external human lineage research and anchoring."*
+
+The bead system is internal accounting and doesn't need
+external lineage by itself. The underlying epistemic
+machinery DOES need external lineage:
+
+- Falsifiability — Popper (1959, *The Logic of Scientific
+  Discovery*).
+- Confirmation bias — Wason (1960), Klayman and Ha (1987),
+  empirical software-testing IS literature.
+- Bead-count thresholds (0/1/2-3/N+) — no specific external
+  lineage; this is factory-local heuristic. Could anchor to
+  Bayesian-update over base-rate framing if needed.
+
+B-0060 (human-lineage external-anchor backfill, P1) tracks
+the broader trajectory of citing external scholars/literature
+across all factory substrate. The Class Validation Beads
+addition is a place where the discipline applies: external
+lineage for the philosophical claims; factory-local metric
+for the operational accounting.
+
+### What Class Validation Beads IS NOT
+
+- **NOT proof.** N beads = N falsifier-passing observations,
+  not N proofs. Proof is a stronger epistemic standard;
+  beads are corroborating evidence.
+- **NOT a global rate.** Bead counts are per-class; total
+  bead count across the factory is not "the protocol works."
+  Per-class accounting only.
+- **NOT externally-anchored.** Beads are factory-local
+  accounting. Don't claim Popper-lineage for the bead
+  count itself; only for the underlying falsifier discipline.
+
 ## How this pairs with Class-Count Validity Drift
 
 Together, the two classes form the validation discipline:
