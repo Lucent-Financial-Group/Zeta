@@ -42,10 +42,15 @@ name: budget-snapshot-cadence
 # convention documented in tools/hygiene/validate-
 # agencysignature-pr-body.sh): this workflow's commits identify
 # themselves as the budget-cadence-workflow agent running on
-# GitHub Actions. The Human-Review-Evidence trailer is "signed-
-# policy" because the cadence is authorized by docs/budget-
-# history/README.md + the maintainer's 2026-04-22 standing
-# direction for evidence-based budgeting.
+# GitHub Actions. The Human-Review-Evidence trailer is "none"
+# because the validator's consistency rule (Amara ferry-5 evidence-
+# pointer rule) requires Evidence="none" whenever Human-Review is
+# not "explicit". The signed-policy authorization for the cadence
+# itself (docs/budget-history/README.md + the maintainer's
+# 2026-04-22 standing direction for evidence-based budgeting) is
+# documented in the commit body prose, not the per-run trailer
+# fields — per-run trailers describe the per-run state, not the
+# deployment-time authorization.
 #
 # Auto-merge limitation: events triggered by
 # secrets.GITHUB_TOKEN do not fire downstream workflow runs
@@ -116,7 +121,11 @@ jobs:
       - name: Run budget snapshot
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NOTE_INPUT: ${{ inputs.note }}
+          # `inputs.note` is only defined for workflow_dispatch / reusable
+          # workflows; on schedule runs that context is undefined and the
+          # expression would fail evaluation. `github.event.inputs.note` is
+          # safe across both trigger types (returns empty string on schedule).
+          NOTE_INPUT: ${{ github.event.inputs.note || '' }}
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
@@ -172,7 +181,8 @@ jobs:
             echo "- Weekly cadence per docs/budget-history/README.md"
             echo "  ('catches drift when no PRs are merging')."
             echo "- Closes task #297 by automating what task #287"
-            echo "  required a maintainer or Otto to do manually."
+            echo "  previously required a human maintainer or agent to"
+            echo "  trigger manually."
             echo
             echo "What:"
             echo "- One JSONL row appended to"
@@ -205,7 +215,7 @@ jobs:
             echo "Credential-Identity: github-actions[bot]"
             echo "Credential-Mode: dedicated-agent"
             echo "Human-Review: not-implied-by-credential"
-            echo "Human-Review-Evidence: signed-policy"
+            echo "Human-Review-Evidence: none"
             echo "Action-Mode: autonomous-fail-open"
             echo "Task: Otto-297"
             echo "Co-authored-by: Otto <noreply@anthropic.com>"
@@ -233,7 +243,9 @@ jobs:
             echo "Per docs/budget-history/README.md: weekly cadence"
             echo "catches drift when no PRs are merging. Authorized by"
             echo "the human maintainer's 2026-04-22 evidence-based"
-            echo "budgeting direction (Human-Review-Evidence: signed-policy)."
+            echo "budgeting direction; per-run trailer fields use"
+            echo "Human-Review-Evidence=none per the validator consistency"
+            echo "rule, since per-run review is not explicit."
             echo
             echo "Agency-Signature-Version: 1"
             echo "Agent: budget-cadence-workflow"
@@ -242,7 +254,7 @@ jobs:
             echo "Credential-Identity: github-actions[bot]"
             echo "Credential-Mode: dedicated-agent"
             echo "Human-Review: not-implied-by-credential"
-            echo "Human-Review-Evidence: signed-policy"
+            echo "Human-Review-Evidence: none"
             echo "Action-Mode: autonomous-fail-open"
             echo "Task: Otto-297"
             echo "Co-authored-by: Otto <noreply@anthropic.com>"
