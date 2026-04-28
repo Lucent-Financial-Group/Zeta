@@ -116,13 +116,24 @@ output is computed:
     }
     EOF
 
-- name: Upload empty SARIF to Code Scanning
+- name: Upload per-language empty SARIF to Code Scanning
   if: steps.path-gate.outputs.code_changed != 'true'
+  strategy:
+    matrix:
+      language: [actions, csharp, python, java-kotlin, javascript-typescript]
   uses: github/codeql-action/upload-sarif@<sha-pin>
   with:
     sarif_file: empty.sarif
-    category: "path-gate-no-code-change"
+    category: "/language:${{ matrix.language }}"
 ```
+
+**Important**: the live `codeql.yml` implementation uses **per-language
+SARIF categories** (one upload per `Analyze (X)` matrix leg) rather
+than a single aggregate category. Reason: the
+`code_quality:severity=all` ruleset rule reads SARIF coverage
+per-language; a single-category upload would still leave 4 of 5
+language legs as "results pending". See lines 270-334 of the live
+workflow for the actual matrix-loop implementation.
 
 ## Acceptance criteria
 
