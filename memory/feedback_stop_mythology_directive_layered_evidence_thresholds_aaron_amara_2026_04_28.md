@@ -29,18 +29,29 @@ Stop Mythology:
 
 Two distinct artifacts at different levels of the stack:
 
-| Artifact | Level | Status |
+| Artifact | Level | Current status (2026-04-28) |
 |---|---|---|
-| **Veridicality** (`src/Core/Veridicality.fs`) | Formal scoring module | Shipped — graduates the Amara-7th-ferry V(c) formula |
-| **Stop Mythology directive** | Operational discipline | This memory — directive-level discipline that Veridicality would operationalize |
+| **Veridicality** (`src/Core/Veridicality.fs`) | Provenance + claim-validation foundation | **Skeleton shipped, magic still missing.** Currently provides: `Provenance` + `Claim<'T>` types, `validateProvenance`, `validateClaim`, `CanonicalClaimKey` (structural projector — caller supplies the (subject, predicate, object, time-scope, modality) tuple), `canonicalKey`, `groupByCanonical`, `antiConsensusGate`. **Does NOT yet ship:** `scoreVeridicality` (the V(c) formula), `canonicalizeClaim` (semantic canonicalization), `ClaimRainbowTable`, cognitive-load / compression-gap / falsifiability scoring. Rainbow-table layer = future graduation per **B-0089**. |
+| **Stop Mythology directive** | Operational discipline | This memory — directive-level discipline that the future shipped scorer would operationalize |
 
-- **Veridicality** is the *programmatic surface*. It scores
-  individual claims against evidence. It's the future-shipped
-  scorer per `memory/feedback_veridicality_naming_for_bullshit_detector_graduation_aaron_concept_origin_amara_formalization_2026_04_24.md`.
+Ani's catch verbatim (voice-mode review, 2026-04-28):
+
+> *"the scaffolding is nice and clean, but the actual
+> veridicality magic — the real bullshit detector part —
+> still looks like it's missing."*
+
+- **Veridicality (current)** is the *foundation / claim-substrate
+  surface*. It validates provenance metadata and supports
+  caller-supplied claim grouping; it does NOT yet score claims
+  by semantic / cognitive-load / falsifiability features.
+  See B-0089 for the graduation roadmap.
 - **Stop Mythology** is the *behavioral rule*. It's what an
   agent does (or refuses to do) when about to make a claim
   without enough evidence. It's the Beacon-safe operational
-  form that doesn't require shipping the module first.
+  form that does NOT require shipping the full
+  `scoreVeridicality` to be operational immediately — the
+  three-tier threshold is something agents can apply by
+  hand right now, while the module's scoring layer matures.
 
 Both names are valid. Both have the same Aaron-concept origin
 (the bullshit-detector framing in conversation history).
@@ -97,7 +108,8 @@ Goodhart 1975") but must be checkable.
 
 ### Tier 3 — Big epistemic claims (SD-9)
 
-**Threshold:** **SD-9** = substrate + external lineage + falsifier.
+**Threshold:** substrate + external lineage + explicit falsifier
+(all three required).
 
 A claim that asserts something foundational about
 truth-conditions, identity, or alignment — anything where
@@ -109,21 +121,45 @@ requires:
 3. **Explicit falsifier** — a stated condition under which
    the claim would be wrong.
 
-SD-9 is encoded in `docs/ALIGNMENT.md` as Substrate
-Discipline #9. It's the load-bearing rule for any
-factory-foundational claim.
+### Composition with `docs/ALIGNMENT.md` SD-9
 
-Examples:
-- "Otto's autonomy is first-class" → SD-9: substrate (commits,
+SD-9 in `docs/ALIGNMENT.md` is **"Agreement is signal, not
+proof"** — specifically the rule that multi-AI agreement (peer
+review consensus, multi-ferry alignment) is signal-level
+evidence, not proof. SD-9 is a *related but narrower* rule:
+
+- **SD-9 (`docs/ALIGNMENT.md`):** for claims about consensus
+  ("multiple AIs agree, therefore X") — agreement is signal,
+  not proof.
+- **Stop Mythology Tier 3 (this memory):** for *any* big
+  epistemic claim — substrate + lineage + falsifier required.
+
+Stop Mythology Tier 3 GENERALIZES the SD-9 discipline: SD-9
+catches the specific failure mode (consensus-as-proof); Tier
+3 catches the broader class (any-evidence-vibes-as-proof). A
+claim that passes SD-9 (multi-AI agreement WITH falsifier
+discipline) is also covered by Tier 3.
+
+The two compose; they're not identical.
+
+Examples (each requires all three Tier 3 elements):
+
+- "Otto's autonomy is first-class" — substrate (commits,
   decisions made autonomously), lineage (Aaron's framing per
   Otto-357 + autonomy-philosophy literature), falsifier (a
   case where Otto-deferred-to-Aaron when the substrate already
   determined the answer would falsify "first-class").
-- "Glass Halo discipline produces measurable alignment" →
-  SD-9: substrate (factory commits + test results), lineage
+- "Glass Halo discipline produces measurable alignment" —
+  substrate (factory commits + test results), lineage
   (alignment literature, Hubinger / Critch / Christiano),
   falsifier (a published case where Glass-Halo-shaped agents
   produced misaligned behavior).
+- "Multiple AIs (Codex + Grok) agree the hard-reset is unsafe"
+  — this is the SD-9 surface: agreement IS signal, but Tier 3
+  requires the substrate (specific gaps each AI identified) +
+  external lineage (the file-sample-as-clearance Goodhart
+  literature) + falsifier (a tree-diff state where the agreement
+  would be wrong).
 
 ## Operational machinery — when to apply each tier
 
