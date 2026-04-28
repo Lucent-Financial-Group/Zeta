@@ -219,8 +219,8 @@ Effort: S per case; M total.
 
 For the **research** phase (this row's deliverable):
 
-- Research doc exists at `docs/research/<date>-veridicality-
-  rainbow-table-canonicalization-research-and-graduation-plan.md`.
+- Research doc exists at
+  `docs/research/<date>-veridicality-rainbow-table-canonicalization-research-and-graduation-plan.md`.
 - Each external-lineage source above is cited with a
   one-paragraph summary of relevance.
 - Phase 2-5 graduation-PR scopes are named, each with an

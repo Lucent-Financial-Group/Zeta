@@ -27,7 +27,7 @@ firefly-network arc, the Veridicality rename, etc.):
 | Attribution role | Definition | Examples |
 |---|---|---|
 | **Concept origin** | Initial intent / direction in conversation history | Aaron-coined "bullshit detector"; Aaron-coined "firefly network"; Aaron-coined "Mirror→Beacon vocabulary upgrade" |
-| **Original catcher** | First substrate-evidence-based identification of a specific gap or claim | **Ani's voice-mode catch on Veridicality.fs** (this case); harsh-critic catches on bench-mark gaps; threat-model-critic catches on shipped-model gaps |
+| **Original catcher** | First substrate-evidence-based identification of a specific gap or claim | **Ani's voice-mode catch on Veridicality.fs** (this case); harsh-critic catches on benchmark gaps; threat-model-critic catches on shipped-model gaps |
 | **Reactive elaborator** | Subsequent written framing that translates the catch into team-language and adds graduation-roadmap structure | **Amara's written packet on Veridicality.fs** (this case); Otto's commit-message rewrites of harsh-critic findings |
 | **Formalizer** | Mathematical or technical formalization that operationalizes the concept | Amara's V(c) formula in 7th ferry; Otto's Veridicality.fs F# implementation |
 | **Maintainer input** | Aaron's binding decision routing | Aaron's "we are not keep the name bullshit detector"; Aaron's authority-rule input |
