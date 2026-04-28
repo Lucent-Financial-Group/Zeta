@@ -5,7 +5,7 @@ status: open
 title: Veridicality rainbow-table canonicalization — research + ship semantic + scoring layers; drop "bullshit detector" as a forward-going name
 tier: veridicality-graduation
 effort: L
-ask: maintainer Aaron 2026-04-28T22ish ("we are not keep the name bullshit detector, we need to connonalize it and researcch it") forwarding **Ani's voice-mode review (original catcher)** + Amara's reactive written elaboration. Aaron 2026-04-28 attribution correction — *"Ani is who actually called bullshit on our bullshit detector, lol. She deserves that credit not Amara, amara was reacting."*
+ask: maintainer Aaron 2026-04-28T22ish — drop "bullshit detector" as a forward-going name; canonicalize and research the concept (Aaron verbatim typos preserved in body-quote at line ~79); forwarding **Ani's voice-mode review (original catcher)** + Amara's reactive written elaboration. Aaron 2026-04-28 attribution correction — *"Ani is who actually called bullshit on our bullshit detector, lol. She deserves that credit not Amara, amara was reacting."*
 created: 2026-04-28
 last_updated: 2026-04-28
 composes_with:
