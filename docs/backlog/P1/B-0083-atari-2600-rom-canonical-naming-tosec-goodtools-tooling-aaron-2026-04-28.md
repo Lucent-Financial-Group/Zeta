@@ -38,7 +38,7 @@ Aaron 2026-04-28T18:55Z verbatim:
 
 **Scheduled trigger**: 0/0/0 AceHack-LFG hard-reset complete (the
 hard-reset chain is the gating dependency; see PR #677 5-disciplines
-+ pull-queue work).
+and pull-queue work).
 
 ## Ownership rationale (Aaron verbatim 2026-04-28T18:58Z)
 
@@ -87,6 +87,7 @@ operationalizes the split by adding the safe-folder + the tooling.
 
 Aaron's explicit verbatim: *"we can backlog this but hight priortiy
 right after the 0/0/0 starting point"*. Decoded:
+
 - Priority: P1 (high)
 - Trigger: AceHack-main and LFG-main reach 0/0/0 (per the hard-reset
   audit already in flight; see PR #677's 5-disciplines memory + the
@@ -219,6 +220,7 @@ explicitly the trajectory direction, not a panic-fallback.
 ### Datfile-as-dependency
 
 Either path needs the actual TOSEC + GoodA26 datfiles. Approach:
+
 1. Pin the datfile version in our dependency-manifest (similar
    to how `.mise.toml` pins runtime versions).
 2. Download from canonical sources (TOSECdev.org / archived
@@ -248,6 +250,7 @@ Either path needs the actual TOSEC + GoodA26 datfiles. Approach:
 
 Per `memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`:
 when we use TOSEC/RomVault/retool, we contribute back. Specifically:
+
 - Bug reports for Mac-specific issues we hit.
 - Documentation improvements if their docs missed something.
 - New datfile entries we generate (e.g. for safe-folder homebrew
@@ -307,6 +310,7 @@ roms-safe/                         (NEW, tracked — license-verified ROMs)
 ## Future-Otto pickup notes
 
 When 0/0/0 lands:
+
 1. Re-read this row + `roms/README.md` + `roms/atari/2600/README.md`.
 2. Run an Otto-247 WebSearch for "TOSEC Atari 2600 datfile latest 2026"
    to get the current version.

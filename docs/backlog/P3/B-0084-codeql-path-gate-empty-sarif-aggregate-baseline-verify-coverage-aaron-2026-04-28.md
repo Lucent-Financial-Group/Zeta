@@ -24,6 +24,7 @@ Aaron 2026-04-28T19:02Z verbatim:
 > *"it also voilates do the right long term thing when making suggested fixes"*
 
 Two compounding corrections caught my dismissal as the wrong move:
+
 1. The dismissal was speculation-without-evidence (I asserted the 2/30
    unchecked were "path-gate-skipped doc-only" without verifying).
 2. Even if the speculation had been correct, dismissal-with-rationale
@@ -33,6 +34,7 @@ Two compounding corrections caught my dismissal as the wrong move:
 ## What the speculation-check actually showed
 
 After reversing the dismissal and investigating:
+
 - **PR #651** ("CI cadence split + Windows trajectory seed"): 32 files
   touched including \`.github/workflows/codeql.yml\` itself. This is
   the commit that introduced the path-gate. Path-gate may have been
@@ -67,6 +69,7 @@ so future security-tool workflows inherit the pattern. The specific
 codeql.yml work is DONE; the timing-artifact resolves on its own.
 
 What remains in scope for B-0084:
+
 - Verify the path-gate aggregate-baseline covers ALL matrix languages
   (currently: actions + csharp + python + java-kotlin + javascript-
   typescript per round-34 update).
