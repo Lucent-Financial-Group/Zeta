@@ -20,6 +20,7 @@ Codex review on PR #663 surfaced four findings on `tools/hygiene/audit-agencysig
 2. **P2 (line 257)**: `classify_commit` calls `exit 2` on unparseable input, but the call is in a subshell — the exit is swallowed and the auditor silently continues. Propagate the error.
 3. **P2 (line 194)**: BSD `date` doesn't accept the date-only override format the parser branch claims macOS compatibility for.
 4. **P2 (line 150)**: `--since` input is passed directly to `git log` without validation; bad inputs silently audit nothing.
+5. **P2 (line 143)**: `--max` validator accepts `0` even though script says it must be a positive integer. `git log --max-count=0` produces an empty commit list that exits with PASS — the auditor silently passes when run with --max=0.
 
 ## Why deferred (not fixed in PR #663)
 
