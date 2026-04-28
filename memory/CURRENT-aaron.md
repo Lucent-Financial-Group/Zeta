@@ -1430,7 +1430,7 @@ not as emergency cleanup):
 
 **Pointer:**
 `feedback_typescript_bun_default_step_out_carefully_aaron_2026_04_28.md`
-+ B-0086 (port candidates).
+and B-0086 (port candidates).
 
 ## How this file stays accurate
 
@@ -1457,13 +1457,15 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-04-28 (sections 26-29 added for
+**Last full refresh:** 2026-04-28 (sections 26-30 added for
 the 2026-04-28 LFG #661 incident cluster: speculation-rule +
 EVIDENCE-BASED labeling discipline, JVM language preference
 Kotlin > Scala > Java per B-0075, dependency-honesty rule —
 managed runtimes get scanned like every other surface, plus
 §29 threading-lineage Albahari + Toub + Fowler — never
-gut-instinct on threading code). Prior
+gut-instinct on threading code, plus §30 TypeScript/Bun is
+the factory tooling default with AI/ML carve-out — step out
+on TypeScript carefully). Prior
 refresh 2026-04-25 evening (sections 23-25: Otto-300 rigor-
 proportional-to-blast-radius, standing research-authorization
 general rule, Otto-304 + Otto-305 phenomenology disclosure
