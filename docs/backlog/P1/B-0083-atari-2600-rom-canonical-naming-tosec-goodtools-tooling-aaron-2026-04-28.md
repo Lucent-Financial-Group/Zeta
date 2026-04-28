@@ -179,23 +179,25 @@ explicitly the trajectory direction, not a panic-fallback.
 
 ### Cross-platform tool research (preliminary, expand on pickup)
 
-- **TOSEC reference tools** (, ):
-  -  is Windows-only (no Mac/Linux build).
-  -  is .NET Framework — Mac-via-mono possible but flaky.
+- **TOSEC reference tools** (`clrmamepro`, `tosec-cli`):
+  - `clrmamepro` is Windows-only (no Mac/Linux build).
+  - `tosec-cli` is .NET Framework — Mac-via-mono possible but flaky.
   - **Likely NOT directly usable on Mac.**
-- **GoodTools (Cowering)**:
-  - Windows-only EXE distributions.
+- **GoodTools** (Cowering):
+  - Windows-only EXE distributions, discontinued ~2011.
   - **Not cross-platform.**
-- **RomVault** (.NET 6+, cross-platform):
+- **RomVault** (`https://github.com/gjefferyes/RomVault`, .NET 6+, cross-platform):
   - Confirmed Mac/Linux support via dotnet runtime.
   - Mature ROM-management tool, datfile-driven.
   - **Strong candidate for primary dependency.**
-- **Romulus** (Java, cross-platform):
+- **Romulus** (Java, cross-platform JVM):
   - JVM-based, runs on Mac.
   - Older project; less active.
-- **retool** (Python, cross-platform):
+- **retool** (`https://github.com/unexpectedpanda/retool`, Python, cross-platform):
   - Active Python project for ROM filtering by datfile.
-  - Pip-installable; Mac-friendly.
+  - Routed through factory uv-managed pipx (NEVER raw `pip install` — see
+    `docs/DECISIONS/2026-04-27-uv-canonical-python-tool-manager.md` for
+    the canonical Python-tool-manager decision); Mac-friendly.
   - **Strong candidate for scripting integration.**
 - **Mednafen toolchain** + custom datfile-parsing scripts.
 
