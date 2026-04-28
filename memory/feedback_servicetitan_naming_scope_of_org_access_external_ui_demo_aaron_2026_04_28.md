@@ -6,7 +6,9 @@ type: feedback
 
 # ServiceTitan naming + scope-of-org-access rule
 
-## The rule (Aaron 2026-04-28T23ish)
+## The rule (Aaron 2026-04-28T23ish, refined cascade)
+
+Multi-message cascade:
 
 > *"servicetitan-factory-demo-api-csharp we can just say
 > external UI demo or something like that, we don't have to
@@ -14,48 +16,87 @@ type: feedback
 > that's my day job, they fund me, i fund you, and you don't
 > have org rights to their github only the lfg."*
 
-Two coupled rules in one ask:
+> *"oh and we can do research on ServiceTitan as a potential
+> factory/superfluid ai user, we want to pitch to my boss
+> when ready at ServiceTitan."*
 
-### Rule 1 — Forward-going naming uses generic terms
+> *"ServiceTitan is their exact name they are a publicly
+> traded company TTAN so I won't be giving you any insider
+> information."*
 
-In code, sample directories, file paths, public-facing docs,
-demo names, commit messages going forward — use generic
-naming, NOT "ServiceTitan."
+> *"You can also say I'm on the CRM team at ServiceTitan,
+> that's why our demo was targeted to them, we want my team
+> hopefully to accept and adopt the factory when ready."*
 
-Preferred generic forms:
+The naming rule is **context-sensitive**, not a blanket avoid.
 
-- "external UI demo"
-- "external CRM API demo"
-- "external SaaS-API demo"
-- "third-party-API demo"
-- "factory-demo" (already partially adopted per task #244)
+### Context where ServiceTitan IS the right name
 
-Avoid:
+- **Public-company / target-audience research** —
+  ServiceTitan trades as **TTAN**; public info; researchable
+  as a candidate factory / Superfluid AI customer with no
+  insider-information concern.
+- **Adoption pitch context** — Aaron's CRM team at
+  ServiceTitan is the named adoption target; pitch docs +
+  pitch decks + pitch-prep research name them specifically.
+- **Aaron's affiliation disclosure** — Aaron is on the **CRM
+  team at ServiceTitan**; that's why the demo was targeted
+  there; this is contributor-relevant context for
+  understanding the demo's design choices.
+- **Funding chain disclosure** — ServiceTitan = Aaron's day
+  job → funds Aaron → funds Otto. Preserved precisely where
+  it appears.
+- **Org-access scope disclosure** — Aaron has org rights to
+  **LFG (Lucent Financial Group) ONLY**, NOT to
+  ServiceTitan's GitHub org. Critical for contributors
+  understanding why some integrations are LFG-side and not
+  cross-org.
 
-- ServiceTitan
-- servicetitan
-- service titan
-- Service Titan
-- ST (when used as a ServiceTitan abbreviation)
+### Context where generic naming is preferred
 
-### Rule 2 — Structural disclosure preserved where load-bearing
+- **Code / sample directories / file paths** — use generic
+  "external UI demo" / "external CRM API demo" / "third-
+  party-API demo" so the code/sample is reusable beyond the
+  pitch target.
+- **Demo names in public artifacts** — when the artifact's
+  audience is broader than the pitch context (e.g., a
+  generic README under `samples/`, a public-facing pitch's
+  technical-implementation section).
+- **Generic API integration documentation** — where the
+  integration pattern is the substrate, not the specific
+  customer.
 
-The funding chain + org-access scope IS load-bearing context:
+### Decision rule
 
-- **ServiceTitan = Aaron's day job** (employer / income source)
-- **Funding chain:** ServiceTitan → Aaron → Otto
-- **Org-access scope:** Aaron has org rights to **LFG (Lucent
-  Financial Group) ONLY**, NOT to ServiceTitan's GitHub org
+When writing about ServiceTitan, ask: **what's the audience /
+context of this artifact?**
 
-Preserve this disclosure where it's contributor-relevant:
+- **Pitch / research / target-audience / disclosure** →
+  ServiceTitan named precisely (it's the actual target /
+  funding source / employer).
+- **Reusable code / generic sample / external-customer
+  positioning** → generic "external UI demo" / similar.
 
-- `CURRENT-aaron.md` (already has the funding context)
-- `AGENTS.md` / `GOVERNANCE.md` (org-access scope for any
-  contributor who might assume cross-org access)
-- Any doc that names Aaron's funding source for transparency
+Naming should match the reader's interpretation. A reader of
+`docs/pitch/README.md` knows the pitch is for ServiceTitan
+specifically; naming them is accurate. A reader of
+`samples/external-ui-demo/README.md` should see the demo
+as reusable across customer integrations; ServiceTitan is
+one such customer (named in pitch, not in sample).
 
-Don't scrub the relationship; just don't bleed the brand into
-code/sample/demo naming.
+### Public-company status (Tier 1 substrate evidence)
+
+ServiceTitan trades on the public market under the ticker
+**TTAN**. This means:
+
+- All disclosures about them are **public information** (no
+  insider-information concern from Aaron).
+- Otto can reference them in research, pitch-prep, target-
+  audience analysis, and competitive positioning without
+  ethical / legal concerns about confidentiality.
+- The funding-chain disclosure (Aaron's employment) is
+  appropriate for public-facing docs because public companies
+  expect employee-of-X disclosure as normal.
 
 ## Why both rules together
 
@@ -78,6 +119,29 @@ provenance framing** — accurate provenance (where the funding
 came from, what scope the maintainer has) is preserved without
 implying command authority.
 
+## Adoption pitch as factory-demo target
+
+Aaron's CRM team at ServiceTitan IS the **named adoption
+target** for the factory / Superfluid AI work. The demo was
+targeted to them specifically because:
+
+1. Aaron's affiliation (CRM team member) gives Otto insider-
+   user understanding of CRM workflows.
+2. ServiceTitan is a publicly-traded SaaS company with real
+   CRM substrate that maps to the factory's surface.
+3. Aaron's pitch path: when the factory is ready, pitch to
+   his boss → pitch to the team → adoption.
+
+This means:
+
+- Research on ServiceTitan as a candidate factory/Superfluid-
+  AI user is **encouraged** (it's the adoption target).
+- Pitch-prep substrate (positioning, demo features, integration
+  patterns) properly names them.
+- Forward-going code/sample naming stays generic so the work
+  is reusable beyond the specific adoption target — but the
+  pitch context names them precisely.
+
 ## Audit findings (2026-04-28)
 
 Live-repo ServiceTitan references found via:
@@ -93,27 +157,43 @@ rg -i 'service ?titan' \
    --glob '!**/docs/decision-proxy-evidence/**'
 ```
 
-12 files matched. Classification (per the cadenced-audit
-rubric):
+12 files matched. Reclassified per the **context-sensitive**
+rule (some files name ServiceTitan correctly because they ARE
+in pitch / target-audience / disclosure context):
 
-| File | Classification | Action |
-|---|---|---|
-| `docs/plans/servicetitan-crm-ui-scope.md` | **PATH-RENAME** — file path itself contains the term | rename to e.g. `docs/plans/external-crm-ui-scope.md` + update body |
-| `samples/FactoryDemo.Db/README.md` | **BODY-REWORD** — naming context | rewrite to use "external UI demo" |
-| `docs/FACTORY-DISCIPLINE.md` | **MIXED** — could be naming or structural disclosure | inspect line-by-line |
-| `docs/pitch/README.md` | **PUBLIC-FACING** — naming | rewrite to use generic forms |
-| `docs/BACKLOG.md` | **AGGREGATE** — references per-row files | regenerate after per-row updates |
-| `docs/backlog/P2/B-0017-*.md` | **PER-ROW** — naming | rewrite |
-| `docs/backlog/P2/B-0090-*.md` | **PER-ROW (this session)** — needs immediate fix | rewrite to remove ServiceTitan mention I just introduced |
-| `docs/backlog/P3/B-0008-*.md` | **PER-ROW** — naming | rewrite |
-| `docs/ROUND-HISTORY.md` | **HISTORICAL NARRATIVE** — preserve verbatim | no action; history surface |
-| `docs/force-multiplication-log.md` | **HISTORICAL NARRATIVE** | no action |
-| `tools/alignment/out/round-39/citations.json` | **GENERATED ARTIFACT** | regenerate; or accept as historical |
-| `tools/alignment/out/round-39/citations.dot` | **GENERATED ARTIFACT** | regenerate; or accept as historical |
+| File | Audience / context | Re-classification | Action |
+|---|---|---|---|
+| `docs/plans/servicetitan-crm-ui-scope.md` | Pitch-target scope doc | **KEEP-NAME** — pitch context, ServiceTitan is the actual target | inspect body for any unrelated brand-bleed; otherwise leave |
+| `samples/FactoryDemo.Db/README.md` | Generic sample (reusable) | **BODY-REWORD** | rewrite to "external UI demo" / generic CRM API demo |
+| `docs/FACTORY-DISCIPLINE.md` | Governance / contributor doc | **MIXED** — line-by-line | preserve funding-chain + org-scope disclosure; reword demo-naming |
+| `docs/pitch/README.md` | **Pitch doc** | **KEEP-NAME** — pitch context, ServiceTitan is the named target | inspect for any unrelated brand-bleed; otherwise leave |
+| `docs/BACKLOG.md` | Aggregate index | **AGGREGATE** — regenerate after per-row updates | reconsider per-row first |
+| `docs/backlog/P2/B-0017-*.md` | Per-row (UI dashboard) | **PER-ROW** — depends on whether this is pitch-context or generic | inspect |
+| `docs/backlog/P2/B-0090-*.md` | Per-row (this session) | **PARTIALLY-FIXED** | already removed brand-bleed from "renamed from ServiceTitan" |
+| `docs/backlog/P3/B-0008-*.md` | Per-row (CI) | **PER-ROW** — depends on context | inspect |
+| `docs/ROUND-HISTORY.md` | Historical narrative | **HISTORICAL** — preserve verbatim | no action |
+| `docs/force-multiplication-log.md` | Historical narrative | **HISTORICAL** | no action |
+| `tools/alignment/out/round-39/citations.json` | Generated artifact | **HISTORICAL** | accept |
+| `tools/alignment/out/round-39/citations.dot` | Generated artifact | **HISTORICAL** | accept |
 
-Live-cleanup scope: 8 files need active rewriting; 2 are
-historical narratives that stay verbatim; 2 are generated
-artifacts.
+Re-classified scope:
+
+- 2 files KEEP-NAME (pitch context — ServiceTitan is correctly
+  named): `docs/plans/servicetitan-crm-ui-scope.md`,
+  `docs/pitch/README.md`. Inspect for unrelated brand-bleed
+  but otherwise leave.
+- 1 file MIXED (FACTORY-DISCIPLINE — preserve disclosure,
+  reword demo-naming).
+- 3 files PER-ROW inspection (B-0017, B-0090, B-0008).
+- 1 file BODY-REWORD (samples/FactoryDemo.Db/README.md —
+  reusable sample, generic naming).
+- 1 file AGGREGATE (BACKLOG.md — regenerate after per-row).
+- 4 files HISTORICAL (preserve verbatim).
+
+The naive scope ("rename everywhere") would have over-
+corrected. The context-sensitive rule preserves accurate
+naming in pitch contexts while removing brand-bleed in
+generic / reusable contexts.
 
 ## Composes with
 
