@@ -50,8 +50,18 @@ that requires manual merging.
   (additive case) or REPLACES it (overwrite case).
 - For overwrite cases, manually verify what was lost and whether
   it's intentional.
-- The right primitive is `git merge-base --is-ancestor <ace-blob>
-  <lfg-blob>` for content-tree subsumption, NOT `git log -1 --format=%at`.
+- For content-level subsumption: there's no single git primitive
+  that proves "blob B contains the substantive content of blob A".
+  Use:
+  ```bash
+  git show <ace-commit>:<path> > /tmp/ace.txt
+  git show <lfg-commit>:<path> > /tmp/lfg.txt
+  diff -u /tmp/ace.txt /tmp/lfg.txt
+  ```
+  For append-only files all changes should be `+` lines (LFG adds);
+  for overwrite-style files manually verify substantive overlap.
+  The often-misused `git merge-base --is-ancestor` is for COMMITS,
+  not blobs — don't reach for it here. NOT `git log -1 --format=%at`.
 
 ### 3. Commit messages / PR refs / AgencySignature provenance count as content
 
@@ -101,8 +111,14 @@ destroy newer content I never saw.
 **Discipline**: Before any destructive op:
 
 ```bash
-# Freeze refs at known state
-git fetch --prune origin acehack 2>&1
+# Freeze refs at known state. NOTE: `git fetch --prune origin acehack`
+# fetches ONLY from `origin` (`acehack` is treated as a refspec, not
+# remote name). To fetch BOTH remotes, use one of:
+git fetch --multiple --prune origin acehack
+# OR sequentially:
+git fetch --prune origin
+git fetch --prune acehack
+
 LFG_TIP=$(git rev-parse origin/main)
 ACE_TIP=$(git rev-parse acehack/main)
 echo "LFG: $LFG_TIP | AceHack: $ACE_TIP"
