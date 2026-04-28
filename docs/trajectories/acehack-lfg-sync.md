@@ -30,13 +30,14 @@ the only allowed deviation.
   rounds via #647/#648/#649/#651/#653/#654 etc. on 2026-04-27)
 - Divergence is bidirectional and large; 0/0/0 not currently
   achieved
-- Aaron 2026-04-27 strategic reframe: bidirectional content-sync
-  too hard; collapse to project-trunk-canonical + dev-mirror
-  topology (LFG=trunk, AceHack=mirror)
+- The human maintainer's 2026-04-27 strategic reframe:
+  bidirectional content-sync too hard; collapse to
+  project-trunk-canonical + dev-mirror topology
+  (LFG=trunk, AceHack=mirror)
 - Force-push to AceHack main is part of protocol; force-push to
   LFG main is forbidden
 - Pre-start state: project is "in pre-start mode" until 0/0/0
-  is reached (Aaron 2026-04-27)
+  is reached (per the human maintainer 2026-04-27)
 
 ## Target state
 
@@ -55,7 +56,8 @@ the only allowed deviation.
 In leverage order:
 
 1. **Reach 0/0/0 baseline** — pre-start mode persists until
-   this lands. Per Aaron: until 0/0/0, project is "hobbling."
+   this lands. Per the human maintainer: until 0/0/0, the
+   project is "hobbling."
 2. **Forward-sync ~50 AceHack-ahead commits to LFG** — substrate
    work that hasn't propagated yet (PRs #25/#72/#73/etc.).
 3. **AceHack hard-reset to LFG** — after the forward-sync
