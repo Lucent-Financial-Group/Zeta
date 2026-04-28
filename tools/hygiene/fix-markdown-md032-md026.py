@@ -73,41 +73,75 @@ def _is_list(line: str) -> bool:
 
 def _classify_lines(lines: list[str]) -> list[bool]:
     """Return a boolean list `inside[i]` = True iff line `i` is inside
-    a fenced code block (and therefore must NOT be touched by the
-    MD032/MD026 transforms — that would mutate code examples).
+    a region that must NOT be touched by the MD032/MD026 transforms.
 
-    A code fence is a line starting with 3+ backticks or 3+ tildes;
-    closing fence must be the same character class as the opener and
-    have at least as many characters. We only track the simple case
-    sufficient for committed-markdown shapes; nested or weird
-    indentation (>3 spaces makes it a code-indent rather than a fence)
-    is conservatively treated as "inside" once opened until matching
-    close — better to skip transforms than to corrupt code."""
-    inside: list[bool] = []
+    Two such regions:
+
+    1. **YAML frontmatter** (Jekyll/Hugo/factory-convention shape):
+       file starts with a line `---`, has another line `---` later;
+       lines between (inclusive) are frontmatter. Inserting blanks
+       here breaks YAML parsing (e.g. `composes_with:` followed by
+       blank line then `  - X` parses as `composes_with: null` plus
+       a separate top-level list). Stripping trailing punctuation
+       from YAML keys would corrupt structure.
+
+    2. **Fenced code blocks**: a line starting with 3+ backticks or
+       3+ tildes; closing fence must be the same character class as
+       the opener and have at least as many characters. Inserting
+       blanks here would mutate code examples (e.g. shell-script
+       with `- option` flags would acquire spurious blanks).
+
+    Both regions are conservatively treated as "inside" so transforms
+    skip them. Better to skip than to corrupt structure.
+
+    YAML frontmatter detection is light-weight: only triggered when
+    line 0 is exactly `---` and a closing `---` appears later in
+    the file. Files without frontmatter (line 0 not `---`) skip
+    the frontmatter region entirely."""
+    inside: list[bool] = [False] * len(lines)
+
+    # Pass 1: YAML frontmatter region (if file starts with `---`).
+    fm_end = -1
+    if lines and lines[0].strip() == "---":
+        for j in range(1, len(lines)):
+            if lines[j].strip() == "---":
+                fm_end = j
+                break
+        if fm_end > 0:
+            for k in range(fm_end + 1):  # inclusive of closing `---`
+                inside[k] = True
+        # If no closing `---` found, conservatively don't mark any
+        # lines as frontmatter (the file probably isn't real
+        # frontmatter; treat normally).
+
+    # Pass 2: fenced code blocks (skip lines already marked
+    # inside-frontmatter — they don't open / close fences).
     open_char: str | None = None  # '`' or '~'
     open_len: int = 0
-    for line in lines:
+    for i, line in enumerate(lines):
+        if inside[i]:
+            continue  # Already marked as frontmatter
         m = _FENCE_OPEN.match(line)
         if m and open_char is None:
             # Opening fence
             fence = m.group(2)
             open_char = fence[0]
             open_len = len(fence)
-            inside.append(True)
+            inside[i] = True
         elif m and open_char is not None:
             # Possible closing fence — must be same char class and
             # length >= open_len, with no info string.
             fence = m.group(2)
             if fence[0] == open_char and len(fence) >= open_len and not m.group(3).strip():
-                inside.append(True)  # The closing fence line itself
+                inside[i] = True  # The closing fence line itself
                 open_char = None
                 open_len = 0
             else:
                 # A different fence char or shorter — still inside the
                 # outer block (it's just code that looks fence-shaped).
-                inside.append(True)
+                inside[i] = True
         else:
-            inside.append(open_char is not None)
+            inside[i] = open_char is not None
     return inside
 
 
