@@ -71,9 +71,17 @@ on:
 
 permissions:
   # Need contents:write to push the snapshot branch; pull-requests:write
-  # to open the auto-merge PR. No other permissions needed.
+  # to open the snapshot PR; actions:read so snapshot-burn.sh can call
+  # the Actions REST endpoints (/repos/.../actions/runs and
+  # /actions/runs/{id}/timing) to populate burn metrics. Without
+  # actions:read, those API calls 403 silently and snapshot-burn.sh
+  # falls back to empty/zeroed timing data while still writing a
+  # snapshot — producing misleading evidence rather than a hard
+  # failure. With explicit workflow permissions, omitted scopes are
+  # `none`, so actions:read MUST be listed explicitly here.
   contents: write
   pull-requests: write
+  actions: read
 
 concurrency:
   # Only one cadence run at a time. Retriggers queue (rather than
