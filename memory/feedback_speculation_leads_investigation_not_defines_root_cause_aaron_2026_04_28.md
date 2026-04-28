@@ -93,6 +93,58 @@ When asked for a mechanism:
 4. **Bullshit-call recovery is fast.** Aaron's "this seems like a bullshit
    answer" is data: the framing was wrong; back up; re-source.
 
+## Mandatory labeling discipline (Aaron 2026-04-28T14:42Z extension)
+
+> *"it will make it easier for your future self if any logs or anything
+> you say about root cause of things, include if it's speculation or
+> based on evidence and list the evidence"*
+
+Every root-cause statement (in chat, commit messages, memory files, tick
+history, PR descriptions, BACKLOG rows, ADRs) MUST carry an explicit label:
+
+- **`EVIDENCE-BASED:`** followed by the claim, with the **evidence list**
+  underneath — quoted error text, command output, file:line citations, API
+  responses, primary sources. Future-self reads the evidence and re-checks
+  the inference cheaply.
+- **`SPECULATION:`** followed by the hypothesis, with the
+  **what-would-disconfirm-it list** underneath — what query / fetch / read
+  would either confirm or refute. Speculation labelled as such is honest
+  scaffolding; speculation un-labelled is the failure mode.
+
+Bad (un-labelled, conflates the two):
+
+> "The umbrella NEUTRAL is caused by org-level config-attachment asymmetry."
+
+Good (labelled, evidence-backed):
+
+> **EVIDENCE-BASED:** umbrella `CodeQL` check goes NEUTRAL because main has
+> `java-kotlin` analyses but the PR head's `codeql.yml` matrix doesn't
+> include `java-kotlin`.
+>
+> **Evidence:**
+> - `gh api repos/Lucent-Financial-Group/Zeta/check-runs/73401083160 --jq .output.summary` → "1 configuration present on `refs/heads/main` was not found: codeql.yml /language:java-kotlin"
+> - `gh api .../code-scanning/analyses?ref=refs/heads/main` → 5 java-kotlin analyses on main, latest 2026-04-28T09:08:48Z
+> - `find . -name '*.java'` → `tools/alloy/AlloyRunner.java` (first-party)
+
+Also good (labelled, honest about what it isn't):
+
+> **SPECULATION:** umbrella might prefer the per-language analyze legs over
+> path-gate's empty-SARIF baseline.
+>
+> **What would disconfirm:** read `github/codeql-action/analyze` source for
+> the SARIF-replace-by-key rule, or check whether path-gate ran on this
+> specific PR (`gh run list --workflow codeql.yml --branch <ref>`).
+
+Why this matters across surfaces:
+
+- **Future Otto** reads commit messages and memory and treats them as
+  ground truth unless labelled otherwise. Un-labelled speculation in
+  durable substrate becomes load-bearing fiction.
+- **Aaron** reads chat output and weights it by confidence-framing. False
+  confidence misroutes his attention.
+- **Cross-AI reviewers** absorb factory output as inputs to their own
+  reviews. Un-labelled speculation propagates through ferries.
+
 ## Aaron's verbatim corrections (2026-04-28)
 
 > *"this seems like a bullshit answer"*
