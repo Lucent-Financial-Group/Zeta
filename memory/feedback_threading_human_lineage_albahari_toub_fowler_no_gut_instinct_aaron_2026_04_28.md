@@ -141,12 +141,15 @@ at:
 
 Key updates that supersede / extend Albahari's classic patterns:
 
-- **`System.Threading.Lock` (C# 13/14)** replaces Monitor-based
-  `lock(object)`. The compiler routes through `EnterScope()`
-  returning a stack-allocated ref struct — zero GC overhead.
-  Casting a `Lock` instance to `object` degrades back to Monitor;
-  the compiler warns. Use `private readonly System.Threading.Lock _lock = new();`
-  pattern for new code.
+- **`System.Threading.Lock` (C# 13/14)** is the new dedicated
+  synchronization type for new code; prefer it over `lock(object)`
+  patterns. The compiler routes `lock(_lock)` through `EnterScope()`
+  returning a stack-allocated ref struct — zero GC overhead. If a
+  `Lock` instance is cast to `object` the compiler warns and
+  silently degrades to Monitor (so the cast undoes the perf win).
+  Use `private readonly System.Threading.Lock _lock = new();` for
+  new code; existing `lock(object)` patterns continue to work via
+  Monitor.
 - **Thread Pool segregation** — Worker threads (synchronous code)
   vs I/O Completion threads (async I/O). ASP.NET Core borrows /
   yields from the pool dynamically; never spawn a raw `Thread` for
@@ -158,10 +161,17 @@ Key updates that supersede / extend Albahari's classic patterns:
 - **Cooperative shutdown via `CancellationToken`** replaces
   `Thread.Abort()` (which destroyed process state); foreground /
   background distinction is largely obsolete in modern app design.
-- **`SemaphoreSlim(1,1)`** replaces `ReaderWriterLockSlim` for
-  async-safe locking — RWLockSlim is thread-affine and throws when
-  `await` resumes on a different thread; SemaphoreSlim has native
-  `WaitAsync()`.
+- **`SemaphoreSlim(1,1)`** for async-safe single-entry locking
+  when crossing `await` — RWLockSlim is thread-affine and throws
+  when `await` resumes on a different thread; SemaphoreSlim has
+  native `WaitAsync()`. **Caveat (Codex/Copilot 2026-04-28):**
+  `SemaphoreSlim(1,1)` is a single-entry mutex, NOT a reader/writer
+  lock — it loses RWLockSlim's "many readers, one writer"
+  concurrency. Use it when the section needs to be serialised
+  across `await` regardless of read/write; for high-read workloads
+  needing async-safe reader/writer semantics, the right primitives
+  are immutable snapshots, channel-bounded mutation, or hand-rolled
+  copy-on-write — not a 1:1 SemaphoreSlim swap.
 - **`System.Threading.Channels`** replaces `Monitor.Wait`/`Pulse` for
   producer/consumer pipelines (Fowler's primitive — async-native,
   bounded/unbounded, backpressure-aware).
