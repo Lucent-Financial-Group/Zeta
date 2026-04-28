@@ -234,7 +234,8 @@ rg -i 'service ?titan' \
    --glob '!**/docs/amara-full-conversation/**' \
    --glob '!**/docs/hygiene-history/**' \
    --glob '!**/docs/pr-preservation/**' \
-   --glob '!**/docs/decision-proxy-evidence/**'
+   --glob '!**/docs/decision-proxy-evidence/**' \
+   --glob '!**/references/upstreams/**'
 ```
 
 12 files matched. Reclassified per the **context-sensitive**

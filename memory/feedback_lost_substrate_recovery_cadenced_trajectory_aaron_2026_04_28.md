@@ -120,8 +120,7 @@ Per the metric ladder:
 
 ## Earns a backlog row
 
-Files **B-0090** (or equivalent next number): cadenced
-lost-substrate audit. Specifies:
+Filed as **B-0090**: cadenced lost-substrate audit. Specifies:
 
 - Weekly worktree audit (quick scan).
 - Monthly orphan-branch + closed-not-merged-PR audit.
