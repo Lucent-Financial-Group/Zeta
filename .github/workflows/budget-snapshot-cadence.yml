@@ -2,11 +2,13 @@ name: budget-snapshot-cadence
 
 # Weekly cadence for evidence-based LFG burn tracking. Runs
 # tools/budget/snapshot-burn.sh, captures the resulting JSONL row,
-# opens a PR (per the AceHack-first UPSTREAM-RHYTHM rhythm) with the
-# snapshot included, and arms auto-merge so the row lands without
-# human intervention. Closes task #297 (cadence half of the
-# evidence-based-budgeting work; tooling was task #285, baseline
-# snapshot was task #287).
+# and opens a PR (per the AceHack-first UPSTREAM-RHYTHM rhythm)
+# with the snapshot included. The PR is left for the next
+# human-or-agent pass through the queue to merge — auto-merge is
+# NOT armed here, see "Auto-merge limitation" section below for
+# why. Closes task #297 (cadence half of the evidence-based-
+# budgeting work; tooling was task #285, baseline snapshot was
+# task #287).
 #
 # Why weekly: docs/budget-history/README.md says "On a cadenced
 # schedule (weekly) — catches drift when no PRs are merging." Weekly
@@ -36,23 +38,24 @@ name: budget-snapshot-cadence
 # `gh auth refresh -s admin:org` the snapshots get richer
 # automatically (Actions billing / Packages / shared-storage).
 #
-# AgencySignature v1 attribution (per the post-ferry-7 convention):
-# this workflow's commits identify themselves as the
-# budget-cadence-workflow agent running on GitHub Actions. The
-# Human-Review-Evidence trailer is "signed-policy" because the
-# cadence is authorized by docs/budget-history/README.md +
-# the maintainer's 2026-04-22 standing direction for evidence-based
-# budgeting.
+# AgencySignature v1 attribution (per the canonical 10-trailer
+# convention documented in tools/hygiene/validate-
+# agencysignature-pr-body.sh): this workflow's commits identify
+# themselves as the budget-cadence-workflow agent running on
+# GitHub Actions. The Human-Review-Evidence trailer is "signed-
+# policy" because the cadence is authorized by docs/budget-
+# history/README.md + the maintainer's 2026-04-22 standing
+# direction for evidence-based budgeting.
 #
-# Auto-merge limitation (Codex review #25 P1): events triggered by
-# secrets.GITHUB_TOKEN do not fire downstream workflow runs (GitHub's
-# anti-infinite-loop guard). That means a PR opened by this workflow
-# would never accumulate the required-status-check runs that
-# auto-merge needs to fire on, and `gh pr merge --auto` would sit
-# in a dead-end. Until a PAT secret is configured, this workflow
-# opens the snapshot PR and leaves it for the next human-or-agent
-# pass through the queue to merge — explicit-no-auto-merge over
-# silent-stall is the operational call.
+# Auto-merge limitation: events triggered by
+# secrets.GITHUB_TOKEN do not fire downstream workflow runs
+# (GitHub's anti-infinite-loop guard). That means a PR opened by
+# this workflow would never accumulate the required-status-check
+# runs that auto-merge needs to fire on, and `gh pr merge --auto`
+# would sit in a dead-end. Until a PAT secret is configured, this
+# workflow opens the snapshot PR and leaves it for the next
+# human-or-agent pass through the queue to merge — explicit-no-
+# auto-merge over silent-stall is the operational call.
 
 on:
   schedule:
@@ -150,10 +153,10 @@ jobs:
 
           # Commit message uses the AgencySignature v1 canonical shape.
           # Trailer block is at the end with strict blank-line discipline
-          # (one blank line before, zero within). Per the four-ferry
-          # consensus: this workflow is a named-agent acting under
-          # signed-policy authorization (the maintainer's 2026-04-22 evidence-
-          # based budgeting direction + docs/budget-history/README.md).
+          # (one blank line before, zero within). This workflow is a
+          # named-agent acting under signed-policy authorization (the
+          # maintainer's 2026-04-22 evidence-based budgeting direction +
+          # docs/budget-history/README.md).
           {
             echo "ops(budget): cadence snapshot $ts — task #297"
             echo
@@ -203,8 +206,8 @@ jobs:
           git push -u origin "$branch"
 
           # Open PR with trailer block in body (Squash-Merge Invariant
-          # per Amara ferry-7 + Grok ferry-16 — no non-trailer text
-          # after the trailer block).
+          # per the canonical 10-trailer convention — no non-trailer
+          # text after the trailer block).
           {
             echo "## Summary"
             echo

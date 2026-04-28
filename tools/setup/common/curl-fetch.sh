@@ -175,10 +175,9 @@ curl_fetch() {
 #
 # The proper structural fix — download to a temp file with
 # `curl_fetch` (file-output), checksum-verify if available,
-# then `bash <tempfile` — is tracked as a backlog item under
-# `docs/backlog/P1/B-0063-streamed-installer-download-to-temp-
-# pattern-codex-p0-pr-75.md`. Until that lands, this variant
-# is fail-fast-no-retry by design.
+# then `bash <tempfile` — is tracked as backlog item B-0063
+# (streamed-installer download-to-temp pattern). Until that
+# lands, this variant is fail-fast-no-retry by design.
 curl_fetch_stream() {
   curl -fsSL "$@"
 }
