@@ -40,23 +40,43 @@ rg -i 'service ?titan' \
    --glob '!**/docs/amara-full-conversation/**' \
    --glob '!**/docs/hygiene-history/**' \
    --glob '!**/docs/pr-preservation/**' \
-   --glob '!**/docs/decision-proxy-evidence/**'
+   --glob '!**/docs/decision-proxy-evidence/**' \
+   --glob '!**/references/upstreams/**'
 ```
 
-12 files matched. 8 need active rewriting; 2 are historical narratives that stay verbatim; 2 are generated artifacts.
+12 files matched. Reclassification per the **context-sensitive** rule (rule memory was refined after initial draft):
+
+- 2 KEEP-NAME (pitch context — ServiceTitan is correctly named there)
+- 1 BODY-REWORD (reusable sample → generic naming)
+- 3 PER-ROW inspection (depends on whether row is in pitch context)
+- 1 MIXED (line-by-line)
+- 1 AGGREGATE (regenerate after per-row)
+- 4 HISTORICAL or generated-artifact (preserve verbatim)
 
 ## Scope
 
-### Active-rewrite files (8)
+### KEEP-NAME (2 — pitch context; ServiceTitan correctly named)
 
-1. **`docs/plans/servicetitan-crm-ui-scope.md`** — PATH-RENAME — file path itself contains the term. Rename to `docs/plans/external-crm-ui-scope.md` (or similar) + update body to use generic terms.
-2. **`samples/FactoryDemo.Db/README.md`** — BODY-REWORD — uses ServiceTitan as the demo's "what" name. Rewrite to "external UI demo" / "external CRM API demo."
-3. **`docs/FACTORY-DISCIPLINE.md`** — MIXED — line-by-line inspection. Where it's naming the demo → generic; where it's structural disclosure of funding chain / org-access scope → preserve precisely.
-4. **`docs/pitch/README.md`** — PUBLIC-FACING — pitch doc. Rewrite to generic; ServiceTitan stays only in funding-chain disclosure context if any.
-5. **`docs/BACKLOG.md`** — AGGREGATE — references per-row files. Regenerate after per-row updates land (per the source-set-regeneration-hazard rule, only after ALL per-row files are rewritten).
-6. **`docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`** — PER-ROW — rewrite naming references.
-7. **`docs/backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`** — PER-ROW (just authored 2026-04-28) — already partially fixed in this session's commit; verify clean.
-8. **`docs/backlog/P3/B-0008-investigate-ci-macos-slim-nightly-move-if-doubles-pr-wait-time.md`** — PER-ROW — rewrite naming references.
+1. **`docs/plans/servicetitan-crm-ui-scope.md`** — pitch-target scope doc. ServiceTitan IS the named adoption target. Action: inspect body for any unrelated brand-bleed; otherwise leave (path + content as-is).
+2. **`docs/pitch/README.md`** — pitch doc. ServiceTitan is the named adoption target. Action: inspect for unrelated brand-bleed; otherwise leave.
+
+### BODY-REWORD (1 — reusable surface)
+
+3. **`samples/FactoryDemo.Db/README.md`** — generic-sample README. Reusable beyond pitch target. Action: rewrite to "external UI demo" / "external CRM API demo" so the sample reads as reusable.
+
+### MIXED (1 — line-by-line inspection)
+
+4. **`docs/FACTORY-DISCIPLINE.md`** — governance / contributor doc. Where it's naming the demo → generic. Where it's structural disclosure of funding chain / org-access scope → preserve precisely.
+
+### PER-ROW inspection (3 — context depends on row)
+
+5. **`docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`** — UI dashboard row. Inspect: pitch context or generic?
+6. **`docs/backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`** — already partially-fixed in this session's commit (removed brand-bleed from "renamed from ServiceTitan"). Verify clean.
+7. **`docs/backlog/P3/B-0008-investigate-ci-macos-slim-nightly-move-if-doubles-pr-wait-time.md`** — CI row. Inspect.
+
+### AGGREGATE (1 — regenerate last)
+
+8. **`docs/BACKLOG.md`** — references per-row files. Regenerate AFTER all per-row inspections + rewrites land. (Per source-set-regeneration-hazard rule.)
 
 ### Historical narrative (2 — preserve verbatim)
 
@@ -70,12 +90,13 @@ rg -i 'service ?titan' \
 
 ## Acceptance
 
-- [ ] All 8 active-rewrite files use generic naming ("external UI demo" / similar) for the demo/sample/API context.
-- [ ] Funding-chain + org-access-scope disclosure preserved precisely where it appears (e.g., FACTORY-DISCIPLINE governance section if relevant).
-- [ ] PATH-RENAME applied for `docs/plans/servicetitan-crm-ui-scope.md`.
-- [ ] BACKLOG.md regenerated AFTER all per-row updates land (avoids the source-set-regeneration-hazard).
-- [ ] Audit re-run shows zero matches in live-repo scope (excluding the two historical narratives + two artifacts).
-- [ ] No new ServiceTitan references introduced in subsequent commits (rule encoded in memory; future Otto applies it).
+- [ ] KEEP-NAME files (2) verified correctly named (pitch context); only unrelated brand-bleed (if any) cleaned.
+- [ ] BODY-REWORD file (1) uses generic naming.
+- [ ] PER-ROW files (3) inspected and reclassified to KEEP-NAME or BODY-REWORD per their actual context.
+- [ ] MIXED file (FACTORY-DISCIPLINE) preserves funding-chain + org-access-scope disclosure precisely; demo-naming generic where used.
+- [ ] BACKLOG.md regenerated AFTER all per-row updates land (source-set-regeneration-hazard rule).
+- [ ] No new ServiceTitan references introduced in **non-pitch / non-disclosure** contexts (rule encoded in memory; future Otto applies).
+- [ ] Final audit shows: matches in live-repo scope are LIMITED to legitimate pitch-target / disclosure / historical contexts. **The acceptance metric is "all remaining matches are correctly-named for context," not "zero matches."**
 
 ## Why P2
 
