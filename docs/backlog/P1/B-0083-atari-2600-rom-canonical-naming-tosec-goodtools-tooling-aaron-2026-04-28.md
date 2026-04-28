@@ -145,17 +145,31 @@ right after the 0/0/0 starting point"*. Decoded:
      only, no distribution) so future-Otto knows what's available
      for testing.
 
-## Tooling design — dependency-first, replicate-as-fallback (Aaron 2026-04-28T18:59Z)
+## Tooling design — dependency-first as bridge; build-our-own as end goal (Aaron 2026-04-28T18:59Z + 19:00Z)
 
-Aaron verbatim: *"TOSEC/Good we can pull as dependences too and use
-the same consume goodcitizen staces as all of our other dependencies
+Aaron verbatim 18:59Z: *"TOSEC/Good we can pull as dependences too and
+use the same consume goodcitizen staces as all of our other dependencies
 i just don't know if these are cross platform."*
 
-**Preferred path: pull TOSEC/Good Tools (or a cross-platform equivalent)
-as a dependency.** This composes with the existing absorb-and-contribute
-discipline (`memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`):
-use community tools, contribute back upstream when we find bugs or
-want improvements, don't reinvent unnecessarily.
+Aaron sharpened verbatim 19:00Z: *"build-our-own as last resort. our
+good citizen is because our end goal is we build all of our dependncies
+but still contribute back our enhancements and such"*
+
+The trajectory (per
+`memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`
+end-goal sharpening):
+
+1. **Bridge phase**: pull TOSEC/Good Tools (or cross-platform
+   equivalent) as a dependency. Use the established consume-good-
+   citizen pattern. Contribute back enhancements while we use it.
+2. **Build-our-own phase** (eventual): factory builds its own
+   datfile-driven ROM-namer. This is the end goal, not a fallback.
+3. **Contribution-back continues** even after build-our-own lands —
+   peer-maintainer status survives our own implementation.
+
+For B-0083 specifically, we're at step 1 (bridge phase). The
+preferred immediate path is dependency-first; build-our-own is
+explicitly the trajectory direction, not a panic-fallback.
 
 ### Cross-platform tool research (preliminary, expand on pickup)
 
