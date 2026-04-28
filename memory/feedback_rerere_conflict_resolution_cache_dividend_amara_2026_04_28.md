@@ -118,12 +118,68 @@ because the prior commit modified the same area).
 
 ## Bead audit
 
+### Bead-audit rule (Amara 2026-04-28T21:10Z)
+
+> *Count only `Resolved '<path>' using previous resolution`
+> as a rerere cache-hit bead. `Recorded preimage` and
+> `Recorded resolution` are cache-write events: they create
+> pending bead opportunities but do not themselves validate
+> reuse.*
+
+This rule was added after Otto over-attributed beads on the
+restart sequence: the original tick-narration claimed
+"3 cache-hit observations across PR #693, #690, #694
+rebases" based on conflating activity logs (cache writes)
+with validation logs (cache hits). Amara caught the
+conflation with the operational distinction:
+
+- **`Resolved '<path>' using previous resolution`** —
+  rerere applied a prior recorded resolution. **CACHE HIT.**
+  Earns one Rerere Cache Dividend bead per occurrence.
+- **`Recorded preimage for '<path>'`** — rerere noted the
+  conflict shape pre-resolution (saving it to the cache).
+  **CACHE WRITE.** Pending future bead; not yet validated.
+- **`Recorded resolution for '<path>'`** — rerere saved the
+  user's manual resolution to the cache. **CACHE WRITE.**
+  Same: pending future bead, not validated.
+
+Apply this rule rigorously in any future bead audit on this
+class. Counting cache-writes as cache-hits is the
+**Mechanism-Activity Validation Drift** failure mode
+(noted as observation-level only — class promotion deferred
+until a second independent example outside rerere). It
+generalizes: any class whose validation depends on
+mechanism-emitted log signals must distinguish
+activity-logs from validation-logs in its bead audit.
+
+### Verified beads
+
 This class earns:
 
 - **1 bead via cache hit**: this session's max-mode restart
   hit `Resolved 'memory/MEMORY.md' using previous
   resolution` on PR #693's first conflict, validating that
-  recorded resolutions survived the prior abort.
+  recorded resolutions survived the prior abort. This is
+  the **only** cache-hit observed in the restart sequence.
+
+### Pending beads (cache writes; not yet validated)
+
+The restart sequence produced 3 cache-write events whose
+validation is still pending:
+
+- PR #693 commit 2 (c795e40): `Recorded preimage` —
+  pending. Earns a bead when a future rebase hits this
+  recorded shape.
+- PR #690 (b1fa17a): `Recorded preimage` + `Recorded
+  resolution` — pending. Earns a bead when a future rebase
+  hits this recorded shape.
+- PR #694 (a8165bb): `Recorded preimage` — pending. Earns
+  a bead when a future rebase hits this recorded shape.
+
+Pending beads can convert to earned beads only when the
+specific cache entry is reused by a future rebase, with
+the `Resolved '<path>' using previous resolution` log
+line as the witness.
 
 Future bead-earning opportunities:
 
