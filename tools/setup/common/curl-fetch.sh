@@ -55,8 +55,8 @@
 #
 #   curl_fetch_stream — for streamed-to-shell installers
 #                       (`curl ... | sh`, `bash -c "$(curl
-#                       ...)"`). NO --retry. Codex P0 review
-#                       on PR #75 confirmed: even bare
+#                       ...)"`). NO --retry. Reviewers
+#                       confirmed: even bare
 #                       `--retry` (without `--retry-all-
 #                       errors`) can retry after bytes have
 #                       already been written to stdout, and
@@ -86,9 +86,11 @@
 #
 # RETRY POLICY (rationale)
 # ========================
-#   --retry 5            — five attempts total. Empirically
-#                          covers the upstream 5xx blips
-#                          this install path has hit.
+#   --retry 5            — up to 5 retries (6 total attempts
+#                          including the initial try, per
+#                          curl(1)). Empirically covers the
+#                          upstream 5xx blips this install
+#                          path has hit.
 #   --retry-delay 2      — 2-second base delay between retries.
 #   --retry-all-errors   — (file-output only) retry on ALL
 #                          transient errors including HTTP
@@ -136,8 +138,9 @@
 # would silently skip BOTH definitions if the caller
 # environment already had an unrelated `curl_fetch`
 # function, leaving `curl_fetch_stream` undefined and
-# breaking the streamed callers (`linux.sh` / `macos.sh`
-# / `elan.sh`) at runtime with `curl_fetch_stream:
+# breaking the streamed callers (`tools/setup/linux.sh` /
+# `tools/setup/macos.sh` / `tools/setup/common/elan.sh`)
+# at runtime with `curl_fetch_stream:
 # command not found`. Sentinel-based guarding ties the
 # load decision to "did this file load?" instead of "does
 # that name exist?" — collisions in the caller environment
@@ -154,7 +157,7 @@ curl_fetch() {
 
 # Streamed variant — NO --retry, NO --retry-all-errors.
 #
-# Codex P0 review on PR #75 surfaced that even bare `curl
+# Reviewers surfaced that even bare `curl
 # --retry` (without --retry-all-errors) can still retry after
 # bytes have been written to stdout: the connect error happens
 # mid-transfer, curl resets the input but the bytes already
