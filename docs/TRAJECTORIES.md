@@ -76,6 +76,7 @@ Optional sections:
 | Wallet experiment + EAT | [wallet-experiment-and-eat.md](trajectories/wallet-experiment-and-eat.md) | architect + maintainer (sign-off per stage) | per-stage; per-receipt; per-research-update | 2026-04-28 |
 | Data Vault integration | [data-vault-integration.md](trajectories/data-vault-integration.md) | architect + data-vault-expert | per-concept; per-paradigm-mapping; quarterly research | 2026-04-28 |
 | Test coverage | [test-coverage.md](trajectories/test-coverage.md) | architect + DST/FsCheck/Stryker experts | per-PR; per-flake; quarterly mutation/coverage audit | 2026-04-28 |
+| Loop quality | [loop-quality.md](trajectories/loop-quality.md) | architect + alignment-observability | per-tick observation; per-violation corrective; cadenced re-read every N=10 ticks (evidence-driven N adjustment) | 2026-04-28 |
 
 (Add a row when a new trajectory lands; never remove rows —
 retired trajectories get a "Retired" status in the file head.)
