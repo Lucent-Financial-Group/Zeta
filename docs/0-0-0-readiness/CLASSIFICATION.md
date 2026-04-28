@@ -27,34 +27,82 @@ overlap or get superseded by LFG's parallel work).
 
 This document classifies each of the 23 files for 0/0/0 readiness.
 
-## Classification rubric (Amara 2026-04-28T21:48Z)
+## Primary-metric reframe (Amara 2026-04-28T22:08Z)
 
-For each file's AceHack-only content:
+Initial framing: "classify 145 AceHack-only commits."
+
+Calibration revealed: commit-count was the wrong primary metric. The
+topology invariant for 0/0/0 is **tree-level equivalence**, not
+commit-count parity. Tree-level diff revealed only 23 differing files;
+calibration on 5 sampled files showed 5/5 ALREADY-COVERED.
+
+**Updated operational frame**:
+
+```text
+Commit-count divergence is a warning signal (diagnostic only).
+Tree-level diff is the working surface.
+File-level substrate comparison is the reconciliation method.
+Commit history is supporting evidence only when file-level comparison is ambiguous.
+```
+
+This is a Goodhart-relevant correction: do not optimize for reducing
+scary commit-count divergence if the topology invariant is tree-level
+equivalence.
+
+## Classification rubric (Amara 2026-04-28T21:48Z + Claude.ai 22:05Z 5th bucket)
+
+For each differing file's content:
 
 | Status | Meaning | Action |
 |---|---|---|
 | `ALREADY-COVERED` | Semantic equivalent already on LFG main (same/different file) | Hard-reset works |
-| `NEEDS-FORWARD-SYNC` | Substantive AceHack-only content not on LFG | Forward-sync to LFG before hard-reset |
+| `NEEDS-FORWARD-SYNC` | Substantive AceHack-only content; still valid | Forward-sync to LFG before hard-reset |
 | `OBSOLETE` | Superseded by parallel LFG work; no longer applicable | Drop on hard-reset |
-| `NEEDS-HUMAN-REVIEW` | Ambiguous; requires Aaron's call | Surface to Aaron |
+| `CONFLICTS-WITH-CURRENT-MAIN` | Actively contradicts current LFG main; reconciliation decision needed | Surface to Aaron |
+| `NEEDS-HUMAN-REVIEW` | Evidence insufficient or ambiguous; do not force a category | Surface to Aaron |
+
+`CONFLICTS-WITH-CURRENT-MAIN` is distinct from `NEEDS-HUMAN-REVIEW`: the
+first means "I know the conflict exists and need a decision"; the
+second means "I can't classify with confidence."
 
 **Evidence requirements per classification**:
 
 - File path
 - Diff direction (+/-/mixed line counts)
-- LFG equivalent commit/path if `ALREADY-COVERED`
+- LFG equivalent commit/path/section if `ALREADY-COVERED`
 - Reason for classification
-- Source commit SHA(s) on AceHack that produced the content
+- Confidence level / ambiguity notes
+- Source AceHack commit SHA(s) only when needed for provenance,
+  supersession-proof, or conflict-evidence
 
-## Method (Amara 2026-04-28T21:48Z)
+## Method (file-level primary, commit history supporting)
 
 ```text
-1. Identify the AceHack-only content (`+` lines in `git diff origin/main..acehack/main -- <file>`)
-2. Check whether LFG main contains equivalent/subsuming content
-3. Classify per rubric above
-4. Record evidence
-5. Do not trust summaries alone; compare substrate
+1. Use `git diff origin/main..acehack/main --numstat` as the work queue.
+2. For each differing file, run `git diff origin/main..acehack/main -- <file>`.
+3. Compare AceHack-only `+` content against LFG main substrate (same file
+   first, then nearby files / cross-references if not in same file).
+4. Classify per rubric using actual git state, not commit summaries.
+5. If file-level comparison is ambiguous, inspect AceHack commit history
+   for provenance/supersession/conflict evidence.
+6. Record evidence in this document.
+7. Long-tail control: random 10% spot-check after the run; every Nth file
+   (TBD when scale becomes clear) gets deeper review.
 ```
+
+## Calibration completion criteria (Claude.ai 2026-04-28T22:05Z)
+
+The calibration phase is complete when:
+
+1. Every sampled file has a classification without forcing a category.
+2. The rubric handles encountered cases cleanly (no patterns
+   surfaced that require a 6th bucket).
+3. Time-per-file is roughly stable by the end of the batch.
+4. Aaron has signed off on the rubric/output shape.
+
+For this round, criteria 1-3 are satisfied (5/5 cleanly classified;
+rubric handled all 5; time stable). Criterion 4 (Aaron sign-off) is
+the gate before scaling to remaining 18 files.
 
 ## Carrier-exposed multi-harness convergence note
 
@@ -124,7 +172,27 @@ Most likely outcome based on the heuristic: 14-16 of the remaining 18 ALREADY-CO
 
 ### Calibration insight for Aaron
 
-The 145-commit / 530-behind state may be much closer to 0/0/0-ready than the raw numbers suggest. The bulk of "AceHack-only work" turns out to be **older drafts of files LFG has since advanced** — not unique work needing forward-sync. If the heuristic holds for the remaining 18 files, hard-reset alone may resolve most of the divergence with at most 2-4 small forward-syncs.
+**Calibration evidence suggests the remaining work is much smaller than the commit-count divergence implied** (Amara tiny-blade 22:08Z — "close to ready" overclaims; "smaller than implied" stays grounded). The bulk of "AceHack-only work" in the calibration sample turned out to be **older drafts of files LFG has since advanced** — not unique work needing forward-sync. The heuristic projects 14-16 of remaining 18 ALREADY-COVERED + 2-4 NEEDS-FORWARD-SYNC/DECISION, but **5/5 ALREADY-COVERED is calibration signal, not proof for the remaining 18** — each file must be proven against substrate before classification.
+
+## Success state (Amara 2026-04-28T22:08Z)
+
+```text
+All differing AceHack/LFG files are classified with evidence.
+
+The factory has a clean reconciliation map:
+  ALREADY-COVERED
+  NEEDS-FORWARD-SYNC
+  OBSOLETE
+  CONFLICTS-WITH-CURRENT-MAIN
+  NEEDS-HUMAN-REVIEW
+
+Only after that map exists should the hard-reset / sync-readiness
+decision proceed.
+```
+
+This is the "AceHack/LFG reconciliation map" deliverable, not "in
+sync by SHA." Exact SHA-sync comes later; the decision map is the
+immediate target.
 
 ### Remaining 18 files (deferred to follow-up ticks)
 
