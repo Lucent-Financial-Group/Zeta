@@ -45,7 +45,34 @@ it's that Scorecard's SASTID metric counts "did the github-code-scanning
 app log a SAST run" per commit, and path-gate-skipped commits register
 as "SAST didn't run".
 
-## The right long-term fix
+## Update 2026-04-28T19:09Z: pattern already implemented
+
+After deeper investigation: `.github/workflows/codeql.yml` lines 53-65,
+121-180, 241-334 ALREADY implement this pattern. The path-gate job
+emits no-findings SARIF per language category when no code changed.
+**The current SASTID 28/30 is a timing artifact**, not a missing fix:
+
+- The alert was created 2026-04-27T23:52:55Z.
+- The path-gate became fully active around PR #651 (which itself
+  modified codeql.yml).
+- Scorecard's window of 'recent 30 merged PRs' currently includes
+  pre-path-gate commits, hence the gap.
+- As more post-path-gate PRs land, the metric self-heals.
+
+**Lower-priority than initially scoped.** The trajectory is now
+captured durably as substrate (see
+`memory/feedback_emit_empty_security_result_on_conditional_skip_ci_maturity_pattern_aaron_2026_04_28.md`)
+so future security-tool workflows inherit the pattern. The specific
+codeql.yml work is DONE; the timing-artifact resolves on its own.
+
+What remains in scope for B-0084:
+- Verify the path-gate aggregate-baseline covers ALL matrix languages
+  (currently: actions + csharp + python + java-kotlin + javascript-
+  typescript per round-34 update).
+- If a future language addition misses the aggregate-baseline, this
+  row catches it.
+
+## The original fix shape (preserved for context)
 
 When path-gate determines no code changes, **still upload an empty
 SARIF** via \`codeql-action/upload-sarif@<sha>\`. This makes GitHub's
