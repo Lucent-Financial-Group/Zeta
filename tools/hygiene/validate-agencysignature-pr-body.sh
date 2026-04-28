@@ -2,7 +2,7 @@
 # validate-agencysignature-pr-body.sh — pre-merge validator for the
 # AgencySignature Convention v1 trailer block in a PR description body.
 # Pairs with audit-agencysignature-main-tip.sh (task #299) as the
-# pre-merge / post-merge enforcement instrument set# ("stop designing, instrument enforcement").
+# pre-merge / post-merge enforcement instrument set ("stop designing, instrument enforcement").
 #
 # Usage:
 #   gh pr view <number> --json body --jq '.body' | tools/hygiene/validate-agencysignature-pr-body.sh
@@ -199,7 +199,7 @@ if ! printf '%s\n' "$task_val" \
   printf '%s\n' "  Found:    '$task_val'"
   printf '%s\n' "  Expected: a ticket-id (e.g. Otto-NN, task-#NNN, #NNN, FOO-NN)"
   printf '%s\n' "            or the literal 'none' fallback"
-  printf '%s\n' "  Spec:     $spec_doc Section 9.2 (Task: none fallback per )"
+  printf '%s\n' "  Spec:     $spec_doc Section 9.2 (Task: none fallback)"
   exit 1
 fi
 

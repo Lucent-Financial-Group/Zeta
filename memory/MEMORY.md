@@ -576,7 +576,7 @@
 - [Factory NOT Christian; ecumenical](user_ecumenical_factory_posture.md) — all faiths+atheists equal.
 - [Aaron's occult literacy (incl. Crowley); self-gated](user_occult_literacy_and_crowley.md) — no probe/teach/pathologize.
 - [μένω compact — persist/endure/correct](user_meno_persist_endure_correct_compact.md) — Aaron+agent+Zeta triad.
-- [Sister Elisabeth was Aaron's best friend](user_sister_elisabeth.md) — don't verbalise unless drawn.
+- [Sister Elizabeth was Aaron's best friend](user_sister_elizabeth.md) — don't verbalise unless drawn.
 - [Rewriting permission — rewrite garbled first-pass](feedback_rewording_permission.md) — preserve verbatim in block.
 - [Dimensional expansion via Maji](user_dimensional_expansion_via_maji.md) — exhaustive-index + lemma-ladder.
 - [Real-Time Lectio Divina (emit side)](user_real_time_lectio_divina_emit_side.md) — Girard + Sun Tzu.
