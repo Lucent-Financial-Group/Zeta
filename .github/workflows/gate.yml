@@ -317,9 +317,11 @@ jobs:
         # Installs shellcheck via mise (pinned in .mise.toml). Single
         # source of truth — the same version on dev laptops + CI
         # runners. Prior step relied on shellcheck shipping pre-
-        # installed on ubuntu-24.04, which broke parity (dev machines
-        # may have a different version) and wouldn't survive newer
-        # runner images like ubuntu-slim that don't ship shellcheck.
+        # installed on ubuntu-22.04 (the older runner image), which
+        # broke parity (dev machines may have a different version)
+        # and wouldn't survive newer runner images like ubuntu-slim
+        # that don't ship shellcheck. Same parity concern applies on
+        # ubuntu-24.04 — install via mise regardless.
         run: ./tools/setup/install.sh
 
       - name: Run shellcheck
