@@ -1507,7 +1507,12 @@ strong enough to authorize DESTRUCTION (irreversible).
 `feedback_amara_authority_rule_default_to_reversible_preservation_escalate_irreversible_loss_2026_04_28.md`
 + `feedback_sample_classification_is_calibration_not_clearance_amara_goodhart_catch_3_2026_04_28.md`
 + `feedback_stop_mythology_layered_evidence_thresholds_aaron_amara_2026_04_28.md`
-+ `feedback_input_is_not_directive_provenance_framing_rule_aaron_amara_2026_04_28.md` (provenance framing — input is not a directive).
++ `feedback_input_is_not_directive_provenance_framing_rule_aaron_amara_2026_04_28.md` (provenance framing — input is not a directive)
++ `feedback_ani_voice_mode_transcript_original_catcher_attribution_correction_aaron_2026_04_28.md` (attribution-credit-chain rule)
++ `feedback_reset_readiness_metric_ladder_content_loss_surface_amara_2026_04_28.md` (4-step metric ladder)
++ `feedback_lost_substrate_recovery_cadenced_trajectory_aaron_2026_04_28.md` (cadenced recovery)
++ `feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md` (context-sensitive naming + word-choice)
++ `feedback_public_company_contributor_compliance_no_insider_info_in_public_repos_with_trajectories_aaron_2026_04_28.md` (generalized contributor compliance + 5 trajectories).
 
 ## How this file stays accurate
 
