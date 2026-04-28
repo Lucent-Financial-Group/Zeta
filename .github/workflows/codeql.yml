@@ -404,6 +404,13 @@ jobs:
           # tools/setup/install.sh; the GitHub-hosted runner has
           # mise-shimmed Java available after the install step
           # below, but we don't need to invoke `javac` ourselves.
+          #
+          # JVM language preference (B-0075): Kotlin > Scala >
+          # Java. New JVM code lands in Kotlin by default;
+          # AlloyRunner.java is grandfathered until its next
+          # non-trivial rewrite. The `java-kotlin` extractor
+          # scans all three so this matrix cell does not need
+          # to change when the preference activates.
           - language: java-kotlin
             build-mode: none
           - language: python
