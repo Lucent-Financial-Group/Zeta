@@ -40,6 +40,7 @@ fast.
 | `budget-snapshot-cadence.yml` | pending merge (AceHack PR #25); weekly cadence |  |
 
 Branch protection (LFG main):
+
 - required_status_checks: build-and-test (macos-26, ubuntu-24.04, ubuntu-24.04-arm), lint (actionlint, markdownlint, semgrep, shellcheck) — strict
 - required_pull_request_reviews: 0 approving, dismiss_stale, no code-owner-required
 - required_linear_history: true
@@ -48,6 +49,7 @@ Branch protection (LFG main):
 - copilot_code_review (in Default ruleset)
 
 Org-level (LFG):
+
 - Code Security configurations: 6 configs (id 17 GitHub recommended + 244997 + 244998 dup + 244999 + 245000 dup + 245012 dup); 244997 attached to 7 sibling repos; Zeta unattached
 - Default code-scanning: not-configured (disabled 2026-04-28)
 
