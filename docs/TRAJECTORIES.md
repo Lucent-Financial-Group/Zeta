@@ -72,6 +72,10 @@ Optional sections:
 | Performance + benchmarks | [performance-and-benchmarks.md](trajectories/performance-and-benchmarks.md) | Naledi (performance-engineer) | per-PR (perf-touching); P1+ regression binding; quarterly hot-path audit | 2026-04-28 |
 | DBSP operator algebra | [dbsp-operator-algebra.md](trajectories/dbsp-operator-algebra.md) | algebra-owner + Soraya (formal routing) | per-claim; per-Mathlib-update; per-paper-stage | 2026-04-28 |
 | Tech radar | [tech-radar.md](trajectories/tech-radar.md) | tech-radar-owner | per-decision; per-evidence; quarterly review; per-batch | 2026-04-28 |
+| Aurora research | [aurora-research.md](trajectories/aurora-research.md) | Otto + Amara (ferry-provider) | per-ferry-landing; per-integration-absorb; per-round | 2026-04-28 |
+| Wallet experiment + EAT | [wallet-experiment-and-eat.md](trajectories/wallet-experiment-and-eat.md) | Otto + maintainer (sign-off per stage) | per-stage; per-receipt; per-research-update | 2026-04-28 |
+| Data Vault integration | [data-vault-integration.md](trajectories/data-vault-integration.md) | Otto + data-vault-expert | per-concept; per-paradigm-mapping; quarterly research | 2026-04-28 |
+| Test coverage | [test-coverage.md](trajectories/test-coverage.md) | Otto + DST/FsCheck/Stryker experts | per-PR; per-flake; quarterly mutation/coverage audit | 2026-04-28 |
 
 (Add a row when a new trajectory lands; never remove rows —
 retired trajectories get a "Retired" status in the file head.)
