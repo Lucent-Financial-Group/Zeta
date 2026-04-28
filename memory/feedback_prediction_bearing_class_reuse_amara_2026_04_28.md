@@ -307,6 +307,76 @@ Bead metrics must be guarded against Goodharting.
 This is the load-bearing summary. Memorize this; cite it
 in any class-bead audit.
 
+### Amortized Precision — positive complement of Goodhart Risk (Aaron 2026-04-28T21:32Z; Amara compact-form 21:38Z)
+
+> *"amortized precision leads to momentum look at 6 sigma
+> for proof and similar like kanban discipline"* — Aaron
+
+Precision and momentum are not opposites when the precision
+work reduces future rework. Disciplined measurement, WIP
+limits, explicit policies, and defect controls can look
+slow locally while increasing throughput across iterations.
+
+**The dual-constraint pair** (preventing oscillation between
+two errors):
+
+- **Goodhart Risk** guards against producing process
+  artifacts for their own sake (*"more process = more
+  progress"*).
+- **Amortized Precision** guards against undervaluing
+  process discipline that measurably lowers downstream
+  defect, rebase, review, or recovery cost
+  (*"process work is not real progress"*).
+
+**Distilled rule** (Amara 2026-04-28T21:38Z):
+
+```text
+Precision is not the enemy of momentum.
+Unamortized process is drag.
+Amortized precision is momentum.
+```
+
+**External lineage**:
+
+- **Six Sigma** — Bill Smith (Motorola, 1986); DMAIC cycle
+  (Define / Measure / Analyze / Improve / Control); 3.4
+  defects-per-million target. Upfront measurement
+  infrastructure amortizes into compounding reductions in
+  downstream rework, warranty, and escalation cost.
+- **Kanban (manufacturing)** — Taiichi Ohno (Toyota
+  Production System, 1950s). Visualize work-in-progress,
+  limit WIP, pull on demand. WIP limits look like
+  throttling but increase total throughput by reducing
+  context-switching, queue depth, and rework cascades.
+- **Kanban (software)** — David J. Anderson, *Kanban:
+  Successful Evolutionary Change for Your Technology
+  Business* (Blue Hole Press, 2010). Same principle
+  adapted to knowledge work: WIP-limit discipline yields
+  faster cycle times than unconstrained alternative.
+
+**Falsifier** — amortized precision fails when:
+
+- Discipline-overhead grows faster than amortized savings
+  (Goodhart Risk applied at the discipline level).
+- Factory throughput drops over time despite growing
+  discipline (operational test: "Did the
+  discipline-overhead this arc produce observable
+  downstream throughput improvement?").
+
+**Composes with**:
+
+- The Goodhart Risk section above — dual constraint;
+  both must be in force.
+- B-0060 (human-lineage external-anchor backfill) — Six
+  Sigma + Kanban are explicit anchors per Aaron's
+  stop-mythology directive.
+
+**What this is NOT**: not a license to drop bead-audit
+guardrails; not a substitute for measurable factory output
+metrics (PRs landed, cycle-time trends, alignment-score
+trajectory) — without those, "amortization" is
+unfalsifiable.
+
 ## Class Validation Beads — accounting mechanism (Amara 2026-04-28T20:48Z)
 
 **System name:** **Class Validation Beads**.
