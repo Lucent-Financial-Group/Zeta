@@ -1,13 +1,14 @@
 ---
 id: B-0084
-priority: P1
-status: open
-title: CodeQL path-gate should emit empty SARIF on doc-only PRs so Scorecard SASTID metric sees "SAST ran" (Aaron 2026-04-28)
+priority: P3
+status: mostly-implemented-verify-coverage
+title: Verify CodeQL path-gate empty-SARIF aggregate-baseline covers all matrix languages (already implemented, verify-only scope)
+tier: factory-tooling
 effort: S
-ask: when path-gate determines no code changes, still upload an empty SARIF file via codeql-action/upload-sarif so GitHub's Code Scanning logs "SAST ran" for that commit. Closes Scorecard SASTID 28/30 → 30/30.
+ask: maintainer Aaron 2026-04-28 (SASTID alert investigation — speculation-vs-evidence + do-the-right-long-term-thing corrections)
 created: 2026-04-28
 last_updated: 2026-04-28
-tags: [aaron-2026-04-28, scorecard, sastid, codeql, path-gate, do-the-right-long-term-thing, dismissed-then-reopened]
+tags: [aaron-2026-04-28, scorecard, sastid, codeql, path-gate, do-the-right-long-term-thing, mostly-implemented, verify-only, P3-downgraded-from-P1-on-finding-already-done]
 ---
 
 # B-0084 — CodeQL path-gate emit-empty-SARIF for Scorecard SAST coverage
@@ -75,7 +76,7 @@ What remains in scope for B-0084:
 ## The original fix shape (preserved for context)
 
 When path-gate determines no code changes, **still upload an empty
-SARIF** via \`codeql-action/upload-sarif@<sha>\`. This makes GitHub's
+SARIF** via \`codeql-action/upload-sarif@<sha-pin>\`. This makes GitHub's
 Code Scanning surface log "SAST ran with zero findings" for that
 commit, which Scorecard then counts as SAST-covered.
 

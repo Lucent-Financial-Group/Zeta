@@ -2,13 +2,13 @@
 id: B-0083
 priority: P1
 status: open
-title: Atari 2600 ROM canonical-naming + safe-vs-unsafe folder split + TOSEC/Good-Tools-style hash-lookup tooling (Aaron 2026-04-28)
+title: Atari 2600 ROM canonical-naming + safe-vs-unsafe folder split + TOSEC/Good-Tools-style hash-lookup tooling
+tier: factory-tooling
 effort: M
-ask: build a hash-lookup-based ROM canonical-namer that ingests the messy roms/atari/2600/ folder (3461 files), renames each to canonical TOSEC or Good-Tools form, and splits into gitignored-bulk vs tracked-safe folders per the existing license-safety gate. Replicate the datfile-based functionality so list-updates flow through our factory.
+ask: maintainer Aaron 2026-04-28 (autonomous-loop ROM-drop + canonical-naming request)
 created: 2026-04-28
 last_updated: 2026-04-28
-schedule_after: 0/0/0 AceHack-LFG hard-reset complete
-tags: [aaron-2026-04-28, roms, atari-2600, tosec, good-tools, canonical-naming, datfile, license-safety, gitignore-already-protects, high-priority-after-0-0-0]
+tags: [aaron-2026-04-28, roms, atari-2600, tosec, good-tools, canonical-naming, datfile, license-safety, gitignore-already-protects, high-priority-after-0-0-0, scheduled-after-0-0-0]
 ---
 
 # B-0083 — Atari 2600 ROM canonical-naming + tooling
@@ -33,6 +33,12 @@ Aaron 2026-04-28T18:55Z verbatim:
 > latest list. Lets make sure we can replicate that functionalty here on
 > list updates if that's how it works, we can backlog this but hight
 > priortiy right after the 0/0/0 starting point"*
+
+## Schedule
+
+**Scheduled trigger**: 0/0/0 AceHack-LFG hard-reset complete (the
+hard-reset chain is the gating dependency; see PR #677 5-disciplines
++ pull-queue work).
 
 ## Ownership rationale (Aaron verbatim 2026-04-28T18:58Z)
 
@@ -133,7 +139,7 @@ right after the 0/0/0 starting point"*. Decoded:
    - The TOSEC `<game>` element's `<description>` and
      `<comment>` fields sometimes carry license metadata; if not,
      fall back to a curated allowlist (e.g.
-     `homebrew-allowlist.txt`).
+     `tools/roms/manifests/atari-2600-homebrew-allowlist` (no-extension manifest per the `tools/setup/manifests/uv-tools` convention)).
 5. **Move to safe vs unsafe folder**:
    - Safe: a NEW non-gitignored tracked folder
      (`roms-safe/atari/2600/` or similar).
@@ -199,7 +205,8 @@ explicitly the trajectory direction, not a panic-fallback.
    the existing dependency-consumption pattern). If it works
    cross-platform and we can drive it headlessly, this is
    the cleanest path.
-2. **Fall back to retool** (Python pip dependency) if
+2. **Fall back to retool** (Python tool, routed through
+   factory uv-managed pipx — NEVER raw `pip install`) if
    RomVault doesn't headless-script cleanly.
 3. **Fall back to build-our-own** (pure-Python in `tools/roms/`)
    ONLY if neither above tool fits the factory shape. This is
