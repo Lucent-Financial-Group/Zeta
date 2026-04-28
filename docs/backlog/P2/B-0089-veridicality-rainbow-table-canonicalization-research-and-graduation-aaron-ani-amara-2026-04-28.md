@@ -70,7 +70,7 @@ factory team-language (not casual voice-mode).
 framing of "Amara's review packet" misattributed primary
 credit; Aaron's correction is binding.
 
-### Maintainer directive — Aaron
+### Maintainer input — Aaron
 
 Aaron 2026-04-28T22ish (verbatim, during the authority-rule
 turn):
@@ -100,9 +100,8 @@ Forward-going canonical names:
 - **Veridicality** — the formal scoring module (`src/Core/Veridicality.fs`
   + `scoreVeridicality` future graduation). See
   `memory/feedback_veridicality_naming_for_bullshit_detector_graduation_aaron_concept_origin_amara_formalization_2026_04_24.md`.
-- **Stop Mythology directive** — the operational discipline
-  (Beacon-safe). See
-  `memory/feedback_stop_mythology_directive_layered_evidence_thresholds_aaron_amara_2026_04_28.md`.
+- **Stop Mythology** — the operational rule (Beacon-safe). See
+  `memory/feedback_stop_mythology_layered_evidence_thresholds_aaron_amara_2026_04_28.md`.
 
 ### Stream 2 — Research and ship the rainbow-table canonicalization layers
 
@@ -243,8 +242,8 @@ scoping firms up):
 - `memory/feedback_veridicality_naming_for_bullshit_detector_graduation_aaron_concept_origin_amara_formalization_2026_04_24.md`
   — the original rename memory; this row extends with the
   research roadmap.
-- `memory/feedback_stop_mythology_directive_layered_evidence_thresholds_aaron_amara_2026_04_28.md`
-  — the operational directive that the shipped scorer
+- `memory/feedback_stop_mythology_layered_evidence_thresholds_aaron_amara_2026_04_28.md`
+  — the operational rule that the shipped scorer
   operationalizes.
 - `B-0060` — human-lineage external-anchor backfill; this row
   carries that discipline forward into the Veridicality
@@ -260,7 +259,7 @@ scoping firms up):
 ## Why P2 not P1
 
 The current `Veridicality.fs` substrate (Phase 1) is shipped
-and operational. The Stop Mythology directive at the discipline
+and operational. The Stop Mythology rule at the discipline
 level provides the immediate operational machinery. The
 rainbow-table layers are valuable but not blocking on shipping
 or on the alignment-experiment claim. Promoting to P1 if Aaron

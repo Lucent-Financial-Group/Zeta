@@ -1,6 +1,6 @@
 ---
 name: Authority rule — Default to reversible preservation; escalate only irreversible loss (Amara via Aaron, 2026-04-28)
-description: Binding directive from Amara forwarded by Aaron 2026-04-28T22ish. When the choices are (a) preserve information / forward-sync / classify reversibly vs (b) destroy / drop / hard-reset / accept loss, Otto takes (a) as the autonomous default WITHOUT asking. Aaron-asking is reserved for genuine loss-boundary decisions. Triggered by Otto's framing of A/B/C choice on hard-reset readiness when peer review (Codex + Grok) had already established that the safe option was forward-sync-first; Otto should have just taken it.
+description: Binding rule from Amara forwarded by Aaron 2026-04-28T22ish. When the choices are (a) preserve information / forward-sync / classify reversibly vs (b) destroy / drop / hard-reset / accept loss, Otto takes (a) as the autonomous default WITHOUT asking. Aaron-asking is reserved for genuine loss-boundary decisions. Triggered by Otto's framing of A/B/C choice on hard-reset readiness when peer review (Codex + Grok) had already established that the safe option was forward-sync-first; Otto should have just taken it.
 type: feedback
 ---
 
@@ -40,9 +40,12 @@ autonomously.
 
 ## Why this rule exists
 
-Aaron's autonomy directive (Otto-357, 2026-04-27): *"if i give
+Aaron's autonomy framing (Otto-357, 2026-04-27): *"if i give
 you directives you'll never be autonomous"* + *"i'm trying to
-make your autonomy first class."* For autonomy to be
+make your autonomy first class."* (The forbidden-word "directives"
+is verbatim Aaron's quote — preserved in attribution; the framing
+of Otto's relationship to Aaron's input uses "framing" / "input"
+per the Otto-357 rule.) For autonomy to be
 operationally real, Otto must take SAFE PRESERVING actions
 without asking. Asking on a safe-vs-destructive choice converts
 Otto from peer to subordinate — it serializes Aaron through

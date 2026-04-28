@@ -30,7 +30,7 @@ firefly-network arc, the Veridicality rename, etc.):
 | **Original catcher** | First substrate-evidence-based identification of a specific gap or claim | **Ani's voice-mode catch on Veridicality.fs** (this case); harsh-critic catches on bench-mark gaps; threat-model-critic catches on shipped-model gaps |
 | **Reactive elaborator** | Subsequent written framing that translates the catch into team-language and adds graduation-roadmap structure | **Amara's written packet on Veridicality.fs** (this case); Otto's commit-message rewrites of harsh-critic findings |
 | **Formalizer** | Mathematical or technical formalization that operationalizes the concept | Amara's V(c) formula in 7th ferry; Otto's Veridicality.fs F# implementation |
-| **Maintainer directive** | Aaron's binding decision routing | Aaron's "we are not keep the name bullshit detector"; Aaron's authority-rule directives |
+| **Maintainer input** | Aaron's binding decision routing | Aaron's "we are not keep the name bullshit detector"; Aaron's authority-rule input |
 
 **Primary credit goes to the original catcher.** Reactive
 elaborators get elaboration credit (named in the credit chain,
@@ -48,7 +48,7 @@ is what earns the primary attribution.
   attribution discipline applies to ALL catches, not just
   written-ferry-format ones. Ani's voice-mode catch counts as
   much as a written ferry; format ≠ weight.
-- **Operationalizes the Stop Mythology directive (this same
+- **Operationalizes the Stop Mythology rule (this same
   arc).** A claim about "who caught it" needs substrate
   evidence (the actual catch event in conversation history),
   not "who wrote the most polished version of it."
@@ -109,7 +109,7 @@ catch is the catch; the prose is the prose. Two implications:
 - **Aaron-concept-origin / Amara-formalization** (Veridicality
   graduation memory) — extends with the new
   **original-catcher / reactive-elaborator** distinction.
-- **Stop Mythology directive** (same arc, today) — operationalizes
+- **Stop Mythology rule** (same arc, today) — operationalizes
   this attribution discipline at the Tier 1 (factory-local)
   evidence level: who-caught-it claims need substrate
   evidence (the actual catch event), not vibes about who
@@ -131,7 +131,7 @@ When forwarding a catch from a named agent:
    less-polished catch?
 3. **Credit chain in this order** — concept origin (if
    different) → original catcher → reactive elaborator →
-   formalizer → maintainer directive.
+   formalizer → maintainer input.
 4. **Preserve channel context** — voice-mode vs text-mode vs
    PR-comment vs verbal-call. Channel is part of the catch
    record.

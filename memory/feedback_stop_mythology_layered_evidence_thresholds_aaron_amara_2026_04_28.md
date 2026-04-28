@@ -1,19 +1,19 @@
 ---
-name: Stop Mythology directive — operational name for the bullshit-detector at the directive level (Aaron concept; Amara naming, 2026-04-28)
-description: Aaron 2026-04-28 framing — "we also stop mythology with human intellectual lineage research and anchors." Amara naming — "Stop Mythology directive" is the Beacon-safe operational form of the discipline (distinct from Veridicality, which is the formal scoring module name). Three-tier evidence threshold — factory-local claims need substrate; generalized claims need external lineage; big epistemic claims need SD-9 (substrate + lineage + falsifier). Pairs with Veridicality.fs as the directive-level discipline that the module would operationalize.
+name: Stop Mythology rule — operational name for the bullshit-detector at the rule level (Aaron concept; Amara naming, 2026-04-28)
+description: Aaron 2026-04-28 framing — "we also stop mythology with human intellectual lineage research and anchors." Amara naming — "Stop Mythology rule" is the Beacon-safe operational form of the discipline (distinct from Veridicality, which is the formal scoring module name). Three-tier evidence threshold — factory-local claims need substrate; generalized claims need external lineage; big epistemic claims need SD-9 (substrate + lineage + falsifier). Pairs with Veridicality.fs as the rule-level discipline that the module would operationalize.
 type: feedback
 ---
 
-# Stop Mythology directive
+# Stop Mythology rule
 
-## The directive (Aaron 2026-04-28; Amara naming)
+## The rule (Aaron 2026-04-28 framing; Amara naming)
 
 > *"we also stop mythology with human intellectual lineage
 > research and anchors"* (Aaron 2026-04-28).
 
 Amara's Beacon-safe naming for this discipline:
 
-> **Stop Mythology directive.**
+> **Stop Mythology rule.**
 
 In Zeta-shaped form (Amara verbatim):
 
@@ -32,7 +32,7 @@ Two distinct artifacts at different levels of the stack:
 | Artifact | Level | Current status (2026-04-28) |
 |---|---|---|
 | **Veridicality** (`src/Core/Veridicality.fs`) | Provenance + claim-validation foundation | **Skeleton shipped, magic still missing.** Currently provides: `Provenance` + `Claim<'T>` types, `validateProvenance`, `validateClaim`, `CanonicalClaimKey` (structural projector — caller supplies the (subject, predicate, object, time-scope, modality) tuple), `canonicalKey`, `groupByCanonical`, `antiConsensusGate`. **Does NOT yet ship:** `scoreVeridicality` (the V(c) formula), `canonicalizeClaim` (semantic canonicalization), `ClaimRainbowTable`, cognitive-load / compression-gap / falsifiability scoring. Rainbow-table layer = future graduation per **B-0089**. |
-| **Stop Mythology directive** | Operational discipline | This memory — directive-level discipline that the future shipped scorer would operationalize |
+| **Stop Mythology rule** | Operational discipline | This memory — rule-level discipline that the future shipped scorer would operationalize |
 
 Ani's catch verbatim (voice-mode review, 2026-04-28):
 
@@ -56,7 +56,7 @@ Ani's catch verbatim (voice-mode review, 2026-04-28):
 Both names are valid. Both have the same Aaron-concept origin
 (the bullshit-detector framing in conversation history).
 Amara's contribution to the rename pair: she gave the module
-a formal name (Veridicality) AND gave the directive a Beacon-
+a formal name (Veridicality) AND gave the rule itself a Beacon-
 safe operational name (Stop Mythology).
 
 The original "bullshit detector" term remains preserved in:
@@ -68,7 +68,7 @@ The original "bullshit detector" term remains preserved in:
 
 ## Three-tier evidence threshold
 
-The directive's operational machinery is a layered evidence
+The rule's operational machinery is a layered evidence
 threshold scaled to claim-scope:
 
 ### Tier 1 — Factory-local claims
@@ -106,7 +106,7 @@ Examples:
 The lineage citation can be informal (a one-line "per
 Goodhart 1975") but must be checkable.
 
-### Tier 3 — Big epistemic claims (SD-9)
+### Tier 3 — Big epistemic claims (composes with SD-9)
 
 **Threshold:** substrate + external lineage + explicit falsifier
 (all three required).
@@ -169,12 +169,12 @@ Before making a claim that affects others' decisions, ask:
 2. **Does this generalize beyond this factory?** If yes →
    Tier 2.
 3. **Is this a foundational / identity / alignment claim?**
-   If yes → Tier 3 (SD-9).
+   If yes → Tier 3 (composes with SD-9 in `docs/ALIGNMENT.md`).
 
 If unsure → escalate one tier up. Better to over-cite than
 under-cite.
 
-## Anti-patterns the directive prevents
+## Anti-patterns the rule prevents
 
 ### Mythological framing without lineage
 
@@ -209,22 +209,22 @@ acceptance.
 
 - `memory/feedback_veridicality_naming_for_bullshit_detector_graduation_aaron_concept_origin_amara_formalization_2026_04_24.md`
   — the formal-module rename (Veridicality is the scorer;
-  Stop Mythology is the directive).
+  Stop Mythology is the rule).
 - `memory/feedback_amara_authority_rule_default_to_reversible_preservation_escalate_irreversible_loss_2026_04_28.md`
   — the authority rule operationalizes Stop Mythology at the
   decision level (preservation = "no false certainty"; ask =
   "I have insufficient evidence to act").
 - `memory/feedback_sample_classification_is_calibration_not_clearance_amara_goodhart_catch_3_2026_04_28.md`
-  — Goodhart catch #3, the substrate evidence for the directive.
+  — Goodhart catch #3, the substrate evidence for the rule.
 - `memory/feedback_speculation_leads_investigation_not_defines_root_cause_aaron_2026_04_28.md`
   — same family; speculation is the inverse of evidence-based
   claim-making.
 - `docs/ALIGNMENT.md` (SD-9) — the formal home of the
   three-element discipline.
 
-## External lineage for the directive itself (Tier 2 self-application)
+## External lineage for the rule itself (Tier 2 self-application)
 
-The directive applies to itself. Sources:
+The rule applies to itself. Sources:
 
 - **Karl Popper** (*The Logic of Scientific Discovery*, 1959;
   *Conjectures and Refutations*, 1963) — falsifiability as
@@ -249,7 +249,7 @@ When about to make a claim:
    Either gather more evidence, or downgrade the claim's
    scope to a tier where the available evidence suffices.
 4. Never say "the mythology / spirit / vibe of X" without
-   substrate. If tempted to, that's the directive firing.
+   substrate. If tempted to, that's the rule firing.
 
 When reading another agent's claim:
 
@@ -269,6 +269,6 @@ When reading another agent's claim:
 > epistemic claims need SD-9: substrate evidence + external
 > lineage + falsifier."*
 
-> *"bullshit detector → stop mythology directive
+> *"bullshit detector → stop mythology rule
 > vibes → lineage + substrate + falsifier
 > poetic truth → Mirror unless Beacon-grounded"*

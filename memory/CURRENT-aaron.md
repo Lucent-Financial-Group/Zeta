@@ -1506,7 +1506,8 @@ strong enough to authorize DESTRUCTION (irreversible).
 **Pointer:**
 `feedback_amara_authority_rule_default_to_reversible_preservation_escalate_irreversible_loss_2026_04_28.md`
 + `feedback_sample_classification_is_calibration_not_clearance_amara_goodhart_catch_3_2026_04_28.md`
-+ `feedback_stop_mythology_directive_layered_evidence_thresholds_aaron_amara_2026_04_28.md`.
++ `feedback_stop_mythology_layered_evidence_thresholds_aaron_amara_2026_04_28.md`
++ `feedback_input_is_not_directive_provenance_framing_rule_aaron_amara_2026_04_28.md` (provenance framing — input is not a directive).
 
 ## How this file stays accurate
 
