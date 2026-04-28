@@ -10,7 +10,16 @@ type: feedback
 
 > *"elisabeth this one causes you a lot of confusion, you keep thinkin
 > her name is that, maybe we should make an exception here
-> the older-spelling -> elizabth"*
+> elisabeth -> elizabth"*
+
+> **Meta-marker**: this verbatim quote contains the ONE permitted set
+> of older-spelling tokens in this file. They are preserved per the
+> signal-in-signal-out DSP discipline (verbatim quotes carry Aaron's
+> original framing; sanitizing them loses signal). The rule the quote
+> establishes — replace older-spelling tokens repo-wide — applies to
+> all OTHER occurrences. The apparent self-reference (a rule about
+> word X must reference X to define X) is a known meta-class of
+> substrate-policy that resolves via this marker pattern.
 
 ## What this overrides
 
