@@ -125,12 +125,18 @@ unclassified_lines    = 176    HEURISTIC_LFG_DOMINATES — pending per-file sema
 Hard-reset is signoff-eligible ONLY when:
 
 ```text
-unclassified_lines      = 0
-unsafe_lines            = 0
-fresh-clone fsck        = clean
-hard-reset preflight    = clean
-maintainer signoff      = yes
+unclassified_lines             = 0
+unsafe_lines                   = 0
+fresh-clone fsck               = clean
+hard-reset preflight           = clean
+ls-remote-vs-fetch SHA match   = verified
+dry-run push shape             = clean
+maintainer signoff             = yes
 ```
+
+Per multi-AI review 2026-04-29T10:35Z: dry-run push shape verification is added to the gate. Validates refspec + credentials + push shape before the real destructive operation. The real lease still matters at the real push (server-side check); dry-run is an additive safety check, not a replacement.
+
+Lease rejection on the real push is NOT a retry condition. It means the remote moved between observation and push — restart the safety gate from the top (re-fetch, recompute content-drift ledger, re-classify if anything moved).
 
 **Currently NOT signoff-eligible**: 176 unclassified lines remain (18 files in HEURISTIC_LFG_DOMINATES).
 
@@ -343,22 +349,50 @@ Remaining steps to clear the gate:
    ```bash
    cd /tmp/zeta-clean-2026-04-29/lfg
    git fetch origin main
-   # Per Amara 2026-04-29T10:32Z (most defensive form, refined across
-   # three iterations recorded in this branch's git log): explicit
-   # expected-SHA lease defends against the TOCTOU race where someone
-   # else pushes to acehack/main between our fetch and our push. The
-   # "no explicit refname" form (lease against upstream-tracking) is
-   # better than the original `=acehack/main` form, but the explicit-
-   # SHA form is strictly safer for a destructive ref move.
-   # See `git log` for the iteration history (avoiding host-specific
-   # PR-number citations per reviewer feedback).
+   # Per multi-AI review packet 2026-04-29T10:35Z (Amara + Claude.ai +
+   # Deepseek + Gemini + Ani convergent): the v4 form below defends
+   # against background-fetch race during the SHA-capture step itself.
+   # `git rev-parse refs/remotes/acehack/main` can return a SHA newer
+   # than what the just-completed `git fetch` produced if a background
+   # cron/IDE auto-fetch fires in between. Fix: observe the remote ref
+   # directly via `git ls-remote` BEFORE the fetch, then verify the
+   # fetched value matches.
+   #
+   # See `git log` for the four-iteration history of this command.
+   #
+   # Best blade: "Do not lease by nickname. Do not lease by a moving
+   # local guess. Lease the remote ref by observed SHA."
+
    git fetch origin main
-   git fetch acehack main
-   expect=$(git rev-parse refs/remotes/acehack/main)
-   git push \
-     --force-with-lease=refs/heads/main:"$expect" \
+
+   remote_expect=$(git ls-remote --refs acehack refs/heads/main | awk '{print $1}')
+   git fetch acehack refs/heads/main:refs/remotes/acehack/main
+   fetched_expect=$(git rev-parse refs/remotes/acehack/main)
+
+   [ "$remote_expect" = "$fetched_expect" ] || {
+     echo "acehack/main moved between ls-remote and fetch — stop, reclassify, re-enter gate"
+     exit 1
+   }
+
+   # Dry-run first: validates push shape + credentials + refspec
+   # without touching the remote. The real lease still matters at the
+   # real push (server-side check).
+   git push --dry-run \
+     --force-with-lease=refs/heads/main:"$fetched_expect" \
      acehack \
      refs/remotes/origin/main:refs/heads/main
+
+   # Real push.
+   if ! git push \
+     --force-with-lease=refs/heads/main:"$fetched_expect" \
+     acehack \
+     refs/remotes/origin/main:refs/heads/main
+   then
+     echo "LEASE REJECTED: acehack/main moved or expectation stale."
+     echo "DO NOT RETRY BLINDLY. Re-fetch, recompute content-drift ledger,"
+     echo "and re-enter the signoff gate from the top."
+     exit 1
+   fi
    ```
    This pushes `origin/main`'s commit to `acehack/main`, which is the destructive AceHack-side reset.
 5. **(AGENT)** Verify 0/0/0:
