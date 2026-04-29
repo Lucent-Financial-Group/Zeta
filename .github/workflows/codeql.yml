@@ -72,6 +72,28 @@
 #      on fork PRs so they fall through to full `analyze`
 #      instead of the short-circuit; CodeQL's analyze handles
 #      fork-PR permissions via its own fallback path.
+#   8. `analyze` matrix has a per-language source-presence
+#      gate (`Detect first-party source`). When a language is
+#      in the matrix but has zero first-party source files at
+#      this commit (e.g. python after the TS hygiene-port
+#      retired the last .py files; future python additions
+#      for AI/ML scripts will naturally re-enable full
+#      analysis), the job uploads a no-findings SARIF and
+#      exits SUCCESS instead of crashing the extractor with
+#      "no source code seen during build" (CodeQL exit 32 in
+#      the `database finalize` stage). The job ALWAYS starts
+#      so workflow-level paths-ignore does not leave required
+#      checks PENDING (per reviewer feedback 2026-04-29 on
+#      #849: a retired language must not become a permanent
+#      gate; structure should self-heal). actions/csharp keep
+#      the unconditional path because they are first-party
+#      always.
+#
+#      Replaces the path-gate's unconditional empty-SARIF
+#      upload pattern at the per-language level — both
+#      survive (path-gate covers the "no code paths changed
+#      at all" docs-PR case; the matrix-level gate covers
+#      the "some code changed but not in this language" case).
 #
 # SECURITY NOTE on `${{ ... }}` expressions
 # ------------------------------------------
@@ -422,14 +444,186 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
+      # ---- Per-language source-presence gate -----------------
+      # Structural fix for the "no source code seen during build"
+      # CodeQL extractor failure when a language is in the matrix
+      # but has zero first-party source files at this commit
+      # (e.g. python after the TS hygiene-port retired the last
+      # .py files; future python additions for AI/ML scripts will
+      # naturally re-enable full analysis here).
+      #
+      # Why this approach (per reviewer feedback 2026-04-29 on
+      # #849): workflow-level paths-ignore would leave required
+      # checks PENDING and block the PR; removing the language
+      # from the matrix loses future re-enablement and risks
+      # branch-protection drift if Python scripts return.
+      # Instead the job always starts, classifies in-place
+      # whether any first-party source exists for this language,
+      # and either runs the full extractor pipeline OR uploads
+      # a no-findings SARIF and exits SUCCESS. The aggregate
+      # `code_quality` ruleset rule sees a real per-language
+      # status; the upload step's `category:` action-param
+      # matches the analyze category, so GitHub's SARIF
+      # replacement logic records it as the clean baseline for
+      # that language.
+      #
+      # Source-presence heuristic mirrors codeql-config.yml's
+      # paths-ignore so the gate cannot report has_source=true
+      # for files CodeQL will skip anyway. Centralised in
+      # `shared_ignored_paths_regex` below.
+      #
+      # `actions` and `csharp` are first-party always — they keep
+      # the unconditional "real analysis" path; gating them would
+      # only mask config drift that should surface as failure.
+      - name: Detect first-party source for ${{ matrix.language }}
+        id: src
+        shell: bash
+        run: |
+          set -euo pipefail
+          # `grep -cvE` returns exit 1 when zero lines are selected
+          # (the "language fully retired" case we WANT to detect),
+          # which trips set -e + pipefail. The `|| true` recovers
+          # while preserving the count printed on stdout (always
+          # "0" or a positive integer); shellcheck SC2126 prefers
+          # `grep -c` over `grep | wc -l`.
+          #
+          # Keep this regex in sync with .github/codeql/codeql-
+          # config.yml `paths-ignore`. If a language source file
+          # lives only under one of these paths, CodeQL would
+          # skip it during extraction even though we counted it
+          # as has_source=true, producing the same "no source
+          # code seen during build" failure this gate is meant
+          # to prevent. `**/*.generated.cs` and `**/obj/**` /
+          # `**/bin/**` from the config are folded in via
+          # `(^|.*/)(obj|bin)/`. The .generated.cs glob is csharp-
+          # only and irrelevant here (csharp is unconditional).
+          #
+          # BRIDGE NOT FINAL ARCHITECTURE: this regex is a
+          # workflow-local classifier embedded in codeql.yml as
+          # the smallest sufficient unblock for the retired-
+          # python case. The future canonical classifier should
+          # pull this logic into `tools/ci/classify-changed-
+          # files.*` with fixtures so CodeQL, docs-substrate,
+          # and code gates share one path-universe rather than
+          # each growing their own. Tracked via task #306
+          # (cadence-fast classifier work) — do not treat the
+          # duplicated regex as the permanent design.
+          shared_ignored_paths_regex='^(references/upstreams/|bench/|tools/tla/|tools/lean4/)|(^|.*/)(obj|bin)/'
+          case "${{ matrix.language }}" in
+            python)
+              count=$(git ls-files -- '*.py' \
+                | grep -cvE "${shared_ignored_paths_regex}" \
+                || true)
+              ;;
+            java-kotlin)
+              # tools/alloy/AlloyRunner.java is first-party Java.
+              count=$(git ls-files -- '*.java' '*.kt' '*.kts' \
+                | grep -cvE "${shared_ignored_paths_regex}" \
+                || true)
+              ;;
+            javascript-typescript)
+              # CodeQL's javascript-typescript extractor handles
+              # `.mts` (ESM TypeScript) and `.cts` (CJS TypeScript)
+              # alongside the .js/.jsx/.ts/.tsx/.mjs/.cjs set. Repos
+              # that use `.mts`/`.cts` exclusively as entrypoints
+              # would otherwise has_source=false and silently skip
+              # real analysis.
+              count=$(git ls-files -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.mjs' '*.cjs' '*.mts' '*.cts' \
+                | grep -cvE "${shared_ignored_paths_regex}" \
+                || true)
+              ;;
+            actions|csharp)
+              # First-party always. Workflows live under
+              # .github/workflows/ (csharp covered by manual
+              # build-mode against Zeta.sln); gating these would
+              # mask real config drift.
+              count=1
+              ;;
+            *)
+              # New languages: default to running full analysis
+              # so silent-skip drift is impossible; revisit if
+              # the new language wants the gated pattern.
+              count=1
+              ;;
+          esac
+          if [ "${count}" -gt 0 ]; then
+            echo "has_source=true" >> "$GITHUB_OUTPUT"
+            echo "first-party ${{ matrix.language }} source files: ${count}"
+          else
+            echo "has_source=false" >> "$GITHUB_OUTPUT"
+            echo "no first-party ${{ matrix.language }} source files at this commit; uploading no-findings SARIF baseline"
+          fi
+
+      # Fork-PR guard mirrors path-gate's emit/upload steps: on
+      # PRs from forks the GITHUB_TOKEN is read-only for
+      # `security-events`, so the SARIF upload would 403 with
+      # `Resource not accessible by integration` and FAIL the
+      # exact retired-language case this gate is meant to unblock
+      # (review-tool P1 catch on PR #857). On fork PR + no-source, the
+      # subsequent init/build/analyze steps are also skipped
+      # (gated on `has_source == 'true'`), so the job exits
+      # SUCCESS with no SARIF emitted — same posture as path-gate
+      # takes on fork PRs.
+      - name: Emit no-findings SARIF (no-source baseline)
+        if: steps.src.outputs.has_source != 'true' && needs.path-gate.outputs.is_fork_pr != 'true'
+        env:
+          HEAD_SHA_ENV: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha || github.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p sarif
+          # Minimal SARIF 2.1.0 with empty results; category is
+          # set by the upload step's `category:` action-param so
+          # automationDetails here is informational.
+          cat > "sarif/no-source-${{ matrix.language }}.sarif" <<SARIF
+          {
+            "version": "2.1.0",
+            "\$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+            "runs": [
+              {
+                "tool": {
+                  "driver": {
+                    "name": "CodeQL",
+                    "semanticVersion": "0.0.0",
+                    "informationUri": "https://codeql.github.com/",
+                    "rules": []
+                  }
+                },
+                "results": [],
+                "automationDetails": {
+                  "id": "/language:${{ matrix.language }}/"
+                },
+                "versionControlProvenance": [
+                  {
+                    "repositoryUri": "https://github.com/${GITHUB_REPOSITORY}",
+                    "revisionId": "${HEAD_SHA_ENV}",
+                    "branch": "${GITHUB_REF_NAME}"
+                  }
+                ]
+              }
+            ]
+          }
+          SARIF
+
+      - name: Upload no-source SARIF
+        if: steps.src.outputs.has_source != 'true' && needs.path-gate.outputs.is_fork_pr != 'true'
+        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        with:
+          sarif_file: sarif/no-source-${{ matrix.language }}.sarif
+          category: "/language:${{ matrix.language }}"
+
       # ---- Toolchain (csharp leg only) -----------------------
       # Mirrors gate.yml discipline: one install script, three
       # consumers (dev laptop / CI / devcontainer). We do NOT
       # reach for actions/setup-dotnet; doing so would fork CI
       # from the canonical install path per GOVERNANCE §24.
+      #
+      # All real-analysis steps below are gated on
+      # steps.src.outputs.has_source == 'true' so they are
+      # skipped on no-source runs (the baseline upload above
+      # already satisfies the per-language status check).
 
       - name: Cache NuGet
-        if: matrix.language == 'csharp'
+        if: matrix.language == 'csharp' && steps.src.outputs.has_source == 'true'
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
         with:
           path: |
@@ -442,12 +636,13 @@ jobs:
           key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props') }}
 
       - name: Install toolchain (three-way-parity script)
-        if: matrix.language == 'csharp'
+        if: matrix.language == 'csharp' && steps.src.outputs.has_source == 'true'
         run: ./tools/setup/install.sh
 
       # ---- CodeQL init + query selection ---------------------
 
       - name: Initialize CodeQL
+        if: steps.src.outputs.has_source == 'true'
         uses: github/codeql-action/init@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2
         with:
           languages: ${{ matrix.language }}
@@ -471,12 +666,13 @@ jobs:
       # a warning is a build break.
 
       - name: Build (csharp - for CodeQL DB extraction)
-        if: matrix.build-mode == 'manual'
+        if: matrix.build-mode == 'manual' && steps.src.outputs.has_source == 'true'
         run: dotnet build Zeta.sln -c Release
 
       # ---- Analyze + upload SARIF ----------------------------
 
       - name: Perform CodeQL Analysis
+        if: steps.src.outputs.has_source == 'true'
         uses: github/codeql-action/analyze@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2
         with:
           category: "/language:${{ matrix.language }}"
