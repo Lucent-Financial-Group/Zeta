@@ -323,6 +323,39 @@ Substrate-loss proof for 0/0/0 requires three layers:
 Per Amara's framing: *"A count is not a clearance. A bucket is
 not proof. A ledger row needs evidence."*
 
+### Day-2 inventory results (executed 2026-04-29 post-peer-verification)
+
+The Day-2 commands ran. **Real findings** — not just empty checks:
+
+| Surface | Finding |
+|---|---|
+| **Stashes** | **8 entries** with substantive WIP. stash@{3} alone is 668 files / 208,844 deletions. Each stash is unfinalized intent on a different branch. |
+| **Reflog** | 13,822 entries (rich machine-local history; ~30-90 day TTL) |
+| **Git notes** | 0 (clean) |
+| **fsck dangling objects** | **1,109** (substantial; 1,000+ dangling commits/trees/blobs not on any branch) |
+| **Pack corruption** | **`.git/objects/pack/pack-16732bccb3ace9ec45c913c57a1fd050fd730c3f.pack` has data-stream errors**; specific object (9bf2daee...) cannot be unpacked. |
+| **History-rewriting refs** | All 5 namespaces (`replace` / `original` / `bisect` / `pull` / `changes`) empty + no `.git/info/grafts`. Clean. |
+| **Index flags** | 0 `assume-unchanged` / `skip-worktree` (clean) |
+| **Per-worktree mid-operation** | 0 worktrees in REBASE/MERGE/AUTO_MERGE state (clean) |
+| **Rerere cache** | **293 conflict-resolution records** (real merge-resolution substrate; codified knowledge) |
+| **Patch / bundle artifacts** | 0 outside `references/upstreams/` (clean) |
+| **Submodules / LFS** | None / `git lfs` not installed (clean) |
+| **Tags** | 0 (none in use) |
+
+**Highest-risk findings**:
+
+1. **1,109 dangling objects** — substrate not reachable from any branch. Hard-reset would destroy these. fsck-recovery is read-only and possible IF the dangling commits encode something we care about. Each requires `git show <sha>` per-object inspection to know what it carries.
+
+2. **Pack corruption** — one pack file has a data-stream error. Object `9bf2daee3ce53c88633824f9532a0158aaa92ed9` cannot be unpacked. This is a real durability-of-history concern. May need `git fsck --full` + possibly `git repack` + re-fetch from origin if the missing object is also on origin.
+
+3. **8 stashes** — explicit unfinalized intent. stash@{3} is enormous (668 files; could be a bulk-revert or a test run). Each stash needs per-stash content classification before any stash-prune operation.
+
+4. **293 rerere records** — codified conflict-resolution knowledge from past merges. NOT auto-disposable; this is real factory-discipline substrate that speeds up future merges.
+
+**Updated count of substrate surfaces this ledger needs to track**: not just 869 branches + 58 worktrees (top of ledger) — also 8 stashes + 1,109 dangling objects + 293 rerere records + pack-corruption to repair + the 15+ surfaces from peer verification.
+
+**Honest-statement update**: this ledger v2 (after peer verification + Day-2 execution) is closer to a substrate-loss audit but still NOT complete — the 1,109 dangling objects need per-object classification before any reset/forward-sync is safe.
+
 ### Day-2 follow-up: next safe inventory passes
 
 Each pass is read-only:
