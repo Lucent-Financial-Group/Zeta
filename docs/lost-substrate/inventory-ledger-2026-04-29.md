@@ -353,9 +353,146 @@ Two corrupt objects identified + classified per Amara's bucket schema:
 
 **Critical finding**: `8d5e67fd` is a local-only blob with no origin recovery path. Some tree/commit references it (fsck flagged "missing blob"). Investigation pending — could be from a stash, dangling commit, or unpushed branch. This is the canonical worked-example of unrecovered-substrate boundary case.
 
-### Follow-up: 8d5e67fd is referenced only from dangling state (lower urgency)
+### Day-2+: corrected reachability via three-bucket scan (Amara 2026-04-29)
 
-Day-2 post-corruption-triage investigation: fsck output adjacent to the "missing blob" line shows:
+The first follow-up under-scanned reachability and reached the
+wrong conclusion. Amara's correction asked for a three-bucket
+schema instead of the implicit two-bucket dangling-vs-live split.
+
+**Three reachability buckets (Amara 2026-04-29)**:
+
+```text
+A. live branch / tag / ref reachable
+B. reflog / stash / local-recovery reachable
+C. dangling / unreachable only
+```
+
+`git fsck` reachability is **mode-dependent** — by default fsck
+includes reflogs as heads, but `--no-reflogs` excludes them, so
+"dangling under no-reflogs" is not the same as "irrelevant to
+all local recovery surfaces." The first follow-up only sampled
+10 of 888 commits touching `loop-tick-history.md` and missed
+the live-ref reach.
+
+**Re-verification commands** (artifacts persisted under
+`docs/lost-substrate/artifacts/2026-04-29-corruption/`):
+
+```bash
+git rev-list --objects --all | grep 8d5e67fd
+git fsck --full --no-progress | grep 8d5e67fd -C 5
+git fsck --full --no-reflogs --no-progress | grep 8d5e67fd -C 5
+git rev-list --objects refs/stash | grep 8d5e67fd
+git for-each-ref --format='%(refname)' | while read r; do
+  git rev-list --objects "$r" 2>/dev/null | grep 8d5e67fd && echo "ref=$r"
+done
+```
+
+**Result — `8d5e67fd` is bucket A, not bucket C**:
+
+```text
+ref=refs/heads/chore/heartbeat-batch-2026-04-26-hour-05Z         → reaches the corrupt blob
+ref=refs/remotes/origin/chore/heartbeat-batch-2026-04-26-hour-05Z → reaches the corrupt blob (stale)
+```
+
+The local branch `chore/heartbeat-batch-2026-04-26-hour-05Z`
+is a **live local ref** that reaches the corrupt blob. The
+same-named remote-tracking ref is **stale**: a fresh clone of
+origin shows the branch was deleted upstream
+(`git ls-remote origin refs/heads/chore/heartbeat-batch-2026-04-26-hour-05Z`
+returns empty). So the live-ref reach is local-only.
+
+**Squash-merge equivalence**: the local branch tip `d9feb3f` is
+NOT an ancestor of `main`, but the equivalent **content** of
+`docs/hygiene-history/loop-tick-history.md` is preserved on
+main under a different blob SHA
+(`de670f72d6fd34208d04863818288d764150a151`) via the squash-merge
+that absorbed the original branch. The intermediate-revision
+provenance (per-commit bisect granularity from the pre-squash
+branch) exists only locally and cannot be recovered from origin.
+
+**Corrected classification (Amara 2026-04-29)**:
+
+```text
+CORRUPT_BLOB_REFERENCED_BY_LIVE_LOCAL_BRANCH_AND_STALE_REMOTE_TRACKING_REF
+```
+
+(sub-bucket of bucket A — live-local-ref reachable; origin no
+longer has the branch; the same-named remote-tracking ref
+preserves evidence but does not provide origin recovery.)
+
+**Content-equivalence verification (Amara 2026-04-29)**:
+Squash-merge preservation must be verified by **content**, not
+by ancestry vibe. Empirical findings:
+
+```text
+$ git ls-tree -r refs/heads/.../hour-05Z | grep 8d5e67fd
+(no path-match — corrupt blob is NOT at the branch tip)
+
+$ git show refs/heads/.../hour-05Z:docs/hygiene-history/loop-tick-history.md
+# Loop-tick history
+... (succeeds — branch tip's tick-history.md is readable)
+
+$ git diff --name-status origin/main...refs/heads/.../hour-05Z \
+  -- docs/hygiene-history/loop-tick-history.md
+M docs/hygiene-history/loop-tick-history.md
+(diff succeeds — corrupt blob is not needed for the diff)
+```
+
+The branch TIP is **clean**. The corrupt blob `8d5e67fd` is
+from the branch's **intermediate history** (an earlier commit
+on the same branch path), not the current tip. Substrate-loss
+for any current-state use case (checkout, hard-reset to tip,
+diff vs main) is zero. Substrate-loss for bisect-through-
+pre-merge-history is the only real impact, since bisect would
+need to read each historical revision of `loop-tick-history.md`.
+
+**Recovery urgency**: LOW–MEDIUM. Current-state use of the
+branch is unaffected. Bisect-through-history of this branch's
+intermediate revisions IS affected, but that's a niche use
+case for a post-merge stale local branch.
+
+**Hard-reset readiness — qualified statement (Amara correction)**:
+
+```text
+This corruption does not appear to affect current main, but it
+DOES affect at least one live local branch (specifically, the
+intermediate history of refs/heads/chore/heartbeat-batch-2026-
+04-26-hour-05Z). Hard reset / branch cleanup remains blocked
+until the branch's content is classified as preserved,
+obsolete, or explicitly abandoned.
+```
+
+Branch-tip checkout / hard-reset-to-tip is fine; reading
+intermediate-history blobs would surface the corruption.
+
+**Cleanup posture (Amara correction)**:
+
+```text
+Cleanup is a destructive decision, not a repair step.
+```
+
+A future cleanup may remove this unreachable/corrupt evidence,
+so cleanup must wait until related dangling/reflog/stash
+surfaces are classified and either preserved or explicitly
+abandoned. `git gc` / `git prune` / `git repack -Ad` /
+`git fsck --lost-found` remain forbidden during triage.
+Auto-gc thresholds are at default per
+`gc-config-snapshot.txt`; below-threshold loose-object count
+means auto-gc is not imminent — the discipline is "no implicit
+cleanup decision" not "we have time."
+
+**Single-lane exclusivity (Amara correction)**:
+
+```text
+Corruption lane means exclusive lane.
+If corruption is the incident, everything else is noise.
+```
+
+While corruption triage is active, all unrelated automation /
+backfill / scanner / queue-drain work pauses. The triage lane
+is exclusive until object classification is stable.
+
+**Initial fsck adjacency observation (preserved)**:
 
 ```text
 dangling tree ba5cc0356d2b571ba19477f5be8c16e15993faf6
@@ -363,17 +500,11 @@ dangling commit 9d5db210aee2b017e99c8d2c78f77242fb24ec0b
 missing blob 8d5e67fd313573855848705e4af114f3ff0eecbc
 ```
 
-Tree `ba5cc035...` (dangling, unreachable) references blob `8d5e67fd`. The dangling commit `9d5db21...` (also unreachable) is in the same context. **8d5e67fd is referenced ONLY from dangling/unreachable substrate, not from any live branch.**
-
-Cross-check: searched 10 most-recent commits touching `docs/hygiene-history/loop-tick-history.md` (888 total commits over the file's history). None of them reference `8d5e67fd`. Live commits use other tree SHAs.
-
-**Updated classification**: `CORRUPT_LOOSE_OBJECT_REFERENCED_BY_DANGLING_ONLY` (sub-bucket of MISSING_UNRECOVERED).
-
-**Recovery urgency**: LOW. The corrupt blob is reachable only from dangling state. Live tick-history.md content on current branches is intact. A future cleanup (`git gc` after explicit decision; NOT during triage) would remove both the corrupt object and the dangling tree/commit that references it. The substrate-loss is bounded to whatever orphan version this blob represented.
-
-**What this means for hard-reset readiness**: the corruption finding does NOT block hard-reset by itself — the corrupt evidence is only on unreachable substrate. Live history is clean.
-
-**What this means for the corruption-triage discipline memory file**: the rule still holds — *do not prune evidence while investigating lost evidence*. The classification work happened first; only AFTER classification is `git gc` / `prune` consideration warranted, and that's a separate decision Aaron would make.
+This adjacency is real but does not by itself prove "ONLY
+dangling" — the same blob is also reached by the live-local
+ref above. Both observations are consistent: the corrupt blob
+is referenced from a live local branch tip AND from dangling
+substrate, and was not preserved on origin.
 
 **Per Amara's correction**: do NOT declare "origin has it" without fresh-clone verification. Wording corrected throughout this ledger.
 

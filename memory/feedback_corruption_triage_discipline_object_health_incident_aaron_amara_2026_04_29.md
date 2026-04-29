@@ -1,6 +1,6 @@
 ---
 name: Corruption triage is a substrate health incident, not a backlog item — Aaron + Amara 2026-04-29
-description: When `git fsck` reports corrupt objects, the lane narrows hard — corruption-first triage outranks all background work (PR-queue drain / tick-history shards / scanner builds / branch deletion / worktree pruning). Treat as substrate health incident; do read-only diagnosis + fresh-clone verification before any repair. Per-object classification per Amara's bucket schema. Never run `git gc` / `git prune` / `git repack -Ad` / `git fsck --lost-found` as a "fix" while investigating lost evidence.
+description: When `git fsck` reports corrupt objects, the lane narrows hard — corruption-first triage outranks all background work (PR-queue drain / tick-history shards / scanner builds / branch deletion / worktree pruning). Treat as substrate health incident; corruption lane is exclusive, no side quests. Read-only diagnosis + fresh-clone verification before any repair. Per-object reachability scan uses Amara's three-bucket schema (live-ref / reflog-stash / dangling-only); reachability is mode-dependent on `git fsck` flags. Stale remote-tracking refs are evidence, not origin recovery — do not prune during triage. Verify squash-preservation by content, not ancestry. Cleanup is a destructive decision, not a repair step — never run `git gc` / `git prune` / `git repack -Ad` / `git fsck --lost-found` as a "fix" while investigating lost evidence.
 type: feedback
 ---
 
@@ -81,7 +81,43 @@ object via the same potentially-corrupt repo proves nothing.
 
 ### Step 4: Classify each corrupt object
 
-Per Amara's bucket schema:
+**First — three-bucket reachability scan (Amara 2026-04-29)**.
+`git fsck` reachability is mode-dependent: by default it
+includes reflogs as heads; `--no-reflogs` excludes them. So the
+correct frame distinguishes three reachability buckets:
+
+| Bucket | Definition |
+|---|---|
+| A | Live branch / tag / ref reachable (`git rev-list --objects --all`; per-ref scan) |
+| B | Reflog / stash / local-recovery reachable (default-fsck reach minus bucket A; `refs/stash` rev-list) |
+| C | Dangling / unreachable only (no live ref, no reflog, no stash reaches it) |
+
+**Reachability scan commands** (all read-only; persist outputs
+to `docs/lost-substrate/artifacts/<date>-corruption/`):
+
+```bash
+OBJ=<sha>
+git rev-list --objects --all > rev-list-all-objects.txt 2> rev-list-all-objects.err
+git fsck --full --no-progress > fsck-full.txt 2>&1
+git fsck --full --no-reflogs --no-progress > fsck-full-no-reflogs.txt 2>&1
+git rev-list --objects refs/stash > rev-list-stash.txt 2>&1 || true
+git for-each-ref --format='%(refname)' | while read r; do
+  git rev-list --objects "$r" 2>/dev/null | grep "$OBJ" && echo "ref=$r"
+done > per-ref-grep.txt
+
+grep "$OBJ" rev-list-all-objects.txt
+grep "$OBJ" fsck-full.txt -C 5
+grep "$OBJ" fsck-full-no-reflogs.txt -C 5
+grep "$OBJ" per-ref-grep.txt
+```
+
+Save command outputs to artifacts BEFORE writing prose
+conclusions. Future-Claude verifies prose against artifacts,
+not the other way around.
+
+**Then — Amara's recovery-source bucket schema** (orthogonal to
+the reachability schema; once reachability is classified, this
+table picks the recovery path):
 
 | Bucket | Definition |
 |---|---|
@@ -105,33 +141,67 @@ MISSING_UNRECOVERED              → record in lost-substrate ledger; substrate-
 ## What this discipline forbids during triage
 
 - **No `git gc` / `git prune` / `git repack -Ad`.** These can
-  destroy unreachable evidence.
+  destroy unreachable evidence. Note: `gc.auto` may run
+  housekeeping implicitly when porcelain commands grow the
+  repo; record `git config --get gc.auto` /
+  `gc.autoPackLimit` / `gc.pruneExpire` as artifact
+  evidence at the start of triage. Disabling auto-gc
+  (`git config gc.auto 0`) is itself a deliberate triage
+  action, not casual.
 - **No `git fsck --lost-found` as a first move.** It writes
   to `.git/lost-found/`; not read-only.
 - **No `stash pop` / `stash apply`.** Stash entries reference
   objects that may be the only path to lost work.
 - **No "origin has it" without fresh-clone verification.**
-- **No background tasks** — single-lane until corruption
-  health understood.
+  Use `git cat-file -t` and `-s` against the fresh clone to
+  confirm same SHA + type + size. The same-named
+  remote-tracking ref in your local repo can be **stale**
+  (origin may have deleted the branch); the stale ref does
+  not prove origin has the object.
+- **No background tasks — single-lane until corruption
+  health understood.** While corruption triage is active,
+  all unrelated automation, backfill, scanner, queue-drain,
+  and substrate work pauses. Corruption lane means
+  exclusive lane.
 
 ## Specific worked example: 2026-04-29 incident
 
 Two corrupt objects identified during Day-2 inventory pass:
 
-| Object | Type | Size | Classification | Recovery |
-|---|---|---|---|---|
-| `9bf2daee3ce53c88633824f9532a0158aaa92ed9` | blob | 16,455,417 bytes | RECOVERABLE_FROM_ORIGIN | Fresh clone has it clean; recoverable via `git fetch --refetch` |
-| `8d5e67fd313573855848705e4af114f3ff0eecbc` | blob | 439,327 bytes (early `docs/hygiene-history/loop-tick-history.md` content) | MISSING_UNRECOVERED | Fresh clone returns "could not get object info"; origin doesn't have this exact blob; local-only intermediate version |
+| Object | Type | Size | Reachability bucket | Recovery-source bucket | Final classification |
+|---|---|---|---|---|---|
+| `9bf2daee3ce53c88633824f9532a0158aaa92ed9` | blob | 16,455,417 bytes | A (live) | RECOVERABLE_FROM_ORIGIN | Fresh-clone cat-file confirmed; recoverable via `git fetch --refetch` |
+| `8d5e67fd313573855848705e4af114f3ff0eecbc` | blob | 439,327 bytes (intermediate `docs/hygiene-history/loop-tick-history.md`) | A (live local only) | LOCAL_ONLY (origin deleted the branch) | `CORRUPT_BLOB_REFERENCED_BY_LIVE_LOCAL_BRANCH_AND_STALE_REMOTE_TRACKING_REF` |
 
-The `8d5e67fd` finding is the more significant: it's a local-
-only blob that origin doesn't have. The repo's `git fsck`
-flagged it as "missing blob" — meaning some tree/commit
-expects it to exist. Investigation pending; could be from a
-stash, dangling commit, or unpushed branch.
+**The `8d5e67fd` finding required three rounds of triage**
+to classify correctly — each round overturned the prior
+conclusion. Lineage:
+
+- **Round 1**: classified as `MISSING_UNRECOVERED` (fresh
+  clone "could not get object info"). Wrong scope — only
+  checked origin recovery; did not check local reachability.
+- **Round 2**: claimed `REFERENCED_BY_DANGLING_ONLY` based
+  on fsck adjacency to a dangling tree. Wrong — sampled
+  10 of 888 commits; missed the live-ref reach.
+- **Round 3** (correct): three-bucket reachability scan +
+  per-ref `rev-list` showed live-local-branch reach
+  (`refs/heads/chore/heartbeat-batch-2026-04-26-hour-05Z`).
+  Fresh `git ls-remote` confirmed origin no longer has the
+  branch (the same-named remote-tracking ref is **stale**).
+  Content-equivalence check (`git ls-tree` + `git show`)
+  showed the branch TIP is clean — the corrupt blob is from
+  the branch's intermediate history, not the tip.
+
+**Final substrate-loss assessment**: zero impact on
+current-state use (checkout / hard-reset-to-tip / diff vs
+main all succeed). Impact only on bisect-through-pre-merge-
+history of this stale post-merge local branch — niche.
 
 This worked example is the canonical failure-mode template:
-**a local-only intermediate version with no origin recovery
-path is the unrecovered-substrate boundary case.**
+**reachability is mode-dependent; classification requires
+three-bucket scan + content-equivalence verification, not
+ancestry vibes; stale remote-tracking refs preserve evidence
+and must not be pruned during triage.**
 
 ## Related discipline
 
@@ -168,16 +238,48 @@ Do not prune the evidence while investigating lost evidence.
 ```
 
 ```text
-Verify recoverability from a fresh clone before declaring recovered.
+Recoverable-from-origin requires fresh-clone cat-file
+type + size verification.
 ```
 
 ```text
 A count is not a clearance. A bucket is not proof.
 ```
 
+```text
+Cleanup is a destructive decision, not a repair step.
+```
+
+```text
+Stale remote-tracking ref is evidence, not origin recovery.
+Do not prune it while investigating lost substrate.
+```
+
+```text
+Live local branch reference means the incident is not closed.
+```
+
+```text
+Corruption lane means exclusive lane.
+Exclusive lane means no side quests.
+If corruption is the incident, everything else is noise.
+```
+
+```text
+Reachability is mode-dependent.
+Three-bucket scan (live ref / reflog-stash / dangling)
+beats two-bucket vibes.
+```
+
+```text
+Verify squash-preservation by content, not by ancestry vibe.
+Tip-clean does not prove history-clean; history-corrupt
+does not prove tip-corrupt.
+```
+
 ## Why this is in memory/, not just a doc
 
-Aaron explicitly asked: *"you for sure need to make sure your
+Aaron emphasized: *"you for sure need to make sure your
 future self remembers this, this is very important."* Per the
 auto-memory protocol + Aaron's natural-home-of-memories-is-in-
 repo rule (2026-04-24), this is durable substrate that future-
