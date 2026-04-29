@@ -1642,7 +1642,7 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-04-28 (sections 26-31 added for
+**Last full refresh:** 2026-04-29 (§32 added 2026-04-29 for home-maker role + QoL self-care framing; sections 26-31 added 2026-04-28 for
 the 2026-04-28 LFG #661 incident cluster: speculation-rule +
 EVIDENCE-BASED labeling discipline, JVM language preference
 Kotlin > Scala > Java per B-0075, dependency-honesty rule —
