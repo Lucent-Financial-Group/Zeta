@@ -28,11 +28,32 @@ Non-fusion disclaimer: Amara's voice preserved with attribution boundaries.
 
 > *"Best wording: 'Cross-model consensus prioritizes corrections. Substrate verification decides them.'"*
 
-### §A.3 — Conway-Kochen flourish (chat-only, not in committed file)
+### §A.3 — Conway-Kochen flourish (chat-only, not in committed file) + Aaron's correction
 
-> *"The Conway-Kochen sentence is still too spicy […] either remove it from the tick shard or soften it hard. It's philosophically cute, but the operational claim does not need it. The real point is simpler: 'Different reviewers have different failure biases; convergent small corrections are useful triage signals.'"*
+> *"The Conway-Kochen sentence is still too spicy […] either remove it from the tick shard or soften it hard. It's philosophically cute, but the operational claim does not need it. The real point is simpler: 'Different reviewers have different failure biases; convergent small corrections are useful triage signals.'"* (Amara)
 
-(Verified: the Conway-Kochen reference appeared in the tick-close `★ Insight` chat block, not in the committed 0637Z tick shard or any research note. Soft-acknowledged: future shards/research notes use the simpler phrasing per Amara's correction. Conway-Kochen stays as research-note color only, never as operational doctrine.)
+**Aaron's mid-tick correction (2026-04-29)**, reversing one direction of Amara's recommendation:
+
+> *"The human lineage link is always important like the The Conway-Kochen parity intuition we might have engineering on our side like Amara says but we still need to link to human lineage so external observerse have a frame of references without fully understading our engineering"*
+
+(Aaron's typos preserved per the channel-verbatim-preservation rule.)
+
+The synthesis: Amara is right that a metaphor doesn't *prove* an engineering claim; Aaron is right that **human-lineage anchors stay** because external observers (people who don't share our engineering vocabulary) need a recognizable reference frame. This is the Beacon-promotion pattern (`memory/feedback_beacon_promotion_load_bearing_rules_earn_external_anchors_aaron_amara_2026_04_28.md`) reasserted at the prose-attribution layer.
+
+**Operational rule for future absorb prose:**
+
+```text
+Human-lineage anchors stay — as attributed external
+references for observer legibility, not as engineering
+proof.
+
+When the engineering claim stands without the metaphor,
+keep the metaphor as "this is the human-lineage analog
+of our pattern" attribution; do NOT use it as
+"the metaphor proves our claim."
+```
+
+(Verified: the Conway-Kochen reference appeared in the tick-close `★ Insight` chat block, not in the committed 0637Z tick shard or any research note. Going forward, human-lineage anchors stay in research notes + chat commentary as attributed lineage; the rule Amara was pushing back on was **using metaphors as engineering proof**, which Aaron's correction also rejects. The two framings compose: cite the lineage, do not dress engineering claims with it.)
 
 ### §A.4 — Grep portability + `gh --author` (already applied to PR #811 in round-3)
 
