@@ -58,28 +58,30 @@ A file is **not** substrate if any leg is missing. A doc on a feature branch is 
 
 The detector tests all three legs.
 
-## Channel taxonomy (5-tier — parking surfaces are git-native, not temp dirs)
+## Channel taxonomy (5-tier, mutually exclusive — parking surfaces are git-ref-backed, not temp dirs)
+
+Each surface belongs to **exactly one** class. The classifier (recovery process + lint) depends on this disjointness.
 
 | Class | Examples | Durability claim |
 |---|---|---|
 | **Ephemeral (weather)** | chat messages, TaskUpdate, `/tmp`, `/var/tmp`, loop todos, session memory, scratch buffer, Desktop loose files, Downloads, untracked working-tree files | NEVER call done. **No temp directory is a parking surface.** `/tmp` and `/var/tmp` are both site-cleaned; FHS does not promise persistence across reboots. |
-| **Local parked** | named `git stash -u`, local WIP branch commit (not pushed) | Last-resort local; machine-specific; weaker because not remote |
-| **Remote parked** | pushed WIP branch (no PR), draft PR, GitHub Issue / task comment | Survives reboot AND compaction. Pushed WIP branch is preferred when avoiding review machinery; draft PR when visibility/discussion wanted |
-| **Host-durable-not-git-canonical** | GitHub Issues, PR comments, labels, assignees, Projects, review threads on closed PRs | Coordination only — NOT canonical substrate |
+| **Local parked** | named `git stash push -u -m "<name>"` entry, local WIP branch commit (not pushed) | Last-resort local; machine-specific; weaker because not remote |
+| **Remote parked** | pushed `wip/<topic>-<date>` branch (no PR), pushed WIP branch with optional draft PR attached | Survives reboot AND compaction because the backing branch/ref survives. Pushed WIP branch is preferred when avoiding review machinery; a draft PR is for visibility/discussion, but the parking durability comes from the branch/ref, not the PR metadata |
+| **Host-durable-not-git-canonical** | GitHub Issues, task comments, PR comments, labels, assignees, Projects, review threads on closed PRs | Coordination only — durable on the host, but NOT canonical substrate and NOT a parking surface (no git ref backs them) |
 | **Git-native preserved substrate** | merged or long-lived-reachable + indexed repo files: `memory/*.md`, `docs/research/`, `docs/ops/`, `docs/backlog/`, claim mirrors, validators / lints / runbooks, CLAUDE.md / AGENTS.md / GOVERNANCE.md | Canonical substrate (committed + reachable + indexed) |
 
 **Parking-surface rule** (Amara correction post-#855-review):
 
 > *"If it matters enough to come back to, it deserves a git ref."*
 
-When you need to set work aside without starting a review cycle: **pushed WIP branch (no PR)** is the cleanest mechanism. NOT `/tmp`. NOT `/var/tmp`. NOT loose Desktop files. The branch is a real Git object (lightweight movable pointer to a commit, per the Git docs); the temp dir is weather.
+When you need to set work aside without starting a review cycle: **pushed WIP branch (no PR)** is the cleanest mechanism. NOT `/tmp`. NOT `/var/tmp`. NOT loose Desktop files. NOT a GitHub Issue (host-durable but no git ref backs it). A draft PR can add visibility, but the branch/ref is the parking mechanism. The branch is a real Git object (lightweight movable pointer to a commit, per the Git docs); the temp dir is weather.
 
 When to use each parking surface:
 
 - **Pushed WIP branch, no PR** — best for *"save this, come back later, do not start review."* Branch like `wip/<topic>-<date>`. Push but no PR. Survives reboot + compaction without triggering CI/review machinery.
-- **Draft PR** — when visibility / discussion / async-review desired. Acceptable when review noise is controlled.
+- **Draft PR (atop a pushed WIP branch)** — when visibility / discussion / async-review desired. Acceptable when review noise is controlled. The branch is still the durability anchor.
 - **Local WIP branch (not pushed)** — only if immediate remote push is impossible; weaker because machine-local. Must be named in status before context loss.
-- **Named `git stash -u`** — last-resort local parking. Better than temp. Must be named (`git stash push -m "<name>"`) and verified.
+- **Named `git stash`** — last-resort local parking. Must be named at creation: `git stash push -u -m "<name>"`. Anonymous stashes (`git stash -u` without `-m`) are weather, not parked.
 
 **PR comments are the hardest non-parked case.** Durable while GitHub persists, but not git-native. For doctrine-changing decisions, mirror the substantive content into a git-native file. Review feedback can stay in PR comments; rules and supersession decisions cannot.
 
@@ -240,11 +242,13 @@ Forbidden:
 The rule is cross-harness, not Claude-only. Add bootstrap pointer at cold-start scope to BOTH:
 
 - `CLAUDE.md` — landed in this PR alongside verify-before-deferring + future-self-not-bound + never-be-idle + version-currency (5th CLAUDE.md-tier rule)
-- `AGENTS.md` — parity addition (same rule, same wording, cross-harness)
+- `AGENTS.md` — equivalent cross-harness addition (same rule / doctrine, file-specific wording rather than identical text)
 
-Pointer text:
+**Committed wording note**: the bootstrap pointers in `CLAUDE.md` and `AGENTS.md` are *equivalent in doctrine, not verbatim-identical*. `AGENTS.md` carries the fuller wording (5-tier channel taxonomy, three-leg substrate definition, parking-surface preferences with `wip/<topic>-<date>` examples, cross-harness applicability). `CLAUDE.md` carries the shorter cold-start reminder (vocabulary discipline, never call TaskUpdate-only "done", verbatim-preservation trigger, magnitude classifier). This memory entry records the rule they share, not a single canonical quoted sentence for both files.
 
-> *"Before declaring work done, identify its durability surface. Chat, TaskUpdate, `/tmp`, and loop todos are not durable project substrate. If a directive matters after compaction, it must be converted into substrate (committed + reachable + indexed). Substrate or it didn't happen."*
+Compact representative wording (read either file's bullet for the full version):
+
+> *"Before declaring work done, identify its durability surface. Chat, TaskUpdate, `/tmp`, and loop todos are not durable project substrate. If a directive matters after compaction, it must be converted into substrate (committed + reachable from a long-lived ref + indexed). Substrate or it didn't happen."*
 
 ## Mid-session re-discoverability
 

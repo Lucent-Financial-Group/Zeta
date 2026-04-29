@@ -274,8 +274,9 @@ These apply to any AI harness.
   `wip/<topic>-<date>`, draft PR — *"if it matters
   enough to come back to, it deserves a git ref"*) /
   host-durable-not-git-canonical (GitHub Issues, PR
-  comments) / git-native-preserved (merged + indexed
-  repo files). Vocabulary discipline: *captured*
+  comments) / git-native-preserved (committed +
+  reachable-from-long-lived-ref + indexed repo
+  files). Vocabulary discipline: *captured*
   (TaskUpdate / chat) ≠ *parked* (GitHub Issue /
   remote WIP branch) ≠ *preserved* (git-native
   repo) ≠ *canonical* (accepted spec) ≠
