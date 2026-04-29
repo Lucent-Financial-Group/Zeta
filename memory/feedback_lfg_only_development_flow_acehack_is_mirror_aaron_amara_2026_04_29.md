@@ -84,7 +84,8 @@ The AceHack PR archives + drain-logs from this round's reset/double-hop ceremony
 
 - `docs/pr-discussions/PR-acehack-0101-...md` — fork-prefixed cross-fork archive
 - `docs/pr-preservation/acehack-101-drain-log.md` — fork-side drain
-- `forks/AceHack/...` — anything already landed there
+
+(The earlier `forks/<fork-name>/` directory layout proposed in task 322 / former task 314 was never created. If AceHack PRs become real again later, that's the unfreeze condition for the canonical-fork-data-homes work — until then, the two paths above are the only existing fork-side archive locations.)
 
 These stay for record. No new entries unless AceHack PRs return.
 

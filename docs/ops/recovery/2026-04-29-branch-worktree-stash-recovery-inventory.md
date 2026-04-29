@@ -120,7 +120,7 @@ NOT_REACHABLE from `main`.
 
 | # | PR | Branch | Tip SHA (8) | Closed | Bucket | Evidence anchor (summary) |
 |---|---|---|---|---|---|---|
-| 1 | #834 | `zero-zero-zero-preflight-result-2026-04-29` | 09aceaec | 2026-04-29 | `OBSOLETE_SUPERSEDED` | The 0/0/0 preflight/blockers/postflight content landed via #836/#838/#841/#842/#843 (see `git log --oneline main` head). Branch tip preceded the successful re-close cluster. |
+| 1 | #834 | `zero-zero-zero-preflight-result-2026-04-29` | 09aceaec | 2026-04-29 | `OBSOLETE_SUPERSEDED` | The 0/0/0 preflight/blockers/postflight content landed via #836/#838/#841/#842/#843 (see `git log --oneline refs/remotes/origin/main` head). Branch tip preceded the successful re-close cluster. |
 | 2 | #656 | `memory/version-currency-inherit-pins-lesson-2026-04-27` | (per inventory) | 2026-04-28 | `OBSOLETE_SUPERSEDED` | `memory/feedback_version_currency_covers_inheriting_existing_pins_not_just_fresh_assertions_aaron_2026_04_27.md` exists on main; `ls memory/` confirms. |
 | 3 | #658 | `fix/elisabeth-elizabeth-lfg-2026-04-28` | (per inventory) | 2026-04-28 | `OBSOLETE_SUPERSEDED` | `memory/user_sister_elizabeth.md` on main shows correct spelling; LFG-side cousin landed under different SHA. **Sensitivity note**: identity-class — flagged for §9 awareness even though content is verified on main. |
 | 4 | #657 | `fix/macos-back-to-pr-cadence` | (per inventory) | 2026-04-28 | `OBSOLETE_SUPERSEDED` | `.github/workflows/gate.yml` on main contains `macos-26` PR-cadence config; `grep macos-26 .github/workflows/*.yml` confirms. |
@@ -142,7 +142,7 @@ prefix. The closest matches found are:
 
 | Branch | SHA (8) | Date | Bucket | Evidence |
 |---|---|---|---|---|
-| `lost-substrate/inventory-ledger-2026-04-29` | d1575528 | 2026-04-28 | `PRESERVE_REF_ONLY` | `git show --stat d1575528` shows the three-bucket reachability + content-equivalence ledger (Amara round-N). Provenance value: documents the methodology that produced this very inventory file. **Recovery candidate** for the recovery lane's own ledger. |
+| `lost-substrate/inventory-ledger-2026-04-29` | d1575528 | 2026-04-28 | `PRESERVE_REF_ONLY` | `git show --stat d1575528` shows the three-bucket reachability + content-equivalence ledger (round-N from the architect role). Provenance value: documents the methodology that produced this very inventory file. **Recovery candidate** for the recovery lane's own ledger. |
 | `tools/lost-files-locations-list` | 9c4dfe06 | 2026-04-25 | `OBSOLETE_SUPERSEDED` | `git log -1 9c4dfe06` shows "fix(B-0019): #521 review-thread catches — orphan-branch survey corrected". Fix landed via #521 squash-merge. |
 | `backlog/B-0070-orphan-role-ref-detector-lint-aaron-2026-04-28` | 02ba264e | 2026-04-28 | `OBSOLETE_SUPERSEDED` | `docs/backlog/P2/B-0070-orphan-role-ref-detector-lint-aaron-2026-04-28.md` exists on main; `memory/feedback_orphan_role_ref_after_name_stripping_aaron_2026_04_28.md` exists on main. |
 | `corruption-triage` | (see inventory) | 2026-04-29 | `NEEDS_AARON_DECISION` | Pack-corruption triage substrate. Possibly load-bearing for the recovery lane itself; do not auto-classify. |
@@ -264,9 +264,9 @@ unambiguously non-sensitive.
 
 **Evidence anchor** (sampled):
 
-- `memory/fork-audit-rename-copy-coverage-amara-2026-04-29` → unable to verify on-main mate without sibling-PR check; tip subject is "Amara round-10 fork-audit corrections" → `NEEDS_AARON_DECISION` (named-agent attribution + multi-AI feedback packet).
+- `memory/fork-audit-rename-copy-coverage-amara-2026-04-29` → unable to verify on-main mate without sibling-PR check; tip subject indicates round-10 fork-audit corrections from the architect role → `NEEDS_AARON_DECISION` (role-attributed agent material + multi-AI feedback packet).
 - `memory/lfg-acehack-content-equivalence-amara-2026-04-29` → tip subject mentions "round-9 peer-harness save" → `NEEDS_AARON_DECISION`.
-- `memory/amara-scaffolded-agency-vs-base-model-emergence-packet-verbatim-2026-04-29` → verbatim Amara packet; **identity / authorship-sensitive** → `NEEDS_AARON_DECISION`.
+- `memory/amara-scaffolded-agency-vs-base-model-emergence-packet-verbatim-2026-04-29` → verbatim architect packet; **identity / authorship-sensitive** → `NEEDS_AARON_DECISION`.
 
 **Disposition**: roughly half (~25–30) likely `OBSOLETE_SUPERSEDED`
 because the content landed as a `memory/<file>.md` on main; the rest
