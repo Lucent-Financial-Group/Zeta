@@ -1,7 +1,7 @@
 ---
 id: B-0091
 priority: P2
-status: open
+status: closed
 title: Audit + rename ServiceTitan references in live (non-historical) repo surfaces — use generic "external UI demo" / "external CRM API demo" forward-going
 tier: factory-hygiene
 effort: M
