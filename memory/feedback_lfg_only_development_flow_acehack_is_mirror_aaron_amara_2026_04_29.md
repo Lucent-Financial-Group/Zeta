@@ -173,8 +173,13 @@ If `origin` has AceHack as a push URL or as a multi-push URL, normalise:
 
 ```bash
 git remote set-url origin git@github.com:Lucent-Financial-Group/Zeta.git
-# If a pushurl that points at AceHack exists:
-git remote set-url --delete --push origin git@github.com:AceHack/Zeta.git
+# Clear any explicit pushurl overrides on origin so push goes to the
+# fetch URL only (canonical destination). This handles SSH, HTTPS, and
+# any other spelling — works regardless of how the AceHack pushurl was
+# originally added. (The earlier `set-url --delete --push origin <exact-url>`
+# form required the URL to match exactly, which fails on HTTPS-vs-SSH or
+# `.git`-suffix differences. Clearing the whole pushurl block is robust.)
+git config --unset-all remote.origin.pushurl 2>/dev/null || true
 ```
 
 If we want explicit mirror sync from this clone, add the dedicated remote:

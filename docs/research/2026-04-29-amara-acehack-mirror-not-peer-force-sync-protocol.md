@@ -2,7 +2,7 @@
 
 **Date**: 2026-04-29
 **Channel**: Aaron (chat) + Amara (relayed via Aaron)
-**Status**: Research-grade preservation. The Aaron + Amara quoted bodies are verbatim; the surrounding framing is translation/synthesis. The distilled rules extend the existing canonical home at `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md` (per Otto-362 in-place expansion, not duplication). This packet contains TWO Amara contributions on the same day: (1) force-with-lease command discipline, (2) remote-topology cleanup (the dual-root problem).
+**Status**: Research-grade preservation. The Aaron + Amara quoted bodies are verbatim; the surrounding framing is translation/synthesis. The distilled rules extend the existing canonical home at `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md` (per Otto-362 in-place expansion, not duplication). This preservation includes THREE same-day Amara contributions: (1) force-with-lease command discipline, (2) remote-topology cleanup (the dual-root problem), and (3) multi-remote-script-design constraint for the TS port and future git tooling.
 
 ---
 
@@ -110,6 +110,8 @@ The trigger is a topology shift: AceHack/Zeta is no longer an active collaborati
 > ```
 >
 > *So yes: AceHack can be force-synced now. Just don't let Claude phrase it like "fork absorption ceremony." That phrase belongs in the trash drawer with "temporarily Aaron-authorized ruleset toggle."*
+
+**Note (non-verbatim, naming-discipline reconciliation):** in the verbatim "Preferred command shape" block above, the remote is named `acehack`. Under the explicit naming discipline established by packet 2 below, the recommended name for that mirror remote is `acehack-mirror` (chosen so the topology cannot be misread as an active peer). The verbatim quote is preserved as-written for fidelity; in operational use, substitute `acehack-mirror` wherever `acehack` appears as a remote name.
 
 ## Amara packet 2 — verbatim (remote-topology cleanup, "dual-root" disambiguation)
 
@@ -466,9 +468,9 @@ Per Otto-364 search-first-authority, the upstream-doc claims Amara cited were ve
 
 ## Operational status
 
-- ✅ Verbatim packets preserved (this file — packet 1 force-sync command discipline + packet 2 remote-topology cleanup).
-- ✅ Existing canonical home extended in-place (per Otto-362): `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md` now carries both new layers as a §"2026-04-29 refinement (later same-day)" section. No duplicate memory file created.
-- ✅ MEMORY.md index entry already exists for the parent doctrine; refinement does not require a new index row (per Otto-362 in-place expansion).
+- ✅ Verbatim packets preserved (this file — packet 1 force-sync command discipline + packet 2 remote-topology cleanup + packet 3 multi-remote-script-design constraint for TS port and future tooling).
+- ✅ Existing canonical home extended in-place (per Otto-362): `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md` now carries all three new layers as §"2026-04-29 refinement (later same-day) — force-with-lease + remote-topology cleanup" and §"2026-04-29 packet 3 — design constraint for git scripts (TS port + future tooling)" sections. No duplicate memory file created.
+- ✅ MEMORY.md index entry already exists for the parent doctrine; refinement requires the existing entry to be refreshed (paired-edit lint requirement) to reflect the new layers — done in the same PR.
 - ⏸️ Local-clone remote-topology audit — separate operational tick (run the cleanup-inspection commands; act on findings only after the doctrine PR lands).
 - ⏸️ CLAUDE.md AceHack section update — the existing CLAUDE.md "AceHack = dev-mirror fork; LFG = project-trunk fork" framing already captures most of this; the residual double-hop language should get a refinement clause in a separate small substrate PR, not bundled here.
 - ⏸️ Operational sync execution — deferred to a discrete tick after this PR lands; not bundling sync-execution with doctrine landing.
