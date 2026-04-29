@@ -182,6 +182,7 @@ shard file at `docs/hygiene-history/ticks/{YYYY}/{MM}/{DD}/{HHmm}Z.md`
 on main.
 
 **Evidence anchor** (sampled):
+
 - `git log -1 060dcde3` → `chore(loop-tick-history): tick 06:13Z` matching branch `tick-history/2026-04-29-tick-0613Z-shard`
 - `ls docs/hygiene-history/ticks/2026/04/29/0613Z.md` → file exists
 - `ls docs/hygiene-history/ticks/2026/04/29/` → 78 shards on main for 04/29 alone
@@ -202,6 +203,7 @@ write-then-shard workflow; no extraction path expected.
 files at `docs/backlog/P{N}/B-NNNN-<slug>.md` on main.
 
 **Evidence anchor** (sampled, all three found on main):
+
 - `find docs/backlog -name 'B-0068*'` → `P2/B-0068-local-ai-trajectory-forge-ollama-direct-integration-aaron-2026-04-28.md`
 - `find docs/backlog -name 'B-0070*'` → `P2/B-0070-orphan-role-ref-detector-lint-aaron-2026-04-28.md`
 - `find docs/backlog -name 'B-0087*'` → `P1/B-0087-github-settings-drift-workflow-broken-invalid-permission-administration-otto-2026-04-28.md`
@@ -220,6 +222,7 @@ as a branch but never made it to main; deferred to per-branch review.
 `docs/pr-preservation/{N}-drain-log.md` on main.
 
 **Evidence anchor** (sampled, 55 drain-logs on main):
+
 - `ls docs/pr-preservation/235-drain-log.md` → exists (matches `drain/235-pr-preservation-log`)
 - `ls docs/pr-preservation/85-drain-log.md` → exists (matches `drain/85-pr-preservation-log`)
 - `ls docs/pr-preservation/426-drain-log.md` → exists (matches `drain/426-pr-preservation-log`)
@@ -237,6 +240,7 @@ landed yet; per-branch check needed.
 → `docs/research/2026-04-28-forward-sync-merge-direction-proposal-9-infra-files.md`).
 
 **Evidence anchor**:
+
 - `find docs/research -name '*forward-sync-merge-direction*'` → 1 match on main
 
 **Disposition**: 30–40 likely `OBSOLETE_SUPERSEDED`; 15–25 likely
@@ -257,6 +261,7 @@ constantly. Default toward `NEEDS_AARON_DECISION` unless content is
 unambiguously non-sensitive.
 
 **Evidence anchor** (sampled):
+
 - `memory/fork-audit-rename-copy-coverage-amara-2026-04-29` → unable to verify on-main mate without sibling-PR check; tip subject is "Amara round-10 fork-audit corrections" → `NEEDS_AARON_DECISION` (named-agent attribution + multi-AI feedback packet).
 - `memory/lfg-acehack-content-equivalence-amara-2026-04-29` → tip subject mentions "round-9 peer-harness save" → `NEEDS_AARON_DECISION`.
 - `memory/amara-scaffolded-agency-vs-base-model-emergence-packet-verbatim-2026-04-29` → verbatim Amara packet; **identity / authorship-sensitive** → `NEEDS_AARON_DECISION`.
@@ -285,18 +290,39 @@ ordered by recency. Most-recent are most-likely-still-load-bearing.
 | 25 | `absorb/multi-ai-2026-04-29-deepseek-amara-threading-and-pr-liveness` | 1eebc2cb | 2026-04-29 | `OBSOLETE_SUPERSEDED` | `gh pr view 815 --json mergedAt` → 2026-04-29T07:06:36Z. |
 | 26 | `absorb/multi-ai-2026-04-29-round4-amara-on-pr818` | 7f2b5c07 | 2026-04-29 | `OBSOLETE_SUPERSEDED` | `gh pr view 819 --json mergedAt` → 2026-04-29T07:41:24Z. |
 
-The full list of `pr-*-fix*` rebase / lint-fix branches:
-`pr-825-fix`, `pr-825-fix2`, `pr-823-fix`, `pr-823-fix2`,
-`pr-823-fix3`, `pr-822-fix`, `pr-821-fix`, `pr-819-fix2`, `pr-818-fix`,
-`pr-815-fix`, `pr-815-fix2`, `pr-815-fix3`, `pr-811-fix`,
-`pr-811-fix2`, `pr-811-fix3`, `pr-811-fix4`, `pr-809-fix`, `pr-806-fix`,
-`pr-827-fix`. All correspond to merged parent PRs — all
-`OBSOLETE_SUPERSEDED`.
+The full list of `pr-*-fix*` rebase / lint-fix branches in the
+inventory (authoritative count: **25**, derived via
+`awk -F'\t' '$2 ~ /^pr-[0-9]+-fix/' /tmp/recovery-inventory-2026-04-29.tsv`):
+
+**Verified `OBSOLETE_SUPERSEDED` (11 branches; per-branch parent-merge confirmed via `gh pr view --json mergedAt`):**
+`pr-806-fix`, `pr-809-fix`, `pr-811-fix`, `pr-815-fix`, `pr-818-fix`,
+`pr-819-fix2`, `pr-821-fix`, `pr-822-fix`, `pr-823-fix`, `pr-825-fix`,
+`pr-827-fix`.
+
+**Presumed `OBSOLETE_SUPERSEDED` but PER-BRANCH UNVERIFIED in this
+report (14 branches; classification deferred to cleanup PR per
+"No proof, no deletion")**:
+`pr-596-fix`, `pr-602-fix`, `pr-615-fix`, `pr-618-fix`, `pr-621-fix`,
+`pr-634-fix` (6 older pr-fix branches preceding the verified set);
+`pr-811-fix2`, `pr-811-fix3`, `pr-811-fix4`, `pr-815-fix2`,
+`pr-815-fix3`, `pr-823-fix2`, `pr-823-fix3`, `pr-825-fix2` (8
+numbered iterations — each iteration may carry post-review tweaks
+that were not necessarily squashed into the parent PR).
+
+**Codex P1 catch on PR #848** (Per "No proof, no deletion" rule):
+the cleanup PR MUST verify each of the 14 unverified branches
+individually before any deletion. The presumption "iterative-fix
+branch + parent merged = safe to delete" holds for the 11 verified
+cases but is only a *prior* (not proof) for the unverified 14. A
+late commit on a numbered iteration that wasn't squashed into the
+parent would be silently discarded by a class-rule sweep — the
+exact failure mode the report's discipline guards against.
 
 **Note on this category**: the `pr-NNN-fix*` shape is a workflow
 artifact of the iterative-Copilot-fix cycle. The follow-up cleanup PR
-should consider whether to ship this entire shape as a single
-auto-classification rule.
+should ship a per-branch verifier (`git diff acehack/main..pr-NNN-fix
+-- '*.md' '*.fs'` to detect post-merge content) before treating any
+of the 14 as auto-deletable.
 
 ---
 
@@ -470,9 +496,15 @@ Branches and worktrees flagged `NEEDS_AARON_DECISION` in this report:
 5. **The detached-HEAD worktree** (`3ca56e95`): if Aaron has no memory
    of what's there, the read should be a `git log -10 3ca56e95` walk
    in a follow-up tick before any removal.
-6. **The 46 closed-not-merged `pr-NNN-fix*` branches**: confirm the
-   "transient lint-fix → parent merged → safe to delete" rule as a
-   single-batch auto-classification, or insist on per-branch verify?
+6. **The 25 `pr-NNN-fix*` branches in §5** (count corrected per Codex
+   P2 catch on PR #848 — the inventory has 25, not 46): of these, 11
+   have individually-verified parent merges and 14 are presumed-
+   superseded but per-branch-unverified. Per the "No proof, no
+   deletion" rule, the cleanup PR must verify each of the 14 before
+   deletion. Decision needed: (a) accept the per-branch-verifier
+   approach in the cleanup PR, OR (b) batch-classify the 11 as
+   auto-deletable + require per-branch verify only for the 14, OR
+   (c) require per-branch verify for all 25 regardless of prior status.
 7. **`feat/learning-repo-proposal-backlog` (#189) — Schoolhouse /
    Khan-style proposal**: never landed on main. Extract as a backlog
    row, or close as superseded by the bigger Schoolhouse vision?
