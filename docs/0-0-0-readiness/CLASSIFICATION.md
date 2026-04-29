@@ -87,6 +87,29 @@ Files needing classification this doc:     23
 
 **Calibration result: 5 of 5 files ALREADY-COVERED.** Hard-reset suffices for all 5; no forward-sync needed.
 
+### Batch 1 (post-strict-bucket-reframe, 2026-04-29T11:32Z)
+
+Per `docs/active-trajectory.md` strict bucket taxonomy: classification requires named AceHack content + named LFG equivalent + named reason. Each entry below promotes from HEURISTIC_LFG_DOMINATES to SAFE_TO_RESET_LFG_SUPERSEDES.
+
+| File | Diff +/- | Status | Evidence |
+|---|---|---|---|
+| `SECURITY.md` | +4/-8 | **SAFE_TO_RESET_LFG_SUPERSEDES** | AceHack has basic disclosure prose ("open a regular GitHub issue with the security label; no separate disclosure inbox"). LFG has the same content PLUS GitHub private vulnerability reporting link, supported-versions section, security-posture section (trust boundaries / crypto choices / dependency audit / static analysis / formal verification details). LFG is strict superset. |
+| `tools/hygiene/validate-agencysignature-pr-body.sh` | +5/-9 | **SAFE_TO_RESET_LFG_SUPERSEDES** | AceHack has older grep-based refactor + a truncated spec reference ("Section 9.2 (Task: none fallback per )"). LFG has cleaner refactored code with proper Section 9.2 reference ("Task: none fallback") + correct spec-doc lineage. LFG is the bug-fixed form. |
+
+**Batch 1 result: 2 of 2 files SAFE_TO_RESET_LFG_SUPERSEDES.** No forward-sync needed.
+
+### Calibration batch reclassification (older "ALREADY-COVERED" label)
+
+The 5 calibration-batch entries above use the prior taxonomy's "ALREADY-COVERED" label, which under the strict bucket rules (named AceHack content + named LFG equivalent + named reason — see `docs/active-trajectory.md` Hard-reset-safety classification) corresponds to **SAFE_TO_RESET_LFG_SUPERSEDES** (4 entries with semantic supersession evidence) or **ALREADY_RESOLVED** (where AceHack-only content is zero). Re-tabulated for the strict-bucket ledger:
+
+- `feedback_doc_class_mirror_beacon_*.md` (+1) → SAFE_TO_RESET_LFG_SUPERSEDES (LFG cites full rule + lineage)
+- `feedback_codeql_umbrella_*.md` (+12) → SAFE_TO_RESET_LFG_SUPERSEDES (LFG resolved Open question with primary-source detail)
+- `MEMORY.md` (+11) → SAFE_TO_RESET_LFG_SUPERSEDES (LFG has 29 newer entries)
+- `CURRENT-aaron.md` (+2) → SAFE_TO_RESET_LFG_SUPERSEDES (LFG has §§26-30 + threading lineage)
+- `CURRENT-amara.md` (+2) → SAFE_TO_RESET_LFG_SUPERSEDES (LFG has §12 three Amara class-namings)
+
+Total: 28 AceHack-only lines properly accounted for under strict bucket as SAFE_TO_RESET_LFG_SUPERSEDES.
+
 ### Emerging rubric heuristic
 
 The calibration revealed a strong pattern: **when LFG-newer (-) line count >> AceHack-newer (+) line count, the AceHack content is almost always older drafts of content LFG has since advanced**. This pattern matches because most of AceHack's commits this arc were tick-history / memory updates that LFG subsequently superseded with substantively newer versions.

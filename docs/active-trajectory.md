@@ -136,13 +136,35 @@ For the text-file ledger, the conceptual computation is straightforward: `git di
 
 Verified 2026-04-29T10:43Z: the 5 binary-classified files in the current diff have status `D` (LFG-only), so `binary_acehack_only_files = 0` and `binary_modified_or_renamed_files = 0` in this specific round.
 
-Current ledger (computed 2026-04-29T10:25Z):
+Current ledger (computed 2026-04-29T11:32Z):
 
 ```text
 potential_loss_lines  = 273    all AceHack-only +lines (would be erased on hard-reset)
-classified_safe_lines = 97     semantic evidence in BUCKET 2 (SAFE_TO_RESET_LFG_SUPERSEDES)
+classified_safe_lines = 134    semantic evidence in BUCKET 2 (SAFE_TO_RESET_LFG_SUPERSEDES)
 unsafe_lines          = 0      no NEEDS_FORWARD_SYNC or NEEDS_HUMAN_DECISION
-unclassified_lines    = 176    HEURISTIC_LFG_DOMINATES — pending per-file semantic inspection
+unclassified_lines    = 139    HEURISTIC_LFG_DOMINATES — pending per-file semantic inspection
+```
+
+Composition of `classified_safe_lines = 134`:
+
+- 9 infra files (97 lines): see "9 infra files" table above. SAFE_TO_RESET_LFG_SUPERSEDES with named per-file evidence.
+- 5 calibration-batch files (28 lines, 2026-04-28): MEMORY.md (11) + codeql_umbrella (12) + doc_class_mirror_beacon (1) + CURRENT-aaron (2) + CURRENT-amara (2). Originally labeled "ALREADY-COVERED" in older taxonomy; under strict bucket each has named evidence in `docs/0-0-0-readiness/CLASSIFICATION.md` → SAFE_TO_RESET_LFG_SUPERSEDES.
+- Batch 1 (9 lines, 2026-04-29T11:32Z): SECURITY.md (4) + validate-agencysignature-pr-body.sh (5). See `docs/0-0-0-readiness/CLASSIFICATION.md` Batch 1 table for named evidence per file.
+
+Composition of `unclassified_lines = 139` (11 files):
+
+```text
+38  .github/workflows/budget-snapshot-cadence.yml
+16  tools/hygiene/fix-markdown-md032-md026.py
+14  tools/setup/common/curl-fetch.sh
+12  docs/hygiene-history/loop-tick-history.md
+11  tools/setup/macos.sh
+ 9  src/Core/Shard.fs
+ 9  docs/AUTONOMOUS-LOOP.md
+ 8  tools/hygiene/audit-memory-index-duplicates.sh
+ 8  memory/project_laptop_only_source_integration_scratch_sqlsharp_features_or_designs_high_priority_2026_04_27.md
+ 8  .github/workflows/memory-index-duplicate-lint.yml
+ 6  .github/codeql/codeql-config.yml
 ```
 
 ### Hard-reset signoff gate (strict)
