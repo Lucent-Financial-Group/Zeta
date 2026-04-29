@@ -128,15 +128,33 @@ if [ -n "${GH_REPO:-}" ]; then
 else
   REPO_NWO="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)"
 fi
-# Validate + parse OWNER/REPO. GH_REPO per gh CLI docs accepts
-# `[HOST/]OWNER/REPO` (host prefix optional, e.g. for GitHub Enterprise).
-# We split by taking the last two segments — ignoring optional leading host.
+# Validate + parse OWNER/REPO (and optional HOST for GitHub Enterprise).
+# GH_REPO per gh CLI docs accepts `[HOST/]OWNER/REPO`. Strict parser:
+#   - 2-segment `OWNER/REPO` → host defaults to github.com (gh CLI default)
+#   - 3-segment `HOST/OWNER/REPO` → HOST must look like a hostname (contain
+#     a dot, e.g. `github.example.com`). Bare 3-segment values like
+#     `owner/repo/extra` are rejected — they're either malformed or a
+#     mis-typed 2-segment value, never a valid Enterprise URL.
+#   - Empty owner or name (e.g. `/repo`, `owner/`, `host//repo`) → reject.
+# Host propagation: when REPO_HOST is set, pass `--hostname` to all
+# `gh api` calls so cross-fork archive runs against Enterprise repos
+# actually target the right backend. (Codex P2 #846: previously the host
+# was parsed but discarded, so host-qualified GH_REPO values silently hit
+# github.com.)
+REPO_HOST=""
 case "${REPO_NWO}" in
+  */*/*/*)
+    # 4+ segments — never valid for `[HOST/]OWNER/REPO`. Fall through to
+    # rejection rather than silently picking the last two segments.
+    REPO_OWNER=""
+    REPO_NAME=""
+    ;;
   */*/*)
     # 3-segment form `HOST/OWNER/REPO` (host-qualified, e.g. Enterprise)
     REPO_NAME="${REPO_NWO##*/}"             # last segment
     _REPO_TMP="${REPO_NWO%/*}"              # everything before last /
     REPO_OWNER="${_REPO_TMP##*/}"           # second-to-last segment
+    REPO_HOST="${_REPO_TMP%/*}"             # first segment (host)
     unset _REPO_TMP
     ;;
   */*)
@@ -150,11 +168,36 @@ case "${REPO_NWO}" in
     ;;
 esac
 if [ -z "${REPO_OWNER}" ] || [ -z "${REPO_NAME}" ]; then
-  echo "error: could not detect repo (need GH_REPO=[HOST/]OWNER/REPO env var or 'gh repo view' to succeed). Is gh authenticated and this a GitHub repo?" >&2
+  echo "error: could not detect repo (need GH_REPO=[HOST/]OWNER/REPO env var or 'gh repo view' to succeed). Is gh authenticated and this a GitHub repo? Got: '${REPO_NWO:-(empty)}'" >&2
   exit 1
 fi
+# Reject embedded slashes inside owner/repo (defence in depth — the case
+# patterns above should already prevent this, but a path-injection here
+# would land archive output outside docs/pr-discussions/).
+case "${REPO_OWNER}" in *"/"*)
+  echo "error: REPO_OWNER cannot contain a slash (got: '${REPO_OWNER}')" >&2
+  exit 1
+  ;;
+esac
+case "${REPO_NAME}" in *"/"*)
+  echo "error: REPO_NAME cannot contain a slash (got: '${REPO_NAME}')" >&2
+  exit 1
+  ;;
+esac
+# When 3-segment form was given, validate host looks like a hostname
+# (contain a dot). This rejects ambiguous values like `owner/repo/extra`
+# which would otherwise parse as host=owner / owner=repo / repo=extra.
+if [ -n "${REPO_HOST}" ]; then
+  case "${REPO_HOST}" in
+    *.*) : ;;  # ok, contains a dot
+    *)
+      echo "error: GH_REPO 3-segment form must be HOST/OWNER/REPO where HOST is a hostname containing a dot (e.g. github.example.com/owner/repo). Got: '${REPO_NWO}'" >&2
+      exit 1
+      ;;
+  esac
+fi
 
-export REPO_ROOT PR REPO_OWNER REPO_NAME
+export REPO_ROOT PR REPO_OWNER REPO_NAME REPO_HOST
 OUT_DIR="${REPO_ROOT}/docs/pr-discussions"
 mkdir -p "$OUT_DIR"
 
@@ -177,6 +220,7 @@ import json, os, subprocess, sys
 
 OWNER = os.environ['REPO_OWNER']
 NAME  = os.environ['REPO_NAME']
+HOST  = os.environ.get('REPO_HOST') or ''
 PR    = int(os.environ['PR'])
 
 QUERY = """
@@ -254,8 +298,17 @@ query($threadId: ID!, $after: String) {
 """
 
 def gh_graphql(query, variables):
-    """Invoke gh api graphql and return parsed JSON or raise."""
-    cmd = ["gh", "api", "graphql", "-f", f"query={query}"]
+    """Invoke gh api graphql and return parsed JSON or raise.
+
+    Honour HOST when REPO_HOST was parsed from a 3-segment GH_REPO
+    (Codex P2 #846): without --hostname, gh api defaults to github.com,
+    so host-qualified GH_REPO values would silently target the wrong
+    backend on GitHub Enterprise.
+    """
+    cmd = ["gh", "api"]
+    if HOST:
+        cmd.extend(["--hostname", HOST])
+    cmd.extend(["graphql", "-f", f"query={query}"])
     for k, v in variables.items():
         if v is None:
             # gh treats -F with empty string as null; for explicit null
