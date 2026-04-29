@@ -23,11 +23,12 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
 
-# Retry-equipped curl helper (per Aaron 2026-04-28 framing — DST
-# exception for external dep downloads, durable retry inside the
-# script instead of ephemeral `gh run rerun --failed`). Sources
-# curl_fetch (file-output, --retry 5 --retry-delay 2
-# --retry-all-errors).
+# Retry-equipped curl helper — DST exception for external dep
+# downloads, durable retry inside the script instead of ephemeral
+# `gh run rerun --failed`. Sources curl_fetch (file-output, with
+# `--retry 5 --retry-delay 2`, plus `--retry-all-errors` when the
+# local curl supports it — curl-fetch.sh feature-detects and falls
+# back on older curl builds).
 # shellcheck source=tools/setup/common/curl-fetch.sh
 source "$SETUP_DIR/common/curl-fetch.sh"
 
@@ -93,7 +94,7 @@ if ! command -v mise >/dev/null 2>&1; then
   # leak the directory on any failure path.
   trap 'rm -rf "${MISE_TMP}"' EXIT
   # Retry-equipped fetch — absorbs transient upstream 5xx without
-  # requiring `gh run rerun --failed` (Aaron 2026-04-29).
+  # requiring a workflow rerun.
   curl_fetch --output "${MISE_TMP}/${MISE_TARBALL}" "${MISE_URL}"
   # Portable SHA256 verification: sha256sum (Linux) or shasum (macOS,
   # though linux.sh runs on Linux only). Per the 4-shell portability

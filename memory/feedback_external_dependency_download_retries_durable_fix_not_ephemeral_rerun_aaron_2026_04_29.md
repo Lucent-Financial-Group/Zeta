@@ -34,13 +34,15 @@ to reduce friction for the NEXT build that hits the same
 mirror flake.
 
 The right fix location is **inside the code**: the call site
-that downloaded the elan installer was
-`tools/setup/common/elan.sh:29`, which used raw `curl -fsSL`
-rather than the retry-equipped helper
-`tools/setup/common/curl-fetch.sh::curl_fetch` that already
-existed. Migrating elan.sh (and the parallel gap in
-`tools/setup/linux.sh:87` for the mise tarball download) to
-`curl_fetch` is the durable fix.
+that downloaded the elan installer in
+`tools/setup/common/elan.sh` (the `elan-init.sh` curl-to-tmp
+download) used raw `curl -fsSL` rather than the retry-equipped
+helper `tools/setup/common/curl-fetch.sh::curl_fetch` that
+already existed. Migrating elan.sh (and the parallel gap in
+`tools/setup/linux.sh` for the mise tarball download) to
+`curl_fetch` is the durable fix. (Line numbers omitted —
+shell sources churn lines fast; grep for the URL constants
+or the `curl_fetch` call to locate the current sites.)
 
 ## The rule (load-bearing)
 
