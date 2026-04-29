@@ -20,8 +20,23 @@
 # "tiny enforcement patches are allowed when they directly prevent
 # repeated consolidation-gate violations."
 #
-# Diff-based scope (avoids retrofitting historical content):
-#   - changed files between BASE_REF and HEAD
+# PORTABILITY (per Amara round-8 honest-naming catch):
+#   This is a Bash + GNU-grep oriented advisory lint. NOT POSIX.
+#   - Uses Bash here-strings (`<<<`), `set -euo pipefail`, etc.
+#   - Uses GNU-grep `\b` word boundaries (extension, not POSIX).
+#   - Targets: Linux CI runners + the 4-shell developer target
+#     (macOS bash 3.2+ / Ubuntu / git-bash / WSL).
+#
+# SCOPE — two modes (per Amara round-8 pre-commit-vs-PR-diff catch):
+#   pr (default)         — diff between BASE_REF and HEAD; matches
+#                           the CI/PR-check use case. Misses local
+#                           working-tree edits before commit.
+#   worktree             — includes unstaged + staged + committed
+#                           changes; matches the local pre-commit
+#                           use case.
+#
+# Diff-based scope (both modes — avoids retrofitting historical):
+#   - changed files (per SCOPE)
 #   - intersected with Otto-authored prose surfaces:
 #     - memory/*.md (top-level; not memory/persona/)
 #     - docs/hygiene-history/ticks/**/*.md (tick shards)
@@ -36,14 +51,19 @@
 #   - lines starting with `> ` (markdown blockquote — usually quoted
 #     third-party text)
 #   - the rule-documentation files themselves
+#   - HTML comments and paired-edit markers ARE in scope (the
+#     paired-edit comment with "directive" in MEMORY.md was the
+#     proof-case that motivated this lint).
 #
 # Usage:
-#   tools/lint/no-directives-otto-prose.sh           # advisory (warn-only)
-#   tools/lint/no-directives-otto-prose.sh --strict  # exit 1 on hits
+#   tools/lint/no-directives-otto-prose.sh                 # PR-diff advisory
+#   tools/lint/no-directives-otto-prose.sh --strict        # PR-diff strict
+#   SCOPE=worktree tools/lint/no-directives-otto-prose.sh  # local pre-commit
 #
 # Env:
-#   BASE_REF — base ref to diff against (default: origin/main).
+#   BASE_REF — base ref to diff against in pr mode (default: origin/main).
 #              CI should set BASE_REF=$BASE_SHA.
+#   SCOPE    — "pr" (default) or "worktree".
 
 set -euo pipefail
 
@@ -52,9 +72,22 @@ cd "$REPO_ROOT"
 
 MODE="${1:-advisory}"
 BASE_REF="${BASE_REF:-origin/main}"
+SCOPE="${SCOPE:-pr}"
 
-# Compute changed files between BASE_REF and HEAD.
-CHANGED_FILES=$(git diff --name-only --diff-filter=AM "$BASE_REF...HEAD" 2>/dev/null || true)
+# Compute changed files per SCOPE.
+if [ "$SCOPE" = "worktree" ]; then
+  # Local pre-commit: include unstaged + staged + committed-but-unpushed.
+  CHANGED_FILES=$(
+    {
+      git diff --name-only --diff-filter=AM 2>/dev/null || true
+      git diff --cached --name-only --diff-filter=AM 2>/dev/null || true
+      git diff --name-only --diff-filter=AM "$BASE_REF...HEAD" 2>/dev/null || true
+    } | sort -u
+  )
+else
+  # PR/CI: diff committed BASE_REF to HEAD.
+  CHANGED_FILES=$(git diff --name-only --diff-filter=AM "$BASE_REF...HEAD" 2>/dev/null || true)
+fi
 
 if [ -z "$CHANGED_FILES" ]; then
   echo "no-directives-otto-prose: no changed files vs $BASE_REF; skipping"
