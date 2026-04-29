@@ -619,7 +619,7 @@ claim_id: CLAIM-123
 github_issue: 123
 source_url: https://github.com/Lucent-Financial-Group/Zeta/issues/123
 status: requested | active | blocked | done | expired | rejected | revoked  # rejected (declined at intake) is distinct from revoked (active claim withdrawn) per the v4 Deepseek catch below
-actor_id: external:<github-login-or-agent-id>
+actor_id: zeta-external://github/<github-login-or-agent-id>  # canonical trust-domain form per the v4 binding rule below
 maintainer_sponsor: null
 role_id: docs-worker
 capability: patch_only
@@ -792,7 +792,7 @@ During the v3 draft in PR #852 (layered actor identity + public claim intake), f
 Claude.ai catch: *"`aaron-mac/claude-code/coordinator` is meaningful for audit only if something prevents impersonation. Today, anything with the right config can claim to be that actor."*
 
 **v4 binding requirement**:
-- Every actor has a registry entry under `actors/<encoded-actor-id>.yaml`. Filename encoding must be cross-platform safe: no path separators and no Windows-forbidden filename characters (`:`, `/`, `\`, `*`, `?`, `"`, `<`, `>`, `|`); the encoded basename must not end with a dot or space; and must not equal a Windows reserved device name (`CON`, `PRN`, `AUX`, `NUL`, `COM1`-`COM9`, `LPT1`-`LPT9`). Canonical encoding: replace `://` with `--`, `/` with `_`, lowercase the result. Example: `zeta://aaron-mac/claude-code/coordinator` → `actors/zeta--aaron-mac_claude-code_coordinator.yaml`. The registry record itself carries the original `actor_id:` field as the canonical string (filename is the lookup key, not the source of truth for the ID).
+- Every actor has a registry entry under `actors/<encoded-actor-id>.yaml`. Filename encoding must be cross-platform safe (no path separators and no Windows-forbidden chars `:`, `/`, `\`, `*`, `?`, `"`, `<`, `>`, `|`; no trailing dot or space; not a Windows reserved device name `CON`/`PRN`/`AUX`/`NUL`/`COM1`-`COM9`/`LPT1`-`LPT9`) **AND must be reversible / collision-free** so distinct actor IDs cannot alias to the same filename. Canonical encoding: percent-encode the actor_id per RFC 3986 (`%3A` for `:`, `%2F` for `/`), preserving case in the encoded form, and use that as the basename. Example: `zeta://aaron-mac/claude-code/coordinator` → `actors/zeta%3A%2F%2Faaron-mac%2Fclaude-code%2Fcoordinator.yaml`. Decoding the basename always recovers the original `actor_id:` byte-for-byte. The registry record itself carries the original `actor_id:` field as the canonical string (filename is the lookup key + a derivable form, not the source of truth for the ID).
 - Registry declares public key fingerprint (Ed25519 preferred; GitHub-native commit verification as MVP fallback).
 - Privileged mutations must be attributable to a bound actor.
 - Reconciler verifies signature/identity binding before trusting any claim mutation.
