@@ -39,6 +39,13 @@ reachability/diff computation`. GitHub's "indirect merge"
 detection (head reachable from base = auto-merge marker) can
 race with mid-cascade rebases.
 
+```text
+This is an observed probabilistic race, NOT a deterministic
+GitHub rule. The guard remains in force even if a future
+force-push happens not to close the PR — one survival is not
+evidence the race retired.
+```
+
 ## Operational rule
 
 ```text
@@ -50,24 +57,58 @@ PR-aliveness is a separate head/base reachability and diff
 invariant. Do not confuse them.
 ```
 
+## Pre-flight: cascade detection (run BEFORE rebase/force-push)
+
+```bash
+# Query active auto-merge PRs on the same base branch.
+gh pr list --state open \
+  --json number,baseRefName,headRefName,autoMergeRequest,mergeStateStatus,title \
+  --jq '.[] | select(.baseRefName == "main" and .autoMergeRequest != null)'
+```
+
+If any PRs are returned (active cascade), defer the rebase/
+force-push until the cascade drains. The detection is
+mechanical — Otto remembering the cascade state is exactly
+the failure mode that produced this incident.
+
 ## Mechanical guard (before any force-push/rebase of an open PR)
+
+The guard uses a per-run identifier to avoid two concurrent
+ticks overwriting each other's evidence (parallel-agent
+future-proofing) — Claude.ai's catch.
 
 ```bash
 PR=<number>
+RUN_ID="$(date -u +%Y%m%dT%H%M%SZ)-$$"
 
 gh pr view "$PR" \
-  --json number,state,headRefName,headRefOid,baseRefName,baseRefOid,mergeStateStatus,isDraft,title \
-  > "/tmp/pr-$PR-before.json"
-git log --oneline "origin/main..HEAD" > "/tmp/pr-$PR-unique-commits-before.txt"
-git diff --stat "origin/main...HEAD" > "/tmp/pr-$PR-diff-before.txt"
+  --json number,state,headRefName,headRefOid,baseRefName,baseRefOid,mergeStateStatus,autoMergeRequest,isDraft,title \
+  > "/tmp/pr-$PR-$RUN_ID-before.json"
+git log --oneline "origin/main..HEAD" > "/tmp/pr-$PR-$RUN_ID-unique-commits-before.txt"
+git diff --stat "origin/main...HEAD" > "/tmp/pr-$PR-$RUN_ID-diff-before.txt"
 
 # ... do the rebase / force-push ...
 
+# Wait for GitHub's API to converge to the local HEAD before
+# classifying. GitHub's PR state computation is async; querying
+# immediately after a push can return stale headRefOid (Gemini's
+# catch). Poll up to 30s.
+LOCAL_HEAD="$(git rev-parse HEAD)"
+for i in 1 2 3 4 5 6; do
+  GH_HEAD="$(gh pr view "$PR" --json headRefOid --jq .headRefOid 2>/dev/null || true)"
+  [ "$GH_HEAD" = "$LOCAL_HEAD" ] && break
+  sleep 5
+done
+if [ "$GH_HEAD" != "$LOCAL_HEAD" ]; then
+  echo "GitHub PR headRefOid did not converge to local HEAD after 30s; stop classification"
+  exit 1
+fi
+
 gh pr view "$PR" \
-  --json number,state,headRefName,headRefOid,baseRefName,baseRefOid,mergeStateStatus,isDraft,title \
-  > "/tmp/pr-$PR-after.json"
-git log --oneline "origin/main..HEAD" > "/tmp/pr-$PR-unique-commits-after.txt"
-git diff --stat "origin/main...HEAD" > "/tmp/pr-$PR-diff-after.txt"
+  --json number,state,headRefName,headRefOid,baseRefName,baseRefOid,mergeStateStatus,autoMergeRequest,isDraft,title \
+  > "/tmp/pr-$PR-$RUN_ID-after.json"
+git log --oneline "origin/main..HEAD" > "/tmp/pr-$PR-$RUN_ID-unique-commits-after.txt"
+git diff --stat "origin/main...HEAD" > "/tmp/pr-$PR-$RUN_ID-diff-after.txt"
 ```
 
 ## Enforcement after the action
@@ -91,9 +132,37 @@ new PR: #<num>
 branch: <name>
 before head SHA: <sha>
 after head SHA: <sha>
+base SHA: <sha>
 diff-stat proving remaining content: <output>
+seconds_between_force_push_and_pr_close: <int>
+whether original later became merged/covered: <yes/no/n-a>
 reason reopen failed (if applicable): <message>
 ```
+
+The `seconds_between_force_push_and_pr_close` field
+(Claude.ai's catch) lets future incidents cluster against this
+one. Sub-five-second close = almost certainly platform race;
+spread across minutes = different mechanism.
+
+## Successor-PR dedup (Deepseek's catch)
+
+GitHub's eventual consistency means an auto-closed PR may
+later be marked as merged once the comparison/diff state
+settles. After opening the successor:
+
+```text
+After opening successor PR:
+- re-check original PR state after GitHub settles (~60s+)
+- if original later became merged/covered AND successor
+  content is identical → close successor as duplicate
+  (preserves attribution lineage)
+- if content has diverged → keep successor and record
+  why in the recovery note
+- always record old→new PR mapping in a recovery-log file
+  for future incident clustering
+```
+
+Otherwise the queue accumulates phantom successor PRs.
 
 ## Why P3 (research-grade, not blocking)
 

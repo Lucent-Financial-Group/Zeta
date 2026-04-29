@@ -43,9 +43,30 @@ If the truth can be computed, compute it or lint it.
 |---|---|
 | filename timestamp (`HHMMZ.md`) | row timestamp's `HH:MM` |
 | tick ordinal ("twenty-second tick") | sorted shard position in directory |
-| session PR total ("30 PRs") | `gh pr list --search` or `git log` count |
+| session PR total ("30 PRs") | `gh pr list` query or `git log` count |
 | branch base ("based on main") | explicit ref SHA |
 | "this is the Nth fix" | git log count of similar commits |
+| PR head/base SHA claims | `gh pr view --json headRefOid,baseRefOid` |
+
+## Boundary — what this lint does NOT apply to (Claude.ai's catch)
+
+The rule fires only on agent-authored prose claiming
+**exact equivalence with a derivable substrate truth**:
+ordinals, counts, timestamps, SHAs, branch bases, PR states.
+
+The rule does **not** fire on:
+
+- Human summaries ("this round produced strong substrate")
+- Interpretations or labels ("the loop has converged on
+  steady-state")
+- Subjective qualifiers ("approximate", "roughly")
+- Prose that intentionally summarizes an automatically-derived
+  fact rather than mirroring it
+
+Without this boundary, the lint becomes Goodhart bait: every
+human-readable summary against literal field values would
+flag as drift. The boundary preserves prose value while
+catching only **claims of correspondence**.
 
 ## Distilled keepers
 
