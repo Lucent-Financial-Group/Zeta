@@ -105,7 +105,20 @@ Best blade (Amara): *"Line-count dominance is a smoke detector. Content equivale
 
 The drift trajectory is a metric; the GATE is the ledger. Hand-counts drift; ledgers from `git diff --numstat` don't.
 
-The ledger is computed in two passes (text via `numstat`, binary direction via `name-status`) and joined NUL-safely. Per multi-AI review 2026-04-29T10:50Z: binary files emit `-/-` in `numstat` because lines aren't countable, but they CAN be erased on hard-reset, so they need direction classification — `acehack-only` vs `lfg-only` vs `modified-on-both`.
+The ledger is computed in two passes (text via `numstat`, binary direction via `name-status`). Per multi-AI review 2026-04-29T10:50Z: binary files emit `-/-` in `numstat` because lines aren't countable, but they CAN be erased on hard-reset, so they need direction classification — `acehack-only` vs `lfg-only` vs `modified-on-both`.
+
+**The shell snippet below is ILLUSTRATIVE, NOT DURABLE.** Per multi-AI review 2026-04-29T11:05Z (Codex + Copilot 7-thread cluster + Amara): the inline awk/grep approach below has real NUL-safety bugs and is not portable across awk implementations:
+
+- `awk $3` with default whitespace FS breaks on paths with spaces (need `FS='\t'`).
+- `grep -Ff` reads newline-delimited patterns, not NUL-delimited (the `ORS="\0"` write doesn't compose with `grep -f`).
+- `numstat -z` rename/copy records are `adds<TAB>dels<TAB>NUL old<NUL>new<NUL>`, not just one NUL-delimited row.
+- `name-status -z` rename/copy rows are `status<NUL>old<NUL>new<NUL>` (3 fields), not `status<NUL>path<NUL>` (2 fields). The toggle parser desynchronizes.
+- `RS='\0'` / `ORS='\0'` is a gawk extension; macOS BSD awk doesn't support it.
+- `/tmp/binary-paths.nul` is a fixed path with no `mktemp` + `trap` cleanup; clobber-prone under concurrency.
+
+The durable home for the gate-runner is `tools/zero-zero-zero/check-gate.sh` (deferred follow-up, see "Deferred follow-ups" below). That script must be tested against fixtures including: paths with spaces, binary add, binary delete, binary modify, binary rename, binary copy, gawk-vs-BSD-awk.
+
+**Stopgap rule for this round**: if `binary_modified_files` is non-zero in this ledger, do NOT rely on the inline snippet to classify direction. Use `git diff --name-status -z origin/main..acehack/main -- <path>` per binary file + direct `git show` evidence, manually, until the gate-runner script exists.
 
 ```bash
 # Pass 1: text files (numstat reports lines)
@@ -151,7 +164,7 @@ if [ -s /tmp/binary-paths.nul ]; then
 fi
 ```
 
-Per Codex 2026-04-29T10:42Z catch + Amara 2026-04-29T10:50Z direction-split: the prior one-pass version silently excluded binary files via `$1 != "-" && $2 != "-"`. v2 counts binary direction separately and uses `-z` NUL-safe parsing throughout (handles paths with spaces / odd chars).
+Per Codex 2026-04-29T10:42Z catch + Amara 2026-04-29T10:50Z direction-split: the prior one-pass version silently excluded binary files via `$1 != "-" && $2 != "-"`. The conceptual fix (split direction into three buckets) is correct. The inline implementation above is illustrative only — see the warning block above this code; the durable NUL-safe + portable implementation lives in the deferred gate-runner script.
 
 **Reset-loss surface for binary files:**
 
@@ -388,7 +401,7 @@ A peer-call to Grok this session reported the inverse claim ("AceHack has the se
 
 Per multi-AI review 2026-04-29T10:50Z packet:
 
-- **Gate-runner script**: build `tools/zero-zero-zero/check-gate.sh` that emits a machine-readable summary of all 9 gate conditions and fails closed. Replaces the prose ledger with a verifiable-by-execution gate. Otherwise the conditions can drift via hand-edit.
+- **Gate-runner script** (now bumped to highest priority among deferred follow-ups): build `tools/zero-zero-zero/check-gate.sh` that emits a machine-readable summary of all 9 gate conditions and fails closed. Replaces the prose ledger AND the illustrative inline snippet above with a verifiable-by-execution gate. Per multi-AI review 2026-04-29T11:05Z (Codex P1 + Copilot 5 threads + Amara): the durable script must be tested against fixtures: paths with spaces, binary add, binary delete, binary modify, binary rename, binary copy, gawk-vs-BSD-awk portability, `mktemp` + `trap` cleanup. Until the script lands, binary direction MUST be classified manually via `git diff --name-status -z` per file + direct `git show` evidence. Best blade (Amara): *"The binary hole is found. The gate condition is right. The parser still needs teeth."*
 - **Self-reference rule for personas in operational specs**: "Otto" is a named identity in the substrate. Should references to "Otto" in reusable operational specs follow the same role-vs-name rule as references to "Aaron" / "Amara"? Probably yes. Capture in `docs/AGENT-BEST-PRACTICES.md` extension.
 - **LOST recovery soft-trigger predicate format**: "deferred with stated condition" needs a verifiable predicate that auto-resurfaces the work for resume/retire decision when the condition becomes true. Example shape: `"deferred until: (B-0105 lands) AND (no consolidation work is active)"`.
 - **Time-gap between dry-run and real push**: structure the destructive sequence so dry-run + real push run as one operator-approved unit, not two separate decisions. Capture timestamps for both for any post-incident analysis.
