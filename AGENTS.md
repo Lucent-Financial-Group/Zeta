@@ -258,6 +258,37 @@ These apply to any AI harness.
   `docs/DRIFT-TAXONOMY.md` (operational one-page
   field guide) — the absorb stayed in-place as
   provenance; the promotion is the ratification.
+- **Substrate or it didn't happen — no invisible
+  directives (Otto-363).** Before declaring work
+  *"done,"* identify its durability surface. Chat,
+  TaskUpdate, `/tmp`, `/var/tmp`, and loop todos are
+  NOT durable project substrate. If a directive /
+  decision / packet matters after compaction, it
+  must be converted into substrate (committed to
+  canonical git history + reachable from a long-lived
+  ref + indexed by a canonical bootstrap or index
+  file — all three legs). 5-tier channel taxonomy:
+  ephemeral (chat, TaskUpdate, temp dirs — weather)
+  / local-parked (named stash, local WIP) /
+  remote-parked (pushed WIP branch like
+  `wip/<topic>-<date>`, draft PR — *"if it matters
+  enough to come back to, it deserves a git ref"*) /
+  host-durable-not-git-canonical (GitHub Issues, PR
+  comments) / git-native-preserved (merged + indexed
+  repo files). Vocabulary discipline: *captured*
+  (TaskUpdate / chat) ≠ *parked* (GitHub Issue /
+  remote WIP branch) ≠ *preserved* (git-native
+  repo) ≠ *canonical* (accepted spec) ≠
+  *operational* (enforced by tooling). When
+  uncertain about preservation route, default to
+  `docs/research/` first; promotion to
+  memory/canonical is cheaper than demotion. Cross-
+  harness rule: applies to all harnesses, not just
+  Claude Code. Carved blade: *"A directive that
+  lives only in a conversation is not a directive.
+  It is weather. Substrate or it didn't happen."*
+  Full reasoning:
+  `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`.
 
 ## Build and test gate
 

@@ -271,7 +271,7 @@ Verbatim packets preserved at:
 ## Composes with
 
 - **Otto-362** (`memory/feedback_otto_362_doctrine_memory_expansion_refresh_stale_statements_same_edit_2026_04_29.md`) — intra-file supersession discipline; Otto-363 is cross-surface generalisation + bidirectional metadata.
-- **`memory/feedback_aaron_channel_verbatim_preservation_*`** — channel-verbatim rule that Otto-363 mechanises with paired structured extraction.
+- **`memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`** — channel-verbatim rule that Otto-363 mechanises with paired structured extraction.
 - **`tools/lint/no-directives-otto-prose.sh`** — lexeme-guard lint born from the same family of failures (vigilance fails; mechanism is the durable answer).
 - **`memory/feedback_verify_target_exists_before_deferring.md`** (CLAUDE.md-tier) — same shape: deferred targets must exist before deferral; chat directives must become substrate before being treated as binding.
 - **`memory/feedback_future_self_not_bound_by_past_decisions.md`** (CLAUDE.md-tier) — companion: future-self can revise *substrate*; future-self cannot revise *chat that didn't land as substrate* because it never existed as project state.
@@ -285,6 +285,51 @@ Verbatim packets preserved at:
 - Does NOT say *"never give chat instructions."* Aaron + Amara give instructions in chat constantly; what the rule forbids is *believing the chat instruction is the durable artifact.*
 - Does NOT replace Otto-362 — Otto-362 is intra-file; Otto-363 is cross-surface + bidirectional supersession metadata.
 - Does NOT require pre-commit hook enforcement immediately — that's deferred to a separate task; the doctrine-level rule operates today via discipline + bootstrap pointer + verbatim discipline.
+
+## Pairs with the existing git-recovery process (task #321)
+
+The factory already has a recovery process for finding "lost" git work — task #321 (recovery lane: branch / worktree / stash inventory + classification + report PR). At first inventory: 918 branches (123 ALREADY_REACHABLE / 795 NOT_REACHABLE), 58 worktrees, 7 stashes.
+
+Otto-363's parking-surface taxonomy is **not a replacement** — it's the *intentional-parking* counterpart that pairs with the recovery process. Together they form a complete loop:
+
+| Direction | Mechanism |
+|---|---|
+| **Parking** (Otto-363) | Author commits to `wip/<topic>-<date>` branch and pushes. Branch is intentional-parking, discoverable by name pattern. |
+| **Recovery** (task #321) | Inventory script walks `git for-each-ref --format='%(refname)'` + `git worktree list` + `git stash list`; classifies each ref as REACHABLE / NOT_REACHABLE / WIP-INTENTIONAL / etc. |
+
+**Naming convention is the discoverability mechanism.** A pushed WIP branch named `wip/<topic>-<date>`:
+
+- Tells the recovery process: *"this is intentional parking, not lost"*
+- Tells future-self: *"this is where I parked work to come back to"*
+- Tells fresh-cold-start agents: *"these are leads, not orphans"*
+- Survives because the recovery process explicitly preserves WIP-prefixed branches in its classification (or should — file as #321 follow-up if not yet implemented)
+
+**Recovery-process recognition rule** (filed against task #321):
+
+```text
+Branches matching `wip/**` are WIP-INTENTIONAL.
+Do not propose them for deletion.
+Do propose them for index/audit ("did the author come back?")
+after configurable staleness window (e.g. 30 days).
+```
+
+**Forbidden parking patterns** (recovery process should flag):
+
+- Long-lived feature branches with no PR (use draft PR instead)
+- WIP branches without `wip/` prefix (silently parked, not discoverable)
+- Untracked working-tree files (always lost on branch switch)
+- Local-only branches that never get pushed (machine-failure-vulnerable)
+
+**The complete loop**:
+
+```text
+Author parks: git checkout -b wip/topic-date && commit && push
+Author returns: git fetch && git checkout wip/topic-date
+Author abandons: branch ages out; recovery process inventories it after window
+Recovery prompts: "wip/topic-date is N days old; promote to PR, delete, or extend?"
+```
+
+Otto-363 doctrine + task #321 recovery process = the parking + recovery substrate is mechanical, not vigilance-based. *"If it matters enough to come back to, it deserves a git ref"* — and the recovery process knows how to find that git ref later.
 
 ## Future failure mode handled: preserved-but-disputed
 

@@ -305,14 +305,16 @@ Claude-Code-specific mechanisms.
   git-native memory / docs/research / docs/ops /
   claim file / validator / bootstrap rule).
   Vocabulary discipline: *captured* (TaskUpdate
-  only) ≠ *parked* (GitHub durable, not repo) ≠
-  *preserved* (repo-native) ≠ *canonical* (accepted
-  spec) ≠ *operational* (enforced by tooling). Never
-  call TaskUpdate-only work *"done."* Verbatim-
-  preservation trigger: when Aaron / Amara / external
-  reviewers send an architecture-changing / doctrine-
-  superseding / multi-AI review packet, preserve
-  verbatim in `docs/research/` BEFORE summarizing.
+  only) ≠ *parked* (GitHub Issue / pushed WIP branch,
+  durable but not git-canonical) ≠ *preserved*
+  (repo-native, committed + reachable + indexed) ≠
+  *canonical* (accepted spec) ≠ *operational*
+  (enforced by tooling). Never call TaskUpdate-only
+  work *"done."* Verbatim-preservation trigger: when
+  the human maintainer / external reviewers send an
+  architecture-changing / doctrine-superseding /
+  multi-AI review packet, preserve verbatim in
+  `docs/research/` BEFORE summarizing.
   Magnitude classifier: small correction → task;
   implementation readiness → task + notes; doctrine
   correction → memory file; superseding architecture
