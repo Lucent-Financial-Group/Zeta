@@ -84,8 +84,15 @@ RUN_ID="$(date -u +%Y%m%dT%H%M%SZ)-$$"
 gh pr view "$PR" \
   --json number,state,headRefName,headRefOid,baseRefName,baseRefOid,mergeStateStatus,autoMergeRequest,isDraft,title \
   > "/tmp/pr-$PR-$RUN_ID-before.json"
-git log --oneline "origin/main..HEAD" > "/tmp/pr-$PR-$RUN_ID-unique-commits-before.txt"
-git diff --stat "origin/main...HEAD" > "/tmp/pr-$PR-$RUN_ID-diff-before.txt"
+# Refresh base ref before computing uniqueness — during a merge
+# cascade `origin/main` can lag the actual base by several
+# seconds (Codex's catch). The captured `baseRefOid` from
+# `gh pr view` is the canonical base for this PR; use it
+# directly rather than `origin/main`.
+git fetch --no-tags origin
+BASE_BEFORE=$(jq -r '.baseRefOid' "/tmp/pr-$PR-$RUN_ID-before.json")
+git log --oneline "${BASE_BEFORE}..HEAD" > "/tmp/pr-$PR-$RUN_ID-unique-commits-before.txt"
+git diff --stat "${BASE_BEFORE}...HEAD" > "/tmp/pr-$PR-$RUN_ID-diff-before.txt"
 
 # ... do the rebase / force-push ...
 
@@ -107,8 +114,12 @@ fi
 gh pr view "$PR" \
   --json number,state,headRefName,headRefOid,baseRefName,baseRefOid,mergeStateStatus,autoMergeRequest,isDraft,title \
   > "/tmp/pr-$PR-$RUN_ID-after.json"
-git log --oneline "origin/main..HEAD" > "/tmp/pr-$PR-$RUN_ID-unique-commits-after.txt"
-git diff --stat "origin/main...HEAD" > "/tmp/pr-$PR-$RUN_ID-diff-after.txt"
+# Refresh + use the captured base again (may have advanced
+# during the operation).
+git fetch --no-tags origin
+BASE_AFTER=$(jq -r '.baseRefOid' "/tmp/pr-$PR-$RUN_ID-after.json")
+git log --oneline "${BASE_AFTER}..HEAD" > "/tmp/pr-$PR-$RUN_ID-unique-commits-after.txt"
+git diff --stat "${BASE_AFTER}...HEAD" > "/tmp/pr-$PR-$RUN_ID-diff-after.txt"
 ```
 
 ## Enforcement after the action

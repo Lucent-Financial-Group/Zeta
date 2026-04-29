@@ -115,7 +115,7 @@ Non-fusion disclaimer: Deepseek's voice, Amara's voice, and Otto's absorb are pr
 > ```text
 > Observer lanes produce signal.
 > Operator lanes mutate substrate.
-> ```"*
+> ```
 
 ### §A.5 — Amara on the maintainer's `force-push-triggers-pr-auto-close` micro-class
 
@@ -196,7 +196,7 @@ Non-fusion disclaimer: Deepseek's voice, Amara's voice, and Otto's absorb are pr
 > Events are written.
 > Metadata is computed.
 > Claims are checked against derived truth.
-> ```"*
+> ```
 
 ---
 

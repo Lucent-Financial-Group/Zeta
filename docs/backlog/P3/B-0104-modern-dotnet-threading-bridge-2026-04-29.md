@@ -160,7 +160,10 @@ land as a small low-risk PR if a contributor picks it up.
 ## Migration path (when active)
 
 1. Locate ALL threading-related docs via
-   `grep -rl 'ReaderWriterLockSlim\|System.Threading.Lock\|FrozenDictionary\|FrozenSet\|Task.WhenEach\|SemaphoreSlim' docs/`.
+   `grep -rlE 'ReaderWriterLockSlim|System.Threading.Lock|FrozenDictionary|FrozenSet|Task.WhenEach|SemaphoreSlim' docs/`
+   (the `-E` flag enables ERE so unescaped `|` is alternation;
+   without `-E`, BSD/macOS grep treats `\|` as a literal in
+   BRE rather than alternation).
 2. Author the bridge doc (likely
    `docs/threading/MODERN-DOTNET-THREADING-BRIDGE.md`).
 3. Cross-link from `docs/LOCKS.md` and the existing Gemini Pro

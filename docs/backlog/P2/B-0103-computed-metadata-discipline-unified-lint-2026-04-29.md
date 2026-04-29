@@ -87,8 +87,17 @@ multiple legitimate shard-name shapes documented in
 `HHMMZ-NN.md`, `HHMMSSZ-<short-hash>.md`).
 
 ```bash
+#!/usr/bin/env bash
 # tools/lint/metadata-drift-check.sh
 # Run on PR diffs touching tick-history shards or backlog rows.
+#
+# REQUIRES BASH (not strict POSIX): uses `[[ ... =~ ... ]]`,
+# `BASH_REMATCH`, `read -d ''`, and process substitution
+# `< <(...)`. The factory's 4-shell portability target
+# (macOS bash 3.2 / Ubuntu bash / git-bash / WSL) all
+# support these. If a strict POSIX rewrite becomes
+# necessary later (e.g., busybox `ash` runners), use
+# `awk` + `case` instead.
 
 # Check 1 — filename HHMM matches row timestamp HH:MM.
 #
