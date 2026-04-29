@@ -276,15 +276,15 @@ These apply to any AI harness.
   host-durable-not-git-canonical (GitHub Issues, PR
   comments) / git-native-preserved (committed +
   reachable-from-long-lived-ref + indexed repo
-  files). Vocabulary discipline (5 mutually-
+  files). Vocabulary discipline (6 mutually-
   exclusive classes): *captured* (TaskUpdate / chat
   — ephemeral) ≠ *parked* (pushed WIP branch like
   `wip/<topic>-<date>`, optionally with draft PR —
-  git-ref-backed; GitHub Issues are NOT parking
-  surfaces, they live in the host-durable-not-git-
-  canonical class) ≠ *preserved* (git-native repo,
-  committed + reachable-from-long-lived-ref +
-  indexed) ≠ *canonical* (accepted spec) ≠
+  git-ref-backed) ≠ *host-durable-not-git-canonical*
+  (GitHub Issues, PR comments — durable on host but
+  not in git-canonical form) ≠ *preserved* (git-
+  native repo, committed + reachable-from-long-lived-
+  ref + indexed) ≠ *canonical* (accepted spec) ≠
   *operational* (enforced by tooling). When
   uncertain about preservation route, default to
   `docs/research/` first; promotion to

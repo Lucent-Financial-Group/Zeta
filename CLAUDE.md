@@ -322,17 +322,18 @@ Claude-Code-specific mechanisms.
   substrate (committed + reachable + indexed git-
   native repo file: memory / docs/research / docs/ops
   / claim file / validator / bootstrap rule). PRs
-  and issues are host-durable parking surfaces, NOT
-  substrate; for doctrine-changing decisions, mirror
-  the substantive content into a git-native file.
-  Vocabulary discipline (5 mutually-exclusive
+  and GitHub Issues are host-durable-not-git-canonical
+  surfaces, NOT substrate; for doctrine-changing
+  decisions, mirror the substantive content into a
+  git-native file.
+  Vocabulary discipline (6 mutually-exclusive
   classes): *captured* (TaskUpdate only — ephemeral)
   ≠ *parked* (pushed WIP branch like
   `wip/<topic>-<date>`, optionally with draft PR —
-  git-ref-backed; GitHub Issues are NOT parking
-  surfaces, they live in the host-durable-not-git-
-  canonical class) ≠ *preserved* (repo-native,
-  committed + reachable-from-long-lived-ref +
+  git-ref-backed) ≠ *host-durable-not-git-canonical*
+  (GitHub Issues, PR comments — durable on host but
+  not in git-canonical form) ≠ *preserved* (repo-
+  native, committed + reachable-from-long-lived-ref +
   indexed) ≠ *canonical* (accepted spec) ≠
   *operational*
   (enforced by tooling). Never call TaskUpdate-only

@@ -2,7 +2,7 @@
 
 **Date**: 2026-04-29
 **Channel**: Aaron (relayed)
-**Status**: Research-grade preservation. Verbatim. The distilled rule lands as Otto-364 (generalisation of Otto-247 version-currency rule) in `memory/feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md`.
+**Status**: Research-grade preservation. The quoted Aaron message is verbatim; the surrounding material is translation, analysis, and demonstration. The distilled rule lands as Otto-364 (generalisation of Otto-247 version-currency rule) in `memory/feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md`.
 
 ---
 
