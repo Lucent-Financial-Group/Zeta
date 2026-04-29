@@ -128,12 +128,31 @@ if [ -n "${GH_REPO:-}" ]; then
 else
   REPO_NWO="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)"
 fi
-if [ -z "${REPO_NWO}" ] || [ "${REPO_NWO}" = "${REPO_NWO#*/}" ]; then
-  echo "error: could not detect repo (need GH_REPO=<owner>/<name> env var or 'gh repo view' to succeed). Is gh authenticated and this a GitHub repo?" >&2
+# Validate + parse OWNER/REPO. GH_REPO per gh CLI docs accepts
+# `[HOST/]OWNER/REPO` (host prefix optional, e.g. for GitHub Enterprise).
+# We split by taking the last two segments — ignoring optional leading host.
+case "${REPO_NWO}" in
+  */*/*)
+    # 3-segment form `HOST/OWNER/REPO` (host-qualified, e.g. Enterprise)
+    REPO_NAME="${REPO_NWO##*/}"             # last segment
+    _REPO_TMP="${REPO_NWO%/*}"              # everything before last /
+    REPO_OWNER="${_REPO_TMP##*/}"           # second-to-last segment
+    unset _REPO_TMP
+    ;;
+  */*)
+    # 2-segment form `OWNER/REPO` (default github.com)
+    REPO_OWNER="${REPO_NWO%/*}"
+    REPO_NAME="${REPO_NWO#*/}"
+    ;;
+  *)
+    REPO_OWNER=""
+    REPO_NAME=""
+    ;;
+esac
+if [ -z "${REPO_OWNER}" ] || [ -z "${REPO_NAME}" ]; then
+  echo "error: could not detect repo (need GH_REPO=[HOST/]OWNER/REPO env var or 'gh repo view' to succeed). Is gh authenticated and this a GitHub repo?" >&2
   exit 1
 fi
-REPO_OWNER="${REPO_NWO%/*}"
-REPO_NAME="${REPO_NWO#*/}"
 
 export REPO_ROOT PR REPO_OWNER REPO_NAME
 OUT_DIR="${REPO_ROOT}/docs/pr-discussions"
