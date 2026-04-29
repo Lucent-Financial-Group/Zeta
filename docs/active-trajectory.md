@@ -136,18 +136,39 @@ For the text-file ledger, the conceptual computation is straightforward: `git di
 
 Verified 2026-04-29T10:43Z: the 5 binary-classified files in the current diff have status `D` (LFG-only), so `binary_acehack_only_files = 0` and `binary_modified_or_renamed_files = 0` in this specific round.
 
-Current ledger (last updated 2026-04-29T12:13Z, post-Batch-2):
+Current ledger (last updated 2026-04-29T12:31Z, post-option-(c)-migration-PR — values reflect post-merge state of the migration PR):
 
 ```text
 potential_loss_lines  = 273    all AceHack-only +lines (would be erased on hard-reset)
-classified_safe_lines = 215    semantic evidence in BUCKET 2 (SAFE_TO_RESET_LFG_SUPERSEDES)
-unsafe_lines          = 12     1 NEEDS_HUMAN_DECISION (loop-tick-history.md mutual divergence)
+classified_safe_lines = 227    semantic evidence in BUCKET 2 (SAFE_TO_RESET_LFG_SUPERSEDES)
+unsafe_lines          = 0      no NEEDS_FORWARD_SYNC or NEEDS_HUMAN_DECISION
 unclassified_lines    = 46     HEURISTIC_LFG_DOMINATES — pending per-file semantic inspection
 ```
 
-`potential_loss_lines = 273` was computed 2026-04-29T10:25Z via `git diff --numstat refs/remotes/origin/main..refs/remotes/acehack/main` and remains canonical at the time of the most recent batch-PR open (the AceHack and LFG main tips have not advanced relative to each other in a way that touched the divergent files — see "Drift cadence observation" earlier; LFG advanced via #837 but #837 only touched docs in `docs/0-0-0-readiness/` which are not in the AceHack-vs-LFG file set). Re-compute on next batch open if either tip moves.
+**Decision-vs-resolution discipline note (per Amara 2026-04-29)**: the `unsafe_lines = 0` value lands ON MERGE of the option-(c) migration PR. While that PR is open, the in-force ledger state is `unsafe_lines = 12 / classified_safe_lines = 215`. The above values represent post-merge state, contingent on the migration PR landing. A plan is not a state change.
 
-Arithmetic sanity check: `273 = 215 + 12 + 46` ✓ (per the multi-AI review discipline — verify mechanically, do not trust the math because it "looks plausible").
+`potential_loss_lines = 273` was computed 2026-04-29T10:25Z via `git diff --numstat refs/remotes/origin/main..refs/remotes/acehack/main` and remains canonical: the AceHack and LFG main tips have not advanced relative to each other in a way that touched the divergent files (#837 + #838 + the option-(c) migration only touch docs in `docs/0-0-0-readiness/` and add new shard files in `docs/hygiene-history/ticks/2026/04/28/` — neither set affects the existing AceHack-vs-LFG diff for the divergent file set). Re-compute on next batch open if either tip moves materially.
+
+Arithmetic sanity check: `273 = 227 + 0 + 46` ✓ (per the multi-AI review discipline — verify mechanically, do not trust the math because it "looks plausible").
+
+### Option-(c) Migration Preflight Ledger (loop-tick-history.md, 2026-04-29T12:31Z)
+
+Per the Migration Preflight Ledger discipline (per multi-AI review 2026-04-29 packet 6): no shard migration starts until every candidate row has normalized hash + bucket + destination/no-op-reason. Built via content-based identity (not timestamp-based). All hashes are 12-char prefixes of SHA-256 over the full normalized row.
+
+| timestamp | acehack_row_hash | lfg_row_hash | bucket | shard_action |
+|---|---|---|---|---|
+| 2026-04-21T17:28 | d1d54bae860f | d1d54bae860f | COMMON_IDENTICAL_REORDERED | no shard write (subcase of COMMON_IDENTICAL — same row content on both forks, diff displays `+/-` because table position changed) |
+| 2026-04-28T04:08 | f23a8b7cdb2d | — | ACEHACK_ONLY | create 0408Z.md |
+| 2026-04-28T04:18 | 49461a7d509b | — | ACEHACK_ONLY | create 0418Z.md |
+| 2026-04-28T04:33 | e48763be9831 | — | ACEHACK_ONLY | create 0433Z.md |
+| 2026-04-28T05:01 | 0fd03048c2fd | — | ACEHACK_ONLY | create 0501Z.md |
+| 2026-04-28T05:23 | f2263f3742fe | — | ACEHACK_ONLY | create 0523Z.md |
+| 2026-04-28T05:44 | 6d0979994589 | — | ACEHACK_ONLY | create 0544Z.md |
+| 2026-04-28T05:50 | e7c8825f26e6 | — | ACEHACK_ONLY | create 0550Z.md |
+| 2026-04-28T07:15 | 9756cee23c0d | — | ACEHACK_ONLY | create 0715Z.md |
+| 2026-04-28T08:50 | d39082ee5264 | — | ACEHACK_ONLY | create 0850Z.md |
+
+Net: 9 shard writes; 1 no-op (COMMON_IDENTICAL with positional drift). The misclassification of `2026-04-21T17:28` as SAME_TIMESTAMP_DRIFT (caught during the trajectory's earlier prose-only classification on #838) was corrected here by the preflight ledger's content-hash check — exactly the bug-class the discipline is designed to prevent. **A timestamp is an address, not an identity.**
 
 Composition of `classified_safe_lines = 215`:
 
