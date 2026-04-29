@@ -29,9 +29,13 @@ ambiguity rule.
 ### Option A — Lint that verifies claimed ordinals against file order
 
 ```bash
-# Pseudocode
+# Pseudocode. Uses POSIX-portable boundary matching since grep -E
+# on GNU/BSD does NOT support \b (treated as backspace/undefined
+# escape). Use a portable boundary: anchor on (^|[^[:alpha:]])
+# and ([^[:alpha:]]|$), or use grep -w (POSIX -w "match whole
+# word"), which both BSD and GNU grep support.
 for file in $(ls -1 docs/hygiene-history/ticks/YYYY/MM/DD/*.md | sort); do
-  claimed_ordinal=$(grep -oE '\b(first|second|...|thirtieth|...)\b' "$file" | head -1)
+  claimed_ordinal=$(grep -woE '(first|second|...|thirtieth|...)' "$file" | head -1)
   expected_ordinal=$(compute_from_file_position)
   [[ "$claimed_ordinal" == "$expected_ordinal" ]] || warn "$file ordinal mismatch"
 done

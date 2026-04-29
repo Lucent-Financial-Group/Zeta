@@ -29,7 +29,11 @@ When a tick shard needs to cite a session PR total:
    thirty-first PR of the arc" style claims unless computed.
 
 2. **If included, cite the computation.** E.g.,
-   `count via gh pr list --search 'merged:>=2026-04-29 author:@me' | wc -l`.
+   `count via gh pr list --search 'merged:>=2026-04-29 author:<gh-login>' | wc -l`
+   (replace `<gh-login>` with the relevant GitHub login;
+   `@me` also works as a documented GitHub-search shorthand
+   for the authenticated user but reads ambiguously, so prefer
+   the explicit form in shard prose).
 
 3. **Better: move totals to a generated projection.** A small
    script that walks `docs/hygiene-history/ticks/YYYY/MM/DD/*.md`
