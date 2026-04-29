@@ -527,8 +527,18 @@ jobs:
             echo "no first-party ${{ matrix.language }} source files at this commit; uploading no-findings SARIF baseline"
           fi
 
+      # Fork-PR guard mirrors path-gate's emit/upload steps: on
+      # PRs from forks the GITHUB_TOKEN is read-only for
+      # `security-events`, so the SARIF upload would 403 with
+      # `Resource not accessible by integration` and FAIL the
+      # exact retired-language case this gate is meant to unblock
+      # (Codex P1 catch on PR #857). On fork PR + no-source, the
+      # subsequent init/build/analyze steps are also skipped
+      # (gated on `has_source == 'true'`), so the job exits
+      # SUCCESS with no SARIF emitted — same posture as path-gate
+      # takes on fork PRs.
       - name: Emit no-findings SARIF (no-source baseline)
-        if: steps.src.outputs.has_source != 'true'
+        if: steps.src.outputs.has_source != 'true' && needs.path-gate.outputs.is_fork_pr != 'true'
         env:
           HEAD_SHA_ENV: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha || github.sha }}
         run: |
@@ -568,7 +578,7 @@ jobs:
           SARIF
 
       - name: Upload no-source SARIF
-        if: steps.src.outputs.has_source != 'true'
+        if: steps.src.outputs.has_source != 'true' && needs.path-gate.outputs.is_fork_pr != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/no-source-${{ matrix.language }}.sarif
