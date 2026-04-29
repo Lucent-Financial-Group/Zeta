@@ -51,7 +51,7 @@ const INDENTED_LINE = /^ {2,}\S/;
 // procedural form (a) avoids ReDoS shapes (sonarjs/slow-regex) and
 // (b) has no length bound, matching Python's `[.,;:!?]+$` behavior on
 // any input including machine-generated headings with arbitrarily long
-// punctuation runs (Codex P2 catch on PR #849: an earlier 10-char bound
+// punctuation runs (PR #849 review noted that an earlier 10-char bound
 // regressed equivalence on long runs).
 const HEADING_LINE = /^#+ /;
 const HEADING_PUNCT_CHARS = ".,;:!?";
@@ -204,11 +204,12 @@ function parseFenceLine(line: string): {
   const fenceChar = fence[0] ?? "";
   const fenceLen = fence.length;
   const tail = line.slice((m[1]?.length ?? 0) + fenceLen).trimStart();
-  // CommonMark forbids backticks in the info string of a backtick fence.
-  // The Python source enforced this via the regex `([^`]*)$`. We honour
-  // the same constraint procedurally: a backtick fence with backticks
-  // in its info string is not a valid fence delimiter.
-  if (fenceChar === "`" && tail.includes("`")) return null;
+  // The Python source enforced `([^`]*)$` on the info string for BOTH
+  // backtick and tilde fences — a backtick anywhere in the info string
+  // invalidates the fence delimiter regardless of fence char. We honour
+  // the same constraint procedurally for behavioural parity with the
+  // retired Python tool (`fix-markdown-md032-md026.py`).
+  if (tail.includes("`")) return null;
   return { fenceChar, fenceLen, info: tail };
 }
 
