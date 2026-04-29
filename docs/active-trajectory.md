@@ -336,11 +336,19 @@ Remaining steps:
    ```bash
    cd /tmp/zeta-clean-2026-04-29/lfg
    git fetch origin main
-   # Per Copilot reviewer P0 (PR #835): the lease MUST default to the
-   # upstream tracking ref (no explicit refname). `--force-with-lease=<name>`
-   # leases against a LOCAL refname, not the remote ref being updated, and
-   # silently degrades to unsafe force-push if the remote advanced.
-   git push --force-with-lease acehack origin/main:refs/heads/main
+   # Per Amara 2026-04-29T10:32Z (most defensive form): explicit expected-SHA
+   # lease defends against the TOCTOU race where someone else pushes to
+   # acehack/main between our fetch and our push. Copilot's "no explicit
+   # refname" form (lease against upstream-tracking) is better than the
+   # original `=acehack/main` form, but the explicit-SHA form is strictly
+   # safer for a destructive ref move.
+   git fetch origin main
+   git fetch acehack main
+   expect=$(git rev-parse refs/remotes/acehack/main)
+   git push \
+     --force-with-lease=refs/heads/main:"$expect" \
+     acehack \
+     refs/remotes/origin/main:refs/heads/main
    ```
    This pushes `origin/main`'s commit to `acehack/main`, which is the destructive AceHack-side reset.
 3. **(AGENT)** Verify 0/0/0:
