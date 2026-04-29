@@ -170,20 +170,21 @@ Per the Migration Preflight Ledger discipline (per multi-AI review 2026-04-29 pa
 
 Net: 9 shard writes; 1 no-op (COMMON_IDENTICAL with positional drift). The misclassification of `2026-04-21T17:28` as SAME_TIMESTAMP_DRIFT (caught during the trajectory's earlier prose-only classification on #838) was corrected here by the preflight ledger's content-hash check — exactly the bug-class the discipline is designed to prevent. **A timestamp is an address, not an identity.**
 
-Composition of `classified_safe_lines = 215`:
+Composition of `classified_safe_lines = 227` (post-merge values, contingent on this PR landing — pre-merge in-force value is 215):
 
 - 9 infra files (97 lines): see "9 infra files" table above. SAFE_TO_RESET_LFG_SUPERSEDES with named per-file evidence.
 - 5 calibration-batch files (28 lines, 2026-04-28): MEMORY.md (11) + codeql_umbrella (12) + doc_class_mirror_beacon (1) + CURRENT-aaron (2) + CURRENT-amara (2). Originally labeled "ALREADY-COVERED" in older taxonomy; under strict bucket each has named evidence in `docs/0-0-0-readiness/CLASSIFICATION.md` → SAFE_TO_RESET_LFG_SUPERSEDES.
 - Batch 1 (9 lines, 2026-04-29T11:32Z): SECURITY.md (4) + validate-agencysignature-pr-body.sh (5). See `docs/0-0-0-readiness/CLASSIFICATION.md` Batch 1 table for named evidence per file.
 - Batch 2 (81 lines, 2026-04-29T12:05Z): codeql-config.yml (6) + memory-index-duplicate-lint.yml (8) + audit-memory-index-duplicates.sh (8) + Shard.fs (9) + AUTONOMOUS-LOOP.md (9) + macos.sh (11) + fix-markdown-md032-md026.py (16) + curl-fetch.sh (14). See `docs/0-0-0-readiness/CLASSIFICATION.md` Batch 2 table for named evidence per file. Common pattern: LFG version is either rule-compliant (role-refs vs persona-name violations on current-state surfaces), more accurate (correct retry-math on curl-fetch.sh), the perf-fixed form (Shard.fs non-boxing comparer), the current doctrine (AUTONOMOUS-LOOP.md Option B shard-mode), or strict superset (fix-markdown-md032-md026.py YAML frontmatter handling).
+- Option-(c) migration (12 lines, this PR): `loop-tick-history.md` reclassifies from NEEDS_HUMAN_DECISION → SAFE_TO_RESET_LFG_SUPERSEDES because the 9 ACEHACK_ONLY rows are durably preserved as Option B shards under `docs/hygiene-history/ticks/2026/04/28/`. Hard-reset of the table on AceHack is then content-preservation-safe.
 
-Composition of `unsafe_lines = 12` (1 file, NEEDS_HUMAN_DECISION):
+Composition of `unsafe_lines = 0` (post-merge values; pre-merge in-force value is 12 — the file is `loop-tick-history.md` until this PR lands):
 
 ```text
-12  docs/hygiene-history/loop-tick-history.md  (mutual divergence — 9-10 unique tick rows on each fork)
+(empty post-merge)
 ```
 
-Per Batch 2 evidence: each fork has unique tick rows for periods when the loop ran independently on that fork. All AceHack-only rows are pre-Option-B (Option B shard-mode landed 2026-04-29T02:04:38Z on LFG via PR #724). Maintainer call is needed on whether to (a) accept the loss on hard-reset, (b) forward-sync to LFG first, or (c) migrate to per-tick shard files first then hard-reset. Recommended path: (c) — preserves evidence in modern format AND makes the file content-identical between forks.
+Pre-merge composition (in-force until this PR lands): `12  docs/hygiene-history/loop-tick-history.md  (mutual divergence — 9 truly-unique-AceHack timestamps + 9 truly-unique-LFG timestamps + 1 COMMON_IDENTICAL_REORDERED row, per the Migration Preflight Ledger above; maintainer-(c) decision recorded; awaiting this PR's merge for resolution).
 
 Composition of `unclassified_lines = 46` (2 files):
 
