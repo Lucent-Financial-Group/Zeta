@@ -363,8 +363,8 @@ This is a **task #321 follow-up addition**: Otto-363 specifies the parking conve
 
 ### Forbidden parking patterns (recovery process should flag)
 
-- Long-lived feature branches with no PR (use **draft PR** instead — visible, discoverable, doesn't drown in `wip/*` scan)
-- WIP branches without `wip/` prefix (silently parked, not discoverable)
+- Long-lived **non-WIP-prefixed** branches with no PR (a `feature/foo` or unprefixed branch sitting around without either a PR or the `wip/` prefix is silent parking — use **draft PR** for visibility OR **rename to `wip/<topic>-<date>`** so the recovery process recognises it as intentional. Pushed `wip/*` branches with no PR are explicitly preferred; this forbidden item is about branches outside that prefix convention.)
+- Branches that intend to be parking but skip the `wip/` / `archive/` prefix (silently parked, not discoverable by the recovery scan)
 - Untracked working-tree files as the only copy (always lost on branch switch)
 - Local-only branches that never get pushed (machine-failure-vulnerable)
 - Anonymous stashes (`git stash` without `-m`) — name them or don't use them
