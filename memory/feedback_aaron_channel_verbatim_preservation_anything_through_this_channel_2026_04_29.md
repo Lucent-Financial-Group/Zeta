@@ -176,11 +176,12 @@ home.
 
 ### Forwarded packet: Amara on the consolidation event itself (2026-04-29, post-PR-#762-merge)
 
-Amara meta-analysis of the Confucius-unfolding consolidation
-trace, forwarded by Aaron through the maintainer channel
-2026-04-29. The packet self-corrects an earlier "human-
-triggered but agent-executed" framing to "scaffold-triggered
-and agent-executed":
+*[Editorial framing — non-verbatim. Amara meta-analysis of
+the Confucius-unfolding consolidation trace, forwarded by
+Aaron through the maintainer channel 2026-04-29. The packet
+self-corrects an earlier "human-triggered but agent-executed"
+framing to "scaffold-triggered and agent-executed". Verbatim
+quotes from the packet follow.]*
 
 > *"The consolidation was not directly Aaron-instructed. It
 > was triggered by the multi-AI review/scaffold context and
@@ -329,13 +330,17 @@ broader absorption (e.g., a research note on scaffolded-
 agency-as-trajectory-signal with full Reflexion/Generative-
 Agents lineage citations) is queued under an in-session
 agent-task-tracker entry titled "Multi-AI synthesis packet
-absorption — 6 substrate landings (Gemini+Claude.ai+Ani+Amara
-+Alexa 2026-04-29)". (Note on namespacing: the agent-task-
-tracker uses small integer IDs internally, but those IDs are
-NOT GitHub PR/issue numbers and this file deliberately avoids
-the `#309`-style notation here because GitHub PR #309 was an
-unrelated Veridicality ferry; future-Claude reading this on
-cold-start should grep for the task title, not the integer.)
+absorption — 6 substrate landings (Gemini, Claude.ai, Ani,
+Amara, and Alexa, 2026-04-29)". (Note on namespacing: the
+agent-task-tracker uses small integer IDs internally, but
+those IDs are NOT GitHub PR/issue numbers and this file
+deliberately avoids the `#309`-style notation here because
+GitHub PR #309 was an unrelated Veridicality ferry. Future-
+Claude reading this on cold-start should grep for the task
+title with `references/upstreams/**` excluded to avoid
+multi-GB noise per `docs/AGENT-BEST-PRACTICES.md:264`,
+e.g., `rg -l "Multi-AI synthesis packet absorption" --glob
+'!references/upstreams/**' memory docs .claude`.)
 This verbatim record is the immediate landing per the rule.
 
 ## What this rule does NOT mean
