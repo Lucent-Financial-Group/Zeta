@@ -50,11 +50,26 @@ contributors can:
 TickId = (Timestamp, ContentHash)
 ```
 
-Filename encoding:
+Filename encoding (current landed convention):
+
+```text
+docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md
+```
+
+Filename encoding (future-migration recommendation for
+multi-agent / high-concurrency, per the 2026-04-29 hardening
+review on the shard transport README):
 
 ```text
 docs/hygiene-history/ticks/YYYY/MM/DD/HHMMSSZ-<short-content-hash>.md
 ```
+
+The math below uses the content-hash form because it makes
+idempotency / retraction laws cleanest to state. The current
+operational form (`HHMMZ.md` with `-01`, `-02` suffixes for
+same-minute collisions) is sufficient for single-agent
+autonomous-loop cadence and is what's currently on main per
+`docs/hygiene-history/ticks/README.md`.
 
 Each shard parses into:
 
@@ -181,11 +196,22 @@ Use content-addressed identity for shard files:
 tick_id = (timestamp, h(canonicalize(row)))
 ```
 
-Recommended path:
+Future-migration recommended path (NOT the current landed
+convention):
 
 ```text
 docs/hygiene-history/ticks/YYYY/MM/DD/HHMMSSZ-<short-content-hash>.md
 ```
+
+Current landed convention per `docs/hygiene-history/ticks/README.md`:
+
+```text
+docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md
+```
+
+with `-01`, `-02` suffixes for same-minute collisions. The
+content-hash form below is forward-looking; adopting it is a
+migration recommendation, not the current contract.
 
 Idempotency law:
 
