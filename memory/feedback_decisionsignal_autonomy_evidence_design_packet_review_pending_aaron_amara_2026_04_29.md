@@ -32,11 +32,36 @@ A status marker. Three load-bearing facts:
 
 3. **NO active adoption yet.** Per Aaron's "review-then-bring-back" pattern:
    - **NOT YET**: distilled doctrine memory file as active rule
-   - **NOT YET**: `.zeta/decisions/` schema file or directory
+   - **NOT YET**: `memory/decisions/` schema file or directory (Deepseek + Amara consensus location, pending round-2 confirmation)
    - **NOT YET**: AgencyReceipt schema augmentation (the proposed `authority_basis` / `autonomy_level` / etc. fields)
    - **NOT YET**: tooling (DecisionSignal validator / generator / linter)
    - **NOT YET**: backfill of past actions with retroactive DecisionSignals
    - **FIRST**: multi-AI review feedback lands; THEN the design firms; THEN active substrate.
+
+## Round-1 review status (2026-04-29)
+
+**Round 1 complete** — 5 reviewers (Gemini, Ani, Claude.ai, Alexa, Deepseek) returned substantive feedback; Amara synthesized into a round-2 convergence packet. Verbatim preserved at `docs/research/2026-04-29-decisionsignal-multi-ai-review-round-1-and-amara-round-2-convergence.md`.
+
+**Convergence points across reviewers** (multiple reviewers independently flagged):
+- Pick **DecisionSignal** as canonical name (Claude.ai + Amara)
+- `initial_classification` + `final_classification` (not single `autonomy_level` field) (Claude.ai + Amara + Deepseek) — captures the agent-paused-at-boundary epistemic event
+- Define minimum-viable-signal boundary as concrete inclusion test: preserve only if (a) agent's interpretation is recorded AND (b) removing the signal would change the authority basis (Claude.ai + Amara)
+- Required vs recommended fields per receipt class (Claude.ai + Amara) — keep routine receipts light; require full DecisionSignal for host/security/authority changes
+- Add `autonomy_justification` field — the *why* of the level label (Deepseek + Amara)
+- Git-native location: `memory/decisions/DS-YYYY-MM-DD-<slug>.md` (Deepseek + Amara) — operational memory artifacts, not general docs
+- `decision_class` field (Deepseek + Amara) — diagnostic / value_choice / invariant_enforcement / host_mutation / permission_change / refusal
+- `non_actions` classification (Deepseek + Amara) — active_refusal / out_of_scope / deferred; only `active_refusal` proves boundary discipline
+- Tie-breaking rule: classify at highest satisfied level; downgrade if uncertain (Deepseek + Amara)
+- A4/A5 should never have `human_intervention: none` — autonomous host mutation without any human signal is a danger signal (Gemini constraint)
+- `human_signals` / `agent_inference` strictly bullet-points, not transcripts (Gemini constraint — prevents exhaust hoarding)
+- `human_intervention.what_human_did_not_do` field — symmetric boundary (Claude.ai + Amara)
+- `durability` self-check applying NO-INVISIBLE-DIRECTIVES rule (Deepseek + Amara) — DecisionSignal applies Otto-363 to its own existence
+- Tighten SLSA citation as analogy not literal claim (Claude.ai + Amara) — receipt = artifact; DecisionSignal = build provenance for that artifact
+- Anchor to NIST AI RMF / NIST AI 600-1 / SLSA-in-toto / W3C PROV / SAE J3016 / Miller-Parasuraman human-automation collaboration literature (Amara)
+
+**Round 2 in flight** — Aaron 2026-04-29: *"I'm going through round 2 now, I'll bring it back in a bit."*
+
+**Amara's recommended next step (post-round-2)**: *"the next step should be Claude Code implementing a tiny DecisionSignal v0 for the Code Quality episode, probably in a WIP branch, with #861 frontmatter fixed first."* — i.e. once round-2 settles, the first concrete adoption is implementing one DecisionSignal v0 paired with the existing host-mutation receipt at `feedback_host_mutation_receipt_2026_04_29_ruleset_15256879_code_quality_removed.md` (LANDED via PR #861). The Code Quality episode IS the canonical worked example all 5 reviewers used — DecisionSignal v0 will retrofit it as the first paired receipt+signal artifact.
 
 ## What this memory is NOT
 
