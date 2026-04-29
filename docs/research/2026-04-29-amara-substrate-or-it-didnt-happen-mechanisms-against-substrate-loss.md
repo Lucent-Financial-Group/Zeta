@@ -10,7 +10,7 @@
 
 Aaron pushed back on Otto's claim that the doctrine round was "done" after a TaskUpdate captured the Amara final review packet + 5-AI review wave (Ani / Gemini / Alexa / Deepseek / Claude.ai). Otto had:
 
-1. Synthesized 12 review corrections into TaskUpdate #339 (session-local).
+1. Synthesized 10 review corrections (numbered in the Amara packet — see structured extraction in the v5 corrections research doc) into TaskUpdate #339 (session-local).
 2. Marked the doctrine round "complete" / "approved by Amara."
 3. Initially minimized the Amara final packet as "review corrections to fold into PR A" — when in fact the packet introduced a v5 superseding architecture (three-layer ports-and-adapters model, host portability, two-worlds split, WorkItem/ChangeRequest/Claim/Actor object model, source-of-truth third rule, freshness budgets, local-git adapter, onboarding ladder, reconciler capability matrix, migration design).
 4. Did NOT land any of it in repo substrate.

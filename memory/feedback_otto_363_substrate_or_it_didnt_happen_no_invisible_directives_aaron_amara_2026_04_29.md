@@ -34,10 +34,13 @@ The agent acting at decision time needs the mechanism in working memory, not the
 6. VOCABULARY      — captured ≠ parked ≠ preserved ≠ canonical ≠
    LOCK              operational. Specific words have specific durability.
 
-7. ENFORCEMENT     — PR body / commit message must include
-   PATH              `Durability:` and `Substrate:` trailers.
-                     Lint flags vocabulary misuse. Pre-commit hook
-                     deferred but planned.
+7. ENFORCEMENT     — PR body / commit message SHOULD include
+   PATH              `Durability:` and `Substrate:` trailers (target
+                     state). Lint to flag vocabulary misuse and the
+                     pre-commit hook are DEFERRED — no PR template
+                     or CI workflow enforces this yet. Doctrine-level
+                     today; mechanically enforced after the
+                     follow-up implementation lands.
 
 8. CROSS-HARNESS   — CLAUDE.md AND AGENTS.md bootstrap pointers.
    PARITY            The rule is not Claude-only.
@@ -49,7 +52,7 @@ Substrate is content that is **all three** of:
 
 1. **Committed** to the canonical git history (not in a working tree, not stashed, not in `/tmp`, not in TaskUpdate).
 2. **Reachable** from a long-lived ref (main, a release branch, or a referenced tag — not on a feature branch that may be deleted).
-3. **Indexed** by a canonical bootstrap or index file (MEMORY.md row, `docs/research/INDEX.md` entry, CLAUDE.md / AGENTS.md pointer, or equivalent canonical reference).
+3. **Indexed** by a canonical bootstrap or index file (MEMORY.md row, CLAUDE.md / AGENTS.md / GOVERNANCE.md pointer, or equivalent canonical reference). A `docs/research/INDEX.md` would be a useful future addition; until it exists, MEMORY.md is the primary memory index and discoverability comes from grep/path conventions for `docs/research/**`.
 
 A file is **not** substrate if any leg is missing. A doc on a feature branch is "in flight," not preserved. A memory file without an MEMORY.md row is "written but lost." A research blob without an index entry is "buried."
 
@@ -103,8 +106,12 @@ The deeper meaning of *"the only directive is NO DIRECTIVES"*:
 ```text
 No invisible conversational directive is allowed to become binding project state.
 
-If it matters after compaction, it must become substrate:
-repo file, issue, PR, claim, memory entry, test, lint, runbook, or bootstrap rule.
+If it matters after compaction, it must be converted into a durable
+project object — preferably substrate (committed + reachable + indexed
+git-native repo file). PRs, issues, comments, and labels are
+host-durable parking surfaces, NOT substrate themselves; for
+doctrine-changing decisions, mirror the substantive content into a
+git-native file.
 ```
 
 The rule is NOT *"never give instructions."* The rule is: *convert directives into substrate, or they are not directives.*
@@ -178,7 +185,7 @@ When new doctrine supersedes old:
 3. **Update old file** with one of:
    - **Top-of-file stale banner** + `superseded_by: <path>` in frontmatter, replacing the active-voice rule body with `[SUPERSEDED BY X]`. The banner goes at the **top**, not the bottom — RAG/grep miss bottom-appended notes.
    - **Quarantine**: rename `feedback_X.md` → `archive/superseded_X.md` and replace contents with `[SUPERSEDED BY <path>]`. Use this when the old file's body would mislead under partial reads.
-4. **Update indexes** (MEMORY.md row, `docs/research/INDEX.md` if any) to reflect new canonical location.
+4. **Update indexes** (MEMORY.md row; future `docs/research/INDEX.md` if it lands) to reflect new canonical location.
 5. **Update bootstrap pointers** if the old doctrine was cited in CLAUDE.md / AGENTS.md / GOVERNANCE.md.
 
 Composes with **Otto-362** (intra-file: refresh stale statements within one file when superseding); Otto-363 generalises across files + adds bidirectional `supersedes:` / `superseded_by:` metadata.
@@ -218,13 +225,15 @@ Forbidden:
 - ❌ Calling a future task *"implemented"*
 - ❌ Calling preserved-but-disputed material *"canonical"*
 
-**Enforcement path** (planned):
+**Enforcement path** (target state — currently DEFERRED; not yet enforced by tooling):
 
-- PR body / commit message trailer:
+- PR body / commit message SHOULD include trailer:
   - `Durability: captured | parked | preserved | canonical | operational`
-  - `Substrate: <path-or-issue-or-commit>` (required when Durability ≥ preserved)
+  - `Substrate: <path-or-issue-or-commit>` (recommended when Durability ≥ preserved)
 - Lint flags vocabulary misuse (PR description claims *"operational"* but no tooling/check added → fail).
-- Pre-commit hook on `memory/` and `docs/ops/` (deferred — file as future task).
+- Pre-commit hook on `memory/` and `docs/ops/`.
+
+**Status today**: doctrine-only. No PR template, lint, or CI workflow enforces this yet. The trailer convention is documented here as the target state; mechanical enforcement lands after a follow-up implementation PR. Until then, the discipline is exercised at PR/commit-authoring time.
 
 ### 8. Cross-harness bootstrap pointer (CLAUDE.md AND AGENTS.md)
 
@@ -242,7 +251,7 @@ Pointer text:
 The bootstrap pointer is read at cold-start. The detector must also fire mid-session — at the moment an action that *creates* substrate is taken, not just at session start. Mechanisms (some deferred):
 
 - Pre-PR check: PR body must include `Durability:` trailer
-- Pre-commit hook on `memory/` files: must be paired with MEMORY.md row (already enforced via `memory-index-integrity.yml`)
+- Pre-commit hook on `memory/` files: must be paired with MEMORY.md row (already enforced via `.github/workflows/memory-index-integrity.yml`)
 - Tool description: `Bash`/`Edit`/`Write` invocations on doctrine files surface a reminder
 - A lint that scans recent commits for *"done"* / *"complete"* / *"operational"* without supporting `Substrate:` trailer
 

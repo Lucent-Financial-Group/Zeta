@@ -301,9 +301,13 @@ Claude-Code-specific mechanisms.
   TaskUpdate, `/tmp`, and loop todos are NOT durable
   project substrate. If a directive / decision /
   packet matters after compaction, it must be
-  converted into substrate (repo file / PR / issue /
-  git-native memory / docs/research / docs/ops /
-  claim file / validator / bootstrap rule).
+  converted to a durable project object — preferably
+  substrate (committed + reachable + indexed git-
+  native repo file: memory / docs/research / docs/ops
+  / claim file / validator / bootstrap rule). PRs
+  and issues are host-durable parking surfaces, NOT
+  substrate; for doctrine-changing decisions, mirror
+  the substantive content into a git-native file.
   Vocabulary discipline: *captured* (TaskUpdate
   only) ≠ *parked* (GitHub Issue / pushed WIP branch,
   durable but not git-canonical) ≠ *preserved*

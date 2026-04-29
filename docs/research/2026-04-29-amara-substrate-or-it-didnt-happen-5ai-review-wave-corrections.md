@@ -251,7 +251,7 @@ Amara synthesized the corrections AND caught Otto about to repeat the original f
 >
 > ## What's missing entirely
 >
-> **A definition of "substrate."** Substrate is content that is (1) committed to canonical git history, (2) on a branch reachable from a long-lived ref, and (3) covered by the canonical index (MEMORY.md row, docs/research/INDEX.md entry, or equivalent). All three.
+> **A definition of "substrate."** Substrate is content that is (1) committed to canonical git history, (2) on a branch reachable from a long-lived ref, and (3) covered by the canonical index (MEMORY.md row, CLAUDE.md / AGENTS.md / GOVERNANCE.md pointer, or equivalent canonical reference; a future `docs/research/INDEX.md` would be a useful addition but does not exist today). All three.
 >
 > **A failure mode for substrate that exists but is wrong.** Once preservation discipline is operational, the new failure mode is contradiction. Add vocabulary for "this is preserved but disputed."
 >
