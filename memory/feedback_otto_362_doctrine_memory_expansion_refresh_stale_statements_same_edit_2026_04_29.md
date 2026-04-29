@@ -43,7 +43,7 @@ The discipline composes with `verify-before-deferring` (CLAUDE.md): the same way
 
 ## Composes with
 
-- **Same-tick update discipline** (`docs/CLAUDE.md` "auto memory" section, CURRENT-file rule): "*when a new memory lands that updates a rule in a CURRENT file, edit CURRENT in the same tick. Skipping is lying-by-omission.*" — Otto-362 is the *intra-file* generalization of the same principle (*within* a single memory file, not across files).
+- **Same-tick update discipline** (`CLAUDE.md` "auto memory" section, CURRENT-file rule): "*when a new memory lands that updates a rule in a CURRENT file, edit CURRENT in the same tick. Skipping is lying-by-omission.*" — Otto-362 is the *intra-file* generalization of the same principle (*within* a single memory file, not across files).
 - **Verify-before-deferring** (`memory/feedback_verify_target_exists_before_deferring.md`): same shape, applied to internal references rather than deferred work.
 - **Future-self is not bound by past-self** (`memory/feedback_future_self_not_bound_by_past_decisions.md`): Otto-362 is the *editing* counterpart — when superseding past-self's statement, refresh it rather than leaving it ambient.
 - **Memory-index-integrity** (`.github/workflows/memory-index-integrity.yml`): mechanical pairing between memory file and MEMORY.md. Otto-362 is the *unmechanized* pairing within a single file.
