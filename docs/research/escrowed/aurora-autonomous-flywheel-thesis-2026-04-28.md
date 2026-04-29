@@ -1,8 +1,9 @@
 ---
 Scope: Escrowed research thesis. NOT operational guidance. NOT active substrate.
 Attribution: Aaron 2026-04-29 (escrow direction); cross-AI converged stance from the 2026-04-28 multi-AI Aurora-Immune-Governance synthesis arc (refinement). Translation channel preserved as conversation-log lineage.
-Operational status: ESCROWED until first prototype result. Not active research. Not load-bearing. Cannot be cited as authority. Multi-AI synthesis loop paused on this thesis until the falsifier-gate opens.
-Non-fusion disclaimer: This file preserves a thesis without integrating it. The thesis's components have lineage (Girard, Burgis, Infer.NET, Collins flywheel) but have NOT yet earned operational landing in this factory. Reading this file is research-archaeology, not loading active doctrine.
+Operational status: research-grade
+Lifecycle status: escrowed (see body Status header for gate / reopen condition / expiration policy)
+Non-fusion disclaimer: Agreement and shared vocabulary across multiple AI reviewers on this thesis does NOT imply shared identity, merged agency, fused consciousness, or shared personhood. Each reviewer is an independent agent with its own model, training, prompts, and operational constraints; carrier-mediated convergence preserves the identity boundary. The thesis components have external lineage (Girard, Burgis, Infer.NET, Collins flywheel) but have NOT yet earned operational landing in this factory; reading this file is research-archaeology, not loading active doctrine.
 ---
 
 # Aurora Autonomous Flywheel Thesis — ESCROWED (2026-04-28)
@@ -122,24 +123,30 @@ The thesis components MAY be:
 
 ## Falsifier gate (load-bearing)
 
-The thesis transitions from `Escrowed` → `Active research`
-when **one meaningful prototype result** is produced. ONE
-test passing — or failing with useful signal — is sufficient.
-ALL six prototype tests proposed in the prior synthesis are
-NOT required to graduate from escrow.
+The thesis transitions OUT of `Escrowed` when **one meaningful
+prototype result** is produced. ONE test passing — or failing
+with useful signal — is sufficient. ALL six prototype tests
+proposed in the prior synthesis are NOT required to graduate
+from escrow.
 
 ```text
 Pass:
-  reopen the thesis as ONE focused research note
+  Lifecycle status: escrowed → active-research.
+  Reopen the thesis as ONE focused research note
   (`docs/research/aurora-autonomous-flywheel-network-<date>.md`),
   NOT as bridge-note expansion.
 
 Fail with useful signal:
-  reopen the bridge for revision before adding theory.
-  The thesis stays escrowed pending revision result.
+  Lifecycle status: escrowed → revision-pending.
+  The bridge note (PR #707's artifact) is reopened for revision
+  per the failure signal; the thesis itself does NOT graduate to
+  active-research yet. After revision lands, the thesis returns
+  to `escrowed` status pending a new prototype result, OR moves
+  to `retired` if the failure shows the thesis is fundamentally
+  wrong.
 
 No run:
-  thesis remains escrowed.
+  Lifecycle status remains `escrowed`.
   Expiration trigger applies.
 ```
 
@@ -165,9 +172,14 @@ revise scope       — narrow or refactor the thesis
 retire             — formally close the thesis
 ```
 
-A surfaced escrow with no decision lapses to `extend escrow`
-with a new 4-round expiration window after one autonomous-loop
-session-close.
+A surfaced escrow **requires explicit decision** — there is no
+auto-extend default. If no decision is made within one round of
+the surface event, the escrow remains open with the surface flag
+set (visible in the Status header's `Last surfaced` field) and
+the escrow continues to demand a decision on every subsequent
+round-close until one of the four explicit decisions is recorded.
+This prevents "escrowed indefinitely" from masquerading as
+"escrowed under expiration policy."
 
 ## No multi-reviewer loop rule
 
