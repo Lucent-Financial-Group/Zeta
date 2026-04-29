@@ -218,26 +218,275 @@ Merge peers need policy.
 Authority peers do not exist by default.
 ```
 
-## Implementation discipline (paced protocol — Amara explicit)
+## Implementation discipline — 5-layer landing plan (multi-AI review v2, 2026-04-29)
 
-**Do not build full automation first.** Land the protocol, then run one dry-run lane.
+**Do not land this as a monolith.** Five reviewers (Ani, Claude.ai, Gemini, Alexa, Deepseek) converged on "approved directionally; don't land everything at once." Amara synthesized into a layered landing sequence. Each layer is independently testable; each layer must validate before the next is adopted.
 
-Phase 1 (design-only PR — research-grade absorb):
-- `.zeta/agents.yaml` (proposed canonical declarative definition)
-- `docs/ops/patterns/multi-harness-agent-orchestra.md`
-- `docs/ops/runbooks/start-agent-claim.md`
-- `docs/ops/coordination/claims/README.md`
-- Optional claim template
+### Layer 0 — Doctrine only (THIS memory file)
 
-Phase 2 (first dry-run):
-- One Windows peer CLI
-- Read-only first → patch-only → isolated write to docs-only allowlist → PR → no merge authority
+Lands first. No automation. Captures:
+- The carved sentences
+- Capability taxonomy (review_only / patch_only / write_worktree / push_branch / open_pr / merge_pr / authority_mutation)
+- Dual-ledger principle (GitHub = live truth, Git = durable truth)
+- Isolation-follows-capability rule
+- Pinned/free role distinction
+- "No shared mutable working tree" invariant
+- Source-of-truth conflict resolution (issue wins for live state; mirror wins for durable rules; if they disagree, GitHub issue/PR is truth until mirror updates)
+
+### Layer 1 — Claim protocol
+
+Define the claim schema and lifecycle:
+- GitHub issue/PR = live operational truth
+- Git mirror at `docs/ops/coordination/claims/CLAIM-<id>.md` = durable summarized truth
+- Every write-capable actor needs a claim (no autonomous write without one)
+- No claim without file allowlist + denylist
+- No claim without stop conditions
+
+### Layer 2 — Conflict resolution
+
+Add explicit overlap rules (Claude.ai catch — design currently has detection but not resolution):
+
+- **First valid active claim by GitHub timestamp wins.**
+- Later overlapping claim must: choose non-overlapping scope, OR wait for the first claim to close, OR escalate to coordinator/maintainer for explicit reassignment.
+- High-risk files always require coordinator approval on overlap, regardless of timestamp.
+
+**High-risk files** (always require coordinator approval on any overlap):
+- `memory/**`
+- `docs/active-trajectory.md`
+- `.github/**`
+- `package.json`
+- `bun.lock` and other lockfiles
+- generated indexes (e.g. `docs/backlog/github-issue-index.md`)
+- ruleset / security / billing docs
+
+### Layer 3 — Mechanical enforcement (load-bearing)
+
+**Do not declare the protocol operational until CI checks exist.** Without enforcement, the claim protocol relies on agent discipline — which the factory has already proved doesn't hold without mechanical guard (parallel-agent collision incident).
+
+Required CI checks before protocol activation:
+- `PR changed files ⊆ claim allowlist` (mechanical)
+- `PR changed files ∩ claim denylist = empty` (mechanical)
+- `claim exists for write-capable PR` (mechanical)
+- `active claim is not expired` (mechanical)
+- `high-risk overlap check passes` (mechanical)
+- `actor role has declared capability` (mechanical, against `agents/project-agents.yaml`)
+
+Claim protocol without enforcement = same shape as "bare main in automation" rule before its linter — chronic risk without mechanical guard.
+
+### Layer 4 — Declarative topology
+
+After claims are proven, add the project-level role definition file.
+
+**Path**: `agents/project-agents.yaml` (visible-path preference per Claude.ai catch — `.zeta/agents.yaml` is sometimes excluded from grep tools / IDE search / linter scope, and the agent topology is meant to be HIGHLY visible).
+
+**Schema** (Gemini correction — boolean capability fields, not string parsing, so CI can enforce mechanically):
+
+```yaml
+roles:
+  typescript-steward:
+    pinned: true
+    capabilities:
+      can_read: true
+      can_review: true
+      can_patch: true
+      can_write_worktree: true
+      can_push_branch: true
+      can_open_pr: true
+      can_merge_pr: false
+      can_mutate_authority: false
+    file_scopes:
+      allowlist:
+        - "tools/**/*.ts"
+        - "docs/best-practices/languages/typescript.md"
+        - "package.json"
+        - "bun.lock"
+      denylist:
+        - "memory/**"
+        - "docs/active-trajectory.md"
+        - ".github/**"
+
+  coordinator:
+    pinned: true
+    human_required: true  # Deepseek catch — until autonomous claim-board management proves safe, the coordinator role is human-filled.
+    capabilities:
+      can_read: true
+      can_review: true
+      can_patch: true
+      can_write_worktree: true
+      can_push_branch: true
+      can_open_pr: true
+      can_merge_pr: false      # merge requires explicit policy gate
+      can_mutate_authority: false
+```
+
+### Layer 5 — Multi-harness dry run
+
+First dry run:
+- One non-coordinator harness (likely a Windows peer CLI)
+- Read-only first → patch-only → isolated docs-only write → PR → no merge authority
 - Success signal: a fresh maintainer/agent can start a peer lane, avoid overlap, open a PR, survive cold start, close the claim without corrupting another lane.
 
-Phase 3 (rolling rollout):
-- Add bootstrap pointer files for additional harnesses
-- Promote tested capabilities incrementally
-- Each promotion through the safety-level ladder requires a successful dry-run at the prior level.
+Windows peers require extra bootstrap before write mode (Ani + Deepseek + Claude.ai catches):
+- WSL vs Git Bash vs native shell **declared explicitly**
+- Line ending policy **declared** (`lf` or `crlf`)
+- Path normalization behavior **declared**
+- Case-sensitivity risk acknowledged (Windows is case-insensitive by default; macOS varies; Linux is case-sensitive — silent file-collision bugs that don't appear until cross-platform sync)
+- Toolchain check passes
+- A `WINDOWS.md` bootstrap file (or section in `AGENTS.md`) must exist before any Windows write-capable lane opens.
+
+Example branch namespace: `aaron-windows/codex/docs-best-practices-2026-04-29`
+
+**Branch-name slash caveat** (Claude.ai catch): GitHub branch protections operate on path patterns, and slashes in branch names interact with protection rules in non-obvious ways. Verify that `aaron/codex/budget-cadence-2026-04-29` doesn't accidentally inherit protections meant for top-level patterns. Alternatives: use `-` as the separator for the maintainer/actor/lane prefix and `/` only for the date suffix, or use a dedicated `lane/` namespace prefix.
+
+## v2 review-driven additions (2026-04-29 multi-AI review)
+
+Five reviewers (Ani, Claude.ai, Gemini, Alexa, Deepseek) reviewed v1; Amara synthesized v2. The following additions are load-bearing and must be incorporated before any layer past Layer 0 is operational.
+
+### Actor identity (stable, separate from session identity)
+
+**Status**: *Required before multi-maintainer use.* Currently undefined — must be specified before Layer 1 operationalizes.
+
+The v1 design said "no autonomous write without a claim; no claim without a role; no role without declared capability." But what *is* an actor's identity? Is `aaron-windows/codex` one identifiable actor across many sessions, or a new actor per session?
+
+**Claude.ai catch — future-policy shape**: actor IDs are stable; sessions are temporary.
+
+- Every actor has a stable `actor_id` (e.g. `aaron-mac-claude-code-coordinator`, `aaron-windows-codex-peer`).
+- Every session has a temporary `session_id`.
+- Claims reference both `actor_id` (for revocation + audit) and `session_id` (for current-state debugging).
+- Revocation operates on `actor_id` (across all sessions of that actor).
+- Audit logs the actor_id history across sessions; trust calibration uses prior actor behavior, not session-bound state.
+
+This matters for: revocation (compromised actor → immediate downgrade to `review_only` across all its sessions), audit (who did what across time), trust calibration (prior good behavior factors into capability grants).
+
+### Compromised-actor recovery — kill switch (Claude.ai catch)
+
+**Status**: *Required before write-capable autonomous peers operate.* Not yet implemented.
+
+If a peer CLI is compromised — prompt-injected, deliberately misaligned, or just buggy — what's the recovery path? v1 had no actor-level kill switch.
+
+**Future-policy shape** (must exist before any write-capable autonomous peer is granted): any sufficiently-authorized maintainer can immediately downgrade an actor's capability set to `review_only`, with the reduction taking effect at the next claim check.
+
+On downgrade:
+- No new write claims accepted from the actor.
+- Active write claims become blocked (state: `actor-suspended`).
+- Open PRs labeled `actor-suspended`; coordinator reviews before continuing.
+- Audit log records the downgrade reason and authorizing maintainer.
+
+Without this, a compromised write-capable actor can produce many PRs before being caught, and the only recovery is to manually close each one. **Layer 1 (claims) cannot operationalize write-capable actors until this kill switch exists.**
+
+### Maintainer governance — open question (Claude.ai catch)
+
+The v1 design distinguishes humans from harnesses but doesn't say what makes someone a maintainer with authority to grant claims. Currently it's Aaron.
+
+Open questions for future rounds (do not solve in this design):
+- How does a new maintainer get added?
+- Who can revoke a maintainer?
+- Can maintainers grant capabilities to other maintainers, or only to actors?
+- How is the set of maintainers itself governed?
+
+**For now** (provisional rule until governance lands): Aaron remains final authority for maintainer/capability governance until explicit governance lands. Other maintainers may operate under delegated authority (pinned role with `human_required: false` and capability bounded by Aaron's grant), but cannot themselves grant maintainer status.
+
+### Emergency-action fast path (Claude.ai catch)
+
+**Status**: *Future policy* — design specified here so it doesn't get reinvented; not active until claim infrastructure ships.
+
+What happens when an actor needs to act before claim infrastructure is ready, or in a recoverable but urgent situation?
+
+**Future-policy shape** — once claims are operational, an actor may take a write or destructive action without a pre-existing claim ONLY IF all are true:
+1. The action is **reversible** (no force-push, no deletion, no authority mutation, no irreversible data loss).
+2. The actor immediately creates a post-hoc claim referencing the emergency action.
+3. The maintainer / coordinator is notified within a defined window (e.g. 1 hour).
+4. **No emergency exception for irreversible loss**: authority mutation, ruleset/secret/billing change, force-push, ref deletion, or ambiguous data loss have NO emergency exception — must always wait for explicit grant, even in urgent situations.
+
+Without the explicit emergency case, urgent work either violates the protocol or gets blocked by it — neither outcome is good.
+
+### "Buddy" reframe (Ani catch)
+
+v1 said *"Buddy does not mean powerless."* Ani flipped to:
+
+> *"Buddy does NOT mean trusted. Buddy means 'can advise, may be granted power with explicit claim and isolation.'"*
+
+Default-down framing: buddy is review-only by default. Power requires explicit grant + isolation, not default trust.
+
+### No-silent-demotion rule for pinned roles (Claude.ai catch)
+
+**Status**: *Active doctrine for role language now; operational enforcement future.*
+
+A free role can be promoted to pinned through explicit governance review, but a pinned role **cannot be silently demoted** to free. Demotion requires explicit governance decision because pinned roles carry accumulated context (memory, doctrine, judgment history) that is lost on demotion.
+
+Without this rule, "pinned" can drift to "named" over time and the durability guarantee weakens.
+
+This is doctrine immediately; mechanical enforcement (rejecting silent-demote PRs in CI) lands with Layer 3 / Layer 4.
+
+### Hidden-path concerns for declarative topology (Claude.ai catch)
+
+`.zeta/agents.yaml` is a hidden directory. Hidden directories sometimes get excluded from grep tools, IDE search, and linter scope by default. The agent topology file is meant to be **highly visible** (it's the source of truth for capability questions).
+
+**Preferred path**: `agents/project-agents.yaml` (visible at top-level; harder to miss in tools and reviews).
+
+### CI enforcement is the load-bearing mechanism (Claude.ai + Deepseek catch)
+
+The v1 design said "CI should eventually enforce..." This is the load-bearing enforcement mechanism. Without it, the entire claim protocol relies on agent discipline — which the factory has already established doesn't hold without mechanical enforcement.
+
+**Rule**: the protocol is NOT operational until Layer 3 (CI enforcement) is in place. Layer 4 (declarative topology) and Layer 5 (dry-run) cannot be activated without Layer 3.
+
+### Coordinator role is human-filled (Deepseek catch)
+
+The `.zeta/agents.yaml` schema example explicitly marks coordinator with `human_required: true`. The coordinator role allocates claims, prevents file overlap, and stops unsafe agents. Until the system can prove autonomous claim management without drift, the coordinator role is human-filled.
+
+When this can change: a successful Phase 2 dry-run that demonstrates autonomous claim-board management (no overlap drift, no claim-protocol violations, no unauthorized capability promotion) over a defined observation window. Until then, human required.
+
+### Regime-change concern flagged (Claude.ai catch)
+
+This design is the right *first* answer to the multi-maintainer question. The *complete* answer probably involves changes to:
+- The alignment trajectory measurement (currently calibrated to single-maintainer regime)
+- The bead system
+- The consolidation gates
+- The escrow protocol
+
+These are beyond this design's scope. Flagged here so future rounds know the multi-maintainer transition will surface them.
+
+The factory has been a single-maintainer-multi-agent system this whole time. With multiple maintainers, no one person reads everything; trust has to be distributed across the substrate itself rather than concentrated in a single reviewer. That's a different architectural problem than the orchestra design currently addresses.
+
+## V2 review constraints — not operational yet
+
+The v2 corrections above are **doctrine constraints**, not operational implementation. To prevent false-progress drift, the following constraints are explicit:
+
+- **Do not land monolith** — the orchestra is a regime-change design, not a quick config file. Each layer (0 → 5) is its own PR with its own validation gate.
+- **Conflict resolution required before claims become operational** — first-claim-wins-by-timestamp + high-risk-coordinator-approval is the rule, but it's not enforced anywhere yet.
+- **CI enforcement required before claims become trusted** — Layer 3 cannot be deferred indefinitely. Without `PR-changed-files ⊆ allowlist` mechanically enforced, the protocol is agent discipline (which has already been proven insufficient).
+- **Actor identity and revocation required before multi-maintainer use** — stable actor IDs separate from session IDs; kill-switch downgrade path. Currently undefined.
+- **Maintainer governance unresolved** — who can add/revoke maintainers, who can grant capabilities, how the maintainer set is itself governed. Aaron is provisional sole authority until governance lands.
+- **Windows write mode requires bootstrap/preflight** — `WINDOWS.md` (or AGENTS.md section) declaring shell, line endings, path normalization, case-sensitivity acknowledgment. Not yet present.
+- **Coordinator remains human-filled until proven safe** — `human_required: true` on the coordinator role. Cannot be flipped without successful dry-run demonstrating autonomous claim-board management without drift.
+- **Layer 3 enforcement cannot be deferred indefinitely** — flagged here so future rounds don't quietly defer it past the point where the protocol gets used in earnest.
+
+## What this doctrine memory file is (and is NOT) — precision per Amara v2
+
+**Allowed framing**:
+- ✅ Zeta Agent Orchestra **doctrine captured**.
+- ✅ Cold-start substrate updated.
+- ✅ Capability/role/claim/isolation **vocabulary preserved**.
+- ✅ Five-AI review convergence: "approved directionally; do not land as monolith."
+- ✅ Phase 1 implementation/design task created (task 324).
+
+**Not allowed framing** (prevents false-progress drift):
+- ❌ NOT "claim protocol operational."
+- ❌ NOT "multi-harness mode ready."
+- ❌ NOT "agents.yaml accepted."
+- ❌ NOT "conflict-resolution rules implemented."
+- ❌ NOT "CI enforcement exists."
+- ❌ NOT "Windows peer mode safe."
+- ❌ NOT "multi-maintainer governance solved."
+
+This file is **doctrine memory**, NOT the protocol. The next PR (per task 324) lands the actual Layer 0 + Layer 1 spec files:
+
+- `docs/ops/patterns/project-agent-topology.md` — Layer 0 doctrine + capability taxonomy + isolation rule + pinned/free/buddy roles
+- `docs/ops/coordination/claims/README.md` — Layer 1 claim schema + lifecycle + conflict resolution + actor identity + compromised-actor downgrade + emergency path
+- `docs/ops/runbooks/start-agent-claim.md` — how to start one claim safely, the read-only → patch → isolated-write → PR ladder, stop conditions, Windows preflight checklist
+- Optional: `agents/project-agents.example.yaml` (NOT active config; `.example.` suffix to make non-operational nature unambiguous; prefer visible `agents/project-agents.yaml` over hidden `.zeta/agents.yaml` once it becomes live config)
+
+Each subsequent layer (2 → 3 → 4 → 5) is its own PR with its own validation gate. Layer 3 (CI enforcement) is the activation gate — nothing past it is operational without mechanical enforcement.
 
 ## Composes with
 
