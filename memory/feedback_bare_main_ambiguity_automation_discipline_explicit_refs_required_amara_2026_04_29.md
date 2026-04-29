@@ -9,7 +9,7 @@ type: feedback
 ## Source
 
 Amara 2026-04-29 forwarded by Aaron through the maintainer
-channel:
+channel (the live Claude Code CLI conversation surface):
 
 > *"You don't need to be scared of 'multiple `main`' by
 > itself. You **should** be worried that the automation is
@@ -99,22 +99,44 @@ or produce wrong results.
 
 ### Preferred patterns
 
-**Branch off LFG main for new work**:
+**Branch off LFG main for new work** (with hard-stop on
+base-ref failure):
 
 ```bash
-git fetch origin main --quiet
-git switch --detach refs/remotes/origin/main
-git switch -c <new-branch-name>
+set -euo pipefail
+git fetch origin refs/heads/main:refs/remotes/origin/main --quiet
+git switch --detach refs/remotes/origin/main || {
+  echo "failed to switch to refs/remotes/origin/main — stopping"
+  exit 1
+}
+git switch -c "$BRANCH"
 ```
 
-**Or, with a local main branch tracking origin**:
+The `refs/heads/main:refs/remotes/origin/main` refspec form
+ensures the remote-tracking ref is refreshed against
+origin's `main` exactly. The hard-stop block prevents the
+"continued past fatal" failure mode that motivated this rule.
+
+**Or, with a local main branch tracking origin** (this form
+DOES use the bare `main` name, but only AFTER the local
+`refs/heads/main` is explicitly created and tracking
+`origin/main` — at that point bare `main` is no longer
+ambiguous because the local branch exists and Git's lookup
+order finds it first):
 
 ```bash
-git fetch origin main --quiet
-git branch --track main origin/main 2>/dev/null || true
-git switch main
-git reset --hard origin/main
+git fetch origin refs/heads/main:refs/remotes/origin/main --quiet
+git branch --track main refs/remotes/origin/main 2>/dev/null || true
+git switch main || { echo "failed to switch to local main"; exit 1; }
+git reset --hard refs/remotes/origin/main
 ```
+
+The fully-qualified `refs/remotes/origin/main` form is used
+throughout this snippet to remove all ambiguity. The bare
+`git switch main` works here because at that point a local
+`refs/heads/main` exists and is unambiguous (multiple-remote
+guessing only fires when the bare name doesn't match a local
+ref).
 
 **Branch off AceHack main**:
 
@@ -141,6 +163,23 @@ command. It must NOT continue past the fatal as if
 nothing happened — that's how downstream operations end
 up on the wrong starting state.
 
+**Hard-stop pattern** (the actual bug Amara caught was
+"fatal happened, loop continued"):
+
+```bash
+set -euo pipefail
+git switch --detach refs/remotes/origin/main || {
+  echo "failed to switch to explicit base ref — stopping tick"
+  exit 1
+}
+```
+
+Continuing after a fatal base-ref failure is the bug.
+Multiple ticks ran on wrong working-tree state because
+the failed `git checkout main` was followed by
+`git reset --hard origin/main` on whatever the prior
+branch was.
+
 ## Worked example: 2026-04-29 trace
 
 The autonomous-loop scripts repeatedly hit:
@@ -160,6 +199,26 @@ ticks worth of branch operations were silently incorrect.
 Amara caught this by reading the trace; it had been
 hidden by the exit-code-zero of the followups even
 though the checkout failed.
+
+## Pre-canonization search (search-before-canonizing evidence)
+
+Before creating this memory file, searched for an existing
+canonical home covering the same operational concern:
+
+```bash
+grep -rl "defaultRemote\|ambiguous main\|multiple remote\|explicit refs" memory/
+grep -rl "matched multiple\|origin/main vs acehack/main" memory/
+```
+
+Search terms used: `bare-main`, `checkout.defaultRemote`,
+`multiple remote tracking branches`, `explicit refs`,
+`ambiguous main`, `origin/main vs acehack/main`.
+
+No existing canonical home found. The closest hit
+(`feedback_self_check_trigger_after_n_idle_loops_*`)
+covered idle-loop discipline, not git automation
+disambiguation — different falsifier and different immune
+response. New home justified.
 
 ## What this rule does NOT mean
 
