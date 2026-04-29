@@ -156,8 +156,9 @@ Squash-merge PR #849 as-is — under standing authority per the locked disciplin
 
 ## Deferred notes
 
-(Per Amara's round-2 closing rule: deferred notes go in this file's `## Deferred notes` section rather than creating a new file. Goes here only if the deferral is durable substrate that would otherwise be lost.)
+(Per the round-2 closing rule: deferred notes go in this file's `## Deferred notes` section rather than creating a new file. Goes here only if the deferral is durable substrate that would otherwise be lost.)
 
 - Round-close meta-observations on review-surface health are optional. The data is in the diff. Commentary can rest for several rounds.
 - The org-level `default_for_new_repos: "all"` policy is a candidate for Lane B+ trajectory work (post-#849 closure). If Lane B's trajectory enumeration walks branches/PRs/tasks, it should pick this up. Until then, parking here as a deferred note rather than a new task (per the zero-fan-out rule).
 - The github-settings-drift workflow is failing on every push event (separate pre-existing tech debt). Also a Lane B+ candidate, not a Lane A subtask.
+- **Trajectory-naming correction (mid-Lane-A, post-merge)**: this directory is named `ci-codeql-host-ownership/` and reads like a trajectory, but it's actually a **blocker record** for the actual trajectory (TypeScript/Bun migration). The trajectory the maintainer cares about is *"how far along is the TS/Bun migration, and what's the next slice?"* — not *"who owns the sticky CodeQL check?"*. Lane B's first artifact should be `docs/trajectories/typescript-bun-migration/RESUME.md` tracking landed TS/Bun ports + remaining Python + remaining Bash + which scripts stay Bash vs become TS vs become F#/dotnet + next PR slice. This investigation links FROM that trajectory as the #849 blocker record. Carved: *CodeQL was the blocker. TypeScript/Bun is the trajectory.*
