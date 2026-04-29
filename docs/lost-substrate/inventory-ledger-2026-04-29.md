@@ -353,6 +353,28 @@ Two corrupt objects identified + classified per Amara's bucket schema:
 
 **Critical finding**: `8d5e67fd` is a local-only blob with no origin recovery path. Some tree/commit references it (fsck flagged "missing blob"). Investigation pending — could be from a stash, dangling commit, or unpushed branch. This is the canonical worked-example of unrecovered-substrate boundary case.
 
+### Follow-up: 8d5e67fd is referenced only from dangling state (lower urgency)
+
+Day-2 post-corruption-triage investigation: fsck output adjacent to the "missing blob" line shows:
+
+```text
+dangling tree ba5cc0356d2b571ba19477f5be8c16e15993faf6
+dangling commit 9d5db210aee2b017e99c8d2c78f77242fb24ec0b
+missing blob 8d5e67fd313573855848705e4af114f3ff0eecbc
+```
+
+Tree `ba5cc035...` (dangling, unreachable) references blob `8d5e67fd`. The dangling commit `9d5db21...` (also unreachable) is in the same context. **8d5e67fd is referenced ONLY from dangling/unreachable substrate, not from any live branch.**
+
+Cross-check: searched 10 most-recent commits touching `docs/hygiene-history/loop-tick-history.md` (888 total commits over the file's history). None of them reference `8d5e67fd`. Live commits use other tree SHAs.
+
+**Updated classification**: `CORRUPT_LOOSE_OBJECT_REFERENCED_BY_DANGLING_ONLY` (sub-bucket of MISSING_UNRECOVERED).
+
+**Recovery urgency**: LOW. The corrupt blob is reachable only from dangling state. Live tick-history.md content on current branches is intact. A future cleanup (`git gc` after explicit decision; NOT during triage) would remove both the corrupt object and the dangling tree/commit that references it. The substrate-loss is bounded to whatever orphan version this blob represented.
+
+**What this means for hard-reset readiness**: the corruption finding does NOT block hard-reset by itself — the corrupt evidence is only on unreachable substrate. Live history is clean.
+
+**What this means for the corruption-triage discipline memory file**: the rule still holds — *do not prune evidence while investigating lost evidence*. The classification work happened first; only AFTER classification is `git gc` / `prune` consideration warranted, and that's a separate decision Aaron would make.
+
 **Per Amara's correction**: do NOT declare "origin has it" without fresh-clone verification. Wording corrected throughout this ledger.
 
 **Highest-risk findings**:
