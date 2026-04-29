@@ -434,4 +434,4 @@ The 10 corrections are absorbed into the Otto-363 memory file (`memory/feedback_
 
 **Next implementation step**: PR #855 absorbs these 10 corrections, lands cleanly. THEN PR 2 (v5 architecture preservation) opens as a separate lane.
 
-**Must NOT do yet**: open PR 2 (v5 architecture preservation). It's drafted in `/tmp/v5-research-doc-saved.md` as the seed; gated on #855 landing first.
+**Must NOT do yet**: open PR 2 (v5 architecture preservation). The seed is parked on remote WIP branch `wip/v5-host-portable-architecture-seed-2026-04-29` (commit `c300b01`, no PR opened) per the Otto-363 parking-surface taxonomy — pushed WIP branch, NOT `/tmp`. PR 2 is gated on #855 landing first. Once #855 lands, the WIP branch can be promoted to a draft or full PR (or rebased onto fresh main and opened as the v5 architecture PR proper).
