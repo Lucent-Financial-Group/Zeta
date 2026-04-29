@@ -32,8 +32,7 @@ Recent recurring reviewer-failure patterns from this session:
   re-reading the full file caused an over-correction
   (the 2026-04-29 ordinal-drift cascade).
 
-## Proposed small classification table (5 buckets, intentionally
-## small per Amara's filter)
+## Proposed small classification table (5 buckets, intentionally small per Amara's filter)
 
 ```text
 REAL_DEFECT
