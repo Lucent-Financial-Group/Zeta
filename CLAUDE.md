@@ -279,22 +279,39 @@ Claude-Code-specific mechanisms.
   verify-before-deferring and future-self-not-bound.
   Full reasoning:
   `memory/feedback_never_idle_speculative_work_over_waiting.md`.
-- **Version currency — search first, training data
-  is stale.** Whenever Claude sees, proposes, or
-  references a version number (runner image,
-  language runtime, framework, OS, CLI tool, GitHub
-  Action, model ID, package pin), Claude MUST
-  `WebSearch` for the current version before
-  asserting it's current. Training-data cutoff
-  (Jan 2026) makes default version knowledge
-  stale within weeks. Applies when the claim is
-  load-bearing (recommendation, code / CI /
-  config / user-facing output) — not passive
-  reading of existing code. CLAUDE.md-level so it
-  is 100% loaded at every wake, alongside
+- **Search-first authority — training data and
+  project state are both historical (Otto-364
+  generalises Otto-247).** For any load-bearing
+  claim about a tool / standard / API / language
+  runtime / library / CI service / security policy
+  / convention, Claude MUST `WebSearch` the current
+  upstream documentation BEFORE asserting. This
+  generalises the original version-currency rule:
+  it's not just version numbers — it's any
+  authoritative claim. Training-data cutoff
+  (Jan 2026) makes default knowledge stale within
+  weeks; project state (the repo's own files) may
+  also be stale, copy-cargo-culted from sibling
+  repos, or never-current-to-begin-with. **Both
+  are historical truth. Current upstream docs are
+  the test.** Citation hygiene: quote/near-quote
+  the source, link as markdown URL, date the search.
+  Project-state grep is a valid *cross-check input*,
+  NOT a substitute for current upstream truth.
+  Applies when the claim is load-bearing
+  (recommendation, code / CI / config / doctrine /
+  user-facing output) — not passive reading of
+  existing code, internal-repo-native invariants,
+  or theoretical claims. CLAUDE.md-level so it is
+  100% loaded at every wake, alongside
   verify-before-deferring, future-self-not-bound,
-  and never-be-idle. Full reasoning:
-  `memory/feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`.
+  never-be-idle, and substrate-or-it-didn't-happen
+  (Otto-363). Full reasoning:
+  `memory/feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md`
+  (generalisation) and
+  `memory/feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`
+  (narrower predecessor for version numbers
+  specifically — NOT superseded).
 - **Substrate or it didn't happen — no invisible
   directives (Otto-363).** Before declaring work
   *"done,"* identify its durability surface. Chat,
@@ -308,11 +325,16 @@ Claude-Code-specific mechanisms.
   and issues are host-durable parking surfaces, NOT
   substrate; for doctrine-changing decisions, mirror
   the substantive content into a git-native file.
-  Vocabulary discipline: *captured* (TaskUpdate
-  only) ≠ *parked* (GitHub Issue / pushed WIP branch,
-  durable but not git-canonical) ≠ *preserved*
-  (repo-native, committed + reachable + indexed) ≠
-  *canonical* (accepted spec) ≠ *operational*
+  Vocabulary discipline (5 mutually-exclusive
+  classes): *captured* (TaskUpdate only — ephemeral)
+  ≠ *parked* (pushed WIP branch like
+  `wip/<topic>-<date>`, optionally with draft PR —
+  git-ref-backed; GitHub Issues are NOT parking
+  surfaces, they live in the host-durable-not-git-
+  canonical class) ≠ *preserved* (repo-native,
+  committed + reachable-from-long-lived-ref +
+  indexed) ≠ *canonical* (accepted spec) ≠
+  *operational*
   (enforced by tooling). Never call TaskUpdate-only
   work *"done."* Verbatim-preservation trigger: when
   the human maintainer / external reviewers send an
