@@ -104,7 +104,7 @@ attempts. Misattributed.
 5. **For CI (CodeQL SARIF upload)**: the dynamic-default-setup
    workflow CANNOT be retried via `gh run rerun --failed`
    ("This workflow run cannot be retried"). Empty-commit
-   retrigger to the PR head is the only path. Per task #319,
+   retrigger to the PR head is the only path. Per task 319,
    the proper fix is bounded-retry-via-tooling, not unbounded
    manual retry.
 
@@ -121,7 +121,7 @@ permissions: contents: read, security-events: write
 
 The Default-Setup CodeQL workflow run (event:`dynamic`) cannot
 be retried directly. Empty-commit-retrigger to the PR head is
-the workaround. Per task #319, this needs bounded-retry per DST
+the workaround. Per task 319, this needs bounded-retry per DST
 (empty-commit-retrigger is a workaround; the proper fix is
 infrastructure that detects the auth-401 SARIF-upload signature
 and retries with bound + back-off).
@@ -148,5 +148,5 @@ flag; Codex P2 review on PR #847 caught the misattribution
 (`gh api` already sends POST with `-f`; the success was the
 glitch resolving). Lesson: claim-without-verify is the failure
 mode that the Drain-Log Claim Verification Discipline (task
-#316) catches. The rule applies to runbook-authoring in real
+task 316) catches. The rule applies to runbook-authoring in real
 time, not just retroactive drain-log audits.

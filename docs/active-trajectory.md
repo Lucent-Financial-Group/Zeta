@@ -35,13 +35,13 @@ Per `CLAUDE.md` AceHack-LFG topology invariant + `memory/feedback_lfg_master_ace
 
 Post-double-hop sequencing per Amara 2026-04-29 (in priority order):
 
-1. **#315 — Budget cadence (hourly measurement, bounded publication)** — HIGH-priority. *"Weekly is archaeology, not control."* The Amara nuance "hourly measurement, bounded publication" applies (measure hourly append-only; publish on threshold or daily roll-up; never PR-spam hourly).
-2. **#319 — Bounded-retry mechanism for CodeQL dynamic-default-setup** — Aaron's directive: empty-commit retrigger is a workaround, the proper fix is bounded-retry per DST.
-3. **#318 — docs/ops taxonomy** (runbooks/patterns/incidents tree) — establishes canonical homes for the substrate this round produced (gh-401 runbook, Bounded-Publication pattern, Drain-Log Claim Verification pattern, 0-0-0-reset incident narrative).
-4. **#317 — Tick-history fast-path policy** (trusted-actor + safe-path + safe-op rule) — relieves the "every heartbeat treated as mini product release" anxiety.
-5. **#316 — Drain-Log Claim Verification Discipline** — absorbed into the docs/ops/patterns/ tree as part of #318.
-6. **#313 — Pre-fix + post-fix lint for fork-name discipline** — substrate-balance hygiene.
-7. **#314 — Canonical fork-data homes** (`forks/<fork-name>/*` migration + fuller archive-pr.sh patch).
+1. **task 315 — Budget cadence (hourly measurement, bounded publication)** — HIGH-priority. *"Weekly is archaeology, not control."* The Amara nuance "hourly measurement, bounded publication" applies (measure hourly append-only; publish on threshold or daily roll-up; never PR-spam hourly).
+2. **task 319 — Bounded-retry mechanism for CodeQL dynamic-default-setup** — Aaron's directive: empty-commit retrigger is a workaround, the proper fix is bounded-retry per DST.
+3. **task 318 — docs/ops taxonomy** (runbooks/patterns/incidents tree) — establishes canonical homes for the substrate this round produced (gh-401 runbook, Bounded-Publication pattern, Drain-Log Claim Verification pattern, 0-0-0-reset incident narrative).
+4. **task 317 — Tick-history fast-path policy** (trusted-actor + safe-path + safe-op rule) — relieves the "every heartbeat treated as mini product release" anxiety.
+5. **task 316 — Drain-Log Claim Verification Discipline** — absorbed into the docs/ops/patterns/ tree as part of task 318.
+6. **task 313 — Pre-fix + post-fix lint for fork-name discipline** — substrate-balance hygiene.
+7. **task 314 — Canonical fork-data homes** (`forks/<fork-name>/*` migration + fuller archive-pr.sh patch).
 8. **Branch/worktree/stash recovery lane** — gates on completion of items 1-7. Inventory parked at `/tmp/recovery-inventory-2026-04-29.tsv` (918 branches: 123 ALREADY_REACHABLE / 795 NOT_REACHABLE; 58 worktrees clean; 7 stashes). Awaiting Amara's recovery-classification framework before any branch/worktree mutation.
 
 The previous "Do NOT" block is rescinded: LOST-branch recovery (#264) gates on item 8; Aurora Round-3 (#286) and multi-AI synthesis (#309/#310/#311) re-enter normal backlog ordering; new memory files / substrate islands resume per their normal rules; autonomous tick-history shards resume normal cadence.
