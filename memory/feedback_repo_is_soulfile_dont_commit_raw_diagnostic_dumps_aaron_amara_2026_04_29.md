@@ -46,7 +46,12 @@ Binary artifacts → high soulfile risk:
   fixtures) where revision count is bounded.
 
 Text artifacts → low soulfile risk:
-  - Aggressive xdelta + zlib compression in pack-delta storage
+  - Packfile delta compression + zlib (or configured
+    compressor) gives aggressive size reduction for similar
+    text revisions in pack-delta storage. ("xdelta" is the
+    name of an external delta-compression tool/algorithm and
+    is not what Git uses internally; Git's pack-format uses
+    its own delta-encoding plus zlib for object compression.)
   - Multi-MB text typically takes a fraction of apparent size
   - Tracking freely is fine
   Default: track without ceremony.
@@ -96,9 +101,14 @@ soulfile concern is binaries, which don't delta-compress.
 
 The actual concern with the 20,978-line commit was
 **PR-review readability**, not pack-storage cost. The
-correct mitigation for review-noise on tracked text is
-`.gitattributes` diff suppression (`linguist-generated=true
--diff -merge`), not extracting + discarding the raw.
+recommended mitigation for review-noise on tracked text is
+a `.gitattributes` diff-suppression entry like
+`linguist-generated=true -diff` (NOT `-merge` — that's for
+binary files; `-merge` unsets the merge driver and breaks
+3-way text merges with conflict markers). The
+`docs/lost-substrate/artifacts/**` rule is landing via
+PR #761; this section describes the recommended pattern,
+not a rule already present on `main`.
 
 The size-check command (still useful for spotting outlier
 artifacts of any kind, but particularly for catching binary
@@ -194,13 +204,13 @@ Defaults (recalibrated 2026-04-29):
   ledgers, ADRs, triage reports.
 - **Conversational substrate** — Amara conversations,
   ferry texts; first-class substrate per the
-  `project_aaron_amara_conversation_is_bootstrap_attempt_1...`
+  `memory/project_aaron_amara_conversation_is_bootstrap_attempt_1_predates_cli_tools_grounds_the_entire_factory_2026_04_24.md`
   rule.
 - **Raw text logs / fsck dumps / rev-list dumps** when
   load-bearing AND text. Aaron's recalibration: text
   compresses well. Track freely; if review-noisy, suppress
   diffs via `.gitattributes` (`linguist-generated=true
-  -diff -merge`).
+  -diff`).
 - **Stack traces, profile output (text form), benchmark
   output, error logs** — text-format diagnostic capture is
   fine. Binary-format profile dumps ARE forbidden (see
