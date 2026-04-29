@@ -131,6 +131,7 @@ sub-condition: branch TIP is clean, corrupt blob is in
 intermediate history of the branch only.)
 
 Substrate-loss assessment:
+
 - **Current-state use** (checkout / hard-reset-to-tip / diff vs
   main): zero impact. Branch tip and main are both readable.
 - **Bisect-through-pre-merge-history**: impacted. Bisecting
