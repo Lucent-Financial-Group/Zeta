@@ -3,7 +3,7 @@ title: Branch / Worktree / Stash Recovery Inventory — Read-Only Classification
 date: 2026-04-29
 status: read-only-classification
 scope: docs/ops/recovery
-authority: read-only — no ref mutations; cleanup batches require Aaron approval in a follow-up PR
+authority: read-only — no ref mutations; cleanup batches require human-maintainer approval in a follow-up PR
 related-task: #321 (recovery lane, first deliverable)
 ---
 
@@ -13,7 +13,7 @@ This is the **first deliverable** of the recovery lane authorized
 parallel to the `0/0/0` hard-reset re-close. Authority is **strictly
 read-only**: this report classifies; a follow-up PR will propose
 specific cleanup batches based on this classification, and any actual
-ref mutations require Aaron's approval.
+ref mutations require the human maintainer's approval.
 
 The phrase that anchors this work: ***"No proof, no deletion."***
 Every classification carries an evidence anchor — a `git log` /
@@ -25,7 +25,7 @@ Every classification carries an evidence anchor — a `git log` /
 
 | Metric | Count |
 |---|---|
-| Total branches inventoried | **918** (1 header + 918 rows in `/tmp/recovery-inventory-2026-04-29.tsv`) |
+| Total branches inventoried | **918** (the inventory file has 919 lines: 1 header + 918 data rows in `/tmp/recovery-inventory-2026-04-29.tsv`) |
 | ALREADY_REACHABLE from main | **123** |
 | NOT_REACHABLE from main | **795** |
 | Closed-not-merged PRs whose branch is NOT_REACHABLE (the **LOST** set) | **81** (last 100 closed-PR scan) |
@@ -49,9 +49,11 @@ stashes dropped, no worktrees removed.
 ## 2. Read-only methodology
 
 Every classification in this report rests on one of the following
-evidence anchors. The **Drain-Log Claim Verification Discipline**
-(`memory/feedback_drain_log_claim_verification_discipline.md`) requires
-that every branch-content claim be backed by a reproducible command.
+evidence anchors. Under the **Drain-Log Claim Verification
+Discipline** (a session-discipline rule introduced 2026-04-29 — Otto-358
+candidate, captured in commit messages of this round; not yet promoted
+to a standalone memory file), every branch-content claim must be backed
+by a reproducible command.
 
 ### Inventory-acquisition commands
 
@@ -77,7 +79,7 @@ git stash show stash@{N} --stat                         # per-stash filelist
 ```bash
 git log -1 --format='%h %ci %s' <SHA>     # tip subject + date
 git show --stat <SHA>                      # files-touched summary
-git rev-list --count main..<SHA>           # ahead-of-main commit count
+git rev-list --count refs/remotes/origin/main..<SHA>  # ahead-of-origin/main commit count
 ls docs/<expected-on-main-path>            # superseded-on-main check
 ```
 
@@ -273,7 +275,7 @@ or persona-substrate framing. Per-file mapping owed; do not bulk-delete.
 
 ---
 
-## 5. Top 20 highest-risk NOT_REACHABLE branches outside prefix batches
+## 5. Top 26 highest-risk NOT_REACHABLE branches outside prefix batches
 
 Filtered: `NOT_REACHABLE` AND not in `{tick-history/, backlog/, drain/,
 drain-, research/, memory/, history/, acehack/, tools/}` prefixes,
@@ -285,7 +287,7 @@ ordered by recency. Most-recent are most-likely-still-load-bearing.
 | 2 | `tools/lint-no-directives-provenance-2026-04-29` | 1d86e0cf | 2026-04-29 | `OBSOLETE_SUPERSEDED` | `gh pr view 825 --json mergedAt` → 2026-04-29T08:16:25Z; merged. |
 | 3 | `pr-827-fix` | 38c6c509 | 2026-04-29 | `OBSOLETE_SUPERSEDED` | `gh pr view 827 --json mergedAt` → 2026-04-29T08:15:20Z; transient lint-fix branch, parent merged. |
 | 4–22 | `pr-{825,823,822,821,819,818,815,811,809,806,72,32,29,...}-fix*` (16 branches) | various | 2026-04-29 .. 2026-04-26 | `OBSOLETE_SUPERSEDED` | Verified for #811, #815, #818, #819, #821, #822, #823, #825, #827, #806, #809 — all merged per `gh pr view --json mergedAt`. Transient lint-fix / Copilot-fix branches rolled into parent squash-merge. |
-| 23 | `durable-retry-fix-aaron-2026-04-29` | 3e46b914 | 2026-04-29 | `NEEDS_AARON_DECISION` | Aaron-attributed branch, no obvious parent PR; needs `git show --stat` to classify. |
+| 23 | `durable-retry-fix-aaron-2026-04-29` | 3e46b914 | 2026-04-29 | `NEEDS_AARON_DECISION` | maintainer-attributed branch, no obvious parent PR; needs `git show --stat` to classify. |
 | 24 | `current-aaron-update-aaron-qol-2026-04-29` | c1322075 | 2026-04-29 | `OBSOLETE_SUPERSEDED` | `gh pr view 823 --json mergedAt` → 2026-04-29T07:35:58Z; CURRENT-aaron QoL section landed. |
 | 25 | `absorb/multi-ai-2026-04-29-deepseek-amara-threading-and-pr-liveness` | 1eebc2cb | 2026-04-29 | `OBSOLETE_SUPERSEDED` | `gh pr view 815 --json mergedAt` → 2026-04-29T07:06:36Z. |
 | 26 | `absorb/multi-ai-2026-04-29-round4-amara-on-pr818` | 7f2b5c07 | 2026-04-29 | `OBSOLETE_SUPERSEDED` | `gh pr view 819 --json mergedAt` → 2026-04-29T07:41:24Z. |
@@ -333,13 +335,13 @@ The main worktree is the only unlocked one. **No dirty / clean
 verification was performed** because traversing into a locked worktree
 to check `git status` requires an `EnterWorktree` step that risks
 violating the read-only authority boundary on the agent worktrees;
-their cleanliness must be assessed in the cleanup PR after Aaron
+their cleanliness must be assessed in the cleanup PR after the maintainer
 reviews this report.
 
 | # | Path (relative) | Branch | Tip (8) | Lock | Branch bucket | Proposed action |
 |---|---|---|---|---|---|---|
 | 1 | `(main)` | `post-0-0-0-reclose-followup-acehack-2026-04-29` | 65b20ee6 | no | active | KEEP |
-| 2 | `agent-a01089031132624c8` | `memory/sync-otto-276-inspect-not-pray` | d5abb78f | yes | `NEEDS_AARON_DECISION` (memory + persona) | hold — Aaron review |
+| 2 | `agent-a01089031132624c8` | `memory/sync-otto-276-inspect-not-pray` | d5abb78f | yes | `NEEDS_AARON_DECISION` (memory + persona) | hold — maintainer review |
 | 3 | `agent-a0319326d067a519a` | `worktree-agent-a0319326d067a519a` | 7ce1a27d | yes | `NEEDS_AARON_DECISION` (placeholder shape) | hold — verify content first |
 | 4 | `agent-a09e691807fe5ce27` | `docs/adr-per-maintainer-current-memory` | c238b383 | yes | `EXTRACT_MEMORY_OR_DOC` (likely) | hold — ADR draft, verify on main |
 | 5 | `agent-a0cade9327f46a045` | `history/otto-103-tick-close` | 16851dbc | yes | `OBSOLETE_SUPERSEDED` (loop-tick-history.md) | safe to remove worktree after unlock |
@@ -399,8 +401,8 @@ reviews this report.
 
 **Worktree action note**: All 57 agent worktrees are pid-67393-locked.
 Removal requires either pid 67393 to release the lock or
-`git worktree remove --force` after Aaron explicitly authorizes the
-force flag. **No `--force` removal in the cleanup PR without Aaron sign-off.**
+`git worktree remove --force` after the maintainer explicitly authorizes the
+force flag. **No `--force` removal in the cleanup PR without maintainer sign-off.**
 
 ---
 
@@ -419,21 +421,21 @@ force flag. **No `--force` removal in the cleanup PR without Aaron sign-off.**
 **Stash action note**: Stashes carry **WIP work** that was never
 committed; loss-tolerance is lower than for branches. The cleanup PR
 must `git stash show stash@{N}` each one, diff against main, and only
-drop after Aaron explicitly signs off per stash.
+drop after the maintainer explicitly signs off per stash.
 
 ---
 
 ## 8. Proposed next-action batches (cleanup-PR roadmap)
 
 These are **proposed batches**, not actions. Every batch listed below
-requires Aaron's review and approval before any ref mutation.
+requires the human maintainer's review and approval before any ref mutation.
 
 ### Batch A — Clean worktrees safe to remove (after lock-release)
 
 About **44 of 57** locked agent worktrees fall into the
 `OBSOLETE_SUPERSEDED` bucket (all rows in §6 marked "safe to remove").
 Action: once pid 67393 releases its lock, `git worktree remove
-<path>` (without `--force`) for each. **Authority**: Aaron approves the
+<path>` (without `--force`) for each. **Authority**: the human maintainer approves the
 batch list; per-worktree removal is then mechanical.
 
 ### Batch B — Branches safe to archive only (`PRESERVE_REF_ONLY`)
@@ -450,7 +452,7 @@ The ~40 `pr-NNN-fix*`, `drain/N-r2`, and `tick-history/<timestamp>-shard`
 branches whose parent PRs are merged. Action sequence: (1) take a
 single `git bundle` of all listed refs as a one-shot archive artifact
 attached to the cleanup PR; (2) `git branch -D` the listed names.
-**Authority**: Aaron approves the bundle + delete list as a unit.
+**Authority**: the human maintainer approves the bundle + delete list as a unit.
 
 ### Batch D — Extraction needed
 
@@ -462,7 +464,7 @@ stash@{6} (tick-history-bounded-growth audit script). Action: open a
 small PR per artifact landing the content directly to its canonical
 home on main, then mark the source branch / stash as Batch C / B.
 
-### Batch E — Aaron decision packet (must surface before any action)
+### Batch E — maintainer decision packet (must surface before any action)
 
 Branches and worktrees flagged `NEEDS_AARON_DECISION` in this report:
 
@@ -474,18 +476,18 @@ Branches and worktrees flagged `NEEDS_AARON_DECISION` in this report:
 - `agent-a01089031132624c8` `memory/sync-otto-276-inspect-not-pray` — persona surface
 - stash@{0} — touches DEDICATION.md (Elizabeth memorial surface)
 - stash@{2} — large delete + skills-surface change
-- `durable-retry-fix-aaron-2026-04-29` — Aaron-attributed branch, no parent PR
+- `durable-retry-fix-aaron-2026-04-29` — maintainer-attributed branch, no parent PR
 
 ---
 
-## 9. Open questions for Aaron
+## 9. Open questions for the human maintainer
 
 1. **Lock release for the 57 agent worktrees**: pid 67393 holds the
    lock. Is that pid still alive, and is killing it the right move
    before Batch A starts? Or should the cleanup PR wait for the lock
    to release naturally?
 2. **DEDICATION.md / Elizabeth surface in stash@{0}**: this stash
-   touches the surface that honors Aaron's sister. Even if the content
+   touches the surface that honors the human maintainer's sister. Even if the content
    is provably already on main, the stash itself feels load-bearing as
    provenance. Drop, archive-as-bundle, or apply-and-recommit?
 3. **Identity-class branches** (`substrate/otto-344-…`, named-agent
@@ -493,7 +495,7 @@ Branches and worktrees flagged `NEEDS_AARON_DECISION` in this report:
    or are they expected to stay accessible by their original name?
 4. **`corruption-triage` branch**: is this part of the recovery lane's
    own substrate? If so, it stays.
-5. **The detached-HEAD worktree** (`3ca56e95`): if Aaron has no memory
+5. **The detached-HEAD worktree** (`3ca56e95`): if the human maintainer has no memory
    of what's there, the read should be a `git log -10 3ca56e95` walk
    in a follow-up tick before any removal.
 6. **The 25 `pr-NNN-fix*` branches in §5** (count corrected per Codex
@@ -516,4 +518,4 @@ Branches and worktrees flagged `NEEDS_AARON_DECISION` in this report:
 
 *End of read-only classification. Recovery lane task #321, first
 deliverable. Follow-up cleanup PR will propose specific batched
-actions for Aaron approval; no ref mutations occur without sign-off.*
+actions for human-maintainer approval; no ref mutations occur without sign-off.*
