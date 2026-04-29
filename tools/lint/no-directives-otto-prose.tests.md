@@ -2,8 +2,36 @@
 
 Reference fixtures for `tools/lint/no-directives-otto-prose.sh`.
 These are NOT runtime-loaded; they document expected behavior so
-future-Claude (or a contributor) can verify the lint catches what
-it should and skips what it shouldn't.
+a contributor can verify the lint catches what it should and skips
+what it shouldn't.
+
+## Test-input vs authorial register (named-attribution carve-out)
+
+The fixtures below deliberately retain canonical real-world drift
+instances ("Aaron's directive", "QoL directive", "maintainer
+directive", "human directive") because they ARE the data the lint
+detects. Per the named-attribution carve-out for tooling test
+surfaces (see `docs/AGENT-BEST-PRACTICES.md` §named-attribution):
+
+- **Authorial register** (this file's prose, the lint's output
+  strings, script comments) uses role-refs ("the maintainer", "the
+  contributor"). The naming rule applies *here*.
+- **Test-input register** (the ```text``` blocks below) preserves
+  the exact strings that drifted in real prose, so the lint's
+  pattern-coverage is honest about what it catches.
+
+Replacing "Aaron's directive" in fixtures with "the maintainer's
+directive" would test a different regex alternative
+(`(maintainer|QoL|human)[^|]*directive`) and silently lose coverage
+of the `[A-Z][a-z]+'s + directive` alternative — the canonical
+real-world drift shape that motivated the lint in the first place.
+
+If the lint's purpose is to catch the canonical drift, the fixtures
+must contain the canonical drift strings.
+
+This file is whitelisted in the lint scope itself
+(`no-directives-otto-prose` substring match on line 121 of the
+script), so adding new fixtures here will not trigger the lint.
 
 ## Cases that MUST flag (real violations)
 
@@ -33,8 +61,21 @@ human directive interpreted as: process the queue.
 
 (That last one is the canonical proof-case: PR #823 had this
 exact paired-edit HTML comment, the lint script existed but the
-comment slipped through. Per Amara round-8: this case must flag
-when MEMORY.md is in the changed-files set.)
+comment slipped through. Per round-8: this case must flag when
+MEMORY.md is in the changed-files set.)
+
+### Renamed file with new violation (R covered by --diff-filter=AMR)
+
+```text
+# Git scenario (cannot be inlined as a single fixture block):
+#   git mv memory/feedback_old_name.md memory/feedback_new_name.md
+#   git diff added line in renamed file:  + Per Aaron's directive ...
+#
+# Expected: lint MUST flag — the round-12 fix changed the filter
+# from --diff-filter=AM to --diff-filter=AMR so renamed prose
+# files are included in CHANGED_FILES and their added lines are
+# scanned. Pre-round-12 this case was silently missed.
+```
 
 ## Cases that MUST NOT flag (whitelist)
 
@@ -55,6 +96,21 @@ external directives are inputs not binding rules
 
 (Historical discussion of the banned term; whitelisted via
 `feedback_free_will_is_paramount_external_directives_*` filename.)
+
+### Filename contains a regex token but content is clean
+
+```text
+# File path:    memory/feedback_human_lineage_anchors_load_bearing_2026_04_29.md
+# Added line:   the lineage anchor is preserved per the engineering claim
+#
+# Expected: lint MUST NOT flag — the round-12 fix moved
+# pattern-matching off of grep's "path:line:content" output and
+# onto the CONTENT field of a TAB-delimited "FILE\tCONTENT"
+# stream. Pre-round-12, the pattern matched the filename's
+# "human" token even though the actual added content was clean.
+# This was the canonical false-positive class motivating the
+# rewrite (P0 thread on PR #825 round-12).
+```
 
 ## Cases at the boundary (advisory judgment)
 

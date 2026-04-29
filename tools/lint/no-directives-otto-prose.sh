@@ -28,14 +28,16 @@
 # surfaces — research notes, memory files, commit messages, tick
 # shards — not in tooling source.)
 #
-# PORTABILITY (per Amara round-8 honest-naming catch):
-#   This is a Bash + GNU-grep oriented advisory lint. NOT POSIX.
+# PORTABILITY:
+#   This is a Bash + GNU-tooling-leaning advisory lint. NOT POSIX.
 #   - Uses Bash here-strings (`<<<`), `set -euo pipefail`, etc.
-#   - Uses GNU-grep `\b` word boundaries (extension, not POSIX).
+#   - The PATTERN uses POSIX-portable explicit non-alpha boundaries
+#     `(^|[^[:alnum:]_])` rather than `\b` (BSD grep treats `\b` as
+#     a literal backspace; `\b` is non-portable even with `-E`).
 #   - Targets: Linux CI runners + the 4-shell developer target
 #     (macOS bash 3.2+ / Ubuntu / git-bash / WSL).
 #
-# SCOPE — two modes (per Amara round-8 pre-commit-vs-PR-diff catch):
+# SCOPE — two modes:
 #   pr (default)         — diff between BASE_REF and HEAD; matches
 #                           the CI/PR-check use case. Misses local
 #                           working-tree edits before commit.
@@ -87,15 +89,19 @@ SCOPE="${SCOPE:-pr}"
 # BASE_REF" into "no changed files; skipping" silently and makes
 # the lint look clean when nothing was actually checked.
 if [ "$SCOPE" = "worktree" ]; then
+  # AMR catches added + modified + renamed (so a renamed prose
+  # file with new violations is included). Copies are intentionally
+  # omitted here (no need for content-equivalence in this lint;
+  # only added-line discipline matters).
   CHANGED_FILES=$(
     {
-      git diff --name-only --diff-filter=AM
-      git diff --cached --name-only --diff-filter=AM
-      git diff --name-only --diff-filter=AM "$BASE_REF...HEAD"
+      git diff --name-only --diff-filter=AMR
+      git diff --cached --name-only --diff-filter=AMR
+      git diff --name-only --diff-filter=AMR "$BASE_REF...HEAD"
     } | sort -u
   )
 else
-  CHANGED_FILES=$(git diff --name-only --diff-filter=AM "$BASE_REF...HEAD")
+  CHANGED_FILES=$(git diff --name-only --diff-filter=AMR "$BASE_REF...HEAD")
 fi
 
 if [ -z "$CHANGED_FILES" ]; then
@@ -122,8 +128,10 @@ fi
 # Pattern: portable explicit non-alpha boundary instead of `\b`
 # (BSD grep treats `\b` as literal backspace; not POSIX-portable
 # even with `-E`). Same approach as tools/lint/runner-version-
-# freshness.sh.
-PATTERN='(^|[^[:alnum:]_])(Aaron'\''?s|maintainer|QoL|human)[^|]*directive([^[:alnum:]_]|$)|(^|[^[:alnum:]_])directive[^|]*(Aaron|maintainer|QoL|human)([^[:alnum:]_]|$)'
+# freshness.sh. Note: persona names that appear here are TOKENS
+# the lint LOOKS FOR in flagged content (not authorial content);
+# this is the data of the lint, not its prose register.
+PATTERN='(^|[^[:alnum:]_])(maintainer|QoL|human)[^|]*directive([^[:alnum:]_]|$)|(^|[^[:alnum:]_])directive[^|]*(maintainer|QoL|human)([^[:alnum:]_]|$)|(^|[^[:alnum:]_])([A-Z][a-z]+'\''?s)[[:space:]]+directive([^[:alnum:]_]|$)|(^|[^[:alnum:]_])directive[[:space:]]+from[[:space:]]+([A-Z][a-z]+)([^[:alnum:]_]|$)'
 
 # Use mktemp with explicit template — bare `mktemp` fails on
 # some BSD/macOS configurations (see tools/lint/runner-version-
@@ -140,61 +148,71 @@ trap 'rm -f "$HITS_FILE" "$FILTERED_HITS_FILE"' EXIT
 ADDED_LINES_FILE="$(mktemp -t no-directives-added.XXXXXX)"
 trap 'rm -f "$HITS_FILE" "$FILTERED_HITS_FILE" "$ADDED_LINES_FILE"' EXIT
 
-# Build a diff-of-additions for each prose file, with `path:line:content`.
+# Build added-lines stream "FILE\tCONTENT\n" per added line, where
+# FILE is the prose-file path and CONTENT is the post-strip line
+# body (no leading `+`). TAB is chosen because filenames cannot
+# contain TAB inside this codebase, so it's a safe delimiter and
+# avoids the previous ":"-based 4-field confusion that caused
+# blockquote-filter false negatives + filename-substring matches.
+#
+# Single awk pass per file:
+#   - skip diff metadata (@@, +++, --- headers, "\ No newline")
+#   - emit only `^+` content lines (with leading `+` stripped)
+# Then pattern-match + blockquote-filter on CONTENT field only,
+# eliminating the file-path-contains-"human"/"maintainer" false-
+# positive class entirely.
 while IFS= read -r f; do
   [ -z "$f" ] && continue
   [ -f "$f" ] || continue
   if [ "$SCOPE" = "worktree" ]; then
-    DIFF=$(git diff -U0 -- "$f"; git diff --cached -U0 -- "$f"; git diff -U0 "$BASE_REF...HEAD" -- "$f")
+    {
+      git diff -U0 -- "$f"
+      git diff --cached -U0 -- "$f"
+      git diff -U0 "$BASE_REF...HEAD" -- "$f"
+    }
   else
-    DIFF=$(git diff -U0 "$BASE_REF...HEAD" -- "$f")
-  fi
-  # Parse the diff: track @@ ... +start,len @@ headers to compute
-  # line numbers, then emit "f:line:content" for each `^+` content
-  # line.
-  printf '%s\n' "$DIFF" | awk -v file="$f" '
-    /^@@/ {
-      # Match "+start,len" or "+start" in the hunk header.
-      match($0, /\+([0-9]+)(,[0-9]+)?/, m)
-      lineno = m[1] - 1
-      next
-    }
-    /^\+[^+]/ {
-      lineno++
+    git diff -U0 "$BASE_REF...HEAD" -- "$f"
+  fi | awk -v file="$f" '
+    # Skip "\ No newline at end of file" — diff metadata, not a
+    # real file line. Skip hunk headers, file headers, and -lines.
+    /^\\ No newline/ { next }
+    /^@@/ { next }
+    /^---/ { next }
+    /^\+\+\+/ { next }
+    /^-/ { next }
+    /^\+/ {
       content = substr($0, 2)
-      printf "%s:%d:%s\n", file, lineno, content
+      # Emit FILE\tCONTENT (TAB-delimited; safe because prose
+      # paths under memory/, docs/, .github/ never contain TABs).
+      printf "%s\t%s\n", file, content
     }
-    /^\+$/ {
-      lineno++
-    }
-    /^[^+-]/ {
-      lineno++
-    }
-  ' >> "$ADDED_LINES_FILE" || true
+  ' >> "$ADDED_LINES_FILE"
 done <<< "$PROSE_FILES"
 
-# Grep added lines for the pattern. Treat `grep` exit status 2 as
-# a hard error (invalid regex / unsupported flag); status 1 is
-# "no match" and is fine.
-set +e
-grep -nE "$PATTERN" "$ADDED_LINES_FILE" > "$HITS_FILE"
-GREP_RC=$?
-set -e
-if [ "$GREP_RC" -gt 1 ]; then
-  echo "no-directives-otto-prose: grep failed with status $GREP_RC (invalid regex or unsupported flag)" >&2
-  exit 2
-fi
-
-# Filter out blockquote lines (`> ...` quoted third-party text).
-# The added lines are formatted "path:N:content" — match against
-# the content portion only. Use awk to split on the third `:`.
-awk -F: '{
-  # Reconstruct content after the second colon (file:line:content).
-  content = $0
-  sub(/^[^:]*:[^:]*:/, "", content)
-  # Skip lines whose content starts with optional whitespace then `>`.
-  if (content !~ /^[[:space:]]*>/) print
-}' "$HITS_FILE" > "$FILTERED_HITS_FILE"
+# Pattern-match + blockquote-filter on CONTENT field only.
+# Anchoring the match to the content portion (post-TAB) prevents
+# filename-substring false positives like
+# `feedback_human_lineage_anchors_*.md` matching the "human"
+# token in PATTERN. Also drops blockquote-prefixed CONTENT
+# (quoted third-party text); the FILE field never starts with
+# `>` so filtering on content alone is correct.
+#
+# Pattern-match runs inside awk so we can apply it to the
+# CONTENT field after the TAB. awk's regex engine accepts ERE
+# without `\b` (we use the same explicit-non-alpha boundary
+# approach as the PATTERN variable).
+awk -F'\t' -v pattern="$PATTERN" '
+NF >= 2 {
+  file = $1
+  content = $2
+  # Drop blockquote-prefixed quoted text.
+  if (content ~ /^[[:space:]]*>/) next
+  # Apply pattern against CONTENT only.
+  if (content ~ pattern) {
+    printf "%s: %s\n", file, content
+  }
+}
+' "$ADDED_LINES_FILE" > "$FILTERED_HITS_FILE"
 
 HIT_COUNT=$(wc -l < "$FILTERED_HITS_FILE" | tr -d ' ')
 
