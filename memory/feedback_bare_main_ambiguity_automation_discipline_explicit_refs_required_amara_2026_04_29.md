@@ -200,6 +200,132 @@ Amara caught this by reading the trace; it had been
 hidden by the exit-code-zero of the followups even
 though the checkout failed.
 
+## Defining "stop the tick" (multi-AI synthesis 2026-04-29)
+
+`set -euo pipefail` is the right hard-stop for shell
+scripts, but the autonomous loop is an orchestrator that
+runs MULTIPLE shell commands across a single tick — shell
+strict mode in any one command does not propagate to the
+orchestrator. The orchestrator-level "stop the tick"
+behavior is:
+
+```text
+Base-ref setup failure means:
+  - mark current tick FAILED (record failure mode + cause);
+  - write a minimal failure note to the tick-history
+    shard if possible (a one-row schema-compliant entry
+    documenting the failure is better than no entry);
+  - do NOT commit;
+  - do NOT open a PR;
+  - do NOT continue the work sequence on an unknown base;
+  - wait until the next cron cycle or explicit recovery
+    action — this prevents fast-failure loops while
+    preserving liveness.
+```
+
+For shell scripts that ARE the unit of work, use:
+
+```bash
+set -euo pipefail
+```
+
+(`-e` exits on any command failure, `-u` treats unset
+variables as errors, `pipefail` returns failure if any
+pipeline command fails.)
+
+For the orchestrator, implement equivalent failure
+propagation explicitly. Do not rely on shell strict mode
+alone in multi-step contexts.
+
+## Concurrency caveat for the fetch/switch pattern (Claude.ai 2026-04-29)
+
+The `git fetch origin refs/heads/main:refs/remotes/origin/main`
++ `git switch --detach refs/remotes/origin/main` pattern
+guarantees an **explicit base ref**, NOT a globally stable
+base across parallel ticks. If two agents fetch at different
+moments, they may branch from different `origin/main` SHAs.
+
+For tick-history shards: this is acceptable (shards don't
+depend on shared state — each row is independent).
+
+For stateful PR work (PR creation against a moving main,
+serialized substrate updates, anything where the base SHA
+matters for correctness): record the base SHA at branch-
+creation time and verify it before merge-sensitive
+operations:
+
+```bash
+BASE_SHA=$(git rev-parse refs/remotes/origin/main)
+# ... do work ...
+# Before any merge-sensitive operation:
+CURRENT_SHA=$(git rev-parse refs/remotes/origin/main)
+if [ "$BASE_SHA" != "$CURRENT_SHA" ]; then
+  echo "warning: origin/main moved during tick; rebasing"
+  # rebase or fail per intended semantics
+fi
+```
+
+## Generalized shell-glob lesson (multi-AI synthesis 2026-04-29)
+
+The zsh issue is not just "quote this one glob." It's a
+broader automation rule:
+
+```text
+Shell glob expansion is shell-specific.
+Bash, zsh, fish, sh all behave differently with unmatched globs.
+Automation must quote Git ref patterns so Git receives the
+pattern, not the shell's attempted (or refused) expansion.
+```
+
+Wrong (zsh nullglob may swallow this before Git sees it):
+
+```bash
+git for-each-ref --format='...' refs/remotes/*/main
+```
+
+Right:
+
+```bash
+git for-each-ref --format='%(refname:short) %(objectname:short)' \
+  'refs/heads/main' \
+  'refs/remotes/*/main'
+```
+
+The single quotes pass the literal pattern to `git`,
+which then does its own ref-expansion. The shell stays
+out of it.
+
+This generalizes to ALL ref patterns in automation: paths
+with `*`, `?`, `[...]`, `{...}`, leading `!` etc. should
+be quoted unless shell expansion is intentionally desired.
+
+## Future-consolidation threshold (Claude.ai + Amara 2026-04-29)
+
+Small distinct memory files for distinct failure modes is
+correct now. But future-Claude searching for "what could
+go wrong with my git script" needs ONE place to start, not
+N. As automation-failure-mode memory files accumulate
+(this one, the corruption-triage one, the soulfile-
+cleanliness one, the verbatim-preservation one — and any
+future ones), the substrate-locality rule applies at the
+folder level too: substrate-locality > duplicate retrieval
+paths.
+
+Threshold rule:
+
+```text
+When automation-failure-mode memory files reach 5–10
+entries, create or update a consolidated index at:
+  docs/automation/automation-pitfalls.md
+or similar. Each individual memory file remains the
+canonical home for its specific rule; the index is the
+single retrieval entry-point.
+```
+
+This prevents future-Claude from having to grep through
+N files to find "the bare-main rule" when starting a new
+automation task.
+
 ## Pre-canonization search (search-before-canonizing evidence)
 
 Before creating this memory file, searched for an existing
@@ -262,4 +388,29 @@ downstream state. Stop on fatal; never continue past it.
 Safety-belt config (checkout.defaultRemote=origin) helps
 interactive use; it does NOT make scripts safe.
 The fix is explicit refs in automation.
+```
+
+```text
+Topology is allowed.
+Ambiguity is expected.
+Continuing after fatal ambiguity is forbidden.
+```
+
+(Best distilled rule from the 2026-04-29 multi-AI synthesis
+packet — the actual immune trigger is the post-fatal
+continuation, not the topology or the ambiguity. Topology is
+just multi-remote infrastructure; ambiguity is a normal Git
+behavior that happens to be load-bearing in this repo class;
+continuation after fatal is the bug.)
+
+```text
+Shell glob expansion is shell-specific.
+Quote ref patterns so Git receives the pattern, not the
+shell's expansion.
+```
+
+```text
+Stop-the-tick semantics differ for shell scripts vs
+orchestrators. set -euo pipefail is right for shells;
+orchestrators need explicit failure propagation.
 ```
