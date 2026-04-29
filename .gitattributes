@@ -57,4 +57,9 @@
 # text merges with conflict markers — undesirable for the
 # tracked text artifacts. `-diff` alone gives the diff
 # suppression we want without changing merge semantics.
-docs/lost-substrate/artifacts/** linguist-generated=true -diff
+# Narrow to raw-evidence file types only — fsck/rev-list outputs,
+# refs dumps, config snapshots, log files. Markdown summaries (like
+# triage-report.md) are NOT suppressed — those are human-readable
+# conclusions and should remain reviewable in PRs.
+docs/lost-substrate/artifacts/**/*.txt linguist-generated=true -diff
+docs/lost-substrate/artifacts/**/*.log linguist-generated=true -diff
