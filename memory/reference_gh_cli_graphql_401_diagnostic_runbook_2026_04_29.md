@@ -1,6 +1,6 @@
 ---
 name: gh CLI / CodeQL transient 401 — diagnostic runbook
-description: When `gh auth status` reports authenticated but `gh api graphql` / `gh api user` returns 401 (and CodeQL SARIF uploads fail in the same window), this is a transient upstream auth-service hiccup, not a token problem. Captured 2026-04-29 during PR #846 review wave; corrected per Codex P2 on PR #847 (the prior `-X POST` "workaround" was a misdiagnosis — `gh api` already sends POST when `-f`/`-F` parameters are present, so the flag was a no-op and the success was just the glitch resolving on retry).
+description: When `gh auth status` reports authenticated but `gh api graphql` / `gh api user` returns 401 (and CodeQL SARIF uploads fail in the same window), the FIRST hypothesis is a transient upstream auth-service hiccup. Always rule out token-side issues (expired / revoked / SSO not authorized) before assuming transient. Captured 2026-04-29 during PR #846 review wave; corrected per Codex P2 on PR #847 (the prior `-X POST` "workaround" was a misdiagnosis — `gh api` already sends POST when `-f`/`-F` parameters are present, so the flag was a no-op and the success was just the glitch resolving on retry).
 type: reference
 ---
 
@@ -21,7 +21,12 @@ While in the same window:
 - `gh api repos/<owner>/<repo>/...` (REST repo-scoped) keeps
   working — gh CLI falls back to anonymous access on public
   repos when auth fails, masking the auth issue
-- `gh api rate_limit` typically still works
+- `gh api rate_limit` may still appear to work, but per GitHub
+  REST docs `GET /rate_limit` succeeds anonymously when only
+  public resources are queried — so a healthy-looking response
+  here does NOT prove the token is valid (Codex P1 catch on
+  PR #847; previously this runbook over-relied on it). Use
+  `gh api user` instead — that endpoint requires authentication.
 - A `gh api -X POST graphql ...` retry seconds later succeeds
   (NOT because of the `-X POST` flag — see "Common
   misdiagnosis" below — but because the upstream path
@@ -78,10 +83,19 @@ attempts. Misattributed.
    is genuinely missing → `gh auth login` is the answer (this
    is a different class from the transient 401).
 
-3. **Confirm partial-failure pattern**: `gh api rate_limit`
-   typically succeeds during a transient 401 window. If it ALSO
-   401s, the issue is more likely token-side (expired / revoked)
-   than upstream auth-service.
+3. **Confirm partial-failure pattern via an auth-required endpoint**:
+   `gh api user --jq .login` requires authentication (no anonymous
+   fallback) and is a reliable signal of token-side health.
+   - If `gh api user` succeeds → token IS authenticating; failure
+     elsewhere is upstream-transient.
+   - If `gh api user` ALSO 401s → likely token-side (expired /
+     revoked / SSO not authorized for the org).
+   **Do NOT use `gh api rate_limit` as the auth-health signal**:
+   `GET /rate_limit` succeeds anonymously when only public
+   resources are queried (per GitHub REST docs), so a missing
+   or revoked token can show as healthy on this check, causing
+   false "transient" classification and delaying real token
+   remediation. (Codex P1 catch on PR #847.)
 
 4. **For local commands**: bounded retry with back-off
    (60s/180s; max 2-3 retries). If still failing after 5
