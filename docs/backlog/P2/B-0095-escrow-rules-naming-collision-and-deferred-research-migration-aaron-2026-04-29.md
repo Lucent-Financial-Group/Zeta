@@ -64,9 +64,14 @@ Options:
 - **Option B: Disambiguate via prefix.** Keep `docs/research/
   escrowed/` but add a top-level rule that this directory is
   for research-grade preservation, distinct from the software-
-  engineering-vendoring sense which lives elsewhere (e.g.
-  `references/upstreams/` is already the vendoring home per
-  GOVERNANCE §23).
+  engineering-vendoring sense. The vendoring-adjacent surface
+  in this repo is `references/upstreams/` (read-only clones
+  from sibling repos per the operational rule in
+  `docs/AGENT-BEST-PRACTICES.md` "Operational standing rules"
+  section); GOVERNANCE.md §23 separately governs upstream
+  open-source contributions via sibling `../` clones, which
+  is a related-but-distinct workflow (sibling clones live at
+  `../`, not under `references/upstreams/`).
 - **Option C: Name both senses explicitly** in a glossary
   entry — research-escrow vs vendor-escrow vs dependency-
   escrow — and let the directory name stay if the glossary
@@ -166,14 +171,20 @@ input was one wrapper.
 
 - **B-0094** — the worked example escrow. Schema this row
   formalizes is what B-0094 implicitly defined.
-- **PR #714** — the file currently at
-  `docs/research/escrowed/aurora-autonomous-flywheel-thesis-2026-04-28.md`.
-  Naming-collision resolution may rename the directory; if so,
-  the file moves with it.
+- **PR #714** — the in-flight PR landing the file at
+  `docs/research/escrowed/aurora-autonomous-flywheel-thesis-2026-04-28.md`
+  (path becomes canonical when PR #714 merges).
+  Naming-collision resolution (sub-ask 1) may rename the
+  directory; if so, the file moves with it.
 - **GOVERNANCE.md §33** — archive-header schema the escrow
   contract must compose with.
-- **GOVERNANCE.md §23** — `references/upstreams/` is the
-  vendoring home; helps disambiguate sub-ask 1.
+- **GOVERNANCE.md §23** — upstream OSS contributions via
+  sibling `../` clones; relevant context for sub-ask 1's
+  vocabulary disambiguation but NOT the authority for
+  `references/upstreams/` being a vendoring home (the
+  operational rule for that surface lives in
+  `docs/AGENT-BEST-PRACTICES.md` "Operational standing
+  rules" section).
 
 ## What this row does NOT authorize
 
