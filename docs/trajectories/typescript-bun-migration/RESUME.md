@@ -28,7 +28,9 @@ After PR #849, Zeta has zero Python files in `tools/` (Zeta-authored — the 22 
 
 ## Inventory — Bash (tools/, Zeta-authored, 55 files)
 
-Three buckets per Deepseek's classification ask.
+Three buckets per the multi-AI review surface's classification ask.
+
+**Count correction**: prior chat estimates referenced "~68 .sh files" — that figure included `tools/lean4/.lake/packages/...` upstream content (mathlib, proofwidgets) which is not Zeta-authored and not in scope for this trajectory. The verified Zeta-authored count is **55**. Both numbers recorded here so future readers don't hit conflicting figures across the substrate. Computed via: `find tools/ -name "*.sh" -type f | grep -v ".lake/" | wc -l`.
 
 ### Bucket A — Should stay Bash (~13 files)
 
@@ -154,6 +156,16 @@ Coherent budget-report cluster; would advance task #287 (cost monitoring) in add
 - `.mise.toml` pins `bun 1.3` for CI parity
 - ESLint + markdownlint already configured for TS files
 - `jiti` 2.6.1 was added in PR #849 as devDep; reused for future ports
+
+## Operating notes (lane-discipline addendum)
+
+These rules apply to this trajectory's execution and are recorded here per the locked discipline that minor lane-discipline additions land in the active lane artifact rather than as standalone doctrine packets.
+
+**Polite waiting is still waiting** (added 2026-04-29 via multi-AI review surface convergence — Amara + Deepseek + Claude.ai). If the next lane is already specified in the locked discipline, its first action is read-only, and no authority boundary is crossed, **start immediately**. Do not wait for the maintainer. Do not ask if it's OK to start. The maintainer is not the lane-transition protocol. This rule is the soft-form sibling of the resume-protocol failure mode the trajectory work was designed to fix.
+
+**Counts before percentages.** Track concrete counts and buckets before claiming progress as a percentage. Every percentage requires a defined denominator that is itself mechanically derivable. The Python inventory's "100% complete" is well-defined (denominator = 2 ports, both landed); future progress claims need the same standard.
+
+**Closure summaries are factual, not meta-evaluative.** When closing a slice or lane, record what landed and what's next. Do not include review-surface health observations or self-evaluation paragraphs. The data is in the diff.
 
 ## Composes with
 
