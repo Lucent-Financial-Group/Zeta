@@ -29,7 +29,34 @@ This second message reframes the cost constraint: the barrier is **not noticing*
 **Two binding constraints (non-negotiable):**
 
 1. **Public repositories only.** Private GitHub repos cost money on these orgs; public repos are free. **Never create a private repo** under this standing authority.
-2. **Billing tracked hourly.** The hourly budget cadence (task #315 + task #287 cost-visibility lane) must keep visibility on whatever resources these test repos consume — Actions minutes, storage, packages, etc. Billing-visibility is the load-bearing safety latch that makes "create freely" safe.
+2. **Billing tracked hourly — and the audit must be ACTIVE before any new test repo is created** (precondition, not promise). The hourly budget cadence (task #315 + task #287 cost-visibility lane) must keep visibility on whatever resources these test repos consume. Per Amara 2026-04-29: *"If the hourly billing audit is not active and covering the target org/account/repo, do not create new test repos."* Billing-visibility is the load-bearing safety latch that makes "create freely" safe; it is not optional.
+
+**Paid-feature exclusion list** (per Amara 2026-04-29 risk-boundary correction):
+
+Public repos and standard GitHub-hosted Actions runners are free, but several adjacent features ARE billable. The standing authority covers public test repos and repository-level settings needed to test git / GitHub behaviour. It does **NOT** include:
+
+- private repo creation
+- larger runners (always charged regardless of public/private status)
+- paid marketplace apps
+- paid GitHub Advanced Security / paid security features
+- paid storage-heavy package / artifact experiments
+- Codespaces paid usage
+- paid LFS / storage experiments
+- adding external collaborators with paid-seat implications
+- org-wide billing / security changes unrelated to the test repo
+
+**Exception path:** any paid-feature use is allowed only if (a) explicitly needed for the test, AND (b) the hourly billing audit is active *before* creation, AND (c) the cost is consciously chosen and visible — i.e., the audit-precondition rule still holds.
+
+**What the hourly billing audit must cover** (per Amara 2026-04-29 + [GitHub Actions billing docs](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions) — Actions storage charges accrue hourly, and budgets/alerts are the native spending-control surface):
+
+- LFG org (existing scope)
+- AceHack account / org (extended scope)
+- newly created test repos (auto-included from creation moment)
+- Actions minutes / runners
+- artifact / cache / package storage
+- any enabled paid SKU / budget alert
+
+**Carved blade** (Amara): *"Public repo is the default cost-control surface. Paid feature enablement is still an authority boundary."*
 
 **Authority lifetime:**
 - Standing — no expiration, no per-tick re-confirmation needed.
