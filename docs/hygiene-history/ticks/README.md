@@ -94,6 +94,28 @@ Either form (`HHMMZ.md` or `HHMMSSZ-<short-content-hash>.md`)
 is valid; the second is preferred when concurrency pressure is
 expected.
 
+**Unique-filename rule** (fail-closed): if the target shard
+path already exists when a new shard is being written, the
+write MUST fail closed and a unique-suffix path MUST be
+chosen. Silent overwrites are forbidden — they would erase
+prior liveness evidence and re-introduce the failure mode shard
+transport was designed to eliminate. The `HHMMSSZ-<short-content-hash>.md`
+form makes collisions extremely rare in the first place; the
+fail-closed rule is the safety net for the remaining cases
+(same-timestamp + same-content with different agent context,
+or filename collisions when the simpler `HHMMZ.md` form is
+used).
+
+**Scope of conflict-elimination claim** (per the deep-research
+external-AI's hardening review): shard transport eliminates the
+*old EOF-append collision class* for new tick rows. It does NOT
+eliminate all conflict classes — same-timestamp filename
+collisions, README/schema edits, generator output conflicts,
+and directory/index conflicts remain possible. Engineering
+hardening (the content-hash naming + unique-filename rule above
++ generator cadence discipline below) addresses the residual
+classes.
+
 ## What goes in a shard
 
 The same content that previously appended as a row to the legacy
@@ -128,6 +150,18 @@ Generator (cadence: post-merge or daily):
 ```
 
 The generator is follow-up work tracked under task #276.
+
+**Generator cadence rule** (the danger to avoid): if the
+generator regenerates the legacy table on EVERY shard PR, the
+EOF append-hotspot returns as generated-output contention. The
+generator MUST run on a separate cadence (post-merge cron OR
+single scheduled PR daily/weekly), NOT on every tick PR.
+
+```text
+Shard files are the canonical WRITE surface (per-tick).
+Generated table is a READ surface (cadenced).
+The hotspot returns iff the read surface tries to be a write surface.
+```
 
 ## Why per-tick rather than per-day or per-PR
 
