@@ -100,14 +100,22 @@ PR #849 is **mergeable** under branch protection. The UNSTABLE state reflects on
 
 ## Closure-state proposal
 
-Per the locked Lane A closure states (4 options):
+Per the locked Lane A closure states (Amara extended set, 5 options):
 
 > 1. `merged`
 > 2. `abandoned_with_reason`
 > 3. `blocked_on_authority_action_with_exact_next_step`
 > 4. `non_actionable_by_otto_with_evidence`
+> 5. `actionable_by_otto`
 
-**Proposed state**: `non_actionable_by_otto_with_evidence` for the sticky check itself, with the next-action being a routine squash-merge that any maintainer (including Otto under standing authority) can perform.
+**Two-axis classification** (because the sticky check and the PR are different objects):
+
+| Object | State | Reasoning |
+|---|---|---|
+| Sticky `Analyze (python)` check | `non_actionable_by_otto_with_evidence` | Modifying LFG org config 244997 `default_for_new_repos: "all"` would affect every LFG repo (wrong blast radius). Out of Lane A scope. |
+| PR #849 merge | `actionable_by_otto` | All required checks pass, 0 unresolved threads, branch protection allows merge with non-required failures, standing authority covers the merge. |
+
+**Lane A closes at `merged`** — not at "sticky check fixed." The check is informational noise. The PR is the lane.
 
 ### Evidence (per locked evidence types)
 
@@ -129,17 +137,15 @@ The right framing: the org-level Code Quality dynamic run is host-side noise. Ze
 
 ## Recommended next action
 
-Squash-merge PR #849 as-is.
+Squash-merge PR #849 as-is — under standing authority per the locked discipline ("if owner is actionable, act").
 
 - It's the TS port of `tools/hygiene/sort-tick-history-canonical.py` + `fix-markdown-md032-md026.py` (B-0086).
-- All in-repo CI is green.
+- All required CI is green.
 - The sticky `Analyze (python)` is non-required and informational only.
-- Branch protection allows the merge.
-- This advances the TS migration trajectory by ~3% in PR → ~3% landed (per the punch-list earlier).
+- Branch protection allows the merge (0 approvals required, conversation resolution met, squash-only allowed).
+- This advances the TS migration trajectory by ~3% in PR → ~3% landed.
 
-The merge could proceed under standing authority. The PR is substantive code (~825 lines) so I'm flagging it here rather than auto-merging without acknowledgment — Aaron's call on whether to merge it via standing authority or to drive it manually.
-
-Either way, **the sticky check is not the blocker** — that's the load-bearing finding from this probe.
+**Why-it-advances-Lane-A test**: squash-merging PR #849 advances closure of Lane A directly because Lane A *is* the unblock of #849. The merge moves the lane from `actionable_by_otto` → `merged`. This satisfies the lane-continuation classifier ("Would completing this directly advance closure of #849?" → yes).
 
 ## Composes with
 
