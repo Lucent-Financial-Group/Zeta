@@ -79,7 +79,10 @@ ref=refs/remotes/origin/chore/heartbeat-batch-2026-04-26-hour-05Z → reaches it
 $ git ls-remote origin refs/heads/chore/heartbeat-batch-2026-04-26-hour-05Z
 (empty — origin no longer has this branch)
 
-$ fresh-clone --branch chore/heartbeat-batch-2026-04-26-hour-05Z
+$ git clone --no-checkout --quiet \
+    --branch chore/heartbeat-batch-2026-04-26-hour-05Z \
+    https://github.com/Lucent-Financial-Group/Zeta.git \
+    /tmp/repo-fresh-corruption-recheck-2026-04-29
 fatal: Remote branch chore/heartbeat-batch-2026-04-26-hour-05Z not found in upstream origin
 ```
 

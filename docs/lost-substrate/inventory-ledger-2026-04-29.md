@@ -168,8 +168,11 @@ In order of safety + leverage:
    reference each branch tip against main's tree using
    content-equivalence (per the metric ladder in
    `memory/feedback_reset_readiness_metric_ladder_content_loss_surface_amara_2026_04_28.md`).
-2. **Run `git branch --merged main`** to identify
-   BRANCH_MERGED_TO_MAIN bucket; these are deletion-safe.
+2. **Run `git branch --merged origin/main`** to identify
+   `BRANCH_MERGED_TO_MAIN_CANDIDATE` bucket; these are deletion
+   **candidates** (mechanical reachability), NOT automatic
+   clearance — still need open-PR mapping + worktree mapping
+   + peer verification per the bucket schema above.
 3. **For BRANCH_GONE_UPSTREAM with substrate-y names**
    (Amara conversation absorbs, Aurora ferry absorbs,
    alignment edits): manual content-equivalence classification.
@@ -187,9 +190,10 @@ Picked by leverage (most uncertainty per branch removed):
 1. **Locked worktree audit** — sample 5 worktrees per tick;
    classify each into the bucket schema; build out the
    ledger over multiple ticks.
-2. **`git branch --merged main`** — identifies safe-to-delete
-   branches in one command; produces an immediate
-   BRANCH_MERGED_TO_MAIN bucket.
+2. **`git branch --merged origin/main`** — produces an
+   immediate `BRANCH_MERGED_TO_MAIN_CANDIDATE` bucket
+   (deletion candidates, NOT auto-cleared; need open-PR +
+   worktree + peer verification before any delete).
 3. **Cross-reference branches against open PRs** — already
    done in this snapshot (27 BRANCH_HAS_OPEN_PR).
 4. **Content-equivalence audit on substrate-y branch names**
@@ -477,7 +481,8 @@ surfaces are classified and either preserved or explicitly
 abandoned. `git gc` / `git prune` / `git repack -Ad` /
 `git fsck --lost-found` remain forbidden during triage.
 Auto-gc thresholds are at default per
-`gc-config-snapshot.txt`; below-threshold loose-object count
+`docs/lost-substrate/artifacts/2026-04-29-corruption/git-gc-config.txt`;
+below-threshold loose-object count
 means auto-gc is not imminent — the discipline is "no implicit
 cleanup decision" not "we have time."
 

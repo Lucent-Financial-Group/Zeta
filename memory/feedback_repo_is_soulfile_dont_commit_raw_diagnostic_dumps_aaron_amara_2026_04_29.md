@@ -63,8 +63,12 @@ Aaron caught the soulfile pollution before merge. Amara
 provided the size-check command:
 
 ```bash
+# BSD/macOS-portable (default macOS find lacks -printf):
 find docs/lost-substrate/artifacts/2026-04-29-corruption \
-  -type f -maxdepth 1 -printf '%s %p\n' | sort -nr
+  -type f -maxdepth 1 -exec ls -la {} \; | awk '{print $5, $NF}' | sort -nr
+# GNU equivalent (Ubuntu/CI runners):
+# find docs/lost-substrate/artifacts/2026-04-29-corruption \
+#   -type f -maxdepth 1 -printf '%s %p\n' | sort -nr
 ```
 
 Corrective action: replaced the raw dumps with grep extracts

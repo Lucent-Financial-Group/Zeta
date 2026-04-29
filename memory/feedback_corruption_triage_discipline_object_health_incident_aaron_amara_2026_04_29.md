@@ -92,26 +92,39 @@ correct frame distinguishes three reachability buckets:
 | B | Reflog / stash / local-recovery reachable (default-fsck reach minus bucket A; `refs/stash` rev-list) |
 | C | Dangling / unreachable only (no live ref, no reflog, no stash reaches it) |
 
-**Reachability scan commands** (all read-only; persist outputs
-to `docs/lost-substrate/artifacts/<date>-corruption/`):
+**Reachability scan commands** (all read-only; per the soulfile-
+cleanliness rule below, run the raw dumps to a `/tmp` working
+directory and commit only the load-bearing extracts plus a
+re-run recipe — NOT the multi-MB raw outputs themselves):
 
 ```bash
 OBJ=<sha>
-git rev-list --objects --all > rev-list-all-objects.txt 2> rev-list-all-objects.err
-git fsck --full --no-progress > fsck-full.txt 2>&1
-git fsck --full --no-reflogs --no-progress > fsck-full-no-reflogs.txt 2>&1
-git rev-list --objects refs/stash > rev-list-stash.txt 2>&1 || true
+RAW=/tmp/corruption-triage-raw-$(date -u +%Y%m%d)
+mkdir -p "$RAW"
+
+# Raw dumps go to /tmp (NOT committed to soul repo):
+git rev-list --objects --all > "$RAW/rev-list-all-objects.txt" 2> "$RAW/rev-list-all-objects.err"
+git fsck --full --no-progress > "$RAW/fsck-full.txt" 2>&1
+git fsck --full --no-reflogs --no-progress > "$RAW/fsck-full-no-reflogs.txt" 2>&1
+git rev-list --objects refs/stash > "$RAW/rev-list-stash.txt" 2>&1 || true
 git for-each-ref --format='%(refname)' | while read r; do
   git rev-list --objects "$r" 2>/dev/null | grep "$OBJ" && echo "ref=$r"
-done > per-ref-grep.txt
+done > "$RAW/per-ref-grep.txt"
 
-grep "$OBJ" rev-list-all-objects.txt
-grep -C 5 "$OBJ" fsck-full.txt
-grep -C 5 "$OBJ" fsck-full-no-reflogs.txt
-grep "$OBJ" per-ref-grep.txt
+# Grep load-bearing lines:
+grep "$OBJ" "$RAW/rev-list-all-objects.txt"
+grep -C 5 "$OBJ" "$RAW/fsck-full.txt"
+grep -C 5 "$OBJ" "$RAW/fsck-full-no-reflogs.txt"
+grep "$OBJ" "$RAW/per-ref-grep.txt"
+
+# Then commit ONLY the small extracts + a re-run recipe to:
+#   docs/lost-substrate/artifacts/<date>-corruption/
+# Per
+#   memory/feedback_repo_is_soulfile_dont_commit_raw_diagnostic_dumps_aaron_amara_2026_04_29.md
 ```
 
-Save command outputs to artifacts BEFORE writing prose
+Save extracts (not raw dumps) to the artifacts directory BEFORE
+writing prose
 conclusions. Future-Claude verifies prose against artifacts,
 not the other way around.
 
