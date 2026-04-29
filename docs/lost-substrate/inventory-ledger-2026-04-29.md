@@ -349,9 +349,9 @@ Two corrupt objects identified + classified per Amara's bucket schema:
 | Object | Type | Size | Bucket | Notes |
 |---|---|---|---|---|
 | `9bf2daee3ce53c88633824f9532a0158aaa92ed9` | blob | 16,455,417 bytes | RECOVERABLE_FROM_ORIGIN | Fresh clone (`/tmp/zeta-fresh-corruption-check`) returns type+size cleanly. Recovery via `git fetch --refetch origin`. |
-| `8d5e67fd313573855848705e4af114f3ff0eecbc` | blob | 439,327 bytes (early `docs/hygiene-history/loop-tick-history.md`) | **MISSING_UNRECOVERED** | Fresh clone returns "could not get object info". Origin doesn't have this exact blob. Local-only intermediate version. |
+| `8d5e67fd313573855848705e4af114f3ff0eecbc` | blob | 439,327 bytes (early `docs/hygiene-history/loop-tick-history.md`) | Round 1: `MISSING_UNRECOVERED` (superseded). **Final (Round 3): `CORRUPT_BLOB_REFERENCED_BY_LIVE_LOCAL_BRANCH_AND_STALE_REMOTE_TRACKING_REF`** | Fresh clone returns "could not get object info" (origin no longer has the branch). Round-3 reachability scan placed it in bucket A: live-local branch reachable; same-named remote-tracking ref is stale. Branch tip is clean — corrupt blob is from intermediate history of the branch only. See "Day-2+: corrected reachability via three-bucket scan" section below for details. |
 
-**Critical finding**: `8d5e67fd` is a local-only blob with no origin recovery path. Some tree/commit references it (fsck flagged "missing blob"). Investigation pending — could be from a stash, dangling commit, or unpushed branch. This is the canonical worked-example of unrecovered-substrate boundary case.
+**Critical finding (Round 3, final)**: `8d5e67fd` is referenced by a live local branch (`refs/heads/chore/heartbeat-batch-2026-04-26-hour-05Z`) plus a stale same-named remote-tracking ref. Origin no longer has the branch (verified via `git ls-remote`). The branch TIP is clean — the corrupt blob is from the branch's intermediate history only. Substrate-loss for current-state use is zero; only bisect-through-pre-merge-history would surface the corruption. See the corrected reachability + content-equivalence section below.
 
 ### Day-2+: corrected reachability via three-bucket scan (Amara 2026-04-29)
 
@@ -379,8 +379,8 @@ the live-ref reach.
 
 ```bash
 git rev-list --objects --all | grep 8d5e67fd
-git fsck --full --no-progress | grep 8d5e67fd -C 5
-git fsck --full --no-reflogs --no-progress | grep 8d5e67fd -C 5
+git fsck --full --no-progress | grep -C 5 8d5e67fd
+git fsck --full --no-reflogs --no-progress | grep -C 5 8d5e67fd
 git rev-list --objects refs/stash | grep 8d5e67fd
 git for-each-ref --format='%(refname)' | while read r; do
   git rev-list --objects "$r" 2>/dev/null | grep 8d5e67fd && echo "ref=$r"
@@ -531,7 +531,10 @@ Each pass is read-only:
 git stash list
 git reflog --all
 git notes list
-git fsck --lost-found --no-reflogs --no-progress
+# fsck WITHOUT --lost-found here: --lost-found writes dangling
+# objects into .git/lost-found/, which is NOT read-only. Use
+# --no-reflogs alone for the read-only mode-comparison check.
+git fsck --no-reflogs --no-progress
 
 # History-rewriting ref namespaces
 git for-each-ref refs/replace refs/original refs/bisect refs/pull refs/changes

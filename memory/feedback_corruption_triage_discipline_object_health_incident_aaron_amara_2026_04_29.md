@@ -106,8 +106,8 @@ git for-each-ref --format='%(refname)' | while read r; do
 done > per-ref-grep.txt
 
 grep "$OBJ" rev-list-all-objects.txt
-grep "$OBJ" fsck-full.txt -C 5
-grep "$OBJ" fsck-full-no-reflogs.txt -C 5
+grep -C 5 "$OBJ" fsck-full.txt
+grep -C 5 "$OBJ" fsck-full-no-reflogs.txt
 grep "$OBJ" per-ref-grep.txt
 ```
 
