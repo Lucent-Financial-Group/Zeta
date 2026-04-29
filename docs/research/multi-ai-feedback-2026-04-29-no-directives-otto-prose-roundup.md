@@ -46,6 +46,16 @@ Both Claude.ai and Amara explicitly mark these as follow-ups, not urgent:
 
 4. **Don't canonize the lint as "done."** Soften "the lint now actually does what it claimed to do" → "the lint now covers the observed failure classes from rounds 7-13" or "the lint is no longer aspirational; it has passed its first self-application test."
 
+5. **Replace the substring whitelist with an explicit allowed-surfaces list** (Amara post-archive correction, ~09:00Z). Currently line 121 of the lint script excludes paths matching the substring `no-directives-otto-prose` — this is convenient but too broad: any future path containing that substring would silently dodge the lint, including paths that have nothing to do with the canonical rule docs. Better future shape:
+   ```text
+   Allowed test fixture file:
+     tools/lint/no-directives-otto-prose.tests.md
+   Allowed verbatim archives (named explicitly):
+     docs/research/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md
+   Plus the existing rule-doc whitelist entries (named explicitly, not by substring).
+   ```
+   This is the same "centralize prose-surface list" family at the whitelist layer. Amara's framing: *"Whitelists should be explicit surfaces, not substring accidents."*
+
 Per B-0105 consolidation gate: these follow-ups are NOT new substrate islands — they are corrections to the existing lint surface. They land when the consolidation gate reopens, not as new rules in their own right.
 
 ## Best keepers from the packet (CANDIDATE substrate, not doctrine)
@@ -60,6 +70,16 @@ From Amara (the strongest line — candidate, not crowned):
 
 > A guard is not real when it exists.
 > A guard is real when it bites the hand that wrote it.
+
+From Amara post-archive (~09:00Z, also candidate):
+
+> Archive is not integration.
+> Candidate is not doctrine.
+> Whitelist should be explicit, not accidental.
+
+> The archive is clean.
+> The whitelist is a little haunted.
+> Fix the haunting later.
 
 From the prior rounds (preserved as composing keepers):
 
