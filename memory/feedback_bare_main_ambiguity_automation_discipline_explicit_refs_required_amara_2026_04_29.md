@@ -117,33 +117,53 @@ ensures the remote-tracking ref is refreshed against
 origin's `main` exactly. The hard-stop block prevents the
 "continued past fatal" failure mode that motivated this rule.
 
-**Or, with a local main branch tracking origin** — but only
-when you can guarantee the local `refs/heads/main` already
-exists OR the `git branch --track` step succeeds before any
-bare-`main` operation. The safest form uses fully-qualified
-refs throughout, never bare `main`, even on the
-`switch`/`reset` lines:
+**Or, with a local main branch tracking origin** — the
+key safety property: create the local branch at an
+EXPLICIT remote-tracking ref FIRST, so that by the time
+any bare-`main` lookup runs, the local branch already
+exists and is unambiguous (Git's branch lookup order finds
+`refs/heads/main` first; the multi-remote guess only fires
+when the bare name doesn't match a local ref):
 
 ```bash
 git fetch origin refs/heads/main:refs/remotes/origin/main --quiet
-# Create the local tracking branch UNCONDITIONALLY at the
-# explicit ref (idempotent: -f forces update if it already
-# exists; explicit start-point removes any guessing):
+# Create the local tracking branch unconditionally at the
+# explicit ref (-f forces update if it already exists;
+# explicit start-point removes any guessing):
 git branch -f main refs/remotes/origin/main
-git switch refs/heads/main || { echo "failed to switch to refs/heads/main"; exit 1; }
+# Now bare `git switch main` is safe because refs/heads/main
+# exists locally and matches first in Git's lookup order:
+git switch main || { echo "failed to switch to local main"; exit 1; }
 git reset --hard refs/remotes/origin/main
 ```
 
-The previous version of this snippet had `git switch main`
-(bare) which only works AFTER `refs/heads/main` exists
-locally — but on first-run scripts where the local branch
-hasn't been created, the bare `main` would still hit the
-multi-remote ambiguity fatal. The `git switch refs/heads/main`
-form is unambiguous regardless of local state: it explicitly
-asks Git for the local-branch ref, never the remote-tracking
-namespace. That's the form to use in automation that may run
-on a fresh clone or a working copy where `refs/heads/main`
-might not exist yet.
+The earlier draft of this snippet had `git switch refs/heads/main`
+(non-detached form). Codex correctly flagged that as invalid:
+`git switch` in non-detached mode takes a branch NAME, not a
+fully-qualified ref. The valid forms in Git are:
+
+- `git switch <branch-name>` — non-detached, branch-name only;
+  ambiguous in multi-remote setups UNLESS the local branch
+  already exists (which we ensure with `git branch -f main`
+  on the line above).
+- `git switch --detach <commit-ish>` — detached HEAD form,
+  accepts any commit-ish including a fully-qualified ref
+  (e.g., `refs/heads/main`, `refs/remotes/origin/main`).
+- `git checkout <branch-name>` — older form; same ambiguity
+  concerns as `git switch`.
+
+So the correct sequence for "switch to local main tracking
+origin": create the local branch at the explicit remote ref
+FIRST (eliminating ambiguity), then bare `git switch main`
+is safe.
+
+For new feature branches (where a detached starting point
+is fine), use:
+
+```bash
+git switch --detach refs/remotes/origin/main
+git switch -c "$NEW_BRANCH"
+```
 
 **Branch off AceHack main**:
 
