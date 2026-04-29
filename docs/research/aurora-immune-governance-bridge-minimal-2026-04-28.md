@@ -13,8 +13,9 @@ A **minimal first bridge** between three recent operational
 governance rules and Aurora-style immune-system mechanics.
 Falsifier-first. One prototype. Explicit boundaries on
 what is NOT being claimed. Earned by the substrate cluster
-that landed across PRs #695-#706 and validated under live
-restraint pressure.
+that landed across PRs #695 → #705 and validated under live
+restraint pressure (PR #706 is the round-close hygiene row,
+not part of the substrate cluster itself).
 
 This note is **not** the full Aurora-unification packet.
 The 12-change canon Aurora originally proposed is
@@ -189,7 +190,7 @@ phi_min(a) =
     verification_level,
     context_class,
     taint_status,
-    PR_stage )
+    pr_stage )
 ```
 
 Nine fields. Each is already populated by an existing
@@ -212,22 +213,22 @@ Translation 3).
 ## Minimal execute gate
 
 ```text
-Execute_min(y) = 1  iff
-    cap_req(y) subseteq cap_allowed(y)
-  AND ImmuneRisk_min(y) <= theta_min
-  AND ComplianceSafe(y) = 1
-  AND PRBoundarySafe(y) = 1
+Execute_min(a) = 1  iff
+    cap_req(a) subseteq cap_allowed(a)
+  AND ImmuneRisk_min(a) <= theta_min
+  AND ComplianceSafe(a) = 1
+  AND PRBoundarySafe(a) = 1
 ```
 
-`ComplianceSafe(y) = 1` is the hard execution
+`ComplianceSafe(a) = 1` is the hard execution
 constraint from Translation 3.
 
-`PRBoundarySafe(y) = 1` is the gate from Translation 2.
+`PRBoundarySafe(a) = 1` is the gate from Translation 2.
 
-`ImmuneRisk_min(y) <= theta_min` covers the soft risk
+`ImmuneRisk_min(a) <= theta_min` covers the soft risk
 from Translation 1.
 
-`cap_req(y) subseteq cap_allowed(y)` is preserved from
+`cap_req(a) subseteq cap_allowed(a)` is preserved from
 the existing Aurora membrane (capability check) — this
 note does NOT modify it.
 
@@ -308,7 +309,7 @@ its earned-now-not-later status.
 ## Boundaries (what this note explicitly does NOT do)
 
 - **Does NOT** mutate Aurora core.
-- **Does NOT** introduce `K_Aurora^+` (the proposed
+- **Does NOT** introduce `K_Aurora⁺` (the proposed
   graduated viability kernel from the 12-change canon).
 - **Does NOT** introduce `A_synthesis` (the proposed
   antigen class for synthesis-treadmill drift).
@@ -351,7 +352,7 @@ In rough order of when the next move *might* happen:
    a recorded failure.
 3. **If the prototype passes** the falsifier-test, the
    bridge graduates to a v0.1 status and the next
-   smallest expansion becomes considerable (one more
+   smallest expansion becomes worth considering (one more
    antigen class, one more risk term, OR one
    integration with the existing Aurora membrane).
 4. **If the session-closure rule** survives the next
