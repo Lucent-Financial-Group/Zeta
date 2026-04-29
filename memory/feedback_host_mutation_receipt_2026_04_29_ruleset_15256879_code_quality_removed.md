@@ -52,7 +52,7 @@ Aaron 2026-04-29: *"if the org-recommended are legacy we can remove, declarative
 
 ## What this receipt is NOT
 
-- **NOT a doctrine adoption.** Removing the rule is invariant maintenance. The doctrine that should govern future ruleset mutations is the executable-host-settings design (`docs/research/2026-04-29-amara-executable-declarative-host-settings.md`), which is **research-first; NO active adoption yet** per Aaron's "we should research it first i think the whole space" signal.
+- **NOT a doctrine adoption.** Removing the rule is invariant maintenance. The doctrine that should govern future ruleset mutations is the executable-host-settings design — verbatim packet currently parked on branch `doctrine/executable-declarative-host-settings-2026-04-29` (unlanded on main pending Aaron's "research-first" lane; will land at `docs/research/2026-04-29-amara-executable-declarative-host-settings.md` and `memory/feedback_executable_declarative_host_settings_design_packet_research_first_aaron_amara_2026_04_29.md` when the space-survey research lands). **Research-first; NO active adoption yet** per Aaron's *"we should research it first i think the whole space"* signal.
 - **NOT a precedent for casual ruleset mutations.** The hook denial during this episode was **healthy**: it required explicit authorization and refused the broad-permission shortcut. Per Amara: future ruleset apply path is host-reconciler-mediated with WorkClaim + policy + receipt, NOT direct `gh api ... rulesets/PUT` from the agent. Do NOT broaden the `Bash:gh api -X PUT repos/.../rulesets/*` permission in `.claude/settings.json`.
 - **NOT a permanent erasure of GitHub Code Quality.** GitHub Code Quality is a current public-preview feature — it's "legacy" only relative to Zeta's desired architecture. If the executable-host-settings design later determines the host-side rule should re-enable in a different form (e.g., as a non-blocking advisory check), the desired-state declaration at `.zeta/hosts/github/lfg-zeta.yaml` will say so and the reconciler will converge.
 
@@ -67,7 +67,7 @@ rulesets:
     target: branch
     enforcement: active
     include:
-      - refs/heads/main
+      - "~DEFAULT_BRANCH"   # matches the live ruleset condition; resolves to refs/heads/main on this repo today
     rules:
       - type: deletion
       - type: non_fast_forward
@@ -94,7 +94,7 @@ When the reconciler runs `hosts:diff` for the first time, this receipt should re
 ## Composes with
 
 - **`feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`** — substrate-or-it-didn't-happen demands this receipt land as durable substrate so git can remember the change.
-- **`feedback_executable_declarative_host_settings_design_packet_research_first_aaron_amara_2026_04_29.md`** — the design that this receipt is the first concrete artifact for. The reconciler tooling will read this receipt as input.
+- **Executable-host-settings design** (parked on `doctrine/executable-declarative-host-settings-2026-04-29` branch; will land at `memory/feedback_executable_declarative_host_settings_design_packet_research_first_aaron_amara_2026_04_29.md` after the space-survey research) — the design that this receipt is the first concrete artifact for. The reconciler tooling will read this receipt as input once the lane lands.
 - **PR #857** (codeql per-language source-presence gate) — the source-presence gate that this mutation makes the sole CodeQL owner.
 - **PR #849** (TS hygiene-port) — the PR that surfaced the multi-master conflict and triggered the mutation.
 - **Task #342 (completed)** — multi-master CodeQL conflict resolution.
