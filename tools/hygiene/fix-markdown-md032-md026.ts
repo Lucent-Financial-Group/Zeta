@@ -70,8 +70,12 @@ const YAML_KEY_LINE = /^\s*[A-Za-z_][\w-]*\s*:/;
 const MAX_FRONTMATTER = 200;
 const YAML_RATIO_MIN = 0.75;
 
-// Discriminated-union result for fixFile — exception-free per Zeta's
-// Result-over-exception convention (CLAUDE.md ground rules). The
+// Discriminated-union result for fixFile — Result-style for the
+// expected outcomes (`not-found` / `unchanged` / `fixed`) per Zeta's
+// Result-over-exception convention (CLAUDE.md ground rules).
+// Unexpected I/O errors (non-ENOENT read, write failures) still
+// propagate as exceptions for the caller to convert to an exit code;
+// only the expected-outcome surface is exception-free. The
 // `bytesDiff` is the UTF-16 code-unit delta; for ASCII content it
 // matches Python's `len(fixed) - len(original)`.
 type FixResult =
