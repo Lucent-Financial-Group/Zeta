@@ -41,9 +41,10 @@ Per maintainer 2026-04-29T10:13Z framing: *"do you not keep up with content drif
 | 2026-04-27 (early) | 53 | — | ~6065 | — | (pre-option-c reference) |
 | 2026-04-28T17:53Z | 23 | — | — | — | Calibration commit `37bbca9` |
 | 2026-04-28T21:50Z | 23 | — | ~397 | — | CLASSIFICATION.md initial |
-| **2026-04-29T10:11Z** | **30** | **156** | **454** | **18,227** | **Drift +7 files / +57 AceHack-only lines in 12.5h vs prior** |
+| 2026-04-29T10:11Z | 30 | 156 | (mis-counted as 454; corrected to 273) | (18,227 then; 18,046 now) | (Earlier line-count was wrong — `grep -c '^+'` counted 181 file-header lines on top of 273 real insertions.) |
+| **2026-04-29T10:25Z** | **30** | **156** | **273** | **18,046** | **Canonical via `git diff --numstat` — see ledger below** |
 
-**Headline safety number: 454 AceHack-only lines.** That's what hard-reset of `acehack/main` would erase. Of those, classified ALREADY-COVERED (LFG has equivalent or supersedes):
+**Headline safety number: 273 AceHack-only lines.** That's what hard-reset of `acehack/main` would erase. Of those, classified safe with semantic evidence:
 
 - 9 infra files: ~all of the file-level safety-relevant content
 - 5 spot-checked memory/docs files: ~tens of lines (mostly stale frontmatter)
@@ -64,15 +65,61 @@ Commit-count is unfaithful — many AceHack-side commits supersede each other on
 
 Per Amara 2026-04-29T09:50Z framing correction: "merge-direction is a plan shape; content-loss is the reset gate; do not confuse them." The question for 0/0/0 is NOT "which fork wins this file" but "what unique AceHack content would be LOST on hard-reset?"
 
-Classification taxonomy:
+Per Amara 2026-04-29T10:18Z reinforcement: line-count dominance is a TRIAGE SIGNAL, not content-equivalence proof. The repeated failure pattern: compute drift → see low AceHack-only count or LFG-newer dominance → infer "safe" → reviewer finds one semantic thing hidden inside the small diff. The fix is the `HEURISTIC_LFG_DOMINATES` bucket — files there are *unclassified*, not safe.
+
+Classification taxonomy (5-bucket, strict):
 
 ```text
-SAFE_TO_RESET_LFG_SUPERSEDES   — LFG has the same or better content; hard-reset is safe and may even improve AceHack.
-ALREADY_RESOLVED               — file already identical between forks; nothing to lose.
+ALREADY_RESOLVED               — file is identical OR exact AceHack content exists on LFG. Zero AceHack-only lines is the canonical case.
+SAFE_TO_RESET_LFG_SUPERSEDES   — AceHack-only content is NAMED + LFG equivalent/superset is NAMED + reason LFG supersedes is WRITTEN. Semantic evidence required.
+HEURISTIC_LFG_DOMINATES        — LFG-only line count dwarfs AceHack-only line count, BUT AceHack-only lines were not semantically inspected. NOT proof; counts as UNCLASSIFIED for gate purposes.
 NEEDS_FORWARD_SYNC             — AceHack has unique substantive content not on LFG; forward-sync to LFG before hard-reset.
-EXPLICIT_ACCEPT_LOSS_REQUIRED  — AceHack has unique content but the maintainer chooses to accept its loss rather than forward-sync.
-NEEDS_HUMAN_DECISION           — ambiguous; surface to maintainer.
+NEEDS_HUMAN_DECISION           — ambiguous, irreversible, or accept-loss decision required.
 ```
+
+Best blade (Amara): *"Line-count dominance is a smoke detector. Content equivalence is the fire inspection."*
+
+### Four-bucket ledger (compute, do not hand-maintain)
+
+The drift trajectory is a metric; the GATE is the ledger. Hand-counts drift; ledgers from `git diff --numstat` don't.
+
+```bash
+git diff --numstat origin/main..acehack/main | awk '
+  $1 != "-" && $2 != "-" {
+    add += $1; del += $2; files += 1
+    if ($1 == 0) zero_files += 1
+  }
+  END {
+    print "modified_files=" files
+    print "zero_acehack_only_files=" zero_files
+    print "potential_loss_lines=" add
+    print "lfg_newer_lines=" del
+  }
+'
+```
+
+Current ledger (computed 2026-04-29T10:25Z):
+
+```text
+potential_loss_lines  = 273    all AceHack-only +lines (would be erased on hard-reset)
+classified_safe_lines = 97     semantic evidence in BUCKET 2 (SAFE_TO_RESET_LFG_SUPERSEDES)
+unsafe_lines          = 0      no NEEDS_FORWARD_SYNC or NEEDS_HUMAN_DECISION
+unclassified_lines    = 176    HEURISTIC_LFG_DOMINATES — pending per-file semantic inspection
+```
+
+### Hard-reset signoff gate (strict)
+
+Hard-reset is signoff-eligible ONLY when:
+
+```text
+unclassified_lines      = 0
+unsafe_lines            = 0
+fresh-clone fsck        = clean
+hard-reset preflight    = clean
+maintainer signoff      = yes
+```
+
+**Currently NOT signoff-eligible**: 176 unclassified lines remain (18 files in HEURISTIC_LFG_DOMINATES).
 
 ### 9 infra files (verified 2026-04-29T09:50Z against current git state, NOT against the 16h-old plan)
 
