@@ -286,50 +286,101 @@ Verbatim packets preserved at:
 - Does NOT replace Otto-362 — Otto-362 is intra-file; Otto-363 is cross-surface + bidirectional supersession metadata.
 - Does NOT require pre-commit hook enforcement immediately — that's deferred to a separate task; the doctrine-level rule operates today via discipline + bootstrap pointer + verbatim discipline.
 
-## Pairs with the existing git-recovery process (task #321)
+## Parking surfaces and git recovery
 
-The factory already has a recovery process for finding "lost" git work — task #321 (recovery lane: branch / worktree / stash inventory + classification + report PR). At first inventory: 918 branches (123 ALREADY_REACHABLE / 795 NOT_REACHABLE), 58 worktrees, 7 stashes.
+The factory already has a real (if messy) git recovery surface — task #321 inventories 918 branches (123 ALREADY_REACHABLE / 795 NOT_REACHABLE), 58 worktrees, 7 stashes. Otto-363's parking-surface taxonomy must **pair** with this recovery process, not invent parking in isolation.
 
-Otto-363's parking-surface taxonomy is **not a replacement** — it's the *intentional-parking* counterpart that pairs with the recovery process. Together they form a complete loop:
+The carved pair:
 
-| Direction | Mechanism |
-|---|---|
-| **Parking** (Otto-363) | Author commits to `wip/<topic>-<date>` branch and pushes. Branch is intentional-parking, discoverable by name pattern. |
-| **Recovery** (task #321) | Inventory script walks `git for-each-ref --format='%(refname)'` + `git worktree list` + `git stash list`; classifies each ref as REACHABLE / NOT_REACHABLE / WIP-INTENTIONAL / etc. |
+> *"If it matters enough to come back to, it deserves a git ref."*
+>
+> *"Parking is only safe if recovery knows where to look."*
 
-**Naming convention is the discoverability mechanism.** A pushed WIP branch named `wip/<topic>-<date>`:
+> *"A parked thing is only parked if recovery can find it. Otherwise it is just lost more slowly."*
 
-- Tells the recovery process: *"this is intentional parking, not lost"*
-- Tells future-self: *"this is where I parked work to come back to"*
-- Tells fresh-cold-start agents: *"these are leads, not orphans"*
-- Survives because the recovery process explicitly preserves WIP-prefixed branches in its classification (or should — file as #321 follow-up if not yet implemented)
+### Preferred parking surfaces (in priority order)
 
-**Recovery-process recognition rule** (filed against task #321):
+1. **Pushed WIP branch** — best for future doctrine seeds, *"save this, come back later, do not start review."* No PR opened.
+2. **Draft PR** — when visibility / review discussion is wanted. Acceptable when review noise is controlled.
+3. **Local WIP branch (not pushed)** — local-parked only; weaker because machine-failure-vulnerable. Push when possible.
+4. **Named `git stash -u`** — short-term only, not for doctrine seeds. Last-resort local. `git stash push -m "<name>"` always (anonymous stashes are weather).
+
+### Predictable naming conventions
 
 ```text
-Branches matching `wip/**` are WIP-INTENTIONAL.
-Do not propose them for deletion.
-Do propose them for index/audit ("did the author come back?")
-after configurable staleness window (e.g. 30 days).
+wip/<topic>-seed-YYYY-MM-DD       — future seed; intentional parking, not yet ready for review
+wip/<topic>-YYYY-MM-DD            — work in progress; same shape, broader use
+archive/<topic>-YYYY-MM-DD        — work intentionally retired but preserved
 ```
 
-**Forbidden parking patterns** (recovery process should flag):
+The naming pattern IS the discoverability mechanism. A `wip/`-prefixed branch tells the recovery process *"intentional parking, not lost"*; an `archive/`-prefixed branch tells it *"retired on purpose, do not propose for deletion."*
 
-- Long-lived feature branches with no PR (use draft PR instead)
+### Discovery commands (recovery process must scan these)
+
+```bash
+# pushed WIP branches (remote and local)
+git branch --list 'wip/*'
+git ls-remote origin 'refs/heads/wip/*'
+git ls-remote origin 'refs/heads/archive/*'
+
+# named stashes
+git stash list
+
+# worktrees
+git worktree list
+
+# all refs (for completeness)
+git for-each-ref --format='%(refname)'
+```
+
+Every parked item must be reachable by at least one of these commands. Anything that can't be found by any of them is either lost or weather.
+
+### Pair with task #321 recovery process
+
+Task #321's recovery inventory script (the existing branch / worktree / stash classification work) should be extended to recognise:
+
+```text
+- branches matching `wip/**`         → WIP-INTENTIONAL (do not propose for deletion;
+                                       propose for index/audit after configurable
+                                       staleness window, e.g. 30 days)
+- branches matching `archive/**`     → ARCHIVE-INTENTIONAL (preserved on purpose)
+- named stashes                      → SHORT-TERM-LOCAL (verify before pruning;
+                                       short window, e.g. 7 days)
+- branches with no prefix            → classify normally (REACHABLE / NOT_REACHABLE /
+                                       LOST / etc. per existing rules)
+```
+
+This is a **task #321 follow-up addition**: Otto-363 specifies the parking convention; #321 implements the recovery-side recognition. The parking discipline + the recovery-process recognition together form the complete loop.
+
+### Forbidden parking patterns (recovery process should flag)
+
+- Long-lived feature branches with no PR (use **draft PR** instead — visible, discoverable, doesn't drown in `wip/*` scan)
 - WIP branches without `wip/` prefix (silently parked, not discoverable)
-- Untracked working-tree files (always lost on branch switch)
+- Untracked working-tree files as the only copy (always lost on branch switch)
 - Local-only branches that never get pushed (machine-failure-vulnerable)
+- Anonymous stashes (`git stash` without `-m`) — name them or don't use them
+- **Any temp directory** (`/tmp`, `/var/tmp`) as a parking surface — weather, not substrate
 
-**The complete loop**:
+### The complete loop
 
 ```text
-Author parks: git checkout -b wip/topic-date && commit && push
-Author returns: git fetch && git checkout wip/topic-date
-Author abandons: branch ages out; recovery process inventories it after window
-Recovery prompts: "wip/topic-date is N days old; promote to PR, delete, or extend?"
+Author parks:    git checkout -b wip/topic-seed-YYYY-MM-DD
+                 git commit ... && git push -u origin HEAD
+                 (no PR opened)
+
+Author returns:  git fetch && git checkout wip/topic-seed-YYYY-MM-DD
+
+Author abandons: branch ages past staleness window;
+                 recovery process inventories it on next pass
+
+Recovery acts:   "wip/topic-seed-2026-04-29 is N days old.
+                  Promote to PR, archive (rename to archive/...),
+                  delete, or extend?"
 ```
 
-Otto-363 doctrine + task #321 recovery process = the parking + recovery substrate is mechanical, not vigilance-based. *"If it matters enough to come back to, it deserves a git ref"* — and the recovery process knows how to find that git ref later.
+Otto-363 doctrine + task #321 recovery process = the parking + recovery substrate is **mechanical, not vigilance-based**. The parking author doesn't have to remember to come back; the recovery cadence surfaces the parked work on its own schedule.
+
+> *"Parking is only safe if recovery knows where to look."*
 
 ## Future failure mode handled: preserved-but-disputed
 
