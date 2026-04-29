@@ -114,63 +114,21 @@ Total: 28 AceHack-only lines properly accounted for under strict bucket as SAFE_
 
 The calibration revealed a strong pattern: **when LFG-newer (-) line count >> AceHack-newer (+) line count, the AceHack content is almost always older drafts of content LFG has since advanced**. This pattern matches because most of AceHack's commits this arc were tick-history / memory updates that LFG subsequently superseded with substantively newer versions.
 
-**Heuristic for the remaining 18 files**:
+**Heuristic for the remaining unclassified files** (live count + per-file enumeration in `docs/active-trajectory.md` four-bucket ledger):
 
 - Files where LFG-newer dominates (`-` >> `+`): probable ALREADY-COVERED; spot-check the AceHack `+` content for any unique semantic addition before classifying
 - Files where AceHack-newer dominates or balanced (`+` >= `-`): higher chance of NEEDS-FORWARD-SYNC; full diff inspection required
-- The 1 pure-AceHack-newer file (`tools/hygiene/github-settings.expected.json`): NEEDS-DECISION (could be obsolete settings snapshot or genuine drift)
+- A separate "pure-AceHack-newer" class (e.g. `tools/hygiene/github-settings.expected.json`): NEEDS-DECISION (could be obsolete settings snapshot or genuine drift)
 
-Files where this heuristic suggests probable ALREADY-COVERED (deferred for spot-check):
-
-```text
-.github/workflows/codeql.yml                 (+18 -156)  ← strong LFG-newer
-memory/project_laptop_only_*                 (+8 -27)    ← strong LFG-newer
-.github/workflows/budget-snapshot-cadence.yml (+38 -75)  ← strong LFG-newer
-.mise.toml                                   (+2 -21)    ← strong LFG-newer
-SECURITY.md                                  (+4 -8)     ← LFG-newer
-tools/setup/common/curl-fetch.sh             (+14 -44)   ← strong LFG-newer
-tools/setup/common/elan.sh                   (+13 -25)   ← strong LFG-newer
-tools/setup/linux.sh                         (+14 -44)   ← strong LFG-newer
-tools/setup/macos.sh                         (+11 -16)   ← LFG-newer
-tools/hygiene/audit-memory-index-duplicates.sh (+8 -7)   ← balanced; spot-check
-tools/hygiene/validate-agencysignature-pr-body.sh (+5 -9)  ← LFG-newer
-.github/workflows/memory-index-duplicate-lint.yml (+8 -5) ← balanced; spot-check
-.github/workflows/resume-diff.yml            (+7 -14)    ← LFG-newer
-.github/codeql/codeql-config.yml             (+17 -12)   ← balanced; spot-check
-src/Core/Shard.fs                            (+9 -12)    ← balanced; spot-check
-docs/hygiene-history/loop-tick-history.md    (+14 -6)    ← AceHack-newer; spot-check
-.github/workflows/gate.yml                   (+179 -110) ← LARGE; full inspection
-tools/hygiene/github-settings.expected.json  (pure-AceHack-newer) ← NEEDS-DECISION
-```
-
-Most likely outcome based on the heuristic: 14-16 of the remaining 18 ALREADY-COVERED, 2-4 NEEDS-FORWARD-SYNC or NEEDS-DECISION.
+The heuristic-classification table previously shown here drifted as files were promoted into Batch 1 + later batches. The live source of truth is the `unclassified_lines` composition block in `docs/active-trajectory.md`; classified files appear in the Batch 1 / Batch 2 / ... tables further up in this document. Keeping a separate hand-maintained heuristic list created exactly the contradictory-counts class Codex flagged.
 
 ### Calibration insight for Aaron
 
-The 145-commit / 530-behind state may be much closer to 0/0/0-ready than the raw numbers suggest. The bulk of "AceHack-only work" turns out to be **older drafts of files LFG has since advanced** — not unique work needing forward-sync. If the heuristic holds for the remaining 18 files, hard-reset alone may resolve most of the divergence with at most 2-4 small forward-syncs.
+The pre-Batch-1 state was 145-commit / 530-behind; the calibration insight remains: the bulk of "AceHack-only work" turns out to be **older drafts of files LFG has since advanced** — not unique work needing forward-sync. As batches land, hard-reset becomes incrementally safer with each promoted file.
 
-### Remaining 18 files (deferred to follow-up ticks)
+### Remaining files (live list — see `docs/active-trajectory.md`)
 
-```text
-.github/codeql/codeql-config.yml             (+17 -12)
-.github/workflows/budget-snapshot-cadence.yml (+38 -75)
-.github/workflows/codeql.yml                 (+18 -156)
-.github/workflows/gate.yml                   (+179 -110)  ← largest AceHack-only delta
-.github/workflows/memory-index-duplicate-lint.yml (+8 -5)
-.github/workflows/resume-diff.yml            (+7 -14)
-.mise.toml                                   (+2 -21)
-SECURITY.md                                  (+4 -8)
-docs/hygiene-history/loop-tick-history.md    (+14 -6)
-memory/project_laptop_only_source_integration_scratch_sqlsharp_features_or_designs_high_priority_2026_04_27.md (+8 -27)
-src/Core/Shard.fs                            (+9 -12)
-tools/hygiene/audit-memory-index-duplicates.sh (+8 -7)
-tools/hygiene/github-settings.expected.json  (pure-AceHack-newer; needs decision)
-tools/hygiene/validate-agencysignature-pr-body.sh (+5 -9)
-tools/setup/common/curl-fetch.sh             (+14 -44)
-tools/setup/common/elan.sh                   (+13 -25)
-tools/setup/linux.sh                         (+14 -44)
-tools/setup/macos.sh                         (+11 -16)
-```
+The per-file enumeration of currently-unclassified files lives in the four-bucket ledger of `docs/active-trajectory.md` (composition of `unclassified_lines`). Hand-maintaining a duplicate list here causes drift; consult the trajectory file for the current set.
 
 ## What this document is NOT
 
@@ -179,8 +137,10 @@ tools/setup/macos.sh                         (+11 -16)
 - **NOT a commit-level audit.** Tree-level diff is the ground truth for 0/0/0
   topology. Per-commit narrative is preserved in git history but not
   re-walked here unless a file requires it.
-- **NOT a single-tick deliverable.** The calibration batch is this tick;
-  remaining 18 files are follow-up tick work.
+- **NOT a single-tick deliverable.** Classification proceeds in
+  small batches (Batch 1, Batch 2, …) per tick; remaining files are
+  follow-up tick work and the live count is in
+  `docs/active-trajectory.md`.
 
 ## Composes with
 
@@ -197,7 +157,7 @@ tools/setup/macos.sh                         (+11 -16)
 
 ## Pickup notes for future-Otto
 
-When resuming classification on the deferred 18 files:
+When resuming classification on the remaining unclassified files (live list in `docs/active-trajectory.md`):
 
 1. Read this file first; verify the rubric still applies.
 2. For each file:
@@ -208,5 +168,6 @@ When resuming classification on the deferred 18 files:
    - Apply the rubric; record evidence
 3. Do not classify in batch without evidence per file.
 4. Surface NEEDS-HUMAN-REVIEW cases to Aaron in the tick close.
-5. Once all 23 files classified, pivot to the action phase (forward-sync
-   the NEEDS-FORWARD-SYNC subset, then hard-reset).
+5. Once `unclassified_lines = 0` in the trajectory ledger, pivot to the
+   action phase (forward-sync the NEEDS-FORWARD-SYNC subset, then
+   hard-reset).
