@@ -65,7 +65,7 @@ LFG org Code Security has 6 configurations. Configuration `244997` ("Code Scanni
 
 This `default_for_new_repos: "all"` policy auto-applies Code Scanning Default Setup to every LFG repo, including Zeta — even though no explicit attachment shows on the `repos/Zeta/code-security-configuration` endpoint. The auto-applied Default Setup spawns the GitHub-managed dynamic Code Quality run that fires `Analyze (python)` on PR diffs containing Python paths (whether or not the in-repo workflow's `paths-ignore` filter would skip them).
 
-PR #849's diff includes the two `tools/hygiene/*.py` scripts being deleted as part of the port → the dynamic run sees Python paths in the diff → tries to extract Python sources at repo root → fails because the `paths-ignore` filter is in `codeql-config.yml` (which the in-repo workflow honors) but the GitHub-managed dynamic run does not honor.
+PR #849's diff includes the two `tools/hygiene/*.py` scripts being deleted as part of the port → the dynamic run sees Python paths in the diff → tries to extract Python sources at repo root → fails because the `paths-ignore` filter is in `.github/codeql/codeql-config.yml` (which the in-repo workflow honors) but the GitHub-managed dynamic run does not honor.
 
 ### Branch protection on `main`
 
@@ -149,11 +149,10 @@ Squash-merge PR #849 as-is — under standing authority per the locked disciplin
 
 ## Composes with
 
-- `docs/research/2026-04-29-multi-ai-troubleshooting-mode-mixing-lane-discipline-trajectory-aggregator.md` (round 1)
-- `docs/research/2026-04-29-multi-ai-troubleshooting-round-2-deferred-note-destination-and-evidence-standards.md` (round 2)
+- Multi-AI troubleshooting round 1 + round 2 verbatim packets (parked on branch `research/multi-ai-troubleshooting-mode-mixing-2026-04-29`, not currently merged to main; that's where the locked discipline this investigation follows lives in verbatim form)
 - `memory/feedback_host_mutation_receipt_2026_04_29_ruleset_15256879_code_quality_removed.md` (PR #861 — earlier host mutation removed the ruleset-level code_quality severity rule; the `default_for_new_repos: "all"` policy is a different surface)
 - `.github/workflows/codeql.yml` (in-repo workflow with PR #857's per-language gate)
-- `.github/codeql-config.yml` (paths-ignore filter, honored by in-repo workflow but NOT by dynamic run)
+- `.github/codeql/codeql-config.yml` (paths-ignore filter, honored by in-repo workflow but NOT by dynamic run)
 
 ## Deferred notes
 
