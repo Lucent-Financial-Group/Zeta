@@ -41,10 +41,10 @@ Task: <ticket-id> | none
 What this gives us:
 1. **Per-commit attribution** — every commit on `main` since v1 ship date carries who/what/how-supervised.
 2. **Three-state classification at audit time** — LEGACY (pre-v1), CORRECT, REGRESSION, HUMAN-AUTHORED-EXEMPT.
-3. **PR-body pre-merge gate** — the trailer block is parsed and validated *before* merge; missing or malformed = block.
-4. **Post-merge tip auditor** — `audit-agencysignature-main-tip.sh` walks the tip and classifies each commit.
+3. **PR-body validator that *can be* a pre-merge gate** — `tools/hygiene/validate-agencysignature-pr-body.sh` parses the trailer block and exits non-zero on missing/malformed input. As of 2026-04-29 it is **not yet wired into a required CI/branch-protection check** under `.github/workflows/`; it is invoked manually or via local pre-commit. Wiring it as an enforced gate is its own follow-up (composes with the AgencySignature v1 squash-merge survival design, task #300).
+4. **Post-merge tip auditor** — `tools/hygiene/audit-agencysignature-main-tip.sh` walks the tip and classifies each commit. Same enforcement-status caveat: useful tool, not yet a required CI gate.
 5. **Trailer Contiguity Survival Failure (ferry-12)** awareness — squash-merge can strip trailers if the body's blank-line discipline is broken; the validator and auditor both check for this class.
-6. **Fail-open-with-receipts** policy (ferry-9/10) — when a trailer is malformed, we don't *block all merges* (the failure mode would freeze the factory); we record evidence, classify, and surface for review.
+6. **Fail-open-with-receipts** policy (ferry-9/10) — when a trailer is malformed, the design intent is to record evidence and classify rather than block all merges (the failure mode would freeze the factory). This policy lives in research docs; it composes with the wiring decision in (3).
 
 What this *doesn't* yet give us:
 - **Cryptographic verification** — the `Agent: aaron-mac/claude-code/coordinator` string is currently advisory. Nothing prevents another tool from writing the same trailer with a different identity in fact.
@@ -71,7 +71,8 @@ Credential-Mode                 →  binding strength (bound | unbound | shared)
 Human-Review                    →  policy gate (orthogonal to identity)
 Human-Review-Evidence           →  evidence pointer (orthogonal)
 Action-Mode                     →  capability mode (composes with capability set)
-Task                            →  claim_id (links commit to active claim)
+Task                            →  task / ticket pointer (preserves v1 meaning)
+Claim (v2-new)                  →  claim_id (links commit to active claim)
 ```
 
 ### Concrete example (proposed)
@@ -108,7 +109,7 @@ Task: 286
 Signed-By: ed25519:abc...         # cryptographic signature over trailer block
 ```
 
-The `Actor:` field is the path-style principal Claude.ai recommended (SPIFFE / IAM-shaped). The `Trust-Domain:` prefix gives explicit namespace. The `Capabilities:` field is the new primitive (replaces implicit role grants). The `Claim:` field links the commit to an active claim (which has its own allowlist + freshness invariant). The `Signed-By:` field provides the binding that Claude.ai called out as missing.
+The `Actor:` field is the path-style principal Claude.ai recommended (SPIFFE / IAM-shaped). The `Trust-Domain:` prefix gives explicit namespace. The `Capabilities:` field is the new primitive (replaces implicit role grants). The `Claim:` field carries the active claim identifier (`claim_id`), which has its own allowlist + freshness invariant. The `Task:` field remains the task / ticket pointer (preserves v1 meaning — Task references the upstream issue / TaskList ID; Claim references the orchestra claim record). The `Signed-By:` field provides the binding that Claude.ai called out as missing.
 
 ### What happens if the trailer is forged
 
@@ -145,10 +146,10 @@ If we were to build identity binding from scratch (Ed25519 keypairs, registry, s
 - have to migrate every existing post-v1 commit twice.
 
 By layering v4 on top of AgencySignature v1:
-- v1 readers continue working (they read `Agent:` and ignore unknown fields).
+- At the trailer-schema level, v1-style readers can continue working if they keep reading `Agent:` and ignore unknown fields.
 - v2 readers get the structured `Actor:` + `Capabilities:` + `Signed-By:` fields.
-- The v1 → v2 migration is additive (add `Trust-Domain:` and `Signed-By:`, optionally `Actor:` superseding `Agent:`).
-- The `audit-agencysignature-main-tip.sh` three-state classification can extend to a four-state (LEGACY / CORRECT-V1 / CORRECT-V2 / REGRESSION) without breaking existing buckets.
+- **However**, the **current** v1 enforcement scripts are not yet forward-compatible: `validate-agencysignature-pr-body.sh` requires `Agency-Signature-Version: 1` exactly and requires `Agent:` as a key. So a `Version: 2` trailer set (and especially replacing `Agent:` with `Actor:`) would currently *fail* validation. The validator + auditor must be updated **before** v2 trailers can pass enforcement.
+- The v1 → v2 migration is additive at the wire level, but the **rollout sequence** is: (a) update validator/auditor to accept `Agency-Signature-Version: 1|2`, (b) during the migration window, emit `Agent:` alongside `Actor:` rather than replacing immediately so existing v1 consumers continue to accept the trailer set, (c) extend the auditor's three-state classification to a four-state (LEGACY / CORRECT-V1 / CORRECT-V2 / REGRESSION) as part of the same rollout without collapsing the existing buckets, (d) once all consumers are v2-aware, drop the dual `Agent:` emission.
 - The fail-open-with-receipts policy from ferry-9 carries over: a forged-but-syntactically-valid trailer becomes a *recordable evidence event*, not an "everything stops" event.
 
 ---
