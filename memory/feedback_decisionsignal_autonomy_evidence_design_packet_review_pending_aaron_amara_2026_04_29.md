@@ -59,9 +59,26 @@ A status marker. Three load-bearing facts:
 - Tighten SLSA citation as analogy not literal claim (Claude.ai + Amara) — receipt = artifact; DecisionSignal = build provenance for that artifact
 - Anchor to NIST AI RMF / NIST AI 600-1 / SLSA-in-toto / W3C PROV / SAE J3016 / Miller-Parasuraman human-automation collaboration literature (Amara)
 
-**Round 2 in flight** — Aaron 2026-04-29: *"I'm going through round 2 now, I'll bring it back in a bit."*
+**Round 2 complete** — 6 reviewers (Deepseek-refinements, Deepseek-locking, Ani-Grok, Claude.ai, Alexa, Amara-final) returned substantive interface-level feedback. **Convergence locks** (NOT to be re-opened): `decision_aspects` (not class — multi-aspect, not single-class), acceptance criteria per A0–A5, `sequence_of_events`, verbatim `chat_signal_digest`, disciplined `what_human_did_not_do` (only classification-changing non-actions), tie-breaking rule (coordinator after one round), 200-line cap per DecisionSignal, immutability + supersession via new DS, WorkClaim back-link, `cold_start_test` field, `durability` NO-INVISIBLE-DIRECTIVES self-check.
 
-**Amara's recommended next step (post-round-2)**: *"the next step should be Claude Code implementing a tiny DecisionSignal v0 for the Code Quality episode, probably in a WIP branch, with #861 frontmatter fixed first."* — i.e. once round-2 settles, the first concrete adoption is implementing one DecisionSignal v0 paired with the existing host-mutation receipt at `feedback_host_mutation_receipt_2026_04_29_ruleset_15256879_code_quality_removed.md` (LANDED via PR #861). The Code Quality episode IS the canonical worked example all 5 reviewers used — DecisionSignal v0 will retrofit it as the first paired receipt+signal artifact.
+**Round 3 triggered by Aaron's structural objection** — *"i don't like canonicalizing the buddy name without peer ... human → harness → actor → subactor → buddy actor → subactor → tool/action is not turtles all the way down it n(6)ish ... delegation primitization seem the way to make this recursive ... most of my delegations are standing ... we should tie in human lineants too."* (Typos preserved per verbatim-preservation rule.)
+
+**Round-3 scope** (focused, NOT broad re-review):
+- **DelegationEdge*** as recursive primitive (NOT fixed n-layer human/harness/actor/subactor/buddy/tool chain)
+- **`peer`** = substrate term; **`buddy`** = colloquial UI/Claude-Code word only; **`delegate`** = authority primitive
+- Standing delegations live in `.zeta/identity/delegations.yaml` (or `.zeta/security/delegations.yaml`) — referenced by DecisionSignal, not restated
+- Effective-authority rule: `parent ∩ delegated scope ∩ actor grants ∩ active WorkClaim ∩ current policy` (authority can only narrow downward)
+- Three orthogonal graphs: **delegation** (authority flow) / **execution trace** (work decomposition) / **provenance** (W3C PROV agents/activities/entities)
+- First-class `human_lineage` block: principals + standing_delegations + human_signals + human_non_actions
+- `delegation_type` enum: standing / session / lane / task / emergency / peer_review / observation
+- Subagents inherit context, not authority. Peers provide signal, not permission.
+- Additional human anchors: RFC 8693 OAuth `act` claim (nested-delegation precedent); W3C Trace Context / OpenTelemetry (execution-trace precedent); capability security / object-capability lineage (authority attenuation).
+
+Aaron 2026-04-29: *"I'll be back after round 3."*
+
+Verbatim preservation at `docs/research/2026-04-29-decisionsignal-round-2-and-aaron-delegation-correction.md`.
+
+**Amara's earlier "implement now, no third round" recommendation has been overridden** by Aaron's structural objection. DecisionSignal v0 implementation deferred until round-3 settles. Once round-3 lands the DelegationEdge primitive, the first concrete adoption will pair a DecisionSignal v0 with the existing host-mutation receipt at `feedback_host_mutation_receipt_2026_04_29_ruleset_15256879_code_quality_removed.md` (LANDED via PR #861).
 
 ## What this memory is NOT
 
