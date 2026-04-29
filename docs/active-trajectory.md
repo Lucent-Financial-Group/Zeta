@@ -96,7 +96,13 @@ The maintainer 2026-04-29T09:51Z framing was: *"pip-install is wrong, uv we deci
 
 LFG installs semgrep via `install.sh` three-way-parity. The `pipx:semgrep` pin in `.mise.toml` routes through `uv tool install` since `uv = "0.11.8"` is in the toolchain — see `docs/DECISIONS/2026-04-27-uv-canonical-python-tool-manager.md` for the canonical form.
 
-AceHack's extra `tools/tla` / `tools/alloy` cache paths are already on LFG in the `Cache verifier jars (TLC + Alloy)` step. The retry-attempts logic (`for attempt in 1 2 3 4 5; do`) is identical on both sides; the only diff is comment wording (AceHack has legacy agency-framing wording — the kind the no-directives lint catches; LFG uses maintainer-input phrasing).
+AceHack's extra `tools/tla` / `tools/alloy` cache paths are already on LFG in the `Cache verifier jars (TLC + Alloy)` step.
+
+The retry-attempts logic (`for attempt in 1 2 3 4 5; do`) is identical on both sides.
+
+The only remaining diff is comment-wording register: AceHack's prose carries the legacy agency-framing form (the kind the no-directives lint catches).
+
+LFG's prose uses maintainer-input phrasing.
 
 Hard-reset removes the wrong-per-decision pip path, gains the canonical uv path, and cleans the lint-tripping prose register.
 
