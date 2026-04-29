@@ -135,21 +135,47 @@ caught missing content in the reset-readiness claim.
 ### Required content-equivalence audit (BEFORE any hard-reset)
 
 ```bash
-# Both checks required for safety:
+# All categories required for safety. Use --find-renames so
+# moved/copied content isn't misclassified as
+# "AceHack-only" or "deleted":
 
-# (1) Files present only on AceHack (not on LFG)
-git diff --name-status --diff-filter=A origin/main..acehack/main
+# (1) Comprehensive status across all relevant categories
+#     A=added (AceHack-only path)
+#     C=copied (content reused under new path)
+#     M=modified (shared path with possibly-unique content)
+#     R=renamed (moved content; compare by content, not path)
+#     T=type change (symlink vs file etc.; inspect manually)
+#     (D=deleted is intentionally omitted — deletion alone
+#     is not content loss going LFG→AceHack direction; if
+#     the deletion is intentional drop, classify so.)
+git diff --name-status --find-renames --diff-filter=ACMRT \
+  origin/main..acehack/main
 
-# (2) Shared files MODIFIED on AceHack (may contain unique content)
+# (2) Numstat for shared MODIFIED files (sizing the audit)
 git diff --numstat --diff-filter=M origin/main..acehack/main
 
-# Then for each modified shared path, content-compare:
+# (3) For each shared / renamed / copied path, content-compare:
 git diff origin/main..acehack/main -- <path>
 
-# And test reachability of each candidate SHA:
+# (4) Test reachability of each candidate SHA:
 git merge-base --is-ancestor <sha> origin/main  # 0=ancestor, 1=not
 git merge-base --is-ancestor <sha> acehack/main
 ```
+
+**Plumbing-vs-porcelain (when this becomes scripted tooling):**
+human auditors are fine with `git diff` (porcelain). When
+this audit graduates to a CI tool or shell script, prefer
+`git diff-tree -r --name-status --find-renames --diff-filter=ACMRT
+origin/main acehack/main` (plumbing) — output is more stable
+and immune to user `core.*` config interference. Alternatively
+add `git -c core.quotepath=false diff --no-ext-diff …`
+for predictable byte sequences.
+
+**Inverse of "same path is not same substrate":** different
+path can still be same substrate. R/C status entries (renamed
+/ copied) require content comparison, not path equality. Don't
+over-flag a moved file as content-loss when its content lives
+under a new path on LFG main.
 
 ### Required classification per unforwarded substantive PR
 
