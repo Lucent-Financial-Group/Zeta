@@ -153,7 +153,9 @@ Hard-reset is signoff-eligible ONLY when:
 unclassified_lines                       = 0
 unsafe_lines                             = 0
 binary_acehack_only_files                = 0  (would be ERASED on hard-reset)
-binary_modified_or_renamed_classified    = all  (each must be SAFE_TO_RESET_LFG_SUPERSEDES or NEEDS_FORWARD_SYNC)
+binary_modified_or_renamed_unclassified  = 0  (each must have a classification verdict)
+binary_files_needing_forward_sync        = 0  (NEEDS_FORWARD_SYNC requires forward-sync FIRST)
+binary_files_needing_human_decision      = 0  (NEEDS_HUMAN_DECISION requires maintainer call)
 fresh-clone fsck                         = clean
 hard-reset preflight                     = clean
 ls-remote-vs-fetch SHA match             = verified
