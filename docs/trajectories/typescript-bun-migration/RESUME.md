@@ -28,17 +28,7 @@ After PR #849, Zeta has zero Python files in `tools/` (Zeta-authored — the 22 
 
 ## Inventory — Bash (tools/, Zeta-authored, 56 files)
 
-Three buckets per the multi-AI review surface's classification ask.
-
-**Count correction history** (recorded so future readers don't hit conflicting figures):
-
-- Prior chat estimates: "~68 .sh files" — included `tools/lean4/.lake/packages/...` upstream content (mathlib, proofwidgets), out of scope.
-- Initial RESUME claim: 55 — also wrong, off by one due to a manual miscount.
-- **Verified count: 56** (this revision). Computed by stable repo-derived command:
-  `git ls-files tools/ | grep '\.sh$' | wc -l`
-  — independently re-run by an automated reviewer on PR #865, who caught the off-by-one. (The earlier `find ... grep -v ".lake/"` form depended on whether `.lake/` was present in the working tree, which varies by local state. `git ls-files` is repo-derived and stable.)
-
-This is the "tested means enforcement-surface-matches-failure-surface" rule firing — a reviewer's mechanical re-verification caught the count error in the same revision that introduced the "counts before percentages" rule. Recording the lineage here as evidence the rule works.
+Three buckets per the multi-AI review surface's classification ask. Count is repo-derived and stable: `git ls-files tools/ | grep '\.sh$' | wc -l` returns 56.
 
 ### Bucket A — Should stay Bash (14 files)
 
