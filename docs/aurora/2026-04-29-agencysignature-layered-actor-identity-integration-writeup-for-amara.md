@@ -39,6 +39,7 @@ Task: <ticket-id> | none
 ```
 
 What this gives us:
+
 1. **Per-commit attribution** — every commit on `main` since v1 ship date carries who/what/how-supervised.
 2. **Three-state classification at audit time** — LEGACY (pre-v1), CORRECT, REGRESSION, HUMAN-AUTHORED-EXEMPT.
 3. **PR-body validator that *can be* a pre-merge gate** — `tools/hygiene/validate-agencysignature-pr-body.sh` parses the trailer block and exits non-zero on missing/malformed input. As of 2026-04-29 it is **not yet wired into a required CI/branch-protection check** under `.github/workflows/`; it is invoked manually or via local pre-commit. Wiring it as an enforced gate is its own follow-up (composes with the AgencySignature v1 squash-merge survival design, task #300).
@@ -47,6 +48,7 @@ What this gives us:
 6. **Fail-open-with-receipts** policy (ferry-9/10) — when a trailer is malformed, the design intent is to record evidence and classify rather than block all merges (the failure mode would freeze the factory). This policy lives in research docs; it composes with the wiring decision in (3).
 
 What this *doesn't* yet give us:
+
 - **Cryptographic verification** — the `Agent: aaron-mac/claude-code/coordinator` string is currently advisory. Nothing prevents another tool from writing the same trailer with a different identity in fact.
 - **Trust-domain prefix** — identifiers don't yet declare which namespace they live in (zeta vs zeta-external vs zeta-system).
 - **Per-actor public-key registry** — there's no `actors/<actor_id>.yaml` file declaring "this actor's public key fingerprint is X."
@@ -116,6 +118,7 @@ The `Actor:` field is the path-style principal Claude.ai recommended (SPIFFE / I
 Today: nothing. The `Agent:` string is advisory.
 
 Under v4 with binding:
+
 1. PR-body validator extracts `Actor:` and `Signed-By:`.
 2. Reconciler looks up `actors/zeta-aaron-mac-claude-code-coordinator.yaml` (or equivalent registry path) for the registered public key fingerprint.
 3. Validator computes the expected signature over the canonical trailer-block bytes and compares against `Signed-By:`.
@@ -141,11 +144,13 @@ This composes with the existing AceHack/LFG dual-fork model: AceHack remains the
 ## Why this beats "build a parallel binding system"
 
 If we were to build identity binding from scratch (Ed25519 keypairs, registry, signature verification) **separately** from AgencySignature, we'd:
+
 - duplicate the per-commit attribution work,
 - have two competing identity schemes (which one wins?),
 - have to migrate every existing post-v1 commit twice.
 
 By layering v4 on top of AgencySignature v1:
+
 - At the trailer-schema level, v1-style readers can continue working if they keep reading `Agent:` and ignore unknown fields.
 - v2 readers get the structured `Actor:` + `Capabilities:` + `Signed-By:` fields.
 - **However**, the **current** v1 enforcement scripts are not yet forward-compatible: `validate-agencysignature-pr-body.sh` requires `Agency-Signature-Version: 1` exactly and requires `Agent:` as a key. So a `Version: 2` trailer set (and especially replacing `Agent:` with `Actor:`) would currently *fail* validation. The validator + auditor must be updated **before** v2 trailers can pass enforcement.
@@ -169,6 +174,7 @@ Does Amara want to recommend a specific binding primitive (Ed25519 keys + signed
 ### Ask 3 — the AgencySignature v1 → v2 migration window
 
 If we extend AgencySignature to carry actor-identity + capability fields, when does v2 ship? Options:
+
 - **Tight coupling**: v2 ships with the first identity-binding PR. All new commits adopt v2; v1 commits become "LEGACY-V1" (still CORRECT, just lower-detail).
 - **Loose coupling**: v2 ships separately; coexists with v1 for a defined window; deprecation date on v1 announced upfront.
 
