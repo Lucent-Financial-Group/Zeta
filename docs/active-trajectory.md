@@ -118,7 +118,7 @@ The ledger is computed in two passes (text via `numstat`, binary direction via `
 
 The durable home for the gate-runner is `tools/zero-zero-zero/check-gate.sh` (deferred follow-up, see "Deferred follow-ups" below). That script must be tested against fixtures including: paths with spaces, binary add, binary delete, binary modify, binary rename, binary copy, gawk-vs-BSD-awk.
 
-**Stopgap rule for this round**: if `binary_modified_files` is non-zero in this ledger, do NOT rely on the inline snippet to classify direction. Use `git diff --name-status -z origin/main..acehack/main -- <path>` per binary file + direct `git show` evidence, manually, until the gate-runner script exists.
+**Stopgap rule for this round**: if either `binary_acehack_only_files > 0` OR `binary_modified_or_renamed_files > 0` in this ledger (the two gate-relevant binary metrics emitted by the new script), do NOT rely on the inline snippet to classify direction. Use `git diff --name-status -z origin/main..acehack/main -- <path>` per binary file + direct `git show` evidence, manually, until the gate-runner script exists. (`binary_lfg_only_files > 0` is NOT a stopgap trigger — LFG-only files get added on hard-reset; no AceHack content lost.)
 
 ```bash
 # Pass 1: text files (numstat reports lines)
