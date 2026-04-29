@@ -4,12 +4,14 @@
 // order.
 //
 // TypeScript+Bun port of the prior Python implementation, per the
-// Aaron + Amara 2026-04-29 directive to canonicalize on TS+Bun for
-// tooling (memory: feedback_typescript_bun_default_step_out_carefully_aaron_2026_04_28.md).
+// 2026-04-29 directive to canonicalize on TS+Bun for tooling. See
+// memory/feedback_typescript_bun_default_step_out_carefully_aaron_2026_04_28.md
+// for the substrate decision (filename retains the date-stamp slug per
+// memory/* convention; in-code references should use role-refs).
 // Behavior is preserved bit-for-bit against the Python source — see
 // the equivalence-check protocol in B-0086.
 //
-// Why this exists (Aaron 2026-04-26):
+// Why this exists (per maintainer 2026-04-26):
 //     "maybe this should be substraite built in instead of dynamic python"
 //
 // What this does:
@@ -399,5 +401,7 @@ async function main(): Promise<number> {
   return 0;
 }
 
-const code = await main();
-process.exit(code);
+// Set process.exitCode (instead of process.exit) so pending stdout/
+// stderr writes flush before the process terminates. Mirrors the
+// tally.ts pattern.
+process.exitCode = await main();

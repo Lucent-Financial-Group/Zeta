@@ -9,12 +9,12 @@
 //
 // Language choice: bun + TypeScript per
 // `docs/DECISIONS/2026-04-20-tools-scripting-language.md`. Replaces the
-// prior Python implementation per the Aaron + Amara 2026-04-29 directive
-// to canonicalize on TS+Bun for tooling. Behavioural equivalence with
+// prior Python implementation per the 2026-04-29 directive to
+// canonicalize on TS+Bun for tooling. Behavioural equivalence with
 // the (now-retired) Python source is verified via the protocol in
 // B-0086.
 //
-// Why this exists (Aaron 2026-04-26):
+// Why this exists (per maintainer 2026-04-26):
 //     "in python shape should be a queue that we are missing substraight
 //      primitives"
 //
@@ -448,4 +448,7 @@ async function main(): Promise<number> {
   return 0;
 }
 
-process.exit(await main());
+// Set process.exitCode (instead of process.exit) so pending stdout/
+// stderr writes flush before the process terminates. Mirrors the
+// tally.ts pattern.
+process.exitCode = await main();
