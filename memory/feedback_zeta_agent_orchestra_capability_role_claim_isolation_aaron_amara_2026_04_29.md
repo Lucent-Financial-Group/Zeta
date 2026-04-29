@@ -358,10 +358,10 @@ The layers:
 - `host_id` — which machine or environment (e.g. `aaron-mac`, `aaron-windows`, `github-actions`)
 - `harness_id` — which runtime (e.g. `claude-code`, `codex-cli`, `gemini-cli`, `cursor`)
 - `role_id` — what it's allowed to do (e.g. `coordinator`, `git-expert`, `docs-worker`, `typescript-steward`, `patch-peer`, `review-peer`)
-- `actor_id` — stable combination of the four above (e.g. `aaron-mac/claude-code/coordinator`)
+- `actor_id` — stable combination of the four above (e.g. `zeta://aaron-mac/claude-code/coordinator` — note the `zeta://` trust-domain prefix is required per the v4 binding rule below; v3 originally introduced the unprefixed form `aaron-mac/claude-code/coordinator`, which v4 supersedes)
 - `session_id` — temporary launch identity (e.g. `2026-04-29T17-xxZ-uuid`)
 
-Examples:
+Examples (canonical v4 form with trust-domain prefix):
 
 ```yaml
 # Aaron's Mac running Claude Code as coordinator
@@ -369,7 +369,7 @@ maintainer_id: aaron
 host_id: aaron-mac
 harness_id: claude-code
 role_id: coordinator
-actor_id: aaron-mac/claude-code/coordinator
+actor_id: zeta://aaron-mac/claude-code/coordinator
 session_id: 2026-04-29T17-xxZ-uuid
 
 # Aaron's Windows machine running Codex CLI as patch-only peer
@@ -377,11 +377,14 @@ maintainer_id: aaron
 host_id: aaron-windows
 harness_id: codex-cli
 role_id: patch-peer
-actor_id: aaron-windows/codex-cli/patch-peer
+actor_id: zeta://aaron-windows/codex-cli/patch-peer
 
-# A different harness filling the same pinned role on a different host
+# A different harness filling the same pinned role on a different host (full record per the four-axis rule)
+maintainer_id: maintainer2
+host_id: maintainer2-linux
+harness_id: gemini-cli
 role_id: git-expert
-actor_id: maintainer2-linux/gemini-cli/git-expert
+actor_id: zeta://maintainer2-linux/gemini-cli/git-expert
 ```
 
 The host/harness/role separation is load-bearing because a single host might run many harnesses with different trust profiles:
@@ -780,7 +783,7 @@ The v2/v3/v4 corrections above are **doctrine constraints**, not operational imp
 
 ## v4 review-driven additions (2026-04-29 second multi-AI review)
 
-After v3 (layered actor identity + public claim intake) landed in PR #852, five reviewers (Deepseek, Gemini, Ani, Alexa, Claude.ai) reviewed v3; Amara synthesized v4. The biggest correction: **identity strings without binding are theater.** A string like `aaron-mac/claude-code/coordinator` is meaningful for audit only if something prevents impersonation. v4 adds the binding layer + reorders rollout to put identity primitives before public intake.
+During the v3 draft in PR #852 (layered actor identity + public claim intake), five reviewers (Deepseek, Gemini, Ani, Alexa, Claude.ai) re-reviewed and Amara synthesized v4 mid-flight before merge. The biggest correction: **identity strings without binding are theater.** A string like `aaron-mac/claude-code/coordinator` is meaningful for audit only if something prevents impersonation. v4 adds the binding layer + reorders rollout to put identity primitives before public intake.
 
 ### Identity needs binding — the missing v3 layer
 
@@ -789,7 +792,7 @@ After v3 (layered actor identity + public claim intake) landed in PR #852, five 
 Claude.ai catch: *"`aaron-mac/claude-code/coordinator` is meaningful for audit only if something prevents impersonation. Today, anything with the right config can claim to be that actor."*
 
 **v4 binding requirement**:
-- Every actor has a registry entry under `actors/<encoded-actor-id>.yaml`. Filename encoding must be cross-platform safe (no `/`, `:`, or `.well-known` chars that fail on Windows). Canonical encoding: replace `://` with `--`, `/` with `_`, lowercase the result. Example: `zeta://aaron-mac/claude-code/coordinator` → `actors/zeta--aaron-mac_claude-code_coordinator.yaml`. The registry record itself carries the original `actor_id:` field as the canonical string (filename is the lookup key, not the source of truth for the ID).
+- Every actor has a registry entry under `actors/<encoded-actor-id>.yaml`. Filename encoding must be cross-platform safe: no path separators and no Windows-forbidden filename characters (`:`, `/`, `\`, `*`, `?`, `"`, `<`, `>`, `|`); the encoded basename must not end with a dot or space; and must not equal a Windows reserved device name (`CON`, `PRN`, `AUX`, `NUL`, `COM1`-`COM9`, `LPT1`-`LPT9`). Canonical encoding: replace `://` with `--`, `/` with `_`, lowercase the result. Example: `zeta://aaron-mac/claude-code/coordinator` → `actors/zeta--aaron-mac_claude-code_coordinator.yaml`. The registry record itself carries the original `actor_id:` field as the canonical string (filename is the lookup key, not the source of truth for the ID).
 - Registry declares public key fingerprint (Ed25519 preferred; GitHub-native commit verification as MVP fallback).
 - Privileged mutations must be attributable to a bound actor.
 - Reconciler verifies signature/identity binding before trusting any claim mutation.
