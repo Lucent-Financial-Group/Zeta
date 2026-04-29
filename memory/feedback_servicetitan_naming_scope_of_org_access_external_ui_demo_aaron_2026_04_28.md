@@ -328,14 +328,23 @@ forward.
 When tempted to write "ServiceTitan" in a code path, sample
 directory, demo name, public doc, or commit message:
 
-1. Stop. Use a generic alternative ("external UI demo",
-   "external CRM API demo", etc.).
-2. If the context genuinely requires the brand name (funding-
-   chain disclosure, org-access scope), keep it precise and
-   in a structural-disclosure context — not in code/demo/
-   sample naming.
-3. Audit nearby files; if the term appears, file it on the
-   B-0091 audit-and-rename queue.
+1. **Check the context first**, per the context-sensitive rule
+   above. ServiceTitan IS the right name when the artifact is
+   in pitch / research / target-audience / funding-chain
+   disclosure / org-access scope context. ServiceTitan is the
+   wrong name when the artifact is reusable code / generic
+   sample / external-customer positioning.
+2. **For reusable / generic context:** use a generic
+   alternative ("external UI demo", "external CRM API demo",
+   "third-party-API demo", etc.).
+3. **For pitch / research / disclosure context:** name them
+   precisely; preserve the brand-target. The pitch IS for
+   ServiceTitan's CRM team; saying "external UI demo" in a
+   pitch doc would dilute the actual target.
+4. **Audit nearby files** when uncertain; the per-row
+   classification (per B-0091's KEEP-NAME / GENERICIZE /
+   HISTORICAL-POINTER terminal states) tells you the right
+   action for each file.
 
 When asked "what's Aaron's day job":
 

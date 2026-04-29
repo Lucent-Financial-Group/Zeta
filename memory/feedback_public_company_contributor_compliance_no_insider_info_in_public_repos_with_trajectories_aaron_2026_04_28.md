@@ -166,8 +166,12 @@ On round-close or quarterly cadence:
   selective disclosure of material non-public information).
 - **Sarbanes-Oxley Act of 2002** — sets out compliance
   obligations for publicly-traded companies, including
-  whistleblower protections AND prohibitions on retaliation
-  + selective disclosure surfaces.
+  internal controls (§404), whistleblower protections (§806),
+  and document-retention / audit-trail requirements. SOX does
+  NOT govern selective disclosure — that's Reg FD's domain
+  (cited above). The two compose: SOX shapes the
+  control-and-disclosure environment; Reg FD prohibits
+  selective leak of MNPI within that environment.
 - **Industry compliance practice** — at every publicly-
   traded company, employees are trained that information
   not in public filings is confidential by default.

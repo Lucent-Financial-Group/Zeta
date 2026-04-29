@@ -61,11 +61,19 @@ safe operational name (Stop Mythology).
 
 The original "bullshit detector" term remains preserved in:
 
-- Research docs (`docs/research/provenance-aware-bullshit-detector-*`)
-- Aurora ferries 7/8/9/10 (research substrate, not renamed)
-- The 8th-ferry memory (`memory/project_amara_8th_ferry_*_bullshit_detector_*`)
-- Casual / commit-message usage (Aaron invented it; not scrubbed)
-- The graduation memory (which records the rename rationale)
+- Research docs under `docs/research/` covering the
+  provenance-aware detector lineage (filename pattern
+  date-stamped; grep for "bullshit-detector" to find the
+  current set, since the set grows over time)
+- Aurora ferries 7/8/9/10 under `docs/aurora/`
+  (research substrate, not renamed)
+- 8th-ferry memory entries under `memory/` for ferry-specific
+  detector discussion (grep "8th_ferry" for current paths)
+- Casual / commit-message usage (Aaron invented it; not
+  scrubbed)
+- The graduation memory
+  (`memory/feedback_veridicality_naming_for_bullshit_detector_graduation_aaron_concept_origin_amara_formalization_2026_04_24.md`)
+  — records the rename rationale
 
 ## Three-tier evidence threshold
 
