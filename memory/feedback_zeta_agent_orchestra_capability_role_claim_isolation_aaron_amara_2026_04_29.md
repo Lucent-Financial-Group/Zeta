@@ -770,12 +770,12 @@ The v2/v3/v4 corrections above are **doctrine constraints**, not operational imp
 - **Do not land monolith** — the orchestra is a regime-change design, not a quick config file. Each layer (0 → 5) is its own PR with its own validation gate.
 - **Conflict resolution required before claims become operational** — first-claim-wins-by-timestamp + high-risk-coordinator-approval is the rule, but it's not enforced anywhere yet.
 - **CI enforcement required before claims become trusted** — Layer 3 cannot be deferred indefinitely. Without `PR-changed-files ⊆ allowlist` mechanically enforced, the protocol is agent discipline (which has already been proven insufficient).
-- **Actor identity and revocation required before multi-maintainer use** — stable actor IDs separate from session IDs; kill-switch downgrade path. Now specified at the doctrine level by the v3 layered-actor-identity section above (`maintainer_id / host_id / harness_id / role_id / actor_id / session_id`); not yet implemented (no actors registry, no signed binding). Implementation gates: tasks #325 + #335.
+- **Actor identity and revocation required before multi-maintainer use** — stable actor IDs separate from session IDs; kill-switch downgrade path. Now specified at the doctrine level by the v3 layered-actor-identity section above (`maintainer_id / host_id / harness_id / role_id / actor_id / session_id`); not yet implemented (no actors registry, no signed binding). Implementation gates: TaskList #325 (Layer 0/1 spec) + the actor-identity-binding follow-up (TaskList #335 in this session; will graduate to a GitHub issue ID on land).
 - **Maintainer governance unresolved** — who can add/revoke maintainers, who can grant capabilities, how the maintainer set is itself governed. Aaron is provisional sole authority until governance lands.
 - **Windows write mode requires bootstrap/preflight** — `WINDOWS.md` (or AGENTS.md section) declaring shell, line endings, path normalization, case-sensitivity acknowledgment. Not yet present.
 - **Coordinator remains human-filled until proven safe** — `human_required: true` on the coordinator role. Cannot be flipped without successful dry-run demonstrating autonomous claim-board management without drift.
 - **Layer 3 enforcement cannot be deferred indefinitely** — flagged here so future rounds don't quietly defer it past the point where the protocol gets used in earnest.
-- **Public intake layer required before strangers can contribute safely** — Claim Request ≠ Active Claim distinction; CONTRIBUTING.md + AGENTS.md autonomous-agent intake block + .github/ISSUE_TEMPLATE/claim_request.yml + reconciler tool + safety levels E0-E5 + high-risk file class block. None of these surfaces exist yet (all `[planned]`); without them, an autonomous agent discovering the repo on GitHub has no safe entrypoint and will either over-reach or be turned away.
+- **Public intake layer required before strangers can contribute safely** — Claim Request ≠ Active Claim distinction; CONTRIBUTING.md + AGENTS.md autonomous-agent intake block + `.github/ISSUE_TEMPLATE/claim_request.yml` + reconciler tool + safety levels E0-E5 + high-risk file class block. The required claim-intake *content* across these surfaces is not in place yet (some container files like `CONTRIBUTING.md` and `AGENTS.md` exist; the intake-specific additions remain `[planned]`); without those additions, an autonomous agent discovering the repo on GitHub has no safe entrypoint and will either over-reach or be turned away.
 - **Layered actor identity required before multi-host operation** — `maintainer_id / host_id / harness_id / role_id` separation. "Mac agent" / "Windows agent" is too coarse (collapses trust boundaries); per-session is too fine (drowns audit trails). The four-axis split is the load-bearing precision.
 
 ## v4 review-driven additions (2026-04-29 second multi-AI review)
@@ -804,7 +804,7 @@ Actor: zeta://aaron-mac/claude-code/coordinator
 Signed-By: ed25519:abc...
 ```
 
-v1 readers ignore unknown fields; v2 readers verify the signature against the registry. Migration is additive (no parallel system). Full integration analysis: `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`.
+v1 readers ignore unknown fields; v2 readers verify the signature against the registry. Migration is additive (no parallel system). Full integration analysis is on its way in PR #853 (file path `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md` — `[planned]` until that PR merges).
 
 ### Trust-domain prefix on every actor_id
 
@@ -894,9 +894,9 @@ Without the distinction, a claim sitting in triage looks identical to one that w
 
 ### Claim requests auto-expire
 
-**Status**: *Active doctrine; mechanism implemented in reconciler.*
+**Status**: *Active doctrine; reconciler must enforce this once implemented.* (The reconciler itself is `[planned]` per the task #333 entry; the auto-expire requirement lives in doctrine here so it lands in the reconciler at first implementation.)
 
-External agents that file claim requests need a time-bounded expectation. Rule: **claim requests auto-expire after N days without maintainer response.** The form tells the requester upfront: *"Your request will expire on [date] if no maintainer responds."*
+External agents that file claim requests need a time-bounded expectation. Rule: **claim requests auto-expire after N days without maintainer response.** The claim-request form tells the requester upfront: *"Your request will expire on [date] if no maintainer responds,"* and the reconciler must apply that expiry when this pathway is implemented.
 
 Without auto-expiration, claim requests pile up and the queue becomes ambiguous (Deepseek catch).
 
