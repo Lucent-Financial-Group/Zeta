@@ -28,18 +28,33 @@ ambiguity rule.
 
 ### Option A — Lint that verifies claimed ordinals against file order
 
+Two viable boundary patterns:
+
 ```bash
-# Pseudocode. Uses POSIX-portable boundary matching since grep -E
-# on GNU/BSD does NOT support \b (treated as backspace/undefined
-# escape). Use a portable boundary: anchor on (^|[^[:alpha:]])
-# and ([^[:alpha:]]|$), or use grep -w (POSIX -w "match whole
-# word"), which both BSD and GNU grep support.
+# (a) GNU/BSD-common — `grep -w` (whole-word match). Supported on
+# both GNU grep and BSD/macOS grep, but NOT a strict POSIX
+# guarantee. Works on every realistic 4-shell target
+# (macOS bash 3.2 / Ubuntu / git-bash / WSL).
 for file in $(ls -1 docs/hygiene-history/ticks/YYYY/MM/DD/*.md | sort); do
   claimed_ordinal=$(grep -woE '(first|second|...|thirtieth|...)' "$file" | head -1)
   expected_ordinal=$(compute_from_file_position)
   [[ "$claimed_ordinal" == "$expected_ordinal" ]] || warn "$file ordinal mismatch"
 done
+
+# (b) Strict POSIX-portable boundary — explicit non-alpha
+# anchors. Use this if cross-shell portability is the priority.
+# Note: \b on `grep -E` is non-portable on GNU/BSD (treated as
+# backspace / undefined escape).
+for file in $(ls -1 docs/hygiene-history/ticks/YYYY/MM/DD/*.md | sort); do
+  claimed_ordinal=$(grep -oE '(^|[^[:alpha:]])(first|second|...|thirtieth|...)([^[:alpha:]]|$)' "$file" | head -1)
+  expected_ordinal=$(compute_from_file_position)
+  [[ "$claimed_ordinal" == *"$expected_ordinal"* ]] || warn "$file ordinal mismatch"
+done
 ```
+
+(Option (a) is shorter; option (b) is the strict-portable path.
+Both are documented so the implementing contributor can pick
+based on their portability priority.)
 
 Pros: keeps the prose readable.
 Cons: still depends on prose, just with a guard.
