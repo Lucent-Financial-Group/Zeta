@@ -189,7 +189,7 @@ Per multi-AI review 2026-04-29T10:35Z: dry-run push shape verification is added 
 
 Lease rejection on the real push is NOT a retry condition. It means the remote moved between observation and push — restart the safety gate from the top (re-fetch, recompute content-drift ledger, re-classify if anything moved).
 
-**Currently NOT signoff-eligible**: 176 unclassified lines remain (18 files in HEURISTIC_LFG_DOMINATES).
+**Currently NOT signoff-eligible**: see the live ledger above (`unclassified_lines`, `HEURISTIC_LFG_DOMINATES` row count). The four-bucket ledger is the single source of truth for classification progress; downstream prose paragraphs are no longer hand-maintained synonyms of the ledger.
 
 ### 9 infra files (verified 2026-04-29T09:50Z against current git state, NOT against the 16h-old plan)
 
@@ -381,7 +381,7 @@ A peer-call to Grok this session reported the inverse claim ("AceHack has the se
 
 ## Next action
 
-**Hard-reset is NOT YET signoff-eligible.** The strict gate above requires `unclassified_lines = 0`, and the current ledger says `unclassified_lines = 176` (18 files in HEURISTIC_LFG_DOMINATES). The next agent-owned work is per-file semantic inspection of those 18 files to either promote each to SAFE_TO_RESET_LFG_SUPERSEDES (with named evidence) or downgrade to NEEDS_FORWARD_SYNC.
+**Hard-reset is NOT YET signoff-eligible.** The strict gate above requires `unclassified_lines = 0`. The live four-bucket ledger above is the source of truth for the current count; the remaining files are listed in the `unclassified_lines` composition block. The next agent-owned work is per-file semantic inspection of each remaining file to either promote each to SAFE_TO_RESET_LFG_SUPERSEDES (with named evidence) or downgrade to NEEDS_FORWARD_SYNC.
 
 ### Deferred follow-ups (NOT blocking 0/0/0 progress, captured for visibility)
 
@@ -395,7 +395,7 @@ Per multi-AI review 2026-04-29T10:50Z packet:
 State summary:
 
 - 9 infra files: SAFE_TO_RESET_LFG_SUPERSEDES (6 files, 97 lines, named evidence) or ALREADY_RESOLVED (3 files, 0 lines, identical content).
-- 18 files in HEURISTIC_LFG_DOMINATES (176 lines, line-ratio dominance only — NOT proof per the strict bucket rule).
+- HEURISTIC_LFG_DOMINATES files remain (line-ratio dominance only — NOT proof per the strict bucket rule). Live count + per-file enumeration in the four-bucket ledger above.
 - Branch / worktree / stash preflight: hard-reset of `acehack/main` does not modify these refs.
 - Pack corruption found in local clone, **fresh clone passes fsck clean → corruption is local-only, remote intact**.
 - Local clone frozen as forensic evidence. All future destructive work happens from `/tmp/zeta-clean-2026-04-29/lfg`.

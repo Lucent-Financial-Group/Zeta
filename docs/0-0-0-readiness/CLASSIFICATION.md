@@ -1,8 +1,8 @@
 ---
 title: AceHack/LFG 0/0/0 Reconciliation — file-level classification
-status: in-progress (calibration batch)
+status: in-progress (batch 1 landed; ~139 lines / 11 files remain unclassified)
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-04-29
 ---
 
 # 0/0/0 Reconciliation — file-level classification
