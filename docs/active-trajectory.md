@@ -120,51 +120,13 @@ The durable home for the gate-runner is `tools/zero-zero-zero/check-gate.sh` (de
 
 **Stopgap rule for this round**: if either `binary_acehack_only_files > 0` OR `binary_modified_or_renamed_files > 0` in this ledger (the two gate-relevant binary metrics emitted by the new script), do NOT rely on the inline snippet to classify direction. Use `git diff --name-status -z origin/main..acehack/main -- <path>` per binary file + direct `git show` evidence, manually, until the gate-runner script exists. (`binary_lfg_only_files > 0` is NOT a stopgap trigger — LFG-only files get added on hard-reset; no AceHack content lost.)
 
-```bash
-# Pass 1: text files (numstat reports lines)
-git diff --numstat -z origin/main..acehack/main \
-  | awk -v RS='\0' '
-      $1 != "-" && $2 != "-" {
-        add += $1; del += $2; files += 1
-        if ($1 == 0) zero_files += 1
-      }
-      END {
-        print "text_modified_files=" files
-        print "zero_acehack_only_text_files=" zero_files
-        print "potential_loss_lines=" add
-        print "lfg_newer_lines=" del
-      }
-    '
+**The inline shell snippet was REMOVED 2026-04-29T11:20Z** per multi-AI review packet (Codex P0 + Copilot 5-thread cluster + Amara). Even with an "illustrative" disclaimer, a broken parser left in the doc encourages copy-paste use of code that has 6 known bugs (awk default-FS path-with-spaces breakage, `grep -Ff` not NUL-aware, name-status `-z` rename-record desync, gawk-only `RS='\0'`, fixed `/tmp/binary-paths.nul` not race-safe, missing semantic LFG-only-vs-modified distinction).
 
-# Pass 2: binary files split by direction (name-status reports A/M/D/R/T)
-# - "A" from AceHack-side perspective = AceHack-only (hard-reset ERASES) → loss-relevant
-# - "D" from AceHack-side perspective = LFG-only (hard-reset ADDS) → not a loss
-# - "M"/"R"/"T" = modified on both sides → needs semantic classification
-git diff --numstat -z origin/main..acehack/main \
-  | awk -v RS='\0' 'BEGIN{ORS="\0"} $1 == "-" && $2 == "-" { print $3 }' \
-  > /tmp/binary-paths.nul
-if [ -s /tmp/binary-paths.nul ]; then
-  git diff --name-status -z origin/main..acehack/main \
-    | awk -v RS='\0' '
-        # name-status with -z: status<NUL>path or for renames status<NUL>old<NUL>new
-        BEGIN{i=0}
-        {if (i==0) {st=$0; i=1} else {p=$0; print st "\t" p; i=0}}
-      ' \
-    | grep -Ff /tmp/binary-paths.nul \
-    | awk -F'\t' '
-        $1=="A" { ace_only += 1 }
-        $1=="D" { lfg_only += 1 }
-        $1 ~ /^[MRTC]/ { modified_both += 1 }
-        END {
-          print "binary_acehack_only_files=" (ace_only+0)
-          print "binary_lfg_only_files=" (lfg_only+0)
-          print "binary_modified_or_renamed_files=" (modified_both+0)
-        }
-      '
-fi
-```
+The conceptual structure remains correct (three binary buckets — `acehack_only`, `lfg_only`, `modified_or_renamed`). The execution belongs in `tools/zero-zero-zero/check-gate.sh` as a real script with fixtures (paths with spaces, binary add/delete/modify/rename/copy, gawk-vs-BSD-awk portability, `mktemp` + `trap` cleanup). That script is the highest-priority deferred follow-up.
 
-Per Codex 2026-04-29T10:42Z catch + Amara 2026-04-29T10:50Z direction-split: the prior one-pass version silently excluded binary files via `$1 != "-" && $2 != "-"`. The conceptual fix (split direction into three buckets) is correct. The inline implementation above is illustrative only — see the warning block above this code; the durable NUL-safe + portable implementation lives in the deferred gate-runner script.
+**Until that script exists, classify binary files manually** (see "Stopgap rule" above): `git diff --name-status -z origin/main..acehack/main -- <path>` per binary file + direct `git show` evidence + manual bucket assignment.
+
+For the text-file ledger, the conceptual computation is straightforward: `git diff --numstat origin/main..acehack/main` reports added/removed line counts per file (with `-/-` for binary). Sum the non-binary rows for `potential_loss_lines` and `lfg_newer_lines`. The current round's verified text-ledger numbers (273 / 18046) were computed manually 2026-04-29T10:25Z and are recorded in the trajectory table above.
 
 **Reset-loss surface for binary files:**
 
