@@ -155,8 +155,16 @@ defended.)
 > aloways expand non obvious thing for future you like that
 > the confucius unfold"*
 
-(Now landed as a separate durable rule in
-`memory/feedback_always_expand_non_obvious_things_for_future_self_confucius_unfold_aaron_2026_04_29.md`.)
+Aaron's follow-up correction 2026-04-29: *"Confucius-unfold
+you have some existing skill or something for this"* +
+*"it has confucius in the name"* — pointing at the existing
+canonical home for the pattern at
+`memory/feedback_confucius_unfolding_pattern_aaron_compresses_terse_rich_with_implication_claude_unfolds_into_operational_substrate_2026_04_25.md`
+(landed 4 days earlier 2026-04-25 as a defining file for the
+orphan term). The 2026-04-29 cold-readability framing is a
+new operational application of the same pattern, added as an
+addendum to that file rather than as a duplicate canonical
+home.
 
 ## What this rule does NOT mean
 
