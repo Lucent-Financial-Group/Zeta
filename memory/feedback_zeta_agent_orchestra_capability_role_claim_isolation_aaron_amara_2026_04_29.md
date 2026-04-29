@@ -28,11 +28,11 @@ Humans
 
 ## Cross-harness memory — the substrate / adapter split
 
-**Canonical substrate** (one source-of-truth):
+**Canonical substrate** (one source-of-truth; entries marked `[planned]` are not yet in the repo and should not be linked-to as live):
 - `memory/` — durable cross-harness lessons + MEMORY.md index
 - `docs/active-trajectory.md` — current lane pointer
 - `docs/ops/**` — runbooks, patterns, incidents
-- `docs/best-practices/**` — evidence-cited per-tool/language standards
+- `docs/best-practices/**` — `[planned]` evidence-cited per-tool/language standards (canonical home; tracked under task 323)
 - `docs/backlog/**` — planning surface
 
 **Harness-specific bootstrap pointers** (thin adapters, not duplicates):
@@ -125,7 +125,7 @@ claim_id: CLAIM-123
 github_issue: 123
 owner_maintainer: "<name>"
 actor: "codex-cli | gemini-cli | claude-code | cursor-agent | human"
-capability: review-only | patch-producing | write-capable | push-capable
+capability: review_only | patch_only | write_worktree | push_branch | open_pr | merge_pr | authority_mutation  # canonical snake_case tokens, matching the capability taxonomy
 branch: "<branch>"
 worktree_or_clone: "<path-or-machine>"
 file_allowlist: [...]
@@ -259,23 +259,9 @@ Add explicit overlap rules (Claude.ai catch — design currently has detection b
 - generated indexes (e.g. `docs/backlog/github-issue-index.md`)
 - ruleset / security / billing docs
 
-### Layer 3 — Mechanical enforcement (load-bearing)
+### Layer 3 — Declarative topology
 
-**Do not declare the protocol operational until CI checks exist.** Without enforcement, the claim protocol relies on agent discipline — which the factory has already proved doesn't hold without mechanical guard (parallel-agent collision incident).
-
-Required CI checks before protocol activation:
-- `PR changed files ⊆ claim allowlist` (mechanical)
-- `PR changed files ∩ claim denylist = empty` (mechanical)
-- `claim exists for write-capable PR` (mechanical)
-- `active claim is not expired` (mechanical)
-- `high-risk overlap check passes` (mechanical)
-- `actor role has declared capability` (mechanical, against `agents/project-agents.yaml`)
-
-Claim protocol without enforcement = same shape as "bare main in automation" rule before its linter — chronic risk without mechanical guard.
-
-### Layer 4 — Declarative topology
-
-After claims are proven, add the project-level role definition file.
+Before CI enforcement can mechanically validate role/capability/scope, the project-level role definition file must exist. Layer 3 introduces the schema; Layer 4 enforces against it.
 
 **Path**: `agents/project-agents.yaml` (visible-path preference per Claude.ai catch — `.zeta/agents.yaml` is sometimes excluded from grep tools / IDE search / linter scope, and the agent topology is meant to be HIGHLY visible).
 
@@ -318,6 +304,20 @@ roles:
       can_merge_pr: false      # merge requires explicit policy gate
       can_mutate_authority: false
 ```
+
+### Layer 4 — Mechanical enforcement (load-bearing)
+
+**Do not declare the protocol operational until CI checks exist.** Without enforcement, the claim protocol relies on agent discipline — which the factory has already proved doesn't hold without mechanical guard (parallel-agent collision incident).
+
+Required CI checks before protocol activation (each check resolves against the schema introduced in Layer 3 — `agents/project-agents.yaml` — and the active-claim board introduced in Layer 2):
+- `PR changed files ⊆ claim allowlist` (mechanical)
+- `PR changed files ∩ claim denylist = empty` (mechanical)
+- `claim exists for write-capable PR` (mechanical)
+- `active claim is not expired` (mechanical)
+- `high-risk overlap check passes` (mechanical)
+- `actor role has declared capability` (mechanical, against `agents/project-agents.yaml` from Layer 3)
+
+Claim protocol without enforcement = same shape as "bare main in automation" rule before its linter — chronic risk without mechanical guard.
 
 ### Layer 5 — Multi-harness dry run
 
@@ -493,8 +493,8 @@ Each subsequent layer (2 → 3 → 4 → 5) is its own PR with its own validatio
 - `memory/feedback_parallel_agents_need_isolated_worktrees_coordinator_owns_main_aaron_amara_2026_04_29.md` — sibling rule landed same day; the operational discipline this orchestra encodes structurally
 - `memory/feedback_best_practices_evidence_lineage_survival_substrate_aaron_amara_2026_04_29.md` — sibling rule; the orchestra lives inside the broader best-practices discipline
 - `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md` — same-day topology decision; LFG is the canonical PR/coordination repo
-- task 320 (Zeta Issue Anchors) — issue-anchor design is a sibling pattern; claims are a generalization (anchors persist; claims expire)
-- task 323 (per-tool/language expert skills) — pinned roles ARE the expert skills
+- Untracked follow-up — Zeta Issue Anchors design (sibling pattern; claims are a generalization — anchors persist, claims expire). Tracked in TaskList session-local; will graduate to a GitHub issue on land.
+- Untracked follow-up — per-tool/language expert skills (pinned roles ARE the expert skills). Tracked in TaskList session-local; will graduate to a GitHub issue on land.
 
 ## Trigger memory
 
