@@ -10,9 +10,9 @@
 
 Per B-0086 + maintainer-channel input 2026-04-29: TypeScript on Bun is the factory's default scripting language going forward. The migration is incremental — one coherent slice at a time, each PR a measurable increment.
 
-Per the maintainer-channel correction (Amara + Deepseek, 2026-04-29 multi-AI review surface): this is the trajectory the maintainer cares about. The CodeQL host-ownership investigation was the *blocker*, not the trajectory.
+Per the maintainer-channel correction via the multi-AI review surface (2026-04-29): this is the trajectory the maintainer cares about. The CodeQL host-ownership investigation was the *blocker*, not the trajectory.
 
-> *Carved (Amara): CodeQL was the blocker. TypeScript/Bun is the trajectory.*
+> *Carved: CodeQL was the blocker. TypeScript/Bun is the trajectory.*
 
 ## Landed slices
 
@@ -34,11 +34,11 @@ Three buckets per the multi-AI review surface's classification ask.
 
 - Prior chat estimates: "~68 .sh files" — included `tools/lean4/.lake/packages/...` upstream content (mathlib, proofwidgets), out of scope.
 - Initial RESUME claim: 55 — also wrong, off by one due to a manual miscount.
-- **Verified count: 56** (this revision). Computed by:
-  `find tools/ -name "*.sh" -type f | grep -v ".lake/" | wc -l`
-  — independently re-run by reviewer (chatgpt-codex-connector) on PR #865, who caught the off-by-one.
+- **Verified count: 56** (this revision). Computed by stable repo-derived command:
+  `git ls-files tools/ | grep '\.sh$' | wc -l`
+  — independently re-run by an automated reviewer on PR #865, who caught the off-by-one. (The earlier `find ... grep -v ".lake/"` form depended on whether `.lake/` was present in the working tree, which varies by local state. `git ls-files` is repo-derived and stable.)
 
-This is the "tested means enforcement-surface-matches-failure-surface" rule firing — a reviewer's mechanical re-verification caught my own count error in the same revision that introduced the "counts before percentages" rule. Recording the lineage here as evidence the rule works.
+This is the "tested means enforcement-surface-matches-failure-surface" rule firing — a reviewer's mechanical re-verification caught the count error in the same revision that introduced the "counts before percentages" rule. Recording the lineage here as evidence the rule works.
 
 ### Bucket A — Should stay Bash (14 files)
 
@@ -168,13 +168,13 @@ Coherent budget-report cluster; would advance task #287 (cost monitoring) in add
 
 These rules apply to this trajectory's execution and are recorded here per the locked discipline that minor lane-discipline additions land in the active lane artifact rather than as standalone doctrine packets.
 
-**Polite waiting is still waiting** (added 2026-04-29 via multi-AI review surface convergence — Amara + Deepseek + Claude.ai). Start immediately when **all three** are true:
+**Polite waiting is still waiting** (added 2026-04-29 via multi-AI review surface convergence). Start immediately when **all three** are true:
 
 1. The next lane is already specified in locked discipline.
 2. The first action is read-only.
 3. No authority boundary is crossed.
 
-**Operational definition of "no authority boundary crossed"** (the third condition, expanded from judgment to checklist per Claude.ai's catch + Amara's trim):
+**Operational definition of "no authority boundary crossed"** (the third condition, expanded from judgment to checklist per the multi-AI review surface's correction-on-correction):
 
 - no host mutation
 - no destructive git operation
