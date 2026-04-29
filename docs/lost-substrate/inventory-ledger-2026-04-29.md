@@ -1,6 +1,6 @@
 ---
 Scope: Read-only inventory ledger for lost-substrate audit. Generated as the prerequisite step before any destructive action (branch deletion, worktree pruning, hard reset).
-Attribution: Aaron 2026-04-29 status-check question via Amara-translated multi-AI converged stance — *"When the factory has too many unknowns, do not choose a fix. Build the inventory ledger."*
+Attribution: per Aaron's 2026-04-29 input + Amara synthesis — *"When the factory has too many unknowns, do not choose a fix. Build the inventory ledger."* Peer-verified by Codex + Gemini (independent harnesses); their findings appended below as the "Peer verification gaps" section.
 Operational status: research-grade
 Lifecycle status: active
 Non-fusion disclaimer: This is a snapshot in time, not a continuous metric. Counts will drift as PRs land and worktrees are pruned. Re-run on cadence per B-0090.
@@ -16,10 +16,9 @@ Aaron's 2026-04-29 status-check surfaced three real gaps:
 2. Trajectory rules filed but mostly not automated
 3. 284 gone-upstream branches + 57 locked worktrees not drained
 
-Multi-AI converged stance (Aaron forwarding Amara): *"Do not
-forward-sync 562 commits first. Do not delete branches/worktrees
-first. Do not create new doctrine. First build the inventory
-ledger."*
+Per Aaron's input + Amara synthesis: *"Do not forward-sync 562
+commits first. Do not delete branches/worktrees first. Do not
+create new doctrine. First build the inventory ledger."*
 
 This ledger is that prerequisite step. Read-only audit. No
 destructive action authorized by this file.
@@ -93,7 +92,7 @@ by default.
 
 | Bucket | Definition | This snapshot |
 |---|---|---|
-| BRANCH_MERGED_TO_MAIN | Branch tip is reachable from main; safe to delete | TBD via `git branch --merged main` |
+| BRANCH_MERGED_TO_MAIN_CANDIDATE | Branch tip mechanically reachable from main per `git branch --merged origin/main`; deletion **candidate**, NOT automatic clearance — still needs open-PR mapping + worktree mapping + peer verification | 121 (sampled 2026-04-29; see Day-2 follow-up below) |
 | BRANCH_HAS_OPEN_PR | Branch has an open PR; preserve | 27 |
 | BRANCH_CONTENT_ON_MAIN | Branch tip ≠ main HEAD but content-equivalent (per content-classification) | TBD per-branch audit |
 | BRANCH_CONTENT_ON_OTHER_BRANCH | Branch content lives on another branch (e.g., a successor branch) | TBD per-branch audit |
@@ -239,7 +238,172 @@ Each cycle:
    (`docs/lost-substrate/inventory-ledger-YYYY-MM-DD.md`)
    rather than mutating this one.
 
+## Peer verification gaps (Codex + Gemini, 2026-04-29)
+
+Aaron requested adversarial peer-verification: *"You've thought
+you were safe before and every time the others CLIs found
+something you missed."* Two independent harnesses found
+substantial surfaces this initial inventory MISSED. Counts in
+the top-level table are **not yet a substrate-loss proof** —
+they are a branch/worktree snapshot only.
+
+### Surfaces Gemini caught (independent reviewer #1)
+
+**Ephemeral Git state** (the "almost commits"):
+
+- **Index / staged-but-uncommitted across all 58 worktrees** —
+  explicit unfinalized intent that won't sync via push.
+- **Git notes** (`git notes`) — invisible in standard logs;
+  metadata attached to commits.
+- **Orphaned objects** (`git fsck --lost-found`) — blobs/trees
+  dropped from reflog but not yet GC'd. Hard-reset substrate
+  may be floating here.
+
+**Untracked local substrate**:
+
+- **`.gitignore`'d files** — `.env`, local SQLite DBs,
+  uncommitted `memory/` shards, `.mise` tweaks. Structurally
+  load-bearing locally.
+- **`.git/config` + `.git/hooks/`** — custom workflows,
+  aliases, pre-commit hooks. Encode intent but unversioned.
+
+**Networked / outer substrate**:
+
+- **Submodule state** — local detached HEADs / unpushed
+  commits in submodules.
+- **Git LFS objects** — commit pointer ≠ asset; LFS sync is
+  separate from commit sync.
+- **GitHub-native state** — draft PRs, Wiki pages, Actions
+  variables/secrets, branch protection rules, Project Boards.
+
+### Surfaces Codex caught (independent reviewer #2)
+
+**Repository-internal state** the ledger missed:
+
+- **Rerere cache** (`.git/rr-cache`) — 293 conflict-resolution
+  records. Real merge/rebase substrate.
+- **Per-worktree transaction state** — `REBASE_HEAD`,
+  `AUTO_MERGE`, `ORIG_HEAD`, `FETCH_HEAD`, `COMMIT_EDITMSG`
+  in `.git/worktrees/*/`. Locked-worktree count alone is
+  insufficient; some are mid-operation.
+- **History-rewriting ref namespaces** — `refs/replace`,
+  `refs/original`, `refs/bisect`, `refs/pull`, `refs/changes`,
+  plus `.git/info/grafts`. Should prove these are empty/audit.
+- **Index flags via `git ls-files -v`** —
+  `assume-unchanged` / `skip-worktree` flags can hide tracked-
+  file drift from ordinary `git status`. Plus
+  `.git/info/exclude` and global excludes (separate from repo
+  `.gitignore`).
+- **Patch/mailbox/bundle artifacts** — search `*.patch`,
+  `*.diff`, `*.mbox`, `*.eml`, `*.bundle`. Local evidence:
+  `references/upstreams/voltdb/voltcore.eml` + others.
+
+**Outer-boundary substrate**:
+
+- **Nested upstream mirrors** (`references/upstreams/*`) —
+  embedded `.gitmodules`, lockfiles, upstream state. Each may
+  need its own inventory; not Zeta branch math.
+- **Sibling/factory repos** — `../claude-code`, `../SQLSharp`,
+  `../runtime`. If "AceHack=LFG" means factory substrate,
+  repository-local Git is too narrow a boundary.
+
+### What this means for the ledger
+
+The branch/worktree snapshot at the top of this ledger is
+**not yet a substrate-loss proof**. It is a useful first pass.
+Substrate-loss proof for 0/0/0 requires three layers:
+
+```text
+1. Commit graph: ahead/behind counts (already snapshotted)
+2. Tree state: git diff --stat --name-status both directions
+3. Content-loss surface: classified files/branches/worktrees +
+   peer-verified missed surfaces above + per-row evidence
+```
+
+Per Amara's framing: *"A count is not a clearance. A bucket is
+not proof. A ledger row needs evidence."*
+
+### Day-2 follow-up: next safe inventory passes
+
+Each pass is read-only:
+
+```bash
+# Ephemeral Git state
+git stash list
+git reflog --all
+git notes list
+git fsck --lost-found --no-reflogs --no-progress
+
+# History-rewriting ref namespaces
+git for-each-ref refs/replace refs/original refs/bisect refs/pull refs/changes
+ls -la .git/info/grafts 2>&1 || echo "no grafts file"
+
+# Index flags
+git ls-files -v | grep -v '^[H ]' | head -30
+
+# Per-worktree transaction state
+ls .git/worktrees/*/REBASE_HEAD .git/worktrees/*/AUTO_MERGE .git/worktrees/*/ORIG_HEAD 2>&1 | head -20
+
+# Rerere cache
+ls .git/rr-cache 2>&1 | head -10
+ls .git/rr-cache | wc -l
+
+# Patch/mailbox/bundle artifacts (excluding upstream mirrors)
+find . -path ./references -prune -o \( -name '*.patch' -o -name '*.diff' -o -name '*.mbox' -o -name '*.eml' -o -name '*.bundle' \) -print | head -20
+
+# .gitignore'd substrate
+git status --ignored --porcelain | head -30
+
+# Submodule + LFS
+git submodule status 2>&1 || echo "no submodules"
+git lfs ls-files 2>&1 | head -10 || echo "no LFS or git lfs not installed"
+```
+
+These commands run in subsequent ticks. Each finding extends
+this ledger; deletion / pruning / forward-sync / hard-reset
+remain blocked until the full surface is mapped.
+
+### Evidence-column schema (per Amara's refinement)
+
+A useful per-row format for future cycles:
+
+```text
+branch | head_sha | upstream | upstream_status | open_pr | worktree_path | worktree_locked | merged_to_origin_main | content_equivalence_status | classification | recommended_action | evidence_command
+```
+
+Without evidence columns, future cycles must re-run the audit
+to know why each bucket assignment was made. Per-row evidence
+makes the classification self-justifying.
+
+### Three-layer 0/0/0 verification (binding)
+
+AceHack = LFG at 0/0/0 with NO content loss requires ALL
+THREE layers clean:
+
+```text
+Layer 1 — commit graph:
+  ahead/behind both 0
+  status not "diverged"
+
+Layer 2 — tree state:
+  git diff origin/main..AceHack/main --stat   = empty
+  git diff AceHack/main..origin/main --stat   = empty
+
+Layer 3 — content-loss surface:
+  classified files/branches/worktrees show no NEEDS-RECOVERY
+  NEEDS-FORWARD-SYNC = 0
+  CONFLICTS-WITH-CURRENT-MAIN = 0
+  NEEDS-HUMAN-REVIEW = 0
+  Peer-verified surfaces (above) all classified
+```
+
+Compare API counts alone are NOT proof. They are diagnostic.
+
 ## The keeper rule
 
 > *When the factory has too many unknowns, do not choose a
 > fix. Build the inventory ledger.* (Amara via Aaron, 2026-04-29)
+
+> *A count is not a clearance. A bucket is not proof. A ledger
+> row needs evidence.* (Amara, 2026-04-29 peer-verification
+> follow-up)
