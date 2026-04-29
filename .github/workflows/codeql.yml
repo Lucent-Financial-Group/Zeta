@@ -83,10 +83,11 @@
 #      "no source code seen during build" (CodeQL exit 32 in
 #      the `database finalize` stage). The job ALWAYS starts
 #      so workflow-level paths-ignore does not leave required
-#      checks PENDING (per Amara 2026-04-29 review of #849:
-#      a retired language must not become a permanent gate;
-#      structure should self-heal). actions/csharp keep the
-#      unconditional path because they are first-party always.
+#      checks PENDING (per reviewer feedback 2026-04-29 on
+#      #849: a retired language must not become a permanent
+#      gate; structure should self-heal). actions/csharp keep
+#      the unconditional path because they are first-party
+#      always.
 #
 #      Replaces the path-gate's unconditional empty-SARIF
 #      upload pattern at the per-language level — both
@@ -451,25 +452,25 @@ jobs:
       # .py files; future python additions for AI/ML scripts will
       # naturally re-enable full analysis here).
       #
-      # Why this approach (per Amara 2026-04-29 review of #849):
-      # workflow-level paths-ignore would leave required checks
-      # PENDING and block the PR; removing the language from the
-      # matrix loses future re-enablement and risks branch-
-      # protection drift if Python scripts return. Instead the
-      # job always starts, classifies in-place whether any
-      # first-party source exists for this language, and either
-      # runs the full extractor pipeline OR uploads a no-findings
-      # SARIF and exits SUCCESS. The aggregate `code_quality`
-      # ruleset rule sees a real per-language status; the
-      # `automationDetails.id` matches the analyze category so
-      # GitHub's SARIF-replace-by-key rule treats it as a clean
-      # baseline.
+      # Why this approach (per reviewer feedback 2026-04-29 on
+      # #849): workflow-level paths-ignore would leave required
+      # checks PENDING and block the PR; removing the language
+      # from the matrix loses future re-enablement and risks
+      # branch-protection drift if Python scripts return.
+      # Instead the job always starts, classifies in-place
+      # whether any first-party source exists for this language,
+      # and either runs the full extractor pipeline OR uploads
+      # a no-findings SARIF and exits SUCCESS. The aggregate
+      # `code_quality` ruleset rule sees a real per-language
+      # status; the upload step's `category:` action-param
+      # matches the analyze category, so GitHub's SARIF
+      # replacement logic records it as the clean baseline for
+      # that language.
       #
       # Source-presence heuristic mirrors codeql-config.yml's
-      # paths-ignore (vendored upstreams, formal-method tool
-      # trees, generated code, build artifacts). When Python or
-      # JS/TS sources land outside those excluded paths, this
-      # check flips back to full analysis.
+      # paths-ignore so the gate cannot report has_source=true
+      # for files CodeQL will skip anyway. Centralised in
+      # `shared_ignored_paths_regex` below.
       #
       # `actions` and `csharp` are first-party always — they keep
       # the unconditional "real analysis" path; gating them would
@@ -485,24 +486,33 @@ jobs:
           # while preserving the count printed on stdout (always
           # "0" or a positive integer); shellcheck SC2126 prefers
           # `grep -c` over `grep | wc -l`.
+          #
+          # Keep this regex in sync with .github/codeql/codeql-
+          # config.yml `paths-ignore`. If a language source file
+          # lives only under one of these paths, CodeQL would
+          # skip it during extraction even though we counted it
+          # as has_source=true, producing the same "no source
+          # code seen during build" failure this gate is meant
+          # to prevent. `**/*.generated.cs` and `**/obj/**` /
+          # `**/bin/**` from the config are folded in via
+          # `(^|.*/)(obj|bin)/`. The .generated.cs glob is csharp-
+          # only and irrelevant here (csharp is unconditional).
+          shared_ignored_paths_regex='^(references/upstreams/|bench/|tools/tla/|tools/lean4/)|(^|.*/)(obj|bin)/'
           case "${{ matrix.language }}" in
             python)
-              # Mirrors codeql-config.yml paths-ignore: skip
-              # tools/lean4/** (mathlib pkg), references/upstreams/**
-              # (vendored), and the references/ tree generally.
               count=$(git ls-files -- '*.py' \
-                | grep -cvE '^(tools/lean4/|references/upstreams/|references/)' \
+                | grep -cvE "${shared_ignored_paths_regex}" \
                 || true)
               ;;
             java-kotlin)
               # tools/alloy/AlloyRunner.java is first-party Java.
               count=$(git ls-files -- '*.java' '*.kt' '*.kts' \
-                | grep -cvE '^(references/upstreams/|references/)' \
+                | grep -cvE "${shared_ignored_paths_regex}" \
                 || true)
               ;;
             javascript-typescript)
               count=$(git ls-files -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.mjs' '*.cjs' \
-                | grep -cvE '^(references/upstreams/|references/|node_modules/)' \
+                | grep -cvE "${shared_ignored_paths_regex}" \
                 || true)
               ;;
             actions|csharp)
@@ -532,7 +542,7 @@ jobs:
       # `security-events`, so the SARIF upload would 403 with
       # `Resource not accessible by integration` and FAIL the
       # exact retired-language case this gate is meant to unblock
-      # (Codex P1 catch on PR #857). On fork PR + no-source, the
+      # (review-tool P1 catch on PR #857). On fork PR + no-source, the
       # subsequent init/build/analyze steps are also skipped
       # (gated on `has_source == 'true'`), so the job exits
       # SUCCESS with no SARIF emitted — same posture as path-gate
