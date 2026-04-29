@@ -4,6 +4,13 @@
 > If you (Claude/Otto/whoever) are about to run `git rev-list`, `git diff`,
 > open a new audit branch, or invoke a peer-call about the active trajectory,
 > stop. Read this file. Do the next action listed here, not a re-derivation.
+>
+> **Classification (per maintainer 2026-04-29T10:30Z call):** this file is a
+> HISTORY surface (like backlog rows / memory files / tick shards / CURRENT-*
+> per-maintainer files), not a current-state surface. Persona names + dated
+> attribution ARE allowed here per the named-attribution carve-out. The
+> trajectory IS history-of-decisions; the file records what was decided, by
+> whom, when, and why. Treat as memory-equivalent for prose-register rules.
 
 ## Priority — blocking all other work
 
@@ -329,7 +336,11 @@ Remaining steps:
    ```bash
    cd /tmp/zeta-clean-2026-04-29/lfg
    git fetch origin main
-   git push --force-with-lease=acehack/main acehack origin/main:refs/heads/main
+   # Per Copilot reviewer P0 (PR #835): the lease MUST default to the
+   # upstream tracking ref (no explicit refname). `--force-with-lease=<name>`
+   # leases against a LOCAL refname, not the remote ref being updated, and
+   # silently degrades to unsafe force-push if the remote advanced.
+   git push --force-with-lease acehack origin/main:refs/heads/main
    ```
    This pushes `origin/main`'s commit to `acehack/main`, which is the destructive AceHack-side reset.
 3. **(AGENT)** Verify 0/0/0:
