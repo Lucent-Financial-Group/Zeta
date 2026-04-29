@@ -12,11 +12,20 @@
 > file records what was decided, by whom, when, and why. Treat as memory-
 > equivalent for prose-register rules.
 >
-> Note: the closed list in `docs/AGENT-BEST-PRACTICES.md` history-attribution
-> rule does not currently include `docs/active-trajectory.md`. The maintainer
-> 2026-04-29T10:30Z call extends the closed list to cover this file. A
-> follow-up edit to `docs/AGENT-BEST-PRACTICES.md` should add active-trajectory
-> alongside backlog and memory entries (deferred follow-up; not blocking 0/0/0).
+> **Inconsistency note (Copilot 2026-04-29T10:48Z catch)**: the closed list
+> in `docs/AGENT-BEST-PRACTICES.md` (around lines 284-312) does NOT currently
+> include `docs/active-trajectory.md`. The maintainer 2026-04-29T10:30Z call
+> extends the closed list to cover this file, but the central rule doc has
+> not yet been updated. Until that update lands, future editors/agents
+> reading `AGENT-BEST-PRACTICES.md` will see the old closed list and
+> conclude this file should use role-refs only.
+>
+> The discrepancy is acknowledged here to prevent silent drift. Follow-up
+> required: edit `docs/AGENT-BEST-PRACTICES.md` to add `docs/active-
+> trajectory.md` to the history-surface closed list alongside backlog and
+> memory entries. Deferred; not blocking 0/0/0 progress, but should land
+> before the trajectory file's classification is treated as authoritative
+> by external readers.
 
 ## Priority — blocking all other work
 
@@ -364,11 +373,9 @@ Remaining steps to clear the gate:
 3. **(MAINTAINER, gate-final)** Once `unclassified_lines = 0` AND `unsafe_lines = 0`, sign off on hard-reset of `acehack/main` to `origin/main`. This is the irreversible step per the reversible-vs-irreversible authority categorization.
 4. **(AGENT, post-sign-off)** From the clean clone:
    ```bash
-   cd /tmp/zeta-clean-2026-04-29/lfg
-   git fetch origin main
-   # Per multi-AI review packet 2026-04-29T10:35Z (Amara + Claude.ai +
-   # Deepseek + Gemini + Ani convergent): the v4 form below defends
-   # against background-fetch race during the SHA-capture step itself.
+   # Per multi-AI review packet 2026-04-29T10:35Z (convergent across
+   # external AI reviewers): the v4 form below defends against
+   # background-fetch race during the SHA-capture step itself.
    # `git rev-parse refs/remotes/acehack/main` can return a SHA newer
    # than what the just-completed `git fetch` produced if a background
    # cron/IDE auto-fetch fires in between. Fix: observe the remote ref
@@ -379,6 +386,9 @@ Remaining steps to clear the gate:
    #
    # Best blade: "Do not lease by nickname. Do not lease by a moving
    # local guess. Lease the remote ref by observed SHA."
+
+   set -euo pipefail
+   cd /tmp/zeta-clean-2026-04-29/lfg
 
    git fetch origin main
 
@@ -393,11 +403,19 @@ Remaining steps to clear the gate:
 
    # Dry-run first: validates push shape + credentials + refspec
    # without touching the remote. The real lease still matters at the
-   # real push (server-side check).
-   git push --dry-run \
+   # real push (server-side check). Per Codex 2026-04-29T10:48Z catch:
+   # the dry-run MUST be guarded — a failed dry-run cannot be allowed
+   # to fall through to the real push. `set -e` above catches it; the
+   # explicit `if !` guard below makes it loud.
+   if ! git push --dry-run \
      --force-with-lease=refs/heads/main:"$fetched_expect" \
      acehack \
      refs/remotes/origin/main:refs/heads/main
+   then
+     echo "DRY-RUN FAILED: refspec / credentials / push shape problem."
+     echo "DO NOT PROCEED to real push. Diagnose dry-run failure first."
+     exit 1
+   fi
 
    # Real push.
    if ! git push \
