@@ -333,7 +333,7 @@ The Day-2 commands ran. **Real findings** — not just empty checks:
 | **Reflog** | 13,822 entries (rich machine-local history; ~30-90 day TTL) |
 | **Git notes** | 0 (clean) |
 | **fsck dangling objects** | **1,109** (substantial; 1,000+ dangling commits/trees/blobs not on any branch) |
-| **Pack corruption** | **`.git/objects/pack/pack-16732bccb3ace9ec45c913c57a1fd050fd730c3f.pack` has data-stream errors**; specific object (9bf2daee...) cannot be unpacked. |
+| **Pack corruption** | **`.git/objects/pack/pack-16732bccb3ace9ec45c913c57a1fd050fd730c3f.pack` has data-stream errors**; 2 specific corrupt objects identified — see "Corruption triage results" section below. |
 | **History-rewriting refs** | All 5 namespaces (`replace` / `original` / `bisect` / `pull` / `changes`) empty + no `.git/info/grafts`. Clean. |
 | **Index flags** | 0 `assume-unchanged` / `skip-worktree` (clean) |
 | **Per-worktree mid-operation** | 0 worktrees in REBASE/MERGE/AUTO_MERGE state (clean) |
@@ -341,6 +341,19 @@ The Day-2 commands ran. **Real findings** — not just empty checks:
 | **Patch / bundle artifacts** | 0 outside `references/upstreams/` (clean) |
 | **Submodules / LFS** | None / `git lfs` not installed (clean) |
 | **Tags** | 0 (none in use) |
+
+### Corruption triage results (executed post-Amara-correction)
+
+Two corrupt objects identified + classified per Amara's bucket schema:
+
+| Object | Type | Size | Bucket | Notes |
+|---|---|---|---|---|
+| `9bf2daee3ce53c88633824f9532a0158aaa92ed9` | blob | 16,455,417 bytes | RECOVERABLE_FROM_ORIGIN | Fresh clone (`/tmp/zeta-fresh-corruption-check`) returns type+size cleanly. Recovery via `git fetch --refetch origin`. |
+| `8d5e67fd313573855848705e4af114f3ff0eecbc` | blob | 439,327 bytes (early `docs/hygiene-history/loop-tick-history.md`) | **MISSING_UNRECOVERED** | Fresh clone returns "could not get object info". Origin doesn't have this exact blob. Local-only intermediate version. |
+
+**Critical finding**: `8d5e67fd` is a local-only blob with no origin recovery path. Some tree/commit references it (fsck flagged "missing blob"). Investigation pending — could be from a stash, dangling commit, or unpushed branch. This is the canonical worked-example of unrecovered-substrate boundary case.
+
+**Per Amara's correction**: do NOT declare "origin has it" without fresh-clone verification. Wording corrected throughout this ledger.
 
 **Highest-risk findings**:
 
