@@ -42,7 +42,6 @@
 //     2 — argument error
 
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { isAbsolute, resolve } from "node:path";
 
@@ -351,12 +350,21 @@ async function main(): Promise<number> {
     }
   }
 
-  if (!existsSync(p)) {
-    process.stderr.write(`ERROR: file not found: ${p}\n`);
-    return 1;
+  // Try-readFile + catch ENOENT (instead of existsSync-then-readFile) to
+  // avoid TOCTOU race-condition (CWE-367, CodeQL flagged). The existsSync
+  // pattern leaves a race window where the file is deleted between check
+  // and read; catching ENOENT on the read itself is atomic at the
+  // OS-syscall level.
+  let original: string;
+  try {
+    original = await readFile(p, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      process.stderr.write(`ERROR: file not found: ${p}\n`);
+      return 1;
+    }
+    throw err;
   }
-
-  const original = await readFile(p, "utf8");
   let newText: string;
   let stats: Stats;
   try {

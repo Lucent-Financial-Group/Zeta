@@ -38,7 +38,6 @@
 // - Otto-346 candidate (recurring dynamic = missing primitive;
 //   this tool IS the primitive that absorbs the recurring pattern)
 
-import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 
 // CommonMark unordered list markers (`-`, `*`, `+`) plus ordered
@@ -340,9 +339,22 @@ function fixMd026(text: string): string {
 }
 
 // Apply both fixes to a file. Returns a discriminated-union result.
+//
+// Uses try-readFile + catch ENOENT (instead of existsSync-then-readFile)
+// to avoid TOCTOU race-condition (CWE-367, CodeQL flagged). The
+// existsSync pattern leaves a race window where the file is deleted
+// between the check and the read; catching ENOENT on the read itself
+// is atomic at the OS-syscall level.
 async function fixFile(path: string, dryRun: boolean): Promise<FixResult> {
-  if (!existsSync(path)) return { kind: "not-found" };
-  const original = await readFile(path, "utf8");
+  let original: string;
+  try {
+    original = await readFile(path, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      return { kind: "not-found" };
+    }
+    throw err;
+  }
   const fixed = fixMd026(fixMd032(original));
   if (fixed === original) return { kind: "unchanged" };
   if (!dryRun) await writeFile(path, fixed);
