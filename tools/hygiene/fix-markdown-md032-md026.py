@@ -59,6 +59,17 @@ _HEADING_WITH_PUNCT = re.compile(r"^(#+ .+?)([.,;:!?]+)\s*$")
 # backtick fences cannot interrupt each other — track which fence opened.
 _FENCE_OPEN = re.compile(r"^( {0,3})(`{3,}|~{3,})\s*([^`]*)$")
 
+# YAML frontmatter line discriminator: matches a non-empty line that
+# starts with a key followed by `:` (with optional leading whitespace
+# and optional value). This distinguishes real YAML frontmatter from
+# a thematic-break line followed by markdown body. Examples that
+# match: `id: B-0001`, `tags:`, `composes_with:`, `  - item`. Note
+# `  - item` matches because it could be a YAML list item under a
+# key, but in practice a frontmatter never starts on line 1 with a
+# list item — the very-first content line should be a key:value.
+# The simple `key:` check is enough for the discriminator.
+_YAML_KEY_LINE = re.compile(r"^\s*[A-Za-z_][\w-]*\s*:")
+
 
 def _is_list_or_continuation(line: str) -> bool:
     """Return True if line is a list item or its continuation
@@ -78,12 +89,17 @@ def _classify_lines(lines: list[str]) -> list[bool]:
     Two such regions:
 
     1. **YAML frontmatter** (Jekyll/Hugo/factory-convention shape):
-       file starts with a line `---`, has another line `---` later;
-       lines between (inclusive) are frontmatter. Inserting blanks
-       here breaks YAML parsing (e.g. `composes_with:` followed by
-       blank line then `  - X` parses as `composes_with: null` plus
-       a separate top-level list). Stripping trailing punctuation
-       from YAML keys would corrupt structure.
+       file starts with a line `---`, line 1 is YAML-shaped
+       (matches `key:` at start), and a closing `---` exists later.
+       Lines from line 0 through the closing `---` are frontmatter.
+       Inserting blanks here breaks YAML parsing (e.g.
+       `composes_with:` followed by blank line then `  - X` parses
+       as `composes_with: null` plus a separate top-level list).
+       MD026 would only affect frontmatter if a YAML-key line
+       happened to match the ATX-heading pattern (`^#+ `) — which
+       it can't, since YAML keys don't start with `#`. So the YAML
+       risk is concentrated in MD032's blank-insertion behavior,
+       and the frontmatter-skip protects that.
 
     2. **Fenced code blocks**: a line starting with 3+ backticks or
        3+ tildes; closing fence must be the same character class as
@@ -94,17 +110,41 @@ def _classify_lines(lines: list[str]) -> list[bool]:
     Both regions are conservatively treated as "inside" so transforms
     skip them. Better to skip than to corrupt structure.
 
-    YAML frontmatter detection is light-weight: only triggered when
-    line 0 is exactly `---` and a closing `---` appears later in
-    the file. Files without frontmatter (line 0 not `---`) skip
-    the frontmatter region entirely."""
+    YAML frontmatter detection is conservative — must distinguish
+    real frontmatter from a markdown file that happens to start with
+    a thematic break (`---` followed by content):
+
+      Real frontmatter:  line 0 is `---`,
+                         line 1 looks YAML-shaped (`key: value` or `key:`),
+                         a closing `---` exists later.
+      Thematic break:    line 0 is `---`,
+                         line 1 is markdown body (heading / prose / etc.).
+
+    The YAML-shape check on line 1 is the discriminator. Without it,
+    a file starting with a horizontal rule would have all subsequent
+    content marked as "inside frontmatter," skipping every list and
+    heading from being processed.
+
+    Files without frontmatter (line 0 not `---`, or line 1 not
+    YAML-shaped, or no closing `---`) skip the frontmatter region
+    entirely — pass-through to the fence-detection logic."""
     inside: list[bool] = [False] * len(lines)
 
-    # Pass 1: YAML frontmatter region (if file starts with `---`).
-    fm_end = -1
-    if lines and lines[0].strip() == "---":
-        for j in range(1, len(lines)):
-            if lines[j].strip() == "---":
+    # Pass 1: YAML frontmatter region — only if all three conditions:
+    # (a) line 0 is exactly `---`
+    # (b) line 1 is YAML-shaped (matches `key:` at start, ignoring
+    #     leading whitespace)
+    # (c) a closing `---` line exists later
+    # The (b) check distinguishes real frontmatter from a thematic
+    # break followed by markdown body.
+    if (
+        len(lines) >= 2
+        and lines[0].rstrip() == "---"
+        and _YAML_KEY_LINE.match(lines[1])
+    ):
+        fm_end = -1
+        for j in range(2, len(lines)):
+            if lines[j].rstrip() == "---":
                 fm_end = j
                 break
         if fm_end > 0:
