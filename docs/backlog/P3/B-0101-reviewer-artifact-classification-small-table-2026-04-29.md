@@ -32,22 +32,42 @@ Recent recurring reviewer-failure patterns from this session:
   re-reading the full file caused an over-correction
   (the 2026-04-29 ordinal-drift cascade).
 
-## Proposed small classification table (5 buckets, intentionally small per Amara's filter)
+## Proposed classification table (5 buckets + 1 split)
+
+Original taxonomy had 5 buckets; the 2026-04-29 session arc
+surfaced a sub-class within `REVIEWER_SNAPSHOT_LAG` that
+Amara flagged as deserving a split — the remedies differ.
 
 ```text
 REAL_DEFECT
   - actual code/doc/test issue caught by reviewer
   - action: fix in current PR
 
-REVIEWER_SNAPSHOT_LAG
-  - reviewer evaluated a stale snapshot of repo state
-  - cited reference is now valid on current main
-  - action: comment with merged SHAs, resolve thread
+SNAPSHOT_MISMATCH (parent class — split into two children)
+  ├─ BACKWARD_STALE_SNAPSHOT (was REVIEWER_SNAPSHOT_LAG)
+  │    - reviewer evaluated a stale snapshot of repo state
+  │    - cited reference is now valid on current main because
+  │      the dependency PR has already merged
+  │    - action: verify current main, comment with merged SHA,
+  │      resolve thread
+  │
+  └─ FORWARD_CROSS_PR_REFERENCE
+       - PR cites substrate introduced by a sibling PR that
+         has NOT yet merged into the base branch
+       - reference is valid only IF merge order is enforced
+       - action: encode dependency (`Depends-On: #N` in PR
+         body + pre-merge guard); do NOT resolve thread as
+         "valid post-merge" unless the dependency is
+         mechanically enforced
+       - distilled rule (Amara): "A forward reference is not
+         wrong if the dependency is enforced. A forward
+         reference is wrong if the dependency is only hoped."
 
 DISPLAY_ARTIFACT
   - reviewer's quoted excerpt contains characters not in source
   - benign hallucination from review-tool rendering
-  - action: resolve with brief explanatory comment
+  - action: resolve with brief explanatory comment + optional
+    git show + od -c hexdump as evidence
 
 INCOMPLETE_CONTEXT
   - reviewer's cited snippet is correct but not load-bearing
@@ -58,6 +78,12 @@ NEEDS_HUMAN_REVIEW
   - reviewer flagged something the acting agent can't classify
   - action: leave thread open, surface to maintainer
 ```
+
+The `SNAPSHOT_MISMATCH` parent class captures both temporal
+directions: **backward** (reviewer's view trails reality) vs
+**forward** (PR reference precedes reality). Same family,
+different remedies; the bucket-level fork prevents
+treating one as the other.
 
 ## Where this lands
 
