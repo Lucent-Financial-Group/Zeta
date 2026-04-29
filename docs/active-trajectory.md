@@ -119,16 +119,66 @@ A peer-call to Grok this session reported the inverse claim ("AceHack has the se
 
 ## Next action
 
-**All 9 infra files now classified ALREADY_RESOLVED or SAFE_TO_RESET_LFG_SUPERSEDES (verified 2026-04-29T09:50Z). Remaining steps to hard-reset:**
+**HARD-RESET BLOCKED by unresolved git pack corruption. Corruption-triage sub-trajectory must close FIRST.**
 
-1. **Spot-verify 3-5 of the other 21 modified files** to confirm the calibration heuristic still holds at scale. Pick the 5 LARGEST-by-line-count files. Update this file with results.
-2. **Run the hard-reset preflight** (see "Hard-reset preflight" section above): list local branches not reachable from origin/main, AceHack remote branches, worktrees, stashes, dangling commits. Classify each per RESET_PREREQ_PRESERVE / RESET_IRRELEVANT_PARKED / ALREADY_REACHABLE / NEEDS_HUMAN_DECISION. Preserve any RESET_PREREQ_PRESERVE items via named refs or PRs BEFORE hard-reset.
-3. **Surface to maintainer**: the 9-file table + 21-file spot-check + preflight result. Request explicit sign-off for hard-reset (per `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md` step 3: *"NEEDS AARON SIGN-OFF"*).
-4. **After sign-off**: hard-reset acehack/main = origin/main per the destructive-git-op pre-flight memory.
-5. **Verify 0/0/0**: `git rev-list --count origin/main..acehack/main` (expect 0) AND `git rev-list --count acehack/main..origin/main` (expect 0) AND `git diff origin/main..acehack/main` (expect empty).
-6. **Update this file**: replace "active trajectory" with the next priority (or delete if no follow-on).
+### Preflight result (2026-04-29T09:55Z)
 
-**Steps 1 + 2 are non-destructive overnight-safe work.** Steps 3-5 require maintainer presence + explicit sign-off.
+#### File classification — strong heuristic confirmation (10 of 30 verified)
+
+- **9 infra files** verified ALREADY_RESOLVED or SAFE_TO_RESET_LFG_SUPERSEDES (see table above; commit `fdbfa9e`).
+- **5 spot-checked** of the other 21 (CURRENT-aaron from calibration batch + 4 LARGEST-by-line: `feedback_lfg_master_acehack_*.md` / `tools/hygiene/fix-markdown-md032-md026.py` / `feedback_outdated_review_threads_*.md` / `feedback_confucius_unfolding_*.md`). All 5 show strong LFG-newer-dominates pattern (LFG-only line counts 127-188 vs AceHack-only 1-17). Each ALREADY_RESOLVED.
+- **20 of 30 not yet per-file verified** but heuristic confidence high (10/10 verified-so-far ALREADY_RESOLVED).
+
+File-level safety: AT THIS LAYER, hard-reset would not lose unique AceHack content.
+
+#### Branch / worktree / orphan preflight (2026-04-29T09:55Z)
+
+```text
+Local branches not reachable from origin/main:        794
+Remote AceHack branches not reachable from origin/main: 122
+Worktrees (locked under .claude/worktrees/agent-*):     ~9 visible
+Stashes:                                                  7
+Dangling unreachable objects:                           many (per fsck)
+```
+
+For HARD-RESET of `acehack/main` specifically: branches/worktrees/stashes are NOT affected (hard-reset only moves `acehack/main`, not other refs). They remain reachable post-reset. **All preflight items at this layer: ALREADY_REACHABLE or RESET_IRRELEVANT_PARKED.**
+
+#### **BLOCKER: git pack corruption persists**
+
+```text
+$ git fsck --full
+error: inflate: data stream error (incorrect data check)
+error: cannot unpack 9bf2daee3ce53c88633824f9532a0158aaa92ed9
+       from .git/objects/pack/pack-16732bccb3ace9ec45c913c57a1fd050fd730c3f.pack
+       at offset 4973478
+[+ many dangling blobs/trees/commits]
+```
+
+Object `9bf2daee...` is a BLOB (not a commit/tree, so commit history is unaffected). But the PACK is corrupt — git cannot unpack one of its objects. Per `memory/feedback_corruption_triage_discipline_object_health_incident_aaron_amara_2026_04_29.md`: corruption-first triage outranks all background work. Task #308 ("Corruption triage 2026-04-29 — exclusive lane (Aaron + Amara)") is marked completed but the corruption persists — that earlier work was DIAGNOSTIC; repair did not happen.
+
+**Implication for 0/0/0:** hard-reset is a destructive operation. Running it on a repo with a corrupt pack is unsafe. The corruption-triage sub-trajectory must close before hard-reset.
+
+Per the corruption memory's explicit guidance:
+
+> Never run `git gc` / `git prune` / `git repack -Ad` / `git fsck --lost-found` as a "fix" while investigating lost evidence.
+
+So the right move is NOT autonomous repair. It's **surface to maintainer** + wait for corruption-triage closure.
+
+### What stays the next action
+
+1. **STOP autonomous progress on 0/0/0 hard-reset.**
+2. **Surface to maintainer**:
+   - 9 infra files: ALREADY-COVERED. Hard-reset SAFE at infra-file layer.
+   - 5 of 21 other files spot-checked: ALREADY-COVERED. Heuristic strongly holds (10/10 verified ALREADY_RESOLVED).
+   - Branch/worktree/stash preflight: all ALREADY_REACHABLE or RESET_IRRELEVANT_PARKED for `acehack/main`-only hard-reset.
+   - **Pack corruption (P0 BLOCKER)**: `pack-16732bccb` has an unrecoverable inflate error on blob `9bf2daee...`. Persists from earlier triage (#308). Repair must happen before hard-reset.
+3. **Wait for maintainer direction** on corruption-repair path. Candidate paths (NOT autonomous; require maintainer call):
+   - Fresh-clone LFG into a sibling dir + verify integrity + replace local clone (per the corruption-triage memory's "fresh-clone verification" step).
+   - Identify the corrupted blob's referrer chain (which commits reference it) + targeted re-fetch.
+   - Accept-loss on that one blob if it's known-superseded content (NEEDS_HUMAN_DECISION on which option).
+4. **After corruption resolves**: re-run preflight, then return to step 3 of the original next-action sequence (request hard-reset sign-off).
+
+This file is the load-state. Even with this STOP marker, the work is preserved: the 9-file table holds, the 5-file spot-check holds, the heuristic holds. Only the corruption-repair step is blocking forward motion.
 
 ## Stop conditions
 
