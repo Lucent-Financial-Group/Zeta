@@ -225,9 +225,19 @@ NOT allowed during escrow:
 
 4. Report result (pass / fail with useful signal / no run).
 
-5. If pass or useful-signal: reopen the thesis as one focused
-   research note. If no run within 4 substantive rounds:
-   surface for explicit decision per expiration trigger.
+5. Apply the falsifier-gate transition (see "Falsifier gate"
+   section above):
+   - **Pass** → escrowed → active-research. Reopen the thesis
+     as one focused research note.
+   - **Fail with useful signal** → escrowed → revision-pending.
+     The bridge note (PR #707's artifact) is reopened for
+     revision per the failure signal; the thesis itself stays
+     escrowed pending revision result. After revision lands,
+     thesis returns to escrowed pending a NEW prototype result,
+     OR moves to retired if the failure shows the thesis is
+     fundamentally wrong.
+   - **No run within 4 substantive rounds** → surface for
+     explicit decision per expiration trigger.
 ```
 
 ## Composition with already-landed substrate
