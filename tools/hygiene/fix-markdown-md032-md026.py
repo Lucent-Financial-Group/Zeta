@@ -130,29 +130,66 @@ def _classify_lines(lines: list[str]) -> list[bool]:
     entirely — pass-through to the fence-detection logic."""
     inside: list[bool] = [False] * len(lines)
 
-    # Pass 1: YAML frontmatter region — only if all three conditions:
+    # Pass 1: YAML frontmatter region — only if all FIVE conditions:
     # (a) line 0 is exactly `---`
     # (b) line 1 is YAML-shaped (matches `key:` at start, ignoring
     #     leading whitespace)
-    # (c) a closing `---` line exists later
-    # The (b) check distinguishes real frontmatter from a thematic
-    # break followed by markdown body.
+    # (c) a closing `---` line exists within the next 200 lines
+    # (d) the line immediately BEFORE the closing `---` is YAML-
+    #     shaped, blank, or a YAML continuation (catches the case
+    #     where a closing `---` is just a thematic break — its
+    #     preceding line is markdown prose, not a YAML key)
+    # (e) at least 75% of non-blank lines BETWEEN the bookends are
+    #     YAML-shaped (catches files where a single YAML-looking
+    #     line appears after a thematic break, with a closing
+    #     thematic break further down — typical "tip:" / "note:" /
+    #     "warning:" prose patterns)
+    #
+    # The (b)/(d)/(e) checks together distinguish real frontmatter
+    # from prose where `note: ...` happens to follow a thematic
+    # break with another thematic break later. (c)'s 200-line cap
+    # is defense-in-depth: real frontmatter is rarely >50 lines.
+    _MAX_FRONTMATTER = 200
+    _YAML_RATIO_MIN = 0.75
     if (
         len(lines) >= 2
         and lines[0].rstrip() == "---"
         and _YAML_KEY_LINE.match(lines[1])
     ):
         fm_end = -1
-        for j in range(2, len(lines)):
+        for j in range(2, min(len(lines), _MAX_FRONTMATTER + 1)):
             if lines[j].rstrip() == "---":
                 fm_end = j
                 break
         if fm_end > 0:
-            for k in range(fm_end + 1):  # inclusive of closing `---`
-                inside[k] = True
-        # If no closing `---` found, conservatively don't mark any
-        # lines as frontmatter (the file probably isn't real
-        # frontmatter; treat normally).
+            # Check (d): line immediately before closing `---` is
+            # YAML-shaped, blank, or YAML continuation
+            prev_line = lines[fm_end - 1] if fm_end > 0 else ""
+            prev_ok = (
+                not prev_line.strip()
+                or _YAML_KEY_LINE.match(prev_line)
+                or prev_line.startswith(("  ", "\t", "- "))
+            )
+            # Check (e): YAML-shaped majority of non-blank lines
+            yaml_count = 0
+            non_blank = 0
+            for j in range(1, fm_end):
+                if lines[j].strip():
+                    non_blank += 1
+                    if (
+                        _YAML_KEY_LINE.match(lines[j])
+                        or lines[j].startswith(("  ", "\t", "- "))
+                    ):
+                        yaml_count += 1
+            ratio_ok = (
+                non_blank == 0
+                or (yaml_count / non_blank) >= _YAML_RATIO_MIN
+            )
+            if prev_ok and ratio_ok:
+                for k in range(fm_end + 1):  # inclusive of closing `---`
+                    inside[k] = True
+        # If conditions don't all hold, conservatively don't mark
+        # any lines as frontmatter (treat as thematic break / body).
 
     # Pass 2: fenced code blocks (skip lines already marked
     # inside-frontmatter — they don't open / close fences).
