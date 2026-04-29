@@ -57,26 +57,26 @@ rg -i 'service ?titan' \
 
 ### KEEP-NAME (2 — pitch context; ServiceTitan correctly named)
 
-1. **`docs/plans/servicetitan-crm-ui-scope.md`** — pitch-target scope doc. ServiceTitan IS the named adoption target. Action: inspect body for any unrelated brand-bleed; otherwise leave (path + content as-is).
-2. **`docs/pitch/README.md`** — pitch doc. ServiceTitan is the named adoption target. Action: inspect for unrelated brand-bleed; otherwise leave.
+- **`docs/plans/servicetitan-crm-ui-scope.md`** — pitch-target scope doc. ServiceTitan IS the named adoption target. Action: inspect body for any unrelated brand-bleed; otherwise leave (path + content as-is).
+- **`docs/pitch/README.md`** — pitch doc. ServiceTitan is the named adoption target. Action: inspect for unrelated brand-bleed; otherwise leave.
 
 ### BODY-REWORD (1 — reusable surface)
 
-3. **`samples/FactoryDemo.Db/README.md`** — generic-sample README. Inspected 2026-04-28: the only ServiceTitan reference is a memory-file path pointer (`memory/feedback_servicetitan_demo_sells_software_factory_not_zeta_database_2026_04_23.md`) — HISTORICAL-POINTER, not brand-bleed. Memory file paths are preserved per the no-churn-history rule. **Reclassified KEEP-NAME-AS-MEMORY-POINTER.**
+- **`samples/FactoryDemo.Db/README.md`** — generic-sample README. Inspected 2026-04-28: the only ServiceTitan reference is a memory-file path pointer (`memory/feedback_servicetitan_demo_sells_software_factory_not_zeta_database_2026_04_23.md`) — HISTORICAL-POINTER, not brand-bleed. Memory file paths are preserved per the no-churn-history rule. **Reclassified KEEP-NAME-AS-MEMORY-POINTER.**
 
 ### MIXED (1 — line-by-line inspection)
 
-4. **`docs/FACTORY-DISCIPLINE.md`** — governance / contributor doc. Inspected 2026-04-28: line ~197 cites "unlimited Copilot via ServiceTitan billing" — this is **structural funding-chain disclosure** (the rule explicitly preserves this), not brand-bleed. **Reclassified KEEP-AS-DISCLOSURE.**
+- **`docs/FACTORY-DISCIPLINE.md`** — governance / contributor doc. Inspected 2026-04-28: line ~197 cites "unlimited Copilot via ServiceTitan billing" — this is **structural funding-chain disclosure** (the rule explicitly preserves this), not brand-bleed. **Reclassified KEEP-AS-DISCLOSURE.**
 
 ### PER-ROW inspection (3 — context depends on row; inspected 2026-04-28)
 
-5. **`docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`** — UI dashboard row. ServiceTitan refs are memory-file path pointers in `composes_with:` + body (`project_frontier_burn_rate_ui_first_class_git_native_for_private_repo_adopters_servicetitan_84_percent_2026_04_23.md`). HISTORICAL-POINTER. **Reclassified KEEP-NAME-AS-MEMORY-POINTER.**
-6. **`docs/backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`** — already fixed in this session's commit. Verified clean (no brand-bleed; only memory-file pointer references remain).
-7. **`docs/backlog/P3/B-0008-investigate-ci-macos-slim-nightly-move-if-doubles-pr-wait-time.md`** — CI row. ServiceTitan refs are memory-file path pointers (same `project_frontier_burn_rate_ui_first_class_..._servicetitan_84_percent_*.md` cited). HISTORICAL-POINTER. **Reclassified KEEP-NAME-AS-MEMORY-POINTER.**
+- **`docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`** — UI dashboard row. ServiceTitan refs are memory-file path pointers in `composes_with:` + body (`project_frontier_burn_rate_ui_first_class_git_native_for_private_repo_adopters_servicetitan_84_percent_2026_04_23.md`). HISTORICAL-POINTER. **Reclassified KEEP-NAME-AS-MEMORY-POINTER.**
+- **`docs/backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`** — already fixed in this session's commit. Verified clean (no brand-bleed; only memory-file pointer references remain).
+- **`docs/backlog/P3/B-0008-investigate-ci-macos-slim-nightly-move-if-doubles-pr-wait-time.md`** — CI row. ServiceTitan refs are memory-file path pointers (same `project_frontier_burn_rate_ui_first_class_..._servicetitan_84_percent_*.md` cited). HISTORICAL-POINTER. **Reclassified KEEP-NAME-AS-MEMORY-POINTER.**
 
 ### AGGREGATE (1 — regenerate last)
 
-8. **`docs/BACKLOG.md`** — references per-row files. Regenerate AFTER all per-row inspections + rewrites land. (Per source-set-regeneration-hazard rule.)
+- **`docs/BACKLOG.md`** — references per-row files. Regenerate AFTER all per-row inspections + rewrites land. (Per source-set-regeneration-hazard rule.)
 
 ### Historical narrative (2 — preserve verbatim)
 
