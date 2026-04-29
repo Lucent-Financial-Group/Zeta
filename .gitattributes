@@ -40,3 +40,12 @@
 *.exe       binary
 *.pdb       binary
 *.jar       binary
+
+# Diagnostic artifacts (corruption triage, profile dumps, etc.):
+# track but suppress diffs and merge attempts so PR review stays
+# focused on conclusions, not raw evidence walls. Per the soulfile-
+# cleanliness rule (`memory/feedback_repo_is_soulfile_dont_commit_
+# raw_diagnostic_dumps_aaron_amara_2026_04_29.md`): default is
+# extracts + recipe, not raw dumps; this attribute kicks in only
+# when a raw artifact is genuinely load-bearing AND tracked.
+docs/lost-substrate/artifacts/** linguist-generated=true -diff -merge
