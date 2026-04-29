@@ -277,6 +277,31 @@ Tip-clean does not prove history-clean; history-corrupt
 does not prove tip-corrupt.
 ```
 
+```text
+rev-list can enumerate object references even when later
+object reads fail.
+Enumeration success is not content recovery.
+```
+
+```text
+Reachability claims must record the fsck mode used.
+"default fsck" and "fsck --no-reflogs" answer different
+questions.
+```
+
+```text
+Reachability is mode-dependent.
+Enumeration is not recovery.
+Cleanup is not triage.
+```
+
+```text
+Don't dirty the soulfile (the git repo and all its history).
+Triage artifacts go in via load-bearing extracts + a re-run
+recipe, not multi-MB raw dumps. See
+`memory/feedback_repo_is_soulfile_dont_commit_raw_diagnostic_dumps_aaron_amara_2026_04_29.md`.
+```
+
 ## Why this is in memory/, not just a doc
 
 Aaron emphasized: *"you for sure need to make sure your

@@ -5,18 +5,43 @@ sibling files), and the conclusion drawn. It exists so a future
 reader can verify the prose conclusions in the ledger against the
 artifacts, rather than trusting the summary.
 
-## Sibling artifact files
+## Sibling artifact files (load-bearing extracts only)
 
-| File | Source command |
+Per Aaron 2026-04-29 (the repo is the soulfile — keep it
+clean): only the **load-bearing extracts** are committed,
+not the raw multi-MB diagnostic dumps. The grep recipes that
+produce these extracts are below; future readers can re-run
+locally to regenerate the raw outputs if needed.
+
+| File | Source command (extract-recipe in re-run section) |
 |---|---|
-| `fsck-full.txt` | `git fsck --full --no-progress` (reflog-inclusive) |
-| `fsck-full-no-reflogs.txt` | `git fsck --full --no-reflogs --no-progress` |
-| `fsck-connectivity.txt` | `git fsck --connectivity-only --no-progress` |
-| `rev-list-all-objects.txt` | `git rev-list --objects --all` |
-| `rev-list-all-objects.err` | stderr from the above (corruption errors) |
-| `gc-config-snapshot.txt` | per-key `git config --get gc.*` snapshot |
+| `fsck-extracts.txt` | grep -C 5 of corrupt SHAs against `git fsck` outputs in three modes (reflog-inclusive / `--no-reflogs` / `--connectivity-only`) plus per-mode line-counts to evidence mode-dependence |
+| `rev-list-extracts.txt` | grep of corrupt SHAs against `git rev-list --objects --all` |
+| `git-gc-config.txt` | git version + per-key `git config --get gc.*` + `gc.rerereResolved` / `gc.rerereUnresolved` snapshot |
+| `hour-05Z-show-ref.txt` | `git show-ref \| grep hour-05Z` |
+| `hour-05Z-ls-remote.txt` | `git ls-remote --heads origin hour-05Z` (empty = origin no longer has the branch) |
 
 All files are point-in-time evidence; do not edit.
+
+### Re-run recipe (regenerates raw outputs locally)
+
+If a future reader wants the raw multi-MB dumps (this file
+intentionally does not commit them — see Aaron's
+soulfile-cleanliness rule), run from repo root:
+
+```bash
+mkdir -p /tmp/corruption-triage-raw
+git fsck --full --no-progress              > /tmp/corruption-triage-raw/fsck-full.txt 2>&1
+git fsck --full --no-reflogs --no-progress > /tmp/corruption-triage-raw/fsck-full-no-reflogs.txt 2>&1
+git fsck --connectivity-only --no-progress > /tmp/corruption-triage-raw/fsck-connectivity.txt 2>&1
+git rev-list --objects --all               > /tmp/corruption-triage-raw/rev-list-all-objects.txt 2>&1
+ls -la /tmp/corruption-triage-raw/
+```
+
+The raw outputs are reproducible from any clone with the same
+local refs at the same point in time. Committing the extracts
+preserves the load-bearing evidence; committing the raw dumps
+would dirty the soulfile.
 
 ## Two corrupt objects under triage
 
