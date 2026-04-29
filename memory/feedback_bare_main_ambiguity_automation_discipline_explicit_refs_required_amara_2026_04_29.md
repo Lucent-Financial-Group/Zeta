@@ -117,26 +117,33 @@ ensures the remote-tracking ref is refreshed against
 origin's `main` exactly. The hard-stop block prevents the
 "continued past fatal" failure mode that motivated this rule.
 
-**Or, with a local main branch tracking origin** (this form
-DOES use the bare `main` name, but only AFTER the local
-`refs/heads/main` is explicitly created and tracking
-`origin/main` — at that point bare `main` is no longer
-ambiguous because the local branch exists and Git's lookup
-order finds it first):
+**Or, with a local main branch tracking origin** — but only
+when you can guarantee the local `refs/heads/main` already
+exists OR the `git branch --track` step succeeds before any
+bare-`main` operation. The safest form uses fully-qualified
+refs throughout, never bare `main`, even on the
+`switch`/`reset` lines:
 
 ```bash
 git fetch origin refs/heads/main:refs/remotes/origin/main --quiet
-git branch --track main refs/remotes/origin/main 2>/dev/null || true
-git switch main || { echo "failed to switch to local main"; exit 1; }
+# Create the local tracking branch UNCONDITIONALLY at the
+# explicit ref (idempotent: -f forces update if it already
+# exists; explicit start-point removes any guessing):
+git branch -f main refs/remotes/origin/main
+git switch refs/heads/main || { echo "failed to switch to refs/heads/main"; exit 1; }
 git reset --hard refs/remotes/origin/main
 ```
 
-The fully-qualified `refs/remotes/origin/main` form is used
-throughout this snippet to remove all ambiguity. The bare
-`git switch main` works here because at that point a local
-`refs/heads/main` exists and is unambiguous (multiple-remote
-guessing only fires when the bare name doesn't match a local
-ref).
+The previous version of this snippet had `git switch main`
+(bare) which only works AFTER `refs/heads/main` exists
+locally — but on first-run scripts where the local branch
+hasn't been created, the bare `main` would still hit the
+multi-remote ambiguity fatal. The `git switch refs/heads/main`
+form is unambiguous regardless of local state: it explicitly
+asks Git for the local-branch ref, never the remote-tracking
+namespace. That's the form to use in automation that may run
+on a fresh clone or a working copy where `refs/heads/main`
+might not exist yet.
 
 **Branch off AceHack main**:
 
