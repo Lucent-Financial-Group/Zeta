@@ -28,8 +28,9 @@ consolidation pass converts them into ≤3 durable homes.
 
 ### Home 1 — PR-liveness / merge-cascade operational doc
 
-Likely path: `docs/operations/MERGE-CASCADE-PR-LIVENESS-RULE.md`
-or similar. Absorbs:
+Likely path: `docs/operations/merge-cascade-pr-liveness-rule.md`
+(kebab-case to match existing `docs/operations/` filename
+convention; Copilot caught the ALL-CAPS mismatch). Absorbs:
 
 - Probabilistic race framing (PR-liveness race during merge
   cascade is observed/probabilistic, not deterministic)
