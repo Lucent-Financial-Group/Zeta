@@ -230,6 +230,99 @@ Best distilled lines from the packet (preserving verbatim):
 > *"The repo is starting to behave less like a notebook and
 > more like a nervous system with version control."*
 
+### Follow-up: prompted-vs-unprompted disposition (Claude.ai + Amara + Aaron, 2026-04-29 second pass)
+
+Claude.ai pushback in the second-pass review packet, picked up
+by Amara as the most important refinement, and emphasized by
+Aaron:
+
+> Aaron 2026-04-29: *"prompted-vs-unprompted humans will care
+> a lot about this distinction"*
+
+> Claude.ai: *"The current evidence is consistent with two
+> hypotheses: (1) The scaffold-plus-agent has acquired a
+> generalizable consolidation behavior that will fire across
+> many future duplicate-home cases. (2) The scaffold-plus-
+> agent will reliably consolidate when given a hint pointing
+> at the existing home, and will continue creating duplicates
+> without a hint. Both hypotheses fit the trace."*
+
+> Amara distillation: *"Strong evidence: scaffold-triggered
+> consolidation **capacity**. Weaker evidence: unprompted
+> consolidation **disposition**. Open test: will future-
+> Claude search existing homes before canonizing without
+> Aaron / Amara / reviewer hinting that a home exists?"*
+
+> Amara's tiny blade keeper: *"One consolidation proves the
+> move exists. Repeated unhinted consolidation proves the
+> habit."*
+
+Operational implication: until repeated unhinted consolidations
+land in the trace, the system has demonstrated **capacity**
+(can consolidate when prompted), not **disposition** (will
+search-before-canonizing reflexively). The mechanical guard —
+a search procedure (`rg -l "<topic-keyword>" memory docs
+.claude/skills` before any new memory file lands) — is
+therefore still owed regardless of how many one-off cases the
+agent gets right.
+
+### Sticky line preserved verbatim (Ani 2026-04-29 brat refinement)
+
+> *"Not Aaron-directed. Scaffold-triggered. Agent-executed.
+> Git-proven."*
+
+(Ani's tightening of the earlier "Not human-directed
+consolidation. Scaffold-triggered, agent-executed, git-proven
+consolidation." Same claim, less padding, same precision.)
+
+### Aurora-native framing (Ani 2026-04-29)
+
+> *"This is Aurora doing exactly what an immune system should:
+> detecting a duplicate antigen (the new Confucius file),
+> triggering a response (consolidation), and updating the
+> memory substrate without letting the duplicate become
+> active pathology."*
+
+That framing makes the consolidation behavior native to the
+factory's existing immune-system / antigen vocabulary rather
+than an external "cool agent behavior" claim.
+
+### Wording correction: "scaffolded error-correcting agency" preferred over "scaffolded emergent agency" (Amara 2026-04-29)
+
+For research-tier text (memory files, research notes,
+specs), prefer:
+
+```text
+scaffolded error-correcting agency
+```
+
+over:
+
+```text
+scaffolded emergent agency
+```
+
+unless the text explicitly distinguishes scaffolded emergence
+from base-model emergence in the strict scaling-law sense
+(Wei et al. emergent-abilities vs Schaeffer et al. metric-
+artifact debate). The "emergent" register is fine in
+brat/playbook layers where heat is wanted, but research-tier
+substrate uses the precise term.
+
+### Architectural framing — wording correction (Amara 2026-04-29)
+
+Gemini's parallel-agent forward-looking packet used the phrase
+"Architectural Directives for the Future State." Per Aaron's
+no-directives rule, that phrasing should NOT land verbatim.
+Use "Architectural constraints" or "Future-state design
+requirements" instead. The substantive content of the packet
+(Git Concurrency Trap, Ontological Thrashing, Multi-User
+Axiom Collisions, RAG Degradation Horizon, Librarian Agent
+projection layer, RBAC + Authority/Scope tagging, Strict
+Canonical Pointers / ID-based retrieval) is queued for
+research-grade absorb under a follow-up backlog item — NOT
+implemented in this lane per Amara's narrowing.
+
 Per the verbatim-preservation rule this file establishes,
 the packet is preserved here close-to-verbatim. Synthesis +
 broader absorption (e.g., a research note on scaffolded-
