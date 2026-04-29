@@ -105,36 +105,61 @@ Best blade (Amara): *"Line-count dominance is a smoke detector. Content equivale
 
 The drift trajectory is a metric; the GATE is the ledger. Hand-counts drift; ledgers from `git diff --numstat` don't.
 
+The ledger is computed in two passes (text via `numstat`, binary direction via `name-status`) and joined NUL-safely. Per multi-AI review 2026-04-29T10:50Z: binary files emit `-/-` in `numstat` because lines aren't countable, but they CAN be erased on hard-reset, so they need direction classification — `acehack-only` vs `lfg-only` vs `modified-on-both`.
+
 ```bash
-git diff --numstat origin/main..acehack/main | awk '
-  # Binary files: numstat emits "-\t-\t<path>". They have no countable lines,
-  # but content can still be lost on hard-reset. Count them separately so
-  # they require explicit classification rather than being silently dropped.
-  $1 == "-" && $2 == "-" {
-    binary_files += 1
-    next
-  }
-  {
-    add += $1; del += $2; files += 1
-    if ($1 == 0) zero_files += 1
-  }
-  END {
-    print "text_modified_files=" files
-    print "zero_acehack_only_files=" zero_files
-    print "potential_loss_lines=" add
-    print "lfg_newer_lines=" del
-    print "binary_modified_files=" (binary_files+0)
-    if ((binary_files+0) > 0) {
-      print "WARNING: binary files in diff need separate classification (lines uncountable)."
-      print "Run: git diff --name-status origin/main..acehack/main | awk '\''$1!~/^[D]$/'\'' | grep -F -f <(git diff --numstat origin/main..acehack/main | awk '\''$1==\"-\"{print $3}'\'')"
-    }
-  }
-'
+# Pass 1: text files (numstat reports lines)
+git diff --numstat -z origin/main..acehack/main \
+  | awk -v RS='\0' '
+      $1 != "-" && $2 != "-" {
+        add += $1; del += $2; files += 1
+        if ($1 == 0) zero_files += 1
+      }
+      END {
+        print "text_modified_files=" files
+        print "zero_acehack_only_text_files=" zero_files
+        print "potential_loss_lines=" add
+        print "lfg_newer_lines=" del
+      }
+    '
+
+# Pass 2: binary files split by direction (name-status reports A/M/D/R/T)
+# - "A" from AceHack-side perspective = AceHack-only (hard-reset ERASES) → loss-relevant
+# - "D" from AceHack-side perspective = LFG-only (hard-reset ADDS) → not a loss
+# - "M"/"R"/"T" = modified on both sides → needs semantic classification
+git diff --numstat -z origin/main..acehack/main \
+  | awk -v RS='\0' 'BEGIN{ORS="\0"} $1 == "-" && $2 == "-" { print $3 }' \
+  > /tmp/binary-paths.nul
+if [ -s /tmp/binary-paths.nul ]; then
+  git diff --name-status -z origin/main..acehack/main \
+    | awk -v RS='\0' '
+        # name-status with -z: status<NUL>path or for renames status<NUL>old<NUL>new
+        BEGIN{i=0}
+        {if (i==0) {st=$0; i=1} else {p=$0; print st "\t" p; i=0}}
+      ' \
+    | grep -Ff /tmp/binary-paths.nul \
+    | awk -F'\t' '
+        $1=="A" { ace_only += 1 }
+        $1=="D" { lfg_only += 1 }
+        $1 ~ /^[MRTC]/ { modified_both += 1 }
+        END {
+          print "binary_acehack_only_files=" (ace_only+0)
+          print "binary_lfg_only_files=" (lfg_only+0)
+          print "binary_modified_or_renamed_files=" (modified_both+0)
+        }
+      '
+fi
 ```
 
-Per Codex 2026-04-29T10:42Z catch (PR #835): the prior version of this script silently excluded binary files via `$1 != "-" && $2 != "-"`. `git diff --numstat` emits `-/-` for binary content because it can't count lines, but binary files CAN still be erased on hard-reset. New version counts them separately and surfaces a warning when present.
+Per Codex 2026-04-29T10:42Z catch + Amara 2026-04-29T10:50Z direction-split: the prior one-pass version silently excluded binary files via `$1 != "-" && $2 != "-"`. v2 counts binary direction separately and uses `-z` NUL-safe parsing throughout (handles paths with spaces / odd chars).
 
-Verified 2026-04-29T10:43Z: the 5 binary-classified files in the current diff are all LFG-only (status `D` from AceHack perspective; hard-reset ADDS them, doesn't erase AceHack content), so this specific instance has zero binary-loss surface. The script fix is for general correctness.
+**Reset-loss surface for binary files:**
+
+- `binary_acehack_only_files` → would be ERASED on hard-reset; this is the gate-relevant count.
+- `binary_lfg_only_files` → would be ADDED on hard-reset; not a loss.
+- `binary_modified_or_renamed_files` → exists on both with content/mode/path differences; needs semantic classification (e.g., is the AceHack version more correct, or is LFG's the canonical?).
+
+Verified 2026-04-29T10:43Z: the 5 binary-classified files in the current diff have status `D` (LFG-only), so `binary_acehack_only_files = 0` and `binary_modified_or_renamed_files = 0` in this specific round.
 
 Current ledger (computed 2026-04-29T10:25Z):
 
@@ -150,14 +175,15 @@ unclassified_lines    = 176    HEURISTIC_LFG_DOMINATES — pending per-file sema
 Hard-reset is signoff-eligible ONLY when:
 
 ```text
-unclassified_lines             = 0
-unsafe_lines                   = 0
-binary_acehack_only_files      = 0  (binary files exist only on LFG, OR each binary file has been classified)
-fresh-clone fsck               = clean
-hard-reset preflight           = clean
-ls-remote-vs-fetch SHA match   = verified
-dry-run push shape             = clean
-maintainer signoff             = yes
+unclassified_lines                       = 0
+unsafe_lines                             = 0
+binary_acehack_only_files                = 0  (would be ERASED on hard-reset)
+binary_modified_or_renamed_classified    = all  (each must be SAFE_TO_RESET_LFG_SUPERSEDES or NEEDS_FORWARD_SYNC)
+fresh-clone fsck                         = clean
+hard-reset preflight                     = clean
+ls-remote-vs-fetch SHA match             = verified
+dry-run push shape                       = clean
+maintainer signoff                       = yes
 ```
 
 Per multi-AI review 2026-04-29T10:35Z: dry-run push shape verification is added to the gate. Validates refspec + credentials + push shape before the real destructive operation. The real lease still matters at the real push (server-side check); dry-run is an additive safety check, not a replacement.
@@ -358,6 +384,15 @@ A peer-call to Grok this session reported the inverse claim ("AceHack has the se
 
 **Hard-reset is NOT YET signoff-eligible.** The strict gate above requires `unclassified_lines = 0`, and the current ledger says `unclassified_lines = 176` (18 files in HEURISTIC_LFG_DOMINATES). The next agent-owned work is per-file semantic inspection of those 18 files to either promote each to SAFE_TO_RESET_LFG_SUPERSEDES (with named evidence) or downgrade to NEEDS_FORWARD_SYNC.
 
+### Deferred follow-ups (NOT blocking 0/0/0 progress, captured for visibility)
+
+Per multi-AI review 2026-04-29T10:50Z packet:
+
+- **Gate-runner script**: build `tools/zero-zero-zero/check-gate.sh` that emits a machine-readable summary of all 9 gate conditions and fails closed. Replaces the prose ledger with a verifiable-by-execution gate. Otherwise the conditions can drift via hand-edit.
+- **Self-reference rule for personas in operational specs**: "Otto" is a named identity in the substrate. Should references to "Otto" in reusable operational specs follow the same role-vs-name rule as references to "Aaron" / "Amara"? Probably yes. Capture in `docs/AGENT-BEST-PRACTICES.md` extension.
+- **LOST recovery soft-trigger predicate format**: "deferred with stated condition" needs a verifiable predicate that auto-resurfaces the work for resume/retire decision when the condition becomes true. Example shape: `"deferred until: (B-0105 lands) AND (no consolidation work is active)"`.
+- **Time-gap between dry-run and real push**: structure the destructive sequence so dry-run + real push run as one operator-approved unit, not two separate decisions. Capture timestamps for both for any post-incident analysis.
+
 State summary:
 
 - 9 infra files: SAFE_TO_RESET_LFG_SUPERSEDES (6 files, 97 lines, named evidence) or ALREADY_RESOLVED (3 files, 0 lines, identical content).
@@ -424,6 +459,11 @@ Remaining steps to clear the gate:
      refs/remotes/origin/main:refs/heads/main
    then
      echo "LEASE REJECTED: acehack/main moved or expectation stale."
+     echo ""
+     echo "If dry-run succeeded above and real push rejected: the remote moved"
+     echo "between dry-run and push. This is EXPECTED behavior — the lease did"
+     echo "its job. The fix is NOT to debug syntax."
+     echo ""
      echo "DO NOT RETRY BLINDLY. Re-fetch, recompute content-drift ledger,"
      echo "and re-enter the signoff gate from the top."
      exit 1
