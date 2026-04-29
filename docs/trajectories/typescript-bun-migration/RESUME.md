@@ -26,13 +26,21 @@ Per the maintainer-channel correction (Amara + Deepseek, 2026-04-29 multi-AI rev
 
 After PR #849, Zeta has zero Python files in `tools/` (Zeta-authored — the 22 `.py` files under `tools/lean4/.lake/packages/mathlib/scripts/` are mathlib upstream, not in scope). Python→TS in `tools/` is **100% complete**.
 
-## Inventory — Bash (tools/, Zeta-authored, 55 files)
+## Inventory — Bash (tools/, Zeta-authored, 56 files)
 
 Three buckets per the multi-AI review surface's classification ask.
 
-**Count correction**: prior chat estimates referenced "~68 .sh files" — that figure included `tools/lean4/.lake/packages/...` upstream content (mathlib, proofwidgets) which is not Zeta-authored and not in scope for this trajectory. The verified Zeta-authored count is **55**. Both numbers recorded here so future readers don't hit conflicting figures across the substrate. Computed via: `find tools/ -name "*.sh" -type f | grep -v ".lake/" | wc -l`.
+**Count correction history** (recorded so future readers don't hit conflicting figures):
 
-### Bucket A — Should stay Bash (~13 files)
+- Prior chat estimates: "~68 .sh files" — included `tools/lean4/.lake/packages/...` upstream content (mathlib, proofwidgets), out of scope.
+- Initial RESUME claim: 55 — also wrong, off by one due to a manual miscount.
+- **Verified count: 56** (this revision). Computed by:
+  `find tools/ -name "*.sh" -type f | grep -v ".lake/" | wc -l`
+  — independently re-run by reviewer (chatgpt-codex-connector) on PR #865, who caught the off-by-one.
+
+This is the "tested means enforcement-surface-matches-failure-surface" rule firing — a reviewer's mechanical re-verification caught my own count error in the same revision that introduced the "counts before percentages" rule. Recording the lineage here as evidence the rule works.
+
+### Bucket A — Should stay Bash (14 files)
 
 These run **before** Bun is installed (post-install scripts can use Bun; pre-install scripts cannot). Per Otto-235 4-shell portability target (macOS bash 3.2 / Ubuntu / git-bash / WSL), these are the bootstrap layer.
 
@@ -55,7 +63,7 @@ tools/profile.sh
 
 Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
 
-### Bucket B — Should become TypeScript (~38 files)
+### Bucket B — Should become TypeScript (39 files)
 
 Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the two scripts ported in #849.
 
@@ -94,7 +102,6 @@ tools/lint/doc-comment-history-audit.sh
 tools/lint/no-directives-otto-prose.sh
 tools/lint/no-empty-dirs.sh
 tools/lint/runner-version-freshness.sh
-tools/lint/safety-clause-audit.sh
 tools/peer-call/codex.sh
 tools/peer-call/gemini.sh
 tools/peer-call/grok.sh
@@ -104,7 +111,7 @@ tools/skill-catalog/backfill_dv2_frontmatter.sh
 
 Rationale: type safety, structured error handling, easier testing, jq/awk/grep replaced by JS object operations, gh CLI shell-out replaced by Octokit when valuable.
 
-### Bucket C — Needs human decision (~3 files)
+### Bucket C — Needs human decision (3 files)
 
 ```text
 tools/hygiene/check-github-settings-drift.sh
@@ -161,7 +168,22 @@ Coherent budget-report cluster; would advance task #287 (cost monitoring) in add
 
 These rules apply to this trajectory's execution and are recorded here per the locked discipline that minor lane-discipline additions land in the active lane artifact rather than as standalone doctrine packets.
 
-**Polite waiting is still waiting** (added 2026-04-29 via multi-AI review surface convergence — Amara + Deepseek + Claude.ai). If the next lane is already specified in the locked discipline, its first action is read-only, and no authority boundary is crossed, **start immediately**. Do not wait for the maintainer. Do not ask if it's OK to start. The maintainer is not the lane-transition protocol. This rule is the soft-form sibling of the resume-protocol failure mode the trajectory work was designed to fix.
+**Polite waiting is still waiting** (added 2026-04-29 via multi-AI review surface convergence — Amara + Deepseek + Claude.ai). Start immediately when **all three** are true:
+
+1. The next lane is already specified in locked discipline.
+2. The first action is read-only.
+3. No authority boundary is crossed.
+
+**Operational definition of "no authority boundary crossed"** (the third condition, expanded from judgment to checklist per Claude.ai's catch + Amara's trim):
+
+- no host mutation
+- no destructive git operation
+- no permission change
+- no merge
+
+If all three conditions are true, proceed. Do not wait for the maintainer. Do not ask if it's OK to start. Do not create a doctrine note before acting. The maintainer is not the lane-transition protocol.
+
+**The anti-waiting rule must not become a waiting rule.** This rule is recorded here, in the active artifact already being touched, rather than as a standalone doctrine packet — *action first, record when the artifact is already being touched*. A rule that prevents waiting must not wait to be recorded.
 
 **Counts before percentages.** Track concrete counts and buckets before claiming progress as a percentage. Every percentage requires a defined denominator that is itself mechanically derivable. The Python inventory's "100% complete" is well-defined (denominator = 2 ports, both landed); future progress claims need the same standard.
 
