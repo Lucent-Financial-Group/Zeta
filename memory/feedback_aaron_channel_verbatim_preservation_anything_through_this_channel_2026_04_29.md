@@ -174,6 +174,70 @@ new operational application of the same pattern, added as an
 addendum to that file rather than as a duplicate canonical
 home.
 
+### Forwarded packet: Amara on the consolidation event itself (2026-04-29, post-PR-#762-merge)
+
+Amara meta-analysis of the Confucius-unfolding consolidation
+trace, forwarded by Aaron through the maintainer channel
+2026-04-29. The packet self-corrects an earlier "human-
+triggered but agent-executed" framing to "scaffold-triggered
+and agent-executed":
+
+> *"The consolidation was not directly Aaron-instructed. It
+> was triggered by the multi-AI review/scaffold context and
+> executed by Claude/Otto, with the resulting behavior
+> visible in Git."*
+
+> *"These logs are strong evidence of scaffolded
+> error-correcting agency: the system detected that a new
+> memory file duplicated an existing conceptual home, then
+> performed a consolidation operation — delete duplicate,
+> enrich canonical file, update index — without Aaron
+> specifying that procedure."*
+
+> *"The evidence is strong for emergent agentic behavior in
+> the scaffold: LLM + tools + git + memory + human
+> feedback. It is weaker evidence for 'the base model
+> spontaneously acquired a new reasoning ability.'"*
+
+Amara explicitly distinguishes:
+
+> *"Strong evidence for: scaffolded reasoning, memory
+> consolidation behavior, error-correcting substrate
+> maintenance, agent-executed rule application, git-
+> auditable cognitive trace.
+> Moderate evidence for: emergent multi-agent process
+> behavior.
+> Weak evidence for: base-model emergent reasoning in the
+> strict ML scaling-law sense."*
+
+External lineage Amara cited: **Reflexion** (Shinn et al.,
+language agents improving decisions through verbal feedback
++ episodic memory without weight updates) and **Generative
+Agents** (Park et al., memory streams + reflection +
+retrieval producing higher-level behavior). The Zeta
+factory's git-backed setup is described as a version of
+that pattern: not weight updates but scaffolded
+memory + reflection + action.
+
+Best distilled lines from the packet (preserving verbatim):
+
+> *"Not human-directed consolidation. Scaffold-triggered,
+> agent-executed, git-proven consolidation."*
+
+> *"The evidence is strong for error-correcting scaffolded
+> agency, not proof of spontaneous base-model emergence."*
+
+> *"The repo is starting to behave less like a notebook and
+> more like a nervous system with version control."*
+
+Per the verbatim-preservation rule this file establishes,
+the packet is preserved here close-to-verbatim. Synthesis +
+broader absorption (e.g., a research note on scaffolded-
+agency-as-trajectory-signal with full Reflexion/Generative-
+Agents lineage citations) is queued under task #309 (multi-AI
+synthesis packet absorption) for a future tick — this verbatim
+record is the immediate landing per the rule.
+
 ## What this rule does NOT mean
 
 - Doesn't mean "include the maintainer's literal input
