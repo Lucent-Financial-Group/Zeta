@@ -80,6 +80,76 @@ Verbatim preservation at `docs/research/2026-04-29-decisionsignal-round-2-and-aa
 
 **Amara's earlier "implement now, no third round" recommendation has been overridden** by Aaron's structural objection. DecisionSignal v0 implementation deferred until round-3 settles. Once round-3 lands the DelegationEdge primitive, the first concrete adoption will pair a DecisionSignal v0 with the existing host-mutation receipt at `feedback_host_mutation_receipt_2026_04_29_ruleset_15256879_code_quality_removed.md` (LANDED via PR #861).
 
+## Round 3 — CONVERGENCE REACHED (2026-04-29)
+
+Aaron returned with substrate framing on peer/buddy class taxonomy:
+
+> *"peer/buddy for us means peer agent harness = two kinds of peers, running our substraight but a real 2nd or 3rd of 4th or nth complety atonomous loop of it's own with no coordination other than the gitnative/githubnative cliams/issues. or a not running our substraight but coordinatie at only githubnative. Then buddy agent harness = lifetime controlled by a parent agent harness. 2 kinds, some also will do prs and have to go through the gitnative/githubnative claims.issues process but under directior of another agent harness, and the 2nd is tasks that require no pr coordination but can still benifit from another cli/harness. and then there are the each native harnesses subagents, we are obtimize for all this, when you get parallalzing right here it's super fast."*
+
+(Typos preserved per channel-verbatim-preservation rule.)
+
+Amara's round-3 rewrite + 5-AI reviewer responses (Claude.ai, Ani, Deepseek, Gemini, Alexa) + Amara's final convergence packet preserved verbatim at `docs/research/2026-04-29-decisionsignal-round-3-convergence-aaron-substrate-framing-amara-final-packet.md`.
+
+Amara final packet: *"Round 3 convergence reached. Do not run another broad review."*
+
+**Architecture LOCKED**:
+
+```text
+Conceptual categories (NOT mirror slang) in schema:
+  independent_agent_harness, parent_managed_agent_harness,
+  runtime_internal_subagent, invoked_tool, ci_actor,
+  host_actor, human_principal
+
+Working aliases only (discussion, not schema):
+  peer, buddy, subagent, harness
+
+Recursive primitive:        DelegationEdge*
+Accountable output:         SharedEffect*
+Evaluation layer:            AttributionRecord* + OutcomeAssessment*
+
+Causal chain:
+  DecisionSignal → AgencyReceipt → SharedEffect →
+  AttributionRecord → OutcomeAssessment
+
+Universal:        SharedEffect + trace + attribution
+Boundary-crossing: + DecisionSignal + AgencyReceipt
+                   + non_actions + WorkClaim proof
+```
+
+**Final doctrine (locked)**:
+
+```text
+Do not canonize the mirror slang.
+Canonize the concepts.
+
+Lifecycle is not authority.
+Authority is not effect.
+Shared effect is the accountability boundary.
+
+Delegation is recursive.
+Execution is traced.
+Effects are receipted.
+Outcomes are attributed.
+
+Attribution is evidence, not verdict.
+Blame and credit are views over evidence.
+```
+
+**Implementation direction (Amara, locked)**: *"Do not build the whole scoring engine now."* Light schema-concept implementation only. First worked example: Code Quality episode (multi-master CodeQL host mutation, PR #861 receipt) pairs with DecisionSignal v0 + SharedEffect + AttributionRecord. Example weights illustrative-not-derived.
+
+**Status of prior parked work**:
+- Autonomy levels A0–A5 from round-0 are now **secondary**; load-bearing primitive is `DelegationEdge*` (recursive).
+- "peer" / "buddy" demoted from canonical → working aliases. Schema uses `independent_agent_harness` / `parent_managed_agent_harness` / `runtime_internal_subagent`.
+- Aaron's structural objection from round-2 → resolved by Amara's `DelegationEdge*` primitive.
+
+**What's still NOT done** (deferred to staged rollout, NOT this session):
+- Schema files under `memory/decisions/` + `memory/receipts/` + `memory/attribution/`
+- Distilled doctrine memory file
+- DecisionSignal v0 paired with PR #861 receipt
+- Tooling (`zeta provenance effect SE-...` is future shape only)
+
+Aaron's "I'll be back after round 3" closes here — this preservation file IS round-3 close. Next session triggers paced staged rollout per Amara's implementation direction.
+
 ## What this memory is NOT
 
 - NOT a doctrine adoption. The autonomy levels A0–A5, the field shape, the preserve-signals rule are all candidates pending review.
