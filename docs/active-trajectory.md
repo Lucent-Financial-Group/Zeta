@@ -98,18 +98,34 @@ The drift trajectory is a metric; the GATE is the ledger. Hand-counts drift; led
 
 ```bash
 git diff --numstat origin/main..acehack/main | awk '
-  $1 != "-" && $2 != "-" {
+  # Binary files: numstat emits "-\t-\t<path>". They have no countable lines,
+  # but content can still be lost on hard-reset. Count them separately so
+  # they require explicit classification rather than being silently dropped.
+  $1 == "-" && $2 == "-" {
+    binary_files += 1
+    next
+  }
+  {
     add += $1; del += $2; files += 1
     if ($1 == 0) zero_files += 1
   }
   END {
-    print "modified_files=" files
+    print "text_modified_files=" files
     print "zero_acehack_only_files=" zero_files
     print "potential_loss_lines=" add
     print "lfg_newer_lines=" del
+    print "binary_modified_files=" (binary_files+0)
+    if ((binary_files+0) > 0) {
+      print "WARNING: binary files in diff need separate classification (lines uncountable)."
+      print "Run: git diff --name-status origin/main..acehack/main | awk '\''$1!~/^[D]$/'\'' | grep -F -f <(git diff --numstat origin/main..acehack/main | awk '\''$1==\"-\"{print $3}'\'')"
+    }
   }
 '
 ```
+
+Per Codex 2026-04-29T10:42Z catch (PR #835): the prior version of this script silently excluded binary files via `$1 != "-" && $2 != "-"`. `git diff --numstat` emits `-/-` for binary content because it can't count lines, but binary files CAN still be erased on hard-reset. New version counts them separately and surfaces a warning when present.
+
+Verified 2026-04-29T10:43Z: the 5 binary-classified files in the current diff are all LFG-only (status `D` from AceHack perspective; hard-reset ADDS them, doesn't erase AceHack content), so this specific instance has zero binary-loss surface. The script fix is for general correctness.
 
 Current ledger (computed 2026-04-29T10:25Z):
 
@@ -127,6 +143,7 @@ Hard-reset is signoff-eligible ONLY when:
 ```text
 unclassified_lines             = 0
 unsafe_lines                   = 0
+binary_acehack_only_files      = 0  (binary files exist only on LFG, OR each binary file has been classified)
 fresh-clone fsck               = clean
 hard-reset preflight           = clean
 ls-remote-vs-fetch SHA match   = verified
