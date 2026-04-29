@@ -61,14 +61,35 @@ _FENCE_OPEN = re.compile(r"^( {0,3})(`{3,}|~{3,})\s*([^`]*)$")
 
 # YAML frontmatter line discriminator: matches a non-empty line that
 # starts with a key followed by `:` (with optional leading whitespace
-# and optional value). This distinguishes real YAML frontmatter from
-# a thematic-break line followed by markdown body. Examples that
-# match: `id: B-0001`, `tags:`, `composes_with:`, `  - item`. Note
-# `  - item` matches because it could be a YAML list item under a
-# key, but in practice a frontmatter never starts on line 1 with a
-# list item — the very-first content line should be a key:value.
-# The simple `key:` check is enough for the discriminator.
+# and optional value). Examples that match: `id: B-0001`, `tags:`,
+# `composes_with:`. YAML list items like `  - item` are intentionally
+# NOT matched here; the discriminator only needs a simple `key:` check
+# because the very-first content line of a real frontmatter should be
+# a key:value, not a list item. List items + indented continuation
+# lines are handled separately in the ratio check via the
+# `_is_yaml_continuation` helper below.
 _YAML_KEY_LINE = re.compile(r"^\s*[A-Za-z_][\w-]*\s*:")
+
+
+def _is_yaml_continuation(line: str) -> bool:
+    """Return True if a line plausibly continues a YAML key's value:
+    indented continuation (>= 2 spaces or tab) of any non-blank
+    content. Does NOT match column-0 lines (those should be either
+    blank, a new key, or non-frontmatter content).
+
+    Critically: this does NOT count `- item` at column 0 as
+    continuation. A column-0 `- item` is almost always a markdown
+    list, not a YAML list item under a parent key. YAML list items
+    appear with leading indent (`  - X`); the leading indent is
+    what disambiguates them.
+
+    Used by the frontmatter-detection ratio check to count
+    indented-continuation lines toward the "YAML-shaped majority"
+    threshold without double-counting markdown list items as
+    YAML."""
+    if not line.strip():
+        return False  # blank lines counted separately
+    return line.startswith(("  ", "\t"))
 
 
 def _is_list_or_continuation(line: str) -> bool:
@@ -163,14 +184,23 @@ def _classify_lines(lines: list[str]) -> list[bool]:
                 break
         if fm_end > 0:
             # Check (d): line immediately before closing `---` is
-            # YAML-shaped, blank, or YAML continuation
-            prev_line = lines[fm_end - 1] if fm_end > 0 else ""
+            # YAML-shaped, blank, or YAML continuation. (No need
+            # for `if fm_end > 0` ternary — already in the
+            # `if fm_end > 0:` block.)
+            prev_line = lines[fm_end - 1]
             prev_ok = (
                 not prev_line.strip()
                 or _YAML_KEY_LINE.match(prev_line)
-                or prev_line.startswith(("  ", "\t", "- "))
+                or _is_yaml_continuation(prev_line)
             )
-            # Check (e): YAML-shaped majority of non-blank lines
+            # Check (e): YAML-shaped majority of non-blank lines.
+            # Counts: `key:` lines (via _YAML_KEY_LINE) and
+            # indented-continuation lines (via _is_yaml_continuation).
+            # Does NOT count column-0 `- item` lines — those are
+            # almost always markdown list items, not YAML, and
+            # counting them would mis-classify ordinary markdown
+            # documents (e.g. a thematic break + "note: ..." +
+            # bullet list) as frontmatter.
             yaml_count = 0
             non_blank = 0
             for j in range(1, fm_end):
@@ -178,7 +208,7 @@ def _classify_lines(lines: list[str]) -> list[bool]:
                     non_blank += 1
                     if (
                         _YAML_KEY_LINE.match(lines[j])
-                        or lines[j].startswith(("  ", "\t", "- "))
+                        or _is_yaml_continuation(lines[j])
                     ):
                         yaml_count += 1
             ratio_ok = (
