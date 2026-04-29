@@ -101,14 +101,24 @@ interface Args {
 function stripHeadingPunctuation(line: string): string | null {
   if (!HEADING_LINE.test(line)) return null;
   const trimmed = line.trimEnd();
+  // Find where the heading prefix ends (after `#+ `). Used to preserve
+  // at least ONE character of heading text below — see floor comment.
+  const prefixMatch = HEADING_LINE.exec(trimmed);
+  const prefixEnd = prefixMatch ? prefixMatch[0].length : 0;
   // Walk backwards from end-of-string, counting trailing chars that
   // belong to the punctuation set. Procedural form (no regex) so:
   //   (a) no ReDoS shape (sonarjs/slow-regex stays clean)
   //   (b) no length bound (matches Python's `[.,;:!?]+$` on any input
   //       length, including machine-generated headings with arbitrarily
-  //       long punctuation runs — Codex P2 catch on PR #849)
+  //       long punctuation runs)
+  //   (c) preserves at least one character of heading text — Python's
+  //       `_HEADING_WITH_PUNCT` regex used `.+?` before the punctuation
+  //       class, requiring at least one non-punct char between `#+ `
+  //       and the trailing punctuation run. A punctuation-only heading
+  //       like `# !!!` should keep one char (`# !!`), not be erased
+  //       to `# `. The `i > prefixEnd + 1` floor enforces this.
   let i = trimmed.length;
-  while (i > 0 && HEADING_PUNCT_CHARS.includes(trimmed[i - 1] ?? "")) {
+  while (i > prefixEnd + 1 && HEADING_PUNCT_CHARS.includes(trimmed[i - 1] ?? "")) {
     i -= 1;
   }
   if (i === trimmed.length) return null; // no trailing punctuation
