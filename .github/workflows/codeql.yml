@@ -522,7 +522,13 @@ jobs:
                 || true)
               ;;
             javascript-typescript)
-              count=$(git ls-files -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.mjs' '*.cjs' \
+              # CodeQL's javascript-typescript extractor handles
+              # `.mts` (ESM TypeScript) and `.cts` (CJS TypeScript)
+              # alongside the .js/.jsx/.ts/.tsx/.mjs/.cjs set. Repos
+              # that use `.mts`/`.cts` exclusively as entrypoints
+              # would otherwise has_source=false and silently skip
+              # real analysis.
+              count=$(git ls-files -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.mjs' '*.cjs' '*.mts' '*.cts' \
                 | grep -cvE "${shared_ignored_paths_regex}" \
                 || true)
               ;;
