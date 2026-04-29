@@ -22,9 +22,11 @@ derived truth:
    but file order says twenty-first (B-0098).
 2. **PR-count drift** — shard prose claims "30 PRs total this
    session arc" but git log says 28 (B-0099).
-3. **Shard-filename-vs-row-timestamp drift** — shard at
-   `0613Z.md` has row timestamp `06:12:50Z` (off-by-one minute,
-   caught by Codex P1 on PR #809).
+3. **Shard-filename-vs-row-timestamp drift** — a shard
+   filename timestamp and its row timestamp diverged
+   (caught by Codex P1 on PR #809; the specific shard was
+   subsequently corrected so a literal current-state quote
+   would mislead).
 
 Three instances in one session is enough signal to consolidate
 the family into a single P2 mechanical guard rather than three
@@ -78,16 +80,33 @@ Claims are checked against derived truth.
 
 ## Implementation sketch (single lint, multiple checks)
 
+The pseudocode below is robust against (a) filenames with
+spaces / special chars (NUL-delimited iteration), (b) the
+multiple legitimate shard-name shapes documented in
+`docs/hygiene-history/ticks/README.md` (`HHMMZ.md`,
+`HHMMZ-NN.md`, `HHMMSSZ-<short-hash>.md`).
+
 ```bash
 # tools/lint/metadata-drift-check.sh
 # Run on PR diffs touching tick-history shards or backlog rows.
 
-# Check 1 — filename HHMM matches row timestamp HH:MM
-for shard in $(git diff --name-only "$BASE..$HEAD" -- 'docs/hygiene-history/ticks/**/*.md'); do
-  filename_hhmm=$(basename "$shard" .md | grep -oE '^[0-9]{4}Z')
+# Check 1 — filename HHMM matches row timestamp HH:MM.
+#
+# NUL-delimited iteration to survive whitespace/newlines in
+# paths; restrict pathspec to the literal directory rather
+# than relying on `**` magic which is not reliably enabled.
+while IFS= read -r -d '' shard; do
+  shard_base=$(basename "$shard" .md)
+  # Accept HHMMZ, HHMMZ-NN, HHMMSSZ-<suffix>, HHMMZ-<short-hash>.
+  if [[ "$shard_base" =~ ^([0-9]{4})([0-9]{2})?Z(-[A-Za-z0-9._-]+)?$ ]]; then
+    filename_hhmm="${BASH_REMATCH[1]}"
+  else
+    warn "$shard: unsupported shard-name shape; cannot extract HHMM"
+    continue
+  fi
   row_hhmm=$(head -1 "$shard" | grep -oE 'T[0-9]{2}:[0-9]{2}' | tr -d 'T:')
-  [[ "${filename_hhmm%Z}" == "$row_hhmm" ]] || warn "$shard: filename $filename_hhmm vs row $row_hhmm"
-done
+  [[ "$filename_hhmm" == "$row_hhmm" ]] || warn "$shard: filename $filename_hhmm vs row $row_hhmm"
+done < <(git diff --name-only -z "$BASE..$HEAD" -- docs/hygiene-history/ticks/)
 
 # Check 2 — claimed ordinal matches file position (only when prose contains ordinal words)
 # Check 3 — claimed PR count matches gh / git query (only when prose contains "N PRs total")
