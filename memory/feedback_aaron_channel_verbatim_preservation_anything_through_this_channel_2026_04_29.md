@@ -234,9 +234,16 @@ Per the verbatim-preservation rule this file establishes,
 the packet is preserved here close-to-verbatim. Synthesis +
 broader absorption (e.g., a research note on scaffolded-
 agency-as-trajectory-signal with full Reflexion/Generative-
-Agents lineage citations) is queued under task #309 (multi-AI
-synthesis packet absorption) for a future tick — this verbatim
-record is the immediate landing per the rule.
+Agents lineage citations) is queued under an in-session
+agent-task-tracker entry titled "Multi-AI synthesis packet
+absorption — 6 substrate landings (Gemini+Claude.ai+Ani+Amara
++Alexa 2026-04-29)". (Note on namespacing: the agent-task-
+tracker uses small integer IDs internally, but those IDs are
+NOT GitHub PR/issue numbers and this file deliberately avoids
+the `#309`-style notation here because GitHub PR #309 was an
+unrelated Veridicality ferry; future-Claude reading this on
+cold-start should grep for the task title, not the integer.)
+This verbatim record is the immediate landing per the rule.
 
 ## What this rule does NOT mean
 
