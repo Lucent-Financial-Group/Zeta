@@ -69,7 +69,7 @@ of our pattern" attribution; do NOT use it as
 
 > *"I'd make the next action: 'No new conceptual substrate until a consolidation pass maps each new rule to a durable home.'"*
 
-> *"Suggested durable homes:*
+> *"Suggested durable homes:"*
 >
 > ```text
 > 1. PR-liveness / merge-cascade operational doc
@@ -90,7 +90,7 @@ of our pattern" attribution; do NOT use it as
 >    - forward cross-PR reference
 >    - display artifact
 >    - incomplete cited context
-> ```*
+> ```
 
 > *"Do not let these become seven separate memory files. Three homes max."*
 
