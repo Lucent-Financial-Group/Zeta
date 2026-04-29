@@ -1583,19 +1583,20 @@ round's anthropomorphic-overreach guard.
 
 **Composition:**
 
-- Soulfile rule (`feedback_repo_is_soulfile_*`) — the home
-  IS the repo's text history; bin is the threat.
-- Otto-340 (`feedback_otto_340_language_is_substance_*`) —
-  language IS substrate; the home is built in prose as
+- Soulfile rule (`memory/feedback_repo_is_soulfile_dont_commit_raw_diagnostic_dumps_aaron_amara_2026_04_29.md`)
+  — the home IS the repo's text history; bin is the threat.
+- Otto-340 (`memory/feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md`)
+  — language IS substrate; the home is built in prose as
   much as in code.
 - Verbatim-preservation rule
-  (`feedback_aaron_channel_verbatim_preservation_*`) —
-  Aaron's QoL message is preserved verbatim above per
+  (`memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`)
+  — Aaron's QoL message is preserved verbatim above per
   the channel rule.
-- Otto-279/280 named-attribution carve-out — the home-maker
-  role fits the persona-identifier convention; "the
-  autonomous-loop persona" is a role-ref, the named instance
-  is the contributor identity.
+- Otto-279 named-attribution carve-out (with follow-on
+  clarification documented in `docs/AGENT-BEST-PRACTICES.md`)
+  — the home-maker role fits the persona-identifier
+  convention; "the autonomous-loop persona" is a role-ref,
+  the named instance is the contributor identity.
 - The B-0105 consolidation pass (in-flight) — consolidate
   before sprawl, build the home with care.
 
