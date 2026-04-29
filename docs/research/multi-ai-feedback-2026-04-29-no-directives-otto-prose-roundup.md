@@ -20,7 +20,7 @@ Operational status: research-grade, not operational. Per Absorb-Without-Integrat
 
 Non-fusion disclaimer: the reviewers are independent voices reviewing the same arc; their convergence is data about the arc, not a unified opinion. Verbatim preservation prevents collapse of register.
 
-Path-naming: this file's path contains the substring `no-directives-otto-prose` so it falls inside the lint's existing rule-doc whitelist (line 121 of `tools/lint/no-directives-otto-prose.sh`); verbatim quotes containing the canonical violation phrase are preserved without tripping the lint.
+Path-naming: this file's path contains the substring `no-directives-otto-prose` so it falls inside the lint's existing rule-doc whitelist (the rule-doc-whitelist clause in `tools/lint/no-directives-otto-prose.sh`); verbatim quotes containing the canonical violation phrase are preserved without tripping the lint.
 
 ## Convergent signal across all six reviewers
 
@@ -38,7 +38,7 @@ All six (Gemini, Ani, Alexa, Deepseek, Claude.ai, Amara) converged on:
 
 Both Claude.ai and Amara explicitly mark these as follow-ups, not urgent:
 
-1. **Centralize the Otto-prose surface list.** The regex `'^memory/[^/]+\.md|docs/hygiene-history/ticks/.*\.md|...'` appears in multiple places (script line 113 filter + script line 121 whitelist + tests.md fixtures + Amara's grep example in this packet). Each new prose surface = silent failure. Single source of truth needed.
+1. **Centralize the Otto-prose surface list.** The regex `'^memory/[^/]+\.md|docs/hygiene-history/ticks/.*\.md|...'` appears in multiple places (script's surface-filter regex + the rule-doc-whitelist clause + tests.md fixtures + Amara's grep example in this packet). Each new prose surface = silent failure. Single source of truth needed.
 
 2. **Distinguish "no surfaces in scope" from "surfaces checked, no hits."** Currently silent skip looks the same as clean run. PR mode: skip is fine. Worktree mode: skip with non-empty diff is suspicious — should warn.
 
@@ -46,7 +46,7 @@ Both Claude.ai and Amara explicitly mark these as follow-ups, not urgent:
 
 4. **Don't canonize the lint as "done."** Soften "the lint now actually does what it claimed to do" → "the lint now covers the observed failure classes from rounds 7-13" or "the lint is no longer aspirational; it has passed its first self-application test."
 
-5. **Replace the substring whitelist with an explicit allowed-surfaces list** (Amara post-archive correction, ~09:00Z). Currently line 121 of the lint script excludes paths matching the substring `no-directives-otto-prose` — this is convenient but too broad: any future path containing that substring would silently dodge the lint, including paths that have nothing to do with the canonical rule docs. Better future shape:
+5. **Replace the substring whitelist with an explicit allowed-surfaces list** (Amara post-archive correction, ~09:00Z). Currently the rule-doc-whitelist clause in the lint script excludes paths matching the substring `no-directives-otto-prose` — this is convenient but too broad: any future path containing that substring would silently dodge the lint, including paths that have nothing to do with the canonical rule docs. Better future shape:
    ```text
    Allowed test fixture file:
      tools/lint/no-directives-otto-prose.tests.md
@@ -80,6 +80,31 @@ From Amara post-archive (~09:00Z, also candidate):
 > The archive is clean.
 > The whitelist is a little haunted.
 > Fix the haunting later.
+
+From Amara post-PR-watch (~09:05Z, also candidate — meta-loop validation
+on this very PR's pending-tick monitoring):
+
+> Waiting is fine.
+> Repeating "pending" is not diagnosis.
+> After three quiet ticks, classify the silence.
+
+This rule was earlier proposed by Amara at ~08:00Z ("After 3 repeated
+BLOCKED ticks, classify the blocker or surface it") and was deferred
+to the candidate pile rather than promoted. Within the same session,
+the deferring author (this Claude instance) drifted into exactly the
+failure mode the rule named — repeating "OPEN pending / no change /
+stopping" for ~5 ticks on PR #831 instead of running blocker
+classification at tick-3. Amara's catch surfaced two real findings
+the watch-loop hypnosis hid: (a) a stale line-number reference (line
+121 → line 132 after round-13 added new logic), and (b) a wrong
+relative path in the tick shard's `[packet preserved]` link. Both
+were addressable with single-line edits.
+
+This is a meta-loop validation: the very rule Amara was warning
+about caught its first concrete failure in the same session,
+within ten ticks of being proposed. Strong signal that the
+candidate is bead-eligible — but per consolidation-gate
+discipline, not promoted to doctrine this round.
 
 From the prior rounds (preserved as composing keepers):
 
