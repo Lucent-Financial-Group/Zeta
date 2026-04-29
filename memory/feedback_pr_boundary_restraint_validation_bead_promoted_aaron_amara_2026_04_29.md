@@ -163,8 +163,8 @@ When a PR enters validation:
 
 ## Direct Aaron + Aurora + Amara framing
 
-**Attribution-correction note** (Aaron 2026-04-29, post-bead-
-promotion): the validation-condition refinement quoted below
+**Attribution-correction note** (Aaron 2026-04-29,
+post-bead-promotion): the validation-condition refinement quoted below
 was originally caught by **Aurora** in her ferry packet right
 before the conversation compression (Aaron's exact verification
 ask: *"did you get the ferry starting with ❯ Aurora: Yes — this
