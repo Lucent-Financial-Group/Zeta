@@ -497,6 +497,17 @@ jobs:
           # `**/bin/**` from the config are folded in via
           # `(^|.*/)(obj|bin)/`. The .generated.cs glob is csharp-
           # only and irrelevant here (csharp is unconditional).
+          #
+          # BRIDGE NOT FINAL ARCHITECTURE: this regex is a
+          # workflow-local classifier embedded in codeql.yml as
+          # the smallest sufficient unblock for the retired-
+          # python case. The future canonical classifier should
+          # pull this logic into `tools/ci/classify-changed-
+          # files.*` with fixtures so CodeQL, docs-substrate,
+          # and code gates share one path-universe rather than
+          # each growing their own. Tracked via task #306
+          # (cadence-fast classifier work) — do not treat the
+          # duplicated regex as the permanent design.
           shared_ignored_paths_regex='^(references/upstreams/|bench/|tools/tla/|tools/lean4/)|(^|.*/)(obj|bin)/'
           case "${{ matrix.language }}" in
             python)
