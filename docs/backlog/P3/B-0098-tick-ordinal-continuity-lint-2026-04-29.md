@@ -41,14 +41,18 @@ for file in $(ls -1 docs/hygiene-history/ticks/YYYY/MM/DD/*.md | sort); do
   [[ "$claimed_ordinal" == "$expected_ordinal" ]] || warn "$file ordinal mismatch"
 done
 
-# (b) Strict POSIX-portable boundary — explicit non-alpha
-# anchors. Use this if cross-shell portability is the priority.
-# Note: \b on `grep -E` is non-portable on GNU/BSD (treated as
-# backspace / undefined escape).
-for file in $(ls -1 docs/hygiene-history/ticks/YYYY/MM/DD/*.md | sort); do
+# (b) Strict POSIX-portable boundary — uses only POSIX shell
+# features (no bash-only `[[ ]]`, no `[[ a == *b* ]]` glob
+# matching). Run with /bin/sh on any POSIX-conformant system.
+# Note: `\b` on `grep -E` is non-portable on GNU/BSD (treated
+# as backspace / undefined escape).
+for file in docs/hygiene-history/ticks/YYYY/MM/DD/*.md; do
   claimed_ordinal=$(grep -oE '(^|[^[:alpha:]])(first|second|...|thirtieth|...)([^[:alpha:]]|$)' "$file" | head -1)
   expected_ordinal=$(compute_from_file_position)
-  [[ "$claimed_ordinal" == *"$expected_ordinal"* ]] || warn "$file ordinal mismatch"
+  case "$claimed_ordinal" in
+    *"$expected_ordinal"*) ;;
+    *) printf 'warn: %s ordinal mismatch\n' "$file" >&2 ;;
+  esac
 done
 ```
 
