@@ -12,7 +12,9 @@
     "format:check": "prettier --check \"**/*.{json,jsonc,md,markdown,ts,toml,yml,yaml}\"",
     "format:write": "prettier --write \"**/*.{json,jsonc,md,markdown,ts,toml,yml,yaml}\"",
     "typecheck": "tsc --noEmit",
-    "test:typescript": "bun test"
+    "test:typescript": "bun test",
+    "hygiene:sort-tick-history": "bun ./tools/hygiene/sort-tick-history-canonical.ts",
+    "hygiene:fix-markdown": "bun ./tools/hygiene/fix-markdown-md032-md026.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -20,6 +22,7 @@
     "eslint": "10.2.1",
     "eslint-plugin-sonarjs": "4.0.3",
     "globals": "17.5.0",
+    "jiti": "2.6.1",
     "markdownlint-cli2": "0.22.1",
     "prettier": "3.8.3",
     "prettier-plugin-toml": "2.0.6",
