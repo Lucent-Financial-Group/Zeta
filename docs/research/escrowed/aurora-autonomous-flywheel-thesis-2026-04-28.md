@@ -16,7 +16,8 @@ Gate:              Candidate-count scanner self-destruct test
 Reopen condition:  one meaningful prototype result (pass OR fail with useful signal)
 Multi-AI loop:     paused until prototype result
 Expiration:        4 substantive rounds without prototype run → surface for explicit decision
-Created:           2026-04-29
+Thesis date:       2026-04-28 (date the thesis was named in the multi-AI synthesis arc; matches the title's "(2026-04-28)")
+File created:      2026-04-29 (date this escrow file was first authored; one day after the thesis date)
 Last surfaced:     2026-04-29 (creation)
 ```
 
@@ -44,7 +45,7 @@ of intent after the multi-AI Aurora-Immune-Governance synthesis arc:
 > in escrow and make it earn its way into the system."*
 
 The cross-AI second-opinion-reviewer's two consecutive rounds of
-hard pushback was not killing the thesis — it was protecting it
+hard pushback were not killing the thesis — they were protecting it
 from sloppy landing. The synthesis was diagnosing the exact
 pathology it was exhibiting (high-momentum theory production,
 flat prototype evidence). The disciplined response is to preserve
