@@ -615,7 +615,7 @@ Mirror fields:
 claim_id: CLAIM-123
 github_issue: 123
 source_url: https://github.com/Lucent-Financial-Group/Zeta/issues/123
-status: requested | active | blocked | done | expired | revoked
+status: requested | active | blocked | done | expired | rejected | revoked  # rejected (declined at intake) is distinct from revoked (active claim withdrawn) per the v4 Deepseek catch below
 actor_id: external:<github-login-or-agent-id>
 maintainer_sponsor: null
 role_id: docs-worker
@@ -789,7 +789,7 @@ After v3 (layered actor identity + public claim intake) landed in PR #852, five 
 Claude.ai catch: *"`aaron-mac/claude-code/coordinator` is meaningful for audit only if something prevents impersonation. Today, anything with the right config can claim to be that actor."*
 
 **v4 binding requirement**:
-- Every actor has a registry entry under `actors/<actor_id>.yaml` (or equivalent path).
+- Every actor has a registry entry under `actors/<encoded-actor-id>.yaml`. Filename encoding must be cross-platform safe (no `/`, `:`, or `.well-known` chars that fail on Windows). Canonical encoding: replace `://` with `--`, `/` with `_`, lowercase the result. Example: `zeta://aaron-mac/claude-code/coordinator` → `actors/zeta--aaron-mac_claude-code_coordinator.yaml`. The registry record itself carries the original `actor_id:` field as the canonical string (filename is the lookup key, not the source of truth for the ID).
 - Registry declares public key fingerprint (Ed25519 preferred; GitHub-native commit verification as MVP fallback).
 - Privileged mutations must be attributable to a bound actor.
 - Reconciler verifies signature/identity binding before trusting any claim mutation.
