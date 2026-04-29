@@ -135,20 +135,29 @@ caught missing content in the reset-readiness claim.
 ### Required content-equivalence audit (BEFORE any hard-reset)
 
 ```bash
-# All categories required for safety. Use --find-renames so
-# moved/copied content isn't misclassified as
-# "AceHack-only" or "deleted":
+# All categories required for safety. Use BOTH --find-renames
+# AND --find-copies so moved/copied content isn't misclassified
+# as "AceHack-only" or "deleted". Note: --diff-filter=C only
+# emits Copied entries when copy detection is enabled; filter
+# alone is not sufficient.
 
-# (1) Comprehensive status across all relevant categories
+# (1) Comprehensive status across content-loss categories
 #     A=added (AceHack-only path)
-#     C=copied (content reused under new path)
+#     C=copied (content reused under new path; requires --find-copies)
 #     M=modified (shared path with possibly-unique content)
-#     R=renamed (moved content; compare by content, not path)
+#     R=renamed (moved content; requires --find-renames; compare by content, not path)
 #     T=type change (symlink vs file etc.; inspect manually)
-#     (D=deleted is intentionally omitted — deletion alone
-#     is not content loss going LFG→AceHack direction; if
-#     the deletion is intentional drop, classify so.)
-git diff --name-status --find-renames --diff-filter=ACMRT \
+git diff --name-status --find-renames --find-copies \
+  --diff-filter=ACMRT \
+  origin/main..acehack/main
+
+# (1b) D=deleted SEPARATE pass — not AceHack-content-loss in
+#      this reset direction (LFG already lacks the file), but
+#      can be SEMANTIC REGRESSION if AceHack intentionally
+#      removed bad/stale/unsafe content. Review separately
+#      when the deleted path is workflow / security config /
+#      tooling / governance substrate.
+git diff --name-status --diff-filter=D \
   origin/main..acehack/main
 
 # (2) Numstat for shared MODIFIED files (sizing the audit)
@@ -165,11 +174,31 @@ git merge-base --is-ancestor <sha> acehack/main
 **Plumbing-vs-porcelain (when this becomes scripted tooling):**
 human auditors are fine with `git diff` (porcelain). When
 this audit graduates to a CI tool or shell script, prefer
-`git diff-tree -r --name-status --find-renames --diff-filter=ACMRT
-origin/main acehack/main` (plumbing) — output is more stable
-and immune to user `core.*` config interference. Alternatively
-add `git -c core.quotepath=false diff --no-ext-diff …`
-for predictable byte sequences.
+`git diff-tree -r --name-status -M -C --diff-filter=ACMRT
+origin/main acehack/main` (plumbing; `-M`/`-C` are the
+plumbing flags for rename/copy detection). Output is more
+stable and immune to user `core.*` config interference.
+Alternatively add `git -c core.quotepath=false diff
+--no-ext-diff …` for predictable byte sequences.
+
+**Copy-detection cost (CI bound):** `-C` (find-copies)
+includes an O(n²) fallback that compares each added file to
+each deleted file. Bound with `-l200` (or similar) for CI:
+
+```bash
+# Two-pass tooling pattern (cheap then thorough)
+# Fast pass — A/M/R/T with rename detection only
+git diff-tree -r --name-status -M --diff-filter=ACMRT \
+  origin/main acehack/main
+
+# Slow pass — copy detection bounded, only if first pass
+# leaves suspicious add/delete clusters
+git diff-tree -r --name-status -M -C -l200 \
+  --diff-filter=ACMRT \
+  origin/main acehack/main
+```
+
+For human audit (one-shot), the unbounded full form is fine.
 
 **Inverse of "same path is not same substrate":** different
 path can still be same substrate. R/C status entries (renamed
