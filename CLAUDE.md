@@ -295,6 +295,42 @@ Claude-Code-specific mechanisms.
   verify-before-deferring, future-self-not-bound,
   and never-be-idle. Full reasoning:
   `memory/feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`.
+- **Substrate or it didn't happen — no invisible
+  directives (Otto-363).** Before declaring work
+  *"done,"* identify its durability surface. Chat,
+  TaskUpdate, `/tmp`, and loop todos are NOT durable
+  project substrate. If a directive / decision /
+  packet matters after compaction, it must be
+  converted to a durable project object — preferably
+  substrate (committed + reachable + indexed git-
+  native repo file: memory / docs/research / docs/ops
+  / claim file / validator / bootstrap rule). PRs
+  and issues are host-durable parking surfaces, NOT
+  substrate; for doctrine-changing decisions, mirror
+  the substantive content into a git-native file.
+  Vocabulary discipline: *captured* (TaskUpdate
+  only) ≠ *parked* (GitHub Issue / pushed WIP branch,
+  durable but not git-canonical) ≠ *preserved*
+  (repo-native, committed + reachable + indexed) ≠
+  *canonical* (accepted spec) ≠ *operational*
+  (enforced by tooling). Never call TaskUpdate-only
+  work *"done."* Verbatim-preservation trigger: when
+  the human maintainer / external reviewers send an
+  architecture-changing / doctrine-superseding /
+  multi-AI review packet, preserve verbatim in
+  `docs/research/` BEFORE summarizing.
+  Magnitude classifier: small correction → task;
+  implementation readiness → task + notes; doctrine
+  correction → memory file; superseding architecture
+  → research preservation + memory absorb +
+  supersession note. Carved blade: *"A directive
+  that lives only in a conversation is not a
+  directive. It is weather. Substrate or it didn't
+  happen."* CLAUDE.md-level so it is 100% loaded at
+  every wake, alongside verify-before-deferring,
+  future-self-not-bound, never-be-idle, and
+  version-currency. Full reasoning:
+  `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`.
 - **Tick must never stop.** When running under
   `/loop` autonomous mode (cron fires every minute
   per `docs/AUTONOMOUS-LOOP.md`), the tick is the
