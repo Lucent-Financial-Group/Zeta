@@ -46,14 +46,15 @@ import { readFile, writeFile } from "node:fs/promises";
 const LIST_LINE = /^( {2})*(?:[-*+] |\d+\. )/;
 const INDENTED_LINE = /^ {2,}\S/;
 
-// ATX heading test (no trailing-punctuation match — that's done
-// procedurally in stripHeadingPunctuation to dodge ReDoS shapes).
+// ATX heading test. Trailing-punctuation stripping is done procedurally
+// in stripHeadingPunctuation — no regex for the punctuation match. The
+// procedural form (a) avoids ReDoS shapes (sonarjs/slow-regex) and
+// (b) has no length bound, matching Python's `[.,;:!?]+$` behavior on
+// any input including machine-generated headings with arbitrarily long
+// punctuation runs (Codex P2 catch on PR #849: an earlier 10-char bound
+// regressed equivalence on long runs).
 const HEADING_LINE = /^#+ /;
-// Bounded quantifier (1-10 chars) replaces unbounded `+` to satisfy
-// sonarjs/slow-regex (ReDoS-risk pattern). ATX headings rarely end with
-// more than a few punctuation chars; 10 is a generous upper bound that
-// preserves Python equivalence on every realistic markdown input.
-const TRAILING_PUNCT = /[.,;:!?]{1,10}$/;
+const HEADING_PUNCT_CHARS = ".,;:!?";
 
 // Fenced-code-block opening delimiter: `^( {0,3})(`{3,}|~{3,})...`.
 // We capture only the indent + fence chars; whatever follows is the
@@ -100,9 +101,18 @@ interface Args {
 function stripHeadingPunctuation(line: string): string | null {
   if (!HEADING_LINE.test(line)) return null;
   const trimmed = line.trimEnd();
-  const match = TRAILING_PUNCT.exec(trimmed);
-  if (match === null) return null;
-  return trimmed.slice(0, match.index);
+  // Walk backwards from end-of-string, counting trailing chars that
+  // belong to the punctuation set. Procedural form (no regex) so:
+  //   (a) no ReDoS shape (sonarjs/slow-regex stays clean)
+  //   (b) no length bound (matches Python's `[.,;:!?]+$` on any input
+  //       length, including machine-generated headings with arbitrarily
+  //       long punctuation runs — Codex P2 catch on PR #849)
+  let i = trimmed.length;
+  while (i > 0 && HEADING_PUNCT_CHARS.includes(trimmed[i - 1] ?? "")) {
+    i -= 1;
+  }
+  if (i === trimmed.length) return null; // no trailing punctuation
+  return trimmed.slice(0, i);
 }
 
 // Return true if a line plausibly continues a YAML key's value:
