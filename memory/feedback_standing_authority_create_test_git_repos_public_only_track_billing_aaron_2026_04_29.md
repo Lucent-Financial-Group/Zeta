@@ -1,6 +1,6 @@
 ---
 name: Standing authority — create public test git repos on AceHack + LFG, full admin, hourly billing tracking (Aaron 2026-04-29)
-description: Aaron 2026-04-29 grants standing authority to create test git repositories on AceHack and Lucent-Financial-Group GitHub orgs at any time to test git/GitHub/CI features, with full admin authority on those test repos to change settings. Two binding constraints — repos must be PUBLIC only (private costs money), and billing must be tracked HOURLY (per the existing budget-cadence work). The authority is standing (no per-creation Aaron sign-off needed) but bounded (public-only, billing-visible). Composes with Otto-365 "basically never ask" for invariant maintenance, branch-protection-settings-are-agent-call (delegated authority pattern), task #315 (hourly budget cadence), task #287 (cost visibility).
+description: Aaron 2026-04-29 grants standing authority to create test git repositories on AceHack and Lucent-Financial-Group GitHub orgs at any time to test git/GitHub/CI features, with full admin authority on those test repos to change settings. Two binding constraints — keep test repos PUBLIC so standard GitHub-hosted Actions usage stays on the no-charge path (private repos consume billed Actions minutes/storage and other paid SKUs; the constraint avoids that mechanism, not "repo creation itself"), and billing must be tracked HOURLY (per the existing budget-cadence work). The authority is standing (no per-creation Aaron sign-off needed) but bounded (public-only, billing-visible). Composes with Otto-365 "basically never ask" for invariant maintenance, branch-protection-settings-are-agent-call (delegated authority pattern), task #315 (hourly budget cadence), task #287 (cost visibility).
 type: feedback
 ---
 
@@ -20,7 +20,7 @@ This second message reframes the cost constraint: the barrier is **not noticing*
 
 ## The rule (load-bearing)
 
-**Standing authority granted to the autonomous agent (this Claude factory instance) to:**
+**Standing authority granted to the autonomous agent (the factory agent — harness-agnostic; this rule applies to whatever harness is running the factory now or in the future) to:**
 
 1. **Create new git repositories** on `AceHack` and `Lucent-Financial-Group` GitHub orgs at any time, no per-creation Aaron sign-off required.
 2. **Use the new repos as test surfaces** for any git / GitHub / CI / Actions / branch-protection / ruleset / SARIF / fork-workflow / multi-remote / mirror-sync feature being investigated or designed.
@@ -28,7 +28,7 @@ This second message reframes the cost constraint: the barrier is **not noticing*
 
 **Two binding constraints (non-negotiable):**
 
-1. **Public repositories only.** Private GitHub repos cost money on these orgs; public repos are free. **Never create a private repo** under this standing authority.
+1. **Public repositories only.** On public repos, standard GitHub-hosted Actions runners + storage are on the no-charge tier; private repos consume billed Actions minutes / storage / artifact retention and are eligible for paid SKUs (Advanced Security, Codespaces, larger runners, etc.). The constraint avoids that *billing mechanism*, not "repo creation itself." **Never create a private repo** under this standing authority. Composes with `feedback_standard_github_runners_free_for_public_repos_stop_drifting_otto_249_2026_04_24.md` (the canonical "public = free / private = billed minutes" rule) and `feedback_aaron_full_github_access_authorization_all_acehack_lfg_only_restriction_no_spending_increase_2026_04_23.md` (visibility public↔private affects billing boundaries).
 2. **Billing tracked hourly — and the audit must be ACTIVE before any new test repo is created** (precondition, not promise). The hourly budget cadence (task #315 + task #287 cost-visibility lane) must keep visibility on whatever resources these test repos consume. Per Amara 2026-04-29: *"If the hourly billing audit is not active and covering the target org/account/repo, do not create new test repos."* Billing-visibility is the load-bearing safety latch that makes "create freely" safe; it is not optional.
 
 **Paid-feature exclusion list** (per Amara 2026-04-29 risk-boundary correction):
