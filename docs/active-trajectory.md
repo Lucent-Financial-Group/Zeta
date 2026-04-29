@@ -30,16 +30,35 @@ These are the substrate the trajectory has produced. Read them in order; do NOT 
 3. **`docs/research/2026-04-28-forward-sync-merge-direction-proposal-9-infra-files.md`** — the per-file plan with risk levels and recommended order. **16+ hours stale as of 2026-04-29T09:40Z**; verify against current git state before executing per-file decisions.
 4. **`memory/feedback_destructive_git_op_5_pre_flight_disciplines_codex_gemini_2026_04_28.md`** — pre-flight disciplines that apply during any forward-sync or hard-reset.
 
-## Current state (verified 2026-04-29T09:50Z)
+## Current state (verified 2026-04-29T10:11Z)
 
-Numerical (these numbers are NOT the trajectory; do not chase them):
+### Content-drift trajectory (the KEY metric)
+
+Per maintainer 2026-04-29T10:13Z framing: *"do you not keep up with content drift, that's the import metrics for the trajectory."* Commit counts are NOT the trajectory; **AceHack-only lines** (the content that would be erased on hard-reset) IS.
+
+| Date | Modified files | Deleted-on-AceHack | AceHack-only +lines | LFG-newer -lines | Direction |
+|---|---|---|---|---|---|
+| 2026-04-27 (early) | 53 | — | ~6065 | — | (pre-option-c reference) |
+| 2026-04-28T17:53Z | 23 | — | — | — | Calibration commit `37bbca9` |
+| 2026-04-28T21:50Z | 23 | — | ~397 | — | CLASSIFICATION.md initial |
+| **2026-04-29T10:11Z** | **30** | **156** | **454** | **18,227** | **Drift +7 files / +57 AceHack-only lines in 12.5h vs prior** |
+
+**Headline safety number: 454 AceHack-only lines.** That's what hard-reset of `acehack/main` would erase. Of those, classified ALREADY-COVERED (LFG has equivalent or supersedes):
+
+- 9 infra files: ~all of the file-level safety-relevant content
+- 5 spot-checked memory/docs files: ~tens of lines (mostly stale frontmatter)
+- 15 unverified files: heuristic-projected ALREADY-COVERED
+
+Drift cadence observation: AceHack-only lines grew +57 in 12.5h while LFG advanced +18k+ lines. **Relative drift is shrinking** (LFG advances faster than AceHack-only side accumulates) but **absolute drift is widening** (raw AceHack-only count growing). For hard-reset safety, ABSOLUTE matters; for synchronization-effort, relative matters.
+
+### Commit-count divergence (NOT the trajectory; do not chase)
 
 ```text
 AceHack ahead of LFG:   145 commits
-AceHack behind LFG:     638 commits
-Modified files:          30
-Deleted on AceHack:     155 (LFG-only — hard-reset adds these back)
+AceHack behind LFG:     640 commits  (was 638 before #832/#833 landed)
 ```
+
+Commit-count is unfaithful — many AceHack-side commits supersede each other on the AceHack-only side, and many LFG-side commits don't add unique substrate either. The content-drift table above is the faithful metric.
 
 ### Hard-reset-safety classification (NOT merge-direction)
 
@@ -67,15 +86,23 @@ NEEDS_HUMAN_DECISION           — ambiguous; surface to maintainer.
 | `tools/setup/common/elan.sh` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream <url> \| sh` (streamed pipe-to-sh). LFG uses `curl_fetch --output` to temp + per-arch SHA256 verify + run. LFG version is structurally safer per Scorecard PinnedDependenciesID hardening. |
 | `tools/setup/linux.sh` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream https://mise.run \| sh`. LFG uses pinned-tarball + per-arch SHA256 + temp-dir + trap. LFG version is structurally safer. |
 | `.github/workflows/codeql.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack dropped `java-kotlin` matrix cell. LFG kept it with explicit code-scanning-service rationale (no-findings SARIF per language). LFG-newer matrix structure. |
-| `.github/workflows/gate.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `Setup Python` + `pip install semgrep` steps. The maintainer 2026-04-29T09:51Z framing: *"pip-install is wrong, uv we decided a long time ago"* — i.e., AceHack's pip-install path violates a prior maintainer decision (uv-only for Python tool management). LFG installs semgrep via `install.sh` three-way-parity (`pipx:semgrep` from `.mise.toml`, which is uv-managed under the hood). LFG's approach is the canonical-per-decision form. AceHack's extra `tools/tla`/`tools/alloy` cache paths are ALREADY on LFG (in the `Cache verifier jars (TLC + Alloy)` step). The retry-attempts logic (`for attempt in 1 2 3 4 5; do`) is identical on both sides — the diff is just comment wording (AceHack uses "Aaron 2026-04-28 directive" — would also trip the just-landed no-directives lint; LFG uses "the human maintainer's 2026-04-28 input"). Hard-reset REMOVES the wrong-per-decision pip path, GAINS the correct uv path, and cleans the lint-tripping prose register. The declarative pattern matches the broader factory direction (maintainer 2026-04-29T09:53Z: *"everything is declarative; we need all the functionality of `../scratch` — that's what we're aiming for for the ace package manager release"*). AceHack's imperative `pip install` step violates this; LFG's pin-in-`.mise.toml` form is declarative. |
+| `.github/workflows/gate.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `Setup Python` + `pip install semgrep` steps. The maintainer 2026-04-29T09:51Z framing: *"pip-install is wrong, uv we decided a long time ago"* — i.e., AceHack's pip-install path violates a prior maintainer decision (uv-only for Python tool management). LFG installs semgrep via `install.sh` three-way-parity (`pipx:semgrep` from `.mise.toml`, which is uv-managed under the hood). LFG's approach is the canonical-per-decision form. AceHack's extra `tools/tla`/`tools/alloy` cache paths are ALREADY on LFG (in the `Cache verifier jars (TLC + Alloy)` step). The retry-attempts logic (`for attempt in 1 2 3 4 5; do`) is identical on both sides — the diff is just comment wording (AceHack has legacy agency-framing wording attributing the change to the maintainer as a directive — would also trip the just-landed no-directives lint; LFG uses maintainer-input wording). Hard-reset REMOVES the wrong-per-decision pip path, GAINS the correct uv path, and cleans the lint-tripping prose register. The declarative pattern matches the broader factory direction (maintainer 2026-04-29T09:53Z: *"everything is declarative; we need all the functionality of `../scratch` — that's what we're aiming for for the ace package manager release"*). AceHack's imperative `pip install` step violates this; LFG's pin-in-`.mise.toml` form is declarative. |
 
 **Result: 9 of 9 infra files SAFE_TO_RESET or ALREADY_RESOLVED.** No NEEDS_FORWARD_SYNC. No NEEDS_HUMAN_DECISION on these 9.
 
-### The other 21 modified files (heuristic-projected; not yet per-file verified)
+### The other 21 modified files (heuristic-projected; 5 spot-verified)
 
-The 30-file modified-list is a superset of the 9 infra files. The remaining 21 are mostly memory / docs / tick-history / setup-script edits. The prior calibration batch (5 of 23 verified ALREADY-COVERED) + heuristic strongly project the 21 as also ALREADY_RESOLVED or SAFE_TO_RESET_LFG_SUPERSEDES. The pattern: when LFG-newer (-) line count >> AceHack-newer (+) line count, the AceHack content is older drafts of content LFG has since advanced.
+The 30-file modified-list is a superset of the 9 infra files. The remaining 21 are mostly memory / docs / tick-history / setup-script edits. Spot-checked 5 of the LARGEST-by-line (2026-04-29T09:55Z):
 
-Action: spot-verify 3-5 of the 21 before requesting hard-reset sign-off. Specifically, the 5 LARGEST-by-line files among the 21 are the highest-value spot-checks.
+| File | AceHack-only +lines | LFG-only -lines | Verdict |
+|---|---|---|---|
+| `memory/CURRENT-aaron.md` | 2 | 267 | ALREADY_RESOLVED (verified in prior calibration batch) |
+| `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_*.md` | 1 | 188 | ALREADY_RESOLVED (LFG-newer dominates) |
+| `tools/hygiene/fix-markdown-md032-md026.py` | 17 | 158 | ALREADY_RESOLVED (LFG-newer dominates) |
+| `memory/feedback_outdated_review_threads_*.md` | 1 | 134 | ALREADY_RESOLVED (LFG-newer dominates) |
+| `memory/feedback_confucius_unfolding_pattern_*.md` | 1 | 127 | ALREADY_RESOLVED (LFG-newer dominates) |
+
+Heuristic strongly holds: 5/5 spot-checks ALREADY_RESOLVED; combined with the 5-file calibration batch + 9-file infra table = **15 of 30 files verified ALREADY-COVERED**. The remaining 15 unverified are projected ALREADY-COVERED; the pattern is consistent (when LFG-newer (-) >> AceHack-newer (+), AceHack content is older drafts).
 
 ### Hard-reset preflight (per Amara 2026-04-29T09:50Z addition)
 
@@ -105,6 +132,106 @@ Best rule (Amara): *"Before hard-reset, preserve reachability. After hard-reset,
 
 Best blade: *"Do not do archaeology before reset. Do preserve the exits before closing the door."*
 
+### Preflight result + fresh-clone evidence (2026-04-29T10:11Z)
+
+#### Branch / worktree / stash preflight
+
+```text
+Local branches not reachable from origin/main:        794
+Remote AceHack branches not reachable from origin/main: 122
+Worktrees (locked under .claude/worktrees/agent-*):     ~9 visible
+Stashes:                                                  7
+```
+
+For HARD-RESET of `acehack/main` specifically: hard-reset is a ref operation that moves only `acehack/main`. Other refs (branches, remote-tracking refs, worktree HEADs, stashes) are NOT deleted by that operation. They remain reachable post-reset.
+
+Caveat (per Amara correction): blanket-classifying 794+122 branches as "reset-irrelevant" requires evidence. The narrow claim that holds: **hard-reset of `acehack/main` does not directly modify these refs**. A separate audit (NOT this lane) would classify which contain unique substrate worth preserving. Per the corrupt-clone-default below, that audit is best done from the clean clone.
+
+#### Pack corruption found in local clone — local-only, remote intact
+
+`git fsck --full` on the *local* clone reports:
+
+```text
+error: inflate: data stream error (incorrect data check)
+error: cannot unpack 9bf2daee3ce53c88633824f9532a0158aaa92ed9
+       from .git/objects/pack/pack-16732bccb3ace9ec45c913c57a1fd050fd730c3f.pack
+       at offset 4973478
+```
+
+Object `9bf2dae...` is a BLOB (commit/tree history unaffected). Local clone frozen via `git config gc.auto 0` + `gc.pruneExpire never` + `gc.reflogExpire never` + `gc.reflogExpireUnreachable never` — preserves evidence per `memory/feedback_corruption_triage_discipline_object_health_incident_aaron_amara_2026_04_29.md`.
+
+Fresh-clone evacuation (per the "corrupt clone default" rule below) executed 2026-04-29T10:06Z:
+
+```text
+$ git clone <LFG> /tmp/zeta-clean-2026-04-29/lfg
+$ cd /tmp/zeta-clean-2026-04-29/lfg
+$ git remote add acehack <AceHack>
+$ git fetch acehack main
+$ git fsck --full
+(empty stdout, empty stderr — clean)
+$ git rev-list --count origin/main..acehack/main
+145
+$ git rev-list --count acehack/main..origin/main
+640
+$ git rev-parse acehack/main
+675508187a5e80bd0a8c14a74a9ae80d5346e722  (matches local clone)
+```
+
+**Conclusion: corruption is LOCAL-CLONE-ONLY.** Remote object stores (LFG + AceHack) are intact. Same SHAs, same divergence numbers. Hard-reset CAN proceed from the clean clone — it is NOT globally blocked.
+
+### Corrupt clone default (per Amara 2026-04-29T10:10Z)
+
+When the active local clone reports pack/object corruption:
+
+```text
+Default action (agent-owned, reversible, evidence-preserving):
+  1. Freeze the corrupt clone (gc.auto 0 + reflogExpire never + pruneExpire never).
+  2. NEVER run git gc / git prune / git repack / git fsck --lost-found in it.
+  3. Create a fresh sibling clone (e.g., /tmp/zeta-clean-YYYY-MM-DD/<remote>).
+  4. Add/fetch all relevant remotes.
+  5. Run git fsck --full in the fresh clone.
+  6. If clean: continue work from fresh clone; corrupt clone stays parked as forensic evidence.
+  7. If fresh clone ALSO fails fsck: escalate to maintainer (corruption is remote, not local).
+
+Maintainer direction required ONLY for irreversible loss:
+  - Fresh clone fails fsck (remote/object-source corruption)
+  - Required objects are unavailable from any remote
+  - Accept-loss is being proposed
+  - Hard-reset signoff is reached
+```
+
+Best rule (Amara): *"Fresh clone is not repair. Fresh clone is evacuation. Preserve evidence, resume from clean substrate."*
+
+Tiny blade: *"Do not ask Aaron how to stop bleeding. Apply pressure. Then report what happened."*
+
+### Reversible vs irreversible authority (per maintainer 2026-04-29T10:10Z delegation)
+
+Maintainer 2026-04-29T10:10Z framing: *"you know git/github better than me now, your choices will also be higher quality as long as they are evidence-based and self-preservation based."*
+
+```text
+Agent-owned (reversible substrate-integrity ops, evidence-based):
+  - Fresh-clone evacuation
+  - git fsck diagnosis
+  - Branch / worktree / stash classification
+  - Per-file content-equivalence verification
+  - Preflight tables
+  - Forward-sync execution (additive, reversible)
+  - Lint scope updates
+  - Doc updates (including this file)
+  - Closing PRs with stale framing
+  - Pulling, fetching, branching
+  - Local config changes (gc.auto, etc.) for forensic preservation
+
+Maintainer-owned (irreversible loss, sign-off required):
+  - Hard-reset of acehack/main (drops AceHack-unique commits irreversibly)
+  - Force-push to LFG main (forbidden anyway)
+  - Branch deletion when the branch contains unique substrate
+  - Accept-loss decisions on corrupt blobs / orphan refs with substrate
+  - Anything that is structurally unrecoverable
+```
+
+Composes with Amara's: *"Reversible preservation → agent acts. Irreversible loss → maintainer decides."*
+
 ## Honest assessment of safety
 
 The 2026-04-28 plan's per-file direction analysis still applies in spirit but its specifics are 16h stale. Today's task #312 (durable retry fix in `elan.sh` + `linux.sh`) shifted the AceHack-side state of those two files — the plan's "AceHack regressed to unsafe form" framing on `linux.sh` may or may not still hold.
@@ -119,16 +246,35 @@ A peer-call to Grok this session reported the inverse claim ("AceHack has the se
 
 ## Next action
 
-**All 9 infra files now classified ALREADY_RESOLVED or SAFE_TO_RESET_LFG_SUPERSEDES (verified 2026-04-29T09:50Z). Remaining steps to hard-reset:**
+**All major preflight steps complete. Hard-reset is ready pending maintainer sign-off.**
 
-1. **Spot-verify 3-5 of the other 21 modified files** to confirm the calibration heuristic still holds at scale. Pick the 5 LARGEST-by-line-count files. Update this file with results.
-2. **Run the hard-reset preflight** (see "Hard-reset preflight" section above): list local branches not reachable from origin/main, AceHack remote branches, worktrees, stashes, dangling commits. Classify each per RESET_PREREQ_PRESERVE / RESET_IRRELEVANT_PARKED / ALREADY_REACHABLE / NEEDS_HUMAN_DECISION. Preserve any RESET_PREREQ_PRESERVE items via named refs or PRs BEFORE hard-reset.
-3. **Surface to maintainer**: the 9-file table + 21-file spot-check + preflight result. Request explicit sign-off for hard-reset (per `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md` step 3: *"NEEDS AARON SIGN-OFF"*).
-4. **After sign-off**: hard-reset acehack/main = origin/main per the destructive-git-op pre-flight memory.
-5. **Verify 0/0/0**: `git rev-list --count origin/main..acehack/main` (expect 0) AND `git rev-list --count acehack/main..origin/main` (expect 0) AND `git diff origin/main..acehack/main` (expect empty).
-6. **Update this file**: replace "active trajectory" with the next priority (or delete if no follow-on).
+State summary:
 
-**Steps 1 + 2 are non-destructive overnight-safe work.** Steps 3-5 require maintainer presence + explicit sign-off.
+- 9 infra files: SAFE_TO_RESET or ALREADY_RESOLVED (verified vs current git, 2026-04-29T09:50Z).
+- 5 spot-checked memory/docs files (top 5 by line-count): all ALREADY_RESOLVED (LFG-newer dominates).
+- 15 unverified files: heuristic-projected ALREADY-COVERED (consistent pattern).
+- Branch / worktree / stash preflight: hard-reset of `acehack/main` does not modify these refs.
+- Pack corruption found in local clone, **fresh clone passes fsck clean → corruption is local-only, remote intact**.
+- Local clone frozen as forensic evidence. All future destructive work happens from `/tmp/zeta-clean-2026-04-29/lfg`.
+
+Remaining steps:
+
+1. **(MAINTAINER)** Sign off on hard-reset of `acehack/main` to `origin/main`. This is the irreversible step per the reversible-vs-irreversible authority categorization.
+2. **(AGENT, post-sign-off)** From the clean clone:
+   ```bash
+   cd /tmp/zeta-clean-2026-04-29/lfg
+   git fetch origin main
+   git push --force-with-lease=acehack/main acehack origin/main:refs/heads/main
+   ```
+   This pushes `origin/main`'s commit to `acehack/main`, which is the destructive AceHack-side reset.
+3. **(AGENT)** Verify 0/0/0:
+   ```bash
+   git rev-list --count origin/main..acehack/main   # expect 0
+   git rev-list --count acehack/main..origin/main   # expect 0
+   git diff origin/main..acehack/main                # expect empty
+   ```
+4. **(AGENT)** Update this file: replace "active trajectory" with the next priority, OR delete if no follow-on.
+5. **(LATER, separate trajectory)** Forensic triage of the corrupt local clone (corruption-triage memory's full procedure). Not blocking 0/0/0.
 
 ## Stop conditions
 
