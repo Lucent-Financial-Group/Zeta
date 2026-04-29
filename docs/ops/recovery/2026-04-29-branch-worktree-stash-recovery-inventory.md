@@ -322,9 +322,14 @@ exact failure mode the report's discipline guards against.
 
 **Note on this category**: the `pr-NNN-fix*` shape is a workflow
 artifact of the iterative-Copilot-fix cycle. The follow-up cleanup PR
-should ship a per-branch verifier (`git diff acehack/main..pr-NNN-fix
--- '*.md' '*.fs'` to detect post-merge content) before treating any
-of the 14 as auto-deletable.
+should ship a per-branch verifier that compares the FULL tree (all
+file extensions, all paths) — `git diff refs/remotes/origin/main..pr-NNN-fix`
+without any path filter — before treating any of the 14 as
+auto-deletable. Codex P1 catch on PR #848: an earlier draft suggested
+limiting the verifier to `*.md` and `*.fs`, which would miss workflow
+/ config / source-file deltas and silently discard non-markdown,
+non-fsharp post-merge content. Per "No proof, no deletion," the
+verifier must cover the full tree, not a path-extension subset.
 
 ---
 
@@ -482,10 +487,17 @@ Branches and worktrees flagged `NEEDS_AARON_DECISION` in this report:
 
 ## 9. Open questions for the human maintainer
 
-1. **Lock release for the 57 agent worktrees**: pid 67393 holds the
-   lock. Is that pid still alive, and is killing it the right move
-   before Batch A starts? Or should the cleanup PR wait for the lock
-   to release naturally?
+1. **Lock release for the 57 agent worktrees**: each worktree carries
+   a `git worktree lock` reason mentioning pid 67393. Per Codex P2 catch
+   on this PR: `git worktree lock` is repository **metadata** (a marker
+   that prevents pruning), NOT a runtime mutex held by a process —
+   killing pid 67393 would not unlock anything and could kill an
+   unrelated process. Correct unlock workflow: `git worktree unlock
+   <path>` per worktree, then either `git worktree remove <path>` (if
+   clean) or authorized `git worktree remove -f <path>` (if dirty,
+   maintainer sign-off required). Decision needed: which of the 57
+   agent worktrees should the cleanup PR unlock, and which should stay
+   locked-as-evidence?
 2. **DEDICATION.md / Elizabeth surface in stash@{0}**: this stash
    touches the surface that honors the human maintainer's sister. Even if the content
    is provably already on main, the stash itself feels load-bearing as
