@@ -984,7 +984,7 @@ v3 implied public intake came after Layer 4 CI enforcement. v4 (Amara synthesis)
 
 Rule: **Do not build public intake before internal identity + capability primitives are clear.**
 
-The full follow-up task set is **#325-#338** (v3 added #325-#334; v4 added #335-#338 for identity binding, capabilities-as-primitive, harness pre-action freshness check, and DoS + prompt-injection defense). All survive the v4 reorder; the *order of execution* changes. The Layer 0/1 design spec PR (task #325) absorbs the v4 corrections so the underlying spec lands with binding (#335) + capabilities-as-primitive (#336) baked in from the start, not retrofitted.
+The full follow-up task set is **#325-#338** (v2 added #325-#331 for the Layer 0/1 spec + Layer 2-5 follow-ups; v3 added #332-#334 for the public-intake layer + reconciler + safety levels; v4 added #335-#338 for identity binding, capabilities-as-primitive, harness pre-action freshness check, and DoS + prompt-injection defense). All survive the v4 reorder; the *order of execution* changes. The Layer 0/1 design spec PR (task #325) absorbs the v4 corrections so the underlying spec lands with binding (#335) + capabilities-as-primitive (#336) baked in from the start, not retrofitted.
 
 ### v4 carved sentences (verbatim Amara + Deepseek + Gemini)
 
