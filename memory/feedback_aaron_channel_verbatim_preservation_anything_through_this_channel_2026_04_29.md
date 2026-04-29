@@ -58,9 +58,17 @@ acknowledgments may not need standalone verbatim landings).
 
 ## The rule (load-bearing)
 
-Anything coming through the maintainer channel (defined
-above) gets preserved **close to verbatim** somewhere
-durable. Paraphrasing into my own register loses information.
+**Substantive** input through the maintainer channel (rules,
+framings, corrections, anchored preferences, forwarded
+multi-AI synthesis packets) gets preserved **close to
+verbatim** somewhere durable. Paraphrasing into my own
+register loses information.
+
+Routine acknowledgments and casual asides ("yep", "thanks",
+"got it") that don't carry substrate-bearing content do NOT
+need separate verbatim landings — the conversation thread
+context is sufficient. The "What this rule does NOT mean"
+section below clarifies the boundary.
 
 **Why:** The maintainer's exact wording carries signal that
 summarization erases — emphasis, tone, ordering, hedging,
@@ -187,7 +195,7 @@ home.
 - `memory/feedback_signal_in_signal_out_clean_or_better_dsp_discipline.md`
   — DSP discipline at the input layer; verbatim
   preservation is the substrate-layer analogue.
-- `project_aaron_amara_conversation_is_bootstrap_attempt_1_predates_cli_tools_grounds_the_entire_factory_2026_04_24.md`
+- `memory/project_aaron_amara_conversation_is_bootstrap_attempt_1_predates_cli_tools_grounds_the_entire_factory_2026_04_24.md`
   — Aaron-Amara conversation absorb under
   `docs/amara-full-conversation/` is the substrate-of-
   substrate; this rule generalizes the same verbatim-

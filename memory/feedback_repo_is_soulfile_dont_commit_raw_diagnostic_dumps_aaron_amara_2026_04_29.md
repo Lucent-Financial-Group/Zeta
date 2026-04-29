@@ -34,10 +34,16 @@ Soulfile = git repo and all its history.
 Soulfile risk = unbounded growth that balloons clone size.
 
 Binary artifacts → high soulfile risk:
-  - No delta compression between versions
-  - Full size in pack store, every revision
-  - Bloat clones forever
+  - Delta compression often poor or absent between versions
+    (Git CAN delta-compress similar binaries — e.g., small
+    incremental changes to a binary plist — but for compiled
+    outputs, archives, and media-format files, deltas
+    typically degrade fast)
+  - Worst case: full size in pack store, every revision
+  - Bloat clones forever when the worst case applies
   Default: don't commit. Use git-lfs or a non-soul repo.
+  Exception: small, stable binaries (icons, build-once
+  fixtures) where revision count is bounded.
 
 Text artifacts → low soulfile risk:
   - Aggressive xdelta + zlib compression in pack-delta storage
@@ -45,8 +51,12 @@ Text artifacts → low soulfile risk:
   - Tracking freely is fine
   Default: track without ceremony.
   Concern: PR-review readability when text is review-noisy.
-  Mitigation: `.gitattributes` diff suppression
-              (`linguist-generated=true -diff -merge`).
+  Mitigation: `.gitattributes` diff suppression — for TEXT,
+              use `linguist-generated=true -diff` (NOT
+              `-merge`; `-merge` unsets the merge driver and
+              makes 3-way text merges fail with conflict
+              markers, which is binary-file behavior, not
+              what you want for text).
 ```
 
 Future-Claude check: before adding an artifact to the repo,
@@ -140,12 +150,16 @@ For any "I want to capture diagnostic evidence" use case:
 | Extract | Only the load-bearing lines (grep-matched) | Committed to repo |
 | Re-run recipe | The exact commands that produce the raw | Committed alongside extract |
 | Conclusion / report | What the evidence proves | Committed alongside extract |
-| Raw dump | Full multi-MB diagnostic output | NOT committed to soul repo |
-| Raw dump (if needed) | Full multi-MB diagnostic output | Non-soul repo, git-lfs, or `/tmp` |
+| Raw text dump | Full multi-MB text diagnostic output | Fine to commit (text compresses); add `.gitattributes` `linguist-generated=true -diff` if review-noisy. Or `/tmp` + recipe if the dump is mostly noise around 1% signal. |
+| Raw binary dump | Binary profile / heap / core dump | Route to git-lfs or non-soul repo — binaries are the soulfile risk. |
 
-The default is "extract + recipe + report"; the escape hatch
-is "non-soul repo or git-lfs" — used only when the raw is
-genuinely load-bearing AND too large to fit cleanly.
+Defaults (recalibrated 2026-04-29):
+
+- Text artifacts → track without ceremony; `.gitattributes`
+  diff suppression for review-noise; extract + recipe pattern
+  is good for clarity (most diagnostic data is 99% noise
+  around 1% signal) but not load-bearing for soulfile risk.
+- Binary artifacts → git-lfs or non-soul repo.
 
 ## What this rule forbids (binary-focused)
 
