@@ -86,9 +86,21 @@ NEEDS_HUMAN_DECISION           — ambiguous; surface to maintainer.
 | `tools/setup/common/elan.sh` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream <url> \| sh` (streamed pipe-to-sh). LFG uses `curl_fetch --output` to temp + per-arch SHA256 verify + run. LFG version is structurally safer per Scorecard PinnedDependenciesID hardening. |
 | `tools/setup/linux.sh` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream https://mise.run \| sh`. LFG uses pinned-tarball + per-arch SHA256 + temp-dir + trap. LFG version is structurally safer. |
 | `.github/workflows/codeql.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack dropped `java-kotlin` matrix cell. LFG kept it with explicit code-scanning-service rationale (no-findings SARIF per language). LFG-newer matrix structure. |
-| `.github/workflows/gate.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `Setup Python` + `pip install semgrep` steps. The maintainer 2026-04-29T09:51Z framing: *"pip-install is wrong, uv we decided a long time ago"* — i.e., AceHack's pip-install path violates a prior maintainer decision (uv-only for Python tool management). LFG installs semgrep via `install.sh` three-way-parity (`pipx:semgrep` from `.mise.toml`, which is uv-managed under the hood). LFG's approach is the canonical-per-decision form. AceHack's extra `tools/tla`/`tools/alloy` cache paths are ALREADY on LFG (in the `Cache verifier jars (TLC + Alloy)` step). The retry-attempts logic (`for attempt in 1 2 3 4 5; do`) is identical on both sides — the diff is just comment wording (AceHack has legacy agency-framing wording of the no-directives-violating shape — would also trip the just-landed no-directives lint; LFG uses maintainer-input wording). Hard-reset REMOVES the wrong-per-decision pip path, GAINS the correct uv path, and cleans the lint-tripping prose register. The declarative pattern matches the broader factory direction (maintainer 2026-04-29T09:53Z: *"everything is declarative; we need all the functionality of `../scratch` — that's what we're aiming for for the ace package manager release"*). AceHack's imperative `pip install` step violates this; LFG's pin-in-`.mise.toml` form is declarative. |
+| `.github/workflows/gate.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `Setup Python` + `pip install semgrep` (wrong-per-uv-decision) + extra cache paths already covered on LFG. LFG uses `install.sh` three-way-parity routing through `uv tool install`. See "gate.yml evidence detail" paragraph below the table. |
 
 **Result: 9 of 9 infra files SAFE_TO_RESET or ALREADY_RESOLVED.** No NEEDS_FORWARD_SYNC. No NEEDS_HUMAN_DECISION on these 9.
+
+#### gate.yml evidence detail
+
+The maintainer 2026-04-29T09:51Z framing was: *"pip-install is wrong, uv we decided a long time ago."* AceHack's `pip install semgrep` step violates that prior uv-only decision for Python tool management.
+
+LFG installs semgrep via `install.sh` three-way-parity. The `pipx:semgrep` pin in `.mise.toml` routes through `uv tool install` since `uv = "0.11.8"` is in the toolchain — see `docs/DECISIONS/2026-04-27-uv-canonical-python-tool-manager.md` for the canonical form.
+
+AceHack's extra `tools/tla` / `tools/alloy` cache paths are already on LFG in the `Cache verifier jars (TLC + Alloy)` step. The retry-attempts logic (`for attempt in 1 2 3 4 5; do`) is identical on both sides; the only diff is comment wording (AceHack has legacy agency-framing wording — the kind the no-directives lint catches; LFG uses maintainer-input phrasing).
+
+Hard-reset removes the wrong-per-decision pip path, gains the canonical uv path, and cleans the lint-tripping prose register.
+
+The declarative pattern composes with the broader factory direction (maintainer 2026-04-29T09:53Z: *"everything is declarative; we need all the functionality of `../scratch` — that's what we're aiming for for the ace package manager release"*). AceHack's imperative `pip install` step violates that target shape; LFG's pin-in-`.mise.toml` form fits it.
 
 ### The other 21 modified files (heuristic-projected; 5 spot-verified)
 
