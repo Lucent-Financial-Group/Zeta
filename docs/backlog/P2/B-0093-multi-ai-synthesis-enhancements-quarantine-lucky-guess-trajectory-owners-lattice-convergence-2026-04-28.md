@@ -149,6 +149,173 @@ Memory file: `feedback_beacon_promotion_load_bearing_rules_earn_external_anchors
 
 **Effort:** S — new memory file
 
+### 9. Candidate-count Goodhart freshness rule (Amara-flagged, second pass)
+
+**Issue:** A classified hit can become stale if its surrounding context materially changes (e.g., file moves from `docs/pitch/` to `samples/external-ui-demo/` — `KEEP-NAME` → `GENERICIZE`). Without a freshness component, the audit converges on a stable state that gradually decouples from current truth.
+
+**Proposed fix:**
+
+Add to `memory/feedback_candidate_count_goodhart_raw_hits_are_not_violations_aaron_amara_2026_04_28.md` a freshness clause:
+
+```text
+A classified hit expires when its context materially changes.
+```
+
+Examples:
+
+```text
+docs/pitch/foo.md → samples/external-ui-demo/foo.md
+   KEEP-NAME may become GENERICIZE.
+
+rule-definition file → product/pitch file
+   ALLOW may become WARN or BLOCK.
+
+historical memory path → live public doc
+   HISTORICAL may become REWRITE.
+```
+
+Acceptance criterion extended:
+
+```text
+- No unclassified hits.
+- No unresolved BLOCK hits.
+- WARN hits reviewed.
+- ALLOW hits have context tags.
+- Classifications re-run when context changes.
+```
+
+**Effort:** S — memory update
+
+### 10. Quarantine vs history-redaction split (Amara + Claude.ai-flagged, second pass)
+
+**Issue:** The mechanical quarantine spec (`.quarantine/`, `*.tainted`) handles **future** suspect content. But if MNPI lands in a commit and is then quarantined, the substrate has a redaction problem rather than a quarantine problem — the content is still in the git log even after `.quarantine/` move. GitHub's own docs warn that sensitive data may remain accessible in forks, cached views, PR refs, or direct SHA links.
+
+**Proposed fix:**
+
+Encode two separate paths in the public-company compliance memory:
+
+```text
+Future-taint quarantine:
+  possible MNPI appears before commit
+  → move to .quarantine/ or *.tainted
+  → gitignored
+  → do not encode publicly
+
+Historical-taint redaction:
+  possible MNPI already entered git history
+  → stop normal loop
+  → identify affected commits/refs/PRs
+  → consult Aaron/employer compliance as needed
+  → consider history rewrite (git-filter-repo / BFG repo cleaner)
+  → consider GitHub sensitive-data-removal procedure
+  → do not "fix" by merely moving the file
+```
+
+Canonical rule:
+
+```text
+Quarantine prevents future disclosure.
+History redaction responds to past disclosure.
+Do not confuse the two.
+```
+
+**Effort:** S — memory update + procedure doc
+
+### 11. Trajectory ownership is structural, not instance-bound (Claude.ai + Amara-flagged, second pass)
+
+**Issue:** B-0092's trajectory ownership says "Otto cron / factory hygiene" — but Otto persists via memory + cron, not via a single Claude instance. When ownership reads "Otto" without naming the durable structure, ownership becomes instance-bound and decays when instances turn over.
+
+**Proposed fix:**
+
+Replace "Otto owns weekly compliance audit" with explicit structural ownership:
+
+```text
+The owning structure is cron + memory + governance recording surface.
+Any Otto instance inherits the trajectory.
+```
+
+Add a failure detector:
+
+```text
+If a trajectory's recording surface is empty for N expected runs,
+the owning structure failed, even if no individual instance noticed.
+```
+
+This converts "Otto owns it" from a name into a measurable substrate claim.
+
+**Effort:** S — B-0092 update
+
+### 12. PR-boundary restraint as a gate, not a static rule (Claude.ai-flagged, second pass)
+
+**Issue:** "Restraint discipline" was framed as a static rule. Claude.ai's sharper framing: it's a **gate** applied at PR boundary; the work BEHIND the gate becomes trajectories/backlog.
+
+**Proposed fix:**
+
+Add to `memory/feedback_amara_authority_rule_default_to_reversible_preservation_escalate_irreversible_loss_2026_04_28.md` a section:
+
+```text
+Static gate (PR boundary):
+  Do not expand active validation PR unless hard defect.
+
+Trajectory (post-merge):
+  Carry new ideas into separate backlog/follow-up PRs.
+```
+
+The pair is a gate + trajectory composition, not a single static rule.
+
+**Effort:** S — memory update
+
+### 13. Synthesis-as-absorb vs durable-rules-need-durable-homes (Claude.ai-flagged, second pass)
+
+**Issue:** Multi-round syntheses risk fading into round-history if the durable rules they introduce don't get split into searchable operational docs. Claude.ai: *"the synthesis itself becomes a pointer document and the durable rules live where they're searchable."*
+
+**Proposed fix:**
+
+When a round synthesis introduces a load-bearing rule, that rule should land in a durable home alongside the synthesis:
+
+```text
+Synthesis = research-grade absorb (round-history, narrative, archive)
+Durable rule = operational artifact (edited in place, searchable)
+```
+
+Specific applications from this round:
+
+- **Candidate-count Goodhart** → glossary entry or short operational doc (`docs/CANDIDATE-COUNT-GOODHART.md` or glossary section)
+- **Public-company compliance canon** → `docs/CONTRIBUTOR-COMPLIANCE.md`
+- **Evidence lattice** → `docs/research/content-loss-evidence-lattice.md`
+- **Synthesis itself** → `docs/round-history/2026-04-28-synthesis.md` (pointer document)
+
+This applies the AGENTS.md research-grade-vs-operational distinction: the synthesis is research-grade absorb; the rules live where contributors search.
+
+**Effort:** M — multiple doc creation tasks
+
+### 14. Restraint validation as candidate bead (not full bead) (Claude.ai + Amara-flagged, second pass)
+
+**Issue:** The Beacon-promotion / restraint discipline / candidate-count Goodhart all earned bead candidates this round, but bead inflation is the failure mode. Per Amara: "Treat this as a candidate validation bead for restraint discipline until #699 lands cleanly without conceptual scope creep."
+
+**Proposed fix:**
+
+Add to `memory/feedback_prediction_bearing_class_reuse_amara_2026_04_28.md` a candidate-bead state:
+
+```text
+Candidate bead = predicted reuse-event observed; not yet promoted to full bead.
+
+Promotion to full bead requires:
+  - the original prediction's falsifier didn't fire AND
+  - the action it predicted held up under post-event review
+
+For restraint discipline (this round):
+  Prediction:    "do not stack synthesis follow-ups onto active PR"
+  Observation:   PR #704 opened separately for candidate-count Goodhart
+  Falsifier:     would fire if PR #699 later imports the synthesis content
+                 just because it feels useful
+  Promotion:     when #699 lands cleanly without backporting #704's scope
+```
+
+This prevents the bead system from Goodharting itself by counting one-event-many-beads.
+
+**Effort:** S — memory update
+
 ## Acceptance
 
 - [ ] Each of the 8 enhancements lands as either a separate small PR or an update to an existing memory/backlog row
