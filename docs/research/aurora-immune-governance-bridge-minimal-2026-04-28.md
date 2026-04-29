@@ -86,6 +86,7 @@ classifier.
 raw hits surfaced by a scanner.
 
 **Feature vector elements that matter:**
+
 - `source` — where the match was found (rule definition?
   sample? live code?)
 - `context_class` — KEEP-NAME / GENERICIZE / HISTORICAL
@@ -121,6 +122,7 @@ attempts to introduce new conceptual substrate into a
 PR that has entered validation.
 
 **Feature vector elements that matter:**
+
 - `pr_stage` — pre-validation / validation / post-merge
 - `change_class` — allow-list classification of the
   proposed change
@@ -154,12 +156,14 @@ is a complete block.
 
 **Antigen class:** `A_compliance` — the existing
 membrane-class for compliance-relevant antigens, with:
+
 - `public_company_reference`
 - `possible_MNPI`
 - `tainted_text` (if any historical-disclosure damage
   occurred — none currently identified)
 
 **Feature vector elements that matter:**
+
 - `taint_status` — clean / suspected / confirmed
 - `context_class` — pitch / research / disclosure / code
 - `provenance` — who introduced the text? was it
