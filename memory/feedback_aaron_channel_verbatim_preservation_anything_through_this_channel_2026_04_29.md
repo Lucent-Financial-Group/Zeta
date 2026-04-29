@@ -213,7 +213,7 @@ Amara explicitly distinguishes:
 
 External lineage Amara cited: **Reflexion** (Shinn et al.,
 language agents improving decisions through verbal feedback
-+ episodic memory without weight updates) and **Generative
+and episodic memory without weight updates) and **Generative
 Agents** (Park et al., memory streams + reflection +
 retrieval producing higher-level behavior). The Zeta
 factory's git-backed setup is described as a version of
