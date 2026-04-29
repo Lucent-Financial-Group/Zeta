@@ -136,7 +136,7 @@ For the text-file ledger, the conceptual computation is straightforward: `git di
 
 Verified 2026-04-29T10:43Z: the 5 binary-classified files in the current diff have status `D` (LFG-only), so `binary_acehack_only_files = 0` and `binary_modified_or_renamed_files = 0` in this specific round.
 
-Current ledger (computed 2026-04-29T11:32Z):
+Current ledger (last updated 2026-04-29T12:13Z, post-Batch-2):
 
 ```text
 potential_loss_lines  = 273    all AceHack-only +lines (would be erased on hard-reset)
@@ -145,7 +145,9 @@ unsafe_lines          = 12     1 NEEDS_HUMAN_DECISION (loop-tick-history.md mutu
 unclassified_lines    = 46     HEURISTIC_LFG_DOMINATES — pending per-file semantic inspection
 ```
 
-Arithmetic sanity check: `273 = 215 + 12 + 46` ✓ (per Amara 2026-04-29 review discipline — verify mechanically, do not trust the math because it "looks plausible").
+`potential_loss_lines = 273` was computed 2026-04-29T10:25Z via `git diff --numstat refs/remotes/origin/main..refs/remotes/acehack/main` and remains canonical at the time of the most recent batch-PR open (the AceHack and LFG main tips have not advanced relative to each other in a way that touched the divergent files — see "Drift cadence observation" earlier; LFG advanced via #837 but #837 only touched docs in `docs/0-0-0-readiness/` which are not in the AceHack-vs-LFG file set). Re-compute on next batch open if either tip moves.
+
+Arithmetic sanity check: `273 = 215 + 12 + 46` ✓ (per the multi-AI review discipline — verify mechanically, do not trust the math because it "looks plausible").
 
 Composition of `classified_safe_lines = 215`:
 
