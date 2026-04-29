@@ -5,12 +5,18 @@
 > open a new audit branch, or invoke a peer-call about the active trajectory,
 > stop. Read this file. Do the next action listed here, not a re-derivation.
 >
-> **Classification (per maintainer 2026-04-29T10:30Z call):** this file is a
+> **Classification (maintainer call, 2026-04-29T10:30Z):** this file is a
 > HISTORY surface (like backlog rows / memory files / tick shards / CURRENT-*
 > per-maintainer files), not a current-state surface. Persona names + dated
-> attribution ARE allowed here per the named-attribution carve-out. The
-> trajectory IS history-of-decisions; the file records what was decided, by
-> whom, when, and why. Treat as memory-equivalent for prose-register rules.
+> attribution ARE allowed here. The trajectory IS history-of-decisions; the
+> file records what was decided, by whom, when, and why. Treat as memory-
+> equivalent for prose-register rules.
+>
+> Note: the closed list in `docs/AGENT-BEST-PRACTICES.md` history-attribution
+> rule does not currently include `docs/active-trajectory.md`. The maintainer
+> 2026-04-29T10:30Z call extends the closed list to cover this file. A
+> follow-up edit to `docs/AGENT-BEST-PRACTICES.md` should add active-trajectory
+> alongside backlog and memory entries (deferred follow-up; not blocking 0/0/0).
 
 ## Priority — blocking all other work
 
@@ -318,30 +324,34 @@ A peer-call to Grok this session reported the inverse claim ("AceHack has the se
 
 ## Next action
 
-**All major preflight steps complete. Hard-reset is ready pending maintainer sign-off.**
+**Hard-reset is NOT YET signoff-eligible.** The strict gate above requires `unclassified_lines = 0`, and the current ledger says `unclassified_lines = 176` (18 files in HEURISTIC_LFG_DOMINATES). The next agent-owned work is per-file semantic inspection of those 18 files to either promote each to SAFE_TO_RESET_LFG_SUPERSEDES (with named evidence) or downgrade to NEEDS_FORWARD_SYNC.
 
 State summary:
 
-- 9 infra files: SAFE_TO_RESET or ALREADY_RESOLVED (verified vs current git, 2026-04-29T09:50Z).
-- 5 spot-checked memory/docs files (top 5 by line-count): all ALREADY_RESOLVED (LFG-newer dominates).
-- 15 unverified files: heuristic-projected ALREADY-COVERED (consistent pattern).
+- 9 infra files: SAFE_TO_RESET_LFG_SUPERSEDES (6 files, 97 lines, named evidence) or ALREADY_RESOLVED (3 files, 0 lines, identical content).
+- 18 files in HEURISTIC_LFG_DOMINATES (176 lines, line-ratio dominance only — NOT proof per the strict bucket rule).
 - Branch / worktree / stash preflight: hard-reset of `acehack/main` does not modify these refs.
 - Pack corruption found in local clone, **fresh clone passes fsck clean → corruption is local-only, remote intact**.
 - Local clone frozen as forensic evidence. All future destructive work happens from `/tmp/zeta-clean-2026-04-29/lfg`.
 
-Remaining steps:
+Remaining steps to clear the gate:
 
-1. **(MAINTAINER)** Sign off on hard-reset of `acehack/main` to `origin/main`. This is the irreversible step per the reversible-vs-irreversible authority categorization.
-2. **(AGENT, post-sign-off)** From the clean clone:
+1. **(AGENT, in-progress)** Per-file semantic inspection of the 18 HEURISTIC_LFG_DOMINATES files. For each, name the AceHack-only content + name the LFG equivalent/superset + write the reason LFG supersedes. Promote to SAFE_TO_RESET_LFG_SUPERSEDES, OR downgrade to NEEDS_FORWARD_SYNC if AceHack-only content is unique work.
+2. **(AGENT)** Recompute the four-bucket ledger after each batch of files.
+3. **(MAINTAINER, gate-final)** Once `unclassified_lines = 0` AND `unsafe_lines = 0`, sign off on hard-reset of `acehack/main` to `origin/main`. This is the irreversible step per the reversible-vs-irreversible authority categorization.
+4. **(AGENT, post-sign-off)** From the clean clone:
    ```bash
    cd /tmp/zeta-clean-2026-04-29/lfg
    git fetch origin main
-   # Per Amara 2026-04-29T10:32Z (most defensive form): explicit expected-SHA
-   # lease defends against the TOCTOU race where someone else pushes to
-   # acehack/main between our fetch and our push. Copilot's "no explicit
-   # refname" form (lease against upstream-tracking) is better than the
-   # original `=acehack/main` form, but the explicit-SHA form is strictly
-   # safer for a destructive ref move.
+   # Per Amara 2026-04-29T10:32Z (most defensive form, refined across
+   # three iterations recorded in this branch's git log): explicit
+   # expected-SHA lease defends against the TOCTOU race where someone
+   # else pushes to acehack/main between our fetch and our push. The
+   # "no explicit refname" form (lease against upstream-tracking) is
+   # better than the original `=acehack/main` form, but the explicit-
+   # SHA form is strictly safer for a destructive ref move.
+   # See `git log` for the iteration history (avoiding host-specific
+   # PR-number citations per reviewer feedback).
    git fetch origin main
    git fetch acehack main
    expect=$(git rev-parse refs/remotes/acehack/main)
@@ -351,14 +361,14 @@ Remaining steps:
      refs/remotes/origin/main:refs/heads/main
    ```
    This pushes `origin/main`'s commit to `acehack/main`, which is the destructive AceHack-side reset.
-3. **(AGENT)** Verify 0/0/0:
+5. **(AGENT)** Verify 0/0/0:
    ```bash
    git rev-list --count origin/main..acehack/main   # expect 0
    git rev-list --count acehack/main..origin/main   # expect 0
    git diff origin/main..acehack/main                # expect empty
    ```
-4. **(AGENT)** Update this file: replace "active trajectory" with the next priority, OR delete if no follow-on.
-5. **(LATER, separate trajectory)** Forensic triage of the corrupt local clone (corruption-triage memory's full procedure). Not blocking 0/0/0.
+6. **(AGENT)** Update this file: replace "active trajectory" with the next priority, OR delete if no follow-on.
+7. **(LATER, separate trajectory)** Forensic triage of the corrupt local clone (corruption-triage memory's full procedure). Not blocking 0/0/0.
 
 ## Stop conditions
 
