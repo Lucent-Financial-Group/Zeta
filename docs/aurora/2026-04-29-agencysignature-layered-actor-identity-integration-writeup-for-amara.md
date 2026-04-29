@@ -93,25 +93,26 @@ Action-Mode: autonomous-fail-open
 Task: 286
 ```
 
-Future trailer (v2 — composes cleanly with v1 readers via `Agency-Signature-Version: 2` and a strict superset of fields):
+Future trailer (v2 — during the migration window, keep `Agent:` alongside the new `Actor:` field so the v2 trailer remains a strict field superset for v1-era readers; once all consumers are v2-aware, drop the dual emission):
 ```text
 Agency-Signature-Version: 2
 Trust-Domain: zeta
+Agent: claude-code-coordinator       # retained for v1-reader compat during migration
 Actor: zeta://aaron-mac/claude-code/coordinator
 Agent-Runtime: claude-code-cli
 Agent-Model: claude-opus-4-7
 Credential-Identity: aaron@servicetitan.com
-Credential-Mode: shared           # bound | unbound | shared
+Credential-Mode: shared               # bound | unbound | shared
 Human-Review: not-implied-by-credential
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
 Capabilities: read:repo,write:memory,push:branch,open:pr
 Claim: CLAIM-286
 Task: 286
-Signed-By: ed25519:abc...         # cryptographic signature over trailer block
+Signed-By: ed25519:abc...             # cryptographic signature over trailer block
 ```
 
-The `Actor:` field is the path-style principal Claude.ai recommended (SPIFFE / IAM-shaped). The `Trust-Domain:` prefix gives explicit namespace. The `Capabilities:` field is the new primitive (replaces implicit role grants). The `Claim:` field carries the active claim identifier (`claim_id`), which has its own allowlist + freshness invariant. The `Task:` field remains the task / ticket pointer (preserves v1 meaning — Task references the upstream issue / TaskList ID; Claim references the orchestra claim record). The `Signed-By:` field provides the binding that Claude.ai called out as missing.
+The `Actor:` field is the path-style principal Claude.ai recommended (SPIFFE / IAM-shaped). The `Trust-Domain:` prefix gives explicit namespace. The `Capabilities:` field is the new primitive (replaces implicit role grants). The `Claim:` field carries the active claim identifier (`claim_id`), which has its own allowlist + freshness invariant. The `Task:` field remains the task / ticket pointer (preserves v1 meaning — Task references the upstream issue / TaskList ID; Claim references the orchestra claim record). `Agent:` is retained during the migration window so the v1 validator continues to accept the trailer set; it can be dropped once all consumers have moved to v2 (per the rollout sequence below). The `Signed-By:` field provides the binding that Claude.ai called out as missing.
 
 ### What happens if the trailer is forged
 
