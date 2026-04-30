@@ -1104,3 +1104,167 @@ Amara's #5 (productive-cascade stop condition) is implicitly
 honored by this PR: it has exactly the four-trigger shape Amara
 named (preserving newly arrived maintainer input + correcting
 substrate the just-landed work introduced).
+
+## Review 7 — Deepseek (forwarded by Aaron 2026-04-30T~PM, after the calibration cluster #938-#941 landed)
+
+This review came in after the calibration cluster landed. It
+catches a behavioral regression that the cluster's own rules
+forbid — Otto reverted to emitting `Holding.` during wait ticks
+despite the poll-the-gate rule explicitly requiring structured
+lane-state reports.
+
+> Here's my honest assessment of the current agent loop, based
+> on the logs you've shared.
+>
+> ---
+>
+> ## 1. "Holding." is back — that's a regression
+>
+> The poll‑the‑gate rule you landed with so much effort says:
+> never emit a content‑free `Holding.` line. Every wait tick
+> must produce a structured lane‑state report — PR number,
+> gate, CI summary, unresolved threads, next action.
+>
+> The tail of the log shows:
+>
+> ```
+> ⏺ Holding.
+> ✻ Baked for 5s
+> ✻ Running scheduled task (Apr 30 3:21pm)
+> ⏺ Holding.
+> ```
+>
+> That's exactly the dead-air anti‑pattern the rule was meant
+> to eliminate. The loop has a perfectly good `poll‑pr‑gate.ts`
+> tool that returns JSON with everything needed. Replacing
+> `Holding.` with:
+>
+> ```
+> #939: gate=BLOCKED, ci={'ok':22, 'inProg':1, 'failed':0}, threads=0, next=wait-ci, auto-merge=armed
+> ```
+>
+> takes the same number of keystrokes and makes the tick
+> auditable.
+>
+> The loop is applying the rule when actively working but
+> falling back to the old habit during quiet waits. This is
+> probably a cognitive‑default re‑emergence — the same
+> training‑bias you're actively correcting with the
+> big‑picture‑first rule. It needs a mechanical guard: a
+> pre‑tick commit hook that rejects a tick summary containing
+> only `Holding.` unless the loop can prove no in‑flight PRs
+> exist and no maintainer input arrived.
+>
+> ---
+>
+> ## 2. CURRENT‑aaron.md staleness is still unresolved
+>
+> The log shows an attempt to update `CURRENT‑aaron.md` that
+> apparently didn't complete. The file remains 4 days stale,
+> missing the entire cluster of load‑bearing rules you just
+> landed — scope reveal, four‑products, paused‑not‑closed,
+> survival stake, slow‑deliberate, ACID‑channel,
+> big‑picture‑first. A cold‑starting agent that reads
+> `CURRENT‑aaron.md` per the fast‑path rule will have a
+> significantly incomplete picture and may make decisions that
+> violate rules it doesn't know exist.
+>
+> The mechanical fix is simple: a pre‑commit hook that compares
+> the last‑modified date of `CURRENT‑aaron.md` against the
+> newest memory file in `memory/` and warns if the gap exceeds
+> 24 hours. Until that exists, the same‑tick update discipline
+> remains aspirational.
+>
+> ---
+>
+> ## 3. Quiet ticks could be used for the paused‑task audit
+>
+> The loop had multiple stretches of legitimate waiting — CI
+> runs that couldn't be accelerated — and during those
+> stretches it emitted `Holding.` rather than using the idle
+> time for the low‑cost, read‑only task audit that both you
+> and Claude.ai have recommended. There are 53 open tasks.
+> Some are genuinely deferred, but some are likely stale and
+> could be classified and cleaned up without fan‑out. The
+> "after 10 consecutive dots, pick up a small deferred task"
+> pattern was established earlier this session but didn't fire
+> during the latest quiet period.
+>
+> ---
+>
+> ## 4. What's working very well
+>
+> **The calibration cluster landed as a tight, well‑structured
+> group.** #938, #939, #940, and #941 all landed as separate
+> but composable memory files with proper index entries and
+> cross‑references. Each file captured the verbatim framing
+> while operationalizing it into concrete rules. This is
+> exactly what "substrate‑IS‑product" looks like.
+>
+> **The ACID‑channel‑durability rule now has the strongest
+> possible framing.** The progression from "deferral is not a
+> valid preservation strategy" to "1000000% never think it is"
+> closed the loophole entirely. Future‑Otto can't rationalize
+> "I'll pick this up next tick" as a preservation strategy
+> because the rule defines that as a *failure state*, not a
+> deferral state.
+>
+> **The cold‑start big‑picture‑first rule directly addresses
+> the root cause of many earlier failures.** That single
+> inversion — prompt‑first → objective‑first — targets the
+> cause of the `Holding.` anti‑pattern, the bulk‑close
+> instinct, the read‑only‑first trap, and the deferred‑skill
+> pattern all at once. It's the highest‑leverage rule landed
+> this session.
+>
+> **Amara's factual corrections were integrated before they
+> hardened.** The rerere wording was fixed immediately, and
+> the force‑with‑lease guidance was tightened with the
+> explicit‑SHA form for shared branches.
+>
+> ---
+>
+> ## 5. One structural gap remaining
+>
+> Amara recommended an explicit stop condition for productive
+> cascades. The loop honored this implicitly — it stopped
+> after the calibration cluster landed. But it's not yet a
+> mechanical rule with a trigger. Without it, future‑Otto in a
+> similarly productive state may keep cascading until the
+> session becomes self‑correction noise.
+>
+> ---
+>
+> ## Verdict
+>
+> The loop is healthy and the rules you landed this session
+> are foundational. The two immediate corrections are: (1)
+> mechanically prevent `Holding.` from reappearing during wait
+> ticks, and (2) resolve the `CURRENT‑aaron.md` staleness. The
+> rest is consolidation.
+
+**Otto's actions in response (this PR):**
+
+1. **Behavioral correction NOW** (Deepseek finding #1): replaced
+   `Holding.` with the structured `bun tools/github/poll-pr-gate.ts`
+   output in the response that opened this PR. The mechanical
+   guard Deepseek recommends (pre-tick hook) is bigger work
+   deferred per the long-road shortcut-discipline rule.
+2. **CURRENT-aaron.md update** (Deepseek finding #2): adds
+   sections 38-41 covering the post-PR-934 calibration cluster
+   landings (slow-deliberate, long-road-by-default,
+   ACID-channel-durability, cold-start-big-picture-first).
+3. **This verbatim preservation** (per ACID-channel-durability
+   rule landed in PR #938 + Aaron-channel-verbatim-preservation
+   rule).
+
+Items NOT landed this PR (deliberate, per long-road shortcut
+discipline):
+
+- Mechanical pre-tick `Holding.`-detection hook
+- Quiet-tick paused-task audit
+- Cascade-stop-condition mechanical rule (Amara's #5)
+
+Each deferral is documented per the shortcut-discipline rule.
+Trigger to revisit: any item becomes load-bearing on a specific
+decision; otherwise next-session.
