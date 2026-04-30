@@ -223,15 +223,12 @@ notes baked into the snippet below:
   fully clear (the matrix had expanded into per-language
   named checks; the template-name check was the
   conditional skip that confused the reading).
-- jq syntax note: `IN("a","b","c")` works because jq's
-  comma operator at the top level produces a stream, and
-  `IN/1` accepts a stream argument (`def IN(s): . as $x |
-  any(s == $x; .)` per the jq stdlib). Tested live at
-  2026-04-30T11:34Z: `echo '{"x":"NEUTRAL"}' | jq '(.x |
-  IN("SUCCESS","NEUTRAL","SKIPPED"))'` returns `true`. An
-  alternative explicit form is
-  `(["SUCCESS","NEUTRAL","SKIPPED"] | index(.) != null)`,
-  but the comma-stream form is shorter and runs identically.
+- The `IN(...)` form below is verified-working jq (tested
+  live 2026-04-30); detailed jq-syntax explanation belongs
+  in the executable poll-the-gate script's tests, not in
+  this rule. Promotion of the snippet to a tested script
+  with fixtures lives in B-0111 (Amara 2026-04-30 review
+  correction #6).
 
 ```bash
 gh pr view <N> --json state,mergeStateStatus,reviewDecision,\
