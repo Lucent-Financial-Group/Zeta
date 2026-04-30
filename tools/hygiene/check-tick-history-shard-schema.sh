@@ -127,10 +127,17 @@ scan_one() {
   rest_b="${rest_a#*/}"
   dd="${rest_b%%/*}"
 
-  # Filename HHMM extraction (HHMMZ or HHMMSSZ-<hash> forms).
+  # Filename HHMM extraction. Per docs/hygiene-history/ticks/README.md
+  # the accepted forms are:
+  #   - `HHMMZ.md` — bare four-digit form (with optional disambiguator)
+  #   - `HHMMSSZ-<hash>.md` — six-digit-with-hash form (the recommended
+  #     high-concurrency form; the hash suffix is REQUIRED, not optional —
+  #     bare `HHMMSSZ.md` would weaken the collision-avoidance rule the
+  #     hash exists for)
+  # Codex P2 review on PR #977 caught the earlier optional-hash regex.
   if [[ "$base" =~ ^([0-9]{4})Z(-[0-9a-f]+)?$ ]]; then
     hhmm="${BASH_REMATCH[1]}"
-  elif [[ "$base" =~ ^([0-9]{4})([0-9]{2})Z(-[0-9a-f]+)?$ ]]; then
+  elif [[ "$base" =~ ^([0-9]{4})([0-9]{2})Z-[0-9a-f]+$ ]]; then
     hhmm="${BASH_REMATCH[1]}"
   else
     echo "VIOLATION: $path_rel — filename does not match HHMMZ.md or HHMMSSZ-<hash>.md schema" >&2
@@ -150,6 +157,23 @@ scan_one() {
 
   if [ -z "$first_line" ]; then
     echo "VIOLATION: $path_rel — file is empty or whitespace-only" >&2
+    return 1
+  fi
+
+  # Schema rule: row must be a 6-column markdown table — col1
+  # = ISO-8601 UTC timestamp, then 5 more columns (model id,
+  # cron sentinel, body, PR ref, observation) per
+  # docs/hygiene-history/ticks/README.md. Codex P2 review on
+  # PR #977 caught that the col1-only check accepted rows
+  # like `| <ts> | a |` with too few columns. The 6-column
+  # enforcement runs first; the col1 regex only fires if the
+  # column count is right.
+  pipe_count=$(awk -F'|' '{print NF-1}' <<< "$first_line")
+  # 6 columns => 7 pipes (one before col1, one between each pair, one
+  # after col6). Allow 7 or 8 to tolerate trailing whitespace.
+  if [ "$pipe_count" -lt 7 ]; then
+    echo "VIOLATION: $path_rel — first row has $pipe_count pipe characters; schema requires 6 columns (7 pipes including the trailing one)" >&2
+    echo "  got: $(echo "$first_line" | head -c 120)" >&2
     return 1
   fi
 
@@ -190,13 +214,22 @@ if [ "$files_mode" -eq 1 ]; then
     case "$f" in
       docs/hygiene-history/ticks/*/*.md)
         # Resolve to absolute path so scan_one's $ROOT prefix
-        # stripping works.
+        # stripping works. Bash case `*` matches `/` so this
+        # glob covers the YYYY/MM/DD/<file>.md depth — verified
+        # via test on PR #977 (Copilot reported a P0 here based
+        # on misreading bash case glob semantics; closed form-2
+        # because `*` in case patterns is greedy across `/`,
+        # confirmed by running the script against real shard
+        # paths like docs/hygiene-history/ticks/2026/04/30/2018Z.md
+        # which match correctly).
         abs="$ROOT/$f"
+        # Per the script header's "silently skipped" contract,
+        # missing or non-shard paths emit no diagnostic. Codex
+        # P2 review on PR #977 caught the earlier "skipped (not
+        # a file)" stderr message that contradicted the contract.
         if [ ! -f "$abs" ]; then
-          echo "skipped (not a file): $f" >&2
           continue
         fi
-        # Skip the README itself.
         if [ "$(basename "$f")" = "README.md" ]; then
           continue
         fi
