@@ -18,9 +18,67 @@ Aaron 2026-04-30 verbatim:
 
 ## The rule
 
-**A growing backlog is the project's autonomous-health
-signal, not its hygiene problem.** The agent loop should
-ENCOURAGE backlog expansion, not aim for backlog-bankruptcy.
+**Backlog flow + backlog count are BOTH autonomous-health
+signals; growing-or-steady-with-active-flow is healthy;
+shrinking-or-frozen is collapse warning.** Backlog count
+alone is one dimension; flow rate (items in / items out
+per unit time) is the other. The agent loop should
+ENCOURAGE backlog expansion AND maintain active throughput,
+not aim for backlog-bankruptcy.
+
+### The two signals (maintainer 2026-04-30 sharpening)
+
+> *"it's just one indicator signal is strong and also number
+> of pending backlog items staying the same is healthy too,
+> as long as number of backlog items processed in last
+> hours/days or whatever is stedy or increasing too, it
+> should be constant in and out into the backlog but lean
+> on more in that out because if we run out of things to do,
+> what are you going to do with the current state of AI,
+> you would just sit in a loop and do nothing."*
+> — maintainer 2026-04-30
+
+The full signal model:
+
+| Dimension | Healthy state | Warning state |
+|---|---|---|
+| **Backlog count** | Growing OR steady (with active flow) | Shrinking-without-completion-velocity OR frozen-with-no-flow |
+| **Flow rate** | Items entering + items processed both active; throughput steady or increasing | Either flow stops (no new items OR no completions) |
+| **In/out balance** | Lean toward more-in-than-out (slight backlog growth) | Out-only sustained; backlog drains to zero |
+
+Why steady-state with active flow is healthy: it means
+the project is genuinely autonomous at scale — items
+flow IN from peer-AI reviews + maintainer asks +
+observation-based candidates + autonomous trigger surfaces;
+items flow OUT through autonomous-loop execution. The
+rate matters more than the count.
+
+### Why lean toward more-in-than-out
+
+> *"because if we run out of things to do, what are you
+> going to do with the current state of AI, you would just
+> sit in a loop and do nothing."*
+
+Current AI agent loops have a structural failure mode at
+the empty-queue boundary. The agent doesn't gracefully
+self-terminate or self-rest; it either generates make-work
+(falsely productive substrate) or sits idle in heartbeat
+ticks consuming resources without producing. **The
+"lean-more-in" buffer prevents the loop from hitting the
+empty-queue boundary** — the slight backlog growth keeps
+the loop in healthy chew-through-mode, never starving.
+
+### Operational consequence — the right balance
+
+- **File items liberally** when they're load-bearing (per
+  non-durable-means-does-not-exist).
+- **Process items steadily** through autonomous loop
+  cycles (per always-do-real-work-not-make-work).
+- **Track flow rate**, not just count — a backlog of 100
+  items with 10/hour throughput is healthier than a
+  backlog of 1000 items with 0/hour throughput.
+- **Lean toward 1.1x in vs out** — not 10x. The buffer is
+  for empty-queue-protection, not infinite hoarding.
 
 ## Industry-default vs Zeta default
 
@@ -172,8 +230,13 @@ Backlog expansion isn't overhead; it's product work.
 projects with the biggest backlogs that can be executed
 autonomously."* (Aaron 2026-04-30)
 
-*"A growing backlog is healthy. A shrinking backlog is a
-collapse warning."*
+*"Backlog count and flow rate are both health signals.
+Growing-or-steady-with-active-flow is healthy. Shrinking-
+or-frozen is collapse warning."*
+
+*"Lean toward more-in-than-out — not for hoarding, but to
+prevent the empty-queue boundary where current AI sits
+idle in a loop doing nothing."*
 
 *"A real human's internal backlog is never complete until
 they die. The project's backlog should be the same."*
