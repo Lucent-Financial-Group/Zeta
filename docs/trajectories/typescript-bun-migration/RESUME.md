@@ -19,7 +19,7 @@ Per the maintainer-channel correction via the multi-AI review surface (2026-04-2
 | PR | Date | Files | Status |
 |---|---|---|---|
 | [#849](https://github.com/Lucent-Financial-Group/Zeta/pull/849) | 2026-04-29 (commit `40344c9`) | `tools/hygiene/sort-tick-history-canonical.{py→ts}`, `tools/hygiene/fix-markdown-md032-md026.{py→ts}` | Merged |
-| Lane B slice 1 | 2026-04-29 | `tools/hygiene/audit-md032-plus-linestart.sh`→`.ts`, `tools/hygiene/audit-memory-index-duplicates.sh`→`.ts`, `tools/hygiene/audit-memory-references.sh`→`.ts` | In flight |
+| Lane B slice 1 | 2026-04-29 | `tools/hygiene/audit-md032-plus-linestart.{sh→ts}`, `tools/hygiene/audit-memory-index-duplicates.{sh→ts}`, `tools/hygiene/audit-memory-references.{sh→ts}` | In flight |
 
 ## Inventory — Python (tools/, Zeta-authored)
 
@@ -154,6 +154,21 @@ Coherent budget-report cluster; would advance task #287 (cost monitoring) in add
 - `.mise.toml` pins `bun 1.3` for CI parity
 - ESLint + markdownlint already configured for TS files
 - `jiti` 2.6.1 was added in PR #849 as devDep; reused for future ports
+
+## Expert skill needed (maintainer-channel input 2026-04-29 mid-#866)
+
+Maintainer flagged a gap: this trajectory is porting bash scripts to TS/Bun without a per-tool/language **expert + teaching** skill anchoring the work. The ports so far (PR #849, slice 1 in #866) follow conventions inferred from existing TS code, not from a current upstream-docs map.
+
+**Required**:
+
+- A TS + Bun expert skill (`.claude/skills/`-shape) anchored to current upstream docs (per Otto-364 search-first authority)
+- Best-practices map for the latest TS + Bun versions (live-search, not training-data)
+- **Teaching role**: the skill transfers the best-practices into agent prose at port-time, not just serves as a static reference
+- Composes with task #323 (per-tool/language expert skills — evidence-based + human-lineage-cited + ongoing-trajectory)
+
+**Status**: deferred from this PR (no-fan-out during live lane). After #866 lands, the TS+Bun expert skill becomes a Lane C+ artifact or a sibling trajectory.
+
+**Why this matters for the migration**: each future slice (~36 ports remaining in Bucket B) benefits from a current-docs anchor. Without it, ports drift toward whatever convention the most-recently-read TS file used; with it, ports converge on contemporary best practice.
 
 ## Operating notes (lane-discipline addendum)
 

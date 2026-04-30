@@ -15,8 +15,12 @@
 // What this does NOT catch:
 //   - Substantially similar descriptions of different files.
 //   - External http(s) URLs (the regex requires `.md` suffix).
-//   - `.md` link targets inside fenced code blocks (line-level
-//     grep, not block-aware).
+//
+// Note: `.md` link targets inside fenced code blocks ARE matched
+// by the regex (the scan is not block-aware). For target files
+// like memory/MEMORY.md that don't use fenced code blocks, this
+// is fine; for callers passing other shapes, pre-strip fences
+// before invocation.
 //
 // Usage:
 //   bun tools/hygiene/audit-memory-index-duplicates.ts              # in-repo memory/MEMORY.md

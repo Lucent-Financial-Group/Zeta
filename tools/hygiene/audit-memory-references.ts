@@ -19,7 +19,7 @@
 // Usage:
 //   bun tools/hygiene/audit-memory-references.ts                  # default: memory/MEMORY.md
 //   bun tools/hygiene/audit-memory-references.ts --file PATH      # custom file
-//   bun tools/hygiene/audit-memory-references.ts --base DIR       # default: memory/
+//   bun tools/hygiene/audit-memory-references.ts --base DIR       # default: memory
 //   bun tools/hygiene/audit-memory-references.ts --enforce        # exit 2 on any broken ref
 //
 // Exit codes:
