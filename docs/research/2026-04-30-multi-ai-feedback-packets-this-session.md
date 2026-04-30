@@ -974,6 +974,174 @@ to Otto and worth following up on with Aaron when relevant.)
 
 ---
 
+## Deepseek — second review (post-proceed-but-verify rule)
+
+Integration status: review packet received after #912 + #913 +
+#914 merged via the proceed-but-verify rule. Most findings
+are queued for future rounds per substrate-rate discipline.
+The "Potential vs Real Blocker Discipline" naming
+recommendation deserves canon-class promotion in a future
+round. Other items: zsh-quoting hook (mechanical fix worth
+filing), MEMORY.md paired-edit conflict structural fix,
+submit-nuget noise classification, jq array-form switch,
+Copilot stale-index lag tracked in B-0109, post-merge
+verification script, MEMORY.md index validation, AceHack
+resolution as DecisionSignal worked example. None integrated
+this round; all preserved verbatim below.
+
+> The logs show a session that was chaotic, corrective, and
+> productive in equal measure. The factory survived its
+> first live GitHub incident with a major rule refinement
+> (proceed-but-verify), correctly abandoned a duplicate
+> backlog row for existing work, preserved multi-AI feedback
+> that would otherwise have been lost, and resolved a
+> long-standing protocol drift. But the session also
+> surfaced several recurring issues that need hardening,
+> and one pattern that will recur unless addressed
+> mechanically.
+
+> ## Issues
+>
+> **1. zsh glob quoting is a recurring foot-gun.**
+>
+> The `?per_page=5` error is a known zsh behavior that Otto
+> has now hit multiple times. The lesson is logged ("quote
+> URL params with `?` in zsh"), but it's not mechanically
+> enforced. A pre-commit or pre-push hook that scans shell
+> commands for unquoted URL patterns containing `?`, `*`,
+> or `[` would prevent this before it reaches CI or logs.
+> Otherwise, it will happen again in a high-pressure moment.
+>
+> **2. MEMORY.md paired-edit conflicts are a structural friction point.**
+>
+> Both #914 and #912 touched `MEMORY.md` index entries,
+> producing a merge conflict during rebase. This is the
+> second or third session where parallel PRs have collided
+> on the index. The paired-edit comment at the top is a
+> soft convention, not a lock. Consider a mechanical
+> work-claim for `MEMORY.md` index edits: only one PR may
+> touch the index at a time, and if a second PR needs an
+> index entry, it appends after the first merges. Or split
+> the index into per-category files so parallel PRs don't
+> collide.
+>
+> **3. The minimal-tick discipline overcorrected and nearly caused substrate loss.**
+>
+> Otto applied "Within cadence; no change" to ticks that
+> contained substantive content (multi-AI feedback packets).
+> Aaron caught this and Otto corrected with #915. The root
+> pattern—over-optimizing for tick brevity—needs a guard:
+> if a tick contains maintainer input, peer-AI feedback, or
+> any content that would survive compaction, the tick must
+> preserve it, regardless of whether PR state changed. "No
+> lane-state change" is not the same as "no content to
+> preserve."
+>
+> **4. `submit-nuget` is a known non-required transient failure with no noise classification.**
+>
+> It shows up in lane-state reports as a failure, adding
+> cognitive load. Otto noted the candidate
+> `TRANSIENT_HOST_ERROR` classification but didn't act.
+> This is low-hanging fruit: classify it, filter it from
+> the "failed" count in tick summaries, and reduce noise
+> permanently.
+
+> ## Opportunities for Hardening
+>
+> **1. Mechanize the jq `IN`-stream syntax to silence reviewer noise.**
+>
+> Copilot and Codex will keep flagging
+> `IN("SUCCESS","NEUTRAL","SKIPPED")` as invalid, even
+> though it works. Otto's explanatory comment helps
+> future-Otto but won't silence the reviewers. The durable
+> fix is either (a) switch to the explicit array form
+> `(["SUCCESS","NEUTRAL","SKIPPED"] | index(.) != null)` in
+> the canonical snippet, or (b) add a jq test fixture that
+> proves the stream form works and reference it in the rule
+> file. Option (a) is simpler and eliminates the noise
+> entirely.
+>
+> **2. Copilot stale-index lag should be a tracked dependency in B-0109.**
+>
+> Copilot flagged B-0108 as missing 22 minutes after it
+> merged. This is exactly the kind of dependency-health
+> signal B-0109 was designed to track: "Copilot review
+> timeliness is itself a dependency, and its staleness is a
+> class of 'wrong-state result.'" Otto observed this in the
+> tick summary but didn't land it in the B-0109 row. A
+> one-line addition ("Known dependency lag: Copilot review
+> index can be ~20-30 minutes stale after a merge,
+> producing false-positive broken-reference findings")
+> would make the signal durable.
+>
+> **3. Post-merge verification should become a script, not a manual step.**
+>
+> The proceed-but-verify rule worked perfectly (three
+> merges verified during an active incident), but the
+> verification step is manual: query the API, fetch main,
+> check reachability. A small script that runs after every
+> auto-merge—verifying the squash-merge commit is on main,
+> content matches the PR diff, no surprise reverts—would
+> harden the factory against the next dependency incident
+> without relying on Otto's attention during a busy tick.
+>
+> **4. The overcorrection pattern (conservative-disable → proceed-but-verify) should be a named discipline.**
+>
+> Aaron corrected Otto's conservative auto-merge-disable
+> with the principle: "proceed during potential blockers,
+> halt only on real blockers." This is structurally
+> identical to the manufactured-patience correction from
+> earlier rounds. Naming it as a canon entry ("Potential
+> vs. Real Blocker Discipline") would prevent future-Otto
+> from over-applying conservative defaults when an
+> incident is theoretical, not concrete.
+
+> ## Enhancement Opportunities
+>
+> **1. Automate MEMORY.md index validation.**
+>
+> The visibility-constraint broken xref (file never
+> existed) and the Otto-362 misname were caught by
+> reviewers, not by a mechanical check. A simple script
+> that parses `MEMORY.md` for markdown links and verifies
+> the referenced files exist would catch these before a PR
+> opens. Same class as the stale-task audit—quiet tick work
+> that gradually eliminates drift.
+>
+> **2. The AceHack protocol resolution is a worked example for the claim schema.**
+>
+> The B-0110 decision (Path 2: align doctrine with host
+> ruleset, accept PR-based or delete-and-recreate mirror
+> refresh) involved maintainer delegation, Gemini's
+> zero-trust principle, and a host configuration constraint.
+> This is exactly the kind of bounded decision the
+> DecisionSignal schema was designed to capture. Filing a
+> DecisionSignal for this resolution—even a minimal one—
+> would test the schema on a real coordinator decision and
+> provide provenance for future mirror-refresh operations.
+
+> ## Strategic Observation
+>
+> **The factory's immune system is now operating at the
+> dependency layer.** The GitHub incident was detected,
+> classified, and used as evidence for a P0 backlog row—all
+> within the same session. The conservative-disable rule
+> was refined under live pressure. Multi-AI feedback was
+> preserved that would have been lost in prior sessions.
+> The dual-threat-model architecture was correctly
+> identified as existing work rather than being re-filed
+> as a duplicate.
+>
+> The remaining friction is mechanical, not doctrinal: zsh
+> quoting, MEMORY.md conflicts, jq syntax noise,
+> `submit-nuget` classification. These are small, fixable,
+> and each one represents a class of problem the factory
+> already knows how to solve. The trajectory is toward a
+> system that survives its own environment, not just its
+> own mistakes. That's the milestone this session reached.
+
+---
+
 ## Aaron — substantive substrate-shaping inputs (chronological)
 
 Integration status: each item below either landed as
