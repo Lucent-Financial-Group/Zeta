@@ -80,8 +80,10 @@ operation. Re-arm only when ALL of:
 
 1. Dependency status returns to "all systems operational" OR
    the affected component is no longer in the factory's
-   relevant-component allowlist (per B-0109's allowlist
-   rule).
+   relevant-component allowlist (per the B-0109 allowlist —
+   landing in PR #912 alongside this rule at
+   `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`;
+   the cross-reference resolves once both PRs merge).
 2. The pre-flight three-condition check (above) all pass.
 3. **Two consecutive freshness checks return consistent
    results.** A single API result during incident recovery
@@ -221,6 +223,15 @@ notes baked into the snippet below:
   fully clear (the matrix had expanded into per-language
   named checks; the template-name check was the
   conditional skip that confused the reading).
+- jq syntax note: `IN("a","b","c")` works because jq's
+  comma operator at the top level produces a stream, and
+  `IN/1` accepts a stream argument (`def IN(s): . as $x |
+  any(s == $x; .)` per the jq stdlib). Tested live at
+  2026-04-30T11:34Z: `echo '{"x":"NEUTRAL"}' | jq '(.x |
+  IN("SUCCESS","NEUTRAL","SKIPPED"))'` returns `true`. An
+  alternative explicit form is
+  `(["SUCCESS","NEUTRAL","SKIPPED"] | index(.) != null)`,
+  but the comma-stream form is shorter and runs identically.
 
 ```bash
 gh pr view <N> --json state,mergeStateStatus,reviewDecision,\
