@@ -411,7 +411,45 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
-## Slice 7 — 3 lint-pattern ports (PR pending — `lane-b/ts-bun-slice-7-lint-scripts-2026-04-30`)
+## Slice 8 — 3 ports (Cluster H finish + audit-cluster start) (PR pending — `lane-b/ts-bun-slice-8-runner-version-freshness-2026-04-30`)
+
+**Slice files**:
+
+- `tools/lint/runner-version-freshness.{sh→ts}`
+- `tools/lint/no-directives-otto-prose.{sh→ts}`
+- `tools/audit/live-lock-audit.{sh→ts}`
+
+**Comparison points**: identical to slice 6/7 (TypeScript 6.0, Bun 1.3, typescript-eslint v8, `../SQLSharp` at `7d3d9f6`, `../scratch` at mtime `2026-04-15`). Within Gate B 30-day window — no re-verification needed.
+
+### Tsconfig audit
+
+- Reuses repo `tsconfig.json` (no per-slice deviation).
+- All 3 files compile under `bun x tsc --noEmit` clean.
+
+### Eslint audit
+
+- All 3 files clean under `eslint` (typescript-eslint strictTypeChecked + stylisticTypeChecked + sonarjs).
+- Pattern: `eslint-disable-next-line sonarjs/no-os-command-from-path` reused on `git` invocations only (intentional — same as prior slices).
+
+### Code-pattern audit (per-port)
+
+- **`runner-version-freshness.ts`** (356 lines bash → 394 lines TS): three label arrays (ALLOWED_LABELS / ROLLING_ALIASES / STALE_LABELS) preserved verbatim. Bash escape_for_regex sed expression replaced with single `String.replace(REGEX_META_RE, ...)` matching the same metachar set. Bash `_verify_age_ok` cross-platform date arithmetic (BSD `date -j -f` + GNU `date -d` branches) replaced with single `Date.parse` + `Math.floor` on ms delta. Bash trailing-comment regex (sonarjs/slow-regex flag) replaced with manual char walk in `stripTrailingComment`. Three scan helpers (scanStaleOrRolling / scanUnknownScalar / scanUnknownMatrix) match the bash three-pass structure 1:1.
+- **`no-directives-otto-prose.ts`** (261 lines bash → 316 lines TS): bash 4-alternative regex split into 4 RegExp[] entries via matchesDirective (each individually under sonarjs/regex-complexity). Bash temp-file pipeline replaced with in-memory AddedLine[] arrays. Bash `git diff -U0 | awk` → TS `extractAddedLinesFromDiff` with `isAddedContentLine` helper. Worktree-mode 4-source merge preserved verbatim with Set-based dedup. Untracked-file detection (`git ls-files --error-unmatch`) preserved as `isUntracked()` helper.
+- **`live-lock-audit.ts`** (116 lines bash → 245 lines TS): bash `git fetch || true` → fire-and-forget spawnSync. Bash origin/main verify guard preserved. Per-commit `git log -m --first-parent --name-only` (Codex P1 PR #147 merge-classification fix) preserved verbatim. Three regex `grep -cE` → three RegExp test-and-count helpers. Bash `printf "%2d   %3d%%"` → manual pad2/pad3 helpers for byte-equivalence. LIVELOCK_MIN_EXT_PCT env var preserved. WINDOW positional arg validation preserved.
+
+### Equivalence audit
+
+Diff'd against bash output on this repo state (2026-04-30 main):
+
+- **`runner-version-freshness`**: byte-equivalent against bash on the live workflow tree + 3 synthetic fixtures (stale ubuntu-22.04 / rolling ubuntu-latest / matrix mixed stale+allowed).
+- **`no-directives-otto-prose`**: byte-equivalent across both `pr` (default) and `worktree` SCOPE modes.
+- **`live-lock-audit`**: byte-equivalent across window=5 + window=25; sole intentional diff is the script self-reference (.sh vs .ts) in the usage-error message — same pattern as prior ports.
+
+### Outcome
+
+Slice 8 passes audit. **Cluster H complete (5/5)**: all five lint-pattern scripts now have TS ports. New cluster opened: `audit-cluster` starts with `live-lock-audit` (slice 8). Bucket B reduced from 22 → 19 remaining files. No new patterns recorded — all reused from prior slices.
+
+## Slice 7 — 3 lint-pattern ports (PR #878, merged 2026-04-30, commit `4dac957`)
 
 **Slice files**:
 
