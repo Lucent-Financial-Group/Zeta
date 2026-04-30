@@ -1,7 +1,7 @@
 # Trajectory — TypeScript / Bun migration
 
 **Status**: Active (Lane B slice 6 merged — [#876](https://github.com/Lucent-Financial-Group/Zeta/pull/876), commit `02baabc`)
-**Milestone**: 19 audit/check scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876). **Cluster F (3 of 4) complete: 3 read-only check scripts ported; append-tick-history-row.sh deferred to slice 7+ as write-side script.**
+**Milestone**: 19 hygiene scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876). **Cluster F-3-of-4 complete: 3 read-only check scripts ported; append-tick-history-row.sh deferred to slice 7+ as write-side script.**
 **Current blocker**: None.
 **Next concrete action**: Pick a coherent next slice from Bucket B (22 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
