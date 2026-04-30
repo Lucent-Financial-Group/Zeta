@@ -411,6 +411,40 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
+## Slice 20 — 1 port (git/batch-resolve-pr-threads — last git-cluster port) (PR pending — `lane-b/ts-bun-slice-20-batch-resolve-pr-threads-2026-04-30`)
+
+**Slice files**:
+
+- `tools/git/batch-resolve-pr-threads.{sh→ts}` (the batch-classifier + resolver for PR review threads matching dangling-ref + name-attribution patterns)
+
+**Comparison points**: identical to slice 19. Within Gate B 30-day window. tsc gate active per #890.
+
+### Code-pattern audit (per-port)
+
+- **`batch-resolve-pr-threads.ts`** (390 → 415 lines): bash GraphQL pagination loop preserved 1:1 — same `first: 50, after: $cursor` shape, same `pageInfo.hasNextPage`/`endCursor` termination. Bash `gh api graphql -F owner=$x -F name=$y ...` shape preserved verbatim via `spawnSync("gh", ["api", "graphql", "-F", "owner=...", ...])` — positional `-F` args avoid the bash parameter-expansion-quote pitfall and the TS shape avoids the same string-concat-into-GraphQL footgun. jq pipelines (`[.comments.nodes[].body] | join("\n---\n")`) become typed `commentNodes.map(c => c.body ?? "").join("\n---\n")`. Pattern classification splits into three pattern arrays (DANGLING_REF_PATTERNS / NAME_ATTRIBUTION_DIRECT_PATTERNS / NAME_ATTRIBUTION_FUZZY_NAME × NAME_ATTRIBUTION_FUZZY_RULE) — same shape as the bash `for pat in "..." "..." ; do [[ ]]; done` loops; the fuzzy-combination check uses `.some()` × 2 rather than the bash `&&` of two `||`-OR groups. Same conservative semantics: unknown threads left unresolved.
+- **GraphQL response error checking**: bash `graphql_check_errors` (inspect `.errors // [] | length`) maps to TS `if (page.errors !== undefined && page.errors.length > 0)`. Same fail-fast on partial-failure responses where gh exits 0 but GraphQL carried errors.
+- **Reply templates verbatim**: the two reply markdown strings (REPLY_DANGLING_REF + REPLY_NAME_ATTRIBUTION) preserved character-for-character from bash. These get posted to live PR threads, so byte-equivalence matters.
+- **Apply-mode mutations**: `addPullRequestReviewThreadReply` then `resolveReviewThread` mutations preserved 1:1. Per-thread error handling: `ResolveError` discriminated record with `stage: "reply" | "resolve"` so callers see exactly which step failed.
+- **Truncation warning**: bash counts threads with `comments.totalCount > 50` (per-thread comment fetch limit); TS mirror via `truncationWarnings++` in classifyThreads. Same stderr warning format.
+
+### Equivalence audit
+
+Diff'd against bash output on this repo state (2026-04-30 main, run against PR #902 with 4 unresolved threads):
+
+- **Argument-validation paths**: byte-equivalent across 3 sampled paths — no args (exit 2 + usage), `abc` (exit 2 + bad-pr-number message), `906 --aply` (exit 2 + unknown-second-arg message).
+- **Live dry-run on PR #902** (4 unresolved threads): byte-equivalent — `diff <(bun ...) <(./...sh)` empty diff. Same thread classification (0 dangling-ref / 0 name-attribution / 4 unknown), same thread IDs printed in same order.
+- **Apply-mode**: not exercised in this audit (would mutate live PR state). Code path verified by inspection — reply-mutation + resolve-mutation calls match bash; per-mutation error classification preserved.
+
+### Behavioural note vs bash original
+
+- The bash `command -v gh && command -v jq` dependency probe drops to just `command -v gh` in TS — `jq` is not needed because JSON parsing is native (`JSON.parse` replaces all jq pipelines).
+- All bash safety rails preserved: positive-integer pr-number validation, exact-`--apply` second-arg check, GraphQL `errors` array inspection, null-pullRequest detection, paginated thread fetch, paginated per-thread comment fetch (50 max — same truncation warning).
+- Exit-code contract identical (0 success / 1 API failures / 2 argument errors).
+
+### Outcome
+
+Slice 20 passes audit. **Last git-cluster port** (slice 13 push-with-retry + slice 20 batch-resolve-pr-threads — both gh-API-mutating ports now TS). Bucket B 2 → 1 (only `tools/pr-preservation/archive-pr.sh` 674L remains; bash+Python mix — slice 21). Shape lessons reusable for slice 21: GraphQL pagination + classification + apply-mode mutation.
+
 ## Slice 19 — 1 port (budget/project-runway — budget cluster closes) (PR #902, merged 2026-04-30, commit `bfdadd9`)
 
 **Slice files**:
