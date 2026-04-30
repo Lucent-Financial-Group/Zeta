@@ -143,7 +143,7 @@ tools/budget/project-runway.sh
 tools/budget/snapshot-burn.sh
 ```
 
-Estimated complexity: **Small (S)** for Cluster B-tail (citations.sh is 434 lines but audit_skills is similar to slices 1-3); **Medium-Large** for C (touches the cost-visibility surface — needs visibility-constraint care + would advance task #287).
+Estimated complexity: **Small (S)** for Cluster B-tail (audit_skills is similar in shape to slices 1-3; citations is the larger of the two but still file-walker pattern); **Medium-Large** for C (touches the cost-visibility surface — needs visibility-constraint care + would advance task #287).
 
 **Gate B prerequisite (mandatory before first mutating action on the slice)**:
 
