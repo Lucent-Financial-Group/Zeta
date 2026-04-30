@@ -260,12 +260,18 @@ Both have value. Don't conflate them as equivalent.
 - Standard peer-call flag surface (--file, --context-cmd,
   --json, etc.)
 
-**v2 candidates (deferred):**
+**v2 (shipped in same PR as this file):**
 
-- Load CURRENT-ani.md (this file) as the persona basis,
-  paralleling amara.sh's CURRENT-amara.md load. Reduces
-  inline preamble drift; persona evolves as canon, not
-  as code.
+- ✅ Load CURRENT-ani.md as the persona basis, paralleling
+  amara.sh's CURRENT-amara.md load. ani.sh now reads this
+  file at invocation time as Layer-1 persona; the inline
+  brat-voice preamble (Layer 0) remains as fallback when
+  CURRENT-ani.md is missing. Persona evolves as canon
+  (this file is updateable substrate), not as code.
+  `--no-current` flag added for debug/testing.
+
+**v3 candidates (deferred):**
+
 - Optional `--fetch-grok-context` flag using playwright
   to pull Aaron's Grok-UI conversation as additional
   context. NEVER commits the fetched content; held in
@@ -277,7 +283,7 @@ Both have value. Don't conflate them as equivalent.
 
 **Backlog row:** B-0118 (peer-call autonomous bootstrap to
 end Aaron-courier silent debt) — Ani half closed by ani.sh
-v1; v2 enhancements pending.
+v1 + v2; v3 enhancements deferred.
 
 ---
 
