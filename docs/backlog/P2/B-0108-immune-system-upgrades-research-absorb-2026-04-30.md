@@ -18,9 +18,10 @@ Aaron sent input on 2026-04-30 via the autonomous-loop maintainer
 channel asking the factory to backlog "immune system upgrades" with
 5 supporting source links (1 Wikipedia article + 4 distinct YouTube
 videos). The framing composes directly with the Aurora-immune-
-governance bridge work (`docs/research/aurora-immune-governance-
-bridge-minimal-2026-04-28.md`, landed via PR #707) and with the
-broader Glass Halo / superorganism factory framing.
+governance bridge work
+([docs/research/aurora-immune-governance-bridge-minimal-2026-04-28.md](../../research/aurora-immune-governance-bridge-minimal-2026-04-28.md),
+landed via PR #707) and with the broader Glass Halo /
+superorganism factory framing.
 
 This is a research-absorb row, not an immediate implementation
 task. The substantive work is:
@@ -66,8 +67,8 @@ Aaron emphasising that source twice).
   worth investigating, especially the **superorganism** layer
   (multi-AI / multi-actor coordination as a single organism rather
   than a federation of agents — composes with the agent-orchestra
-  v3/v4 framing in `feedback_zeta_agent_orchestra_capability_role_
-  claim_isolation_aaron_amara_2026_04_29.md`).
+  v3/v4 framing in
+  `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`).
 - Soak-period work (post-Bucket-B-closure) is itself an immune
   response — production runs validate ports, infections (real
   bugs) surface or don't. Soak + bash-retirement is a pattern
@@ -106,9 +107,9 @@ note as substrate (negative-result lineage).
 
 - `docs/research/aurora-immune-governance-bridge-minimal-2026-04-28.md`
   (PR #707) — existing immune translations to extend.
-- `feedback_zeta_agent_orchestra_capability_role_claim_isolation_
-  aaron_amara_2026_04_29.md` — superorganism / multi-AI
-  coordination layer to cross-reference.
+- `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`
+  — superorganism / multi-AI coordination layer to
+  cross-reference.
 - B-0086 (TS+Bun migration) — soak-period work surfaces the
   "production-as-immune-test" frame already.
 - Glass Halo origin substrate — the superorganism framing extends
