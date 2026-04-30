@@ -135,7 +135,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0107](backlog/P3/B-0107-codeql-peer-call-dismiss-pattern-2026-04-30.md)** CodeQL `js/indirect-command-line-injection` dismissal pattern for peer-call siblings (gemini.ts, codex.ts)
 - [ ] **[B-0115](backlog/P3/B-0115-zsh-vim-muscle-memory-aliases-wq-q-2026-04-30.md)** Shell aliases for `:wq` / `:wq!` / `:q` — catch vim-muscle-memory leakage in zsh (Deepseek 2026-04-30 finding)
 - [ ] **[B-0116](backlog/P3/B-0116-gh-jq-safe-wrapper-zsh-quoting-2026-04-30.md)** tools/gh-jq-safe.sh — wrap gh-jq calls to handle zsh quoting (Deepseek 2026-04-30 finding)
-- [ ] **[B-0119](backlog/P3/B-0119-peer-call-existing-scripts-role-ref-cleanup-2026-04-30.md)** Existing peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) — role-ref cleanup per copilot-instructions.md (Codex 2026-04-30 finding on PR #962)
+- [x] **[B-0119](backlog/P3/B-0119-peer-call-existing-scripts-role-ref-cleanup-2026-04-30.md)** Existing peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) — role-ref cleanup per copilot-instructions.md (Codex 2026-04-30 finding on PR #962)
 - [ ] **[B-0123](backlog/P3/B-0123-stacked-pr-create-tooling-gh-fallback-aaron-2026-04-30.md)** Stacked-PR creation tooling — `gh pr create --base <not-main>` fails with cryptic GraphQL error; needs a wrapper or doc (Aaron 2026-04-30)
 
 <!-- END AUTO-GENERATED -->

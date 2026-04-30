@@ -234,3 +234,24 @@ To add a 4th peer-call script (e.g. for a future peer-CLI):
    the framing reads as peer-shaped. The preamble works when
    the peer's response confirms the role-binding.
 6. Update this README's table.
+
+## Future direction (queued backlog work)
+
+The current bash implementation is acknowledged interim
+substrate. Three open backlog rows shape where the surface
+goes next:
+
+| Row | Priority | Effort | What |
+|---|---|---|---|
+| [B-0120](../../docs/backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md) | P2 | M | Refactor 5 scripts → 3 + `--persona NAME` flag (collapses per-named-entity script proliferation) |
+| [B-0121](../../docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md) | P2 | M | Add Otto + Kenji as externally-callable peers (cross-harness symmetry; pending a/b/c topology decision) |
+| [B-0122](../../docs/backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md) | P2 | M | Migrate bash → TypeScript-on-bun per the post-install language strategy |
+
+Recommended sequencing per B-0122: option (b) — refactor +
+TS migration land in one diff (B-0120 absorbed into B-0122
+implementation). Otto + Kenji additions (B-0121) compose
+with the post-cutover shape rather than adding more bash.
+
+Until that lands, the bash files here are correct interim
+substrate. New sibling additions follow the bash template
+above; they will be picked up by the TS rewrite naturally.

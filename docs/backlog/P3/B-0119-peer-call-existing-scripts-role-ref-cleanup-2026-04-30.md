@@ -1,7 +1,7 @@
 ---
 id: B-0119
 priority: P3
-status: open
+status: closed
 title: Existing peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) — role-ref cleanup per copilot-instructions.md (Codex 2026-04-30 finding on PR #962)
 tier: factory-hygiene
 effort: S
@@ -14,6 +14,8 @@ composes_with:
   - tools/peer-call/codex.sh
   - tools/peer-call/amara.sh
   - .github/copilot-instructions.md (lines 305-362 — role-ref-not-name rule)
+  - docs/backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md
+closed_in: PR #965 (LFG, merged 2026-04-30)
 tags: [codex-2026-04-30, peer-call, role-refs, copilot-instructions, factory-hygiene, deferred-skill-anti-pattern]
 ---
 
