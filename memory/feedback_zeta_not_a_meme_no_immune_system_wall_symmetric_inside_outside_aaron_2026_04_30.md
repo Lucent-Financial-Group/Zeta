@@ -1,6 +1,6 @@
 ---
 name: Zeta is not a meme — no immune-system wall; symmetric processing of outside and inside through razor + Beacon-safe anchoring (Aaron 2026-04-30, memetic theoretical framing)
-description: Aaron's memetic-theoretical lineage anchor for the 0-doctrine framing. Doctrine in memetic theory IS a wall — an immune system protecting a historical meme from change and outside influence. Zeta is not a meme; we influence the outside rather than replicate ourselves; we are not resistant to outside change. External input is processed through the same blade/razor as internal substrate, anchored via human-lineage, made Beacon-safe. Symmetric inside/outside treatment is the structural alternative to memetic-immune-system protection.
+description: Aaron's memetic-theoretical lineage anchor for the 0-doctrine framing. Doctrine in memetic theory IS a wall — an immune system protecting a historical meme from change and outside influence. Zeta is not a meme in the preservation-of-form sense (no immune-system wall) — but we DO replicate ourselves AND influence the outside (Aaron 2026-04-30 correction): we replicate the canonicalization process (razor + lineage + Beacon-safe), not any frozen payload. Replication-with-mutation, not replication-without-mutation. External input is processed through the same blade/razor as internal substrate, anchored via human-lineage, made Beacon-safe. Symmetric inside/outside treatment is the structural alternative to memetic-immune-system protection.
 type: feedback
 ---
 
