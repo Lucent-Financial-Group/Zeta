@@ -625,3 +625,72 @@ jobs:
 
       - name: Run markdownlint
         run: mise exec -- markdownlint-cli2 "**/*.md"
+
+  lint-tsc-tools:
+    # Strict typecheck on every TypeScript file via `tsc --noEmit -p
+    # tsconfig.json`. Round 35 static-analysis expansion per B-0106:
+    # ESLint with typed-linting catches *most* TS issues but not all
+    # assignability narrowings. Slice 9 (PR #882) shipped a real
+    # TS2322 (`Type 'string' is not assignable to type "head" | ...`)
+    # to main because gate.yml previously had `dotnet build` for F#/C#
+    # but no tsc step for `tools/**/*.ts`. PR #887 fixed the bug; this
+    # job is the missing gate that prevents the class. Same shape as
+    # round-30 semgrep elevation: codified rules (tsconfig strict mode)
+    # without a gate aren't a control.
+    name: lint (tsc tools)
+    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        # Comprehensive cache — see lint-shell job above for the
+        # rationale. Bun is what mise installs and what the tsc step
+        # consumes; cache hit avoids the bun-1.3.13 GitHub releases
+        # CDN entirely (same flake class as PR #23 2026-04-28).
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise's `bun = "1.3"` pin in .mise.toml.
+        # See lint-shell job above for retry rationale (Aaron 2026-04-28
+        # PR #23 mise+bun-1.3.13 502).
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: Install npm devDependencies (typescript@6.0.3 + eslint stack)
+        # tsc lives in node_modules/.bin via the typescript devDep
+        # pinned in package.json + bun.lock. --frozen-lockfile fails
+        # if the lockfile is out of date with package.json — same
+        # discipline as bun's own CI patterns.
+        run: bun install --frozen-lockfile
+
+      - name: Run tsc --noEmit on tsconfig.json
+        # Strict typecheck: catches type errors (TS2322 narrowing,
+        # noUncheckedIndexedAccess gaps, exactOptionalPropertyTypes
+        # mismatches, etc.) that eslint typed-linting may miss. Per
+        # the .tsconfig.json strictness profile (verbatimModuleSyntax,
+        # noUncheckedIndexedAccess, exactOptionalPropertyTypes).
+        run: bun --bun tsc --noEmit -p tsconfig.json

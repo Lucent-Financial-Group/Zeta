@@ -1,7 +1,7 @@
 ---
 id: B-0106
 priority: P2
-status: open
+status: in-progress
 title: Add `tsc --noEmit` gate job for tools/**.ts so type errors fail CI
 tier: factory-hygiene
 effort: S
