@@ -112,7 +112,10 @@ existing workflow:
    workflows only run from the default branch. A workflow file
    in a feature branch will never fire on schedule.
 3. **Is it disabled?** — public-repo schedules can be disabled
-   after inactivity (60+ days no commits to the workflow).
+   by GitHub Actions after **60 days of no repository
+   activity** (per GitHub's documented rule — repo-level
+   activity, NOT workflow-file-age. An active repo with an
+   old workflow file does NOT trigger the auto-disable).
    `gh run list --all` may show runs for disabled workflows
    that the default `gh run list` filters out.
 4. **Is the cron valid UTC?** — cron is always UTC; a `0 9 * * *`
@@ -157,6 +160,102 @@ inspection.
 The class name **Workflow Null-Result Audit Signal** preserves
 the broader category; the six questions enumerate the failure
 modes; the control invokes them in order.
+
+### Promotion to tier-1 cheap-prevention scan (Amara 2026-04-28T20:18Z)
+
+**Promoted class name:** **Scheduled Workflow Null-Result Hygiene Scan**.
+
+After the class found two real bugs in its first hour
+(B-0085 budget-cadence-cron-vs-deadline + B-0087
+github-settings-drift-invalid-permission), Amara promoted
+the audit from "special case" to **routine tick-open
+cheap-prevention scan**. Cost: ~5 seconds for the
+scheduled-workflow surface (`grep -l schedule:` +
+`gh run list --workflow=...`). Yield this arc:
+2 captured cadence-substrate gaps from a 5-workflow
+surface.
+
+**Tier-1 rule (Amara prescribed):**
+
+> *At tick-open, enumerate scheduled workflows and classify
+> every null/failure result. No unclassified scheduled
+> workflow silence is allowed.*
+
+**Classification labels** — when auditing a scheduled
+workflow, every empty/failure result for that workflow
+(e.g. `gh run list --workflow=<path>` returning `[]`,
+or last-run `conclusion=failure`) must sort into ONE of
+the labels below. The labels classify the *workflow's
+null/failure situation*, not individual runs:
+
+- **known row** — already filed as B-NNNN; row ID cited.
+- **too-new-to-fire** (Q1) — workflow file's first-commit-date
+  is after the most recent natural cron firing slot.
+- **non-default-branch** (Q2) — workflow file lives on a
+  non-default branch where scheduled triggers don't fire.
+- **disabled** (Q3) — workflow disabled by GHA after
+  **60 days of no repository activity** (per GitHub's
+  documented rule — repo-level activity, NOT workflow-file-
+  age); `gh run list --all` may show prior runs the default
+  filter hides.
+- **cron mismatch** (Q4) — cron syntax is malformed OR cron
+  doesn't fit the deployment context (e.g. workflow needs
+  daily fire but cron is weekly; or cron interpreted as
+  local time when GHA uses UTC).
+- **event-trigger incompatible** (Q5) — the workflow's
+  trigger doesn't fire under the deployment context (e.g.
+  `pull_request_target` from external forks lacks
+  permissions; `workflow_run` upstream never fires;
+  `schedule` needs default-branch).
+- **wrong workflow identifier** (Q6) — `--workflow=` filter
+  used a name/path/ID that doesn't match how this workflow
+  registers.
+- **uncaptured gap** — none of the above; file new B-NNNN
+  row this tick.
+
+**Tiny blade calibration (Amara's distinction):**
+
+> *"nothing else found" is not proof the workflow level is
+> clean; it is proof the current audited scheduled-workflow
+> surface has no uncaptured gaps under this lens. That's
+> still a win. It's just the difference between "clean" and
+> "clean for this detector."*
+
+The 40% gap rate observed this arc (2 of 5 scheduled
+workflows had captured cadence-substrate gaps) is a
+**local signal, not a global rate**. Hypothesis:
+comparable null-result audits over other substrate
+surfaces may reveal similarly cheap, high-yield gaps;
+treat as hypothesis until repeated across other workflow
+classes.
+
+**Where this fits in task #269:**
+
+- Phase 1 (existing shell tooling): walk **scheduled**
+  workflows in `.github/workflows/*.yml` (those with
+  `on.schedule`), run `gh run list`, classify every
+  null/failure into the **8-label set** (known row + Q1-Q6
+  + uncaptured-gap; see *Classification labels* above).
+  Non-scheduled workflows have different null-result
+  semantics (e.g. `pull_request`-only workflows
+  legitimately have empty `gh run list` until a PR fires
+  them) and require their own audit class.
+- Phase 2 (existing skill wrapper): skill invokes the
+  script + summarizes findings + files uncaptured-gap
+  rows automatically.
+- Phase 3 (new — promoted from special-case to tier-1):
+  tick-open hook auto-runs on session-start when no
+  recent audit has been done.
+
+**What this is NOT:**
+
+- NOT a license to skip the six-question diagnostic. The
+  diagnostic IS the classification step.
+- NOT a directive to globalize the 40% rate. Local signal
+  to local surface; widen with empirical repetition.
+- NOT a substitute for actual fixes. The audit surfaces
+  gaps; fixes still need maintainer-call (visibility-
+  constraint).
 
 ## Both classes compose with
 
