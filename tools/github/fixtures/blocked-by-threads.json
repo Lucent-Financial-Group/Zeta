@@ -1,0 +1,20 @@
+{
+  "number": 915,
+  "state": "OPEN",
+  "mergeStateStatus": "BLOCKED",
+  "autoMergeRequest": null,
+  "mergeCommit": null,
+  "statusCheckRollup": [
+    { "status": "COMPLETED", "conclusion": "SUCCESS", "name": "build" },
+    { "status": "COMPLETED", "conclusion": "SUCCESS", "name": "lint" },
+    { "status": "COMPLETED", "conclusion": "SUCCESS", "name": "memory-index-integrity" }
+  ],
+  "reviewThreads": {
+    "nodes": [
+      { "isResolved": false },
+      { "isResolved": false },
+      { "isResolved": false },
+      { "isResolved": true }
+    ]
+  }
+}
