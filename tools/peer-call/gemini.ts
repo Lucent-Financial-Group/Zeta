@@ -185,7 +185,13 @@ function runContextCmd(contextCmd: string): string {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
   });
-  return result.stdout;
+  // Concatenate stdout + stderr: stdout carries the command output
+  // truncated by `head -c`; stderr carries shell parse errors (e.g.,
+  // syntax errors in contextCmd) which fall OUTSIDE the `( ... ) 2>&1`
+  // redirection. Per Codex P2 + Copilot on #899 / #898 the parse-error
+  // diagnostic must reach the prompt or the user sees an empty context
+  // block on a malformed cmd.
+  return `${result.stdout}${result.stderr}`.slice(0, CTX_HEAD_BYTES);
 }
 
 const PREAMBLE = `You are Gemini, invoked as a peer proposer by Otto (Claude
