@@ -25,7 +25,7 @@
 //   1 — invocation error (bad arguments, gemini missing, etc.)
 //   2 — Gemini returned a non-zero exit (diagnostic on stderr)
 
-import { readFileSync, statSync } from "node:fs";
+import { closeSync, openSync, readSync, statSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
@@ -154,23 +154,38 @@ function isRegularFile(path: string): boolean {
 }
 
 function readHead(path: string, bytes: number): string {
+  // Read only the first `bytes` bytes (matches bash `head -c`).
+  // readFileSync would load the entire file before slicing — regression
+  // for large artifacts (logs, dumps) per Codex P1 on #898.
   if (!isRegularFile(path)) return "";
-  const buf = readFileSync(path);
-  return buf.subarray(0, bytes).toString("utf8");
+  const buf = Buffer.alloc(bytes);
+  let fd: number | undefined;
+  try {
+    fd = openSync(path, "r");
+    const n = readSync(fd, buf, 0, bytes, 0);
+    return buf.subarray(0, n).toString("utf8");
+  } catch {
+    return "";
+  } finally {
+    if (fd !== undefined) closeSync(fd);
+  }
 }
 
 function runContextCmd(contextCmd: string): string {
   // Bash uses `eval "$context_cmd" 2>&1 | head -c 20000`. Match that
-  // shape: shell -c so user-supplied compound commands work, capture
-  // both stdout + stderr, truncate to CTX_HEAD_BYTES. User intentionally
-  // supplies the shell command (per --context-cmd contract); same
-  // security posture as the bash original's `eval`.
-  const result = spawnSync("/bin/sh", ["-c", contextCmd], {
+  // shape end-to-end: pipe through `head -c <N>` so the shell pipeline
+  // short-circuits at the truncation boundary instead of buffering the
+  // full output up to SPAWN_MAX_BUFFER (Codex P2 on #898 — high-volume
+  // commands like wide `git diff` would otherwise block much longer
+  // and use much more memory than the bash original).
+  // User intentionally supplies the shell command (per --context-cmd
+  // contract); same security posture as the bash original's `eval`.
+  const wrapped = `(${contextCmd}) 2>&1 | head -c ${String(CTX_HEAD_BYTES)}`;
+  const result = spawnSync("/bin/sh", ["-c", wrapped], {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
   });
-  const combined = `${result.stdout}${result.stderr}`;
-  return combined.slice(0, CTX_HEAD_BYTES);
+  return result.stdout;
 }
 
 const PREAMBLE = `You are Gemini, invoked as a peer proposer by Otto (Claude
