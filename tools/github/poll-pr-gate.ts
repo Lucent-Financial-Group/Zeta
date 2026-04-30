@@ -103,6 +103,9 @@ const PENDING_STATUSES = new Set([
   "PENDING",
   // StatusContext-class pending state (per Codex P1):
   "EXPECTED",
+  // CheckRun non-terminal states (per Codex P1, second pass):
+  "REQUESTED",
+  "WAITING",
 ]);
 
 function classifyChecks(rollup: CheckRollupItem[]): GateReport["checks"] {
