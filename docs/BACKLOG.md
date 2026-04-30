@@ -9,6 +9,7 @@ _Each entry below is a link to a per-row file under
 `docs/backlog/`. Entries with `- [ ]` are open; `- [x]`
 are closed (status: closed in frontmatter)._
 
+
 ## P0 — critical / blocking
 
 - [ ] **[B-0062](backlog/P0/B-0062-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md)** Wallet v0 build-out — concrete spec-logic punch list aggregating PR #72 deferred review concerns (Aaron 2026-04-28 honest-tracking catch)
