@@ -118,9 +118,10 @@ This is the substrate-or-it-didn't-happen rule (Otto-363)
 applied at the maintainer-channel layer, with the additional
 constraint that **deferral to a future actor is not a valid
 preservation strategy**. The conversion has to happen now or it
-might never happen. (Otto is named in the rule's title because
-the agent loop is the most-frequent surface this fires on; the
-rule applies equally to any actor on the project.)
+might never happen. (The rule applies equally to any actor on
+the project — agents, human maintainers, and external
+contributors. The agent loop is just the most-frequent surface
+this fires on.)
 
 ## How to apply
 

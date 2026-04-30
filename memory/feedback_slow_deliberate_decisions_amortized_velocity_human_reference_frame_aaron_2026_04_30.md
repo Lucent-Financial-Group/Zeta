@@ -118,7 +118,7 @@ The "forever" is load-bearing. Some decisions create
 - A single fast force-push that overwrites un-pushed work on
   another branch — the lost work may be unrecoverable from
   reflog if enough time passes.
-- A single fast doctrine commit that mis-states a load-bearing
+- A single fast canon commit that mis-states a load-bearing
   rule — propagates to peer-AI reviews, to future-Otto's
   cold-start reads, to external observers' assessments. By
   the time it's caught, multiple downstream artifacts depend
