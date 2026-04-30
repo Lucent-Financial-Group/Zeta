@@ -59,9 +59,17 @@ interface AuditResult {
   readonly broken: readonly BrokenRefFinding[];
 }
 
+type ParseResult =
+  | { readonly kind: "args"; readonly args: Args }
+  | { readonly kind: "help" }
+  | { readonly kind: "error"; readonly message: string };
+
 const LINK_RE = /\]\(([a-zA-Z_0-9./-]+\.md)\)/g;
 
-function parseArgs(argv: readonly string[]): Args {
+const HELP_TEXT =
+  "Usage: audit-memory-references.ts [--file PATH] [--base DIR] [--enforce]\n";
+
+function parseArgs(argv: readonly string[]): ParseResult {
   let target = "memory/MEMORY.md";
   let baseDir = "memory";
   let enforce = false;
@@ -71,16 +79,14 @@ function parseArgs(argv: readonly string[]): Args {
     if (arg === "--file") {
       const value = argv[i + 1];
       if (value === undefined) {
-        process.stderr.write("error: --file requires a path\n");
-        process.exit(64);
+        return { kind: "error", message: "error: --file requires a path" };
       }
       target = value;
       i += 2;
     } else if (arg === "--base") {
       const value = argv[i + 1];
       if (value === undefined) {
-        process.stderr.write("error: --base requires a directory\n");
-        process.exit(64);
+        return { kind: "error", message: "error: --base requires a directory" };
       }
       baseDir = value;
       i += 2;
@@ -88,16 +94,12 @@ function parseArgs(argv: readonly string[]): Args {
       enforce = true;
       i += 1;
     } else if (arg === "-h" || arg === "--help") {
-      process.stdout.write(
-        "Usage: audit-memory-references.ts [--file PATH] [--base DIR] [--enforce]\n",
-      );
-      process.exit(0);
+      return { kind: "help" };
     } else {
-      process.stderr.write(`unknown arg: ${String(arg)}\n`);
-      process.exit(64);
+      return { kind: "error", message: `unknown arg: ${String(arg)}` };
     }
   }
-  return { target, baseDir, enforce };
+  return { kind: "args", args: { target, baseDir, enforce } };
 }
 
 function isFile(p: string): boolean {
@@ -145,7 +147,16 @@ export function audit(content: string, baseDir: string): AuditResult {
 }
 
 export function main(argv: readonly string[]): AuditExitCode {
-  const { target, baseDir, enforce } = parseArgs(argv);
+  const parsed = parseArgs(argv);
+  if (parsed.kind === "help") {
+    process.stdout.write(HELP_TEXT);
+    return 0;
+  }
+  if (parsed.kind === "error") {
+    process.stderr.write(`${parsed.message}\n`);
+    return 64;
+  }
+  const { target, baseDir, enforce } = parsed.args;
 
   // Read target atomically — readFileSync throws on ENOENT, EISDIR,
   // EACCES, etc. Avoids the TOCTOU race between an existsSync check
