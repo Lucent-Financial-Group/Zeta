@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 14 merged — [#894](https://github.com/Lucent-Financial-Group/Zeta/pull/894), commit `9cb21a7`)
-**Milestone**: 35 ported + 1 in-flight = 36 total (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 from #880 + 3 from #882 + 2 from #883 + 2 from #884 + 1 from #885 + 1 from #892 + 1 from #894 = 35 merged; +1 in-flight in slice-15). Slice-15 opens **peer-call cluster** (peer-call/grok). 7 Bucket B files remain.
+**Status**: Active (Lane B slice 15 merged — [#896](https://github.com/Lucent-Financial-Group/Zeta/pull/896))
+**Milestone**: 36 ported + 1 in-flight = 37 total. Slice-16 opens **peer-call sibling** (peer-call/gemini, sibling of slice-15 grok). 6 Bucket B files remain.
 **Current blocker**: None.
-**Next concrete action**: Pick a coherent next slice from Bucket B (7 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
+**Next concrete action**: Pick a coherent next slice from Bucket B (6 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
