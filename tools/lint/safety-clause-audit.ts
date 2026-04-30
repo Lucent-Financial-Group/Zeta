@@ -257,14 +257,17 @@ function formatPercent(numerator: number, total: number): string {
 }
 
 function emitListMissing(c: AuditCounts): void {
-  // Match bash byte-for-byte: `printf '%s\n' "${missing_list[@]:-}"`
-  // emits a single newline when the array is empty (the :- expansion
-  // produces "", then printf emits "%s\n" = "\n"). Verified empirically
-  // 2026-04-30 in macOS bash 3.2 + Linux bash 5.x.
-  if (c.missingList.length === 0) {
-    process.stdout.write("\n");
-    return;
-  }
+  // Intentional behaviour-improvement-over-bash: emit zero bytes
+  // when the missing list is empty. Bash's
+  // `printf '%s\n' "${missing_list[@]:-}"` actually emits one
+  // newline on empty (verified empirically 2026-04-30 in macOS
+  // bash 3.2 + Linux bash 5.x — the :- expansion produces "",
+  // then printf emits "%s\n" = "\n"). Reviewer flagged this as
+  // a piping ergonomics wart on PR #878; the TS port emits the
+  // expected zero bytes when there's nothing to list. Same
+  // category as the no-empty-dirs empty-FILTERED behaviour-fix
+  // documented in slice-7 audit (the bash original was
+  // unintentional, byte-equivalence wasn't a contract).
   for (const name of c.missingList) process.stdout.write(`${name}\n`);
 }
 
