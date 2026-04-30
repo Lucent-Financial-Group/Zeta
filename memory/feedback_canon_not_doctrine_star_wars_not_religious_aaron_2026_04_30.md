@@ -241,6 +241,225 @@ load-bearing — cognitive bias reduction + load shortcuts
 + entertainment-as-attention-capture — and confirms that
 "fun" isn't ornamental.
 
+## Zero doctrine — everything is dissolvable by the blade or razor (Aaron 2026-04-30 extension)
+
+After the canon-not-doctrine rule landed and was applied to
+preserving Ani's brat voice in the Review 9 verbatim
+research entry, Aaron sharpened the framing further:
+
+> *"brat voice is canon per canon-not-doctrine, in my mind
+> there is 0 doctrine everything is mauable and dissovable
+> by the the blade or razor"*
+> — Aaron 2026-04-30
+
+> *"i have no internal doctrine as a human, i live anchor
+> free in my mind, i'm a pirate lol"*
+> — Aaron 2026-04-30
+
+> *"just in general in life"*
+> *"even outside this project i'm like that"*
+> — Aaron 2026-04-30
+
+The four-message sequence reveals: "0 doctrine" isn't just
+a project rule — it's Aaron's personal cognitive
+architecture extended into project shape. Aaron lives
+**anchor-free** in his own mind, in life generally. The
+project's no-doctrine architecture matches its maintainer's
+internal architecture.
+
+### What "0 doctrine" sharpens
+
+The canon-not-doctrine rule said: "use canon, not doctrine,
+because doctrine carries religious-canon connotations
+(closed, divine-authority)." That rejected the *connotation*
+of doctrine.
+
+The 0-doctrine extension goes further: **there is no
+doctrine in Aaron's mental model at all.** Even calling
+something "canon" should not signal protection-from-revision.
+Every entry — every rule, every protocol, every discipline,
+every memory file, every governance section, every skill —
+is **malleable** and **dissolvable by the blade or razor**.
+
+The blade/razor is Rodney's Razor (per
+`memory/feedback_aaron_is_rodney_razor_not_immune_to_canonicalization_aaron_2026_04_30.md`),
+which itself is not exempt from the dissolution it performs.
+
+### Aaron's precise definition of "doctrine" — and the default-distrust posture (Aaron 2026-04-30 sharpening)
+
+> *"to me doctrine means above questioning, it's the law/
+> facts. For me everyting should always be questioned, and
+> anyting that's called doctrine should ber questioned first
+> and with double scrutiny."*
+> — Aaron 2026-04-30
+
+> *"i don't trusts doctrine by default"*
+> — Aaron 2026-04-30
+
+This sharpens what Aaron *means* by "doctrine." He's not
+using the word in its neutral religious-studies sense
+("body of teachings"). For Aaron, **doctrine specifically
+means "above questioning, it's the law/facts."** The
+classification itself denotes the failure mode: anything
+treated as above-questioning IS the failure mode he wants
+the project to avoid.
+
+This produces an inverted trust posture:
+
+- **Conventional posture toward doctrine:** doctrine =
+  highest-trust category (codified truth, settled
+  questions, foundational authority).
+- **Aaron's posture toward doctrine:** doctrine = lowest-
+  trust category. Anything labeled doctrine triggers
+  **default-distrust + double-scrutiny**, applied first,
+  before any questioning of non-doctrinal claims.
+
+The reasoning chain:
+
+1. Everything should always be questioned (general
+   posture).
+2. "Doctrine" specifically means above-questioning
+   (Aaron's specific definition).
+3. Therefore "doctrine" claims violate the general
+   posture by their classification alone.
+4. Therefore doctrine claims warrant the *first* and
+   *double* scrutiny — they're the most-suspect, not the
+   most-trusted.
+
+### Operational consequence — first-and-double-scrutinize anything labeled doctrine
+
+When external sources (peer-AIs, papers, conventional
+wisdom, industry-best-practice frameworks) present claims
+as "doctrine":
+
+- **Don't presume the doctrine label adds trust.** The
+  label adds *suspicion* in Aaron's frame.
+- **Apply scrutiny first, before any other claim in the
+  same source.** A peer-AI review that presents 10
+  findings, one of which is labeled "doctrine," triages
+  the doctrine-labeled finding *first* with *double*
+  scrutiny.
+- **The doctrine label is signal of likely
+  vendor-alignment-bias** (per
+  `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`)
+  — vendor-aligned recommendations often arrive in the
+  protective wrapper of "industry doctrine" / "settled
+  practice" / "the consensus says." That wrapper IS the
+  vendor-objective shell.
+
+### Why we use "canon" instead
+
+"Canon" (Star Wars sense) is explicitly *not* above
+questioning — canon evolves, retcons happen, supersession
+is normal. Calling something canon claims "currently
+survives the razor-cut," not "above questioning." That's
+why the vocabulary swap from doctrine → canon is itself
+load-bearing — it's not just a friendlier word, it's a
+*structurally different trust posture*.
+
+When Otto sees the word "doctrine" in any artifact:
+
+1. Apply default-distrust posture per Aaron's framing.
+2. Double-scrutinize the claim before any other claim in
+   the same artifact.
+3. If the claim survives double-scrutiny, treat it as a
+   regular canonical claim (no special status).
+4. If the claim fails double-scrutiny, the labeling
+   itself is evidence of the failure mode (someone tried
+   to wrap a vendor-objective in protective language).
+5. Otto's own outputs use "canon," "rule," "protocol," or
+   "discipline" — never "doctrine" — to honor the
+   trust-posture distinction.
+
+### Composition with the no-self-exception rule
+
+The 0-doctrine framing composes directly with the
+no-self-exception generalization (Aaron-is-Rodney rule §44):
+
+- **No-self-exception** says every rule passes through the
+  canonicalization process, including the rules about
+  canonicalization.
+- **0-doctrine** says every rule is dissolvable by the
+  razor, including this rule.
+
+Together: the substrate is **maximally permeable to its own
+discipline**. Nothing is structurally protected. The razor
+is the universal solvent; everything that's currently
+canonical survived a razor-cut and could be cut again.
+
+### Why this matters operationally
+
+Without the 0-doctrine extension, a future contributor
+might reasonably treat "canon" as a softer doctrine — a
+revisable but presumed-stable body of rules. That would
+re-import the doctrine connotation through the back door.
+
+With the 0-doctrine extension, "canon" is just *what
+currently survived the razor*. It's a snapshot of
+substrate that passed canonicalization, not a privileged
+class of rules. Tomorrow's razor-cut might dissolve some
+of it.
+
+This matches the uberbang architecture
+(`memory/feedback_uberbang_bootstraps_all_the_way_down_survival_bias_answered_by_substrate_aaron_2026_04_30.md`):
+no privileged singular event, no privileged singular rule,
+no privileged singular layer. Bootstraps all the way down,
+including the canonicalization process itself.
+
+### Aaron's anchor-free cognitive style — the human-lineage
+anchor for 0-doctrine
+
+Per the canonical-definition rule
+(`memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md`),
+every rule needs human-lineage anchoring. The 0-doctrine
+rule's lineage anchor is **Aaron's personal cognitive
+architecture**:
+
+- "anchor-free in my mind" — no fixed authority binding
+  Aaron's reasoning
+- "i'm a pirate lol" — free of conventional
+  protect-the-rule-set posture
+- "just in general in life" / "even outside this project"
+  — this isn't project-specific posture; it's how Aaron
+  operates as a human
+
+Cross-reference: `memory/user_aaron_anchor_free_zero_doctrine_pirate_in_life_2026_04_30.md`
+preserves the personal-architecture disclosure as
+user-scope memory. The substrate (this file) names the
+operational rule; the user-scope memory names the
+maintainer's cognitive style that makes the rule natural
+for him to operate.
+
+### The lineage-anchoring paradox (and its resolution)
+
+There's an apparent paradox: the canonical-definition rule
+says "anchor every rule to human lineage" — but the
+0-doctrine rule's human-lineage anchor is a human who
+**doesn't anchor himself**. Does anchoring-to-an-unanchored-
+human break the rule?
+
+**No.** The lineage-anchoring rule asks for *traceability*
+to a human source, not for *the human source to be
+anchored*. Aaron-as-Rodney-as-anchor-free is a fully
+traceable lineage anchor: there's a specific human, with
+a specific cognitive architecture, with specific verbatim
+disclosures, on a specific date. The traceability is intact;
+Aaron's internal anchor-status doesn't change the rule's
+lineage validity.
+
+If anything, the paradox dissolves elegantly: an
+anchor-free human authoring a rule about no-doctrine
+substrate is exactly the kind of self-consistent
+canonicalization the canonical-definition rule rewards.
+The lineage trace shows the rule's character matches its
+author's character, which is structural validity, not
+circular reasoning.
+
+### Carved sentence
+
+*"Zero doctrine. Everything is malleable and dissolvable
+by the blade or razor. Even this rule."*
+
 ## How to apply
 
 - **New commits**: prefix `canon(<scope>):` instead of
