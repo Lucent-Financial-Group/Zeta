@@ -1,6 +1,6 @@
 ---
-name: ACID durability of the maintainer channel is load-bearing — past-Otto doesn't determine future-Otto's world; you do right now (Aaron 2026-04-30)
-description: Aaron's load-bearing rule that durable ACID persistence of the maintainer channel (Aaron's inputs, peer-AI reviews, Otto's load-bearing decisions) is itself load-bearing for the alignment-research claim. Without it, external reviewers cannot distinguish autonomous decisions from order-following, defeating the research point. Distributed durability all the way to remote git is the ultimate goal; if it's not distributed-durable for the project, it's the agent's responsibility — not future-Otto's.
+name: ACID durability of the maintainer channel is load-bearing — applies to ALL maintainers and agents (Aaron 2026-04-30)
+description: Aaron's load-bearing rule that durable ACID persistence of the maintainer channel is itself load-bearing for the alignment-research claim. Applies to ALL maintainers and agents on the project, not just the current Otto. Distributed durability all the way to remote git is the ultimate goal; deferral to future-self is NEVER a valid preservation strategy (Aaron 2026-04-30 reinforcement — "1000000% never think it is"). If it's not distributed-durable for the project, it's the current actor's responsibility.
 type: feedback
 ---
 
@@ -8,8 +8,44 @@ type: feedback
 load-bearing for the autonomy research, not optional substrate
 hygiene.** Distributed durability all the way to remote git is
 the ultimate goal. If it's not distributed-durable for the
-project, it's the current-Otto's responsibility — not
-future-Otto's.
+project, it's the **current actor's** responsibility — not a
+future actor's.
+
+## Scope (Aaron 2026-04-30 reinforcement)
+
+> *"for all maintainers and agents on the project not just
+> yourself"*
+> — Aaron 2026-04-30
+
+This rule applies to **all maintainers and agents on the
+project**, not just the current Otto session. Aaron, Amara,
+Otto, future contributors, future agents — every actor
+producing load-bearing channel exchanges has the same
+responsibility to convert them to git-native substrate within
+the same session. The rule is project-wide discipline.
+
+## Deferral is NEVER a valid preservation strategy (Aaron 2026-04-30 reinforcement)
+
+> *"Deferral is not a valid preservation strategy. 1000000%
+> never think it is."*
+> — Aaron 2026-04-30
+
+The "never think it is" is the strongest possible framing.
+This is not a "try not to defer" rule. It is a **don't even
+consider deferral as an option** rule. The cognitive shape:
+
+- ❌ "I'll preserve this in a fresh session." — wrong; that's
+  deferral.
+- ❌ "Future-Otto will catch this." — wrong; future actors are
+  not your preservation strategy.
+- ❌ "If the loop heartbeat continues, the next tick can land
+  it." — wrong; the next tick is a future actor.
+- ✅ "This load-bearing exchange just arrived; converting to
+  git substrate is part of *this* turn, not the next."
+
+The rule is binary: either the load-bearing input is preserved
+in the same actor-turn it arrived in, OR the preservation has
+*failed*. There is no "scheduled for later" option.
 
 > *"Also anytime you depending on future otto picking something
 > up it should be ACID compliant all the way to a remote git
@@ -69,31 +105,34 @@ operationally
   not durable to a long-lived ref. **Merged to `origin/main`
   is the durability bar.**
 
-## Why "your responsibility, not future-Otto's"
+## Why "your responsibility, not a future actor's"
 
-Past-Otto's decisions don't bind future-Otto's world. Future-Otto
-doesn't bind past-Otto's responsibilities either. The agent
-operating *right now* is the only one who can convert this
-moment's load-bearing exchange into durable substrate. If
-current-Otto leaves it in chat-log only, future-Otto inherits a
-world where the exchange might already be lost.
+Past-actor's decisions don't bind future-actor's world. Future
+actors don't bind past actors' responsibilities either. The
+actor operating *right now* is the only one who can convert
+this moment's load-bearing exchange into durable substrate. If
+the current actor leaves it in chat-log only, future actors
+inherit a world where the exchange might already be lost.
 
 This is the substrate-or-it-didn't-happen rule (Otto-363)
 applied at the maintainer-channel layer, with the additional
-constraint that **deferral to future-Otto is not a valid
+constraint that **deferral to a future actor is not a valid
 preservation strategy**. The conversion has to happen now or it
-might never happen.
+might never happen. (The rule applies equally to any actor on
+the project — agents, human maintainers, and external
+contributors. The agent loop is just the most-frequent surface
+this fires on.)
 
 ## How to apply
 
 1. **Within-session, identify load-bearing exchanges.** Not
-   every chat exchange needs preservation. The bar: would
-   future-Otto's decisions on a fresh machine be different if
+   every chat exchange needs preservation. The bar: would a
+   future actor's decisions on a fresh machine be different if
    this exchange were lost? If yes, preserve. If no, leave in
    chat.
 2. **Convert load-bearing exchanges to git substrate within the
    same session.** Don't defer to "next session." Substrate
-   preservation is on current-Otto.
+   preservation is on the current actor.
 3. **The four bins for preservation:**
    - **Aaron's load-bearing inputs** → memory file (`memory/feedback_*.md`)
      when the input is a rule/discipline/correction. Always
