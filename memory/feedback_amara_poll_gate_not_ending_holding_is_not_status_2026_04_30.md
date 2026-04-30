@@ -171,10 +171,14 @@ notes baked into the snippet below:
   pending or failing — the lane-state summary then reports
   a false-clear gate. The snippet handles both shapes.
 - GitHub's `CheckConclusionState` includes blocking
-  conclusions beyond plain `FAILURE` —  `CANCELLED`,
-  `TIMED_OUT`, `STARTUP_FAILURE`, `ACTION_REQUIRED` all
-  count against merge readiness. The snippet treats them
-  as failures, not "0 failed."
+  conclusions beyond plain `FAILURE` — `CANCELLED`,
+  `TIMED_OUT`, `STARTUP_FAILURE`, `ACTION_REQUIRED`,
+  `STALE` all count against merge readiness. Required
+  checks must be in a successful state
+  (`SUCCESS`/`NEUTRAL`/`SKIPPED`) to merge; `STALE` means
+  the check is no longer current and so doesn't satisfy
+  the required-state contract. The snippet treats all of
+  the above as failures, not "0 failed."
 
 ```bash
 gh pr view <N> --json state,mergeStateStatus,reviewDecision,\
@@ -183,7 +187,7 @@ gh pr view <N> --json state,mergeStateStatus,reviewDecision,\
     [$pr.statusCheckRollup[]?
       | if .__typename == "CheckRun"
         then {success: (.conclusion == "SUCCESS"),
-              failed:  ((.conclusion // "") | IN("FAILURE","CANCELLED","TIMED_OUT","STARTUP_FAILURE","ACTION_REQUIRED")),
+              failed:  ((.conclusion // "") | IN("FAILURE","CANCELLED","TIMED_OUT","STARTUP_FAILURE","ACTION_REQUIRED","STALE")),
               pending: (.status != "COMPLETED")}
         else {success: (.state == "SUCCESS"),
               failed:  ((.state // "") | IN("FAILURE","ERROR")),
