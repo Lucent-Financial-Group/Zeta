@@ -246,23 +246,33 @@ function loadFixture(path: string): PullRequestData {
   return JSON.parse(readFileSync(path, "utf8")) as PullRequestData;
 }
 
-function parseArgs(argv: string[]): {
+interface ParsedArgs {
   fixture?: string;
   owner: string;
   repo: string;
   number?: number;
-} {
-  let fixture: string | undefined;
-  let owner = "Lucent-Financial-Group";
-  let repo = "Zeta";
-  let number: number | undefined;
+}
+
+function parseArgs(argv: string[]): ParsedArgs {
+  const out: ParsedArgs = {
+    owner: "Lucent-Financial-Group",
+    repo: "Zeta",
+  };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
-    if (arg === "--fixture") fixture = argv[++i];
-    else if (arg === "--owner") owner = argv[++i];
-    else if (arg === "--repo") repo = argv[++i];
-    else if (/^\d+$/.test(arg)) number = Number.parseInt(arg, 10);
-    else if (arg === "--help" || arg === "-h") {
+    if (arg === undefined) continue;
+    if (arg === "--fixture") {
+      const v = argv[++i];
+      if (v !== undefined) out.fixture = v;
+    } else if (arg === "--owner") {
+      const v = argv[++i];
+      if (v !== undefined) out.owner = v;
+    } else if (arg === "--repo") {
+      const v = argv[++i];
+      if (v !== undefined) out.repo = v;
+    } else if (/^\d+$/.test(arg)) {
+      out.number = Number.parseInt(arg, 10);
+    } else if (arg === "--help" || arg === "-h") {
       process.stdout.write(
         "Usage: poll-pr-gate.ts <PR_NUMBER> [--owner X] [--repo Y]\n" +
           "       poll-pr-gate.ts --fixture path/to/fixture.json\n",
@@ -273,7 +283,7 @@ function parseArgs(argv: string[]): {
       process.exit(1);
     }
   }
-  return { fixture, owner, repo, number };
+  return out;
 }
 
 function main(): void {
