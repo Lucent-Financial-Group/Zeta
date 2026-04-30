@@ -14,14 +14,30 @@ tags: [dependency-status, outages, github-incidents, supply-chain, observability
 
 # Dependency status tracking surface — outages and issues affecting us
 
+> **First-class factory surface** (Aaron 2026-04-30):
+> *"looking at github status should be first class for us we
+> live on git and github for now until we get a 2nd host in
+> the future."* This is not a "design something later" row —
+> it's the visibility layer the factory's hot path runs
+> through. Until a second git host exists, GitHub status IS
+> factory status, and the surface should reflect that
+> operational reality.
+
 Aaron sent input on 2026-04-30 via the autonomous-loop maintainer
 channel asking the factory to land a surface that lists the
 status of the dependencies the factory relies on and any issues
 in those dependencies that could affect us. The framing came
 with 6 source URLs covering a GitHub-availability incident class
-(merge queue bug + general availability degradation) and a
-follow-up urgency clarification: *"github can erase stuff from
-master when we use the merge queue sometimes."*
+(merge queue bug + general availability degradation), a
+follow-up urgency clarification (*"github can erase stuff from
+master when we use the merge queue sometimes"*), and a
+first-class-priority elevation (*"looking at github status
+should be first class for us we live on git and github for
+now until we get a 2nd host in the future"*). The first-class
+framing composes with the existing 3-tier multi-remote design
+work (Amara packet 3 2026-04-29, task #341): the
+status-tracking surface IS the tier-0 visibility layer that
+the multi-remote design assumes is in place.
 
 This is a **P0** row (escalated from P1 on Aaron's urgency
 clarification) because:
@@ -171,6 +187,73 @@ This row produces, in order:
    expand if the static markdown turns out to be enough,
    stay there.
 
+## Adjacent merge-risk classes in scope
+
+Aaron's named concern was the merge-queue-builds-on-wrong-commit
+class (which we don't trigger directly because we don't use
+merge-queue). The broader class — *GitHub backend producing
+wrong-state results that auto-merge can fire against* — IS in
+scope. Specific failure modes the surface should help future-Otto
+notice:
+
+- **Auto-merge against stale base.** Our auto-merge with
+  `allow_update_branch: true` setting auto-rebases stale
+  branches before merging — but if the rebase itself fires
+  during a degraded-API window, the result might not be what
+  the diff preview showed.
+- **`allow_update_branch` auto-rebase producing unexpected
+  merge content.** When auto-merge updates a stale branch,
+  the resulting tree is whatever the rebase produces. If the
+  rebase happens during incomplete-API-state, the branch state
+  observed by reviewers can differ from the state actually
+  merged.
+- **Force-push race with auto-merge firing.** If a force-push
+  and auto-merge fire near-simultaneously, the merged commit
+  may be whichever the GitHub backend resolved first — not
+  necessarily the head observed during review.
+- **Incomplete API results during merge decision.** This round's
+  active incident ("Incomplete pull request results in
+  repositories") is exactly this class. A 0-unresolved-threads
+  count from a degraded API can satisfy auto-merge's
+  required_conversation_resolution gate while threads exist
+  unseen.
+
+The status-tracking surface flags these conditions; it does not
+mitigate them. Mitigation rules (e.g., "when GitHub Pull Requests
+component is degraded, do not arm auto-merge") belong in
+follow-up rows.
+
+## Sharpening points (Claude.ai 2026-04-30 review)
+
+Three operational details to settle in the design pass:
+
+1. **Polling cadence cost-vs-freshness tradeoff.** Polling every
+   minute would be noisy and might hit GitHub's rate limits;
+   polling every hour might miss short incidents that fall
+   wholly within the gap. Reasonable shape: poll on
+   freshness-pass triggers (before mutating actions like merge,
+   force-push, auto-merge arming), poll opportunistically when
+   ticks are otherwise idle, treat any non-operational status as
+   a freshness gap that propagates to dependent decisions.
+2. **Distinguish factory-relevant components from unrelated
+   incidents.** A GitHub Pages outage doesn't affect the
+   factory's PR pipeline; a Pull Requests degradation does.
+   Without that distinction, every minor unrelated incident
+   becomes noise and the surface trains future-Otto to ignore
+   it. Initial factory-relevant component allowlist for GitHub:
+   Pull Requests, Actions, API Requests, Webhooks. Other
+   dependencies (Anthropic, OpenAI, Google) get their own
+   allowlist when their status sources are wired in.
+3. **Historical record for retrospective correlation.** Log
+   incidents to a durable file (e.g.,
+   `docs/dependency-status/incident-log.jsonl`) so future-Otto
+   can correlate "session-time anomalies" against
+   "session-time incidents." Without this, the diagnostic
+   question Deepseek's framing introduced ("if I do nothing,
+   will the signal change on its own?") can't be answered
+   retrospectively — the substrate gains nothing from past
+   incidents.
+
 ## Out of scope for this row
 
 - Building a full incident-management system. The factory
@@ -219,7 +302,8 @@ The surface must be discoverable from CLAUDE.md and AGENTS.md
   what we depend on; this row makes the dependency list
   legible.
 - `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`
-  — the poll-the-gate rule says "watch the gate, not the
+  (landing in PR #911 alongside this row) — the
+  poll-the-gate rule says "watch the gate, not the
   ending." Knowing whether the gate (CI, merge queue,
   reviewer presence) itself is dependency-degraded is part
   of the gate-state. A degraded GitHub Actions queue makes
