@@ -80,6 +80,58 @@ abstractions; sibling directories are *cases*, Zeta is
 the *general theory*. Treating the factory as a clipboard
 defeats the generalization purpose.
 
+## Generalized abouts allowed (Aaron-published, 2026-04-30)
+
+Per the privacy-class rule, the following generalized
+"about" framings are Aaron-shared and may appear in Zeta
+documents as context for what kinds of patterns to learn
+from each sibling. Aaron 2026-04-30 verbatim:
+
+> like what patterns are applicablicable to Zeta,
+> ../SQLSharp is pre DBSP streamng db work and LINQ/SQL
+> interface work, good ts/bun patterns, ../scratch start
+> of the ace package manager, good declarative patterns
+> we should follow, we want full feature set and
+> ingegration will all dependiens it integrates with
+> eventually, ../no-copy-only-learning-agents-insight
+> agent loop learnings, real project learnings based on
+> non-greeen field messy project, many lessons already
+> encoded on a narrow non genralized scope, will
+> continnusual be updated over time, an ongoing project
+> too seperate from us.
+
+Distilled (still within Aaron's privacy-class boundary —
+these are the high-level purpose-lines, not internals):
+
+- **`../SQLSharp`** — streaming-DB work that predates
+  DBSP rigor, plus LINQ/SQL-style interface work; good
+  TS/Bun patterns to learn from. *Pattern relevance to
+  Zeta:* streaming semantics + interface design + TS/Bun
+  ergonomics (then generalize per Zeta's broader
+  scope).
+- **`../scratch`** — start of the Ace package manager
+  (Aaron's own project name, shared by him); good
+  declarative patterns the factory should follow; the
+  long-term goal is full feature set + integration with
+  all dependencies it integrates with. *Pattern
+  relevance to Zeta:* declarative-package-manager
+  patterns (then generalize for Zeta's broader
+  install/distribution work).
+- **`../no-copy-only-learning-agents-insight`** —
+  agent-loop learnings from a real (non-greenfield,
+  messy) project; many lessons already encoded but on a
+  narrow non-generalized scope; ongoing project,
+  separate from Zeta, continually updated. *Pattern
+  relevance to Zeta:* agent-loop discipline lessons
+  (then generalize for Zeta's broader autonomous-loop +
+  multi-AI substrate).
+
+These purpose-lines are the maximum-detail "about"
+framing allowed in Zeta documents per the privacy-class
+rule. Anything more specific (architectures, named
+features beyond project-level naming, customers, IP) stays
+inside the sibling repos.
+
 ## How to apply
 
 - **Reading source there is fine.** That's what learning
