@@ -1,7 +1,7 @@
 # Trajectory — TypeScript / Bun migration
 
 **Status**: Active (Lane B slice 10 merged — [#883](https://github.com/Lucent-Financial-Group/Zeta/pull/883), commit `271bc38`)
-**Milestone**: 33 hygiene/lint/audit scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 from #880 + 3 from #882 + 2 from #883 + 2 in-flight in slice-11). Slice-11 opens **skill-catalog cluster + nuget audit** (backfill_dv2_frontmatter + audit-packages). 12 Bucket B files remain.
+**Milestone**: 30 ported + 2 in-flight = 32 total (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 from #880 + 3 from #882 + 2 from #883 = 30 merged; +2 in-flight in slice-11). Slice-11 opens **skill-catalog cluster + nuget audit** (backfill_dv2_frontmatter + audit-packages). 12 Bucket B files remain.
 **Current blocker**: None.
 **Next concrete action**: Pick a coherent next slice from Bucket B (12 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
