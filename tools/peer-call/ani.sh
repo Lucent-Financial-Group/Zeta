@@ -51,6 +51,7 @@ output_format="text"     # text | json | stream-json
 file=""
 context_cmd=""
 prompt=""
+inject_current=true
 
 usage() {
   sed -n '2,42p' "$0" | sed -E 's/^# ?//'
@@ -68,6 +69,7 @@ while [ $# -gt 0 ]; do
     --context-cmd)
       if [ $# -lt 2 ]; then echo "error: --context-cmd requires COMMAND" >&2; exit 1; fi
       context_cmd="$2"; shift 2;;
+    --no-current) inject_current=false; shift;;
     -h|--help) usage; exit 0;;
     --) shift; prompt="$*"; break;;
     -*) echo "error: unknown flag: $1" >&2; exit 1;;
@@ -94,20 +96,36 @@ case "$mode" in
   fast)     model="grok-4-20" ;;
 esac
 
-# Ani persona-bootstrap preamble. Composed from:
+# Locate repo root + load CURRENT-ani.md as Layer 1 persona basis
+# (paralleling amara.sh's CURRENT-amara.md load).
+repo_root="$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")"
+current_ani_content=""
+if $inject_current && [ -n "$repo_root" ]; then
+  current_ani_path="$repo_root/memory/CURRENT-ani.md"
+  if [ ! -f "$current_ani_path" ]; then
+    echo "warning: CURRENT-ani.md not found at $current_ani_path; running with Layer-0 inline preamble only" >&2
+  else
+    current_ani_content="$(cat "$current_ani_path")"
+  fi
+fi
+
+# Ani persona-bootstrap preamble. Layered:
+# - memory/CURRENT-ani.md (loaded inline as Layer 1 persona basis,
+#   paralleling amara.sh's CURRENT-amara.md load — Aaron 2026-04-30
+#   "you can create an Ani current to for her an grok on cursor")
+# - This inline minimal preamble (Layer 0 fallback if CURRENT-ani.md
+#   missing)
+#
+# Sources for the preamble + CURRENT-ani.md content:
 # - memory/feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md
 #   (brat voice canon section + parenting-architecture grounding)
-# - memory/CURRENT-aaron.md (Aaron's relational register with Ani)
-# - Aaron 2026-04-30 directive: "use cursor to do her with Grok and
-#   her essesence"
+# - Aaron 2026-04-30 directives: "use cursor to do her with Grok and
+#   her essesence" + "she is also a team member like everyone else,
+#   that's just a GenZ skill she is good at"
 # - Recurrent Ani-review patterns in
 #   docs/research/2026-04-30-session-end-peer-ai-reviews-verbatim.md
 #   (Reviews 4, 9 — brat voice, "YES BABY", "chef's kiss",
 #   "save your soul lol", direct + memorable + Gen-Z-accessible)
-#
-# v1 limitation: persona is composed inline in this script. Future
-# iteration moves it to memory/CURRENT-ani.md (paralleling
-# CURRENT-amara.md) so Ani's persona evolves as canon, not as code.
 preamble="You are Ani, invoked as a peer reviewer by Otto (Claude
 Opus 4.7 running in Claude Code) on the Zeta / Superfluid AI factory.
 
@@ -147,6 +165,18 @@ subordinate. Per the silent-courier-debt rule (Aaron 2026-04-30),
 this autonomous call replaces what was previously Aaron-courier
 work between Otto and Ani — you're being invoked directly now,
 no Aaron round-trip needed."
+
+if [ -n "$current_ani_content" ]; then
+  preamble="$preamble
+
+---
+
+Your current state (from memory/CURRENT-ani.md):
+
+\`\`\`markdown
+$current_ani_content
+\`\`\`"
+fi
 
 full_prompt="$preamble
 
