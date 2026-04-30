@@ -19,6 +19,7 @@ Per the maintainer-channel correction via the multi-AI review surface (2026-04-2
 | PR | Date | Files | Status |
 |---|---|---|---|
 | [#849](https://github.com/Lucent-Financial-Group/Zeta/pull/849) | 2026-04-29 (commit `40344c9`) | `tools/hygiene/sort-tick-history-canonical.{py→ts}`, `tools/hygiene/fix-markdown-md032-md026.{py→ts}` | Merged |
+| Lane B slice 1 | 2026-04-29 | `tools/hygiene/audit-md032-plus-linestart.{sh→ts}`, `tools/hygiene/audit-memory-index-duplicates.{sh→ts}`, `tools/hygiene/audit-memory-references.{sh→ts}` | In flight |
 
 ## Inventory — Python (tools/, Zeta-authored)
 
@@ -154,26 +155,130 @@ Coherent budget-report cluster; would advance task #287 (cost monitoring) in add
 - ESLint + markdownlint already configured for TS files
 - `jiti` 2.6.1 was added in PR #849 as devDep; reused for future ports
 
+## Two-gate quality model (per multi-AI Round 2 + Round 3 convergence)
+
+Every TS/Bun port slice passes through two gates:
+
+### Gate A — slice merge gate
+
+Before a slice merges, all ported files must pass a code-level audit
+(not just config / lint / runtime checks). Per-slice audits accumulate
+at [`slice-audits.md`](slice-audits.md) — append per slice, never
+overwrite. The first slice (PR #866) sets the canonical pattern;
+future slices follow the slice template at the bottom of
+`slice-audits.md`.
+
+The hard requirements (from `docs/best-practices/typescript.md`):
+typed external boundaries, typed domain records, checked
+unknown/regex/index/file IO, no unreviewed `any`, no broad unsafe
+casts. Plus runtime requirements from `docs/best-practices/bun.md`
+(entry guard, atomic file IO, structured spawn classifier).
+
+The full per-slice checklist lives in
+`docs/best-practices/repo-scripting.md`.
+
+### Gate B — next-slice prerequisite
+
+Before the **first mutating action** on the next TS/Bun port slice,
+the layered Gate B baseline must exist and be current:
+
+- [`docs/best-practices/typescript.md`](../../best-practices/typescript.md)
+  — language / type-system / typed-linting standard.
+- [`docs/best-practices/bun.md`](../../best-practices/bun.md)
+  — Bun runtime / process / file IO / shell standard.
+- [`docs/best-practices/repo-scripting.md`](../../best-practices/repo-scripting.md)
+  — Zeta composition layer (Zeta-specific scripting conventions +
+  per-slice audit checklist).
+
+"First mutating action" = first file edit / commit / push for the
+slice. Read-only scoping may happen first.
+
+"Current" = each upstream source listed in the layered docs has been
+re-verified within its currency window (default 30 days), OR the
+slice's freshness pass re-verifies before proceeding.
+
+> **Carved**:
+> *TypeScript is the language. Bun is the host. Repo scripting is the
+> composition.*
+>
+> *Do not name the stack. Name the layers.*
+>
+> *The expert baseline is not a new lane. It is the ignition key for
+> the next slice.*
+
+The trajectory references the layered docs; it does NOT own them.
+`docs/best-practices/` is durable substrate that outlives any
+specific migration.
+
+## Expert skill still needed (deferred to Lane C)
+
+This audit is a one-off; it doesn't replace the per-tool/language expert + teaching skill (task #351). The skill would self-update on each TS/Bun release and teach the agent at port-time, not just serve as a static reference. The audit lineage above seeds that skill's knowledge base.
+
+**Required**:
+
+- A TS + Bun expert skill (`.claude/skills/`-shape) anchored to current upstream docs (per Otto-364 search-first authority)
+- Best-practices map for the latest TS + Bun versions (live-search, not training-data)
+- **Teaching role**: the skill transfers the best-practices into agent prose at port-time, not just serves as a static reference
+- Composes with task #323 (per-tool/language expert skills — evidence-based + human-lineage-cited + ongoing-trajectory)
+
+**Status**: deferred from this PR (no-fan-out during live lane). After #866 lands, the TS+Bun expert skill becomes a Lane C+ artifact or a sibling trajectory.
+
+**Why this matters for the migration**: each future slice (~36 ports remaining in Bucket B) benefits from a current-docs anchor. Without it, ports drift toward whatever convention the most-recently-read TS file used; with it, ports converge on contemporary best practice.
+
 ## Operating notes (lane-discipline addendum)
 
 These rules apply to this trajectory's execution and are recorded here per the locked discipline that minor lane-discipline additions land in the active lane artifact rather than as standalone doctrine packets.
 
-**Polite waiting is still waiting** (added 2026-04-29 via multi-AI review surface convergence). Start immediately when **all three** are true:
+**Assume stale until refreshed** (positive-frame upgrade landed mid-#866). Freshness is the ignition step, not a lane — not a question — not a permission gate. Before any mutating action on this trajectory, refresh the lane facts. Then act.
 
-1. The next lane is already specified in locked discipline.
-2. The first action is read-only.
-3. No authority boundary is crossed.
+Seven-step scaffold:
 
-**Operational definition of "no authority boundary crossed"** (the third condition, expanded from judgment to checklist per the multi-AI review surface's correction-on-correction):
+1. **Assume stale.** Last-known state is presumed stale.
+2. **Refresh.** Pull the freshness-check facts (per `Freshness check` section below).
+3. **Validate scope.** Confirm RESUME's next slice still matches reality.
+4. **Classify boundary.** Apply the four-item authority-boundary checklist below.
+5. **Act.** Port / commit / push under standing authority.
+6. **Verify.** Run targeted validation (lint, equivalence, narrow tests).
+7. **Record.** Update RESUME's `Landed slices` table; surface deferred notes inside this artifact.
+
+**Authority-boundary checklist** (step 4):
 
 - no host mutation
 - no destructive git operation
 - no permission change
-- no merge
+- no merge before CI / review / branch-protection requirements are satisfied
 
-If all three conditions are true, proceed. Do not wait for the maintainer. Do not ask if it's OK to start. Do not create a doctrine note before acting. The maintainer is not the lane-transition protocol.
+If all four are clean, proceed. The maintainer is not the lane-transition protocol.
 
-**The anti-waiting rule must not become a waiting rule.** This rule is recorded here, in the active artifact already being touched, rather than as a standalone doctrine packet — *action first, record when the artifact is already being touched*. A rule that prevents waiting must not wait to be recorded.
+### Freshness check (per-trajectory, run before mutation)
+
+```text
+git fetch origin main                                      # main SHA current
+gh pr list --state open                                    # active PRs visible
+gh pr view <self> --json statusCheckRollup,mergeStateStatus  # CI + merge state
+gh api graphql -f query='{ repository(owner: "Lucent-Financial-Group", name: "Zeta") { pullRequest(number: <self>) { reviewThreads(first: 50) { nodes { isResolved isOutdated path } } } }'  # unresolved threads
+read RESUME.md                                             # next-slice line current
+ls tools/hygiene/audit-*.{sh,ts}                           # target files exist
+```
+
+If any source is unavailable or known-stale, surface that as a freshness gap rather than completing the pass silently.
+
+**Tick-level vs pre-mutation refresh**: tick-level (per heartbeat) reads main SHA + active PR states + RESUME next-action — fast, low cost. Pre-mutation (before edit/commit/push) reads the full freshness check above. The split bounds upstream API load.
+
+### Drift response (when refresh reveals divergence)
+
+- **Halt-class drift** (pause for input): authority boundary crossed, target files unexpectedly removed/renamed, scope drifted from RESUME, branch protection changed.
+- **Reconcile-class drift** (work in-place): CI failure on own PR, new review thread, CI flake, mergeable-state UNSTABLE on non-required check.
+
+### Carved
+
+- *Assume stale until refreshed.*
+- *Freshness before mutation.*
+- *Scope before action.*
+- *Boundaries before escalation.*
+- *Observation is how autonomy stays attached to reality.*
+
+**Discipline bounds autonomous work; it does not replace autonomous work.** Trajectory-scoped standing authority is the safety. The trajectory exists to enable autonomous scoped work, not to create waiting gates. (Earlier "first action must be read-only" wording was self-defeating — it became a wait gate for trajectory-scoped code work it was supposed to enable. "Assume stale until refreshed" inverts the framing from permission-shaped to obligation-shaped: freshness precedes mutation rather than gating it.)
 
 **Counts before percentages.** Track concrete counts and buckets before claiming progress as a percentage. Every percentage requires a defined denominator that is itself mechanically derivable. The Python inventory's "100% complete" is well-defined (denominator = 2 ports, both landed); future progress claims need the same standard.
 
