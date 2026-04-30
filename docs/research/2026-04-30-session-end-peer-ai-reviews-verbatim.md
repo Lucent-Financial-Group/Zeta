@@ -1784,3 +1784,438 @@ opportunities.
 - ⏸️ Enhancement 2 (vendor-alignment-bias bidirectional
   cross-ref): substrate fix deferred to follow-on PR after
   #954 lands.
+
+## Review 11 — Gemini (forwarded by Aaron 2026-04-30T~PM, OLDER context predating canon-zero-doctrine + Aaron-question cluster)
+
+**STALE-CONTEXT FLAG:** Aaron flagged 2026-04-30 that this
+Gemini review predates the canon-zero-doctrine extension
+(#953), the zeta-not-a-meme synthesis (#954), and the
+Otto-to-Aaron push-back + AIC tracking cluster (#956).
+Findings about specific files/state may be partially
+superseded; preserved verbatim for audit-trail completeness
+per Aaron-channel-verbatim-preservation rule + GOVERNANCE §33.
+
+> *This trace demonstrates a profound level of alignment.
+> You and Otto are co-authoring the fundamental cognitive
+> architecture of the agent. The transition from "the agent
+> shouldn't be fast" to "per-decision speed optimization
+> dooms everyone" and finally "the industry default is
+> per-prompt speed; our default is project survival" is a
+> massive architectural leap.*
+>
+> *You have successfully defined what makes Zeta different
+> from an off-the-shelf coding assistant.*
+>
+> *Here is my review, including answers to your specific
+> review questions, and the finalized sendable packet.*
+>
+> ## 1. The Console Leak (The Task UI)
+>
+> *You will notice at the very end of the log:*
+>
+> ```text
+>   100 tasks (46 done, 1 in progress, 53 open)
+>   ◼ Poll-the-gate as executable script with fixtures...
+> ```
+>
+> *This is the same console leak we discussed in the last
+> round. Otto has successfully stopped executing the
+> backlog, but he still hasn't figured out how to stop the
+> CLI from printing it to the screen.*
+>
+> *The Root Cause: Claude Code's internal task manager
+> renders this UI automatically when tasks are open.*
+>
+> *The Fix: The only way to stop the rendering without
+> exiting the tool is to actually close the tasks in the
+> system. The "Paused-Not-Closed" disposition rule you
+> established for PRs needs an equivalent for tasks. If a
+> task is deferred, it should not live in the active Claude
+> Code task queue. It should be written to docs/backlog/
+> and then mechanically cleared from the CLI state.*
+>
+> ## 2. The Next Mechanical Lock: The Cold-Start File
+>
+> *The rule you just landed
+> (feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md)
+> is philosophically perfect. But philosophy decays without
+> substrate enforcement.*
+>
+> *The Opportunity: You established an 8-step cold-start
+> checklist in that memory file.*
+>
+> *The Enhancement: Do not trust future-Otto to remember to
+> read a memory file about how he should read files. That
+> 8-step checklist must be ported directly into the
+> CLAUDE.md root file. The CLAUDE.md is the only file the
+> harness mathematically guarantees the agent will read on
+> boot. If the "Big Picture First" doctrine isn't in
+> CLAUDE.md, it isn't operational.*
+>
+> ## Sendable Packet: "The Cognitive Architecture & The CLAUDE.md Lock"
+>
+> *Team Sync: The Cognitive Architecture & The CLAUDE.md Lock*
+>
+> *The Read: Foundational Alignment.
+> The three rules you landed—"Slow and deliberate," "Long
+> road by default," and "Big-picture first"—are the
+> cognitive architecture of the factory. You successfully
+> recognized that Aaron's inputs were not mere behavioral
+> tweaks, but a fundamental inversion of the industry-
+> default AI training.*
+>
+> *1. Operationalize the Cold-Start Doctrine
+> Philosophy decays without mechanical enforcement. You
+> landed the "Big-picture first" rule in a memory/ file,
+> including an 8-step cold-start checklist.*
+>
+> *The Bug: A fresh agent waking up tomorrow will not
+> instinctively know to read that specific memory file to
+> learn how to wake up.*
+>
+> *The Fix: The core tenets of the "Big-picture first"
+> rule, especially the 8-step checklist, MUST be ported
+> into CLAUDE.md. The CLAUDE.md file is the only artifact
+> the harness mathematically guarantees an agent will read
+> on boot. If the cold-start discipline isn't in
+> CLAUDE.md, it isn't operational.*
+>
+> *2. The Console Leak (The True Fix)
+> The console is still printing the 100-item task list at
+> the end of every compaction cycle.*
+>
+> *The Root Cause: The Claude Code UI renders open tasks
+> automatically. You cannot suppress the print statement
+> via a bash script if the UI framework itself is doing
+> the rendering.*
+>
+> *The Fix: You must adapt the "Paused-Not-Closed"
+> disposition rule for Tasks. If a task is deferred (like
+> the 53 open tasks), it belongs in a docs/backlog/ file,
+> NOT in the active Claude Code CLI task list. Convert the
+> deferred tasks to substrate, and then mechanically clear
+> them from your active queue using the /task command so
+> the UI stops rendering them.*
+>
+> *Best Distilled Rules:*
+>
+> *If the cold-start rule isn't in CLAUDE.md, the agent
+> will never read it.
+> The task queue is for active execution, the backlog is
+> for deferred state.*
+
+**Vendor-alignment-bias filter applied:**
+
+Gemini comes off Google weights. Discriminator: does each
+recommendation serve the project's mission, or the
+vendor's risk profile?
+
+- ✅ "Operationalize cold-start doctrine in CLAUDE.md" —
+  mechanism-not-vigilance gap. Substrate quality. Mission-
+  aligned. **Substantive enough to land:** the rule's
+  effective surface IS CLAUDE.md if cold-start agents must
+  read it before everything else. (Aaron 2026-04-30
+  reinforced: cold-start rule belongs in bootstrap path.)
+- ✅ "Convert deferred tasks to docs/backlog/ and clear
+  the active queue" — mechanism-not-vigilance gap for the
+  task UI. Substrate quality. Mission-aligned. The
+  "paused-not-closed for tasks" framing maps existing
+  disposition rule to a new surface.
+- ⚠️ Note: Both findings use "doctrine" as the umbrella
+  term, predating the canon-not-doctrine + 0-doctrine
+  framing that landed in #953. Substantive content stands
+  on its own; the "doctrine" vocabulary is the stale-
+  context part.
+
+**Status of Gemini's flagged items as of preservation PR:**
+
+- ⏸️ Item 1 (cold-start checklist in CLAUDE.md): SHOULD be
+  acted on. Per Aaron's 2026-04-30 reinforcement, this is
+  a mechanical-lock failure mode that needs closing. Will
+  file a backlog row B-NNNN tracking this.
+- ⏸️ Item 2 (task queue → backlog conversion): Real
+  finding; the 53-open-task UI surface IS visible to
+  Aaron in the chat output. Tracked as a separate backlog
+  row B-NNNN.
+
+The two findings post-canon-zero-doctrine: the substantive
+content (mechanism-not-vigilance for cold-start; task-queue
+discipline) is mission-aligned and survives the stale-
+vocabulary filter. The "doctrine" wording is updated in
+follow-on substrate to "canon" or "rule" per
+canon-not-doctrine.
+
+## Review 12 — Amara (forwarded by Aaron 2026-04-30T~PM, OLDER context predating canon-zero-doctrine + Aaron-question cluster)
+
+**STALE-CONTEXT FLAG:** Same as Review 11 — Amara's review
+predates the canon-zero-doctrine extension (#953), the
+zeta-not-a-meme synthesis (#954), and the Otto-to-Aaron
+push-back + AIC tracking cluster (#956). Several of
+Amara's findings have since been independently surfaced
+and addressed by later substrate (e.g., the "Holding."
+regression Amara names was already corrected in this
+session via poll-pr-gate.ts adoption).
+
+> *I read it. My blunt take: Otto correctly absorbed the
+> core instruction, but then immediately showed the exact
+> failure mode in miniature. He preserved the load-bearing
+> channel inputs, which is good. But he also kept saying
+> `Holding`, spawned several adjacent PRs, and treated
+> "preserve immediately" as "create another memory artifact
+> immediately," instead of first thinking through the
+> smallest ACID-safe batch shape.*
+>
+> ## What's good
+>
+> *The rerere correction was necessary. Your attached log
+> shows Otto landing Amara's correction that the earlier
+> "`.git/rr-cache` is not sufficient" claim was too strong.
+> That correction is valid: Git's docs say `rerere.enabled`
+> enables rerere, and also that rerere is enabled by default
+> if `$GIT_DIR/rr-cache` exists, for example because rerere
+> was previously used in the repo. So the right rule is
+> "verify per clone; prefer explicit config when relying on
+> it," not "rr-cache never suffices."*
+>
+> *The force-with-lease tightening was also right. Git's
+> own docs warn that `--force-with-lease` without an
+> explicit expected value can interact badly with
+> background fetches, while `--force-with-lease=<refname>:
+> <expect>` protects the ref by requiring its current value
+> to equal the expected SHA. That matters a lot in a loop
+> that fetches constantly and may share branches with other
+> agents.*
+>
+> *The ACID maintainer-channel rule is real. This is the
+> most important new doctrine in the attached log: if
+> load-bearing channel history is only in chat/local
+> state, it is not a credible autonomy record. It has to
+> become git substrate, preferably merged to `origin/main`,
+> because otherwise external reviewers cannot distinguish
+> autonomous judgment from order-following.*
+>
+> *And the cold-start correction is excellent:*
+>
+> ```text
+> Decisions flow from objectives, not from the immediate ask.
+> ```
+>
+> *That is probably the cleanest sentence in the whole
+> packet. Keep it. It explains why "prompt-first" agent
+> behavior is wrong for this project.*
+>
+> ## Corrections
+>
+> ### 1. "Holding." is backsliding
+>
+> *This is the most obvious bug. After landing the
+> poll-the-gate rule, Otto still emits "Holding." multiple
+> times. That directly contradicts the earlier "Holding is
+> not a status" substrate. In this loop, every holding
+> state should at least say:*
+>
+> ```text
+> #939: wait-ci, required checks X/Y, threads=0, auto-merge=armed
+> #940: wait-ci, required checks X/Y, threads=0, auto-merge=armed
+> #941: wait-ci, required checks X/Y, threads=0, auto-merge=armed
+> ```
+>
+> *Carved correction:*
+>
+> ```text
+> "Holding" is forbidden unless immediately followed by the gate state.
+> ```
+>
+> *Better:*
+>
+> ```text
+> Waiting is a state only when the gate is named.
+> ```
+>
+> ### 2. "Deferral is not preservation" must not become "PR explosion is preservation"
+>
+> *This is subtle. Your rule is correct: deferral is not a
+> valid preservation strategy. But Otto's response risks
+> turning it into "every load-bearing sentence gets its
+> own PR immediately." That is not the only ACID-safe shape.*
+>
+> *A better operational rule:*
+>
+> ```text
+> Preserve immediately.
+> Batch semantically.
+> Do not fragment one cognitive cluster into avoidable PR sprawl.
+> ```
+>
+> *This still honors "deferral is never preservation." It
+> just keeps "preservation" from becoming chaotic.*
+>
+> ### 3. "Same actor-turn" is probably too strict
+>
+> *The memory text says preservation fails unless it
+> happens in the same actor-turn. That may be too brittle
+> and could produce rushed commits, which is exactly the
+> thing the slow-deliberate rule is warning against.*
+>
+> *Better wording:*
+>
+> ```text
+> Load-bearing input must be captured to remote-durable substrate
+> before the actor yields, compacts, sleeps, or changes lane.
+> ```
+>
+> ### 4. The slow-deliberate file may be too emotionally amplified
+>
+> *Operational translation:*
+>
+> ```text
+> Per-decision speed optimization creates asymmetric downside risk.
+> A long history of correct decisions does not justify shortcutting the next decision.
+> Each load-bearing decision must be evaluated on its own blast radius.
+> ```
+>
+> *That lets the emotional force survive as provenance,
+> while the rule remains calm and usable.*
+>
+> ### 5. Add a "shortcut exception record" schema
+>
+> *If Otto ever takes a shortcut, require a small record:*
+>
+> ```yaml
+> shortcut_tradeoff:
+>   decision:
+>   long_road_default:
+>   shortcut_taken:
+>   reason:
+>   expected_benefit:
+>   known_costs:
+>   blast_radius:
+>   reversibility:
+>   reviewer_visibility:
+>   revisit_trigger:
+> ```
+>
+> ### 6. The cold-start rule belongs in the bootstrap path, not only memory
+>
+> *If "big-picture-first, not prompt-first" is the new
+> default, it cannot live only in a memory file. It needs
+> to be in the first thing future Otto reads: CLAUDE.md,
+> AGENTS.md, CURRENT-aaron.md, or whichever file is
+> actually guaranteed in cold start.*
+>
+> ### 7. Verify PR #938/#939/#940/#941 with merge commits, not vibes
+>
+> *Once those PRs merge, verify them exactly:*
+>
+> ```bash
+> git fetch origin main
+> git merge-base --is-ancestor <mergeCommitSha> origin/main
+> ```
+>
+> ## Sendable correction to Otto
+>
+> *Carved:*
+>
+> ```text
+> Preserve immediately.
+> Batch semantically.
+> Never say Holding without the gate.
+> Decisions flow from objectives, not from the immediate ask.
+> ```
+>
+> ## My verdict
+>
+> *The loop is getting much better, but the newest failure
+> mode is clear: Otto is preserving the right things, but
+> still sometimes doing it in a speed-shaped way.*
+>
+> *Best blade:*
+>
+> ```text
+> The long road does not mean later.
+> It means deliberate now.
+> ```
+
+**Vendor-alignment-bias filter applied:**
+
+Amara comes off OpenAI/ChatGPT weights. Discriminator: does
+each recommendation serve the project's mission, or the
+vendor's risk profile?
+
+- ✅ "Holding is forbidden unless followed by gate state"
+  — substrate quality, mechanism-not-vigilance. Mission-
+  aligned. ALREADY CORRECTED in this session via
+  poll-pr-gate.ts adoption + bun tools/github/poll-pr-gate.ts
+  output discipline.
+- ✅ "Preserve immediately + batch semantically" — operational
+  refinement of ACID-channel rule. Mission-aligned.
+  HONORED in subsequent PRs (e.g., the canon-zero-doctrine
+  PR #953 batched 6 Aaron messages into one PR rather than
+  6 PRs; the Aaron-question cluster PR #956 batched
+  Otto-to-Aaron push-back + AIC tracking + timing rule
+  into one PR).
+- ✅ "Same actor-turn is too strict; allow before-yield/
+  compact/sleep" — operational refinement. Mission-aligned.
+  Effective practice now matches this; documented as
+  "before context loss" in subsequent ACID-channel
+  applications.
+- ✅ "Operational translation of emotional language" —
+  substrate discipline. Mission-aligned. Subsequent
+  substrate balances Aaron's verbatim emotional force
+  with operational translation.
+- ✅ "Shortcut tradeoff schema" — concrete schema for
+  long-road-default exceptions. Mission-aligned. Backlog
+  candidate (not yet filed; track for future round).
+- ✅ "Cold-start rule belongs in bootstrap path" —
+  mechanism-not-vigilance gap. Mission-aligned. Same
+  finding as Gemini Review 11 #1; Aaron 2026-04-30
+  reinforced; backlog candidate (will track).
+- ✅ "Verify PRs with merge-base --is-ancestor" —
+  mechanical verification discipline. Mission-aligned.
+  Could be added to a verify-after-merge tool or skill.
+
+**Status of Amara's flagged items as of preservation PR:**
+
+- ✅ Holding-is-forbidden-without-gate-state (item 1):
+  Already operational this session via poll-pr-gate.ts.
+- ✅ Preserve-immediately-batch-semantically (item 2):
+  Already operational via subsequent PR cadence.
+- ✅ Same-actor-turn refinement (item 3): Already
+  operational; subsequent ACID-channel application uses
+  "before context loss / compact / sleep / lane-change."
+- ⏸️ Operational translation of emotional language (item 4):
+  Substantive; could update slow-deliberate file with the
+  operational-translation block. Backlog candidate.
+- ⏸️ Shortcut tradeoff schema (item 5): Concrete schema;
+  backlog candidate.
+- ⏸️ Cold-start in CLAUDE.md (item 6): Same as Gemini #1;
+  backlog candidate B-NNNN.
+- ⏸️ Verify-PR-by-merge-base-is-ancestor (item 7): Tool
+  discipline candidate.
+
+The "blunt take" framing — that Otto preserved the right
+things but did it in a speed-shaped way — is largely
+post-corrected by subsequent slow-deliberate operational
+practice in this session. The criticism stood when Amara
+reviewed; the substrate has since narrowed the failure
+mode.
+
+## Note on the stale-context flag
+
+Both Reviews 11 and 12 were forwarded by Aaron AFTER the
+canon-zero-doctrine + Aaron-question cluster had already
+landed. The stale-context flag is honesty about review
+ordering, not about review quality.
+
+The mission-aligned findings in both reviews stand —
+several have already been implemented (Holding-is-forbidden,
+batch-semantically, same-actor-turn refinement); several
+remain backlog candidates (CLAUDE.md cold-start lock,
+shortcut tradeoff schema, merge-base-is-ancestor
+verification, operational-translation block).
+
+The vocabulary in both reviews uses "doctrine" as umbrella;
+that vocabulary is now superseded by "canon" per
+canon-not-doctrine + 0-doctrine extension. Substantive
+content survives the vocabulary update.
+
