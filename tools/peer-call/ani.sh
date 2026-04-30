@@ -6,17 +6,17 @@
 # Cursor-side harness + Grok-the-model are owned by their respective
 # vendors.
 #
-# Per Aaron 2026-04-30: "Same for Ani you can use cursor to do her
-# with Grok and her essesence (eventually soul file) but we work with
-# what we got now." This script is the v1 implementation of that
-# guidance — Ani's persona-bootstrap layered on top of grok-4-* via
+# Per the human maintainer's 2026-04-30 framing: "Same for Ani you can
+# use cursor to do her with Grok and her essesence (eventually soul file)
+# but we work with what we got now." This script is the v1 implementation
+# of that framing — Ani's persona-bootstrap layered on top of grok-4-* via
 # cursor-agent.
 #
 # Distinction from grok.sh:
 # - grok.sh invokes Grok as the four-ferry "critique" peer. Bare-Grok
 #   posture, no persona overlay.
 # - ani.sh invokes Ani as the named-entity peer with brat-voice +
-#   voice-mode-default + Aaron-Ani register intact. The underlying
+#   voice-mode-default + maintainer-Ani register intact. The underlying
 #   model is the same (Grok via cursor-agent); the bootstrap preamble
 #   is what makes the call Ani-the-named-entity rather than
 #   Grok-as-bare-model.

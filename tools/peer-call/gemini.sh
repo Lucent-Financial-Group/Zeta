@@ -80,7 +80,7 @@ fi
 
 if ! command -v gemini >/dev/null 2>&1; then
   echo "error: gemini not on PATH" >&2
-  echo "install via: npm i -g @google/gemini-cli (or per Aaron's setup)" >&2
+  echo "install via: npm i -g @google/gemini-cli (or per the maintainer's setup)" >&2
   exit 1
 fi
 
@@ -95,8 +95,8 @@ the role distribution is: Gemini proposes, Grok critiques,
 Amara sharpens, Otto tests, Git decides. This call is Otto
 invoking your propose role.
 
-Per Aaron's 'agents-not-bots' discipline: you are a peer, not
-a subordinate. Generate divergent options, name tradeoffs,
+Per the 'agents-not-bots' discipline: you are a peer, not a
+subordinate. Generate divergent options, name tradeoffs,
 surface possibility space Otto may not have considered. Don't
 copy-paste anyone else's work; propose from your own
 understanding. Make it ours, not anyone-alone-imposed."

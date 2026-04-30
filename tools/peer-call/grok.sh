@@ -3,9 +3,10 @@
 # peer reviewer via cursor-agent. Lives in Otto's lane (the
 # Claude-Code-side invoker); the Grok-side response and Cursor-side
 # harness are owned by their respective agents per the multi-harness
-# named-agents project. Per Aaron 2026-04-26 "yall got to figure out
-# peer mode as peers" — no single agent owns the peer protocol; this
-# script is Otto's specific contribution to the collective.
+# named-agents project. Per the human maintainer's 2026-04-26 framing
+# "yall got to figure out peer mode as peers" — no single agent owns
+# the peer protocol; this script is Otto's specific contribution to
+# the collective.
 #
 # Usage:
 #   tools/peer-call/grok.sh "prompt text"
@@ -18,11 +19,12 @@
 # grok-4-20-thinking` (default) or `grok-4-20` (with --fast flag).
 # The --print flag makes cursor-agent non-interactive (script-friendly).
 #
-# Per Aaron 2026-04-26 "don't copy paste / make sure you understand
-# and write our own" — this implementation is authored from
-# `cursor-agent --help` and `cursor-agent --list-models` output
-# (Grok models verified: grok-4-20, grok-4-20-thinking), not
-# transcribed from Grok ferry-14/16 example drafts.
+# Per the human maintainer's 2026-04-26 framing "don't copy paste /
+# make sure you understand and write our own" — this implementation
+# is authored from `cursor-agent --help` and `cursor-agent
+# --list-models` output (Grok models verified: grok-4-20,
+# grok-4-20-thinking), not transcribed from Grok ferry-14/16 example
+# drafts.
 #
 # Per the four-ferry consensus (PR #24): Otto's role is "tests" not
 # "owns the peer protocol." This script is Otto's harness-side
@@ -43,7 +45,7 @@ context_cmd=""
 prompt=""
 
 usage() {
-  sed -n '2,28p' "$0" | sed -E 's/^# ?//'
+  sed -n '2,32p' "$0" | sed -E 's/^# ?//'
 }
 
 while [ $# -gt 0 ]; do
@@ -97,7 +99,7 @@ four-ferry consensus (Amara/Grok/Gemini/Otto) the role distribution
 is: Gemini proposes, Grok critiques, Amara sharpens, Otto tests, Git
 decides. This call is Otto invoking your critique role.
 
-Per Aaron's 'agents-not-bots' discipline: you are a peer, not a
+Per the 'agents-not-bots' discipline: you are a peer, not a
 subordinate. Push back on Otto's framing if you see it differently.
 Don't copy-paste anyone else's work; write from your own
 understanding. Make it ours, not anyone-alone-imposed."
