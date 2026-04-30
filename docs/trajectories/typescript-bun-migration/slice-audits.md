@@ -149,6 +149,82 @@ divergences are recorded explicitly above when they exist.
 
 Slice 1 passes audit with one ergonomic gap (`noPropertyAccessFromIndexSignature`) recorded explicitly. Slice can merge as-is; future slices follow this audit's pattern in this same file.
 
+## Slice 2 — 3 hygiene-audit-script ports (PR #NNN, 2026-04-30)
+
+**Slice files**:
+
+- `tools/hygiene/audit-machine-specific-content.{sh→ts}`
+- `tools/hygiene/audit-git-hotspots.{sh→ts}`
+- `tools/hygiene/audit-cross-platform-parity.{sh→ts}`
+
+**Comparison points**:
+
+- `docs/best-practices/typescript.md` — verified within currency window (1 day old).
+- `docs/best-practices/bun.md` — verified within currency window.
+- `docs/best-practices/repo-scripting.md` — per-slice audit checklist applied.
+- `../SQLSharp` at commit `7d3d9f6` (2026-04-18) — process-runner pattern reused.
+- Slice 1 (PR #866, commit `d3b0be8`) — canonical pattern for typed boundaries + spawn classifier + atomic file IO + ParseResult discriminated union.
+
+### Tsconfig audit
+
+- **Applied**: Inherited from slice 1's tsconfig (no changes needed). All three slice-2 files compile clean under the same strict regime.
+
+### Eslint audit
+
+- **Applied**: All three files pass `strictTypeChecked` + `stylisticTypeChecked` + sonarjs.
+- **Cognitive-complexity push**: `audit-git-hotspots.ts:parseArgs` initially exceeded the 15-cap. Refactored into a `ParseAcc` reducer with `reduceFlag` helper; complexity now within bounds. Pattern recorded for future slices that need flag-table parsing.
+
+### Code-pattern audit (per-port, with evidence)
+
+Hard-requirement checks across all 3 ports:
+
+| Check | Method | Result |
+|---|---|---|
+| No `any` uses | grep for any patterns | 0 matches |
+| No `as` casts | grep for `as` casts | 0 matches |
+| Project typecheck clean | `bun x tsc --noEmit` | 0 errors |
+| ESLint strictTypeChecked | `eslint <files>` | 0 errors |
+| Regex match groups guarded | inspect `match[]` access | All guarded |
+| Index accesses guarded under `noUncheckedIndexedAccess` | inspect | All guarded |
+| File reads as typed error outcomes | inspect `try/catch` | All file IO wrapped |
+| TOCTOU race avoided | inspect for `existsSync ... readFileSync` patterns | 0 instances |
+
+Per-port pattern checklist:
+
+- **Applied (all 3)**: typed boundary objects (`AuditFinding`, `FileSummary`, `AuditBuckets` etc.) — no stringly-formatted findings.
+- **Applied (all 3)**: literal-type union exit codes (`0 | 2 | 64`, `0 | 64 | 128`, `0 | 1 | 2` per script).
+- **Applied (all 3)**: `ParseResult` discriminated-union for CLI args — no `process.exit` from parse paths (slice-1 pattern continued).
+- **Applied (all 3)**: structured spawn-failure classifier (mirrors SQLSharp `process-runner.ts`).
+- **Applied (all 3)**: `maxBuffer: 64 * 1024 * 1024` on `spawnSync` (slice-1 P2 fix continued).
+- **Applied (all 3)**: named exports + `import.meta.main` invocation guard.
+- **Applied (`audit-git-hotspots`, `audit-cross-platform-parity`)**: clock injection via `Clock` interface — DST-friendly per the universal-DST gate. Tests can substitute a deterministic clock for the report timestamp; CLI uses `realClock()`.
+
+### DST + coverage audit (per `repo-scripting.md`)
+
+- **DST-friendly: applied** — the only non-deterministic surface in either time-stamping script (`audit-git-hotspots`, `audit-cross-platform-parity`) is the report's "Generated"/"Run" timestamp, and both inject a `Clock` interface so tests can substitute a fake clock. `audit-machine-specific-content` has no time/random surface.
+- **Code coverage: deferred** — slice 2 ports do not introduce tests yet. The bash originals had no tests either; per `repo-scripting.md` the gap is recorded explicitly rather than waved through, and tests are queued as a follow-up before the next slice that introduces a *new* module (not a port).
+
+### Equivalence audit
+
+For each of the 3 ports, equivalence verified against the bash original:
+
+**`audit-machine-specific-content`**:
+
+- **Applied**: bash-vs-TS output diff is empty under default args.
+
+**`audit-git-hotspots`**:
+
+- **Applied**: bash-vs-TS output diff is empty modulo the `Generated:` timestamp line (which differs by run-time, not script-version). Verified with `--top 5` against current repo state.
+
+**`audit-cross-platform-parity`**:
+
+- **Applied**: bash-vs-TS output diff is empty under `--summary` mode (counts only, no timestamp).
+- **Applied**: bash-vs-TS output diff is empty under the default `report` mode modulo the `Run:` timestamp line.
+
+### Outcome
+
+Slice 2 passes audit. The clock-injection pattern is the new substrate addition (DST-friendliness applied to the two report-generating scripts); the `ParseAcc` reducer pattern from `audit-git-hotspots` is recorded for future flag-heavy parsers.
+
 ## Slice template (for future slices)
 
 Copy this section header and fill out before merging the slice's PR:
