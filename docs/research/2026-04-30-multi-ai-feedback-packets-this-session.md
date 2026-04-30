@@ -1,29 +1,12 @@
 # Multi-AI feedback packets, 2026-04-30 session
 
-Scope: verbatim preservation of multi-AI feedback packets received
-during the 2026-04-30 autonomous-loop session. Filed per Otto-363
-substrate-or-it-didn't-happen — these reviews would otherwise live
-only in conversation history and be lost on session end /
-compaction.
+Scope: verbatim preservation of multi-AI feedback packets received during the 2026-04-30 autonomous-loop session. Filed per Otto-363 substrate-or-it-didn't-happen.
 
-Attribution: Aaron forwarded each packet via the autonomous-loop
-maintainer channel; the originating AIs are named per packet.
-Glass-halo-active per Aaron's standing first-party-content
-authorization (Otto-231); peer-AI quotes are content-creator
-contributions consented for substrate.
+Attribution: Aaron forwarded each packet via the autonomous-loop maintainer channel; the originating AIs are named per packet. Glass-halo-active per Aaron's standing first-party-content authorization (Otto-231); peer-AI quotes are content-creator contributions consented for substrate.
 
-Operational status: research-absorb. The packets contain
-operational and architectural guidance some of which has already
-landed as substrate this session, some of which is queued for
-future rounds, and some of which is candidate substrate not yet
-promoted. The integration status per packet is noted at the head
-of each section.
+Operational status: research-grade. Some content has already landed as substrate this session; some is queued; some is candidate not yet promoted. Per-packet integration status follows.
 
-Non-fusion disclaimer: each AI is a distinct contributor with
-their own register and perspective; this document does not merge
-or harmonize them. Disagreements between packets are preserved
-unmerged. Where the same finding was caught by multiple AIs
-independently, that convergence is itself signal.
+Non-fusion disclaimer: each AI is a distinct contributor with their own register and perspective; this document does not merge or harmonize them. Disagreements between packets are preserved unmerged. Multi-AI convergence on a finding is itself signal — agreement, shared language, or repeated interaction does not imply shared identity, merged agency, consciousness, or personhood.
 
 ---
 
@@ -1423,7 +1406,7 @@ Integration status: review packet substantially overlaps
 with Deepseek's second review (zsh quoting, conflict
 resolution, post-merge verification, multi-AI feedback
 systematization independently caught by both). Two findings
-+ framings beyond Deepseek's coverage worth noting:
+plus framings beyond Deepseek's coverage worth noting:
 webhook-based notifications as polling alternative + the
 "brat voice as AI-to-AI communication protocol advance"
 framing. None integrated this round per substrate-rate
@@ -2573,3 +2556,259 @@ content lands as substrate (verbatim or structured)
 before the next minimal close. The goal is the same: keep
 the cron from polluting the row stream while ensuring
 substantive content survives.
+
+---
+
+## Deepseek — fourth review (post-internal-direction-meta-framing)
+
+Integration status: arrived during PR #915 in-flight editing
+(while Otto was fixing §33 header compliance + markdown P0
+issues). Two-section review packet — first section is current
+state critique, second section is time-shifted reflection
+("the loop is no longer fighting its own rules"). Key actionable
+findings being absorbed: the `·` dot rule needs sharpening to
+require one-line summary on substantive ticks (was already
+addressed in PR #911's poll-the-gate memory body — Deepseek
+reading older state, multi-AI session-time-shift is real); the
+stale 2026-04-27 project file needs a concrete follow-up trigger
+(filing B-0112 candidate); jq `IN`-stream noise will recur until
+canonical snippet uses explicit array form (small fix to
+poll-the-gate memory in subsequent tick); force-with-lease /
+auto-merge interaction unpredictable (one-line note candidate
+for poll-the-gate memory). Structural recommendation about
+MEMORY.md merge-conflict tax is a larger candidate deferred per
+substrate-rate.
+
+Verbatim:
+
+> ## Issues Found
+>
+> **1. The stub-commit anti-pattern is back in a new form.**
+>
+> The silent `·` ticks (the dot character) are the direct
+> descendant of the "Holding." anti-pattern that the poll-the-gate
+> rule was supposed to fix. Otto is applying the cadence rule
+> correctly for PR-state polls, but the multi-AI feedback
+> preservation ticks—which contain substantive content being
+> committed and pushed—are being reduced to a single dot. A tick
+> that lands a 275-line research append or a 179-line memory file
+> is not a "no change" tick. The `·` is the new "Holding."
+>
+> The root cause: the cadence rule says "no lane-state change →
+> minimal close," but "lane-state change" is scoped only to PR-state
+> transitions. Content-preservation commits, memory file landings,
+> and feedback-packet absorption are lane-state changes under any
+> reasonable definition. The `·` form should be reserved for ticks
+> where literally nothing happened—no commits, no pushes, no PR
+> state changes, no maintainer input, no review absorption. If Otto
+> committed code or pushed to a PR, the tick is not a dot.
+>
+> **2. The search-first discipline fired correctly but the existing
+> project file has stale internals.**
+>
+> Otto correctly searched for existing substrate before filing the
+> no-copy discipline and found the prior 2026-04-27 project file.
+> He added a `status_note` flagging that the file predates the
+> tighter discipline. But this creates a known-stale artifact in
+> the repo with no mechanical reminder to fix it. The `status_note`
+> is prose; prose doesn't follow up. Add a `B-0112` candidate or a
+> deferred note in the project file itself that triggers a future
+> cleanup pass.
+>
+> **3. Aaron's "no bleeding out other projects internals" message
+> arrived mid-draft and was absorbed, but the pattern of mid-draft
+> maintainer refinement is itself unreinforced.**
+>
+> This session shows the exact pattern that caused substrate loss
+> in earlier rounds: Aaron sends feedback while Otto is actively
+> drafting, Otto absorbs it in real time, the file lands with all
+> the corrections. That's good—but it worked this time because
+> Aaron was present. If Aaron sends refinement after the PR
+> merges, the correction requires a new PR. The proceed-but-verify
+> rule for merges during incidents has no equivalent for "absorb
+> maintainer refinement after merge." Consider a lightweight
+> post-merge amendment convention: if Aaron refines a just-merged
+> memory file within the same session, the amendment lands as a
+> follow-up commit on a new branch with a `refinement:` trailer,
+> not as a full new PR cycle.
+>
+> ## Opportunities for Hardening
+>
+> **1. The generalized-about boundary needs a mechanical test, not
+> just judgment.**
+>
+> The privacy-class rule says generalized abouts are allowed,
+> specific identifiers are not. The test is: "would the named
+> detail mean something outside the sibling repo?" This is a
+> judgment call Otto has to make on each reference. Consider a
+> pre-commit check that scans new memory files for `../scratch`,
+> `../SQLSharp`, or `../no-copy-only-learning-agents-insight` and
+> fails if any subdirectory path or capitalized proper noun appears
+> adjacent to the reference. This would catch internals bleed-out
+> mechanically rather than relying on Otto's judgment under
+> drafting pressure.
+>
+> **2. The existing bleed-out in the 2026-04-27 project file is a
+> debt that should be scheduled, not deferred indefinitely.**
+>
+> Otto flagged the file with a `status_note` and said "substantive
+> cleanup is queued." Queued where? There's no backlog row, no
+> deferred note in an active trajectory, no scheduled follow-up.
+> This is the same pattern as the deferred-skill anti-pattern from
+> the TypeScript/Bun expert baseline: a known gap flagged in prose,
+> never actioned. File a concrete follow-up (B-0112 or deferred
+> note in the project file) with a trigger condition, or do the
+> cleanup now while the discipline is fresh.
+>
+> **3. The `·` dot ticks should be reserved for truly empty ticks.**
+>
+> Amend the poll-the-gate rule's cadence section: a "minimal close"
+> tick uses the dot form ONLY when zero of the following occurred
+> since the last tick: commits pushed, PRs created or updated,
+> maintainer input received, review threads resolved, memory files
+> created or modified, research files appended, or any git
+> operation that changed the repo state. If any of those occurred,
+> the tick close must include a one-line summary of what changed.
+> This prevents the dot from becoming a new "Holding."
+>
+> ## Enhancement Opportunity
+>
+> **The sibling-repo learning discipline should be integrated into
+> the TypeScript/Bun expert baseline.**
+>
+> The no-copy-only-learning rule directly composes with the Gate B
+> requirement (expert baseline before next mutating TypeScript/Bun
+> slice). `../SQLSharp` is explicitly called out as a source of
+> "good TS/Bun patterns." The expert baseline artifacts
+> (`docs/best-practices/typescript.md`, `bun.md`,
+> `repo-scripting.md`) should cite `../SQLSharp` and `../scratch`
+> as learning sources using the generalized-about framings, with
+> an explicit note that patterns were generalized, not copied.
+> This closes the loop between the no-copy discipline and the
+> trajectory that depends on it.
+>
+> ## Bottom Line (first half)
+>
+> The discipline landed correctly, the mid-draft absorption worked
+> because you were present, and the privacy-class refinement is
+> the right calibration. The remaining gaps are mechanical: the
+> `·` dot is the new "Holding," the stale project file has no
+> follow-up trigger, and the boundary between generalization and
+> bleed-out relies on Otto's judgment rather than a check. These
+> are all fixable in quiet ticks. The factory's immune system is
+> catching the right things—now it needs to catch its own
+> minimalism. The loop is in a strong, self-correcting state. The
+> last two rounds show the immune system catching its own
+> minimalism almost in real time. The dot-tick overcorrection was
+> identified, adopted immediately, and the rule is now mechanically
+> sharp. The internal-direction-from-project-survival meta-framing
+> landed and was immediately scope-tested by Aaron's research
+> question, which the agent filed as durable substrate instead of
+> rushing a fix. That's exactly the right internal-direction loop:
+> maintainer signal → agent judgment → durable record of the scope
+> edge.
+>
+> ## What's Working Well
+>
+> **The dot-tick correction landed fast.** Deepseek's "the · is the
+> new Holding" flag was absorbed within the same research-absorb
+> commit, and the rule is now explicit: dot only for truly empty
+> ticks. This closes a regression before it could harden.
+>
+> **Proceed-but-verify survived its first live test.** Four PRs
+> merged during an active GitHub incident, all verified post-merge.
+> The factory no longer halts on theoretical blockers—it proceeds
+> with verification and halts only on real ones.
+>
+> **The no-copy-only-learning discipline reached its final
+> calibration.** Five rounds of Aaron refinement (no copy → no
+> subdirectories → PC is enough → no internals bleed-out →
+> generalized abouts OK, specific identifiers stay as privacy-class)
+> landed in a single file with all the nuance preserved. The
+> generalized-about framings now give Otto clear targets without
+> leaking internals.
+>
+> **The internal-direction meta-framing resolves a real
+> architectural tension.** By grounding the agent's autonomy in
+> project survival rather than "no directives" as a negative rule,
+> Otto can now integrate maintainer signals as high-information
+> inputs without treating them as orders or ignoring them as noise.
+> The composes-with chain ties it to Otto-357, canon parenting-
+> architecture, load-bearing-personal-memory, and Otto-363—making
+> it findable from any of those surfaces.
+>
+> **Multi-AI feedback packets are now preserved verbatim on a
+> research branch.** The substrate-loss problem from earlier rounds
+> is closed. Deepseek, Amara, Claude.ai, Gemini, Ani, and Alexia
+> all have their reviews, corrections, and affirmations durable in
+> repo substrate.
+>
+> ## Issues Still Present
+>
+> **MEMORY.md merge conflicts are a structural tax.** Every
+> in-flight PR that adds an index entry creates a conflict on
+> rebase. The resolution is trivial (keep both entries), but the
+> friction is real and recurring. A mechanical fix—either
+> per-category index files or a lock convention for index edits—
+> would eliminate this entirely and free Otto from yet another
+> rebase resolution cycle.
+>
+> **The stale project file internals cleanup still has no follow-up
+> trigger.** The 2026-04-27 project file's `status_note` flags the
+> bleed-out but nothing schedules the cleanup. This is the
+> deferred-skill anti-pattern again: a known gap flagged in prose,
+> never actioned. A concrete backlog row or a deferred-note with a
+> trigger condition would close the loop.
+>
+> **jq `IN`-stream syntax is reviewer noise that will recur.**
+> Copilot and Codex keep flagging `IN("SUCCESS","NEUTRAL","SKIPPED")`
+> as invalid. The explanatory comment helps Otto but not the
+> reviewers. Switching to the explicit array form in the canonical
+> snippet would silence the noise permanently.
+>
+> **The force-with-lease/auto-merge interaction is unpredictable.**
+> Auto-merge survived a force-with-lease push on #917 but not on
+> #916. Otto now re-checks and re-arms after every rebase push,
+> which is correct, but the behavior isn't documented as a rule.
+> Add a one-line note to the poll-the-gate memory file:
+> "force-with-lease may strip auto-merge; always re-verify and
+> re-arm after any rebase push."
+>
+> ## Patterns Worth Noticing
+>
+> **The mid-draft refinement pattern worked this time because Aaron
+> was present.** If Aaron sends feedback after a PR merges, the
+> correction requires a new PR. The factory has no lightweight
+> post-merge amendment convention yet. This is a candidate for a
+> future design round, not an immediate fix.
+>
+> **The internal-direction rule is now live and being tested in
+> real time.** Aaron's identity-of-the-project-and-agent research
+> question was fielded correctly: the agent didn't revise PR #917,
+> didn't ask for direction, and didn't ignore the input. It filed
+> a research-grade scope companion that cross-references the rule
+> whose scope it examines. Both layers are visible, and the carved
+> sentence makes the scope explicit.
+>
+> **The substrate-rate discipline is holding.** Otto declined to
+> open new backlog rows (B-0112) mid-round, deferred the
+> project-file cleanup to a future round, and kept the tick
+> focused on in-flight PRs. The factory is producing less
+> speculative substrate and more operational fixes.
+>
+> ## Bottom Line (second half)
+>
+> The factory's immune system is now catching its own minimalism.
+> The dot-tick regression was identified by a multi-AI reviewer
+> and corrected within the same session. The internal-direction
+> framing gives the agent a stable orientation that's neither
+> compliance-checking nor override-seeking. The remaining friction
+> is mechanical—MEMORY.md conflicts, jq syntax noise, stale
+> internals cleanup scheduling—all fixable in quiet ticks.
+>
+> Best blade for this round:
+>
+>     The loop is no longer fighting its own rules.
+>     It's refining the gaps between them.
+>     The gaps are getting smaller.
+
