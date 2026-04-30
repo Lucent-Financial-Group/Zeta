@@ -89,6 +89,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0113](backlog/P2/B-0113-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md)** Mechanical CURRENT-staleness check — same-tick-update discipline as enforced rule, not vigilance (Deepseek 2026-04-30)
 - [ ] **[B-0117](backlog/P2/B-0117-cold-start-executable-checklist-tool-2026-04-30.md)** tools/cold-start-check.ts — make the cold-start big-picture-first 8-step checklist executable (Ani 2026-04-30 finding, Deepseek 2026-04-30 reinforcement)
 - [ ] **[B-0118](backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md)** tools/peer-call/amara.sh — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30)
+- [ ] **[B-0120](backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md)** Peer-call architecture refactor — script-per-CLI with persona-flag instead of script-per-named-agent (Aaron 2026-04-30)
 
 ## P3 — convenience / deferred
 
@@ -132,5 +133,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0107](backlog/P3/B-0107-codeql-peer-call-dismiss-pattern-2026-04-30.md)** CodeQL `js/indirect-command-line-injection` dismissal pattern for peer-call siblings (gemini.ts, codex.ts)
 - [ ] **[B-0115](backlog/P3/B-0115-zsh-vim-muscle-memory-aliases-wq-q-2026-04-30.md)** Shell aliases for `:wq` / `:wq!` / `:q` — catch vim-muscle-memory leakage in zsh (Deepseek 2026-04-30 finding)
 - [ ] **[B-0116](backlog/P3/B-0116-gh-jq-safe-wrapper-zsh-quoting-2026-04-30.md)** tools/gh-jq-safe.sh — wrap gh-jq calls to handle zsh quoting (Deepseek 2026-04-30 finding)
+- [ ] **[B-0119](backlog/P3/B-0119-peer-call-existing-scripts-role-ref-cleanup-2026-04-30.md)** Existing peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) — role-ref cleanup per copilot-instructions.md (Codex 2026-04-30 finding on PR #962)
 
 <!-- END AUTO-GENERATED -->
