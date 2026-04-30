@@ -76,13 +76,6 @@ interface ArgParseResult {
   readonly errorMessage: string;
 }
 
-type StringArgKey = "commitSha" | "maxN" | "sinceDate" | "branch" | "v1ShipDate";
-
-type ArgStep =
-  | { readonly kind: "ok"; readonly key: StringArgKey; readonly value: string; readonly setMode: Mode | null; readonly skip: 1 }
-  | { readonly kind: "error"; readonly message: string }
-  | { readonly kind: "help" };
-
 interface MutableArgs {
   mode: Mode;
   commitSha: string;
@@ -91,6 +84,16 @@ interface MutableArgs {
   branch: string;
   v1ShipDate: string;
 }
+
+// Derived from MutableArgs so adding/removing string fields cannot drift
+// from the ArgStep narrowing. `mode` is set via the parallel `setMode`
+// channel, never via key/value.
+type StringArgKey = Exclude<keyof MutableArgs, "mode">;
+
+type ArgStep =
+  | { readonly kind: "ok"; readonly key: StringArgKey; readonly value: string; readonly setMode: Mode | null; readonly skip: 1 }
+  | { readonly kind: "error"; readonly message: string }
+  | { readonly kind: "help" };
 
 function classifyArg(arg: string, next: string | undefined): ArgStep {
   const requiresNext: Record<string, { key: StringArgKey; setMode: Mode | null; missing: string }> = {
