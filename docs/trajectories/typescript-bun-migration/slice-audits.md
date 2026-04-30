@@ -423,7 +423,7 @@ Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 ### Code-pattern audit (per-port)
 
 - **`backfill_dv2_frontmatter.ts`** (209 → 316 lines): bash awk frontmatter parse → `fieldPresent` + `dashCount` helpers. Bash `compute_record_source` heuristic preserved. Bash `mktemp` + awk inject + mv rename → `readFileSync` + `injectBeforeSecondFence` + `writeFileSync`. Bash `INJECT_BLOB` env-passing pattern → in-memory string array. `--all` find-glob → readdirSync filter.
-- **`audit-packages.ts`** (51 → 154 lines): bash grep+sed extraction → `PACKAGE_RE.exec` loop. Bash awk pipe-table parse → `cols.split('|').map(trim)` + col2 match check (preserves "last matching row" semantics). Three statuses preserved: `✓ up-to-date` / `? couldn't query` / `⚠ bump available`.
+- **`audit-packages.ts`** (51 → 143 lines): bash grep+sed extraction → `PACKAGE_RE.exec` loop. Bash awk pipe-table parse → `cols.split('|').map(trim)` + col2 match check (preserves "last matching row" semantics). Three statuses preserved: `✓ up-to-date` / `? couldn't query` / `⚠ bump available`.
 
 ### Equivalence audit
 

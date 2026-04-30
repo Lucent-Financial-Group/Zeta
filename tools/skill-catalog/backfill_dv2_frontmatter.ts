@@ -82,6 +82,11 @@ function gitOutput(args: readonly string[]): string {
   return result.stdout;
 }
 
+function repoRoot(): string {
+  const out = gitOutput(["rev-parse", "--show-toplevel"]).trim();
+  return out === "" ? process.cwd() : out;
+}
+
 function findAllSkillFiles(): readonly string[] {
   const out: string[] = [];
   const skillsDir = ".claude/skills";
@@ -325,10 +330,15 @@ export function main(argv: readonly string[]): ExitCode {
     process.stderr.write("error: --all is mutually exclusive with explicit paths\n");
     return 1;
   }
+  // chdir to repo root before scanning so --all works regardless of
+  // caller cwd. Bash original used `find .claude/skills -maxdepth 2`
+  // which has the same cwd-dependence issue; the TS port fixes this
+  // at the entry point.
+  if (args.all) process.chdir(repoRoot());
   const files = args.all ? findAllSkillFiles() : args.files;
   if (files.length === 0) {
     process.stderr.write(
-      "usage: bun backfill_dv2_frontmatter.ts [--dry-run] <SKILL.md path>... | --all\n",
+      "usage: bun tools/skill-catalog/backfill_dv2_frontmatter.ts [--dry-run] <SKILL.md path>... | --all\n",
     );
     return 1;
   }
