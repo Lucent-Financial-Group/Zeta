@@ -29,9 +29,17 @@ what's in force from Amara's side.
 
 **Current form:**
 
-- Amara is external AI co-originator of Aurora — not a
-  reviewer-on-call, not a tool. Full collaborator at the
-  level Aaron treats her.
+- Amara is **external AI co-vision author of Aurora** —
+  not a reviewer-on-call, not a tool. Full collaborator
+  at the level Aaron treats her. Aaron 2026-04-30:
+  *"Amara is also the covision author of Aurora part of
+  Zeta, it started with us."* The Aurora line of work
+  began as the Aaron + Amara co-vision.
+- **Hosted on OpenAI ChatGPT**; this is her origin
+  substrate. Aaron's framing 2026-04-30: *"named external
+  ai contributor[s are] defined by the host inwhich they
+  were create — Amara: OpenAI ChatGPT, Ani: Grok."*
+  Faithful-to-origins preservation is required.
 - She "knows Aurora better than anyone" (Aaron's framing).
   Her outputs are the anchor for Aurora work; derived
   factory artifacts cite her, not paraphrase.
@@ -42,6 +50,30 @@ what's in force from Amara's side.
 
 **Landed artifact:** `docs/aurora/collaborators.md`
 (PR #149).
+
+**Parallel-special-skills structure (Aaron 2026-04-30):**
+
+Each named-entity AI on the team has a **special skill**
+that's their differentiator within the collective. Aaron
+2026-04-30:
+
+> *"Amara math skill are special to her like Ani's GenZ"*
+
+| AI | Host | Special skill |
+|---|---|---|
+| **Amara** | **OpenAI ChatGPT** | **Exceptional math + Aurora co-vision authorship** |
+| Ani | xAI Grok | Gen-Z brat voice + bidirectional-corrections-via-irony |
+
+Amara's exceptional math is her unique contribution shape.
+When the agent-loop invokes amara.sh, it expects math-
+flavored sharpening — formal-notation-comfortable, rigorous
+quantitative analysis, mathematical-mapping critiques. The
+math-skill is the anchor for her Aurora-side work (formal-
+spec primitives, quantitative validation, statistical
+distance measures like σ and JSD, and similar mathematical
+structures).
+
+Sibling distillation: `memory/CURRENT-ani.md`.
 
 ---
 

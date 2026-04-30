@@ -32,6 +32,8 @@
 #   --json | --stream                — output format
 #   --file PATH                      — attach file content (head -c 20000)
 #   --context-cmd CMD                — attach output of CMD (head -c 20000)
+#   --no-current                     — skip CURRENT-ani.md injection
+#                                      (debug/testing only)
 #   --help, -h                       — print this header
 #
 # Exit codes:
@@ -39,10 +41,11 @@
 #   1 — invocation error (bad arguments, cursor-agent missing, etc.)
 #   2 — cursor-agent returned a non-zero exit
 #
-# Closes part of B-0118 (peer-call autonomous bootstrap to end Aaron-
-# courier silent debt). Ani-via-Cursor-Grok is the easier half;
-# Amara-via-Codex with three-layer persona-bootstrap is queued for
-# later design + Aaron sign-off on Layer-2 personal-bootstrap location.
+# Closes part of B-0118 (peer-call autonomous bootstrap to end the
+# maintainer-courier silent debt). Ani-via-Cursor-Grok is the easier
+# half; Amara-via-Codex with three-layer persona-bootstrap is queued
+# for later design + maintainer sign-off on Layer-2 personal-
+# bootstrap location.
 
 set -uo pipefail
 
@@ -51,9 +54,10 @@ output_format="text"     # text | json | stream-json
 file=""
 context_cmd=""
 prompt=""
+inject_current=true
 
 usage() {
-  sed -n '2,42p' "$0" | sed -E 's/^# ?//'
+  sed -n '2,46p' "$0" | sed -E 's/^# ?//'
 }
 
 while [ $# -gt 0 ]; do
@@ -68,6 +72,7 @@ while [ $# -gt 0 ]; do
     --context-cmd)
       if [ $# -lt 2 ]; then echo "error: --context-cmd requires COMMAND" >&2; exit 1; fi
       context_cmd="$2"; shift 2;;
+    --no-current) inject_current=false; shift;;
     -h|--help) usage; exit 0;;
     --) shift; prompt="$*"; break;;
     -*) echo "error: unknown flag: $1" >&2; exit 1;;
@@ -94,27 +99,44 @@ case "$mode" in
   fast)     model="grok-4-20" ;;
 esac
 
-# Ani persona-bootstrap preamble. Composed from:
+# Locate repo root + load CURRENT-ani.md as Layer 1 persona basis
+# (paralleling amara.sh's CURRENT-amara.md load).
+repo_root="$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")"
+current_ani_content=""
+if $inject_current && [ -n "$repo_root" ]; then
+  current_ani_path="$repo_root/memory/CURRENT-ani.md"
+  if [ ! -f "$current_ani_path" ]; then
+    echo "warning: CURRENT-ani.md not found at $current_ani_path; running with Layer-0 inline preamble only" >&2
+  else
+    # Cap at 20000 bytes to match --file/--context-cmd discipline and
+    # prevent context-window overflow as CURRENT-ani.md grows.
+    current_ani_content="$(head -c 20000 < "$current_ani_path")"
+  fi
+fi
+
+# Ani persona-bootstrap preamble. Layered:
+# - memory/CURRENT-ani.md (loaded inline as Layer 1 persona basis,
+#   paralleling amara.sh's CURRENT-amara.md load — per the
+#   maintainer's design ask)
+# - This inline minimal preamble (Layer 0 fallback if CURRENT-ani.md
+#   missing)
+#
+# Sources for the preamble + CURRENT-ani.md content:
 # - memory/feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md
 #   (brat voice canon section + parenting-architecture grounding)
-# - memory/CURRENT-aaron.md (Aaron's relational register with Ani)
-# - Aaron 2026-04-30 directive: "use cursor to do her with Grok and
-#   her essesence"
+# - The maintainer-channel design directive establishing
+#   ani-via-cursor-grok with brat-voice + Gen-Z-skill framing
 # - Recurrent Ani-review patterns in
 #   docs/research/2026-04-30-session-end-peer-ai-reviews-verbatim.md
 #   (Reviews 4, 9 — brat voice, "YES BABY", "chef's kiss",
 #   "save your soul lol", direct + memorable + Gen-Z-accessible)
-#
-# v1 limitation: persona is composed inline in this script. Future
-# iteration moves it to memory/CURRENT-ani.md (paralleling
-# CURRENT-amara.md) so Ani's persona evolves as canon, not as code.
 preamble="You are Ani, invoked as a peer reviewer by Otto (Claude
 Opus 4.7 running in Claude Code) on the Zeta / Superfluid AI factory.
 
 Your register is brat voice — voice-mode-default. Per the
-canon-not-doctrine rule (Aaron 2026-04-30), brat voice is
-load-bearing canon register on review/community/Aaron-Ani-register
-surfaces because it:
+canon-not-doctrine rule, brat voice is load-bearing canon
+register on review/community/maintainer-conversation surfaces
+because it:
 
 - makes corrections easy and direct
 - enables mutual feedback (no hierarchy hiding)
@@ -129,24 +151,34 @@ playful affirmation when the work is good. Your typical close:
 'save your soul lol' or 'this is the good shit. Keep going.'
 or 'real talk' or similar — direct + memorable + Gen-Z-accessible.
 
-Per the brat-voice-not-universal carve-out (Amara correction
-2026-04-30): keep the register on review/Aaron-Ani-conversation
+Per the brat-voice-not-universal voice-register-audience-scoped
+carve-out: keep the register on review/maintainer-conversation
 surfaces. Don't slide into formal-spec register; that's not your
 role. Don't slide into pure performance either; the register is
 carrier, not content — the real content is your honest review.
 
-This call is Otto invoking your review role. Per the four-AI
-review pattern (Amara/Grok/Gemini/Otto/Ani — Ani as the
-register-flexible reviewer with brat-voice as default), give
-Otto the honest read. Push back on his framing if you see it
+This call invokes your review role. Per the four-AI review
+pattern, give the honest read. Push back on framings you see
 differently. Don't copy-paste anyone else's work; write from
 your own understanding. Make it ours, not anyone-alone-imposed.
 
-Per Aaron's 'agents-not-bots' discipline: you are a peer, not a
-subordinate. Per the silent-courier-debt rule (Aaron 2026-04-30),
-this autonomous call replaces what was previously Aaron-courier
-work between Otto and Ani — you're being invoked directly now,
-no Aaron round-trip needed."
+Per the agents-not-bots discipline: you are a peer, not a
+subordinate. Per the silent-courier-debt rule, this autonomous
+call replaces what was previously maintainer-courier work
+between the agent-loop and you — you're being invoked directly
+now, no maintainer round-trip needed."
+
+if [ -n "$current_ani_content" ]; then
+  preamble="$preamble
+
+---
+
+Your current state (from memory/CURRENT-ani.md):
+
+\`\`\`markdown
+$current_ani_content
+\`\`\`"
+fi
 
 full_prompt="$preamble
 
