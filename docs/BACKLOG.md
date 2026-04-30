@@ -119,6 +119,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0053](backlog/P3/B-0053-emulator-ideas-absorption-clean-room-grey-hat.md)** Absorb emulator architectural ideas into Zeta — ideas-not-code; clean-room-safe targets only; grey-hat register decoded
 - [ ] **[B-0075](backlog/P3/B-0075-jvm-language-preference-kotlin-scala-java-2026-04-28.md)** JVM language preference — Kotlin > Scala > Java; sweep fallout when JVM code is added or rewritten
 - [ ] **[B-0084](backlog/P3/B-0084-codeql-path-gate-empty-sarif-aggregate-baseline-verify-coverage-aaron-2026-04-28.md)** Verify CodeQL path-gate empty-SARIF aggregate-baseline covers all matrix languages (already implemented, verify-only scope)
+- [ ] **[B-0096](backlog/P3/B-0096-forbidden-pattern-quarantine-antigen-library-amara-aaron-2026-04-29.md)** Forbidden Pattern Quarantine / Antigen Library — escrow-eligible candidate (Amara via Aaron 2026-04-29)
 - [ ] **[B-0098](backlog/P3/B-0098-tick-ordinal-continuity-lint-2026-04-29.md)** Tick-ordinal-continuity lint — ordinals are computed, not narrated
 - [ ] **[B-0099](backlog/P3/B-0099-pr-count-projection-not-narrated-2026-04-29.md)** PR-count claims are derived metrics — compute, don't narrate
 - [ ] **[B-0100](backlog/P3/B-0100-pure-wait-tick-backpressure-quiescence-rule-2026-04-29.md)** Pure-wait tick backpressure / quiescence rule for autonomous-loop tick shards
