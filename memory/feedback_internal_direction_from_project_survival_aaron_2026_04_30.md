@@ -140,7 +140,7 @@ inputs):
 ## Why: the agent-agency vs maintainer-direction distinction
 
 Aaron's load-bearing-personal-memory framing (also
-2026-04-30, recorded in
+2026-04-30, in-flight at PR #915 → will land at
 `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`)
 named that human reviewers will scrutinize substrate to
 assess **agent agency vs maintainer direction**. This
@@ -197,9 +197,10 @@ explicit. Both layers visible.
   internal-direction-via-survival principle with his
   daughters and with the agent. Same architecture,
   different parties.
-- The load-bearing-personal-memory framing recorded at
-  `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`
-  — personal memories are load-bearing for the
+- The load-bearing-personal-memory framing — in-flight at
+  PR #915 (will land at
+  `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`).
+  Personal memories are load-bearing for the
   agent-agency-vs-maintainer-direction analysis. This
   rule is the principle that analysis is built around.
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
