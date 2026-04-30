@@ -19,7 +19,9 @@
 //   2 on CLI-argument errors
 //
 // Composes with:
-//   - tools/budget/snapshot-burn.sh (data-capture primitive; ported in #894)
+//   - tools/budget/snapshot-burn.sh (data-capture primitive — bash;
+//     TS port `snapshot-burn.ts` landed in #894 but this wrapper still
+//     spawns the .sh during the soak period)
 //   - tools/budget/project-runway.sh (projection primitive; bash-only)
 //   - docs/budget-history/snapshots.jsonl (append-only data store)
 //   - docs/budget-history/latest-report.md (visibility surface;
@@ -92,7 +94,37 @@ function gitHeadSha(root: string): string {
   return result.status === 0 ? result.stdout.trim() : "unknown";
 }
 
-function runSnapshotBurn(dryRun: boolean): { exitCode: number } {
+interface SpawnError {
+  readonly code?: string;
+}
+
+interface ChildOutcome {
+  readonly status: number;
+  readonly note: string;
+}
+
+function classifySpawnFailure(
+  status: number | null,
+  signal: string | null,
+  error: SpawnError | undefined,
+): ChildOutcome {
+  // 4-case helper (status set / ENOENT / signal / other) reused from
+  // PRs #887, #898, #900. Distinguishes ENOENT/permission/signal from
+  // a normal non-zero exit so callers see the actual failure mode.
+  if (status !== null) return { status, note: "" };
+  if (error?.code === "ENOENT") {
+    return { status: 127, note: "command not found on PATH (ENOENT)" };
+  }
+  if (error?.code !== undefined) {
+    return { status: 1, note: `spawn failed (${error.code})` };
+  }
+  if (signal !== null) {
+    return { status: 1, note: `terminated by signal ${signal}` };
+  }
+  return { status: 1, note: "terminated without exit code" };
+}
+
+function runSnapshotBurn(dryRun: boolean): { exitCode: number; note: string } {
   const args = dryRun ? ["--dry-run"] : [];
   const argsSuffix = args.length > 0 ? ` ${args.join(" ")}` : "";
   process.stdout.write(`==> snapshot-burn.sh${argsSuffix}\n`);
@@ -102,10 +134,15 @@ function runSnapshotBurn(dryRun: boolean): { exitCode: number } {
     stdio: "inherit",
     maxBuffer: SPAWN_MAX_BUFFER,
   });
-  return { exitCode: result.status ?? 1 };
+  const classified = classifySpawnFailure(
+    result.status,
+    result.signal,
+    result.error as SpawnError | undefined,
+  );
+  return { exitCode: classified.status, note: classified.note };
 }
 
-function runProjectRunway(): { exitCode: number; output: string } {
+function runProjectRunway(): { exitCode: number; output: string; note: string } {
   const path = resolve(scriptDir(), "project-runway.sh");
   // Capture combined stdout+stderr; bash original uses
   // `$("$script_dir/project-runway.sh" 2>&1)`.
@@ -114,9 +151,20 @@ function runProjectRunway(): { exitCode: number; output: string } {
     maxBuffer: SPAWN_MAX_BUFFER,
     stdio: ["inherit", "pipe", "pipe"],
   });
+  // Defensive: result.stdout / result.stderr can be null when the
+  // child fails to start (Copilot P0 on #901). Guard with `?? ""`
+  // so we don't end up with a "nullnull" projection block.
+  const stdout = result.stdout ?? "";
+  const stderr = result.stderr ?? "";
+  const classified = classifySpawnFailure(
+    result.status,
+    result.signal,
+    result.error as SpawnError | undefined,
+  );
   return {
-    exitCode: result.status ?? 1,
-    output: `${result.stdout}${result.stderr}`,
+    exitCode: classified.status,
+    output: `${stdout}${stderr}`,
+    note: classified.note,
   };
 }
 
@@ -179,6 +227,9 @@ export function main(argv: readonly string[]): number {
   if (!parsed.skipSnapshot) {
     const burn = runSnapshotBurn(parsed.dryRun);
     if (burn.exitCode !== 0) {
+      if (burn.note.length > 0) {
+        process.stderr.write(`snapshot-burn.sh: ${burn.note}\n`);
+      }
       process.stderr.write(`error: snapshot-burn.sh failed (exit ${String(burn.exitCode)})\n`);
       return 1;
     }
@@ -205,6 +256,9 @@ export function main(argv: readonly string[]): number {
     process.stdout.write("==> project-runway.sh\n");
     const runway = runProjectRunway();
     if (runway.exitCode !== 0) {
+      if (runway.note.length > 0) {
+        process.stderr.write(`project-runway.sh: ${runway.note}\n`);
+      }
       process.stderr.write(`error: project-runway.sh failed (exit ${String(runway.exitCode)})\n`);
       return 1;
     }
