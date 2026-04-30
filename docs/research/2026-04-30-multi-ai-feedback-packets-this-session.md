@@ -3848,7 +3848,7 @@ Integration outcomes this tick:
   Claude.ai's "loop documenting itself instead of building" critique
   AND to the recurring rebase-tax that this session has paid four
   times. One line in `.gitattributes`. Multi-AI convergent (Claude.ai
-  + Gemini + Ani + Deepseek named the tax; Gemini named the actual
+  plus Gemini, Ani, and Deepseek named the tax; Gemini named the actual
   mechanism).
 - **Stale-reviewers-during-host-degradation rule** — composes with
   the GitHub-status reference (`memory/reference_github_status_first_class_aaron_2026_04_30.md`).
