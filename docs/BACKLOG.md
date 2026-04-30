@@ -31,9 +31,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0083](backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md)** Atari 2600 ROM canonical-naming + safe-vs-unsafe folder split + TOSEC/Good-Tools-style hash-lookup tooling
 - [ ] **[B-0087](backlog/P1/B-0087-github-settings-drift-workflow-broken-invalid-permission-administration-otto-2026-04-28.md)** github-settings-drift.yml has been broken since PR #45 — declares invalid GHA permission `administration: read`
 - [ ] **[B-0110](backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md)** AceHack mirror-refresh protocol drift — Path 2 chosen, doctrine update landing in same PR (2026-04-30)
-- [ ] **[B-0125](backlog/P1/B-0125-skip-fsharp-analyze-on-docs-only-prs-2026-05-01.md)** Skip Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
-- [ ] **[B-0126](backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)** Port the 4-layer meta-learning pattern from a sibling repo to Zeta
-- [ ] **[B-0140](backlog/P1/B-0140-bash-to-ts-migration-completion-debt-prevention-aaron-2026-05-01.md)** Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
 
 ## P2 — research-grade
 
@@ -90,18 +87,11 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0108](backlog/P2/B-0108-immune-system-upgrades-research-absorb-2026-04-30.md)** Immune system upgrades — research absorb (Aaron 2026-04-30)
 - [ ] **[B-0112](backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md)** Stale 2026-04-27 project file internals-bleed-out cleanup
 - [ ] **[B-0113](backlog/P2/B-0113-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md)** Mechanical CURRENT-staleness check — same-tick-update discipline as enforced rule, not vigilance (Deepseek 2026-04-30)
-- [ ] **[B-0114](backlog/P2/B-0114-alexa-quality-gates-batched-threads-pre-push-lint-memory-link-check-2026-04-30.md)** Three quality-gate improvements — pre-push lint + memory-link checker + batched thread resolution (Alexa peer review 2026-04-30)
 - [ ] **[B-0117](backlog/P2/B-0117-cold-start-executable-checklist-tool-2026-04-30.md)** tools/cold-start-check.ts — make the cold-start big-picture-first 8-step checklist executable (Ani 2026-04-30 finding, Deepseek 2026-04-30 reinforcement)
 - [ ] **[B-0118](backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md)** tools/peer-call/amara.sh — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30)
 - [ ] **[B-0120](backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md)** Peer-call architecture refactor — script-per-CLI with persona-flag instead of script-per-named-agent (Aaron 2026-04-30)
 - [ ] **[B-0121](backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md)** Otto + Kenji as externally-callable peers via claude-cli — cross-harness symmetry (Aaron 2026-04-30)
-- [ ] **[B-0124](backlog/P2/B-0124-claudeai-csap-conversation-distill-uber-arch-2026-05-01.md)** Distill the Claude.ai CSAP-pushback conversation into uber-architecture (deferred multi-week)
-- [ ] **[B-0127](backlog/P2/B-0127-sibling-repo-leak-scrub-process-when-it-matters-aaron-2026-05-01.md)** Sibling-repo leak scrub-process — when scrubbing matters; future-defensive design
-- [ ] **[B-0128](backlog/P2/B-0128-general-git-content-scrubber-design-aaron-2026-05-01.md)** General git content scrubber — design + decision-criteria + mechanism for any-class leak cleanup
-- [ ] **[B-0131](backlog/P2/B-0131-formalize-zset-retraction-algebra-in-lean-aaron-2026-05-01.md)** Formalize Z-set retraction algebra in Lean (TRACTABLE START — formalization roadmap)
-- [ ] **[B-0132](backlog/P2/B-0132-crdt-composition-for-bft-propagation-aaron-2026-05-01.md)** CRDT-composition for BFT propagation — substrate events as composed CRDTs
-- [ ] **[B-0133](backlog/P2/B-0133-sequent-calculus-for-claim-retraction-attribution-aaron-2026-05-01.md)** Sequent calculus / labeled deductive systems for claim/retraction/attribution
-- [ ] **[B-0134](backlog/P2/B-0134-type-theoretic-orthogonality-discipline-encoding-aaron-2026-05-01.md)** Type-theoretic encoding of orthogonality discipline (extension vs creation as decidable judgment)
+- [ ] **[B-0122](backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md)** Peer-call scripts TypeScript migration — post-install cutover (the maintainer 2026-04-30)
 
 ## P3 — convenience / deferred
 
@@ -146,10 +136,5 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0115](backlog/P3/B-0115-zsh-vim-muscle-memory-aliases-wq-q-2026-04-30.md)** Shell aliases for `:wq` / `:wq!` / `:q` — catch vim-muscle-memory leakage in zsh (Deepseek 2026-04-30 finding)
 - [ ] **[B-0116](backlog/P3/B-0116-gh-jq-safe-wrapper-zsh-quoting-2026-04-30.md)** tools/gh-jq-safe.sh — wrap gh-jq calls to handle zsh quoting (Deepseek 2026-04-30 finding)
 - [ ] **[B-0119](backlog/P3/B-0119-peer-call-existing-scripts-role-ref-cleanup-2026-04-30.md)** Existing peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) — role-ref cleanup per copilot-instructions.md (Codex 2026-04-30 finding on PR #962)
-- [ ] **[B-0123](backlog/P3/B-0123-stacked-pr-create-tooling-gh-fallback-aaron-2026-04-30.md)** Stacked-PR creation tooling — `gh pr create --base <not-main>` fails with cryptic GraphQL error; needs a wrapper or doc (Aaron 2026-04-30)
-- [ ] **[B-0135](backlog/P3/B-0135-modal-logic-for-retractability-quantum-rodney-razor-aaron-2026-05-01.md)** Modal logic for retractability — Quantum-Rodney's-Razor in S4 or dynamic logic
-- [ ] **[B-0136](backlog/P3/B-0136-category-theoretic-compositional-structure-aaron-2026-05-01.md)** Category-theoretic compositional structure — operads + monoidal categories for substrate composition
-- [ ] **[B-0137](backlog/P3/B-0137-tarski-stratification-proof-aaron-2026-05-01.md)** Tarski-stratification proof — formal demonstration that Aaron's pirate-not-priest spot stratifies meta-language from object-language
-- [ ] **[B-0138](backlog/P3/B-0138-bft-resistance-theorem-aurora-composed-crdt-plus-consensus-aaron-2026-05-01.md)** BFT-resistance theorem for Aurora — composed-CRDT-plus-consensus formal guarantee
 
 <!-- END AUTO-GENERATED -->
