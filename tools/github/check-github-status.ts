@@ -20,7 +20,8 @@
 // Output (default): one JSON object on stdout, shape:
 //   {
 //     "overall":  "operational" | "degraded" | "outage" | "maintenance",
-//     "fetchedAt": "2026-04-30T15:00:00Z",
+//     "fetchedAt":      "2026-04-30T15:00:00Z",  // local fetch time
+//     "statusUpdatedAt":"2026-04-30T15:00:00Z",  // status-page update time
 //     "degradedComponents": [{ "name": "...", "status": "..." }, ...],
 //     "factoryRelevant": {
 //       "Pull Requests": "operational" | "...",
@@ -33,14 +34,18 @@
 //     "decision": "proceed" | "proceed-with-verify" | "halt"
 //   }
 //
-// Exit codes:
-//   0 — overall operational; safe to proceed
+// Exit codes (default — friendly for `set -e` shells):
+//   0 — fetch + parse succeeded; decision is in JSON
 //   1 — invocation / dependency error
 //   2 — fetch failed (network / DNS / cloudflare)
 //   3 — JSON parse failed
-//   8 — overall degraded; proceed-but-verify (per the proceed-but-verify
-//       rule landed in poll-the-gate memory)
-//   9 — overall outage / major; halt mutating operations
+//
+// Exit codes with `--strict` (opt-in enforcement):
+//   0 — decision: proceed
+//   8 — decision: proceed-with-verify (degraded; per proceed-but-verify
+//       rule from poll-the-gate memory)
+//   9 — decision: halt (outage / major)
+//   1, 2, 3 — same as default
 //
 // The `factoryRelevant` allowlist mirrors the GitHub-status reference
 // memory file (memory/reference_github_status_first_class_aaron_2026_04_30.md)
@@ -83,7 +88,13 @@ interface ApiSummary {
 
 interface StatusReport {
   overall: OverallStatus;
+  /** Local wall-clock time the tool fetched/loaded the status (ISO 8601).
+   *  Distinct from `statusUpdatedAt` which is the status page's own
+   *  last-updated time (per Copilot v0 review — field-name semantics). */
   fetchedAt: string;
+  /** GitHub status page's `updated_at` — when the status itself last
+   *  changed, NOT when the tool ran. May be older than `fetchedAt`. */
+  statusUpdatedAt: string;
   degradedComponents: Array<{ name: string; status: ComponentStatus }>;
   factoryRelevant: Record<string, ComponentStatus | "unknown">;
   decision: Decision;
@@ -117,7 +128,8 @@ function classifyDecision(
 
 function buildReport(summary: ApiSummary): StatusReport {
   const overall = classifyOverall(summary.status.indicator);
-  const fetchedAt = summary.page?.updated_at ?? new Date().toISOString();
+  const fetchedAt = new Date().toISOString();
+  const statusUpdatedAt = summary.page?.updated_at ?? fetchedAt;
   const factoryNameSet = new Set<string>(FACTORY_RELEVANT_COMPONENTS);
   const factoryRelevant: Record<string, ComponentStatus | "unknown"> = {};
   for (const name of FACTORY_RELEVANT_COMPONENTS) {
@@ -136,6 +148,7 @@ function buildReport(summary: ApiSummary): StatusReport {
   return {
     overall,
     fetchedAt,
+    statusUpdatedAt,
     degradedComponents,
     factoryRelevant,
     decision,
@@ -185,12 +198,21 @@ interface ParsedArgs {
   fixture?: string;
   component?: string;
   quiet: boolean;
+  /** When true, non-`proceed` decisions exit non-zero (8/9). When false
+   *  (default), exit 0 on successful fetch/parse — decision is in JSON.
+   *  Per Copilot v0 review: `set -e` shells abort on any non-zero, so
+   *  default-to-zero is friendlier; opt-in to strict via `--strict`. */
+  strict: boolean;
 }
 
 function parseArgs(argv: string[]): ParsedArgs {
-  const out: ParsedArgs = { quiet: false };
+  const out: ParsedArgs = { quiet: false, strict: false };
   const requireValue = (flag: string, v: string | undefined): string => {
-    if (v === undefined || v.startsWith("--")) {
+    // Reject any value that looks like a flag (starts with `-`), per
+    // Copilot v0 review — `--component -q` was silently accepting `-q`
+    // as a component name. Allow values that are pure numbers (covered
+    // separately) or non-flag strings only.
+    if (v === undefined || v.startsWith("-")) {
       process.stderr.write(`${flag} requires a value\n`);
       process.exit(1);
     }
@@ -205,10 +227,17 @@ function parseArgs(argv: string[]): ParsedArgs {
       out.component = requireValue("--component", argv[++i]);
     } else if (arg === "--quiet" || arg === "-q") {
       out.quiet = true;
+    } else if (arg === "--strict") {
+      out.strict = true;
     } else if (arg === "--help" || arg === "-h") {
       process.stdout.write(
-        "Usage: check-github-status.ts [--component <name>] [--quiet]\n" +
-          "       check-github-status.ts --fixture path/to/summary.json\n",
+        "Usage: check-github-status.ts [--component <name>] [--quiet] [--strict]\n" +
+          "       check-github-status.ts --fixture path/to/summary.json\n" +
+          "\n" +
+          "  --strict   non-`proceed` decisions exit non-zero (8 degraded, 9 outage).\n" +
+          "             Default: exit 0 on successful fetch/parse; decision is\n" +
+          "             encoded in the JSON `decision` field. Friendlier for\n" +
+          "             `set -e` shells; opt-in to enforcement via --strict.\n",
       );
       process.exit(0);
     } else {
@@ -233,21 +262,34 @@ export async function main(argv: string[]): Promise<number> {
   const report = buildReport(summary);
   if (args.component) {
     const status = report.factoryRelevant[args.component] ?? "unknown";
+    // Component decision incorporates the overall status (per Copilot v0
+    // review): if overall is halt, the component decision is halt
+    // regardless; otherwise use the stricter of the component's status
+    // and the overall decision.
+    let decision: Decision;
+    if (report.decision === "halt") {
+      decision = "halt";
+    } else if (status === "operational" && report.decision === "proceed") {
+      decision = "proceed";
+    } else {
+      decision = "proceed-with-verify";
+    }
     const filtered = {
       component: args.component,
       status,
-      decision:
-        status === "operational" ? "proceed" : "proceed-with-verify",
+      overall: report.overall,
+      overallDecision: report.decision,
+      decision,
     };
     if (!args.quiet) {
       process.stdout.write(`${JSON.stringify(filtered, null, 2)}\n`);
     }
-    return status === "operational" ? 0 : 8;
+    return args.strict ? decisionExitCode(decision) : 0;
   }
   if (!args.quiet) {
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
   }
-  return decisionExitCode(report.decision);
+  return args.strict ? decisionExitCode(report.decision) : 0;
 }
 
 if (import.meta.main) {
