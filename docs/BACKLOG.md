@@ -86,6 +86,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0106](backlog/P2/B-0106-tsc-noemit-gate-job-for-ts-tools-2026-04-30.md)** Add `tsc --noEmit` gate job for tools/**.ts so type errors fail CI
 - [ ] **[B-0108](backlog/P2/B-0108-immune-system-upgrades-research-absorb-2026-04-30.md)** Immune system upgrades — research absorb (Aaron 2026-04-30)
 - [ ] **[B-0112](backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md)** Stale 2026-04-27 project file internals-bleed-out cleanup
+- [ ] **[B-0113](backlog/P2/B-0113-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md)** Mechanical CURRENT-staleness check — same-tick-update discipline as enforced rule, not vigilance (Deepseek 2026-04-30)
 
 ## P3 — convenience / deferred
 
