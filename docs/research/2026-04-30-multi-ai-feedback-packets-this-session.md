@@ -3864,3 +3864,328 @@ Integration outcomes this tick:
   (the leak is in runtime harness UI loop, not in committed Zeta
   substrate). Documented inline as known-limitation.
 
+
+---
+
+## Amara — second review (loop-health hardening pass) + Aaron's harness-vendor correction
+
+Integration status: arrived during PR #919 generator-bug fix tick.
+Two-section paired Amara packet with eight hardening findings,
+many converging with Deepseek 4th + Gemini 4th + Alexa 5th +
+Ani 3rd reviews. **Highest-leverage**: the poller-as-executable-
+script recommendation has now reached 5-AI convergence (Amara,
+Deepseek, Alexa, Ani, Gemini). **Aaron's load-bearing correction
+at the end** inverts my "harness leak is out-of-scope" framing:
+*"we don't have to be limited by their limitations, we can also
+submit feedback to their open source repos and make sure our
+substrate has the rules for still working reliably despite the
+limitations of the vendors harnesses."* This is dependency-
+symbiosis (Otto-323 + Otto-346 absorb-and-contribute) applied
+to the harness layer.
+
+Verbatim Amara packet (first section — loop-health / hardening):
+
+> Yep. I reviewed it as a loop-health / hardening pass. Net: **the
+> loop is improving fast**, but the newest logs show three remaining
+> failure modes: **preservation timing**, **verification
+> precision**, and **memory/substrate hygiene**.
+>
+> ### What looks genuinely better
+>
+> The best improvement is that Otto corrected two real process
+> errors in-flight: he abandoned the duplicate dual-threat-model
+> backlog row after you pointed out the threat-model artifacts
+> already existed, then created PR #915 to preserve the multi-AI
+> feedback packets that were actually at risk of being lost. That
+> is exactly the right correction: **don't create duplicate
+> substrate; preserve the packets that only exist in chat**.
+>
+> The proceed-but-verify shift is also right. GitHub's status page
+> currently says Pull Requests are degraded due to incomplete PR
+> results, but it also says no PR data was lost and that pages/APIs
+> not relying on Elasticsearch, including `gh pr list` and
+> `/repos/{owner}/{repo}/pulls`, are not impacted. So your
+> correction was better than Otto's conservative hold: a GitHub
+> incident should not globally freeze work unless it affects the
+> exact gate surface being used. Proceed, then verify.
+>
+> The required-check logic also converged in the right direction.
+> GitHub says required checks must be `successful`, `skipped`, or
+> `neutral` before merging, so counting `SKIPPED` / `NEUTRAL` as
+> merge-satisfying was a real fix, not just bikeshedding.
+>
+> ### Issues I'd harden
+>
+> #### 1. The post-merge verification is still too loose
+>
+> Otto verified recent commits on `origin/main`, but the error
+> output shows the verification command was brittle, noisy, and
+> partially failed because zsh treated `?per_page=5` as a glob.
+> He then recovered with `git fetch` / `git log`, which is fine as
+> a human sanity check, but not enough as the canonical
+> verification path.
+>
+> Use a precise per-PR verification contract:
+>
+> ```text
+> For each merged PR:
+> 1. Query the PR mergeCommit SHA.
+> 2. git fetch origin main.
+> 3. Verify mergeCommit is reachable from origin/main:
+>    git merge-base --is-ancestor <mergeCommitSha> origin/main
+> 4. Verify the PR files/content shape if the incident class
+>    involves missing/stale PR data.
+> 5. Record PASS/FAIL per PR, not "recent commits look right."
+> ```
+>
+> Carved:
+>
+> ```text
+> Verify the PR's merge commit.
+> Do not merely inspect recent main.
+> ```
+>
+> #### 2. The loop needs a "substantive input arrived" trigger
+>
+> The log shows the minimal cadence message — "Within cadence; no
+> change" — was technically okay only when nothing substantive
+> happened. But once you had sent multiple AI packets and
+> architecture feedback, that same minimal tick shape became
+> dangerous because it failed to preserve conversation state.
+>
+> Suggested rule:
+>
+> ```text
+> Cron tick with no new maintainer/peer-AI input:
+>   minimal status is fine.
+>
+> Cron tick after substantive maintainer/peer-AI input:
+>   preserve or route the content before closing the tick.
+> ```
+>
+> #### 3. "Proceed-but-verify" needs a surface matrix
+>
+> Right now the loop says "GitHub degraded" and then reasons
+> informally. Better: classify which GitHub surfaces are relevant
+> to the action. For a PR merge, the dependency surfaces are
+> roughly:
+>
+> ```text
+> PR metadata
+> review threads
+> required checks
+> branch protection / mergeability
+> git fetch/push
+> main branch commit reachability
+> Actions logs
+> GitHub status API
+> ```
+>
+> So the loop should say:
+>
+> ```text
+> Incident affects: PR listing/search/indexing.
+> Gate uses: branch protection + checks + review threads + git fetch.
+> Mitigation: cross-check via non-Elastic APIs + git reachability.
+> Decision: proceed-but-verify.
+> ```
+>
+> #### 4. The personal-memory capture is too rich by default
+>
+> The brat-voice / parenting-architecture grounding is meaningful,
+> but the log includes personal details like daughters' birth years
+> and Addison's name/programming relationship. Even with consent,
+> I'd tighten the durable version unless those exact details are
+> load-bearing. [Otto note 2026-04-30: Aaron's prior resolution on
+> this point was KEEP — the personal context IS load-bearing for
+> the agent-agency-vs-maintainer-direction analysis. Amara converges
+> with Claude.ai's earlier flag; Aaron's resolution stands as
+> preserved-but-disputed substrate per Otto-363 vocabulary lock.]
+>
+> #### 5. The "praise memory" behavior still needs restraint
+>
+> When you praised the stale-task audit insight, Otto wrote
+> memories. Good instinct if the preserved object is the
+> **pattern**. Bad if the preserved object is "Aaron praised me."
+> [Otto note: this was caught by Claude.ai earlier; the praise file
+> was deleted same session.]
+>
+> #### 6. The poller must become executable
+>
+> The jq snippets have now been corrected repeatedly: `StatusContext`,
+> broader failure conclusions, `STALE`, `NEUTRAL`, `SKIPPED`, jq
+> `IN`, and stale reviewer indices. That is the sign that prose
+> examples have reached their limit.
+>
+> Next hardening item:
+>
+> ```text
+> tools/github/poll-pr-gate.ts
+> ```
+>
+> with fixtures for: CheckRun SUCCESS / SKIPPED / NEUTRAL / STALE /
+> StatusContext SUCCESS / PENDING / ERROR / mixed rollup /
+> missing/unknown conclusion.
+>
+> The memory file should stop being the implementation. It should
+> point to the implementation.
+>
+> #### 7. "Within cadence; no change" should include last-known gate summary
+>
+> The newer cadence is good; every minute full-polling was too
+> much. But the minimal tick should still be slightly more
+> informative than "no change."
+>
+> Better:
+>
+> ```text
+> No lane-state change since 13:01Z.
+> Open gates:
+> - #911: CI green, 4 unresolved threads
+> - #915: CI green, 7 unresolved threads
+> Next full poll: 13:16Z
+> ```
+>
+> #### 8. Do not let PR #915 become a dumping ground
+>
+> The 1196-line research absorb was the right emergency save. But
+> now it needs structure, or it becomes a landfill.
+>
+> For #915, I'd require:
+>
+> ```text
+> - packet boundaries
+> - source AI
+> - forwarded-by Aaron timestamp
+> - integration status: landed / queued / rejected / unresolved
+> - duplicate/superseded markers
+> - redaction/data-minimization review
+> ```
+
+Verbatim Amara packet (second section — loop is healthy but
+artisanal):
+
+> Current loop is **stronger than the prior one**, but it is also
+> starting to show a new failure mode: **the agent is doing good
+> work, but too much of the workflow is still hand-rolled live in
+> shell/prose instead of becoming small tested mechanisms.**
+>
+> ### High-level verdict
+>
+> The loop is working. It caught and fixed real review defects:
+> PR #916's broken YAML frontmatter, PR #917's broken in-flight
+> xref to PR #915, and the directive-vocabulary mismatch; it also
+> noticed the recurring `MEMORY.md` merge-conflict tax and the
+> need to re-check/re-arm auto-merge after rebase pushes. That is
+> good operational awareness.
+>
+> But the same log also shows repeated command-shape failures: bad
+> `jq` quoting, invalid `gh pr view --json reviewThreads`,
+> `CronList` unavailable in shell, and fallback Python parsing
+> after jq errors. Those are not catastrophic, but they are a
+> smell. The loop is smart enough to recover, but it should not
+> need to keep recovering from its own probe commands.
+>
+> ### The biggest improvements I'd make
+>
+> **1. Turn PR gate polling into a real script now** — Create
+> `tools/github/poll-pr-gate.ts` with one JSON object per PR.
+> Tiny blade: **if the loop uses it every tick, it deserves
+> tests.**
+>
+> **2. Add a frontmatter validator** — `tools/hygiene/audit-
+> frontmatter.ts`. PR #916 proved a second YAML block can slip
+> past markdownlint. Should assert: one opening `---`, one closing
+> `---`, valid YAML, known keys allowed, no second frontmatter
+> block, required keys by file type.
+>
+> **3. Stop letting in-flight cross-references cause thread storms**
+> — Standardize xref states: `landed` (path exists on main),
+> `in_flight` (path exists on PR #N), `planned` (do not link as
+> path yet). Rule: *"Do not cite a path as if it exists on main
+> unless it exists on main."*
+>
+> **4. The `MEMORY.md` conflict tax is now a real bottleneck** —
+> [Otto note 2026-04-30: addressed via PR #920 — Git union merge
+> driver added to .gitattributes per Gemini 4th's mechanism
+> recommendation. Multi-AI convergent fix.]
+>
+> **5. Proceed-but-verify is right, but verification should be
+> per-PR merge commit** — [Otto note: addressed in PR #911's
+> poll-the-gate file using `git merge-base --is-ancestor`. Verified
+> against the three #911/#916/#917 merges this session.]
+>
+> **6. The "dot tick" correction is good; enforce it mechanically**
+> — Add a tiny local tick-summary helper at `tools/loop/tick-
+> summary.ts` that inspects git status, last head SHA, last
+> pushed commit, new maintainer input flag, new review thread
+> count, and emits dot only when truly empty.
+>
+> **7. The "queued in prose" gap is still open** — [Otto note:
+> addressed via B-0112 P2 row filed in PR #915 with concrete
+> trigger conditions.]
+>
+> **8. The research-question capture was good, but he should not
+> ask to schedule it** — *"Do not schedule a periodic agent. Add
+> a trigger: when any named topology class becomes operational,
+> revisit this research doc."* The log already says Task #352
+> tracks promotion when topology classes become operational.
+> Good. That is enough.
+>
+> Carved:
+>
+> ```text
+> The loop is doing the work.
+> Now make the work's probes executable.
+> ```
+
+### Aaron's harness-vendor correction (2026-04-30, verbatim)
+
+> Exactly but we don't have to be limited by thier limitations, we
+> can also submit feedback to their open source repos and make sure
+> out substraight has the rules for still working reliably despite
+> the limitations of the vendors harnesses
+
+This inverts my framing of the Gemini-flagged harness console-
+print leak. I had documented it as *"out-of-scope, can't fix from
+inside the harness."* Aaron's correction: NOT a hard limit. Two
+load-bearing paths:
+
+1. **Submit feedback upstream** to the harness vendors' open
+   source repos. The console-print leak (and similar harness-
+   level issues) can be filed as bugs/PRs against the vendor
+   project. This is dependency-symbiosis (Otto-323 + Otto-346
+   absorb-and-contribute) applied to the harness layer:
+   depend-and-contribute, not absorb-without-shape.
+2. **Make sure our substrate has rules for working reliably
+   despite vendor limitations.** Resilience-against-vendor-
+   limitations is itself substrate the factory tracks. Even
+   when the harness is leaky, the agent's behavior should be
+   robust — token-tax mitigation strategies, log-noise filtering
+   rules, harness-quirk detection patterns.
+
+Composes with:
+
+- **Otto-323 / Otto-346 dependency-symbiosis discipline** —
+  *"absorb and contribute back; don't free-ride."* Now extends
+  to harness layer.
+- **Aaron's substrate-IS-product framing** — substrate
+  resilience-against-vendor-limitations IS substrate-quality
+  work. Not infrastructure-vs-doctrine; infrastructure-quality
+  AT the harness boundary.
+- **The four-products-evolving framing** — vendor harnesses are
+  one class of dependency in the evolving N-product trajectory.
+  How the factory relates to vendor harnesses is part of the
+  factory's substrate-product.
+
+What this means operationally:
+
+- The harness console-print leak Gemini flagged is not closed
+  as "out-of-scope." It's open as "candidate for upstream PR +
+  candidate for resilience-rule landing in our substrate."
+- Future harness limitations follow the same pattern: file
+  upstream + record substrate resilience rule.
+- This is the same shape as the dependency-status-tracking
+  surface (B-0109) but applied to harness vendors as
+  dependencies.
+
