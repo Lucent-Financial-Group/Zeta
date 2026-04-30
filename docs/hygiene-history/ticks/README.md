@@ -163,7 +163,10 @@ Future generator behavior:
 ```text
 Generator (cadence: post-merge or daily):
   1. Read all shards under docs/hygiene-history/ticks/**/*.md
-  2. Sort by filename (chronological by file naming)
+  2. Sort by parsed timestamp prefix (HHMMZ or HHMMSSZ-...).
+     Raw filename sort is incorrect when both forms coexist
+     in a single day (HHMMSSZ-... sorts before same-minute
+     HHMMZ.md lexicographically, despite being later).
   3. Format as legacy-table rows
   4. Append to docs/hygiene-history/loop-tick-history.md
   5. Optionally retire shards older than N days to a compressed archive

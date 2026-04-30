@@ -52,7 +52,7 @@ shape is:
 - Note it is escrow-eligible (the next step on graduation is
   promotion to `docs/research/escrowed/` per B-0094's pattern).
 - Do NOT integrate any of the proposal's substrate into active
-  doctrine, memory files, AGENT-BEST-PRACTICES.md, or skill
+  canon, memory files, AGENT-BEST-PRACTICES.md, or skill
   files this round.
 
 ## The escrowed candidate concept (preserved verbatim)
