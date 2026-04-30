@@ -1293,6 +1293,37 @@ load-bearing canon-class document) lives as candidate
 substrate for a future round when the existing artifacts
 get reviewed for the dual-track relationship.
 
+### Canonical preferred over canon as adjective form
+
+Aaron 2026-04-30 follow-up linguistic refinement after the
+canon memory file (PR #914) merged:
+
+> i usually say connonical over cannon bacase of the cannon
+> connontations, this makes it feel softer to humans too,
+> more like entertaimnment than religion
+
+Refinement on the canon framing: prefer **"canonical"**
+(adjective) to **"canon"** (noun) where both fit. The
+"canon" noun still carries enough religious connotation
+that "canonical" feels softer + more entertainment-coded.
+"Canonical" has wide tech usage (canonical URL, canonical
+form, canonical implementation) which lands cleanly without
+the dogmatic baggage.
+
+Both stay in vocabulary; the preference is for the
+adjective form when grammatically natural. The merged
+canon memory file (PR #914) doesn't need patching — the
+noun usage there is grammatically right ("the body of
+operating rules + practices + protocols collectively"
+*is* a noun position). Going forward, prefer
+"canonical X" / "X is canonical" over "X is canon" when
+both fit.
+
+Status: candidate substrate for a future canon memory
+file follow-up; preserved here as session-shaping
+linguistic input. Adopting going forward without
+opening a new PR (per substrate-rate discipline).
+
 ### Substrate-loss framing (the impetus for this document)
 
 > you are going to loose a lot of our conversation and not
