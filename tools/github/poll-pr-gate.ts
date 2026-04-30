@@ -368,8 +368,7 @@ function parseArgs(argv: string[]): ParsedArgs {
   return out;
 }
 
-function main(): void {
-  const argv = process.argv.slice(2);
+export function main(argv: string[]): number {
   const args = parseArgs(argv);
   let pr: PullRequestData;
   if (args.fixture) {
@@ -378,10 +377,13 @@ function main(): void {
     pr = fetchPR(args.owner, args.repo, args.number);
   } else {
     process.stderr.write("must provide PR number or --fixture\n");
-    process.exit(1);
+    return 1;
   }
   const report = buildReport(pr);
   process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+  return 0;
 }
 
-main();
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}
