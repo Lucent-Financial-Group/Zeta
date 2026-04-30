@@ -88,7 +88,6 @@ generate() {
 _Each entry below is a link to a per-row file under
 `docs/backlog/`. Entries with `- [ ]` are open; `- [x]`
 are closed (status: closed in frontmatter)._
-
 HEADER
 
   # Stable section order
