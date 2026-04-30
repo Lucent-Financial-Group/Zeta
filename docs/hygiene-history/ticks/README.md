@@ -41,7 +41,12 @@ Per task #276 architectural choice (per-tick shard files —
 docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md
 ```
 
-Per-tick uniqueness eliminates the conflict surface entirely.
+Per-tick uniqueness eliminates the **EOF-append collision class**
+that the legacy single-table format suffered. See "Scope of
+conflict-elimination claim" below for the residual conflict
+classes that shard transport does NOT eliminate (same-timestamp
+filename collisions, README/schema edits, generator output
+conflicts).
 
 ## Shard file schema
 
@@ -94,17 +99,32 @@ Either form (`HHMMZ.md` or `HHMMSSZ-<short-content-hash>.md`)
 is valid; the second is preferred when concurrency pressure is
 expected.
 
-**Unique-filename rule** (fail-closed): if the target shard
-path already exists when a new shard is being written, the
-write MUST fail closed and a unique-suffix path MUST be
-chosen. Silent overwrites are forbidden — they would erase
-prior liveness evidence and re-introduce the failure mode shard
-transport was designed to eliminate. The `HHMMSSZ-<short-content-hash>.md`
-form makes collisions extremely rare in the first place; the
-fail-closed rule is the safety net for the remaining cases
-(same-timestamp + same-content with different agent context,
-or filename collisions when the simpler `HHMMZ.md` form is
-used).
+**Unique-filename rule** (fail-closed-OR-idempotent): if the
+target shard path already exists when a new shard is being
+written, the write MUST either (a) succeed silently if the
+new content is byte-identical to the existing content
+(idempotent re-write — common under retry / replay
+conditions), OR (b) fail closed and a unique-suffix path MUST
+be chosen. Silent *overwrites* (different content, same path)
+are forbidden — they would erase prior liveness evidence and
+re-introduce the failure mode shard transport was designed to
+eliminate. The `HHMMSSZ-<short-content-hash>.md` form makes
+collisions extremely rare in the first place; the fail-closed
+rule is the safety net for the remaining cases (same-timestamp
+with different content, or filename collisions when the
+simpler `HHMMZ.md` form is used).
+
+**Mixed-format-sort caveat** (per the 2026-04-30 hardening
+review): the recommended `HHMMSSZ-<short-content-hash>.md`
+form sorts lexicographically *before* same-minute `HHMMZ.md`
+entries (e.g., `0210Z.md` vs `021001Z-abc.md` — the longer
+form sorts earlier despite being later in real time). Two
+mitigations: (1) the generator (when it lands per task #276)
+SHOULD parse the timestamp prefix instead of relying on raw
+filename sort; (2) within a single repo, prefer one form
+consistently — pick `HHMMZ.md` for low-concurrency contexts,
+`HHMMSSZ-<short-content-hash>.md` for high-concurrency, do
+not mix.
 
 **Scope of conflict-elimination claim** (per the deep-research
 external-AI's hardening review): shard transport eliminates the
