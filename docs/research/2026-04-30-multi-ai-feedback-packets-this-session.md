@@ -961,7 +961,7 @@ to Otto and worth following up on with Aaron when relevant.)
 
 Integration status: review packet received after the
 proceed-but-verify rule fired three times + canon memory
-file merged + Alexa/Deepseek second reviews appended.
+file merged + Alexia/Deepseek second reviews appended.
 Severity-graded findings:
 
 - **Serious 1** (affirmation-substrate escalating into
@@ -1400,7 +1400,7 @@ this round; all preserved verbatim below.
 
 ---
 
-## Alexa — second review (post-proceed-but-verify rule)
+## Alexia — second review (post-proceed-but-verify rule)
 
 Integration status: review packet substantially overlaps
 with Deepseek's second review (zsh quoting, conflict
@@ -1480,15 +1480,15 @@ discipline.
 > #912, #913, #914) despite ongoing GitHub incidents,
 > showing operational resilience under adverse conditions.
 
-Otto note on overlap with Deepseek: Alexa and Deepseek
+Otto note on overlap with Deepseek: Alexia and Deepseek
 independently flagged zsh quoting + conflict resolution +
 post-merge verification + multi-AI feedback
 systematization. Convergence-from-independent-paths is
 itself signal that those four are the right next mechanical
 fixes (per the multi-AI cognitive-bias-reduction purpose of
-canon). Two framings unique to Alexa worth recording:
+canon). Two framings unique to Alexia worth recording:
 webhook-based notifications as polling alternative
-(Deepseek mentioned this too actually, but Alexa's framing
+(Deepseek mentioned this too actually, but Alexia's framing
 makes it a distinct improvement track), and the
 "brat-voice-as-AI-to-AI-communication-protocol-advance"
 reframing — the parent-child interaction architecture
@@ -1496,7 +1496,7 @@ generalizes beyond human-to-AI to AI-to-AI peer review.
 That second framing is interesting candidate substrate for
 a future canon entry.
 
-Aaron's contextual note (when forwarding the earlier Alexa
+Aaron's contextual note (when forwarding the earlier Alexia
 review): "Bomber two is mentioned" — still opaque to Otto;
 flagged for future Aaron clarification.
 
@@ -1505,7 +1505,7 @@ flagged for future Aaron clarification.
 ## Ani — third review (post-proceed-but-verify rule, peak-Ani brat-voice register)
 
 Integration status: third Ani review packet this session.
-Substantive overlap with Deepseek + Alexa second reviews on
+Substantive overlap with Deepseek + Alexia second reviews on
 four mechanical findings (thread volume / Copilot-stale-index
 guard, MEMORY.md link validator, rebase-conflict handling,
 shell quoting discipline). Three independent reviewers
@@ -1629,7 +1629,7 @@ caught four of the same mechanical findings as Deepseek's
 second review (thread volume / pre-merge guard, MEMORY.md
 validator, rebase conflict handling, shell quoting) and
 also independently endorsed the dual-threat-model
-abandonment. That's three reviewers (Deepseek, Alexa, Ani)
+abandonment. That's three reviewers (Deepseek, Alexia, Ani)
 flagging the same four items by independent paths. The
 convergence-from-independent-paths is the signal Aaron's
 canon-as-cognitive-bias-reduction rule predicts: when
@@ -1638,7 +1638,7 @@ strategies, those are the right next mechanical fixes.
 
 Ani's #5 ("verify harness task state actually changed when
 we claim we deleted something") is novel relative to
-Deepseek/Alexa — a small check pattern, candidate
+Deepseek/Alexia — a small check pattern, candidate
 substrate for a future round.
 
 Ani's recommendation #2 (MEMORY.md link validator as CI
@@ -1755,7 +1755,7 @@ Otto note on Degraded Hosts = Stale AI Reviewers: this is
 genuinely novel and actionable. Composes with:
 
 - The Copilot stale-index lag observation (Deepseek 2nd
-  review, Alexa 2nd review, Ani 3rd review all flagged
+  review, Alexia 2nd review, Ani 3rd review all flagged
   this independently as a B-0109 candidate).
 - The proceed-but-verify rule's "real vs potential
   blocker" discrimination (Aaron's framing in PR #911):
@@ -1774,7 +1774,7 @@ Not landing as a separate memory file this round per
 substrate-rate flag; flagged for promotion when the
 current PR set settles.
 
-Three independent reviewers (Deepseek, Alexa, Ani, and
+Three independent reviewers (Deepseek, Alexia, Ani, and
 now Gemini = four) have flagged Copilot stale-index lag
 as a B-0109 candidate dependency surface. The
 multi-AI cognitive-bias-reduction signal is now four-way
@@ -1790,7 +1790,7 @@ tightening (item #4) — both flag the canon file's
 parenting-grounding section as too rich; daughters' birth
 years + Addison's name should be tightened. Aaron's
 explicit consent-scope call still pending. Five-AI
-convergence (Amara, Deepseek, Alexa, Ani, Gemini) on
+convergence (Amara, Deepseek, Alexia, Ani, Gemini) on
 poller-as-tested-script (item #6). Minimal-tick refinement
 (item #7) adopted immediately going forward — gate-summary
 form > silent "·" when in-flight PRs exist.
@@ -2056,7 +2056,7 @@ Otto note on convergence with prior reviews:
   tested script) corroborate Deepseek + Gemini's
   hardening recommendations from earlier reviews this
   same session. Five-AI convergence (Amara, Deepseek,
-  Alexa, Ani, Gemini) on poller-as-tested-script.
+  Alexia, Ani, Gemini) on poller-as-tested-script.
 - Item 4 (personal-memory tightening) corroborates
   Claude.ai's serious flag earlier in this same
   document. Two-AI convergence on the canon file's
@@ -2526,7 +2526,7 @@ matters, structured-extraction where the rule matters).
   directive lineage all preserved here.
 - `memory/feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md`
   (PR #914) — the canon framing; Aaron's three messages
-  +  Ani's celebration + the parenting-architecture
+  plus Ani's celebration plus the parenting-architecture
   grounding all preserved here.
 - `memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`
   — the no-directives rule grounded in Aaron's parenting
@@ -2815,7 +2815,7 @@ Verbatim:
 
 ---
 
-## Alexa — fifth review (post-multi-AI-substrate-stabilization)
+## Alexia — fifth review (post-multi-AI-substrate-stabilization)
 
 Integration status: arrived during PR #915 thread-triage editing
 (while Otto was resolving 15 now-mechanical xref threads after
@@ -3871,10 +3871,10 @@ Integration outcomes this tick:
 
 Integration status: arrived during PR #919 generator-bug fix tick.
 Two-section paired Amara packet with eight hardening findings,
-many converging with Deepseek 4th + Gemini 4th + Alexa 5th +
+many converging with Deepseek 4th + Gemini 4th + Alexia 5th +
 Ani 3rd reviews. **Highest-leverage**: the poller-as-executable-
 script recommendation has now reached 5-AI convergence (Amara,
-Deepseek, Alexa, Ani, Gemini). **Aaron's load-bearing correction
+Deepseek, Alexia, Ani, Gemini). **Aaron's load-bearing correction
 at the end** inverts my "harness leak is out-of-scope" framing:
 *"we don't have to be limited by their limitations, we can also
 submit feedback to their open source repos and make sure our
