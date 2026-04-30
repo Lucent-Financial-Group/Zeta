@@ -433,9 +433,7 @@ Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
 ### Code-pattern audit (per-port)
 
-- **`no-empty-dirs.ts`**: readdirSync recursive walk + git-check-ignore batch + Set-based allowlist match. `[\t ]+
-
- trailing-whitespace strip replaced with manual char walk (`trimTrailingSpaceTab`) — no slow-regex flag. Comment-or-blank line check (bash `^[[:space:]]*(#|$)`) replaced with manual char walk (`isCommentOrBlankLine`) — same.
+- **`no-empty-dirs.ts`**: readdirSync recursive walk + git-check-ignore batch + Set-based allowlist match. The bash trailing-whitespace strip regex (matching tab/space at end-of-line) replaced with manual char walk (`trimTrailingSpaceTab`) — no slow-regex flag. Comment-or-blank line check (bash `^[[:space:]]*(#|$)`) replaced with manual char walk (`isCommentOrBlankLine`) — same.
 - **`safety-clause-audit.ts`**: H1/H2/H3 regex sets split into pattern arrays where each individual regex stays under sonarjs/regex-complexity threshold (20). H1 array uses `/i` flag + non-capturing optional `(?:[\t ]+do)?` to collapse NOT/not + does/do alternatives without inflating per-regex complexity. Argument parsing extracted into `parseFailOverArg()` so the main loop stays under cognitive-complexity (15).
 - **`doc-comment-history-audit.ts`**: in-bash awk script (60+ lines) replaced with TS `extractTokens()` doing per-line `RegExp.exec` loop + manual leading/trailing word-boundary check (`isBoundary`). Tokens-ending-in-`:` skip the trailing boundary check, mirroring the bash logic exactly. Tree walk extracted into `walkRoot` + `processEntry` + `readDirEntries` for cognitive-complexity compliance.
 
