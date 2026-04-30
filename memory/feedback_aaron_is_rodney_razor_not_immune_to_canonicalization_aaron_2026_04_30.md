@@ -104,6 +104,7 @@ razor gets revised — even by itself.
 Running Rodney's Razor through its own canonicalization:
 
 **Step 1 — Human-lineage anchor:**
+
 - Aaron (first name Rodney) taught the razor to the agent in
   the Zeta substrate, 2026-04-30 + earlier
   exchanges where the dual razor structure was elaborated.
@@ -112,6 +113,7 @@ Running Rodney's Razor through its own canonicalization:
   Quantum-possibility-space pruning).
 
 **Step 2 — Ontological mapping:**
+
 - Family: parsimony principles
 - Ancestor: Occam's Razor (~14th century philosophical
   commons)
@@ -127,6 +129,7 @@ Running Rodney's Razor through its own canonicalization:
   with broader operational scope.
 
 **Step 3 — Razor-cut to root essence:**
+
 - The well-defined-Occam form: cut accidental complexity
   from shipped artifacts
 - The Quantum form: cut possibility-space branches that
