@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 1 merged — [#866](https://github.com/Lucent-Financial-Group/Zeta/pull/866), commit `d3b0be8`)
-**Milestone**: 5 audit scripts ported (2 from PR #849 + 3 from PR #866). Two-gate quality model + layered Gate B baseline (`docs/best-practices/typescript.md`, `docs/best-practices/bun.md`, `docs/best-practices/repo-scripting.md`) landed.
+**Status**: Active (Lane B slice 2 merged — [#868](https://github.com/Lucent-Financial-Group/Zeta/pull/868), commit `b1dab4d`)
+**Milestone**: 8 audit scripts ported (2 from PR #849 + 3 from PR #866 + 3 from PR #868). Universal-DST + coverage doctrine + clock-injection pattern (Bun-native via `Clock` interface) operational. Layered Gate B baseline holds.
 **Current blocker**: None.
-**Next concrete action**: Pick a coherent next slice from Bucket B (36 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
+**Next concrete action**: Pick a coherent next slice from Bucket B (33 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
@@ -20,6 +20,7 @@ Per the maintainer-channel correction via the multi-AI review surface (2026-04-2
 |---|---|---|---|
 | [#849](https://github.com/Lucent-Financial-Group/Zeta/pull/849) | 2026-04-29 (commit `40344c9`) | `tools/hygiene/sort-tick-history-canonical.{py→ts}`, `tools/hygiene/fix-markdown-md032-md026.{py→ts}` | Merged |
 | [#866](https://github.com/Lucent-Financial-Group/Zeta/pull/866) | 2026-04-30 (commit `d3b0be8`) | `tools/hygiene/audit-md032-plus-linestart.{sh→ts}`, `tools/hygiene/audit-memory-index-duplicates.{sh→ts}`, `tools/hygiene/audit-memory-references.{sh→ts}` | Merged |
+| [#868](https://github.com/Lucent-Financial-Group/Zeta/pull/868) | 2026-04-30 (commit `b1dab4d`) | `tools/hygiene/audit-machine-specific-content.{sh→ts}`, `tools/hygiene/audit-git-hotspots.{sh→ts}`, `tools/hygiene/audit-cross-platform-parity.{sh→ts}` | Merged |
 
 ## Inventory — Python (tools/, Zeta-authored)
 
@@ -54,9 +55,9 @@ tools/profile.sh
 
 Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
 
-### Bucket B — Should become TypeScript (36 files remaining)
+### Bucket B — Should become TypeScript (33 files remaining)
 
-Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849 and #866. Three originally-listed audit scripts (`audit-md032-plus-linestart.sh`, `audit-memory-index-duplicates.sh`, `audit-memory-references.sh`) are now ported to TS in #866 and removed from this list; the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
+Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868. Six originally-listed audit scripts are now ported to TS (#866 + #868) and removed from this list; the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
 
 ```text
 tools/alignment/audit_archive_headers.sh
@@ -74,9 +75,6 @@ tools/git/batch-resolve-pr-threads.sh
 tools/git/push-with-retry.sh
 tools/hygiene/append-tick-history-row.sh
 tools/hygiene/audit-agencysignature-main-tip.sh
-tools/hygiene/audit-cross-platform-parity.sh
-tools/hygiene/audit-git-hotspots.sh
-tools/hygiene/audit-machine-specific-content.sh
 tools/hygiene/audit-missing-prevention-layers.sh
 tools/hygiene/audit-post-setup-script-stack.sh
 tools/hygiene/audit-tick-history-bounded-growth.sh
@@ -116,14 +114,7 @@ Rationale: borderline — depends on whether the lint can be expressed as cleanl
 
 ## Recommended next slice
 
-**Slice candidate (3-4 files, coherent unit)**: a same-shape audit cluster from `tools/hygiene/`, picking from the unported set in Bucket B above. Three plausible clusters:
-
-```text
-# Cluster A — hygiene audit-pattern (low risk, slice-1 shape)
-tools/hygiene/audit-cross-platform-parity.sh
-tools/hygiene/audit-git-hotspots.sh
-tools/hygiene/audit-machine-specific-content.sh
-```
+Cluster A landed in #868 (slice 2). Two plausible candidates remaining:
 
 ```text
 # Cluster B — alignment audit-pattern (5 files, larger)
@@ -141,7 +132,7 @@ tools/budget/project-runway.sh
 tools/budget/snapshot-burn.sh
 ```
 
-Estimated complexity: **Small (S)** for Cluster A (similar to slice 1), **Medium (M)** for B (5 files + alignment-specific patterns), **Medium-Large** for C (touches Aaron's cost-visibility surface — needs visibility-constraint care + would advance task #287).
+Estimated complexity: **Medium (M)** for B (5 files + alignment-specific patterns); **Medium-Large** for C (touches the cost-visibility surface — needs visibility-constraint care + would advance task #287).
 
 **Gate B prerequisite (mandatory before first mutating action on the slice)**:
 
@@ -149,7 +140,7 @@ Estimated complexity: **Small (S)** for Cluster A (similar to slice 1), **Medium
 2. Re-verify sibling-repo comparison points (`../SQLSharp` commit hash, `../scratch` mtime).
 3. Confirm DST + coverage gate items in the per-slice checklist apply (or document deferred-check exemption).
 
-Cluster A is the recommended-default for a same-shape continuation slice; B is the natural step-up; C is reserved for after Aaron weighs in on visibility-impact.
+Cluster B is the recommended-default; C is reserved for after the maintainer weighs in on visibility-impact.
 
 ## Bun / tooling requirements
 
