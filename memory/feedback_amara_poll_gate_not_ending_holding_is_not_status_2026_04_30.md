@@ -27,9 +27,15 @@ PR #N: <state> / <mergeStateStatus>
   Next action: <plan, not status — see below>
 ```
 
-If no PR is in flight: emit nothing. The cron is already the
-wakeup mechanism. Polling for "did a PR I haven't filed merge"
-is dead air.
+If no PR is in flight: emit a brief non-PR heartbeat row (the
+autonomous-loop tick fire-log requires per-tick durable logging
+per `docs/AUTONOMOUS-LOOP.md` — a silenced tick is
+indistinguishable from a stalled scheduler, which weakens the
+liveness signal this rule is meant to improve). The heartbeat is
+one short line ("no in-flight PRs; no maintainer input"), not a
+full poll. The cron is the wakeup mechanism; polling for "did a
+PR I haven't filed merge" is dead air, but the tick must still
+leave a discoverable trace.
 
 If auto-merge is armed and CI is the only blocker: the poll's only
 job is to detect failure or review-state change. Don't poll merged
@@ -106,14 +112,18 @@ Pull Requests degraded), do NOT halt all merges. Instead:
 2. **Add post-merge verification** — after auto-merge
    fires, verify the commit landed on main as expected.
    Concrete checks:
-   - Query `gh api repos/<owner>/<repo>/commits/main`
-     and confirm the head SHA matches the squash-merge
-     commit announced by `gh pr merge`.
-   - Run `git fetch origin main` locally + verify the
-     commit is reachable.
+   - Run `git fetch origin main`, then verify the announced
+     squash-merge commit is **reachable from `origin/main`**
+     using `git merge-base --is-ancestor <sha> origin/main`
+     (or grep for it in `git log origin/main`). Reachability
+     is the load-bearing invariant — head-SHA equality is
+     unstable when another PR merges concurrently and would
+     falsely classify a successful merge as a blocker.
    - Spot-check the merged content matches the PR diff
      (no surprise reverts, no missing files, no
-     content-truncation symptoms).
+     content-truncation symptoms). This is the deeper
+     verification tier — invoked when symptoms suggest
+     a deeper issue, not on every merge.
 3. **Halt only on real blockers** — escalate to
    conservative-disable mode if any of: (a) post-merge
    verification fails on a recent merge, (b) the incident
@@ -275,8 +285,11 @@ notes baked into the snippet below:
   live 2026-04-30); detailed jq-syntax explanation belongs
   in the executable poll-the-gate script's tests, not in
   this rule. Promotion of the snippet to a tested script
-  with fixtures lives in B-0111 (Amara 2026-04-30 review
-  correction #6).
+  with fixtures is queued for a future round (multi-AI
+  convergence: Amara, Deepseek, Alexa all flagged this; no
+  backlog row filed yet — trigger condition is *"the next
+  time the inline jq snippet causes a live error in a
+  poll-the-gate operation"*).
 
 ```bash
 gh pr view <N> --json state,mergeStateStatus,reviewDecision,\
