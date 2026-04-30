@@ -856,6 +856,32 @@ Each entry names the authoritative source of the
 definition — this glossary's job is pointer-plus-gist, not
 canonical definition.
 
+### Candidate-count Goodhart
+
+**Plain:** Raw search hits are not violation counts. When
+auditing for a forbidden pattern, count matches to *find* work,
+but *classify* the context of each match to *decide* whether
+work is needed. A scanner that reports "12 references to X" has
+located 12 candidates; only context classification (rule-
+definition / sample / live-code / disclosure / etc.) determines
+how many — if any — actually need rewriting. Treating the
+candidate count as the violation count is a Goodhart-class
+failure: it optimizes for the visible metric (count) at the
+expense of the intended target (real risk).
+**Technical:** A specialization of Goodhart's Law applied to
+factory audit patterns. Codified after a 2026-04-28
+ServiceTitan-name audit found 12 raw matches → 0 active
+rewrites required after context classification (KEEP-NAME for
+factory-funding-chain disclosure / HISTORICAL-POINTER for
+research history / GENERICIZE for reusable code samples). The
+canonical operational rule: *"Count matches to find work.
+Classify context to decide work."* Fifth member of the
+Goodhart catch family in this factory (Catches #1-4 are
+substrate-IS-amortized-precision, commit-count vs tree-numstat,
+sample-classification ≠ clearance, tree-diff vs content-loss
+surface). Authoritative source:
+`memory/feedback_candidate_count_goodhart_raw_hits_are_not_violations_aaron_amara_2026_04_28.md`.
+
 ### Harmonious Division
 
 **Plain:** The maintainer's name for the meta-algorithm that
