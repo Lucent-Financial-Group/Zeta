@@ -27,7 +27,9 @@ the order they arrived in the maintainer channel):
 
 ## The disclosure
 
-Aaron's personal cognitive architecture:
+Aaron's **self-described** cognitive style (Amara correction
+2026-04-30 — bounded language; preserve self-disclosure as
+provenance, avoid over-diagnosing or over-ontologizing):
 
 - **No internal doctrine.** No fixed body of rules he
   wouldn't revise.

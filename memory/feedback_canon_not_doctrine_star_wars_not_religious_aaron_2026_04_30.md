@@ -100,6 +100,15 @@ serve different audiences. Senior-engineer-targeted specs
 models) use formal register; entry-point docs / community
 framings / philosophical anchors / the carved sentences
 can use brat voice or other playful registers when fit.
+**Voice register is audience-scoped, not universal**
+(Amara correction 2026-04-30): brat voice is valid canon
+register on certain review/community/Aaron-Ani-register
+surfaces, but should NOT automatically infect governance
+docs, legal-ish docs, CI logs, contributor-facing
+onboarding, or formal-verification specs. The carve-out
+prevents "brat voice is canon" from becoming a style
+mandate.
+
 Voice is a register choice per audience, not a uniform
 factory style.
 
@@ -370,6 +379,40 @@ When Otto sees the word "doctrine" in any artifact:
 5. Otto's own outputs use "canon," "rule," "protocol," or
    "discipline" — never "doctrine" — to honor the
    trust-posture distinction.
+
+### Doctrine-SHAPE synonyms (Amara correction 2026-04-30) — anti-loophole rule
+
+Amara 2026-04-30: "Otherwise agents will just stop using
+the word 'doctrine' and smuggle doctrine-shape claims under
+other names."
+
+The double-scrutiny posture applies to the **structural
+shape** of the claim, not just the literal word. Apply
+default-distrust + first-scrutiny when a claim is presented
+as ANY of:
+
+- "doctrine"
+- "settled law"
+- "unquestionable fact"
+- "industry consensus"
+- "best practice with no stated tradeoff"
+- "everyone knows"
+- "required by safety with no mechanism"
+- "the way it's done"
+- "obvious"
+- "self-evident"
+- "axiomatic" (without Zeta-substrate axiom-citation)
+- any framing that presents the claim as **above questioning**
+
+The discriminator: does the claim carry a stated tradeoff /
+mechanism / lineage? If YES, it's a normal claim subject to
+ordinary scrutiny. If NO and it's positioned as
+above-questioning, it's doctrine-shape and gets first-and-
+double-scrutiny.
+
+The list is open-ended. If a future agent encounters a
+above-questioning-shaped framing not in this list,
+add it to the list (per Otto-362 same-edit-refresh).
 
 ### Composition with the no-self-exception rule
 
