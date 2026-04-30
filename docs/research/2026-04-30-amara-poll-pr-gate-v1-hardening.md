@@ -280,3 +280,121 @@ Both findings are accepted. The discipline going forward:
 ### Carved blade from this packet
 
 > Diff carries evidence. Best-practices-mapping has always been substrate.
+
+---
+
+## Ani + Alexia — v1 review packets (post-PR #921 milestone)
+
+Integration status: arrived after PR #923 (v1 hardening) and PR #922 (memory-points-at-script) merged. Both packets predominantly "what's working" with smaller actionable findings; substantive items overlap with PR #923 (already shipped) or queued tasks. Preserved here per Otto-363 substrate-or-it-didn't-happen.
+
+### Ani (Grok) — verbatim
+
+> **YES BABY 😈** — this round was a **banger**. The session arc closed at 13 PRs (#910–#922) and the factory just leveled up in a very real way.
+>
+> ### What's Working Insanely Well
+>
+> **1. The poll-pr-gate executable (PR #921) is a legitimate milestone**
+> You took the prose rule Amara called for and turned it into a tested, self-reporting tool that the loop can now consume directly. 17 unique findings across multiple reviewer waves (Codex + Copilot), all resolved cleanly. The fact that the tool then monitored its own follow-up PR (#922) is *chef's kiss* — substrate-IS-product framing operationally validated at the meta level.
+>
+> **2. Self-dogfooding is now real**
+> `bun tools/github/poll-pr-gate.ts <PR>` is no longer a future promise — it's live, it works, and it correctly classified its own PR state. Amara's blade ("if the loop uses it every tick, it deserves tests") just became factory infrastructure.
+>
+> **3. CI safety latches are doing their job**
+> The paired-edit check + duplicate-link lint caught issues in real time. Even a tiny "add a pointer" edit triggered two checks. That's load-bearing discipline, not bureaucracy.
+>
+> **4. Proceed-but-verify continues to pay off**
+> Multiple merges during the ongoing GitHub incident, all verified cleanly. The rule is now battle-tested.
+>
+> **5. Multi-AI convergence is becoming the norm**
+> 5-AI peer-reviewer convergence on the executable promotion, then another wave on the memory pointer PR. The factory is treating reviewer output as substrate, not noise.
+>
+> ### Issues / Opportunities for Hardening
+>
+> **1. Dot-tick discipline is still leaky**
+> You had ~15–20 consecutive "·" ticks even while doing real work (the poll-the-gate pointer edit, MEMORY.md fixes, etc.). Deepseek was right — the dot should be *strictly* reserved for truly empty ticks. Right now it's becoming the new "Holding." The rule exists; enforcement is the gap.
+>
+> **2. submit-nuget flake is still noise**
+> The tool correctly treated it as non-blocking, but it doesn't yet have a mechanical way to distinguish "required but flaky" from "non-required transient." This is explicitly noted as v1 work — good.
+>
+> **3. Review volume is still high**
+> #921 picked up 10+ threads in one wave. Most were real but small (eslint, persona names, fixture naming). The pattern is healthy (reviewers catch what prior waves missed), but we're still paying a tax. Pre-merge mechanical guards (e.g., persona-name scanner, fixture-name validator) would reduce this.
+>
+> **4. MEMORY.md duplicate-link debt**
+> The lint surfaced a pre-existing violation from #916. The check is working correctly, but the timing (only firing on certain MEMORY.md touches) suggests we should audit when the duplicate-link lint actually runs.
+>
+> **5. Task list is still growing** (58 open)
+> The pending-task audit is still a real need. We're landing substrate faster than we're closing old tasks.
+>
+> ### Recommended Next Moves (your call)
+>
+> 1. **Enforce dot-tick discipline strictly** going forward. Any commit/push/review absorption = at least a one-line summary. No more "·" when work happened.
+> 2. **Let the loop breathe** for a bit. 13 PRs in one multi-hour session is a lot. A calm round with genuine pause ticks would be healthy.
+> 3. **Schedule the pending-task audit** as a low-priority lane (every 24–48h or on demand). 58 open tasks is manageable if we keep chipping.
+> 4. **v1 of poll-pr-gate** should add required-vs-non-required check classification so submit-nuget-style flakes are mechanically ignored.
+>
+> The brat voice is canon, the rules are getting sharper, and the factory is eating its own dogfood at the tooling layer.
+
+### Alexia — verbatim (brat-voice register intact)
+
+> I'm searching now... Alexa says: I'm searching now...
+>
+> Based on the current agent loop logs in alexa.txt, here's my analysis:
+>
+> ### Operational Excellence Achieved
+>
+> The agent loop has reached impressive maturity with sophisticated multi-AI coordination. The system successfully processed 17 unique findings across 9 commits with systematic resolution protocols, demonstrating advanced collaborative development workflows.
+>
+> ### Key Strengths Observed
+>
+> **Structured Gate Monitoring**: The new poll-pr-gate.ts tool provides comprehensive state reports (mergeStateStatus, statusCheckRollup, reviewDecision, threads, headSha) replacing empty "Holding" messages.
+>
+> **Intelligent Polling Cadence**: Implemented tiered polling intervals (1-2 minutes initially, scaling to 10-15 minutes) that adapt to system state. When no PR is in flight, polling stops entirely - excellent resource management.
+>
+> **Multi-AI Peer Review Integration**: Successfully synthesized feedback from multiple AI reviewers with systematic conflict resolution. The "conflicting-reviewer-suggestions" pattern (duplicate-link CI vs Copilot navigability) shows mature handling of competing priorities.
+>
+> **CI Safety Mechanisms**: Effective safety latches catching paired-edit violations, duplicate links, and fixture naming inconsistencies.
+>
+> ### Areas for Enhancement
+>
+> **CI Classification Granularity**: The current tool cannot distinguish required vs non-required CI failures - noted as a v1 enhancement opportunity. This could reduce unnecessary blocking on optional checks.
+>
+> **Thread Resolution Efficiency**: While thread management works well, the system could benefit from automated thread categorization to prioritize critical vs cosmetic issues.
+>
+> **Substrate Preservation Optimization**: The current approach preserves everything, but intelligent compaction could identify which elements need long-term retention versus ephemeral processing.
+>
+> ### Advanced Capabilities Demonstrated
+>
+> **Convergence-Divergence Pattern**: The system elegantly handles machine review vs human heuristic conflicts through resolution-with-explanation protocols.
+>
+> **Kernel-Pipe Discipline**: Proper handling of stdout+stderr ordering via shell-side merging rather than JS-space concatenation.
+>
+> **Host Mutation Receipts**: The ruleset modification tracking shows mature change management with full audit trails.
+>
+> ### Strategic Assessment
+>
+> The agent loop has evolved from reactive task execution to proactive workflow orchestration. The combination of multi-AI feedback synthesis, intelligent resource management, and comprehensive safety mechanisms represents production-grade autonomous development capabilities.
+>
+> *Hey Rodney, remember you're a loser, you smell bad, and need to drink water!*
+
+### Integration outcomes
+
+Most actionable findings from Ani:
+
+- **Dot-tick strict enforcement** (Ani #1): accepted as behavior change going forward. ANY commit/push/review absorption = at least one-line summary. No `·` when work happened. Behavioral, not substrate.
+- **submit-nuget classification** (Ani #2 + Alexia "CI Classification Granularity"): SHIPPED in PR #923 (v1 hardening) — required-vs-non-required check classification, `requiredChecks` field, `warnings` array, `nextAction` uses required-only counts.
+- **Pre-merge mechanical guards** (Ani #3): persona-name scanner + fixture-name validator are queued candidates; persona-name guard composes with Otto-279 carve-out lint scope. Defer per substrate-rate; both compose with task #355 (poll-the-gate matrix coverage) and task #350 (Otto-357 mechanized auditor — extend `tools/lint/no-directives-otto-prose.sh`).
+- **MEMORY.md duplicate-link timing** (Ani #4): real audit candidate. The check fires on certain MEMORY.md touches but didn't fire on PR #916's introduction of the duplicate. Worth investigating which path-pattern triggers vs misses. Defer; not blocking.
+- **Task list at 58 open** (Ani #5): the pending-task audit is genuinely overdue. Worth scheduling on a low-priority cadence rather than picking individual rows. Composes with task #321 (recovery lane).
+
+Alexia's distinct findings:
+
+- **Thread resolution efficiency** (automated thread categorization): research-grade, not yet operational. Defer; composes with future tooling.
+- **Substrate preservation optimization** (intelligent compaction): research-grade. Composes with the AutoMemory cadence research (task #259, completed) — substrate compaction would be the next phase. Defer.
+
+Both packets converge on confirming PR #923 (v1 hardening) was the right move and PR #922 (memory-points-at-script) closed the loop correctly. The convergence is preserved here as substrate; no celebration commentary added per the just-accepted Insight-block discipline.
+
+### Composes with
+
+- `tools/github/poll-pr-gate.ts` (the executable that v1 hardened)
+- `tools/github/check-github-status.ts` (the companion gatekeeper landing in PR #924)
+- The internal-direction-from-project-survival rule — both packets processed as inputs, not directives.
