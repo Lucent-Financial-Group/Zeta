@@ -5,9 +5,10 @@
 // snippets that the poll-the-gate memory file describes
 // (memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md).
 //
-// Origin: 5-AI convergence (Amara 2nd, Deepseek 4th, Alexia 5th, Ani 3rd,
-// Gemini 4th — all 2026-04-30) on promoting prose-jq to executable.
-// Amara's blade: "if the loop uses it every tick, it deserves tests."
+// Origin: 5-AI peer-reviewer convergence on 2026-04-30 (full attribution
+// in `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`)
+// on promoting prose-jq to executable. Carved blade from that packet:
+// "if the loop uses it every tick, it deserves tests."
 //
 // This is **v0**: skeleton + minimal happy-path query. Fixtures and
 // matrix tests follow in subsequent slices. The memory file should
@@ -37,7 +38,7 @@
 //   2 — gh CLI returned non-zero (auth, rate-limit, PR not found)
 //   3 — gh CLI output couldn't be parsed (truncated, non-JSON)
 //
-// Required-check semantics (per Amara 2nd's GitHub-docs verification):
+// Required-check semantics (per peer-AI GitHub-docs verification):
 // SUCCESS / NEUTRAL / SKIPPED are merge-satisfying; FAILURE / CANCELLED
 // / TIMED_OUT / STARTUP_FAILURE / ACTION_REQUIRED / STALE block.
 
@@ -203,6 +204,9 @@ function buildReport(pr: PullRequestData): GateReport {
 const SPAWN_MAX_BUFFER = 32 * 1024 * 1024; // 32 MiB
 
 function runGhOrExit(args: string[], context: string): string {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh is a
+  // standard CI/dev dependency invoked by name; convention used across
+  // tools/peer-call/, tools/pr-preservation/, tools/audit-packages.ts.
   const result = spawnSync("gh", args, {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
