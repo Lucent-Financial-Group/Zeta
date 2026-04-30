@@ -280,6 +280,48 @@ Per-port pattern checklist:
 
 Slice 3 passes audit. Three new patterns recorded in this audit (Bun-native readdirSync recursion, regex matchAll for parsing, per-commit signal classifier).
 
+## Slice 4 — 2 alignment-tail ports (PR #NNN, 2026-04-30)
+
+**Slice files**:
+
+- `tools/alignment/audit_skills.{sh→ts}`
+- `tools/alignment/citations.{sh→ts}`
+
+**Comparison points**: Layered baseline verified 2026-04-30 (1 day old, within window). Slices 1-3 canonical patterns reused.
+
+### Code-pattern audit
+
+| Check | Result |
+|---|---|
+| No `any` uses | 0 matches |
+| No `as` casts | 0 matches |
+| Project typecheck clean | 0 errors |
+| ESLint strictTypeChecked | 0 errors |
+
+Per-port pattern checklist:
+
+- **Applied (both)**: typed boundary objects (SkillRow, InternalCite, BrokenCite, AuditResult).
+- **Applied (both)**: literal-type union exit codes (0 | 1 | 2, 0 | 2).
+- **Applied (both)**: ParseResult discriminated-union via reduceFlag.
+- **Applied (both)**: Bun-native readdirSync recursion (slice-3 pattern).
+- **Per-line scan pattern (`citations`)**: bash uses `grep -oE` per line; TS port mirrors with `content.split("\n")` + per-line `matchAll`. Initial whole-content `matchAll` produced off-by-3 differences (regex matched across newlines); per-line scan restores byte-equivalence.
+- **`audit_skills`**: schema = DORA-2025-skill-scope-v1; 4 measurable columns + 6 unmeasured stubs.
+- **`citations`**: candidatePaths helper extracted to keep resolveTarget within sonarjs 15-cap; OS-injection-style regex disabled with eslint-disable + justification (bash original used same shape).
+
+### DST + coverage audit
+
+- **DST-friendly: applied** — no time / random / scheduler dependencies in test paths.
+- **Coverage: deferred** — bash originals had no tests; ports don't introduce a new module.
+
+### Equivalence audit
+
+- **`audit_skills`**: bash-vs-TS output diff is empty under default args (44/235 skills touched in current repo state).
+- **`citations`**: bash-vs-TS output diff is empty (5427 internal edges, 86 broken candidates, 577 external refs against current repo state).
+
+### Outcome
+
+Slice 4 passes audit. New pattern recorded: per-line scan to preserve bash `grep` behavior across regex extraction.
+
 ## Slice template (for future slices)
 
 Copy this section header and fill out before merging the slice's PR:
