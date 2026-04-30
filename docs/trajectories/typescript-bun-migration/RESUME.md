@@ -155,13 +155,60 @@ Coherent budget-report cluster; would advance task #287 (cost monitoring) in add
 - ESLint + markdownlint already configured for TS files
 - `jiti` 2.6.1 was added in PR #849 as devDep; reused for future ports
 
-## Per-slice audits (canonical sub-artifact)
+## Two-gate quality model (per multi-AI Round 2 + Round 3 convergence)
 
-Each slice produces a per-slice audit before merge: upstream-docs check + sibling-repo comparison + per-file code-pattern verification + explicit gap recording. The audits accumulate in:
+Every TS/Bun port slice passes through two gates:
 
-- [`slice-audits.md`](slice-audits.md) — append per slice, never overwrite
+### Gate A — slice merge gate
 
-The first slice (PR #866) sets the canonical pattern. Future slices follow the slice template at the bottom of `slice-audits.md`. **Audit happens before merge**, not after — once a slice merges, its pattern is set as canonical and subsequent slices pattern-match on it.
+Before a slice merges, all ported files must pass a code-level audit
+(not just config / lint / runtime checks). Per-slice audits accumulate
+at [`slice-audits.md`](slice-audits.md) — append per slice, never
+overwrite. The first slice (PR #866) sets the canonical pattern;
+future slices follow the slice template at the bottom of
+`slice-audits.md`.
+
+The hard requirements (from `docs/best-practices/typescript.md`):
+typed external boundaries, typed domain records, checked
+unknown/regex/index/file IO, no unreviewed `any`, no broad unsafe
+casts. Plus runtime requirements from `docs/best-practices/bun.md`
+(entry guard, atomic file IO, structured spawn classifier).
+
+The full per-slice checklist lives in
+`docs/best-practices/repo-scripting.md`.
+
+### Gate B — next-slice prerequisite
+
+Before the **first mutating action** on the next TS/Bun port slice,
+the layered Gate B baseline must exist and be current:
+
+- [`docs/best-practices/typescript.md`](../../best-practices/typescript.md)
+  — language / type-system / typed-linting standard.
+- [`docs/best-practices/bun.md`](../../best-practices/bun.md)
+  — Bun runtime / process / file IO / shell standard.
+- [`docs/best-practices/repo-scripting.md`](../../best-practices/repo-scripting.md)
+  — Zeta composition layer (Zeta-specific scripting conventions +
+  per-slice audit checklist).
+
+"First mutating action" = first file edit / commit / push for the
+slice. Read-only scoping may happen first.
+
+"Current" = each upstream source listed in the layered docs has been
+re-verified within its currency window (default 30 days), OR the
+slice's freshness pass re-verifies before proceeding.
+
+> **Carved**:
+> *TypeScript is the language. Bun is the host. Repo scripting is the
+> composition.*
+>
+> *Do not name the stack. Name the layers.*
+>
+> *The expert baseline is not a new lane. It is the ignition key for
+> the next slice.*
+
+The trajectory references the layered docs; it does NOT own them.
+`docs/best-practices/` is durable substrate that outlives any
+specific migration.
 
 ## Expert skill still needed (deferred to Lane C)
 
@@ -206,12 +253,12 @@ If all four are clean, proceed. The maintainer is not the lane-transition protoc
 ### Freshness check (per-trajectory, run before mutation)
 
 ```text
-git fetch origin main                           # main SHA current
-gh pr list --state open                         # active PRs visible
-gh pr view <self> --json statusCheckRollup      # in-flight CI state
-gh api graphql {reviewThreads}                  # unresolved threads (self)
-read RESUME.md                                  # next-slice line current
-ls tools/hygiene/audit-*.{sh,ts}                # target files exist
+git fetch origin main                                      # main SHA current
+gh pr list --state open                                    # active PRs visible
+gh pr view <self> --json statusCheckRollup,mergeStateStatus  # CI + merge state
+gh api graphql -f query='{ repository(owner: "Lucent-Financial-Group", name: "Zeta") { pullRequest(number: <self>) { reviewThreads(first: 50) { nodes { isResolved isOutdated path } } } }'  # unresolved threads
+read RESUME.md                                             # next-slice line current
+ls tools/hygiene/audit-*.{sh,ts}                           # target files exist
 ```
 
 If any source is unavailable or known-stale, surface that as a freshness gap rather than completing the pass silently.

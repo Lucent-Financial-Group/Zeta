@@ -91,9 +91,19 @@ function classifyGitFailure(
   return null;
 }
 
+// Set maxBuffer high enough that `git ls-files -z "*.md"` does not
+// hit ENOBUFS as the repo grows. Default Node maxBuffer is 1 MiB,
+// which can be exceeded by markdown-heavy trees. The bash original
+// streamed output and had no fixed-buffer failure mode; we restore
+// equivalent headroom rather than re-introducing a regression.
+const SPAWN_MAX_BUFFER = 64 * 1024 * 1024; // 64 MiB
+
 function runGit(args: readonly string[]): string {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is repo-pinned via .mise.toml; args are an explicit string array (no shell interpolation).
-  const result = spawnSync("git", args, { encoding: "utf8" });
+  const result = spawnSync("git", args, {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
   const failure = classifyGitFailure(args, result);
   if (failure !== null) throw new Error(failure);
   return result.stdout;

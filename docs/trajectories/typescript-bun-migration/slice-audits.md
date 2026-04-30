@@ -11,6 +11,15 @@ Each audit names the upstream-doc + sibling-repo comparison points
 with paths and as-of identifiers (commit hashes for git-tracked
 sources, file mtimes for non-git workspaces).
 
+**Audit pattern**: each slice audit MUST satisfy the per-slice
+checklist in `docs/best-practices/repo-scripting.md` (the Gate A
+merge gate). Layered references for the checklist:
+
+- Language: `docs/best-practices/typescript.md`
+- Runtime: `docs/best-practices/bun.md`
+- Composition (where the canonical checklist lives):
+  `docs/best-practices/repo-scripting.md`
+
 ## Slice 1 — 3 audit-script ports (PR #866)
 
 **Slice files**:

@@ -16,13 +16,16 @@
 //   guidance and `../SQLSharp` conventions.
 //
 // Every `](foo.md)` link target in MEMORY.md MUST resolve to an
-// actual file under `memory/`. Together with the duplicate-detector
-// and the memory-index-integrity workflow, this forms three-part
-// memory-index hygiene:
+// actual file. Resolution is two-pass: first relative to `baseDir`
+// (default: `memory`), then — for legacy targets that already
+// include a path prefix like `memory/...` — as a workspace-root-
+// relative path. A target resolves if either pass finds an actual
+// file. Together with the duplicate-detector and the memory-index-
+// integrity workflow, this forms three-part memory-index hygiene:
 //   1. Every memory file change updates MEMORY.md (workflow).
 //   2. MEMORY.md has no duplicate link targets (sibling lint).
 //   3. Every MEMORY.md link target resolves to an actual file
-//      (this tool).
+//      under one of the accepted resolution modes (this tool).
 //
 // Usage:
 //   bun tools/hygiene/audit-memory-references.ts                  # default: memory/MEMORY.md
