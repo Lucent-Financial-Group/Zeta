@@ -236,8 +236,11 @@ is visible.**
    throughput; it's correction-cost-per-mistake.
 7. **Read your own draft once before sending.** Catches
    Insight-block escalation (Claude.ai's diagnosis), catches
-   over-claims (Amara's rerere catch), catches doctrine drift
-   in the framing of corrections.
+   over-claims (Amara's rerere catch), catches canonical drift
+   in the framing of corrections (per Aaron 2026-04-30: more
+   generic than "canon drift" — applies to canonical forms in
+   code, canonical paths, canonical anything, not just
+   doctrine/canon vocabulary).
 
 ## What this rule does NOT mean
 

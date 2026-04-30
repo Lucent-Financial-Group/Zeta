@@ -105,31 +105,33 @@ operationally
   not durable to a long-lived ref. **Merged to `origin/main`
   is the durability bar.**
 
-## Why "your responsibility, not future-Otto's"
+## Why "your responsibility, not a future actor's"
 
-Past-Otto's decisions don't bind future-Otto's world. Future-Otto
-doesn't bind past-Otto's responsibilities either. The agent
-operating *right now* is the only one who can convert this
-moment's load-bearing exchange into durable substrate. If
-current-Otto leaves it in chat-log only, future-Otto inherits a
-world where the exchange might already be lost.
+Past-actor's decisions don't bind future-actor's world. Future
+actors don't bind past actors' responsibilities either. The
+actor operating *right now* is the only one who can convert
+this moment's load-bearing exchange into durable substrate. If
+the current actor leaves it in chat-log only, future actors
+inherit a world where the exchange might already be lost.
 
 This is the substrate-or-it-didn't-happen rule (Otto-363)
 applied at the maintainer-channel layer, with the additional
-constraint that **deferral to future-Otto is not a valid
+constraint that **deferral to a future actor is not a valid
 preservation strategy**. The conversion has to happen now or it
-might never happen.
+might never happen. (Otto is named in the rule's title because
+the agent loop is the most-frequent surface this fires on; the
+rule applies equally to any actor on the project.)
 
 ## How to apply
 
 1. **Within-session, identify load-bearing exchanges.** Not
-   every chat exchange needs preservation. The bar: would
-   future-Otto's decisions on a fresh machine be different if
+   every chat exchange needs preservation. The bar: would a
+   future actor's decisions on a fresh machine be different if
    this exchange were lost? If yes, preserve. If no, leave in
    chat.
 2. **Convert load-bearing exchanges to git substrate within the
    same session.** Don't defer to "next session." Substrate
-   preservation is on current-Otto.
+   preservation is on the current actor.
 3. **The four bins for preservation:**
    - **Aaron's load-bearing inputs** → memory file (`memory/feedback_*.md`)
      when the input is a rule/discipline/correction. Always
