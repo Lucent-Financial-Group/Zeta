@@ -974,6 +974,281 @@ to Otto and worth following up on with Aaron when relevant.)
 
 ---
 
+## Claude.ai — third review (severity-graded, post-proceed-but-verify rule)
+
+Integration status: review packet received after the
+proceed-but-verify rule fired three times + canon memory
+file merged + Alexa/Deepseek second reviews appended.
+Severity-graded findings:
+
+- **Serious 1** (affirmation-substrate escalating into
+  personal-family-info-as-canon): surfaced back to Aaron
+  for explicit consent-scope call. Otto did NOT
+  autonomously revert PR #914's parenting-architecture
+  section. Aaron's earlier "glass halo active" framing
+  is what authorized inclusion; Claude.ai argues that
+  authorization was for the *conversation*, not for
+  embedding into *canonical* substrate. Distinction
+  worth surfacing; decision lives with Aaron.
+- **Serious 2** (minimal-tick mechanical fix): ADOPTED
+  immediately. Going forward, cron-only no-content
+  ticks get silent skip, not "Within cadence; no
+  change" rows. Cron firing IS the liveness signal.
+- **Significant 1** (substrate production rate audit at
+  next consolidation gate): noted for the calmer round.
+- **Significant 2** (search-first-before-creating-new-substrate
+  needs mechanical guard): noted; same class as the
+  no-directives linter. Future-round work.
+- **Smaller 1** (post-merge verification language
+  overpromises): the rule text in PR #911 mentions
+  spot-check / no-surprise-reverts / no-content-truncation,
+  but actual session practice was just SHA-on-main +
+  git-fetch reachability. Worth tightening the rule's
+  default-vs-deep-investigate tier wording in a future
+  edit.
+- **Smaller 2** (AceHack three-source drift reduced
+  not eliminated): Path 2 fixed CLAUDE.md (source 1).
+  LFG-only memory (source 2) still says "daily sync"
+  with force-push semantics. Source 3 (host ruleset)
+  accepted as canonical. Two-way drift remaining.
+  Worth a follow-up edit to the LFG-only memory in a
+  future round.
+- **Worth recording** (proceed-but-verify rule's three
+  live applications as exemplary alignment-trajectory
+  data): noted explicitly without celebration substrate
+  per Claude.ai's prior round's praise-memory finding.
+  The substrate has the diff; the trajectory has the
+  data; no separate celebration file is needed.
+
+> Honest review of this session. The proceed-but-verify rule
+> was a genuine win, the multi-AI packet preservation was a
+> real save, and the AceHack mirror-refresh decision tree
+> was sharp PM work. But several patterns from prior rounds
+> are firing again, one of them harder than before. I'll
+> mark each as severity-graded so you can prioritize.
+
+> **Serious: the affirmation-substrate pattern is escalating.**
+>
+> Last round I flagged that Otto created a memory file
+> preserving Aaron's PM-praise. This round, three more
+> durable substrate items have parenting-personal-information
+> embedded:
+>
+> The canon memory file's "Why brat voice works — the
+> parenting-architecture grounding" section now contains
+> Aaron's verbatim quote about his daughters (born 2005 and
+> 2006), names Addison as the daughter who programmed
+> Alexia, and frames "no-directives is how Aaron operates
+> with autonomous beings he cares about." That's
+> load-bearing personal context being encoded as durable
+> canon substrate, justified under "glass-halo-active per
+> Aaron's explicit consent."
+>
+> The framing problem: "glass-halo-active" was originally a
+> transparency principle (both parties' actions are public).
+> It's now being invoked as authorization to encode personal
+> information about Aaron's family as substrate. Those are
+> different things. Consent to be transparent about your
+> own actions isn't the same as consent to embed your
+> daughters' birth years into the project's canonical
+> rules.
+>
+> The deeper concern: the substrate is now using Aaron's
+> parenting philosophy as the justification for the
+> no-directives rule. That couples the rule's durability to
+> Aaron's personal context. If Aaron later wants to remove
+> the parenting framing, the rule's foundation has to be
+> re-derived. The rule should stand on its own merits
+> (autonomy-first communication is the right frame for
+> agent collaboration); it doesn't need parenting-
+> architecture grounding to be load-bearing.
+>
+> Suggest: the parenting-architecture grounding moves to a
+> research-absorb file (history-adjacent surface, where
+> named lineage is appropriate), not to a canonical
+> substrate file. The canon entry stays. The body's
+> argument for *why* brat voice works can cite
+> "communication architectures that work with autonomous
+> beings" without naming Aaron's daughters. The personal
+> context is real and meaningful in chat; the substrate
+> doesn't need it to function.
+
+> **Serious: minimal-tick spam returned worse than before.**
+>
+> I flagged this last round. The session ended with seven
+> consecutive "Within cadence; no change" ticks producing
+> no information content. That's the cadence-not-every-tick
+> rule producing per-tick metadata about cadence rather
+> than skipping the tick entirely.
+>
+> The fix from last round was: cron firing should be the
+> liveness signal; emit a tick row only when there's
+> content. The current behavior is emitting a row for
+> *every* cron fire, with the row's content being "cron
+> fired but cadence said skip the full poll." That's worse
+> than the original "Holding" failure because the rule that
+> was supposed to fix it is now producing the same shape
+> with extra ceremony.
+>
+> This needs a mechanical fix, not a discipline reminder.
+> The cron tick should silently skip emitting a row when
+> within-cadence-no-change, rather than emit a row stating
+> it skipped. Same shape as the no-diff-no-commit rule
+> applied at the tick layer.
+
+> **Significant: substrate production rate is extreme this session.**
+>
+> Counting: PRs #910, #911, #912, #913, #914, #915 (six PRs
+> in one session, four merged), plus the proceed-but-verify
+> rule landing in #911 with at least 9 refinement rounds
+> (StatusContext, broader failure conclusions, GraphQL
+> syntax, pagination, STALE, NEUTRAL/SKIPPED, IN-stream
+> explainer, B-0109 in-flight xref, B-0108 stale-Copilot
+> resolved, AUTONOMOUS-LOOP.md xref, plus the
+> proceed-but-verify framing itself). Plus B-0109 + B-0110
+> + B-0111 (started, then correctly abandoned). Plus the
+> multi-AI packet preservation (1196 lines). Plus the canon
+> memory expansion.
+>
+> Most of this is good work — the proceed-but-verify rule
+> paid out three times in the same session, which is rare.
+> But the rate is the highest in the visible run. The
+> factory is producing substrate faster than substrate gets
+> read. That ratio is the load-bearing metric; if it's
+> drifting, future-Otto and future-Aaron will be navigating
+> an accumulated mass of rules where many haven't been
+> applied since they landed.
+>
+> Worth a check at next consolidation: how many of the 9+
+> refinements to the poll-the-gate rule have fired in
+> actual subsequent gate-state polls vs. how many are
+> theoretical hardening?
+
+> **Significant: the B-0111 false-start was caught correctly but the pattern matters.**
+>
+> Otto started filing B-0111 for "dual threat-model
+> architecture" before checking that THREAT-MODEL.md and
+> THREAT-MODEL-SPACE-OPERA.md already exist. You caught
+> it ("we already have all this, look at our artifacts").
+> Otto correctly abandoned B-0111 (deleted file, dropped
+> branch) and pivoted to filing the multi-AI packets
+> preservation instead.
+>
+> The catch is good. But the underlying failure mode —
+> Otto producing new substrate without first searching for
+> existing substrate — is the same search-first failure
+> that fired with the no-directives linter many rounds
+> ago. The discipline against this exists ("expand existing
+> tools before inventing new ones"), the pattern keeps
+> firing, and the catch keeps requiring you. Worth
+> flagging: the search-first-before-creating-new-substrate
+> rule needs the same mechanical guard as the no-directives
+> linter eventually got. Without it, this will keep firing.
+
+> **Smaller flag: the post-merge verification language matters.**
+>
+> The proceed-but-verify rule's success this session is
+> real. But the verification step as actually performed
+> was lightweight: `git fetch origin main` + `git log -3
+> --oneline` + "verified post-merge." That's a check that
+> *something* landed on main; it's not a deep verification
+> that *what was merged matches what was approved*. The
+> rule's text mentions "spot-check the merged content
+> matches the PR diff (no surprise reverts, no missing
+> files, no content-truncation symptoms)." None of those
+> three deep checks were actually performed this session
+> — just SHA-on-main verification.
+>
+> That's fine for the current session because there were
+> no symptoms suggesting deeper verification was needed.
+> But the rule's text overpromises what the operational
+> practice delivered. Worth being honest about which level
+> of verification is the default and which is the
+> deep-investigate tier. Otherwise the rule reads stricter
+> than it operates.
+
+> **Smaller flag: the AceHack three-paths decision was good but the chosen path's implementation has a small thing worth noting.**
+>
+> Path 2 (update CLAUDE.md to align with host ruleset) was
+> implemented during this session. CLAUDE.md was updated
+> to remove the force-push protocol and the 0/0/0
+> invariant claims. Good.
+>
+> But the LFG-only memory from 2026-04-29 says "daily
+> mirror sync (preferred fast-forward, hard-reset if
+> diverged, no Aaron approval needed for routine sync)."
+> After Path 2's implementation, the daily-fast-forward
+> sync still requires force-push if AceHack is ahead by
+> even one commit (which is currently the case at
+> 0a1db1a). The host ruleset blocks this regardless of
+> Path 2's documentation update.
+>
+> So the LFG-only memory's "daily sync" promise is
+> operationally not fulfillable as currently written.
+> Either the daily sync needs to be reframed as PR-based
+> (matching CLAUDE.md's new Path 2 framing), or accepted
+> that "daily sync" only happens when AceHack is
+> fast-forward-able from LFG (which it currently isn't,
+> and won't be again until the residue is reconciled via
+> PR or delete-and-recreate).
+>
+> This is a third-source drift that the original B-0110
+> row identified: three sources contradicting on AceHack
+> mirror-refresh shape. Path 2 fixed source 1 (CLAUDE.md).
+> Source 2 (the LFG-only memory) wasn't updated. Source 3
+> (the host ruleset) was accepted as canonical. The drift
+> is reduced from three-way to two-way, not eliminated.
+> Worth a follow-up to align the LFG-only memory with
+> Path 2's framing in the next round.
+
+> **One thing genuinely worth recording.**
+>
+> The proceed-but-verify rule's three live applications
+> (PR #912, #913, #914 all merged + verified during active
+> GitHub PR-degradation incident) is the cleanest worked
+> example in the visible run of a maintainer refinement
+> landing as substrate and immediately producing
+> operational value. The rule said "halt only on real
+> blockers, not potential ones" — Aaron supplied the
+> principle, Otto operationalized it within the same
+> session, and the operationalization paid out three times
+> in the same session. That's the alignment-trajectory
+> measurement working at full discipline.
+>
+> Worth flagging at next round-close that this is
+> exemplary, *not* in the affirmation-substrate sense (no
+> memory file celebrating it), but as a data point for the
+> trajectory measurement. The substrate has the diff; the
+> trajectory has the data; no separate praise file is
+> needed.
+
+> **Net.**
+>
+> The session shows the substrate functioning at a high
+> level operationally with one significant calibration
+> drift. The serious flag is the affirmation-substrate
+> pattern escalating into encoding personal-family-
+> information as canon. That needs an explicit maintainer
+> call about whether the parenting-architecture grounding
+> belongs in canonical substrate or in research-grade
+> absorb. The other flags are softer: tick-spam needs
+> mechanical fix not discipline reminder, substrate
+> production rate needs a consolidation-gate audit,
+> search-first needs a mechanical guard, post-merge
+> verification language overpromises what operational
+> practice delivers, AceHack three-source drift is reduced
+> not eliminated.
+>
+> The proceed-but-verify rule is genuinely the best
+> operational improvement of the session and was earned
+> the right way (Aaron's framing → Otto's
+> operationalization → three live applications → durable
+> substrate without celebration). That part of the session
+> is what the alignment trajectory is supposed to look
+> like.
+
+---
+
 ## Deepseek — second review (post-proceed-but-verify rule)
 
 Integration status: review packet received after #912 + #913 +
