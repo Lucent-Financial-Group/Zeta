@@ -411,7 +411,27 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
-## Slice 13 — 1 port (git/push-with-retry — git-cluster opens) (PR pending — `lane-b/ts-bun-slice-13-push-with-retry-2026-04-30`)
+## Slice 14 — 1 port (budget/snapshot-burn — budget-cluster opens) (PR pending — `lane-b/ts-bun-slice-14-snapshot-burn-2026-04-30`)
+
+**Slice files**:
+
+- `tools/budget/snapshot-burn.{sh→ts}` (point-in-time LFG cost/burn snapshot capture; appends one JSON line to `docs/budget-history/snapshots.jsonl`)
+
+**Comparison points**: identical to slice 13. Within Gate B 30-day window. tsc gate active in CI per PR #890.
+
+### Code-pattern audit (per-port)
+
+- **`snapshot-burn.ts`** (174 → 360 lines): bash `gh api ... | jq` pipelines → `ghJson` helper that wraps `spawnSync("gh", ["api", path])` + `JSON.parse`; defensive `ghJsonOrEmpty` for fault-tolerant capture. Bash `mapfile` workaround (`while read; do … done < <(...)` for macOS bash 3.2 compat) → straightforward TS for-loop. Bash heredoc-driven `jq -n` snapshot composition → typed `Snapshot` interface + `JSON.stringify`. Bash JSONL append (`printf '%s\n' >> "$out"`) → `appendFileSync(out, line + "\n")`. Per-repo aggregation extracted into `aggregateTimings` + `summarizePulls` helpers under cognitive-complexity threshold. Optional fields elided via spread+conditional (`...(row.name === undefined ? {} : { name: row.name })`) for `exactOptionalPropertyTypes` compliance.
+
+### Equivalence audit
+
+- **`snapshot-burn`**: byte-equivalent on argument-validation paths (`--note` without value → exit 2 with same message; `--help` → 0). Live `--dry-run` exercised against the GitHub API: produces a JSON snapshot with all the same fields as the bash original (ts, factory_git_sha, org, note, copilot_billing, repos[].agg, repos[].pr, repos[].last_20_runs, scope_coverage). Fault-tolerant warning behavior preserved (counts API failures + emits same warning summary line). Network-dependent path verified by spot-check.
+
+### Outcome
+
+Slice 14 passes audit. **Budget-cluster opens** (first of 3 budget scripts). Bucket B 9 → 8. The bash original remains in-tree as equivalence reference + production fallback until the TS port has soaked through several daily-cost-report runs.
+
+## Slice 13 — 1 port (git/push-with-retry — git-cluster opens) (PR #892, merged 2026-04-30, commit `e9dc894`)
 
 **Slice files**:
 
