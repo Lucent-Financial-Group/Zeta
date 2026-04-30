@@ -9,7 +9,7 @@ ask: Decision landed 2026-04-30 — Path 2 (PR-based mirror; ruleset stays canon
 created: 2026-04-30
 last_updated: 2026-04-30
 decided_by: Aaron delegation 2026-04-30 ("any decisions about acehack i leave up to you") + Gemini principle 2026-04-30 ("the protocol bends to the security ruleset; the ruleset does not bend to the protocol")
-composes_with: [B-0109]
+composes_with: [B-0109]  # B-0109 lands in PR #912 alongside this row in #913; cross-reference resolves on merge
 tags: [doctrine-drift, acehack, mirror-refresh, branch-protection, host-vs-doctrine, decided]
 ---
 
@@ -119,17 +119,24 @@ different actions:
   LFG/main. Hard-reset on the server-side is also force-push.
   **Blocked by host.**
 - **AceHack ruleset**: open a PR with linear-history,
-  required-conversation-resolution, squash-only merge.
-  Cannot resolve a non-fast-forward via PR (the 1-commit
-  divergence makes it non-FF, and `required_linear_history`
-  blocks merge commits).
+  required-conversation-resolution, squash-only merge. A PR
+  squash merge IS a fast-forward update to the base branch
+  (it adds a new commit on AceHack/main); what it cannot
+  do is restore *exact SHA equality* with `lfg/main`,
+  which is what the mirror invariant historically required.
+  PR-based sync can match content but cannot satisfy the
+  0-ahead/0-behind invariant — squash-only merge adds a
+  new commit on AceHack/main rather than making
+  AceHack/main point at the same commit as LFG/main.
 
-So the actual operation has no clean path under the current
-host config. The reset on 2026-04-29 (visible as the
-`archive/acehack-main-pre-000-reset-2026-04-29` branch) must
-have happened either through a temporary ruleset relaxation
-or as a post-hoc archive marker — that history is itself
-worth recovering as part of resolving this drift.
+So PR-based sync gives content-equivalence, not
+SHA-equivalence. Under the chosen Path 2 (where SHA
+equality is no longer the invariant), this is fine. The
+reset on 2026-04-29 (visible as the
+`archive/acehack-main-pre-000-reset-2026-04-29` branch)
+must have happened either through a temporary ruleset
+relaxation or as a post-hoc archive marker — that history
+is worth recovering at next opportunity for full lineage.
 
 ## Decision needed (maintainer call)
 
@@ -175,10 +182,13 @@ class of mutation, not the autonomous-action class.
 
 ## Composes with
 
-- **B-0109** — dependency-status surface. AceHack mirror-refresh
-  is a sub-case of "dependencies we depend on for canonical
-  factory state"; the drift here is doctrine-vs-host, parallel
-  to the GitHub-incident class B-0109 covers.
+- **B-0109** (landing in PR #912 alongside this row at
+  `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`;
+  cross-reference resolves on merge) — dependency-status
+  surface. AceHack mirror-refresh is a sub-case of
+  "dependencies we depend on for canonical factory state";
+  the drift here is doctrine-vs-host, parallel to the
+  GitHub-incident class B-0109 covers.
 - `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md`
   — the 2026-04-29 framing this row references.
 - `memory/feedback_host_mutation_receipt_2026_04_29_ruleset_15256879_code_quality_removed.md`
