@@ -366,6 +366,51 @@ Per-port pattern checklist:
 
 Slice 5 passes audit. New pattern recorded: `trimSpaces` pure helper as eslint-clean alternative to anchored space-stripping regexes (avoids sonarjs/slow-regex flag).
 
+## Slice 6 — 3 check-only hygiene ports (PR #NNN, 2026-04-30)
+
+**Slice files**:
+
+- `tools/hygiene/check-no-conflict-markers.{sh→ts}`
+- `tools/hygiene/check-archive-header-section33.{sh→ts}`
+- `tools/hygiene/check-tick-history-order.{sh→ts}`
+
+**Slice scope adjustment**: Cluster F was 4 files; `append-tick-history-row.sh` is a write-side script (file mutation) and warrants its own careful equivalence-test setup with file-state preservation. Deferred to slice 7+.
+
+**Comparison points**: Layered baseline verified 2026-04-30 (1 day old). Slices 1-5 canonical patterns reused.
+
+### Code-pattern audit
+
+| Check | Result |
+|---|---|
+| No `any` uses | 0 matches |
+| No `as` casts | 0 matches |
+| Project typecheck clean | 0 errors |
+| ESLint strictTypeChecked | 0 errors |
+
+Per-port pattern checklist:
+
+- **Applied (all 3)**: typed boundary objects (Violation, Row).
+- **Applied (all 3)**: literal-type union exit codes.
+- **Applied (all 3)**: self-allowlist where applicable (this script's bash + ts paths).
+- **`check-no-conflict-markers`**: per-line scan with `MARKER_RE` (mirrors bash POSIX `[[:space:]]` via `[\t ]`).
+- **`check-archive-header-section33`**: file-walker with content-hint detection; enum-strict `OP_STATUS_VALID_RE` for the operational-status value.
+- **`check-tick-history-order`**: ISO-8601 lex-sortable string comparison (timestamp format chosen for this property).
+
+### DST + coverage audit
+
+- **DST-friendly: applied** — none of the 3 ports introduce time/random/scheduler dependencies.
+- **Coverage: deferred** — bash originals had no tests; ports don't introduce a new module.
+
+### Equivalence audit
+
+- **`check-no-conflict-markers`**: byte-equivalent against current repo state.
+- **`check-archive-header-section33`**: byte-equivalent against current repo state.
+- **`check-tick-history-order`**: byte-equivalent against current repo state.
+
+### Outcome
+
+Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
+
 ## Slice template (for future slices)
 
 Copy this section header and fill out before merging the slice's PR:
