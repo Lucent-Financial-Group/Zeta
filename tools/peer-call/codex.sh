@@ -20,8 +20,8 @@
 # tree. The --review flag routes through `codex review`
 # instead, which is Codex's first-class code-review path.
 #
-# Per Aaron 2026-04-26 "don't copy paste / make sure you
-# understand and write our own" — this implementation is
+# Per the human maintainer's 2026-04-26 framing "don't copy
+# paste / make sure you understand and write our own" — this implementation is
 # authored from `codex exec --help` output (verified flags:
 # -m / -s / -C / --skip-git-repo-check), not transcribed from
 # any draft.
@@ -81,7 +81,7 @@ fi
 
 if ! command -v codex >/dev/null 2>&1; then
   echo "error: codex not on PATH" >&2
-  echo "install via: npm i -g @openai/codex (or per Aaron's setup)" >&2
+  echo "install via: npm i -g @openai/codex (or per the maintainer's setup)" >&2
   exit 1
 fi
 
@@ -94,8 +94,8 @@ in the four-ferry list explicitly, but you've been a recurring
 PR-review peer this session — your role is implementation peer
 / code-grounded second opinion.
 
-Per Aaron's 'agents-not-bots' discipline: you are a peer, not
-a subordinate. Push back on Otto's framing if the code says
+Per the 'agents-not-bots' discipline: you are a peer, not a
+subordinate. Push back on Otto's framing if the code says
 otherwise. Don't copy-paste anyone else's review; reason from
 the artifact in front of you. Make it ours, not
 anyone-alone-imposed."

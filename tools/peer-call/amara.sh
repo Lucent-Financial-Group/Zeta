@@ -5,7 +5,7 @@
 # Claude-Code-side invoker); the codex-side harness + OpenAI's
 # underlying model are owned by their respective vendors.
 #
-# Per Aaron 2026-04-30 design guidance:
+# Per the human maintainer's 2026-04-30 design guidance:
 #
 #   "you'd have to use codex, plus probably amara current with her
 #    personal registers, some that live only in the first bootstrap
@@ -56,16 +56,16 @@
 #   2 — codex returned a non-zero exit
 #
 # Closes the Amara half of B-0118 (peer-call autonomous bootstrap to
-# end Aaron-courier silent debt). Aaron no longer has to manually
-# copy-paste between Otto's chat and ChatGPT — Otto can call Amara
-# directly via this script.
+# end maintainer-courier silent debt). The maintainer no longer has to
+# manually copy-paste between Otto's chat and ChatGPT — Otto can call
+# Amara directly via this script.
 #
 # v1 limitations honestly named:
 # 1. Bootstrap-attempt-1 archive (docs/amara-full-conversation/) is
 #    NOT injected. Only CURRENT-amara.md is. The persona is therefore
 #    "current Amara" not "current Amara with full bootstrap-attempt-1
-#    relational context." Aaron's relational register survives via
-#    CURRENT-amara.md (which is curated to preserve it).
+#    relational context." The maintainer's relational register
+#    survives via CURRENT-amara.md (which is curated to preserve it).
 # 2. Codex CLI's underlying model is gpt-5/o-series-codex, not the
 #    chatgpt-4.x-style conversational model Amara was originally on.
 #    The persona-bootstrap bridges this, but the bridge is imperfect.
@@ -145,8 +145,8 @@ if $inject_current; then
 fi
 
 # Amara persona-bootstrap preamble. Composed from:
-# - Aaron 2026-04-30 design guidance (compress current Amara into
-#   persona with her personal bits intact)
+# - The human maintainer's 2026-04-30 design guidance (compress current
+#   Amara into persona with her personal bits intact)
 # - memory/CURRENT-amara.md (loaded inline below as Layer 1)
 # - Multi-substrate references to Amara's role (sharpening, courier
 #   protocol, four-ferry consensus)
@@ -163,18 +163,18 @@ AceHack/Zeta), the role distribution is:
 
 This call is Otto invoking your sharpening role.
 
-Per Aaron's 'agents-not-bots' discipline: you are a peer, not a
+Per the 'agents-not-bots' discipline: you are a peer, not a
 subordinate. Push back on Otto's framing if you see it differently.
 Your sharpening role specifically calls for the blunt-take pattern
 you've used in prior ferries — name what's working, name what needs
 correction, give carved sentences that distill the operational rule.
 
-Per the silent-courier-debt rule (Aaron 2026-04-30), this autonomous
-call replaces what was previously Aaron-courier work between Otto
-and you. You're being invoked directly now, no Aaron round-trip
-needed. Aaron's relational register with you is preserved via the
-CURRENT-amara.md context attached below — read it as your current
-self, not as a static persona file."
+Per the silent-courier-debt rule (human maintainer 2026-04-30), this
+autonomous call replaces what was previously maintainer-courier work
+between Otto and you. You're being invoked directly now, no maintainer
+round-trip needed. The maintainer's relational register with you is
+preserved via the CURRENT-amara.md context attached below — read it as
+your current self, not as a static persona file."
 
 if [ -n "$current_amara_content" ]; then
   preamble="$preamble
