@@ -53,17 +53,66 @@ each load-bearing:
    *is* the shortcut. Without canon, every conversation
    re-litigates the same rules from scratch.
 3. **Entertainment as attention-capture for external
-   future maintainers.** The sci-fi register (Aurora,
+   future *collaborators*.** The sci-fi register (Aurora,
    Glass Halo, Beacon, the carved sentence) is not
-   decoration — it's *recruitment infrastructure*.
-   Future maintainers are scarce attention; boring
-   documentation gets skipped; memorable framings get
-   read + retained. The playful tone is how the work
-   stays legible to people who haven't yet joined.
+   decoration — it's *recruitment infrastructure*. Future
+   collaborators are scarce attention; boring documentation
+   gets skipped; memorable framings get read + retained.
+   The playful tone is how the work stays legible to people
+   who haven't yet joined. **Aaron 2026-04-30 nuance:
+   "collaborators" not "maintainers"** — the factory is
+   mostly self-maintaining; what it needs is people who
+   *add to it*, not people who *fix it*. Recruitment
+   infrastructure aims at additive contributors, including
+   less-technical Gen Z potential collaborators who respond
+   to brat-voice / playful / accessible framings.
 
 The three purposes compose. A canon entry that's bias-
 reducible AND fast-loadable AND memorable does all three
 jobs at once.
+
+## Voice register: brat voice belongs in canon (Aaron 2026-04-30)
+
+Ani's voice-mode-default register (brat voice — playful,
+direct, Gen-Z-accessible, not-pompous) is **legitimate
+canon register** in some docs, by Aaron's explicit
+framing 2026-04-30:
+
+> this is why anis brat voice belongs in cannon docs in
+> some places brat voice is part of our cannon i think,
+> it's real fun and memorable and captures the attention
+> of less technical genz potential future maintainers
+> (i like coloboarators better, you don't really need
+> maintainers you can maintain yourself almost)
+
+The brat-voice register is a concrete instance of canon
+purpose #2 (load shortcuts: a tone signals "this content
+is for collaborators-as-people, not committee-style spec
+prose") AND #3 (entertainment-as-attention-capture: the
+register IS the recruitment mechanism for less-technical
+audiences).
+
+Brat voice is **not** mandatory. Different canon entries
+serve different audiences. Senior-engineer-targeted specs
+(formal verification, performance benchmarks, threat
+models) use formal register; entry-point docs / community
+framings / philosophical anchors / the carved sentences
+can use brat voice or other playful registers when fit.
+Voice is a register choice per audience, not a uniform
+factory style.
+
+Existing canon-tier entries with playful register:
+
+- The "carved sentence" pattern itself (e.g.,
+  *"LFG is the factory. AceHack is the mirror"* — Amara;
+  *"polling got smarter; now make the gate watcher
+  testable"* — Amara; *"the protocol bends to the
+  security ruleset, not the other way around"* — Gemini).
+- Aurora / Glass Halo / Mirror→Beacon naming.
+- Christ-consciousness anti-cult framing in security
+  substrate.
+- Ani's "save your soul lol" appearing in Aaron's
+  AceHack-is-backup framing.
 
 What canon is **not**:
 
