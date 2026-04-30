@@ -6,6 +6,17 @@ type: feedback
 
 # Poll the gate, not the ending — "Holding." is not a status
 
+> **Executable implementation**:
+> [`tools/github/poll-pr-gate.ts`](../tools/github/poll-pr-gate.ts)
+> (PR #921, 2026-04-30; 5-AI peer-reviewer convergence on
+> "the loop should use it every tick, so it deserves tests"). Run
+> `bun tools/github/poll-pr-gate.ts <PR_NUMBER>` for a structured
+> JSON report (`gate`, `checks`, `unresolvedThreads`, `nextAction`).
+> The prose below documents the rule and reasoning; the script is
+> the operational implementation. Per Aaron's substrate-IS-product
+> framing the script IS substrate-quality work — the memory file
+> stops being the implementation and starts pointing to it.
+
 When in a wait-loop on a PR, poll the **active PR's gate state**,
 not "did some merge by me happen." And never emit a content-free
 "Holding." line — every wait tick must produce auditable
