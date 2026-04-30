@@ -76,8 +76,10 @@ interface ArgParseResult {
   readonly errorMessage: string;
 }
 
+type StringArgKey = "commitSha" | "maxN" | "sinceDate" | "branch" | "v1ShipDate";
+
 type ArgStep =
-  | { readonly kind: "ok"; readonly key: keyof MutableArgs; readonly value: string; readonly setMode: Mode | null; readonly skip: 1 }
+  | { readonly kind: "ok"; readonly key: StringArgKey; readonly value: string; readonly setMode: Mode | null; readonly skip: 1 }
   | { readonly kind: "error"; readonly message: string }
   | { readonly kind: "help" };
 
@@ -91,7 +93,7 @@ interface MutableArgs {
 }
 
 function classifyArg(arg: string, next: string | undefined): ArgStep {
-  const requiresNext: Record<string, { key: keyof MutableArgs; setMode: Mode | null; missing: string }> = {
+  const requiresNext: Record<string, { key: StringArgKey; setMode: Mode | null; missing: string }> = {
     "--commit": { key: "commitSha", setMode: "commit", missing: "error: --commit requires SHA" },
     "--max": { key: "maxN", setMode: "max", missing: "error: --max requires N" },
     "--since": { key: "sinceDate", setMode: "since", missing: "error: --since requires DATE (YYYY-MM-DD)" },
