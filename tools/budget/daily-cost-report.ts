@@ -153,8 +153,12 @@ function runProjectRunway(): { exitCode: number; output: string; note: string } 
   });
   // Defensive: result.stdout / result.stderr can be null when the
   // child fails to start (Copilot P0 on #901). Guard with `?? ""`
-  // so we don't end up with a "nullnull" projection block.
+  // so we don't end up with a "nullnull" projection block. The
+  // typings claim string when encoding is set, but the runtime
+  // doesn't always cooperate.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const stdout = result.stdout ?? "";
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const stderr = result.stderr ?? "";
   const classified = classifySpawnFailure(
     result.status,
@@ -208,6 +212,57 @@ ${args.projection}
 `;
 }
 
+function isRegularFileSafe(path: string): boolean {
+  try {
+    return statSync(path).isFile();
+  } catch {
+    return false;
+  }
+}
+
+interface StepResult {
+  readonly ok: boolean;
+  readonly projection?: string;
+}
+
+function runSnapshotStep(skipSnapshot: boolean, dryRun: boolean): StepResult {
+  if (skipSnapshot) {
+    process.stdout.write("==> snapshot-burn.sh SKIPPED per --skip-snapshot\n");
+    return { ok: true };
+  }
+  const burn = runSnapshotBurn(dryRun);
+  if (burn.exitCode !== 0) {
+    if (burn.note.length > 0) {
+      process.stderr.write(`snapshot-burn.sh: ${burn.note}\n`);
+    }
+    process.stderr.write(`error: snapshot-burn.sh failed (exit ${String(burn.exitCode)})\n`);
+    return { ok: false };
+  }
+  return { ok: true };
+}
+
+const BOOTSTRAP_PROJECTION =
+  "No snapshots captured yet. The first snapshot-burn.sh run will append a baseline row to docs/budget-history/snapshots.jsonl. Once N >= 2 snapshots exist across LFG merges, projection becomes available.";
+
+function runProjectionStep(snapshotsPath: string): StepResult {
+  if (!isRegularFileSafe(snapshotsPath)) {
+    process.stdout.write(
+      "==> project-runway.sh SKIPPED (no snapshots yet); writing bootstrap report\n",
+    );
+    return { ok: true, projection: BOOTSTRAP_PROJECTION };
+  }
+  process.stdout.write("==> project-runway.sh\n");
+  const runway = runProjectRunway();
+  if (runway.exitCode !== 0) {
+    if (runway.note.length > 0) {
+      process.stderr.write(`project-runway.sh: ${runway.note}\n`);
+    }
+    process.stderr.write(`error: project-runway.sh failed (exit ${String(runway.exitCode)})\n`);
+    return { ok: false };
+  }
+  return { ok: true, projection: runway.output };
+}
+
 export function main(argv: readonly string[]): number {
   const parsed = parseArgs(argv);
   if ("help" in parsed) {
@@ -223,47 +278,12 @@ export function main(argv: readonly string[]): number {
   const reportPath = resolve(root, "docs", "budget-history", "latest-report.md");
   const snapshotsPath = resolve(root, "docs", "budget-history", "snapshots.jsonl");
 
-  // Step 1 — capture snapshot (unless skipped)
-  if (!parsed.skipSnapshot) {
-    const burn = runSnapshotBurn(parsed.dryRun);
-    if (burn.exitCode !== 0) {
-      if (burn.note.length > 0) {
-        process.stderr.write(`snapshot-burn.sh: ${burn.note}\n`);
-      }
-      process.stderr.write(`error: snapshot-burn.sh failed (exit ${String(burn.exitCode)})\n`);
-      return 1;
-    }
-  } else {
-    process.stdout.write("==> snapshot-burn.sh SKIPPED per --skip-snapshot\n");
-  }
+  const snapshotStep = runSnapshotStep(parsed.skipSnapshot, parsed.dryRun);
+  if (!snapshotStep.ok) return 1;
 
-  // Step 2 — run projection (text mode). Match bash `-f` semantics
-  // (regular-file check; existsSync would also accept directories).
-  let isRegularFile: boolean;
-  try {
-    isRegularFile = statSync(snapshotsPath).isFile();
-  } catch {
-    isRegularFile = false;
-  }
-  let projection: string;
-  if (!isRegularFile) {
-    process.stdout.write(
-      "==> project-runway.sh SKIPPED (no snapshots yet); writing bootstrap report\n",
-    );
-    projection =
-      "No snapshots captured yet. The first snapshot-burn.sh run will append a baseline row to docs/budget-history/snapshots.jsonl. Once N >= 2 snapshots exist across LFG merges, projection becomes available.";
-  } else {
-    process.stdout.write("==> project-runway.sh\n");
-    const runway = runProjectRunway();
-    if (runway.exitCode !== 0) {
-      if (runway.note.length > 0) {
-        process.stderr.write(`project-runway.sh: ${runway.note}\n`);
-      }
-      process.stderr.write(`error: project-runway.sh failed (exit ${String(runway.exitCode)})\n`);
-      return 1;
-    }
-    projection = runway.output;
-  }
+  const projectionStep = runProjectionStep(snapshotsPath);
+  if (!projectionStep.ok) return 1;
+  const projection = projectionStep.projection ?? "";
 
   // Step 3 — write the report (overwrite, not append)
   const report = buildReport({
