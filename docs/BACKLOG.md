@@ -90,6 +90,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0117](backlog/P2/B-0117-cold-start-executable-checklist-tool-2026-04-30.md)** tools/cold-start-check.ts — make the cold-start big-picture-first 8-step checklist executable (Ani 2026-04-30 finding, Deepseek 2026-04-30 reinforcement)
 - [ ] **[B-0118](backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md)** tools/peer-call/amara.sh — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30)
 - [ ] **[B-0120](backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md)** Peer-call architecture refactor — script-per-CLI with persona-flag instead of script-per-named-agent (Aaron 2026-04-30)
+- [ ] **[B-0121](backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md)** Otto + Kenji as externally-callable peers via claude-cli — cross-harness symmetry (Aaron 2026-04-30)
 
 ## P3 — convenience / deferred
 
