@@ -70,6 +70,33 @@ Convert auto-merge from "set it and forget it" to "armed with
 explicit verification of conditions." Same discipline as the
 lease-rejection-restarts-the-gate rule.
 
+### Auto-merge re-arm during dependency-incident recovery (Claude.ai 2026-04-30)
+
+When auto-merge has been deliberately disabled because of a
+live dependency incident (e.g., GitHub status flagging Pull
+Requests as `degraded_performance`), re-arming requires a
+**stricter freshness check** than re-arming during normal
+operation. Re-arm only when ALL of:
+
+1. Dependency status returns to "all systems operational" OR
+   the affected component is no longer in the factory's
+   relevant-component allowlist (per B-0109's allowlist
+   rule).
+2. The pre-flight three-condition check (above) all pass.
+3. **Two consecutive freshness checks return consistent
+   results.** A single API result during incident recovery
+   could falsely indicate readiness if the result was
+   itself produced from stale state. Two consecutive
+   consistent reads — separated by enough time that
+   recovery-jitter would surface — is the discriminator
+   between "actually clear" and "currently looks clear."
+
+Without the consistency-across-checks rule, the conservative
+auto-merge-disable becomes a coin-flip on re-arm. The whole
+point of disabling during incident is to avoid acting on
+incomplete data; the re-arm check should be at least as
+strict as the disable trigger.
+
 ### "Next action" is a plan, not a status (Claude.ai 2026-04-30)
 
 The "Next action" field carries operational load. Bad form:
