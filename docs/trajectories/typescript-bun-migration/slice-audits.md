@@ -421,7 +421,7 @@ Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
 ### Code-pattern audit (per-port)
 
-- **`push-with-retry.ts`** (129 → 138 lines): bash `[[ =~ $int_re ]]` regex → `POSITIVE_INT_RE.test()`. Bash `mktemp` + tee + grep on tmp file → `spawnSync` with `stdio: ['inherit', 'inherit', 'pipe']` capturing stderr in-memory; `TRANSIENT_5XX_RE.test()` against captured string. Bash `set +e; git push; exit_code=$?; set -e` → straightforward `result.status ?? 1`. Bash `sleep "$backoff"` → `Atomics.wait(view, 0, 0, seconds * 1000)` synchronous-busy-wait pattern (preserves the script's synchronous flow; async setTimeout would change exit-code semantics). Exponential backoff doubling preserved (`backoff *= 2`). DST-ACCEPTED-BOUNDARY classification preserved in header comment (Otto-168 boundary registry §3).
+- **`push-with-retry.ts`** (129 → 184 lines): bash `[[ =~ $int_re ]]` regex → `POSITIVE_INT_RE.test()`. Bash `mktemp` + tee + grep on tmp file → `spawnSync` with `stdio: ['inherit', 'inherit', 'pipe']` capturing stderr in-memory; `TRANSIENT_5XX_RE.test()` against captured string. Bash `set +e; git push; exit_code=$?; set -e` → `classifySpawnFailure` helper handling 4 cases: status set / ENOENT (return 127 like bash command-not-found) / other spawn error / signal-terminated. Bash `sleep "$backoff"` → `Atomics.wait(view, 0, 0, seconds * 1000)` synchronous-sleep pattern (preserves the script's synchronous flow; async setTimeout would change exit-code semantics). Exponential backoff doubling preserved (`backoff *= 2`). DST-ACCEPTED-BOUNDARY classification preserved in header comment (Otto-168 boundary registry §3).
 
 ### Equivalence audit
 

@@ -76,34 +76,75 @@ function validateEnv(): Validated | { readonly error: string } {
 }
 
 function sleepSeconds(seconds: number): void {
-  // Synchronous busy-wait via Atomics.wait on a SharedArrayBuffer.
-  // Bun supports Atomics.wait on a shared int32 view; falls back to
-  // a tight loop if not available. We need a synchronous sleep
-  // because the bash original uses `sleep` between attempts inside
-  // a synchronous loop, and entry guard / exit-code semantics
-  // depend on the script staying synchronous.
+  // Synchronous sleep via Atomics.wait on a SharedArrayBuffer. The
+  // shebang pins this to Bun, which supports main-thread Atomics.wait
+  // (Node's main thread throws TypeError; off-thread workers in either
+  // runtime work too). We need synchronous because the entry guard
+  // `process.exit(main(...))` depends on `main` returning synchronously.
   const sab = new SharedArrayBuffer(4);
   const view = new Int32Array(sab);
   Atomics.wait(view, 0, 0, seconds * 1000);
+}
+
+interface SpawnError {
+  readonly code?: string;
+}
+
+function classifySpawnFailure(
+  status: number | null,
+  signal: string | null,
+  error: SpawnError | undefined,
+): { readonly status: number; readonly note: string } {
+  if (status !== null) return { status, note: "" };
+  // status === null implies either a signal termination or a spawn
+  // failure (ENOENT / EACCES / EAGAIN). Match bash exit-code conventions
+  // where practical: 127 for command-not-found, 1 otherwise.
+  if (error?.code === "ENOENT") {
+    return { status: 127, note: "git not found on PATH (ENOENT)" };
+  }
+  if (error?.code !== undefined) {
+    return { status: 1, note: `spawn failed (${error.code})` };
+  }
+  if (signal !== null) {
+    return { status: 1, note: `git terminated by signal ${signal}` };
+  }
+  return { status: 1, note: "git terminated without exit code" };
 }
 
 function runOnce(args: readonly string[]): {
   status: number;
   stderr: string;
 } {
+  // `git` invocation: no shell interpolation (args passed as
+  // separate array elements); user-provided args go directly to git
+  // push, not the shell. Same security posture as the bash original
+  // which runs `git push "$@"` in an unquoted-glob-safe way.
   // eslint-disable-next-line sonarjs/no-os-command-from-path
   const result = spawnSync("git", ["push", ...args], {
     stdio: ["inherit", "inherit", "pipe"],
     encoding: "utf8",
     maxBuffer: 64 * 1024 * 1024,
   });
-  const stderr = result.stderr;
+  // Defensive: @types/node typings claim `stderr: string` (when
+  // encoding is set), but the runtime can return `null` when the
+  // child cannot start (ENOENT/EACCES). Guard with `?? ""` so the
+  // downstream regex match against the empty string is safe.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const stderr = result.stderr ?? "";
   // Replay captured stderr to the user (bash original streams via
   // tee; we batch).
   if (stderr.length > 0) {
     process.stderr.write(stderr);
   }
-  return { status: result.status ?? 1, stderr };
+  const classified = classifySpawnFailure(
+    result.status,
+    result.signal,
+    result.error as SpawnError | undefined,
+  );
+  if (classified.note.length > 0) {
+    process.stderr.write(`push-with-retry: ${classified.note}\n`);
+  }
+  return { status: classified.status, stderr };
 }
 
 export function main(args: readonly string[]): number {
