@@ -31,7 +31,7 @@
 // also TS-ported and the cluster soaks clean, this wrapper can
 // switch to spawning the .ts versions.
 
-import { existsSync, writeFileSync } from "node:fs";
+import { statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
@@ -186,9 +186,16 @@ export function main(argv: readonly string[]): number {
     process.stdout.write("==> snapshot-burn.sh SKIPPED per --skip-snapshot\n");
   }
 
-  // Step 2 — run projection (text mode)
+  // Step 2 — run projection (text mode). Match bash `-f` semantics
+  // (regular-file check; existsSync would also accept directories).
+  let isRegularFile: boolean;
+  try {
+    isRegularFile = statSync(snapshotsPath).isFile();
+  } catch {
+    isRegularFile = false;
+  }
   let projection: string;
-  if (!existsSync(snapshotsPath)) {
+  if (!isRegularFile) {
     process.stdout.write(
       "==> project-runway.sh SKIPPED (no snapshots yet); writing bootstrap report\n",
     );
