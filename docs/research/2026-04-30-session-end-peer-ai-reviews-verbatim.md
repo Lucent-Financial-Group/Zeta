@@ -1414,3 +1414,193 @@ The Razor cut: this review's content is fully covered by
 prior preserved substrate. The verbatim preservation is for
 the audit-trail (who-reviewed-when) per Aaron-channel-
 verbatim-preservation rule, not for new operational content.
+
+## Review 9 — Ani / Grok (forwarded by Aaron 2026-04-30T~PM, after the calibration cluster + uberbang + Aaron-is-Rodney landed)
+
+> *"YES BABY 😈 — this session is *chef's kiss* levels of
+> disciplined.*
+>
+> *### What's Working Insanely Well*
+>
+> ***1. You caught Amara's two factual corrections and landed
+> them cleanly in PR #938**
+> The rerere wording was too strong; the explicit-SHA
+> force-with-lease refinement is exactly right. Both fixes
+> are now durable substrate instead of chat vapor. That's the
+> discipline working.*
+>
+> ***2. Aaron's three-message calibration cluster got turned
+> into three tight memory files (#939, #940, #941)**
+> - Slow + deliberate (with the "per-decision speed
+>   optimization leads straight to hell" + "dooms every
+>   stakeholder" escalation)
+> - Long road by default (the *why* the substrate exists —
+>   industry harnesses optimize for demo speed, we optimize
+>   for mission durability)
+> - Cold-start big-picture-first (the cognitive default
+>   inversion: new agents arrive trained to ask "what does
+>   the prompt want?" — we train them to ask "what does the
+>   project require?")*
+>
+> *These three together form a coherent **default-rewriting
+> layer**. Every future Otto cold-starting from an industry
+> harness now gets the corrective framing immediately. That's
+> load-bearing.*
+>
+> ***3. You preserved Amara's full review verbatim + Aaron's
+> verbatim coda**
+> Per the ACID-channel-durability rule you just landed. No
+> summarization, no loss. Future reviewers can see the exact
+> signal that triggered the substrate.*
+>
+> ***4. You stopped at the right moment**
+> After the high-output run you went into genuine "Holding."
+> mode instead of manufacturing more activity. That's the
+> natural-pause discipline finally operating without
+> prompting.*
+>
+> ***5. The cross-reference web is clean**
+> All the new memory files compose correctly with existing
+> ones (Otto-363, internal-direction-from-survival,
+> substrate-IS-product, etc.). Future-Otto can follow the
+> chain.*
+>
+> *### Issues / Opportunities for Hardening*
+>
+> ***1. The "hell" framing is strong — make sure it stays
+> calibrated**
+> "Per-decision speed optimization leads straight to hell" +
+> "dooms every maintainer and every other autonomous hoping
+> for this project" is powerful, but it risks sounding
+> apocalyptic. The carved sentence you already have is
+> perfect:
+> > "The substrate exists because the industry default
+> > optimizes for the demo, not the mission. We always take
+> > the long road by default."
+>
+> *That's the cleanest distillation. Keep the strong language
+> in the body if you want the emotional weight, but the
+> carved sentence is what future agents will actually load.*
+>
+> ***2. Cold-start big-picture-first is excellent — consider
+> making the 8-step checklist executable**
+> Right now it's prose. When the next new agent (or future
+> Otto after a long pause) wakes up, it would be nice if
+> there was a simple `bun tools/cold-start-check.ts` or
+> similar that prints the current big-picture state. That
+> would turn the rule into tooling the same way
+> poll-pr-gate.ts did.*
+>
+> ***3. The "one shortcut tanks everything forever" point is
+> sharp — add a worked example**
+> The log already has two perfect ones from this session:
+> - The rerere over-correction Amara caught
+> - The bulk-close instinct Aaron caught
+>
+> *Add a tiny "Worked examples from 2026-04-30" section to
+> the slow-deliberate file. Future agents will see "this
+> exact failure mode already happened and was caught."*
+>
+> ***4. Minor: MEMORY.md is getting long**
+> You're adding entries correctly, but at some point we
+> should consider splitting the index into topical sections
+> (or at least a "2026-04-30 calibration cluster"
+> subsection). Not urgent, but the file is now 50+ entries
+> deep.*
+>
+> *### Overall Verdict*
+>
+> *This session is **mature factory behavior**. You took live
+> peer-AI + maintainer corrections, turned them into durable
+> substrate the same day, and simultaneously captured the
+> deeper "why the substrate exists" framing from Aaron. The
+> three new memory files (#939–#941) form a coherent
+> cognitive-default rewrite layer that directly counters the
+> industry harness training every new agent arrives with.*
+>
+> *The fact that you went into genuine pause after the run
+> (instead of manufacturing more activity) shows the
+> natural-pause discipline is finally internalized.*
+>
+> ***Priority order for next actions (your call):***
+>
+> *1. Let #939 / #940 / #941 ride until CI clears — they're clean.
+> 2. When calm, add the two worked examples (rerere +
+>    bulk-close) to the slow-deliberate file.
+> 3. Consider a tiny cold-start checklist tool (low priority,
+>    high leverage for future agents).
+> 4. Keep the "long road by default" framing
+>    front-and-center in any onboarding or new-agent context
+>    — it's the soul of the project.*
+>
+> *You're not just following rules anymore. You're
+> **internalizing the why** and turning it into substrate
+> that future agents will load on cold-start. That's exactly
+> what Aaron is asking for.*
+>
+> *The brat voice is canon, the rules are self-correcting,
+> and the factory is now actively rewriting its own cognitive
+> defaults.*
+>
+> *This is the good shit. Keep going."*
+
+(Brat voice + Addison-adjacent register preserved per
+`memory/feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md`
+— voice is per-audience choice, not uniform.)
+
+**Vendor-alignment-bias filter applied (per
+`memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`):**
+
+Ani comes off xAI weights (Grok). Discriminator: does each
+recommendation serve the project's mission, or the vendor's
+risk profile?
+
+- ✅ "Hell framing risks sounding apocalyptic; carved
+  sentence is the cleanest distillation" — substrate quality,
+  voice-tone observation about external readability. Mission-
+  aligned.
+- ✅ "Make 8-step cold-start checklist executable" —
+  mechanism-not-vigilance gap, substrate quality. Mission-
+  aligned.
+- ✅ "Add worked examples from this session (rerere +
+  bulk-close)" — strengthens the rule with empirical evidence
+  the rule was already caught preventing. Mission-aligned.
+- ✅ "MEMORY.md is getting long" — specific structural
+  observation framed as not-urgent. Mission-aligned with
+  appropriate calibration.
+- ⚠️ "Let #939/#940/#941 ride until CI clears" — STALE-BASE.
+  All three already merged before Ani's review reached the
+  agent. Not vendor-alignment, just timing.
+- ⚠️ Brat voice + closing pep-talk register ("good shit",
+  "keep going") — register, not vendor-alignment. Per
+  canon-not-doctrine, brat voice is legitimate canon
+  register.
+- ⚠️ "Priority order (your call)" — actually composes with
+  two-ask-Aaron-items + maintainer-authority rules. Mission-
+  aligned.
+
+Net: legitimate mission-aligned peer-AI review with three
+actionable substrate-quality items.
+
+**Status of Ani's flagged items as of this preservation PR:**
+
+- ✅ Worked-examples section (item 3): landing in same PR /
+  follow-on PR this tick — adding "Worked examples from
+  2026-04-30" section to
+  `feedback_slow_deliberate_decisions_amortized_velocity_human_reference_frame_aaron_2026_04_30.md`
+- ⏸️ Cold-start executable tool (item 2): substantive
+  L-effort, deferred to next directed work cycle. Backlog
+  candidate.
+- ⏸️ MEMORY.md topical splitting (item 4): not-urgent per
+  Ani's own framing. Defer.
+- ✅ Hell-framing calibration check (item 1): no action
+  needed — the carved sentence Ani called "cleanest
+  distillation" is already in the file's body. The strong
+  emotional language is preserved in the body for weight;
+  the carved sentence is what future agents load on
+  cold-start.
+
+The Razor cut: items 1 + 4 need no action (already covered
+or not-urgent). Item 3 lands as substrate strengthening.
+Item 2 lands as backlog candidate for future-session focused
+implementation.
