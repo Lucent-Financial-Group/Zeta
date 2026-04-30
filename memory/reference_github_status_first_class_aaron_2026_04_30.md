@@ -140,10 +140,11 @@ The freshness-check produces a one-of-three classification:
 
 The freshness-check itself is non-mutating (a single HTTP GET).
 Its cost is negligible vs. the cost of acting on incomplete
-state. **Skipping it is not an option** — the every-minute
-autonomous-loop cron makes per-tick freshness affordable, and
-the per-investigation use is amortized over what would
-otherwise be wasted speculation cycles.
+state. **Skipping it where mandated is not an option** — the
+cadence-driven check (per the cadence rule above), the
+on-suspicion check, and the pre-mutation check are all
+required; only the every-tick interpretation is over-specified
+per Aaron's calibration.
 
 ## The assumption this rule makes testable
 
@@ -162,12 +163,14 @@ mode into a visible one.
 
 When auto-merge has been deliberately disabled because of a
 live incident, re-arming requires **two consecutive consistent
-freshness checks** (per
-`feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`
-"Auto-merge re-arm during dependency-incident recovery"
-section). One freshness check during recovery jitter is not
-enough — recovery may produce intermittent operational
-readings before the underlying state actually clears.
+freshness checks** (per the "Auto-merge re-arm during
+dependency-incident recovery" section in the poll-the-gate
+rule landing in PR #911 alongside this reference at
+`memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`;
+the cross-reference resolves once both PRs merge). One
+freshness check during recovery jitter is not enough —
+recovery may produce intermittent operational readings before
+the underlying state actually clears.
 
 ## Composes with
 
@@ -178,18 +181,22 @@ readings before the underlying state actually clears.
   when their status sources are wired in; the design pass for
   the full surface lives in B-0109.
 - `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`
-  — the poll-the-gate rule that names the gate-state shape and
+  (landing in PR #911 alongside this reference) — the
+  poll-the-gate rule that names the gate-state shape and
   the auto-merge pre-flight check. The freshness-check rule
   here is the dependency-layer version of poll-the-gate.
 - `docs/AUTONOMOUS-LOOP.md` — the loop discipline. The
   freshness-check above adds a dependency-aware pre-flight to
   the existing tick checklist; binding integration into the
   loop spec is a follow-up edit.
-- `memory/feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`
-  — the visibility-constraint rule. A degraded GitHub also
-  degrades the visibility surface Aaron uses to verify
-  factory state; freshness-check failures are a visibility
-  gap that should be flagged in the lane-state report.
+- The visibility-constraint rule (Aaron 2026-04-28; canonical
+  home is `memory/CURRENT-aaron.md`'s "Visibility constraint"
+  section, since the dedicated `feedback_*.md` file referenced
+  by some MEMORY.md index entries was never landed in-repo).
+  A degraded GitHub also degrades the visibility surface Aaron
+  uses to verify factory state; freshness-check failures are
+  a visibility gap that should be flagged in the lane-state
+  report.
 
 ## Origin
 
