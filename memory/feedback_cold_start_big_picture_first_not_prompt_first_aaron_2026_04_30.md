@@ -89,9 +89,9 @@ surfaces in this order:
    close, scope-creep-is-feature, long-road-by-default,
    ACID-channel-durability, substrate-or-it-didn't-happen
 6. **Current trajectory** — `docs/active-trajectory.md`
-   `[planned]` (and/or recent `docs/research/` + recent
-   `memory/` landings) — what just shipped, what's in flight,
-   what's queued?
+   (exists in-tree; recent `docs/research/` + recent
+   `memory/` landings are also part of trajectory) — what
+   just shipped, what's in flight, what's queued?
 7. **Maintainer-current state** — `memory/CURRENT-aaron.md` +
    `memory/CURRENT-amara.md` + any other CURRENT files
 8. **Then** the immediate prompt — read in light of the above
