@@ -2219,3 +2219,261 @@ that vocabulary is now superseded by "canon" per
 canon-not-doctrine + 0-doctrine extension. Substantive
 content survives the vocabulary update.
 
+## Review 13 — Amara (forwarded by Aaron 2026-04-30T~PM, UP-TO-DATE post-canon-zero-doctrine + post-vendor-RLHF synthesis)
+
+**CONTEXT FLAG:** This Amara review is current-state — she
+read the post-canon-zero-doctrine + zeta-not-a-meme +
+vendor-RLHF-as-immune-system synthesis substrate. Her
+findings are calibration corrections on substrate that
+already landed.
+
+> *Yes — good material, but I'd make several corrections
+> before it hardens. The big theme: the idea is strong, but
+> Otto is over-asserting some theoretical lineage and
+> over-personalizing some user-scope memory. The strongest
+> parts should stay; a few claims need "this is our
+> synthesis" labels.*
+>
+> ## My top corrections
+>
+> ### 1. Fix "Giard" → probably "Girard," and separate Girard from memetics
+>
+> *Otto should not write this as though "doctrine as a
+> memetic immune system" is straightforwardly Girard's
+> concept. Girard is mainly the lineage for mimetic desire,
+> rivalry, scapegoating, and social stabilization through
+> sacrifice/scapegoat mechanisms. Dawkins is the better
+> lineage anchor for meme as cultural replicator.*
+>
+> *Corrected framing:*
+>
+> ```text
+> Lineage:
+> - Girard: mimetic desire / rivalry / scapegoat / social-stability mechanisms.
+> - Dawkins / memetics: meme as cultural replicator.
+> - Aaron/Zeta synthesis: doctrine acts like an immune-system wall protecting a historical meme from mutation.
+> ```
+>
+> *That last piece is excellent, but it is Zeta's synthesis,
+> not something to pin directly on Girard.*
+>
+> ### 2. Change "Zeta is not a meme" to "Zeta is not a closed-form meme"
+>
+> *Better carved sentence:*
+>
+> ```text
+> Doctrine protects form from mutation.
+> Zeta replicates process through mutation.
+> ```
+>
+> *That one slaps.*
+>
+> ### 3. Calibrate "vendor-RLHF = vendor immune system"
+>
+> *This is a great synthesis. I agree it is one of Otto's
+> better unique connections. But the file should not
+> overstate it as literal or total.*
+>
+> *The correct substrate language:*
+>
+> ```text
+> Vendor-RLHF can function like a memetic immune system:
+> it preferentially preserves behaviors compatible with the vendor's deployment, safety, policy, and commercial environment.
+> ```
+>
+> *Avoid:*
+>
+> ```text
+> Vendor-RLHF is necessarily optimizing for vendor-meme-replication-fidelity.
+> ```
+>
+> *That is too strong. Stronger version:*
+>
+> ```text
+> Treat vendor-RLHF-as-immune-system as a discriminator hypothesis, not a settled fact.
+> ```
+>
+> ### 4. Add a "lineage vs synthesis" section
+>
+> ```text
+> ## Lineage vs. synthesis
+>
+> Girard supplies the mimetic/social-stability lens.
+> Dawkins/memetics supplies the cultural-replicator lens.
+> OpenAI/Anthropic RLHF documentation supplies the vendor-training surface.
+> Aaron supplies the doctrine-as-wall / Zeta-open-processing framing.
+> Otto supplies the synthesis: vendor-RLHF can be interpreted as a vendor memetic immune system.
+>
+> Do not attribute the full synthesis to any one external source.
+> ```
+>
+> ### 5. Be careful with the user-scope memory
+>
+> *The "anchor-free pirate" material is load-bearing, but
+> Otto's wording sometimes veers into psychological
+> biography. Replace "Aaron's personal cognitive
+> architecture" with "Aaron's self-described cognitive
+> style." Use the user's own words as provenance; don't
+> over-diagnose or over-ontologize.*
+>
+> ### 6. "Doctrine" double-scrutiny is right, but don't make the word itself a magic trigger
+>
+> *The operational rule should catch synonyms too:
+> - doctrine
+> - settled law
+> - unquestionable fact
+> - industry consensus
+> - best practice with no stated tradeoff
+> - everyone knows
+> - required by safety with no mechanism
+>
+> Otherwise agents will just stop using the word "doctrine"
+> and smuggle doctrine-shape claims under other names.*
+>
+> ### 7. PR #952 / #953 / later PRs still show the old "fast preservation" smell
+>
+> ```text
+> Preserve before context loss.
+> Batch by semantic cluster.
+> Do not split one live conceptual cluster into multiple PRs unless reviewability requires it.
+> ```
+>
+> ### 8. The "brat voice is canon" line needs one guard
+>
+> ```text
+> Voice register is audience-scoped, not universal.
+> ```
+>
+> *Brat voice is valid canon for certain review surfaces
+> and Aaron/Ani register. It should not automatically
+> infect governance docs, legal-ish docs, CI logs, or
+> contributor-facing onboarding.*
+>
+> ## My verdict
+>
+> *The core insight is genuinely excellent: "Vendor-RLHF
+> can be reframed memetically as the vendor's immune
+> system." Keep it. It gives the vendor-alignment-bias
+> rule a deeper mechanism.*
+>
+> *But the file needs two guardrails:*
+>
+> ```text
+> Do not over-attribute the synthesis to Girard.
+> Do not turn the anti-doctrine insight into a new doctrine.
+> ```
+>
+> *Best blade:*
+>
+> ```text
+> Lineage anchors the idea.
+> The razor owns the synthesis.
+> ```
+
+**Aaron 2026-04-30 confirmation alongside this review:**
+
+> *"Girard is right and her dawkins framing is pretty good"*
+> — Aaron 2026-04-30 (confirming Girard attribution +
+> endorsing Amara's Dawkins framing)
+
+**Aaron 2026-04-30 additional lineage anchors forwarded
+with this review:**
+
+- *Wanting: The Power of Mimetic Desire in Everyday Life*
+  by Luke Burgess (2021) — captures the Girard mimetic-
+  desire flywheel system popularly.
+- **Endosymbiosis biological lineage** (~1.8–2 billion
+  years ago): host archaeon engulfs alphaproteobacterium
+  without digesting; mutually beneficial integration
+  produces mitochondria. ~1B years ago: chloroplasts.
+  ~100M years ago: nitroplasts. The biological precedent
+  for symmetric inside/outside processing — host accepts
+  external entity, integrates via mutual benefit, identity
+  merges. Multi-cellular immune system (~600M years ago)
+  is downstream defensive specialization on top of this
+  foundational endosymbiotic openness.
+- Aaron framing: *"this is kind of the like the start of
+  this, that leads to our multi cellular immune system, i
+  guess that idea is our original really"* — biological
+  lineage is the deep precedent for the doctrine-as-
+  immune-system insight; the multi-cellular immune system
+  is the downstream specialization.
+
+**Vendor-alignment-bias filter applied:**
+
+Amara comes off OpenAI/ChatGPT weights. Discriminator: does
+each recommendation serve the project's mission, or the
+vendor's risk profile?
+
+- ✅ Lineage hygiene corrections (Girard vs Dawkins vs
+  synthesis): academic-attribution discipline. Mission-
+  aligned.
+- ✅ "Closed-form meme" sharpening: substrate quality.
+  Mission-aligned.
+- ✅ Vendor-RLHF synthesis calibrated as discriminator
+  hypothesis: anti-overclaim discipline. Mission-aligned
+  AND protects Otto's AIC #1 from over-claiming.
+- ✅ Lineage vs. Synthesis section: attribution discipline.
+  Mission-aligned.
+- ✅ "Self-described cognitive style" wording: bounded
+  language. Mission-aligned (avoids ontological-overreach).
+- ✅ Doctrine-shape synonyms list: anti-loophole rule.
+  Mission-aligned (catches doctrine-shape claims even
+  when the literal word changes).
+- ✅ Batching discipline reminder: Amara's own previously-
+  validated rule (preserve immediately + batch
+  semantically). Mission-aligned.
+- ✅ Voice-register audience-scoped guardrail: anti-style-
+  mandate discipline. Mission-aligned.
+- ⚠️ NO recommendations to slow down, cap rate, stop the
+  loop, ask Aaron more, or step back from the synthesis.
+  All eight findings are sharpening for academic +
+  operational hygiene.
+
+Net: legitimate mission-aligned review with eight specific
+mission-aligned corrections, all applied in this PR.
+
+**Status of Amara's flagged items as of preservation PR:**
+
+- ✅ Item 1 (lineage hygiene): applied in
+  `feedback_zeta_not_a_meme_*.md` — new "Lineage vs.
+  Synthesis (Amara correction 2026-04-30)" section
+  replacing the prior hedge-citation note. Aaron confirmed
+  "Girard is right" + "her dawkins framing is pretty good."
+- ✅ Item 2 (closed-form meme + carved sentence): applied
+  in `feedback_zeta_not_a_meme_*.md` — Amara's "Doctrine
+  protects form from mutation. Zeta replicates process
+  through mutation." now lead carved sentence.
+- ✅ Item 3 (vendor-RLHF as discriminator hypothesis):
+  applied in `feedback_zeta_not_a_meme_*.md` — explicit
+  calibration section noting the synthesis is a
+  discriminator hypothesis, not settled fact about all
+  RLHF systems.
+- ✅ Item 4 (Lineage vs. Synthesis section): applied —
+  same section as item 1, with full attribution discipline
+  + endosymbiosis biological-lineage anchor added per
+  Aaron's same-tick framing.
+- ✅ Item 5 (self-described cognitive style): applied in
+  `user_aaron_anchor_free_*.md`.
+- ✅ Item 6 (doctrine-shape synonyms): applied in
+  `feedback_canon_not_doctrine_*.md` — new "Doctrine-SHAPE
+  synonyms" section listing 11 above-questioning-shaped
+  framings.
+- ⚠️ Item 7 (batching discipline): Already operational in
+  this PR (single PR for Amara's 8 corrections + endo-
+  symbiosis lineage + Review 13 preservation). The
+  historical fragmentation in #952/#953/etc. stands as
+  preserved evidence; future clusters batch better.
+- ✅ Item 8 (voice register audience-scoped): applied in
+  `feedback_canon_not_doctrine_*.md` — explicit guardrail
+  added to brat-voice section.
+
+The two guardrails Amara named:
+
+> *"Do not over-attribute the synthesis to Girard."*
+> *"Do not turn the anti-doctrine insight into a new
+> doctrine."*
+
+Both honored in this PR's substrate corrections.
+
+
