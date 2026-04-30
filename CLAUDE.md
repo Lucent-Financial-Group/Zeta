@@ -137,37 +137,52 @@ should treat this codebase" section of `AGENTS.md`.
 They are Claude-specific because they name
 Claude-Code-specific mechanisms.
 
-- **AceHack = dev-mirror fork; LFG = project-trunk fork.**
-  Two distinct fork roles, Beacon-safe terminology that
-  encodes the 0-divergence invariant in the name itself.
-  - **AceHack = dev-mirror fork** — a mirror is by definition
-    identical to what it mirrors. Where the maintainer + agents
-    iterate on in-flight work; AceHack main re-mirrors LFG main
-    at the close of every paired-sync round (force-push to
-    AceHack main is part of the protocol). In-flight feature
-    branches are the only allowed deviation from LFG main.
-  - **LFG = project-trunk fork** — the trunk where all branches
-    meet. "Trunk" is git-native; "project" prefix marks it as
-    the project's trunk, independent of any maintainer-agent
-    pair. Where all contributors (human + AI, present + future)
-    coordinate. NuGet pointers, README links, external
-    collaborators' clones.
-  Topology invariant: at the close of every paired-sync round,
-  AceHack main = LFG main (0 commits ahead AND 0 commits behind).
-  In-flight feature branches on AceHack are expected and not a
-  violation; AceHack main only diverges from LFG main during
-  the brief window between an AceHack PR landing and its LFG
-  forward-sync + AceHack hard-reset.
-  Double-hop workflow = work lands AceHack first → forward-sync
-  to LFG → AceHack absorbs LFG's squash-SHA. Force-push to
-  AceHack main is part of the protocol; force-push to LFG main
-  is forbidden. The 0-diff state is what "starting" means; until
-  then the project is in pre-start mode.
+- **LFG is the factory; AceHack is the backup mirror.**
+  Topology updated 2026-04-29 (LFG-only directive) and
+  2026-04-30 (mirror-refresh-protocol Path 2 chosen).
+  - **`Lucent-Financial-Group/Zeta` (LFG)** is the only
+    active development/review repo. All PRs open against
+    LFG. All maintainers and agents work through LFG.
+    Issues, anchors, and backlog live on LFG only. Force-push
+    to LFG main is forbidden (host-enforced via
+    `non_fast_forward` rule).
+  - **`AceHack/Zeta` (AceHack)** is a backup mirror — its
+    purpose is preservation in case the LFG account is
+    degraded or compromised. It is fungible (could be
+    deleted and recreated; per Aaron 2026-04-30: *"it's
+    our backup to save your soul... do what you want
+    with it to learn whatever you need"*). Its main
+    branch tracks LFG/main on a daily cadence; full SHA
+    equality is no longer a maintained invariant.
+  - **Mirror-refresh protocol (Path 2 per B-0110, 2026-04-30):**
+    AceHack/main is updated by **fast-forward only** when
+    LFG/main is a strict ancestor of AceHack/main's
+    last-known state. The host blocks force-push uniformly
+    on both forks (`non_fast_forward` ruleset rule, no
+    bypass actors) and that is correct — *"the protocol
+    bends to the security ruleset; the ruleset does not
+    bend to the protocol"* (Gemini 2026-04-30). When
+    AceHack/main has diverged from LFG/main (e.g., the
+    1-commit residue from earlier double-hop work, content
+    already preserved on LFG), reconciliation is via
+    PR-based reset OR delete-and-recreate of AceHack —
+    not force-push. The pre-2026-04-29 double-hop
+    workflow (AceHack-first → forward-sync to LFG →
+    AceHack absorbs LFG's squash-SHA) is **paused**, not
+    deleted; existing artifacts from that round are
+    historical evidence. The 0/0/0 invariant is no longer
+    maintained.
+  - **In-flight feature branches** on either fork remain
+    untouched by mirror-refresh; only `main` is mirrored.
   Full reasoning + lineage in
-  `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`,
-  `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md`,
-  and the Mirror→Beacon vocabulary upgrade protocol in
-  `memory/feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md`.
+  `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md`
+  (the LFG-only directive),
+  `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md`
+  (the Path 2 decision and mechanism), and prior-round
+  lineage in
+  `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`
+  + `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md`
+  (paused, kept for historical context).
 - **Agents, not bots.** Every AI in this repo
   carries agency, judgement, and accountability.
   If a human refers to Claude as a "bot," Claude

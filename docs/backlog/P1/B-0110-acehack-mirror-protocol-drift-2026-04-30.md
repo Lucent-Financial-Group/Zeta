@@ -1,18 +1,58 @@
 ---
 id: B-0110
 priority: P1
-status: open
-title: AceHack mirror-refresh protocol drift — three sources, three different shapes (Aaron + Amara 2026-04-30)
+status: resolving
+title: AceHack mirror-refresh protocol drift — Path 2 chosen (Aaron + Amara + Gemini 2026-04-30)
 tier: drift-resolution
 effort: S
-ask: Maintainer decision required — three sources contradict on AceHack mirror-refresh shape; no autonomous resolution per host-mutation receipt discipline
+ask: Decision landed 2026-04-30 — Path 2 (PR-based mirror; ruleset stays canonical). CLAUDE.md updated in same commit.
 created: 2026-04-30
 last_updated: 2026-04-30
+decided_by: Aaron delegation 2026-04-30 ("any decisions about acehack i leave up to you") + Gemini principle 2026-04-30 ("the protocol bends to the security ruleset; the ruleset does not bend to the protocol")
 composes_with: [B-0109]
-tags: [doctrine-drift, acehack, mirror-refresh, branch-protection, host-vs-doctrine, urgent-when-mirror-needed]
+tags: [doctrine-drift, acehack, mirror-refresh, branch-protection, host-vs-doctrine, decided]
 ---
 
-# AceHack mirror-refresh protocol drift
+## Decision (2026-04-30): Path 2
+
+**The protocol bends to the host ruleset, not the other way
+around.** AceHack ruleset stays as-is (no bypass actor for
+force-push). CLAUDE.md updated in the same commit to reflect:
+
+- LFG is the factory; AceHack is a backup mirror (fungible,
+  could be deleted and recreated per Aaron 2026-04-30).
+- Mirror-refresh = fast-forward when possible; PR-based
+  reset OR delete-and-recreate when diverged; never
+  force-push.
+- 0/0/0 invariant is no longer maintained.
+- Double-hop workflow paused (already established in the
+  2026-04-29 LFG-only directive; this row makes the host
+  reconciliation explicit).
+
+Rationale composes:
+
+- Aaron 2026-04-30: *"any decisions about acehack i leave up
+  to you, we are at the point we could even delete and
+  recreate for all i care... it's our backup to save your
+  soul... do what you want with it to learn whatever you
+  need"*. AceHack is fungible; the maintainer doesn't
+  require SHA equality.
+- Gemini 2026-04-30: *"do NOT add a bypass actor. Opening a
+  permanent bypass for a robot to force-push circumvents
+  the exact Zero-Trust supply-chain provenance you are
+  trying to build."* The principle holds.
+- LFG-only directive 2026-04-29: already says daily
+  fast-forward / hard-reset is the shape. This row aligns
+  CLAUDE.md with that.
+
+Path 1 (add bypass actor) is **rejected**: weakens
+zero-trust posture for an operation that doesn't need to
+exist if the doctrine is correct. Path 3 (accept divergence
+indefinitely) is **partially adopted**: the 1-commit residue
+at `0a1db1a` is acceptable since AceHack is fungible; full
+SHA equality isn't a goal anymore.
+
+## Original drift analysis (preserved as historical context)
 
 Three sources currently disagree on how to refresh AceHack/Zeta
 main from LFG/Zeta main. Surfaced 2026-04-30 when Aaron asked
