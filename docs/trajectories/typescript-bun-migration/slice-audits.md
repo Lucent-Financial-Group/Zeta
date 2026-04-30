@@ -411,7 +411,41 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
-## Slice 20 — 1 port (git/batch-resolve-pr-threads — last git-cluster port) (PR pending — `lane-b/ts-bun-slice-20-batch-resolve-pr-threads-2026-04-30`)
+## Slice 21 — 1 port (pr-preservation/archive-pr — last Bucket B file) (PR pending — `lane-b/ts-bun-slice-21-archive-pr-2026-04-30`)
+
+**Slice files**:
+
+- `tools/pr-preservation/archive-pr.{sh→ts}` (PR-conversation preservation — fetches review threads + reviews + general comments via gh GraphQL and writes `docs/pr-discussions/PR-<NNNN>-<slug>.md` archive; closes Bucket B)
+
+**Comparison points**: identical to slice 20. Within Gate B 30-day window. tsc gate active per #890.
+
+### Code-pattern audit (per-port)
+
+- **`archive-pr.ts`** (674 → 806 lines): the bash original was 217 lines bash + ~457 lines embedded Python (GraphQL fetcher + Markdown formatter). The TS port collapses both into a single Bun runtime — no more bash/Python boundary, no more `mktemp` + temp-file shuffle, no `set +e` to capture Python's exit code. Drops Python from runtime deps entirely. The TS line count is larger than bash because explicit type interfaces (PullRequest / ThreadNode / ReviewNode / CommentNode / etc.) replace Python's untyped dict navigation; the explicit typing is the cost of the language change, paid once at port time.
+- **3-axis paginated GraphQL fetch** preserved 1:1: top-level `reviewThreads` (100/page) + `reviews` (50/page) + `comments` (100/page), then per-thread comments (100/page) for threads with `>100` comments. Generic helper `paginateTopLevel<T>` handles the cursor loop with type-safe `extractor` callback per connection. `paginateThreadComments` handles the per-thread case.
+- **NWO parsing with Enterprise HOST/OWNER/REPO support** preserved verbatim per Codex P2 #846. `parseRepoNwo` accepts 2-segment (github.com default) or 3-segment (HOST must contain a dot — rejects `owner/repo/extra` ambiguity). Slash-injection defence on owner/name preserved.
+- **Idempotency via PR-NNNN glob** (Otto-235): `findExistingArchive` reads `docs/pr-discussions/` + filters on `PR-<NNNN>-` prefix, sorts deterministically, reuses first match. Title edits update in-place rather than orphaning the old slug.
+- **Markdown post-processor with CommonMark §4.5 fence handling** preserved: `detectFenceMarker` enforces leading-space-count ≤ 3 + no tab in prefix; closer must match marker char (backtick/tilde) AND length ≥ opener (allows nested fences via longer opener). Inside fences, no normalization — audit fidelity wins. Outside fences, whitespace-only → empty + 3+ blank-line collapse to 2.
+- **Python `json.dumps` ensure_ascii=True** for YAML-quoted titles required a non-trivial fix: `JSON.stringify` in JS preserves non-ASCII characters as-is (the right-arrow stays a literal Unicode codepoint in output); Python's default escapes them to `\uXXXX` form (e.g. the right-arrow becomes `→`, em-dash becomes `—`). The TS port's `yamlQuote` post-processes the JSON output, replacing each non-ASCII codepoint with its `\uXXXX` form to match Python's wire-format default. Both bash and TS now emit identical `—`-style escaped strings.
+
+### Equivalence audit
+
+Diff'd against bash output on this repo state (2026-04-30 main, run against PR #902):
+
+- **Argument-validation paths**: same exit code (1) and same error-message body on 2 sampled paths — no args, `abc`. The usage-line script-path is intentionally NOT byte-equivalent: bash echoes `$0` (showing the actual `./tools/pr-preservation/archive-pr.sh` path), TS hard-codes `bun tools/pr-preservation/archive-pr.ts` to give the user the form they should run. Same self-describing-line carve-out as the `archive_tool` YAML field. Note exit code 1 (not 2) on argument errors here — consistent with bash original; differs from the slice 18/19/20 budget+git scripts (those use 2 for arg errors).
+- **Live archive run on PR #902** (4 threads, 2 reviews, 0 comments): byte-equivalent EXCEPT `archived_at` (timestamp) + `archive_tool` (.sh vs .ts — deliberate self-reference). Title with non-ASCII characters (right-arrow + em-dash) escapes correctly to `→` and `—` matching Python's `json.dumps` default.
+
+### Behavioural note vs bash original
+
+- The bash + Python mix dropped to single Bun runtime. The two-stage Python invocation (validation + formatter) collapses into a single TS function call.
+- The `mktemp` temp file and `trap 'rm -f "$TMP"' EXIT` cleanup are removed — no temp file needed, the fetched data lives in memory.
+- Markdown post-processing fence handling preserved CommonMark §4.5 strictly: opening fence ≤ 3 leading spaces + no tab in prefix; closing fence same marker char + length ≥ opener.
+
+### Outcome
+
+Slice 21 passes audit. **Bucket B closed** (after this PR merges, every file flagged for TS port has been ported). The TS+Bun migration trajectory transitions from "porting" phase to "soak + bash retirement" phase. Bucket C (2 files using gh-api heavily) remains pending maintainer decision (shell-out vs Octokit). Bucket A (14 setup-script files) stays bash by design.
+
+## Slice 20 — 1 port (git/batch-resolve-pr-threads — last git-cluster port) (PR #907, merged 2026-04-30, commit `a8e15f3`)
 
 **Slice files**:
 

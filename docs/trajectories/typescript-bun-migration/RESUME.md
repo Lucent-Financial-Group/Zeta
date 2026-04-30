@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 19 merged — [#902](https://github.com/Lucent-Financial-Group/Zeta/pull/902); slice 20 in flight — `lane-b/ts-bun-slice-20-batch-resolve-pr-threads-2026-04-30`)
-**Milestone**: 40 ported + 1 in-flight = 41 total. Budget cluster (14/18/19) and peer-call cluster (15/16/17) both complete. After slice 20 lands, Bucket B reduces to 1 unported file (`tools/pr-preservation/archive-pr.sh` 674L — bash+Python mix). Bucket C: 2 (`tools/hygiene/check-github-settings-drift.sh` + `tools/hygiene/snapshot-github-settings.sh`).
+**Status**: Active (Lane B slice 20 merged — [#907](https://github.com/Lucent-Financial-Group/Zeta/pull/907); slice 21 in flight — `lane-b/ts-bun-slice-21-archive-pr-2026-04-30`)
+**Milestone**: 41 ported + 1 in-flight = 42 total. Budget cluster (14/18/19) and peer-call cluster (15/16/17) both complete; git cluster complete (13/20). Slice 21 (archive-pr.sh — last Bucket B file) is in flight; **after slice 21 lands, Bucket B is empty**. Bucket C: 2 (`tools/hygiene/check-github-settings-drift.sh` + `tools/hygiene/snapshot-github-settings.sh`).
 **Current blocker**: None.
-**Next concrete action**: After slice 20 merges, slice 21 = `tools/pr-preservation/archive-pr.sh` is the last Bucket B file (674 lines, bash+Python mix — most complex remaining). Per Gate B: read-only scope first when possible — but the remaining file is state-mutating (gh API + writes drain logs).
+**Next concrete action**: After slice 21 merges, **Bucket B is empty** — TS+Bun migration trajectory transitions from "porting" phase to "soak + bash retirement" phase. Bucket C (2 files using gh-api heavily) requires maintainer decision on shell-out vs Octokit. Bucket A (14 setup-script files) stays bash by design.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
