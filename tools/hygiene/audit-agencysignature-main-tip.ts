@@ -76,11 +76,6 @@ interface ArgParseResult {
   readonly errorMessage: string;
 }
 
-type ArgStep =
-  | { readonly kind: "ok"; readonly key: keyof MutableArgs; readonly value: string; readonly setMode: Mode | null; readonly skip: 1 }
-  | { readonly kind: "error"; readonly message: string }
-  | { readonly kind: "help" };
-
 interface MutableArgs {
   mode: Mode;
   commitSha: string;
@@ -90,8 +85,18 @@ interface MutableArgs {
   v1ShipDate: string;
 }
 
+// Derived from MutableArgs so adding/removing string fields cannot drift
+// from the ArgStep narrowing. `mode` is set via the parallel `setMode`
+// channel, never via key/value.
+type StringArgKey = Exclude<keyof MutableArgs, "mode">;
+
+type ArgStep =
+  | { readonly kind: "ok"; readonly key: StringArgKey; readonly value: string; readonly setMode: Mode | null; readonly skip: 1 }
+  | { readonly kind: "error"; readonly message: string }
+  | { readonly kind: "help" };
+
 function classifyArg(arg: string, next: string | undefined): ArgStep {
-  const requiresNext: Record<string, { key: keyof MutableArgs; setMode: Mode | null; missing: string }> = {
+  const requiresNext: Record<string, { key: StringArgKey; setMode: Mode | null; missing: string }> = {
     "--commit": { key: "commitSha", setMode: "commit", missing: "error: --commit requires SHA" },
     "--max": { key: "maxN", setMode: "max", missing: "error: --max requires N" },
     "--since": { key: "sinceDate", setMode: "since", missing: "error: --since requires DATE (YYYY-MM-DD)" },
