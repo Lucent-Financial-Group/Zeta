@@ -1,13 +1,14 @@
 ---
 id: B-0106
 priority: P2
-status: in-progress
+status: closed
 title: Add `tsc --noEmit` gate job for tools/**.ts so type errors fail CI
 tier: factory-hygiene
 effort: S
 ask: Aaron 2026-04-29 (B-0086 trajectory) — found via slice-9 #882 post-merge audit on 2026-04-30
 created: 2026-04-30
 last_updated: 2026-04-30
+closed_in: PR #890 (commit 9ca9ed9, 2026-04-30)
 composes_with: [B-0086]
 tags: [ci-lint, factory-hygiene, ts-bun-migration, mechanical-guard, missing-gate]
 ---
