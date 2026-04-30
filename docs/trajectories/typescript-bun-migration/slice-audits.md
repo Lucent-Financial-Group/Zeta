@@ -411,7 +411,32 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
-## Slice 14 — 1 port (budget/snapshot-burn — budget-cluster opens) (PR pending — `lane-b/ts-bun-slice-14-snapshot-burn-2026-04-30`)
+## Slice 15 — 1 port (peer-call/grok — peer-call cluster opens) (PR pending — `lane-b/ts-bun-slice-15-peer-call-grok-2026-04-30`)
+
+**Slice files**:
+
+- `tools/peer-call/grok.{sh→ts}` (Otto's harness-side caller for invoking Grok via cursor-agent as a peer reviewer)
+
+**Comparison points**: identical to slice 14. Within Gate B 30-day window. tsc gate active per #890.
+
+### Code-pattern audit (per-port)
+
+- **`grok.ts`** (157 → 289 lines): bash arg-parse loop → `classifyFlag` helper + `MutableArgState` so the main `parseArgs` stays under cognitive-complexity 15. Bash `eval "$context_cmd" 2>&1 | head -c 20000` → `spawnSync("/bin/sh", ["-c", contextCmd])` capturing stdout+stderr + slice to `CTX_HEAD_BYTES`; same security posture as bash original (user explicitly supplies the shell command via --context-cmd contract). Bash `head -c 20000 < "$file"` → `readFileSync` + `Buffer.subarray(0, FILE_HEAD_BYTES)`. Bash file-existence check → `isRegularFile` helper using `statSync().isFile()` with try/catch. PREAMBLE preserved verbatim (Otto's contribution to the four-ferry consensus protocol convention). cursor-agent invocation via `spawnSync` with `stdio: "inherit"` so cursor-agent's stdout/stderr stream live to the user (key UX for an LLM-CLI peer-call); exit-code semantics preserved (0 success, 2 if cursor-agent non-zero). eslint-disable for `no-os-command-from-path` placed on the literal next line (the `"cursor-agent"` argument) per the directive-placement pattern from slice-13 (#892 review).
+
+### Equivalence audit
+
+- **`grok`**: byte-equivalent on argument-validation paths (`--file` without value → exit 1 with same message; `--context-cmd` without value → exit 1; `--bogus` → exit 1; no prompt → exit 1). LLM-response equivalence is non-deterministic (cursor-agent + Grok produce different completions per invocation); only structural/UX equivalence verified — same flag set, same model selection, same preamble construction, same file/context-cmd injection.
+
+### Behavioural note vs bash original
+
+- The bash version uses `cursor-agent --print --output-format ...` directly with stdio inherited; the TS version invokes `cursor-agent` via spawnSync with `stdio: "inherit"` for parity. No buffering differences expected.
+- The eval/security boundary is preserved verbatim: user-supplied `--context-cmd` runs through `/bin/sh -c` (TS) which is structurally equivalent to `eval` (bash). Same trust assumption: caller controls the script invocation, so caller controls the context command.
+
+### Outcome
+
+Slice 15 passes audit. **Peer-call cluster opens** (first of 3 LLM-CLI wrappers). Bucket B 8 → 7. Sibling ports (gemini.sh + codex.sh) follow the same shape per the cross-script structural similarity (`diff` showed only header-comment + flag-set + model-string variations).
+
+## Slice 14 — 1 port (budget/snapshot-burn — budget-cluster opens) (PR #894, merged 2026-04-30, commit `9cb21a7`)
 
 **Slice files**:
 

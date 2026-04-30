@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 13 merged — [#892](https://github.com/Lucent-Financial-Group/Zeta/pull/892), commit `e9dc894`)
-**Milestone**: 34 ported + 1 in-flight = 35 total (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 from #880 + 3 from #882 + 2 from #883 + 2 from #884 + 1 from #885 + 1 from #892 = 34 merged; +1 in-flight in slice-14). Slice-14 opens **budget-cluster** (budget/snapshot-burn). 8 Bucket B files remain.
+**Status**: Active (Lane B slice 14 merged — [#894](https://github.com/Lucent-Financial-Group/Zeta/pull/894), commit `9cb21a7`)
+**Milestone**: 35 ported + 1 in-flight = 36 total (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 from #880 + 3 from #882 + 2 from #883 + 2 from #884 + 1 from #885 + 1 from #892 + 1 from #894 = 35 merged; +1 in-flight in slice-15). Slice-15 opens **peer-call cluster** (peer-call/grok). 7 Bucket B files remain.
 **Current blocker**: None.
-**Next concrete action**: Pick a coherent next slice from Bucket B (8 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
+**Next concrete action**: Pick a coherent next slice from Bucket B (7 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
@@ -64,18 +64,17 @@ tools/profile.sh
 
 Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
 
-### Bucket B — Should become TypeScript (8 files remaining)
+### Bucket B — Should become TypeScript (7 files remaining)
 
-Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874, #876, #878, #880, #882, #883, #884, #885, #892. The originally-listed audit/lint scripts have progressively ported (1 in slice-14 in flight — budget/snapshot-burn); the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
+Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874, #876, #878, #880, #882, #883, #884, #885, #892, #894. The originally-listed audit/lint scripts have progressively ported (1 in slice-15 in flight — peer-call/grok); the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
 
 ```text
 tools/budget/daily-cost-report.sh
 tools/budget/project-runway.sh
-tools/budget/snapshot-burn.sh                  # in flight (slice 14)
 tools/git/batch-resolve-pr-threads.sh
 tools/peer-call/codex.sh
 tools/peer-call/gemini.sh
-tools/peer-call/grok.sh
+tools/peer-call/grok.sh                        # in flight (slice 15)
 tools/pr-preservation/archive-pr.sh
 ```
 
@@ -133,6 +132,7 @@ tools/skill-catalog/backfill_dv2_frontmatter.sh    # ported in #884
 tools/audit-packages.sh                            # ported in #884
 tools/backlog/generate-index.sh                    # ported in #885
 tools/git/push-with-retry.sh                       # ported in #892
+tools/budget/snapshot-burn.sh                      # ported in #894
 ```
 
 ## Recommended next slice
