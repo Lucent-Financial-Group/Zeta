@@ -70,34 +70,82 @@ Convert auto-merge from "set it and forget it" to "armed with
 explicit verification of conditions." Same discipline as the
 lease-rejection-restarts-the-gate rule.
 
-### Auto-merge re-arm during dependency-incident recovery (Claude.ai 2026-04-30)
+### Proceed-but-verify during known dependency degradation (Aaron 2026-04-30 refinement)
 
-When auto-merge has been deliberately disabled because of a
-live dependency incident (e.g., GitHub status flagging Pull
-Requests as `degraded_performance`), re-arming requires a
-**stricter freshness check** than re-arming during normal
-operation. Re-arm only when ALL of:
+Earlier this round (Claude.ai 2026-04-30) introduced a
+"two-consecutive-consistent-freshness-checks" gate before
+re-arming auto-merge during a live dependency incident.
+Aaron 2026-04-30 refined the framing on operational
+review:
 
-1. Dependency status returns to "all systems operational" OR
-   the affected component is no longer in the factory's
-   relevant-component allowlist (per the B-0109 allowlist —
-   landing in PR #912 alongside this rule at
-   `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`;
-   the cross-reference resolves once both PRs merge).
-2. The pre-flight three-condition check (above) all pass.
-3. **Two consecutive freshness checks return consistent
-   results.** A single API result during incident recovery
-   could falsely indicate readiness if the result was
-   itself produced from stale state. Two consecutive
-   consistent reads — separated by enough time that
-   recovery-jitter would surface — is the discriminator
-   between "actually clear" and "currently looks clear."
+> even when there are github issues like now we should try
+> to get PRs to complete and just verify they end up on
+> main as expected like a 2nd verification after merge
+> while until the github warning, then we are not blocked,
+> this could always apply when having known github status
+> degradation, so it does not completely block us unless
+> it's a real blocker not just a potential one.
 
-Without the consistency-across-checks rule, the conservative
-auto-merge-disable becomes a coin-flip on re-arm. The whole
-point of disabling during incident is to avoid acting on
-incomplete data; the re-arm check should be at least as
-strict as the disable trigger.
+The core insight: the conservative auto-merge-disable was
+**too** conservative when the incident represents a
+*potential* risk, not a *concrete* failure on this PR.
+Merge is not the same as the incident; the incident
+*could* corrupt the merge but most often doesn't. Pausing
+all merges during every dependency incident converts
+intermittent-host-degradation into total-factory-blockage
+even when none of our specific operations are affected.
+
+**The refined rule (proceed-but-verify):**
+
+When a known dependency incident is active (e.g., GitHub
+Pull Requests degraded), do NOT halt all merges. Instead:
+
+1. **Proceed with merge** — auto-merge stays armed (or
+   gets re-armed) when the gate state is otherwise clean
+   (CI green, threads resolved, required checks pass).
+2. **Add post-merge verification** — after auto-merge
+   fires, verify the commit landed on main as expected.
+   Concrete checks:
+   - Query `gh api repos/<owner>/<repo>/commits/main`
+     and confirm the head SHA matches the squash-merge
+     commit announced by `gh pr merge`.
+   - Run `git fetch origin main` locally + verify the
+     commit is reachable.
+   - Spot-check the merged content matches the PR diff
+     (no surprise reverts, no missing files, no
+     content-truncation symptoms).
+3. **Halt only on real blockers** — escalate to
+   conservative-disable mode if any of: (a) post-merge
+   verification fails on a recent merge, (b) the incident
+   *specifically* affects the operation we're about to
+   take (not just "could affect"), (c) a real-blocker
+   class symptom appears (force-push race, branch
+   protection bypass, commit-on-main-doesn't-match-PR-
+   diff, etc.).
+
+The key distinction: *real blocker* vs *potential
+blocker*. A live GitHub Pull Requests incident is a
+**potential** blocker — most merges complete fine even
+during recovery. A concrete failure on a verified merge
+(merge fired but commit isn't on main, or commit on main
+doesn't match the diff we approved) is a **real**
+blocker — that's when conservative-disable applies.
+
+**The two-consecutive-consistent-checks rule (Claude.ai
+2026-04-30) still applies** as a guard for when we *do*
+choose to halt. But the default during known degradation
+is now proceed-but-verify, not halt. The Claude.ai rule
+governs re-arm-after-real-blocker, not
+re-arm-after-incident-clears.
+
+This is the same shape as the broader autonomy-first
+discipline elsewhere in the factory: don't manufacture
+patience when the dependency we're waiting on isn't
+actually blocking the specific operation
+(`memory/feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md`).
+Conservative-disable on a *potential* blocker IS
+manufactured patience. Real-blocker discrimination is
+how the factory keeps moving without taking on real risk.
 
 ### "Next action" is a plan, not a status (Claude.ai 2026-04-30)
 
