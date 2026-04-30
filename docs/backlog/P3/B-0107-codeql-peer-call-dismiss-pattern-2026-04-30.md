@@ -20,9 +20,16 @@ on the `runContextCmd` shell-out. This is **by-design** — the script
 contract is "user explicitly supplies a shell command via
 `--context-cmd`"; same trust boundary as the bash original's `eval`.
 
-Resolution on PR #896: dismiss the alert via API (`gh api code-scanning/
-alerts/N -X PATCH -f state=dismissed -f "dismissed_reason=won't fix"`)
-with a 280-char justification.
+Resolution on PR #896: dismiss the alert via API with a 280-char
+justification:
+
+```bash
+gh api repos/Lucent-Financial-Group/Zeta/code-scanning/alerts/<N> \
+  -X PATCH \
+  -f state=dismissed \
+  -f "dismissed_reason=won't fix" \
+  -f "dismissed_comment=<280-char justification>"
+```
 
 The two sibling ports — `tools/peer-call/gemini.sh` and
 `tools/peer-call/codex.sh` — will hit the same alert when ported
@@ -58,9 +65,14 @@ removed in the same PR.
 
 ## Acceptance criteria
 
-- `.github/codeql/codeql-config.yml` adds a `query-filters` exclusion
-  for `js/indirect-command-line-injection` on path
-  `tools/peer-call/*.ts`.
+- `.github/codeql/codeql-config.yml` adds a CodeQL filter that
+  scopes `js/indirect-command-line-injection` to exclude
+  `tools/peer-call/*.ts`. The exact syntax should be verified
+  during implementation: CodeQL supports `query-filters` (rule-
+  scoped) and `paths-ignore` (path-scoped); per-rule + per-path
+  scoping requires combining them or using a custom suite — see
+  CodeQL docs at <https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning>
+  before committing the form.
 - Comment in YAML cites this row + slice 15 + by-design justification.
 - New PR for slice 16 (gemini port) does NOT raise the alert.
 
