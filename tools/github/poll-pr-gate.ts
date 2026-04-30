@@ -10,9 +10,13 @@
 // on promoting prose-jq to executable. Carved blade from that packet:
 // "if the loop uses it every tick, it deserves tests."
 //
-// This is **v0**: skeleton + minimal happy-path query. Fixtures and
-// matrix tests follow in subsequent slices. The memory file should
-// stop being the implementation; it should point to this file.
+// **v1** (2026-04-30): adds required-vs-non-required check classification
+// per peer-AI hardening feedback. Total `checks` summary preserved;
+// `requiredChecks` summary plus `warnings` array added. nextAction uses
+// required-only counts so non-required transient flakes (e.g. submit-nuget
+// on this repo) don't produce spurious fix-failed-checks signals.
+// The memory file points at this script (per script-supersedes-prose
+// discipline); matrix fixture coverage tracked under task #355.
 //
 // Usage:
 //   bun tools/github/poll-pr-gate.ts <PR_NUMBER>
@@ -24,12 +28,20 @@
 //     "number": 917,
 //     "state": "OPEN" | "MERGED" | "CLOSED",
 //     "gate": "CLEAN" | "BLOCKED" | "DIRTY" | "UNSTABLE" | "UNKNOWN",
-//     "checks": { "ok": 23, "inProgress": 0, "pending": 0, "failed": 0 },
+//     "checks":         { "ok": N, "inProgress": N, "pending": N, "failed": N },
+//     "requiredChecks": { "ok": N, "inProgress": N, "pending": N, "failed": N },
 //     "unresolvedThreads": 0,
 //     "autoMerge": "armed" | "none",
 //     "mergeCommit": "0ec21ebe..." | null,
+//     "warnings": ["non-required check failed: <name>", ...],
 //     "nextAction": "wait-ci" | "fix-failed-checks" | "resolve-threads" | "rebase" | "verify-merge" | "none"
 //   }
+//
+// `checks` counts every status check on the rollup. `requiredChecks`
+// counts only the subset that GitHub considers required for merge.
+// `nextAction` uses required-only counts so non-required diagnostic
+// failures (e.g. transient submit-nuget) surface in `warnings` rather
+// than producing spurious fix-failed-checks signals.
 //
 // Exit codes:
 //   0 — query succeeded, JSON emitted
@@ -73,8 +85,15 @@ interface PullRequestData {
   statusCheckRollup: CheckRollupItem[];
   reviewThreads: { nodes: ReviewThreadNode[] };
   /** Names of checks that are *required* for merge. Set during fetchPR
-   *  via `gh pr checks --required`. Empty Set in fixture mode unless
-   *  the fixture supplies it (per v1 hardening, Amara 2026-04-30). */
+   *  via `gh pr checks --required`. Tri-state semantics:
+   *  - `undefined` — fetch failed or fixture didn't supply (unknown);
+   *    buildReport falls back to v0 semantics (treat all as required).
+   *  - `[]` (empty array) — successfully fetched, GitHub reports zero
+   *    required checks; treat that as the truth, not as fallback.
+   *  - `[...names]` — known required-check name set.
+   *  This distinction matters because "fetch failed" and "no required
+   *  checks configured" produce different correct behaviors.
+   *  (Per v1 hardening peer review 2026-04-30.) */
   requiredCheckNames?: string[];
 }
 
@@ -92,7 +111,7 @@ interface GateReport {
   /** All checks counted (required + non-required). */
   checks: CheckCounts;
   /** Just the required-for-merge checks. nextAction uses these to
-   *  decide failure vs warning (Amara v1 hardening 2026-04-30 —
+   *  decide failure vs warning (v1 hardening per peer review 2026-04-30 —
    *  "a failed check is not automatically a failed gate"). */
   requiredChecks: CheckCounts;
   unresolvedThreads: number;
@@ -181,8 +200,8 @@ function classifyGate(
   // the DIRTY gate state per Copilot P0 — semantically the same fix.
   if (mergeStateStatus === "DIRTY" || mergeStateStatus === "BEHIND") return "DIRTY";
   if (mergeStateStatus === "UNSTABLE") return "UNSTABLE";
-  // Only required-check failures gate the merge (Amara v1 hardening
-  // 2026-04-30). Non-required failures surface as warnings, not gate.
+  // Only required-check failures gate the merge (v1 hardening per
+  // peer review 2026-04-30). Non-required failures surface as warnings.
   if (requiredChecks.failed > 0) return "BLOCKED";
   if (mergeStateStatus === "BLOCKED") return "BLOCKED";
   if (mergeStateStatus === "CLEAN" && unresolvedThreads === 0) return "CLEAN";
@@ -197,8 +216,8 @@ function nextAction(report: Omit<GateReport, "nextAction">): NextAction {
   if (report.state === "CLOSED") return "none";
   if (report.gate === "DIRTY") return "rebase";
   // Only required-check failures trigger fix-failed-checks. Non-required
-  // failures appear in `warnings` but don't gate merge (Amara v1
-  // hardening — "a failed check is not automatically a failed gate").
+  // failures appear in `warnings` but don't gate merge (v1 hardening per
+  // peer review — "a failed check is not automatically a failed gate").
   if (report.requiredChecks.failed > 0) return "fix-failed-checks";
   if (report.unresolvedThreads > 0) return "resolve-threads";
   if (
@@ -212,15 +231,20 @@ function nextAction(report: Omit<GateReport, "nextAction">): NextAction {
 
 function buildReport(pr: PullRequestData): GateReport {
   const rollup = pr.statusCheckRollup ?? [];
-  const requiredNames = new Set(pr.requiredCheckNames ?? []);
   const checks = classifyChecks(rollup);
-  // If no required-check metadata is supplied, fall back to treating ALL
-  // checks as required (preserves v0 semantics, conservative-by-default).
-  const hasRequiredMetadata = requiredNames.size > 0;
-  const requiredChecks = hasRequiredMetadata
+  // Tri-state on requiredCheckNames (v1 hardening per peer review):
+  //   undefined → unknown (fetch failed or fixture didn't supply);
+  //               fall back to treating all as required (v0 semantics).
+  //   defined   → trust as ground truth (even if empty array).
+  // This distinguishes "fetch failed" from "no required checks
+  // configured" — the latter is a valid state that shouldn't be
+  // confused with an unknown.
+  const haveRequiredMetadata = pr.requiredCheckNames !== undefined;
+  const requiredNames = new Set(pr.requiredCheckNames ?? []);
+  const requiredChecks = haveRequiredMetadata
     ? classifyChecks(rollup, (c) => Boolean(c.name && requiredNames.has(c.name)))
     : checks;
-  const warnings = hasRequiredMetadata
+  const warnings = haveRequiredMetadata
     ? nonRequiredFailures(rollup, requiredNames).map(
         (name) => `non-required check failed: ${name}`,
       )
@@ -352,13 +376,15 @@ function fetchPR(
   const reviewThreads = { nodes: allNodes };
 
   // Fetch required-check names so buildReport can distinguish required-
-  // gate failures from non-required diagnostic noise (Amara v1 hardening
+  // gate failures from non-required diagnostic noise (v1 hardening per peer review
   // 2026-04-30). Use `gh pr checks --required --json name`. The flag
   // returns only the checks GitHub considers required for merge.
   // Failure here is non-fatal: if the API errors (e.g., classic-vs-ruleset
   // protection edge cases), fall back to v0 semantics (treat all as required)
   // rather than crashing the poll.
-  const requiredCheckNames: string[] = [];
+  // Tri-state: undefined = fetch failed (fall back to v0 semantics);
+  // defined (even if empty) = trust the result. See PullRequestData.
+  let requiredCheckNames: string[] | undefined;
   const requiredResult = spawnSync(
     "gh",
     [
@@ -389,23 +415,26 @@ function fetchPR(
       const required = JSON.parse(requiredResult.stdout) as Array<{
         name?: string;
       }>;
-      for (const r of required) {
-        if (r.name) requiredCheckNames.push(r.name);
-      }
+      requiredCheckNames = required
+        .map((r) => r.name)
+        .filter((n): n is string => typeof n === "string");
     } catch {
-      // Fall back to v0 semantics on parse error — non-fatal.
+      // Parse error — leave undefined so buildReport falls back to v0.
     }
   }
 
   const prNarrowed = pr as unknown as PullRequestData;
   const rollup = (prNarrowed.statusCheckRollup ?? []) as unknown[];
 
-  return {
+  const result: PullRequestData = {
     ...prNarrowed,
     statusCheckRollup: normalizeRollup(rollup),
     reviewThreads,
-    requiredCheckNames,
   };
+  if (requiredCheckNames !== undefined) {
+    result.requiredCheckNames = requiredCheckNames;
+  }
+  return result;
 }
 
 // StatusContext items (gh pr view --json output for non-CheckRun checks)

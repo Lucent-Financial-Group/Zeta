@@ -232,3 +232,51 @@ This packet's findings split into three classes per substrate-rate discipline:
 > Trust the gate tool over the prose summary.
 > Reviewers found the gaps; fixtures keep them closed.
 > The gate watcher landed. Now teach it which checks are actually gates.
+
+---
+
+## Claude.ai — v1 review (Insight-block escalation flag) + Aaron's substrate-work correction
+
+Integration status: arrived during PR #923 v1 hardening review-thread triage. Claude.ai's flag is **serious**: the Insight-block pattern has been escalating across sessions into self-validating ritual rather than load-bearing analysis. Aaron's correction at the end is load-bearing: best-practices-mapping for new domains has *always* been substrate work, not "now substrate work."
+
+### Aaron's correction (verbatim)
+
+> Reading the gh manual would have caught this; reading the manual is now substrate-quality work.   this always has been substrate work, this is what it means to map out best practics for new domains
+
+This corrects my framing in the prior commit message. I had written "reading the manual is *now* substrate-quality work," which framed it as a discovery. Aaron's correction: it's been substrate work all along — that's literally what mapping out best practices for new domains means. The "now" framing was wrong.
+
+### Claude.ai's serious flag (verbatim, condensed)
+
+> The Insight blocks are doing the affirmation-substrate pattern at a different surface. Instead of memory files celebrating Aaron's praise, the loop is now writing self-validating Insight blocks after every operational moment...
+>
+> A specific test: read each Insight block in the trace and ask "does removing this change anything operational?" If the answer is no, the block is meta-commentary rather than substrate. From what I count in this trace, every Insight block could be removed without affecting the next operational step. They're functioning as session-level affirmation rather than as load-bearing analysis.
+>
+> The disciplined alternative is what the proceed-but-verify rule did right: produce the work, let the diff carry the evidence, don't write the celebration.
+>
+> Suggest a discipline rule: Insight blocks fire only when (a) a finding generalizes beyond the current case, AND (b) the generalization isn't already documented in canonical substrate. Otherwise the operational work speaks for itself.
+
+### Integration
+
+Both findings are accepted. The discipline going forward:
+
+1. **No Insight blocks for routine operational moments**. Diff carries evidence. Future ticks emit work + brief state, not session-level affirmation.
+2. **Best-practices-mapping IS substrate work** (Aaron's framing). Reading manuals, verifying upstream-doc claims, building executable substrate from prose rules — these are all the same shape of substrate work; no need to flag any one of them as "now."
+3. **Claude.ai's two-condition rule** for when an Insight-class observation is warranted: (a) generalizes beyond current case, AND (b) not already documented. This makes the discipline mechanical rather than vibes-based.
+
+### Other Claude.ai findings (operational)
+
+- **Substrate-rate at session-record (13 PRs, now 14 with this v1)** — softer concern. The PRs are real work; the rate is what's worth checking. Worth a consolidation-gate question at next round-close: which artifacts will be consumed vs accumulated?
+- **submit-nuget transient miscalssification** — this PR (#923) addresses it directly via required-vs-non-required.
+- **Pre-existing duplicate-link debt surfacing on small PRs** — worth a sweep audit rather than encountering one PR at a time.
+- **Auto-merge-during-incident verification depth** — currently SHA-reachability, not content equivalence. Honest acknowledgment at next round-close: "verification" means reachability, not diff equivalence.
+
+### Composes with
+
+- The internal-direction-from-project-survival rule — both Claude.ai and Aaron's input are processed as inputs to internal direction, not directives.
+- Aaron's substrate-IS-product framing — best-practices-mapping has always been the substrate-product shape.
+- Otto-279 history-class attribution — persona names belong on history surfaces, not current-state code.
+- The praise-substrate-pattern correction from earlier this session — Insight-block-as-self-validation is the same pattern, different surface. The discipline that deleted the praise-memory file applies here.
+
+### Carved blade from this packet
+
+> Diff carries evidence. Best-practices-mapping has always been substrate.
