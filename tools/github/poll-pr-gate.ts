@@ -373,7 +373,18 @@ function fetchPR(
     ],
     { encoding: "utf8", maxBuffer: SPAWN_MAX_BUFFER },
   );
-  if (requiredResult.status === 0) {
+  // `gh pr checks` exit codes (per `gh help exit-codes`):
+  //   0 — OK
+  //   1 — invalid invocation
+  //   2 — gh CLI error / auth / etc.
+  //   4 — one or more checks failed (data is still valid JSON)
+  //   8 — checks pending (data is still valid JSON — common in-progress case)
+  // The JSON output is well-formed for 0/4/8 — only 1/2 mean "no usable
+  // data." Treating only exit 0 as success (per Codex P1 catch) would
+  // defeat the v1 fix in the exact case it targets: required checks
+  // pending while a non-required check failed. Accept 0/4/8 as parseable.
+  const requiredStatus = requiredResult.status;
+  if (requiredStatus === 0 || requiredStatus === 4 || requiredStatus === 8) {
     try {
       const required = JSON.parse(requiredResult.stdout) as Array<{
         name?: string;
