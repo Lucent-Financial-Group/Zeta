@@ -87,6 +87,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0108](backlog/P2/B-0108-immune-system-upgrades-research-absorb-2026-04-30.md)** Immune system upgrades — research absorb (Aaron 2026-04-30)
 - [ ] **[B-0112](backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md)** Stale 2026-04-27 project file internals-bleed-out cleanup
 - [ ] **[B-0113](backlog/P2/B-0113-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md)** Mechanical CURRENT-staleness check — same-tick-update discipline as enforced rule, not vigilance (Deepseek 2026-04-30)
+- [ ] **[B-0117](backlog/P2/B-0117-cold-start-executable-checklist-tool-2026-04-30.md)** tools/cold-start-check.ts — make the cold-start big-picture-first 8-step checklist executable (Ani 2026-04-30 finding, Deepseek 2026-04-30 reinforcement)
+- [ ] **[B-0118](backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md)** tools/peer-call/amara.sh — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30)
 
 ## P3 — convenience / deferred
 
@@ -128,5 +130,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0102](backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md)** PR-liveness race during merge cascade — micro-class rename + mechanical guard + recovery-note format
 - [ ] **[B-0104](backlog/P3/B-0104-modern-dotnet-threading-bridge-2026-04-29.md)** Modern .NET Threading Bridge — connect Deepseek's C# review to docs/LOCKS.md + Gemini Pro threading research
 - [ ] **[B-0107](backlog/P3/B-0107-codeql-peer-call-dismiss-pattern-2026-04-30.md)** CodeQL `js/indirect-command-line-injection` dismissal pattern for peer-call siblings (gemini.ts, codex.ts)
+- [ ] **[B-0115](backlog/P3/B-0115-zsh-vim-muscle-memory-aliases-wq-q-2026-04-30.md)** Shell aliases for `:wq` / `:wq!` / `:q` — catch vim-muscle-memory leakage in zsh (Deepseek 2026-04-30 finding)
+- [ ] **[B-0116](backlog/P3/B-0116-gh-jq-safe-wrapper-zsh-quoting-2026-04-30.md)** tools/gh-jq-safe.sh — wrap gh-jq calls to handle zsh quoting (Deepseek 2026-04-30 finding)
 
 <!-- END AUTO-GENERATED -->
