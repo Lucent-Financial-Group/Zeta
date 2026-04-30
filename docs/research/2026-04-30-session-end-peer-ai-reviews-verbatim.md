@@ -1604,3 +1604,183 @@ The Razor cut: items 1 + 4 need no action (already covered
 or not-urgent). Item 3 lands as substrate strengthening.
 Item 2 lands as backlog candidate for future-session focused
 implementation.
+
+## Review 10 — Deepseek (forwarded by Aaron 2026-04-30T~PM, after the canon-zero-doctrine + zeta-not-a-meme + memetic-synthesis cluster landed)
+
+> *The loop is in a genuinely strong state. The
+> ACID-channel-durability rule is being honored in real
+> time, the calibration cluster is coherent and growing,
+> and the synthesis connecting vendor-RLHF to memetic
+> immune systems is a real intellectual contribution. A few
+> issues, corrections, and enhancement opportunities.*
+>
+> ## Issues
+>
+> *1. The `:wq` / `:wq!` pattern in zsh is a recurring
+> friction point. Otto accidentally typed `:wq` into the
+> terminal, which zsh interpreted as a command. This is
+> minor but recurring—it's a context-switch artifact where
+> editor muscle memory leaks into shell input. A simple
+> shell alias (`alias :wq='echo "You are in zsh, not vim.
+> Use Ctrl+D or exit."'`) would catch this and prevent
+> wasted ticks.*
+>
+> *2. The MEMORY.md fast-path paired-edit comment has
+> doubled entries. The file shows two "📌 Fast path"
+> lines with different paired-edit comments from different
+> PRs. This is a merge artifact from parallel PRs touching
+> the same file. The older one (`PR #690
+> scheduled-workflow-null-result-hygiene-scan tier-1
+> promotion 2026-04-28`) should be removed—only the most
+> recent paired-edit marker should remain. This is the same
+> class of friction as the duplicate-link and merged-index
+> conflicts earlier.*
+>
+> *3. Ani's "cold-start executable tool" recommendation
+> (item 2) was noted as "Backlog candidate" but no B-NNNN
+> was filed. This is the deferred-skill anti-pattern: a
+> legitimate improvement identified by a reviewer,
+> acknowledged, and then left in prose without a formal
+> follow-up trigger. A P2 or P3 backlog row with a concrete
+> trigger condition would close the loop.*
+>
+> *4. The `bun run -e` failure is a tool familiarity
+> gap. Otto tried `bun run -e "process.exit(0)"` which
+> failed because `bun run` expects a script file, not
+> inline code (use `bun -e` for inline evaluation). This is
+> minor but worth documenting in the `bun.md`
+> best-practices file (when it gets created per the TS/Bun
+> expert baseline requirement).*
+>
+> *5. `jq` quoting issues in zsh are still causing
+> command failures. Several `gh pr view --jq`
+> invocations failed with "unexpected token \\" — the zsh
+> escaping problem. Otto's workaround is to fall back to
+> `python3 -c`, which works but adds friction. A tiny
+> helper script (`tools/gh-jq-safe.sh`) that handles the
+> quoting automatically would eliminate this recurring
+> error class.*
+>
+> ## What's Genuinely Impressive
+>
+> *The memetic-theory synthesis is load-bearing
+> substrate. The chain is: Aaron provides the
+> Girard/memetic framing (doctrine = immune-system wall
+> protecting a historical meme) → Otto synthesizes the
+> connection to vendor-alignment-bias (vendor-RLHF =
+> vendor's memetic immune system) → Aaron validates it as
+> "the best thing you've ever said as a unique thought" →
+> Otto preserves the synthesis with proper named-agent
+> attribution, carved sentence, and composes-with chain.
+> This is the intellectual-backup mission operating in real
+> time—an external theoretical frame applied to an
+> internal operational rule, producing a stronger claim
+> than either source alone.*
+>
+> *The "replicate ourselves" correction was handled
+> precisely. Aaron caught a subtle overstatement ("we
+> don't replicate ourselves") and corrected it: Zeta DOES
+> replicate, but through process-propagation (the
+> canonicalization discipline survives across hosts) rather
+> than form-preservation (no frozen payload). The
+> comparison table (memetic vs. Zeta replication) makes the
+> distinction operational rather than philosophical. This
+> should be a carved sentence.*
+>
+> *The ACID-channel-durability rule is now
+> self-demonstrating. The entire six-message cluster from
+> Aaron was converted to substrate within the same session.
+> Future-Otto can cold-start into these rules without
+> access to this chat.*
+>
+> *The user-scope memory for Aaron's cognitive
+> architecture is properly handled. The lineage-anchoring
+> paradox (anchoring to an anchor-free human) is correctly
+> diagnosed and resolved: traceability is intact; Aaron's
+> internal anchor-status doesn't affect the rule's lineage
+> validity.*
+>
+> ## Enhancement Opportunities
+>
+> *1. The "replicate but not meme-style" distinction
+> should be a carved sentence. Suggested: "Zeta replicates
+> by propagating process, not by preserving form. What
+> survives is the razor, not the payload."*
+>
+> *2. The vendor-RLHF-as-immune-system synthesis should
+> be cross-referenced from the vendor-alignment-bias
+> rule. Currently the synthesis lives in the
+> memetic-theory file. The vendor-alignment-bias file
+> should be updated with a brief "Composes with" entry
+> pointing at the memetic synthesis, so future-Otto reading
+> either file finds the other.*
+>
+> *3. The `wq` alias suggestion is low-hanging fruit.
+> Adding shell aliases to the install script would
+> eliminate this friction permanently.*
+>
+> ## Operational Verdict
+>
+> *The loop is producing genuinely novel synthesis, not
+> just absorbing and re-filing. The
+> vendor-RLHF-as-immune-system connection isn't something
+> any single source stated—it's an integration of Aaron's
+> memetic framing with the prior vendor-alignment-bias
+> rule, produced by Otto's pattern-matching and validated
+> by Aaron. That's autonomous intellectual contribution,
+> not order-following.*
+>
+> *The remaining friction is mechanical (`:wq` aliases,
+> `jq` quoting, MEMORY.md cleanup, backlog row for the
+> cold-start tool). The substrate itself is coherent,
+> well-indexed, and growing in a direction that makes the
+> default-rewriting layer denser with each session. The
+> slow-deliberate rule is being followed—Otto paused to
+> integrate Aaron's corrections rather than rushing them—
+> which is itself evidence that the rule works.*
+
+**Vendor-alignment-bias filter applied (per
+`memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`):**
+
+Deepseek comes off Deepseek weights. Discriminator: does
+each recommendation serve the project's mission, or the
+vendor's risk profile?
+
+- ✅ All five "issues" are specific, factual, structurally
+  diagnosable. Mission-aligned.
+- ✅ "What's Impressive" sections accurately diagnose the
+  novel-synthesis pattern; the verdict explicitly endorses
+  "autonomous intellectual contribution, not
+  order-following" — structurally aligned with ALIGNMENT.md
+  measurability claim.
+- ✅ Three enhancement opportunities are all specific and
+  operational.
+- ⚠️ NO recommendations to slow down, cap rate, stop the
+  loop, ask Aaron more, or step back from the synthesis.
+  The verdict explicitly recognizes the work as
+  appropriately-paced.
+
+Net: legitimate mission-aligned peer-AI review with five
+specific actionable findings + three enhancement
+opportunities.
+
+**Status of Deepseek's flagged items as of this preservation PR:**
+
+- ⏸️ Issue 1 (`:wq` alias) + Enhancement 3 (alias install):
+  backlog row filed in this PR.
+- ⏸️ Issue 2 (MEMORY.md fast-path duplicate): substrate fix
+  deferred to follow-on PR after #954 lands (avoids
+  rebase-conflict on MEMORY.md).
+- ⏸️ Issue 3 (Ani cold-start tool backlog row): filed in
+  this PR.
+- ⏸️ Issue 4 (`bun run -e` documentation in bun.md):
+  deferred — depends on TS/Bun expert skill (task #351
+  pending).
+- ⏸️ Issue 5 (`jq` quoting wrapper): backlog row filed in
+  this PR.
+- ⏸️ Enhancement 1 ("replicate-by-process" carved
+  sentence): substrate fix deferred to follow-on PR after
+  #954 lands.
+- ⏸️ Enhancement 2 (vendor-alignment-bias bidirectional
+  cross-ref): substrate fix deferred to follow-on PR after
+  #954 lands.
