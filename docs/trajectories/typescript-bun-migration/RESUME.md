@@ -1,7 +1,7 @@
 # Trajectory — TypeScript / Bun migration
 
 **Status**: Soak + bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); **Bucket B is empty**)
-**Milestone**: 42 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21). Bucket B is empty as of 2026-04-30T08:07:32Z. Trajectory transitions from "porting" phase to "soak + bash retirement" phase.
+**Milestone**: 42 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21). Bucket B is empty as of 2026-04-30T08:07:32Z. Trajectory transitions from "porting" phase to "soak + bash-retirement" phase.
 **Current blocker**: None.
 **Next concrete action**: This trajectory's "porting" phase is complete. Possible follow-ups: (a) audit + retire bash siblings for clusters that have soaked clean (no production breakage observed in the .ts ports), starting with the oldest-merged ports; (b) for budget cluster specifically, switch `daily-cost-report.ts` (slice 18) from spawning the .sh siblings to spawning the .ts versions now that snapshot-burn.ts (slice 14) and project-runway.ts (slice 19) are both available; (c) pursue Bucket C (2 files using gh-api heavily) — maintainer decision on shell-out wrapper vs Octokit. Bucket A (14 setup-script files) stays bash by design.
 **Last updated**: 2026-04-30
@@ -64,16 +64,16 @@ tools/profile.sh
 
 Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
 
-### Bucket B — Should become TypeScript (2 files remaining)
+### Bucket B — Should become TypeScript (0 files remaining — empty as of 2026-04-30T08:07:32Z)
 
-Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874, #876, #878, #880, #882, #883, #884, #885, #892, #894, #896, #898, #900, #901, #902. The peer-call cluster (grok / gemini / codex — slices 15/16/17) and budget cluster (snapshot-burn / daily-cost-report / project-runway — slices 14/18/19) are now complete. The bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
+Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). All 42 ports landed across PRs #849, #866, #868, #870, #872, #874, #876, #878, #880, #882, #883, #884, #885, #892, #894, #896, #898, #900, #901, #902, #907, #908. Cluster summary:
 
-```text
-tools/git/batch-resolve-pr-threads.sh           # 390 lines; mutates PR thread state via gh GraphQL
-tools/pr-preservation/archive-pr.sh             # 674 lines; mutates gh API + writes drain logs
-```
+- **budget cluster** (slices 14/18/19) — complete: snapshot-burn / daily-cost-report / project-runway
+- **peer-call cluster** (slices 15/16/17) — complete: grok / gemini / codex
+- **git cluster** (slices 13/20) — complete: push-with-retry / batch-resolve-pr-threads
+- **pr-preservation cluster** (slice 21) — complete: archive-pr
 
-Rationale: type safety, structured error handling, easier testing, jq/awk/grep replaced by JS object operations, gh CLI shell-out replaced by Octokit when valuable. Both remaining files are state-mutating (not read-only audits), so equivalence-test discipline is heavier — dry-run mode + idempotency check + structured rollback path on partial failure.
+The bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked clean in production. See "Soak + bash-retirement phase" actions in the status line at the top of this doc.
 
 ### Bucket C — Needs human decision (2 files)
 
