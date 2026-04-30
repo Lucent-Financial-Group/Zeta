@@ -147,8 +147,14 @@ inside the sibling repos.
   a sign the rule isn't generalized enough yet.
 - **Top-level path is the maximum granularity** when
   contextually necessary at all. Subdirectory paths,
-  scope descriptions, purpose statements, architecture
-  summaries: none of these belong in Zeta documents.
+  *specific* scope descriptions, *specific* purpose
+  statements, and architecture summaries: none of these
+  belong in Zeta documents. Generalized "about" framings
+  (per the *Generalized abouts allowed* section above —
+  e.g., "a database-related sibling project") ARE allowed;
+  what crosses the privacy line is *specific identifying
+  detail* (named experiments, internal architecture,
+  customer/IP specifics).
 
 ## Why: Aaron's verbatim framing (2026-04-30, five messages)
 
@@ -218,10 +224,12 @@ across the boundary; specific-identifying-detail is not.
 
 ## Origin
 
-Aaron 2026-04-30 sent four short messages tightening this
+Aaron 2026-04-30 sent five short messages tightening this
 discipline as I drafted the substrate. The progression —
 from "no copy" to "no subdirectories" to "PC is enough"
-to "no internals bleed-out" — is itself the substrate:
-each clarification narrowed what counts as legitimate
-sibling-reference, ending at "almost nothing crosses the
-boundary except the agent's learning."
+to "no internals bleed-out" to "generalized abouts allowed,
+specific identifiers stay as privacy-class" — is itself the
+substrate: each clarification narrowed what counts as
+legitimate sibling-reference, ending at the privacy-class-
+internals frame where generalized abouts are allowed but
+specific identifying details stay inside the sibling repo.
