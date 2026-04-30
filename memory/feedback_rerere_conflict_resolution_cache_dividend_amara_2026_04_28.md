@@ -6,6 +6,23 @@ type: feedback
 
 # Rerere Conflict-Resolution Cache Dividend
 
+## Prerequisite — rerere must be explicitly enabled
+
+Git's rerere does NOT run by default. The `.git/rr-cache/`
+directory existing is not sufficient — rerere only fires when
+`rerere.enabled` is set to true in Git config:
+
+```bash
+git config --global rerere.enabled true
+```
+
+Without this config, recorded resolutions never replay and
+this entire class's "cache dividend" doesn't materialize.
+Verify per-clone with `git config --get rerere.enabled`. If
+the cache dividend is being relied on across multiple
+contributors, document the enablement in CONTRIBUTING.md or
+the install script.
+
 ## Class name (Amara 2026-04-28T20:55Z)
 
 **Rerere Conflict-Resolution Cache Dividend** — Amara named
@@ -234,11 +251,11 @@ chain, vs ~3 minutes without rerere. Compounds across the
   — adjacent. The 5 disciplines guard against destructive
   ops; rerere is non-destructive (cache-only) but worth
   inspecting after auto-application.
-- `memory/feedback_class_validation_beads...` (in
-  `feedback_prediction_bearing_class_reuse_amara_2026_04_28.md`)
+- `memory/feedback_prediction_bearing_class_reuse_amara_2026_04_28.md`
   — this class is at 1 bead via cache-hit; adding more
   beads requires worked examples of `git rerere forget`,
-  cross-session survival, or falsifier-event.
+  cross-session survival, or falsifier-event. (Class
+  Validation Beads framework lives in that file.)
 
 ## What this is NOT
 
