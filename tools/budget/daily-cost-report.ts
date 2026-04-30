@@ -144,22 +144,22 @@ function runSnapshotBurn(dryRun: boolean): { exitCode: number; note: string } {
 
 function runProjectRunway(): { exitCode: number; output: string; note: string } {
   const path = resolve(scriptDir(), "project-runway.sh");
-  // Capture combined stdout+stderr; bash original uses
-  // `$("$script_dir/project-runway.sh" 2>&1)`.
-  const result = spawnSync(path, [], {
+  // Capture combined stdout+stderr in-order via shell-side `2>&1`
+  // (matches bash original `$("$script_dir/project-runway.sh" 2>&1)`
+  // which preserves chronological interleaving). Concatenating
+  // `result.stdout + result.stderr` would reorder warnings vs
+  // success output (Copilot P1 on #901).
+  // The path is constructed from import.meta.url + dirname, not from
+  // user input, so shell-quoting safety isn't an issue here.
+  const result = spawnSync("/bin/bash", ["-c", `"${path}" 2>&1`], {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
     stdio: ["inherit", "pipe", "pipe"],
   });
-  // Defensive: result.stdout / result.stderr can be null when the
-  // child fails to start (Copilot P0 on #901). Guard with `?? ""`
-  // so we don't end up with a "nullnull" projection block. The
-  // typings claim string when encoding is set, but the runtime
-  // doesn't always cooperate.
+  // Defensive: result.stdout can be null when the child fails to
+  // start (Copilot P0 on #901). Guard with `?? ""`.
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  const stdout = result.stdout ?? "";
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  const stderr = result.stderr ?? "";
+  const output = result.stdout ?? "";
   const classified = classifySpawnFailure(
     result.status,
     result.signal,
@@ -167,7 +167,7 @@ function runProjectRunway(): { exitCode: number; output: string; note: string } 
   );
   return {
     exitCode: classified.status,
-    output: `${stdout}${stderr}`,
+    output,
     note: classified.note,
   };
 }
