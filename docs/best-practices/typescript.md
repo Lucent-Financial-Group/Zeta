@@ -66,6 +66,27 @@ files decide whether to enable it.
   the constraint.
 - **No broad unsafe casts** — `as` casts require justification when
   used; bare `<T>` casts forbidden.
+- **DST-friendly code paths** — Deterministic Simulation Testing is
+  a universal best practice across every Zeta language. The
+  language-layer obligation:
+  - No reliance on real `Date.now()` / `Math.random()` /
+    `setTimeout`-timing for test-observable behavior. Inject a
+    clock / RNG / scheduler so tests can substitute deterministic
+    fakes.
+  - Pin seeds where randomness is unavoidable.
+  - Test retries are a DST-violation smell — investigate root
+    cause; never paper over.
+  Runtime-specific DST tooling lives in the runtime layer
+  (`bun.md` for Bun; future `node.md` / `deno.md` for those).
+- **Code-coverage gate** — every language adopts code coverage:
+  - Tests cover the public API surface of every module by default.
+    A new module without coverage is incomplete.
+  - Coverage is reported (not hidden) — CI surfaces it; reductions
+    fail the gate.
+  - Branch + line coverage both tracked. Line-only is necessary
+    but not sufficient.
+  Runtime-specific coverage tooling lives in the runtime layer
+  (Bun's built-in coverage in `bun.md`).
 
 ## Preferred patterns (style — not the merge gate, but adopt where natural)
 

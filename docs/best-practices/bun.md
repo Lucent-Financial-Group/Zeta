@@ -163,6 +163,55 @@ directory), capture the error code:
 For audit scripts where the only useful action is "fail loud,"
 the simple form suffices.
 
+## DST (Deterministic Simulation Testing) — Bun runtime
+
+DST is a universal Zeta best practice. The language-layer
+obligation lives in `typescript.md`; this section names the
+Bun-runtime tooling.
+
+- **Pinned seeds**: `Math.random()` is non-deterministic; tests
+  that need randomness inject a seeded RNG (e.g., `seedrandom` or
+  a small in-repo seed-PRNG helper). The slice's `bunfig.toml`
+  test config can document the seed.
+- **Fake clocks**: `bun:test` supports `setSystemTime()` for
+  controlling `Date.now()`. Avoid real timers in test paths;
+  inject a clock or use Bun's fake-time API.
+- **Deterministic test order**: avoid relying on filesystem
+  enumeration order or async-resolution race ordering. When order
+  matters, sort explicitly.
+- **No retries in CI** — test retries are a DST-violation smell.
+  If a test flakes, investigate root cause; do NOT paper over
+  with `retry: N`.
+
+Re-verify Bun's current DST tooling before any slice that
+introduces tests (the API surface evolves; per the currency rule).
+
+## Code coverage — Bun runtime
+
+Built-in via Bun's test runner. Pattern adopted from `../SQLSharp`:
+
+```toml
+# bunfig.toml
+[test]
+timeout = 20000
+coverageSkipTestFiles = true
+coveragePathIgnorePatterns = [
+  "**/node_modules/**",
+  "**/bin/**",
+  "**/obj/**",
+  "**/artifacts/**",
+  "**/TestResults/**",
+]
+```
+
+Run with `bun test --coverage`. CI surfaces coverage; reductions
+fail the gate. Helper scripts (mirroring SQLSharp's pattern) live
+under `tools/automation/coverage/` once Zeta has them.
+
+Per Otto-364: re-verify Bun's current coverage flags before
+introducing the workflow (SQLSharp's `bunfig.toml` shape was
+verified 2026-04-30 at commit `7d3d9f6`).
+
 ## What this artifact is NOT
 
 - **Not the full Bun expert skill** — task #351 remains open; this
