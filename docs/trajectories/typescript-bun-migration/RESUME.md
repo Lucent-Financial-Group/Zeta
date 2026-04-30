@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 11 merged — [#884](https://github.com/Lucent-Financial-Group/Zeta/pull/884), commit `9237756`)
-**Milestone**: 32 ported + 1 in-flight = 33 total (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 from #880 + 3 from #882 + 2 from #883 + 2 from #884 = 32 merged; +1 in-flight in slice-12). Slice-12 opens **backlog index regenerator** (backlog/generate-index). 10 Bucket B files remain.
+**Status**: Active (Lane B slice 12 merged — [#885](https://github.com/Lucent-Financial-Group/Zeta/pull/885), commit `cfb5964`)
+**Milestone**: 33 ported + 1 in-flight = 34 total (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 from #880 + 3 from #882 + 2 from #883 + 2 from #884 + 1 from #885 = 33 merged; +1 in-flight in slice-13). Slice-13 opens **git-cluster** (git/push-with-retry). 9 Bucket B files remain.
 **Current blocker**: None.
-**Next concrete action**: Pick a coherent next slice from Bucket B (10 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
+**Next concrete action**: Pick a coherent next slice from Bucket B (9 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
@@ -64,17 +64,16 @@ tools/profile.sh
 
 Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
 
-### Bucket B — Should become TypeScript (10 files remaining)
+### Bucket B — Should become TypeScript (9 files remaining)
 
-Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874, #876, #878, #880, #882, #883, #884. The originally-listed audit/lint scripts have progressively ported (1 in slice-12 in flight); the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
+Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874, #876, #878, #880, #882, #883, #884, #885. The originally-listed audit/lint scripts have progressively ported (1 in slice-13 in flight — git/push-with-retry); the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
 
 ```text
-tools/backlog/generate-index.sh                # in flight (slice 12)
 tools/budget/daily-cost-report.sh
 tools/budget/project-runway.sh
 tools/budget/snapshot-burn.sh
 tools/git/batch-resolve-pr-threads.sh
-tools/git/push-with-retry.sh
+tools/git/push-with-retry.sh                   # in flight (slice 13)
 tools/peer-call/codex.sh
 tools/peer-call/gemini.sh
 tools/peer-call/grok.sh
@@ -133,6 +132,7 @@ tools/hygiene/counterweight-audit.sh               # ported in #883
 tools/hygiene/append-tick-history-row.sh           # ported in #883
 tools/skill-catalog/backfill_dv2_frontmatter.sh    # ported in #884
 tools/audit-packages.sh                            # ported in #884
+tools/backlog/generate-index.sh                    # ported in #885
 ```
 
 ## Recommended next slice

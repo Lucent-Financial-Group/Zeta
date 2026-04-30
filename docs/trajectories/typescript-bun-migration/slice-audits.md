@@ -411,6 +411,30 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
+## Slice 13 — 1 port (git/push-with-retry — git-cluster opens) (PR pending — `lane-b/ts-bun-slice-13-push-with-retry-2026-04-30`)
+
+**Slice files**:
+
+- `tools/git/push-with-retry.{sh→ts}` (`git push` retry wrapper for transient GitHub 5xx)
+
+**Comparison points**: identical to slice 12. Within Gate B 30-day window. tsc gate now active in CI per PR #890.
+
+### Code-pattern audit (per-port)
+
+- **`push-with-retry.ts`** (129 → 138 lines): bash `[[ =~ $int_re ]]` regex → `POSITIVE_INT_RE.test()`. Bash `mktemp` + tee + grep on tmp file → `spawnSync` with `stdio: ['inherit', 'inherit', 'pipe']` capturing stderr in-memory; `TRANSIENT_5XX_RE.test()` against captured string. Bash `set +e; git push; exit_code=$?; set -e` → straightforward `result.status ?? 1`. Bash `sleep "$backoff"` → `Atomics.wait(view, 0, 0, seconds * 1000)` synchronous-busy-wait pattern (preserves the script's synchronous flow; async setTimeout would change exit-code semantics). Exponential backoff doubling preserved (`backoff *= 2`). DST-ACCEPTED-BOUNDARY classification preserved in header comment (Otto-168 boundary registry §3).
+
+### Equivalence audit
+
+- **`push-with-retry`**: byte-equivalent on env-validation paths (invalid `GIT_PUSH_MAX_ATTEMPTS=foo` → exit 2 with same message; invalid `GIT_PUSH_BACKOFF_S=-1` → exit 2). Network-dependent retry path can't be tested without an actual 5xx; success path tests would need a real push (deferred to live-fire usage).
+
+### Behavioural note vs bash original
+
+The bash version uses `tee` to BOTH capture stderr AND stream it live during each attempt. The TS port uses `spawnSync` which captures-then-replays stderr after each attempt completes. For typical git-push runtimes (seconds) the UX difference is invisible; for long pushes the stderr appears in batches per attempt rather than streaming live. Documented in port file header.
+
+### Outcome
+
+Slice 13 passes audit. **Git-cluster opens** (first of 2 git scripts). Bucket B 10 → 9. The remaining cluster — peer-call trio + budget trio + git/batch-resolve + pr-preservation/archive-pr — all need careful design (LLM non-determinism, shared-state mutation, gh API mutation).
+
 ## Slice 12 — 1 port (backlog index regenerator) (PR pending — `lane-b/ts-bun-slice-12-backlog-generate-index-2026-04-30`)
 
 **Slice files**:
