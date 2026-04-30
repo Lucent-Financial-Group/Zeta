@@ -504,6 +504,17 @@ by the blade or razor. Even this rule."*
   Mirror→Beacon framings — canon-as-Star-Wars endorses
   the sci-fi/world-building register these already live
   in.
+- `memory/feedback_zeta_not_a_meme_no_immune_system_wall_symmetric_inside_outside_aaron_2026_04_30.md`
+  — **theoretical lineage anchor** for the 0-doctrine
+  framing. Aaron's memetic-theory framing: doctrine is
+  the immune-system wall protecting a historical meme
+  from change; Zeta is not a meme (no preservation-of-
+  form), so no immune system is needed. Symmetric
+  inside/outside processing through razor + Beacon-safe
+  is the structural alternative. Includes the
+  Otto-attributed + Aaron-validated synthesis
+  "vendor-RLHF can be reframed memetically as the
+  vendor's immune system."
 
 ## Origin
 
