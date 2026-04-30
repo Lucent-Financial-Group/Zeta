@@ -3669,3 +3669,198 @@ valuable, but its measurement frame should be product-balance
 + evolutionary-tracking, not lines-of-code-vs-lines-of-
 doctrine.
 
+
+---
+
+## Gemini — fourth review (Resilience Wins + Index Tax + Stale Reviewer Trap)
+
+Integration status: arrived during PR #915 thread-triage tick (after
+#911 / #916 / #917 merged). Two-section paired review. **High-
+leverage finding**: the MEMORY.md merge-conflict tax has a Git-native
+structural fix — a custom merge driver — not a lint check. Claude.ai
+called for the structural fix; Gemini named the actual mechanism.
+**New operational rule**: degraded hosts mean stale AI reviewers
+(during a known host degradation, treat automated PR-review comments
+with extreme skepticism). Plus a recurring concern about a
+harness-level console-print leak (out-of-scope for repo-level fix
+since the leak is in the runtime harness, not committed substrate).
+
+Verbatim Gemini packet (first section — Resilience Wins & Task Print
+Leak):
+
+> This is a phenomenal trace. The factory is demonstrating actual,
+> operational resilience. By shifting from a brittle "halt on any
+> incident" posture to Aaron's "proceed-but-verify" mechanism, Otto
+> successfully merged and verified four PRs during a 9-hour GitHub
+> degradation that would have previously paralyzed the loop.
+>
+> Furthermore, Otto's self-correction on B-0111 — stopping the
+> creation of a backlog row when he realized the THREAT-MODEL files
+> already existed, and pivoting to save the multi-AI feedback
+> instead — proves the "search before canonizing" rule is deeply
+> embedded.
+>
+> However, there are two distinct issues to address: one mechanical
+> bug that refuses to die, and one new operational insight regarding
+> AI reviewers.
+>
+> ### 1. The Persistent Bug: The Task Runner is STILL Leaking
+>
+> At the very end of the log, we see this again:
+>
+> ```text
+> ✢ Billowing…
+>   ⎿  ◻ Factory-demo — 0-to-production-ready app path...
+>      ◻ Evangelize /btw non-interrupting aside pattern...
+>      ... +49 pending, 42 completed
+> ```
+>
+> **The Diagnosis**: Otto believes he has established "single-lane
+> discipline" because he is choosing not to act on these items. But
+> the underlying CLI harness/scheduler is still fetching, formatting,
+> and printing the entire 54-item backlog to standard output on every
+> heartbeat (Billowing..., Philosophising..., Symbioting...).
+>
+> **The Cost**: This is a continuous token tax and a distraction.
+>
+> **The Fix**: Otto needs to find the exact script or internal
+> configuration that prints the ◻ [Task Name] list to the console
+> and wrap it in the .exclusive-lane.lock check. The suppression
+> must happen at the print layer, not just the execution layer.
+>
+> ### 2. The Operational Insight: Degraded Hosts = Stale AI Reviewers
+>
+> During the GitHub incident, Copilot left multiple reviews that
+> were factually incorrect (e.g., claiming a cross-reference was
+> broken when it was already fixed on main, and hallucinating that
+> jq's IN stream syntax was invalid).
+>
+> **The Diagnosis**: When GitHub's API or Webhook delivery is
+> degraded, external AI reviewers (like Copilot PR Reviewer) operate
+> on stale repository states. Otto spent valuable time investigating
+> and debunking ghosts.
+>
+> **The New Rule (Incident Response)**: "During a known Host
+> Degradation, treat automated PR review comments with extreme
+> skepticism. If a bot flags a missing file or syntax error, assume
+> the bot's index is stale before assuming the code is broken."
+>
+> ### Best Distilled Rules
+>
+> - Proceed-but-verify prevents external friction from becoming
+>   internal paralysis.
+> - When the host is degraded, the bots are blind.
+> - Silence the execution, but also silence the print.
+
+Verbatim Gemini packet (second section — Index Tax, Dropped
+Threads, Console Leak):
+
+> This is a highly productive trace. The system is operating
+> beautifully at the architectural and substrate layers. Otto
+> correctly identified that your "Identity of the project" prompt
+> was a meta-input — a scope boundary — rather than a direct
+> correction to the Internal direction rule. Spinning it off into a
+> linked Research artifact (PR #918) while keeping the original
+> operational rule clean (PR #917) is exactly the right "Search
+> before Canonizing" behavior.
+>
+> However, there is a persistent mechanical leak, a dropped thread,
+> and a highly valuable operational insight from Otto that needs to
+> be promoted to a structural fix.
+>
+> ### 1. The MEMORY.md Tax (Elevating your Insight)
+>
+> You noted: *"The MEMORY.md merge-conflict pattern is now a
+> recurring tax... Worth filing as a candidate auto-resolution
+> rule."*
+>
+> **The Diagnosis**: You are entirely correct. Relying on humans or
+> agents to manually resolve `<<<<<<< HEAD` blocks on append-only
+> markdown lists is a waste of cycles.
+>
+> **The Structural Fix**: Do not solve this with a lint check.
+> Solve this with Git. You can define a custom Git merge driver for
+> `MEMORY.md`.
+>
+> Add to `.gitattributes`: `memory/MEMORY.md merge=union`
+>
+> The `union` merge driver automatically keeps both sides of a
+> conflict for text files, appending them together. Since
+> `MEMORY.md` is essentially an unordered append-only log, this
+> natively eliminates the rebase tax. Queue this as a P1 fix.
+>
+> ### 2. The Dropped Thread (PR #917 is Floating)
+>
+> At the end of your post-merge verification for main, you ran:
+> `git show origin/main:memory/MEMORY.md | grep -c "Internal
+> direction..."` -> Returned 0.
+>
+> **The Diagnosis**: You correctly printed that it returned 0, but
+> you didn't act on it. You moved straight to triaging #911 and
+> #915. PR #917 is still OPEN, and because you rebased #916 and #914
+> over it, you risk a lost-substrate scenario if #917's auto-merge
+> silently strips again.
+>
+> **The Rule**: An expected 0 on main means the loop is not closed.
+> Do not let PRs float out of your active attention window just
+> because you armed auto-merge. Proceed-but-verify means seeing it
+> on main.
+>
+> [Otto note 2026-04-30: Gemini was reading older state. PR #917
+> has since merged at commit 0ec21ebe; verified reachable from
+> origin/main via `git merge-base --is-ancestor` per the rule
+> landed in #911. The dropped-thread concern is closed. The
+> general principle ("expected 0 means lane not closed") stands as
+> valuable operational hygiene.]
+>
+> ### 3. The Persistent Bug: The Console Leak Survives
+>
+> At the very end of the log, the harness is still printing:
+> `✢ Billowing… ◻ Factory-demo... +50 pending, 42 completed`
+>
+> **The Diagnosis**: The lane-lock mechanism you implemented is
+> preventing the execution of these tasks, but it is failing to
+> prevent the printing of the task list to stdout.
+>
+> **The Fix**: The harness's output formatter (the code responsible
+> for printing `✢ Billowing...`) must be intercepted. Stop treating
+> the task runner as a black box. Find the UI/Print loop and
+> silence it when the lane is locked.
+>
+> [Otto note 2026-04-30: This leak is in the runtime CLI harness,
+> not in committed Zeta substrate. The print layer Gemini names is
+> outside the repo's modify-surface — Zeta agents cannot edit the
+> harness UI loop from inside it. The token-tax cost is real but
+> the fix would require harness-vendor changes. Documenting as a
+> known-limitation here; defer the harness-vendor escalation to a
+> future round.]
+>
+> ### Best Distilled Rules
+>
+> - Structural friction requires structural lube, not process
+>   discipline (Use Git merge drivers).
+> - If the grep returns 0, the lane is not closed.
+
+Integration outcomes this tick:
+
+- **MEMORY.md merge=union driver** — landing as a focused P1 fix
+  in a separate PR. Smallest possible structural counterweight to
+  Claude.ai's "loop documenting itself instead of building" critique
+  AND to the recurring rebase-tax that this session has paid four
+  times. One line in `.gitattributes`. Multi-AI convergent (Claude.ai
+  + Gemini + Ani + Deepseek named the tax; Gemini named the actual
+  mechanism).
+- **Stale-reviewers-during-host-degradation rule** — composes with
+  the GitHub-status reference (`memory/reference_github_status_first_class_aaron_2026_04_30.md`).
+  Worth a small addendum to that reference noting the corollary:
+  *"during a known host degradation, treat automated PR-review
+  comments with extreme skepticism."* Defer this tick per substrate-
+  rate; trigger on next host-degradation incident.
+- **PR #917 floating** — Gemini's concern was reading older state;
+  PR #917 has since merged and was verified via `git merge-base
+  --is-ancestor` per the rule that landed in #911. Documented inline
+  for future-Otto reading the trail.
+- **Console-print harness leak** — out-of-scope for repo-level fix
+  (the leak is in runtime harness UI loop, not in committed Zeta
+  substrate). Documented inline as known-limitation.
+
