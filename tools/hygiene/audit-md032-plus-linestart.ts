@@ -6,20 +6,29 @@
 // See docs/trajectories/typescript-bun-migration/RESUME.md for the
 // trajectory; see B-0086 for the migration discipline.
 //
+// Type discipline (typed boundaries, not noise):
+//   Findings flow as `readonly AuditFinding[]` of structured
+//   `{ file, line }` objects, not stringly-formatted "file:line"
+//   text. Strings are produced only at the output boundary. Exit
+//   code is a literal-type union `AuditExitCode = 0 | 2`. CLI mode
+//   is a literal-type union `Mode`. The git-spawn boundary uses
+//   `type SpawnSyncReturns<string>` and a structured failure
+//   classifier that distinguishes launch / termination / non-zero
+//   exit. Idioms follow upstream Bun + TS 6 + typescript-eslint v8
+//   strictTypeChecked guidance and `../SQLSharp/tools/automation/
+//   format/process-runner.ts`.
+//
 // What this does:
-//   Detects markdown files where a line starts with `+ ` inside
-//   a paragraph (no blank line above, previous line is not itself
-//   a `+ `-list continuation) — the pattern that markdownlint
-//   MD032 treats as "list item missing blank line."
+//   Detects markdown files where a line starts with `+ ` inside a
+//   paragraph (no blank line above, previous line is not itself a
+//   `+ `-list continuation) — the markdownlint MD032 false-trigger.
 //
 // Detection shape (CommonMark-aware):
-//   * Scans each line matching `^ {0,3}\+ ` (CommonMark allows
-//     up to 3 leading spaces on list-marker lines).
-//   * Flags a gap only when the previous line is **not blank**
-//     (after stripping all whitespace: spaces, tabs, CR) **and**
-//     the previous line is itself **not** a `^ {0,3}\+ ` line.
-//   * No file-level skip heuristic — every candidate line is
-//     judged on its own per-line context.
+//   * Scans each line matching `^ {0,3}\+ ` (CommonMark allows up
+//     to 3 leading spaces on list-marker lines).
+//   * Flags a gap only when the previous line is non-blank (after
+//     stripping all whitespace) AND the previous line is itself NOT
+//     a `^ {0,3}\+ ` line.
 //
 // Usage:
 //   bun tools/hygiene/audit-md032-plus-linestart.ts              # summary
@@ -27,14 +36,31 @@
 //   bun tools/hygiene/audit-md032-plus-linestart.ts --enforce    # exit 2 on any gap
 //
 // Exit codes:
-//   0 — no offending `+ `-at-line-start patterns (or --enforce
-//       not set and gaps found)
+//   0 — clean (or --enforce not set and gaps found)
 //   2 — gaps found and --enforce was set
 
-import { spawnSync } from "node:child_process";
+import {
+  spawnSync,
+  type SpawnSyncReturns,
+} from "node:child_process";
 import { readFileSync } from "node:fs";
 
 type Mode = "summary" | "list" | "enforce";
+
+type AuditExitCode = 0 | 2;
+
+interface AuditFinding {
+  readonly file: string;
+  readonly line: number;
+}
+
+interface AuditResult {
+  readonly findings: readonly AuditFinding[];
+}
+
+const PLUS_MARKER_RE = /^ {0,3}\+ /;
+const EXCLUDE_RE =
+  /^(docs\/ROUND-HISTORY\.md|docs\/hygiene-history\/|docs\/DECISIONS\/|tools\/hygiene\/audit-md032-plus-linestart\.(sh|ts))/;
 
 function parseMode(argv: readonly string[]): Mode {
   const arg = argv[0];
@@ -43,12 +69,33 @@ function parseMode(argv: readonly string[]): Mode {
   return "summary";
 }
 
-function runGit(args: readonly string[]): string {
-  // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is required tooling per the factory bootstrap (mise pin); shell-injection-resistant via explicit args array.
-  const result = spawnSync("git", args, { encoding: "utf8" });
-  if (result.status !== 0) {
-    throw new Error(`git ${args.join(" ")} failed`);
+function classifyGitFailure(
+  args: readonly string[],
+  result: SpawnSyncReturns<string>,
+): string | null {
+  if (result.error) {
+    return `Failed to start 'git ${args.join(" ")}': ${result.error.message}`;
   }
+  if (result.status === null) {
+    if (result.signal !== null) {
+      return `'git ${args.join(" ")}' terminated by signal ${result.signal}`;
+    }
+    return `'git ${args.join(" ")}' terminated before reporting an exit code`;
+  }
+  if (result.status !== 0) {
+    const stderr = result.stderr.trim();
+    return stderr !== ""
+      ? stderr
+      : `'git ${args.join(" ")}' exited ${String(result.status)}`;
+  }
+  return null;
+}
+
+function runGit(args: readonly string[]): string {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is repo-pinned via .mise.toml; args are an explicit string array (no shell interpolation).
+  const result = spawnSync("git", args, { encoding: "utf8" });
+  const failure = classifyGitFailure(args, result);
+  if (failure !== null) throw new Error(failure);
   return result.stdout;
 }
 
@@ -56,32 +103,27 @@ function repoRoot(): string {
   return runGit(["rev-parse", "--show-toplevel"]).trim();
 }
 
-function listMarkdownFiles(): string[] {
+function listMarkdownFiles(): readonly string[] {
   return runGit(["ls-files", "-z", "*.md"])
     .split("\0")
-    .filter((s) => s.length > 0);
+    .filter((s): s is string => s.length > 0);
 }
-
-const EXCLUDE_RE =
-  /^(docs\/ROUND-HISTORY\.md|docs\/hygiene-history\/|docs\/DECISIONS\/|tools\/hygiene\/audit-md032-plus-linestart\.(sh|ts))/;
-
-const PLUS_MARKER_RE = /^ {0,3}\+ /;
 
 function isBlankAfterStrip(line: string): boolean {
   return line.replace(/\s/g, "").length === 0;
 }
 
-function auditFile(file: string): string[] {
+function auditFile(file: string): readonly AuditFinding[] {
   const content = readFileSync(file, "utf8");
   const lines = content.split("\n");
-  // Match the bash behavior: a trailing newline produces an empty
-  // last element which we drop, but a file without trailing newline
-  // keeps its final partial line.
+  // Match bash behavior: trailing newline produces an empty last
+  // element which we drop; a file without trailing newline keeps
+  // its final partial line.
   if (lines.length > 0 && lines[lines.length - 1] === "") {
     lines.pop();
   }
 
-  const gaps: string[] = [];
+  const findings: AuditFinding[] = [];
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i] ?? "";
     if (!PLUS_MARKER_RE.test(line)) continue;
@@ -89,33 +131,39 @@ function auditFile(file: string): string[] {
     const prev = lines[i - 1] ?? "";
     if (isBlankAfterStrip(prev)) continue;
     if (PLUS_MARKER_RE.test(prev)) continue;
-    gaps.push(`${file}:${String(i + 1)}`);
+    findings.push({ file, line: i + 1 });
   }
-  return gaps;
+  return findings;
 }
 
-function main(argv: readonly string[]): number {
-  const mode = parseMode(argv);
+export function auditRepo(): AuditResult {
   process.chdir(repoRoot());
-
   const files = listMarkdownFiles().filter((f) => !EXCLUDE_RE.test(f));
-  const gapLines: string[] = [];
+  const findings: AuditFinding[] = [];
   for (const file of files) {
-    gapLines.push(...auditFile(file));
+    findings.push(...auditFile(file));
   }
-  const gapCount = gapLines.length;
+  return { findings };
+}
+
+function formatFinding(finding: AuditFinding): string {
+  return `${finding.file}:${String(finding.line)}`;
+}
+
+export function main(argv: readonly string[]): AuditExitCode {
+  const mode = parseMode(argv);
+  const { findings } = auditRepo();
+  const count = findings.length;
 
   if (mode === "list") {
-    if (gapCount > 0) {
-      console.log(gapLines.join("\n"));
-    }
+    if (count > 0) console.log(findings.map(formatFinding).join("\n"));
     return 0;
   }
 
   if (mode === "enforce") {
-    if (gapCount > 0) {
-      console.log(`MD032 '+'-at-line-start gaps: ${String(gapCount)}`);
-      for (const line of gapLines) console.log(`  ${line}`);
+    if (count > 0) {
+      console.log(`MD032 '+'-at-line-start gaps: ${String(count)}`);
+      for (const finding of findings) console.log(`  ${formatFinding(finding)}`);
       console.log("");
       console.log(
         "Fix: replace '+' at line start with 'and' or similar prose",
@@ -130,8 +178,8 @@ function main(argv: readonly string[]): number {
     return 0;
   }
 
-  if (gapCount > 0) {
-    console.log(`MD032 '+'-at-line-start gaps: ${String(gapCount)}`);
+  if (count > 0) {
+    console.log(`MD032 '+'-at-line-start gaps: ${String(count)}`);
     console.log("run with --list to see offending file:line locations");
   } else {
     console.log("MD032 '+'-at-line-start gaps: 0 (clean)");
@@ -139,5 +187,6 @@ function main(argv: readonly string[]): number {
   return 0;
 }
 
-const code = main(process.argv.slice(2));
-process.exit(code);
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}

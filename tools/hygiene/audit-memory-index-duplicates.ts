@@ -7,10 +7,17 @@
 // See docs/trajectories/typescript-bun-migration/RESUME.md for the
 // trajectory; see B-0086 for the migration discipline.
 //
+// Type discipline (typed boundaries, not noise):
+//   Findings flow as `readonly DuplicateFinding[]` of structured
+//   `{ count, target }` objects. CLI args parse into a typed `Args`
+//   interface. Exit code is a literal-type union `AuditExitCode`.
+//   Idioms follow upstream Bun + TS 6 + typescript-eslint v8
+//   strictTypeChecked guidance and `../SQLSharp` conventions.
+//
 // Detection strategy:
-//   Line-grep the target file for `](filename.md)` link targets,
-//   normalize equivalent paths (strip leading `./`), tally by
-//   normalized filename. Any count > 1 is a duplicate.
+//   Scan the target file for `](filename.md)` link targets, normalize
+//   equivalent paths (strip leading `./`), tally by normalized
+//   filename. Any count > 1 is a duplicate.
 //
 // What this does NOT catch:
 //   - Substantially similar descriptions of different files.
@@ -34,10 +41,19 @@
 
 import { readFileSync } from "node:fs";
 
+type AuditExitCode = 0 | 2 | 64;
+
 interface Args {
-  target: string;
-  enforce: boolean;
+  readonly target: string;
+  readonly enforce: boolean;
 }
+
+interface DuplicateFinding {
+  readonly count: number;
+  readonly target: string;
+}
+
+const LINK_RE = /\]\(([a-zA-Z_0-9./-]+\.md)\)/g;
 
 function parseArgs(argv: readonly string[]): Args {
   let target = "memory/MEMORY.md";
@@ -69,35 +85,29 @@ function parseArgs(argv: readonly string[]): Args {
   return { target, enforce };
 }
 
-const LINK_RE = /\]\(([a-zA-Z_0-9./-]+\.md)\)/g;
-
-interface DupRow {
-  count: number;
-  target: string;
-}
-
-function findDuplicates(content: string): DupRow[] {
+export function findDuplicates(content: string): readonly DuplicateFinding[] {
   const counts = new Map<string, number>();
   for (const match of content.matchAll(LINK_RE)) {
     const captured = match[1] ?? "";
     const path = captured.startsWith("./") ? captured.slice(2) : captured;
     counts.set(path, (counts.get(path) ?? 0) + 1);
   }
-  const dups: DupRow[] = [];
+  const dups: DuplicateFinding[] = [];
   for (const [target, count] of counts) {
     if (count > 1) dups.push({ count, target });
   }
-  // Sort by count descending (matches `sort -rn` in the bash original).
+  // Sort by count descending (matches `sort -rn` in bash); tie-break
+  // alphabetically so output is deterministic.
   dups.sort((a, b) => b.count - a.count || a.target.localeCompare(b.target));
   return dups;
 }
 
-function main(argv: readonly string[]): number {
+export function main(argv: readonly string[]): AuditExitCode {
   const { target, enforce } = parseArgs(argv);
 
-  // Read target atomically — readFileSync throws ENOENT/EISDIR if missing,
-  // matching the prior existsSync check. Avoids the TOCTOU race between
-  // the check and the read (CodeQL js/file-system-race).
+  // Read target atomically. readFileSync throws ENOENT/EISDIR if missing
+  // or not a regular file; that matches the prior existsSync check
+  // without the TOCTOU race (CodeQL js/file-system-race).
   let content: string;
   try {
     content = readFileSync(target, "utf8");
@@ -105,8 +115,8 @@ function main(argv: readonly string[]): number {
     process.stderr.write(`error: target file not found: ${target}\n`);
     return 64;
   }
-  const dups = findDuplicates(content);
 
+  const dups = findDuplicates(content);
   if (dups.length === 0) {
     process.stderr.write(`no duplicate memory-index links in ${target}\n`);
     return 0;
@@ -138,9 +148,9 @@ function main(argv: readonly string[]): number {
     "duplicated target, keeping the newest-first-ordered one.\n",
   );
 
-  if (enforce) return 2;
-  return 0;
+  return enforce ? 2 : 0;
 }
 
-const code = main(process.argv.slice(2));
-process.exit(code);
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}

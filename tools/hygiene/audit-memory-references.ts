@@ -7,6 +7,14 @@
 // See docs/trajectories/typescript-bun-migration/RESUME.md for the
 // trajectory; see B-0086 for the migration discipline.
 //
+// Type discipline (typed boundaries, not noise):
+//   Findings flow as `readonly BrokenRefFinding[]` of structured
+//   `{ ref, tried }` objects. CLI args parse into a typed `Args`
+//   interface. `AuditResult` carries totals + structured findings.
+//   Exit code is a literal-type union `AuditExitCode`. Idioms follow
+//   upstream Bun + TS 6 + typescript-eslint v8 strictTypeChecked
+//   guidance and `../SQLSharp` conventions.
+//
 // Every `](foo.md)` link target in MEMORY.md MUST resolve to an
 // actual file under `memory/`. Together with the duplicate-detector
 // and the memory-index-integrity workflow, this forms three-part
@@ -29,11 +37,26 @@
 
 import { statSync, readFileSync } from "node:fs";
 
+type AuditExitCode = 0 | 2 | 64;
+
 interface Args {
-  target: string;
-  baseDir: string;
-  enforce: boolean;
+  readonly target: string;
+  readonly baseDir: string;
+  readonly enforce: boolean;
 }
+
+interface BrokenRefFinding {
+  readonly ref: string;
+  readonly tried: string;
+}
+
+interface AuditResult {
+  readonly total: number;
+  readonly okCount: number;
+  readonly broken: readonly BrokenRefFinding[];
+}
+
+const LINK_RE = /\]\(([a-zA-Z_0-9./-]+\.md)\)/g;
 
 function parseArgs(argv: readonly string[]): Args {
   let target = "memory/MEMORY.md";
@@ -74,8 +97,6 @@ function parseArgs(argv: readonly string[]): Args {
   return { target, baseDir, enforce };
 }
 
-const LINK_RE = /\]\(([a-zA-Z_0-9./-]+\.md)\)/g;
-
 function isFile(p: string): boolean {
   try {
     return statSync(p).isFile();
@@ -84,13 +105,7 @@ function isFile(p: string): boolean {
   }
 }
 
-interface AuditResult {
-  total: number;
-  okCount: number;
-  broken: { ref: string; tried: string }[];
-}
-
-function audit(content: string, baseDir: string): AuditResult {
+export function audit(content: string, baseDir: string): AuditResult {
   const refs = new Set<string>();
   for (const match of content.matchAll(LINK_RE)) {
     const captured = match[1];
@@ -98,7 +113,7 @@ function audit(content: string, baseDir: string): AuditResult {
   }
 
   const sortedRefs = [...refs].sort((a, b) => a.localeCompare(b));
-  const broken: { ref: string; tried: string }[] = [];
+  const broken: BrokenRefFinding[] = [];
   let okCount = 0;
   for (const ref of sortedRefs) {
     const fileRel = `${baseDir}/${ref}`;
@@ -115,13 +130,12 @@ function audit(content: string, baseDir: string): AuditResult {
   return { total: sortedRefs.length, okCount, broken };
 }
 
-function main(argv: readonly string[]): number {
+export function main(argv: readonly string[]): AuditExitCode {
   const { target, baseDir, enforce } = parseArgs(argv);
 
-  // Read target atomically — readFileSync throws ENOENT/EISDIR if missing
-  // or not a regular file, which is the same failure case the prior
-  // existsSync+statSync check produced. Avoids the TOCTOU race between
-  // the check and the read (CodeQL js/file-system-race).
+  // Read target atomically (readFileSync throws ENOENT/EISDIR if
+  // missing or not a regular file). Avoids the TOCTOU race between
+  // an existsSync check and the read (CodeQL js/file-system-race).
   let content: string;
   try {
     content = readFileSync(target, "utf8");
@@ -187,9 +201,9 @@ function main(argv: readonly string[]): number {
   );
   process.stderr.write("remove the broken row from the index.\n");
 
-  if (enforce) return 2;
-  return 0;
+  return enforce ? 2 : 0;
 }
 
-const code = main(process.argv.slice(2));
-process.exit(code);
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}
