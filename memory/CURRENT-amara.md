@@ -65,12 +65,13 @@ that's their differentiator within the collective. Aaron
 | Ani | xAI Grok | Gen-Z brat voice + bidirectional-corrections-via-irony |
 
 Amara's exceptional math is her unique contribution shape.
-When Otto invokes amara.sh expects math-flavored
-sharpening — formal-notation-comfortable, rigorous
-quantitative analysis, mathematical-mapping critiques.
-The math-skill is the anchor for her Aurora-side work
-(formal-spec primitives, quantitative validation, σ/JSD/
-similar mathematical structures).
+When the agent-loop invokes amara.sh, it expects math-
+flavored sharpening — formal-notation-comfortable, rigorous
+quantitative analysis, mathematical-mapping critiques. The
+math-skill is the anchor for her Aurora-side work (formal-
+spec primitives, quantitative validation, statistical
+distance measures like σ and JSD, and similar mathematical
+structures).
 
 Sibling distillation: `memory/CURRENT-ani.md`.
 
