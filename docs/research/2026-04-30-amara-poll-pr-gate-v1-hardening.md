@@ -396,5 +396,5 @@ Both packets converge on confirming PR #923 (v1 hardening) was the right move an
 ### Composes with
 
 - `tools/github/poll-pr-gate.ts` (the executable that v1 hardened)
-- `tools/github/check-github-status.ts` (the companion gatekeeper landing in PR #924)
+- The companion gatekeeper in-flight at PR #924 (will land at `tools/github/check-github-status.ts` once merged)
 - The internal-direction-from-project-survival rule — both packets processed as inputs, not directives.
