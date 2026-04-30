@@ -140,6 +140,17 @@ must record:
       (default args and any flag modes)
 - [ ] All slice files use the *same* canonical pattern (no
       one-script-typed-properly-others-loose split)
+- [ ] DST-friendly: no real `Date.now()` / `Math.random()` /
+      `setTimeout`-timing reliance in test paths; injected
+      clock/RNG/scheduler used. For port slices that have no
+      tests yet, this is a deferred check — flag as gap in
+      slice-audits.md, not a free pass.
+- [ ] Code coverage: any new module added by the slice has tests
+      covering its public surface; CI surfaces coverage; the
+      slice does not regress overall coverage. For port slices
+      where the bash original had no tests, the TS port either
+      adds tests OR records the gap explicitly (DST-exempt-is-
+      deferred-bug discipline applies to coverage too).
 
 ## What this artifact is NOT
 
