@@ -112,7 +112,10 @@ existing workflow:
    workflows only run from the default branch. A workflow file
    in a feature branch will never fire on schedule.
 3. **Is it disabled?** — public-repo schedules can be disabled
-   after inactivity (60+ days no commits to the workflow).
+   by GitHub Actions after **60 days of no repository
+   activity** (per GitHub's documented rule — repo-level
+   activity, NOT workflow-file-age. An active repo with an
+   old workflow file does NOT trigger the auto-disable).
    `gh run list --all` may show runs for disabled workflows
    that the default `gh run list` filters out.
 4. **Is the cron valid UTC?** — cron is always UTC; a `0 9 * * *`
@@ -191,8 +194,10 @@ null/failure situation*, not individual runs:
 - **non-default-branch** (Q2) — workflow file lives on a
   non-default branch where scheduled triggers don't fire.
 - **disabled** (Q3) — workflow disabled by GHA after
-  inactivity (60+ days no commits to the workflow); `gh run
-  list --all` may show prior runs the default filter hides.
+  **60 days of no repository activity** (per GitHub's
+  documented rule — repo-level activity, NOT workflow-file-
+  age); `gh run list --all` may show prior runs the default
+  filter hides.
 - **cron mismatch** (Q4) — cron syntax is malformed OR cron
   doesn't fit the deployment context (e.g. workflow needs
   daily fire but cron is weekly; or cron interpreted as
@@ -229,7 +234,8 @@ classes.
 - Phase 1 (existing shell tooling): walk **scheduled**
   workflows in `.github/workflows/*.yml` (those with
   `on.schedule`), run `gh run list`, classify every
-  null/failure into the 7-label set + uncaptured-gap.
+  null/failure into the **8-label set** (known row + Q1-Q6
+  + uncaptured-gap; see *Classification labels* above).
   Non-scheduled workflows have different null-result
   semantics (e.g. `pull_request`-only workflows
   legitimately have empty `gh run list` until a PR fires
