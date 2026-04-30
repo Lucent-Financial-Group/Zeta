@@ -25,6 +25,7 @@ const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const ALLOWLIST_REL = "tools/lint/no-empty-dirs.allowlist";
 const SPACE = 0x20;
 const TAB = 0x09;
+const CR = 0x0d;
 const HASH = 0x23;
 
 const HARD_EXCLUDE_PREFIXES: readonly string[] = [
@@ -131,10 +132,14 @@ function findEmptyDirs(root: string): readonly string[] {
 }
 
 function trimTrailingSpaceTab(s: string): string {
+  // Trim space, tab, and CR — CR matters when the allowlist is
+  // checked out with CRLF endings (Otto-235 4-shell portability +
+  // git autocrlf=true on Windows). Bash's `[[:space:]]*$` regex
+  // also matches CR.
   let end = s.length;
   while (end > 0) {
     const c = s.charCodeAt(end - 1);
-    if (c !== SPACE && c !== TAB) break;
+    if (c !== SPACE && c !== TAB && c !== CR) break;
     end--;
   }
   return s.slice(0, end);

@@ -67,10 +67,10 @@ const H3_PATTERNS: readonly RegExp[] = [
   /^#+[\t ]+What[\t ]+this[\t ]+skill[\t ]+does[\t ]+not[\t ]+audit\b/im,
 ];
 
-interface ParsedArgs {
-  readonly mode: Mode;
-  readonly failOver: number | null;
-}
+type ParsedArgs =
+  | { readonly kind: "ok"; readonly mode: Mode; readonly failOver: number | null }
+  | { readonly kind: "help" }
+  | { readonly kind: "usage-error"; readonly message: string };
 
 interface SkillResult {
   readonly name: string;
@@ -99,31 +99,63 @@ function repoRoot(): string {
   return result.stdout.trim();
 }
 
-interface FailOverParse {
-  readonly value: number | null;
-  readonly consumeNext: boolean;
-}
+type FailOverParse =
+  | { readonly kind: "found"; readonly value: number; readonly consumeNext: boolean }
+  | { readonly kind: "invalid"; readonly raw: string }
+  | { readonly kind: "missing-value" }
+  | { readonly kind: "no-match" };
 
 function parseFailOverArg(
   arg: string,
   next: string | undefined,
 ): FailOverParse {
   if (arg === "--fail-over") {
-    if (next === undefined) return { value: null, consumeNext: false };
+    if (next === undefined) return { kind: "missing-value" };
     const parsed = Number.parseInt(next, 10);
-    return {
-      value: Number.isNaN(parsed) ? null : parsed,
-      consumeNext: true,
-    };
+    if (Number.isNaN(parsed) || !/^-?\d+$/.test(next)) {
+      return { kind: "invalid", raw: next };
+    }
+    return { kind: "found", value: parsed, consumeNext: true };
   }
   if (arg.startsWith("--fail-over=")) {
-    const parsed = Number.parseInt(arg.slice("--fail-over=".length), 10);
+    const raw = arg.slice("--fail-over=".length);
+    const parsed = Number.parseInt(raw, 10);
+    if (Number.isNaN(parsed) || !/^-?\d+$/.test(raw)) {
+      return { kind: "invalid", raw };
+    }
+    return { kind: "found", value: parsed, consumeNext: false };
+  }
+  return { kind: "no-match" };
+}
+
+type ArgStep =
+  | { readonly kind: "set-mode"; readonly mode: Mode; readonly skip: 0 }
+  | { readonly kind: "set-fail-over"; readonly value: number; readonly skip: 0 | 1 }
+  | { readonly kind: "help"; readonly skip: 0 }
+  | { readonly kind: "error"; readonly message: string }
+  | { readonly kind: "skip"; readonly skip: 0 };
+
+function classifyArg(arg: string, next: string | undefined): ArgStep {
+  if (arg === "--list-missing") return { kind: "set-mode", mode: "list-missing", skip: 0 };
+  if (arg === "--verbose") return { kind: "set-mode", mode: "verbose", skip: 0 };
+  if (arg === "-h" || arg === "--help") return { kind: "help", skip: 0 };
+  const fo = parseFailOverArg(arg, next);
+  if (fo.kind === "found") {
+    return { kind: "set-fail-over", value: fo.value, skip: fo.consumeNext ? 1 : 0 };
+  }
+  if (fo.kind === "invalid") {
     return {
-      value: Number.isNaN(parsed) ? null : parsed,
-      consumeNext: false,
+      kind: "error",
+      message: `--fail-over requires an integer value, got: ${fo.raw}`,
     };
   }
-  return { value: null, consumeNext: false };
+  if (fo.kind === "missing-value") {
+    return {
+      kind: "error",
+      message: "--fail-over requires an integer value (e.g. --fail-over 5)",
+    };
+  }
+  return { kind: "skip", skip: 0 };
 }
 
 function parseArgs(argv: readonly string[]): ParsedArgs {
@@ -132,19 +164,29 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === undefined) continue;
-    if (arg === "--list-missing") {
-      mode = "list-missing";
-      continue;
+    const step = classifyArg(arg, argv[i + 1]);
+    if (step.kind === "help") return { kind: "help" };
+    if (step.kind === "error") return { kind: "usage-error", message: step.message };
+    if (step.kind === "set-mode") mode = step.mode;
+    else if (step.kind === "set-fail-over") {
+      failOver = step.value;
+      i += step.skip;
     }
-    if (arg === "--verbose") {
-      mode = "verbose";
-      continue;
-    }
-    const fo = parseFailOverArg(arg, argv[i + 1]);
-    if (fo.value !== null) failOver = fo.value;
-    if (fo.consumeNext) i++;
   }
-  return { mode, failOver };
+  return { kind: "ok", mode, failOver };
+}
+
+function emitHelp(): void {
+  process.stdout.write(
+    "Usage: bun tools/lint/safety-clause-audit.ts [options]\n",
+  );
+  process.stdout.write("\n");
+  process.stdout.write("Options:\n");
+  process.stdout.write("  (no flag)         summary table (default)\n");
+  process.stdout.write("  --list-missing    print one skill name per missing entry\n");
+  process.stdout.write("  --verbose         per-skill table with tier classification\n");
+  process.stdout.write("  --fail-over N     exit 1 if MISSING count > N\n");
+  process.stdout.write("  -h, --help        print this help and exit 0\n");
 }
 
 function listSkillFiles(skillsDir: string): readonly string[] {
@@ -215,6 +257,10 @@ function formatPercent(numerator: number, total: number): string {
 }
 
 function emitListMissing(c: AuditCounts): void {
+  // Match bash byte-for-byte: `printf '%s\n' "${missing_list[@]:-}"`
+  // emits a single newline when the array is empty (the :- expansion
+  // produces "", then printf emits "%s\n" = "\n"). Verified empirically
+  // 2026-04-30 in macOS bash 3.2 + Linux bash 5.x.
   if (c.missingList.length === 0) {
     process.stdout.write("\n");
     return;
@@ -279,10 +325,19 @@ function emitSummary(c: AuditCounts): void {
 }
 
 export function main(argv: readonly string[]): ExitCode {
+  const parsed = parseArgs(argv);
+  if (parsed.kind === "help") {
+    emitHelp();
+    return 0;
+  }
+  if (parsed.kind === "usage-error") {
+    process.stderr.write(`safety-clause-audit: ${parsed.message}\n`);
+    return 1;
+  }
+  const { mode, failOver } = parsed;
+
   const root = repoRoot();
   const skillsDir = join(root, ".claude", "skills");
-  const { mode, failOver } = parseArgs(argv);
-
   const files = listSkillFiles(skillsDir);
   const counts = auditSkills(files);
 

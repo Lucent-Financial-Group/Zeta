@@ -447,7 +447,7 @@ Diff'd against bash output on this repo state (2026-04-30 main):
 
 ### Outcome
 
-Slice 7 passes audit. No new patterns recorded — all reused from prior slices. The two remaining Cluster H scripts (`no-directives-otto-prose.sh` at 261 lines + `runner-version-freshness.sh` at 356 lines) are deferred to slice 8 — natural size boundary, plus `no-directives-otto-prose` has open backlog #350 (extend scope) so port-then-extend likely needs paired review.
+Slice 7 passes audit. No new patterns recorded — all reused from prior slices. The two remaining Cluster H scripts (`no-directives-otto-prose.sh` at 261 lines + `runner-version-freshness.sh` at 356 lines) are deferred to slice 8 — natural size boundary, plus `no-directives-otto-prose` has Task #350 (extend scope) so port-then-extend likely needs paired review.
 
 ## Slice template (for future slices)
 

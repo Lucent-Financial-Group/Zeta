@@ -60,11 +60,26 @@ const SCAN_EXCLUDE_SEGMENTS: readonly string[] = [
   "obj",
   ".venv",
   "node_modules",
+  // tools/lean4/.lake is the Lake build-output tree under tools/
+  // — pulled in via SCAN_ROOTS, but contains a heavy mathlib
+  // checkout that's not in scope. Excluded for both correctness
+  // (mathlib references would dominate findings) and performance
+  // (the directory walk gets very slow if .lake exists locally).
+  ".lake",
 ];
 
 const TOKEN_RE =
   /(Otto-\d+|Amara|Aaron|ferry|courier|graduation|Provenance:|Attribution:)/g;
 
+// Comment-line patterns. `///` and `//` are F#/C# comment markers
+// (and the F#-XML-doc shape is `///`). `#!` is a shell shebang (NOT
+// a comment to scan). `#` is the shell-comment marker. Note: in
+// F#/C# `#` typically denotes preprocessor / module directives
+// rather than comments — but those still get scanned here, with
+// the rationale that any `#`-prefixed line in a code file is a
+// candidate for the same factory-process-token check (a bash
+// shebang precondition + an F# `#nowarn` directive both legitimately
+// describe what the code DOES, not its history).
 const COMMENT_TRIPLE_SLASH_RE = /^[\t ]*\/\/\//;
 const COMMENT_DOUBLE_SLASH_RE = /^[\t ]*\/\//;
 const COMMENT_SHEBANG_RE = /^[\t ]*#!/;
