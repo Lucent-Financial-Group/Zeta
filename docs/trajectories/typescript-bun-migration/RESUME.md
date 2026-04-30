@@ -1,10 +1,10 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B first artifact)
-**Milestone**: First two non-AI/ML Python hygiene scripts ported to TypeScript on Bun (PR #849, commit `40344c9`).
-**Current blocker**: None. CodeQL host-ownership noise diagnosed in `docs/trajectories/ci-codeql-host-ownership/INVESTIGATION.md` (linked-from-here as the #849 blocker record, not the trajectory itself).
-**Next concrete action**: Pick a coherent next slice from the "should become TypeScript" classification below and open a single PR.
-**Last updated**: 2026-04-29
+**Status**: Active (Lane B slice 1 merged — d3b0be8)
+**Milestone**: 5 audit scripts ported (2 from PR #849 + 3 from PR #866). Two-gate quality model + layered Gate B baseline (`docs/best-practices/{typescript,bun,repo-scripting}.md`) landed.
+**Current blocker**: None.
+**Next concrete action**: Pick a coherent next slice from Bucket B (~36 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
+**Last updated**: 2026-04-30
 
 ## Why this trajectory exists
 
@@ -19,7 +19,7 @@ Per the maintainer-channel correction via the multi-AI review surface (2026-04-2
 | PR | Date | Files | Status |
 |---|---|---|---|
 | [#849](https://github.com/Lucent-Financial-Group/Zeta/pull/849) | 2026-04-29 (commit `40344c9`) | `tools/hygiene/sort-tick-history-canonical.{py→ts}`, `tools/hygiene/fix-markdown-md032-md026.{py→ts}` | Merged |
-| Lane B slice 1 | 2026-04-29 | `tools/hygiene/audit-md032-plus-linestart.{sh→ts}`, `tools/hygiene/audit-memory-index-duplicates.{sh→ts}`, `tools/hygiene/audit-memory-references.{sh→ts}` | In flight |
+| [#866](https://github.com/Lucent-Financial-Group/Zeta/pull/866) | 2026-04-30 (commit `d3b0be8`) | `tools/hygiene/audit-md032-plus-linestart.{sh→ts}`, `tools/hygiene/audit-memory-index-duplicates.{sh→ts}`, `tools/hygiene/audit-memory-references.{sh→ts}` | Merged |
 
 ## Inventory — Python (tools/, Zeta-authored)
 
