@@ -225,6 +225,61 @@ For each of the 3 ports, equivalence verified against the bash original:
 
 Slice 2 passes audit. The clock-injection pattern is the new substrate addition (DST-friendliness applied to the two report-generating scripts); the `ParseAcc` reducer pattern from `audit-git-hotspots` is recorded for future flag-heavy parsers.
 
+## Slice 3 — 3 alignment-audit-script ports (PR #NNN, 2026-04-30)
+
+**Slice files**:
+
+- `tools/alignment/audit_archive_headers.{sh→ts}`
+- `tools/alignment/audit_personas.{sh→ts}`
+- `tools/alignment/audit_commit.{sh→ts}`
+
+**Comparison points**:
+
+- `docs/best-practices/typescript.md`, `bun.md`, `repo-scripting.md` — verified 1 day old (within currency window).
+- `../SQLSharp` at commit `7d3d9f6` (2026-04-18).
+- Slices 1+2 (PRs #866, #868) — canonical patterns reused.
+
+### Tsconfig + eslint audit
+
+- **Applied**: inherited from earlier slices; all three slice-3 files compile clean under the same strict regime.
+- **Cognitive-complexity push (audit_archive_headers, audit_commit)**: extracted helper functions (reduceFlag, emitJsonRollup, emitHumanSummary, classifyHc2/Hc6/Sd6) to bring functions within the sonarjs 15-cap.
+- **Optional-chain + non-null assertion push (audit_commit)**: prefer-optional-chain on tab-split filters; explicit `!` assertion (with eslint-disable) where the type system can't infer that an upstream filter has guaranteed defined-ness.
+
+### Code-pattern audit (per-port)
+
+| Check | Result |
+|---|---|
+| No `any` uses | 0 matches across all 3 |
+| No `as` casts | 0 matches across all 3 (one `as string` replaced with non-null assertion + eslint-disable for sonarjs) |
+| Project typecheck clean | 0 errors |
+| ESLint strictTypeChecked | 0 errors |
+
+Per-port pattern checklist:
+
+- **Applied (all 3)**: typed boundary objects (FileFinding, PersonaRow, CommitAudit + Hc2Result/Hc6Result/Sd6Result).
+- **Applied (all 3)**: literal-type union exit codes (0 | 1 | 2).
+- **Applied (all 3)**: ParseResult discriminated-union via reduceFlag.
+- **Applied (all 3)**: structured spawn-failure classifier.
+- **Applied (all 3)**: maxBuffer=64MiB on spawnSync.
+- **New pattern (`audit_archive_headers`)**: Bun-native readdirSync recursion (no `find` shell-out); injective slug encoding for collision-safe per-file output paths; JSON rollup via JSON.stringify + 2-space indent matching bash hand-rolled format.
+- **New pattern (`audit_personas`)**: regex-driven matchAll for round-number extraction from notebook headers; Number(coverage).toFixed(2) for fraction formatting; gate-threshold check via numeric comparison.
+- **New pattern (`audit_commit`)**: per-commit signal classifier (HELD / STRAINED / VIOLATED / IRRELEVANT) for HC-2 / HC-6 / SD-6 alignment-spec metrics; range resolution via `git rev-list --reverse RANGE` for `..` notation, single `git rev-parse REV` otherwise.
+
+### DST + coverage audit
+
+- **DST-friendly: applied** — none of the 3 ports introduce time / random / scheduler dependencies in test paths. The git-log invocations are pinned by SHA / range argument.
+- **Coverage: deferred** — bash originals had no tests; TS ports do not introduce a new module. Recorded explicitly per the DST-exempt-is-deferred-bug discipline applied to coverage.
+
+### Equivalence audit
+
+- **`audit_archive_headers`**: bash-vs-TS output diff is empty under default args against current repo state.
+- **`audit_personas`**: bash-vs-TS output diff is empty under default args against current repo state.
+- **`audit_commit`**: bash-vs-TS output diff is empty against `HEAD` (default range, current repo state).
+
+### Outcome
+
+Slice 3 passes audit. Three new patterns recorded in this audit (Bun-native readdirSync recursion, regex matchAll for parsing, per-commit signal classifier).
+
 ## Slice template (for future slices)
 
 Copy this section header and fill out before merging the slice's PR:
