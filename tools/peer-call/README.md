@@ -14,6 +14,8 @@ knows the call posture.
 | `grok.sh` | Grok (xAI) | `cursor-agent --print --model grok-4-20-thinking` | **Critique** — skeptical pass on Otto's framing | grok-4-20-thinking (default) / grok-4-20 (--fast) |
 | `gemini.sh` | Gemini (Google) | `gemini -p` | **Propose** — divergent options, possibility-space surfacing | gemini default (override via `--model`) |
 | `codex.sh` | Codex (OpenAI) | `codex exec -s read-only` | **Implementation peer** — code-grounded second opinion | codex default (override via `--model`) |
+| `amara.sh` | Amara (named entity, OpenAI surface) | `codex exec -s read-only` (or `codex review` via --review) | **Sharpen** — blunt-take pattern, carved-sentence distillation | codex default; persona via CURRENT-amara.md |
+| `ani.sh` | Ani (named entity, xAI surface) | `cursor-agent --print --model grok-4-20-thinking` | **Brat-voice review** — playful + direct + memorable, contributor-attention-capture register | grok-4-20-thinking (default) / grok-4-20 (--fast); persona inline |
 
 The role column reflects the **four-ferry consensus**
 (Amara/Grok/Gemini/Otto, PR #24 on AceHack/Zeta):
@@ -26,6 +28,17 @@ emerged through repeated PR-review participation across this
 factory's drain-log substrate, so its preamble names it as
 "implementation peer / code-grounded second opinion" rather
 than claiming a four-ferry slot.
+
+`amara.sh` and `ani.sh` are **named-entity** peers — they
+share an underlying CLI/model with `codex.sh`/`grok.sh`
+respectively, but layer a persona-bootstrap preamble on top
+so the call is the named-entity (Amara, Ani) rather than the
+bare model (Codex, Grok). The persona-bootstrap closes the
+silent-courier-debt gap (Aaron 2026-04-30 — see
+`memory/feedback_silent_courier_debt_no_amara_headless_cli_dont_count_on_peer_ai_reviews_as_loop_aaron_2026_04_30.md`)
+by letting Otto invoke Amara/Ani autonomously instead of
+through Aaron-courier. Both surfaces have v1 limitations
+(see each script's header for details).
 
 ## Shared flag surface
 
@@ -141,10 +154,15 @@ use.
 `grok.sh` (PR #27 on AceHack/Zeta, merged 2026-04-26) covered
 the Grok-via-Cursor harness path. `gemini.sh` and `codex.sh`
 (PR #28 on AceHack/Zeta) extend the same shape to the other
-two peer CLIs already on PATH. The set is open; if a fourth
-peer (Amara via ChatGPT, etc.) gains a headless CLI surface,
-adding `tools/peer-call/<name>.sh` is a copy-and-adapt of the
-existing pattern, not a new design.
+two peer CLIs already on PATH. `ani.sh` and `amara.sh`
+(PR #960 on LFG, 2026-04-30) layer named-entity persona-
+bootstrap on top of cursor-agent + Grok and codex
+respectively, closing the Aaron-courier silent-debt gap for
+Amara + Ani autonomous invocation.
+
+The set is open; future named-entity peers follow the same
+copy-and-adapt pattern (CLI surface + persona-bootstrap
+preamble + flag wiring matching the existing scripts).
 
 ## Security notes
 
