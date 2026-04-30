@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 6 merged — [#876](https://github.com/Lucent-Financial-Group/Zeta/pull/876), commit `02baabc`)
-**Milestone**: 22 hygiene/lint scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from PR #878). **Cluster H-3-of-5 complete in PR #878 (no-empty-dirs, safety-clause-audit, doc-comment-history-audit); 2 remain in slice-8 (no-directives-otto-prose at 261 lines + runner-version-freshness at 356 lines).** This row updates atomically with the PR #878 merge — the count + PR-list are merge-stable; subsequent slices append a row, not edit this one.
+**Status**: Active (Lane B slice 7 merged — [#878](https://github.com/Lucent-Financial-Group/Zeta/pull/878), commit `4dac957`)
+**Milestone**: 25 hygiene/lint/audit scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 in-flight in slice-8). **Cluster H complete (5/5): #878 landed 3 lint-pattern ports (no-empty-dirs, safety-clause-audit, doc-comment-history-audit); slice-8 finishes Cluster H with no-directives-otto-prose + runner-version-freshness, plus the live-lock-audit port from `tools/audit/`.** 19 Bucket B files remain.
 **Current blocker**: None.
-**Next concrete action**: Pick a coherent next slice from Bucket B (22 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
+**Next concrete action**: Pick a coherent next slice from Bucket B (19 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
@@ -59,13 +59,12 @@ tools/profile.sh
 
 Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
 
-### Bucket B — Should become TypeScript (22 files remaining)
+### Bucket B — Should become TypeScript (19 files remaining)
 
-Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874, #876. Seventeen originally-listed audit scripts are now ported to TS and removed from this list; the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
+Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874, #876, #878. Twenty-three originally-listed audit/lint scripts are now ported to TS and removed from this list (3 in slice-8 in flight); the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
 
 ```text
 tools/audit-packages.sh
-tools/audit/live-lock-audit.sh
 tools/backlog/generate-index.sh
 tools/budget/daily-cost-report.sh
 tools/budget/project-runway.sh
@@ -77,10 +76,6 @@ tools/hygiene/audit-agencysignature-main-tip.sh
 tools/hygiene/capture-tick-snapshot.sh
 tools/hygiene/counterweight-audit.sh
 tools/hygiene/validate-agencysignature-pr-body.sh
-tools/lint/doc-comment-history-audit.sh
-tools/lint/no-directives-otto-prose.sh
-tools/lint/no-empty-dirs.sh
-tools/lint/runner-version-freshness.sh
 tools/peer-call/codex.sh
 tools/peer-call/gemini.sh
 tools/peer-call/grok.sh
@@ -105,9 +100,9 @@ tools/lint/safety-clause-audit.sh
 
 Rationale: borderline — depends on whether the lint can be expressed as cleanly in TS as it currently is in shell. Worth a small comparison before committing the port.
 
-### Bucket D — Ported, bash retained (17 files)
+### Bucket D — Ported, bash retained (23 files)
 
-The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876; the bash originals stay in-tree as equivalence references and will retire once the TS ports have soaked.
+The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 (3 more in slice-8 PR in flight); the bash originals stay in-tree as equivalence references and will retire once the TS ports have soaked.
 
 ```text
 tools/hygiene/audit-md032-plus-linestart.sh        # ported in #866
@@ -127,9 +122,12 @@ tools/hygiene/audit-missing-prevention-layers.sh   # ported in #874
 tools/hygiene/check-no-conflict-markers.sh         # ported in #876
 tools/hygiene/check-archive-header-section33.sh    # ported in #876
 tools/hygiene/check-tick-history-order.sh          # ported in #876
-tools/lint/no-empty-dirs.sh                        # ported on slice-7 branch (in flight)
-tools/lint/safety-clause-audit.sh                  # ported on slice-7 branch (in flight)
-tools/lint/doc-comment-history-audit.sh            # ported on slice-7 branch (in flight)
+tools/lint/no-empty-dirs.sh                        # ported in #878
+tools/lint/safety-clause-audit.sh                  # ported in #878
+tools/lint/doc-comment-history-audit.sh            # ported in #878
+tools/lint/runner-version-freshness.sh             # ported in slice-8 PR (in flight)
+tools/lint/no-directives-otto-prose.sh             # ported in slice-8 PR (in flight)
+tools/audit/live-lock-audit.sh                     # ported in slice-8 PR (in flight)
 ```
 
 ## Recommended next slice
