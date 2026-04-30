@@ -1,6 +1,6 @@
 ---
 name: Canon, Star Wars sense — not doctrine, not religious canon (Aaron 2026-04-30)
-description: Factory rules + load-bearing operating practices are tagged "canon" in the Star Wars sense. Three load-bearing purposes — cognitive-bias reduction, load shortcuts (mental fast-lookups for complex concepts), entertainment as attention-capture for external future maintainers. NOT religious canon (closed, divine-authority, dogmatic). Replaces ambient use of "doctrine" which carried wrong connotations.
+description: Factory rules + load-bearing operating practices are tagged "canon" in the Star Wars sense. Three load-bearing purposes — cognitive-bias reduction, load shortcuts (mental fast-lookups for complex concepts), entertainment as attention-capture for external future collaborators (the body explicitly prefers "collaborators" over "maintainers" since the factory is mostly self-maintaining). NOT religious canon (closed, divine-authority, dogmatic). Replaces ambient use of "doctrine" which carried wrong connotations.
 type: feedback
 ---
 
@@ -22,9 +22,11 @@ implies:
   Lucasfilm Story Group is the analogy: a maintained
   continuity, not a closed set.
 - **Revisable** — entries can be deprecated or retired.
-  Otto-362 supersession-protocol + Otto-363
-  substrate-or-it-didn't-happen apply: revision leaves a
-  trail; what's now-canonical replaces what was-canonical.
+  Otto-362 (doctrine memory expansion refreshes stale
+  statements in the same edit) and Otto-363
+  (substrate-or-it-didn't-happen) apply: revision leaves
+  a trail; what's now-canonical replaces what
+  was-canonical.
 
 ## Three load-bearing purposes (Aaron 2026-04-30)
 
@@ -67,9 +69,9 @@ each load-bearing:
    less-technical Gen Z potential collaborators who respond
    to brat-voice / playful / accessible framings.
 
-The three purposes compose. A canon entry that's bias-
-reducible AND fast-loadable AND memorable does all three
-jobs at once.
+The three purposes compose. A canon entry that's
+bias-reducible AND fast-loadable AND memorable does all
+three jobs at once.
 
 ## Voice register: brat voice belongs in canon (Aaron 2026-04-30)
 
@@ -250,9 +252,11 @@ load-bearing — cognitive bias reduction + load shortcuts
   a single rule, prefer **rule** or **protocol** or
   **discipline** per context.
 - **Existing prose**: bulk s/doctrine/canon/g rename pass
-  is queued as B-0111 (separate round when current PRs
-  settle). Mid-flight files don't need surgical
-  refactoring; the rename pass handles them.
+  is queued for a future round (no specific backlog row
+  filed yet — the rename is a candidate-substrate task
+  that lands when current PRs settle). Mid-flight files
+  don't need surgical refactoring; the rename pass
+  handles them.
 - **Tag/topic discussions**: "factory canon" replaces
   "factory doctrine" in informal speech.
 - **Cross-AI review packets**: when Amara/Gemini/Aurora/etc.
@@ -270,12 +274,13 @@ load-bearing — cognitive bias reduction + load shortcuts
   — substrate discipline. Canon entries are committed +
   reachable + indexed; verbal-only "canon" is weather,
   not canon.
-- `memory/feedback_otto_362_supersession_*.md` (the
-  supersession protocol) — canon evolves via the
-  supersession protocol, same as any other rule.
-- `memory/feedback_supersession_audit_pattern_on_stale_tasks_validated_aaron_2026_04_30.md`
-  — stale canon entries get audited and superseded the
-  same way stale tasks do.
+- `memory/feedback_otto_362_doctrine_memory_expansion_refresh_stale_statements_same_edit_2026_04_29.md`
+  (Otto-362, doctrine-memory-expansion-refresh) — when a
+  canon entry expands and earlier statements in the same
+  file become stale, refresh them in the same edit, not a
+  follow-up. Internal contradictions within one file are
+  lying-by-omission. Canon evolves via this in-edit-refresh
+  discipline, same as any other rule.
 - The Aurora world-building lineage + Glass Halo +
   Mirror→Beacon framings — canon-as-Star-Wars endorses
   the sci-fi/world-building register these already live
