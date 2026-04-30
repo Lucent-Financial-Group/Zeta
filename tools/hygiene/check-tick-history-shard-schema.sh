@@ -18,36 +18,46 @@
 #   requires schema uniformity on main; this check is the
 #   mechanism that preserves it.
 #
-# What this checks:
-#   1. Shard file exists at the canonical path
-#      docs/hygiene-history/ticks/YYYY/MM/DD/<HHMMZ>.md
-#      (or the extended HHMMSSZ-<hash>.md form per the schema's
-#      high-concurrency option).
-#   2. First non-empty line is a 6-column markdown table row
-#      starting with `| YYYY-MM-DDTHH:MM:SSZ |` — exactly the ISO
-#      timestamp, no parenthetical, no extra prose, no leading
-#      whitespace beyond the standard `| `.
-#   3. The timestamp inside col1 matches the filename's `HHMMZ`
-#      — i.e. a shard at `2026/04/30/2304Z.md` must carry a col1
-#      timestamp of `2026-04-30T23:04:??Z` (any second).
+# Usage:
+#   tools/hygiene/check-tick-history-shard-schema.sh
+#       — full-tree audit; scans every shard under
+#         docs/hygiene-history/ticks/. Default mode used by
+#         manual runs and full-tree audits.
+#   tools/hygiene/check-tick-history-shard-schema.sh --files PATH...
+#       — restricted audit; scans only the listed shard files.
+#         Shape that pre-push hooks and per-PR CI jobs want, so
+#         they can run only on changed shards instead of failing
+#         on the 5 known-stale shards documented below. Each
+#         path must be a real file ending in .md under the shard
+#         directory; non-shard paths are silently skipped (so the
+#         caller can pass a broader file list, e.g. all changed
+#         files in a PR diff).
 #
-# What this does NOT do:
-#   - Does NOT validate body content (cols 4-6). The body is
-#     intentionally free-form prose.
-#   - Does NOT enforce that col2 = `<model id>` or col3 =
-#     `<cron sentinel>` strictly. The schema's lower columns
-#     have drifted in practice (col3 commonly carries a commit
-#     SHA instead of the cron sentinel); enforcing that would
-#     be its own clean-up effort.
-#   - Does NOT detect the prefab pattern (col1 timestamp
-#     significantly ahead of commit-author time). That requires
-#     git-log access which isn't available pre-push for the
+# What this checks (per shard):
+#   1. Filename matches HHMMZ.md or HHMMSSZ-<hash>.md per the
+#      schema in docs/hygiene-history/ticks/README.md.
+#   2. First non-empty line is a 6-column markdown table row
+#      starting with `| YYYY-MM-DDTHH:MM(:SS)?Z |` — exactly the
+#      ISO timestamp, no parenthetical, no extra prose, no
+#      leading whitespace beyond the standard `| `. Both the
+#      with-seconds and no-seconds forms are valid ISO-8601 UTC.
+#   3. The col1 timestamp's date + HH:MM matches the filename's
+#      path date and HHMM.
+#
+# What this does NOT check:
+#   - Body content (cols 4-6) — intentionally free-form prose.
+#   - Strict col2/col3 enforcement — the lower columns have
+#     drifted in practice (col3 commonly carries a commit SHA
+#     instead of the cron sentinel); enforcing that would be
+#     its own clean-up effort.
+#   - The prefab pattern (col1 timestamp ≫ commit-author time)
+#     — requires git-log access not available pre-push for the
 #     current commit. See
 #     `memory/feedback_tick_history_prefabricated_shards_codex_finding_audit_trail_integrity_2026_04_30.md`
 #     for the deferred check.
 #
 # Exit codes:
-#   0 — all shards valid
+#   0 — all checked shards valid
 #   1 — one or more violations found (details on stderr)
 #   2 — invocation error (script bug or missing inputs)
 #
@@ -69,16 +79,25 @@
 #   `memory/feedback_tick_history_prefabricated_shards_codex_finding_audit_trail_integrity_2026_04_30.md`
 #   — fixing col1 mechanically would launder the body-level
 #   prefab claim. The check is therefore landed in DORMANT
-#   mode (not yet wired into CI); a future cleanup PR resolves
-#   the prefab-vs-schema decision before the check goes
-#   binding.
+#   mode (full-tree); the --files mode IS safe to wire into
+#   pre-push immediately because it only checks the caller's
+#   stated set, not the full tree.
 
 set -euo pipefail
 
 ROOT="${REPO_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || echo .)}"
 SHARD_DIR="$ROOT/docs/hygiene-history/ticks"
 
-if [ ! -d "$SHARD_DIR" ]; then
+# Argument parsing.
+files_mode=0
+files=()
+if [ $# -gt 0 ] && [ "$1" = "--files" ]; then
+  files_mode=1
+  shift
+  files=("$@")
+fi
+
+if [ "$files_mode" -eq 0 ] && [ ! -d "$SHARD_DIR" ]; then
   echo "error: $SHARD_DIR does not exist" >&2
   exit 2
 fi
@@ -86,9 +105,17 @@ fi
 violations=0
 total=0
 
-# Find every shard file (skip README.md and any schema/* docs).
-while IFS= read -r -d '' shard; do
+# Per-shard validator. Echos VIOLATION lines on stderr and
+# returns 0 if the shard is fine, 1 if a violation was found.
+# Shellcheck note: this function uses early-return semantics
+# instead of `continue` because it's invoked outside the find
+# loop too (in --files mode).
+scan_one() {
+  local shard="$1"
   total=$((total + 1))
+  local base path_rel parts yyyy rest_a mm rest_b dd hhmm hh mm_of_hour
+  local first_line line ts ts_yyyy ts_mm ts_dd ts_hh ts_min
+
   base="$(basename "$shard" .md)"
   path_rel="${shard#"$ROOT/"}"
 
@@ -100,21 +127,19 @@ while IFS= read -r -d '' shard; do
   rest_b="${rest_a#*/}"
   dd="${rest_b%%/*}"
 
-  # Pull the HHMM from the filename (handle both HHMMZ and
-  # HHMMSSZ-<hash> forms).
+  # Filename HHMM extraction (HHMMZ or HHMMSSZ-<hash> forms).
   if [[ "$base" =~ ^([0-9]{4})Z(-[0-9a-f]+)?$ ]]; then
     hhmm="${BASH_REMATCH[1]}"
   elif [[ "$base" =~ ^([0-9]{4})([0-9]{2})Z(-[0-9a-f]+)?$ ]]; then
     hhmm="${BASH_REMATCH[1]}"
   else
     echo "VIOLATION: $path_rel — filename does not match HHMMZ.md or HHMMSSZ-<hash>.md schema" >&2
-    violations=$((violations + 1))
-    continue
+    return 1
   fi
   hh="${hhmm:0:2}"
   mm_of_hour="${hhmm:2:2}"
 
-  # Read the first non-empty line.
+  # First non-empty line.
   first_line=""
   while IFS= read -r line; do
     if [ -n "${line// }" ]; then
@@ -125,16 +150,12 @@ while IFS= read -r -d '' shard; do
 
   if [ -z "$first_line" ]; then
     echo "VIOLATION: $path_rel — file is empty or whitespace-only" >&2
-    violations=$((violations + 1))
-    continue
+    return 1
   fi
 
-  # Schema rule: first cell must be `| YYYY-MM-DDTHH:MM(:SS)?Z |`
-  # with no extra content before the next column boundary. Both
-  # the with-seconds form (`...T23:04:00Z`) and the no-seconds
-  # form (`...T23:04Z`) are valid ISO-8601 UTC; the schema
-  # in docs/hygiene-history/ticks/README.md does not pick a side.
-  # Capture the timestamp and verify it matches the path.
+  # Schema rule: col1 must be `| YYYY-MM-DDTHH:MM(:SS)?Z |`
+  # exactly, with no parenthetical or extra prose. Both ISO
+  # forms are valid UTC; the schema doesn't pick a side.
   if [[ "$first_line" =~ ^\|\ ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z)\ \|\  ]]; then
     ts="${BASH_REMATCH[1]}"
     ts_yyyy="${ts:0:4}"
@@ -145,25 +166,59 @@ while IFS= read -r -d '' shard; do
 
     if [ "$ts_yyyy" != "$yyyy" ] || [ "$ts_mm" != "$mm" ] || [ "$ts_dd" != "$dd" ]; then
       echo "VIOLATION: $path_rel — col1 timestamp $ts does not match path date $yyyy-$mm-$dd" >&2
-      violations=$((violations + 1))
-      continue
+      return 1
     fi
 
     if [ "$ts_hh" != "$hh" ] || [ "$ts_min" != "$mm_of_hour" ]; then
       echo "VIOLATION: $path_rel — col1 timestamp ${ts_hh}:${ts_min} does not match filename ${hh}:${mm_of_hour}" >&2
-      violations=$((violations + 1))
-      continue
+      return 1
     fi
   else
-    echo "VIOLATION: $path_rel — col1 must be exactly '| YYYY-MM-DDTHH:MM:SSZ | ...' (no parenthetical, no extra prose)" >&2
+    echo "VIOLATION: $path_rel — col1 must be exactly '| YYYY-MM-DDTHH:MM(:SS)?Z | ...' (no parenthetical, no extra prose)" >&2
     echo "  got: $(echo "$first_line" | head -c 120)" >&2
-    violations=$((violations + 1))
-    continue
+    return 1
   fi
 
-done < <(find "$SHARD_DIR" -type f -name '*.md' \
-  ! -name 'README.md' \
-  -print0)
+  return 0
+}
+
+if [ "$files_mode" -eq 1 ]; then
+  # --files mode: scan only the listed paths. Skip non-shard
+  # paths silently so callers can pass a broader file list
+  # (e.g. all changed files from `git diff --name-only`).
+  for f in "${files[@]}"; do
+    case "$f" in
+      docs/hygiene-history/ticks/*/*.md)
+        # Resolve to absolute path so scan_one's $ROOT prefix
+        # stripping works.
+        abs="$ROOT/$f"
+        if [ ! -f "$abs" ]; then
+          echo "skipped (not a file): $f" >&2
+          continue
+        fi
+        # Skip the README itself.
+        if [ "$(basename "$f")" = "README.md" ]; then
+          continue
+        fi
+        if ! scan_one "$abs"; then
+          violations=$((violations + 1))
+        fi
+        ;;
+      *)
+        # Not a shard path; silently skip.
+        ;;
+    esac
+  done
+else
+  # Default mode: full-tree audit.
+  while IFS= read -r -d '' shard; do
+    if ! scan_one "$shard"; then
+      violations=$((violations + 1))
+    fi
+  done < <(find "$SHARD_DIR" -type f -name '*.md' \
+    ! -name 'README.md' \
+    -print0)
+fi
 
 echo "checked $total shard files; $violations violations" >&2
 
