@@ -28,7 +28,7 @@
 //   2 — duplicates found and --enforce set
 //   64 — argument error
 
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 
 interface Args {
   target: string;
@@ -91,12 +91,16 @@ function findDuplicates(content: string): DupRow[] {
 function main(argv: readonly string[]): number {
   const { target, enforce } = parseArgs(argv);
 
-  if (!existsSync(target)) {
+  // Read target atomically — readFileSync throws ENOENT/EISDIR if missing,
+  // matching the prior existsSync check. Avoids the TOCTOU race between
+  // the check and the read (CodeQL js/file-system-race).
+  let content: string;
+  try {
+    content = readFileSync(target, "utf8");
+  } catch {
     process.stderr.write(`error: target file not found: ${target}\n`);
     return 64;
   }
-
-  const content = readFileSync(target, "utf8");
   const dups = findDuplicates(content);
 
   if (dups.length === 0) {

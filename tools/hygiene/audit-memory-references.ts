@@ -27,7 +27,7 @@
 //   2 — broken references found and --enforce set
 //   64 — argument error
 
-import { existsSync, statSync, readFileSync } from "node:fs";
+import { statSync, readFileSync } from "node:fs";
 
 interface Args {
   target: string;
@@ -118,16 +118,29 @@ function audit(content: string, baseDir: string): AuditResult {
 function main(argv: readonly string[]): number {
   const { target, baseDir, enforce } = parseArgs(argv);
 
-  if (!existsSync(target) || !statSync(target).isFile()) {
+  // Read target atomically — readFileSync throws ENOENT/EISDIR if missing
+  // or not a regular file, which is the same failure case the prior
+  // existsSync+statSync check produced. Avoids the TOCTOU race between
+  // the check and the read (CodeQL js/file-system-race).
+  let content: string;
+  try {
+    content = readFileSync(target, "utf8");
+  } catch {
     process.stderr.write(`error: target file not found: ${target}\n`);
     return 64;
   }
-  if (!existsSync(baseDir) || !statSync(baseDir).isDirectory()) {
+
+  // Same atomic pattern for base directory.
+  try {
+    if (!statSync(baseDir).isDirectory()) {
+      process.stderr.write(`error: base directory not found: ${baseDir}\n`);
+      return 64;
+    }
+  } catch {
     process.stderr.write(`error: base directory not found: ${baseDir}\n`);
     return 64;
   }
 
-  const content = readFileSync(target, "utf8");
   const { total, okCount, broken } = audit(content, baseDir);
 
   if (total === 0) {

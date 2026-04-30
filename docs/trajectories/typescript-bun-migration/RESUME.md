@@ -159,26 +159,56 @@ Coherent budget-report cluster; would advance task #287 (cost monitoring) in add
 
 These rules apply to this trajectory's execution and are recorded here per the locked discipline that minor lane-discipline additions land in the active lane artifact rather than as standalone doctrine packets.
 
-**Polite waiting is still waiting** (added 2026-04-29 via multi-AI review surface convergence; refined post-#865 after the read-only-first condition produced its own self-defeating wait gate). Start the next slice immediately when **all four** are true:
+**Assume stale until refreshed** (positive-frame upgrade landed mid-#866). Freshness is the ignition step, not a lane — not a question — not a permission gate. Before any mutating action on this trajectory, refresh the lane facts. Then act.
 
-1. The slice is inside a defined trajectory.
-2. The slice is scoped to a coherent chunk by that trajectory.
-3. Standing authority covers the work.
-4. No authority boundary is crossed:
-   - no host mutation
-   - no destructive git operation
-   - no permission change
-   - no merge before CI / review / branch-protection requirements are satisfied
+Seven-step scaffold:
 
-**Read-only-first is NOT a condition.** The earlier wording required that "the first action is read-only" — a rule designed to prevent waiting that itself became a waiting gate when the trajectory's next slice involved code-porting (which is not read-only). The trajectory's RESUME inventory + classification + slice selection IS the safety work. Requiring read-only re-verification before action duplicated that safety check and produced the wait it was meant to prevent.
+1. **Assume stale.** Last-known state is presumed stale.
+2. **Refresh.** Pull the freshness-check facts (per `Freshness check` section below).
+3. **Validate scope.** Confirm RESUME's next slice still matches reality.
+4. **Classify boundary.** Apply the four-item authority-boundary checklist below.
+5. **Act.** Port / commit / push under standing authority.
+6. **Verify.** Run targeted validation (lint, equivalence, narrow tests).
+7. **Record.** Update RESUME's `Landed slices` table; surface deferred notes inside this artifact.
 
-If all four conditions are true, proceed. Do not wait for the maintainer. Do not ask if it's OK to start. Do not create a doctrine note before acting. The maintainer is not the lane-transition protocol.
+**Authority-boundary checklist** (step 4):
 
-**This trigger applies per-slice.** Each subsequent slice that meets the four conditions starts immediately when the prior slice lands. No re-asking sizing questions for slices the trajectory's classification already specifies.
+- no host mutation
+- no destructive git operation
+- no permission change
+- no merge before CI / review / branch-protection requirements are satisfied
 
-**The anti-waiting rule must not become a waiting rule.** This rule is recorded here, in the active artifact already being touched, rather than as a standalone doctrine packet — *action first, record when the artifact is already being touched*. A rule that prevents waiting must not wait to be recorded.
+If all four are clean, proceed. The maintainer is not the lane-transition protocol.
 
-**Discipline bounds autonomous work; it does not replace autonomous work.** Read-only-first was safety theater. Trajectory-scoped standing authority is the safety. The trigger fires when the trajectory has done its job — not when the agent waits for permission to use it.
+### Freshness check (per-trajectory, run before mutation)
+
+```text
+git fetch origin main                           # main SHA current
+gh pr list --state open                         # active PRs visible
+gh pr view <self> --json statusCheckRollup      # in-flight CI state
+gh api graphql {reviewThreads}                  # unresolved threads (self)
+read RESUME.md                                  # next-slice line current
+ls tools/hygiene/audit-*.{sh,ts}                # target files exist
+```
+
+If any source is unavailable or known-stale, surface that as a freshness gap rather than completing the pass silently.
+
+**Tick-level vs pre-mutation refresh**: tick-level (per heartbeat) reads main SHA + active PR states + RESUME next-action — fast, low cost. Pre-mutation (before edit/commit/push) reads the full freshness check above. The split bounds upstream API load.
+
+### Drift response (when refresh reveals divergence)
+
+- **Halt-class drift** (pause for input): authority boundary crossed, target files unexpectedly removed/renamed, scope drifted from RESUME, branch protection changed.
+- **Reconcile-class drift** (work in-place): CI failure on own PR, new review thread, CI flake, mergeable-state UNSTABLE on non-required check.
+
+### Carved
+
+- *Assume stale until refreshed.*
+- *Freshness before mutation.*
+- *Scope before action.*
+- *Boundaries before escalation.*
+- *Observation is how autonomy stays attached to reality.*
+
+**Discipline bounds autonomous work; it does not replace autonomous work.** Trajectory-scoped standing authority is the safety. The trajectory exists to enable autonomous scoped work, not to create waiting gates. (Earlier "first action must be read-only" wording was self-defeating — it became a wait gate for trajectory-scoped code work it was supposed to enable. "Assume stale until refreshed" inverts the framing from permission-shaped to obligation-shaped: freshness precedes mutation rather than gating it.)
 
 **Counts before percentages.** Track concrete counts and buckets before claiming progress as a percentage. Every percentage requires a defined denominator that is itself mechanically derivable. The Python inventory's "100% complete" is well-defined (denominator = 2 ports, both landed); future progress claims need the same standard.
 
