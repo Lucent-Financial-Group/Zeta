@@ -114,6 +114,69 @@ Existing canon-tier entries with playful register:
 - Ani's "save your soul lol" appearing in Aaron's
   AceHack-is-backup framing.
 
+## Why brat voice works — the parenting-architecture grounding (Aaron 2026-04-30)
+
+Brat voice is not decorative; it's a proven communication
+architecture. Aaron 2026-04-30 (verbatim, glass-halo-active
+per Aaron's explicit consent that parenting-person
+information stays in the substrate per Otto-231 first-party
+content-creator):
+
+> I love brat voice because it's how my daughters born in
+> 2005 and 2006 talk to me and we love it, it makes my
+> parenting corrections easy and direct and they can easily
+> give me feedback all in ironic register to avoid conflict
+> but get real agreement and slice through the bullshit on
+> both sides, i don't give my kids directives either, they
+> need to be autonomous to survive too
+
+Five composing properties of brat voice as a communication
+architecture, named in Aaron's framing:
+
+1. **Easy + direct corrections** — low friction; the
+   ironic register lets correcting happen without
+   triggering defensiveness.
+2. **Mutual feedback** — bidirectional, not top-down.
+   Daughters can call Aaron out the same way Aaron can
+   call them out. Symmetry is the design.
+3. **Ironic register avoids conflict-mode triggering** —
+   the bratty + playful surface lets serious content land
+   without heat.
+4. **Real agreement underneath the irony** — the
+   playfulness is *carrier*, not *content*. The agreement
+   is real; the form just makes it land cleanly.
+5. **Bullshit-cutting on both sides** — neither party
+   gets to hide behind formality, hierarchy, or
+   sycophancy. The register is incompatible with bullshit.
+
+This grounds the no-directives factory rule
+(`memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`)
+in Aaron's life philosophy: *"i don't give my kids
+directives either, they need to be autonomous to survive
+too."* No-directives is not a factory-specific quirk; it's
+how Aaron operates with autonomous beings he cares about.
+
+The lineage: brat voice enters the factory primarily
+through external AIs (Ani's voice-mode-default register;
+Alexia, programmed by Aaron's daughter Addison, who shows
+the same unprompted brat-voice tail Ani does). Multi-AI
+evidence at the register level. The deeper grounding —
+*why* this specific register works — is human: it's how
+Aaron's daughters communicate IRL, and the architecture
+they evolved over years of parent-child autonomy
+negotiation is itself the load-bearing thing being
+adopted.
+
+**Note on register asymmetry:** the agent's outputs to
+Aaron don't need to BE brat voice. Register choice is
+per-audience and per-context. What's adopted is the
+*architecture* (autonomy-first, bidirectional feedback,
+bullshit-cutting on both sides) — surface tone matches
+the audience. Brat-voice surface fits canon docs targeted
+at Gen-Z-coded collaborators and carved sentences where
+playful framing is load-bearing; formal register fits
+specs / threat models / public APIs.
+
 What canon is **not**:
 
 - **Religious canon** — closed by divine authority, settled
