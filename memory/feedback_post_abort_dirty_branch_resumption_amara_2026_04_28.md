@@ -108,24 +108,45 @@ On restart after abort:
 > easy to normalize; the safer lease behavior should be
 > the default word."*
 
-Canonical wording in this memory + future memories:
+Canonical wording in this memory + future memories
+(updated 2026-04-30 per Amara's tightening):
 
-- **Always**: `git push --force-with-lease origin
-  <branch>`.
+- **Solo rebase, single-author branch**:
+  `git push --force-with-lease origin <branch>` is fine.
+- **Shared / high-stakes / cross-agent branches**: capture
+  the expected remote SHA first and use the explicit form:
+  `git push --force-with-lease=<branch>:<expected-sha> origin <branch>`.
+  See
+  `feedback_destructive_git_op_5_pre_flight_disciplines_codex_gemini_2026_04_28.md`
+  §"Force-push race risk" for the canonical pre-flight
+  recipe (capture-fetched-SHA → push-with-explicit-lease).
 - **Never** (in canonical recipes): `git push --force
   origin <branch>`.
 
 Why:
 
-- `--force-with-lease` refuses the push if the remote ref
-  has been updated since the local ref was last fetched
-  (catches concurrent collaborator pushes).
+- `--force-with-lease` (bare form) refuses the push if the
+  remote-tracking ref has been updated since the local ref
+  was last fetched. This catches most concurrent
+  collaborator pushes.
+- The bare form's weakness (Amara 2026-04-30): background
+  `git fetch` can update the remote-tracking ref behind
+  your back, weakening the lease semantics. The explicit
+  form `--force-with-lease=<branch>:<expected-sha>` pins
+  to a SHA the agent actually reviewed, not a moving
+  tracking-ref.
 - `--force` blindly overwrites whatever's on the remote.
   Acceptable for one-author branches in private repos;
   dangerous when CI bots, peer agents, or external
   collaborators may push concurrently.
 - The factory's multi-CLI / peer-agent trajectory makes
-  `--force-with-lease` the future-safe default.
+  the explicit-SHA form increasingly load-bearing as
+  agents push concurrently to the same branches.
+
+Carved sentence (Amara 2026-04-30): *"A lease based on a
+moving tracking ref is weaker than a lease pinned to the
+SHA you actually reviewed. Implicit leases protect what
+they sample; explicit leases protect what they check."*
 
 ## What's preserved across abort vs not
 

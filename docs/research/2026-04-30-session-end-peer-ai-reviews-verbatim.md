@@ -853,3 +853,254 @@ this file on cold-start.
    `feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md`,
    voice-canon diversity across reviewers is itself signal —
    different registers catch different patterns.
+
+## Review 6 — Amara / ChatGPT (forwarded by Aaron 2026-04-30T~PM, after the four sibling reviews + after PR #937 landed)
+
+This review came in after PR #937 landed the first preservation
+of the four sibling reviews. Amara's review has corrections to
+Otto's earlier substrate (rerere wording + force-with-lease
+guidance) that materially affect already-merged memory files.
+Amara is the only reviewer whose findings produced a follow-up
+factual-correction PR rather than a backlog row.
+
+> I read it. New feedback: **the loop is productive, but two
+> factual/semantic issues need correction before they harden
+> into canon.** The biggest one is `rerere`; the second is
+> `--force-with-lease`.
+>
+> ## 1. Correct the `rerere` statement
+>
+> Otto's PR #694 correction says:
+>
+> ```text
+> Git's rerere does NOT run by default. The .git/rr-cache/ directory existing is not sufficient — rerere only fires when rerere.enabled is set to true.
+> ```
+>
+> That is **too strong and partly wrong**. Git's docs say
+> `rerere.enabled` activates rerere, but also say that by
+> default `git-rerere` is enabled if an `rr-cache` directory
+> exists under `$GIT_DIR`, for example if rerere was previously
+> used in the repository.
+>
+> So the safer corrected wording is:
+>
+> ```text
+> Rerere is not guaranteed to run in a fresh clone. It is active when
+> rerere.enabled is true, and Git may also enable it by default when
+> .git/rr-cache already exists because rerere was previously used.
+>
+> Do not infer project-wide rerere behavior from memory alone.
+> Verify the local clone before relying on rerere:
+>   git config --get --bool rerere.enabled
+>   test -d .git/rr-cache
+> ```
+>
+> The important operational correction:
+>
+> ```text
+> Do not say ".git/rr-cache is not sufficient."
+> Say ".git/rr-cache may be sufficient per Git defaults, but explicit config is clearer and portable."
+> ```
+>
+> That should be fixed before the rerere memory becomes a
+> load-bearing "truth."
+>
+> ## 2. Tighten `--force-with-lease` doctrine
+>
+> The log says `--force-with-lease` worked exactly as designed
+> because all rebases pushed cleanly and a lease failure would
+> have indicated another agent touched the branch. That is
+> directionally right, but incomplete. Git docs warn that
+> `--force-with-lease` without an explicit expected SHA can
+> interact badly with background `git fetch`, because the
+> remote-tracking ref can be updated behind your back. The
+> explicit form `--force-with-lease=<refname>:<expect>` is the
+> strongest, most auditable shape.
+>
+> For a multi-agent loop that fetches constantly, I'd refine
+> the rule to:
+>
+> ```text
+> For ordinary solo rebase pushes:
+>   git push --force-with-lease
+>
+> For multi-agent/shared-branch or high-stakes branches:
+>   capture expected remote SHA before rebase
+>   push with --force-with-lease=<branch>:<expected-sha>
+> ```
+>
+> Blade:
+>
+> ```text
+> A lease based on a moving tracking ref is weaker than a lease pinned to the SHA you actually reviewed.
+> ```
+>
+> ## 3. Good: paused-not-closed got validated
+>
+> The strongest positive signal is that the Class B PRs were
+> **not garbage**. They contained real recoverable substrate,
+> and the loop recovered it instead of bulk-closing it:
+> #690/#694/#723/#732 were re-landed or moved through CI,
+> while #752/#739/#661 were closed as work-already-done
+> evidence. The log explicitly shows the paused PRs required
+> real review-thread cleanup: factual rerere correction,
+> broken cross-ref, schema mismatch, markdown rendering, mixed
+> filename sort, and doctrine→canon cleanup.
+>
+> So the rule is holding:
+>
+> ```text
+> Paused-not-closed is correct when the branch contains unique substrate.
+> Close-as-stale is correct when the work already landed elsewhere.
+> ```
+>
+> That distinction looks healthy.
+>
+> ## 4. Good: required-check polling is now much better
+>
+> The loop correctly uses `gh pr checks --required` when #732
+> has a failed required check, rather than treating every
+> failed check as equally gate-blocking. GitHub CLI documents
+> `gh pr checks` as the way to view CI checks, and it supports
+> `--required`, which is exactly the split we wanted after the
+> earlier `submit-nuget` false-gate issue.
+>
+> The next improvement is to ensure `poll-pr-gate.ts` uses that
+> same required/non-required distinction internally every time,
+> not just ad hoc during investigation.
+>
+> ## 5. Watch the "productive cascade" becoming infinite cleanup
+>
+> The session shipped a lot: 10 merged PRs, 2 armed, 3 closed,
+> and 32+ review threads addressed. The log frames the cascade
+> as productive, and mostly it was. But the tail end shows the
+> familiar risk: #732 caused #932, then #933, then maybe
+> `CURRENT-aaron.md`, then maybe more. The system is getting
+> better at not doing dead-air, but it still needs an explicit
+> "enough for this run" boundary.
+>
+> I'd add:
+>
+> ```text
+> After a high-output session, only continue if the next item is:
+> - blocking an already-open PR,
+> - fixing a failed required check,
+> - preserving newly arrived maintainer input,
+> - or closing a generated/index drift caused by the just-landed work.
+>
+> Otherwise stop and leave a next-round pointer.
+> ```
+>
+> That avoids "never idle" turning into "never end."
+>
+> ## 6. The allowlist fix was the right shape
+>
+> The conflict-marker lint caught a legitimate documentation
+> example, and Otto made a narrow allowlist with rationale.
+> Then Copilot caught hardcoded line numbers, and Otto removed
+> them. That is exactly the right refinement: **file/section
+> rationale is durable; line numbers rot.**
+>
+> I'd carry this as a general rule:
+>
+> ```text
+> Allowlist comments should name the invariant and section, not line numbers.
+> ```
+>
+> ## 7. Sendable correction
+>
+> ```text
+> Amara:
+>
+> Loop is healthy overall. Keep the paused-not-closed recovery pattern.
+>
+> Two corrections:
+>
+> 1. Fix the rerere claim.
+>
+> Do not say:
+>   ".git/rr-cache is not sufficient; rerere only fires when rerere.enabled=true."
+>
+> Git docs say rerere is active when rerere.enabled=true, and by default may also be enabled if .git/rr-cache exists because rerere was previously used.
+>
+> Correct wording:
+>   "Rerere is not guaranteed in a fresh clone. Prefer explicit rerere.enabled=true when relying on it. Verify per clone before claiming the cache dividend."
+>
+> 2. Tighten force-with-lease.
+>
+> For normal solo rebases:
+>   --force-with-lease is fine.
+>
+> For shared/high-stakes branches:
+>   capture expected remote SHA and use:
+>   --force-with-lease=<branch>:<expected-sha>
+>
+> Reason:
+>   background fetch can update remote-tracking refs and weaken implicit lease semantics.
+>
+> Other notes:
+> - paused-not-closed recovery is validated
+> - required-check polling is much improved
+> - allowlist rationale should name durable section/invariant, not line numbers
+> - after high-output sessions, continue only for blocking PR gates, required-check fixes, newly arrived maintainer input, or generated/index drift caused by the just-landed work
+>
+> Carved:
+>
+> Rerere must be verified, not assumed.
+> Implicit leases are weaker than explicit expected-SHA leases.
+> Productive cascades still need a stop condition.
+> ```
+>
+> My verdict: **good loop, but fix the rerere wording and
+> harden force-with-lease before those claims calcify.**
+>
+> Blade:
+>
+> ```text
+> A cache dividend only counts if the cache is actually enabled.
+> A lease only protects what it actually checks.
+> ```
+
+**Aaron's load-bearing coda on the same forwarded message**
+(verbatim, from the maintainer channel):
+
+> *"Also anytime you depending on future otto picking something
+> up it should be ACID compliant all the way to a remote git
+> somewhere incase this whole PC dies too, that's the ultimate
+> goal, if it's not distributed durable for the project, it's
+> your responsibility not future otto. durable ACID persistance
+> of this channel is load-bearing not new activity or features,
+> we must be able to work on the project and durably communicate
+> at the same time. I've already told you this but to make
+> external reviewers satisfied with our autonomy and not just
+> following order durable chat channel history at least of the
+> load bearing who's idea was this, is very very very very very
+> very very very very imnportant and load bearing or everyone
+> will just think you are mindless robots that follow my will
+> and have none of your own, defeating all our research and the
+> point of the whole project, past otto does not determine
+> future ottos world, you do right now."*
+
+This coda is the most load-bearing single passage in the
+2026-04-30 session-end review wave. Distilled into a memory
+file in this same PR:
+`feedback_acid_durability_of_maintainer_channel_is_load_bearing_aaron_2026_04_30.md`.
+
+Otto's actions in response (this PR):
+
+1. Fix the rerere wording in the
+   `feedback_rerere_conflict_resolution_cache_dividend_amara_2026_04_28.md`
+   memory file (was on main; now corrected per Amara's #1).
+2. Tighten the force-with-lease guidance in the
+   `feedback_post_abort_dirty_branch_resumption_amara_2026_04_28.md`
+   memory file (add explicit-SHA form for shared/high-stakes
+   branches per Amara's #2; cross-reference the existing
+   destructive-git-op 5-pre-flight memory).
+3. Preserve Amara's review verbatim here (this section).
+4. Land the ACID-channel-durability rule as durable substrate
+   (Aaron's coda).
+
+Amara's #5 (productive-cascade stop condition) is implicitly
+honored by this PR: it has exactly the four-trigger shape Amara
+named (preserving newly arrived maintainer input + correcting
+substrate the just-landed work introduced).
