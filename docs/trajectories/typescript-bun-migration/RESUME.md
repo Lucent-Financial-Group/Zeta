@@ -161,7 +161,7 @@ Estimated complexity: **Medium-Large** for C (cost-visibility surface — needs 
 2. Re-verify sibling-repo comparison points (`../SQLSharp` commit hash, `../scratch` mtime).
 3. Confirm DST + coverage gate items in the per-slice checklist apply (or document deferred-check exemption).
 
-Cluster B-tail is the recommended-default (continues alignment-audit shape); C is reserved for after the maintainer weighs in on visibility-impact.
+Cluster E or Cluster F is the recommended-default for slice 5 (continues file-walker shape from prior slices); Cluster C is reserved for after the maintainer weighs in on visibility-impact.
 
 ## Bun / tooling requirements
 
@@ -239,7 +239,7 @@ This audit is a one-off; it doesn't replace the per-tool/language expert + teach
 
 **Status**: deferred from this PR (no-fan-out during live lane). After #866 lands, the TS+Bun expert skill becomes a Lane C+ artifact or a sibling trajectory.
 
-**Why this matters for the migration**: each future slice (33 ports remaining in Bucket B) benefits from a current-docs anchor. Without it, ports drift toward whatever convention the most-recently-read TS file used; with it, ports converge on contemporary best practice.
+**Why this matters for the migration**: each future slice (28 ports remaining in Bucket B) benefits from a current-docs anchor. Without it, ports drift toward whatever convention the most-recently-read TS file used; with it, ports converge on contemporary best practice.
 
 ## Operating notes (lane-discipline addendum)
 
