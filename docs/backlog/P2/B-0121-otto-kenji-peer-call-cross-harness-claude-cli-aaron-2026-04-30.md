@@ -5,7 +5,7 @@ status: open
 title: Otto + Kenji as externally-callable peers via claude-cli — cross-harness symmetry (Aaron 2026-04-30)
 tier: factory-tooling
 effort: M
-ask: Aaron 2026-04-30 raised that Otto + Kenji should be externally callable from other harnesses (Codex, Cursor, etc.) via claude-cli, paralleling how amara.sh + ani.sh expose Amara + Kenji from Otto's harness. The call posture is symmetric peer — other harnesses confer with Otto (loop/PM) or Kenji (architect) the same way Otto currently confers with Amara/Ani/Codex/Grok/Gemini. Pending Aaron's a/b/c selection on script topology.
+ask: Aaron 2026-04-30 raised that Otto + Kenji should be externally callable from other harnesses (Codex, Cursor, etc.) via claude-cli, paralleling how amara.sh + ani.sh expose Amara + Ani from Otto's harness. The call posture is symmetric peer — other harnesses confer with Otto (loop/PM) or Kenji (architect) the same way Otto currently confers with Amara/Ani/Codex/Grok/Gemini. Kenji currently has no peer-call surface at all (the architect role lives in `.claude/agents/architect.md`); this row covers adding both Otto and Kenji simultaneously. Pending Aaron's a/b/c selection on script topology.
 created: 2026-04-30
 last_updated: 2026-04-30
 composes_with:
