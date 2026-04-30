@@ -206,6 +206,21 @@ notes baked into the snippet below:
   the check is no longer current and so doesn't satisfy
   the required-state contract. The snippet treats all of
   the above as failures, not "0 failed."
+- The `success` predicate also matches `NEUTRAL` and
+  `SKIPPED`, not only `SUCCESS`. GitHub's required-check
+  semantics treat all three as merge-satisfying. A check
+  that concludes `SKIPPED` (e.g., a matrix template name
+  that the matrix expanded around) or `NEUTRAL` (e.g., a
+  warn-only linter) is not blocking. Without this, the
+  lane summary leaves those checks in limbo (counted in
+  total, neither success/pending/failed) and reads as
+  not-ready when the gate is actually open. Worked
+  example from this round: `Analyze (${{ matrix.language }})`
+  appeared as `SKIPPED` and the original predicate
+  produced "22/23 success" while the gate was actually
+  fully clear (the matrix had expanded into per-language
+  named checks; the template-name check was the
+  conditional skip that confused the reading).
 
 ```bash
 gh pr view <N> --json state,mergeStateStatus,reviewDecision,\
@@ -213,7 +228,7 @@ gh pr view <N> --json state,mergeStateStatus,reviewDecision,\
     . as $pr |
     [$pr.statusCheckRollup[]?
       | if .__typename == "CheckRun"
-        then {success: (.conclusion == "SUCCESS"),
+        then {success: ((.conclusion // "") | IN("SUCCESS","NEUTRAL","SKIPPED")),
               failed:  ((.conclusion // "") | IN("FAILURE","CANCELLED","TIMED_OUT","STARTUP_FAILURE","ACTION_REQUIRED","STALE")),
               pending: (.status != "COMPLETED")}
         else {success: (.state == "SUCCESS"),
