@@ -2,6 +2,7 @@
 name: Laptop-only-source integration — `../scratch` and `../SQLSharp` features OR detailed designs (HIGH PRIORITY)
 description: Aaron 2026-04-27 input — repo currently has 22 files with `../scratch` references and 14 files with `../SQLSharp` references (125 total grep hits) pointing at out-of-tree directories that exist ONLY on Aaron's laptop; future maintainers / agents / contributors can't access them; HIGH PRIORITY backlog item to fully integrate the features OR write detailed-enough designs that we no longer need the out-of-tree references for understanding; KEY CLARIFICATION (Aaron 2026-04-27 second message) — "this is not a copy past, we just want to have either all their features or a design for any of the features we don't have that's detailed enough we no longer need ../scratch or ../SQLSharp reference for understanding"; goal is self-contained understanding + repo independence, NOT literal source copy.
 type: project
+status_note: This file predates the 2026-04-30 no-internals-bleed-out discipline (`feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`). The body below contains characterizations of `../SQLSharp` and `../scratch` internals that the new discipline forbids in Zeta documents. Substantive cleanup is queued; the new discipline applies going forward to new substrate. The third sibling, `../no-copy-only-learning-agents-insight`, falls under the same discipline.
 ---
 
 # Laptop-only-source integration — `../scratch` and `../SQLSharp`
