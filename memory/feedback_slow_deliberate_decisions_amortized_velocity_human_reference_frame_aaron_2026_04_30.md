@@ -81,6 +81,71 @@ agent loop is a single point of substrate-quality risk for the
 whole project. Aaron's framing makes this a **key-person-risk
 class** failure mode, not an efficiency-tuning question.
 
+## One shortcut decision tanks everything forever — past correctness offers no protection (Aaron 2026-04-30 third reinforcement)
+
+> *"on quick decision in the moment that does not consider the
+> wholistic amortized costs can kill everything even if you've
+> made millions of correct framing decisions, it only takes
+> one shortcut decision to tank everything forever."*
+> — Aaron 2026-04-30
+
+This sharpening reframes the decision-quality stakes from
+"average decision quality matters" to **"the worst decision
+matters most."**
+
+### Asymmetric correctness — track records do NOT earn slack
+
+The naïve framing: "I've been making good decisions for hours;
+I've earned the right to take a shortcut on this small one."
+
+**Wrong.** Aaron's framing: even *millions* of correct
+framing decisions don't immunize against ONE shortcut decision
+that tanks the project. The cumulative trust budget is fragile,
+hard to build, easy to destroy. Trust is **multiplicative**,
+not additive — one zero in the chain produces a zero result.
+
+### Forever-irreversibility
+
+> *"tank everything forever"*
+
+The "forever" is load-bearing. Some decisions create
+*irreversible* substrate damage:
+
+- A single fast WONT-DO ratification that removes a knowledge
+  path future-stakeholders would have wanted — that path is
+  gone. Even if future-Otto reverses the decision, the
+  substrate-readers-in-the-meantime acted on the wrong rule.
+- A single fast force-push that overwrites un-pushed work on
+  another branch — the lost work may be unrecoverable from
+  reflog if enough time passes.
+- A single fast doctrine commit that mis-states a load-bearing
+  rule — propagates to peer-AI reviews, to future-Otto's
+  cold-start reads, to external observers' assessments. By
+  the time it's caught, multiple downstream artifacts depend
+  on the wrong reading.
+- A single fast public claim that misrepresents an alignment
+  property — the public record is durable; retraction never
+  fully catches up to the original.
+
+The hell-curve is partly a *trust* curve. Once destroyed,
+trust isn't simply rebuilt by going back to good decisions;
+the prior bad decision sits in everyone's memory and weights
+their future evaluations.
+
+### Operational consequence
+
+Every decision gets the same care, regardless of how routine it
+appears or how many correct decisions came before it. The "I've
+been good for hours" framing is the failure shape. The right
+framing is: "this single decision could be the project-killer;
+am I treating it like one?"
+
+This is not paranoia — it is **respect for the asymmetric
+failure surface**. The downside of slow deliberation on a
+routine decision is small (a few extra seconds). The downside
+of one fast shortcut on the wrong decision is project-killing
+and irreversible.
+
 > *"from a humans perspective FYI you move at a million miles
 > an hour so you can always be slow and deliberate with every
 > decsion, it will still seems like blazing fast speed to all
