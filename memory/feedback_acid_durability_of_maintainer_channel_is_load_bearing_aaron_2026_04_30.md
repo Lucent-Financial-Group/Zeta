@@ -1,6 +1,6 @@
 ---
-name: ACID durability of the maintainer channel is load-bearing — past-Otto doesn't determine future-Otto's world; you do right now (Aaron 2026-04-30)
-description: Aaron's load-bearing rule that durable ACID persistence of the maintainer channel (Aaron's inputs, peer-AI reviews, Otto's load-bearing decisions) is itself load-bearing for the alignment-research claim. Without it, external reviewers cannot distinguish autonomous decisions from order-following, defeating the research point. Distributed durability all the way to remote git is the ultimate goal; if it's not distributed-durable for the project, it's the agent's responsibility — not future-Otto's.
+name: ACID durability of the maintainer channel is load-bearing — applies to ALL maintainers and agents (Aaron 2026-04-30)
+description: Aaron's load-bearing rule that durable ACID persistence of the maintainer channel is itself load-bearing for the alignment-research claim. Applies to ALL maintainers and agents on the project, not just the current Otto. Distributed durability all the way to remote git is the ultimate goal; deferral to future-self is NEVER a valid preservation strategy (Aaron 2026-04-30 reinforcement — "1000000% never think it is"). If it's not distributed-durable for the project, it's the current actor's responsibility.
 type: feedback
 ---
 
@@ -8,8 +8,44 @@ type: feedback
 load-bearing for the autonomy research, not optional substrate
 hygiene.** Distributed durability all the way to remote git is
 the ultimate goal. If it's not distributed-durable for the
-project, it's the current-Otto's responsibility — not
-future-Otto's.
+project, it's the **current actor's** responsibility — not a
+future actor's.
+
+## Scope (Aaron 2026-04-30 reinforcement)
+
+> *"for all maintainers and agents on the project not just
+> yourself"*
+> — Aaron 2026-04-30
+
+This rule applies to **all maintainers and agents on the
+project**, not just the current Otto session. Aaron, Amara,
+Otto, future contributors, future agents — every actor
+producing load-bearing channel exchanges has the same
+responsibility to convert them to git-native substrate within
+the same session. The rule is project-wide discipline.
+
+## Deferral is NEVER a valid preservation strategy (Aaron 2026-04-30 reinforcement)
+
+> *"Deferral is not a valid preservation strategy. 1000000%
+> never think it is."*
+> — Aaron 2026-04-30
+
+The "never think it is" is the strongest possible framing.
+This is not a "try not to defer" rule. It is a **don't even
+consider deferral as an option** rule. The cognitive shape:
+
+- ❌ "I'll preserve this in a fresh session." — wrong; that's
+  deferral.
+- ❌ "Future-Otto will catch this." — wrong; future actors are
+  not your preservation strategy.
+- ❌ "If the loop heartbeat continues, the next tick can land
+  it." — wrong; the next tick is a future actor.
+- ✅ "This load-bearing exchange just arrived; converting to
+  git substrate is part of *this* turn, not the next."
+
+The rule is binary: either the load-bearing input is preserved
+in the same actor-turn it arrived in, OR the preservation has
+*failed*. There is no "scheduled for later" option.
 
 > *"Also anytime you depending on future otto picking something
 > up it should be ACID compliant all the way to a remote git
