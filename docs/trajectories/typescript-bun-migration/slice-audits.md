@@ -426,14 +426,14 @@ Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 - **NWO parsing with Enterprise HOST/OWNER/REPO support** preserved verbatim per Codex P2 #846. `parseRepoNwo` accepts 2-segment (github.com default) or 3-segment (HOST must contain a dot — rejects `owner/repo/extra` ambiguity). Slash-injection defence on owner/name preserved.
 - **Idempotency via PR-NNNN glob** (Otto-235): `findExistingArchive` reads `docs/pr-discussions/` + filters on `PR-<NNNN>-` prefix, sorts deterministically, reuses first match. Title edits update in-place rather than orphaning the old slug.
 - **Markdown post-processor with CommonMark §4.5 fence handling** preserved: `detectFenceMarker` enforces leading-space-count ≤ 3 + no tab in prefix; closer must match marker char (backtick/tilde) AND length ≥ opener (allows nested fences via longer opener). Inside fences, no normalization — audit fidelity wins. Outside fences, whitespace-only → empty + 3+ blank-line collapse to 2.
-- **Python `json.dumps` ensure_ascii=True** for YAML-quoted titles required a non-trivial fix: `JSON.stringify` in JS preserves non-ASCII (→ stays as ` →`); Python escapes to `→`. The TS port's `yamlQuote` post-processes the JSON output, replacing each non-ASCII codepoint with its `\uXXXX` form to match Python's wire-format default.
+- **Python `json.dumps` ensure_ascii=True** for YAML-quoted titles required a non-trivial fix: `JSON.stringify` in JS preserves non-ASCII characters as-is (the right-arrow stays a literal `→`); Python escapes them to `→`. The TS port's `yamlQuote` post-processes the JSON output, replacing each non-ASCII codepoint with its `\uXXXX` form to match Python's wire-format default.
 
 ### Equivalence audit
 
 Diff'd against bash output on this repo state (2026-04-30 main, run against PR #902):
 
 - **Argument-validation paths**: byte-equivalent on 2 sampled paths — no args (exit 1 + usage), `abc` (exit 1 + bad-PR-number message). Note exit code 1 (not 2) on argument errors here — consistent with bash original; differs from the slice 18/19/20 budget+git scripts (those use 2 for arg errors).
-- **Live archive run on PR #902** (4 threads, 2 reviews, 0 comments): byte-equivalent EXCEPT `archived_at` (timestamp) + `archive_tool` (.sh vs .ts — deliberate self-reference). Title with non-ASCII chars (` →` arrow + ` —` em-dash) escapes correctly to `→` and `—` matching Python's `json.dumps` default.
+- **Live archive run on PR #902** (4 threads, 2 reviews, 0 comments): byte-equivalent EXCEPT `archived_at` (timestamp) + `archive_tool` (.sh vs .ts — deliberate self-reference). Title with non-ASCII characters (right-arrow + em-dash) escapes correctly to `→` and `—` matching Python's `json.dumps` default.
 
 ### Behavioural note vs bash original
 
