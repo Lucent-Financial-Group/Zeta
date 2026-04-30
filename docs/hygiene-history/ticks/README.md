@@ -132,9 +132,9 @@ external-AI's hardening review): shard transport eliminates the
 eliminate all conflict classes — same-timestamp filename
 collisions, README/schema edits, generator output conflicts,
 and directory/index conflicts remain possible. Engineering
-hardening (the content-hash naming + unique-filename rule above
-+ generator cadence discipline below) addresses the residual
-classes.
+hardening (the content-hash naming, the unique-filename rule
+above, and the generator cadence discipline below) addresses
+the residual classes.
 
 ## What goes in a shard
 
