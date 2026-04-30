@@ -1251,8 +1251,8 @@ lane-state reports.
    guard Deepseek recommends (pre-tick hook) is bigger work
    deferred per the long-road shortcut-discipline rule.
 2. **CURRENT-aaron.md update** (Deepseek finding #2): adds
-   sections 38-41 covering the post-PR-934 calibration cluster
-   landings (slow-deliberate, long-road-by-default,
+   sections 38-41 covering the calibration cluster (PRs
+   #938-#941) landings (slow-deliberate, long-road-by-default,
    ACID-channel-durability, cold-start-big-picture-first).
 3. **This verbatim preservation** (per ACID-channel-durability
    rule landed in PR #938 + Aaron-channel-verbatim-preservation
