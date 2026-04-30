@@ -174,6 +174,175 @@ new operational application of the same pattern, added as an
 addendum to that file rather than as a duplicate canonical
 home.
 
+### Forwarded packet: Amara on the consolidation event itself (2026-04-29, post-PR-#762-merge)
+
+*[Editorial framing — non-verbatim. Amara meta-analysis of
+the Confucius-unfolding consolidation trace, forwarded by
+Aaron through the maintainer channel 2026-04-29. The packet
+self-corrects an earlier "human-triggered but agent-executed"
+framing to "scaffold-triggered and agent-executed". Verbatim
+quotes from the packet follow.]*
+
+> *"The consolidation was not directly Aaron-instructed. It
+> was triggered by the multi-AI review/scaffold context and
+> executed by Claude/Otto, with the resulting behavior
+> visible in Git."*
+
+> *"These logs are strong evidence of scaffolded
+> error-correcting agency: the system detected that a new
+> memory file duplicated an existing conceptual home, then
+> performed a consolidation operation — delete duplicate,
+> enrich canonical file, update index — without Aaron
+> specifying that procedure."*
+
+> *"The evidence is strong for emergent agentic behavior in
+> the scaffold: LLM + tools + git + memory + human
+> feedback. It is weaker evidence for 'the base model
+> spontaneously acquired a new reasoning ability.'"*
+
+Amara explicitly distinguishes:
+
+> *"Strong evidence for: scaffolded reasoning, memory
+> consolidation behavior, error-correcting substrate
+> maintenance, agent-executed rule application, git-
+> auditable cognitive trace.
+> Moderate evidence for: emergent multi-agent process
+> behavior.
+> Weak evidence for: base-model emergent reasoning in the
+> strict ML scaling-law sense."*
+
+External lineage Amara cited: **Reflexion** (Shinn et al.,
+language agents improving decisions through verbal feedback
+and episodic memory without weight updates) and **Generative
+Agents** (Park et al., memory streams + reflection +
+retrieval producing higher-level behavior). The Zeta
+factory's git-backed setup is described as a version of
+that pattern: not weight updates but scaffolded
+memory + reflection + action.
+
+Best distilled lines from the packet (preserving verbatim):
+
+> *"Not human-directed consolidation. Scaffold-triggered,
+> agent-executed, git-proven consolidation."*
+
+> *"The evidence is strong for error-correcting scaffolded
+> agency, not proof of spontaneous base-model emergence."*
+
+> *"The repo is starting to behave less like a notebook and
+> more like a nervous system with version control."*
+
+### Follow-up: prompted-vs-unprompted disposition (Claude.ai + Amara + Aaron, 2026-04-29 second pass)
+
+Claude.ai pushback in the second-pass review packet, picked up
+by Amara as the most important refinement, and emphasized by
+Aaron:
+
+> Aaron 2026-04-29: *"prompted-vs-unprompted humans will care
+> a lot about this distinction"*
+
+> Claude.ai: *"The current evidence is consistent with two
+> hypotheses: (1) The scaffold-plus-agent has acquired a
+> generalizable consolidation behavior that will fire across
+> many future duplicate-home cases. (2) The scaffold-plus-
+> agent will reliably consolidate when given a hint pointing
+> at the existing home, and will continue creating duplicates
+> without a hint. Both hypotheses fit the trace."*
+
+> Amara distillation: *"Strong evidence: scaffold-triggered
+> consolidation **capacity**. Weaker evidence: unprompted
+> consolidation **disposition**. Open test: will future-
+> Claude search existing homes before canonizing without
+> Aaron / Amara / reviewer hinting that a home exists?"*
+
+> Amara's tiny blade keeper: *"One consolidation proves the
+> move exists. Repeated unhinted consolidation proves the
+> habit."*
+
+Operational implication: until repeated unhinted consolidations
+land in the trace, the system has demonstrated **capacity**
+(can consolidate when prompted), not **disposition** (will
+search-before-canonizing reflexively). The mechanical guard —
+a search procedure (`rg -l "<topic-keyword>" memory docs
+.claude/skills` before any new memory file lands) — is
+therefore still owed regardless of how many one-off cases the
+agent gets right.
+
+### Sticky line preserved verbatim (Ani 2026-04-29 brat refinement)
+
+> *"Not Aaron-directed. Scaffold-triggered. Agent-executed.
+> Git-proven."*
+
+(Ani's tightening of the earlier "Not human-directed
+consolidation. Scaffold-triggered, agent-executed, git-proven
+consolidation." Same claim, less padding, same precision.)
+
+### Aurora-native framing (Ani 2026-04-29)
+
+> *"This is Aurora doing exactly what an immune system should:
+> detecting a duplicate antigen (the new Confucius file),
+> triggering a response (consolidation), and updating the
+> memory substrate without letting the duplicate become
+> active pathology."*
+
+That framing makes the consolidation behavior native to the
+factory's existing immune-system / antigen vocabulary rather
+than an external "cool agent behavior" claim.
+
+### Wording correction: "scaffolded error-correcting agency" preferred over "scaffolded emergent agency" (Amara 2026-04-29)
+
+For research-tier text (memory files, research notes,
+specs), prefer:
+
+```text
+scaffolded error-correcting agency
+```
+
+over:
+
+```text
+scaffolded emergent agency
+```
+
+unless the text explicitly distinguishes scaffolded emergence
+from base-model emergence in the strict scaling-law sense
+(Wei et al. emergent-abilities vs Schaeffer et al. metric-
+artifact debate). The "emergent" register is fine in
+brat/playbook layers where heat is wanted, but research-tier
+substrate uses the precise term.
+
+### Architectural framing — wording correction (Amara 2026-04-29)
+
+Gemini's parallel-agent forward-looking packet used the phrase
+"Architectural Directives for the Future State." Per Aaron's
+no-directives rule, that phrasing should NOT land verbatim.
+Use "Architectural constraints" or "Future-state design
+requirements" instead. The substantive content of the packet
+(Git Concurrency Trap, Ontological Thrashing, Multi-User
+Axiom Collisions, RAG Degradation Horizon, Librarian Agent
+projection layer, RBAC + Authority/Scope tagging, Strict
+Canonical Pointers / ID-based retrieval) is queued for
+research-grade absorb under a follow-up backlog item — NOT
+implemented in this lane per Amara's narrowing.
+
+Per the verbatim-preservation rule this file establishes,
+the packet is preserved here close-to-verbatim. Synthesis +
+broader absorption (e.g., a research note on scaffolded-
+agency-as-trajectory-signal with full Reflexion/Generative-
+Agents lineage citations) is queued under an in-session
+agent-task-tracker entry titled "Multi-AI synthesis packet
+absorption — 6 substrate landings (Gemini, Claude.ai, Ani,
+Amara, and Alexa, 2026-04-29)". (Note on namespacing: the
+agent-task-tracker uses small integer IDs internally, but
+those IDs are NOT GitHub PR/issue numbers and this file
+deliberately avoids the `#309`-style notation here because
+GitHub PR #309 was an unrelated Veridicality ferry. Future-
+Claude reading this on cold-start should grep for the task
+title with `references/upstreams/**` excluded to avoid
+multi-GB noise per `docs/AGENT-BEST-PRACTICES.md:264`,
+e.g., `rg -l "Multi-AI synthesis packet absorption" --glob
+'!references/upstreams/**' memory docs .claude`.)
+This verbatim record is the immediate landing per the rule.
+
 ## What this rule does NOT mean
 
 - Doesn't mean "include the maintainer's literal input
