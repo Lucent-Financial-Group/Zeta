@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 1 merged — d3b0be8)
-**Milestone**: 5 audit scripts ported (2 from PR #849 + 3 from PR #866). Two-gate quality model + layered Gate B baseline (`docs/best-practices/{typescript,bun,repo-scripting}.md`) landed.
+**Status**: Active (Lane B slice 1 merged — [#866](https://github.com/Lucent-Financial-Group/Zeta/pull/866), commit `d3b0be8`)
+**Milestone**: 5 audit scripts ported (2 from PR #849 + 3 from PR #866). Two-gate quality model + layered Gate B baseline (`docs/best-practices/typescript.md`, `docs/best-practices/bun.md`, `docs/best-practices/repo-scripting.md`) landed.
 **Current blocker**: None.
-**Next concrete action**: Pick a coherent next slice from Bucket B (~36 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
+**Next concrete action**: Pick a coherent next slice from Bucket B (36 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
@@ -54,9 +54,9 @@ tools/profile.sh
 
 Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
 
-### Bucket B — Should become TypeScript (39 files)
+### Bucket B — Should become TypeScript (36 files remaining)
 
-Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the two scripts ported in #849.
+Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849 and #866. Three originally-listed audit scripts (`audit-md032-plus-linestart.sh`, `audit-memory-index-duplicates.sh`, `audit-memory-references.sh`) are now ported to TS in #866 and removed from this list; the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
 
 ```text
 tools/alignment/audit_archive_headers.sh
@@ -77,9 +77,6 @@ tools/hygiene/audit-agencysignature-main-tip.sh
 tools/hygiene/audit-cross-platform-parity.sh
 tools/hygiene/audit-git-hotspots.sh
 tools/hygiene/audit-machine-specific-content.sh
-tools/hygiene/audit-md032-plus-linestart.sh
-tools/hygiene/audit-memory-index-duplicates.sh
-tools/hygiene/audit-memory-references.sh
 tools/hygiene/audit-missing-prevention-layers.sh
 tools/hygiene/audit-post-setup-script-stack.sh
 tools/hygiene/audit-tick-history-bounded-growth.sh
@@ -119,33 +116,40 @@ Rationale: borderline — depends on whether the lint can be expressed as cleanl
 
 ## Recommended next slice
 
-**Slice candidate (3 files, coherent unit)**: same-shape ports as #849 — markdown / memory hygiene auditors that walk the repo and emit findings.
+**Slice candidate (3-4 files, coherent unit)**: a same-shape audit cluster from `tools/hygiene/`, picking from the unported set in Bucket B above. Three plausible clusters:
 
 ```text
-tools/hygiene/audit-md032-plus-linestart.sh
-tools/hygiene/audit-memory-index-duplicates.sh
-tools/hygiene/audit-memory-references.sh
+# Cluster A — hygiene audit-pattern (low risk, slice-1 shape)
+tools/hygiene/audit-cross-platform-parity.sh
+tools/hygiene/audit-git-hotspots.sh
+tools/hygiene/audit-machine-specific-content.sh
 ```
 
-Estimated complexity: **Small (S)** — under a day. Each is a self-contained file walker emitting structured findings. The ports follow the established pattern from #849 (Bun runtime, TS strict mode, lint-clean, equivalence-verified against the bash original via golden-file fixtures).
-
-Why this slice:
-
-- Same shape as #849 (audit + emit findings; no host mutation, no auth)
-- Coherent cluster: all three are under `tools/hygiene/` and audit memory + markdown
-- Three is small enough to PR-merge in one round; not so small that it's churn
-- Demonstrates the pattern can scale beyond the first two ports
-- Each has a checked-in shell version that can serve as a reference for equivalence testing
-
-Alternative slice (skipping ahead to a different cluster):
+```text
+# Cluster B — alignment audit-pattern (5 files, larger)
+tools/alignment/audit_archive_headers.sh
+tools/alignment/audit_commit.sh
+tools/alignment/audit_personas.sh
+tools/alignment/audit_skills.sh
+tools/alignment/citations.sh
+```
 
 ```text
+# Cluster C — budget reports (touches shared production state)
 tools/budget/daily-cost-report.sh
 tools/budget/project-runway.sh
 tools/budget/snapshot-burn.sh
 ```
 
-Coherent budget-report cluster; would advance task #287 (cost monitoring) in addition to the migration.
+Estimated complexity: **Small (S)** for Cluster A (similar to slice 1), **Medium (M)** for B (5 files + alignment-specific patterns), **Medium-Large** for C (touches Aaron's cost-visibility surface — needs visibility-constraint care + would advance task #287).
+
+**Gate B prerequisite (mandatory before first mutating action on the slice)**:
+
+1. Re-verify currency of `docs/best-practices/typescript.md`, `docs/best-practices/bun.md`, `docs/best-practices/repo-scripting.md` upstream-source dates (default 30-day window).
+2. Re-verify sibling-repo comparison points (`../SQLSharp` commit hash, `../scratch` mtime).
+3. Confirm DST + coverage gate items in the per-slice checklist apply (or document deferred-check exemption).
+
+Cluster A is the recommended-default for a same-shape continuation slice; B is the natural step-up; C is reserved for after Aaron weighs in on visibility-impact.
 
 ## Bun / tooling requirements
 
