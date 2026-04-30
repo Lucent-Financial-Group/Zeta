@@ -322,6 +322,50 @@ Per-port pattern checklist:
 
 Slice 4 passes audit. New pattern recorded: per-line scan to preserve bash `grep` behavior across regex extraction.
 
+## Slice 5 — 3 hygiene-audit ports (PR #NNN, 2026-04-30)
+
+**Slice files**:
+
+- `tools/hygiene/audit-tick-history-bounded-growth.{sh→ts}`
+- `tools/hygiene/audit-post-setup-script-stack.{sh→ts}`
+- `tools/hygiene/audit-missing-prevention-layers.{sh→ts}`
+
+**Comparison points**: Layered baseline verified 2026-04-30 (1 day old). Slices 1-4 canonical patterns reused.
+
+### Code-pattern audit
+
+| Check | Result |
+|---|---|
+| No `any` uses | 0 matches |
+| No `as` casts | 0 matches |
+| Project typecheck clean | 0 errors |
+| ESLint strictTypeChecked | 0 errors |
+
+Per-port pattern checklist:
+
+- **Applied (all 3)**: typed boundary objects (Args, AuditBuckets, AuditResult, HygieneRow, ClassificationEntry).
+- **Applied (all 3)**: literal-type union exit codes.
+- **Applied (all 3)**: ParseResult discriminated-union via reduceFlag.
+- **Applied (all 3)**: structured spawn-failure classifier.
+- **`audit-tick-history-bounded-growth`**: simple line-count check; no git invocations beyond repo-root resolution; threshold default 500 (per inline mini-ADR in bash original).
+- **`audit-post-setup-script-stack`**: classification logic (exempt / labelled / violation) extracted into pure helpers (isExempt, hasLabel) for testability. LABEL_RE compiled once.
+- **`audit-missing-prevention-layers`**: `trimSpaces` extracted as a pure helper to avoid sonarjs/slow-regex on anchored space patterns. ROW_RE compiled once. `Map<string, string>` for classifications (vs bash's parallel arrays + linear lookup).
+
+### DST + coverage audit
+
+- **DST-friendly: applied** — `audit-post-setup-script-stack` and `audit-missing-prevention-layers` use `new Date().toISOString()` for the report timestamp; would inject a `Clock` interface (slice-2 pattern) if/when tests are added. `audit-tick-history-bounded-growth` has no time/random surface.
+- **Coverage: deferred** — bash originals had no tests; ports don't introduce a new module.
+
+### Equivalence audit
+
+- **`audit-tick-history-bounded-growth`**: byte-equivalent under both terse and `--summary` modes against current repo state.
+- **`audit-post-setup-script-stack`**: byte-equivalent under `--summary` (counts only) and report mode (modulo `Run:` timestamp).
+- **`audit-missing-prevention-layers`**: byte-equivalent (modulo `Run:` timestamp).
+
+### Outcome
+
+Slice 5 passes audit. New pattern recorded: `trimSpaces` pure helper as eslint-clean alternative to anchored space-stripping regexes (avoids sonarjs/slow-regex flag).
+
 ## Slice template (for future slices)
 
 Copy this section header and fill out before merging the slice's PR:
