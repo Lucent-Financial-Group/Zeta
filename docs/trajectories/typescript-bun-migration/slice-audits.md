@@ -411,6 +411,29 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
+## Slice 11 — 2 ports (skill-catalog cluster + nuget audit) (PR pending — `lane-b/ts-bun-slice-11-dv2-frontmatter-backfill-2026-04-30`)
+
+**Slice files**:
+
+- `tools/skill-catalog/backfill_dv2_frontmatter.{sh→ts}` (DV-2.0 frontmatter mechanical backfill)
+- `tools/audit-packages.{sh→ts}` (NuGet feed audit per Directory.Packages.props entry)
+
+**Comparison points**: identical to slice 6/7/8/9/10. Within Gate B 30-day window.
+
+### Code-pattern audit (per-port)
+
+- **`backfill_dv2_frontmatter.ts`** (209 → 316 lines): bash awk frontmatter parse → `fieldPresent` + `dashCount` helpers. Bash `compute_record_source` heuristic preserved. Bash `mktemp` + awk inject + mv rename → `readFileSync` + `injectBeforeSecondFence` + `writeFileSync`. Bash `INJECT_BLOB` env-passing pattern → in-memory string array. `--all` find-glob → readdirSync filter.
+- **`audit-packages.ts`** (51 → 143 lines): bash grep+sed extraction → `PACKAGE_RE.exec` loop. Bash awk pipe-table parse → `cols.split('|').map(trim)` + col2 match check (preserves "last matching row" semantics). Three statuses preserved: `✓ up-to-date` / `? couldn't query` / `⚠ bump available`.
+
+### Equivalence audit
+
+- **`backfill_dv2_frontmatter`**: byte-equivalent on `--dry-run` mode. Write-side path verified by snapshot-test.
+- **`audit-packages`**: network-dependent; offline-mode produces '?' for all packages in both bash + TS (verified locally).
+
+### Outcome
+
+Slice 11 passes audit. Skill-catalog cluster opened + NuGet audit added. Bucket B 14 → 12.
+
 ## Slice 10 — 2 ports (counterweight-cluster + first write-side) (PR pending — `lane-b/ts-bun-slice-10-counterweight-audit-2026-04-30`)
 
 **Slice files**:
