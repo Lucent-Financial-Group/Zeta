@@ -41,7 +41,12 @@ Per task #276 architectural choice (per-tick shard files —
 docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md
 ```
 
-Per-tick uniqueness eliminates the conflict surface entirely.
+Per-tick uniqueness eliminates the **EOF-append collision class**
+that the legacy single-table format suffered. See "Scope of
+conflict-elimination claim" below for the residual conflict
+classes that shard transport does NOT eliminate (same-timestamp
+filename collisions, README/schema edits, generator output
+conflicts).
 
 ## Shard file schema
 
@@ -94,6 +99,43 @@ Either form (`HHMMZ.md` or `HHMMSSZ-<short-content-hash>.md`)
 is valid; the second is preferred when concurrency pressure is
 expected.
 
+**Unique-filename rule** (fail-closed-OR-idempotent): if the
+target shard path already exists when a new shard is being
+written, the write MUST either (a) succeed silently if the
+new content is byte-identical to the existing content
+(idempotent re-write — common under retry / replay
+conditions), OR (b) fail closed and a unique-suffix path MUST
+be chosen. Silent *overwrites* (different content, same path)
+are forbidden — they would erase prior liveness evidence and
+re-introduce the failure mode shard transport was designed to
+eliminate. The `HHMMSSZ-<short-content-hash>.md` form makes
+collisions extremely rare in the first place; the fail-closed
+rule is the safety net for the remaining cases (same-timestamp
+with different content, or filename collisions when the
+simpler `HHMMZ.md` form is used).
+
+**Mixed-format-sort caveat** (per the 2026-04-30 hardening
+review): the recommended `HHMMSSZ-<short-content-hash>.md`
+form sorts lexicographically *before* same-minute `HHMMZ.md`
+entries (e.g., `0210Z.md` vs `021001Z-abc.md` — the longer
+form sorts earlier despite being later in real time). Two
+mitigations: (1) the generator (when it lands per task #276)
+SHOULD parse the timestamp prefix instead of relying on raw
+filename sort; (2) within a single repo, prefer one form
+consistently — pick `HHMMZ.md` for low-concurrency contexts,
+`HHMMSSZ-<short-content-hash>.md` for high-concurrency, do
+not mix.
+
+**Scope of conflict-elimination claim** (per the deep-research
+external-AI's hardening review): shard transport eliminates the
+*old EOF-append collision class* for new tick rows. It does NOT
+eliminate all conflict classes — same-timestamp filename
+collisions, README/schema edits, generator output conflicts,
+and directory/index conflicts remain possible. Engineering
+hardening (the content-hash naming, the unique-filename rule
+above, and the generator cadence discipline below) addresses
+the residual classes.
+
 ## What goes in a shard
 
 The same content that previously appended as a row to the legacy
@@ -121,13 +163,28 @@ Future generator behavior:
 ```text
 Generator (cadence: post-merge or daily):
   1. Read all shards under docs/hygiene-history/ticks/**/*.md
-  2. Sort by filename (chronological by file naming)
+  2. Sort by parsed timestamp prefix (HHMMZ or HHMMSSZ-...).
+     Raw filename sort is incorrect when both forms coexist
+     in a single day (HHMMSSZ-... sorts before same-minute
+     HHMMZ.md lexicographically, despite being later).
   3. Format as legacy-table rows
   4. Append to docs/hygiene-history/loop-tick-history.md
   5. Optionally retire shards older than N days to a compressed archive
 ```
 
 The generator is follow-up work tracked under task #276.
+
+**Generator cadence rule** (the danger to avoid): if the
+generator regenerates the legacy table on EVERY shard PR, the
+EOF append-hotspot returns as generated-output contention. The
+generator MUST run on a separate cadence (post-merge cron OR
+single scheduled PR daily/weekly), NOT on every tick PR.
+
+```text
+Shard files are the canonical WRITE surface (per-tick).
+Generated table is a READ surface (cadenced).
+The hotspot returns iff the read surface tries to be a write surface.
+```
 
 ## Why per-tick rather than per-day or per-PR
 
