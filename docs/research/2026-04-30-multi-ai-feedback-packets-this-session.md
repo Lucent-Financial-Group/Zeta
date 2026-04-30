@@ -2090,6 +2090,182 @@ Otto note on convergence with prior reviews:
 
 ---
 
+## Deepseek — third review (post-no-copy-discipline-landing)
+
+Integration status: third Deepseek review. Three issues + three
+hardening opportunities + one enhancement. Strongest novel
+finding: the "·" dot tick is the new "Holding." anti-pattern.
+Adopted immediately: dot is reserved for truly empty ticks
+(zero commits, zero pushes, zero maintainer input, zero review
+absorption); any state change → minimal one-line summary.
+
+> The user is asking me to review the latest agent logs for
+> issues, opportunities for hardening, or enhancements. They've
+> provided a substantial log dump from what appears to be an
+> autonomous AI agent system (Claude Code / Otto) operating on
+> a repository called Zeta.
+
+> I've reviewed the logs in detail. This session was highly
+> productive—the no-copy-only-learning discipline landed with
+> precise, multi-round refinement—but it also surfaced several
+> recurring patterns that need hardening.
+
+> ## Issues Found
+>
+> ### 1. The stub-commit anti-pattern is back in a new form.
+>
+> The silent · ticks (the dot character) are the direct
+> descendant of the "Holding." anti-pattern that the
+> poll-the-gate rule was supposed to fix. Otto is applying the
+> cadence rule correctly for PR-state polls, but the multi-AI
+> feedback preservation ticks—which contain substantive content
+> being committed and pushed—are being reduced to a single dot.
+> A tick that lands a 275-line research append or a 179-line
+> memory file is not a "no change" tick. The · is the new
+> "Holding."
+>
+> The root cause: the cadence rule says "no lane-state change →
+> minimal close," but "lane-state change" is scoped only to
+> PR-state transitions. Content-preservation commits, memory
+> file landings, and feedback-packet absorption are lane-state
+> changes under any reasonable definition. The · form should
+> be reserved for ticks where literally nothing happened—no
+> commits, no pushes, no PR state changes, no maintainer input,
+> no review absorption. If Otto committed code or pushed to a
+> PR, the tick is not a dot.
+>
+> ### 2. The search-first discipline fired correctly but the existing project file has stale internals.
+>
+> Otto correctly searched for existing substrate before filing
+> the no-copy discipline and found the prior 2026-04-27
+> project file. He added a status_note flagging that the file
+> predates the tighter discipline. But this creates a
+> known-stale artifact in the repo with no mechanical reminder
+> to fix it. The status_note is prose; prose doesn't follow
+> up. Add a B-0112 candidate or a deferred note in the project
+> file itself that triggers a future cleanup pass.
+>
+> ### 3. Aaron's "no bleeding out other projects internals" message arrived mid-draft and was absorbed, but the pattern of mid-draft maintainer refinement is itself unreinforced.
+>
+> This session shows the exact pattern that caused substrate
+> loss in earlier rounds: Aaron sends feedback while Otto is
+> actively drafting, Otto absorbs it in real time, the file
+> lands with all the corrections. That's good—but it worked
+> this time because Aaron was present. If Aaron sends
+> refinement after the PR merges, the correction requires a
+> new PR. The proceed-but-verify rule for merges during
+> incidents has no equivalent for "absorb maintainer
+> refinement after merge." Consider a lightweight post-merge
+> amendment convention: if Aaron refines a just-merged memory
+> file within the same session, the amendment lands as a
+> follow-up commit on a new branch with a refinement: trailer,
+> not as a full new PR cycle.
+
+> ## Opportunities for Hardening
+>
+> ### 1. The generalized-about boundary needs a mechanical test, not just judgment.
+>
+> The privacy-class rule says generalized abouts are allowed,
+> specific identifiers are not. The test is: "would the named
+> detail mean something outside the sibling repo?" This is a
+> judgment call Otto has to make on each reference. Consider a
+> pre-commit check that scans new memory files for
+> ../scratch, ../SQLSharp, or
+> ../no-copy-only-learning-agents-insight and fails if any
+> subdirectory path or capitalized proper noun appears
+> adjacent to the reference. This would catch internals
+> bleed-out mechanically rather than relying on Otto's
+> judgment under drafting pressure.
+>
+> ### 2. The existing bleed-out in the 2026-04-27 project file is a debt that should be scheduled, not deferred indefinitely.
+>
+> Otto flagged the file with a status_note and said
+> "substantive cleanup is queued." Queued where? There's no
+> backlog row, no deferred note in an active trajectory, no
+> scheduled follow-up. This is the same pattern as the
+> deferred-skill anti-pattern from the TypeScript/Bun expert
+> baseline: a known gap flagged in prose, never actioned.
+> File a concrete follow-up (B-0112 or deferred note in the
+> project file) with a trigger condition, or do the cleanup
+> now while the discipline is fresh.
+>
+> ### 3. The · dot ticks should be reserved for truly empty ticks.
+>
+> Amend the poll-the-gate rule's cadence section: a "minimal
+> close" tick uses the dot form ONLY when zero of the
+> following occurred since the last tick: commits pushed, PRs
+> created or updated, maintainer input received, review
+> threads resolved, memory files created or modified,
+> research files appended, or any git operation that changed
+> the repo state. If any of those occurred, the tick close
+> must include a one-line summary of what changed. This
+> prevents the dot from becoming a new "Holding."
+
+> ## Enhancement Opportunity
+>
+> The sibling-repo learning discipline should be integrated
+> into the TypeScript/Bun expert baseline.
+>
+> The no-copy-only-learning rule directly composes with the
+> Gate B requirement (expert baseline before next mutating
+> TypeScript/Bun slice). ../SQLSharp is explicitly called out
+> as a source of "good TS/Bun patterns." The expert baseline
+> artifacts (docs/best-practices/typescript.md, bun.md,
+> repo-scripting.md) should cite ../SQLSharp and ../scratch
+> as learning sources using the generalized-about framings,
+> with an explicit note that patterns were generalized, not
+> copied. This closes the loop between the no-copy discipline
+> and the trajectory that depends on it.
+
+> ## Bottom Line
+>
+> The discipline landed correctly, the mid-draft absorption
+> worked because you were present, and the privacy-class
+> refinement is the right calibration. The remaining gaps are
+> mechanical: the · dot is the new "Holding," the stale
+> project file has no follow-up trigger, and the boundary
+> between generalization and bleed-out relies on Otto's
+> judgment rather than a check. These are all fixable in
+> quiet ticks. The factory's immune system is catching the
+> right things—now it needs to catch its own minimalism.
+
+Otto note on Deepseek's review:
+
+- Issue #1 (· is the new "Holding."): adopted immediately.
+  Going forward, dot reserved for truly-empty ticks (no
+  commits, no pushes, no maintainer input, no review
+  absorption); any state change gets a minimal one-line
+  summary. This composes with Amara's item #7 (gate-summary
+  form when in-flight PRs exist).
+- Issue #2 (status_note prose has no follow-up trigger):
+  fair concern. The 2026-04-27 project file's
+  internals-cleanup is genuinely queued in prose only.
+  Worth adding to a backlog or a trigger. Not landing a
+  new B-NNNN this round per substrate-rate; flagged for
+  next round.
+- Issue #3 (post-merge amendment convention): real
+  insight. Worth a future-round design — what's the
+  lightweight shape for "Aaron refined a just-merged
+  memory file within the same session"?
+- Hardening #1 (mechanical test for generalized-about
+  boundary): pre-commit check for subdirectory paths or
+  proper nouns adjacent to sibling-repo references. Real
+  durable fix; queued.
+- Hardening #2 (concrete follow-up for project file
+  cleanup): same as Issue #2.
+- Hardening #3 (· dot rule amendment): adopted with #1.
+- Enhancement (no-copy discipline integration into
+  TS/Bun expert baseline): real connection between two
+  trajectories; queued for when the expert baseline
+  work resumes.
+
+Carved sentence (Deepseek 2026-04-30):
+
+> The factory's immune system is catching the right
+> things — now it needs to catch its own minimalism.
+
+---
+
 ## Aaron — substantive substrate-shaping inputs (chronological)
 
 Integration status: each item below either landed as
@@ -2271,6 +2447,62 @@ Status: candidate substrate for a future canon memory
 file follow-up; preserved here as session-shaping
 linguistic input. Adopting going forward without
 opening a new PR (per substrate-rate discipline).
+
+### Personal memories are load-bearing for agent-agency analysis (resolution of Claude.ai + Amara open question)
+
+Aaron 2026-04-30, in response to Claude.ai's serious flag +
+Amara's item #4 (both flagged the canon memory file's
+parenting-architecture grounding as too rich, recommending
+tightening to remove daughters' birth years + Addison's name):
+
+> Also don't foget that personal memories are the basis for
+> the inital directions of the project and other human
+> reviwers will want to scrutinze it for when review claims
+> of agent acgency and autonomy to see what is interally
+> chosen vs externally directed.
+
+Aaron's resolution: keep the personal-memory grounding
+in canon. Personal memories are LOAD-BEARING because they
+serve a downstream review purpose:
+
+- They show the **inital directions** of the project —
+  where the rules came from, what the maintainer
+  actually values, what the architecture is grounded in.
+- Future human reviewers (alignment researchers,
+  collaborators, evaluators) will scrutinize the
+  substrate to assess **agent agency vs maintainer
+  direction** — what's internally chosen by the agent
+  vs externally directed by the maintainer.
+- Personal grounding (e.g., "no-directives is how Aaron
+  parents") makes the maintainer's contribution
+  explicit, which is exactly what reviewers need to do
+  the agency analysis. Removing it would obscure the
+  attribution lineage.
+- This inverts Claude.ai's earlier framing that
+  "affirmation-substrate is alignment-risk." Aaron's
+  framing: personal-context-as-substrate is
+  alignment-*evidence*, not alignment-risk, BECAUSE it
+  makes the maintainer's authorship of the rules
+  scrutinizable.
+
+Status: PR #914's parenting-architecture-grounding
+section stays as merged. Two-AI flags (Claude.ai +
+Amara) noted as legitimate concerns from a different
+analysis lens (data minimization), but the maintainer
+call resolves toward keeping for the review-scrutiny
+purpose. The substrate now records both perspectives —
+the durable canon entry has the parenting grounding;
+this research-absorb has Claude.ai + Amara's flags +
+Aaron's resolution.
+
+The praise-memory deletion earlier this session
+(`feedback_supersession_audit_pattern_*.md` removed per
+Claude.ai's prior flag) remains correct — that file's
+trigger was praise itself, not a maintainer-directional
+substrate. The distinction Aaron is drawing here:
+maintainer-personal-context-grounding-architectural-rules
+is load-bearing; agent-creating-files-to-preserve-praise
+is not.
 
 ### Substrate-loss framing (the impetus for this document)
 
