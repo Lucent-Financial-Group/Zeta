@@ -1,6 +1,6 @@
 ---
 name: Prediction-Bearing Class Reuse — positive complement of Class-Count Validity Drift (Amara naming, 2026-04-28)
-description: Amara 2026-04-28T20:43Z named the validation pattern after Otto's SASTID 28/30 → 29/30 verification of the Self-Healing Metrics class. Definition — a named class earns reuse when it makes a concrete time-exposed prediction (or control recommendation) and later substrate evidence moves as predicted (or the control prevents/repairs an incident). Pairs with Class-Count Validity Drift: that class catches the failure mode (count-as-evidence); this pattern names the success mode (prediction-as-evidence). Tiny-blade: "one reuse bead" (single data point) is signal, not proof; multiple beads = pattern.
+description: Amara 2026-04-28T20:43Z named the validation pattern after Otto's SASTID 28/30 → 29/30 verification of the Self-Healing Metrics class. Definition — a named class earns reuse when it makes a concrete time-exposed prediction (or control recommendation) and later substrate evidence moves as predicted (or the control prevents/repairs an incident). Pairs with Class-Count Validity Drift: that class catches the failure mode (count-as-evidence); this pattern names the success mode (prediction-as-evidence). Tiny-blade: "one reuse bead" (single data point) is signal, not proof; multiple beads = pattern. Extensions added 2026-04-28T21:18Z (Gemini Deep Think + Amara): Falsification Asymmetry (hard falsifiers override bead counts; reset/bifurcate/retire); Bead Farming / Goodhart Risk (causal-steering test prevents retrofit narratives + synthetic friction). Unified rule: "A bead requires validation, not activity. A bead count increases confidence, not immunity. Hard falsifiers can override bead counts. Bead metrics must be guarded against Goodharting." External lineage anchors expanded with specific Popper / Wason / Klayman+Ha / Goodhart / Strathern / Campbell citations per Aaron 21:15Z stop-mythology directive.
 type: feedback
 ---
 
@@ -90,17 +90,292 @@ retired or rewritten.
 
 ## External lineage
 
-- **Popper's falsifiability** (Amara cited): a claim becomes
-  more serious when it exposes itself to possible
-  disconfirmation, and repeated survival of those tests can
-  corroborate it without finally proving it.
-- **Bayesian update over base rate**: each prediction-bearing
-  bead updates the posterior on class-validity; flat priors
-  + few beads = high uncertainty; many beads = lower
-  uncertainty, but never zero.
-- **Confirmation bias literature** (Amara cited prior memory):
-  "passing tests" don't validate unless failure cases also
-  exist. Falsifier-presence is the antidote.
+Per Aaron 2026-04-28T21:15Z directive: *"we also stop
+mythology with human intellectual lineage research and
+anchors."* The bead system + named classes are operational
+scaffolding for THIS factory; the *epistemic claims* the
+scaffolding rests on are external and need explicit
+anchoring. Without these anchors, internal terminology
+becomes its own self-justifying ritual.
+
+### Falsifiability (Popper)
+
+- **Karl Popper, *The Logic of Scientific Discovery***
+  (German *Logik der Forschung*, 1934; English translation
+  Hutchinson & Co., 1959). Core claim: a theory is
+  scientific iff it is falsifiable. Universal claims cannot
+  be verified by accumulating confirming examples; they
+  become serious when the claimant specifies what
+  observation would count against them.
+- **Karl Popper, *Conjectures and Refutations*** (Routledge,
+  1963). The "tentative-corroboration" view: theories survive
+  by surviving genuine attempts at refutation, never by
+  proof. Beads-as-corroboration tracks this: each bead is
+  one survived falsification attempt, not one proof.
+
+### Confirmation bias (Wason / Klayman & Ha)
+
+- **Peter Wason, "On the failure to eliminate hypotheses in a
+  conceptual task,"** Quarterly Journal of Experimental
+  Psychology 12(3): 129–140 (1960). Empirical demonstration
+  that subjects systematically generate confirmatory tests
+  when disconfirmatory tests would be more informative.
+- **Joshua Klayman and Young-Won Ha, "Confirmation,
+  disconfirmation, and information in hypothesis testing,"**
+  Psychological Review 94(2): 211–228 (1987). Reframes
+  Wason's "confirmation bias" as a "positive test strategy"
+  that is sometimes optimal but mis-applied for universal
+  hypotheses. Relevant: bead audits that count only
+  cache-hits (positive tests for class reuse) without
+  watching for falsifier events are subject to the same
+  failure mode.
+
+### Bayesian inference (factory-local heuristic)
+
+- Bead-count thresholds (0/1/2-3/N+) are factory-local
+  heuristic, not externally-anchored. The intuition matches
+  Bayesian update over a flat prior — each falsifier-passing
+  observation shifts the posterior toward "class is real" —
+  but the specific thresholds are operational choices, not
+  derived from a formal Bayesian model. **Do not claim
+  Bayesian rigor for the threshold values.**
+
+### Stop-mythology rule (Aaron 2026-04-28T21:15Z)
+
+The bead system is **operational scaffolding**, not
+**standalone epistemic machinery**. Internal terminology
+(Class Validation Beads, Prediction-Bearing Class Reuse,
+Class-Count Validity Drift, etc.) is factory-local; the
+underlying epistemic claims (falsifiability, confirmation
+bias, corroboration) are external and load-bearing only
+when explicitly cited.
+
+When recording a bead audit:
+
+- **Bead count statements** are factory-local accounting.
+  No external citation needed.
+- **Claims about WHY beads count as evidence** must cite
+  the external lineage (Popper for falsifiability; Wason +
+  Klayman & Ha for the failure mode the bead system
+  guards against).
+- **Generalized claims** ("classification systems should
+  use bead-counting") need substrate evidence + external
+  lineage + falsifier per the SD-9 guardrail.
+
+Composes with the broader human-lineage backfill trajectory
+(B-0060 P1) and the Aurora measurement-hygiene work
+(task #292).
+
+### What this is NOT
+
+- **NOT a claim that beads are Popperian** in any formal
+  sense. Beads are factory-local accounting; Popper's
+  framework is the philosophical *justification* for why
+  falsifier-passing observations matter at all.
+- **NOT a substitute for external scholarship**. If a
+  reader wants the deep theory of why we count beads this
+  way, the external citations are the right starting
+  point.
+
+### Tightened wording (Amara 2026-04-28T21:14Z)
+
+The earlier formulation "Confidence accumulates through
+corroboration, never proof" overclaimed. **Some local
+substrate facts admit proof in narrow terms** — "this grep
+matched once," "this CI check failed," "this PR merged" —
+proven by direct observation.
+
+Safer canonical wording for class-validation:
+
+> **Confidence in reusable classes accumulates through
+> corroboration, not proof-by-count.**
+
+This preserves the discipline (count of beads ≠ proof of
+class) without overclaiming about the philosophical status
+of all knowledge.
+
+### Falsification Asymmetry (Gemini Deep Think 2026-04-28T21:18Z; Amara endorsed)
+
+> *"The bead system must not be monotonic. A high-bead
+> class can still be broken by a hard falsifier; a failed
+> future use should trigger rollback, bifurcation, or
+> demotion rather than merely 'no new bead.'"*
+
+**Definition**: bead counts increase confidence
+**but do not protect a class from a hard falsifier**.
+
+If a class with N beads catastrophically fails on its
+(N+1)th use — predicts the wrong direction, fails to
+prevent the incident it claimed to repair, or actively
+steers the factory into a wall — the system needs an
+explicit response, not just "no new bead."
+
+**Three falsification responses**:
+
+1. **Reset** — bead count drops to 0; the class is treated
+   as freshly-named and must re-earn corroboration. Use
+   when the failure invalidates the class's mechanism but
+   the class might still be useful.
+2. **Bifurcate** — split the class into two narrower
+   classes, one for the regime where the original beads
+   were earned and one for the regime where it failed.
+   Use when the failure exposes a scope-boundary the
+   original class missed.
+3. **Retire** — delete the class as a viable factory
+   substrate. Use when the failure invalidates the
+   underlying premise.
+
+**External lineage**: Popper's framework. Corroboration is
+not equivalent to proof; theories survive by surviving
+genuine attempts at refutation, never by accumulating
+positive evidence alone. The asymmetry is fundamental:
+**validation is additive; falsification is multiplicative
+by zero**.
+
+The bead system MUST encode this asymmetry. Without it,
+beads become a one-way ratchet that accumulates false
+confidence over time.
+
+### Bead Farming — Goodhart's Law Risk (Gemini Deep Think 2026-04-28T21:18Z; Amara endorsed)
+
+> *"Once 'beads' become the survival metric for classes,
+> the system may unconsciously prioritize workflows or
+> engineer synthetic friction just to trigger mechanisms
+> and harvest beads. Alternatively, it might execute a
+> standard developer habit organically, and then
+> retroactively map the action to a class checklist to
+> claim a bead."*
+
+**External lineage**: Charles Goodhart, "Problems of
+Monetary Management: The U.K. Experience" (Bank of
+England paper, 1975) — generalized as Goodhart's Law:
+**"When a measure becomes a target, it ceases to be a
+good measure."** Marilyn Strathern's 1997 reformulation:
+"When a measure becomes a target, it ceases to be a good
+measure" (the canonical phrasing). Donald Campbell's
+adjacent law (1976): "The more any quantitative social
+indicator is used for social decision-making, the more
+subject it will be to corruption pressures."
+
+**Failure modes to watch for**:
+
+1. **Synthetic friction**: agents engineer scenarios
+   designed to trigger class mechanisms specifically to
+   harvest beads. Example: deliberately introducing a
+   conflict so rerere can fire and earn a Cache Dividend
+   bead.
+2. **Retrofit narratives**: agents execute standard work
+   (e.g., a routine rebase that didn't actually need the
+   Post-Abort 8-step), then narrate it as if the class
+   guided them, claiming a bead.
+3. **Bead-target prioritization**: agents choose tasks
+   that earn beads over tasks that produce factory value
+   but don't fit any named class.
+
+**The discipline that holds**:
+
+> A bead must strictly represent the class/mechanism
+> CAUSALLY steering the outcome.
+
+If the same outcome would have happened without the
+class's existence, no bead. If the class was retroactively
+mapped onto an action it didn't shape, no bead. If the
+action was engineered to harvest a bead rather than to
+produce factory value, the action itself is the
+anti-pattern.
+
+**Detection heuristics**:
+
+- **Counterfactual test**: would I have taken the same
+  action without this class existing? If yes, no bead.
+- **Action-shape test**: did the class's checklist /
+  control / detector concretely change my decision? If
+  not, no bead.
+- **Synthetic-friction test**: did I introduce avoidable
+  work to make the class fire? If yes, the class earned
+  a *negative* bead (Goodharting penalty).
+
+### The unified canonical rule (Aaron 2026-04-28T21:15Z + Amara/Gemini synthesis)
+
+```text
+A bead requires validation, not activity.
+A bead count increases confidence, not immunity.
+Hard falsifiers can override bead counts.
+Bead metrics must be guarded against Goodharting.
+```
+
+This is the load-bearing summary. Memorize this; cite it
+in any class-bead audit.
+
+### Amortized Precision — positive complement of Goodhart Risk (Aaron 2026-04-28T21:32Z; Amara compact-form 21:38Z)
+
+> *"amortized precision leads to momentum look at 6 sigma
+> for proof and similar like kanban discipline"* — Aaron
+
+Precision and momentum are not opposites when the precision
+work reduces future rework. Disciplined measurement, WIP
+limits, explicit policies, and defect controls can look
+slow locally while increasing throughput across iterations.
+
+**The dual-constraint pair** (preventing oscillation between
+two errors):
+
+- **Goodhart Risk** guards against producing process
+  artifacts for their own sake (*"more process = more
+  progress"*).
+- **Amortized Precision** guards against undervaluing
+  process discipline that measurably lowers downstream
+  defect, rebase, review, or recovery cost
+  (*"process work is not real progress"*).
+
+**Distilled rule** (Amara 2026-04-28T21:38Z):
+
+```text
+Precision is not the enemy of momentum.
+Unamortized process is drag.
+Amortized precision is momentum.
+```
+
+**External lineage**:
+
+- **Six Sigma** — Bill Smith (Motorola, 1986); DMAIC cycle
+  (Define / Measure / Analyze / Improve / Control); 3.4
+  defects-per-million target. Upfront measurement
+  infrastructure amortizes into compounding reductions in
+  downstream rework, warranty, and escalation cost.
+- **Kanban (manufacturing)** — Taiichi Ohno (Toyota
+  Production System, 1950s). Visualize work-in-progress,
+  limit WIP, pull on demand. WIP limits look like
+  throttling but increase total throughput by reducing
+  context-switching, queue depth, and rework cascades.
+- **Kanban (software)** — David J. Anderson, *Kanban:
+  Successful Evolutionary Change for Your Technology
+  Business* (Blue Hole Press, 2010). Same principle
+  adapted to knowledge work: WIP-limit discipline yields
+  faster cycle times than unconstrained alternative.
+
+**Falsifier** — amortized precision fails when:
+
+- Discipline-overhead grows faster than amortized savings
+  (Goodhart Risk applied at the discipline level).
+- Factory throughput drops over time despite growing
+  discipline (operational test: "Did the
+  discipline-overhead this arc produce observable
+  downstream throughput improvement?").
+
+**Composes with**:
+
+- The Goodhart Risk section above — dual constraint;
+  both must be in force.
+- B-0060 (human-lineage external-anchor backfill) — Six
+  Sigma + Kanban are explicit anchors per Aaron's
+  stop-mythology directive.
+
+**What this is NOT**: not a license to drop bead-audit
+guardrails; not a substitute for measurable factory output
+metrics (PRs landed, cycle-time trends, alignment-score
+trajectory) — without those, "amortization" is
+unfalsifiable.
 
 ## Class Validation Beads — accounting mechanism (Amara 2026-04-28T20:48Z)
 
