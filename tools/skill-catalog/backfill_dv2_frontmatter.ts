@@ -19,7 +19,13 @@
 //   1    usage error
 //   2    a file was malformed (no closing frontmatter fence)
 
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+  renameSync,
+  unlinkSync,
+} from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -263,7 +269,28 @@ function processOne(
     return { status: "ok", message: lines.join("\n"), exitCode: 0 };
   }
   const newContent = injectBeforeSecondFence(content, inject);
-  writeFileSync(file, newContent);
+  // Atomic rewrite: write to a sibling tmp file + rename. Mirrors the
+  // bash original's `mktemp` + `mv` pattern. Crash/kill/disk-full mid-
+  // write leaves the original file intact rather than truncated. The
+  // tmp lives next to the target so rename is a same-filesystem
+  // operation (atomic on POSIX).
+  const tmpPath = `${file}.tmp.${String(process.pid)}.${String(Date.now())}`;
+  try {
+    writeFileSync(tmpPath, newContent);
+    renameSync(tmpPath, file);
+  } catch (err) {
+    try {
+      unlinkSync(tmpPath);
+    } catch {
+      // tmp may not exist yet; ignore.
+    }
+    const message = err instanceof Error ? err.message : "unknown error";
+    return {
+      status: "error",
+      message: `error: cannot write ${file}: ${message}`,
+      exitCode: 2,
+    };
+  }
   return {
     status: "wrote",
     message: `wrote ${file} (${String(inject.length)} field(s) added)`,
