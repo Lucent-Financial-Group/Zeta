@@ -44,7 +44,9 @@ interface Args {
 
 interface ArgError {
   readonly error: string;
-  readonly exitCode: 1;
+  // Exit code 64 = invocation/usage error per
+  // docs/best-practices/repo-scripting.md §exit-codes (rule 0|2|64).
+  readonly exitCode: 64;
 }
 
 interface ArgHelp {
@@ -71,7 +73,7 @@ function classifyFlag(
   state: MutableArgState,
 ): StepResult {
   if (a === "--model") {
-    if (next === undefined) return { kind: "error", message: "error: --model requires NAME" };
+    if (next === undefined) return { kind: "error", message: "error: --model requires NAME" };  // exitCode set in parseArgs
     state.model = next;
     return { kind: "advance", skip: 2 };
   }
@@ -107,7 +109,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     const a = argv[i] ?? "";
     const step = classifyFlag(a, argv[i + 1], state);
     if (step.kind === "help") return { help: true };
-    if (step.kind === "error") return { error: step.message, exitCode: 1 };
+    if (step.kind === "error") return { error: step.message, exitCode: 64 };
     if (step.kind === "stop") {
       state.prompt = argv.slice(i + 1).join(" ");
       break;
@@ -153,19 +155,33 @@ function isRegularFile(path: string): boolean {
   }
 }
 
-function readHead(path: string, bytes: number): string {
+interface ReadHeadResult {
+  readonly ok: boolean;
+  readonly content: string;
+  readonly error: string;
+}
+
+function readHead(path: string, bytes: number): ReadHeadResult {
   // Read only the first `bytes` bytes (matches bash `head -c`).
   // readFileSync would load the entire file before slicing — regression
   // for large artifacts (logs, dumps) per Codex P1 on #898.
-  if (!isRegularFile(path)) return "";
+  // Surfaces read failures (permission, race, etc.) instead of silently
+  // returning empty per Codex P2 on #898 — bash's `head` writes errors
+  // to stderr; we propagate via the result type so the caller can decide
+  // (warn the user, abort, etc.) rather than building a prompt that
+  // looks like context was attached when it wasn't.
+  if (!isRegularFile(path)) {
+    return { ok: false, content: "", error: "not a regular file" };
+  }
   const buf = Buffer.alloc(bytes);
   let fd: number | undefined;
   try {
     fd = openSync(path, "r");
     const n = readSync(fd, buf, 0, bytes, 0);
-    return buf.subarray(0, n).toString("utf8");
-  } catch {
-    return "";
+    return { ok: true, content: buf.subarray(0, n).toString("utf8"), error: "" };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return { ok: false, content: "", error: message };
   } finally {
     if (fd !== undefined) closeSync(fd);
   }
@@ -178,10 +194,14 @@ function runContextCmd(contextCmd: string): string {
   // full output up to SPAWN_MAX_BUFFER (Codex P2 on #898 — high-volume
   // commands like wide `git diff` would otherwise block much longer
   // and use much more memory than the bash original).
+  // Use /bin/bash -c (not /bin/sh -c) so bash-only features (`[[ ... ]]`,
+  // brace expansion, process substitution) accepted by the bash
+  // original's `eval` continue to work — Codex P2 on #898 noted that
+  // /bin/sh on Ubuntu is dash and accepts a strict POSIX subset.
   // User intentionally supplies the shell command (per --context-cmd
   // contract); same security posture as the bash original's `eval`.
   const wrapped = `(${contextCmd}) 2>&1 | head -c ${String(CTX_HEAD_BYTES)}`;
-  const result = spawnSync("/bin/sh", ["-c", wrapped], {
+  const result = spawnSync("/bin/bash", ["-c", wrapped], {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
   });
@@ -192,6 +212,33 @@ function runContextCmd(contextCmd: string): string {
   // diagnostic must reach the prompt or the user sees an empty context
   // block on a malformed cmd.
   return `${result.stdout}${result.stderr}`.slice(0, CTX_HEAD_BYTES);
+}
+
+interface SpawnError {
+  readonly code?: string;
+}
+
+interface ChildOutcome {
+  readonly status: number;
+  readonly note: string;
+}
+
+function classifySpawnFailure(
+  status: number | null,
+  signal: string | null,
+  error: SpawnError | undefined,
+): ChildOutcome {
+  if (status !== null) return { status, note: "" };
+  if (error?.code === "ENOENT") {
+    return { status: 127, note: "command not found on PATH (ENOENT)" };
+  }
+  if (error?.code !== undefined) {
+    return { status: 1, note: `spawn failed (${error.code})` };
+  }
+  if (signal !== null) {
+    return { status: 1, note: `terminated by signal ${signal}` };
+  }
+  return { status: 1, note: "terminated without exit code" };
 }
 
 const PREAMBLE = `You are Gemini, invoked as a peer proposer by Otto (Claude
@@ -222,8 +269,17 @@ function buildFullPrompt(args: Args): PromptResult {
         value: `error: --file path does not exist: ${args.file}`,
       };
     }
-    const head = readHead(args.file, FILE_HEAD_BYTES);
-    full += `\n\n---\n\nFile context: ${args.file}\n\`\`\`\n${head}\n\`\`\``;
+    const headResult = readHead(args.file, FILE_HEAD_BYTES);
+    if (!headResult.ok) {
+      // Surface read failures (permission, race, etc.) per Codex P2
+      // on #898; bash's `head` writes to stderr — abort instead of
+      // pretending context was attached.
+      return {
+        ok: false,
+        value: `error: --file read failed for ${args.file}: ${headResult.error}`,
+      };
+    }
+    full += `\n\n---\n\nFile context: ${args.file}\n\`\`\`\n${headResult.content}\n\`\`\``;
   }
 
   if (args.contextCmd.length > 0) {
@@ -247,13 +303,15 @@ export function main(argv: readonly string[]): number {
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
     process.stderr.write("see: bun tools/peer-call/gemini.ts --help\n");
-    return 1;
+    // Exit code 64 = invocation/usage error per
+    // docs/best-practices/repo-scripting.md.
+    return 64;
   }
 
   if (!commandAvailable("gemini")) {
     process.stderr.write("error: gemini not on PATH\n");
     process.stderr.write(
-      "install via: npm i -g @google/gemini-cli (or per Aaron's setup)\n",
+      "install via: npm i -g @google/gemini-cli (or per the maintainer's setup)\n",
     );
     return 1;
   }
@@ -293,10 +351,17 @@ export function main(argv: readonly string[]): number {
     },
   );
 
-  const exitCode = result.status ?? 1;
-  if (exitCode !== 0) {
+  const classified = classifySpawnFailure(
+    result.status,
+    result.signal,
+    result.error as SpawnError | undefined,
+  );
+  if (classified.note.length > 0) {
+    process.stderr.write(`gemini: ${classified.note}\n`);
+  }
+  if (classified.status !== 0) {
     process.stderr.write("\n");
-    process.stderr.write(`gemini exited with code ${String(exitCode)}\n`);
+    process.stderr.write(`gemini exited with code ${String(classified.status)}\n`);
     return 2;
   }
   return 0;
