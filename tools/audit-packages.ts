@@ -18,7 +18,8 @@
 //   1  one or more packages have a bump available
 
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 
 type ExitCode = 0 | 1;
@@ -33,13 +34,12 @@ interface PackageEntry {
 }
 
 function repoRoot(): string {
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const result = spawnSync("git", ["rev-parse", "--show-toplevel"], {
-    encoding: "utf8",
-    maxBuffer: SPAWN_MAX_BUFFER,
-  });
-  if (result.status !== 0) return process.cwd();
-  return result.stdout.trim();
+  // Match bash original: REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)".
+  // Bash resolves the script's path, walks up one (tools/.. → repo root),
+  // and cds. The TS port mirrors this via import.meta.url so the script
+  // works regardless of caller cwd, the same as the bash behavior.
+  const scriptPath = fileURLToPath(import.meta.url);
+  return resolve(dirname(scriptPath), "..");
 }
 
 function parsePackages(content: string): readonly PackageEntry[] {
