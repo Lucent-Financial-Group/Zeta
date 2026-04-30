@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 8 merged — [#880](https://github.com/Lucent-Financial-Group/Zeta/pull/880), commit `988de70`)
-**Milestone**: 28 hygiene/lint/audit scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 from #880 + 3 in-flight in slice-9). **Cluster H complete (5/5)** in #878 + #880; slice-9 opens **agency-signature-pair cluster** (validate-agencysignature-pr-body + audit-agencysignature-main-tip — paired ferry-7 enforcement-instrument set per Amara) + capture-tick-snapshot (snapshot-pinning per Amara 4th-ferry). 16 Bucket B files remain.
+**Status**: Active (Lane B slice 9 merged — [#882](https://github.com/Lucent-Financial-Group/Zeta/pull/882), commit `02266a7`)
+**Milestone**: 31 hygiene/lint/audit scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 from #880 + 3 from #882 + 2 in-flight in slice-10). **Cluster H complete** + agency-signature-pair complete; slice-10 opens **counterweight-cluster + write-side-tools** (counterweight-audit + append-tick-history-row). 14 Bucket B files remain.
 **Current blocker**: None.
-**Next concrete action**: Pick a coherent next slice from Bucket B (16 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
+**Next concrete action**: Pick a coherent next slice from Bucket B (14 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists

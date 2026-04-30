@@ -411,6 +411,29 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
+## Slice 10 — 2 ports (counterweight-cluster + first write-side) (PR pending — `lane-b/ts-bun-slice-10-counterweight-audit-2026-04-30`)
+
+**Slice files**:
+
+- `tools/hygiene/counterweight-audit.{sh→ts}` (Otto-278 cadenced re-read)
+- `tools/hygiene/append-tick-history-row.{sh→ts}` (chronological-tail-append validator)
+
+**Comparison points**: identical to slice 6/7/8/9. Within Gate B 30-day window.
+
+### Code-pattern audit (per-port)
+
+- **`counterweight-audit.ts`** (253 → 326 lines): BSD/GNU stat-flavor probe replaced with `statSync().mtimeMs`. YAML frontmatter awk parser → manual fence-aware char walk. Arg parser refactored into `classifyArg` helper + ArgStep tagged union. `mktemp` + sort-rn pipeline replaced with in-memory array sort.
+- **`append-tick-history-row.ts`** (81 → 106 lines): bash `[[ =~ ]]` regex preserved as `TS_PREFIX_RE.exec`. `grep -oE | sort | tail -1` replaced with `findLatestTimestamp` helper. ISO-8601 sort uses `localeCompare`.
+
+### Equivalence audit
+
+- **`counterweight-audit`**: byte-equivalent on default cadence + all explicit cadence levels.
+- **`append-tick-history-row`**: byte-equivalent on usage error + malformed-row + out-of-order-timestamp paths modulo script self-reference (.sh vs .ts).
+
+### Outcome
+
+Slice 10 passes audit. **Counterweight-cluster opened** (Otto-278 cadenced inspect). **First write-side script ported** (append-tick-history-row) — confirms write-side equivalence-test pattern works. Bucket B 16 → 14.
+
 ## Slice 9 — 3 ports (agency-signature-pair cluster + snapshot-pinning) (PR pending — `lane-b/ts-bun-slice-9-agencysignature-pair-2026-04-30`)
 
 **Slice files**:
