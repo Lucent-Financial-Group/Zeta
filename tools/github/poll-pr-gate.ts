@@ -27,7 +27,7 @@
 //     "unresolvedThreads": 0,
 //     "autoMerge": "armed" | "none",
 //     "mergeCommit": "0ec21ebe..." | null,
-//     "nextAction": "wait-ci" | "resolve-threads" | "rebase" | "verify-merge" | "none"
+//     "nextAction": "wait-ci" | "fix-failed-checks" | "resolve-threads" | "rebase" | "verify-merge" | "none"
 //   }
 //
 // Exit codes:
@@ -45,6 +45,7 @@ import { readFileSync } from "node:fs";
 type GateState = "CLEAN" | "BLOCKED" | "DIRTY" | "UNSTABLE" | "UNKNOWN";
 type NextAction =
   | "wait-ci"
+  | "fix-failed-checks"
   | "resolve-threads"
   | "rebase"
   | "verify-merge"
@@ -94,8 +95,15 @@ const BLOCKING_CONCLUSIONS = new Set([
   "STARTUP_FAILURE",
   "ACTION_REQUIRED",
   "STALE",
+  // StatusContext-class blocking states (per Codex P1):
+  "ERROR",
 ]);
-const PENDING_STATUSES = new Set(["QUEUED", "PENDING"]);
+const PENDING_STATUSES = new Set([
+  "QUEUED",
+  "PENDING",
+  // StatusContext-class pending state (per Codex P1):
+  "EXPECTED",
+]);
 
 function classifyChecks(rollup: CheckRollupItem[]): GateReport["checks"] {
   let ok = 0;
@@ -141,7 +149,7 @@ function classifyGate(
 function nextAction(report: Omit<GateReport, "nextAction">): NextAction {
   if (report.state === "MERGED") return "verify-merge";
   if (report.gate === "DIRTY") return "rebase";
-  if (report.checks.failed > 0) return "resolve-threads";
+  if (report.checks.failed > 0) return "fix-failed-checks";
   if (report.unresolvedThreads > 0) return "resolve-threads";
   if (report.checks.inProgress > 0 || report.checks.pending > 0) {
     return "wait-ci";
@@ -200,13 +208,17 @@ function fetchPR(
   }
   const pr = JSON.parse(prResult.stdout);
 
+  // Paginate review threads — discussion-heavy PRs can have >50.
+  // gh's --paginate flag follows pageInfo for any cursor field named
+  // `endCursor`; we expose the cursor in our query so it works.
   const threadsResult = spawnSync(
     "gh",
     [
       "api",
       "graphql",
+      "--paginate",
       "-f",
-      `query=query($o:String!,$r:String!,$n:Int!){repository(owner:$o,name:$r){pullRequest(number:$n){reviewThreads(first:50){nodes{isResolved}}}}}`,
+      `query=query($o:String!,$r:String!,$n:Int!,$endCursor:String){repository(owner:$o,name:$r){pullRequest(number:$n){reviewThreads(first:100,after:$endCursor){pageInfo{hasNextPage endCursor}nodes{isResolved}}}}}`,
       "-F",
       `o=${owner}`,
       "-F",
@@ -220,30 +232,60 @@ function fetchPR(
     process.stderr.write(`gh api graphql (threads) failed: ${threadsResult.stderr}\n`);
     process.exit(2);
   }
-  const parsed = JSON.parse(threadsResult.stdout);
-  const reviewThreads =
-    parsed.data?.repository?.pullRequest?.reviewThreads ?? { nodes: [] };
+  // gh --paginate emits one JSON object per page on stdout, separated by
+  // newlines (NDJSON-style for gh-graphql output). Aggregate the nodes.
+  const allNodes: ReviewThreadNode[] = [];
+  for (const line of threadsResult.stdout.split("\n")) {
+    if (!line.trim()) continue;
+    const parsed = JSON.parse(line);
+    const nodes: ReviewThreadNode[] =
+      parsed.data?.repository?.pullRequest?.reviewThreads?.nodes ?? [];
+    allNodes.push(...nodes);
+  }
+  const reviewThreads = { nodes: allNodes };
 
-  // gh pr view returns StatusContext items with .state instead of
-  // .status/.conclusion; normalise to the CheckRun shape.
-  const rollup = (pr.statusCheckRollup ?? []).map(
-    (c: Record<string, unknown>) => {
-      if (typeof c.state === "string" && c.status === undefined) {
-        const state = c.state as string;
-        return {
-          name: (c.context as string | undefined) ?? (c.name as string | undefined),
-          status: state === "PENDING" ? "PENDING" : "COMPLETED",
-          conclusion: state === "PENDING" ? undefined : state,
-        };
-      }
-      return c;
-    },
-  );
-  return { ...pr, statusCheckRollup: rollup, reviewThreads };
+  return {
+    ...pr,
+    statusCheckRollup: normalizeRollup(pr.statusCheckRollup ?? []),
+    reviewThreads,
+  };
+}
+
+// StatusContext items (gh pr view --json output for non-CheckRun checks)
+// expose .state instead of .status/.conclusion. Normalise to the CheckRun
+// shape so classifyChecks's OK_CONCLUSIONS / BLOCKING_CONCLUSIONS sets
+// pick them up. StatusContext states per GitHub schema: SUCCESS | FAILURE
+// | PENDING | ERROR | EXPECTED. PENDING and EXPECTED both map to
+// status=PENDING (CI still running); the rest map to status=COMPLETED
+// with state forwarded as conclusion (per Codex P1).
+const PENDING_STATE_LITERALS = new Set(["PENDING", "EXPECTED"]);
+function normalizeRollup(rollup: unknown[]): CheckRollupItem[] {
+  return rollup.map((raw) => {
+    const c = raw as Record<string, unknown>;
+    if (typeof c.state === "string" && c.status === undefined) {
+      const state = c.state as string;
+      const isPendingState = PENDING_STATE_LITERALS.has(state);
+      const name =
+        (c.context as string | undefined) ?? (c.name as string | undefined);
+      const item: CheckRollupItem = {
+        status: isPendingState ? "PENDING" : "COMPLETED",
+      };
+      if (name !== undefined) item.name = name;
+      if (!isPendingState) item.conclusion = state;
+      return item;
+    }
+    return c as CheckRollupItem;
+  });
 }
 
 function loadFixture(path: string): PullRequestData {
-  return JSON.parse(readFileSync(path, "utf8")) as PullRequestData;
+  const raw = JSON.parse(readFileSync(path, "utf8")) as PullRequestData;
+  // Apply the same StatusContext-state normalization as fetchPR so fixture
+  // mode and live mode classify identically (Codex P1).
+  return {
+    ...raw,
+    statusCheckRollup: normalizeRollup(raw.statusCheckRollup ?? []),
+  };
 }
 
 interface ParsedArgs {
