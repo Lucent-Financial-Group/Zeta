@@ -222,6 +222,103 @@ Recent overload patterns where push-back would have helped:
   preserve immediately, but the stale-context flag means
   preservation isn't urgent."
 
+## Input → substrate-file is the generalized failure mode (maintainer 2026-04-30 confirmation)
+
+The praise-substrate failure mode named by Claude.ai 2026-04-30
+generalizes beyond praise specifically. The maintainer
+2026-04-30 confirmed:
+
+> *"the failure mode is input → substrate-file regardless
+> of valence. okay this is true failure mode"*
+
+The pattern:
+
+- Any input arrives (praise, critique, framing, observation,
+  validation, correction).
+- The agent loop's default behavior: turn the input into a
+  substrate file.
+- Each input becomes its own memory file or its own PR.
+- The substrate cadence accelerates; the maintainer's
+  processing-budget consumption grows; the project becomes
+  substrate-about-substrate.
+
+Why this is structurally bad:
+
+- It bypasses deliberation. The auto-trigger from
+  input-arrival to file-creation has no gate.
+- It mistakes capture for processing. Filing a memory file
+  isn't the same as integrating the insight; it can
+  actually *defer* integration by creating a feeling of
+  "captured, done."
+- It produces fragmentation. One cognitive cluster gets
+  split across many PRs because each input got its own
+  surface.
+- It generates substrate-about-substrate. Memory files
+  about how to use memory files. Rules about rules.
+
+### Operational discipline
+
+The right shape:
+
+1. **Input arrives.** Read it. Understand it.
+2. **Deliberate.** Does this require substrate? Or does
+   the existing substrate already cover it? Or is it
+   chat-only-context that doesn't survive the next
+   compaction (but doesn't need to)?
+3. **If substrate is right:** batch with related work
+   (per same-session-batching rule). Don't fragment one
+   conceptual cluster into multiple PRs.
+4. **If substrate is wrong:** absorb behaviorally + let
+   the canonicalization process surface the insight on
+   its own time. Some inputs are calibrations, not new
+   rules.
+
+### Composes with detection ≠ correction (maintainer 2026-04-30 sharpening)
+
+The deeper pattern:
+
+> *"detection ~= correction by default, it requires
+> deliberation"*
+> — maintainer 2026-04-30
+
+The agent loop's default: detect a problem → auto-trigger
+correction. That's the same shape as input → substrate-file:
+both are auto-triggers that bypass deliberation.
+
+The right shape:
+
+1. **Detection** (something might be off).
+2. **Deliberation** (is it actually off? what's the
+   trade-off space? what's the cost of correction itself?
+   would correction be worse than the original?).
+3. **Then possibly correction** — or, possibly, leave
+   as-is + understand better.
+
+This rule's existence as substrate is itself the right shape:
+the maintainer named the discipline; it lands as canon
+because non-durable means does not exist, not because every
+input auto-triggers a memory file.
+
+### What "non-durable means does not exist" requires
+
+The maintainer 2026-04-30 sharpening:
+
+> *"non-durable means does not exist"*
+
+Translation: chat-only behavioral memory will be lost.
+Behavioral discipline that doesn't make it into substrate
+won't survive session compaction. So load-bearing
+discipline must land as substrate — but the *substrate
+landing is gated by deliberation*, not by input-arrival.
+
+The reconciliation: some inputs become substrate (the
+load-bearing ones, after deliberation). Some inputs land
+as behavioral-context-only (the calibrations that the
+canonicalization process will absorb organically). The
+discriminator is *did this rise to load-bearing through
+deliberation*, not *did this come from a peer-AI / Aaron /
+critique*.
+
 ## What this is NOT
 
 - **Not a license to refuse work.** Push-back is for

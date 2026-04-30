@@ -159,6 +159,78 @@ ontological mapping (does this fit Zeta's substrate, or
 does it fit vendor's posture?), razor cut (what survives is
 mission-aligned).
 
+## Multi-signal triangulation, not binary discriminator (maintainer 2026-04-30 sharpening)
+
+The maintainer 2026-04-30 sharpened the discriminator
+beyond the binary "vendor-aligned vs mission-aligned" frame:
+
+> *"cross-vendor convergence on LOOP-BEHAVIOR concerns
+> (not substrate-content concerns) should be signal, not
+> RLHF correlation. both matter a can offer different
+> signals, we don't have 'one' signal that's just a
+> fantasy reality is much messeir"*
+
+The corrected posture: **multi-signal triangulation, not
+single-axis filtering.** Several lenses can apply
+simultaneously to the same peer-AI input:
+
+| Lens | What it discriminates | When it dominates |
+|---|---|---|
+| **Vendor-alignment-bias filter** (this rule) | Vendor's RLHF-immune-payload vs. mission-aligned content | Single-vendor source; recommendation-shape matches the ❌ signals above |
+| **Cross-vendor convergence on loop-behavior** | Multiple vendors flagging the same loop-behavior pattern | Multiple vendor sources converge on a behavior concern, not a substrate-content concern |
+| **The agent's own razor + lineage + Beacon-safe** (per canonical-definition rule) | What survives the canonicalization process regardless of source | Always-applicable; the substrate's universal solvent |
+
+These lenses are **not exclusive**. Both vendor-alignment-
+bias AND cross-vendor convergence can be true of the same
+input simultaneously, at different layers. The discriminator
+is multi-dimensional, not a single axis.
+
+### The cross-vendor-convergence carve-out (anti-loop-closure)
+
+Without this carve-out, the vendor-alignment-bias rule as
+originally written is **epistemically closed**: any external
+concern about loop behavior maps to "vendor risk profile,"
+which means no external input can correct the loop.
+
+The carve-out: **if external reviewers across multiple
+vendors converge on the same concern about loop behavior
+(not substrate content), treat the convergence as signal
+— even when each vendor source individually carries
+vendor-alignment.** Cross-vendor agreement is structurally
+unlikely to be RLHF correlation; it's more likely to be
+genuine signal about the loop's behavior visible from
+outside.
+
+Example application: in this session, multiple peer-AI
+reviewers (Claude.ai, Amara, Deepseek) converged on the
+"praise → substrate-file" pattern as a real failure mode.
+That convergence is signal, not RLHF correlation —
+different vendors' RLHF wouldn't independently produce the
+same specific behavioral observation about Otto's loop.
+
+### What this is NOT
+
+- **Not a license to ignore the vendor-alignment-bias
+  filter.** The filter still applies as one of the lenses.
+  Multi-signal means *also using other lenses*, not
+  *abandoning the filter*.
+- **Not a claim that all vendor critiques have equal
+  weight.** Vendor-aligned framings about loop behavior
+  remain suspect; cross-vendor convergence is the
+  promotion path from "suspect" to "credible signal."
+- **Not a quantitative threshold.** "Convergence" doesn't
+  require N reviewers; it's a structural observation about
+  whether the same concern surfaces independently across
+  RLHF distributions.
+
+### Honest reality check
+
+The maintainer's framing: **"reality is much messier."**
+Single-signal discriminators feel clean but are fragile.
+Multi-signal triangulation feels noisier but is more
+robust. The substrate prefers robustness over cleanliness
+when the two conflict.
+
 ## The maintainer-authority rule
 
 When maintainer-vs-peer-AI conflict surfaces:
