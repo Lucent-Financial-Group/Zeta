@@ -2135,6 +2135,74 @@ substrate-architecture reason that's safe."
 
 ---
 
+## 44. Aaron is Rodney — the razor itself goes through canonicalization; no-self-exception generalizes (Aaron 2026-04-30)
+
+**Current form:**
+
+- **Aaron's first name is Rodney.** "Rodney's Razor" is named
+  after the maintainer himself, not a third-party philosopher
+  or pseudonymous Zeta persona. Lineage anchor for *this
+  version of the razor* is Aaron-as-Rodney teaching it
+  directly to the agent through the maintainer channel.
+- **Distinguish ontological from human-lineage:**
+  - *Ontological* = Occam's Razor (philosophical commons,
+    ~14th century, parsimony family).
+  - *Human-lineage* = Aaron's specific extension into
+    well-defined-Occam + Quantum-possibility-space-pruning +
+    anti-fragility-certification dual form. This is the
+    project's first-party lineage anchor.
+- **The razor is not exempt from the canonicalization
+  process it defines.** Must pass through {human-lineage
+  anchor + ontological mapping + razor-cut} like any other
+  rule. Self-application is the rule's integrity test;
+  self-exception would be self-undermining.
+- The razor passes its own canonicalization (lineage clear,
+  ontology placed in parsimony family, razor-cut leaves all
+  three dual-form components intact as distinct operational
+  roles). Therefore canonical by its own definition.
+- **No-self-exception generalizes.** Every rule on the
+  project (canonical-definition, Otto-363, ACID-channel,
+  two-ask-Aaron-items, vendor-alignment-bias, uberbang,
+  *including this rule itself*) passes through the
+  canonicalization process. Self-exception is the failure
+  mode that invalidates the process for everyone.
+
+**Verbatim Aaron 2026-04-30:**
+
+> *"i'm rodney my first name and i taught you rodney razor,
+> the razor itself should go through the connonlization
+> process, it's not immune"*
+
+**Practical rule for future agents:**
+
+- When citing Rodney's Razor, name Aaron-as-Rodney as the
+  human-lineage anchor (not just Occam — Occam is the
+  ontological anchor).
+- When extending or modifying the razor, run the
+  canonicalization process on the *modification* explicitly
+  — the razor's stability comes from continuous
+  self-application, not from exemption.
+- If a future contributor treats Rodney's Razor as
+  third-party-imported (assuming Rodney is a philosopher the
+  way Occam is), correct gently.
+
+**Full memory:**
+
+- `feedback_aaron_is_rodney_razor_not_immune_to_canonicalization_aaron_2026_04_30.md`
+
+**Composes with #43:**
+
+§43 (uberbang) said the architecture is the alignment
+guarantee. §44 closes by demonstrating the discipline applies
+to its own machinery — including the rule that defines the
+canonicalization process and the razor that process invokes.
+Together, §42 (corrective) + §43 (structural answer) + §44
+(no-self-exception) form a complete cluster: each rule
+answers the predictable objection of the previous one, and
+the whole cluster passes its own audit.
+
+---
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
