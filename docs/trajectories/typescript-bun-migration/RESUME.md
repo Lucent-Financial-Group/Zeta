@@ -30,7 +30,7 @@ After PR #849, Zeta has zero Python files in `tools/` (Zeta-authored — the 22 
 
 ## Inventory — Bash (tools/, Zeta-authored, 56 files)
 
-Three buckets per the multi-AI review surface's classification ask. Count is repo-derived and stable: `git ls-files tools/ | grep '\.sh$' | wc -l` returns 56.
+Four buckets. Count is repo-derived and stable: `git ls-files tools/ | grep '\.sh$' | wc -l` returns 56. Buckets: A (14 stay-bash) + B (33 should-become-TS) + C (3 needs-decision) + D (6 ported-TS-exists, bash retained as equivalence reference and will retire) = 56.
 
 ### Bucket A — Should stay Bash (14 files)
 
@@ -111,6 +111,19 @@ tools/lint/safety-clause-audit.sh
 ```
 
 Rationale: borderline — depends on whether the lint can be expressed as cleanly in TS as it currently is in shell. Worth a small comparison before committing the port.
+
+### Bucket D — Ported, bash retained (6 files)
+
+The TS ports landed in #866 + #868; the bash originals stay in-tree as equivalence references and will retire once the TS ports have soaked.
+
+```text
+tools/hygiene/audit-md032-plus-linestart.sh        # ported in #866
+tools/hygiene/audit-memory-index-duplicates.sh     # ported in #866
+tools/hygiene/audit-memory-references.sh           # ported in #866
+tools/hygiene/audit-machine-specific-content.sh    # ported in #868
+tools/hygiene/audit-git-hotspots.sh                # ported in #868
+tools/hygiene/audit-cross-platform-parity.sh       # ported in #868
+```
 
 ## Recommended next slice
 
@@ -218,7 +231,7 @@ This audit is a one-off; it doesn't replace the per-tool/language expert + teach
 
 **Status**: deferred from this PR (no-fan-out during live lane). After #866 lands, the TS+Bun expert skill becomes a Lane C+ artifact or a sibling trajectory.
 
-**Why this matters for the migration**: each future slice (~36 ports remaining in Bucket B) benefits from a current-docs anchor. Without it, ports drift toward whatever convention the most-recently-read TS file used; with it, ports converge on contemporary best practice.
+**Why this matters for the migration**: each future slice (33 ports remaining in Bucket B) benefits from a current-docs anchor. Without it, ports drift toward whatever convention the most-recently-read TS file used; with it, ports converge on contemporary best practice.
 
 ## Operating notes (lane-discipline addendum)
 
