@@ -1,7 +1,7 @@
 {
   "number": 917,
   "state": "OPEN",
-  "mergeStateStatus": "BLOCKED",
+  "mergeStateStatus": "CLEAN",
   "autoMergeRequest": { "enabledAt": "2026-04-30T14:08:53Z" },
   "mergeCommit": null,
   "statusCheckRollup": [

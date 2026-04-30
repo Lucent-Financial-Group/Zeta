@@ -32,8 +32,10 @@
 //
 // Exit codes:
 //   0 — query succeeded, JSON emitted
-//   1 — invocation / dependency error
-//   2 — gh CLI returned non-zero
+//   1 — invocation / argument / dependency error (bad args, gh missing,
+//       fixture missing, PR number <= 0)
+//   2 — gh CLI returned non-zero (auth, rate-limit, PR not found)
+//   3 — gh CLI output couldn't be parsed (truncated, non-JSON)
 //
 // Required-check semantics (per Amara 2nd's GitHub-docs verification):
 // SUCCESS / NEUTRAL / SKIPPED are merge-satisfying; FAILURE / CANCELLED
@@ -154,6 +156,10 @@ function classifyGate(
 
 function nextAction(report: Omit<GateReport, "nextAction">): NextAction {
   if (report.state === "MERGED") return "verify-merge";
+  // CLOSED-without-merge is terminal too — no actionable next step
+  // for a PR that can no longer merge (per Codex P2). Avoid chasing
+  // stale CI/thread blockers on intentionally-closed PRs.
+  if (report.state === "CLOSED") return "none";
   if (report.gate === "DIRTY") return "rebase";
   if (report.checks.failed > 0) return "fix-failed-checks";
   if (report.unresolvedThreads > 0) return "resolve-threads";
@@ -191,8 +197,16 @@ function buildReport(pr: PullRequestData): GateReport {
 //   1 — invocation / argument / dependency-missing error
 //   2 — gh CLI returned non-zero (auth, rate-limit, PR not found)
 //   3 — gh CLI output couldn't be parsed (truncated, non-JSON)
+// Generous buffer for `gh api graphql --paginate` on discussion-heavy PRs.
+// Default Node maxBuffer is 1 MiB which can truncate paginated output and
+// cascade into JSON parse failures (per Copilot P1).
+const SPAWN_MAX_BUFFER = 32 * 1024 * 1024; // 32 MiB
+
 function runGhOrExit(args: string[], context: string): string {
-  const result = spawnSync("gh", args, { encoding: "utf8" });
+  const result = spawnSync("gh", args, {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
   if (result.error) {
     // ENOENT etc — gh is not on PATH or couldn't be launched
     process.stderr.write(`${context}: failed to launch gh: ${result.error.message}\n`);
@@ -315,7 +329,14 @@ function normalizeRollup(rollup: unknown[]): CheckRollupItem[] {
 }
 
 function loadFixture(path: string): PullRequestData {
-  const raw = JSON.parse(readFileSync(path, "utf8")) as PullRequestData;
+  let raw: PullRequestData;
+  try {
+    raw = JSON.parse(readFileSync(path, "utf8")) as PullRequestData;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`failed to load fixture ${path}: ${msg}\n`);
+    process.exit(1);
+  }
   // Apply the same StatusContext-state normalization as fetchPR so fixture
   // mode and live mode classify identically (Codex P1).
   return {
@@ -353,7 +374,12 @@ function parseArgs(argv: string[]): ParsedArgs {
     } else if (arg === "--repo") {
       out.repo = requireValue("--repo", argv[++i]);
     } else if (/^\d+$/.test(arg)) {
-      out.number = Number.parseInt(arg, 10);
+      const parsed = Number.parseInt(arg, 10);
+      if (parsed <= 0) {
+        process.stderr.write("PR number must be a positive integer\n");
+        process.exit(1);
+      }
+      out.number = parsed;
     } else if (arg === "--help" || arg === "-h") {
       process.stdout.write(
         "Usage: poll-pr-gate.ts <PR_NUMBER> [--owner X] [--repo Y]\n" +
