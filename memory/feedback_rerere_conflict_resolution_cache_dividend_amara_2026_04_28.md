@@ -6,22 +6,36 @@ type: feedback
 
 # Rerere Conflict-Resolution Cache Dividend
 
-## Prerequisite — rerere must be explicitly enabled
+## Prerequisite — verify rerere is active per clone (Amara 2026-04-30 correction)
 
-Git's rerere does NOT run by default. The `.git/rr-cache/`
-directory existing is not sufficient — rerere only fires when
-`rerere.enabled` is set to true in Git config:
+Rerere is **not guaranteed in a fresh clone**. Per Git docs:
+
+- It is active when `rerere.enabled` is set to `true` in config.
+- It MAY also be enabled by Git's defaults if `.git/rr-cache/`
+  already exists in the repo (because rerere was previously used).
+
+So the earlier wording in this file (*"`.git/rr-cache/` directory
+existing is not sufficient"*) was **too strong and partly
+wrong**. Amara 2026-04-30 correction: don't infer project-wide
+rerere behavior from memory — verify per clone before relying
+on the cache dividend:
 
 ```bash
-git config --global rerere.enabled true
+git config --get --bool rerere.enabled
+test -d .git/rr-cache
 ```
 
-Without this config, recorded resolutions never replay and
+Either condition can activate rerere; both visible together is
+the strongest signal. Prefer **explicit `rerere.enabled=true`**
+in CONTRIBUTING.md or the install script when the dividend is
+load-bearing across multiple contributors — explicit config is
+clearer and portable across clones that don't carry the cache.
+
+Without verification, recorded resolutions may not replay and
 this entire class's "cache dividend" doesn't materialize.
-Verify per-clone with `git config --get rerere.enabled`. If
-the cache dividend is being relied on across multiple
-contributors, document the enablement in CONTRIBUTING.md or
-the install script.
+
+Carved sentence: *"A cache dividend only counts if the cache
+is actually enabled. Verify per clone, not from memory."*
 
 ## Class name (Amara 2026-04-28T20:55Z)
 
