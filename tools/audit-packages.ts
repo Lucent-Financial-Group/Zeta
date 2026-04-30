@@ -103,6 +103,16 @@ export function main(): ExitCode {
   }
   const packages = parsePackages(content);
 
+  // If parsing yields zero entries on a non-empty Directory.Packages.props,
+  // the regex has likely drifted from the file format — silent success
+  // would hide real audit failure (Codex P2). Fail with a clear message.
+  if (packages.length === 0) {
+    process.stderr.write(
+      `error: parsed 0 PackageVersion entries from ${propsPath} — regex may be stale relative to file format\n`,
+    );
+    return 1;
+  }
+
   process.stdout.write("=== Dbsp package audit ===\n");
   process.stdout.write(
     `${pad("Package", 35)} ${pad("Pinned", 15)} ${pad("Latest", 15)} Status\n`,

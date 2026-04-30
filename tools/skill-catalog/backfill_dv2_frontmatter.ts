@@ -19,13 +19,7 @@
 //   1    usage error
 //   2    a file was malformed (no closing frontmatter fence)
 
-import {
-  readdirSync,
-  readFileSync,
-  writeFileSync,
-  renameSync,
-  unlinkSync,
-} from "node:fs";
+import { readdirSync, readFileSync, writeFileSync, renameSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -282,28 +276,19 @@ function processOne(
   const tmpPath = `${file}.tmp.${String(process.pid)}.${String(Date.now())}`;
   try {
     writeFileSync(tmpPath, newContent);
-    try {
-      renameSync(tmpPath, file);
-    } catch {
-      // Defense-in-depth: modern Node/Bun renameSync overwrites the
-      // destination atomically on all platforms (POSIX + Windows), but
-      // edge cases like Windows file locks (open editor) or
-      // permission-restricted shares can fail. Fallback: unlink the
-      // destination then retry rename. Loses atomicity for the failure
-      // window but recovers correctness. Bash `mv` has the same fragility.
-      unlinkSync(file);
-      renameSync(tmpPath, file);
-    }
+    renameSync(tmpPath, file);
   } catch (err) {
-    try {
-      unlinkSync(tmpPath);
-    } catch {
-      // tmp may not exist yet; ignore.
-    }
+    // Preserve-original-on-failure: do NOT unlink the original; leave
+    // the tmp file behind for manual recovery rather than risk losing
+    // data in a delete-before-retry pattern. Modern Node/Bun
+    // renameSync overwrites atomically on all platforms in the common
+    // case; failure is rare (Windows file lock, perms, disk-full) and
+    // a stray tmp file is recoverable. Deleting the target before a
+    // retry that might also fail is the unsafe path Codex flagged.
     const message = err instanceof Error ? err.message : "unknown error";
     return {
       status: "error",
-      message: `error: cannot write ${file}: ${message}`,
+      message: `error: cannot rewrite ${file}: ${message} (tmp preserved at ${tmpPath})`,
       exitCode: 2,
     };
   }
