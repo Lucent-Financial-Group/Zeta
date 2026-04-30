@@ -155,46 +155,13 @@ Coherent budget-report cluster; would advance task #287 (cost monitoring) in add
 - ESLint + markdownlint already configured for TS files
 - `jiti` 2.6.1 was added in PR #849 as devDep; reused for future ports
 
-## Best-practices research lineage (mid-#866 audit)
+## Per-slice audits (canonical sub-artifact)
 
-Maintainer flagged that the slice-1 ports (in PR #866) had been written before any upstream-docs research. The order was wrong: port → challenge → research, when it should have been learn → map → audit → code. PR #866 was held until the audit landed.
+Each slice produces a per-slice audit before merge: upstream-docs check + sibling-repo comparison + per-file code-pattern verification + explicit gap recording. The audits accumulate in:
 
-**Sources consulted** (Otto-364 search-first authority — current upstream docs, not training data):
+- [`slice-audits.md`](slice-audits.md) — append per slice, never overwrite
 
-- [TypeScript 6.0 release notes](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html): `strict: true` is now the default; recommended additions are `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noPropertyAccessFromIndexSignature`. TS 6.0 also changed default `compilerOptions.types` from auto-include to `[]` — explicit listing required.
-- [Bun TypeScript docs](https://bun.com/docs/runtime/typescript): recommended `target: "ESNext"`, `module: "Preserve"`, `moduleResolution: "bundler"`, `verbatimModuleSyntax: true`, `strict: true`, `noUncheckedIndexedAccess: true`. Bun runs `.ts` files directly with no transpile. `import.meta.main` is the canonical entry guard.
-- [typescript-eslint v8 announcement](https://typescript-eslint.io/blog/announcing-typescript-eslint-v8/) + [typed-linting guide](https://typescript-eslint.io/getting-started/typed-linting/): canonical strict combo is `strictTypeChecked` + `stylisticTypeChecked` with `projectService: true`.
-
-**Sibling-repo conventions consulted**:
-
-- `../SQLSharp/tsconfig.json` + `../SQLSharp/eslint.config.ts` + `../SQLSharp/tools/automation/format/process-runner.ts` — process-spawn structured-failure pattern (launch / termination / non-zero exit), named-export-with-`import.meta.main`-guard pattern.
-- `../scratch/tsconfig.json` + `../scratch/eslint.config.mjs` — same strict regime; minimal Bun-ts script shape.
-
-**Gap audit — Zeta config vs upstream + sibling**:
-
-| Setting | Upstream | SQLSharp | Zeta | Status |
-|---|---|---|---|---|
-| `strict` | true (default in TS 6.0) | true | true | ✓ |
-| `noUncheckedIndexedAccess` | recommended | true | true | ✓ |
-| `exactOptionalPropertyTypes` | recommended | true | true | ✓ |
-| `noPropertyAccessFromIndexSignature` | recommended | (not set) | (not set) | gap (deferred — sibling-repo convention is to omit) |
-| `verbatimModuleSyntax` | recommended | true | true | ✓ |
-| `noEmit` / `noEmitOnError` | recommended | `noEmitOnError: true` | `noEmitOnError: true` | ✓ |
-| `types: ["bun"]` | required in TS 6.0 (default empty) | `["bun"]` | `["bun"]` | ✓ |
-| eslint `strictTypeChecked` | recommended | yes | yes | ✓ |
-| eslint `stylisticTypeChecked` | recommended | yes | yes | ✓ |
-
-The `noPropertyAccessFromIndexSignature` gap is the only deviation; sibling repos chose to omit it for ergonomics. Recording explicitly so future audits see the choice rather than re-discovering the gap.
-
-**Code-pattern uplift applied to slice-1 ports**:
-
-- Typed boundary objects: `AuditFinding`, `DuplicateFinding`, `BrokenRefFinding` instead of `string` for findings; `AuditExitCode = 0 | 2 | 64` literal-type union instead of `number` for exit codes; `Args` interfaces for parsed CLI options.
-- String formatting only at the output boundary (`formatFinding(): string`) — internal flow stays structured.
-- Named exports + `import.meta.main` guard for testability.
-- Type-imports: `import { type SpawnSyncReturns } from "node:child_process"` for spawn types.
-- Structured spawn-failure classifier: distinguishes launch failure / termination-without-exit / non-zero exit.
-- `readonly` arrays where mutation is not needed.
-- Narrowed undefined via guards (`captured !== undefined`) under `noUncheckedIndexedAccess`.
+The first slice (PR #866) sets the canonical pattern. Future slices follow the slice template at the bottom of `slice-audits.md`. **Audit happens before merge**, not after — once a slice merges, its pattern is set as canonical and subsequent slices pattern-match on it.
 
 ## Expert skill still needed (deferred to Lane C)
 
