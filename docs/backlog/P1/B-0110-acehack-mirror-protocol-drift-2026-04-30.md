@@ -1,15 +1,15 @@
 ---
 id: B-0110
 priority: P1
-status: resolving
-title: AceHack mirror-refresh protocol drift — Path 2 chosen (Aaron + Amara + Gemini 2026-04-30)
+status: open
+title: AceHack mirror-refresh protocol drift — Path 2 chosen, doctrine update landing in same PR (2026-04-30)
 tier: drift-resolution
 effort: S
 ask: Decision landed 2026-04-30 — Path 2 (PR-based mirror; ruleset stays canonical). CLAUDE.md updated in same commit.
 created: 2026-04-30
 last_updated: 2026-04-30
-decided_by: Aaron delegation 2026-04-30 ("any decisions about acehack i leave up to you") + Gemini principle 2026-04-30 ("the protocol bends to the security ruleset; the ruleset does not bend to the protocol")
-composes_with: [B-0109]  # B-0109 lands in PR #912 alongside this row in #913; cross-reference resolves on merge
+decided_by: maintainer-delegated 2026-04-30 (Path 2 of three originally surfaced; rationale in Decision section below)
+composes_with: [B-0109]
 tags: [doctrine-drift, acehack, mirror-refresh, branch-protection, host-vs-doctrine, decided]
 ---
 
@@ -138,25 +138,25 @@ must have happened either through a temporary ruleset
 relaxation or as a post-hoc archive marker — that history
 is worth recovering at next opportunity for full lineage.
 
-## Decision needed (maintainer call)
+## Decision (resolved 2026-04-30): Path 2 + partial Path 3
 
-One of the three:
+The three originally-surfaced paths were:
 
 1. **Add a bypass actor to AceHack ruleset 15524390** — restore
-   force-push capability scoped to a specific actor (repo
-   admin or named bypass). Smallest host mutation; aligns host
-   with doctrine. Files a host-mutation receipt per the
-   receipt discipline.
+   force-push capability scoped to a specific actor.
+   **Rejected.** Weakens zero-trust posture for an operation
+   that doesn't need to exist if the doctrine is correct.
 2. **Update CLAUDE.md and the LFG-only memory to a PR-based
-   mirror protocol** — accept the host as canonical,
-   adjust doctrine to a PR-shape that doesn't require
-   force-push (e.g., a "sentinel PR" pattern that resets
-   AceHack via a series of PRs, OR explicit acceptance that
-   AceHack will diverge until a manual maintainer reset).
-3. **Accept current divergence indefinitely** — pause the 0/0/0
-   invariant entirely. Document this as the post-2026-04-29
-   reality. AceHack becomes a distant-cousin mirror, not a
-   mathematically-equal one.
+   mirror protocol** — accept the host as canonical, adjust
+   doctrine to a PR-shape that doesn't require force-push.
+   **Chosen.** The host is right; the doctrine was wrong.
+   CLAUDE.md edit lands in this same PR.
+3. **Accept current divergence indefinitely** — pause the
+   0/0/0 invariant entirely. **Partially adopted.** The
+   1-commit residue at the AceHack-side post-double-hop
+   close commit (content already on LFG via the
+   forward-sync) is acceptable since AceHack is fungible
+   and the 0/0/0 invariant is no longer a maintained goal.
 
 I'd lean toward **(1)** because it's the smallest mutation
 that aligns host with doctrine and preserves the LFG-only

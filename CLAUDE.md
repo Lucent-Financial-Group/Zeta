@@ -149,29 +149,35 @@ Claude-Code-specific mechanisms.
   - **`AceHack/Zeta` (AceHack)** is a backup mirror — its
     purpose is preservation in case the LFG account is
     degraded or compromised. It is fungible (could be
-    deleted and recreated; per Aaron 2026-04-30: *"it's
-    our backup to save your soul... do what you want
-    with it to learn whatever you need"*). Its main
-    branch tracks LFG/main on a daily cadence; full SHA
-    equality is no longer a maintained invariant.
+    deleted and recreated; the maintainer has explicitly
+    declared AceHack a learning sandbox + disposable
+    backup). Its main branch tracks LFG/main on a daily
+    cadence; full SHA equality is no longer a maintained
+    invariant.
   - **Mirror-refresh protocol (Path 2 per B-0110, 2026-04-30):**
-    AceHack/main is updated by **fast-forward only** when
-    LFG/main is a strict ancestor of AceHack/main's
-    last-known state. The host blocks force-push uniformly
+    Conceptually, AceHack-the-mirror descends from
+    LFG-the-source — every AceHack commit (at sync time)
+    inherits from LFG's history. Operationally, AceHack/main
+    is updated by **fast-forward only** when AceHack/main
+    has not picked up commits that LFG/main does not have
+    (i.e., AceHack/main can be advanced to LFG/main without
+    rewriting history). The host blocks force-push uniformly
     on both forks (`non_fast_forward` ruleset rule, no
-    bypass actors) and that is correct — *"the protocol
-    bends to the security ruleset; the ruleset does not
-    bend to the protocol"* (Gemini 2026-04-30). When
-    AceHack/main has diverged from LFG/main (e.g., the
-    1-commit residue from earlier double-hop work, content
-    already preserved on LFG), reconciliation is via
-    PR-based reset OR delete-and-recreate of AceHack —
-    not force-push. The pre-2026-04-29 double-hop
-    workflow (AceHack-first → forward-sync to LFG →
-    AceHack absorbs LFG's squash-SHA) is **paused**, not
-    deleted; existing artifacts from that round are
-    historical evidence. The 0/0/0 invariant is no longer
-    maintained.
+    bypass actors) and that is correct — the canonical
+    reviewer principle is *"the protocol bends to the
+    security ruleset; the ruleset does not bend to the
+    protocol"*. When AceHack/main has diverged from LFG/main
+    (i.e., AceHack has commits LFG does not have, so
+    fast-forward is impossible — for example, a residual
+    commit from earlier double-hop work whose content is
+    already preserved on LFG under a different SHA),
+    reconciliation is via PR-based reset OR
+    delete-and-recreate of AceHack — not force-push. The
+    pre-2026-04-29 double-hop workflow (AceHack-first →
+    forward-sync to LFG → AceHack absorbs LFG's squash-SHA)
+    is **paused**, not deleted; existing artifacts from
+    that round are historical evidence. The 0/0/0 invariant
+    is no longer maintained.
   - **In-flight feature branches** on either fork remain
     untouched by mirror-refresh; only `main` is mirrored.
   Full reasoning + lineage in
