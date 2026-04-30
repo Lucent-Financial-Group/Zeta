@@ -411,6 +411,44 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
+## Slice 7 — 3 lint-pattern ports (PR pending — `lane-b/ts-bun-slice-7-lint-scripts-2026-04-30`)
+
+**Slice files**:
+
+- `tools/lint/no-empty-dirs.{sh→ts}`
+- `tools/lint/safety-clause-audit.{sh→ts}`
+- `tools/lint/doc-comment-history-audit.{sh→ts}`
+
+**Comparison points**: identical to slice 6 (TypeScript 6.0 release notes, Bun docs, typescript-eslint v8, `../SQLSharp` at `7d3d9f6`, `../scratch` at mtime `2026-04-15`). No re-verification needed — within the 30-day Gate B window.
+
+### Tsconfig audit
+
+- Reuses repo `tsconfig.json` (no per-slice deviation).
+- All 3 files compile under `tsc --noEmit` clean.
+
+### Eslint audit
+
+- All 3 files clean under `eslint` (typescript-eslint strictTypeChecked + stylisticTypeChecked + sonarjs).
+- Pattern: `eslint-disable-next-line sonarjs/no-os-command-from-path` reused on `git` invocations only (intentional — same as prior slices).
+
+### Code-pattern audit (per-port)
+
+- **`no-empty-dirs.ts`**: readdirSync recursive walk + git-check-ignore batch + Set-based allowlist match. The bash trailing-whitespace strip regex (matching tab/space at end-of-line) replaced with manual char walk (`trimTrailingSpaceTab`) — no slow-regex flag. Comment-or-blank line check (bash `^[[:space:]]*(#|$)`) replaced with manual char walk (`isCommentOrBlankLine`) — same.
+- **`safety-clause-audit.ts`**: H1/H2/H3 regex sets split into pattern arrays where each individual regex stays under sonarjs/regex-complexity threshold (20). H1 array uses `/i` flag + non-capturing optional `(?:[\t ]+do)?` to collapse NOT/not + does/do alternatives without inflating per-regex complexity. Argument parsing extracted into `parseFailOverArg()` so the main loop stays under cognitive-complexity (15).
+- **`doc-comment-history-audit.ts`**: in-bash awk script (60+ lines) replaced with TS `extractTokens()` doing per-line `RegExp.exec` loop + manual leading/trailing word-boundary check (`isBoundary`). Tokens-ending-in-`:` skip the trailing boundary check, mirroring the bash logic exactly. Tree walk extracted into `walkRoot` + `processEntry` + `readDirEntries` for cognitive-complexity compliance.
+
+### Equivalence audit
+
+Diff'd against bash output on this repo state (2026-04-30 main):
+
+- **`no-empty-dirs`**: bash original errors with "unbound variable" on macOS bash 3.2 + empty FILTERED array (pre-existing bug); TS produces correct output `OK (0 allowlisted, 0 flagged)`. Behavioural improvement, not divergence.
+- **`safety-clause-audit`**: byte-equivalent across all 3 modes (`summary` / `--list-missing` / `--verbose`).
+- **`doc-comment-history-audit`**: byte-equivalent across all 4 modes (`check` / `--list` / `--fail-any` / `--regenerate-baseline`). Sole intentional diff: error-message self-reference is `.ts` instead of `.sh`, since each invocation tells users to use the same form they ran.
+
+### Outcome
+
+Slice 7 passes audit. No new patterns recorded — all reused from prior slices. The two remaining Cluster H scripts (`no-directives-otto-prose.sh` at 261 lines + `runner-version-freshness.sh` at 356 lines) are deferred to slice 8 — natural size boundary, plus `no-directives-otto-prose` has Task #350 (extend scope) so port-then-extend likely needs paired review.
+
 ## Slice template (for future slices)
 
 Copy this section header and fill out before merging the slice's PR:

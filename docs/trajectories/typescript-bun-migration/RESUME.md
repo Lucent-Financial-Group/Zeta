@@ -1,7 +1,7 @@
 # Trajectory — TypeScript / Bun migration
 
 **Status**: Active (Lane B slice 6 merged — [#876](https://github.com/Lucent-Financial-Group/Zeta/pull/876), commit `02baabc`)
-**Milestone**: 19 hygiene scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876). **Cluster F-3-of-4 complete: 3 read-only check scripts ported; append-tick-history-row.sh deferred to slice 7+ as write-side script.**
+**Milestone**: 22 hygiene/lint scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from PR #878). **Cluster H-3-of-5 complete in PR #878 (no-empty-dirs, safety-clause-audit, doc-comment-history-audit); 2 remain in slice-8 (no-directives-otto-prose at 261 lines + runner-version-freshness at 356 lines).** This row updates atomically with the PR #878 merge — the count + PR-list are merge-stable; subsequent slices append a row, not edit this one.
 **Current blocker**: None.
 **Next concrete action**: Pick a coherent next slice from Bucket B (22 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
@@ -127,6 +127,9 @@ tools/hygiene/audit-missing-prevention-layers.sh   # ported in #874
 tools/hygiene/check-no-conflict-markers.sh         # ported in #876
 tools/hygiene/check-archive-header-section33.sh    # ported in #876
 tools/hygiene/check-tick-history-order.sh          # ported in #876
+tools/lint/no-empty-dirs.sh                        # ported on slice-7 branch (in flight)
+tools/lint/safety-clause-audit.sh                  # ported on slice-7 branch (in flight)
+tools/lint/doc-comment-history-audit.sh            # ported on slice-7 branch (in flight)
 ```
 
 ## Recommended next slice
