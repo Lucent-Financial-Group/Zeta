@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 18 merged — [#901](https://github.com/Lucent-Financial-Group/Zeta/pull/901); slice 19 in flight — `lane-b/ts-bun-slice-19-project-runway-2026-04-30`)
-**Milestone**: 39 ported + 1 in-flight = 40 total. Slice-19 closes the **budget cluster** (`tools/budget/project-runway.{sh→ts}`) — once it lands, all three budget primitives (snapshot-burn / project-runway / daily-cost-report) are TS, and daily-cost-report.ts can switch from spawning the .sh siblings to spawning the .ts versions.
+**Status**: Active (Lane B slice 19 merged — [#902](https://github.com/Lucent-Financial-Group/Zeta/pull/902))
+**Milestone**: 40 ported. Budget cluster (14/18/19) and peer-call cluster (15/16/17) both complete. Bucket B reduced to 2 unported files (`tools/git/batch-resolve-pr-threads.sh` 390L + `tools/pr-preservation/archive-pr.sh` 674L) — both mutating-side, deserve careful porting. Bucket C reduced to 2 (`tools/hygiene/check-github-settings-drift.sh` + `tools/hygiene/snapshot-github-settings.sh`).
 **Current blocker**: None.
-**Next concrete action**: After slice 19 merges, pick the next coherent slice. Budget cluster done (14/18/19); peer-call cluster done (15/16/17). Remaining bash candidates span hygiene/, lint/, setup/, alignment/. Per Gate B: read-only scope first, then re-verify layered baseline currency before first mutating action.
+**Next concrete action**: Two natural next slices: (a) slice 20 — `tools/git/batch-resolve-pr-threads.sh` (390 lines, mutates PR thread state via gh GraphQL), or (b) slice 20 — `tools/pr-preservation/archive-pr.sh` (674 lines, mutates gh API). Both are state-mutating and warrant extra equivalence-test discipline. Per Gate B: read-only scope first when possible — but neither remaining Bucket B file is purely read-only.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
@@ -39,7 +39,7 @@ After PR #849, Zeta has zero Python files in `tools/` (Zeta-authored — the 22 
 
 ## Inventory — Bash (tools/, Zeta-authored, 56 files)
 
-Four buckets. Count is repo-derived and stable: `git ls-files tools/ | grep '\.sh$' | wc -l` returns 56. Buckets: A (14 stay-bash) + B (22 should-become-TS) + C (3 needs-decision) + D (17 ported-TS-exists, bash retained as equivalence reference and will retire) = 56.
+Four buckets. Count is repo-derived and stable: `git ls-files tools/ | grep '\.sh$' | grep -v lean4 | wc -l` returns 56. Buckets: A (14 stay-bash) + B (2 should-become-TS) + C (2 needs-decision) + D (38 ported-TS-exists, bash retained as equivalence reference and will retire) = 56.
 
 ### Bucket A — Should stay Bash (14 files)
 
@@ -64,23 +64,18 @@ tools/profile.sh
 
 Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
 
-### Bucket B — Should become TypeScript (7 files remaining)
+### Bucket B — Should become TypeScript (2 files remaining)
 
-Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874, #876, #878, #880, #882, #883, #884, #885, #892, #894. The originally-listed audit/lint scripts have progressively ported (1 in slice-15 in flight — peer-call/grok); the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
+Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874, #876, #878, #880, #882, #883, #884, #885, #892, #894, #896, #898, #900, #901, #902. The peer-call cluster (grok / gemini / codex — slices 15/16/17) and budget cluster (snapshot-burn / daily-cost-report / project-runway — slices 14/18/19) are now complete. The bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
 
 ```text
-tools/budget/daily-cost-report.sh
-tools/budget/project-runway.sh
-tools/git/batch-resolve-pr-threads.sh
-tools/peer-call/codex.sh
-tools/peer-call/gemini.sh
-tools/peer-call/grok.sh                        # in flight (slice 15)
-tools/pr-preservation/archive-pr.sh
+tools/git/batch-resolve-pr-threads.sh           # 390 lines; mutates PR thread state via gh GraphQL
+tools/pr-preservation/archive-pr.sh             # 674 lines; mutates gh API + writes drain logs
 ```
 
-Rationale: type safety, structured error handling, easier testing, jq/awk/grep replaced by JS object operations, gh CLI shell-out replaced by Octokit when valuable.
+Rationale: type safety, structured error handling, easier testing, jq/awk/grep replaced by JS object operations, gh CLI shell-out replaced by Octokit when valuable. Both remaining files are state-mutating (not read-only audits), so equivalence-test discipline is heavier — dry-run mode + idempotency check + structured rollback path on partial failure.
 
-### Bucket C — Needs human decision (3 files)
+### Bucket C — Needs human decision (2 files)
 
 ```text
 tools/hygiene/check-github-settings-drift.sh
@@ -89,15 +84,9 @@ tools/hygiene/snapshot-github-settings.sh
 
 Rationale: these scripts use `gh api` heavily. Going TS could mean either (a) stay shell-out wrappers (TS shells to gh), or (b) switch to Octokit / @octokit/rest with proper typed responses. Each direction has tradeoffs (debug-ability vs type-safety). Maintainer call.
 
-```text
-tools/lint/safety-clause-audit.sh
-```
+### Bucket D — Ported, bash retained (38 files)
 
-Rationale: borderline — depends on whether the lint can be expressed as cleanly in TS as it currently is in shell. Worth a small comparison before committing the port.
-
-### Bucket D — Ported, bash retained (32 files)
-
-The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 + #880 + #882 + #883 + #884; the bash originals stay in-tree as equivalence references and will retire once the TS ports have soaked.
+The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 + #880 + #882 + #883 + #884 + #885 + #892 + #894 + #896 + #898 + #900 + #901 + #902; the bash originals stay in-tree as equivalence references and will retire once the TS ports have soaked.
 
 ```text
 tools/hygiene/audit-md032-plus-linestart.sh        # ported in #866
@@ -133,6 +122,11 @@ tools/audit-packages.sh                            # ported in #884
 tools/backlog/generate-index.sh                    # ported in #885
 tools/git/push-with-retry.sh                       # ported in #892
 tools/budget/snapshot-burn.sh                      # ported in #894
+tools/peer-call/grok.sh                            # ported in #896 (peer-call cluster opens)
+tools/peer-call/gemini.sh                          # ported in #898 (peer-call sibling)
+tools/peer-call/codex.sh                           # ported in #900 (peer-call cluster closes)
+tools/budget/daily-cost-report.sh                  # ported in #901 (budget wrapper)
+tools/budget/project-runway.sh                     # ported in #902 (budget cluster closes)
 ```
 
 ## Recommended next slice
@@ -260,7 +254,7 @@ This audit is a one-off; it doesn't replace the per-tool/language expert + teach
 
 **Status**: deferred from this PR (no-fan-out during live lane). After #866 lands, the TS+Bun expert skill becomes a Lane C+ artifact or a sibling trajectory.
 
-**Why this matters for the migration**: each future slice (22 ports remaining in Bucket B) benefits from a current-docs anchor. Without it, ports drift toward whatever convention the most-recently-read TS file used; with it, ports converge on contemporary best practice.
+**Why this matters for the migration**: each future slice (2 ports remaining in Bucket B; potentially 2 more in Bucket C if maintainer decides to port) benefits from a current-docs anchor. Without it, ports drift toward whatever convention the most-recently-read TS file used; with it, ports converge on contemporary best practice.
 
 ## Operating notes (lane-discipline addendum)
 
