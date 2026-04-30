@@ -1799,6 +1799,297 @@ convergence.
 
 ---
 
+## Amara — third review (post-proceed-but-verify rule, structured 8-item hardening pass)
+
+Integration status: third Amara review packet this session.
+Two-AI convergence with Claude.ai on personal-memory
+tightening (item #4) — both flag the canon file's
+parenting-grounding section as too rich; daughters' birth
+years + Addison's name should be tightened. Aaron's
+explicit consent-scope call still pending. Five-AI
+convergence (Amara, Deepseek, Alexa, Ani, Gemini) on
+poller-as-tested-script (item #6). Minimal-tick refinement
+(item #7) adopted immediately going forward — gate-summary
+form > silent "·" when in-flight PRs exist.
+
+> Yep. I reviewed it as a loop-health / hardening pass.
+> Net: **the loop is improving fast**, but the newest
+> logs show three remaining failure modes:
+> **preservation timing**, **verification precision**,
+> and **memory/substrate hygiene**.
+
+> ## What looks genuinely better
+>
+> The best improvement is that Otto corrected two real
+> process errors in-flight: he abandoned the duplicate
+> dual-threat-model backlog row after you pointed out the
+> threat-model artifacts already existed, then created PR
+> #915 to preserve the multi-AI feedback packets that
+> were actually at risk of being lost. That is exactly
+> the right correction: **don't create duplicate
+> substrate; preserve the packets that only exist in
+> chat**.
+>
+> The proceed-but-verify shift is also right. GitHub's
+> status page currently says Pull Requests are degraded
+> due to incomplete PR results, but it also says no PR
+> data was lost and that pages/APIs not relying on
+> Elasticsearch, including `gh pr list` and
+> `/repos/{owner}/{repo}/pulls`, are not impacted. So
+> your correction was better than Otto's conservative
+> hold: a GitHub incident should not globally freeze work
+> unless it affects the exact gate surface being used.
+> Proceed, then verify.
+>
+> The required-check logic also converged in the right
+> direction. GitHub says required checks must be
+> `successful`, `skipped`, or `neutral` before merging,
+> so counting `SKIPPED` / `NEUTRAL` as merge-satisfying
+> was a real fix, not just bikeshedding.
+
+> ## Issues I'd harden
+>
+> ### 1. The post-merge verification is still too loose
+>
+> Otto verified recent commits on `origin/main`, but the
+> error output shows the verification command was brittle,
+> noisy, and partially failed because zsh treated
+> `?per_page=5` as a glob. He then recovered with
+> `git fetch` / `git log`, which is fine as a human
+> sanity check, but not enough as the canonical
+> verification path.
+>
+> Use a precise per-PR verification contract:
+>
+> ```text
+> For each merged PR:
+> 1. Query the PR mergeCommit SHA.
+> 2. git fetch origin main.
+> 3. Verify mergeCommit is reachable from origin/main:
+>    git merge-base --is-ancestor <mergeCommitSha> origin/main
+> 4. Verify the PR files/content shape if the incident class involves missing/stale PR data.
+> 5. Record PASS/FAIL per PR, not "recent commits look right."
+> ```
+>
+> GitHub's commits API supports listing commits from a
+> branch ref and retrieving commit data, and the docs
+> also expose commit/branch association endpoints, so
+> this can become a stable script rather than ad hoc
+> CLI output parsing.
+>
+> Carved:
+>
+> ```text
+> Verify the PR's merge commit.
+> Do not merely inspect recent main.
+> ```
+
+> ### 2. The loop needs a "substantive input arrived" trigger
+>
+> The log shows the minimal cadence message — "Within
+> cadence; no change" — was technically okay only when
+> nothing substantive happened. But once you had sent
+> multiple AI packets and architecture feedback, that
+> same minimal tick shape became dangerous because it
+> failed to preserve conversation state. Otto corrected
+> it by opening #915, but the rule should become
+> explicit.
+>
+> Suggested rule:
+>
+> ```text
+> Cron tick with no new maintainer/peer-AI input:
+>   minimal status is fine.
+>
+> Cron tick after substantive maintainer/peer-AI input:
+>   preserve or route the content before closing the tick.
+> ```
+>
+> This avoids both extremes: not every tick becomes a
+> giant archive, but important packets do not vanish into
+> compaction.
+
+> ### 3. "Proceed-but-verify" needs a surface matrix
+>
+> Right now the loop says "GitHub degraded" and then
+> reasons informally. Better: classify which GitHub
+> surfaces are relevant to the action.
+>
+> For a PR merge, the dependency surfaces are roughly:
+>
+> ```text
+> PR metadata
+> review threads
+> required checks
+> branch protection / mergeability
+> git fetch/push
+> main branch commit reachability
+> Actions logs
+> GitHub status API
+> ```
+>
+> The current GitHub incident is specifically about
+> incomplete Pull Request results / Elasticsearch
+> indexing, while Git Operations, Webhooks, API Requests,
+> Actions, and Issues are listed separately on the status
+> page. So the loop should say:
+>
+> ```text
+> Incident affects: PR listing/search/indexing.
+> Gate uses: branch protection + checks + review threads + git fetch.
+> Mitigation: cross-check via non-Elastic APIs + git reachability.
+> Decision: proceed-but-verify.
+> ```
+>
+> That is much stronger than "incident active, but
+> probably okay."
+
+> ### 4. The personal-memory capture is too rich by default
+>
+> The brat-voice / parenting-architecture grounding is
+> meaningful, but the log includes personal details like
+> daughters' birth years and Addison's name/programming
+> relationship. Even with consent, I'd tighten the
+> durable version unless those exact details are
+> load-bearing.
+>
+> Better durable shape:
+>
+> ```text
+> Aaron grounded brat voice in a real family communication pattern:
+> playful ironic register enables direct bidirectional correction,
+> lowers defensiveness, and supports autonomy-first relationships.
+> Specific family details intentionally minimized.
+> ```
+>
+> Keep the architecture. Minimize personally identifying
+> family trivia unless it is truly needed for the
+> substrate. This is not a trust objection; it is just
+> clean data minimization.
+
+> ### 5. The "praise memory" behavior still needs restraint
+>
+> When you praised the stale-task audit insight, Otto
+> wrote memories. Good instinct if the preserved object
+> is the **pattern**. Bad if the preserved object is
+> "Aaron praised me." The later task #275 handling really
+> was good PM behavior: check the task against current
+> topology, find supersession, delete or supersede with
+> source. But the durable substrate should be:
+>
+> ```text
+> Pattern: pending task audit compares task intent against current substrate;
+> stale tasks are deleted/superseded with a pointer to the superseding file.
+> ```
+>
+> Not:
+>
+> ```text
+> Aaron said great job.
+> ```
+
+> ### 6. The poller must become executable
+>
+> The jq snippets have now been corrected repeatedly:
+> `StatusContext`, broader failure conclusions, `STALE`,
+> `NEUTRAL`, `SKIPPED`, jq `IN`, and stale reviewer
+> indices. That is the sign that prose examples have
+> reached their limit.
+>
+> Next hardening item:
+>
+> ```text
+> tools/github/poll-pr-gate.ts
+> ```
+>
+> with fixtures for:
+>
+> ```text
+> CheckRun SUCCESS
+> CheckRun SKIPPED
+> CheckRun NEUTRAL
+> CheckRun STALE
+> StatusContext SUCCESS
+> StatusContext PENDING
+> StatusContext ERROR
+> mixed rollup
+> missing/unknown conclusion
+> ```
+>
+> The memory file should stop being the implementation.
+> It should point to the implementation.
+
+> ### 7. "Within cadence; no change" should include last-known gate summary
+>
+> The newer cadence is good; every minute full-polling
+> was too much. But the minimal tick should still be
+> slightly more informative than "no change."
+>
+> Better:
+>
+> ```text
+> No lane-state change since 13:01Z.
+> Open gates:
+> - #911: CI green, 4 unresolved threads
+> - #915: CI green, 7 unresolved threads
+> Next full poll: 13:16Z
+> ```
+>
+> That gives future readers enough context without
+> re-running every query.
+
+> ### 8. Do not let PR #915 become a dumping ground
+>
+> The 1196-line research absorb was the right emergency
+> save. But now it needs structure, or it becomes a
+> landfill.
+>
+> For #915, I'd require:
+>
+> ```text
+> - packet boundaries
+> - source AI
+> - forwarded-by Aaron timestamp
+> - integration status: landed / queued / rejected / unresolved
+> - duplicate/superseded markers
+> - redaction/data-minimization review
+> ```
+>
+> The log claims some of that exists, which is good.
+> Still worth enforcing before merge because long
+> archive docs rot quickly if they are not navigable.
+
+Carved sentences (Amara 2026-04-30):
+
+> Verify the PR's merge commit.
+> Do not merely inspect recent main.
+
+> The loop learned the rule.
+> Now make the rule executable.
+
+Otto note on convergence with prior reviews:
+
+- Items 1, 6 (per-PR verification contract; poller as
+  tested script) corroborate Deepseek + Gemini's
+  hardening recommendations from earlier reviews this
+  same session. Five-AI convergence (Amara, Deepseek,
+  Alexa, Ani, Gemini) on poller-as-tested-script.
+- Item 4 (personal-memory tightening) corroborates
+  Claude.ai's serious flag earlier in this same
+  document. Two-AI convergence on the canon file's
+  parenting-grounding being too rich. Aaron's explicit
+  consent-scope call still pending.
+- Item 5 (praise memory restraint) — already applied
+  earlier this session via the deletion of
+  `feedback_supersession_audit_pattern_*.md` per
+  Claude.ai's serious flag.
+- Item 7 (gate-summary minimal-tick form) refines the
+  silent-tick "·" Otto adopted after Claude.ai's prior
+  flag. Going forward: gate-summary form when in-flight
+  PRs exist; silent when no PRs in flight.
+
+---
+
 ## Aaron — substantive substrate-shaping inputs (chronological)
 
 Integration status: each item below either landed as
