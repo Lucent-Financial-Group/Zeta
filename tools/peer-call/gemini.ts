@@ -44,9 +44,11 @@ interface Args {
 
 interface ArgError {
   readonly error: string;
-  // Exit code 64 = invocation/usage error per
-  // docs/best-practices/repo-scripting.md §exit-codes (rule 0|2|64).
-  readonly exitCode: 64;
+  // Exit code 1 = invocation/usage error per tools/peer-call/README.md
+  // (uniform 0/1/2 across all three peer-call wrappers — README scope
+  // is more specific than the general repo-scripting.md 0/2/64 spec
+  // and wins on overlap).
+  readonly exitCode: 1;
 }
 
 interface ArgHelp {
@@ -109,7 +111,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     const a = argv[i] ?? "";
     const step = classifyFlag(a, argv[i + 1], state);
     if (step.kind === "help") return { help: true };
-    if (step.kind === "error") return { error: step.message, exitCode: 64 };
+    if (step.kind === "error") return { error: step.message, exitCode: 1 };
     if (step.kind === "stop") {
       state.prompt = argv.slice(i + 1).join(" ");
       break;
@@ -143,7 +145,12 @@ function emitHelp(): void {
 }
 
 function commandAvailable(cmd: string): boolean {
-  const result = spawnSync(cmd, ["--version"], { stdio: "ignore" });
+  // Match bash `command -v <cmd>` semantics: PATH existence, not
+  // `<cmd> --version` exit-status (Copilot P1 on #898 — some CLIs
+  // exit non-zero on --version which is irrelevant to availability).
+  const result = spawnSync("/bin/sh", ["-c", `command -v "${cmd}"`], {
+    stdio: "ignore",
+  });
   return result.status === 0;
 }
 
@@ -303,9 +310,9 @@ export function main(argv: readonly string[]): number {
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
     process.stderr.write("see: bun tools/peer-call/gemini.ts --help\n");
-    // Exit code 64 = invocation/usage error per
-    // docs/best-practices/repo-scripting.md.
-    return 64;
+    // Exit code 1 = invocation/usage error per tools/peer-call/README.md
+    // (uniform 0/1/2 across all three peer-call wrappers).
+    return 1;
   }
 
   if (!commandAvailable("gemini")) {
