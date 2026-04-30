@@ -411,7 +411,7 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
-## Slice 19 — 1 port (budget/project-runway — budget cluster closes) (PR pending — `lane-b/ts-bun-slice-19-project-runway-2026-04-30`)
+## Slice 19 — 1 port (budget/project-runway — budget cluster closes) (PR #902, merged 2026-04-30, commit `bfdadd9`)
 
 **Slice files**:
 
@@ -438,7 +438,90 @@ Diff'd against bash output on this repo state (2026-04-30 main, snapshots.jsonl 
 
 Slice 19 passes audit. **Budget cluster closes** (snapshot-burn.ts at slice 14, daily-cost-report.ts at slice 18, project-runway.ts at slice 19 — all three TS now). Once this lands, daily-cost-report.ts can switch from spawning `project-runway.sh` to spawning `project-runway.ts` for full-TS budget reporting (follow-up slice). Bucket B inventory: budget cluster done.
 
-## Slice 15 — 1 port (peer-call/grok — peer-call cluster opens) (PR pending — `lane-b/ts-bun-slice-15-peer-call-grok-2026-04-30`)
+## Slice 18 — 1 port (budget/daily-cost-report — daily cost-monitoring entry point) (PR #901, merged 2026-04-30, commit `76f3dc9`)
+
+**Slice files**:
+
+- `tools/budget/daily-cost-report.{sh→ts}` (wraps `snapshot-burn.sh` + `project-runway.sh`; writes `docs/budget-history/latest-report.md` for the daily `/schedule` cadence)
+
+**Comparison points**: identical to slice 17. Within Gate B 30-day window. tsc gate active per #890.
+
+### Code-pattern audit (per-port)
+
+- **`daily-cost-report.ts`** (~190 → 302 lines): bash dispatch script structure mapped 1:1 to TS — `runSnapshotStep` + `runProjectionStep` extracted as `StepResult`-returning helpers so `main()` stays under cognitive-complexity 15 (Codex P3 on round 2). Bash `$( "$script_dir/project-runway.sh" 2>&1 )` → `spawnSync("/bin/bash", ["-c", `"${path}" 2>&1`])` so stdout/stderr merge happens at the kernel pipe boundary chronologically (NOT JS-space `result.stdout + result.stderr` concat — Copilot P1 round 2 caught the JS-space approach loses ordering). Bash `[ -f "$snapshots_path" ]` → `isRegularFileSafe` helper (statSync().isFile() + try/catch) — guards against the existsSync/`-f` semantic mismatch documented in slice-19.
+- **`classifySpawnFailure` 4-case helper reused**: status set / ENOENT → 127 / signal / other (same shape as slices 13-17). Distinguishes a missing-script ENOENT from a normal non-zero exit so callers see the actual failure mode.
+- **Bootstrap path**: when no snapshots.jsonl exists yet, the wrapper writes a fixed bootstrap message into the report (matches bash original); `runProjectRunway` is never spawned in that case.
+- **Output discipline**: `writeFileSync(reportPath, report)` overwrites (not appends) — same as bash `cat <<...> "$report"`. Historical snapshots stay in `snapshots.jsonl`; the report file is reproducible from snapshot subset + run timestamp.
+
+### Equivalence audit
+
+- **`daily-cost-report`**: byte-equivalent on argument-validation paths (`--bogus` → exit 2 with same message; `--help` → 0 with help text). Live `--dry-run` smoke-test produced an identical report file structure to the bash original (header / projection text block / "How to read this" / source data sections — all character-for-character match modulo the `Source: tools/budget/daily-cost-report.ts` self-reference, which is the deliberate self-describing line).
+
+### Behavioural note vs bash original
+
+- Bash original spawns the bash siblings (`snapshot-burn.sh` + `project-runway.sh`); TS wrapper continues to spawn the **bash** siblings during the soak period. Once snapshot-burn.ts (slice 14) + project-runway.ts (slice 19) have soaked clean, the wrapper switches to spawning the .ts versions (deferred follow-up slice).
+- Stdout/stderr stream-ordering preserved end-to-end via shell-side `2>&1`.
+
+### Outcome
+
+Slice 18 passes audit. **Daily-cost wrapper now TS** — first wrapper-class port in the budget cluster. Bucket B 7 → 6. Adds substrate observation: kernel-pipe vs JS-space stream interleaving distinction (recorded in 07:21Z tick row).
+
+## Slice 17 — 1 port (peer-call/codex — peer-call cluster closes) (PR #900, merged 2026-04-30, commit `10c3418`)
+
+**Slice files**:
+
+- `tools/peer-call/codex.{sh→ts}` (Otto's harness-side caller for invoking Codex (OpenAI) as a peer reviewer via the codex CLI; closes the peer-call cluster)
+
+**Comparison points**: identical to slice 16. Within Gate B 30-day window. tsc gate active per #890.
+
+### Code-pattern audit (per-port)
+
+- **`codex.ts`** (~150 → 357 lines): structurally identical to slice-16 gemini.ts — same `classifyFlag` + `MutableArgState` arg-parse split, same `ReadHeadResult { ok, content, error }` for surfacing read failures (Codex P2 on slice 16), same `runContextCmd` shape using `/bin/bash -c "(${cmd}) 2>&1 | head -c 20000"` for shell-side truncation + bash-only feature support (Codex P2 round 2 on slice 16). All round-2/round-3 fixes from siblings #898/#896 baked in proactively.
+- **Routing distinction**: codex CLI exposes both `codex exec -s read-only --skip-git-repo-check` (default; non-interactive sandboxed) and `codex review` (with `--review` flag — Codex's first-class code-review path). The `--model` flag is ignored in `--review` mode (codex review uses its own model selection); a stderr warning is preserved verbatim from the bash original.
+- **Exit-code uniformity**: 0/1/2 across all three peer-call siblings per `tools/peer-call/README.md` (Codex round-2 catch on slice 16: more-specific README scope wins over `docs/best-practices/repo-scripting.md`'s 0/2/64 generic rule).
+
+### Equivalence audit
+
+- **`codex`**: byte-equivalent on argument-validation paths (`--file` without value → exit 1 + same message; `--bogus` → exit 1; no prompt → exit 1). LLM-response equivalence is non-deterministic (Codex CLI produces different completions per invocation); structural/UX equivalence verified — same flag set, same routing branches, same PREAMBLE preamble construction.
+
+### Behavioural note vs bash original
+
+- Same eval/security posture as siblings: user-supplied `--context-cmd` runs through `/bin/bash -c`, structurally equivalent to bash `eval`.
+- `commandAvailable("codex")` uses `/bin/sh -c 'command -v codex'` (PATH existence) rather than `codex --version` — gemini.ts round-2 finding generalizes.
+
+### Outcome
+
+Slice 17 passes audit. **Peer-call cluster closes** (slice 15 grok + slice 16 gemini + slice 17 codex — all three LLM-CLI wrappers ported). Bucket B 8 → 7. Sibling-port-cost decreased monotonically: slice 17 shipped 357 lines in a single commit with all known fixes pre-baked. Worth absorbing as factory pattern: when porting sibling scripts, batch-apply known fixes proactively rather than waiting for reviewer rediscovery.
+
+## Slice 16 — 1 port (peer-call/gemini — peer-call sibling) (PR #898, merged 2026-04-30, commit `db8f3e8`)
+
+**Slice files**:
+
+- `tools/peer-call/gemini.{sh→ts}` (Otto's harness-side caller for invoking Gemini as a peer reviewer)
+
+**Comparison points**: identical to slice 15. Within Gate B 30-day window. tsc gate active per #890.
+
+### Code-pattern audit (per-port)
+
+- **`gemini.ts`**: shares structural shape with grok.ts (slice 15). Three rounds of review-cycle fixes baked in:
+  - Round 1: Codex P2 + Copilot P1 — exit-code 1 (not 64) per `tools/peer-call/README.md` scope-wins-over-generic; `commandAvailable` via `/bin/sh -c 'command -v <cmd>'` PATH check (some CLIs exit non-zero on `--version`).
+  - Round 2: Codex P2 — `/bin/bash -c` (not `/bin/sh -c`) for bash-only feature support (`[[ ]]`, brace expansion, process substitution); Codex P1 — full-buffer-then-truncate in `runContextCmd` switched to `(cmd) 2>&1 | head -c N` for shell-side truncation; Codex P2 — full-file-read in `readHead` switched to `openSync + readSync(fd, buf, 0, bytes, 0)` for bounded reads; Codex P2 — `ReadHeadResult { ok, content, error }` type so file-read failures surface to the caller instead of silently producing an empty string.
+  - Round 3: Copilot P1 — stdout+stderr concatenation re-shaped: parse errors fall outside `( ) 2>&1` redirect, so concat preserves shell parse-error diagnostics that would otherwise be lost.
+
+### Equivalence audit
+
+- **`gemini`**: byte-equivalent on argument-validation paths. LLM-response equivalence non-deterministic (same caveat as grok/codex); structural equivalence verified.
+
+### Behavioural note vs bash original
+
+- The gemini CLI is invoked via `spawnSync` with `stdio: "inherit"` (same as cursor-agent in slice 15 + codex in slice 17).
+- Backported the slice-16 fixes to slice-15 grok.ts via PR #899 (sibling-port-bug-propagation pattern: when slice 16 review caught bugs in shared structure, the same bugs existed in already-merged slice 15).
+
+### Outcome
+
+Slice 16 passes audit. Bucket B 9 → 8. Adds substrate observations: kernel-pipe vs JS-space stream-ordering (further refined in slice 18), `ReadHeadResult` discriminated-union for file-read failures, bash-only feature support requires `/bin/bash -c` (not `/bin/sh -c`).
+
+## Slice 15 — 1 port (peer-call/grok — peer-call cluster opens) (PR #896, merged 2026-04-30 — backport from #898 baked in via #899 commit `c1623ca`)
 
 **Slice files**:
 
