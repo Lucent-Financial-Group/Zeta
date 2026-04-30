@@ -166,6 +166,14 @@ function hasMatchingExt(name: string): boolean {
   return false;
 }
 
+// Normalize Node-style relative() paths to forward slashes — on
+// Windows `relative()` returns `\\`-separated paths, but the bash
+// original emits `/` paths and the baseline file uses `/` paths.
+// Posix-relative-path everywhere, including baseline-diff comparisons.
+function toPosixRel(p: string): string {
+  return p.replace(/\\/g, "/");
+}
+
 function readDirEntries(
   dir: string,
 ): readonly import("node:fs").Dirent[] {
@@ -184,7 +192,7 @@ function processEntry(
   out: string[],
 ): void {
   const full = join(dir, e.name);
-  const rel = relative(root, full);
+  const rel = toPosixRel(relative(root, full));
   if (e.isDirectory()) {
     if (!shouldExcludeDir(rel)) stack.push(full);
   } else if (e.isFile() && hasMatchingExt(e.name)) {

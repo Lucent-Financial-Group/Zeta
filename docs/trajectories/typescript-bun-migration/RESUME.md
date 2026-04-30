@@ -1,7 +1,7 @@
 # Trajectory — TypeScript / Bun migration
 
 **Status**: Active (Lane B slice 6 merged — [#876](https://github.com/Lucent-Financial-Group/Zeta/pull/876), commit `02baabc`)
-**Milestone**: 22 hygiene/lint scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 in-flight on slice-7 branch). **Cluster H-3-of-5 in flight: 3 lint-pattern scripts ported (no-empty-dirs, safety-clause-audit, doc-comment-history-audit); 2 remain deferred (no-directives-otto-prose at 261 lines + runner-version-freshness at 356 lines — natural slice-8 boundary).**
+**Milestone**: 22 hygiene/lint scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from PR #878). **Cluster H-3-of-5 complete in PR #878 (no-empty-dirs, safety-clause-audit, doc-comment-history-audit); 2 remain in slice-8 (no-directives-otto-prose at 261 lines + runner-version-freshness at 356 lines).** This row updates atomically with the PR #878 merge — the count + PR-list are merge-stable; subsequent slices append a row, not edit this one.
 **Current blocker**: None.
 **Next concrete action**: Pick a coherent next slice from Bucket B (22 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30

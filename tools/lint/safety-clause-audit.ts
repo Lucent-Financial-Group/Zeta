@@ -25,7 +25,11 @@
 //
 // Exit codes:
 //   0   audit ran (irrespective of MISSING count, unless --fail-over)
-//   1   MISSING > N when --fail-over N specified
+//   1   MISSING > N when --fail-over N specified, OR usage error
+//       (invalid / missing --fail-over value). Behaviour-improvement-
+//       over-bash: bash printed "integer expression expected" and
+//       exited 0 from the failed `[` test; TS port surfaces the
+//       usage error explicitly.
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { basename, dirname, join } from "node:path";

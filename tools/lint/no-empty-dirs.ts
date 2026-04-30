@@ -92,7 +92,7 @@ function pushChildDirs(
   for (const e of entries) {
     if (!e.isDirectory()) continue;
     const full = join(dir, e.name);
-    const rel = relative(root, full);
+    const rel = toPosixRel(relative(root, full));
     if (!isHardExcluded(rel)) stack.push(full);
   }
 }
@@ -105,6 +105,14 @@ function readDirSafe(
   } catch {
     return null;
   }
+}
+
+// Normalize a Node-style relative() path to forward slashes — on
+// Windows, `relative()` returns `\\`-separated paths, but the bash
+// original emits `/` paths and the allowlist + git-check-ignore
+// comparisons assume forward slashes. Posix-relative-path everywhere.
+function toPosixRel(p: string): string {
+  return p.replace(/\\/g, "/");
 }
 
 function byteCompare(a: string, b: string): number {
@@ -122,7 +130,7 @@ function findEmptyDirs(root: string): readonly string[] {
     const entries = readDirSafe(dir);
     if (entries === null) continue;
     if (entries.length === 0) {
-      const rel = relative(root, dir);
+      const rel = toPosixRel(relative(root, dir));
       if (rel !== "" && !isHardExcluded(rel)) out.push(rel);
       continue;
     }
