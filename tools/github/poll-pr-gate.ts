@@ -72,21 +72,35 @@ interface PullRequestData {
   mergeCommit: { oid: string } | null;
   statusCheckRollup: CheckRollupItem[];
   reviewThreads: { nodes: ReviewThreadNode[] };
+  /** Names of checks that are *required* for merge. Set during fetchPR
+   *  via `gh pr checks --required`. Empty Set in fixture mode unless
+   *  the fixture supplies it (per v1 hardening, Amara 2026-04-30). */
+  requiredCheckNames?: string[];
+}
+
+interface CheckCounts {
+  ok: number;
+  inProgress: number;
+  pending: number;
+  failed: number;
 }
 
 interface GateReport {
   number: number;
   state: string;
   gate: GateState;
-  checks: {
-    ok: number;
-    inProgress: number;
-    pending: number;
-    failed: number;
-  };
+  /** All checks counted (required + non-required). */
+  checks: CheckCounts;
+  /** Just the required-for-merge checks. nextAction uses these to
+   *  decide failure vs warning (Amara v1 hardening 2026-04-30 —
+   *  "a failed check is not automatically a failed gate"). */
+  requiredChecks: CheckCounts;
   unresolvedThreads: number;
   autoMerge: "armed" | "none";
   mergeCommit: string | null;
+  /** Diagnostic notes about non-required failures or other lane-state
+   *  observations that don't gate merge. */
+  warnings: string[];
   nextAction: NextAction;
 }
 
@@ -111,12 +125,16 @@ const PENDING_STATUSES = new Set([
   "WAITING",
 ]);
 
-function classifyChecks(rollup: CheckRollupItem[]): GateReport["checks"] {
+function classifyChecks(
+  rollup: CheckRollupItem[],
+  filter?: (item: CheckRollupItem) => boolean,
+): CheckCounts {
   let ok = 0;
   let inProgress = 0;
   let pending = 0;
   let failed = 0;
   for (const c of rollup) {
+    if (filter && !filter(c)) continue;
     if (c.status === "IN_PROGRESS") {
       inProgress++;
       continue;
@@ -136,10 +154,24 @@ function classifyChecks(rollup: CheckRollupItem[]): GateReport["checks"] {
   return { ok, inProgress, pending, failed };
 }
 
+function nonRequiredFailures(
+  rollup: CheckRollupItem[],
+  requiredNames: Set<string>,
+): string[] {
+  const failures: string[] = [];
+  for (const c of rollup) {
+    if (c.name && requiredNames.has(c.name)) continue;
+    if (c.conclusion && BLOCKING_CONCLUSIONS.has(c.conclusion)) {
+      if (c.name) failures.push(c.name);
+    }
+  }
+  return failures;
+}
+
 function classifyGate(
   mergeStateStatus: string,
   state: string,
-  checks: GateReport["checks"],
+  requiredChecks: CheckCounts,
   unresolvedThreads: number,
 ): GateState {
   if (state === "MERGED") return "CLEAN";
@@ -149,7 +181,9 @@ function classifyGate(
   // the DIRTY gate state per Copilot P0 — semantically the same fix.
   if (mergeStateStatus === "DIRTY" || mergeStateStatus === "BEHIND") return "DIRTY";
   if (mergeStateStatus === "UNSTABLE") return "UNSTABLE";
-  if (checks.failed > 0) return "BLOCKED";
+  // Only required-check failures gate the merge (Amara v1 hardening
+  // 2026-04-30). Non-required failures surface as warnings, not gate.
+  if (requiredChecks.failed > 0) return "BLOCKED";
   if (mergeStateStatus === "BLOCKED") return "BLOCKED";
   if (mergeStateStatus === "CLEAN" && unresolvedThreads === 0) return "CLEAN";
   return "UNKNOWN";
@@ -162,23 +196,42 @@ function nextAction(report: Omit<GateReport, "nextAction">): NextAction {
   // stale CI/thread blockers on intentionally-closed PRs.
   if (report.state === "CLOSED") return "none";
   if (report.gate === "DIRTY") return "rebase";
-  if (report.checks.failed > 0) return "fix-failed-checks";
+  // Only required-check failures trigger fix-failed-checks. Non-required
+  // failures appear in `warnings` but don't gate merge (Amara v1
+  // hardening — "a failed check is not automatically a failed gate").
+  if (report.requiredChecks.failed > 0) return "fix-failed-checks";
   if (report.unresolvedThreads > 0) return "resolve-threads";
-  if (report.checks.inProgress > 0 || report.checks.pending > 0) {
+  if (
+    report.requiredChecks.inProgress > 0 ||
+    report.requiredChecks.pending > 0
+  ) {
     return "wait-ci";
   }
   return "none";
 }
 
 function buildReport(pr: PullRequestData): GateReport {
-  const checks = classifyChecks(pr.statusCheckRollup ?? []);
+  const rollup = pr.statusCheckRollup ?? [];
+  const requiredNames = new Set(pr.requiredCheckNames ?? []);
+  const checks = classifyChecks(rollup);
+  // If no required-check metadata is supplied, fall back to treating ALL
+  // checks as required (preserves v0 semantics, conservative-by-default).
+  const hasRequiredMetadata = requiredNames.size > 0;
+  const requiredChecks = hasRequiredMetadata
+    ? classifyChecks(rollup, (c) => Boolean(c.name && requiredNames.has(c.name)))
+    : checks;
+  const warnings = hasRequiredMetadata
+    ? nonRequiredFailures(rollup, requiredNames).map(
+        (name) => `non-required check failed: ${name}`,
+      )
+    : [];
   const unresolvedThreads = (pr.reviewThreads?.nodes ?? []).filter(
     (t) => !t.isResolved,
   ).length;
   const gate = classifyGate(
     pr.mergeStateStatus,
     pr.state,
-    checks,
+    requiredChecks,
     unresolvedThreads,
   );
   const partial: Omit<GateReport, "nextAction"> = {
@@ -186,9 +239,11 @@ function buildReport(pr: PullRequestData): GateReport {
     state: pr.state,
     gate,
     checks,
+    requiredChecks,
     unresolvedThreads,
     autoMerge: pr.autoMergeRequest ? "armed" : "none",
     mergeCommit: pr.mergeCommit?.oid ?? null,
+    warnings,
   };
   return { ...partial, nextAction: nextAction(partial) };
 }
@@ -295,6 +350,42 @@ function fetchPR(
     allNodes.push(...nodes);
   }
   const reviewThreads = { nodes: allNodes };
+
+  // Fetch required-check names so buildReport can distinguish required-
+  // gate failures from non-required diagnostic noise (Amara v1 hardening
+  // 2026-04-30). Use `gh pr checks --required --json name`. The flag
+  // returns only the checks GitHub considers required for merge.
+  // Failure here is non-fatal: if the API errors (e.g., classic-vs-ruleset
+  // protection edge cases), fall back to v0 semantics (treat all as required)
+  // rather than crashing the poll.
+  const requiredCheckNames: string[] = [];
+  const requiredResult = spawnSync(
+    "gh",
+    [
+      "pr",
+      "checks",
+      String(number),
+      "--repo",
+      `${owner}/${repo}`,
+      "--required",
+      "--json",
+      "name",
+    ],
+    { encoding: "utf8", maxBuffer: SPAWN_MAX_BUFFER },
+  );
+  if (requiredResult.status === 0) {
+    try {
+      const required = JSON.parse(requiredResult.stdout) as Array<{
+        name?: string;
+      }>;
+      for (const r of required) {
+        if (r.name) requiredCheckNames.push(r.name);
+      }
+    } catch {
+      // Fall back to v0 semantics on parse error — non-fatal.
+    }
+  }
+
   const prNarrowed = pr as unknown as PullRequestData;
   const rollup = (prNarrowed.statusCheckRollup ?? []) as unknown[];
 
@@ -302,6 +393,7 @@ function fetchPR(
     ...prNarrowed,
     statusCheckRollup: normalizeRollup(rollup),
     reviewThreads,
+    requiredCheckNames,
   };
 }
 
