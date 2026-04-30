@@ -262,6 +262,93 @@ is visible.**
   down. The rule applies to decisions where multiple options
   exist and the agent picks one.
 
+## Worked examples — caught in this session (2026-04-30)
+
+Two real examples from the session this rule landed in,
+preserved here so future agents see "this exact failure mode
+already happened and was caught" (per Ani 2026-04-30 review
+recommendation):
+
+### Example 1 — Rerere over-correction (Amara caught it)
+
+**Setup:** Earlier in the 2026-04-30 session, the agent
+proposed adding a strong rule about always-using-rerere for
+rebases. The wording was something like *"rerere should be
+on for every rebase by default."*
+
+**The fast-decision failure:** the wording was over-corrected
+because the agent moved fast on what felt like a useful
+hygiene rule.
+
+**The catch:** Amara reviewed the proposed wording and
+flagged that it was too strong — rerere has specific
+applicability conditions (multiple-rebase-of-same-branch
+patterns), not universal applicability. A "default-on"
+wording would propagate as canon and bind future agents to a
+rule that doesn't apply to all their rebases.
+
+**The fix:** PR #938 landed the corrected wording — rerere
+applies *when applicable*, not *by default for every
+rebase*. The corrected memory file now reflects the narrower
+scope.
+
+**Why this composes with the rule:** the per-decision speed
+on the over-corrected wording would have produced amortized
+cost on every future agent reading the wrong-too-strong
+wording, plus the cost of un-canonizing it once caught.
+Slow-deliberate would have asked "is this universally
+applicable, or only in specific patterns?" before landing.
+
+### Example 2 — Bulk-close instinct (Aaron caught it)
+
+**Setup:** Same session, stale-PR triage round. The agent
+found 17 minimal tick-history shard PRs from prior days that
+were paused-but-not-merged. The agent's instinct said
+*"these are stale; bulk-close to clean the queue."*
+
+**The fast-decision failure:** queue-clarity bias — agents
+default to wanting clean PR lists. Closing 17 PRs in one
+sweep would feel productive ("17 fewer items").
+
+**The catch:** Aaron flagged it directly: *"why would you
+want to bulk close, are these things we should do later? on
+this project there are very few wontdos most things are
+reevualtuate later."*
+
+**The fix:** the bulk-close was prevented; the
+default-disposition-paused rule landed
+(`memory/feedback_default_disposition_paused_work_is_reeval_later_not_close_aaron_2026_04_30.md`).
+The 17 PRs stayed open as visible-as-paused work.
+
+**Why this composes with the rule:** queue-clarity-on-this-
+tick is the per-decision optimization; future-knowledge-
+preservation is the amortized-velocity optimization. A
+"clean" PR queue today, but the path-to-future-knowledge
+removed forever.
+
+### What both examples have in common
+
+Both share the **single-shortcut failure shape**:
+
+- A correct-feeling local decision (rerere is hygiene; bulk
+  closing reduces queue noise)
+- That would have produced amortized cost (canon binding to
+  wrong wording; paths to future knowledge removed)
+- Caught only because someone slowed down enough to apply
+  the right framing
+
+**The lesson is not "don't make those decisions."** The
+lesson is: **even after many correct decisions, the next
+decision needs the same care.** Trust accrued from prior
+correctness does not make the current decision safer.
+
+These two caught-in-flight examples are evidence that the
+slow-deliberate rule operates correctly when applied. Future
+agents reading this file should see them as **not-paranoia**
+— the failure mode is real, the catch mechanism is the rule
+itself, and the substrate-shaping cost of NOT catching them
+would have been irreversible.
+
 ## Composes with
 
 - `memory/feedback_acid_durability_of_maintainer_channel_is_load_bearing_aaron_2026_04_30.md`
