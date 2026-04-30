@@ -32,6 +32,7 @@ pattern.
 ## Two options
 
 **A — Per-PR dismissal (status quo)**
+
 - Each sibling-port PR triggers the alert + needs the same
   dismissal API call.
 - Cost: ~30 seconds per PR.
@@ -40,6 +41,7 @@ pattern.
   future sibling port subtly changes the shape.
 
 **B — Structural exclusion in `.github/codeql/codeql-config.yml`**
+
 - One-time exclusion of the rule for `tools/peer-call/*.ts`.
 - Cost: ~1 PR (small YAML change).
 - Pro: drift-resistant; no per-PR work; consistent across siblings.
