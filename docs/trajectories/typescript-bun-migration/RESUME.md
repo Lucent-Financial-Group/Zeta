@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 4 merged — [#872](https://github.com/Lucent-Financial-Group/Zeta/pull/872), commit `2f3275a`)
-**Milestone**: 13 audit scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872). **Cluster B complete: all 5 alignment audits ported.** New pattern this slice: per-line scan for grep-like regex extraction (bash `grep -oE` is per-line by default; whole-content `matchAll` produces extra matches across newlines).
+**Status**: Active (Lane B slice 5 merged — [#874](https://github.com/Lucent-Financial-Group/Zeta/pull/874), commit `3f33b51`)
+**Milestone**: 16 audit scripts ported (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874). **Cluster E complete: 3 hygiene audit-pattern scripts ported.** New pattern this slice: `trimSpaces` pure helper as eslint-clean alternative to anchored space-stripping regexes (avoids sonarjs/slow-regex flag).
 **Current blocker**: None.
-**Next concrete action**: Pick a coherent next slice from Bucket B (28 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
+**Next concrete action**: Pick a coherent next slice from Bucket B (25 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
@@ -23,6 +23,7 @@ Per the maintainer-channel correction via the multi-AI review surface (2026-04-2
 | [#868](https://github.com/Lucent-Financial-Group/Zeta/pull/868) | 2026-04-30 (commit `b1dab4d`) | `tools/hygiene/audit-machine-specific-content.{sh→ts}`, `tools/hygiene/audit-git-hotspots.{sh→ts}`, `tools/hygiene/audit-cross-platform-parity.{sh→ts}` | Merged |
 | [#870](https://github.com/Lucent-Financial-Group/Zeta/pull/870) | 2026-04-30 (commit `cab59ca`) | `tools/alignment/audit_archive_headers.{sh→ts}`, `tools/alignment/audit_personas.{sh→ts}`, `tools/alignment/audit_commit.{sh→ts}` | Merged |
 | [#872](https://github.com/Lucent-Financial-Group/Zeta/pull/872) | 2026-04-30 (commit `2f3275a`) | `tools/alignment/audit_skills.{sh→ts}`, `tools/alignment/citations.{sh→ts}` | Merged |
+| [#874](https://github.com/Lucent-Financial-Group/Zeta/pull/874) | 2026-04-30 (commit `3f33b51`) | `tools/hygiene/audit-tick-history-bounded-growth.{sh→ts}`, `tools/hygiene/audit-post-setup-script-stack.{sh→ts}`, `tools/hygiene/audit-missing-prevention-layers.{sh→ts}` | Merged |
 
 ## Inventory — Python (tools/, Zeta-authored)
 
@@ -32,7 +33,7 @@ After PR #849, Zeta has zero Python files in `tools/` (Zeta-authored — the 22 
 
 ## Inventory — Bash (tools/, Zeta-authored, 56 files)
 
-Four buckets. Count is repo-derived and stable: `git ls-files tools/ | grep '\.sh$' | wc -l` returns 56. Buckets: A (14 stay-bash) + B (28 should-become-TS) + C (3 needs-decision) + D (11 ported-TS-exists, bash retained as equivalence reference and will retire) = 56.
+Four buckets. Count is repo-derived and stable: `git ls-files tools/ | grep '\.sh$' | wc -l` returns 56. Buckets: A (14 stay-bash) + B (25 should-become-TS) + C (3 needs-decision) + D (14 ported-TS-exists, bash retained as equivalence reference and will retire) = 56.
 
 ### Bucket A — Should stay Bash (14 files)
 
@@ -57,9 +58,9 @@ tools/profile.sh
 
 Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
 
-### Bucket B — Should become TypeScript (28 files remaining)
+### Bucket B — Should become TypeScript (25 files remaining)
 
-Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872. Eleven originally-listed audit scripts are now ported to TS and removed from this list; the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
+Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874. Fourteen originally-listed audit scripts are now ported to TS and removed from this list; the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
 
 ```text
 tools/audit-packages.sh
@@ -72,9 +73,6 @@ tools/git/batch-resolve-pr-threads.sh
 tools/git/push-with-retry.sh
 tools/hygiene/append-tick-history-row.sh
 tools/hygiene/audit-agencysignature-main-tip.sh
-tools/hygiene/audit-missing-prevention-layers.sh
-tools/hygiene/audit-post-setup-script-stack.sh
-tools/hygiene/audit-tick-history-bounded-growth.sh
 tools/hygiene/capture-tick-snapshot.sh
 tools/hygiene/check-archive-header-section33.sh
 tools/hygiene/check-no-conflict-markers.sh
@@ -109,9 +107,9 @@ tools/lint/safety-clause-audit.sh
 
 Rationale: borderline — depends on whether the lint can be expressed as cleanly in TS as it currently is in shell. Worth a small comparison before committing the port.
 
-### Bucket D — Ported, bash retained (11 files)
+### Bucket D — Ported, bash retained (14 files)
 
-The TS ports landed in #866 + #868 + #870 + #872; the bash originals stay in-tree as equivalence references and will retire once the TS ports have soaked.
+The TS ports landed in #866 + #868 + #870 + #872 + #874; the bash originals stay in-tree as equivalence references and will retire once the TS ports have soaked.
 
 ```text
 tools/hygiene/audit-md032-plus-linestart.sh        # ported in #866
@@ -125,11 +123,14 @@ tools/alignment/audit_personas.sh                  # ported in #870
 tools/alignment/audit_commit.sh                    # ported in #870
 tools/alignment/audit_skills.sh                    # ported in #872
 tools/alignment/citations.sh                       # ported in #872
+tools/hygiene/audit-tick-history-bounded-growth.sh # ported in #874
+tools/hygiene/audit-post-setup-script-stack.sh     # ported in #874
+tools/hygiene/audit-missing-prevention-layers.sh   # ported in #874
 ```
 
 ## Recommended next slice
 
-Cluster A landed in #868, Cluster B (5 alignment audits) fully complete with #870 + #872. Three plausible candidates remaining:
+Cluster A (#868) + Cluster B (#870, #872) + Cluster E (#874) all landed. Two plausible candidates remaining:
 
 ```text
 # Cluster C — budget reports (touches shared production state)
@@ -139,21 +140,14 @@ tools/budget/snapshot-burn.sh
 ```
 
 ```text
-# Cluster E — generic hygiene checks (3 files, audit pattern)
-tools/hygiene/audit-missing-prevention-layers.sh
-tools/hygiene/audit-post-setup-script-stack.sh
-tools/hygiene/audit-tick-history-bounded-growth.sh
-```
-
-```text
-# Cluster F — append/check hygiene (3-4 files, simpler shape)
+# Cluster F — append/check hygiene (4 files, simpler shape)
 tools/hygiene/append-tick-history-row.sh
 tools/hygiene/check-archive-header-section33.sh
 tools/hygiene/check-no-conflict-markers.sh
 tools/hygiene/check-tick-history-order.sh
 ```
 
-Estimated complexity: **Medium-Large** for C (cost-visibility surface — needs visibility-constraint care + advances task #287); **Medium** for E (audit-pattern, similar shape to prior slices); **Small** for F (check-only scripts, simpler than audits).
+Estimated complexity: **Medium-Large** for C (cost-visibility surface — needs visibility-constraint care + advances task #287); **Small** for F (check-only scripts, simpler than audits).
 
 **Gate B prerequisite (mandatory before first mutating action on the slice)**:
 
@@ -161,7 +155,7 @@ Estimated complexity: **Medium-Large** for C (cost-visibility surface — needs 
 2. Re-verify sibling-repo comparison points (`../SQLSharp` commit hash, `../scratch` mtime).
 3. Confirm DST + coverage gate items in the per-slice checklist apply (or document deferred-check exemption).
 
-Cluster E or Cluster F is the recommended-default for slice 5 (continues file-walker shape from prior slices); Cluster C is reserved for after the maintainer weighs in on visibility-impact.
+Cluster F is the recommended-default for slice 6 (continues file-walker shape from prior slices); Cluster C is reserved for after the maintainer weighs in on visibility-impact.
 
 ## Bun / tooling requirements
 
@@ -239,7 +233,7 @@ This audit is a one-off; it doesn't replace the per-tool/language expert + teach
 
 **Status**: deferred from this PR (no-fan-out during live lane). After #866 lands, the TS+Bun expert skill becomes a Lane C+ artifact or a sibling trajectory.
 
-**Why this matters for the migration**: each future slice (28 ports remaining in Bucket B) benefits from a current-docs anchor. Without it, ports drift toward whatever convention the most-recently-read TS file used; with it, ports converge on contemporary best practice.
+**Why this matters for the migration**: each future slice (25 ports remaining in Bucket B) benefits from a current-docs anchor. Without it, ports drift toward whatever convention the most-recently-read TS file used; with it, ports converge on contemporary best practice.
 
 ## Operating notes (lane-discipline addendum)
 
