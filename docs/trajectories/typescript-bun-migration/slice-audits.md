@@ -411,6 +411,40 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
+## Slice 9 — 3 ports (agency-signature-pair cluster + snapshot-pinning) (PR pending — `lane-b/ts-bun-slice-9-agencysignature-pair-2026-04-30`)
+
+**Slice files**:
+
+- `tools/hygiene/validate-agencysignature-pr-body.{sh→ts}` (pre-merge validator)
+- `tools/hygiene/audit-agencysignature-main-tip.{sh→ts}` (post-merge auditor)
+- `tools/hygiene/capture-tick-snapshot.{sh→ts}` (factory-state pin)
+
+**Comparison points**: identical to slice 6/7/8 (TypeScript 6.0, Bun 1.3, typescript-eslint v8, `../SQLSharp` at `7d3d9f6`, `../scratch` at mtime `2026-04-15`). Within Gate B 30-day window.
+
+### Tsconfig audit
+
+- Reuses repo `tsconfig.json` (no per-slice deviation). All 3 files compile under `bun x tsc --noEmit` clean.
+
+### Eslint audit
+
+- All 3 files clean under `eslint` (typescript-eslint strictTypeChecked + stylisticTypeChecked + sonarjs).
+
+### Code-pattern audit (per-port)
+
+- **`validate-agencysignature-pr-body.ts`** (247 → 454 lines): bash `cat` for stdin → `readFileSync(0, "utf8")`. `git interpret-trailers --parse` invocation preserved. Markdown code-fence strip via FENCE_RE filter. Terminal-block check (3-strategy lookup) preserved. Bash `[\t ]+$` (sonarjs/slow-regex) replaced with manual trimSpaceTab walk. Bash `check_enum` → ENUMS array + checkEnums helper. Human-Review/Human-Review-Evidence consistency check preserved verbatim.
+- **`audit-agencysignature-main-tip.ts`** (297 → 432 lines): **two bash-bug-fixes-by-port** documented — (1) BSD `date -j -f '%Y-%m-%dT%H:%M:%SZ'` does NOT handle TZ-offset like `-04:00` on macOS; TS uses `Date.parse` which handles both `Z` and `±HH:MM`; (2) bash `exit 2` inside `$(classify_commit ...)` only exits subshell — bash silently produced unclassified output on macOS. TS short-circuits cleanly. Same behaviour-improvement class as no-empty-dirs empty-FILTERED.
+- **`capture-tick-snapshot.ts`** (118 → 186 lines): bash `wc -c` shell-out replaced with `statSync().size`. Bash sed regex greedy-bug (retains `.git` suffix) preserved for drop-in equivalence; future cleanup follow-up to strip after downstream verifies.
+
+### Equivalence audit
+
+- **`validate-agencysignature-pr-body`**: byte-equivalent on PASS + FAIL paths.
+- **`audit-agencysignature-main-tip`**: TS port produces CORRECT classifications where bash silently broke (unclassified output) due to BSD date + exit-in-subshell bugs.
+- **`capture-tick-snapshot`**: byte-equivalent on YAML + JSON modes modulo run-time fields (date_utc + claude_cli_version).
+
+### Outcome
+
+Slice 9 passes audit. **Agency-signature-pair cluster opened**: validate-pr-body (pre-merge) + audit-main-tip (post-merge) form Amara's ferry-7 enforcement-instrument set. Bucket B 19 → 16.
+
 ## Slice 8 — 3 ports (Cluster H finish + audit-cluster start) (PR pending — `lane-b/ts-bun-slice-8-runner-version-freshness-2026-04-30`)
 
 **Slice files**:
