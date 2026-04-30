@@ -862,8 +862,9 @@ canonical definition.
 auditing for a forbidden pattern, count matches to *find* work,
 but *classify* the context of each match to *decide* whether
 work is needed. A scanner that reports "12 references to X" has
-located 12 candidates; only context classification (rule-
-definition / sample / live-code / disclosure / etc.) determines
+located 12 candidates; only context classification
+(rule-definition / sample / live-code / disclosure / etc.)
+determines
 how many — if any — actually need rewriting. Treating the
 candidate count as the violation count is a Goodhart-class
 failure: it optimizes for the visible metric (count) at the
