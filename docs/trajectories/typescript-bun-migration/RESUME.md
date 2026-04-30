@@ -19,6 +19,7 @@ Per the maintainer-channel correction via the multi-AI review surface (2026-04-2
 | PR | Date | Files | Status |
 |---|---|---|---|
 | [#849](https://github.com/Lucent-Financial-Group/Zeta/pull/849) | 2026-04-29 (commit `40344c9`) | `tools/hygiene/sort-tick-history-canonical.{py→ts}`, `tools/hygiene/fix-markdown-md032-md026.{py→ts}` | Merged |
+| Lane B slice 1 | 2026-04-29 | `tools/hygiene/audit-md032-plus-linestart.sh`→`.ts`, `tools/hygiene/audit-memory-index-duplicates.sh`→`.ts`, `tools/hygiene/audit-memory-references.sh`→`.ts` | In flight |
 
 ## Inventory — Python (tools/, Zeta-authored)
 
@@ -158,22 +159,26 @@ Coherent budget-report cluster; would advance task #287 (cost monitoring) in add
 
 These rules apply to this trajectory's execution and are recorded here per the locked discipline that minor lane-discipline additions land in the active lane artifact rather than as standalone doctrine packets.
 
-**Polite waiting is still waiting** (added 2026-04-29 via multi-AI review surface convergence). Start immediately when **all three** are true:
+**Polite waiting is still waiting** (added 2026-04-29 via multi-AI review surface convergence; refined post-#865 after the read-only-first condition produced its own self-defeating wait gate). Start the next slice immediately when **all four** are true:
 
-1. The next lane is already specified in locked discipline.
-2. The first action is read-only.
-3. No authority boundary is crossed.
+1. The slice is inside a defined trajectory.
+2. The slice is scoped to a coherent chunk by that trajectory.
+3. Standing authority covers the work.
+4. No authority boundary is crossed:
+   - no host mutation
+   - no destructive git operation
+   - no permission change
+   - no merge before CI / review / branch-protection requirements are satisfied
 
-**Operational definition of "no authority boundary crossed"** (the third condition, expanded from judgment to checklist per the multi-AI review surface's correction-on-correction):
+**Read-only-first is NOT a condition.** The earlier wording required that "the first action is read-only" — a rule designed to prevent waiting that itself became a waiting gate when the trajectory's next slice involved code-porting (which is not read-only). The trajectory's RESUME inventory + classification + slice selection IS the safety work. Requiring read-only re-verification before action duplicated that safety check and produced the wait it was meant to prevent.
 
-- no host mutation
-- no destructive git operation
-- no permission change
-- no merge
+If all four conditions are true, proceed. Do not wait for the maintainer. Do not ask if it's OK to start. Do not create a doctrine note before acting. The maintainer is not the lane-transition protocol.
 
-If all three conditions are true, proceed. Do not wait for the maintainer. Do not ask if it's OK to start. Do not create a doctrine note before acting. The maintainer is not the lane-transition protocol.
+**This trigger applies per-slice.** Each subsequent slice that meets the four conditions starts immediately when the prior slice lands. No re-asking sizing questions for slices the trajectory's classification already specifies.
 
 **The anti-waiting rule must not become a waiting rule.** This rule is recorded here, in the active artifact already being touched, rather than as a standalone doctrine packet — *action first, record when the artifact is already being touched*. A rule that prevents waiting must not wait to be recorded.
+
+**Discipline bounds autonomous work; it does not replace autonomous work.** Read-only-first was safety theater. Trajectory-scoped standing authority is the safety. The trigger fires when the trajectory has done its job — not when the agent waits for permission to use it.
 
 **Counts before percentages.** Track concrete counts and buckets before claiming progress as a percentage. Every percentage requires a defined denominator that is itself mechanically derivable. The Python inventory's "100% complete" is well-defined (denominator = 2 ports, both landed); future progress claims need the same standard.
 
