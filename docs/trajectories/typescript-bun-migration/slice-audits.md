@@ -436,7 +436,7 @@ Diff'd against bash output on this repo state (2026-04-30 main, snapshots.jsonl 
 
 ### Outcome
 
-Slice 19 passes audit. **Budget cluster closes** (snapshot-burn.ts at slice 14, daily-cost-report.ts at slice 18, project-runway.ts at slice 19 — all three TS now). Once this lands, daily-cost-report.ts can switch from spawning `project-runway.sh` to spawning `project-runway.ts` for full-TS budget reporting (follow-up slice). Bucket B inventory: budget cluster done.
+Slice 19 passes audit. **Budget cluster closes** (snapshot-burn.ts at slice 14, daily-cost-report.ts at slice 18, project-runway.ts at slice 19 — all three TS now). Now that this has landed, daily-cost-report.ts can switch from spawning `project-runway.sh` to spawning `project-runway.ts` for full-TS budget reporting (follow-up slice). Bucket B inventory: budget cluster done.
 
 ## Slice 18 — 1 port (budget/daily-cost-report — daily cost-monitoring entry point) (PR #901, merged 2026-04-30, commit `76f3dc9`)
 
@@ -448,7 +448,7 @@ Slice 19 passes audit. **Budget cluster closes** (snapshot-burn.ts at slice 14, 
 
 ### Code-pattern audit (per-port)
 
-- **`daily-cost-report.ts`** (~190 → 302 lines): bash dispatch script structure mapped 1:1 to TS — `runSnapshotStep` + `runProjectionStep` extracted as `StepResult`-returning helpers so `main()` stays under cognitive-complexity 15 (Codex P3 on round 2). Bash `$( "$script_dir/project-runway.sh" 2>&1 )` → `spawnSync("/bin/bash", ["-c", `"${path}" 2>&1`])` so stdout/stderr merge happens at the kernel pipe boundary chronologically (NOT JS-space `result.stdout + result.stderr` concat — Copilot P1 round 2 caught the JS-space approach loses ordering). Bash `[ -f "$snapshots_path" ]` → `isRegularFileSafe` helper (statSync().isFile() + try/catch) — guards against the existsSync/`-f` semantic mismatch documented in slice-19.
+- **`daily-cost-report.ts`** (~190 → 302 lines): bash dispatch script structure mapped 1:1 to TS — `runSnapshotStep` + `runProjectionStep` extracted as `StepResult`-returning helpers so `main()` stays under cognitive-complexity 15 (round-2 review finding). Bash command-substitution over `project-runway.sh` with `2>&1` mapped to `spawnSync` invoking `/bin/bash -c` with the same shell-side redirect — so stdout/stderr merge happens at the kernel pipe boundary chronologically. The naive JS-space approach (concatenating `result.stdout` and `result.stderr`) loses ordering and was rejected during round-2 review. Bash `[ -f "$snapshots_path" ]` mapped to `isRegularFileSafe` (statSync().isFile() + try/catch) — guards against the existsSync vs bash `-f` semantic mismatch documented in slice-19.
 - **`classifySpawnFailure` 4-case helper reused**: status set / ENOENT → 127 / signal / other (same shape as slices 13-17). Distinguishes a missing-script ENOENT from a normal non-zero exit so callers see the actual failure mode.
 - **Bootstrap path**: when no snapshots.jsonl exists yet, the wrapper writes a fixed bootstrap message into the report (matches bash original); `runProjectRunway` is never spawned in that case.
 - **Output discipline**: `writeFileSync(reportPath, report)` overwrites (not appends) — same as bash `cat <<...> "$report"`. Historical snapshots stay in `snapshots.jsonl`; the report file is reproducible from snapshot subset + run timestamp.
@@ -464,13 +464,13 @@ Slice 19 passes audit. **Budget cluster closes** (snapshot-burn.ts at slice 14, 
 
 ### Outcome
 
-Slice 18 passes audit. **Daily-cost wrapper now TS** — first wrapper-class port in the budget cluster. Bucket B 7 → 6. Adds substrate observation: kernel-pipe vs JS-space stream interleaving distinction (recorded in 07:21Z tick row).
+Slice 18 passes audit. **Daily-cost wrapper now TS** — first wrapper-class port in the budget cluster. Bucket B 5 → 4. Adds substrate observation: kernel-pipe vs JS-space stream interleaving distinction (recorded in 07:21Z tick row).
 
 ## Slice 17 — 1 port (peer-call/codex — peer-call cluster closes) (PR #900, merged 2026-04-30, commit `10c3418`)
 
 **Slice files**:
 
-- `tools/peer-call/codex.{sh→ts}` (Otto's harness-side caller for invoking Codex (OpenAI) as a peer reviewer via the codex CLI; closes the peer-call cluster)
+- `tools/peer-call/codex.{sh→ts}` (the harness-side caller for invoking Codex (OpenAI) as a peer reviewer via the codex CLI; closes the peer-call cluster)
 
 **Comparison points**: identical to slice 16. Within Gate B 30-day window. tsc gate active per #890.
 
@@ -491,13 +491,13 @@ Slice 18 passes audit. **Daily-cost wrapper now TS** — first wrapper-class por
 
 ### Outcome
 
-Slice 17 passes audit. **Peer-call cluster closes** (slice 15 grok + slice 16 gemini + slice 17 codex — all three LLM-CLI wrappers ported). Bucket B 8 → 7. Sibling-port-cost decreased monotonically: slice 17 shipped 357 lines in a single commit with all known fixes pre-baked. Worth absorbing as factory pattern: when porting sibling scripts, batch-apply known fixes proactively rather than waiting for reviewer rediscovery.
+Slice 17 passes audit. **Peer-call cluster closes** (slice 15 grok + slice 16 gemini + slice 17 codex — all three LLM-CLI wrappers ported). Bucket B 6 → 5. Sibling-port-cost decreased monotonically: slice 17 shipped 357 lines in a single commit with all known fixes pre-baked. Worth absorbing as factory pattern: when porting sibling scripts, batch-apply known fixes proactively rather than waiting for reviewer rediscovery.
 
 ## Slice 16 — 1 port (peer-call/gemini — peer-call sibling) (PR #898, merged 2026-04-30, commit `db8f3e8`)
 
 **Slice files**:
 
-- `tools/peer-call/gemini.{sh→ts}` (Otto's harness-side caller for invoking Gemini as a peer reviewer)
+- `tools/peer-call/gemini.{sh→ts}` (the harness-side caller for invoking Gemini as a peer reviewer)
 
 **Comparison points**: identical to slice 15. Within Gate B 30-day window. tsc gate active per #890.
 
@@ -519,7 +519,7 @@ Slice 17 passes audit. **Peer-call cluster closes** (slice 15 grok + slice 16 ge
 
 ### Outcome
 
-Slice 16 passes audit. Bucket B 9 → 8. Adds substrate observations: kernel-pipe vs JS-space stream-ordering (further refined in slice 18), `ReadHeadResult` discriminated-union for file-read failures, bash-only feature support requires `/bin/bash -c` (not `/bin/sh -c`).
+Slice 16 passes audit. Bucket B 7 → 6. Adds substrate observations: kernel-pipe vs JS-space stream-ordering (further refined in slice 18), `ReadHeadResult` discriminated-union for file-read failures, bash-only feature support requires `/bin/bash -c` (not `/bin/sh -c`).
 
 ## Slice 15 — 1 port (peer-call/grok — peer-call cluster opens) (PR #896, merged 2026-04-30 — backport from #898 baked in via #899 commit `c1623ca`)
 
