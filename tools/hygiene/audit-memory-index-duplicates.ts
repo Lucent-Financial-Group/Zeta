@@ -85,6 +85,17 @@ function parseArgs(argv: readonly string[]): Args {
   return { target, enforce };
 }
 
+function describeIoError(err: unknown): string {
+  if (err instanceof Error) {
+    const code =
+      "code" in err && typeof (err as { code?: unknown }).code === "string"
+        ? (err as { code: string }).code
+        : undefined;
+    return code !== undefined ? `${code}: ${err.message}` : err.message;
+  }
+  return String(err);
+}
+
 export function findDuplicates(content: string): readonly DuplicateFinding[] {
   const counts = new Map<string, number>();
   for (const match of content.matchAll(LINK_RE)) {
@@ -105,14 +116,18 @@ export function findDuplicates(content: string): readonly DuplicateFinding[] {
 export function main(argv: readonly string[]): AuditExitCode {
   const { target, enforce } = parseArgs(argv);
 
-  // Read target atomically. readFileSync throws ENOENT/EISDIR if missing
-  // or not a regular file; that matches the prior existsSync check
-  // without the TOCTOU race (CodeQL js/file-system-race).
+  // Read target atomically — readFileSync throws on ENOENT, EISDIR,
+  // EACCES, etc. Avoids the TOCTOU race between a separate existsSync
+  // check and the read (CodeQL js/file-system-race). Surface the
+  // error code so permission / path-shape failures are not silently
+  // misreported as "not found".
   let content: string;
   try {
     content = readFileSync(target, "utf8");
-  } catch {
-    process.stderr.write(`error: target file not found: ${target}\n`);
+  } catch (err: unknown) {
+    process.stderr.write(
+      `error: unable to read target file: ${target} (${describeIoError(err)})\n`,
+    );
     return 64;
   }
 

@@ -108,6 +108,17 @@ function isFile(p: string): boolean {
   }
 }
 
+function describeIoError(err: unknown): string {
+  if (err instanceof Error) {
+    const code =
+      "code" in err && typeof (err as { code?: unknown }).code === "string"
+        ? (err as { code: string }).code
+        : undefined;
+    return code !== undefined ? `${code}: ${err.message}` : err.message;
+  }
+  return String(err);
+}
+
 export function audit(content: string, baseDir: string): AuditResult {
   const refs = new Set<string>();
   for (const match of content.matchAll(LINK_RE)) {
@@ -136,25 +147,33 @@ export function audit(content: string, baseDir: string): AuditResult {
 export function main(argv: readonly string[]): AuditExitCode {
   const { target, baseDir, enforce } = parseArgs(argv);
 
-  // Read target atomically (readFileSync throws ENOENT/EISDIR if
-  // missing or not a regular file). Avoids the TOCTOU race between
-  // an existsSync check and the read (CodeQL js/file-system-race).
+  // Read target atomically — readFileSync throws on ENOENT, EISDIR,
+  // EACCES, etc. Avoids the TOCTOU race between an existsSync check
+  // and the read (CodeQL js/file-system-race). Surface the error
+  // code so debugging permission/path-shape errors is not just
+  // "not found".
   let content: string;
   try {
     content = readFileSync(target, "utf8");
-  } catch {
-    process.stderr.write(`error: target file not found: ${target}\n`);
+  } catch (err: unknown) {
+    process.stderr.write(
+      `error: unable to read target file: ${target} (${describeIoError(err)})\n`,
+    );
     return 64;
   }
 
   // Same atomic pattern for base directory.
   try {
     if (!statSync(baseDir).isDirectory()) {
-      process.stderr.write(`error: base directory not found: ${baseDir}\n`);
+      process.stderr.write(
+        `error: base directory is not a directory: ${baseDir}\n`,
+      );
       return 64;
     }
-  } catch {
-    process.stderr.write(`error: base directory not found: ${baseDir}\n`);
+  } catch (err: unknown) {
+    process.stderr.write(
+      `error: unable to stat base directory: ${baseDir} (${describeIoError(err)})\n`,
+    );
     return 64;
   }
 

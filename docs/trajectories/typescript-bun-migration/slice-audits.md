@@ -103,13 +103,47 @@ Claude.ai's distinction between hard requirements and stylistic preferences is r
 
 **Gap recorded**: Bun Shell (`Bun.$`) NOT used; the ports use Node-style `spawnSync` + `readFileSync`. Reason: the ports' shell originals were file-walkers and regex-matchers, not multi-stage pipelines; Node-style IO is sufficient. Bun Shell becomes relevant for ports that pipe shell commands together, where bash `set -e` semantics need explicit Bun Shell error handling. **Required checklist item for future slices that DO use shell pipelines.**
 
-### Equivalence audit
+### Equivalence audit (clean + failure-mode fixtures)
 
-For each of the 3 ports:
+For each of the 3 ports, equivalence verified across the relevant
+modes:
 
-- **Applied**: bash-vs-TS output diff is empty under default args.
-- **Applied**: bash-vs-TS output diff is empty under `--list` mode (md032 only).
-- **Note**: `--enforce` mode exits 2 vs 0; tested manually by running enforce-mode against a known-bad fixture.
+**`audit-md032-plus-linestart`**:
+
+- **Applied**: bash-vs-TS output diff is empty under default args
+  (summary mode against current repo state).
+- **Applied**: bash-vs-TS output diff is empty under `--list` mode.
+- **Note**: `--enforce` mode exits 2 vs 0; tested manually by running
+  enforce-mode against a known-bad fixture.
+
+**`audit-memory-references`**:
+
+- **Applied**: bash-vs-TS output diff is empty under the clean path
+  (current repo state — 0 broken refs).
+- **Applied**: bash-vs-TS output diff is empty under the
+  broken-ref-found path. Fixture: `MEMORY.md` with one resolving
+  link (`exists.md`) and one missing target (`missing.md`); both
+  scripts report `refs checked: 2 / resolved: 1 / broken: 1` plus
+  the same `missing.md -> memory/missing.md (not found)` line.
+
+**`audit-memory-index-duplicates`**:
+
+- **Applied**: bash-vs-TS output diff is empty under the clean
+  path.
+- **Gap recorded — intentional output-format change** (failure
+  path): the bash version emits `](foo.md)` in the target column
+  (a side-effect of `grep -oE '\]\([...]+\.md\)'` not stripping
+  its match wrapper); the TS version emits the bare path
+  (`foo.md`). Detection, count, and ordering are byte-equivalent;
+  only the wrapper visual is dropped. The wrapper was extraction
+  noise — the column header is "target" and `foo.md` IS the
+  target; `](foo.md)` was the *match-pattern*, not the target.
+  Treated as an intentional improvement; documented here so future
+  audits know the divergence is deliberate, not a regression.
+
+**Hard requirement**: behavioral equivalence on detection (which
+findings are reported) and exit status. Stderr formatting
+divergences are recorded explicitly above when they exist.
 
 ### Outcome
 
