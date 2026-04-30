@@ -242,6 +242,6 @@ The Trunk.io post on merge-queue-builds-on-wrong-commit is
 the most operationally-load-bearing of the six — it
 describes a class of bug that, if present in our path,
 would silently produce wrong commits while our auto-merge
-+ CI gates report green. The "wrong commit" failure mode
-is exactly the silent-failure shape the factory has rules
-against. Worth a careful read on first absorb pass.
+plus CI gates report green. The "wrong commit" failure
+mode is exactly the silent-failure shape the factory has
+rules against. Worth a careful read on first absorb pass.
