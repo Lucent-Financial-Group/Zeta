@@ -398,3 +398,49 @@ Both packets converge on confirming PR #923 (v1 hardening) was the right move an
 - `tools/github/poll-pr-gate.ts` (the executable that v1 hardened)
 - The companion gatekeeper in-flight at PR #924 (will land at `tools/github/check-github-status.ts` once merged)
 - The internal-direction-from-project-survival rule — both packets processed as inputs, not directives.
+
+---
+
+## Deepseek — full session-arc review (post-PR #924 merge)
+
+Integration status: arrived after PR #924 merged. Full-arc retrospective; most findings overlap with prior packets and shipped substrate.
+
+### Verbatim packet
+
+> ## What's Genuinely Strong
+>
+> **The CI immune system is now mechanical, not just prose.** Three independent latches fired on a single small PR: the paired-edit check (memory file edited without updating MEMORY.md), the duplicate-link lint (pre-existing violation from PR #916), and the submit-nuget transient flake class. Each caught a real defect or surfaced known noise. This is defense-in-depth operating autonomously—exactly what the earlier rounds were designing toward.
+>
+> **The poll-pr-gate tool went through 17 unique reviewer findings and emerged functional.** That's real multi-AI iteration polish. The tool now self-reports on its own follow-up PRs. The script-supersedes-prose loop closed cleanly when PR #922 pointed the memory file at the executable.
+>
+> **The 22 consecutive dot ticks are legitimate.** No in-flight PRs, no open work, no maintainer input. The `·` form is correct here—this is genuine pause, not the "Holding." anti-pattern. The loop correctly declined to fabricate motion.
+>
+> ## Patterns Worth Attention
+>
+> **After 22 dots, the never-be-idle principle should eventually re-engage.** The current cadence rule handles short pauses well but doesn't specify what happens when quiet extends beyond ~30 minutes. There are 58 open tasks. Many are genuinely deferred (waiting on external events or maintainer input), but some may be small, actionable items that could be picked up during extended quiet periods—stale-task audits, MEMORY.md conflict resolution, the project-file internals cleanup from the no-copy discipline. The dot is the right form for an empty tick. But a sequence of 30+ dots should trigger a deferred-task re-audit.
+>
+> **The submit-nuget transient flake still shows as `fix-failed-checks` in the tool output.** It's non-required and known-transient, but the tool can't yet distinguish required failures from noise. This creates false-positive signal. A `TRANSIENT_HOST_ERROR` classification and a filter in the gate report would eliminate it.
+>
+> **MEMORY.md merge conflicts are a recurring tax.** Every parallel PR that touches the index creates a conflict on rebase. The resolution is trivial, but the friction accumulates across every session. A mechanical fix—per-category index files or a merge-union driver—would eliminate this entirely.
+>
+> **The stale project-file internals cleanup has no follow-up trigger.** The no-copy discipline's status_note flagged the bleed-out but nothing schedules the cleanup. This is the deferred-skill anti-pattern: a known gap in prose, never actioned.
+>
+> ## Operational Verdict
+>
+> The session arc is the strongest in the visible run. 13 PRs landed—substrate-product, infrastructure-fix, and tooling in correct rotation. The CI immune system caught real defects mechanically. The poll-the-gate rule moved from prose to executable. The dot-tick discipline held correctly through 22+ minutes of genuine pause.
+>
+> The remaining friction is mechanical, not doctrinal: submit-nuget noise classification, MEMORY.md conflicts, stale internals cleanup scheduling. Each is small, fixable, and of known class. The loop has earned its pause.
+
+### Integration outcomes
+
+Most findings overlap with already-shipped substrate:
+
+- **submit-nuget transient classification** → SHIPPED in PR #923 (v1 hardening). The required-vs-non-required check classification distinguishes required failures from non-required diagnostic noise. Deepseek was reading state before #923 merged.
+- **MEMORY.md merge-conflict tax** → SHIPPED in PR #920 (Git `merge=union` driver in `.gitattributes`). Deepseek was reading state before #920 merged.
+- **Stale project-file internals cleanup** → B-0112 P2 row filed earlier this session with concrete trigger conditions (any tick that touches the file OR scopes work into the named sibling directories OR TS+Bun expert baseline drafting). The "deferred-skill anti-pattern" Deepseek named is exactly what B-0112's trigger-condition addresses.
+
+New finding worth noting:
+
+- **30+ dot threshold for deferred-task re-audit** — specific cadence rule beyond the existing dot-tick discipline. Composes with Ani's strict-enforcement framing (any work = one-line summary; pause = dot). Adds: after sustained dots, a backlog scan for already-scoped tiny fixes is the proper resumption shape (NOT new conceptual lanes — per Amara's prior 10-dot guidance).
+
+The 13-PR arc Deepseek calls "the strongest in the visible run" is now extended by PR #923 (v1 hardening) + PR #924 (check-github-status companion gatekeeper) + PR #925 (this preservation packet). The factory's two-tool diagnostic pair (Query + Gatekeeper) is operationally on main.
