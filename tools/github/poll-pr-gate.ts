@@ -16,7 +16,7 @@
 // Usage:
 //   bun tools/github/poll-pr-gate.ts <PR_NUMBER>
 //   bun tools/github/poll-pr-gate.ts <PR_NUMBER> --owner Lucent-Financial-Group --repo Zeta
-//   bun tools/github/poll-pr-gate.ts --fixture tools/github/fixtures/blocked-with-threads.json
+//   bun tools/github/poll-pr-gate.ts --fixture tools/github/fixtures/blocked-by-threads.json
 //
 // Output: one JSON object on stdout, shape:
 //   {
@@ -138,7 +138,10 @@ function classifyGate(
 ): GateState {
   if (state === "MERGED") return "CLEAN";
   if (state === "CLOSED") return "CLEAN";
-  if (mergeStateStatus === "DIRTY") return "DIRTY";
+  // DIRTY = merge conflict; BEHIND = base advanced past PR's merge-base
+  // (rebase/update needed). Both surface as "rebase" next-action under
+  // the DIRTY gate state per Copilot P0 — semantically the same fix.
+  if (mergeStateStatus === "DIRTY" || mergeStateStatus === "BEHIND") return "DIRTY";
   if (mergeStateStatus === "UNSTABLE") return "UNSTABLE";
   if (checks.failed > 0) return "BLOCKED";
   if (mergeStateStatus === "BLOCKED") return "BLOCKED";
@@ -180,6 +183,38 @@ function buildReport(pr: PullRequestData): GateReport {
   return { ...partial, nextAction: nextAction(partial) };
 }
 
+// Distinct exit codes (per Copilot P1):
+//   0 — success
+//   1 — invocation / argument / dependency-missing error
+//   2 — gh CLI returned non-zero (auth, rate-limit, PR not found)
+//   3 — gh CLI output couldn't be parsed (truncated, non-JSON)
+function runGhOrExit(args: string[], context: string): string {
+  const result = spawnSync("gh", args, { encoding: "utf8" });
+  if (result.error) {
+    // ENOENT etc — gh is not on PATH or couldn't be launched
+    process.stderr.write(`${context}: failed to launch gh: ${result.error.message}\n`);
+    process.exit(1);
+  }
+  if (result.status !== 0) {
+    process.stderr.write(
+      `${context}: gh exited ${result.status}: ${result.stderr || result.stdout}\n`,
+    );
+    process.exit(2);
+  }
+  return result.stdout;
+}
+
+function parseJsonOrExit<T>(raw: string, context: string): T {
+  try {
+    return JSON.parse(raw) as T;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`${context}: JSON parse error: ${msg}\n`);
+    process.stderr.write(`first 200 bytes of output: ${raw.slice(0, 200)}\n`);
+    process.exit(3);
+  }
+}
+
 function fetchPR(
   owner: string,
   repo: string,
@@ -189,8 +224,7 @@ function fetchPR(
   // array (CheckRun + StatusContext both surfaced as items with status/
   // conclusion/name fields). Pair with a separate `gh api graphql` call for
   // reviewThreads since `gh pr view --json reviewThreads` is not supported.
-  const prResult = spawnSync(
-    "gh",
+  const prStdout = runGhOrExit(
     [
       "pr",
       "view",
@@ -200,19 +234,14 @@ function fetchPR(
       "--json",
       "number,state,mergeStateStatus,autoMergeRequest,mergeCommit,statusCheckRollup",
     ],
-    { encoding: "utf8" },
+    "fetchPR.gh-pr-view",
   );
-  if (prResult.status !== 0) {
-    process.stderr.write(`gh pr view failed: ${prResult.stderr}\n`);
-    process.exit(2);
-  }
-  const pr = JSON.parse(prResult.stdout);
+  const pr = parseJsonOrExit<Record<string, unknown>>(prStdout, "fetchPR.gh-pr-view");
 
   // Paginate review threads — discussion-heavy PRs can have >50.
   // gh's --paginate flag follows pageInfo for any cursor field named
   // `endCursor`; we expose the cursor in our query so it works.
-  const threadsResult = spawnSync(
-    "gh",
+  const threadsStdout = runGhOrExit(
     [
       "api",
       "graphql",
@@ -226,27 +255,31 @@ function fetchPR(
       "-F",
       `n=${number}`,
     ],
-    { encoding: "utf8" },
+    "fetchPR.gh-graphql-threads",
   );
-  if (threadsResult.status !== 0) {
-    process.stderr.write(`gh api graphql (threads) failed: ${threadsResult.stderr}\n`);
-    process.exit(2);
-  }
   // gh --paginate emits one JSON object per page on stdout, separated by
   // newlines (NDJSON-style for gh-graphql output). Aggregate the nodes.
   const allNodes: ReviewThreadNode[] = [];
-  for (const line of threadsResult.stdout.split("\n")) {
+  for (const line of threadsStdout.split("\n")) {
     if (!line.trim()) continue;
-    const parsed = JSON.parse(line);
+    const parsed = parseJsonOrExit<{
+      data?: {
+        repository?: {
+          pullRequest?: { reviewThreads?: { nodes?: ReviewThreadNode[] } };
+        };
+      };
+    }>(line, "fetchPR.gh-graphql-threads.page");
     const nodes: ReviewThreadNode[] =
       parsed.data?.repository?.pullRequest?.reviewThreads?.nodes ?? [];
     allNodes.push(...nodes);
   }
   const reviewThreads = { nodes: allNodes };
+  const prNarrowed = pr as unknown as PullRequestData;
+  const rollup = (prNarrowed.statusCheckRollup ?? []) as unknown[];
 
   return {
-    ...pr,
-    statusCheckRollup: normalizeRollup(pr.statusCheckRollup ?? []),
+    ...prNarrowed,
+    statusCheckRollup: normalizeRollup(rollup),
     reviewThreads,
   };
 }
@@ -300,18 +333,22 @@ function parseArgs(argv: string[]): ParsedArgs {
     owner: "Lucent-Financial-Group",
     repo: "Zeta",
   };
+  const requireValue = (flag: string, v: string | undefined): string => {
+    if (v === undefined || v.startsWith("--")) {
+      process.stderr.write(`${flag} requires a value\n`);
+      process.exit(1);
+    }
+    return v;
+  };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === undefined) continue;
     if (arg === "--fixture") {
-      const v = argv[++i];
-      if (v !== undefined) out.fixture = v;
+      out.fixture = requireValue("--fixture", argv[++i]);
     } else if (arg === "--owner") {
-      const v = argv[++i];
-      if (v !== undefined) out.owner = v;
+      out.owner = requireValue("--owner", argv[++i]);
     } else if (arg === "--repo") {
-      const v = argv[++i];
-      if (v !== undefined) out.repo = v;
+      out.repo = requireValue("--repo", argv[++i]);
     } else if (/^\d+$/.test(arg)) {
       out.number = Number.parseInt(arg, 10);
     } else if (arg === "--help" || arg === "-h") {
