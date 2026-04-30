@@ -162,28 +162,62 @@ something happens it re-engages.
 
 ## How to apply
 
-The right `gh` shape for a per-PR lane poll:
+The right `gh` shape for a per-PR lane poll. Two correctness
+notes baked into the snippet below:
+
+- `statusCheckRollup` returns a union of `CheckRun` and
+  `StatusContext` nodes. Filtering to `CheckRun` only can
+  under-count required status contexts that are still
+  pending or failing — the lane-state summary then reports
+  a false-clear gate. The snippet handles both shapes.
+- GitHub's `CheckConclusionState` includes blocking
+  conclusions beyond plain `FAILURE` —  `CANCELLED`,
+  `TIMED_OUT`, `STARTUP_FAILURE`, `ACTION_REQUIRED` all
+  count against merge readiness. The snippet treats them
+  as failures, not "0 failed."
 
 ```bash
 gh pr view <N> --json state,mergeStateStatus,reviewDecision,\
-  statusCheckRollup,updatedAt,headRefOid -q '{
-    state, mergeStateStatus, reviewDecision,
-    headSha: (.headRefOid[0:7]),
-    updatedAt,
-    ciSummary: ([.statusCheckRollup[]
-      | select(.__typename == "CheckRun")]
-      | "\([.[] | select(.conclusion == "SUCCESS")] | length)/\(length) success, \([.[] | select(.status != "COMPLETED")] | length) in-progress, \([.[] | select(.conclusion == "FAILURE")] | length) failed")
-}'
+  statusCheckRollup,updatedAt,headRefOid -q '
+    . as $pr |
+    [$pr.statusCheckRollup[]?
+      | if .__typename == "CheckRun"
+        then {success: (.conclusion == "SUCCESS"),
+              failed:  ((.conclusion // "") | IN("FAILURE","CANCELLED","TIMED_OUT","STARTUP_FAILURE","ACTION_REQUIRED")),
+              pending: (.status != "COMPLETED")}
+        else {success: (.state == "SUCCESS"),
+              failed:  ((.state // "") | IN("FAILURE","ERROR")),
+              pending: ((.state // "") | IN("PENDING","EXPECTED"))}
+        end] as $checks |
+    {
+      state: $pr.state,
+      mergeStateStatus: $pr.mergeStateStatus,
+      reviewDecision: $pr.reviewDecision,
+      headSha: ($pr.headRefOid[0:7]),
+      updatedAt: $pr.updatedAt,
+      ciSummary: "\([$checks[]|select(.success)]|length)/\($checks|length) success, \([$checks[]|select(.pending)]|length) in-progress, \([$checks[]|select(.failed)]|length) failed"
+    }'
 ```
 
-For unresolved review threads:
+For unresolved review threads. Two correctness notes:
+
+- `pullRequest(number: ...)` requires a concrete integer,
+  not a literal `N`. Substitute a real PR number when
+  copying.
+- `reviewThreads(first: 50)` does not paginate. Most PRs
+  fit, but for discussion-heavy lanes loop on
+  `pageInfo.hasNextPage` with `first: 100, after: $cursor`
+  until exhausted; otherwise the unresolved-thread count is
+  truncated and the auto-merge pre-flight is unsound.
 
 ```bash
+# Substitute a real PR number for 910 below.
 gh api graphql -f query='
 {
-  repository(owner:"Lucent-Financial-Group", name:"Zeta") {
-    pullRequest(number:N) {
-      reviewThreads(first:50) {
+  repository(owner: "Lucent-Financial-Group", name: "Zeta") {
+    pullRequest(number: 910) {
+      reviewThreads(first: 50) {
+        pageInfo { hasNextPage endCursor }
         nodes { id isResolved isOutdated }
       }
     }
