@@ -411,6 +411,33 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
+## Slice 19 — 1 port (budget/project-runway — budget cluster closes) (PR pending — `lane-b/ts-bun-slice-19-project-runway-2026-04-30`)
+
+**Slice files**:
+
+- `tools/budget/project-runway.{sh→ts}` (projection layer over `docs/budget-history/snapshots.jsonl`; companion to snapshot-burn.ts; closes the budget cluster)
+
+**Comparison points**: identical to slice 18. Within Gate B 30-day window. tsc gate active per #890.
+
+### Code-pattern audit (per-port)
+
+- **`project-runway.ts`** (297 → 430 lines): JSONL parsing entirely native (`readFileSync` + split + `JSON.parse`) — no jq spawn-out, since this is a pure data-projection script (snapshot-burn.ts still needs `gh api` for capture, but projection is over already-persisted JSON). Argument parsing splits flag classification (`classifyFlag`) from int-flag application (`applyIntFlag`) so each function stays under cognitive-complexity 15. Validation mirror: bash `case '$val' in ''|*[!0-9]*) ...` → TS `requireInt(flag, val)` returning `number | ArgError` discriminated-union — same semantics (non-empty + digits-only), same exit code 2, same error-message wording. The jq path expressions like `([.repos[].agg.total_duration_ms // 0] | add) // 0` map cleanly to typed `RepoEntryLike[].map(...).reduce(...)` once you express the snapshot shape as `SnapshotLike` with optional fields throughout (`?:`). Default-zero (`?? 0`) matches jq `// 0` per-element + `add // 0` empty-array semantics.
+- **File-existence guard**: `statSync().isFile()` + try/catch (same as slice-18 `isRegularFileSafe`); bash `-f` rejects directories, `existsSync` accepts them — semantic mismatch corrected.
+- **Output construction**: bash `cat <<OUT ... OUT` heredocs split into three small text builders (`emitProjectionLines`, `emitDecisionLines`, `emitTextOutput`) so each stays trivially scannable. `relative()` from `node:path` replaces bash `${file#"$repo_root"/}` prefix-strip — guards against `..`-prefixed relative paths from leaking absolute paths.
+- **JSON output structure**: `JSON.stringify(out, null, 2) + "\n"` produces byte-equivalent indentation to `jq -n {...}` (jq's default indent is 2 spaces; matches).
+
+### Equivalence audit
+
+Diff'd against bash output on this repo state (2026-04-30 main, snapshots.jsonl with N=4):
+
+- **`project-runway`** (text mode): byte-equivalent. Verified via `diff <(bun ...) <(./...sh)` — empty diff.
+- **`project-runway --json`**: byte-equivalent. Verified same way.
+- **Error paths**: byte-equivalent on three sampled paths — `--stages abc` (exit 2 with same message), `--file /tmp/nonexistent` (exit 1 with same message), `--bogus` (exit 2 with same message).
+
+### Outcome
+
+Slice 19 passes audit. **Budget cluster closes** (snapshot-burn.ts at slice 14, daily-cost-report.ts at slice 18, project-runway.ts at slice 19 — all three TS now). Once this lands, daily-cost-report.ts can switch from spawning `project-runway.sh` to spawning `project-runway.ts` for full-TS budget reporting (follow-up slice). Bucket B inventory: budget cluster done.
+
 ## Slice 15 — 1 port (peer-call/grok — peer-call cluster opens) (PR pending — `lane-b/ts-bun-slice-15-peer-call-grok-2026-04-30`)
 
 **Slice files**:

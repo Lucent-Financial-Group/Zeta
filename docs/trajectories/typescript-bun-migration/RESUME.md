@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 15 merged — [#896](https://github.com/Lucent-Financial-Group/Zeta/pull/896))
-**Milestone**: 36 ported + 1 in-flight = 37 total. Slice-16 opens **peer-call sibling** (peer-call/gemini, sibling of slice-15 grok). 6 Bucket B files remain.
+**Status**: Active (Lane B slice 18 merged — [#901](https://github.com/Lucent-Financial-Group/Zeta/pull/901); slice 19 in flight — `lane-b/ts-bun-slice-19-project-runway-2026-04-30`)
+**Milestone**: 39 ported + 1 in-flight = 40 total. Slice-19 closes the **budget cluster** (`tools/budget/project-runway.{sh→ts}`) — once it lands, all three budget primitives (snapshot-burn / project-runway / daily-cost-report) are TS, and daily-cost-report.ts can switch from spawning the .sh siblings to spawning the .ts versions.
 **Current blocker**: None.
-**Next concrete action**: Pick a coherent next slice from Bucket B (6 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
+**Next concrete action**: After slice 19 merges, pick the next coherent slice. Budget cluster done (14/18/19); peer-call cluster done (15/16/17). Remaining bash candidates span hygiene/, lint/, setup/, alignment/. Per Gate B: read-only scope first, then re-verify layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
