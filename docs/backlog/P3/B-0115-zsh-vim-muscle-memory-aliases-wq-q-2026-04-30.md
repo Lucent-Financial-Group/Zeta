@@ -73,5 +73,7 @@ promote to P2 and prioritize.
 - `tools/setup/install.sh` (the surface this change lands
   on; per GOVERNANCE.md §24 single-install-script-three-ways
   rule)
-- `memory/feedback_bash_compatibility_target_four_shells_macos_32_ubuntu_git_bash_wsl_otto_235_2026_04_24.md`
-  (must work on the four-shell target)
+- `memory/project_install_script_language_strategy_post_install_typescript_pre_install_bash_powershell_python_for_ai_ml_2026_04_27.md`
+  (composes Otto-235 four-shell-bash-compat — pre-install
+  scripts must work on macOS bash 3.2 / Ubuntu / git-bash /
+  WSL)
