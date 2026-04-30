@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 10 merged — [#883](https://github.com/Lucent-Financial-Group/Zeta/pull/883), commit `271bc38`)
-**Milestone**: 30 ported + 2 in-flight = 32 total (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 from #880 + 3 from #882 + 2 from #883 = 30 merged; +2 in-flight in slice-11). Slice-11 opens **skill-catalog cluster + nuget audit** (backfill_dv2_frontmatter + audit-packages). 12 Bucket B files remain.
+**Status**: Active (Lane B slice 11 merged — [#884](https://github.com/Lucent-Financial-Group/Zeta/pull/884), commit `9237756`)
+**Milestone**: 32 ported + 1 in-flight = 33 total (2 from #849 + 3 from #866 + 3 from #868 + 3 from #870 + 2 from #872 + 3 from #874 + 3 from #876 + 3 from #878 + 3 from #880 + 3 from #882 + 2 from #883 + 2 from #884 = 32 merged; +1 in-flight in slice-12). Slice-12 opens **backlog index regenerator** (backlog/generate-index). 10 Bucket B files remain.
 **Current blocker**: None.
-**Next concrete action**: Pick a coherent next slice from Bucket B (12 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
+**Next concrete action**: Pick a coherent next slice from Bucket B (10 files remaining). Per Gate B: read-only scope first, then re-verify the layered baseline currency before first mutating action.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
@@ -25,6 +25,11 @@ Per the maintainer-channel correction via the multi-AI review surface (2026-04-2
 | [#872](https://github.com/Lucent-Financial-Group/Zeta/pull/872) | 2026-04-30 (commit `2f3275a`) | `tools/alignment/audit_skills.{sh→ts}`, `tools/alignment/citations.{sh→ts}` | Merged |
 | [#874](https://github.com/Lucent-Financial-Group/Zeta/pull/874) | 2026-04-30 (commit `3f33b51`) | `tools/hygiene/audit-tick-history-bounded-growth.{sh→ts}`, `tools/hygiene/audit-post-setup-script-stack.{sh→ts}`, `tools/hygiene/audit-missing-prevention-layers.{sh→ts}` | Merged |
 | [#876](https://github.com/Lucent-Financial-Group/Zeta/pull/876) | 2026-04-30 (commit `02baabc`) | `tools/hygiene/check-no-conflict-markers.{sh→ts}`, `tools/hygiene/check-archive-header-section33.{sh→ts}`, `tools/hygiene/check-tick-history-order.{sh→ts}` | Merged |
+| [#878](https://github.com/Lucent-Financial-Group/Zeta/pull/878) | 2026-04-30 | `tools/lint/no-empty-dirs.{sh→ts}`, `tools/lint/safety-clause-audit.{sh→ts}`, `tools/lint/doc-comment-history-audit.{sh→ts}` | Merged |
+| [#880](https://github.com/Lucent-Financial-Group/Zeta/pull/880) | 2026-04-30 (commit `988de70`) | `tools/lint/runner-version-freshness.{sh→ts}`, `tools/lint/no-directives-otto-prose.{sh→ts}`, `tools/audit/live-lock-audit.{sh→ts}` | Merged |
+| [#882](https://github.com/Lucent-Financial-Group/Zeta/pull/882) | 2026-04-30 (commit `02266a7`) | `tools/hygiene/validate-agencysignature-pr-body.{sh→ts}`, `tools/hygiene/audit-agencysignature-main-tip.{sh→ts}`, `tools/hygiene/capture-tick-snapshot.{sh→ts}` | Merged |
+| [#883](https://github.com/Lucent-Financial-Group/Zeta/pull/883) | 2026-04-30 (commit `271bc38`) | `tools/hygiene/counterweight-audit.{sh→ts}`, `tools/hygiene/append-tick-history-row.{sh→ts}` | Merged |
+| [#884](https://github.com/Lucent-Financial-Group/Zeta/pull/884) | 2026-04-30 (commit `9237756`) | `tools/skill-catalog/backfill_dv2_frontmatter.{sh→ts}`, `tools/audit-packages.{sh→ts}` | Merged |
 
 ## Inventory — Python (tools/, Zeta-authored)
 
@@ -59,28 +64,21 @@ tools/profile.sh
 
 Rationale: TS/Bun is itself one of the things `install.sh` installs. These scripts cannot depend on Bun.
 
-### Bucket B — Should become TypeScript (19 files remaining)
+### Bucket B — Should become TypeScript (10 files remaining)
 
-Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874, #876, #878. Twenty-three originally-listed audit/lint scripts are now ported to TS and removed from this list (3 in slice-8 in flight); the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
+Post-install scripts that operate on the repo (lints, audits, hygiene checks, peer-call wrappers, budget reports, git ops). Same shape as the scripts ported in #849, #866, #868, #870, #872, #874, #876, #878, #880, #882, #883, #884. The originally-listed audit/lint scripts have progressively ported (1 in slice-12 in flight); the bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked.
 
 ```text
-tools/audit-packages.sh
-tools/backlog/generate-index.sh
+tools/backlog/generate-index.sh                # in flight (slice 12)
 tools/budget/daily-cost-report.sh
 tools/budget/project-runway.sh
 tools/budget/snapshot-burn.sh
 tools/git/batch-resolve-pr-threads.sh
 tools/git/push-with-retry.sh
-tools/hygiene/append-tick-history-row.sh
-tools/hygiene/audit-agencysignature-main-tip.sh
-tools/hygiene/capture-tick-snapshot.sh
-tools/hygiene/counterweight-audit.sh
-tools/hygiene/validate-agencysignature-pr-body.sh
 tools/peer-call/codex.sh
 tools/peer-call/gemini.sh
 tools/peer-call/grok.sh
 tools/pr-preservation/archive-pr.sh
-tools/skill-catalog/backfill_dv2_frontmatter.sh
 ```
 
 Rationale: type safety, structured error handling, easier testing, jq/awk/grep replaced by JS object operations, gh CLI shell-out replaced by Octokit when valuable.
@@ -100,9 +98,9 @@ tools/lint/safety-clause-audit.sh
 
 Rationale: borderline — depends on whether the lint can be expressed as cleanly in TS as it currently is in shell. Worth a small comparison before committing the port.
 
-### Bucket D — Ported, bash retained (23 files)
+### Bucket D — Ported, bash retained (32 files)
 
-The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 (3 more in slice-8 PR in flight); the bash originals stay in-tree as equivalence references and will retire once the TS ports have soaked.
+The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 + #880 + #882 + #883 + #884; the bash originals stay in-tree as equivalence references and will retire once the TS ports have soaked.
 
 ```text
 tools/hygiene/audit-md032-plus-linestart.sh        # ported in #866
@@ -125,9 +123,16 @@ tools/hygiene/check-tick-history-order.sh          # ported in #876
 tools/lint/no-empty-dirs.sh                        # ported in #878
 tools/lint/safety-clause-audit.sh                  # ported in #878
 tools/lint/doc-comment-history-audit.sh            # ported in #878
-tools/lint/runner-version-freshness.sh             # ported in slice-8 PR (in flight)
-tools/lint/no-directives-otto-prose.sh             # ported in slice-8 PR (in flight)
-tools/audit/live-lock-audit.sh                     # ported in slice-8 PR (in flight)
+tools/lint/runner-version-freshness.sh             # ported in #880
+tools/lint/no-directives-otto-prose.sh             # ported in #880
+tools/audit/live-lock-audit.sh                     # ported in #880
+tools/hygiene/validate-agencysignature-pr-body.sh  # ported in #882
+tools/hygiene/audit-agencysignature-main-tip.sh    # ported in #882
+tools/hygiene/capture-tick-snapshot.sh             # ported in #882
+tools/hygiene/counterweight-audit.sh               # ported in #883
+tools/hygiene/append-tick-history-row.sh           # ported in #883
+tools/skill-catalog/backfill_dv2_frontmatter.sh    # ported in #884
+tools/audit-packages.sh                            # ported in #884
 ```
 
 ## Recommended next slice

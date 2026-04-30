@@ -411,7 +411,27 @@ Per-port pattern checklist:
 
 Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
-## Slice 11 — 2 ports (skill-catalog cluster + nuget audit) (PR pending — `lane-b/ts-bun-slice-11-dv2-frontmatter-backfill-2026-04-30`)
+## Slice 12 — 1 port (backlog index regenerator) (PR pending — `lane-b/ts-bun-slice-12-backlog-generate-index-2026-04-30`)
+
+**Slice files**:
+
+- `tools/backlog/generate-index.{sh→ts}` (regenerates `docs/BACKLOG.md` from per-row `docs/backlog/P<tier>/B-<NNNN>-<slug>.md` files)
+
+**Comparison points**: identical to slice 11/10/9. Within Gate B 30-day window.
+
+### Code-pattern audit (per-port)
+
+- **`generate-index.ts`** (217 → 282 lines): bash awk frontmatter parser (state machine + `gsub` for quote-stripping) → `extractField` + `stripQuotes` helpers; one `RegExp.exec` per known field; bash `find -name 'B-*.md' -type f -print0 | sort -z` → `readdirSync` filter + `localeCompare` by basename. Bash `mktemp` + atomic `mv` rename → `readFileSync` compare + conditional `writeFileSync` (no rewrite when content identical, mirroring bash's "only write if different"). Bash `diff -q` + `diff` invocation in `--check` mode → in-memory line-by-line comparison emitting `<` / `>` diff markers. Phase-1a 50-line safety guard preserved (refuses to overwrite shorter files unless `BACKLOG_WRITE_FORCE=1`). Three modes preserved: write (default) / `--check` / `--stdout`.
+
+### Equivalence audit
+
+- **`generate-index`**: byte-equivalent against bash original on `--stdout` mode for the current `docs/backlog/` tree (4 priority tiers × ~70 rows). `--check` produces matching exit codes. Write-mode tested via temp-copy snapshot.
+
+### Outcome
+
+Slice 12 passes audit. **Backlog-cluster opened** — first script in this cluster ports cleanly with the in-memory diff pattern (replaces shell-out to `diff`). Bucket B 11 → 10.
+
+## Slice 11 — 2 ports (skill-catalog cluster + nuget audit) (PR #884, merged 2026-04-30, commit `9237756`)
 
 **Slice files**:
 
@@ -434,7 +454,7 @@ Slice 6 passes audit. No new patterns recorded — all reused from prior slices.
 
 Slice 11 passes audit. Skill-catalog cluster opened + NuGet audit added. Bucket B 14 → 12.
 
-## Slice 10 — 2 ports (counterweight-cluster + first write-side) (PR pending — `lane-b/ts-bun-slice-10-counterweight-audit-2026-04-30`)
+## Slice 10 — 2 ports (counterweight-cluster + first write-side) (PR #883, merged 2026-04-30, commit `271bc38`)
 
 **Slice files**:
 
@@ -457,7 +477,7 @@ Slice 11 passes audit. Skill-catalog cluster opened + NuGet audit added. Bucket 
 
 Slice 10 passes audit. **Counterweight-cluster opened** (Otto-278 cadenced inspect). **First write-side script ported** (append-tick-history-row) — confirms write-side equivalence-test pattern works. Bucket B 16 → 14.
 
-## Slice 9 — 3 ports (agency-signature-pair cluster + snapshot-pinning) (PR pending — `lane-b/ts-bun-slice-9-agencysignature-pair-2026-04-30`)
+## Slice 9 — 3 ports (agency-signature-pair cluster + snapshot-pinning) (PR #882, merged 2026-04-30, commit `02266a7`)
 
 **Slice files**:
 
@@ -491,7 +511,7 @@ Slice 10 passes audit. **Counterweight-cluster opened** (Otto-278 cadenced inspe
 
 Slice 9 passes audit. **Agency-signature-pair cluster opened**: validate-pr-body (pre-merge) + audit-main-tip (post-merge) form Amara's ferry-7 enforcement-instrument set. Bucket B 19 → 16.
 
-## Slice 8 — 3 ports (Cluster H finish + audit-cluster start) (PR pending — `lane-b/ts-bun-slice-8-runner-version-freshness-2026-04-30`)
+## Slice 8 — 3 ports (Cluster H finish + audit-cluster start) (PR #880, merged 2026-04-30, commit `988de70`)
 
 **Slice files**:
 
