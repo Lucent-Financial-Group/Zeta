@@ -349,7 +349,7 @@ Per-port pattern checklist:
 - **Applied (all 3)**: structured spawn-failure classifier.
 - **`audit-tick-history-bounded-growth`**: simple line-count check; no git invocations beyond repo-root resolution; threshold default 500 (per inline mini-ADR in bash original).
 - **`audit-post-setup-script-stack`**: classification logic (exempt / labelled / violation) extracted into pure helpers (isExempt, hasLabel) for testability. LABEL_RE compiled once.
-- **`audit-missing-prevention-layers`**: `trimSpaces` extracted as a pure helper to avoid sonarjs/slow-regex on `^ +` / ` +$` patterns. ROW_RE compiled once. `Map<string, string>` for classifications (vs bash's parallel arrays + linear lookup).
+- **`audit-missing-prevention-layers`**: `trimSpaces` extracted as a pure helper to avoid sonarjs/slow-regex on anchored space patterns. ROW_RE compiled once. `Map<string, string>` for classifications (vs bash's parallel arrays + linear lookup).
 
 ### DST + coverage audit
 
