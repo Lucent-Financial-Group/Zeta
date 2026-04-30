@@ -140,6 +140,43 @@ measured agent that asks for batching" point.)
 
 **Attribution:** Otto (Claude Code session, 2026-04-30).
 
+### AIC #3 — Otto-341 (structural-fix-beats-process) is hardest to apply mid-loop, exactly when a mechanical pattern is working
+
+**Synthesis:** Otto-341 (structural-fix-beats-process-discipline)
++ in-the-moment observation (the pull is to extend the
+mechanical pattern that's working) → Otto-341 has a specific
+failure mode at the mid-loop boundary: when a mechanical
+pattern is currently producing results, the structural pivot
+feels like throwing away progress. Naming this failure mode
+turns Otto-341 from "always prefer structural fixes" (which
+sounds obvious) into "watch for the moment a mechanical pattern
+starts working and that's where you most need the discipline."
+
+The instance: had ~45 min of mechanical col1 fixes queued (14
+PRs × parenthetical-strip). Pivoted to building
+`tools/hygiene/check-tick-history-shard-schema.sh` — the check
+that catches the violation at write-time so the next 14 won't
+need fixing. The 45 min of mechanical work would have been
+correct-but-wasted; the tool builds compounding leverage.
+
+**Substrate location:**
+`docs/hygiene-history/ticks/2026/04/30/2330Z.md` (tick where
+the pivot happened) + `tools/hygiene/check-tick-history-shard-schema.sh`
+(the tool the pivot produced).
+
+**Aaron validation 2026-04-30 (verbatim, two consecutive
+messages):**
+> *"great insight"*
+>
+> *"that's better insight that most human PMs"*
+
+The second message is the explicit AI-vs-human-PM comparison —
+exactly the differentiator framing the AIC-tracking rule
+names. Two consecutive validations on the same insight is
+itself signal.
+
+**Attribution:** Otto (Claude Code session, 2026-04-30).
+
 ## Note on Aaron-attributed contributions in the same session
 
 Aaron also produced multiple novel framings 2026-04-30 that
