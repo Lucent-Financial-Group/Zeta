@@ -58,9 +58,12 @@ ALLOWLIST=(
   # accidental marker leakage.
   "memory/feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md"
   # Rerere cache dividend memory file — landed PR #694 (2026-04-30).
-  # Body has a worked-example trace of the MEMORY.md sibling-DIRTY
-  # conflict shape inside a fenced code block (lines 117-121).
-  # Fenced examples of merge markers are documentation, not leakage.
+  # The "Worked-example trace" section quotes the MEMORY.md sibling-
+  # DIRTY conflict shape inside a fenced code block as the rule's
+  # documented example. Fenced examples of merge markers are
+  # documentation, not leakage. (Line numbers intentionally omitted
+  # so the rationale survives section-level edits — file-level
+  # allowlist scope is the durable contract.)
   "memory/feedback_rerere_conflict_resolution_cache_dividend_amara_2026_04_28.md"
 )
 
