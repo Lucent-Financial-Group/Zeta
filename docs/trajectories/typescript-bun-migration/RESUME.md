@@ -1,9 +1,9 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Active (Lane B slice 20 merged — [#907](https://github.com/Lucent-Financial-Group/Zeta/pull/907); slice 21 in flight — `lane-b/ts-bun-slice-21-archive-pr-2026-04-30`)
-**Milestone**: 41 ported + 1 in-flight = 42 total. Budget cluster (14/18/19) and peer-call cluster (15/16/17) both complete; git cluster complete (13/20). Slice 21 (archive-pr.sh — last Bucket B file) is in flight; **after slice 21 lands, Bucket B is empty**. Bucket C: 2 (`tools/hygiene/check-github-settings-drift.sh` + `tools/hygiene/snapshot-github-settings.sh`).
+**Status**: Soak + bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); **Bucket B is empty**)
+**Milestone**: 42 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21). Bucket B is empty as of 2026-04-30T08:07:32Z. Trajectory transitions from "porting" phase to "soak + bash retirement" phase.
 **Current blocker**: None.
-**Next concrete action**: After slice 21 merges, **Bucket B is empty** — TS+Bun migration trajectory transitions from "porting" phase to "soak + bash retirement" phase. Bucket C (2 files using gh-api heavily) requires maintainer decision on shell-out vs Octokit. Bucket A (14 setup-script files) stays bash by design.
+**Next concrete action**: This trajectory's "porting" phase is complete. Possible follow-ups: (a) audit + retire bash siblings for clusters that have soaked clean (no production breakage observed in the .ts ports), starting with the oldest-merged ports; (b) for budget cluster specifically, switch `daily-cost-report.ts` (slice 18) from spawning the .sh siblings to spawning the .ts versions now that snapshot-burn.ts (slice 14) and project-runway.ts (slice 19) are both available; (c) pursue Bucket C (2 files using gh-api heavily) — maintainer decision on shell-out wrapper vs Octokit. Bucket A (14 setup-script files) stays bash by design.
 **Last updated**: 2026-04-30
 
 ## Why this trajectory exists
