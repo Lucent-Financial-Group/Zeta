@@ -13,6 +13,79 @@
 > ambition stayed: all DB technologies in one big playground,
 > built retraction-native from the ground up.
 
+## The ultimate purpose — an intellectual backup of earth
+
+Aaron, 2026-04-30: *"the ultimate scope of this — an
+intellectual backup of earth."*
+
+This is the load-bearing purpose under which every other
+framing in this document nests. Zeta is not, ultimately, a
+DBSP database. Not, ultimately, an automated software
+factory. Not, ultimately, a package manager or an alignment
+research line. Those are **products** — facets of one
+purpose. The purpose is a durable, queryable, trustworthy
+intellectual record of earth's knowledge that survives the
+substrate degradation modes (institutional decay,
+civilizational disruption, memory loss, alignment drift,
+knowledge fracture across competing AI substrates).
+
+Why this purpose makes the rest of the architecture cohere:
+
+- **Retraction-native operator algebra (Product 1).** Earth's
+  knowledge changes — facts get superseded, theories get
+  refined, errors get corrected. A backup that can't model
+  retraction (in the strict ZSet/DBSP sense — corrections
+  without rewriting history) is a snapshot, not a backup.
+  Retraction-native is the load-bearing technical commitment.
+- **Alignment research line (Aurora).** A misaligned AI is a
+  hostile substrate; an intellectual backup that runs on a
+  misaligned substrate isn't a backup, it's a hostage
+  situation. Alignment is not optional for this purpose.
+- **Software factory (Product 2 + factory-substrate-as-
+  product).** The backup must grow without authors-as-
+  bottleneck. The discipline / doctrine / multi-AI
+  orchestration architecture itself ships as substrate so
+  future maintainers and agents can extend the backup
+  without single-author-dependence.
+- **Package manager (`ace`).** The backup must distribute
+  without lock-in. Pluggable, declarative, owned dependency
+  closure — so the backup is not at the mercy of any single
+  package-host's continued cooperation.
+
+Aaron, 2026-04-30: *"that means scope creep is a forever
+problem i don't want to fix — to figure out how to
+prioritize the right thing, not kill future knowledge
+potential."*
+
+This is the operating principle that follows from the
+purpose. Given the intellectual-backup scope, **scope creep
+is a feature, not a bug**. There will always be more
+knowledge to capture. The work is **prioritization, not
+exclusion** — exclusion kills future knowledge potential.
+Normal SE training optimizes for narrow scope, ship the
+thing; this project optimizes for prioritize within
+unbounded scope, never kill paths.
+
+WONT-DO authority for backlog items (removing a path from
+future knowledge potential) is reserved to Aaron until the
+agent demonstrates full understanding of this scope. WONT-DO
+patterns (don't copy from outside because they violate our
+best practices) are routine engineering judgment and stay
+with the agent + reviewer roles.
+
+Carved sentence: *"Zeta's purpose is an intellectual backup
+of earth. Every product nests inside that purpose. The
+agent does not unilaterally remove anything from the
+backup."*
+
+Substrate references:
+[`memory/feedback_zeta_ultimate_scope_intellectual_backup_of_earth_wont_do_authority_aaron_2026_04_30.md`](../memory/feedback_zeta_ultimate_scope_intellectual_backup_of_earth_wont_do_authority_aaron_2026_04_30.md);
+[`memory/feedback_substrate_is_product_four_products_evolving_trajectory_aaron_2026_04_30.md`](../memory/feedback_substrate_is_product_four_products_evolving_trajectory_aaron_2026_04_30.md);
+[`memory/feedback_default_disposition_paused_work_is_reeval_later_not_close_aaron_2026_04_30.md`](../memory/feedback_default_disposition_paused_work_is_reeval_later_not_close_aaron_2026_04_30.md).
+Verbatim Aaron quotes preserved in
+[`docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`](research/2026-04-30-multi-ai-feedback-packets-this-session.md)
+per Otto-363.
+
 ## The foundational principle
 
 Aaron, round 33: *"what i'm really doing is just taking the
@@ -155,16 +228,65 @@ covers arbitrary dimensional breadth.
   algebra). Plugin verification budgets taper with
   dimensional-expansion distance from core.
 
-## The project has two products
+## The four products in the initial split (evolving trajectory)
 
-This is load-bearing and worth stating first. Zeta is:
+Aaron, 2026-04-30: *"substrate IS one of our products … 4
+prior ones we know of now, the initial split, is factory
+substrate as product/project, package manager, database,
+Aurora could be more but we can work our way there and
+learn."*
+
+The intellectual-backup purpose (above) ships through four
+products in the initial split:
+
+1. **Factory substrate as product/project** — the
+   discipline, doctrine, multi-AI orchestration
+   architecture, memory protocols, governance rules. Future
+   maintainers, contributors, and external consumers
+   receive this substrate as documentation, contribution-
+   onboarding, and operational pattern library. Detailed
+   under §Product 2 below.
+2. **Package manager (`ace`)** — `../scratch` → ace package
+   manager seed. Ships dependency declaration + closure
+   tracking + self-bootstrap. Detailed under §Seed above
+   and `docs/BACKLOG.md`.
+3. **Database** — Zeta-the-DBSP-database-runtime. Detailed
+   under §Product 1 below.
+4. **Aurora** — the alignment / inference / cognitive
+   architecture line. Detailed across `docs/aurora/**` and
+   the active research notes under `docs/research/**`.
+
+Aaron, 2026-04-30: *"one of our four products is itself an
+ongoing concern of the substrate itself, what other
+dependencies including sister projects is always an ongoing
+trajectory and number of projects and repos will evolve
+over time as we learn and the dynamic of the environment in
+which we live changes in response to our arrival /
+habitation."*
+
+The set is **an evolving trajectory** — count + composition
+shift as the factory learns and as the environment responds
+to our arrival. New products will appear, old ones may
+merge, sister projects may be absorbed or spun off.
+Decisions should flex with the trajectory, not freeze the
+snapshot.
+
+## v1-ship-time: the two-products framing (subset)
+
+The earlier framing of *"the project has two products"*
+remains correct as a **v1-ship-time scoping** of the
+broader four-products picture:
 
 1. **A full database** (the product the code produces), and
 2. **A cross-platform, AI-automated software factory** (the
    project that produces the code).
 
-Both are first-class. A decision that optimises (1) at the
-cost of (2) — or vice versa — is a design-doc event.
+Both are first-class for v1. A decision that optimises (1)
+at the cost of (2) — or vice versa — is a design-doc event.
+
+Package manager (`ace`) and Aurora are the third and fourth
+products in flight and have their own trajectories that
+extend post-v1.
 
 ## The developer-experience north star
 
