@@ -282,7 +282,18 @@ function processOne(
   const tmpPath = `${file}.tmp.${String(process.pid)}.${String(Date.now())}`;
   try {
     writeFileSync(tmpPath, newContent);
-    renameSync(tmpPath, file);
+    try {
+      renameSync(tmpPath, file);
+    } catch {
+      // Defense-in-depth: modern Node/Bun renameSync overwrites the
+      // destination atomically on all platforms (POSIX + Windows), but
+      // edge cases like Windows file locks (open editor) or
+      // permission-restricted shares can fail. Fallback: unlink the
+      // destination then retry rename. Loses atomicity for the failure
+      // window but recovers correctness. Bash `mv` has the same fragility.
+      unlinkSync(file);
+      renameSync(tmpPath, file);
+    }
   } catch (err) {
     try {
       unlinkSync(tmpPath);
