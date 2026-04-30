@@ -330,8 +330,9 @@ content, don't infer from the framework.
 - `feedback_never_idle_speculative_work_over_waiting.md` — when
   no PR is in flight, the never-idle ladder applies (re-audit /
   meta-check / speculative work) rather than polling-for-nothing.
-- AUTONOMOUS-LOOP.md "every-tick-gets-a-row" liveness invariant —
-  the row content must be auditable, not "Holding." copy-paste.
+- `docs/AUTONOMOUS-LOOP.md` "every-tick-gets-a-row" liveness
+  invariant — the row content must be auditable, not "Holding."
+  copy-paste.
 - "Live unblock wins; fan-out after closure, not during"
   (Claude.ai catch family) — same discipline about *what kind*
   of attention is appropriate at *what point* in the work cycle.
