@@ -24,7 +24,7 @@ PR #N: <state> / <mergeStateStatus>
   Head SHA: <short-sha>
   Updated: <updatedAt>
   Auto-merge: <armed | unarmed | not-applicable>
-  Next action: <wait-for-CI | resolve-threads | rebase | merge-now | ...>
+  Next action: <plan, not status — see below>
 ```
 
 If no PR is in flight: emit nothing. The cron is already the
@@ -34,6 +34,63 @@ is dead air.
 If auto-merge is armed and CI is the only blocker: the poll's only
 job is to detect failure or review-state change. Don't poll merged
 status; auto-merge fires automatically when CI clears.
+
+### Scope clarification (Claude.ai 2026-04-30)
+
+The "don't poll merged PRs" rule applies **during the PR's wait-
+for-merge phase**. Polling-for-merge-confirmation is legitimate
+**after** auto-merge fires, for downstream cleanup (branch
+deletion, dependent-task triggering, drain-log update). The
+distinction:
+
+- **During wait phase**: poll the gate (CI / threads / mergeable),
+  not the outcome. Otto is part of the loop he'd be observing if
+  he polled "did my PR merge" — that's tautology not observation.
+- **Post-merge**: poll merged-status as confirmation for cleanup
+  steps. The merge has happened; querying confirms downstream
+  state. This is real lane progress detection.
+
+Carve-out: a single post-merge confirmation query is fine.
+Repeated post-merge queries with no other action are still dead
+air.
+
+### Auto-merge pre-flight (Claude.ai 2026-04-30)
+
+Before arming `gh pr merge --auto`, verify all three:
+
+1. All required checks are configured to be merge-blocking
+   (otherwise auto-merge fires through gates that should hold).
+2. All currently-failing checks are NOT in the required set
+   (otherwise auto-merge waits indefinitely on a sticky failure).
+3. No unresolved review threads exist (auto-merge respects
+   `required_conversation_resolution` if branch protection has
+   it; without it, auto-merge fires through unresolved threads).
+
+Convert auto-merge from "set it and forget it" to "armed with
+explicit verification of conditions." Same discipline as the
+lease-rejection-restarts-the-gate rule.
+
+### "Next action" is a plan, not a status (Claude.ai 2026-04-30)
+
+The "Next action" field carries operational load. Bad form:
+
+```text
+Next action: waiting on CI
+```
+
+(repeats every tick, conveys no progress info)
+
+Good form:
+
+```text
+Next action: merge after `build-and-test (macos-26)` clears
+  (currently in_progress; ETA 3-5 min based on prior runs)
+```
+
+The plan names the specific remaining gate. If the plan doesn't
+change between ticks, the ticks are confirming the plan still
+holds. If the plan changes, the change itself is signal worth
+noticing.
 
 ## Why: the blade
 
@@ -80,6 +137,28 @@ When auto-merge is armed and CI is the only blocker: the only
 events worth waking on are (a) CI failure, (b) new review-thread
 appearance, (c) auto-merge-armed status drops (would indicate
 force-push or external state change).
+
+### Cadence resumption on state change (Claude.ai 2026-04-30)
+
+The tiered cadence trades responsiveness for noise reduction.
+Without a resumption rule, that trade can quietly bite — a CI
+completion at minute 35 gets noticed up to 15 minutes late if
+the lane has dropped to 30+ tier.
+
+Resumption rule: **any state change resets the cadence to the
+0–10 min tier for the next 10 minutes.** State changes worth
+resetting on:
+
+- CI status change (new check completes, fails, or starts)
+- review-decision change
+- new review-thread appears
+- head SHA change (force-push or new commit)
+- mergeStateStatus transitions (BEHIND → CLEAN, BLOCKED → CLEAN,
+  etc.)
+
+This converts the cadence from monotonically decaying to
+event-responsive: when nothing's happening it backs off; when
+something happens it re-engages.
 
 ## How to apply
 
@@ -139,6 +218,74 @@ output gave no auditable content. Amara's full catch + suggestions
 preserved verbatim in
 `docs/research/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`.
 
+## Correction-class note (Claude.ai 2026-04-30)
+
+This rule is an **application-level** correction, not a
+substrate-level one. The factory's discipline isn't wrong; the
+*application* of available tools to the discipline was suboptimal.
+Earlier rounds caught Otto in patterns requiring structural rule
+changes (read-only-first removed, polite-waiting refined,
+mode-mixing diagnosed). This round catches Otto in a pattern
+requiring no rule change — just better tooling discipline.
+
+Two different categories of correction exist:
+
+- **Substrate-level**: the factory's invariants need updating.
+  Lands as new memory file, new ADR, new rule.
+- **Application-level**: the invariants are fine; Otto's habit
+  within them was suboptimal. Lands as memory file (this one),
+  but the lesson is "use existing tools better," not "change
+  what's allowed."
+
+The buddy-review surface should distinguish these. Both are
+worth catching; the response shape differs.
+
+## Deeper structural diagnosis (Deepseek 2026-04-30)
+
+Deepseek's synthesis after concurring with Amara + Claude.ai:
+
+> Otto treating his own involvement as external state when it's
+> actually under his control.
+
+The polled signal `gh pr list --state merged` depends on Otto's
+own action (filing the PR, arming auto-merge, resolving threads,
+pushing fix-ups) plus external state (CI runners, branch
+protection, reviewer availability). Polling treats the whole
+combined signal as opaque external — which is the conceptual
+error. The participant view forces the question: *what
+specifically is blocking, and is the blocker something I can act
+on or something I'm waiting on?*
+
+Generalization: **whenever the polled signal depends partially on
+the agent's own action, the polling shape is wrong.** Other
+instances of this anti-pattern caught in earlier rounds:
+
+- Polling for Aaron-input that requires Otto to first surface a
+  question.
+- "Holding" while a PR has unresolved threads Otto could resolve
+  via GraphQL.
+- Manufactured-patience waits where the named dependency is
+  actually Otto-side, not external.
+
+The diagnostic question for any wait state: *if I do nothing, will
+the signal change on its own?* If yes, gate-poll is appropriate.
+If no, waiting is itself the bug — Otto needs to act.
+
+## Freshness-pass observation (Claude.ai 2026-04-30)
+
+This round's catch came from reading the actual log content
+(the literal repeated `[]` and "Holding" lines) rather than from
+theoretical analysis. The most diagnostic reviews are sometimes
+the most concrete — reading what's literally happening rather
+than what's supposed to be happening. Same generative pattern
+as the freshness-pass discipline applied to review itself:
+refresh against actual state, don't review against the assumed
+state.
+
+Worth recording as a buddy-review meta-rule: when reviewing an
+agent's autonomous-loop behavior, read the literal log/output
+content, don't infer from the framework.
+
 ## Composes with
 
 - Otto-363 substrate-or-it-didn't-happen — this lesson lands as
@@ -151,3 +298,8 @@ preserved verbatim in
   meta-check / speculative work) rather than polling-for-nothing.
 - AUTONOMOUS-LOOP.md "every-tick-gets-a-row" liveness invariant —
   the row content must be auditable, not "Holding." copy-paste.
+- "Live unblock wins; fan-out after closure, not during"
+  (Claude.ai catch family) — same discipline about *what kind*
+  of attention is appropriate at *what point* in the work cycle.
+  Polling-for-merged-PRs and absorbing-incoming-context-during-
+  active-lane are both fan-out failures.
