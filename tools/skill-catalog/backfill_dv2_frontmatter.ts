@@ -19,7 +19,7 @@
 //   1    usage error
 //   2    a file was malformed (no closing frontmatter fence)
 
-import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -85,14 +85,12 @@ function findAllSkillFiles(): readonly string[] {
   } catch {
     return [];
   }
+  // List candidate paths; processOne uses readFileSync directly with
+  // try/catch (no statSync gate), so missing/non-file paths surface as
+  // a warn outcome rather than racing the file system.
   for (const e of entries) {
     if (!e.isDirectory()) continue;
-    const path = join(skillsDir, e.name, "SKILL.md");
-    try {
-      if (statSync(path).isFile()) out.push(path);
-    } catch {
-      continue;
-    }
+    out.push(join(skillsDir, e.name, "SKILL.md"));
   }
   return out.sort((a, b) => a.localeCompare(b));
 }
@@ -225,19 +223,25 @@ function processOne(
   dryRun: boolean,
   today: string,
 ): ProcessOutcome {
-  let stat: import("node:fs").Stats;
-  try {
-    stat = statSync(file);
-  } catch {
-    return { status: "warn", message: `warn: skipping non-file: ${file}`, exitCode: 0 };
-  }
-  if (!stat.isFile()) {
-    return { status: "warn", message: `warn: skipping non-file: ${file}`, exitCode: 0 };
-  }
+  // Single readFileSync — avoids TOCTOU race the bash original had via
+  // separate `[ ! -f "$file" ]` test before content read. Errors from
+  // ENOENT, EACCES, EISDIR, etc. all surface as readFileSync exceptions
+  // and we map them to the same warn/error outcomes here.
   let content: string;
   try {
     content = readFileSync(file, "utf8");
-  } catch {
+  } catch (err) {
+    const code =
+      err !== null && typeof err === "object" && "code" in err
+        ? String(err.code)
+        : "";
+    if (code === "ENOENT" || code === "EISDIR") {
+      return {
+        status: "warn",
+        message: `warn: skipping non-file: ${file}`,
+        exitCode: 0,
+      };
+    }
     return { status: "error", message: `error: cannot read ${file}`, exitCode: 2 };
   }
   if (dashCount(content) < 2) {
