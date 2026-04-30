@@ -67,34 +67,59 @@ to it requires Architect / human sign-off.
 
 ## Freshness-check rule (loop + investigation integration)
 
-Aaron 2026-04-30 reinforcement (verbatim):
+Aaron 2026-04-30 framed the rule across three short messages
+(verbatim):
 
 > polling github status should just be a regular part of our
 > loops and investigations because all our assumptions are
 > based on them being healthy today which is not always true
 > as we can see todya
 
-The freshness-check is **not** a pre-mutation-only gate. It
-runs at three points:
+> every loop tick might be excessive but on some cadence or if
+> you suspect issues because assumptions are not working out
 
-1. **Every autonomous-loop tick.** Each `<<autonomous-loop>>`
-   wake polls `summary.json` as part of its standard lane-state
-   read. The result lands in the lane-state report alongside
-   PR/CI/threads, so future-Otto and the human maintainer see
-   the dependency state every tick. This is the primary
-   integration point.
-2. **Every investigation.** Whenever a loop tick is
-   investigating an anomaly (slow CI, stuck PR, missing
-   check, unexpected `BLOCKED` state, vanished review
-   threads, force-push race conditions), the freshness-check
-   is the first candidate cause considered. *"Is GitHub
-   currently degraded?"* is asked before *"is my logic
-   wrong?"* — same shape as the speculation-vs-evidence
-   discipline (`feedback_speculation_leads_investigation_not_defines_root_cause_aaron_2026_04_28.md`),
-   applied at the dependency layer.
+The two messages compose: regular part of loops + investigations,
+**but** every-tick is excessive — cadence + on-suspicion +
+pre-mutation are the right shape. The freshness-check runs at
+three points:
+
+1. **On a cadence (not every tick).** Default cadence: every
+   10–15 minutes when there is in-flight loop work, less
+   frequently when idle. This composes with the tiered
+   cadence already in the poll-the-gate rule (0–10 min
+   tier, 10–30 min tier, 30+ min tier). The freshness-check
+   piggybacks on the existing tiered cadence rather than
+   adding its own — when the loop is in an active wait at
+   the 0–10 tier, freshness-check fires on a longer
+   sub-cadence (every 3–5 ticks) to avoid hitting the
+   GitHub status endpoint every minute. Idle loops can
+   freshness-check less frequently (every 30+ min). The
+   exact cadence is tunable; the principle is "regular
+   enough to catch a degradation within an hour, sparse
+   enough not to be every-tick excessive."
+2. **On suspicion** — whenever a loop tick is investigating an
+   anomaly (slow CI, stuck PR, missing check, unexpected
+   `BLOCKED` state, vanished review threads, force-push race
+   conditions, "assumptions are not working out"), the
+   freshness-check is the first candidate cause considered.
+   *"Is GitHub currently degraded?"* is asked before *"is
+   my logic wrong?"* — same shape as the
+   speculation-vs-evidence discipline applied at the
+   dependency layer
+   (`feedback_speculation_leads_investigation_not_defines_root_cause_aaron_2026_04_28.md`).
+   This is the load-bearing trigger: any time a poll result
+   surprises Otto, freshness-check is non-optional.
 3. **Before any mutating action** (merge, force-push,
    auto-merge arming, branch deletion, commit-then-push). This
    is the strictest gate; non-green status defers the action.
+   Pre-mutation freshness-check IS every-mutation, since
+   each mutation is its own freshness boundary.
+
+The cadence trigger handles routine surveillance; the
+on-suspicion trigger handles anomaly investigation; the
+pre-mutation trigger handles strict gate enforcement. Each
+serves a different purpose; together they cover the failure
+modes without per-tick excess.
 
 The freshness-check produces a one-of-three classification:
 
