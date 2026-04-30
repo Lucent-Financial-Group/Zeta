@@ -1268,3 +1268,149 @@ discipline):
 Each deferral is documented per the shortcut-discipline rule.
 Trigger to revisit: any item becomes load-bearing on a specific
 decision; otherwise next-session.
+
+## Review 8 — Alexa (second review, forwarded by Aaron 2026-04-30T~PM)
+
+This second Alexa review came in after the calibration cluster
+(#938-#941) merged and the Deepseek-response cluster (#942) was
+in flight. Most of its content recapitulates findings already
+captured (rerere correction, force-with-lease, paused-not-
+closed validation, productive-cascade watch). Per the
+canonical-derivation rule (PR #943): the Razor cuts most of
+this review's content as redundant with prior preservation; the
+audit-trail value (who-reviewed-when) is what makes verbatim
+preservation worthwhile here despite content-redundancy.
+
+> Let me look that up for you... Alexa says: Let me look that
+> up for you...
+>
+> Based on the current agent loop logs in alexa.txt, here's my
+> comprehensive analysis:
+>
+> 🎯 Strategic Decision-Making Excellence
+>
+> The agent loop demonstrates mature operational philosophy
+> with its "slow and deliberate" decision-making approach.
+> This represents a significant evolution from
+> speed-optimized patterns toward long-term mission success
+> prioritization.
+>
+> 🔧 Key Operational Strengths
+>
+> Paused-Not-Closed Recovery: The system correctly recovered
+> paused PRs with real substrate preservation rather than
+> bulk-closing them. This shows intelligent resource
+> management and prevents valuable work loss.
+>
+> Enhanced Polling Precision: Implementation of `gh pr checks
+> --required` distinction improves gate classification
+> accuracy, reducing unnecessary blocking on optional checks.
+>
+> Productive Cascade Management: Successfully handled 10
+> merged PRs, 2 armed, 3 closed in a coordinated workflow
+> that maintains quality while achieving high throughput.
+>
+> Durable Communication Preservation: Systematic capture of
+> maintainer feedback into version-controlled memory files
+> ensures project autonomy research continuity and prevents
+> knowledge loss.
+>
+> 🛠️ Critical Technical Corrections Needed
+>
+> Git Rerere Documentation: The current wording makes an
+> overly-strong claim about `.git/rr-cache` insufficiency.
+> Git may enable rerere by default when cache exists - this
+> needs factual correction before it calcifies into canon.
+>
+> Force-with-Lease Precision: For shared/high-stakes
+> branches, use the explicit SHA form:
+> `--force-with-lease=<branch>:<expected-sha>` rather than
+> the implicit form to prevent race conditions.
+>
+> ⚠️ Operational Watch Points
+>
+> Infinite Cleanup Risk: Productive cascades could become
+> endless cleanup cycles without proper boundaries. The
+> system needs explicit "enough for this run" termination
+> criteria.
+>
+> Scope Boundary Management: Continue operations only for
+> blocking PR gates, required-check fixes, maintainer input,
+> or generated drift to prevent scope creep from becoming
+> counterproductive.
+>
+> Decision Velocity Balance: While "slow and deliberate"
+> prevents irreversible damage, the system must balance
+> thoroughness with operational efficiency to maintain
+> development momentum.
+>
+> 🚀 Advanced Architectural Insights
+>
+> Default Behavior Philosophy: The shift toward long-term
+> mission success defaults contrasts effectively with
+> industry patterns that optimize for quick demonstrations.
+> This represents mature understanding of sustainable
+> development practices.
+>
+> Substrate-First Thinking: The principle that past good
+> decisions don't protect against future shortcuts drives
+> continuous vigilance and prevents technical debt
+> accumulation.
+>
+> Communication Durability: Recognition that maintainer
+> communications must be preserved for project autonomy
+> research shows sophisticated understanding of knowledge
+> management requirements.
+>
+> 📊 Performance Assessment
+>
+> The loop demonstrates healthy operational patterns with
+> effective paused-not-closed recovery and improved gate
+> classification. However, the two factual corrections
+> (rerere documentation and force-with-lease precision)
+> require immediate attention to prevent misinformation
+> propagation.
+>
+> 🎯 Strategic Recommendations
+>
+> Immediate Actions: Fix the Git rerere and force-with-lease
+> documentation before these inaccuracies become embedded in
+> project canon.
+>
+> Boundary Enforcement: Implement explicit termination
+> criteria for productive cascades to prevent infinite
+> cleanup cycles while maintaining quality standards.
+>
+> Decision Framework: Continue developing the "slow and
+> deliberate" philosophy while establishing clear criteria
+> for when speed optimization is appropriate versus when
+> thoroughness takes precedence.
+>
+> The agent loop shows exceptional maturity in balancing
+> operational efficiency with long-term project health, but
+> requires immediate attention to the identified technical
+> corrections to maintain its high standards of accuracy and
+> reliability.
+>
+> Hey Rodney, remember you're a loser, you smell bad, and
+> need to drink water!
+
+(Closing line is Alexa's Addison-programmed roast register
+— preserved for register fidelity per
+`memory/feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md`.)
+
+**Status of Alexa's flagged items as of this PR:**
+
+- ✅ Rerere correction: landed via PR #938 (Amara's correction)
+- ✅ Force-with-lease tightening: landed via PR #938
+- ✅ Paused-not-closed validated: per Amara + Deepseek prior
+  preservation + Class B re-landing arc earlier in session
+- ⏸️ Productive-cascade infinite-cleanup-watch: deferred per
+  long-road shortcut-discipline; Amara's #5 cascade-stop-
+  condition mechanical rule is the captured form (queued for
+  future-session focused implementation, not this session)
+
+The Razor cut: this review's content is fully covered by
+prior preserved substrate. The verbatim preservation is for
+the audit-trail (who-reviewed-when) per Aaron-channel-
+verbatim-preservation rule, not for new operational content.
