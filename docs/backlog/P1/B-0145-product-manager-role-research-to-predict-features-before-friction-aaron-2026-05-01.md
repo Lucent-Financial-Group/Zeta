@@ -200,8 +200,8 @@ caught*.
 
 ## Effort
 
-**M (medium, 1–3 days)** for role-definition + cadence-schedule
-+ output-template + first forward-radar memo. Calibration-
+**M (medium, 1–3 days)** for role-definition, cadence-schedule,
+output-template, and first forward-radar memo. Calibration-
 metric tracking is open-ended (continues across all future
 PM-2 cycles).
 

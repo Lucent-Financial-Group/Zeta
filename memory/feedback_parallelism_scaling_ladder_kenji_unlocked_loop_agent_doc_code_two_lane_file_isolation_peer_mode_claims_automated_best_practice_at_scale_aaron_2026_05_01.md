@@ -32,8 +32,8 @@ type: feedback
 ## What this codifies
 
 This is **not** a directive (per Otto-357 *no directives*); it
-is Aaron's framing of the parallelism architecture's evolution
-+ scaling ladder + guardrail + mechanism. Substrate-grade
+is Aaron's framing of the parallelism architecture's evolution,
+scaling ladder, guardrail, and mechanism. Substrate-grade
 because it answers the question *"how does parallel-agent
 throughput scale without sacrificing per-PR quality?"* —
 which is the central tension between speed and review-rigor.
