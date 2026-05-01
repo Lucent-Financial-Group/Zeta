@@ -184,16 +184,20 @@ Before filing a new backlog row (or memory file, by extension):
 
 1. **Identify topic keywords** from the new row's working
    title.
-2. **Grep `docs/backlog/`** for those keywords:
+2. **Grep `docs/backlog/`** for those keywords (use
+   `-nirE` for file:line:context; `-l` alone returns only
+   filenames):
 
    ```bash
-   grep -lirE "<keyword1>|<keyword2>|..." docs/backlog/
+   grep -nirE "<keyword1>|<keyword2>|..." docs/backlog/
    ```
 
-3. **Grep `memory/`** for existing memos on related topics:
+3. **Grep `memory/`** for existing memos on related topics
+   (the `-r` flag in `-nirE` recurses into the directory;
+   `memory/` alone is interpreted as a starting path):
 
    ```bash
-   grep -lirE "<keyword>" memory/
+   grep -nirE "<keyword>" memory/
    ```
 
 4. **Check TaskList items** (if this is an agent task) — they
@@ -243,13 +247,33 @@ depends_on:                  # NEW optional field
 ```
 
 `depends_on` semantics: the depending row CAN be filed
-immediately, but its work shouldn't START until the depended-
-on row reaches a defined state (typically `status: closed`
-or a specific milestone within the row). The generator
-(`tools/backlog/generate-index.sh`) can then produce a
-topologically-sorted view of the backlog, and downstream
-tooling can flag attempts to start work on a row whose
-deps haven't landed.
+immediately, but its work shouldn't START until the
+depended-on row reaches a defined state (typically
+`status: closed` or a specific milestone within the row).
+
+**Tooling state — envisioned, not yet implemented.** As of
+this memo's authoring, `tools/backlog/generate-index.sh`
+parses `id`/`priority`/`status`/`title`/`created`/
+`last_updated` and does NOT consume `depends_on`. The
+schema field is the *forward-compatible authoring shape*;
+downstream tooling lands as separate work:
+
+- **Topological-sort view** — candidate generator extension
+  to emit a DAG-ordered listing of the backlog.
+- **Cycle detection** — candidate lint to reject
+  `depends_on` cycles at PR time (memories and backlog
+  rows can only point backward in time, like commits).
+- **Schema documentation** — `tools/backlog/README.md`
+  needs a `depends_on` row added when the tooling lands.
+- **Start-work guard** — candidate hook to flag attempts
+  to mark a row `in_progress` when its deps are still
+  open.
+
+None of these exist today; they are the *natural mechanization
+trajectory* the schema unblocks. Authoring rows with
+`depends_on:` populated NOW means the data is in place when
+tooling catches up; reading the field is the agent's
+discipline until then.
 
 Example: B-0150 (timeseries domain expert + teacher persona)
 should `depends_on: [Otto-task #323]` (per-tool/language
@@ -259,10 +283,11 @@ instantiates). B-0153 (pre-commit lint suite) should
 B-0151 (RX researcher) should `depends_on: [B-0017]`
 (operational resonance dashboard with continuous UX research).
 
-The backlog becomes a DAG, not a list. Each new row is
-either a leaf (no deps) or an internal node (deps known +
-encoded). Cycles are surfaced by the generator (rejected
-at lint time).
+The backlog becomes graph-shaped (a DAG once tooling lands)
+rather than flat. Each new row is either a leaf (no deps)
+or an internal node (deps known + encoded). The DAG view
+and cycle-rejection are tooling targets, not present
+implementation.
 
 ### 2026-05-01 audit — failure mode demonstrated
 
@@ -288,16 +313,29 @@ The audit IS the demonstration of the failure mode.
 ### Mechanization candidate
 
 Add as **class 14** in B-0153 (PR #1120) — "pre-filing
-similar-row grep check." Pre-commit hook on
-`docs/backlog/B-NNNN-*.md` file-create that:
+similar-row grep check." Two viable mechanization shapes
+(the right git hook depends on whether the gate runs
+*before commit message authoring* or *during commit message
+finalization*):
 
-- Extracts keywords from the title
-- Greps `docs/backlog/` + `memory/` for matches
-- Reports per-keyword hit-list with file:line context
-- BLOCKS the commit unless the author confirms (via commit
-  message tag like `[overlap-checked]`) that they've
-  reviewed the hits and chosen extend / sharpen / create-
-  orthogonal
+- **`pre-commit` hook** on `docs/backlog/B-NNNN-*.md`
+  file-create — extracts keywords, greps
+  `docs/backlog/` + `memory/`, reports the hit-list,
+  fails if any hit found. Author must rerun the commit
+  with an explicit override flag (e.g.,
+  `git commit --no-verify` or an env var
+  `OVERLAP_CHECKED=1`) after manual review. Pre-commit
+  runs before message finalization, so a commit-message
+  tag is NOT readable here.
+- **`commit-msg` hook** alternative — runs after the
+  commit message is written but before the commit is
+  finalized; CAN read message content. Would let the
+  author write `[overlap-checked]` in the message body
+  to acknowledge the review.
+
+Either shape works; the first (pre-commit + override
+flag) is simpler. Implementation choice deferred to
+B-0153's landing.
 
 The mechanization is straightforward; it's the discipline
 that's been missing, and the recurrence is the evidence.
@@ -333,10 +371,11 @@ under the no-directives + autonomy-first-class framing.
 | `caused_by` | This memory was triggered by a specific event / incident / PR / message. (Free-text, not file-pointer.) |
 
 Forward-only by design — each file owns its outgoing claims;
-reverse navigation is `grep -l "supersedes:.*X" memory/`
-away. Bidirectional edges require dual-write discipline that
-always drifts; forward-only matches Glass-Halo
-file-as-source-of-truth.
+reverse navigation is `grep -lrE "supersedes:.*X" memory/`
+away (the `-r` recurses into the directory; `-E` enables
+the regex `.*`). Bidirectional edges require dual-write
+discipline that always drifts; forward-only matches
+Glass-Halo file-as-source-of-truth.
 
 #### Authoring discipline
 
@@ -344,10 +383,12 @@ Mirror the backlog pre-filing check. When drafting a new
 memory file:
 
 1. **Identify keywords** from the working title.
-2. **Grep `memory/`** for related memos:
+2. **Grep `memory/`** for related memos (use `-nirE` for
+   filename:line:context; `-l` alone returns only filenames
+   without context):
 
    ```bash
-   grep -lirE "<keyword1>|<keyword2>" memory/
+   grep -nirE "<keyword1>|<keyword2>" memory/
    ```
 
 3. **Read the hits** (or at least their MEMORY.md
@@ -400,13 +441,17 @@ free-text strings.
 #### Mechanization candidate
 
 Add as **class 15** in B-0153 — "memory-edge
-target-existence lint." Same shape as the existing
+target-existence lint." Sibling-shape to the existing
 `.github/workflows/memory-reference-existence-lint.yml`
-which validates prose links — extend it to also read
-frontmatter edge fields and validate that pointer
-filenames exist in `memory/`. Cycles in `extends` /
-`supersedes` are rejected at lint time (memories can
-only point backward in time, like commits).
+which currently validates that `memory/MEMORY.md` link
+targets exist under `memory/` (its scope is the index,
+not all prose links). The new lint would parse memory
+file frontmatter, extract edge fields (`extends` /
+`supersedes` / `refines` / `contradicts` / `composes_with`),
+and validate that the named filenames exist in
+`memory/`. Cycle-detection (rejecting `extends` /
+`supersedes` cycles at lint time) is a candidate
+companion check; not yet implemented.
 
 #### Why prose `## Composes with` sections stay
 
@@ -426,12 +471,13 @@ duplication required, no migration needed.
   authoring-discipline-going-forward.
 - **NOT a graph database** — git-flat-files-with-grep is
   the store; the graph is just an emergent view from
-  walking edges via `grep -l`.
+  walking edges via `grep -lrE` (the `-r` recurses; `-l`
+  lists matching filenames).
 - **NOT a replacement for MEMORY.md** — the index stays
   as the cold-start reading order; edges are per-file
   relational claims, not a global index.
 - **NOT bidirectional** — forward-only by design; reverse
-  navigation is `grep -l "edge: X"` away.
+  navigation is `grep -lrE "edge: X" memory/` away.
 - **NOT required at PR-time** — adding edges is
   encouraged when the relationship is obvious during
   authoring; absence of edges is not a lint failure.
