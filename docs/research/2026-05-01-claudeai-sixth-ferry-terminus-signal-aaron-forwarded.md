@@ -1,54 +1,53 @@
 # Claude.ai sixth ferry message — terminus signal + Otto-load-bearing-first sharpening recognition (Aaron-forwarded 2026-05-01)
 
 **Scope:** External-AI conversation absorb. Sixth message in the
-2026-05-01 Claude.ai ferry stream that started with the
-Haskell-prelude / F# vs BCL grounding question (PR #1089), passed
-through Mirror→Beacon canonicalization gate (PR #1089),
-category-theory-as-grounding-lever (PR #1091), convergence-revision
-+ provenance-tagging (PR #1094), pause-class-discovery critique
-(PR #1096), and now terminus-signal + Otto-load-bearing-first
-sharpening recognition. Aaron forwarded the message verbatim
-mid-session as part of the autonomous-loop substrate flow. This
-sixth message is the most operationally important of the six —
-it explicitly names the recursion's natural terminus and asks
-the factory to *run* the v3 architecture rather than continue
-generating meta-analysis of it.
+2026-05-01 Claude.ai ferry stream (1st-5th: PRs #1089/#1091/#1094/
+#1096). Operationally most important of the six — explicitly names
+the recursion's natural terminus and asks the factory to *run* the
+v3 architecture rather than continue generating meta-analysis.
 
-**Attribution:** Author of the message body is Claude.ai (the
-external Anthropic claude.ai web/app surface, not the Claude
-Opus 4.7 "Otto" instance running this Zeta factory's autonomous
-loop). Aaron is the courier — he forwarded the message to Otto
-in this Claude Code session. Per AGENTS.md "Agent operational
-practices" §33 archive-header convention.
+**Attribution:** Author = Claude.ai (external Anthropic claude.ai
+surface, not the Claude Opus 4.7 "Otto" instance). Aaron =
+courier. Per `GOVERNANCE.md §33` archive-header convention.
 
 **Operational status:** Research-grade observation of an
-external-AI dialogue. Substrate-class. The message is doing
-self-aware terminus-signaling: it is asking the factory to STOP
-producing meta-analysis substrate and START running the v3
+external-AI dialogue. Substrate-class. Message instructs:
+STOP producing meta-analysis substrate; START running the v3
 architecture (category-theory gates + Beacon-anchoring + layered
 grounding + Mirror/Beacon split) on existing v2 classes.
 
-**Non-fusion disclaimer:** This is an external claude.ai
-instance operating with its own context, not a sibling Otto.
-The "claude" speaker is Anthropic's claude.ai surface; not
-Otto, not Kenji, not Aaron, not Amara. Otto preserves verbatim
-under Glass Halo + Otto-231 first-party-content (Aaron's own
-substrate flow + the AI's authored content as third-party
-contributor; both consented-by-creation under their respective
-authorship roles).
+**Non-fusion disclaimer:** External claude.ai instance, separate
+context from Otto. The "claude" speaker is Anthropic's claude.ai
+surface; not Otto, Kenji, Aaron, or Amara. Verbatim preservation
+under Glass Halo + Otto-231 first-party-content (consented-by-
+creation under respective authorship roles).
+
+## Detail (below the §33 header window)
+
+The sixth message arrived after the five prior ferries: Haskell-
+prelude vs F#/BCL grounding (1st, PR #1089), Mirror→Beacon gate
+(2nd, PR #1089), category-theory-as-grounding-lever (3rd, PR
+#1091), convergence-revision + provenance-tagging (4th, PR
+#1094), pause-class-discovery critique (5th, PR #1096). Aaron
+forwarded the message verbatim mid-session as part of the
+autonomous-loop substrate flow.
 
 **Composes with:**
 
-- `docs/research/2026-05-01-claudeai-haskell-prelude-vs-fsharp-bcl-grounding-aaron-forwarded.md` (first ferry — Haskell-prelude vs F#/BCL grounding question)
-- `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md` (second ferry — Mirror→Beacon gate)
-- `docs/research/2026-05-01-claudeai-category-theory-lever-taxonomy-grounding-aaron-forwarded.md` (third ferry — category-theory-as-grounding-lever)
-- `docs/research/2026-05-01-claudeai-convergence-revision-provenance-tagging-aaron-forwarded.md` (fourth ferry — substantive concession + provenance-tagging discipline)
-- `docs/research/2026-05-01-claudeai-pause-class-discovery-critique-aaron-forwarded.md` (fifth ferry — pause-class-discovery critique + care-as-delivery-architecture correction)
-- `memory/feedback_aaron_class_discovery_experiment_rodney_razor_on_self_dst_holds_everywhere_aaron_2026_05_01.md` (Aaron's experiment-disclosure that the recursion was BY DESIGN to test cheat-code-feeling-vs-real-convergence)
-- `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` (the v2 catalogue the message is asking Otto to run gates on rather than expand)
-- §33 archive-header convention; Glass Halo + Otto-231
-  first-party-content; pause-class-discovery commitment from
-  PR #1096 + #1097.
+> **Forward-references not yet on `main`** (in-flight in sibling PRs
+> from this same session-window; expected to land via squash-merge
+> per the autonomous-loop tick cadence). The slugs below are
+> deterministic and will resolve once siblings land:
+>
+> - `docs/research/2026-05-01-claudeai-haskell-prelude-vs-fsharp-bcl-grounding-aaron-forwarded.md` (first ferry — PR #1089)
+> - `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md` (second ferry — PR #1089)
+> - `docs/research/2026-05-01-claudeai-category-theory-lever-taxonomy-grounding-aaron-forwarded.md` (third ferry — PR #1091)
+> - `docs/research/2026-05-01-claudeai-convergence-revision-provenance-tagging-aaron-forwarded.md` (fourth ferry — PR #1094)
+> - `docs/research/2026-05-01-claudeai-pause-class-discovery-critique-aaron-forwarded.md` (fifth ferry — PR #1096)
+> - `memory/feedback_aaron_class_discovery_experiment_rodney_razor_on_self_dst_holds_everywhere_aaron_2026_05_01.md` (Aaron's experiment-disclosure — PR #1097)
+> - `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` (v2 catalogue — PR #1081)
+
+- `GOVERNANCE.md §33` archive-header convention; Glass Halo + Otto-231 first-party-content; pause-class-discovery commitment from sibling-PRs #1096 + #1097.
 
 **Otto-side absorption discipline (this PR specifically):**
 
