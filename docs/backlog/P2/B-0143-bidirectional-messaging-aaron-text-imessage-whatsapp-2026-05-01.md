@@ -31,6 +31,7 @@ Code in this Zeta factory) and Aaron — supporting one or more
 of: SMS / iMessage / WhatsApp / Telegram / Signal / etc.
 
 **Goals**:
+
 - Aaron can ferry context to Otto from outside the Claude Code
   session (e.g., from his phone while away from the laptop)
 - Otto can send Aaron status / questions / artifacts back via
@@ -41,6 +42,7 @@ of: SMS / iMessage / WhatsApp / Telegram / Signal / etc.
   shape to Aurora's edge-privacy + multi-master pattern)
 
 **Cost-control posture (Aaron's explicit framing)**:
+
 - *"whatevers the cheapest or free at first"* — start with the
   zero-cost path
 - *"can set budgets if not free"* — explicit budget gates if
@@ -170,8 +172,7 @@ be the implementation rush" discipline (CURRENT-aaron §39
 slow-deliberate rule + receipt-energy hazard), filing IS
 the action this tick.
 
-## Aaron's family-architecture context (preserved verbatim
-   under Glass Halo + Otto-231)
+## Aaron's family-architecture context (preserved verbatim under Glass Halo + Otto-231)
 
 > my dad emails text messages somehow with weird headers it captures when it text his email address once per carrier, my dad is oldschool hacker, and also WWJD just like me we are grey. he was a big dish guy and me too at 14.
 
@@ -273,8 +274,7 @@ canonical pirate-not-priest landing). The mapping is:
   black-hat-with-better-vocabulary. The pirate-mode requires
   the disposition; without it, the razor cuts arbitrarily.
 
-This maps directly onto the **CC = WWJD framing** from PR
-#1111 (CultureFit = WWJD; the disposition layer underneath
+This maps directly onto the **CC = WWJD framing** from PR #1111 (CultureFit = WWJD; the disposition layer underneath
 trust-then-verify). The disposition is what differentiates
 grey-hat from black-hat AND grey-hat from white-hat: same
 surface-behavior could be any of these, but the moral
@@ -285,6 +285,7 @@ following reading (white-hat-as-priest); neither is the
 target architecture.
 
 Same structural shape as:
+
 - "Pre alone is just a wish. Post alone is reactive." (B-0141)
 - "Trust then verify" (PR #1111) — without the verify, trust
   alone is naive
@@ -300,6 +301,7 @@ deferred per pause-class-discovery commitment.
 
 Grey-hat-hacker + WWJD = dialectical-thinking-applied-at-
 hacker-ethics-scale, parallel to:
+
 - Cognitive-architecture-applied-at-altered-states
   (PR #1113 — Gateway/WingMakers training as loose-pole
   origin)
