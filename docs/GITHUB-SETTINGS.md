@@ -255,6 +255,117 @@ record the drift source in the PR body (or an ADR under
 `docs/DECISIONS/` if the diagnosis is non-trivial and worth
 preserving for future maintainers).
 
+## Architectural target — three-ruleset split (B-0155 Phase 1 audit)
+
+Per Aaron 2026-05-01 — *"the settings that are there are accidental
+complexity not intentional, we want best practices and to prefer the
+git native settings over the legacy github ui/cli only settings, these
+are nasty thats why they are legacy"* + *"splitting rulesets so you
+could have all always on but multiple smaller rulesets."*
+
+### Migration matrix — branch protection field → ruleset rule
+
+Audit performed 2026-05-01 against live state of `Lucent-Financial-Group/Zeta`.
+
+| Branch protection field | Current state | Ruleset rule equivalent | Migration plan |
+|---|---|---|---|
+| `allow_deletions` | `false` | `deletion` rule | Already in `Default` ruleset → keep on ruleset, can remove from branch protection |
+| `allow_force_pushes` | `false` | `non_fast_forward` rule | Already in `Default` ruleset → keep on ruleset, can remove from branch protection |
+| `allow_fork_syncing` | `false` | (no equivalent) | **Branch-protection-only legacy** — keep in branch protection |
+| `block_creations` | `false` | (no direct equivalent) | Off anyway; can remove |
+| `enforce_admins` | `false` | (rulesets default-enforce against admins unless bypass-actors set) | Rulesets handle admins differently; verify policy intent |
+| `lock_branch` | `false` | (no equivalent) | Off anyway; can remove |
+| `required_conversation_resolution` | `true` | `required_review_thread_resolution` rule (verify exact name in REST API) | **MIGRATE** — add rule to Review-process ruleset |
+| `required_linear_history` | `true` | `required_linear_history` rule | Already in `Default` ruleset → keep on ruleset, can remove from branch protection |
+| `required_pull_request_reviews` | configured | `pull_request` rule (broader scope) | Already in `Default` ruleset (more comprehensive) → keep on ruleset, can remove from branch protection |
+| `required_signatures` | `false` | `required_signatures` rule | Off anyway; can remove |
+| `required_status_checks` | configured (7 contexts, `strict: false`) | `required_status_checks` rule | **MIGRATE** — primary work; add to CI-gate ruleset |
+
+### Three-ruleset target shape
+
+After migration, the single `Default` ruleset splits into three concern-aligned smaller rulesets, all `enforcement: active`, all conditioned on `~DEFAULT_BRANCH`.
+
+#### Ruleset 1 — "Branch integrity"
+
+Concern: physical-git-history protection. Lowest-level invariants
+that should never be temporarily disabled.
+
+Rules:
+
+- `deletion`
+- `non_fast_forward`
+- `required_linear_history`
+
+#### Ruleset 2 — "Review process"
+
+Concern: human and AI review gating before merge. Occasionally
+adjusted (emergency-fix lanes; auto-review tuning).
+
+Rules:
+
+- `pull_request` (review thread resolution + allowed merge methods + required reviewers + dismiss-stale-reviews)
+- `copilot_code_review` (auto-review on draft + push)
+- `required_review_thread_resolution` (migrated from branch protection's `required_conversation_resolution`)
+
+#### Ruleset 3 — "CI gate"
+
+Concern: required status checks must pass before merge. Evolves
+most frequently (every new workflow / lint / check).
+
+Rules:
+
+- `required_status_checks` migrated from branch protection. Contexts: the 7 currently in branch protection (`build-and-test (macos-26)` / `build-and-test (ubuntu-24.04)` / `build-and-test (ubuntu-24.04-arm)` / `lint (actionlint)` / `lint (markdownlint)` / `lint (semgrep)` / `lint (shellcheck)`) plus the memory-* lints + backlog-index-integrity + tick-history-order
+- `strict: false` (parallel-PR-friendly; preserved per session-cluster experience)
+
+### Branch protection — minimized post-migration
+
+After migration, branch protection should retain only fields with no
+ruleset equivalent:
+
+- `allow_fork_syncing: false` (legacy-only)
+
+All other branch-protection settings become redundant and should be
+removed (their ruleset equivalents take over enforcement).
+
+### Why git-native preferred over legacy UI/CLI-only
+
+Aaron 2026-05-01: *"these are nasty thats why they are legacy."*
+
+- **Rulesets** can be exported via REST API as JSON, edited, and
+  applied via REST API — declarative-as-code shape (even if not in
+  a `.github/ruleset.yml` file natively, the JSON in
+  `tools/hygiene/github-settings.expected.json` IS the source of
+  truth)
+- **Branch protection** has the same REST API surface but predates
+  rulesets and lacks granularity (single big object; can't be split
+  by concern)
+- **GitHub UI checkboxes** introduce click-ops drift that
+  `github-settings-drift.yml` only catches retroactively; the
+  reconciliation script direction (Phase 2 of B-0155) makes drift
+  structurally impossible by reversing the flow (always edit the
+  expected.json first, then apply via script)
+
+### Reconciliation script (Phase 2 mechanization)
+
+Envisioned (not yet implemented):
+`tools/hygiene/apply-github-settings.sh` — reads
+`tools/hygiene/github-settings.expected.json` and applies via `gh
+api PUT/POST/DELETE` to the host. Idempotent. Run with `--dry-run`
+to preview, then without to apply. Composes with the existing
+`snapshot-github-settings.sh` (read-only) and
+`check-github-settings-drift.sh` (diff-only) — `apply` is the third
+verb that closes the loop.
+
+After Phase 2 ships, every settings change flows through:
+
+1. Edit `tools/hygiene/github-settings.expected.json`
+2. Run `apply-github-settings.sh` (verifies + applies)
+3. Drift workflow stays green by construction
+
+Click-ops drift becomes structurally impossible — any host change
+that wasn't applied via the script gets caught by the drift workflow
+on next run.
+
 ## Related
 
 - `tools/hygiene/snapshot-github-settings.sh` — generates the
@@ -264,3 +375,5 @@ preserving for future maintainers).
 - `.github/workflows/github-settings-drift.yml` — cadence
   workflow.
 - `docs/FACTORY-HYGIENE.md` row #40 — the hygiene row.
+- `docs/backlog/P1/B-0155-github-settings-ruleset-split-git-native-preferred-aaron-2026-05-01.md`
+  — the multi-phase refactor row this audit serves.
