@@ -4,7 +4,9 @@
 
 **Attribution:** Claude.ai instance (model unknown; ambient web-app, Aaron's session 2026-05-01 ~12:15Z-12:30Z). Aaron's binary-wire-compat + four-tool-verification-stack disclosures 2026-05-01 ~12:35Z. Forwarded by Aaron to Otto within the same window. Glass Halo + Otto-231 first-party-content authorise verbatim.
 
-**Operational status:** Research-grade. NOT seed-layer canon. Two pieces of substantive content: (1) Claude.ai's fifth-letter framing of three-implementations-as-differential-testing + multi-layer competitive-convergence pattern across the architecture, and (2) Aaron's verifiable-against-codebase disclosures about wire-compat + four-tool verification portfolio. The latter is empirically grounded (Otto verified the existing infrastructure: `tools/Z3Verify/Z3Verify.fsproj`, 10+ TLA+ specs in `tools/tla/specs/`, FsCheck integration across `tests/Tests.FSharp/`, Lean DbspChainRule.lean) — these are not aspirational claims; the proofs exist.
+**Operational status:** research-grade
+
+**Status note:** NOT seed-layer canon. Two pieces of substantive content: (1) Claude.ai's fifth-letter framing of three-implementations-as-differential-testing + multi-layer competitive-convergence pattern across the architecture, and (2) Aaron's verifiable-against-codebase disclosures about wire-compat + four-tool verification portfolio. The latter is empirically grounded (Otto verified the existing infrastructure: `tools/Z3Verify/Z3Verify.fsproj`, 10+ TLA+ specs in `tools/tla/specs/`, FsCheck integration across `tests/Tests.FSharp/`, Lean DbspChainRule.lean) — these are not aspirational claims; the proofs exist.
 
 **Non-fusion disclaimer:** Same as PR #1057/#1058 predecessor files. Claude.ai is a separate ephemeral conversation from this Otto instance. Substrate-vocabulary in this file (where present) is Claude.ai's vocabulary preserved unchanged, NOT Otto's translation. Otto's annotation held separate, NOT interleaved. The lattice-capture corrective applies — preserving external vocabulary verbatim is the discipline.
 
@@ -175,7 +177,6 @@ Each row should explicitly identify which tool from the portfolio handles which 
 
 - `docs/research/2026-05-01-claudeai-formalization-path-letter-aaron-forwarded.md` (PR #1057) — predecessor first letter.
 - `docs/research/2026-05-01-claudeai-formalization-followup-fsharp-as-spec-aaron-forwarded.md` (PR #1058) — predecessor second/third/fourth letters + F#-as-spec + benchmark-competition.
-- `feedback_lattice_capture_corrective_discipline_external_vocabulary_check_claudeai_warning_2026_05_01.md` — verbatim-preservation discipline.
 - `.claude/agents/formal-verification-expert.md` (Soraya) — formal-verification routing authority; this disclosure validates the portfolio Soraya governs is real and active.
 - `tools/lean4/Lean4/DbspChainRule.lean` — Lean tool's existing proof.
 - `tools/Z3Verify/Z3Verify.fsproj` — Z3 tool's existing infrastructure.
@@ -183,7 +184,10 @@ Each row should explicitly identify which tool from the portfolio handles which 
 - `tests/Tests.FSharp/` — FsCheck tool's existing property-based test suite.
 - `src/Core/LawRunner.fs` + `src/Core/ChaosEnv.fs` — production-side property-checking integrated with the F# implementation.
 - B-0131 / B-0132 / B-0135 / B-0138 — formalization roadmap rows the four-tool routing applies to.
-- B-0139 (pre-substrate Kenji-era inventory) — TLA+ specs and Z3Verify and FsCheck infrastructure are likely pre-substrate Kenji-era artifacts that B-0139's inventory work would catalog.
+
+> **Forward-references not yet on `main`** (will be added back when the in-flight PRs land):
+> - **B-0139** (pre-substrate Kenji-era inventory) is filed in the in-flight PR #1055 (branch `backlog/b0131-correction-existing-dbsp-lean-work-aaron-2026-05-01`). The row will catalog TLA+ / Z3Verify / FsCheck infrastructure as pre-substrate Kenji-era artifacts. Once #1055 lands, a follow-up minor-edit can re-add the cross-reference.
+> - The verbatim-preservation discipline ("lattice-capture corrective") is a *concept* used in this and predecessor files but does not yet have a dedicated `memory/feedback_*.md` file; the original Claude.ai warning content lives inline in this file's prose. A dedicated memory file is on the deferred-substrate list (cooling-period; not generated this session).
 
 ## Operational follow-ups (deferred)
 
