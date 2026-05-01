@@ -125,7 +125,7 @@ invariant holds. If no, the change has broken it.
 Four properties make the invariant true today:
 
 - **Tick-history is on `main`.** Each tick lands a row in
-  `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMz.md` before
+  `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` before
   the tick stops, so the next session sees the prior tick's
   context by reading the repo.
 - **PR queue is on the host.** Open PRs are visible via
@@ -140,22 +140,31 @@ Four properties make the invariant true today:
   2026-04-30), if it isn't on `main`, the next tick
   won't see it.
 - **Cron is the cadence engine, not session memory.** The
-  every-minute heartbeat fires regardless of which session
-  is active; `CronList` is checked end-of-tick so the
-  [last-check → next-fire] window is minimised; the next
+  every-minute heartbeat fires whenever a session is active
+  to receive it; `CronList` is checked end-of-tick so the
+  [last-check → next-fire] window is minimized; the next
   tick fires without depending on the prior tick's
-  process state.
+  process state. Sessions that resume via `--resume` /
+  `--continue` inherit the registered cron when it's still
+  within its 7-day expiry; brand-new sessions re-arm via
+  the every-tick checklist (per the "Session-restart
+  recovery" section below).
 
 Future revisions of this file may add, drop, or restructure
 the checklist below — provided the rediscoverable-from-`main`
 invariant is preserved or strengthened. Treat the four
 properties above as the test surface.
 
-> The human maintainer, 2026-04-30: *"[the rediscoverable-on-
-> main part] should be an invariant for all future changes
-> to this file"* — the meta-property is what makes the
-> discipline portable across sessions, agents, and forks of
-> the factory.
+> The human maintainer, 2026-04-30 (paraphrased — the original
+> framing was "Six-step tick close has a satisfying property
+> that should be an invariant for all future changes to this
+> file" followed by a sharpening "not six step the
+> rediscoverable on main part"; the bracketed gloss reflects
+> the sharpening): *"[the rediscoverable-on-main part]
+> should be an invariant for all future changes to this
+> file."* The meta-property is what makes the discipline
+> portable across sessions, agents, and forks of the
+> factory.
 
 ## The every-tick checklist
 
