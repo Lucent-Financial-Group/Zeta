@@ -165,6 +165,124 @@ rule applied to its own promotion.)
   The rule says try-mechanical-first when applicable; it
   doesn't say "only use one anchor."
 
+# 2026-05-01 follow-up — pre-condition-fix discipline (avoid PR review hell)
+
+Aaron 2026-05-01 follow-up:
+
+> *"you pr review agents can mechanicalize any anchor you want
+> on the pr process, just be ready to have the pre condition
+> fix for that class or you'll be in PR review hell."*
+
+Sharpens the rule with a load-bearing operational discipline:
+
+PR review agents (copilot, chatgpt-codex-connector, etc.) ARE
+the mechanical anchors at the PR-process layer. They enforce
+mechanical / external / self-encoding tests automatically on
+every PR.
+
+**The trap**: if you push a PR WITHOUT the pre-condition fixes
+for every class the agents will check, the agents fire on every
+push → review-thread proliferation → force-push to fix → CI
+re-runs → more agents fire → repeat. **PR review hell.**
+
+This is exactly what's happened multiple times this session:
+B-0153's own row hit its own classes. B-0154's row hit MD032
+~10 times. Each force-push triggers a fresh review wave. The
+loop converges eventually (this session has 9+ merged PRs as
+proof) but the convergence cost is high.
+
+**The fix — pre-condition discipline**:
+
+1. **Identify the mechanical classes the agents will check**
+   (B-0153's 13 classes is a strong baseline; track new
+   classes as they surface).
+2. **Run the mechanical checks LOCALLY before pushing.**
+   `markdownlint-cli2`, `tsc --noEmit`, `bun test`,
+   `tools/hygiene/check-github-settings-drift.sh`, etc. are
+   the local equivalents of what PR agents run remotely.
+3. **Fix all violations BEFORE pushing.** A push with
+   known-violations is a vote for PR review hell.
+4. **Push only after green-locally.** If the local checks
+   pass, the PR-agent checks should also pass on first run.
+
+**The mechanization gradient**:
+
+- **Worst**: agent catches it after push (PR review thread)
+- **Better**: pre-commit hook catches it before push
+- **Best**: editor / IDE catches it before save (file is
+  never wrong)
+
+The prefer-mechanical-anchor rule says use mechanical tests;
+this refinement says: **run them at the EARLIEST possible
+phase**. Earliest = save-time (editor); next-earliest =
+pre-commit; latest-acceptable = pre-push. Post-push (PR-agent)
+is the failure mode.
+
+**Composes with B-0153 + B-0156**: B-0153's 13-class lint
+suite IS the mechanical-anchor inventory. B-0156's TS-port
+lets the suite run locally via `bun` (vs being trapped in
+GitHub Actions). The two together close the pre-condition-fix
+loop for the bash-linter classes.
+
+**Composes with B-0157 (detect-changes pattern)**: even
+detect-changes-gated workflows still produce review-thread
+hell if the relevant change-class triggers a fix-class
+violation. Gating reduces the SET of fired checks, not the
+hell of any individual check that does fire.
+
+# 2026-05-01 follow-up — precision matters (cheaper + more accurate)
+
+Aaron 2026-05-01 follow-up:
+
+> *"more precise mechanicalization is cheaper and more accurate."*
+
+Mechanical tests have a precision axis. Higher precision is
+better on BOTH cost and accuracy:
+
+- **Cheaper** — fewer false positives = less review-thread noise
+  = less force-push churn = less CI minutes consumed
+- **More accurate** — catches what should be caught; misses less
+
+Examples of the precision axis:
+
+| Lower precision | Higher precision |
+|---|---|
+| "Does the file contain 'STCRM'?" | "Does any of [path / filename / commit msg / branch / commit body / PR title / PR body] contain any of `<list of company names + known aliases>`?" |
+| "Does markdownlint pass?" | "Does the file have any line starting with `+`/`-` immediately following non-blank line?" (precise MD032 trigger pattern) |
+| "Does this look insecure?" | "Run Semgrep with `[OWASP top 10 + project-specific] rules`" |
+
+The discipline: **invest in the precision of the mechanical
+check.** A precise test:
+
+1. **Reduces noise.** Less spurious failures → less developer
+   friction (HX) → less agent friction (UX) → less classifier-
+   approval churn.
+2. **Catches more.** Real violations don't slip through gaps.
+3. **Is auditable.** A precise test is a definitive answer;
+   a fuzzy test requires judgment to interpret results.
+4. **Composes with DST grade-A** — precise mechanical tests
+   are exactly what DST-grade artifacts look like.
+5. **Composes with reproducible-accuracy-before-quality** —
+   precision IS the accuracy axis the fitness-function-first
+   rule names.
+
+**Consequence for the discipline-test priority ladder**:
+
+- Within "mechanical (step 1)", prefer the MORE PRECISE test.
+- A vague mechanical test (step 1-low-precision) is sometimes
+  less useful than a high-precision external-process test
+  (step 2). Don't let "mechanical" become license for
+  imprecision.
+- The ladder is: **precise mechanical** > external-process >
+  self-encoding > external-anchor lineage > Aaron-as-anchor.
+  Imprecise mechanical might NOT beat external-process.
+
+**Investment direction**: when building substrate-discipline
+mechanizations (per B-0153 lint suite, B-0156 TS port,
+B-0157 detect-changes pattern), spend the effort on PRECISION
+not on coverage-breadth. Five precise checks beat fifty fuzzy
+ones.
+
 # Self-test (this very memo)
 
 Does this rule pass its own test?
