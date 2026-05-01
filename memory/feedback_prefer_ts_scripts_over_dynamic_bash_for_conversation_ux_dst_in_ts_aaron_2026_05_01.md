@@ -199,6 +199,36 @@ qualifier means: not full DST (random clock effects from
 package-manager network calls; remote registry behavior
 isn't deterministic), but as close as bash can get.
 
+## The blast radius of bash/PowerShell (Aaron 2026-05-01)
+
+Aaron 2026-05-01 confirming refinement: *"already required
+(install graph / declarative bootstrap) those are the
+requirements yep, that's the blast radius of bash/powershell."*
+
+**"Blast radius"** is the canonical architectural term.
+Bash and PowerShell are contained to a finite, well-defined
+set of scenarios where they're legitimately required:
+
+1. **Install graph** — the chain rooted at `install.sh` (or
+   `install.ps1` on Windows) where bun is not yet on PATH;
+   bash/PS is structurally necessary because it bootstraps
+   the TS runtime
+2. **Declarative bootstrap** — bash/PS as executor over
+   static manifests (`tools/setup/manifests/`); the manifest
+   is the source of truth, the script is a thin invoker
+
+**Outside the blast radius**: TS is the target. Every `.sh`
+or `.ps1` outside install graph + declarative bootstrap is a
+TS-port candidate (per B-0156).
+
+The blast-radius framing has containment connotation —
+bash/PS isn't banned, it's bounded. Code inside the blast
+radius gets bash/PS quality discipline (4-bash alignment per
+Otto-235; PowerShell for Windows reach per task #305; bats
++ pester testing where DST matters). Code outside the blast
+radius gets TS quality discipline (cheap DST, native
+testing, type safety).
+
 So the DST-bash-impossible claim is sharpened: **bash is
 DST-blocked for general computation; declarative-executor
 bash over static manifests is closest-to-DST and is a
@@ -268,9 +298,10 @@ autonomous tick:
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Bash is the high-discipline-cost path to DST grade-A.
-TS is the cheap path. Pick the cheap path unless bash is
-already required (install graph / declarative bootstrap)."*
+*"Bash/PowerShell have a finite blast radius: install graph
++ declarative bootstrap. Outside the blast radius, TS is
+the target. Inside, bats + pester give expensive-but-real
+DST."*
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence, not
