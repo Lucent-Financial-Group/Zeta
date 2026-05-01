@@ -13,8 +13,8 @@ last_updated: 2026-05-01
 
 Build a pre-commit lint suite consolidating the **13 mechanizable
 lint-classes** thoroughly characterized during the 3-PR
-substrate cluster iteration 2026-05-01 (PRs #1116 + #1117 +
-#1118 + #1119, ~17 ticks of CI/review iteration). Each class
+substrate cluster iteration 2026-05-01 (PRs #1116, #1117,
+#1118, and #1119, ~17 ticks of CI/review iteration). Each class
 corresponds to a friction encountered by reviewer agents
 (Copilot + reviewers) that mechanizable pre-commit checks would
 have eliminated.
@@ -28,8 +28,9 @@ would have closed in single-push.
 
 ## Why now
 
-The 3-PR substrate cluster (parallelism-scaling-ladder + timeseries-DB
-+ topological-quantum-emulation) is now fully merged. The
+The 3-PR substrate cluster (parallelism-scaling-ladder,
+timeseries-DB, and topological-quantum-emulation) is now fully
+merged. The
 cluster's iteration journey produced empirical characterization
 of 13 distinct lint-classes that compound coordinator-load when
 unmechanized. Filing a single consolidated row prevents the
@@ -43,7 +44,7 @@ classes from diffusing into the backlog as 13 separate rows.
    flowing prose interpreted as list-marker, triggering the
    blanks-around-lists rule. Fix-pattern: prose-reflow with
    connectives ("plus", "and", comma-list, "/"). Aaron-affirmed
-   as *"very high quality decison"*.
+   as *"very high quality decision"* (Aaron typed "decison").
 2. **MD038 / no-space-in-code**: spaces inside inline-code spans
    (e.g., `` `| ` ``) trigger MD038. Fix: tighten code-span or
    replace with prose.
@@ -56,40 +57,40 @@ classes from diffusing into the backlog as 13 separate rows.
 
 ### Reference resolution
 
-5. **Wildcard refs vs concrete filenames**: `feedback_*_*.md`
+1. **Wildcard refs vs concrete filenames**: `feedback_*_*.md`
    patterns in flowing prose don't resolve to a real file. Fix:
    replace with concrete filename or descriptive prose.
-6. **Bare memory-ref vs `memory/`-prefix**: `feedback_*.md`
+2. **Bare memory-ref vs `memory/`-prefix**: `feedback_*.md`
    without `memory/` prefix in backlog rows is inconsistent
    with other rows. Fix: prepend `memory/`.
-7. **Forward-ref to unmerged PR**: references to files in
+3. **Forward-ref to unmerged PR**: references to files in
    sibling-PR branches that don't exist on main yet. Fix: annotate
    as "(forward-ref to PR #N)" until target merges.
-8. **B-NNNN refs that don't resolve**: references to backlog
+4. **B-NNNN refs that don't resolve**: references to backlog
    rows that don't exist as files in `docs/backlog/**`. Fix:
    annotate as `(not yet filed)` / `(when filed)` / `(when
    they land)`.
-9. **`task #NNN` vs GitHub auto-link ambiguity**: `task #NNN`
+5. **`task #NNN` vs GitHub auto-link ambiguity**: `task #NNN`
    pattern conflicts with GitHub's automatic `#NNN` PR/issue
    linking. Fix: prefix with `Otto-task #NNN` to disambiguate.
 
 ### Project-state accuracy
 
-10. **Stale code-tree paths**: `Zeta.Core/**`, `Zeta.*/**`
-    stale references when actual code lives under `src/Core/**`,
-    `src/Core.CSharp/**`, `src/Bayesian/**`. Fix: use concrete
-    current paths.
-11. **Aspirational tooling without framing**: `tools/lint/markdownlint`
-    or similar paths cited as if existing when they don't.
-    Fix: prefix with framing words ("envisioned", "candidate
-    path", "to be established", "when filed").
-12. **URL canonicalization**: `research.microsoft.com` form vs
-    repo-canonical `https://www.microsoft.com/en-us/research/`
-    form. Fix: use canonical form.
-13. **MEMORY.md duplicate-link-targets**: post-rebase regression
-    where long-form-original + tightened-one-liner both point
-    at same memory file. Fix: dedup keeping terse form per
-    `memory/README.md` policy.
+1. **Stale code-tree paths**: `Zeta.Core/**`, `Zeta.*/**`
+   stale references when actual code lives under `src/Core/**`,
+   `src/Core.CSharp/**`, `src/Bayesian/**`. Fix: use concrete
+   current paths.
+2. **Aspirational tooling without framing**: `tools/lint/markdownlint`
+   or similar paths cited as if existing when they don't.
+   Fix: prefix with framing words ("envisioned", "candidate
+   path", "to be established", "when filed").
+3. **URL canonicalization**: `research.microsoft.com` form vs
+   repo-canonical `https://www.microsoft.com/en-us/research/`
+   form. Fix: use canonical form.
+4. **MEMORY.md duplicate-link-targets**: post-rebase regression
+   where long-form-original + tightened-one-liner both point
+   at same memory file. Fix: dedup keeping terse form per
+   `memory/README.md` policy.
 
 ## Acceptance criteria
 
@@ -124,9 +125,12 @@ classes from diffusing into the backlog as 13 separate rows.
   via `xxd`) are reviewer-noise, not authoring-error. Mitigation
   is reviewer-side, not lint-side.
 - **Outdated-thread auto-resolve script**: separate concern;
-  `tools/hygiene/resolve-outdated-threads.sh` is its own row.
-- **Rebase-after-sibling-merge mechanization**: separate concern;
-  `tools/hygiene/rebase-after-sibling-merge.sh` is its own row.
+  candidate path `tools/hygiene/resolve-outdated-threads.sh`
+  (not yet filed) is its own row.
+- **Rebase-after-sibling-merge mechanization**: separate
+  concern; candidate path
+  `tools/hygiene/rebase-after-sibling-merge.sh` (not yet filed)
+  is its own row.
 
 ## Composes with
 
