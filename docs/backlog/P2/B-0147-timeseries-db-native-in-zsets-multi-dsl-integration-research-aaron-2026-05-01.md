@@ -201,6 +201,28 @@ performance, complexity of the algebra surface, and CRDT
 semantics. The research lane (this row) must investigate at
 least these four options before recommending.
 
+**Prior on algebra-surface-complexity weighting.** Aaron
+2026-05-01: *"complexity of the algebra surface, i'm not too
+worried about this one because we have all the formal
+verification"* + *"a little bit"*. The factory's formal-
+verification investment (B-0134 / B-0133 / B-0135 / B-0137 /
+B-0142) mechanically tames algebra complexity — invariants
+are proved at compile-time / build-time / verification-pass
+rather than depended-on at review-time. Result: **algebra-
+surface complexity carries less cost in the factory than it
+would for a typical project**. The research should NOT
+over-weight this dimension; sophisticated algebras that would
+be rejected elsewhere as "too complex" remain viable here as
+long as they are formally specified.
+
+This is a deliberate **non-Pareto choice** the factory makes
+explicitly: pay more upfront on formal-spec investment to buy
+more headroom on algebra-complexity. Composes with the
+amortized-keystone (per
+`feedback_parallelism_scaling_ladder_*_2026_05_01.md` PR #1116)
+— the formal-spec cost is paid once and reaped N times across
+every algebra change.
+
 Beyond this open question, Zeta SHOULD:
 - Treat label cardinality as a first-class parameter, not an
   implicit assumption
@@ -271,6 +293,118 @@ The formal-verification expert (Soraya, per
 property class. Likely portfolio: TLA+ for distributed CRDT
 properties; F# refinement types for algebra correctness;
 Lean / Coq for the retraction-native duality proof.
+
+## Research methodology — Pareto-improvement framing
+
+Aaron 2026-05-01 (load-bearing research-spine question):
+
+> *"why did they make the tradeoff and can we make a differnt
+> one that gives us better properties without loosing good
+> properties"*
+
+This is the **Pareto-improvement-or-bust** discipline that
+governs the entire research lane. Before recommending a
+different design point, the research must:
+
+### Step 1 — Understand WHY they made the tradeoff
+
+For each candidate (Prometheus / TimescaleDB / InfluxDB /
+VictoriaMetrics / etc.), document:
+
+- **Constraints they were optimizing for** — what hardware
+  envelope, what query patterns, what operational model
+- **Properties they prioritized** — what they got right (and
+  why those properties are valuable)
+- **Properties they accepted as costs** — what they sacrificed
+  (and whether that sacrifice was load-bearing or incidental)
+- **Era / context** — when was the design made; what
+  alternatives existed; what was the state of CRDT research,
+  columnar storage, hardware
+
+For Prometheus specifically (the immediate worked example):
+- WHY small-cardinality? Memory-resident inverted index
+  performance; predictable scrape-and-query cycle; operational
+  simplicity for the common monitoring case
+- WHY pull-based? Decoupled service health from monitoring
+  health; trivial to add a target; works in Kubernetes
+  service-discovery model
+- WHY no schema? Labels are arbitrary; no migration burden;
+  composable across services
+
+### Step 2 — Identify the Pareto frontier
+
+Once each candidate's design is understood, map the **Pareto
+frontier** — the set of candidates where no candidate
+dominates (better-on-everything-than) another. Each Pareto-
+optimal candidate is a defensible choice for some workload;
+each non-Pareto-optimal candidate is dominated and not worth
+adopting.
+
+### Step 3 — Look for Pareto-superior alternatives
+
+The research's load-bearing question: *can we design a point
+that gives us better properties without losing good
+properties?* Specifically:
+
+- Can we have **high-cardinality first-class** WITHOUT losing
+  Prometheus's pull-based simplicity?
+- Can we have **CRDT multi-mode** WITHOUT losing the
+  retention-cost-efficiency Prometheus achieves?
+- Can we have a **formal math specification** WITHOUT losing
+  the operational ergonomics?
+- Can we have **multi-DSL meta-DSL composability** WITHOUT
+  losing per-DSL optimization opportunities?
+
+For each "yes" answer, document the design move that achieves
+it. For each "no" answer, document the structural reason — that
+becomes the *unavoidable tradeoff* the design must own
+explicitly.
+
+### Step 4 — Recommend with explicit tradeoffs named
+
+The recommendation (per acceptance criterion #5) must name:
+
+- What properties the chosen design **gains** over the
+  alternatives
+- What properties it **preserves** from the alternatives'
+  strengths
+- What properties it **explicitly sacrifices** and why
+  that sacrifice is acceptable (or not, if the design is
+  dominated by another)
+- Whether the chosen point is **on the Pareto frontier** or
+  is **a deliberate non-Pareto choice** for reasons (e.g.,
+  alignment with broader Zeta architecture)
+
+### Why this methodology matters
+
+Without the Pareto-improvement framing, the research devolves
+into "different is better" or "newer is better" — both wrong.
+The mature stance: *every tradeoff is a tradeoff for
+reasons; the research finds reasons to do better, not reasons
+to do different.*
+
+This composes with:
+
+- `feedback_aaron_pirate_not_priest_expand_prune_pedagogical_framework_quantum_rodney_razor_parallel_worlds_aaron_2026_05_01.md`
+  — pirate-not-priest disposition: Prometheus doesn't get a
+  free pass for being established; nor does it get critiqued
+  for being established. The razor applies impartially.
+- `feedback_orthogonal_axes_factory_hygiene.md` — design
+  rules sit on orthogonal axes; understanding which axes
+  matter for which constraint is precondition to Pareto
+  analysis
+- B-0135 (modal logic for retractability) — tradeoffs are
+  retractable design moves; modal-logic gives the formal
+  vocabulary for "in this design point, X holds; in that
+  design point, Y holds"
+- The `research-grade-not-operational` discipline (from
+  GOVERNANCE §33 archive-header convention) — this row is
+  research, not implementation; the recommendation lands
+  with explicit tradeoffs named, not with a hidden
+  assumption that "newer = better"
+
+The carved sentence: *"Every tradeoff is a tradeoff for
+reasons. Find better, not different."*
 
 ## Out of scope (defer)
 
