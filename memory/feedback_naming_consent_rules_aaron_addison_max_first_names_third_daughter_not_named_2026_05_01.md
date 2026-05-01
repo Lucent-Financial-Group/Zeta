@@ -123,10 +123,10 @@ Aaron's grant):
   pedagogy
 - Bought Aaron his first video-game-backup device
   (Super UFO — Super Nintendo backup device that copied
-  cartridges to floppy disk; NOT Game Boy per Otto's prior
-  misread, corrected by Aaron 2026-05-01) from Popular
-  Science magazine for his birthday — hands-on hardware-
-  hacking pedagogy
+  cartridges to **3.5" hard-shell floppy disks**; NOT Game
+  Boy per Otto's prior misread, corrected by Aaron
+  2026-05-01) from Popular Science magazine for his
+  birthday — hands-on hardware-hacking pedagogy
 - **Active game-hacking co-conspirator**: Aaron 2026-05-01:
   *"she would drive me to blockbuster to copy the games"*
   — grandmother drove young Aaron to Blockbuster Video to
