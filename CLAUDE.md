@@ -543,6 +543,42 @@ Claude-Code-specific mechanisms.
   at every wake. Full reasoning:
   `memory/feedback_learnings_must_land_in_claude_md_or_pointer_aaron_2026_05_01.md`
   + `memory/feedback_otto_buddy_spin_up_when_waiting_aaron_2026_05_01.md`.
+- **Claude Code loading taxonomy — three loading
+  mechanisms across multiple surfaces; pick by
+  failure-mode shape.** Direct-load: CLAUDE.md and
+  CLAUDE.local.md auto-load full at session start;
+  per Anthropic docs `.claude/rules/*.md` without
+  `paths:` also auto-loads with same priority **but
+  this is unverified in our harness — canary test
+  pending in `.claude/rules/test-canary.md`; treat
+  rules as direct-load only after the canary
+  confirms**. Lazy-load: `.claude/rules/*.md` with
+  `paths:` glob loads when Claude reads matching
+  files (also doc-supported / unverified in our
+  harness). Router-keyed: `.claude/skills/<name>/SKILL.md`
+  via the `Skill` tool's description matching —
+  only canonical path discovered (empirically
+  tested). Subagent-discovery: `.claude/agents/<name>.md`.
+  On-demand: `~/.claude/projects/<x>/memory/MEMORY.md`
+  (first 200 lines / 25KB at start) + topic files
+  via Read. **Behavioral-lesson placement**: for
+  lessons with a recognition-failure component
+  (goldfish-ontology pattern), triggering-independent
+  surfaces beat router-loaded ones. *"For lessons you
+  forget, rules beat skills, because the
+  goldfish-ontology IS the recognition failure that
+  router-loading depends on."* Rule of thumb: "I keep
+  forgetting to do X" → CLAUDE.md or `.claude/rules/`;
+  "Apply X when working with Y files" → path-scoped
+  `.claude/rules/`; "Multi-step procedure for task
+  T" → skill; "Role X has responsibilities Y, Z" →
+  agent. CLAUDE.md-level so it is 100% loaded at
+  every wake. Doc-supported by canonical Anthropic
+  source (`code.claude.com/docs/en/memory`); the
+  rules-auto-load piece specifically is unverified
+  in our harness pending the canary test. Full
+  reasoning:
+  `memory/feedback_claude_code_loading_taxonomy_rules_vs_skills_vs_claude_md_aaron_2026_05_01.md`.
 
 ## Build and test gate
 
