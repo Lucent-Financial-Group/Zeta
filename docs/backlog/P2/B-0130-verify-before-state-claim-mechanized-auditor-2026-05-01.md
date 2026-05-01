@@ -36,13 +36,13 @@ The discipline that catches these at authoring time is **verify-before-state-cla
 
 ## What — proposed audit suite
 
-Each audit is a small lint that fires on `git pre-commit` AND in CI (`.github/workflows/`):
+Each audit is a small lint that fires on the local pre-commit hook (`.git/hooks/pre-commit` invoking `tools/lint/*`) AND in CI (`.github/workflows/`):
 
 1. **Wildcard-ref auditor** — flag any `feedback_*` or `*_*.md` pattern in markdown that contains literal `*` characters; require concrete filename or explicit "to-be-written" annotation.
 
 2. **Slot-uniqueness auditor** — for any HTML comment with `latest-paired-edit:` semantics, count occurrences in target file (e.g. MEMORY.md); fail if > 1.
 
-3. **Frontmatter-schema auditor (memory)** — extend the existing `memory-index-integrity.yml` to validate that `memory/feedback_*.md` files have the required YAML frontmatter fields (`name`, `description`, `type`). Already partially done at index level; this extends to per-file schema.
+3. **Frontmatter-schema auditor (memory)** — extend the existing `.github/workflows/memory-index-integrity.yml` to validate that `memory/feedback_*.md` files have the required YAML frontmatter fields (`name`, `description`, `type`). Already partially done at index level; this extends to per-file schema.
 
 4. **Citation-of-canonical-source auditor** — for any substrate file that mentions `CLAUDE.md`, `GOVERNANCE.md`, `AGENTS.md`, etc., flag if the surrounding paragraph paraphrases without quoting or cites a §NN that doesn't exist in the canonical file.
 
@@ -90,9 +90,12 @@ Each audit is a small lint that fires on `git pre-commit` AND in CI (`.github/wo
 - **Task #350** (`Otto-357 mechanized auditor — extend tools/lint/no-directives-otto-prose.sh scope`) — adjacent; this row is the queue of complementary audits in the same family. Consider whether to fold into task #350 or keep as separate B-0130 lane.
 - **Task #316** (`Drain-Log Claim Verification Discipline — capture rule + lint candidate`) — similar shape; this row's audit #4 (citation-of-canonical-source) is the lint version of the discipline #316 captures.
 - **PR #1018** (backlog generator WARN) — first slice mechanized; proves the approach works.
-- **`memory/feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`** (PR #1025) — the meta-meta-meta-rule that predicted this convergent pattern empirically.
 - **`memory/feedback_verify_target_exists_before_deferring.md`** — the parent class of which this row's audits are concrete instances.
 - **CLAUDE.md verify-before-deferring + future-self-not-bound + never-be-idle disciplines** — this row's audits operationalize those at compose-time rather than at deferral-time.
+
+**Forward-references not yet on `main`** (will be re-added as direct refs once their PRs land):
+
+- **`memory/feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`** — the meta-meta-meta-rule that predicted this convergent pattern empirically. **Filed in the in-flight PR #1025**.
 
 ## Status
 
