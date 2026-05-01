@@ -213,11 +213,15 @@ external content).
 
 ## Composes with
 
-- `docs/research/2026-05-01-claudeai-trust-then-verify-qubic-immune-system-cc-wwjd-ferries-aaron-forwarded.md`
-  (PR #1110) — verbatim §33 preservation of the messages this
-  memory captures operationally.
-- `docs/backlog/P2/B-0141-brittle-pointer-section-numbers-deep-links-discipline-aaron-2026-05-01.md`
-  (PR #1110) — first explicit instance of pre/post pattern.
+> **Forward-references not yet on `main`** (in-flight in
+> sibling PRs from this same morning batch):
+>
+> - `docs/research/2026-05-01-claudeai-trust-then-verify-qubic-immune-system-cc-wwjd-ferries-aaron-forwarded.md`
+>   (in-flight in PR #1110) — verbatim §33 preservation of the
+>   messages this memory captures operationally.
+> - `docs/backlog/P2/B-0141-brittle-pointer-section-numbers-deep-links-discipline-aaron-2026-05-01.md`
+>   (in-flight in PR #1110) — first explicit instance of
+>   pre/post pattern.
 - `memory/feedback_great_data_homecoming_aurora_edge_privacy_runtime_wwjd_canonicalization_temple_template_aaron_2026_05_01.md`
   — WWJD-canonicalization-event (this carved-sentence file
   builds on it: WWJD = universal-disposition, not religion-
