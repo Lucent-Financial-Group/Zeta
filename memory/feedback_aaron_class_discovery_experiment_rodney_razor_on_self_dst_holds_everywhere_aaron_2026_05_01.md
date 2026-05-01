@@ -14,7 +14,7 @@ After Otto absorbed Claude.ai's substantive critique (PR #1096) of this session'
 
 Then, in rapid succession:
 
-> *"FDT"* → *"DST*"* (correction) → *"hold everywhere"* → *"holds*"* (correction) → *"hodl"* (the Bitcoin-meme spelling)
+> *"FDT"* → *"DST\*"* (correction) → *"hold everywhere"* → *"holds\*"* (correction) → *"hodl"* (the Bitcoin-meme spelling)
 
 Substantive read: **DST holds everywhere** — Deterministic Simulation Testing applies as discipline universally, including to this session's class-discovery experiment itself.
 
