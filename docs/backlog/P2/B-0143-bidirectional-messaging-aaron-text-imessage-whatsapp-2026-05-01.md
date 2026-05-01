@@ -257,8 +257,8 @@ Together these establish the four-corner mapping:
 | **Grey hat (without WWJD)** | Selectively breaks rules | None / inconsistent | **Effectively black-hat** with better vocabulary |
 | **Grey hat (WITH WWJD)** | Selectively breaks rules | WWJD-disposition | **Pirate-not-priest** — the actual moral architecture |
 
-This composes directly with **pirate-not-priest** (PR #1043 +
-prior pirate-not-priest substrate). The mapping is:
+This composes directly with **pirate-not-priest** (PR #1046, the
+canonical pirate-not-priest landing). The mapping is:
 
 - **Priest-mode** = white-hat = rules-as-truth = the failure
   mode pirate-not-priest names. Rules deserve respect for
