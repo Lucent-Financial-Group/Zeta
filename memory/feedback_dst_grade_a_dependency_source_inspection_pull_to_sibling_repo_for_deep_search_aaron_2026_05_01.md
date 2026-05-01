@@ -150,6 +150,52 @@ ships with a citation; the class enforces the citation. The
 enforcement bites at merge-time, not just review-time —
 which is the stronger discipline shape Aaron is naming.
 
+### The PR convergence loop framing — meta-learning via iteration
+
+Aaron 2026-05-01 (further clarification):
+
+> *"i mean we have the pr convergence loop in the classes that
+> the copilot, claude and other agents who review prs the meta
+> learning loop on every pr is what i was talking aobut"*
+
+The mechanization isn't just *"a single agent posts a thread."*
+It's the **PR convergence loop**: every PR runs through
+multiple review agents (Copilot, Claude, harsh-critic via
+peer-call, future-Cursor when wired) that collectively iterate
+toward consensus. The DST-rule class participates in that
+loop — not as a one-shot check but as a **meta-learning
+target** the loop converges toward across many PRs.
+
+Three structural properties this composes:
+
+1. **Multiple-agent participation.** Per the harness-bias
+   substrate (PR #1119), different agents/harnesses give
+   different biases. The DST-rule class gets checked from
+   multiple bias-axes; the convergence loop reconciles them.
+2. **Iterative refinement.** Per the 7-class PR-thread-
+   resolution taxonomy (`memory/feedback_pr_thread_resolution_
+   class_taxonomy_2026_04_28.md`), each PR's threads exercise
+   the class library; the meta-learning loop is "the agents
+   collectively improve their handling of the class library
+   across iterations."
+3. **Amortization at the meta-layer.** Per the parallelism-
+   scaling-ladder amortized-keystone (PR #1116, merged), the
+   cost of mechanizing the class is paid once; the meta-
+   learning benefit accrues across every future PR. The agent
+   pool's understanding of the class library compounds.
+
+This is the multi-agent generalization of the amortized-
+keystone: not just "mechanize the check" but **"the agents
+that do the checking learn from the iterations and improve."**
+The 13 mechanizable lint-classes from B-0153 + the DST-rule
+class 14 here all become meta-learning targets — each PR's
+iteration is one training-instance for the convergence loop.
+
+**Carved sentence (refined)**: *"The PR convergence loop IS
+the meta-learning mechanism. Every class checked is a
+training-instance; every PR is an iteration; every merge is
+a converged answer."*
+
 **Aaron's challenge to Otto** (same exchange): *"did you look
 at source to prove your DST dievation was necessary"* — a
 quality-check on whether the documenting-agent walks the
