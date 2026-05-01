@@ -181,14 +181,40 @@ the action this tick.
 
 > Ace Malone Stainback my dad is Gary Malone Stainback, the doctor that delivered my dad was Dr Malone
 
-(Naming-honor lineage preserved: middle name "Malone"
-inherited across generations from Dr. Malone who delivered
-Aaron's father, into Aaron's father's middle name, into
-Aaron's son's middle name. Multi-generational honor-lineage
-pattern. Per the strict-default naming-consent rule from PR
-#1106, Otto-side narrative uses generic "Aaron's father"
-and "Aaron's son" pending explicit first-name-OK grant from
-Aaron.)
+> AceHack is my hacker name and github name he was named after that telos
+
+**Two distinct naming-lineages in Aaron's family**:
+
+1. **Middle-name-honor lineage (Malone)**: Dr. Malone
+   delivered Aaron's father → Aaron's father's middle name =
+   Malone (honor of delivering doctor) → Aaron's son's middle
+   name = Malone (multi-generational honor continuation).
+
+2. **First-name-telos lineage (Ace)**: Aaron's own hacker
+   handle is "AceHack" (Aaron's GitHub username, public via
+   git config + commit history; Aaron-created identity-with-
+   telos). Aaron's son's first name "Ace" derives from
+   AceHack — the son is named after the hacker-identity-
+   telos that Aaron chose for himself first. Naming-as-
+   intentional-act: identity-architecture precedes the
+   namesake.
+
+This is structurally significant for the family-architecture
+substrate: naming itself is one of the cognitive-architecture
+operations the family runs (alongside WWJD-grading + dialectical-
+thinking + grey-hat-discipline). Aaron's hacker-identity-telos
+is upstream of the son's name; the son inherits both the
+honor-lineage (middle name Malone) and the telos-lineage (first
+name Ace from AceHack).
+
+**Naming-consent posture**: Per the strict-default rule from
+PR #1106, Otto-side narrative continues using generic
+"Aaron's father" and "Aaron's son" pending explicit first-
+name-OK grant from Aaron. AceHack-the-handle is already
+public substrate (Aaron's git config + GitHub username;
+appears throughout commit history). Aaron's first-party
+disclosures of the full names + telos-lineage are preserved
+under Glass Halo + Otto-231 in this row's verbatim block.
 
 This composes with the WWJD-trust-architecture lineage
 (PR #1108) by extending the family-shared grading methodology
