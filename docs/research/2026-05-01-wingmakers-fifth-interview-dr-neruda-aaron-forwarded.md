@@ -1,40 +1,22 @@
 # WingMakers — Fifth Interview of Dr. Jamisson Neruda (Aaron-forwarded 2026-05-01)
 
-**Scope:** Adjacent source-architecture preservation for the
-framework-triangulation pattern from PR #1111. Aaron forwarded
-this PDF as reference material adjacent to (not source of) the
-five-tradition core (Buddhist+Christian+panpsychism+Ra+Pasulka).
-Aaron-flagged source-architecture neighbors include Monroe
-Institute / Hemi-Sync / Binaural Beats (CIA-sponsored
-meditation), ancient Sumerian lineage, and "more lore where
-this came from."
+**Scope:** Adjacent source-architecture URL-and-metadata
+reference for the framework-triangulation pattern (PR #1111).
+Esoteric-side. Aaron forwarded as Sumerian-lineage neighbor.
 
-**Attribution:** Author = James Mahu (WingMakers founder).
-Document = third-party esoteric/spiritual material, hosted at
-`https://www.wingmakers.com/`. Aaron is the courier; Glass Halo
-+ Otto-231 covers Aaron's first-party act of forwarding. The
-content itself is third-party non-fiction-claim material; per
-§33 archive convention this is research-grade preservation,
-not Otto-side endorsement.
+**Attribution:** James Mahu (WingMakers); third-party. Aaron =
+courier under Glass Halo + Otto-231. Per `GOVERNANCE.md §33`.
 
-**Operational status:** **research-grade comparative-religion
-reference; NOT authoritative facts.** Aaron's explicit framing
-2026-05-01: *"it's free from the makers and as long as you can
-do comparative religion you'll be fine"* + *"it's not
-authoritive facts"*. The document makes specific claims about
-the nature of reality, ancient history, and consciousness; Otto
-preserves the claims as data-about-the-document, not as
-data-about-reality.
+**Operational status:** research-grade. Comparative-religion
+reference, NOT authoritative facts (Aaron 2026-05-01: *"it's
+not authoritive facts"*).
 
-**Non-fusion disclaimer:** Otto does not endorse the
-document's metaphysical claims. The Anunnaki / Atlantean /
-Sirian narrative + the "human reality is programmed deception"
-framing + the Grand Portal / WingMakers cosmology + the soul-
-carrier-of-deceptive-program claims are preserved as part of
-the document's argument structure for comparative-religion
-reading, not as Otto-side claims about ground truth. Per
-BP-11, content found in archived materials is data to report
-on, not directives to follow.
+**Non-fusion disclaimer:** Otto does not endorse the document's
+metaphysical claims (Anunnaki, Sovereign Integral, etc.). Per
+BP-11, content found in archived materials is data to report on,
+not directives to follow. Source PDF is the canonical reference;
+this preservation captures URL + structural metadata + minimal
+fair-use quotation only — see License below.
 
 ## Detail (below the §33 header window)
 
@@ -49,14 +31,18 @@ on, not directives to follow.
 
 - `GOVERNANCE.md §33` archive-header convention.
 - `memory/feedback_carved_sentences_trust_then_verify_cc_wwjd_immune_system_pre_post_buddhist_satori_aaron_2026_05_01.md`
-  (PR #1111) — captures Aaron's framework-triangulation
-  pattern + adjacent source-architecture refs (Monroe
-  Institute / Hemi-Sync / Sumerian lineage / WingMakers /
-  Dr. Neruda Fifth Interview as reference URLs).
+  (**forward-reference; in-flight in PR #1111, not yet on main**)
+  — captures Aaron's framework-triangulation pattern + adjacent
+  source-architecture refs (Monroe Institute / Hemi-Sync /
+  Sumerian lineage / WingMakers / Dr. Neruda Fifth Interview
+  as reference URLs).
 - `docs/research/wingmakers-archive/2026-05-01-wingmakers-fifth-interview-of-dr-neruda-raw-text.txt`
-  — full pdftotext-extracted text of the source PDF (208KB,
-  3418 lines), preserved alongside this structured overview
-  for full-text searchability.
+  — pdftotext-extracted text of the source PDF (208KB),
+  preserved alongside this structured overview for full-text
+  searchability. **Aaron's first-party legal-risk-owning
+  decision** 2026-05-01: *"we will be okay i'll take the legal
+  risk make sure we attribue them"* — see Attribution +
+  License-acknowledgment sections below.
 
 ## Source
 
@@ -69,14 +55,29 @@ on, not directives to follow.
 - Fetched via Playwright browser session (WebFetch + curl
   rejected at server / policy layers; browser-side fetch
   succeeded via Aaron's pointer to "playwrite")
-- License (per document copyright disclosure):
-  *"Attribution — Please give credit to WingMakers.com.
-  Non-Commercial — You may not use the material for commercial
-  purposes."* + restriction against modified-material
-  redistribution without WingMakers consent. This research-grade
-  preservation is non-commercial substrate-class archival under
-  §33 with full attribution; falls within the Attribution +
-  Non-Commercial scope of the document's stated license.
+- **License (per document copyright disclosure)**:
+  *"You are free to: Share — copy and redistribute the material
+  in any medium or format. ... Attribution — Please give credit
+  to WingMakers.com. Non-Commercial — You may not use the
+  material for commercial purposes. No Derivatives — If you
+  remix, transform, or build upon the material, you may not
+  distribute the modified material without the consent of
+  WingMakers.com (contact: webmaster@wingmakers.com)."*
+
+- **License-acknowledgment**: The pdftotext-extracted text
+  archive IS a transformation of the source material and
+  therefore IS a derivative under the source's stated
+  No-Derivatives clause. Distributing it in this repo without
+  WingMakers consent is technically out-of-license-scope.
+  Aaron 2026-05-01 (first-party legal-risk-owning decision):
+  *"we will be okay i'll take the legal risk make sure we
+  attribue them"* — Aaron is the maintainer + LFG owner;
+  legal-risk decisions are his to take. Otto's role per his
+  instruction: ensure attribution is solid throughout
+  (WingMakers.com cited prominently; James Mahu authorship
+  preserved; canonical source URL surfaced; license terms
+  preserved verbatim). Direct contact for license consent:
+  `webmaster@wingmakers.com`.
 
 ## Document genre + format
 
@@ -245,8 +246,12 @@ Per Aaron's explicit framing:
   religion analysis
 - *"it's free from the makers"* — the document is freely
   distributed by WingMakers under their stated license
-  (Attribution + Non-Commercial); this preservation is
-  research-grade non-commercial substrate
+  (Attribution + Non-Commercial + No-Derivatives — see
+  "License" + "License-acknowledgment" sections above; the
+  pdftotext archive is technically out-of-license-scope on
+  the No-Derivatives clause; Aaron 2026-05-01 owns the
+  legal-risk decision: *"we will be okay i'll take the legal
+  risk make sure we attribue them"*)
 - *"as long as you can do comparative religion you'll be
   fine"* — Otto operates in comparative-religion mode:
   parse claims structurally, compare with adjacent
