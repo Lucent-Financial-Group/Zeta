@@ -55,8 +55,9 @@ until you manually install the Code Contract library."*
 ([Microsoft Learn — Microsoft Code Contracts](https://learn.microsoft.com/en-us/archive/technet-wiki/6502.microsoft-code-contracts))
 
 The historical reason for death (per Aaron + general industry
-consensus): *"they could not figured out how to make
-[it] performant"*. The contract-rewriter inserted runtime
+consensus): *"they could not figure out how to make
+[it] performant"* (paraphrased, grammar-corrected from Aaron's
+direct-mode register). The contract-rewriter inserted runtime
 checks with non-trivial perf overhead; the static verifier
 had soundness / incompleteness / scaling issues.
 
@@ -108,7 +109,7 @@ had soundness / incompleteness / scaling issues.
    - Dafny (active Microsoft Research project; verifier-
      centric; F#-adjacent)
    - LiquidF# (the project's already-evaluated refinement-
-     types library; per `feedback_pirate_not_priest_*` the
+     types library; per `memory/feedback_aaron_pirate_not_priest_expand_prune_pedagogical_framework_quantum_rodney_razor_parallel_worlds_aaron_2026_05_01.md` the
      Day-0 Hold rejected it because upstream dormant — same
      constraint as Code Contracts)
    - Zen / FsCheck-style property-as-contract approaches
@@ -168,8 +169,9 @@ had soundness / incompleteness / scaling issues.
   the same upstream-dormant-constraint that rejected
   LiquidF# applies to Microsoft Code Contracts; modern
   resurrection must avoid the dormant-upstream trap.
-- **Result-over-exception discipline** (CLAUDE.md §
-  Claude-Code-harness): contracts complement Result<_,_> by
+- **Result-over-exception discipline** (CLAUDE.md
+  "Ground rules Claude Code honours here" / "Result-over-
+  exception" bullet): contracts complement `Result<_, _>` by
   expressing pre-conditions on inputs that Result handles
   on outputs. Same shape, different scope.
 
