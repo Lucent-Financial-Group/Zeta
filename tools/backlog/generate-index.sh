@@ -20,6 +20,14 @@
 #   1  environment / dependency error
 #   2  drift detected (--check mode only)
 #
+# Stderr warnings (non-fatal):
+#   `WARN: <file> — missing YAML frontmatter (need id + title)`
+#     surfaces row files that are silently rendering as empty
+#     `**[](path)** ` entries because the heading-only format
+#     was used without the YAML frontmatter the generator reads.
+#     Doesn't change exit code; operators / CI can grep stderr
+#     to surface the cause when --check fails downstream.
+#
 # Dependencies: bash 4+, POSIX awk, sort, diff, find, mktemp.
 # No external `yq` required; inline awk parser handles the
 # flat frontmatter schema. `yq` integration is a Phase 1b
@@ -119,6 +127,17 @@ HEADER
       id=$(extract_field "$file" "id")
       status=$(extract_field "$file" "status")
       title=$(extract_field "$file" "title")
+
+      # Surface missing frontmatter to stderr — the file is
+      # otherwise silently rendered as `**[](path)** ` (empty
+      # link text + empty title) and the integrity check fails
+      # later with no hint at the cause. Warning only — does not
+      # change generator output, so does not regress existing CI
+      # behaviour. Operators / CI can grep stderr for "WARN:" to
+      # surface the cause early.
+      if [ -z "$id" ] || [ -z "$title" ]; then
+        echo "WARN: $file — missing YAML frontmatter (need id + title)" >&2
+      fi
 
       case "$status" in
         closed)                     checkbox="[x]" ;;
