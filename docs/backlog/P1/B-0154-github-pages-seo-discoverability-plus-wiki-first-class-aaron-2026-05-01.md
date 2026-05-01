@@ -138,15 +138,17 @@ funnel is broken at the discovery step.
    | [Hugo](https://gohugo.io/) | Go | goldmark | built-in | Yes | **Yes** (Go) | very-fast static sites |
    | [Jekyll](https://jekyllrb.com/) | Ruby | kramdown | jekyll-sitemap (auto) | Yes | **Yes** (Ruby) | GitHub Pages auto-build (zero workflow) |
    | [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) | Python | python-markdown | built-in | Yes | **Yes** (Python — already shipped via `uv-tools` manifest) | technical docs with search |
-   | [Docusaurus](https://docusaurus.io/) | Node | mdx | built-in | Partial (React hydration) | No | React-heavy interactive docs |
+   | [Docusaurus](https://docusaurus.io/) | Node | mdx | built-in | Yes (SSG) | No | React-heavy interactive docs |
 
    **Best-tool-for-the-job analysis**:
 
    The problem axes that discriminate (where tools differ
    meaningfully):
 
-   - **Plain-HTML output for AI-agent crawlers**: Docusaurus
-     loses (React hydration). Others tied.
+   - **Plain-HTML output for AI-agent crawlers**: All
+     candidate tools generate plain HTML at build time
+     (Docusaurus uses SSG and is documented as SEO-friendly,
+     not pure-SPA). Tied — not a discriminator.
    - **No new dependency surface**: Hugo / Jekyll lose
      (new runtimes). MkDocs is borderline (Python is
      already shipped via uv-tools, so it's not a *new*
@@ -157,8 +159,12 @@ funnel is broken at the discovery step.
      Astro's content-collections (typed frontmatter,
      glob-based content discovery) is purpose-built for
      this. Eleventy is more permissive but less typed.
-     MkDocs has good `nav:` structure but requires
-     `mkdocs.yml` config maintenance.
+     Docusaurus uses MDX (Markdown + React component
+     embedding) which is more powerful but more complex
+     than vanilla Markdown — useful if interactive
+     React docs are wanted, overkill for our `docs/**/*.md`
+     tree which is plain Markdown. MkDocs has good `nav:`
+     structure but requires `mkdocs.yml` config maintenance.
    - **GitHub-native + git-native both**: Jekyll wins on
      GitHub-native (auto-build); criterion #1 voids that
      advantage by requiring explicit deploy workflow.
@@ -171,10 +177,14 @@ funnel is broken at the discovery step.
    - **Astro** wins on: typed content-collections (purpose-
      built for `docs/**/*.md`), TS-native (DST achievable),
      plain-HTML default, no new dep.
-   - All other tools have a losing axis: Docusaurus (SPA
-     hydration), Hugo/Jekyll (new runtime), MkDocs (less
-     mature md→html ecosystem than Node-side), Eleventy
-     (no typed content-collections).
+   - **Docusaurus** is a strong runner-up: Node-native, SSG
+     plain-HTML, MDX adds React-component-in-Markdown
+     capability we don't currently need. Swap Astro→Docusaurus
+     becomes the right call later if interactive React-component
+     embedding becomes a requirement.
+   - **Other tools** have a losing axis: Hugo/Jekyll
+     (new runtime), MkDocs (less mature md→html ecosystem
+     than Node-side), Eleventy (no typed content-collections).
 
    **Decision**: **Astro** is best-tool-for-this-job by
    problem-axis match. Phase 1 spike validates Astro on
