@@ -108,6 +108,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0148](backlog/P2/B-0148-mdx-as-meta-dsl-framing-fsharp-mdx-dsl-implementation-aaron-2026-05-01.md)** MDX as meta-DSL framing for multi-DSL Zset substrate + F# MDX DSL implementation
 - [ ] **[B-0149](backlog/P2/B-0149-prometheus-mcp-integration-promtool-factory-agents-direct-query-aaron-2026-05-01.md)** Prometheus MCP integration + promtool — factory agents direct-query observability
 - [ ] **[B-0150](backlog/P2/B-0150-timeseries-domain-expert-and-teacher-persona-aaron-2026-05-01.md)** TimeSeries / observability domain expert + teacher persona
+- [ ] **[B-0151](backlog/P2/B-0151-rx-research-experience-researcher-persona-aaron-2026-05-01.md)** RX (Research eXperience) researcher persona — meta-research on the research process
 
 ## P3 — convenience / deferred
 
