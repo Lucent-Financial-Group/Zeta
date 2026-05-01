@@ -1,6 +1,6 @@
-# B-0126 — Port the 4-layer meta-learning pattern from STCRM to Zeta
+# B-0126 — Port the 4-layer meta-learning pattern from `../no-copy-only-learning-agents-insight` to Zeta
 
-**Priority:** P1 (high leverage; PR-review pain is recurring; pattern already proven in ServiceTitan exploit context)
+**Priority:** P1 (high leverage; PR-review pain is recurring; pattern already operationally tested in a sibling-repo exploit context)
 
 **Filed:** 2026-05-01
 
@@ -10,10 +10,11 @@
 
 ## Source
 
-The 4-layer pattern Aaron developed with a prior Otto at ServiceTitan, captured at:
+The 4-layer pattern Aaron developed with a prior Otto, captured at:
 
-- `../no-copy-only-learning-agents-insight/docs/ai-meta-patterns.md` (sibling repo, ServiceTitan's STCRM)
-- Reference incident: STCRM PR #2562
+- `../no-copy-only-learning-agents-insight/docs/ai-meta-patterns.md` (sibling repo on Aaron's laptop; agent-insight research project — generalized framing only, no leak per `feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`)
+
+Per the no-copy-only-learning discipline: the source repo's internal project names, company identifiers, specific PR numbers, and architectural details stay inside that repo. Only the path-name and the generalized insight cross to Zeta substrate.
 
 ## What
 
@@ -31,12 +32,12 @@ Port the 4-layer meta-pattern to Zeta substrate, adapted for Zeta's surfaces (CL
 
 - **The pain is recurring.** This session alone (2026-05-01) hit ≥8 distinct class-level lessons that fired as bot comments and were fixed instance-level only. Each will fire again in cousin form.
 - **High leverage.** A class-level encoding catches a family of future bugs; instance-level catches one. Sub-linear substrate growth vs linear bug-discovery rate.
-- **Pattern is already proven.** Aaron and prior Otto landed it on STCRM PR #2562 with measurable convergence (rounds 1-5 each generalized from real incidents; round 4 confirmed the substrate worked because L3 caught what was meant to catch). Not a speculative pattern.
+- **Pattern is already operationally tested** in a sibling-repo exploit context with measurable convergence (rounds generalized from real incidents; substrate caught what it was meant to catch). Not a speculative pattern.
 - **Aaron's "evolutionary fit" framing.** PR-review-pain IS environmental pressure; the project survives by fitting. Failing to encode is failing to evolve.
 
 ## Why not P0
 
-- **Implementation requires care to not collapse Zeta-specific structure into STCRM-shaped rules.** Zeta has different surfaces (memory/, openspec/, docs/research/) that STCRM doesn't have. Direct copy would be wrong; adaptation is needed.
+- **Implementation requires care to not collapse Zeta-specific structure into shapes from the source repo.** Zeta has different surfaces (memory/, openspec/, docs/research/) than the source. Direct copy would be wrong (and forbidden by the no-copy-only-learning rule); adaptation is needed.
 - **Pattern is for handling pain that's already manageable, not blocking critical-path.** P1 is the right tier.
 
 ## Why not P2
@@ -50,18 +51,22 @@ Port the 4-layer meta-pattern to Zeta substrate, adapted for Zeta's surfaces (CL
 3. **Class-level test included** in the rule body: "imagine the next 3 PRs that could hit a similar bug; would your encoding catch all 3?"
 4. **AI-attribution footer** standardized for Otto's PR replies via `gh api`.
 5. **Pilot on next 2-3 PR-thread cycles** to verify the class-level encoding catches cousin-bugs that would otherwise have re-fired.
-6. **Composes with existing Zeta substrate** (substrate-or-it-didn't-happen, candidate-vs-canonical CSAP layers, the no-self-exception rule) rather than displacing them.
+6. **Composes with existing Zeta substrate** (substrate-or-it-didn't-happen, candidate-vs-canonical CSAP layers, the no-self-exception rule, the no-copy-only-learning discipline) rather than displacing them.
+7. **Generalized framing only** — the Zeta-side rules name no specifics from the source repo; the source repo's own internals stay there.
 
 ## Out of scope
 
-- **Higher meta-layers** (rules about how to write rules; rules about detecting missing rules; rules about retiring rules). The STCRM doc explicitly defers these — *"premature meta-stacking is bureaucracy."* Adopt Layer 1-4 first; let the next pain teach what's needed.
+- **Higher meta-layers** (rules about how to write rules; rules about detecting when a rule is missing; rules about retiring rules). The source doc explicitly defers these — premature meta-stacking is bureaucracy. Adopt Layer 1-4 first; let the next pain teach what's needed.
 - **Replacing existing Zeta substrate-discipline rules.** This pattern composes with what's already on substrate; doesn't replace.
-- **Cross-project rule sharing** (porting Zeta's rules back to STCRM, or vice versa). Each project has its own surfaces; the pattern is portable, the specific rules aren't necessarily.
+- **Cross-project rule sharing.** Each project has its own surfaces; the pattern is portable, the specific rules aren't.
+- **Anything that would require source-repo internals to surface in Zeta.** If implementation requires reading source-repo specifics, the implementer reads the source doc privately, generalizes, then writes Zeta's version fresh.
 
 ## Composes with
 
 - `feedback_backlog_prioritization_authority_delegated_to_otto_aaron_2026_05_01.md`
   — first substantive use of delegated authority for this; second was B-0125; third is this row.
+- `feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`
+  — the discipline that constrains how this porting can happen. Generalized insights cross; specifics don't.
 - The CSAP eight-layer architecture (`feedback_carved_sentence_fixed_point_stability_*`) — Layer 3 (class-level encoding) IS what the CSAP convergence step does for substrate; this is the same mechanism applied to PR-review-pain.
 - Otto-272/273 DST discipline — the runtime-evidence-tested-rule-revision is the Layer 2 mechanism in math form.
 - `feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`
@@ -78,4 +83,8 @@ A separate B-NNNN should capture the 8 class-level rules from this session's PR 
 
 ## Verify-before-deferring note
 
-The source pattern at `../no-copy-only-learning-agents-insight/docs/ai-meta-patterns.md` was verified as readable from this Zeta repo via `ls ../no-copy-only-learning-agents-insight/`. Sibling-repo path resolves; doc head verified to contain the 4-layer pattern Aaron referenced. Path will need re-verification at implementation time (sibling repo location may have moved).
+The source pattern at `../no-copy-only-learning-agents-insight/docs/ai-meta-patterns.md` was verified as readable from this Zeta repo via `ls ../no-copy-only-learning-agents-insight/`. Sibling-repo path resolves; doc head verified to contain the 4-layer pattern Aaron referenced. Path will need re-verification at implementation time (sibling repo location may have moved). Per the no-copy-only-learning discipline, only the path itself and the generalized 4-layer insight cross to Zeta; the source repo's specific internal references stay private.
+
+## Layer 3 lesson from THIS row's drafting
+
+Otto's first draft of this row violated the no-copy-only-learning discipline by importing project-specific names + company name + specific PR number from the source doc into Zeta substrate. Aaron caught it. The class-level rule that should have prevented it: **when reading a sibling-repo doc that internally self-references the underlying project name, do NOT carry those names into Zeta substrate. The sibling-repo directory name + generalized-purpose framing + extractable-insights are the ONLY granularity that crosses the boundary.** The source doc's self-references are private content; Otto's job was to translate to the pass-through name only. This row's clean-version IS the Layer 3 application — the lesson encoded in the same PR as the failure (Layer 2), at the class level (Layer 3), about a class that wasn't yet explicit despite the parent rule covering it. The CLASS that the parent no-copy-only-learning rule didn't yet enumerate explicitly: **transitive-name-leakage through sibling-repo's own self-references.** Adding that to the parent rule's "MUST NOT leak" list would have prevented this. Companion-row task or amendment to parent rule both viable; deferring choice to implementation.
