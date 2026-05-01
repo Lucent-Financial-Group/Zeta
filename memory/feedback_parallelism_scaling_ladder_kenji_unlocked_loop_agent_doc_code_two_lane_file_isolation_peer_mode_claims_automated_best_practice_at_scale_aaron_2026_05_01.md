@@ -190,8 +190,8 @@ the merge-base advances cleanly.
 | PR-merge-readiness | Reviewer checks + CI | Merge-queue auto-merges on green |
 | Stale-PR triage | Manual sweep | Bot auto-pings author / auto-closes >N days |
 | Backlog-row-without-frontmatter | Lint warns | Auto-frontmatter-injector adds skeleton |
-| Brittle-pointer (B-0141) | Pre/post check fails | Auto-rewriter converts §N → anchor-link |
-| Pre-condition violation | Code Contracts (B-0142) throws at runtime | Compiler-time refinement-types reject the build |
+| Brittle-pointer (B-0141, not yet filed) | Pre/post check fails | Auto-rewriter converts §N → anchor-link |
+| Pre-condition violation | Code Contracts (B-0142, not yet filed) throws at runtime | Compiler-time refinement-types reject the build |
 
 Reading the table: each row's left column is the *guardrail
 form* (automated, gating); the right column is the *mover
@@ -205,10 +205,10 @@ Operational shape:
   encoded as `tools/lint/*.sh` / Semgrep / CodeQL queries.
   Each lane is checked mechanically; coordinator only
   reviews lint failures.
-- **Pre/post mechanization** (per B-0141) — preconditions
+- **Pre/post mechanization** (per B-0141 (not yet filed)) — preconditions
   + postconditions checked at function/module/PR boundary;
   Hoare-logic discipline mechanized.
-- **Code Contracts revival** (per B-0142) — design-by-contract
+- **Code Contracts revival** (per B-0142 (not yet filed)) — design-by-contract
   primitives that enforce invariants at compile/runtime,
   not at review time.
 - **Mechanized claim verification** (per B-0130) —
@@ -246,9 +246,10 @@ up."*
 
 Why doc/code is the right next-rung:
 
-1. **Maximal file-disjointness.** `docs/**` and `src/**` (or
-   the F# code under `Zeta.Core/**`) have no overlap; the
-   risk of cross-lane stash-collisions is structurally near-zero.
+1. **Maximal file-disjointness.** `docs/**` and `src/**` (the
+   F# code under `src/Core/**`, `src/Core.CSharp/**`,
+   `src/Bayesian/**`) have no overlap; the risk of cross-lane
+   stash-collisions is structurally near-zero.
 2. **Different review-discipline shapes.** Docs are reviewed
    for clarity / accuracy / glossary-discipline /
    archive-header compliance. Code is reviewed for

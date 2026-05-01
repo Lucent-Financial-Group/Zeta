@@ -470,8 +470,9 @@ provably instantiate the layer above.
 
 - **B-0136** (category-theoretic compositional structure) —
   the topmost layer of the ladder, made explicit
-- **B-0134, B-0133, B-0135, B-0137, B-0141, B-0142** —
-  the type-theory / formal-verification layer
+- **B-0134, B-0133, B-0135, B-0137** (with B-0141 + B-0142
+  to be filed in follow-up PRs) — the type-theory /
+  formal-verification layer
 - **The v2 class catalog work** — the class-taxonomy layer
   (multiple memory files capture this)
 - **The SRE traditions Aaron pointed at** — the discipline
