@@ -63,12 +63,13 @@ work without re-learning paradigms.
   or [AspNetStatic](https://github.com/ZarehD/AspNetStatic)
   — both crawl the Blazor app at build time and emit
   `.html` files. Render mode taxonomy (best→worst SEO):
-  Static SSR (5-star) > Interactive Server (3-star) >
-  Interactive Auto (4-star, mixed) > Interactive WASM
+  Static SSR (5-star) > Interactive Auto (4-star, mixed)
+  > Interactive Server (3-star) > Interactive WASM
   (1-star, requires prerendering). .NET 10's persistent-
   state attribute fixes the prerender→hydrate flicker
   (Core Web Vitals win). Astro stays the right choice
-  for content-heavy SEO (B-0154); Blazor + BlazorStatic
+  for content-heavy SEO (per the Pages-site backlog row,
+  in-flight integration); Blazor + BlazorStatic
   becomes the right choice when a future surface needs
   C#-deep dashboards with a few SEO landing pages.
 
