@@ -165,74 +165,83 @@ funnel is broken at the discovery step.
      React docs are wanted, overkill for our `docs/**/*.md`
      tree which is plain Markdown. MkDocs has good `nav:`
      structure but requires `mkdocs.yml` config maintenance.
-   - **GitHub-native first-class**: Jekyll wins. Aaron
-     2026-05-01: *"jekyl is first class on github that's
-     why i chose it."* This is the original-reason for
-     Aaron's Jekyll preference and IS load-bearing — Jekyll
-     gets zero-config server-side build by GitHub itself
-     (no workflow file, no SHA-pinning, no permissions
-     stanza, no actions/deploy-pages). The "criterion #1
-     requires explicit workflow" framing was tail-wagging-
-     dog: the workflow is required for Bun-TS / Astro /
-     Eleventy / Docusaurus / Hugo / MkDocs paths, not for
-     the Jekyll path. Jekyll path = no workflow.
+   - **GitHub-native first-class** (originally favored
+     Jekyll). Aaron 2026-05-01 second pass: *"this can be
+     first class for us and more portable, one less tool
+     we have to worry about."* The "first-class" framing
+     was host-coupling (GitHub-favored), not factory-
+     favored. Bun-based SSGs (BunPress, Bun-SSG, Bunjucks,
+     Fresh-Bun) provide the same SEO features (auto-
+     sitemap, robots.txt, Open Graph) without host-
+     coupling. Deployment via `oven-sh/setup-bun` +
+     `peaceiris/actions-gh-pages` (or actions/deploy-pages)
+     is one-time CI setup; outweighed by portability +
+     factory-coherence + zero new runtime.
    - **No new runtime dep**: Hugo (Go) / MkDocs
      (Python is shipped via uv-tools so borderline) /
-     Jekyll (Ruby is NEW). Astro / Eleventy / Docusaurus
-     reuse Node/Bun (already shipped).
+     Jekyll (Ruby is NEW). Astro / Eleventy / Docusaurus /
+     Bun-SSGs reuse Node/Bun (already shipped).
 
    **Surviving discriminators** (where one tool actually
    wins outright on the problem):
 
-   - **Jekyll** wins on: GitHub-native first-class
-     (zero-config server-side build, no workflow needed),
-     mature plugin ecosystem (`jekyll-sitemap` /
-     `jekyll-seo-tag` / `jekyll-feed` are 1-line drops).
-     Loses on: new Ruby runtime in CI if local-build
-     wanted, factory coherence (Ruby is the only Ruby
-     dep), DST achievability.
-   - **Astro** wins on: typed content-collections (purpose-
-     built for `docs/**/*.md`), TS-native (DST achievable),
-     factory-coherent with B-0156 trajectory, plain-HTML
-     default. Loses on: requires explicit deploy workflow
-     (criterion #1 hygiene applies).
+   - **Bun-based SSG** (BunPress / Bun-SSG / Bunjucks /
+     Fresh-Bun) wins on: factory first-class (not host
+     first-class), portability across hosts, zero new
+     runtime, full SEO feature parity (auto-sitemap +
+     robots.txt + Open Graph + plain-HTML output), DST-
+     achievable, factory-coherent with B-0156. **BunPress**
+     specifically: docs-engine VitePress-inspired, builds
+     4000 files in ~0.18s, batteries-included SEO. Loses
+     on: requires explicit deploy workflow (one-time CI
+     setup with `oven-sh/setup-bun` action; cost is bounded
+     and amortized over all future docs builds).
+   - **Astro** wins on: typed content-collections (for
+     `docs/**/*.md`), TS-native, plain-HTML default,
+     mature plugin ecosystem. Stays Astro-vs-BunPress
+     tradeoff for Phase 1 spike (both serve the outcomes;
+     Astro has more typing, BunPress is more focused).
+   - **Jekyll** loses (host-coupling = Bun-SSG portability
+     win + Ruby is new runtime + factory-coherence loss
+     vs Bun-stack). Aaron 2026-05-01: *"this can be first
+     class for us and more portable."*
    - **Docusaurus** strong runner-up: Node-native, SSG
      plain-HTML, MDX adds React-component-in-Markdown
-     capability we don't currently need. Right call later
-     if interactive React embedding becomes a requirement.
+     capability we don't currently need.
    - **Other tools** have losing axes: Hugo (new Go runtime),
      MkDocs (less mature md→html ecosystem than Node-side),
-     Eleventy (no typed content-collections).
+     Eleventy (no typed content-collections; less SEO-
+     batteries-included than BunPress).
 
-   **Decision**: **The choice is genuinely Astro vs Jekyll**;
-   each wins on different axes that Aaron weights differently
-   at different times. Phase 1 spike should EVALUATE BOTH:
-   - Jekyll path: zero-config GitHub-Pages enable + author
-     `_config.yml` + verify auto-build serves `docs/**/*.md`.
-     Outcome: SEO/discoverability wins fast; install graph
-     unchanged (Ruby runtime doesn't ship to local because
-     GitHub server-side-builds).
-   - Astro path: write the deploy workflow + content-
-     collections config + verify Bun-TS build chain.
-     Outcome: factory-coherent; DST-achievable; longer
-     setup cost.
+   **Decision**: **Bun-based SSG wins on factory-first-class
+   + portability + zero-new-runtime axes**. Phase 1 spike
+   evaluates Astro vs BunPress (both Bun/Node-native with
+   different opinionatedness):
+   - **BunPress path**: docs-engine batteries-included
+     (auto-sitemap + robots.txt + Open Graph). Outcome:
+     SEO-fast-path; minimal config; less typing than Astro.
+   - **Astro path**: typed content-collections + plugin
+     ecosystem. Outcome: more typing + extensibility;
+     larger config surface.
 
-   The factory-coherence axis is recent (B-0156 TS-only-
-   trajectory was 2026-05-01); Aaron's Jekyll-preference
-   predates it. **Recommendation**: spike Jekyll first
-   (faster path to publish-and-index for SEO outcomes;
-   discoverability is the Phase 1 outcome target);
-   migrate to Astro in Phase 3 if/when factory-coherence
-   becomes load-bearing for the docs site (e.g., when
-   we want TS-typed content-collections, DST-checked
-   build, etc.). The two-phase approach gives discoverability
-   THIS week + factory-coherence WHEN it actually matters.
+   The decision rests on whether typing or batteries-
+   included matters more for the docs site's `docs/**/*.md`
+   scope. Recommendation: spike both for ~1 hour each;
+   the one that produces a working SEO-clean Pages build
+   first wins. Fallback: drop to Eleventy (simpler) if
+   both surface blockers.
 
-   Fallback if Jekyll spike surfaces a blocker (custom
-   theme cost, plugin sandbox limits, etc.): drop to
-   Astro. Hugo
-   /Jekyll/MkDocs/Docusaurus considered only if both
-   fail.
+   **Aaron's framing for the principle**: *"first class for
+   us, not for our host."* The reversal of the earlier
+   Jekyll-first-class re-weight: GitHub-favoring tools
+   are host-coupling; factory-favoring tools are
+   portable-first. Captured as substrate principle in
+   `memory/feedback_first_class_for_us_not_for_our_host_*`.
+
+   Fallback if both Bun-SSG paths (BunPress + Astro)
+   surface blockers: drop to Eleventy (simpler Bun-
+   compatible). Hugo / Jekyll / MkDocs / Docusaurus
+   considered only if all Bun-stack options fail.
 
 3. **Content sources for the Pages site**:
    - `README.md` → landing page
