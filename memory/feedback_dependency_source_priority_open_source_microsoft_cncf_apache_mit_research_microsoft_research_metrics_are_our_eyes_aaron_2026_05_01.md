@@ -46,15 +46,15 @@ ratcheted up: not just *prefer* open source but *exclude*
 proprietary.
 
 The hierarchy is concentric-circles, not strict ordering. Within
-each tier, evaluate on quality / integration-fit / maintenance
--health / community signal. Across tiers, prefer the higher tier
-unless a lower-tier candidate is decisively better on substantive
-grounds.
+each tier, evaluate on quality / integration-fit /
+maintenance-health / community signal. Across tiers, prefer the
+higher tier unless a lower-tier candidate is decisively better on
+substantive grounds.
 
 **Why these specific tiers**:
 
-- **Open Source generally** — composes with `feedback_absorb_
-  and_contribute_community_dependency_discipline_2026_04_22.md`
+- **Open Source generally** — composes with
+  `feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`
   (absorb AND contribute back; don't free-ride). Open source
   IS the default; everything else is a fallback.
 - **Microsoft** — high-quality .NET-ecosystem alignment for an
@@ -323,9 +323,9 @@ timeseries natively as one type among many, all addressable
 through a unified meta-DSL."
 
 This is the **multi-algebra database** vision Aaron named
-2026-04-23 (per `project_zeta_multi_algebra_database_one_
-algebra_to_rule_them_all_sequenced_after_frontier_and_demo_
-2026_04_23.md`). Each type (graph / hierarchy / filesystem /
+2026-04-23 (per
+`project_zeta_multi_algebra_database_one_algebra_to_rule_them_all_sequenced_after_frontier_and_demo_2026_04_23.md`).
+Each type (graph / hierarchy / filesystem /
 timeseries / ...) IS an algebra; the meta-DSL is what makes
 them composable. Sequenced AFTER Frontier + factory-demo per
 that earlier substrate.
