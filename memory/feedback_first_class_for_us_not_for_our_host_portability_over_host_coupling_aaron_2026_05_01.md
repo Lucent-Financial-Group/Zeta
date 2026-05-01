@@ -147,8 +147,9 @@ cost of the SSG choice is the SSG library itself (a
 dependency in `package.json`), not a new toolchain.
 
 The bounded-install-graph axis composes with B-0156 (TS
-standardization) + `feedback_dependency_source_priority_*`
-(prefer existing deps over new). Every new toolchain is a
+standardization) + the dependency-source-priority guidance
+(`memory/feedback_dependency_source_priority_open_source_microsoft_cncf_apache_mit_research_microsoft_research_metrics_are_our_eyes_aaron_2026_05_01.md`
+— prefer existing deps over new). Every new toolchain is a
 substrate liability.
 
 # How to apply
