@@ -1,6 +1,6 @@
 ---
 name: First-class for us, not for our host — portability-over-host-coupling factory principle — Aaron 2026-05-01
-description: Aaron 2026-05-01 — *"this can be first class for us and more portable, one less tool we have to worry about."* Reverses the host-favoring "Jekyll first-class on GitHub" framing. The right axis is "first-class for the FACTORY," not "first-class for our host." When a tool's primary advantage is host-coupling (zero-config because the host built it in), that advantage is illusory: it locks the factory to that host. Tool selection should optimize for portability (works across hosts) + factory-coherence (matches existing stack) + bounded-install-graph ("one less tool we have to worry about"). Concrete trigger: B-0154 static-site-generator decision, where Bun-based SSGs (BunPress, Bun-SSG, Bunjucks, Fresh-Bun) provide the same SEO features as Jekyll (auto-sitemap, robots.txt, Open Graph) without GitHub-coupling. Composes with git-native-vs-GitHub-native distinction + B-0156 TS-trajectory + outcomes-driven-decisions.
+description: Aaron 2026-05-01 — *"this can be first class for us and more portable, one less tool we have to worry about."* Reverses the host-favoring "Jekyll first-class on GitHub" framing. The right axis is "first-class for the FACTORY," not "first-class for our host." When a tool's primary advantage is host-coupling (zero-config because the host built it in), that advantage is illusory: it locks the factory to that host. Tool selection should optimize for portability (works across hosts) + factory-coherence (matches existing stack) + bounded-install-graph ("one less tool we have to worry about"). Concrete trigger: B-0154 static-site-generator decision, where Bun/Node-based SSGs (Astro, BunPress, Bun-SSG, Bunjucks, Fresh-Bun, Eleventy) provide the same SEO features as Jekyll (auto-sitemap, robots.txt, Open Graph) without GitHub-coupling. Composes with git-native-vs-GitHub-native distinction + B-0156 TS-trajectory + outcomes-driven-decisions.
 type: feedback
 caused_by:
   - "Aaron 2026-05-01 verbatim: 'this can be first class for us and more portable, one less tool we have to worry about'"
@@ -89,9 +89,17 @@ Host-first-class tools are valuable when they are
 collapses to "saves you a one-time CI workflow setup" —
 a bounded cost amortized over all future builds.
 
-For static-site-generation, Aaron's research surfaced four
-Bun-based SSGs with full SEO feature parity:
+For static-site-generation, Aaron's research (across two
+passes) surfaced multiple Bun/Node-compatible SSGs with full
+SEO feature parity:
 
+- **Astro** — TS-native SSG with content-collections
+  (typed frontmatter, glob-based content discovery),
+  Islands Architecture (zero-JS by default; hydrate only
+  components that need interactivity), framework-agnostic
+  (mix React/Svelte/Vue). 2025 SSG comparisons rank it
+  the modern Jekyll-replacement for content sites. The
+  B-0154 spike-target.
 - **BunPress** — VitePress-inspired docs engine; builds
   4000 files in ~0.18s; auto-generated sitemap.xml, robots.txt,
   Open Graph tags out of the box.
@@ -103,6 +111,9 @@ Bun-based SSGs with full SEO feature parity:
 - **Fresh-Bun** — batteries-included template focused on
   performance + SEO; near-perfect PageSpeed Insights out of
   the box.
+- **Eleventy** — simpler, zero-JS by default, multi-template
+  (Nunjucks / Liquid / Pug / etc.); less typed than Astro
+  but more flexible if a template-engine approach is wanted.
 
 Plus deployment via `oven-sh/setup-bun` action +
 `peaceiris/actions-gh-pages` (or the standard
