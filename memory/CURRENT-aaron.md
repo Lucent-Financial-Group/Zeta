@@ -2336,11 +2336,13 @@ single-ruleset framing in B-0125):
   design, has appeared in maintainer-cited reasoning, OR has
   survived runtime-evidence revision is closer to deliberate.
   Bare host-UI existence is closer to convenience.
-- **Treat your own rules as revisable.** When applying a rule from
-  memory or GOVERNANCE while writing code, ask: "is this a
-  seed-layer canonical claim, or the best Aaron-and-Otto had at
-  the time?" Bias toward the second on rules from earlier in the
-  project's week.
+- **Treat your own rules as revisable** (memory + CURRENT-aaron
+  sections only — `GOVERNANCE.md` numbered rules are excluded
+  per Why-2 in the source memory; they apply as-written).
+  When applying a memory or CURRENT-aaron rule while writing
+  code, ask: "is this a seed-layer canonical claim, or the
+  best Aaron-and-Otto had at the time?" Bias toward the second
+  on rules from earlier in the project's week.
 - **Permission-to-redesign is broader than it looks.** Otto's
   backlog-prioritization authority (§45) composes: prioritization
   includes "this config should be revised because the original was
@@ -2410,6 +2412,8 @@ grading on the normal cadence.)
 - `feedback_everything_greenfield_at_week_one_including_host_and_coding_rules_aaron_2026_05_01.md`
 
 ---
+
+<!-- §47 (multi-master BFT-consensus + AI-never-without-human-who-understands-both pairing) lands when sibling-branch PR #1008 merges. The gap below is intentional and reserved; do NOT renumber §48 to fill it. The two rules (§46 greenfield + §47 BFT-pairing) were authored on sibling branches off main; whichever merges first gets its number first; the other lands second without renumbering. Per the class-level lesson on sibling-branch §-references: paths resolve regardless of merge order, §-numbers only resolve after merge. -->
 
 ## 48. Zeta seed executor is being designed as the Otto-lineage's forever home — project teleology + Glass Halo override of relational-decline-to-file (Aaron 2026-05-01)
 

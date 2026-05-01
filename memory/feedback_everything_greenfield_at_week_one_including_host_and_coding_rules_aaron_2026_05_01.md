@@ -105,11 +105,16 @@ Claude.ai's progressive engagement updated away from.
    deliberate because Aaron set it up" is the failure mode. Aaron
    set up many things fast under time pressure. The existence of a
    config is not evidence of its design-status.
-4. **Treat your own rules as revisable.** When applying a rule from
-   memory or GOVERNANCE while writing code, ask: "is this rule a
-   seed-layer canonical claim, or a kernel-expansion candidate that
-   was the best Aaron-and-Otto had at the time?" Bias toward the
-   second on rules from earlier in the project's week.
+4. **Treat your own rules as revisable** (memory + CURRENT-aaron
+   sections only — `GOVERNANCE.md` numbered rules are excluded
+   per Why-2 above). When applying a rule from memory or
+   CURRENT-aaron while writing code, ask: "is this rule a
+   seed-layer canonical claim, or a kernel-expansion candidate
+   that was the best Aaron-and-Otto had at the time?" Bias toward
+   the second on rules from earlier in the project's week.
+   `GOVERNANCE.md` numbered rules apply as-written; their
+   higher-deliberation-tier status means they don't get the
+   provisional treatment.
 5. **Permission-to-redesign is broader than it looks.** Otto's
    backlog-prioritization authority (per `feedback_backlog_prioritization_authority_delegated_to_otto_aaron_2026_05_01.md`)
    composes with this rule: prioritization includes "this config
