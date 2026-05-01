@@ -244,13 +244,14 @@ goes next:
 | Row | Priority | Effort | What |
 |---|---|---|---|
 | [B-0120](../../docs/backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md) | P2 | M | Refactor 5 scripts → 3 + `--persona NAME` flag (collapses per-named-entity script proliferation) |
-| [B-0121](../../docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md) | P2 | M | Add Otto + Kenji as externally-callable peers (cross-harness symmetry; pending a/b/c topology decision) |
-| [B-0122](../../docs/backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md) | P2 | M | Migrate bash → TypeScript-on-bun per the post-install language strategy |
+| [B-0121](../../docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md) | P2 | M | Add the Anthropic-side Claude-code-instance personas as externally-callable peers (cross-harness symmetry; pending a/b/c topology decision) |
+| **B-0122** (filed in in-flight [PR #966](https://github.com/Lucent-Financial-Group/Zeta/pull/966); link will resolve once that PR lands) | P2 | M | Migrate bash → TypeScript-on-bun per the post-install language strategy |
 
 Recommended sequencing per B-0122: option (b) — refactor +
 TS migration land in one diff (B-0120 absorbed into B-0122
-implementation). Otto + Kenji additions (B-0121) compose
-with the post-cutover shape rather than adding more bash.
+implementation). The Anthropic-side (Claude-code-instance)
+peer additions (B-0121) compose with the post-cutover shape
+rather than adding more bash.
 
 Until that lands, the bash files here are correct interim
 substrate. New sibling additions follow the bash template

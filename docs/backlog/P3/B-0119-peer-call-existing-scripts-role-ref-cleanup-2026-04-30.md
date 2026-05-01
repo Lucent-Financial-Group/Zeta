@@ -14,7 +14,7 @@ composes_with:
   - tools/peer-call/codex.sh
   - tools/peer-call/amara.sh
   - .github/copilot-instructions.md (lines 305-362 — role-ref-not-name rule)
-  - docs/backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md
+  # B-0122 (peer-call-typescript-migration-cutover) is filed in the in-flight PR #966; will land on main when that PR merges.
 closed_in: PR #965 (LFG, merged 2026-04-30)
 tags: [codex-2026-04-30, peer-call, role-refs, copilot-instructions, factory-hygiene, deferred-skill-anti-pattern]
 ---
