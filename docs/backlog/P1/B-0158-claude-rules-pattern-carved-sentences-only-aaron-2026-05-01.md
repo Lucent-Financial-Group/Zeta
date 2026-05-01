@@ -43,8 +43,9 @@ Outcomes it serves, ordered:
    *"you are only allowed carved statments in the rules
    compression is key."* Forces every rule to be
    blade-shaped, not prose-shaped. Composes with the
-   carved-sentences memory file (PR #1111) +
-   CSAP framework. The constraint is the discipline.
+   carved-sentences architectural-claim cluster (in-flight
+   integration) + CSAP framework. The constraint is the
+   discipline.
 
 4. **DORA-aligned — lower lead-time** — every session-wake
    that reads CLAUDE.md pays the always-on tax. Reducing
@@ -89,13 +90,18 @@ Two load-bearing constraints:
    pattern** — proven design, no new architecture
    needed. Mechanical anchor: their pattern is the
    reference.
-2. **Carved-statements-only** — TIGHTER than the sibling
+2. **Carved-sentences-only** — TIGHTER than the sibling
    repo (whose rules carry full prose bodies). Our
    constraint: every rule in `.claude/rules/<rule>.md`
    is a *carved sentence* (blade-shaped statement, no
    prose-explanation). Per the CSAP framework + the
-   carved-sentences memory file (PR #1111). Compression
-   is the discipline.
+   carved-sentences architectural-claim cluster
+   (in-flight integration; the canonical filename will
+   resolve once that PR merges). Compression is the
+   discipline. (Aaron's verbatim "carved statments" maps
+   to the established factory term "carved sentences" —
+   single-source vocabulary per the engagement-under-
+   discipline memo's mirror-language convention.)
 
 The combination is novel: sibling's lazy-load shape +
 our carved-sentence constraint. The sibling's pattern
@@ -174,7 +180,9 @@ source.
 - `memory/feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md`
   — sibling-repo as external anchor (same anchor as
   this row; different pattern surface)
-- The carved-sentences memory file in PR #1111 — the
+- The carved-sentences architectural-claim cluster
+  (PR #1111 in-flight; canonical memory filename
+  resolves once that PR lands) — the
   CSAP framework that defines what "carved" means
 - `memory/feedback_prefer_mechanical_external_anchors_over_aaron_as_anchor_aaron_2026_05_01.md`
   — sibling-repo IS the mechanical anchor, not
