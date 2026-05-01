@@ -105,7 +105,7 @@ actions_perms_json=$(gh api "/repos/$repo/actions/permissions" --jq '{enabled, a
 
 actions_vars_json=$(gh api "/repos/$repo/actions/variables" --jq '[.variables[]? | {name, value}] | sort_by(.name)')
 
-workflows_json=$(gh api "/repos/$repo/actions/workflows" --jq '[.workflows[] | {name, state, path}] | sort_by(.name)')
+workflows_json=$(gh api "/repos/$repo/actions/workflows" --jq '[.workflows[] | {name, state, path}] | sort_by(.name, .path)')
 
 envs_json=$(gh api "/repos/$repo/environments" --jq '[.environments[]? | {name, protection_rule_types: [.protection_rules[]?.type] | sort}] | sort_by(.name)')
 
