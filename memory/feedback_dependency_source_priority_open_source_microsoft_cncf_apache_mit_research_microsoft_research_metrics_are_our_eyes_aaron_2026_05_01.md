@@ -110,7 +110,8 @@ Aaron 2026-05-01 (clarifying): *"that's for all the metrics
 that's the connection it's not just for fun, it's our eyes"*
 
 The SRE metric frameworks (DORA / USE / RED / Four Golden Signals,
-captured in `feedback_reproducible_accuracy_before_quality_*_2026_05_01.md`)
+captured in `feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`,
+forward-ref to PR #1116)
 + the timeseries-DB infrastructure (B-0147) are **not decoration**.
 They ARE the factory's **sensory system**.
 
@@ -344,9 +345,9 @@ decision that Microsoft Research has consistently led on.
   — absorb AND contribute back; the dependency-priority hierarchy
   is the *which* to absorb from, the contribution discipline is
   the *how to give back*
-- `feedback_parallelism_scaling_ladder_*_2026_05_01.md` (PR #1116)
+- `feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md` (forward-ref to PR #1116)
   — the amortized-keystone that "metrics-are-our-eyes" enables
-- `feedback_reproducible_accuracy_before_quality_*_2026_05_01.md`
+- `feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md` (forward-ref to PR #1116)
   (PR #1116) — the SRE metric frameworks + abstraction ladder
   this memory connects to via the eyes framing
 - `project_zeta_multi_algebra_database_one_algebra_to_rule_them_all_sequenced_after_frontier_and_demo_2026_04_23.md`

@@ -77,7 +77,8 @@ proceeds in parallel.
    simple Prometheus-native UI / Grafana dashboard exposing
    the SRE metric framework views (DORA / USE / RED / Four
    Golden Signals) per
-   `feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`.
+   `feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`
+   (forward-ref to PR #1116).
 
 ## Why Prometheus first (per Aaron's "good citizen" framing)
 
@@ -130,6 +131,7 @@ because:
   — the substrate this row instantiates; Prometheus = Tier 3
   (CNCF graduated)
 - `feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`
+  (forward-ref to PR #1116)
   (PR #1116) — SRE metric frameworks (DORA/USE/RED/FGS) the
   initial query catalog targets
 - B-0147 — long-term timeseries-DB research; this row is the

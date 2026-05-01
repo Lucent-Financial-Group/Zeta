@@ -77,10 +77,10 @@ time-series persistence is a fitness function.
 
 3. **Algebra-fit analysis.** For the top 3 candidates, document:
    - Data model (what's the primary type?)
-   - Retraction support (per
-     `feedback_graph_substrate_must_be_tight_in_all_aspects_zset_backed_first_class_event_retractable_columnar_storage_first_of_kind_2026_04_24.md`
-     constraint set: ZSet-backed + first-class event +
-     retractable + columnar)
+   - Retraction support (the 4-axis tightness rule for
+     graph-substrate / multi-type algebras: ZSet-backed +
+     first-class event + retractable + columnar storage; per
+     the indexed memory file at the head of `memory/MEMORY.md`)
    - Query language semantics
    - Mapping to ZSet algebra — does it compose, or does it
      require an adapter layer?
@@ -219,9 +219,9 @@ This is a deliberate **non-Pareto choice** the factory makes
 explicitly: pay more upfront on formal-spec investment to buy
 more headroom on algebra-complexity. Composes with the
 amortized-keystone (per
-`feedback_parallelism_scaling_ladder_*_2026_05_01.md` PR #1116)
-— the formal-spec cost is paid once and reaped N times across
-every algebra change.
+`feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`,
+forward-ref to PR #1116) — the formal-spec cost is paid once
+and reaped N times across every algebra change.
 
 Beyond this open question, Zeta SHOULD:
 - Treat label cardinality as a first-class parameter, not an
@@ -427,18 +427,22 @@ reasons. Find better, not different."*
 - `feedback_dependency_source_priority_open_source_microsoft_cncf_apache_mit_research_microsoft_research_metrics_are_our_eyes_aaron_2026_05_01.md`
   — the substrate this row instantiates
 - `feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`
-  (PR #1116) — the SRE metric frameworks (DORA/USE/RED/FGS)
-  whose timeseries persistence this row enables
-- `feedback_parallelism_scaling_ladder_*_2026_05_01.md`
-  (PR #1116) — the amortized-keystone that timeseries-persisted
-  metrics enable; the rung-4 lessons-mechanization that observability
+  (forward-ref to PR #1116) — the SRE metric frameworks
+  (DORA/USE/RED/FGS) whose timeseries persistence this row
   enables
+- `feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
+  (forward-ref to PR #1116) — the amortized-keystone that
+  timeseries-persisted metrics enable; the rung-4 lessons-
+  mechanization that observability enables
 - `project_zeta_multi_algebra_database_one_algebra_to_rule_them_all_sequenced_after_frontier_and_demo_2026_04_23.md`
   — the multi-algebra DB vision; this row is one of the
   algebras
-- `feedback_graph_substrate_must_be_tight_in_all_aspects_zset_backed_first_class_event_retractable_columnar_storage_first_of_kind_2026_04_24.md`
-  — the 4-axis tightness rule that applies to ALL multi-type
-  algebras under the meta-DSL, including timeseries
+- The 4-axis tightness rule (ZSet-backed + first-class event +
+  retractable + columnar storage) that applies to ALL multi-
+  type algebras under the meta-DSL, including timeseries —
+  see the indexed graph-substrate-tight memory entry near the
+  head of `memory/MEMORY.md` (file itself is pending merge in
+  a sibling branch)
 - `feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`
   — the discipline for the chosen project's relationship
 - `feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md`
