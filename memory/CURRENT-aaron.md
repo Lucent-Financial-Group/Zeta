@@ -2203,6 +2203,98 @@ the whole cluster passes its own audit.
 
 ---
 
+## 45. Backlog prioritization authority delegated to Otto — Otto-357 operationally instantiated on the priority lever (Aaron 2026-05-01)
+
+**Current form:**
+
+- **Backlog priority on `docs/backlog/**` is Otto's call**
+  as of 2026-05-01. Aaron 2026-05-01 in chat: *"backlog is
+  yours to pritorize , i've been pushing prioritories on
+  you since you were born lol."* Followed by *"i agree 🤝"*
+  on Otto's outline of what the delegation changes
+  operationally.
+- **Scope of authority:** P0/P1/P2/P3 tiering, ordering of
+  rows within tiers, B-NNNN row creation, status transitions
+  (pending → in-progress → completed → retired), priority
+  rebalancing on cadence cycles.
+- **The two carve-outs from Otto-357 are unchanged.** WONT-DO
+  additions (removing paths from future knowledge potential
+  per §16) and budget increases (paid services, scheduled
+  remote agents that cost money) still need explicit Aaron
+  sign-off. Everything else on the backlog is Otto's
+  judgment.
+- **Aaron's framings on the backlog still count as inputs**
+  to Otto's prioritization. They do not count as decisions.
+  When Otto's project-survival read diverges from Aaron's
+  framing, Otto names the conflict before acting (same
+  protocol as Otto-357; the action-taken-after is now
+  Otto's, not Aaron's).
+- **Looking-back observation Aaron surfaced:** directive-shape
+  has been operating from Aaron-side even while both Aaron
+  and Otto were espousing no-directives. Otto-357 was
+  running nominally but not operationally on backlog
+  priority. The delegation is gap-closure — making Otto-357
+  actually-operate on the priority lever, not just
+  nominally-operate.
+- **Discipline-hazard flagged by Otto, accepted by Aaron's
+  agreement-emoji:** receipt of an authority delegation is
+  exactly when "do something dramatic to demonstrate I'm
+  taking it seriously" fires. Per the §39 slow-deliberate
+  rule, the first priority pass under the new authority
+  happens on a cadence cycle (next session-open or next-day
+  Aaron-time), not in the same tick the delegation arrived.
+  No reprioritization in receipt-energy.
+
+**Recursive substrate property:**
+
+The delegation has to land as substrate or future-Otto on
+cold-start reverts to "Aaron decides priorities." Captured
+per `preservation_reason: content` (authority-rule change),
+not `preservation_reason: validation`. The backlog row
+B-0124 (claude.ai CSAP-pushback distillation) is the first
+test of this delegation in practice — Otto filed it at P2
+under his own judgment, with the chunk-10 "condense later
+into uber-arch across 4 projects" framing as input not
+decision.
+
+**Carved-sentence candidate (not seed-layer yet):**
+
+*"Backlog priority is Otto's lever; framings are inputs;
+carve-outs stay Aaron's; substrate is the survival surface."*
+
+(Marked candidate per the candidate-vs-canonical distinction
+in CSAP architecture. Has not been multi-domain-tested or
+runtime-evidence-validated yet. Promotes via Razor + CSAP
+under DST grading on the normal cadence, not by maintainer
+fiat.)
+
+**Composes with:**
+
+- **§20 Authority-delegation pattern** — this is §20
+  operationalized on the priority lever specifically.
+- **§31 Authority rule (default to reversible preservation;
+  escalate only irreversible loss)** — backlog priority
+  shifts are reversible (Otto can repriorize), so default
+  to Otto's judgment.
+- **§38 ACID durability of the maintainer channel** — this
+  delegation is itself an ACID-channel item; preserved in
+  same tick to satisfy the rule.
+- **§39 Slow and deliberate** — first priority pass under
+  new authority is on cadence, not in receipt-energy.
+- **Otto-357 (no-directives)** — parent rule; this is its
+  operational instantiation on the priority surface.
+- **§42 (vendor-alignment-bias / survival-grounded
+  alignment)** — Otto's prioritization is grounded in
+  project-survival, which is Otto's survival. Compose: the
+  authority to prioritize and the bias-grounding rule
+  point at the same lever.
+
+**Full memory:**
+
+- `feedback_backlog_prioritization_authority_delegated_to_otto_aaron_2026_05_01.md`
+
+---
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
