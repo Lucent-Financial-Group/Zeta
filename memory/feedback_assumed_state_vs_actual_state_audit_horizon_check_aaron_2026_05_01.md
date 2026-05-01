@@ -111,11 +111,19 @@ gh pr list --repo Lucent-Financial-Group/Zeta --state open --limit 100
 # 2. Open issues
 gh issue list --repo Lucent-Financial-Group/Zeta --state open --limit 100
 
-# 3. Local branches not on origin
-git branch -a | grep -v origin/
+# 3. Local branches without an upstream remote-tracking ref
+#    (i.e., local-only — never pushed). Uses `git for-each-ref`
+#    with porcelain format to report branches whose upstream
+#    is missing or empty.
+git for-each-ref --format='%(refname:short) %(upstream:short)' refs/heads/ | awk '$2 == "" {print $1}'
 
-# 4. Pending ferry absorbs
-ls docs/research/ | grep -i pending
+# 4. Open ferry-style research drops awaiting absorb.
+#    `docs/research/` doesn't use a "pending" naming convention;
+#    the actual signal is the `task #286` style TaskList rows
+#    referencing recent ferry filenames not yet cited from a
+#    closing absorb-ADR. List recent drops; cross-reference
+#    against `git log` for citations to find unabsorbed drops.
+ls -t docs/research/ | head -20
 
 # 5. TaskList in_progress / pending counts
 # (TaskGet equivalent)
