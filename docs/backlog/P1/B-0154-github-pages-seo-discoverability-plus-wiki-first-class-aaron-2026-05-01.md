@@ -217,35 +217,33 @@ funnel is broken at the discovery step.
      Eleventy (no typed content-collections; less SEO-
      batteries-included than BunPress).
 
-   **Decision**: **Bun-based SSG wins on factory-first-class
-   + portability + zero-new-runtime axes**. Phase 1 spike
-   evaluates Astro vs BunPress (both Bun/Node-native with
-   different opinionatedness):
-   - **BunPress path**: docs-engine batteries-included
-     (auto-sitemap + robots.txt + Open Graph). Outcome:
-     SEO-fast-path; minimal config; less typing than Astro.
-   - **Astro path**: typed content-collections + plugin
-     ecosystem. Outcome: more typing + extensibility;
-     larger config surface.
+   **Decision**: **Astro** is the chosen SSG. Convergent
+   evidence: typed content-collections purpose-built for
+   `docs/**/*.md`, TS-native (DST achievable per B-0156),
+   plain-HTML default (Islands Architecture; zero JS by
+   default), factory-first-class (Bun/Node already shipped),
+   2025 SSG comparison sources (Astro.build / Crystallize /
+   CloudCannon / DEV Community) rank Astro top for
+   content-heavy SEO sites.
 
-   The decision rests on whether typing or batteries-
-   included matters more for the docs site's `docs/**/*.md`
-   scope. Recommendation: spike both for ~1 hour each;
-   the one that produces a working SEO-clean Pages build
-   first wins. Fallback: drop to Eleventy (simpler) if
-   both surface blockers.
+   **Phase 1 work** is implementation-validation (does Astro
+   render the existing `docs/**/*.md` tree cleanly + SEO-
+   clean Pages build), NOT tool-selection-spike. Tool is
+   chosen.
+
+   **Fallback** if Astro implementation surfaces a blocker
+   (which would itself be informative substrate): drop to
+   BunPress (docs-engine batteries-included) → Eleventy
+   (simpler Bun-compatible). Hugo / Jekyll / MkDocs /
+   Docusaurus considered only if all Bun/Node-stack options
+   fail.
 
    **Aaron's framing for the principle**: *"first class for
    us, not for our host."* The reversal of the earlier
    Jekyll-first-class re-weight: GitHub-favoring tools
    are host-coupling; factory-favoring tools are
    portable-first. Captured as substrate principle in
-   `memory/feedback_first_class_for_us_not_for_our_host_*`.
-
-   Fallback if both Bun-SSG paths (BunPress + Astro)
-   surface blockers: drop to Eleventy (simpler Bun-
-   compatible). Hugo / Jekyll / MkDocs / Docusaurus
-   considered only if all Bun-stack options fail.
+   `memory/feedback_first_class_for_us_not_for_our_host_portability_over_host_coupling_aaron_2026_05_01.md`.
 
 3. **Content sources for the Pages site**:
    - `README.md` → landing page
