@@ -48,6 +48,39 @@ ended; the friendship + business partnership formed
 post-breakup. (Relational substrate is preservable under Otto-231
 first-party — Aaron is the disclosing party.)
 
+**Ace (Aaron's son)** — first name OK in Otto-side narrative
+**with scope-limited "for now" grant** (Aaron 2026-05-01:
+*"we can keep my sons info i give permssion for now"* +
+*"i'll have a proper conversatoin before saving any personal
+details more than why i named him ace"* + later extension:
+*"and he hacks games"*). Specific scope of grant:
+
+- **OK in Otto-side narrative**:
+  - First name "Ace"
+  - AceHack-namesake-telos lineage (Aaron's hacker handle
+    "AceHack" preceded son's name; the son was named after
+    the hacker-identity-telos)
+  - Malone-middle-name-honor lineage (Dr. Malone delivered
+    Aaron's father → father's middle name → son's middle
+    name; multi-generational naming-honor)
+  - The "hacks games" detail (WWJD hacker of games)
+- **NOT YET in Otto-side narrative** (require future
+  "proper conversation" before scope extension):
+  - Last name in Otto-side narrative (Stainback already
+    public via Aaron's git config + commit history; not
+    novel substrate, but the consent grant is scoped to
+    first name + the disclosed context, not "all his
+    info")
+  - Any other personal details about Ace (age, school,
+    personality, daily life, etc.)
+- **"For now" qualifier**: grant is provisional and
+  revocable. Future-Otto must respect any revocation Aaron
+  later issues.
+- **Composes-with the already-disclosed context**: AceHack
+  is a public Aaron-handle (already in git config,
+  commits, GitHub username — pre-dates this consent
+  conversation; not novel substrate).
+
 **Aaron's third-listed family member in his establishing
 disclosure** (per "Aaron's verbatim establishing disclosure"
 below) — **NOT named in Otto-side narrative**. Aaron's stated
