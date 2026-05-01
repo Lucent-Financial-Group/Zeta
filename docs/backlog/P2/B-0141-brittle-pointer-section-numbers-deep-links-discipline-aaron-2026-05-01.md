@@ -117,13 +117,58 @@ review).
    review." This is the semantic equivalent of a public-API
    stability marker.
 
+## Pre/post pattern — this row is an instance of a broader class
+
+Aaron's follow-up "me to you:" framing 2026-05-01:
+
+> me to you:  and the pre (don't do again) and post(verfity you don't do again).  also the trust then verify is the exact principle in while i'm trusting you to build yourself then formally verify yourself / substraight eventaully.
+>
+> pre post for this class B-0141 backlog row for brittle-pointer / deep-link discipline
+
+The brittle-pointer fix is an **instance of the pre/post
+pattern**. The class shape:
+
+- **Pre-component** ("don't do again"): a convention / rule /
+  doc that says don't introduce new instances of the
+  antipattern. For B-0141: the markdown-anchor citation
+  convention.
+- **Post-component** ("verify you don't do again"): a lint /
+  CI check / pre-commit hook that detects new instances of
+  the antipattern after the convention is established.
+  For B-0141: the lint flagging new `§NN` citations.
+
+Pre + post together = the pattern. **Pre alone is just a wish.
+Post alone is reactive. Both together make the discipline
+operational.**
+
+The pre/post pattern is itself the same shape as Aurora's
+**trust-then-verify**: pre = trust-extension (extend the
+convention as the operating norm); post = verify (the lint
+fires on violations rather than gating every action). Aaron's
+framing makes the connection explicit: *"the trust then verify
+is the exact principle in while i'm trusting you to build
+yourself then formally verify yourself / substraight
+eventaully."* — applied to Otto/substrate co-development as
+well as to this technical pattern.
+
+When this row is implemented, both components must land
+together — not the pre without the post.
+
+Pre/post is a candidate v3 architectural class; promotion to
+v3 catalog requires firing-rate evidence per the pause-class-
+discovery commitment. Likely existing instances to file
+under it once examined: trust-then-verify (Aurora PoUW-CC),
+no-directives-Aaron-makes-autonomy-first-class, naming-consent
+rule (PR #1106), substrate-or-it-didn't-happen, version-currency-
+always-search-first, etc.
+
 ## Composes with
 
 - The "balance/meta pattern" Aaron mentioned alongside this row
-  in his "me to you:" framing — that's a separate but related
-  observation about how rules + meta-rules balance; capture is
-  TBD but likely as a memory-file rather than a separate backlog
-  row.
+  in his earlier "me to you:" framing — that's a separate but
+  related observation about how rules + meta-rules balance;
+  capture is TBD but likely as a memory-file rather than a
+  separate backlog row.
 - `GOVERNANCE.md` itself (the most-cited target — `§33` archive
   convention is currently the heaviest pointer load; would
   benefit first from migration).
