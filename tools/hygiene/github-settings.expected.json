@@ -88,12 +88,6 @@
         },
         {
           "parameters": {
-            "severity": "all"
-          },
-          "type": "code_quality"
-        },
-        {
-          "parameters": {
             "allowed_merge_methods": [
               "squash"
             ],
@@ -139,7 +133,7 @@
         "lint (semgrep)",
         "lint (shellcheck)"
       ],
-      "strict": true
+      "strict": false
     }
   },
   "actions_permissions": {
@@ -173,6 +167,16 @@
       "state": "active"
     },
     {
+      "name": "CodeQL",
+      "path": "dynamic/github-code-scanning/codeql",
+      "state": "active"
+    },
+    {
+      "name": "Copilot cloud agent",
+      "path": "dynamic/copilot-swe-agent/copilot",
+      "state": "active"
+    },
+    {
       "name": "Copilot code review",
       "path": "dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer",
       "state": "active"
@@ -183,12 +187,56 @@
       "state": "active"
     },
     {
+      "name": "backlog-index-integrity",
+      "path": ".github/workflows/backlog-index-integrity.yml",
+      "state": "active"
+    },
+    {
+      "name": "budget-snapshot-cadence",
+      "path": ".github/workflows/budget-snapshot-cadence.yml",
+      "state": "active"
+    },
+    {
       "name": "gate",
       "path": ".github/workflows/gate.yml",
+      "state": "active"
+    },
+    {
+      "name": "low-memory",
+      "path": ".github/workflows/low-memory.yml",
+      "state": "active"
+    },
+    {
+      "name": "memory-index-duplicate-lint",
+      "path": ".github/workflows/memory-index-duplicate-lint.yml",
+      "state": "active"
+    },
+    {
+      "name": "memory-index-integrity",
+      "path": ".github/workflows/memory-index-integrity.yml",
+      "state": "active"
+    },
+    {
+      "name": "memory-reference-existence-lint",
+      "path": ".github/workflows/memory-reference-existence-lint.yml",
+      "state": "active"
+    },
+    {
+      "name": "resume-diff",
+      "path": ".github/workflows/resume-diff.yml",
+      "state": "active"
+    },
+    {
+      "name": "scorecard",
+      "path": ".github/workflows/scorecard.yml",
       "state": "active"
     }
   ],
   "environments": [
+    {
+      "name": "copilot",
+      "protection_rule_types": []
+    },
     {
       "name": "github-pages",
       "protection_rule_types": [
@@ -214,7 +262,7 @@
       "javascript-typescript",
       "typescript"
     ],
-    "query_suite": "default",
+    "query_suite": "extended",
     "state": "not-configured"
   },
   "security": {
