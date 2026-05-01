@@ -128,6 +128,156 @@ synthetic deps).
   — full Claude.ai loop architecture; this script is the immediate
   actionable extraction.
 
+## Architecture decision — two-layer git-native + GitHub-API split (the human maintainer 2026-05-01, integrating Amara)
+
+The human maintainer 2026-05-01 calibrated Amara's
+`repo-state` rename further:
+
+> *"worldview invites scope creep; repo-state almost agree,
+> repo-state instead enough that's gitnative it will need to
+> be a wrapper github-state that composes over repo-state."*
+
+Two-layer architecture:
+
+### Layer 1: `tools/repo-state/repo-state.ts` — git-native, portable
+
+- Pure git operations: current branch, HEAD SHA, origin/main SHA,
+  ahead/behind, dirty working tree flag.
+- File-system surfaces: backlog row inventory, claim files,
+  trajectory files, active session shards.
+- Backlog delta via `git diff --name-only HEAD~1 HEAD -- docs/backlog/`
+  + `git log --diff-filter=A` queries.
+- **Portable across git hosts** (works on Forgejo, GitLab,
+  plain git servers, etc.) per
+  `memory/feedback_git_native_vs_github_native_plural_host_pluggable_adapters_2026_04_23.md`.
+- No GitHub-specific dependencies.
+
+### Layer 2: `tools/github/github-state.ts` — wraps repo-state, adds GitHub API
+
+- **Wraps `repo-state.ts`** for git-native foundation.
+- **Wraps `poll-pr-gate-batch.ts`** for per-PR gate detail.
+- Adds GitHub-specific queries:
+  - Full open-PR list (via `gh api --paginate`)
+  - PR provenance (author bucketing: self / peer-call / maintainer / unknown)
+  - Recent merged PRs + mergeCommit reachability
+  - PR statusCheckRollup, mergeStateStatus, reviewDecision, autoMergeRequest
+  - Workflow run status (pending/failed required vs warnings)
+  - Cross-harness coordination signals
+- **GitHub-native** — only works against GitHub host.
+- **Composes** with both repo-state and poll-pr-gate-batch as building blocks.
+
+### Why split
+
+- **Factory-first-class portability** (per
+  `memory/feedback_first_class_for_us_not_for_our_host_portability_over_host_coupling_aaron_2026_05_01.md`):
+  the git-native layer survives host migration. The GitHub-specific
+  layer is replaced when host changes; the repo-state layer is reused.
+- **Testability**: repo-state has zero network dependencies; trivially
+  DST-able. github-state mocks the GitHub API surface only.
+- **Single-responsibility**: each tool answers one question. repo-state
+  answers "what's the local git + backlog state?". github-state answers
+  "what's the GitHub-side state on top of that?".
+- **Composability with existing tools**: `poll-pr-gate-batch.ts`
+  remains the per-PR gate expert; `github-state.ts` calls it for that
+  detail and adds cross-cutting GitHub queries.
+
+### Tool naming summary (post-rename)
+
+| Old name | New name | Layer | Composes |
+|---|---|---|---|
+| `refresh-github-worldview` | (deprecated — too broad) | — | — |
+| (n/a) | `tools/repo-state/repo-state.ts` | Layer 1 (git-native) | git ops + filesystem |
+| (n/a) | `tools/github/github-state.ts` | Layer 2 (GitHub) | wraps Layer 1 + poll-pr-gate-batch + gh API |
+| `tools/github/poll-pr-gate.ts` | (unchanged) | per-PR primitive | direct gh API |
+| `tools/github/poll-pr-gate-batch.ts` | (unchanged) | per-PR-list primitive | wraps poll-pr-gate.ts |
+
+The "before tick decision" canonical call becomes:
+`bun tools/github/github-state.ts` (which internally calls
+both repo-state.ts and poll-pr-gate-batch.ts).
+
+For non-GitHub hosts (future), the canonical call could become
+e.g. `bun tools/forgejo/forgejo-state.ts` wrapping the same
+`repo-state.ts` Layer 1 — the host-pluggable-adapter pattern.
+
+## Peer-AI consolidated refinements (4 reviewers, 2026-05-01)
+
+Verbatim packet preserved at
+[docs/research/2026-05-01-peer-ai-followup-reviews-on-b-0159-refresh-script.md](../../research/2026-05-01-peer-ai-followup-reviews-on-b-0159-refresh-script.md).
+Consolidated requirements absorbed below.
+
+### Ani — hardening checklist
+
+- **Idempotency + fail-closed**: if worktree dirty or
+  rebase/cherry-pick in progress, exit 10 with clear message
+  ("refresh blocked — dirty worktree or active rebase
+  detected"). MUST NEVER mutate state.
+- **`--raw` flag**: outputs only machine-readable snapshot
+  (JSON). Default is two-layer.
+- **One-line noise filter** for keyboard-mash / stray input.
+- **Tighter memo**: one carved sentence + one worked example
+  (already done in PR #1171).
+
+### Alexa — structural / technical / process
+
+- **Success criteria per phase**: how do we measure that
+  Phase 1 captures cross-cutting state Otto was missing? What
+  metrics confirm Phase 2 doesn't degrade tick performance?
+- **Composition Pattern note**: explicit "wraps existing
+  poll-pr-gate-batch.ts as building block, adds cross-cutting
+  layer." (Done — see Layer 2 spec above.)
+- **Staleness detection mechanism**: freshness timestamp
+  flagging when last cross-cutting refresh was >N ticks ago.
+- **Rollback procedures**: if unified refresh breaks Otto's
+  flow, how does he revert cleanly? Document the revert path.
+- **Cross-harness coordination section**: "recent activity from
+  other agents" surface in the output.
+- **Memory file versioning**: refresh-before-decide invariant
+  may evolve; preserve reasoning that led to it.
+- **Performance benchmarking**: ensure unified refresh doesn't
+  slow tick cadence below effective thresholds.
+
+### Gemini — macro/micro framing
+
+- **Best Distilled Rule**: *"A perfect understanding of a single
+  lane is useless if you don't know you're in the wrong lane."*
+- Strict sequence: don't context switch; finish current PR cycle
+  first; then file backlog row; then memory file; then
+  implement on a quiet tick. (Already followed.)
+
+### Amara — substantial review
+
+- **Rename**: `worldview` → `repo-state` (boring is right). The
+  human maintainer 2026-05-01 calibration extends to the
+  two-layer split documented above.
+- **Aggregator-not-replacement**: explicit composition pattern.
+  (Done above.)
+- **Flow metrics**: Kanban-style WIP / throughput / cycle time / age
+  in the backlog delta surface, not just count.
+- **Unknown/unavailable states**: explicit per-source
+  `{status: "ok"|"unavailable", error?}`. Empty ≠ unavailable.
+- **Modular `collect*()` functions**: `collectPrs()`,
+  `collectRecentMerges()`, `collectBranchState()`,
+  `collectBacklogDelta()`, `collectClaims()`,
+  `interpretSnapshot()`. Prevents the script from becoming
+  monolithic.
+- **Persisted prior snapshot** at
+  `.state/repo-state/last.json` or
+  `.state/github-state/last.json` (gitignored, session-local)
+  for delta computation. Flags: `--write-state` /
+  `--no-write-state` / `--since <timestamp-or-sha>`.
+- **Carved blade**: *"Known PRs are not reality. They are the
+  part of reality Otto remembered to ask about."*
+
+## Cross-peer convergence (4/4 agree)
+
+1. **Aggregator / superset, NOT replacement.**
+2. **Two-layer output (raw + interpretation).** Single JSON with
+   `summary` field per Deepseek (preferred) is the consolidated form.
+3. **Don't context-switch mid-tick.** File the row, pick up in
+   proactive-mode.
+4. **Compose with existing disciplines.** poll-the-gate, manufactured-patience,
+   never-idle.
+
 ## Deepseek refinements (2026-05-01)
 
 Deepseek follow-up review on this row's first draft surfaced critical
