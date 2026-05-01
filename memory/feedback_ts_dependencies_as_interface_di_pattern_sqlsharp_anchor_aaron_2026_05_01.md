@@ -81,14 +81,17 @@ in an injectable interface.
 
 ## Why-2: Dependencies-as-interface unlocks DST without tooling
 
-The pattern Aaron points at — `formatRepo.ts` line 14-26
-(`FormatRepoDependencies` interface) — is structural DI
-without a DI framework. Each external call surface (process
-runner, file lister, settings resolver) is a typed function
-in the interface. Tests construct a synthetic interface
-instance with deterministic stubs. Production uses the
-default `formatRepoDependencies` const that wires real
-implementations.
+The pattern the human maintainer points at — `format-repo.ts`,
+the `FormatRepoDependencies` interface near the top of the
+file — is structural DI without a DI framework. (External
+line numbers drift; consult the current file in the sibling
+repo via `git -C ../SQLSharp log` for canonical state.) Each
+external call surface (process runner, file lister, settings
+resolver) is a typed function in the interface. Tests
+construct a synthetic interface instance with deterministic
+stubs. Production uses a default `default*Dependencies` const
+(in `format-repo.ts` named `defaultFormatRepoDependencies`)
+that wires real implementations.
 
 Compared to monkeypatching, vi.mock, jest.fn — the structural
 DI form is:
@@ -145,9 +148,13 @@ When authoring or touching a TS tool in `tools/`:
 4. **Build `defaultDependencies` const** at module scope.
 5. **Top-level functions take `(args, options, deps?)` triple**.
 6. **Tests pass synthetic `deps`** in `bun test` form.
-7. **Run `bun run validate:typescript` / equivalent**
-   before commit to verify zero `any`, zero implicit `any`,
-   strict mode passing.
+7. **Run lint + typecheck + tests** before commit to verify
+   zero `any`, zero implicit `any`, strict mode passing.
+   In this repo, the script names are `bun run lint:typescript`,
+   `bun run typecheck`, and `bun run test:typescript` (or
+   `bun test` for tools). Check `package.json` scripts for
+   the canonical names; don't trust generic command names
+   that may not exist.
 
 When the pattern is hard to apply — a function genuinely
 needs no external deps, or the existing tool predates the
