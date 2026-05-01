@@ -69,9 +69,16 @@ root-causes (seeds, time, IO, threading) don't account for it:
    non-determinism.** Anything that wraps RNG, time, threading,
    IO, network, or is itself a state machine.
 3. **Read the candidate source.** Most package managers expose
-   source links. For .NET: `dotnet decompile` or browse
-   GitHub directly. For npm: `view package source` or visit
-   GitHub.
+   repository URLs and SourceLink debug info. For .NET:
+   resolve the repo URL via `nuget.org` package metadata
+   or via SourceLink (debugger steps directly into the
+   dependency source); decompile via ILSpy / dnSpy / dotPeek
+   when source isn't published. For npm: `npm view <pkg>
+   repository` for the repo URL; for `pip`: the package's
+   PyPI page or `pip show <pkg>` lists Home-page; for cargo:
+   `cargo metadata --format-version=1` or `crates.io` metadata.
+   The discipline is generic (find the source); the specific
+   tooling is per-ecosystem.
 4. **If the public source is insufficient**, pull the dependency
    down to `../sibling repo` for deep inspection. Aaron's
    pattern: clone the dep alongside the project (not inside),
@@ -133,19 +140,22 @@ check. The class signature:
   WITHOUT the citation. PR review agent posts a thread:
   *"DST deviation detected. Provide source-inspection
   evidence or remove the annotation."*
-- **Enforcement** (Aaron 2026-05-01 follow-up): *"with a
-  source attribution the code does not max it through"* —
-  i.e., **WITHOUT** the source attribution, the code does
-  not make it through. This is enforcement, not just
-  flag-and-resolve. The DST-deviation thread becomes a
-  merge-blocking gate: required-attribution or merge-rejected.
-  Composes with GitHub's `required_conversation_resolution`
-  branch-protection — the DST-deviation thread is a category
-  that requires explicit citation-resolution before the PR
-  can land.
+- **Enforcement** (Aaron 2026-05-01 follow-up, **verbatim
+  quote, typo preserved**): *"with a source attribution the
+  code does not max it through"* — Aaron's intended meaning
+  (clarified by surrounding context): *without* a source
+  attribution, code does NOT make it through; *with*
+  attribution, it does. The "max" is a typo for "make"; the
+  inversion in the negative direction is what's load-bearing.
+  This is enforcement, not just flag-and-resolve. The
+  DST-deviation thread becomes a merge-blocking gate:
+  required-attribution or merge-rejected. Composes with
+  GitHub's `required_conversation_resolution` branch-protection
+  — the DST-deviation thread is a category that requires
+  explicit citation-resolution before the PR can land.
 
 This is class 14 for the BP-NN-mechanizable-lint-classes
-consolidation (B-0153). The fix-pattern: every DST-exemption
+consolidation (B-0153, proposed in PR #1120). The fix-pattern: every DST-exemption
 ships with a citation; the class enforces the citation. The
 enforcement bites at merge-time, not just review-time —
 which is the stronger discipline shape Aaron is naming.
@@ -187,7 +197,7 @@ Three structural properties this composes:
 This is the multi-agent generalization of the amortized-
 keystone: not just "mechanize the check" but **"the agents
 that do the checking learn from the iterations and improve."**
-The 13 mechanizable lint-classes from B-0153 + the DST-rule
+The 13 mechanizable lint-classes from B-0153 (proposed in PR #1120) + the DST-rule
 class 14 here all become meta-learning targets — each PR's
 iteration is one training-instance for the convergence loop.
 
