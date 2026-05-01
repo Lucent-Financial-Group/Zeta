@@ -36,7 +36,7 @@ The discipline that catches these at authoring time is **verify-before-state-cla
 
 ## What — proposed audit suite
 
-Each audit is a small lint that fires on the local pre-commit hook (`.git/hooks/pre-commit` invoking `tools/lint/*`) AND in CI (`.github/workflows/`):
+Each audit is a small lint that fires on the project pre-commit hook (via tracked `.githooks/` pointed at by `core.hooksPath`, with `tools/lint/*` invoked from there) AND in CI (`.github/workflows/`). Note: `.git/hooks/*` is per-clone and untracked, so it's not the integration point; the lint must live in a versioned location and be opt-in via `core.hooksPath` configuration set up by the install script:
 
 1. **Wildcard-ref auditor** — flag any `feedback_*` or `*_*.md` pattern in markdown that contains literal `*` characters; require concrete filename or explicit "to-be-written" annotation.
 
@@ -95,7 +95,7 @@ Each audit is a small lint that fires on the local pre-commit hook (`.git/hooks/
 
 **Forward-references not yet on `main`** (will be re-added as direct refs once their PRs land):
 
-- **`memory/feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`** — the meta-meta-meta-rule that predicted this convergent pattern empirically. **Filed in the in-flight PR #1025**.
+- The class-level rules orthogonality-check rule (the meta-meta-meta-rule that predicted this convergent pattern empirically) — **filed in the in-flight PR #1025** as `feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md` (path will resolve once #1025 lands).
 
 ## Status
 
