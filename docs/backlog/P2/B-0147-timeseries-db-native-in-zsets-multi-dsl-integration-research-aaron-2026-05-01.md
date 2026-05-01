@@ -127,6 +127,102 @@ Per Otto-364 search-first authority — verify every load-bearing
 claim against current upstream docs / papers / project pages,
 not training data.
 
+## Design constraints — Aaron 2026-05-01 follow-up
+
+When the recommendation lands on "Build native" (or "Adopt-with-
+adapter" with substantial native augmentation), the design must
+satisfy these constraints Aaron named explicitly:
+
+> *"cardinalty matters a lot for prometheus or at least it did
+> becasue of they way they are uber columnar store if i
+> remember right they are relying on reduced dimensionaly
+> within lables. we can avoid those same drawbacks in our
+> implmentation, CRDT multi mode or whatever you call it will
+> be paramount. formal math specifican"*
+>
+> *"or timeseries"*
+
+### Constraint 1 — High cardinality must be first-class
+
+**Prometheus's known limitation**: high-cardinality label sets
+cause severe performance degradation in the columnar store. The
+storage layout assumes label-value cardinality stays bounded;
+unique-per-event labels (request IDs, user IDs, session IDs)
+break it. Operators use `relabel_config` to drop high-cardinality
+labels at scrape time as a workaround.
+
+**Zeta's design must avoid this drawback.** The implementation
+SHOULD:
+- Treat label cardinality as a first-class parameter, not an
+  implicit assumption
+- Choose a storage layout that does not penalize high-cardinality
+  dimensions (likely *not* a Prometheus-style flat columnar
+  store; possibly a hybrid with cardinality-adaptive indexing)
+- Document the cardinality-vs-performance tradeoff explicitly
+  so operators can reason about it
+- Compose with the ZSet algebra such that cardinality changes
+  retraction-natively (adding a new label-value doesn't
+  invalidate prior data)
+
+### Constraint 2 — CRDT multi-mode is paramount
+
+Aaron's *"CRDT multi mode or whatever you call it will be
+paramount"* — applied specifically to timeseries (his
+clarification: *"or timeseries"*).
+
+**CRDT (Conflict-free Replicated Data Type)** semantics are
+load-bearing for multi-master / Byzantine-fault-tolerant
+operation per `feedback_ai_never_without_human_who_understands_both_ai_and_earth_technology_aaron_2026_05_01.md`
+(BFT-many-masters / no-single-head). For timeseries:
+
+- **Multi-master writes** must converge to a consistent state
+  without coordination (CRDT property: commutative, associative,
+  idempotent merge)
+- **Time-correlated CRDT modes** likely needed: counter (for
+  monotonic measurements), gauge / LWW-register (for state
+  measurements), set (for label sets), G-counter / PN-counter
+  patterns adapted for timeseries
+- **Multi-mode** ≈ different CRDT primitives composing within
+  the same timeseries (not all metrics fit one CRDT shape;
+  the framework must support multiple)
+- **Composes with the BFT-many-masters architecture** — without
+  CRDT semantics, multi-master timeseries devolves to last-write-
+  wins (single-head failure mode at the data layer)
+
+Research alongside MDX-as-meta-DSL (B-0148) — the meta-DSL
+framing must compose with CRDT semantics, not constrain them
+out.
+
+### Constraint 3 — Formal math specification
+
+Aaron's *"formal math specifican"* — implementation must have
+a formal mathematical specification, likely in TLA+ / Lean /
+F# refinement types / Coq / Isabelle.
+
+**Composes with** the formal-foundations layer-2 work already
+filed:
+- B-0134 (type-theoretic orthogonality discipline)
+- B-0133 (sequent calculus for claim retraction)
+- B-0135 (modal logic for retractability)
+- B-0137 (Tarski stratification proof)
+- B-0142 (Code Contracts revival)
+
+The formal spec must cover at minimum:
+- Algebra correctness — operations preserve ZSet invariants
+- CRDT convergence — commutativity / associativity / idempotency
+- Retraction-native semantics — every insert has a matching
+  retract operation; spec proves the duality
+- Cardinality-adaptive storage — performance bounds as a
+  function of cardinality + retention
+- Time-monotonicity — under what relabeling / re-ordering does
+  the algebra preserve time-causal ordering?
+
+The formal-verification expert (Soraya, per
+`docs/CONFLICT-RESOLUTION.md`) routes which tool fits each
+property class. Likely portfolio: TLA+ for distributed CRDT
+properties; F# refinement types for algebra correctness;
+Lean / Coq for the retraction-native duality proof.
+
 ## Out of scope (defer)
 
 - **Implementation.** This is a research B-row. Implementation
