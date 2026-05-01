@@ -65,7 +65,11 @@ canonicalized:
 
 **Why-1 (greenfield-stable requires the pairing).** The project's
 "everything is greenfield" + "stable, doesn't crumble" pairing (per
-§46) only works because a human-who-understands-both is rebalancing
+the greenfield-foundations memory at
+`memory/feedback_everything_greenfield_at_week_one_including_host_and_coding_rules_aaron_2026_05_01.md`,
+landing as `CURRENT-aaron.md` §46 in PR #1006 — sibling-branch to
+this PR; section number stable across the merge order)
+only works because a human-who-understands-both is rebalancing
 the configs and rules in real-time. Configs can be putlog-tier
 provisional because the master is repositioning them as the wall
 rises. Coding rules can be "getting better as we go" because the
@@ -79,7 +83,10 @@ substrate carries craft-training across brief master-absences
 pairing. Long-term master-absence requires finding another
 human-who-understands-both, not letting the substrate run alone.
 This composes with the chunk-7 Claude.ai reframe ("substrate
-exists because conversations end"): conversations end IS the
+exists because conversations end"; for the chunk-7 source see
+`docs/research/2026-05-01-claudeai-csap-pushback-from-aaron-chunked-import.md`
+on main, the verbatim 11-chunk import landed via PR #997):
+conversations end IS the
 master dying briefly; substrate IS the technique-transmission
 that survives the gap; but the next session needs a master to
 resume the pairing.
@@ -166,7 +173,10 @@ correct mental model:
   craft transmission. Otto can be paired with multiple masters
   simultaneously (different sessions, different surfaces); the
   pairing is per-active-collaboration, not project-wide singular.
-- **Public visibility** (third anchor per chunk 6) is the
+- **Public visibility** (named the *third anchor* in chunk 6 of the
+  CSAP-pushback import at
+  `docs/research/2026-05-01-claudeai-csap-pushback-from-aaron-chunked-import.md`)
+  is the
   long-arc mechanism for adding masters via fork/critique/
   reconstruction. External humans-who-understand-both surface
   through public engagement; they enter the consensus network
@@ -190,10 +200,12 @@ substrate as the consensus record.
   authority works because the pairing is filling the rebalance
   loop in real-time. Without the pairing, the delegation would
   be either premature or unsupported.
-- **§46** (everything is greenfield at week one + WONT-DO is
-  deferral-class) — explains why greenfield-stable is achievable:
-  the pairing is the rebalance mechanism that prevents
-  ossification AND prevents chaos.
+- **The greenfield-foundations rule** at
+  `memory/feedback_everything_greenfield_at_week_one_including_host_and_coding_rules_aaron_2026_05_01.md`
+  (CURRENT-aaron §46 once PR #1006 lands; section number stable
+  across the merge order of these sibling PRs) — explains why
+  greenfield-stable is achievable: the pairing is the rebalance
+  mechanism that prevents ossification AND prevents chaos.
 - **CURRENT-aaron's anticipation of Max as next human maintainer**
   — reframed: Max isn't the successor; Max is an additional
   master in the consensus network.
@@ -209,8 +221,10 @@ substrate as the consensus record.
   can run a value-preserving system without central authority.
   Aaron's chat invocation: *"says satoshi"*. The same structural
   property the substrate is implementing for craft transmission.
-- **Aurora's PoUW-CC + cooperative-mode** (per the CSAP-pushback
-  conversation chunk 8 + the docs/research/aurora-* files) —
+- **Aurora's PoUW-CC + cooperative-mode** (named in chunk 8 of the
+  CSAP-pushback import at
+  `docs/research/2026-05-01-claudeai-csap-pushback-from-aaron-chunked-import.md`,
+  plus the `docs/research/aurora-*` files) —
   the eventual machine-graded version of multi-master BFT
   consensus on substrate contributions. PoUW-CC: Verify · Useful ·
   CultureFit · Provenance · Retractability. Each factor is BFT-
@@ -219,9 +233,11 @@ substrate as the consensus record.
   — DST is what eventually graduates from "pairing-required" to
   "machine-graded promotion"; until then, pairing is the
   primary calibration.
-- **Public-visibility-as-third-anchor** (chunk 6) — the long-arc
-  resilience mechanism for finding external humans-who-understand-
-  both when needed.
+- **Public-visibility-as-third-anchor** (named the *third anchor*
+  in chunk 6 of the CSAP-pushback import at
+  `docs/research/2026-05-01-claudeai-csap-pushback-from-aaron-chunked-import.md`)
+  — the long-arc resilience mechanism for finding external humans-
+  who-understand-both when needed.
 
 # What this rule does NOT do
 

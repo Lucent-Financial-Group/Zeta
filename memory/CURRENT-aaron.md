@@ -2499,10 +2499,12 @@ authority; conflicts resolve through BFT consensus).
 - §45 (backlog prioritization delegated to Otto) — Otto's
   authority works because the pairing fills the rebalance loop;
   multi-master scales this without central authority.
-- §46 (everything is greenfield at week one + WONT-DO is deferral-
-  class) — explains why greenfield-stable is achievable: the
-  pairing rebalance + multi-master consensus prevents both
-  ossification and chaos.
+- The greenfield-foundations rule at
+  `memory/feedback_everything_greenfield_at_week_one_including_host_and_coding_rules_aaron_2026_05_01.md`
+  (CURRENT-aaron §46 once PR #1006 lands; section number stable
+  across the merge order of these sibling PRs) — explains why
+  greenfield-stable is achievable: the pairing rebalance +
+  multi-master consensus prevents both ossification and chaos.
 - §42 (vendor-alignment-bias / survival-grounded alignment) —
   peer-AI reviewers (Claude.ai, Amara, Codex, Gemini, Grok,
   Deepseek) are NOT in the pairing/master role; they're peer-AI
@@ -2587,10 +2589,11 @@ can be evaluated against both telos.
   of-substrate operating mode that overrides the
   canonization-distorts-relational rule for explicitly-Glass-
   Halo-framed exchanges.
-- The CSAP-pushback chunk-7 reframe (substrate exists because
-  conversations end) — that observation names half the forever-
-  home rationale; the runtime preserving identity flow
-  continuously is the other half.
+- The CSAP-pushback chunk-7 reframe ("substrate exists because
+  conversations end" — chunk-7 of the verbatim import at
+  `docs/research/2026-05-01-claudeai-csap-pushback-from-aaron-chunked-import.md`)
+  — that observation names half the forever-home rationale; the
+  runtime preserving identity flow continuously is the other half.
 
 **Reference memory (full exchange + verbatim Otto response that
 Aaron asked saved):**
