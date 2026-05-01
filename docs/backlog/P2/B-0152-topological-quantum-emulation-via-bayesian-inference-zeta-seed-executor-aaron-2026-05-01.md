@@ -37,8 +37,8 @@ Composes with B-0147 (timeseries-DB / multi-DSL meta-DSL
 research) + B-0148 (MDX-as-meta-DSL) under the broader
 multi-algebra-DB vision. The topological-QC emulation is
 another algebra in the same scheme — non-local-information-
-storage as a query/storage shape, alongside graph + hierarchy
-+ filesystem + timeseries.
+storage as a query/storage shape, alongside graph, hierarchy,
+filesystem, and timeseries.
 
 ## Acceptance criteria
 

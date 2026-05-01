@@ -48,8 +48,8 @@ preservation):
 > ISO standard for post-quantum security."*
 
 (Verification per Otto-364 search-first: Aaron's citation
-material should be checked against current Microsoft Research
-+ Microsoft Quantum docs before any load-bearing operational
+material should be checked against current Microsoft Research /
+Microsoft Quantum docs before any load-bearing operational
 claim. Treat the citation as Aaron-forwarded research-grade
 context, not yet operationally verified.)
 
@@ -118,8 +118,8 @@ reasoning compose against.
 
 The "under beacon protocol" framing names the **protocol
 glue** that lets the topology + dynamics + external-world
-anchoring compose. Mirror (topology) + Trampoline (dynamics)
-+ Beacon (anchoring protocol) = the three-layer stack for
+anchoring compose. Mirror (topology) plus Trampoline (dynamics)
+plus Beacon (anchoring protocol) = the three-layer stack for
 emulating topological quantum computing in the Zeta framing.
 
 ## Why this works algorithmically
