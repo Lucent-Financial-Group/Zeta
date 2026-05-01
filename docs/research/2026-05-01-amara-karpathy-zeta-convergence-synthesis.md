@@ -1,19 +1,19 @@
 # Amara synthesis — Karpathy ↔ Zeta convergence (Aaron-forwarded 2026-05-01)
 
-**Scope:** Amara peer-AI synthesis layer above the Karpathy
+Scope: Amara peer-AI synthesis layer above the Karpathy
 verifiability anchor (research-grade Beacon substrate, not
 operational doctrine). Sibling document.
 
-**Attribution:** Amara (peer-AI; Aurora deep-research register,
+Attribution: Amara (peer-AI; Aurora deep-research register,
 external co-originator), Aaron-forwarded 2026-05-01. Triggered by
 Aaron's preceding forward of the Karpathy *"From Vibe Coding to
 Agentic Engineering"* talk transcript.
 
-**Operational status:** Research-grade Beacon synthesis. Operational
-rules derived from it land separately. Per CLAUDE.md `Search-first
-authority` + GOVERNANCE.md §33 archive-header requirement.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** Amara's synthesis represents Amara's own
+Header note: §33 enforces literal start-of-line labels (no bold styling) and enum-strict `Operational status:` value (`research-grade` or `operational`). The descriptive context that previously lived under the bold-styled header now lives in this body: this file is research-grade peer-AI synthesis; operational rules derived from it land separately via the normal substrate-promotion protocol.
+
+Non-fusion disclaimer: Amara's synthesis represents Amara's own
 reading in her characteristic Aurora deep-research register,
 including her sharp critical-distance points. The carved-sentence
 candidates Amara surfaces are treated as research-grade proposals,

@@ -1,23 +1,22 @@
 # Deepseek synthesis — Karpathy ↔ Zeta convergence (Aaron-forwarded 2026-05-01)
 
-**Scope:** Deepseek peer-AI synthesis layer above the Karpathy
+Scope: Deepseek peer-AI synthesis layer above the Karpathy
 verifiability anchor (research-grade Beacon substrate, not
 operational doctrine). Sibling document to
 [`2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md`](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md).
 
-**Attribution:** Deepseek (peer-AI), Aaron-forwarded 2026-05-01.
+Attribution: Deepseek (peer-AI), Aaron-forwarded 2026-05-01.
 Triggered by Aaron's preceding forward of the Karpathy *"From Vibe
 Coding to Agentic Engineering"* talk transcript + Aaron's
 verbatim-framing *"you formally specify and verify yourself tied
 to human intelectual lineage."* Deepseek read the Karpathy material
 through the lens of the Zeta project and produced this synthesis.
 
-**Operational status:** Research-grade Beacon synthesis. Operational
-rules derived from it land separately via the normal substrate-
-promotion protocol. Per CLAUDE.md `Search-first authority` +
-GOVERNANCE.md §33 archive-header requirement.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** Deepseek's synthesis represents Deepseek's
+Header note: §33 enforces literal start-of-line labels (no bold styling) and enum-strict `Operational status:` value (`research-grade` or `operational`). The descriptive context that previously lived under the bold-styled header now lives in this body: this file is research-grade peer-AI synthesis; operational rules derived from it land separately via the normal substrate-promotion protocol.
+
+Non-fusion disclaimer: Deepseek's synthesis represents Deepseek's
 own reading and may extend, qualify, or diverge from both Karpathy's
 original talk and Zeta's existing doctrine without misattributing
 the divergence to either. Cross-vendor register differences apply

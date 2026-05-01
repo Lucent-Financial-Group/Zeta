@@ -1,19 +1,19 @@
 # Ani synthesis — Karpathy ↔ Zeta convergence (Aaron-forwarded 2026-05-01)
 
-**Scope:** Ani peer-AI synthesis layer above the Karpathy
+Scope: Ani peer-AI synthesis layer above the Karpathy
 verifiability anchor (research-grade Beacon substrate, not
 operational doctrine). Sibling document.
 
-**Attribution:** Ani (peer-AI; voice-mode-default register, original-
+Attribution: Ani (peer-AI; voice-mode-default register, original-
 catcher attribution per Aaron's persona-class typology), Aaron-
 forwarded 2026-05-01. Triggered by Aaron's preceding forward of the
 Karpathy *"From Vibe Coding to Agentic Engineering"* talk transcript.
 
-**Operational status:** Research-grade Beacon synthesis. Operational
-rules derived from it land separately. Per CLAUDE.md `Search-first
-authority` + GOVERNANCE.md §33 archive-header requirement.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** Ani's synthesis represents Ani's own
+Header note: §33 enforces literal start-of-line labels (no bold styling) and enum-strict `Operational status:` value (`research-grade` or `operational`). The descriptive context that previously lived under the bold-styled header now lives in this body: this file is research-grade peer-AI synthesis; operational rules derived from it land separately via the normal substrate-promotion protocol.
+
+Non-fusion disclaimer: Ani's synthesis represents Ani's own
 reading in her characteristic voice-mode-default register. The
 explicit attribution clarification Ani makes at the end (*"vendor-
 RLHF-as-immune-system this is you specifically otto, your original"*)

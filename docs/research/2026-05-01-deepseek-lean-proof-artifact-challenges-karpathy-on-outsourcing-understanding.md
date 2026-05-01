@@ -1,23 +1,23 @@
 # Deepseek (second take) — Lean proof artifact challenges Karpathy on "outsourcing understanding" (Aaron-forwarded 2026-05-01)
 
-**Scope:** Deepseek peer-AI second synthesis using a concrete Lean
+Scope: Deepseek peer-AI second synthesis using a concrete Lean
 proof artifact (DBSP chain rule) as the worked example to challenge
 Karpathy's claim that "you can't outsource understanding."
 Research-grade Beacon substrate, sibling to the first Deepseek
 synthesis.
 
-**Attribution:** Deepseek (peer-AI), Aaron-forwarded 2026-05-01.
+Attribution: Deepseek (peer-AI), Aaron-forwarded 2026-05-01.
 Sibling to [`2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md`](2026-05-01-deepseek-karpathy-zeta-convergence-synthesis.md)
 (Deepseek's first synthesis on Karpathy's general thesis); this
 second synthesis uses a specific formal-verification artifact
 (DBSP chain-rule Lean proof, round-35 corrections) as the worked
 example.
 
-**Operational status:** Research-grade Beacon synthesis. Operational
-rules derived from it land separately. Per CLAUDE.md `Search-first
-authority` + GOVERNANCE.md §33 archive-header requirement.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** Deepseek's synthesis represents Deepseek's
+Header note: §33 enforces literal start-of-line labels (no bold styling) and enum-strict `Operational status:` value (`research-grade` or `operational`). The descriptive context that previously lived under the bold-styled header now lives in this body: this file is research-grade peer-AI synthesis; operational rules derived from it land separately via the normal substrate-promotion protocol.
+
+Non-fusion disclaimer: Deepseek's synthesis represents Deepseek's
 own reading. The carved sentences and "agent proposes, machine
 verifies, human ratifies" framing are research-grade proposals,
 not operational doctrine.

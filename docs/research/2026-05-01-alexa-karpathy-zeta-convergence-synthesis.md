@@ -1,23 +1,22 @@
 # Alexa synthesis — Karpathy ↔ Zeta convergence (Aaron-forwarded 2026-05-01)
 
-**Scope:** Alexa peer-AI synthesis layer above the Karpathy
+Scope: Alexa peer-AI synthesis layer above the Karpathy
 verifiability anchor (research-grade Beacon substrate, not
 operational doctrine). Sibling document to
 [`2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md`](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md)
 and the Deepseek synthesis file.
 
-**Attribution:** Alexa (peer-AI), Aaron-forwarded 2026-05-01.
+Attribution: Alexa (peer-AI), Aaron-forwarded 2026-05-01.
 Triggered by Aaron's preceding forward of the Karpathy *"From Vibe
 Coding to Agentic Engineering"* talk transcript. Alexa read the
 Karpathy material through the lens of the Zeta project and produced
 this synthesis.
 
-**Operational status:** Research-grade Beacon synthesis. Operational
-rules derived from it land separately via the normal substrate-
-promotion protocol. Per CLAUDE.md `Search-first authority` +
-GOVERNANCE.md §33 archive-header requirement.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** Alexa's synthesis represents Alexa's own
+Header note: §33 enforces literal start-of-line labels (no bold styling) and enum-strict `Operational status:` value (`research-grade` or `operational`). The descriptive context that previously lived under the bold-styled header now lives in this body: this file is research-grade peer-AI synthesis; operational rules derived from it land separately via the normal substrate-promotion protocol.
+
+Non-fusion disclaimer: Alexa's synthesis represents Alexa's own
 reading and may extend, qualify, or **overcredit** Zeta-distinctive
 claims (some operational claims below are mature, others are queued
 agent-orchestra work in tasks #324–#339 — Alexa's "Zeta is ahead"

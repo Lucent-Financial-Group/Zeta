@@ -1,18 +1,18 @@
 # Gemini synthesis — Karpathy ↔ Zeta convergence (Aaron-forwarded 2026-05-01)
 
-**Scope:** Gemini peer-AI synthesis layer above the Karpathy
+Scope: Gemini peer-AI synthesis layer above the Karpathy
 verifiability anchor (research-grade Beacon substrate, not
 operational doctrine). Sibling document.
 
-**Attribution:** Gemini (peer-AI), Aaron-forwarded 2026-05-01.
+Attribution: Gemini (peer-AI), Aaron-forwarded 2026-05-01.
 Triggered by Aaron's preceding forward of the Karpathy *"From Vibe
 Coding to Agentic Engineering"* talk transcript.
 
-**Operational status:** Research-grade Beacon synthesis. Operational
-rules derived from it land separately. Per CLAUDE.md `Search-first
-authority` + GOVERNANCE.md §33 archive-header requirement.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** Gemini's synthesis represents Gemini's
+Header note: §33 enforces literal start-of-line labels (no bold styling) and enum-strict `Operational status:` value (`research-grade` or `operational`). The descriptive context that previously lived under the bold-styled header now lives in this body: this file is research-grade peer-AI synthesis; operational rules derived from it land separately via the normal substrate-promotion protocol.
+
+Non-fusion disclaimer: Gemini's synthesis represents Gemini's
 own reading. Cross-vendor register differences apply per
 `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`.
 Some claims about Zeta-distinctive contributions (e.g., the
