@@ -95,7 +95,10 @@ funnel is broken at the discovery step.
      (likely `docs/site/` or generated from `docs/` tree)
    - Uses `actions/upload-pages-artifact` +
      `actions/deploy-pages`, both SHA-pinned (no tag
-     references) per `docs/FACTORY-HYGIENE.md` row #43
+     references) per the SHA-pinning sub-criterion of
+     `docs/FACTORY-HYGIENE.md` row #43 (workflow-injection
+     safe-patterns audit; SHA-pinned actions is one of
+     its enumerated safe patterns)
    - Concurrency group + `cancel-in-progress: false`
    - Minimum permissions (`contents: read`, `pages: write`, `id-token: write`).
      **Note**: GitHub Actions defaults unspecified scopes to `none` once any
@@ -124,7 +127,7 @@ funnel is broken at the discovery step.
    - DST-achievable per the per-tool/language guidance
    - GitHub-native first; portable second (the `git-native
      vs GitHub-native` distinction in
-     `feedback_git_native_vs_github_native_*`)
+     `feedback_git_native_vs_github_native_plural_host_pluggable_adapters_2026_04_23.md`)
 
    **Candidate tools** (problem-axis scored):
 
@@ -221,10 +224,13 @@ funnel is broken at the discovery step.
    - **Docusaurus path** — `sitemap.xml` via
      `@docusaurus/plugin-sitemap` (preset-default);
      `robots.txt` via `static/robots.txt` (manual).
-   - **Decision factor**: criterion #2 default is Jekyll
-     unless evidence points elsewhere; the AI-agent
-     allow-list is generator-agnostic at the file-content
-     level.
+   - **Decision factor**: criterion #2's problem-driven
+     analysis selects Astro (TS-native, content-collections,
+     plain-HTML default, no new runtime dep). The
+     AI-agent allow-list is generator-agnostic at the
+     file-content level — `static/robots.txt` works the
+     same way regardless of which path criterion #2
+     ultimately ships.
 
 6. **Repo metadata SEO win**:
    - `topics`: add `dbsp`, `fsharp`, `dotnet`,
