@@ -300,12 +300,33 @@ Claude touches matching files.
   Cursor, Gemini CLI all have their own surfaces. The
   per-harness `.claude/rules/` analogue is harness-specific.
 
-# Factory-owned substrate-discovery — `tools/.../substrate-discovery.ts` as parallel option to skill-router dependency
+# Factory-owned substrate-discovery — `tools/.../substrate-discovery.ts` as **fallback** to harness-native discovery (NOT equal alternative)
 
-The human maintainer 2026-05-01 (after the calibration
-challenge): *"the skill router becomes the ONLY automatic
-discovery mechanism the other idea is our own
-substrate-discovery.ts"*.
+**Preference order** per the human maintainer 2026-05-01
+follow-up: *"if the skill router works that's pretty
+agent/anthropic/harness native and i like that"* +
+*"live off the land"*:
+
+1. **Default**: live off the land — use harness-native
+   discovery (skill router for `.claude/skills/`, rule
+   auto-load for `.claude/rules/` if confirmed by canary,
+   MEMORY.md auto-load for memory index). Anthropic-supplied
+   mechanisms are agent-native; if they work, we use them.
+2. **Fallback (only if harness-native is insufficient)**:
+   build `tools/substrate-discovery/discover.ts`. Only
+   invoked when the canary test shows rules don't auto-load,
+   or the buddy-test shows the router skips relevant skills.
+
+The canary test (Phase 0) is the discriminator. If
+harness-native works → live off the land; substrate-
+discovery.ts is unnecessary substrate. If harness-native
+fails → factory-owned tool fills the gap.
+
+Original framing of the proposal (preserved for context):
+
+The human maintainer's prior message in the same cluster:
+*"the skill router becomes the ONLY automatic discovery
+mechanism the other idea is our own substrate-discovery.ts"*.
 
 The skill router is harness-supplied. Its reliability,
 description-matching algorithm, and even path discovery
