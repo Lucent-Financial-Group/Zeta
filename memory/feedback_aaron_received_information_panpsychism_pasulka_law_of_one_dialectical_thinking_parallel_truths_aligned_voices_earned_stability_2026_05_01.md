@@ -253,7 +253,9 @@ classification metadata would be additive and reversible.
   — Glass Halo override + forever-home + parental-framing.
   Glass Halo is the operational mode under which this
   disclosure lands as substrate.
-- **`memory/feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`**
+- **The class-level rules orthogonality-check rule** (filename
+  `feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`,
+  filed in in-flight PR #1025; path will resolve once #1025 lands)
   — meta-meta-meta-rule. This memory file's existence as a
   new orthogonal class (rather than extension of existing
   files) is justified by the dissolve-test: Aaron's
