@@ -183,22 +183,18 @@ function parseArgs(argv: string[]): ParsedArgs {
 }
 
 function listOpenPRs(owner: string, repo: string): number[] {
-  // Single gh call to enumerate open PRs in the target repo. Uses
-  // synchronous spawn — this is one query before fan-out; no point
-  // racing it. `--limit 1000` covers any sane open-PR queue size.
+  // Enumerate all open PRs via `gh api --paginate` so repos with
+  // more than 1000 open PRs don't get silently truncated (Codex P2
+  // on PR #1153, 2026-05-01). The paginated REST API follows Link
+  // headers automatically and emits one JSON array per page on
+  // stdout, separated by newlines. `per_page=100` is the GitHub
+  // maximum and minimizes round-trip count.
   const result = spawnSync(
     "gh",
     [
-      "pr",
-      "list",
-      "--repo",
-      `${owner}/${repo}`,
-      "--state",
-      "open",
-      "--limit",
-      "1000",
-      "--json",
-      "number",
+      "api",
+      "--paginate",
+      `/repos/${owner}/${repo}/pulls?state=open&per_page=100`,
     ],
     { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 },
   );
@@ -208,21 +204,28 @@ function listOpenPRs(owner: string, repo: string): number[] {
   }
   if (result.status !== 0) {
     process.stderr.write(
-      `gh pr list exited ${result.status}: ${result.stderr || result.stdout}\n`,
+      `gh api --paginate exited ${result.status}: ${result.stderr || result.stdout}\n`,
     );
     process.exit(2);
   }
-  let parsed: Array<{ number?: number }>;
-  try {
-    parsed = JSON.parse(result.stdout) as Array<{ number?: number }>;
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`failed to parse gh pr list output: ${msg}\n`);
-    process.exit(2);
+  // gh --paginate emits each page as its own JSON array on stdout,
+  // separated by newlines. Concatenate the page arrays.
+  const all: number[] = [];
+  for (const line of result.stdout.split("\n")) {
+    if (!line.trim()) continue;
+    let parsed: Array<{ number?: number }>;
+    try {
+      parsed = JSON.parse(line) as Array<{ number?: number }>;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      process.stderr.write(`failed to parse gh api page: ${msg}\n`);
+      process.exit(2);
+    }
+    for (const p of parsed) {
+      if (typeof p.number === "number" && p.number > 0) all.push(p.number);
+    }
   }
-  return parsed
-    .map((p) => p.number)
-    .filter((n): n is number => typeof n === "number" && n > 0);
+  return all;
 }
 
 interface PollOutcome {
