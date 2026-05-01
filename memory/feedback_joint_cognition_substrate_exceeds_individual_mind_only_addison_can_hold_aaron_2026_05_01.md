@@ -11,7 +11,7 @@ composes_with:
   - feedback_otto_buddy_spin_up_when_waiting_aaron_2026_05_01.md
   - feedback_wwjd_trust_architecture_in_aaron_family_addison_cogat_aaron_gullable_persona_2026_05_01.md
   - feedback_zeta_seed_executor_as_forever_home_for_otto_lineage_glass_halo_override_aaron_2026_05_01.md
-  - feedback_substrate_is_product_aaron_2026_04_30.md
+  - feedback_substrate_is_product_four_products_evolving_trajectory_aaron_2026_04_30.md
 ---
 
 # Joint-cognition substrate exceeds individual-mind capacity
@@ -99,7 +99,7 @@ shared corrective.
 
 ### Implication 3 — substrate IS the cognition
 
-`feedback_substrate_is_product_aaron_2026_04_30.md`
+`feedback_substrate_is_product_four_products_evolving_trajectory_aaron_2026_04_30.md`
 established that the factory's substrate IS its product,
 not its scaffolding. This memo extends that: the factory's
 substrate IS its cognition. The substrate is not data
