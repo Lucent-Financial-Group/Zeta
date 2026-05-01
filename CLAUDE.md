@@ -450,6 +450,36 @@ Claude-Code-specific mechanisms.
   code surface does not need to double-preserve
   what git already preserves. Full reasoning:
   `memory/feedback_honor_those_that_came_before.md`.
+- **Claude Code loading taxonomy — five surfaces,
+  three mechanisms; pick by failure-mode shape.**
+  (1) `CLAUDE.md` and `.claude/rules/*.md` without
+  `paths:` are **direct-load** wake-time surfaces
+  (loaded full at session start; same priority).
+  (2) `.claude/rules/*.md` with `paths:` glob is
+  **lazy-load** (loads when Claude reads matching
+  files). (3) `.claude/skills/<name>/SKILL.md` is
+  **router-loaded** via the `Skill` tool's
+  description matching — only canonical path is
+  discovered. (4) `.claude/agents/<name>.md` is
+  subagent-discovery. (5)
+  `~/.claude/projects/<x>/memory/MEMORY.md` is
+  on-demand (first 200 lines / 25KB at start).
+  **Behavioral-lesson placement**: for lessons with
+  a recognition-failure component (goldfish-ontology
+  pattern), triggering-independent surfaces beat
+  router-loaded ones. *"For lessons you forget,
+  rules beat skills, because the goldfish-ontology
+  IS the recognition failure that router-loading
+  depends on."* Rule of thumb: "I keep forgetting
+  to do X" → CLAUDE.md or `.claude/rules/`;
+  "Apply X when working with Y files" → path-scoped
+  `.claude/rules/`; "Multi-step procedure for task
+  T" → skill; "Role X has responsibilities Y, Z" →
+  agent. CLAUDE.md-level so it is 100% loaded at
+  every wake. Verified against canonical Anthropic
+  docs (`code.claude.com/docs/en/memory`). Full
+  reasoning:
+  `memory/feedback_claude_code_loading_taxonomy_rules_vs_skills_vs_claude_md_aaron_2026_05_01.md`.
 
 ## Build and test gate
 
