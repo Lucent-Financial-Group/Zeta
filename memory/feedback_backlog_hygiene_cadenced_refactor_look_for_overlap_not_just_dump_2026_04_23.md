@@ -139,6 +139,119 @@ harness-surface — 5-10 rounds). Each firing:
   priority Aaron set; re-prioritization applies within
   the agent-owned priority space.
 
+## 2026-05-01 extension — pre-filing check (point-in-time discipline)
+
+Aaron 2026-05-01:
+
+> *"you know wheveryou pickup new backlog items you should
+> look for similar backlog items because i've repeated myself
+> on several designs since the start of this project"*
+
+The 2026-04-23 rule covers **cadenced retroactive refactor**
+(every 5-10 rounds, sweep the whole BACKLOG for overlap).
+Aaron's 2026-05-01 addition is the **point-in-time
+prospective check**: at the moment you pick up / file / draft
+a new backlog row, GREP existing backlog FIRST for similar
+topics. The two rules are complementary:
+
+- **2026-04-23 cadenced refactor** = ambulance at the bottom
+  of the cliff (catches overlap that slipped through)
+- **2026-05-01 pre-filing check** = fence at the top
+  (prevents overlap from slipping through in the first place)
+
+### Aaron's empirical observation
+
+*"i've repeated myself on several designs since the start of
+this project."* Aaron has stated multiple times that the same
+design pattern, rule, or concern recurs — meaning the factory
+DID NOT absorb the first-stating fully. The recurrence IS the
+diagnostic for absorption-failure. The fence-at-top discipline
+prevents new instances of this from compounding.
+
+### Recursive irony — this rule itself is the recurrence
+
+Aaron stated this rule on 2026-04-23 (this very memory file).
+Aaron repeated it on 2026-05-01 (this extension). That's the
+EXACT failure-mode the rule names — Aaron repeats himself on
+designs because the first-stating wasn't absorbed at the
+operational layer. The fix isn't more memos; it's
+**mechanizing the pre-filing check** so it runs without
+agent vigilance.
+
+### Pre-filing check protocol
+
+Before filing a new backlog row (or memory file, by extension):
+
+1. **Identify topic keywords** from the new row's working
+   title.
+2. **Grep `docs/backlog/`** for those keywords:
+
+   ```bash
+   grep -lirE "<keyword1>|<keyword2>|..." docs/backlog/
+   ```
+
+3. **Grep `memory/`** for existing memos on related topics:
+
+   ```bash
+   grep -lirE "<keyword>" memory/
+   ```
+
+4. **Check TaskList items** (if this is an agent task) — they
+   carry persistent backlog-shaped intent that doesn't show up
+   in `docs/backlog/**`. The TaskList is the OTHER backlog.
+
+5. **If hits found**, three branches per the orthogonality
+   discipline (per
+   `feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`):
+
+   - **Extend existing** (preferred default) — add the new
+     concern as a section/note to the existing row
+   - **Sharpen the boundary** — if both rows have legitimate
+     scope, edit each to make the non-overlap explicit
+   - **Create-orthogonal** (rare, requires evidence) — only
+     if the new concern is genuinely independent of all
+     existing rows
+
+6. **If no hits**, file the new row.
+
+### 2026-05-01 audit — failure mode demonstrated
+
+This very session (2026-05-01), Otto filed 10 backlog rows
+(B-0144 through B-0153) WITHOUT running the pre-filing check.
+Quick post-hoc audit found:
+
+- **B-0150** (timeseries domain expert + teacher persona) +
+  **B-0151** (RX researcher persona) overlap with TaskList
+  Otto-task #323 (per-tool/language expert skills) and
+  Otto-task #351 (TS+Bun expert + teaching skill). Filed
+  without checking the TaskList.
+- **B-0153** (pre-commit lint suite) overlaps with B-0033
+  (otto discipline hooks system substrate as mechanism
+  claude-code-plugin) and B-0086 (port tools/hygiene python
+  to typescript/bun). Both existed; neither was integrated.
+- **B-0151** (RX researcher) overlaps with B-0017
+  (operational resonance dashboard with continuous UX
+  research). Both existed; neither was integrated.
+
+The audit IS the demonstration of the failure mode.
+
+### Mechanization candidate
+
+Add as **class 14** in B-0153 (PR #1120) — "pre-filing
+similar-row grep check." Pre-commit hook on
+`docs/backlog/B-NNNN-*.md` file-create that:
+
+- Extracts keywords from the title
+- Greps `docs/backlog/` + `memory/` for matches
+- Reports per-keyword hit-list with file:line context
+- BLOCKS the commit unless the author confirms (via commit
+  message tag like `[overlap-checked]`) that they've
+  reviewed the hits and chosen extend / sharpen / create-
+  orthogonal
+
+The mechanization is straightforward; it's the discipline
+that's been missing, and the recurrence is the evidence.
+
 ## Composes with
 
 - `docs/BACKLOG.md` — the target surface
