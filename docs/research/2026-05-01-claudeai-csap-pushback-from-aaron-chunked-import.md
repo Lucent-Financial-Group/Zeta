@@ -665,7 +665,7 @@ to come"*
 
 ---
 
-## Chunk 7 (final) — Aaron's attribution-graph claim + Claude.ai's measurement-substrate update + Aaron's "I started externalizing because conversations end" origin story + Claude.ai's closing reframe
+## Chunk 7 — Aaron's attribution-graph claim + Claude.ai's measurement-substrate update + Aaron's "I started externalizing because conversations end" origin story + Claude.ai's reframe
 
 ### Aaron message (verbatim)
 
@@ -793,7 +793,7 @@ to come"*
 
 ---
 
-## Closing import-side notes (Otto, not Claude.ai) — UPDATED through chunk 10
+## Closing import-side notes (Otto, not Claude.ai) — UPDATED through chunk 11
 
 **Conversation arc.** Claude.ai began declining-to-execute, flagged
 praise-substrate / canon-accumulation / over-fluent metaphor /
