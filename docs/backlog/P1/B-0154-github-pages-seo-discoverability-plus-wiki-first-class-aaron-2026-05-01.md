@@ -17,6 +17,35 @@ depends_on:
 
 # B-0154 — GitHub Pages for SEO/discoverability + GitHub Wiki first-class
 
+## Outcomes solved
+
+This row is a **trajectory** in the parallel-trajectories sense
+(per `docs/active-trajectory.md` + the outcomes-driven discipline
+in `memory/feedback_outcomes_over_vanity_metrics_goodhart_resistance.md`).
+Outcomes it serves, ordered:
+
+1. **Discoverability** — search-engine first-page rankings for
+   target queries (e.g., "DBSP F#"); AI-agent crawler hit rate
+   (PerplexityBot, ClaudeBot, GPTBot, Google-Extended);
+   time-from-publish-to-indexed.
+2. **Maintainer-recruitment funnel** — conversion from
+   Pages-discovery → contributor signup. The final outcome
+   beyond raw indexing.
+3. **DORA frontend metrics** — deployment frequency (Pages
+   updates), lead time (doc-edit → live URL), MTTR (Pages
+   build break recovery), change failure rate. Per
+   criterion #9 the Playwright validation harness measures
+   these.
+4. **Bounded install graph** — keep the factory's runtime
+   surface minimal; no new language toolchains added unless
+   they buy outcomes the existing graph cannot.
+
+The static-site choice (criterion #2) is the **means**;
+these outcomes are the **ends**. The Astro decision in
+criterion #2 is justified by which tool best serves each
+of the outcomes above, not by tool-feature lists in
+isolation.
+
 ## What
 
 Aaron 2026-05-01 directional input — two distinct host integrations, ordered by priority:
