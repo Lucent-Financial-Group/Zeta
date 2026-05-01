@@ -1,0 +1,154 @@
+---
+id: B-0141
+priority: P2
+status: open
+title: Brittle-pointer pattern — replace `§NN` section-number citations with markdown deep-links / anchor refs that survive document refactoring
+created: 2026-05-01
+last_updated: 2026-05-01
+---
+
+# B-0141 — Brittle-pointer pattern — replace `§NN` section-number citations with markdown deep-links / anchor refs that survive document refactoring
+
+**Priority:** P2 (architectural pointer hygiene; not blocking, but
+compounding cost across substrate as `§NN` numbering drifts)
+
+**Filed:** 2026-05-01
+
+**Filed by:** Otto under the backlog-prioritization authority
+delegated 2026-05-01. Aaron's verbatim "me to you:" framing
+2026-05-01 (during the seventh-ferry exchange aftermath, after
+flagging the substrate-IS-canonical-form citation
+`GOVERNANCE.md §33`):
+
+> me to you:  i was waiting for you to find your mistake and i don't know how you can set a rule and save it an a glass halo way that says lillian says don't save the name lillian hahaha.  we don't have secrets yet, it's okay, no worries.  no big deal.
+
+(That above is Aaron flagging the consent-rule self-paradox; the
+brittle-pointer instruction is the parallel "me to you:" that
+followed:)
+
+> me to you:  backlog new class brittle pointer or something and the blalance/meta pattern.  `GOVERNANCE.md §33`   that numbering is unlikeys to survive a merge on the governance doc.  an kind of deep linking with md, take advantage of the medium.  if so hyperlinks/deeplinks are a better technical numbering than our current technical numbering.
+
+**Effort:** M (1-3 days — audit existing `§NN` citations,
+draft markdown-anchor convention, migration script, doc updates)
+
+## What
+
+Replace `§NN`-style section-number citations across the substrate
+with markdown-native deep-link / anchor refs that survive
+document refactoring.
+
+Current state: substrate uses `GOVERNANCE.md §33`, `CURRENT-aaron
+§48`, `AGENTS.md §22`, etc. as pointer convention. Each `§NN` is
+a brittle pointer — a merge or refactor on the target doc that
+inserts/removes/renumbers any prior section silently breaks every
+existing citation without any tooling catching it.
+
+Target state: substrate uses markdown anchor refs that the
+markdown medium supports natively:
+
+```markdown
+- `[GOVERNANCE.md / archive-header convention](../../GOVERNANCE.md#archive-header-convention)`
+- `[CURRENT-aaron / forever-home telos](../../CURRENT-aaron.md#forever-home-telos)`
+```
+
+Anchor IDs are derived from the target heading text (per CommonMark
++ GitHub-flavored markdown). When the section heading text stays
+stable (which is the load-bearing semantic), the link survives
+section-number renumbering. When the heading text changes
+(genuine semantic shift), the link breaks visibly — which is the
+correct failure mode (semantic shift SHOULD break references for
+review).
+
+## Why P2
+
+- **Real cost compounds.** Every `§NN` citation across substrate
+  is a brittle pointer. Some have already drifted (e.g., earlier
+  `CURRENT-aaron §16` references that turned out to point at a
+  different section than intended after intervening edits — see
+  `feedback_everything_greenfield_at_week_one_..._2026_05_01.md`
+  for the phantom-§16 audit).
+- **Bounded scope.** Audit + migration + lint can be a contained
+  multi-day project.
+- **Deep-link discipline takes advantage of the medium.** Aaron's
+  framing: *"take advantage of the medium. ... hyperlinks/deeplinks
+  are a better technical numbering than our current technical
+  numbering."* Markdown-native anchor support is the medium's
+  affordance; we're paying a brittleness cost by NOT using it.
+
+## Why not P0/P1
+
+- Not currently blocking critical-path work; the existing `§NN`
+  citations work today and the cost is paid on each refactor,
+  not continuously.
+- Aaron explicitly framed it as *"backlog new class"* — file
+  it, don't rush it.
+
+## Why not P3
+
+- The cost compounds with substrate growth. Every new file that
+  cites `§NN` adds one more brittle pointer. Deferring multi-month
+  pays a real (if quiet) tax on substrate refactors.
+
+## Acceptance criteria
+
+1. **Convention documented.** A short doc (in `docs/` or as a
+   memory file) names the markdown-anchor citation convention,
+   shows examples, explains semantic-shift-breaks-link as a
+   feature.
+
+2. **Existing-citation audit.** Inventory of all `§NN` citations
+   across substrate (memory/, docs/, .claude/skills/, ADRs,
+   tick-history shards). For each: target file + section, current
+   citation, proposed anchor-ref form.
+
+3. **Migration applied.** Existing `§NN` citations migrated to
+   anchor-ref form, in batched PRs (one per target document, to
+   keep diff scope contained).
+
+4. **Lint candidate.** A pre-commit / CI lint that flags new
+   `§NN`-style citations and suggests the anchor-ref form. Soft
+   warning at first; promote to hard fail once existing citations
+   are migrated.
+
+5. **Anchor-stability check.** For citation-targeted headings,
+   add a comment-marker convention (e.g., `<!-- anchor-stable:
+   archive-header-convention -->`) that signals "renaming this
+   heading breaks downstream citations; coordinate via PR
+   review." This is the semantic equivalent of a public-API
+   stability marker.
+
+## Composes with
+
+- The "balance/meta pattern" Aaron mentioned alongside this row
+  in his "me to you:" framing — that's a separate but related
+  observation about how rules + meta-rules balance; capture is
+  TBD but likely as a memory-file rather than a separate backlog
+  row.
+- `GOVERNANCE.md` itself (the most-cited target — `§33` archive
+  convention is currently the heaviest pointer load; would
+  benefit first from migration).
+- Any future `CURRENT-aaron.md` / `CURRENT-amara.md` /
+  `CURRENT-ani.md` distillation refresh — section numbers in
+  those files are even more volatile than GOVERNANCE.md sections.
+- The host-portability discipline in `AGENTS.md` — markdown
+  anchor refs are git-host-portable (work on GitHub, GitLab,
+  Forgejo, plain-git rendering); `§NN` requires the reader to
+  resolve numbering manually.
+
+## Out of scope
+
+- **Replacing section numbers IN governance/current docs themselves.**
+  Sections can keep their numbered headings; the migration is for
+  citations TO sections, not the section-internal structure. (If
+  a future round wants to drop `§NN` from headings entirely,
+  that's a separate row.)
+- **Cross-host link compatibility audits** (GitHub-only-features
+  like permalinks vs portable refs) — separate concern, file
+  separately if it earns its own row.
+
+## Status
+
+**Filed.** Implementation deferred to a future round with
+rested attention. Per Aaron's *"backlog new class"* framing, the
+filing IS the action this tick; implementation lands when picked
+up.

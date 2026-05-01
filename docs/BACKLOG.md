@@ -104,6 +104,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0132](backlog/P2/B-0132-crdt-composition-for-bft-propagation-aaron-2026-05-01.md)** CRDT-composition for BFT propagation — substrate events as composed CRDTs
 - [ ] **[B-0133](backlog/P2/B-0133-sequent-calculus-for-claim-retraction-attribution-aaron-2026-05-01.md)** Sequent calculus / labeled deductive systems for claim/retraction/attribution
 - [ ] **[B-0134](backlog/P2/B-0134-type-theoretic-orthogonality-discipline-encoding-aaron-2026-05-01.md)** Type-theoretic encoding of orthogonality discipline (extension vs creation as decidable judgment)
+- [ ] **[B-0141](backlog/P2/B-0141-brittle-pointer-section-numbers-deep-links-discipline-aaron-2026-05-01.md)** Brittle-pointer pattern — replace `§NN` section-number citations with markdown deep-links / anchor refs that survive document refactoring
 
 ## P3 — convenience / deferred
 
