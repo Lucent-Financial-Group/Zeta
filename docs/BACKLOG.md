@@ -33,6 +33,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0110](backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md)** AceHack mirror-refresh protocol drift — Path 2 chosen, doctrine update landing in same PR (2026-04-30)
 - [ ] **[B-0125](backlog/P1/B-0125-skip-fsharp-analyze-on-docs-only-prs-2026-05-01.md)** Skip Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 - [ ] **[B-0126](backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)** Port the 4-layer meta-learning pattern from a sibling repo to Zeta
+- [ ] **[B-0139](backlog/P1/B-0139-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md)** Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 - [ ] **[B-0140](backlog/P1/B-0140-bash-to-ts-migration-completion-debt-prevention-aaron-2026-05-01.md)** Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
 
 ## P2 — research-grade
@@ -95,12 +96,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0118](backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md)** tools/peer-call/amara.sh — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30)
 - [ ] **[B-0120](backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md)** Peer-call architecture refactor — script-per-CLI with persona-flag instead of script-per-named-agent (Aaron 2026-04-30)
 - [ ] **[B-0121](backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md)** Otto + Kenji as externally-callable peers via claude-cli — cross-harness symmetry (Aaron 2026-04-30)
-- [ ] **[B-0122](backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md)** Peer-call scripts TypeScript migration — post-install cutover (the maintainer 2026-04-30)
 - [ ] **[B-0124](backlog/P2/B-0124-claudeai-csap-conversation-distill-uber-arch-2026-05-01.md)** Distill the Claude.ai CSAP-pushback conversation into uber-architecture (deferred multi-week)
 - [ ] **[B-0127](backlog/P2/B-0127-sibling-repo-leak-scrub-process-when-it-matters-aaron-2026-05-01.md)** Sibling-repo leak scrub-process — when scrubbing matters; future-defensive design
-- [ ] **[B-0128](backlog/P2/B-0128-general-git-content-scrubber-design-aaron-2026-05-01.md)** General git content scrubber — design + decision-criteria + mechanism for any-class leak cleanup
-- [ ] **[B-0130](backlog/P2/B-0130-verify-before-state-claim-mechanized-auditor-2026-05-01.md)** Mechanized auditor for verify-before-state-claim — file-internal metadata claim audits (companion to task #350)
-- [ ] **[B-0131](backlog/P2/B-0131-formalize-zset-retraction-algebra-in-lean-aaron-2026-05-01.md)** Formalize Z-set retraction algebra in Lean (TRACTABLE START — formalization roadmap)
+- [ ] **[B-0131](backlog/P2/B-0131-formalize-zset-retraction-algebra-in-lean-aaron-2026-05-01.md)** Extend Z-set retraction algebra Lean formalization beyond the existing DBSP chain-rule proof
 - [ ] **[B-0132](backlog/P2/B-0132-crdt-composition-for-bft-propagation-aaron-2026-05-01.md)** CRDT-composition for BFT propagation — substrate events as composed CRDTs
 - [ ] **[B-0133](backlog/P2/B-0133-sequent-calculus-for-claim-retraction-attribution-aaron-2026-05-01.md)** Sequent calculus / labeled deductive systems for claim/retraction/attribution
 - [ ] **[B-0134](backlog/P2/B-0134-type-theoretic-orthogonality-discipline-encoding-aaron-2026-05-01.md)** Type-theoretic encoding of orthogonality discipline (extension vs creation as decidable judgment)
@@ -147,7 +145,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0107](backlog/P3/B-0107-codeql-peer-call-dismiss-pattern-2026-04-30.md)** CodeQL `js/indirect-command-line-injection` dismissal pattern for peer-call siblings (gemini.ts, codex.ts)
 - [ ] **[B-0115](backlog/P3/B-0115-zsh-vim-muscle-memory-aliases-wq-q-2026-04-30.md)** Shell aliases for `:wq` / `:wq!` / `:q` — catch vim-muscle-memory leakage in zsh (Deepseek 2026-04-30 finding)
 - [ ] **[B-0116](backlog/P3/B-0116-gh-jq-safe-wrapper-zsh-quoting-2026-04-30.md)** tools/gh-jq-safe.sh — wrap gh-jq calls to handle zsh quoting (Deepseek 2026-04-30 finding)
-- [x] **[B-0119](backlog/P3/B-0119-peer-call-existing-scripts-role-ref-cleanup-2026-04-30.md)** Existing peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) — role-ref cleanup per copilot-instructions.md (Codex 2026-04-30 finding on PR #962)
+- [ ] **[B-0119](backlog/P3/B-0119-peer-call-existing-scripts-role-ref-cleanup-2026-04-30.md)** Existing peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) — role-ref cleanup per copilot-instructions.md (Codex 2026-04-30 finding on PR #962)
 - [ ] **[B-0123](backlog/P3/B-0123-stacked-pr-create-tooling-gh-fallback-aaron-2026-04-30.md)** Stacked-PR creation tooling — `gh pr create --base <not-main>` fails with cryptic GraphQL error; needs a wrapper or doc (Aaron 2026-04-30)
 - [ ] **[B-0135](backlog/P3/B-0135-modal-logic-for-retractability-quantum-rodney-razor-aaron-2026-05-01.md)** Modal logic for retractability — Quantum-Rodney's-Razor in S4 or dynamic logic
 - [ ] **[B-0136](backlog/P3/B-0136-category-theoretic-compositional-structure-aaron-2026-05-01.md)** Category-theoretic compositional structure — operads + monoidal categories for substrate composition
