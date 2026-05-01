@@ -127,7 +127,7 @@ funnel is broken at the discovery step.
    - DST-achievable per the per-tool/language guidance
    - GitHub-native first; portable second (the `git-native
      vs GitHub-native` distinction in
-     `feedback_git_native_vs_github_native_plural_host_pluggable_adapters_2026_04_23.md`)
+     `memory/feedback_git_native_vs_github_native_plural_host_pluggable_adapters_2026_04_23.md`)
 
    **Candidate tools** (problem-axis scored):
 
