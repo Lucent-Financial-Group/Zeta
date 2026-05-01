@@ -302,6 +302,162 @@ similar-row grep check." Pre-commit hook on
 The mechanization is straightforward; it's the discipline
 that's been missing, and the recurrence is the evidence.
 
+### 2026-05-01 follow-up — edge schema for memory files
+
+Aaron 2026-05-01 (right after the backlog `depends_on`
+extension above):
+
+> *"you could have a related to our some other edge in
+> memories, up to you, they are very much your domain"*
+
+Aaron generalized the graph-shape from backlog rows to
+memory files. The same overlap problem afflicts `memory/`
+— ~367 memory files are unindexed in MEMORY.md (task
+#291), and overlapping memories on the same topic
+accumulate without being linked. Edges turn the memory
+tree into a navigable graph.
+
+Aaron's *"up to you, they are very much your domain"* is
+explicit delegation; the design choices below are Otto's
+under the no-directives + autonomy-first-class framing.
+
+#### Edge types (six classes, all optional, forward-only)
+
+| Edge | Semantics |
+|---|---|
+| `extends` | This memory adds to an earlier memory; both stay in force. (Example: the 2026-05-01 extension to this 2026-04-23 file.) |
+| `supersedes` | This memory replaces an earlier memory entirely; the earlier becomes historical. (Rare — most evolution is `refines`.) |
+| `refines` | This memory sharpens an earlier memory's scope without replacing it. (Example: Otto-364 refines Otto-247; predecessor stays.) |
+| `contradicts` | This memory explicitly conflicts with another; reader needs to know both exist. (Glass-Halo: surface contradictions, don't paper over.) |
+| `composes_with` | This memory works alongside another; neither subsumes nor depends. (Promotes existing prose `## Composes with` sections to machine-readable form.) |
+| `caused_by` | This memory was triggered by a specific event / incident / PR / message. (Free-text, not file-pointer.) |
+
+Forward-only by design — each file owns its outgoing claims;
+reverse navigation is `grep -l "supersedes:.*X" memory/`
+away. Bidirectional edges require dual-write discipline that
+always drifts; forward-only matches Glass-Halo
+file-as-source-of-truth.
+
+#### Authoring discipline
+
+Mirror the backlog pre-filing check. When drafting a new
+memory file:
+
+1. **Identify keywords** from the working title.
+2. **Grep `memory/`** for related memos:
+
+   ```bash
+   grep -lirE "<keyword1>|<keyword2>" memory/
+   ```
+
+3. **Read the hits** (or at least their MEMORY.md
+   descriptions).
+4. **Choose the relationship**: extends / supersedes /
+   refines / contradicts / composes_with / caused_by — or
+   none, if the new memory is genuinely orthogonal.
+5. **Encode in frontmatter** under the chosen edge field(s).
+
+#### Frontmatter schema
+
+```yaml
+---
+name: ...
+description: ...
+type: feedback
+originSessionId: ...
+extends:                       # optional, list of filenames
+  - feedback_NAME_DATE.md
+supersedes:                    # optional, list of filenames
+  - feedback_NAME_DATE.md
+refines:                       # optional, list of filenames
+  - feedback_NAME_DATE.md
+contradicts:                   # optional, list of filenames
+  - feedback_NAME_DATE.md
+composes_with:                 # optional, list of filenames
+  - feedback_NAME_DATE.md
+caused_by:                     # optional, list of free-text strings
+  - "PR #1234 review thread"
+  - "Aaron 2026-05-01 messages"
+---
+```
+
+All edge fields are **optional**. New memories CAN add
+them; existing memories get them incrementally as they're
+touched. The 376KB of existing MEMORY.md doesn't get
+retroactive edges (that's task #291-scale work).
+
+#### Pointer values
+
+References within `memory/` use the **filename**
+(basename, not full path):
+
+- `extends: [feedback_version_currency_otto_247_2026_04_24.md]`
+
+External-surface references (PR / issue / TaskList /
+maintainer messages) live under `caused_by:` as
+free-text strings.
+
+#### Mechanization candidate
+
+Add as **class 15** in B-0153 — "memory-edge
+target-existence lint." Same shape as the existing
+`.github/workflows/memory-reference-existence-lint.yml`
+which validates prose links — extend it to also read
+frontmatter edge fields and validate that pointer
+filenames exist in `memory/`. Cycles in `extends` /
+`supersedes` are rejected at lint time (memories can
+only point backward in time, like commits).
+
+#### Why prose `## Composes with` sections stay
+
+Frontmatter edges are **terse pointer-lists** for machine
+traversal (graph audits, visualization, navigation
+tooling). Prose sections **narrate the relationship** for
+human readers. They serve different purposes; one
+doesn't replace the other. Memories with rich relational
+context keep both; memories with clear simple
+relationships can use just the frontmatter. No
+duplication required, no migration needed.
+
+#### What this is NOT
+
+- **NOT a retroactive sweep** — task #291 is the right
+  place for backfilling. The edge-schema is
+  authoring-discipline-going-forward.
+- **NOT a graph database** — git-flat-files-with-grep is
+  the store; the graph is just an emergent view from
+  walking edges via `grep -l`.
+- **NOT a replacement for MEMORY.md** — the index stays
+  as the cold-start reading order; edges are per-file
+  relational claims, not a global index.
+- **NOT bidirectional** — forward-only by design; reverse
+  navigation is `grep -l "edge: X"` away.
+- **NOT required at PR-time** — adding edges is
+  encouraged when the relationship is obvious during
+  authoring; absence of edges is not a lint failure.
+
+#### Worked example — this very file
+
+If this `feedback_backlog_hygiene_*.md` were rewritten
+today with the new schema, its frontmatter would gain:
+
+```yaml
+caused_by:
+  - "Aaron 2026-04-23 backlog-hygiene cadenced-refactor message"
+  - "Aaron 2026-05-01 'i've repeated myself on several designs' message"
+  - "Aaron 2026-05-01 'depends on if you find that relationship' message"
+  - "Aaron 2026-05-01 'related to our some other edge in memories' message"
+composes_with:
+  - feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md
+  - feedback_signal_in_signal_out_clean_or_better_dsp_discipline.md
+  - feedback_free_work_amara_and_agent_schedule_paid_work_escalate_to_aaron_2026_04_23.md
+```
+
+The 2026-05-01 extension to this file IS itself an
+`extends` edge in narrative form; if a separate file had
+been created instead, the new file's frontmatter would
+carry `extends: [feedback_backlog_hygiene_..._2026_04_23.md]`.
+
 ## Composes with
 
 - `docs/BACKLOG.md` — the target surface
