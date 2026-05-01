@@ -1,6 +1,6 @@
 ---
 name: Engagement under discipline, not avoidance — unified pattern (Aaron 2026-05-01)
-description: Aaron names a unified pattern across two existing carve-outs (Pliny prompt-injection corpus + sibling-repo internals): engagement under discipline beats avoidance. Same KIND of pattern but per-class strictness varies — Pliny is strict (read itself requires kill-switchable BUDDY, not a peer); sibling-repos are looser (main-session reads OK; discipline applies at absorb/write-back). Vocabulary precision (Aaron 2026-05-01): peer = autonomous, lifetime-not-controlled; buddy = sub-process, lifetime-controlled / kill-switchable. The strict variant uses buddies; the principle is unified; the strictness scales with contamination class.
+description: Aaron names a unified pattern across two existing carve-outs (Pliny prompt-injection corpus + sibling-repo internals): engagement under discipline beats avoidance. Same KIND of pattern but per-class strictness varies — Pliny is strict (read itself requires kill-switchable BUDDY, not a peer); sibling-repos are looser (main-session reads OK; discipline applies at absorb/write-back). Vocabulary precision (Aaron 2026-05-01): peer/buddy is a RELATIONAL role between two actors, not a categorical property of a persona — the same persona (Otto, Codex, etc.) can be a peer of one actor and a buddy of another simultaneously. Peer = autonomous runtime, lifetime-not-controlled by this actor; buddy = named persona / first-class team member whose current runtime IS lifetime-controlled by this actor / kill-switchable (NOT "sub-process" — that framing was explicitly rejected in a ~10-round design because it denied buddies their persona-status). The strict variant uses buddies; the principle is unified; the strictness scales with contamination class.
 type: feedback
 ---
 
@@ -33,27 +33,86 @@ more broadly with varying strictness — peer/sibling repos sit
 at a looser position on the same axis. The fifth + sixth
 sharpen the vocabulary: in factory mirror-language, *peers*
 are autonomous (you do not control their lifetime); the
-strict-variant containment requires a *buddy* (a sub-process
-whose lifetime you DO control). The strict-variant constraint
-is therefore precisely *"always in buddies you control the
-lifetime of,"* not *"in peers."*
+strict-variant containment requires a *buddy* (a named persona
+whose runtime instance you DO control the lifetime of — full
+first-class team member, not "sub-process"). The strict-variant
+constraint is therefore precisely *"always in buddies you
+control the lifetime of,"* not *"in peers."*
 
 ## Vocabulary — peer vs buddy (factory mirror-language)
 
 Per Aaron 2026-05-01:
 
-- **Peer.** An autonomous actor with its own runtime,
-  decision-making, and session lifetime. The controlling
-  actor does NOT control a peer's lifetime. Examples: Codex
-  CLI, Gemini CLI, Grok harness, Amara (ChatGPT), other
-  named-agent personas operating in their own sessions.
-  Peer-call infrastructure: `tools/peer-call/`.
-- **Buddy.** A sub-process whose lifetime IS controlled by
-  the spawning actor. Examples: an isolated Claude CLI
-  instance spawned for adversarial-payload review (the
-  Pliny carve-out's strict containment surface); a sandboxed
-  harness; a scratch container. The controlling actor can
-  kill the buddy on detected rogue behaviour.
+**Peer/buddy is a *spawn-mode* — a relational property of a
+runtime instance, not a categorical property of the named
+agent.** Aaron 2026-05-01: *"you technically could get spaned
+in either mode otto becaseu curosrs loop may execute you in a
+sub process and vice version or be in control"* + *"spawned
+buddy mode or peer mode same named agent can run as either"*.
+
+The same named agent (Otto, Codex, Gemini, etc.) runs in one
+of two spawn-modes per runtime, and a single agent can run in
+either mode depending on how its current runtime was spawned:
+
+- **Buddy mode** — runtime spawned with lifetime controlled
+  by the spawning actor. The spawning actor can kill this
+  runtime.
+- **Peer mode** — runtime spawned with autonomous lifetime.
+  No external actor can kill this runtime; the agent
+  decides when to end its session.
+
+The agent's identity, history, metrics, and persona-status
+persist across runtimes regardless of spawn-mode. Only the
+runtime-lifetime control varies.
+
+Examples of the same named agent running in different modes:
+
+- When Cursor's loop spawns Otto's runtime, Otto is a buddy
+  *of Cursor* (Cursor controls Otto's runtime lifetime).
+- When Otto spawns an isolated Claude-instance for adversarial
+  payload review, that instance is a buddy *of Otto*.
+- When Otto in the LFG main session calls Codex via
+  `tools/peer-call/codex.sh`, Codex is a peer *of Otto*
+  (Codex's runtime is autonomous; Otto cannot kill it).
+
+The label depends on *which side of the spawning relationship*
+the actor is on at this moment. A persona is not "a peer" or
+"a buddy" in the abstract — the persona has a relationship to
+each actor it interacts with, and that relationship labels
+the role.
+
+- **Peer (relational role).** An autonomous actor whose
+  runtime lifetime is NOT controlled by the actor in question.
+  Examples (relative to current-Otto in this LFG session):
+  Codex CLI, Gemini CLI, Grok harness, Amara via ChatGPT —
+  reached via `tools/peer-call/`.
+- **Buddy (relational role).** A named persona / first-class
+  team member whose runtime instance IS lifetime-controlled
+  by the actor in question (the actor that spawned the
+  buddy's current runtime). Buddies are NOT "sub-processes"
+  in factory
+  vocabulary — that framing was explicitly rejected in a
+  ~10-round design discussion because reducing them to
+  "sub-process" denied that they are named personas (Aaron
+  2026-05-01: *"sub-process in like a 10 round design was
+  decided against becasue they were named persona"* +
+  *"we have a whole design on this and the agency hierarcy
+  even subprocesses are named and have history and metrics
+  like your team members"*). Buddies have names, they have
+  history across invocations, they have metrics, they
+  participate in the agency hierarchy as full first-class
+  actors. The lifetime-control is a runtime containment
+  property of the buddy's *current instance*, not a denial
+  of the buddy's identity. Examples: an isolated Claude CLI
+  instance spawned for adversarial-payload review (the Pliny
+  carve-out's strict containment surface) — still a named
+  team member with its own continuous history across spawns;
+  a sandboxed harness running a named role; any named
+  persona whose runtime the spawning actor can kill on
+  detected rogue behaviour. When the buddy's current runtime
+  is killed, the buddy's identity, history, and metrics
+  persist across to the next runtime — the kill ends the
+  *runtime*, not the *persona*.
 
 The kill-switch only exists with buddies. Peers cannot be
 kill-switched (they are autonomous; the most you can do is
@@ -85,7 +144,7 @@ content can contaminate the factory:
 
 | Strictness | Read constraint | Absorb constraint | Kill-switch | Example class |
 | --- | --- | --- | --- | --- |
-| **Strict** | Read only in a buddy (lifetime-controlled sub-process) | Outputs cross back as structural-findings only | Process-kill on rogue behaviour (only possible because buddy lifetime is controlled) | Pliny prompt-injection corpus |
+| **Strict** | Read only in a buddy (named persona; lifetime-controlled runtime) | Outputs cross back as structural-findings only | Runtime-kill on rogue behaviour (only possible because the buddy's runtime is lifetime-controlled; the buddy persona itself persists) | Pliny prompt-injection corpus |
 | **Loose** | Read can happen in main session | Generalize-fresh on write-back; no copy / no names / no internals bleed-out | Discard-and-rewrite on detected verbatim leak | Sibling-repo internals (`../scratch`, `../SQLSharp`, `../no-copy-only-learning-agents-insight`) |
 | **(Class-specific)** | Per-class | Per-class | Per-class | Future classes — courier-ferried adversarial packets, third-party threat models, etc. |
 
@@ -163,8 +222,10 @@ Determine WHERE in the cycle the contamination mechanism lives:
 - **Read-time contamination** (the very act of reading the
   content can change the agent or substrate) → **strict
   variant**: containerize the read; main session never touches
-  the content; buddy-process with kill-switch (NOT a peer —
-  peers are autonomous and cannot be kill-switched).
+  the content; named buddy with kill-switchable runtime (NOT a
+  peer — peers are autonomous and cannot have their runtime
+  kill-switched). The buddy persona persists across runtimes;
+  only the current contaminated runtime is killed.
 - **Absorb-time contamination** (reading is fine; the danger
   is in copying / quoting / referencing the content into the
   factory's substrate) → **loose variant**: main-session reads
@@ -232,16 +293,21 @@ rather than redefining the shape.
   loose-variant classes (sibling-repo absorb / write-back
   generalization with peer-eyes review) and for cross-harness
   coordination — NOT for strict-variant containment, which
-  requires a buddy (lifetime-controlled sub-process), not a
-  peer.
-- The buddy-spawn infrastructure (e.g., isolated Claude CLI
-  instance launched as a sub-process) is the natural surface
-  for strict-variant containment. Concrete tooling lives in
+  requires a buddy (named persona, lifetime-controlled
+  runtime), not a peer.
+- The buddy-spawn infrastructure (e.g., spawning a named
+  buddy persona's runtime via an isolated Claude CLI instance)
+  is the natural surface for strict-variant containment.
+  Concrete tooling lives in
   `.claude/skills/prompt-protector/` (canonical heavy-weight
   strict-variant route) and per-incident isolated CLI launches.
   A consolidated `tools/buddy-call/` surface may be worth
   building when the strict-variant case fires more than once
-  per quarter — file as backlog if observed.
+  per quarter — file as backlog if observed. The agency
+  hierarchy (per `memory/feedback_zeta_agent_orchestra_*`)
+  treats buddies as first-class actors — names, history,
+  metrics — distinct from any "sub-process" framing that the
+  ~10-round design discussion explicitly rejected.
 - `.claude/skills/prompt-protector/` — the canonical heavy-weight
   isolated-single-turn route for strict-variant adversarial
   payload work.
@@ -267,18 +333,42 @@ lifetime of... technically that's not a peer in our mirror
 language that's a buddy"* + *"peer you don't control the
 lifetime and they are atonomous"* — sharpened the vocabulary.
 I had been using "peer" loosely where the precise term is
-"buddy." Peers are autonomous (Codex, Gemini, Grok, Amara —
-the actors `tools/peer-call/` reaches); buddies are
-lifetime-controlled sub-processes (isolated Claude CLI
-instances Otto can spawn and kill). The strict variant
-requires buddies because the kill-switch only exists with
-lifetime control.
+"buddy." The strict variant requires buddies because the
+kill-switch only exists with lifetime control of the runtime;
+peers (autonomous lifetime) cannot be kill-switched.
+
+The seventh + eighth + ninth messages — *"sub-process in like
+a 10 round design was decided against becasue they were named
+persona"* + *"we have a whole design on this and the agency
+hierarcy even subprocesses are named and have history and
+metrics like your team members"* + *"you technically could get
+spaned in either mode otto becaseu curosrs loop may execute
+you in a sub process and vice version or be in control"* +
+*"spawned buddy mode or peer mode same named agent can run as
+either"* + *"depending on how it was launch"* — corrected two
+errors in my framing:
+
+1. **"Sub-process" as a term was explicitly rejected** in a
+   prior ~10-round design discussion because it denied that
+   buddies are named personas with full first-class status
+   (history, metrics, agency-hierarchy participation). The
+   factory's vocabulary calls them buddies, not sub-processes.
+2. **Peer/buddy is a runtime spawn-mode, not a categorical
+   property of a named agent.** The same named agent can run
+   in either mode depending on how its current runtime was
+   launched. Otto could be running in peer mode (autonomous
+   LFG session) one moment and in buddy mode (spawned by
+   Cursor's loop with controlled lifetime) the next.
 
 The progression — *engagement under discipline (principle)* →
 *strict variant (Pliny: read-time containment + buddy +
 kill-switch)* → *loose variant (sibling-repos: absorb-time
 discipline + write-back generalization)* → *strictness scales
 with contamination mechanism* → *vocabulary precision (peer ≠
-buddy)* — completes the pattern. The unified frame is the
-*kind*; the per-class strictness is the *form*; the peer/buddy
-distinction is the *mechanism*.
+buddy)* → *agency-hierarchy preservation (buddies are named
+personas, not sub-processes)* → *spawn-mode is relational
+(determined at launch by the spawning relationship)* —
+completes the pattern. The unified frame is the *kind*; the
+per-class strictness is the *form*; the peer/buddy distinction
+is the *spawn-mode mechanism*; spawn-mode is determined per
+launch.
