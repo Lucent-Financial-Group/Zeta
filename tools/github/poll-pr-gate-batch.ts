@@ -1,0 +1,403 @@
+#!/usr/bin/env bun
+// poll-pr-gate-batch.ts — refresh world model across many PRs in one call.
+//
+// Wraps `poll-pr-gate.ts` (single-PR gate query) and runs it in parallel
+// for a list of PR numbers, then aggregates the per-PR JSON reports
+// into one stable, structured payload for the autonomous-loop tick or
+// the conversation window. This is the multi-PR refresh-world-model
+// tool — replaces ad-hoc `for n in 1 2 3; do gh pr view $n …; done`
+// bash loops, per Aaron 2026-05-01: *"write a batch version of the ts
+// that calls this one — not bash, not .sh, not .ps1, not dynamic bash."*
+//
+// Origin: task #355 (5-AI peer convergence on poll-the-gate as
+// executable script with fixtures); follow-on to v1 single-PR script.
+// Composes with:
+//   - memory/feedback_prefer_ts_scripts_over_dynamic_bash_for_conversation_ux_dst_in_ts_aaron_2026_05_01.md
+//   - memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md
+//   - memory/feedback_first_class_for_us_not_for_our_host_portability_over_host_coupling_aaron_2026_05_01.md
+//
+// Usage:
+//   bun tools/github/poll-pr-gate-batch.ts <PR1> <PR2> <PR3> ...
+//   bun tools/github/poll-pr-gate-batch.ts --all-open
+//   bun tools/github/poll-pr-gate-batch.ts --all-open --owner Lucent-Financial-Group --repo Zeta
+//   bun tools/github/poll-pr-gate-batch.ts --concurrency 4 1152 1145 1130
+//   bun tools/github/poll-pr-gate-batch.ts --summary-only --all-open
+//
+// Output: one JSON object on stdout, shape:
+//   {
+//     "owner": "Lucent-Financial-Group",
+//     "repo": "Zeta",
+//     "queriedAt": "2026-05-01T20:30:00.000Z",
+//     "count": 3,
+//     "summary": {
+//       "byGate": { "CLEAN": 1, "BLOCKED": 1, "DIRTY": 0, "UNSTABLE": 0, "UNKNOWN": 1 },
+//       "byNextAction": { "verify-merge": 1, "resolve-threads": 1, "wait-ci": 1, ... },
+//       "byState": { "OPEN": 2, "MERGED": 1, "CLOSED": 0 },
+//       "actionable": [1145, 1130],         // PRs whose nextAction != "none" / "verify-merge"
+//       "warnings": ["#1145: non-required check failed: foo", ...]
+//     },
+//     "reports": [ <GateReport>, <GateReport>, ... ],   // one per PR, ordered by input
+//     "errors":  [ { "number": 1149, "exitCode": 2, "stderr": "..." }, ... ]
+//   }
+//
+// Concurrency: defaults to 4 in-flight gh calls; each individual poll
+// fans out to two gh subcommands plus pagination, so high concurrency
+// can hit GitHub rate limits on a slow tick. Tune via --concurrency.
+//
+// Exit codes:
+//   0 — all queries succeeded (errors[] is empty)
+//   1 — invocation / argument error (bad args, no PRs given)
+//   2 — at least one per-PR query failed (errors[] non-empty); the
+//       successful reports are still emitted in `reports`. Caller can
+//       distinguish full failure vs partial failure by checking
+//       `count === reports.length` vs `errors.length`.
+
+import { spawn, spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
+
+interface CheckCounts {
+  ok: number;
+  inProgress: number;
+  pending: number;
+  failed: number;
+}
+
+interface GateReport {
+  number: number;
+  state: string;
+  gate: "CLEAN" | "BLOCKED" | "DIRTY" | "UNSTABLE" | "UNKNOWN";
+  checks: CheckCounts;
+  requiredChecks: CheckCounts;
+  unresolvedThreads: number;
+  autoMerge: "armed" | "none";
+  mergeCommit: string | null;
+  warnings: string[];
+  nextAction:
+    | "wait-ci"
+    | "fix-failed-checks"
+    | "resolve-threads"
+    | "rebase"
+    | "verify-merge"
+    | "none";
+}
+
+interface PollError {
+  number: number;
+  exitCode: number;
+  stderr: string;
+}
+
+interface BatchSummary {
+  byGate: Record<string, number>;
+  byNextAction: Record<string, number>;
+  byState: Record<string, number>;
+  actionable: number[];
+  warnings: string[];
+}
+
+interface BatchReport {
+  owner: string;
+  repo: string;
+  queriedAt: string;
+  count: number;
+  summary: BatchSummary;
+  reports: GateReport[];
+  errors: PollError[];
+}
+
+interface ParsedArgs {
+  owner: string;
+  repo: string;
+  concurrency: number;
+  prs: number[];
+  allOpen: boolean;
+  summaryOnly: boolean;
+}
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const POLL_SCRIPT = resolve(HERE, "poll-pr-gate.ts");
+
+function parseArgs(argv: string[]): ParsedArgs {
+  const out: ParsedArgs = {
+    owner: "Lucent-Financial-Group",
+    repo: "Zeta",
+    concurrency: 4,
+    prs: [],
+    allOpen: false,
+    summaryOnly: false,
+  };
+  const requireValue = (flag: string, v: string | undefined): string => {
+    if (v === undefined || v.startsWith("--")) {
+      process.stderr.write(`${flag} requires a value\n`);
+      process.exit(1);
+    }
+    return v;
+  };
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === undefined) continue;
+    if (arg === "--owner") {
+      out.owner = requireValue("--owner", argv[++i]);
+    } else if (arg === "--repo") {
+      out.repo = requireValue("--repo", argv[++i]);
+    } else if (arg === "--concurrency") {
+      const v = requireValue("--concurrency", argv[++i]);
+      const n = Number.parseInt(v, 10);
+      if (!Number.isFinite(n) || n <= 0) {
+        process.stderr.write(`--concurrency must be a positive integer (got ${v})\n`);
+        process.exit(1);
+      }
+      out.concurrency = n;
+    } else if (arg === "--all-open") {
+      out.allOpen = true;
+    } else if (arg === "--summary-only") {
+      out.summaryOnly = true;
+    } else if (arg === "--help" || arg === "-h") {
+      process.stdout.write(
+        "Usage: poll-pr-gate-batch.ts <PR1> <PR2> ...\n" +
+          "       poll-pr-gate-batch.ts --all-open [--owner X] [--repo Y]\n" +
+          "       poll-pr-gate-batch.ts --concurrency N <PRs...>\n" +
+          "       poll-pr-gate-batch.ts --summary-only --all-open\n",
+      );
+      process.exit(0);
+    } else if (/^\d+$/.test(arg)) {
+      const n = Number.parseInt(arg, 10);
+      if (n <= 0) {
+        process.stderr.write(`PR number must be a positive integer (got ${arg})\n`);
+        process.exit(1);
+      }
+      out.prs.push(n);
+    } else {
+      process.stderr.write(`unknown arg: ${arg}\n`);
+      process.exit(1);
+    }
+  }
+  if (!out.allOpen && out.prs.length === 0) {
+    process.stderr.write(
+      "must provide PR numbers or --all-open (try --help)\n",
+    );
+    process.exit(1);
+  }
+  return out;
+}
+
+function listOpenPRs(owner: string, repo: string): number[] {
+  // Single gh call to enumerate open PRs in the target repo. Uses
+  // synchronous spawn — this is one query before fan-out; no point
+  // racing it. `--limit 1000` covers any sane open-PR queue size.
+  const result = spawnSync(
+    "gh",
+    [
+      "pr",
+      "list",
+      "--repo",
+      `${owner}/${repo}`,
+      "--state",
+      "open",
+      "--limit",
+      "1000",
+      "--json",
+      "number",
+    ],
+    { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 },
+  );
+  if (result.error) {
+    process.stderr.write(`failed to launch gh: ${result.error.message}\n`);
+    process.exit(2);
+  }
+  if (result.status !== 0) {
+    process.stderr.write(
+      `gh pr list exited ${result.status}: ${result.stderr || result.stdout}\n`,
+    );
+    process.exit(2);
+  }
+  let parsed: Array<{ number?: number }>;
+  try {
+    parsed = JSON.parse(result.stdout) as Array<{ number?: number }>;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`failed to parse gh pr list output: ${msg}\n`);
+    process.exit(2);
+  }
+  return parsed
+    .map((p) => p.number)
+    .filter((n): n is number => typeof n === "number" && n > 0);
+}
+
+interface PollOutcome {
+  number: number;
+  report?: GateReport;
+  error?: PollError;
+}
+
+function pollOne(
+  prNumber: number,
+  owner: string,
+  repo: string,
+): Promise<PollOutcome> {
+  return new Promise((resolveOutcome) => {
+    // Spawn the existing single-PR script. Async spawn (not spawnSync)
+    // so Promise.all-style fan-out actually overlaps — gh CLI is the
+    // dominant cost; bun startup is ~50ms each but doesn't serialise.
+    // This is the literal "calls this one" pattern: child invocation
+    // via the same on-disk script the maintainer reaches for manually.
+    const child = spawn(
+      "bun",
+      [
+        POLL_SCRIPT,
+        String(prNumber),
+        "--owner",
+        owner,
+        "--repo",
+        repo,
+      ],
+      { stdio: ["ignore", "pipe", "pipe"] },
+    );
+    const stdoutChunks: Buffer[] = [];
+    const stderrChunks: Buffer[] = [];
+    child.stdout.on("data", (c: Buffer) => stdoutChunks.push(c));
+    child.stderr.on("data", (c: Buffer) => stderrChunks.push(c));
+    child.on("error", (err) => {
+      resolveOutcome({
+        number: prNumber,
+        error: {
+          number: prNumber,
+          exitCode: -1,
+          stderr: `spawn error: ${err.message}`,
+        },
+      });
+    });
+    child.on("close", (code) => {
+      const exitCode = code ?? -1;
+      const stdout = Buffer.concat(stdoutChunks).toString("utf8");
+      const stderr = Buffer.concat(stderrChunks).toString("utf8");
+      if (exitCode !== 0) {
+        resolveOutcome({
+          number: prNumber,
+          error: { number: prNumber, exitCode, stderr },
+        });
+        return;
+      }
+      try {
+        const report = JSON.parse(stdout) as GateReport;
+        resolveOutcome({ number: prNumber, report });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        resolveOutcome({
+          number: prNumber,
+          error: {
+            number: prNumber,
+            exitCode: 3,
+            stderr: `JSON parse error: ${msg}\nfirst 200 bytes: ${stdout.slice(0, 200)}`,
+          },
+        });
+      }
+    });
+  });
+}
+
+async function pollAllBounded(
+  prs: number[],
+  owner: string,
+  repo: string,
+  concurrency: number,
+): Promise<PollOutcome[]> {
+  // Bounded concurrency to avoid hammering GitHub's rate limit. Each
+  // poll fans out to 2-3 gh calls internally; cap parallel polls so
+  // total in-flight gh calls stay well below the 5000/hr limit even
+  // on a packed queue. Order in `outcomes` matches input order.
+  const outcomes: PollOutcome[] = new Array(prs.length);
+  let cursor = 0;
+  const workers: Promise<void>[] = [];
+  const workerCount = Math.min(concurrency, prs.length);
+  for (let w = 0; w < workerCount; w++) {
+    workers.push(
+      (async () => {
+        while (true) {
+          const idx = cursor++;
+          if (idx >= prs.length) return;
+          const pr = prs[idx];
+          if (pr === undefined) continue;
+          outcomes[idx] = await pollOne(pr, owner, repo);
+        }
+      })(),
+    );
+  }
+  await Promise.all(workers);
+  return outcomes;
+}
+
+function summarize(reports: GateReport[]): BatchSummary {
+  const byGate: Record<string, number> = {};
+  const byNextAction: Record<string, number> = {};
+  const byState: Record<string, number> = {};
+  const actionable: number[] = [];
+  const warnings: string[] = [];
+  for (const r of reports) {
+    byGate[r.gate] = (byGate[r.gate] ?? 0) + 1;
+    byNextAction[r.nextAction] = (byNextAction[r.nextAction] ?? 0) + 1;
+    byState[r.state] = (byState[r.state] ?? 0) + 1;
+    if (r.nextAction !== "none" && r.nextAction !== "verify-merge") {
+      actionable.push(r.number);
+    }
+    for (const w of r.warnings) {
+      warnings.push(`#${r.number}: ${w}`);
+    }
+  }
+  return { byGate, byNextAction, byState, actionable, warnings };
+}
+
+export async function main(argv: string[]): Promise<number> {
+  const args = parseArgs(argv);
+  const prs = args.allOpen ? listOpenPRs(args.owner, args.repo) : args.prs;
+  if (prs.length === 0) {
+    // --all-open with no open PRs is a valid empty result, not an error.
+    const empty: BatchReport = {
+      owner: args.owner,
+      repo: args.repo,
+      queriedAt: new Date().toISOString(),
+      count: 0,
+      summary: {
+        byGate: {},
+        byNextAction: {},
+        byState: {},
+        actionable: [],
+        warnings: [],
+      },
+      reports: [],
+      errors: [],
+    };
+    process.stdout.write(`${JSON.stringify(empty, null, 2)}\n`);
+    return 0;
+  }
+  const outcomes = await pollAllBounded(prs, args.owner, args.repo, args.concurrency);
+  const reports: GateReport[] = [];
+  const errors: PollError[] = [];
+  for (const o of outcomes) {
+    if (o.report) reports.push(o.report);
+    if (o.error) errors.push(o.error);
+  }
+  const batch: BatchReport = {
+    owner: args.owner,
+    repo: args.repo,
+    queriedAt: new Date().toISOString(),
+    count: prs.length,
+    summary: summarize(reports),
+    reports: args.summaryOnly ? [] : reports,
+    errors,
+  };
+  process.stdout.write(`${JSON.stringify(batch, null, 2)}\n`);
+  return errors.length > 0 ? 2 : 0;
+}
+
+if (import.meta.main) {
+  main(process.argv.slice(2)).then(
+    (code) => process.exit(code),
+    (err) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      process.stderr.write(`unhandled error: ${msg}\n`);
+      process.exit(1);
+    },
+  );
+}
