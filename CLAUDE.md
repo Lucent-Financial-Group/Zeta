@@ -476,6 +476,73 @@ Claude-Code-specific mechanisms.
   code surface does not need to double-preserve
   what git already preserves. Full reasoning:
   `memory/feedback_honor_those_that_came_before.md`.
+- **Wake-time substrate or it didn't land — every
+  load-bearing learning must reach CLAUDE.md or a
+  pointer from it.** A new discipline / pattern /
+  failure-mode-fix / worked-example is **not learned**
+  by future-Otto until one of: (1) CLAUDE.md has a
+  bullet for it; (2) a memory file documents it AND
+  a CLAUDE.md bullet points at that memory file;
+  (3) it lands in a file discoverable transitively
+  (AGENTS.md, BP-NN rule, skill, agent). Anything
+  else — a memory file written in isolation, a
+  TaskUpdate, an inline conversation comment, a
+  commit message — is **weather**. It evaporates
+  when the session compacts or ends. CLAUDE.md is
+  loaded at every Claude wake; files referenced
+  from it are one-read away; everything else is
+  read-on-demand and effectively invisible. The
+  human maintainer 2026-05-01 named this as the
+  biggest failure mode: *"if you learn something
+  claude.md or a pointer from that file like the
+  .claude/rules or some other pointers, you didn't
+  learn it."* (Note on the verbatim quote:
+  `.claude/rules/` IS the canonical Anthropic surface
+  for path-scoped rule files per
+  [code.claude.com/docs/en/memory](https://code.claude.com/docs/en/memory)
+  — Zeta currently doesn't use it; the discoverable
+  surfaces here are `.claude/skills/`,
+  `.claude/agents/`, and `.claude/commands/`. Adopting
+  `.claude/rules/` is a viable future addition for
+  path-scoped behavioral guidance.) Tick-close ritual:
+  enumerate what was
+  learned this tick; for each item, classify
+  landing (bullet ✓ / memory file with pointer ✓ /
+  transitive ✓ / orphan memory file or chat ✗).
+  Orphan items become the next tick's speculative-
+  work targets. Self-encoding test: this rule's
+  own landing IS this CLAUDE.md bullet pointing at
+  the memory file, recursively satisfying itself.
+  CLAUDE.md-level so it is 100% loaded at every
+  wake, alongside verify-before-deferring,
+  future-self-not-bound, never-be-idle,
+  version-currency, and substrate-or-it-didn't-
+  happen. Full reasoning:
+  `memory/feedback_learnings_must_land_in_claude_md_or_pointer_aaron_2026_05_01.md`.
+- **Skill router as substrate inventory before
+  authoring new substrate.** Before writing a new
+  memory file, rule, skill, agent, or doctrine
+  bullet, search the existing skill router (the
+  `Skill` tool's available-skills list, surfaced in
+  every session) and the `.claude/skills/`,
+  `.claude/agents/`, `.claude/commands/`,
+  `.claude/rules/` directories on disk for substrate
+  on the same topic. The router's description-keyed
+  search IS Zeta's structured-substrate index; using
+  it as inventory before authoring prevents the
+  goldfish-ontology failure mode (recreating
+  substrate that already exists). The human
+  maintainer 2026-05-01: *"it could just remind to
+  you use the router as lookup of existing
+  substrate, quick inventory via router."* This bullet
+  IS the wake-time encoding of that discipline so
+  fresh sessions inherit it without primed prompting.
+  Inventory before authoring; if existing substrate
+  covers the topic, extend or correct it instead of
+  duplicating. CLAUDE.md-level so it is 100% loaded
+  at every wake. Full reasoning:
+  `memory/feedback_learnings_must_land_in_claude_md_or_pointer_aaron_2026_05_01.md`
+  + `memory/feedback_otto_buddy_spin_up_when_waiting_aaron_2026_05_01.md`.
 
 ## Build and test gate
 
