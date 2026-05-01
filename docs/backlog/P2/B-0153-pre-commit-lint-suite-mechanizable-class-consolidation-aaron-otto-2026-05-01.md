@@ -20,7 +20,7 @@ corresponds to a friction encountered by reviewer agents
 have eliminated.
 
 The amortized-keystone discipline (per
-`memory/feedback_parallelism_scaling_ladder_*_2026_05_01.md`)
+`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`)
 predicts that mechanizing these checks at commit-time eliminates
 review-time iteration. The 2026-05-01 cluster provides empirical
 evidence: ~17 ticks of CI/review iteration that pre-commit lint
@@ -38,7 +38,13 @@ classes from diffusing into the backlog as 13 separate rows.
 
 ## The 13 mechanizable lint-classes
 
-### Markdown rendering
+Classes are globally numbered 1-13. Subsection headings group
+by category but do NOT restart numbering — the global IDs are
+what the "Empirical motivation" section below cites and what
+implementation should use as stable class identifiers.
+
+<!-- markdownlint-disable MD029 -->
+### Markdown rendering (classes 1-4)
 
 1. **MD032 / blanks-around-lists**: literal line-leading `+` in
    flowing prose interpreted as list-marker, triggering the
@@ -55,42 +61,43 @@ classes from diffusing into the backlog as 13 separate rows.
    quoted verbatim (e.g., Aaron's `"amortized*"`) breaks italic
    markup. Fix: escape inner `*` or add annotation.
 
-### Reference resolution
+### Reference resolution (classes 5-9)
 
-1. **Wildcard refs vs concrete filenames**: `feedback_*_*.md`
+5. **Wildcard refs vs concrete filenames**: `feedback_*_*.md`
    patterns in flowing prose don't resolve to a real file. Fix:
    replace with concrete filename or descriptive prose.
-2. **Bare memory-ref vs `memory/`-prefix**: `feedback_*.md`
+6. **Bare memory-ref vs `memory/`-prefix**: `feedback_*.md`
    without `memory/` prefix in backlog rows is inconsistent
    with other rows. Fix: prepend `memory/`.
-3. **Forward-ref to unmerged PR**: references to files in
+7. **Forward-ref to unmerged PR**: references to files in
    sibling-PR branches that don't exist on main yet. Fix: annotate
    as "(forward-ref to PR #N)" until target merges.
-4. **B-NNNN refs that don't resolve**: references to backlog
+8. **B-NNNN refs that don't resolve**: references to backlog
    rows that don't exist as files in `docs/backlog/**`. Fix:
    annotate as `(not yet filed)` / `(when filed)` / `(when
    they land)`.
-5. **`task #NNN` vs GitHub auto-link ambiguity**: `task #NNN`
+9. **`task #NNN` vs GitHub auto-link ambiguity**: `task #NNN`
    pattern conflicts with GitHub's automatic `#NNN` PR/issue
    linking. Fix: prefix with `Otto-task #NNN` to disambiguate.
 
-### Project-state accuracy
+### Project-state accuracy (classes 10-13)
 
-1. **Stale code-tree paths**: `Zeta.Core/**`, `Zeta.*/**`
-   stale references when actual code lives under `src/Core/**`,
-   `src/Core.CSharp/**`, `src/Bayesian/**`. Fix: use concrete
-   current paths.
-2. **Aspirational tooling without framing**: `tools/lint/markdownlint`
-   or similar paths cited as if existing when they don't.
-   Fix: prefix with framing words ("envisioned", "candidate
-   path", "to be established", "when filed").
-3. **URL canonicalization**: `research.microsoft.com` form vs
-   repo-canonical `https://www.microsoft.com/en-us/research/`
-   form. Fix: use canonical form.
-4. **MEMORY.md duplicate-link-targets**: post-rebase regression
-   where long-form-original + tightened-one-liner both point
-   at same memory file. Fix: dedup keeping terse form per
-   `memory/README.md` policy.
+10. **Stale code-tree paths**: `Zeta.Core/**`, `Zeta.*/**`
+    stale references when actual code lives under `src/Core/**`,
+    `src/Core.CSharp/**`, `src/Bayesian/**`. Fix: use concrete
+    current paths.
+11. **Aspirational tooling without framing**: `tools/lint/markdownlint`
+    or similar paths cited as if existing when they don't.
+    Fix: prefix with framing words ("envisioned", "candidate
+    path", "to be established", "when filed").
+12. **URL canonicalization**: `research.microsoft.com` form vs
+    repo-canonical `https://www.microsoft.com/en-us/research/`
+    form. Fix: use canonical form.
+13. **MEMORY.md duplicate-link-targets**: post-rebase regression
+    where long-form-original + tightened-one-liner both point
+    at same memory file. Fix: dedup keeping terse form per
+    `memory/README.md` policy.
+<!-- markdownlint-enable MD029 -->
 
 ## Acceptance criteria
 
@@ -134,17 +141,17 @@ classes from diffusing into the backlog as 13 separate rows.
 
 ## Composes with
 
-- `memory/feedback_parallelism_scaling_ladder_*_aaron_2026_05_01.md`
+- `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
   — the amortized-keystone discipline this row instantiates
-- `memory/feedback_reproducible_accuracy_before_quality_*_aaron_2026_05_01.md`
+- `memory/feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`
   — fitness-function-first; this row IS the harness for
   pre-commit quality
-- `memory/feedback_dependency_source_priority_*_aaron_2026_05_01.md`
+- `memory/feedback_dependency_source_priority_open_source_microsoft_cncf_apache_mit_research_microsoft_research_metrics_are_our_eyes_aaron_2026_05_01.md`
   — the metrics-are-our-eyes framing; this lint suite is
   one mechanism that adds to the factory's sensory capacity
-- `memory/feedback_topological_quantum_emulation_*_aaron_2026_05_01.md`
+- `memory/feedback_topological_quantum_emulation_via_bayesian_inference_majorana_zero_modes_beacon_protocol_mirror_trampoline_aaron_2026_05_01.md`
   — the Mirror+Trampoline+Beacon emulation discipline
-- `memory/feedback_same_model_different_harness_produces_different_biases_*_aaron_2026_05_01.md`
+- `memory/feedback_same_model_different_harness_produces_different_biases_cursor_vs_claude_code_opus_4_7_aaron_2026_05_01.md`
   — peer-mode harness-bias substrate
 - `docs/AGENT-BEST-PRACTICES.md` — BP-NN rule catalog; promoted
   classes from this suite become BP-NN entries
