@@ -13,8 +13,9 @@ last_updated: 2026-05-01
 
 Operationalize a two-lane parallel-subagent dispatch pattern
 where one lane mutates `docs/**` (with `memory/**`,
-`openspec/**`) and the other lane mutates code (`src/**`,
-`Zeta.Core/**`, `tools/**` excluding `tools/lint/`). Both lanes
+`openspec/**`) and the other lane mutates code (`src/Core/**`,
+`src/Core.CSharp/**`, `src/Bayesian/**`, `tools/**` excluding
+`tools/lint/`). Both lanes
 run concurrently in **isolated worktrees** per the established
 worktree-isolation discipline. Coordinator (Otto) merges via
 PR-with-merge-queue cadence.
@@ -30,7 +31,7 @@ unlock for factory parallelism:
 > reduce fiction for more lanes"*
 
 Per the parallelism scaling ladder (rung 2 of 5) captured in
-`feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`,
+`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`,
 this is the immediate next throughput multiplier with
 structurally-near-zero collision risk because docs and code
 have disjoint file trees, disjoint review-disciplines, and
@@ -46,8 +47,9 @@ disjoint mechanized-best-practice toolchains.
      (`tools/lanes/code-lane.sh allocate <branch>`)
    - File allowlist per lane (doc-lane writes to `docs/**`,
      `memory/**`, `openspec/**`, `*.md` at root; code-lane
-     writes to `src/**`, `Zeta.*/**`, `tools/**` excluding
-     `tools/lint/`, `*.fs`, `*.fsproj`)
+     writes to `src/Core/**`, `src/Core.CSharp/**`,
+     `src/Bayesian/**`, `tools/**` excluding `tools/lint/`,
+     `*.fs`, `*.fsproj`)
    - File denylist per lane (doc-lane never writes code-tree
      files; code-lane never writes `docs/**` or `memory/**`)
 
@@ -108,7 +110,7 @@ disjoint mechanized-best-practice toolchains.
   like more review surface; mitigated by mechanized
   best-practice toolchain handling 80%+ of review surface
   automatically (per
-  `feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
+  `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
   rung-4 discipline).
 - **Coordinator complexity** — managing two lanes is more
   bookkeeping than one; mitigated by codifying the
@@ -117,18 +119,19 @@ disjoint mechanized-best-practice toolchains.
 
 ## Composes with
 
-- `feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
+- `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
   — the architectural framing this row operationalizes (rung 2)
-- `feedback_parallel_agents_need_isolated_worktrees_coordinator_owns_main_aaron_amara_2026_04_29.md`
+- `memory/feedback_parallel_agents_need_isolated_worktrees_coordinator_owns_main_aaron_amara_2026_04_29.md`
   — the worktree-isolation discipline this row instantiates
-- `project_loop_agent_named_otto_role_project_manager_2026_04_23.md`
+- `memory/project_loop_agent_named_otto_role_project_manager_2026_04_23.md`
   — Otto-as-PM role definition (the coordinator)
-- `feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`
+- `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`
   — the agent-orchestra design (rung 5; this row's
   long-term endpoint)
-- B-0141 (pre/post pattern), B-0142 (Code Contracts revival),
-  B-0130 (verify-before-state-claim mechanized auditor) —
-  mechanization primitives that compound the rung-4
+- B-0130 (verify-before-state-claim mechanized auditor),
+  plus B-0141 (pre/post pattern) and B-0142 (Code Contracts
+  revival) when they land — mechanization primitives that
+  compound the rung-4
   lessons-to-reduce-friction discipline
 
 ## Effort

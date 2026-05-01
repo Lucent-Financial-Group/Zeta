@@ -30,7 +30,7 @@ Aaron 2026-05-01:
 > the product."*
 
 The parallelism scaling ladder (per
-`feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`)
+`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`)
 multiplies *throughput*, but does not change *direction*. The
 direction-axis requires a role that does **forward research**
 — PM-2 — distinct from the reactive-cadence role (Otto / PM-1).
@@ -50,7 +50,7 @@ standard (*should have*) names PM-2 by its absence.
    - Recent Claude.ai / Amara / peer-AI ferries (`docs/research/`)
    - Upstream-doc WebSearch per Otto-364 (search-first authority)
    - Demo target requirements (`task #244` factory-demo)
-   - Consumer-facing API audits (`Zeta.Core` public surface)
+   - Consumer-facing API audits (`src/Core/**` public surface)
    - GLOSSARY churn (terms moving in vocabulary signal
      surface evolution)
    - Recent CONFLICT-RESOLUTION conferences (where a
@@ -146,7 +146,7 @@ caught*.
    they prioritize.
 
 3. **Persona-sprawl.** Per
-   `project_loop_agent_named_otto_role_project_manager_2026_04_23.md`
+   `memory/project_loop_agent_named_otto_role_project_manager_2026_04_23.md`
    — Otto fills the hat-less default; future roles should
    not multiply persona-names without a discrete
    role-shape. PM-2 has a discrete role-shape (proactive
@@ -175,15 +175,15 @@ caught*.
   initially; paid-tier expansion (e.g., scheduled remote
   routines for forward-radar generation) is a separate
   decision per
-  `feedback_free_work_amara_and_agent_schedule_paid_work_escalate_to_aaron_2026_04_23.md`.
+  `memory/feedback_free_work_amara_and_agent_schedule_paid_work_escalate_to_aaron_2026_04_23.md`.
 
 ## Composes with
 
-- `feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
+- `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
   — the architectural framing that names this role as
   the direction-axis complement to the throughput-axis
   scaling ladder
-- `project_loop_agent_named_otto_role_project_manager_2026_04_23.md`
+- `memory/project_loop_agent_named_otto_role_project_manager_2026_04_23.md`
   — Otto = PM-1 (reactive); this row defines PM-2 (proactive)
 - `docs/EXPERT-REGISTRY.md` — extension target for the
   role definition
