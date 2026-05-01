@@ -200,19 +200,69 @@ Before filing a new backlog row (or memory file, by extension):
    carry persistent backlog-shaped intent that doesn't show up
    in `docs/backlog/**`. The TaskList is the OTHER backlog.
 
-5. **If hits found**, three branches per the orthogonality
-   discipline (per
+5. **If hits found**, four branches (Aaron 2026-05-01
+   extension adds `depends_on` to the orthogonality
+   discipline per
    `feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`):
 
    - **Extend existing** (preferred default) — add the new
      concern as a section/note to the existing row
    - **Sharpen the boundary** — if both rows have legitimate
      scope, edit each to make the non-overlap explicit
+   - **Add `depends_on`** (Aaron 2026-05-01: *"you could
+     start adding depends on if you find that relationship
+     when doing that"*) — if the new row genuinely needs the
+     existing row to land first OR is meaningfully constrained
+     by the existing row's outcome, encode the dependency in
+     a `depends_on:` frontmatter field. Makes the backlog
+     graph-shaped instead of flat; topological-sort ordering
+     becomes possible.
    - **Create-orthogonal** (rare, requires evidence) — only
      if the new concern is genuinely independent of all
      existing rows
 
 6. **If no hits**, file the new row.
+
+### `depends_on` schema extension
+
+When the pre-filing check surfaces a dependency relationship,
+encode it in the new row's frontmatter:
+
+```yaml
+---
+id: B-NNNN
+priority: P2
+status: open
+title: ...
+created: YYYY-MM-DD
+last_updated: YYYY-MM-DD
+depends_on:                  # NEW optional field
+  - B-NNNN-existing-row      # blocking dependency
+  - Otto-task #N             # TaskList dependency
+---
+```
+
+`depends_on` semantics: the depending row CAN be filed
+immediately, but its work shouldn't START until the depended-
+on row reaches a defined state (typically `status: closed`
+or a specific milestone within the row). The generator
+(`tools/backlog/generate-index.sh`) can then produce a
+topologically-sorted view of the backlog, and downstream
+tooling can flag attempts to start work on a row whose
+deps haven't landed.
+
+Example: B-0150 (timeseries domain expert + teacher persona)
+should `depends_on: [Otto-task #323]` (per-tool/language
+expert skills — which is the broader pattern B-0150
+instantiates). B-0153 (pre-commit lint suite) should
+`depends_on: [B-0033, B-0086]` (sibling tooling concerns).
+B-0151 (RX researcher) should `depends_on: [B-0017]`
+(operational resonance dashboard with continuous UX research).
+
+The backlog becomes a DAG, not a list. Each new row is
+either a leaf (no deps) or an internal node (deps known +
+encoded). Cycles are surfaced by the generator (rejected
+at lint time).
 
 ### 2026-05-01 audit — failure mode demonstrated
 
