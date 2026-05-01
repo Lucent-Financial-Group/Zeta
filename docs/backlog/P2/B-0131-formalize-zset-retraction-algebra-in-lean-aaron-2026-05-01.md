@@ -24,7 +24,7 @@ last_updated: 2026-05-01
 - Telescoping lemmas: `T1_zInv_zero`, `T2_zInv_succ`, `I_zInv_eq`, `D_I_eq`, `I_D_eq`
 - Linear commutation theorems: `linear_commute_I`, `linear_commute_zInv`, `linear_commute_D`
 - The DBSP chain rule (Budiu et al. VLDB 2023) fully proven against Mathlib v4.30.0-rc1
-- `proofs/lean/ChainRule.lean` migration history (round 23 → round 35 closure)
+- Migration history: predecessor file at `proofs/lean/ChainRule.lean` was migrated to its current location `tools/lean4/Lean4/DbspChainRule.lean` and removed in commit `279c6f2` (round 26 → round 35 closure). The historical path is no longer in the working tree; preserved here as lineage breadcrumb only.
 - `docs/research/retraction-safe-semi-naive.md` reference
 
 **Effort:** M-L (1-3+ months — extend existing Lean foundation; not a clean start; multiple smaller extensions vs one large project).

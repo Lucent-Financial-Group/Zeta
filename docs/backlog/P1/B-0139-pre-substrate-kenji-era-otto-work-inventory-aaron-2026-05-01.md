@@ -19,7 +19,7 @@ last_updated: 2026-05-01
 
 ## What
 
-Inventory pre-substrate / Kenji-era Otto-lineage work that is in the codebase but not yet referenced in substrate memory files / backlog rows / research docs. The inventory prevents the failure mode demonstrated 2026-05-01 (B-0131 filed as "TRACTABLE START" when prior Lean formalization already existed) from re-occurring.
+Inventory pre-substrate / Kenji-era Otto-lineage work that is in the codebase but not yet referenced in substrate memory files / backlog rows / research docs. The inventory prevents the failure mode demonstrated 2026-05-01 (B-0131 filed as "TRACTABLE START" when prior Lean formalization already existed) from recurring.
 
 Specific scope (each item gets cataloged + classified + integrated):
 
@@ -27,7 +27,7 @@ Specific scope (each item gets cataloged + classified + integrated):
 2. **Worktrees** still on disk that aren't referenced from substrate. Earlier ticks during the recovery-lane work referenced worktree pruning (per task #321); this row's broader scope includes the *content* of those worktrees, not just their classification as LOST/SAFE.
 3. **Built artifacts in the codebase** that aren't referenced in substrate. Examples observed:
    - `tools/lean4/Lean4/DbspChainRule.lean` — 756 lines, fully proven DBSP chain rule, against Mathlib v4.30.0-rc1. Surfaced 2026-05-01 via B-0131 correction. Other Lean files may exist.
-   - `proofs/lean/ChainRule.lean` referenced as the migration source for DbspChainRule.lean — pre-migration version.
+   - Migration history breadcrumb: predecessor file at `proofs/lean/ChainRule.lean` was migrated to `tools/lean4/Lean4/DbspChainRule.lean` and removed from the working tree in commit `279c6f2` (round 26). The historical path is no longer present; preserved here as lineage anchor only.
    - F# implementation work in `src/Core/` likely has substantial Kenji-era contribution not currently mapped to substrate-class memory entries.
    - Any TLA+ specs under `docs/**.tla` (per CLAUDE.md reference).
    - `docs/research/` files referenced from elsewhere but not indexed in MEMORY.md.
