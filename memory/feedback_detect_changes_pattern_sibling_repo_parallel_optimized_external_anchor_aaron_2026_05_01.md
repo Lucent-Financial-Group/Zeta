@@ -1,5 +1,5 @@
 ---
-name: detect-changes pattern + fine-grained workflow split — STCRM parallel-optimized repo as external anchor — Aaron 2026-05-01
+name: detect-changes pattern + fine-grained workflow split — sibling-repo parallel-optimized external anchor — Aaron 2026-05-01
 description: Aaron 2026-05-01 *"../no-copy-only-learning-agents-insight is the best repo in github i've seen setup to be parallel, it's not perfect but it's pretty good."* — external-anchor pointing at sibling repo's parallel-optimization patterns. Three load-bearing patterns identified via direct inspection: (1) `detect-changes.yaml` workflow that emits per-change-class outputs (`mfe-src-changed`, `backend-src-changed`, etc.); (2) fine-grained workflow split (42 workflows, one concern each, vs our ~15 monolithic); (3) test parallelism at script level (bash + PowerShell pair). The pattern's core insight is that PRs only run workflows their changes need — backend-only PR doesn't trigger MFE workflows. Massive parallel-PR-friendliness because CI churn drops to zero across unrelated changes.
 type: feedback
 caused_by:
@@ -116,7 +116,7 @@ Aaron 2026-05-01 follow-up: *"you should be able to use the gh
 cli i think to see it's setting in read only mode too"* + *"on
 gh not in ../no-copy-only-learning-agents-insight."*
 
-Direct `gh api repos/servicetitan/stcrm` audit revealed **five
+Direct `gh api repos/<sibling-org>/<sibling-repo>` audit revealed **five
 concern-aligned rulesets**:
 
 1. `Copilot review for default branch` (active) — review-process
@@ -129,7 +129,7 @@ concern-aligned rulesets**:
 
 This is **exactly the B-0155 architectural target**: multiple
 smaller concern-aligned rulesets, all always-on (or staged-on
-via `evaluate` mode for new rules). STCRM has done this in
+via `evaluate` mode for new rules). the sibling repo has done this in
 production at scale. Empirical validation that the split-into-
 multiple-smaller-rulesets pattern is the right architecture.
 
@@ -143,7 +143,7 @@ split: each new rule could ship via `evaluate` → observe →
 
 ## Pattern 5 — Branch protection effectively empty post-migration
 
-STCRM's `gh api .../branches/master/protection` shows:
+the sibling repo's `gh api .../branches/master/protection` shows:
 
 - `required_status_checks.strict: null`
 - `required_status_checks.contexts: []` (zero contexts)
@@ -155,14 +155,14 @@ protection into rulesets.** Branch protection is effectively
 inert; the rulesets carry the policy.
 
 This is the B-0155 Phase-3-cleanup endpoint: minimized branch
-protection. STCRM is the empirical proof that the migration
+protection. the sibling repo is the empirical proof that the migration
 works — they're operating at production scale with branch
 protection as a thin shim.
 
-## Pattern 6 — STCRM uses Wiki, not Pages
+## Pattern 6 — the sibling repo uses Wiki, not Pages
 
-`gh api repos/servicetitan/stcrm` shows `has_pages: false`,
-`has_wiki: true`. STCRM uses Wiki, not Pages — opposite shape
+`gh api repos/<sibling-org>/<sibling-repo>` shows `has_pages: false`,
+`has_wiki: true`. the sibling repo uses Wiki, not Pages — opposite shape
 from Aaron's previous Jekyll-on-Pages experience.
 
 Aaron 2026-05-01 follow-up framing correction:
@@ -209,7 +209,7 @@ The sibling AGENTS.md has rules we already have analogues for:
   — never reuse training data or earlier-in-session results"*
   — same as Otto-247 + Otto-364 search-first authority
 
-Convergence: STCRM and Zeta arrived at the same agent-discipline
+Convergence: the sibling repo and Zeta arrived at the same agent-discipline
 patterns independently. External-anchor-lineage strongly
 validates our substrate.
 
@@ -254,7 +254,7 @@ B-0156 (TS port) — the detect-changes pattern composes:
 - task #341 (TS port + 3-tier multi-remote) — composes with
   the TS preference + workflow-split
 
-## Attribution — STCRM config is deliberate-by-others, not Aaron-clicked
+## Attribution — the sibling repo config is deliberate-by-others, not Aaron-clicked
 
 Aaron 2026-05-01 follow-up: *"this has had a lot of intention
 put into by others not so much by me the gh config for that
@@ -265,12 +265,12 @@ Important attribution distinction:
 - **Zeta's host config** = Aaron-clicked-alone-under-time-
   pressure (per the everything-greenfield cause-attribution:
   rushed-bootstrap + safety-bias + limited-experience)
-- **STCRM's host config** = multi-engineer org-scale
+- **the sibling repo's host config** = multi-engineer org-scale
   deliberation, invested-by-others, NOT primarily Aaron-
   clicked
 
 This sharpens the external-anchor strength. The patterns we're
-extracting from STCRM aren't "Aaron-via-different-org converged
+extracting from the sibling repo aren't "Aaron-via-different-org converged
 on the same shape" — they're "engineers who built the parallel
 architecture deliberately produced this design." External
 validation from a *different* deliberation process is stronger
@@ -278,8 +278,8 @@ than convergence-via-Aaron-self-consistency.
 
 Composes with the everything-greenfield cause-attribution
 refinement: the click-vs-decision distinction generalizes across
-WHO clicked vs decided. Aaron clicked Zeta; the STCRM team
-decided STCRM. Pattern-extraction from STCRM is pattern-extraction
+WHO clicked vs decided. Aaron clicked Zeta; the the sibling repo team
+decided the sibling repo design. Pattern-extraction from the sibling repo is pattern-extraction
 from a decision, not a click — high-credibility source.
 
 # Carved sentence (candidate, not seed-layer yet)
@@ -296,7 +296,7 @@ direction of validation.)
 
 # What this rule does NOT do
 
-- **NOT a mandate to copy STCRM workflows wholesale** — we
+- **NOT a mandate to copy the sibling repo workflows wholesale** — we
   port the *pattern*, not the implementations. Their domain
   (MFE / backend / Citus DB) is different from ours
   (F# DBSP / Lean / TLA+).
