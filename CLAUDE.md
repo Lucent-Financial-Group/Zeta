@@ -406,6 +406,28 @@ Claude-Code-specific mechanisms.
   the failure mode — reframe before commit. CLAUDE.md-
   level so it is 100% loaded at every wake. Full reasoning:
   `memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`.
+- **Refresh-before-decide is the fundamental
+  invariant — and refresh fast/cheap so it holds.**
+  Every other discipline assumes current worldview.
+  Mandatory refresh before tick selection, after any
+  merge or claim release, on session start, on
+  challenge from the maintainer. Two-layer print DX:
+  print raw structured output (e.g.,
+  `poll-pr-gate-batch.ts` JSON) BEFORE the
+  interpretation; label the interpretation layer
+  distinctly. Mismatch between layers IS the bug
+  class the discipline is designed to catch.
+  Cheap-to-run is what makes the discipline hold —
+  if refresh were slow, the temptation to skip would
+  win. Per Claude.ai 2026-05-01: *"refresh-before-decide
+  is the most violated invariant in agent loops
+  generally, not just Otto. The temptation to skip
+  refresh is constant because refresh feels redundant
+  when 'I just refreshed earlier.'"* CLAUDE.md-level
+  so it is 100% loaded at every wake. Full reasoning:
+  `memory/feedback_refresh_before_decide_invariant_two_layer_print_dx_claudeai_2026_05_01.md`
+  + verbatim packet at
+  `docs/research/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md`.
 - **Refresh world model via `tools/github/poll-pr-gate.ts`
   / `poll-pr-gate-batch.ts` — never inline
   `gh pr view + jq` chains.** When a tick wakes
