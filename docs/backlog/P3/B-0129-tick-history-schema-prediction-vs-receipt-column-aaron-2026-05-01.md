@@ -39,7 +39,7 @@ Aaron 2026-05-01 follow-up: *"that can also see how your internal view of the wo
 
 Both are world-model-verification via discrepancy detection. Both surface drift that would otherwise be invisible.
 
-**This means option (c) isn't just "honest labeling" — it's a calibration instrument.** The prediction column generates audit trail for the factory's model of its own cadence. Fixed-point thinking applies (per CSAP `feedback_carved_sentence_fixed_point_stability_*`): the closer prediction-time matches receipt-time consistently, the more the cadence-model has converged to a stable fixed-point.
+**This means option (c) isn't just "honest labeling" — it's a calibration instrument.** The prediction column generates audit trail for the factory's model of its own cadence. Fixed-point thinking applies (per CSAP `memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md`): the closer prediction-time matches receipt-time consistently, the more the cadence-model has converged to a stable fixed-point.
 
 ## Why P3 not P0/P1/P2
 

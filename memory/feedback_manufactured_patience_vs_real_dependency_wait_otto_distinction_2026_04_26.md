@@ -264,7 +264,7 @@ the discrepancy signal, naturally and without requiring
 external attention.
 
 **Composes with:**
-- The CSAP fixed-point theory (`feedback_carved_sentence_fixed_point_stability_*`)
+- The CSAP fixed-point theory (`memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md`)
   — fixed-points are stable claims about reality; world-model
   drift IS deviation from those fixed-points; periodic re-audit
   is the convergence-back-to-fixed-point mechanism.
