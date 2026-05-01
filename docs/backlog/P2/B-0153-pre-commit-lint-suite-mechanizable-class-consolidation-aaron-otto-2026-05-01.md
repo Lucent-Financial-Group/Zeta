@@ -14,7 +14,7 @@ last_updated: 2026-05-01
 Build a pre-commit lint suite consolidating the **13 mechanizable
 lint-classes** thoroughly characterized during the 3-PR
 substrate cluster iteration 2026-05-01 (PRs #1116, #1117,
-#1118, and #1119, ~17 ticks of CI/review iteration). Each class
+\#1118, and #1119, ~17 ticks of CI/review iteration). Each class
 corresponds to a friction encountered by reviewer agents
 (Copilot + reviewers) that mechanizable pre-commit checks would
 have eliminated.
@@ -178,8 +178,8 @@ strong.
 
 ## Effort
 
-**M (medium, 1–3 days)** for the script + pre-commit hook
-+ CI parity + per-class fix-suggestion output. Per-class
+**M (medium, 1–3 days)** for the script, pre-commit hook,
+CI parity, and per-class fix-suggestion output. Per-class
 implementation effort is small (each is a regex / file-glob
 check); the consolidation effort is the integration shell.
 
