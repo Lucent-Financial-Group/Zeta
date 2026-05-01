@@ -8,7 +8,7 @@ caused_by:
 composes_with:
   - feedback_dst_grade_a_dependency_source_inspection_pull_to_sibling_repo_for_deep_search_aaron_2026_05_01.md
   - feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md
-  - feedback_otto_352_external_anchor_lineage_for_substrate_credibility_2026_04_26.md
+  - feedback_beacon_promotion_load_bearing_rules_earn_external_anchors_aaron_amara_2026_04_28.md
   - feedback_prefer_ts_scripts_over_dynamic_bash_for_conversation_ux_dst_in_ts_aaron_2026_05_01.md
 ---
 
@@ -278,7 +278,7 @@ than convergence-via-Aaron-self-consistency.
 
 Composes with the everything-greenfield cause-attribution
 refinement: the click-vs-decision distinction generalizes across
-WHO clicked vs decided. Aaron clicked Zeta; the the sibling repo team
+WHO clicked vs decided. Aaron clicked Zeta; the sibling repo team
 decided the sibling repo design. Pattern-extraction from the sibling repo is pattern-extraction
 from a decision, not a click — high-credibility source.
 
