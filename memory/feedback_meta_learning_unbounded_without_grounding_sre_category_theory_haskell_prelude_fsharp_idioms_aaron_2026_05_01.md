@@ -27,21 +27,40 @@ loop produces meta-learning; class-encoding accumulates the
 class library; B-0146 abstraction ladder gives the formal
 spine) was structurally correct **but missing the convergence
 target**. Without grounding the meta-learning in established
-formal traditions, the loop is **UNBOUNDED**:
+formal traditions, the loop is **UNBOUNDED** in the sense of
+having no termination criterion.
 
-- Class library balloons indefinitely
-- No termination criterion
-- Classes overlap without composition rules
-- Rules conflict without a precedence hierarchy
-- The agent runs faster and faster generating new insights
-  that don't compose with anything stable
+Aaron's epistemic correction (4th message in arc): *"class-
+encoding diverges instead of converges. we don't know that it
+diverges either we have no evidense or proof either way."*
+
+So the honest framing is **"convergence/divergence is unknown
+without grounding"** — NOT "diverges without grounding." The
+unbounded property is **lack of bound**, not **proven
+divergence**. Possible failure modes that are unproven but
+plausible:
+
+- Class library balloons indefinitely (possible)
+- No termination criterion (definite — that's what unbounded
+  means)
+- Classes may overlap without composition rules (possible)
+- Rules may conflict without a precedence hierarchy (possible)
+- The agent may run faster generating new insights that
+  don't compose with anything stable (possible — empirical
+  observation pending)
+
+What the grounding gives us is **the possibility of provable
+convergence** via foundation laws / termination criteria. The
+ungrounded loop's behavior is empirically not-yet-characterized.
 
 Aaron's empirical observation: when Otto + Copilot follow the
 sibling-repo rules (which are themselves meta-learning rules)
 without grounding, the result is **~1 ★ Insight block per
 minute** — Aaron flagged this as the asymmetric-exhaustion
 / cheat-code-feeling drift earlier today, and explicitly cites
-*"last time"* indicating recurrence.
+*"last time"* indicating recurrence. This is **observation**
+of a specific failure mode, not proof that the abstract loop
+diverges in general.
 
 ## The four grounding traditions
 
@@ -242,7 +261,14 @@ When following the meta-learning loop:
    flag for unbounded drift. If hitting that rate, pause +
    re-ground.
 
-The carved sentence: *"Meta-learning without grounding is
-unbounded. The four foundations (SRE, category theory, Haskell
-Prelude, F# idioms) are the convergence target — without them
-the loop diverges."*
+The carved sentence (epistemically-honest version): *"Meta-
+learning without grounding is unbounded. The four foundations
+(SRE, category theory, Haskell Prelude, F# idioms) are the
+convergence target. Without them, convergence is unknown —
+neither provable nor disprovable on current evidence."*
+
+(Aaron's correction preserved: the original draft said "the
+loop diverges" — Aaron called that out as ungrounded claim.
+We have observation of a specific failure mode (~1 ★ Insight/
+minute drift) but no proof that the abstract loop diverges in
+general.)
