@@ -175,7 +175,7 @@ file.
   — Aaron's anchor-free cognitive architecture. Razor
   dissolves mistaken creations; orthogonality earns the
   create.
-- **The Aaron-is-Rodney rule** — Rodney's Razor goes through
+- **The Aaron-is-Rodney rule** (`memory/feedback_aaron_is_rodney_razor_not_immune_to_canonicalization_aaron_2026_04_30.md`) — Rodney's Razor goes through
   canonicalization itself (no-self-exception). The
   meta-meta-meta rule is itself subject to its own discipline:
   if a future finding shows it's actually a sub-case of an
