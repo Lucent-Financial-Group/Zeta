@@ -23,7 +23,7 @@ including:
    not seed-layer canonical. **Explicit exclusion:**
    `GOVERNANCE.md` numbered rules are NOT in the
    greenfield-provisional scope — they are multi-domain-tested
-   doctrine at a higher deliberation tier than convenience-clicked
+   canonical at a higher deliberation tier than convenience-clicked
    configs or in-flight memory entries. (Why-2 below restates
    this in expanded form.)
 
@@ -64,7 +64,7 @@ Otto follows when writing code (memory files, AGENTS.md,
 canonical entries) have been getting better as the project has
 evolved. **Explicit exclusion:** GOVERNANCE.md numbered rules
 are NOT in the provisional scope — those are multi-domain-tested
-doctrine that Aaron and Otto have grafted together over the
+canon that Aaron and Otto have grafted together over the
 week, and they sit at a higher deliberation tier than
 convenience-clicked configs or in-flight memory files. The
 greenfield-provisional rule applies to: host configs (UI-clicked),
