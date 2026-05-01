@@ -40,6 +40,7 @@ Design + document a general scrubber covering five load-bearing pieces:
 ### 1. Leak-class taxonomy
 
 A canonical enumeration (the seven above plus an "other" escape hatch) with per-class:
+
 - **Detection signal** — what pattern identifies a leak of this class (regex, lint, manual review).
 - **Severity floor** — minimum harm assumption (secrets are always severe; outdated wording usually isn't).
 - **Reach-sensitivity** — how badly external propagation matters per class.
@@ -48,6 +49,7 @@ A canonical enumeration (the seven above plus an "other" escape hatch) with per-
 ### 2. Decision-criteria — does this leak need scrubbing?
 
 A matrix combining:
+
 - **Class** (from taxonomy).
 - **Reach** (local branch / pushed branch / merged main / external mirror / external clones).
 - **Detection-time vs incident-time** (caught at write-time = prevention layer; caught later = cure layer; caught after external propagation = limited-cure).
@@ -67,6 +69,7 @@ Output: scrub / leave-and-record / hybrid (scrub-content-keep-audit-trail) / esc
 ### 4. Audit-trail preservation — scrubbing without lying
 
 When a leak is scrubbed, the *fact* of the scrub must remain as substrate:
+
 - **What** was scrubbed (class, surface, original commit / PR reference).
 - **When** the scrub happened.
 - **Who** authorized it.
