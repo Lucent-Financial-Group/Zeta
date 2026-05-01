@@ -13,10 +13,76 @@ composes_with:
   - feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md
 ---
 
+# EMPIRICAL VERIFICATION STATUS (added 2026-05-01 same tick, before merge)
+
+**The auto-load claim for `.claude/rules/*.md` is doc-only,
+NOT empirically verified in our harness.**
+
+Per the human maintainer's calibration challenge 2026-05-01:
+*"i think rules are not special you have to look those up
+like any other docs, is that true? there is no router so the
+only way you know about them is if they are pointed to in
+claude code... what's will you magically read and apply all
+the rules?"*
+
+What I actually have:
+
+- **Doc citation**: Anthropic's canonical docs at
+  [code.claude.com/docs/en/memory](https://code.claude.com/docs/en/memory)
+  state rules are auto-loaded from `.claude/rules/*.md` at
+  session start. WebFetch 2026-05-01 confirmed the
+  documentation language.
+- **Empirical evidence in our harness**: NONE. There is no
+  `.claude/rules/` directory in this repo at the time this
+  memo was written. The auto-load behavior has not been
+  tested on Zeta's specific Claude Code version /
+  configuration.
+
+The Otto-364 search-first-authority discipline says: cite
+canonical docs, not training data. I did that — but treating
+doc-citation as empirical fact is a different failure mode.
+Doc-supported isn't the same as harness-tested.
+
+**Calibrated language to use until the canary test runs**:
+
+- "Per Anthropic docs, `.claude/rules/*.md` is documented to
+  auto-load." — accurate.
+- "In our harness, `.claude/rules/*.md` auto-loads." —
+  unverified; do NOT assert as fact.
+
+**Canary test plan** (set up in a sibling PR, runs on next
+fresh session):
+
+1. Create `.claude/rules/test-canary.md` with detectable
+   unique content.
+2. Restart Claude Code session in this repo.
+3. Run `/memory` slash command. Per Anthropic docs, it
+   "lists all CLAUDE.md, CLAUDE.local.md, and rules files
+   loaded in your current session."
+4. Canary appears in `/memory` output → docs accurate, rules
+   auto-load in our harness.
+5. Canary absent → doc-vs-harness mismatch; rules require
+   manual pointer / lookup like memory files.
+
+If the test fails, the entire "direct-load surfaces" section
+below collapses to "single direct-load surface (CLAUDE.md)
+plus pointer-discovered surfaces (everything else, including
+`.claude/rules/`)." The MVP architecture analysis in
+`feedback_learnings_must_land_in_claude_md_or_pointer_*` and
+the CLAUDE.md bullet pointing at this memo would need
+revision.
+
+The body below preserves the doc-language taxonomy AS AN
+INTERPRETATION of the Anthropic docs. Read it with the above
+caveat applied. Once the canary test runs, this section will
+be replaced with an empirical result line.
+
 # Rule
 
 Claude Code has FIVE distinct surfaces for instruction /
-memory loading, with three different mechanisms:
+memory loading, with three different mechanisms (per
+Anthropic docs; see the EMPIRICAL VERIFICATION STATUS
+section above for the calibration caveat):
 
 ## Direct-load wake-time surfaces (no router, no lazy)
 
@@ -233,6 +299,93 @@ Claude touches matching files.
 - **NOT a claim about other AI harnesses.** Codex,
   Cursor, Gemini CLI all have their own surfaces. The
   per-harness `.claude/rules/` analogue is harness-specific.
+
+# Factory-owned substrate-discovery — `tools/.../substrate-discovery.ts` as parallel option to skill-router dependency
+
+The human maintainer 2026-05-01 (after the calibration
+challenge): *"the skill router becomes the ONLY automatic
+discovery mechanism the other idea is our own
+substrate-discovery.ts"*.
+
+The skill router is harness-supplied. Its reliability,
+description-matching algorithm, and even path discovery
+(`.claude/skills/<name>/SKILL.md` only — empirically tested)
+are Anthropic-controlled. If the buddy-test reveals the
+router's matching is inconsistent across description
+variants, or if `.claude/rules/` auto-load doesn't work in
+our harness, we lose deterministic substrate discovery on
+the Anthropic-supplied path.
+
+The factory-first-class alternative
+(per `feedback_first_class_for_us_not_for_our_host_portability_over_host_coupling_aaron_2026_05_01.md`):
+build our own substrate-discovery tool. Concrete shape:
+
+```
+tools/substrate-discovery/discover.ts
+```
+
+A TS+Bun script that:
+
+1. Walks `.claude/skills/`, `.claude/agents/`,
+   `.claude/commands/`, `.claude/rules/` (if used), and
+   `memory/` — known substrate locations.
+2. Indexes frontmatter (`name`, `description`) and
+   first-paragraph summaries.
+3. Takes a topic / keyword / description query.
+4. Returns ranked matches with path + summary so the caller
+   can read targeted files.
+
+Properties this gives us that the skill router can't:
+
+- **DST-grade-A**: pure function over filesystem state;
+  same input → same output; testable with fixtures (per
+  the SQLSharp pattern + the dynamic-bash → TS migration
+  trajectory).
+- **Portable**: runs in any TS+Bun environment; not tied
+  to Claude Code; usable from Codex / Gemini / Cursor
+  harnesses if they invoke `bun
+  tools/substrate-discovery/discover.ts <query>` as a
+  shell command.
+- **Inspectable**: the matching algorithm is in our
+  source; we can tune it (string match → fuzzy match →
+  embedding similarity, in escalating phases).
+- **Deterministic at ranking**: unlike a router whose
+  decisions are driven by an LLM's relevance judgment, a
+  TS scorer over frontmatter is reproducible.
+- **Composes with the inventory-via-router CLAUDE.md
+  bullet**: instead of "search the skill router," the
+  bullet's instruction becomes "run `bun
+  tools/substrate-discovery/discover.ts <topic>`" — a
+  mechanical step the model can always execute.
+
+Failure modes the factory-owned tool addresses:
+
+- Skill router skips a relevant skill because the
+  description didn't match the model's framing →
+  factory tool's deterministic scoring catches it.
+- `.claude/rules/` doesn't auto-load in our harness (per
+  the canary test pending) → factory tool reads them
+  directly regardless of harness behavior.
+- Memory files are read-on-demand → factory tool surfaces
+  them at inventory time without separate grep.
+
+Sequencing relative to buddy-test:
+
+- **Phase 0 (now)**: canary test — does Anthropic's
+  `.claude/rules/` auto-load work in our harness?
+- **Phase 1 (next)**: build `tools/substrate-discovery/discover.ts`
+  v0 — even if rules auto-load, the factory tool gives
+  cross-substrate inventory the router doesn't.
+- **Phase 2**: buddy-test the inventory-via-router
+  CLAUDE.md bullet — does fresh-instance Otto reach for
+  the factory tool when the bullet says to?
+- **Phase 3 (if needed)**: skill-conversion of behavioral
+  lessons — informed by Phase 2 results.
+
+This proposal stays in the open-research lane (no
+implementation in this commit). Capturing it here so it
+doesn't evaporate; the actual TS script is its own future
+PR.
 
 # Behavioral-lesson placement — rules beat skills for the goldfish-ontology failure mode
 
