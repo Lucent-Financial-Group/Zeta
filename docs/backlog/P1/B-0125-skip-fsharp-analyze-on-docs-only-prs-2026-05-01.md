@@ -35,15 +35,18 @@ Make `Analyze (csharp)` (and any other F#-only CI step) skip on PRs that touch o
 
 1. **Path-filter implemented.** PRs touching only the listed non-code surfaces skip `Analyze (csharp)` and any F#-only CI steps. Implementation must use a deterministic path-list (not pattern guesswork) to avoid silent drift.
 2. **TypeScript still runs.** Any PR touching `*.ts` / `*.tsx` / `package.json` / `bun.lock` / `tsconfig*.json` runs the full TypeScript pipeline. The "TypeScript is part of docs" carve-out from Aaron's chat framing is honored.
-3. **`code_quality severity:all` does NOT fail** on LFG/main when the skip fires. Either via:
+3. **`code_quality severity:all` does NOT fail** on LFG/main when the skip fires. Three paths in the design space:
    - (a) Conditional skip-vs-run rather than always-run pattern (so the ruleset sees "not applicable" not "failed"), OR
-   - (b) Coordinated ruleset config change (with appropriate sign-off — host mutation per task #343 is an Aaron-decision class, NOT Otto's; Otto identifies the option but doesn't execute it without explicit Aaron sign-off because host-mutation has shown failure modes before per Amara/Aaron 2026-04-29).
+   - (b) Coordinated ruleset config change on the existing single ruleset, OR
+   - (c) **Multi-ruleset split** — separate docs-targeted ruleset (lower bar; F# Analyze not required) + code-targeted ruleset (severity:all on src/ paths). Aaron 2026-05-01 in chat: *"maybe multiple rulesets i just had one for convience, you can do it for whats best for your and making humans feel comfortable, all makes humans feel comfortable i don't know if that help if not no worries."* This reveals the single severity:all ruleset was set up for convenience, not as a technical requirement. The real constraint is **human-comfort signaling** — humans see "all required checks passing" and feel reassured; the literal severity:all configuration is one of several ways to produce that signal. A multi-ruleset design that surfaces "all required-for-this-surface checks pass" preserves the comfort property without requiring F# Analyze on docs PRs.
+
+**Aaron's host-mutation authorization for this work specifically (2026-05-01):** *"you can do it for what's best."* Scoped explicitly to the ruleset-redesign work in this row. NOT a blanket grant on host mutations going forward — the §16 host-mutation-needs-sign-off rule remains in force; this is an explicit per-row carve-out for B-0125 implementation.
 4. **Verification across PR shapes:** docs-only PR, TypeScript-only PR, src-only PR, mixed PR, workflow-only PR — all behave correctly.
 5. **No reduction in security coverage** for actual code surfaces. Skip is for non-code only.
 
 ## Out of scope
 
-- **Changing what `code_quality severity:all` requires** beyond the minimum needed to support the path-filter (host-mutation needs Aaron sign-off, not Otto-authority).
+- **Changing what `code_quality severity:all` requires** for code surfaces (src/) — that protection stays at the same severity level. Multi-ruleset split adds a docs-targeted ruleset alongside; it does NOT lower the bar on the code-targeted ruleset.
 - **Skipping CodeQL on other languages** (only F#/csharp is named in Aaron's chat carve-out).
 - **Skipping TypeScript checks ever** — TypeScript IS docs surface per CURRENT-aaron §30.
 - **Cross-cutting CI overhaul** — narrow scope; broader CI work can be its own row.
