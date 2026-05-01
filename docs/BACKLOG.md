@@ -33,6 +33,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0110](backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md)** AceHack mirror-refresh protocol drift — Path 2 chosen, doctrine update landing in same PR (2026-04-30)
 - [ ] **[B-0125](backlog/P1/B-0125-skip-fsharp-analyze-on-docs-only-prs-2026-05-01.md)** Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 - [ ] **[B-0126](backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)** Port the 4-layer meta-learning pattern from a sibling repo to Zeta
+- [ ] **[B-0139](backlog/P1/B-0139-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md)** Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 - [ ] **[B-0140](backlog/P1/B-0140-bash-to-ts-migration-completion-debt-prevention-aaron-2026-05-01.md)** Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
 - [ ] **[B-0144](backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md)** Doc/code two-lane parallel split — rung-2 unlock for factory parallelism
 - [ ] **[B-0145](backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md)** Product Manager (PM-2) role — research-to-predict-features-before-friction
@@ -107,7 +108,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0127](backlog/P2/B-0127-sibling-repo-leak-scrub-process-when-it-matters-aaron-2026-05-01.md)** Sibling-repo leak scrub-process — when scrubbing matters; future-defensive design
 - [ ] **[B-0128](backlog/P2/B-0128-general-git-content-scrubber-design-aaron-2026-05-01.md)** General git content scrubber — design + decision-criteria + mechanism for any-class leak cleanup
 - [ ] **[B-0130](backlog/P2/B-0130-verify-before-state-claim-mechanized-auditor-2026-05-01.md)** Mechanized auditor for verify-before-state-claim — file-internal metadata claim audits (companion to task #350)
-- [ ] **[B-0131](backlog/P2/B-0131-formalize-zset-retraction-algebra-in-lean-aaron-2026-05-01.md)** Formalize Z-set retraction algebra in Lean (TRACTABLE START — formalization roadmap)
+- [ ] **[B-0131](backlog/P2/B-0131-formalize-zset-retraction-algebra-in-lean-aaron-2026-05-01.md)** Extend Z-set retraction algebra Lean formalization beyond the existing DBSP chain-rule proof
 - [ ] **[B-0132](backlog/P2/B-0132-crdt-composition-for-bft-propagation-aaron-2026-05-01.md)** CRDT-composition for BFT propagation — substrate events as composed CRDTs
 - [ ] **[B-0133](backlog/P2/B-0133-sequent-calculus-for-claim-retraction-attribution-aaron-2026-05-01.md)** Sequent calculus / labeled deductive systems for claim/retraction/attribution
 - [ ] **[B-0134](backlog/P2/B-0134-type-theoretic-orthogonality-discipline-encoding-aaron-2026-05-01.md)** Type-theoretic encoding of orthogonality discipline (extension vs creation as decidable judgment)
