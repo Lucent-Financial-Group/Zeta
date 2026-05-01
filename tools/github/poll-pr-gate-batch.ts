@@ -6,12 +6,13 @@
 // into one stable, structured payload for the autonomous-loop tick or
 // the conversation window. This is the multi-PR refresh-world-model
 // tool — replaces ad-hoc `for n in 1 2 3; do gh pr view $n …; done`
-// bash loops, per Aaron 2026-05-01: *"write a batch version of the ts
-// that calls this one — not bash, not .sh, not .ps1, not dynamic bash."*
+// bash loops per the human maintainer's directive 2026-05-01: write a
+// batch version of the ts that calls this one — not bash, not .sh,
+// not .ps1, not dynamic bash.
 //
 // Origin: task #355 (5-AI peer convergence on poll-the-gate as
 // executable script with fixtures); follow-on to v1 single-PR script.
-// Composes with:
+// Full attribution lineage in:
 //   - memory/feedback_prefer_ts_scripts_over_dynamic_bash_for_conversation_ux_dst_in_ts_aaron_2026_05_01.md
 //   - memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md
 //   - memory/feedback_first_class_for_us_not_for_our_host_portability_over_host_coupling_aaron_2026_05_01.md
@@ -128,7 +129,11 @@ function parseArgs(argv: string[]): ParsedArgs {
     summaryOnly: false,
   };
   const requireValue = (flag: string, v: string | undefined): string => {
-    if (v === undefined || v.startsWith("--")) {
+    // Reject any value starting with `-` (not just `--`), so that
+    // `--owner -h` doesn't silently consume `-h` as the flag value.
+    // Matches the parsing pattern in tools/github/check-github-status.ts.
+    // (Copilot review on PR #1153 2026-05-01.)
+    if (v === undefined || v.startsWith("-")) {
       process.stderr.write(`${flag} requires a value\n`);
       process.exit(1);
     }
@@ -186,15 +191,23 @@ function listOpenPRs(owner: string, repo: string): number[] {
   // Enumerate all open PRs via `gh api --paginate` so repos with
   // more than 1000 open PRs don't get silently truncated (Codex P2
   // on PR #1153, 2026-05-01). The paginated REST API follows Link
-  // headers automatically and emits one JSON array per page on
-  // stdout, separated by newlines. `per_page=100` is the GitHub
-  // maximum and minimizes round-trip count.
+  // headers automatically.
+  //
+  // Use `--jq '.[].number'` to project each page to one PR number
+  // per line (line-oriented primitive output) instead of trying to
+  // parse the page bodies as JSON. `gh api` may pretty-print page
+  // bodies across multiple lines for REST endpoints, breaking any
+  // line-split-then-JSON-parse approach (Codex P2 + Copilot P1 on
+  // PR #1153 2026-05-01). The jq filter sidesteps the issue
+  // entirely — stdout becomes a stream of integers, one per line.
   const result = spawnSync(
     "gh",
     [
       "api",
       "--paginate",
       `/repos/${owner}/${repo}/pulls?state=open&per_page=100`,
+      "--jq",
+      ".[].number",
     ],
     { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 },
   );
@@ -208,22 +221,14 @@ function listOpenPRs(owner: string, repo: string): number[] {
     );
     process.exit(2);
   }
-  // gh --paginate emits each page as its own JSON array on stdout,
-  // separated by newlines. Concatenate the page arrays.
+  // Each non-empty line is one PR number — guaranteed by the jq
+  // filter. Parse each as an integer; skip malformed lines defensively.
   const all: number[] = [];
   for (const line of result.stdout.split("\n")) {
-    if (!line.trim()) continue;
-    let parsed: Array<{ number?: number }>;
-    try {
-      parsed = JSON.parse(line) as Array<{ number?: number }>;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      process.stderr.write(`failed to parse gh api page: ${msg}\n`);
-      process.exit(2);
-    }
-    for (const p of parsed) {
-      if (typeof p.number === "number" && p.number > 0) all.push(p.number);
-    }
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const n = Number.parseInt(trimmed, 10);
+    if (Number.isFinite(n) && n > 0) all.push(n);
   }
   return all;
 }
@@ -245,18 +250,21 @@ function pollOne(
     // dominant cost; bun startup is ~50ms each but doesn't serialise.
     // This is the literal "calls this one" pattern: child invocation
     // via the same on-disk script the maintainer reaches for manually.
-    const child = spawn(
-      "bun",
-      [
-        POLL_SCRIPT,
-        String(prNumber),
-        "--owner",
-        owner,
-        "--repo",
-        repo,
-      ],
-      { stdio: ["ignore", "pipe", "pipe"] },
-    );
+    // Default stdio (omitted) gives ['pipe','pipe','pipe'] without
+    // the explicit-stdio TS narrowing problem: when `stdio` is
+    // explicitly specified, TypeScript types `child.stdout`/`stderr`
+    // as nullable, breaking the repo's strict tsc gate. Default
+    // pipes give non-null streams. Explicitly close stdin since we
+    // never write to it. (Copilot review on PR #1153 2026-05-01.)
+    const child = spawn("bun", [
+      POLL_SCRIPT,
+      String(prNumber),
+      "--owner",
+      owner,
+      "--repo",
+      repo,
+    ]);
+    child.stdin.end();
     const stdoutChunks: Buffer[] = [];
     const stderrChunks: Buffer[] = [];
     child.stdout.on("data", (c: Buffer) => stdoutChunks.push(c));

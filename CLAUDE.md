@@ -422,9 +422,10 @@ Claude-Code-specific mechanisms.
   2026-04-30) on poll-the-gate as executable
   script with fixtures. The discipline rule —
   *"dynamic bash is forgotten bash, once useful
-  but never amortized"* (Aaron 2026-05-01) — is
-  why the scripts exist; reaching for inline bash
-  IS the goldfish-ontology failure mode. Update
+  but never amortized"* (the human maintainer,
+  2026-05-01) — is why the scripts exist;
+  reaching for inline bash IS the
+  goldfish-ontology failure mode. Update
   / extend the scripts when something's missing,
   rather than fall back to one-off bash. CLAUDE.md-
   level so it is 100% loaded at every wake. Full
