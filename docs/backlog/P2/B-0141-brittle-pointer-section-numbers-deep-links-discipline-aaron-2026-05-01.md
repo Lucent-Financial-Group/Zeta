@@ -44,19 +44,59 @@ inserts/removes/renumbers any prior section silently breaks every
 existing citation without any tooling catching it.
 
 Target state: substrate uses markdown anchor refs that the
-markdown medium supports natively:
+markdown medium supports natively. Illustrative shape (paths
+are intentionally illustrative, not currently-correct
+relative paths — see path-depth + CURRENT-aaron-location
+caveats below):
 
 ```markdown
-- `[GOVERNANCE.md / archive-header convention](../../GOVERNANCE.md#archive-header-convention)`
-- `[CURRENT-aaron / forever-home telos](../../CURRENT-aaron.md#forever-home-telos)`
+- `[GOVERNANCE.md / archive-header convention](<repo-root-relative-path>/GOVERNANCE.md#archive-header-convention)`
+- `[CURRENT-aaron / forever-home telos](<destination-resolver>/CURRENT-aaron.md#forever-home-telos)`
 ```
 
-Anchor IDs are derived from the target heading text (per CommonMark
-+ GitHub-flavored markdown). When the section heading text stays
-stable (which is the load-bearing semantic), the link survives
-section-number renumbering. When the heading text changes
-(genuine semantic shift), the link breaks visibly — which is the
-correct failure mode (semantic shift SHOULD break references for
+**Path-depth caveat**: from a memory file at
+`memory/<file>.md`, `..` reaches repo root in one step. From a
+backlog row at `docs/backlog/P2/<file>.md`, three `..` are
+needed (`../../..`). Each migration target's correct relative
+URL is part of the per-target audit work in the acceptance
+criteria below.
+
+**CURRENT-aaron.md location caveat**: `CURRENT-aaron.md` is
+not in-repo; it lives in the per-user
+`~/.claude/projects/<slug>/memory/` location (per CLAUDE.md
+"Fast-path on wake" guidance). Citations to it from in-repo
+substrate cannot use repo-relative paths and would need to
+either (a) accept absent target on consumers without the
+per-user file, or (b) reframe the citation to a stable
+in-repo memory file that mirrors the relevant CURRENT-aaron
+section. Acceptance-criteria audit work covers per-target
+resolution.
+
+**Anchor-ID-stability caveat**: anchor IDs are NOT specified
+by CommonMark itself — CommonMark doesn't define heading
+IDs. Different renderers / git-hosts (GitHub, GitLab, Forgejo,
+plain CommonMark renderers) generate different slugs from the
+same heading text. The migration must therefore either:
+
+- Standardize on GitHub's slug-generation algorithm
+  (acceptable on any host that uses the same algorithm; brittle
+  if rendering host changes), OR
+- Use explicit anchor IDs via inline HTML
+  (`<a id="archive-header-convention"></a>` immediately
+  preceding the heading) — host-portable, explicit, breaks
+  only on intentional anchor-rename, OR
+- Accept that anchor-link stability is renderer-dependent and
+  document the assumed renderer in the convention doc.
+
+Either way, the anchor-stability comment-marker proposed in
+acceptance criterion 5 should specify the chosen approach so
+downstream citations have a deterministic resolution model.
+
+When the section heading text stays stable (which is the
+load-bearing semantic), the link survives section-number
+renumbering. When the heading text changes (genuine semantic
+shift), the link breaks visibly — which is the correct
+failure mode (semantic shift SHOULD break references for
 review).
 
 ## Why P2
