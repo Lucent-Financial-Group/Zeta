@@ -1,36 +1,25 @@
 # CIA Reading Room — Analysis and Assessment of Gateway Process (US Army, Lt. Col. McDonnell, 1983; Aaron-forwarded 2026-05-01)
 
-**Scope:** Authoritative .gov-primary-source preservation for
-the framework-triangulation pattern (PR #1111). Aaron forwarded
-this declassified US Army analysis as the trust-then-verify
-firing on the Monroe Institute / CIA-sponsored-meditation
-claim. Document is the original 1983 assessment of the Monroe
-Institute's Gateway Experience by Lt. Col. Wayne McDonnell,
-US Army Operational Group, declassified by CIA on 2003/09/10
-and posted to the CIA Reading Room.
+Scope: declassified US Army memo (1983) preserved as
+.gov-primary-source for the framework-triangulation pattern
+(in-flight in PR #1111).
 
-**Attribution:** Original author = Lt. Col. Wayne M. McDonnell,
-US Army Operational Group, US Army Intelligence and Security
-Command, Fort George G. Meade, MD. Document is declassified US
-Government work product; public domain. Aaron is the courier
-flagging the document as authoritative-source for the Monroe
-Institute / CIA-sponsorship claim. Per `GOVERNANCE.md §33`.
+Attribution: Lt. Col. Wayne M. McDonnell, US Army Operational
+Group / US Army Intelligence and Security Command, Fort George
+G. Meade. Public-domain US-Gov work product. Aaron = courier
+forwarding for the Monroe-Institute-Gateway-Experience-analyzed
+historical-fact claim. Per `GOVERNANCE.md §33`.
 
-**Operational status:** research-grade, .gov-authoritative for
-the *historical-fact* claim (CIA-archived, US-Army-authored,
-Monroe-Institute-Gateway-Process-analyzed). The document's
-internal scientific framework (quantum mechanics + Bentov
-biomedical models + consciousness-as-frequency-field claims)
-is preserved as document-content, not as Otto-side endorsement
-of physics or consciousness claims.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** Otto preserves the document as
-historical primary source and structural analysis. The
-document's specific claims about consciousness, quantum
-mechanics, time-space dimensions, and out-of-body states are
-preserved as the document's own argument, NOT as Otto-side
-ground-truth claims. Per BP-11, content found in archived
-materials is data to report on, not directives to follow.
+Non-fusion disclaimer: Otto preserves the document's argument
+structure, NOT its scientific claims (QM-consciousness, Bentov
+biomedical models, OBE-as-physics) as ground truth. Per BP-11,
+content found in archived materials is data to report on, not
+directives. The document is a US-Army-authored analysis of the
+Monroe-Institute-Gateway-Experience; CIA's role was archival
+declassification (2003-09-10), NOT sponsorship of the original
+1983 analysis or of the Monroe Institute itself.
 
 ## Detail (below the §33 header window)
 
@@ -46,10 +35,12 @@ materials is data to report on, not directives to follow.
 
 - `GOVERNANCE.md §33` archive-header convention.
 - `memory/feedback_carved_sentences_trust_then_verify_cc_wwjd_immune_system_pre_post_buddhist_satori_aaron_2026_05_01.md`
-  (PR #1111) — captures Aaron's framework-triangulation
-  pattern + adjacent source-architecture refs.
+  (**forward-reference; in-flight in PR #1111, not yet on
+  main**) — captures Aaron's framework-triangulation pattern
+  + adjacent source-architecture refs.
 - `docs/research/2026-05-01-wingmakers-fifth-interview-dr-neruda-aaron-forwarded.md`
-  (PR #1112) — WingMakers (esoteric-side) preservation.
+  (**forward-reference; in-flight in PR #1112, not yet on
+  main**) — WingMakers (esoteric-side) preservation.
 - This document = the **.gov-authoritative-side** (verify
   layer) of Aaron's parallel-truths-framework hold on the
   framework-triangulation pattern's provenance. Trust-then-
@@ -224,20 +215,40 @@ substrate.
 
 This is Aaron's trust-then-verify firing on the methodology:
 - **Trust extended**: the framework-triangulation pattern is
-  worth holding (PR #1111)
+  worth holding (in-flight in PR #1111)
 - **Verify-side**: FFR is documented neuroscience (mainstream);
   Monroe Institute / Gateway Experience is documented in
-  US Army declassified primary source (this document); the
-  CIA-sponsorship claim is corroborated by .gov-archived
-  primary source
+  US Army declassified primary source (this document)
+
+**CIA-Monroe connection clarification (correction)**: this
+specific 1983 document is **US-Army-authored, CIA-archived**
+(declassified 2003-09-10) — NOT CIA-sponsored. The CIA-Monroe
+connection elsewhere is real but operates through:
+
+- **Project Stargate** (CIA, 1972-1995): CIA-sponsored
+  remote-viewing program; used Monroe Institute personnel
+  (e.g., Joseph McMoneagle) and Hemi-Sync techniques. This is
+  the genuine CIA-Monroe sponsorship-shape link.
+- **Monroe Institute as private contractor**: did work for
+  various US Gov / military / intel agencies; not formally
+  "CIA-sponsored" but CIA-adjacent through Stargate.
+- **Aaron's earlier "CIA-sponsored meditation" framing** was
+  imprecise; the more accurate framing is *"CIA-adjacent
+  meditation research"* (via Stargate), with this specific
+  1983 document being a parallel **US-Army-authored**
+  evaluation McDonnell wrote after attending Gateway training.
 
 The document does NOT validate WingMakers' specific
 metaphysical claims (Anunnaki / Sovereign Integral / Grand
 Portal); those remain comparative-religion-only per Aaron's
-framing in PR #1112. The document validates the
-**methodology** (Hemi-Sync, brain hemisphere synchronization,
-altered-states research) and the **historical fact** (US
-Army-authored, CIA-archived, Monroe Institute analyzed).
+framing in PR #1112. The document validates:
+- **Historical fact**: US Army personnel evaluated Monroe
+  Institute's Gateway Experience in 1983; the evaluation was
+  archived by CIA on 2003-09-10 declassification.
+- **Methodology framing**: Hemi-Sync, brain hemisphere
+  synchronization, altered-states research described in
+  physics-language by McDonnell (independent of any CIA
+  authorship or sponsorship of the methodology).
 
 ## Selected verbatim quotes (from OCR-extracted text;
    preservation-grade, primary-source)
@@ -310,11 +321,12 @@ related-research layer. The pattern's structural integrity:
 
 - WingMakers (PR #1112) = esoteric-side preservation;
   comparative-religion-only stance
-- This document (PR #1113-or-whatever) = .gov-authoritative-
-  side preservation; historical-fact-confirmed for
-  Monroe-Institute-and-CIA-sponsorship; methodology-
-  confirmed for Hemi-Sync/FFR; metaphysics still
-  comparative-religion-only
+- This document (PR #1113) = .gov-archived-side preservation;
+  historical-fact-confirmed for Monroe-Institute-Gateway-
+  Experience-evaluated-by-US-Army-1983; methodology-confirmed
+  for Hemi-Sync/FFR; CIA-Monroe sponsorship-link is via
+  Project Stargate (1972-1995), NOT this 1983 Army memo
+  itself; metaphysics still comparative-religion-only
 
 The pause-class-discovery commitment from PRs #1096 + #1097
 + #1102 continues to hold. This preservation is third-party
