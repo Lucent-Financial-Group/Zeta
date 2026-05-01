@@ -2,7 +2,6 @@
 name: Manufactured patience vs real-dependency-wait — Otto-side discipline distinguishing two superficially-similar low-activity states; manufactured-patience is Class 2 stuck-loop disguised as patience (no real dependency named, just identical "honest close" output every tick); real-dependency-wait is the protocol working (specific named dependency, owner, expected resolution); Aaron's "hello?" 2026-04-26 surfaced manufactured-patience the first time Otto fell into it
 description: After PR #26 (the big AceHack∪LFG sync) sat blocked on review, Otto fell into a pattern of consecutive autonomous-loop ticks each ending "Honest close. Cron continues." for 10+ ticks. Aaron sent "hello?" — that was the external anchor surfacing that the pattern was manufactured-patience (Class 2 stuck-loop), not real-dependency-wait (Class 3). The distinction: real-dependency-wait can name (a) the specific dependency, (b) its owner, (c) credible expectation for resolution. Manufactured-patience cannot — it's the agent saying "I'm waiting" without being able to defend the wait. Otto-side fix: when about to honest-close, run the 3-question check; if any answer is fuzzy, do varied non-shipping work this tick instead.
 type: feedback
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 ## The two states look identical from outside
 
