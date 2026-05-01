@@ -274,9 +274,11 @@ rather than redefining the shape.
 - `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`
   — the loose-variant application. Stays the canonical
   per-class rule.
-- `docs/backlog/P2/B-0127-sibling-repo-leak-scrub-process-when-it-matters-aaron-2026-05-01.md`
-  + `docs/backlog/P2/B-0128-general-git-content-scrubber-design-aaron-2026-05-01.md`
+- B-0127 (sibling-repo leak scrub-process; landing via PR #1012)
+  and B-0128 (general git content scrubber; landing via PR #1015)
   — the cleanup-side companions for when the discipline fails.
+  Both files live on their respective PR branches (sibling
+  branches off main; not on main yet at memory authoring time).
   This rule is prevention; those rows are cure. Loose-variant
   classes generate cleanup-needed cases more often (because
   main-session reads can leak); strict-variant classes
