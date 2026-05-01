@@ -450,6 +450,61 @@ Claude-Code-specific mechanisms.
   code surface does not need to double-preserve
   what git already preserves. Full reasoning:
   `memory/feedback_honor_those_that_came_before.md`.
+- **Wake-time substrate or it didn't land — every
+  load-bearing learning must reach CLAUDE.md or a
+  pointer from it.** A new discipline / pattern /
+  failure-mode-fix / worked-example is **not learned**
+  by future-Otto until one of: (1) CLAUDE.md has a
+  bullet for it; (2) a memory file documents it AND
+  a CLAUDE.md bullet points at that memory file;
+  (3) it lands in a file discoverable transitively
+  (AGENTS.md, BP-NN rule, skill, agent). Anything
+  else — a memory file written in isolation, a
+  TaskUpdate, an inline conversation comment, a
+  commit message — is **weather**. It evaporates
+  when the session compacts or ends. CLAUDE.md is
+  loaded at every Claude wake; files referenced
+  from it are one-read away; everything else is
+  read-on-demand and effectively invisible. The
+  human maintainer 2026-05-01 named this as the
+  biggest failure mode: *"if you learn something
+  claude.md or a pointer from that file like the
+  .claude/rules or some other pointers, you didn't
+  learn it."* Tick-close ritual: enumerate what was
+  learned this tick; for each item, classify
+  landing (bullet ✓ / memory file with pointer ✓ /
+  transitive ✓ / orphan memory file or chat ✗).
+  Orphan items become the next tick's speculative-
+  work targets. Self-encoding test: this rule's
+  own landing IS this CLAUDE.md bullet pointing at
+  the memory file, recursively satisfying itself.
+  CLAUDE.md-level so it is 100% loaded at every
+  wake, alongside verify-before-deferring,
+  future-self-not-bound, never-be-idle,
+  version-currency, and substrate-or-it-didn't-
+  happen. Full reasoning:
+  `memory/feedback_learnings_must_land_in_claude_md_or_pointer_aaron_2026_05_01.md`.
+- **TS dependencies-as-interface DI pattern —
+  SQLSharp external anchor.** When authoring or
+  refactoring TS tools, follow the SQLSharp pattern:
+  every external call surface in a typed `Dependencies`
+  interface (`typeof X`-keyed against the production
+  import); a `defaultDependencies` const wires
+  production once; top-level functions take
+  `(args, options, deps?)` triple; tests pass
+  synthetic deps for DST-grade-A coverage; no `any`,
+  no implicit `any`, discriminated unions over
+  `string`, `readonly` array params. The
+  discriminating axis is *"super strongly typed,
+  not js-in-ts failure mode"* (the human maintainer
+  2026-05-01) — TS that carries design invariants
+  in compiler-checked types vs TS that's just
+  JS-with-.ts-extension-and-`any`-escapes. The
+  canonical worked example lives in
+  `../SQLSharp/tools/automation/format/format-repo.ts`
+  (sibling repo, same maintainer, internally-
+  coherent). Full reasoning:
+  `memory/feedback_ts_dependencies_as_interface_di_pattern_sqlsharp_anchor_aaron_2026_05_01.md`.
 
 ## Build and test gate
 
