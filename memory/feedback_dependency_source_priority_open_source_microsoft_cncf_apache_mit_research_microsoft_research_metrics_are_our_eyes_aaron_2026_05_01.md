@@ -354,11 +354,11 @@ decision that Microsoft Research has consistently led on.
 - `project_zeta_multi_algebra_database_one_algebra_to_rule_them_all_sequenced_after_frontier_and_demo_2026_04_23.md`
   — the multi-algebra DB vision; B-0147 timeseries is one
   algebra in this scheme
-- `feedback_graph_substrate_must_be_tight_in_all_aspects_zset_backed_first_class_event_retractable_columnar_storage_first_of_kind_2026_04_24.md`
-  — the graph-substrate constraints; the same 4-axis tightness
-  (ZSet-backed + first-class event + retractable + columnar)
-  applies to the timeseries algebra and likely to all multi-
-  type algebras under the meta-DSL
+- The 4-axis tightness rule (ZSet-backed + first-class event +
+  retractable + columnar storage) per the indexed graph-
+  substrate-tight memory entry in `memory/MEMORY.md` — the
+  same constraints apply to the timeseries algebra and likely
+  to all multi-type algebras under the meta-DSL
 - `feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md`
   — the search-first authority rule; Microsoft Research is one
   of the preferred sources to search first, not training-data-

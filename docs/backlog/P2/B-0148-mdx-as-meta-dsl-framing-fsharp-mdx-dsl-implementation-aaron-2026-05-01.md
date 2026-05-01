@@ -186,9 +186,10 @@ against current docs/papers, not training data.
   declare layer (likely Layer 3: class taxonomy, since
   meta-DSL is a pattern catalog instantiating type-theoretic
   primitives)
-- `feedback_graph_substrate_must_be_tight_in_all_aspects_zset_backed_first_class_event_retractable_columnar_storage_first_of_kind_2026_04_24.md`
-  — the 4-axis tightness rule; MDX must compose with retraction-
-  native to satisfy
+- The 4-axis tightness rule (ZSet-backed + first-class event +
+  retractable + columnar storage) per the indexed graph-
+  substrate-tight memory entry in `memory/MEMORY.md`; MDX must
+  compose with retraction-native to satisfy
 - F# DSL design lineage — Don Syme's research (Microsoft Research,
   Tier 2 + Microsoft-Research-preferred citation per the
   dependency-priority memory)
