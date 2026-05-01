@@ -110,6 +110,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0132](backlog/P2/B-0132-crdt-composition-for-bft-propagation-aaron-2026-05-01.md)** CRDT-composition for BFT propagation — substrate events as composed CRDTs
 - [ ] **[B-0133](backlog/P2/B-0133-sequent-calculus-for-claim-retraction-attribution-aaron-2026-05-01.md)** Sequent calculus / labeled deductive systems for claim/retraction/attribution
 - [ ] **[B-0134](backlog/P2/B-0134-type-theoretic-orthogonality-discipline-encoding-aaron-2026-05-01.md)** Type-theoretic encoding of orthogonality discipline (extension vs creation as decidable judgment)
+- [ ] **[B-0143](backlog/P2/B-0143-bidirectional-messaging-aaron-text-imessage-whatsapp-2026-05-01.md)** Bi-directional messaging integration with Aaron — text/iMessage/WhatsApp/etc., cheapest-or-free first, budget-controlled (Aaron 2026-05-01)
 - [ ] **[B-0146](backlog/P2/B-0146-formal-architecture-ladder-explicit-layer-declaration-aaron-2026-05-01.md)** Formal architecture ladder — explicit-layer-declaration discipline for B-rows
 - [ ] **[B-0147](backlog/P2/B-0147-timeseries-db-native-in-zsets-multi-dsl-integration-research-aaron-2026-05-01.md)** TimeSeries DB native-in-Zsets multi-DSL integration research (metrics-are-our-eyes)
 - [ ] **[B-0148](backlog/P2/B-0148-mdx-as-meta-dsl-framing-fsharp-mdx-dsl-implementation-aaron-2026-05-01.md)** MDX as meta-DSL framing for multi-DSL Zset substrate + F# MDX DSL implementation
