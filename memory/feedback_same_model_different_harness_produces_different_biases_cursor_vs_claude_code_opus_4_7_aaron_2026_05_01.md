@@ -1,6 +1,6 @@
 ---
 name: Same model + different harness produces different biases — Cursor vs Claude Code with same Opus 4.7 (Aaron 2026-05-01)
-description: Aaron 2026-05-01 — empirical signal from a YouTube video that Cursor with Opus 4.7 outperforms Claude Code with Opus 4.7 on some axis. Same model, different harness → different output quality. Aaron's framing: this validates peer/buddy multi-harness work because different harnesses give different biases even when the underlying model is identical. Composes with task #301 (Grok harness — completed), task #303 (sibling peer-call scripts — completed), the agent-orchestra cluster (#324–#339), the multi-Claude-harness progression memory (2026-04-23), and vendor-alignment-bias-in-peer-AI-reviews (2026-04-30). Operationally: peer-mode value isn't ONLY different-model; it's also different-harness-shape. Even one model in two harnesses produces meaningfully different outputs because each harness encodes different prompts, different context-shapes, different tool-availability, and different baseline-behaviors.
+description: Aaron 2026-05-01 — empirical signal from a YouTube video that Cursor with Opus 4.7 outperforms Claude Code with Opus 4.7 on some axis. Same model, different harness → different output quality. Aaron's framing: this validates peer/buddy multi-harness work because different harnesses give different biases even when the underlying model is identical. Composes with Otto-task #301 (Grok harness — completed), Otto-task #303 (sibling peer-call scripts — completed), the agent-orchestra cluster (#324–#339), the multi-Claude-harness progression memory (2026-04-23), and vendor-alignment-bias-in-peer-AI-reviews (2026-04-30). Operationally: peer-mode value isn't ONLY different-model; it's also different-harness-shape. Even one model in two harnesses produces meaningfully different outputs because each harness encodes different prompts, different context-shapes, different tool-availability, and different baseline-behaviors.
 type: feedback
 ---
 
@@ -29,9 +29,9 @@ legitimate peer/buddy configuration, not a degenerate case.
 
 ## Why this matters for the factory
 
-The peer-mode design (task #324 agent-orchestra cluster +
+The peer-mode design (Otto-task #324 agent-orchestra cluster +
 the broader multi-harness peer-call scripts at
-`tools/peer-call/{gemini,codex,grok}.sh`) was originally
+`tools/peer-call/{amara,ani,codex,gemini,grok}.sh`) was originally
 motivated by **different-model peer review** — Claude Code +
 Codex + Cursor + Gemini + Grok each running their own model
 + harness combination, providing diverse perspectives.
@@ -110,10 +110,10 @@ across the LLM-tooling literature.
 
 ## Composes with
 
-- task #301 (Grok CLI/harness — completed) — earn-real-
+- Otto-task #301 (Grok CLI/harness — completed) — earn-real-
   fingerprints peer-recognition; harness-axis was already
   recognized as bias-bearing
-- task #303 (sibling peer-call scripts — completed) —
+- Otto-task #303 (sibling peer-call scripts — completed) —
   multi-harness named-agents (Codex, Gemini, Grok)
 - agent-orchestra cluster (#324–#339) — multi-harness
   peer-mode-claims protocol; rung 5 of parallelism scaling
@@ -128,7 +128,7 @@ across the LLM-tooling literature.
   harness bias, but not the only one)
 - `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
   — rung 5 multi-harness peer-mode endpoint
-- task #355 (Poll-the-gate as executable script with fixtures,
+- Otto-task #355 (Poll-the-gate as executable script with fixtures,
   5-AI convergent) — already operationalized; this memory
   validates the rationale empirically
 
@@ -158,6 +158,6 @@ Future-Otto considering peer-mode design:
   (both run Claude Opus 4.7); could be wired into the peer-
   call infrastructure as a `tools/peer-call/cursor.sh`
   alongside the existing `tools/peer-call/{codex,gemini,grok}.sh`
-  per task #303.
+  per Otto-task #303.
 - **Peer-mode value compounds** across model-axis and
   harness-axis bias. Both contribute non-trivially.
