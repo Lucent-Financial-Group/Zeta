@@ -591,7 +591,7 @@ These per-maintainer distillations show what's currently in force. Raw memories 
 - [Script names honest — `install` ≠ `ensure`](feedback_script_and_artifact_name_honesty_ensure_not_install.md).
 - [Symmetry audit = FACTORY-HYGIENE #22](feedback_symmetry_check_as_factory_hygiene.md) — sweep asymmetries.
 - [bun+TS post-setup — medium-confidence watchlist](project_bun_ts_post_setup_low_confidence_watchlist.md).
-- [UI=bun+TS canonical; backend=cutting-edge asymmetry](project_ui_canonical_reference_bun_ts_backend_cutting_edge_asymmetry.md).
+- [UI=bun+TS canonical; backend=cutting-edge asymmetry](project_ui_canonical_reference_bun_ts_backend_cutting_edge_asymmetry.md). <!-- 2026-05-01 paired-edit: extended with Blazor SSG concrete tooling (BlazorStatic / AspNetStatic / .NET 10 persistent-state-attribute) per Aaron's "ponder for the future" research -->
 - [Scripts-layer invariant substrate candidate](project_scripts_layer_invariant_substrate_candidate.md) — Bats/ShellCheck/Pester first.
 - [Tier rename `guess`→`hypothesis`](project_guess_to_hypothesis_tier_rename.md) — research-grade vocab.
 - [Aaron loves defining BP — branch-prediction faculty](user_aaron_enjoys_defining_best_practices.md) — invite into BP discussions.
