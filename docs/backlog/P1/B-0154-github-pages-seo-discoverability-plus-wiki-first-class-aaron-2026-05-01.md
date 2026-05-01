@@ -219,6 +219,27 @@ wiki UI for browsability.
 - B-0143 (bi-directional messaging with Aaron + four-corner
   hat-color/WWJ) — Aaron's communication channels; Pages
   could surface a "contact" page
+- `docs/CONTRIBUTOR-PERSONAS.md` (10 personas: drive-by typo
+  fixer / bug reporter / grad student / AI agent / systems
+  engineer / security researcher / F# enthusiast /
+  maintainer-external peer / factory user / returning
+  contributor) — Pages content + Wiki nav should explicitly
+  serve each persona's discovery + on-ramp path. Per the
+  Friction log section of CONTRIBUTOR-PERSONAS.md, missing
+  per-persona on-ramps are cataloged friction.
+- Otto-task #324 + the agent-orchestra cluster (#325-#339)
+  — the autonomous-entity issues-claims process for humans
+  AND AI: claim schema + active-claim board (#327), public
+  claim intake via CONTRIBUTING.md + AGENTS.md +
+  ISSUE_TEMPLATE (#332), claim sync reconciler (#333),
+  external safety levels E0-E5 (#334), actor identity
+  binding (#335), capabilities-as-primitive (#336),
+  multi-actor collision resolution (#337), DoS protection
+  for public intake (#338), GitHub-native + git-canonical +
+  host-portable contribution architecture (#339). The Pages
+  site's "Contributing" section should integrate with this
+  claims-process once it lands; the Wiki could be the
+  human-facing rendering of the active-claim board.
 
 ## Effort
 
