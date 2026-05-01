@@ -77,13 +77,10 @@ Aaron's attribution (load-bearing for honest record):
                        (one lane mutates docs, one mutates code,
                         run in parallel — no file overlap)
 
-  Rung 3:              file-isolation lanes
-                       (each lane owns a disjoint file set;
-                        N lanes run concurrently with merge-
-                        coordinator owning main per
-                        feedback_parallel_agents_need_isolated_
-                        worktrees_coordinator_owns_main_aaron_
-                        amara_2026_04_29.md)
+  Rung 3:              file-isolation lanes — each lane owns a
+                       disjoint file set; N lanes run concurrently
+                       with merge-coordinator owning main per
+                       memory/feedback_parallel_agents_need_isolated_worktrees_coordinator_owns_main_aaron_amara_2026_04_29.md
 
   Rung 4 (compound):   save-lessons-to-reduce-friction discipline
                        (each parallel lane that hits friction
@@ -129,7 +126,7 @@ Aaron's keystone (three messages composed):
 > *"amotorized is what i was trying to say but both are true
 > automated"*
 >
-> *"amortized*"*
+> *"amortized\*"* (Aaron's literal asterisk-as-correction-marker preserved)
 
 **Three terms, each capturing a distinct dimension. All three
 load-bearing.**
