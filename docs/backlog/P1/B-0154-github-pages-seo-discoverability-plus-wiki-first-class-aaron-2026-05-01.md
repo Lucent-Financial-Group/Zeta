@@ -112,6 +112,44 @@ funnel is broken at the discovery step.
    sitemap to Google Search Console + Bing Webmaster Tools.
    Manual one-time action.
 
+8. **Playwright validation harness** (Aaron 2026-05-01:
+   *"feel free to use playwright to test our github pages at
+   any times this should give you the full deployment
+   experience at least frontend deployments that can be
+   measured with DORA and things like that, no backend yet
+   other than git is the backend for our UI until we decide
+   what's next and cheap/free"*) — Playwright MCP is
+   available; test scope:
+   - Page returns HTTP 200 (not 404 — primary validation)
+   - Title + meta description present + matches expectation
+   - Navigation links resolve
+   - Sitemap.xml + robots.txt accessible
+   - Open Graph preview renders
+   - Mobile viewport renders
+   Tests live at `tools/test/pages-playwright/` (envisioned;
+   path to confirm at implementation). Run on:
+   - Pre-merge in CI on every Pages-affecting PR
+   - Post-deploy verification after each Pages publish
+   - Scheduled cadence (daily) to catch external regressions
+
+9. **DORA metrics on frontend deployments** — track the four
+   DORA metrics for the Pages frontend lane:
+   - **Deployment frequency** — how often Pages publishes
+     successfully (CI workflow run count)
+   - **Lead time for changes** — commit timestamp →
+     Pages-live timestamp (Playwright HTTP-200 confirms live)
+   - **Mean Time to Restore (MTTR)** — broken-Pages-detected
+     to Pages-restored-200 duration
+   - **Change failure rate** — % of Pages publishes that
+     produced a broken state (Playwright HTTP-200 fail or
+     test-suite fail)
+   Architectural note (Aaron 2026-05-01): *"no backend yet
+   other than git is the backend for our UI"* — DORA at the
+   frontend deployment layer is the only DORA we measure
+   until backend decisions land. Composes with B-0147
+   (timeseries-DB native research) + the metrics-are-our-eyes
+   substrate.
+
 ### Anti-patterns this guards against
 
 - **404-stall**: enabled Pages with no content rotting at
