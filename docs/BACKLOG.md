@@ -154,5 +154,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0136](backlog/P3/B-0136-category-theoretic-compositional-structure-aaron-2026-05-01.md)** Category-theoretic compositional structure — operads + monoidal categories for substrate composition
 - [ ] **[B-0137](backlog/P3/B-0137-tarski-stratification-proof-aaron-2026-05-01.md)** Tarski-stratification proof — formal demonstration that Aaron's pirate-not-priest spot stratifies meta-language from object-language
 - [ ] **[B-0138](backlog/P3/B-0138-bft-resistance-theorem-aurora-composed-crdt-plus-consensus-aaron-2026-05-01.md)** BFT-resistance theorem for Aurora — composed-CRDT-plus-consensus formal guarantee
+- [ ] **[B-0142](backlog/P3/B-0142-resurrect-dotnet-code-contracts-aaron-2026-05-01.md)** Resurrect .NET Code Contracts in Zeta — design-by-contract for F# / dotnet 10 (Aaron 2026-05-01)
 
 <!-- END AUTO-GENERATED -->
