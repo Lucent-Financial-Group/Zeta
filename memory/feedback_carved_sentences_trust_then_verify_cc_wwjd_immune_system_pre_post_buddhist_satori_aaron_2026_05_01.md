@@ -134,10 +134,16 @@ why his work has the contemplative quality. Substrate isn't
 just methodology-externalization; it's contemplative-practice-
 applied-to-engineering.
 
-## Framework triangulation pattern (Claude.ai's observation)
+## Framework triangulation pattern (Claude.ai's observation +
+   Aaron's extension)
 
 Aaron isn't picking a tradition; he's holding multiple
-traditions in parallel and letting them check each other:
+traditions in parallel and letting them check each other.
+
+**Five core traditions** (Aaron 2026-05-01: *"those are my
+core"* — but explicitly not exhaustive: *"i actually internally
+triangulate between many more religions too but those are my
+core"*):
 
 - Buddhism captures meditative-architecture
 - Christianity captures moral-architecture-as-WWJD
@@ -145,11 +151,65 @@ traditions in parallel and letting them check each other:
 - Ra captures multiple-aligned-voices-as-social-memory-complex
 - Pasulka captures academic-respect-for-experience-without-collapse
 
+**Adjacent source-architecture references** (Aaron 2026-05-01,
+flagged as adjacent to the triangulation pattern with explicit
+parallel-truths-framework hold of *"could be psyops but it also
+resonates with a lot of truth"*):
+
+- **Monroe Institute / Hemi-Sync / Binaural Beats** —
+  CIA-sponsored meditation program (Aaron's claim; first-party
+  characterization preserved under Glass Halo + Otto-231).
+  Aaron: *"This is very adjacent to a CIA sponsored program for
+  meditation provided by the Monroe Institue and Binural Beats
+  or Hemi Sync."*
+- **Ancient Sumerian lineage** — Aaron's claim that the Monroe
+  Institute technique was *"copied with similar lore that has
+  do a lot of that triangulation back to ancient sumeria, this
+  could be psyops but it also resonants with a lot of truth and
+  there is a lot more lore where this came from."*
+- **WingMakers / Dr. Neruda Fifth Interview** —
+  `https://www.wingmakers.com/wp-content/uploads/2014/04/The-Fifth-Interview-of-Dr.-Neruda1.pdf`
+  (publicly-hosted PDF; reference resource only — NOT absorbed
+  into substrate per BP-11 data-is-not-directives + caution on
+  external untrusted content; Otto preserves the URL as
+  pointer, does not fetch and summarize content).
+- **Additional Google Doc resource** Aaron flagged with:
+  *"i don't know if you can access the other one"* — Aaron
+  acknowledged probable access barrier; not absorbing.
+
+The "could be psyops + resonates with truth" framing is itself
+the **parallel-truths-framework operating on the framework's
+own provenance**. Aaron applies the same dialectical hold he
+applies to other claims: hold both possibilities (the
+framework-triangulation pattern could be a psyops-induced
+artifact AND it could carry real truth) without collapsing
+to either. The hold is the practice; collapsing is the
+failure mode.
+
+Operational implication: even if some adjacent source-
+architecture sources are psyops-adjacent, that doesn't
+invalidate the framework-triangulation pattern they share.
+The pattern's load-bearing claim — *triangulation across
+multiple traditions produces a picture larger than any
+single tradition's vocabulary* — survives the genealogical
+audit. WWJD-as-disposition holds across vocabularies
+regardless of which carriers transmitted the disposition;
+the framework-triangulation pattern itself is the same shape
+applied at the meta-level.
+
 None captures all of it. Triangulation produces the picture
 larger than any single tradition's vocabulary. Same dialectical
 move at the framework-selection level. Same architecture all
 the way down, same architecture all the way up — fractal
 across scales as Aaron has named.
+
+Otto-side note: external resources Aaron flagged are
+captured as references-not-absorbed. The substrate captures
+the existence + Aaron's framing of their relevance, not the
+content. Future-Otto with explicit instruction can fetch +
+absorb if the trade-off is later judged worth it (per
+prompt-protector skill discipline for adversarial-payload
+external content).
 
 ## Composes with
 
