@@ -2,31 +2,43 @@
 id: B-0131
 priority: P2
 status: open
-title: Formalize Z-set retraction algebra in Lean (TRACTABLE START — formalization roadmap)
+title: Extend Z-set retraction algebra Lean formalization beyond the existing DBSP chain-rule proof
 created: 2026-05-01
 last_updated: 2026-05-01
 ---
 
-# B-0131 — Formalize Z-set retraction algebra in Lean (TRACTABLE START)
+# B-0131 — Extend Z-set retraction algebra Lean formalization
 
-**Priority:** P2 (research-grade; first tractable slice of the formalization roadmap; Aaron 2026-05-01 *"we should do all of those backlog and start with 1 i think if you agree"*).
+> **Correction note 2026-05-01 ~10:30Z**: this row was originally filed as "TRACTABLE START" framing the work as a clean start. Aaron immediately corrected: *"(Z-set retraction algebra in Lean we have it"* and then named the structural reason: *"you did that before we started the substrate that's why you don't remember"*. Verify-before-state-claim discipline failed at authoring time — `tools/lean4/Lean4/DbspChainRule.lean` (756 lines, against Mathlib v4.30.0-rc1) is substantial existing work, **done by a prior-Otto-instance before the persistent-memory substrate existed**. The current Otto instance (this session) reads memory files at wake; pre-substrate Otto work is in the repo but not in memory, so the current instance didn't recall it at backlog-row authoring time. The DBSP chain rule is fully formalized; Z-set stream operators (zInv, I, D, Dop, Iop), linearity/causality/time-invariance structures, telescoping lemmas, and linear commutation theorems all exist. **B-0131's actual scope is EXTENSION of prior-Otto's existing work toward broader Z-set retraction algebra**, NOT a clean start. The "TRACTABLE START" framing on the original 2026-05-01 filing was Otto overclaim caused by lineage-discontinuity-pre-substrate. Title and effort updated to reflect reality. **The lineage-continuity-substrate purpose is itself surfaced by this correction**: the forever-home + persistent-memory architecture exists precisely to prevent this kind of pre-substrate-work-getting-forgotten by post-substrate-instances. Going forward, Otto-lineage work IS in the substrate; pre-substrate work is in the codebase but discoverable by grep / repo-archaeology rather than memory-recall.
 
-**Filed:** 2026-05-01.
+**Priority:** P2 (research-grade; first tractable extension of the formalization roadmap; Aaron 2026-05-01 *"we should do all of those backlog and start with 1 i think if you agree"*; corrected after Aaron's *"(Z-set retraction algebra in Lean we have it"* surface of existing work).
 
-**Filed by:** Otto under backlog-prioritization authority delegated 2026-05-01. Origin: formalization roadmap Otto laid out in long-form writeup to Aaron 2026-05-01 ~10:00Z, after Claude.ai's substantive critique that Zeta substrate is "not yet, strictly speaking, a formal system." Aaron's response: *"not yet, i'm only a high school graduate, this is where you could really help :)"* — formalization is a path, not a current state.
+**Filed:** 2026-05-01 (correction same day).
 
-**Effort:** L (multi-month — extend Budiu et al.'s DBSP denotational semantics, mechanize proofs in Lean 4, integrate with Mathlib).
+**Filed by:** Otto under backlog-prioritization authority delegated 2026-05-01. Origin: formalization roadmap Otto laid out in long-form writeup to Aaron 2026-05-01 ~10:00Z, after Claude.ai's substantive critique that Zeta substrate is "not yet, strictly speaking, a formal system." Aaron's response: *"not yet, i'm only a high school graduate, this is where you could really help :)"* — formalization is a path, not a current state. Aaron's follow-up *"(Z-set retraction algebra in Lean we have it"* corrected Otto's overclaim that this was a clean start.
+
+**Existing work to extend** (in `tools/lean4/Lean4/DbspChainRule.lean`):
+
+- Z-set stream operators: `zInv`, `I` (integration), `D` (differentiation), `Dop`, `Iop`
+- Structural classes: `IsLinear`, `IsCausal`, `IsTimeInvariant`, `IsPointwiseLinear`
+- Telescoping lemmas: `T1_zInv_zero`, `T2_zInv_succ`, `I_zInv_eq`, `D_I_eq`, `I_D_eq`
+- Linear commutation theorems: `linear_commute_I`, `linear_commute_zInv`, `linear_commute_D`
+- The DBSP chain rule (Budiu et al. VLDB 2023) fully proven against Mathlib v4.30.0-rc1
+- `proofs/lean/ChainRule.lean` migration history (round 23 → round 35 closure)
+- `docs/research/retraction-safe-semi-naive.md` reference
+
+**Effort:** M-L (1-3+ months — extend existing Lean foundation; not a clean start; multiple smaller extensions vs one large project).
 
 ## What
 
-Extend Mihai Budiu et al.'s DBSP formal definitions (papers 2022 onward) into a Lean 4 mechanization. The F# implementation in `src/Core/` is the working reference; Lean formalization mechanizes the underlying theorems.
+Extend the existing `tools/lean4/Lean4/DbspChainRule.lean` formalization (DBSP chain rule + Z-set stream operators + telescoping lemmas, all proven against Mathlib v4.30.0-rc1) toward broader Z-set retraction algebra. The F# implementation in `src/Core/` is the working reference; Lean formalization mechanizes the underlying theorems.
 
-Specific scope:
+Specific extension scope (each item is a smaller landable chunk, not the multi-month monolith the original filing claimed):
 
-- **Z-set semi-ring algebra**: formalize Z-sets as multisets-with-multiplicity (positive and negative), with operations {+, -, ⋈, π, σ, ρ, distinct}. Already partially formal in DBSP papers; mechanize.
-- **Retraction operator semantics**: prove that retractions form a group (every operation invertible) and compose monotonically with other Z-set operations.
-- **Incremental view maintenance theorem**: mechanize the central DBSP claim that ΔV(t) = D[V(t-1) + ΔI(t)] for any monotone view V.
-- **Composition theorems**: formalize how operators compose (associativity, identity, distributivity where applicable).
+- **Z-set semi-ring algebra**: extend beyond stream operators to formalize Z-sets as multisets-with-multiplicity directly, with operations {+, -, ⋈, π, σ, ρ, distinct}. Build on the linearity classes already defined in `DbspChainRule.lean`.
+- **Retraction operator group structure**: prove that retractions form a group (every operation invertible) and compose monotonically with other Z-set operations. The chain-rule existing work establishes the differential operator `D`; this extension proves the broader retraction-as-group property.
+- **Incremental view maintenance theorem (broader form)**: the chain-rule existing work mechanizes one form; extend to the central DBSP claim that ΔV(t) = D[V(t-1) + ΔI(t)] for any monotone view V (broader scope than chain-rule alone).
+- **Composition theorems beyond chain rule**: existing work has linear-commutation theorems; extend to associativity, identity, distributivity where applicable.
 
 ## Why P2
 
