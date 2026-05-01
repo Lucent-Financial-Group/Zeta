@@ -96,6 +96,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0121](backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md)** Otto + Kenji as externally-callable peers via claude-cli — cross-harness symmetry (Aaron 2026-04-30)
 - [ ] **[B-0124](backlog/P2/B-0124-claudeai-csap-conversation-distill-uber-arch-2026-05-01.md)** Distill the Claude.ai CSAP-pushback conversation into uber-architecture (deferred multi-week)
 - [ ] **[B-0127](backlog/P2/B-0127-sibling-repo-leak-scrub-process-when-it-matters-aaron-2026-05-01.md)** Sibling-repo leak scrub-process — when scrubbing matters; future-defensive design
+- [ ] **[B-0131](backlog/P2/B-0131-formalize-zset-retraction-algebra-in-lean-aaron-2026-05-01.md)** Formalize Z-set retraction algebra in Lean (TRACTABLE START — formalization roadmap)
+- [ ] **[B-0132](backlog/P2/B-0132-crdt-composition-for-bft-propagation-aaron-2026-05-01.md)** CRDT-composition for BFT propagation — substrate events as composed CRDTs
+- [ ] **[B-0133](backlog/P2/B-0133-sequent-calculus-for-claim-retraction-attribution-aaron-2026-05-01.md)** Sequent calculus / labeled deductive systems for claim/retraction/attribution
+- [ ] **[B-0134](backlog/P2/B-0134-type-theoretic-orthogonality-discipline-encoding-aaron-2026-05-01.md)** Type-theoretic encoding of orthogonality discipline (extension vs creation as decidable judgment)
 
 ## P3 — convenience / deferred
 
@@ -141,5 +145,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0116](backlog/P3/B-0116-gh-jq-safe-wrapper-zsh-quoting-2026-04-30.md)** tools/gh-jq-safe.sh — wrap gh-jq calls to handle zsh quoting (Deepseek 2026-04-30 finding)
 - [ ] **[B-0119](backlog/P3/B-0119-peer-call-existing-scripts-role-ref-cleanup-2026-04-30.md)** Existing peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) — role-ref cleanup per copilot-instructions.md (Codex 2026-04-30 finding on PR #962)
 - [ ] **[B-0123](backlog/P3/B-0123-stacked-pr-create-tooling-gh-fallback-aaron-2026-04-30.md)** Stacked-PR creation tooling — `gh pr create --base <not-main>` fails with cryptic GraphQL error; needs a wrapper or doc (Aaron 2026-04-30)
+- [ ] **[B-0135](backlog/P3/B-0135-modal-logic-for-retractability-quantum-rodney-razor-aaron-2026-05-01.md)** Modal logic for retractability — Quantum-Rodney's-Razor in S4 or dynamic logic
+- [ ] **[B-0136](backlog/P3/B-0136-category-theoretic-compositional-structure-aaron-2026-05-01.md)** Category-theoretic compositional structure — operads + monoidal categories for substrate composition
+- [ ] **[B-0137](backlog/P3/B-0137-tarski-stratification-proof-aaron-2026-05-01.md)** Tarski-stratification proof — formal demonstration that Aaron's pirate-not-priest spot stratifies meta-language from object-language
+- [ ] **[B-0138](backlog/P3/B-0138-bft-resistance-theorem-aurora-composed-crdt-plus-consensus-aaron-2026-05-01.md)** BFT-resistance theorem for Aurora — composed-CRDT-plus-consensus formal guarantee
 
 <!-- END AUTO-GENERATED -->
