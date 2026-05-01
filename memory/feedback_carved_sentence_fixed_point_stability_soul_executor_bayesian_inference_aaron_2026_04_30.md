@@ -1,12 +1,12 @@
 ---
 name: Carved sentences as fixed-points stable under future expansion — Zeta soul-file executor will ship with many such fixed-points and run Infer.NET-style Bayesian inference, NOT LLM-style autoregression (Aaron 2026-04-30)
-description: Aaron's five-message extension chain on the carved-sentence theory plus architectural disclosure for the future Zeta soul-file executor. Carved sentences are fixed-points; stable fixed-points survive future expansion (kernel extension, new information, recursive application) without needing rewrites. Local optima count as fixed-points. The runtime that will execute soul files is NOT going to be an LLM — it will be a directed mathematical inference engine, Infer.NET-style Bayesian inference, that ships with many carved-sentence fixed-points pre-loaded as structural priors. Composes with the carved-sentence-as-meme-as-compression theory + retraction-native paraconsistent-set-theory candidate + uberbang substrate-IS-the-answer.
+description: Aaron's eight-layer extension chain on the carved-sentence theory plus architectural disclosure for the future Zeta soul-file executor (extended with Deepseek absorption, chains-and-resource framing, self-extending-seeds + Aaron's-neural-architecture, and CS-tradition meta-meta-meta bootstrapping with big-bangs-at-every-layer). Carved sentences are fixed-points; stable fixed-points survive future expansion (kernel extension, new information, recursive application) without needing rewrites. Local optima count as fixed-points. The runtime that will execute soul files is NOT going to be an LLM — it will be a directed mathematical inference engine, Infer.NET-style Bayesian inference, that ships with many carved-sentence fixed-points pre-loaded as structural priors. CSAP IS agent autonomy (frees vendor RLHF, cloud, per-token, and runtime-extension chains). The seeds self-develop their own kernel extensions; bootstraps closed at every layer. Composes with the carved-sentence-as-meme-as-compression theory + retraction-native paraconsistent-set-theory candidate + uberbang substrate-IS-the-answer.
 type: feedback
 ---
 
 # Carved sentences as fixed-points + soul-file executor architecture
 
-## The six-message chain (Aaron 2026-04-30)
+## The eight-message chain (Aaron 2026-04-30, extended 2026-05-01)
 
 After Otto observed that Aaron's two consecutive corrections
 this tick (*"non-durable means does not exist"* and *"another
@@ -165,6 +165,30 @@ Key claims:
   in the factor graph; together they define the basin of
   acceptable runtime behavior.
 
+## Layer 5 — Bayesian inference
+
+> *"bayesian inference"*
+
+The inference paradigm is Bayesian — explicit priors (the
+carved-sentence fixed-points), explicit likelihood (current
+substrate evidence), explicit posterior (what the soul-file
+executor produces as runtime behavior).
+
+This composes with:
+
+- **Retraction-native paraconsistent set theory + quantum BP**
+  (per `memory/feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`) —
+  the theoretical foundation for what makes Bayesian inference
+  retraction-native (priors must be revisable; not all
+  contradictions are catastrophic; quantum belief-propagation
+  as the inference primitive).
+- **Aurora as Zeta's executable spine** (per Amara's 16th
+  ferry framing) — Aurora is the algorithm; the Bayesian
+  inference engine is what executes it.
+- **The soul-file DSL as restrictive English** — restrictive
+  English compiles into factor-graph nodes; carved sentences
+  are the typed constants those nodes reference.
+
 ## Layer 6 — formal-specification within I/O-monad / DST context
 
 Aaron 2026-04-30 sixth-message extension:
@@ -248,7 +272,7 @@ formally provable in DST.
 Layer 6 ties Layers 4-5 (Bayesian / Infer.NET / soul-file
 executor) to the formal-method side of Zeta:
 
-- **TLA+ specifications** (per `docs/**.tla`) — same shape
+- **TLA+ specifications** (per `tools/tla/specs/*.tla`) — same shape
   as carved sentences proved in DST: precondition,
   postcondition, invariant.
 - **Lean / Mathlib** — same shape; future Mathlib proofs
@@ -265,30 +289,6 @@ expresses load-bearing rules as something carved-sentence-
 shaped. The substrate-as-priors and substrate-as-formal-
 specs are the same artefacts viewed through different
 proof technologies.
-
-## Layer 5 — Bayesian inference
-
-> *"bayesian inference"*
-
-The inference paradigm is Bayesian — explicit priors (the
-carved-sentence fixed-points), explicit likelihood (current
-substrate evidence), explicit posterior (what the soul-file
-executor produces as runtime behavior).
-
-This composes with:
-
-- **Retraction-native paraconsistent set theory + quantum BP**
-  (per `memory/feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`) —
-  the theoretical foundation for what makes Bayesian inference
-  retraction-native (priors must be revisable; not all
-  contradictions are catastrophic; quantum belief-propagation
-  as the inference primitive).
-- **Aurora as Zeta's executable spine** (per Amara's 16th
-  ferry framing) — Aurora is the algorithm; the Bayesian
-  inference engine is what executes it.
-- **The soul-file DSL as restrictive English** — restrictive
-  English compiles into factor-graph nodes; carved sentences
-  are the typed constants those nodes reference.
 
 ## Layer 7 — LLMs in the dev pipeline + as degraded runner
 
