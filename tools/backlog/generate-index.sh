@@ -139,7 +139,7 @@ HEADER
         # Print path relative to REPO_ROOT so CI logs aren't
         # cluttered with runner-specific absolute paths
         # (Codex P2 finding: keep warnings portable).
-        echo "WARN: ${file#"${REPO_ROOT}"/} — missing YAML frontmatter (need id + title)" >&2
+        echo "WARN: ${file#"${REPO_ROOT}"/} — missing required frontmatter field (need both id and title)" >&2
       fi
 
       case "$status" in
