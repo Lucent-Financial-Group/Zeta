@@ -137,18 +137,38 @@ TS via bun gives:
 - Bun has built-in test runner (`bun test`); no separate
   test infrastructure to bootstrap
 
-This is an order-of-magnitude argument: DST is structurally
-incompatible with bash's process-model + side-effects-as-
-defaults; DST is structurally compatible with TS's runtime
-(closures + injectable dependencies + native testing).
+This is an order-of-magnitude expense argument: DST is
+structurally **expensive** in bash's process-model +
+side-effects-as-defaults; DST is structurally **cheap** in
+TS's runtime (closures + injectable dependencies + native
+testing).
 
-Aaron's framing makes this load-bearing: **the factory's DST
-discipline (Otto-272, DST grade-A) is unattainable in bash
-scripts when bash is doing the computing — bash is a
-DST-exempt zone by structural necessity for general logic.**
-Every script that stays bash AND does general logic is a
-DST-exempt zone the factory can never achieve grade-A DST
-coverage on.
+Aaron 2026-05-01 follow-up refinement: *"well we have bats
+for bash testing and pester for powershell you can get
+close to DST but it's a pain in the ass."*
+
+So bash + PowerShell aren't DST-IMPOSSIBLE — they're
+DST-EXPENSIVE. Frameworks exist:
+
+- **bats** (Bash Automated Testing System) — gives bash
+  scripts a test runner with assertion helpers
+- **pester** — same for PowerShell
+
+You can get close to DST in either, but the discipline
+required is high (clock injection / RNG seeding / mocking
+remain pain-in-the-ass even with the framework). The TS
+preference is therefore **expense-based**, not
+**impossibility-based**: pick the runtime where DST is
+cheap to achieve; save bats/pester for the legitimate-bash
+zone where bash is already required (declarative-bootstrap
+/ install graph).
+
+Updated framing: **the factory's DST discipline (Otto-272,
+DST grade-A) is achievable but expensive in bash for
+general computation; achievable cheaply in TS.** Every
+script that stays bash AND does general logic faces the
+high-discipline-cost path; TS-port shifts those scripts
+to the cheap-DST path.
 
 ## Why-3.5: install.sh is the closest-to-DST in bash (declarative-bootstrap exception)
 
@@ -248,9 +268,9 @@ autonomous tick:
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Bash is a DST-exempt zone by structural necessity. Every
-recurring bash command is a DST-grade-A coverage gap. TS is
-the migration target."*
+*"Bash is the high-discipline-cost path to DST grade-A.
+TS is the cheap path. Pick the cheap path unless bash is
+already required (install graph / declarative bootstrap)."*
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence, not
