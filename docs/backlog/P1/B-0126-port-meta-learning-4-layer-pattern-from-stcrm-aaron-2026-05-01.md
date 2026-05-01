@@ -1,3 +1,10 @@
+---
+id: B-0126
+priority: P1
+status: open
+title: Port the 4-layer meta-learning pattern from a sibling repo to Zeta
+---
+
 # B-0126 — Port the 4-layer meta-learning pattern from STCRM to Zeta
 
 **Priority:** P1 (high leverage; PR-review pain is recurring; pattern already proven in ServiceTitan exploit context)
