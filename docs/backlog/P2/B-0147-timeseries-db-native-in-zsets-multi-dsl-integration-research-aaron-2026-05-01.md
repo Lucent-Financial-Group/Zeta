@@ -113,7 +113,7 @@ time-series persistence is a fitness function.
 
 When researching this, prioritize sources in this order:
 
-1. **Microsoft Research** (research.microsoft.com) — search for
+1. **Microsoft Research** (https://www.microsoft.com/en-us/research/) — search for
    timeseries-DB primitives, retraction-native datalog,
    incremental view maintenance over time-streamed data
 2. **CNCF projects** (cncf.io) — Prometheus, OpenTelemetry,

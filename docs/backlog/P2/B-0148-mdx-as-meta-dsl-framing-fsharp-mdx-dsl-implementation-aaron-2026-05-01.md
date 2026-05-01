@@ -144,7 +144,7 @@ need answers; they may share a candidate.
 Per the dependency-source priority + Microsoft-Research-as-
 preferred-research-source memory:
 
-1. **Microsoft Research** (research.microsoft.com) — search
+1. **Microsoft Research** (https://www.microsoft.com/en-us/research/) — search
    for MDX evaluation semantics, OLAP query optimization,
    F# DSL design papers (Don Syme + collaborators)
 2. **MDX official spec** (Microsoft docs) — the canonical

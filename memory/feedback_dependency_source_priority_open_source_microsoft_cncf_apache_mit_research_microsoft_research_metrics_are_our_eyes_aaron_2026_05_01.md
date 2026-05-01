@@ -81,7 +81,7 @@ Aaron 2026-05-01: *"Microsoft has VERY high qulity research on
 microsoft reserach it's not all like the regular research places
 too."*
 
-**Treat Microsoft Research (research.microsoft.com) as a preferred
+**Treat Microsoft Research (https://www.microsoft.com/en-us/research/) as a preferred
 citation source for technical research,** not as just-another-
 corp-research-arm. Microsoft Research's track record:
 
@@ -92,11 +92,11 @@ corp-research-arm. Microsoft Research's track record:
   toolkit; cited by Aaron explicitly as the model for the Zeta
   seed executor's Bayesian inference engine), z3 SMT solver
   (referenced in formal-verification work)
-- **Distributed systems** — Orleans, Service Fabric, COSMOS DB
+- **Distributed systems** — Orleans, Service Fabric, Cosmos DB
   research
 - **Verification** — Dafny, F* (FStar), Boogie verification
   language
-- **Database research** — Kuzu graph DB foundations, COSMOS DB
+- **Database research** — Kuzu graph DB foundations, Cosmos DB
   multi-model design
 
 This is **not** a blanket-endorsement of all Microsoft research
@@ -336,7 +336,7 @@ that earlier substrate.
 When B-0145's PM-2 (Product Manager) role gets operationalized,
 **Microsoft Research is a preferred research-source for the
 forward-radar memo**. PM-2's research-cadence inputs (per B-0145)
-should explicitly include `research.microsoft.com` queries
+should explicitly include `https://www.microsoft.com/en-us/research/` queries
 alongside the other sources. This is the kind of layer-4
 decision that Microsoft Research has consistently led on.
 

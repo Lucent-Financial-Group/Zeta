@@ -32,10 +32,10 @@ usable* as a factory observability surface.
 
 Per the metrics-are-our-eyes framing (per
 `feedback_dependency_source_priority_open_source_microsoft_cncf_apache_mit_research_microsoft_research_metrics_are_our_eyes_aaron_2026_05_01.md`),
-the timeseries-channel is additive sensory capacity. Prometheus
-+ MCP is the lowest-friction path to *getting eyes operational
-NOW*, while the research about the optimal long-term substrate
-proceeds in parallel.
+the timeseries-channel is additive sensory capacity.
+Prometheus plus MCP is the lowest-friction path to *getting
+eyes operational NOW*, while the research about the optimal
+long-term substrate proceeds in parallel.
 
 ## Acceptance criteria
 
@@ -46,7 +46,7 @@ proceeds in parallel.
 
 2. **MCP server integration** — Prometheus exposed as an MCP
    server consumable by Claude Code agents. Configuration in
-   `.claude/mcp.json` (or wherever harness MCP config lives).
+   `.mcp.json` (or wherever harness MCP config lives).
 
 3. **promtool wired into factory tooling** — `tools/observability/
    promtool/` wraps `promtool` for:
