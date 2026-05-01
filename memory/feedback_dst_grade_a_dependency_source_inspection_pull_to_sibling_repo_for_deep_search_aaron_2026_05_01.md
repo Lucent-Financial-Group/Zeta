@@ -133,10 +133,22 @@ check. The class signature:
   WITHOUT the citation. PR review agent posts a thread:
   *"DST deviation detected. Provide source-inspection
   evidence or remove the annotation."*
+- **Enforcement** (Aaron 2026-05-01 follow-up): *"with a
+  source attribution the code does not max it through"* —
+  i.e., **WITHOUT** the source attribution, the code does
+  not make it through. This is enforcement, not just
+  flag-and-resolve. The DST-deviation thread becomes a
+  merge-blocking gate: required-attribution or merge-rejected.
+  Composes with GitHub's `required_conversation_resolution`
+  branch-protection — the DST-deviation thread is a category
+  that requires explicit citation-resolution before the PR
+  can land.
 
 This is class 14 for the BP-NN-mechanizable-lint-classes
 consolidation (B-0153). The fix-pattern: every DST-exemption
-ships with a citation; the class enforces the citation.
+ships with a citation; the class enforces the citation. The
+enforcement bites at merge-time, not just review-time —
+which is the stronger discipline shape Aaron is naming.
 
 **Aaron's challenge to Otto** (same exchange): *"did you look
 at source to prove your DST dievation was necessary"* — a
