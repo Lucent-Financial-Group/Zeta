@@ -2219,10 +2219,10 @@ the whole cluster passes its own audit.
   rebalancing on cadence cycles.
 - **The two carve-outs from Otto-357 are unchanged.** WONT-DO
   additions (removing paths from future knowledge potential
-  per §16) and budget increases (paid services, scheduled
-  remote agents that cost money) still need explicit Aaron
-  sign-off. Everything else on the backlog is Otto's
-  judgment.
+  per `docs/WONT-DO.md` doctrine) and budget increases (paid
+  services, scheduled remote agents that cost money) still
+  need explicit Aaron sign-off. Everything else on the
+  backlog is Otto's judgment.
 - **Aaron's framings on the backlog still count as inputs**
   to Otto's prioritization. They do not count as decisions.
   When Otto's project-survival read diverges from Aaron's

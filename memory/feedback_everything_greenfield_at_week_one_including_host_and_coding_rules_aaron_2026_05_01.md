@@ -18,9 +18,14 @@ including:
    while writing code in this project. They've been getting better
    over the week, but are NOT yet at current standards.
 3. **The substrate that documents both of the above** — memory
-   files, CURRENT-aaron.md sections, GOVERNANCE.md numbered rules.
-   Most are kernel-expansion-layer candidates, not seed-layer
-   canonical.
+   files and CURRENT-aaron.md sections (newer-layer rules
+   especially). Most are kernel-expansion-layer candidates,
+   not seed-layer canonical. **Explicit exclusion:**
+   `GOVERNANCE.md` numbered rules are NOT in the
+   greenfield-provisional scope — they are multi-domain-tested
+   doctrine at a higher deliberation tier than convenience-clicked
+   configs or in-flight memory entries. (Why-2 below restates
+   this in expanded form.)
 
 The wrong-prior failure mode: treating "this configuration exists,
 therefore it must be deliberate / load-bearing" as a default. The
@@ -42,7 +47,7 @@ constraint in B-0125):
 > rules but theyv been getting better as we go so even those are not
 > up to current standards"*
 
-Two specific revelations that compose into the meta-rule:
+Three specific revelations that compose into the meta-rule:
 
 **Why-1 (host is not git-native).** GitHub host-side configurations
 (branch rulesets, required-checks lists, repo-level ruleset coordination)
