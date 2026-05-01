@@ -65,13 +65,18 @@ Composition (NOT replacement):
 
 Two-layer print:
 
-1. **Raw layer first**: structured JSON output verbatim. The auditable
-   ground truth. Maintainer (or any reader) sees data before any
-   interpretation.
-2. **Interpretation layer second, labeled**: what changed since last
-   refresh, what's actionable, what's stale, what conflicts. Distinct
-   from raw data so mismatch between layers IS the bug class refresh
-   is designed to surface.
+**Output contract (canonical — single JSON with `summary` field, NOT
+two separate passes).** Per Deepseek's reconciliation 2026-05-01: a
+single JSON document where the `summary` object IS the interpretation
+layer alongside the raw `prs[]` / `backlog_delta` / `claims[]` / etc.
+arrays. Both layers are emitted in one stdout-JSON, in one invocation.
+Mismatch between `summary` and the underlying arrays IS the bug class
+the maintainer (or future-Otto reading the same JSON) catches.
+
+This **supersedes** earlier "two-pass print" framing in this row's
+draft history; ignore any references to two separate stdout passes.
+The single-JSON form composes cleanly with Otto's existing
+`poll-pr-gate-batch.ts` consumption pattern.
 
 ## Interface
 
@@ -363,7 +368,7 @@ Compute the delta via:
 
 ```bash
 git diff --name-only HEAD~1 HEAD -- docs/backlog/
-git log --oneline --diff-filter=A -- docs/backlog/ --since="<last-refresh-timestamp>"
+git log --oneline --diff-filter=A --since="<last-refresh-timestamp>" -- docs/backlog/
 ```
 
 Don't trust frontmatter `created:` / `last_updated:` fields — that's
