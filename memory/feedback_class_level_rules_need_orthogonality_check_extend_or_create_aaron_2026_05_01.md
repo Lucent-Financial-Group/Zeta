@@ -95,8 +95,11 @@ When about to encode a Layer-3 class-level rule:
 
 ## Worked example — applying this rule to a class-level lesson I just encoded
 
-In tick 2026-05-01T04:40Z (shard `0440Z.md`) I encoded a
-class-level lesson:
+In tick 2026-05-01T04:40Z (shard
+`docs/hygiene-history/ticks/2026/05/01/0440Z.md`, landing via
+PR #1023 — pending merge at the time this memory was authored;
+verify on main once #1023 lands) I encoded a class-level
+lesson:
 
 > *"when fixing a scope/vocabulary inconsistency, grep the
 > WHOLE file for the inconsistent term, not just the section
@@ -105,7 +108,7 @@ class-level lesson:
 Per Aaron's meta-meta-meta rule, before promoting this to a
 new class, I should have searched for parent classes:
 
-- **`feedback_otto_247_version_currency_always_search_first_*.md`**
+- **`feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`**
   + **`feedback_otto_364_search_first_authority_*.md`** —
   these are search-first rules. They cover *upstream-truth-vs-
   training-data*, not *whole-file-vs-just-the-section-that-
@@ -151,7 +154,7 @@ file.
 
 ## Composes with
 
-- **`docs/backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-sibling-repo-aaron-2026-05-01.md`**
+- **`docs/backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md`**
   — this rule is the meta-meta-meta layer above B-0126's
   Layer 3 (encode the class). Layer 3 says encode the class;
   this rule says *check existing classes before encoding a
@@ -166,7 +169,7 @@ file.
 - **`memory/feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md`**
   — canonical-definition machinery. Class-level rules ARE
   canonical entries; same razor applies.
-- **`memory/feedback_aaron_anchor_free_zero_doctrine_pirate_in_life_2026_04_30.md`**
+- **`memory/user_aaron_anchor_free_zero_doctrine_pirate_in_life_2026_04_30.md`**
   — Aaron's anchor-free cognitive architecture. Razor
   dissolves mistaken creations; orthogonality earns the
   create.
@@ -246,7 +249,7 @@ pointer is recorded so future-Otto knows where to look when
 the PR process needs math-precise specification (e.g., for
 formal verification of substrate canonicalization).
 
-## PR-process as poor-mans immune system at the github-host layer
+## PR-process as poor-man's immune system at the GitHub-host layer
 
 Aaron 2026-05-01:
 
@@ -269,19 +272,19 @@ but at a different abstraction level:
   pair evaluating + repairing; threads as the consensus surface;
   manual-graded right now.
 
-Aaron's framing: the github-layer process is a *poor-mans
+Aaron's framing: the github-layer process is a *poor-man's
 version* of what Aurora will eventually do machine-graded. The
 shape is the same; the maturity-tier is different.
 
 This connects to the cross-project maturity-tier split: the
-github-host immune system runs in Zeta's explore-side (where
+GitHub-host immune system runs in Zeta's explore-side (where
 higher-order discipline is safe to experiment with); the
 exploit-side benefits from the *output* of the discipline
 (settled class-level rules) without paying the
 discovery-process cost.
 
 **Implication for the meta-meta-meta-rule itself**: this rule
-is part of the github-host immune system's antibody library.
+is part of the GitHub-host immune system's antibody library.
 Each class-level rule is an antibody; this rule governs the
 shape and orthogonality of new antibodies; Aurora's eventual
 machine-graded version will encode this same discipline
