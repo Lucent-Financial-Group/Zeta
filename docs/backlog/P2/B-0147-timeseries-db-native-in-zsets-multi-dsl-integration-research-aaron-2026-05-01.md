@@ -54,11 +54,13 @@ time-series persistence is a fitness function.
    - **Prometheus** (Aaron's known good-citizen baseline; CNCF
      graduated; pull-based; PromQL; widely-deployed)
    - **TimescaleDB** (PostgreSQL extension; SQL-native;
-     time-partitioned; Apache 2.0)
-   - **InfluxDB** (line-protocol; Flux/InfluxQL; check license
-     tier — OSS vs commercial — for proprietary-filter)
-   - **VictoriaMetrics** (Apache 2.0; Prometheus-compatible
-     API; high cardinality)
+     time-partitioned; verify current license tier per Otto-364
+     before depending on it — the project has had license
+     re-tiering in recent history)
+   - **InfluxDB** (line-protocol; Flux/InfluxQL; verify current
+     license tier — OSS vs commercial — for proprietary-filter)
+   - **VictoriaMetrics** (verify current license; Prometheus-
+     compatible API; high cardinality)
    - **Microsoft Research candidates** — search MSR for
      timeseries-DB primitives or any precursor research
      (Aaron 2026-05-01 dependency-priority rule)
