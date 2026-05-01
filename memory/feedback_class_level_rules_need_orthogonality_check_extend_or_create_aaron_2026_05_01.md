@@ -109,8 +109,8 @@ Per Aaron's meta-meta-meta rule, before promoting this to a
 new class, I should have searched for parent classes:
 
 - **`feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`**
-  + **`feedback_otto_364_search_first_authority_*.md`** —
-  these are search-first rules. They cover *upstream-truth-vs-
+  and **`feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md`**
+  — these are search-first rules. They cover *upstream-truth-vs-
   training-data*, not *whole-file-vs-just-the-section-that-
   triggered*. Different scope (upstream / external) vs
   (in-file / internal). Adjacent but not parent.
@@ -121,8 +121,8 @@ new class, I should have searched for parent classes:
     - verify-before-fix-complete: claim = "X is fixed"; verify = all-instances-fixed.
   Same `verify-before-claim` parent shape; different specific
   claims and verifications.
-- **`feedback_otto_363_substrate_or_it_didnt_happen_*.md`** —
-  substrate-must-be-reachable. Adjacent (both about claim
+- **`feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`**
+  — substrate-must-be-reachable. Adjacent (both about claim
   verification) but addresses different claim type
   (durability of work).
 
@@ -136,10 +136,12 @@ is about fix-completion. But they share a parent shape:
 `feedback_grep_whole_file_before_declaring_fixed.md`. The
 right move is to either (a) extend the verify-before-deferring
 file with a sibling rule about fix-completion verification, or
-(b) create a small parent file
-`feedback_verify_before_state_claim_*.md` that covers both,
-with the deferring + fix-completion cases as worked examples
-underneath.
+(b) create a small parent file (proposed but not yet written;
+working name `feedback_verify_before_state_claim_<date>.md`)
+that covers both, with the deferring + fix-completion cases
+as worked examples underneath. The file does not exist as of
+this PR; the working-name pattern signals "to-be-written"
+rather than "already-extant."
 
 I'm leaving the choice between (a) and (b) for the next
 class-level encoding moment when one more sub-case appears —
@@ -267,7 +269,7 @@ but at a different abstraction level:
   grading with Verify · Useful · CultureFit · Provenance ·
   Retractability factors; multi-master BFT consensus;
   cooperative-mode resilience; eventually machine-graded.
-- **GitHub-host layer** (this PR process): bot reviewers
+- **GitHub-host layer** (this PR process): agent reviewers
   (Codex/Copilot) producing findings; the maintainer-with-AI
   pair evaluating + repairing; threads as the consensus surface;
   manual-graded right now.
