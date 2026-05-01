@@ -58,9 +58,9 @@ funnel is broken at the discovery step.
    - Triggers on push to `main` (and `workflow_dispatch`)
    - Builds the Pages content from a designated source
      (likely `docs/site/` or generated from `docs/` tree)
-   - Uses `actions/upload-pages-artifact@vX` +
-     `actions/deploy-pages@vX` (SHA-pinned per
-     `docs/FACTORY-HYGIENE.md` row #43)
+   - Uses `actions/upload-pages-artifact` +
+     `actions/deploy-pages`, both SHA-pinned (no tag
+     references) per `docs/FACTORY-HYGIENE.md` row #43
    - Concurrency group + `cancel-in-progress: false`
    - Minimum permissions (`pages: write`, `id-token: write`)
 
@@ -102,8 +102,8 @@ funnel is broken at the discovery step.
    - `topics`: add `dbsp`, `fsharp`, `dotnet`,
      `incremental-computation`, `streaming-database`,
      `differential-dataflow`, `database`, `query-engine`,
-     `formal-verification`, `tla-plus` (12 topics is GitHub
-     max)
+     `formal-verification`, `tla-plus` (max 20 topics per
+     GitHub repository topic limits)
    - `description`: keep current "F# implementation of DBSP
      for .NET 10" (concise + keyword-rich)
    - `homepage`: stay pointed at the Pages URL
@@ -112,7 +112,41 @@ funnel is broken at the discovery step.
    sitemap to Google Search Console + Bing Webmaster Tools.
    Manual one-time action.
 
-8. **Playwright validation harness** (Aaron 2026-05-01:
+8. **AI-agent-crawler explicit allow** (Aaron 2026-05-01:
+   *"we should make sure we have our wiki seo optimize to
+   explicitly allow agents crawlers to consume it too"* +
+   *"or github pages i mean or both however it works, i've
+   never used the wiki, i've used github pages with the
+   jekyll or whatever before"*) — many sites BLOCK AI
+   crawlers in robots.txt to defend training-data; we
+   EXPLICITLY ALLOW them as a discoverability win. Agent
+   search (Perplexity, ChatGPT browsing, Claude search,
+   Gemini grounding) is increasingly the maintainer-
+   discovery channel in 2026. Implementation:
+   - **`robots.txt`** explicitly `Allow:` for known agent
+     user-agents:
+     - `GPTBot` (OpenAI search)
+     - `ClaudeBot` / `Claude-Web` / `anthropic-ai` (Anthropic)
+     - `PerplexityBot` (Perplexity)
+     - `Google-Extended` (Google's AI training corpus)
+     - `CCBot` (Common Crawl — feeds many AI training sets)
+     - `Cohere-AI` (Cohere)
+     - `FacebookBot` / `Meta-ExternalAgent` (Meta)
+     - `YouBot` (You.com)
+     - `DuckAssistBot` (DuckDuckGo)
+   - **JSON-LD structured data** on every page so agents
+     can parse content as machine-readable graph (Article,
+     SoftwareApplication, Organization types)
+   - **Open Graph + Twitter Card** complete for agents
+     that scrape link-preview surfaces
+   - **Plain-HTML semantic markup** (no SPA hydration that
+     blocks crawler access — Jekyll default is fine)
+   - Same allow-list applied at GitHub Wiki level if/when
+     Aaron uses Wiki (Pages is primary; Wiki is secondary
+     per Aaron's *"i've never used the wiki"* note —
+     Pages-with-Jekyll is the proven path)
+
+9. **Playwright validation harness** (Aaron 2026-05-01:
    *"feel free to use playwright to test our github pages at
    any times this should give you the full deployment
    experience at least frontend deployments that can be
@@ -132,23 +166,25 @@ funnel is broken at the discovery step.
    - Post-deploy verification after each Pages publish
    - Scheduled cadence (daily) to catch external regressions
 
-9. **DORA metrics on frontend deployments** — track the four
-   DORA metrics for the Pages frontend lane:
-   - **Deployment frequency** — how often Pages publishes
-     successfully (CI workflow run count)
-   - **Lead time for changes** — commit timestamp →
-     Pages-live timestamp (Playwright HTTP-200 confirms live)
-   - **Mean Time to Restore (MTTR)** — broken-Pages-detected
-     to Pages-restored-200 duration
-   - **Change failure rate** — % of Pages publishes that
-     produced a broken state (Playwright HTTP-200 fail or
-     test-suite fail)
-   Architectural note (Aaron 2026-05-01): *"no backend yet
-   other than git is the backend for our UI"* — DORA at the
-   frontend deployment layer is the only DORA we measure
-   until backend decisions land. Composes with B-0147
-   (timeseries-DB native research) + the metrics-are-our-eyes
-   substrate.
+10. **DORA metrics on frontend deployments** — track the four
+    DORA metrics for the Pages frontend lane:
+
+    - **Deployment frequency** — how often Pages publishes
+      successfully (CI workflow run count)
+    - **Lead time for changes** — commit timestamp →
+      Pages-live timestamp (Playwright HTTP-200 confirms live)
+    - **Mean Time to Restore (MTTR)** — broken-Pages-detected
+      to Pages-restored-200 duration
+    - **Change failure rate** — % of Pages publishes that
+      produced a broken state (Playwright HTTP-200 fail or
+      test-suite fail)
+
+    Architectural note (Aaron 2026-05-01): *"no backend yet
+    other than git is the backend for our UI"* — DORA at the
+    frontend deployment layer is the only DORA we measure
+    until backend decisions land. Composes with B-0147
+    (timeseries-DB native research) + the metrics-are-our-eyes
+    substrate.
 
 ### Anti-patterns this guards against
 
@@ -248,13 +284,13 @@ wiki UI for browsability.
 - `memory/feedback_github_settings_as_code_declarative_checked_in_file.md`
   — the declarative-settings-as-code discipline; Pages
   workflow IS this discipline applied
-- `memory/feedback_agent_owns_all_github_settings_and_config_all_projects_zeta_frontier_poor_mans_mode_default_budget_asks_require_scheduled_budget_2026_04_23.md`
+- `memory/feedback_agent_owns_all_github_settings_and_config_all_projects_zeta_frontier_poor_mans_mode_default_budget_asks_require_scheduled_backlog_and_cost_estimate_2026_04_23.md`
   — Aaron's standing authorization for agent-owned GitHub
   settings; this row falls under that authorization
 - `memory/project_factory_is_git_native_github_first_host_hygiene_cadences_for_frictionless_operation_2026_04_23.md`
   — git-native + GitHub-first-host framing; Pages + Wiki
   are GitHub-first-host surfaces
-- B-0143 (bi-directional messaging with Aaron + four-corner
+- B-0143 (bi-directional messaging with Aaron + four-corner; forward-ref to PR #1115 not yet merged on main
   hat-color/WWJ) — Aaron's communication channels; Pages
   could surface a "contact" page
 - `docs/CONTRIBUTOR-PERSONAS.md` (10 personas: drive-by typo
