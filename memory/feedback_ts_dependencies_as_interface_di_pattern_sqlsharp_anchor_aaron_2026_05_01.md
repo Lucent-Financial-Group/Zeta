@@ -4,7 +4,7 @@ description: Aaron 2026-05-01 — *"`../SQLSharp` is a decent example... of best
 type: feedback
 caused_by:
   - "Aaron 2026-05-01 nudge cluster after PR #1153 (poll-pr-gate-batch.ts + DST tests) landed: '../SQLSharp is a decent example' + 'of best practices not super DST yet the other repo but best bun/ts practices' + 'super strongly typed' + 'not js in ts failure mode'"
-  - "Inspection of `/Users/acehack/Documents/src/repos/SQLSharp/tools/automation/format/format-repo.ts` confirmed the pattern (FormatRepoDependencies interface + defaultFormatRepoDependencies const + DI through call chain)"
+  - "Inspection of `../SQLSharp/tools/automation/format/format-repo.ts` (sibling-repo path; absolute filesystem path host-specific) confirmed the pattern (FormatRepoDependencies interface + defaultFormatRepoDependencies const + DI through call chain)"
   - "SQLSharp CLAUDE.md explicit rule: *'Prefer strong static types and generics across C#, F#, and TypeScript; push invariants into compiler-checked types and signatures when the design can carry them there.'*"
 composes_with:
   - feedback_prefer_ts_scripts_over_dynamic_bash_for_conversation_ux_dst_in_ts_aaron_2026_05_01.md
