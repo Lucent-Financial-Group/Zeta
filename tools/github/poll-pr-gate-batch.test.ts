@@ -197,4 +197,23 @@ describe("pollAllBounded with injected pollFn", () => {
     expect(outcomes[1]?.error?.exitCode).toBe(2);
     expect(outcomes[2]?.report?.number).toBe(2);
   });
+
+  test("converts a rejected pollFn promise into a PollError outcome", async () => {
+    // P0 invariant (Copilot review on PR #1153 2026-05-01):
+    // pollAllBounded must NEVER reject — even if pollFn throws or
+    // returns a rejected promise. The orchestrator's contract is
+    // that Promise.all(workers) always resolves; rejection from a
+    // single PR's poll converts to PollOutcome.error so the caller
+    // partitions success/failure deterministically.
+    const pollFn = (pr: number): Promise<PollOutcome> =>
+      pr === 99
+        ? Promise.reject(new Error("synthetic rejection"))
+        : Promise.resolve({ number: pr, report: mkReport({ number: pr }) });
+    const outcomes = await pollAllBounded([1, 99, 2], "o", "r", 4, pollFn);
+    expect(outcomes).toHaveLength(3);
+    expect(outcomes[0]?.report?.number).toBe(1);
+    expect(outcomes[1]?.error?.exitCode).toBe(-1);
+    expect(outcomes[1]?.error?.stderr).toContain("synthetic rejection");
+    expect(outcomes[2]?.report?.number).toBe(2);
+  });
 });

@@ -340,7 +340,24 @@ export async function pollAllBounded(
           if (idx >= prs.length) return;
           const pr = prs[idx];
           if (pr === undefined) continue;
-          outcomes[idx] = await pollFn(pr, owner, repo);
+          // Wrap pollFn in try/catch so a throw or rejected promise
+          // from a single PR doesn't abort the whole batch
+          // (Copilot P0 review on PR #1153 2026-05-01). Convert any
+          // rejection into a PollOutcome.error entry; Promise.all
+          // on the workers always resolves.
+          try {
+            outcomes[idx] = await pollFn(pr, owner, repo);
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            outcomes[idx] = {
+              number: pr,
+              error: {
+                number: pr,
+                exitCode: -1,
+                stderr: `pollFn rejected: ${msg}`,
+              },
+            };
+          }
         }
       })(),
     );
