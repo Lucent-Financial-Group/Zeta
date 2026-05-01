@@ -2486,10 +2486,13 @@ authority; conflicts resolve through BFT consensus).
 
 **Composes with:**
 
-- §16 (host-mutation needs Aaron sign-off) — composes: the carve-
-  out is for irreversibility-class actions; per-master sign-off
-  is one mechanism, multi-master consensus is the eventual
-  mechanism.
+- The host-mutation-needs-Aaron-sign-off discipline (derived
+  from Otto-357 + the no-spending-increase carve-out + task
+  #343 drift-debt receipt — NOT a numbered §NN in
+  CURRENT-aaron; §16 is "Ethical clean-room services") —
+  composes: the carve-out is for irreversibility-class
+  actions; per-master sign-off is one mechanism, multi-master
+  consensus is the eventual mechanism.
 - §20 (authority-delegation pattern, don't make Aaron the
   bottleneck) — multi-master architecture is the structural
   answer to bottleneck.
