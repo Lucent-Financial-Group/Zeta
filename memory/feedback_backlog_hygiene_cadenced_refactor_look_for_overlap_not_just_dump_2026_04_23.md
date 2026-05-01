@@ -242,9 +242,15 @@ created: YYYY-MM-DD
 last_updated: YYYY-MM-DD
 depends_on:                  # NEW optional field
   - B-NNNN-existing-row      # blocking dependency
-  - Otto-task #N             # TaskList dependency
+  - "Otto-task #N"           # TaskList dependency (quote required: # starts a YAML comment unquoted)
 ---
 ```
+
+YAML quoting note: values containing `#` (after whitespace)
+must be quoted to avoid being parsed as comments — strings
+like `Otto-task #323` get silently truncated to `Otto-task`
+without quotes. Use double-quotes (`"Otto-task #323"`) for
+all `Otto-task #N` and `PR #N` values in `depends_on:`.
 
 `depends_on` semantics: the depending row CAN be filed
 immediately, but its work shouldn't START until the
@@ -253,10 +259,11 @@ depended-on row reaches a defined state (typically
 
 **Tooling state — envisioned, not yet implemented.** As of
 this memo's authoring, `tools/backlog/generate-index.sh`
-parses `id`/`priority`/`status`/`title`/`created`/
-`last_updated` and does NOT consume `depends_on`. The
-schema field is the *forward-compatible authoring shape*;
-downstream tooling lands as separate work:
+parses only `id` / `status` / `title` from frontmatter
+(priority is derived from the directory path
+`docs/backlog/P{0,1,2,3}/`), and does NOT consume
+`depends_on`. The schema field is the *forward-compatible
+authoring shape*; downstream tooling lands as separate work:
 
 - **Topological-sort view** — candidate generator extension
   to emit a DAG-ordered listing of the backlog.
@@ -276,12 +283,14 @@ tooling catches up; reading the field is the agent's
 discipline until then.
 
 Example: B-0150 (timeseries domain expert + teacher persona)
-should `depends_on: [Otto-task #323]` (per-tool/language
+should `depends_on: ["Otto-task #323"]` (per-tool/language
 expert skills — which is the broader pattern B-0150
-instantiates). B-0153 (pre-commit lint suite) should
-`depends_on: [B-0033, B-0086]` (sibling tooling concerns).
-B-0151 (RX researcher) should `depends_on: [B-0017]`
-(operational resonance dashboard with continuous UX research).
+instantiates; quotes required because of the `#`).
+B-0153 (pre-commit lint suite) should
+`depends_on: [B-0033, B-0086]` (sibling tooling concerns;
+B-NNNN values are unquoted-safe). B-0151 (RX researcher)
+should `depends_on: [B-0017]` (operational resonance
+dashboard with continuous UX research).
 
 The backlog becomes graph-shaped (a DAG once tooling lands)
 rather than flat. Each new row is either a leaf (no deps)
@@ -432,7 +441,7 @@ retroactive edges (that's task #291-scale work).
 References within `memory/` use the **filename**
 (basename, not full path):
 
-- `extends: [feedback_version_currency_otto_247_2026_04_24.md]`
+- `extends: [feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md]`
 
 External-surface references (PR / issue / TaskList /
 maintainer messages) live under `caused_by:` as
@@ -477,7 +486,9 @@ duplication required, no migration needed.
   as the cold-start reading order; edges are per-file
   relational claims, not a global index.
 - **NOT bidirectional** — forward-only by design; reverse
-  navigation is `grep -lrE "edge: X" memory/` away.
+  navigation is `grep -lrE "(extends|supersedes|refines|contradicts|composes_with):.*X" memory/`
+  away (the field names are the literal frontmatter keys,
+  not a generic `edge:`).
 - **NOT required at PR-time** — adding edges is
   encouraged when the relationship is obvious during
   authoring; absence of edges is not a lint failure.
