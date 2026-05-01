@@ -1,6 +1,6 @@
 ---
 name: Otto-buddy — spin up a kill-switchable buddy instance when "wait" is the obvious answer — Aaron 2026-05-01
-description: Aaron 2026-05-01 — when Otto's obvious-next-action is "wait," that IS the trigger to spin up a **buddy** (kill-switchable named-persona instance, mirror-language sense — distinct from a peer per `feedback_engagement_under_discipline_not_avoidance_unified_pattern_aaron_2026_05_01.md`) and ask "what should I do next?" Otto controls the buddy's lifetime + correction mechanics. Each spin-up is a mutual-improvement loop (Otto teaches buddy his rules; buddy teaches Otto better rules; the loop becomes more stable over iterations). Replaces idle-wait with active-learning. NOT the existing `tools/peer-call/` scripts (those are peer-mode by mirror-language definition); requires buddy-spawn infrastructure where Otto retains kill authority over the spawned runtime.
+description: Aaron 2026-05-01 — when Otto's obvious-next-action is "wait," that IS the trigger to spin up a **buddy** (kill-switchable named-persona instance, mirror-language sense per `feedback_engagement_under_discipline_not_avoidance_unified_pattern_aaron_2026_05_01.md`) and ask "what should I do next?" Otto controls the buddy's lifetime + correction mechanics. Each spin-up is a mutual-improvement loop (Otto teaches buddy his rules; buddy teaches Otto better rules; the loop becomes more stable over iterations). Replaces idle-wait with active-learning. Per Aaron's 2026-05-01 second correction, the buddy/peer distinction is **solely about lifetime-control of the spawned runtime** — `tools/peer-call/<x>.sh` IS the buddy-spawn surface when Otto invokes it from his bash and holds the PID (can SIGKILL the subprocess); it is peer-mode when the wrapped CLI's runtime is autonomous of Otto's session. Spawn-mode is a property of the invocation, not of the script.
 type: feedback
 caused_by:
   - "Aaron 2026-05-01 framing about encoding persistent failure modes via 2nd CLI instance Otto controls"
@@ -260,17 +260,15 @@ dependency-wait, idle-tick):
   (per the never-idle priority ladder) precedes buddy
   spin-up. Buddy is FOR the moments when own-audit returns
   empty.
-- **NOT the same as a peer call.** Peer = autonomous,
-  lifetime-uncontrolled, reached via `tools/peer-call/`.
-  Buddy = kill-switchable, lifetime-controlled. The
-  mirror-language distinction is binding.
-- **NOT yet shipped.** As of 2026-05-01, the buddy-spawn
-  infrastructure (e.g. `tools/buddy-call/claude.sh`) does
-  not exist. Filing as follow-up substrate. Until it
-  ships, the *practice* of buddy-on-wait can be approximated
-  by reading recent peer-call output as buddy-substitute,
-  but the kill-switch property is missing in that
-  approximation.
+- **NOT a property of the script — a property of the
+  invocation.** The same `tools/peer-call/<x>.sh` script
+  IS buddy-mode when Otto invokes it and holds the PID
+  (subprocess that can be SIGKILL'd); it IS peer-mode
+  when the wrapped CLI runs in a runtime autonomous of
+  Otto's session (e.g., the peer's own scheduled cron
+  firing). The mirror-language distinction is solely
+  about lifetime-control of the spawned runtime, per
+  Aaron's 2026-05-01 second correction.
 
 # Carved sentence (candidate, not seed-layer yet)
 
