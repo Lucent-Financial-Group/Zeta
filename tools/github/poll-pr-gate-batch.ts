@@ -56,14 +56,14 @@ import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
-interface CheckCounts {
+export interface CheckCounts {
   ok: number;
   inProgress: number;
   pending: number;
   failed: number;
 }
 
-interface GateReport {
+export interface GateReport {
   number: number;
   state: string;
   gate: "CLEAN" | "BLOCKED" | "DIRTY" | "UNSTABLE" | "UNKNOWN";
@@ -82,13 +82,13 @@ interface GateReport {
     | "none";
 }
 
-interface PollError {
+export interface PollError {
   number: number;
   exitCode: number;
   stderr: string;
 }
 
-interface BatchSummary {
+export interface BatchSummary {
   byGate: Record<string, number>;
   byNextAction: Record<string, number>;
   byState: Record<string, number>;
@@ -96,7 +96,7 @@ interface BatchSummary {
   warnings: string[];
 }
 
-interface BatchReport {
+export interface BatchReport {
   owner: string;
   repo: string;
   queriedAt: string;
@@ -228,7 +228,7 @@ function listOpenPRs(owner: string, repo: string): number[] {
   return all;
 }
 
-interface PollOutcome {
+export interface PollOutcome {
   number: number;
   report?: GateReport;
   error?: PollError;
@@ -300,16 +300,26 @@ function pollOne(
   });
 }
 
-async function pollAllBounded(
+type PollFn = (
+  prNumber: number,
+  owner: string,
+  repo: string,
+) => Promise<PollOutcome>;
+
+export async function pollAllBounded(
   prs: number[],
   owner: string,
   repo: string,
   concurrency: number,
+  pollFn: PollFn = pollOne,
 ): Promise<PollOutcome[]> {
   // Bounded concurrency to avoid hammering GitHub's rate limit. Each
   // poll fans out to 2-3 gh calls internally; cap parallel polls so
   // total in-flight gh calls stay well below the 5000/hr limit even
   // on a packed queue. Order in `outcomes` matches input order.
+  // `pollFn` is injectable for DST: tests pass a synchronous pure
+  // function returning a fixed PollOutcome so orchestration runs
+  // deterministically without spawning gh.
   const outcomes: PollOutcome[] = new Array(prs.length);
   let cursor = 0;
   const workers: Promise<void>[] = [];
@@ -322,7 +332,7 @@ async function pollAllBounded(
           if (idx >= prs.length) return;
           const pr = prs[idx];
           if (pr === undefined) continue;
-          outcomes[idx] = await pollOne(pr, owner, repo);
+          outcomes[idx] = await pollFn(pr, owner, repo);
         }
       })(),
     );
@@ -331,7 +341,7 @@ async function pollAllBounded(
   return outcomes;
 }
 
-function summarize(reports: GateReport[]): BatchSummary {
+export function summarize(reports: GateReport[]): BatchSummary {
   const byGate: Record<string, number> = {};
   const byNextAction: Record<string, number> = {};
   const byState: Record<string, number> = {};
