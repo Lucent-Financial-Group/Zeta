@@ -1,9 +1,10 @@
 ---
-name: Doc/code two-lane parallel split — next-rung-up unlock for factory parallelism (Aaron 2026-05-01)
+id: B-0144
 priority: P1
-type: factory-architecture
-owner: otto
-related: B-0141, B-0142, B-0130, B-0134, B-0135, #324-#339 (agent-orchestra)
+status: open
+title: Doc/code two-lane parallel split — rung-2 unlock for factory parallelism
+created: 2026-05-01
+last_updated: 2026-05-01
 ---
 
 # B-0144 — Doc/code two-lane parallel split

@@ -1,9 +1,10 @@
 ---
-name: Product Manager (PM-2) role — research-to-predict-features-before-friction (Aaron 2026-05-01)
+id: B-0145
 priority: P1
-type: factory-architecture
-owner: TBD (gap; currently unfilled)
-related: B-0144 (rung 2 of scaling ladder), task #244 (factory-demo target), task #286 (Aurora integration), task #292 (measurement hygiene), task #309 (multi-AI synthesis), TECH-RADAR
+status: open
+title: Product Manager (PM-2) role — research-to-predict-features-before-friction
+created: 2026-05-01
+last_updated: 2026-05-01
 ---
 
 # B-0145 — Product Manager (PM-2) role — research-to-predict-features-before-friction
