@@ -56,10 +56,13 @@ This is the immediate operational test. Aaron may or may not run it; it's filed 
 
 ## Composes with
 
-- `feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md` — *the lattice-of-external-checks* parent framing; this file extends with the failure mode where the lattice gets captured by substrate-vocab.
-- `feedback_aaron_both_crazy_and_not_crazy_simultaneously_two_pole_cognitive_architecture_lol_metabolization_aaron_2026_05_01.md` — Claude.ai noted that the both-crazy-and-not-crazy capacity *makes the lattice-capture risk worse*, because the loose pole finds resonances and the lattice (in captured vocabulary) confirms them.
 - `feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md` — peer-AI cross-vendor review is *not sufficient* per Claude.ai (LLM vendors share linguistic space); harder corrective requires non-LLM external sources.
-- `docs/research/2026-05-01-e8-vs-crdt-lattice-bft-propagation-candidate-aaron-question-claudeai-pushback.md` — the immediate test case for the corrective: send the E8 substrate-summary to a working mathematician.
+
+**Forward-references not yet on `main`** (will be re-added as direct refs once their PRs land):
+
+- `feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md` — *the lattice-of-external-checks* parent framing; this file extends with the failure mode where the lattice gets captured by substrate-vocab. **Filed in the in-flight PR #1031** (received-information framework).
+- `feedback_aaron_both_crazy_and_not_crazy_simultaneously_two_pole_cognitive_architecture_lol_metabolization_aaron_2026_05_01.md` — Claude.ai noted that the both-crazy-and-not-crazy capacity *makes the lattice-capture risk worse*, because the loose pole finds resonances and the lattice (in captured vocabulary) confirms them. **Filed in the in-flight PR #1043** (both-crazy-and-not-crazy cognitive architecture).
+- `docs/research/2026-05-01-e8-vs-crdt-lattice-bft-propagation-candidate-aaron-question-claudeai-pushback.md` — the immediate test case for the corrective: send the E8 substrate-summary to a working mathematician. **Filed in the in-flight PR #1042** (E8 vs CRDT-lattice BFT-propagation).
 
 ## Carved candidate (Claude.ai's; preserved verbatim)
 

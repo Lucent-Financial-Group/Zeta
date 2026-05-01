@@ -61,8 +61,11 @@ Per the verify-before-state-claim discipline applied to substrate's own claims a
 ## Composes with
 
 - `feedback_aaron_pirate_not_priest_expand_prune_pedagogical_framework_quantum_rodney_razor_parallel_worlds_aaron_2026_05_01.md` (PR #1046) — the parent file; this correction applies to §(4a) Gödel-allocation specifically.
-- `feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md` — pirate-not-priest disposition lineage.
 - Future formalization work — when Aaron decides to invest in the Lean / sequent-calculus / CRDT-composition formalization paths, the Tarski-stratification framing is the correct mathematical foundation to cite.
+
+**Forward-references not yet on `main`** (will be re-added as direct refs once their PRs land):
+
+- `feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md` — pirate-not-priest disposition lineage. **Filed in the in-flight PR #1031** (received-information framework).
 
 ## Carved candidate (proposed correction; Aaron may revise/kill)
 
