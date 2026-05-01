@@ -2348,15 +2348,19 @@ single-ruleset framing in B-0125):
 
 **On host-mutation specifically:**
 
-§16 (host-mutation needs Aaron sign-off) remains in force as the
-default, but the *interpretation* shifts: the host configurations
-being mutated are themselves provisional, so "the host mutation
-breaks the original design" framing is often false because there
-wasn't an original design to break. Per-row Aaron sign-offs (like
-the one for B-0125) are the explicit mechanism for proceeding.
-Absent that, default still defers because the failure modes from
-prior host mutations (task #342/#343 cluster) remain real
-*regardless* of whether the original config was deliberate.
+The host-mutation-needs-Aaron-sign-off norm (derived from Otto-357
+no-directives + the no-spending-increase carve-out per
+`feedback_aaron_full_github_access_authorization_*` + the failure
+modes from prior host mutations per task #343 drift-debt receipt)
+remains in force as the default. The *interpretation* shifts: the
+host configurations being mutated are themselves provisional, so
+"the host mutation breaks the original design" framing is often
+false because there wasn't an original design to break. Per-row
+Aaron sign-offs (like the one for B-0125 multi-ruleset
+authorization) are the explicit mechanism for proceeding. Absent
+that, default still defers because the failure modes from prior
+host mutations (task #342/#343 cluster) remain real *regardless*
+of whether the original config was deliberate.
 
 **Carved-sentence candidate (not seed-layer yet):**
 
@@ -2369,8 +2373,10 @@ grading on the normal cadence.)
 
 **Composes with:**
 
-- **§16** (host-mutation needs Aaron sign-off) — default still
-  defers, but interpretation shifts.
+- **The host-mutation-needs-Aaron-sign-off norm** (Otto-357
+  no-directives + no-spending-increase carve-out per
+  `feedback_aaron_full_github_access_authorization_*`) —
+  default still defers, but interpretation shifts.
 - **§35** (default-disposition-paused-not-closed) — same shape
   applied to configurations.
 - **§45** (backlog prioritization delegated to Otto) — composes

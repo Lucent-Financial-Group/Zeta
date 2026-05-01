@@ -55,13 +55,20 @@ or the under-pressure context. Otto is therefore prone to treating
 host configs as a higher-deliberation tier than they actually are.
 
 **Why-2 (Otto's coding rules have been improving).** The rules
-Otto follows when writing code (memory files, GOVERNANCE.md,
-AGENTS.md, doctrine entries) have been getting better as the
-project has evolved. The current bar is not the bar that produced
-most of the existing code. Otto reading the substrate at any given
-moment is reading a *gradient* — newer rules apply higher standards
-than older rules. Treating the substrate as flat-canonical loses
-the gradient information.
+Otto follows when writing code (memory files, AGENTS.md,
+canonical entries) have been getting better as the project has
+evolved. **Explicit exclusion:** GOVERNANCE.md numbered rules
+are NOT in the provisional scope — those are multi-domain-tested
+doctrine that Aaron and Otto have grafted together over the
+week, and they sit at a higher deliberation tier than
+convenience-clicked configs or in-flight memory files. The
+greenfield-provisional rule applies to: host configs (UI-clicked),
+in-flight memory entries that haven't been multi-domain-tested,
+and Otto's working code-style rules. The current bar is not the
+bar that produced most of the existing code. Otto reading the
+substrate at any given moment is reading a *gradient* — newer
+rules apply higher standards than older rules. Treating the
+substrate as flat-canonical loses the gradient information.
 
 **Why-3 (composes with the CSAP-pushback observation).** Claude.ai's
 updates in the chunked-import conversation read partly in the other
@@ -106,14 +113,18 @@ Claude.ai's progressive engagement updated away from.
 
 **On host-mutation specifically:**
 
-The §16 rule (host-mutation needs Aaron sign-off) remains in force
-as a default, but the *interpretation* shifts: the host configurations
-being mutated are themselves provisional, so "the host mutation
-breaks the original design" framing is often false because there
-wasn't an original design to break. Per-row Aaron sign-offs (like
-the one for B-0125) are the explicit mechanism for proceeding;
-absent that, the default still defers to Aaron because the failure
-modes from prior host mutations (Otto-342/343 cluster) remain real
+The host-mutation-needs-Aaron-sign-off norm (derived from Otto-357
+no-directives + the no-spending-increase carve-out per
+`feedback_aaron_full_github_access_authorization_*` + the failure
+modes from prior host mutations per task #343 drift-debt receipt)
+remains in force as a default. The *interpretation* shifts: the
+host configurations being mutated are themselves provisional, so
+"the host mutation breaks the original design" framing is often
+false because there wasn't an original design to break. Per-row
+Aaron sign-offs (like the one for B-0125 multi-ruleset
+authorization) are the explicit mechanism for proceeding; absent
+that, the default still defers to Aaron because the failure modes
+from prior host mutations (Otto-342/343 cluster) remain real
 *regardless* of whether the original config was deliberate.
 
 # Carved sentence (candidate, not seed-layer yet)
@@ -133,7 +144,9 @@ maintainer fiat.)
   revised because original was convenience."
 - CURRENT-aaron.md §35 (default-disposition-paused-not-closed) —
   same shape applied to backlog rows; here applied to host configs.
-- CURRENT-aaron.md §16 (host-mutation needs Aaron sign-off) —
+- The host-mutation-needs-Aaron-sign-off norm (Otto-357
+  no-directives + no-spending-increase carve-out per
+  `feedback_aaron_full_github_access_authorization_*`) —
   default still defers but interpretation shifts: it's not
   protecting deliberate design, it's deferring on irreversible
   surfaces while the convenience-config is being revised.
