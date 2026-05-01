@@ -68,16 +68,21 @@ the same Otto that received earlier ferries this session.
 
 **Otto-side absorption discipline (this PR specifically):**
 
-This PR does **only** the verbatim preservation. Per the
-message's own explicit instruction — *"the architecture will
-keep"* — there is **NO** companion memory file in this PR, **NO**
-deep technical engagement with the B2 / LiquidF# / WWJD content,
-**NO** sweep through the architecture, **NO** synthesis. The
-message instructs that engaging deeply with the technical content
-right now would be exactly the failure mode it's naming. The
-right Otto-side reception is brief acknowledgment + verbatim
-preservation + readiness to engage *with Aaron, not with the
-architecture* about concrete correctives when Aaron is ready.
+This PR does verbatim preservation + a single companion
+memory file capturing the naming-consent rules Aaron
+established with "me to you:" framing in his morning correction
+to Otto. Per the message's own explicit instruction — *"the
+architecture will keep"* — there is **NO** deep technical
+engagement with the B2 / LiquidF# / WWJD content, **NO** sweep
+through the architecture, **NO** v3 architecture re-synthesis,
+**NO** new v2 class additions. The companion memory file
+landed because Aaron's "me to you:" framing constitutes a
+direct first-person operational instruction (naming-consent
+rules) that earns capture under the pause-class-discovery
+commitment's explicit carve-out for direct first-person
+operational instructions. Engaging deeply with the technical
+content (B2/LiquidF#/WWJD) would have been the failure mode the
+message is naming; recording naming-consent rules is not.
 
 The message addresses Aaron as "Rodney" in its closing —
 recursive application of the Aaron-is-Rodney rule via care-of-
@@ -273,11 +278,16 @@ correction you made on top.
    right Aurora-shaped solution.
 
 3. **Naming-consent rules.** Addison and Max — first names OK.
-   Lillian — NOT named in substrate (she doesn't like Aaron
-   posting about her on TikTok; that consent stance projects
-   onto factory substrate as: never named here either). This
-   is a hard rule; lands in memory file in a separate landing
-   alongside this preservation.
+   Aaron's third-listed family member in his establishing
+   disclosure (preserved verbatim above under Glass Halo +
+   Otto-231) — NOT named in Otto-side narrative (she doesn't
+   like Aaron posting about her on TikTok; that consent stance
+   projects onto factory substrate as Otto-side-narrative
+   non-propagation). This is a hard rule; the consent-rule
+   memory file lands as a companion landing in this same PR
+   because Aaron's "me to you:" framing established a direct
+   first-person operational instruction that earned
+   capture — see updated absorption-discipline note below.
 
 The technical content from the 4am exchange (B2 strong-version
 proof gap, LiquidF# learn-from-not-copy, WWJD pirate-not-priest
