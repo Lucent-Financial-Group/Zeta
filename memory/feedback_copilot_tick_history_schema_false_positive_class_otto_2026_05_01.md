@@ -19,13 +19,18 @@ shard claiming it fails `tools/hygiene/check-tick-history-shard-schema.sh` with 
 matching the pattern *"line starts with ` <N> || <date>...`"* or *"col1 must
 be exactly..."* or *"leading whitespace before the pipe"*:
 
-1. **Run the validator first** — `bash tools/hygiene/check-tick-history-shard-schema.sh <shard-path>`.
-2. **If the validator output contains zero matches for the cited shard
-   path**: the finding is a false-positive of the diff-line-number-misread
-   class. Resolve the thread as outdated. Do not edit the shard.
-3. **If the validator output contains a match for the cited shard path**:
-   the finding is a real schema violation. Fix per the validator's
-   error message (col1 must start with `| <ISO8601 ts> | ...`).
+1. **Run the validator first in `--files` mode** —
+   `bash tools/hygiene/check-tick-history-shard-schema.sh --files <shard-path>`.
+   The `--files` flag scopes the audit to the cited shard;
+   without it the script runs a full-tree audit and you have
+   to grep for the shard name in the output (per the script's
+   own usage docs at lines 26-27 of the source).
+2. **If the validator reports `0 violations`**: the finding
+   is a false-positive of the diff-line-number-misread class.
+   Resolve the thread as outdated. Do not edit the shard.
+3. **If the validator reports a violation**: it's a real
+   schema violation. Fix per the validator's error message
+   (col1 must start with `| <ISO8601 ts> | ...`).
 
 This rule applies specifically to Copilot's `copilot-pull-request-reviewer`
 on tick-history shards. Other reviewers (Codex, human) and other file
@@ -48,11 +53,15 @@ Verification:
 
 ```bash
 $ bash tools/hygiene/check-tick-history-shard-schema.sh \
-    docs/hygiene-history/ticks/2026/05/01/2047Z.md 2>&1 | grep -c 2047Z
-0
+    --files docs/hygiene-history/ticks/2026/05/01/2047Z.md
+checked 1 shard files; 0 violations
 ```
 
-Zero violations. False-positive. Resolved.
+Zero violations. False-positive. Resolved. (At the time of
+that PR, I ran the full-tree audit and grep-filtered for the
+shard name — produced the same conclusion but used the wrong
+script API; the corrected `--files` invocation is what the
+script's own usage docs recommend.)
 
 ## Worked example 2 — PR #1165 (shard 2120Z) 2026-05-01 (same tick session, ~hours later)
 
@@ -68,11 +77,13 @@ Verification:
 
 ```bash
 $ bash tools/hygiene/check-tick-history-shard-schema.sh \
-    docs/hygiene-history/ticks/2026/05/01/2120Z.md 2>&1 | grep -c 2120Z
-0
+    --files docs/hygiene-history/ticks/2026/05/01/2120Z.md
+checked 1 shard files; 0 violations
 ```
 
 Zero violations again. Same false-positive shape. Resolved.
+(Same correction note as worked-example-1 applies — wrong
+script API at PR-resolution time, corrected here.)
 
 ## The pattern
 
@@ -117,10 +128,11 @@ When Copilot posts the false-positive shape:
 3. **If validator reports a violation**: fix per the validator's
    actual error. Don't trust Copilot's claim about the violation
    shape; trust only the validator's output.
-4. **Don't edit shard content prophylactically.** Adding `\\|`
-   escapes or removing leading whitespace based on Copilot's claim
-   alone may MASK a real future violation by changing the file
-   content beyond what's needed.
+4. **Don't edit shard content prophylactically.** Adding
+   backslash-escapes (`\|` for literal pipe inside cells, per
+   GFM-table escaping) or removing leading whitespace based on
+   Copilot's claim alone may MASK a real future violation by
+   changing the file content beyond what's needed.
 
 # Composes with
 
