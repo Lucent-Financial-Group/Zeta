@@ -56,6 +56,22 @@ work without re-learning paradigms.
   UI is the known-good stable-ground that new tech
   is compared against.
 
+  **Blazor SSG concrete tooling** (Aaron 2026-05-01
+  research add): for any future Blazor surface that
+  needs static-site output (e.g., GitHub-Pages-hosted
+  docs/dashboards), use [BlazorStatic](https://github.com/BlazorStatic/BlazorStatic)
+  or [AspNetStatic](https://github.com/ZarehD/AspNetStatic)
+  — both crawl the Blazor app at build time and emit
+  `.html` files. Render mode taxonomy (best→worst SEO):
+  Static SSR (5-star) > Interactive Server (3-star) >
+  Interactive Auto (4-star, mixed) > Interactive WASM
+  (1-star, requires prerendering). .NET 10's persistent-
+  state attribute fixes the prerender→hydrate flicker
+  (Core Web Vitals win). Astro stays the right choice
+  for content-heavy SEO (B-0154); Blazor + BlazorStatic
+  becomes the right choice when a future surface needs
+  C#-deep dashboards with a few SEO landing pages.
+
 **The evolve-over-time pattern:**
 
 1. **Start:** Canonical reference UI in bun+TS.
