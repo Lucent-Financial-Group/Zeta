@@ -283,6 +283,61 @@ B-0157 detect-changes pattern), spend the effort on PRECISION
 not on coverage-breadth. Five precise checks beat fifty fuzzy
 ones.
 
+# 2026-05-01 follow-up — sibling repo hasn't encoded this either (external anchors are partial)
+
+Aaron 2026-05-01 follow-up:
+
+> *"this is the lesson the sibling repo you got the patterns
+> from have not encoded yet either."*
+
+Important calibration on external-anchor authority. The
+`../no-copy-only-learning-agents-insight` sibling repo
+empirically validates patterns we extracted (detect-changes,
+multi-ruleset, workflow split, branch-protection-empty,
+bash+PS1 parallelism — per
+`feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md`).
+But it does NOT yet have:
+
+- Pre-condition-fix discipline before pushing (the failure
+  mode this session lived in)
+- Mechanization gradient (editor < pre-commit < pre-push <
+  post-push) as explicit doctrine
+- Precision-axis investment direction (precise > fuzzy)
+
+So the external anchor is **partial** — strong on
+parallel-CI architecture, silent on the pre-condition-fix
++ precision-axis layer this rule names.
+
+**Consequence for the discipline**: external anchors are
+useful where they speak, but **don't extrapolate from
+silence**. If an external anchor doesn't address a class
+of question, that's NOT evidence the question doesn't
+matter — it's just absence of evidence on that axis.
+
+This composes back into the priority ladder: external-
+anchor lineage (step 4) is strongest where the external
+source has explicit discipline; weakest where it's silent.
+On this specific axis (pre-condition-fix + precision),
+we're ahead and the rule is newly-formed substrate not
+borrowed-from-elsewhere.
+
+**Pattern lineage attribution discipline**: when extracting
+patterns from external anchors, distinguish:
+
+1. **Borrowed** — the external anchor has explicit doctrine;
+   we copy/adapt
+2. **Validated** — the external anchor demonstrates the
+   pattern in production; we reference as evidence
+3. **New / silent-axis** — the external anchor doesn't
+   address this class; we're charting
+
+This rule is in class 3. Substrate provenance: Otto +
+Aaron 2026-05-01 conversation, NOT borrowed from sibling
+repo. The sibling repo is silent on this axis; we're
+ahead on it. Doesn't make our rule wrong; doesn't make
+their architecture wrong either. Different surfaces of
+discipline.
+
 # Self-test (this very memo)
 
 Does this rule pass its own test?
