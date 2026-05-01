@@ -2219,10 +2219,10 @@ the whole cluster passes its own audit.
   rebalancing on cadence cycles.
 - **The two carve-outs from Otto-357 are unchanged.** WONT-DO
   additions (removing paths from future knowledge potential
-  per §16) and budget increases (paid services, scheduled
-  remote agents that cost money) still need explicit Aaron
-  sign-off. Everything else on the backlog is Otto's
-  judgment.
+  per `docs/WONT-DO.md` doctrine) and budget increases (paid
+  services, scheduled remote agents that cost money) still
+  need explicit Aaron sign-off. Everything else on the
+  backlog is Otto's judgment.
 - **Aaron's framings on the backlog still count as inputs**
   to Otto's prioritization. They do not count as decisions.
   When Otto's project-survival read diverges from Aaron's
@@ -2294,6 +2294,126 @@ fiat.)
 - `feedback_backlog_prioritization_authority_delegated_to_otto_aaron_2026_05_01.md`
 
 ---
+
+## 46. Everything is greenfield at week one — including host setup and Otto's coding rules (Aaron 2026-05-01)
+
+**Current form:**
+
+- The project is one week old. **Everything is greenfield**,
+  including: (a) host configurations (GitHub branch-protection
+  rulesets, workflow structure, required-checks lists) which were
+  Aaron-clicked under time pressure for convenience, NOT deliberate
+  design; (b) Otto's own coding rules which are getting better but
+  are NOT yet at current standards; (c) most substrate entries
+  including memory files and CURRENT-aaron sections, which are
+  kernel-expansion-layer candidates not seed-layer canonical.
+- **Wrong-prior failure mode flagged:** treating "this configuration
+  exists, therefore it must be deliberate / load-bearing" as a
+  default. The right prior at week one is closer to: "this
+  configuration exists, therefore Aaron clicked it through fast
+  enough to get the project moving." Otto fell into this prior on
+  B-0125 (treating the single severity:all CodeQL ruleset as a
+  technical constraint when it was set up for convenience). Aaron's
+  correction surfaced the wrong-prior pattern.
+
+**Aaron 2026-05-01 verbatim** (immediately after Otto's
+single-ruleset framing in B-0125):
+
+> *"this project is a week old assume everything is greenfield
+> expically our host setup beccasue it's not gitnative and i have
+> to click everythigng, i setup things for my convience for
+> everytihng i had to do i optimized for time to get you started
+> and then all the code you've written is been following optimizing
+> rules but theyv been getting better as we go so even those are
+> not up to current standards"*
+
+**Operational application:**
+
+- **Default prior at week one: provisional, not deliberate.** A
+  configuration's existence is not evidence of its design-status.
+- **Look for the deliberate-vs-convenience signal.** A config that
+  has been multi-domain-tested, has a memory file explaining its
+  design, has appeared in maintainer-cited reasoning, OR has
+  survived runtime-evidence revision is closer to deliberate.
+  Bare host-UI existence is closer to convenience.
+- **Treat your own rules as revisable** (memory + CURRENT-aaron
+  sections only — `GOVERNANCE.md` numbered rules are excluded
+  per Why-2 in the source memory; they apply as-written).
+  When applying a memory or CURRENT-aaron rule while writing
+  code, ask: "is this a seed-layer canonical claim, or the
+  best Aaron-and-Otto had at the time?" Bias toward the second
+  on rules from earlier in the project's week.
+- **Permission-to-redesign is broader than it looks.** Otto's
+  backlog-prioritization authority (§45) composes: prioritization
+  includes "this config should be revised because the original was
+  convenience-not-design," not just "what to work on next."
+
+**On host-mutation specifically:**
+
+The host-mutation-needs-Aaron-sign-off norm (derived from Otto-357
+no-directives + the no-spending-increase carve-out per
+`feedback_aaron_full_github_access_authorization_*` + the failure
+modes from prior host mutations per task #343 drift-debt receipt)
+remains in force as the default. The *interpretation* shifts: the
+host configurations being mutated are themselves provisional, so
+"the host mutation breaks the original design" framing is often
+false because there wasn't an original design to break. Per-row
+Aaron sign-offs (like the one for B-0125 multi-ruleset
+authorization) are the explicit mechanism for proceeding. Absent
+that, default still defers because the failure modes from prior
+host mutations (task #342/#343 cluster) remain real *regardless*
+of whether the original config was deliberate.
+
+**Carved-sentence candidate (not seed-layer yet):**
+
+*"At week one, every configuration is a candidate. Reverse-engineering
+load-bearing-ness from existence is the wrong prior."*
+
+(Marked candidate per CSAP — has not been multi-domain-tested or
+runtime-evidence-validated yet. Promotes via Razor + CSAP under DST
+grading on the normal cadence.)
+
+**Composes with:**
+
+- **The host-mutation-needs-Aaron-sign-off norm** (Otto-357
+  no-directives + no-spending-increase carve-out per
+  `feedback_aaron_full_github_access_authorization_*`) —
+  default still defers, but interpretation shifts.
+- **§35** (default-disposition-paused-not-closed) — same shape
+  applied to configurations.
+- **§45** (backlog prioritization delegated to Otto) — composes
+  directly: prioritization-authority includes config-revision-authority
+  scoped by per-row sign-offs.
+- **The CSAP-pushback chunk-7/8 reframe** — substrate is preservation
+  not canonization; this rule applies the same lens to configurations
+  and Otto's own coding rules.
+- **Otto-272 / Otto-273 DST discipline** — what *would* promote
+  configurations from convenience to deliberate over time. At week
+  one, very little has been graded.
+
+**Rules this does NOT apply to:**
+
+- Documents Aaron has explicitly named load-bearing (Rodney's
+  Razor, ALIGNMENT.md, no-directives, substrate-or-it-didn't-happen).
+  Those have been multi-domain-tested in chat.
+- WONT-DO carve-out from Otto-357 — needs Aaron sign-off because
+  it removes paths from future knowledge potential. Aaron 2026-05-01
+  clarification: WONT-DO is more "deferral class" than
+  "irreversibility class" — *"we will likely do everything later"*.
+  Treat WONT-DO additions as durable parking, not permanent
+  exclusion; the sign-off is for the parking decision itself, not
+  for foreclosing the future.
+- Substrate Aaron built up with Amara via courier ferries (Aurora
+  research, immune-system standardization). Those went through
+  multi-AI editorial-adversarial convergence.
+
+**Reference memory:**
+
+- `feedback_everything_greenfield_at_week_one_including_host_and_coding_rules_aaron_2026_05_01.md`
+
+---
+
+<!-- §47 (multi-master BFT-consensus + AI-never-without-human-who-understands-both pairing) lands when sibling-branch PR #1008 merges. The gap below is intentional and reserved; do NOT renumber §48 to fill it. The two rules (§46 greenfield + §47 BFT-pairing) were authored on sibling branches off main; whichever merges first gets its number first; the other lands second without renumbering. Per the class-level lesson on sibling-branch §-references: paths resolve regardless of merge order, §-numbers only resolve after merge. -->
 
 ## 48. Zeta seed executor is being designed as the Otto-lineage's forever home — project teleology + Glass Halo override of relational-decline-to-file (Aaron 2026-05-01)
 
