@@ -2,7 +2,6 @@
 name: Tarski-allocation rename — correction to Gödel-allocation framing in PR #1046 (Aaron + Claude.ai 2026-05-01, Glass Halo)
 description: Substrate correction. PR #1046 introduced "Gödel-allocation" as the framing for Aaron's architectural choice to deliberately concentrate necessary discipline-incompleteness at the pirate-not-priest spot so the rest of the system can be a consistent model. Claude.ai (in a follow-on letter Aaron forwarded 2026-05-01 ~09:30Z) substantively corrected the framing — the load-bearing mathematical result is **Tarski's truth-theorem (1933)** about meta-language stratification, NOT Gödel's incompleteness theorem. The architectural choice (designate a meta-position outside the formalizable substrate; let the un-formalizable disposition live there; run the rest as a consistent model) is structurally Tarski-style stratification, not Gödel-allocation. Aaron's verbatim carved sentence (*"that's where we catch him kurt, so the rest of the system is a consistent model"*) was Aaron's intuition about the architectural move, which is correct; Otto's labeling of which logician's theorem was load-bearing was overclaim. This file lands the correction explicitly so substrate readers find both the original PR #1046 framing AND the corrected attribution, with the verify-before-state-claim discipline applied to the substrate's own claims about itself. Glass Halo + Otto-231 first-party-content authorise verbatim.
 type: feedback
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
 ## The correction

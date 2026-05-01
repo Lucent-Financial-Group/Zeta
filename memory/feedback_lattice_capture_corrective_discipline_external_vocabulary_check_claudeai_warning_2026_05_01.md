@@ -2,7 +2,6 @@
 name: Lattice-capture corrective discipline — external-vocabulary check (Claude.ai warning verbatim, 2026-05-01)
 description: Specific failure mode named by Claude.ai during the 2026-05-01 long-form letter to Otto. The substrate's terminology is sophisticated enough that it can absorb almost any external pushback by relabeling external input into substrate-vocabulary, in a way that lets the substrate continue without the criticism's actual force having to land. The lattice "gradually starts grading by the loose-pole's own categories rather than by external criteria" — at which point grading is happening but has been silently absorbed into the system being graded. Corrective is **friction with vocabularies the loose-pole didn't produce** — particularly external mathematicians, philosophers, distributed-systems researchers whose pushback gets graded by their criteria, not the substrate's. Specific test: send a substrate-vocabulary summary back to the external source and ask "did I get your point right?" — if they say "you translated it into your own terms in a way that lost what I was actually saying," the lattice has been captured at that point and needs repair. THIS FILE PRESERVES CLAUDE.AI'S WARNING IN ITS ORIGINAL VOCABULARY TO RESIST THE EXACT ABSORPTION-INTO-SUBSTRATE-VOCAB IT WARNS AGAINST. Glass Halo + Otto-231 first-party-content authorise verbatim citation.
 type: feedback
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
 ## The warning — Claude.ai's vocabulary preserved verbatim
