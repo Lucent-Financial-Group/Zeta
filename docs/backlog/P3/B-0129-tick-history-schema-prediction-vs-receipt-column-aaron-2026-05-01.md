@@ -50,7 +50,7 @@ Both are world-model-verification via discrepancy detection. Both surface drift 
 
 ## Acceptance criteria
 
-1. **Schema doc updated** — `docs/hygiene-history/README.md` (or the canonical schema doc) explicitly distinguishes prediction-time vs receipt-time columns / markers.
+1. **Schema doc updated** — `docs/hygiene-history/ticks/README.md` (the canonical schema doc) explicitly distinguishes prediction-time vs receipt-time columns / markers.
 2. **Migration policy documented** — what to do with the 14 existing prefab shards from 2026-04-29 (label retroactively / leave as-is / close the prediction-only ones; whichever Aaron prefers when this lands).
 3. **Lint update (optional)** — if a tick-history validator exists, extend it to detect the distinction.
 
@@ -62,7 +62,10 @@ Both are world-model-verification via discrepancy detection. Both surface drift 
 ## Composes with
 
 - `memory/feedback_tick_history_prefabricated_shards_codex_finding_audit_trail_integrity_2026_04_30.md` — the parent finding. Option (c) from that file's matrix.
-- `feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md` — meta-meta-meta-rule. The schema improvement extends the existing tick-history class with a sub-distinction; doesn't create a new class.
+
+**Forward-references not yet on `main`** (will be re-added as direct refs once their PRs land):
+
+- `memory/feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md` — meta-meta-meta-rule. The schema improvement extends the existing tick-history class with a sub-distinction; doesn't create a new class. **Filed in the in-flight PR #1025**.
 
 ## Status
 

@@ -214,7 +214,7 @@ extension of "manufactured-patience vs real-dependency-wait
 diagnostic" without losing precision? Yes — same diagnostic,
 extended from one-shot to periodic. New file would be
 namespace-pollution. Extension is the right move per the
-class-orthogonality rule (`feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`).
+class-orthogonality rule (`feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`, filed in in-flight PR #1025).
 
 **Aaron's framing of why this matters:**
 
