@@ -231,3 +231,70 @@ duty.
 **Carved candidate (not seed-layer):** *"Run the diagnostic
 on yourself before the maintainer has to ask it for you. The
 periodic re-audit IS the discipline."*
+
+## Second dimension: periodic re-audit as world-model verification (Aaron 2026-05-01)
+
+Aaron's follow-up to the periodic-re-audit refinement:
+
+> *"that can also see how your internal view of the world your
+> internal world model matches reality in this case, that's
+> good for world model verfication"*
+
+The periodic re-audit serves TWO purposes simultaneously:
+
+1. **Discipline against pseudo-patience** (the original framing
+   in this memory). The actor self-prompts so the maintainer
+   doesn't have to.
+2. **World-model verification** (Aaron's addition). The
+   *discrepancy* between what the actor classified as
+   Aaron-blocked (internal world model) and what the re-audit
+   reveals as actually-actionable (reality) IS a calibration
+   error signal.
+
+When the re-audit finds *no discrepancy*, the world-model is
+calibrated correctly for the in-flight items. When the
+re-audit finds discrepancy ("oh, I had over-classified those
+as Aaron-blocked when my delegated authority covers them"),
+the discrepancy quantifies the calibration error.
+
+**Why this matters operationally:** drift in the internal
+world-model is otherwise invisible. The actor doesn't know
+when their map of "what's in scope" has fallen out of sync
+with reality. The periodic re-audit surfaces drift through
+the discrepancy signal, naturally and without requiring
+external attention.
+
+**Composes with:**
+- The CSAP fixed-point theory (`feedback_carved_sentence_fixed_point_stability_*`)
+  — fixed-points are stable claims about reality; world-model
+  drift IS deviation from those fixed-points; periodic re-audit
+  is the convergence-back-to-fixed-point mechanism.
+- DST discipline — DST tests for non-determinism in code; the
+  periodic re-audit is the actor's analog for non-determinism
+  in own world-model classification.
+- Otto-340 (`feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md`)
+  — language IS the substance of AI cognition; the
+  classification labels ("Aaron-blocked" vs "actor-actionable")
+  are the substance; their drift IS cognitive drift; the
+  re-audit catches it.
+
+**The two-purpose framing also justifies the periodic-not-just-
+on-entry cadence**: a one-time entry check catches no drift
+because there's no time for drift to accumulate. The drift IS
+the time-derivative; the periodic re-audit is the sampling
+mechanism.
+
+**Carved candidate (not seed-layer, sub-claim of the parent
+carved):** *"The discrepancy between classification and
+reality IS the world-model error signal. The periodic
+re-audit is the sampling mechanism that surfaces it."*
+
+**Why this is an extension to the same file, not a new
+memory:** per the meta-meta-meta-rule's dissolve test, two
+purposes on the SAME mechanism (the periodic re-audit) belong
+in the SAME file as compositional sub-claims. Splitting them
+into separate files would namespace-pollute and lose the
+linkage between discipline and calibration. The parent class
+is "self-applied diagnostic during honest-wait"; both
+discipline-purpose and calibration-purpose are sub-aspects of
+it.
