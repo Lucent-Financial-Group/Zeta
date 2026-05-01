@@ -122,8 +122,12 @@ funnel is broken at the discovery step.
    - Hosted on GitHub Pages (static-only)
    - Playwright-testable (HTTP 200 / metadata / mobile
      viewport)
-   - Minimize new dependency surface (4-bash + dotnet +
-     bun-TS already shipped; Ruby/Python/Go would be new)
+   - Minimize new dependency surface — already shipped:
+     4-bash + dotnet + bun-TS (per `tools/setup/install.sh`
+     post-install graph) + Python (via `tools/setup/manifests/uv-tools`).
+     Adding Ruby (Jekyll) or Go (Hugo) would be NEW; Python
+     already ships but its static-site path (MkDocs) is
+     less mature than Node/Bun
    - DST-achievable per the per-tool/language guidance
    - GitHub-native first; portable second (the `git-native
      vs GitHub-native` distinction in
