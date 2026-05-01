@@ -21,7 +21,7 @@
 #   2  drift detected (--check mode only)
 #
 # Stderr warnings (non-fatal):
-#   `WARN: <file> — missing YAML frontmatter (need id + title)`
+#   `WARN: <file> — missing required frontmatter field (need both id and title)`
 #     surfaces row files that are silently rendering as empty
 #     `**[](path)** ` entries because the heading-only format
 #     was used without the YAML frontmatter the generator reads.
