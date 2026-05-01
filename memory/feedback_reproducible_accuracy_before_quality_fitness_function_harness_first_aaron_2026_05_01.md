@@ -180,6 +180,333 @@ The multiplier comes from compounding effects:
    curve, performance regression suite). Future iterations
    start from compounded knowledge, not fresh.
 
+## SRE metric frameworks — pre-built fitness-function shapes
+
+Aaron 2026-05-01 (follow-up):
+
+> *"Oh and to shape your SRE into metrics we talked about DORA,
+> USE, RED, and the four golden signals."*
+
+Site Reliability Engineering (SRE), the discipline Aaron's
+been pointing at for the factory's class taxonomy, has four
+**pre-built fitness-function shapes** that the factory can
+pull principles from. Each is a specific measurement-discipline
+that operationalizes reproducibility-first at a particular
+layer.
+
+### DORA (DevOps Research and Assessment, Google) — engineering-org level
+
+Four metrics that distinguish elite vs low-performing teams:
+
+- **Deployment Frequency** — how often code reaches production
+- **Lead Time for Changes** — commit → production duration
+- **Mean Time To Restore (MTTR)** — incident → recovery duration
+- **Change Failure Rate** — % of deploys that cause incidents
+
+**Fitness-function shape**: organization-level outcome metrics.
+Each is reproducibly measurable; iteration moves them in known
+directions (more frequent + faster + faster + lower-failure).
+
+**Maps to the factory**: the cadence of merges, lead-time per
+PR, time-to-recover from a bad merge, and rate of merge-driven
+breakage. Otto's tick-history is the substrate; aggregating
+per-round produces the four DORA values.
+
+### USE method (Brendan Gregg, Sun/Netflix) — resource level
+
+For every system resource (CPU, memory, disk, network,
+thread pool, etc.) measure:
+
+- **U**tilization — % time the resource is busy
+- **S**aturation — degree to which the resource has extra work
+  it can't service (queue depth)
+- **E**rrors — count of error events
+
+**Fitness-function shape**: per-resource bottleneck detection.
+Reproducibly identifies which resource is the constraint.
+
+**Maps to the factory**: per-persona / per-subagent
+utilization (% of ticks that hat is dispatched), saturation
+(queue depth waiting on each persona), and errors (per-
+persona reviewer-finding rate). Currently informal; could be
+mechanized via tick-history aggregation.
+
+### RED method (Tom Wilkie, Weaveworks) — service level
+
+For every service measure:
+
+- **R**ate — requests per second
+- **E**rrors — failed requests per second
+- **D**uration — latency distribution (p50, p95, p99)
+
+**Fitness-function shape**: service-level observability for
+request/response systems.
+
+**Maps to the factory**: per-PR-pipeline rate (PRs opened
+per round), errors (PRs closed without merging due to
+genuine failure, not stale), duration (open → merge p50/p95).
+Currently raw queryable via `gh pr list`; aggregating into
+a RED dashboard would make trends visible.
+
+### Four Golden Signals (Google SRE Book) — user-facing systems
+
+Cornerstone metrics for monitoring user-facing services:
+
+- **Latency** — time to serve a request
+- **Traffic** — demand on the system (requests/sec)
+- **Errors** — failed requests
+- **Saturation** — how full the system is
+
+**Fitness-function shape**: user-facing-system health
+synthesis. The 4 metrics together give a complete picture
+without information overload.
+
+**Maps to the factory**: latency (Aaron's response cycle —
+how long does a substrate-message wait before being absorbed?
+how long does a thread wait before being addressed?),
+traffic (substrate flow per round), errors (Aaron-correction
+rate, factual-error rate, consent-rule-violation rate),
+saturation (Aaron's cognitive load — how often does Aaron
+need to repeat the same correction?).
+
+### Pull principles, reduce ceremony — same rule applies
+
+These four frameworks have **principles** (the metric shapes:
+DORA's 4 outcomes, USE's 3-per-resource, RED's 3-per-service,
+Four-Golden's 4-cornerstones) and **ceremony** (commercial
+SRE-tooling subscriptions, formal-incident-review templates,
+SLO-contract bureaucracy, dedicated-SRE-team org-charts that
+big companies build around them).
+
+**The factory pulls the principles, leaves the ceremony.**
+The metric shapes ARE the fitness functions; the rest is
+overhead the principles do not require. Same rule as Six
+Sigma and the project-management traditions: extract the
+load-bearing pattern, skip the apparatus.
+
+### Composition — these frameworks layer
+
+The four frameworks compose at different levels of the
+factory:
+
+```text
+  User-facing                  <-  Four Golden Signals
+  ----------                       (Aaron's experience of
+                                    the factory)
+
+  Service                      <-  RED
+  -------                          (per-PR pipeline,
+                                    per-tick cycle)
+
+  Resource                     <-  USE
+  --------                         (per-persona, per-
+                                    subagent, per-tool)
+
+  Engineering org              <-  DORA
+  ---------------                  (cadence aggregates)
+```
+
+Together they cover the four observability layers without
+gap and without overlap. Building dashboards for all four is
+the operationalization of the reproducibility-first
+discipline at the factory scale.
+
+**Backlog candidate**: file a row for *factory observability
+dashboard — DORA + USE + RED + Four Golden Signals shapes
+applied to factory cadence*. Currently informal in
+tick-history; mechanizing the aggregation makes the fitness
+functions visible.
+
+## The abstraction ladder — from category theory down to operational quality
+
+Aaron 2026-05-01 (composing two follow-up messages):
+
+> *"that shoud be able to go from category theroy->SRE
+> classes->DORE/USE/RED/FGS quailty measurements of
+> doman->accuracy->quality"*
+>
+> *"i probably missed some steps"*
+
+Aaron is naming the **formal abstraction-ladder** that connects
+pure mathematical foundation to operational quality. Each layer
+instantiates the layer above it; each layer's output is the
+input to the next layer down. **Skip a layer and the ladder
+breaks** — the lower layers have no formal anchor; the higher
+layers have no operational consequence.
+
+Aaron's chain (verbatim) plus the steps he acknowledged he
+might have missed (reconstructed):
+
+```text
+  ┌─────────────────────────────────────────────────────────┐
+  │  CATEGORY THEORY                                        │
+  │  (functors, morphisms, natural transformations,         │
+  │   composition laws, adjunctions, monads)                │
+  │                                                         │
+  │  per B-0136 (category-theoretic compositional structure)│
+  │  + Bartosz Milewski's "Category Theory for Programmers" │
+  │  per the class-level rules orthogonality memory file    │
+  └────────────────────────┬────────────────────────────────┘
+                           │ instantiates
+                           v
+  ┌─────────────────────────────────────────────────────────┐
+  │  TYPE THEORY / FORMAL VERIFICATION                      │
+  │  (orthogonality types, retractable types, modal types,  │
+  │   sequent calculus, refinement types, dependent types)  │
+  │                                                         │
+  │  per B-0134 (type-theoretic orthogonality)              │
+  │  + B-0133 (sequent calculus for retraction)             │
+  │  + B-0135 (modal logic for retractability)              │
+  │  + B-0137 (Tarski stratification proof)                 │
+  │  + B-0142 (Code Contracts revival)                      │
+  │  + B-0141 (pre/post pattern — Hoare logic)              │
+  └────────────────────────┬────────────────────────────────┘
+                           │ instantiates
+                           v
+  ┌─────────────────────────────────────────────────────────┐
+  │  CLASS TAXONOMY / PATTERN CATALOG                       │
+  │  (v2 class catalog: phantom-blocker, brittle-pointer,   │
+  │   stale-content-deferral, rebase-drop-with-content-     │
+  │   resurface, pre/post pattern, manufactured patience,   │
+  │   etc. — domain patterns instantiating formal types)    │
+  │                                                         │
+  │  per the v2 catalog work + SRE class-taxonomy traditions│
+  │  + Aaron's "study SRE Site reliability engineer"        │
+  │    pointer to the long-standing tradition               │
+  └────────────────────────┬────────────────────────────────┘
+                           │ instantiates per domain
+                           v
+  ┌─────────────────────────────────────────────────────────┐
+  │  DOMAIN-SPECIFIC METRIC FRAMEWORKS                      │
+  │  (DORA / USE / RED / Four Golden Signals)               │
+  │  Each domain layer (org / resource / service / user)    │
+  │  has its own fitness-function shape that operationalizes│
+  │  the relevant class-taxonomy patterns as measurements   │
+  └────────────────────────┬────────────────────────────────┘
+                           │ requires
+                           v
+  ┌─────────────────────────────────────────────────────────┐
+  │  REPRODUCIBILITY HARNESS                                │
+  │  (DST + CI + lint + observability dashboard +           │
+  │   measurement substrate that produces                   │
+  │   reproducibly-correct numbers)                         │
+  │                                                         │
+  │  per Otto-272 DST-everywhere + this memory file's       │
+  │  reproducibility-first principle                        │
+  └────────────────────────┬────────────────────────────────┘
+                           │ produces
+                           v
+  ┌─────────────────────────────────────────────────────────┐
+  │  ACCURACY                                               │
+  │  (reproducibly-correct measurements with signal-not-    │
+  │   noise; the ground truth for iteration to optimize     │
+  │   against)                                              │
+  └────────────────────────┬────────────────────────────────┘
+                           │ enables iteration toward
+                           v
+  ┌─────────────────────────────────────────────────────────┐
+  │  QUALITY                                                │
+  │  (the iteratively-optimized end-property; what the      │
+  │   fitness function is being moved toward)               │
+  └─────────────────────────────────────────────────────────┘
+```
+
+### Why each layer is necessary
+
+- **Category theory at top** — provides the *language* for
+  talking about composition, identity, and morphism
+  preservation. Without it, the lower layers are just
+  collections of patterns with no structural grammar.
+- **Type theory / formal verification** — translates
+  categorical concepts into machine-checkable invariants.
+  The factory's claim-retraction work (B-0133), orthogonality
+  discipline (B-0134), and modal-logic-for-retractability
+  (B-0135) are all type-theoretic instantiations of
+  category-theoretic concepts.
+- **Class taxonomy** — populates the type-theoretic abstract
+  types with concrete domain patterns. *"Phantom-blocker"* is
+  a class; it's an instance of a type that's an instance of
+  a categorical structure. The v2 catalog work IS this
+  layer.
+- **Domain-specific metric frameworks** — each domain layer
+  needs its own *measurement shape* because what counts as
+  signal at the user-facing layer (Four Golden Signals) is
+  not the same as what counts at the resource layer (USE)
+  or org layer (DORA). The framework choice IS the
+  acknowledgment that one-size-fits-all metrics fail.
+- **Reproducibility harness** — without DST + CI + lint +
+  dashboard infrastructure, the metric frameworks have no
+  *substrate* to measure on. This is the bridge from
+  abstract measurement-shapes to concrete numbers.
+- **Accuracy** — the output of the harness running the
+  framework. The first thing iteration can optimize against.
+- **Quality** — the iteratively-optimized end-property.
+  Note: *quality is the OUTPUT of the chain, not the input*.
+  This is precisely Aaron's reproducibility-before-quality
+  principle expressed structurally.
+
+### The "missing steps" Aaron acknowledged
+
+Aaron's *"i probably missed some steps"* — the steps he
+implicitly bridged that warrant naming explicitly:
+
+1. **Type theory / formal verification** between category
+   theory and SRE classes. Without it, classes are unmoored
+   from the categorical foundation.
+2. **Pattern catalog** (the v2 class taxonomy) between
+   SRE-classes-as-tradition and SRE-metric-frameworks. The
+   class taxonomy is the bridge from abstract pattern-language
+   to specific measurable instances.
+3. **Reproducibility harness** between metric frameworks
+   and accuracy. The frameworks ARE measurement-shapes;
+   accuracy requires concrete substrate (DST, CI, dashboards)
+   to produce numbers.
+
+These three additions don't change the chain's direction;
+they fill in the formal anchoring that lets each layer
+provably instantiate the layer above.
+
+### What this composes with
+
+- **B-0136** (category-theoretic compositional structure) —
+  the topmost layer of the ladder, made explicit
+- **B-0134, B-0133, B-0135, B-0137, B-0141, B-0142** —
+  the type-theory / formal-verification layer
+- **The v2 class catalog work** — the class-taxonomy layer
+  (multiple memory files capture this)
+- **The SRE traditions Aaron pointed at** — the discipline
+  the catalog draws from
+- **The four metric frameworks** (DORA/USE/RED/FGS) covered
+  earlier in this memory file
+- **DST (Otto-272) + CI + lint** — the reproducibility-harness
+  layer infrastructure
+- **The amortized keystone** in the parallelism-ladder file —
+  what each layer's mechanization enables when amortized
+  across the scale
+
+### Why this matters for the factory
+
+The ladder makes the factory's formal architecture **legible**.
+Right now, the factory has B-rows for category-theoretic
+work (B-0136), type-theoretic work (B-0134), class-taxonomy
+work (the v2 catalog), and metric-framework work (this
+memory file's SRE section) — but the **connection between
+them** has been implicit. Aaron's chain makes it explicit:
+each row is a layer-instance; the chain is the formal
+spine.
+
+**Practical consequence**: when filing a new B-row for a
+formal-foundations item, the row should declare its layer
+explicitly (categorical / type-theoretic / class /
+metric-framework / harness / accuracy / quality). When the
+declared layer has no instances above or below it, the chain
+has a gap that should be filed as a sibling row.
+
+**Backlog candidate**: file a row for *formal-architecture-
+ladder explicit-layer-declaration discipline*. Each layer
+gets a dedicated index in the backlog so cross-layer
+composition is traceable.
+
 ## When this principle DOES NOT apply
 
 Reproducibility-first has a cost: building the harness first
