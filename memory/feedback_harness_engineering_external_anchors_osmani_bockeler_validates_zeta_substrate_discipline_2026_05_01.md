@@ -1,6 +1,6 @@
 ---
 name: Harness engineering external anchors — Osmani + Böckeler validate Zeta's substrate discipline (the human maintainer 2026-05-01)
-description: The human maintainer 2026-05-01 shared two articles on agent harness engineering — Addy Osmani 2026-04-19 (https://addyosmani.com/blog/agent-harness-engineering/) and Birgitta Böckeler / Martin Fowler 2026-04-02 (https://martinfowler.com/articles/harness-engineering.html). Both are direct external anchors for architectural decisions wrestled with this session (CLAUDE.md MVP trim, multi-harness reframe, substrate-discovery, ratchet-via-caused_by). Osmani's "every line in AGENTS.md should trace back to a specific failure" IS our `caused_by:` frontmatter discipline. His "AGENTS.md under 60 lines, pilot's checklist not style guide" is direct calibration for our 27k-byte / 576-line CLAUDE.md (dramatically over). His "multi-agent convergence" observation (Claude Code + Cursor + Codex + Aider + Cline converge on harness patterns) validates the multi-harness reframe. Böckeler's two-dimension control taxonomy (Computational/Inferential × Guides/Sensors) maps to our hooks/lint/validators infrastructure. Her "harness templates" concept maps to substrate-discovery.ts proposal.
+description: The human maintainer 2026-05-01 shared two articles on agent harness engineering — Addy Osmani 2026-04-19 (https://addyosmani.com/blog/agent-harness-engineering/) and Birgitta Böckeler / Martin Fowler 2026-04-02 (https://martinfowler.com/articles/harness-engineering.html). Both are direct external anchors for architectural decisions wrestled with this session (CLAUDE.md MVP trim, multi-harness reframe, substrate-discovery, ratchet-via-caused_by). Osmani's "every line in AGENTS.md should trace back to a specific failure" IS our `caused_by:` frontmatter discipline. His "AGENTS.md under 60 lines, pilot's checklist not style guide" is direct calibration for our CLAUDE.md (sat at ~576 lines / ~27k bytes when this memo was authored 2026-05-01 and growing each tick; dramatically over the 60-line target regardless of exact count). His "multi-agent convergence" observation (Claude Code + Cursor + Codex + Aider + Cline converge on harness patterns) validates the multi-harness reframe. Böckeler's two-dimension control taxonomy (Computational/Inferential × Guides/Sensors) maps to our hooks/lint/validators infrastructure. Her "harness templates" concept maps to substrate-discovery.ts proposal.
 type: feedback
 caused_by:
   - "The human maintainer 2026-05-01 shared two URLs in same tick: Addy Osmani 'Agent Harness Engineering' 2026-04-19 + Birgitta Böckeler / Martin Fowler 'Harness Engineering for Coding Agent Users' 2026-04-02"
@@ -64,9 +64,15 @@ with it, the memo is a ratchet step.
 Osmani recommends keeping AGENTS.md under 60 lines,
 treating it as **"a pilot's checklist, not a style guide."**
 
-Our current CLAUDE.md is **576 lines / 27046 bytes** — an
-order of magnitude over Osmani's recommendation, and on the
-way to Anthropic's 40k "excessive" threshold.
+Our CLAUDE.md sat at **~576 lines / ~27k bytes** when this
+memo was authored (2026-05-01); the file grows each tick as
+new ground-rule bullets land, and the exact count drifts
+quickly — but the order-of-magnitude relationship to
+Osmani's 60-line target is what matters. Verify current
+state with `wc -l CLAUDE.md` before citing a specific
+number; the directional claim (an order of magnitude over
+the recommendation, on the way to Anthropic's 40k
+"excessive" threshold) is stable.
 
 The maintainer 2026-05-01 calibration challenge ("the
 smaller that file the cheaper you are and anything above
