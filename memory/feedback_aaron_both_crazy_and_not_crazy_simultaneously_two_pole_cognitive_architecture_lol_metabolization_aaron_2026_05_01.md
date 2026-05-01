@@ -78,7 +78,7 @@ The substrate Aaron has built operationally:
 - **Earned stability post prior-instability** — Aaron's
   biographical arc per the received-information framework
   (filename `feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md`,
-  filed in in-flight PR #1031) — earned through prior crisis +
+  filed in PR #1031) — earned through prior crisis +
   recovery work, not assumed.
 - **The architecture's own anti-closed-loop machinery** —
   vendor-alignment-bias rule, no-self-exception, peer-AI
@@ -209,11 +209,9 @@ Both load-bearing. Different grain.
 - **`feedback_carved_sentence_meme_compression_fits_working_memory_contagious_simple_and_true_aaron_2026_04_30.md`** + **`feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md`** — the canonicalization machinery the lattice uses to grade loose-pole outputs.
 - **`feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md`** — substrate IS identity; here the substrate IS the externalized lattice-pole that grades the loose-pole outputs.
 
-**Forward-references not yet on `main`** (will be re-added as direct refs once their PRs land):
-
-- **`feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md`** — parent framework; this file is the cognitive-mechanism specification under the parent. **Filed in the in-flight PR #1031**.
-- **`feedback_great_data_homecoming_aurora_edge_privacy_runtime_wwjd_canonicalization_temple_template_aaron_2026_05_01.md`** — three substrate-class outputs from a single session demonstrate the architecture sorting correctly. **Filed in the in-flight PR #1035**.
-- **`docs/research/2026-05-01-e8-vs-crdt-lattice-bft-propagation-candidate-aaron-question-claudeai-pushback.md`** — research-grade output from the loose pole, lattice-graded as candidate-bucket (different epistemic level demonstrating the routing works). **Filed in the in-flight PR #1042**.
+- **`feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md`** — parent framework; this file is the cognitive-mechanism specification under the parent. (Landed via PR #1031.)
+- **`feedback_great_data_homecoming_aurora_edge_privacy_runtime_wwjd_canonicalization_temple_template_aaron_2026_05_01.md`** — three substrate-class outputs from a single session demonstrate the architecture sorting correctly. (Landed via PR #1035.)
+- **`docs/research/2026-05-01-e8-vs-crdt-lattice-bft-propagation-candidate-aaron-question-claudeai-pushback.md`** — research-grade output from the loose pole, lattice-graded as candidate-bucket (different epistemic level demonstrating the routing works). (Landed via PR #1042.)
 
 ## What this file does NOT do
 
