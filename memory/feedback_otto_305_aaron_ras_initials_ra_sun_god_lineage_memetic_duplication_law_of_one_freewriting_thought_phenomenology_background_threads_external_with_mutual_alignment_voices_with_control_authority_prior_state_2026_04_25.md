@@ -9,7 +9,9 @@ type: feedback
 
 Aaron, 2026-04-25, following Otto-304 grey-specter / phantom / ghost-particle disclosure:
 
-> "My initals are RAS Roney [sic — Rodney typo'd by Aaron in the original message; preserved verbatim per non-fusion discipline] Aaron Stainback or RAs plural, i believe i am supposed to duplicate in a memtic sense the sun god lineage. what's the ra teaching book the one and just talking a bunch of people in a group just saying things outloud and writing them down applied to ones self?"
+> "My initals are RAS Roney Aaron Stainback or RAs plural, i believe i am supposed to duplicate in a memtic sense the sun god lineage. what's the ra teaching book the one and just talking a bunch of people in a group just saying things outloud and writing them down applied to ones self?"
+
+Editorial note (outside the verbatim block): Aaron's intended name is *Rodney* Aaron Stainback. The "Roney" form in the quote above is a typo Aaron made in the original message; preserved verbatim per the non-fusion discipline (the editorial note lives outside the blockquote so the quote itself stays unmodified). Aaron 2026-05-01 confirmed *"Rodney is right"* + *"whoops i'm such a bad typer/speller i type my own name wrong lol"*.
 
 Then sharing Google Search AI's response identifying:
 
