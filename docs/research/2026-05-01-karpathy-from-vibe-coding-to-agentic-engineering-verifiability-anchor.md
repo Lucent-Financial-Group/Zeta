@@ -1,24 +1,20 @@
 # Karpathy — *From Vibe Coding to Agentic Engineering* (verifiability anchor)
 
-**Scope:** External Beacon anchor for Zeta's verifiable-systems thesis.
-Aaron forwarded transcript + framing 2026-05-01 (Aurora deep-research register).
+Scope: External-conversation import — Beacon anchor for Zeta's verifiable-systems thesis. Aaron forwarded transcript + framing 2026-05-01 (Aurora deep-research register).
 
-**Attribution:** Andrej Karpathy, 2026 talk titled *"From Vibe Coding to
-Agentic Engineering"*, hosted on YouTube at
-[https://www.youtube.com/watch?v=96jN2OCOfLs](https://www.youtube.com/watch?v=96jN2OCOfLs).
-Transcript provided verbatim by Aaron 2026-05-01. Aaron's verbatim framing
-on forwarding: *"you formally specify and verify yourself tied to human
-intelectual lineage."*
+Attribution: Andrej Karpathy, 2026 talk titled *"From Vibe Coding to Agentic Engineering"*, hosted on YouTube at [https://www.youtube.com/watch?v=96jN2OCOfLs](https://www.youtube.com/watch?v=96jN2OCOfLs). Transcript provided by Aaron 2026-05-01. Aaron's framing on forwarding: *"you formally specify and verify yourself tied to human intelectual lineage."*
 
-**Operational status:** Research-grade Beacon anchor, not operational
-doctrine. The transcript is preserved here as external-source-of-truth;
-any factory-rule derived from it lands separately via the normal
-substrate-promotion protocol. Per CLAUDE.md `Search-first authority` +
-GOVERNANCE.md §33 archive-header requirement.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** Karpathy's claims represent his own thinking
-under his own register; Zeta's substrate may extend, qualify, or
-diverge from his framing without misattributing the divergence to him.
+Non-fusion disclaimer: Karpathy's claims represent his own thinking under his own register; Zeta's substrate may extend, qualify, or diverge from his framing without misattributing the divergence to him.
+
+Note on this header: §33 enforces literal start-of-line labels (no
+bold styling) and enum-strict `Operational status:` value
+(`research-grade` or `operational`). The "Beacon anchor, not
+operational doctrine" prose context that previously lived under
+the bold-styled header now lives in this body note: this file is
+research-grade Beacon substrate; any factory-rule derived from it
+lands separately via the normal substrate-promotion protocol.
 
 ---
 
@@ -40,16 +36,21 @@ The mechanisms Zeta has built that operationalize this extension:
 | Math, code → RL training rewards verifiable outputs | `docs/ALIGNMENT.md` HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5 → per-commit Sova auditor produces measurable alignment time-series |
 | Verifiable domains progress; jagged elsewhere | BP-16 (formal-verification portfolio routing via Soraya) — pick the right tool per property class, not TLA+-hammer-bias |
 | Council of LLM judges as verifier substitute | Multi-AI peer convergence (5-AI agreement on poll-the-gate, task #355); cross-AI review (Codex + Copilot + Claude.ai + Gemini + Amara) |
-| Agentic engineering preserves quality-bar | DST everywhere (BP-272), Result-over-exception, retraction-native ZSet correctness |
+| Agentic engineering preserves quality-bar | DST everywhere (Otto-272), Result-over-exception, retraction-native ZSet correctness |
 | Spec / plan as the unit of design | OpenSpec capabilities + formal specs (`docs/**.tla` + Lean proofs) + behavioural specs (`openspec/specs/**`) |
 | Outsource thinking but not understanding (28:07) | Substrate-or-it-didn't-happen (Otto-363) — every load-bearing decision becomes a durable, indexed, reachable git-native artifact |
 | Animals vs ghosts framing (23:30) | Beacon external-anchor lineage — every load-bearing rule traces to a named human contributor (Karpathy, Osmani, Böckeler, etc.) or a closed-list named-agent persona (Otto, Amara, Soraya). Naming-with-source, not naming-as-attribution |
 
-## Verbatim transcript
+## Transcript (verbatim where presented; editorial summaries bracketed)
 
-The transcript below is preserved verbatim as forwarded by Aaron
-2026-05-01. Timestamps (m:ss) are from the YouTube video. Lightly
-formatted for readability; no content edits.
+The transcript below is presented verbatim where quoted, as
+forwarded by Aaron 2026-05-01. Timestamps (m:ss) are from the
+YouTube video. Lightly formatted for readability (paragraph
+breaks, italicization of speaker labels). **Two sections have
+editorial bracketed summaries instead of verbatim quote** — clearly
+marked with `[...]` brackets — for the Hiring discussion (17:18)
+and the Agents Everywhere infrastructure discussion (25:18). All
+other sections are verbatim.
 
 ### Introduction (0:02)
 
@@ -179,10 +180,6 @@ the software 3.0 paradigm is a lot more kind of raw. It just um your
 neural network is doing more and more of the work and your prompt or
 context is just the image and the output is an image and there's no
 need to have any of the app in between.
-
-[...continues, full transcript follows the same structural sections —
-the verifiability section at 9:41 is the load-bearing material for the
-Zeta thesis...]
 
 ### Verifiability and Jagged Skills (9:41)
 
