@@ -246,6 +246,52 @@ autonomous tick:
   alone justifies the TS preference for any tool that
   needs deterministic-reproducibility.
 
+# Worked example — refresh-world-model tools (Aaron 2026-05-01)
+
+The session-long failure that prompted this rule's encoding
+at CLAUDE.md-level (alongside verify-before-deferring,
+future-self-not-bound, never-be-idle, version-currency,
+substrate-or-it-didn't-happen) was Otto repeatedly running
+inline bash like `gh pr view N --json mergeStateStatus,
+statusCheckRollup,reviewThreads | jq …` for tick-wake state
+queries — *while* `tools/github/poll-pr-gate.ts` already
+existed (v1 from 2026-04-30, 5-AI peer convergence) and did
+exactly that job with structured JSON output, required-vs-
+non-required check classification, and fixture-supported
+testing.
+
+Aaron 2026-05-01 (verbatim, three-message clarification):
+
+> *"thdse look good but are dynamic not ts shaped"*
+> *"dynamic bash is forgotten bash once useful but never
+> amotorized"*
+> *"write a bactch version of the ts that calls this one —
+> not bash, not .sh, not .ps1, not dyanamic bash"*
+
+The carved blade is *"dynamic bash is forgotten bash, once
+useful but never amortized."* The amortization horizon is
+**1000s of PR-gate queries across the autonomous loop's
+lifetime**; per-command bash burns the cost every time
+(re-author, re-test, re-debug, no fixture reuse). Named TS
+scripts amortize the cost once and pay it forward.
+
+Canonical tools after this lesson landed:
+
+- `tools/github/poll-pr-gate.ts` — single-PR gate query
+  (5-AI peer convergence, task #355).
+- `tools/github/poll-pr-gate-batch.ts` — multi-PR refresh
+  via async parallel spawn over the single-PR script
+  (literal "calls this one" wrap; written 2026-05-01 in
+  direct response to the lesson). Output: per-PR
+  `GateReport` array + summary aggregate (`byGate`,
+  `byNextAction`, `byState`, `actionable`, `warnings`).
+
+Both scripts are pointed at from CLAUDE.md as the canonical
+refresh-world-model tools (load-bearing wake-time discipline).
+Reaching for inline `gh pr view + jq` for the same job after
+this is the goldfish-ontology failure mode this memory file
+exists to prevent.
+
 # Carved sentence (candidate, not seed-layer yet)
 
 *"Bash is a DST-exempt zone by structural necessity. Every
@@ -255,3 +301,10 @@ the migration target."*
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence, not
 by maintainer fiat.)
+
+# Second carved sentence (candidate)
+
+*"Dynamic bash is forgotten bash — once useful but never
+amortized. The named TS script pays the amortization cost
+once; the named TS script is the substrate."* (Aaron
+2026-05-01.)

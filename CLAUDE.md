@@ -406,13 +406,39 @@ Claude-Code-specific mechanisms.
   the failure mode — reframe before commit. CLAUDE.md-
   level so it is 100% loaded at every wake. Full reasoning:
   `memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`.
+- **Refresh world model via `tools/github/poll-pr-gate.ts`
+  / `poll-pr-gate-batch.ts` — never inline
+  `gh pr view + jq` chains.** When a tick wakes
+  and needs PR-gate state (single or many PRs),
+  call the TS scripts; do NOT reach for ad-hoc
+  bash like `gh pr view N --json mergeStateStatus
+  | jq …`. Single-PR: `bun tools/github/poll-pr-gate.ts
+  <PR>`. Multi-PR: `bun tools/github/poll-pr-gate-batch.ts
+  <PR1> <PR2> …` (or `--all-open`). Both emit
+  structured JSON with `gate`, `requiredChecks`,
+  `unresolvedThreads`, `nextAction` — the
+  decision-enabling output the loop actually needs.
+  Origin: 5-AI peer convergence (task #355,
+  2026-04-30) on poll-the-gate as executable
+  script with fixtures. The discipline rule —
+  *"dynamic bash is forgotten bash, once useful
+  but never amortized"* (the human maintainer,
+  2026-05-01) — is why the scripts exist;
+  reaching for inline bash IS the
+  goldfish-ontology failure mode. Update
+  / extend the scripts when something's missing,
+  rather than fall back to one-off bash. CLAUDE.md-
+  level so it is 100% loaded at every wake. Full
+  reasoning:
+  `memory/feedback_prefer_ts_scripts_over_dynamic_bash_for_conversation_ux_dst_in_ts_aaron_2026_05_01.md`
+  + `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`.
 - **BLOCKED-with-green-CI means investigate
   unresolved review threads first — don't wait.**
-  When `gh pr view N --json mergeStateStatus`
-  returns `BLOCKED` AND CI is fully green AND
-  auto-merge is armed, ALWAYS query unresolved
-  review threads via GraphQL FIRST before
-  classifying the wait. Filter on `isResolved
+  When `bun tools/github/poll-pr-gate.ts <PR>`
+  reports `gate: "BLOCKED"` AND `requiredChecks.failed: 0`
+  AND `autoMerge: "armed"`, ALWAYS check
+  `unresolvedThreads` in the same JSON payload
+  FIRST before classifying the wait. Filter on `isResolved
   == false` only — outdated unresolved threads
   (after a force-push) STILL block merge under
   `required_conversation_resolution` and must
