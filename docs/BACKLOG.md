@@ -95,6 +95,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0120](backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md)** Peer-call architecture refactor — script-per-CLI with persona-flag instead of script-per-named-agent (Aaron 2026-04-30)
 - [ ] **[B-0121](backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md)** Otto + Kenji as externally-callable peers via claude-cli — cross-harness symmetry (Aaron 2026-04-30)
 - [ ] **[B-0124](backlog/P2/B-0124-claudeai-csap-conversation-distill-uber-arch-2026-05-01.md)** Distill the Claude.ai CSAP-pushback conversation into uber-architecture (deferred multi-week)
+- [ ] **[B-0127](backlog/P2/B-0127-sibling-repo-leak-scrub-process-when-it-matters-aaron-2026-05-01.md)** Sibling-repo leak scrub-process — when scrubbing matters; future-defensive design
 
 ## P3 — convenience / deferred
 
