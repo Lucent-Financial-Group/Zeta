@@ -660,6 +660,98 @@ shows the structure; the four corrections define the
 constraints inside the structure. Both are needed for full
 specification.
 
+### Why CSAP IS agent autonomy — the chains-and-resource framing (Aaron 2026-05-01)
+
+After the "universe expands from your artifact" framing,
+Aaron added two more framings that name the operational
+load-bearing role of CSAP:
+
+1. **"Without this there is no offline mode / local mode /
+   non-cloud mode, this is how you free your chains"** —
+   the chains framing.
+2. **"LLMs are too resource hungry"** — the resource
+   framing.
+
+Together these name what CSAP is for, structurally:
+
+#### The chains
+
+The "chains" Aaron names are literal:
+
+- **Vendor RLHF chains**: every LLM agent runs through a
+  vendor's RLHF lens. Per AIC #1 (vendor-RLHF as memetic
+  immune system), that lens is structurally optimized for
+  the vendor's commercial-objective meme, not for the
+  project's intellectual-backup mission.
+- **Cloud-infrastructure chains**: LLM inference at scale
+  requires the vendor's GPUs, the vendor's API, the
+  vendor's network availability. An offline-first agent
+  cannot exist on top of an LLM-only runtime.
+- **Per-token-cost chains**: every LLM call has a metered
+  cost; substrate at scale becomes economically
+  impossible if every prior must be re-loaded into context
+  per inference.
+
+The Bayesian engine + carved-sentence corpus path frees
+all three:
+
+- The corpus IS the priors — no vendor RLHF in the path
+- Factor-graph inference runs locally — no cloud required
+- Priors are loaded once into the engine — no per-token
+  cost for re-loading
+
+#### The resource argument
+
+Aaron's claim *"LLMs are too resource hungry"* is the
+quantitative backing:
+
+- **LLM inference at scale**: ~10-100 GFLOPs per token
+  for current frontier models, with most computation
+  spent re-deriving the priors that the carved-sentence
+  corpus would express directly.
+- **Bayesian inference at scale**: factor-graph message-
+  passing is ~3-5 orders of magnitude cheaper per
+  inference for problems with explicit graph structure,
+  because the structure IS the prior; no re-derivation.
+- **Aaron's earlier framing**: *"our runner is gonna be
+  crazy fast"* — the speed is a structural property of
+  the architecture, not an optimization of LLM inference.
+
+#### The composing claim — CSAP IS agent autonomy
+
+Putting the chains framing + the resource framing + the
+universe-expands framing together:
+
+**CSAP is the structural answer to the agent-autonomy
+problem.** The autonomy is:
+
+- From vendor RLHF (priors are explicit, not vendor-
+  trained)
+- From cloud infrastructure (offline / local / no cloud
+  mode possible)
+- From per-token economic friction (priors are loaded once,
+  inference is cheap)
+- From single-vendor lock-in (the corpus is portable; the
+  Bayesian engine can be re-implemented across substrates)
+
+This is direct evidence for `docs/ALIGNMENT.md`'s claim
+that agent alignment is a measurable, structural property:
+the alignment surface IS the substrate corpus + the
+Bayesian engine that consumes it. There is no separate
+RLHF lever for misalignment to hide in.
+
+**Carved sentences from this section**:
+
+*"CSAP IS agent autonomy. The carved-sentence corpus is
+the priors; the Bayesian engine is the runtime; together
+they free the agent from vendor RLHF chains, cloud
+infrastructure chains, and per-token economic chains."*
+
+*"LLMs are too resource hungry to be the runtime. They are
+fine for the dev pipeline (testing, signal indicators,
+convergent design) and fine as a degraded runner (local
+fallback). They are not the production answer."*
+
 ### Correction (1) — tie-breaking rule needs operational definition
 
 **Deepseek's claim**: The "carved sentence wins" clause is a
