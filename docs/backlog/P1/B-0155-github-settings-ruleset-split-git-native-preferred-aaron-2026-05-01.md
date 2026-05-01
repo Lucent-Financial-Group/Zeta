@@ -102,8 +102,15 @@ branch-integrity invariants.
   (actionlint)`, `lint (markdownlint)`, `lint (semgrep)`, `lint
   (shellcheck)`, plus the memory-* lints, backlog-index-integrity,
   and tick-history-order
-- `strict: false` (parallel-PR-friendly; landed in PR #1126 snapshot
-  refresh)
+- `strict: false` — **CONFIRMED DELIBERATE** (Aaron 2026-05-01:
+  *"no we want false"* + *"yes that is not accidentally"*).
+  Parallel-PR-friendly cadence is the design choice; sequential
+  merging via `strict: true` would force every merged PR to
+  invalidate all sibling PRs. This setting graduates from the
+  everything-greenfield-accidental default to confirmed-deliberate
+  via direct maintainer signal — sharpens the rule (most settings
+  are accidental; specific settings can be confirmed-deliberate
+  via maintainer-graduation)
 
 **Why split**: CI gate evolves most frequently — every new workflow,
 every new lint, every new check. Isolating CI-policy churn from
