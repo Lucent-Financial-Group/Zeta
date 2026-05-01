@@ -75,7 +75,7 @@ Aaron's principle generalizes:
 | Inference accuracy | Train the model, then evaluate | Build the eval set first, then iterate the model against it |
 | Documentation | Write the doc, then proofread | Write the lint (markdownlint, §33-archive-check, glossary-discipline), then write the doc passing it |
 | Factory cadence | Ship great rounds, then maybe write retro | Track ROUND-HISTORY + tick-history first (harness), then iterate the cadence against measurable round-quality |
-| Best-practice decisions | Make the right call, then mechanize if useful | Build the lint/contract/proof first, then the call passes it (this IS the keystone-mechanism from `feedback_parallelism_scaling_ladder_*_2026_05_01.md`) |
+| Best-practice decisions | Make the right call, then mechanize if useful | Build the lint/contract/proof first, then the call passes it (the keystone-mechanism from the sibling parallelism-scaling-ladder memory file in this same PR) |
 | Agent behavior | Train better behavior, then evaluate | Build the eval harness (e.g., DecisionSignal v0, AgencySignature validation), then iterate behavior against it |
 | PR quality | Write good PRs, then maybe review | Build the review-mechanization (CI, lint, harsh-critic) first; PRs pass through measurement |
 

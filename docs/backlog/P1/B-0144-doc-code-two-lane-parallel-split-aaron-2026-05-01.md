@@ -108,7 +108,7 @@ disjoint mechanized-best-practice toolchains.
   like more review surface; mitigated by mechanized
   best-practice toolchain handling 80%+ of review surface
   automatically (per
-  `feedback_parallelism_scaling_ladder_*_2026_05_01.md`
+  `feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
   rung-4 discipline).
 - **Coordinator complexity** — managing two lanes is more
   bookkeeping than one; mitigated by codifying the
