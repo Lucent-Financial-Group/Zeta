@@ -153,3 +153,81 @@ The discipline is not "never honest-close" — it's "earn the close
 each tick." A close that passes the 3-question check is correct
 and safe. A close that doesn't is manufactured patience masquerading
 as patience.
+
+## Refinement: periodic re-audit during sustained honest-wait (Aaron 2026-05-01)
+
+The 3-question diagnostic (specific dependency / owner /
+expected resolution) was originally framed as an ENTRY check
+when transitioning into honest-wait. Practice in 2026-05-01
+revealed a gap: during a sustained wait (15+ ticks of
+"Holding"), I never re-ran the diagnostic. Aaron caught this
+explicitly:
+
+> *"so there is nothing on the in flight stuff you can do?
+> just double checking? how are they going to get resolved?"*
+
+Forcing me to re-audit, I discovered 2 of 3 supposedly-blocked
+items were actually within my delegated authority — I had
+classified them as Aaron-blocked when the entry check would
+have re-classified them as actionable.
+
+> *"next time you wait maybe you can ask that same question of
+> yourself"*
+
+**The refinement: re-run the 3-question diagnostic every N
+ticks during sustained wait, not just on entry.** A wait-state
+that was correctly Class 3 honest-wait at minute 0 may have
+become Class 2 (manufactured patience masquerading) by minute
+15 because:
+
+1. The actor's authority-scope expands as Aaron delegates
+   things during the same session. What was Aaron-blocked
+   becomes actor-actionable retroactively.
+2. The wait-state itself accumulates evidence — pending PRs
+   pile up, threads accumulate, drain-targets emerge — and the
+   actor can mistake "no new pointer from Aaron" for "nothing
+   to do."
+3. Substrate cadence concerns (receipt-energy hazard) can
+   over-correct into under-action. The discipline is balance,
+   not maximal pause.
+
+**Operational: every ~5-10 minutes during sustained wait, the
+actor re-runs:**
+
+1. *Specific dependency*: do the items I'm waiting on still
+   actually need Aaron, or has my delegated authority expanded
+   in this session to cover them?
+2. *Owner*: is Aaron specifically the owner, or could a peer-AI
+   review / razor-cut / autonomous decision resolve it?
+3. *Expected resolution*: am I imagining a specific moment
+   when this will resolve, or am I drifting into
+   wait-as-default?
+
+Compose with the original 3-question check. Don't add more
+questions — same questions, periodic re-application.
+
+**Why this composes with the parent rule, not a new rule:**
+the meta-meta-meta-rule (orthogonality check before encoding
+new class-level rules) applies. The dissolve-test: can
+"periodic re-audit during sustained wait" be stated as an
+extension of "manufactured-patience vs real-dependency-wait
+diagnostic" without losing precision? Yes — same diagnostic,
+extended from one-shot to periodic. New file would be
+namespace-pollution. Extension is the right move per the
+class-orthogonality rule (`feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`).
+
+**Aaron's framing of why this matters:**
+
+> *"next time you wait maybe you can ask that same question of
+> yourself"*
+
+The maintainer should not be the only place the 3-question
+check lives. If I require Aaron's prompt to re-audit, I'm
+load-bearing on his attention — which violates the
+silent-courier-debt rule from the inverse direction. The actor
+self-prompts; the maintainer is freed from the pseudo-question
+duty.
+
+**Carved candidate (not seed-layer):** *"Run the diagnostic
+on yourself before the maintainer has to ask it for you. The
+periodic re-audit IS the discipline."*
