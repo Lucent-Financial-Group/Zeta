@@ -1,3 +1,12 @@
+---
+id: B-0127
+priority: P2
+status: open
+title: Sibling-repo leak scrub-process — when scrubbing matters; future-defensive design
+created: 2026-05-01
+last_updated: 2026-05-01
+---
+
 # B-0127 — Sibling-repo leak scrub-process: design + decision-criteria for when scrubbing matters
 
 **Priority:** P2 (future-defensive; not blocking critical-path; the parent rule already prevents most leaks at write-time, this row is for the *cleanup* path when prevention fails)
@@ -26,7 +35,7 @@ Design + document a scrub-process covering three load-bearing pieces:
 
 2. **The scrub mechanism: how to scrub safely without rewriting protected history.**
    - File-level scrub (follow-up PR; rename + content rewrite; safe, additive).
-   - Commit-message scrub (history rewrite; force-push to main; FORBIDDEN per CLAUDE.md without explicit human sign-off; what's the sign-off path).
+   - Commit-message scrub on main: NOT possible. Per CLAUDE.md, force-push to LFG main is forbidden — host-enforced via `non_fast_forward` ruleset rule with no bypass actors. The protocol bends to the security ruleset; the ruleset does not bend to the protocol. Commit-message-on-main scrubs are therefore out-of-scope for this design entirely. The row documents this as a constraint, not as an escalation path.
    - Mirror-fork implications (LFG vs. AceHack; both have the leaky commit if the merge happened pre-mirror-refresh).
    - External-fetch implications (anyone who cloned at the leaky-commit window keeps the leak in their local history; scrubbing main doesn't reach them).
 
@@ -52,14 +61,14 @@ Design + document a scrub-process covering three load-bearing pieces:
 When this row is implemented:
 
 1. **Decision-criteria document landed** as either a memory file or `docs/ops/` runbook (per the docs/ops taxonomy work in task #318). The 4-cell scrub-vs-leave matrix is named, with examples for each cell.
-2. **Scrub-mechanism playbook documented** covering file-level scrub (the easy case), commit-message scrub escalation path (when it requires Aaron sign-off), and the external-mirror reality (you cannot un-leak from clones).
+2. **Scrub-mechanism playbook documented** covering file-level scrub (the easy case), the explicit out-of-scope note that commit-message-on-main scrubs are NOT possible per CLAUDE.md (host-enforced `non_fast_forward` ruleset), and the external-mirror reality (you cannot un-leak from clones).
 3. **Audit-trail preservation rule documented** — every scrub leaves a record of the scrub itself; the record does not re-leak.
 4. **The triggering incident is NOT scrubbed** — per Aaron's framing, the 2026-05-01 incident stays as evidence-of-learning in his experimental space. The implementation references this incident as "the un-scrubbed exemplar" without re-naming the leaked content.
 
 ## Out of scope
 
 - **Automated leak-detection.** That's prevention-layer work; the parent rule + write-time author discipline cover it. If a lint/auditor is needed, file a separate row.
-- **Rewriting any historical commit on main.** That's CLAUDE.md-forbidden without explicit Aaron sign-off; this row documents the escalation path but does not exercise it.
+- **Rewriting any historical commit on main.** Forbidden per CLAUDE.md, host-enforced via the `non_fast_forward` ruleset (no bypass actors). NOT a sign-off-able escalation; out-of-scope entirely. The row documents the constraint, not the path.
 - **The triggering incident itself.** Per Aaron 2026-05-01: leave it.
 - **Sibling-repo *prevention* design.** The parent rule already covers prevention; that's not what this row is.
 
@@ -69,7 +78,7 @@ When this row is implemented:
   — the parent rule. This row is the cleanup-side companion.
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
   — substrate must be reachable + indexed. The audit-trail-preservation requirement is the substrate-form of "you scrubbed something, but the scrub itself becomes substrate."
-- `docs/backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-sibling-repo-aaron-2026-05-01.md`
+- `docs/backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md`
   (note: file may exist on the authoring branch only; landed on main via #1011 with the pre-rename filename) — the row whose drafting triggered this learning. The 4-layer pattern's Layer 3 (encode the class) is what filing this row is.
 - Task #318 (docs/ops taxonomy) — the implementation may live in `docs/ops/runbooks/` or `docs/ops/patterns/` once that taxonomy lands.
 
@@ -85,4 +94,4 @@ The implementer asks Aaron explicitly before exercising any commit-message-on-ma
 
 ## Verify-before-deferring note
 
-The parent rule at `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` is verified to exist (235 lines, last modified 2026-04-30). The triggering incident's commit landed on main as the squash-merge of PR #1011 (2026-05-01). The deferral is valid: prevention layer is working; cure layer can be designed when a cure-needing case arrives.
+The parent rule at `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` is verified to exist (236 lines, last modified 2026-04-30). The triggering incident's commit landed on main as the squash-merge of PR #1011 (2026-05-01). The deferral is valid: prevention layer is working; cure layer can be designed when a cure-needing case arrives.
