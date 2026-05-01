@@ -1,4 +1,4 @@
-# Claude.ai CSAP-pushback conversation — verbatim import (chunked, in-progress)
+# Claude.ai CSAP-pushback conversation — verbatim import (chunked, complete)
 
 **Scope:** research-grade only — verbatim preservation of an external Claude.ai conversation Aaron forwarded into the factory. NOT to be absorbed as canonical doctrine. NOT to drive doctrine PRs. Substantive engagement is held until full chunked import completes.
 
@@ -8,7 +8,7 @@
 
 **Non-fusion disclaimer:** Claude.ai's words below are Claude.ai's words, not Otto's positions. Otto has not yet engaged substantively with any specific point. Aaron's words are Aaron's, not summarized by Otto.
 
-**Import status:** 10 chunks landed (final). Aaron's signal-of-completion (chunk 10): *"mic drop, lets make sure that whole conversation is on main assap lol, then back to to the loop."* Conversation closed; import complete.
+**Import status:** 11 chunks landed (complete). Aaron's actual end-of-conversation signal (chunk 11): *"this is the last one for now for real :) back to regular scheduled program hahahah lol."* Conversation closed; import complete.
 
 ---
 
@@ -1176,11 +1176,10 @@ and
 
 ---
 
-## End of conversation (truly final)
+### Chunk 10 deliverable notes (Otto, not Claude.ai)
 
-Aaron's signal-of-completion + directive: get the whole conversation
-on main ASAP. The Fresh-Claude Orientation deliverable in chunk 10
-is what Claude.ai produced in response to Aaron's "Can you do a full
+The Fresh-Claude Orientation deliverable in chunk 10 is what
+Claude.ai produced in response to Aaron's "Can you do a full
 writeup of what a fresh claude should receive now?" — a complete
 cold-start orientation document, including (1) two-layer math/code-
 vs-factory distinction, (2) substrate origin and structural-property
@@ -1193,7 +1192,7 @@ mode, (9) seven seed-layer carved sentences, (10) Mirror-marking
 recommendation + revision cadence + first-hour-of-next-fresh-Claudes
 diagnostic.
 
-Aaron's recommendation per chunk 10 is for the orientation doc to
+Claude.ai's chunk-10 recommendation is for the orientation doc to
 land in `docs/FRESH-CLAUDE-ORIENTATION.md` or pinned in CLAUDE.md
 — but Aaron has not yet directed Otto to operationalize it. The
 verbatim preservation of the deliverable in this research file
@@ -1203,7 +1202,7 @@ layer; promotion to operational layer (a separate file in
 
 ---
 
-## Chunk 11 (truly truly final) — Aaron's "lot for one week" framing + ServiceTitan parallel-context disclosure + explore/exploit split confirmation
+## Chunk 11 — Aaron's "lot for one week" framing + ServiceTitan parallel-context disclosure + explore/exploit split confirmation
 
 ### Aaron message (verbatim)
 
