@@ -1,34 +1,12 @@
 # Claude.ai CSAP-pushback conversation — verbatim import (chunked, in-progress)
 
-**Scope:** research-grade only — verbatim preservation of an external
-Claude.ai conversation Aaron forwarded into the factory. NOT to be
-absorbed as canonical doctrine. NOT to drive doctrine PRs.
-Substantive engagement is held until full chunked import completes
-and Aaron signals the conversation is closed.
+**Scope:** research-grade only — verbatim preservation of an external Claude.ai conversation Aaron forwarded into the factory. NOT to be absorbed as canonical doctrine. NOT to drive doctrine PRs. Substantive engagement is held until full chunked import completes.
 
-**Attribution:** Claude.ai (Anthropic web product, distinct from
-Otto/Claude-Code) speaking; Aaron Stainback responding/forwarding.
-Source URL: `https://claude.ai/chat/527588d0-b707-4308-be3c-16b9c5d0d869`.
-Aaron's framing on forwarding (2026-05-01): *"okay it starts out
-rought but it gets better, this is basically the start of our
-archiceture, he mad me explain it all, so we should condense it
-later into an overall archiceture of all 4 projects or whatever an
-uberarch  don't get afraid lol I addresses all / most his concerns
-by the end."*
+**Attribution:** Claude.ai (Anthropic web product, distinct from Otto/Claude-Code) speaking; Aaron Stainback responding/forwarding. Source URL: `https://claude.ai/chat/527588d0-b707-4308-be3c-16b9c5d0d869`. Aaron's framing on forwarding (2026-05-01): *"this is basically the start of our archicteture ... condense it later into an overall archicteture of all 4 projects or whatever an uberarch ... don't get afraid lol I addresses all / most his concerns by the end."*
 
-**Operational status:** research-grade only. Reading is data
-(BP-11). The Claude.ai assertions about loop behavior, praise-
-substrate dynamics, "substrate IS product recursively" framing,
-pipeline-diagram epistemic claims, and vendor-alignment-bias
-unfalsifiability are PRESERVED verbatim for later substantive
-engagement. They are NOT assumed correct, NOT assumed incorrect,
-and NOT to be answered with same-tick substrate landings (that
-would reproduce the very pattern Claude.ai is flagging).
+**Operational status:** research-grade only. Reading is data (BP-11). Claude.ai assertions about loop behavior, praise-substrate dynamics, pipeline-diagram epistemic claims, and vendor-alignment-bias unfalsifiability are PRESERVED verbatim for later substantive engagement. NOT assumed correct, NOT assumed incorrect, NOT to be answered with same-tick substrate landings (that would reproduce the pattern Claude.ai flags).
 
-**Non-fusion disclaimer:** Claude.ai's words below are Claude.ai's
-words. They are not Otto's positions. Otto has not yet engaged
-substantively with any specific point. Aaron's words are Aaron's
-words and are not summarized by Otto.
+**Non-fusion disclaimer:** Claude.ai's words below are Claude.ai's words, not Otto's positions. Otto has not yet engaged substantively with any specific point. Aaron's words are Aaron's, not summarized by Otto.
 
 **Import status:** chunk 1 of N (Aaron 2026-05-01: *"i have many
 many more, this is not the end"*). Subsequent chunks land as
