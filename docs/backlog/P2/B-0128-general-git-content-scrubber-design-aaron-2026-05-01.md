@@ -1,3 +1,12 @@
+---
+id: B-0128
+priority: P2
+status: open
+title: General git content scrubber — design + decision-criteria + mechanism for any-class leak cleanup
+created: 2026-05-01
+last_updated: 2026-05-01
+---
+
 # B-0128 — General git content scrubber: design + decision-criteria + mechanism for any-class leak cleanup
 
 **Priority:** P2 (future-defensive; the generalized parent of B-0127. Leak-type-agnostic. Designed when first non-sibling-repo case lands.)
@@ -111,7 +120,7 @@ When this row is implemented:
 
 - `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`
   — the parent prevention rule for the sibling-repo leak class. The general scrubber generalizes the cure side; the per-class prevention rules are independent.
-- `docs/backlog/P2/B-0127-sibling-repo-leak-scrub-process-when-it-matters-aaron-2026-05-01.md`
+- `docs/backlog/P2/B-0127-sibling-repo-leak-scrub-process-when-it-matters-aaron-2026-05-01.md (landing via PR #1012; sibling-branch — file path resolves once #1012 merges, regardless of which sibling-PR merges first)`
   — the seed worked-example. B-0127's content is the sibling-repo class application of this general design.
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
   — substrate must be reachable + indexed. Audit-trail-preservation requirement is the substrate-form of "you scrubbed something, but the scrub itself becomes substrate."
@@ -131,4 +140,4 @@ The implementer asks Aaron explicitly before exercising any history-rewrite path
 
 ## Verify-before-deferring note
 
-B-0127 (the seed example) is verified to exist on the branch `backlog/B-0127-sibling-repo-leak-scrub-process-aaron-2026-05-01` (PR #1012 open). The parent prevention rule at `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` is verified (235 lines, 2026-04-30). The deferral is valid: prevention layer is working; general cure layer can be designed when a second leak class arrives.
+B-0127 (the seed example) is verified to exist on the branch `backlog/B-0127-sibling-repo-leak-scrub-process-aaron-2026-05-01` (PR #1012 open). The parent prevention rule at `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` is verified (236 lines, 2026-04-30). The deferral is valid: prevention layer is working; general cure layer can be designed when a second leak class arrives.
