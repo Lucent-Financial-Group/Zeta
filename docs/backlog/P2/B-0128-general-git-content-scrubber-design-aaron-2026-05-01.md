@@ -60,7 +60,7 @@ Output: scrub / leave-and-record / hybrid (scrub-content-keep-audit-trail) / esc
 
 - **File-level scrub** (additive PR; rename + content rewrite). Always safe. Preferred when the leak's reach is local branch only or when commit-message-level cleanup isn't required.
 - **Branch / PR / commit-message scrub** — host-level edits (PR description rewrite, branch deletion, commit-message amend on un-pushed commits). Bounded safety.
-- **History rewrite** (`git filter-repo`, `git filter-branch`, BFG Repo-Cleaner) — destructive. Force-push required. Forbidden on `main` per CLAUDE.md without explicit Aaron sign-off; possible on feature branches with the same caution.
+- **History rewrite** (`git filter-repo`, `git filter-branch`, BFG Repo-Cleaner) — destructive. Force-push required. **Blocked uniformly by the host `non_fast_forward` ruleset on both forks (LFG and AceHack), no bypass actors** per CLAUDE.md. Reconciliation paths when history rewrite is genuinely needed: PR-based reset, delete-and-recreate of the affected branch (or fork, in the AceHack mirror case), or coordination with the maintainer to lift the ruleset rule for a specific window. The mechanism design must NOT rely on force-push as a routine option.
 - **External-mirror reality** — `git push --force-with-lease` updates the mirror, but anyone who *cloned* during the leak window keeps the leak in their local history. Communication + secret-rotation are the only real cures for already-propagated leaks.
 - **Tooling survey** — BFG Repo-Cleaner (specialized), `git filter-repo` (current canonical, deprecates filter-branch), GitHub's "Removing sensitive data" guidance, GitLab equivalent. Live-search authority discipline applies (CLAUDE.md): documented knowledge expires; check current upstream when implementing.
 
@@ -120,8 +120,7 @@ When this row is implemented:
 
 - `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`
   — the parent prevention rule for the sibling-repo leak class. The general scrubber generalizes the cure side; the per-class prevention rules are independent.
-- `docs/backlog/P2/B-0127-sibling-repo-leak-scrub-process-when-it-matters-aaron-2026-05-01.md (landing via PR #1012; sibling-branch — file path resolves once #1012 merges, regardless of which sibling-PR merges first)`
-  — the seed worked-example. B-0127's content is the sibling-repo class application of this general design.
+- B-0127 (sibling-repo leak scrub-process) — the seed worked-example. B-0127's content is the sibling-repo class application of this general design. (Path is `docs/backlog/P2/B-0127-...` once that file lands via PR #1012; sibling-branch, so the path is not yet resolvable on this branch — referenced by row ID rather than path to keep the cross-reference durable across merge order.)
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
   — substrate must be reachable + indexed. Audit-trail-preservation requirement is the substrate-form of "you scrubbed something, but the scrub itself becomes substrate."
 - Task #318 (`docs/ops` taxonomy) — implementation may live in `docs/ops/runbooks/` or `docs/ops/patterns/`.
