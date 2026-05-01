@@ -100,10 +100,10 @@ branch-integrity invariants.
   contexts include `build-and-test (macos-26)`, `build-and-test
   (ubuntu-24.04)`, `build-and-test (ubuntu-24.04-arm)`, `lint
   (actionlint)`, `lint (markdownlint)`, `lint (semgrep)`, `lint
-  (shellcheck)`, plus the memory-* lints + backlog-index-integrity
-  + tick-history-order
-- `strict: false` (parallel-PR-friendly; preserved from current state
-  per the PR #1126 commit message rationale)
+  (shellcheck)`, plus the memory-* lints, backlog-index-integrity,
+  and tick-history-order
+- `strict: false` (parallel-PR-friendly; landed in PR #1126 snapshot
+  refresh)
 
 **Why split**: CI gate evolves most frequently — every new workflow,
 every new lint, every new check. Isolating CI-policy churn from
@@ -212,7 +212,7 @@ mechanism Aaron's directive flags as "nasty."
 
 ## Composes with
 
-- B-0154 (GitHub Pages for SEO + Wiki first-class) — both rows are
+- B-0154 (GitHub Pages for SEO + Wiki first-class; forward-ref to PR #1125 not yet merged on main) — both rows are
   GitHub-host-config refactor work; ordering: drift-debt resolved
   first (PR #1126), then this row, then B-0154's Pages workflow
   lands cleanly
@@ -233,10 +233,13 @@ mechanism Aaron's directive flags as "nasty."
   — apply the audit-horizon discipline: actual-state of settings is
   what's on the host RIGHT NOW; target-state is the best-practices
   shape; the gap between them IS the refactor scope
-- `memory/feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`
-  — Aaron's visibility-constraint rule applies; settings changes
-  must be visible to Aaron post-merge; this is satisfied by the
-  declarative expected.json being checked in
+- Aaron's visibility-constraint rule (Aaron 2026-04-28: don't
+  change shared-production things he can't see) — referenced
+  in MEMORY.md fast-path and prose across multiple memory
+  files but not yet captured as its own dedicated memory file.
+  Applies here: settings changes must be visible to Aaron
+  post-merge; this is satisfied by the declarative
+  expected.json being checked in
 - task #343 (drift-debt receipt 2026-04-29) — historical predecessor;
   the drift-debt that PR #1126 just resolved is what motivated
   Aaron's directive to refactor properly
