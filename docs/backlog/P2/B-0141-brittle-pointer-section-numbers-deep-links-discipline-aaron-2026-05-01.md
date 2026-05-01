@@ -202,6 +202,51 @@ no-directives-Aaron-makes-autonomy-first-class, naming-consent
 rule (PR #1106), substrate-or-it-didn't-happen, version-currency-
 always-search-first, etc.
 
+### SRE / design-by-contract prior-art (Beacon-grade external
+   grounding)
+
+Aaron 2026-05-01: *"shit all the classes you are creating now
+have a long standing tradition if you study SRE Site
+reliability engineer"*
+
+The pre/post pattern is **not novel in CS literature** — it
+has Beacon-grade external grounding in:
+
+- **Design-by-contract / contract programming**: Bertrand
+  Meyer's *Eiffel* language (1986) formalized pre-conditions
+  + post-conditions + invariants as the explicit operational
+  shape of class contracts. The pre/post pattern Aaron named
+  for B-0141 maps 1:1 to this literature.
+- **Site Reliability Engineering (SRE)**: the Google SRE Book
+  (Murphy/Beyer/Jones/Petoff, 2016) + subsequent SRE
+  literature has decades of operational discipline around:
+  - **Pre-conditions** as expressed in production-readiness
+    reviews, runbook entry-criteria, SLO-honoring change
+    requirements
+  - **Post-conditions** as expressed in SLI/SLO compliance,
+    post-deployment validation, error-budget accounting
+  - **Blameless postmortem culture** as the discipline that
+    pre+post checks must be operational rather than
+    reputational
+- **Hoare logic / axiomatic semantics**: the formal-methods
+  ancestor of pre/post in computer science (Hoare, 1969).
+  Triple `{P} S {Q}` is literally pre-condition / statement
+  / post-condition.
+
+**Implication for the v3 catalog**: future class-promotion
+should triangulate against SRE + design-by-contract
+vocabulary BEFORE coining new substrate-internal names.
+"phantom-blocker / pre-post / live-lock / stale-content-
+deferral" all have prior-art mappings that, once examined,
+produce stronger Beacon-anchoring than substrate-internal
+naming alone.
+
+Acceptance-criterion-extension: the convention doc for this
+row (criterion 1) should explicitly cite SRE / design-by-
+contract / Hoare-logic prior-art as the Beacon-grade grounding
+rather than presenting pre/post as a substrate-internal
+invention.
+
 ## Composes with
 
 - The "balance/meta pattern" Aaron mentioned alongside this row
