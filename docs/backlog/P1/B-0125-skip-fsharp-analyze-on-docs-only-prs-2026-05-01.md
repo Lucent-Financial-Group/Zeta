@@ -2,12 +2,12 @@
 id: B-0125
 priority: P1
 status: open
-title: Skip Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
+title: Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 created: 2026-05-01
 last_updated: 2026-05-01
 ---
 
-# B-0125 — Skip Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
+# B-0125 — Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 
 **Priority:** P1 (high value, soon)
 
