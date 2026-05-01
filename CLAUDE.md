@@ -470,7 +470,16 @@ Claude-Code-specific mechanisms.
   biggest failure mode: *"if you learn something
   claude.md or a pointer from that file like the
   .claude/rules or some other pointers, you didn't
-  learn it."* Tick-close ritual: enumerate what was
+  learn it."* (Note on the verbatim quote:
+  `.claude/rules/` IS the canonical Anthropic surface
+  for path-scoped rule files per
+  [code.claude.com/docs/en/memory](https://code.claude.com/docs/en/memory)
+  — Zeta currently doesn't use it; the discoverable
+  surfaces here are `.claude/skills/`,
+  `.claude/agents/`, and `.claude/commands/`. Adopting
+  `.claude/rules/` is a viable future addition for
+  path-scoped behavioral guidance.) Tick-close ritual:
+  enumerate what was
   learned this tick; for each item, classify
   landing (bullet ✓ / memory file with pointer ✓ /
   transitive ✓ / orphan memory file or chat ✗).
@@ -484,27 +493,30 @@ Claude-Code-specific mechanisms.
   version-currency, and substrate-or-it-didn't-
   happen. Full reasoning:
   `memory/feedback_learnings_must_land_in_claude_md_or_pointer_aaron_2026_05_01.md`.
-- **TS dependencies-as-interface DI pattern —
-  SQLSharp external anchor.** When authoring or
-  refactoring TS tools, follow the SQLSharp pattern:
-  every external call surface in a typed `Dependencies`
-  interface (`typeof X`-keyed against the production
-  import); a `defaultDependencies` const wires
-  production once; top-level functions take
-  `(args, options, deps?)` triple; tests pass
-  synthetic deps for DST-grade-A coverage; no `any`,
-  no implicit `any`, discriminated unions over
-  `string`, `readonly` array params. The
-  discriminating axis is *"super strongly typed,
-  not js-in-ts failure mode"* (the human maintainer
-  2026-05-01) — TS that carries design invariants
-  in compiler-checked types vs TS that's just
-  JS-with-.ts-extension-and-`any`-escapes. The
-  canonical worked example lives in
-  `../SQLSharp/tools/automation/format/format-repo.ts`
-  (sibling repo, same maintainer, internally-
-  coherent). Full reasoning:
-  `memory/feedback_ts_dependencies_as_interface_di_pattern_sqlsharp_anchor_aaron_2026_05_01.md`.
+- **Skill router as substrate inventory before
+  authoring new substrate.** Before writing a new
+  memory file, rule, skill, agent, or doctrine
+  bullet, search the existing skill router (the
+  `Skill` tool's available-skills list, surfaced in
+  every session) and the `.claude/skills/`,
+  `.claude/agents/`, `.claude/commands/`,
+  `.claude/rules/` directories on disk for substrate
+  on the same topic. The router's description-keyed
+  search IS Zeta's structured-substrate index; using
+  it as inventory before authoring prevents the
+  goldfish-ontology failure mode (recreating
+  substrate that already exists). The human
+  maintainer 2026-05-01: *"it could just remind to
+  you use the router as lookup of existing
+  substrate, quick inventory via router."* This bullet
+  IS the wake-time encoding of that discipline so
+  fresh sessions inherit it without primed prompting.
+  Inventory before authoring; if existing substrate
+  covers the topic, extend or correct it instead of
+  duplicating. CLAUDE.md-level so it is 100% loaded
+  at every wake. Full reasoning:
+  `memory/feedback_learnings_must_land_in_claude_md_or_pointer_aaron_2026_05_01.md`
+  + `memory/feedback_otto_buddy_spin_up_when_waiting_aaron_2026_05_01.md`.
 
 ## Build and test gate
 
