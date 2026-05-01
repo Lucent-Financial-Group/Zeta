@@ -77,7 +77,7 @@ A class can be Mirror-only AND categorically expressible AND empirically-rare-bu
 
 ## What this means for v3 (combined picture from all four ferry messages)
 
-The v3 taxonomy work now has FOUR composable disciplines from the four-message ferry:
+The v3 taxonomy work now has FIVE composable disciplines from the four-message ferry (Message D contributed two distinct layers — provenance tagging + convergence metric):
 
 | Layer | Discipline | Source |
 |---|---|---|
