@@ -142,17 +142,33 @@ satisfy these constraints Aaron named explicitly:
 >
 > *"or timeseries"*
 
-### Constraint 1 — High cardinality must be first-class
+### Constraint 1 — High cardinality must be first-class (without disrespecting Prometheus's structural reasons)
 
-**Prometheus's known limitation**: high-cardinality label sets
-cause severe performance degradation in the columnar store. The
-storage layout assumes label-value cardinality stays bounded;
-unique-per-event labels (request IDs, user IDs, session IDs)
-break it. Operators use `relabel_config` to drop high-cardinality
-labels at scrape time as a workaround.
+Aaron 2026-05-01 follow-up clarification:
 
-**Zeta's design must avoid this drawback.** The implementation
-SHOULD:
+> *"but the they do need small cardinailty"*
+
+**Prometheus's small-cardinality constraint is structural,
+not accidental.** Their columnar storage layout (uber-efficient
+for the bounded-cardinality common case) is a deliberate
+design choice with a clear performance contract. Operators
+who follow the cardinality discipline get excellent
+performance; operators who violate it get exactly what the
+design predicts. *This is not a Prometheus bug — it is a
+Prometheus design.*
+
+The factory's stance: **Prometheus IS Tier 3 + the right
+operational starting point** (per B-0149) because for the
+factory's *own* metrics (tick rate, PR-cycle latency,
+per-persona dispatch counts, Aaron-correction rate), the
+cardinality stays bounded — these metrics fit Prometheus's
+design contract cleanly.
+
+Zeta's *long-term native timeseries algebra* (this row's
+"Build native" recommendation path) targets a *different*
+contract: high-cardinality dimensions as first-class. This
+is not a critique of Prometheus; it is a different design
+point in the same problem space. Zeta SHOULD:
 - Treat label cardinality as a first-class parameter, not an
   implicit assumption
 - Choose a storage layout that does not penalize high-cardinality

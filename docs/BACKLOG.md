@@ -107,6 +107,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0147](backlog/P2/B-0147-timeseries-db-native-in-zsets-multi-dsl-integration-research-aaron-2026-05-01.md)** TimeSeries DB native-in-Zsets multi-DSL integration research (metrics-are-our-eyes)
 - [ ] **[B-0148](backlog/P2/B-0148-mdx-as-meta-dsl-framing-fsharp-mdx-dsl-implementation-aaron-2026-05-01.md)** MDX as meta-DSL framing for multi-DSL Zset substrate + F# MDX DSL implementation
 - [ ] **[B-0149](backlog/P2/B-0149-prometheus-mcp-integration-promtool-factory-agents-direct-query-aaron-2026-05-01.md)** Prometheus MCP integration + promtool — factory agents direct-query observability
+- [ ] **[B-0150](backlog/P2/B-0150-timeseries-domain-expert-and-teacher-persona-aaron-2026-05-01.md)** TimeSeries / observability domain expert + teacher persona
 
 ## P3 — convenience / deferred
 
