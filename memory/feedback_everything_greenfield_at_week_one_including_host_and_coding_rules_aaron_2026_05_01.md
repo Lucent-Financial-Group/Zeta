@@ -149,8 +149,8 @@ alongside its modern replacement" framing):
 > safe so i clicked everything without reading much just going off
 > limited past experience with setting up new repos from scratch"*
 
-Aaron names the **cause** of the accidental shape. Three load-
-bearing factors:
+Aaron names the **cause** of the accidental shape. Three
+load-bearing factors:
 
 1. **Uneducated at the time** — limited prior experience with
    setting up new repos from scratch. Click-everything was
