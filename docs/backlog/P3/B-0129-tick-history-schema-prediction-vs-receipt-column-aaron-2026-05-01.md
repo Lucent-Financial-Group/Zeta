@@ -26,6 +26,21 @@ Aaron's prediction-OK framing makes option (c) the right direction:
 
 Both forms preserve the integrity invariant ("a shard claim must be honest about its evidence type") while accepting that predictions ARE legitimate substrate when explicitly labeled.
 
+## Load-bearing benefit: the prediction column IS world-model verification
+
+Aaron 2026-05-01 follow-up: *"that can also see how your internal view of the world your internal world model matches reality in this case, that's good for world model verfication"* — the prediction column itself becomes a calibration mechanism. When a shard records *predicted-tick-time* alongside *actual-receipt-time*, the discrepancy between the two IS the world-model error signal at the substrate layer. Same pattern as the periodic re-audit during honest-wait (per `memory/feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md` — see "Refinement: periodic re-audit during sustained honest-wait" + "Second dimension: periodic re-audit as world-model verification" sections), just operating on a different layer.
+
+**Two instances of the same world-model-verification pattern:**
+
+| Layer | Prediction | Actual | Discrepancy meaning |
+|---|---|---|---|
+| Cognitive (periodic re-audit) | Actor's classification of in-flight items as Aaron-blocked | What re-audit reveals as actor-actionable | Drift in scope-classification |
+| Substrate (this row) | Predicted tick-time recorded in shard col1 | Actual cron-firing time | Drift in cadence-prediction |
+
+Both are world-model-verification via discrepancy detection. Both surface drift that would otherwise be invisible.
+
+**This means option (c) isn't just "honest labeling" — it's a calibration instrument.** The prediction column generates audit trail for the factory's model of its own cadence. Fixed-point thinking applies (per CSAP `feedback_carved_sentence_fixed_point_stability_*`): the closer prediction-time matches receipt-time consistently, the more the cadence-model has converged to a stable fixed-point.
+
 ## Why P3 not P0/P1/P2
 
 - **Low stakes per Aaron 2026-05-01**: *"at this point if history is not perfect it's okay clean it up if you like, if not just note it somewhere and lets do it right in the future, still low steakes, up to you greenfield."*
