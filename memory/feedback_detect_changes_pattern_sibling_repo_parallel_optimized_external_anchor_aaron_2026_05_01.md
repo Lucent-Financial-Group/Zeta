@@ -1,6 +1,6 @@
 ---
 name: detect-changes pattern + fine-grained workflow split — sibling-repo parallel-optimized external anchor — Aaron 2026-05-01
-description: Aaron 2026-05-01 *"../no-copy-only-learning-agents-insight is the best repo in github i've seen setup to be parallel, it's not perfect but it's pretty good."* — external-anchor pointing at sibling repo's parallel-optimization patterns. Three load-bearing patterns identified via direct inspection: (1) `detect-changes.yaml` workflow that emits per-change-class outputs (`mfe-src-changed`, `backend-src-changed`, etc.); (2) fine-grained workflow split (42 workflows, one concern each, vs our ~15 monolithic); (3) test parallelism at script level (bash + PowerShell pair). The pattern's core insight is that PRs only run workflows their changes need — backend-only PR doesn't trigger MFE workflows. Massive parallel-PR-friendliness because CI churn drops to zero across unrelated changes.
+description: Aaron 2026-05-01 *"../no-copy-only-learning-agents-insight is the best repo in github i've seen setup to be parallel, it's not perfect but it's pretty good."* — external-anchor pointing at sibling repo's parallel-optimization patterns. Seven load-bearing patterns identified via direct inspection: (1) `detect-changes.yaml` workflow that emits per-change-class outputs (`mfe-src-changed`, `backend-src-changed`, etc.); (2) fine-grained workflow split (42 workflows, one concern each, vs our ~15 monolithic); (3) test parallelism at script level (bash + PowerShell pair); (4) 5 concern-aligned rulesets empirically validating B-0155 architecture; (5) branch protection effectively empty (zero contexts, all migrated to rulesets); (6) sibling uses Wiki not Pages — Aaron's prior Jekyll-on-Pages was workaround-not-preference (*"bun is probably enough"*); (7) AGENTS.md learning-discipline convergence. The pattern's core insight is that PRs only run workflows their changes need — backend-only PR doesn't trigger MFE workflows. Massive parallel-PR-friendliness because CI churn drops to zero across unrelated changes.
 type: feedback
 caused_by:
   - "Aaron 2026-05-01 message naming `../no-copy-only-learning-agents-insight` as the best parallel-optimized repo he's seen on GitHub"
@@ -308,9 +308,11 @@ direction of validation.)
   for full parallel-friendliness. Workflow-split alone
   doesn't change which checks are *required*; ruleset-split
   alone doesn't change which checks *run*.
-- **NOT a "best repo on github" claim by Otto** — Aaron's
+- **NOT a "best repo on GitHub" claim by Otto** — Aaron's
   framing was *"the best repo in github i've seen setup
   to be parallel, it's not perfect but it's pretty good."*
   External-anchor is "Aaron-encountered, Aaron-named-positive";
   Otto is reporting Aaron's anchor, not making an
-  independent claim.
+  independent claim. (Quote retains lowercase "github"
+  per Aaron's verbatim; Otto's surrounding prose uses
+  "GitHub" per established capitalization.)
