@@ -42,6 +42,7 @@ expert) but no role studying the *how* (the research process
 itself).
 
 **Without an RX researcher**, research lanes:
+
 - Re-invent methodology each time (no compounding from prior
   research lanes' lessons)
 - Lack measurement of research effectiveness (which research

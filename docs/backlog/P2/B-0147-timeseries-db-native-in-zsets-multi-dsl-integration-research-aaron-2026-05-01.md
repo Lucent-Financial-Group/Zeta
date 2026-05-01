@@ -224,6 +224,7 @@ forward-ref to PR #1116) — the formal-spec cost is paid once
 and reaped N times across every algebra change.
 
 Beyond this open question, Zeta SHOULD:
+
 - Treat label cardinality as a first-class parameter, not an
   implicit assumption
 - Choose a storage layout that does not penalize high-cardinality
@@ -272,6 +273,7 @@ F# refinement types / Coq / Isabelle.
 
 **Composes with** the formal-foundations layer-2 work already
 filed:
+
 - B-0134 (type-theoretic orthogonality discipline)
 - B-0133 (sequent calculus for claim retraction)
 - B-0135 (modal logic for retractability)
@@ -279,6 +281,7 @@ filed:
 - B-0142 (Code Contracts revival)
 
 The formal spec must cover at minimum:
+
 - Algebra correctness — operations preserve ZSet invariants
 - CRDT convergence — commutativity / associativity / idempotency
 - Retraction-native semantics — every insert has a matching
@@ -322,6 +325,7 @@ VictoriaMetrics / etc.), document:
   columnar storage, hardware
 
 For Prometheus specifically (the immediate worked example):
+
 - WHY small-cardinality? Memory-resident inverted index
   performance; predictable scrape-and-query cycle; operational
   simplicity for the common monitoring case

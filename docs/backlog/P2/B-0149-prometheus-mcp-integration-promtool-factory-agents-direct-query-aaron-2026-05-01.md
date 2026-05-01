@@ -102,6 +102,7 @@ Prometheus is Aaron's known-quantity dependency:
 Even if B-0147's research recommends a *different* long-term
 timeseries DB, Prometheus is the right *starting point*
 because:
+
 1. It exists today, deployable in minutes
 2. The dependency-priority hierarchy passes it (Tier 3)
 3. Its query language is already MDX-shaped (informs B-0148)
