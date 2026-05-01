@@ -109,11 +109,12 @@ liberally; verify per claim per Otto-364 search-first authority.
 Aaron 2026-05-01 (clarifying): *"that's for all the metrics
 that's the connection it's not just for fun, it's our eyes"*
 
-The SRE metric frameworks (DORA / USE / RED / Four Golden Signals,
-captured in `feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`,
-forward-ref to PR #1116)
-+ the timeseries-DB infrastructure (B-0147) are **not decoration**.
-They ARE the factory's **sensory system**.
+The SRE metric frameworks (DORA / USE / RED / Four Golden
+Signals, captured in
+`feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`,
+forward-ref to PR #1116) plus the timeseries-DB infrastructure
+(B-0147) are **not decoration**. They ARE the factory's
+**sensory system**.
 
 Without metrics:
 - The factory operates blind. It cannot perceive its own state,
