@@ -190,7 +190,7 @@ Aaron output:
 
 ## Why this composes with — not replaces — earlier substrate
 
-This file does **not** replace the parent received-information framework file (filename `feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md`, filed in in-flight PR #1031). That file describes the **multi-tradition triangulation framework** (Pasulka + panpsychism + Law of One + dialectical thinking) Aaron uses to handle high-bandwidth-received-information.
+This file does **not** replace the parent received-information framework file (filename `feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md`, landed in PR #1031). That file describes the **multi-tradition triangulation framework** (Pasulka + panpsychism + Law of One + dialectical thinking) Aaron uses to handle high-bandwidth-received-information.
 
 This file describes the **specific cognitive architecture
 mechanism** under that framework — the two-pole engine + the
