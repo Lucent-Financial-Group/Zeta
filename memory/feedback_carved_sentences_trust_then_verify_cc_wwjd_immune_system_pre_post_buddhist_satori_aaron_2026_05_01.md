@@ -134,8 +134,7 @@ why his work has the contemplative quality. Substrate isn't
 just methodology-externalization; it's contemplative-practice-
 applied-to-engineering.
 
-## Framework triangulation pattern (Claude.ai's observation +
-   Aaron's extension)
+## Framework triangulation pattern (Claude.ai's observation + Aaron's extension)
 
 Aaron isn't picking a tradition; he's holding multiple
 traditions in parallel and letting them check each other.
