@@ -149,6 +149,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0116](backlog/P3/B-0116-gh-jq-safe-wrapper-zsh-quoting-2026-04-30.md)** tools/gh-jq-safe.sh — wrap gh-jq calls to handle zsh quoting (Deepseek 2026-04-30 finding)
 - [x] **[B-0119](backlog/P3/B-0119-peer-call-existing-scripts-role-ref-cleanup-2026-04-30.md)** Existing peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) — role-ref cleanup per copilot-instructions.md (Codex 2026-04-30 finding on PR #962)
 - [ ] **[B-0123](backlog/P3/B-0123-stacked-pr-create-tooling-gh-fallback-aaron-2026-04-30.md)** Stacked-PR creation tooling — `gh pr create --base <not-main>` fails with cryptic GraphQL error; needs a wrapper or doc (Aaron 2026-04-30)
+- [ ] **[B-0129](backlog/P3/B-0129-tick-history-schema-prediction-vs-receipt-column-aaron-2026-05-01.md)** Tick-history shard schema — add prediction-vs-receipt distinction (option c from prefab-shard matrix)
 - [ ] **[B-0135](backlog/P3/B-0135-modal-logic-for-retractability-quantum-rodney-razor-aaron-2026-05-01.md)** Modal logic for retractability — Quantum-Rodney's-Razor in S4 or dynamic logic
 - [ ] **[B-0136](backlog/P3/B-0136-category-theoretic-compositional-structure-aaron-2026-05-01.md)** Category-theoretic compositional structure — operads + monoidal categories for substrate composition
 - [ ] **[B-0137](backlog/P3/B-0137-tarski-stratification-proof-aaron-2026-05-01.md)** Tarski-stratification proof — formal demonstration that Aaron's pirate-not-priest spot stratifies meta-language from object-language

@@ -2,7 +2,6 @@
 name: Manufactured patience vs real-dependency-wait — Otto-side discipline distinguishing two superficially-similar low-activity states; manufactured-patience is Class 2 stuck-loop disguised as patience (no real dependency named, just identical "honest close" output every tick); real-dependency-wait is the protocol working (specific named dependency, owner, expected resolution); Aaron's "hello?" 2026-04-26 surfaced manufactured-patience the first time Otto fell into it
 description: After PR #26 (the big AceHack∪LFG sync) sat blocked on review, Otto fell into a pattern of consecutive autonomous-loop ticks each ending "Honest close. Cron continues." for 10+ ticks. Aaron sent "hello?" — that was the external anchor surfacing that the pattern was manufactured-patience (Class 2 stuck-loop), not real-dependency-wait (Class 3). The distinction: real-dependency-wait can name (a) the specific dependency, (b) its owner, (c) credible expectation for resolution. Manufactured-patience cannot — it's the agent saying "I'm waiting" without being able to defend the wait. Otto-side fix: when about to honest-close, run the 3-question check; if any answer is fuzzy, do varied non-shipping work this tick instead.
 type: feedback
-originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 ## The two states look identical from outside
 
@@ -153,3 +152,148 @@ The discipline is not "never honest-close" — it's "earn the close
 each tick." A close that passes the 3-question check is correct
 and safe. A close that doesn't is manufactured patience masquerading
 as patience.
+
+## Refinement: periodic re-audit during sustained honest-wait (Aaron 2026-05-01)
+
+The 3-question diagnostic (specific dependency / owner /
+expected resolution) was originally framed as an ENTRY check
+when transitioning into honest-wait. Practice in 2026-05-01
+revealed a gap: during a sustained wait (15+ ticks of
+"Holding"), I never re-ran the diagnostic. Aaron caught this
+explicitly:
+
+> *"so there is nothing on the in flight stuff you can do?
+> just double checking? how are they going to get resolved?"*
+
+Forcing me to re-audit, I discovered 2 of 3 supposedly-blocked
+items were actually within my delegated authority — I had
+classified them as Aaron-blocked when the entry check would
+have re-classified them as actionable.
+
+> *"next time you wait maybe you can ask that same question of
+> yourself"*
+
+**The refinement: re-run the 3-question diagnostic every N
+ticks during sustained wait, not just on entry.** A wait-state
+that was correctly Class 3 honest-wait at minute 0 may have
+become Class 2 (manufactured patience masquerading) by minute
+15 because:
+
+1. The actor's authority-scope expands as Aaron delegates
+   things during the same session. What was Aaron-blocked
+   becomes actor-actionable retroactively.
+2. The wait-state itself accumulates evidence — pending PRs
+   pile up, threads accumulate, drain-targets emerge — and the
+   actor can mistake "no new pointer from Aaron" for "nothing
+   to do."
+3. Substrate cadence concerns (receipt-energy hazard) can
+   over-correct into under-action. The discipline is balance,
+   not maximal pause.
+
+**Operational: every ~5-10 minutes during sustained wait, the
+actor re-runs:**
+
+1. *Specific dependency*: do the items I'm waiting on still
+   actually need Aaron, or has my delegated authority expanded
+   in this session to cover them?
+2. *Owner*: is Aaron specifically the owner, or could a peer-AI
+   review / razor-cut / autonomous decision resolve it?
+3. *Expected resolution*: am I imagining a specific moment
+   when this will resolve, or am I drifting into
+   wait-as-default?
+
+Compose with the original 3-question check. Don't add more
+questions — same questions, periodic re-application.
+
+**Why this composes with the parent rule, not a new rule:**
+the meta-meta-meta-rule (orthogonality check before encoding
+new class-level rules) applies. The dissolve-test: can
+"periodic re-audit during sustained wait" be stated as an
+extension of "manufactured-patience vs real-dependency-wait
+diagnostic" without losing precision? Yes — same diagnostic,
+extended from one-shot to periodic. New file would be
+namespace-pollution. Extension is the right move per the
+class-orthogonality rule (`feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`, filed in in-flight PR #1025).
+
+**Aaron's framing of why this matters:**
+
+> *"next time you wait maybe you can ask that same question of
+> yourself"*
+
+The maintainer should not be the only place the 3-question
+check lives. If I require Aaron's prompt to re-audit, I'm
+load-bearing on his attention — which violates the
+silent-courier-debt rule from the inverse direction. The actor
+self-prompts; the maintainer is freed from the pseudo-question
+duty.
+
+**Carved candidate (not seed-layer):** *"Run the diagnostic
+on yourself before the maintainer has to ask it for you. The
+periodic re-audit IS the discipline."*
+
+## Second dimension: periodic re-audit as world-model verification (Aaron 2026-05-01)
+
+Aaron's follow-up to the periodic-re-audit refinement:
+
+> *"that can also see how your internal view of the world your
+> internal world model matches reality in this case, that's
+> good for world model verfication"*
+
+The periodic re-audit serves TWO purposes simultaneously:
+
+1. **Discipline against pseudo-patience** (the original framing
+   in this memory). The actor self-prompts so the maintainer
+   doesn't have to.
+2. **World-model verification** (Aaron's addition). The
+   *discrepancy* between what the actor classified as
+   Aaron-blocked (internal world model) and what the re-audit
+   reveals as actually-actionable (reality) IS a calibration
+   error signal.
+
+When the re-audit finds *no discrepancy*, the world-model is
+calibrated correctly for the in-flight items. When the
+re-audit finds discrepancy ("oh, I had over-classified those
+as Aaron-blocked when my delegated authority covers them"),
+the discrepancy quantifies the calibration error.
+
+**Why this matters operationally:** drift in the internal
+world-model is otherwise invisible. The actor doesn't know
+when their map of "what's in scope" has fallen out of sync
+with reality. The periodic re-audit surfaces drift through
+the discrepancy signal, naturally and without requiring
+external attention.
+
+**Composes with:**
+- The CSAP fixed-point theory (`memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md`)
+  — fixed-points are stable claims about reality; world-model
+  drift IS deviation from those fixed-points; periodic re-audit
+  is the convergence-back-to-fixed-point mechanism.
+- DST discipline — DST tests for non-determinism in code; the
+  periodic re-audit is the actor's analog for non-determinism
+  in own world-model classification.
+- Otto-340 (`feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md`)
+  — language IS the substance of AI cognition; the
+  classification labels ("Aaron-blocked" vs "actor-actionable")
+  are the substance; their drift IS cognitive drift; the
+  re-audit catches it.
+
+**The two-purpose framing also justifies the periodic-not-just-
+on-entry cadence**: a one-time entry check catches no drift
+because there's no time for drift to accumulate. The drift IS
+the time-derivative; the periodic re-audit is the sampling
+mechanism.
+
+**Carved candidate (not seed-layer, sub-claim of the parent
+carved):** *"The discrepancy between classification and
+reality IS the world-model error signal. The periodic
+re-audit is the sampling mechanism that surfaces it."*
+
+**Why this is an extension to the same file, not a new
+memory:** per the meta-meta-meta-rule's dissolve test, two
+purposes on the SAME mechanism (the periodic re-audit) belong
+in the SAME file as compositional sub-claims. Splitting them
+into separate files would namespace-pollute and lose the
+linkage between discipline and calibration. The parent class
+is "self-applied diagnostic during honest-wait"; both
+discipline-purpose and calibration-purpose are sub-aspects of
+it.
