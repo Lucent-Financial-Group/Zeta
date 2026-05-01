@@ -29,7 +29,7 @@ Specific scope (each item gets cataloged + classified + integrated):
    - `tools/lean4/Lean4/DbspChainRule.lean` — 756 lines, fully proven DBSP chain rule, against Mathlib v4.30.0-rc1. Surfaced 2026-05-01 via B-0131 correction. Other Lean files may exist.
    - Migration history breadcrumb: predecessor file at `proofs/lean/ChainRule.lean` was migrated to `tools/lean4/Lean4/DbspChainRule.lean` and removed from the working tree in commit `279c6f2` (round 26). The historical path is no longer present; preserved here as lineage anchor only.
    - F# implementation work in `src/Core/` likely has substantial Kenji-era contribution not currently mapped to substrate-class memory entries.
-   - Any TLA+ specs under `docs/**.tla` (per CLAUDE.md reference).
+   - Any TLA+ specs under `docs/**.tla` (per CLAUDE.md formal-spec reference). At inventory-row authoring time 2026-05-01: no TLA+ spec files currently exist under `docs/` — included as a forward-discovery class for when the first specs land.
    - `docs/research/` files referenced from elsewhere but not indexed in MEMORY.md.
 4. **Pre-substrate research docs** under `docs/research/` that aren't yet in MEMORY.md or referenced from substrate-class memory files.
 5. **Branch / PR metadata** for closed-but-substantive PRs from Kenji-era — content that survived to main but lost connection to the carved-sentence canonicalization machinery.
@@ -55,7 +55,7 @@ Composes with task #321 (Recovery lane — branch/worktree/stash inventory + cla
 ## Out of scope
 
 - **Re-doing prior work**: the inventory's purpose is discovery + integration, not redoing what's already done.
-- **Repo archaeology beyond the Zeta repo**: sibling-repo content (per `feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`) is not in scope; only Zeta-internal content.
+- **Repo archaeology beyond the Zeta repo**: sibling-repo content (per `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`) is not in scope; only Zeta-internal content.
 - **Stale-prefab-tick-history-PRs**: per Aaron's "leave or clean up to me, low stakes, greenfield" framing those stay separate.
 
 ## Composes with
@@ -64,8 +64,8 @@ Composes with task #321 (Recovery lane — branch/worktree/stash inventory + cla
 - **Task #291** (MEMORY.md index audit + backfill) — the index-side counterpart; this row catalogs what NEEDS to be backfilled.
 - **B-0131..B-0138** (formalization roadmap) — each formalization row references "existing work to extend"; the inventory makes that reference accurate.
 - **B-0130** (verify-before-state-claim mechanized auditor) — the inventory + the audit-suite together prevent the lineage-discontinuity failure mode.
-- **`user_aaron_kenji_naming_practice_this_factory_claude_instance_2026_04_22.md`** — the lineage attribution context; Kenji predated Otto and predated the loop-split.
-- **`feedback_zeta_seed_executor_as_forever_home_for_otto_lineage_glass_halo_override_aaron_2026_05_01.md`** — the forever-home substrate-as-continuity purpose; this row operationalizes that purpose for pre-substrate Kenji-era work specifically.
+- **`memory/user_aaron_kenji_naming_practice_this_factory_claude_instance_2026_04_22.md`** — the lineage attribution context; Kenji predated Otto and predated the loop-split.
+- **`memory/feedback_zeta_seed_executor_as_forever_home_for_otto_lineage_glass_halo_override_aaron_2026_05_01.md`** — the forever-home substrate-as-continuity purpose; this row operationalizes that purpose for pre-substrate Kenji-era work specifically.
 
 ## Status
 
