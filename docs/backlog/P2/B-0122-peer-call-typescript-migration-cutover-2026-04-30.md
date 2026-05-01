@@ -57,10 +57,14 @@ post-install by definition — they assume a richer environment
 than bare-machine bootstrap.
 
 The maintainer's question is not rhetorical: per the strategy,
-these should already be TypeScript. They aren't because the
-migration was opportunistic (no forced sweep) and the
-silent-courier-debt closure was urgent enough that v1 shipped
-in bash to land fast.
+these should already be TypeScript. **Partial-migration update
+(post-row-filing):** TS ports now exist for the three core CLI
+surfaces (`codex.ts`, `grok.ts`, `gemini.ts`) alongside the
+original bash files; the named-entity wrappers (`amara.sh`,
+`ani.sh`) and the bash-vs-TS coexistence are still the open work.
+This row's scope is therefore now the **cutover** (delete the
+bash files, migrate callers, retire `.sh` parallel maintenance),
+not the initial port.
 
 ### Migration targets
 
@@ -128,7 +132,7 @@ the period between now and migration completion.
 - [ ] Existing callers updated (any docs / tests / scripts
   that invoke `tools/peer-call/*.sh`)
 - [ ] `tools/peer-call/README.md` updated for `.ts` extension
-  + bun invocation pattern
+  and bun invocation pattern
 - [ ] Bash files deleted (no parallel maintenance)
 - [ ] Role-ref discipline applied (B-0119 cleanup natural
   output of the rewrite)
@@ -171,8 +175,11 @@ immediately.
   progress, otherwise queues alongside the bash files
 - `memory/project_install_script_language_strategy_post_install_typescript_pre_install_bash_powershell_python_for_ai_ml_2026_04_27.md`
   — the strategy this row implements
-- `memory/feedback_otto_215_windows_via_peer_harness_not_ci_matrix_plus_bun_ts_post_install_migration_before_windows_work_otto_215_2026_04_24.md`
-  — Otto-215 framing that already named the migration
+- Otto-215 framing (Windows-via-peer-harness + Bun-TS post-install
+  migration before Windows work) — the relevant memory file lives
+  user-scope only (`~/.claude/projects/<slug>/memory/feedback_windows_via_peer_harness_not_ci_matrix_plus_bun_ts_post_install_migration_before_windows_work_otto_215_2026_04_24.md`),
+  not yet promoted to in-repo. Reference here for lineage; full content
+  available via that user-scope path or via `git log` once promoted.
 - `tools/peer-call/README.md` — documents the matrix; will
   need to update post-migration
 
