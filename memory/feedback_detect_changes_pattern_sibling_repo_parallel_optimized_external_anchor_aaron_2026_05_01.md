@@ -129,7 +129,7 @@ concern-aligned rulesets**:
 
 This is **exactly the B-0155 architectural target**: multiple
 smaller concern-aligned rulesets, all always-on (or staged-on
-via `evaluate` mode for new rules). the sibling repo has done this in
+via `evaluate` mode for new rules). The sibling repo has done this in
 production at scale. Empirical validation that the split-into-
 multiple-smaller-rulesets pattern is the right architecture.
 
