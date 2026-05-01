@@ -44,9 +44,16 @@ Aaron's "competing lattices" intuition was reaching for **CRDT-composition theor
 3. **BFT layer specification**: which consensus family (PBFT / HotStuff / Tendermint), with proof that BFT-resistance composes correctly with CRDT semantics.
 4. **At least one academic-mathematician review** (lattice-capture corrective per B-0130).
 
+## Prerequisites (Aaron 2026-05-01 ~10:50Z framing — split build before CRDT work)
+
+- **B-0125** (Skip Analyze (csharp) on docs-only PRs) — **two-tracks-separable build prerequisite**. Aaron's verbatim: *"you probably should split out ts text from f# before the new crdt stuff it will speed everyting up"* + *"the split im taliing is build docs and code seperatly, docs need ts not f#, f# is the long pole for doc only changes"*. CRDT work touches both tracks (docs + code); without the split first, every CRDT-related PR pays the cross-track CI cost.
+- **B-0140** (Bash → TS migration completion) — **debt-prevention prerequisite**. Aaron's verbatim: *"Bash → TS migration completion this is also usefull so we don't just keep building dept"*. The bash and TS implementations of the same script (e.g., `generate-index.sh` + `generate-index.ts`) duplicate maintenance burden; cleaning up before adding CRDT-related substrate operations prevents debt compounding.
+
 ## Composes with
 
 - B-0131 (Z-set Lean formalization) — Z-set semantics underpin retraction CRDT.
+- B-0125 (skip-csharp-on-docs-only) — prerequisite per above.
+- B-0140 (bash→TS migration completion) — prerequisite per above.
 - Shapiro et al. INRIA 2011 — load-bearing source.
 - BFT consensus literature (Castro & Liskov 1999; HotStuff 2019; Tendermint).
 - `feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md` — Quantum-Rodney's-Razor + retraction-native theory connects here.
@@ -54,4 +61,4 @@ Aaron's "competing lattices" intuition was reaching for **CRDT-composition theor
 
 ## Status
 
-**Filed.** Awaiting B-0131 progress (Z-set mechanization is foundational) before activation.
+**Filed.** Awaiting B-0131 (Z-set Lean extension) + B-0125 (build-track split) + B-0140 (bash→TS migration completion) progress before activation. The build-track split + migration completion are the prerequisite-phase work; B-0131 is the parallel formalization-foundation work; B-0132 activates once those land.
