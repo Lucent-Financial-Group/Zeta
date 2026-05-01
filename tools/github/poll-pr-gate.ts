@@ -76,7 +76,7 @@ interface ReviewThreadNode {
   isResolved: boolean;
 }
 
-interface PullRequestData {
+export interface PullRequestData {
   number: number;
   state: string;
   mergeStateStatus: string;
@@ -97,14 +97,14 @@ interface PullRequestData {
   requiredCheckNames?: string[];
 }
 
-interface CheckCounts {
+export interface CheckCounts {
   ok: number;
   inProgress: number;
   pending: number;
   failed: number;
 }
 
-interface GateReport {
+export interface GateReport {
   number: number;
   state: string;
   gate: GateState;
@@ -229,7 +229,7 @@ function nextAction(report: Omit<GateReport, "nextAction">): NextAction {
   return "none";
 }
 
-function buildReport(pr: PullRequestData): GateReport {
+export function buildReport(pr: PullRequestData): GateReport {
   const rollup = pr.statusCheckRollup ?? [];
   const checks = classifyChecks(rollup);
   // Tri-state on requiredCheckNames (v1 hardening per peer review):
@@ -464,7 +464,7 @@ function normalizeRollup(rollup: unknown[]): CheckRollupItem[] {
   });
 }
 
-function loadFixture(path: string): PullRequestData {
+export function loadFixture(path: string): PullRequestData {
   let raw: PullRequestData;
   try {
     raw = JSON.parse(readFileSync(path, "utf8")) as PullRequestData;
