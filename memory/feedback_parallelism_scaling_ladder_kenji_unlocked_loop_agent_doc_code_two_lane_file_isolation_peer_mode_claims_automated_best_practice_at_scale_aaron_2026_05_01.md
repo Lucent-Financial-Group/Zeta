@@ -256,10 +256,11 @@ Why doc/code is the right next-rung:
    correctness / type-safety / test-coverage / performance.
    The reviewer-shape is disjoint, which means the
    automated-best-practice-decision tools are also disjoint
-   (`tools/lint/markdownlint`, `tools/lint/section33-archive`,
-   `tools/lint/no-directives-otto-prose` for docs; F# compiler
-   + dotnet test + Stryker mutation tests + harsh-critic for
-   code). No shared bottleneck.
+   (envisioned: markdownlint + §33-archive lint +
+   no-directives-otto-prose lint for docs; F# compiler +
+   dotnet test + harsh-critic + optional Stryker-style
+   mutation testing for code — actual tool paths to be
+   established when this rung lands). No shared bottleneck.
 3. **No new-design-decision required.** The worktree-
    isolation discipline (per
    `feedback_parallel_agents_need_isolated_worktrees_
