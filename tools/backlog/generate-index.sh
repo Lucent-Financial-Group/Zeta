@@ -136,7 +136,10 @@ HEADER
       # behaviour. Operators / CI can grep stderr for "WARN:" to
       # surface the cause early.
       if [ -z "$id" ] || [ -z "$title" ]; then
-        echo "WARN: $file — missing YAML frontmatter (need id + title)" >&2
+        # Print path relative to REPO_ROOT so CI logs aren't
+        # cluttered with runner-specific absolute paths
+        # (Codex P2 finding: keep warnings portable).
+        echo "WARN: ${file#${REPO_ROOT}/} — missing YAML frontmatter (need id + title)" >&2
       fi
 
       case "$status" in
