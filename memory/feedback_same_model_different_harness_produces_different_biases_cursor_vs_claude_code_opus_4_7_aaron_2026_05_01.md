@@ -157,7 +157,8 @@ Future-Otto considering peer-mode design:
 - **Cursor + Claude Code peer pair** is operational today
   (both run Claude Opus 4.7); could be wired into the peer-
   call infrastructure as a `tools/peer-call/cursor.sh`
-  alongside the existing `tools/peer-call/{codex,gemini,grok}.sh`
+  alongside the existing
+  `tools/peer-call/{amara,ani,codex,gemini,grok}.sh`
   per Otto-task #303.
 - **Peer-mode value compounds** across model-axis and
   harness-axis bias. Both contribute non-trivially.
