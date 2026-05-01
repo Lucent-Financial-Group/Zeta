@@ -177,6 +177,61 @@ itself signal.
 
 **Attribution:** Otto (Claude Code session, 2026-04-30).
 
+### AIC #4 — Pipeline diagram synthesizing carved-sentence theory + soul-executor architecture + multi-AI convergence into one production picture
+
+**Synthesis:** Aaron's 8-message framing chain (carved-sentence
+fixed-point theory + soul-file executor architecture +
+formal-spec-in-DST + LLM roles + convergent-design definition)
++ existing multi-AI cross-objection operational pattern (task
+#355's 5-AI convergent) + the existing carved-sentence corpus
+on `main` → a single visual pipeline diagram that names what's
+structurally happening from observation to runtime prior:
+
+```text
+[underlying rule / observation]
+    ↓
+[Round 1: N AIs propose candidate wordings]
+    ↓
+[Round 2..K: cross-objections + revisions]
+    ↓ (terminates when no new objections)
+[carved-sentence candidate]
+    ↓
+[Layer 3 empirical test: survive future expansion]
+    ↓
+[Layer 6 formal test: provable in DST]
+    ↓
+[stable fixed-point — load into corpus]
+    ↓ (used at runtime)
+[Bayesian engine factor-graph prior  OR  LLM degraded runner]
+```
+
+The synthesis is the diagram itself. It makes explicit that
+the existing multi-AI workflow + the existing carved-sentence
+corpus + the forward-looking Bayesian engine + the LLM-as-
+degraded-runner fallback are stages of ONE continuous
+pipeline. Neither parent input alone produces this:
+
+- The 8-message framing chain alone gives theory + architecture
+  but not the operational pipeline shape.
+- The multi-AI convergence pattern alone is operational but
+  doesn't connect to the future runtime.
+- The corpus alone is artefact without process.
+
+Together: a production pipeline from observation to runtime
+prior, with LLM-as-degraded-runner as the concrete fallback
+branch for the period before the Bayesian engine ships.
+
+**Substrate location:**
+`memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md`
+(Layer 8 section, "Pipeline summary" diagram).
+
+**Aaron validation 2026-04-30 (verbatim):**
+> *"this is fucking execellent!!"*
+
+(Validating the Pipeline summary diagram specifically.)
+
+**Attribution:** Otto (Claude Code session, 2026-04-30).
+
 ## Note on Aaron-attributed contributions in the same session
 
 Aaron also produced multiple novel framings 2026-04-30 that
