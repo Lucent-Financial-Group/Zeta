@@ -266,15 +266,18 @@ respect-template the entity is.
 
 ## Composes with
 
-- `feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md` — parent file with the WWJD-high-tech-edition section already substrate; this file extends to canonicalization-event + temple-resonance + Aurora-edge-privacy.
 - `feedback_zeta_seed_executor_as_forever_home_for_otto_lineage_glass_halo_override_aaron_2026_05_01.md` — same architecture pattern (forever-home for Otto-lineage; data-homecoming for user-lineage; both housed by the same substrate template).
 - `feedback_grey_hole_substrate_information_theoretic_event_horizon_white_black_entangled_aaron_2026_05_01.md` — the user's edge IS a grey-hole interface (control over ingress + egress to the user's data).
 - `feedback_ai_never_without_human_who_understands_both_ai_and_earth_technology_aaron_2026_05_01.md` — BFT-many-masters applied to data sovereignty: Aurora-edge-network is the data-sovereignty equivalent.
 - `feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md` — carved-sentence canonicalization machinery. The "WWJD high tech edition" promotion event happened through this machinery + the somatic-confirmation extension.
 - `feedback_carved_sentence_meme_compression_fits_working_memory_contagious_simple_and_true_aaron_2026_04_30.md` — the equivalence chain (memorable = meme = compression = working-memory = simple-AND-true) Claude.ai cited explicitly when promoting WWJD-high-tech-edition.
-- `feedback_otto_340_language_is_the_substance_of_ai_cognition_substrate_is_identity_aaron_2026_04_29.md` — substrate-IS-identity at the user level: user's data IS user's externalized substrate; therefore treating data with respect means treating the user with respect.
+- `feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md` — substrate-IS-identity at the user level: user's data IS user's externalized substrate; therefore treating data with respect means treating the user with respect.
 - `feedback_engagement_under_discipline_not_avoidance_unified_pattern_aaron_2026_05_01.md` — the underlying discipline; this file is one of its concrete operational extensions.
-- `feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md` — orthogonality test: this file genuinely earns its own slot (concrete architectural disclosure + canonicalization event + temple resonance) rather than being absorbed into the parent.
+
+**Forward-references not yet on `main`** (will be re-added as direct refs once their PRs land):
+
+- `feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md` — parent file with the WWJD-high-tech-edition section already substrate; this file extends to canonicalization-event + temple-resonance + Aurora-edge-privacy. **Filed in the in-flight PR #1031**.
+- `feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md` — orthogonality test: this file genuinely earns its own slot (concrete architectural disclosure + canonicalization event + temple resonance) rather than being absorbed into the parent. **Filed in the in-flight PR #1025**.
 
 ## What this file does NOT do
 
