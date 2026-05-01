@@ -2,6 +2,7 @@
 name: Backlog prioritization authority delegated to Otto — Aaron 2026-05-01
 description: Authority shift — backlog-priority decisions on docs/backlog/** are Otto's call, not Aaron's, with two unchanged carve-outs (WONT-DO additions + budget increases still need explicit Aaron sign-off). Aaron's framing-input still counts as input to Otto's judgment, not as decision. Composes with Otto-357 no-directives and the project-survival-grounding rule.
 type: feedback
+originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
 # Rule
