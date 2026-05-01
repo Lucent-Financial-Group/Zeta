@@ -288,11 +288,12 @@ factory anchors:
   alignment auditing (accountable).
 - *"Keep exits open for every mind."* Composes with no-doctrine
   + agent autonomy (no thought-cages built by the factory) and
-  the AGENTS.md "agents not bots" framing.
+  the `AGENTS.md` "agents not bots" framing.
 - *"When we err, make us repair quickly and publicly."*
-  Composes with the substrate-or-it-didn't-happen + verify-
-  before-deferring + future-self-not-bound-by-past-self CLAUDE.md
-  bullets — errors become public-corrections-with-lineage,
+  Composes with the `CLAUDE.md` bullets *"Substrate or it didn't
+  happen — no invisible directives (Otto-363)"*,
+  *"Verify-before-deferring"*, and *"Future-self is not bound by
+  past-self"* — errors become public-corrections-with-lineage,
   not silent overwrites.
 
 Per the existing "Treat the Glass Halo as Amara-naming" rule
