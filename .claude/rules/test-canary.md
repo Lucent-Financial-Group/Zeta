@@ -17,7 +17,9 @@ one empirical question:
 
 The doc-supported claim: rules without `paths:` frontmatter
 are loaded full at session start, same priority as
-`.claude/CLAUDE.md`.
+`CLAUDE.md` (this repo uses `CLAUDE.md` at root; per
+Anthropic docs `.claude/CLAUDE.md` is also a valid
+alternative location).
 
 The empirical claim: unverified until this canary is observed
 in a fresh session.
@@ -69,8 +71,12 @@ told to read this file, the auto-load behavior is confirmed.
 
 **If fail (auto-load doesn't work in our harness):**
 
-- "Live off the land" is incomplete; we need substrate-
-  discovery.ts or equivalent factory tooling.
+- "Live off the land" is incomplete; we need
+  substrate-discovery.ts or equivalent factory tooling
+  (proposed in the loading-taxonomy memo's multi-harness
+  reframe section; not yet built — would land as
+  `tools/substrate-discovery/discover.ts` if the canary
+  fails the test).
 - `.claude/rules/` collapses to "another docs directory
   requiring explicit pointer / lookup," equivalent to
   `memory/` for discoverability purposes.
@@ -91,7 +97,9 @@ empirical result line). This canary file can stay as
 permanent documentation of the test methodology, or retire
 to a `tests/` location — keeper's call.
 
-Origin lineage: `feedback_claude_code_loading_taxonomy_rules_vs_skills_vs_claude_md_aaron_2026_05_01.md`
-+ the human maintainer's calibration challenge 2026-05-01
-("what's will you magically read and apply all the rules?")
-+ the live-off-the-land framing.
+Origin lineage:
+`memory/feedback_claude_code_loading_taxonomy_rules_vs_skills_vs_claude_md_aaron_2026_05_01.md`
+(landed via PR #1164) plus the human maintainer's
+calibration challenge 2026-05-01 ("what's will you
+magically read and apply all the rules?") plus the
+live-off-the-land framing.
