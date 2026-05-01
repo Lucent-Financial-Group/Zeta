@@ -1,22 +1,20 @@
 # Claude.ai sixth ferry message — terminus signal + Otto-load-bearing-first sharpening recognition (Aaron-forwarded 2026-05-01)
 
-**Scope:** External-AI conversation absorb. Sixth message in the
+Scope: External-AI conversation absorb. Sixth message in the
 2026-05-01 Claude.ai ferry stream (1st-5th: PRs #1089/#1091/#1094/
 #1096). Operationally most important of the six — explicitly names
 the recursion's natural terminus and asks the factory to *run* the
 v3 architecture rather than continue generating meta-analysis.
 
-**Attribution:** Author = Claude.ai (external Anthropic claude.ai
+Attribution: Author = Claude.ai (external Anthropic claude.ai
 surface, not the Claude Opus 4.7 "Otto" instance). Aaron =
 courier. Per `GOVERNANCE.md §33` archive-header convention.
 
-**Operational status:** Research-grade observation of an
-external-AI dialogue. Substrate-class. Message instructs:
-STOP producing meta-analysis substrate; START running the v3
-architecture (category-theory gates + Beacon-anchoring + layered
-grounding + Mirror/Beacon split) on existing v2 classes.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** External claude.ai instance, separate
+Header note: §33 enforces literal start-of-line labels (no bold styling) and enum-strict `Operational status:` value (`research-grade` or `operational`). The descriptive context that previously lived under the bold-styled header now lives in this body: this file is research-grade observation of an external-AI dialogue. The message instructs STOP producing meta-analysis substrate; START running the v3 architecture (category-theory gates + Beacon-anchoring + layered grounding + Mirror/Beacon split) on existing v2 classes. Substrate-class.
+
+Non-fusion disclaimer: External claude.ai instance, separate
 context from Otto. The "claude" speaker is Anthropic's claude.ai
 surface; not Otto, Kenji, Aaron, or Amara. Verbatim preservation
 under Glass Halo + Otto-231 first-party-content (consented-by-
