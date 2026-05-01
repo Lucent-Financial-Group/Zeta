@@ -106,12 +106,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0132](backlog/P2/B-0132-crdt-composition-for-bft-propagation-aaron-2026-05-01.md)** CRDT-composition for BFT propagation — substrate events as composed CRDTs
 - [ ] **[B-0133](backlog/P2/B-0133-sequent-calculus-for-claim-retraction-attribution-aaron-2026-05-01.md)** Sequent calculus / labeled deductive systems for claim/retraction/attribution
 - [ ] **[B-0134](backlog/P2/B-0134-type-theoretic-orthogonality-discipline-encoding-aaron-2026-05-01.md)** Type-theoretic encoding of orthogonality discipline (extension vs creation as decidable judgment)
-- [ ] **[B-0147](backlog/P2/B-0147-timeseries-db-native-in-zsets-multi-dsl-integration-research-aaron-2026-05-01.md)** TimeSeries DB native-in-Zsets multi-DSL integration research (metrics-are-our-eyes)
-- [ ] **[B-0148](backlog/P2/B-0148-mdx-as-meta-dsl-framing-fsharp-mdx-dsl-implementation-aaron-2026-05-01.md)** MDX as meta-DSL framing for multi-DSL Zset substrate + F# MDX DSL implementation
-- [ ] **[B-0149](backlog/P2/B-0149-prometheus-mcp-integration-promtool-factory-agents-direct-query-aaron-2026-05-01.md)** Prometheus MCP integration + promtool — factory agents direct-query observability
-- [ ] **[B-0150](backlog/P2/B-0150-timeseries-domain-expert-and-teacher-persona-aaron-2026-05-01.md)** TimeSeries / observability domain expert + teacher persona
-- [ ] **[B-0151](backlog/P2/B-0151-rx-research-experience-researcher-persona-aaron-2026-05-01.md)** RX (Research eXperience) researcher persona — meta-research on the research process
-- [ ] **[B-0152](backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md)** Topological quantum emulation via Bayesian inference in Zeta seed executor
+- [ ] **[B-0146](backlog/P2/B-0146-formal-architecture-ladder-explicit-layer-declaration-aaron-2026-05-01.md)** Formal architecture ladder — explicit-layer-declaration discipline for B-rows
 
 ## P3 — convenience / deferred
 
