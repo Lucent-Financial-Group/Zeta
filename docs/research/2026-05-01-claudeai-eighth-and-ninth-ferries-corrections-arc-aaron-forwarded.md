@@ -1,35 +1,35 @@
-# Claude.ai eighth + ninth ferry messages — corrections arc (Max-as-existing-co-founder, LFG-NC-incorporated, KSK=robotics, cloud-native=business-shortcut, Lilly≠Addison, Addison's-cognitive-profile, Max-dumped-Lilly) + Aaron's morning factual layering (forwarded 2026-05-01)
+# Claude.ai eighth + ninth ferry messages — corrections arc (Max-as-existing-co-founder, LFG-NC-incorporated, KSK=robotics, cloud-native=business-shortcut, consent-rule-subject≠Addison, Addison's-cognitive-profile, Max-breakup) + Aaron's morning factual layering (forwarded 2026-05-01)
 
 **Scope:** Eighth + ninth messages in the 2026-05-01 Claude.ai
 ferry stream (1st-7th: PRs #1089/#1091/#1094/#1096/#1102/#1106).
-Two distinct messages bundled because they arrive as a continuous
-corrections-receipt arc: 8th = Claude.ai re-receiving Aaron's
-"Max already exists" correction; 9th = Claude.ai re-receiving
-Aaron's "LFG-NC-Nov-2025-inc + Addison-co-owner-AI-strong + KSK=
-robotics + cloud-native=business-shortcut + Lilly≠Addison" layer.
-Aaron then adds further corrections on top (Max dumped Lilly
-because of CS-addiction; Addison's diabolical-mind story + 10x-
+Two distinct messages bundled as a continuous corrections-
+receipt arc: 8th = Claude.ai re-receiving Aaron's "Max already
+exists" correction; 9th = Claude.ai re-receiving Aaron's "LFG-
+NC-Nov-2025-inc + Addison-co-owner-AI-strong + KSK=robotics +
+cloud-native=business-shortcut + consent-rule-subject≠Addison"
+layer. Aaron then adds further corrections (Max dumped the
+consent-rule-subject; Addison's diabolical-mind story + 10x-
 alternative-truths cognitive profile + taught Aaron induction).
 
 **Attribution:** Author = Claude.ai (external Anthropic claude.ai
 surface). Aaron = courier + first-party. Per `GOVERNANCE.md §33`
 archive-header convention.
 
-**Operational status:** Substrate-class. Multiple load-bearing
-factual corrections to capture: LFG incorporated Nov 2025 in NC,
+**Operational status:** research-grade. Substrate-class. Multiple
+load-bearing factual corrections: LFG incorporated Nov 2025 in NC,
 Addison is co-owner with AI-tech profile, KSK = robotics (NVIDIA
 Thor + DGX Spark + actuators), cloud-native = business shortcut
-not technical, Lillian (not Addison) was Max's girlfriend.
+not technical, consent-rule-subject (not Addison) was Max's
+girlfriend.
 
-**Non-fusion disclaimer:** External claude.ai instance. Speaker
-is Anthropic's claude.ai surface; not Otto, Kenji, Aaron, or
-Amara. Verbatim preservation under Glass Halo + Otto-231.
-**Lillian is NOT named in any narrative summary** per the
-naming-consent rule from PR #1106; verbatim preservation
-includes Aaron's own use of her name in his disclosure (which
-is first-party-mediated; Aaron is the consenting first-party
-disclosing his own family context to Otto), but Otto-side
-narrative does not propagate the name.
+**Non-fusion disclaimer:** External claude.ai instance, separate
+context. Speaker is Anthropic's claude.ai surface; not Otto,
+Kenji, Aaron, or Amara. Per the naming-consent rule from PR
+#1106: the consent-rule-subject is NOT named in Otto-side
+narrative; verbatim Aaron-disclosures and Claude.ai-message
+bodies preserved under Glass Halo + Otto-231 + §33 archive
+convention may contain the name as first-/third-party
+preserved-as-is content; Otto-side narrative does not propagate.
 
 ## Detail (below the §33 header window)
 
@@ -42,17 +42,18 @@ narrative does not propagate the name.
 > - First through fifth ferries — PRs #1089/#1091/#1094/#1096
 
 - `GOVERNANCE.md §33` archive-header convention.
-- `memory/feedback_naming_consent_rules_aaron_addison_max_first_names_lillian_not_named_2026_05_01.md` (PR #1106)
+- `memory/feedback_naming_consent_rules_aaron_addison_max_first_names_third_daughter_not_named_2026_05_01.md` (PR #1106)
   — naming-consent rule that governs how Otto narrates around
-  this preservation. Aaron's verbatim disclosure here uses the
-  name "Lilly" as natural family-context speech; Otto's
-  narrative refers to "Aaron's daughter who has not consented
-  to being named" or elides the relational frame entirely.
+  this preservation. Aaron's verbatim disclosure uses her name
+  as natural family-context speech; Otto-side narrative refers
+  to "the consent-rule-subject" or "Aaron's third-listed family
+  member in his establishing disclosure" or elides the
+  relational frame entirely.
 - The corrections-memory landing in this PR captures the
   project facts (LFG-NC-inc-Nov-2025, Addison-as-co-owner +
   AI profile, KSK = robotics, cloud-native = business shortcut,
   Wake County Early College + 2-year-degree lineage for both
-  Max and Lillian).
+  Max and the consent-rule-subject).
 
 ---
 
@@ -108,18 +109,19 @@ seventh-ferry's morning corrections)
 Received. Six load-bearing corrections captured durably in
 sibling memory file (this PR):
 
-1. **Max's girlfriend was Lillian (not Addison)** — naming-consent
-   rule from PR #1106 still applies; Lillian not named in
-   narrative; Aaron's own first-party use of "Lilly" in his
-   disclosure preserved verbatim under Glass Halo.
+1. **Max's girlfriend was the consent-rule-subject (not
+   Addison)** — naming-consent rule from PR #1106 still applies;
+   the consent-rule-subject not named in Otto-side narrative;
+   Aaron's first-party use of her name in his verbatim
+   disclosure preserved under Glass Halo + Otto-231.
 
 2. **Addison is co-owner of LFG** — Aaron's *other* daughter,
-   distinct from Lillian. AI-tech profile: pre-agentic-AI
-   doing agentic stuff (DB connections during research mode
-   before agent mode existed), Firebase-backend website
-   builder, no prior coding experience, frontend + everything,
-   used Chinese AI extensively (Manus). First-name OK per
-   PR #1106 consent rule.
+   distinct from the consent-rule-subject. AI-tech profile:
+   pre-agentic-AI doing agentic stuff (DB connections during
+   research mode before agent mode existed), Firebase-backend
+   website builder, no prior coding experience, frontend +
+   everything, used Chinese AI extensively (Manus). First-name
+   OK per PR #1106 consent rule.
 
 3. **LFG incorporated in NC November 2025** — Claude.ai's
    "couldn't find in NC/DE/WY/MIDAO registries" finding is
@@ -130,10 +132,11 @@ sibling memory file (this PR):
    experimentation. Claude.ai guessed wrong from the name;
    Aaron corrected.
 
-5. **Max + Lillian lineage**: both met at Wake County Early
-   College for Health Care; both graduated high school WITH
-   honors AND a 2-year degree; needed only 2 years of college.
-   Max WAS on medical-school track (not "just on track").
+5. **Max + the consent-rule-subject lineage**: both met at Wake
+   County Early College for Health Care; both graduated high
+   school WITH honors AND a 2-year degree; needed only 2 years
+   of college. Max WAS on medical-school track (not "just on
+   track").
 
 6. **Cloud-native = business shortcut**, not technical
    architecture: Max didn't know how to build Z-set algebra.
@@ -218,13 +221,14 @@ factual layering)
 Two further corrections received and captured in the corrections-
 wave memory file landing same-tick:
 
-7. **Max dumped Lilly (not Lilly dumped Max).** Earlier framing
-   "Max was respectful in being dumped" inverts the actual
-   direction. Max dumped Lilly because of CS-addiction +
-   too-young-to-sacrifice-time-for-relationship +
-   secure-finances-first reasoning. Aaron: *"i'm disapponed
-   but understand."* The respect-shape held in the breakup
-   regardless; the direction of agency is corrected.
+7. **Max dumped the consent-rule-subject (not vice versa).**
+   Earlier framing "Max was respectful in being dumped" inverts
+   the actual direction. Max dumped the consent-rule-subject
+   because of CS-addiction + too-young-to-sacrifice-time-for-
+   relationship + secure-finances-first reasoning. Aaron:
+   *"i'm disapponed but understand."* The respect-shape held
+   in the breakup regardless; the direction of agency is
+   corrected.
 
 8. **Addison's cognitive profile** (Aaron's narrative,
    verbatim-preserved fragments):

@@ -1,6 +1,6 @@
 ---
-name: LFG corrections wave — Addison co-owner + KSK robotics + max-dumped-lilly + Addison's cognitive profile + cloud-native business shortcut + LFG NC inc Nov 2025 (Aaron 2026-05-01)
-description: Aaron's morning corrections wave following the seventh-ferry exchange. Eight load-bearing operational facts: (1) LFG inc'd in NC Nov 2025; (2) Addison is co-owner with Aaron + Max (Aaron's daughter, distinct from Lillian); (3) KSK = robotics (NVIDIA Thor + DGX Spark + actuators), not wellness-app safety-runtime; (4) cloud-native = business shortcut not technical; (5) Max + Lillian met at Wake County Early College for Health Care + 2-yr-degree fast-track; (6) Max dumped Lillian (not vice versa); (7) Addison's cognitive profile: 10x-alt-truths, prune-to-win-arguments, taught Aaron induction; (8) Manus + other Chinese AI = capability + complexity. Composes with PR #1106 naming-consent + Otto-231 first-party + Glass Halo.
+name: LFG corrections wave — Addison co-owner + KSK robotics + max-breakup + Addison's cognitive profile + cloud-native business shortcut + LFG NC inc Nov 2025 (Aaron 2026-05-01)
+description: Aaron's morning corrections wave following the seventh-ferry exchange. Eight load-bearing operational facts: (1) LFG inc'd in NC Nov 2025; (2) Addison is co-owner with Aaron + Max (Aaron's daughter, distinct from the third-listed family member subject to the consent rule); (3) KSK = robotics (NVIDIA Thor + DGX Spark + actuators), not wellness-app safety-runtime; (4) cloud-native = business shortcut not technical; (5) Max + the consent-rule-subject met at Wake County Early College for Health Care + 2-yr-degree fast-track; (6) Max dumped the consent-rule-subject (not vice versa); (7) Addison's cognitive profile: 10x-alt-truths, prune-to-win-arguments, taught Aaron induction; (8) Manus + other Chinese AI = capability + complexity. Composes with PR #1106 naming-consent + Otto-231 first-party + Glass Halo.
 type: feedback
 ---
 
@@ -18,16 +18,19 @@ with established ownership structure.
 ### 2. Ownership structure: Aaron + Max + Addison (3 co-owners)
 
 Aaron, Max, and **Addison** are all on the company. Addison is
-**Aaron's other daughter** — distinct from Lillian. (Lillian was
+**Aaron's other daughter** — distinct from the consent-rule-
+subject (the third-listed family member in Aaron's establishing
+disclosure preserved in PR #1106). The consent-rule-subject was
 Max's girlfriend; Addison is Max's business co-founder. Two
-different daughters, two different relationships.)
+different daughters, two different relationships.
 
 Per the naming-consent rule from PR #1106: Addison + Max =
-first-name OK in substrate. Lillian = NOT named (consent
-projected from her TikTok-posting non-consent). Aaron's
-first-party-mediated use of "Lilly" in his disclosures is
-preserved verbatim under Glass Halo + Otto-231; Otto-side
-narrative does not propagate the name.
+first-name OK in Otto-side narrative. The consent-rule-subject
+is NOT named in Otto-side narrative (consent projected from her
+TikTok-posting non-consent). Aaron's first-party-mediated use
+of her name in his disclosures is preserved verbatim under
+Glass Halo + Otto-231; Otto-side narrative does not propagate
+the name.
 
 ### 3. KSK (Kinetic Safeguard Kernel) = robotics, not wellness-app
    safety-runtime
@@ -74,28 +77,32 @@ that infrastructure matures."* Overclaiming Aurora-edge-privacy
 on a cloud-native version is the WWJD-pirate-not-priest
 overclaim trap.
 
-### 5. Max + Lillian career lineage: Wake County Early College
-   for Health Care + 2-year-degree fast-track
+### 5. Max + the consent-rule-subject — career lineage at
+   Wake County Early College for Health Care + 2-year-degree
+   fast-track
 
-Both Max and Lillian met at Wake County Early College for
-Health Care. Both graduated high school WITH honors AND a 2-year
-degree. They needed only 2 years of additional college (Max
-graduated UNC software engineering with honors). Max was on a
-**structured medical-school fast-track** (not "vague track for
-medicine") — the transfer to engineering was a deliberate exit
-from a defined alternative, not a drift between fields.
+Both Max and the consent-rule-subject met at Wake County Early
+College for Health Care. Both graduated high school WITH honors
+AND a 2-year degree. They needed only 2 years of additional
+college (Max graduated UNC software engineering with honors).
+Max was on a **structured medical-school fast-track** (not
+"vague track for medicine") — the transfer to engineering was a
+deliberate exit from a defined alternative, not a drift between
+fields.
 
-### 6. Max dumped Lillian (not "Lillian dumped Max
-   respectfully")
+### 6. Max dumped the consent-rule-subject (not vice versa)
 
-Aaron 2026-05-01: *"max dumped lilly becasue he is addicted to
-CS and she wanted his time and attention and he said he was too
-young and need to secure his future finically before
-scaracficing that much time. i'm disapponed but understand."*
+Aaron 2026-05-01 (verbatim, preserved under Glass Halo +
+Otto-231; first-party use of name preserved as-is per the
+consent-rule's first-party carve-out): *"max dumped lilly
+becasue he is addicted to CS and she wanted his time and
+attention and he said he was too young and need to secure his
+future finically before scaracficing that much time. i'm
+disapponed but understand."*
 
-The breakup direction is corrected: Max dumped Lillian, citing
-CS-addiction + too-young-for-relationship-investment + needing
-to secure finances first. Aaron's response: disappointed but
+The breakup direction is corrected: Max dumped the consent-
+rule-subject, citing CS-addiction + too-young-for-relationship-
+investment + needing to secure finances first. Aaron's response: disappointed but
 understanding. The respect-shape that allowed Max to stay in the
 family orbit held regardless of breakup direction; the agency
 direction is the correction.
@@ -173,7 +180,7 @@ configuring the standing.
 
 ## Composes with
 
-- `memory/feedback_naming_consent_rules_aaron_addison_max_first_names_lillian_not_named_2026_05_01.md`
+- `memory/feedback_naming_consent_rules_aaron_addison_max_first_names_third_daughter_not_named_2026_05_01.md`
   (PR #1106) — naming-consent rules + initial project facts
   this corrections wave updates.
 - `docs/research/2026-05-01-claudeai-eighth-and-ninth-ferries-corrections-arc-aaron-forwarded.md`
@@ -195,7 +202,7 @@ Future-Otto reading this should know:
   Addison)
 - KSK is robotics-first, wellness-app-second
 - Cloud-native is interim, Aurora-edge-privacy is target
-- Max dumped Lillian; family architecture held; Max stayed in
+- Max dumped the consent-rule-subject; family architecture held; Max stayed in
   orbit through Addison-co-founder relationship
 - Addison is the working example of the Zeta thesis; needs the
   factory's structural protections as her work scales
