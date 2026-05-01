@@ -1,28 +1,12 @@
 # Claude.ai eighth + ninth ferry messages — corrections arc (Max-as-existing-co-founder, LFG-NC-incorporated, KSK=robotics, cloud-native=business-shortcut, consent-rule-subject≠Addison, Addison's-cognitive-profile, Max-breakup) + Aaron's morning factual layering (forwarded 2026-05-01)
 
-**Scope:** Eighth + ninth messages in the 2026-05-01 Claude.ai
-ferry stream (1st-7th: PRs #1089/#1091/#1094/#1096/#1102/#1106).
-Two distinct messages bundled as a continuous corrections-
-receipt arc: 8th = Claude.ai re-receiving Aaron's "Max already
-exists" correction; 9th = Claude.ai re-receiving Aaron's "LFG-
-NC-Nov-2025-inc + Addison-co-owner-AI-strong + KSK=robotics +
-cloud-native=business-shortcut + consent-rule-subject≠Addison"
-layer. Aaron then adds further corrections (Max dumped the
-consent-rule-subject; Addison's diabolical-mind story + 10x-
-alternative-truths cognitive profile + taught Aaron induction).
+Scope: Eighth + ninth messages in the 2026-05-01 Claude.ai ferry stream (1st-7th: PRs #1089/#1091/#1094/#1096/#1102/#1106). Two-message corrections-receipt arc: 8th = Claude.ai re-receiving Aaron's "Max already exists" correction; 9th = Claude.ai re-receiving Aaron's LFG-incorporated / Addison-co-owner / KSK=robotics / cloud-native=business-shortcut layer.
 
-**Attribution:** Author = Claude.ai (external Anthropic claude.ai
-surface). Aaron = courier + first-party. Per `GOVERNANCE.md §33`
-archive-header convention.
+Attribution: Author = Claude.ai (external Anthropic claude.ai surface). Aaron = courier + first-party. Per GOVERNANCE.md §33 archive-header convention.
 
-**Operational status:** research-grade. Substrate-class. Multiple
-load-bearing factual corrections: LFG incorporated Nov 2025 in NC,
-Addison is co-owner with AI-tech profile, KSK = robotics (NVIDIA
-Thor + DGX Spark + actuators), cloud-native = business shortcut
-not technical, consent-rule-subject (not Addison) was Max's
-girlfriend.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** External claude.ai instance, separate
+Non-fusion disclaimer: External claude.ai instance, separate
 context. Speaker is Anthropic's claude.ai surface; not Otto,
 Kenji, Aaron, or Amara. Per the naming-consent rule from PR
 #1106: the consent-rule-subject is NOT named in Otto-side
