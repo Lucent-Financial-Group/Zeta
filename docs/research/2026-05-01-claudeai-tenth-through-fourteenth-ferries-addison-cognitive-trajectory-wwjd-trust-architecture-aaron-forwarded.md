@@ -13,19 +13,22 @@ Aaron = courier + first-party. Per `GOVERNANCE.md §33`.
 content items: (a) Addison's documented cogAT scores (99th
 percentile + upper-whisker off-chart) as external grader
 independent of Aaron's methodology; (b) educational-trajectory
-correction (Lilly = early-college fast-track at Wake County, not
-Addison); (c) Addison's regular-HS-to-online-HS path (lazy-in-
-traditional-school recognition); (d) WWJD-trust-architecture
-operating in Aaron's family (Aaron + Aaron's-mom + Addison all
-operate WWJD by shared family rules); (e) Aaron's gullable-
-presenting persona as engineered trust-acquisition.
+correction (the consent-rule-subject = early-college fast-track
+at Wake County, not Addison); (c) Addison's regular-HS-to-
+online-HS path (lazy-in-traditional-school recognition);
+(d) WWJD-trust-architecture operating in Aaron's family (Aaron
++ Aaron's-mom + Addison all operate WWJD by shared family
+rules); (e) Aaron's gullable-presenting persona as engineered
+trust-acquisition.
 
-**Non-fusion disclaimer:** External claude.ai instance. Verbatim
-preservation under Glass Halo + Otto-231. Naming-consent rule
-from PR #1106 honored: Lillian NOT named in Otto-side narrative;
-Aaron's first-party-mediated use of "Lilly" preserved verbatim
-under his own consent-by-creation. Aaron's mom = generic
-reference (no name disclosed by Aaron, no name propagated).
+**Non-fusion disclaimer:** External claude.ai instance, separate
+context. Speaker is Anthropic's claude.ai surface; not Otto,
+Kenji, Aaron, or Amara. Per the naming-consent rule from PR
+#1106: the consent-rule-subject is NOT named in Otto-side
+narrative; Aaron's first-party-mediated use of her name
+preserved verbatim under Glass Halo + Otto-231 carve-out.
+Aaron's mom = generic reference (no name disclosed by Aaron,
+no name propagated).
 
 ## Detail (below the §33 header window)
 
@@ -40,10 +43,11 @@ reference (no name disclosed by Aaron, no name propagated).
 
 - `GOVERNANCE.md §33` archive-header convention.
 - Glass Halo + Otto-231 first-party-content.
-- `memory/feedback_naming_consent_rules_aaron_addison_max_first_names_lillian_not_named_2026_05_01.md`
-  (PR #1106) — naming-consent rule. Lillian not named in
-  narrative; Aaron's verbatim Lilly preserved.
-- `memory/feedback_lfg_corrections_wave_addison_co_owner_ksk_robotics_max_dumped_lilly_addison_cognitive_profile_2026_05_01.md`
+- `memory/feedback_naming_consent_rules_aaron_addison_max_first_names_third_daughter_not_named_2026_05_01.md`
+  (PR #1106) — naming-consent rule. The consent-rule-subject
+  is not named in Otto-side narrative; Aaron's first-party
+  verbatim preserved under Glass Halo + Otto-231.
+- `memory/feedback_lfg_corrections_wave_addison_co_owner_ksk_robotics_max_breakup_addison_cognitive_profile_2026_05_01.md`
   (PR #1107) — corrections wave that this preservation extends.
 - New corrections-and-trust memory file landing same-tick (this
   PR) capturing the five load-bearing items above.
@@ -181,11 +185,11 @@ Aaron's vocabulary; Addison scored as she scored on instruments
 designed by people who don't know the family. That's
 methodology-independent measurement.
 
-Educational-trajectory correction: Lilly = Wake County Early
-College for Health Care (2-year fast-track); Addison = regular
-HS (almost failed) → online HS (aced APs). Different daughters,
-different educational shapes, both consistent with the
-cognitive-style observations.
+Educational-trajectory correction: the consent-rule-subject =
+Wake County Early College for Health Care (2-year fast-track);
+Addison = regular HS (almost failed) → online HS (aced APs).
+Different daughters, different educational shapes, both
+consistent with the cognitive-style observations.
 
 These five items are captured operationally in the sibling
 memory file landing same-tick.

@@ -122,16 +122,16 @@ rapid trust-acquisition).
 
 ## Educational-trajectory correction
 
-For the substrate-vs-Lilly-vs-Addison record:
+For the substrate disambiguation between the two daughters:
 
-- **Lilly** = Wake County Early College for Health Care (2-year-
-  degree fast-track, healthcare-track, met Max there). Per
-  PR #1107 corrections.
+- **The consent-rule-subject** = Wake County Early College for
+  Health Care (2-year-degree fast-track, healthcare-track, met
+  Max there). Per PR #1107 corrections.
 - **Addison** = regular high school (almost failed; lazy-in-
   traditional-school per Aaron) → online high school (aced
-  AP classes) → currently LFG co-founder. Different
-  educational shape than Lilly's; Addison did NOT do the
-  Wake County early-college program.
+  AP classes) → currently LFG co-founder. Different educational
+  shape than the consent-rule-subject's; Addison did NOT do
+  the Wake County early-college program.
 
 Pattern recognition (Claude.ai's 14th-message receipt): kids
 with high cognitive bandwidth often appear lazy in traditional
@@ -143,13 +143,14 @@ fit-recognition.
 
 ## Composes with
 
-- `memory/feedback_naming_consent_rules_aaron_addison_max_first_names_lillian_not_named_2026_05_01.md`
-  (PR #1106) — naming-consent rule. Lilly not named in narrative;
-  Aaron's first-party "Lilly" preserved verbatim under Glass Halo.
+- `memory/feedback_naming_consent_rules_aaron_addison_max_first_names_third_daughter_not_named_2026_05_01.md`
+  (PR #1106) — naming-consent rule. The consent-rule-subject is
+  not named in Otto-side narrative; Aaron's first-party use of
+  her name preserved verbatim under Glass Halo + Otto-231.
   Aaron's mother also not named (no name disclosed).
-- `memory/feedback_lfg_corrections_wave_addison_co_owner_ksk_robotics_max_dumped_lilly_addison_cognitive_profile_2026_05_01.md`
-  (PR #1107) — Addison's cognitive profile + initial Lilly-vs-
-  Addison disambiguation. This file extends with cogAT external-
+- `memory/feedback_lfg_corrections_wave_addison_co_owner_ksk_robotics_max_breakup_addison_cognitive_profile_2026_05_01.md`
+  (PR #1107) — Addison's cognitive profile + initial daughter-
+  disambiguation. This file extends with cogAT external-
   grader evidence + WWJD-trust-architecture answer to "who
   grades Addison".
 - `docs/research/2026-05-01-claudeai-tenth-through-fourteenth-ferries-addison-cognitive-trajectory-wwjd-trust-architecture-aaron-forwarded.md`
@@ -176,6 +177,8 @@ Future-Otto reading this should know:
   he doesn't run trust-calculus on others (rare exception:
   perhaps Addison)
 - Addison's educational path = regular HS → online HS → LFG
-  (NOT Wake County early-college; that was Lilly's path)
-- Naming-consent honored: Lilly not named, Aaron's mother not
-  named (generic refs only); Addison + Max first-name OK
+  (NOT Wake County early-college; that was the consent-rule-
+  subject's path)
+- Naming-consent honored: the consent-rule-subject not named,
+  Aaron's mother not named (generic refs only); Addison + Max
+  first-name OK
