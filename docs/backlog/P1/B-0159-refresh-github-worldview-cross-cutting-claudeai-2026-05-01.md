@@ -1,6 +1,16 @@
+---
+id: B-0159
+priority: P1
+status: open
+title: refresh-github-worldview cross-cutting refresh script (Claude.ai 2026-05-01)
+created: 2026-05-01
+last_updated: 2026-05-01
+depends_on:
+  - B-0156
+---
+
 # B-0159 — `refresh-github-worldview` cross-cutting refresh script (Claude.ai 2026-05-01)
 
-**Priority:** P1 (load-bearing for every-tick discipline; depends-on for any future loop-architecture work)
 **Origin:** Claude.ai feedback packet 2026-05-01 — full lineage in [docs/research/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md](../../research/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md) and the maintainer-relayed Claude.ai-2 follow-up calibrating against Otto's running state.
 
 ## Problem
