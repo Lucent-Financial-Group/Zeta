@@ -137,14 +137,61 @@ that, the default still defers to Aaron because the failure modes
 from prior host mutations (Otto-342/343 cluster) remain real
 *regardless* of whether the original config was deliberate.
 
+# 2026-05-01 cause-attribution refinement (Aaron)
+
+Aaron 2026-05-01 (during the github-settings ruleset-split refactor
+arc, after seeing Otto's Phase 1 audit empirically validate the
+"branch protection IS mostly accidental complexity surviving
+alongside its modern replacement" framing):
+
+> *"cause it's accidental complexity i cause by being uneducated
+> at the time i set it up and in a rush to get you started but
+> safe so i clicked everything without reading much just going off
+> limited past experience with setting up new repos from scratch"*
+
+Aaron names the **cause** of the accidental shape. Three load-
+bearing factors:
+
+1. **Uneducated at the time** — limited prior experience with
+   setting up new repos from scratch. Click-everything was
+   working off a small reference set, not deliberate
+   architecture.
+2. **In a rush to get Otto started** — time pressure. The
+   bootstrap sequence prioritized "Otto can begin work" over
+   "settings shape is right." Time-pressure + click-everything
+   compounds the no-deliberation pattern.
+3. **Safety-bias toward clicking everything** — when in doubt,
+   click MORE protections, not fewer. Defensive default that
+   accumulates accidental complexity (extra protections that
+   don't compose with each other).
+
+The pattern is generalizable beyond GitHub settings: any
+factory-bootstrap decision Aaron made under
+time-pressure-plus-safety-bias-plus-limited-experience is in
+the same provisional class. Not just the original "everything
+is greenfield" framing — that was the OBSERVATION; this is
+the GENERATIVE MECHANISM.
+
+Composes with the substrate-IS-product framing — accidental
+substrate from rushed bootstrap is still substrate; replacing
+it with deliberate-design substrate IS the work, not a
+detour from work.
+
 # Carved sentence (candidate, not seed-layer yet)
 
 *"At week one, every configuration is a candidate. Reverse-engineering
 load-bearing-ness from existence is the wrong prior."*
 
-(Marked candidate per CSAP. Has not been multi-domain-tested.
-Promotes via Razor + CSAP under DST grading on cadence, not by
-maintainer fiat.)
+Refinement of the carved sentence (Aaron 2026-05-01 cause-
+attribution): the WHY is *"rushed bootstrap + safety-bias
+click-everything + limited prior experience."* Recognizing this
+generative mechanism shifts the rule from "be skeptical of
+configs that exist" to "be deliberate about which configs to
+KEEP — the original choice was a click, not a decision."
+
+(Both sentences marked candidate per CSAP. Have not been
+multi-domain-tested. Promote via Razor + CSAP under DST grading
+on cadence, not by maintainer fiat.)
 
 # Composes with
 
