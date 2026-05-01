@@ -110,6 +110,51 @@ root-causes (seeds, time, IO, threading) don't account for it:
   proceed in parallel with other work; the bug is documented
   as `DST-grade-A pending` until found.
 
+## Mechanization — DST-deviation as a meta-checkable class
+
+Aaron 2026-05-01 (follow-up):
+
+> *"the dst rule is a class that can be checked/metachecked by
+> our PR review agents too"*
+
+The DST-grade-A discipline is **mechanizable as a class** that
+PR review agents (Copilot, Codex, harsh-critic, etc.) can
+check. The class signature:
+
+- **Trigger**: any commit / diff that adds `DST-exempt`,
+  `// flake-retry`, `// non-deterministic`, `[Retry(N)]`, or
+  similar annotations to a test or runtime path.
+- **Required evidence**: a citation (memory file, commit, ADR,
+  GitHub comment) demonstrating that dependency source was
+  inspected and the non-determinism was either (a) found and
+  named, or (b) traced to a fundamental property requiring
+  this exemption.
+- **Failure mode** (what the class flags): annotation lands
+  WITHOUT the citation. PR review agent posts a thread:
+  *"DST deviation detected. Provide source-inspection
+  evidence or remove the annotation."*
+
+This is class 14 for the BP-NN-mechanizable-lint-classes
+consolidation (B-0153). The fix-pattern: every DST-exemption
+ships with a citation; the class enforces the citation.
+
+**Aaron's challenge to Otto** (same exchange): *"did you look
+at source to prove your DST dievation was necessary"* — a
+quality-check on whether the documenting-agent walks the
+talk. The honest answer (from Otto, 2026-05-01): no DST
+deviations have surfaced this session that warranted source
+inspection; the bugs hit were lint-class / formatting / phantom-
+blocker, not dependency non-determinism. This memory file is
+forward-looking documentation, not retrospective application.
+**The challenge stands as a future-Otto check**: every time
+this discipline is invoked, the citation must be real, not
+theoretical.
+
+The carved sentence (now with the meta-checkable extension):
+*"DST should hodl. Grade A DST is DST that doesn't surrender —
+and the deviation that DOES need to ship is the one that
+provides source-level evidence of necessity."*
+
 ## Composes with
 
 - `memory/feedback_retries_are_non_determinism_smell_DST_holds_investigate_first_2026_04_23.md`
