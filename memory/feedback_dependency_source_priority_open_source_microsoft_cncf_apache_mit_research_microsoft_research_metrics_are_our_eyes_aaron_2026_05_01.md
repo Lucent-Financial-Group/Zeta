@@ -225,6 +225,80 @@ This composes structurally with:
   layers (org / resource / service / user-facing) compose
   without gap into a complete sensory system
 
+## PromQL ≈ MDX — the meta-DSL framing observation
+
+Aaron 2026-05-01 (continuing):
+
+> *"plus promethius as a sick MCP and promtool and you'll love
+> the query language its like simplifed multidimensonal query
+> language MDX, oh shit backlog f# mdx dsl"*
+>
+> *"that's might be meta dsl framing"*
+
+A substrate-grade observation about query-language shape:
+
+**PromQL is MDX-shaped.** Both are multidimensional-first query
+languages with dimensions / hierarchies / measures / tuples /
+sets. If PromQL — the query language for the *timeseries* type
+— is naturally MDX-shaped, then **MDX may be the right shape
+for the meta-DSL** Aaron's been describing for the multi-DSL
+Zset substrate (graph + hierarchy + filesystem + timeseries +
+future types).
+
+**MDX (Multidimensional Expressions)**:
+
+- Microsoft-published spec, used in SQL Server Analysis
+  Services, OLAP / business-intelligence ecosystems
+- Tier 2 per the dependency-source priority hierarchy
+  (Microsoft, open-spec — not proprietary)
+- 25+ years of mature semantics
+- **First-class hierarchies** — directly maps to one of
+  Aaron's named types
+- **Multidimensional from the start** — every Zset type
+  (graph nodes / hierarchy levels / filesystem paths /
+  timestamps) is naturally a dimension
+- **Compositional** — measures derive from measures; queries
+  parameterize cleanly
+- Don Syme's F# work (Microsoft Research, Tier 2 +
+  Microsoft-Research-preferred citation) provides ample
+  prior art for embedding query DSLs in F# (computation
+  expressions, quotations, type providers)
+
+**Backlog row B-0148** captures the design-question: *Is MDX
+the meta-DSL framing? If yes, what does the F# MDX DSL look
+like?* Companion to B-0147 (which asks *what is the timeseries
+algebra?*).
+
+This is also the **second concrete worked-example** for the
+metrics-are-our-eyes framing: not only do we need timeseries-DB
+to land the eyes operationally, we need a query language that
+spans timeseries + the other types unified through one shape.
+MDX is the candidate. PromQL's existing-MDX-shape is the proof
+point.
+
+## Prometheus MCP + promtool — the immediate-eyes path
+
+Aaron 2026-05-01 same message:
+
+> *"plus promethius as a sick MCP and promtool"*
+
+While B-0147/B-0148 research the long-term substrate questions,
+**Prometheus + MCP is the immediate-eyes path** — Prometheus
+deploys today, MCP integration is well-supported, promtool is a
+mature CLI, and PromQL queries already work (per the MDX-shape
+observation). **Backlog row B-0149** captures this operational
+work: deploy Prometheus locally, wire MCP server, adopt
+promtool, build initial query catalog targeting the SRE metric
+frameworks.
+
+Sequence: B-0149 (operational eyes NOW) runs in parallel with
+B-0147 + B-0148 (long-term substrate research). Even if the
+research recommends a different long-term backend, Prometheus
+is the right starting point because (a) Aaron names it as
+"good citizen" baseline, (b) its query language informs the
+meta-DSL research, (c) migration to a different backend later
+is well-understood (Prometheus-compatible APIs are widespread).
+
 ## Implications for the factory
 
 ### Backlog row B-0147

@@ -105,6 +105,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0133](backlog/P2/B-0133-sequent-calculus-for-claim-retraction-attribution-aaron-2026-05-01.md)** Sequent calculus / labeled deductive systems for claim/retraction/attribution
 - [ ] **[B-0134](backlog/P2/B-0134-type-theoretic-orthogonality-discipline-encoding-aaron-2026-05-01.md)** Type-theoretic encoding of orthogonality discipline (extension vs creation as decidable judgment)
 - [ ] **[B-0147](backlog/P2/B-0147-timeseries-db-native-in-zsets-multi-dsl-integration-research-aaron-2026-05-01.md)** TimeSeries DB native-in-Zsets multi-DSL integration research (metrics-are-our-eyes)
+- [ ] **[B-0148](backlog/P2/B-0148-mdx-as-meta-dsl-framing-fsharp-mdx-dsl-implementation-aaron-2026-05-01.md)** MDX as meta-DSL framing for multi-DSL Zset substrate + F# MDX DSL implementation
+- [ ] **[B-0149](backlog/P2/B-0149-prometheus-mcp-integration-promtool-factory-agents-direct-query-aaron-2026-05-01.md)** Prometheus MCP integration + promtool — factory agents direct-query observability
 
 ## P3 — convenience / deferred
 
