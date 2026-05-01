@@ -168,7 +168,40 @@ Zeta's *long-term native timeseries algebra* (this row's
 "Build native" recommendation path) targets a *different*
 contract: high-cardinality dimensions as first-class. This
 is not a critique of Prometheus; it is a different design
-point in the same problem space. Zeta SHOULD:
+point in the same problem space.
+
+**Open research question** — Aaron 2026-05-01: *"maybe we need
+both shapes IDK, research probably."* Zeta's timeseries
+algebra may need to support BOTH shapes:
+
+- **Small-cardinality optimized path** — the Prometheus-style
+  fast-path for bounded-cardinality factory metrics
+  (tick rate, PR-cycle latency, per-persona dispatch counts)
+- **High-cardinality first-class path** — the Aurora-side path
+  for multi-master with per-event unique IDs (sessions,
+  users, requests, claims)
+
+Possible architectures to research:
+
+1. **Cardinality-adaptive storage** — single algebra, automatically
+   chooses storage layout per dimension based on observed
+   cardinality at write time
+2. **Multi-mode algebra** — operator declares the mode per
+   timeseries (small-card fast vs high-card first-class);
+   storage paths differ but algebra surface stays unified
+3. **Hybrid layered** — small-cardinality data goes to a
+   Prometheus-like backing store; high-cardinality data goes
+   to a different backing store; the algebra unifies query
+4. **Single high-cardinality-first** — accept the small-card
+   tax to get high-card without compromise; benchmark whether
+   the tax is acceptable
+
+Each option pays differently on storage cost, query
+performance, complexity of the algebra surface, and CRDT
+semantics. The research lane (this row) must investigate at
+least these four options before recommending.
+
+Beyond this open question, Zeta SHOULD:
 - Treat label cardinality as a first-class parameter, not an
   implicit assumption
 - Choose a storage layout that does not penalize high-cardinality
