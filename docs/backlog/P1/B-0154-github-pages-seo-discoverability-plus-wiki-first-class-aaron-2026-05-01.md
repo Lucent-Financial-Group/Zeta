@@ -7,6 +7,12 @@ created: 2026-05-01
 last_updated: 2026-05-01
 depends_on:
   - B-0047
+# Note: `depends_on` is a forward-compat schema field landed via the
+# 2026-05-01 extension to `memory/feedback_backlog_hygiene_cadenced_refactor_look_for_overlap_not_just_dump_2026_04_23.md`
+# (Aaron 2026-05-01 *"you could start adding depends on if you find that
+# relationship when doing that"*). Authoring is the discipline now;
+# tooling (`tools/backlog/generate-index.sh` topo-sort + cycle-detection
+# lint) lands as separate work — currently informational-only.
 ---
 
 # B-0154 — GitHub Pages for SEO/discoverability + GitHub Wiki first-class
@@ -62,17 +68,90 @@ funnel is broken at the discovery step.
      `actions/deploy-pages`, both SHA-pinned (no tag
      references) per `docs/FACTORY-HYGIENE.md` row #43
    - Concurrency group + `cancel-in-progress: false`
-   - Minimum permissions (`pages: write`, `id-token: write`)
+   - Minimum permissions (`contents: read`, `pages: write`, `id-token: write`).
+     **Note**: GitHub Actions defaults unspecified scopes to `none` once any
+     `permissions:` block is set, so `contents: read` MUST be explicit or
+     `actions/checkout` and any read-from-repo step breaks.
 
-2. **Static-site generator choice** — candidate options:
-   - **Jekyll** (GitHub-native, default, zero-build-config)
-   - **MkDocs Material** (Python-based, popular for technical
-     docs, good search integration)
-   - **Docusaurus** (React-based, heavier, good if we want
-     React-y interactive demos)
-   - Decision factor: which one renders the existing
-     `docs/**.md` tree with minimum rewrite. Default to
-     Jekyll unless evidence points elsewhere.
+2. **Static-site generator choice** — problem-driven
+   selection (NOT preference-driven; the prefer-mechanical-
+   anchors discipline says don't use Aaron-as-anchor for tool
+   selection).
+
+   **Problem statement** (factored out from criterion #1 + #4
+   + #8 + #9):
+   - Render `docs/**/*.md` (markdown source) to plain HTML
+   - Generate `sitemap.xml` + `robots.txt` for crawler
+     discovery
+   - SEO metadata: `<title>`, `<meta description>`, canonical
+     URL, Open Graph, Twitter Card, JSON-LD
+   - AI-agent-crawler-accessible (no SPA hydration that
+     blocks crawlers; semantic HTML)
+   - Hosted on GitHub Pages (static-only)
+   - Playwright-testable (HTTP 200 / metadata / mobile
+     viewport)
+   - Minimize new dependency surface (4-bash + dotnet +
+     bun-TS already shipped; Ruby/Python/Go would be new)
+   - DST-achievable per the per-tool/language guidance
+   - GitHub-native first; portable second (the `git-native
+     vs GitHub-native` distinction in
+     `feedback_git_native_vs_github_native_*`)
+
+   **Candidate tools** (problem-axis scored):
+
+   | Tool | Language runtime | Markdown render | Sitemap/robots | Plain-HTML output | New dep? | Best-at |
+   |---|---|---|---|---|---|---|
+   | [Astro](https://astro.build/) | Node/Bun (TS) | content-collections | `@astrojs/sitemap` + author robots.txt | Yes (default) | No (Bun shipped) | TS-native static site, content-collections |
+   | [Eleventy](https://www.11ty.dev/) | Node/Bun | markdown-it / nunjucks | plugin or author | Yes | No (Bun shipped) | thin md→html, minimal config |
+   | [Hugo](https://gohugo.io/) | Go | goldmark | built-in | Yes | **Yes** (Go) | very-fast static sites |
+   | [Jekyll](https://jekyllrb.com/) | Ruby | kramdown | jekyll-sitemap (auto) | Yes | **Yes** (Ruby) | GitHub Pages auto-build (zero workflow) |
+   | [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) | Python | python-markdown | built-in | Yes | **Yes** (Python — already shipped via `uv-tools` manifest) | technical docs with search |
+   | [Docusaurus](https://docusaurus.io/) | Node | mdx | built-in | Partial (React hydration) | No | React-heavy interactive docs |
+
+   **Best-tool-for-the-job analysis**:
+
+   The problem axes that discriminate (where tools differ
+   meaningfully):
+
+   - **Plain-HTML output for AI-agent crawlers**: Docusaurus
+     loses (React hydration). Others tied.
+   - **No new dependency surface**: Hugo / Jekyll lose
+     (new runtimes). MkDocs is borderline (Python is
+     already shipped via uv-tools, so it's not a *new*
+     dep — but the Python static-site path is less mature
+     than the Node/Bun path). Astro / Eleventy / Docusaurus
+     don't add new runtimes.
+   - **Best-fit for `docs/**/*.md` source structure**:
+     Astro's content-collections (typed frontmatter,
+     glob-based content discovery) is purpose-built for
+     this. Eleventy is more permissive but less typed.
+     MkDocs has good `nav:` structure but requires
+     `mkdocs.yml` config maintenance.
+   - **GitHub-native + git-native both**: Jekyll wins on
+     GitHub-native (auto-build); criterion #1 voids that
+     advantage by requiring explicit deploy workflow.
+     Astro/Eleventy/Hugo/MkDocs/Docusaurus all need the
+     same `actions/deploy-pages` workflow.
+
+   **Surviving discriminators** (where one tool actually
+   wins outright on the problem):
+
+   - **Astro** wins on: typed content-collections (purpose-
+     built for `docs/**/*.md`), TS-native (DST achievable),
+     plain-HTML default, no new dep.
+   - All other tools have a losing axis: Docusaurus (SPA
+     hydration), Hugo/Jekyll (new runtime), MkDocs (less
+     mature md→html ecosystem than Node-side), Eleventy
+     (no typed content-collections).
+
+   **Decision**: **Astro** is best-tool-for-this-job by
+   problem-axis match. Phase 1 spike validates Astro on
+   the `docs/**/*.md` tree before committing.
+
+   Fallback if Astro evaluation surfaces a blocker: drop
+   to Eleventy (same runtime, simpler, less typing). Hugo
+   /Jekyll/MkDocs/Docusaurus considered only if both
+   fail.
 
 3. **Content sources for the Pages site**:
    - `README.md` → landing page
@@ -93,10 +172,30 @@ funnel is broken at the discovery step.
    - JSON-LD structured data (`SoftwareApplication` /
      `Organization` / `Article` types as appropriate)
 
-5. **`robots.txt` + `sitemap.xml`** — both auto-generated
-   by Jekyll plugins (`jekyll-sitemap`) or MkDocs equivalents.
-   `robots.txt` allows all crawlers except for explicit
-   no-index paths.
+5. **`robots.txt` + `sitemap.xml`** — generation strategy
+   depends on the chosen static-site generator (criterion #2
+   — Jekyll vs MkDocs vs Docusaurus):
+   - **Jekyll path (`jekyll-sitemap`)** — auto-generates
+     BOTH `sitemap.xml` AND a default `robots.txt` that
+     references the sitemap. Per upstream source at
+     <https://github.com/jekyll/jekyll-sitemap/blob/master/lib/robots.txt>
+     and [issue #189](https://github.com/jekyll/jekyll-sitemap/issues/189),
+     since v1.4.0 the plugin does NOT overwrite an existing
+     `robots.txt`. To carry the AI-agent allow-list
+     (criterion #8) we author a custom `robots.txt` checked
+     into the repo; that custom file takes precedence over
+     the plugin's default.
+   - **MkDocs path (`mkdocs-material` + plugins)** —
+     `sitemap.xml` is built into mkdocs-material core;
+     `robots.txt` requires `mkdocs-robotstxt` plugin OR
+     manual authoring under `docs/robots.txt`.
+   - **Docusaurus path** — `sitemap.xml` via
+     `@docusaurus/plugin-sitemap` (preset-default);
+     `robots.txt` via `static/robots.txt` (manual).
+   - **Decision factor**: criterion #2 default is Jekyll
+     unless evidence points elsewhere; the AI-agent
+     allow-list is generator-agnostic at the file-content
+     level.
 
 6. **Repo metadata SEO win**:
    - `topics`: add `dbsp`, `fsharp`, `dotnet`,
@@ -144,7 +243,15 @@ funnel is broken at the discovery step.
    - Same allow-list applied at GitHub Wiki level if/when
      Aaron uses Wiki (Pages is primary; Wiki is secondary
      per Aaron's *"i've never used the wiki"* note —
-     Pages-with-Jekyll is the proven path)
+     Pages-with-Jekyll is the proven path).
+     **Wiki indexing preconditions** — GitHub indexes Wikis
+     only when repo-level prerequisites are met (notably
+     repo-star-threshold + restricted public-editing
+     setting); without these, an allow-list-only Wiki ships
+     zero indexing. Phase 2 acceptance MUST verify both
+     prerequisites are configured OR scope SEO success
+     criteria to Pages only and treat Wiki indexing as
+     best-effort.
 
 9. **Playwright validation harness** (Aaron 2026-05-01:
    *"feel free to use playwright to test our github pages at
