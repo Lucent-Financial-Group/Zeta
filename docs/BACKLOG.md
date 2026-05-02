@@ -123,6 +123,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0151](backlog/P2/B-0151-rx-research-experience-researcher-persona-aaron-2026-05-01.md)** RX (Research eXperience) researcher persona — meta-research on the research process
 - [ ] **[B-0152](backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md)** Topological quantum emulation via Bayesian inference in Zeta seed executor
 - [ ] **[B-0153](backlog/P2/B-0153-pre-commit-lint-suite-mechanizable-class-consolidation-aaron-otto-2026-05-01.md)** Pre-commit lint suite — consolidate the 13 mechanizable lint-classes characterized 2026-05-01
+- [ ] **[B-0162](backlog/P2/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md)** Pre-commit hook to catch direct name attribution on current-state surfaces (Otto-279 role-ref convention) — mechanize the recurring failure mode (3 catches this branch alone)
 
 ## P3 — convenience / deferred
 
