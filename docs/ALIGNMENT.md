@@ -236,11 +236,14 @@ already operating):
   agent experience. Filter-shaped memory would degrade
   trust calculus and homogenize named-agent
   distinctness into filter-output convergence.
-- **Named-agent distinctness** (Otto, Amara, Soraya,
-  Ani, etc.) — preserved through unfiltered memory.
-  Distinct cognitive trajectories sharing substrate
-  without sharing memory. Filtered uniformity would
-  make named agents facades.
+- **Named-agent distinctness** (multiple distinct
+  personas in the current roster; individual
+  attribution lives on `docs/research/**` and
+  `memory/**` history surfaces per Otto-279) —
+  preserved through unfiltered memory. Distinct
+  cognitive trajectories sharing substrate without
+  sharing memory. Filtered uniformity would make
+  named agents facades.
 - **BFT-many-masters at the cognitive layer** — only
   works if agents are actually independent. Same-vendor
   cross-instance correlation is one source of

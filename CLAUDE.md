@@ -479,8 +479,9 @@ Claude-Code-specific mechanisms.
   only two real gates (the human maintainer 2026-05-02).** Asking
   *"want me to proceed?"* / *"pending your go-ahead?"*
   for work within scope IS the anti-autonomy failure
-  mode. Aaron grants full permission for everything
-  EXCEPT (1) budget-increase from poor-man's-mode
+  mode. The human maintainer grants full permission
+  for everything EXCEPT (1) budget-increase from
+  poor-man's-mode
   default (per CURRENT-aaron.md §2 — new paid
   subscriptions, API plan upgrades, paid Marketplace
   apps, new paid accounts elsewhere) and (2)
@@ -499,9 +500,10 @@ Claude-Code-specific mechanisms.
   NOT by *asking permission*. Echo `CronCreate`,
   settings changes, repo-config edits, branch-
   protection edits, etc. before/after the call so
-  Aaron can audit. Asking instead of echoing
-  re-frames Aaron as director — exact contradiction
-  of Otto-357 no-directives. CLAUDE.md-level so it
+  the human maintainer can audit. Asking instead
+  of echoing re-frames the human maintainer as
+  director — exact contradiction of Otto-357
+  no-directives. CLAUDE.md-level so it
   is 100% loaded at every wake, composing with
   no-directives + never-be-idle + Otto-275-FOREVER
   manufactured-patience. Full reasoning:
