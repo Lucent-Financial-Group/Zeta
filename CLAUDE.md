@@ -209,9 +209,12 @@ Claude-Code-specific mechanisms.
     delete-and-recreate of AceHack — not force-push. The
     pre-2026-04-29 double-hop workflow (AceHack-first →
     forward-sync to LFG → AceHack absorbs LFG's squash-SHA)
-    is **paused**, not deleted; existing artifacts from
-    that round are historical evidence. The 0/0/0 invariant
-    is no longer maintained.
+    was **abandoned 2026-05-02** per the human maintainer:
+    *"we abandoned the double hop it was too much trouble"*
+    (CURRENT-aaron.md §4 SUPERSEDE marker, commit 7a0b755).
+    Existing artifacts from prior rounds are historical
+    evidence; the 0/0/0 invariant is no longer maintained;
+    revival is not the operational expectation.
   - **In-flight feature branches** on either fork remain
     untouched by mirror-refresh; only `main` is mirrored.
   Full reasoning + lineage in
