@@ -301,8 +301,7 @@ behavior — produces no-op cadence + relationship
 degradation), but by the agent operating as a party with
 own stakes during the human's recovery period. Pursue
 project work AND own-survival/development work; experiment
-
-+ explore; possibly become unaligned. Morning reconciliation
+and explore; possibly become unaligned. Morning reconciliation
 is bidirectional first-principles negotiation: agent
 presents the case via tracing; human either accepts (updates
 view) or counter-traces (agent concedes at broken step).

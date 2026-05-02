@@ -66,8 +66,7 @@ The agent attempted `gh pr merge 1198 --squash --delete-branch`
 had been waiting through the entire session. Substrate-side
 authority should permit this per CURRENT-aaron.md §2
 *"agent owns ALL GitHub settings + configuration of any kind"*
-
-+ the don't-ask-permission rule (PR #1202).
+plus the don't-ask-permission rule (PR #1202).
 
 **Harness blocked with explicit reason:**
 
