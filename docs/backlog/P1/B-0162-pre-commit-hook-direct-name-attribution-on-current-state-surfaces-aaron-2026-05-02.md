@@ -174,4 +174,6 @@ is warranted.
 Per the just-landed first-principles trust calculus rule, the
 trace IS the verification surface for whether this row is
 warranted. The trace above checks out; the row earns its
-P2 placement.
+P1 placement (promoted from P2 at Tick-12 / commit c97cca4
+per the 5-recurrence-past-mechanization-breakeven trace in
+the "P2 → P1 promotion" section above).
