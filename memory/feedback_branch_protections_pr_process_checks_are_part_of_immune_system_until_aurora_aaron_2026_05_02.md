@@ -57,8 +57,7 @@ This is the right ordering: **don't disable the host-layer protection while buil
 
 ## Composes with
 
-- `memory/feedback_acehack_lfg_mirror_protocol_path_2_chosen_branch_protection_uniform_2026_04_30.md` (canonical reviewer rule lineage)
-- `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md` (mirror-refresh Path 2 decision)
+- `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md` (canonical reviewer rule lineage AND mirror-refresh Path 2 decision — single source per Copilot review on PR #1209; the rule "the protocol bends to the security ruleset; the ruleset does not bend to the protocol" lives in this backlog row's body)
 - `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md` (mechanical-check sibling pattern)
 - The Aurora immune-math standardization doc (canonical formal model — one of the 4 guiding-principle docs in CLAUDE.md)
 - `docs/VISION.md` (scope-creep-is-feature requires immune-system load-bearing)
