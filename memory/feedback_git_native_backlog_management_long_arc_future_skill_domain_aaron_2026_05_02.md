@@ -87,7 +87,7 @@ When the maturity signal fires (some N future ticks, possibly months out):
 
 ## Composes with
 
-- `memory/feedback_at_pickup_time_prereq_check_discipline_aaron_2026_05_02.md` — the discipline is the substrate that becomes the skill bodies for `backlog-row-creator-with-prereq-search` + `backlog-row-picker-with-prereq-search`
+- `memory/feedback_depends_on_backlog_search_discipline_at_creation_and_at_pickup_aaron_2026_05_02.md` — the discipline is the substrate that becomes the skill bodies for `backlog-row-creator-with-prereq-search` + `backlog-row-picker-with-prereq-search`
 - `memory/feedback_skill_flywheel_expansion_flywheel_parallel_tracks_substrate_aaron_2026_05_02.md` — the expansion-flywheel + parallel-tracks substrate is what `backlog-flywheel-mechanizer` + `parallel-tracks-dispatcher` mechanize
 - `memory/feedback_largest_mechanizable_automatable_backlog_wins_in_AI_age_inverts_classical_PM_training_prior_aaron_2026_05_02.md` — the meta-thesis the long-arc strategist's judgment surface is anchored to
 - `memory/feedback_amortized_speed_superfluid_phase_transition_inverts_per_action_optimization_aaron_2026_05_02.md` — the system-level optimization target the long-arc strategist optimizes for

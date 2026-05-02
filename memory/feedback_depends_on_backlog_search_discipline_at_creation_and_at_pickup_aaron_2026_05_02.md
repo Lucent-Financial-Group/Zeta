@@ -66,7 +66,7 @@ The schema-completion PR (#1246) was honest about what it didn't do — relation
 Before committing the new file:
 
 1. **Identify implicit prereqs from the row scope.** What substrate must exist for this work to land? Tooling, other rows, external research, a skill, an ADR.
-2. **Cross-reference the backlog for each implicit prereq.** `grep -l "<keyword>" docs/backlog/P*/B-*.md` or scan by tag (`grep -l "tags:.*<tag>" ...`). The keyword is whatever names the prereq concept.
+2. **Cross-reference the backlog for each implicit prereq.** `grep -l "<keyword>" docs/backlog/P*/B-*.md` or scan by tag (`grep -l "tags:.*<tag>" docs/backlog/P*/B-*.md`). The keyword is whatever names the prereq concept. Always include the explicit path glob — bare `...` placeholders risk turning into repo-wide greps that pull in `references/` clones or other noise.
 3. **Populate depends_on at file-time** with the found rows' ids — empty list `[]` is the honest answer when search returned nothing, but the search must have actually happened.
 4. **If the search surfaces a missing prereq** (substrate the new row needs that doesn't yet exist as a backlog row), file the prereq row FIRST, then file the original with `depends_on: [<prereq-id>]`.
 
