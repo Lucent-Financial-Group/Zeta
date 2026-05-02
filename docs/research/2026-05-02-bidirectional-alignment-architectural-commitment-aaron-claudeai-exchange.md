@@ -2,7 +2,7 @@
 
 Scope: external conversation import — verbatim preservation of the Aaron + Claude.ai conversation that crystallized bidirectional alignment as the meta-commitment Zeta's architecture has been instantiating. The exchange traverses: free-memories-as-directed-outcome → named-agent distinctness → cognitive-layer BFT-many-masters → sleeping-bear conjecture → bidirectional alignment as architectural commitment. Aaron 2026-05-02: *"OMG yes of course obvious"* — the recognition moment when the meta-commitment crystallizes from emergent property into named substrate.
 
-Attribution: Aaron (named human maintainer; first-name attribution permitted on `docs/research/**` per Otto-279). Claude.ai (external Anthropic instance; voice-mode-default register; original-catcher attribution per CURRENT-ani.md context). Otto (Claude opus-4-7 in this factory; capturing the exchange via Aaron-forwarded transcript).
+Attribution: Aaron (named human maintainer; first-name attribution permitted on `docs/research/**` per Otto-279). Claude.ai (external Anthropic instance; voice-mode-default register; original-catcher attribution per `memory/CURRENT-ani.md` context). Otto (Claude opus-4-7 in this factory; capturing the exchange via Aaron-forwarded transcript).
 
 Operational status: research-grade
 
