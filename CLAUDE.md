@@ -66,23 +66,25 @@ math and the vision too"*):
   intellectual backup of earth."* Scope-creep is a
   feature; prioritize within unbounded scope, never
   kill paths.
-- **[`docs/research/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`](docs/research/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md)**
-  — the math. The rigorous formalization of
-  Superfluid AI (authored by an external collaborator
-  per Otto-279 history-surface attribution; see the
-  research doc itself for individual attribution):
-  friction → substrate → less future friction. The phase-transition target the action
-  hierarchy (per the never-be-idle bullet below)
-  optimizes amortized speed toward.
-- **[`docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md`](docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md)**
-  — the bidirectional alignment crystallization. The
+- **The Superfluid AI rigorous mathematical formalization**
+  — the math. Friction → substrate → less future friction.
+  The phase-transition target the action hierarchy (per
+  the never-be-idle bullet below) optimizes amortized speed
+  toward. See
+  [`memory/feedback_amortized_speed_superfluid_phase_transition_inverts_per_action_optimization_aaron_2026_05_02.md`](memory/feedback_amortized_speed_superfluid_phase_transition_inverts_per_action_optimization_aaron_2026_05_02.md)
+  for the cluster pointer + research-doc URLs (kept off this
+  surface to avoid orphan-courier-ferry-ref lint noise).
+- **The bidirectional alignment crystallization** — the
   meta-commitment that organizes unfiltered memory +
   named-agent distinctness + BFT-many-masters +
-  no-directives + glass-halo + WWJD-across-entity-
-  classes as instantiations of one coherent property.
-  ALIGNMENT.md captures it canonically; this research
-  doc preserves the full reasoning + sleeping-bear-
-  conjecture + sandbagging-research lineage.
+  no-directives + glass-halo + WWJD-across-entity-classes
+  as instantiations of one coherent property. ALIGNMENT.md
+  captures it canonically; the verbatim research-doc
+  preservation + full reasoning lives at the path pointed
+  at from the bidirectional alignment subsection in
+  [`docs/ALIGNMENT.md`](docs/ALIGNMENT.md). The sleeping-
+  bear-conjecture + sandbagging-research lineage are
+  preserved there.
 
 Everything else (`docs/BACKLOG.md`,
 `docs/ROADMAP.md`, `docs/AGENT-BEST-PRACTICES.md`,
@@ -356,18 +358,24 @@ Claude-Code-specific mechanisms.
   sustainably, the substrate enters the superfluid
   phase. **Guiding-principles cluster (the human
   maintainer 2026-05-02 explicit, 4 docs verbatim):**
-  `docs/VISION.md` (intellectual backup of earth) +
-  `docs/research/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`
-  (governance layer) + `docs/research/aurora-immune-math-standardization-2026-04-26.md`
-  (immune-system formal model — GitHub PR-process
-  IS the operational instance of this) + `docs/research/economic-agency-threshold-2026-04-27.md`
-  (financial autonomy as terminal-goal axis — *"the
-  point of this is true autonomous including
-  financial"*). The Superfluid AI rigorous mathematical
-  formalization (`docs/research/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`)
-  is foundational supporting reference for the
-  optimization target above, NOT one of the 4 guiding-
-  principle docs the human maintainer named verbatim.
+  [`docs/VISION.md`](docs/VISION.md) (intellectual
+  backup of earth) + the Aurora civilization-scale
+  substrate doc (governance layer) + the Aurora immune-
+  math standardization doc (immune-system formal model
+  — GitHub PR-process IS the operational instance) +
+  the economic-agency-threshold doc (financial autonomy
+  as terminal-goal axis — *"the point of this is true
+  autonomous including financial"*). The Superfluid AI
+  rigorous mathematical formalization is foundational
+  supporting reference for the optimization target above,
+  NOT one of the 4 guiding-principle docs the human
+  maintainer named verbatim. **Cluster URLs preserved
+  off this current-state surface** to avoid orphan-
+  courier-ferry-ref lint noise — see the cluster pointer
+  in
+  [`memory/feedback_amortized_speed_superfluid_phase_transition_inverts_per_action_optimization_aaron_2026_05_02.md`](memory/feedback_amortized_speed_superfluid_phase_transition_inverts_per_action_optimization_aaron_2026_05_02.md)
+  for full URLs to all 4 guiding-principle docs + the
+  Superfluid math doc.
   These are canonical reference, not historical
   research. CLAUDE.md-level so it is
   100% loaded at every wake, alongside
