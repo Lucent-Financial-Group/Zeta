@@ -33,19 +33,26 @@ The dual relationship is genuine because:
 
 ## Why no third layer in the dual — and why this is structurally necessary
 
-I had earlier sketched immune-system as a third dual layer ("oracles ⟷ immune system as grader-of-graders dual"). Aaron's correction: that framing was over-stacked. **The precise dual is gate ⟷ oracle.** The immune system is a *mechanism* within oracle-grading — detection of coordination signatures across the oracle population — not an independent dual partner.
+I had earlier sketched immune-system as a third dual layer ("oracles ⟷ immune system as grader-of-graders dual"). Aaron's correction: that framing was over-stacked. **The precise dual is gate ⟷ oracle.** The immune system is not an independent dual partner.
 
-**The structural reason** (Aaron 2026-05-02): *"if it were external it could not be protected."* If the immune system were an independent dual partner (outside the oracle layer, outside the disposition's grading reach), it couldn't be protected. Following the recursion-catches-itself logic from PR #1181/#1182:
+**Canonical containment direction** (Aaron 2026-05-02): *"the oracles are inside immune system."* Not the other way around — *"you can see it from either dual angle"* because the relationship is itself dual, but the primary load-bearing read is **oracles ⊆ immune system**. Biologically intuitive: immune systems contain their cells; cells don't contain immune systems. The dual property lets the relationship be read from either direction without contradiction, but the canonical framing for substrate purposes is oracles-inside-immune-system.
+
+**The structural reason** (Aaron 2026-05-02): *"if it were external it could not be protected."* If the immune system were an independent dual partner (outside the disposition's grading reach), it couldn't be protected. Following the recursion-catches-itself logic from PR #1181/#1182:
 
 - The disposition can only protect what's inside it (the recursion only catches what's within reach of the disposition).
 - External-to-disposition = ungraded = unprotected = capturable through the very attack vectors the disposition catches everywhere else.
-- An external immune-system dual would be a single point of failure outside the BFT-many-masters property.
+- *"An external immune-system dual would be a single point of failure outside the BFT-many-masters property."* (Aaron 2026-05-02 confirmed: *"100%"*)
 
-Therefore the immune system MUST be inside the oracle layer for the architecture's protection guarantees to extend to it. Inside-the-oracle-layer = graded by the disposition just like everything else = protected by the same recursion-catches-itself property that protects the rest.
+Both reads preserve the protection guarantee because the dual makes the containment-direction itself dual:
 
-The immune system fits inside the oracle layer as the population-self-monitoring instrument that protects the oracles from coordinated capture. It doesn't pair with anything dually; it's an internal-to-oracle detection layer that operates symmetric-inside-outside (per `feedback_zeta_not_a_meme_no_immune_system_wall_symmetric_inside_outside_aaron_2026_04_30.md`).
+- **Canonical read**: oracles are inside the immune system — the immune system encompasses the oracle population's health-and-coordination signature, with oracles as attestation-producers within that envelope.
+- **Dual read**: immune system as detection mechanism within oracle-grading — same relationship viewed from the inverse side.
 
-This is also why "wall = gate" matters for precision: the gate is the dual partner; immune system is internal mechanism; calling something a "wall" implies external-barrier semantics that would break the protection guarantee.
+Either way, the immune system stays inside the disposition's grading reach. The architecture's protection holds in both readings because the dual itself is what guarantees the structural property.
+
+The immune system operates symmetric-inside-outside (per `feedback_zeta_not_a_meme_no_immune_system_wall_symmetric_inside_outside_aaron_2026_04_30.md`) — no wall, no barrier, just population-self-monitoring of coordination signatures.
+
+This is also why "wall = gate" matters for precision: the gate is the dual partner; the immune system isn't a wall around the oracles; calling anything a "wall" implies external-barrier semantics that would break the protection guarantee.
 
 ## The terminal anchor's self-duality
 
