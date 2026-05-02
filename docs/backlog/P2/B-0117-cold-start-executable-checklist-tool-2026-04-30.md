@@ -1,13 +1,24 @@
 ---
 id: B-0117
 priority: P2
-status: open
+status: closed
+closed: 2026-05-02
+closed_by: PR #1188
 title: tools/cold-start-check.ts — make the cold-start big-picture-first 8-step checklist executable (Ani 2026-04-30 finding, Deepseek 2026-04-30 reinforcement)
 tier: factory-tooling
 effort: M
 ask: The cold-start big-picture-first rule (memory/feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md) currently lives as prose. Ani's review recommended turning the 8-step checklist into a runnable tool. Deepseek's review reinforced the deferred-skill-anti-pattern observation that a noted "Backlog candidate" without a B-NNNN row is gap-by-omission. This row closes that gap and tracks the implementation scope.
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+
+> **Closed 2026-05-02 by PR #1188** —
+> `tools/cold-start-check.ts` ships with three modes
+> (human-readable / `--json` / `--no-git`) and prints all 8 cold-
+> start steps including the user-scope `CURRENT-*.md` discovery.
+> TypeScript-clean. Documented in `tools/cold-start-check.md`.
+> Cross-shell verification (Otto-235 four-shell target) is the
+> one open follow-up — Bun is cross-platform but only smoke-tested
+> on macOS in this PR.
 composes_with:
   - feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md
   - tools/github/poll-pr-gate.ts

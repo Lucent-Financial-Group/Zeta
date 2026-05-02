@@ -1,11 +1,26 @@
 ---
 id: B-0144
 priority: P1
-status: open
+status: closed
+closed: 2026-05-02
+closed_by: PR #1189 + PR #1190
 title: Doc/code two-lane parallel split — rung-2 unlock for factory parallelism
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
 ---
+
+> **Closed 2026-05-02 by PR #1189 (protocol docs) + PR #1190
+> (allocator scripts).** Acceptance criteria 1+2+3 (worktree-
+> isolation pattern documented + subagent prompt templates +
+> coordinator coordination protocol) shipped via the protocol
+> docs at `tools/lanes/README.md` + `tools/lanes/prompts/{doc,code}-lane-template.md`.
+> Allocator scripts shipped via `tools/lanes/{lane-allocator,doc-lane,code-lane}.sh`
+> closing acceptance criterion #1 implementation. The CI/build
+> side of the lane split landed earlier in the same session via
+> PR #1185 (B-0125 path-filter — F# build steps skip on docs-only
+> PRs). Acceptance criterion #4 (first demonstrated dry-run) and
+> #5 (lessons-mechanization step) remain as open-ended follow-ups
+> — those are operational rather than implementation-substrate.
 
 # B-0144 — Doc/code two-lane parallel split
 
