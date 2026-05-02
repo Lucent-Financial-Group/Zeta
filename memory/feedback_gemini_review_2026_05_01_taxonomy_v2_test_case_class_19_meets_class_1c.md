@@ -17,21 +17,20 @@ PR #1081 landed `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wa
 
 Aaron also forwarded a calibration: *"You are smarter than gemini in my opinion, it mostly praises you."*
 
-## Empirical verification (taxonomy v2 in operation)
+## Empirical verification (taxonomy v2 in operation — and where it failed)
 
-Following the v2 diagnostic flowchart, step 1: verify the file state cited by the reviewer.
+Following the v2 diagnostic flowchart, step 1: verify the file state cited by the reviewer. Otto ran:
 
 ```
 $ find memory -name "*cold_start*"
 $ find memory -name "*big_picture*"
 $ find memory -name "*prompt_first*"
 $ ls ~/.claude/projects/<slug>/memory/feedback_cold_start_*
-(all returned empty)
 ```
 
-The file `feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md` **does not exist** in-repo, in user-scope, or anywhere. The cited 8-step checklist is not extant substrate. **Class #1c hallucinated content** per the v2 taxonomy: reviewer cited specific content attributed to a file that doesn't exist.
+These commands returned empty in the original tick. **EDIT 2026-05-01: that result was wrong.** The file `memory/feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md` DID exist on main since 2026-04-30T16:15Z (commit c0151c4) — about 14 hours before this shard was written. The verification step had a bug (likely path or pattern mismatch); the empty-result conclusion was a false negative. Otto initially classified Gemini's recommendation (a) as **class #1c hallucinated content** based on this faulty verification, but the corrected truth is that Gemini's cited file existed and Gemini's recommendation was substantively correct, not hallucinated.
 
-The taxonomy operating on its own first review is itself the meta-meta-recursion (extending the class-#19 self-bootstrapping observation).
+The taxonomy v2 verification cascade itself operated correctly — the issue was the verification *step* feeding the cascade. The lesson: **verification-of-the-verification matters**. Empty `find`/`grep` results are NOT proof of non-existence; the verification harness itself can be buggy. The cascade discipline is load-bearing, but it requires verification steps that don't silently fail.
 
 ## Aaron filter — substantive intent preserved
 
@@ -76,9 +75,9 @@ Applying the filter to Gemini's two recommendations:
 
 ## Class #1c demonstration value
 
-This memory file IS the worked example of class #1c (hallucinated content) at the peer-AI-review level. The taxonomy v2's verification cascade caught the hallucination on first read; the Aaron filter pre-armed the skepticism; the resolution preserved Gemini's substantive intent without acting on the fabricated specifics.
+This memory file IS the worked example of **the inverse class — taxonomy v2 producing a false-positive class-#1c verdict against a peer-AI when the verification step itself fails silently**. The original framing claimed Gemini's recommendation was hallucinated; the corrected framing (per the EDIT block at top of this file) is that Otto's verification step had a bug, the cited file existed, and Gemini's recommendation was substantively correct. The Aaron filter pre-armed the skepticism, the v2 cascade ran the verification step, but the verification step failed silently — and Otto acted on its empty result rather than verifying the verification.
 
-This is the v2 taxonomy operating at meta-level on its own first real review. Future-Otto: when a peer-AI cites specific evidence (filenames, line numbers, content), run the verification cascade BEFORE acting. The filter cost is low; the cost of acting on hallucinated evidence is structural-substrate-pollution.
+The lesson is sharper than the original framing suggested: **the v2 verification cascade is only as load-bearing as its weakest verification step**. Future-Otto: when running the cascade, treat empty `find`/`grep` results with the same skepticism as positive matches — both can be artifacts of pattern/path errors. Verify the verification harness before acting on its output. The cost of acting on hallucinated-non-existence (false-positive class #1c against a peer-AI) is the same structural-substrate-pollution as acting on hallucinated-content; both produce wrong substrate landings. Cascade discipline + verification-of-verification IS the corrected v2 invariant.
 
 ## Composes with
 
