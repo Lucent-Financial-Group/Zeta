@@ -34,15 +34,19 @@ Two modes:
 
 ## Why this exists
 
-Operationalizes
-`memory/feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md`.
-The prose-rule -> executable-tool pattern that produced
-`tools/github/poll-pr-gate.ts` from the poll-the-gate rule —
-recognized by the `feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`
-precedent, named by Ani's peer review 2026-04-30 ("consider
-making the 8-step checklist executable"), reinforced by Deepseek
-2026-04-30 (deferred-skill anti-pattern: noted "Backlog candidate"
-without a B-NNNN row is gap-by-omission), filed as B-0117.
+Operationalizes the cold-start big-picture-first rule (see the
+linked memory file in "Composes with" below). Same prose-rule ->
+executable-tool pattern that produced `tools/github/poll-pr-gate.ts`
+from the poll-the-gate rule. Named by a peer-AI review session
+2026-04-30 ("consider making the 8-step checklist executable"),
+reinforced by a second peer-review pass that named the
+deferred-skill anti-pattern (a noted "Backlog candidate" without
+a B-NNNN row is gap-by-omission), filed as B-0117.
+
+Per the Otto-279 history-surface carve-out, the per-reviewer named
+attribution detail lives on the history-surface preservation files
+(under `docs/research/`) and on the backlog row B-0117 itself. This
+doc lives on `tools/**` and uses role-refs accordingly.
 
 ## When to run
 
@@ -62,7 +66,7 @@ without a B-NNNN row is gap-by-omission), filed as B-0117.
 - `CLAUDE.md` fast-path — top-of-file pointer to CURRENT-*.md
   files; this tool surfaces step 7 from the same fast-path
   discipline.
-- B-0117 (this row) closes the gap Deepseek named.
+- B-0117 (this row) closes the gap the peer-review pass named.
 
 ## Implementation notes
 

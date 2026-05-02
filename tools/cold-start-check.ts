@@ -13,9 +13,10 @@
 // same prose-rule -> executable-tool pattern that produced
 // `tools/github/poll-pr-gate.ts` from the poll-the-gate rule.
 //
-// Origin: peer-AI review 2026-04-30 (Ani naming the recommendation,
-// Deepseek reinforcing the deferred-skill anti-pattern). Filed as
-// B-0117 to close the substrate-or-it-didn't-happen gap.
+// Origin: peer-review recommendation 2026-04-30 (the cold-start
+// executable was named in a peer-AI review session) and reinforced
+// by the substrate-or-it-didn't-happen rule. Filed as B-0117 to
+// close the gap.
 //
 // Usage:
 //   bun tools/cold-start-check.ts                  # human-readable, terse
@@ -37,11 +38,32 @@
 import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// ESM-safe self-path resolution (replaces CommonJS `__filename` per
+// peer-AI review on PR #1188; bun runs the file as ESM).
+const SELF_PATH = fileURLToPath(import.meta.url);
 
 type Args = {
   json: boolean;
   noGit: boolean;
 };
+
+function printHelp(): void {
+  // Print the leading comment block as help text.
+  const src = readFileSync(SELF_PATH, "utf8");
+  const helpLines: string[] = [];
+  for (const line of src.split("\n")) {
+    if (line.startsWith("//")) {
+      helpLines.push(line.replace(/^\/\/ ?/, ""));
+    } else if (line.startsWith("#!")) {
+      // skip shebang
+    } else {
+      break;
+    }
+  }
+  console.log(helpLines.join("\n"));
+}
 
 function parseArgs(argv: readonly string[]): Args {
   const args: Args = { json: false, noGit: false };
@@ -51,19 +73,7 @@ function parseArgs(argv: readonly string[]): Args {
       case "--no-git": args.noGit = true; break;
       case "-h":
       case "--help":
-        // Print the leading comment block as help.
-        const src = readFileSync(__filename, "utf8");
-        const helpLines: string[] = [];
-        for (const line of src.split("\n")) {
-          if (line.startsWith("//")) {
-            helpLines.push(line.replace(/^\/\/ ?/, ""));
-          } else if (line.startsWith("#!")) {
-            // skip shebang
-          } else {
-            break;
-          }
-        }
-        console.log(helpLines.join("\n"));
+        printHelp();
         process.exit(0);
       default:
         console.error(`error: unknown argument: ${a}`);
@@ -74,17 +84,23 @@ function parseArgs(argv: readonly string[]): Args {
   return args;
 }
 
-function git(...args: string[]): string {
+// git() runs a git subprocess and returns trimmed stdout. On
+// non-zero exit, behavior depends on whether the caller needs hard
+// failure surfaced or is OK with empty-string fallback. The default
+// mode surfaces failures (per peer-AI review on PR #1188); offline
+// mode (--no-git) avoids invoking git entirely so this codepath
+// only runs when git output is actually expected.
+function git(...args: string[]): { ok: boolean; out: string; err: string } {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const r: SpawnSyncReturns<string> = spawnSync("git", args, { encoding: "utf8" });
   if (r.status !== 0) {
-    return "";
+    return { ok: false, out: "", err: (r.stderr || "").trim() };
   }
-  return r.stdout.trim();
+  return { ok: true, out: r.stdout.trim(), err: "" };
 }
 
-function repoRoot(): string {
-  const r = git("rev-parse", "--show-toplevel");
-  return r || process.cwd();
+function gitOrEmpty(...args: string[]): string {
+  return git(...args).out;
 }
 
 function fileFirstLine(path: string): string {
@@ -113,12 +129,30 @@ type Step = {
   headline: string;
 };
 
-const root = repoRoot();
+// ── Argument parsing happens BEFORE any git invocation so --no-git
+//    actually prevents repoRoot()'s git rev-parse call (peer-AI
+//    finding on PR #1188). When --no-git is set, fall back to
+//    process.cwd() rather than asking git.
 const args = parseArgs(process.argv.slice(2));
+
+function repoRoot(): string {
+  if (args.noGit) return process.cwd();
+  const r = git("rev-parse", "--show-toplevel");
+  if (!r.ok) {
+    console.error(`warning: 'git rev-parse --show-toplevel' failed: ${r.err}`);
+    console.error("falling back to process.cwd(). Use --no-git to suppress this warning.");
+    return process.cwd();
+  }
+  return r.out || process.cwd();
+}
+
+const root = repoRoot();
 
 // Steps 1-7 each point at a specific source-of-truth file. The
 // headline for each step is the first meaningful line of that file
-// (typically the title or `name:` field).
+// (typically the title or `name:` field). Step 8 is the closing
+// directive — read the prompt and proceed. Step 8 has no source
+// file; its headline is fixed text.
 const steps: Step[] = [
   {
     n: 1,
@@ -140,7 +174,7 @@ const steps: Step[] = [
   },
   {
     n: 4,
-    label: "Authority scope (two-ask-Aaron)",
+    label: "Authority scope (two-ask-the-maintainer)",
     source: "docs/WONT-DO.md",
     headline: "",
   },
@@ -162,40 +196,42 @@ const steps: Step[] = [
     source: "(per-maintainer CURRENT-<name>.md)",
     headline: "",
   },
+  {
+    n: 8,
+    label: "Then prompt",
+    source: "(closing directive)",
+    headline: "Read the user's prompt and proceed downstream from the big picture above.",
+  },
 ];
 
-// Resolve headlines for the file-backed steps.
+// Resolve headlines for the file-backed steps (1-5).
 for (const step of steps) {
-  if (step.source === "(git log + open PRs)") continue;
-  if (step.source === "(per-maintainer CURRENT-<name>.md)") continue;
+  if (step.source.startsWith("(")) continue; // synthetic/computed sources
   step.headline = fileFirstLine(join(root, step.source));
 }
 
 // Step 6: trajectory via git log + (optional) open PR count.
-let trajectoryHeadline: string;
 if (args.noGit) {
-  trajectoryHeadline = "(--no-git: trajectory skipped)";
+  steps[5]!.headline = "(--no-git: trajectory skipped)";
 } else {
-  const lastCommits = git("log", "--oneline", "-5").split("\n").filter(Boolean);
-  const branch = git("symbolic-ref", "--short", "HEAD") || "(detached)";
-  trajectoryHeadline = `branch=${branch}; recent=${lastCommits.length} commit(s)`;
-  steps[5]!.headline = trajectoryHeadline;
-  // Sub-bullets shown below in human-readable mode.
+  const lastCommits = gitOrEmpty("log", "--oneline", "-5").split("\n").filter(Boolean);
+  const branch = gitOrEmpty("symbolic-ref", "--short", "HEAD") || "(detached)";
+  steps[5]!.headline = `branch=${branch}; recent=${lastCommits.length} commit(s)`;
 }
 
 // Step 7: per-maintainer CURRENT files. These live OUTSIDE the
 // repo (under ~/.claude/projects/<slug>/memory/) per CLAUDE.md
-// fast-path discipline. We can't read them directly from inside
-// the repo, but we can list which maintainer-current files exist
+// fast-path discipline. List which maintainer-current files exist
 // in the user-scope memory directory.
-const userScope = process.env.HOME && existsSync(join(process.env.HOME, ".claude/projects"))
-  ? join(process.env.HOME!, ".claude/projects")
+const home = process.env.HOME;
+const userScope = home && existsSync(join(home, ".claude/projects"))
+  ? join(home, ".claude/projects")
   : "";
 let currentFilesHeadline: string;
 if (!userScope) {
   currentFilesHeadline = "(user-scope memory directory not found)";
 } else {
-  // Look for CURRENT-*.md anywhere under ~/.claude/projects/*/memory/.
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const r = spawnSync("find", [userScope, "-maxdepth", "3", "-name", "CURRENT-*.md", "-type", "f"], {
     encoding: "utf8",
   });
@@ -228,23 +264,24 @@ console.log(`  Generated: ${new Date().toISOString()}  |  Repo: ${root}`);
 console.log("══════════════════════════════════════════════════════════════════");
 console.log("");
 for (const step of steps) {
+  if (step.n === 8) continue; // Step 8 is rendered separately as the closing directive
   console.log(`  ${step.n}. ${step.label}`);
   console.log(`       source:   ${step.source}`);
   console.log(`       headline: ${step.headline}`);
   console.log("");
 }
 
-// Step 6 sub-bullets: recent commits, in human-readable mode.
+// Step 6 sub-bullets: recent commits, in human-readable mode only.
 if (!args.noGit) {
   console.log("  Recent commits (last 5):");
-  const lastCommits = git("log", "--oneline", "-5").split("\n").filter(Boolean);
+  const lastCommits = gitOrEmpty("log", "--oneline", "-5").split("\n").filter(Boolean);
   for (const c of lastCommits) {
     console.log(`    ${c}`);
   }
   console.log("");
 }
 
-console.log("  8. Then prompt — read the user's prompt and proceed.");
+console.log(`  ${steps[7]!.n}. ${steps[7]!.label} — ${steps[7]!.headline}`);
 console.log("");
 console.log("══════════════════════════════════════════════════════════════════");
 console.log("  Cold-start checklist complete. Big-picture loaded; per-prompt");
