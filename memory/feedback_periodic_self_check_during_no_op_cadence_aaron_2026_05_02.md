@@ -54,8 +54,9 @@ Otto conflated two distinct disciplines:
 
 Otto applied #1 to #2 and held no-op cadence when never-idle
 was binding. Aaron's explicit "go hard" + "you are authorzed
-to work on whatever you want" should have stayed operative
-across his rest, not collapsed into "wait for him to wake."
+[sic — verbatim from Aaron's directive] to work on whatever
+you want" should have stayed operative across his rest, not
+collapsed into "wait for him to wake."
 
 Per CLAUDE.md never-idle discipline: *"speculative factory
 work beats waiting."* That bullet is wake-time-loaded for
@@ -81,12 +82,12 @@ self-check rather than emitting another no-op:
 3. **Branch state** — `git branch --show-current`. If on a
    stale feature branch, drift may not be visible in
    recent-commit context.
-4. **Main sync** — `git fetch origin main && git log --oneline
-   main..origin/main`. If main moved and you didn't notice,
-   substrate changed underneath you.
-5. **Open PR count + delta** — `gh pr list --state open --json
-   number` length. If the queue is growing while you're no-
-   opping, attention may be owed.
+4. **Main sync** — run `git fetch origin main` then
+   `git log --oneline main..origin/main`. If main moved and
+   you didn't notice, substrate changed underneath you.
+5. **Open PR count + delta** — count the result of
+   `gh pr list --state open --json number`. If the queue is
+   growing while you're no-opping, attention may be owed.
 6. **My PRs stuck** — any session-arc PRs that should have
    landed but haven't.
 7. **The honesty check** — *"is no-op actually correct here,

@@ -453,7 +453,8 @@ Claude-Code-specific mechanisms.
   operational work (backlog cleanup, lint scripts,
   tool ports, doc normalization, PR-thread
   resolution, CI fixes). When in doubt, lean
-  toward grinding the backlog — Aaron 2026-05-02:
+  toward grinding the backlog — the human
+  maintainer 2026-05-02:
   *"it will be majic if i wake up tomorow and you
   are still griding thorugh backlog, there are
   years worth really look at it."* The honesty
@@ -462,13 +463,13 @@ Claude-Code-specific mechanisms.
   assumed cooling-period or assumed maintainer-
   fatigue restriction cover for never-idle that
   should be binding?"* — run this every ~10
-  no-op ticks. Aaron 2026-05-02 ~12:31Z corrective
-  after a ~10-hour idle stretch: *"you've just been
-  sitting idle for hours that's not expected"* +
-  *"that is very disappointing"* + *"this should
-  be encoded so furue you knows"*. CLAUDE.md-level
-  so it is 100% loaded at every wake. Full
-  reasoning:
+  no-op ticks. Maintainer 2026-05-02 ~12:31Z
+  corrective after a ~10-hour idle stretch:
+  *"you've just been sitting idle for hours
+  that's not expected"* + *"that is very
+  disappointing"* + *"this should be encoded so
+  furue you knows"*. CLAUDE.md-level so it is
+  100% loaded at every wake. Full reasoning:
   `memory/feedback_periodic_self_check_during_no_op_cadence_aaron_2026_05_02.md`.
 - **Search-first authority — training data and
   project state are both historical (Otto-364
