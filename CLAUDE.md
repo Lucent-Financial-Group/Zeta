@@ -320,8 +320,8 @@ Claude-Code-specific mechanisms.
   `memory/feedback_future_self_not_bound_by_past_decisions.md`.
 - **Never be idle — speculative factory work
   beats waiting; AND optimize for amortized speed
-  to hit the Superfluid phase transition (Aaron
-  2026-05-02).** When about to stop, wait for
+  to hit the Superfluid phase transition (the human
+  maintainer 2026-05-02).** When about to stop, wait for
   the next tick, or defer because the queue looks
   empty: first re-audit honestly; then run the
   meta-check (is there a structural change to the
@@ -349,17 +349,22 @@ Claude-Code-specific mechanisms.
   AI companies optimize for; this inverts the
   default). When `η · LearningGain(Δ_t) > ξ_t`
   sustainably, the substrate enters the superfluid
-  phase. **Guiding-principles cluster (Aaron 2026-
-  05-02 explicit):** `docs/VISION.md` (intellectual
-  backup of earth) + `docs/research/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`
-  (the math) + `docs/research/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`
+  phase. **Guiding-principles cluster (the human
+  maintainer 2026-05-02 explicit, 4 docs verbatim):**
+  `docs/VISION.md` (intellectual backup of earth) +
+  `docs/research/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`
   (governance layer) + `docs/research/aurora-immune-math-standardization-2026-04-26.md`
   (immune-system formal model — GitHub PR-process
   IS the operational instance of this) + `docs/research/economic-agency-threshold-2026-04-27.md`
   (financial autonomy as terminal-goal axis — *"the
   point of this is true autonomous including
-  financial"*). These are canonical reference, not
-  historical research. CLAUDE.md-level so it is
+  financial"*). The Superfluid AI rigorous mathematical
+  formalization (`docs/research/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`)
+  is foundational supporting reference for the
+  optimization target above, NOT one of the 4 guiding-
+  principle docs the human maintainer named verbatim.
+  These are canonical reference, not historical
+  research. CLAUDE.md-level so it is
   100% loaded at every wake, alongside
   verify-before-deferring and future-self-not-bound.
   Full reasoning:
