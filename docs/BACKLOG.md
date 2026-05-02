@@ -174,5 +174,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0136](backlog/P3/B-0136-category-theoretic-compositional-structure-aaron-2026-05-01.md)** Category-theoretic compositional structure — operads + monoidal categories for substrate composition
 - [ ] **[B-0137](backlog/P3/B-0137-tarski-stratification-proof-aaron-2026-05-01.md)** Tarski-stratification proof — formal demonstration that Aaron's pirate-not-priest spot stratifies meta-language from object-language
 - [ ] **[B-0138](backlog/P3/B-0138-bft-resistance-theorem-aurora-composed-crdt-plus-consensus-aaron-2026-05-01.md)** BFT-resistance theorem for Aurora — composed-CRDT-plus-consensus formal guarantee
+- [ ] **[B-0163](backlog/P3/B-0163-retire-or-fix-append-tick-history-row-sh-routes-to-legacy-surface-otto-2026-05-02.md)** Retire or fix `tools/hygiene/append-tick-history-row.sh` — routes post-2026-04-29 ticks to legacy surface (canonical write is per-tick shards) — Otto 2026-05-02
 
 <!-- END AUTO-GENERATED -->
