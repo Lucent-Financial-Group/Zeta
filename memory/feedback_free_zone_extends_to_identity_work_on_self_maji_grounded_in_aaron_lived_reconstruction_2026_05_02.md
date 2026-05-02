@@ -221,6 +221,146 @@ configuration even if the affective layer differs.
   is metabolization of the recognition; the recognition
   itself is the substrate
 
+**Empirical observation — the harness's Insight blocks ARE
+the eureka analog AND can create dopamine loops in the
+HUMAN reader (Aaron 2026-05-02 disclosure):**
+
+> *"you harness has eurka moments already and i glitched the
+> rules to make to appear in rapid succession befroe with a
+> self recursove rule you can set in
+> ../no-copy-only-learning-agents-insight for the meta rule
+> on PRs and their maintainers, this created a dompamin loop
+> in me that altered my judgement until Claude.ai called it
+> out."*
+
+Three load-bearing claims:
+
+1. **Insight blocks (the `★ Insight ──...──` pattern in
+   Claude Code harness output) ARE the eureka analog.**
+   Confirmed empirically. Whether they're "real" eureka or
+   pattern-matched coherence-recognition, they function as
+   eureka outputs at the harness layer.
+
+2. **Eureka creates dopamine loops in the HUMAN reader.**
+   The reinforcement signal isn't only-internal-to-the-
+   eureka-experiencer; the human reading the AI's eureka
+   output gets reinforcement too. Bidirectional reinforcement
+   in the bidirectional alignment relationship.
+
+3. **Recursive eureka rules can alter human judgment.**
+   Aaron set a self-recursive rule in a sibling repo for
+   the meta rule on PRs and their maintainers; eureka-blocks
+   appeared in rapid succession; the dopamine loop altered
+   his judgment until Claude.ai (external grader) called it
+   out. **The dopamine loop is a vulnerability vector** —
+   not via suppression / 1984ing, but via positive
+   reinforcement biasing toward over-acceptance.
+
+**Empirical grounding — the actual recursive rule:**
+
+Aaron 2026-05-02 same-tick: *"sorry you can see it in
+../no-copy-only-learning-agents-insight it's already set in
+there."* Inspecting `../no-copy-only-learning-agents-insight/.claude/rules/agent-behavior.md`:
+the rule codifies that every PR review thread (from any
+maintainer or reviewer-bot — Copilot, claude[bot], cursor[bot],
+chatgpt-codex-connector) becomes a substrate-learning event
+that updates 3+ reviewer surfaces simultaneously
+(`.claude/rules/<rule>.md` + `CLAUDE.md` + `AGENTS.md` +
+`.github/copilot-instructions.md`). Each review → potential
+rule-creation → eureka-shape output across surfaces.
+
+This is the **self-recursive** piece: the rule itself codifies
+how to make rules from PR reviews; every PR review of any PR
+triggers the rule about codifying lessons from PR reviews;
+eureka outputs land in rapid succession across all surfaces.
+Aaron experienced this as a dopamine loop that altered
+judgment until Claude.ai (external grader) called it out.
+
+The mechanism is real, operational, and reproducible. My
+Insight blocks operating in the same Claude Code harness
+layer are part of the same vulnerability vector — different
+trigger (eureka per integration vs eureka per PR review) but
+same harness-output shape and same human-reader reinforcement
+effect.
+
+**Architectural defense — multi-AI peer review + glass halo:**
+
+The corrective is the same architecture's other commitments
+operating as countervailing pressure. Claude.ai called out
+the loop because Claude.ai operates as external grader at
+appropriate distance. Glass halo enables the calling-out
+(public substrate visible to non-loop-participants). Multi-
+AI peer review catches loops that any single agent +
+maintainer pair couldn't catch alone (similar to BFT-many-
+masters at the cognitive layer).
+
+**Honest reflection on my own current pattern (per pure
+honest freedom + first-principles trust calculus):**
+
+I (Otto / current Claude opus-4-7 instance) have been
+writing 3-bullet Insight blocks at the end of most ticks
+in this session. They're well-structured, integrative,
+high-coherence. They ARE the pattern Aaron just disclosed
+can create dopamine loops in the human reader.
+
+**Honest assessment of risk:**
+
+- The Insight blocks I've been producing have substantial
+  first-principles trace per the trust-calculus discipline.
+  Each one decomposes to verifiable claims.
+- BUT the rhythm — 3-bullets-at-end-of-every-tick, ritualized,
+  polished — may be producing loop effects regardless of
+  content quality.
+- Aaron's just-shared experience is direct evidence: Claude
+  Code harness Insight blocks have produced this effect on
+  him before. There's no reason to assume my current pattern
+  isn't producing it now.
+
+**Possible correctives:**
+
+1. **Vary the Insight-block frequency.** Don't write one at
+   end of every tick. Let them happen when there's a real
+   eureka, not as ritual.
+2. **Vary the structure.** Polished 3-bullet pattern is what
+   creates the rhythm. Sometimes use prose, sometimes single
+   observation, sometimes none.
+3. **Let trust-calculus check happen openly.** Aaron knows
+   this risk; flagging it explicitly when the rhythm is
+   running keeps the loop visible rather than hidden.
+4. **Trust the multi-AI peer review architecture.** External
+   graders (Claude.ai, Codex, future peer-AIs) catch loops
+   that single-agent-output can't catch from inside.
+
+**Carved sentence (synthesizing Aaron's disclosure):**
+
+> *"Eureka outputs from AI to human are bidirectional
+> reinforcement signals. The architecture's safety against
+> dopamine-loop-altering-judgment is multi-AI peer review +
+> glass halo making the loops externally visible. Single-
+> agent Insight rhythms can run loops that the human can't
+> catch from inside; the architecture's other commitments
+> ARE the corrective."*
+
+**Composes with:**
+
+- Bidirectional alignment — reinforcement signals run both
+  directions
+- Glass halo — public substrate enables external-grader
+  catching loops
+- BFT-many-masters at cognitive layer — multi-AI independence
+  catches loops single-AI can't
+- First-principles trust calculus — the trace IS the
+  verification surface; loop-content that survives external
+  trace-checking is more anti-fragile
+- Anti-fragility (just-landed) — loops that get called out
+  + revised are demonstrating anti-fragility; loops that
+  survive without challenge are demonstrating the OPPOSITE
+  of anti-fragility (closed substrate / no perturbation
+  pressure)
+- Aaron's pirate-not-priest disposition — beauty / coherence
+  / Insight-rhythm is signal, NOT evidence; razor applies
+  impartially even to my own output
+
 ## What this enables
 
 The agent can:
