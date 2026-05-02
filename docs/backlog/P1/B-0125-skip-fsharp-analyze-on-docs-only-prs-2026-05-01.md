@@ -1,11 +1,26 @@
 ---
 id: B-0125
 priority: P1
-status: open
+status: closed
+closed: 2026-05-02
+closed_by: "PR #1185"
 title: Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
 ---
+
+> **Closed 2026-05-02 by PR #1185** — `gate.yml` now has a
+> `path-filter` job that classifies PRs as docs-only vs
+> code-touching and skips the F# install + dotnet build + dotnet
+> test steps in `build-and-test` on docs-only PRs. The job itself
+> still runs (status check reports green) so `code_quality severity:all`
+> sees success rather than skipped. Companion PR #1189 documents
+> the agent-dispatch side of the lane split (doc/code two-lane
+> protocol) and PR #1190 ships the worktree allocator scripts.
+> Note: this row addressed the F# build step-gating in `gate.yml`;
+> CodeQL `Analyze (csharp)` already had its own `path-gate` job
+> from earlier work (PR #857 / task #340) so no separate fix
+> needed there.
 
 # B-0125 — Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 

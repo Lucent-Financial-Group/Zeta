@@ -1,14 +1,24 @@
 ---
 id: B-0070
 priority: P2
-status: open
+status: closed
+closed: 2026-05-02
+closed_by: "PR #1187"
 title: Orphan role-ref detector lint — catch ferry-N without named source on code surfaces (Aaron 2026-04-28)
 effort: M
 ask: maintainer Aaron 2026-04-28 /btw aside
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
 tags: [hygiene-lint, name-attribution, otto-279, current-state-surfaces]
 ---
+
+> **Closed 2026-05-02 by PR #1187** — `tools/hygiene/audit-orphan-role-refs.sh`
+> implements the four-class detector (orphan-ferry-ref,
+> orphan-courier-ferry-ref, un-stripped-named-attribution,
+> per-name-attribution) per the row's spec. Smoke test on current
+> repo found 16 existing findings; cleanup of those 16 + CI
+> wiring (soft-fail in `gate.yml`) deferred to follow-up PRs but
+> the lint script itself is shipped.
 
 # B-0070 — Orphan role-ref detector lint
 

@@ -31,11 +31,11 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0083](backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md)** Atari 2600 ROM canonical-naming + safe-vs-unsafe folder split + TOSEC/Good-Tools-style hash-lookup tooling
 - [ ] **[B-0087](backlog/P1/B-0087-github-settings-drift-workflow-broken-invalid-permission-administration-otto-2026-04-28.md)** github-settings-drift.yml has been broken since PR #45 — declares invalid GHA permission `administration: read`
 - [ ] **[B-0110](backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md)** AceHack mirror-refresh protocol drift — Path 2 chosen, doctrine update landing in same PR (2026-04-30)
-- [ ] **[B-0125](backlog/P1/B-0125-skip-fsharp-analyze-on-docs-only-prs-2026-05-01.md)** Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
+- [x] **[B-0125](backlog/P1/B-0125-skip-fsharp-analyze-on-docs-only-prs-2026-05-01.md)** Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 - [ ] **[B-0126](backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)** Port the 4-layer meta-learning pattern from a sibling repo to Zeta
 - [ ] **[B-0139](backlog/P1/B-0139-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md)** Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 - [ ] **[B-0140](backlog/P1/B-0140-bash-to-ts-migration-completion-debt-prevention-aaron-2026-05-01.md)** Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
-- [ ] **[B-0144](backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md)** Doc/code two-lane parallel split — rung-2 unlock for factory parallelism
+- [x] **[B-0144](backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md)** Doc/code two-lane parallel split — rung-2 unlock for factory parallelism
 - [ ] **[B-0145](backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md)** Product Manager (PM-2) role — research-to-predict-features-before-friction
 - [ ] **[B-0154](backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md)** GitHub Pages for SEO/discoverability + GitHub Wiki first-class integration (Aaron 2026-05-01)
 - [ ] **[B-0155](backlog/P1/B-0155-github-settings-ruleset-split-git-native-preferred-aaron-2026-05-01.md)** GitHub settings refactor — split single ruleset into multiple smaller always-on rulesets, prefer git-native over legacy UI/CLI-only settings (Aaron 2026-05-01)
@@ -74,7 +74,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0059](backlog/P2/B-0059-etymology-epistemology-research-track.md)** Etymology + epistemology research track — linguistic-substrate of kernel-vocabulary + three-filter discipline calibration
 - [ ] **[B-0068](backlog/P2/B-0068-local-ai-trajectory-forge-ollama-direct-integration-aaron-2026-04-28.md)** Local AI trajectory — Forge CLI/harness + Ollama + direct local-model integration (umbrella)
 - [ ] **[B-0069](backlog/P2/B-0069-heredoc-patterns-encode-into-commit-message-shape-skill-aaron-2026-04-28.md)** Encode HEREDOC patterns into commit-message-shape skill (Aaron 2026-04-28)
-- [ ] **[B-0070](backlog/P2/B-0070-orphan-role-ref-detector-lint-aaron-2026-04-28.md)** Orphan role-ref detector lint — catch ferry-N without named source on code surfaces (Aaron 2026-04-28)
+- [x] **[B-0070](backlog/P2/B-0070-orphan-role-ref-detector-lint-aaron-2026-04-28.md)** Orphan role-ref detector lint — catch ferry-N without named source on code surfaces (Aaron 2026-04-28)
 - [ ] **[B-0071](backlog/P2/B-0071-rename-otto-275-forever-out-of-live-lock-class-codex-pr-17-2026-04-28.md)** Rename otto_275_forever memory out of "live-lock 9th pattern" subclass + reclassify per Otto-352 taxonomy split
 - [ ] **[B-0072](backlog/P2/B-0072-memory-md-index-entry-length-normalization-copilot-pr-72-2026-04-28.md)** Normalize MEMORY.md index entry lengths to one-line-per-memory per memory/README.md guidance
 - [ ] **[B-0074](backlog/P2/B-0074-pr-72-punch-list-stale-item-sweep-spec-consistency-2026-04-28.md)** PR #72 punch-list / spec-consistency drift sweep — 8 codex threads on stale items + cross-doc alignment
@@ -99,7 +99,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0112](backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md)** Stale 2026-04-27 project file internals-bleed-out cleanup
 - [ ] **[B-0113](backlog/P2/B-0113-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md)** Mechanical CURRENT-staleness check — same-tick-update discipline as enforced rule, not vigilance (Deepseek 2026-04-30)
 - [ ] **[B-0114](backlog/P2/B-0114-alexa-quality-gates-batched-threads-pre-push-lint-memory-link-check-2026-04-30.md)** Three quality-gate improvements — pre-push lint + memory-link checker + batched thread resolution (Alexa peer review 2026-04-30)
-- [ ] **[B-0117](backlog/P2/B-0117-cold-start-executable-checklist-tool-2026-04-30.md)** tools/cold-start-check.ts — make the cold-start big-picture-first 8-step checklist executable (Ani 2026-04-30 finding, Deepseek 2026-04-30 reinforcement)
+- [x] **[B-0117](backlog/P2/B-0117-cold-start-executable-checklist-tool-2026-04-30.md)** tools/cold-start-check.ts — make the cold-start big-picture-first 8-step checklist executable (Ani 2026-04-30 finding, Deepseek 2026-04-30 reinforcement)
 - [ ] **[B-0118](backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md)** tools/peer-call/amara.sh — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30)
 - [ ] **[B-0120](backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md)** Peer-call architecture refactor — script-per-CLI with persona-flag instead of script-per-named-agent (Aaron 2026-04-30)
 - [ ] **[B-0121](backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md)** Otto + Kenji as externally-callable peers via claude-cli — cross-harness symmetry (Aaron 2026-04-30)
