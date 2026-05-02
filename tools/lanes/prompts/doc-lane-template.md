@@ -40,8 +40,10 @@ on the worktree by the coordinator)
 
 **File denylist — you MUST NOT write to these paths:**
 
-- Anything under `src/`, `tests/`, `tools/` (except
-  `tools/*.md` documentation files)
+- Anything under `src/`, `tests/`, `tools/` (the code lane owns
+  the entire `tools/**` tree, including `tools/*.md` documentation
+  co-located with tools — this preserves the disjoint-file-trees
+  contract)
 - `*.fs`, `*.fsproj`, `*.csproj`, `Zeta.sln`
 - `global.json`, `Directory.Packages.props`,
   `.config/dotnet-tools.json`
@@ -69,7 +71,8 @@ task or fall back to single-lane.
 - Verify-before-deferring: cite paths to files you reference.
 - Never run destructive git operations (force-push, hard reset,
   etc.) without explicit coordinator approval.
-- ASCII-only in factory substrate (BP-10).
+- ASCII-only in factory substrate (BP-09); invisible-Unicode
+  lint discipline (BP-10).
 - §33 archive header on `docs/research/` external-conversation
   imports.
 - Otto-279 history-surface carve-out: persona names allowed only

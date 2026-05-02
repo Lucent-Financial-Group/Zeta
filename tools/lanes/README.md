@@ -113,8 +113,9 @@ allowlist is the contract:
 
 ### Doc lane — NEVER writes
 
-- Anything under `src/`, `tests/`, `tools/` (except
-  `tools/*.md` documentation files)
+- Anything under `src/`, `tests/`, `tools/` (the code lane owns
+  the entire `tools/**` tree, including `tools/*.md`
+  co-located docs — preserves disjoint-file-trees)
 - `*.fs`, `*.fsproj`, `*.csproj`, `Zeta.sln`
 - `global.json`, `Directory.Packages.props`,
   `.config/dotnet-tools.json`
@@ -136,12 +137,19 @@ allowlist is the contract:
 
 ### Code lane — NEVER writes
 
-- Anything under `memory/`, `docs/research/`, `docs/aurora/`,
-  `docs/DECISIONS/`, `docs/backlog/`
-- Behavioral specs under `openspec/specs/**` (those move with
-  the doc lane even though they're loosely "spec")
-- `.claude/skills/**/SKILL.md`, `.claude/agents/*.md` (skill
-  bodies move with the doc lane)
+The disjoint contract is symmetric: doc-lane files are
+forbidden to the code lane.
+
+- Anything under `docs/**` or `memory/**` or `openspec/specs/**`
+  (including all of `docs/research/`, `docs/aurora/`,
+  `docs/DECISIONS/`, `docs/backlog/`, `docs/hygiene-history/`,
+  etc. — the entire `docs/` tree is doc-lane territory)
+- Root-level `*.md` (README, AGENTS, GOVERNANCE, CLAUDE.md, etc.)
+- `.claude/skills/**/SKILL.md`, `.claude/agents/*.md`,
+  `.claude/rules/*.md`, `.claude/commands/*.md` (skill / agent /
+  rule / command bodies move with the doc lane)
+- `.github/copilot-instructions.md`,
+  `.github/PULL_REQUEST_TEMPLATE.md`, `.github/ISSUE_TEMPLATE/*`
 
 ## Worktree isolation pattern
 
