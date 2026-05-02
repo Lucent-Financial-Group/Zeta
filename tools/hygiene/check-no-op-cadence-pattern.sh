@@ -24,8 +24,12 @@
 #   - Most recent N (default 7) tick-history shards under
 #     docs/hygiene-history/ticks/YYYY/MM/DD/ for today AND yesterday
 #     UTC (window survives midnight rollover)
-#   - Counts shards matching the minimal-observation pattern
-#     (heuristic: short body + observation-class language)
+#   - Counts shards matching the minimal-observation pattern.
+#     Heuristic (OR-semantic): the shard's BODY column (5th pipe-
+#     separated field) is < 600 chars, OR the row contains
+#     observation-class language ("minimal observation",
+#     "within-basin observation", "observe-only",
+#     "minimal not idle", "same. stopping"). Either signal counts.
 #   - If count >= threshold (default 5), prints WARNING
 #
 # What this does NOT do:
@@ -89,51 +93,67 @@ if [[ -n "$YESTERDAY_DATE_PATH" ]]; then
 fi
 
 # Collect candidate shards from a directory, emitting tab-separated
-# `<sortkey>\t<full-path>` lines. Sort key is YYYYMMDDHHMMSS (parsed
-# timestamp, NOT raw filename) so mixed-format shards order correctly
-# per the README mixed-format-sort caveat:
-#   - HHMMZ.md / HHMMZ-<hex>.md  → YYYYMMDDHHMM00 (pad seconds)
-#   - HHMMSSZ-<hex>.md           → YYYYMMDDHHMMSS
+# `<primary-key>\t<disambiguator>\t<full-path>` lines. Primary key is
+# YYYYMMDDHHMMSS (parsed timestamp, NOT raw filename) so mixed-format
+# shards order correctly per the README mixed-format-sort caveat.
+# Disambiguator is the suffix (empty for unsuffixed `HHMMZ.md`) so a
+# base shard sorts BEFORE same-minute disambiguators (`HHMMZ.md` <
+# `HHMMZ-01.md`) — empty disambiguator sorts first because the field
+# separator (tab) is lower-ASCII than any hex character.
+#   - HHMMZ.md           → primary=YYYYMMDDHHMM00, disambiguator=""
+#   - HHMMZ-<hex>.md     → primary=YYYYMMDDHHMM00, disambiguator="<hex>"
+#   - HHMMSSZ-<hex>.md   → primary=YYYYMMDDHHMMSS, disambiguator="<hex>"
 collect_shards() {
   local dir="$1"
   local date_flat="$2"
   [[ -d "$dir" && -n "$date_flat" ]] || return 0
-  local shard_path shard_name sortkey
+  local shard_path shard_name primary disamb
   shopt -s nullglob
   for shard_path in "$dir"/*.md; do
     shard_name="${shard_path##*/}"
-    if [[ "$shard_name" =~ ^([0-9]{4})Z(-[0-9a-f]+)?\.md$ ]]; then
-      sortkey="${date_flat}${BASH_REMATCH[1]}00"
-      printf '%s\t%s\n' "$sortkey" "$shard_path"
-    elif [[ "$shard_name" =~ ^([0-9]{6})Z-[0-9a-f]+\.md$ ]]; then
-      sortkey="${date_flat}${BASH_REMATCH[1]}"
-      printf '%s\t%s\n' "$sortkey" "$shard_path"
+    if [[ "$shard_name" =~ ^([0-9]{4})Z(-([0-9a-f]+))?\.md$ ]]; then
+      primary="${date_flat}${BASH_REMATCH[1]}00"
+      disamb="${BASH_REMATCH[3]:-}"
+      printf '%s|%s|%s\n' "$primary" "$disamb" "$shard_path"
+    elif [[ "$shard_name" =~ ^([0-9]{6})Z-([0-9a-f]+)\.md$ ]]; then
+      primary="${date_flat}${BASH_REMATCH[1]}"
+      disamb="${BASH_REMATCH[2]}"
+      printf '%s|%s|%s\n' "$primary" "$disamb" "$shard_path"
     fi
   done
   shopt -u nullglob
 }
 
-# Combined list, sorted by parsed-timestamp sort-key, last N entries.
-COMBINED="$( { collect_shards "$YESTERDAY_DIR" "$YESTERDAY_DATE_FLAT"; collect_shards "$TODAY_DIR" "$TODAY_DATE_FLAT"; } | sort | tail -n "$WINDOW_SIZE" )"
+# Combined list, sorted by primary key then disambiguator, last N entries.
+# Field separator is `|` (non-whitespace) because bash's IFS-whitespace
+# collapsing rule would silently merge an empty disambiguator field with
+# the surrounding tabs and corrupt the read loop below.
+COMBINED="$( { collect_shards "$YESTERDAY_DIR" "$YESTERDAY_DATE_FLAT"; collect_shards "$TODAY_DIR" "$TODAY_DATE_FLAT"; } | sort -t'|' -k1,1 -k2,2 | tail -n "$WINDOW_SIZE" )"
 
 if [[ -z "$COMBINED" ]]; then
   echo "[no-op-check] No shards in window for today (${TODAY_DIR}) or yesterday; nothing to check." >&2
   exit 0
 fi
 
-# Count shards that match minimal-observation pattern
-# Heuristic: short body (length < 800 chars) OR contains
-# "minimal observation" / "within-basin" / "observe-only" language
+# Count shards that match minimal-observation pattern.
+# Heuristic (OR-semantic, matching the header docstring):
+#   short BODY column (length < 600 chars) OR observation-class language
+#   anywhere in the row.
+# Body is the 5th pipe-separated field per shard schema:
+#   `| timestamp | model | cron-id | <body> | <PR ref> | <observation> |`
+# Measuring whole-file size (previous behavior) inflated the length
+# count when the observation column was long, masking terse-body ticks.
 MIN_OBS_COUNT=0
 TOTAL_COUNT=0
 
-while IFS=$'\t' read -r _sortkey shard_path; do
+while IFS='|' read -r _primary _disamb shard_path; do
   [[ -z "${shard_path:-}" ]] && continue
   TOTAL_COUNT=$((TOTAL_COUNT + 1))
 
-  body_length=$(wc -c < "$shard_path" 2>/dev/null || echo 9999)
+  body=$(awk -F'|' 'NR==1 {print $5}' "$shard_path" 2>/dev/null || echo "")
+  body_length=${#body}
 
-  if [[ $body_length -lt 800 ]] || grep -qiE 'minimal observation|within-basin observation|observe-only|minimal[ -]not[ -]idle|same\.\s*stopping' "$shard_path" 2>/dev/null; then
+  if (( body_length < 600 )) || grep -qiE 'minimal observation|within-basin observation|observe-only|minimal[ -]not[ -]idle|same\.\s*stopping' "$shard_path" 2>/dev/null; then
     MIN_OBS_COUNT=$((MIN_OBS_COUNT + 1))
   fi
 done <<< "$COMBINED"
