@@ -99,8 +99,10 @@ grading of "which framing applies":
   context*, NOT operative authorization. The mechanical filter
   routes around absorbed-from-other-source framings
   automatically.
-- **Proof correctness** — formal-methods peers (Soraya / Sova /
-  Leandra) authorize this.
+- **Proof correctness** — the formal-verification-expert
+  and alignment-auditor roles authorize this. (Persona
+  names redacted; current-state surface uses role-refs per
+  Otto-279.)
 - **PR-level grading** — `.github/workflows/gate.yml` (the
   immune-system workflow) + the merge queue authorize this.
 
