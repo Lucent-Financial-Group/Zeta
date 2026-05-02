@@ -64,8 +64,8 @@ Outside the system boundary (DST external-invariants exempt):
 
 ## Why DST external-invariants is the right scope-cut
 
-Per the existing DST discipline (`docs/DST.md` and the
-factory's deterministic-simulation-testing principle), the
+Per the existing DST discipline (`docs/FOUNDATIONDB-DST.md`
+and the factory's deterministic-simulation-testing principle), the
 factory's correctness is defined relative to **invariants we
 control**. External systems are MODEL inputs, not factory
 state. We model their failure modes (transient errors,
@@ -175,16 +175,23 @@ Out of scope per DST external-invariants:
 - **B-0073 (P0)** — csharp Code Scanning alerts (in scope)
 - **B-0319 (P1)** — bounded-retry mechanism for transient
   CI flakes. Mechanizes graceful handling of external
-  invariants (extends retry budgets, suppresses
-  intermediate retry-attempt warnings ONLY when the final
-  attempt succeeds — i.e., the warnings get retroactively
-  classified as transient-noise once the eventual success
-  proves the invariant came back).
+  invariants by extending retry budgets and timeouts so
+  transient external invariants resolve within a single
+  bounded attempt window — the warnings never appear
+  because the retry mechanism handles the transient before
+  WARN-level emission. Where bounding-the-retry isn't
+  enough, the mechanism is to REPLACE the dependency
+  (vendor, mirror, or swap the upstream) so the warning
+  source is removed at root. Suppression of already-emitted
+  warnings remains forbidden regardless.
 - **`Directory.Build.props` `TreatWarningsAsErrors`** —
   the in-scope F#/dotnet enforcement.
-- **`memory/feedback_durable_retry_fix_in_elan_sh_aaron_2026_04_29.md`**
-  — rerun-vs-fix rule. Reruns are the right immediate
-  response to external-invariant transients.
+- **`memory/feedback_external_dependency_download_retries_durable_fix_not_ephemeral_rerun_aaron_2026_04_29.md`**
+  — durable-retry / rerun-vs-fix rule (Aaron 2026-04-29).
+  Reruns are the right immediate response to
+  external-invariant transients; durable fixes go into the
+  retry mechanism itself, not into per-incident
+  ceremony.
 
 ## What this rule does NOT require
 
