@@ -36,6 +36,7 @@ The branch-protection-as-immune-system framing (`feedback_branch_protections_pr_
 |---|---|---|
 | 0 | Author is catching their own bugs OR substrate is over-engineered before opening | Speed up authoring; trust external graders to catch the gap |
 | 0.5–1 | Slightly over-cautious authoring; immune system underutilized | Slight speed-up acceptable |
+| 1–1.5 | Approaching productive zone; immune system gaining traction but not yet fully exercising substrate verifiers | Maintain or slight speed-up; trajectory is right |
 | **1.5–3** | **Productive zone.** Author moves at the rate the immune system can absorb. Each PR exercises the substrate's verifiers and produces real value. | Maintain this cadence; the immune system is earning its place |
 | 3–6 | Authoring is moving fast; immune system is doing meaningful work; risk of reviewer fatigue | Slight slow-down; consider better pre-flight checks (linters, etc.) |
 | 6+ | Author is sloppy; immune system is overwhelmed; review-cycle latency compounds | Slow down authoring; add pre-PR self-checks |
@@ -68,7 +69,7 @@ The metric is now substrate-grade. Three follow-up shapes that could mechanize t
 
 1. **Per-tick logging**: each tick that touches PRs records bugs-caught-this-tick / PRs-touched-this-tick into a JSON file. Time-series builds.
 2. **Tooling**: `tools/metrics/bugs-per-pr.ts` queries closed PRs over a time window, counts review threads with category-tags (P0/P1/P2 from the existing Codex/Copilot output), produces the rate per author / per branch / per file class.
-3. **Tick-shard schema extension** (composes with Tick-80 candidate #4): add a `bugs-caught` column to per-tick shards. The schema already has a 6th observation column where ad-hoc notes go; promoting bugs-caught to its own column makes the time-series queryable without parsing prose.
+3. **Tick-shard structured-tag in observation column** (composes with Tick-80 candidate #4): the existing tick-shard schema is fixed at 6 columns per `docs/hygiene-history/ticks/README.md` and the schema validator. Rather than break that constraint by proposing a 7th `bugs-caught` column, embed a structured tag in the existing 6th (observation) column — e.g. `[bugs-caught: 7] [prs-touched: 3]` — that's grep-extractable, time-series-queryable, and preserves the schema. Tooling can parse the tag without requiring schema migration. This is the right shape because it composes additively with the existing constraint instead of competing with it.
 
 These are speculative; landing the metric as substrate is the load-bearing first step.
 
