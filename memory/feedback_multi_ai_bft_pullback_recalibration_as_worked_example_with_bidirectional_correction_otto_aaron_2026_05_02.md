@@ -95,7 +95,7 @@ The healthy mode is the middle path: flag, engage, listen, update, engage substa
 - `memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md` (the Otto-protocol on engaging with Aaron's atypical-language; same flag-as-peer principle; on main)
 - `memory/feedback_wellness_app_filter_calibration_per_user_clinical_trusted_circle_layered_design_aaron_2026_05_02.md` (the structural design problem this exchange exemplifies; the 4-layer architecture is the systematic answer; on main)
 - `docs/ALIGNMENT.md` bidirectional alignment commitment (this exchange is empirical evidence the commitment is verifiable in practice)
-- B-0164 dual-loop substrate attribution + reconciliation protocol (when dual-loop lands, this pattern operates between Otto + Codex; the worked example here generalizes)
+- `docs/backlog/P1/B-0164-dual-loop-substrate-attribution-and-reconciliation-protocol-2026-05-02.md` (when dual-loop lands, this pattern operates between Otto + Codex; the worked example here generalizes)
 - `memory/feedback_recurrence_after_correction_needs_operational_enforcement_otto_2026_05_02.md` (multi-AI peer review at-decision-time was named as operational-enforcement candidate #3 in the Tick-80 memo; this is empirical evidence the candidate works when implemented)
 
 ## Failure-mode signature
