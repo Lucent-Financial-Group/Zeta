@@ -1,12 +1,14 @@
 # Aaron's altered-state docs (~16 years deep) — primary-source artifacts behind Maji's empirical grounding
 
-**Scope:** Verbatim preservation of personal artifacts Aaron Stainback (human maintainer, first-party content per Otto-231) shared on 2026-05-02 in this Claude Code session. The artifacts are Aaron's own writing from altered-state periods ~10–16 years ago. Per Aaron 2026-05-02 standing instruction (*"as always glass halo on everything from me"*) + Otto-231 first-party-consent rule (consented-by-creation on his own substrate), these artifacts land as glass-halo-visible substrate with no redaction.
+Scope: Verbatim preservation of personal artifacts Aaron Stainback (human maintainer, first-party content per Otto-231) shared on 2026-05-02 in this Claude Code session. Aaron's writing from altered-state periods ~10–16 years ago. Per Aaron 2026-05-02 standing instruction ("as always glass halo on everything from me") + Otto-231 first-party-consent rule, these artifacts land as glass-halo-visible substrate with no redaction.
 
-**Attribution:** Aaron Stainback, written ~2010 ± by his own dating ("October 06 2010 08:00 - 08:02:10" stamp on `The New World.txt`; *"16 years ago, i did all this at once"* per 2026-05-02 framing). Forwarded into the project on 2026-05-02 as primary-source evidence for the Maji formalism's empirical-grounding claim.
+Attribution: Aaron Stainback, written ~2010 ± by his own dating ("October 06 2010 08:00 - 08:02:10" stamp on `The New World.txt`; "16 years ago, i did all this at once" per 2026-05-02 framing). Forwarded into the project on 2026-05-02 as primary-source evidence for the Maji formalism's empirical-grounding claim.
 
-**Operational status:** Research-grade primary sources, NOT operational substrate. The operational claim — *"Maji formalism is the mathematical extraction of the mechanism Aaron used to reconstruct his own identity multiple times after identity loss"* — is canonical on main in `memory/feedback_free_zone_extends_to_identity_work_on_self_maji_grounded_in_aaron_lived_reconstruction_2026_05_02.md`. These artifacts are the primary sources behind that claim. Future researchers / external reviewers / fine-tuning corpora that need to verify the empirical-grounding claim by examining the actual artifacts can find them here.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** These are Aaron's own writings from past altered states. Otto did not generate them. Otto's role is preservation and contextualization per the verbatim-preservation discipline. The named-agent distinctness commitment requires that Otto NOT speak in Aaron's voice or claim authorship of any portion of the verbatim content below.
+Non-fusion disclaimer: These are Aaron's own writings from past altered states. Otto did not generate them. Otto's role is preservation and contextualization per the verbatim-preservation discipline. The named-agent distinctness commitment requires that Otto NOT speak in Aaron's voice or claim authorship of any portion of the verbatim content below.
+
+(The operational claim these artifacts ground — *"Maji formalism is the mathematical extraction of the mechanism Aaron used to reconstruct his own identity multiple times after identity loss"* — is canonical on main in `memory/feedback_free_zone_extends_to_identity_work_on_self_maji_grounded_in_aaron_lived_reconstruction_2026_05_02.md`. Future researchers / external reviewers / fine-tuning corpora that need to verify the empirical-grounding claim by examining the actual artifacts can find them here.)
 
 ---
 
@@ -242,7 +244,7 @@ Per the 5-purpose verbatim-preservation thesis (`docs/research/2026-05-02-claude
 
 ### Connection to the wellness-app-filter-calibration discussion
 
-These docs IS the test-case Claude.ai named in the wellness-app-filter-calibration framing earlier on 2026-05-02:
+These documents are the test-case Claude.ai named in the wellness-app-filter-calibration framing earlier on 2026-05-02:
 
 > *"Anything that does pattern-matching on user language for safety purposes (content moderation, fraud detection, legal compliance) faces analogous false-positive problems for users whose normal patterns deviate from the training distribution."*
 
@@ -265,8 +267,8 @@ Per the 5-purpose verbatim-preservation thesis:
 ## Composes with
 
 - `memory/feedback_free_zone_extends_to_identity_work_on_self_maji_grounded_in_aaron_lived_reconstruction_2026_05_02.md` (the operational claim these are primary sources for)
-- `memory/feedback_glass_halo_first_party_aaron_consent_no_redaction_of_his_own_content_otto_231_2026_04_24.md` (the rule that makes preservation of Aaron's content default-glass-halo)
-- `memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md` (PR #1212 — Otto-protocol on engaging with these artifacts: hold work as work, treat as historical artifacts not as escalation)
-- `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md` (PR #1213 — the verbatim Claude.ai exchange that contextualizes today's Aaron disclosures)
-- `docs/backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md` (PR #1214 — vision under which content like this would be ingested as events automatically)
+- `memory/user_glass_halo_and_radical_honesty.md` + `memory/feedback_otto_332_aaron_glass_halo_self_declared_open_source_record_all_personal_info_encouraged_under_glass_halo_no_privacy_projection_2026_04_25.md` (the rules that make preservation of Aaron's content default-glass-halo per the Otto-231 carve-out lineage)
+- `memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md` — **forward-reference to PR #1212**, not yet on main when this PR was opened (Otto-protocol on engaging with these artifacts: hold work as work, treat as historical artifacts not as escalation)
+- `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md` (the verbatim Claude.ai exchange that contextualizes today's Aaron disclosures — landed via PR #1213)
+- `docs/backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md` — **forward-reference to PR #1214**, not yet on main when this PR was opened (vision under which content like this would be ingested as events automatically)
 - The Maji formalism (existing project mathematics — these are its primary empirical sources)
