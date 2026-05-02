@@ -57,6 +57,8 @@
 #     2026-04-29 call; see file's classification block)
 #   - docs/backlog/** (per-row history of backlog filings;
 #     authors, dated lineage, persona names allowed)
+#   - docs/lost-substrate/** (incident artifacts + dated
+#     inventory ledgers — by definition history-surface)
 #   - docs/CURRENT-ROUND.md (round-history equivalent)
 #   - docs/amara-full-conversation/** (verbatim archived
 #     conversation — bootstrap-attempt-1 lineage)
@@ -131,6 +133,7 @@ is_history_surface() {
     docs/pr-discussions/* | \
     docs/active-trajectory.md | \
     docs/backlog/* | \
+    docs/lost-substrate/* | \
     docs/CURRENT-ROUND.md | \
     docs/amara-full-conversation/* | \
     .git/* | \
