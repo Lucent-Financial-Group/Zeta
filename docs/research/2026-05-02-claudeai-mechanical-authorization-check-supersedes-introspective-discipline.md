@@ -219,8 +219,7 @@ two voices remain distinct.
 
 ---
 
-## Pointer mappings (Otto's interpretation, NOT fused into the
-## verbatim above)
+## Pointer mappings (interpretation in factory voice, NOT fused into the verbatim above)
 
 - Claude.ai's references to "PR #1194" map to **PR #1198** in
   this repo (the no-op-cadence corrective). PR-number

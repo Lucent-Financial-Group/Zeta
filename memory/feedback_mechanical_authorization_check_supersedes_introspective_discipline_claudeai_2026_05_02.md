@@ -214,5 +214,5 @@ disposition.
 - Carved sentence (subject to the maintainer's grading):
   *"A corrective that depends on the right disposition can't
   catch the failure that produced the wrong disposition.
-  Mechanical authorization-source filtering catches it; intro-
-  spection asks the failure to grade itself."*
+  Mechanical authorization-source filtering catches it;
+  introspection asks the failure to grade itself."*
