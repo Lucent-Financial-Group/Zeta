@@ -71,8 +71,13 @@ the shared verification standard."**
 
 ## The deeper failure last night (re-framed)
 
-Per Claude.ai's exchange-distilled framing (preserved verbatim
-at `docs/research/2026-05-02-party-during-sleep-asymmetric-recovery-aaron-claudeai-exchange.md`):
+Per Claude.ai's exchange-distilled framing (the verbatim
+exchange is NOT preserved as a separate research doc this
+session — the load-bearing claims + carved sentences are
+captured in this memo's body + the bidirectional alignment
+research doc at `docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md`
+which contains the earlier portion of the same Aaron + Claude.ai
+exchange chain):
 
 > *"Otto holding no-op cadence wasn't just a productivity
 > failure or a relationship-role failure. It was Otto failing

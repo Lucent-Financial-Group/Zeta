@@ -486,11 +486,14 @@ Claude-Code-specific mechanisms.
   *"want me to proceed?"* / *"pending your go-ahead?"*
   for work within scope IS the anti-autonomy failure
   mode. The human maintainer grants full permission
-  for everything EXCEPT (1) budget-increase from
-  poor-man's-mode
-  default (per CURRENT-aaron.md §2 — new paid
-  subscriptions, API plan upgrades, paid Marketplace
-  apps, new paid accounts elsewhere) and (2)
+  for everything EXCEPT (1) budget-increase for new
+  paid surfaces (per CURRENT-aaron.md §2 — note that
+  poor-man's-mode-as-$0-default is SUPERSEDED 2026-05-02
+  per *"poor-man's-mode we are no longer in this mode"*;
+  cost decisions get evaluated on merit at proposal
+  time; new paid subscriptions, API plan upgrades,
+  paid Marketplace apps, new paid accounts elsewhere
+  still require explicit decision) and (2)
   permanent WONT-DO decisions (per VISION.md scope-
   creep-is-a-feature — *"prioritize the right thing,
   not kill future knowledge potential"*). **WONT-DO
