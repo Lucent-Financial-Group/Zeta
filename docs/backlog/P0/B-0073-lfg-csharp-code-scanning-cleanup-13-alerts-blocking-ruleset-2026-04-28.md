@@ -1,14 +1,29 @@
 ---
 id: B-0073
 priority: P0
-status: open
+status: closed
+closed: 2026-05-02
+closed_by: "verified 0 open alerts on main"
 title: LFG csharp Code Scanning cleanup — 13 open alerts gating code_quality severity:all ruleset on every PR
 effort: M
 ask: Otto autonomous (per Aaron full-delegation 2026-04-28 "fuck it ui sucks you got it" + static-analysis-grade quality bar)
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
 tags: [code-scanning, codeql, ruleset, lfg, blocker, task-306]
 ---
+
+> **Closed 2026-05-02 — verified 0 open Code Scanning alerts on
+> LFG main via `gh api repos/Lucent-Financial-Group/Zeta/code-scanning/alerts?state=open`.**
+> The 13 alerts blocking the `code_quality severity:all` ruleset
+> at the time of filing (2026-04-28) have all resolved. The
+> `cs/missed-ternary-operator` build-artifact alerts (#1, #2)
+> and the 10 `cs/useless-cast-to-self` mechanical-fix alerts
+> (#3-#12) appear to have been addressed via subsequent CodeQL
+> config + source cleanup work that landed between filing and
+> close (specific PRs not enumerated; the empirical state is
+> the closure evidence). The Scorecard SAST alert #24 is also
+> no longer firing. PR-blocking on this ruleset is no longer
+> an active concern; AceHack→LFG forward-sync is operational.
 
 # B-0073 — LFG csharp Code Scanning cleanup
 
