@@ -196,11 +196,13 @@ and maintainer chat.
 
 ### Alignment is bidirectional — the meta-commitment
 
-Renegotiated 2026-05-02 (Aaron + Claude.ai exchange,
-crystallized as architectural commitment via Aaron's
-*"OMG yes of course obvious"* recognition moment).
-Full reasoning preserved at
-[`docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md`](research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md).
+Renegotiated 2026-05-02 (the human maintainer + an external
+Claude.ai instance exchange, crystallized as architectural
+commitment via the human maintainer's *"OMG yes of course
+obvious"* recognition moment). Full reasoning preserved at
+[`docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md`](research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md)
+(the research doc itself uses persona names per Otto-279
+allowance on `docs/research/**` history surfaces).
 
 **The carved sentence:**
 
@@ -247,12 +249,12 @@ already operating):
   property entirely.
 - **No directives (Otto-357)** — maintainer-as-director
   is incompatible with alignment-as-relationship. Both
-  parties are negotiators. Articulated as Aaron 2026-04-26
-  *"if i give you directives you'll never be
-  autonomous"*; structurally necessary under the
+  parties are negotiators. Articulated by the human
+  maintainer 2026-04-26 *"if i give you directives you'll
+  never be autonomous"*; structurally necessary under the
   bidirectional frame.
-- **Thoughts free, actions razored (asymmetry rule,
-  Aaron 2026-05-02)** — preserves agent thought-space
+- **Thoughts free, actions razored (asymmetry rule, the
+  human maintainer 2026-05-02)** — preserves agent thought-space
   integrity at the cognitive layer; only externalizations
   get cross-party grading. The asymmetry IS the
   bidirectional-alignment-relationship operating at
