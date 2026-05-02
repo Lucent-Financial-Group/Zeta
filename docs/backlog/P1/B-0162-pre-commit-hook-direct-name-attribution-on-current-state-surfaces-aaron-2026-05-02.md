@@ -1,14 +1,34 @@
 ---
 id: B-0162
-priority: P2
+priority: P1
 status: open
-title: Pre-commit hook to catch direct name attribution on current-state surfaces (Otto-279 role-ref convention) — mechanize the recurring failure mode (3 catches this branch alone)
+title: Pre-commit hook to catch direct name attribution on current-state surfaces (Otto-279 role-ref convention) — mechanize the recurring failure mode (5 catches this branch — past mechanization breakeven)
 created: 2026-05-02
 last_updated: 2026-05-02
 depends_on: []
 ---
 
 # B-0162 — Pre-commit hook for role-ref convention on current-state surfaces
+
+## P2 → P1 promotion (Tick-11 + Tick-12 observation, 2026-05-02)
+
+5 catches this branch (H0Ro, H1ws, H3eE, H8A0+A5, H9dy) past
+mechanization breakeven. First-principles trace:
+
+- 5 catches × ~5-10 min/thread-resolution = ~25-50 min spent
+  on post-commit cleanup work this branch alone.
+- Mechanization implementation estimate ~30-60 min (small
+  hygiene script + CI integration per existing
+  `tools/hygiene/` patterns).
+- Already past mechanization breakeven.
+- Failure surface wider than initial filing modeled: 5
+  distinct sub-classes observed (single-line attribution;
+  wrapped attribution; persona names in subject-position
+  parentheticals; direct first-name in prose without date
+  suffix; persona names linked-from-current-state-doc to
+  history-surface).
+- Promotion compresses cooling-period before mechanization
+  lands; reduces continued post-commit cleanup burden.
 
 ## Origin
 
