@@ -133,38 +133,60 @@ jobs:
   # failure rather than success.
   #
   # Default safety: any non-PR event (push to main, merge_group,
-  # workflow_dispatch, schedule) gets `code=true` — full build runs.
+  # workflow_dispatch — no `schedule:` trigger is currently configured)
+  # gets `code=true` via the fast-path step (no checkout needed).
   # Path-filter is a per-PR optimization, never a path that hides
   # a code change from main-tip CI.
+  #
+  # Job output composition (per Copilot review on PR #1185, 2026-05-02):
+  # - Non-PR events: fast-path step `nonpr` writes `code=true` without
+  #   any checkout — saves the full-history fetch on every push to main
+  #   and every merge_group run.
+  # - Pull-request events: checkout + git diff base..head + classify
+  #   per the path-list below; `detect` step writes `code=true|false`.
+  # - Job output `code` resolves via `||` to whichever step ran
+  #   (GH Actions falsy-string fallback).
   path-filter:
     name: path filter
     runs-on: ubuntu-24.04
-    timeout-minutes: 1
+    # 5 min covers the full-history checkout (`fetch-depth: 0`) on
+    # slow runners. The non-PR fast path runs in ~5 sec without any
+    # checkout, well under the cap.
+    timeout-minutes: 5
     outputs:
-      code: ${{ steps.detect.outputs.code }}
+      code: ${{ steps.detect.outputs.code || steps.nonpr.outputs.code }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          # Need both PR base and head shas for git diff.
-          fetch-depth: 0
-
-      - id: detect
+      # Fast-path for non-PR events: emit code=true without cloning
+      # the repo. Push-to-main / merge_group / workflow_dispatch all
+      # take this path — preserves the per-PR-optimization invariant
+      # (path-filter is never the mechanism that hides a code change
+      # from main-tip CI).
+      - id: nonpr
+        if: github.event_name != 'pull_request'
         shell: bash
         env:
           GH_EVENT: ${{ github.event_name }}
+        run: |
+          echo "Event ${GH_EVENT} (not pull_request) — emitting code=true (full build), no checkout needed."
+          echo "code=true" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # Need both PR base and head shas for git diff. fetch-depth: 0
+          # gets full history; the 5-minute job timeout above is sized
+          # for this on slow runners.
+          fetch-depth: 0
+
+      - id: detect
+        if: github.event_name == 'pull_request'
+        shell: bash
+        env:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
-
-          # Non-PR events: always run full build. Path-filter is a
-          # per-PR speedup, not a main-tip skip mechanism.
-          if [ "${GH_EVENT}" != "pull_request" ]; then
-            echo "Event ${GH_EVENT} (not pull_request) — emitting code=true (full build)."
-            echo "code=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
 
           # Diff base..head of the PR to enumerate changed files.
           CHANGED=$(git diff --name-only "${PR_BASE_SHA}" "${PR_HEAD_SHA}")
