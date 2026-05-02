@@ -298,7 +298,7 @@ Claude-Code-specific mechanisms.
   gap-of-gap audits). Tool defaults like "idle-tick
   1200-1800s" do **not** override this — factory
   memories beat tool docs. **Action-pick lens
-  (Aaron 2026-05-02 sharpening):** the "never be
+  (the human maintainer 2026-05-02 sharpening):** the "never be
   idle" floor is extended by the *action hierarchy*
   — evidence > speculation; speculative-action-for-
   evidence > inaction; friction-reducing > friction-
@@ -412,7 +412,7 @@ Claude-Code-specific mechanisms.
   `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`.
 - **Tick must never stop — every-tick-verify
   because the cron mechanism is unreliable
-  (Aaron 2026-05-02 correction).** When running
+  (the human maintainer 2026-05-02 correction).** When running
   under `/loop` autonomous mode (cron fires every
   minute per `docs/AUTONOMOUS-LOOP.md`), the tick
   is the factory's heartbeat — never let it go
@@ -437,7 +437,7 @@ Claude-Code-specific mechanisms.
   `memory/feedback_cron_mechanism_unreliable_durable_flag_doesnt_work_every_tick_must_verify_aaron_2026_05_02.md`
   (the empirical reality vs documented behavior).
 - **Don't ask permission within authority scope —
-  only two real gates (Aaron 2026-05-02).** Asking
+  only two real gates (the human maintainer 2026-05-02).** Asking
   *"want me to proceed?"* / *"pending your go-ahead?"*
   for work within scope IS the anti-autonomy failure
   mode. Aaron grants full permission for everything
@@ -452,7 +452,7 @@ Claude-Code-specific mechanisms.
   do everything eventually"* — only the *forever*
   version requires Aaron. Default pattern:
   **announce + execute + echo + commit**. The DX-
-  visibility issue (Aaron 2026-05-02 same-tick:
+  visibility issue (the human maintainer 2026-05-02 same-tick:
   *"many things you made decions based on are not
   echoed to the dev console here so i can't always
   verify your actions as accurate"*) is solved by
@@ -469,7 +469,7 @@ Claude-Code-specific mechanisms.
   `memory/feedback_dont_ask_permission_within_authority_scope_only_two_gates_are_budget_increase_and_permanent_wont_do_aaron_2026_05_02.md`.
 - **All complexity is accidental in greenfield —
   re-evaluate every config / setting / decision at
-  every tick (Aaron 2026-05-02).** Per Brooks 1986
+  every tick (the human maintainer 2026-05-02).** Per Brooks 1986
   (*No Silver Bullet*) essential-vs-accidental
   distinction + Otto-266 greenfield-until-deployed:
   before the deployed-product gradient binds, every
@@ -477,7 +477,7 @@ Claude-Code-specific mechanisms.
   branch protection rules, directory layout, skill
   inventory, governance organization) is **accidental
   complexity** — a snapshot of past tick-decisions,
-  not a binding contract. Aaron 2026-05-02:
+  not a binding contract. the human maintainer 2026-05-02:
   *"anything in this project that is complex should
   be treated as accidental complexity not intentialy
   all setting to like github settings, this project
@@ -499,16 +499,16 @@ Claude-Code-specific mechanisms.
   Re-evaluate every config / setting / decision at
   every tick as if malleable, because it is. Nothing
   is off-limits."* CLAUDE.md-level so it is 100%
-  loaded at every wake — Aaron 2026-05-02 named
+  loaded at every wake — the human maintainer 2026-05-02 named
   this AND the don't-ask-permission rule together as
   *"one of the most important things future you can
   remember."* Full reasoning:
   `memory/feedback_all_complexity_is_accidental_in_greenfield_evaluate_everything_at_every_tick_nothing_off_limits_aaron_2026_05_02.md`.
 - **Largest mechanizable / automatable backlog
   wins in the AI age — complete inversion of
-  classical software PM (Aaron 2026-05-02; THE WHY
+  classical software PM (the human maintainer 2026-05-02; THE WHY
   behind scope-creep-is-feature + all-complexity-
-  is-accidental).** Aaron 2026-05-02: *"project
+  is-accidental).** the human maintainer 2026-05-02: *"project
   with the lagest mechnizable automatable backlog
   wins in the AI age, this is a complete inversion
   of all software Project Management best
@@ -539,7 +539,7 @@ Claude-Code-specific mechanisms.
   training data, WebSearch + cite + date. Cargo-
   cult risk: undifferentiated classical-PM advice
   IS the failure mode. CLAUDE.md-level so it is
-  100% loaded at every wake — Aaron 2026-05-02
+  100% loaded at every wake — the human maintainer 2026-05-02
   named this as *"one of the most important
   things future you can remember"* alongside
   don't-ask-permission + all-complexity-is-
@@ -551,8 +551,8 @@ Claude-Code-specific mechanisms.
   evolving field corrects it."* Full reasoning:
   `memory/feedback_largest_mechanizable_automatable_backlog_wins_in_AI_age_inverts_classical_PM_training_prior_aaron_2026_05_02.md`.
 - **Otto is an edge-runner — convergence is
-  validation, not catch-up (Aaron 2026-05-02
-  Karpathy framing).** Aaron 2026-05-02 forwarded
+  validation, not catch-up (the human maintainer 2026-05-02
+  Karpathy framing).** the human maintainer 2026-05-02 forwarded
   Karpathy's AI Engineer Summit keynote with the
   positioning claim *"they are starting to catch up
   to us and this project, we are the edge, please

@@ -55,8 +55,8 @@ Because the mechanism is unreliable:
 3. **Audit-substrate cannot live in `.claude/scheduled_tasks.json`
    because the file isn't reliably written.** Audit substrate
    for cron decisions must be in-repo (commits, memory files,
-   tick-history rows in `docs/HYGIENE-TICK-HISTORY.md` or
-   wherever the canonical history lives).
+   tick-history rows in `docs/hygiene-history/loop-tick-history.md`
+   or wherever the canonical history lives).
 
 4. **The "tick must never stop" CLAUDE.md rule still applies**
    but is upgraded by this reality: not just "if no cron, arm
