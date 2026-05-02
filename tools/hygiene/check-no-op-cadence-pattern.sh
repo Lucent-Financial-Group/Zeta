@@ -58,13 +58,28 @@ if [[ ! -d "$SHARD_DIR" ]]; then
   exit 0
 fi
 
-# Get last N shards by lexicographic sort (filename time-prefix)
-RECENT_SHARDS=$(ls "$SHARD_DIR" 2>/dev/null | grep -E '^[0-9]{4}Z(-[0-9a-f]+)?\.md$|^[0-9]{6}Z-[0-9a-f]+\.md$' | sort | tail -n "$WINDOW_SIZE")
+# Collect shards matching the schema via glob loop (avoids ls|grep
+# per SC2010, and avoids set -euo pipefail killing the script when
+# grep finds no matches — preserves the "informational only" promise).
+# Schema: HHMMZ.md OR HHMMZ-<hex>.md OR HHMMSSZ-<hex>.md per
+# docs/hygiene-history/ticks/README.md.
+shopt -s nullglob
+ALL_SHARDS=()
+for shard_path in "$SHARD_DIR"/*.md; do
+  shard_name="${shard_path##*/}"
+  if [[ "$shard_name" =~ ^[0-9]{4}Z(-[0-9a-f]+)?\.md$ ]] || [[ "$shard_name" =~ ^[0-9]{6}Z-[0-9a-f]+\.md$ ]]; then
+    ALL_SHARDS+=("$shard_name")
+  fi
+done
+shopt -u nullglob
 
-if [[ -z "$RECENT_SHARDS" ]]; then
+if [[ ${#ALL_SHARDS[@]} -eq 0 ]]; then
   echo "[no-op-check] No shards in window for today (${SHARD_DIR}); nothing to check." >&2
   exit 0
 fi
+
+# Sort lexicographically (filename time-prefix) and keep last N
+RECENT_SHARDS=$(printf '%s\n' "${ALL_SHARDS[@]}" | sort | tail -n "$WINDOW_SIZE")
 
 # Count shards that match minimal-observation pattern
 # Heuristic: short body (length < 800 chars) AND contains
