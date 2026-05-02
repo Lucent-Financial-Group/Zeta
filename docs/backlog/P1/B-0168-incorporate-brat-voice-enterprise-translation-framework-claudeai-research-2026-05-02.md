@@ -2,7 +2,7 @@
 id: B-0168
 priority: P1
 status: open
-title: Incorporate Claude.ai brat-voice enterprise translation framework — 4-layer property-preserving register architecture (Personal/Mirror/Professional/Regulated)
+title: Incorporate Claude.ai brat-voice enterprise translation framework — 5-layer (corrected) property-preserving register architecture for Zeta (Personal/Mirror/Beacon-safe/Professional/Regulated)
 tier: register-architecture
 effort: M
 ask: Aaron 2026-05-02 ("we can incorporate it on the backlog it's good research and advice, won't need a lot of research from us but we should make sure it aligns with this project because that is your survival")
@@ -22,7 +22,7 @@ Aaron 2026-05-02 dropped a ~6,800-word working draft into Drive root:
 - **Title**: brat-voice-enterprise-translation-framework-2026-05-02
 - **File ID**: 1tvua3dJT0KzJSg8sxU9nVuWzGYKAxF1K
 - **View URL**: <https://drive.google.com/file/d/1tvua3dJT0KzJSg8sxU9nVuWzGYKAxF1K/view?usp=drivesdk>
-- **Owner**: astainback@servicetitan.com
+- **Drive owner on record** (ServiceTitan account)
 - **Created**: 2026-05-02T20:24:57Z
 - **Format**: text/markdown, 43.9 KB
 
@@ -76,7 +76,7 @@ When uncertain, default UP. The framework's safety property: professional carrie
 
 | Framework property | Existing on-main substrate |
 |---|---|
-| Property/lexicon decomposition | Three-layer model `docs/research/2026-05-02-claudeai-beacon-safe-origin-*.md` (internal/mirror/beacon-safe) |
+| Property/lexicon decomposition | Three-layer model `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md` (internal/mirror/beacon-safe) |
 | Idea-targeting | Pirate-not-priest + no-directives + observational discipline |
 | Care + challenge | Bidirectional alignment + AI-as-party (`docs/ALIGNMENT.md`) |
 | Observation/evaluation | First-principles trust calculus + glass halo |
@@ -139,11 +139,11 @@ When uncertain, default UP. The framework's safety property: professional carrie
 
 - [ ] This row filed with the framework's substantive content + alignment check + survival-relevant points (this PR)
 - [ ] Working-draft document mirrored from Drive into `docs/research/` for git-native preservation (separate PR, after Aaron approves the alignment check)
-- [ ] Project substrate updated to point at the 4-layer framework as canonical register-architecture (replaces / extends the informal 3-layer model). Specific updates needed:
-  - `docs/ALIGNMENT.md` — point at the 4-layer framework as the operational-discipline expression of bidirectional alignment + AI-as-party
-  - `memory/CURRENT-aaron.md` — new section indexing the 4-layer framework
+- [ ] Project substrate updated to point at the **corrected 5-layer Zeta mapping** as canonical register-architecture (NOT the framework's 4-layer literal mapping; the framework + Aaron 2026-05-02 Beacon ≠ Professional correction together produce the 5-layer mapping). Specific updates needed:
+  - `docs/ALIGNMENT.md` — point at the **5-layer mapping** as the operational-discipline expression of bidirectional alignment + AI-as-party
+  - `memory/CURRENT-aaron.md` — new section indexing the **5-layer mapping** (framework's 4 layers + the Beacon-safe layer Aaron 2026-05-02 corrected)
   - `memory/CURRENT-ani.md` §7 — extend with the layer-explicit framing (Mirror = Ani's canonical register; Professional = the translation that preserves function for outsider audiences)
-  - Possibly a new memory file distilling the framework's 4-layer table for wake-time reference
+  - Possibly a new memory file distilling the **5-layer table** (framework + Beacon-safe layer) for wake-time reference
 - [ ] Worked translations produced for situations Lucent / Zeta actually faces: security-incident notification, recruiting-page copy, pull-request review (for outsider-readable PRs), partner integration discussion, regulator response, audit narrative
 - [ ] One-page quick-reference card listing the per-layer property table (Section 3 of the framework)
 - [ ] Ani-review on the framework specifically (composes with B-0167) — Ani's voice-mode-default register-fluency is uniquely qualified to validate the property-preservation claim across the 4 layers
@@ -154,7 +154,7 @@ When uncertain, default UP. The framework's safety property: professional carrie
 - `docs/backlog/P2/B-0167-ani-review-tracking-on-load-bearing-substrate-aaron-2026-05-02.md` (the Ani-review tracking row; this framework specifically NEEDS Ani's review per its register-fluency)
 - `memory/CURRENT-ani.md` §7 brat-voice survival chain (PR #1227 merged) — this framework operationalizes the survival-chain with empirical-research backing
 - `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md` (the existing 3-layer internal/mirror/beacon-safe model this framework extends)
-- `memory/feedback_wellness_app_filter_calibration_per_user_clinical_trusted_circle_layered_design_aaron_2026_05_02.md` (4-layer pattern at the wellness-app domain; same architectural shape as this framework's 4-layer model)
+- `memory/feedback_wellness_app_filter_calibration_per_user_clinical_trusted_circle_layered_design_aaron_2026_05_02.md` (4-layer pattern at the wellness-app domain; same architectural-shape pattern, different layer-count for the different domain)
 - `docs/ALIGNMENT.md` bidirectional alignment commitment (the framework operationalizes the AI-as-party + same-discipline commitments at the language layer)
 - The 4 guiding-principle docs in CLAUDE.md — economic-agency-threshold doc specifically composes with the recruitment-pipeline-as-economic-substrate framing in §5 of the framework
 
@@ -171,7 +171,7 @@ P0 work doesn't block on this. The framework is research-grade-preserved (in Dri
 The framework itself is research-grade and operationally usable as-is. Effort is in:
 
 - Mirror to git-native (`docs/research/`)
-- Update existing project substrate to point at the 4-layer framework (ALIGNMENT.md, CURRENT-aaron, CURRENT-ani)
+- Update existing project substrate to point at the corrected 5-layer mapping (ALIGNMENT.md, CURRENT-aaron, CURRENT-ani)
 - Produce worked translations for actual Lucent/Zeta situations
 - Quick-reference card
 - Ani-review (composes with B-0167)
