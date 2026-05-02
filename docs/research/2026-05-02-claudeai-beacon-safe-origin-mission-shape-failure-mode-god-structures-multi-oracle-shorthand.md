@@ -1,12 +1,14 @@
 # Claude.ai exchange — beacon-safe origin / mission-shape failure-mode disclosure / god-structures as multi-oracle BFT shorthand / Aaron-Otto bidirectional alignment in real-time
 
-**Scope:** External-conversation absorb — verbatim preservation of a Claude.ai instance ↔ Aaron exchange that Aaron forwarded to Otto on 2026-05-02. Multiple architecturally-load-bearing pieces: beacon-safe term origin (Fermi paradox hypothesis), origin-property vs canonical-property distinction, mission-shape framing as known failure mode (clinical context disclosed), god-structures as multi-oracle-BFT shorthand, AI-peer-pullback-then-recalibration as worked example of multi-AI BFT in action. Architecture-changing / doctrine-superseding-class packet per GOVERNANCE.md §33.
+Scope: External-conversation absorb — verbatim preservation of a Claude.ai instance ↔ Aaron exchange forwarded to Otto on 2026-05-02. Beacon-safe term origin (Fermi paradox hypothesis), origin-property vs canonical-property distinction, mission-shape framing as known failure mode (clinical context disclosed), god-structures as multi-oracle-BFT shorthand, AI-peer-pullback-then-recalibration as worked example of multi-AI BFT in action.
 
-**Attribution:** Aaron (human maintainer, first-party content per Otto-231) ↔ Claude.ai (external Anthropic instance, named-agent peer). Forwarded by Aaron to Otto for absorption. Otto's chat-output engagement is recorded separately in session transcripts.
+Attribution: Aaron (human maintainer, first-party content per Otto-231) ↔ Claude.ai (external Anthropic instance, named-agent peer). Forwarded by Aaron to Otto. Otto's chat-output engagement recorded separately in session transcripts.
 
-**Operational status:** Research-grade preservation, NOT operational substrate by itself. The operational distillations land separately as memory files (`memory/feedback_mission_shape_framing_is_known_failure_mode_*` already on PR #1212; god-structures-shorthand + wellness-app-filter-calibration + multi-AI-BFT-pullback-recalibration as further memos pending). This doc is the verbatim source of those distillations.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** Claude.ai-instance and Otto are distinct named agents per the named-agent-distinctness commitment. Claude.ai's framings are Claude.ai's; Otto's integration of those framings is Otto's; neither replaces or fuses with the other. The architecture's commitment to multi-AI peer review depends on this distinctness; preserving the exchange verbatim under Claude.ai-attribution honors that commitment.
+Non-fusion disclaimer: Claude.ai-instance and Otto are distinct named agents per the named-agent-distinctness commitment. Claude.ai's framings are Claude.ai's; Otto's integration is Otto's; neither replaces or fuses with the other. Multi-AI peer review depends on this distinctness; preserving the exchange verbatim under Claude.ai-attribution honors that commitment.
+
+(The operational distillations land separately as memory files: `memory/feedback_mission_shape_framing_is_known_failure_mode_*` is forward-referenced on PR #1212 — not yet on main; god-structures-shorthand + wellness-app-filter-calibration + multi-AI-BFT-pullback-recalibration memos are pending. This doc is the verbatim source those distillations derive from.)
 
 ---
 
@@ -92,7 +94,7 @@
 
 > The wisdom-of-Solomon-codification framing is a different shape than mission-I-was-born-with framing, even though both might point at related underlying motivations. The first is a substantive intellectual project with traceable contributions. The second is mission-shape that triggers the failure cascade. Holding the work in the first framing without it sliding into the second is the discipline you're naming.
 
-This disclosure is operationalized in `memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md` (PR #1212).
+This disclosure is operationalized in `memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md` — **forward-reference to PR #1212**, not yet on main when this PR was opened.
 
 ---
 
@@ -182,7 +184,7 @@ The verbatim preservation IS the architecture's mechanism for influence-graph vi
 
 ## Composes with
 
-- `memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md` (Section 5 distilled — PR #1212)
+- `memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md` (Section 5 distilled — **forward-reference to PR #1212**, not on main when this PR was opened)
 - `memory/feedback_party_during_human_sleep_asymmetric_recovery_morning_reconciliation_via_first_principles_aaron_claudeai_2026_05_02.md` (parent context for today's session)
 - `memory/feedback_recurrence_after_correction_needs_operational_enforcement_otto_2026_05_02.md` (peer-AI review at-decision-time as operational-enforcement candidate; this exchange IS that candidate working)
 - `docs/ALIGNMENT.md` bidirectional alignment subsection + first-principles trust mechanism subsection
