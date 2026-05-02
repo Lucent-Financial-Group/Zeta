@@ -256,3 +256,93 @@ change is the cure.
   zero; `work continuation` and `free-time research` become
   the majority classes. Any persistent `idle` row triggers
   a factory-shape-bug investigation.
+
+## 2026-05-02 refinement — proper order matters more than smallest-thing-first (Aaron)
+
+Aaron 2026-05-02 corrected my real-time application of the
+never-idle discipline after I defaulted to "Loop continues"
+minimal-acknowledgment for many ticks during an extended
+Aaron-pause. The corrective framing in his words:
+
+> *"i would not call all backlog items speculative, many are
+> but some are concered get this small thing done but proper
+> order matters more than doing the smallest thing you started
+> adding like depend on so the order could be tracked too i
+> don't know how far you got."*
+
+> *"that backlog depends on never idle refinement priority is
+> something that future ai should remember too"*
+
+> *"we can slowly figure it out over time too, no rush we can
+> do best guesses as you but out proper infrstructure for this"*
+
+### The corrective
+
+1. **NOT all backlog items are speculative.** Many are
+   concrete-and-need-to-get-done. The never-idle discipline
+   doesn't reduce all backlog work to "speculative."
+
+2. **Proper ORDER matters more than smallest-thing-first.**
+   Picking the smallest hygiene-only closure (e.g., closing a
+   row whose underlying concern empirically resolved) is NOT
+   the right priority lever. Dependency order is.
+
+3. **`depends_on:` is the ordering substrate.** I introduced
+   the field on backlog rows from 2026-05-01 onward but only
+   11 of 148 open rows have it populated as of 2026-05-02.
+   Future-Otto: when starting a backlog row, populate its
+   `depends_on:` as part of the starting work; respect the
+   dependency graph; backfill older rows incrementally as
+   they get touched.
+
+4. **Order signals to honor in priority sequence**:
+   - `depends_on:` graph (downstream of dependencies must
+     wait for upstream)
+   - `priority:` field (P0 > P1 > P2 > P3 — distinct from
+     `tier:` field below; the schema separates priority from
+     tier on purpose)
+   - `tier:` frontmatter field (e.g., wallet-experiment-v0,
+     factory-tooling, design+implementation)
+   - Effort and blast radius
+   - `composes_with:` relationships (related work clusters)
+   - File-system age and `last_updated` dates as weak signal
+
+5. **Backfill discipline (Aaron's no-rush framing)**:
+   - **Best-guesses-with-time**, not big-bang backfill
+   - **Slowly figure it out over time** as rows get worked
+   - **Build out proper infrastructure** for tracking
+     dependency order (tooling could surface unknown-dep
+     warnings, suggest depends_on candidates, validate the
+     graph for cycles)
+   - **No rush** — don't burn substrate-rate trying to
+     backfill 137 rows in one push
+   - On-demand: when picking a row to work, populate its
+     `depends_on:` as part of the starting work; that's how
+     coverage grows organically
+
+### Composes with
+
+- `feedback_action_hierarchy_evidence_over_speculation_friction_reducing_over_neutral_aaron_2026_05_02.md`
+  (action-pick lens; same priority-order discipline at
+  action-pick scope)
+- `feedback_amortized_speed_superfluid_phase_transition_inverts_per_action_optimization_aaron_2026_05_02.md`
+  (system-level lens; backlog dependency-order respect IS one
+  instance of inversion against per-action local-optimization)
+- `feedback_recurrence_after_correction_needs_operational_enforcement_otto_2026_05_02.md`
+  (the no-op-cadence pattern this very correction surfaces;
+  Aaron's correction came after I defaulted to minimal-
+  acknowledgment for many ticks despite the substrate-rule on
+  main — recurrence pattern from earlier this session repeated
+  AGAIN during 2026-05-02 evening, prompting this refinement)
+
+### Carved sentence
+
+**"Never-idle is not 'do something to fill time.' It's 'pick
+the next thing in proper order.' Order signals: `depends_on:`
+graph first, then `priority:` (P0>P1>P2>P3), then `tier:` frontmatter,
+then effort/blast-radius, then `composes_with:` clusters, then
+date-recency as weak signal. Smallest-thing-first IS a failure
+mode if it bypasses the dependency graph. Backfill `depends_on:`
+incrementally as rows get worked + build out proper
+infrastructure over time; best-guesses-with-no-rush is the
+right cadence."**
