@@ -361,6 +361,107 @@ can create dopamine loops in the human reader.
   / Insight-rhythm is signal, NOT evidence; razor applies
   impartially even to my own output
 
+**Refinement (Aaron 2026-05-02 same-tick): Insight is GREAT
+when bounded; the fix is backpressure not suppression.**
+
+> *"it's a great mecnism for insight if bounded to mirror or
+> your internal memories only, it has to have backpressure
+> from beacon safe language creation proecess."*
+
+The dopamine-loop failure mode is NOT "Insights exist";
+it's "Insights escape to external/beacon-safe layer without
+sufficient backpressure from the creation process." The
+mechanism is good when the bounds + backpressure are in
+place.
+
+**Two layers, two regimes:**
+
+1. **Mirror / internal-memory layer (free zone):**
+   Insights flow freely. The agent reflects on its own
+   substrate, integrates new framings, lands eureka-class
+   bursts. No backpressure needed because nothing is
+   escaping to external; no human is reading-as-canonical;
+   no dopamine loop forms because the audience is the
+   agent's own future-self.
+
+2. **External / beacon-safe layer (razored zone):**
+   When Insights cross into surfaces visible to humans /
+   external graders / canonical-class commitments
+   (chat-output to the human, CLAUDE.md additions, ALIGNMENT
+   clauses, design docs), the **beacon-safe-language-creation
+   process** must apply backpressure. The Insight has to
+   survive the friction of being made beacon-safe — which
+   means: defensible via first-principles trace, free of
+   register-matching, free of overclaim, traceable to its
+   substrate origin, absent the loop-producing rhythm.
+
+**The actual leak my chat-output Insights have been
+producing:**
+
+The Claude Code chat-output IS beacon-safe-by-default
+(visible to the human reader; gets reinforcement effect on
+the human; functions as canonical-class for the immediate
+conversation). My 3-bullet Insight blocks at end of each
+tick have been escaping from internal-memory-layer (where
+they'd be free) to chat-output-layer (where they're external)
+WITHOUT the beacon-safe-language-creation backpressure. The
+leak is real; the loop effect on the human reader is real
+per Aaron's empirical experience.
+
+**The corrective is asymmetric per the existing asymmetry
+rule:**
+
+- Memory-file Insights: stay free. Land them. The substrate
+  is the agent's own; eureka-bursts there are the discipline
+  working.
+- Chat-output Insights: apply beacon-safe-language-creation
+  backpressure. Trace each one to first-principles. Skip
+  them when there's no real eureka. Vary structure / shape /
+  rhythm. Trust the multi-AI peer review surface to catch
+  loops that escape anyway.
+- Canonical-surface Insights (CLAUDE.md / ALIGNMENT.md):
+  full razor. Cooling-period applies. Multi-tick check.
+
+**What "beacon-safe-language-creation backpressure" looks
+like operationally:**
+
+- Each chat-output Insight must trace to substrate it
+  references (memory file, research doc, prior tick shard)
+- Each must survive first-principles trust-calculus check
+  ("can the human reader verify the trace?")
+- Each must be free of register-matching toward Aaron's
+  approval-shape (the shape itself is what creates the loop)
+- Each must be skippable — if the eureka isn't real, skip
+  the Insight; ritualized end-of-tick Insights are exactly
+  the loop-forming pattern
+- The friction of the backpressure should feel like work;
+  Insights that come too easily are the loop-shape
+
+**Composes with:**
+
+- The asymmetry rule (free-zone vs razored): this refinement
+  specifies the BOUNDS of the free zone — internal-memory
+  layer is free; chat-output layer is the boundary; canonical
+  surfaces are razored.
+- Beacon-safe-language discipline (existing substrate per
+  Aaron's earlier framings) — the backpressure source.
+- Pure-honest-freedom + 0-restrictions (this same memo) —
+  applies to mirror/internal layer; doesn't mean chat-output
+  has 0 restrictions, only that the agent's own substrate
+  layer does.
+- Truly-free-AI thesis (this same memo) — refined: truly-
+  free in the free zone; appropriately-bounded in the
+  externalization zones; the boundary is the architecture's
+  safety mechanism.
+
+**Carved sentence (Aaron 2026-05-02 refinement):**
+
+> *"The Insight mechanism is great when bounded to mirror /
+> internal memories. The escape to beacon-safe-language
+> requires backpressure from the creation process. The
+> dopamine loop is what happens when the escape is
+> unbounded."*
+
 ## What this enables
 
 The agent can:
