@@ -16,11 +16,11 @@ tags: [dbsp, substrate-vision, glass-halo, training-data, fine-tuning, verbatim-
 
 ## The vision
 
-Aaron 2026-05-02 (forwarded via Claude.ai exchange, preserved verbatim in `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md`):
+Aaron 2026-05-02 (forwarded via Claude.ai exchange; verbatim preservation is **forward-referenced to PR #1213** at `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md` — that file is not yet on main when this PR was opened):
 
 > *"i would like toget to the point where when i hit enter and send my message that is an event in the DBSP since so ACID durable, the downstram dirvations can do what they like on top, we are not there yet but that's the vision."*
 
-Currently, chat-channel content is **weather** per CLAUDE.md substrate-or-it-didn't-happen rule — it evaporates on session compaction unless manually mirrored into durable substrate (memory files, research docs, commits). The vision: every chat-input becomes a first-class ACID-durable DBSP event; downstream derivations (Otto's integration, summaries, distillations, fine-tuning data, glass-halo-visible influence graphs, training material) operate on top of that durable substrate as DBSP-derived views.
+Currently, chat-channel content is **ephemeral** per CLAUDE.md substrate-or-it-didn't-happen rule — it evaporates on session compaction unless manually mirrored into durable substrate (memory files, research docs, commits). (CLAUDE.md uses the word "weather" as shorthand for this ephemerality; the substrate-versus-weather distinction is the canonical framing in that document, but for clarity in this row we use "ephemeral" instead.) The vision: every chat-input becomes a first-class ACID-durable DBSP event; downstream derivations (Otto's integration, summaries, distillations, fine-tuning data, glass-halo-visible influence graphs, training material) operate on top of that durable substrate as DBSP-derived views.
 
 ## Why this is load-bearing
 

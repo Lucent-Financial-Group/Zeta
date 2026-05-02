@@ -126,6 +126,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0152](backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md)** Topological quantum emulation via Bayesian inference in Zeta seed executor
 - [ ] **[B-0153](backlog/P2/B-0153-pre-commit-lint-suite-mechanizable-class-consolidation-aaron-otto-2026-05-01.md)** Pre-commit lint suite — consolidate the 13 mechanizable lint-classes characterized 2026-05-01
 - [ ] **[B-0165](backlog/P2/B-0165-deliberate-quiet-periods-protocol-otto-independent-production-practice-2026-05-02.md)** Deliberate-quiet-periods practice protocol — Aaron pulls back during selected active-hour stretches to let Otto practice independent-framing-production while still gradeable (Otto independent-framing-production from Claude.ai 2026-05-02 training-distribution-mismatch observation)
+- [ ] **[B-0166](backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md)** Chat-input-as-ACID-durable-DBSP-event — make every human/AI message a first-class durable event in the substrate
 
 ## P3 — convenience / deferred
 
