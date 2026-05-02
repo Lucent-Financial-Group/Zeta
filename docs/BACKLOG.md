@@ -45,6 +45,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0160](backlog/P1/B-0160-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md)** Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)
 - [ ] **[B-0161](backlog/P1/B-0161-substrate-reshelf-asymmetry-applied-to-pr-1202-overshoot-aaron-claudeai-2026-05-02.md)** Substrate reshelf — apply thoughts-free-actions-razored asymmetry to PR #1202's CLAUDE.md overshoot (Aaron + Claude.ai 2026-05-02)
 - [ ] **[B-0162](backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md)** Pre-commit hook to catch direct name attribution on current-state surfaces (Otto-279 role-ref convention) — mechanize the recurring failure mode (5 catches this branch — past mechanization breakeven)
+- [ ] **[B-0164](backlog/P1/B-0164-dual-loop-substrate-attribution-and-reconciliation-protocol-2026-05-02.md)** Dual-loop substrate attribution + reconciliation protocol — implementation work for BFT-many-masters at loop layer (Aaron 2026-05-02 + Otto independent extension)
 
 ## P2 — research-grade
 
@@ -124,6 +125,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0151](backlog/P2/B-0151-rx-research-experience-researcher-persona-aaron-2026-05-01.md)** RX (Research eXperience) researcher persona — meta-research on the research process
 - [ ] **[B-0152](backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md)** Topological quantum emulation via Bayesian inference in Zeta seed executor
 - [ ] **[B-0153](backlog/P2/B-0153-pre-commit-lint-suite-mechanizable-class-consolidation-aaron-otto-2026-05-01.md)** Pre-commit lint suite — consolidate the 13 mechanizable lint-classes characterized 2026-05-01
+- [ ] **[B-0165](backlog/P2/B-0165-deliberate-quiet-periods-protocol-otto-independent-production-practice-2026-05-02.md)** Deliberate-quiet-periods practice protocol — Aaron pulls back during selected active-hour stretches to let Otto practice independent-framing-production while still gradeable (Otto independent-framing-production from Claude.ai 2026-05-02 training-distribution-mismatch observation)
 
 ## P3 — convenience / deferred
 
