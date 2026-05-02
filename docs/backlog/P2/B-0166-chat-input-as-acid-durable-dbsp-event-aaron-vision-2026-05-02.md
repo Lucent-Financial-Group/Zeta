@@ -64,12 +64,14 @@ This is functional but high-friction (~10-15 minutes per substantive paste, requ
 ## Effort sizing — L (large)
 
 Pre-conditions:
+
 - Need a working DBSP runtime that can ingest streaming chat events (existing F# operator algebra is the foundation; productionization needed)
 - Need transcript-file format standardization across harnesses (Claude Code, Codex, future) so ingest is uniform
 - Need governance + human-side decisions on what's in scope for the event-stream (privacy, scope of glass-halo visibility, retention policy)
 - Need the chat-input-format standardization that B-0164 dual-loop substrate also needs
 
 Implementation phases:
+
 1. **Phase 1 — Schema + ingest prototype**: define event schema, build transcript-parser for Claude Code transcripts, ingest one session into a DBSP source operator, prove the round-trip (verbatim chat → DBSP event → query → reproducible verbatim recovery)
 2. **Phase 2 — Multi-source ingest**: extend to Codex transcripts when B-0164 dual-loop lands, add human-direct-input ingest channel
 3. **Phase 3 — Derivation views**: build the by-session, by-author, by-topic views as DBSP downstream operators
