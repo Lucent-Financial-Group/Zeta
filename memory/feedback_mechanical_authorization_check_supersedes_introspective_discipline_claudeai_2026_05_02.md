@@ -101,8 +101,8 @@ grading of "which framing applies":
   automatically.
 - **Proof correctness** — formal-methods peers (Soraya / Sova /
   Leandra) authorize this.
-- **PR-level grading** — `gate.yml` + the merge queue authorize
-  this.
+- **PR-level grading** — `.github/workflows/gate.yml` (the
+  immune-system workflow) + the merge queue authorize this.
 
 The filter applies in two stages:
 
