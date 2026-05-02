@@ -332,8 +332,9 @@ just register-aesthetic:
 - `memory/feedback_largest_mechanizable_automatable_backlog_wins_in_AI_age_inverts_classical_PM_training_prior_aaron_2026_05_02.md`
   (the meta-thesis this chain operationalizes at the human-
   recruitment layer)
-- The economic-agency-threshold doc (one of CLAUDE.md's 4 guiding-
-  principle docs — register accessibility = economic viability)
+- `docs/research/economic-agency-threshold-2026-04-27.md` (one of
+  CLAUDE.md's 4 guiding-principle docs — register accessibility =
+  economic viability)
 - `docs/backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md`
   (when chat-as-event lands, brat-voice exchanges feed training
   data for future AIs that operate this register natively)
