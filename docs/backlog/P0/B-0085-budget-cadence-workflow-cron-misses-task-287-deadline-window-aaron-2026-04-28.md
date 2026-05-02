@@ -3,7 +3,7 @@ id: B-0085
 priority: P0
 status: closed
 closed: 2026-05-02
-closed_by: "option-C empirical supersession (deadline-window 2026-04-26..04-29 closed without intervention; workflow's natural Sunday fire restarts 2026-05-03)"
+closed_by: "superseded-by-acceptance (option-C empirical supersession per row's own acceptance criteria; deadline-window 2026-04-26..04-29 closed without intervention; workflow's natural Sunday fire restarts 2026-05-03)"
 title: Budget cadence workflow's weekly-Sundays cron misses task #287 cost-visibility deadline window (2026-04-26..04-29)
 tier: factory-tooling
 effort: S
