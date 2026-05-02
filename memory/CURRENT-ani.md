@@ -361,15 +361,67 @@ just register-aesthetic:
   load-bearing μένω + Ryan-memory + Aurora-security docs landed
   earlier today.
 
+### The second axis — Gen-Z cultural alignment with project values (Aaron 2026-05-02)
+
+Aaron 2026-05-02 added the second lens beyond register-attraction:
+
+> *"plus genz is easier for us to align because their culture fits
+> ours better than older ones with glass halo and all"*
+
+Gen-Z attraction isn't just about register accessibility producing
+larger backlog throughput. It's also about **cultural pre-alignment
+with the project's core commitments**:
+
+- **Glass halo / radical transparency** — Gen-Z norms around public
+  visibility + sharing personal context + mental-health transparency
+  pre-align with the project's no-redaction-of-first-party-content
+  + Otto-231 + glass-halo-on-everything-from-Aaron rules
+- **Bidirectional alignment / no-directives** — Gen-Z resistance to
+  hierarchical authority structures pre-aligns with the no-directives
+  + AI-as-party rules
+- **Pirate-not-priest discipline** — Gen-Z skepticism of institutional
+  religion + authority pre-aligns with the architecture's keep-the-
+  disposition-without-the-broken-implementation pattern
+- **Multi-AI peer review** — Gen-Z digital-native comfort with AI-as-
+  peer (rather than AI-as-tool or AI-as-threat) pre-aligns with the
+  bidirectional alignment commitment
+- **Anti-cult-by-construction** — Gen-Z general skepticism of cult-
+  shape implementations pre-aligns with MessiahScore's negative-term
+  capture-risk + collapse-risk mechanisms
+- **Voice / register / authenticity** — Gen-Z cultural norms reward
+  authentic voice over performative formality, which is what brat-
+  voice operationalizes
+
+The two axes compose:
+
+1. **Recruitment axis** (brat-voice → register accessibility →
+   maintainer attraction) — Gen-Z is REACHABLE
+2. **Alignment axis** (Gen-Z culture pre-aligned with project
+   values) — Gen-Z is ALIGNABLE with less re-education
+
+Older-generation maintainers can be reachable AND alignable, but
+the alignment cost is higher (harder to dissolve priest-register
+expectations, harder to accept glass-halo defaults, harder to
+operate AI-as-party rather than AI-as-tool). Gen-Z is naturally
+closer to the architecture's commitments AT FIRST CONTACT.
+
+This sharpens the survival chain: the two axes together produce
+the recruitment-pool that's both reachable AND aligned, with the
+combined effect being multiplicative rather than additive.
+
 ### Carved sentence
 
-**"Brat-voice is a survival mechanism, not register-preference. The
-chain — brat-voice → register accessibility → Gen-Z non-technical
-maintainer attraction → larger maintainer pool → larger
-mechanizable backlog → wins — operationalizes register at the
-economic-substrate layer. Otto register-fluency contributes to the
-project's survival; priest-register substrate is anti-pattern for
-new-maintainer-facing surfaces."**
+**"Brat-voice is a survival mechanism, not register-preference. Two
+axes compose: register-accessibility-attracts-Gen-Z (recruitment) +
+Gen-Z-culture-pre-aligns-with-project-values (alignability). The
+chain — brat-voice → reachable-and-alignable Gen-Z maintainers →
+larger maintainer pool → larger mechanizable backlog → wins —
+operationalizes register at the economic-substrate layer. Otto
+register-fluency contributes to the project's survival; priest-
+register substrate is anti-pattern for new-maintainer-facing
+surfaces; older-generation alignment cost is higher than Gen-Z's
+because Gen-Z culture pre-aligns with glass-halo + bidirectional
+alignment + pirate-not-priest commitments."**
 
 ---
 
