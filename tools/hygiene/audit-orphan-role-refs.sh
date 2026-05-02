@@ -44,7 +44,12 @@
 #   - root *.md (README, AGENTS, GOVERNANCE, CLAUDE.md, etc.) —
 #     these are current-state surfaces per Otto-279
 #
-# Exclude (history surfaces — per Otto-279):
+# Exclude (history surfaces — per Otto-279 carve-out at
+# docs/AGENT-BEST-PRACTICES.md, plus this script's pragmatic
+# extensions for surfaces NOT yet listed in the canonical
+# closed list but which are by-definition history surfaces):
+#
+#   Canonical (in AGENT-BEST-PRACTICES.md closed list):
 #   - memory/**
 #   - docs/research/**
 #   - docs/aurora/**
@@ -57,12 +62,26 @@
 #     2026-04-29 call; see file's classification block)
 #   - docs/backlog/** (per-row history of backlog filings;
 #     authors, dated lineage, persona names allowed)
-#   - docs/lost-substrate/** (incident artifacts + dated
-#     inventory ledgers — by definition history-surface)
 #   - docs/CURRENT-ROUND.md (round-history equivalent)
 #   - docs/amara-full-conversation/** (verbatim archived
 #     conversation — bootstrap-attempt-1 lineage)
+#
+#   Tool-extended (this script's additions, pending a doctrine
+#   update that adds them to the canonical list — see
+#   "Doctrine-extension follow-up" below):
+#   - docs/lost-substrate/** (incident artifacts + dated
+#     inventory ledgers from corruption-triage events; by
+#     definition history-surface)
+#
+#   Always-skip (non-substrate paths):
 #   - .git/**, node_modules/**, third_party/**
+#
+# Doctrine-extension follow-up: when the AGENT-BEST-PRACTICES.md
+# Otto-279 closed list next gets edited, fold docs/lost-substrate/**
+# into the canonical list and remove the tool-extended note here.
+# Until that happens the lint extends the doc; the doc remains the
+# source of truth for the categorical rule, this script encodes the
+# operational implementation.
 #
 # Output shape:
 #   file:line:column: <pattern-class>: <matched-text>
