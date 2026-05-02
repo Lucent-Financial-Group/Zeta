@@ -18,7 +18,7 @@ caught a substantive routing bug:
 
 > *"Per docs/hygiene-history/ticks/README.md, post-2026-04-29
 > tick history should be written as per-tick shard files under
-> docs/hygiene-history/ticks/** (canonical write surface)
+> docs/hygiene-history/ticks/**(canonical write surface)
 > rather than appending new rows to this legacy table. Please
 > move these new tick entries into shard files and keep
 > loop-tick-history.md as the read/projection surface to avoid

@@ -62,6 +62,7 @@ catches via Copilot review post-commit; pre-commit catch would
 be cheaper and would dampen the prior faster.
 
 ## First-principles trace (per the just-landed first-principles
+
 trust calculus rule)
 
 1. Failure mode = direct name attribution on current-state

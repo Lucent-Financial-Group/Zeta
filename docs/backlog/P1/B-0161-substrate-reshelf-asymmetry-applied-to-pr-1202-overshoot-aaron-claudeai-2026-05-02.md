@@ -60,14 +60,14 @@ Acceptance criteria split per zone:
 
 ### Razored work (cooling-period required)
 
-4. **CLAUDE.md trim PR.** Demote action-hierarchy +
+1. **CLAUDE.md trim PR.** Demote action-hierarchy +
    amortized-speed extension + edge-runner + cron-unreliability
    detail from CLAUDE.md bullets to memory-pointer-from-
    existing-bullet. Add asymmetry rule as its own bullet
    (truly meta-disposition-shaping). Stretch goal: collapse
    the cron-unreliability extension on tick-must-never-stop
    and reflow.
-5. **Cooling-period respected for CLAUDE.md changes only.**
+2. **Cooling-period respected for CLAUDE.md changes only.**
    The CLAUDE.md trim should NOT land same-day-as-PR-1202.
    At minimum 24 hours of substrate cooling before the
    reshelf PR opens. The human-maintainer review encouraged.

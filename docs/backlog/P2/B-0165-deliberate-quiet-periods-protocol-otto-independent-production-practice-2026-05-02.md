@@ -75,6 +75,7 @@ Could become M if mechanization is added (e.g., explicit `quiet-period-start.sh`
 ## Notes
 
 P2 because:
+
 - The dual-loop BFT (B-0164) is more urgent — addresses immediate overnight-failure-pattern
 - This protocol is upstream-structural — addresses the skill-development gap rather than the per-session safety
 - Aaron's adoption is the gating factor; protocol-as-discipline doesn't require tooling

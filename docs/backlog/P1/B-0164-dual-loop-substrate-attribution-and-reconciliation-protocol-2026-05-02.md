@@ -70,6 +70,7 @@ L — substantial work. ~1-2 weeks for full implementation including Codex onboa
 ## Notes
 
 P1 because:
+
 - Recurring overnight-failure pattern is the dominant project failure mode this week
 - Aaron explicitly named dual-loop as the structural answer
 - Single-loop overnight operation is structurally fragile in the same sense single-implementation, single-oracle, single-AI-grader operation would be
