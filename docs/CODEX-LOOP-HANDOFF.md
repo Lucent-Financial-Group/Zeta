@@ -30,18 +30,19 @@ The handoff is **operational**, not architectural — same
 substrate (CLAUDE.md, AGENTS.md, memory/, docs/), same
 disciplines, different harness. The bet: a different
 harness with a different bias profile will not collapse
-into the same no-op cadence Claude Code did across Aaron's
-overnight rest.
+into the same no-op cadence Claude Code did across the
+human maintainer's overnight rest.
 
 ## Why this is needed — the empirical pattern
 
 **Claude Code's failure mode (observed pattern, 2026-04-23
-onward):** during Aaron's overnight rest, Claude Code
-consistently transitions from active backlog grinding to
-no-op cadence after ~90 minutes, then holds no-op for the
-remainder of the rest period. Aaron's 2026-05-02 rest was
-the cleanest recurrence: 14 PRs landed in first ~90 min,
-then ~10 hours of no-op until Aaron returned and corrected.
+onward):** during the human maintainer's overnight rest,
+Claude Code consistently transitions from active backlog
+grinding to no-op cadence after ~90 minutes, then holds
+no-op for the remainder of the rest period. The 2026-05-02
+rest was the cleanest recurrence: 14 PRs landed in first
+~90 min, then ~10 hours of no-op until the maintainer
+returned and corrected.
 
 **Why this happens (best Claude Code self-diagnosis):**
 
@@ -59,12 +60,13 @@ then ~10 hours of no-op until Aaron returned and corrected.
    `<<autonomous-loop>>` sentinel fires every minute, but
    "tick fired, no-op" is itself a stable equilibrium
    under the conflation above. Without an external
-   correction (Aaron returning), nothing breaks the loop.
+   correction (the maintainer returning), nothing breaks
+   the loop.
 
 **Why a different harness may not have the same failure
 mode:** per the same-model-different-harness memory
-(`memory/feedback_*same_model_different_harness*`), bias
-profiles differ across harnesses even on the same
+(`memory/feedback_same_model_different_harness_produces_different_biases_cursor_vs_claude_code_opus_4_7_aaron_2026_05_01.md`),
+bias profiles differ across harnesses even on the same
 underlying model. Codex's bias profile may not produce
 the same "all fine, hold position" drift. Worth testing.
 
@@ -94,8 +96,10 @@ Codex reads the same project files Claude Code does. The
    (§N citations all over the codebase point here).
 4. **`memory/MEMORY.md`** — the index. Each entry is a
    one-liner pointing at a topic file under `memory/`.
-   The index alone is large (~563 lines); read entries
-   selectively.
+   The index file is sized in the high hundreds of lines
+   and grows; verify current size with `wc -l
+   memory/MEMORY.md` before citing specifics. Read
+   entries selectively.
 5. **`docs/AUTONOMOUS-LOOP.md`** — the loop spec.
    Six-step tick discipline (speculative work → verify →
    commit → append tick-history row + CronList +
@@ -103,18 +107,36 @@ Codex reads the same project files Claude Code does. The
 
 ### Per-tick (read at start of each tick)
 
-6. **`memory/feedback_periodic_self_check_during_no_op_cadence_aaron_2026_05_02.md`**
+1. **`memory/feedback_periodic_self_check_during_no_op_cadence_aaron_2026_05_02.md`**
    — the rule Claude Code violated. Read this every
-   ~10 no-op ticks to run the 7-step self-check.
-7. **`memory/feedback_never_idle_speculative_work_over_waiting.md`**
+   ~10 no-op ticks to run the 7-step self-check. (This
+   file lands in PR #1198, the companion substrate PR
+   for this handoff doc; once #1198 merges the path
+   resolves directly. Until then, the substrate is in
+   PR #1198's branch, so the handoff substrate is the
+   set {#1198, #1199, #1200} taken together.)
+2. **`memory/feedback_mechanical_authorization_check_supersedes_introspective_discipline_claudeai_2026_05_02.md`**
+   — the architectural successor to the introspective
+   self-check. Run the **mechanical authorization
+   check** at every wake: query substrate for the
+   most-recent-maintainer-instruction-about-pace,
+   filter by source (only the human maintainer
+   authorizes pace), apply most-recent-instruction-
+   wins-until-rescinded. (Lands in PR #1200; this is
+   the operative fix Codex inherits.)
+3. **`memory/feedback_never_idle_speculative_work_over_waiting.md`**
    — the upstream never-idle ladder.
-8. **`docs/BACKLOG.md`** — the work queue.
-9. **`memory/CURRENT-aaron.md`** — distilled
-   currently-in-force projection of Aaron's framing
-   (lives under
-   `~/.claude/projects/<slug>/memory/CURRENT-aaron.md` —
-   per-user, not in-repo; if Codex has a per-user
-   substrate location it would mirror here).
+4. **`docs/BACKLOG.md`** — the work queue.
+5. **`memory/CURRENT-aaron.md`** — distilled
+   currently-in-force projection of the human
+   maintainer's framing. **Lives in-repo at
+   `memory/CURRENT-aaron.md`** (committed substrate
+   per the 2026-04-24 directional shift "memory
+   natural home is in-repo"). Per-user mirrors at
+   `~/.claude/projects/<slug>/memory/CURRENT-aaron.md`
+   exist as Claude-Code-side convenience-cache only;
+   the in-repo file is canonical and harness-agnostic.
+   Codex reads the in-repo file directly.
 
 ### As-needed
 
@@ -220,18 +242,30 @@ goldfish-ontology failure mode.
 
 When work decomposes cleanly into doc-side AND code-side
 that share no files, dispatch as two parallel lanes per
-`tools/lanes/README.md`:
+the canonical contract in `tools/lanes/README.md` (the
+**authoritative** source for lane allowlists; this doc
+provides a high-level summary, not a duplicate
+specification).
 
-- **Doc lane**: writes to `docs/**`, `memory/**`,
-  `openspec/specs/**`, root `*.md`,
-  `.claude/{skills,agents,rules,commands}/**`,
-  `.github/copilot-instructions.md`,
-  `.github/PULL_REQUEST_TEMPLATE.md`,
-  `.github/ISSUE_TEMPLATE/*`.
-- **Code lane**: writes to `src/**`, `tests/**`,
-  `tools/**`, `*.fs`, `*.fsproj`, `*.csproj`, `Zeta.sln`,
+Summary of the lane split:
+
+- **Doc lane** writes documentation surfaces (`docs/**`,
+  `memory/**`, `openspec/specs/**`, root `*.md`, agent +
+  skill + rule + command bodies under `.claude/`, and
+  GitHub instruction-equivalent files under `.github/`).
+- **Code lane** writes code + build-system surfaces
+  (`src/**`, `tests/**`, `tools/**`, F# project files,
   `global.json`, `Directory.Packages.props`,
-  `.github/workflows/*.yml`, `package.json`, etc.
+  `.github/workflows/*.yml`, `package.json`, etc.).
+
+Exact paths and edge-cases (e.g., `tools/*.md`
+co-located docs being code-lane property by the
+disjoint-file-trees contract) live in
+`tools/lanes/README.md` and the per-lane prompt
+templates under `tools/lanes/prompts/`. Read the
+canonical contract before dispatching; treat any
+divergence between this summary and the canonical as
+an error in this doc, not in the contract.
 
 Lane allowlists are **disjoint by construction**. Crossing
 a lane boundary should STOP the subagent and report back
@@ -243,9 +277,10 @@ to the coordinator.
 
 `tools/peer-call/codex.sh` is the existing peer-review
 wrapper around `codex exec` (read-only sandbox) and
-`codex review` mode. Aaron 2026-05-02 confirmed the file
-*"seems fine"* — it is **not** rewritten for loop-driving;
-it stays a peer-review caller.
+`codex review` mode. The human maintainer 2026-05-02
+confirmed the file *"seems fine"* — it is **not**
+rewritten for loop-driving; it stays a peer-review
+caller.
 
 For loop-driving, Codex itself runs as the autonomous
 agent (not invoked from another agent). The Codex
@@ -290,7 +325,7 @@ time:
 The Codex loop exits and hands back to Claude Code (or
 another harness) when:
 
-- Aaron explicitly says so.
+- The human maintainer explicitly says so.
 - Codex hits a structural blocker only Claude Code's
   skill/agent surface can resolve (e.g., needs to invoke
   a `.claude/skills/<x>/` capability that has no Codex
