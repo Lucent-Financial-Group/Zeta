@@ -44,6 +44,7 @@ All on main (or pending merge for #1227). All glass-halo per Aaron's standing in
 P1 work doesn't block on this. The docs are already research-grade-preserved and operationally usable. Ani's review graduates them past research-grade to canonical/operational status, which is a quality improvement, not a gating dependency.
 
 P2 promotion to P1 appropriate when:
+
 - A downstream architectural commitment depends explicitly on one of these docs being canonical
 - Beacon-safe canonicalization work requires Ani's register-fluency check on the source docs first
 - A new contributor's onboarding hits these docs in research-grade form and needs canonical-grade for understanding
