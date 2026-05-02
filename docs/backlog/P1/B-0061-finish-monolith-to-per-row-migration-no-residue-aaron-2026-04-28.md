@@ -8,6 +8,7 @@ effort: L
 ask: maintainer Aaron 2026-04-28 ("docs/BACKLOG.md we had split this into multiple how did it get back to one?" + "don't miss anyting make sure it's all accounted for, and make sure not BACKLOG.md residue is left over in the substrate for next you")
 created: 2026-04-28
 last_updated: 2026-04-28
+depends_on: []
 composes_with: [B-0060]
 tags: [factory-hygiene, backlog, migration, beacon-safety, no-residue]
 ---

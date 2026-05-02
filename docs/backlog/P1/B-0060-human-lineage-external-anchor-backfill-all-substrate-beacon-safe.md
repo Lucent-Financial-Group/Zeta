@@ -8,6 +8,7 @@ effort: L
 ask: maintainer Aaron 2026-04-28 ("we should backlog human lineage to all our substraight stuff too if it exists, all our AI stuff even though we are just editing md files is coding and thee might be articles and research papers or question/answer fourms stack overflow etc... we should research waht we've already done and make sure it's beacon safe and human anchored/linage.")
 created: 2026-04-28
 last_updated: 2026-04-28
+depends_on: []
 composes_with: [B-0003]
 tags: [substrate-quality, beacon-safety, otto-351, otto-352, external-anchors, human-lineage, prior-art, agent-design-research, research-discipline]
 ---
