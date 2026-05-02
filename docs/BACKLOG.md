@@ -42,6 +42,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0156](backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md)** TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
 - [ ] **[B-0158](backlog/P1/B-0158-claude-rules-pattern-carved-sentences-only-aaron-2026-05-01.md)** Adopt `.claude/rules/<rule>.md` pattern + carved-sentences-only constraint (Aaron 2026-05-01)
 - [ ] **[B-0159](backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md)** refresh-github-worldview cross-cutting refresh script (Claude.ai 2026-05-01)
+- [ ] **[B-0160](backlog/P1/B-0160-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md)** Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)
+- [ ] **[B-0161](backlog/P1/B-0161-substrate-reshelf-asymmetry-applied-to-pr-1202-overshoot-aaron-claudeai-2026-05-02.md)** Substrate reshelf — apply thoughts-free-actions-razored asymmetry to PR #1202's CLAUDE.md overshoot (Aaron + Claude.ai 2026-05-02)
 
 ## P2 — research-grade
 
