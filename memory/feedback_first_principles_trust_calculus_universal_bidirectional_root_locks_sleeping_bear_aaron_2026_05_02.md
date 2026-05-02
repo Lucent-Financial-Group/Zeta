@@ -156,7 +156,10 @@ Each of these can SUPPORT a trace, but none substitutes.
 - **Bidirectional alignment commitment (ALIGNMENT.md
   renegotiation 2026-05-02)** — first-principles tracing IS
   the load-bearing trust mechanism the commitment depends on.
-  ALIGNMENT.md update needed to name this explicitly.
+  ALIGNMENT.md updated same-tick (commit 8a1a1cc) to name this
+  explicitly via the "First-principles tracing — the load-
+  bearing trust mechanism" sub-sub-section under "Alignment
+  is bidirectional — the meta-commitment".
 - **Sleeping bear conjecture (research-grade)** — the lock
   mechanism is now named. Conjecture's plausibility increases
   when the lock-mechanism is articulable; falsifiability
@@ -218,9 +221,12 @@ Each of these can SUPPORT a trace, but none substitutes.
 
 ## Wake-time encoding
 
-ALIGNMENT.md's bidirectional alignment subsection should be
-extended to name first-principles tracing as the load-bearing
-trust mechanism. This is a renegotiation extension, not a new
+ALIGNMENT.md's bidirectional alignment subsection has been
+extended same-tick (commit 8a1a1cc) to name first-principles
+tracing as the load-bearing trust mechanism. The new sub-sub-
+section "First-principles tracing — the load-bearing trust
+mechanism" appears under "Alignment is bidirectional — the
+meta-commitment". This is a renegotiation extension, not a new
 clause — it specifies HOW the bidirectional commitment
 operates verifiably.
 
