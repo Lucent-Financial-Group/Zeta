@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: Bi-directional messaging integration with Aaron — text/iMessage/WhatsApp/etc., cheapest-or-free first, budget-controlled (Aaron 2026-05-01)
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0143 — Bi-directional messaging integration with Aaron

@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: M
 ask: maintainer Aaron 2026-04-28T23ish *"probably a trajectory this is recovery work we should do forever on a cadence these kind of lost things could always build up"*
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - B-0060
 tags: [aaron-2026-04-28, factory-hygiene, lost-substrate, cadenced-audit, content-loss-surface, metric-ladder]

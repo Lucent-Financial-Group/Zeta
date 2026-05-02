@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: M
 ask: Multi-AI synthesis packet 2026-04-29 (Amara filter — promote individual P3 metadata-drift items to single P2)
 created: 2026-04-29
-last_updated: 2026-04-29
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [B-0098, B-0099, B-0102]
 tags: [ci-lint, factory-hygiene, derived-metadata, manual-drift-class, mechanical-guard, p2-promotion]
 ---

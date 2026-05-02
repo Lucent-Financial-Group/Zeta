@@ -7,7 +7,8 @@ tier: factory-tooling
 effort: S
 ask: autonomous-loop tick discovery 2026-04-28T20:23Z (paired-edit failures observed on PR #688/#689; both auto-merged anyway)
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - B-0087
 tags: [otto-2026-04-28, github-actions, branch-protection, advisory-vs-enforcement, factory-hygiene, memory-index-integrity]

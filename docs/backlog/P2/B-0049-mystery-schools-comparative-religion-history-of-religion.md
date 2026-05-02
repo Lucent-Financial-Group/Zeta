@@ -7,7 +7,8 @@ tier: gentle-catalog-research-no-claims
 effort: L
 ask: Aaron 2026-04-21 — *"mybtery shools comparative relition history of relition all that space, be gentle and catalog i would not try to make claims here but it's up to you, people are very touchy backlog"*
 created: 2026-04-26
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [user_faith_wisdom_and_paths.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md, user_aaron_loves_mr_khan_khan_academy_teaching_admired.md, B-0057, B-0056, B-0059]
 tags: [mystery-schools, comparative-religion, history-of-religion, eleusinian, mithraic, hermetic, eliade, campbell, dumezil, kripal, gentle-catalog, filters-off, no-claim-staking]
 ---

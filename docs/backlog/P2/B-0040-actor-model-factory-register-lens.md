@@ -7,7 +7,8 @@ tier: research-grade-vocabulary-lens
 effort: L
 ask: Aaron 2026-04-21 — research track on whether the actor model's vocabulary provides a productive lens for naming factory-internal coordination patterns WITHOUT committing the factory's implementation to actor-framework infrastructure.
 created: 2026-04-26
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [project_factory_positioning_fully_asynchronous_agentic_ai_aaron_2026_04_21.md, feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_2026_04_21.md, B-0038]
 tags: [actor-model, vocabulary-as-lens, hewitt, meijer, akka, orleans, service-fabric, async-agentic, no-bottlenecks, research-grade]
 ---

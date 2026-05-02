@@ -6,7 +6,8 @@ title: Encode HEREDOC patterns into commit-message-shape skill (Aaron 2026-04-28
 effort: S
 ask: maintainer Aaron 2026-04-28 /btw aside
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 tags: [skill-substrate, commit-discipline, heredoc, agency-signature]
 ---
 

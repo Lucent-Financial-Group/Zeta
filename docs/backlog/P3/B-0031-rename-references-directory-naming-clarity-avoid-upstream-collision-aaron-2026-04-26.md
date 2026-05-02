@@ -7,7 +7,8 @@ tier: hygiene-naming
 effort: M
 ask: Aaron 2026-04-26 — *"references (not upstream that's proabalby a bad name i randomly chose, we should rectify to avoid wars/confusion becasue im using upstream incorrectly)"*. The `references/` directory holds vendored / mirrored upstream-codebase content; Aaron initially used the word "upstream" colloquially to refer to it, but "upstream" has specific git-semantic meaning (the parent branch / repo a fork tracks). Using "upstream" in this colloquial sense creates confusion and risks future agents/contributors interpreting it via the git-semantic. "References" is fine for the directory name; the issue is the colloquial vocabulary used around it.
 created: 2026-04-26
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, B-0030, docs/GLOSSARY.md, B-0010]
 tags: [naming-clarity, glossary, git-semantic-collision, vocabulary-discipline, otto-339-anywhere, references-directory]
 ---

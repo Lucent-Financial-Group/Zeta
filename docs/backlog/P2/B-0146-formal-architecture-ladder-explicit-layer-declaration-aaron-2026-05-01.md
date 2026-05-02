@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: Formal architecture ladder — explicit-layer-declaration discipline for B-rows
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0146 — Formal architecture ladder — explicit-layer-declaration discipline

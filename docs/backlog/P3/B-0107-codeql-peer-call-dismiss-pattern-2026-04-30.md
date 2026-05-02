@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: S
 ask: surfaced during slice-15 PR #896 review on 2026-04-30
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [B-0086]
 tags: [ci-codeql, peer-call, by-design-suppression, missing-mechanism]
 ---

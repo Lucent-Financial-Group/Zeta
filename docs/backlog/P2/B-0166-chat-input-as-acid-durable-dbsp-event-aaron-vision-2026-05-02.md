@@ -8,6 +8,7 @@ effort: L
 ask: Aaron 2026-05-02 long-horizon vision (forwarded via Claude.ai exchange)
 created: 2026-05-02
 last_updated: 2026-05-02
+depends_on: []
 composes_with: [B-0164]
 tags: [dbsp, substrate-vision, glass-halo, training-data, fine-tuning, verbatim-preservation, chat-as-substrate]
 ---

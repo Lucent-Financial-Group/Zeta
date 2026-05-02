@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: M
 ask: maintainer Aaron 2026-04-28T23ish *"we definitely need some contributor works for public company watch for insider information generalization in the factory, that can be used by anyone at service titan to when working on public repos or any one who works for any public company, that's reusable substrate."* + *"probably comes with trajectories I would think."*
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - B-0090
 tags: [aaron-2026-04-28, factory-hygiene, contributor-compliance, public-company, insider-information, cadenced-trajectories, sec-rule-10b-5, reg-fd, sarbanes-oxley]

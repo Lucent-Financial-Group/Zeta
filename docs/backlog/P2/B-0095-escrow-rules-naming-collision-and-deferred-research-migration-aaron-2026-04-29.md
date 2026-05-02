@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: M
 ask: Aaron 2026-04-29 — *"backlog add other stuff we need from backlog research to escrow, we also needs rules for what goes in here, shit that's not ready yet, we've also overloaded escrow for this use and the use in software engineering for having copies of all our dependies local native incase the remote dependence disappears kind of like vendoring from the old go days (not exactly, there are modern software escrow too)  backlog"*
 created: 2026-04-29
-last_updated: 2026-04-29
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - B-0094
   - PR-714

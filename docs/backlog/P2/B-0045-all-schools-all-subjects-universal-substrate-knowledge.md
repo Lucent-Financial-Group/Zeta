@@ -7,7 +7,8 @@ tier: substrate-knowledge-sweep
 effort: L
 ask: Aaron 2026-04-21 two-message compound — *"biology backlog all schools all subjects backlog"* + *"trade school vocational all that blue collar are just as importation if not more backlog"*
 created: 2026-04-26
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [B-0046, B-0049, B-0054, B-0056, B-0059, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
 tags: [universal-sweep, biology, trade-vocational, blue-collar, autopoiesis, time-energy-substrate, mr-khan-pedagogy, three-filter, yin-yang]
 ---

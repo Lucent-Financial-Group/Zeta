@@ -7,7 +7,8 @@ tier: factory-tooling
 effort: M
 ask: The maintainer 2026-04-30 flagged "why are these not ts, are we done with the cutover? these are post install scripts." Per the install-script language strategy memory (`memory/project_install_script_language_strategy_post_install_typescript_pre_install_bash_powershell_python_for_ai_ml_2026_04_27.md`), peer-call scripts qualify as post-install (they require external CLIs already installed) and should migrate from bash to TypeScript-on-bun. Otto-215 already named "Bun-TS post-install migration before substantive Windows work" as the framing. This row tracks the concrete migration of `tools/peer-call/*.sh` to `tools/peer-call/*.ts`.
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - tools/peer-call/codex.sh
   - tools/peer-call/grok.sh

@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: S
 ask: maintainer Aaron 2026-04-28 ("checking for git hotspots should be on some cadence somwhere. we can backlog this")
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [B-0061, B-0066]
 tags: [factory-hygiene, git-hotspot, cadence, structural-fix, audit]
 ---

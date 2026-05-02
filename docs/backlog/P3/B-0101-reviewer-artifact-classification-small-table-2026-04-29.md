@@ -7,7 +7,8 @@ tier: research-grade
 effort: S
 ask: Multi-AI synthesis packet 2026-04-29 (Deepseek + Amara filter)
 created: 2026-04-29
-last_updated: 2026-04-29
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [B-0098, B-0099, B-0100]
 tags: [code-review, copilot, reviewer-noise, taxonomy, classification]
 ---

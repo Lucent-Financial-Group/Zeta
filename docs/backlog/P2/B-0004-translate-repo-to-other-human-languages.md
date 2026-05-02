@@ -7,7 +7,8 @@ tier: research-grade
 effort: L
 ask: maintainer Aaron 2026-04-25
 created: 2026-04-25
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [B-0003]
 tags: [inclusivity, bidirectional-alignment, internationalization, i18n, localization, l10n, globalization, g11n, accessibility, a11y, translation, education, precision-dictionary]
 ---

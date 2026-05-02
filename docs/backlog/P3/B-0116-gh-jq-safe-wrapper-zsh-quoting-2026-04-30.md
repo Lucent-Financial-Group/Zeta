@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: S
 ask: Recurring zsh-quoting failures on `gh pr view --jq '...'` invocations cause command failures with "unexpected token \\". Otto's workaround is fall-back to `python3 -c`, which works but adds friction. A small wrapper script handles the quoting consistently.
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - tools/github/poll-pr-gate.ts
   - feedback_kernel_pipe_vs_js_space_stream_ordering_ts_bun_port_pattern_2026_04_30.md

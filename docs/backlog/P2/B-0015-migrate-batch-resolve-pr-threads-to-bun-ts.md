@@ -7,7 +7,8 @@ tier: ops
 effort: S
 ask: PR #199 review feedback (Copilot P0 exception-label requirement) + sibling-migration guardrail per docs/POST-SETUP-SCRIPT-STACK.md
 created: 2026-04-25
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [docs/POST-SETUP-SCRIPT-STACK.md]
 tags: [post-setup-stack, bun, typescript, migration, sibling-migration-guardrail]
 ---

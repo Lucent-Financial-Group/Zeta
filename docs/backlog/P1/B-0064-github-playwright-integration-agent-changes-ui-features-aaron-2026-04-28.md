@@ -7,7 +7,8 @@ tier: agent-capability-expansion
 effort: M
 ask: maintainer Aaron 2026-04-28 ("backlog github/playwrite integration, this is for all those things you need me to change, you should be able to change in the UI, also looking at the UI will help you understand how i see things and find new features as soon as they come out, backlog")
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [B-0060, B-0061]
 tags: [agent-capability, github-ui, playwright, mcp, automation, friction-reduction, feature-discovery]
 ---

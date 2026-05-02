@@ -7,7 +7,8 @@ tier: factory-tooling
 effort: M
 ask: maintainer Aaron 2026-04-28T19:56Z (TypeScript/Bun-as-default substrate framing)
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - B-0061
 tags: [aaron-2026-04-28, typescript, bun, factory-default, language-discipline, port-candidate]

@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: Mechanized auditor for verify-before-state-claim — file-internal metadata claim audits (companion to task #350)
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0130 — Mechanized auditor for verify-before-state-claim — file-internal metadata claim audits

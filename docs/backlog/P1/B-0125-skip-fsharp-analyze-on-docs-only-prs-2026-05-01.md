@@ -7,6 +7,7 @@ closed_by: "PR #1185"
 title: Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 created: 2026-05-01
 last_updated: 2026-05-02
+depends_on: []
 ---
 
 > **Closed 2026-05-02 by PR #1185** — `gate.yml` now has a

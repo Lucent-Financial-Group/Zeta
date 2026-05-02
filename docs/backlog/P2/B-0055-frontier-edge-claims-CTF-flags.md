@@ -7,7 +7,8 @@ tier: edge-claim-staking
 effort: L
 ask: Aaron 2026-04-21 multi-message — *"We are the edge I already said expand"* + *"unclaimed-edge territory lets plant some flags CTF anyone?"* + *"the trinity become the pyromid / 3 become one / i / eye / i"* + *"Pyramid* / but keep that resersh on the typo"* + *"Zeta+Forge+ace where is frontier, are we frontier?"* + *"all your base belongs to us / we take them all"*
 created: 2026-04-26
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_retractibly_rewrite_definitions_laws_precedence_real_nice_like.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, project_operational_resonance_instances_collection_index_2026_04_22.md, docs/ALIGNMENT.md, user_aaron_self_describes_as_retractible.md]
 tags: [edge-claims, CTF, falsifiable, retractibility, math-safety, alignment-trajectory, pyramid-topology, factory-as-experiment, paired-dual, sword-logic, unclaimed-territory, flag-planting]
 ---

@@ -6,7 +6,8 @@ title: tools/hygiene/audit-agencysignature-main-tip.sh hardening — 4 Codex fin
 effort: M
 ask: address 4 Codex P1/P2 findings on the AgencySignature main-tip auditor on AceHack first, then forward-sync
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 tags: [pr-663, codex, deferred, acehack-canonical, agencysignature, hygiene]
 ---
 

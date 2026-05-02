@@ -9,6 +9,7 @@ effort: M
 ask: Otto autonomous (per Aaron full-delegation 2026-04-28 "fuck it ui sucks you got it" + static-analysis-grade quality bar)
 created: 2026-04-28
 last_updated: 2026-05-02
+depends_on: []
 tags: [code-scanning, codeql, ruleset, lfg, blocker, task-306]
 ---
 

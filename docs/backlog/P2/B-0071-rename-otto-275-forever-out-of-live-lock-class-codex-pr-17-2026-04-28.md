@@ -6,7 +6,8 @@ title: Rename otto_275_forever memory out of "live-lock 9th pattern" subclass + 
 effort: M
 ask: codex review on PR #17 thread (chatgpt-codex-connector P2)
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 tags: [substrate-rename, taxonomy, live-lock, otto-352, memory-hygiene]
 ---
 

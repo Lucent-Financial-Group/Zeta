@@ -7,7 +7,8 @@ tier: factory-tooling
 effort: S
 ask: autonomous-loop tick discovery 2026-04-28T20:05Z (workflow-null-result audit class first concrete catch)
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - B-0085
 tags: [otto-2026-04-28, github-actions, workflow-startup-failure, invalid-permission, drift-detector-broken, factory-hygiene]

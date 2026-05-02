@@ -7,7 +7,8 @@ tier: aspirational-broad-scope-research
 effort: L
 ask: Aaron 2026-04-21 — *"all company information on all compaanies on earth all governements too backlog"*
 created: 2026-04-26
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [B-0046, feedback_capture_everything_including_failure_aspirational_honesty.md, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, docs/ALIGNMENT.md]
 tags: [aspirational, broad-scope, institutional-landscape, opencorporates, gleif, openownership, alignment-trajectory-denominator, scoping-first, license-gated]
 ---

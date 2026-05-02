@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: Type-theoretic encoding of orthogonality discipline (extension vs creation as decidable judgment)
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0134 — Type-theoretic encoding of orthogonality discipline

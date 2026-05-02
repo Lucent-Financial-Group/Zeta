@@ -7,7 +7,8 @@ tier: research-grade
 effort: L
 ask: maintainer Otto-287/Aaron 2026-04-25 ("backlog ongoing research here to formalize this conservation law analogously")
 created: 2026-04-25
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: []
 tags: [otto-287, formal-methods, physics, cognitive-substrate, research-grade, noether]
 ---

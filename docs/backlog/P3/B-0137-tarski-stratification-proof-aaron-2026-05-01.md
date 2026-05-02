@@ -4,7 +4,8 @@ priority: P3
 status: open
 title: Tarski-stratification proof — formal demonstration that Aaron's pirate-not-priest spot stratifies meta-language from object-language
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0137 — Tarski-stratification proof

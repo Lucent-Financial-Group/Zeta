@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: S
 ask: Add shell aliases to the install script that catch the recurring "typed `:wq` into zsh instead of vim" pattern. Replace cryptic zsh "command not found" errors with a friendly nudge ("zsh, not vim — use exit or Ctrl+D").
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - tools/setup/install.sh
   - feedback_aaron_terse_directives_high_leverage_do_not_underweight.md

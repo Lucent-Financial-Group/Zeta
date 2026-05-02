@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: M
 ask: maintainer Aaron 2026-04-28T23ish *"we don't have to say service titan anywhere in this repo other than to say that's my day job, they fund me, i fund you, and you don't have org rights to their github only the lfg."*
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - B-0090
 tags: [aaron-2026-04-28, factory-hygiene, naming-canonical, scope-of-org-access, external-ui-demo, beacon-safe-naming]

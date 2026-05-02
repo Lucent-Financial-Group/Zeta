@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: TimeSeries / observability domain expert + teacher persona
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0150 — TimeSeries / observability domain expert + teacher persona

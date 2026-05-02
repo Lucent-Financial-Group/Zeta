@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: Extend Z-set retraction algebra Lean formalization beyond the existing DBSP chain-rule proof
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0131 — Extend Z-set retraction algebra Lean formalization

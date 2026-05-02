@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: Distill the Claude.ai CSAP-pushback conversation into uber-architecture (deferred multi-week)
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0124 — Distill the Claude.ai CSAP-pushback conversation into uber-architecture (across 4 projects, eventually)

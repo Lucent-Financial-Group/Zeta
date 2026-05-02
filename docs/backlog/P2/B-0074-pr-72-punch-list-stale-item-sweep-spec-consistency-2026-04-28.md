@@ -6,7 +6,8 @@ title: PR #72 punch-list / spec-consistency drift sweep — 8 codex threads on s
 effort: M
 ask: chatgpt-codex-connector + copilot reviews on PR #72
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 tags: [pr-72, punch-list, spec-consistency, b-0062, deferral-tracking]
 ---
 
