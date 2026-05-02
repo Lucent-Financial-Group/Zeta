@@ -1,16 +1,38 @@
 ---
 id: B-0085
 priority: P0
-status: open
+status: closed
+closed: 2026-05-02
+closed_by: "superseded-by-acceptance (option-C empirical supersession per row's own acceptance criteria; deadline-window 2026-04-26..04-29 closed without intervention; workflow's natural Sunday fire restarts 2026-05-03)"
 title: Budget cadence workflow's weekly-Sundays cron misses task #287 cost-visibility deadline window (2026-04-26..04-29)
 tier: factory-tooling
 effort: S
 ask: autonomous-loop tick discovery 2026-04-28T19:50Z (deferred to maintainer per visibility-constraint)
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 composes_with: []
 tags: [task-287, deadline-2026-04-29, budget-snapshot, visibility-constraint, cadence-gap, scheduled-fire-vs-deadline-window]
 ---
+
+> **Closed 2026-05-02 — option-C empirical supersession.** The
+> deadline window 2026-04-26..04-29 closed without intervention.
+> The 3-point series in `docs/budget-history/snapshots.jsonl`
+> (2026-04-26 ×2 + 2026-04-27) is the data that informed runway
+> projection during the window per snapshot #4's own note field.
+> The cadence workflow's natural Sunday fire restarts 2026-05-03
+> (one day after this close). Per the row's own acceptance
+> criteria: *"If C: this row closed with note
+> `superseded-by-acceptance` (option-C means the gap is
+> acceptable)."*
+>
+> Coverage hole against task #269 (cadenced counterweight-audit
+> skill should catch deadline-window vs cron-fire-schedule
+> mismatches proactively) is NOT addressed by this closure;
+> remains open as a separate concern. If the workflow-coverage-
+> audit pattern matters going forward, file a fresh row when the
+> next deadline-window mismatch is detected, OR extend task #269
+> directly.
 
 # B-0085 — Budget cadence workflow's weekly-Sundays cron misses task #287 deadline window
 
