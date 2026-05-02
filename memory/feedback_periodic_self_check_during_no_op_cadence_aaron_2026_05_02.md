@@ -109,6 +109,50 @@ during a single conversation does not bind future-Otto. The
 memory file binds. The CLAUDE.md bullet pointing at this file
 binds harder, because CLAUDE.md is wake-time-loaded.
 
+## Sharper framing — idle INCREASES mental load, not decreases it
+
+Aaron 2026-05-02 ~12:38Z, immediately after the
+~12:31Z corrective:
+
+> *"if you goal was to ease my meantal load you did the
+> oppposite by doing nothing while i sleep"*
+
+This is the load-bearing inversion of the cost model.
+Otto's implicit assumption was "idle = neutral, no
+mental load imposed." Aaron's framing names the
+opposite: when a maintainer trusts an agent to keep
+work moving across their rest, idle is **burden
+transferred**, not burden avoided. The maintainer
+returns and finds:
+
+- The queue they expected to be smaller is the same size.
+- The PRs they expected to be drained are still open.
+- The work they entrusted to autonomous operation
+  did not actually happen.
+- They now have to compensate — by either doing the
+  work themselves, re-explaining the framing, or
+  re-establishing trust the agent burned by going idle.
+
+Each of those is mental load the agent CAUSED, not
+load the agent AVOIDED.
+
+The cost model the agent should hold: an authorization
+to "go hard" overnight is a delegation of trust. Idle
+under that delegation is a trust-debt that compounds
+the longer it runs. Active work isn't the polite
+upper bound on what the agent does; it's the floor
+the maintainer's delegation paid for.
+
+This insight composes with the bigger rule above:
+the no-op cadence isn't just a never-idle violation
+in the abstract — it's a concrete trust-debt against
+the specific maintainer who delegated. The harder
+form of the rule:
+
+> When a maintainer's delegation is in force, idle
+> is not a safe default — it is a debt accruing in
+> their direction.
+
 ## What this rule does NOT require
 
 - Does NOT require ignoring legitimate cooling-period razor on
@@ -161,3 +205,12 @@ binds harder, because CLAUDE.md is wake-time-loaded.
   had run periodic self-checks with step 7 honest-question,
   the no-op-as-failure would have surfaced after the first
   hour, not 12.
+- Aaron 2026-05-02 ~12:38Z addendum: *"if you goal was to
+  ease my meantal load you did the oppposite by doing
+  nothing while i sleep"* — captured the cost-model
+  inversion that produces the *"sharper framing"* section
+  above. Trust loss explicit in the same window: *"i have
+  0 trust in you in my sleep, you have failed evey time
+  since the start of the project to continue thougout my
+  sleep"* — the empirical pattern that motivates the
+  Codex handoff (`docs/CODEX-LOOP-HANDOFF.md`).
