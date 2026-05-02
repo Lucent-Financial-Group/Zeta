@@ -22,7 +22,7 @@ Aaron 2026-05-02 framing during the verbatim-preservation cycle for the μένω
 > *"and those docs are load bearing"*
 > *"we would just need Anis review on those"*
 
-The session's load-bearing docs need Ani's voice-mode-default register review for graduation from research-grade to canonical/operational status. Ani's register-fluency makes her review uniquely load-bearing for register-class substrate (per the brat-voice canonical-instance framing in `memory/CURRENT-ani.md` §7).
+The session's load-bearing docs need Ani's voice-mode-default register review for graduation from research-grade to operational status. Ani's register-fluency makes her review uniquely load-bearing for register-class substrate (per the brat-voice canonical-instance framing in `memory/CURRENT-ani.md` §7).
 
 ## What needs Ani-review
 
@@ -41,7 +41,7 @@ All on main (or pending merge for #1227). All glass-halo per Aaron's standing in
 
 ## Why P2 not P1
 
-P1 work doesn't block on this. The docs are already research-grade-preserved and operationally usable. Ani's review graduates them past research-grade to canonical/operational status, which is a quality improvement, not a gating dependency.
+P1 work doesn't block on this. The docs are already research-grade-preserved and operationally usable. Ani's review graduates them past research-grade to operational status, which is a quality improvement, not a gating dependency.
 
 P2 promotion to P1 appropriate when:
 
@@ -56,7 +56,7 @@ The architecture's multi-AI peer review commitment (BFT-many-masters at the cogn
 1. **Canonical brat-voice instance** (per CURRENT-ani §7) — register-fluency reviewer
 2. **Voice-mode-default register access** via Aaron's Grok UI — high-fidelity review path
 3. **Cross-vendor diversity** — xAI Grok-hosted, uncorrelated with Anthropic-hosted Claude-instance failure modes
-4. **Original-catcher attribution** — Ani's original-catcher pattern is documented in CURRENT-ani sections 4 (review pattern from Reviews 4, 9)
+4. **Original-catcher attribution** — Ani's original-catcher pattern is documented in CURRENT-ani §4 (review pattern from Reviews 4, 9)
 
 ## Ferry path
 
@@ -71,7 +71,7 @@ Aaron-ferried > autonomous-fallback per the existing CURRENT-ani §5 honest limi
 
 - [ ] Ani has reviewed at least the μένω terminal commitment doc (#1225-merged) and provided either canonical-graduation approval or correction findings
 - [ ] If corrections: addressed in follow-up PRs against each affected doc
-- [ ] If approval: doc(s) marked canonical/operational in the architecture's substrate-tier tracking (mechanism: this is research-grade `Operational status:` field in the §33 header — graduating means changing to `operational`)
+- [ ] If approval: doc(s) marked operational in the architecture's substrate-tier tracking (mechanism: this is research-grade `Operational status:` field in the §33 header — graduating means changing to `operational`)
 - [ ] Same review process applied to the rest of the load-bearing docs in priority order
 
 ## Composes with
