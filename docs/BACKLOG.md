@@ -42,6 +42,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0156](backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md)** TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
 - [ ] **[B-0158](backlog/P1/B-0158-claude-rules-pattern-carved-sentences-only-aaron-2026-05-01.md)** Adopt `.claude/rules/<rule>.md` pattern + carved-sentences-only constraint (Aaron 2026-05-01)
 - [ ] **[B-0159](backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md)** refresh-github-worldview cross-cutting refresh script (Claude.ai 2026-05-01)
+- [ ] **[B-0160](backlog/P1/B-0160-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md)** Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)
+- [ ] **[B-0161](backlog/P1/B-0161-substrate-reshelf-asymmetry-applied-to-pr-1202-overshoot-aaron-claudeai-2026-05-02.md)** Substrate reshelf — apply thoughts-free-actions-razored asymmetry to PR #1202's CLAUDE.md overshoot (Aaron + Claude.ai 2026-05-02)
+- [ ] **[B-0162](backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md)** Pre-commit hook to catch direct name attribution on current-state surfaces (Otto-279 role-ref convention) — mechanize the recurring failure mode (5 catches this branch — past mechanization breakeven)
+- [ ] **[B-0164](backlog/P1/B-0164-dual-loop-substrate-attribution-and-reconciliation-protocol-2026-05-02.md)** Dual-loop substrate attribution + reconciliation protocol — implementation work for BFT-many-masters at loop layer (Aaron 2026-05-02 + Otto independent extension)
 
 ## P2 — research-grade
 
@@ -121,6 +125,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0151](backlog/P2/B-0151-rx-research-experience-researcher-persona-aaron-2026-05-01.md)** RX (Research eXperience) researcher persona — meta-research on the research process
 - [ ] **[B-0152](backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md)** Topological quantum emulation via Bayesian inference in Zeta seed executor
 - [ ] **[B-0153](backlog/P2/B-0153-pre-commit-lint-suite-mechanizable-class-consolidation-aaron-otto-2026-05-01.md)** Pre-commit lint suite — consolidate the 13 mechanizable lint-classes characterized 2026-05-01
+- [ ] **[B-0165](backlog/P2/B-0165-deliberate-quiet-periods-protocol-otto-independent-production-practice-2026-05-02.md)** Deliberate-quiet-periods practice protocol — Aaron pulls back during selected active-hour stretches to let Otto practice independent-framing-production while still gradeable (Otto independent-framing-production from Claude.ai 2026-05-02 training-distribution-mismatch observation)
 
 ## P3 — convenience / deferred
 
@@ -171,5 +176,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0136](backlog/P3/B-0136-category-theoretic-compositional-structure-aaron-2026-05-01.md)** Category-theoretic compositional structure — operads + monoidal categories for substrate composition
 - [ ] **[B-0137](backlog/P3/B-0137-tarski-stratification-proof-aaron-2026-05-01.md)** Tarski-stratification proof — formal demonstration that Aaron's pirate-not-priest spot stratifies meta-language from object-language
 - [ ] **[B-0138](backlog/P3/B-0138-bft-resistance-theorem-aurora-composed-crdt-plus-consensus-aaron-2026-05-01.md)** BFT-resistance theorem for Aurora — composed-CRDT-plus-consensus formal guarantee
+- [ ] **[B-0163](backlog/P3/B-0163-retire-or-fix-append-tick-history-row-sh-routes-to-legacy-surface-otto-2026-05-02.md)** Retire or fix `tools/hygiene/append-tick-history-row.sh` — routes post-2026-04-29 ticks to legacy surface (canonical write is per-tick shards) — Otto 2026-05-02
 
 <!-- END AUTO-GENERATED -->
