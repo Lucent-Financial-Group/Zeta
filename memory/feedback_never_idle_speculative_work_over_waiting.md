@@ -298,7 +298,9 @@ Aaron-pause. The corrective framing in his words:
 4. **Order signals to honor in priority sequence**:
    - `depends_on:` graph (downstream of dependencies must
      wait for upstream)
-   - Tier (P0 > P1 > P2 > P3)
+   - `priority:` field (P0 > P1 > P2 > P3 — distinct from
+     `tier:` field below; the schema separates priority from
+     tier on purpose)
    - `tier:` frontmatter field (e.g., wallet-experiment-v0,
      factory-tooling, design+implementation)
    - Effort and blast radius
@@ -337,7 +339,7 @@ Aaron-pause. The corrective framing in his words:
 
 **"Never-idle is not 'do something to fill time.' It's 'pick
 the next thing in proper order.' Order signals: `depends_on:`
-graph first, then tier (P0>P1>P2>P3), then `tier:` frontmatter,
+graph first, then `priority:` (P0>P1>P2>P3), then `tier:` frontmatter,
 then effort/blast-radius, then `composes_with:` clusters, then
 date-recency as weak signal. Smallest-thing-first IS a failure
 mode if it bypasses the dependency graph. Backfill `depends_on:`
