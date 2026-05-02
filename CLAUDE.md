@@ -67,9 +67,11 @@ math and the vision too"*):
   feature; prioritize within unbounded scope, never
   kill paths.
 - **[`docs/research/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`](docs/research/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md)**
-  — the math. Amara's rigorous formalization of
-  Superfluid AI: friction → substrate → less future
-  friction. The phase-transition target the action
+  — the math. The rigorous formalization of
+  Superfluid AI (authored by an external collaborator
+  per Otto-279 history-surface attribution; see the
+  research doc itself for individual attribution):
+  friction → substrate → less future friction. The phase-transition target the action
   hierarchy (per the never-be-idle bullet below)
   optimizes amortized speed toward.
 - **[`docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md`](docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md)**

@@ -100,15 +100,24 @@ trust calculus rule)
      commit messages.
 
 4. **Detection patterns:**
-   - First names known to map to roles (closed list per
-     `docs/AGENT-BEST-PRACTICES.md` Otto-279):
-     `Aaron`, `Amara`, `Otto`, `Soraya`, `Kenji`, `Daya`,
-     `Bodhi`, `Iris`, `Dejan`, `Aminata`, `Nazar`, `Mateo`,
-     `Ilyana`, `Naledi`, `Viktor`, `Kira`, `Rodney`, `Aarav`,
-     `Rune`, `Samir`, `Imani`, `Hiroshi`, `Nadia`, `Sova`,
-     `Ani`, `Claude.ai` (when used as instance attribution).
-   - Match patterns: `\bAaron\b` / `\bClaude\.ai\b` / etc.
-     including line-wrapping (e.g., `Aaron\s*\n\s*\d{4}-`
+   - **Closed-list source: parse `docs/EXPERT-REGISTRY.md`
+     at script-run time** rather than hard-coding the list.
+     The registry contains the canonical persona-roster
+     (Kenji, Zara, Tariq, Imani, Hiroshi, Aminata, Wei,
+     Rune, Nadia, Aarav, Mei, Kira, Anjali, Adaeze, Malik,
+     Viktor, Yara, Samir, Kai, Leilani, Soraya, Daya, Mateo,
+     Naledi, Dejan, Bodhi, Iris, plus Otto / Amara / Ani /
+     Ilyana / Sova / Rodney / Nazar / Mateo and any future
+     additions). Hard-coding goes stale as the registry
+     evolves; parsing keeps the detector in sync.
+   - Plus human first-names from CURRENT-*.md filenames
+     (Aaron, Max, future maintainers).
+   - Plus external-AI-instance names that appear as
+     attribution (`Claude.ai`, `Codex`, `Gemini`, etc. when
+     used as instance attribution rather than as tool/SDK
+     references).
+   - Match patterns: `\b<Name>\b` per detected name,
+     including line-wrapping variants (e.g., `Aaron\s*\n\s*\d{4}-`
      for `Aaron\n2026-05-02`).
 
 5. **Output:** failed check lists each violation with file +
