@@ -52,14 +52,21 @@ cd "$REPO_ROOT"
 WINDOW_SIZE="${NO_OP_CHECK_WINDOW:-7}"
 THRESHOLD="${NO_OP_CHECK_THRESHOLD:-5}"
 
-if ! [[ "$WINDOW_SIZE" =~ ^[0-9]+$ ]] || [[ "$WINDOW_SIZE" -lt 1 ]]; then
+# `10#$VAR` forces base-10 interpretation in arithmetic context. Without
+# it, a zero-padded value like `08` would be parsed as octal (and fail
+# with "value too great for base"), defeating the validation guard.
+if ! [[ "$WINDOW_SIZE" =~ ^[0-9]+$ ]] || (( 10#$WINDOW_SIZE < 1 )); then
   echo "[no-op-check] Invalid NO_OP_CHECK_WINDOW='${WINDOW_SIZE}' (need positive integer); using default 7." >&2
   WINDOW_SIZE=7
 fi
-if ! [[ "$THRESHOLD" =~ ^[0-9]+$ ]] || [[ "$THRESHOLD" -lt 1 ]]; then
+if ! [[ "$THRESHOLD" =~ ^[0-9]+$ ]] || (( 10#$THRESHOLD < 1 )); then
   echo "[no-op-check] Invalid NO_OP_CHECK_THRESHOLD='${THRESHOLD}' (need positive integer); using default 5." >&2
   THRESHOLD=5
 fi
+# Normalize to base-10 (strip leading zeros) so subsequent arithmetic
+# comparisons + tail -n usage are unambiguous regardless of input format.
+WINDOW_SIZE=$((10#$WINDOW_SIZE))
+THRESHOLD=$((10#$THRESHOLD))
 
 # Compute today + yesterday shard directories.
 # `date -u -v-1d` is BSD/macOS; `date -u -d "yesterday"` is GNU/Linux.
