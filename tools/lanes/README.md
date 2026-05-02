@@ -97,7 +97,7 @@ coordinator follows for every two-lane dispatch:
 The lanes have **disjoint file trees** by construction. The
 allowlist is the contract:
 
-### Doc lane writes to:
+### Doc lane — writes to
 
 - `docs/**` (including `docs/backlog/`, `docs/hygiene-history/`,
   `docs/research/`, `docs/aurora/`, `docs/DECISIONS/`)
@@ -111,7 +111,7 @@ allowlist is the contract:
 - `.github/copilot-instructions.md`, `.github/PULL_REQUEST_TEMPLATE.md`,
   `.github/ISSUE_TEMPLATE/*`
 
-### Doc lane NEVER writes:
+### Doc lane — NEVER writes
 
 - Anything under `src/`, `tests/`, `tools/` (except
   `tools/*.md` documentation files)
@@ -121,7 +121,7 @@ allowlist is the contract:
 - `.github/workflows/*.yml`
 - `package.json`, `bun.lock`, `tsconfig*.json`
 
-### Code lane writes to:
+### Code lane — writes to
 
 - `src/**`, `tests/**`
 - `tools/**` (including `tools/hygiene/`, `tools/github/`,
@@ -134,7 +134,7 @@ allowlist is the contract:
 - `.github/workflows/*.yml`
 - `package.json`, `bun.lock`, `tsconfig*.json`
 
-### Code lane NEVER writes:
+### Code lane — NEVER writes
 
 - Anything under `memory/`, `docs/research/`, `docs/aurora/`,
   `docs/DECISIONS/`, `docs/backlog/`
