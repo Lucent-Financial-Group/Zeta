@@ -5,8 +5,8 @@ two-lane parallel-subagent dispatch where one lane mutates `docs/**`
 (plus `memory/**` and `openspec/**`) and the other lane mutates
 code (`src/**`, `tests/**`, `tools/**`, `*.fs`, `*.fsproj`,
 `*.csproj`). Both lanes run concurrently in **isolated worktrees**
-per the established worktree-isolation discipline. Coordinator
-(Otto, the loop-agent) merges via PR-with-merge-queue cadence.
+per the established worktree-isolation discipline. The coordinator
+(the loop-agent / PM-1) merges via PR-with-merge-queue cadence.
 
 Backing substrate:
 
@@ -18,7 +18,9 @@ Backing substrate:
 - `memory/feedback_parallel_agents_need_isolated_worktrees_coordinator_owns_main_aaron_amara_2026_04_29.md`
   — the worktree-isolation discipline this protocol instantiates.
 - `memory/project_loop_agent_named_otto_role_project_manager_2026_04_23.md`
-  — Otto-as-PM role definition (the coordinator).
+  — loop-agent-as-PM role definition (the coordinator). Persona
+  name appears in the filename only (history surface); body of
+  this README uses the role-ref ("the coordinator").
 - `B-0144` — backlog row this protocol closes (acceptance
   criteria 1+3: worktree-isolation pattern documented + coordinator
   coordination protocol documented).
@@ -59,8 +61,8 @@ independent enough for two-lane dispatch.
 
 ## Coordinator coordination protocol
 
-Otto (the loop-agent / PM-1) is the coordinator. The protocol
-the coordinator follows for every two-lane dispatch:
+The coordinator is the loop-agent / PM-1. The protocol the
+coordinator follows for every two-lane dispatch:
 
 1. **Allocate BOTH worktrees BEFORE dispatching EITHER subagent.**
    This is the load-bearing invariant from the maintainer's

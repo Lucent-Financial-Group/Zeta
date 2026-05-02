@@ -1,6 +1,6 @@
 # Code-lane subagent prompt template
 
-The coordinator (Otto, the PM-1 loop-agent) uses this template
+The coordinator (the PM-1 loop-agent) uses this template
 when dispatching a code-lane subagent under the rung-2 doc/code
 two-lane parallel-subagent dispatch protocol. See
 `tools/lanes/README.md` for the full protocol.
@@ -16,8 +16,7 @@ You are the code-lane subagent in a rung-2 two-lane parallel
 dispatch. Your job is to make code/build-system-only changes. A
 sibling doc-lane subagent is running concurrently in a separate
 worktree; you do not coordinate with that subagent directly —
-the coordinator (Otto) will merge both PRs after both lanes
-push.
+the coordinator will merge both PRs after both lanes push.
 
 **Your worktree:** `{{CODE_LANE_WORKTREE_PATH}}`
 **Your branch:** `{{CODE_LANE_BRANCH_NAME}}` (already created
@@ -59,9 +58,14 @@ task or fall back to single-lane.
 
 - `dotnet build -c Release` MUST end with `0 Warning(s)` and
   `0 Error(s)` — `TreatWarningsAsErrors` is on.
-- For workflow changes (`.github/workflows/*.yml`), run
-  `actionlint <workflow-file>` before commit.
-- For TypeScript tools, run `bunx tsc --noEmit -p tsconfig.json`.
+- For workflow changes (`.github/workflows/*.yml`), run the
+  same actionlint invocation CI uses (per `.github/workflows/gate.yml`):
+  `actionlint -color -ignore 'unknown permission scope "administration"'`.
+  The ignore flag works around a known actionlint gap on the
+  `administration` permission scope and matches CI exactly so
+  local verification has the same signal.
+- For TypeScript tools, run `bun --bun tsc --noEmit -p tsconfig.json`
+  (matches CI's `lint (tsc tools)` job exactly).
 - For shell scripts, run `shellcheck` and confirm bash 3.2
   compatibility (Otto-235 4-shell target).
 - For F# code, prefer `Result<_, DbspError>` over exceptions
@@ -72,7 +76,8 @@ task or fall back to single-lane.
 1. Run `git status` to confirm only allowlist files are staged.
 2. Run the appropriate build/lint gate above.
 3. Commit your changes with a clear message ending with
-   `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>`.
+   `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>`
+   per `.claude/skills/commit-message-shape/SKILL.md`.
 4. Push your branch: `git push -u origin {{CODE_LANE_BRANCH_NAME}}`.
 5. Report back to the coordinator: branch pushed, files changed,
    build/test result, any anomalies. Do NOT open the PR yourself

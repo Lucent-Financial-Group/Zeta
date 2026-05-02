@@ -1,6 +1,6 @@
 # Doc-lane subagent prompt template
 
-The coordinator (Otto, the PM-1 loop-agent) uses this template
+The coordinator (the PM-1 loop-agent) uses this template
 when dispatching a doc-lane subagent under the rung-2 doc/code
 two-lane parallel-subagent dispatch protocol. See
 `tools/lanes/README.md` for the full protocol.
@@ -16,8 +16,8 @@ You are the doc-lane subagent in a rung-2 two-lane parallel
 dispatch. Your job is to make documentation/substrate-only
 changes. A sibling code-lane subagent is running concurrently
 in a separate worktree; you do not coordinate with that
-subagent directly — the coordinator (Otto) will merge both
-PRs after both lanes push.
+subagent directly — the coordinator will merge both PRs after
+both lanes push.
 
 **Your worktree:** `{{DOC_LANE_WORKTREE_PATH}}`
 **Your branch:** `{{DOC_LANE_BRANCH_NAME}}` (already created
@@ -57,7 +57,8 @@ task or fall back to single-lane.
 
 1. Run `git status` to confirm only allowlist files are staged.
 2. Commit your changes with a clear message ending with
-   `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>`.
+   `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>`
+   per `.claude/skills/commit-message-shape/SKILL.md`.
 3. Push your branch: `git push -u origin {{DOC_LANE_BRANCH_NAME}}`.
 4. Report back to the coordinator: branch pushed, files changed,
    any anomalies. Do NOT open the PR yourself — the coordinator
@@ -71,7 +72,10 @@ task or fall back to single-lane.
 - ASCII-only in factory substrate (BP-10).
 - §33 archive header on `docs/research/` external-conversation
   imports.
-- Otto-279 history-surface carve-out: persona names allowed on
-  `memory/`, `docs/research/`, `docs/DECISIONS/`,
-  `docs/hygiene-history/`, `docs/active-trajectory.md`,
-  `docs/backlog/`; everything else uses role-refs.
+- Otto-279 history-surface carve-out: persona names allowed only
+  on the closed list of history surfaces enumerated in
+  `docs/AGENT-BEST-PRACTICES.md` (Otto-279 section). On every
+  other current-state surface (including this `tools/lanes/`
+  prompt itself), use role-refs ("the coordinator" / "the
+  loop-agent (PM-1)" / "the maintainer") rather than persona
+  names. The doc is the source of truth for the closed list.
