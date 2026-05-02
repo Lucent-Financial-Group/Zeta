@@ -490,7 +490,8 @@ Claude-Code-specific mechanisms.
   not kill future knowledge potential"*). **WONT-DO
   is 99% deferral, not forever** — *"we will likely
   do everything eventually"* — only the *forever*
-  version requires Aaron. Default pattern:
+  version requires the human maintainer. Default
+  pattern:
   **announce + execute + echo + commit**. The DX-
   visibility issue (the human maintainer 2026-05-02 same-tick:
   *"many things you made decions based on are not
