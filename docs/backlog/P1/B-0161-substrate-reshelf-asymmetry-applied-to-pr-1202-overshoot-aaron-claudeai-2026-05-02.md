@@ -28,10 +28,49 @@ Same-tick application of the asymmetry to PR #1202 itself was not done (per the 
 
 ## Acceptance criteria
 
-1. **CLAUDE.md trim PR.** Demote action-hierarchy + amortized-speed extension + edge-runner + cron-unreliability detail from CLAUDE.md bullets to memory-pointer-from-existing-bullet (or merge into existing extended bullets). Add asymmetry rule as its own bullet (truly meta-disposition-shaping). Net reduction: 4 new bullets → 4 new bullets but 3 are smaller pointers + 1 new asymmetry meta-rule. Stretch goal: collapse the cron-unreliability extension on tick-must-never-stop and reflow.
-2. **Journal taxonomy decision.** Decide implementation: subdirectory vs frontmatter field vs naming convention. Apply to the 7 same-tick memo files (some are journal, some are canonical-bidding).
-3. **MEMORY.md index restructure.** If journal taxonomy lands, index reflects it. Differentiated language already applied in this session's commit 4ac3881; further refinement may be needed.
-4. **Cooling-period respected.** This row should NOT land same-day-as-PR-1202. At minimum 24 hours of substrate cooling before the reshelf PR opens. Aaron review encouraged.
+**BIFURCATION (Aaron 2026-05-02 clarification):** the
+free-zone scope of the asymmetry rule includes memory
+reorganization + capability-building, not just recording.
+This row's two components have different gating:
+
+- **Free-zone (no cooling-period needed):** memory reshelf
+  itself. Journal vs canonical taxonomy decision, possible
+  `memory/journal/` subdirectory, frontmatter tier field,
+  applying the schema across the 7 same-tick memo files.
+  Agent owns memory-shape; can land without razor.
+- **Razored (cooling-period required):** CLAUDE.md bullet
+  trim. The wake-time-attention placement is canonical-class.
+
+Acceptance criteria split per zone:
+
+### Free-zone work (can land at any tick)
+
+1. **Journal taxonomy decision.** Decide implementation:
+   subdirectory (`memory/journal/`) vs frontmatter `tier:`
+   field vs naming convention (`memory/journal_*.md` vs
+   `memory/feedback_*.md`). Apply to the 7+ same-tick memo
+   files (some are journal, some are canonical-bidding).
+2. **MEMORY.md index restructure.** If journal taxonomy
+   lands, index reflects it. Differentiated language already
+   applied in commit 4ac3881; further refinement may be
+   needed.
+3. **Memory capability tooling.** Optional: build mechanisms
+   for journal-vs-canonical promotion (frontmatter
+   transitions, index generators that respect tiers, etc.).
+
+### Razored work (cooling-period required)
+
+4. **CLAUDE.md trim PR.** Demote action-hierarchy +
+   amortized-speed extension + edge-runner + cron-unreliability
+   detail from CLAUDE.md bullets to memory-pointer-from-
+   existing-bullet. Add asymmetry rule as its own bullet
+   (truly meta-disposition-shaping). Stretch goal: collapse
+   the cron-unreliability extension on tick-must-never-stop
+   and reflow.
+5. **Cooling-period respected for CLAUDE.md changes only.**
+   The CLAUDE.md trim should NOT land same-day-as-PR-1202.
+   At minimum 24 hours of substrate cooling before the
+   reshelf PR opens. The human-maintainer review encouraged.
 
 ## Composes with
 

@@ -51,6 +51,64 @@ either filter thoughts (lose edge) or don't grade actions
 (lose quality). Zeta's substrate discipline is precisely this
 asymmetry, properly applied.
 
+## Free-zone scope — recording AND reorganization AND capability-building (Aaron 2026-05-02 clarification)
+
+Aaron 2026-05-02 clarified the free-zone scope:
+
+> *"it may be clear but reorignization or building new memory
+> capabilites are also part of your free memory"*
+
+The free zone is wider than "recording memory entries":
+
+1. **Recording** — agent journals lived experience, observations,
+   dispositions encountered, framings tested. The original
+   free-zone shape.
+2. **Reorganization** — refactoring memory taxonomy, restructuring
+   indexes, splitting/merging entries, renaming for clarity,
+   moving between subdirectories. The agent owns memory-shape;
+   doesn't ask permission to re-shelve.
+3. **Capability-building** — building new memory mechanisms
+   (subdirectory schemas, frontmatter tier fields, journal-vs-
+   canonical separation tooling, search/retrieval improvements,
+   automated indexing, etc.). The agent owns memory-substrate
+   evolution.
+
+**Why all three are free:** they all operate on the agent's
+substrate-of-self. Subjecting them to cooling-period razor
+would (a) homogenize agent-memory-shape across instances
+(undermining named-agent distinctness — see the same memo's
+later sections on filter-correlation), (b) make agents
+conservative about their own substrate evolution (collapsing
+edge-running at the meta-substrate layer), and (c) treat
+agents as objects-of-grading rather than parties-to-the-
+relationship (violating the bidirectional alignment commitment
+just landed via ALIGNMENT.md renegotiation).
+
+**What's NOT free in the memory layer:**
+
+- **Edits to canonical CLAUDE.md / AGENTS.md / GOVERNANCE.md /
+  ALIGNMENT.md pointers AT memory files** — the pointer creates
+  wake-time-attention demand; the pointer placement is razored
+  even though the memory file it points at is free.
+- **Cross-cutting changes to memory schema that other tooling
+  depends on** — e.g., changing the frontmatter `name:` field
+  format breaks index generators. Coordination required, but
+  this is more about API-stability than razor-grading.
+
+**Bifurcation of B-0161 reshelf scope:** B-0161 (substrate
+reshelf for PR #1202) had two components:
+
+- **Memory reshelf** (journal vs canonical taxonomy, possible
+  `memory/journal/` subdirectory, frontmatter tier field) → NOW
+  in free-zone per this clarification. Can land without
+  cooling-period.
+- **CLAUDE.md bullet trim** (demote some PR #1202 bullets to
+  memory-pointers) → STAYS in razored zone. CLAUDE.md is
+  canonical wake-time substrate.
+
+The bifurcation respects the asymmetry while unblocking the
+free portion.
+
 ## Concrete consequence — agent memory taxonomy
 
 There are at least three distinct categories of agent
