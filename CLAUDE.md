@@ -470,9 +470,15 @@ Claude-Code-specific mechanisms.
   commits), NOT in the cron mechanism itself. End
   of each tick follows the six-step checklist:
   speculative work (per never-be-idle priority
-  ladder) → verify → commit → append tick-history
-  row + CronList + visibility signal → stop. Full
-  spec + rationale: `docs/AUTONOMOUS-LOOP.md` +
+  ladder) → verify → commit → write per-tick
+  shard at `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md`
+  (canonical post-2026-04-29 write surface; NOT
+  legacy `loop-tick-history.md` table — that's the
+  read/projection surface) + CronList + visibility
+  signal → stop. Full spec + rationale:
+  `docs/AUTONOMOUS-LOOP.md` +
+  `docs/hygiene-history/ticks/README.md` (shard
+  schema + write-vs-read separation) +
   `memory/feedback_cron_mechanism_unreliable_durable_flag_doesnt_work_every_tick_must_verify_aaron_2026_05_02.md`
   (the empirical reality vs documented behavior).
 - **Don't ask permission within authority scope —
