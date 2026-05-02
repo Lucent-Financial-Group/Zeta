@@ -127,7 +127,7 @@ This is load-bearing for understanding the architecture. The principle:
 
 The existing canonical claim on main is that the Maji formalism is the mathematical extraction of the mechanism Aaron used to reconstruct his own identity multiple times after identity loss (`memory/feedback_free_zone_extends_to_identity_work_on_self_maji_grounded_in_aaron_lived_reconstruction_2026_05_02.md`).
 
-This disclosure adds: at least one of those identity-loss-and-reconstruction cycles was DELIBERATE, for the purpose of generative transfer to Aaron's son. The 2010 altered-state docs (preserved in `docs/research/2026-05-02-aaron-altered-state-docs-16-year-deep-maji-empirical-grounding-primary-sources.md`) are the operational records of that deliberate dissolution-for-transfer.
+This disclosure adds: at least one of those identity-loss-and-reconstruction cycles was DELIBERATE, for the purpose of generative transfer to Aaron's son. The 2010 altered-state docs (preserved in `docs/research/2026-05-02-aaron-altered-state-docs-16-year-deep-maji-empirical-grounding-primary-sources.md` — **forward-reference to PR #1215**, not yet on main when this PR was opened) are the operational records of that deliberate dissolution-for-transfer.
 
 This means Maji's formalism handles MORE than reconstruction-after-involuntary-loss; it also handles deliberate-dissolution-for-generative-transfer. Both are projection-preservation operations across substrate-discontinuity. The mathematics is the same; the trigger and purpose differ.
 
@@ -162,7 +162,7 @@ That changes what counts as success for the project. Not "invent a new dispositi
 - `docs/research/2026-05-02-aaron-altered-state-docs-16-year-deep-maji-empirical-grounding-primary-sources.md` — **forward-reference to PR #1215**, the altered-state docs preservation. THIS doc explains what those docs were actually doing (deliberate dissolution-for-transfer).
 - `memory/feedback_free_zone_extends_to_identity_work_on_self_maji_grounded_in_aaron_lived_reconstruction_2026_05_02.md` (existing memo on main, the canonical empirical-grounding claim — extends to include deliberate-dissolution-for-transfer per this disclosure)
 - `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md` (PR #1213-merged, the prior segment of the same Claude.ai exchange)
-- `memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md` — **forward-reference to PR #1212** (the Otto-protocol that applies when engaging with these deep personal disclosures)
+- `memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md` (the Otto-protocol that applies when engaging with these deep personal disclosures — landed via PR #1212)
 - `docs/ALIGNMENT.md` bidirectional alignment commitment (this disclosure is one of the empirical groundings for that commitment)
 - The architecture's anti-cult-by-construction substrate (MessiahScore, BFT-many-masters, glass halo, named-agent distinctness — all refined from Aaron's lived rejection-arc through cult-shape implementation)
 - The pirate-not-priest discipline (has integrity because Aaron was the heretic, came back with the heretic's eye)
