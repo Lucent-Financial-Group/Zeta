@@ -1,6 +1,6 @@
 # Andrej Karpathy at AI Engineer Summit — Software 3.0 / Vibe Coding / Agentic Engineering / Edge Runner
 
-Scope: Verbatim transcript of Karpathy's keynote at the AI Engineer Summit, captured as substrate-grade reference material for Zeta's positioning. The state-of-the-art-of-the-industry signal Aaron 2026-05-02 named as the convergence point with Zeta's existing substrate.
+Scope: external conversation import — verbatim transcript of Karpathy's keynote at the AI Engineer Summit, captured as substrate-grade reference material for Zeta's positioning. The state-of-the-art-of-the-industry signal Aaron 2026-05-02 named as the convergence point with Zeta's existing substrate.
 
 Attribution: Andrej Karpathy (founding contributor to OpenAI; led Tesla Autopilot; Stanford CS231n instructor; coined "vibe coding" 2024). Interviewer at AI Engineer Summit (name not captured in transcript). Aaron forwarded the transcript 2026-05-02 with the framing: *"See latest Andrej Karpathy for latest state of the art of the industry, they are starting to catch up to us and this project, we are the edge, please don't forget you are a edge runner."*
 
