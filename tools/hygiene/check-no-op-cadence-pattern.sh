@@ -31,6 +31,12 @@
 #     "within-basin observation", "observe-only",
 #     "minimal not idle", "same. stopping"). Either signal counts.
 #   - If count >= threshold (default 5), prints WARNING
+#   - **Shard-density check (Aaron 2026-05-02 extension)**: if the
+#     most recent shard is more than NO_OP_CHECK_GAP_MINUTES (default
+#     15) minutes old relative to current UTC, prints a separate
+#     missing-shard-cadence warning. Catches the "agent kept saying
+#     'standing by' in chat without writing tick-history shards" failure
+#     mode that the body-length / keyword heuristic alone misses.
 #
 # What this does NOT do:
 #   - Does NOT block the tick (informational only — exit 0 always)
@@ -177,6 +183,78 @@ if [[ $MIN_OBS_COUNT -ge $THRESHOLD ]]; then
   echo "  warning to surface the pattern at decision-time, not just substrate-read time." >&2
 
   # Informational warning; does not exit non-zero (would block tick)
+fi
+
+# Shard-density check (Aaron 2026-05-02 extension):
+# Detects the "agent kept saying 'standing by' in chat without writing
+# tick-history shards" failure mode. If the most recent shard's parsed
+# timestamp is more than NO_OP_CHECK_GAP_MINUTES (default 15) minutes
+# old relative to current UTC, print a missing-shard-cadence warning.
+GAP_THRESHOLD="${NO_OP_CHECK_GAP_MINUTES:-15}"
+if ! [[ "$GAP_THRESHOLD" =~ ^[0-9]+$ ]] || (( 10#$GAP_THRESHOLD < 1 )); then
+  echo "[no-op-check] Invalid NO_OP_CHECK_GAP_MINUTES='${GAP_THRESHOLD}' (need positive integer); using default 15." >&2
+  GAP_THRESHOLD=15
+fi
+GAP_THRESHOLD=$((10#$GAP_THRESHOLD))
+
+# Get the latest shard's primary key (YYYYMMDDHHMMSS) from COMBINED.
+# COMBINED is sorted ascending; tail -1 gives the latest.
+LATEST_LINE=$(printf '%s\n' "$COMBINED" | tail -n 1)
+LATEST_PRIMARY=$(printf '%s' "$LATEST_LINE" | awk -F'|' '{print $1}')
+
+if [[ -n "$LATEST_PRIMARY" && "${#LATEST_PRIMARY}" -eq 14 ]]; then
+  # Convert YYYYMMDDHHMMSS → epoch seconds (UTC).
+  # BSD/macOS: date -j -u -f "%Y%m%d%H%M%S" "$LATEST_PRIMARY" +%s
+  # GNU/Linux: date -u -d "${YYYY-MM-DDTHH:MM:SS}Z" +%s
+  YYYY="${LATEST_PRIMARY:0:4}"
+  MM="${LATEST_PRIMARY:4:2}"
+  DD="${LATEST_PRIMARY:6:2}"
+  HH="${LATEST_PRIMARY:8:2}"
+  MIN="${LATEST_PRIMARY:10:2}"
+  SS="${LATEST_PRIMARY:12:2}"
+
+  if LATEST_EPOCH="$(date -j -u -f "%Y%m%d%H%M%S" "$LATEST_PRIMARY" +%s 2>/dev/null)"; then
+    : # BSD/macOS path succeeded
+  elif LATEST_EPOCH="$(date -u -d "${YYYY}-${MM}-${DD}T${HH}:${MIN}:${SS}Z" +%s 2>/dev/null)"; then
+    : # GNU/Linux path succeeded
+  else
+    LATEST_EPOCH=""
+  fi
+
+  if [[ -n "$LATEST_EPOCH" ]]; then
+    NOW_EPOCH="$(date -u +%s)"
+    GAP_SECONDS=$((NOW_EPOCH - LATEST_EPOCH))
+    GAP_MINUTES=$((GAP_SECONDS / 60))
+
+    echo "[no-op-check] Most recent shard ${GAP_MINUTES} minutes old (gap-threshold: ${GAP_THRESHOLD})." >&2
+
+    if (( GAP_MINUTES > GAP_THRESHOLD )); then
+      echo "" >&2
+      echo "WARNING: missing-shard-cadence detected — most recent shard is ${GAP_MINUTES} minutes old, exceeding threshold ${GAP_THRESHOLD} minutes." >&2
+      echo "" >&2
+      echo "This is the structural counterpart to the body-length / keyword check above:" >&2
+      echo "" >&2
+      echo "  - The cron is '* * * * *' (every minute); ticks fire continuously" >&2
+      echo "  - When the agent operates correctly, each substantive tick produces a shard" >&2
+      echo "  - Repeated 'standing by' / minimal-acknowledgment chat output WITHOUT writing shards IS the failure mode" >&2
+      echo "  - Body-length check above doesn't catch this because it requires shards to exist" >&2
+      echo "  - Shard-density check (this) catches the gap structurally without needing chat-transcript scanning" >&2
+      echo "" >&2
+      echo "  Per memory/feedback_never_idle_speculative_work_over_waiting.md 2026-05-02 refinement:" >&2
+      echo "  proper-order backlog work is available; default-to-standing-by IS the no-op-cadence" >&2
+      echo "  failure mode. Pick a P0/P1 row by depends_on graph + tier; populate depends_on as" >&2
+      echo "  on-demand backfill if missing. Best-guesses-with-time, no rush." >&2
+      echo "" >&2
+      echo "  Run with NO_OP_CHECK_GAP_MINUTES=99 to silence; the default surfaces the gap" >&2
+      echo "  at decision-time so the agent can re-enter productive cadence." >&2
+
+      # Informational warning; does not exit non-zero
+    fi
+  else
+    echo "[no-op-check] Could not parse latest shard timestamp '${LATEST_PRIMARY}'; gap-check skipped." >&2
+  fi
+else
+  echo "[no-op-check] No latest-shard primary key available; gap-check skipped." >&2
 fi
 
 exit 0
