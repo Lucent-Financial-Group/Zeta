@@ -117,6 +117,128 @@ jobs:
         env:
           GH_EVENT: ${{ github.event_name }}
 
+  # F# / .NET path filter for build-and-test step-gating (B-0125).
+  #
+  # PR docs-only PRs (touching only docs/**, memory/**, openspec/**,
+  # *.md at root, etc.) do NOT need to run F# install + dotnet build
+  # + dotnet test — those steps take 5-10 minutes per OS-leg and
+  # produce no signal on doc-only changes. This job emits a single
+  # boolean `code` indicating whether code-substrate paths were
+  # touched; build-and-test gates its expensive steps on it.
+  #
+  # Required-status-check compatibility: build-and-test STILL RUNS
+  # on docs-only PRs (so the required check name is reported as
+  # passing); only the heavy steps inside it are skipped. This avoids
+  # tripping `code_quality severity:all` which reads skipped jobs as
+  # failure rather than success.
+  #
+  # Default safety: any non-PR event (push to main, merge_group,
+  # workflow_dispatch — no `schedule:` trigger is currently configured)
+  # gets `code=true` via the fast-path step (no checkout needed).
+  # Path-filter is a per-PR optimization, never a path that hides
+  # a code change from main-tip CI.
+  #
+  # Job output composition (per Copilot review on PR #1185, 2026-05-02):
+  # - Non-PR events: fast-path step `nonpr` writes `code=true` without
+  #   any checkout — saves the full-history fetch on every push to main
+  #   and every merge_group run.
+  # - Pull-request events: checkout + git diff base..head + classify
+  #   per the path-list below; `detect` step writes `code=true|false`.
+  # - Job output `code` resolves via `||` to whichever step ran
+  #   (GH Actions falsy-string fallback).
+  path-filter:
+    name: path filter
+    runs-on: ubuntu-24.04
+    # 5 min covers the full-history checkout (`fetch-depth: 0`) on
+    # slow runners. The non-PR fast path runs in ~5 sec without any
+    # checkout, well under the cap.
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.detect.outputs.code || steps.nonpr.outputs.code }}
+    steps:
+      # Fast-path for non-PR events: emit code=true without cloning
+      # the repo. Push-to-main / merge_group / workflow_dispatch all
+      # take this path — preserves the per-PR-optimization invariant
+      # (path-filter is never the mechanism that hides a code change
+      # from main-tip CI).
+      - id: nonpr
+        if: github.event_name != 'pull_request'
+        shell: bash
+        env:
+          GH_EVENT: ${{ github.event_name }}
+        run: |
+          echo "Event ${GH_EVENT} (not pull_request) — emitting code=true (full build), no checkout needed."
+          echo "code=true" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # Need both PR base and head shas for git diff. fetch-depth: 0
+          # gets full history; the 5-minute job timeout above is sized
+          # for this on slow runners.
+          fetch-depth: 0
+
+      - id: detect
+        if: github.event_name == 'pull_request'
+        shell: bash
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          # Diff base..head of the PR to enumerate changed files.
+          CHANGED=$(git diff --name-only "${PR_BASE_SHA}" "${PR_HEAD_SHA}")
+          echo "Changed files in PR:"
+          # Two-space indent each line via parameter expansion (pure
+          # bash; SC2001-clean — no `sed s/^/  /` shell-out).
+          INDENTED=${CHANGED//$'\n'/$'\n'  }
+          echo "  ${INDENTED}"
+
+          # Pure-docs surfaces never trigger the F# build/test path:
+          #   docs/**       — repo documentation (incl. backlog/, hygiene-history/, research/)
+          #   memory/**     — in-repo memory files
+          #   openspec/**   — behavioral specs (no F# touch)
+          #   *.md at root  — README, AGENTS, GOVERNANCE, CLAUDE.md, etc.
+          #   .claude/**    — skill / agent / rule definitions (text only)
+          #   .github/ISSUE_TEMPLATE, .github/PULL_REQUEST_TEMPLATE — text only
+          #   .gitignore / .gitattributes — text only
+          #   *.txt / LICENSE — text only
+          #
+          # Anything else (incl. src/**, tests/**, tools/**, *.fs, *.fsproj,
+          # *.csproj, .github/workflows/**, global.json, Directory.Packages.props,
+          # Zeta.sln, .config/dotnet-tools.json) flips code=true.
+          HAS_CODE="false"
+          while IFS= read -r f; do
+            [ -z "${f}" ] && continue
+            case "${f}" in
+              docs/*|memory/*|openspec/*|.claude/*|.github/ISSUE_TEMPLATE/*|.github/PULL_REQUEST_TEMPLATE.md|.github/copilot-instructions.md)
+                ;;
+              .gitignore|.gitattributes|LICENSE|*.txt)
+                ;;
+              *.md)
+                # Root-level markdown (README, AGENTS, GOVERNANCE,
+                # CLAUDE.md, etc.) — non-build surface.
+                case "${f}" in
+                  */*) HAS_CODE="true" ;;  # under a subdir we don't recognize as docs-only
+                  *) ;;                     # at repo root → docs surface
+                esac
+                ;;
+              *)
+                HAS_CODE="true"
+                ;;
+            esac
+          done <<< "${CHANGED}"
+
+          if [ "${HAS_CODE}" = "true" ]; then
+            echo "Code-substrate path touched — emitting code=true (full build)."
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Docs-only PR — emitting code=false (skip F# install/build/test)."
+            echo "code=false" >> "$GITHUB_OUTPUT"
+          fi
+
   build-and-test:
     # Final runner matrix (maintainer ask 2026-04-24): symmetric
     # across AceHack fork and LFG canonical — same legs run everywhere.
@@ -171,7 +293,7 @@ jobs:
     # workflow_dispatch run all three.
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
-    needs: matrix-setup
+    needs: [matrix-setup, path-filter]
     # Windows legs are experimental until tools/setup/install.ps1
     # exists; mark them non-blocking so initial failures don't gate
     # per-merge runs. Linux + macOS legs are blocking.
@@ -182,9 +304,28 @@ jobs:
         os: ${{ fromJson(needs.matrix-setup.outputs.os) }}
     runs-on: ${{ matrix.os }}
 
+    # Path-filter step-gating (B-0125 / 2026-05-02): when the PR
+    # touches only docs/memory/openspec/etc., the heavy F# install +
+    # dotnet build + dotnet test steps below are skipped. The job
+    # itself still runs (status check name reports green) so
+    # required-status-checks and `code_quality severity:all` see
+    # success rather than "skipped". Cache + checkout steps are
+    # cheap and unconditional. See `path-filter` job above for the
+    # detection logic.
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Path-filter result (B-0125)
+        shell: bash
+        env:
+          CODE_PATH: ${{ needs.path-filter.outputs.code }}
+        run: |
+          if [ "${CODE_PATH}" = "true" ]; then
+            echo "Path filter: code=true — running full F# build/test."
+          else
+            echo "Path filter: code=false — docs-only PR, will skip F# install/build/test steps."
+          fi
 
       # Cache keys include `runner.arch` in addition to `runner.os` so
       # Linux x64 (ubuntu-24.04, ubuntu-slim) and Linux arm64
@@ -247,16 +388,27 @@ jobs:
         # verifier jars. shellenv.sh emits BASH_ENV into $GITHUB_ENV
         # so every subsequent bash `run:` step auto-sources the
         # managed shellenv file (SQLSharp-proven pattern).
+        if: needs.path-filter.outputs.code == 'true'
         run: ./tools/setup/install.sh
 
       - name: Build (0 Warning(s) / 0 Error(s) required)
         # BASH_ENV (set by shellenv.sh during the install step) has
         # already pointed this shell at the managed shellenv file;
         # no explicit source needed.
+        if: needs.path-filter.outputs.code == 'true'
         run: dotnet build Zeta.sln -c Release
 
       - name: Test
+        if: needs.path-filter.outputs.code == 'true'
         run: dotnet test Zeta.sln -c Release --no-build --verbosity normal
+
+      - name: Skipped (docs-only PR)
+        # Status-check passthrough: when the path filter said code=false,
+        # the job still completes successfully so required-status-checks
+        # see green. This step is the visible signal that the F# build
+        # was skipped intentionally.
+        if: needs.path-filter.outputs.code != 'true'
+        run: echo "build-and-test skipped on docs-only PR (B-0125 path-filter)."
 
   lint:
     # Semgrep runs every rule in `.semgrep.yml` — 14+ custom rules
