@@ -7,7 +7,8 @@ tier: hygiene-tooling
 effort: S
 ask: Aaron 2026-04-26 — *"this is like the python smell but with python and this one had a real cost it forgot to ignore upstram so it took like a minute to run instead of a few seconds, if it was cononalized in code like in ../scratch it would never forget to exclude directoris like our references"*. The bash pipeline `markdownlint-cli2 "**/*.md" | grep -E 'MD[0-9]{3}'` I composed inline lacked proper repo-aware exclusions for vendored / mirrored directories, ran ~60s instead of expected ~3s. Same Otto-346 pattern (recurring inline composition = missing substrate primitive). Per B-0015 P2 priority bump: target is TypeScript via Bun, not bash and not Python.
 created: 2026-04-26
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, B-0015, B-0027, B-0028, B-0031, tools/hygiene/fix-markdown-md032-md026.py]
 tags: [otto-346, recurring-pattern, missing-primitive, tooling-extraction, markdownlint, repo-aware-exclusions, real-cost, typescript, ts-migration]
 ---

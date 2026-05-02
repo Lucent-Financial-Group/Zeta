@@ -4,7 +4,8 @@ priority: P3
 status: open
 title: BFT-resistance theorem for Aurora — composed-CRDT-plus-consensus formal guarantee
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0138 — BFT-resistance theorem for Aurora

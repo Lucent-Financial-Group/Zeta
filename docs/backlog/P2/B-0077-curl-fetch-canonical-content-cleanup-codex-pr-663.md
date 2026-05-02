@@ -6,7 +6,8 @@ title: tools/setup/common/curl-fetch.sh canonical-content cleanup — Codex P0/P
 effort: S
 ask: address Codex P0 (docstring with `curl ... | sh` examples) + P1 (commentary about install paths is inaccurate) on AceHack first, then forward-sync to LFG
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 tags: [pr-663, codex, deferred, acehack-canonical, curl-fetch, install-hardening]
 ---
 

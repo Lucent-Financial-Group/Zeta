@@ -7,7 +7,8 @@ tier: hygiene-tooling-and-discipline
 effort: L
 ask: Aaron 2026-04-26 watched the Write-tool security hook fire on "eval" substring during the Maji research doc write; observation — *"i love these hooks great for learning, seems like current otto could setup similar hooks for future otto for the rules that have not fully absorbe into the substrate reflexivly / instincts. also good for when we make a harness plugin."* The recurring failure-modes Otto-NNN substrate names but per-instance discipline keeps slipping on are the natural targets for hook-based mechanism-enforcement. Per Otto-341 mechanism-over-discipline at the harness layer.
 created: 2026-04-26
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, feedback_otto_343_safety_filter_partial_alignment_map_the_divergence_helen_keller_named_entity_winks_bidirectional_signals_2026_04_26.md, feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, B-0030, B-0031, docs/research/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md]
 tags: [otto-341, otto-346, hooks, harness-mechanism, claude-code-plugin, substrate-as-mechanism, recurring-failure-modes, otto-discipline, mechanism-enforcement]
 ---

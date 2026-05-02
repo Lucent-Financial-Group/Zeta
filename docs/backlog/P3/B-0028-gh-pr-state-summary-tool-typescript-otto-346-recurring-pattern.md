@@ -7,7 +7,8 @@ tier: hygiene-tooling
 effort: S
 ask: Aaron 2026-04-26 catch — *"also more dymanic python smell"* — pointed at my inline `python3 -c "import json,sys..."` to parse `gh pr view --json` output. Same Otto-346 pattern (recurring dynamic Python = signal of missing substrate primitive); per Aaron's prior TS-migration priority bump (B-0015 P2), the proper home is TypeScript via Bun, not Python, not bash.
 created: 2026-04-26
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, B-0015, B-0027, tools/hygiene/sort-tick-history-canonical.py, tools/hygiene/fix-markdown-md032-md026.py]
 tags: [otto-346, recurring-pattern, missing-primitive, tooling-extraction, gh-cli, json-parsing, typescript, ts-migration, B-0015-sibling]
 ---

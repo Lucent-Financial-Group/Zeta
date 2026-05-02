@@ -6,7 +6,8 @@ title: JVM language preference — Kotlin > Scala > Java; sweep fallout when JVM
 effort: S-per-fallout
 ask: future-direction substrate; trigger sweep when JVM code touches the repo
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 tags: [jvm, kotlin, scala, java, language-preference, alloy-runner, future-direction]
 ---
 

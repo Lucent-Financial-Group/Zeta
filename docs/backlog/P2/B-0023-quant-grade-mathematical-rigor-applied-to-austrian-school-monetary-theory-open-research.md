@@ -8,7 +8,8 @@ effort: XL
 ask: Aaron 2026-04-25 ("we are going to find out and let the world know lol, everything we do is open source lol like in real time")
 # Note: schema field renamed `directive:` → `ask:` per Otto-293 (one-way "directive" language). Other rows still use `directive:`; serialized rename across schema is owed-work per Otto-244 (rename cascades OK if right long-term + careful).
 created: 2026-04-25
-last_updated: 2026-04-25
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md, docs/aurora/**]
 tags: [aurora, economics, austrian-school, quant, mathematical-rigor, open-research, real-time-publishing]
 ---

@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: RX (Research eXperience) researcher persona — meta-research on the research process
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0151 — RX (Research eXperience) researcher persona

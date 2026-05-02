@@ -7,7 +7,8 @@ tier: factory-tooling
 effort: S
 ask: maintainer Aaron 2026-04-28 (SASTID alert investigation — speculation-vs-evidence + do-the-right-long-term-thing corrections)
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 tags: [aaron-2026-04-28, scorecard, sastid, codeql, path-gate, do-the-right-long-term-thing, mostly-implemented, verify-only, P3-downgraded-from-P1-on-finding-already-done]
 ---
 

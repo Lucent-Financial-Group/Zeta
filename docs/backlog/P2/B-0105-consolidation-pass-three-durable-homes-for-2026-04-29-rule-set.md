@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: M
 ask: Multi-AI synthesis packet round 4 (Amara 2026-04-29 — "no new conceptual substrate until a consolidation pass maps each new rule to a durable home")
 created: 2026-04-29
-last_updated: 2026-04-29
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [B-0098, B-0099, B-0100, B-0101, B-0102, B-0103, B-0104]
 tags: [consolidation, factory-hygiene, durable-home-discipline, p2, blocks-new-substrate]
 ---

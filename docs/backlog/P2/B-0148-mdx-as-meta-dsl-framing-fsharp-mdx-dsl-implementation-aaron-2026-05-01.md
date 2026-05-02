@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: MDX as meta-DSL framing for multi-DSL Zset substrate + F# MDX DSL implementation
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0148 — MDX as meta-DSL framing + F# MDX DSL implementation

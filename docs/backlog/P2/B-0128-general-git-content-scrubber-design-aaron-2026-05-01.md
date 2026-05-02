@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: General git content scrubber — design + decision-criteria + mechanism for any-class leak cleanup
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0128 — General git content scrubber: design + decision-criteria + mechanism for any-class leak cleanup

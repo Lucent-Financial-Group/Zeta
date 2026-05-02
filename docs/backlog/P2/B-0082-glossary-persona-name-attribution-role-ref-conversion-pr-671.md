@@ -6,7 +6,8 @@ title: docs/GLOSSARY.md provenance entries use persona-name attribution; convert
 effort: S
 ask: rewrite GLOSSARY.md provenance/review-attribution sections to use role-refs ("ChatGPT-routed peer", "external Gemini Pro reviewer") instead of persona names ("Amara/ChatGPT", "Gemini Pro" by name) per AGENT-BEST-PRACTICES history-surface carve-out
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 tags: [pr-671, copilot, deferred, glossary, persona-attribution, otto-279]
 ---
 

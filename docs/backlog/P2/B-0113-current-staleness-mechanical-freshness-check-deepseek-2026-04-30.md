@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: S
 ask: Deepseek peer review 2026-04-30 — the same-tick CURRENT-update discipline currently relies on agent memory of whether the rule fired. A 4-day staleness gap on `memory/CURRENT-aaron.md` was caught only because Deepseek flagged it during peer review, not by mechanism. The rule needs a mechanical trigger.
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - PR-934
   - feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md

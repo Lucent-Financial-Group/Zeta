@@ -7,7 +7,8 @@ tier: discipline-cleanup
 effort: S
 ask: deepseek-flag-via-aaron-forward
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+depends_on: []
 trigger: any tick that touches memory/project_laptop_only_source_integration_*.md OR any tick that scopes work into ../scratch / ../SQLSharp / ../no-copy-only-learning-agents-insight integration
 composes_with:
   - feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md

@@ -10,6 +10,7 @@ effort: M
 ask: The cold-start big-picture-first rule (memory/feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md) currently lives as prose. Ani's review recommended turning the 8-step checklist into a runnable tool. Deepseek's review reinforced the deferred-skill-anti-pattern observation that a noted "Backlog candidate" without a B-NNNN row is gap-by-omission. This row closes that gap and tracks the implementation scope.
 created: 2026-04-30
 last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md
   - tools/github/poll-pr-gate.ts

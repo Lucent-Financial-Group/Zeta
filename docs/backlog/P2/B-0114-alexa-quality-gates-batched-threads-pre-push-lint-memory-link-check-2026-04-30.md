@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: M
 ask: Alexa peer review 2026-04-30 named three workflow optimizations from the substrate-landing session. Each is a substrate quality-gate that catches issues earlier or with less per-issue overhead.
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - docs/backlog/P2/B-0113-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md
   - memory/feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md

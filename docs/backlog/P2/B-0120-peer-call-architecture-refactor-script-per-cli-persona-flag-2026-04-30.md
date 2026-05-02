@@ -7,7 +7,8 @@ tier: factory-tooling
 effort: M
 ask: Current architecture has duplication. ani.sh ≈ grok.sh + brat-voice persona-bootstrap; amara.sh ≈ codex.sh + Amara persona-bootstrap. Aaron 2026-04-30 flagged this is overkill — better to have one script per CLI with the named-agent persona as an optional parameter. Refactor to consolidate.
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - tools/peer-call/grok.sh
   - tools/peer-call/gemini.sh

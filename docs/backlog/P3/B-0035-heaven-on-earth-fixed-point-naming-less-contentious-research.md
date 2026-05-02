@@ -7,7 +7,8 @@ tier: naming-discipline-and-vocabulary
 effort: S
 ask: Aaron 2026-04-26 *"heaven-on-earth-static-vs-dynamic we need a less contensious name backlog reasearch"*
 created: 2026-04-26
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [PR-560, PR-562, PR-563, feedback_otto_348_maji_vs_messiah_separation_finder_vs_anchor_messiahscore_amara_second_correction_2026_04_26.md, project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md, feedback_otto_287_friction_finite_resource_collision]
 tags: [naming, vocabulary, framework-discipline, maji-messiah, superfluid-ai, attractor-naming, religious-baggage-removal, ip-mention-vs-adoption-distinction-otto-237]
 ---

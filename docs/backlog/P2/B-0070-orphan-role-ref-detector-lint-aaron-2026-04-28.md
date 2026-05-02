@@ -9,6 +9,7 @@ effort: M
 ask: maintainer Aaron 2026-04-28 /btw aside
 created: 2026-04-28
 last_updated: 2026-05-02
+depends_on: []
 tags: [hygiene-lint, name-attribution, otto-279, current-state-surfaces]
 ---
 

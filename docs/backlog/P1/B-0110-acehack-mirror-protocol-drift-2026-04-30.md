@@ -7,7 +7,8 @@ tier: drift-resolution
 effort: S
 ask: Decision landed 2026-04-30 — Path 2 (PR-based mirror; ruleset stays canonical). CLAUDE.md updated in same commit.
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+depends_on: []
 decided_by: maintainer-delegated 2026-04-30 (Path 2 of three originally surfaced; rationale in Decision section below)
 composes_with: [B-0109]
 tags: [doctrine-drift, acehack, mirror-refresh, branch-protection, host-vs-doctrine, decided]

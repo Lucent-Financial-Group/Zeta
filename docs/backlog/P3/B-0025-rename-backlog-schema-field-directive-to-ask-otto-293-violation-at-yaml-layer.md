@@ -7,7 +7,8 @@ tier: hygiene-and-discipline
 effort: M
 ask: Aaron 2026-04-25 (caught the "directive:" YAML field on B-0023 — "still sneaking in that one way langage")
 created: 2026-04-25
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [docs/backlog/**, docs/AGENT-BEST-PRACTICES.md, .github/workflows/]
 tags: [otto-293, schema, rename, mutual-alignment-language, backlog-hygiene]
 ---

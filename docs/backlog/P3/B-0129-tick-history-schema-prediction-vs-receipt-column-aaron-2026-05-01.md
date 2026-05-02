@@ -4,7 +4,8 @@ priority: P3
 status: open
 title: Tick-history shard schema — add prediction-vs-receipt distinction (option c from prefab-shard matrix)
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0129 — Tick-history shard schema: prediction-vs-receipt column distinction

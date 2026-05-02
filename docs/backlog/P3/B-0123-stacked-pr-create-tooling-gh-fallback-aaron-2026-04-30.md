@@ -7,7 +7,8 @@ tier: factory-tooling
 effort: S
 ask: When opening PR #977 stacked on PR #975's branch (instead of main), `gh pr create --base tooling/check-tick-history-shard-schema-prevent-col1-drift-2026-04-30` failed with `GraphQL: Head sha can't be blank, Base sha can't be blank, No commits between ... Base ref must be a branch (createPullRequest)`. The fallback was to base on main with a stacking note in the body. The "stacked PR" workflow is real but `gh` treats it as exotic and produces an unhelpful error path. Fix candidates — a thin tools/git/stacked-pr-create.{sh,ts} wrapper, OR a docs/best-practices/stacked-prs.md note explaining the fallback, OR an upstream-feedback issue to cli/cli per the upstream-contribution discipline.
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - tools/git/
   - docs/best-practices/

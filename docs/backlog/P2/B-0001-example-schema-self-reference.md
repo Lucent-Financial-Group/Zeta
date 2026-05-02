@@ -7,7 +7,8 @@ tier: research-grade
 effort: S
 ask: maintainer Otto-181 (BACKLOG split Phase 1a)
 created: 2026-04-24
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: []
 tags: [backlog-schema, example, phase-1a]
 ---

@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: TimeSeries DB native-in-Zsets multi-DSL integration research (metrics-are-our-eyes)
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0147 — TimeSeries DB native-in-Zsets multi-DSL integration research

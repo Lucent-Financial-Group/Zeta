@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: Prometheus MCP integration + promtool — factory agents direct-query observability
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0149 — Prometheus MCP integration + promtool

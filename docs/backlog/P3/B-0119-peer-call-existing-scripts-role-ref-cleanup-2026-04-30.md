@@ -7,7 +7,8 @@ tier: factory-hygiene
 effort: S
 ask: Codex flagged on PR #962 that ani.sh had named-attribution ("Aaron 2026-04-30", "Aaron's") in violation of copilot-instructions.md 305-362 + Otto-279 (code/docs/skills outside history surfaces use role-refs). Fix landed for ani.sh + CURRENT-amara.md. The same pattern exists in the four sibling peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) but wasn't flagged for those because Codex was reviewing the PR diff. Closes the deferred-skill-anti-pattern by tracking the cleanup explicitly.
 created: 2026-04-30
-last_updated: 2026-04-30
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - tools/peer-call/grok.sh
   - tools/peer-call/gemini.sh

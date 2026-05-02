@@ -4,7 +4,8 @@ priority: P2
 status: open
 title: CRDT-composition for BFT propagation — substrate events as composed CRDTs
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0132 — CRDT-composition for BFT propagation

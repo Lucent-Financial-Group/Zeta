@@ -6,7 +6,8 @@ title: Narrow markdownlint carve-out from `docs/research/2026-*-*.md` to verbati
 effort: S
 ask: narrow .markdownlint-cli2.jsonc ignore pattern to exclude only verbatim ferry absorbs, not all date-prefixed research docs
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 tags: [pr-663, codex, deferred, acehack-canonical, markdownlint]
 ---
 

@@ -7,7 +7,8 @@ tier: security-research
 effort: L
 ask: Aaron 2026-04-25 ("red team during game days will need a library of code, tools, skills eventually too, CTF would be one sided without it")
 created: 2026-04-25
-last_updated: 2026-04-26
+last_updated: 2026-05-02
+depends_on: []
 composes_with: []
 tags: [security, red-team, offensive-security, ctf, game-days, blue-team-balance, responsible-use]
 ---

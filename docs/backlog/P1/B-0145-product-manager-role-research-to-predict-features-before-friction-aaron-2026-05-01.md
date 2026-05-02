@@ -4,7 +4,8 @@ priority: P1
 status: open
 title: Product Manager (PM-2) role — research-to-predict-features-before-friction
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0145 — Product Manager (PM-2) role — research-to-predict-features-before-friction

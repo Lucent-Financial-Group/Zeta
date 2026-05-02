@@ -7,7 +7,8 @@ tier: install-path-supply-chain
 effort: M
 ask: codex P0 review on PR #75 (5 threads on tools/setup/common/curl-fetch.sh, macos.sh, linux.sh, elan.sh) flagging that even bare `curl --retry` can retry after bytes are written to stdout, leaving the shell consumer with partial+full concatenated script content. PR #75 immediate fix: drop --retry from `curl_fetch_stream` entirely. This row tracks the structurally safe replacement.
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 composes_with: [B-0060]
 tags: [install-path, supply-chain, upstream-installers, codex-p0, pr-75, streaming-vs-buffered, checksum]
 ---

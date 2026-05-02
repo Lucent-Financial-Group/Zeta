@@ -7,7 +7,8 @@ tier: factory-tooling
 effort: M
 ask: maintainer Aaron 2026-04-28 (autonomous-loop ROM-drop + canonical-naming request)
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 tags: [aaron-2026-04-28, roms, atari-2600, tosec, good-tools, canonical-naming, datfile, license-safety, gitignore-already-protects, high-priority-after-0-0-0, scheduled-after-0-0-0]
 ---
 

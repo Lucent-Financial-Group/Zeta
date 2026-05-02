@@ -6,7 +6,8 @@ title: Normalize MEMORY.md index entry lengths to one-line-per-memory per memory
 effort: M
 ask: copilot review on PR #72 (memory/MEMORY.md line 16)
 created: 2026-04-28
-last_updated: 2026-04-28
+last_updated: 2026-05-02
+depends_on: []
 tags: [memory-hygiene, memory-md, index-format, substrate-cleanup]
 ---
 

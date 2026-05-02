@@ -4,7 +4,8 @@ priority: P1
 status: open
 title: Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0139 — Pre-substrate Kenji-era inventory

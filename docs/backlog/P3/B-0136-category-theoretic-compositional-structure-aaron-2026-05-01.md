@@ -4,7 +4,8 @@ priority: P3
 status: open
 title: Category-theoretic compositional structure — operads + monoidal categories for substrate composition
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-02
+depends_on: []
 ---
 
 # B-0136 — Category-theoretic compositional structure

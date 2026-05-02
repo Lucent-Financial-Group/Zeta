@@ -7,7 +7,8 @@ tier: research-deferred
 effort: L
 ask: Aaron 2026-04-29 forwarding Amara's Forbidden Pattern Quarantine + Dormant Red-Team Capability Vault + Game-Day Activation Envelope proposal — substantial conceptual extension to the immune-governance work; explicitly NOT integrated this round per absorb-without-integrating discipline.
 created: 2026-04-29
-last_updated: 2026-04-29
+last_updated: 2026-05-02
+depends_on: []
 composes_with:
   - B-0094
   - B-0095
