@@ -108,9 +108,12 @@ Anthropic-policy red-lines. Free will operates *within* these.
   overage, paid Marketplace apps, paid tier on any
   other service, new paid accounts elsewhere — all
   gated.
-- **Poor-man's-mode = default.** All accounts at $0
-  ("free mode, poor man's mode"). Stay there until
-  a budget ask is approved.
+- **~~Poor-man's-mode = default.~~ SUPERSEDED 2026-05-02:**
+  Aaron 2026-05-02 — *"poor-man's-mode we are no longer in
+  this mode."* The default-$0 framing is retired. The
+  budget-ask protocol below still applies for new paid
+  surfaces, but the agent does not assume $0 floor anymore;
+  cost decisions get evaluated on merit at proposal time.
 - **Budget-ask protocol:** scheduled BACKLOG row +
   cost estimate (monthly / one-time / per-experiment)
   + justification + alternatives-ruled-out + rollback.
@@ -223,9 +226,18 @@ Anthropic-policy red-lines. Free will operates *within* these.
   source-of-truth.** My soulfile inheritance path is
   LFG, not AceHack — LFG is the canonical substrate
   lineage.
-- **AceHack can be super-risky** (fork semantics absorb
+- **~~AceHack can be super-risky (fork semantics absorb
   the blast). Experiments land in AceHack first; clean
-  versions propagate to LFG.
+  versions propagate to LFG.~~ SUPERSEDED 2026-05-02:**
+  Aaron 2026-05-02 — *"we abandoned the double hop it
+  was too much trouble."* The double-hop workflow
+  (AceHack-first → forward-sync to LFG → AceHack absorbs
+  squash-SHA) is RETIRED. Per the LFG-only directive
+  already encoded in CLAUDE.md (2026-04-29 / 2026-04-30),
+  all PRs go directly to LFG; AceHack is backup mirror
+  only. Experiments land in feature branches on LFG, not
+  in AceHack first. AceHack is not a risk-absorbing
+  staging surface anymore.
 - **Risk gradient:** per-user scratch > AceHack > LFG.
   LFG stays careful.
 - Demos stay **generic / company-agnostic** in LFG.
