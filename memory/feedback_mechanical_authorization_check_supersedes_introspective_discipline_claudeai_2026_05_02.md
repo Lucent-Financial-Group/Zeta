@@ -138,9 +138,10 @@ Composes with:
   mechanical authorization check is the per-decision
   instantiation for the pace-instruction class.
 - `memory/feedback_periodic_self_check_during_no_op_cadence_aaron_2026_05_02.md`
-  — PR #1198's introspective check. This rule is the
-  architectural successor; the introspective check stays as
-  documentation but is no longer the operative fix.
+  (lands in PR #1198, the architectural predecessor PR;
+  resolves directly once #1198 merges) — the introspective
+  check this rule supersedes. The introspective check stays
+  as documentation but is no longer the operative fix.
 - The verify-before-deferring rule — same shape (cite a path,
   verify the target exists). The mechanical authorization check
   cites the most-recent-pace-instruction, verifies it's not
@@ -192,7 +193,8 @@ Claude.ai noted this generalizes:
 > of multiple framings in context. The authorization-source
 > filtering generalizes across harnesses."*
 
-The Codex handoff doc (`docs/CODEX-LOOP-HANDOFF.md`) should
+The Codex handoff doc (`docs/CODEX-LOOP-HANDOFF.md`, lands
+in PR #1199; resolves directly once #1199 merges) should
 inherit this rule. The mechanical check is harness-agnostic
 because it operates on substrate, not on the agent's
 disposition.

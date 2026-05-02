@@ -1,26 +1,22 @@
 # Claude.ai 2026-05-02 — mechanical authorization check supersedes introspective discipline
 
-**Scope:** Architectural correction to PR #1198 (the no-op-cadence
+Scope: Architectural correction to PR #1198 (the no-op-cadence
 periodic-self-check memory file + CLAUDE.md bullet). Claude.ai
 diagnoses that PR #1198 lands documentation but misses the
 operative fix; the actual fix is a mechanical authorization-source
 filter, not introspective grading.
 
-**Attribution:** Claude.ai (the human maintainer's other
+Attribution: Claude.ai (the human maintainer's other
 Anthropic-side instance, distinct from the Claude Code instance
 that landed PR #1198). Delivered verbatim 2026-05-02 via the
 human maintainer as courier. Catcher: the human maintainer.
 
-**Operational status:** Research-grade preservation. The packet
-is doctrine-superseding for PR #1198's framing; the operative
-substrate landings (memory file + skill build) follow in
-companion PRs. Not yet enforced; the mechanical-check skill
-proposal is a backlog row, not a shipped tool.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** Claude.ai's voice is preserved
-verbatim below. Otto's interpretation + the architectural-
-correction memory file land in companion artifacts. The two
-voices remain distinct.
+Non-fusion disclaimer: Claude.ai's voice is preserved
+verbatim below. The interpretation + architectural-correction
+memory file land in companion artifacts (factory voice). The
+two voices remain distinct.
 
 ---
 
@@ -243,8 +239,9 @@ voices remain distinct.
 ## Companion landings
 
 - Memory file: `memory/feedback_mechanical_authorization_check_supersedes_introspective_discipline_claudeai_2026_05_02.md`
-- Backlog row (skill build): TBD — to be filed under
-  `docs/backlog/P0/` for the pace-instruction-resolver skill.
+- Backlog row (skill build): `docs/backlog/P0/B-0160-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md`
+  — landed in this same PR; tracks the build sequencing for
+  the pace-instruction-resolver skill.
 - PR #1198 status: lands as documentation; this packet is the
   architectural successor for the operative fix.
 
