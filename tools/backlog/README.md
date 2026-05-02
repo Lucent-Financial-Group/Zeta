@@ -41,6 +41,7 @@ effort: L
 ask: maintainer Otto-180
 created: 2026-04-24
 last_updated: 2026-04-24
+depends_on: []
 composes_with:
   - B-0031
   - B-0038
@@ -65,6 +66,7 @@ tags: [game-industry, sharding, multi-node]
 | `ask`          | no       | string       | Origin reference; e.g. `maintainer Otto-180`, `Amara 18th ferry #4`. Per Otto-293 mutual-alignment language ("ask" not "directive"). |
 | `created`      | yes      | YYYY-MM-DD   | First-landing date. |
 | `last_updated` | yes      | YYYY-MM-DD   | Updated on every content edit. |
+| `depends_on`   | no       | list of `B-NNNN` | Hard prerequisite ordering (this row cannot land until each listed row lands). Distinct from `composes_with` (which is bidirectional cross-reference, not ordering). Empty list `[]` = no known dependencies. Backfill-discipline: incremental on-demand as rows are touched (Aaron 2026-05-02 backfill thesis). Graph-traversal field; not surfaced in `BACKLOG.md` index. |
 | `composes_with`| no       | list of `B-NNNN` | Cross-references; strict-lint-candidate Phase-2+. |
 | `tags`         | no       | list of string | Free-form. Examples: `multi-node`, `dst`, `ui-rename`. |
 
