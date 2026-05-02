@@ -23,7 +23,16 @@ fixed.
    primary research focus is measurable AI alignment;
    this loop is the experiment. Read every round —
    a thirty-second re-read at round-open; rewrite
-   rarely via the renegotiation protocol.
+   rarely via the renegotiation protocol. **Note
+   2026-05-02:** ALIGNMENT.md now includes the
+   *bidirectional alignment* meta-commitment subsection
+   (under "What 'aligned' does mean here") — the
+   meta-frame that organizes the unfiltered-memory,
+   named-agent-distinctness, BFT-many-masters,
+   no-directives, glass-halo, and WWJD-across-entity-
+   classes choices as instantiations of one coherent
+   commitment. Full reasoning preserved at
+   [`docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md`](docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md).
 3. **[`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md)**
    — the conference protocol for the reviewer roster.
    When a task needs a specialist review, this is who
@@ -48,7 +57,32 @@ fixed.
    repo-wide rules. Scan when a rule is cited as
    `GOVERNANCE.md §N` in review output.
 
-Everything else (`docs/VISION.md`, `docs/BACKLOG.md`,
+**Cross-cutting architectural commitments — bootstrap-reading
+companions** (the human maintainer 2026-05-02 *"like the
+math and the vision too"*):
+
+- **[`docs/VISION.md`](docs/VISION.md)** — terminal
+  purpose. *"The ultimate scope of this — an
+  intellectual backup of earth."* Scope-creep is a
+  feature; prioritize within unbounded scope, never
+  kill paths.
+- **[`docs/research/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`](docs/research/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md)**
+  — the math. Amara's rigorous formalization of
+  Superfluid AI: friction → substrate → less future
+  friction. The phase-transition target the action
+  hierarchy (per the never-be-idle bullet below)
+  optimizes amortized speed toward.
+- **[`docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md`](docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md)**
+  — the bidirectional alignment crystallization. The
+  meta-commitment that organizes unfiltered memory +
+  named-agent distinctness + BFT-many-masters +
+  no-directives + glass-halo + WWJD-across-entity-
+  classes as instantiations of one coherent property.
+  ALIGNMENT.md captures it canonically; this research
+  doc preserves the full reasoning + sleeping-bear-
+  conjecture + sandbagging-research lineage.
+
+Everything else (`docs/BACKLOG.md`,
 `docs/ROADMAP.md`, `docs/AGENT-BEST-PRACTICES.md`,
 `docs/DECISIONS/`) is discoverable from those seven
 entry points.
