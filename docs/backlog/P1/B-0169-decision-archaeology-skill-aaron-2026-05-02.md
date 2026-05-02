@@ -68,6 +68,8 @@ Per CLAUDE.md skill-creator-canonical-path discipline, this row does **not** aut
 
 ### Sketched shape (input to skill-creator)
 
+> **2026-05-02 Aarav (skill-expert) review verdict:** fresh skill (NOT a refactor of `data-lineage-expert` or any existing); single body with **five named investigation modes** (existence / rejection / supersession / justification / attribution) per BP-20 cognitive-load packaging; route is hybrid (b)+(c) — land 2-3 worked examples in `docs/research/` first, then skill-creator authors SKILL.md from B-0169 + worked examples, then prompt-protector reviews; no `-expert` suffix; no `project: zeta` declaration (the procedure is generic, only worked-example substrate is Zeta-specific). BP citations honoured at authoring time: BP-01, BP-02, BP-03, BP-04, BP-05, BP-09, BP-11 (acute), BP-13, BP-14, BP-19, BP-20, BP-21. Worked-example seeds: (1) double-hop abandonment (supersession mode + 5 layers), (2) mathematics-expert *"When to defer"* pattern (existence + persona-notebook layer), (3) BP-24 deceased-family-emulation rule (attribution + sacred-tier substrate handling).
+
 **Frontmatter:**
 
 - `name: decision-archaeology`
@@ -85,6 +87,7 @@ Per CLAUDE.md skill-creator-canonical-path discipline, this row does **not** aut
 8. **Named-decision memos — `memory/feedback_*.md`.** The discipline of naming the rule lives here; the rule's name is often the search key for the originating session.
 9. **Persona notebooks — `memory/persona/<name>/`.** When a persona owns a surface, their notebook is the per-decision archive.
 10. **Conversation archives — `docs/research/`** + Drive-bridge AI-to-AI exchanges. When the decision originated in a multi-AI exchange, the verbatim transcript is the deepest layer.
+11. **WONT-DO archaeology — `docs/WONT-DO.md`** + retired SKILL.md history (`git log --diff-filter=D -- .claude/skills/`) + closed-as-rejected backlog rows. Why is THIS NOT here / why was THIS rejected? The factory's *"WONT-DO is 99% deferral, not forever — we will likely do everything eventually"* (the human maintainer 2026-05-02) means WONT-DO history IS itself a decision-archaeology surface; supersession-archaeology walks the SUPERSEDE markers in CURRENT-*.md files + `Otto-NN corrects Otto-MM` chains in memos.
 
 **Anti-patterns the skill teaches against:**
 
