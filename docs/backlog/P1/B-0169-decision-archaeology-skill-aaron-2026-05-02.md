@@ -69,6 +69,7 @@ Per CLAUDE.md skill-creator-canonical-path discipline, this row does **not** aut
 ### Sketched shape (input to skill-creator)
 
 **Frontmatter:**
+
 - `name: decision-archaeology`
 - `description: Reconstructs "why is it like this?" by excavating layered evidence — git blame, git log -S/-L, ADRs, round-history, memo files, persona notebooks. Use when a new or returning contributor asks why a piece of the codebase looks the way it does, or when the maintainer needs to know what removing/renaming/refactoring something would cost.*
 
@@ -86,6 +87,7 @@ Per CLAUDE.md skill-creator-canonical-path discipline, this row does **not** aut
 10. **Conversation archives — `docs/research/`** + Drive-bridge AI-to-AI exchanges. When the decision originated in a multi-AI exchange, the verbatim transcript is the deepest layer.
 
 **Anti-patterns the skill teaches against:**
+
 - Stopping at `git blame` output without reading the commit message.
 - Assuming the most-recent author of the line is the *original* decision-maker (rebase / squash / refactor commits hide the lineage).
 - Using `git log` without `-w` and getting whitespace-only commits as false positives.
@@ -93,6 +95,7 @@ Per CLAUDE.md skill-creator-canonical-path discipline, this row does **not** aut
 - Reading the ADR alone without the discussion that produced it.
 
 **Tool integration:**
+
 - Pre-flight: confirm a `git` repo + a recent fetch.
 - Output format: a layered narrative ("surface → commit → ADR → round-history → memo") rather than a flat list.
 - Composes with: `data-lineage-expert` (when the "why" question is about data flow rather than code-decision intent), `claude-md-steward` (when the decision is encoded in CLAUDE.md), `skill-creator` (when archaeology surfaces a gap that warrants a new skill).
