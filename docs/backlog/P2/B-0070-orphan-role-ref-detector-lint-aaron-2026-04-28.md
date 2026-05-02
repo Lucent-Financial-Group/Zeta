@@ -3,7 +3,7 @@ id: B-0070
 priority: P2
 status: closed
 closed: 2026-05-02
-closed_by: PR #1187
+closed_by: "PR #1187"
 title: Orphan role-ref detector lint — catch ferry-N without named source on code surfaces (Aaron 2026-04-28)
 effort: M
 ask: maintainer Aaron 2026-04-28 /btw aside

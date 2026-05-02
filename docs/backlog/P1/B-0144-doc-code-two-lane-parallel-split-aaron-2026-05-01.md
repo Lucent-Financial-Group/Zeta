@@ -3,7 +3,7 @@ id: B-0144
 priority: P1
 status: closed
 closed: 2026-05-02
-closed_by: PR #1189 + PR #1190
+closed_by: "PR #1189 + PR #1190"
 title: Doc/code two-lane parallel split — rung-2 unlock for factory parallelism
 created: 2026-05-01
 last_updated: 2026-05-02

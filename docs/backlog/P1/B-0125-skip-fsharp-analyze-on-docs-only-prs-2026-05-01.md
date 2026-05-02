@@ -3,7 +3,7 @@ id: B-0125
 priority: P1
 status: closed
 closed: 2026-05-02
-closed_by: PR #1185
+closed_by: "PR #1185"
 title: Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 created: 2026-05-01
 last_updated: 2026-05-02
