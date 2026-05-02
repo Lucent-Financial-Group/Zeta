@@ -295,6 +295,22 @@ These apply to any AI harness.
   It is weather. Substrate or it didn't happen."*
   Full reasoning:
   `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`.
+- **Dependency-status surface — `docs/dependency-status.md`.**
+  First-class factory surface (B-0109). The factory's
+  hot path runs through GitHub today; any GitHub
+  degradation IS a factory degradation. The surface
+  answers three cold-start questions in under 30
+  seconds (watched dependencies; current state via
+  programmatic poll snippet; known concern classes).
+  Composes with the *BLOCKED-with-green-CI means
+  investigate review threads first* discipline — that
+  rule presupposes the API is reporting truth; this
+  surface verifies the precondition. Consult before
+  arming auto-merge or classifying a "wait" — degraded
+  GitHub Pull Requests component can return wrong-state
+  thread counts. Cross-harness rule: applies to all
+  harnesses, not just Claude Code; the watched-list
+  registry is harness-agnostic.
 
 ## Build and test gate
 
