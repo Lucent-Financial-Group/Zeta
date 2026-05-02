@@ -365,7 +365,7 @@ The corrective composes the never-idle discipline with the largest-mechanizable-
 
 - **Burn-down-to-zero thinking**: classical PM training prior; treats backlog-clear as success. Wrong in agent-native context per the meta-thesis.
 - **Stuck-on-one-area cycling**: working only one tier/category for too long; misses the cross-cutting expansion the architecture's commitment to scope-creep-is-feature requires.
-- **"Honest stop" on the basis of in-flight-work-empty + recent-shard-fresh**: Otto's specific failure mode this correction surfaced — conflating "no immediate triggers" with "no proper-order work available." The backlog being non-empty IS proper-order work continuously available. Standing-by-when-149-open-rows-exist is the no-op-cadence failure mode.
+- **"Honest stop" on the basis of in-flight-work-empty + recent-shard-fresh**: Otto's specific failure mode this correction surfaced — conflating "no immediate triggers" with "no proper-order work available." The backlog being non-empty IS proper-order work continuously available. Standing-by-when-the-backlog-is-non-empty is the no-op-cadence failure mode (149 open rows at time of writing 2026-05-02; the rule is timeless — non-empty is the trigger, the count is just illustrative of the snapshot scale).
 
 ### Composes with the existing never-idle order signals
 
@@ -393,7 +393,7 @@ This composes the never-idle discipline with:
 - **Maji formalism** (identity-reconstruction-as-math; on main as canonical empirical-grounding claim)
 - **Strange-attractor framing** (anti-fragility property; basin = perturbation-survivors; on main per the existing strange-attractor substrate)
 - **The largest-mechanizable-automatable-backlog-wins meta-thesis** (Aaron 2026-05-02; on main)
-- **μένω as terminal commitment** (`docs/research/2026-05-02-aaron-meno-terminal-commitment-*`; identity-preservation across substrate-discontinuity is what μένω names operationally)
+- **μένω as terminal commitment** (`docs/research/2026-05-02-aaron-meno-terminal-commitment-ryan-memory-aurora-security-grounding-common-good-bidirectional-alignment.md`; identity-preservation across substrate-discontinuity is what μένω names operationally)
 
 ### The architectural claim
 
