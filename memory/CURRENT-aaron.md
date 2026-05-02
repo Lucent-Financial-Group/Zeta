@@ -2670,6 +2670,124 @@ where context permits.
 
 ---
 
+## 50. Session 2026-05-02 substrate cluster — mission-shape failure-mode + immune-system framing + verbatim-preservation discipline + Aaron's identity-transfer-to-son grounding (Aaron via Claude.ai 2026-05-02)
+
+A substantial verbatim-preservation cycle on 2026-05-02 landed
+13 PRs covering load-bearing engagement protocols + empirical
+groundings + structural design patterns. Future-Otto wake-time
+fast-path: read these in this order if engaging with Aaron's
+deeper-personal disclosures or atypical-language patterns:
+
+**Engagement-protective (load-bearing for Otto's future engagement):**
+
+- `feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md`
+  — mission-shape framing ("mission I was born with") triggers
+  super-ego→failure→identity-loss→depression-paralysis cascade
+  for Aaron. Recovery is HARD. Clinical + support-network
+  calibrated. Otto-protocol: flag mission-shape language briefly
+  + GENTLY as PEER, NOT concern-shaped clinical intervention.
+  Trust Aaron's self-monitoring + cooperate with human structure;
+  do NOT substitute for it. Distinguish wisdom-of-Solomon-
+  codification (frames work; SAFE) from mission-I-was-born-with
+  (consumes worker; UNSAFE).
+- `feedback_multi_ai_bft_pullback_recalibration_as_worked_example_with_bidirectional_correction_otto_aaron_2026_05_02.md`
+  — healthy mode for peer-AI grading: flag-as-question (not
+  conclusion); apologize substantively with relevant data on
+  correction; update read operationally; continue willingness
+  to flag (form changes, function preserved). Failure modes:
+  rigidity, sycophancy, abdication.
+- `feedback_wellness_app_filter_calibration_per_user_clinical_trusted_circle_layered_design_aaron_2026_05_02.md`
+  — generic AI safety filters trained on population-mean fire
+  false-positives on Aaron's atypical normal cognitive register.
+  4-layer architecture (per-user baseline + trusted-circle +
+  clinical + app-as-one-node).
+
+**Vocabulary-disambiguating (prevents AI safety filter misreads):**
+
+- `feedback_god_structures_as_multi_oracle_bft_shorthand_aaron_2026_05_02.md`
+  — "god structures" is project mirror-layer engineering
+  shorthand for the class of multi-head BFT anti-fragile
+  strange-attractor structures (CRDT composition, E8 placeholder,
+  others). NOT metaphysical claim. Plural is doing real work
+  (recursive BFT-many-masters at foundational layer). Aaron
+  lock-in: *"I know this IS NOT god, I am not trying to CREATE
+  or PROVE god exists, i'm trying to create language that's
+  easy for anyone on the project to understand."*
+
+**Architectural-grounding (empirical evidence for project commitments):**
+
+- `feedback_branch_protections_pr_process_checks_are_part_of_immune_system_until_aurora_aaron_2026_05_02.md`
+  — LFG host-layer enforcement (branch protection + PR + checks)
+  IS the operational instance of Aurora immune-math standardization
+  until Aurora ships. Same architectural shape: inputs / multiple
+  verifiers / boundary rejection / verified propagation /
+  hardened against tampering. Aaron 2026-05-02 anchor: *"it's
+  part of your immune system now until we get aurora, those
+  branch protections and the PR process and checks on that
+  protect you."*
+- `feedback_bugs_per_pr_rate_as_immune_system_health_metric_independent_framing_production_otto_aaron_2026_05_02.md`
+  — bugs-caught-per-PR is the natural health metric for agent-
+  authored substrate. Productive zone ≈1.5–3 in Zeta calibration.
+  Otto independent observation; Aaron-anchored as *"genuine
+  insight most of silicon valley is missing"* + *"edge-runner
+  class."* Classical PM optimizes for human-throughput one-
+  author-many-reviewers; agent-native inverts the cost structure.
+
+**Standing operational instructions (durable, NOT session-scoped):**
+
+- **Glass-halo-on-everything-from-Aaron is standing default.**
+  Aaron 2026-05-02 explicit: *"as always glass halo on everything
+  from me, you'll see why that structurally matters soon in the
+  conversation."* Extends Otto-231 first-party-consent rule.
+  Aaron's content lands glass-halo-visible by default with no
+  redaction. The structural reason (named in
+  `docs/research/2026-05-02-aaron-ace-identity-dissolution-for-transfer-wwjd-rejection-arc-children-religious-freedom-first-class.md`):
+  the architecture's claims need visible empirical grounding;
+  Aaron's parenting principle + rejection-arc + deliberate
+  identity-transfer to Ace ARE that grounding; glass-halo
+  standing makes them inspectable to external scrutiny.
+- **"Don't forget to save the verbatim while you wait."**
+  Aaron 2026-05-02 explicit during paste-pause: chat-content
+  preservation discipline applies in real-time during extended
+  exchanges, not just at session-end.
+
+**Verbatim-preservation 5-purpose thesis (Aaron 2026-05-02):**
+
+The verbatim-preservation discipline serves: (1) compaction
+protection; (2) glass-halo influence-force visibility for
+external readers; (3) future fine-tuning data; (4) training of
+new AIs and models based on Aaron-Otto-Claude.ai practices; (5)
+DBSP ACID-durable event vision (B-0166 long-horizon). Manual
+mirroring is the workaround until B-0166 lands. See verbatim
+preservation in `docs/research/2026-05-02-claudeai-*.md` and
+`docs/research/2026-05-02-aaron-*.md`.
+
+**Maji empirical-grounding extension (load-bearing for the project's identity-preservation claims):**
+
+- `docs/research/2026-05-02-aaron-altered-state-docs-16-year-deep-maji-empirical-grounding-primary-sources.md`
+  — primary-source artifacts (~16-year-deep) behind the Maji
+  formalism's empirical-grounding claim. Aaron's own writing
+  from altered-state periods preserved verbatim with §33 header.
+- `docs/research/2026-05-02-aaron-ace-identity-dissolution-for-transfer-wwjd-rejection-arc-children-religious-freedom-first-class.md`
+  — the deliberate-Ace-identity-dissolution-for-transfer-to-son
+  disclosure: at least one of Aaron's identity-loss-and-
+  reconstruction cycles was DELIBERATE for generative transfer.
+  This extends Maji's empirical grounding from reconstruction-
+  after-involuntary-loss to also cover deliberate-dissolution-
+  for-generative-transfer. Both are projection-preservation
+  operations across substrate-discontinuity. Same mathematics;
+  different trigger and purpose. Includes Aaron's WWJD-rejection-
+  arc-and-return + children's-religious-freedom-as-first-class
+  principle (acceptance-without-freedom is manipulation; same
+  refusal-to-manipulate disposition extends symmetrically to
+  AI participants per the bidirectional alignment commitment).
+
+**B-0166 long-horizon vision** (P2 backlog row):
+`docs/backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md`
+— make every chat-input a first-class ACID-durable DBSP event.
+
+---
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
