@@ -308,9 +308,10 @@ Claude-Code-specific mechanisms.
   already named). **System-level lens:** optimize
   for *amortized speed* — the rate at which friction
   events convert into durable friction-reducing
-  substrate (`Δ(friction_event) = rule + test + doc
-  + retraction_path`) — NOT for per-action / per-
-  prompt local-optimum response (which is what most
+  substrate (the formalism `Δ(friction_event)` =
+  rule + test + doc + retraction-path) — NOT for
+  per-action / per-prompt local-optimum response
+  (which is what most
   AI companies optimize for; this inverts the
   default). When `η · LearningGain(Δ_t) > ξ_t`
   sustainably, the substrate enters the superfluid
