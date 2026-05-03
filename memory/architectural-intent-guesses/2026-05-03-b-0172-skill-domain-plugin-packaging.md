@@ -4,7 +4,7 @@
 
 `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md`
 
-The architectural choice: Aaron filed B-0172 for "skill-domain plugin packaging." The question this guess answers: **why packages skills as plugins (specifically) — vs alternatives like cross-skill imports, skill-namespace prefixes, or shared-substrate-via-symlink?**
+The architectural choice: Aaron filed B-0172 for "skill-domain plugin packaging." The question this guess answers: **why package skills as plugins (specifically) — vs alternatives like cross-skill imports, skill-namespace prefixes, or shared-substrate-via-symlink?**
 
 ## Read state at guess time (2026-05-03 ~02:55Z)
 
@@ -93,7 +93,7 @@ This pre-prediction itself is calibration data: how well does Otto predict its o
 
 ## Ground truth (recovered 2026-05-03 ~03:00Z via direct read of B-0172)
 
-Read source: `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md` (full body) — protocol-permitted only after the guess commit landed (committed under cf1dc7b on the guess branch; merged to main via PR #1282 still wait-ci at recovery-time, but commit timestamp is the binding marker).
+Read source: `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md` (full body) — protocol-permitted only after the guess commit landed (guess committed under 4a3d583 on the guess branch; landing to main eventually happened via PR #1283's chained-rebase-merge — PR #1282, which originally hosted the guess commit alone, was closed as superseded after #1283 absorbed both guess + recovery commits; the binding marker is the guess COMMIT TIMESTAMP, not the merge timestamp).
 
 ### Architectural intent (Aaron's verbatim)
 
@@ -206,7 +206,7 @@ I predicted before research:
 
 ---
 
-**Guess timestamp:** 2026-05-03 ~02:55Z (committed under 4a3d583 on the guess branch; landed to main via PR #1282)
+**Guess timestamp:** 2026-05-03 ~02:55Z (committed under 4a3d583 on the guess branch; landed to main via PR #1283's chained-rebase-merge — PR #1282, the original guess-only PR, was closed as superseded since #1283 absorbed both guess + recovery commits)
 **Ground-truth recovery timestamp:** 2026-05-03 ~03:00Z
 **Author:** Otto autonomous (architect hat)
 **Protocol:** in-the-moment guess + ground-truth recovery per
