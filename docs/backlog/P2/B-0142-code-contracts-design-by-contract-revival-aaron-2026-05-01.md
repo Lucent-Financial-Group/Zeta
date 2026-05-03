@@ -9,7 +9,7 @@ ask: Aaron 2026-05-01 named the row in the parallelism-scaling-ladder memo (`mem
 created: 2026-05-01
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [B-0141, B-0177]
+composes_with: [B-0130, B-0141, B-0170, B-0177]
 tags: [code-contracts, design-by-contract, pre-condition, post-condition, invariant, mechanization, runtime, compile-time, fsharp, csharp, tooling]
 ---
 
