@@ -214,39 +214,34 @@ Per the never-idle rule (CLAUDE.md §"Never be idle —
 speculative factory work beats waiting"), the tick does not
 wait for instruction. Priority ladder:
 
-0. **Cadence-tracker grep** (tick-open; the human maintainer 2026-05-03
-   directive). Before picking speculative work, grep the
-   tick-shard history for cadenced hygiene work that is due:
+0. **Tick-start mechanical checks** (the human maintainer 2026-05-03 — *"important to survival"*).
+   Run before picking speculative work:
 
    ```
+   bun tools/hygiene/check-no-op-cadence-pattern.ts
    grep -rE "CADENCE-TRACK" docs/hygiene-history/ticks/
    ```
 
-   Each tick-shard that has touched OR observed-as-overdue a
-   piece of cadenced hygiene work carries a `CADENCE-TRACK`
-   marker in its body, naming the cadenced work + last-run
-   date. Examples: AutoDream consolidation (cadence: 24h + 5
-   sessions), backlog-refactor cadence (every N rounds, look
-   for overlap), tech-radar review, dependency-status
-   refresh. If the grep surfaces overdue work AND the
-   cadence rule permits same-tick action, do that work. If
-   overdue but cadence-rule prohibits same-tick (e.g.,
-   AutoDream's "do NOT run on freshly-written memories"),
-   write a `CADENCE-TRACK: <work> overdue, deferred to
-   <next-permissible-trigger>` line into THIS tick's shard
-   so the next tick's grep surfaces the same observation.
-   The convention emerges from per-tick-shard use; this
-   discipline plus the convention is the operational
-   substrate.
+   **Check 0a — no-op-cadence**: examines last 7 tick-shards;
+   warns if ≥5 are minimal-observation OR most-recent >15 min
+   old. On warn: write a substantive shard OR do real work,
+   not acknowledgment-only. Bash sibling `.sh` for
+   non-bun environments; both kept in sync.
 
-   Per the human maintainer 2026-05-03 *"now that you have
-   tick shard history you can keep up with all the
-   cadineses and hygene we need to do on a regualr basis in
-   the tick, so you'll know for sure when it's time to
-   reoccur, we have many things that shouold hapeen on
-   cadence."* The tick-shard history thus serves dual
-   roles: per-tick episodic log AND cadenced-hygiene-work
-   tracker via the `CADENCE-TRACK` marker.
+   **Check 0b — cadence-tracker**: shards mark `CADENCE-TRACK:
+   <work>` with last-run date for cadenced hygiene (AutoDream
+   / backlog-refactor / tech-radar / dependency-status). If
+   overdue + same-tick-permitted: do work. If overdue +
+   same-tick-prohibited (e.g., AutoDream's fresh-memories
+   rule): write `CADENCE-TRACK: <work> overdue, deferred to
+   <trigger>` into this tick's shard.
+
+   Why critical: agent drift into ~20-tick-acknowledgment
+   patterns is what these checks catch at decision-time.
+   Lineage: tick shards
+   `docs/hygiene-history/ticks/2026/05/03/0913Z.md` and
+   `docs/hygiene-history/ticks/2026/05/03/0918Z.md`, plus
+   PR #1366 (TS port of the check script).
 
 1. **Open-PR hygiene first.** Before picking speculative
    work, audit the open PR pool via
