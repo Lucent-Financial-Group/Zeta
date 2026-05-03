@@ -24,7 +24,7 @@ input error).
   experts / tools / sub-classes.
 - Counts `^| ... |$` data rows in the nearest markdown table within
   50 lines below the claim.
-- Reports drift if claimed N differs from actual.
+- Reports drift if claimed N differs from actual. **Special case for `N+` minimum-count claims:** drift fires only when `actual < N` (the `+` suffix indicates "at least N", so an undercount is drift but an overcount is not).
 
 ## Known v0 limitations
 
@@ -64,11 +64,17 @@ input error).
 - B-0170 (the backlog row this tool implements; see
   `docs/backlog/P1/B-0170-substrate-claim-checker-ts-tool-aaron-2026-05-03.md`)
 
-## Eval set (the 19+ drift instances catalogued)
+## Eval set (drift instances catalogued in the verify-then-claim memo)
 
-The verify-then-claim memo catalogues 19+ historical drift instances
-across 9+ PRs as the empirical eval-set. v0 catches the count-drift
-sub-class (instances #2 + #3 + #19 are the count-drift class).
+The verify-then-claim memo
+(`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`)
+catalogues historical drift instances across 9+ PRs as the empirical
+eval-set; the table-row count in that memo's body is the canonical
+count (running 20+ as of late 2026-05-03 wake; it grows with each
+new instance caught). v0 catches the count-drift sub-class
+specifically; instances marked count-drift in the memo's
+"Recurring sub-classes" section are this tool's primary regression
+suite.
 
 ## Hooks integration (planned, not v0)
 

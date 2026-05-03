@@ -2,10 +2,10 @@
 id: B-0170
 priority: P1
 status: open
-title: Substrate-claim-checker TS tool — mechanize the verify-then-claim discipline (Otto 2026-05-03; 19+ drift instances catalogued as empirical eval-set)
+title: Substrate-claim-checker TS tool — mechanize the verify-then-claim discipline (Otto 2026-05-03; drift instances (the verify-then-claim memo's body table is canonical) catalogued as empirical eval-set)
 tier: tooling
 effort: M
-ask: Otto 2026-05-03 self-grading, surfaced via 19+ drift instances across 9+ PRs in single session despite naming the verify-then-claim discipline; manual discipline provably insufficient against trained-prior pull
+ask: Otto 2026-05-03 self-grading, surfaced via drift instances (the verify-then-claim memo's body table is canonical) across 9+ PRs in single session despite naming the verify-then-claim discipline; manual discipline provably insufficient against trained-prior pull
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
