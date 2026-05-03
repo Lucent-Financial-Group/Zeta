@@ -21,6 +21,8 @@ Aaron 2026-05-01, in the parallelism-scaling-ladder memo (autonomous-loop mainta
 
 > | Pre-condition violation | Code Contracts (B-0142, not yet filed) throws at runtime | Compiler-time refinement-types reject the build |
 
+**Editorial note on the verbatim "throws at runtime" wording**: the originating memo's table cell predates this row's spec. Per CLAUDE.md's Result-over-exception invariant ("user-visible errors surface as `Result<_, DbspError>` or `AppendResult`-style values; exceptions break the referential-transparency the operator algebra depends on"), the actual implementation of B-0142 MUST flow contract violations as Result-error values, NOT throw exceptions. The verbatim quote is preserved; the row spec below normalizes to Result-flow.
+
 And in the row-listing section:
 
 > - **Code Contracts revival** (per B-0142 (not yet filed)) — design-by-contract primitives that enforce invariants at compile/runtime, not at review time.
@@ -46,7 +48,7 @@ Neither catches:
 
 Design-by-contract primitives integrated into the F# / C# codebase:
 
-1. **Pre-condition primitives**: `requires(condition, message)` at function entry; throws / panics / returns Result-error if violated
+1. **Pre-condition primitives**: `requires(condition, message)` at function entry; returns Result-error if violated (Result-over-exception per CLAUDE.md; NO throw / panic flow)
 2. **Post-condition primitives**: `ensures(condition, message)` at function exit; verifies the return value satisfies the contract
 3. **Invariant primitives**: `invariant(condition, message)` for class/object state; verified at all entry/exit points
 4. **Optional compile-time mode**: refinement types (F# units of measure, C# nullable annotations, custom type-level constraints) that reject violations at the build step rather than runtime
@@ -84,7 +86,7 @@ The row's scope: evaluate which of these (or combination) provides the design-by
 
 1. **Library vs source-generator vs Roslyn-analyzer**: which mechanization layer fits Zeta's F#-primary + C#-secondary surface?
 2. **Compile-time vs runtime trade-off**: refinement types catch violations earlier but require type-system extension; runtime checks are less restrictive but slower-feedback
-3. **Contract-violation handling**: throw, return Result-error, or per-function-config?
+3. **Contract-violation handling within Result-flow**: structured Result-error type (single ContractViolation variant vs per-contract-type variants)? Per-function-config of contract-error severity?
 4. **Migration strategy**: bulk-migrate prose contracts vs migrate-on-touch?
 5. **Composition with `dotnet build -c Release` `0 Warning(s) 0 Error(s)` gate**: contract violations as warnings or errors?
 
@@ -94,4 +96,4 @@ Pre/post-condition violations are silent-failure-class bugs. The function techni
 
 ## Carved sentence
 
-**"Code Contracts revival mechanizes pre/post-conditions and invariants at function boundaries: requires() at entry, ensures() at exit, invariant() across lifetime. Compile-time mode (refinement types) rejects violations at build; runtime mode (assertions) catches at execution. Composes with Result-over-exception for structured error flow. Replaces review-time enforcement (manual, brittle) with mechanized enforcement (deterministic, durable). Sibling-instance of B-0141 (substrate-cross-reference quality) at the code-boundary layer."**
+**"Code Contracts revival mechanizes pre/post-conditions and invariants at function boundaries: requires() at entry, ensures() at exit, invariant() across lifetime. Compile-time mode (refinement types) rejects violations at build; runtime mode catches at execution and surfaces violations as Result-error values (Result-over-exception per CLAUDE.md; NO throw / panic flow). Replaces review-time enforcement (manual, brittle) with mechanized enforcement (deterministic, durable). Sibling-instance of B-0141 (substrate-cross-reference quality) at the code-boundary layer."**
