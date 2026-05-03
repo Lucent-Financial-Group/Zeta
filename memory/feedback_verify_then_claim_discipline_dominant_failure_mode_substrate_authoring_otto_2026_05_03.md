@@ -1,12 +1,12 @@
 ---
 name: Verify-then-claim discipline — verify every substrate claim empirically BEFORE publishing (Otto 2026-05-03 self-grading; 20 drift instances catalogued across 9+ PRs this session)
-description: 2026-05-03; Otto self-grading after Copilot caught 20 distinct claim-vs-reality drift instances across 9+ PRs (#1245 #1247 #1248 #1250 #1252 #1253 #1254 #1255 #1256 — and counting; instances #10-#20 landed AFTER the discipline was named, strongest empirical urgency for mechanization; v0 of the tool shipped in PR #1260). The dominant failure mode for substrate authoring this session is claim-vs-reality drift — Otto wrote "X exists" / "command returns Y" / "table has N rows" without verifying empirically. Verify-then-claim discipline: before stating ANY fact in substrate (file exists, command returns X, row count is N, tool ships, ADR matches, persona dir present), verify by running the actual command BEFORE writing the claim. Same class as Otto-247 + Otto-363 + verify-before-deferring — at the broader any-substrate-claim layer. 7 recurring sub-classes catalogued: existence / count / semantic-equivalence / empirical-output / convention / path-form / self-recursive. Mechanization: `tools/substrate-claim-checker/` (v0 shipped PR #1260, count-drift sub-class only; v1+ extends to remaining 6 sub-classes; planned two-hook integration: pre-commit for staged-files, commit-msg for message itself, plus CI check for PR descriptions). Manual discipline provably insufficient against trained-prior pull.
+description: 2026-05-03; Otto self-grading after Copilot caught 20 distinct claim-vs-reality drift instances across 9+ PRs (#1245, #1248/#1249, #1250, #1252, #1253, #1254, #1255, #1256, #1257, #1259 — and counting; instances #10-#20 landed AFTER the discipline was named, strongest empirical urgency for mechanization; v0 of the tool shipped in PR #1260). The dominant failure mode for substrate authoring this session is claim-vs-reality drift — Otto wrote "X exists" / "command returns Y" / "table has N rows" without verifying empirically. Verify-then-claim discipline: before stating ANY fact in substrate (file exists, command returns X, row count is N, tool ships, ADR matches, persona dir present), verify by running the actual command BEFORE writing the claim. Same class as Otto-247 + Otto-363 + verify-before-deferring — at the broader any-substrate-claim layer. 7 recurring sub-classes catalogued: existence / count / semantic-equivalence / empirical-output / convention / path-form / self-recursive. Mechanization: `tools/substrate-claim-checker/` (v0 shipped PR #1260, count-drift sub-class only; v1+ extends to remaining 6 sub-classes; planned two-hook integration: pre-commit for staged-files, commit-msg for message itself, plus CI check for PR descriptions). Manual discipline provably insufficient against trained-prior pull.
 type: feedback
 ---
 
 # Verify-then-claim discipline — dominant failure mode for substrate authoring
 
-## Empirical evidence (this session, 9+ PRs, 15+ distinct drift instances)
+## Empirical evidence (this session, 9+ PRs, 20 distinct drift instances)
 
 | Drift instance | PR | Wrong claim | Actual reality |
 |---|---|---|---|
@@ -93,7 +93,7 @@ The full mechanization would be `tools/substrate-claim-checker/` — a TS tool (
 
 The tool's outputs (per-commit drift reports) are satellite-shaped per Aaron 2026-05-03 hub-satellite rule; the tool itself is hub-shaped. Filing as a separate backlog row is the right path for actually building it.
 
-Until the tool ships: **the discipline is manual** but the pattern is now named, the failure modes are catalogued (20 drift instances above across 7 recurring sub-classes), and future-Otto can pre-flight-check substrate claims before publishing. **Update 2026-05-03: v0 of the tool shipped in PR #1260** covering the count-drift sub-class — the eval-set above is what made authoring v0 mechanical. v1+ extends to remaining 6 sub-classes.
+**Tool status (2026-05-03):** v0 of `tools/substrate-claim-checker/check-counts.ts` shipped in PR #1260 covering the count-drift sub-class. The eval-set above is what made authoring v0 mechanical. v1+ extends to the remaining 6 sub-classes (existence / semantic-equivalence / empirical-output / convention / path-form / self-recursive). **Until v1+ ships covering all 7 sub-classes, the discipline outside count-drift is still manual** — but the pattern is now named, the failure modes are catalogued (20 drift instances above across 7 recurring sub-classes), and future-Otto can pre-flight-check substrate claims before publishing.
 
 ## Worked example: how this would have caught #1250's Layer-7 drift
 
@@ -112,7 +112,7 @@ If `tools/substrate-claim-checker/` had existed during PR #1250 authoring, it wo
 
 ## Carved sentence
 
-**"Before stating any fact in substrate, verify it empirically. The dominant failure mode for substrate authoring is claim-vs-reality drift — 9 instances caught across 7 PRs in one session is empirical evidence the discipline matters. The rule applies to fact-claims about current repo state (file existence, command output, count totals, tool shipped); NOT to verbatim quotes, hedged speculation, future predictions, or normative recommendations. Generalizes Otto-247 + Otto-364 + verify-before-deferring at the broader any-substrate-claim layer. Manual until `tools/substrate-claim-checker/` ships."**
+**"Before stating any fact in substrate, verify it empirically. The dominant failure mode for substrate authoring is claim-vs-reality drift — 20 instances caught across 9+ PRs in one session is empirical evidence the discipline matters; instances #10-#20 landed AFTER the discipline was named, proving manual discipline insufficient. The rule applies to fact-claims about current repo state (file existence, command output, count totals, tool shipped); NOT to verbatim quotes, hedged speculation, future predictions, or normative recommendations. Generalizes Otto-247 + Otto-364 + verify-before-deferring at the broader any-substrate-claim layer. v0 of `tools/substrate-claim-checker/` shipped (count-drift sub-class); v1+ extends to remaining 6 sub-classes."**
 
 ## Composes with
 
