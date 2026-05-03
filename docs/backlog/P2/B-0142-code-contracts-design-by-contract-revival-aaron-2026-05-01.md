@@ -2,10 +2,10 @@
 id: B-0142
 priority: P2
 status: open
-title: Code Contracts revival — design-by-contract primitives enforcing pre/post-conditions and invariants at compile/runtime, not at review time (Aaron 2026-05-01; reserved ID never filed; sibling of B-0141)
+title: Code Contracts revival — design-by-contract primitives enforcing pre/post-conditions and invariants at compile/runtime, not at review time (Aaron 2026-05-01; sibling of B-0141)
 tier: tooling
 effort: L
-ask: Aaron 2026-05-01 named the row in the parallelism-scaling-ladder memo (`feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`) — "B-0142, not yet filed" — as the mechanization primitive at the runtime/compile boundary for pre-condition enforcement. ID was reserved; per-row file was never filed (caught by Otto 2026-05-03 audit pass post-B-0141 filing).
+ask: Aaron 2026-05-01 named the row in the parallelism-scaling-ladder memo (`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`) — "B-0142, not yet filed" — as the mechanization primitive at the runtime/compile boundary for pre-condition enforcement. ID was reserved 2026-05-01; per-row file filed 2026-05-03 by Otto audit pass post-B-0141 filing.
 created: 2026-05-01
 last_updated: 2026-05-03
 depends_on: []
