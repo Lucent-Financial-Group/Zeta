@@ -8,7 +8,7 @@ type: feedback
 
 ## Origin
 
-Aaron 2026-05-03 (00:0xZ tick), in the autonomous-loop maintainer channel after the post-merge-corrections cycle on PR #1251:
+Aaron 2026-05-03 (around the 00:08Z tick), in the autonomous-loop maintainer channel after the post-merge-corrections cycle on PR #1251:
 
 > *"when designing anything you should go through a multi harness alignment/convergence on the design, that's a good skill domain to have too"*
 
@@ -109,7 +109,7 @@ Three seed cases the factory has already produced:
 
 When the maturity signal fires:
 
-1. **The skill candidates listed above are the canonical starting set.** 5 procedure skills + 4 named-persona experts + 5 tools.
+1. **The skill candidates listed above are the canonical starting set.** 6 procedure skills (including `effort-router` per Aaron's same-tick vocabulary alignment) + 4 named-persona experts + 7 tools (including `metrics.ts` for per-harness/per-model metrics recording + `multi-model-roster.md` per the two-axis refinement).
 2. **Promotion-trigger criteria are the gate** — same as git-native-backlog memo's criteria.
 3. **Composition with the existing bidirectional-alignment commitment is one-to-many** — bidirectional alignment is the architectural commitment; multi-harness convergence is one operational instance.
 4. **The discipline is distinct from multi-AI peer review** (post-output) — this is pre-output design convergence.
