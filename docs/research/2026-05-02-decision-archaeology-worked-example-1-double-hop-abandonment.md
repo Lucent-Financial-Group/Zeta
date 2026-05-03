@@ -169,11 +169,23 @@ Searching `docs/DECISIONS/` for double-hop related ADRs:
 ls docs/DECISIONS/ | grep -iE "double.hop|acehack|mirror"
 ```
 
-Returns nothing. **The double-hop never had an ADR.** It was governed by
-memos + CLAUDE.md + branch-protection rules. This is itself archaeology
-output: not all load-bearing decisions in this factory are ADR'd; the
-ADR threshold is "decisions that need cross-domain reference," and the
-double-hop was substrate-discipline scope, which lives in memos.
+Returns one match: `2026-04-26-sync-drain-plan-acehack-lfg-roundtrip-option-c.md`.
+
+**Layer-7 output:** the AceHack/LFG roundtrip workflow has an ADR — the
+2026-04-26 sync-drain-plan ADR that codified Option C (the chosen sync
+strategy) before the double-hop pattern explicitly emerged. Reading
+that ADR shows it covered the *AceHack-first sync drain* decision, which
+the 2026-04-27 `feedback_lfg_master_acehack_zero_divergence_fork_double_hop_*`
+memo extended into the full double-hop pattern. So the supersession at
+2026-05-02 implicitly affects the ADR's chosen Option C — and walking
+the abandonment forward should ask whether the ADR needs an updated
+status marker (superseded-by-LFG-only-directive).
+
+This is a **layer-7 finding worth its own follow-up:** the 2026-04-26 ADR
+should carry a `superseded:` or `current_status:` marker pointing at the
+2026-04-29 LFG-only directive + 2026-05-02 abandonment. ADRs without
+supersession markers drift to falsely-canonical status. Filing this as
+a separate concern from the worked example.
 
 ### Layer 8 — Named-decision memos
 
@@ -295,7 +307,16 @@ absorbs squash-SHA) was abandoned 2026-05-02 because:
    when possible; PR-based reset OR delete-and-recreate when diverged."
    The Path-2 mechanism is strictly simpler than the double-hop; the
    abandonment retires the mechanism Path-2 already obsoleted.
-4. **No permanent rejection.** The abandonment is current-state, not
+4. **The 2026-04-26 sync-drain-plan ADR is now stale.** Layer-7
+   archaeology surfaced
+   `docs/DECISIONS/2026-04-26-sync-drain-plan-acehack-lfg-roundtrip-option-c.md`
+   as the original ADR codifying the sync strategy that the double-hop
+   pattern operationalized. The supersession affects this ADR
+   implicitly; it should carry an explicit `superseded:` /
+   `current_status:` marker pointing at the 2026-04-29 LFG-only directive
+   + 2026-05-02 abandonment so future readers don't treat it as
+   canonical-current.
+5. **No permanent rejection.** The abandonment is current-state, not
    forever — *"WONT-DO is 99% deferral, not forever"* applies. If
    risk-absorption needs return, the double-hop pattern is recoverable
    from the 2026-04-27 memo + git history.
@@ -312,12 +333,20 @@ For the eventual `decision-archaeology` SKILL.md body:
 
 1. **Layered narrative beats flat list.** The synthesized answer above
    could not be produced from any single layer; it composes evidence
-   from layers 2, 4, 6, 8, and 11. The skill must teach contributors
+   from layers 2, 4, 6, 7, 8, and 11. The skill must teach contributors
    to walk all 11 layers, not just the first 3.
-2. **Negative results at layer 7 (no ADR) and layer 11 (no WONT-DO)
-   ARE substantive.** A naive contributor would skip these layers
-   because they returned nothing; the *absence* tells future contributors
-   important things (decision threshold; rejection-permanence).
+2. **Layer-7 ADRs need supersession markers; layer-11 negative results
+   ARE substantive.** Layer 7 surfaced a relevant ADR
+   (`2026-04-26-sync-drain-plan-acehack-lfg-roundtrip-option-c.md`)
+   that is implicitly affected by the supersession but lacks an explicit
+   marker — the skill must teach contributors to (a) read each match
+   for relevance, NOT skip on first-glance no-match, and (b) propose
+   supersession markers when ADRs drift past their canonical-status
+   window. Layer 11 (no WONT-DO entry) IS substantive negative output
+   (rejection isn't permanent; double-hop is recoverable). The skill
+   teaches contributors to distinguish *positive-with-stale-status* from
+   *substantive-negative*: the first needs a marker landing; the second
+   IS the result.
 3. **Ride-along supersessions are common.** Layer 3's surprising
    signal (`7a0b755` is named for *party-during-sleep* not the
    abandonment) means the skill must teach contributors to query at
