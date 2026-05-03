@@ -1,0 +1,88 @@
+---
+id: B-0157
+priority: P2
+status: open
+title: detect-changes pattern — per-change-class workflow gating so PRs only run relevant checks (Aaron 2026-05-01; sibling-repo parallel-optimization external anchor)
+tier: tooling
+effort: M
+ask: Aaron 2026-05-01 named the row in the prefer-mechanical-external-anchors memo (`memory/feedback_prefer_mechanical_external_anchors_over_aaron_as_anchor_aaron_2026_05_01.md`) — "B-0157, detect-changes pattern" — composing with B-0153 (lint suite) and B-0156 (TS port). ID was reserved 2026-05-01; per-row file filed 2026-05-03 by Otto audit pass post-B-0141 + post-B-0142 filings. Detailed pattern source at `memory/feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md`.
+created: 2026-05-01
+last_updated: 2026-05-03
+depends_on: []
+composes_with: [B-0125, B-0153, B-0156, B-0177]
+tags: [ci, workflows, detect-changes, parallel-pr, gating, fine-grained-workflows, sibling-repo, external-anchor, tooling]
+---
+
+# detect-changes pattern — per-change-class workflow gating
+
+## Origin
+
+Aaron 2026-05-01, in two related memos:
+
+- `memory/feedback_prefer_mechanical_external_anchors_over_aaron_as_anchor_aaron_2026_05_01.md` — names B-0157 in the investment-direction section: *"when building substrate-discipline mechanizations (per B-0153 lint suite, B-0156 TS port, B-0157 detect-changes pattern), spend the effort on PRECISION not on coverage-breadth"*
+- `memory/feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md` — full pattern source from sibling-repo direct inspection: *"`../no-copy-only-learning-agents-insight` is the best repo in github i've seen setup to be parallel"*
+
+ID was reserved 2026-05-01; per-row file was never filed. Otto 2026-05-03 audit pass (post-B-0141 + post-B-0142 filings) found B-0157 still missing — third concrete hit for B-0177's audit hypothesis.
+
+## The problem
+
+Current Zeta CI runs ALL workflows on every PR regardless of whether the PR's changes are relevant to each workflow. Examples:
+
+- A docs-only PR triggers `dotnet build`, F# analyzer runs, .NET tests — none of which can be affected by docs changes
+- A backlog-row-only PR triggers markdown lint, semgrep, CodeQL — only markdown lint is relevant
+- A workflow-config PR triggers everything in the relevant matrix even though the change might be limited to one workflow file
+
+**Effect**: CI churn proportional to (open PRs) × (number of workflows), independent of (changes per PR). Parallel-PR friendliness is bounded by total CI capacity, not by relevance.
+
+## What this row builds
+
+The sibling-repo's detect-changes pattern (`../no-copy-only-learning-agents-insight`) — adapted for Zeta:
+
+1. **`detect-changes.yaml` workflow** — runs FIRST on every PR; emits per-change-class outputs:
+   - `dotnet-src-changed: true|false`
+   - `fsharp-src-changed: true|false`
+   - `tools-ts-changed: true|false`
+   - `docs-changed: true|false`
+   - `workflows-changed: true|false`
+   - etc. (one output per change class)
+
+2. **Downstream workflows gated on detect-changes outputs**:
+   - `dotnet build` runs only if `dotnet-src-changed == true`
+   - F# analyze runs only if `fsharp-src-changed == true`
+   - markdown lint runs only if `docs-changed == true`
+   - etc.
+
+3. **Required-checks list** still includes all gated workflows; gate reports SUCCESS-skipped if not relevant. Per GitHub's required-checks semantics, a skipped-but-required check still counts as passing.
+
+## Composes with
+
+- **B-0125 (skip-fsharp-analyze on docs-only PRs)**: specific instance of the general pattern this row builds
+- **B-0153 (pre-commit lint suite)**: detect-changes-gated lint runs reduce per-PR CI burden
+- **B-0156 (TypeScript standardization for non-install scripts)**: TS port composes with detect-changes — TS-only changes don't trigger F# workflows
+- **B-0177 (audit memos for misfiled backlog)**: this row's existence IS the third empirical hit for B-0177's audit hypothesis (sibling to B-0141 + B-0142)
+
+## Why this is M-effort
+
+- detect-changes.yaml workflow: ~50-100 lines of YAML
+- Per-workflow gating: each existing workflow needs a `needs: detect-changes` + `if: needs.detect-changes.outputs.<class> == 'true'` condition (small per workflow; cumulative ~15-42 workflows)
+- Test fixtures: docs-only PR / fsharp-only PR / mixed PR each verify gating works
+- Required-checks list audit: ensure required-but-skipped checks still produce passing status
+- Edge cases: workflow-config-changes-but-no-source-changes; merge-queue interaction; force-push edge cases
+
+## Open design questions (NOT for this row; for the design pass)
+
+1. **Granularity**: how fine-grained should change classes be? (Sibling repo has ~10-15; too granular = brittle; too coarse = ineffective)
+2. **Workflow-config-changes**: when `.github/workflows/X.yml` itself changes, should X run regardless of source-class?
+3. **Path-filter vs detect-changes**: GitHub's native `paths:` filter is simpler but doesn't compose well with required-checks; detect-changes is more code but composes cleanly
+4. **Migration sequence**: phase-1 (detect-changes only, no gating yet) vs phase-2 (gating enabled); how to validate empirically before flip
+5. **Rollback discipline**: if detect-changes mis-classifies, what's the fallback? (Manual override label? Force-all-workflows mode?)
+
+## Why this matters
+
+The sibling-repo's detect-changes pattern enables parallel-PR-friendly CI: PRs only run workflows their changes need. Effect: CI throughput scales with (changes per PR) × (workflows for those changes), not (open PRs) × (all workflows). For a multi-PR autonomous-loop session like the current one, the difference is substantial.
+
+Composes with the alignment-frontier framing: substrate-quality CI is alignment-frontier substrate. The CI pipeline IS part of the substrate's connective tissue; reducing CI churn reduces friction in the friction → substrate → less-future-friction superfluid amortized-speed loop (per CLAUDE.md).
+
+## Carved sentence
+
+**"detect-changes pattern: per-PR detect-changes workflow emits per-change-class outputs; downstream workflows gate on those outputs. Result: PRs only run workflows their changes need. CI throughput scales with relevance, not with PR count. Composes with B-0125 (specific instance: skip fsharp on docs-only), B-0153 (lint suite), B-0156 (TS port). Sibling-repo pattern source preserved at `memory/feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md`. Third concrete hit for B-0177 audit hypothesis."**
