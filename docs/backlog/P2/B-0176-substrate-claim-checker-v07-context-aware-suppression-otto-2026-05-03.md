@@ -2,7 +2,7 @@
 id: B-0176
 priority: P2
 status: open
-title: substrate-claim-checker v0.7 — context-aware suppression for hypothetical / contrastive / partial-path / branch-name references (Otto 2026-05-03 empirical observation)
+title: Substrate-claim-checker v0.7 — context-aware suppression for hypothetical / contrastive / partial-path / branch-name references (Otto 2026-05-03 empirical observation)
 tier: tooling
 effort: M
 ask: Otto self-derived 2026-05-03 from v0.6 retroactive eval (PR #1329) finding 7 drift items mostly from a recurring false-positive class; subsequent 0603Z drift exploration confirmed the class
