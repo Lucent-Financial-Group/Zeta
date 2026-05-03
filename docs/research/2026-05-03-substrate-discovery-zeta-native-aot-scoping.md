@@ -195,6 +195,63 @@ Zeta.Bayesian.
 **This is the load-bearing question.** No substantial
 commit beyond Phase 0 PoC until this question has data.
 
+### DST integration — load-bearing, not afterthought
+
+**Updated 2026-05-03** (the human maintainer reminder *"i'm sure
+you remember all the DST goodness right?"*). Deterministic
+Simulation Testing (Otto-272 DST-everywhere + Otto-273
+seed-lock-policy + Otto-281 DST-exempt-is-deferred-bug) is
+load-bearing for substrate-discovery, not a follow-on. The
+PoC includes DST primitives from day 1 because:
+
+1. **Cold-start replay = warm-state IVM** is the central
+   correctness invariant. Rebuilding the index from
+   `git ls-files | feed-into-zeta` must produce the
+   IDENTICAL Z-set state to the live IVM. This is a DST
+   equivalence property — encoded as a CI invariant, not
+   just a property test.
+
+2. **File-watcher events are adversarial schedules.** Real-
+   world quirks (concurrent file modifications during a
+   `git pull`, partial writes during atomic-rename, OS
+   file-watcher coalescing) become reproducible test cases
+   under DST. Pinned seed → deterministic adversarial
+   schedule replay.
+
+3. **Every non-determinism source must be exposed.**
+   Dictionary iteration order, hashtable insertion order,
+   async-scheduler ordering, plugin-load timing — each is
+   either pinned or filed as a deferred bug per Otto-281.
+   *"Retries are non-determinism smell"* — if the
+   substrate-discovery test suite ever needs a retry, that
+   retry IS the bug.
+
+4. **The chain-rule Prop 3.2 Lean proof guarantees algebraic
+   determinism.** The implementation must match. Lean proves
+   the math; DST proves the implementation matches the
+   math. Both are required for an A-grade artifact in the
+   sense of #1383's grading.
+
+Concrete DST primitives in Phase 0 PoC:
+
+- Pinned random seeds for all stochastic operations (per
+  Otto-273; values containing 69 or 420 if architect picks
+  per maintainer whimsy preference)
+- A `replay` mode that reads a recorded event sequence +
+  seed and reproduces the Z-set state exactly
+- A CI job that compares cold-start replay vs warm-state
+  IVM at every commit; any divergence fails the build
+- Adversarial-schedule fuzz harness that generates
+  pathological file-watcher event sequences (out-of-order,
+  duplicated, partial)
+
+DST is the discipline that makes substrate-discovery
+trustworthy enough to be the canonical answer-source for
+agent wake-time inventory queries. Without DST, every
+"the index says X" claim is uncertain. With DST, "the
+index says X" reduces to "the deterministic algebra over
+the deterministic event-sequence produced X."
+
 ---
 
 ## What we're indexing — substrate types
