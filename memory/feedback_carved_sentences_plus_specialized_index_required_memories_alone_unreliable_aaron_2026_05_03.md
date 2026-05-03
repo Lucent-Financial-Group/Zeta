@@ -29,10 +29,10 @@ This is a substrate-retrieval-architecture observation, empirically self-demonst
 
 **Memory files exist but don't reliably retrieve in-the-moment.** Otto's (and other AI agents') working substrate-retrieval mechanism is:
 
-- **Reliably-retrieved**: CLAUDE.md (auto-loaded every wake), AGENTS.md (auto-loaded for Codex / OpenAI Agent SDK / etc.), `.github/copilot-instructions.md` (Copilot equivalent — real path in this repo), other harness-specific equivalent files. `GEMINI.md` would be the Gemini equivalent if added (currently documented as absent / planned in this repo).
+- **Reliably-retrieved**: CLAUDE.md (auto-loaded every wake by Claude Code), AGENTS.md (universal onboarding handbook for any AI harness — Codex, OpenAI Agent SDK, Gemini CLI, Copilot, Cursor, Aider, etc.; per AGENTS.md self-description: *"This file is the universal onboarding handbook for the Zeta repository. It is written to work with any AI harness ... Harnesses may optionally load a harness-specific addendum"*), `.github/copilot-instructions.md` (Copilot equivalent — real path in this repo), other harness-specific equivalent files. `GEMINI.md` would be the Gemini equivalent if added (currently documented as absent / planned in this repo).
 - **MEMORY.md + first 200 lines**: partially retrieved at session start (truncation risk past line 200)
 - **Memory topic files** (`memory/*.md`): retrieved only when (a) explicitly read via Read tool, (b) `MEMORY.md` index pointer surfaces them, (c) found via grep / Glob during in-flight work
-- **docs/research/**, **docs/decisions/**, **persona notebooks**: read-on-demand only
+- **docs/research/**, **docs/DECISIONS/**, **persona notebooks**: read-on-demand only
 
 The reliability gap: a memo can exist as durable substrate (committed, reachable, indexed in MEMORY.md) and still fail to surface when the moment comes to apply it. The MEMORY.md index is line-bounded; topic-file titles don't always match the in-flight retrieval keyword; and even when they do match, the retrieval happens only if Otto explicitly searches.
 
