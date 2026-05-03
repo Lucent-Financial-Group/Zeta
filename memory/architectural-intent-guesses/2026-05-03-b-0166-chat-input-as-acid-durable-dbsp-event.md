@@ -94,18 +94,67 @@ Based on guess #001 + #002 patterns:
 | Specific implementation — "auto-capture hook + docs/chat-events/ directory + replay TS tool" | **Low** | Standard event-sourcing pattern but no prior specific context for this row |
 | Cross-row composition | **Medium-High** | Strong context for Otto-363 + Otto-272 + retraction-native composition |
 
-## Ground truth (TO BE FILLED IN AFTER VERIFICATION)
+## Ground truth (recovered 2026-05-03 ~03:30Z via direct read of B-0166)
 
-(Empty at write time. Populated when Otto reads B-0166 row body in a SUBSEQUENT GROUND-TRUTH-RECOVERY commit.)
+Aaron's verbatim:
 
-## Calibration delta (TO BE FILLED IN AFTER VERIFICATION)
+> *"i would like toget to the point where when i hit enter and send my message that is an event in the DBSP since so ACID durable, the downstram dirvations can do what they like on top, we are not there yet but that's the vision."*
 
-(Empty at write time.)
+5 enumerated purposes (row's own list): (1) compaction protection, (2) glass halo / influence-force visibility, (3) **future fine-tuning data for Anthropic's next-generation Claude**, (4) **training of new AIs/models** based on Aaron-Otto-Claude.ai practices, (5) architecture-as-code applied to chat itself.
+
+Schema: `{timestamp, sender_role, sender_name, message_text, session_id, message_id, parent_message_id}` + structured tags. Multi-source ingest (Claude Code + Codex + future-AIs + human-direct). 7 derivation views. F# DBSP runtime (NOT TS). 6-phase implementation. composes_with: [B-0164 dual-loop attribution + reconciliation].
+
+## Calibration delta — 17-18/40 = ~44% (lowest of three so far)
+
+| Layer | Predicted | Actual | Within range? |
+|---|---|---|---|
+| Architectural | 6-7/10 | **6/10** PARTIAL-MATCH | ✓ |
+| Substrate-content | 5-6/10 | **5/10** MIXED | ✓ |
+| Specific implementation | 3-4/10 | **2-3/10** MOSTLY-OFF | ✗ (over by ~1pt) |
+| Cross-row composition | 6-7/10 | **4/10** MOSTLY-OFF | ✗ (over by 2-3pt) |
+
+### Architectural — got ACID/DBSP/glass-halo angle; missed training-substrate
+
+Got: ACID-durable-preserves + DBSP-event semantics + replayability + glass-halo composition.
+
+Missed: **chat-event-stream as fine-tuning data for Anthropic's next-gen + training material for new AIs**. The training-substrate angle (purposes #3 + #4) composes with the bidirectional alignment commitment — chat substrate becomes training data for future-Claude generations, making the experiment self-reinforcing across model versions.
+
+### Substrate-content — got basic schema; missed multi-source ingest + 7 views
+
+Multi-source ingest (Claude Code + Codex + future-AIs + human-direct) was the architecture-shaped piece I missed because B-0164 (dual-loop) wasn't in my read-state.
+
+### Specific implementation — wrong language (TS vs F#) + wrong storage (file vs DBSP runtime)
+
+The F#-vs-TS miss is the biggest specific error. Aaron's skill-design rule 2 ("TS files under tools/") doesn't apply to substrate-level work — DBSP runtime is F#. My rule-2 inference over-generalized.
+
+### Cross-row composition — missed B-0164 dual-loop entirely
+
+I had no read-state for B-0164 at all. The primary composition partner is a row I haven't read, so my inference was poor. **Validates context-dependent calibration pattern** from guess #002 — when read-state is absent for a layer, accuracy degrades regardless of principle-based reasoning.
+
+## NEW PATTERN — read-state determines layer-level ceiling (3-data-point hypothesis)
+
+| Layer | Driven by |
+|---|---|
+| Architectural | Aaron's framing + cross-disciplinary catalogue + general principles |
+| Substrate-content | Specific row context + recent PR context |
+| Specific implementation | Recent PR context for exact implementation choices |
+| Cross-row composition | **Direct read-state for the composition partners** |
+
+**Hypothesis**: layer-level-accuracy ≈ min(principle-reasoning-quality, read-state-coverage-for-that-layer).
+
+For B-0166: principle-reasoning was good across layers, but read-state was thin (row title + general DBSP context). Cross-row composition scored low because read-state for B-0164 was zero. Specific implementation scored low because read-state for F# DBSP runtime production work was zero.
+
+**Future-Otto rule**: when read-state is thin for a specific layer, predict that layer's score CONSERVATIVELY. Don't let principle-reasoning quality bleed into layer-level confidence when read-state is the actual ceiling.
+
+## Pre-prediction validation — 2/4 within range
+
+Improvement over #002 (2/3 = 67%). The pattern: I'm calibrated on architectural + substrate-content but over-predict on layers requiring specific read-state I lack.
 
 ---
 
-**Guess timestamp:** 2026-05-03 ~03:25Z
+**Guess timestamp:** 2026-05-03 ~03:25Z (committed under f038fe6)
+**Ground-truth recovery timestamp:** 2026-05-03 ~03:30Z
 **Author:** Otto autonomous (architect hat)
-**Protocol:** in-the-moment guess per
-`memory/feedback_guess_then_verify_architectural_intent_calibration_protocol_aaron_2026_05_03.md`
-**Series:** Guess #003 (after #001 B-0173 48% + #002 B-0172 65%; pattern observations: principle-strong + specific-weak (context-dependent); over-inference of motivations; architect-vs-UX divide; cross-disciplinary pattern adoption is one of Aaron's signature moves)
+**Protocol:** in-the-moment guess + recovery per `memory/feedback_guess_then_verify_architectural_intent_calibration_protocol_aaron_2026_05_03.md`
+**Recovery method:** direct read of `docs/backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md` body
+**Series:** Guess #003. Trajectory: 48% → 65% → 44%. Pattern emerging: layer-level-accuracy ≈ min(principle-reasoning-quality, read-state-coverage). Future-Otto: predict conservatively when read-state is thin for a layer.
