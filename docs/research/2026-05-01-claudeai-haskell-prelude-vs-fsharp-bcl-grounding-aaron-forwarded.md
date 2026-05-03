@@ -78,12 +78,17 @@ This is a discipline observation worth absorbing: **grounding-question precision
 
 ## Composes with
 
-- `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` (PR #1081) — the v2 taxonomy this recommendation proposes grounding via Haskell-prelude concepts.
-- `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md` (PR #1083) — sibling cross-vendor reception evidence; Gemini's review demonstrated class #1c, this Claude.ai message demonstrates substantive-recommendation-with-real-citations.
-- `memory/feedback_claudeai_endorsement_taxonomy_v2_class_15_intra_file_drift_2026_05_01.md` (PR #1085) — sibling Claude.ai endorsement of class #15.
-- `memory/feedback_lattice_capture_corrective_discipline_external_vocabulary_check_claudeai_warning_2026_05_01.md` (PR #1051, in flight) — the verbatim-preservation discipline this absorb honors.
 - `.claude/agents/formal-verification-expert.md` (Soraya) — formal-verification routing; the Haskell-prelude grounding intersects with Soraya's portfolio (Lean for theorems, Z3 for SMT, TLA+ for temporal, FsCheck for property-based).
 - Aaron's existing F# affinity (per `CLAUDE.md` + GOVERNANCE.md) — not compromised; F# remains the implementation; Haskell-shape concepts are the conceptual layer above.
+
+### Forward-references not yet on main
+
+The cited memory filenames are not present in the current repo tree at time of this absorb; references kept as forward-references until those PRs land or the paths can be updated to the actual filenames.
+
+- Forward-reference: intended `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` in PR #1081 — the v2 taxonomy this recommendation proposes grounding via Haskell-prelude concepts.
+- Forward-reference: intended `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md` in PR #1083 — sibling cross-vendor reception evidence; Gemini's review demonstrated class #1c, this Claude.ai message demonstrates substantive-recommendation-with-real-citations.
+- Forward-reference: intended `memory/feedback_claudeai_endorsement_taxonomy_v2_class_15_intra_file_drift_2026_05_01.md` in PR #1085 — sibling Claude.ai endorsement of class #15.
+- Forward-reference: intended `memory/feedback_lattice_capture_corrective_discipline_external_vocabulary_check_claudeai_warning_2026_05_01.md` in PR #1051 — the verbatim-preservation discipline this absorb honors.
 
 ## Future v3 work (deferred — not this session)
 

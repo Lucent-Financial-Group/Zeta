@@ -96,10 +96,13 @@ This reduces Claude.ai's earlier concern about Insight-blocks-accelerating-class
 ## Composes with
 
 - `docs/research/2026-05-01-claudeai-haskell-prelude-vs-fsharp-bcl-grounding-aaron-forwarded.md` — sibling absorb covering the categorical-grounding half of the two-filter composition. Together: Haskell-prelude grounds the **structure** (typeclasses + laws + base category C); Beacon-anchoring gates the **canonicalization** (Mirror→Beacon promotion).
-- `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` (PR #1081) — the v2 taxonomy that this Mirror→Beacon gate would tier.
-- `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md` (PR #1083) — the verification-cascade that already catches hallucinated citations (class #1c). Same discipline as the Beacon-citation verification step.
 - The existing Mirror→Beacon promotion discipline in the substrate: DBSP papers (F# library); RFC 2119 (no-directives rule SDT); SEC and Reg FD (public-company compliance); in-toto and W3C PROV (agency-receipt work). These prior anchorings are the worked examples Claude.ai cites.
 - `.claude/agents/formal-verification-expert.md` (Soraya) — the formal-verification routing that would handle the categorical / lawful-structure verification for Beacon-candidate classes structurally a typeclass instance.
+
+### Forward-references not yet on main
+
+- PR #1081 — the v2 taxonomy that this Mirror→Beacon gate would tier. The cited memory filename is not present in the current repo tree; keep this as a forward-reference until that PR lands or the path can be updated to the actual filename.
+- PR #1083 — the verification-cascade that already catches hallucinated citations (class #1c). Same discipline as the Beacon-citation verification step. The cited memory filename is not present in the current repo tree; keep this as a forward-reference until that PR lands or the path can be updated to the actual filename.
 
 ## Future v3 work (deferred — not this session)
 
