@@ -175,15 +175,18 @@ Returns one match: `2026-04-26-sync-drain-plan-acehack-lfg-roundtrip-option-c.md
 2026-04-26 sync-drain-plan ADR that codified Option C (the chosen sync
 strategy) before the double-hop pattern explicitly emerged. Reading
 that ADR shows it covered the *AceHack-first sync drain* decision, which
-the 2026-04-27 `feedback_lfg_master_acehack_zero_divergence_fork_double_hop_*`
+the 2026-04-27 `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_*`
 memo extended into the full double-hop pattern. So the supersession at
 2026-05-02 implicitly affects the ADR's chosen Option C — and walking
 the abandonment forward should ask whether the ADR needs an updated
 status marker (superseded-by-LFG-only-directive).
 
 This is a **layer-7 finding worth its own follow-up:** the 2026-04-26 ADR
-should carry a `superseded:` or `current_status:` marker pointing at the
-2026-04-29 LFG-only directive + 2026-05-02 abandonment. ADRs without
+should carry a `> **Superseded by** [link]` blockquote at the top per
+the existing convention (see `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`
+line 3 and `docs/DECISIONS/2026-04-21-router-coherence-v2.md` lines 4 and 142
+for the canonical pattern). The supersession should point at the 2026-04-29
+LFG-only directive memo + the 2026-05-02 abandonment. ADRs without
 supersession markers drift to falsely-canonical status. Filing this as
 a separate concern from the worked example.
 
@@ -312,10 +315,11 @@ absorbs squash-SHA) was abandoned 2026-05-02 because:
    `docs/DECISIONS/2026-04-26-sync-drain-plan-acehack-lfg-roundtrip-option-c.md`
    as the original ADR codifying the sync strategy that the double-hop
    pattern operationalized. The supersession affects this ADR
-   implicitly; it should carry an explicit `superseded:` /
-   `current_status:` marker pointing at the 2026-04-29 LFG-only directive
-   + 2026-05-02 abandonment so future readers don't treat it as
-   canonical-current.
+   implicitly; it should carry a `> **Superseded by** [link]`
+   blockquote at the top (per the existing ADR convention demonstrated
+   in `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`) pointing
+   at the 2026-04-29 LFG-only directive memo plus the 2026-05-02
+   abandonment, so future readers don't treat the ADR as canonical-current.
 5. **No permanent rejection.** The abandonment is current-state, not
    forever — *"WONT-DO is 99% deferral, not forever"* applies. If
    risk-absorption needs return, the double-hop pattern is recoverable
