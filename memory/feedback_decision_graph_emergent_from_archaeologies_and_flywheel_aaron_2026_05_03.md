@@ -22,7 +22,7 @@ Each substrate type maps to a node class in the emergent graph:
 |---|---|---|
 | Backlog row | `docs/backlog/P*/B-*.md` | public |
 | ADR | `docs/DECISIONS/` | public |
-| Named-decision memo | `memory/feedback_*.md` / `project_*` | per-user |
+| Named-decision memo | `memory/feedback_*.md` / `memory/project_*.md` | per-user |
 | Skill | `.claude/skills/<name>/SKILL.md` | public |
 | Persona notebook | `memory/persona/<name>/` | per-user |
 | User memo | `memory/user_*.md` | per-user (sacred-tier when about deceased family) |
