@@ -645,8 +645,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise's pin in .mise.toml. Same pattern as
+        # memory-index-duplicate-lint.yml (#1377) +
+        # memory-reference-existence-lint.yml (#1378). shellenv.sh
+        # wires BASH_ENV so subsequent run: steps auto-source the
+        # managed shellenv with bun on PATH.
+        run: ./tools/setup/install.sh
+
       - name: Run check-tick-history-order
-        run: tools/hygiene/check-tick-history-order.sh
+        run: bun tools/hygiene/check-tick-history-order.ts
 
   lint-no-conflict-markers:
     # Fail if any committed file contains git merge-conflict markers
@@ -669,8 +677,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise's pin in .mise.toml. Same pattern as
+        # memory-index-duplicate-lint.yml (#1377) +
+        # memory-reference-existence-lint.yml (#1378). shellenv.sh
+        # wires BASH_ENV so subsequent run: steps auto-source the
+        # managed shellenv with bun on PATH.
+        run: ./tools/setup/install.sh
+
       - name: Run check-no-conflict-markers
-        run: tools/hygiene/check-no-conflict-markers.sh
+        run: bun tools/hygiene/check-no-conflict-markers.ts
 
   lint-archive-header-section33:
     # Fail if any courier-ferry / external-conversation import under
@@ -697,8 +713,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise's pin in .mise.toml. Same pattern as
+        # memory-index-duplicate-lint.yml (#1377) +
+        # memory-reference-existence-lint.yml (#1378). shellenv.sh
+        # wires BASH_ENV so subsequent run: steps auto-source the
+        # managed shellenv with bun on PATH.
+        run: ./tools/setup/install.sh
+
       - name: Run check-archive-header-section33
-        run: tools/hygiene/check-archive-header-section33.sh
+        run: bun tools/hygiene/check-archive-header-section33.ts
 
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
