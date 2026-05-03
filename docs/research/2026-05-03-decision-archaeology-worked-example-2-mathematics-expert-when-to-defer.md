@@ -49,14 +49,18 @@ seeds. Three properties make it complementary to worked example #1
 
 ## The vibe-coded reframe (Aaron 2026-05-03 correction)
 
-The maintainer reminded me mid-tick: per `AGENTS.md`'s vibe-coded
-hypothesis, he has written **zero lines of code** — every line in
-`src/**`, `tools/**`, `docs/**` is **agent-authored** (per
-`AGENTS.md` "The vibe-coded hypothesis" §). The maintainer
-2026-05-03 chat extension explicitly broadens this to `.claude/skills/`
-as well: *"i didn't write any code all is written by you"* — so
-SKILL.md content is agent-authored too, even though `.claude/skills/`
-isn't named in the AGENTS.md scope-list verbatim.
+The maintainer reminded me mid-tick: per `AGENTS.md` §"The
+vibe-coded hypothesis", he has written **zero lines of code** —
+every line in `src/**`, `tools/**`, `docs/**` is
+**agent-authored**. AGENTS.md verbatim names only those three
+roots. The maintainer 2026-05-03 chat extends the scope to
+`.claude/skills/` separately — *"i didn't write any code all is
+written by you"* — confirming SKILL.md content is agent-authored
+too, even though `.claude/skills/` isn't in the AGENTS.md
+verbatim scope-list. (Backporting the `.claude/skills/` extension
+into AGENTS.md is itself a substrate-or-it-didn't-happen
+follow-up; this paragraph cites the maintainer-chat as the
+extension's source until AGENTS.md is updated.)
 
 This makes git-blame attribution structurally misleading at the
 substrate-content layer:
@@ -72,10 +76,10 @@ So the question "why was the umbrella's defer-block written this
 way?" cannot be answered by asking the maintainer — he didn't
 author the substrate; he selected it. Asking himself the question
 returns: "I committed an agent-authored proposal." But the model
-+ harness that authored the substrate IS recoverable from agent-
-signature substrate (Co-Authored-By trailers; tick shards; PR
-footers); only the specific session-CoT layer is the actually-
-lost part.
+and harness that authored the substrate IS recoverable from
+agent-signature substrate (Co-Authored-By trailers; tick shards;
+PR footers); only the specific session-CoT layer is the
+actually-lost part.
 
 **Decision-archaeology in vibe-coded projects has a unique
 substrate-author-recovery challenge — but partial recovery is available:**
