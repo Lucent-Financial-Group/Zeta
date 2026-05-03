@@ -268,7 +268,7 @@ let ``TLC validates DbspSpec`` () =
 let ``TLC validates CircuitRegistration`` () =
     // Circuit's Register/Build interleaving — verifies the
     // composite safety invariant `Safety == TypeOK /\
-    // NoRegisterAfterBuild` (per the spec's THEOREM at line ~96:
+    // NoRegisterAfterBuild` (matching the spec's stated THEOREM
     // `Spec => [](TypeOK /\ NoRegisterAfterBuild)`). The `Safety`
     // operator was missing from the .tla until B-0180 fixed the
     // config bug surfaced by the 2026-05-03 verify-then-claim sweep.
