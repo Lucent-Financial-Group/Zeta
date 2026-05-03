@@ -222,3 +222,20 @@ let ``TLC validates FeatureFlagsResolution`` () =
     // FeatureFlags.isEnabled matches the documented resolution order
     // on every environment.
     assertSpecValid "FeatureFlagsResolution"
+
+
+[<Fact>]
+let ``TLC validates DbspSpec`` () =
+    // DBSP per-tick semantics — explores 1M distinct initial states in
+    // ~11s wall on dev hardware, proving the operator-algebra
+    // invariants hold across the configured state space. Closes the
+    // first of the 4 deferred specs in B1 (#1383 math-proofs honest
+    // assessment outstanding-work matrix). The other 3
+    // (SpineAsyncProtocol, CircuitRegistration, SpineMergeInvariants)
+    // have known issues per a 2026-05-03 verify-then-claim sweep:
+    // SpineAsyncProtocol + SpineMergeInvariants produce trace files
+    // (counterexamples); CircuitRegistration has a config bug
+    // (invariant `Safety` not defined in spec). They remain
+    // intentionally unregistered until the underlying issues are
+    // fixed in follow-up PRs.
+    assertSpecValid "DbspSpec"
