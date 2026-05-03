@@ -4,7 +4,7 @@
 
 `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md`
 
-The architectural choice: Aaron filed B-0172 for "skill-domain plugin packaging." The question this guess answers: **why packages skills as plugins (specifically) — vs alternatives like cross-skill imports, skill-namespace prefixes, or shared-substrate-via-symlink?**
+The architectural choice: Aaron filed B-0172 for "skill-domain plugin packaging." The question this guess answers: **why package skills as plugins (specifically) — vs alternatives like cross-skill imports, skill-namespace prefixes, or shared-substrate-via-symlink?**
 
 ## Read state at guess time (2026-05-03 ~02:55Z)
 
