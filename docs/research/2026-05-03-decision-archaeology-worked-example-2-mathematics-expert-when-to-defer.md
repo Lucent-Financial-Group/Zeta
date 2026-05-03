@@ -37,8 +37,9 @@ seeds. Three properties make it complementary to worked example #1
    skill body works across modes, not just one.
 2. **Persona-notebook payoff** — the load-bearing answer lives in
    Aarav's NOTEBOOK at round 41. Without consulting persona notebooks,
-   the archaeology stops at "Aaron wrote it 2026-04-19 in PR #27"
-   without explaining why it became *canonical pattern* later.
+   the archaeology stops at "the maintainer wrote it 2026-04-19 in
+   PR #27" without explaining why it became *canonical pattern*
+   later.
 3. **Substantive negative at Layer 7** — the 2026-04-21
    router-coherence ADR pair exists but is about a DIFFERENT routing
    concern (claims-tester Stage-1-vs-Stage-2 flow), not the umbrella's
@@ -135,7 +136,7 @@ code; this layer no-ops for skill-body documentation.
 ### Layer 6 — Round-history shards
 
 ```bash
-ls docs/hygiene-history/ticks/2026/04/ | head -3
+ls -1 docs/hygiene-history/ticks/2026/04/ | sort | head -3
 ```
 
 Returns: `28`, `29`, `30` — the earliest tick-shard directory under
@@ -147,9 +148,10 @@ umbrella authoring**.
 **Layer-6 output:** substantive negative — pre-shard-discipline
 substrate cannot be archaeologically traced through tick shards; it
 must be traced through other layers (commit + persona-notebook +
-ADR + memos). This itself teaches contributors: **substrate boundaries
-matter**. The round-history surface is dense for 2026-04-28+ work but
-sparse / nonexistent for earlier substrate. Decision-archaeology must
+memos; ADR-class did not canonicalize this pattern, per Layer 7
+below). This teaches contributors: **substrate boundaries matter**.
+The round-history surface is dense for 2026-04-28+ work but sparse /
+nonexistent for earlier substrate. Decision-archaeology must
 recognize when a layer is empty by-substrate-design rather than by
 omission.
 
@@ -187,14 +189,18 @@ load-bearing claim about ADR content).
 grep -lE "When to defer|umbrella exists to" memory/feedback_*.md
 ```
 
-Returns no specific feedback memo named for the pattern. The doctrine
-lives in the ADR pair (Layer 7) + Aarav's notebook (Layer 9), not in
-a named-rule memo.
+Returns no specific feedback memo named for the pattern. The
+recognition-as-canonical lives in Aarav's notebook (Layer 9) +
+the replication evidence (Layer 4), not in a named-rule memo and
+not in an ADR (per Layer 7 substantive negative).
 
 **Layer-8 output:** another substantive negative result — not every
-load-bearing pattern gets a feedback memo; some live in ADR + persona-
-notebook substrate. The skill body should teach contributors to read
-all 11 layers, not give up when one returns nothing.
+load-bearing pattern gets a feedback memo; this one lives in
+persona-notebook + replication-evidence substrate alone. The skill
+body should teach contributors to read all 11 layers, not give up
+when one returns nothing, and to recognize when the canonical form
+spans multiple sub-canonical surfaces (notebook + replication)
+without a single doctrine-elevation point.
 
 ### Layer 9 — Persona notebooks
 
@@ -215,14 +221,17 @@ Returns:
 **Layer-9 output:** *this is the load-bearing layer for the question.*
 Aarav (skill-tune-up persona) explicitly noted at round 41 (2026-04-20,
 one day after authoring) that the umbrella's defer-block IS the canonical
-pattern — and named it as the model other umbrellas should follow. The
-persona-notebook entry preceded the ADR pair (v1 + v2 land 2026-04-21);
-Aarav's observation is what drove the doctrine into the ADRs.
+pattern — and named it as the model other umbrellas should follow.
+Aarav's observation IS the explicit recognition-as-canonical signal;
+no ADR captures it; no named-decision memo captures it. The notebook
+recognition + the replication evidence (Layer 4 — physics-expert
+copied the pattern) together constitute the canonical-status without
+formal ADR doctrine.
 
 This is the kind of load-bearing context that **doesn't appear at any
 other layer.** Without consulting Aarav's notebook, the archaeology
-stops at "Aaron wrote it as part of round 34 factory alignment" without
-explaining *why it became canonical*.
+stops at "the maintainer wrote it as part of round 34 factory
+alignment" without explaining *why it became canonical*.
 
 ### Layer 10 — Conversation archives
 
@@ -230,7 +239,9 @@ explaining *why it became canonical*.
 case (other than this very document, recursively). The conversations
 that produced the pattern are pre-Drive-bridge era (round 34 was
 2026-04-19; Drive-bridge ferry pattern emerged later); the canonical
-durable form is the SKILL.md + ADR + persona-notebook trio.
+durable form is the SKILL.md (umbrella + replicated to physics-expert
+sibling) + Aarav's persona notebook duo — NO ADR is part of the
+canonical durable form, per Layer 7's substantive negative.
 
 ### Layer 11 — WONT-DO archaeology + retired-SKILL.md history
 
