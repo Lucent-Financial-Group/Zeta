@@ -95,11 +95,22 @@ This pre-prediction itself is calibration data: how well does Otto predict its o
 
 Read source: `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md` (full body) — protocol-permitted only after the guess commit landed (guess committed under 4a3d583 on the guess branch; landing to main eventually happened via PR #1283's chained-rebase-merge — PR #1282, which originally hosted the guess commit alone, was closed as superseded after #1283 absorbed both guess + recovery commits; the binding marker is the guess COMMIT TIMESTAMP, not the merge timestamp).
 
-### Architectural intent (Aaron's verbatim)
+### Architectural intent (Aaron's verbatim — refined via direct first-party query 2026-05-03)
+
+**From B-0172 row body** (initial recovery source):
 
 > *"look at packaking skill domains a plugins or other packagin so we can take advantage of hooks in harnesses"*
 
-**Primary frame**: **plugin packaging exists to ship hooks** ("so we can take advantage of hooks in harnesses"). Without hooks, plugin packaging is "bare-skill-grouping" (the row's own characterization). The composition with B-0173 is depends_on (load-bearing), not just composes_with.
+**From Aaron 2026-05-03 chat clarification (direct first-party query, after recovery commit landed)**:
+
+> *"why package skills as plugins (specifically) i care about the hooks the most and then 2nd going to the devloper / vibe coder where they are already without much hassle."*
+
+**Two architectural motivations, ranked**:
+
+1. **PRIMARY: Hooks** — *"i care about the hooks the most"*. Plugin packaging exists to ship hooks. Without hooks, plugin packaging is "bare-skill-grouping" (the row's own characterization). The composition with B-0173 is depends_on (load-bearing), not just composes_with
+2. **SECONDARY: Meet developers where they already are** — *"going to the devloper / vibe coder where they are already without much hassle"*. Plugin packaging meets contributors in the harness they already use (Claude Code plugin system; Codex equivalent; Cursor; etc.) without forcing them to install separately. Distribution-as-low-friction is the secondary motivation
+
+The secondary motivation was NOT in the B-0172 row body verbatim. Aaron's direct chat input added it as load-bearing first-party data.
 
 **Promotion-trigger gate**: row is P2 not P1 because no skill domain has yet met the promotion-trigger criteria (3+ worked examples per skill candidate + 1+ judgment-disagreement per expert candidate). When a domain matures, this row becomes the implementation work.
 
@@ -123,18 +134,26 @@ Read source: `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05
 
 ## Calibration delta
 
-### Architectural layer — PARTIAL-MATCH (6/10)
+### Architectural layer — PARTIAL-MATCH (6/10) — SCORE UNCHANGED but motivation-ranking now first-party-confirmed
 
 | What I got | What I missed |
 |---|---|
-| Distribution-as-unit (correct) | **"Hooks-shipping-as-primary-purpose"** — Aaron's verbatim *"so we can take advantage of hooks in harnesses"* names hooks as THE motivating frame, not a benefit |
-| Composition-as-contracts (correct, principle-shaped) | **Promotion-trigger maturity-gate** — row is P2 specifically because the trigger hasn't fired; I didn't anticipate the maturity-gate-before-packaging design at all |
-| Hub-satellite at domain level (correct, principle-shaped) | (no miss here — though wasn't named in row) |
+| Distribution-as-unit (correct — partial match for Aaron's secondary "meet developers where they are") | **PRIMARY motivation: hooks** — Aaron's direct chat input *"i care about the hooks the most"* — I had hooks as point #2 of 4, not as primary |
+| Composition-as-contracts (correct, principle-shaped) | **SECONDARY motivation: meeting developers where they are** — Aaron's chat *"going to the devloper / vibe coder where they are already without much hassle"*. NOT in the row body verbatim; first-party clarification post-recovery added it |
+| Hub-satellite at domain level (correct, principle-shaped — but wasn't named by Aaron) | **Promotion-trigger maturity-gate** — row is P2 specifically because the trigger hasn't fired; I didn't anticipate the maturity-gate-before-packaging design at all |
 | Versioning-as-lineage (incorrect — not a stated frame) | The row says "minimal fields" — no semver in the manifest |
+| Isolation-as-namespace (incorrect — not a stated frame) | (extraneous — Aaron didn't motivate plugins by namespace isolation) |
 
-**Analysis**: I generalized to "distribution + isolation + composition" — got the principles right but missed Aaron's specific "hooks-shipping" frame. Same pattern as guess #001 (principle-strong, specific-frame-weak).
+**Refined analysis (post-Aaron-direct-input 2026-05-03)**: Aaron has TWO explicitly-ranked motivations, not the four I generalized to:
 
-The **promotion-trigger maturity-gate is a significant miss**: I didn't anticipate that packaging is gated on skill-domain maturity (3+ worked examples per skill + 1+ judgment-disagreement per expert). This is a DESIGN-by-Aaron choice, not derivable from principles.
+1. **Primary: hooks** — I had this as point #2 of 4. The ranking miss is significant — hooks IS the primary, not just an enabler
+2. **Secondary: developer/vibe-coder distribution** — I had "distribution-as-unit" but framed it as content-distribution rather than developer-meeting
+
+My "isolation-as-namespace" + "versioning-as-lineage" + "composition-as-contracts" are inferred-from-principles motivations Aaron did NOT name. They may still be true benefits but are NOT load-bearing motivations.
+
+**Pattern**: I tend to **proliferate inferred motivations** beyond what's first-party. Aaron's two explicit motivations (hooks primary, developer-friction-reduction secondary) are simpler than my four. This is over-inference at the architectural layer — proposing more "reasons why" than the first-party agent actually has. Future-Otto: when listing architectural motivations, mark which are first-party (verbatim from row / chat) vs inferred (from principles); rank them only when first-party data permits.
+
+**The promotion-trigger maturity-gate miss**: I didn't anticipate that packaging is gated on skill-domain maturity (3+ worked examples per skill + 1+ judgment-disagreement per expert). This is a DESIGN-by-Aaron choice, not derivable from principles.
 
 ### Substrate-content layer — MIXED (6/10)
 
