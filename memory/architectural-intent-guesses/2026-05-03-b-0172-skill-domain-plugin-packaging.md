@@ -91,18 +91,125 @@ Based on guess #001's pattern (principle-strong + specific-weak), I predict:
 
 This pre-prediction itself is calibration data: how well does Otto predict its own accuracy BEFORE seeing the answer?
 
-## Ground truth (TO BE FILLED IN AFTER VERIFICATION)
+## Ground truth (recovered 2026-05-03 ~03:00Z via direct read of B-0172)
 
-(Empty at write time. Populated when Otto reads B-0172 row body in a SUBSEQUENT GROUND-TRUTH-RECOVERY commit.)
+Read source: `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md` (full body) — protocol-permitted only after the guess commit landed (committed under cf1dc7b on the guess branch; merged to main via PR #1282 still wait-ci at recovery-time, but commit timestamp is the binding marker).
 
-## Calibration delta (TO BE FILLED IN AFTER VERIFICATION)
+### Architectural intent (Aaron's verbatim)
 
-(Empty at write time.)
+> *"look at packaking skill domains a plugins or other packagin so we can take advantage of hooks in harnesses"*
+
+**Primary frame**: **plugin packaging exists to ship hooks** ("so we can take advantage of hooks in harnesses"). Without hooks, plugin packaging is "bare-skill-grouping" (the row's own characterization). The composition with B-0173 is depends_on (load-bearing), not just composes_with.
+
+**Promotion-trigger gate**: row is P2 not P1 because no skill domain has yet met the promotion-trigger criteria (3+ worked examples per skill candidate + 1+ judgment-disagreement per expert candidate). When a domain matures, this row becomes the implementation work.
+
+### Substrate-content intent
+
+- `.claude-plugin/plugin.json` manifest with **minimal fields** (name + description + author per the upstream Claude Code spec — NOT semver/dependencies/etc.)
+- Bundle contents: `skills/<skill>/SKILL.md` + `agents/<agent>.md` + hooks (per B-0173) + `tools/` (TS files per rule 2) + OpenSpec capability references (per B-0171)
+- **Codex equivalent uses `.codex-plugin/plugin.json` with richer fields** (semver + interface block + URLs + category) — different shape from Claude Code's
+- **Cross-harness portability**: canonical "skill-domain bundle" format (harness-agnostic) + per-harness packaging adapters that emit harness-specific package formats
+
+### Specific implementation intent
+
+- Install location: `~/.claude/plugins/cache/<plugin-name>/` (Claude Code convention)
+- Manifest path inside the bundle: `.claude-plugin/plugin.json` (per recent #1262 path corrections)
+- B-0169 (decision-archaeology) named as "likely first skill packaged once mature" but row scope is generic — packaging happens when promotion-trigger fires, not "package this specific cluster now"
+
+### Cross-row composition
+
+- depends_on: **[B-0171, B-0173]** (NOT just B-0171)
+- composes_with: [B-0169, B-0170]
+
+## Calibration delta
+
+### Architectural layer — PARTIAL-MATCH (6/10)
+
+| What I got | What I missed |
+|---|---|
+| Distribution-as-unit (correct) | **"Hooks-shipping-as-primary-purpose"** — Aaron's verbatim *"so we can take advantage of hooks in harnesses"* names hooks as THE motivating frame, not a benefit |
+| Composition-as-contracts (correct, principle-shaped) | **Promotion-trigger maturity-gate** — row is P2 specifically because the trigger hasn't fired; I didn't anticipate the maturity-gate-before-packaging design at all |
+| Hub-satellite at domain level (correct, principle-shaped) | (no miss here — though wasn't named in row) |
+| Versioning-as-lineage (incorrect — not a stated frame) | The row says "minimal fields" — no semver in the manifest |
+
+**Analysis**: I generalized to "distribution + isolation + composition" — got the principles right but missed Aaron's specific "hooks-shipping" frame. Same pattern as guess #001 (principle-strong, specific-frame-weak).
+
+The **promotion-trigger maturity-gate is a significant miss**: I didn't anticipate that packaging is gated on skill-domain maturity (3+ worked examples per skill + 1+ judgment-disagreement per expert). This is a DESIGN-by-Aaron choice, not derivable from principles.
+
+### Substrate-content layer — MIXED (6/10)
+
+| What I got | What I missed |
+|---|---|
+| `.claude-plugin/plugin.json` path (correct; cited from #1262 path-correction context) | **Codex equivalent format** with richer fields (semver + interface block + URLs + category) — completely missed |
+| Plugin install location `~/.claude/plugins/cache/<plugin-name>/` (correct) | **Cross-harness portability via canonical-bundle-format + per-harness adapters** — significant architectural element; row's design is to ship a harness-agnostic substrate format |
+| Bundle contents (skills/, agents/, hooks/) (correct, kind of — also tools/ and OpenSpec references) | (closeish on contents) |
+| First packaging = decision-archaeology cluster (correct — B-0169 named as "likely first") | (no miss here) |
+
+**Analysis**: I correctly inferred the Claude-Code-side path/format/install-location (recent specific-context from PR #1262 boosted accuracy). But missed the Codex equivalent + cross-harness adapter design entirely. The cross-harness piece is load-bearing for Aaron's "skills are for everyone and even other agent harnesses" framing.
+
+### Specific implementation layer — MOSTLY-MATCH (7/10)
+
+| What I got | What I missed |
+|---|---|
+| Plugin format: directory tree with manifest + skills/ + agents/ + hooks/ (correct) | **Tools/ subdirectory** — I didn't list this explicitly |
+| Plugin install location (correct) | (no miss) |
+| Manifest path (correct via #1262 context) | (no miss) |
+| Dependencies declaration mechanism (incorrect — I guessed `dependencies: ["plugin-name@version"]`; row says "minimal fields") | The row says minimal fields — no dependencies in the Claude Code manifest. (Codex has more.) |
+
+**Analysis**: This layer was substantially stronger than guess #001's specific-implementation layer. The reason: **recent specific-context from PR #1262 path correction** taught me the actual manifest path + install location. When prior specific-context exists, specific-implementation accuracy is much higher.
+
+**This is a useful finding** about when the principle-strong + specific-weak pattern breaks: it breaks when prior specific-context is present.
+
+### Cross-row composition layer — MOSTLY-MATCH (7/10)
+
+| What I got | What I missed |
+|---|---|
+| depends_on B-0171 (correct) | **depends_on B-0173 (NOT composes_with)** — I categorized B-0173 as composes_with; actual is depends_on. Architectural reason: hooks shipping inside the plugin is the primary value |
+| composes_with B-0169 (correct) | (no miss) |
+| composes_with B-0170 (correct) | (no miss) |
+| | (no major miss) |
+
+**Analysis**: Right rows; one categorization error (B-0173 depends_on vs composes_with). The depends_on B-0173 reflects that "without hooks, packaging is bare-skill-grouping" — packaging-without-hooks is meaningless, so hooks must precede plugin packaging.
+
+## Pre-recovery prediction validation
+
+I predicted before research:
+
+| Layer | Predicted | Actual | Match? |
+|---|---|---|---|
+| Architectural | PARTIAL-MATCH | PARTIAL-MATCH (6/10) | ✓ |
+| Substrate-content | MIXED | MIXED (6/10) | ✓ |
+| Specific implementation | MOSTLY-OFF | MOSTLY-MATCH (7/10) | ✗ — over-predicted weakness |
+| Cross-row composition | (no prediction) | MOSTLY-MATCH (7/10) | n/a |
+
+**Pre-prediction accuracy: 2/3 = 67%**. The pattern (principle-strong + specific-weak) held for architectural + substrate-content layers, but specific-implementation was actually stronger than expected because recent specific-context (PR #1262) was present.
+
+**Updated pattern observation**:
+- The principle-strong + specific-weak pattern holds **when no prior specific-context is present**
+- Recent specific-context (e.g., recent PR fixes, recent doc reads, recent commit context) substantially boosts specific-implementation accuracy
+- Pre-recovery self-prediction is reliable for architectural + substrate-content layers but unreliable for specific-implementation (Otto under-predicts its own ability when specific-context exists)
+
+## Summary
+
+**Score (informal):**
+
+| Layer | Score | Pattern |
+|---|---|---|
+| Architectural intent | **6/10** | Principle-strong; missed Aaron's "hooks-shipping" frame + promotion-trigger maturity-gate |
+| Substrate-content | **6/10** | Got Claude-Code-side; missed Codex equivalent + cross-harness adapter design |
+| Specific implementation | **7/10** | **Stronger than expected** — recent specific-context (PR #1262) boosted accuracy |
+| Cross-row composition | **7/10** | Right rows; one mis-categorization (B-0173 depends_on vs composes_with) |
+
+**Overall**: 26/40 = **65%** — significantly higher than guess #001's 48%. The improvement came from specific-implementation + cross-row layers, both boosted by prior context.
+
+**Key new finding**: the principle-strong + specific-weak pattern is **context-dependent** — when specific-context exists, the gap narrows. This refines the original pattern observation.
 
 ---
 
-**Guess timestamp:** 2026-05-03 ~02:55Z
+**Guess timestamp:** 2026-05-03 ~02:55Z (committed under 4a3d583 on the guess branch; landed to main via PR #1282)
+**Ground-truth recovery timestamp:** 2026-05-03 ~03:00Z
 **Author:** Otto autonomous (architect hat)
-**Protocol:** in-the-moment guess per
+**Protocol:** in-the-moment guess + ground-truth recovery per
 `memory/feedback_guess_then_verify_architectural_intent_calibration_protocol_aaron_2026_05_03.md`
-**Series:** Guess #002 (after #001 on B-0173 hook-authoring scored ~48% across 4 layers; pattern observation: principle-strong + specific-weak)
+**Recovery method:** direct read of `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md` body
+**Series:** Guess #002 in calibration series; #001 scored 48%, #002 scored 65% — improvement attributed to recent specific-context (PR #1262) boosting specific-implementation layer
