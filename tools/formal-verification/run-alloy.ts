@@ -19,11 +19,11 @@
 // counterexample or unsatisfiable run. Exit 0 only if the runner
 // exits 0 AND no "FAIL " markers appear in stdout.
 
-import { readdirSync, readFileSync, statSync, mkdirSync, unlinkSync } from "node:fs";
-import { join } from "node:path";
+import { statSync, mkdirSync } from "node:fs";
+import { delimiter, join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-type ExitCode = 0 | 1 | 2;
+type ExitCode = 0 | 1 | 2 | 3;
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
@@ -43,21 +43,27 @@ function repoRoot(): string {
   return result.stdout.trim();
 }
 
+/** In-process PATH-scan equivalent of `which`. No shell-out (matches
+ *  the F# AlloyRunnerTests pattern; portable to Windows + minimal
+ *  images that lack `/usr/bin/env which`). */
 function which(exe: string): string | null {
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const result = spawnSync("/usr/bin/env", ["which", exe], {
-    encoding: "utf8",
-    maxBuffer: SPAWN_MAX_BUFFER,
-  });
-  if (result.status !== 0) return null;
-  const out = result.stdout.trim();
-  if (out === "") return null;
-  try {
-    statSync(out);
-    return out;
-  } catch {
-    return null;
+  const pathEnv = process.env["PATH"] ?? "";
+  if (pathEnv === "") return null;
+  const isWindows = process.platform === "win32";
+  const extensions = isWindows ? [".exe", ".cmd", ".bat", ""] : [""];
+  for (const dir of pathEnv.split(delimiter)) {
+    if (dir === "") continue;
+    for (const ext of extensions) {
+      const candidate = join(dir, `${exe}${ext}`);
+      try {
+        const s = statSync(candidate);
+        if (s.isFile()) return candidate;
+      } catch {
+        // not present — try next
+      }
+    }
   }
+  return null;
 }
 
 function fileExists(path: string): boolean {
@@ -220,11 +226,16 @@ function runOne(toolchain: Toolchain, specName: string): ExitCode {
 function runAll(toolchain: Toolchain): ExitCode {
   const passed: string[] = [];
   const failed: string[] = [];
-  const skipped: string[] = [];
+  const missing: string[] = [];
+  const failureDetails: { spec: string; result: AlloyResult }[] = [];
   for (const specName of CATALOGUE) {
     if (!specExists(toolchain, specName)) {
-      process.stdout.write(`skipping ${specName} (no .als)\n`);
-      skipped.push(specName);
+      // Missing-from-catalogue is catalogue drift (rename / delete),
+      // NOT acceptable skip. Treat as failure to gate against drift.
+      process.stderr.write(
+        `MISSING: ${specName} (no .als in ${toolchain.specsPath})\n`,
+      );
+      missing.push(specName);
       continue;
     }
     process.stdout.write(`running Alloy on ${specName}...\n`);
@@ -237,14 +248,37 @@ function runAll(toolchain: Toolchain): ExitCode {
         `  FAIL: ${specName} (exit ${String(result.exitCode)})\n`,
       );
       failed.push(specName);
+      failureDetails.push({ spec: specName, result });
     }
   }
   process.stdout.write("\n");
   process.stdout.write(
-    `summary: ${String(passed.length)} passed, ${String(failed.length)} failed, ${String(skipped.length)} skipped (out of ${String(CATALOGUE.length)} catalogued)\n`,
+    `summary: ${String(passed.length)} passed, ${String(failed.length)} failed, ${String(missing.length)} missing-from-catalogue (out of ${String(CATALOGUE.length)} catalogued)\n`,
   );
-  if (failed.length > 0) {
-    process.stderr.write(`failed: ${failed.join(", ")}\n`);
+  if (failureDetails.length > 0) {
+    process.stderr.write("\n--- failure details ---\n");
+    for (const fd of failureDetails) {
+      process.stderr.write(
+        `\n[${fd.spec}] (rerun with: bun tools/formal-verification/run-alloy.ts ${fd.spec})\n`,
+      );
+      const tail = fd.result.stdout.split("\n").slice(-30).join("\n");
+      process.stderr.write(tail);
+      if (!tail.endsWith("\n")) process.stderr.write("\n");
+      if (fd.result.stderr !== "") {
+        process.stderr.write("--- stderr ---\n");
+        const errTail = fd.result.stderr.split("\n").slice(-15).join("\n");
+        process.stderr.write(errTail);
+        if (!errTail.endsWith("\n")) process.stderr.write("\n");
+      }
+    }
+  }
+  if (failed.length > 0 || missing.length > 0) {
+    if (failed.length > 0) {
+      process.stderr.write(`\nfailed: ${failed.join(", ")}\n`);
+    }
+    if (missing.length > 0) {
+      process.stderr.write(`missing: ${missing.join(", ")}\n`);
+    }
     return 1;
   }
   return 0;
@@ -296,9 +330,12 @@ function main(argv: readonly string[]): ExitCode {
 
   const specName = argv[0] ?? "";
   if (specName.startsWith("--")) {
+    // Exit 3 for argument/usage error; distinguishable from
+    // exit 2 (toolchain not ready). Same orthogonal-exit-code
+    // contract as run-tlc.ts.
     process.stderr.write(`unknown flag: ${specName}\n`);
     process.stderr.write("use --help\n");
-    return 2;
+    return 3;
   }
   return runOne(toolchain, specName);
 }
