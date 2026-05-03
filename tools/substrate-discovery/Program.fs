@@ -41,13 +41,29 @@ let main argv =
         0
 
     | [| "--smoke" |] ->
-        // AOT-clean smoke test: build a trivial Circuit + step once.
-        // Proves Zeta.Core's IVM primitive composes through a
-        // PublishAot=true binary. The actual indexing surface lands
-        // in Phase 1.
+        // AOT-clean smoke test: build a trivial Circuit + feed one
+        // input + step once + observe the output. Proves Zeta.Core's
+        // FULL IVM tick path composes through a PublishAot=true
+        // binary — not just the build path. Per #1392 reviewer
+        // finding: a pure Build()-only smoke would miss any AOT
+        // incompatibility in the tick exe surface.
         let circuit = Circuit.create ()
+        let input = circuit.ZSetInput<int> ()
+        let view = circuit.Output input.Stream
         circuit.Build ()
-        Console.WriteLine $"smoke: circuit built (tick %d{circuit.Tick})"
+
+        let tickBefore = circuit.Tick
+        (task {
+            input.Send(ZSet.ofKeys [ 1; 2; 3 ])
+            do! circuit.StepAsync ()
+        }).GetAwaiter().GetResult()
+        let tickAfter = circuit.Tick
+
+        Console.WriteLine $"smoke: circuit built + stepped (tick %d{tickBefore} -> %d{tickAfter})"
+        let mutable count = 0
+        for entry in view.Current do
+            count <- count + int entry.Weight
+        Console.WriteLine $"smoke: observed %d{count} entries in output ZSet"
         Console.WriteLine "smoke: ok"
         0
 
