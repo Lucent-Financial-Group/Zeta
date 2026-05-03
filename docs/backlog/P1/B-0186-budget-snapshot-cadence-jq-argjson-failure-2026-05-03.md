@@ -42,9 +42,12 @@ The script `tools/budget/snapshot-burn.sh` line 68 fetches:
 copilot_raw="$(gh api "/orgs/${org}/copilot/billing" 2>/dev/null || echo "{}")"
 ```
 
-The workflow's GITHUB_TOKEN has `contents:write + pull-requests:write
-+ actions:read` per `.github/workflows/budget-snapshot-cadence.yml`,
-but **does NOT have `read:org`** which the
+The workflow's `snapshot` job grants
+`contents:write` + `pull-requests:write` + `actions:read` to its
+`GITHUB_TOKEN` per `.github/workflows/budget-snapshot-cadence.yml`
+(top-level workflow `permissions:` is `contents: read`, narrower —
+the snapshot job widens within job scope only). The job
+**does NOT grant `read:org`** scope, which the
 `/orgs/{org}/copilot/billing` endpoint requires.
 
 The current fallback (`|| echo "{}"`) only triggers if `gh api` exits
@@ -137,6 +140,7 @@ copilot_raw="$(ensure_json "$copilot_raw" '{}')"
 Discovered during autonomous-loop tick 2026-05-03T17:45Z while
 auditing main CI for failures during a drained-bounded-PR-queue
 no-op window. The failure had been silent for 35+ minutes without
-any other surface flagging it (which is the cadence-workflow-null-
-result-hygiene-scan class — see `feedback_scheduled_workflow_null_result_hygiene_scan_aaron_2026_04_28.md`
-if it exists, otherwise the broader cadence-detector pattern).
+any other surface flagging it — exemplifying the broader
+cadence-detector pattern where scheduled workflows' silent failures
+need their own audit cadence (the `gh run list --branch main` audit
+this iteration found it).
