@@ -27,21 +27,15 @@ Finished in 00s
 
 TLC dumps a trace file when it finds an invariant violation. The depth-17 termination suggests TLC explored 17 transitions before finding the violation — deeper than the SpineAsyncProtocol failure (depth 9), which may indicate the violation is more subtle (further from initial state, requires more interleaving to manifest).
 
-## Investigation needed
+## Investigation summary (resolved)
 
-1. Read the TTrace file to identify which invariant fails at the depth-17 state
-2. Determine the failure class:
-   - **Spec bug**: spec models the LSM-spine merge protocol incorrectly
-   - **Invariant over-specification**: invariant asks for a property the merge protocol doesn't actually guarantee
-   - **Real bug found**: the invariant is correct but the modeled protocol violates it; this would indicate a bug in `BalancedSpine.fs` itself
-3. The third class is the most interesting — TLA+ found a real concurrency bug. If that's the case, file as a P0/P1 in BUGS.md instead of treating it as a spec-fix.
+The TTrace dump at the depth-16 state showed `levels[1] = 10 > 2*Cap(1) = 8` after a Cascade(0)→Cascade(0)→Cascade(0)→Cascade(0)→Cascade(0) sequence with no Cascade(1) ever firing. Failure-class triage found:
 
-## Composes with
+- **Not a spec-models-protocol-incorrectly bug**: the `Cascade(i)` action's *primary effect* (move levels[i] to levels[i+1]) is correct
+- **Not invariant over-specification**: `InvCap` (each level ≤ 2*Cap) is the right safety property — BalancedSpine.fs maintains it in production
+- **Not real-bug-found in BalancedSpine.fs**: production code performs synchronous cascades — if level i+1 is full, level i must wait for i+1 to drain before dumping; the spec's `Cascade(i)` action lacked this neighboring-state precondition
 
-- B-0179 (SpineAsyncProtocol counterexample — sibling B1 issue)
-- B-0180 (CircuitRegistration config bug — sibling B1 issue, smallest fix)
-- `src/Core/BalancedSpine.fs` — the production code this spec models
-- Closure of B1 → A in the math-proofs honest assessment requires all 3 sibling fixes
+The fix (below) adds the missing precondition so the spec correctly models BalancedSpine.fs's synchronous cascade chain.
 
 ## Why P1 (after investigation)
 

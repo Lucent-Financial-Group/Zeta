@@ -87,18 +87,19 @@ InvCap == \A i \in 0..MaxLevel: levels[i] <= 2 * Cap(i)
 \* Liveness: every accepted batch eventually drains out of `pendingIn`.
 LivDrained == <>[](pendingIn = <<>>)
 
-\* State constraint to keep TLC's BFS tractable. The spec is otherwise
+\* State constraints to keep TLC's BFS tractable. The spec is otherwise
 \* unbounded: Accept can fire indefinitely so totalInserted grows
 \* without limit, even though levels + pendingIn stay bounded by physical
-\* capacity. Bounding totalInserted at twice the system's saturated mass
-\* covers fill-then-drain cycles without unbounded exploration. With the
-\* default MaxLevel=2 / MaxBatchSize=1 model in the .cfg, sum(2*Cap(i))
-\* = 14 plus 16-slot pendingIn = 30; bound 30 is enough to walk every
-\* reachable cap configuration twice over.
+\* capacity. Both constraints together bound the BFS:
+\*   * `totalInserted <= 30` — pragmatic exploration cap; far enough
+\*     above the saturated-mass ceiling under the default .cfg constants
+\*     (MaxLevel=2 / MaxBatchSize=1, where sum(2*Cap(i)) = 14) to walk
+\*     fill-then-drain cycles without re-exploring the same cap
+\*     configurations indefinitely.
+\*   * `Len(pendingIn) <= 4` — caps Accept's branching factor; without
+\*     it the 16-slot soft bound inside Accept would let TLC explore
+\*     too many parallel-batch interleavings under MaxBatchSize > 1.
 StateBound == totalInserted <= 30
-\* Also bound pendingIn length to constrain Accept's branching factor;
-\* the 16-slot soft bound in Accept itself is too loose to keep TLC
-\* tractable when MaxBatchSize > 1.
 PendingBound == Len(pendingIn) <= 4
 
 THEOREM Spec => [](TypeOK /\ InvMass /\ InvCap)
