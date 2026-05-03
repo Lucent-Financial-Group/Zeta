@@ -91,13 +91,18 @@ decision docs, scoping docs, ADRs, governance edits):
   unevidenced claims IS within the architect's authority;
   it does not require the maintainer's permission.
 
-**Discipline check (every substrate authoring tick):**
+**Discipline check (every substrate authoring tick).** For
+each question below, "yes" is the desired answer; "no"
+flags the failure mode and triggers a revision pass:
 
-- Did I echo any chat-assertion as architectural fact
-  without grading its evidence base?
-- Did I encode "maybe" as "is" anywhere?
-- Did I document falsifiability tests for hypotheses?
-- Did I attribute assertions to whoever asserted them?
+- Did I grade every chat-assertion's evidence base before
+  encoding it as architectural fact?
+- Did I keep "maybe" framed as "maybe" (hypothesis with
+  falsifiability test) rather than promoting it to "is"?
+- Did I document falsifiability tests for every hypothesis
+  encoded?
+- Did I attribute assertions to whoever asserted them
+  (maintainer, architect, external AI, named persona)?
 
 If any answer is "no" — that's the failure mode. Revise.
 
