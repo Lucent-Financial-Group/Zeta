@@ -214,9 +214,36 @@ Per the never-idle rule (CLAUDE.md §"Never be idle —
 speculative factory work beats waiting"), the tick does not
 wait for instruction. Priority ladder:
 
-0. **Cadence-tracker grep** (tick-open; the human maintainer 2026-05-03
-   directive). Before picking speculative work, grep the
-   tick-shard history for cadenced hygiene work that is due:
+0. **Tick-start mechanical checks** (the human maintainer 2026-05-03 directive:
+   *"i'd remember this now if i were you, sounds
+   importatant to survival"*). Two checks run at every
+   tick-open before picking speculative work:
+
+   **Check 0a — no-op-cadence mechanical check** (existing
+   tool; per `memory/feedback_recurrence_after_correction_needs_operational_enforcement_otto_2026_05_02.md`):
+
+   ```
+   bun tools/hygiene/check-no-op-cadence-pattern.ts
+   ```
+
+   (The bash sibling `check-no-op-cadence-pattern.sh` works
+   on environments without bun; both kept in sync.) The
+   script examines the last 7 tick-shards and warns if (a)
+   ≥5 are minimal-observation OR (b) most recent shard >15
+   min old. Both conditions catch the "no-op cadence"
+   failure mode at decision-time, not after the fact. If
+   the script warns, address the underlying cause before
+   continuing the priority ladder — typically by writing
+   a substantive shard OR doing real-work-not-
+   acknowledgment-only. **This check is critical to
+   tick-loop survival** — without it, agent drift into
+   ~20-tick-acknowledgment-only patterns goes unnoticed
+   until the human maintainer surfaces it manually (per
+   the corrective lineage at the 0913Z + 0918Z + 1366
+   shards).
+
+   **Check 0b — cadence-tracker grep**: grep the tick-shard
+   history for cadenced hygiene work that is due:
 
    ```
    grep -rE "CADENCE-TRACK" docs/hygiene-history/ticks/
