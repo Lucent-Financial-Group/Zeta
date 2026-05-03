@@ -46,25 +46,36 @@ Filter to standard `ubuntu-24.04` only. Skip on:
 
 Affected test classes:
 
-- `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` — 9 [Fact] entries
-- `tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs` — 3 [Fact] entries
+- `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` (per-spec `[<Fact>]` TLC entries)
+- `tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs` (per-spec `[<Fact>]` Alloy entries)
 - (Future) Lean integration tests if any are added at the F# layer
 
 ## Implementation options
 
-### Option A — Runtime OS check in `toolchainReady()`
+### Option A — Runtime check in `toolchainReady()`
 
-Cheapest. Add `Environment.OSVersion.Platform` check to the existing
-`toolchainReady()` helpers; return false on non-Linux so tests
-silent-no-op (matches existing skip-on-missing-toolchain pattern).
+Cheapest. Add a check to the existing `toolchainReady()` helpers
+that gates on TWO axes:
 
-Pros: minimal code change; consistent with existing skip discipline
-(no java → silent skip).
-Cons: macOS dev local runs would silent-skip even though TLC works
-locally (regression vs current behavior; devs lose local validation).
+1. **OS axis**: skip on non-Linux (catches `macos-26`,
+   `windows-2025`, `windows-11-arm`).
+2. **Runner-class axis**: skip on the slim runner. Since
+   `ubuntu-slim` is still Linux, an OS-only check won't catch it.
+   The discriminator is `GITHUB_WORKFLOW=low-memory` (GHA-set env
+   var) — survives runner-name churn unlike `RUNNER_NAME`.
 
-Mitigation: gate the OS check on `CI=true` env var so dev laptops
-still run them.
+Combined logic: run formal-verification tests when
+`Linux AND GITHUB_WORKFLOW != "low-memory"`; otherwise
+silent-no-op.
+
+Pros: minimal code change; consistent with existing
+skip-on-missing-toolchain pattern.
+Cons: macOS dev local runs would silent-skip even though TLC
+works locally (regression vs current behavior; devs lose local
+validation).
+
+Mitigation: gate the skip on `CI=true` env var so dev laptops
+still run them; on CI the dual-axis check applies.
 
 ### Option B — Custom `[<LinuxOnly>]` xunit attribute
 
@@ -97,6 +108,7 @@ preserves dev-local validation.
 ## Effort estimate
 
 M (1-2 days):
+
 - Half day: pick Option, implement
 - Half day: verify CI matrix shape unchanged (dotnet test still runs;
   just specific tests skip); confirm dev local still validates
