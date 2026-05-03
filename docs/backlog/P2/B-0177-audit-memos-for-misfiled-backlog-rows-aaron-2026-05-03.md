@@ -1,0 +1,89 @@
+---
+id: B-0177
+priority: P2
+status: open
+title: Audit memory/ for misfiled backlog rows — memos that should have been B-NNNN backlog entries (Aaron 2026-05-03 observation; "a lot of backlog lost in our memories")
+tier: tooling
+effort: M
+ask: Aaron 2026-05-03 verbatim "maybe you just made a memo in memory for it again :) and not a backlog, therfe is a a lot of backlog lost in our memories" (autonomous-loop maintainer channel)
+created: 2026-05-03
+last_updated: 2026-05-03
+depends_on: []
+composes_with: [B-0175]
+tags: [backlog, memory, audit, category-confusion, substrate-architecture, index, retrieval]
+---
+
+# Audit memory/ for misfiled backlog rows
+
+## Origin
+
+Aaron 2026-05-03, autonomous-loop maintainer channel. Otto was looking for an existing backlog row about "md links surviving rename where possible" / "technical numbering" — searched docs/backlog/ extensively, came up empty. Aaron's response:
+
+> "maybe you just made a memo in memory for it again :) and not a backlog, therfe is a a lot of backlog lost in our memories"
+
+This identifies a substrate-architecture failure mode: **memos got authored in memory/ where backlog rows should have been filed in docs/backlog/**. The two surfaces have different roles:
+
+- **memory/feedback_*.md** — observations, framings, rules, doctrine absorbed from external sources
+- **docs/backlog/P*/B-NNNN-*.md** — actionable work items with stable IDs, tier/effort/ask metadata, scoped scope
+
+When an item that should have been a backlog row gets authored as a memo, three failure modes:
+
+1. **Category confusion**: future-Otto looking for backlog candidates won't find it via grep on docs/backlog/
+2. **No stable B-NNNN ID**: cross-references can't use the canonical backlog identifier
+3. **No tier/effort/ask metadata**: the item lacks the prioritization scaffolding backlog rows carry
+
+## What this row builds
+
+A pass over memory/ identifying memos that satisfy backlog-row criteria:
+
+1. **Names a specific actionable work item** (not just an observation or doctrine)
+2. **Has scope and effort estimable** (small / medium / large; days / weeks)
+3. **Has an "ask" — the source request or empirical motivation**
+4. **Is NOT primarily a doctrine / framing / rule** (those legitimately belong in memory/)
+
+For each match: file a B-NNNN backlog row with appropriate frontmatter; leave the original memo in place but add a cross-reference pointer to the new backlog row (so the substrate is dual-indexed without duplication).
+
+## Empirical motivation
+
+This row is itself empirically motivated: Otto 2026-05-03 spent a tick searching for a specific Aaron-mentioned backlog row about "md links surviving rename" + "technical numbering." Searched:
+
+- `docs/backlog/P*/B-*.md` filenames for `link|rename|stable|tech|number|slug`
+- `docs/backlog/P*/*.md` content for `link.{0,15}rename|rename.{0,15}link|stable.{0,10}id|technical.{0,5}number`
+- `memory/*.md` filenames for similar keywords
+- `memory/*.md` content for the same patterns
+
+Result: the specific row Aaron referenced was not findable. Either it exists under a non-obvious filename, OR (more likely per Aaron's observation) it exists as a memo not as a backlog row. Composes with B-0175 (substrate-retrieval-index) — same architectural gap, different surface.
+
+## Composes with
+
+- **B-0175 (substrate-retrieval-index)**: the layer-4 active retrieval would prevent the failure mode this row addresses; this row is a one-shot manual pass while B-0175 is in flight
+- **memory/MEMORY.md**: the index over memory topic files; this row's pass would reveal which entries warrant a `→ docs/backlog/B-NNNN` pointer added to MEMORY.md
+- **docs/BACKLOG.md generator**: backlog rows feed the auto-generated index; misfiled-as-memo items currently invisible to that index
+
+## Why this is M-effort
+
+- 200+ files in memory/ (feedback + project + user + reference)
+- Each needs a quick is-this-a-backlog-candidate check (fast — most memos are clearly doctrine/framing/observation)
+- Suspected hit-rate: 5-10% per Aaron's observation ("a lot")
+- Each hit needs a new B-NNNN row authored (small per row; cumulative is M)
+- Cross-reference back-pointer in the original memo
+
+## Open design questions (NOT for this row; for the audit pass)
+
+1. **Hit threshold**: for ambiguous cases (memo names a future direction but doesn't quite scope it), default to leaving in memory/ or default to filing as backlog?
+2. **Cross-reference format**: explicit `→ docs/backlog/B-NNNN` line in memo OR a YAML frontmatter field?
+3. **Audit cadence**: one-shot pass + ongoing discipline, or recurring quarterly audit?
+4. **Tooling**: should the audit be mechanizable via classifier (LLM grep over memos asking "is this a backlog candidate?"), or strictly manual?
+
+## Why this matters for substrate quality
+
+Aaron's observation is empirical evidence that the substrate-retrieval-index gap (B-0175) is real AT BOTH ENDS:
+
+- Authoring time: memos got filed where backlog rows belong (no in-flight retrieval to surface "is there an existing backlog row for this concept?")
+- Retrieval time: future-Otto can't find work items because they're in the wrong surface
+
+Filing this row as a backlog row (NOT a memo) is itself the carved sentence: when an observation IS about-to-be-implementation work, file it in docs/backlog/, not memory/. Recursive substrate-quality discipline.
+
+## Carved sentence
+
+**"A lot of backlog is lost in our memories. The substrate-architecture rule: actionable work items with scope+effort+ask belong in docs/backlog/P*/B-NNNN-*.md as backlog rows; observations/framings/rules/doctrine belong in memory/feedback_*.md as memos. Audit memory/ once for misfiled backlog rows; cross-reference back-pointers added in the original memo. The substrate-retrieval-index (B-0175) closes this gap going forward; this row's pass closes it backward over the existing memos."**
