@@ -77,7 +77,7 @@ framing was too binary.
 | Layer | Status | Evidence base |
 |---|---|---|
 | Zeta-native-AOT canonical index | **Decision (architect, within authority)** | Algebra match (fact: workload IS Z-set); dogfood-leverage (assertion, supported by math-proofs A-grade); deployment story (hypothesis pending Phase 0 PoC) |
-| DuckDB as verification oracle | **Assertion (maintainer 2026-05-03), worth pursuing** | DuckDB feature-richness (fact, well-known); cross-check-as-property-test pattern (precedent: Lean cross-checks paper) |
+| DuckDB as verification oracle | **Assertion (maintainer 2026-05-03), worth pursuing** | DuckDB feature-richness (fact, well-known); cross-check-as-property-test pattern (precedent: Lean cross-checks paper); pattern extends to git per maintainer 2026-05-03 (*"some compabilty testing you do with duck you can do with git to slowly replace that"*) — composes with existing `memory/feedback_git_interface_wasm_bootstrap_zero_requirements_2026_04_24.md` architectural commitment (Zeta IS git client+server; native F# impl; two-UI Frontier+Mode-1-admin+WASM-Mode-2; both zero-install). |
 | Live-off-the-land for harness-loaded surfaces | **Hypothesis pending research** | Maintainer said "maybe"; zero observed-behavior evidence; falsifiable via canary test + skill-persona behavioral observation |
 | Distribution feasibility (NativeAOT single-binary) | **Make-or-break risk per maintainer assertion** | Need cross-platform empirical test (linux-x64 / osx-arm64 / win-x64); known-unknown |
 
@@ -426,17 +426,35 @@ start replay matches live IVM.
   (the algebra is A-grade verified; this dogfoods it)
 - `src/Core/IndexedZSet.fs` + `Incremental.fs` + `Operators.fs`
   + `ZSet.fs` (the primitives)
+- `src/Core/PluginApi.fs` + `PluginHarness.fs` (the AOT-core
+  plugin contract; Zeta.Bayesian is the existing JIT plugin
+  precedent)
 - `tools/tla/specs/DbspSpec.tla` (determinism contract)
 - `tools/lean4/Lean4/DbspChainRule.lean` (proof the IVM
   composes correctly under retraction)
+- `memory/feedback_git_interface_wasm_bootstrap_zero_requirements_2026_04_24.md`
+  (existing architectural commitment: Zeta IS git client+
+  server; native F# impl; two-UI architecture; both modes
+  zero-install; substrate-discovery composes with this not
+  competes against it)
+- `docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`
+  (the Operational Resonance Dashboard within Frontier-UI
+  consumes substrate-discovery's index data; Z-set queries
+  feed dashboard widgets; live IVM means auto-updating
+  without polling; DST means dashboard state is reproducible;
+  *"every pixel earns its way via A/B experiments"* is the
+  consumer-side discipline)
 - `memory/feedback_claude_code_loading_taxonomy_*.md`
   (the wake-time inventory discipline this index serves)
 - `.claude/rules/test-canary.md` (the harness-native
-  alternative we're explicitly choosing not to rely on for
-  the custom-index workload)
+  alternative; runs as one of the live-off-the-land
+  hypothesis tests, not as the architecture)
 - `tools/hygiene/audit-memory-references.ts` +
   `audit-memory-index-duplicates.ts` (Phase-1 dogfood
   targets — re-implement as Zeta queries)
+- Otto-272 DST-everywhere + Otto-273 seed-lock-policy +
+  Otto-281 DST-exempt-is-deferred-bug (the determinism
+  discipline this PoC must integrate from day 1)
 
 ---
 
