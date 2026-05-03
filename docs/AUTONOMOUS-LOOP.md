@@ -238,8 +238,10 @@ wait for instruction. Priority ladder:
 
    Why critical: agent drift into ~20-tick-acknowledgment
    patterns is what these checks catch at decision-time.
-   Lineage: `docs/hygiene-history/ticks/2026/05/03/0913Z.md`
-   + `0918Z.md` + PR #1366.
+   Lineage: tick shards
+   `docs/hygiene-history/ticks/2026/05/03/0913Z.md` and
+   `docs/hygiene-history/ticks/2026/05/03/0918Z.md`, plus
+   PR #1366 (TS port of the check script).
 
 1. **Open-PR hygiene first.** Before picking speculative
    work, audit the open PR pool via
