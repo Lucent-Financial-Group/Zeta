@@ -39,11 +39,12 @@ seeds. Three properties make it complementary to worked example #1
    Aarav's NOTEBOOK at round 41. Without consulting persona notebooks,
    the archaeology stops at "Aaron wrote it 2026-04-19 in PR #27"
    without explaining why it became *canonical pattern* later.
-3. **ADR cross-reference** — Layer 7 surfaces the 2026-04-21
-   router-coherence ADR pair (v1 → v2) that ELEVATED the umbrella's
-   pattern into project-wide discipline. Demonstrates the skill body
-   correctly handles "find the load-bearing escalation, not just the
-   origin."
+3. **Substantive negative at Layer 7** — the 2026-04-21
+   router-coherence ADR pair exists but is about a DIFFERENT routing
+   concern (claims-tester Stage-1-vs-Stage-2 flow), not the umbrella's
+   defer pattern. Demonstrates the skill body must teach contributors
+   to recognize when a same-period ADR is unrelated and not assume
+   doctrine-elevation occurred.
 
 ## The procedure walked, layer by layer
 
@@ -107,19 +108,24 @@ block was one piece of a larger factory-alignment effort, not a standalone
 decision. PR #27 is the commit context but doesn't itself explain *why*
 the block became canonical.
 
-### Layer 4 — String archaeology: `git log -S "umbrella exists to"`
+### Layer 4 — String archaeology
 
 ```bash
-git log --oneline -S "umbrella exists to" -- .claude/skills/
+grep -l "umbrella exists to" .claude/skills/*/SKILL.md
 ```
 
-Returns: *(only the originating commit 5fdc72b — the phrase has not been
-repeated elsewhere in skills/ history)*
+Returns BOTH `.claude/skills/mathematics-expert/SKILL.md` AND
+`.claude/skills/physics-expert/SKILL.md`. The "umbrella exists to"
+verbatim phrase has been **replicated to a sibling umbrella** —
+physics-expert carries the same pattern.
 
-**Layer-4 output:** the verbatim string is unique to the
-mathematics-expert umbrella; the pattern hasn't been copy-replicated
-into other umbrellas via direct text reuse. Other umbrellas may follow
-the *shape* but the canonical exemplar lives in mathematics-expert.
+**Layer-4 output:** the pattern is canonical-by-replication. The
+mathematics-expert SKILL.md is the **earlier instance** (per `git
+blame` dates on each file), but it's been deliberately copied into
+physics-expert. The replication itself is evidence the pattern was
+treated as a canonical exemplar to follow — even though no formal
+ADR canonicalized it (Layer 7 will confirm this is a substantive
+negative result).
 
 ### Layer 5 — Function archaeology
 
@@ -129,50 +135,56 @@ code; this layer no-ops for skill-body documentation.
 ### Layer 6 — Round-history shards
 
 ```bash
-grep -rln "When to defer\|mathematics-expert" docs/hygiene-history/ticks/2026/04/19 docs/hygiene-history/ticks/2026/04/20
+ls docs/hygiene-history/ticks/2026/04/ | head -3
 ```
 
-Returns shards from round 34's authoring window referring to skill
-substrate creation but no specific elevation-to-canonical signal at
-this layer. The shards confirm the timeline but not the doctrine
-crystallization.
+Returns: `28`, `29`, `30` — the earliest tick-shard directory under
+2026/04/ is `04/28`, **NINE DAYS AFTER** the umbrella SKILL.md was
+authored (2026-04-19). There are no tick shards from the authoring
+window because **the tick-shard discipline started later than the
+umbrella authoring**.
 
-### Layer 7 — ADRs: `docs/DECISIONS/2026-04-21-router-coherence-{v1,v2}.md`
+**Layer-6 output:** substantive negative — pre-shard-discipline
+substrate cannot be archaeologically traced through tick shards; it
+must be traced through other layers (commit + persona-notebook +
+ADR + memos). This itself teaches contributors: **substrate boundaries
+matter**. The round-history surface is dense for 2026-04-28+ work but
+sparse / nonexistent for earlier substrate. Decision-archaeology must
+recognize when a layer is empty by-substrate-design rather than by
+omission.
+
+### Layer 7 — ADRs
 
 ```bash
-ls docs/DECISIONS/ | grep -iE "router-coherence"
+grep -liE "When to defer|mathematics-expert|umbrella exists" docs/DECISIONS/*.md
 ```
 
-Returns:
+Returns nothing. **No ADR mentions the umbrella's "When to defer"
+pattern.** The router-coherence ADR pair
+(`2026-04-21-router-coherence-claims-vs-complexity.md` v1 →
+`2026-04-21-router-coherence-v2.md` v2) does exist, but those ADRs
+are about a different routing concern entirely — the
+**claims-tester** Stage-1-vs-Stage-2 routing flow (Hiroshi analytic
+proof vs Daisy empirical measurement), not about the
+mathematics-expert umbrella's defer-block.
 
-```
-2026-04-21-router-coherence-claims-vs-complexity.md
-2026-04-21-router-coherence-v2.md
-```
-
-Reading these (especially v2's status block + comparison with v1):
-
-```
-**Status:** *Accepted.* Supersedes ADR
-`docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`
-(`47d92d8`, "v1"). v1 stays in place with a "Superseded by v2" header
-appended per `GOVERNANCE.md §2`...
-```
-
-The v2 ADR's body cites the umbrella's "When to defer" pattern as the
-canonical pattern other umbrellas should pattern-match on. The
-router-coherence discipline (v1 → v2) is what elevated the umbrella's
-defer-block from local-skill-feature into project-wide doctrine.
-
-**Layer-7 output:** the load-bearing escalation happened 2 days after
-the original authoring (2026-04-21 vs 2026-04-19). The pattern existed
-first; the doctrine that names it as canonical came second; ADRs
-canonicalize the doctrine.
+**Layer-7 output:** **substantive negative** — no ADR canonicalized
+the umbrella's "When to defer" pattern. This is meaningful: the
+pattern is canonical-by-replication-and-notebook-recognition (per
+Layer 4 + Layer 9), NOT by ADR-decree. Different elevation paths
+lead to canonical-status; the skill body must teach contributors to
+recognize when the elevation lives outside ADRs. **The earlier draft
+of this worked example claimed the v2 ADR cited the umbrella's
+pattern; that claim was empirically false** — verified empirically
+via `grep -li "When to defer" docs/DECISIONS/*.md` returning no
+matches. The worked example itself is now also a worked example of
+the verify-then-claim drift class (semantic-equivalence drift on a
+load-bearing claim about ADR content).
 
 ### Layer 8 — Named-decision memos
 
 ```bash
-grep -l "When to defer\|umbrella exists to" memory/feedback_*.md
+grep -lE "When to defer|umbrella exists to" memory/feedback_*.md
 ```
 
 Returns no specific feedback memo named for the pattern. The doctrine
@@ -187,7 +199,7 @@ all 11 layers, not give up when one returns nothing.
 ### Layer 9 — Persona notebooks
 
 ```bash
-grep -A2 "When to defer\|umbrella has a" memory/persona/aarav/NOTEBOOK.md
+grep -A2 -E "When to defer|umbrella has a" memory/persona/aarav/NOTEBOOK.md
 ```
 
 Returns:
@@ -223,7 +235,7 @@ durable form is the SKILL.md + ADR + persona-notebook trio.
 ### Layer 11 — WONT-DO archaeology + retired-SKILL.md history
 
 ```bash
-grep -i "When to defer\|mathematics-expert" docs/WONT-DO.md
+grep -iE "When to defer|mathematics-expert" docs/WONT-DO.md
 ```
 
 Returns nothing. The pattern is not in WONT-DO; it's a positive-pattern
@@ -247,30 +259,38 @@ substantive.
 The mathematics-expert umbrella SKILL.md's "When to defer" block exists
 because:
 
-1. **Origin (2026-04-19):** Aaron authored it as part of round 34 factory
+1. **Origin (2026-04-19):** the maintainer authored it as part of round 34 factory
    + public-repo alignment (PR #27, commit 5fdc72b). The block was one
    piece of a multi-area factory-substrate creation; not a standalone
    decision.
-2. **Recognition as canonical (2026-04-20):** Aarav (skill-tune-up
+2. **Replication to a sibling umbrella (date undetermined; ≥ 2026-04-19):**
+   the same "umbrella exists to" verbatim phrase appears in
+   `.claude/skills/physics-expert/SKILL.md` — the pattern was deliberately
+   copied to a sibling. Replication-without-ADR is itself a canonicalization
+   signal: someone treated the math-expert version as the exemplar to follow.
+3. **Recognition as canonical (2026-04-20):** Aarav (skill-tune-up
    persona) noted at round 41 in his notebook that the block was a
    "strong" exemplar naming every narrow sibling, with the explicit
    observation that other umbrella skills should pattern-match on it.
-3. **Elevation to project-wide doctrine (2026-04-21):** The
-   router-coherence ADR pair (`2026-04-21-router-coherence-claims-vs-
-   complexity.md` v1 → `2026-04-21-router-coherence-v2.md` v2)
-   canonicalized the discipline. Aarav's notebook observation drove
-   the doctrine into the ADRs; the ADRs cite the umbrella's pattern
-   as the canonical exemplar.
-4. **Load-bearing now:** the block is "load-bearing" because every
+   **This is the only explicit recognition-as-canonical signal** in the
+   substrate; no ADR, no named-decision memo, no commit-message elevation.
+4. **No ADR canonicalization (substantive negative):** despite the
+   2026-04-21 router-coherence ADR pair landing 2 days after the umbrella
+   authoring, those ADRs are about the **claims-tester Stage-1-vs-Stage-2
+   routing flow** — a different routing concern. No ADR elevated the
+   umbrella's defer-block into project-wide doctrine.
+5. **Load-bearing now:** the block is "load-bearing" because every
    narrow-sibling skill exists at the same router-trigger surface;
    without an explicit defer-block, the umbrella + narrow-siblings
    would compete for routing and produce unpredictable behavior. The
-   pattern is what makes the multi-skill router coherent — hence
-   "router-coherence" as the doctrine's name.
+   pattern is what makes the multi-skill router coherent.
 
-The doctrine's emergence took 3 days across 3 distinct layers
-(commit → notebook → ADR). Decision-archaeology that stops at any one
-layer misses the doctrine's full provenance.
+The doctrine's emergence followed a **canonical-by-replication-and-notebook-recognition**
+path, NOT a canonical-by-ADR-decree path. Decision-archaeology that
+stops at "no ADR found" misses Layer 4 (replication evidence) + Layer 9
+(persona-notebook recognition). Different elevation paths exist; the
+skill body must teach contributors to recognize which path applies in
+each case.
 
 ## What this worked example demonstrates
 
