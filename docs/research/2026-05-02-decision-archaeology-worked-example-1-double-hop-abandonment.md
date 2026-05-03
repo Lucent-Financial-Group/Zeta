@@ -183,9 +183,12 @@ status marker (superseded-by-LFG-only-directive).
 
 This is a **layer-7 finding worth its own follow-up:** the 2026-04-26 ADR
 should carry a `> **Superseded by** [link]` blockquote at the top per
-the existing convention (see `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`
-line 3 and `docs/DECISIONS/2026-04-21-router-coherence-v2.md` lines 4 and 142
-for the canonical pattern). The supersession should point at the 2026-04-29
+the existing convention (the `> **Superseded by** [link]` blockquote
+pattern appears at line 3 of
+`docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`;
+the sibling v2 ADR carries forward-pointing references but not the
+canonical blockquote pattern itself).
+The supersession should point at the 2026-04-29
 LFG-only directive memo + the 2026-05-02 abandonment. ADRs without
 supersession markers drift to falsely-canonical status. Filing this as
 a separate concern from the worked example.
