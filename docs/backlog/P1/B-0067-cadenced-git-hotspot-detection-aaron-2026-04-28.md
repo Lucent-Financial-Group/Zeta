@@ -1,16 +1,16 @@
 ---
 id: B-0067
 priority: P1
-status: open
-title: Cadenced git-hotspot detection — find files-touched-by-many-PRs and migrate to per-row format (Aaron 2026-04-28)
+status: partial
+title: Cadenced git-hotspot detection — phase 1 detector + phase 2 cadence wired (2026-05-03); phase 3 triage routing remains
 tier: factory-hygiene
 effort: S
 ask: maintainer Aaron 2026-04-28 ("checking for git hotspots should be on some cadence somwhere. we can backlog this")
 created: 2026-04-28
-last_updated: 2026-05-02
+last_updated: 2026-05-03
 depends_on: []
 composes_with: [B-0061, B-0066]
-tags: [factory-hygiene, git-hotspot, cadence, structural-fix, audit]
+tags: [factory-hygiene, git-hotspot, cadence, structural-fix, audit, phase-1-2-landed]
 ---
 
 # Cadenced git-hotspot detection
@@ -102,13 +102,10 @@ For each detected hotspot:
 
 ## Done-criteria
 
-- [ ] Phase 1 detector lands at
-      `tools/hygiene/audit-git-hotspots.sh` with default
-      window + threshold + exclude list.
-- [ ] Phase 2 cadence wired (workflow OR auto-loop task);
-      first audit shipped as evidence.
-- [ ] Phase 3 routing triggered at least once on a real
-      hotspot finding (validates the loop closes).
+- [x] Phase 1 detector landed at `tools/hygiene/audit-git-hotspots.ts` (TS+Bun port; `.sh` predecessor migrated). Default window 60d, top 20, excludes `docs/hygiene-history/` `openspec/changes/` `references/upstreams/`. Supports `--window N{d|w|m|y}` shorthand + raw approxidate strings.
+- [x] **Latent bug found + fixed (2026-05-03)** during phase-2 wiring: the detector's `--window 60d` shorthand was passed verbatim to `git log --since=60d`, which is NOT a valid approxidate format and silently matched zero commits. Empirically caught when the cadence workflow's first run reported "no commits in window '60d' (or all filtered)" while the repo had 1274 commits in that window. Fix: `expandWindowShorthand()` translates `60d → "60 days ago"` at the script boundary so existing CLI syntax keeps working while git sees a string it can parse.
+- [x] Phase 2 cadence wired at `.github/workflows/git-hotspot-cadence.yml` — weekly Sundays 16:43 UTC + workflow_dispatch + path-filtered PR trigger on the script + workflow file. Markdown report uploaded as 90-day workflow artifact. Modeled on `.github/workflows/budget-snapshot-cadence.yml`.
+- [ ] Phase 3 routing triggered at least once on a real hotspot finding (validates the loop closes). The 2026-05-03 ad-hoc local run confirmed the top-2 findings (`memory/MEMORY.md` 246 touches; `docs/BACKLOG.md` 162) match the existing migration rows B-0066 and B-0061 — detector working, but per-finding triage routing not yet exercised on a NEW hotspot.
 
 ## Composes with
 
