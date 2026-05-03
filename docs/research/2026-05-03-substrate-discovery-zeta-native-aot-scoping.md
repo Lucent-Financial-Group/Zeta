@@ -48,10 +48,123 @@ default:
    Edge-runner discipline (the human maintainer 2026-05-03)
    says ship the dogfood.
 
-Alternatives considered + rejected: TS + sqlite-vec/DuckDB
-(faster but doesn't dogfood); live-off-the-land via Skill
-router + grep (punts architecture); hybrid TS+Zeta (two
-systems, more complexity).
+**Updated 2026-05-03** (post-#1385 merge corrections from
+the human maintainer). Two epistemic-discipline corrections
+re-grade the original framing:
+
+### Correction 1 — chat is an assertion-channel, not a fact-channel
+
+The maintainer 2026-05-03 verbatim: *"when i speak i'm
+making assertions, that's the best way to describe this
+chat channel."* Chat-claims (his OR the architect's) are
+assertions; they need evidence to be elevated to
+architectural fact. The architect's failure mode in #1385:
+echoed the maintainer's *"maybe"* on live-off-the-land back
+as an architectural fact. Push-back-with-evidence is the
+discipline.
+
+### Correction 2 — alternatives are complementary, not exclusive
+
+The maintainer 2026-05-03 verbatim: *"i like hybrid for
+verification duckdb is very advanced too and we want a lot
+of its features we can verify against it behavior too, we
+don't want to copy it's code at all we are very differnt
+but it has some awesome feature."* The original "rejected"
+framing was too binary.
+
+### Re-graded architecture (with evidence labels)
+
+| Layer | Status | Evidence base |
+|---|---|---|
+| Zeta-native-AOT canonical index | **Decision (architect, within authority)** | Algebra match (fact: workload IS Z-set); dogfood-leverage (assertion, supported by math-proofs A-grade); deployment story (hypothesis pending Phase 0 PoC) |
+| DuckDB as verification oracle | **Assertion (maintainer 2026-05-03), worth pursuing** | DuckDB feature-richness (fact, well-known); cross-check-as-property-test pattern (precedent: Lean cross-checks paper) |
+| Live-off-the-land for harness-loaded surfaces | **Hypothesis pending research** | Maintainer said "maybe"; zero observed-behavior evidence; falsifiable via canary test + skill-persona behavioral observation |
+| Distribution feasibility (NativeAOT single-binary) | **Make-or-break risk per maintainer assertion** | Need cross-platform empirical test (linux-x64 / osx-arm64 / win-x64); known-unknown |
+
+### Push-back: what would establish the live-off-the-land hypothesis?
+
+The current claim has zero evidence base. The maintainer's
+"maybe" is directional input, not data. Concrete falsifiable
+tests:
+
+1. **`.claude/rules/` auto-load canary** (fixture exists at
+   `.claude/rules/test-canary.md`): does a fresh Claude Code
+   session in this repo see the canary string without being
+   told to read the file? Pass = harness-native loading
+   covers some of the substrate-discovery problem; fail =
+   it doesn't, and the live-off-the-land path needs work.
+
+2. **Skill-persona behavioral observation:** Do existing
+   skill personas (.claude/skills/<name>/SKILL.md) actually
+   succeed at finding what they need with `Skill` router +
+   grep + glob alone, or do they regularly fail / reach for
+   substrate that isn't router-discoverable? Measurable by
+   reading skill execution logs (if they exist) or
+   instrumenting one tick to log every `Skill` invocation
+   and its outcome.
+
+3. **External-PR-reviewer behavioral observation:** External
+   review agents (`/ultrareview`, automated PR reviewers)
+   either find what they need or they don't. Observable on
+   recent PR review threads; we can sample the last ~50
+   review comments and classify "agent had context to
+   answer" vs "agent missed context that lived in
+   substrate".
+
+Until at least one of these tests produces data, "live-off-
+the-land for harness-loaded surfaces" is a hypothesis to be
+tested, NOT an architectural decision to be encoded. Phase 0
+PoC scope expanded: include ONE of the three tests above as
+prerequisite evidence before building the substrate-
+discovery layer that would integrate with live-off-the-
+land.
+
+### Distribution feasibility — dual-mode (NativeAOT + self-contained JIT)
+
+**Updated 2026-05-03** (the human maintainer): both distribution
+modes are intentional support targets, not AOT-with-JIT-as-
+fallback. Each is useful in different situations:
+
+| Mode | When | Trade-offs |
+|---|---|---|
+| **NativeAOT** | cron / CI / agent-loop fast-startup contexts; embedded-tool invocations; external-agent zero-install delivery | small binary (~30-50MB est.); fast cold-start (~30-50ms est.); reflection-heavy code requires AOT-compatible patterns (source generators, no FSharp.Core reflection) |
+| **Self-contained JIT** | reflection-heavy library-mode contexts; full F# / Mathlib / Lean tooling integration; long-running processes where JIT warmup amortizes | larger binary (~100-200MB est., bundles CLR); JIT-warmup cost on first invocation; full reflection compatibility |
+
+The maintainer 2026-05-03 verbatim: *"the whole Zeta-
+native-AOT direction self contained jit is the rethink"* +
+*"we want to support both anyways, they are both useful in
+different sistuaitons"*. Both modes preserve single-binary
+(or single-directory) distribution; both work for the
+zero-install external-agent use case the maintainer named
+(*"if they can use the zeta self containen asseblem too,
+they would not need anyting else installed"*).
+
+The maintainer's epistemic position remains honest: *"i
+just don't know whats possiible with distribution that's
+what makes or breaks it."* Distribution feasibility is the
+load-bearing empirical question — but the answer-space is
+broader than AOT-only. Phase 0 PoC's **primary deliverable**
+is the empirical answer, validated for BOTH modes:
+
+- Build NativeAOT publish on linux-x64, osx-arm64, win-x64
+- Build self-contained-JIT publish on linux-x64, osx-arm64,
+  win-x64
+- Measure binary size + cold-start latency for each
+  (mode × platform) cell
+- Run a non-trivial Zeta query end-to-end on each cell
+- Document any compatibility issues encountered (AOT
+  reflection edge cases; JIT first-run-warmup magnitude)
+- Decision matrix per substrate-discovery use-case: which
+  mode for cron-tick? which for agent-loop? which for
+  external-PR-reviewer self-install?
+
+If both modes work cross-platform, the deployment-story win
+extends well beyond substrate-discovery: every Zeta-
+consuming tool can pick AOT or JIT per situation. If
+neither works, the whole Zeta-native-AOT/JIT direction
+needs re-think. **This is the load-bearing question.** No
+substantial commit beyond Phase 0 PoC until this question
+has data for both modes.
 
 ---
 
