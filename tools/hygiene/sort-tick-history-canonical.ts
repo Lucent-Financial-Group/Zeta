@@ -24,8 +24,9 @@
 // - Prints a summary
 //
 // Composes with:
-// - tools/hygiene/check-tick-history-order.sh (the detection check;
-//   this script is the fix)
+// - tools/hygiene/check-tick-history-order.ts (the detection check;
+//   this script is the fix; .sh removed 2026-05-03 after #1380
+//   .sh→.ts CI conversion)
 // - Otto-229 (append-only tick-history; one-case override authorized
 //   for canonical-order preservation since git history retains prior
 //   state)

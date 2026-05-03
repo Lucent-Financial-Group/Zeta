@@ -120,9 +120,9 @@ Sometimes the only record of a decision lives in the PR description, which is lo
 
 ### 15. Memory-file deletions (cross-tree drift)
 
-`memory/**/*.md` files deleted in one branch but still referenced from another. Found via the `tools/hygiene/audit-memory-references.sh` lint.
+`memory/**/*.md` files deleted in one branch but still referenced from another. Found via the `tools/hygiene/audit-memory-references.ts` lint.
 
-- **Survey command**: `bash tools/hygiene/audit-memory-references.sh` — broken refs surface deleted files.
+- **Survey command**: `bun tools/hygiene/audit-memory-references.ts` — broken refs surface deleted files.
 - **Triage**: per Otto-238 retractability, deletions should leave a visible trail; a broken ref without a deletion-trail is suspect.
 
 ## Search cadence
@@ -140,7 +140,7 @@ This list is the doc-form. The executable form would be `tools/hygiene/audit-los
 
 Composes with:
 
-- `tools/hygiene/audit-memory-references.sh` — covers location-class #15
+- `tools/hygiene/audit-memory-references.ts` — covers location-class #15
 - `tools/hygiene/audit-git-hotspots.sh` — surfaces high-churn files (proxy for "high deletion risk")
 - `tools/hygiene/audit-tick-history-bounded-growth.sh` — finds tick-history pattern violations
 - Otto-262 trunk-based-development branch policy

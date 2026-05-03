@@ -102,7 +102,8 @@
 #   - Otto-279 history-surface carve-out: docs/AGENT-BEST-PRACTICES.md ~287-348
 #   - feedback_orphan_role_ref_after_name_stripping_aaron_2026_04_28.md
 #   - prompt-protector skill (similar write-time-scan layer)
-#   - audit-memory-index-duplicates.sh (template for audit-script shape)
+#   - audit-memory-index-duplicates.ts (template for audit-script shape;
+#     .sh removed 2026-05-03 after #1377 .sh→.ts CI conversion)
 #
 # Bash-3.2 compatible (macOS default) per Otto-235 4-shell target.
 
