@@ -11,18 +11,21 @@
 // Usage:
 //   bun tools/formal-verification/run-tlc.ts <SpecName>
 //     Runs TLC on tools/tla/specs/<SpecName>.tla with the matching
-//     .cfg. Exit 0 on "Model checking completed. No error has been
-//     found."; exit 1 on TLC error / invariant violation; exit 2 on
-//     toolchain not ready.
+//     .cfg.
 //
 //   bun tools/formal-verification/run-tlc.ts --all
-//     Run TLC on every spec the F# test file currently registers
-//     (the curated catalogue, not all .tla files in specs/). Aggregate
-//     pass/fail count; exit 0 only if all pass.
+//     Run TLC on every spec the curated catalogue lists. Treats
+//     missing-from-catalogue specs as failures (catalogue drift).
+//     Per-failure stdout-tail printed for CI triage.
 //
 //   bun tools/formal-verification/run-tlc.ts --check-toolchain
-//     Exit 0 if java + tla2tools.jar are present; exit 2 otherwise.
 //     Useful for CI gating + dev-local diagnostics.
+//
+// Exit codes (orthogonal — each code has one semantic):
+//   0  success
+//   1  TLC error / invariant violation / missing spec
+//   2  toolchain not ready (java / jar absent)
+//   3  argument / usage error (unknown flag, missing argument)
 //
 // Design notes:
 //   - No xunit dependency
@@ -34,11 +37,26 @@
 //   - working directory set to tools/tla/specs so TLC resolves
 //     module names by file lookup
 
-import { readdirSync, readFileSync, statSync, unlinkSync } from "node:fs";
-import { join } from "node:path";
+import { readdirSync, statSync, unlinkSync } from "node:fs";
+import { delimiter, join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-type ExitCode = 0 | 1 | 2;
+/** Exit codes (header doc contract):
+ *    0  success
+ *    1  TLC error / invariant violation / missing spec
+ *    2  toolchain not ready (java / jar absent)
+ *    3  argument / usage error (unknown flag, etc.)
+ */
+
+type ExitCode = 0 | 1 | 2 | 3;
+
+/** Escape regex metacharacters so user-supplied spec names cannot
+ *  cause unintended file matches in trace cleanup. Per #1412 P0
+ *  CodeQL finding: a specName containing `.` or `*` would otherwise
+ *  match unrelated files. */
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
@@ -70,21 +88,27 @@ function repoRoot(): string {
   return result.stdout.trim();
 }
 
+/** In-process PATH-scan equivalent of `which`. No shell-out (matches
+ *  the F# Tlc.Runner.Tests.fs pattern; portable to Windows + minimal
+ *  images that lack `/usr/bin/env which`). */
 function which(exe: string): string | null {
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const result = spawnSync("/usr/bin/env", ["which", exe], {
-    encoding: "utf8",
-    maxBuffer: SPAWN_MAX_BUFFER,
-  });
-  if (result.status !== 0) return null;
-  const out = result.stdout.trim();
-  if (out === "") return null;
-  try {
-    statSync(out);
-    return out;
-  } catch {
-    return null;
+  const pathEnv = process.env["PATH"] ?? "";
+  if (pathEnv === "") return null;
+  const isWindows = process.platform === "win32";
+  const extensions = isWindows ? [".exe", ".cmd", ".bat", ""] : [""];
+  for (const dir of pathEnv.split(delimiter)) {
+    if (dir === "") continue;
+    for (const ext of extensions) {
+      const candidate = join(dir, `${exe}${ext}`);
+      try {
+        const s = statSync(candidate);
+        if (s.isFile()) return candidate;
+      } catch {
+        // not present — try next
+      }
+    }
   }
+  return null;
 }
 
 function fileExists(path: string): boolean {
@@ -119,8 +143,12 @@ function cleanupTraceFiles(specsPath: string, specName: string): void {
   } catch {
     return;
   }
-  const traceTla = new RegExp(`^${specName}_TTrace_.*\\.tla$`);
-  const traceBin = new RegExp(`^${specName}_TTrace_.*\\.bin$`);
+  // Escape regex meta-characters in specName before embedding.
+  // Without this, a specName like "X.Y" or "X*Y" would match
+  // unrelated files and delete them. Per CodeQL #1412 P0 finding.
+  const safeName = escapeRegex(specName);
+  const traceTla = new RegExp(`^${safeName}_TTrace_.*\\.tla$`);
+  const traceBin = new RegExp(`^${safeName}_TTrace_.*\\.bin$`);
   const mcTla = /^MC.*\.tla$/;
   for (const e of entries) {
     if (!e.isFile()) continue;
@@ -204,11 +232,17 @@ function runOne(toolchain: Toolchain, specName: string): ExitCode {
 function runAll(toolchain: Toolchain): ExitCode {
   const passed: string[] = [];
   const failed: string[] = [];
-  const skipped: string[] = [];
+  const missing: string[] = [];
+  const failureDetails: { spec: string; result: TlcResult }[] = [];
   for (const specName of CATALOGUE) {
     if (!specExists(toolchain, specName)) {
-      process.stdout.write(`skipping ${specName} (no .tla or .cfg)\n`);
-      skipped.push(specName);
+      // Per #1412 P1 finding: a missing catalogued spec is
+      // catalogue drift (renamed / deleted), NOT an acceptable
+      // skip. Treat it as a failure so --all gates against drift.
+      process.stderr.write(
+        `MISSING: ${specName} (no .tla or .cfg in ${toolchain.specsPath})\n`,
+      );
+      missing.push(specName);
       continue;
     }
     process.stdout.write(`running TLC on ${specName}...\n`);
@@ -221,14 +255,32 @@ function runAll(toolchain: Toolchain): ExitCode {
         `  FAIL: ${specName} (exit ${String(result.exitCode)})\n`,
       );
       failed.push(specName);
+      failureDetails.push({ spec: specName, result });
     }
   }
   process.stdout.write("\n");
   process.stdout.write(
-    `summary: ${String(passed.length)} passed, ${String(failed.length)} failed, ${String(skipped.length)} skipped (out of ${String(CATALOGUE.length)} catalogued)\n`,
+    `summary: ${String(passed.length)} passed, ${String(failed.length)} failed, ${String(missing.length)} missing-from-catalogue (out of ${String(CATALOGUE.length)} catalogued)\n`,
   );
-  if (failed.length > 0) {
-    process.stderr.write(`failed: ${failed.join(", ")}\n`);
+  // Per #1412 P2 finding: print a failure-tail per failed spec so
+  // CI triage doesn't require re-running with --one. Cap at last
+  // ~30 lines of stdout each to keep summary readable.
+  if (failureDetails.length > 0) {
+    process.stderr.write("\n--- failure details ---\n");
+    for (const fd of failureDetails) {
+      process.stderr.write(`\n[${fd.spec}] (rerun with: bun tools/formal-verification/run-tlc.ts ${fd.spec})\n`);
+      const tail = fd.result.stdout.split("\n").slice(-30).join("\n");
+      process.stderr.write(tail);
+      if (!tail.endsWith("\n")) process.stderr.write("\n");
+    }
+  }
+  if (failed.length > 0 || missing.length > 0) {
+    if (failed.length > 0) {
+      process.stderr.write(`\nfailed: ${failed.join(", ")}\n`);
+    }
+    if (missing.length > 0) {
+      process.stderr.write(`missing: ${missing.join(", ")}\n`);
+    }
     return 1;
   }
   return 0;
@@ -272,9 +324,12 @@ function main(argv: readonly string[]): ExitCode {
 
   const specName = argv[0] ?? "";
   if (specName.startsWith("--")) {
+    // Per #1412 P0 finding: distinguish argument errors from
+    // toolchain-not-ready errors. Exit 3 = usage error so callers
+    // (CI, dev) can tell them apart.
     process.stderr.write(`unknown flag: ${specName}\n`);
     process.stderr.write("use --help\n");
-    return 2;
+    return 3;
   }
   return runOne(toolchain, specName);
 }
