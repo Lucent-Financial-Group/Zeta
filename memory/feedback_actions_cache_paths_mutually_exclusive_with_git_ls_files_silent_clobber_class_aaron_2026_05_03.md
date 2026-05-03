@@ -9,6 +9,18 @@ mutually exclusive with `git ls-files`. Cache only DERIVED files
 (downloaded jars, built artefacts, user-home tool state), never
 source-controlled content.
 
+**Bug-locus disambiguation (Aaron 2026-05-03):**
+This is a **usage bug in our workflow configuration**, not a bug in
+`actions/cache` or GitHub Actions. The cache action does exactly
+what its docs promise: restores cached files at the configured
+paths, overwriting whatever's there. We asked it to cache a path
+that contained source-controlled files — it did. The fix is on our
+side: narrow the cache path so it doesn't overlap source-controlled
+content. A reasonable upstream feature request (warning when cache
+path overlaps with checked-out git content) would be an
+enhancement, not a bug fix, since the existing behavior is
+documented.
+
 **Why this is load-bearing:**
 
 When `actions/cache` restores on a cache hit, it OVERWRITES the
