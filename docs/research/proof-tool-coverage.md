@@ -206,7 +206,7 @@ modes, chain rule pipeline.
 | **Eldarica / Spacer (Horn)** | Recursive-program invariant synthesis — could auto-derive loop invariants for `BalancedSpine.compactLevel` |
 | **Liquid Haskell / LiquidF#** | ~~Refinement types inline in F# — catches `arr.[i]` out-of-bounds *at compile time* over the whole codebase~~ **Round-35 Hold: tool dormant.** No currently-maintained F#-native refinement checker; F7 (the Microsoft Research ancestor) last shipped 2012. See `docs/research/liquidfsharp-findings.md`. Successor path: F\* extraction to F# (Assess, TECH-RADAR round 35). |
 | **Hypothesis-style coverage-guided fuzz** | Deeper counter-example minimisation than FsCheck's generic shrinker; catches concurrency bugs via state-space exploration |
-| **Mutation testing (Stryker)** | Already configured via `stryker-config.json`, but **not yet run in CI** and no coverage target published — unknown whether our 471 tests survive a realistic mutant kill rate |
+| **Mutation testing (Stryker)** | Configured via `stryker-config.json` and run in CI via `.github/workflows/stryker-mutation.yml` — path-filtered to `src/Core/**` + `tests/Tests.FSharp/**`; threshold-break at 50% gates the workflow; HTML + json reports uploaded as 90-day artifacts on every run. Kill-rate trend observable from the workflow run page. |
 | **CodeQL** | Data-flow / taint analysis (untrusted `File.ReadAllBytes` → parser) — config deferred, listed as P0 in `BACKLOG.md` |
 | **Semgrep** | Pattern-level anti-patterns; 12 rules shipped but only run externally (`TECH-RADAR.md` says "runs externally"); **not part of CI** |
 
