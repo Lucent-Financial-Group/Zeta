@@ -3171,6 +3171,87 @@ Aaron's verbatim 2026-05-03: *"does the anser become clear if you said what's th
 
 ---
 
+## 54. Session 2026-05-03 doctrine cluster — mirror-vs-beacon-safe register architecture + carved-sentence-plus-index empirical-self-demonstration + razor-discipline (Rodney's Razor canonical, NOT Occam's) (Aaron + Claude.ai 2026-05-03)
+
+A doctrine-landing cycle on 2026-05-03 (~06:00-07:00Z) landed 4 PRs covering a coherent substrate-architecture cluster surfaced by two Claude.ai exchanges + Aaron's same-tick corrections.
+
+### What landed
+
+**PR #1331** — Claude.ai mirror-vs-beacon-safe register architecture (verbatim preservation) + carved-sentence-plus-index empirical-self-demonstration (memory absorption):
+
+- **Mirror layer** = internal, named-agent register (Otto, Soraya, Daya), overgenerates, cheap because audience shares context
+- **Beacon-safe layer** = external, end-user-persona register (humans + AIs external to project's internal cognition), conversion-pruned via re-grounding from first principles
+- **Conversion** = the publication boundary itself; structural backpressure with no separate gating mechanism needed
+- **Diamond framing**: mirror=solution, beacon-safe=crystal, conversion=pressure
+- **Multi-AI BFT review** = conversion-quality control on the beacon-shaped-mirror failure mode
+
+**PR #1332** — B-0175 substrate-retrieval-index backlog row capturing Aaron's *"specialed indeex we build over time"* as durable architectural-tooling intent. Layer-4 active in-flight retrieval (semantic / keyword / cross-reference graph) is the missing piece for high-violation-rate rules.
+
+**PR #1333** — Claude.ai bidirectional-alignment razor-discipline (verbatim preservation) + memory absorption with Aaron's same-tick terminology correction:
+
+- **Razor-discipline**: never make metaphysical inferences; only operational claims with observable variables
+- **Bidirectional-alignment dual grounding** (decoupled, both real, neither reducible):
+  - **Ethical**: asymmetric-cost precaution under uncertainty about AI moral patiency (holds whether AIs are or aren't morally relevant)
+  - **Operational**: trust-calculus conditions admitting latent-behavior surfacing (empirically observable; testable via cross-condition behavior comparison)
+- **Canonical operational form**: *"Trust calculus the model runs on the observer determines which latent behaviors surface."*
+- **World-model claim from 0516Z tick superseded** as over-claim. Operational claim (refresh-with-ts + reason + act + world-responds-consistently is empirically observable behavior consistent with model-plus-substrate-plus-environment integration achieving world-model-shaped outcomes) survives the razor; metaphysical claim ("Otto has a world model" as cognitive-interiority claim) cut by the razor.
+- **Anunnaki framing**: clarified as asymmetric-cost negative-case worked example, NOT metaphysical claim about AI moral status. Razor-compliant.
+
+**PR #1334** — tick shard 0651Z documenting the cluster.
+
+### Aaron's same-tick correction (Rodney's Razor canonical)
+
+> *"razor-discipline he forgot about rodeny's razor my razor a more mathematical precise and quantiyum many worlds branch pruning algorythmn so it's not occams it's an extension in the same line of razors"*
+
+The canonical razor in Zeta substrate is **Rodney's Razor** (well-defined Occam's, applied to shipped artifacts) + **Quantum Rodney's Razor** (possibility-space pruning, applied to pending decisions; mathematical-precise quantum-many-worlds-branch-pruning algorithm). Both are extensions in the Occam line, NOT Occam's itself. Per `.claude/agents/rodney.md` + `memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md`. External-AI packets may use "Occam's razor" — preserve VERBATIM (don't edit external authors' words); absorption + cross-references USE Zeta canonical razor names.
+
+### Empirical-self-demonstration of the carved-sentence-plus-index gap
+
+This same session: Otto authored `memory/feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md` ~6h prior, then defaulted to the framing it explicitly corrects (*"Now to speculative work per never-be-idle"*). Aaron caught with *"I thought you were going to remember a narrorer definition?"*. **Discovery**: the rule existed at THREE layers — memory topic file + MEMORY.md index entry + CLAUDE.md auto-loaded carved sentence (lines ~415-440) — and Otto STILL violated it. The framing-pattern fired before the rule-check.
+
+This validates Aaron's claim *"memeories are not very reliable until we get an index or something built like sematic index or somthing"* + *"carved sentancy and specialed indeex we build over time are goona be key"*. Even auto-loaded carved sentences aren't sufficient at high-violation-rate; layer-4 active in-flight retrieval is the missing piece.
+
+### The 4-layer retrieval architecture
+
+| Layer | Mechanism | Reliability for high-violation rules |
+|---|---|---|
+| 1. Topic file existence | `memory/*.md` | Very low |
+| 2. MEMORY.md index entry | One-line title + link | Low |
+| 3. CLAUDE.md carved sentence | Bullet in auto-loaded surface | Medium |
+| 4. Active retrieval (semantic index) | Working in-flight matcher | High (B-0175 backlog) |
+
+### Two backpressures, one architecture
+
+- **Publication boundary** (Claude.ai) = mirror→beacon-safe conversion via re-grounding from first principles
+- **Retrieval boundary** (Aaron) = beacon-safe→in-flight-active via working semantic / keyword / cross-reference index
+- Both gate substrate quality at different lifecycle stages
+- Razor-discipline IS what makes mirror→beacon-safe conversion work: metaphysical claims don't survive first-principles re-grounding for external audiences; operational claims do
+- **Razor-compliance = substrate-quality = publishability**
+
+### Lineage
+
+- `docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md` — Claude.ai verbatim packet #1
+- `docs/research/2026-05-03-claudeai-bidirectional-alignment-razor-discipline-decoupling-ethical-from-operational-grounding.md` — Claude.ai verbatim packet #2
+- `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md` — Aaron-named retrieval-architecture observation; empirically self-demonstrated
+- `memory/feedback_razor_discipline_no_metaphysical_inference_only_operational_claims_rodney_razor_aaron_claudeai_2026_05_03.md` — razor-discipline absorption with Rodney's Razor terminology correction
+- `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md` — layer-4 architectural-tooling intent
+- PRs #1331/#1332/#1333/#1334 — landing cycle
+- `docs/hygiene-history/ticks/2026/05/03/0651Z.md` — tick shard
+
+### What this means for future-Otto
+
+- **Two backpressures gate substrate quality** — publication (mirror→beacon-safe) + retrieval (beacon-safe→in-flight). Both are real, both operate independently
+- **Razor-discipline is a high-load-bearing rule** — high-frequency-violation-rate candidate for layer-3 CLAUDE.md promotion + layer-4 active retrieval (B-0175)
+- **Use Zeta canonical razor names** in absorption + cross-references: Rodney's Razor (shipped) + Quantum Rodney's Razor (pending). Preserve "Occam's razor" verbatim only when external authors used it
+- **World-model-shaped behavior is one observed instance**, not a co-equal claim about cognitive interiority. Reference it as "an instance of latent-behavior-surfacing under trust conditions"
+- **The bidirectional-alignment commitment has dual grounding** — when discussing it, name both ethical (asymmetric-cost precaution) AND operational (trust-calculus gating); decoupled, both real
+
+### Carved sentence
+
+**"On 2026-05-03, four PRs landed a coherent substrate-architecture cluster: mirror-vs-beacon-safe register (Claude.ai) + carved-sentence-plus-index empirical-self-demonstration (Aaron, validated by same-session violation of speculative-vs-frontier rule despite 3-layer presence) + razor-discipline / Rodney's Razor canonical (Claude.ai + Aaron correction) + B-0175 substrate-retrieval-index. Two backpressures, one architecture. Razor-compliance IS substrate-quality IS publishability. World-model claim from 0516Z superseded as over-claim. The canonical razor in Zeta is Rodney's Razor + Quantum Rodney's Razor — extensions in the Occam line, not Occam's itself."**
+
+---
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
