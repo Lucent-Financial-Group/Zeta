@@ -14,9 +14,9 @@ type: feedback
 | 2 | #1245 (post-merge) | "12-row surface→specialist table" in MEMORY.md index | actually 13 rows |
 | 3 | #1248 (post-merge) | "5 procedure skills + 5 tools" in canonical-starting-set | actually 6 + 7 (after refinements) |
 | 4 | #1250 (post-merge) | Layer-6 shards are `1610Z.md`, `1612Z.md`, `1619Z.md` | fictional names; actual: `0112Z.md`, `1456Z.md`, `1520Z.md`, `1522Z.md`, `1523Z.md` |
-| 5 | #1250 (post-merge) | Layer-7 `ls docs/DECISIONS/ \| grep` returns nothing | returns `2026-04-26-sync-drain-plan-acehack-lfg-roundtrip-option-c.md` |
+| 5 | #1250 (post-merge) | Layer-7 ADR search ("ls docs/DECISIONS/ piped through grep") returns nothing | returns `2026-04-26-sync-drain-plan-acehack-lfg-roundtrip-option-c.md` |
 | 6 | #1250 (post-merge) | Layer-9 `memory/persona/amara/` exists | doesn't exist (Aaron does, 21 others, no Amara) |
-| 7 | #1250 (post-merge) | Layer-10 `ls docs/research/ \| grep -iE` returns no specific double-hop artifact | adjacent-substrate artifacts ARE there (5+) |
+| 7 | #1250 (post-merge) | Layer-10 docs/research grep returns no specific double-hop artifact | adjacent-substrate artifacts ARE there (5+) |
 | 8 | #1252 (post-merge) | future-domain memo references `docs/courier-ferry-protocol.md` | doesn't exist |
 | 9 | #1253 (post-merge) | skill-design memo references `tools/backlog/expand-from-closure.ts` as the mechanizing tool | doesn't exist; only proposed |
 
@@ -65,10 +65,10 @@ The rule fires on **fact-claims about current repo state**, not normative or spe
 
 The full mechanization would be `tools/substrate-claim-checker/` — a TS tool (per Aaron's no-dynamic-commands rule) that:
 
-1. **Parses a memo / doc / commit message** for fact-claim patterns (path mentions, command-result claims, count claims, existence assertions)
+1. **Parses a memo / doc / PR description** for fact-claim patterns (path mentions, command-result claims, count claims, existence assertions)
 2. **Runs the corresponding verification commands** (`ls <path>`, `<cmd>` and parse output, count rows, etc.)
 3. **Reports drift** between claim and reality
-4. **Pre-commit hook integration** — block commits that contain unverified or wrong fact-claims
+4. **Two-hook integration** — `pre-commit` hook validates staged-file content (memos, docs); `commit-msg` hook validates the commit message itself (which doesn't exist yet at pre-commit time per git's hook ordering). Both hooks call the same tool with different inputs. PR descriptions get a separate CI check (post-PR-creation) since they're authored on the host, not pre-commit.
 
 The tool's outputs (per-commit drift reports) are satellite-shaped per Aaron 2026-05-03 hub-satellite rule; the tool itself is hub-shaped. Filing as a separate backlog row is the right path for actually building it.
 
