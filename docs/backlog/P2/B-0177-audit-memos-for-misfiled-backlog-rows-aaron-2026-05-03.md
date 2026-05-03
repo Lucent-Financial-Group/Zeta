@@ -79,7 +79,7 @@ Refined hit-rate hypothesis:
 
 | Sub-class | Hit-rate (empirical) | Status |
 |---|---|---|
-| Reserved-but-never-filed B-NNNN cross-references | High (3-of-3 found in 30 min) | Closed via 2026-05-03 audit pass (B-0141, B-0142, B-0157) |
+| Reserved-but-never-filed B-NNNN cross-references | High (3-of-3 found in 30 min) | Audit-gap closed: per-row files filed 2026-05-03 (B-0141, B-0142, B-0157 are now filed-but-status-open backlog rows) |
 | Broader misfiled-backlog (memo IS the work item) | Low (0-of-10 in recent sample) | Lower priority than initial estimate |
 
 **Refined audit scope**: focus on the high-yield class (reserved-but-never-filed B-NNNN cross-references in memos). The pattern: search for `B-NNNN.*not yet filed` / `B-NNNN.*pending` / `B-NNNN.*TBD` / `B-NNNN.*to be filed` references in memory/ and verify each B-NNNN has a per-row file. The broader misfiled-backlog class is lower-yield and can be deferred to opportunistic-on-touch rather than systematic audit.
