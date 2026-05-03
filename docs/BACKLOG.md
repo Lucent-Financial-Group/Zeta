@@ -142,6 +142,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0176](backlog/P2/B-0176-substrate-claim-checker-v07-context-aware-suppression-otto-2026-05-03.md)** Substrate-claim-checker v0.7 — context-aware suppression for hypothetical / contrastive / partial-path / branch-name references (Otto 2026-05-03 empirical observation)
 - [ ] **[B-0177](backlog/P2/B-0177-audit-memos-for-misfiled-backlog-rows-aaron-2026-05-03.md)** Audit memory/ for misfiled backlog rows — memos that should have been B-NNNN backlog entries (Aaron 2026-05-03 observation; "a lot of backlog lost in our memories")
 - [ ] **[B-0178](backlog/P2/B-0178-decision-graph-traversal-tool-aaron-2026-05-03.md)** Decision-graph traversal tool — `tools/decision-graph/` TS scripts that emit + query the substrate's implicit provenance graph (Aaron 2026-05-03 architectural observation; fourth B-0177 audit hit)
+- [ ] **[B-0179](backlog/P2/B-0179-fix-spineasyncprotocol-tla-counterexample-blocks-b1-ci-registration-2026-05-03.md)** Fix SpineAsyncProtocol.tla counterexample (blocks B1 → A CI registration; depth-9 trace dump on TLC run)
+- [ ] **[B-0180](backlog/P2/B-0180-fix-circuitregistration-tla-config-bug-safety-invariant-undefined-2026-05-03.md)** Fix CircuitRegistration.tla config bug — `.cfg` references invariant `Safety` not defined in `.tla` (blocks B1 → A CI registration)
+- [ ] **[B-0181](backlog/P2/B-0181-fix-spinemergeinvariants-tla-counterexample-blocks-b1-ci-registration-2026-05-03.md)** Fix SpineMergeInvariants.tla counterexample (blocks B1 → A CI registration; depth-17 trace dump on TLC run)
 
 ## P3 — convenience / deferred
 
