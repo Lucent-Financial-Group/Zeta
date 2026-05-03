@@ -113,14 +113,17 @@ Read source: `docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts
 
 **Initial recovery (PR #1280) was wrong.** The B-0173 row body lists 3 hook integrations including 2 git hooks; my recovery section reproduced that. **Aaron 2026-05-03 clarification** (see `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md`): vibe-coders always have a harness; harness hooks suffice; git hooks are antipattern in this scope. **Corrected scope is harness hooks + CI only, NOT git hooks.**
 
-Two hook integrations (CORRECTED, NOT three) — deliverables of B-0173:
+**Two hook integrations** (CORRECTED, NOT three) — actual deliverables of B-0173 going forward:
 
-1. ~~`tools/git/hooks/pre-commit`~~ — REMOVED per Aaron's clarification. Harness fires on pre-tool-use (Edit/Write) before content lands; covers the same use case
-2. ~~`tools/git/hooks/commit-msg`~~ — REMOVED per Aaron's clarification. Harness fires on pre-Bash-tool-use when command is `git commit`; covers the same use case
-3. **Harness hooks** *(proposed; new in correction)* — Claude Code `.claude/settings.json` hooks field, with parallel mechanisms for Codex / Cursor / etc.; called via the harness's runtime; TS-canonical
-4. **`.github/workflows/substrate-claim-checker.yml`** *(proposed)* — CI check on PR descriptions (host-authored; runs on PR creation)
+1. **Harness hooks** *(proposed; new in correction)* — Claude Code's `.claude/settings.json` hooks FIELD (the file `.claude/settings.json` itself already exists on main, but the `hooks` field within it is not yet populated), with parallel mechanisms for Codex / Cursor / etc.; called via the harness's runtime; TS-canonical
+2. **`.github/workflows/substrate-claim-checker.yml`** *(proposed)* — CI check on PR descriptions (host-authored; runs on PR creation)
 
-As of correction time (2026-05-03), neither `.claude/settings.json` hooks nor the workflow file exist on main. These are B-0173 row deliverables. **Do NOT implement git hooks for B-0173** — that's the wrong shape per Aaron's clarification.
+**Removed from scope** (the original recovery had these as "proposed" too; Aaron's clarification removes them entirely):
+
+- ~~`tools/git/hooks/pre-commit`~~ — Harness fires on pre-tool-use (Edit/Write) before content lands; covers the same use case
+- ~~`tools/git/hooks/commit-msg`~~ — Harness fires on pre-Bash-tool-use when command is `git commit`; covers the same use case
+
+As of correction time (2026-05-03), the `hooks` field in `.claude/settings.json` is not yet populated, and `.github/workflows/substrate-claim-checker.yml` does not exist on main. Both are B-0173 row deliverables. **Do NOT implement git hooks for B-0173** — that's the wrong shape per Aaron's clarification.
 
 depends_on: **[B-0170 (substrate-claim-checker tool) + B-0171 (OpenSpec catch-up — contracts live in specs)]**
 
