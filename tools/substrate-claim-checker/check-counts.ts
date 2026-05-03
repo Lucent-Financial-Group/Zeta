@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * substrate-claim-checker / check-counts.ts (v0.1)
+ * substrate-claim-checker / check-counts.ts (v0.4)
  *
  * Per the verify-then-claim discipline memo
  * (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
@@ -9,14 +9,17 @@
  * instances", "13-row table", "5 procedure skills") and the
  * actual count of structured rows the claims reference.
  *
- * v0.1 (this file) addressed Copilot review on v0:
- *   - Fail fast on missing input files (exit 1, not silent skip)
- *   - Preserve `+` semantics: "20+" treated as a minimum-count claim
- *   - Catch hyphenated forms: "13-row" works, not just "13 row"
- *   - Skip fenced code blocks + table cells when scanning narrative
- *   - Drop unused Table.endLine field
+ * Iteration history (Copilot recursive review on PR #1260):
+ *   v0   — initial ship: count-drift sub-class only
+ *   v0.1 — strict-null guards; `+` semantics; hyphenated forms;
+ *          fence + table-cell skip in findClaims; drop unused field
+ *   v0.2 — fence skipping in findTables (asymmetric-discipline catch)
+ *   v0.3 — separator regex requires `-`; export main + import.meta.main
+ *          guard; B-0170 sub-class accuracy; indented-table v1 doc
+ *   v0.4 — CommonMark fence-delimiter tracking (char + length match);
+ *          directory rejection via statSync; readFileSync error wrap
  *
- * v0.1 NOT in scope (deferred to v1):
+ * v0.4 NOT in scope (deferred to v1):
  *   - Existence drift (file/dir/tool claimed to exist; doesn't)
  *   - Semantic-equivalence drift (command substitution claims)
  *   - Empirical-output drift (run-the-command-and-compare)
@@ -209,7 +212,14 @@ function checkFile(filePath: string): { findings: Finding[]; ok: boolean } {
     console.error(`error: not a regular file (directory or other): ${filePath}`);
     return { findings: [], ok: false };
   }
-  const content = readFileSync(filePath, "utf-8");
+  let content: string;
+  try {
+    content = readFileSync(filePath, "utf-8");
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`error: read failed for ${filePath}: ${msg}`);
+    return { findings: [], ok: false };
+  }
   const lines = content.split("\n");
   const tables = findTables(lines);
   const claims = findClaims(lines);
