@@ -44,8 +44,24 @@ This same tick (2026-05-03 ~06:00Z) Otto:
 2. Aaron corrected with "I thought you were going to remember a narrorer definition?"
 3. Otto checked `ls memory/ | grep -iE "specul|frontier"` and found `feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md` — authored by Otto earlier that same day (~6h prior)
 4. Read the memo; confirmed it explicitly covers the corrected framing including the carved sentence: *"Edge-defining work is not speculation. ... Reserve 'speculation' for the narrow idle-fallback case."*
+5. Subsequently grep'd CLAUDE.md and discovered the rule **was already in the auto-loaded carved-sentence index** (CLAUDE.md lines ~415-440), explicitly stating *"Future-Otto: when the never-be-idle ladder surfaces 'speculative work,' check if it's edge-defining; if yes, frame as edge-defining-work in chat / commits / tick shards — not 'speculative work.'"*
 
-The memo existed. The index entry existed. Otto still defaulted to the wrong framing because the memo wasn't retrieved in-the-moment when the framing decision was being made. **Memory file ≠ working memory.** Aaron's observation is empirically validated by Otto's own behavior in the same tick that produced it.
+**The stronger finding**: the rule existed at THREE layers — memory topic file + MEMORY.md index entry + CLAUDE.md auto-loaded carved sentence — and Otto STILL defaulted to the wrong framing. **Even the auto-loaded layer wasn't sufficient.** The framing-pattern ("speculative work per never-be-idle") fired before the rule-check. Aaron's observation is validated more strongly than initially absorbed: it's not just "memory files alone are unreliable" — it's "even auto-loaded carved sentences aren't sufficient when the violating framing-pattern is the default mental model."
+
+This points at what Aaron's *"specialed indeex we build over time"* names: not a static rules surface, but a **working retrieval mechanism that actively surfaces relevant rules during in-flight inference** — semantic-index-shaped, not bullet-list-shaped. Layer-3 (CLAUDE.md auto-load) puts the rule in context; layer-4 (active retrieval) is the missing piece for high-violation-rate rules.
+
+## The 4-layer retrieval architecture (refined)
+
+| Layer | Mechanism | Reliability for high-violation rules | Notes |
+|---|---|---|---|
+| 1. Topic file existence | `memory/*.md` | Very low | Necessary substrate; not retrieval |
+| 2. MEMORY.md index entry | One-line title + link | Low | First 200 lines auto-loaded; titles must match keyword |
+| 3. CLAUDE.md carved sentence | Bullet in auto-loaded surface | Medium | Present in context but framing-pattern can fire first |
+| 4. Active retrieval (semantic index) | Working in-flight matcher | High (proposed) | Aaron's *"specialed indeex"* — not yet built |
+
+The empirical evidence from this tick is that for SOME rules, layers 1-3 are insufficient. The violation is the working-set / mental-model conflict that fires faster than the rule-check. Layer-4 is what closes the gap.
+
+**B-0xxx candidate (NOT filed this tick)**: substrate-retrieval-index design — a working semantic-index over `memory/` + carved sentences in CLAUDE.md / AGENTS.md / equivalent surfaces, queryable in-flight via keyword + semantic embedding. Mirrors the skill-router-as-substrate-inventory pattern but for memos/carved-sentences instead of skills.
 
 ## Composes with mirror-vs-beacon-safe register architecture
 
