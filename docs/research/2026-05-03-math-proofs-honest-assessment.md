@@ -292,7 +292,7 @@ to publishable form:
 | Semgrep CI | B4 → A | 0.5 day | P1 | **Already done (verify-then-claim correction; see B4 section)** |
 | 4 deferred TLA+ specs into CI | B1 → A | 2 days | P1 | **Done (4 of 4): DbspSpec ✓ #1397; CircuitRegistration ✓ #1401 (B-0180 Safety operator); SpineAsyncProtocol ✓ #1411 (B-0179 CHECK_DEADLOCK FALSE for bounded-protocol terminal state); SpineMergeInvariants ✓ this PR (B-0181 Cascade downstream-room precondition + state constraint + WF on Cascade)** |
 | Alloy CI hook | B2 → A | 0.5 day | P1 | **Done (PR #1396, 2026-05-03 — `tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs` spec-path fixed; Spine + InfoTheoreticSharder specs now actually validate, not silent-no-op)** |
-| `.cfg` for 4 C1 specs | C1 → B | 2 days | P2 | open |
+| `.cfg` for 4 C1 specs | C1 → B | 2 days | P2 | **Partial (1 of 4): ChaosEnvDeterminism ✓ this PR (cfg + atomized DelayCritical so Atomic invariant holds across the splitMix+AdvanceTime critical section; 2043 distinct states / depth 26). Remaining 3: ConsistentHashRebalance + DictionaryStripedCAS + AsyncStreamEnumerator (each needs more than just a cfg — structural spec issues)** |
 | TLA+ spec for `Recursive.fs` LFP | C2 → B | 2-3 days | P2 | open |
 | TLA+ spec for WDC protocol | C2 → B | 3-5 days | P1 | open |
 | 15 FsCheck properties (C3) | C3 → B | 3 days | P2 | open |

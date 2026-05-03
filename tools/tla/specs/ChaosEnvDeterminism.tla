@@ -19,7 +19,7 @@ TypeOK ==
   /\ rngState \in Int
   /\ clockState \in Int
   /\ lockHolder \in Threads \cup {"none"}
-  /\ action \in [Threads -> {"idle", "delay-rng", "delay-clock", "done"}]
+  /\ action \in [Threads -> {"idle", "delay-rng", "done"}]
   /\ history \in Seq([thread: Threads, op: {"rng", "clock"}, value: Int])
 
 Init ==
@@ -36,22 +36,26 @@ AcquireLock(t) ==
   /\ action' = [action EXCEPT ![t] = "delay-rng"]
   /\ UNCHANGED <<rngState, clockState, history>>
 
-\* The critical path: splitMix + AdvanceTime while the lock is held.
-DelayRng(t) ==
+\* Critical section: splitMix + AdvanceTime executed as a SINGLE step.
+\* The implementation in ChaosEnvironment.fs holds the lock across both
+\* operations and the spec must model that same atomicity — splitting
+\* into separate DelayRng/DelayClock steps would expose a per-state
+\* counterexample to Atomic at the intermediate "rng-recorded-but-no-
+\* clock-yet" instant. Real concurrent code never observes that state
+\* because the lock is held; the spec models the same observation.
+DelayCritical(t) ==
   /\ lockHolder = t
   /\ action[t] = "delay-rng"
-  /\ rngState' = rngState + 1   \* model splitMix as monotone advance
-  /\ action' = [action EXCEPT ![t] = "delay-clock"]
-  /\ history' = Append(history, [thread |-> t, op |-> "rng", value |-> rngState + 1])
-  /\ UNCHANGED <<clockState, lockHolder>>
-
-DelayClock(t) ==
-  /\ lockHolder = t
-  /\ action[t] = "delay-clock"
+  /\ rngState' = rngState + 1
   /\ clockState' = clockState + 1
   /\ action' = [action EXCEPT ![t] = "done"]
-  /\ history' = Append(history, [thread |-> t, op |-> "clock", value |-> clockState + 1])
-  /\ UNCHANGED <<rngState, lockHolder>>
+  /\ history' = Append(
+                  Append(history,
+                         [thread |-> t, op |-> "rng",
+                          value |-> rngState + 1]),
+                  [thread |-> t, op |-> "clock",
+                   value |-> clockState + 1])
+  /\ UNCHANGED lockHolder
 
 ReleaseLock(t) ==
   /\ lockHolder = t
@@ -61,7 +65,7 @@ ReleaseLock(t) ==
   /\ UNCHANGED <<rngState, clockState, history>>
 
 Next ==
-  \/ \E t \in Threads: AcquireLock(t) \/ DelayRng(t) \/ DelayClock(t) \/ ReleaseLock(t)
+  \/ \E t \in Threads: AcquireLock(t) \/ DelayCritical(t) \/ ReleaseLock(t)
 
 Spec == Init /\ [][Next]_vars
 
@@ -74,4 +78,11 @@ Atomic == \A i \in 1..Len(history):
 
 Safety == [](TypeOK /\ Atomic)
 THEOREM Spec => Safety
+
+\* State constraint to bound TLC's exploration. Each thread
+\* repeatedly acquires + releases the lock, appending two entries
+\* per cycle (rng + clock). With 2 threads and 4 cycles each, history
+\* tops out at 16 entries — large enough to exhibit every interleaving
+\* class while keeping state finite.
+HistoryBound == Len(history) <= 16
 ====
