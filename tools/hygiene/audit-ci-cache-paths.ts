@@ -89,7 +89,59 @@ function gitTrackedFiles(): readonly string[] {
 }
 
 function isUserHomePath(path: string): boolean {
-  return path.startsWith("~") || path.startsWith("/");
+  // Only `~/...` (true user home) is exempt. Absolute paths starting
+  // with `/` are NOT auto-exempt because actions/cache absolute paths
+  // can point INTO the checked-out workspace (e.g.
+  // `/home/runner/work/<repo>/<repo>/...`) — same clobber failure
+  // mode as relative paths. Per #1404 reviewer P1: don't skip
+  // absolute paths.
+  return path.startsWith("~");
+}
+
+/**
+ * Convert a glob pattern (* and ?) to a JavaScript regex.
+ * Used for matching cache-path globs against git-tracked files
+ * (per #1404 reviewer P2: cache paths can contain wildcards).
+ *
+ * Conventions:
+ *   - `**` matches any number of path components (including `/`)
+ *   - `*`  matches anything except `/`
+ *   - `?`  matches any single character except `/`
+ *   - Other regex meta-chars are escaped
+ */
+function globToRegex(glob: string): RegExp {
+  let pattern = "";
+  let i = 0;
+  while (i < glob.length) {
+    const c = glob[i] ?? "";
+    if (c === "*") {
+      if (glob[i + 1] === "*") {
+        pattern += ".*";
+        i += 2;
+        continue;
+      }
+      pattern += "[^/]*";
+      i++;
+      continue;
+    }
+    if (c === "?") {
+      pattern += "[^/]";
+      i++;
+      continue;
+    }
+    if (".+^$|()[]{}\\".includes(c)) {
+      pattern += "\\" + c;
+      i++;
+      continue;
+    }
+    pattern += c;
+    i++;
+  }
+  return new RegExp(`^${pattern}$`);
+}
+
+function pathHasGlob(path: string): boolean {
+  return path.includes("*") || path.includes("?");
 }
 
 /**
@@ -179,7 +231,13 @@ function parseCachePaths(workflow: string, content: string): readonly CachePath[
 /**
  * True if `cachePath` overlaps with any tracked file:
  *   - Exactly equals a tracked file, OR
- *   - Is a directory ancestor of a tracked file (cachePath/...)
+ *   - Is a directory ancestor of a tracked file (cachePath/...), OR
+ *   - Contains a glob (*, ?, **) that matches at least one tracked
+ *     file (per #1404 reviewer P2: actions/cache supports glob
+ *     patterns; the audit must match them too).
+ *
+ * Returns the offending tracked file (first match), or null if no
+ * overlap.
  */
 function overlapsTrackedFile(
   cachePath: string,
@@ -189,6 +247,14 @@ function overlapsTrackedFile(
   let cp = cachePath;
   if (cp.startsWith("./")) cp = cp.slice(2);
   if (cp.endsWith("/")) cp = cp.slice(0, -1);
+
+  if (pathHasGlob(cp)) {
+    const re = globToRegex(cp);
+    for (const tracked of trackedFiles) {
+      if (re.test(tracked)) return tracked;
+    }
+    return null;
+  }
 
   for (const tracked of trackedFiles) {
     if (tracked === cp) return tracked;
@@ -219,14 +285,20 @@ function main(): number {
   const tracked = gitTrackedFiles();
   const violations: Violation[] = [];
 
+  let readFailures = 0;
   for (const wf of workflows) {
     let content: string;
     try {
       content = readFileSync(wf, "utf8");
     } catch (err) {
+      // Per #1404 reviewer P2: an unreadable workflow could hide a
+      // violation. Document + count, return exit 2 at end. Don't
+      // silently skip and report "OK" — that's the same false-pass
+      // class the audit was designed to catch.
       process.stderr.write(
         `ERROR: cannot read ${wf}: ${(err as Error).message}\n`,
       );
+      readFailures++;
       continue;
     }
     const cachePaths = parseCachePaths(wf, content);
@@ -242,6 +314,13 @@ function main(): number {
         });
       }
     }
+  }
+
+  if (readFailures > 0) {
+    process.stderr.write(
+      `ERROR: ${String(readFailures)} workflow file(s) unreadable; cannot complete audit\n`,
+    );
+    return 2;
   }
 
   if (violations.length === 0) {
