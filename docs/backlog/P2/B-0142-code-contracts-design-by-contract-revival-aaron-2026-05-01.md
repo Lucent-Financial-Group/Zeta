@@ -21,7 +21,7 @@ Aaron 2026-05-01, in the parallelism-scaling-ladder memo (autonomous-loop mainta
 
 > | Pre-condition violation | Code Contracts (B-0142, not yet filed) throws at runtime | Compiler-time refinement-types reject the build |
 
-**Editorial note on the verbatim "throws at runtime" wording**: the originating memo's table cell predates this row's spec. Per CLAUDE.md's Result-over-exception invariant ("user-visible errors surface as `Result<_, DbspError>` or `AppendResult`-style values; exceptions break the referential-transparency the operator algebra depends on"), the actual implementation of B-0142 MUST flow contract violations as Result-error values, NOT throw exceptions. The verbatim quote is preserved; the row spec below normalizes to Result-flow.
+**Editorial note on the verbatim "throws at runtime" wording**: the originating memo's table cell predates this row's spec. Per CLAUDE.md's Result-over-exception invariant ("user-visible errors surface as `Result<_, DbspError>` or `AppendResult`-style values; exceptions break the referential-transparency the operator algebra depends on"), the actual implementation of B-0142 MUST flow **recoverable-user-facing-failure contract violations** as Result-error values, NOT throw exceptions. **Scope of "MUST"**: limited to recoverable-user-facing failures within Result-flow code paths. **Programmer-error preconditions** (e.g., F# `invalidArg` for argument validation in `src/Core/**`) are explicitly OUT OF SCOPE for the no-throw rule and stay as exceptions per F# idiom — see "Migration concerns + scope clarification" below for the precise scope split. The verbatim quote is preserved; the row spec normalizes to Result-flow within its narrowed scope.
 
 And in the row-listing section:
 
@@ -48,7 +48,7 @@ Neither catches:
 
 Design-by-contract primitives integrated into the F# / C# codebase:
 
-1. **Pre-condition primitives**: `requires(condition, message)` at function entry; returns Result-error if violated (Result-over-exception per CLAUDE.md; NO throw / panic flow)
+1. **Pre-condition primitives**: `requires(condition, message)` at function entry; returns Result-error if violated **for recoverable-user-facing-failure contracts** (Result-over-exception per CLAUDE.md; NO throw / panic flow within that scope). For programmer-error preconditions (argument validation, internal invariants), use `requires_assert()` two-mode variant which composes with existing F# `invalidArg` idiom.
 2. **Post-condition primitives**: `ensures(condition, message)` at function exit; verifies the return value satisfies the contract
 3. **Invariant primitives**: `invariant(condition, message)` for class/object state; verified at all entry/exit points
 4. **Optional compile-time mode**: refinement types (F# units of measure, C# nullable annotations, custom type-level constraints) that reject violations at the build step rather than runtime
@@ -72,7 +72,7 @@ The row's scope: evaluate which of these (or combination) provides the design-by
 - **B-0130 (verify-before-state-claim mechanized auditor)**: claim-integrity discipline; this row mechanizes the contract-integrity discipline at function boundaries
 - **B-0170 (substrate-claim-checker)**: data-claim verification; this row's tool is code-claim verification
 - **B-0177 (audit memos for misfiled backlog)**: this row's existence IS another empirical hit for B-0177's audit hypothesis (sibling to B-0141)
-- **memory/parallelism-scaling-ladder memo (Aaron 2026-05-01)**: the originating substrate where the ID was reserved alongside B-0141
+- **`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`**: the originating substrate where the ID was reserved alongside B-0141
 
 ## Why this is L-effort
 
@@ -82,13 +82,23 @@ The row's scope: evaluate which of these (or combination) provides the design-by
 - Migration of existing prose-documented contracts to mechanized form (substantial; many functions in F# core have pre/post-conditions in comments)
 - CI integration (compile-time mode requires custom build steps; runtime mode requires test-suite integration)
 
+## Migration concerns + scope clarification (post-merge review absorption)
+
+Reviewer findings on the original row revealed three real compatibility concerns the row must acknowledge:
+
+1. **Existing `invalidArg` / exception-based code in `src/Core/**`**: programmer-error preconditions currently use `invalidArg` (e.g., bucket/count/window validation). The Result-over-exception invariant per CLAUDE.md applies to **user-visible failures**; programmer-error preconditions historically use exceptions in F# idiom. **Scope refinement**: B-0142's contract primitives target **recoverable user-facing failures** (`Result<_, ContractViolation>` flow); programmer-error preconditions stay as `invalidArg` until a separate decision (likely future row) decides whether to migrate. The row does NOT blanket-ban exceptions; it adds Result-flow contracts WHERE Result-flow is the operator-algebra path.
+
+2. **Plain-returning APIs (`bool`, `Stream`, `ValueTask`)** in `src/Core/**`: contract primitives returning `Result<_, ContractViolation>` aren't drop-in for plain-returning functions. **Scope refinement**: B-0142's `requires()`/`ensures()`/`invariant()` apply to functions whose return-type already accommodates Result-flow OR whose call-site is willing to accept a wrapping change. For pure plain-returning APIs, the contract layer is **assertion-only** (debug-mode runtime check; production mode no-op) rather than Result-returning. Two-mode primitive: `requires_result()` (Result-returning) vs `requires_assert()` (assertion).
+
+3. **`TreatWarningsAsErrors=true` in `Directory.Build.props`**: the original row's open-question framed contract violations as "warnings or errors" — a false dichotomy under the current build configuration where warning ≡ error. **Scope refinement**: contract violations are categorized at the contract layer (severity field on ContractViolation), but the build-gate disposition is uniform: any contract-layer issue that reaches build is a build break. Per-contract-class CI gating (some contracts produce build-breaks; some only fail tests) is itself a future design question, NOT a per-violation warning/error toggle.
+
 ## Open design questions (NOT for this row; for the design pass)
 
 1. **Library vs source-generator vs Roslyn-analyzer**: which mechanization layer fits Zeta's F#-primary + C#-secondary surface?
 2. **Compile-time vs runtime trade-off**: refinement types catch violations earlier but require type-system extension; runtime checks are less restrictive but slower-feedback
 3. **Contract-violation handling within Result-flow**: structured Result-error type (single ContractViolation variant vs per-contract-type variants)? Per-function-config of contract-error severity?
-4. **Migration strategy**: bulk-migrate prose contracts vs migrate-on-touch?
-5. **Composition with `dotnet build -c Release` `0 Warning(s) 0 Error(s)` gate**: contract violations as warnings or errors?
+4. **Migration strategy**: bulk-migrate prose contracts vs migrate-on-touch? (Note: scope of "prose contracts" is recoverable-user-facing-failure preconditions; programmer-error preconditions stay as `invalidArg` per scope refinement above)
+5. **Build-gate disposition**: per-contract-class severity → build-break OR test-failure-only OR ignore? (Resolves the warning-vs-error confusion by routing contract-layer severity to build-gate disposition explicitly)
 
 ## Why this matters
 
@@ -96,4 +106,4 @@ Pre/post-condition violations are silent-failure-class bugs. The function techni
 
 ## Carved sentence
 
-**"Code Contracts revival mechanizes pre/post-conditions and invariants at function boundaries: requires() at entry, ensures() at exit, invariant() across lifetime. Compile-time mode (refinement types) rejects violations at build; runtime mode catches at execution and surfaces violations as Result-error values (Result-over-exception per CLAUDE.md; NO throw / panic flow). Replaces review-time enforcement (manual, brittle) with mechanized enforcement (deterministic, durable). Sibling-instance of B-0141 (substrate-cross-reference quality) at the code-boundary layer."**
+**"Code Contracts revival mechanizes pre/post-conditions and invariants at function boundaries: requires() at entry, ensures() at exit, invariant() across lifetime. Compile-time mode (refinement types) rejects violations at build; runtime mode catches at execution and surfaces violations as Result-error values for **recoverable-user-facing-failure contract violations** (Result-over-exception per CLAUDE.md; NO throw / panic flow within that scope). **Programmer-error preconditions** (e.g., F# `invalidArg`) are out of scope for the no-throw rule and stay as exceptions per F# idiom. Replaces review-time enforcement (manual, brittle) with mechanized enforcement (deterministic, durable). Sibling-instance of B-0141 (substrate-cross-reference quality) at the code-boundary layer."**
