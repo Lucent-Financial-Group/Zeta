@@ -94,10 +94,13 @@ export function collectShards(dir: string, dateFlat: string): Shard[] {
       continue;
     }
     const m2 = name.match(/^(\d{6})Z-([0-9a-f]+)\.md$/);
+    // Both capture groups are required by the regex — when m2 is
+    // truthy, m2[1] and m2[2] are guaranteed strings. Non-null
+    // assertions (vs `?? ""`) preserve the invariant explicitly.
     if (m2) {
       shards.push({
-        primary: `${dateFlat}${m2[1]}`,
-        disamb: m2[2],
+        primary: `${dateFlat}${m2[1]!}`,
+        disamb: m2[2]!,
         path: join(dir, name),
       });
     }
