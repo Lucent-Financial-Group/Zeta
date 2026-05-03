@@ -34,25 +34,36 @@ Current Zeta CI runs ALL workflows on every PR regardless of whether the PR's ch
 
 **Effect**: CI churn proportional to (open PRs) × (number of workflows), independent of (changes per PR). Parallel-PR friendliness is bounded by total CI capacity, not by relevance.
 
+**Partial pre-existence** (post-merge review correction): some gating already exists — `gate.yml` skips build/test on docs-only PRs; `codeql.yml` short-circuits pure docs changes via `path-gate`; backlog-only changes have a `backlog-index-integrity` check. This row generalizes the partial pattern into a uniform mechanism, NOT introduces gating from zero.
+
 ## What this row builds
 
-The sibling-repo's detect-changes pattern (`../no-copy-only-learning-agents-insight`) — adapted for Zeta:
+The sibling-repo's detect-changes pattern (`../no-copy-only-learning-agents-insight`) — adapted for Zeta. **Note (post-merge review correction)**: GitHub Actions `needs:` works only within a single workflow file (`jobs.<job_id>.needs`), NOT across workflow files. The cross-workflow gating must use one of three architectures:
 
-1. **`detect-changes.yaml` workflow** — runs FIRST on every PR; emits per-change-class outputs:
-   - `dotnet-src-changed: true|false`
-   - `fsharp-src-changed: true|false`
-   - `tools-ts-changed: true|false`
-   - `docs-changed: true|false`
-   - `workflows-changed: true|false`
-   - etc. (one output per change class)
+**Architecture A — Reusable workflow** (`workflow_call`):
 
-2. **Downstream workflows gated on detect-changes outputs**:
-   - `dotnet build` runs only if `dotnet-src-changed == true`
-   - F# analyze runs only if `fsharp-src-changed == true`
-   - markdown lint runs only if `docs-changed == true`
-   - etc.
+A `detect-changes.yml` reusable workflow declares outputs; each downstream workflow calls it via `uses: ./.github/workflows/detect-changes.yml` and gates jobs on the called workflow's outputs. Cleanest separation; matches sibling-repo pattern.
 
-3. **Required-checks list** still includes all gated workflows; gate reports SUCCESS-skipped if not relevant. Per GitHub's required-checks semantics, a skipped-but-required check still counts as passing.
+**Architecture B — Per-workflow detect-job**:
+
+Each downstream workflow includes a small `detect-changes` job at the top that emits the change-class outputs; subsequent jobs in the same workflow gate on `needs: detect-changes`. Duplicated per workflow but no cross-workflow coordination needed.
+
+**Architecture C — Single consolidated workflow**:
+
+Collapse all gated workflows into one mega-workflow with a top-level `detect-changes` job + per-class job. Simplest semantics but loses workflow-file separation.
+
+**Recommended**: Architecture A (reusable workflow) — matches sibling-repo pattern, preserves separation, and gate-on-outputs semantics are well-supported in GitHub Actions.
+
+Per-class outputs:
+
+- `dotnet-src-changed: true|false`
+- `fsharp-src-changed: true|false`
+- `tools-ts-changed: true|false`
+- `docs-changed: true|false`
+- `workflows-changed: true|false`
+- etc. (one output per change class)
+
+**Required-checks list** still includes all gated workflows; gate reports SUCCESS-skipped if not relevant. Per GitHub's required-checks semantics, a skipped-but-required check still counts as passing.
 
 ## Composes with
 
@@ -63,7 +74,7 @@ The sibling-repo's detect-changes pattern (`../no-copy-only-learning-agents-insi
 
 ## Why this is M-effort
 
-- detect-changes.yaml workflow: ~50-100 lines of YAML
+- `detect-changes.yml` reusable workflow: ~50-100 lines of YAML (`.yml` matches the repo's existing convention; all `.github/workflows/` files use `.yml` not `.yaml`)
 - Per-workflow gating: each existing workflow needs a `needs: detect-changes` + `if: needs.detect-changes.outputs.<class> == 'true'` condition (small per workflow; cumulative ~15-42 workflows)
 - Test fixtures: docs-only PR / fsharp-only PR / mixed PR each verify gating works
 - Required-checks list audit: ensure required-but-skipped checks still produce passing status
