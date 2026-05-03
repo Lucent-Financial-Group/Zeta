@@ -87,19 +87,39 @@ substrate-author-recovery challenge — but partial recovery is available:**
   2. **Tick shards / persona notebooks** that captured the past-session's context (Aarav's notebook is the rare load-bearing example for this case)
   3. **Maintainer-acceptance reasoning** — the maintainer can explain why he ACCEPTED the agent's output, which is its own first-party content (not the substrate-author's intent, but the selection-judgment intent)
 
-### Past-agent introspection on this case
+### Architectural intent (first-party from maintainer 2026-05-03)
 
-The substrate context the past-agent had at write-time (round 34,
-2026-04-19):
+When asked directly, the maintainer provided the architectural-
+decision intent:
+
+> *"it was my decision that we would have both narrow and wide
+> skills and if they accidently got routed to the wide it would
+> help them route to the narrow."*
+
+This is the **architectural intent** layer — distinct from
+substrate-content intent. The maintainer decided:
+
+1. The skill space should have **both narrow + wide skills** (two-tier design — not narrow-only, not wide-only)
+2. The wide (umbrella) skill should act as **redirect-to-narrow** when accidental wide-routing happens
+
+The substrate-content intent (specific shape: explicit enumeration of every sibling with `→ skill-name` routing) was the past Claude session's choice **within** that architecture. The architecture is the maintainer's; the implementation is the agent's.
+
+### Past-agent introspection on the substrate-content layer
+
+Given the architectural intent (both narrow + wide; wide-redirects-to-narrow), the substrate context the past-agent had at write-time (round 34, 2026-04-19):
 
 1. The math substrate had 6+ narrow expert skills (category-theory, measure-theory, numerical-analysis, probability, applied-mathematics, theoretical-mathematics)
-2. Skill-routing matches on description keywords; an umbrella named "mathematics-expert" would trigger on every math-flavored query
-3. Without explicit defer-block, the umbrella + narrow-siblings would compete for the router's matches → unpredictable behavior
-4. The minimal-change fix: make the defer-discipline explicit + load-bearing
+2. Skill-routing matches on description keywords; an umbrella named "mathematics-expert" would trigger on every math-flavored query (including queries that should hit a narrow sibling)
+3. The architectural goal (wide-redirects-to-narrow) is satisfied by an explicit defer-block listing every sibling
+4. The "this is load-bearing" emphasis flags the procedure as router-critical to future contributors
 
-**Inferred past-agent reasoning (necessarily speculative, bounded by substrate):** the defer-block was the smallest change making umbrella + narrow-siblings co-exist deterministically. The "this is load-bearing" emphasis flags the procedure as router-critical (later named "router-coherence" in Aarav's round-41 observation). Listing every sibling explicitly rather than "defer to most-narrow matching skill" was the more conservative implementation — explicit enumeration is deterministic; "most-narrow matching" requires routing-implementation that doesn't exist.
+**Inferred past-agent reasoning (necessarily speculative, bounded by architectural intent + substrate-context):** explicit enumeration of every sibling rather than "defer to most-narrow matching skill" was the more conservative implementation — explicit enumeration is deterministic; "most-narrow matching" requires routing-implementation that doesn't exist. The past agent translated the architectural intent into the simplest deterministic implementation.
 
-This inference is **bounded by the substrate-context**, not authoritative on past-agent intent. The skill body should teach contributors: **inference is the right tool for vibe-coded substrate-author archaeology; certainty about intent is not available.**
+This inference is **bounded by the architectural intent (now first-party-confirmed) + substrate-context**, not authoritative on past-agent intent. The skill body should teach contributors:
+
+- **Three intent layers**: architectural (maintainer's decision authority — first-party recoverable), substrate-content (past-agent — past-agent introspection bounded by architecture + substrate), selection-judgment (maintainer's commit acceptance — first-party recoverable)
+- **Inference is the right tool** for vibe-coded substrate-author archaeology at the substrate-content layer; certainty about implementation-specific intent is not available
+- **First-party query IS available** for architectural intent + selection-judgment; ask the maintainer for those layers
 
 ## The procedure walked, layer by layer
 
