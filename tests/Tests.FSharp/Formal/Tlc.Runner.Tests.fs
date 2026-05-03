@@ -81,18 +81,21 @@ let private which (exe: string) : string option =
 /// True when the TLC toolchain (jar + java) is fully configured
 /// AND the runner is one we want to actually exercise. Formal
 /// verification (TLC) is pure-math computation: no OS-specific
-/// behavior, no environment touching. Running it on macOS / ARM /
-/// slim runners alongside Linux is duplicate work. Filter to
-/// standard Linux only on CI; preserve dev-local validation
-/// regardless.
+/// behavior, no environment touching. Running it on macOS /
+/// Windows / ARM / slim runners alongside standard Linux x64 is
+/// duplicate work. Filter to standard Linux x64 only on CI;
+/// preserve dev-local validation regardless.
 ///
-/// Two-axis check:
+/// Three-axis check:
 ///   * OS axis: skip non-Linux on CI (catches macos-26, windows-*).
+///   * Architecture axis: skip non-x64 on CI (catches
+///     ubuntu-24.04-arm, windows-11-arm — both are still
+///     Linux/Windows so OS check alone wouldn't catch ARM Linux).
 ///   * Runner-class axis: skip the slim runner via the workflow-name
-///     env var GITHUB_WORKFLOW. ubuntu-slim is still Linux so the OS
-///     check alone wouldn't catch it.
+///     env var GITHUB_WORKFLOW. ubuntu-slim is Linux x64 so the
+///     OS+arch check alone wouldn't catch it.
 ///
-/// Dev-local (no CI=true) bypasses both filters so devs can
+/// Dev-local (no CI=true) bypasses all three filters so devs can
 /// validate specs in their normal `dotnet test` runs.
 let private toolchainReady () : bool =
     let isCi =
@@ -102,11 +105,14 @@ let private toolchainReady () : bool =
     let isLinux =
         System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
             System.Runtime.InteropServices.OSPlatform.Linux)
+    let isX64 =
+        System.Runtime.InteropServices.RuntimeInformation.OSArchitecture =
+            System.Runtime.InteropServices.Architecture.X64
     let isLowMemoryWorkflow =
         match Environment.GetEnvironmentVariable "GITHUB_WORKFLOW" with
         | "low-memory" -> true
         | _ -> false
-    if isCi && (not isLinux || isLowMemoryWorkflow) then false
+    if isCi && (not isLinux || not isX64 || isLowMemoryWorkflow) then false
     else
         match which "java" with
         | Some _ when File.Exists tlaJarPath -> true
