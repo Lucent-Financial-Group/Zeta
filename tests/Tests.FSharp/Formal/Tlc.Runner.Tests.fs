@@ -259,12 +259,21 @@ let ``TLC validates CircuitRegistration`` () =
 
 [<Fact>]
 let ``TLC validates SpineAsyncProtocol`` () =
-    // SpineAsync producer/worker protocol — verifies three
-    // invariants over a bounded NumBatches=4 run: InvMonotonic
-    // (sent counter only increases), InvEventuallyDrains (channel
-    // empties before flush completes), InvFlushTerminates (the
-    // protocol reaches quiescence without livelock). The cfg
-    // declares CHECK_DEADLOCK FALSE because reaching the all-done
-    // state (processed=NumBatches, channel empty, both PCs idle)
-    // is intended termination, not bug-deadlock.
+    // SpineAsync producer/worker protocol — verifies three STATE
+    // invariants over a bounded NumBatches=4 run:
+    //   * InvMonotonic: processed <= sent at every reachable state
+    //   * InvEventuallyDrains: when channel is empty, processed
+    //     accounts for everything sent at that instant (not a
+    //     temporal liveness claim — the name is historical from
+    //     the spec author's intent comment; the actual predicate
+    //     is state-conditional)
+    //   * InvFlushTerminates: at any state where a flush target
+    //     <= sent, processed accounts for the in-flight + drained
+    //     work (also state-conditional, not temporal)
+    // The cfg declares CHECK_DEADLOCK FALSE because reaching the
+    // all-done state (processed=NumBatches, channel empty, both
+    // PCs idle) is intended termination for this bounded protocol,
+    // not bug-deadlock. Real liveness (eventual completion) is not
+    // checked by this spec; it would require LTL properties + WF/SF
+    // fairness assumptions.
     assertSpecValid "SpineAsyncProtocol"
