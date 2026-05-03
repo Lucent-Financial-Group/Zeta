@@ -8,13 +8,13 @@ type: feedback
 
 ## Why v2
 
-The v1 taxonomy (`memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md`, currently user-scope-only — never promoted in-repo per the 2026-04-24 natural-home directive) catalogued 7 classes from a 5-tick PR drain in 2026-04-28. The 2026-05-01 drain wave landed ~20 PR thread-fix ticks across ~16 ticks, encountering classes the v1 taxonomy didn't name. Deepseek (peer-AI) explicitly flagged the consolidation as overdue: *"The review-thread taxonomy is ready for consolidation. The loop has identified ~13 distinct classes of review findings."*
+The v1 taxonomy (`~/.claude/projects/<slug>/memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` — user-scope-only; never promoted in-repo per the 2026-04-24 natural-home directive) catalogued 7 classes from a 5-tick PR drain in 2026-04-28. The 2026-05-01 drain wave landed ~20 PR thread-fix ticks across ~16 ticks, encountering classes the v1 taxonomy didn't name. Deepseek (peer-AI) explicitly flagged the consolidation as overdue: *"The review-thread taxonomy is ready for consolidation. The loop has identified ~13 distinct classes of review findings."*
 
 The cost of not consolidating: each class re-discovered from scratch on first encounter. Cost of consolidating: a single read-once, apply-many lookup. The leverage scales with the per-class repeat-rate (forward-reference fired 9+ times this drain wave alone).
 
 ## v1 reminder (the parent 7 classes)
 
-Briefly, from `feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` (user-scope; promotion-to-in-repo is a separate followup row):
+Briefly, from `~/.claude/projects/<slug>/memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` (user-scope only; promotion-to-in-repo is a separate follow-up row):
 
 1. **Phantom-blocker** — finding describes a state the file isn't in
 2. **Outdated-thread** — finding was real when filed but my fix-push made it stale
@@ -150,11 +150,11 @@ The v1 real-fix class is the largest bucket; the drain wave shows several distin
 
 #### 17. **Structural-pattern-mismatch / Real-fix**
 
-**Signal:** path/pattern is correct in 90% of contexts but wrong here because the project needs a different abstraction layer. E.g., `.git/hooks/pre-commit` (per-clone, untracked) vs `.githooks/` + `core.hooksPath` (versioned, indirected).
+**Signal:** path/pattern is correct in 90% of contexts but wrong here because the project needs a different abstraction layer. E.g., `.git/hooks/pre-commit` (per-clone, untracked) vs a hypothetical `.githooks/` + `core.hooksPath` integration (versioned, indirected). Note: this repo currently has no `.githooks/` directory; hooks are plugin-shipped via `.claude/settings.json` per the hooks audit. The `.githooks/` example is illustrative of the structural pattern (versioned-vs-runtime layer), not a description of the current mechanism.
 
 **Resolution:** **layer-of-abstraction discipline** — when describing a tooling integration, name the *versioned* layer (project artifact) rather than the *runtime* layer (per-clone instance). Same user-visible behavior; different durability.
 
-**Example:** PR #1040 follow-up — `.git/hooks/pre-commit` rephrased to `.githooks/` + `core.hooksPath` integration.
+**Example:** PR #1040 follow-up — `.git/hooks/pre-commit` rephrased to point at the versioned (project-artifact) layer rather than the per-clone runtime layer.
 
 #### 18. **Same-wake-author-error-cluster / Real-fix**
 
@@ -250,11 +250,10 @@ Total: ~46+ class-firings catalogued across ~16 ticks. Forward-reference and def
 
 ## Composes with
 
-- v1 taxonomy at `~/.claude/projects/<slug>/memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` (user-scope; promotion-to-in-repo is a separate follow-up).
-- B-0129 (`docs/backlog/P3/B-0129-tick-history-schema-prediction-vs-receipt-column-aaron-2026-05-01.md`) — the named-policy that powers class #19 batch-resolution.
-- B-0130 (`docs/backlog/P2/B-0130-verify-before-state-claim-mechanized-auditor-2026-05-01.md`) — when implemented, would mechanize classes #4 (wildcard-ref auditor), #10 (stale-filename / cross-reference-resolves-to-file auditor proposed for row #8), #15 (intra-file pair auditor), #18 (wake-window-cluster auditor).
-- `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` — v1 parent.
-- The drain-wave tick-history shards `docs/hygiene-history/ticks/2026/05/01/0904Z.md` through `1007Z.md` — empirical evidence for each class-firing.
+- v1 taxonomy at `~/.claude/projects/<slug>/memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` (user-scope only — never promoted in-repo per the 2026-04-24 natural-home directive; promotion-to-in-repo is a separate follow-up).
+- B-0129 (`docs/backlog/P3/B-0129-tick-history-schema-prediction-vs-receipt-column-aaron-2026-05-01.md`) — the named-policy that powers class #20 (deferred-per-explicit-policy) batch-resolution.
+- B-0130 (`docs/backlog/P2/B-0130-verify-before-state-claim-mechanized-auditor-2026-05-01.md`) — when implemented, would mechanize classes #11 (wildcard-not-navigable auditor), #10 (stale-filename / cross-reference-resolves-to-file auditor proposed for row #8), #15 (intra-file pair auditor), #18 (wake-window-cluster auditor).
+- The drain-wave tick-history shards under `docs/hygiene-history/ticks/2026/05/01/` (representative range from `0904Z.md` onward through the 10:00-11:00 UTC drain window) — empirical evidence for each class-firing.
 - Deepseek peer-AI 2026-05-01 — prompted the consolidation: *"the next highest-leverage action is to consolidate these into a canonical memory file."*
 
 ## What this file does NOT do
