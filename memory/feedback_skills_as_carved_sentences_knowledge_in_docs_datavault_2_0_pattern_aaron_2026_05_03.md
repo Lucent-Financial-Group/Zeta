@@ -81,7 +81,7 @@ The flywheel mechanizes the consume → expand cycle. Per the change-rate split:
 - **Hub content for the flywheel:** the discipline ("at-creation: search backlog for prerequisites"), the closure-pass meta-observation procedure, the depends_on graph traversal logic — these are skill-shaped
 - **Satellite content for the flywheel:** the actual rows that exist; the tags assigned; the `composes_with` cross-references; per-tick closure outputs — these are doc-shaped (the backlog itself is a satellite cluster)
 
-The mechanizing tool (`tools/backlog/expand-from-closure.ts`) is **hub-shaped** (the mechanism stays stable); its **outputs** are satellite-shaped (per-PR closure analyses).
+The mechanizing tool (`tools/backlog/expand-from-closure.ts` — proposed, not yet built; named in `feedback_skill_flywheel_*` as Phase-1b candidate) is **hub-shaped** (the mechanism would stay stable once shipped); its **outputs** would be satellite-shaped (per-PR closure analyses).
 
 ## Composes with existing substrate
 
@@ -137,7 +137,7 @@ The decision-archaeology skill body (B-0169 future SKILL.md) has 11 procedure la
 | 4 | `git log -S "<string>" -- memory/ CLAUDE.md` | `bun tools/decision-archaeology/string-archaeology.ts "<string>"` |
 | 5 | `git log -L :func:file` | `bun tools/decision-archaeology/function-archaeology.ts <func> <file>` |
 | 6 | `grep -rlnE "<pattern>" docs/hygiene-history/ticks/` | `bun tools/decision-archaeology/shard-search.ts <pattern>` |
-| 7 | `ls docs/DECISIONS/ \| grep <pattern>` | `bun tools/decision-archaeology/adr-search.ts <pattern>` |
+| 7 | `find docs/DECISIONS/ -iname "*<pattern>*"` (single-command alternative to `ls .. ｜ grep ..`; pipe in markdown table cells is awkward, find avoids it) | `bun tools/decision-archaeology/adr-search.ts <pattern>` |
 | 8-11 | Various searches | TS-wrapped where they involve multi-flag patterns |
 
 Each TS file is small (often <100 lines), single-purpose, type-checked, and re-runnable. Skill body becomes carved-sentence pointers ("invoke `bun tools/decision-archaeology/blame.ts`") rather than embedded bash.
