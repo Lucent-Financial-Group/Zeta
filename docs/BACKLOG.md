@@ -145,6 +145,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0179](backlog/P2/B-0179-fix-spineasyncprotocol-tla-counterexample-blocks-b1-ci-registration-2026-05-03.md)** Fix SpineAsyncProtocol.tla counterexample (blocks B1 → A CI registration; depth-9 trace dump on TLC run)
 - [ ] **[B-0180](backlog/P2/B-0180-fix-circuitregistration-tla-config-bug-safety-invariant-undefined-2026-05-03.md)** Fix CircuitRegistration.tla config bug — `.cfg` references invariant `Safety` not defined in `.tla` (blocks B1 → A CI registration)
 - [ ] **[B-0181](backlog/P2/B-0181-fix-spinemergeinvariants-tla-counterexample-blocks-b1-ci-registration-2026-05-03.md)** Fix SpineMergeInvariants.tla counterexample (blocks B1 → A CI registration; depth-17 trace dump on TLC run)
+- [ ] **[B-0182](backlog/P2/B-0182-linux-only-formal-verification-tests-pure-math-no-os-difference-aaron-2026-05-03.md)** Filter formal-verification tests to standard Linux only — TLC + Alloy + Lean are pure-math computation; no OS-specific behavior
 
 ## P3 — convenience / deferred
 
