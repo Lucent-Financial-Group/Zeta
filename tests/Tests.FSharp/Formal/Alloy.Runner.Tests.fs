@@ -196,7 +196,7 @@ let private assertSpecValid (specName: string) =
 // ═══════════════════════════════════════════════════════════════════
 
 
-[<Fact(Skip = "Spine.als has Alloy 6.2.0 type error at line 35; tracked as B-0184. Skip until spec is fixed.")>]
+[<Fact>]
 let ``Alloy spec Spine structural invariants hold`` () =
     assertSpecValid "Spine"
 
