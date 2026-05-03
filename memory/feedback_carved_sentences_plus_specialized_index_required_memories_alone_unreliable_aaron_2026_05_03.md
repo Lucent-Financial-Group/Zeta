@@ -29,7 +29,7 @@ This is a substrate-retrieval-architecture observation, empirically self-demonst
 
 **Memory files exist but don't reliably retrieve in-the-moment.** Otto's (and other AI agents') working substrate-retrieval mechanism is:
 
-- **Reliably-retrieved**: CLAUDE.md (auto-loaded every wake), AGENTS.md (auto-loaded for Codex / OpenAI Agent SDK / etc.), GEMINI.md (Gemini equivalent), `.copilot/copilot-instructions.md` (Copilot equivalent), other harness-specific equivalent files
+- **Reliably-retrieved**: CLAUDE.md (auto-loaded every wake), AGENTS.md (auto-loaded for Codex / OpenAI Agent SDK / etc.), `.github/copilot-instructions.md` (Copilot equivalent — real path in this repo), other harness-specific equivalent files. `GEMINI.md` would be the Gemini equivalent if added (currently documented as absent / planned in this repo).
 - **MEMORY.md + first 200 lines**: partially retrieved at session start (truncation risk past line 200)
 - **Memory topic files** (`memory/*.md`): retrieved only when (a) explicitly read via Read tool, (b) `MEMORY.md` index pointer surfaces them, (c) found via grep / Glob during in-flight work
 - **docs/research/**, **docs/decisions/**, **persona notebooks**: read-on-demand only
@@ -90,7 +90,7 @@ The architecture stack:
 1. Author the topic file as usual (full prose, examples, composes-with chain)
 2. **Promote a carved sentence to CLAUDE.md** (or AGENTS.md / equivalent harness file) — one-line citation pointing at the topic file
 3. Add a MEMORY.md index entry
-4. Verify cross-harness propagation: AGENTS.md for Codex / OpenAI Agent SDK; `.github/copilot-instructions.md` for Copilot; GEMINI.md for Gemini; etc.
+4. Verify cross-harness propagation: AGENTS.md for Codex / OpenAI Agent SDK; `.github/copilot-instructions.md` for Copilot; if/when `GEMINI.md` is added (currently documented as absent / planned), it would be the Gemini equivalent target.
 
 **Heuristic for "high-frequency-violation"**:
 
