@@ -32,7 +32,7 @@ The domain would have three classes of substrate:
 | Skill candidate | What it does | Status today |
 |---|---|---|
 | `decision-archaeology` | Reconstructs "why is it like this?" via layered evidence (B-0169) | In flight; PR #1244 merged the row; SKILL.md authoring deferred to skill-creator after worked examples land |
-| `backlog-row-creator-with-prereq-search` | Mechanizes at-creation-time discipline: search backlog for prerequisites, populate `depends_on:` at file-time | Substrate exists as memo (`feedback_at_pickup_time_prereq_check_discipline_*`); not yet skill-routed |
+| `backlog-row-creator-with-prereq-search` | Mechanizes at-creation-time discipline: search backlog for prerequisites, populate `depends_on:` at file-time | Substrate exists as memo (`feedback_depends_on_backlog_search_discipline_at_creation_and_at_pickup_*`); not yet skill-routed |
 | `backlog-row-picker-with-prereq-search` | Mechanizes at-pickup-time discipline: when work feels like missing substrate, search backlog for the prereq | Same memo; not yet skill-routed |
 | `depends_on-relationship-analyst` | Per-row analysis filling `depends_on:` with real prerequisites (not the empty `[]` schema-completion default) | The hard-work job that PR #1246 explicitly didn't do; ongoing per natural-trigger |
 | `backlog-flywheel-mechanizer` | Runs the expand-from-closure analysis at PR-merge-time; produces N≥0 candidate-rows per closure context | Proposed in `feedback_skill_flywheel_expansion_flywheel_parallel_tracks_substrate_*`; `tools/backlog/expand-from-closure.ts` not yet built |
