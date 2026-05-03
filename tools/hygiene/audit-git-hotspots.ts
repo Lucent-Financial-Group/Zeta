@@ -182,10 +182,33 @@ function isInsideWorkTree(): boolean {
   return result.status === 0 && result.stdout.trim() === "true";
 }
 
+// Convert window shorthand (e.g. "60d", "2w", "3m", "1y") to a
+// `git log --since=` value git actually understands. Git's --since
+// parses approxidate strings like "60 days ago"; the bare "60d" is
+// NOT a valid approxidate and silently matches zero commits.
+// Empirically caught 2026-05-03 when the cadence workflow's first
+// run reported "no commits in window '60d' (or all filtered)" while
+// the repo had 1274 commits in that window. Pass-through if the
+// input does not match the shorthand pattern (so callers can still
+// supply a raw approxidate like "1 month ago").
+function expandWindowShorthand(window: string): string {
+  const match = /^(\d+)([dwmy])$/.exec(window);
+  if (!match) return window;
+  const n = match[1];
+  const suffix = match[2];
+  const unit =
+    suffix === "d" ? "days" :
+    suffix === "w" ? "weeks" :
+    suffix === "m" ? "months" :
+    "years";
+  return `${n} ${unit} ago`;
+}
+
 function tallyTouches(window: string): readonly FileTally[] {
+  const since = expandWindowShorthand(window);
   const raw = runGit([
     "log",
-    `--since=${window}`,
+    `--since=${since}`,
     "--pretty=format:",
     "--name-only",
   ]);
@@ -216,9 +239,10 @@ function uniqueLineCount(text: string): number {
 }
 
 function summariseFile(window: string, file: string, touches: number): FileSummary {
+  const since = expandWindowShorthand(window);
   const authorsRaw = runGit([
     "log",
-    `--since=${window}`,
+    `--since=${since}`,
     "--pretty=format:%an",
     "--",
     file,
@@ -226,7 +250,7 @@ function summariseFile(window: string, file: string, touches: number): FileSumma
   const authors = uniqueLineCount(authorsRaw.trim());
   const subjectsRaw = runGit([
     "log",
-    `--since=${window}`,
+    `--since=${since}`,
     "--pretty=format:%s",
     "--",
     file,
