@@ -55,14 +55,28 @@ Aaron 2026-05-03: *"vibe coders will never be without a harness of some kind"* +
 
 Aaron 2026-05-03: *"can we count on our install/setup has run for contributors and/or maintainers, yes, so we can count on bun here too then, not for skills we send out via skill bundles for pepole who only resued they have cluade hooks, we maintiners and contributors can have both and both on ts."*.
 
-**Tracked end-user personas (per Aaron 2026-05-03 — *"we should start keeping us with our end user persona contrbutor maintainer skill bundle user, there will be more over time"*)**:
+**Persona vocabulary distinction (Aaron 2026-05-03 — *"now we have ai agents that are named and personas that are end user ai and human personas"*)**:
 
-| Persona | Bun availability | Hook options |
-|---|---|---|
-| **Contributor** (runs `tools/setup/install.sh`) | Yes (installed bun) | Could have both git hooks AND harness hooks, both in TS |
-| **Maintainer** (also runs install) | Yes | Same as contributor |
-| **Skill-bundle user** (uses plugins via harness) | Only via harness's runtime | Harness hooks only |
-| *(more personas over time)* | TBD | TBD |
+There are two distinct persona axes:
+
+1. **Named AI agents** (internal to Zeta's identity): Otto, Soraya, Daya, Aarav, Nadia, etc. These are the project's internal-cognition personas — they have notebooks, history surfaces, and contribute as named contributors per Otto-279
+2. **End-user personas** (external consumers of Zeta substrate): both human (contributor / maintainer / skill-bundle user) AND AI (PR Copilot, external Codex / Cursor / Aider reviewers, etc.)
+
+This memo's table covers **end-user personas** (axis 2). Internal named-agent personas are tracked separately (per the Otto-279 history-surface attribution carve-out + persona notebooks under `memory/persona/`).
+
+**Tracked end-user personas (per Aaron 2026-05-03 — *"we should start keeping us with our end user persona contrbutor maintainer skill bundle user, there will be more over time"* + *"the pr copilot ... yes that's a first class personal any any exteranl ai like that that could benefit from our runtime"*)**:
+
+| Persona | Type | Bun availability | What they execute |
+|---|---|---|---|
+| **Contributor** (runs `tools/setup/install.sh`) | Human | Yes (installed bun) | Could run git hooks + harness hooks, both in TS |
+| **Maintainer** (also runs install) | Human | Yes | Same as contributor |
+| **Skill-bundle user** (uses plugins via harness) | Human | Only via harness's runtime | Harness hooks only |
+| **PR Copilot reviewer** (default static) | AI | N/A — doesn't execute | Static analysis only; reads + flags issues |
+| **PR Copilot reviewer** (with `copilot-setup-steps.yml`) | AI | Yes (via our setup) | Both bash + TS executable; can verify findings by running tools |
+| **Other external-AI PR reviewers** (Codex, Cursor, Aider, Gemini-CLI, etc.) | AI | Conditional per their integration | Static or executable depending on setup |
+| *(more personas over time)* | TBD | TBD | TBD |
+
+**Architectural commitment**: external AI reviewers that could benefit from our runtime are first-class personas, not afterthoughts. When designing infrastructure (CI workflows, install scripts, distribution mechanisms), include rows for external-AI personas in the planning table.
 
 **Even for contributors/maintainers**, harness hooks cover the use cases git hooks would. Aaron's analysis (confirming Otto's):
 
