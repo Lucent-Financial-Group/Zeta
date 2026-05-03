@@ -1,6 +1,6 @@
 ---
 name: counterweight-audit
-description: Cadenced re-read discipline for counterweight memories (Otto-278). Memory-only counterweights are write-once-read-never without a forced re-read cadence; Otto-276 drifted within 30 min, Otto-277 re-tightened. This skill is Phase 2 of the cadenced-inspect stack — wraps tools/hygiene/counterweight-audit.sh and prompts the agent through the audit. Invoke when opening a session, opening a round, every N ticks in autonomous-loop, or on-demand when drift is suspected. Agent self-scores; no automatic drift detection — the point is forcing the re-read.
+description: Cadenced re-read discipline for counterweight memories (Otto-278). Memory-only counterweights are write-once-read-never without a forced re-read cadence; Otto-276 drifted within 30 min, Otto-277 re-tightened. This skill is Phase 2 of the cadenced-inspect stack — wraps tools/hygiene/counterweight-audit.ts and prompts the agent through the audit. Invoke when opening a session, opening a round, every N ticks in autonomous-loop, or on-demand when drift is suspected. Agent self-scores; no automatic drift detection — the point is forcing the re-read.
 project: zeta
 ---
 
@@ -40,7 +40,7 @@ pattern recurs indefinitely without a forced re-read.
    round (full sweep). Produces a drift report that informs
    round planning.
 3. **Every 5-10 autonomous-loop ticks** — `--cadence medium`.
-   The `tools/hygiene/counterweight-audit.sh` tool emits
+   The `tools/hygiene/counterweight-audit.ts` tool emits
    the prompts; the agent self-scores.
 4. **On-demand** — any time the agent suspects drift
    (committed to a pattern a memory counters, or a
@@ -54,14 +54,14 @@ pattern recurs indefinitely without a forced re-read.
 
 ### Step 1 — invoke the tool
 
-Run `tools/hygiene/counterweight-audit.sh` with the
+Run `tools/hygiene/counterweight-audit.ts` with the
 appropriate `--cadence`:
 
 ```bash
-tools/hygiene/counterweight-audit.sh --cadence quick   # top 3, session-start
-tools/hygiene/counterweight-audit.sh --cadence medium  # top 10, per-N-ticks
-tools/hygiene/counterweight-audit.sh --cadence long    # all, round-open
-tools/hygiene/counterweight-audit.sh --count 5         # override count
+tools/hygiene/counterweight-audit.ts --cadence quick   # top 3, session-start
+tools/hygiene/counterweight-audit.ts --cadence medium  # top 10, per-N-ticks
+tools/hygiene/counterweight-audit.ts --cadence long    # all, round-open
+tools/hygiene/counterweight-audit.ts --count 5         # override count
 ```
 
 The tool emits a markdown report listing each counterweight
@@ -159,7 +159,7 @@ stability as in catching drift. Both outcomes are logged.
 ## Phase roadmap
 
 - **Phase 1 (merged in #418):** the shell tool
-  `tools/hygiene/counterweight-audit.sh`.
+  `tools/hygiene/counterweight-audit.ts`.
 - **Phase 2 (this skill, current):** the wrapper so agents
   and subagents can invoke via the Skill tool with
   consistent cadence-to-count mapping.
@@ -174,7 +174,7 @@ stability as in catching drift. Both outcomes are logged.
 
 ## Reference patterns
 
-- `tools/hygiene/counterweight-audit.sh` — the tool this
+- `tools/hygiene/counterweight-audit.ts` — the tool this
   skill wraps.
 - `memory/feedback_memory_alone_leaky_without_cadenced_inspect_audit_for_missing_balance_otto_278_2026_04_24.md`
   — the originating rule.

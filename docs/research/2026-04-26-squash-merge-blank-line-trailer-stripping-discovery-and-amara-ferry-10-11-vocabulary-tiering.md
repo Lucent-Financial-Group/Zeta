@@ -13,7 +13,7 @@ This absorb is dual-topic: a critical operational discovery from the post-merge 
 
 ### Triggering event
 
-While dogfooding `tools/hygiene/audit-agencysignature-main-tip.sh` (task #299, in development) on the current acehack/main branch, the auditor flagged commit `bb9f73031757` (the squash-merge of PR #20 — the validator script itself) as a REGRESSION. Investigation revealed the cause.
+While dogfooding `tools/hygiene/audit-agencysignature-main-tip.ts` (task #299, in development) on the current acehack/main branch, the auditor flagged commit `bb9f73031757` (the squash-merge of PR #20 — the validator script itself) as a REGRESSION. Investigation revealed the cause.
 
 ### What happened
 

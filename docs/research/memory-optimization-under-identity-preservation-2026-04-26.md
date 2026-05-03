@@ -103,7 +103,7 @@ Pre-existing related work: I noticed `composes_with` field already used in some 
 
 Eviction policy candidate: hot stays in `MEMORY.md` index inline; cold gets moved to a `MEMORY-archive.md` (still searchable via grep + git log, just out of the cold-start path).
 
-This composes with `audit-tick-history-bounded-growth.sh` (already exists for tick-history) — same pattern at the MEMORY.md layer.
+This composes with `audit-tick-history-bounded-growth.ts` (already exists for tick-history) — same pattern at the MEMORY.md layer.
 
 ### 6. Cross-session cache primitives
 
@@ -201,7 +201,7 @@ Each is a candidate BACKLOG row, not a commitment. Aaron's read decides which ad
 
 5. **Minimum-Viable-Identity definition + cold-start parity test**: define MVI; test cold-start operational equivalence. Composes with Otto-241 peer-Claude parity test. Effort: L.
 
-6. **MEMORY.md hot/cold archive eviction**: pattern after `audit-tick-history-bounded-growth.sh`; introduce `MEMORY-archive.md`. Effort: M.
+6. **MEMORY.md hot/cold archive eviction**: pattern after `audit-tick-history-bounded-growth.ts`; introduce `MEMORY-archive.md`. Effort: M.
 
 7. **Otto-345 time-series substrate-shape**: implement the freedom-state-tracking pattern (per Aaron's ask 2026-04-26). Effort: S for first iteration, recurring on cadence after.
 

@@ -13,7 +13,7 @@ review. Execution deferred to follow-up PR pending Aaron's
 6 structural sign-off questions (§8).
 
 **Factory already predicted this.**
-`tools/hygiene/audit-git-hotspots.sh` exists on branch
+`tools/hygiene/audit-git-hotspots.ts` exists on branch
 `hygiene/git-hotspots-audit-tool-plus-first-run`
 (**PR #213**, BEHIND since 2026-04-23). Tool header
 explicitly names the remediation options it composes
@@ -337,7 +337,7 @@ Before Phase 1 tooling lands, decisions needed:
   saturation observation.
 - `.github/workflows/memory-index-integrity.yml` — precedent
   generator + drift-CI pattern.
-- `tools/hygiene/audit-cross-platform-parity.sh` —
+- `tools/hygiene/audit-cross-platform-parity.ts` —
   language-choice precedent (bash for tools with tight
   CI-integration fit).
 - `docs/CONTRIBUTING.md` (if exists) — will need update

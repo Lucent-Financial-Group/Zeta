@@ -421,7 +421,7 @@ force flag. **No `--force` removal in the cleanup PR without maintainer sign-off
 | `stash@{3}` | `worktree-agent-abe73073cc7bba314` (WIP) — "core: Veridicality.antiConsensusGate — 6th graduation (10th ferry + SD-9)" | (per stash) | `docs/hygiene-history/loop-tick-history.md` (1 line) | `OBSOLETE_SUPERSEDED` (likely; loop-tick-history.md is heavily updated on main) |
 | `stash@{4}` | `pr148-lint-fix-rebase` (WIP) — "docs: why-the-factory-is-different — audience-perspective explainer" | (per stash) | `docs/plans/why-the-factory-is-different.md` (1 line) | `OBSOLETE_SUPERSEDED` (likely; if file exists on main) |
 | `stash@{5}` | `round-44-speculative` (WIP) — "Round 44: landing plan for the 201-commit speculative branch" | (per stash) | `docs/research/github-surface-map-complete-2026-04-22.md` (+796) | `EXTRACT_MEMORY_OR_DOC` — **substantial new artifact** (796 lines), worth verifying on-main and extracting if absent. |
-| `stash@{6}` | `hygiene/tick-history-bounded-growth` — "bounded-growth-staged" | (per stash) | `docs/hygiene-history/tick-history-bounded-growth-history.md` (+42), `tools/hygiene/audit-tick-history-bounded-growth.sh` (+129) | `EXTRACT_MEMORY_OR_DOC` — tool + history file; verify on-main; if absent, extract. |
+| `stash@{6}` | `hygiene/tick-history-bounded-growth` — "bounded-growth-staged" | (per stash) | `docs/hygiene-history/tick-history-bounded-growth-history.md` (+42), `tools/hygiene/audit-tick-history-bounded-growth.ts` (+129) | `EXTRACT_MEMORY_OR_DOC` — tool + history file; verify on-main; if absent, extract. |
 
 **Stash action note**: Stashes carry **WIP work** that was never
 committed; loss-tolerance is lower than for branches. The cleanup PR
