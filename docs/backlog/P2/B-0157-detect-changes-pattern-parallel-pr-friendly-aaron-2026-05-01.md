@@ -9,7 +9,7 @@ ask: Aaron 2026-05-01 named the row in the prefer-mechanical-external-anchors me
 created: 2026-05-01
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [B-0125, B-0153, B-0156, B-0177]
+composes_with: [B-0125, B-0153, B-0155, B-0156, B-0177]
 tags: [ci, workflows, detect-changes, parallel-pr, gating, fine-grained-workflows, sibling-repo, external-anchor, tooling]
 ---
 
@@ -34,7 +34,9 @@ Current Zeta CI runs ALL workflows on every PR regardless of whether the PR's ch
 
 **Effect**: CI churn proportional to (open PRs) × (number of workflows), independent of (changes per PR). Parallel-PR friendliness is bounded by total CI capacity, not by relevance.
 
-**Partial pre-existence** (post-merge review correction): some gating already exists — `gate.yml` skips build/test on docs-only PRs; `codeql.yml` short-circuits pure docs changes via `path-gate`; backlog-only changes have a `backlog-index-integrity` check. This row generalizes the partial pattern into a uniform mechanism, NOT introduces gating from zero.
+**Partial pre-existence** (post-merge review correction): some gating already exists — `gate.yml` skips build/test on docs-only PRs; `codeql.yml` short-circuits pure docs changes via `path-gate`; backlog-only changes have a `backlog-index-integrity` check. This row generalizes the partial pattern into a uniform mechanism and does NOT introduce gating from zero.
+
+**Per-gate ruleset architecture** (Aaron 2026-05-03 — recurring substrate, see B-0155 + the sibling-repo's 5 concern-aligned rulesets empirically validating that pattern): each parallel-forever-workflow has its OWN ruleset that stays always-on. Rulesets are managed via **declarative git-native files** (the `rulesets`-API-via-config-files pattern), NOT the legacy branch-protection API. Composition: B-0157 supplies the detect-changes infrastructure + the gating semantics; B-0155 supplies the multi-ruleset split architecture; per-gate rulesets stay always-on because they protect the gate itself, not the workflow's runtime decisions. The sibling-repo (`../no-copy-only-learning-agents-insight`) has already validated this at production scale: branch protection effectively empty, zero contexts there; all gating migrated to rulesets per concern-aligned class.
 
 ## What this row builds
 
@@ -56,14 +58,14 @@ Collapse all gated workflows into one mega-workflow with a top-level `detect-cha
 
 Per-class outputs:
 
-- `dotnet-src-changed: true|false`
-- `fsharp-src-changed: true|false`
-- `tools-ts-changed: true|false`
-- `docs-changed: true|false`
-- `workflows-changed: true|false`
+- `dotnet-src-changed: 'true'|'false'` (string-typed; GitHub Actions outputs are strings in expressions)
+- `fsharp-src-changed: 'true'|'false'` (string-typed; GitHub Actions outputs are strings in expressions)
+- `tools-ts-changed: 'true'|'false'` (string-typed; GitHub Actions outputs are strings in expressions)
+- `docs-changed: 'true'|'false'` (string-typed; GitHub Actions outputs are strings in expressions)
+- `workflows-changed: 'true'|'false'` (string-typed; GitHub Actions outputs are strings in expressions)
 - etc. (one output per change class)
 
-**Required-checks list** still includes all gated workflows; gate reports SUCCESS-skipped if not relevant. Per GitHub's required-checks semantics, a skipped-but-required check still counts as passing.
+**Required-checks semantics — corrected per repo reality** (post-merge review P1 finding): the repo's current setup (`gate.yml` + `code_quality severity:all`) treats skipped jobs as FAILURE, not SUCCESS. The naive "skipped-but-required passes" claim is INCORRECT for Zeta. The correct pattern: each gated workflow's required-check name keeps reporting SUCCESS — but the workflow internally skips only the EXPENSIVE STEPS, OR emits a cheap baseline status/artifact that satisfies the required-check name. The required-check name doesn't go skipped; it goes SUCCESS via cheap-no-op-path. This composes with B-0155 (multi-ruleset split): each ruleset can configure its required-checks list independently, so per-class gating doesn't accidentally over-require.
 
 ## Composes with
 
