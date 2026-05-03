@@ -1,13 +1,23 @@
 #!/usr/bin/env bun
 /**
- * substrate-claim-checker / check-existence.ts (v0.5.0)
+ * substrate-claim-checker / check-existence.ts (v0.6.0)
  *
  * Existence-drift sub-class checker — catches claims that a file or
  * directory exists when it doesn't. Per the verify-then-claim memo,
  * one of 7 sub-classes B-0170 v1+ should mechanize.
+ *
+ * v0.6 changes:
+ * - Gitignore awareness: paths that exist on disk but are gitignored
+ *   are flagged as "exists-on-disk-not-in-git" findings (substrate
+ *   convention: references should point to git-tracked paths or stable
+ *   URLs, not to local-mirror sync state). Caught via `git check-ignore`.
+ *   Empirical seed: PR #1322 review found `references/upstreams/efcore/...`
+ *   reference in a tick shard; references/upstreams/* is gitignored per
+ *   the upstream-mirror sync convention.
  */
 
 import { readFileSync, statSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 
 interface Finding {
@@ -15,6 +25,8 @@ interface Finding {
   line: number;
   pathClaim: string;
   reason: string;
+  /** v0.6: severity hint for downstream filtering. */
+  severity?: "drift" | "warning";
 }
 
 interface PathClaim {
@@ -47,6 +59,35 @@ function statExists(p: string): {
       isDirectory: false,
       errorCode: err.code ?? "EUNKNOWN",
     };
+  }
+}
+
+/**
+ * Check whether a path is gitignored, by invoking `git check-ignore`.
+ * Returns true if the path matches a gitignore rule (would not be tracked
+ * by git).
+ *
+ * Uses spawnSync (no shell) per the project's avoid-command-injection
+ * discipline. The path argument is passed as a separate argv entry.
+ *
+ * Edge cases:
+ * - If git is not on PATH (highly unusual), returns false (safe default —
+ *   don't flag everything as gitignored)
+ * - If path is outside the git working tree, returns false
+ * - If git returns 0, the path IS gitignored; if 1, it's NOT; other exit
+ *   codes treated as "unknown — assume not gitignored"
+ */
+function isGitIgnored(absPath: string, repoRoot: string): boolean {
+  try {
+    const result = spawnSync("git", ["check-ignore", "--quiet", absPath], {
+      cwd: repoRoot,
+      stdio: "ignore",
+      timeout: 5000,
+    });
+    // Exit 0 = path IS gitignored; Exit 1 = NOT gitignored; other = unknown
+    return result.status === 0;
+  } catch {
+    return false;
   }
 }
 
@@ -258,6 +299,7 @@ function checkFile(filePath: string): CheckResult {
     if (isFutureStateContext(lineText, before, after)) continue;
 
     let isResolvedClaim = false;
+    let resolvedAbsPath: string | null = null;
     let unreadableButExtant = false; // EACCES/EPERM/etc. — can't tell
     const triedRelative: string[] = [];
     for (const root of candidateRoots) {
@@ -268,6 +310,7 @@ function checkFile(filePath: string): CheckResult {
       const stat = statExists(absPath);
       if (stat.exists) {
         isResolvedClaim = true;
+        resolvedAbsPath = absPath;
         break;
       }
       if (stat.errorCode && stat.errorCode !== "ENOENT") {
@@ -281,7 +324,22 @@ function checkFile(filePath: string): CheckResult {
         line: claim.line,
         pathClaim: claim.path,
         reason: `path does not exist (tried relative-to-repo: ${triedRelative.join(", ")})`,
+        severity: "drift",
       });
+    } else if (isResolvedClaim && resolvedAbsPath !== null) {
+      // v0.6: path exists on disk — but is it git-tracked? Substrate
+      // references should point to git-tracked paths or stable URLs,
+      // NOT to local-mirror sync state (e.g., `references/upstreams/*`
+      // which is gitignored per the upstream-mirror sync convention).
+      if (isGitIgnored(resolvedAbsPath, repoRoot)) {
+        findings.push({
+          file: filePath,
+          line: claim.line,
+          pathClaim: claim.path,
+          reason: `path exists on disk but is gitignored (resolves to ${toRelative(resolvedAbsPath)}) — substrate references should point to git-tracked paths or stable URLs, not local-mirror sync state`,
+          severity: "warning",
+        });
+      }
     }
   }
   return { findings, ok: true };
@@ -296,7 +354,8 @@ export function main(): number {
     console.error("usage: bun tools/substrate-claim-checker/check-existence.ts <file> [<file> ...]");
     return 1;
   }
-  let totalFindings = 0;
+  let totalDrift = 0;
+  let totalWarnings = 0;
   let inputErrors = 0;
   for (const arg of args) {
     const { findings, ok } = checkFile(arg);
@@ -305,17 +364,27 @@ export function main(): number {
       continue;
     }
     for (const f of findings) {
-      console.log(`${f.file}:${f.line}: existence drift — claim "${f.pathClaim}" — ${f.reason}`);
-      totalFindings++;
+      const label = f.severity === "warning" ? "existence warning" : "existence drift";
+      console.log(`${f.file}:${f.line}: ${label} — claim "${f.pathClaim}" — ${f.reason}`);
+      if (f.severity === "warning") {
+        totalWarnings++;
+      } else {
+        totalDrift++;
+      }
     }
   }
   if (inputErrors > 0) {
     console.error(`\n${inputErrors} input error(s).`);
     return 1;
   }
-  if (totalFindings > 0) {
-    console.log(`\n${totalFindings} existence-drift finding(s).`);
-    return 1;
+  if (totalDrift > 0 || totalWarnings > 0) {
+    const parts: string[] = [];
+    if (totalDrift > 0) parts.push(`${totalDrift} drift finding(s)`);
+    if (totalWarnings > 0) parts.push(`${totalWarnings} warning(s)`);
+    console.log(`\n${parts.join(", ")}.`);
+    // Drift findings are real failures (exit 1); warnings alone exit 0
+    // (substrate-quality concern but not blocking) per v0.6 design.
+    return totalDrift > 0 ? 1 : 0;
   }
   console.log("no existence drift detected.");
   return 0;
