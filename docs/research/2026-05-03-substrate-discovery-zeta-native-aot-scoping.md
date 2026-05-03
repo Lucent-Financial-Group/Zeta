@@ -48,10 +48,209 @@ default:
    Edge-runner discipline (the human maintainer 2026-05-03)
    says ship the dogfood.
 
-Alternatives considered + rejected: TS + sqlite-vec/DuckDB
-(faster but doesn't dogfood); live-off-the-land via Skill
-router + grep (punts architecture); hybrid TS+Zeta (two
-systems, more complexity).
+**Updated 2026-05-03** (post-#1385 merge corrections from
+the human maintainer). Two epistemic-discipline corrections
+re-grade the original framing:
+
+### Correction 1 — chat is an assertion-channel, not a fact-channel
+
+The maintainer 2026-05-03 verbatim: *"when i speak i'm
+making assertions, that's the best way to describe this
+chat channel."* Chat-claims (his OR the architect's) are
+assertions; they need evidence to be elevated to
+architectural fact. The architect's failure mode in #1385:
+echoed the maintainer's *"maybe"* on live-off-the-land back
+as an architectural fact. Push-back-with-evidence is the
+discipline.
+
+### Correction 2 — alternatives are complementary, not exclusive
+
+The maintainer 2026-05-03 verbatim: *"i like hybrid for
+verification duckdb is very advanced too and we want a lot
+of its features we can verify against it behavior too, we
+don't want to copy it's code at all we are very differnt
+but it has some awesome feature."* The original "rejected"
+framing was too binary.
+
+### Re-graded architecture (with evidence labels)
+
+| Layer | Status | Evidence base |
+|---|---|---|
+| Zeta-native-AOT canonical index | **Decision (architect, within authority)** | Algebra match (fact: workload IS Z-set); dogfood-leverage (assertion, supported by math-proofs A-grade); deployment story (hypothesis pending Phase 0 PoC) |
+| DuckDB as verification oracle | **Assertion (maintainer 2026-05-03), worth pursuing** | DuckDB feature-richness (fact, well-known); cross-check-as-property-test pattern (precedent: Lean cross-checks paper) |
+| Live-off-the-land for harness-loaded surfaces | **Hypothesis pending research** | Maintainer said "maybe"; zero observed-behavior evidence; falsifiable via canary test + skill-persona behavioral observation |
+| Distribution feasibility (NativeAOT single-binary) | **Make-or-break risk per maintainer assertion** | Need cross-platform empirical test (linux-x64 / osx-arm64 / win-x64); known-unknown |
+
+### Push-back: what would establish the live-off-the-land hypothesis?
+
+The current claim has zero evidence base. The maintainer's
+"maybe" is directional input, not data. Concrete falsifiable
+tests:
+
+1. **`.claude/rules/` auto-load canary** (fixture exists at
+   `.claude/rules/test-canary.md`): does a fresh Claude Code
+   session in this repo see the canary string without being
+   told to read the file? Pass = harness-native loading
+   covers some of the substrate-discovery problem; fail =
+   it doesn't, and the live-off-the-land path needs work.
+
+2. **Skill-persona behavioral observation:** Do existing
+   skill personas (.claude/skills/<name>/SKILL.md) actually
+   succeed at finding what they need with `Skill` router +
+   grep + glob alone, or do they regularly fail / reach for
+   substrate that isn't router-discoverable? Measurable by
+   reading skill execution logs (if they exist) or
+   instrumenting one tick to log every `Skill` invocation
+   and its outcome.
+
+3. **External-PR-reviewer behavioral observation:** External
+   review agents (`/ultrareview`, automated PR reviewers)
+   either find what they need or they don't. Observable on
+   recent PR review threads; we can sample the last ~50
+   review comments and classify "agent had context to
+   answer" vs "agent missed context that lived in
+   substrate".
+
+Until at least one of these tests produces data, "live-off-
+the-land for harness-loaded surfaces" is a hypothesis to be
+tested, NOT an architectural decision to be encoded. Phase 0
+PoC scope expanded: include ONE of the three tests above as
+prerequisite evidence before building the substrate-
+discovery layer that would integrate with live-off-the-
+land.
+
+### Distribution feasibility — existing AOT core + JIT plugin architecture
+
+**Updated 2026-05-03** (the human maintainer): the dual-mode
+framing in this doc was reinventing existing prior art. *"we
+already have a AOT core that can load JIT plugins see the
+Baseyan."* Verified in repo: `src/Bayesian/Bayesian.fsproj`
+line 9 explicit comment — *"Explicitly NOT AOT-enforced —
+this is a plugin. Core stays AOT-clean."* — and the project
+description *"Opt-in: this project doesn't enforce
+PublishAot=true because it may optionally use Infer.NET,
+which depends on reflection-emit."*
+
+The actual architecture (already shipping):
+
+- **Zeta.Core** (`src/Core/Core.fsproj`) = AOT-clean library.
+  Includes `PluginApi.fs` (`IOperator<'TOut>` plugin-author
+  contract, `OutputBuffer`, `StreamHandle`) and
+  `PluginHarness.fs` (test harness for plugin operator
+  authors). Contains `IndexedZSet.fs`, `Incremental.fs`,
+  `Operators.fs` — the substrate-discovery primitives.
+
+- **Plugin projects** (`src/Bayesian/`, future
+  `src/SubstrateDiscovery.Plugins.*/`, etc.) = separate
+  fsproj files that reference Zeta.Core, implement the
+  `IOperator<'TOut>` contract, and are **not** AOT-enforced
+  so they can use reflection-heavy libraries (Infer.NET for
+  Bayesian, future DuckDB.NET for the verification oracle,
+  etc.).
+
+For substrate-discovery, this means:
+
+- The CORE indexing / query engine ships AOT-published as
+  `Zeta.SubstrateDiscovery` (small binary, fast startup,
+  zero-install for external agents).
+- Reflection-heavy or library-dependent extensions (DuckDB
+  cross-check oracle, future ML-driven similarity scoring,
+  etc.) ship as separate JIT plugin assemblies that the AOT
+  core loads on demand.
+- The `IOperator<'TOut>` contract is stable across the AOT
+  / JIT boundary; plugins compose into the same circuit
+  evaluator the AOT core runs.
+
+This means the maintainer's *"zero-install external-agent
+delivery"* use case is met by the AOT core alone. Plugins
+ship separately when needed. No need to bundle the entire
+Zeta + DuckDB.NET stack into a single binary.
+
+The maintainer's epistemic position remains honest: *"i
+just don't know whats possiible with distribution that's
+what makes or breaks it."* Distribution feasibility is the
+load-bearing empirical question. Phase 0 PoC's **primary
+deliverables** validate the existing AOT-core-plus-JIT-plugins
+architecture extends cleanly to substrate-discovery:
+
+- Build a minimal `Zeta.SubstrateDiscovery` AOT-clean
+  library that consumes Zeta.Core; publish AOT on
+  linux-x64, osx-arm64, win-x64
+- Measure binary size + cold-start latency on each platform
+- Run a non-trivial Zeta query end-to-end on each platform
+- Optionally: build a sibling `Zeta.SubstrateDiscovery.DuckDB`
+  JIT plugin that the AOT core loads on demand for the
+  verification-oracle path
+- Document any AOT compatibility issues encountered
+
+If the AOT core publishes cleanly on all three platforms,
+the zero-install external-agent delivery use-case is met.
+If AOT has compatibility issues for some Zeta.Core
+dependency, the rethink is *narrow* (which dependency, can
+it be moved to a JIT plugin, can the AOT-clean subset be
+extracted) — not a wholesale re-architecture, because the
+AOT-core-plus-plugins pattern is already shipping in
+Zeta.Bayesian.
+
+**This is the load-bearing question.** No substantial
+commit beyond Phase 0 PoC until this question has data.
+
+### DST integration — load-bearing, not afterthought
+
+**Updated 2026-05-03** (the human maintainer reminder *"i'm sure
+you remember all the DST goodness right?"*). Deterministic
+Simulation Testing (Otto-272 DST-everywhere + Otto-273
+seed-lock-policy + Otto-281 DST-exempt-is-deferred-bug) is
+load-bearing for substrate-discovery, not a follow-on. The
+PoC includes DST primitives from day 1 because:
+
+1. **Cold-start replay = warm-state IVM** is the central
+   correctness invariant. Rebuilding the index from
+   `git ls-files | feed-into-zeta` must produce the
+   IDENTICAL Z-set state to the live IVM. This is a DST
+   equivalence property — encoded as a CI invariant, not
+   just a property test.
+
+2. **File-watcher events are adversarial schedules.** Real-
+   world quirks (concurrent file modifications during a
+   `git pull`, partial writes during atomic-rename, OS
+   file-watcher coalescing) become reproducible test cases
+   under DST. Pinned seed → deterministic adversarial
+   schedule replay.
+
+3. **Every non-determinism source must be exposed.**
+   Dictionary iteration order, hashtable insertion order,
+   async-scheduler ordering, plugin-load timing — each is
+   either pinned or filed as a deferred bug per Otto-281.
+   *"Retries are non-determinism smell"* — if the
+   substrate-discovery test suite ever needs a retry, that
+   retry IS the bug.
+
+4. **The chain-rule Prop 3.2 Lean proof guarantees algebraic
+   determinism.** The implementation must match. Lean proves
+   the math; DST proves the implementation matches the
+   math. Both are required for an A-grade artifact in the
+   sense of #1383's grading.
+
+Concrete DST primitives in Phase 0 PoC:
+
+- Pinned random seeds for all stochastic operations (per
+  Otto-273; values containing 69 or 420 if architect picks
+  per maintainer whimsy preference)
+- A `replay` mode that reads a recorded event sequence +
+  seed and reproduces the Z-set state exactly
+- A CI job that compares cold-start replay vs warm-state
+  IVM at every commit; any divergence fails the build
+- Adversarial-schedule fuzz harness that generates
+  pathological file-watcher event sequences (out-of-order,
+  duplicated, partial)
+
+DST is the discipline that makes substrate-discovery
+trustworthy enough to be the canonical answer-source for
+agent wake-time inventory queries. Without DST, every
+"the index says X" claim is uncertain. With DST, "the
+index says X" reduces to "the deterministic algebra over
+the deterministic event-sequence produced X."
 
 ---
 
