@@ -109,22 +109,24 @@ Read source: `docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts
 
 **Primary frame**: contract-based development (Meyer, Eiffel) / Design-by-Contract / spec-based development (OpenSpec). Hooks fire at well-defined points (pre-tool-use, post-tool-use, session-start, pre-commit, commit-msg) — **the natural place to enforce pre-conditions and post-conditions on procedures**.
 
-### Substrate-content intent
+### Substrate-content intent (as PROPOSED in B-0173 — these files do NOT yet exist; B-0173 is an open backlog row)
 
-Three hook integrations (NOT just one):
+Three hook integrations (NOT just one) — all are deliverables of B-0173, not current repo state:
 
-1. **`tools/git/hooks/pre-commit`** — bash; invokes `bun tools/substrate-claim-checker/check-counts.ts <staged-files>`; validates staged-file content
-2. **`tools/git/hooks/commit-msg`** — bash; validates the commit message itself for fact-claims; pre-commit can't see this surface (commit msg doesn't exist yet at pre-commit time)
-3. **`.github/workflows/substrate-claim-checker.yml`** — CI check on PR descriptions (host-authored; different timing from git hooks)
+1. **`tools/git/hooks/pre-commit`** *(proposed)* — bash; would invoke `bun tools/substrate-claim-checker/check-counts.ts <staged-files>`; validates staged-file content
+2. **`tools/git/hooks/commit-msg`** *(proposed)* — bash; would validate the commit message itself for fact-claims; pre-commit can't see this surface (commit msg doesn't exist yet at pre-commit time)
+3. **`.github/workflows/substrate-claim-checker.yml`** *(proposed)* — CI check on PR descriptions (host-authored; different timing from git hooks)
+
+As of recovery time (2026-05-03), `tools/git/hooks/` directory does NOT exist on main; the workflow file is not present. These are all B-0173 row deliverables to be implemented when the row is picked up.
 
 depends_on: **[B-0170 (substrate-claim-checker tool) + B-0171 (OpenSpec catch-up — contracts live in specs)]**
 
-### Specific implementation intent
+### Specific implementation intent (as PROPOSED in B-0173)
 
 - **git hooks**, NOT Claude Code's `.claude/settings.json` hook system
-- bash wrapper that invokes the TS tool (per Aaron's rule 2: TS under tools/; the hook itself is bash to integrate with git's hook protocol)
-- Strict vs warn mode via `SUBSTRATE_CLAIM_CHECKER_MODE` env var (warn for v0.x rollout; strict once mature)
-- Per-check-type opt-out via comment markers: `<!-- substrate-claim-checker: skip-count-drift -->`
+- bash wrapper that would invoke the TS tool (per Aaron's rule 2: TS under tools/; the hook itself is bash to integrate with git's hook protocol)
+- Strict vs warn mode via `SUBSTRATE_CLAIM_CHECKER_MODE` env var (warn for v0.x rollout; strict once mature) — env var **not yet recognized** by `tools/substrate-claim-checker/check-counts.ts` v0.4.4; would be added as part of B-0173 implementation
+- Per-check-type opt-out via comment markers: `<!-- substrate-claim-checker: skip-count-drift -->` — markers **not yet recognized** by v0.4.4; would be added as part of B-0173 implementation (or B-0170 v1+)
 - Performance target: <2 seconds per commit
 
 ## Calibration delta
