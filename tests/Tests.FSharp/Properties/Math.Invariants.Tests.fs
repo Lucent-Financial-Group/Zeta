@@ -102,6 +102,41 @@ let ``PN-counter merge is associative`` (a: int) (b: int) (c: int) =
     lhs.Value = rhs.Value
 
 
+// ─── OR-Set — semilattice laws on observable element set ──────────
+// OrSet.Merge is ZSet.add on the (elem, tag) entries. Internal
+// weights can vary across merge orderings (Merge a a doubles weights),
+// but the *observable* set (elements with ANY weight > 0) is the
+// CRDT contract. These properties pin the laws on the observable
+// set, which is the layer external code consumes.
+
+let private orSetValueEqual<'T when 'T : comparison>
+    (a: OrSet<'T>) (b: OrSet<'T>) =
+    Set.ofSeq a.Value = Set.ofSeq b.Value
+
+let private buildOrSet (xs: int list) : OrSet<int> =
+    xs |> List.fold (fun (s: OrSet<int>) x -> s.Add x) OrSet<int>.Empty
+
+[<Property>]
+let ``OR-set merge value is commutative`` (xs: int list) (ys: int list) =
+    let a = buildOrSet xs
+    let b = buildOrSet ys
+    orSetValueEqual (OrSet<int>.Merge a b) (OrSet<int>.Merge b a)
+
+[<Property>]
+let ``OR-set merge value is idempotent`` (xs: int list) =
+    let a = buildOrSet xs
+    orSetValueEqual (OrSet<int>.Merge a a) a
+
+[<Property>]
+let ``OR-set merge value is associative`` (xs: int list) (ys: int list) (zs: int list) =
+    let a = buildOrSet xs
+    let b = buildOrSet ys
+    let c = buildOrSet zs
+    let lhs = OrSet<int>.Merge (OrSet<int>.Merge a b) c
+    let rhs = OrSet<int>.Merge a (OrSet<int>.Merge b c)
+    orSetValueEqual lhs rhs
+
+
 // ─── HyperMinHash — Jaccard monotonicity ───────────────────────────
 // Reference: Yu & Weber arXiv:1710.08436.
 
