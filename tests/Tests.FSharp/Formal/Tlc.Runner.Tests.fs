@@ -255,3 +255,16 @@ let ``TLC validates CircuitRegistration`` () =
     // NoRegisterAfterBuild` (matching the spec's stated THEOREM
     // `Spec => [](TypeOK /\ NoRegisterAfterBuild)`).
     assertSpecValid "CircuitRegistration"
+
+
+[<Fact>]
+let ``TLC validates SpineAsyncProtocol`` () =
+    // SpineAsync producer/worker protocol — verifies three
+    // invariants over a bounded NumBatches=4 run: InvMonotonic
+    // (sent counter only increases), InvEventuallyDrains (channel
+    // empties before flush completes), InvFlushTerminates (the
+    // protocol reaches quiescence without livelock). The cfg
+    // declares CHECK_DEADLOCK FALSE because reaching the all-done
+    // state (processed=NumBatches, channel empty, both PCs idle)
+    // is intended termination, not bug-deadlock.
+    assertSpecValid "SpineAsyncProtocol"
