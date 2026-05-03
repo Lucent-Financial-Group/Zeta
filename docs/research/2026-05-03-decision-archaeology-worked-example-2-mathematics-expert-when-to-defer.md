@@ -1,0 +1,333 @@
+# Decision-archaeology worked example #2 — the mathematics-expert "When to defer" pattern
+
+> Scope: worked example for the proposed `decision-archaeology` skill (B-0169).
+> Attribution: Otto autonomous (the `architect` hat) authored from on-repo
+> evidence; original-decision attribution to the human maintainer per
+> `git blame` on `.claude/skills/mathematics-expert/SKILL.md`.
+> Operational status: research-grade — input to skill-creator's eventual
+> SKILL.md authoring per Aarav's hybrid (b)+(c) routing recommendation
+> on B-0169. Not normative discipline; demonstrative.
+> Non-fusion disclaimer: the procedure walked here is generic
+> decision-archaeology; the substrate paths cited
+> (`.claude/skills/`, `docs/DECISIONS/`, `memory/persona/`) are
+> Zeta-specific illustrations of the generic procedure, not part of
+> the skill's portable surface.
+
+## The question
+
+> *"Why does the `mathematics-expert` umbrella SKILL.md have a
+> `## When to defer (this is load-bearing)` block listing every
+> narrow-sibling skill, and where does the convention come from?"*
+
+This is an **existence-archaeology** question (one of the five sub-modes
+Aarav recommended for the `decision-archaeology` skill body) — the
+artifact exists; the question asks why it's shaped that way + what
+discipline it serves. Composes with **persona-notebook-archaeology** as
+a secondary mode: the answer's load-bearing layer lives in a per-persona
+notebook (Aarav's), not in commits or docs proper.
+
+## Why this is a good worked example #2
+
+Aarav's review of B-0169 named this case as one of the 3 worked-example
+seeds. Three properties make it complementary to worked example #1
+(double-hop abandonment, supersession-archaeology mode):
+
+1. **Different sub-mode** — existence (why does this exist?) vs
+   supersession (why was this replaced?). Demonstrates the
+   skill body works across modes, not just one.
+2. **Persona-notebook payoff** — the load-bearing answer lives in
+   Aarav's NOTEBOOK at round 41. Without consulting persona notebooks,
+   the archaeology stops at "Aaron wrote it 2026-04-19 in PR #27"
+   without explaining why it became *canonical pattern* later.
+3. **ADR cross-reference** — Layer 7 surfaces the 2026-04-21
+   router-coherence ADR pair (v1 → v2) that ELEVATED the umbrella's
+   pattern into project-wide discipline. Demonstrates the skill body
+   correctly handles "find the load-bearing escalation, not just the
+   origin."
+
+## The procedure walked, layer by layer
+
+### Layer 1 — Frame the question
+
+The question `"why does the mathematics-expert umbrella have a 'When to
+defer' block?"` decomposes into:
+
+- **What does the block contain?** A list of narrow-sibling skills
+  (category-theory-expert, measure-theory-and-signed-measures-expert,
+  numerical-analysis-and-floating-point-expert, etc.) with explicit
+  "→ skill-name" routing.
+- **Why is it load-bearing?** The skill itself says so (the heading
+  contains "this is load-bearing"). The deeper why requires layers 7
+  + 9.
+- **When did it become canonical?** Different question from "when was
+  it authored" — needs round-history + persona-notebook archaeology.
+
+### Layer 2 — Surface layer: `git blame` on the canonical file
+
+```bash
+git blame -L 30,49 .claude/skills/mathematics-expert/SKILL.md
+```
+
+Returns:
+
+```
+5fdc72bf (Aaron Stainback 2026-04-19 20:01:01 -0400 30) ## When to defer (this is load-bearing)
+5fdc72bf (Aaron Stainback 2026-04-19 20:01:01 -0400 31)
+5fdc72bf (Aaron Stainback 2026-04-19 20:01:01 -0400 32) Defer to the narrow skill whenever a prompt cleanly lands
+5fdc72bf (Aaron Stainback 2026-04-19 20:01:01 -0400 33) in its lane. The umbrella exists to *route*, not to
+5fdc72bf (Aaron Stainback 2026-04-19 20:01:01 -0400 34) compete:
+... (lines 35-49: 6 narrow-sibling defer-rules)
+```
+
+**Layer-2 output:** the entire "When to defer" block landed in a single
+commit, `5fdc72bf`, on 2026-04-19 by the human maintainer. No subsequent
+edits to the block — `git blame` shows ONE commit owns all 20 lines.
+
+This is meaningfully different from worked example #1's supersession case
+(where blame surfaced multiple commits incrementally building the marker).
+Existence-archaeology often gets a single-commit blame; the load-bearing
+context lives elsewhere.
+
+### Layer 3 — Commit context: `git show 5fdc72bf`
+
+```bash
+git show --stat 5fdc72bf | head -10
+```
+
+Returns:
+
+```
+Round 34: factory + public-repo alignment + first DB tests (#27)
+```
+
+**Layer-3 output:** the umbrella SKILL.md was authored as part of "Round
+34: factory + public-repo alignment + first DB tests" — a multi-area
+commit covering the early skill-substrate creation. The "When to defer"
+block was one piece of a larger factory-alignment effort, not a standalone
+decision. PR #27 is the commit context but doesn't itself explain *why*
+the block became canonical.
+
+### Layer 4 — String archaeology: `git log -S "umbrella exists to"`
+
+```bash
+git log --oneline -S "umbrella exists to" -- .claude/skills/
+```
+
+Returns: *(only the originating commit 5fdc72b — the phrase has not been
+repeated elsewhere in skills/ history)*
+
+**Layer-4 output:** the verbatim string is unique to the
+mathematics-expert umbrella; the pattern hasn't been copy-replicated
+into other umbrellas via direct text reuse. Other umbrellas may follow
+the *shape* but the canonical exemplar lives in mathematics-expert.
+
+### Layer 5 — Function archaeology
+
+Not applicable. The "When to defer" block is markdown procedure-doc, not
+code; this layer no-ops for skill-body documentation.
+
+### Layer 6 — Round-history shards
+
+```bash
+grep -rln "When to defer\|mathematics-expert" docs/hygiene-history/ticks/2026/04/19 docs/hygiene-history/ticks/2026/04/20
+```
+
+Returns shards from round 34's authoring window referring to skill
+substrate creation but no specific elevation-to-canonical signal at
+this layer. The shards confirm the timeline but not the doctrine
+crystallization.
+
+### Layer 7 — ADRs: `docs/DECISIONS/2026-04-21-router-coherence-{v1,v2}.md`
+
+```bash
+ls docs/DECISIONS/ | grep -iE "router-coherence"
+```
+
+Returns:
+
+```
+2026-04-21-router-coherence-claims-vs-complexity.md
+2026-04-21-router-coherence-v2.md
+```
+
+Reading these (especially v2's status block + comparison with v1):
+
+```
+**Status:** *Accepted.* Supersedes ADR
+`docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`
+(`47d92d8`, "v1"). v1 stays in place with a "Superseded by v2" header
+appended per `GOVERNANCE.md §2`...
+```
+
+The v2 ADR's body cites the umbrella's "When to defer" pattern as the
+canonical pattern other umbrellas should pattern-match on. The
+router-coherence discipline (v1 → v2) is what elevated the umbrella's
+defer-block from local-skill-feature into project-wide doctrine.
+
+**Layer-7 output:** the load-bearing escalation happened 2 days after
+the original authoring (2026-04-21 vs 2026-04-19). The pattern existed
+first; the doctrine that names it as canonical came second; ADRs
+canonicalize the doctrine.
+
+### Layer 8 — Named-decision memos
+
+```bash
+grep -l "When to defer\|umbrella exists to" memory/feedback_*.md
+```
+
+Returns no specific feedback memo named for the pattern. The doctrine
+lives in the ADR pair (Layer 7) + Aarav's notebook (Layer 9), not in
+a named-rule memo.
+
+**Layer-8 output:** another substantive negative result — not every
+load-bearing pattern gets a feedback memo; some live in ADR + persona-
+notebook substrate. The skill body should teach contributors to read
+all 11 layers, not give up when one returns nothing.
+
+### Layer 9 — Persona notebooks
+
+```bash
+grep -A2 "When to defer\|umbrella has a" memory/persona/aarav/NOTEBOOK.md
+```
+
+Returns:
+
+```
+- 2026-04-20 (round 41) -- mathematics-expert umbrella has a
+  strong "When to defer" block naming every narrow sibling;
+  router-coherence discipline the factory now uses widely.
+  ... other umbrella skills should pattern-match on. No action,
+  but worth referencing when other umbrellas are tuned.
+```
+
+**Layer-9 output:** *this is the load-bearing layer for the question.*
+Aarav (skill-tune-up persona) explicitly noted at round 41 (2026-04-20,
+one day after authoring) that the umbrella's defer-block IS the canonical
+pattern — and named it as the model other umbrellas should follow. The
+persona-notebook entry preceded the ADR pair (v1 + v2 land 2026-04-21);
+Aarav's observation is what drove the doctrine into the ADRs.
+
+This is the kind of load-bearing context that **doesn't appear at any
+other layer.** Without consulting Aarav's notebook, the archaeology
+stops at "Aaron wrote it as part of round 34 factory alignment" without
+explaining *why it became canonical*.
+
+### Layer 10 — Conversation archives
+
+`docs/research/` doesn't carry a specific worked example for this
+case (other than this very document, recursively). The conversations
+that produced the pattern are pre-Drive-bridge era (round 34 was
+2026-04-19; Drive-bridge ferry pattern emerged later); the canonical
+durable form is the SKILL.md + ADR + persona-notebook trio.
+
+### Layer 11 — WONT-DO archaeology + retired-SKILL.md history
+
+```bash
+grep -i "When to defer\|mathematics-expert" docs/WONT-DO.md
+```
+
+Returns nothing. The pattern is not in WONT-DO; it's a positive-pattern
+canonical-doctrine, not a deprecation.
+
+```bash
+git log --oneline --diff-filter=D --all -- .claude/skills/ | grep -iE "math"
+```
+
+Returns no deletion of math-related skills; the umbrella + narrow-siblings
+are all live. No retired-SKILL.md history relevant here.
+
+**Layer-11 output:** another substantive negative — patterns that
+become canonical positive-doctrine don't show up in rejection-archaeology
+surfaces. This complements worked example #1 (which DID surface negative
+content via the abandonment lifecycle); the contrast is itself
+substantive.
+
+## The synthesized answer
+
+The mathematics-expert umbrella SKILL.md's "When to defer" block exists
+because:
+
+1. **Origin (2026-04-19):** Aaron authored it as part of round 34 factory
+   + public-repo alignment (PR #27, commit 5fdc72b). The block was one
+   piece of a multi-area factory-substrate creation; not a standalone
+   decision.
+2. **Recognition as canonical (2026-04-20):** Aarav (skill-tune-up
+   persona) noted at round 41 in his notebook that the block was a
+   "strong" exemplar naming every narrow sibling, with the explicit
+   observation that other umbrella skills should pattern-match on it.
+3. **Elevation to project-wide doctrine (2026-04-21):** The
+   router-coherence ADR pair (`2026-04-21-router-coherence-claims-vs-
+   complexity.md` v1 → `2026-04-21-router-coherence-v2.md` v2)
+   canonicalized the discipline. Aarav's notebook observation drove
+   the doctrine into the ADRs; the ADRs cite the umbrella's pattern
+   as the canonical exemplar.
+4. **Load-bearing now:** the block is "load-bearing" because every
+   narrow-sibling skill exists at the same router-trigger surface;
+   without an explicit defer-block, the umbrella + narrow-siblings
+   would compete for routing and produce unpredictable behavior. The
+   pattern is what makes the multi-skill router coherent — hence
+   "router-coherence" as the doctrine's name.
+
+The doctrine's emergence took 3 days across 3 distinct layers
+(commit → notebook → ADR). Decision-archaeology that stops at any one
+layer misses the doctrine's full provenance.
+
+## What this worked example demonstrates
+
+For the eventual `decision-archaeology` SKILL.md body:
+
+1. **Single-commit blame is common for existence-archaeology cases.**
+   Unlike supersession cases (worked example #1), existence-archaeology
+   often gets one commit + the load-bearing context lives elsewhere.
+   The skill must teach contributors to KEEP GOING past Layer 2 even
+   when the blame trail is short.
+2. **Persona notebooks are non-trivially load-bearing.** Layer 9 carried
+   the answer here; Layer 8 (named-decision memos) returned nothing.
+   The skill body should not skip persona notebooks just because they're
+   "user-scope-feeling" substrate — they're factory-canonical.
+3. **The doctrine emerges across layers + dates, not in a single
+   moment.** Three layers (commit + notebook + ADR) span three days
+   (04-19 → 04-20 → 04-21). The skill teaches contributors to walk the
+   timeline, not just the origin.
+4. **Substantive negatives at Layers 8 + 11 confirm + locate the
+   load-bearing layer.** Negative results at multiple layers tell the
+   contributor "look elsewhere" — they're directional signal, not
+   wasted queries.
+5. **Both worked examples (#1 supersession + #2 existence) walk all
+   11 layers.** The procedure is consistent across modes; only the
+   answer-shape differs (negative-result-rich for supersession;
+   positive-pattern-canonical-doctrine for existence).
+
+## Composes with
+
+- **B-0169** — the row this is a worked example for. References this
+  artifact via the `worked-example-seeds` section.
+- **`docs/research/2026-05-02-decision-archaeology-worked-example-1-double-hop-abandonment.md`** —
+  worked example #1; pair-companion. Together demonstrate two distinct
+  sub-modes (supersession + existence).
+- **`.claude/skills/mathematics-expert/SKILL.md`** — the canonical
+  artifact whose existence the question investigates.
+- **`docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`** +
+  **`docs/DECISIONS/2026-04-21-router-coherence-v2.md`** — Layer-7
+  ADR pair establishing the elevation-to-doctrine.
+- **`memory/persona/aarav/NOTEBOOK.md`** (round 41 entry) — Layer-9
+  persona-notebook substrate carrying the load-bearing recognition.
+
+## What's next
+
+Per Aarav's BP-14 (3 worked examples before skill-creator authors
+SKILL.md):
+
+- ✅ Worked example #1 — double-hop abandonment (supersession-archaeology
+  mode) on main since 2026-05-02
+- ✅ Worked example #2 — mathematics-expert "When to defer" pattern
+  (existence-archaeology + persona-notebook layer demonstration; this
+  document)
+- ⏳ Worked example #3 — BP-24 deceased-family-emulation rule
+  (attribution-archaeology mode + sacred-tier substrate handling).
+  Pending; lands in a subsequent PR.
+
+Once worked example #3 lands, skill-creator can author
+`.claude/skills/decision-archaeology/SKILL.md` with confidence that
+the procedure-body is grounded in 3 empirically-walked cases across 3
+distinct sub-modes.
