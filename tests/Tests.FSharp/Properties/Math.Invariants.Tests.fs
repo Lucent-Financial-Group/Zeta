@@ -209,6 +209,47 @@ let ``LWW-register merge tie-breaks left on equal (timestamp, replica)`` () =
     (LwwRegister<int>.Merge b a).Value |> should equal 2
 
 
+// ─── Delta-CRDT anti-entropy laws (Almeida et al. 2018) ────────────
+// Delta-state CRDTs ship per-operation deltas instead of full state.
+// The anti-entropy contract: applying deltas in ANY order, with
+// duplicates allowed, must converge to the same state. The laws
+// inherit from GCounter/PNCounter semilattice merges, but pinning
+// them at the delta-apply layer guards against future regressions
+// in DeltaCrdt's apply implementation (e.g. accidentally using
+// addition instead of max-merge under the hood).
+
+[<Property>]
+let ``GCounterDelta apply is order-independent``
+        (NonNegativeInt d1) (NonNegativeInt d2) =
+    let initial = GCounter.Empty
+    let priorDvv = Dvv.Empty
+    let delta1 = GCounterDelta.increment "r1" (int64 d1) priorDvv
+    let delta2 = GCounterDelta.increment "r2" (int64 d2) priorDvv
+    let lhs = GCounterDelta.apply (GCounterDelta.apply initial delta1) delta2
+    let rhs = GCounterDelta.apply (GCounterDelta.apply initial delta2) delta1
+    lhs.Value = rhs.Value
+
+[<Property>]
+let ``GCounterDelta apply is idempotent on Value``
+        (NonNegativeInt d) =
+    let initial = GCounter.Empty
+    let delta = GCounterDelta.increment "r1" (int64 d) Dvv.Empty
+    let once = GCounterDelta.apply initial delta
+    let twice = GCounterDelta.apply once delta
+    once.Value = twice.Value
+
+[<Property>]
+let ``PNCounterDelta apply is order-independent``
+        (d1: int) (d2: int) =
+    let initial = PNCounter.Empty
+    let priorDvv = Dvv.Empty
+    let delta1 = PNCounterDelta.increment "r1" (int64 d1) priorDvv
+    let delta2 = PNCounterDelta.increment "r2" (int64 d2) priorDvv
+    let lhs = PNCounterDelta.apply (PNCounterDelta.apply initial delta1) delta2
+    let rhs = PNCounterDelta.apply (PNCounterDelta.apply initial delta2) delta1
+    lhs.Value = rhs.Value
+
+
 // ─── HyperMinHash — Jaccard monotonicity ───────────────────────────
 // Reference: Yu & Weber arXiv:1710.08436.
 
