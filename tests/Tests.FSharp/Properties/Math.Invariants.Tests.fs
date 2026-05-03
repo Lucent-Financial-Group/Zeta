@@ -249,6 +249,35 @@ let ``PNCounterDelta apply is order-independent``
     let rhs = PNCounterDelta.apply (PNCounterDelta.apply initial delta2) delta1
     lhs.Value = rhs.Value
 
+[<Property>]
+let ``PNCounterDelta apply is idempotent on Value`` (d: int) =
+    // Duplicate-tolerance: applying the SAME delta twice must yield
+    // the same Value as applying it once. Catches a future regression
+    // that uses additive merge instead of GCounter max-merge — under
+    // additive merge, double-apply would double the count.
+    let initial = PNCounter.Empty
+    let delta = PNCounterDelta.increment "r1" (int64 d) Dvv.Empty
+    let once = PNCounterDelta.apply initial delta
+    let twice = PNCounterDelta.apply once delta
+    once.Value = twice.Value
+
+[<Property>]
+let ``PNCounterDelta same-replica deltas converge order-independently``
+        (d1: int) (d2: int) =
+    // Same-replica test exercises the WITHIN-component merge path
+    // (both deltas land in the same PN P-side or N-side GCounter
+    // entry under "r1"). The disjoint-replica order-independence
+    // property above can stay green even under a broken additive
+    // merge because deltas land in different replicas; this property
+    // forces the merge to actually max-fold the same component.
+    let initial = PNCounter.Empty
+    let priorDvv = Dvv.Empty
+    let delta1 = PNCounterDelta.increment "r1" (int64 d1) priorDvv
+    let delta2 = PNCounterDelta.increment "r1" (int64 d2) priorDvv
+    let lhs = PNCounterDelta.apply (PNCounterDelta.apply initial delta1) delta2
+    let rhs = PNCounterDelta.apply (PNCounterDelta.apply initial delta2) delta1
+    lhs.Value = rhs.Value
+
 
 // ─── HyperMinHash — Jaccard monotonicity ───────────────────────────
 // Reference: Yu & Weber arXiv:1710.08436.
