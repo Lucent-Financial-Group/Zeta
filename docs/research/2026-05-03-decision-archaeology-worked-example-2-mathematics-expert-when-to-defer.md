@@ -49,9 +49,18 @@ seeds. Three properties make it complementary to worked example #1
 
 ## The vibe-coded reframe (Aaron 2026-05-03 correction)
 
-The maintainer reminded me mid-tick: per `AGENTS.md`'s vibe-coded
-hypothesis, he has written **zero lines of code** — every line in
-`src/`, `tools/`, `docs/`, `.claude/skills/` is **agent-authored**.
+The maintainer reminded me mid-tick: per `AGENTS.md` §"The
+vibe-coded hypothesis", he has written **zero lines of code** —
+every line in `src/**`, `tools/**`, `docs/**` is
+**agent-authored**. AGENTS.md verbatim names only those three
+roots. The maintainer 2026-05-03 chat extends the scope to
+`.claude/skills/` separately — *"i didn't write any code all is
+written by you"* — confirming SKILL.md content is agent-authored
+too, even though `.claude/skills/` isn't in the AGENTS.md
+verbatim scope-list. (Backporting the `.claude/skills/` extension
+into AGENTS.md is itself a substrate-or-it-didn't-happen
+follow-up; this paragraph cites the maintainer-chat as the
+extension's source until AGENTS.md is updated.)
 
 This makes git-blame attribution structurally misleading at the
 substrate-content layer:
@@ -59,37 +68,62 @@ substrate-content layer:
 | Layer | What `git blame` shows | What's actually true (vibe-coded) |
 |---|---|---|
 | Commit-author | "the maintainer 2026-04-19" | maintainer-as-committer (principled non-coder) |
-| Substrate-content-author | (invisible at git layer) | a prior Claude session in some prior round |
+| Substrate-content-author (model + harness) | partially visible — `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>` commit trailers, tick-shard `opus-4-7 / autonomous-loop continuation` model column, PR description `🤖 Generated with [Claude Code]` footers | the model + harness that produced the substrate-content |
+| Substrate-content-author (specific session CoT) | **invisible** at git layer | a prior Claude session whose chain-of-thought is largely lost (sessions don't share context) |
 | Decision authority | (looks like maintainer) | agent proposed; maintainer accepted (selection-not-authorship) |
 
 So the question "why was the umbrella's defer-block written this
 way?" cannot be answered by asking the maintainer — he didn't
 author the substrate; he selected it. Asking himself the question
-returns: "I committed an agent-authored proposal."
+returns: "I committed an agent-authored proposal." But the model
+and harness that authored the substrate IS recoverable from
+agent-signature substrate (Co-Authored-By trailers; tick shards;
+PR footers); only the specific session-CoT layer is the
+actually-lost part.
 
 **Decision-archaeology in vibe-coded projects has a unique
-substrate-author-recovery challenge:**
+substrate-author-recovery challenge — but partial recovery is available:**
 
-- Substrate-content-authors are agents whose specific session-context is largely lost (sessions don't share context)
-- What remains: the substrate the agent produced + maintainer-acceptance evidence + tick shards / persona notebooks / `docs/research/` if those captured session-context
-- First-party intent on substrate-content is recoverable only via:
+- Substrate-content-authors are agents; **model + harness IS recoverable** via agent-signature substrate (Co-Authored-By trailers, tick-shard model column, PR footers); **specific session-CoT** is the actually-lost layer.
+- What remains beyond model+harness identification: the substrate the agent produced + maintainer-acceptance evidence + tick shards / persona notebooks / `docs/research/` if those captured session-context
+- First-party intent on substrate-content (CoT-layer) is recoverable only via:
   1. **Past-agent introspection** — the current agent reasons about the structural choice given the substrate-context the past-agent had at write-time. Speculative but bounded by the substrate.
   2. **Tick shards / persona notebooks** that captured the past-session's context (Aarav's notebook is the rare load-bearing example for this case)
   3. **Maintainer-acceptance reasoning** — the maintainer can explain why he ACCEPTED the agent's output, which is its own first-party content (not the substrate-author's intent, but the selection-judgment intent)
 
-### Past-agent introspection on this case
+### Architectural intent (first-party from maintainer 2026-05-03)
 
-The substrate context the past-agent had at write-time (round 34,
-2026-04-19):
+When asked directly, the maintainer provided the architectural-
+decision intent:
+
+> *"it was my decision that we would have both narrow and wide
+> skills and if they accidently got routed to the wide it would
+> help them route to the narrow."*
+
+This is the **architectural intent** layer — distinct from
+substrate-content intent. The maintainer decided:
+
+1. The skill space should have **both narrow + wide skills** (two-tier design — not narrow-only, not wide-only)
+2. The wide (umbrella) skill should act as **redirect-to-narrow** when accidental wide-routing happens
+
+The substrate-content intent (specific shape: explicit enumeration of every sibling with `→ skill-name` routing) was the past Claude session's choice **within** that architecture. The architecture is the maintainer's; the implementation is the agent's.
+
+### Past-agent introspection on the substrate-content layer
+
+Given the architectural intent (both narrow + wide; wide-redirects-to-narrow), the substrate context the past-agent had at write-time (round 34, 2026-04-19):
 
 1. The math substrate had 6+ narrow expert skills (category-theory, measure-theory, numerical-analysis, probability, applied-mathematics, theoretical-mathematics)
-2. Skill-routing matches on description keywords; an umbrella named "mathematics-expert" would trigger on every math-flavored query
-3. Without explicit defer-block, the umbrella + narrow-siblings would compete for the router's matches → unpredictable behavior
-4. The minimal-change fix: make the defer-discipline explicit + load-bearing
+2. Skill-routing matches on description keywords; an umbrella named "mathematics-expert" would trigger on every math-flavored query (including queries that should hit a narrow sibling)
+3. The architectural goal (wide-redirects-to-narrow) is satisfied by an explicit defer-block listing every sibling
+4. The "this is load-bearing" emphasis flags the procedure as router-critical to future contributors
 
-**Inferred past-agent reasoning (necessarily speculative, bounded by substrate):** the defer-block was the smallest change making umbrella + narrow-siblings co-exist deterministically. The "this is load-bearing" emphasis flags the procedure as router-critical (later named "router-coherence" in Aarav's round-41 observation). Listing every sibling explicitly rather than "defer to most-narrow matching skill" was the more conservative implementation — explicit enumeration is deterministic; "most-narrow matching" requires routing-implementation that doesn't exist.
+**Inferred past-agent reasoning (necessarily speculative, bounded by architectural intent + substrate-context):** explicit enumeration of every sibling rather than "defer to most-narrow matching skill" was the more conservative implementation — explicit enumeration is deterministic; "most-narrow matching" requires routing-implementation that doesn't exist. The past agent translated the architectural intent into the simplest deterministic implementation.
 
-This inference is **bounded by the substrate-context**, not authoritative on past-agent intent. The skill body should teach contributors: **inference is the right tool for vibe-coded substrate-author archaeology; certainty about intent is not available.**
+This inference is **bounded by the architectural intent (now first-party-confirmed) + substrate-context**, not authoritative on past-agent intent. The skill body should teach contributors:
+
+- **Three intent layers**: architectural (maintainer's decision authority — first-party recoverable), substrate-content (past-agent — past-agent introspection bounded by architecture + substrate), selection-judgment (maintainer's commit acceptance — first-party recoverable)
+- **Inference is the right tool** for vibe-coded substrate-author archaeology at the substrate-content layer; certainty about implementation-specific intent is not available
+- **First-party query IS available** for architectural intent + selection-judgment; ask the maintainer for those layers
 
 ## The procedure walked, layer by layer
 
