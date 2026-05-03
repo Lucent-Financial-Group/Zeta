@@ -202,7 +202,7 @@ Pre-conditions a hook could enforce:
 Post-conditions:
 
 - After PR merge: trigger `expand-from-closure.ts` (per the backlog-flywheel-mechanizer skill from `feedback_skill_flywheel_*`)
-- After tick close: verify shard density (per the `tools/hygiene/check-no-op-cadence-pattern.sh` script; could move to a hook)
+- After tick close: verify shard density (per the `tools/hygiene/check-no-op-cadence-pattern.ts` script; could move to a hook)
 - After skill creation: verify hub-vs-satellite + no-dynamic-commands rules from this memo
 
 The hooks ARE the enforcement layer for the carved-sentence rules. Rule 1 says "skills should be hubs"; the hook checks at skill-creation time whether the skill has satellite content; rejects if so.

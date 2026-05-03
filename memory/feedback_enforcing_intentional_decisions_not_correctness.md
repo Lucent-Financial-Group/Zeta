@@ -26,7 +26,7 @@ clarifies why it's load-bearing even when it "only" diffs two
 lists.
 
 **Why:** The missing-prevention-layer audit
-(`tools/hygiene/audit-missing-prevention-layers.sh`) is a
+(`tools/hygiene/audit-missing-prevention-layers.ts`) is a
 literal diff between `docs/FACTORY-HYGIENE.md` main table and
 `docs/hygiene-history/prevention-layer-classification.md`
 matrix. On the surface it looks mechanical — "row N in list A

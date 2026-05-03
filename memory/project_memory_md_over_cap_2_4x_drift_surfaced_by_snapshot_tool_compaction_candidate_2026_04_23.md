@@ -9,7 +9,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 ## Observation (2026-04-24 Otto-70/71)
 
-`tools/hygiene/capture-tick-snapshot.sh` first fire
+`tools/hygiene/capture-tick-snapshot.ts` first fire
 (Otto-70, PR #223) reported:
 
 ```

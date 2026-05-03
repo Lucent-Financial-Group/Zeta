@@ -34,7 +34,7 @@ the factory asks *why* on any directive Aaron issues, Aaron
 answers. The factory owes the same.
 
 **Canonical mini-ADR shape (worked instance: header block of
-`tools/hygiene/audit-cross-platform-parity.sh` — the first
+`tools/hygiene/audit-cross-platform-parity.ts` — the first
 instance of the pattern, landed in the same commit as this
 memory):**
 

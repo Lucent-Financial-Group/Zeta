@@ -49,7 +49,7 @@ The four target platforms:
     audit)
   Each exists to make a silent property loud before it becomes
   enforced.
-- **First instance:** `tools/hygiene/audit-cross-platform-parity.sh`
+- **First instance:** `tools/hygiene/audit-cross-platform-parity.ts`
   (landed 2026-04-22 together with this memory). Detect-only;
   enforces with `--enforce`; surfaces:
   - Pre-setup bash missing PowerShell twin (Q1 violation)
