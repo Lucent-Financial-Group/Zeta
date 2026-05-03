@@ -1,17 +1,17 @@
 ---
 id: B-0087
 priority: P1
-status: open
-title: github-settings-drift.yml has been broken since PR #45 — declares invalid GHA permission `administration: read`
+status: partial
+title: github-settings-drift.yml broken since PR #45 — option A landed (invalid permission removed); options B/C remain maintainer-gated
 tier: factory-tooling
 effort: S
 ask: autonomous-loop tick discovery 2026-04-28T20:05Z (workflow-null-result audit class first concrete catch)
 created: 2026-04-28
-last_updated: 2026-05-02
+last_updated: 2026-05-03
 depends_on: []
 composes_with:
   - B-0085
-tags: [otto-2026-04-28, github-actions, workflow-startup-failure, invalid-permission, drift-detector-broken, factory-hygiene]
+tags: [otto-2026-04-28, github-actions, workflow-startup-failure, invalid-permission, drift-detector-broken, factory-hygiene, option-a-landed]
 ---
 
 # B-0087 — github-settings-drift.yml broken since PR #45
@@ -130,14 +130,20 @@ for security audits.
 
 ## Acceptance criteria
 
-- [ ] Maintainer picks A / B / C (or alternative path)
-- [ ] github-settings-drift.yml passes `actionlint` cleanly
-  (no unknown permission scope warnings)
-- [ ] Workflow runs to completion (success OR drift-detected
-  exit code 1, NOT workflow-startup failure)
-- [ ] Cadenced cron run on next Monday 14:17 UTC confirms
-  fix (or shows real drift findings if option A drops some
-  endpoints)
+- [x] Option A landed (2026-05-03): invalid `administration: read` permission removed; workflow startup-failure resolved.
+- [x] github-settings-drift.yml passes `actionlint` cleanly (no unknown permission scope warnings) — verified via this PR.
+- [x] Workflow no longer fails at workflow-startup ("workflow file issue"). It now reaches the drift-check step. Under GITHUB_TOKEN the snapshot script will likely exit 2 (tooling/input failure) on the first admin-only endpoint returning 403 — that's expected post-option-A behavior, NOT a regression. Exit codes 0 (no-drift) and 1 (drift-detected) are only achievable once option B (PAT) or C (GitHub App) is in place.
+- [ ] Cadenced cron run on next Monday 14:17 UTC confirms fix at LFG-canonical level (reaches the script step instead of failing at startup; exit-2 expected until option B/C).
+- [ ] **(Maintainer-gated, options B/C):** drift detector calls admin-only endpoints (`/automated-security-fixes`, `/private-vulnerability-reporting`, `/autolinks`, etc.) which return 403 under GITHUB_TOKEN; full fidelity requires `DRIFT_DETECTOR_PAT` secret (option B) or GitHub App (option C). Tracked as separate maintainer-action follow-on.
+
+## What option A did NOT fix
+
+The drift detector script (`tools/hygiene/check-github-settings-drift.sh`) calls a mix of public + admin-scope GitHub API endpoints. Under GITHUB_TOKEN (post-option-A), the public endpoints return correct data; the admin-scope endpoints (rulesets at the org level, autolinks, security configs) return 403. The drift detector either:
+
+1. Fails on the first admin-scope endpoint (if it doesn't tolerate 403), OR
+2. Reports phantom drift on the admin-scope fields (if it tolerates 403 by emitting null).
+
+Either way, partial drift coverage. Maintainer-action (configure PAT secret) is the path to full coverage. This row stays open in `partial` status to track the residual maintainer-gated work.
 
 ## Operational note
 
