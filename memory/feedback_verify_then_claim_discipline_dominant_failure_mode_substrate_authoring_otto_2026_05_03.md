@@ -1,6 +1,6 @@
 ---
-name: Verify-then-claim discipline — verify every substrate claim empirically BEFORE publishing (Otto 2026-05-03 self-grading; dominant failure mode caught across 7+ PRs this session)
-description: 2026-05-03; Otto self-grading after Copilot caught 9 distinct claim-vs-reality drift instances across 7 PRs (#1245 #1247 #1248 #1250 #1252 #1253 #1254). The dominant failure mode for substrate authoring this session is claim-vs-reality drift — Otto wrote "X exists" / "command returns Y" / "table has N rows" without verifying empirically. The corrective is the verify-then-claim discipline: before stating ANY fact in substrate (file exists, command returns X, row count is N, tool ships, ADR matches, persona dir present), verify by running the actual command / `ls` / `grep` BEFORE writing the claim. Same class as Otto-247 version-currency-always-search-first + Otto-363 substrate-or-it-didn't-happen + verify-before-deferring — but at the more general layer of any-substrate-claim. Mechanization: `tools/substrate-claim-checker/` (proposed, not yet built) that reads a memo / doc / commit message and runs the cited commands to verify; pre-commit hook integration is a future Phase. Until that ships: discipline is manual but the pattern is now named.
+name: Verify-then-claim discipline — verify every substrate claim empirically BEFORE publishing (Otto 2026-05-03 self-grading; 18+ drift instances catalogued across 9+ PRs this session)
+description: 2026-05-03; Otto self-grading after Copilot caught 18+ distinct claim-vs-reality drift instances across 9+ PRs (#1245 #1247 #1248 #1250 #1252 #1253 #1254 #1255 #1256 — and counting; instances #10-#18 landed AFTER the discipline was named, strongest empirical urgency for mechanization). The dominant failure mode for substrate authoring this session is claim-vs-reality drift — Otto wrote "X exists" / "command returns Y" / "table has N rows" without verifying empirically. Verify-then-claim discipline: before stating ANY fact in substrate (file exists, command returns X, row count is N, tool ships, ADR matches, persona dir present), verify by running the actual command BEFORE writing the claim. Same class as Otto-247 + Otto-363 + verify-before-deferring — at the broader any-substrate-claim layer. 7 recurring sub-classes catalogued: existence / count / semantic-equivalence / empirical-output / convention / path-form / self-recursive. Mechanization: `tools/substrate-claim-checker/` (proposed, not yet built) — TS tool with two-hook integration (pre-commit for staged-files; commit-msg for message itself) plus CI check for PR descriptions. Manual discipline provably insufficient against trained-prior pull.
 type: feedback
 ---
 
@@ -88,7 +88,7 @@ The full mechanization would be `tools/substrate-claim-checker/` — a TS tool (
 
 The tool's outputs (per-commit drift reports) are satellite-shaped per Aaron 2026-05-03 hub-satellite rule; the tool itself is hub-shaped. Filing as a separate backlog row is the right path for actually building it.
 
-Until the tool ships: **the discipline is manual** but the pattern is now named, the failure modes are catalogued (9 drift instances above), and future-Otto can pre-flight-check substrate claims before publishing.
+Until the tool ships: **the discipline is manual** but the pattern is now named, the failure modes are catalogued (18+ drift instances above across 7 recurring sub-classes), and future-Otto can pre-flight-check substrate claims before publishing.
 
 ## Worked example: how this would have caught #1250's Layer-7 drift
 
