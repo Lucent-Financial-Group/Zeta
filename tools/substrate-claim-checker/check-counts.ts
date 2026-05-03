@@ -80,10 +80,12 @@ function findTables(lines: string[]): Table[] {
     }
     const headerLine = cur;
     const sepLine = lines[i + 1] ?? "";
+    // Separator must contain at least one `-` to be a real GFM table
+    // separator; `|   |` or `||||` are not valid separators.
     if (
       /^\|.*\|\s*$/.test(headerLine) &&
       i + 1 < lines.length &&
-      /^\|[\s\-:|]+\|\s*$/.test(sepLine)
+      /^\|[\s\-:|]*-[\s\-:|]*\|\s*$/.test(sepLine)
     ) {
       const startLine = i + 1; // 1-indexed; header row is at i (0-indexed)
       let rowCount = 0;
@@ -200,7 +202,10 @@ function checkFile(filePath: string): { findings: Finding[]; ok: boolean } {
   return { findings, ok: true };
 }
 
-function main(): number {
+export { findTables, findClaims, checkFile };
+export type { Finding, Table, Claim };
+
+export function main(): number {
   const args = process.argv.slice(2);
   if (args.length === 0) {
     console.error("usage: bun tools/substrate-claim-checker/check-counts.ts <file> [<file> ...]");
@@ -234,4 +239,6 @@ function main(): number {
   return 0;
 }
 
-process.exit(main());
+if (import.meta.main) {
+  process.exit(main());
+}

@@ -49,7 +49,7 @@ Per the verify-then-claim catalogue:
 | Convention drift | v1 | recommended pattern matches canonical convention |
 | Path-form drift | v1 | fully-qualified vs bare paths consistent across document |
 | Self-recursive drift | v1 | the memo about X contains its own X |
-| Frontmatter ↔ body ↔ index count drift | v0 covers | three surfaces same count |
+| Cross-surface count drift (frontmatter ↔ body ↔ section heading ↔ carved sentence ↔ MEMORY.md) | v1 (v0 catches narrative-vs-table within a single document; cross-surface narrative-to-narrative comparison is v1 work) | five surfaces should match consistent N |
 
 ## Hooks integration (planned, not v0)
 

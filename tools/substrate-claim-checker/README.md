@@ -40,6 +40,10 @@ input error).
   from rhetorical-illustration via context analysis.
 - **Lists not counted**: only markdown-table data rows are counted.
   Bulleted lists with N items aren't counted yet (v1 candidate).
+- **Top-level tables only**: lines must start with `|` in column 1 to
+  be recognized as table rows. Indented tables (inside nested lists
+  or blockquotes) aren't recognized yet. v1 candidate: relax the
+  leading-anchor in `findTables` from `^\|` to `^\s*\|`.
 
 ## What this does NOT do (v0)
 
