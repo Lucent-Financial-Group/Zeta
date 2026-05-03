@@ -6,7 +6,7 @@ type: feedback
 
 # Verify-then-claim discipline — dominant failure mode for substrate authoring
 
-## Empirical evidence (this session, 7 PRs, 9 distinct drift instances)
+## Empirical evidence (this session, 9+ PRs, 15+ distinct drift instances)
 
 | Drift instance | PR | Wrong claim | Actual reality |
 |---|---|---|---|
@@ -19,8 +19,24 @@ type: feedback
 | 7 | #1250 (post-merge) | Layer-10 docs/research grep returns no specific double-hop artifact | adjacent-substrate artifacts ARE there (5+) |
 | 8 | #1252 (post-merge) | future-domain memo references `docs/courier-ferry-protocol.md` | doesn't exist |
 | 9 | #1253 (post-merge) | skill-design memo references `tools/backlog/expand-from-closure.ts` as the mechanizing tool | doesn't exist; only proposed |
+| 10 | #1255 (in-flight) | drift catalogue itself contained `\|` table-cell escapes (rows 5 and 7 of THIS table, in earlier draft) | the catalogue was itself drifting; rewrote rows in prose form |
+| 11 | #1255 (in-flight) | mechanization path claimed pre-commit hook validates commit-message claims | git pre-commit fires BEFORE commit-msg exists; needs commit-msg hook for that surface |
+| 12 | #1255 (in-flight, recursive #1) | replaced `ls\|grep` with `find -iname` — claimed equivalent | `find -iname` only does shell glob, not regex alternation; semantic-equivalence drift |
+| 13 | #1255 (in-flight, recursive #2) | replaced earlier with `grep -ilrE PATTERN docs/DECISIONS/` — claimed equivalent | `grep -r` searches file CONTENTS, not filenames; semantic-equivalence drift, attempt #2 |
+| 14 | #1254 (post-merge) | recommended `superseded:` / `current_status:` ADR frontmatter marker | canonical convention is `> **Superseded by** [link]` blockquote (per `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`) |
+| 15 | #1256 (post-merge) | path-form inconsistency in adjacent ADR citations (mixing fully-qualified with bare filename) | a recurring sub-class — pick one form and apply uniformly per document |
 
-**9 drift instances across 7 PRs in one session.** Each one a Copilot catch; each one a real claim Otto wrote without verifying. The pattern is consistent enough that "verify-then-claim" needs to be a named discipline.
+**15 drift instances across 9 PRs (and counting; instances #10-#15 landed AFTER the discipline was named — strongest possible empirical urgency for mechanization, since manual discipline already provably hit its wall on the very memo defining the discipline).** Each one a Copilot catch; each one a real claim Otto wrote without verifying. Instances #12 and #13 are particularly diagnostic: same substitution attempt failed twice in succession (find→grep equivalence; grep -ilrE→ls|grep equivalence) — each "fix" introduced a new equivalence-class drift.
+
+Recurring sub-classes within the broader claim-vs-reality drift:
+
+- **Existence drift** (file/dir/tool claimed to exist; doesn't): instances #1, #6, #8, #9
+- **Count drift** (table claims N rows; actually M): instances #2, #3
+- **Semantic-equivalence drift** (substituted command claimed equivalent; actually changes semantics): instances #4, #12, #13
+- **Empirical-output drift** (command claimed to return X; actually returns Y): instances #5, #7
+- **Convention drift** (recommended pattern doesn't match canonical convention): instance #14
+- **Path-form drift** (fully-qualified vs bare paths inconsistent in adjacent citations): instance #15
+- **Self-recursive drift** (the memo about drift contains its own drift): instances #10, #11
 
 ## The carved rule
 
