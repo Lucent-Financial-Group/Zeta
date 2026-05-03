@@ -154,14 +154,21 @@ have A-grade and C-grade artifacts side-by-side.
   Pages or a release artifact; track kill-rate as a metric.
 - **Effort:** ~1 day.
 
-### B4 — Semgrep pattern rules (12 rules)
+### B4 — Semgrep pattern rules (14+ rules) → **A-grade (verified post-assessment)**
 
 - **Artifact:** `.semgrep.yml`
-- **Status:** runs externally per `TECH-RADAR.md`; **not in
-  CI**. Catches pattern-level anti-patterns that would
-  otherwise need code review to spot.
-- **Path to A:** add CI job.
-- **Effort:** ~0.5 day.
+- **Status correction (2026-05-03 verify-then-claim sweep):**
+  Semgrep is ALREADY in CI via `.github/workflows/gate.yml`
+  job `lint (semgrep)` (line ~422 in gate.yml). The original
+  B4 grading was incorrect — verified by grep against
+  `.github/workflows/gate.yml`. The job runs every rule via
+  `semgrep --config .semgrep.yml --error --metrics=off`
+  with hard-fail on any match.
+- **Effective grade: A.** No work owed; the assessment's
+  outstanding-work matrix originally listed "Semgrep CI"
+  as a P1 item but that item is already complete. This
+  illustrates the verify-then-claim discipline (check actual
+  CI workflow before grading).
 
 ---
 
@@ -276,21 +283,22 @@ to publishable form:
 
 ---
 
-## Outstanding-work matrix (post-this-assessment)
+## Outstanding-work matrix (post-this-assessment, with status updates)
 
-| Work item | Grade upgrade | Effort | Priority |
-|---|---|---|---|
-| Lean lake-build CI job | A1, A2 → A-with-CI | 1 day | P0 |
-| Stryker CI + kill-rate publish | B3 → A | 1 day | P0 |
-| Semgrep CI | B4 → A | 0.5 day | P1 |
-| 4 deferred TLA+ specs into CI | B1 → A | 2 days | P1 |
-| Alloy CI hook | B2 → A | 0.5 day | P1 |
-| `.cfg` for 4 C1 specs | C1 → B | 2 days | P2 |
-| TLA+ spec for `Recursive.fs` LFP | C2 → B | 2-3 days | P2 |
-| TLA+ spec for WDC protocol | C2 → B | 3-5 days | P1 |
-| 15 FsCheck properties (C3) | C3 → B | 3 days | P2 |
-| `chain_rule_poly` (3-group) | C4 → A | research | P3 |
-| Registry rows for A4 specs | external-fidelity claim | 1 day | P0 |
+| Work item | Grade upgrade | Effort | Priority | Status |
+|---|---|---|---|---|
+| Lean lake-build CI job | A1, A2 → A-with-CI | 1 day | P0 | **In flight (this PR ships `.github/workflows/lean-proof.yml`)** |
+| Stryker CI + kill-rate publish | B3 → A | 1 day | P0 | open |
+| Semgrep CI | B4 → A | 0.5 day | P1 | **Already done (verify-then-claim correction; see B4 section)** |
+| 4 deferred TLA+ specs into CI | B1 → A | 2 days | P1 | open |
+| Alloy CI hook | B2 → A | 0.5 day | P1 | open |
+| `.cfg` for 4 C1 specs | C1 → B | 2 days | P2 | open |
+| TLA+ spec for `Recursive.fs` LFP | C2 → B | 2-3 days | P2 | open |
+| TLA+ spec for WDC protocol | C2 → B | 3-5 days | P1 | open |
+| 15 FsCheck properties (C3) | C3 → B | 3 days | P2 | open |
+| `chain_rule_poly` (3-group) | C4 → A | research | P3 | open |
+| Registry rows for A4 specs | external-fidelity claim | 1 day | P0 | **Done (PR #1393, 2026-05-03)** |
+| Peer-review email draft | publishability | 2 hours | P0 | **Done (PR #1387, 2026-05-03)** |
 | Peer-review email draft | publishability | 2 hours | P0 |
 
 ---
