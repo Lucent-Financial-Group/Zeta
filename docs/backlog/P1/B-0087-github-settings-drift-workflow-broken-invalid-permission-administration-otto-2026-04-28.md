@@ -132,8 +132,8 @@ for security audits.
 
 - [x] Option A landed (2026-05-03): invalid `administration: read` permission removed; workflow startup-failure resolved.
 - [x] github-settings-drift.yml passes `actionlint` cleanly (no unknown permission scope warnings) — verified via this PR.
-- [x] Workflow runs to completion (will exit 0 on no-drift OR exit 1 on drift-detected, NOT workflow-startup failure).
-- [ ] Cadenced cron run on next Monday 14:17 UTC confirms fix at LFG-canonical level.
+- [x] Workflow no longer fails at workflow-startup ("workflow file issue"). It now reaches the drift-check step. Under GITHUB_TOKEN the snapshot script will likely exit 2 (tooling/input failure) on the first admin-only endpoint returning 403 — that's expected post-option-A behavior, NOT a regression. Exit codes 0 (no-drift) and 1 (drift-detected) are only achievable once option B (PAT) or C (GitHub App) is in place.
+- [ ] Cadenced cron run on next Monday 14:17 UTC confirms fix at LFG-canonical level (reaches the script step instead of failing at startup; exit-2 expected until option B/C).
 - [ ] **(Maintainer-gated, options B/C):** drift detector calls admin-only endpoints (`/automated-security-fixes`, `/private-vulnerability-reporting`, `/autolinks`, etc.) which return 403 under GITHUB_TOKEN; full fidelity requires `DRIFT_DETECTOR_PAT` secret (option B) or GitHub App (option C). Tracked as separate maintainer-action follow-on.
 
 ## What option A did NOT fix
