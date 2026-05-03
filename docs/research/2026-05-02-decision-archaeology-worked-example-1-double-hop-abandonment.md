@@ -184,8 +184,8 @@ status marker (superseded-by-LFG-only-directive).
 This is a **layer-7 finding worth its own follow-up:** the 2026-04-26 ADR
 should carry a `> **Superseded by** [link]` blockquote at the top per
 the existing convention (see `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`
-line 3 + `2026-04-21-router-coherence-v2.md` lines 4 + 142 for the
-canonical pattern). The supersession should point at the 2026-04-29
+line 3 and `docs/DECISIONS/2026-04-21-router-coherence-v2.md` lines 4 and 142
+for the canonical pattern). The supersession should point at the 2026-04-29
 LFG-only directive memo + the 2026-05-02 abandonment. ADRs without
 supersession markers drift to falsely-canonical status. Filing this as
 a separate concern from the worked example.
@@ -317,7 +317,7 @@ absorbs squash-SHA) was abandoned 2026-05-02 because:
    pattern operationalized. The supersession affects this ADR
    implicitly; it should carry a `> **Superseded by** [link]`
    blockquote at the top (per the existing ADR convention demonstrated
-   in `2026-04-21-router-coherence-claims-vs-complexity.md`) pointing
+   in `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`) pointing
    at the 2026-04-29 LFG-only directive memo plus the 2026-05-02
    abandonment, so future readers don't treat the ADR as canonical-current.
 5. **No permanent rejection.** The abandonment is current-state, not
