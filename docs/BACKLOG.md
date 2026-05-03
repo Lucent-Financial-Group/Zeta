@@ -147,6 +147,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0181](backlog/P2/B-0181-fix-spinemergeinvariants-tla-counterexample-blocks-b1-ci-registration-2026-05-03.md)** Fix SpineMergeInvariants.tla counterexample (blocks B1 → A CI registration; depth-17 trace dump on TLC run)
 - [ ] **[B-0182](backlog/P2/B-0182-linux-only-formal-verification-tests-pure-math-no-os-difference-aaron-2026-05-03.md)** Filter formal-verification tests to standard Linux only — TLC + Alloy + Lean are pure-math computation; no OS-specific behavior
 - [ ] **[B-0183](backlog/P2/B-0183-tla-alloy-runners-as-ts-wrappers-not-fsharp-tests-aaron-2026-05-03.md)** TLA+ / Alloy runners should be TS wrappers under tools/, not F# xunit tests — pure-shell-out, no F# operator-algebra logic involved
+- [ ] **[B-0184](backlog/P2/B-0184-fix-spine-als-alloy-6-2-0-type-error-line-35-spec-bug-2026-05-03.md)** Fix Spine.als spec bug — Alloy 6.2.0 type-check failure at line 35 col 25 (sum-vs-all comprehension confusion)
 
 ## P3 — convenience / deferred
 
