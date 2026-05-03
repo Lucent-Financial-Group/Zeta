@@ -137,6 +137,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0174](backlog/P2/B-0174-cross-model-tool-review-convergence-rate-replay-otto-2026-05-03.md)** Cross-model tool-review convergence-rate replay protocol — measure how many review rounds different models need to settle on a tool-authoring PR (Otto 2026-05-03 sibling-instance of multi-harness convergence skill domain)
 - [ ] **[B-0175](backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md)** Substrate-retrieval-index — active in-flight matcher for memos + carved sentences (Aaron 2026-05-03 'specialed indeex we build over time'; addresses 4-layer retrieval gap empirically self-demonstrated)
 - [ ] **[B-0176](backlog/P2/B-0176-substrate-claim-checker-v07-context-aware-suppression-otto-2026-05-03.md)** Substrate-claim-checker v0.7 — context-aware suppression for hypothetical / contrastive / partial-path / branch-name references (Otto 2026-05-03 empirical observation)
+- [ ] **[B-0177](backlog/P2/B-0177-audit-memos-for-misfiled-backlog-rows-aaron-2026-05-03.md)** Audit memory/ for misfiled backlog rows — memos that should have been B-NNNN backlog entries (Aaron 2026-05-03 observation; "a lot of backlog lost in our memories")
 
 ## P3 — convenience / deferred
 
