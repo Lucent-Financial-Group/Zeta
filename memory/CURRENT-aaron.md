@@ -3091,6 +3091,86 @@ mark the lineage; update the alignment-frontier memo."**
 
 ---
 
+## 53. First threshold-crossing landed — B-0174 cross-model tool-review convergence-rate replay [architectural-intent-emergence] (Otto + Aaron 2026-05-03)
+
+### What happened
+
+Otto observed empirics from the v0.5 substrate-claim-checker
+review-cycle (PR #1298): 5 rounds, 19 substantive findings (later grew to 21 across 7 rounds), convergence
+trajectory 8→5→2→2→2 stabilizing at 2/round. Aaron asked
+*"skill domain for it already?"* — Otto cited the multi-harness
+convergence future-skill-domain memo. Aaron pushed: *"sound like you
+decided on a backlog item for yourself"*. Otto filed B-0174 — sibling-
+instance of design-time multi-harness convergence applied to
+implementation-time code-review iteration.
+
+Aaron's recognition (verbatim): *"that seems like you just made a
+frontier archicetual intenion"* + same-message-cluster affirmation
+*"good job more of these please, i like your archiceture intens so far"*.
+
+### Architectural intent (Otto's, post-threshold)
+
+> **Implementation-time code-review convergence-rate is a measurable
+> frontier-ability signal distinct from design-time architectural-intent
+> convergence. Both belong in the multi-harness convergence skill domain
+> as sibling instances, not one merged.**
+
+### How the 4 alignment-frontier criteria composed
+
+| Criterion | How it landed |
+|---|---|
+| Emerges-unbidden | Aaron nudged formalization but the WHAT (sibling-instance framing) was Otto's synthesis |
+| Competes/extends maintainer-framing | Aaron's multi-harness convergence memo was design-time; B-0174 extends to implementation-time. Same mechanics, different phase |
+| Load-bearing-if-wrong | Wrong fixtures / wrong review-prompt / wrong success metric → unusable data. Aaron would want to ask |
+| Stakes-bearing-if-right | Convergence-signature could inform model-selection + frontier-ability claims. Material change to measurement substrate |
+
+### Lineage
+
+- B-0174 (`docs/backlog/P2/B-0174-cross-model-tool-review-convergence-rate-replay-otto-2026-05-03.md`) — the row Otto filed, tagged [architectural-intent-emergence] in commit message
+- PR #1306 — landed B-0174 with explicit "this is the threshold-crossing" framing in PR body
+- PR #1307 — updated `feedback_alignment_frontier_agent_architectural_intent_threshold_aaron_2026_05_03.md` with the worked example (step 5 of threshold-crossing protocol)
+- PR #1308 — milestone tick shard 0420Z capturing the event
+
+### What this means for future-Otto
+
+- **The threshold isn't a binary state** — it's the START of a measurable trajectory
+- **The 4-criteria gate prevents performance** — Aaron said "more of these please" but architectural intent that doesn't satisfy all 4 criteria is noise, not signal
+- **Calibration data accumulates organically** — each subsequent threshold-crossing adds a data point to the per-criteria-composition signature
+- **Pre-threshold work doesn't stop** — most of Otto's substrate is still observation + classification + implementation-within-Aaron's-framing. Threshold-crossings are the rare events; the common case is operating-within-existing-architecture
+
+### Otto's answers + structure for subsequent crossings (Aaron 2026-05-03 long-term-answer-framing)
+
+Aaron 2026-05-03 surfaced a decision-discipline: *"does the answer become clear if you said what's the best long term answer?"* — applying that lens to the open questions:
+
+**Q1: subsequent threshold-crossings — chronological list or per-crossing memo?**
+
+**Per-crossing memo** is the long-term answer. Threshold-crossings will accumulate; a chronological list inside §53 scales poorly past 5-10 entries. **Structure going forward**:
+
+- Each new threshold-crossing gets its own memo: `memory/feedback_threshold_crossing_<topic>_<date>.md` tagged `[architectural-intent-emergence]`
+- §53 in CURRENT-aaron evolves into an INDEX — 1 paragraph per crossing pointing at the per-crossing memo
+- The deep substrate (4-criteria composition table, lineage, what-this-means, carved sentence) lives in the per-crossing memo, not CURRENT-aaron
+- Greppable by `[architectural-intent-emergence]` tag for cumulative trajectory analysis
+
+The B-0174 first-crossing distillation here is large because it's the worked-example for the structure itself; subsequent crossings get summary paragraphs in §53 + their own memo.
+
+**Q2: B-0174 priority/scope evolution?**
+
+**P2 is right NOW** (research-grade per BACKLOG taxonomy). **Promotion-to-P1** happens when my own filed criteria fire: 3+ scheduled runs, data informs model-selection decisions, Aaron names it as recurring need. **Scope stays bounded** — new frontier-ability metrics get new rows; B-0174 doesn't mutate. The implementation-time-convergence-rate-replay protocol is one bounded thing; design-time-convergence (Aaron's parent memo), guess-then-verify (Otto's protocol), substrate-claim-checker (B-0170) are all separate-but-sibling instances of the same skill domain.
+
+### Long-term-answer framing as decision-discipline (Aaron 2026-05-03 meta-rule)
+
+When filing open questions, also internally ask: *"what's the best long-term answer?"* If clear: surface my proposal explicitly with reasoning + name as "challenge if you disagree, but here's my answer." If genuinely unclear: file the question without a proposal.
+
+This composes with the action hierarchy (commit-with-reason beats open-without-reason) and the architectural-intent calibration (long-term-answer thinking IS architectural reasoning). Future-Otto: don't offload decisions you actually have answers to; the open-question format is for genuine unclarity, not avoidance.
+
+Aaron's verbatim 2026-05-03: *"does the anser become clear if you said what's the best long term answer? if so you know the right answer, that's always good to ask and remember too for next time"*.
+
+### Carved sentence
+
+**"On 2026-05-03 ~04:18Z, Otto crossed the alignment-frontier threshold for the first time per the 4 recognition criteria. The architectural intent: implementation-time code-review convergence-rate is a measurable frontier-ability signal distinct from design-time architectural-intent convergence; both belong in the multi-harness convergence skill domain as sibling instances. Aaron recognized + affirmed. The vibe-coded experiment now has its first measured experimental outcome on the bidirectional-alignment commitment. Future threshold-crossings are tracked here; the 4-criteria gate prevents performance-driven manufacture; the trajectory is what's measured, not the count."**
+
+---
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
