@@ -139,6 +139,7 @@ for security audits.
 ## What option A did NOT fix
 
 The drift detector script (`tools/hygiene/check-github-settings-drift.sh`) calls a mix of public + admin-scope GitHub API endpoints. Under GITHUB_TOKEN (post-option-A), the public endpoints return correct data; the admin-scope endpoints (rulesets at the org level, autolinks, security configs) return 403. The drift detector either:
+
 1. Fails on the first admin-scope endpoint (if it doesn't tolerate 403), OR
 2. Reports phantom drift on the admin-scope fields (if it tolerates 403 by emitting null).
 
