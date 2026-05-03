@@ -25,8 +25,15 @@ Every contributor decision flows from that.
 ## The vibe-coded hypothesis
 
 The human maintainer has written **zero lines of code**
-himself. Every line in `src/**`, `tools/**`, `docs/**` is
-agent-authored. The project's explicit research hypothesis:
+himself. Every line in `src/**`, `tools/**`, `docs/**`,
+`.claude/**` (skills, agents, commands, rules) is
+agent-authored. The maintainer commits the agent-produced
+substrate; he does not author it. Per the maintainer
+2026-05-03 chat extension: *"i didn't write any code all is
+written by you"* — confirming `.claude/skills/` content sits
+under the same vibe-coded scope as the originally-named
+`src/**`/`tools/**`/`docs/**` roots. The project's explicit
+research hypothesis:
 
 > A correctly-calibrated stack of formal verification, static
 > analysis, adversarial review, and spec-driven development is
