@@ -137,8 +137,14 @@ The decision-archaeology skill body (B-0169 future SKILL.md) has 11 procedure la
 | 4 | `git log -S "<string>" -- memory/ CLAUDE.md` | `bun tools/decision-archaeology/string-archaeology.ts "<string>"` |
 | 5 | `git log -L :func:file` | `bun tools/decision-archaeology/function-archaeology.ts <func> <file>` |
 | 6 | `grep -rlnE "<pattern>" docs/hygiene-history/ticks/` | `bun tools/decision-archaeology/shard-search.ts <pattern>` |
-| 7 | `grep -ilrE "<pattern>" docs/DECISIONS/` (single-command, regex-capable equivalent of `ls .. ｜ grep -iE`; preserves alternation semantics; avoids markdown-table pipe-escape awkwardness) | `bun tools/decision-archaeology/adr-search.ts <pattern>` |
+| 7 | ADR-filename search by regex pattern (canonical command shown in code block below the table — pipe in table cells is awkward; the right shape is `ls docs/DECISIONS/` piped through `grep -iE`, which searches **filenames**; do NOT substitute `grep -ilrE PATTERN docs/DECISIONS/` since `-r` searches **file contents** instead) | `bun tools/decision-archaeology/adr-search.ts <pattern>` |
 | 8-11 | Various searches | TS-wrapped where they involve multi-flag patterns |
+
+Layer-7 canonical command (filename search; intentionally pulled out of the table cell because pipe-in-cell breaks markdown rendering):
+
+```bash
+ls docs/DECISIONS/ | grep -iE "<pattern>"
+```
 
 Each TS file is small (often <100 lines), single-purpose, type-checked, and re-runnable. Skill body becomes carved-sentence pointers ("invoke `bun tools/decision-archaeology/blame.ts`") rather than embedded bash.
 
