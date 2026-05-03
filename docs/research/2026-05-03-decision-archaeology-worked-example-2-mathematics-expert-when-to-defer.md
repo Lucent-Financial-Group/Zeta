@@ -361,6 +361,20 @@ For the eventual `decision-archaeology` SKILL.md body:
    11 layers.** The procedure is consistent across modes; only the
    answer-shape differs (negative-result-rich for supersession;
    positive-pattern-canonical-doctrine for existence).
+6. **Ask the original decision-maker rather than infer — when
+   available.** Decision-archaeology can recover *what happened*, *when*,
+   and *who-touched-what* from substrate; **first-party intent on
+   substrate-content requires first-party query**. In traditional
+   projects this means asking the original author. In vibe-coded
+   projects (per Aaron 2026-05-03 correction + the vibe-coded reframe
+   section above), the maintainer is principled-non-substrate-author,
+   so first-party query targets the maintainer's selection-judgment +
+   the past-agent's substrate-context, not the maintainer's
+   substrate-author intent. The skill body should teach contributors
+   to **distinguish between substrate-recoverable facts (cached) and
+   first-party intent (source-of-truth) — and ask the available
+   first-party source rather than infer from substrate when intent
+   is the question.**
 
 ## Composes with
 
