@@ -99,18 +99,102 @@ The hook will probably:
 | Substrate-content — "TS file under tools/git/hooks/" | **Medium** | Decision-graph memo cited the path; rule 2 forces TS; but the specific filename + scope is inferred not confirmed |
 | Specific — "Claude Code settings.json + stdin protocol" | **Low** | Standard Claude Code hook shape but I haven't confirmed the specific event names or payload schema for this hook type |
 
-## Ground truth (TO BE FILLED IN AFTER VERIFICATION)
+## Ground truth (recovered 2026-05-03 ~02:50Z via direct read of B-0173)
 
-(Empty at write time. Populated when Otto reads B-0173 row body OR
-asks Aaron OR runs decision-archaeology on the row.)
+Read source: `docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md` (full body) — protocol-permitted only after the guess commit landed (PR #1279 merged onto main).
 
-## Calibration delta (TO BE FILLED IN AFTER VERIFICATION)
+### Architectural intent (Aaron's verbatim)
 
-(Empty at write time. Populated alongside ground truth section.)
+> *"this feature is great for reminding yourself to do the right thing the pre conditions and post condtions in contract based development or spec based development like openspec"*
+
+**Primary frame**: contract-based development (Meyer, Eiffel) / Design-by-Contract / spec-based development (OpenSpec). Hooks fire at well-defined points (pre-tool-use, post-tool-use, session-start, pre-commit, commit-msg) — **the natural place to enforce pre-conditions and post-conditions on procedures**.
+
+### Substrate-content intent
+
+Three hook integrations (NOT just one):
+
+1. **`tools/git/hooks/pre-commit`** — bash; invokes `bun tools/substrate-claim-checker/check-counts.ts <staged-files>`; validates staged-file content
+2. **`tools/git/hooks/commit-msg`** — bash; validates the commit message itself for fact-claims; pre-commit can't see this surface (commit msg doesn't exist yet at pre-commit time)
+3. **`.github/workflows/substrate-claim-checker.yml`** — CI check on PR descriptions (host-authored; different timing from git hooks)
+
+depends_on: **[B-0170 (substrate-claim-checker tool) + B-0171 (OpenSpec catch-up — contracts live in specs)]**
+
+### Specific implementation intent
+
+- **git hooks**, NOT Claude Code's `.claude/settings.json` hook system
+- bash wrapper that invokes the TS tool (per Aaron's rule 2: TS under tools/; the hook itself is bash to integrate with git's hook protocol)
+- Strict vs warn mode via `SUBSTRATE_CLAIM_CHECKER_MODE` env var (warn for v0.x rollout; strict once mature)
+- Per-check-type opt-out via comment markers: `<!-- substrate-claim-checker: skip-count-drift -->`
+- Performance target: <2 seconds per commit
+
+## Calibration delta
+
+### Architectural layer — PARTIAL-MATCH
+
+| What I got | What I missed |
+|---|---|
+| harness-native enforcement (correct) | The **contract-based development / Design-by-Contract / OpenSpec** primary frame — Aaron's load-bearing motivating frame |
+| local-fast-feedback at commit boundary (correct) | The pre/post-condition framing as the *primary* purpose, not just a benefit |
+| separation of concerns (skill body = WHAT, hook = VALID) (correct) | (no miss here) |
+| composes with skill-design rule 3 (correct, was already first-party-confirmed) | (no miss here) |
+
+**Analysis**: I touched the surface (separation of concerns / harness-native) but didn't surface the deeper architectural framing — Aaron is using hooks to operationalize contract-based development / DbC / spec-based development, not just to provide validation. The Design-by-Contract / Eiffel / OpenSpec lineage is load-bearing for understanding why hooks are the right primitive, and I missed it.
+
+### Substrate-content layer — MIXED
+
+| What I got | What I missed |
+|---|---|
+| `tools/git/hooks/` path (correct; cited from decision-graph memo) | **Multi-hook architecture** — three hooks (pre-commit + commit-msg + CI workflow), not one |
+| pre-commit hook fires on staged content (correct) | **commit-msg hook** is its own surface (commit message text validation; pre-commit can't see this) |
+| TS implementation (close — TS is the underlying tool; hooks are bash wrapping TS) | **CI workflow on PR descriptions** — host-authored content; different timing from git hooks |
+| Composes with substrate-claim-checker (B-0170) (correct) | (no miss here) |
+| | **Hook scope** — validates ALL staged content (memos, docs, config), not just `.claude/skills/*/SKILL.md` |
+
+**Analysis**: My substrate-content guess was too narrow. I assumed one hook focused on skill-files; ground truth has three hooks covering staged content / commit message / PR description. The fact-claim surface has three timing windows; each needs its own hook. I missed the multi-hook architecture entirely.
+
+### Specific implementation layer — MOSTLY-OFF
+
+| What I got | What I missed |
+|---|---|
+| Structured exit contract (exit code blocks vs allows) | **git hooks vs Claude Code hooks** — I guessed `.claude/settings.json` Claude Code hooks; actual is git hooks (`tools/git/hooks/`). Significantly different mechanisms |
+| Override path for edge cases | **Per-check-type opt-out via comment markers** — more granular than my "emergency-commit override" guess |
+| | **Strict vs warn mode via env var** — I didn't anticipate the rollout-mode-switch design |
+| | **Performance target** (<2 seconds) — I didn't think about this |
+| | **Bash wrapping TS** — I guessed pure TS; actual is bash invoking bun |
+
+**Analysis**: My specific-implementation guess was the weakest layer (which I correctly self-rated as "low confidence"). The git-hooks-vs-Claude-Code-hooks confusion is the biggest error — fundamentally different mechanisms. Both are called "hooks" but git hooks fire on git events, Claude Code hooks fire on Claude Code tool-use events.
+
+### Cross-row composition layer — MISSED
+
+| What I got | What I missed |
+|---|---|
+| Composition with B-0170 (substrate-claim-checker) — implicit in my guess | **B-0171 (OpenSpec catch-up) as depends_on** — Aaron explicitly named OpenSpec as the contract source (*"hooks enforce contracts; contracts live in OpenSpec capabilities"*) |
+| | I knew B-0171 existed as a sibling but didn't see it as the load-bearing contract source |
+
+**Analysis**: I had the substrate-content piece (substrate-claim-checker integration) but missed the spec-source piece (OpenSpec). Without specs, hooks have no contracts to enforce — that's the architectural reason for B-0173's depends_on B-0171. My guess implicitly assumed substrate-claim-checker provides the contracts, but actually substrate-claim-checker is the **enforcement engine** while OpenSpec provides the **contracts being enforced**. Two different layers.
+
+## Summary
+
+**Score (informal):**
+
+| Layer | Score | Notes |
+|---|---|---|
+| Architectural intent | **6/10** | Got periphery (separation, harness-native); missed primary DbC/OpenSpec frame |
+| Substrate-content | **5/10** | Got 1 of 3 hooks; right path; missed multi-hook architecture |
+| Specific implementation | **3/10** | Wrong hook system; missed mode-switch + opt-out granularity |
+| Cross-row composition | **5/10** | Got B-0170 implicit; missed B-0171 explicit |
+
+**Overall**: Inference was strong on **principles** (separation of concerns; harness-native; composition) and weak on **specifics** (which hook system; which timing windows; which contract source). My self-reported confidence was well-calibrated — high-confidence layer scored highest; low-confidence layer scored lowest.
+
+**Pattern observation**: My inference defaults to *generalization-from-principle* rather than *specific-mechanism-recall*. For substrate-content + implementation specifics, principle-based inference is unreliable; specific-mechanism-research is needed.
+
+**Useful for cross-model retroactive replay**: this calibration data point is now reproducible — give another model B-0173's row title only + the same prior-substrate context, see how their guess compares. The fact that I missed the contract-based-development frame is a genuine inference-failure that other models can be tested against.
 
 ---
 
-**Guess timestamp:** 2026-05-03 ~02:42Z
+**Guess timestamp:** 2026-05-03 ~02:42Z (committed under cf1dc7b on the guess branch; landed to main via PR #1279)
+**Ground-truth recovery timestamp:** 2026-05-03 ~02:50Z
 **Author:** Otto autonomous (architect hat)
-**Protocol:** in-the-moment guess per
+**Protocol:** in-the-moment guess + ground-truth recovery per
 `memory/feedback_guess_then_verify_architectural_intent_calibration_protocol_aaron_2026_05_03.md`
+**Recovery method:** direct read of `docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md` body
