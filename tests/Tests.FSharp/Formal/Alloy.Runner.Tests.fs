@@ -9,11 +9,12 @@ open global.Xunit
 
 
 // ═══════════════════════════════════════════════════════════════════
-// Alloy runner — parses every `.als` spec in `docs/` that we want to
-// validate, shells out to `java -cp alloy.jar:<runner-class-dir>
-// AlloyRunner docs/<Spec>.als`, and checks that every `check` command
-// proves (unsat of its negation) and every `run` command finds an
-// instance.
+// Alloy runner — parses every `.als` spec under `tools/alloy/specs/`
+// that we want to validate, shells out to
+// `java -cp alloy.jar:<runner-class-dir>
+// AlloyRunner tools/alloy/specs/<Spec>.als`, and checks that every
+// `check` command proves (unsat of its negation) and every `run`
+// command finds an instance.
 //
 // `AlloyRunner.java` lives in `tools/alloy/` and is compiled on demand
 // into an `obj/` scratch directory the first time any test runs. If
@@ -47,7 +48,13 @@ let private alloyRunnerSource =
     Path.Combine(repoRoot, "tools", "alloy", "AlloyRunner.java")
 
 
-let private docsPath = Path.Combine(repoRoot, "docs")
+// Alloy specs live at tools/alloy/specs/<Spec>.als (not docs/) since
+// the round-? specs reorganization. Pre-fix this constant pointed at
+// docs/ and the tests silently no-op'd (no <Spec>.als file found
+// triggered toolchainReady-false-path skip-pattern; B2 from #1383
+// math-proofs assessment was correct that Alloy "not in CI"). The
+// path correction is the prerequisite for the tests to actually run.
+let private alloySpecsPath = Path.Combine(repoRoot, "tools", "alloy", "specs")
 
 
 /// Scratch directory holding the compiled `AlloyRunner.class`. Colocated
@@ -109,7 +116,7 @@ let private compileRunnerIfNeeded () : bool =
 
 /// Run the Alloy driver on the given spec. Returns `(exitCode, stdout)`.
 let private runAlloy (specName: string) : int * string =
-    let specFile = Path.Combine(docsPath, $"{specName}.als")
+    let specFile = Path.Combine(alloySpecsPath, $"{specName}.als")
     if not (File.Exists specFile) then
         failwithf "Alloy spec not found: %s" specFile
     let classpathSep = if OperatingSystem.IsWindows() then ";" else ":"
@@ -156,7 +163,7 @@ let private assertSpecValid (specName: string) =
 
 
 // ═══════════════════════════════════════════════════════════════════
-// Per-spec test cases. Each `docs/*.als` gets one trivial test line.
+// Per-spec test cases. Each `tools/alloy/specs/*.als` gets one trivial test line.
 // ═══════════════════════════════════════════════════════════════════
 
 
