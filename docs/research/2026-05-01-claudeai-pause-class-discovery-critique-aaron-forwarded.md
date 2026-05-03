@@ -84,12 +84,17 @@ What this file commits to operationally:
 
 ## Composes with
 
-- `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` (PR #1081) — the v2 file Claude.ai is critiquing.
-- `docs/research/2026-05-01-claudeai-haskell-prelude-vs-fsharp-bcl-grounding-aaron-forwarded.md` (PR #1089) — message A.
-- `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md` (PR #1089) — message C.
-- `docs/research/2026-05-01-claudeai-category-theory-lever-taxonomy-grounding-aaron-forwarded.md` (PR #1091) — message B.
-- `docs/research/2026-05-01-claudeai-convergence-revision-provenance-tagging-aaron-forwarded.md` (PR #1094) — message D (the prior message that already flagged the within-session-cleanliness concern this message now elaborates on with empirical evidence).
-- `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md` (PR #1083) — the Gemini absorption file Claude.ai specifically critiqued for celebrating-the-catch over substantively-addressing-the-Gemini-CLAUDE.md-principle.
+- `docs/research/2026-05-01-claudeai-haskell-prelude-vs-fsharp-bcl-grounding-aaron-forwarded.md` — message A.
+- `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md` — message C.
+- `docs/research/2026-05-01-claudeai-category-theory-lever-taxonomy-grounding-aaron-forwarded.md` — message B.
+
+### Forward-references not yet on main
+
+The cited file paths are not present in the current repo tree at time of this absorb; references kept as forward-references until those PRs land.
+
+- Forward-reference: `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` in PR #1081 — the v2 file Claude.ai is critiquing.
+- Forward-reference: `docs/research/2026-05-01-claudeai-convergence-revision-provenance-tagging-aaron-forwarded.md` in PR #1094 — message D (the prior message that already flagged the within-session-cleanliness concern this message now elaborates on with empirical evidence).
+- Forward-reference: `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md` in PR #1083 — the Gemini absorption file Claude.ai specifically critiqued for celebrating-the-catch over substantively-addressing-the-Gemini-CLAUDE.md-principle.
 
 ## Carved candidate (Claude.ai's, preserved verbatim)
 
