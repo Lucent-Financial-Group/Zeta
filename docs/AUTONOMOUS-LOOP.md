@@ -225,8 +225,7 @@ wait for instruction. Priority ladder:
    **Check 0a — no-op-cadence**: examines last 7 tick-shards;
    warns if ≥5 are minimal-observation OR most-recent >15 min
    old. On warn: write a substantive shard OR do real work,
-   not acknowledgment-only. Bash sibling `.sh` for
-   non-bun environments; both kept in sync.
+   not acknowledgment-only.
 
    **Check 0b — cadence-tracker**: shards mark `CADENCE-TRACK:
    <work>` with last-run date for cadenced hygiene (AutoDream
