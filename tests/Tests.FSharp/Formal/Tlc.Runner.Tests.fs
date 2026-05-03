@@ -226,16 +226,37 @@ let ``TLC validates FeatureFlagsResolution`` () =
 
 [<Fact>]
 let ``TLC validates DbspSpec`` () =
-    // DBSP per-tick semantics — explores 1M distinct initial states in
-    // ~11s wall on dev hardware, proving the operator-algebra
-    // invariants hold across the configured state space. Closes the
-    // first of the 4 deferred specs in B1 (#1383 math-proofs honest
-    // assessment outstanding-work matrix). The other 3
-    // (SpineAsyncProtocol, CircuitRegistration, SpineMergeInvariants)
-    // have known issues per a 2026-05-03 verify-then-claim sweep:
-    // SpineAsyncProtocol + SpineMergeInvariants produce trace files
-    // (counterexamples); CircuitRegistration has a config bug
-    // (invariant `Safety` not defined in spec). They remain
-    // intentionally unregistered until the underlying issues are
-    // fixed in follow-up PRs.
+    // DBSP per-tick semantics — verifies the 9 algebra invariants
+    // (InvAssoc / InvCommute / InvIdentity / InvInverse /
+    // InvDoubleNeg / InvNegDistributes / InvSubIsAddNeg /
+    // InvDistinctIdempotent / InvHCorrectness) over the cfg's
+    // configured state space.
+    //
+    // **Coverage scope (verbatim from DbspSpec.cfg):**
+    //   * Keys K = {"k1", "k2"} (2-key universe)
+    //   * Weights W = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} — POSITIVE
+    //     ONLY. Retraction (negative-weight) cases are NOT
+    //     exercised by this model-check; they are covered separately
+    //     by the FsCheck property-tests over Z-set algebra in
+    //     `tests/Tests.FSharp/Algebra/ZSetTests.fs` and by the
+    //     Lean proof of Prop 3.2 (`tools/lean4/Lean4/
+    //     DbspChainRule.lean`) which is general over abelian-group
+    //     weights.
+    //   * Explores ~1M distinct initial states in ~11s wall on dev
+    //     hardware; full state-space coverage of the positive-
+    //     weight subset.
+    //
+    // Adding negative-weight coverage to this cfg would either
+    // require enlarging W (linear blow-up in state space) or
+    // refining the spec model — captured as a future-work refinement
+    // for whoever lands the chain_rule_poly (3-group) follow-on.
+    //
+    // Closes the first of the 4 deferred specs in B1 (#1383
+    // math-proofs honest assessment outstanding-work matrix). The
+    // other 3 (SpineAsyncProtocol, CircuitRegistration,
+    // SpineMergeInvariants) have known issues per a 2026-05-03
+    // verify-then-claim sweep — SpineAsyncProtocol +
+    // SpineMergeInvariants produce trace files (counterexamples);
+    // CircuitRegistration has a config bug (invariant Safety
+    // not defined in spec). Tracked as B-0179 + B-0180 + B-0181.
     assertSpecValid "DbspSpec"
