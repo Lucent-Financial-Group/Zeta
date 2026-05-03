@@ -46,6 +46,50 @@ seeds. Three properties make it complementary to worked example #1
    to recognize when a same-period ADR is unrelated and not assume
    doctrine-elevation occurred.
 
+## The vibe-coded reframe (Aaron 2026-05-03 correction)
+
+The maintainer reminded me mid-tick: per `AGENTS.md`'s vibe-coded
+hypothesis, he has written **zero lines of code** — every line in
+`src/`, `tools/`, `docs/`, `.claude/skills/` is **agent-authored**.
+
+This makes git-blame attribution structurally misleading at the
+substrate-content layer:
+
+| Layer | What `git blame` shows | What's actually true (vibe-coded) |
+|---|---|---|
+| Commit-author | "the maintainer 2026-04-19" | maintainer-as-committer (principled non-coder) |
+| Substrate-content-author | (invisible at git layer) | a prior Claude session in some prior round |
+| Decision authority | (looks like maintainer) | agent proposed; maintainer accepted (selection-not-authorship) |
+
+So the question "why was the umbrella's defer-block written this
+way?" cannot be answered by asking the maintainer — he didn't
+author the substrate; he selected it. Asking himself the question
+returns: "I committed an agent-authored proposal."
+
+**Decision-archaeology in vibe-coded projects has a unique
+substrate-author-recovery challenge:**
+
+- Substrate-content-authors are agents whose specific session-context is largely lost (sessions don't share context)
+- What remains: the substrate the agent produced + maintainer-acceptance evidence + tick shards / persona notebooks / `docs/research/` if those captured session-context
+- First-party intent on substrate-content is recoverable only via:
+  1. **Past-agent introspection** — the current agent reasons about the structural choice given the substrate-context the past-agent had at write-time. Speculative but bounded by the substrate.
+  2. **Tick shards / persona notebooks** that captured the past-session's context (Aarav's notebook is the rare load-bearing example for this case)
+  3. **Maintainer-acceptance reasoning** — the maintainer can explain why he ACCEPTED the agent's output, which is its own first-party content (not the substrate-author's intent, but the selection-judgment intent)
+
+### Past-agent introspection on this case
+
+The substrate context the past-agent had at write-time (round 34,
+2026-04-19):
+
+1. The math substrate had 6+ narrow expert skills (category-theory, measure-theory, numerical-analysis, probability, applied-mathematics, theoretical-mathematics)
+2. Skill-routing matches on description keywords; an umbrella named "mathematics-expert" would trigger on every math-flavored query
+3. Without explicit defer-block, the umbrella + narrow-siblings would compete for the router's matches → unpredictable behavior
+4. The minimal-change fix: make the defer-discipline explicit + load-bearing
+
+**Inferred past-agent reasoning (necessarily speculative, bounded by substrate):** the defer-block was the smallest change making umbrella + narrow-siblings co-exist deterministically. The "this is load-bearing" emphasis flags the procedure as router-critical (later named "router-coherence" in Aarav's round-41 observation). Listing every sibling explicitly rather than "defer to most-narrow matching skill" was the more conservative implementation — explicit enumeration is deterministic; "most-narrow matching" requires routing-implementation that doesn't exist.
+
+This inference is **bounded by the substrate-context**, not authoritative on past-agent intent. The skill body should teach contributors: **inference is the right tool for vibe-coded substrate-author archaeology; certainty about intent is not available.**
+
 ## The procedure walked, layer by layer
 
 ### Layer 1 — Frame the question
