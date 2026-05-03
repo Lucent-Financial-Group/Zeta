@@ -76,8 +76,11 @@ tools/tla/*.jar
 *_TTrace_*.out
 
 # TLC state output directory — created by `java -cp tla2tools.jar tlc2.TLC`
-# with default settings; timestamped subdirs per run. Ephemeral.
+# with default settings; timestamped subdirs per run. Ephemeral. Both
+# tools/tla/states/ (run-from-tools/tla) and tools/tla/specs/states/
+# (run-from-tools/tla/specs) covered.
 tools/tla/states/
+tools/tla/specs/states/
 
 .fake
 

@@ -290,6 +290,26 @@ let ``TLC validates CircuitRegistration`` () =
 
 
 [<Fact>]
+let ``TLC validates SpineMergeInvariants`` () =
+    // BalancedSpine's level-cap merge protocol — verifies two safety
+    // invariants over a bounded MaxLevel=2 / MaxBatchSize=1 run with
+    // totalInserted <= 30 and Len(pendingIn) <= 4:
+    //   * InvMass: sum(levels) + sum(pendingIn) = totalInserted at
+    //     every reachable state (mass conservation across merges)
+    //   * InvCap: levels[i] <= 2 * Cap(i) at every reachable state
+    //     (one self-merge overshoot tolerated, no further accumulation)
+    // The cfg declares CHECK_DEADLOCK FALSE because the bounded model
+    // can reach a saturated terminal state (all caps full, pendingIn
+    // saturated) where no Next-step is enabled — modeling the
+    // physical-substrate limit of the LSM, not a bug-deadlock. The
+    // spec models the LSM cascade chain: Cascade(i) requires downstream
+    // room (levels[i+1] + levels[i] <= 2*Cap(i+1)) so the protocol
+    // can't dump from level i while level i+1 is at the cap-overshoot
+    // boundary, mirroring the synchronous cascade in BalancedSpine.fs.
+    assertSpecValid "SpineMergeInvariants"
+
+
+[<Fact>]
 let ``TLC validates SpineAsyncProtocol`` () =
     // SpineAsync producer/worker protocol — verifies three STATE
     // invariants over a bounded NumBatches=4 run:

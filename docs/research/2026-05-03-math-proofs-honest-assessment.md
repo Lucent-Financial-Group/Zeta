@@ -290,7 +290,7 @@ to publishable form:
 | Lean lake-build CI job | A1, A2 → A-with-CI | 1 day | P0 | **Done (PR #1394, 2026-05-03 — `.github/workflows/lean-proof.yml` shipped; runs on `tools/lean4/**` changes; `lake exe cache get` for Mathlib oleans + `lake env lean` type-check)** |
 | Stryker CI + kill-rate publish | B3 → A | 1 day | P0 | **Partial (PR #1395 fixed stale `stryker-config.json` paths; CI workflow design + kill-rate publication target deferred to follow-up — substantial-design item)** |
 | Semgrep CI | B4 → A | 0.5 day | P1 | **Already done (verify-then-claim correction; see B4 section)** |
-| 4 deferred TLA+ specs into CI | B1 → A | 2 days | P1 | **Partial (2 of 4 done): DbspSpec ✓ #1397; CircuitRegistration ✓ #1401 (B-0180 Safety invariant defined). Remaining: B-0179 SpineAsyncProtocol counterexample + B-0181 SpineMergeInvariants counterexample — both need TTrace investigation (substantial)** |
+| 4 deferred TLA+ specs into CI | B1 → A | 2 days | P1 | **Done (4 of 4): DbspSpec ✓ #1397; CircuitRegistration ✓ #1401 (B-0180 Safety operator); SpineAsyncProtocol ✓ #1411 (B-0179 CHECK_DEADLOCK FALSE for bounded-protocol terminal state); SpineMergeInvariants ✓ this PR (B-0181 Cascade downstream-room precondition + state constraint + WF on Cascade)** |
 | Alloy CI hook | B2 → A | 0.5 day | P1 | **Done (PR #1396, 2026-05-03 — `tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs` spec-path fixed; Spine + InfoTheoreticSharder specs now actually validate, not silent-no-op)** |
 | `.cfg` for 4 C1 specs | C1 → B | 2 days | P2 | open |
 | TLA+ spec for `Recursive.fs` LFP | C2 → B | 2-3 days | P2 | open |
@@ -300,12 +300,12 @@ to publishable form:
 | Registry rows for A4 specs | external-fidelity claim | 1 day | P0 | **Done (PR #1393, 2026-05-03)** |
 | Peer-review email draft | publishability | 2 hours | P0 | **Done (PR #1387, 2026-05-03)** |
 | Phase 0 PoC (substrate-discovery toolchain) | substrate-discovery | 2-3 ticks | (sibling) | **Done (PR #1392, 2026-05-03 — 4.0 MB single AOT binary on osx-arm64; full IVM tick path validates; cross-platform CI matrix runs)** |
-| 3 broken-spec follow-ups (B-0179 + B-0180 + B-0181) | spec-fix tracking | varies | P2 | **Filed (PR #1398, 2026-05-03); B-0180 closed (PR #1401); B-0179 + B-0181 remain open** |
+| 3 broken-spec follow-ups (B-0179 + B-0180 + B-0181) | spec-fix tracking | varies | P2/P1 | **All 3 closed: B-0180 ✓ #1401 (Safety operator); B-0179 ✓ #1411 (CHECK_DEADLOCK FALSE); B-0181 ✓ this PR (Cascade downstream-room precondition; promoted P2→P1 — same author-time class as B-0184 Spine.als under-specified action)** |
 | `.ts/.sh` parity bug in `tools/backlog/generate-index.ts` | substrate-tooling-debt | <1 day | P2 | **Done (PR #1400, 2026-05-03 — both generators now byte-identical)** |
 
 **Net P0 progress:** Lean CI ✓, A4 registry rows ✓, peer-review email ✓ (3 of 3 P0 items closed). Stryker B3 partial (config-fix done; CI wire deferred to follow-up substantial-design). All P0 items have movement.
 
-**Net P1 progress:** Alloy B2 ✓, Semgrep B4 ✓ (correction). B1 4 deferred specs at 2/4 done (CircuitRegistration + DbspSpec); the other 2 need counterexample investigation. WDC protocol spec + Recursive.fs LFP spec remain open (substantial multi-day each).
+**Net P1 progress:** Alloy B2 ✓, Semgrep B4 ✓ (correction), B1 ✓ (all 4 deferred TLA+ specs in CI). WDC protocol spec + Recursive.fs LFP spec remain open (substantial multi-day each).
 
 ---
 
