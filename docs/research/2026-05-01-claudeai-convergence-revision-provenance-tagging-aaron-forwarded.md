@@ -107,11 +107,16 @@ Composes with Otto-231 first-party-content (Aaron's affirmations are consented-b
 
 ## Composes with
 
-- `docs/research/2026-05-01-claudeai-haskell-prelude-vs-fsharp-bcl-grounding-aaron-forwarded.md` (PR #1089) — message A.
-- `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md` (PR #1089) — message C.
-- `docs/research/2026-05-01-claudeai-category-theory-lever-taxonomy-grounding-aaron-forwarded.md` (PR #1091) — message B.
+- `docs/research/2026-05-01-claudeai-haskell-prelude-vs-fsharp-bcl-grounding-aaron-forwarded.md` — message A.
+- `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md` — message C.
 - This file — message D (revision + provenance-tagging + convergence-metric).
-- `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` (PR #1081) — the v2 taxonomy that all four messages ground.
+
+### Forward-references not yet on main
+
+The cited file paths are not present in the current repo tree at time of this absorb; references kept as forward-references until those PRs land.
+
+- Forward-reference: `docs/research/2026-05-01-claudeai-category-theory-lever-taxonomy-grounding-aaron-forwarded.md` in PR #1091 — message B.
+- Forward-reference: `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` in PR #1081 — the v2 taxonomy that all four messages ground.
 
 ## Future v3 work — combined recommendation now from all four ferry messages
 
