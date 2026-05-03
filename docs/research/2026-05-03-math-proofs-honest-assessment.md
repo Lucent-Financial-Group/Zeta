@@ -295,7 +295,7 @@ to publishable form:
 | `.cfg` for 4 C1 specs | C1 → B | 2 days | P2 | **Partial (1 of 4): ChaosEnvDeterminism ✓ this PR (cfg + atomized DelayCritical so Atomic invariant holds across the splitMix+AdvanceTime critical section; 2043 distinct states / depth 26). Remaining 3: ConsistentHashRebalance + DictionaryStripedCAS + AsyncStreamEnumerator (each needs more than just a cfg — structural spec issues)** |
 | TLA+ spec for `Recursive.fs` LFP | C2 → B | 2-3 days | P2 | open |
 | TLA+ spec for WDC protocol | C2 → B | 3-5 days | P1 | open |
-| 15 FsCheck properties (C3) | C3 → B | 3 days | P2 | open |
+| 15 FsCheck properties (C3) | C3 → B | 3 days | P2 | **Partial (3 of 15): PN-counter merge commutative + idempotent + associative ✓ this PR (mirrors G-counter pattern in `Math.Invariants.Tests.fs`). Remaining ~12 properties: OR-Set + LWW-Register + DeltaCrdt + Residuated lattice + Recursive fixpoint + Merkle + Watermark + KLL** |
 | `chain_rule_poly` (3-group) | C4 → A | research | P3 | open |
 | Registry rows for A4 specs | external-fidelity claim | 1 day | P0 | **Done (PR #1393, 2026-05-03)** |
 | Peer-review email draft | publishability | 2 hours | P0 | **Done (PR #1387, 2026-05-03)** |
