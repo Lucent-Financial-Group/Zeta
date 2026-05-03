@@ -97,11 +97,16 @@ So: yes, reverse-order was better here, but the underlying principle is load-bea
 
 ## Composes with
 
-- `docs/research/2026-05-01-claudeai-haskell-prelude-vs-fsharp-bcl-grounding-aaron-forwarded.md` (PR #1089) — message A in the ferry. Haskell-prelude grounds the taxonomy structure; F#/BCL grounds the executable substrate.
-- `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md` (PR #1089) — message C in the ferry (presented first by Aaron). Mirror→Beacon gate gates canonicalization.
 - This file — message B in the ferry (presented last by Aaron). Category-theory grounding gates additions to the structure.
-- `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` (PR #1081) — the v2 taxonomy that the three-message dialogue grounds.
 - `docs/category-theory/` — Claude.ai cited this directory as evidence the project already has the category-theory affinity to apply to internal cataloguing.
+
+### Forward-references not yet on main
+
+The cited file paths are not present in the current repo tree at time of this absorb; references kept as forward-references until those PRs land.
+
+- Forward-reference: `docs/research/2026-05-01-claudeai-haskell-prelude-vs-fsharp-bcl-grounding-aaron-forwarded.md` in PR #1089 — message A in the ferry. Haskell-prelude grounds the taxonomy structure; F#/BCL grounds the executable substrate.
+- Forward-reference: `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md` in PR #1089 — message C in the ferry (presented first by Aaron). Mirror→Beacon gate gates canonicalization.
+- Forward-reference: `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` in PR #1081 — the v2 taxonomy that the three-message dialogue grounds.
 
 ## Future v3 work — combined recommendation from all three messages
 
