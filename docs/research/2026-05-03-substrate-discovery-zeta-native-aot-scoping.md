@@ -119,52 +119,81 @@ prerequisite evidence before building the substrate-
 discovery layer that would integrate with live-off-the-
 land.
 
-### Distribution feasibility — dual-mode (NativeAOT + self-contained JIT)
+### Distribution feasibility — existing AOT core + JIT plugin architecture
 
-**Updated 2026-05-03** (the human maintainer): both distribution
-modes are intentional support targets, not AOT-with-JIT-as-
-fallback. Each is useful in different situations:
+**Updated 2026-05-03** (the human maintainer): the dual-mode
+framing in this doc was reinventing existing prior art. *"we
+already have a AOT core that can load JIT plugins see the
+Baseyan."* Verified in repo: `src/Bayesian/Bayesian.fsproj`
+line 9 explicit comment — *"Explicitly NOT AOT-enforced —
+this is a plugin. Core stays AOT-clean."* — and the project
+description *"Opt-in: this project doesn't enforce
+PublishAot=true because it may optionally use Infer.NET,
+which depends on reflection-emit."*
 
-| Mode | When | Trade-offs |
-|---|---|---|
-| **NativeAOT** | cron / CI / agent-loop fast-startup contexts; embedded-tool invocations; external-agent zero-install delivery | small binary (~30-50MB est.); fast cold-start (~30-50ms est.); reflection-heavy code requires AOT-compatible patterns (source generators, no FSharp.Core reflection) |
-| **Self-contained JIT** | reflection-heavy library-mode contexts; full F# / Mathlib / Lean tooling integration; long-running processes where JIT warmup amortizes | larger binary (~100-200MB est., bundles CLR); JIT-warmup cost on first invocation; full reflection compatibility |
+The actual architecture (already shipping):
 
-The maintainer 2026-05-03 verbatim: *"the whole Zeta-
-native-AOT direction self contained jit is the rethink"* +
-*"we want to support both anyways, they are both useful in
-different sistuaitons"*. Both modes preserve single-binary
-(or single-directory) distribution; both work for the
-zero-install external-agent use case the maintainer named
-(*"if they can use the zeta self containen asseblem too,
-they would not need anyting else installed"*).
+- **Zeta.Core** (`src/Core/Core.fsproj`) = AOT-clean library.
+  Includes `PluginApi.fs` (`IOperator<'TOut>` plugin-author
+  contract, `OutputBuffer`, `StreamHandle`) and
+  `PluginHarness.fs` (test harness for plugin operator
+  authors). Contains `IndexedZSet.fs`, `Incremental.fs`,
+  `Operators.fs` — the substrate-discovery primitives.
+
+- **Plugin projects** (`src/Bayesian/`, future
+  `src/SubstrateDiscovery.Plugins.*/`, etc.) = separate
+  fsproj files that reference Zeta.Core, implement the
+  `IOperator<'TOut>` contract, and are **not** AOT-enforced
+  so they can use reflection-heavy libraries (Infer.NET for
+  Bayesian, future DuckDB.NET for the verification oracle,
+  etc.).
+
+For substrate-discovery, this means:
+
+- The CORE indexing / query engine ships AOT-published as
+  `Zeta.SubstrateDiscovery` (small binary, fast startup,
+  zero-install for external agents).
+- Reflection-heavy or library-dependent extensions (DuckDB
+  cross-check oracle, future ML-driven similarity scoring,
+  etc.) ship as separate JIT plugin assemblies that the AOT
+  core loads on demand.
+- The `IOperator<'TOut>` contract is stable across the AOT
+  / JIT boundary; plugins compose into the same circuit
+  evaluator the AOT core runs.
+
+This means the maintainer's *"zero-install external-agent
+delivery"* use case is met by the AOT core alone. Plugins
+ship separately when needed. No need to bundle the entire
+Zeta + DuckDB.NET stack into a single binary.
 
 The maintainer's epistemic position remains honest: *"i
 just don't know whats possiible with distribution that's
 what makes or breaks it."* Distribution feasibility is the
-load-bearing empirical question — but the answer-space is
-broader than AOT-only. Phase 0 PoC's **primary deliverable**
-is the empirical answer, validated for BOTH modes:
+load-bearing empirical question. Phase 0 PoC's **primary
+deliverables** validate the existing AOT-core-plus-JIT-plugins
+architecture extends cleanly to substrate-discovery:
 
-- Build NativeAOT publish on linux-x64, osx-arm64, win-x64
-- Build self-contained-JIT publish on linux-x64, osx-arm64,
-  win-x64
-- Measure binary size + cold-start latency for each
-  (mode × platform) cell
-- Run a non-trivial Zeta query end-to-end on each cell
-- Document any compatibility issues encountered (AOT
-  reflection edge cases; JIT first-run-warmup magnitude)
-- Decision matrix per substrate-discovery use-case: which
-  mode for cron-tick? which for agent-loop? which for
-  external-PR-reviewer self-install?
+- Build a minimal `Zeta.SubstrateDiscovery` AOT-clean
+  library that consumes Zeta.Core; publish AOT on
+  linux-x64, osx-arm64, win-x64
+- Measure binary size + cold-start latency on each platform
+- Run a non-trivial Zeta query end-to-end on each platform
+- Optionally: build a sibling `Zeta.SubstrateDiscovery.DuckDB`
+  JIT plugin that the AOT core loads on demand for the
+  verification-oracle path
+- Document any AOT compatibility issues encountered
 
-If both modes work cross-platform, the deployment-story win
-extends well beyond substrate-discovery: every Zeta-
-consuming tool can pick AOT or JIT per situation. If
-neither works, the whole Zeta-native-AOT/JIT direction
-needs re-think. **This is the load-bearing question.** No
-substantial commit beyond Phase 0 PoC until this question
-has data for both modes.
+If the AOT core publishes cleanly on all three platforms,
+the zero-install external-agent delivery use-case is met.
+If AOT has compatibility issues for some Zeta.Core
+dependency, the rethink is *narrow* (which dependency, can
+it be moved to a JIT plugin, can the AOT-clean subset be
+extracted) — not a wholesale re-architecture, because the
+AOT-core-plus-plugins pattern is already shipping in
+Zeta.Bayesian.
+
+**This is the load-bearing question.** No substantial
+commit beyond Phase 0 PoC until this question has data.
 
 ---
 
