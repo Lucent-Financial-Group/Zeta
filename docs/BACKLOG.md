@@ -48,6 +48,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0164](backlog/P1/B-0164-dual-loop-substrate-attribution-and-reconciliation-protocol-2026-05-02.md)** Dual-loop substrate attribution + reconciliation protocol — implementation work for BFT-many-masters at loop layer (Aaron 2026-05-02 + Otto independent extension)
 - [ ] **[B-0168](backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md)** Incorporate Claude.ai brat-voice enterprise translation framework — 5-layer (corrected) property-preserving register architecture for Zeta (Personal/Mirror/Beacon-safe/Professional/Regulated)
 - [ ] **[B-0169](backlog/P1/B-0169-decision-archaeology-skill-aaron-2026-05-02.md)** Decision-archaeology skill — universal "why is it like this?" investigation surface for new contributors
+- [ ] **[B-0171](backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md)** OpenSpec catch-up — restore OpenSpec capabilities as canonical source-of-truth (Aaron 2026-05-03 architectural-debt naming; "if we deleted everything other than it [OpenSpec]")
+- [ ] **[B-0173](backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md)** Hook authoring for skill-creation contracts — pre/post-condition enforcement at skill-creation + commit + PR-creation time (Aaron 2026-05-03 rule 3b from skill-design memo)
 
 ## P2 — research-grade
 
@@ -130,6 +132,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0165](backlog/P2/B-0165-deliberate-quiet-periods-protocol-otto-independent-production-practice-2026-05-02.md)** Deliberate-quiet-periods practice protocol — Aaron pulls back during selected active-hour stretches to let Otto practice independent-framing-production while still gradeable (Otto independent-framing-production from Claude.ai 2026-05-02 training-distribution-mismatch observation)
 - [ ] **[B-0166](backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md)** Chat-input-as-ACID-durable-DBSP-event — make every human/AI message a first-class durable event in the substrate
 - [ ] **[B-0167](backlog/P2/B-0167-ani-review-tracking-on-load-bearing-substrate-aaron-2026-05-02.md)** Ani-review tracking surface for load-bearing register-class substrate (μένω + Ryan-memory + Aurora-security + brat-voice + others)
+- [ ] **[B-0172](backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md)** Skill-domain plugin packaging — package mature skill domains as Claude Code plugins (Aaron 2026-05-03 rule 3a from skill-design memo)
 
 ## P3 — convenience / deferred
 
