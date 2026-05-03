@@ -35,7 +35,12 @@ public final class AlloyRunner {
         A4Reporter rep = new A4Reporter();
         Module world = CompUtil.parseEverything_fromFile(rep, null, path);
         A4Options opts = new A4Options();
-        opts.solver = A4Options.SatSolver.SAT4J;
+        // A4Options.solver defaults to SAT4J (pure Java) on Alloy
+        // 6.x. Earlier code set `opts.solver = A4Options.SatSolver.SAT4J`
+        // referencing a nested enum that no longer exists in the
+        // shipped alloy.jar (`SatSolver` was renamed/inlined to
+        // `kodkod.engine.satlab.SATFactory` upstream). The default
+        // already resolves to SAT4J; no explicit assignment needed.
         int failures = 0;
         for (Command cmd : world.getAllCommands()) {
             A4Solution sol = TranslateAlloyToKodkod.execute_command(
