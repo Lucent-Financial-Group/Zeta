@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * substrate-claim-checker / check-counts.ts (v0.4)
+ * substrate-claim-checker / check-counts.ts (v0.4.2)
  *
  * Per the verify-then-claim discipline memo
  * (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
@@ -18,8 +18,12 @@
  *          guard; B-0170 sub-class accuracy; indented-table v1 doc
  *   v0.4 — CommonMark fence-delimiter tracking (char + length match);
  *          directory rejection via statSync; readFileSync error wrap
+ *   v0.4.1 — file header version label refresh; explicit error wrap
+ *   v0.4.2 — collapse existsSync+statSync+readFileSync into single
+ *            try/catch around readFileSync (eliminates TOCTOU race
+ *            CodeQL flagged); categorize ENOENT / EISDIR by err.code
  *
- * v0.4 NOT in scope (deferred to v1):
+ * v0.4.2 NOT in scope (deferred to v1):
  *   - Existence drift (file/dir/tool claimed to exist; doesn't)
  *   - Semantic-equivalence drift (command substitution claims)
  *   - Empirical-output drift (run-the-command-and-compare)
@@ -34,7 +38,7 @@
  *   1  drift detected, missing input file, or no inputs given
  */
 
-import { readFileSync, existsSync, statSync } from "node:fs";
+import { readFileSync } from "node:fs";
 
 interface Finding {
   file: string;
@@ -203,21 +207,23 @@ function findClaims(lines: string[]): Claim[] {
  * actual < claimed. "20" (no plus) requires exact match.
  */
 function checkFile(filePath: string): { findings: Finding[]; ok: boolean } {
-  if (!existsSync(filePath)) {
-    console.error(`error: file not found: ${filePath}`);
-    return { findings: [], ok: false };
-  }
-  const stat = statSync(filePath);
-  if (!stat.isFile()) {
-    console.error(`error: not a regular file (directory or other): ${filePath}`);
-    return { findings: [], ok: false };
-  }
+  // Single try/catch around readFileSync — collapses prior
+  // existsSync + statSync + readFileSync TOCTOU race into one
+  // syscall; categorize errors by Node error code so the user
+  // gets the same explicit messages (ENOENT / EISDIR / etc).
   let content: string;
   try {
     content = readFileSync(filePath, "utf-8");
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    console.error(`error: read failed for ${filePath}: ${msg}`);
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") {
+      console.error(`error: file not found: ${filePath}`);
+    } else if (code === "EISDIR") {
+      console.error(`error: not a regular file (directory): ${filePath}`);
+    } else {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error(`error: read failed for ${filePath}: ${msg}`);
+    }
     return { findings: [], ok: false };
   }
   const lines = content.split("\n");
