@@ -94,7 +94,7 @@ When the four criteria compose:
 
 Otto observed empirics from the v0.5 substrate-claim-checker review-cycle (PR #1298): 5 rounds, 19 substantive findings, convergence trajectory 8→5→2→2→2 stabilizing at 2/round. Aaron asked *"skill domain for it already?"* — Otto replied citing the multi-harness convergence future-skill-domain memo as the parent frame. Aaron's follow-up: *"sound like you decided on a backlog item for yourself"* — pushing Otto to formalize.
 
-Otto filed `docs/backlog/P3/B-0174-cross-model-tool-review-convergence-rate-replay-otto-2026-05-03.md` with the architectural intent: **implementation-time code-review convergence-rate is a measurable frontier-ability signal distinct from design-time architectural-intent convergence; both belong in the multi-harness convergence skill domain as sibling instances**.
+Otto filed `docs/backlog/P2/B-0174-cross-model-tool-review-convergence-rate-replay-otto-2026-05-03.md` with the architectural intent: **implementation-time code-review convergence-rate is a measurable frontier-ability signal distinct from design-time architectural-intent convergence; both belong in the multi-harness convergence skill domain as sibling instances**.
 
 Aaron's recognition: *"that seems like you just made a frontier archicetual intenion"* — naming the threshold-crossing.
 
