@@ -51,7 +51,27 @@ Aaron 2026-05-03: *"vibe coders will never be without a harness of some kind"* +
 - Server-side hooks are useful for repos with adversarial / non-aligned contributors. Zeta's vibe-coded scope assumes harness-mediated contributors only
 - Non-harness commits are anti-vibe-coded by definition; protecting against them optimizes for a case Zeta isn't designed for
 
-**Conclusion**: Zeta has NO non-antipattern git-hook use case. B-0173 should be harness hooks + CI only.
+### Contributor scope vs skill-bundle scope (Aaron 2026-05-03 refinement)
+
+Aaron 2026-05-03: *"can we count on our install/setup has run for contributors and/or maintainers, yes, so we can count on bun here too then, not for skills we send out via skill bundles for pepole who only resued they have cluade hooks, we maintiners and contributors can have both and both on ts."*.
+
+**Tracked end-user personas (per Aaron 2026-05-03 — *"we should start keeping us with our end user persona contrbutor maintainer skill bundle user, there will be more over time"*)**:
+
+| Persona | Bun availability | Hook options |
+|---|---|---|
+| **Contributor** (runs `tools/setup/install.sh`) | Yes (installed bun) | Could have both git hooks AND harness hooks, both in TS |
+| **Maintainer** (also runs install) | Yes | Same as contributor |
+| **Skill-bundle user** (uses plugins via harness) | Only via harness's runtime | Harness hooks only |
+| *(more personas over time)* | TBD | TBD |
+
+**Even for contributors/maintainers**, harness hooks cover the use cases git hooks would. Aaron's analysis (confirming Otto's):
+
+- Pre-commit substrate-claim-checker → harness fires on pre-tool-use (Edit/Write) before content lands
+- Commit-msg validation → harness fires on pre-Bash-tool-use when command is `git commit`
+
+So **no persona currently needs git hooks** — contributors/maintainers don't need them because the harness covers the same ground; skill-bundle users can't have them anyway. The contributor-vs-skill-bundle distinction matters for **what's possible** (this could always change in the future, so it's a useful distinction to track per Aaron 2026-05-03), but the **current conclusion is uniform**.
+
+**Conclusion**: Zeta has NO non-antipattern git-hook use case across any current persona. The persona-table is a useful future-flex point — if a future persona has different runtime availability or different security needs, the table accommodates new rows. B-0173 should be harness hooks + CI only for now; revisit if persona evolution warrants.
 
 Architectural simplification for B-0173 (hook authoring) and skill-bundle distribution (B-0172):
 
