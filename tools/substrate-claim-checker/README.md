@@ -70,8 +70,7 @@ The verify-then-claim memo
 (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`)
 catalogues historical drift instances across 9+ PRs as the empirical
 eval-set; the table-row count in that memo's body is the canonical
-count (running 20+ as of late 2026-05-03 wake; it grows with each
-new instance caught). v0 catches the count-drift sub-class
+count (it grows with each new instance caught). v0 catches the count-drift sub-class
 specifically; instances marked count-drift in the memo's
 "Recurring sub-classes" section are this tool's primary regression
 suite.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * substrate-claim-checker / check-counts.ts (v0.4.2)
+ * substrate-claim-checker / check-counts.ts (v0.4.4)
  *
  * Per the verify-then-claim discipline memo
  * (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
@@ -22,8 +22,14 @@
  *   v0.4.2 — collapse existsSync+statSync+readFileSync into single
  *            try/catch around readFileSync (eliminates TOCTOU race
  *            CodeQL flagged); categorize ENOENT / EISDIR by err.code
+ *   v0.4.3 — bun:test unit-test suite (16 tests across findTables /
+ *            findClaims / checkFile); README + B-0170 count drift
+ *            switched to "memo's body table is canonical"
+ *   v0.4.4 — fence-close requires whitespace-only after delimiter
+ *            (closes "```bash" classified as opening info-string
+ *            rather than closer)
  *
- * v0.4.2 NOT in scope (deferred to v1):
+ * v0.4.4 NOT in scope (deferred to v1):
  *   - Existence drift (file/dir/tool claimed to exist; doesn't)
  *   - Semantic-equivalence drift (command substitution claims)
  *   - Empirical-output drift (run-the-command-and-compare)
@@ -77,26 +83,36 @@ function findTables(lines: string[]): Table[] {
   let i = 0;
   while (i < lines.length) {
     const cur = lines[i] ?? "";
-    const fenceMatch = /^\s*(`{3,}|~{3,})/.exec(cur);
-    if (fenceMatch) {
-      const delim = fenceMatch[1] ?? "";
+    // CommonMark fence rules:
+    //   - Opening fences may have an "info string" after the delimiter
+    //     (e.g. "```bash" or "```{language=ts}").
+    //   - Closing fences MUST be whitespace-only after the delimiter
+    //     (per the CommonMark spec — "the closing fence must not have
+    //     a info string"). Use two regexes to distinguish.
+    const fenceOpen = /^\s*(`{3,}|~{3,})/.exec(cur);
+    const fenceClose = /^\s*(`{3,}|~{3,})\s*$/.exec(cur);
+    if (fenceOpen) {
+      const delim = fenceOpen[1] ?? "";
       const ch = delim[0] === "`" ? "`" : "~";
       const len = delim.length;
       if (fenceChar === null) {
-        // Open a fence
+        // Opening fences are allowed to carry an info string.
         fenceChar = ch;
         fenceLen = len;
         i++;
         continue;
       }
-      // Close only if same char + at-least-equal length per CommonMark
-      if (ch === fenceChar && len >= fenceLen) {
+      // Inside a fence — only a whitespace-only closer with same
+      // char + at-least-equal length closes per CommonMark.
+      if (fenceClose && ch === fenceChar && len >= fenceLen) {
         fenceChar = null;
         fenceLen = 0;
         i++;
         continue;
       }
-      // Otherwise it's just a line inside the fence
+      // Otherwise it's just a line inside the fence (e.g. nested
+      // shorter delimiter, or a delimiter line with non-whitespace
+      // trailing content like "```bash" used as info-string echo).
     }
     if (fenceChar !== null) {
       i++;
@@ -157,15 +173,17 @@ function findClaims(lines: string[]): Claim[] {
     `\\b(\\d+)(\\+?)[\\s-]+(${nounAlt})\\b`,
     "gi",
   );
-  // CommonMark fence-tracking: a fence is closed only by a delimiter
-  // of the same character and at-least-equal length.
+  // CommonMark fence-tracking: opening fences may carry an info
+  // string ("```bash"); closing fences MUST be whitespace-only
+  // after the delimiter.
   let fenceChar: "`" | "~" | null = null;
   let fenceLen = 0;
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i] ?? "";
-    const fenceMatch = /^\s*(`{3,}|~{3,})/.exec(line);
-    if (fenceMatch) {
-      const delim = fenceMatch[1] ?? "";
+    const fenceOpen = /^\s*(`{3,}|~{3,})/.exec(line);
+    const fenceClose = /^\s*(`{3,}|~{3,})\s*$/.exec(line);
+    if (fenceOpen) {
+      const delim = fenceOpen[1] ?? "";
       const ch = delim[0] === "`" ? "`" : "~";
       const len = delim.length;
       if (fenceChar === null) {
@@ -173,7 +191,7 @@ function findClaims(lines: string[]): Claim[] {
         fenceLen = len;
         continue;
       }
-      if (ch === fenceChar && len >= fenceLen) {
+      if (fenceClose && ch === fenceChar && len >= fenceLen) {
         fenceChar = null;
         fenceLen = 0;
         continue;

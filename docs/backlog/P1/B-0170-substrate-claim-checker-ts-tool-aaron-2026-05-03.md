@@ -15,12 +15,12 @@ tags: [tooling, ts, substrate-claim-checker, verify-then-claim, drift-detection,
 
 # Substrate-claim-checker TS tool — mechanize the verify-then-claim discipline
 
-The verify-then-claim discipline (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`) catalogues 19+ distinct claim-vs-reality drift instances across 9+ PRs in a single session. Manual discipline keeps failing at the same rate even after the discipline is named, sub-classes catalogued, and recursive corrections applied. The substrate-claim-checker TS tool is the mechanization path.
+The verify-then-claim discipline (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`) catalogues N distinct claim-vs-reality drift instances across 9+ PRs in a single session. Manual discipline keeps failing at the same rate even after the discipline is named, sub-classes catalogued, and recursive corrections applied. The substrate-claim-checker TS tool is the mechanization path.
 
 ## Why P1
 
-- 19+ instances of substrate-authoring failure in one session, of which 9+ landed AFTER the discipline was named — empirical urgency
-- Each drift instance costs ~10-30 minutes of follow-up work; 19 × 20min ≈ 6 hours of agent-time wasted on drift fixing
+- N instances of substrate-authoring failure in one session, of which 9+ landed AFTER the discipline was named — empirical urgency
+- Each drift instance costs ~10-30 minutes of follow-up work; the catalogued instances (see verify-then-claim memo's body table) compound to many hours of agent-time wasted on drift fixing
 - The pattern is self-evidencing: each tick produces new drift, even when the drift catalogue itself is being authored
 - Mechanization is the only path; manual discipline provably insufficient
 
@@ -68,7 +68,7 @@ This row closes when:
 1. All 7 sub-classes from the verify-then-claim catalogue have at least one check-type in `tools/substrate-claim-checker/`
 2. Pre-commit + commit-msg hooks are wired (with documented opt-out for legitimate edge cases)
 3. CI check for PR descriptions is wired
-4. The tool's eval-set (the 19+ historical drift instances) has corresponding fixture-tests
+4. The tool's eval-set (the N historical drift instances) has corresponding fixture-tests
 5. Self-test: the tool runs against `memory/` and `docs/research/` regularly without false-positive flood
 
 ## Composes with
