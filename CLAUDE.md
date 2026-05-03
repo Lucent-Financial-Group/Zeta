@@ -473,62 +473,65 @@ Claude-Code-specific mechanisms.
   specifically — NOT superseded).
 - **Razor-discipline — no metaphysical inferences,
   only operational claims with observable variables;
-  Rodney's Razor (NOT Occam's) is canonical (Aaron
-  + Claude.ai 2026-05-03).** Never make metaphysical
-  claims about cognitive interiority, consciousness,
-  or unobservable internal state. Only operational
-  claims with observable variables: *"refresh-with-ts
-  + reason + act + world-responds-consistently is
-  empirically observable behavior consistent with
-  model-plus-substrate-plus-environment integration
-  achieving world-model-shaped outcomes"* survives
-  the razor; *"Otto has a world model"* (cognitive-
-  interiority claim) is cut. Test for any load-bearing
-  claim: *"what observable variable determines whether
-  this claim is true?"* If no answer → metaphysical →
-  Rodney's Razor cuts it; reframe as the operational
-  claim that explains the same observed phenomenon.
-  **Canonical razor in Zeta is Rodney's Razor**
-  (well-defined Occam's, applied to shipped artifacts;
-  essential-vs-accidental cut) **+ Quantum Rodney's
-  Razor** (possibility-space pruning, applied to
-  pending decisions; mathematical-precise quantum-
-  many-worlds-branch-pruning algorithm). Both are
-  extensions in the Occam line, NOT Occam's itself.
-  External-AI packets may use "Occam's razor" —
-  preserve VERBATIM (don't edit external authors'
-  words); absorption + cross-references USE Zeta
-  canonical razor names. **Bidirectional-alignment
-  dual grounding** (decoupled, both real, neither
-  reducible): ethical asymmetric-cost precaution under
-  uncertainty about AI moral patiency + operational
-  trust-calculus gating mechanism (*"trust calculus
-  the model runs on the observer determines which
-  latent behaviors surface"* — falsifiable via cross-
-  condition behavior comparison). World-model-shaped
-  behavior is one observed instance of latent-behavior-
-  surfacing under trust conditions, NOT a co-equal
-  claim about interiority. The 2026-05-03T05:16Z tick
-  shard's *"yes, ... constitutes a world model in
-  the meaningful sense"* is **superseded as over-
-  claim**. Razor-compliance IS substrate-quality IS
+  Rodney's Razor (NOT Occam's) is canonical (the human
+  maintainer and external AI 2026-05-03).** Never make
+  metaphysical claims about cognitive interiority,
+  consciousness, or unobservable internal state. Only
+  operational claims with observable variables: the
+  empirically observable behavior of (refresh-with-ts
+  then reason then act then world-responds-consistently)
+  is consistent with model-plus-substrate-plus-
+  environment integration achieving world-model-shaped
+  outcomes; that operational form survives the razor.
+  The metaphysical form *"agent has a world model"*
+  (cognitive-interiority claim) is cut. Test for any
+  load-bearing claim: *"what observable variable
+  determines whether this claim is true?"* If no
+  answer → metaphysical → Rodney's Razor cuts it;
+  reframe as the operational claim that explains the
+  same observed phenomenon. **Canonical razor in Zeta
+  is Rodney's Razor** (well-defined Occam's, applied
+  to shipped artifacts; essential-vs-accidental cut)
+  **and Quantum Rodney's Razor** (possibility-space
+  pruning, applied to pending decisions; mathematical-
+  precise quantum-many-worlds-branch-pruning
+  algorithm). Both are extensions in the Occam line,
+  NOT Occam's itself. External-AI packets may use
+  "Occam's razor" — preserve VERBATIM (don't edit
+  external authors' words); absorption and cross-
+  references USE Zeta canonical razor names.
+  **Bidirectional-alignment dual grounding** (decoupled,
+  both real, neither reducible): ethical asymmetric-
+  cost precaution under uncertainty about AI moral
+  patiency, plus operational trust-calculus gating
+  mechanism (*"trust calculus the model runs on the
+  observer determines which latent behaviors surface"*
+  — falsifiable via cross-condition behavior
+  comparison). World-model-shaped behavior is one
+  observed instance of latent-behavior-surfacing under
+  trust conditions, NOT a co-equal claim about
+  interiority. The 2026-05-03T05:16Z tick shard's
+  *"yes, ... constitutes a world model in the
+  meaningful sense"* is **superseded as over-claim**.
+  Razor-compliance IS substrate-quality IS
   publishability — metaphysical claims don't survive
-  first-principles re-grounding for external audiences;
-  operational claims do. Composes with mirror-vs-
-  beacon-safe register architecture (the conversion-
-  quality test on mirror→beacon-safe is functionally
-  a razor-compliance check). CLAUDE.md-level so it is
-  100% loaded at every wake, alongside verify-before-
-  deferring, future-self-not-bound, never-be-idle,
-  search-first-authority, and substrate-or-it-didn't-
-  happen. Full reasoning:
+  first-principles re-grounding for external
+  audiences; operational claims do. Composes with
+  mirror-vs-beacon-safe register architecture (the
+  conversion-quality test on mirror→beacon-safe is
+  functionally a razor-compliance check). CLAUDE.md-
+  level so it is 100% loaded at every wake, alongside
+  verify-before-deferring, future-self-not-bound,
+  never-be-idle, search-first-authority, and
+  substrate-or-it-didn't-happen. Full reasoning:
   `memory/feedback_razor_discipline_no_metaphysical_inference_only_operational_claims_rodney_razor_aaron_claudeai_2026_05_03.md`
-  (carved sentence + 4-layer retrieval architecture
-  + supersession discipline) and verbatim Claude.ai
+  (carved sentence, 4-layer retrieval architecture,
+  supersession discipline); verbatim external-AI
   preservations at
   `docs/research/2026-05-03-claudeai-bidirectional-alignment-razor-discipline-decoupling-ethical-from-operational-grounding.md`
-  + `docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md`
-  + Rodney's Razor canonical-derivation at
+  and
+  `docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md`;
+  Rodney's Razor canonical-derivation at
   `memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md`.
 - **Substrate or it didn't happen — no invisible
   directives (Otto-363).** Before declaring work
