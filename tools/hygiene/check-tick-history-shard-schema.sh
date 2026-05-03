@@ -62,9 +62,10 @@
 #   2 — invocation error (script bug or missing inputs)
 #
 # Composes with:
-#   - tools/hygiene/check-tick-history-order.sh (the legacy
+#   - tools/hygiene/check-tick-history-order.ts (the legacy
 #     monolithic-table order check; this is the per-shard
-#     analogue for the post-shard-transport surface)
+#     analogue for the post-shard-transport surface;
+#     .sh removed 2026-05-03 after #1380 .sh→.ts CI conversion)
 #   - docs/hygiene-history/ticks/README.md (the schema this
 #     check enforces)
 #   - .github/workflows/gate.yml (where this should be wired

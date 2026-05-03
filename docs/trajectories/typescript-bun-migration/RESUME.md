@@ -84,14 +84,20 @@ tools/hygiene/snapshot-github-settings.sh
 
 Rationale: these scripts use `gh api` heavily. Going TS could mean either (a) stay shell-out wrappers (TS shells to gh), or (b) switch to Octokit / @octokit/rest with proper typed responses. Each direction has tradeoffs (debug-ability vs type-safety). Maintainer call.
 
-### Bucket D — Ported, bash retained (38 files)
+### Bucket D — Ported, bash retained (33 files; 5 removed)
 
 The TS ports landed in #866 + #868 + #870 + #872 + #874 + #876 + #878 + #880 + #882 + #883 + #884 + #885 + #892 + #894 + #896 + #898 + #900 + #901 + #902; the bash originals stay in-tree as equivalence references and will retire once the TS ports have soaked.
 
+**Removed 2026-05-03 (CI-workflow .sh→.ts conversion completed):** the 5 files
+listed in #1376's risk-stratification (audit-memory-index-duplicates,
+audit-memory-references, check-archive-header-section33, check-no-conflict-markers,
+check-tick-history-order) were removed after #1377 / #1378 / #1380 converted
+all 3 workflows that referenced them (memory-index-duplicate-lint.yml,
+memory-reference-existence-lint.yml, gate.yml). #1379 was the prerequisite
+allowlist-parity fix to check-no-conflict-markers.ts.
+
 ```text
 tools/hygiene/audit-md032-plus-linestart.sh        # ported in #866
-tools/hygiene/audit-memory-index-duplicates.sh     # ported in #866
-tools/hygiene/audit-memory-references.sh           # ported in #866
 tools/hygiene/audit-machine-specific-content.sh    # ported in #868
 tools/hygiene/audit-git-hotspots.sh                # ported in #868
 tools/hygiene/audit-cross-platform-parity.sh       # ported in #868
@@ -103,9 +109,6 @@ tools/alignment/citations.sh                       # ported in #872
 tools/hygiene/audit-tick-history-bounded-growth.sh # ported in #874
 tools/hygiene/audit-post-setup-script-stack.sh     # ported in #874
 tools/hygiene/audit-missing-prevention-layers.sh   # ported in #874
-tools/hygiene/check-no-conflict-markers.sh         # ported in #876
-tools/hygiene/check-archive-header-section33.sh    # ported in #876
-tools/hygiene/check-tick-history-order.sh          # ported in #876
 tools/lint/no-empty-dirs.sh                        # ported in #878
 tools/lint/safety-clause-audit.sh                  # ported in #878
 tools/lint/doc-comment-history-audit.sh            # ported in #878

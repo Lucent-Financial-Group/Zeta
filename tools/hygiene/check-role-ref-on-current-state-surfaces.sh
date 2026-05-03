@@ -41,7 +41,8 @@
 # Composes with:
 #   - docs/AGENT-BEST-PRACTICES.md (Otto-279 carve-out)
 #   - tools/hygiene/audit-orphan-role-refs.sh (post-strip lint)
-#   - tools/hygiene/check-archive-header-section33.sh (sibling pattern)
+#   - tools/hygiene/check-archive-header-section33.ts (sibling pattern;
+#     .sh removed 2026-05-03 after #1380 .sh→.ts CI conversion)
 #   - .github/workflows/gate.yml (wired as a lint job — TODO)
 #
 # Self-test:

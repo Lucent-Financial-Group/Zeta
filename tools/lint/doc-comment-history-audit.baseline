@@ -66,8 +66,6 @@ tools/hygiene/audit-cross-platform-parity.sh:18:Aaron
 tools/hygiene/audit-cross-platform-parity.sh:32:Aaron
 tools/hygiene/audit-cross-platform-parity.sh:48:Aaron
 tools/hygiene/audit-machine-specific-content.sh:12:Aaron,Otto-27
-tools/hygiene/audit-memory-references.sh:19:Aaron
-tools/hygiene/audit-memory-references.sh:6:Amara,ferry
 tools/hygiene/audit-tick-history-bounded-growth.sh:14:Aaron
 tools/hygiene/capture-tick-snapshot.sh:12:Amara,ferry
 tools/hygiene/capture-tick-snapshot.sh:41:Amara
