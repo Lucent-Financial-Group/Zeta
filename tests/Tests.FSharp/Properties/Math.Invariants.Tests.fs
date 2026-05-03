@@ -71,6 +71,37 @@ let ``G-counter merge is associative`` (NonNegativeInt a) (NonNegativeInt b) (No
     lhs.Value = rhs.Value
 
 
+// ─── PN-Counter — semilattice laws (positive + negative G-counters) ─
+// PN-Counter merges elementwise: P-side max-merge + N-side max-merge.
+// The semilattice laws (commute / idempotent / associative) inherit
+// from G-counter directly because PN.Merge is just (G-merge,G-merge).
+// These properties pin that derivation: any future change to PNCounter
+// that breaks one of the laws (e.g. accidentally min-merging instead
+// of max-merging) trips a property here.
+
+[<Property>]
+let ``PN-counter merge is commutative`` (aP: int) (aN: int) (bP: int) (bN: int) =
+    // Bound to non-negative for Increment's contract; PN allows
+    // both positive (P side) and negative (N side) deltas.
+    let a = PNCounter.Empty.Increment("r1", int64 (abs aP)).Increment("r1", -(int64 (abs aN)))
+    let b = PNCounter.Empty.Increment("r2", int64 (abs bP)).Increment("r2", -(int64 (abs bN)))
+    (PNCounter.Merge a b).Value = (PNCounter.Merge b a).Value
+
+[<Property>]
+let ``PN-counter merge is idempotent`` (p: int) (n: int) =
+    let a = PNCounter.Empty.Increment("r1", int64 (abs p)).Increment("r1", -(int64 (abs n)))
+    (PNCounter.Merge a a).Value = a.Value
+
+[<Property>]
+let ``PN-counter merge is associative`` (a: int) (b: int) (c: int) =
+    let x = PNCounter.Empty.Increment("r1", int64 (abs a))
+    let y = PNCounter.Empty.Increment("r2", int64 (abs b))
+    let z = PNCounter.Empty.Increment("r3", int64 (abs c))
+    let lhs = PNCounter.Merge (PNCounter.Merge x y) z
+    let rhs = PNCounter.Merge x (PNCounter.Merge y z)
+    lhs.Value = rhs.Value
+
+
 // ─── HyperMinHash — Jaccard monotonicity ───────────────────────────
 // Reference: Yu & Weber arXiv:1710.08436.
 
