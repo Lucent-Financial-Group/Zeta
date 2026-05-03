@@ -1,11 +1,19 @@
 # substrate-claim-checker
 
-V0 of the substrate-claim-checker per the verify-then-claim discipline
-memo (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
+Substrate-claim-checker per the verify-then-claim discipline memo
+(`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
 
-Catches one class of drift today: **count drift** between narrative
-claims (e.g. "18+ drift instances", "13-row table", "5 procedure
-skills") and the actual count of structured rows the claims reference.
+Catches two of the seven sub-classes B-0170 names:
+
+- **Count drift** (v0.4.4) — between narrative claims (e.g. "18+ drift
+  instances", "13-row table", "5 procedure skills") and the actual
+  count of structured rows the claims reference. Implemented in
+  `check-counts.ts`.
+- **Existence drift** (v0.5) — claims that a file or directory exists
+  when it doesn't on disk. Implemented in `check-existence.ts`.
+
+The remaining 5 sub-classes (semantic-equivalence, empirical-output,
+convention, path-form, self-recursive) are deferred to v0.6+.
 
 ## Usage
 
@@ -85,3 +93,57 @@ Per the verify-then-claim memo's mechanization-path section:
 
 These will land in subsequent PRs once the tool's check-types are
 mature enough to trust as gates.
+
+## v0.5 — `check-existence.ts` (existence drift)
+
+The `check-existence.ts` tool is the second sub-class checker, covering the **existence drift** sub-class (per the verify-then-claim memo's 7-class taxonomy).
+
+### What it catches
+
+Claims that a file or directory exists when it doesn't:
+
+- Backtick-quoted paths: `` `path/to/X.md` ``
+- Markdown link targets: `[text](relative/path)` — relative paths only
+
+### Resolution order
+
+For each path claim, tries three candidate roots:
+
+1. The file's own directory (cross-references within the same dir)
+2. The parent directory (bare-filename references for files in subdirs)
+3. The repository root (repo-relative paths)
+
+Stops on first hit. Emits a finding only if NO candidate root resolves.
+
+### Future-state context detection
+
+Claims marked future-state are exempt:
+
+- `(proposed)`, `(planned)`, `(future)`, `(would be)`, `(not yet)`, `(tbd)`, `(deferred)`, `(pending)`
+- Phrasings: "would be", "will be", "to be authored", "not yet exists", "doesn't yet exist", "future-state", "row deliverable", "I'm guessing", "concretely something like", "will probably", "lower confidence"
+
+Detected within the line + ±1 line context window.
+
+### Skipped automatically
+
+- Glob patterns (`*`, `?`, `[...]`) — not real paths
+- URLs (http://, https://, mailto:) — not file-system
+- Anchor-only links (`#section`) — same-page anchors
+- Absolute paths (`/etc/...`) — system paths, out of repo scope
+- Short strings (<3 chars) — unlikely to be paths
+- Placeholders (`<...>`, `{...}`, `XXX`)
+- Fenced code blocks — example paths in code shouldn't false-positive
+
+### Known limitations (v0.5)
+
+- Calibration-delta tables that cite path-forms as discussion topics (not claims of existence) may false-positive. Mitigated by future-marker context detection but imperfect.
+- Section-level future-state markers (e.g., a section header `## (Proposed) X`) don't propagate to claims further down. Use inline markers per claim or per paragraph.
+
+### Usage
+
+```
+bun tools/substrate-claim-checker/check-existence.ts <file>
+bun tools/substrate-claim-checker/check-existence.ts <file1> <file2> ...
+```
+
+Exit codes match check-counts.ts: `0` clean, `1` drift detected or input error.
