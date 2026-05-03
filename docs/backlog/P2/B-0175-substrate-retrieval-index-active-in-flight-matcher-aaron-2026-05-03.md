@@ -2,7 +2,7 @@
 id: B-0175
 priority: P2
 status: open
-title: Substrate-retrieval-index — active in-flight matcher for memos + carved sentences (Aaron 2026-05-03 *"specialed indeex we build over time"*; addresses 4-layer retrieval gap empirically self-demonstrated)
+title: Substrate-retrieval-index — active in-flight matcher for memos + carved sentences (Aaron 2026-05-03 _"specialed indeex we build over time"_; addresses 4-layer retrieval gap empirically self-demonstrated)
 tier: tooling
 effort: L
 ask: Aaron 2026-05-03 verbatim *"memeories are not very reliable until we get an index or something built like sematic index or somthing"* + *"carved sentancy and specialed indeex we build over time are goona be key"* (autonomous-loop maintainer channel)
@@ -47,7 +47,7 @@ A working substrate-retrieval-index that:
 1. **Indexes** the existing carved-sentence + memo + research surfaces:
    - Carved-sentence bullets in `CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md` (and equivalent harness files when added)
    - Memo topic files in `memory/*.md`
-   - Decision archaeology output in `docs/research/`, `docs/decisions/`
+   - Decision archaeology output in `docs/research/`, `docs/DECISIONS/`
    - Persona notebook entries in `memory/persona/<name>/`
 
 2. **Matches** in-flight retrieval keys:
@@ -63,7 +63,7 @@ A working substrate-retrieval-index that:
 4. **Composes with** existing tooling:
    - Skill router (`Skill` tool's description-keyed search) — already a working index for skills; mirror-instance for memos
    - Substrate-claim-checker — checks claims; this row checks for missing-rule-application
-   - poll-pr-gate.ts — refresh world model; this row would refresh rule-applicability
+   - `tools/github/poll-pr-gate.ts` — refresh world model; this row would refresh rule-applicability
 
 ## Why this is L-effort
 
