@@ -57,12 +57,28 @@ interface Claim {
   noun: string;
 }
 
-/** Find all markdown tables in the file and count data rows in each. */
+/**
+ * Find all markdown tables in the file and count data rows in each.
+ * Skips fenced code blocks so example tables in code fences aren't
+ * miscounted as real tables. Same fence-tracking discipline as
+ * `findClaims()`.
+ */
 function findTables(lines: string[]): Table[] {
   const tables: Table[] = [];
+  let inFence = false;
   let i = 0;
   while (i < lines.length) {
-    const headerLine = lines[i] ?? "";
+    const cur = lines[i] ?? "";
+    if (/^\s*(```|~~~)/.test(cur)) {
+      inFence = !inFence;
+      i++;
+      continue;
+    }
+    if (inFence) {
+      i++;
+      continue;
+    }
+    const headerLine = cur;
     const sepLine = lines[i + 1] ?? "";
     if (
       /^\|.*\|\s*$/.test(headerLine) &&
