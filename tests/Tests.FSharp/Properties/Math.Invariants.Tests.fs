@@ -108,13 +108,28 @@ let ``PN-counter merge is associative`` (a: int) (b: int) (c: int) =
 // but the *observable* set (elements with ANY weight > 0) is the
 // CRDT contract. These properties pin the laws on the observable
 // set, which is the layer external code consumes.
+//
+// Tag derivation: deterministic Guid from list-index so FsCheck
+// shrinking is replayable. Naive `OrSet.Empty.Add x` would call
+// Guid.NewGuid() on every step, which (a) makes shrinking
+// non-replayable and (b) takes O(N^2) work via repeated linear
+// merges. Building Entries directly via ZSet.ofSeq is deterministic
+// and O(N log N).
 
 let private orSetValueEqual<'T when 'T : comparison>
     (a: OrSet<'T>) (b: OrSet<'T>) =
     Set.ofSeq a.Value = Set.ofSeq b.Value
 
 let private buildOrSet (xs: int list) : OrSet<int> =
-    xs |> List.fold (fun (s: OrSet<int>) x -> s.Add x) OrSet<int>.Empty
+    let entries =
+        xs
+        |> List.mapi (fun i x ->
+            // Encode list-index into a 16-byte Guid for determinism;
+            // index is unique per call so no collisions across xs.
+            let bytes = Array.zeroCreate<byte> 16
+            (System.BitConverter.GetBytes i).CopyTo(bytes, 0)
+            (x, System.Guid bytes), 1L)
+    { Entries = ZSet.ofSeq entries }
 
 [<Property>]
 let ``OR-set merge value is commutative`` (xs: int list) (ys: int list) =
