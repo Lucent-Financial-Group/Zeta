@@ -48,8 +48,8 @@ Fires post-PR-creation on the GitHub host. Validates **the PR description** for 
 
 ## Hook authoring deliverables
 
-1. `tools/git-hooks/pre-commit` (bash invoking `bun tools/substrate-claim-checker/...` with staged files)
-2. `tools/git-hooks/commit-msg` (bash invoking the same tool with commit message)
+1. `tools/git/hooks/pre-commit` (bash invoking `bun tools/substrate-claim-checker/...` with staged files)
+2. `tools/git/hooks/commit-msg` (bash invoking the same tool with commit message)
 3. `.github/workflows/substrate-claim-checker.yml` (CI check for PR descriptions)
 4. Documentation: how to install hooks (`tools/setup/install.sh` integration)
 5. Opt-out mechanism for legitimate edge cases (e.g., a hedged-claim memo where strict drift checking would false-positive — `# substrate-claim-checker: skip` comment in the file)

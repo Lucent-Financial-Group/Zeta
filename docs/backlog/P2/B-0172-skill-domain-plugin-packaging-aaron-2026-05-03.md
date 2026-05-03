@@ -19,7 +19,7 @@ Aaron 2026-05-03 named plugin-packaging as Rule 3a of the skill-design memo (`fe
 
 > *"look at packaking skill domains a plugins or other packagin so we can take advantage of hooks in harnesses"*
 
-Claude Code supports plugins under `.claude/plugins/`. When a skill domain matures (per the future-skill-domain memos' promotion-trigger criteria — 3+ worked examples per skill candidate + 1+ judgment-disagreement per expert candidate), packaging the whole domain as a plugin lets it ship as one unit including its hooks.
+Claude Code installs plugins under `~/.claude/plugins/cache/<plugin-name>/` (per `docs/research/codex-builtins-skills-vs-plugins-factory-integration-2026-04-24.md`). When a skill domain matures (per the future-skill-domain memos' promotion-trigger criteria — 3+ worked examples per skill candidate + 1+ judgment-disagreement per expert candidate), packaging the whole domain as a plugin lets it ship as one unit including its hooks.
 
 ## Why P2 (promotion-trigger pending)
 
@@ -34,15 +34,16 @@ When promotion-trigger DOES fire on a skill domain, this row becomes the impleme
 
 ## Scope (when promotion-trigger fires)
 
-Per Claude Code plugin convention (`.claude/plugins/<name>/`):
+Per Claude Code plugin convention (installed at `~/.claude/plugins/cache/<plugin-name>/`; the source bundle has the manifest at `.claude-plugin/plugin.json`):
 
-1. Each plugin contains:
-   - One or more `SKILL.md` files (the procedure-skills of the domain)
-   - One or more `agent.md` files (the named-persona-experts)
+1. Each plugin bundle contains:
+   - `.claude-plugin/plugin.json` — manifest with name + description + author (minimal fields per the upstream Claude Code spec)
+   - `skills/<skill>/SKILL.md` files (the procedure-skills of the domain) under conventional subdirectories
+   - `agents/<agent>.md` files (the named-persona-experts) under conventional subdirectories
    - One or more hook configurations (per B-0173)
    - Tools under `tools/` (TS files per Aaron skill-design rule 2)
    - References to OpenSpec capabilities the plugin contracts against (per B-0171)
-2. Plugin manifest (`plugin.json` per Anthropic spec) with description + dependencies + capabilities
+2. Codex equivalent uses `.codex-plugin/plugin.json` with richer fields (semver + interface block + URLs + category) per the cross-harness research at `docs/research/codex-builtins-skills-vs-plugins-factory-integration-2026-04-24.md`
 3. Cross-harness portability documentation: how Codex / Cursor / Gemini-CLI consume the equivalent substrate (per Aaron 2026-05-02 *"skills are for everyone and even other agent harnesses"*)
 
 ## Cross-harness consideration
