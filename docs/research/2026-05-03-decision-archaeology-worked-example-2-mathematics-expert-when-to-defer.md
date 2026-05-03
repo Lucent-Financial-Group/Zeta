@@ -51,7 +51,12 @@ seeds. Three properties make it complementary to worked example #1
 
 The maintainer reminded me mid-tick: per `AGENTS.md`'s vibe-coded
 hypothesis, he has written **zero lines of code** — every line in
-`src/`, `tools/`, `docs/`, `.claude/skills/` is **agent-authored**.
+`src/**`, `tools/**`, `docs/**` is **agent-authored** (per
+`AGENTS.md` "The vibe-coded hypothesis" §). The maintainer
+2026-05-03 chat extension explicitly broadens this to `.claude/skills/`
+as well: *"i didn't write any code all is written by you"* — so
+SKILL.md content is agent-authored too, even though `.claude/skills/`
+isn't named in the AGENTS.md scope-list verbatim.
 
 This makes git-blame attribution structurally misleading at the
 substrate-content layer:
@@ -59,20 +64,25 @@ substrate-content layer:
 | Layer | What `git blame` shows | What's actually true (vibe-coded) |
 |---|---|---|
 | Commit-author | "the maintainer 2026-04-19" | maintainer-as-committer (principled non-coder) |
-| Substrate-content-author | (invisible at git layer) | a prior Claude session in some prior round |
+| Substrate-content-author (model + harness) | partially visible — `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>` commit trailers, tick-shard `opus-4-7 / autonomous-loop continuation` model column, PR description `🤖 Generated with [Claude Code]` footers | the model + harness that produced the substrate-content |
+| Substrate-content-author (specific session CoT) | **invisible** at git layer | a prior Claude session whose chain-of-thought is largely lost (sessions don't share context) |
 | Decision authority | (looks like maintainer) | agent proposed; maintainer accepted (selection-not-authorship) |
 
 So the question "why was the umbrella's defer-block written this
 way?" cannot be answered by asking the maintainer — he didn't
 author the substrate; he selected it. Asking himself the question
-returns: "I committed an agent-authored proposal."
+returns: "I committed an agent-authored proposal." But the model
++ harness that authored the substrate IS recoverable from agent-
+signature substrate (Co-Authored-By trailers; tick shards; PR
+footers); only the specific session-CoT layer is the actually-
+lost part.
 
 **Decision-archaeology in vibe-coded projects has a unique
-substrate-author-recovery challenge:**
+substrate-author-recovery challenge — but partial recovery is available:**
 
-- Substrate-content-authors are agents whose specific session-context is largely lost (sessions don't share context)
-- What remains: the substrate the agent produced + maintainer-acceptance evidence + tick shards / persona notebooks / `docs/research/` if those captured session-context
-- First-party intent on substrate-content is recoverable only via:
+- Substrate-content-authors are agents; **model + harness IS recoverable** via agent-signature substrate (Co-Authored-By trailers, tick-shard model column, PR footers); **specific session-CoT** is the actually-lost layer.
+- What remains beyond model+harness identification: the substrate the agent produced + maintainer-acceptance evidence + tick shards / persona notebooks / `docs/research/` if those captured session-context
+- First-party intent on substrate-content (CoT-layer) is recoverable only via:
   1. **Past-agent introspection** — the current agent reasons about the structural choice given the substrate-context the past-agent had at write-time. Speculative but bounded by the substrate.
   2. **Tick shards / persona notebooks** that captured the past-session's context (Aarav's notebook is the rare load-bearing example for this case)
   3. **Maintainer-acceptance reasoning** — the maintainer can explain why he ACCEPTED the agent's output, which is its own first-party content (not the substrate-author's intent, but the selection-judgment intent)
