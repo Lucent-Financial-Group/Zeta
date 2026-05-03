@@ -72,7 +72,7 @@ The row's scope: evaluate which of these (or combination) provides the design-by
 - **B-0130 (verify-before-state-claim mechanized auditor)**: claim-integrity discipline; this row mechanizes the contract-integrity discipline at function boundaries
 - **B-0170 (substrate-claim-checker)**: data-claim verification; this row's tool is code-claim verification
 - **B-0177 (audit memos for misfiled backlog)**: this row's existence IS another empirical hit for B-0177's audit hypothesis (sibling to B-0141)
-- **memory/parallelism-scaling-ladder memo (Aaron 2026-05-01)**: the originating substrate where the ID was reserved alongside B-0141
+- **`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`**: the originating substrate where the ID was reserved alongside B-0141
 
 ## Why this is L-effort
 
@@ -82,13 +82,23 @@ The row's scope: evaluate which of these (or combination) provides the design-by
 - Migration of existing prose-documented contracts to mechanized form (substantial; many functions in F# core have pre/post-conditions in comments)
 - CI integration (compile-time mode requires custom build steps; runtime mode requires test-suite integration)
 
+## Migration concerns + scope clarification (post-merge review absorption)
+
+Reviewer findings on the original row revealed three real compatibility concerns the row must acknowledge:
+
+1. **Existing `invalidArg` / exception-based code in `src/Core/**`**: programmer-error preconditions currently use `invalidArg` (e.g., bucket/count/window validation). The Result-over-exception invariant per CLAUDE.md applies to **user-visible failures**; programmer-error preconditions historically use exceptions in F# idiom. **Scope refinement**: B-0142's contract primitives target **recoverable user-facing failures** (`Result<_, ContractViolation>` flow); programmer-error preconditions stay as `invalidArg` until a separate decision (likely future row) decides whether to migrate. The row does NOT blanket-ban exceptions; it adds Result-flow contracts WHERE Result-flow is the operator-algebra path.
+
+2. **Plain-returning APIs (`bool`, `Stream<_>`, `ValueTask`)** in `src/Core/**`: contract primitives returning `Result<_, ContractViolation>` aren't drop-in for plain-returning functions. **Scope refinement**: B-0142's `requires()`/`ensures()`/`invariant()` apply to functions whose return-type already accommodates Result-flow OR whose call-site is willing to accept a wrapping change. For pure plain-returning APIs, the contract layer is **assertion-only** (debug-mode runtime check; production mode no-op) rather than Result-returning. Two-mode primitive: `requires_result()` (Result-returning) vs `requires_assert()` (assertion).
+
+3. **`TreatWarningsAsErrors=true` in `Directory.Build.props`**: the original row's open-question framed contract violations as "warnings or errors" — a false dichotomy under the current build configuration where warning ≡ error. **Scope refinement**: contract violations are categorized at the contract layer (severity field on ContractViolation), but the build-gate disposition is uniform: any contract-layer issue that reaches build is a build break. Per-contract-class CI gating (some contracts produce build-breaks; some only fail tests) is itself a future design question, NOT a per-violation warning/error toggle.
+
 ## Open design questions (NOT for this row; for the design pass)
 
 1. **Library vs source-generator vs Roslyn-analyzer**: which mechanization layer fits Zeta's F#-primary + C#-secondary surface?
 2. **Compile-time vs runtime trade-off**: refinement types catch violations earlier but require type-system extension; runtime checks are less restrictive but slower-feedback
 3. **Contract-violation handling within Result-flow**: structured Result-error type (single ContractViolation variant vs per-contract-type variants)? Per-function-config of contract-error severity?
-4. **Migration strategy**: bulk-migrate prose contracts vs migrate-on-touch?
-5. **Composition with `dotnet build -c Release` `0 Warning(s) 0 Error(s)` gate**: contract violations as warnings or errors?
+4. **Migration strategy**: bulk-migrate prose contracts vs migrate-on-touch? (Note: scope of "prose contracts" is recoverable-user-facing-failure preconditions; programmer-error preconditions stay as `invalidArg` per scope refinement above)
+5. **Build-gate disposition**: per-contract-class severity → build-break OR test-failure-only OR ignore? (Resolves the warning-vs-error confusion by routing contract-layer severity to build-gate disposition explicitly)
 
 ## Why this matters
 
