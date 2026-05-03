@@ -78,13 +78,39 @@ let private which (exe: string) : string option =
         |> Seq.tryFind File.Exists
 
 
-/// True when the TLC toolchain (jar + java) is fully configured.
-/// Tests gracefully no-op when any piece is missing so local dev
-/// machines without a JDK still get a green `dotnet test`.
+/// True when the TLC toolchain (jar + java) is fully configured
+/// AND the runner is one we want to actually exercise. Formal
+/// verification (TLC) is pure-math computation: no OS-specific
+/// behavior, no environment touching. Running it on macOS / ARM /
+/// slim runners alongside Linux is duplicate work. Filter to
+/// standard Linux only on CI; preserve dev-local validation
+/// regardless.
+///
+/// Two-axis check:
+///   * OS axis: skip non-Linux on CI (catches macos-26, windows-*).
+///   * Runner-class axis: skip the slim runner via the workflow-name
+///     env var GITHUB_WORKFLOW. ubuntu-slim is still Linux so the OS
+///     check alone wouldn't catch it.
+///
+/// Dev-local (no CI=true) bypasses both filters so devs can
+/// validate specs in their normal `dotnet test` runs.
 let private toolchainReady () : bool =
-    match which "java" with
-    | Some _ when File.Exists tlaJarPath -> true
-    | _ -> false
+    let isCi =
+        match Environment.GetEnvironmentVariable "CI" with
+        | "true" -> true
+        | _ -> false
+    let isLinux =
+        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
+            System.Runtime.InteropServices.OSPlatform.Linux)
+    let isLowMemoryWorkflow =
+        match Environment.GetEnvironmentVariable "GITHUB_WORKFLOW" with
+        | "low-memory" -> true
+        | _ -> false
+    if isCi && (not isLinux || isLowMemoryWorkflow) then false
+    else
+        match which "java" with
+        | Some _ when File.Exists tlaJarPath -> true
+        | _ -> false
 
 
 /// Runs TLC on a single spec. Returns `(exitCode, stdout)`.
