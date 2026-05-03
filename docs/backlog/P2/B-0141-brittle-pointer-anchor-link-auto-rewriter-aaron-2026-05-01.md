@@ -10,7 +10,7 @@ created: 2026-05-01
 last_updated: 2026-05-03
 depends_on: []
 composes_with: [B-0170, B-0175, B-0177]
-tags: [pointer, anchor-link, brittle, mechanization, markdown, rename, cross-reference, auto-rewriter, tooling]
+tags: [pointer, anchor-link, brittle, mechanization, markdown, rename, cross-reference, auto-rewriter, tooling, decision-graph, graph-edge-preservation, prov-o]
 ---
 
 # Brittle-pointer auto-rewriter — section-number pointers to anchor-links
@@ -71,6 +71,7 @@ Optional second pass:
 - **B-0175 (substrate-retrieval-index)**: layer-4 active retrieval; pointer-rewriting is a layer-3 mechanization that helps in-flight retrieval find correct targets
 - **B-0177 (audit memos for misfiled backlog rows)**: this row's existence IS empirical evidence that B-0177's hypothesis is correct (memo named `B-0141, not yet filed` — never got filed; B-0177 catches this class)
 - **memory/parallelism-scaling-ladder memo (Aaron 2026-05-01)**: the originating substrate where the ID was reserved
+- **memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md (Aaron 2026-05-03)**: identifies markdown links as one of the substrate-encoded provenance graph's edge surfaces (alongside frontmatter `depends_on`/`composes_with`, ADR `Superseded by` blockquotes, SUPERSEDE markers, commit messages, cross-references in memo bodies). The brittle-pointer rewriter PRESERVES those graph edges across rename + renumbering — without it, the implicit decision-graph (DataVault-2.0-shaped, PROV-O analogue) loses edges every time a section is renumbered or a heading text is edited. **Architectural framing**: B-0141 isn't just a markdown-quality tool; it's a graph-edge-preservation tool. The pointers ARE the graph; brittle pointers ARE graph-edge rot. (Per Aaron 2026-05-03 retrieval anecdote: VSCode search across `memory/` is the current human-side retrieval tool for finding cross-cluster connections like this one.)
 
 ## Why this is M-effort
 
