@@ -29,7 +29,7 @@ This row captures the architectural-tooling response: build a working retrieval 
 
 ## The problem
 
-Empirically self-demonstrated 2026-05-03: Otto authored `feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md` earlier in the same day, then ~6h later defaulted to the violating framing (*"Now to speculative work per never-be-idle"*). Discovery: the rule existed at THREE layers — memory topic file + MEMORY.md index entry + CLAUDE.md auto-loaded carved sentence (lines ~415-440) — and Otto STILL violated it. The framing-pattern fired before the rule-check.
+Empirically self-demonstrated 2026-05-03: Otto authored `memory/feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md` earlier in the same day, then ~6h later defaulted to the violating framing (_"Now to speculative work per never-be-idle"_). Discovery: the rule existed at THREE layers — memory topic file + MEMORY.md index entry + CLAUDE.md auto-loaded carved sentence (lines ~415-440) — and Otto STILL violated it. The framing-pattern fired before the rule-check.
 
 | Layer | Mechanism | Reliability for high-violation rules |
 |---|---|---|
