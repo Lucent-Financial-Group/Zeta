@@ -50,10 +50,15 @@ The "hodl" closes the loop: same substrate-discipline (DST) packaged in cultural
 
 - `memory/feedback_aaron_is_rodney_razor_not_immune_to_canonicalization_aaron_2026_04_30.md` — the Aaron-is-Rodney rule. This disclosure is a worked example of the rule operating on Aaron's own enthusiasm in real time.
 - `memory/feedback_aaron_pirate_not_priest_expand_prune_pedagogical_framework_quantum_rodney_razor_parallel_worlds_aaron_2026_05_01.md` — pirate-not-priest disposition. Bitcoin's HODL meme treated as pirate-not-priest applied to financial discipline; same shape applied to substrate-discipline.
-- `docs/research/2026-05-01-claudeai-pause-class-discovery-critique-aaron-forwarded.md` (PR #1096) — the Claude.ai critique that Aaron forwarded as external-anchor for the razor-self-application.
-- `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` (PR #1081) — the v2 file that the experiment produced; remains the artifact.
+- `docs/research/2026-05-01-claudeai-pause-class-discovery-critique-aaron-forwarded.md` — the Claude.ai critique that Aaron forwarded as external-anchor for the razor-self-application (landed via PR #1096).
 - DST discipline (existing substrate, multiple files) — Aaron's "hodl" extends DST to the experiment-on-the-experimenter layer.
 - Glass Halo + Otto-231 first-party-content — Aaron's somatic-emotional disclosure is consented-by-creation; the SOOOO-HAPPPY caps + lol register stays verbatim.
+
+### Forward-references not yet on main
+
+The path below is a forward-reference to a PR not yet merged at time of this absorb. Kept as forward-reference until the PR lands or the path can be updated to the actual filename.
+
+- Forward-reference: PR #1081's v2 drain-wave taxonomy artifact (intended `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md`, not yet on `main`) — the v2 file that the experiment produced; remains the artifact.
 
 ## Carved candidate (not seed-layer)
 
