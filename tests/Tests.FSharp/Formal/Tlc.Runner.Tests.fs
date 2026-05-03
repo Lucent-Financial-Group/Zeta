@@ -290,6 +290,24 @@ let ``TLC validates CircuitRegistration`` () =
 
 
 [<Fact>]
+let ``TLC validates ChaosEnvDeterminism`` () =
+    // ChaosEnvironment seeded-determinism contract — verifies the
+    // composite safety invariant `Safety == TypeOK /\ Atomic` over a
+    // bounded 2-thread / Seed=0 / HistoryBound=16 run. The Atomic
+    // invariant says: for every "rng" entry in history, the
+    // immediately following entry is a "clock" entry from the same
+    // thread. Modeling the splitMix + AdvanceTime critical section
+    // as a SINGLE atomic step (DelayCritical) mirrors
+    // ChaosEnvironment.fs holding the lock across both ops; without
+    // atomicity, the model would expose an intermediate
+    // "rng-recorded-but-no-clock-yet" state where Atomic fails. The
+    // cfg declares CHECK_DEADLOCK FALSE because every thread reaching
+    // "done" then "idle" is intentional cycle completion. Bounded by
+    // HistoryBound = 16 entries to keep TLC's BFS tractable.
+    assertSpecValid "ChaosEnvDeterminism"
+
+
+[<Fact>]
 let ``TLC validates SpineMergeInvariants`` () =
     // BalancedSpine's level-cap merge protocol — verifies two safety
     // invariants over a bounded MaxLevel=2 / MaxBatchSize=1 run with
