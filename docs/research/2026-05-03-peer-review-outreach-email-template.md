@@ -42,7 +42,7 @@ paper's central theorem strengthens the paper's claim).
 - **Frank McSherry** — TimelyDataflow / Materialize co-
   founder. Practical-IVM context.
 - **Leonid Ryzhyk** — VMware / DDlog originator. Type-system
-  + verified-IR context.
+  and verified-IR context.
 - **Val Tannen** — UPenn. Database-theory background; the
   semantic-foundations co-author.
 
@@ -54,8 +54,9 @@ audience), Tannen third (theory-purity audience).
 
 These are formal-verification program committee members from
 the last 2-3 years who would be the natural reviewers for a
-submission. Reaching out NOW (vs. submitting cold) is
-informal-feedback signal.
+submission. Reaching out NOW (vs. submitting cold) is a way
+to gather informal-feedback signal before committing to a
+specific venue.
 
 - **Adam Chlipala** (MIT) — Coq-based verification at scale.
 - **Lars Birkedal** (Aarhus) — Iris / separation logic.
