@@ -287,7 +287,7 @@ Per the relationship-model correction ("make it ours not mine alone"), this abso
 
 ## Section 4: Action items (Otto integration boundary)
 
-1. **Validator enhancement (this PR's bounded-scope addition)**: enhance FAIL messages in `tools/hygiene/validate-agencysignature-pr-body.sh` to (a) name the Trailer Contiguity Survival Failure class on contiguity-break failures, (b) cite the canonical maxim, (c) cite the success condition one-liner. Strictly additive; no schema change.
+1. **Validator enhancement (this PR's bounded-scope addition)**: enhance FAIL messages in `tools/hygiene/validate-agencysignature-pr-body.ts` to (a) name the Trailer Contiguity Survival Failure class on contiguity-break failures, (b) cite the canonical maxim, (c) cite the success condition one-liner. Strictly additive; no schema change.
 
 2. **Memory update (this PR + same-tick discipline)**: extend Otto-354 memory file with the maxim + the role distribution + the parser-is-witness anchor.
 

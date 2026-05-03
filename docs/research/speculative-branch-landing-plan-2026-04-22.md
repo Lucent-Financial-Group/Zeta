@@ -155,10 +155,10 @@ files + `FACTORY-HYGIENE.md` rows 40-49. Paired with
 
 **New files (10):**
 
-- `tools/hygiene/audit-cross-platform-parity.sh`
-- `tools/hygiene/audit-missing-prevention-layers.sh`
-- `tools/hygiene/audit-post-setup-script-stack.sh`
-- `tools/hygiene/audit-tick-history-bounded-growth.sh`
+- `tools/hygiene/audit-cross-platform-parity.ts`
+- `tools/hygiene/audit-missing-prevention-layers.ts`
+- `tools/hygiene/audit-post-setup-script-stack.ts`
+- `tools/hygiene/audit-tick-history-bounded-growth.ts`
 - `docs/POST-SETUP-SCRIPT-STACK.md`
 - `docs/hygiene-history/cross-platform-parity-history.md`
 - `docs/hygiene-history/issue-triage-history.md`
