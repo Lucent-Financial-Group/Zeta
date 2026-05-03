@@ -67,10 +67,11 @@ Per-class outputs:
 
 ## Composes with
 
-- **B-0125 (skip-fsharp-analyze on docs-only PRs)**: specific instance of the general pattern this row builds
+- **B-0125 (skip-fsharp-analyze on docs-only PRs)**: **sibling-instance** of the parallel-forever-workflow pattern this row generalizes — NOT subsumed by B-0157. Per Aaron 2026-05-03 correction: "redesign for parallel gates for parallel workflows that are going to be parallel forever basically there are probably others that fit this category or will in the future." Both rows stay as sibling artifacts; B-0157 supplies the cross-cutting infrastructure (reusable detect-changes workflow + gating semantics); B-0125 + future-similar rows continue to express their per-workflow gating in their own rows. Composition is "shared infrastructure, distinct gates," not "general subsumes specific."
 - **B-0153 (pre-commit lint suite)**: detect-changes-gated lint runs reduce per-PR CI burden
 - **B-0156 (TypeScript standardization for non-install scripts)**: TS port composes with detect-changes — TS-only changes don't trigger F# workflows
 - **B-0177 (audit memos for misfiled backlog)**: this row's existence IS the third empirical hit for B-0177's audit hypothesis (sibling to B-0141 + B-0142)
+- **Future parallel-forever-workflow rows** (placeholder for later filings): each new parallel-forever workflow gets its own row + composes with B-0157's infrastructure. The cluster grows by addition of siblings, NOT by subsumption into a single mega-row.
 
 ## Why this is M-effort
 
@@ -96,4 +97,4 @@ Composes with the alignment-frontier framing: substrate-quality CI is alignment-
 
 ## Carved sentence
 
-**"detect-changes pattern: per-PR detect-changes workflow emits per-change-class outputs; downstream workflows gate on those outputs. Result: PRs only run workflows their changes need. CI throughput scales with relevance, not with PR count. Composes with B-0125 (specific instance: skip fsharp on docs-only), B-0153 (lint suite), B-0156 (TS port). Sibling-repo pattern source preserved at `memory/feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md`. Third concrete hit for B-0177 audit hypothesis."**
+**"detect-changes pattern: reusable detect-changes workflow emits per-change-class outputs; downstream workflows gate on those outputs via `workflow_call`. Result: PRs only run workflows their changes need. CI throughput scales with relevance, not with PR count. **B-0157 supplies the cross-cutting infrastructure; B-0125 + future-similar are sibling-instances of parallel-forever-workflows, NOT subsumed by B-0157 — composition is "shared infrastructure, distinct gates."** Sibling-repo pattern source preserved at `memory/feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md`. Third concrete hit for B-0177 audit hypothesis."**
