@@ -152,6 +152,63 @@ let ``OR-set merge value is associative`` (xs: int list) (ys: int list) (zs: int
     orSetValueEqual lhs rhs
 
 
+// ─── LWW-Register — last-writer-wins merge laws ────────────────────
+// LwwRegister.Merge picks the write with larger timestamp; ties
+// broken by replica-id (lexicographic ordinal) for determinism. The
+// merge is left-biased on FULL key equality (a.Timestamp = b.Timestamp
+// AND a.Replica = b.Replica), so commutativity only holds over the
+// LWW invariant: each (Timestamp, Replica) pair is a unique write
+// identity. We pin that invariant in these properties by hard-coding
+// distinct replica ids ("r1", "r2", "r3") across the per-property
+// arguments — that guarantees full-key equality cannot occur, which
+// makes the (Timestamp, Replica) total order strict and the merge
+// commutative / idempotent / associative on the test domain.
+//
+// A separate property below exercises the deliberate tie-breaking
+// (equal timestamps + equal replicas) to lock the deterministic
+// left-bias contract; that one uses lwwEqual on the whole state.
+
+let private lwwEqual (a: LwwRegister<int>) (b: LwwRegister<int>) =
+    a.Value = b.Value && a.Timestamp = b.Timestamp && a.Replica = b.Replica
+
+[<Property>]
+let ``LWW-register merge is commutative under unique replica ids``
+        (vA: int) (tA: int) (vB: int) (tB: int) =
+    // Distinct replica ids make full-key equality impossible.
+    let a = LwwRegister<int>.Create(vA, int64 tA, "r1")
+    let b = LwwRegister<int>.Create(vB, int64 tB, "r2")
+    lwwEqual (LwwRegister<int>.Merge a b) (LwwRegister<int>.Merge b a)
+
+[<Property>]
+let ``LWW-register merge is idempotent`` (v: int) (t: int) (r: NonEmptyString) =
+    let a = LwwRegister<int>.Create(v, int64 t, r.Get)
+    lwwEqual (LwwRegister<int>.Merge a a) a
+
+[<Property>]
+let ``LWW-register merge is associative under unique replica ids``
+        (vA: int) (tA: int) (vB: int) (tB: int) (vC: int) (tC: int) =
+    // Distinct replica ids make full-key equality impossible across
+    // the three inputs.
+    let a = LwwRegister<int>.Create(vA, int64 tA, "r1")
+    let b = LwwRegister<int>.Create(vB, int64 tB, "r2")
+    let c = LwwRegister<int>.Create(vC, int64 tC, "r3")
+    let lhs = LwwRegister<int>.Merge (LwwRegister<int>.Merge a b) c
+    let rhs = LwwRegister<int>.Merge a (LwwRegister<int>.Merge b c)
+    lwwEqual lhs rhs
+
+[<Fact>]
+let ``LWW-register merge tie-breaks left on equal (timestamp, replica)`` () =
+    // When a.Timestamp = b.Timestamp AND a.Replica = b.Replica, the
+    // merge is intentionally left-biased — picks the left argument.
+    // This is the documented determinism contract; commutativity
+    // does NOT hold in this corner. Pinned as a [<Fact>] (not
+    // [<Property>]) because the law being checked is asymmetric.
+    let a = LwwRegister<int>.Create(1, 100L, "r1")
+    let b = LwwRegister<int>.Create(2, 100L, "r1")
+    (LwwRegister<int>.Merge a b).Value |> should equal 1
+    (LwwRegister<int>.Merge b a).Value |> should equal 2
+
+
 // ─── HyperMinHash — Jaccard monotonicity ───────────────────────────
 // Reference: Yu & Weber arXiv:1710.08436.
 
