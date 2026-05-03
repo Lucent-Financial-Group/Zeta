@@ -93,7 +93,7 @@ This pre-prediction itself is calibration data: how well does Otto predict its o
 
 ## Ground truth (recovered 2026-05-03 ~03:00Z via direct read of B-0172)
 
-Read source: `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md` (full body) — protocol-permitted only after the guess commit landed (guess committed under 4a3d583 on the guess branch; landing to main eventually happened via PR #1283's chained-rebase-merge — PR #1282, which originally hosted the guess commit alone, was closed as superseded after #1283 absorbed both guess + recovery commits; the binding marker is the guess COMMIT TIMESTAMP, not the merge timestamp).
+Read source: `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md` (full body) — protocol-permitted only after the guess commit landed (guess committed under 4a3d583 on the guess branch; merged into main eventually via PR #1283's chained-rebase-merge — PR #1282, which originally hosted the guess commit alone, was closed as superseded after #1283 absorbed both guess + recovery commits; the binding marker is the guess COMMIT TIMESTAMP, not the merge timestamp).
 
 ### Architectural intent (Aaron's verbatim — refined via direct first-party query 2026-05-03)
 
@@ -138,11 +138,12 @@ The secondary motivation was NOT in the B-0172 row body verbatim. Aaron's direct
 
 | What I got | What I missed |
 |---|---|
-| Distribution-as-unit (correct — partial match for Aaron's secondary "meet developers where they are") | **PRIMARY motivation: hooks** — Aaron's direct chat input *"i care about the hooks the most"* — I had hooks as point #2 of 4, not as primary |
-| Composition-as-contracts (correct, principle-shaped) | **SECONDARY motivation: meeting developers where they are** — Aaron's chat *"going to the devloper / vibe coder where they are already without much hassle"*. NOT in the row body verbatim; first-party clarification post-recovery added it |
-| Hub-satellite at domain level (correct, principle-shaped — but wasn't named by Aaron) | **Promotion-trigger maturity-gate** — row is P2 specifically because the trigger hasn't fired; I didn't anticipate the maturity-gate-before-packaging design at all |
-| Versioning-as-lineage (incorrect — not a stated frame) | The row says "minimal fields" — no semver in the manifest |
-| Isolation-as-namespace (incorrect — not a stated frame) | (extraneous — Aaron didn't motivate plugins by namespace isolation) |
+| Distribution-as-unit (partial match for Aaron's secondary "meet developers where they are") | **PRIMARY motivation: hooks** — Aaron's direct chat input *"i care about the hooks the most"* — I had hooks as point #2 of 4, not as primary |
+| Hub-satellite at domain level (principle-shaped — but wasn't named by Aaron as motivation; valid as architectural pattern) | **SECONDARY motivation: meeting developers where they are** — Aaron's chat *"going to the devloper / vibe coder where they are already without much hassle"*. NOT in the row body verbatim; first-party clarification post-recovery added it |
+| | **Promotion-trigger maturity-gate** — row is P2 specifically because the trigger hasn't fired; I didn't anticipate the maturity-gate-before-packaging design at all |
+| | **Composition-as-contracts** — I generated this as point #3 of 4 motivations; Aaron did NOT name it as motivation. Inferred-from-principles, not load-bearing |
+| | **Versioning-as-lineage** — I generated this as point #4; Aaron did NOT name it. Row says "minimal fields" — no semver in the manifest |
+| | **Isolation-as-namespace** — I generated this; Aaron did NOT name it. Inferred-from-principles, not load-bearing |
 
 **Refined analysis (post-Aaron-direct-input 2026-05-03)**: Aaron has TWO explicitly-ranked motivations, not the four I generalized to:
 
@@ -225,7 +226,7 @@ I predicted before research:
 
 ---
 
-**Guess timestamp:** 2026-05-03 ~02:55Z (committed under 4a3d583 on the guess branch; landed to main via PR #1283's chained-rebase-merge — PR #1282, the original guess-only PR, was closed as superseded since #1283 absorbed both guess + recovery commits)
+**Guess timestamp:** 2026-05-03 ~02:55Z (committed under 4a3d583 on the guess branch; merged into main via PR #1283's chained-rebase-merge — PR #1282, the original guess-only PR, was closed as superseded since #1283 absorbed both guess + recovery commits)
 **Ground-truth recovery timestamp:** 2026-05-03 ~03:00Z
 **Author:** Otto autonomous (architect hat)
 **Protocol:** in-the-moment guess + ground-truth recovery per
