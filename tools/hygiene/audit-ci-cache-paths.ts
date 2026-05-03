@@ -202,26 +202,29 @@ function parseCachePaths(workflow: string, content: string): readonly CachePath[
         continue;
       }
       const indent = (indentMatch[1] ?? "").length;
-      const content = (indentMatch[2] ?? "").trim();
+      // Rename to `trimmed` per #1404 reviewer: avoid shadowing the
+      // outer `content` parameter (workflow YAML text) with the
+      // inner per-line trimmed value.
+      const trimmed = (indentMatch[2] ?? "").trim();
       if (indent <= pathListIndent) {
         // De-indent past the path: parent — done
         collectingPaths = false;
         continue;
       }
-      if (content === "" || content.startsWith("#")) continue;
+      if (trimmed === "" || trimmed.startsWith("#")) continue;
       // End of path list: a sibling key like `key:` or `restore-keys:`
       if (
-        content.startsWith("key:") ||
-        content.startsWith("restore-keys:") ||
-        content.startsWith("enableCrossOsArchive:") ||
-        content.startsWith("save-always:") ||
-        content.startsWith("fail-on-cache-miss:") ||
-        content.startsWith("lookup-only:")
+        trimmed.startsWith("key:") ||
+        trimmed.startsWith("restore-keys:") ||
+        trimmed.startsWith("enableCrossOsArchive:") ||
+        trimmed.startsWith("save-always:") ||
+        trimmed.startsWith("fail-on-cache-miss:") ||
+        trimmed.startsWith("lookup-only:")
       ) {
         collectingPaths = false;
         continue;
       }
-      out.push({ workflow, stepName: currentStepName, path: content });
+      out.push({ workflow, stepName: currentStepName, path: trimmed });
     }
   }
 
@@ -247,6 +250,16 @@ function overlapsTrackedFile(
   let cp = cachePath;
   if (cp.startsWith("./")) cp = cp.slice(2);
   if (cp.endsWith("/")) cp = cp.slice(0, -1);
+
+  // Repo-root special case: cache paths like `.`, `./`, or `""`
+  // (after normalisation) cover the entire repo and overlap EVERY
+  // tracked file. Without this branch the literal-prefix check
+  // below silently false-passes (no tracked file equals "" or
+  // starts with "/"). Per #1404 reviewer: high-impact false-pass
+  // class for `.` / `./` cache paths.
+  if (cp === "" || cp === ".") {
+    return trackedFiles[0] ?? null;
+  }
 
   if (pathHasGlob(cp)) {
     const re = globToRegex(cp);
