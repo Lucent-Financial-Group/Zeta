@@ -2,7 +2,7 @@
 id: B-0175
 priority: P2
 status: open
-title: Substrate-retrieval-index — active in-flight matcher for memos + carved sentences (Aaron 2026-05-03 _"specialed indeex we build over time"_; addresses 4-layer retrieval gap empirically self-demonstrated)
+title: Substrate-retrieval-index — active in-flight matcher for memos + carved sentences (Aaron 2026-05-03 'specialed indeex we build over time'; addresses 4-layer retrieval gap empirically self-demonstrated)
 tier: tooling
 effort: L
 ask: Aaron 2026-05-03 verbatim *"memeories are not very reliable until we get an index or something built like sematic index or somthing"* + *"carved sentancy and specialed indeex we build over time are goona be key"* (autonomous-loop maintainer channel)
@@ -29,7 +29,7 @@ This row captures the architectural-tooling response: build a working retrieval 
 
 ## The problem
 
-Empirically self-demonstrated 2026-05-03: Otto authored `memory/feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md` earlier in the same day, then ~6h later defaulted to the violating framing (_"Now to speculative work per never-be-idle"_). Discovery: the rule existed at THREE layers — memory topic file + MEMORY.md index entry + CLAUDE.md auto-loaded carved sentence (lines ~415-440) — and Otto STILL violated it. The framing-pattern fired before the rule-check.
+Empirically self-demonstrated 2026-05-03: Otto authored `memory/feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md` earlier in the same day, then ~6h later defaulted to the violating framing (*"Now to speculative work per never-be-idle"*). Discovery: the rule existed at THREE layers — memory topic file + MEMORY.md index entry + CLAUDE.md auto-loaded carved sentence (lines ~415-440) — and Otto STILL violated it. The framing-pattern fired before the rule-check.
 
 | Layer | Mechanism | Reliability for high-violation rules |
 |---|---|---|
