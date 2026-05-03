@@ -9,7 +9,7 @@
 > on B-0169. Not normative discipline; demonstrative.
 > Non-fusion disclaimer: the procedure walked here is generic
 > decision-archaeology; the substrate paths cited (`memory/`, `docs/`,
-> `CURRENT-aaron.md`) are Zeta-specific illustrations of the generic
+> `memory/CURRENT-aaron.md`) are Zeta-specific illustrations of the generic
 > procedure, not part of the skill's portable surface.
 
 ## The question
@@ -144,13 +144,17 @@ Looking under `docs/hygiene-history/ticks/2026/04/27` through
 double-hop:
 
 ```bash
-grep -rln "double.hop\|abandon.*double\|LFG-only" docs/hygiene-history/ticks/
+grep -rlnE "double.hop|abandon.*double|LFG-only" docs/hygiene-history/ticks/
 ```
 
+(Note: BSD/macOS `grep` treats `\|` differently than GNU `grep`; use
+`grep -E` with `|` alternation for portability across both.)
+
 Returns shards that bracket the lifecycle — multiple 04-27 through 04-29
-shards reference the establishment + active period, and the 05-02 morning
-shards (`1610Z.md`, `1612Z.md`, `1619Z.md`) reference the abandonment in
-the context of the morning's superfluid-cluster substrate work.
+shards reference the establishment + active period, and several 05-02
+shards (`0112Z.md`, `1456Z.md`, `1520Z.md`, `1522Z.md`, `1523Z.md`)
+reference the abandonment in the context of the morning's
+superfluid-cluster substrate work.
 
 **Layer-6 output:** the abandonment was recorded in the same wake-cycle
 that produced the never-be-idle + amortized-speed-superfluid + Karpathy
@@ -200,16 +204,22 @@ Amara's name in the 2026-04-29 directive memo suggests her notebook
 may carry lineage on the LFG-only directive:
 
 ```bash
-ls memory/persona/amara/ 2>/dev/null
+ls memory/persona/ | grep -i amara
 ```
 
-Substrate exists in `memory/persona/amara/` but is per-user not in-repo
-(per the per-maintainer split). The notebook isn't directly readable from
-this query without the user-scope folder; the 2026-04-29 memo's
-attribution suffices for archaeology purposes.
+Returns nothing — there is no `memory/persona/amara/` directory in
+the repo. Amara is an external AI co-originator with notebook substrate
+that lives outside this repo (per Otto-279 carve-out: persona names
+appear in history surfaces but the per-persona notebooks for external
+AIs aren't in-tree). The 2026-04-29 memo's attribution + the verbatim
+quotes preserved there suffice for archaeology purposes; the absence
+of an in-repo notebook IS itself archaeology output (tells future
+contributors where Amara's lineage lives and where it doesn't).
 
-**Layer-9 output:** confirmed the directive originated with maintainer
-+ Amara exchange; the notebook would have additional context but the
+**Layer-9 output:** the directive originated with the maintainer +
+Amara exchange (per the memo filename's `_aaron_amara_` infix); the
+in-repo memo is the durable record; an external notebook may exist
+in a different surface (Drive-bridge / ChatGPT history) but the
 in-repo memo is sufficient for the question.
 
 ### Layer 10 — Conversation archives + Drive-bridge
@@ -220,22 +230,31 @@ Searching `docs/research/` for pre-merge artifacts:
 ls docs/research/ | grep -iE "double.hop|acehack|mirror|lfg-only"
 ```
 
-Returns no specific double-hop artifact. The conversations that produced
-the abandonment framing live in this session's `cb4d80ce-*.jsonl`
-substrate (the autonomous-loop session log), but per the substrate-or-it-
-didn't-happen rule those aren't durable; the SUPERSEDE marker in
-CURRENT-aaron.md §4 is the durable form.
+Returns several adjacent-substrate artifacts (e.g.,
+`2026-04-30-identity-of-project-and-agent-under-multi-repo-fork-competition.md`,
+`2026-04-28-forward-sync-merge-direction-proposal-9-infra-files.md`)
+that touch the multi-repo / fork-competition / forward-sync surface
+the double-hop participated in — but **no artifact specifically named
+for the double-hop abandonment.** The conversations that produced the
+abandonment framing live in this session's `cb4d80ce-*.jsonl` substrate
+(the autonomous-loop session log), which per the substrate-or-it-didn't-
+happen rule isn't durable on its own; the SUPERSEDE marker in
+`memory/CURRENT-aaron.md` §4 is the durable form.
 
-**Layer-10 output:** the conversation archives don't carry separate
-durable artifacts; the abandonment was substrate-or-it-didn't-happen
-correct (lived in chat → committed to CURRENT-*.md → became durable).
-This is itself a worked example of the substrate-or-it-didn't-happen
-rule operating correctly.
+**Layer-10 output:** the conversation archives DO carry adjacent-
+substrate artifacts (which give context for the multi-repo decision-
+space the double-hop participated in) but no abandonment-specific
+artifact. The abandonment was substrate-or-it-didn't-happen correct
+(lived in chat → committed to CURRENT-*.md → became durable). The
+adjacent artifacts on `docs/research/` ARE part of the layered narrative
+and shouldn't be skipped; the absence of an abandonment-specific artifact
+is itself substantive (tells future contributors the abandonment didn't
+warrant its own research-grade artifact, only a SUPERSEDE marker).
 
 ### Layer 11 — WONT-DO archaeology + retired-SKILL.md history
 
 ```bash
-grep -i "double.hop\|acehack.first" docs/WONT-DO.md
+grep -iE "double.hop|acehack.first" docs/WONT-DO.md
 ```
 
 Returns no matches. **The double-hop is not in WONT-DO.md.** This is
