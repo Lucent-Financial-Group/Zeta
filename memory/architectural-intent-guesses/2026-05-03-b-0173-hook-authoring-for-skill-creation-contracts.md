@@ -109,25 +109,28 @@ Read source: `docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts
 
 **Primary frame**: contract-based development (Meyer, Eiffel) / Design-by-Contract / spec-based development (OpenSpec). Hooks fire at well-defined points (pre-tool-use, post-tool-use, session-start, pre-commit, commit-msg) — **the natural place to enforce pre-conditions and post-conditions on procedures**.
 
-### Substrate-content intent (as PROPOSED in B-0173 — these files do NOT yet exist; B-0173 is an open backlog row)
+### Substrate-content intent (CORRECTED 2026-05-03 — Aaron clarified harness-hooks-only after initial recovery)
 
-Three hook integrations (NOT just one) — all are deliverables of B-0173, not current repo state:
+**Initial recovery (PR #1280) was wrong.** The B-0173 row body lists 3 hook integrations including 2 git hooks; my recovery section reproduced that. **Aaron 2026-05-03 clarification** (see `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md`): vibe-coders always have a harness; harness hooks suffice; git hooks are antipattern in this scope. **Corrected scope is harness hooks + CI only, NOT git hooks.**
 
-1. **`tools/git/hooks/pre-commit`** *(proposed)* — bash; would invoke `bun tools/substrate-claim-checker/check-counts.ts <staged-files>`; validates staged-file content
-2. **`tools/git/hooks/commit-msg`** *(proposed)* — bash; would validate the commit message itself for fact-claims; pre-commit can't see this surface (commit msg doesn't exist yet at pre-commit time)
-3. **`.github/workflows/substrate-claim-checker.yml`** *(proposed)* — CI check on PR descriptions (host-authored; different timing from git hooks)
+Two hook integrations (CORRECTED, NOT three) — deliverables of B-0173:
 
-As of recovery time (2026-05-03), `tools/git/hooks/` directory does NOT exist on main; the workflow file is not present. These are all B-0173 row deliverables to be implemented when the row is picked up.
+1. ~~`tools/git/hooks/pre-commit`~~ — REMOVED per Aaron's clarification. Harness fires on pre-tool-use (Edit/Write) before content lands; covers the same use case
+2. ~~`tools/git/hooks/commit-msg`~~ — REMOVED per Aaron's clarification. Harness fires on pre-Bash-tool-use when command is `git commit`; covers the same use case
+3. **Harness hooks** *(proposed; new in correction)* — Claude Code `.claude/settings.json` hooks field, with parallel mechanisms for Codex / Cursor / etc.; called via the harness's runtime; TS-canonical
+4. **`.github/workflows/substrate-claim-checker.yml`** *(proposed)* — CI check on PR descriptions (host-authored; runs on PR creation)
+
+As of correction time (2026-05-03), neither `.claude/settings.json` hooks nor the workflow file exist on main. These are B-0173 row deliverables. **Do NOT implement git hooks for B-0173** — that's the wrong shape per Aaron's clarification.
 
 depends_on: **[B-0170 (substrate-claim-checker tool) + B-0171 (OpenSpec catch-up — contracts live in specs)]**
 
-### Specific implementation intent (as PROPOSED in B-0173)
+### Specific implementation intent (CORRECTED)
 
-- **git hooks**, NOT Claude Code's `.claude/settings.json` hook system
-- bash wrapper that would invoke the TS tool (per Aaron's rule 2: TS under tools/; the hook itself is bash to integrate with git's hook protocol)
-- Strict vs warn mode via `SUBSTRATE_CLAIM_CHECKER_MODE` env var (warn for v0.x rollout; strict once mature) — env var **not yet recognized** by `tools/substrate-claim-checker/check-counts.ts` v0.4.4; would be added as part of B-0173 implementation
-- Per-check-type opt-out via comment markers: `<!-- substrate-claim-checker: skip-count-drift -->` — markers **not yet recognized** by v0.4.4; would be added as part of B-0173 implementation (or B-0170 v1+)
-- Performance target: <2 seconds per commit
+- **Harness hooks** (per Claude Code's `.claude/settings.json` hooks field), NOT git hooks. Same goes for Codex / Cursor equivalents
+- TS-canonical (per Aaron's skill-design rule 2 + DST justification): `bun tools/substrate-claim-checker/check-counts.ts <staged-files>` is invoked directly by the harness
+- Strict vs warn mode via `SUBSTRATE_CLAIM_CHECKER_MODE` env var (warn for v0.x rollout; strict once mature) — env var **not yet recognized** by `tools/substrate-claim-checker/check-counts.ts` v0.4.4 OR v0.5; would be added as part of B-0173 implementation
+- Per-check-type opt-out via comment markers: `<!-- substrate-claim-checker: skip-count-drift -->` — markers **not yet recognized** by v0.5; would be added as part of B-0173 implementation (or B-0170 v1+)
+- Performance target: <2 seconds per pre-tool-use trigger
 
 ## Calibration delta
 
