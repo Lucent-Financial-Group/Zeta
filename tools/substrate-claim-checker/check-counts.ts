@@ -1,25 +1,26 @@
 #!/usr/bin/env bun
 /**
- * substrate-claim-checker / check-counts.ts
+ * substrate-claim-checker / check-counts.ts (v0.1)
  *
- * V0 of the substrate-claim-checker per
- * `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`.
+ * Per the verify-then-claim discipline memo
+ * (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
  *
- * Checks ONE class of drift: count drift between narrative claims
- * (e.g. "18+ drift instances", "13-row surface→specialist table",
- * "5 procedure skills + 5 tools") and the actual count of
- * structured rows / list items those claims reference.
+ * Catches count drift between narrative claims (e.g. "20 drift
+ * instances", "13-row table", "5 procedure skills") and the
+ * actual count of structured rows the claims reference.
  *
- * v0 scope:
- *   - Detect "N drift instances" / "N rows" / "N items" patterns in narrative
- *   - Count `^| ... |$` data rows (excluding header + separator)
- *   - Report drift if claimed N differs from actual
+ * v0.1 (this file) addressed Copilot review on v0:
+ *   - Fail fast on missing input files (exit 1, not silent skip)
+ *   - Preserve `+` semantics: "20+" treated as a minimum-count claim
+ *   - Catch hyphenated forms: "13-row" works, not just "13 row"
+ *   - Skip fenced code blocks + table cells when scanning narrative
+ *   - Drop unused Table.endLine field
  *
- * v0 NOT in scope (deferred to v1):
+ * v0.1 NOT in scope (deferred to v1):
  *   - Existence drift (file/dir/tool claimed to exist; doesn't)
  *   - Semantic-equivalence drift (command substitution claims)
  *   - Empirical-output drift (run-the-command-and-compare)
- *   - Convention drift / path-form drift
+ *   - Convention drift / path-form drift / self-recursive drift
  *
  * Usage:
  *   bun tools/substrate-claim-checker/check-counts.ts <file>
@@ -27,7 +28,7 @@
  *
  * Exit code:
  *   0  no drift detected
- *   1  drift detected (or input error)
+ *   1  drift detected, missing input file, or no inputs given
  */
 
 import { readFileSync, existsSync } from "node:fs";
@@ -37,14 +38,23 @@ interface Finding {
   line: number;
   claim: string;
   claimedCount: number;
+  claimIsMinimum: boolean;
   actualCount: number;
   context: string;
 }
 
 interface Table {
   startLine: number;
-  endLine: number;
   rowCount: number;
+}
+
+interface Claim {
+  line: number;
+  raw: string;
+  n: number;
+  /** True if the original claim used a `+` suffix ("20+" → minimum). */
+  isMinimum: boolean;
+  noun: string;
 }
 
 /** Find all markdown tables in the file and count data rows in each. */
@@ -52,20 +62,21 @@ function findTables(lines: string[]): Table[] {
   const tables: Table[] = [];
   let i = 0;
   while (i < lines.length) {
-    // A table starts with a row matching | ... | and is followed by a separator |---|---|.
+    const headerLine = lines[i] ?? "";
+    const sepLine = lines[i + 1] ?? "";
     if (
-      /^\|.*\|\s*$/.test(lines[i]) &&
+      /^\|.*\|\s*$/.test(headerLine) &&
       i + 1 < lines.length &&
-      /^\|[\s\-:|]+\|\s*$/.test(lines[i + 1])
+      /^\|[\s\-:|]+\|\s*$/.test(sepLine)
     ) {
       const startLine = i + 1; // 1-indexed; header row is at i (0-indexed)
       let rowCount = 0;
-      let j = i + 2; // skip header + separator
-      while (j < lines.length && /^\|.*\|\s*$/.test(lines[j])) {
+      let j = i + 2;
+      while (j < lines.length && /^\|.*\|\s*$/.test(lines[j] ?? "")) {
         rowCount++;
         j++;
       }
-      tables.push({ startLine, endLine: j, rowCount });
+      tables.push({ startLine, rowCount });
       i = j;
     } else {
       i++;
@@ -78,9 +89,13 @@ function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-/** Find narrative claims like "N drift instances", "N rows", "N items". */
-function findClaims(lines: string[]): { line: number; raw: string; n: number; noun: string }[] {
-  const claims: { line: number; raw: string; n: number; noun: string }[] = [];
+/**
+ * Find narrative claims like "N drift instances", "N rows", "N items",
+ * "N-row table". Skips fenced code blocks and lines that are clearly
+ * markdown table cells (start with `|`).
+ */
+function findClaims(lines: string[]): Claim[] {
+  const claims: Claim[] = [];
   const nounsToCheck = [
     "drift instances",
     "drift instance",
@@ -93,18 +108,35 @@ function findClaims(lines: string[]): { line: number; raw: string; n: number; no
     "tools",
     "sub-classes",
   ];
+  // Match "20 rows" / "20+ rows" (whitespace-separated) or
+  // "20-row" / "20+-row" (hyphenated), capturing integer + optional '+'.
+  const nounAlt = nounsToCheck.map(escapeRegex).join("|");
   const pattern = new RegExp(
-    `\\b(\\d+)\\+?\\s+(${nounsToCheck.map(escapeRegex).join("|")})\\b`,
+    `\\b(\\d+)(\\+?)[\\s-]+(${nounAlt})\\b`,
     "gi",
   );
+  let inFence = false;
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+    const line = lines[i] ?? "";
+    // Toggle fenced-code-block state on lines starting with ``` or ~~~.
+    if (/^\s*(```|~~~)/.test(line)) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) continue;
+    // Skip table rows (start with `|`) — they're data, not narrative.
+    if (/^\s*\|/.test(line)) continue;
     for (const m of line.matchAll(pattern)) {
+      const numStr = m[1];
+      const plus = m[2];
+      const noun = m[3];
+      if (numStr === undefined || noun === undefined) continue;
       claims.push({
         line: i + 1,
-        raw: m[0],
-        n: parseInt(m[1]!, 10),
-        noun: m[2]!.toLowerCase(),
+        raw: m[0] ?? "",
+        n: parseInt(numStr, 10),
+        isMinimum: plus === "+",
+        noun: noun.toLowerCase(),
       });
     }
   }
@@ -114,11 +146,14 @@ function findClaims(lines: string[]): { line: number; raw: string; n: number; no
 /**
  * For each claim, find the nearest table BELOW it within 50 lines and
  * check whether the claim's N matches the table's row count.
+ *
+ * "20+" is treated as a minimum-count claim: drift fires only when
+ * actual < claimed. "20" (no plus) requires exact match.
  */
-function checkFile(filePath: string): Finding[] {
+function checkFile(filePath: string): { findings: Finding[]; ok: boolean } {
   if (!existsSync(filePath)) {
     console.error(`error: file not found: ${filePath}`);
-    return [];
+    return { findings: [], ok: false };
   }
   const content = readFileSync(filePath, "utf-8");
   const lines = content.split("\n");
@@ -131,18 +166,22 @@ function checkFile(filePath: string): Finding[] {
       (t) => t.startLine > claim.line && t.startLine - claim.line <= 50,
     );
     if (!nearestTable) continue;
-    if (nearestTable.rowCount !== claim.n) {
+    const drift = claim.isMinimum
+      ? nearestTable.rowCount < claim.n
+      : nearestTable.rowCount !== claim.n;
+    if (drift) {
       findings.push({
         file: filePath,
         line: claim.line,
         claim: claim.raw,
         claimedCount: claim.n,
+        claimIsMinimum: claim.isMinimum,
         actualCount: nearestTable.rowCount,
-        context: `nearest table starts at line ${nearestTable.startLine} with ${nearestTable.rowCount} data rows`,
+        context: `nearest table at line ${nearestTable.startLine} has ${nearestTable.rowCount} data rows`,
       });
     }
   }
-  return findings;
+  return { findings, ok: true };
 }
 
 function main(): number {
@@ -152,14 +191,24 @@ function main(): number {
     return 1;
   }
   let totalFindings = 0;
+  let inputErrors = 0;
   for (const arg of args) {
-    const findings = checkFile(arg);
+    const { findings, ok } = checkFile(arg);
+    if (!ok) {
+      inputErrors++;
+      continue;
+    }
     for (const f of findings) {
+      const operator = f.claimIsMinimum ? ">=" : "==";
       console.log(
-        `${f.file}:${f.line}: count drift — claim "${f.claim}" (${f.claimedCount}) vs actual ${f.actualCount} (${f.context})`,
+        `${f.file}:${f.line}: count drift — claim "${f.claim}" (expected ${operator} ${f.claimedCount}) vs actual ${f.actualCount} (${f.context})`,
       );
       totalFindings++;
     }
+  }
+  if (inputErrors > 0) {
+    console.error(`\n${inputErrors} input error(s).`);
+    return 1;
   }
   if (totalFindings > 0) {
     console.log(`\n${totalFindings} count-drift finding(s).`);

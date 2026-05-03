@@ -31,6 +31,7 @@ The verify-then-claim discipline (`memory/feedback_verify_then_claim_discipline_
 - **Count drift** — body says "N drift instances" / "N rows" / "N items" but the actual count differs
 
 V0 limitations documented in `tools/substrate-claim-checker/README.md`:
+
 - Nearest-table heuristic (no noun-to-table matching yet)
 - Rhetorical number false positives (`"100 rows"` in narrative)
 - Markdown-table data rows only (lists not counted yet)
