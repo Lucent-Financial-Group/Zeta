@@ -115,7 +115,7 @@ Read source: `docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts
 
 **Two hook integrations** (CORRECTED, NOT three) — actual deliverables of B-0173 going forward:
 
-1. **Harness hooks** *(proposed; new in correction)* — Claude Code's `.claude/settings.json` hooks FIELD (the file `.claude/settings.json` itself already exists on main, but the `hooks` field within it is not yet populated), with parallel mechanisms for Codex / Cursor / etc.; called via the harness's runtime; TS-canonical
+1. **Harness hooks** *(proposed; new in correction)* — Claude Code's `.claude/settings.json` hooks FIELD (the file `.claude/settings.json` itself already exists on main with an `enabledPlugins` field, but the `hooks` field is not yet present/defined — adding the field is part of B-0173 deliverables), with parallel mechanisms for Codex / Cursor / etc.; called via the harness's runtime; TS-canonical
 2. **`.github/workflows/substrate-claim-checker.yml`** *(proposed)* — CI check on PR descriptions (host-authored; runs on PR creation)
 
 **Removed from scope** (the original recovery had these as "proposed" too; Aaron's clarification removes them entirely):
