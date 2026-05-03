@@ -72,7 +72,7 @@ This memo's table covers **end-user personas** (axis 2). Internal named-agent pe
 | **Maintainer** (also runs install) | Human | Yes | Same as contributor |
 | **Skill-bundle user** (uses plugins via harness) | Human | Only via harness's runtime | Harness hooks only |
 | **PR Copilot reviewer** (default static) | AI | N/A — doesn't execute | Static analysis only; reads + flags issues |
-| **PR Copilot reviewer** (with `copilot-setup-steps.yml`) | AI | Yes (via our setup) | Both bash + TS executable; can verify findings by running tools |
+| **PR Copilot reviewer** (HYPOTHETICAL — if we adopt a `copilot-setup-steps.yml` workflow; not currently in the repo) | AI | Yes (via our setup, IF that workflow exists) | Both bash + TS would be executable; could verify findings by running tools |
 | **Other external-AI PR reviewers** (Codex, Cursor, Aider, Gemini-CLI, etc.) | AI | Conditional per their integration | Static or executable depending on setup |
 | *(more personas over time)* | TBD | TBD | TBD |
 
