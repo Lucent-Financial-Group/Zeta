@@ -214,6 +214,40 @@ Per the never-idle rule (CLAUDE.md §"Never be idle —
 speculative factory work beats waiting"), the tick does not
 wait for instruction. Priority ladder:
 
+0. **Cadence-tracker grep** (tick-open; the human maintainer 2026-05-03
+   directive). Before picking speculative work, grep the
+   tick-shard history for cadenced hygiene work that is due:
+
+   ```
+   grep -rE "CADENCE-TRACK" docs/hygiene-history/ticks/
+   ```
+
+   Each tick-shard that has touched OR observed-as-overdue a
+   piece of cadenced hygiene work carries a `CADENCE-TRACK`
+   marker in its body, naming the cadenced work + last-run
+   date. Examples: AutoDream consolidation (cadence: 24h + 5
+   sessions), backlog-refactor cadence (every N rounds, look
+   for overlap), tech-radar review, dependency-status
+   refresh. If the grep surfaces overdue work AND the
+   cadence rule permits same-tick action, do that work. If
+   overdue but cadence-rule prohibits same-tick (e.g.,
+   AutoDream's "do NOT run on freshly-written memories"),
+   write a `CADENCE-TRACK: <work> overdue, deferred to
+   <next-permissible-trigger>` line into THIS tick's shard
+   so the next tick's grep surfaces the same observation.
+   The convention emerges from per-tick-shard use; this
+   discipline plus the convention is the operational
+   substrate.
+
+   Per the human maintainer 2026-05-03 *"now that you have
+   tick shard history you can keep up with all the
+   cadineses and hygene we need to do on a regualr basis in
+   the tick, so you'll know for sure when it's time to
+   reoccur, we have many things that shouold hapeen on
+   cadence."* The tick-shard history thus serves dual
+   roles: per-tick episodic log AND cadenced-hygiene-work
+   tracker via the `CADENCE-TRACK` marker.
+
 1. **Open-PR hygiene first.** Before picking speculative
    work, audit the open PR pool via
    `gh pr list --state open --json number,title,mergeStateStatus,mergeable,isCrossRepository,headRepositoryOwner,autoMergeRequest`.
