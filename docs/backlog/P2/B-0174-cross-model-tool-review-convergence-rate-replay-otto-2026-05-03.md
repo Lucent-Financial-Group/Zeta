@@ -1,6 +1,6 @@
 ---
 id: B-0174
-priority: P3
+priority: P2
 status: open
 title: Cross-model tool-review convergence-rate replay protocol — measure how many review rounds different models need to settle on a tool-authoring PR (Otto 2026-05-03 sibling-instance of multi-harness convergence skill domain)
 tier: research
@@ -44,7 +44,7 @@ The **convergence-rate signature** is `[findings_round_1, findings_round_2, ...,
 - **Reproducible** — same tool draft + same review prompt = directly comparable across models
 - **Quantitative** — finding-counts are measurable; convergence-rounds are measurable
 - **Frontier-ability signal** — models with faster convergence-rate produce higher-quality code per cycle
-- **Composes with the calibration protocol** — Otto's in-the-moment guesses (B-0XXXX backlog rows) measure architectural-intent inference; this row measures code-implementation quality
+- **Composes with the calibration protocol** — Otto's in-the-moment guesses on B-0173 + B-0172 + B-0166 (under `memory/architectural-intent-guesses/`) measure architectural-intent inference; this row measures code-implementation quality
 
 ## Acceptance criteria
 
@@ -64,9 +64,9 @@ This row closes when:
 - `memory/feedback_guess_then_verify_architectural_intent_calibration_protocol_aaron_2026_05_03.md` — sibling protocol (architectural-intent inference vs code-implementation quality)
 - `memory/architectural-intent-guesses/` — sibling calibration data directory
 
-## Why P3
+## Why P2
 
-This is research-grade frontier-ability measurement, not a production-blocking concern. P3 (low-priority research) per the project priority taxonomy. Promotion to P2 would be appropriate when:
+This is research-grade frontier-ability measurement (the P2 tier per `docs/BACKLOG.md` priority taxonomy: "P2 — research-grade"). Initial filing was incorrectly placed in P3; corrected post-merge per #1306 reviewer finding. Promotion to P1 (within 2-3 rounds) would be appropriate when:
 
 - 3+ cross-model runs are scheduled to run as a routine (not one-shot)
 - The convergence-signature data starts informing model-selection decisions for routine work
