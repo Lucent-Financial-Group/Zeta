@@ -140,13 +140,42 @@ let private runAlloy (specName: string) : int * string =
 
 
 /// True when the Alloy toolchain (jar + javac + java) is fully
-/// configured. Tests gracefully no-op when any piece is missing so
-/// local dev machines without a JDK still get a green `dotnet test`.
+/// configured AND the runner is one we want to actually exercise.
+/// Formal verification (Alloy) is pure-math computation: no
+/// OS-specific behavior, no environment touching. Running it on
+/// macOS / Windows / ARM / slim runners alongside standard Linux
+/// x64 is duplicate work. Filter to standard Linux x64 only on CI;
+/// preserve dev-local validation regardless. Same shape as
+/// Tlc.Runner.Tests.fs.
+///
+/// Three-axis check:
+///   * OS axis: skip non-Linux on CI.
+///   * Architecture axis: skip non-x64 on CI (catches
+///     ubuntu-24.04-arm).
+///   * Runner-class axis: skip the slim runner via GITHUB_WORKFLOW.
+///
+/// Dev-local (no CI=true) bypasses all three filters.
 let private toolchainReady () : bool =
-    match which "java", which "javac" with
-    | Some _, Some _ when File.Exists alloyJarPath ->
-        compileRunnerIfNeeded ()
-    | _ -> false
+    let isCi =
+        match Environment.GetEnvironmentVariable "CI" with
+        | "true" -> true
+        | _ -> false
+    let isLinux =
+        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
+            System.Runtime.InteropServices.OSPlatform.Linux)
+    let isX64 =
+        System.Runtime.InteropServices.RuntimeInformation.OSArchitecture =
+            System.Runtime.InteropServices.Architecture.X64
+    let isLowMemoryWorkflow =
+        match Environment.GetEnvironmentVariable "GITHUB_WORKFLOW" with
+        | "low-memory" -> true
+        | _ -> false
+    if isCi && (not isLinux || not isX64 || isLowMemoryWorkflow) then false
+    else
+        match which "java", which "javac" with
+        | Some _, Some _ when File.Exists alloyJarPath ->
+            compileRunnerIfNeeded ()
+        | _ -> false
 
 
 let private assertSpecValid (specName: string) =
