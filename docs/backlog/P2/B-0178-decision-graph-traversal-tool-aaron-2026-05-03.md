@@ -72,7 +72,7 @@ Parameterised queries via CLI:
 
 - `--downstream-of B-0170` — what depends on B-0170?
 - `--upstream-of B-0175` — what does B-0175 depend on / compose with?
-- `--supersession-chain ADR-0042` — full lineage of supersedes/superseded-by
+- `--supersession-chain docs/DECISIONS/2026-04-17-lock-free-circuit-register.md` — full lineage of supersedes/superseded-by (ADRs use date-slug filenames in this repo, not `ADR-####` IDs)
 - `--citation-traversal memory/feedback_X.md` — which memos cite this one?
 - `--orphans` — nodes with zero incoming edges
 - `--sacred-tier-walk <node>` — respects sacred-tier walk-discipline
