@@ -13,7 +13,7 @@ composes_with: [B-0175]
 tags: [substrate-claim-checker, false-positive, context-aware, hypothetical, contrastive, drift, severity-tier, tooling]
 ---
 
-# substrate-claim-checker v0.7 — context-aware suppression
+# Substrate-claim-checker v0.7 — context-aware suppression
 
 ## Origin
 
