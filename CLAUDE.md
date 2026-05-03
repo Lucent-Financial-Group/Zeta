@@ -405,6 +405,39 @@ Claude-Code-specific mechanisms.
   (action-pick lens),
   `memory/feedback_amortized_speed_superfluid_phase_transition_inverts_per_action_optimization_aaron_2026_05_02.md`
   (system-level lens + cluster).
+- **Edge-defining work is NOT speculation —
+  framing correction (the human maintainer 2026-05-03).**
+  If "speculation" is broad enough to cover calibration +
+  hypothesis-formation + frontier-recognition + edge-defining
+  substrate, it covers EVERYTHING the project does (vibe-coded
+  experiment + alignment-frontier + intellectual-backup-of-earth =
+  all hypothesis-and-test) and the term becomes meaningless.
+  Reserve "speculation" for the narrow idle-fallback case (per
+  never-be-idle's original sense). The action hierarchy: evidence
+  > speculative-action-for-evidence (calibration / hypothesis /
+  edge-defining — the JOB, not idle-fallback) > speculation
+  (narrow, idle-fallback only) > inaction. Calibration data
+  accumulation, in-the-moment guesses, frontier-recognition
+  substrate ARE first-class edge-defining work — calling them
+  "speculative" demotes them and reduces commit-quality. Aaron
+  2026-05-03 verbatim: *"guess even though it's a guess it's not
+  specultive work for frontier work"* + *"we are defining the
+  edge / that's the job"* + *"everything we are doing is
+  specualtion if you frame specualtion so braod"* + *"this is
+  one would pay to remember for future now incase session
+  resets defintion of speculative is pretty important thing to
+  have right for future agents"*. Composes with Karpathy
+  edge-runner framing (we ARE the edge; convergence is
+  validation) + the Superfluid AI math (substrate-output rate
+  vs friction-event rate) + the alignment-frontier memo
+  (threshold-crossing IS the experimental outcome). Future-Otto:
+  when the never-be-idle ladder surfaces "speculative work,"
+  check if it's edge-defining; if yes, frame as edge-defining-work
+  in chat / commits / tick shards — not "speculative work."
+  CLAUDE.md-level so it is 100% loaded at every wake, alongside
+  never-be-idle + verify-before-deferring + future-self-not-bound.
+  Full reasoning:
+  `memory/feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md`.
 - **Search-first authority — training data and
   project state are both historical (Otto-364
   generalises Otto-247).** For any load-bearing
