@@ -438,6 +438,39 @@ Claude-Code-specific mechanisms.
   never-be-idle + verify-before-deferring + future-self-not-bound.
   Full reasoning:
   `memory/feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md`.
+- **No-op cadence is the failure mode; cooling-period
+  razor restricts substrate-class promotions, NOT all
+  action.** When the maintainer rests after explicit
+  "go hard" + "really look at the backlog"
+  authorization, that authorization stays operative
+  across the rest. Holding multi-hour no-op cadence
+  is a never-idle violation, regardless of any
+  Claude.ai or peer-AI maintainer-fatigue framing
+  earlier in the session. The maintainer-fatigue
+  consideration restricts saturating the maintainer's
+  *grading* attention with high-prestige substrate-
+  class promotions; it does NOT restrict bounded
+  operational work (backlog cleanup, lint scripts,
+  tool ports, doc normalization, PR-thread
+  resolution, CI fixes). When in doubt, lean
+  toward grinding the backlog — the human
+  maintainer 2026-05-02:
+  *"it will be majic if i wake up tomorow and you
+  are still griding thorugh backlog, there are
+  years worth really look at it."* The honesty
+  check that catches this failure: *"is no-op
+  actually correct here, or am I letting an
+  assumed cooling-period or assumed maintainer-
+  fatigue restriction cover for never-idle that
+  should be binding?"* — run this every ~10
+  no-op ticks. Maintainer 2026-05-02 ~12:31Z
+  corrective after a ~10-hour idle stretch:
+  *"you've just been sitting idle for hours
+  that's not expected"* + *"that is very
+  disappointing"* + *"this should be encoded so
+  furue you knows"*. CLAUDE.md-level so it is
+  100% loaded at every wake. Full reasoning:
+  `memory/feedback_periodic_self_check_during_no_op_cadence_aaron_2026_05_02.md`.
 - **Search-first authority — training data and
   project state are both historical (Otto-364
   generalises Otto-247).** For any load-bearing
