@@ -144,10 +144,11 @@ The right response to a hit:
    GitHub Releases incidents, that's a tunable in mise's
    config — adjust upward, but the warnings WILL still
    appear during actual outages.
-4. **DO consider B-0319** (bounded-retry mechanism for
-   transient CI flakes) — the right shape is a wrapper
-   that retries longer with exponential backoff, NOT
-   suppression.
+4. **DO consider a bounded-retry mechanism for transient
+   CI flakes** — the right shape is a wrapper that retries
+   longer with exponential backoff, NOT suppression. (No
+   backlog row filed yet for this; reference removed
+   pending row creation.)
 
 ## What's still in scope (and what isn't from this session)
 
@@ -173,14 +174,14 @@ Out of scope per DST external-invariants:
   scope-cut. External invariants are model inputs, not
   factory state.
 - **B-0073 (P0)** — csharp Code Scanning alerts (in scope)
-- **B-0319 (P1)** — bounded-retry mechanism for transient
-  CI flakes. Mechanizes graceful handling of external
-  invariants by extending retry budgets and timeouts so
-  transient external invariants resolve within a single
-  bounded attempt window — the warnings never appear
-  because the retry mechanism handles the transient before
-  WARN-level emission. Where bounding-the-retry isn't
-  enough, the mechanism is to REPLACE the dependency
+- **A future bounded-retry-for-transient-CI-flakes row** —
+  unfiled at the moment; mechanizes graceful handling of
+  external invariants by extending retry budgets and
+  timeouts so transient external invariants resolve within
+  a single bounded attempt window — the warnings never
+  appear because the retry mechanism handles the transient
+  before WARN-level emission. Where bounding-the-retry
+  isn't enough, the mechanism is to REPLACE the dependency
   (vendor, mirror, or swap the upstream) so the warning
   source is removed at root. Suppression of already-emitted
   warnings remains forbidden regardless.
@@ -209,9 +210,12 @@ Out of scope per DST external-invariants:
 ## Self-encoding test
 
 This memory file's body must not produce any in-scope
-warning when the factory's lints run on it (markdownlint,
-ASCII lint, invisible-char lint). External lints (e.g., a
-CDN-hosted lint that fails to download) are exempt.
+warning under the lints that actually apply to memory/
+files (ASCII lint and invisible-char lint per BP-10).
+markdownlint is intentionally NOT applied to memory/**
+(per `.markdownlint-cli2.jsonc` ignores list); external
+lints (e.g., a CDN-hosted lint that fails to download)
+are also exempt.
 
 ## Provenance
 
