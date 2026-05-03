@@ -256,7 +256,26 @@ let ``TLC validates DbspSpec`` () =
     // other 3 (SpineAsyncProtocol, CircuitRegistration,
     // SpineMergeInvariants) have known issues per a 2026-05-03
     // verify-then-claim sweep — SpineAsyncProtocol +
-    // SpineMergeInvariants produce trace files (counterexamples);
-    // CircuitRegistration has a config bug (invariant Safety
-    // not defined in spec). Tracked as B-0179 + B-0180 + B-0181.
+    // SpineMergeInvariants produce trace files (counterexamples,
+    // tracked as B-0179 + B-0181). CircuitRegistration's config bug
+    // was fixed in B-0180 (the missing `Safety` invariant operator
+    // was defined in CircuitRegistration.tla; cfg now resolves);
+    // see the test below.
     assertSpecValid "DbspSpec"
+
+
+[<Fact>]
+let ``TLC validates CircuitRegistration`` () =
+    // Circuit's Register/Build interleaving — verifies the
+    // composite safety invariant `Safety == TypeOK /\
+    // NoRegisterAfterBuild` (per the spec's THEOREM at line ~96:
+    // `Spec => [](TypeOK /\ NoRegisterAfterBuild)`). The `Safety`
+    // operator was missing from the .tla until B-0180 fixed the
+    // config bug surfaced by the 2026-05-03 verify-then-claim sweep.
+    // Coverage: 3538 distinct states explored at depth 14 in <1s wall.
+    //
+    // Closes 1 of 3 broken sibling specs from #1397's verify-then-claim.
+    // Remaining: B-0179 (SpineAsyncProtocol) and B-0181
+    // (SpineMergeInvariants) — both produce TTrace dumps and need
+    // counterexample investigation, not just config fixes.
+    assertSpecValid "CircuitRegistration"

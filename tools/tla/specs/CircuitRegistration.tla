@@ -82,6 +82,16 @@ Spec == Init /\ [][Next]_vars /\ WF_vars(Build)
 NoRegisterAfterBuild ==
   built => \A t \in Threads: pending[t] # "registering"
 
+\* Composite safety invariant — the conjunction the THEOREM at the
+\* end of this spec asserts (Spec => [](TypeOK /\
+\* NoRegisterAfterBuild)). Defined as a named operator so
+\* CircuitRegistration.cfg's `INVARIANT Safety` directive resolves;
+\* without this definition TLC fails with "The invariant Safety
+\* specified in the configuration file is not defined in the
+\* specification" (B-0180 — surfaced by the 2026-05-03
+\* verify-then-claim sweep on #1397).
+Safety == TypeOK /\ NoRegisterAfterBuild
+
 \* Safety: no FeedbackOp can be connected twice. Second Connect call
 \* would require feedbackConnected[op] = FALSE but our CAS guard rejects.
 \* We encode the post-condition: if feedbackConnected[op] flips, it flips
