@@ -44,9 +44,15 @@ PushL0 ==
     /\ UNCHANGED totalInserted
 
 \* Cascade: level i full → merge into level i+1.
+\* Downstream-room precondition mirrors the real LSM constraint: if level
+\* i+1 cannot absorb the merge without overflowing 2*Cap(i+1), Cascade(i)
+\* is blocked and Cascade(i+1) must drain first. Without this, the model
+\* can fire Cascade(0) repeatedly while Cascade(1) sits enabled, letting
+\* level 1 accumulate past its 2*Cap bound.
 Cascade(i) ==
     /\ i < MaxLevel
     /\ levels[i] >= Cap(i)
+    /\ levels[i+1] + levels[i] <= 2 * Cap(i+1)
     /\ levels' = [levels EXCEPT ![i] = 0, ![i+1] = @ + levels[i]]
     /\ UNCHANGED <<pendingIn, totalInserted>>
 
@@ -55,7 +61,13 @@ Next ==
     \/ PushL0
     \/ \E i \in 0..(MaxLevel - 1): Cascade(i)
 
-Spec == Init /\ [][Next]_vars /\ WF_vars(PushL0)
+\* Weak fairness on cascades: every continuously-enabled cascade must
+\* eventually fire. Required for LivDrained — without it, the cascade
+\* chain could starve and pendingIn would never drain.
+Spec == Init
+     /\ [][Next]_vars
+     /\ WF_vars(PushL0)
+     /\ \A i \in 0..(MaxLevel - 1): WF_vars(Cascade(i))
 
 \* Mass conservation: Σ levels + Σ pending = totalInserted.
 InvMass ==
@@ -74,6 +86,20 @@ InvCap == \A i \in 0..MaxLevel: levels[i] <= 2 * Cap(i)
 
 \* Liveness: every accepted batch eventually drains out of `pendingIn`.
 LivDrained == <>[](pendingIn = <<>>)
+
+\* State constraint to keep TLC's BFS tractable. The spec is otherwise
+\* unbounded: Accept can fire indefinitely so totalInserted grows
+\* without limit, even though levels + pendingIn stay bounded by physical
+\* capacity. Bounding totalInserted at twice the system's saturated mass
+\* covers fill-then-drain cycles without unbounded exploration. With the
+\* default MaxLevel=2 / MaxBatchSize=1 model in the .cfg, sum(2*Cap(i))
+\* = 14 plus 16-slot pendingIn = 30; bound 30 is enough to walk every
+\* reachable cap configuration twice over.
+StateBound == totalInserted <= 30
+\* Also bound pendingIn length to constrain Accept's branching factor;
+\* the 16-slot soft bound in Accept itself is too loose to keep TLC
+\* tractable when MaxBatchSize > 1.
+PendingBound == Len(pendingIn) <= 4
 
 THEOREM Spec => [](TypeOK /\ InvMass /\ InvCap)
 THEOREM Spec => LivDrained

@@ -65,11 +65,11 @@ the test harness is already wired.
 
 | Spec | `.cfg`? | In CI? |
 |---|---|---|
-| `DbspSpec` | yes | no |
-| `SpineAsyncProtocol` | yes | no |
-| `CircuitRegistration` | yes | no |
+| `DbspSpec` | yes | **yes** |
+| `SpineAsyncProtocol` | yes | **yes** |
+| `CircuitRegistration` | yes | **yes** |
 | `TwoPCSink` | yes | **yes** |
-| `SpineMergeInvariants` | yes | no |
+| `SpineMergeInvariants` | yes | **yes** |
 | `TransactionInterleaving` | yes | **yes** |
 | `OperatorLifecycleRace` | yes | **yes** |
 | `TickMonotonicity` | yes | **yes** |
@@ -80,10 +80,12 @@ the test harness is already wired.
 | `AsyncStreamEnumerator` | **missing** | no |
 | `SpineMergeInvariants_TTrace_…` | n/a (TLC output) | no |
 
-CI runs four specs via `tests/Tests.FSharp/TlcRunnerTests.fs`.
-Five specs with `.cfg` are *not* in CI (DbspSpec, SpineAsyncProtocol,
-CircuitRegistration, SpineMergeInvariants — all are runnable today
-but deliberately skipped pending a re-verification pass).
+CI runs nine specs via `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` —
+all `.cfg`-bearing specs are now wired (B1 → A in the math-proofs
+honest assessment). Counterexamples surfaced during the pass were
+fixed inline (B-0179 SpineAsyncProtocol CHECK_DEADLOCK FALSE,
+B-0180 CircuitRegistration Safety operator, B-0181 SpineMergeInvariants
+Cascade downstream-room precondition + state constraint).
 
 **Code paths WITHOUT any TLA+ model:**
 
