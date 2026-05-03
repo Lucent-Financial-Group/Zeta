@@ -1,6 +1,6 @@
 ---
-name: Multi-harness alignment/convergence on design as a future skill domain (Aaron 2026-05-03 forward-looking architectural observation)
-description: 2026-05-03; Aaron-named forward-looking emergence: when designing anything, run the design through multiple AI harnesses; convergence = structural soundness signal; divergence = hidden assumption or missing perspective. Composes with the bidirectional alignment / BFT-many-masters commitment + Karpathy edge-runner framing + the Drive-bridge AI-to-AI peer review pattern + the 5-AI peer convergence on poll-the-gate (task #355). Same shape as the git-native-backlog-management memo from prior tick — once down pat, it becomes a skill DOMAIN with multiple skills + experts. Captures canonical starting set + promotion-trigger criteria so when the maturity signal fires, the substrate is ready.
+name: Multi-harness AND multi-model alignment/convergence on design as a future skill domain (Aaron 2026-05-03 forward-looking architectural observation, two-axis refinement)
+description: 2026-05-03; Aaron-named forward-looking emergence at TWO orthogonal axes — harnesses (Claude Code / Codex / Cursor / Gemini-CLI / Claude.ai / ChatGPT) AND models (Opus / Sonnet / Haiku / GPT-X / Gemini-X). Run designs through the harness × model matrix; convergence = structural soundness signal; divergence = hidden assumption surface. Same-tick refinement: record metrics per-harness AND per-model (latency / cost / quality / accuracy on task class) — for now use larger models with higher thinking modes (foundation matters); later use smaller models where they suffice for budget; many future uses beyond budget (capacity planning / fallback chains / specialty routing). Composes with bidirectional alignment + BFT-many-masters + Karpathy edge-runner + Drive-bridge AI-to-AI peer review + the 5-AI poll-the-gate convergence (task #355). Sibling shape to git-native-backlog-management memo; canonical starting set + promotion-trigger criteria captured so when the maturity signal fires, the substrate is ready.
 type: feedback
 ---
 
@@ -12,7 +12,19 @@ Aaron 2026-05-03 (00:0xZ tick), in the autonomous-loop maintainer channel after 
 
 > *"when designing anything you should go through a multi harness alignment/convergence on the design, that's a good skill domain to have too"*
 
-Second forward-looking architectural observation in two consecutive ticks. The first (2026-05-02 mid-tick) named *"git-native backlog management + long-arc thesis"* as a future skill domain. This one names *"multi-harness alignment/convergence on design"* as another future skill domain. The pair establishes a pattern: Aaron is enumerating the **emerging skill-domain landscape** Otto + the future contributor base will operate in.
+**Same-tick two-axis refinement (Aaron 2026-05-03):**
+
+> *"i should say multi harness / multi model we have acess to both and can also use that to start judging where smaller modeles could save us money too, we should stil use the largemer models for now with higher thinking modes so our output is hight quality since this is the foundation but different modesl different harnesses and recording some metrics on harnesses and mdoels themsvles will be use3ful for many things in the future more than just budget"*
+
+The refinement adds an orthogonal axis: not just **harnesses** (the runtime / CLI / UI shell) but also **models** (the underlying LLM). Within a single harness like Claude Code you have access to multiple models (Opus / Sonnet / Haiku); across harnesses you have access to many model providers (Anthropic / OpenAI / Google / future). The convergence-on-design discipline operates across the **harness × model matrix**, not just one axis.
+
+Three substantive guidance points from the refinement:
+
+1. **Both axes are first-class.** Designs should be checked across harnesses AND across models within harnesses; the diversity-of-priors that produces signal lives at both layers.
+2. **Foundation-first sizing rule.** *Currently* use larger models with higher thinking modes — foundation work matters, output quality matters more than cost while the foundation is still being shaped. *Later* use smaller models where they suffice for budget.
+3. **Metrics recording has many uses beyond budget.** Per-harness AND per-model metrics (latency / cost / quality / task-class accuracy / convergence-pattern) feed: capacity planning, fallback chains, specialty routing, harness/model selection per task class, auditing for drift over time. Budget is one downstream consumer among many.
+
+Second forward-looking architectural observation in two consecutive ticks. The first (2026-05-02 mid-tick) named *"git-native backlog management + long-arc thesis"* as a future skill domain. This one names *"multi-harness AND multi-model alignment/convergence on design"* as another future skill domain. The pair establishes a pattern: Aaron is enumerating the **emerging skill-domain landscape** Otto + the future contributor base will operate in.
 
 ## What "multi-harness alignment/convergence on design" names
 
@@ -41,11 +53,12 @@ Three classes of substrate, same architecture as the git-native-backlog-manageme
 
 | Skill candidate | What it does | Status today |
 |---|---|---|
-| `multi-harness-design-converger` | Runs a design through N harnesses; captures responses; classifies convergence/divergence | Substrate exists as ad-hoc Drive-bridge ferries; not yet skill-routed |
-| `design-divergence-analyzer` | When harnesses diverge, classify why (different priors, scope assumptions, cost models, training distribution biases) | Done ad-hoc by Otto + the human maintainer today |
-| `design-convergence-validator` | When harnesses converge, validate the convergence isn't just shared-training-data artifact (the "all GPT-derived models agree because OpenAI corpus" failure mode) | Implicit; not formalized |
-| `harness-strength-mapper` | Knows which harness is strongest for which design class (e.g., Claude.ai for voice/register; Codex for code-shape; Gemini for scale/architecture; harness-specific lookups) | Folk knowledge; not codified |
-| `design-packet-formatter` | Formats a design for ferry-friendly cross-harness consumption (per `docs/courier-ferry-protocol.md` — wait, does that exist? — TBD) | Implicit; verbal protocol |
+| `multi-harness-design-converger` | Runs a design through N harnesses × M models; captures responses; classifies convergence/divergence | Substrate exists as ad-hoc Drive-bridge ferries; not yet skill-routed |
+| `design-divergence-analyzer` | When harnesses/models diverge, classify why (different priors, scope assumptions, cost models, training distribution biases, effort (the harness term — model-size + thinking-mode bundled)) | Done ad-hoc by Otto + the human maintainer today |
+| `design-convergence-validator` | When harnesses/models converge, validate the convergence isn't just shared-training-data artifact (the "all GPT-derived models agree because OpenAI corpus" failure mode) | Implicit; not formalized |
+| `harness-and-model-strength-mapper` | Knows which harness × model is strongest for which design class (e.g., Claude.ai/Opus for voice/register; Codex/GPT for code-shape; Gemini-Pro for scale/architecture; Sonnet/Haiku for routine triage where larger isn't needed) | Folk knowledge; not codified |
+| `design-packet-formatter` | Formats a design for ferry-friendly cross-harness/cross-model consumption | Implicit; verbal protocol |
+| `effort-router` | Picks **effort** per task class (the Claude Code harness's vocabulary — *effort* bundles model-size + thinking-mode, e.g., Opus + extended-thinking is high-effort; Sonnet + standard is mid-effort; Haiku is low-effort). Foundation-grade work → high effort; routine triage → low effort where it suffices; the sizing rule operates against recorded harness/effort metrics. Aaron 2026-05-03: *"your harness calls this effort"* — vocabulary alignment with the harness layer matters since the harness is one of the things the discipline consults. | Not built; metrics not yet recorded |
 
 ### Judgment experts (named-persona-shaped)
 
@@ -60,10 +73,12 @@ Three classes of substrate, same architecture as the git-native-backlog-manageme
 
 | Tool | Purpose | Status |
 |---|---|---|
-| `tools/multi-harness/dispatch.ts` | Sends a design packet to N harnesses in parallel | Not built |
-| `tools/multi-harness/aggregate.ts` | Collects responses; categorizes convergence/divergence | Not built |
-| `tools/multi-harness/divergence-classify.ts` | Pattern-matches divergence against known classes (training-distribution / scope / cost / register) | Not built |
+| `tools/multi-harness/dispatch.ts` | Sends a design packet to N harnesses × M models in parallel | Not built |
+| `tools/multi-harness/aggregate.ts` | Collects responses; categorizes convergence/divergence per harness AND per model | Not built |
+| `tools/multi-harness/divergence-classify.ts` | Pattern-matches divergence against known classes (training-distribution / scope / cost / register / effort (the harness term — model-size + thinking-mode bundled)) | Not built |
 | `docs/multi-harness-roster.md` | Canonical list of available harnesses + their strengths + access mechanisms (Drive-bridge for Claude.ai, ChatGPT API for Codex, etc.) | Not built; substrate is implicit in CLAUDE.md mentions |
+| `docs/multi-model-roster.md` | Canonical list of accessible models + their characteristics (size, cost, latency, thinking-mode availability, task-class accuracy) | Not built |
+| `tools/multi-harness/metrics.ts` | Records per-harness AND per-model metrics over time (latency / cost / quality / convergence-rate / divergence-classification-rate) for capacity planning, fallback chains, specialty routing, drift auditing | Not built; the human maintainer 2026-05-03 explicitly named *"recording some metrics on harnesses and models themselves will be useful for many things in the future more than just budget"* |
 | `docs/research/<date>-multi-harness-design-<topic>.md` | Per-design archive of the convergence findings | Pattern exists (Drive-bridge research-folder mirrors); not formalized as multi-harness-specific |
 
 ## Promotion-trigger criteria (the "down pat" signal)
@@ -109,6 +124,40 @@ When the maturity signal fires:
 - `docs/research/2026-05-02-claudeai-response-to-otto-critique-of-brat-voice-framework-drive-bridge-ai-to-ai-peer-review.md` — the Drive-bridge worked example demonstrating convergence + divergence in the wild
 - The Aarav-on-B-0169 review (recorded in chat substrate; pending durable preservation) — counter-example where single-specialist suffices
 
-## Carved sentence
+## Foundation-first sizing rule (Aaron 2026-05-03)
 
-**"When designing anything, run the design through multiple AI harnesses. Convergence is structural-soundness signal; divergence is hidden-assumption surface. Distinct from multi-AI peer review (post-output) — this is pre-output design convergence. Once 3+ worked examples land + convergence-vs-divergence is empirically distinguished + the discipline catches a design bug a single-harness pass would have missed, this becomes a skill DOMAIN of its own — a few procedure skills + named-persona experts + tooling. Until then, lives in memos + ad-hoc Drive-bridge ferries + the architect hat."**
+While Zeta is still pre-v1 / foundation-being-shaped:
+
+- **Default to larger models with higher thinking modes** for design-convergence work — the foundation matters more than per-task cost; output quality at the foundation layer compounds across every later step.
+- **Smaller models stay candidates for routine triage** where they suffice (e.g., simple lint, routine-classification tasks).
+- **Don't optimize for budget on foundation work** — the cost of a wrong foundation is much higher than the cost of larger-model invocations during foundation-shaping.
+
+Once foundation is set + metrics are recorded, model-size-routing per task class becomes a budget optimization. **Currently: foundation-first; metrics-recording starts now so the optimization is actionable later.**
+
+## Vocabulary alignment with the harness (Aaron 2026-05-03)
+
+> *"your harness calls this effort"*
+
+The Claude Code harness uses **"effort"** as the bundled term for model-size + thinking-mode (e.g., Opus + extended-thinking is high-effort; Sonnet + standard is mid-effort; Haiku is low-effort). Earlier drafts of this memo used "model-size capacity" as a substitute term — that's wrong. Use the harness vocabulary because the harness is one of the things the discipline consults; vocabulary divergence between memo and harness produces routing-pipeline friction.
+
+For cross-harness work where each harness uses different vocabulary, the bridging convention should be: **use the local harness's term in skill bodies that target that harness; use a neutral term ("compute-tier" or "effort-level") only in cross-harness substrate**.
+
+## Metrics worth recording (per-harness AND per-model)
+
+Per the maintainer's *"more than just budget"* framing, metrics serve many downstream consumers:
+
+| Metric | Budget use | Other uses |
+|---|---|---|
+| Latency (response-time-to-completion) | Cost of stalled ticks | Capacity planning; user-experience floor |
+| Cost-per-invocation (token-out × rate) | Direct budget | Funding model awareness for the maintainer; fundraising data |
+| Convergence-rate per task class | — | Design-quality signal; harness/model-pair calibration |
+| Divergence-classification (training / scope / cost / register / capacity) | — | Reveals harness/model-specific blind spots |
+| Quality-per-task-class (accuracy / completeness / correctness) | Smaller-model viability decision | Specialty routing; fallback chains; model-deprecation timing |
+| Drift over time | Deprecation cost-tracking | Auditing; provider-stability assessment |
+| Thinking-mode availability + cost | Larger-thinking-mode budget | When-to-invoke decision; foundation-layer routing |
+
+Aaron's framing: *"different models different harnesses and recording some metrics on harnesses and models themselves will be useful for many things in the future more than just budget."*
+
+## Carved sentence (refined)
+
+**"When designing anything, run the design through the harness × model matrix — multiple AI harnesses AND multiple model sizes within each harness. Convergence is structural-soundness signal; divergence is hidden-assumption surface. Distinct from multi-AI peer review (post-output) — this is pre-output design convergence. Foundation-first sizing rule: default to larger models with higher thinking modes during foundation-shaping; smaller models for routine triage where they suffice; budget optimization comes after metrics are recorded. Record per-harness AND per-model metrics now (latency / cost / convergence-rate / divergence-class / quality / drift / thinking-mode availability) — many downstream consumers beyond budget. Once 3+ worked examples land + convergence-vs-divergence is empirically distinguished + the discipline catches a design bug a single-harness/single-model pass would have missed, this becomes a skill DOMAIN — a few procedure skills + named-persona experts + tooling. Until then, lives in memos + ad-hoc Drive-bridge ferries + the architect hat."**
