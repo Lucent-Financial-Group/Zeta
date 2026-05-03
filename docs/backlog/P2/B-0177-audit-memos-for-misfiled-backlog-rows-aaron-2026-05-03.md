@@ -64,9 +64,27 @@ Result: the specific row Aaron referenced was not findable. Either it exists und
 
 - 200+ files in memory/ (feedback + project + user + reference)
 - Each needs a quick is-this-a-backlog-candidate check (fast — most memos are clearly doctrine/framing/observation)
-- Suspected hit-rate: 5-10% per Aaron's observation ("a lot")
 - Each hit needs a new B-NNNN row authored (small per row; cumulative is M)
 - Cross-reference back-pointer in the original memo
+
+## Empirical refinement — sample-classification result (Otto 2026-05-03)
+
+Initial sample-pass over 10 most-recent feedback memos (post-2026-05-02) yielded:
+
+- **9 clearly doctrine/framing/observation** — legitimately memory (razor-discipline, carved-sentences-plus-index, dst-justifies-ts, skill-bundle-compounding, alignment-frontier, edge-defining-work, cross-disciplinary-pattern, consent-driven-ux, same-tick-update-recursion)
+- **1 mixed** — guess-then-verify-protocol; the protocol itself is doctrine, but the protocol-as-TS-tool formalization could be a backlog candidate (deferred — protocol works as-is via `memory/architectural-intent-guesses/` directory)
+- **0 clearly misfiled backlog rows**
+
+Refined hit-rate hypothesis:
+
+| Sub-class | Hit-rate (empirical) | Status |
+|---|---|---|
+| Reserved-but-never-filed B-NNNN cross-references | High (3-of-3 found in 30 min) | Closed via 2026-05-03 audit pass (B-0141, B-0142, B-0157) |
+| Broader misfiled-backlog (memo IS the work item) | Low (0-of-10 in recent sample) | Lower priority than initial estimate |
+
+**Refined audit scope**: focus on the high-yield class (reserved-but-never-filed B-NNNN cross-references in memos). The pattern: search for `B-NNNN.*not yet filed` / `B-NNNN.*pending` / `B-NNNN.*TBD` / `B-NNNN.*to be filed` references in memory/ and verify each B-NNNN has a per-row file. The broader misfiled-backlog class is lower-yield and can be deferred to opportunistic-on-touch rather than systematic audit.
+
+Aaron's *"a lot of backlog lost in our memories"* claim remains valid — 3 lost rows in one cycle IS substantial — but the lost backlog is concentrated in the reserved-but-never-filed sub-class, not spread across all memos.
 
 ## Open design questions (NOT for this row; for the audit pass)
 
