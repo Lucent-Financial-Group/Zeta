@@ -24,7 +24,7 @@ Aaron 2026-05-03, autonomous-loop maintainer channel. Otto was looking for an ex
 This identifies a substrate-architecture failure mode: **memos got authored in memory/ where backlog rows should have been filed in docs/backlog/**. The two surfaces have different roles:
 
 - **memory/feedback_*.md** — observations, framings, rules, doctrine absorbed from external sources
-- **docs/backlog/P*/B-NNNN-*.md** — actionable work items with stable IDs, tier/effort/ask metadata, scoped scope
+- **docs/backlog/P*/B-NNNN-*.md** — actionable work items with stable IDs, tier/effort/ask metadata, bounded scope
 
 When an item that should have been a backlog row gets authored as a memo, three failure modes:
 
