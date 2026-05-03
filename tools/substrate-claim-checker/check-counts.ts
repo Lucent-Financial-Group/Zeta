@@ -31,7 +31,7 @@
  *   1  drift detected, missing input file, or no inputs given
  */
 
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, statSync } from "node:fs";
 
 interface Finding {
   file: string;
@@ -65,16 +65,33 @@ interface Claim {
  */
 function findTables(lines: string[]): Table[] {
   const tables: Table[] = [];
-  let inFence = false;
+  let fenceChar: "`" | "~" | null = null;
+  let fenceLen = 0;
   let i = 0;
   while (i < lines.length) {
     const cur = lines[i] ?? "";
-    if (/^\s*(```|~~~)/.test(cur)) {
-      inFence = !inFence;
-      i++;
-      continue;
+    const fenceMatch = /^\s*(`{3,}|~{3,})/.exec(cur);
+    if (fenceMatch) {
+      const delim = fenceMatch[1] ?? "";
+      const ch = delim[0] === "`" ? "`" : "~";
+      const len = delim.length;
+      if (fenceChar === null) {
+        // Open a fence
+        fenceChar = ch;
+        fenceLen = len;
+        i++;
+        continue;
+      }
+      // Close only if same char + at-least-equal length per CommonMark
+      if (ch === fenceChar && len >= fenceLen) {
+        fenceChar = null;
+        fenceLen = 0;
+        i++;
+        continue;
+      }
+      // Otherwise it's just a line inside the fence
     }
-    if (inFence) {
+    if (fenceChar !== null) {
       i++;
       continue;
     }
@@ -133,15 +150,29 @@ function findClaims(lines: string[]): Claim[] {
     `\\b(\\d+)(\\+?)[\\s-]+(${nounAlt})\\b`,
     "gi",
   );
-  let inFence = false;
+  // CommonMark fence-tracking: a fence is closed only by a delimiter
+  // of the same character and at-least-equal length.
+  let fenceChar: "`" | "~" | null = null;
+  let fenceLen = 0;
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i] ?? "";
-    // Toggle fenced-code-block state on lines starting with ``` or ~~~.
-    if (/^\s*(```|~~~)/.test(line)) {
-      inFence = !inFence;
-      continue;
+    const fenceMatch = /^\s*(`{3,}|~{3,})/.exec(line);
+    if (fenceMatch) {
+      const delim = fenceMatch[1] ?? "";
+      const ch = delim[0] === "`" ? "`" : "~";
+      const len = delim.length;
+      if (fenceChar === null) {
+        fenceChar = ch;
+        fenceLen = len;
+        continue;
+      }
+      if (ch === fenceChar && len >= fenceLen) {
+        fenceChar = null;
+        fenceLen = 0;
+        continue;
+      }
     }
-    if (inFence) continue;
+    if (fenceChar !== null) continue;
     // Skip table rows (start with `|`) — they're data, not narrative.
     if (/^\s*\|/.test(line)) continue;
     for (const m of line.matchAll(pattern)) {
@@ -171,6 +202,11 @@ function findClaims(lines: string[]): Claim[] {
 function checkFile(filePath: string): { findings: Finding[]; ok: boolean } {
   if (!existsSync(filePath)) {
     console.error(`error: file not found: ${filePath}`);
+    return { findings: [], ok: false };
+  }
+  const stat = statSync(filePath);
+  if (!stat.isFile()) {
+    console.error(`error: not a regular file (directory or other): ${filePath}`);
     return { findings: [], ok: false };
   }
   const content = readFileSync(filePath, "utf-8");
