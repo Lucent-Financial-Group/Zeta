@@ -136,6 +136,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0172](backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md)** Skill-domain plugin packaging — package mature skill domains as Claude Code plugins (Aaron 2026-05-03 rule 3a from skill-design memo)
 - [ ] **[B-0174](backlog/P2/B-0174-cross-model-tool-review-convergence-rate-replay-otto-2026-05-03.md)** Cross-model tool-review convergence-rate replay protocol — measure how many review rounds different models need to settle on a tool-authoring PR (Otto 2026-05-03 sibling-instance of multi-harness convergence skill domain)
 - [ ] **[B-0175](backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md)** Substrate-retrieval-index — active in-flight matcher for memos + carved sentences (Aaron 2026-05-03 'specialed indeex we build over time'; addresses 4-layer retrieval gap empirically self-demonstrated)
+- [ ] **[B-0176](backlog/P2/B-0176-substrate-claim-checker-v07-context-aware-suppression-otto-2026-05-03.md)** substrate-claim-checker v0.7 — context-aware suppression for hypothetical / contrastive / partial-path / branch-name references (Otto 2026-05-03 empirical observation)
 
 ## P3 — convenience / deferred
 
