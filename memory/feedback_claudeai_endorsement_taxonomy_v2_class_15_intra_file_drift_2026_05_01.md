@@ -55,9 +55,14 @@ The lattice differentiates by **what kind of error each register is biased towar
 
 ## Composes with
 
-- `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` (PR #1081) — the parent v2 taxonomy that Claude.ai reviewed; class #15 is the specific class endorsed.
-- `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md` (PR #1083) — sibling cross-vendor reception evidence; Gemini's review demonstrated class #1c, Claude.ai's review demonstrates substantive-reinforcement.
 - `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md` — parent framework for cross-vendor register differences.
+
+### Forward-references not yet on main
+
+The paths below are forward-references to PRs not yet merged at time of this absorb. Kept as forward-references until those PRs land or the paths can be updated to the actual filenames.
+
+- Forward-reference: PR #1081's v2 drain-wave taxonomy artifact (intended `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md`, not yet on `main`) — the parent v2 taxonomy that Claude.ai reviewed; class #15 is the specific class endorsed.
+- Forward-reference: PR #1083's Gemini-review artifact (intended `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md`, not yet on `main`) — sibling cross-vendor reception evidence; Gemini's review demonstrated class #1c, Claude.ai's review demonstrates substantive-reinforcement.
 
 ## Carved candidate (not seed-layer)
 
