@@ -51,6 +51,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0170](backlog/P1/B-0170-substrate-claim-checker-ts-tool-aaron-2026-05-03.md)** Substrate-claim-checker TS tool — mechanize the verify-then-claim discipline (Otto 2026-05-03; drift instances (the verify-then-claim memo's body table is canonical) catalogued as empirical eval-set)
 - [ ] **[B-0171](backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md)** OpenSpec catch-up — restore OpenSpec capabilities as canonical source-of-truth (Aaron 2026-05-03 architectural-debt naming; "if we deleted everything other than it [OpenSpec]")
 - [ ] **[B-0173](backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md)** Hook authoring for skill-creation contracts — pre/post-condition enforcement at skill-creation + commit + PR-creation time (Aaron 2026-05-03 rule 3b from skill-design memo)
+- [x] **[B-0184](backlog/P1/B-0184-fix-spine-als-alloy-6-2-0-type-error-line-35-spec-bug-2026-05-03.md)** Fix Spine.als spec bug — Alloy 6.2.0 type-check failure at line 35 col 25 (sum-vs-all comprehension confusion) + check-vs-run-vs-fact semantic confusion
 
 ## P2 — research-grade
 

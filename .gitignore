@@ -157,3 +157,4 @@ console-*.log
 # 2026-04-22 triggered this entry. Our own source-of-truth lives
 # at docs/assets/social-preview.svg and is rasterized to .png.
 repository-open-graph-template.png
+Spine/
