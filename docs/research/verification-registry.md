@@ -125,14 +125,165 @@ because <one-line>.`
 
 ---
 
+## TLA+ specs in CI (round 2026-05-03 cluster)
+
+The 5 TLA+ specs that run in CI via `tests/Tests.FSharp/
+TlcRunnerTests.fs` get registry rows so the math-proofs
+honest assessment (`docs/research/2026-05-03-math-proofs-
+honest-assessment.md`) can claim A-grade for both the *spec
+runs* claim AND the *spec matches source* claim.
+
+For specs with explicit external-paper citations (TwoPCSink
+cites Skeen/Stonebraker 2PC), the registry shape mirrors the
+Lean rows above. For internal-correctness specs (Tick
+monotonicity, transaction interleaving, lifecycle race), the
+"Paper" field becomes "Internal correctness target" naming
+the source-code surface the spec models, and the
+"Preconditions diff / Definition map" fields are scoped to
+spec-vs-implementation alignment rather than spec-vs-paper.
+
+## `TwoPCSink`
+
+- **Artifact.** `tools/tla/specs/TwoPCSink.tla` (TLA+ spec
+  with `.cfg`; runs in CI via
+  `tests/Tests.FSharp/TlcRunnerTests.fs`).
+- **Paper.** Skeen, D. (1981) *Nonblocking Commit
+  Protocols*; Skeen, D. & Stonebraker, M. (1983) *A Formal
+  Model of Crash Recovery in a Distributed System* —
+  classical 2-phase-commit literature.
+- **Paper statement (informal).** A 2PC protocol with one
+  coordinator and N participants, where the coordinator
+  collects votes, broadcasts decision, and participants
+  commit-or-rollback per the decision; satisfies safety
+  (no participant commits while another rolls back) and
+  liveness (every prepared transaction eventually
+  commits-or-aborts under fair scheduling).
+- **Our statement.** Per-tick DBSP variant where
+  coordinator = circuit scheduler, participants = `ISink`
+  instances. Spec verifies four invariants:
+  `Idempotent` (epoch commits at most once), `AllOrNothing`
+  (committed → all sinks done-or-pending),
+  `AbortSafe` (aborted → no sinks done), `NoOrphans`
+  (every preCommitted tx eventually committed-or-aborted
+  after checkpoint).
+- **Preconditions diff.** Paper assumes coordinator-
+  failure recovery via decision log; our spec assumes
+  scheduler is in-process (no coordinator-failure
+  recovery scope).
+  Paper assumes async network with reordering; our spec
+  assumes per-tick synchronous step (TLA+ models the
+  interleaving of `Tick` calls but not network delay).
+  These narrowings are intentional — the DBSP variant
+  scopes 2PC to per-tick semantics, not full distributed-
+  recovery.
+- **Definition map.**
+  - Our `txnState` ↔ paper's transaction state ∈ {open,
+    preparing, committed, aborted}.
+  - Our `sinkVote` ↔ paper's prepare-vote ∈ {none, yes,
+    no}.
+  - Our `sinkCommit` ↔ paper's commit-state ∈ {pending,
+    done, rolledback}.
+  - Our `sinkLog` ↔ paper's per-participant durable audit
+    log (Seq of committed txn IDs).
+  - Our `coord` ↔ paper's coordinator state-machine ∈
+    {init, prep, commit, abort, done}.
+- **Last audit.** None yet — registered 2026-05-03.
+  Cadenced re-audit owed under
+  `verification-drift-auditor` (every 5-10 rounds).
+
+## `TickMonotonicity`
+
+- **Artifact.** `tools/tla/specs/TickMonotonicity.tla`
+  (TLA+ spec with `.cfg`; runs in CI).
+- **Internal correctness target.** `Circuit.tick` field
+  in `src/Core/Circuit.fs`; specifically the
+  `Interlocked.Increment(ref _tick)` + `[<VolatileField>]`
+  combination.
+- **Internal correctness claim.** `tick` is monotone non-
+  decreasing from any observer's perspective; under N
+  concurrent increments, the final value equals N (no
+  lost updates); on a 32-bit platform, no torn-long-read
+  produces a backwards tick.
+- **Spec-vs-implementation alignment.** Spec models
+  `tick` as `Int` with `AcquireStep / AdvanceTick /
+  ObserveTick / ReleaseStep` actions; implementation
+  uses `Interlocked.Increment` (atomic) +
+  `[<VolatileField>]` (read fence). Spec checks
+  `Monotone` invariant + `MaxIncrements` count match;
+  implementation enforces same via .NET memory model.
+- **Last audit.** None yet — registered 2026-05-03.
+
+## `TransactionInterleaving`
+
+- **Artifact.** `tools/tla/specs/TransactionInterleaving.tla`
+  (TLA+ spec with `.cfg`; runs in CI).
+- **Internal correctness target.** `TransactionZ1Op.fs`
+  CAS-based semantics — concurrent `Begin` / `Commit` /
+  `Rollback` calls against `AfterStepAsync`-driven `Tick`.
+- **Internal correctness claim.** No torn state snapshot;
+  `state ≤ pending` reachability holds; under
+  `autoCommit`, `state = pending` after every `Tick`; no
+  two concurrent `Commit` calls double-advance.
+- **Spec-vs-implementation alignment.** Spec models
+  `state`, `pending`, `autoCommit`, `inputVal`,
+  `tickPhase` per-thread; implementation uses
+  `Interlocked.CompareExchange` for the CAS. Spec checks
+  the three claimed invariants directly.
+- **Last audit.** None yet — registered 2026-05-03.
+
+## `OperatorLifecycleRace`
+
+- **Artifact.** `tools/tla/specs/OperatorLifecycleRace.tla`
+  (TLA+ spec with `.cfg`; runs in CI).
+- **Internal correctness target.** `Circuit`'s
+  `Register` / `Build` interleaving — specifically the
+  `anyAsync` flag soundness invariant.
+- **Internal correctness claim.** `anyAsync` equals the
+  disjunction of async flags across every registered op
+  at every step. V2 formulation drops the broken
+  `ScanAsync` action (which read without committing) and
+  tightens `FlagSound` to its post-condition.
+- **Spec-vs-implementation alignment.** Spec models
+  `ops` as Seq of `[id, async]` records; implementation
+  registers ops under a conceptual `registerLock` so
+  `anyAsync = OR(op.async)` holds at every step. Spec
+  is the V2 (post-bug-fix) formulation.
+- **Last audit.** None yet — registered 2026-05-03.
+
+## `SmokeCheck`
+
+- **Artifact.** `tools/tla/specs/SmokeCheck.tla` (trivial
+  TLA+ module; runs in CI).
+- **Internal correctness target.** TLC + tla2tools.jar
+  toolchain wiring itself, NOT a Zeta source artifact.
+- **Internal correctness claim.** A trivial spec with one
+  variable that increments by 1 up to 3 satisfies the
+  invariant `x ≤ 3`. Catches "TLC can't even parse a
+  spec" regressions in the toolchain integration.
+- **Spec-vs-implementation alignment.** Not applicable —
+  this spec exists to validate the harness, not a code
+  artifact. Treated as a meta-test of the
+  verification-portfolio infrastructure.
+- **Last audit.** None yet — registered 2026-05-03.
+  Audit cadence may be looser since this is a toolchain
+  smoke-test, not a fidelity claim.
+
+---
+
 ## How to add a new row
 
-1. New verification artifact with an external citation lands.
+1. New verification artifact with an external citation OR
+   internal-correctness spec lands.
 2. Author (or the auditor, if unclaimed) drops a row here in
    the same round.
-3. Fill all seven fields (Artifact, Paper, Paper statement,
-   Our statement, Preconditions diff, Definition map, Last
-   audit).
+3. For external-citation rows: fill all seven fields
+   (Artifact, Paper, Paper statement, Our statement,
+   Preconditions diff, Definition map, Last audit).
+   For internal-correctness rows: substitute "Internal
+   correctness target" for "Paper", "Internal correctness
+   claim" for "Paper statement", and "Spec-vs-implementation
+   alignment" for the Preconditions diff + Definition map
+   pair.
 4. `verification-drift-auditor` re-audits on the next
    scheduled cadence.
 
