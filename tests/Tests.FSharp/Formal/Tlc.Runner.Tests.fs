@@ -232,35 +232,19 @@ let ``TLC validates DbspSpec`` () =
     // InvDistinctIdempotent / InvHCorrectness) over the cfg's
     // configured state space.
     //
-    // **Coverage scope (verbatim from DbspSpec.cfg):**
-    //   * Keys K = {"k1", "k2"} (2-key universe)
-    //   * Weights W = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} — POSITIVE
+    // Coverage scope (from DbspSpec.cfg):
+    //   - Keys K = {"k1", "k2"} (2-key universe)
+    //   - Weights W = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} — POSITIVE
     //     ONLY. Retraction (negative-weight) cases are NOT
     //     exercised by this model-check; they are covered separately
     //     by the FsCheck property-tests over Z-set algebra in
-    //     `tests/Tests.FSharp/Algebra/ZSetTests.fs` and by the
-    //     Lean proof of Prop 3.2 (`tools/lean4/Lean4/
-    //     DbspChainRule.lean`) which is general over abelian-group
-    //     weights.
-    //   * Explores ~1M distinct initial states in ~11s wall on dev
-    //     hardware; full state-space coverage of the positive-
-    //     weight subset.
+    //     tests/Tests.FSharp/Algebra/ZSetTests.fs and by the Lean
+    //     proof of Prop 3.2 (tools/lean4/Lean4/DbspChainRule.lean)
+    //     which is general over abelian-group weights.
     //
-    // Adding negative-weight coverage to this cfg would either
-    // require enlarging W (linear blow-up in state space) or
-    // refining the spec model — captured as a future-work refinement
-    // for whoever lands the chain_rule_poly (3-group) follow-on.
-    //
-    // Closes the first of the 4 deferred specs in B1 (#1383
-    // math-proofs honest assessment outstanding-work matrix). The
-    // other 3 (SpineAsyncProtocol, CircuitRegistration,
-    // SpineMergeInvariants) have known issues per a 2026-05-03
-    // verify-then-claim sweep — SpineAsyncProtocol +
-    // SpineMergeInvariants produce trace files (counterexamples,
-    // tracked as B-0179 + B-0181). CircuitRegistration's config bug
-    // was fixed in B-0180 (the missing `Safety` invariant operator
-    // was defined in CircuitRegistration.tla; cfg now resolves);
-    // see the test below.
+    // Adding negative-weight coverage would require enlarging W
+    // (linear blow-up in state space) or refining the spec model —
+    // future work tied to the chain_rule_poly (3-group) follow-on.
     assertSpecValid "DbspSpec"
 
 
@@ -269,13 +253,5 @@ let ``TLC validates CircuitRegistration`` () =
     // Circuit's Register/Build interleaving — verifies the
     // composite safety invariant `Safety == TypeOK /\
     // NoRegisterAfterBuild` (matching the spec's stated THEOREM
-    // `Spec => [](TypeOK /\ NoRegisterAfterBuild)`). The `Safety`
-    // operator was missing from the .tla until B-0180 fixed the
-    // config bug surfaced by the 2026-05-03 verify-then-claim sweep.
-    // Coverage: 3538 distinct states explored at depth 14 in <1s wall.
-    //
-    // Closes 1 of 3 broken sibling specs from #1397's verify-then-claim.
-    // Remaining: B-0179 (SpineAsyncProtocol) and B-0181
-    // (SpineMergeInvariants) — both produce TTrace dumps and need
-    // counterexample investigation, not just config fixes.
+    // `Spec => [](TypeOK /\ NoRegisterAfterBuild)`).
     assertSpecValid "CircuitRegistration"
