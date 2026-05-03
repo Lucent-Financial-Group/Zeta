@@ -47,6 +47,18 @@ on:
 permissions:
   contents: read
 
+# Workflow-level env: exposes GITHUB_TOKEN to every step so mise's
+# aqua: backend (used by tools/setup/install.sh during toolchain
+# install) can authenticate its GitHub API calls. Without a token,
+# mise hits the unauthenticated rate limit (60 requests per hour
+# per IP, shared across all GitHub Actions runners) and fails to
+# fetch release tags with a 403. With the token, the limit is
+# 5000/hr per token. Same pattern as gate.yml (see workflow-level
+# env: block there); inherits the workflow's permissions:
+# contents: read — no write escalation.
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 concurrency:
   group: lean-proof-${{ github.ref }}
   cancel-in-progress: false

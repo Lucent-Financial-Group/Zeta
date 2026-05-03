@@ -299,7 +299,6 @@ to publishable form:
 | `chain_rule_poly` (3-group) | C4 → A | research | P3 | open |
 | Registry rows for A4 specs | external-fidelity claim | 1 day | P0 | **Done (PR #1393, 2026-05-03)** |
 | Peer-review email draft | publishability | 2 hours | P0 | **Done (PR #1387, 2026-05-03)** |
-| Peer-review email draft | publishability | 2 hours | P0 |
 
 ---
 
