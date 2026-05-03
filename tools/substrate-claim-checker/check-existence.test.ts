@@ -251,3 +251,137 @@ describe("findPathClaims - angle-bracket link targets", () => {
     expect(claims.map((c) => c.path).sort()).toEqual(["docs/angled.md", "docs/normal.md"]);
   });
 });
+
+describe("checkFile - v0.6 gitignore awareness", () => {
+  // Build a self-contained git repo with .gitignore + tracked + ignored
+  // files so the tests work on fresh clones / CI without the
+  // developer-local references/upstreams/ mirror.
+  function setupGitignoreFixture(): { repoRoot: string; mdFile: string; cleanup: () => void } {
+    const repoRoot = mkdtempSync(join(tmpdir(), "check-existence-gitignore-"));
+    const { spawnSync } = require("node:child_process");
+    spawnSync("git", ["init", "--quiet"], { cwd: repoRoot, stdio: "ignore" });
+    spawnSync("git", ["config", "user.email", "test@example.com"], { cwd: repoRoot, stdio: "ignore" });
+    spawnSync("git", ["config", "user.name", "test"], { cwd: repoRoot, stdio: "ignore" });
+    writeFileSync(join(repoRoot, ".gitignore"), "ignored-dir/\n");
+    require("node:fs").mkdirSync(join(repoRoot, "ignored-dir"), { recursive: true });
+    writeFileSync(join(repoRoot, "ignored-dir", "ghosts.md"), "# Ignored");
+    writeFileSync(join(repoRoot, "tracked.md"), "# Tracked");
+    spawnSync("git", ["add", ".gitignore", "tracked.md"], { cwd: repoRoot, stdio: "ignore" });
+    spawnSync("git", ["commit", "-m", "init", "--quiet"], { cwd: repoRoot, stdio: "ignore" });
+    const mdFile = join(repoRoot, "test.md");
+    return {
+      repoRoot,
+      mdFile,
+      cleanup: () => {
+        try { require("node:fs").rmSync(repoRoot, { recursive: true, force: true }); } catch {}
+      },
+    };
+  }
+
+  test("flags exists-on-disk-but-gitignored as warning", () => {
+    const fx = setupGitignoreFixture();
+    try {
+      writeFileSync(
+        fx.mdFile,
+        "# Test\n\nSee `ignored-dir/ghosts.md` for the canonical pattern.\n",
+      );
+      const result = checkFile(fx.mdFile);
+      expect(result.ok).toBe(true);
+      const gitignoredFindings = result.findings.filter(
+        (f) => f.severity === "warning" && f.reason.includes("gitignored"),
+      );
+      expect(gitignoredFindings.length).toBeGreaterThan(0);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("git-tracked path produces no findings", () => {
+    const fx = setupGitignoreFixture();
+    try {
+      writeFileSync(
+        fx.mdFile,
+        "# Test\n\nSee `tracked.md` for the implementation.\n",
+      );
+      const result = checkFile(fx.mdFile);
+      expect(result.ok).toBe(true);
+      expect(result.findings).toEqual([]);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("severity is 'drift' for non-existent paths and 'warning' for gitignored", () => {
+    const fx = setupGitignoreFixture();
+    try {
+      writeFileSync(
+        fx.mdFile,
+        `# Test\n\nMissing: \`does/not/exist-${Date.now()}.md\`\n\nGitignored: \`ignored-dir/ghosts.md\`\n`,
+      );
+      const result = checkFile(fx.mdFile);
+      expect(result.ok).toBe(true);
+      const driftFindings = result.findings.filter((f) => f.severity === "drift");
+      const warningFindings = result.findings.filter((f) => f.severity === "warning");
+      expect(driftFindings.length).toBeGreaterThan(0);
+      expect(warningFindings.length).toBeGreaterThan(0);
+    } finally {
+      fx.cleanup();
+    }
+  });
+});
+
+describe("main CLI - v0.6 exit codes", () => {
+  // Re-uses the gitignore fixture pattern from above. Tests the
+  // CLI behavior + exit-code contract for warning-only / drift-only /
+  // mixed runs.
+  function setupGitignoreFixture(): { repoRoot: string; mdFile: string; cleanup: () => void } {
+    const repoRoot = mkdtempSync(join(tmpdir(), "check-existence-cli-"));
+    const { spawnSync: spawnSyncCp } = require("node:child_process");
+    spawnSyncCp("git", ["init", "--quiet"], { cwd: repoRoot, stdio: "ignore" });
+    spawnSyncCp("git", ["config", "user.email", "test@example.com"], { cwd: repoRoot, stdio: "ignore" });
+    spawnSyncCp("git", ["config", "user.name", "test"], { cwd: repoRoot, stdio: "ignore" });
+    writeFileSync(join(repoRoot, ".gitignore"), "ignored-dir/\n");
+    require("node:fs").mkdirSync(join(repoRoot, "ignored-dir"), { recursive: true });
+    writeFileSync(join(repoRoot, "ignored-dir", "ghosts.md"), "# Ignored");
+    writeFileSync(join(repoRoot, "tracked.md"), "# Tracked");
+    spawnSyncCp("git", ["add", ".gitignore", "tracked.md"], { cwd: repoRoot, stdio: "ignore" });
+    spawnSyncCp("git", ["commit", "-m", "init", "--quiet"], { cwd: repoRoot, stdio: "ignore" });
+    const mdFile = join(repoRoot, "test.md");
+    return {
+      repoRoot,
+      mdFile,
+      cleanup: () => {
+        try { require("node:fs").rmSync(repoRoot, { recursive: true, force: true }); } catch {}
+      },
+    };
+  }
+
+  test("warning-only run produces warning finding (exit code 0 contract)", () => {
+    const fx = setupGitignoreFixture();
+    try {
+      writeFileSync(fx.mdFile, "# Test\n\nWarning: `ignored-dir/ghosts.md`\n");
+      const result = checkFile(fx.mdFile);
+      expect(result.ok).toBe(true);
+      // All findings are warnings; main() should return 0 for this case.
+      // We test the underlying severity model (the contract that main()
+      // depends on); main()'s exit-code branch reads f.severity.
+      const allWarnings = result.findings.length > 0 && result.findings.every((f) => f.severity === "warning");
+      expect(allWarnings).toBe(true);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("drift-only run produces drift finding (exit code 1 contract)", () => {
+    const fx = setupGitignoreFixture();
+    try {
+      writeFileSync(fx.mdFile, `# Test\n\nMissing: \`does/not/exist-${Date.now()}.md\`\n`);
+      const result = checkFile(fx.mdFile);
+      expect(result.ok).toBe(true);
+      const allDrift = result.findings.length > 0 && result.findings.every((f) => f.severity === "drift");
+      expect(allDrift).toBe(true);
+    } finally {
+      fx.cleanup();
+    }
+  });
+});

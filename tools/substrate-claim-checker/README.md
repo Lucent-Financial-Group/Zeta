@@ -22,7 +22,7 @@ bun tools/substrate-claim-checker/check-counts.ts <file>
 bun tools/substrate-claim-checker/check-counts.ts memory/feedback_*.md
 ```
 
-Exit code 0 = no drift detected. Exit code 1 = drift detected (or
+Exit code 0 = no drift detected (warnings alone are non-blocking per the v0.6 severity model — see "v0.6 — gitignore awareness for existence-drift" below). Exit code 1 = drift detected (or
 input error).
 
 ## What it does (v0)
@@ -147,3 +147,22 @@ bun tools/substrate-claim-checker/check-existence.ts <file1> <file2> ...
 ```
 
 Exit codes match check-counts.ts: `0` clean, `1` drift detected or input error.
+
+## v0.6 — gitignore awareness for existence-drift
+
+Extends `check-existence.ts` to flag a new sub-class: paths that exist on disk but are gitignored. Per substrate convention, references should point to git-tracked paths or stable URLs, NOT to local-mirror sync state (e.g., `references/upstreams/*` which is gitignored per the upstream-mirror sync convention).
+
+### Empirical seed
+
+PR #1322 review found `references/upstreams/efcore/.github/workflows/copilot-setup-steps.yml` referenced in a tick shard. The path exists on disk (synced from upstream efcore) but is gitignored. Pre-v0.6, `check-existence.ts` reported "no drift" because the path resolved on disk; v0.6 emits a warning.
+
+### Severity model (new in v0.6)
+
+- **drift** (severity `"drift"`): path doesn't exist anywhere — exit code 1
+- **warning** (severity `"warning"`): path exists on disk but is gitignored — exit code 0 (substrate-quality concern but not blocking)
+
+If both are present, drift wins for exit code (1).
+
+### Implementation
+
+Uses `git check-ignore --quiet <path>` via `spawnSync` (no shell — avoids command injection) to ask git directly. Exit code 0 from git = path IS gitignored; exit code 1 = NOT gitignored. The 5-second timeout guards against pathological cases.
