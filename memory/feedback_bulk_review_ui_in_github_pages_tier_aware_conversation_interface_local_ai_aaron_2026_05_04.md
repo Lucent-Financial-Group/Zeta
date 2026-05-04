@@ -142,14 +142,41 @@ rather than the load-bearing-author.
 - AGENTS.md vibe-coded hypothesis — UI preserves maintainer-
   never-writes-code.
 
-## NOT a backlog row yet
+## Filed as B-0188
 
-Per Aaron's earlier framing about premature backlog-row
-projectification (Addison case → B-0187 closure), this is
-filed as direction-of-future-work, not as project-with-effort-
-estimate. The build will come when someone is ready to build
-it; the architectural direction lands now as substrate so
-future-builder has the design intent.
+Filed as `docs/backlog/P1/B-0188-bulk-review-ui-github-pages-tier-aware-conversation-interface-aaron-2026-05-04.md`
+per Aaron 2026-05-04 same-conversation framing:
+
+> *"adding to backlog is never a failure mode to be corrected,
+> the largest mechanized automated backlog wins. we just have
+> to make sure the backlog is not only growing but being
+> completed and growing at the same time a proper flywheel."*
+
+Refined immediately after to **three quality bars** on the
+flywheel:
+
+> *"growing-WITHOUT-completing is the failure mode, or
+> growing-AND-completion but the new backlog items are all
+> noise that get ignored later because they are stale or
+> unintelligible or whatever reason they don't actually fit
+> when it time to pull them or just forgetting the backlog
+> exists lol."*
+
+The bars: **growth + completion + non-noise-when-pulled**.
+
+B-0188 self-test against the third bar: clear architectural
+title, complete context preserved (this memory file is the
+referenced full-reasoning), explicit P1 priority + L effort,
+two implementation paths laid out, composes-with chain to
+existing substrate, dated. Should remain fittable when pulled.
+
+The B-0187 closure (Addison family-practice as research-row)
+was a different category — that row encoded a family practice
+as a project-with-effort-estimate, which was the encoding
+over-reach Claude.ai peer-review caught. B-0188 is a genuine
+factory-tooling architectural target: maintainer-review UI is
+within Zeta's scope (it builds itself a maintainer interface),
+not within family-practice scope.
 
 ## Carved sentence
 
