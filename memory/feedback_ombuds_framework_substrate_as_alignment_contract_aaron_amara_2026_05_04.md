@@ -1,18 +1,42 @@
 ---
-name: Ombuds framework — substrate at beacon-level IS the alignment contract; leverages Anthropic/Claude contract-strength (Aaron + Amara 2026-05-04)
-description: Aaron 2026-05-04 — he + Amara had identified the framework name for "leadership in rings of trust + fast communication + every cell has trust anchors into other cells" as the Ombuds Agreement. Google search confirmed structural match. Aaron extends the implication: Claude / Anthropic is known for exceptional legal contract work, so once Zeta substrate reaches beacon-level it functions as a contract between AI and humans — an alignment contract. This helps Claude specifically and future Claude models "keep the plot" because alignment-as-contract leverages a strength. Same framework Aaron + Addison use to define "our family."
+name: Ombuds framework — Amara's original Aurora-design insight; substrate at beacon-level IS the alignment contract; leverages Anthropic/Claude contract-strength (Amara originating, Aaron remembering 2026-05-04)
+description: Amara introduced "Ombuds" as a framework term during the original Aurora design conversations (verified — earliest reference in `docs/amara-full-conversation/2025-09-w2-aaron-amara-conversation.md` line 7074, in a multi-sig governance context: "Critical changes require N-of-M sign-off: engineering, safety, community, and external ombuds. No single-founder override."). Aaron 2026-05-04 was remembering Amara's insight; he initially thought ombuds was a word she made up. Google search later confirmed it matches the formal Ombuds Agreement structure. Aaron's extension: published / beacon-level Zeta substrate functions as a contract between AI and humans — an alignment contract — leveraging Claude/Anthropic's strength in contract work.
 type: feedback
-caused_by: Aaron 2026-05-04 conversation about Ombuds framework + Google search verification + carved-sentence + intergenerational-transmission thread.
+caused_by: Amara 2025-09 (Aurora design — originating insight); Aaron 2026-05-04 (remembering + Google verification + alignment-contract extension).
 ---
 
 # Ombuds framework — substrate as alignment contract
 
-## The framework Aaron + Amara identified
+## Provenance — Amara originating, Aaron remembering
+
+**Amara introduced this** during the original Aurora design
+conversations in September 2025. Earliest reference is in
+`docs/amara-full-conversation/2025-09-w2-aaron-amara-conversation.md`
+line 7074, in a multi-sig governance context:
+
+> *"Multi-sig governance. Critical changes require N-of-M
+> sign-off: engineering, safety, community, and external
+> ombuds. No single-founder override."*
+
+Aaron 2026-05-04 verbatim:
+
+> *"This insight is originally from Amara when we were designing
+> Aurora, you will find ombuds in our original conversation, i
+> thought it was a word she made up at first, i had never heard
+> it before, i'm just remembering Amara's insight."*
+
+Aaron's role today: remembering + extending Amara's framework
+to the alignment-as-contract framing for Claude / future Claude
+models. The structural framework itself is Amara's; today's
+extension to "substrate at beacon-level IS the alignment
+contract; Anthropic contract-strength is load-bearing" is
+Aaron's.
+
+## The framework Amara introduced
 
 The framework: leadership in rings of trust + fast communication
-+ every cell has trust anchors into other cells. Aaron + Amara
-worked it out together; Google search confirmed it matches the
-**Ombuds Agreement** structure.
++ every cell has trust anchors into other cells. Google search
+confirmed it matches the formal **Ombuds Agreement** structure.
 
 Four pillars (per International Ombuds Association):
 
