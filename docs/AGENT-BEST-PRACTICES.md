@@ -348,7 +348,7 @@ BP drift.
   of those files need to resolve role-refs to
   persona-names to do their job. The carve-out covers
   roster-mapping ONLY — body-prose attribution
-  ("Kira said X" / "Rune added this fix") remains
+  (`"Kira said X"` / `"Rune added this fix"`) remains
   forbidden on current-state surfaces; use the role-ref
   ("the harsh-critic said X"). The factory reads stable
   across contributor turnover on reusable surfaces;
