@@ -77,7 +77,7 @@ EP appears far less in the QEC literature. The dominant message-passing family t
 - **Quipper** (Green et al., 2013) — functional, scalable, generates trillion-gate circuits. Higher-order, type-safe. ([arXiv:1304.3390](https://arxiv.org/abs/1304.3390), WebSearch 2026-05-04.)
 - **Silq** (Bichsel et al., PLDI 2020) — high-level quantum language with safe uncomputation. ~46% less code than Q#. ([SRI ETH paper](https://files.sri.inf.ethz.ch/website/papers/pldi20-silq.pdf), WebSearch 2026-05-04.)
 - **Qunity** (Voichick et al.) — unified language for quantum and classical, algebraic data types, quantum control construct. ([NSF par](https://par.nsf.gov/servlets/purl/10394898), WebSearch 2026-05-04.)
-- **Twist** — quantum-classical interaction via entanglement / purity restrictions.
+- **Twist** (Yuan, McNally, Carbin, POPL 2022) — first quantum language with a type system for sound reasoning about purity / entanglement; enables identifying pure expressions via type annotations and automatic detection of subtle entanglement bugs. ([arXiv:2205.02287](https://arxiv.org/abs/2205.02287), [DOI 10.1145/3498691](https://dl.acm.org/doi/abs/10.1145/3498691), WebSearch 2026-05-04.)
 - **Qutes** (2025) — high-level quantum language for simplified quantum computing. ([arXiv:2503.13084](https://arxiv.org/html/2503.13084v1), WebSearch 2026-05-04.)
 - **Q#** — Microsoft's quantum language, in QDK; supports rich classical computation alongside quantum operations. ([Microsoft Q# overview](https://learn.microsoft.com/en-us/azure/quantum/qsharp-overview), WebSearch 2026-05-04.)
 
