@@ -1,16 +1,6 @@
 ---
 name: q-sharp
-description: |
-  When the user is working with quantum computing in Q# or asking
-  about quantum operator-algebra, type-system-as-clarity for
-  quantum operations, or Bayesian BP/EP integration with quantum
-  runtimes (B-0189). Loads operator-algebra reasoning context,
-  Jordan-Wigner transformation framing, and the type-level
-  adjointability + controllability constraints (`Unit is Adj + Ctl`)
-  that make Q# different from imperative quantum-circuit thinking.
-  Wear when reading or writing `.qs` files, when comparing Q# to
-  Cirq / Qiskit / OpenQASM as substrate, or when evaluating Q# as a
-  formal-verification target alongside Lean / F* / TLA+ / Z3.
+description: Capability skill ("hat") — Q# operator-algebra reasoning for Microsoft Quantum Development Kit. Covers type-level adjointability + controllability constraints (`Unit is Adj + Ctl`), Pauli-as-typed-value (`PauliX`/`PauliY`/`PauliZ`) measurement-basis selection, `within / apply` conjugation pattern, Jordan-Wigner transformation as library concern (`Microsoft.Quantum.Chemistry`), and the B-0189 BP/EP-runtime-acceleration research lane. Wear when reading or writing `.qs` files, comparing Q# to Cirq / Qiskit / OpenQASM, or evaluating Q# as a formal-verification target alongside `lean4-expert` / `tla-expert` / `z3-expert` / `f-star-expert`.
 ---
 
 # Q# operator-algebra skill
