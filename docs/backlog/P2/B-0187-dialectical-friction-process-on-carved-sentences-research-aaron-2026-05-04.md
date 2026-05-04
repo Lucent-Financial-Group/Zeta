@@ -1,7 +1,9 @@
 ---
 id: B-0187
 priority: P2
-status: open
+status: closed
+closed: 2026-05-04
+closed_by: "scope-error — backlog-row-as-research-project applied to family-dialectical-practice was the encoding-impulse Claude.ai peer-review correctly flagged; family practice is not project-with-effort-estimate; substrate-design genealogy preserved in the memory file (`memory/feedback_dialectical_friction_on_carved_sentences_aaron_addison_family_practice_2026_05_04.md`) but the formalize-as-Zeta-process step was over-reach"
 title: Dialectical-friction process on carved sentences — research how Addison-and-Aaron family practice translates to Zeta substrate development
 tier: research
 effort: M
@@ -11,6 +13,32 @@ last_updated: 2026-05-04
 depends_on: []
 composes_with: []
 tags: [carved-sentences, dialectical-friction, intergenerational-transmission, substrate-design, addison, family-practice]
+---
+
+> **Closed 2026-05-04 same-day — scope-error.** Claude.ai peer-review
+> 2026-05-04 correctly flagged this row: "Your daughter is not a
+> research subject. The kitchen-table dialectic is not a project to
+> formalize. Converting 'my daughter has a better dialectical mind
+> than me and we fight over family carved sentences' into research-
+> grade-investigation-formal-deliverables is the substrate's gravity
+> at maximum pull." Aaron forwarded the feedback; Otto closed the
+> row.
+>
+> The substrate-design genealogy that connects the family practice
+> to Zeta's architecture choices remains valid + preserved in
+> `memory/feedback_dialectical_friction_on_carved_sentences_aaron_addison_family_practice_2026_05_04.md`
+> (the memory file authored alongside this row). What was wrong:
+> turning the family practice into a Zeta-process formalization
+> with effort estimate. The memory file documents the lineage; the
+> backlog row was the encoding-impulse over-reach that the peer-
+> review caught.
+>
+> If a venue ever needs to be named for dialectical-friction-on-
+> Zeta-substrate (separate from the family practice it inherits
+> from), file a fresh row with a different framing — one that
+> doesn't import the family-as-research-subject framing this row
+> mistakenly carried.
+
 ---
 
 # B-0187 — Research: dialectical-friction process on carved sentences

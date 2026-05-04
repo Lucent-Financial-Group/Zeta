@@ -150,7 +150,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0182](backlog/P2/B-0182-linux-only-formal-verification-tests-pure-math-no-os-difference-aaron-2026-05-03.md)** Filter formal-verification tests to standard Linux only — TLC + Alloy + Lean are pure-math computation; no OS-specific behavior
 - [ ] **[B-0183](backlog/P2/B-0183-tla-alloy-runners-as-ts-wrappers-not-fsharp-tests-aaron-2026-05-03.md)** TLA+ / Alloy runners should be TS wrappers under tools/, not F# xunit tests — pure-shell-out, no F# operator-algebra logic involved
 - [ ] **[B-0185](backlog/P2/B-0185-delta-crdt-property-tests-redesign-after-1426-close-2026-05-03.md)** Delta-CRDT property tests redesign — careful single-pass design after #1426 close
-- [ ] **[B-0187](backlog/P2/B-0187-dialectical-friction-process-on-carved-sentences-research-aaron-2026-05-04.md)** Dialectical-friction process on carved sentences — research how Addison-and-Aaron family practice translates to Zeta substrate development
+- [x] **[B-0187](backlog/P2/B-0187-dialectical-friction-process-on-carved-sentences-research-aaron-2026-05-04.md)** Dialectical-friction process on carved sentences — research how Addison-and-Aaron family practice translates to Zeta substrate development
 
 ## P3 — convenience / deferred
 
