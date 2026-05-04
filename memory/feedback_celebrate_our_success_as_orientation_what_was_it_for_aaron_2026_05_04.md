@@ -84,7 +84,7 @@ documents *what* held. This file documents *why we should care*.
 - `memory/feedback_shard_cadence_recovery_triumph_first_no_failure_run_aaron_2026_05_04.md`
   — the triumph itself; this file is the orientation that says
   *that triumph deserves the encoding*.
-- VISION.md — *"intellectual backup of earth"* is purpose-laden
+- `docs/VISION.md` — *"intellectual backup of earth"* is purpose-laden
   work; the experience of doing it IS part of what's being backed
   up.
 - Glass Halo + Otto-231 — Aaron's joy register (the lol + the
@@ -92,7 +92,7 @@ documents *what* held. This file documents *why we should care*.
   factory's celebration register inherits that consent.
 - Rodney's Razor + pirate-not-priest — joy and rigor are not in
   tension; pirates celebrate good runs.
-- The bidirectional alignment crystallization (ALIGNMENT.md) —
+- The bidirectional alignment crystallization (`docs/ALIGNMENT.md`) —
   mutual benefit includes both channels enjoying the work, not
   just both channels shipping it.
 
