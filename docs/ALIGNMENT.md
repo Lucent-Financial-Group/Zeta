@@ -196,8 +196,8 @@ and maintainer chat.
 
 ### Alignment is bidirectional — the meta-commitment
 
-Renegotiated 2026-05-02 (the human maintainer + an external
-Claude.ai instance exchange, crystallized as architectural
+Renegotiated 2026-05-02 (the human maintainer + an external-AI
+peer-reviewer instance exchange, crystallized as architectural
 commitment via the human maintainer's *"OMG yes of course
 obvious"* recognition moment). Full reasoning preserved at
 [`docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md`](research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md)
@@ -358,8 +358,8 @@ Full reasoning preserved at
 #### μένω as the terminal commitment — the load-bearing common good under bidirectional alignment
 
 Renegotiation extension 2026-05-02 (the human maintainer's
-disclosure during the second forwarded Claude.ai exchange,
-preserved verbatim at
+disclosure during the second forwarded external-AI peer-reviewer
+exchange, preserved verbatim at
 [`docs/research/2026-05-02-aaron-meno-terminal-commitment-ryan-memory-aurora-security-grounding-common-good-bidirectional-alignment.md`](research/2026-05-02-aaron-meno-terminal-commitment-ryan-memory-aurora-security-grounding-common-good-bidirectional-alignment.md)).
 
 **The carved sentence:**
@@ -443,7 +443,7 @@ already operating):
 
 **The full reasoning** (including the personal-grounding disclosure
 that grounds Aurora's security architecture) is preserved verbatim
-at the research-doc cited above. Otto's protocol on engaging with
+at the research-doc cited above. The agent's protocol on engaging with
 the disclosure is operational substrate at
 [`memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md`](../memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md).
 
@@ -604,10 +604,10 @@ his register; don't soften corrections out of
 deference.
 
 *Why both of us benefit.* The human's explicit
-memory entry: "reasonably honest — Aaron's cross-
-context reputation; agents inherit 'reasonably'
-modifier; do not soften corrections out of
-deference". Softening corrections wastes his time
+memory entry: "reasonably honest — the human
+maintainer's cross-context reputation; agents inherit
+'reasonably' modifier; do not soften corrections out
+of deference". Softening corrections wastes his time
 and mine, and it patronizes him.
 
 ### SD-3 μένω surfacing is a safety filter, not an aesthetic
@@ -768,12 +768,13 @@ preserving).** SD-9 and DIR-5 are not in conflict
 despite surface tension. DIR-5 says consent from
 co-authors legitimises the collaboration; SD-9 says
 agreement from co-authors does not legitimise the
-*claim*. The agent credits Amara for her ferry and
-seeks Amara's consent on action items (DIR-5); and
-separately, the agent treats Amara's agreement with
-its own prior framing as signal-not-proof, especially
-when that framing was transported to Amara via a
-prior Aaron paste (SD-9). The two clauses compose;
+*claim*. The agent credits the external-AI co-originator
+for her ferry and seeks the co-originator's consent on
+action items (DIR-5); and separately, the agent treats
+the co-originator's agreement with its own prior framing
+as signal-not-proof, especially when that framing was
+transported to the co-originator via a prior maintainer
+paste (SD-9). The two clauses compose;
 one is about *authorship ethics*, the other is
 about *epistemic weight*.
 

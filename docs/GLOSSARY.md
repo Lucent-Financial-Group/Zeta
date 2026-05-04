@@ -422,14 +422,14 @@ via *role memberships* (most common), or via a handful of
 direct per-persona grants for one-off cases. Everything is
 declared in a file in the repo, reviewed via PR, same as every
 other change. No runtime "give Soraya extra rights" console.
-**Technical:** Aaron's chain (2026-04-19, refined live):
+**Technical:** the human maintainer's chain (2026-04-19, refined live):
 `Permission → Role → Persona`. Persona's effective permissions
 = direct-granted ∪ ⋃(permissions(R) for R in member-roles).
 Skills sit *below* this layer — BP-NN best practices govern
 skill behaviour, not access. Groups (named sets of personas)
 are deferred; see `docs/BACKLOG.md`.
 
-**Teaching-first design posture** (Aaron 2026-04-19):
+**Teaching-first design posture** (the human maintainer 2026-04-19):
 difficult security is a blocker to adoption. Zeta's RBAC aims
 for **zero-config safe defaults** — a new contributor inherits
 a sensible baseline (their persona gets a sensible role, their
@@ -447,7 +447,7 @@ sounds scary; it's just a list in a YAML file.
 **Technical:** The `permissions` field on a role, or the
 direct-grant list on a persona. Evaluated at enforcement
 points; see `Hook`. Zeta's posture is *simple security until
-proven otherwise* (Aaron 2026-04-19) — prefer CODEOWNERS +
+proven otherwise* (the human maintainer 2026-04-19) — prefer CODEOWNERS +
 branch protection + a tiny YAML manifest over a full IAM-style
 policy engine unless attack-surface growth forces the upgrade.
 
@@ -584,7 +584,7 @@ persona's memory folder under
 `~/.claude/projects/<slug>/memory/persona/<name>/` is
 **not** touched. Scope rule: *skills are code, memories are
 valuable* — code retires to git history, memories stay
-in-tree (Aaron 2026-04-20).
+in-tree (the human maintainer 2026-04-20).
 
 ### Unretire (a skill or persona)
 
@@ -659,10 +659,10 @@ A hazard for cold-start personas who discover skills via Glob.
 produce its first useful output on session start. Dominated by
 Tier 0 (shared) files plus the persona's own agent + skill +
 notebook.
-**Technical:** Measured by the AX researcher (Daya) per
+**Technical:** Measured by the AX researcher per
 `docs/WAKE-UP.md` Tier 0 + 1 read sequence; tokens estimated at
 ~4 char/token for English prose, ~3.2 for YAML / skill bodies.
-Per-persona trend published in Daya's notebook.
+Per-persona trend published in the AX researcher's notebook.
 
 ### Idle (agent time-use class)
 
