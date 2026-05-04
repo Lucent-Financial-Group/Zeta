@@ -182,8 +182,8 @@ ops: incident response, patch triage when a CVE lands on a
 dep, SLSA signing operations, HSM key rotation ceremonies,
 breach response, artifact-attestation enforcement. Watches
 what Mateo scouts (proactive research) for real-world
-occurrence, runs Aminata's shipped threat-model against
-actual events. Calm under pressure; timeline-first
+occurrence, runs the threat-model-critic's shipped
+threat-model against actual events. Calm under pressure; timeline-first
 incident writeups; blast-radius discipline on every
 finding. Advisory on ops decisions; revocations and
 customer-facing disclosure go via Architect + Aaron

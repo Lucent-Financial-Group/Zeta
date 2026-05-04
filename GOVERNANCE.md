@@ -693,12 +693,12 @@ than renumbering the rest.
       file is audited on the 5-10 round tune-up cadence
       alongside every SKILL.md, for drift / BP-NN
       citation / scope creep / tone-contract actionability.
-    - **Nadia (prompt-protector) lints it.** Every change
+    - **The prompt-protector lints it.** Every change
       runs the invisible-Unicode + adversarial-input
       sweep before commit. The file lives outside
-      `.claude/skills/`, so Nadia's scope explicitly
-      lists `.github/copilot-instructions.md` as a
-      first-class audit target.
+      `.claude/skills/`, so the prompt-protector's scope
+      explicitly lists `.github/copilot-instructions.md`
+      as a first-class audit target.
     - **Kenji integrates.** Binding changes on the
       Copilot contract (new hard rule, reviewer-floor
       shift, principle edit) need Architect sign-off the
