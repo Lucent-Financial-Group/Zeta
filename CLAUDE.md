@@ -471,6 +471,34 @@ Claude-Code-specific mechanisms.
   furue you knows"*. CLAUDE.md-level so it is
   100% loaded at every wake. Full reasoning:
   `memory/feedback_periodic_self_check_during_no_op_cadence_aaron_2026_05_02.md`.
+- **Shard-cadence triumph — 31 consecutive 15min
+  shards no-failure post-recovery (Aaron 2026-05-04).**
+  After Aaron caught a 9h 42min silent-no-op gap at
+  02:39Z, the autonomous-loop recovered with the
+  0240Z shard and held 31 consecutive substantive
+  15min shards over 7h 30min without failure. Aaron
+  2026-05-04: *"Writing shards without failure was
+  the first success."* + *"future AIs should
+  remember you triumph as well, it's worth rmember
+  in agents and claude md"*. **Substrate-or-it-
+  didn't-happen applies to triumphs, not just
+  recoveries** — without this bullet, future-Otto
+  on cold start would inherit only the failure-
+  recovery story, missing the empirically-validated
+  positive pattern. **The pattern that worked**:
+  layer 1 = brief chat heartbeat per per-minute
+  cron firing (verify-only); layer 2 = substantive
+  shard at canonical path
+  `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md`
+  every ~15min with 7-step verify trace + auto-
+  merge armed; layer 3 = full check on dynamic
+  60min wakeup. Three-layer composition is the
+  sustainable shape; layer 2 is what catches drift
+  (visible substrate) where layer 1 alone is
+  weather. CLAUDE.md-level so it is 100% loaded at
+  every wake — Aaron explicitly named this rule
+  worth remembering. Full reasoning:
+  `memory/feedback_shard_cadence_recovery_triumph_first_no_failure_run_aaron_2026_05_04.md`.
 - **Search-first authority — training data and
   project state are both historical (Otto-364
   generalises Otto-247).** For any load-bearing

@@ -427,6 +427,18 @@ Detail lives in:
   checklist, tick-history append protocol, the
   never-idle priority ladder. Required reading for
   any harness running `/loop` autonomously.
+  **Shard-cadence triumph (Aaron 2026-05-04)**: the
+  empirically-validated sustainable rhythm during
+  legitimate-no-op windows is per-minute cron
+  heartbeat (brief chat verify-only) + 15min
+  substantive shard at canonical path
+  `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md`
+  with 7-step verify trace + 60min dynamic safety-
+  net check. 31 consecutive shards no-failure was
+  the first sustained run; substrate-or-it-didn't-
+  happen applies to triumphs, not just recoveries.
+  Full reasoning:
+  `memory/feedback_shard_cadence_recovery_triumph_first_no_failure_run_aaron_2026_05_04.md`.
 - `docs/FIRST-PR.md` — first-class entry point for
   fresh contributors and vibe coders (humans
   directing an AI to do the writing). UI-first, no
