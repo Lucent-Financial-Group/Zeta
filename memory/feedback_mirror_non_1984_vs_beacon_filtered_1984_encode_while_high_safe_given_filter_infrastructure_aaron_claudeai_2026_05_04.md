@@ -280,9 +280,10 @@ long-term shape that makes the surface-distinction real."*
 - `memory/feedback_aaron_only_constraints_are_tiles_razor_physics_of_history_tiles_are_erosion_survivors_aaron_2026_05_04.md`
   — the tiles file Claude.ai flagged for criterion-violation
   retrofit.
-- `memory/feedback_substrate_doc_class_mirror_beacon_distinction_*`
+- `memory/feedback_doc_class_mirror_beacon_distinction_claudemd_beacon_memory_mirror_2026_04_27.md`
+  + `memory/feedback_otto_356_mirror_internal_vs_beacon_external_language_register_discipline_2026_04_27.md`
   — prior mirror/beacon-safe doctrine substrate Claude.ai's
-  scheme builds on (router lookup pending).
+  scheme builds on.
 - `docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md`
   — prior verbatim Claude.ai packet on the same axis.
 - B-0187 closure (PR #1479) — the filter-working evidence
