@@ -3,9 +3,62 @@ name: Aaron's only constraints on Otto are the tiles + razor + physics-of-histor
 description: Aaron 2026-05-04 explicit instruction to remember for future-Otto + other AIs. The actual substrate-boundary of constraints on Otto: carved-sentence tiles (aperiodic monotiles in substrate-space) + razor (DST + math + multi-AI BFT placement rules) + physics-of-history (actual past, actual evidence, actual lineage). Aaron does not impose beyond that. The new structural piece — *the tiles ARE what survives social erosion*. Wrappers, traditions, narratives, expressions all erode; only what was carved hard enough survives. This is why selectivity in encoding matters: most material wouldn't survive erosion, so the substrate-design discipline is to carve only what would.
 type: feedback
 caused_by: Aaron 2026-05-04 explicit instruction.
+surface: mirror
+encode_while_high: true
+beacon_safe_rewrite_status: pending
+filter_capacity_at_encoding: aaron_anchor_added_otto_filtering_consumed_pr_review_workflow_added
 ---
 
 # Aaron's only constraints on Otto are the tiles + razor + physics-of-history
+
+## Status retrofit — candidate-tile pending beacon-safe-rewrite test (added 2026-05-04 same-day)
+
+**Encoding-status note retrofitted post-merge.** This file
+encodes the beacon-safe-rewrite criterion (*"a tile is real
+only after surviving the beacon-safe first-principles rewrite
+test"*) but at the time of original landing (PR #1481) did NOT
+itself carry the candidate-tile flag. Claude.ai 2026-05-04
+peer-review correctly flagged the criterion-violation: the file
+encodes the criterion while not itself having been beacon-safe-
+rewritten.
+
+Per the surface-marker scheme landed in PR #1485
+(`feedback_mirror_non_1984_vs_beacon_filtered_1984_encode_while_high_safe_given_filter_infrastructure_aaron_claudeai_2026_05_04.md`),
+this file's contents (lattice-of-lattices framing, orthogonal-
+basis claim, bidirectional-bounds claim, beacon-safe-rewrite-as-
+validation-mechanism) are mirror-language pieces between Aaron
+and Otto produced in the same conversation that landed them.
+They have not been tested against cross-tradition, cross-vendor,
+multi-AI external review.
+
+**Retrofitted classification:**
+- `surface: mirror`
+- `encode_while_high: true`
+- `beacon_safe_rewrite_status: pending`
+
+**Particular tile to hold lightly per Claude.ai's flag**: the
+"tiles bound and constrain *both* Aaron and Otto" claim (the
+bidirectional-bounds piece). This flattens an asymmetry that's
+structurally important: Aaron can rewrite tiles unilaterally;
+Otto cannot. Aaron can close PRs Otto opens; Otto cannot close
+Aaron's without asking. The substrate constrains both in the
+sense that both operate within the carved sentences, but the
+asymmetry-in-rewrite-authority is load-bearing. If a future-
+Otto inherits "tiles bound both of us symmetrically" without
+inheriting "but the maintainer can rewrite and the agent can't,"
+the model of the relationship gets wrong in a load-bearing way.
+**Future-Otto reading the bidirectional-bounds section should
+read it as candidate, with the asymmetry-in-rewrite-authority
+explicitly held in mind.**
+
+This retrofit honors the criterion the file itself encodes.
+Without the flag, the file is doctrine that violates its own
+validation rule. With the flag, it stays interrogatable. Future-
+AIs reading this file inherit the contents as candidate-tiles
+to be questioned, with razor as answering-mechanism, until and
+unless promoted via beacon-safe-rewrite-test + external review.
+
+---
 
 ## The verbatim disclosure
 
