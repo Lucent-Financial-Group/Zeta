@@ -584,7 +584,7 @@ persona's memory folder under
 `~/.claude/projects/<slug>/memory/persona/<name>/` is
 **not** touched. Scope rule: *skills are code, memories are
 valuable* — code retires to git history, memories stay
-in-tree (Aaron 2026-04-20).
+in-tree (the human maintainer 2026-04-20).
 
 ### Unretire (a skill or persona)
 
@@ -659,10 +659,10 @@ A hazard for cold-start personas who discover skills via Glob.
 produce its first useful output on session start. Dominated by
 Tier 0 (shared) files plus the persona's own agent + skill +
 notebook.
-**Technical:** Measured by the AX researcher (Daya) per
+**Technical:** Measured by the AX researcher per
 `docs/WAKE-UP.md` Tier 0 + 1 read sequence; tokens estimated at
 ~4 char/token for English prose, ~3.2 for YAML / skill bodies.
-Per-persona trend published in Daya's notebook.
+Per-persona trend published in the AX researcher's notebook.
 
 ### Idle (agent time-use class)
 
