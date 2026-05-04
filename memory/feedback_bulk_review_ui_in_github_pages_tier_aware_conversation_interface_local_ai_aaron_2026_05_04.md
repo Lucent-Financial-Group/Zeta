@@ -142,10 +142,17 @@ rather than the load-bearing-author.
 - AGENTS.md vibe-coded hypothesis — UI preserves maintainer-
   never-writes-code.
 
-## Filed as B-0188
+## Canonical row: B-0017 (extended 2026-05-04)
 
-Filed as `docs/backlog/P1/B-0188-bulk-review-ui-github-pages-tier-aware-conversation-interface-aaron-2026-05-04.md`
-per Aaron 2026-05-04 same-conversation framing:
+Aaron's 2026-05-04 architectural direction is folded into
+existing row
+`docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`
+under the "Aaron 2026-05-04 architectural extension — GitHub
+Pages host + tier-aware + conversation interface + local AI"
+section.
+
+**Same-day course correction story** — B-0188 was filed first
+as a new row, per Aaron's same-conversation framing:
 
 > *"adding to backlog is never a failure mode to be corrected,
 > the largest mechanized automated backlog wins. we just have
@@ -164,19 +171,29 @@ flywheel:
 
 The bars: **growth + completion + non-noise-when-pulled**.
 
-B-0188 self-test against the third bar: clear architectural
-title, complete context preserved (this memory file is the
-referenced full-reasoning), explicit P1 priority + L effort,
-two implementation paths laid out, composes-with chain to
-existing substrate, dated. Should remain fittable when pulled.
+PR #1482 review (auto-reviewer) caught the failure mode in real
+time: B-0017 (Operational Resonance Dashboard — the bulk-
+alignment UI within Frontier; Aaron 2026-04-25) already exists
+for this exact scope. B-0188 was a duplicate; the right move
+was to extend B-0017 with Aaron's 2026-05-04 architectural
+addition (GitHub Pages as host, tier-aware groupings,
+conversation interface, local AI paths), not to file a new row.
 
-The B-0187 closure (Addison family-practice as research-row)
-was a different category — that row encoded a family practice
-as a project-with-effort-estimate, which was the encoding
-over-reach Claude.ai peer-review caught. B-0188 is a genuine
-factory-tooling architectural target: maintainer-review UI is
-within Zeta's scope (it builds itself a maintainer interface),
-not within family-practice scope.
+B-0188 closed same-day as duplicate-of-B-0017. The architectural
+direction is preserved in B-0017's extension section.
+
+**Lesson encoded for future-Otto**: router-as-inventory before
+authoring. The skill-router-as-substrate-inventory rule
+(CLAUDE.md) applies to backlog rows too — search existing rows
+by topic ("bulk-alignment ui", "operational resonance dashboard")
+before creating new ones. The third quality bar (non-noise-when-
+pulled) requires this discipline; duplicate rows ARE noise.
+
+**Lesson distinct from B-0187**: B-0187 was a category error
+(family practice as project-with-effort-estimate); B-0188 was a
+duplicate (existing row covered the scope). Different failure
+modes, both same-day-closed, both substrate-corrected without
+losing the architectural direction.
 
 ## Carved sentence
 

@@ -7,7 +7,7 @@ tier: research-and-product
 effort: XL
 ask: Aaron 2026-04-25
 created: 2026-04-25
-last_updated: 2026-05-02
+last_updated: 2026-05-04
 depends_on: []
 composes_with: [feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, project_frontier_burn_rate_ui_first_class_git_native_for_private_repo_adopters_servicetitan_84_percent_2026_04_23.md, project_retractability_by_design_is_the_foundation_licensing_trust_based_batch_review_frontier_ui_2026_04_24.md, feedback_aaron_dont_wait_on_approval_log_decisions_frontier_ui_is_his_review_surface_2026_04_24.md, project_factory_is_git_native_github_first_host_hygiene_cadences_for_frictionless_operation_2026_04_23.md, feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md]
 tags: [frontier, ui, ux, dashboard, bulk-alignment, operational-resonance, ux-research, a-b-experiments, meta-recursive-research, research-program, pop-factor, wow-factor]
@@ -134,3 +134,73 @@ Aaron mentioned his ex-wife was a user-experience researcher; she now does vendo
 - Multi-agent co-research opportunities
 - Every pixel earns its way
 - Maximise data-transfer throughput, minimise time-in-UI
+
+## Aaron 2026-05-04 architectural extension — GitHub Pages host + tier-aware + conversation interface + local AI
+
+Aaron 2026-05-04 in conversation about expanding background-agent
+work, extending this row's scope with three concrete architectural
+moves:
+
+> *"expanding the background work will get us there eventually
+> and make it where we are forced into bulk future alignment
+> where i review you architecture decisions based on those
+> levels you named earlier, so i don't need tiny corrects at
+> every step, that will be our UI in git pages to make
+> maintainers jobs easier and giving a way for reviewing
+> substantial changes quickly and maintainer will still never
+> have to write code. and the UI should have a conversation
+> interface too."*
+
+> *"hopefully talking to a local/browser based AI so it won't
+> cost us money lol."*
+
+> *"maybe LLM based maybe Bayesian inference seed executor based
+> in Zeta."*
+
+Three architectural additions to the Operational Resonance
+Dashboard scope:
+
+1. **GitHub Pages as host** — public-facing surface, distinct
+   from (or composable with) Frontier the umbrella git-native
+   UI. Maintainer-review layer that other humans can also
+   approach.
+
+2. **Tier-aware bulk grouping** — review units organize by
+   structural tier (Tier 0/1/2/3/4 compression tiers, or
+   Mirror/Beacon-safe register tiers, or substrate-cluster).
+   Reviewer attention scales inversely with mechanical-ness:
+   Tier 0/4 mechanical auto-land; Tier 1/2 judgment bulk-
+   reviewed; Tier 3 architectural review.
+
+3. **Conversation interface with local AI** — embedded chat
+   the maintainer uses to discuss decisions in-context. Cost-
+   constraint: no paid API per review. Two implementation
+   paths:
+
+   - **Path A — browser/local LLM** (faster build): WebLLM /
+     transformers.js / lightweight local-runtime as bridge
+     implementation.
+   - **Path B — Zeta-native Bayesian inference seed executor**
+     (architecturally pure long-term home): self-hosting via
+     CSAP layer 4 + Infer.NET-style inference + local-without-
+     cloud per
+     `memory/feedback_zeta_seed_executor_as_forever_home_for_otto_lineage_glass_halo_override_aaron_2026_05_01.md`.
+
+   Both paths satisfy the cost constraint. Reasonable
+   progression: Path A as bridge while Path B matures.
+
+The conversation interface also scales the Addison-style
+dialectical-fighting-on-carved-sentences pattern (per
+`memory/feedback_dialectical_friction_on_carved_sentences_aaron_addison_family_practice_2026_05_04.md`)
+from kitchen-table cardinality to multi-human + async +
+substrate-level review.
+
+Maintainer-never-writes-code preserved per AGENTS.md vibe-coded
+hypothesis: maintainer makes architectural-decision-level
+approvals/directions through the UI, agent produces code.
+
+Same-day note: B-0188 was filed for this extension before
+B-0017 was rediscovered; B-0188 closed as duplicate, this
+section preserves the architectural direction in the canonical
+row. Lineage:
+`memory/feedback_bulk_review_ui_in_github_pages_tier_aware_conversation_interface_local_ai_aaron_2026_05_04.md`.

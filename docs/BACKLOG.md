@@ -54,7 +54,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0181](backlog/P1/B-0181-fix-spinemergeinvariants-tla-counterexample-blocks-b1-ci-registration-2026-05-03.md)** Fix SpineMergeInvariants.tla counterexample (closed — Cascade downstream-room precondition + state constraint; B1 → A CI registration landed)
 - [x] **[B-0184](backlog/P1/B-0184-fix-spine-als-alloy-6-2-0-type-error-line-35-spec-bug-2026-05-03.md)** Fix Spine.als spec bug — Alloy 6.2.0 type-check failure at line 35 col 25 (sum-vs-all comprehension confusion) + check-vs-run-vs-fact semantic confusion
 - [ ] **[B-0186](backlog/P1/B-0186-budget-snapshot-cadence-jq-argjson-failure-2026-05-03.md)** budget-snapshot-cadence workflow jq --argjson failure on first natural-Sunday fire post-B-0085-close (2026-05-03)
-- [ ] **[B-0188](backlog/P1/B-0188-bulk-review-ui-github-pages-tier-aware-conversation-interface-aaron-2026-05-04.md)** Bulk-review UI in GitHub Pages — tier-aware + conversation interface + local AI (Aaron 2026-05-04)
+- [x] **[B-0188](backlog/P1/B-0188-bulk-review-ui-github-pages-tier-aware-conversation-interface-aaron-2026-05-04.md)** Bulk-review UI in GitHub Pages — closed 2026-05-04 same-day as duplicate of B-0017; architectural extension folded into B-0017
 
 ## P2 — research-grade
 
