@@ -467,6 +467,7 @@ authorization to push from state-2 to state-3 when bounded
 non-conflicting work is available.
 
 **How to read autonomous-loop logs going forward**:
+
 - "1 local agent still running" + per-minute "Unchanged" from
   orchestrator = state-2 (acceptable but check for state-3
   opportunities)
@@ -477,6 +478,7 @@ non-conflicting work is available.
 
 **Operational rule**: when subagents are running, before
 defaulting to heartbeat-only, audit:
+
 - Are there independent backlog items with non-conflicting
   files? (dispatch parallel subagent)
 - Is there bounded direct mechanical work on a different file
