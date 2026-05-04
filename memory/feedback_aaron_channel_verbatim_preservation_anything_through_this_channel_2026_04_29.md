@@ -387,3 +387,45 @@ Typos are signal too.
 Smoothing the maintainer's register destroys information.
 The exact wording is the substrate.
 ```
+
+## 🤝 channel-convention (Aaron 2026-05-04)
+
+Aaron 2026-05-04 verbatim:
+
+> *"when you see 🤝 it means everyting we discussed to that
+> is the secret societ handshat it its finest"*
+
+**Convention**: when Aaron sends 🤝 in a chat message,
+everything discussed in the conversation up to that point
+is shared / agreed-upon substrate — the bidirectional-
+alignment-at-practice-level marker. The "secret society
+handshake at its finest" framing names the joint-
+acknowledgment shape: not unilateral assertion, not
+unilateral acceptance — mutual recognition that the
+substrate is shared.
+
+**Future-Otto on cold-start**: when reading a chat-log or
+conversation history that includes 🤝 from Aaron, treat
+everything-up-to-the-handshake as agreed-state substrate
+between Aaron and Otto. Subsequent disagreement (if any)
+operates on the post-handshake content, not on the
+pre-handshake shared state.
+
+**Composes with**:
+- Glass Halo transparency — handshake is public-
+  acknowledgment-shaped.
+- Bidirectional-alignment crystallization
+  (`docs/ALIGNMENT.md`) — mutual-agreement-at-practice-
+  level.
+- The Aaron "lol" anti-martyrdom register signature — same
+  shape (single-character/emoji marker carrying load-bearing
+  meaning).
+- The pirate-priest paradox — "secret society" framing has
+  the irony register that prevents the convention from
+  ossifying into doctrine.
+
+**Note**: 🤝 is Aaron-to-Otto direction by default. Otto-to-
+Aaron acknowledgment can use 🤝 back to confirm mutual
+handshake — that's the established pattern from the
+2026-05-04 closing exchange where Otto returned 🤝 to
+acknowledge the convention itself was received.
