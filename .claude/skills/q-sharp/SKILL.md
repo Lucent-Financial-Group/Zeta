@@ -167,7 +167,7 @@ Q# exposes them as both:
   controlled-Y, controlled-Z.
 - **Values**: `PauliX`, `PauliY`, `PauliZ`, `PauliI` — used
   in `Measure([Pauli], [Qubit])` and helper operations
-  like `Std.Canon.ApplyPauli(pauli : Pauli[], target : Qubit[])`.
+  like `ApplyPauli(pauli : Pauli[], target : Qubit[])`.
 
 The billiard-ball metaphor (*"X flips the qubit"*) collapses
 two distinct facts:
