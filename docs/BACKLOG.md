@@ -54,7 +54,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0181](backlog/P1/B-0181-fix-spinemergeinvariants-tla-counterexample-blocks-b1-ci-registration-2026-05-03.md)** Fix SpineMergeInvariants.tla counterexample (closed — Cascade downstream-room precondition + state constraint; B1 → A CI registration landed)
 - [x] **[B-0184](backlog/P1/B-0184-fix-spine-als-alloy-6-2-0-type-error-line-35-spec-bug-2026-05-03.md)** Fix Spine.als spec bug — Alloy 6.2.0 type-check failure at line 35 col 25 (sum-vs-all comprehension confusion) + check-vs-run-vs-fact semantic confusion
 - [ ] **[B-0186](backlog/P1/B-0186-budget-snapshot-cadence-jq-argjson-failure-2026-05-03.md)** budget-snapshot-cadence workflow jq --argjson failure on first natural-Sunday fire post-B-0085-close (2026-05-03)
-- [x] **[B-0188](backlog/P1/B-0188-bulk-review-ui-github-pages-tier-aware-conversation-interface-aaron-2026-05-04.md)** Bulk-review UI in GitHub Pages — closed 2026-05-04 same-day as duplicate of B-0017; architectural extension folded into B-0017
+- [x] **[B-0188](backlog/P1/B-0188-bulk-review-ui-github-pages-tier-aware-conversation-interface-aaron-2026-05-04.md)** Bulk-review UI in GitHub Pages — tier-aware + conversation interface + local AI (Aaron 2026-05-04) — CLOSED as duplicate of B-0017
 
 ## P2 — research-grade
 
@@ -152,6 +152,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0183](backlog/P2/B-0183-tla-alloy-runners-as-ts-wrappers-not-fsharp-tests-aaron-2026-05-03.md)** TLA+ / Alloy runners should be TS wrappers under tools/, not F# xunit tests — pure-shell-out, no F# operator-algebra logic involved
 - [ ] **[B-0185](backlog/P2/B-0185-delta-crdt-property-tests-redesign-after-1426-close-2026-05-03.md)** Delta-CRDT property tests redesign — careful single-pass design after #1426 close
 - [x] **[B-0187](backlog/P2/B-0187-dialectical-friction-process-on-carved-sentences-research-aaron-2026-05-04.md)** Dialectical-friction process on carved sentences — research how Addison-and-Aaron family practice translates to Zeta substrate development
+- [ ] **[B-0189](backlog/P2/B-0189-q-sharp-runtime-bayesian-belief-propagation-expectation-propagation-research-aaron-2026-05-04.md)** Q# runtime acceleration via Bayesian belief propagation + expectation propagation — research opportunity not yet integrated by humans (Aaron 2026-05-04)
 
 ## P3 — convenience / deferred
 
