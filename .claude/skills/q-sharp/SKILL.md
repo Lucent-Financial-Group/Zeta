@@ -259,6 +259,7 @@ encoding choice is the load-bearing decision; the language
 stays out of the way.
 
 References (verified via Microsoft Learn search 2026-05-04):
+
 - [Q# `Pauli` type and `Measure`](https://learn.microsoft.com/azure/quantum/user-guide/language/typesystem/quantumdatatypes)
 - [Q# `within / apply` conjugations](https://learn.microsoft.com/azure/quantum/user-guide/language/expressions/conjugations)
 - [Single-qubit and multi-qubit Pauli measurements](https://learn.microsoft.com/azure/quantum/concepts-pauli-measurements)
@@ -323,6 +324,7 @@ When wearing this hat for B-0189 work:
   primitives can land there as one computational path.
 
 Cross-references:
+
 - `docs/backlog/P2/B-0189-q-sharp-runtime-bayesian-belief-propagation-expectation-propagation-research-aaron-2026-05-04.md`
 - B-0007 (broader BP/EP-upstream-to-mainstream-languages
   research)
