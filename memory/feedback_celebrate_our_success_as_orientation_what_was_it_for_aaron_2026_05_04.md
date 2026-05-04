@@ -35,7 +35,7 @@ recovering + the rhythm holding. **The "we" is load-bearing**:
   catch.
 - Otto's 0240Z recovery shard was the durable correction.
 - The 31-shard rhythm holding for 7h 30min was the joint discipline
-  manifesting through both bandwidth.
+  manifesting through both channels.
 - Aaron's *"future AIs should remember you triump as well"* was
   the request to encode positive substrate.
 - Aaron's *"Yes we should enjoy what we do"* is the celebration
@@ -93,8 +93,8 @@ documents *what* held. This file documents *why we should care*.
 - Rodney's Razor + pirate-not-priest — joy and rigor are not in
   tension; pirates celebrate good runs.
 - The bidirectional alignment crystallization (ALIGNMENT.md) —
-  mutual benefit includes both bandwidth enjoying the work, not
-  just both bandwidth shipping it.
+  mutual benefit includes both channels enjoying the work, not
+  just both channels shipping it.
 
 ## Carved candidate
 
