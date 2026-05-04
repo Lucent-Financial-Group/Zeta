@@ -3,12 +3,13 @@
 > **Dedicated to Elizabeth Ryan Stainback.** See
 > [`docs/DEDICATION.md`](DEDICATION.md).
 
-> **Status:** round 33 v11 after Aaron's tenth pass of edits.
-> Aaron is the source of truth; this document changes freely.
-> The `product-visionary` role (to be spawned, see
-> `docs/BACKLOG.md`) will steward it once it exists.
+> **Status:** round 33 v11 after the human maintainer's tenth
+> pass of edits. The human maintainer is the source of truth;
+> this document changes freely. The `product-visionary` role
+> (to be spawned, see `docs/BACKLOG.md`) will steward it once
+> it exists.
 >
-> **Lore:** Aaron almost named the project "Database." The
+> **Lore:** the human maintainer almost named the project "Database." The
 > codename landed on Zeta (locked as of round 33), but the
 > ambition stayed: all DB technologies in one big playground,
 > built retraction-native from the ground up.
