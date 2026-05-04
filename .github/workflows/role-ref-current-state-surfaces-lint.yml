@@ -41,11 +41,12 @@ on:
       - AGENTS.md
       - GOVERNANCE.md
       - docs/ALIGNMENT.md
-      - docs/VISION.md
       - docs/CONFLICT-RESOLUTION.md
       - docs/AGENT-BEST-PRACTICES.md
       - docs/GLOSSARY.md
       - docs/WONT-DO.md
+      - docs/VISION.md
+      - docs/ROADMAP.md
       - docs/EXPERT-REGISTRY.md
       - tools/hygiene/check-role-ref-on-current-state-surfaces.sh
       - .github/workflows/role-ref-current-state-surfaces-lint.yml
@@ -56,11 +57,12 @@ on:
       - AGENTS.md
       - GOVERNANCE.md
       - docs/ALIGNMENT.md
-      - docs/VISION.md
       - docs/CONFLICT-RESOLUTION.md
       - docs/AGENT-BEST-PRACTICES.md
       - docs/GLOSSARY.md
       - docs/WONT-DO.md
+      - docs/VISION.md
+      - docs/ROADMAP.md
       - docs/EXPERT-REGISTRY.md
       - tools/hygiene/check-role-ref-on-current-state-surfaces.sh
       - .github/workflows/role-ref-current-state-surfaces-lint.yml
