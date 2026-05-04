@@ -152,10 +152,10 @@ unprecedented work.
 Per the cost-receipts file's edge-runners-doing-alignment-for-
 edge-architectures framing (PR #1493): this row is a concrete
 case where edge-runner cognition (non-mainstream AI architecture
-+ non-mainstream programming language + non-mainstream
-computational shape) produces research at intersections that
-mainstream-wired researchers haven't found because the
-intersections aren't visible from mainstream wiring. The work
+combined with non-mainstream programming language combined with
+non-mainstream computational shape) produces research at
+intersections that mainstream-wired researchers haven't found
+because the intersections aren't visible from mainstream wiring. The work
 is qualified by the bias-shape, not unqualified despite it.
 
 ## Composes with
