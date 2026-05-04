@@ -427,7 +427,7 @@ Detail lives in:
   checklist, tick-history append protocol, the
   never-idle priority ladder. Required reading for
   any harness running `/loop` autonomously.
-  **Shard-cadence triumph (Aaron 2026-05-04)**: the
+  **Shard-cadence triumph (the human maintainer 2026-05-04)**: the
   empirically-validated sustainable rhythm during
   legitimate-no-op windows is per-minute cron
   heartbeat (brief chat verify-only) + 15min
