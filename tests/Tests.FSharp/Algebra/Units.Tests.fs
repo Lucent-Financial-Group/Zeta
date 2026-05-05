@@ -1,0 +1,136 @@
+module Zeta.Core.Tests.Algebra.UnitsTests
+
+open Xunit
+open Zeta.Core
+open Zeta.Core.Units
+
+// ============================================================================
+// Rounding semantics for wallToLogical / wallToLogicalFloor / wallToLogicalCeil.
+// Pin the contract -- these are easy to silently change later, and the
+// difference matters at tick boundaries.
+// ============================================================================
+
+[<Fact>]
+let ``wallToLogical truncates toward zero (positive duration)`` () =
+    let rate = 10.0<ms/tick>  // 10 ms per tick
+    let d = 25.0<ms>           // 2.5 ticks worth
+    let result = wallToLogical rate d
+    Assert.Equal(2L<tick>, result)  // truncated, not rounded
+
+[<Fact>]
+let ``wallToLogical truncates toward zero (negative duration)`` () =
+    let rate = 10.0<ms/tick>
+    let d = -25.0<ms>          // -2.5 ticks
+    let result = wallToLogical rate d
+    Assert.Equal(-2L<tick>, result)  // truncates toward 0, not toward -inf
+
+[<Fact>]
+let ``wallToLogicalFloor rounds toward negative infinity`` () =
+    let rate = 10.0<ms/tick>
+
+    // Positive: same as truncation
+    Assert.Equal(2L<tick>, wallToLogicalFloor rate 25.0<ms>)
+
+    // Negative: differs from truncation -- rounds AWAY from zero
+    Assert.Equal(-3L<tick>, wallToLogicalFloor rate -25.0<ms>)
+
+[<Fact>]
+let ``wallToLogicalCeil rounds toward positive infinity`` () =
+    let rate = 10.0<ms/tick>
+
+    // Positive: rounds AWAY from zero
+    Assert.Equal(3L<tick>, wallToLogicalCeil rate 25.0<ms>)
+
+    // Negative: same as truncation (rounds toward 0)
+    Assert.Equal(-2L<tick>, wallToLogicalCeil rate -25.0<ms>)
+
+[<Fact>]
+let ``wallToLogical exact tick boundary returns exact tick count`` () =
+    let rate = 10.0<ms/tick>
+    let d = 30.0<ms>           // exactly 3 ticks
+    Assert.Equal(3L<tick>, wallToLogical rate d)
+    Assert.Equal(3L<tick>, wallToLogicalFloor rate d)
+    Assert.Equal(3L<tick>, wallToLogicalCeil rate d)
+
+[<Fact>]
+let ``wallToLogical rejects zero rate`` () =
+    let rate = 0.0<ms/tick>
+    let d = 25.0<ms>
+    Assert.Throws<System.ArgumentException>(fun () -> wallToLogical rate d |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``wallToLogical rejects negative rate`` () =
+    let rate = -1.0<ms/tick>
+    let d = 25.0<ms>
+    Assert.Throws<System.ArgumentException>(fun () -> wallToLogical rate d |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``wallToLogicalFloor rejects zero/negative rate`` () =
+    Assert.Throws<System.ArgumentException>(fun () ->
+        wallToLogicalFloor 0.0<ms/tick> 25.0<ms> |> ignore)
+    |> ignore
+    Assert.Throws<System.ArgumentException>(fun () ->
+        wallToLogicalFloor -1.0<ms/tick> 25.0<ms> |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``wallToLogicalCeil rejects zero/negative rate`` () =
+    Assert.Throws<System.ArgumentException>(fun () ->
+        wallToLogicalCeil 0.0<ms/tick> 25.0<ms> |> ignore)
+    |> ignore
+    Assert.Throws<System.ArgumentException>(fun () ->
+        wallToLogicalCeil -1.0<ms/tick> 25.0<ms> |> ignore)
+    |> ignore
+
+// ============================================================================
+// Conversion round-trips: probToPct / pctToProb.
+// ============================================================================
+
+[<Fact>]
+let ``probToPct then pctToProb is identity (within float tolerance)`` () =
+    let original = 0.95<prob>
+    let roundTrip = original |> probToPct |> pctToProb
+    Assert.Equal(float original, float roundTrip, 10)
+
+[<Fact>]
+let ``probToPct produces 100 for prob 1`` () =
+    Assert.Equal(100.0<pct>, probToPct 1.0<prob>)
+
+[<Fact>]
+let ``pctToProb produces 0 for pct 0`` () =
+    Assert.Equal(0.0<prob>, pctToProb 0.0<pct>)
+
+// ============================================================================
+// Algebra cancellation: per_tick * tick is dimensionless.
+// ============================================================================
+
+[<Fact>]
+let ``expectedArrivals algebra cancels per_tick * tick`` () =
+    let rate = 0.05<per_tick>
+    let window = 100L<tick>
+    // 0.05 per tick * 100 ticks = 5.0 dimensionless
+    Assert.Equal(5.0, expectedArrivals rate window, 10)
+
+// ============================================================================
+// applyDelta: signed weight + signed delta produces signed weight.
+// ============================================================================
+
+[<Fact>]
+let ``applyDelta accumulates positive delta`` () =
+    let state = 10L<weight>
+    let d = 3L<delta>
+    Assert.Equal(13L<weight>, applyDelta state d)
+
+[<Fact>]
+let ``applyDelta accumulates negative delta (retraction)`` () =
+    let state = 10L<weight>
+    let d = -3L<delta>
+    Assert.Equal(7L<weight>, applyDelta state d)
+
+[<Fact>]
+let ``applyDelta below zero is allowed (signed weight)`` () =
+    let state = 1L<weight>
+    let d = -5L<delta>
+    Assert.Equal(-4L<weight>, applyDelta state d)

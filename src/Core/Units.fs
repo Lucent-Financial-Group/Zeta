@@ -38,9 +38,14 @@ module Units =
     [<Measure>]
     type weight
 
-    /// Unsigned count of distinct elements. Always >= 0 by construction.
-    /// Combining with `weight` requires explicit conversion at the call site
-    /// (which is the point: you have to think about retraction semantics).
+    /// Count of distinct elements -- expected to be >= 0 by discipline,
+    /// not by UoM enforcement. UoM tags the *kind* (cardinality vs
+    /// weight); the underlying numeric type (typically `int` or `int64`)
+    /// is what carries signedness. A `cardinality`-tagged value being
+    /// non-negative is a contract callers maintain, not a property the
+    /// type system can prove. Combining with `weight` requires explicit
+    /// conversion at the call site (which is the point: you have to
+    /// think about retraction semantics).
     [<Measure>]
     type cardinality
 
@@ -130,17 +135,23 @@ module Units =
     /// far" is the dominant query shape; truncation gives the conservative
     /// answer.
     let wallToLogical (rate: float<ms/tick>) (d: float<ms>) : int64<tick> =
+        if float rate <= 0.0 then
+            invalidArg "rate" $"rate must be positive (got %f{float rate})"
         LanguagePrimitives.Int64WithMeasure<tick> (int64 (d / rate))
 
     /// Same as `wallToLogical` but with explicit floor rounding (always
     /// rounds toward negative infinity; matches truncation for non-negative
     /// inputs but differs for negative durations).
     let wallToLogicalFloor (rate: float<ms/tick>) (d: float<ms>) : int64<tick> =
+        if float rate <= 0.0 then
+            invalidArg "rate" $"rate must be positive (got %f{float rate})"
         LanguagePrimitives.Int64WithMeasure<tick> (int64 (System.Math.Floor (float (d / rate))))
 
     /// Same as `wallToLogical` but with explicit ceiling rounding (always
     /// rounds toward positive infinity).
     let wallToLogicalCeil (rate: float<ms/tick>) (d: float<ms>) : int64<tick> =
+        if float rate <= 0.0 then
+            invalidArg "rate" $"rate must be positive (got %f{float rate})"
         LanguagePrimitives.Int64WithMeasure<tick> (int64 (System.Math.Ceiling (float (d / rate))))
 
     /// Convert milliseconds to nanoseconds (always safe; deterministic factor).
