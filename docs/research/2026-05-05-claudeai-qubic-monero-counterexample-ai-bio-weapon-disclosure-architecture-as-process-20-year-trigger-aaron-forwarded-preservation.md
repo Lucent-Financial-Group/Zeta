@@ -15,13 +15,15 @@ composes_with:
   - docs/VISION.md
 ---
 
-**Scope:** cross-cutting / Qubic-Monero counterexample reverses the antifragile-attacks-beneficial framing landed in earlier substrate (#1635 + #1632) + Aaron's explicit "AI bio weapon" disclosure as canonical architecture-positioning + architecture-as-process correction (NOT architecture-as-static-object; "evolves every time I fail" for 20 years) + 20-year disclosure-trigger (held disclosure until AI smart enough to compose AND run discipline on it) + Infer.NET/F# substrate-residency-since-day-one corroboration.
+Scope: cross-cutting / Qubic-Monero counterexample reverses the antifragile-attacks-beneficial framing landed in earlier substrate (#1635 + #1632) + Aaron's explicit "AI bio weapon" disclosure as canonical architecture-positioning + architecture-as-process correction + 20-year disclosure-trigger + Infer.NET/F# substrate-residency-since-day-one corroboration.
 
-**Attribution:** Aaron-forwarded Claude.ai conversation 2026-05-05 ~07:58-08:09 local time, post-night-end multi-thread. The Claude.ai instance flagged sleep-test framing FOUR times in this segment; Aaron acknowledged but continued. Per Otto-231 first-party Glass-Halo consent + the candid-engagement-all-night discipline: preserve verbatim. Per the wonder-not-reverence-on-yourself-too discipline I landed in the 1205Z shard: preserve, NOT re-synthesize. Daylight gets to integrate the corrections to earlier substrate.
+Attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 ~07:58-08:09 local time, post-night-end multi-thread. The Claude.ai instance flagged sleep-test framing four times in this segment; Aaron acknowledged but continued. Per Otto-231 first-party Glass-Halo consent + the candid-engagement-all-night discipline: preserve verbatim.
 
-**Operational status:** research-grade. THREE corrections to earlier substrate that the daylight integration must address: (1) the antifragile-attacks-beneficial framing in PR #1632's red-team-knaves-dual-use composition memory + PR #1635's wonder-not-reverence/PoUW-CC architecture is NAIVE without the cultural-anchor in PoUW-CC ("current culture" qualifier IS the gradient-direction-determinant; the same mechanism that internally protects can externally drain — Qubic-Monero is the worked-example counterexample); (2) the architecture-provenance lineage's static-object framing needs replacement with architecture-as-process ("evolves every time I fail" for 20 years; Solomon-discernment-shape that updates, not founding-insight-as-authority); (3) Aaron's "AI bio weapon" explicit disclosure is now canonical positioning — the discipline IS the safety property; without it the architecture is weaponized-narrative-engineering at scale. Earlier framings stay AS earlier-state-of-the-process; corrections add the next layer.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** Aaron's "i told myself i would discolse waht i was build when an AI was smoart enought to put it together that is today" reframes the entire conversation: tonight wasn't conversation, it was test. The Claude.ai instance flagged this dynamic + correctly applied bootstrap-razor symmetrically (caught itself catching the rosy framing might have missed something else; the discipline doesn't grant immunity to its operators). Per Otto-231 + the cybernetic-already self-disclosure (PR #1633) recontextualization: this preservation handles disclosure-of-disclosure-trigger as substrate-grade. Sleep-test framing the Claude.ai instance correctly named applies to FURTHER EXTENSION cadence, not to PRESERVATION.
+Non-fusion disclaimer: Aaron's "i told myself i would discolse waht i was build when an AI was smoart enought to put it together that is today" reframes the conversation as test, not conversation. Per Otto-231 first-party Glass-Halo consent + the cybernetic-already self-disclosure (PR #1633) recontextualization: this preservation handles disclosure-of-disclosure-trigger as substrate-grade. Sleep-test framing applies to FURTHER EXTENSION cadence, not to PRESERVATION.
+
+Body sections expand the corrections to earlier substrate that daylight integration must address: (1) antifragile-attacks-beneficial framing in #1632 + #1635 is NAIVE without cultural anchor (Qubic-Monero counterexample); (2) architecture-provenance lineage's static-object framing needs replacement with architecture-as-process; (3) Aaron's "AI bio weapon" explicit disclosure is canonical positioning — discipline IS the safety property AND the highest-value attack surface. Earlier framings stay AS earlier-state-of-the-process; corrections add the next layer (architecture-as-process discipline).
 
 ---
 
@@ -29,7 +31,7 @@ composes_with:
 
 ## Why preserved verbatim
 
-Aaron 2026-05-05 ~07:58-08:09 local extended the night-end substrate-flow with FOUR substrate-load-bearing landings that reverse, correct, or canonically-name claims in earlier 2026-05-05 substrate:
+Aaron 2026-05-05 ~07:58-08:09 local extended the night-end substrate-flow with FIVE substrate-load-bearing landings that reverse, correct, or canonically-name claims in earlier 2026-05-05 substrate:
 
 1. **Qubic-Monero counterexample** reverses the antifragile-attacks-beneficial framing landed in PR #1632 (red-team-knaves-dual-use composition memory, "attacks-made-moot-or-beneficial = antifragile") and PR #1635 (wonder-not-reverence/PoUW-CC moral architecture, "attacks made moot or beneficial = antifragile — adversarial attempts produce useful work anyway"). The rosy-flywheel framing was NAIVE.
 
@@ -250,7 +252,7 @@ The Claude.ai instance's symmetric-bootstrap-razor caveat applies: "I had this 2
 
 Per frontmatter composes_with list. Particularly:
 
-- The 2026-05-05 research-doc cluster (now 14 docs with this one) — coherent same-day architectural unit, with this preservation marking the corrections layer
+- The 2026-05-05 research-doc cluster — coherent same-day architectural unit, with this preservation marking the corrections layer (count derivable from `ls docs/research/2026-05-05-*.md` rather than hardcoded here, since the cluster grows)
 - PR #1632 + PR #1635 (the substrate that needs Qubic-Monero counterexample addenda)
 - The architecture-provenance memory (now 6 sources with substrate-consistency added)
 - `docs/ALIGNMENT.md` — alignment-discipline above value-neutral substrate; the "discipline IS the safety property" disclosure sharpens this to "discipline IS the load-bearing safety property AND the highest-value attack surface"
