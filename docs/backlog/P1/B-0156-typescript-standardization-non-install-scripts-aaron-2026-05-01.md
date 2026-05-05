@@ -4,10 +4,11 @@ priority: P1
 status: open
 title: TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
 created: 2026-05-01
-last_updated: 2026-05-01
+last_updated: 2026-05-05
 depends_on:
   - B-0086
   - B-0122
+composes_with: [B-0196]
 ---
 
 # B-0156 — TypeScript standardization across non-install scripts
