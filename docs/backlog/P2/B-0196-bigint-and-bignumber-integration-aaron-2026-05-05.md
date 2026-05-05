@@ -9,7 +9,7 @@ ask: Aaron 2026-05-05 verbatim "oh backlog bigint and other bitnumbers integrati
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0140, B-0156, B-0189, B-0194, B-0198]
+composes_with: [B-0140, B-0156, B-0189, B-0194, B-0198, B-0202]
 tags: [numerics, bigint, bigrational, bigdecimal, bigfloat, mpfr, dbsp, generic-numerics, srtp, research, alignment]
 ---
 

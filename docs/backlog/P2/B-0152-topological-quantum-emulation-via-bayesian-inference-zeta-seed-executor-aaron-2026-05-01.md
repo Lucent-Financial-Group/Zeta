@@ -6,7 +6,7 @@ title: Topological quantum emulation via Bayesian inference in Zeta seed executo
 created: 2026-05-01
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0199]
+composes_with: [B-0199, B-0202]
 ---
 
 # B-0152 — Topological quantum emulation via Bayesian inference
