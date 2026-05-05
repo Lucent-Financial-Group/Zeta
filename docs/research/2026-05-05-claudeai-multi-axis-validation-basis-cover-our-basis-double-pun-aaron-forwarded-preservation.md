@@ -4,6 +4,14 @@ date: 2026-05-05
 scope: cross-cutting / measurement-discipline-extension + meta-cognitive-skill-disclosure
 attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 (~06:22-06:25 local time, two-message extension)
 operational-status: research-grade
+composes_with:
+  - docs/research/2026-05-05-claudeai-girard-mimetic-theory-zeta-closes-thiel-hsieh-failure-mode-dora-correction-aaron-forwarded-preservation.md
+  - docs/research/2026-05-05-claudeai-social-memes-precision-narrative-mom-skill-apprenticeship-aaron-forwarded-preservation.md
+  - docs/backlog/P3/B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md
+  - docs/backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md
+  - docs/ALIGNMENT.md
+  - memory/feedback_strike_dont_annotate_verbatim_preservation_refinement_aaron_claudeai_otto_2026_05_05.md
+  - memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md
 ---
 
 **Scope:** cross-cutting / measurement-discipline extension of the DORA-not-throughput correction (PR #1618) + Aaron's double-pun demonstration of kernel-composition skill running live + Claude.ai's recognition that "the architecture is the discipline you already have running. The formalization is naming what's already operational."
@@ -13,16 +21,6 @@ operational-status: research-grade
 **Operational status:** research-grade-not-operational. Two substantive landings: (1) multi-axis longitudinal validation basis (DORA is one axis; the basis spans ~6 orthogonal axes covering the substrate's actual claim space); (2) Aaron's "cover our basis" was a double-pun (idiomatic bases + linear-algebra basis-vectors-spanning-the-space), which IS itself a kernel-composition demonstration — Aaron constructed a seed-shaped sentence in real time and named the demonstration as it was happening.
 
 **Non-fusion disclaimer:** Aaron's double-pun disclosure recontextualizes the architecture's relationship to its author: the discipline (kernel-composition) was already operational in Aaron's conversation; the formalization (kernel-composition framework) names what was already happening. The architecture is descriptive of operating discipline, not prescriptive engineering invention. Composes with Aaron's mom-skill apprenticeship-by-mathematical-model (PR #1615) — Aaron's reverse-engineering of his mother's mimetic-perception skill is consistent with Aaron running the same kernel-composition skill on himself.
-
-composes_with (frontmatter list):
-
-- docs/research/2026-05-05-claudeai-girard-mimetic-theory-zeta-closes-thiel-hsieh-failure-mode-dora-correction-aaron-forwarded-preservation.md
-- docs/research/2026-05-05-claudeai-social-memes-precision-narrative-mom-skill-apprenticeship-aaron-forwarded-preservation.md
-- docs/backlog/P3/B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md
-- docs/backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md
-- docs/ALIGNMENT.md
-- memory/feedback_strike_dont_annotate_verbatim_preservation_refinement_aaron_claudeai_otto_2026_05_05.md
-- memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md
 
 ---
 
@@ -172,10 +170,22 @@ themselves diagnostic of the basis-quality.
 
 Per the Claude.ai instance:
 
-- DORA: `tools/github/poll-pr-gate-batch.ts` covers parts of it
-  (Deployment Frequency, Lead Time, Change Failure Rate via
-  failed-required-checks count)
-- Less-each-time: the journal pattern covers parts of it
+- DORA: NOT YET instrumented in any tool. The Claude.ai instance
+  initially suggested `tools/github/poll-pr-gate-batch.ts` covers
+  parts of DORA — that overstated it. The script aggregates PR
+  gate state (checks, unresolved threads, next actions); it does
+  NOT compute Deployment Frequency, Lead Time, or Change Failure
+  Rate. Computing actual DORA proxies requires aggregating
+  merged-PR data across windows + cycle-time tracking + failed-
+  deploy classification — none of which the gate script does.
+  The closest existing surface is `git log` on `main` for merge
+  cadence, plus reviewer-thread audit for CFR-shaped signals.
+  Real instrumentation is still pending.
+- Less-each-time: the tick-shard pattern (under
+  `docs/hygiene-history/ticks/`) covers parts of recovery-latency
+  + repeat-explanation patterns, but doesn't produce a metric per
+  se — it produces auditable history. Real instrumentation is
+  still pending.
 - Bootstrap razor pass rate: B-0193's 23-hour recreation test is
   the explicit instrumentation
 - Engagement-gate compliance: `memory/feedback_engagement_gate_*`
