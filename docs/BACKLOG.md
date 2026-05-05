@@ -158,6 +158,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0187](backlog/P2/B-0187-dialectical-friction-process-on-carved-sentences-research-aaron-2026-05-04.md)** Dialectical-friction process on carved sentences — research how Addison-and-Aaron family practice translates to Zeta substrate development
 - [ ] **[B-0189](backlog/P2/B-0189-q-sharp-runtime-bayesian-belief-propagation-expectation-propagation-research-aaron-2026-05-04.md)** Q# runtime acceleration via Bayesian belief propagation + expectation propagation — research opportunity not yet integrated by humans (Aaron 2026-05-04)
 - [ ] **[B-0194](backlog/P2/B-0194-incremental-auto-dispatcher-bilinear-capability-detection-aaron-2026-05-05.md)** IncrementalAuto dispatcher + checkBilinear law + capability detection (active-patterns over reflection) -- contract-by-convention gap in the algebra-capability system (Aaron 2026-05-05)
+- [ ] **[B-0195](backlog/P2/B-0195-dbsp-chain-rule-finding-cross-check-and-writeup-decision-aaron-2026-05-05.md)** DBSP chain rule formal-verification finding -- cross-check counter-example + verify Prop 3.5 reading + writeup decision (Aaron 2026-05-05)
 
 ## P3 — convenience / deferred
 
