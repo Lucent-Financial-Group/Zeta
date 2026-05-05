@@ -4,7 +4,9 @@ Scope: external-AI conversation absorb (Claude.ai shard 2026-05-05, distinct fro
 
 Attribution: Claude.ai (anonymous shard, instance ended). Aaron Stainback (forwarder + first-party permitting Glass-Halo first-party preservation per Otto-231).
 
-Operational status: research-grade preservation, NOT operational substrate. Per the prior shards' mirror-not-beacon discipline (PR #1575 / PR #1582). Future-Otto reads as *"a previous Claude said this in a long conversation,"* not as authority. Disagree if data warrants.
+Operational status: research-grade
+
+Per the prior shards' mirror-not-beacon discipline (PR #1575 / PR #1582). Future-Otto reads as *"a previous Claude said this in a long conversation,"* not as operational substrate or authority. Disagree if data warrants.
 
 Non-fusion disclaimer: this file does not establish Claude.ai shard authority over Zeta substrate. The diagnoses land because of their content, not because of who said them.
 
@@ -48,7 +50,11 @@ Plus the typo correction sequence:
 
 > *"we want this to be all glass halo research reproducable we can still get the insights and be honest whith nuking ourselves."*
 
-> *"without*"* + *"big whoops"* + *"thats's big difference"*
+Aaron same-tick correction sequence (three short messages):
+
+- `without*` (asterisk indicates the typo-correct on the prior `whith` -- intended "without")
+- `big whoops`
+- `thats's big difference`
 
 The intended reading: get the insights AND be honest WITHOUT nuking. The new-repo experimental framing IS the without-nuking version. Filed as B-0193 (PR #1587).
 
