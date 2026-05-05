@@ -20,7 +20,7 @@ refactor proposal.
 
 The repo treats warnings as errors at the
 `Directory.Build.props` level
-(`/Users/acehack/Documents/src/repos/Zeta/Directory.Build.props:6`):
+(`Directory.Build.props:6`):
 
 ```
 <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -35,7 +35,7 @@ Three F# warnings are silenced project-wide
 ```
 
 Zeta.Core's `.fsproj`
-(`/Users/acehack/Documents/src/repos/Zeta/src/Core/Core.fsproj:5`)
+(`src/Core/Core.fsproj:5`)
 opts in to four additional info-level warnings:
 
 ```
@@ -47,12 +47,12 @@ Two F# analyzer packs ship with the project
 `Ionide.Analyzers 0.15.0`, run via
 `dotnet msbuild -t:AnalyzeFSharpProject`.
 `AssemblyInfo.fs` enumerates exactly six `InternalsVisibleTo` consumers
-(`/Users/acehack/Documents/src/repos/Zeta/src/Core/AssemblyInfo.fs:11-16`).
+(`src/Core/AssemblyInfo.fs:11-16`).
 
 ## 2. File inventory (74 `.fs` files, 13 199 LOC total)
 
 Listed in compile order from
-`/Users/acehack/Documents/src/repos/Zeta/src/Core/Core.fsproj:13-86`,
+`src/Core/Core.fsproj:13-86`,
 omitting `obj/` build outputs.
 
 | # | File | LOC | Purpose summary |
@@ -135,6 +135,13 @@ omitting `obj/` build outputs.
 total. The `find` initially returned 74 because two `obj/` build-output files
 were included; they are ignored.)
 
+**Top-level files NOT in the compile manifest:** `src/Core/RecursiveSigned.fs`
+(82 lines, parked skeleton per `RecursiveSigned.fs:3-21`; intentionally
+excluded from `Core.fsproj` per the file-header comment). Counting it
+brings the on-disk top-level `.fs` total to 73. Survey scope is the 72
+compiled files; `RecursiveSigned.fs` is discussed separately in §5 (S4)
+as the stub-aging observation.
+
 ## 3. Hot-churn / large-file flags
 
 ### 3.1 Files larger than 500 LOC (audit candidates)
@@ -145,7 +152,7 @@ were included; they are ignored.)
 | `ZSet.fs` | 563 | Core data type — size is justified given it carries `ZEntry`, `ZSetCmp`, `ZSet<'K>`, span/sort/merge/consolidate, and the public surface. No obvious split candidate. |
 | `BloomFilter.fs` | 533 | `#nowarn "9"` justified by `NativePtr.stackalloc` zero-alloc hashing path. Carries blocked + counting variants in one file; cohesion looks intentional (counting Bloom is the retraction-safe variant of the regular Bloom). |
 | `SignalQuality.fs` | 486 | Composable quality dimensions — compression-gap, structure, prediction. Distinct dimensions in one module; could split if more dimensions land. |
-| `Advanced.fs` | 449 | "Core missing operators" header in the file (`/Users/acehack/Documents/src/repos/Zeta/src/Core/Advanced.fs:11-13`); a generic `Advanced` name is a smell — see §5.4. |
+| `Advanced.fs` | 449 | "Core missing operators" header in the file (`src/Core/Advanced.fs:11-13`); a generic `Advanced` name is a smell — see §5.4. |
 
 ### 3.2 Recent change activity (last ~10 days)
 
@@ -252,9 +259,13 @@ discipline holds.**
   unverifiable. Justified by zero-alloc hot path; the hot-path
   `NativePtr.stackalloc<byte>` calls are at `BloomFilter.fs:112`, `:119`,
   `:126`, `:133`. Locally scoped to one file.
-- `Shard.fs:2`: `#nowarn "9"` — implied to cover the
-  `[<StructLayout(LayoutKind.Explicit, Size = 128)>]` `PaddedCounter`
-  cache-line padding and the SIMD intrinsics in the same file.
+- `Shard.fs:2`: `#nowarn "9"` — covers the
+  `[<Struct; StructLayout(LayoutKind.Explicit, Size = 128)>] PaddedCounter`
+  type at `Shard.fs:17-23` (cache-line padding to avoid false sharing
+  on multi-thread counter increment) and the `Span<byte>` cast at
+  `Shard.fs:44` for `RandomNumberGenerator.Fill`. No SIMD intrinsics
+  in this file (earlier survey draft over-claimed); the suppression
+  is bounded to the cache-line + Span constructs.
 
 Both pragmas are file-scoped and justified by performance-critical
 unmanaged code. **Compliant with the warning-as-error stance.**
