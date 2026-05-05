@@ -7,7 +7,7 @@ tier: foundation
 effort: M
 ask: Aaron 2026-05-04 verbatim *"for humans this is why oh my zsh reminds us of many things like this it has branch name in the ui"* + same-tick *"maybe a deliberate design/redesign on the backlog?"*
 created: 2026-05-04
-last_updated: 2026-05-04
+last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0006, B-0140, B-0156, B-0162]
 tags: [orchestrator, concurrency-hazard, mechanization, pre-commit-hook, worktree, foundation]
