@@ -59,12 +59,17 @@ Five concrete shapes the row covers:
    on "the canonical weight ring `ℤ`" (per
    `src/Core/Algebra.fs` line 5-7 comment)? UoM
    compatibility -- `int64<weight>` works for current
-   Zeta scale; `BigInteger<weight>` would need
-   verification that F# UoM extends to `BigInteger`
-   (it does not by default; UoM is constrained to
-   primitive numeric types per the F# spec; this is
-   itself a substantive finding for the research
-   output).
+   Zeta scale; `BigInteger<weight>` is a hypothesis to
+   test. The expected (training-data) answer is that
+   F# UoM is constrained to primitive numeric types
+   per the spec, but per Otto-364 search-first
+   authority that hypothesis must be WebSearch-verified
+   against current Anthropic / FSharp-Foundation /
+   Mathlib documentation before binding -- recent F#
+   versions may have lifted the constraint, or
+   community workarounds (measure-attributed wrapper
+   structs) may already exist. Section (d) is the
+   research task that resolves this.
 
 2. **BigRational**. Arbitrary-precision exact rationals
    for probability arithmetic where float precision
