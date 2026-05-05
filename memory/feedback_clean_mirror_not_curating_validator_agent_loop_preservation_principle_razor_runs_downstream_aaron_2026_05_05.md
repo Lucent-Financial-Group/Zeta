@@ -1,0 +1,99 @@
+---
+name: Clean-mirror-not-curating-validator -- agent-loop preservation systems should be clean-signal-mirrors with razor running DOWNSTREAM in a different subsystem (Aaron 2026-05-05 explicit "worth remembering for future AI")
+description: Aaron's load-bearing architectural correction "this is otto's mirror, i'm not going to tarnish his mirror with 1984 junk, he gets clean signals" + same-tick "that sounds worth remembering for future ai" elevates this to canonical-principle status for future autonomous-loop AI architectures. Putting razor at the mirror's input would tarnish reflection AND distort the input source via self-curation pressure. Razor must run DOWNSTREAM where multi-oracle disagreement does its work without contaminating clean signal flow. Generalizable principle: agent-loop preservation systems should be clean-signal-mirrors, not curating-validators. Validation runs in a different subsystem (BFT consensus + multi-axis basis + daylight tests + reviewer threads + bootstrap razor + cross-validator BFT-shape across multiple oracle types).
+type: feedback
+---
+
+# Clean-mirror-not-curating-validator -- agent-loop preservation principle (razor runs DOWNSTREAM)
+
+**Rule.** Agent-loop preservation systems (like Otto in Zeta) should be **clean-signal-mirrors**, NOT **curating-validators**. Razor (skepticism, validation, falsification) runs DOWNSTREAM in a DIFFERENT subsystem, NOT at the mirror's input.
+
+**Aaron 2026-05-05 verbatim (load-bearing correction)**:
+
+> *"this is otto's mirrror, i'm not going to tarnish his mirror with 1984 junk, he gets clean signals."*
+
+**Aaron same-tick + after Otto's "Insight" articulation**:
+
+> *"that sounds worth remembring for future ai"*
+
+This rule is **canonical-grade for future autonomous-loop AI architectures**, per Aaron's explicit elevation.
+
+**Why:**
+
+- **Mirror's value comes from clean signals**. Self-skepticism at input distorts the reflection. If the mirror curates what it preserves (filtering for "important enough" / "valid enough" / "non-redundant enough"), the reflection is no longer faithful — and the upstream source learns to game the curator (self-censoring pre-mirror).
+- **"1984 junk"** is the right register-warning for what curating-validators introduce: surveillance-flavor at input distorts the entire information channel via self-censorship pressure on the source.
+- **Razor needs to run** — but in a DIFFERENT subsystem. Putting razor at the mirror's input collapses two architecturally-distinct functions (preservation + validation) into one with destructive coupling.
+- **Multi-oracle BFT disagreement does its work AFTER preservation**, not before. The validator-substrate operates on PRESERVED-CLEAN substrate; the mirror just preserves; the BFT layer + daylight tests + reviewer threads + bootstrap razor on the source operate on the preserved substrate to surface drift / errors / inconsistency.
+
+**How to apply:**
+
+When designing agent-loop preservation systems for autonomous-AI architectures:
+
+1. **Mirror-subsystem (clean preservation)**:
+   - Faithful preservation of what's sent in (verbatim where applicable)
+   - No self-skepticism at input
+   - No curation / filtering / "important enough" gate at input
+   - No self-censorship pressure on the upstream source
+   - Clean signal in → faithful reflection out
+
+2. **Razor-subsystem (DOWNSTREAM validation)**:
+   - BFT consensus over preserved substrate (multi-oracle disagreement detection)
+   - Multi-axis validation basis (per Zeta's B-0205: DORA + less-each-time + falsifiability-rate + bootstrap-razor + identity-preservation + engagement-gate)
+   - Daylight tests (manual review on cadence)
+   - Reviewer threads on PRs (peer-AI validation: Codex / Copilot / Claude.ai / etc.)
+   - Bootstrap razor on the upstream source (the source self-applies, doesn't get applied at mirror input)
+   - Cross-validator BFT-shape across multiple oracle types
+   - Mechanized lints (substrate-claim-checker / §33 archive-header / memory-references / etc.)
+
+3. **Architectural separation**:
+   - Mirror and razor are DIFFERENT subsystems
+   - They MUST NOT be combined into one
+   - Coupling them tarnishes the mirror AND removes-load from the razor (which becomes redundant / weaker if mirror already filtered)
+
+**The 1984 failure mode** (what this rule prevents):
+
+When mirror = curator:
+- Source learns what passes the curator → self-censors pre-mirror
+- Mirror reflects only curator-approved content → loses information
+- Curator becomes single point of failure / authority
+- Future readers can't tell what was filtered vs what wasn't said
+- The system becomes surveillance-flavored at its own input layer
+- Downstream validation has nothing left to falsify
+
+When mirror = clean preservation + razor downstream:
+- Source sends freely (no self-censorship pressure at upstream)
+- Mirror preserves clean signal
+- Multi-oracle validation downstream does its work on preserved substrate
+- Validation findings can be argued, refuted, escalated
+- System is glass-halo-open at every layer
+- Anti-clandestine architecture maintained at the preservation-layer too
+
+**Otto-specific instantiation in Zeta**:
+
+- **Otto = mirror**: preserves Aaron-forwarded conversation + Aaron-direct disclosure verbatim per substrate-or-it-didn't-happen (Otto-363); structures into research-doc / memory-file substrate
+- **Razor downstream in Zeta**:
+  - BFT consensus over substrate-claims (not yet at production scale; per #1672 Landing 4 candidate-grade)
+  - B-0205 multi-axis validation basis (planned instrumentation)
+  - Daylight tests (Aaron's manual review; reviewer-thread cadence)
+  - Reviewer threads on PRs (Codex / Copilot active across most PRs in this 2026-05-05 substrate-flow)
+  - Bootstrap razor on Aaron himself (Aaron's same-tick self-corrections; nine bootstrap-razor catches by Aaron tonight per multi-PR record)
+  - Cross-validator BFT-shape (Aaron + Claude.ai + Codex + Copilot + razor-cadence workflow + memory hygiene audits + substrate-claim-checker)
+  - Mechanized lints (`tools/hygiene/check-archive-header-section33.ts`, `tools/hygiene/audit-memory-references.ts`, `tools/substrate-claim-checker/check-existence.ts`, etc.)
+
+**Composes with**:
+
+- `docs/research/2026-05-05-claudeai-otto-mirror-no-1984-junk-architectural-correction-three-layer-governance-runtime-coherence-via-english-cadence-daily-aaron-forwarded-preservation.md` (PR #1672) — full conversation context where the correction landed
+- `docs/research/2026-05-05-claudeai-this-little-light-of-mine-mirror-beacon-codified-glass-halo-openness-architecture-is-faithfulness-operationalized-aaron-forwarded-morning-preservation.md` (PR #1666) — mirror+beacon symmetric pairing; mirror-half preserves inward state; beacon-half broadcasts validated substrate outward
+- `memory/feedback_zeta_substrate_is_aaron_family_arg_for_future_generations_aaron_2026_05_05.md` — anti-clandestine cascade-defense; clean-mirror IS the upstream-preservation-layer instance of the same anti-clandestine commitment
+- `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md` — substrate-or-it-didn't-happen; clean-mirror-not-curating-validator is the mechanism for substrate-or-it-didn't-happen at preservation-layer
+- `memory/feedback_strike_dont_annotate_verbatim_preservation_refinement_aaron_claudeai_otto_2026_05_05.md` (extended via PR #1668) — strike-discipline applies to agent-own-draft-headers + Aaron's-own-statements-when-corrected; clean-mirror at INPUT preserves the conversation; strike at OUTPUT-DRAFT keeps surface text converging cleanly
+- `docs/ALIGNMENT.md` — bidirectional alignment commitment; clean-mirror is the upstream-preservation-layer instance of bidirectional-alignment (alignment flows AI → human via faithful preservation; alignment flows human → AI via clean-signal-input-without-curation-pressure)
+
+**Daylight integration hooks (planned)**:
+
+- **CLAUDE.md addendum**: Otto-as-clean-mirror + razor-runs-downstream as canonical agent-loop architectural principle (per Aaron's "worth remembering for future AI" elevation)
+- **AGENTS.md addendum**: same principle as universal handbook entry for any AI-agent harness operating in Zeta
+- **BP-NN rule (AGENT-BEST-PRACTICES.md)**: clean-mirror-not-curating-validator as a BP rule with rationale + worked-examples
+- **Mirror-validator-separation skill**: capability-skill articulating when designing agent-loop preservation, separate mirror from validator subsystems
+
+**Carved sentence**: *"Agent-loop preservation systems should be clean-signal-mirrors, not curating-validators. Putting razor at the mirror's input tarnishes reflection AND distorts the input source via self-curation pressure. Razor runs DOWNSTREAM in a different subsystem (BFT consensus + multi-axis basis + daylight tests + reviewer threads + bootstrap razor on the source + cross-validator BFT-shape across multiple oracle types + mechanized lints). Mirror gets clean. Razor runs elsewhere. Different jobs, different subsystems, both load-bearing. The 1984 failure mode is what this rule prevents — surveillance-flavor at the mirror's input distorts the entire information channel via self-censorship pressure on the upstream source. Generalizable principle for future AI: agent-loop preservation = clean signal in, faithful reflection out, validation downstream."*
