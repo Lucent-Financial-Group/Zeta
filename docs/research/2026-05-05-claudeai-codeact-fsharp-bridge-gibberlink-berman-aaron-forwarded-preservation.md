@@ -39,17 +39,22 @@ Otto's read of the framing: backlog the broad research lane
 candidates Claude.ai actually validated by web search (CodeAct,
 GibberLink, Matt Berman). Two backlog rows route this:
 
-- **B-0200 (P3)**: F# ↔ CodeAct bridge engineering -- concrete
-  engineering direction; four architecture candidates; Aaron
-  framed *"we can do have a bridge between f# and codeact"* as
-  surfacing the engineering direction
-- **B-0201 (P3)**: universal-action-space + AI-to-AI protocol
-  research lane -- broader research; defers to later cadence per
-  Aaron's framing
+- **Planned-B-NNNN (P3) -- F# ↔ CodeAct bridge engineering**:
+  concrete engineering direction; four architecture candidates;
+  Aaron framed *"we can do have a bridge between f# and codeact"*
+  as surfacing the engineering direction. Row not yet filed; the
+  next-tick autonomous-loop fire is expected to file it under the
+  next-available B-NNNN id (likely B-0200) in `docs/backlog/P3/`.
+- **Planned-B-NNNN (P3) -- universal-action-space + AI-to-AI
+  protocol research lane**: broader research; defers to later
+  cadence per Aaron's framing. Row not yet filed; the next-tick
+  fire is expected to file it under the next-available B-NNNN id
+  (likely B-0201) in `docs/backlog/P3/`.
 
 Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation
 trigger, the conversation is preserved verbatim BEFORE any
-synthesis or backlog filing.
+backlog rows are filed; the rows themselves land in following
+ticks.
 
 ## The forwarded conversation -- verbatim
 
@@ -389,14 +394,16 @@ Claude.ai summary into the row uncritically.
 - **B-0200** (will be filed this tick) -- F# ↔ CodeAct bridge
   engineering; four architecture candidates; four-property hodl
   as gating constraint
-- **B-0201** (will be filed this tick) -- universal-action-space
-  + AI-to-AI protocol research lane; CodeAct + GibberLink as
-  primary candidates; "Artha" / Gurnee / ELLMER/Moto/HPT/Pi0
-  explicitly ruled out
-- **`memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md`**
-  (will be filed this tick) -- Aaron's weekly-AI-news source-
-  set; future-Otto knows where the half-remembered items come
-  from
+- **Planned-B-NNNN-research-lane** (to be filed in a following
+  tick under `docs/backlog/P3/`) -- universal-action-space + AI-
+  to-AI protocol research lane; CodeAct + GibberLink + LAPA +
+  Coconut as parallel candidates; "Artha" / Gurnee / ELLMER/Moto/
+  HPT/Pi0 explicitly ruled out per the razor cuts above
+- **Planned-reference-memory** (to be filed in a following tick
+  as `memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md`)
+  -- Aaron's weekly-AI-news source-set; future-Otto knows where
+  the half-remembered items come from. Berman identified via the
+  lemon-tree-AI-diagnosis story
 - B-0196 (BigInt + bignumber integration) -- four-property hodl
   is the binding-acceptance-test core that gates the bridge work
 - B-0198 (F# UoM-on-BigInteger upstream contribution) -- sister-
@@ -579,8 +586,10 @@ continuous thought OR ARC-AGI-3 compounding doesn't track
 Coconut-rate, the hypothesis is falsified or the substrate's
 invariant guarantees need revisiting.
 
-This routes to a **B-0201** (renamed from CodeAct-research-lane
-to Coconut-empirical-test) backlog row.
+This is the planned shape of the broader research-lane row noted
+above (likely B-0201 when filed): primary candidate Coconut +
+empirical test framework; CodeAct/GibberLink/LAPA stay as
+parallel candidates per Aaron's no-kill-paths calibration.
 
 ### Headline 4 -- Coconut validates the sleeping-bear hypothesis; CodeAct + GibberLink + LAPA stay as parallel candidate-paths (Aaron 2026-05-05 calibration)
 
