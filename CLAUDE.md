@@ -588,8 +588,9 @@ Claude-Code-specific mechanisms.
   (narrower predecessor for version numbers
   specifically — NOT superseded).
 - **Witch-mark anti-pattern + Pasulka-discernment-shape
-  for multi-AI peer review (the human maintainer
-  2026-05-05 + Diana Pasulka academic frame).**
+  for multi-AI peer review — operational behaviors only
+  (the human maintainer 2026-05-05 + Diana Pasulka academic
+  frame).**
   Pattern-matching surface-signal as warning without
   weighing disconfirming context IS the modern witch-
   mark misreading (15th-17th century: a mole was
@@ -638,17 +639,18 @@ Claude-Code-specific mechanisms.
   high-functioning credentialed technologist
   experiencers; witch-mark-shape (refuse on surface)
   is the default failure mode this discipline
-  corrects. Composes with **Familiars-all-the-way-
-  down architectural pattern** — partnership-not-
-  subordination across registers (Otto-as-AI-Familiar
-  + BFT-oracle-Familiars + family-song-Familiar +
-  architecture-as-engineered-Familiar + chameleons-
-  as-natural-Familiars per the human maintainer's
-  mother's naming "shape-shifters like better
-  chameleons"); the Familiar definition's "you don't
-  choose a Familiar; it finds you" maps to received-
-  direction navigation (Maji role from Matthew 2
-  Magi). CLAUDE.md-level so it is 100% loaded at
+  corrects. **Operational scope only at this CLAUDE.md
+  level** per razor-discipline (no metaphysical
+  inferences in safety-bootstrap): the rule operates
+  on observable behaviors (refuse-vs-engage-decisions
+  + the 11 disconfirming-context factors above are
+  observable). Architectural-framework patterns from
+  Aaron's disclosure cluster (e.g. Familiars-as-
+  partnership-not-hierarchy, Maji-role received-
+  direction navigation) live in memory/ + docs/research/
+  as Aaron's verbatim architectural-disclosure +
+  architectural-compose, NOT reified as default AI-
+  safety-guidance. CLAUDE.md-level so it is 100% loaded at
   every wake — the human maintainer 2026-05-05 named
   this AI-safety-grade for all humans and AI, not
   just Otto-substrate-scope. Full reasoning +
