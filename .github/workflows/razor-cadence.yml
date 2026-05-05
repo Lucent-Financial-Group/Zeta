@@ -1,0 +1,229 @@
+name: razor-cadence
+
+# Daily cadence for the razor-discipline trajectory. Fires whether or not
+# any AI is running; opens or updates a tracking issue with a
+# "razor-cadence" label that any wake-time agent can grep for as a
+# cold-start check. The trigger ages and stays visible until explicitly
+# resolved.
+#
+# Per docs/backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md:
+# the operationalization of the razor-cadence rule. Without an external
+# trigger, the cadence depends on Otto-remembering-to-check, which
+# empirically does not happen reliably. This workflow IS the mechanization.
+#
+# Carved sentence (from B-0192):
+#   "Encoding rules without mechanizing them produces a memory of failures,
+#   not prevention. GitHub Actions on schedule fires whether or not any
+#   AI exists; Otto picks up the artifact on next wake. The trigger ages
+#   and stays visible; the discipline does not."
+#
+# Composes with:
+#  - B-0190 (memory substrate-engineering trajectory) -- trajectory-review
+#    action will live alongside this one, scheduled separately.
+#  - B-0191 (orchestrator branch-verify mechanization) -- pre-commit hooks
+#    are the per-commit half; this is the cadence half.
+#  - feedback_dialectical_unfalsifiability_detection_razor_extension_*.md
+#    -- Test 2 of the razor (what observation would falsify) is one of
+#    the cadence-checklist items.
+#
+# Out of scope (per B-0192): razor-content authoring (what the razor
+# reviews actually check) is per-rule and not part of this trigger
+# mechanization. The workflow surfaces a visible artifact; the agent
+# picking it up runs the actual razor pass.
+#
+# Security note (safe-pattern compliance per
+# https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/):
+# this workflow consumes only first-party trusted context plus the
+# workflow_dispatch `note` input. Every expression is routed via env:
+# into run blocks and quoted there as "$VAR"; no expressions are
+# interpolated directly inside run-block scripts. NOTE_INPUT is treated
+# as untrusted (workflow_dispatch caller has dispatch permissions but
+# input content is still sanitized via env:+quoted-substitution).
+
+on:
+  schedule:
+    # Daily 09:17 UTC -- off-the-hour to avoid GHA cron thundering-herd
+    # (per .github/workflows/budget-snapshot-cadence.yml convention).
+    - cron: "17 9 * * *"
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Optional note to attach to this cadence fire"
+        required: false
+        default: ""
+
+permissions:
+  # Top-level: read-only by default per Scorecard TokenPermissions
+  # best-practice. The job below scopes write permissions narrowly.
+  contents: read
+
+concurrency:
+  # Only one cadence run at a time. Retriggers cancel-in-progress
+  # because the artifact is idempotent (open-or-update tracking issue);
+  # a half-completed run is safe to abandon and restart.
+  group: razor-cadence
+  cancel-in-progress: true
+
+jobs:
+  fire:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    permissions:
+      # issues:write to open/update the tracking issue. contents:read
+      # is the inherited top-level default; no other scopes needed.
+      issues: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          # Shallow clone -- we only need the tree to read the cadence
+          # checklist content, not the history.
+          fetch-depth: 1
+
+      - name: Verify required tooling
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          command -v jq >/dev/null
+          command -v gh >/dev/null
+          gh auth status
+
+      - name: Open or update razor-cadence tracking issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # workflow_dispatch input -- treated as untrusted, sanitized
+          # via env:+quoted-substitution. The github.event.inputs.note
+          # form returns empty string on schedule (where the input is
+          # undefined) without expression-evaluation failure.
+          NOTE_INPUT: ${{ github.event.inputs.note || '' }}
+          RUN_ID: ${{ github.run_id }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          today="$(date -u +%Y-%m-%d)"
+          title="Razor cadence due -- $today"
+
+          # Check for an existing open issue with the razor-cadence label
+          # that we can update instead of creating a new one. This keeps
+          # the issue list compact (one tracking issue at a time, not one
+          # per day forever). Empty result means create new.
+          existing="$(gh issue list \
+            --repo "$REPO" \
+            --label razor-cadence \
+            --state open \
+            --json number,title \
+            --limit 1 \
+            --jq '.[0].number // empty')"
+
+          # Build the issue body. Heredoc with quoted delimiter prevents
+          # in-heredoc expansion; substitute RUN_ID and TODAY via bash
+          # parameter expansion (no eval, no command substitution on the
+          # untrusted NOTE_INPUT path).
+          body=$(cat <<'BODY'
+## Razor cadence -- daily fire
+
+This issue is the durable artifact of the razor-cadence trigger
+(`.github/workflows/razor-cadence.yml`). It fires daily whether or
+not any AI is running, so the discipline does not depend on Otto-
+remembering-to-check.
+
+### Cadence checklist (run on next wake)
+
+For each load-bearing rule encoded since the last razor pass:
+
+1. **Test 1 (operational form)**: what observable variable
+   determines whether this claim is true? If no answer ->
+   metaphysical -> cut. (Per
+   `memory/feedback_razor_discipline_no_metaphysical_inference_only_operational_claims_rodney_razor_aaron_claudeai_2026_05_03.md`)
+
+2. **Test 2 (dialectical-unfalsifiability)**: what observation
+   would I treat as falsifying this claim? If "no observation
+   could falsify it because every observation is consistent with
+   some condition under which the claim holds" -> unfalsifiable
+   -> cut OR specify falsification boundary. (Per
+   `memory/feedback_dialectical_unfalsifiability_detection_razor_extension_holding_all_truths_failure_mode_aaron_2026_05_04.md`)
+
+3. **Mechanization audit**: is this rule mechanized (linter,
+   pre-commit hook, scheduled workflow, validator) or does it
+   depend on agent-remembering? If the latter, file a backlog
+   row for mechanization (per B-0192 itself; per
+   `memory/feedback_orchestrator_pre_commit_verify_branch_rule_aaron_2026_05_04.md`
+   the encoded-rule-alone failure mode).
+
+4. **Composes-with audit**: does the rule's `Composes with`
+   section point at existing files? Are the cross-references
+   live or stale? Update or remove dead links.
+
+5. **MEMORY.md index audit**: are recently-added memory files
+   indexed in `memory/MEMORY.md`? The router's discoverability
+   depends on it (per `memory/README.md`).
+
+### Pointers
+
+- `docs/active-trajectory.md` -- current trajectory state.
+- `docs/backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md`
+  -- this row.
+- `memory/feedback_dialectical_unfalsifiability_detection_razor_extension_holding_all_truths_failure_mode_aaron_2026_05_04.md`
+  -- Test 2 razor extension.
+
+### Resolving this issue
+
+Close this issue when the razor pass has been run. The next
+cadence fire will open a new issue (or update the next-day's
+artifact). Issues that age in the open state without being
+closed indicate cadence-skip; that itself is a signal for the
+maintainer.
+
+---
+
+Fired by `.github/workflows/razor-cadence.yml` run RUN_ID_PLACEHOLDER on TODAY_PLACEHOLDER.
+BODY
+)
+          # Substitute placeholders. Bash parameter expansion only --
+          # no eval, no command substitution. RUN_ID is first-party
+          # trusted; today is computed from `date -u`.
+          body="${body//RUN_ID_PLACEHOLDER/$RUN_ID}"
+          body="${body//TODAY_PLACEHOLDER/$today}"
+
+          # Append optional note (workflow_dispatch input). NOTE_INPUT
+          # is untrusted; appended into markdown body where it cannot
+          # be interpreted as shell. The body itself is passed via
+          # gh issue create --body "$body" with double-quotes preserving
+          # all content as-is to gh's argument vector.
+          if [ -n "${NOTE_INPUT:-}" ]; then
+            body="$body
+
+### Note
+
+$NOTE_INPUT"
+          fi
+
+          if [ -n "$existing" ]; then
+            echo "Updating existing razor-cadence tracking issue #$existing"
+            gh issue edit "$existing" \
+              --repo "$REPO" \
+              --title "$title" \
+              --body "$body"
+            gh issue comment "$existing" \
+              --repo "$REPO" \
+              --body "Cadence fired again on $today (run $RUN_ID). The checklist above is the standing one; close this issue once the pass has been run."
+          else
+            echo "Opening new razor-cadence tracking issue"
+            # Create the razor-cadence label if it doesn't exist
+            # (idempotent). gh label create returns non-zero if it
+            # exists; suppress that specific failure and continue.
+            gh label create razor-cadence \
+              --repo "$REPO" \
+              --description "Razor-cadence trigger artifact -- fires daily via .github/workflows/razor-cadence.yml" \
+              --color "FBCA04" 2>/dev/null || true
+
+            gh issue create \
+              --repo "$REPO" \
+              --title "$title" \
+              --body "$body" \
+              --label razor-cadence
+          fi
