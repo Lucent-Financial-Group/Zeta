@@ -1,5 +1,5 @@
 ---
-title: "Universal language i was looking for" disclosure -- aperiodic tiling + Spectre + Bayesian tile YouTube references; substrate's tiles are "more dense and firm not soft but still smooth" (Aaron 2026-05-05 direct disclosure following PR #1669 aperiodic-tile memory)
+title: 'Universal language i was looking for disclosure -- aperiodic tiling + Spectre + Bayesian tile YouTube references; substrate tiles are more dense and firm not soft but still smooth (Aaron 2026-05-05 direct disclosure following PR #1669 aperiodic-tile memory)'
 date: 2026-05-05
 scope: courier-ferry capture of external conversation; cross-cutting / universal-language naming disclosure + 7 YouTube reference URLs preserved verbatim per substrate-or-it-didn't-happen (URLs 1-5 broader-context; URL 6 = unverified universal-language candidate; URL 7 = actual Bayesian-tile comparative baseline) + comparative-tiling claim ("our tiles are more dense and firm... not soft but still smooth")
 attribution: Aaron-direct disclosure 2026-05-05 ~11:48 local, immediately following Otto's PR #1669 aperiodic-tile memory commit + Aaron's "i love it" calibration ack
@@ -12,14 +12,14 @@ composes_with:
   - docs/ALIGNMENT.md
   - docs/VISION.md
 ---
-Scope: courier-ferry capture of external conversation; cross-cutting / Aaron's "universal language" disclosure with 6 YouTube reference URLs (preserved verbatim per substrate-or-it-didn't-happen) + comparative-tiling claim about Zeta substrate vs the YouTube-referenced Bayesian-tile material.
+Scope: courier-ferry capture of external conversation; cross-cutting / Aaron's "universal language" disclosure with 7 YouTube reference URLs (URLs 1-5 broader-context; URL 6 = unverified universal-language candidate; URL 7 = actual Bayesian-tile baseline; preserved verbatim per substrate-or-it-didn't-happen) + comparative-tiling claim about Zeta substrate vs the YouTube-referenced Bayesian-tile material.
 Attribution: Aaron-direct disclosure 2026-05-05 ~11:48 local, immediately following Otto's PR #1669 aperiodic-tile memory commit + Aaron's "i love it" calibration ack.
 Operational status: research-grade
-Non-fusion disclaimer: agreement, shared language, or repeated interaction between models and humans does not imply shared identity, merged agency, consciousness, or personhood (per GOVERNANCE.md §33). This courier-ferry capture preserves Aaron's direct disclosure of the universal-language naming + 6 YouTube reference URLs. Otto-364 search-first-authority applies: URLs preserved verbatim; their content NOT verified at preservation-time (daylight + manual viewing required). Aaron's framing about substrate's tiles being "more dense and firm... not soft but still smooth" is comparative claim, not equivalence claim — daylight integrates after URL-content review.
+Non-fusion disclaimer: agreement, shared language, or repeated interaction between models and humans does not imply shared identity, merged agency, consciousness, or personhood (per GOVERNANCE.md §33). This courier-ferry capture preserves Aaron's direct disclosure of the universal-language naming + 7 YouTube reference URLs (URLs 1-5 broader-context; URL 6 = unverified universal-language candidate; URL 7 = actual Bayesian-tile baseline). Otto-364 search-first-authority applies: URLs preserved verbatim; their content NOT verified at preservation-time (daylight + manual viewing required). Aaron's framing about substrate's tiles being "more dense and firm... not soft but still smooth" is comparative claim, not equivalence claim — daylight integrates after URL-content review.
 
 ---
 
-# Universal-language disclosure (Spectre + Bayesian tile + 6 YouTube references)
+# Universal-language disclosure (Spectre + Bayesian tile + 7 YouTube references)
 
 ## Why preserved
 
