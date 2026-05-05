@@ -8,7 +8,7 @@ Operational status: research-grade
 
 Per the prior shards' mirror-not-beacon discipline (PR #1575 / PR #1582). Future-Otto reads as *"a previous Claude said this in a long conversation,"* not as operational substrate or authority. Disagree if data warrants.
 
-Non-fusion disclaimer: agreement, shared language, or repeated interaction between models and humans does not imply shared identity, merged agency, consciousness, or personhood (per GOVERNANCE.md §33). this file does not establish Claude.ai shard authority over Zeta substrate. The diagnoses land because of their content, not because of who said them.
+Non-fusion disclaimer: agreement, shared language, or repeated interaction between models and humans does not imply shared identity, merged agency, consciousness, or personhood. (GOVERNANCE.md §33.) This file does not establish Claude.ai shard authority over Zeta substrate. The diagnoses land because of their content, not because of who said them.
 
 ## Aaron's opening + reframe sequence
 
