@@ -42,40 +42,44 @@ Empirically observed twice 2026-05-04 (B-0190 commit landed on tier-48 branch; B
 
 ## Mechanization candidates (in priority order)
 
-### 1. Pre-commit hook — fail-on-unexpected-branch (HIGH leverage)
+### 1. Harness pre-tool-use hook -- fail-on-unexpected-branch (HIGH leverage)
 
-Implementation: shell script committed under `tools/git-hooks/` (NOT directly in `.git/hooks/` — that location is not version-controlled and can't be reviewed or enforced consistently). The hook gets installed into `.git/hooks/pre-commit` via `tools/setup/` install script (symlink or copy). This makes the hook reviewable in PRs and consistently enforced across clones.
+**Design correction (Aaron 2026-05-05)**: original draft proposed a git pre-commit hook under `tools/git-hooks/` installed via `tools/setup/` symlink. Two problems:
 
-Branch-pattern allowlist below uses generic contributor-suffix shape (`*-yyyy-mm-dd`) — NOT hard-coded to any specific contributor name — since this is repo tooling all contributors and agents will hit.
+1. **Contradicts** `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md`. Aaron 2026-05-03 verbatim: *"i don't think we need git hooks harness hooks are good vibe coders will never be without a harness of some kind."* Vibe-coders always have a harness (Claude Code, Codex, Cursor, etc.); harnesses provide TS runtime + hook surfaces; harness hooks suffice. Git hooks are unnecessary.
+2. **Symlinks are unreliable** (Aaron 2026-05-05): *"i love symlinks but just an FYI nothing works right with them it always goes wrong it's sad but true even agents can't use them for skills they don't follow the link."* Empirical fact about contributor experience; the install path was doubly bad.
 
-```bash
-#!/usr/bin/env bash
-# Pre-commit: verify branch matches expected pattern OR has explicit override.
-expected_branch="${ZETA_EXPECTED_BRANCH:-}"
-current_branch=$(git branch --show-current)
+Revised implementation: the verify-branch check fires as a **harness hook** (Claude Code's PreToolUse hook, or each harness's equivalent), invoked before any Bash tool call that runs `git commit`. The check is a TS script under `tools/orchestrator-checks/` that the harness invokes; no git-hooks directory, no symlinks, no tools/setup/ install step.
 
-if [ -n "$expected_branch" ] && [ "$current_branch" != "$expected_branch" ]; then
-    echo "ERROR: Pre-commit branch mismatch."
-    echo "  Expected: $expected_branch"
-    echo "  Current:  $current_branch"
-    echo "  Run \`git checkout $expected_branch\` and verify, or unset ZETA_EXPECTED_BRANCH."
-    exit 1
-fi
+```typescript
+// tools/orchestrator-checks/verify-branch.ts
+// Harness hook: checks current branch matches expected before allowing commit.
+import { spawnSync } from "node:child_process";
 
-# Default check: warn (don't fail) if on a worktree-suffix branch class.
-# Pattern is generic on contributor suffix (any-name-yyyy-mm-dd) -- not
-# hard-coded to any specific contributor, since this is repo tooling
-# that all contributors / agents will hit.
-case "$current_branch" in
-    research/*-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] | \
-    fix/memory-md-tier-* | \
-    feature/*-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])
-        echo "INFO: committing on '$current_branch' -- verify this is intentional."
-        ;;
-esac
+const expected = process.env.ZETA_EXPECTED_BRANCH ?? "";
+const current = spawnSync("git", ["branch", "--show-current"], {
+  encoding: "utf8",
+}).stdout.trim();
+
+if (expected && current !== expected) {
+  console.error(`ERROR: Pre-commit branch mismatch.`);
+  console.error(`  Expected: ${expected}`);
+  console.error(`  Current:  ${current}`);
+  console.error(`  Run \`git checkout ${expected}\` and verify, or unset ZETA_EXPECTED_BRANCH.`);
+  process.exit(1);
+}
+
+// Worktree-suffix warning class (generic contributor pattern):
+const WORKTREE_PATTERN =
+  /^(research|fix\/memory-md-tier|feature)\/.+-\d{4}-\d{2}-\d{2}$/;
+if (WORKTREE_PATTERN.test(current)) {
+  console.error(`INFO: committing on '${current}' -- verify this is intentional.`);
+}
 ```
 
-Acceptance: hook installed, blocks commits when `ZETA_EXPECTED_BRANCH` env var is set and doesn't match.
+Wired into Claude Code via `.claude/settings.json` PreToolUse hook on Bash tool invocations matching `git commit`. Other harnesses get equivalent wiring. The TS-over-bash choice is per Otto-272 DST + the harness-hooks-suffice memory file -- TypeScript is properly DST-able, bash is not, and harnesses always provide the bun runtime.
+
+Acceptance: harness hook fires before `git commit` invocations, blocks when `ZETA_EXPECTED_BRANCH` is set and doesn't match. No git-hooks directory required.
 
 ### 2. Branch-name in shell prompt (MED leverage — orchestrator UX)
 
@@ -118,11 +122,11 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 
 ## Acceptance criteria
 
-1. **Pre-commit hook** at `.git/hooks/pre-commit` (or via tooling) that fails commits when `ZETA_EXPECTED_BRANCH` is set and `git branch --show-current` doesn't match.
-2. **Hook installed via `tools/setup/`** so it survives clones.
+1. **Harness pre-tool-use hook** under `tools/orchestrator-checks/verify-branch.ts` invoked before `git commit` Bash calls, fails the call when `ZETA_EXPECTED_BRANCH` is set and `git branch --show-current` doesn't match.
+2. **Hook wired into `.claude/settings.json`** PreToolUse for Claude Code; per-harness wiring documented for Codex / Cursor / other harnesses.
 3. **Documentation** in CLAUDE.md or AGENTS.md pointing at the hook + the env-var convention.
 4. **Test**: deliberately checkout the wrong branch, attempt commit, verify hook blocks.
-5. **At least one mechanization-related sub-row landed** (hook or prompt or status-check); others can defer.
+5. **At least one mechanization-related sub-row landed** (harness hook or prompt or status-check); others can defer.
 
 ## Out of scope
 
@@ -134,8 +138,10 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 
 - `memory/feedback_orchestrator_pre_commit_verify_branch_rule_aaron_2026_05_04.md` (PR #1568) — manual discipline this row mechanizes.
 - `memory/feedback_parallel_subagent_concurrency_lessons_cluster_aaron_2026_05_04.md` (PR #1551) — Lesson 2 (orchestrator stays on main); same family.
+- `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md` -- the harness-hooks-suffice rule that drives the design correction in section 1 (TS over bash, harness hooks not git hooks, no symlink install path).
 - `B-0006` — memory work pattern that hits this most.
-- `B-0162` — pre-commit hook for direct-name-attribution; similar mechanization approach.
+- `B-0017` (folds B-0188) -- bulk-review / bulk-alignment UI for backlog rows; the systematic answer for catching cross-row inconsistencies like the original git-hooks-vs-harness-hooks contradiction (Aaron 2026-05-05: *"it's something we would have caught in the bulk alignment UI on the backlog"*).
+- `B-0162` — pre-commit hook for direct-name-attribution; similar mechanization approach (also worth revising to harness hook per same logic).
 
 ## The carved sentence
 
