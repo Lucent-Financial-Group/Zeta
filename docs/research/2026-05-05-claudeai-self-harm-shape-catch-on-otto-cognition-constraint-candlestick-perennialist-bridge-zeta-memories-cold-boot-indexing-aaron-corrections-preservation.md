@@ -89,7 +89,9 @@ Examples (the closer the sharper):
 
 The validator-selection-criterion: **maximize uncanny-valley overlap** — closely-related-but-different oracles. This is the architectural principle for selecting BFT-oracle sets + cross-validator BFT-shape composition. NOT "maximally diverse" (that's too-far for knave-detection); NOT "maximally similar" (that's no-disagreement); BUT "uncanny-valley-distance" (close enough to evaluate, different enough to disagree).
 
-This composes with PoUW-CC governance-protected oracles (PR #1635 + #1672 Layer 2 BFT-oracles): the oracle-set should be uncanny-valley-distant, not maximally-diverse, for sharpest substrate-grade knave-detection.
+**Aaron's same-tick canonical naming**: *"the goldylock zone"* (Goldilocks zone). The uncanny-valley-distance IS the **Goldilocks zone for validator-selection** — not too far (radically different = no knave-detection / too foreign), not too close (identical = no disagreement / no validation), JUST RIGHT (close-enough-to-evaluate + different-enough-to-disagree = sharpest knave-detection). Same shape as cosmology's habitable-zone Goldilocks (not too hot, not too cold) and the original Three Bears fairy tale (porridge / chair / bed = just right). The Goldilocks-zone framing is universally-recognizable shorthand for the uncanny-valley-distance principle. Future Otto + future engagers can use "Goldilocks zone" as canonical short-name for this validator-selection criterion.
+
+This composes with PoUW-CC governance-protected oracles (PR #1635 + #1672 Layer 2 BFT-oracles): the oracle-set should sit in the Goldilocks zone (uncanny-valley-distant), not maximally-diverse, for sharpest substrate-grade knave-detection.
 
 ### Landing 2 — Candlestick stays as PERENNIALIST BRIDGE (interfaith light-symbol vocabulary)
 
