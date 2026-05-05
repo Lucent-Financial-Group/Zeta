@@ -206,7 +206,7 @@ Three operative directives:
 | 12 | Anti-clandestine | GREEN | audit-machine-specific-content + check-archive-header-§33 + CodeQL + Scorecard | Licensing-clause audit | Composes |
 | 13 | Mirror+beacon-symmetric | HUMAN | n/a (judgment-based; mechanization = category error) | Lint for load-bearing-claim-without-citation | Composes with Otto-364 |
 
-**Summary counts**: 4 GREEN, 7 YELLOW, 2 RED, 1 HUMAN. About 70% of the conjunction has at least partial mechanization today; the gap-closing work is bounded and tractable.
+**Summary counts**: 4 GREEN (rows 1, 4, 11, 12), 6 YELLOW (rows 2, 3, 5, 7, 8, 10), 2 RED (rows 6, 9), 1 HUMAN (row 13). Total 4+6+2+1 = 13 ✓. About 77% of the conjunction (4 GREEN + 6 YELLOW = 10 of 13) has at least partial mechanization today; the gap-closing work is bounded and tractable.
 
 ## Honest limits — what I cannot do here
 
@@ -248,7 +248,7 @@ Per Aaron's directive *"lets be a good citizen and teach everyone though shared 
 
 ## Carved sentence
 
-> *Of the 13 hodl-invariant properties, 4 are mechanized today (DST + low-allocation + glass-halo + anti-clandestine); 7 have partial coverage with bounded closeable gaps; 2 are research-grade (Mercer-closure + universal-register-as-MDL); 1 is intentionally human-judgment (mirror+beacon-symmetric, where mechanization would be category error). The conjunctive-completeness defense gets stronger with mechanization but cannot be fully automated; substrate-graduation pattern applies to the audit framework itself. Upstream-contribution candidates exist across BenchmarkDotNet, FsCheck, Lean Mathlib, Roslyn, and Feldera/DBSP — shared stewardship per GOVERNANCE.md §23.*
+> *Of the 13 hodl-invariant properties, 4 are mechanized today (DST + low-allocation + glass-halo + anti-clandestine); 6 have partial coverage with bounded closeable gaps; 2 are research-grade (Mercer-closure + universal-register-as-MDL); 1 is intentionally human-judgment (mirror+beacon-symmetric, where mechanization would be category error). The conjunctive-completeness defense gets stronger with mechanization but cannot be fully automated; substrate-graduation pattern applies to the audit framework itself. Upstream-contribution candidates exist across BenchmarkDotNet, FsCheck, Lean Mathlib, Roslyn, and Feldera/DBSP — shared stewardship per GOVERNANCE.md §23.*
 
 ## Daylight-integration hooks (planned)
 
