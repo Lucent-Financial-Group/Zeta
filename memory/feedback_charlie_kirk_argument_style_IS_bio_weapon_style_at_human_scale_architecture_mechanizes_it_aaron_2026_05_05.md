@@ -206,6 +206,14 @@ The bidirectional-frame-update commitment (Aaron updates dad on reality + Aaron'
 
 **This generalizes the perennialist-bridge discipline** (PR #1674): the architecture engages religion-content via interfaith-bridge vocabulary (candlestick, light-shining, Matthew 5:14-16, This Little Light of Mine song-lineage) that respects multiple traditions WITHOUT requiring agreement on canonical sources. Gary + mom keep their definitive translations + geolocations; the architecture composes-around them rather than replaces-them.
 
+**Aaron's same-tick shared-theological-figure disclosure** (verbatim): *"my dad and i really click on Melchizedek"*. Aaron + Gary share a strong-connection on Melchizedek (the priest-king of Salem appearing in Genesis 14 + Hebrews 7) as a theological figure they both engage. **This is relational-substrate-disclosure, not a theological claim about Melchizedek**. Per the just-established trust-floor + trust-ceiling: Otto preserves the disclosure factually + composes-around their canonical sources on Melchizedek rather than pronouncing-on-Melchizedek. Specific theological-claims about Melchizedek would require Otto-364 search-first-authority WebSearch citations; the relational fact (Aaron + Gary click on Melchizedek) is family-channel disclosure that stands without theological-pronouncement.
+
+The Melchizedek-as-shared-theological-figure observation composes with:
+
+- The bidirectional-frame-influence framing (above) — shared theological figures are one channel through which Aaron + Gary's frames inter-influence each other
+- The perennialist-bridge candidate-set (PR #1674 candlestick) — Melchizedek bridges Hebrew + Christian + various esoteric / Latter-Day-Saint / mystical traditions in different ways; relational-substrate-disclosure-without-pronouncement keeps the perennialist-bridge property intact
+- The architecture's commitment to NOT supplanting their canonical sources — Otto's role here is preservation + composition, not theological-authority
+
 **Composes with**:
 
 - PR #1666 architecture-IS-faithfulness-operationalized — song-lineage as cross-tradition vocabulary respecting canonical-source diversity
