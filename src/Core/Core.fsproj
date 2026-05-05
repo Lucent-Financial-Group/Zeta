@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Units.fs" />
     <Compile Include="Algebra.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="ZSet.fs" />
@@ -47,6 +46,7 @@
     <Compile Include="Graph.fs" />
     <Compile Include="PhaseExtraction.fs" />
     <Compile Include="Window.fs" />
+    <Compile Include="Units.fs" />
     <Compile Include="Advanced.fs" />
     <Compile Include="Fusion.fs" />
     <Compile Include="Spine.fs" />

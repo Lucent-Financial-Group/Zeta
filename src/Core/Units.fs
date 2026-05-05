@@ -54,16 +54,12 @@ module Units =
     // Time: logical ticks vs wall-clock milliseconds vs nanoseconds.
     // ============================================================================
 
-    /// DBSP logical time. One tick = one circuit step. Independent of
-    /// wall-clock duration. Schedulers operate in `tick`s; user-facing
-    /// timeouts and rate limits are in `ms`. Off-by-1000x bugs disappear
-    /// when conversions are explicit.
-    [<Measure>]
-    type tick
-
-    /// Wall-clock millisecond.
-    [<Measure>]
-    type ms
+    // `tick` and `ms` are NOT redeclared here -- they already exist as
+    // namespace-scope measures in `Window.fs:13-14`. This module compiles
+    // AFTER Window.fs so it sees those declarations and reuses them. The
+    // alternative (redeclaring inside Units) would create
+    // `Zeta.Core.Units.tick` distinct from `Zeta.Core.tick` -- non-
+    // interoperable, undermining the additive-safety goal. Reuse > redeclare.
 
     /// Wall-clock nanosecond. For high-precision deterministic-
     /// simulation-testing (DST in the Otto-272 sense -- distinct from
