@@ -21,6 +21,25 @@ tags: [bootstrap-razor, specs-as-source-of-truth, recreation-test, openspec, fal
 
 > *"the stronger version i consederd is i alredy sadi conderer the specs and open spec the source of truth we are going to delete every9ign else and you have to be able to recrate everyign in 23 hours"*
 
+## Pre-existing foundation (NOT new principle)
+
+Aaron 2026-05-05 same-tick correction to over-claiming:
+
+> *"also befreo the substrate the first sendatn i may have tped is opnespec is source of truth code is rederivabel i'm there is stuff all in this repo about that too not new"*
+
+The "specs as source of truth" framing IS foundational and pre-dates this row. Already established in:
+
+- `docs/ARCHITECTURE.md`: *"Specs as source of truth. Behavioural specs under `openspec/specs/` plus formal specs (`docs/*.tla`, `proofs/lean/`) describe what the code must satisfy. Code is regenerable from specs; the reverse is not."*
+- `openspec/README.md`: *"OpenSpec is the source of truth for this project. If implementation code disappeared, the combination of [specs] would..."* + *"The canonical specs under `openspec/specs/*/` are the only standing source of truth; there is no change-history archive."*
+
+What this row adds (NOT new principle, NEW operationalization):
+
+1. **Concrete recreation test**: 23-hour window with fresh-context Otto + specs-only as input. Makes the regenerable claim falsifiable.
+2. **Scheduled razor pass**: a date by which the test runs against accumulated bootstrap. The date IS the operational signature.
+3. **Keep-vs-cut categories**: explicit treatment for research-grade preservation, decision rationale, external-context, personal-history surfaces.
+
+This row makes the pre-existing principle operational rather than aspirational.
+
 ## What this addresses
 
 Greenfield-as-permission-to-razor is the operationally load-bearing framing -- without a scheduled bootstrap-razor pass, accumulated substrate ossifies because deletion feels like loss. With the razor + a date, every piece of substrate is provisional until it earns load-bearing status. The pattern Claude.ai 2026-05-05 named correctly:
