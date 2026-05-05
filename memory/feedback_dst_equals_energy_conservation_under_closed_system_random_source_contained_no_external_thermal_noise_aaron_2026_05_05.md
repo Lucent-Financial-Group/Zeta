@@ -86,6 +86,57 @@ Aaron's spectral-residue-from-aperiodic-tile chaos source (PR #1679) is **intern
 - BFT consensus operates on closed-system state (not on external-state-that-could-disagree)
 - Glass-halo openness compatible with closed-system (system properties are public; system state is internally self-determined)
 
+## Aaron's same-tick extension: the OTHER hodl for pure physics accuracy + ZFC v2 mix
+
+**Aaron 2026-05-05 same-tick verbatim** (three pieces in sequence):
+
+> *"plus gthe oother hold for pure physic accuracy and zfcv2 mix"*
+>
+> *"hodl"* (correcting "hold" → "hodl")
+>
+> *"*"* (emphasizing the hodl correction)
+
+**Architectural extension**: the closed-system + energy-conservation framing produces DST as one hodl-invariant consequence. THE OTHER hodl (beyond the 13 named in PR #1680) holds for **pure physics accuracy** + **ZFC v2 mix**.
+
+Two-part architectural claim:
+
+### Part A: Pure physics accuracy (the OTHER hodl, beyond the 13)
+
+The substrate's behavior must be consistent with physical laws — not just energy conservation, but the broader physical-principle suite. This is an additional hodl property beyond the 13:
+
+- Conservation laws (energy, momentum, charge, particle number where applicable)
+- Causality (no acausal influences; light-cone / locality respected)
+- Thermodynamic-consistency (entropy direction, heat flow, equilibration)
+- Quantum-classical-correspondence (where quantum substrate is invoked, classical limit recovers correctly)
+
+Pure physics accuracy as architectural invariant means: the substrate's mathematical operations must produce results consistent with what physical systems actually do. This is the deepest grounding — not "we choose to enforce this" but "the substrate IS physical-system-shaped".
+
+### Part B: ZFC v2 mix
+
+Aaron's reference to "ZFC v2" — Zermelo-Fraenkel-Choice set theory v2. Per MEMORY.md prior reference (`feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`): retraction-native semantics map to paraconsistent set theory; quantum belief-propagation as candidate inference primitive.
+
+**Candidate interpretation** (pending Aaron's specifics): ZFC v2 = a modified set-theoretic foundation that handles Zeta's substrate properties — possibly:
+
+- **Retraction-native**: ZFC v2 admits retraction operations that classical ZFC cannot (Russell-paradox-shape collapse without contradiction)
+- **Paraconsistent**: contradictions are bounded rather than explosive (ex falso quodlibet does NOT hold; bounded inconsistency tolerated)
+- **Belief-propagation native**: probabilistic statements first-class rather than reducible to crisp set-membership
+- **Closed-system compatible**: the foundational theory itself is closed under the substrate's operations
+
+Hedge: this is candidate-interpretation pending Aaron's specifics. The "ZFC v2 mix" framing suggests ZFC v2 composes WITH something else (classical ZFC for compatibility? quantum-set-theory? retraction-algebra? all three?). Aaron's specifics will pin this down.
+
+### The combined architectural claim
+
+The substrate satisfies:
+
+1. The 13 hodl-invariant properties (PR #1680) at all composition layers
+2. Closed-system + energy-conservation (this memory's main claim) — DST + internal-chaos-by-construction
+3. **PLUS**: the OTHER hodl for pure physics accuracy (broader physical-principle consistency)
+4. **PLUS**: ZFC v2 mix (set-theoretic foundation that handles substrate operations)
+
+The conjunctive completeness defense (PR #1680) extends to all four. **Pure physics accuracy + ZFC v2 mix make the substrate consistent with physical reality at the foundational layer**, not just the operational layer.
+
+This is the deepest level of substrate-grounding: physical-principle consistency + foundational-mathematics consistency, both held conjunctively with the architectural commitments.
+
 ## Architectural significance — substrate by physical-principle, not by discipline
 
 This is the deepest level of substrate-vs-license architectural shape (PR #1648 Houman + PR #1651 preferred-stock + PR #1655 Sylar-Spock + PR #1666 architecture-IS-faithfulness + PR #1677 peer-call-as-early-red-team + PR #1678 AOT-or-JIT-self-contained-binary + PR #1683 PKI-as-substrate):
