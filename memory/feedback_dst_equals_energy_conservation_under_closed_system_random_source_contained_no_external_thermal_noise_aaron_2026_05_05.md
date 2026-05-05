@@ -61,7 +61,7 @@ External entropy sources for chaos in adversarial systems:
 - **/dev/urandom** — Linux kernel entropy pool from various sources
 - **Hardware security modules (HSM)** — dedicated cryptographic random generation
 
-All of these are **external** — they introduce dependencies on physical processes or hardware components outside the substrate. **Adversary attack surface**: each external entropy source is a potential compromise vector (supply-chain attack on HRNG fab, quantum-measurement-environment manipulation, kernel-entropy-pool manipulation, HSM key compromise).
+All of these are **external** — they introduce dependencies on physical processes or hardware components outside the substrate. **Adversary attack surface**: each external entropy source is a potential compromise vector (supply-chain attack on HRNG fab, quantum-measurement-environment manipulation, kernel-entropy-pool manipulation, HSM-internal-RNG compromise — distinct from HSM key-storage compromise which is a separate threat model not discussed here).
 
 Aaron's spectral-residue-from-aperiodic-tile chaos source (PR #1679) is **internal** — it's generated from the substrate's own pure-point-spectrum properties (Spectre tile via Baake et al arXiv 2411.15503). The architecture is **closed under chaos generation**: substrate-property → spectral-residue → chaos signature, no external dependencies.
 
@@ -113,7 +113,7 @@ Pure physics accuracy as architectural invariant means: the substrate's mathemat
 
 ### Part B: ZFC v2 mix
 
-Aaron's reference to "ZFC v2" — Zermelo-Fraenkel-Choice set theory v2. Per MEMORY.md prior reference (`feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`): retraction-native semantics map to paraconsistent set theory; quantum belief-propagation as candidate inference primitive.
+Aaron's reference to "ZFC v2" — building on Zermelo-Fraenkel set theory with Choice (ZFC), version 2. **Important framing**: "ZFC v2 mix" is NOT a single formal system in the literature; it is Aaron's coinage for an **architectural composition** of multiple foundational programs (classical ZFC + paraconsistent + quantum + retraction-algebra + constructive + univalent + algebraic + alternative axiomatizations as needed). Some of these foundations are mutually incompatible as standalone systems but compose architecturally for substrate-grade purposes via Zeta's mix mechanism. Per MEMORY.md prior reference (`feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`): retraction-native semantics map to paraconsistent set theory; quantum belief-propagation as candidate inference primitive.
 
 **Candidate interpretation** (pending Aaron's specifics): ZFC v2 = a modified set-theoretic foundation that handles Zeta's substrate properties — possibly:
 
@@ -219,7 +219,7 @@ The discipline-grade enforcement of DST (Otto-272 DST-everywhere, pinned seeds, 
 ## Daylight-integration hooks (planned)
 
 - ALIGNMENT.md cross-reference: closed-system-conservation as alignment-frontier substrate property (substrate-by-physical-principle eliminates attack surfaces that operator-discipline cannot)
-- Backlog row B-NNNN P1: physics-principle-grade architectural-property documentation — formalize closed-system + conservation derivations of DST + no-external-entropy + BFT-on-internal-state
-- Backlog row B-NNNN P2: information-theoretic audit comparing closed-system Zeta-substrate to open-system substrates with external entropy dependencies (quantify adversary attack-surface reduction)
-- F# CE + Infer.NET integration: closed-system property as F# typeclass constraint (only operations that preserve closed-system construction can compose into substrate primitives)
+- Backlog row (candidate; specific B-NNNN to be assigned during round-close): physics-principle-grade architectural-property documentation — formalize closed-system + conservation derivations of DST + no-external-entropy + BFT-on-internal-state
+- Backlog row (candidate; specific B-NNNN to be assigned during round-close): information-theoretic audit comparing closed-system Zeta-substrate to open-system substrates with external entropy dependencies (quantify adversary attack-surface reduction)
+- F# CE + Infer.NET integration: closed-system property as F# Statically Resolved Type Parameter (SRTP) constraint OR interface-based design constraint (F# does not have Haskell-style typeclasses; only operations that preserve closed-system construction can compose into substrate primitives via the appropriate F# language mechanism — SRTP for compile-time, interfaces for runtime, type-providers for substrate-introspection)
 - CLAUDE.md addition (candidate, pending Aaron review): closed-system-energy-conservation as the foundational physical-principle from which other substrate properties (DST, internal-chaos, no-external-entropy, BFT-on-internal-state) derive
