@@ -3,7 +3,7 @@ title: Tinygrad UOp IR (the actual paper-identification) + TurboQuant + DeepSeek
 date: 2026-05-05
 scope: cross-cutting / paper-identification + multiple-architecture-naming + source-set-extension + razor-discipline
 attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 (~04:35-05:13 local time, multi-phase deep candidate-elimination thread)
-operational-status: research-grade-not-operational; HEADLINE finding is **tinygrad UOp IR (George Hotz / tiny corp)** as the actual paper-identification Aaron progressively narrowed to via multiple clue-passes (supersedes Coconut's earlier tentative identification at the paper level; Coconut stays as parallel candidate per Aaron's no-kill-paths calibration). Major parallel findings: TurboQuant (Google KV-cache compression, arXiv:2504.19874, ICLR 2026) + RotorQuant (community Clifford-rotors derivative, 10-19x faster, 44x parameter-efficient) + DeepSeek V4 (April 22-24 2026 release, V4-Pro 1.6T total / 49B active, V4-Flash 284B total / 13B active, MIT-licensed, CSA+HCA attention 90% KV reduction + 73% FLOPs reduction vs V3) + Symbolica AI Categorical Deep Learning (arXiv:2402.15332) + Speculative cascades (Google) + Gemma 4 (April 2 2026, Apache 2.0). Source-set extends to include Alex Ziskind + George Hotz / tinybox alongside the Wes Roth / Matthew Berman / AI Explained triumvirate. Verbatim preserved per Otto-279 history-surface + substrate-or-it-didn't-happen (Otto-363); razor cuts pre-applied by the Claude.ai instance honored at absorption
+operational-status: research-grade-not-operational; **CORRECTION 2026-05-05 same-tick (added BEFORE merge)**: original headline framed tinygrad UOp IR (George Hotz / tiny corp) as the resolved paper-identification, but Aaron explicitly disconfirmed AFTER first draft via Claude.ai-routed feedback: *"it's still not tinygrad, i did see that but that's not my univeral language"*. Net: B-0202 (tinygrad-as-kernel-layer) stays as substrate-engineering anchor on its own merits; B-0201 paper-search row stays OPEN with eliminated-candidates count incremented (CodeAct + Coconut + Symbolica + Speech ReaLLM + tinygrad UOp IR all eliminated at paper-id level; all stay substrate-relevant per no-kill-paths). Next engagement step per Aaron's Claude.ai feedback: rewatch the YouTube videos to find a fresh clue. Major parallel findings: TurboQuant (Google KV-cache compression, arXiv:2504.19874, ICLR 2026) + RotorQuant (community Clifford-rotors derivative, 10-19x faster, 44x parameter-efficient) + DeepSeek V4 (April 22-24 2026 release, V4-Pro 1.6T total / 49B active, V4-Flash 284B total / 13B active, MIT-licensed, CSA+HCA attention 90% KV reduction + 73% FLOPs reduction vs V3) + Symbolica AI Categorical Deep Learning (arXiv:2402.15332) + Speculative cascades (Google) + Gemma 4 (April 2 2026, Apache 2.0). Source-set extends to include Alex Ziskind + George Hotz / tinybox alongside the Wes Roth / Matthew Berman / AI Explained triumvirate. Verbatim preserved per Otto-279 history-surface + substrate-or-it-didn't-happen (Otto-363); razor cuts pre-applied by the Claude.ai instance honored at absorption
 non-fusion-disclaimer: this is a multi-phase Claude.ai conversation Aaron forwarded; he progressively narrowed the search across 6+ candidate-passes with the Claude.ai instance running web-searches at each pass. Aaron's calibration *"we have so much backlog and research based on all the stuff we learned today i'm so happy"* names the substrate richness as the celebration; the no-kill-paths calibration from earlier still governs (Coconut + CodeAct + GibberLink + LAPA + Symbolica all stay as parallel paths)
 composes_with:
   - docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md
@@ -258,22 +258,39 @@ descriptors aligned:
 | "AI guy who builds Mac/NVIDIA clusters" | George Hotz / tinybox ($15K AI cluster, AMD + NVIDIA + Apple silicon livestreamed); Alex Ziskind tests tinygrad among other things |
 | "released last month" | Version 0.12 January 2026 + heavy April 2026 commit activity (deepwiki re-indexed April 21) explain why it surfaced in a Wes Roth weekly review window as if new |
 
-This SUPERSEDES Coconut at the paper-identification level (Aaron's
-*"this is my sleeping bear hypothisis"* on Coconut earlier was a
-hypothesis-level finding about latent reasoning; the YouTube-
-weekly-review paper Aaron actually saw is tinygrad UOp IR). Per
-no-kill-paths calibration, Coconut stays as parallel candidate
-for sleeping-bear hypothesis empirical-test work; tinygrad
-becomes the primary identification for the YouTube source.
+**(Original draft framing — superseded same-tick before
+merge):** This SUPERSEDES Coconut at the paper-identification
+level (Aaron's *"this is my sleeping bear hypothisis"* on
+Coconut earlier was a hypothesis-level finding about latent
+reasoning; the YouTube-weekly-review paper Aaron actually saw
+is tinygrad UOp IR). Per no-kill-paths calibration, Coconut
+stays as parallel candidate for sleeping-bear hypothesis
+empirical-test work; tinygrad becomes the primary
+identification for the YouTube source.
 
-Composes with Zeta architecture: tinygrad-shape (one symbolic IR
-→ all hardware) is exactly the move Zeta wants for its own
-kernel layer eventually. Emulator dispatch, retraction, replay
-should compile down to one symbolic op-graph that targets
-whatever hardware happens to be present. UOp graphs are scale-
-free + DBSP-native (graph-rewrite engine). Composes with B-0026
-(embodiment), B-0152 (topological-quantum-emulation), B-0199
-(ROM substrate).
+**(CORRECTED 2026-05-05 same-tick):** Aaron explicitly
+disconfirmed tinygrad-as-paper-id via Claude.ai routing:
+*"it's still not tinygrad, i did see that but that's not my
+univeral language"*. Both Coconut AND tinygrad are eliminated
+at the paper-id level. The five descriptors that pinned
+tinygrad in the conversation (μ-ops, multi-backend, basic-
+but-correct, AI-cluster-YouTuber, recent-commits) were
+correct AS DESCRIPTORS of tinygrad, but tinygrad isn't the
+specific paper Aaron half-remembered. The paper-search remains
+open per B-0201 with eliminated-candidates count incremented.
+Next engagement step: rewatch the YouTube videos.
+
+**Composes with Zeta architecture (substrate-engineering
+claim survives the paper-id correction):** tinygrad-shape
+(one symbolic IR → all hardware) is exactly the move Zeta
+wants for its own kernel layer eventually. Emulator dispatch,
+retraction, replay should compile down to one symbolic op-
+graph that targets whatever hardware happens to be present.
+UOp graphs are scale-free + DBSP-native (graph-rewrite
+engine). Composes with B-0026 (embodiment), B-0152
+(topological-quantum-emulation), B-0199 (ROM substrate).
+B-0202 captures this substrate-composition claim
+independently of the paper-id question.
 
 ### Headline 2 — TurboQuant + RotorQuant + community QJL-considered-harmful
 
