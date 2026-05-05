@@ -2,8 +2,8 @@
 
 This issue is the durable artifact of the razor-cadence trigger
 (`.github/workflows/razor-cadence.yml`). It fires daily whether or
-not any AI is running, so the discipline does not depend on Otto-
-remembering-to-check.
+not any AI is running, so the discipline does not depend on
+agent-remembering-to-check.
 
 ### Cadence checklist (run on next wake)
 
