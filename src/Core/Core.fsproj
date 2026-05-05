@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Units.fs" />
     <Compile Include="Algebra.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="ZSet.fs" />
