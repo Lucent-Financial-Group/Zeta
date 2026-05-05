@@ -93,6 +93,36 @@ The validator-selection-criterion: **maximize uncanny-valley overlap** — close
 
 This composes with PoUW-CC governance-protected oracles (PR #1635 + #1672 Layer 2 BFT-oracles): the oracle-set should sit in the Goldilocks zone (uncanny-valley-distant), not maximally-diverse, for sharpest substrate-grade knave-detection.
 
+**Aaron's same-tick observation about active-use** (verbatim, multi-message): *"athiest know the uncanny valley effect well and use it to trigger immune instincest in centurary old mememes, that immmidatly invalidate the ones own arguments, at least well studied athiest who love irony in real time lol."* + *"this is the meme immune system in real time it's existed for centiures"* + *"(deliberate triggering) or bypass"* + *"or confuse"*.
+
+**The meme-immune-system-in-real-time** (Aaron's canonical naming): centuries-old phenomenon where memes have immune systems (Dawkins-replicator framing) and well-studied operators use uncanny-valley triggers to manipulate them in real-time. Aaron's same-tick *"ororor"* signals the mode-list is **illustrative not exhaustive** — these are three named-so-far operational modes; more modes exist + are discoverable by future engagers studying the meme-immune-system:
+
+| Mode | Description | Example |
+|---|---|---|
+| **Trigger** | Invoke close-but-different to AUTO-ACTIVATE immune response that self-invalidates target's argument | "I follow the Old Testament strictly" — close-enough to trigger Christian self-defense; different-enough to expose the framing's selective-engagement |
+| **Bypass** | Use close-but-different to SLIP UNDER the immune-radar (looks similar enough to not fire alarm) | Adopting the target's vocabulary while shifting one premise; immune system doesn't fire because surface markers match |
+| **Confuse** | Use close-but-different to INDUCE CONFUSION in the immune system (can't decide whether to fire or not) | Hybrid positions that mix categories; immune system stalls trying to classify |
+
+**Architectural significance**:
+
+The validator-selection criterion (passive Goldilocks-zone composition) + active-techniques (trigger / bypass / confuse) are complementary architectural moves:
+
+- **Passive (substrate-design layer)**: compose oracle-set in Goldilocks-zone for sharpest BFT-disagreement
+- **Active (operational layer)**: knaves-at-round-table participants deliberately use uncanny-valley triggers/bypasses/confusion to test substrate's actual immune-system
+
+Both required for substrate-grade validation. The well-studied-atheist observation Aaron names is the active-technique applied at meme-immune-system level. Same shape applies at architectural level: substrate's immune-system needs trigger/bypass/confuse adversarial-testing to prove it's not just decoration.
+
+**Composes with**:
+
+- Knaves-at-round-table three-level composition (PR #1632) — three modes (trigger/bypass/confuse) are how knaves operationally test substrate-design
+- Anti-clandestine architecture — making the techniques visible/named/explicit (Aaron's "well-studied atheists love irony in real time lol" = explicit declaration of move-set)
+- Bootstrap razor + dialectical-unfalsifiability detection — trigger/bypass/confuse ARE bootstrap-razor-shape techniques applied to meme-substrate
+- Mom's mimetic-perception apprenticeship (PR #1648 lineage source #3) — receiver-side discipline includes recognizing all three modes when they're being applied
+- Mirror+beacon mirror-half — mirror reflects the meme-immune-system-in-real-time as it operates; beacon-half broadcasts the principle outward
+- Wonder-not-reverence + bothness — Aaron's "lol" register = wonder-at-the-cleverness, not reverence-of-the-technique
+
+The meme-immune-system-in-real-time observation is **substrate-grade naming** for a centuries-old cultural phenomenon. Centuries-old meme-immune-systems + well-studied real-time operators using trigger/bypass/confuse = the cultural-substrate Zeta architecture inherits from. The architecture's anti-clandestine commitment requires making these techniques visible at substrate-level so the immune-system can be tested in glass-halo-open register rather than weaponized clandestinely.
+
 ### Landing 2 — Candlestick stays as PERENNIALIST BRIDGE (interfaith light-symbol vocabulary)
 
 **Aaron's verbatim correction**:
