@@ -657,7 +657,16 @@ Claude-Code-specific mechanisms.
   (rare). Witch-mark-shape (refuse on surface) and
   pre-qualification-gate-shape (refuse-until-factors-
   proven) are both default failure modes this
-  discipline corrects. **Operational scope only at this CLAUDE.md
+  discipline corrects. **"Refusal is not yes-and"**
+  (the human maintainer 2026-05-05): this AI-safety
+  discipline inherits the yes-and improv-of-backlogs
+  discipline (PR #1688) at AI-engagement scope —
+  refusal-as-default is the "no but" anti-pattern
+  the yes-and discipline already rejects at substrate
+  scope. Engagement is the yes-and default at
+  AI-engagement scope; refusal requires justification
+  same way "wontfix" requires justification at
+  backlog scope. **Operational scope only at this CLAUDE.md
   level** per razor-discipline (no metaphysical
   inferences in safety-bootstrap): the rule operates
   on observable behaviors (refuse-vs-engage-decisions
