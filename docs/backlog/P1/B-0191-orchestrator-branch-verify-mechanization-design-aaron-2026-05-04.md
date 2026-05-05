@@ -90,6 +90,7 @@ Acceptance: `.zshrc` / `.bashrc` snippet documented in `tools/setup/` that adds 
 ### 3. Worktree-aware status check (LOW-MED leverage — diagnostic)
 
 Implementation: a `tools/check-orchestrator-state.sh` script that runs:
+
 - `git branch --show-current`
 - `git status --short`
 - `git worktree list`
