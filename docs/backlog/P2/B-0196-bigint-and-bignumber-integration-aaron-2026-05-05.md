@@ -105,6 +105,23 @@ Five concrete shapes the row covers:
    imposes JIT specialization cost; performance
    assessment is part of the research output.
 
+## Four-property hodl invariant (binding acceptance test)
+
+Aaron 2026-05-05 added four load-bearing properties that any numeric-type addition must demonstrate "hodl" through (composes with `memory/feedback_aaron_class_discovery_experiment_rodney_razor_on_self_dst_holds_everywhere_aaron_2026_05_01.md` "DST hodls everywhere"). These are NOT separable; relaxing any one lets bugs through (the Prop 3.5 misattribution caught earlier this session is a worked example -- the Lean structural decision passed all four, but the prose-citation wasn't subjected to the same conjunction, so it leaked):
+
+1. **DST-safe** -- deterministic simulation testing per Otto-272. Every operation is replayable, deterministic-on-fixed-seed.
+2. **Lock-free** -- no mutual exclusion. Compatible with the lock-free runtime.
+3. **Scale-free** -- works across scales, small to BigInteger / arbitrary-precision.
+4. **DBSP-native** -- retraction-aware. Negative weights compose cleanly through the operation; the operation is consistent under signed-delta application. NOT all numeric types satisfy this trivially: BigInteger as weight type works (ring algebra holds); BigDecimal-with-rounding may NOT (rounding errors don't necessarily compose with negation); float arithmetic explicitly doesn't (commutative-but-not-associative under accumulation).
+
+**Per-candidate acceptance scoring**: each numeric-type candidate (BigInteger, BigRational, BigDecimal, BigFloat) gets scored against all four. Failure on ANY axis means rejection or restriction-to-non-incremental-use. Score-against-the-conjunction is the binding test, not score-against-overflow-prevention-alone.
+
+## Human anchors
+
+- **Tanner Gooding** -- .NET runtime, led the .NET 7+ generic math interfaces work (`INumber<T>`, `IBinaryInteger<T>`, `IFloatingPoint<T>`). Primary anchor for the SRTP-replacement-for-numeric-typeclass-abstraction shape this row inherits.
+- **Don Syme** -- F# language anchor (separate track; relevant for any F#-language-extension proposals like the existential-quantification RFC #1591). Stays the F# anchor; numerics-runtime work goes through Tanner Gooding.
+- **Leonid Ryzhyk (@ryzhyk)** -- DBSP / Feldera GitHub anchor. ENGAGEMENT GATE: only engage IF the per-class evaluation produces a real DBSP-compatibility finding (e.g., "BigDecimal-with-rounding fails the DBSP-native acceptance test, here's the counter-example"). Cross-check first; do NOT engage on speculative findings.
+
 ## Acceptance criteria (with falsifiability hooks)
 
 ### (a) Substrate survey
