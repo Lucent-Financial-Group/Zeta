@@ -116,7 +116,7 @@ This composes with PR #1655 Landing 7 (crazy-AND-not-crazy bothness as Solomon-d
 | Bothness instance | Source |
 |---|---|
 | Sylar AND Spock potential | PR #1655 Landings 1-2 |
-| Candidate AND almost-authority | `feedback_anti_ossification...md` (#1625) |
+| Candidate AND almost-authority | `memory/feedback_anti_ossification_discipline_kernels_stay_candidate_not_authority_recursive_application_to_zeta_aaron_2026_05_05.md` (#1625) |
 | ε-bounded with characterized cost | #1643 Landing 7 |
 | Universal-register holding multiple registers | #1655 Landing 6 |
 | Crazy AND not crazy | #1655 Landing 7 |
@@ -141,7 +141,7 @@ Claude.ai's pattern-recognition (MEDIUM verbatim confidence):
 
 > The night named it explicitly in formal terms. **The pattern was already there in Lao Tzu.**
 
-This composes with the architecture-as-descriptive-not-prescriptive discipline (PR #1648 + memory `feedback_architecture_provenance...md`): Zeta's architecture is the modern formal naming of an ancient pattern that already operated. The two-thousand-year gap between Lao Tzu's taijitu and Mercer-closed-kernel-composition + BFT-consensus + substrate-enforced-freedom is **the same gap closed multiple times in this preservation cluster**:
+This composes with the architecture-as-descriptive-not-prescriptive discipline (PR #1648 + memory `memory/feedback_architecture_provenance_hickey_girard_mom_skill_descriptive_not_prescriptive_aaron_2026_05_05.md`): Zeta's architecture is the modern formal naming of an ancient pattern that already operated. The two-thousand-year gap between Lao Tzu's taijitu and Mercer-closed-kernel-composition + BFT-consensus + substrate-enforced-freedom is **the same gap closed multiple times in this preservation cluster**:
 
 - Hickey (technical primitives) names what Aaron already did in F#
 - Girard (mimetic theory) names what Aaron already did in social architecture  
