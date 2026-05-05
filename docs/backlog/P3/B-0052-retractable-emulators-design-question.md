@@ -9,7 +9,7 @@ ask: Aaron 2026-04-21 — *"our emulators should be retractable backlog how"*
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0053, B-0051, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md, docs/research/chain-rule-proof-log.md, tools/lean4/Lean4/DbspChainRule.lean]
+composes_with: [B-0053, B-0051, B-0199, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md, docs/research/chain-rule-proof-log.md, tools/lean4/Lean4/DbspChainRule.lean]
 tags: [emulator, retraction-native, save-state, deterministic-replay, jit-cache, bank-switching, view-clock, rng-reified, cycle-accurate, design-question]
 ---
 

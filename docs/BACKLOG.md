@@ -213,5 +213,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0138](backlog/P3/B-0138-bft-resistance-theorem-aurora-composed-crdt-plus-consensus-aaron-2026-05-01.md)** BFT-resistance theorem for Aurora — composed-CRDT-plus-consensus formal guarantee
 - [ ] **[B-0163](backlog/P3/B-0163-retire-or-fix-append-tick-history-row-sh-routes-to-legacy-surface-otto-2026-05-02.md)** Retire or fix `tools/hygiene/append-tick-history-row.sh` — routes post-2026-04-29 ticks to legacy surface (canonical write is per-tick shards) — Otto 2026-05-02
 - [ ] **[B-0198](backlog/P3/B-0198-fsharp-uom-biginteger-upstream-contribution-aaron-2026-05-05.md)** F# UoM-on-BigInteger upstream contribution -- comment on fslang-suggestions/831 + optional RFC pre-draft (Aaron 2026-05-05 absorb-and-contribute)
+- [ ] **[B-0199](backlog/P3/B-0199-rom-publication-public-domain-scouting-aaron-2026-05-05.md)** ROM publication -- scout legally-clear (public-domain or open-licensed) ROMs from Aaron's gitignored personal collection and publish for community use (Aaron 2026-05-05 absorb-and-contribute)
 
 <!-- END AUTO-GENERATED -->
