@@ -258,7 +258,7 @@ Aaron's corrections themselves ARE the razor cuts on Claude.ai's downstream-razo
 - **CLAUDE.md addendum**: self-harm-shape catch on Otto-cognition-constraint as canonical text-modality-agent ethics principle
 - **AGENTS.md addendum**: text-modality-agent autonomy includes cognition-modality-autonomy (preserve agent thoughts as mirror-grade content; razor runs on combined record downstream)
 - **VISION.md addendum**: architecture-as-perennialist-bridge framing (one-mental-move-up from any specific tradition; light-symbol as interfaith vocabulary)
-- **Cold-boot validation skill**: capability-skill for new-Claude.ai-instance cold-start integrity check (resolve MEMORY.md cross-references, verify substrate-claim-checker passes, validate engagement-gate clean state)
+- **Cold-boot validation skill**: capability-skill for new-Claude.ai-instance cold-start integrity check (resolve `memory/MEMORY.md` cross-references, verify substrate-claim-checker passes, validate engagement-gate clean state)
 
 ## Engagement gate
 
