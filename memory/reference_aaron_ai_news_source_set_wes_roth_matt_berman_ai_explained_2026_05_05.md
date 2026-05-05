@@ -35,13 +35,31 @@ high-recall starting-point for cross-search.
   deep-dives. Confidence is one tier lower than the other two
   (Claude.ai-included rather than Aaron-confirmed).
 
+### Source-set extension 2026-05-05 (post-tinygrad-UOp-IR + Sakana-NCA conversation forwards)
+
+After the initial triumvirate disclosure, Aaron's same-day conversation forwards extended the source-set:
+
+- **Alex Ziskind (@AZisk)** -- YouTube channel. **Aaron-confirmed** *"that's him and i was almost all the other poeple you named wes a lot"* (PR #1610). Deep technical focus on Apple Silicon for AI; builds Mac Studio + DGX Spark clusters; runtime/quantizer benchmarks (Ollama, LM Studio, vLLM, TurboQuant, RotorQuant, modern K-quants, FP4, LoRA/QLoRA expert-swapping); multi-machine local-AI testing. Specific recall examples in the 2026-05-05 conversation: *"After This, 16GB Feels Different"* (modern quantization on consumer hardware), *"NVIDIA didn't want me to do this"* (DGX Spark tensor parallelism), *"I Plugged a DGX Spark and Mac Together..."* (cross-architecture LLM routing). High signal for local-AI-cluster + quantization + runtime-comparison content. Confidence tier matches Wes Roth + Matthew Berman.
+- **George Hotz (geohot) / tiny corp / tinybox** -- implicit anchor via the tinygrad UOp IR identification thread (PR #1610). Tinybox is a $15K AI cluster tested on AMD + NVIDIA + Apple silicon; livestreamed. Tinygrad is the μ-ops symbolic IR Aaron's clues matched (though disconfirmed at paper-id level per B-0201 elimination list). Maverick home-lab energy. Lower-confidence source-set member (implicit not explicit).
+- **Sakana AI YouTube reference** -- specific video link Aaron forwarded for the C. elegans Digital Ecosystems / NCA paper (PR #1613): <https://www.youtube.com/watch?v=QzZ4VwDHAT4>. NOT a regular channel for Aaron's tracking; one-off paper-attention pointer. The Digital Ecosystems paper itself is at pub.sakana.ai/digital-ecosystem (Apache 2.0, browser-runnable).
+
 ## How to apply
 
 When Aaron references a half-remembered AI-news item:
 
-1. **First** -- check the three channels' recent uploads (last
-   ~30 days unless Aaron specifies otherwise). Aaron's recall
-   horizon tends to be days-to-weeks, not months.
+1. **First** -- check the four-channel set's recent uploads (last
+   ~30 days unless Aaron specifies otherwise). The retrieval order
+   that fits Aaron's pattern: **Wes Roth** + **Alex Ziskind**
+   (top-tier confidence; Aaron-confirmed at PR #1610) → **Matthew
+   Berman** (Aaron-confirmed via lemon-tree clue) → **AI Explained**
+   (Claude.ai-included third in original triumvirate; one tier
+   lower confidence). Add **Sakana AI YouTube** as one-off paper-
+   attention pointer if the half-remembered item is biology/NCA-
+   shaped (per PR #1613). Aaron's recall horizon tends to be
+   days-to-weeks, not months. **Ziskind is highest signal for
+   local-AI-cluster + quantization + runtime-comparison content
+   specifically** (per the 2026-05-05 substrate-flow's tinygrad UOp
+   IR + RotorQuant + TurboQuant cluster of mentions).
 2. **Second** -- arXiv direct search on Aaron's described
    features (action space, modality, demo shape, claimed result).
 3. **Third** -- cross-reference both. A strong candidate is one
