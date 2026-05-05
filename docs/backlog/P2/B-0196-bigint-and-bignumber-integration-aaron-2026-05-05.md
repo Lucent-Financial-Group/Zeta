@@ -71,7 +71,7 @@ Five concrete shapes the row covers:
    loss matters (small-probability tail events,
    Bayesian normalization at high decimal precision).
    Currently `src/Bayesian/BayesianAggregate.fs` uses
-   `double` throughout (`BetaBernoulli`, `NormalGamma`,
+   `double` throughout (`BetaBernoulli`, `NormalInverseGamma`,
    `DirichletMultinomial`). Composes with B-0189 (Q#
    Bayesian BP/EP runtime).
 
@@ -90,7 +90,7 @@ Five concrete shapes the row covers:
    as load-bearing for any current Zeta surface; the
    research output should name whether any of the
    formal-verification toolbelt (`tools/lean4/`,
-   `tools/z3/`) or research-mathematics surfaces
+   `tools/Z3Verify/`) or research-mathematics surfaces
    (`docs/research/aurora-immune-system-math-cross-review-otto-gemini-2026-04-26.md`)
    genuinely need MPFR-grade precision, or whether
    `double` suffices.
@@ -136,7 +136,7 @@ category.
 - **Verifier**: the grep output is reproducible at any
   time; the count is a function of the working tree.
 - **Pass**: report names every numeric-type surface
-  + provides a count; cross-checked with at least one
+  AND provides a count; cross-checked with at least one
   reviewer (subagent or peer-AI).
 - **Fail (falsifier)**: a numeric-type surface is
   missed by the survey (caught later by a reviewer or
@@ -149,15 +149,23 @@ moment, so the research has a baseline)**:
   (raw grep, not filtered for false-positives like
   `let float = ...` -- the deduped count is research
   output, not pre-survey).
-- `Checked.*` arithmetic guard sites: 40 across 12
-  files (`ZSet.fs`, `Operators.fs`, `IndexedZSet.fs`,
-  `Crdt.fs`, `CountMin.fs`, `TimeSeries.fs`,
-  `NovelMath.fs`, `NovelMathExt.fs`, `Aggregate.fs`,
-  `Advanced.fs`, `SimdMerge.fs`,
-  `Bayesian/BayesianAggregate.fs`). These are the
-  already-acknowledged-overflow-risk sites; the
-  survey should compare them against the fuller
-  what-actually-needs-protection list.
+- `Checked.*` arithmetic guard sites: ~40 across the
+  Core surfaces (`ZSet.fs`, `Operators.fs`,
+  `IndexedZSet.fs`, `Crdt.fs`, `CountMin.fs`,
+  `TimeSeries.fs`, `NovelMath.fs`, `NovelMathExt.fs`,
+  `Aggregate.fs`, `Advanced.fs`, `SimdMerge.fs` are
+  the file set the initial subagent grep surfaced;
+  the deduped per-file count is part of the survey
+  output, not pre-survey baseline). `BayesianAggregate.fs`
+  was originally listed here in error -- it has only
+  one `Checked.*` mention, and that's a doc-comment
+  reference, not arithmetic guards. Bayesian surfaces
+  use `double` arithmetic without checked guards
+  (their precision-loss risk is different in shape
+  from int64-overflow risk -- relevant to the
+  BigRational candidate, not the BigInteger one).
+  The survey should produce the verified per-file
+  count.
 
 ### (b) Risk-site identification
 
@@ -204,7 +212,7 @@ extends, or rejects)**:
    table. If no, the guard is correct.
 
 4. **`BayesianAggregate.BetaBernoulli` /
-   `NormalGamma` / `DirichletMultinomial`**
+   `NormalInverseGamma` / `DirichletMultinomial`**
    (`src/Bayesian/BayesianAggregate.fs`). All
    `double`-based. **Question**: do small-
    probability tail events (e.g., probability

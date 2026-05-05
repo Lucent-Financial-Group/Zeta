@@ -8,6 +8,7 @@ last_updated: 2026-05-01
 depends_on:
   - B-0086
   - B-0122
+composes_with: [B-0196]
 ---
 
 # B-0156 — TypeScript standardization across non-install scripts

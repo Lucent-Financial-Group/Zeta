@@ -9,7 +9,7 @@ ask: Aaron 2026-05-04 explicit research-opportunity naming
 created: 2026-05-04
 last_updated: 2026-05-04
 depends_on: []
-composes_with: [B-0007, B-0152]
+composes_with: [B-0007, B-0152, B-0196]
 tags: [q-sharp, quantum-runtime, bayesian-inference, belief-propagation, expectation-propagation, research-opportunity, infer-net, microsoft-quantum, edge-runner-research, beacon-candidate-pending]
 ---
 

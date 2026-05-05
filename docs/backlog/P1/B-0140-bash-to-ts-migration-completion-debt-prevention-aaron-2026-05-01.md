@@ -4,8 +4,9 @@ priority: P1
 status: open
 title: Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
 created: 2026-05-01
-last_updated: 2026-05-02
+last_updated: 2026-05-05
 depends_on: []
+composes_with: [B-0196]
 ---
 
 # B-0140 — Bash → TS migration completion
