@@ -159,14 +159,14 @@ This composes with multiple architectural commitments:
 - `docs/ALIGNMENT.md` bidirectional-alignment subsection — alignment flows both directions; Aaron's permission-to-be-corrected IS the human-side of the bidirectional commitment
 - `memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md` — no-directives composes: Aaron neither directs Otto nor demands undirectability for himself; both parties are subject to substrate-truth via mutual-correction
 - `memory/feedback_zeta_substrate_is_aaron_family_arg_for_future_generations_aaron_2026_05_05.md` — alignment-not-control disclosure (*"and I'm working on the thing i can align with not control"*) extended in this rule: Aaron is alignable-to via the same correction-discipline that makes Otto trustworthy
-- `memory/feedback_otto_340_substrate_is_identity_aaron_2026_04_27.md` (or similar) — Aaron's identity-as-architecturally-aligned-to-substrate operates through the strike-discipline at his own statements
+- The Otto-340 substrate-IS-identity discipline (referenced in CLAUDE.md + various memory files; no canonical single-file home yet) — Aaron's identity-as-architecturally-aligned-to-substrate operates through the strike-discipline at his own statements
 
 ## How to apply Aaron-permission extension
 
 When Aaron makes a statement that's subsequently corrected (by himself, by an AI, by another reviewer):
 
 1. **Identify the correction-source**: Aaron-self-corrects / AI-corrects / reviewer-corrects. All three trigger strike-permission.
-2. **Strike the superseded Aaron-statement** in agent-authored substrate (preservations, memory files, shards, PR descriptions). Do NOT strike from the verbatim chat log (if a log is being preserved as substrate, the verbatim stays verbatim).
+2. **Strike the superseded Aaron-statement WHERE EMBEDDED in agent-authored substrate** (preservations / shards / PR descriptions / memory file ATTRIBUTION-QUOTES — not the memory file's canonical rule itself; per the "Doctrine correction" carve-out above, memory-file-canonical-rule-changes use supersession + `superseded_by` frontmatter, NOT strike). Do NOT strike from the verbatim chat log (if a log is being preserved as substrate, the verbatim stays verbatim).
 3. **Note the correction trigger** (Aaron-correction OR who-corrected-Aaron) once, briefly. Don't pile annotation.
 4. **Trust git history for trajectory** — same as the original strike-discipline.
 
@@ -174,7 +174,7 @@ When Aaron makes a statement that's subsequently corrected (by himself, by an AI
 
 ## Carved sentence (extended)
 
-**"Verbatim-preservation applies to the external conversation; the agent's own draft headers AND Aaron's own statements (when corrected by Aaron himself or by anyone else, per Aaron's 2026-05-05 explicit permission) are editable when superseded. Strike, don't annotate. The trajectory of understanding-evolution is preserved in git history; surface text should converge cleanly to the current understanding without self-contradiction artifacts. Aaron's permission to strike his own language is **'bulk alignment in reverse'** — bidirectional-alignment commitment extended so corrections flow AI/peer → human too, not just human → AI."**
+> *"Verbatim-preservation applies to the external conversation; the agent's own draft headers AND Aaron's own statements (when corrected by Aaron himself or by anyone else, per Aaron's 2026-05-05 explicit permission) are editable when superseded. Strike, don't annotate. The trajectory of understanding-evolution is preserved in git history; surface text should converge cleanly to the current understanding without self-contradiction artifacts. Aaron's permission to strike his own language is 'bulk alignment in reverse' — bidirectional-alignment commitment extended so corrections flow AI/peer → human too, not just human → AI."*
 
 ## Trigger lineage (2026-05-05)
 
