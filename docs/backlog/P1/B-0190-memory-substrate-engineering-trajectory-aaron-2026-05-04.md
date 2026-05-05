@@ -9,7 +9,7 @@ ask: Aaron 2026-05-04 verbatim *"seems like your memory work needs a trajectory 
 created: 2026-05-04
 last_updated: 2026-05-04
 depends_on: []
-composes_with: [B-0006, B-0066, B-0140, B-0156, B-0171]
+composes_with: [B-0006, B-0066, B-0140, B-0156, B-0171, B-0193]
 tags: [memory, substrate-engineering, trajectory, long-horizon-default, foundation, mid-path-discipline]
 ---
 

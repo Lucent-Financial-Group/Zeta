@@ -58,6 +58,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0190](backlog/P1/B-0190-memory-substrate-engineering-trajectory-aaron-2026-05-04.md)** Memory substrate-engineering trajectory — multi-row plan for memory work as a domain (not just one-shot compression) (Aaron 2026-05-04)
 - [ ] **[B-0191](backlog/P1/B-0191-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md)** Orchestrator branch-verify mechanization design — pre-commit hook + branch-name display + worktree-aware checks (Aaron 2026-05-04)
 - [ ] **[B-0192](backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md)** GitHub Actions trigger for razor cadence + trajectory reviews -- escape Otto-remembering as the load-bearing trigger (Claude.ai 2026-05-04 + Aaron 2026-05-04)
+- [ ] **[B-0193](backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md)** Bootstrap razor + 23-hour recreation test -- specs as source of truth, anything that succeeds recreation is bootstrap and gets cut (Aaron 2026-05-05)
 
 ## P2 — research-grade
 

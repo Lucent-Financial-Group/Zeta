@@ -9,7 +9,7 @@ ask: Aaron 2026-05-04 forwarded Claude.ai 2026-05-04 design + verbatim *"and we 
 created: 2026-05-04
 last_updated: 2026-05-04
 depends_on: []
-composes_with: [B-0138, B-0190, B-0191]
+composes_with: [B-0138, B-0190, B-0191, B-0193]
 tags: [razor-cadence, mechanization, github-actions, trigger-reliability, foundation, autonomy]
 ---
 
