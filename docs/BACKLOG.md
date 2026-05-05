@@ -159,6 +159,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0189](backlog/P2/B-0189-q-sharp-runtime-bayesian-belief-propagation-expectation-propagation-research-aaron-2026-05-04.md)** Q# runtime acceleration via Bayesian belief propagation + expectation propagation — research opportunity not yet integrated by humans (Aaron 2026-05-04)
 - [ ] **[B-0194](backlog/P2/B-0194-incremental-auto-dispatcher-bilinear-capability-detection-aaron-2026-05-05.md)** IncrementalAuto dispatcher + checkBilinear law + capability detection (active-patterns over reflection) -- contract-by-convention gap in the algebra-capability system (Aaron 2026-05-05)
 - [ ] **[B-0195](backlog/P2/B-0195-dbsp-chain-rule-finding-cross-check-and-writeup-decision-aaron-2026-05-05.md)** DBSP chain rule formal-verification finding -- cross-check counter-example + verify Prop 3.5 reading + writeup decision (Aaron 2026-05-05)
+- [ ] **[B-0197](backlog/P2/B-0197-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md)** Lean DbspChainRule + chain-rule-proof-log -- correct Prop 3.5 misattribution to Theorem 3.3 (Aaron 2026-05-05)
 
 ## P3 — convenience / deferred
 
