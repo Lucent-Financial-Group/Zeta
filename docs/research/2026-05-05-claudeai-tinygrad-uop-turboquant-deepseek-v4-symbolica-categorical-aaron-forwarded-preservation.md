@@ -65,14 +65,20 @@ paper across 6+ candidate-elimination passes:
    symbolsy maybe and it complied to other things myabe cuda and
    the ati one and the inteall one"* + *"there is also an AI guy
    i wath a lot who build mac and nvida clusers and tests them
-   like a home lab setup like mine"* nailed it. Multiple
-   descriptors pinned: UOp = μ-ops (Greek mu, "symbolsy not
-   English"); compiles to CUDA + AMD/ROCm + Intel/oneAPI + Metal
-   + OpenCL + LLVM (one IR → many backends, the "universal"
-   part); "basic and not well-principled but correct" matches
-   tinygrad's stated design philosophy exactly; the AI YouTuber
-   clue led to Alex Ziskind (@AZisk) who tests tinygrad among
-   other things on Mac Studio + DGX Spark clusters.
+   like a home lab setup like mine"* matched tinygrad's
+   descriptors. Multiple descriptors fit: UOp = μ-ops (Greek mu,
+   "symbolsy not English"); compiles to CUDA + AMD/ROCm + Intel/
+   oneAPI + Metal + OpenCL + LLVM (one IR → many backends, the
+   "universal" part); "basic and not well-principled but correct"
+   matches tinygrad's stated design philosophy exactly; the AI
+   YouTuber clue led to Alex Ziskind (@AZisk) who tests tinygrad
+   among other things on Mac Studio + DGX Spark clusters.
+   **However, Aaron later disconfirmed tinygrad as THE specific
+   paper Aaron half-remembered**: *"it's still not tinygrad, i
+   did see that but that's not my univeral language"* — the
+   descriptors fit tinygrad but don't disambiguate against the
+   paper Aaron actually saw. Paper-search remains open per
+   B-0201 (eliminated-candidates count incremented).
 
 Major parallel findings landed in the same conversation:
 
@@ -269,11 +275,19 @@ chat log Aaron pasted.
 
 ## Headline substrate
 
-### Headline 1 — Tinygrad UOp IR is the actual paper-identification
+### Headline 1 — Tinygrad UOp IR (paper-id eliminated; descriptors-fit-but-not-the-paper-Aaron-saw)
 
-The progressive-narrowing identification pinned tinygrad UOp IR
-(George Hotz / tiny corp) as the half-remembered item. All five
-descriptors aligned:
+**Status (CORRECTED 2026-05-05 same-tick)**: Aaron explicitly
+disconfirmed tinygrad as the paper-identification via Claude.ai-
+routed feedback: *"it's still not tinygrad, i did see that but
+that's not my univeral language"*. The progressive-narrowing
+identification IN THE FORWARDED CONVERSATION matched tinygrad's
+descriptors accurately, but the descriptors don't disambiguate
+against the specific paper Aaron half-remembered. Paper-search
+remains open per B-0201.
+
+The five descriptors fit tinygrad UOp IR (George Hotz / tiny
+corp) accurately:
 
 | Aaron's clue | Tinygrad UOp IR fit |
 |---|---|
@@ -283,21 +297,13 @@ descriptors aligned:
 | "AI guy who builds Mac/NVIDIA clusters" | George Hotz / tinybox ($15K AI cluster, AMD + NVIDIA + Apple silicon livestreamed); Alex Ziskind tests tinygrad among other things |
 | "released last month" | Version 0.12 January 2026 + heavy April 2026 commit activity (deepwiki re-indexed April 21) explain why it surfaced in a Wes Roth weekly review window as if new |
 
-**(Original draft framing — superseded same-tick before
-merge):** This SUPERSEDES Coconut at the paper-identification
-level (Aaron's *"this is my sleeping bear hypothisis"* on
-Coconut earlier was a hypothesis-level finding about latent
-reasoning; the YouTube-weekly-review paper Aaron actually saw
-is tinygrad UOp IR). Per no-kill-paths calibration, Coconut
-stays as parallel candidate for sleeping-bear hypothesis
-empirical-test work; tinygrad becomes the primary
-identification for the YouTube source.
-
-**(CORRECTED 2026-05-05 same-tick):** Aaron explicitly
-disconfirmed tinygrad-as-paper-id via Claude.ai routing:
-*"it's still not tinygrad, i did see that but that's not my
-univeral language"*. Both Coconut AND tinygrad are eliminated
-at the paper-id level. The five descriptors that pinned
+**Net effect on substrate**: both Coconut AND tinygrad are
+eliminated at the paper-id level (per Aaron's no-kill-paths
+calibration, both stay as parallel substrate-relevant
+candidates for OTHER work — Coconut for B-0201 sleeping-bear
+empirical test; tinygrad for B-0202 kernel-layer engineering;
+both filed and merged on main as of 2026-05-05). The five
+descriptors that fit
 tinygrad in the conversation (μ-ops, multi-backend, basic-
 but-correct, AI-cluster-YouTuber, recent-commits) were
 correct AS DESCRIPTORS of tinygrad, but tinygrad isn't the
@@ -412,8 +418,11 @@ Zeta Cayley-Dickson cascade substrate:
 
 The connection: **Clifford algebras (geometric algebras) are
 the multivector extension of the Cayley-Dickson cascade.**
-Quaternions are a special case of Clifford algebra Cl(0,2) or
-Cl(3,0). **Rotors in geometric algebra are the multivector
+Quaternions are isomorphic to the Clifford algebra Cl(0,2);
+they ALSO appear as the **even subalgebra** Cl⁺(3,0) (i.e.
+Spin(3)) of the Cl(3,0) algebra (Cl(3,0) itself is isomorphic
+to Mat(2, ℂ), not directly to ℍ). **Rotors in geometric
+algebra are the multivector
 representation of rotations** — exactly the primitive
 RotorQuant uses to replace dense matrix multiplications with
 fused-kernel rotations that keep data in registers.
@@ -428,9 +437,9 @@ four-property hodl + Cayley-Dickson exploration.
 
 Routes to a planned follow-up backlog row that examines the
 Clifford-rotor + Cayley-Dickson + four-property hodl
-composition explicitly. Engagement gate: walk the Cl(0,2)
-quaternion-rotor isomorphism through Zeta's signed-delta
-algebra before claiming compositional alignment.
+composition explicitly. Engagement gate: walk the Cl(0,2) ≅
+ℍ ≅ Cl⁺(3,0) quaternion-rotor isomorphism through Zeta's
+signed-delta algebra before claiming compositional alignment.
 
 ### Headline 4 — Symbolica AI Categorical Deep Learning (parallel candidate, Symbolica vocabulary matches Zeta independently)
 
@@ -508,13 +517,18 @@ Routes to extension of
   NetworkChuck / Ashen / Exo Labs** — Claude.ai's intermediate
   guesses for the YouTuber clue, all ruled out by Aaron's
   *"that's him"* confirmation pinning Alex Ziskind
-- **CodeAct / Coconut / Symbolica as the YouTube paper-
-  identification** — none was the actual half-remembered item
-  per Aaron's progressive narrowing; tinygrad UOp IR is the
-  paper-identification. Per no-kill-paths, all three stay as
-  parallel candidates for OTHER substrate work (CodeAct = bridge
-  engineering B-0200; Coconut = sleeping-bear hypothesis
-  B-0201; Symbolica = categorical-DL parallel substrate).
+- **CodeAct / Coconut / Symbolica / tinygrad UOp IR as the
+  YouTube paper-identification** — none was the actual half-
+  remembered item per Aaron's progressive narrowing + same-tick
+  disconfirmation of tinygrad (*"it's still not tinygrad, i
+  did see that but that's not my univeral language"*). Paper-
+  search remains OPEN per B-0201 with eliminated-candidates
+  count incremented. Per no-kill-paths, all four stay as
+  parallel substrate-relevant candidates for OTHER work
+  (CodeAct = bridge engineering B-0200, merged; Coconut =
+  sleeping-bear hypothesis B-0201, merged; tinygrad =
+  kernel-layer engineering B-0202, merged; Symbolica =
+  categorical-DL parallel substrate, planned).
 
 ## What lands as substrate (operational claims surviving razor)
 
