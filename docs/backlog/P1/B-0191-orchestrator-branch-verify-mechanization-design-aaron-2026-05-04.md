@@ -44,7 +44,9 @@ Empirically observed twice 2026-05-04 (B-0190 commit landed on tier-48 branch; B
 
 ### 1. Pre-commit hook — fail-on-unexpected-branch (HIGH leverage)
 
-Implementation: shell script at `.git/hooks/pre-commit` (or via `husky` / `pre-commit` framework if cross-repo):
+Implementation: shell script committed under `tools/git-hooks/` (NOT directly in `.git/hooks/` — that location is not version-controlled and can't be reviewed or enforced consistently). The hook gets installed into `.git/hooks/pre-commit` via `tools/setup/` install script (symlink or copy). This makes the hook reviewable in PRs and consistently enforced across clones.
+
+Branch-pattern allowlist below uses generic contributor-suffix shape (`*-yyyy-mm-dd`) — NOT hard-coded to any specific contributor name — since this is repo tooling all contributors and agents will hit.
 
 ```bash
 #!/usr/bin/env bash
@@ -60,11 +62,15 @@ if [ -n "$expected_branch" ] && [ "$current_branch" != "$expected_branch" ]; the
     exit 1
 fi
 
-# Default check: warn (don't fail) if on a subagent worktree branch
+# Default check: warn (don't fail) if on a worktree-suffix branch class.
+# Pattern is generic on contributor suffix (any-name-yyyy-mm-dd) -- not
+# hard-coded to any specific contributor, since this is repo tooling
+# that all contributors / agents will hit.
 case "$current_branch" in
-    research/*-aaron-2026-* | fix/memory-md-tier-* | feature/*-aaron-2026-*)
-        # OK if intentional — but flag for visibility
-        echo "INFO: committing on '$current_branch' — verify this is intentional."
+    research/*-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] | \
+    fix/memory-md-tier-* | \
+    feature/*-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])
+        echo "INFO: committing on '$current_branch' -- verify this is intentional."
         ;;
 esac
 ```
