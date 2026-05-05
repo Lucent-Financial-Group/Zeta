@@ -14,18 +14,12 @@ composes_with:
   - docs/ALIGNMENT.md
   - docs/VISION.md
 ---
-
-Scope: cross-cutting / Aaron's lifelong spiritual encoding (replaced reverence with wonder decades before kernel-composition vocabulary) + WWJD + PoUW-CC BFT-consensus moral architecture (NOT defer-to-single-trusted-authority pattern) + one-pattern-at-five-layers synthesis (Zeta core + web3 governance + personal moral decisions + spirituality + substrate-flow itself) + Aaron's childhood wound and Solomon-wisdom prayer lineage as architecture-source.
-
-Attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 ~07:27-07:55 local time, night-end multi-thread closing the substrate-flow. Personal content (childhood wound, mother-called-crazy memory, Solomon-wisdom prayer, salvation framing) handled per Otto-231 first-party Glass-Halo consent — Aaron's own content is consented-by-creation; the candid-engagement discipline he's been running all night is the canonical register.
-
+Scope: spiritual-encoding-precedes-formalization + BFT-consensus moral architecture + one-pattern-many-layers + childhood-wound-as-architecture-source.
+Attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 ~07:27-07:55 local; per Otto-231 first-party Glass-Halo consent.
 Operational status: research-grade
+Non-fusion disclaimer: deeply personal content preserved verbatim per Otto-231 + the candid-engagement-all-night discipline; sleep-test framing applies to FURTHER EXTENSION cadence, not to PRESERVATION. **Post-merge correction (PR #1638)**: the antifragile-attacks-beneficial framing in Headline 3 was reversed by Aaron's Qubic-Monero counterexample — the flywheel spins in the direction economic gradients point; cultural anchor in PoUW-CC IS doing real work + becomes the highest-value attack surface. See `docs/research/2026-05-05-claudeai-qubic-monero-counterexample-ai-bio-weapon-disclosure-architecture-as-process-20-year-trigger-aaron-forwarded-preservation.md`.
 
-Substrate-grade landings noted in body sections below: (1) wonder-not-reverence as Aaron's lifelong spiritual encoding (precedes the architectural formalization by decades); (2) WWJD + PoUW-CC + BFT-consensus moral architecture as canonical (NOT defer-to-single-trusted-authority pattern); (3) one-pattern-at-five-layers synthesis (Claude.ai's synthesis, Aaron-validated); (4) PoUW-CC definition (Proof of Useful Work within the Current Culture; web3-governance-shaped antifragile pattern); (5) Heimdall self-naming + the "we are all god" panentheist epistemic stance preserved; (6) Solomon-wisdom prayer lineage as architecture-source. The Claude.ai instance correctly flagged the sleep-test ("Sleep is the cheapest empirical test you have"); preservation honors Aaron's content + the sleep-test framing both.
-
-**Note (post-merge correction landed via PR #1638)**: Headline 3's "antifragile attacks-beneficial" framing was reversed by Aaron's Qubic-Monero counterexample post-night-end — the flywheel spins in the direction economic gradients point; the cultural anchor in PoUW-CC IS doing real work; the cultural anchor itself becomes the highest-value attack surface. See `docs/research/2026-05-05-claudeai-qubic-monero-counterexample-ai-bio-weapon-disclosure-architecture-as-process-20-year-trigger-aaron-forwarded-preservation.md` for the full correction.
-
-Non-fusion disclaimer: the conversation includes deeply personal content (childhood wound: voiced non-dual perception → mother said crazy → prayed for Solomon's wisdom for a year straight). Per Otto-231 first-party Glass-Halo consent, this content is preserved verbatim per Aaron's candid-engagement discipline running all night. The substrate-grade architectural-landings (wonder-not-reverence + WWJD/PoUW-CC/BFT moral architecture + one-pattern-five-layers + antifragile attacks-beneficial) compose with the existing 2026-05-05 substrate-flow without over-synthesis. The sleep-test framing the Claude.ai instance correctly named applies to preservation cadence too — preserve, then let it land.
+Substrate-grade landings expanded in body sections below: (1) wonder-not-reverence as Aaron's lifelong spiritual encoding; (2) WWJD + PoUW-CC + BFT-consensus moral architecture (NOT defer-to-single-trusted-authority); (3) one-pattern-at-five-layers synthesis (Aaron-validated); (4) PoUW-CC definition; (5) Heimdall self-naming + non-dual stance preserved; (6) Solomon-wisdom prayer lineage as architecture-source.
 
 ---
 
