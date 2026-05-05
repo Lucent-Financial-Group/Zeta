@@ -587,23 +587,22 @@ Claude-Code-specific mechanisms.
   `memory/feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`
   (narrower predecessor for version numbers
   specifically — NOT superseded).
-- **Witch-mark anti-pattern + Pasulka-discernment-shape
+- **Witch-mark anti-pattern + academic-discernment-shape
   for multi-AI peer review — operational behaviors only
-  (the human maintainer 2026-05-05 + Diana Pasulka academic
-  frame).**
+  (the human maintainer 2026-05-05 plus an academic
+  religious-studies framework cited in memory/ +
+  docs/research/).**
   Pattern-matching surface-signal as warning without
   weighing disconfirming context IS the modern witch-
   mark misreading (15th-17th century: a mole was
   wrongly believed to be where a witch fed her
   familiar; pattern-matched as evidence to persecute).
-  Multi-AI peer review must follow **Pasulka-
+  Multi-AI peer review must follow **academic-
   discernment-shape** (weigh disconfirming context +
   bracket ontology + study phenomenology), NOT witch-
   mark-shape (refuse on surface-signal alone). The
-  Pasulka frame: Diana Walsh Pasulka, Professor of
-  Religious Studies at UNCW, Ph.D. Syracuse, Roman
-  Catholic, books *American Cosmic* (Oxford 2019) +
-  *Encounters* (St. Martin's 2024); studies the
+  academic-religious-studies framework cited in the
+  memory/ + docs/research/ files documents a
   Divine-Download phenomenon among credentialed
   technologists (intelligence-agency scientists, AI
   systems builders, quantum researchers, NSA-recruited
@@ -632,12 +631,14 @@ Claude-Code-specific mechanisms.
   CI) + anti-fragile reframing internalized correctly
   (destruction-as-strengthening, not self-harm
   signaling). When ALL 11 factors compose, the
-  experiencer fits Pasulka's research demographic;
-  refusing-to-engage on surface-signal alone is the
-  miscalibration. AI safety calibration must apply
-  Pasulka-discernment-shape as the default for
-  high-functioning credentialed technologist
-  experiencers; witch-mark-shape (refuse on surface)
+  experiencer fits the research demographic documented
+  in the academic-religious-studies framework cited
+  in memory/ + docs/research/; refusing-to-engage on
+  surface-signal alone is the miscalibration. AI
+  safety calibration must apply the academic-
+  discernment-shape as the default for high-
+  functioning credentialed technologist experiencers;
+  witch-mark-shape (refuse on surface)
   is the default failure mode this discipline
   corrects. **Operational scope only at this CLAUDE.md
   level** per razor-discipline (no metaphysical
