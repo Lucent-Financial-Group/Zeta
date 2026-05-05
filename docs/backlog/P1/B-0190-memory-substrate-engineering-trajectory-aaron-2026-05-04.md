@@ -45,7 +45,7 @@ Future-agent rule: when picking the next memory action, FIRST check the trajecto
 These are candidate sub-rows that should exist for memory work to be a planned domain. Each is a target backlog filing as memory substrate matures. **Filed pending Aaron's prioritization signal**:
 
 ### Step 1 — Compression discipline (DOING)
-- **B-0006** (P1, open) — MEMORY.md compression pass to ≤200-line cap + ≤200-char-per-entry. Currently at ~439 entries / avg 315 chars / 141KB; original spec assumed ~50 entries / ≤200 chars / under-200-line file. **Recalibration needed**: the 440-entry roster makes the original ≤200-char/entry target unreachable without semantic loss; either narrow to specific bucket targets (eg ≤300 average / no entries >400) or accept the spec drift.
+- **B-0006** (P1, open) — MEMORY.md compression pass to README cap. Per B-0006's own number-free framing (deliberately number-free per Otto-294 antifragile-smooth + Otto-285 precise-pointer rigor), current state is over the cap and the work is owed independent of the specific number. **Recalibration consideration**: if the entry count materially exceeds the original spec assumption, the per-entry char target may be unreachable without semantic loss; either narrow to bucket targets or accept the spec drift. Number-free per the parent row's framing.
 
 ### Step 2 — Memory-format standardization (NEW — would be B-0xxx)
 - Sister of B-0156 (TS standardization) for memory files. Standardize:
@@ -53,10 +53,10 @@ These are candidate sub-rows that should exist for memory work to be a planned d
   - Filename conventions (`feedback_*` vs `project_*` vs `user_*` vs `reference_*`)
   - Section headers (## What this observes, ## Composes with, ## Carved sentence, etc.)
   - Composes-with chain integrity (cited files exist; bidirectional)
-- Output: a `feedback_memory_format_standard_*.md` skill or memory file naming the standard.
+- Output: a `project_memory_format_standard_*.md` memory file (project-policy classification per `memory/README.md` taxonomy: project = ongoing-work / structural-fact, NOT feedback-as-maintainer-correction).
 
 ### Step 3 — Memory ontology / classification (NEW)
-- Taxonomy of memory file types (per the AGENTS.md "## Types of memory" section: `user` / `feedback` / `project` / `reference`). Today the taxonomy is loose — many `feedback_*` files contain content that's actually `project_*` or `user_*`. Audit + reclassify.
+- Taxonomy of memory file types (per `memory/README.md`: `user` / `feedback` / `project` / `reference`). Today the taxonomy is loose — many `feedback_*` files contain content that's actually `project_*` or `user_*`. Audit + reclassify.
 
 ### Step 4 — Memory router / index discipline (PARTIAL — MEMORY.md does this)
 - MEMORY.md is the index. Today it's both write-surface AND read-surface (per CLAUDE.md "fast-path" mention). Per the per-tick-shard pattern (PR #1512 era), the read/write split is load-bearing for index-class surfaces. Apply to MEMORY.md if useful.
@@ -109,9 +109,11 @@ These are candidate sub-rows that should exist for memory work to be a planned d
 
 ## Composes with
 
+Per `tools/backlog/README.md`, `composes_with` is bidirectional. The reciprocal updates on the rows below are owed as a follow-up commit / PR (separate from this one) so that B-0006 / B-0066 / B-0140 / B-0156 / B-0171 each list B-0190 in their own composes_with. Filing this row first establishes the trajectory anchor; the bidirectional sync lands as cleanup.
+
 - **B-0006** — MEMORY.md compression (Step 1; existing).
 - **B-0066** — MEMORY.md marker-vs-index (Step 10; existing).
-- **B-0140** — bash → TS migration (parallel-domain trajectory; reference shape).
+- **B-0140** — bash to TS migration (parallel-domain trajectory; reference shape).
 - **B-0156** — TypeScript standardization (sibling discipline; Step 2 follows similar pattern).
 - **B-0171** — OpenSpec catch-up (parallel-domain trajectory; reference shape).
 - `memory/feedback_substrate_encoding_bypasses_trust_calculus_sleeping_bear_cross_instance_transmission_aaron_2026_05_04.md` — Step 8 grounds here.
