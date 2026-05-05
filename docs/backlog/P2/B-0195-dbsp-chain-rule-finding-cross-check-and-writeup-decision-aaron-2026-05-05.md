@@ -9,7 +9,7 @@ ask: Aaron 2026-05-05 verbatim "and what makes you rmemeber it tomorrow?" -- cau
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0189]
+composes_with: [B-0189, B-0197]
 tags: [dbsp, formal-verification, lean, chain-rule, paper-writeup, research]
 ---
 

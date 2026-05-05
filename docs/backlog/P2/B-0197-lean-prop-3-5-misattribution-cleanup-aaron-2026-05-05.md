@@ -128,20 +128,35 @@ trail.
 
 ## Falsifiability
 
-Each cleanup is falsified if a *"Prop 3.5"* / *"Proposition 3.5"*
-reference (without the strikethrough / *"[corrected]"*
-annotation) remains in the audited files after the cleanup PR
-merges. The verifier is grep:
+Each cleanup is falsified if a **bare** *"Prop 3.5"* / *"Proposition 3.5"*
+reference remains in the audited files after the cleanup PR
+merges -- where "bare" means NOT wrapped in `~~...~~` strikethrough
+markup AND NOT preceded by a `[corrected 2026-05-05: ...]` annotation
+on the same line.
+
+The verifier is two-pass grep with explicit exclusion of
+history-preserving annotation:
 
 ```bash
+# Pass 1: any occurrence of the misattribution pattern
 grep -n -E "Prop\.? 3\.5|Proposition 3\.5" \
   tools/lean4/Lean4/DbspChainRule.lean \
-  docs/research/chain-rule-proof-log.md
+  docs/research/chain-rule-proof-log.md \
+  > /tmp/all-occurrences.txt
+
+# Pass 2: filter out lines that ARE history-preserving annotations
+# (strikethrough OR explicit [corrected] tag). What remains is bare
+# misattribution that the cleanup must remove.
+grep -v -E "~~.*Prop\.? 3\.5|~~.*Proposition 3\.5|\[corrected 2026-05-05" \
+  /tmp/all-occurrences.txt
 ```
 
-Should return zero matches after merge (excluding
-strikethrough / annotated history-preserving lines, which the
-maintainer can identify by inspection).
+Pass 2 should return **zero lines** after the cleanup PR merges. If
+non-zero, the cleanup is falsified; if zero, the cleanup is verified
+AND the witnessable-evolution annotations are preserved as required
+by acceptance criterion (d). The two requirements (zero-bare-refs +
+preserve-original-as-annotation) compose; they do not conflict
+because the grep targets bare-only.
 
 ## Why P2 not P1
 
