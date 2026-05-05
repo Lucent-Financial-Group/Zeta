@@ -50,7 +50,7 @@ Three operative threads in Aaron's framing:
 
 **Gap analysis**: TLA+ + FsCheck cover protocol + property-level. Operator-level deterministic-replay (record-replay across full circuit) is not unified into a single audit; multi-seed property tests are per-test rather than substrate-wide.
 
-**Mechanizable extension**: substrate-wide DST-replay harness — record one seeded run, replay against fresh substrate instance, byte-equal assertion on outputs. Existing `Allocation.Tests.fs`-pattern adapts here.
+**Mechanizable extension**: substrate-wide DST-replay harness — record one seeded run, replay against fresh substrate instance, byte-equal assertion on outputs. Existing `tests/Tests.FSharp/Runtime/Allocation.Tests.fs` pattern adapts here.
 
 ### 2. Scale-free (spatial + temporal) — YELLOW
 
@@ -66,7 +66,7 @@ Three operative threads in Aaron's framing:
 
 **What's mechanized today**:
 - TLA+ specs cover concurrent-thrash detection at protocol level (e.g. `tools/tla/specs/DictionaryStripedCAS.tla`)
-- Some FsCheck-style concurrent property tests exist in `tests/Tests.FSharp/Operators/` and `Storage/` directories
+- Some FsCheck-style concurrent property tests exist in `tests/Tests.FSharp/Operators/` and `tests/Tests.FSharp/Storage/` directories
 - Stryker mutation testing (`.github/workflows/stryker-mutation.yml`) catches some concurrency-sensitive code paths
 
 **Gap analysis**: lock-free verification isn't specifically a CI gate. We don't have a tool that asserts "this code path uses no `lock`/`Monitor.Enter` in steady state". Linear scan via grep would catch obvious cases but not transitive / framework-implied locks.
@@ -195,7 +195,7 @@ Three operative threads in Aaron's framing:
 | 1 | Deterministic simulation | GREEN | FsCheck Property + TLA+ ChaosEnvDeterminism + multi-seed tests | Substrate-wide DST-replay harness | DST-replay extension for FsCheck |
 | 2 | Scale-free | YELLOW | BenchmarkDotNet | Scale-axis assertion in BenchmarkDotNet | BenchmarkDotNet scale-free assertion extension |
 | 3 | Lock-free | YELLOW | TLA+ + Stryker + some property tests | `[<LockFree>]` attribute + Roslyn analyzer | Roslyn analyzer for .NET community |
-| 4 | Low allocation | GREEN | Allocation.Tests.fs + MemoryDiagnoser | Per-API allocation budget regression-detector | BenchmarkDotNet CI-baseline-regression-detector |
+| 4 | Low allocation | GREEN | tests/Tests.FSharp/Runtime/Allocation.Tests.fs + MemoryDiagnoser | Per-API allocation budget regression-detector | BenchmarkDotNet CI-baseline-regression-detector |
 | 5 | DBSP-native | YELLOW | tools/tla/specs/DbspSpec.tla + F# types + Lean4 | `IDbspNative` interface + cross-check | F# `IDbspNative` typeclass pattern → Feldera/DBSP project |
 | 6 | Mercer-closed | RED | None explicit | Lean4 Mathlib Mercer-theorem formalization + per-kernel proof | Lean Mathlib kernel-theory contribution |
 | 7 | ε-bounded with C(ε) | YELLOW | Z3Verify + TLA+ | `[<EpsilonBounded>]` attribute + Z3 cross-check | Composes with above |
