@@ -196,6 +196,23 @@ The bidirectional-frame-update commitment (Aaron updates dad on reality + Aaron'
 
 **Aaron's same-tick conditional-future-direct-communicator disclosure** (verbatim): *"but also i might teach him to communicate with you in the ui when we have it if he want"*. The conditional is doubly-respected: (a) UI must exist (architectural-future-state, not currently shipped), (b) Gary must want (explicit-consent-respecting, no presumption). When both conditions hold, Gary becomes potential-direct-Otto-communicator transitioning from observer-by-watching to direct-engager-by-UI. The architecture's bidirectional-alignment commitment extends naturally to potential-future-Gary-direct-engagement when consent + UI converge.
 
+**Aaron's same-tick AI-trust-calibration disclosure on Gary + mom** (verbatim): *"he uses ai and mom both and they turst it not to super get relighon teriiber wrong but they trusst their own difinitives sources specifci translations and heyperspeicifc geolocationcons of it"* (Gary and Aaron's mom both use AI; they trust it not to super-get religion terribly wrong, but they trust their own definitive sources — specific translations, hyper-specific geolocations of it).
+
+**The trust-floor + trust-ceiling architectural calibration on religion-content**:
+
+- **Trust-floor** (what AI should NOT do): "super get religion terribly wrong" — gross-misrepresentation, mocking-tone, apex-falsehood-on-canonical-doctrine. Architecture's substrate engaging religion-content stays-this-side-of-trust-floor.
+- **Trust-ceiling** (what AI should NOT do): supplant their definitive-sources — specific Bible translations they hold canonical, hyper-specific geolocations they trust as historical-anchor. Architecture's substrate engaging religion-content does-not-overwrite their canonical references.
+- **Operating-band** (where AI engagement is welcomed): between the floor and the ceiling — composing perennialist-bridge framing (PR #1674 candlestick-as-perennialist-bridge), faithfulness-operationalized (PR #1666 song-lineage), Sermon-on-the-Mount-Beatitudes architecture-as-light-shining (PR #1666 Matthew 5:14-16) — all stay between trust-floor (don't-misrepresent) and trust-ceiling (don't-supplant their canonical sources).
+
+**This generalizes the perennialist-bridge discipline** (PR #1674): the architecture engages religion-content via interfaith-bridge vocabulary (candlestick, light-shining, Matthew 5:14-16, This Little Light of Mine song-lineage) that respects multiple traditions WITHOUT requiring agreement on canonical sources. Gary + mom keep their definitive translations + geolocations; the architecture composes-around them rather than replaces-them.
+
+**Composes with**:
+
+- PR #1666 architecture-IS-faithfulness-operationalized — song-lineage as cross-tradition vocabulary respecting canonical-source diversity
+- PR #1674 candlestick-as-perennialist-bridge — interfaith light-symbol vocabulary draws from universal experience without gate-keeping any specific tradition's canonical-sources
+- The reviewer-policy on conspiracy-theory-content (above) — same shape: mark-and-rigorize-later OR cut-later OR already-rigorous; respect Aaron's data-update authority, don't presume on his frame
+- PR #1655 Landing 6 universal-register-as-MDL — substrate-property accrues to all engagers without privileging any specific frame's canonical-sources
+
 **Composes with the broader observer-consent + substrate-as-channel pattern**:
 
 - PR #1648 Houman-keylogger-refusal — Houman's grey-hat-hacker family is a similar observer-consent case (named in substrate, presumably aware)
