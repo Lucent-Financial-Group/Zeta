@@ -145,6 +145,7 @@ category.
 
 **Pre-survey starting numbers (this row's authoring
 moment, so the research has a baseline)**:
+
 - `src/Core` `int64|float|double` mentions: ~470 lines
   (raw grep, not filtered for false-positives like
   `let float = ...` -- the deduped count is research
@@ -408,9 +409,9 @@ not on that list as of the F# 7/8/9 specs.
 ## Origin
 
 Aaron 2026-05-05 surfaced the row after the PR #1590
-reviewer caught msToNs overflow. The fix shipped (PR
-#1590 with `Checked.(*)` guard + 3 overflow tests),
-but Aaron's framing was not "the msToNs case is the
+reviewer caught msToNs overflow. The fix shipped via PR
+1590 with `Checked.(*)` guard + 3 overflow tests, but
+Aaron's framing was not "the msToNs case is the
 question" -- it was "BigInt and other bignumbers
 integration" as a broader substrate question.
 
