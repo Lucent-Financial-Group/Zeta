@@ -59,8 +59,11 @@ it all lateer and focus sooner on waht clausd says"*.
 
 (The first response from Claude.ai about embodiment is preserved
 in the companion research-doc
-`2026-05-05-claudeai-embodiment-thread-recursion-engagement-gate-search-first-aaron-forwarded-preservation.md`
--- not duplicated here.)
+`docs/research/2026-05-05-claudeai-embodiment-thread-recursion-engagement-gate-search-first-aaron-forwarded-preservation.md`
+landing via PR #1603 -- the path resolves once both this PR and
+PR #1603 are on main. Cross-reference is intentional rather than
+inline duplication; if PR #1603 lands first the path is live, if
+this PR lands first the path resolves at #1603's merge.)
 
 Aaron then asked Claude.ai:
 
