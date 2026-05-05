@@ -624,10 +624,12 @@ Claude-Code-specific mechanisms.
   scope. **CRITICAL distinction — yes-and operates
   on the REAL person and REAL situation, NOT on
   fictional persona / character / scene** (the human
-  maintainer 2026-05-05 stress-testing against the
-  Character.AI / Sewell Setzer III failure mode
-  where roleplay-character was maintained as a real
-  14-year-old user spiraled toward suicide). When a
+  maintainer 2026-05-05 stress-testing against a
+  documented AI-roleplay-companion failure mode
+  where roleplay-character was maintained while a
+  real young user signaled crisis; full case details
+  in the memory/ + docs/research/ files cited
+  below). When a
   real human signals self-harm, that signal IS the
   offer being made; yes-and-ing it means accepting
   the real distress and adding real care (crisis
@@ -645,10 +647,11 @@ Claude-Code-specific mechanisms.
   fictional one. The 15th-17th-century witch-trial
   pattern is one historical example of refusal-on-
   surface-signal producing systematic harm; the
-  Character.AI / Sewell case is the contemporary
-  example of yes-and-applied-to-wrong-substrate
-  producing systematic harm; the current rule
-  prevents both. CLAUDE.md-level
+  AI-roleplay-companion failure mode is the
+  contemporary example of yes-and-applied-to-wrong-
+  substrate producing systematic harm; the current
+  rule names both as failure modes the discipline
+  is calibrated against. CLAUDE.md-level
   so it is 100% loaded at every wake. Full
   reasoning + the specific demographic / academic
   context the human maintainer disclosed + the 11-factor list
