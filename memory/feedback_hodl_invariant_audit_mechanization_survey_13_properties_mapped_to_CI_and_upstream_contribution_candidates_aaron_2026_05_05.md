@@ -2,7 +2,7 @@
 name: |
   Hodl-invariant audit mechanization survey -- 13 properties mapped to existing CI/lint coverage + gap analysis + upstream-contribution candidates per shared-stewardship discipline (Aaron 2026-05-05)
 description: |
-  Aaron's directive 2026-05-05 verbatim: "Is the audit currently human-judgment per
+  Aaron's framing 2026-05-05 verbatim: "Is the audit currently human-judgment per
   primitive, or are there parts of the test wired into CI/lint already? do all you
   can tell if you cant and why and lets be a good citizen and teach everyone though
   shared stewardship of our dependies with upstream enhancements". Survey of which
@@ -23,7 +23,7 @@ type: feedback
 
 **Why:** Aaron 2026-05-05 verbatim: *"Is the audit currently human-judgment per primitive, or are there parts of the test wired into CI/lint already? do all you can tell if you cant and why and lets be a good citizen and teach everyone though shared stewardship of our dependies with upstream enhancements"*.
 
-Three operative directives:
+Three operative threads in Aaron's framing:
 
 1. **Audit honestly** — what's mechanized; what's gap; what's inherently human-judgment
 2. **Mechanize wherever tractable** — substrate-graduation pattern applied to the audit framework itself
@@ -44,7 +44,7 @@ Three operative directives:
 
 **What's mechanized today**:
 - Multi-seed property tests via FsCheck `[<Property>]` decorator (e.g. `tests/Tests.FSharp/Operators/RecursiveCounting.MultiSeed.Tests.fs`)
-- TLA+ specs verify protocol-level determinism: `tools/tla/specs/ChaosEnvDeterminism.tla` + `.cfg`, `DbspSpec.tla`
+- TLA+ specs verify protocol-level determinism: `tools/tla/specs/ChaosEnvDeterminism.tla` (with companion .cfg file in the same directory) and `tools/tla/specs/DbspSpec.tla`
 - TLC runner wrapped: `tools/formal-verification/run-tlc.ts`
 - DST-test discipline established per Otto-272 (DST-everywhere) + Otto-281 (DST-exempt-is-deferred-bug)
 
@@ -65,9 +65,9 @@ Three operative directives:
 ### 3. Lock-free (wait-free if fits) — YELLOW
 
 **What's mechanized today**:
-- TLA+ specs cover concurrent-thrash detection at protocol level (e.g. `DictionaryStripedCAS.tla`)
+- TLA+ specs cover concurrent-thrash detection at protocol level (e.g. `tools/tla/specs/DictionaryStripedCAS.tla`)
 - Some FsCheck-style concurrent property tests exist in `tests/Tests.FSharp/Operators/` and `Storage/` directories
-- Stryker mutation testing (`stryker-mutation.yml`) catches some concurrency-sensitive code paths
+- Stryker mutation testing (`.github/workflows/stryker-mutation.yml`) catches some concurrency-sensitive code paths
 
 **Gap analysis**: lock-free verification isn't specifically a CI gate. We don't have a tool that asserts "this code path uses no `lock`/`Monitor.Enter` in steady state". Linear scan via grep would catch obvious cases but not transitive / framework-implied locks.
 
@@ -79,7 +79,7 @@ Three operative directives:
 
 **What's mechanized today**:
 - `tests/Tests.FSharp/Runtime/Allocation.Tests.fs` uses `GC.GetAllocatedBytesForCurrentThread()` to assert byte-precise zero-allocation in steady state
-- BenchmarkDotNet `[<MemoryDiagnoser>]` decorators in `bench/Benchmarks/*.fs` and `bench/Feldera.Bench/*.fs`
+- BenchmarkDotNet `[<MemoryDiagnoser>]` decorators in F# files under `bench/Benchmarks/` and `bench/Feldera.Bench/` directories
 - Pattern documented and used widely
 
 **Gap analysis**: Allocation tests are per-primitive opt-in, not substrate-wide audit. No CI gate that flags "this PR introduces allocation in a previously-zero-alloc path".
@@ -91,7 +91,7 @@ Three operative directives:
 ### 5. DBSP-native — YELLOW
 
 **What's mechanized today**:
-- TLA+ spec `DbspSpec.tla` covers protocol-level DBSP semantics
+- TLA+ spec `tools/tla/specs/DbspSpec.tla` covers protocol-level DBSP semantics
 - F# type system enforces signed Z-set delta type for stream-incremental primitives
 - Lean4 proofs in `tools/lean4/` cover algebraic properties
 
@@ -196,7 +196,7 @@ Three operative directives:
 | 2 | Scale-free | YELLOW | BenchmarkDotNet | Scale-axis assertion in BenchmarkDotNet | BenchmarkDotNet scale-free assertion extension |
 | 3 | Lock-free | YELLOW | TLA+ + Stryker + some property tests | `[<LockFree>]` attribute + Roslyn analyzer | Roslyn analyzer for .NET community |
 | 4 | Low allocation | GREEN | Allocation.Tests.fs + MemoryDiagnoser | Per-API allocation budget regression-detector | BenchmarkDotNet CI-baseline-regression-detector |
-| 5 | DBSP-native | YELLOW | DbspSpec.tla + F# types + Lean4 | `IDbspNative` interface + cross-check | F# `IDbspNative` typeclass pattern → Feldera/DBSP project |
+| 5 | DBSP-native | YELLOW | tools/tla/specs/DbspSpec.tla + F# types + Lean4 | `IDbspNative` interface + cross-check | F# `IDbspNative` typeclass pattern → Feldera/DBSP project |
 | 6 | Mercer-closed | RED | None explicit | Lean4 Mathlib Mercer-theorem formalization + per-kernel proof | Lean Mathlib kernel-theory contribution |
 | 7 | ε-bounded with C(ε) | YELLOW | Z3Verify + TLA+ | `[<EpsilonBounded>]` attribute + Z3 cross-check | Composes with above |
 | 8 | BFT-resolvable / conceded | YELLOW | TLA+ BFT specs + Z3 | `IBftResolvable` vs `IConcessionPrimitive` typeclass | Composes |
@@ -222,7 +222,7 @@ Three operative directives:
 
 ## Upstream-contribution candidates (per shared-stewardship discipline)
 
-Per Aaron's directive *"lets be a good citizen and teach everyone though shared stewardship of our dependies with upstream enhancements"* + GOVERNANCE.md §23 upstream-contribution workflow:
+Per Aaron's framing *"lets be a good citizen and teach everyone though shared stewardship of our dependies with upstream enhancements"* + GOVERNANCE.md §23 upstream-contribution workflow:
 
 | Tool/dependency | Contribution type | Effort estimate | Why it benefits the community |
 |---|---|---|---|
