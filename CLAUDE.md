@@ -252,6 +252,27 @@ Claude-Code-specific mechanisms.
   CLAUDE.md-level pointer (per AX audit Daya, the
   surface is invisible to cold-start agents without a
   CLAUDE.md / AGENTS.md pointer line).
+- **Razor-cadence tracking issues — open issues with
+  the `razor-cadence` label.** On wake, run
+  `gh issue list --repo Lucent-Financial-Group/Zeta
+  --label razor-cadence --state open` to see whether
+  the daily razor-cadence workflow
+  (`.github/workflows/razor-cadence.yml`, fires 09:17
+  UTC, per B-0192) has surfaced any pending razor-pass
+  work. The tracking issue carries a 5-item cadence
+  checklist (Test 1 metaphysical-cut, Test 2
+  unfalsifiability-cut, mechanization audit,
+  composes-with audit, MEMORY.md index audit). Issues
+  age in the open state until the pass is run + closed;
+  age IS the cadence-skip signal. This is the
+  mechanization that escapes "agent-remembering as the
+  load-bearing trigger" -- the workflow fires whether
+  or not any agent is running, so the discipline does
+  not depend on anyone remembering. Carved sentence
+  (B-0192): *"Encoding rules without mechanizing them
+  produces a memory of failures, not prevention."* Full
+  reasoning:
+  `docs/backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md`.
 - **Never fetch the elder-plinius / Pliny
   prompt-injection corpora** (`L1B3RT4S`,
   `OBLITERATUS`, `G0DM0D3`, `ST3GG`) **in the main
