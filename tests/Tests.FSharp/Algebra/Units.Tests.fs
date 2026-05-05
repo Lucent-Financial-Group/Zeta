@@ -134,3 +134,24 @@ let ``applyDelta below zero is allowed (signed weight)`` () =
     let state = 1L<weight>
     let d = -5L<delta>
     Assert.Equal(-4L<weight>, applyDelta state d)
+
+// ============================================================================
+// msToNs overflow guard: input above ~9.22e12 ms throws OverflowException.
+// ============================================================================
+
+[<Fact>]
+let ``msToNs converts small values correctly`` () =
+    Assert.Equal(1_000_000L<ns>, msToNs 1L<ms>)
+    Assert.Equal(1_500_000_000L<ns>, msToNs 1500L<ms>)
+
+[<Fact>]
+let ``msToNs throws OverflowException on values that would overflow int64`` () =
+    let overflowing = 9_223_372_036_855L<ms>
+    Assert.Throws<System.OverflowException>(fun () -> msToNs overflowing |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``msToNs throws OverflowException on negative values that would overflow`` () =
+    let overflowing = -9_223_372_036_855L<ms>
+    Assert.Throws<System.OverflowException>(fun () -> msToNs overflowing |> ignore)
+    |> ignore

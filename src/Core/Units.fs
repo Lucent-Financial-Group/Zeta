@@ -154,9 +154,13 @@ module Units =
             invalidArg "rate" $"rate must be positive (got %f{float rate})"
         LanguagePrimitives.Int64WithMeasure<tick> (int64 (System.Math.Ceiling (float (d / rate))))
 
-    /// Convert milliseconds to nanoseconds (always safe; deterministic factor).
+    /// Convert milliseconds to nanoseconds. Multiplies by 1_000_000;
+    /// `int64` overflows for `|d|` above roughly 9_223_372_036_854 ms
+    /// (~292 years). Guarded with `Checked.( * )` so overflow throws
+    /// `OverflowException` rather than silently wrapping.
     let msToNs (d: int64<ms>) : int64<ns> =
-        d * 1000000L<ns/ms>
+        let raw = Checked.(*) (int64 d) 1000000L
+        LanguagePrimitives.Int64WithMeasure<ns> raw
 
     /// Apply a signed delta to a weight, producing a new weight.
     /// Both arguments are signed; result is signed. The function exists
