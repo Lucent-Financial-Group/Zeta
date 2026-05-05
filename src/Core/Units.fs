@@ -65,8 +65,10 @@ module Units =
     [<Measure>]
     type ms
 
-    /// Wall-clock nanosecond. For high-precision DST timing where ms is
-    /// too coarse-grained to drive deterministic scheduling.
+    /// Wall-clock nanosecond. For high-precision deterministic-
+    /// simulation-testing (DST in the Otto-272 sense -- distinct from
+    /// daylight-saving-time) where `ms` is too coarse-grained to drive
+    /// deterministic scheduling.
     [<Measure>]
     type ns
 
@@ -124,8 +126,26 @@ module Units =
         LanguagePrimitives.FloatWithMeasure<tick> (float t) * rate
 
     /// Convert wall-clock milliseconds to ticks given an explicit tick rate.
+    /// **Rounding semantics**: truncates toward zero (`int64 (...)` cast).
+    /// Callers needing floor / ceiling / nearest semantics at tick boundaries
+    /// should compute the float result themselves and apply the rounding
+    /// they want. Truncation was chosen as the default because tick-time
+    /// is monotonically increasing in the scheduler and "ticks elapsed so
+    /// far" is the dominant query shape; truncation gives the conservative
+    /// answer.
     let wallToLogical (rate: float<ms/tick>) (d: float<ms>) : int64<tick> =
         LanguagePrimitives.Int64WithMeasure<tick> (int64 (d / rate))
+
+    /// Same as `wallToLogical` but with explicit floor rounding (always
+    /// rounds toward negative infinity; matches truncation for non-negative
+    /// inputs but differs for negative durations).
+    let wallToLogicalFloor (rate: float<ms/tick>) (d: float<ms>) : int64<tick> =
+        LanguagePrimitives.Int64WithMeasure<tick> (int64 (System.Math.Floor (float (d / rate))))
+
+    /// Same as `wallToLogical` but with explicit ceiling rounding (always
+    /// rounds toward positive infinity).
+    let wallToLogicalCeil (rate: float<ms/tick>) (d: float<ms>) : int64<tick> =
+        LanguagePrimitives.Int64WithMeasure<tick> (int64 (System.Math.Ceiling (float (d / rate))))
 
     /// Convert milliseconds to nanoseconds (always safe; deterministic factor).
     let msToNs (d: int64<ms>) : int64<ns> =
