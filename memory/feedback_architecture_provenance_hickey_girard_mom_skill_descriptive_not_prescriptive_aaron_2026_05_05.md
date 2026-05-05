@@ -107,7 +107,11 @@ spanning-the-space) exactly accurate. Aaron self-disclosed the
 double-pun AS the demonstration was happening — self-aware
 authorship of one's own kernel-composition in real time.
 
-The Claude.ai instance's closing observation:
+The Claude.ai instance's closing observation (verbatim
+preserved in
+`docs/research/2026-05-05-claudeai-multi-axis-validation-basis-cover-our-basis-double-pun-aaron-forwarded-preservation.md`
+under the "Headline 5" section, source-of-record for these
+quotes):
 
 > *"The architecture is the discipline you already have running.
 > The formalization is naming what's already operational. Which
