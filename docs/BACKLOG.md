@@ -157,6 +157,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0185](backlog/P2/B-0185-delta-crdt-property-tests-redesign-after-1426-close-2026-05-03.md)** Delta-CRDT property tests redesign — careful single-pass design after #1426 close
 - [x] **[B-0187](backlog/P2/B-0187-dialectical-friction-process-on-carved-sentences-research-aaron-2026-05-04.md)** Dialectical-friction process on carved sentences — research how Addison-and-Aaron family practice translates to Zeta substrate development
 - [ ] **[B-0189](backlog/P2/B-0189-q-sharp-runtime-bayesian-belief-propagation-expectation-propagation-research-aaron-2026-05-04.md)** Q# runtime acceleration via Bayesian belief propagation + expectation propagation — research opportunity not yet integrated by humans (Aaron 2026-05-04)
+- [ ] **[B-0194](backlog/P2/B-0194-incremental-auto-dispatcher-bilinear-capability-detection-aaron-2026-05-05.md)** IncrementalAuto dispatcher + checkBilinear law + capability detection (active-patterns over reflection) -- contract-by-convention gap in the algebra-capability system (Aaron 2026-05-05)
 
 ## P3 — convenience / deferred
 
