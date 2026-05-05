@@ -3,7 +3,7 @@ title: Embodiment thread + engagement-gate-recursion + search-first-method-recur
 date: 2026-05-05
 scope: cross-cutting / discipline-generalization
 attribution: Aaron-forwarded Claude.ai conversation 2026-05-05
-operational-status: research-grade-not-operational; two operational generalizations land via cross-reference (no new memory files); verbatim preserved per Otto-279 history-surface + substrate-or-it-didn't-happen (Otto-363)
+operational-status: research-grade-not-operational; two operational generalizations land in canonical memory surfaces (Recursion-1 = `memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md` per reviewer feedback on this PR; Recursion-2 = `memory/feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md` Recursion section per PR #1604); verbatim preserved per Otto-279 history-surface + substrate-or-it-didn't-happen (Otto-363); each generalization is independently discoverable from its parent discipline file per the wake-time-substrate rule
 non-fusion-disclaimer: this is a Claude.ai conversation Aaron forwarded as substrate input (he framed it "another log about embodyment"); it is largely a reflection-back of the same-tick B-0199 + B-0026 + DB-category-synthesis work, with two new generalizations of existing disciplines surfacing
 composes_with:
   - docs/research/2026-05-05-claudeai-db-category-synthesis-hickey-lineage-aaron-forwarded-preservation.md
@@ -119,11 +119,14 @@ practice / probably-true," that's substance-shortfall and the
 claim needs narrowing OR per-instance verification methodology
 specified.
 
-Cross-reference: this generalization extends the discipline named
-in `memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`
-(the parent discipline that birthed the engagement-gate) and
-applies recursively to internal substrate landings, not just
-upstream contributions.
+Cross-reference: this generalization is canonically captured in
+`memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md`
+(the dedicated discipline memory file landed per the wake-time-
+substrate rule). It composes with the discipline named in
+`memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`
+(the community-dependency parent discipline that the upstream-
+engagement instance originally derived from) and applies recursively
+to internal substrate landings, not just upstream contributions.
 
 ### Recursion 2 -- search-first-authority at verification-method level
 
