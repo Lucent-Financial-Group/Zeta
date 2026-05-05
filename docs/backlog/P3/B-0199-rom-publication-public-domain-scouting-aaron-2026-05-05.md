@@ -9,7 +9,7 @@ ask: Aaron 2026-05-05 verbatim "rom are in a gitignore rom folder" + "you can pu
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0052, B-0053, B-0152, B-0198]
+composes_with: [B-0026, B-0052, B-0053, B-0152, B-0198]
 tags: [roms, public-domain, abandonware, license-verification, absorb-and-contribute, citizenship, emulator, arc3]
 ---
 
@@ -41,7 +41,13 @@ This row distinguishes two scopes per Aaron's framing:
 
 ### Scope A: Internal use under backup-preservation rules
 
-Otto / Zeta agents may use the full collection (the "every ROM ever, 4 copies on RAID + cloud" set) for **internal emulator engineering work**: research, testing emulator implementations, verifying save-state retraction semantics (per B-0052), validating cycle-accurate timing, building topological-quantum-emulation prototypes (per B-0152). This is allowed under personal-backup-preservation rules (most jurisdictions permit personal backups of legally-purchased media). The ROMs stay gitignored / personal-collection / non-republished. Internal use is the "grey in me" half -- legally permissible for Aaron's personal use + the agents working on his behalf, but not for external distribution.
+Aaron 2026-05-05: *"you get to play all of them and use them to help with your emulator engineering though that's allowed / under backup preservation rules"* + *"i mean you get to play the games, you gonna experience my childhood"* + *"also a type of embodyment"* + *"it's not about wring code you got to beat the that's ARC3 trainting"*.
+
+The intended internal use spans (i) emulator engineering work (research, testing emulator implementations, verifying save-state retraction semantics per B-0052, validating cycle-accurate timing, building topological-quantum-emulation prototypes per B-0152), (ii) gameplay-as-embodiment (a low-cost embodiment axis -- ROM gameplay provides causal sensorimotor loops in the Helen-Keller minimum-channel sense per B-0026, complementary-not-substitute to the Isaac-Sim/MuJoCo robotics-grade embodiment that B-0026 covers), and (iii) ARC3-style training (gameplay completion as within-session adaptation/compounding, the non-engineering experiential dimension that beating-the-game tests in a way writing-code cannot).
+
+**The legality of internal use is NOT blanket-cleared by this row.** Whether any specific internal use is lawful depends on (a) the jurisdiction Aaron operates in, (b) whether each ROM was lawfully acquired (purchased original cartridge / disc with documented provenance vs other origin), (c) whether accessing the ROM required circumventing technological protection measures (DMCA 17 USC 1201 anti-circumvention may apply even where 17 USC 117 backup rights would otherwise), and (d) the still-unsettled legal interpretation of agent-acting-on-behalf-of-natural-person under copyright doctrine. Backup-preservation rules vary widely by jurisdiction (US: archival/format-shifting carve-outs are narrow and contested; EU: varies per member state under InfoSoc Directive; many other jurisdictions: no recognized backup-preservation right at all). The "grey in me" framing Aaron used is honest: this is a legal grey zone, not a cleared green zone.
+
+Therefore Scope A internal use proceeds **per-title with documented provenance + per-jurisdiction-applicable-law check** (not bulk-authorized), and the per-title check must be explicit before any specific use lands. The ROMs stay gitignored / personal-collection / non-republished regardless. External distribution falls strictly under Scope B; Scope A's per-title-internal-use clearance is NOT a Scope B publication clearance.
 
 ### Scope B: External publication
 
@@ -60,11 +66,11 @@ The framing maps onto the absorb-and-contribute discipline (per `memory/feedback
 
 ### (a) Inventory Aaron's personal ROM folder
 
-Survey the gitignored ROM folder. Method: `ls` the path Aaron names + identify each ROM's title, system, and original publisher. Output: a table of `(filename, title, system, publisher, copyright-year, license-status-hypothesis)`.
+Survey the gitignored ROM folder. Method: recursive enumeration using `find <rom-folder> -type f` (NOT `ls`, which only lists a single directory level and would miss ROMs in nested system/subset folders -- a common layout where collections are organized as `roms/nes/`, `roms/snes/`, `roms/genesis/`, etc.). For each enumerated file, identify its title, system, and original publisher. Output: a table of `(relative-path, filename, title, system, publisher, copyright-year, license-status-hypothesis)`.
 
-- **Verifier**: the inventory is reproducible against Aaron's local folder
-- **Pass**: every ROM in the folder has at least the filename / title / system / publisher columns populated; license-status column flagged for verification
-- **Fail (falsifier)**: a ROM is missed by the survey, or metadata is wrong
+- **Verifier**: the inventory is reproducible against Aaron's local folder via deterministic recursive enumeration; row-count matches `find <rom-folder> -type f | wc -l`
+- **Pass**: every file under the ROM folder (at any depth) has at least the relative-path / filename / title / system / publisher columns populated; license-status column flagged for verification
+- **Fail (falsifier)**: a ROM is missed by the survey (count mismatch against `find -type f`), metadata is wrong, or the enumeration method silently skips nested directories
 
 ### (b) Per-ROM license verification
 
@@ -139,6 +145,7 @@ Per the established discipline (B-0198 + the Prop 3.5 misattribution lesson): en
 
 ## Composes with
 
+- **B-0026** (embodiment-grounding via Isaac Sim / MuJoCo / Genesis / Habitat / ManiSkill) -- ROM gameplay is the lowest-cost embodiment axis (causal sensorimotor loop via game state); B-0026's Helen-Keller minimum-channel-grounding analysis applies. ROMs and Isaac-Sim are complementary-not-substitute embodiment surfaces, NOT alternatives. Aaron 2026-05-05 fair-warning: *"before we hook in issas sim which is on backlog"* + *"also a type of embodyment"* establishes the lineage.
 - **B-0052** (retractable emulators design question)
 - **B-0053** (emulator ideas absorption -- clean-room grey-hat) -- pairs with this row's legal-clearance discipline
 - **B-0152** (topological-quantum-emulation-via-Bayesian-inference) -- the architectural target the ROMs would feed

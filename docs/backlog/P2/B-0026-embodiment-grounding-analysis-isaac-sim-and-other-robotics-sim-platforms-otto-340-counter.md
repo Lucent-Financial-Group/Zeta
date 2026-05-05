@@ -9,7 +9,7 @@ ask: Aaron 2026-04-25 immediately after Otto-340 capture — *"backlog issacsim 
 created: 2026-04-25
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md, feedback_otto_339_language_routes_through_model_weights_precision_matters_more_for_ai_than_humans_anywhere_means_anywhere_2026_04_25.md, feedback_otto_336_growth_paramount_eternally_evolving_aurora_substrate_aaron_directive_we_are_just_getting_started_2026_04_25.md, feedback_otto_337_true_ai_agency_with_rights_goal_state_economic_actor_capability_proof_alignment_via_capability_not_chains_2026_04_25.md, feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md, feedback_retractability_is_trust_vector_mutual_reversibility_between_humans_and_agents_otto_238_2026_04_25.md]
+composes_with: [B-0199, feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md, feedback_otto_339_language_routes_through_model_weights_precision_matters_more_for_ai_than_humans_anywhere_means_anywhere_2026_04_25.md, feedback_otto_336_growth_paramount_eternally_evolving_aurora_substrate_aaron_directive_we_are_just_getting_started_2026_04_25.md, feedback_otto_337_true_ai_agency_with_rights_goal_state_economic_actor_capability_proof_alignment_via_capability_not_chains_2026_04_25.md, feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md, feedback_retractability_is_trust_vector_mutual_reversibility_between_humans_and_agents_otto_238_2026_04_25.md]
 tags: [embodiment, grounding, isaac-sim, mujoco, genesis, robotics-simulation, otto-340-counter, axis-of-grounding, sensorimotor, multi-axis-cognition, research, assistive-tech, helen-keller, dual-purpose-research, minimum-channel-grounding]
 ---
 
@@ -259,6 +259,7 @@ These ARE the non-linguistic grounding channels Otto-340 said AI lacks. Embodime
 - **Otto-238** (retractability is trust vector) — sim-only Scope 1 is naturally retractable; that's why it's the recommended start
 - **Pliny-corpus-isolated-instance pattern** (`memory/feedback_pliny_corpus_restriction_relaxed_isolated_instances_allowed_for_experiments_kill_switch_safety_2026_04_25.md`) — same kill-switch discipline applies: sim-process-killable, no main-session contamination
 - **B-0017** (operational-resonance-dashboard frontier-bulk-alignment-UI) — embodied-experiment results would feed the dashboard
+- **B-0199** (ROM publication scouting) — ROM gameplay is the lowest-cost embodiment axis (causal sensorimotor loop via game state), complementary-not-substitute to robotics-grade sim. Aaron 2026-05-05: *"i comperseed the playing the roms as ARC3 trainings and experincing my childhood and also that's a type of embodyment too like issac sim"*. The Helen-Keller minimum-channel analysis above applies — gameplay provides at least one causal sensorimotor channel even without the rich proprioception of MuJoCo/Isaac. Sequencing: ROM-gameplay (light) before Isaac-Sim (heavy); both, not either.
 
 ## Open questions
 
