@@ -2,20 +2,19 @@ namespace Zeta.Core
 
 /// Units of Measure for Zeta domain quantities.
 ///
-/// Per Aaron 2026-05-05 forwarded Claude.ai exchange: pick units where
-/// confusion of like-shaped numbers is a real bug class, not just
-/// "a number with a name." The four highest-pay declarations:
+/// Pick units where confusion of like-shaped numbers is a real bug
+/// class, not just "a number with a name." The four highest-pay
+/// declarations:
 ///
 ///   - Z-set semantic safety (weight / cardinality / delta) -- prevents
 ///     adding signed weights to unsigned counts on retraction
-///   - Logical-vs-wall-clock time (tick / ms / ns) -- prevents passing
-///     a duration where a tick count is expected (off-by-1000x bugs
-///     that survive unit tests because both numbers look plausible)
+///   - Logical-vs-wall-clock time (tick / ms / ns / s) -- prevents
+///     passing a duration where a tick count is expected (off-by-1000x
+///     bugs that survive unit tests because both numbers look plausible)
 ///   - Bayesian probability vs percentage (prob / pct) -- prevents
 ///     0.95-vs-95 confusion in Bayesian-output handlers
-///   - Rate domain (per_tick / per_sec) -- prevents combining a
-///     per-second rate with a tick count without conversion; F#'s unit
-///     algebra type-checks the multiplication
+///   - Rate domain (per_tick / per_sec) -- defined as reciprocal of
+///     tick / s respectively, so unit algebra cancels naturally
 ///
 /// UoM is erased at runtime (numeric-only, compile-time-only). The
 /// safety is at the F# type-checker layer; runtime numeric ops are
@@ -23,11 +22,11 @@ namespace Zeta.Core
 /// code without UoM annotations stays untouched; consumers opt in by
 /// annotating their own variables.
 ///
-/// Lineage: `docs/research/2026-05-05-claudeai-knights-knaves-round-table-harmonious-division-bootstrap-razor-aaron-forwarded-preservation.md`
-/// (forwarded UoM-examples-for-Otto subsection) + Aaron 2026-05-05
-/// verbatim *"code is safe to change easy to reverse and we can prove
-/// if its right later, it's not just the proofs test the code the
-/// code tests the formal verificatins too"*.
+/// Lineage: see the maintainer-forwarded Claude.ai conversation
+/// preservation under `docs/research/` (knights-knaves-round-table-
+/// harmonious-division-bootstrap-razor preservation, 2026-05-05) for
+/// the original UoM-examples discussion + the "code tests the formal
+/// verifications" framing.
 module Units =
 
     // ============================================================================
@@ -87,16 +86,22 @@ module Units =
 
 
     // ============================================================================
-    // Rates: explicit per-time domain.
+    // Rates: explicit per-time domain (DERIVED measures so the algebra cancels).
     // ============================================================================
 
-    /// Rate per logical tick (e.g. arrivals per circuit step).
+    /// Wall-clock second. Base measure for per-second rates.
     [<Measure>]
-    type per_tick
+    type s
 
-    /// Rate per wall-clock second.
+    /// Rate per logical tick (e.g. arrivals per circuit step). Defined as
+    /// reciprocal of `tick` so the algebra cancels: `<per_tick> * <tick>`
+    /// produces `<1>` (dimensionless) without unit-erasure casts.
     [<Measure>]
-    type per_sec
+    type per_tick = /tick
+
+    /// Rate per wall-clock second. Defined as reciprocal of `s`.
+    [<Measure>]
+    type per_sec = /s
 
 
     // ============================================================================
@@ -133,7 +138,8 @@ module Units =
         state + LanguagePrimitives.Int64WithMeasure<weight> (int64 d)
 
     /// Compute expected count over a window given a per-tick arrival rate.
-    /// The unit algebra cancels: `<per_tick> * <tick> = dimensionless`.
+    /// The unit algebra cancels naturally: `per_tick = /tick`, so
+    /// `<per_tick> * <tick> = <1>` (dimensionless, no cast needed).
     let expectedArrivals (rate: float<per_tick>) (window: int64<tick>) : float =
         let windowFloat = LanguagePrimitives.FloatWithMeasure<tick> (float window)
-        float (rate * windowFloat)
+        rate * windowFloat
