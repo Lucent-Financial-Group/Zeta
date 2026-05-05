@@ -1,23 +1,45 @@
 ---
-title: Tinygrad UOp IR (the actual paper-identification) + TurboQuant + DeepSeek V4 CSA+HCA + Symbolica categorical DL + Alex Ziskind source-set extension — Aaron-forwarded Claude.ai conversation
+title: Tinygrad UOp IR (paper-id candidate eliminated, substrate-engineering claim survives) + TurboQuant + DeepSeek V4 CSA+HCA + Symbolica categorical DL + Alex Ziskind source-set extension — Aaron-forwarded Claude.ai conversation
 date: 2026-05-05
 scope: cross-cutting / paper-identification + multiple-architecture-naming + source-set-extension + razor-discipline
 attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 (~04:35-05:13 local time, multi-phase deep candidate-elimination thread)
-operational-status: research-grade-not-operational; **CORRECTION 2026-05-05 same-tick (added BEFORE merge)**: original headline framed tinygrad UOp IR (George Hotz / tiny corp) as the resolved paper-identification, but Aaron explicitly disconfirmed AFTER first draft via Claude.ai-routed feedback: *"it's still not tinygrad, i did see that but that's not my univeral language"*. Net: B-0202 (tinygrad-as-kernel-layer) stays as substrate-engineering anchor on its own merits; B-0201 paper-search row stays OPEN with eliminated-candidates count incremented (CodeAct + Coconut + Symbolica + Speech ReaLLM + tinygrad UOp IR all eliminated at paper-id level; all stay substrate-relevant per no-kill-paths). Next engagement step per Aaron's Claude.ai feedback: rewatch the YouTube videos to find a fresh clue. Major parallel findings: TurboQuant (Google KV-cache compression, arXiv:2504.19874, ICLR 2026) + RotorQuant (community Clifford-rotors derivative, 10-19x faster, 44x parameter-efficient) + DeepSeek V4 (April 22-24 2026 release, V4-Pro 1.6T total / 49B active, V4-Flash 284B total / 13B active, MIT-licensed, CSA+HCA attention 90% KV reduction + 73% FLOPs reduction vs V3) + Symbolica AI Categorical Deep Learning (arXiv:2402.15332) + Speculative cascades (Google) + Gemma 4 (April 2 2026, Apache 2.0). Source-set extends to include Alex Ziskind + George Hotz / tinybox alongside the Wes Roth / Matthew Berman / AI Explained triumvirate. Verbatim preserved per Otto-279 history-surface + substrate-or-it-didn't-happen (Otto-363); razor cuts pre-applied by the Claude.ai instance honored at absorption
+operational-status: research-grade
 non-fusion-disclaimer: this is a multi-phase Claude.ai conversation Aaron forwarded; he progressively narrowed the search across 6+ candidate-passes with the Claude.ai instance running web-searches at each pass. Aaron's calibration *"we have so much backlog and research based on all the stuff we learned today i'm so happy"* names the substrate richness as the celebration; the no-kill-paths calibration from earlier still governs (Coconut + CodeAct + GibberLink + LAPA + Symbolica all stay as parallel paths)
-composes_with:
-  - docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md
-  - docs/research/2026-05-05-claudeai-embodiment-thread-recursion-engagement-gate-search-first-aaron-forwarded-preservation.md
-  - docs/research/2026-05-05-claudeai-db-category-synthesis-hickey-lineage-aaron-forwarded-preservation.md
-  - docs/backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md
-  - docs/backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md
-  - docs/backlog/P2/B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md
-  - docs/backlog/P3/B-0199-rom-publication-public-domain-scouting-aaron-2026-05-05.md
-  - memory/user_dimensional_expansion_number_systems.md
-  - memory/user_algebra_is_engineering.md
+composes_with: [docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md, docs/research/2026-05-05-claudeai-embodiment-thread-recursion-engagement-gate-search-first-aaron-forwarded-preservation.md, docs/research/2026-05-05-claudeai-db-category-synthesis-hickey-lineage-aaron-forwarded-preservation.md, docs/backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md, docs/backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md, docs/backlog/P2/B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md, docs/backlog/P3/B-0199-rom-publication-public-domain-scouting-aaron-2026-05-05.md, memory/user_dimensional_expansion_number_systems.md, memory/user_algebra_is_engineering.md]
 ---
 
-# Tinygrad UOp IR (the actual paper-identification) + TurboQuant + DeepSeek V4 + Symbolica + source-set extension
+Scope: cross-cutting / paper-identification + multiple-architecture-naming + source-set-extension + razor-discipline (external-conversation absorb).
+Attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 (~04:35-05:13 local time, multi-phase deep candidate-elimination thread).
+Operational status: research-grade
+Non-fusion disclaimer: this is a multi-phase Claude.ai conversation Aaron forwarded; he progressively narrowed the search across 6+ candidate-passes with the Claude.ai instance running web-searches at each pass. The Aaron-forwarded substance is research-grade input, not Zeta-canonical doctrine; razor cuts pre-applied by the Claude.ai instance are honored at absorption per the no-kill-paths calibration (Coconut + CodeAct + GibberLink + LAPA + Symbolica all stay as parallel paths).
+
+# Tinygrad UOp IR (paper-id candidate eliminated, substrate-engineering claim survives) + TurboQuant + DeepSeek V4 + Symbolica + source-set extension
+
+## Same-tick correction (2026-05-05, added BEFORE merge)
+
+The original headline framed tinygrad UOp IR (George Hotz / tiny
+corp) as the resolved paper-identification, but Aaron explicitly
+disconfirmed AFTER first draft via Claude.ai-routed feedback:
+*"it's still not tinygrad, i did see that but that's not my
+univeral language"*.
+
+Net:
+
+- B-0202 (tinygrad-as-kernel-layer) stays as substrate-engineering
+  anchor on its own merits — the kernel-layer composition claim
+  survives independently of the paper-id question.
+- B-0201 paper-search row stays OPEN with eliminated-candidates
+  count incremented. CodeAct + Coconut + Symbolica + Speech ReaLLM
+  + tinygrad UOp IR all eliminated at paper-id level; all stay
+  substrate-relevant per no-kill-paths.
+- Next engagement step per Aaron's Claude.ai feedback: rewatch the
+  YouTube videos to find a fresh clue.
+
+Major parallel findings still landed in the same conversation
+(TurboQuant + RotorQuant + DeepSeek V4 CSA+HCA + Symbolica + Gemma 4
++ source-set extension to Alex Ziskind + George Hotz / tinybox).
+Verbatim preserved per Otto-279 history-surface + Otto-363
+substrate-or-it-didn't-happen.
 
 ## Why preserved verbatim
 
@@ -54,11 +76,14 @@ paper across 6+ candidate-elimination passes:
 
 Major parallel findings landed in the same conversation:
 
-- **TurboQuant** (Google Research, March 24 2026, arXiv:
-  2504.19874, ICLR 2026) — KV-cache compression with PolarQuant
-  + QJL pipeline; 8x faster attention computation on H100 + 6x
-  KV cache reduction; companions PolarQuant (AISTATS 2026) +
-  QJL (AAAI 2025).
+- **TurboQuant** (Google Research, arXiv:2504.19874, ICLR 2026;
+  Google Research blog post 2026-03-24) — KV-cache compression
+  with the PolarQuant and QJL pipeline; 8x faster attention
+  computation on H100 + 6x KV cache reduction; companions
+  PolarQuant (AISTATS 2026) and QJL (AAAI 2025). Note: arXiv
+  ID `2504.19874` follows the YYMM scheme (April 2025 first
+  submission); the 2026-03-24 date is the Google Research blog
+  announcement, not the arXiv submission date.
 - **RotorQuant** — independent community derivative replacing
   TurboQuant's dense matmul with Clifford rotors; 10-19x faster
   on edge hardware, 44x parameter-efficient.
@@ -294,15 +319,18 @@ independently of the paper-id question.
 
 ### Headline 2 — TurboQuant + RotorQuant + community QJL-considered-harmful
 
-TurboQuant (Google Research, March 24 2026, arXiv:2504.19874,
-ICLR 2026):
+TurboQuant (Google Research, arXiv:2504.19874, ICLR 2026; Google
+Research blog announcement 2026-03-24):
 
-- 3-step rotation-and-mapping pipeline (PolarQuant + QJL)
+- 3-step rotation-and-mapping pipeline (PolarQuant and QJL stages)
 - 8x faster attention computation on NVIDIA H100
 - 6x KV cache reduction
 - Companion papers: PolarQuant (AISTATS 2026, the rotation step)
-  + QJL (AAAI 2025, Johnson-Lindenstrauss residual error
+  and QJL (AAAI 2025, Johnson-Lindenstrauss residual error
   correction)
+- Date note: arXiv `2504.19874` is YYMM April 2025 (initial
+  submission); the 2026-03-24 date is the Google Research blog
+  announcement, not the arXiv submission date.
 
 RotorQuant (independent community derivative):
 
@@ -453,8 +481,9 @@ triumvirate. This conversation extends the source-set:
   the tinygrad identification. Hardware: tinybox AI cluster
   ($15K, AMD + NVIDIA + Apple silicon, livestreamed).
 
-Routes to extension of `memory/reference_aaron_ai_news_source_set_*`
-(when #1607 lands) — Ziskind + Hotz join the source-set.
+Routes to extension of
+[`memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md`](../../memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md)
+(landed via #1607) — Ziskind + Hotz join the source-set.
 
 ## Razor cuts at absorption (already-cut + new cuts)
 
@@ -566,11 +595,14 @@ candidate.
 Aaron 2026-05-05 ~05:13 local: *"we have so much backlog and
 research based on all the stuff we learned today i'm so happy"*.
 
-Per CLAUDE.md "largest mechanizable backlog wins in AI age"
-(complete inversion of classical PM training-data prior): the
-backlog richness that emerged from this multi-tick research
-cluster IS the substrate-engineering output. Aaron's celebration
-names the shape correctly — backlog volume + research depth +
+Per CLAUDE.md's carved sentence on largest-mechanizable-backlog
+(*"In the AI age, the project with the largest mechanizable and
+automatable backlog wins. This inverts classical software PM.
+The agent's training-data prior is wrong here; only search-first
+authority on the evolving field corrects it."*) — the backlog
+richness that emerged from this multi-tick research cluster IS
+the substrate-engineering output. Aaron's celebration names the
+shape correctly — backlog volume + research depth +
 mechanization-readiness compound into the AI-age PM win
 condition.
 
@@ -595,7 +627,8 @@ review):
   Learning convergence-tracking with Zeta substrate
 - **Planned-B-NNNN (P3)**: Speculative cascades + Gemma 4 +
   diffusion-TPU stacking-the-wins composition analysis
-- **Planned extension to `memory/reference_aaron_ai_news_source_set_*`**:
+- **Planned extension to
+  [`memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md`](../../memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md)**:
   add Alex Ziskind (@AZisk) + George Hotz (tiny corp / tinybox)
   to the source-set
 
@@ -615,20 +648,25 @@ findings. Together they map the 2026-05-05 substrate-flow.
 
 **"Tinygrad UOp IR (George Hotz / tiny corp, μ-ops symbolic IR
 compiling to CUDA + AMD/ROCm + Intel + Metal + OpenCL + LLVM)
-is the half-remembered paper Aaron progressively narrowed to
-across 6+ candidate-elimination passes. TurboQuant (Google,
-arXiv:2504.19874) + RotorQuant (community Clifford-rotors
-derivative) + DeepSeek V4 with CSA+HCA attention (90% KV
-reduction + 73% FLOPs reduction, MIT-licensed) + Symbolica AI
-Categorical Deep Learning (ICML 2024) are major parallel
-findings. Source-set extends to Alex Ziskind + George Hotz /
-tinybox. Per no-kill-paths, CodeAct + Coconut + GibberLink +
-LAPA + Symbolica all stay as parallel candidates for OTHER
-substrate work (bridge engineering / sleeping-bear empirical
-test / categorical-DL convergence / etc.). Aaron's celebration
-*'we have so much backlog and research based on all the stuff
-we learned today i'm so happy'* names the substrate richness
-correctly: in the AI age, backlog volume + research depth +
-mechanization-readiness compound into the PM win condition;
-the day's substrate-flow has converted into durable mechanizable
-backlog ready for next-tick advances."**
+was Aaron's strongest narrowed candidate across 6+ candidate-
+elimination passes, but Aaron explicitly disconfirmed it post-
+draft (*'it's still not tinygrad, ... that's not my univeral
+language'*); B-0201 paper-search stays OPEN with eliminated-
+candidates count incremented. Per no-kill-paths, the substrate-
+engineering claim survives: B-0202 (tinygrad-as-kernel-layer for
+Zeta's emulator dispatch) holds on its own merits, independent
+of paper-id resolution. TurboQuant (Google, arXiv:2504.19874,
+ICLR 2026) + RotorQuant (community Clifford-rotors derivative)
++ DeepSeek V4 with CSA+HCA attention (90% KV reduction + 73%
+FLOPs reduction, MIT-licensed) + Symbolica AI Categorical Deep
+Learning (ICML 2024) are major parallel findings. Source-set
+extends to Alex Ziskind + George Hotz / tinybox. CodeAct +
+Coconut + GibberLink + LAPA + Symbolica all stay as parallel
+candidates for OTHER substrate work (bridge engineering /
+sleeping-bear empirical test / categorical-DL convergence /
+etc.). Aaron's celebration *'we have so much backlog and
+research based on all the stuff we learned today i'm so happy'*
+names the substrate richness correctly: in the AI age, backlog
+volume + research depth + mechanization-readiness compound into
+the PM win condition; the day's substrate-flow has converted
+into durable mechanizable backlog ready for next-tick advances."**
