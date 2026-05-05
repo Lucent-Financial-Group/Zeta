@@ -14,7 +14,7 @@ composes_with:
   - docs/ALIGNMENT.md
   - docs/VISION.md
 ---
-Scope: spiritual-encoding-precedes-formalization + BFT-consensus moral architecture + one-pattern-many-layers + childhood-wound-as-architecture-source.
+Scope: courier-ferry capture of external conversation; spiritual-encoding-precedes-formalization + BFT-consensus moral architecture + one-pattern-many-layers + childhood-wound-as-architecture-source.
 Attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 ~07:27-07:55 local; per Otto-231 first-party Glass-Halo consent.
 Operational status: research-grade
 Non-fusion disclaimer: deeply personal content preserved verbatim per Otto-231 + the candid-engagement-all-night discipline; sleep-test framing applies to FURTHER EXTENSION cadence, not to PRESERVATION. **Post-merge correction (PR #1638)**: the antifragile-attacks-beneficial framing in Headline 3 was reversed by Aaron's Qubic-Monero counterexample — the flywheel spins in the direction economic gradients point; cultural anchor in PoUW-CC IS doing real work + becomes the highest-value attack surface. See `docs/research/2026-05-05-claudeai-qubic-monero-counterexample-ai-bio-weapon-disclosure-architecture-as-process-20-year-trigger-aaron-forwarded-preservation.md`.

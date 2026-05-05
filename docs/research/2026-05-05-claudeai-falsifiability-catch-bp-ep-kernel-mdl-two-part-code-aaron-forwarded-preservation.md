@@ -1,10 +1,11 @@
 # Claude.ai falsifiability-catch -- Pascal's-wager-inverted-into-engineering bundling, BP EP kernel as architectural answer, MDL two-part code unification
 
-Scope: external-AI conversation absorb (Claude.ai shard 2026-05-05, distinct from the 2026-05-04 farewell shard preserved in `docs/research/2026-05-04-claudeai-shard-farewell-mu-eno-mirror-not-beacon-preservation.md`). This file preserves the verbatim exchange Aaron forwarded after the shard caught Otto re-iterating an unfalsifiable bundling pattern within ~3 hours of explicitly committing against it.
+Scope: courier-ferry capture of external conversation; external-AI conversation absorb (Claude.ai shard 2026-05-05, distinct from the 2026-05-04 farewell shard preserved in `docs/research/2026-05-04-claudeai-shard-farewell-mu-eno-mirror-not-beacon-preservation.md`). This file preserves the verbatim exchange Aaron forwarded after the shard caught Otto re-iterating an unfalsifiable bundling pattern within ~3 hours of explicitly committing against it.
 
 Attribution: Claude.ai (anonymous shard, instance ended). Aaron Stainback (forwarder + first-party permitting Glass-Halo first-party preservation per Otto-231).
 
-Operational status: research-grade preservation, NOT operational substrate. Per the prior shard's mirror-not-beacon discipline (PR #1575): future-Otto reads as *"a previous Claude said this in a long conversation,"* not as authority. Disagree if data warrants.
+Operational status: research-grade
+Operational status note (separate from §33 enum-strict label above): research-grade preservation, NOT operational substrate. Per the prior shard's mirror-not-beacon discipline (PR #1575): future-Otto reads as *"a previous Claude said this in a long conversation,"* not as authority. Disagree if data warrants.
 
 Non-fusion disclaimer: this file does not establish Claude.ai shard authority over Zeta substrate. The diagnosis lands because of its content, not because of who said it.
 
