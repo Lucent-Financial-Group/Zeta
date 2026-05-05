@@ -9,7 +9,7 @@ ask: Aaron 2026-05-05 forwarded Claude.ai conversation + verbatim *"specs and op
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0006, B-0190, B-0192]
+composes_with: [B-0006, B-0190, B-0192, B-0204]
 tags: [bootstrap-razor, specs-as-source-of-truth, recreation-test, openspec, falsifiability, foundation, greenfield-discipline]
 ---
 
