@@ -2,8 +2,7 @@
 name: |
   Yes-and improv of backlogs -- accept offers + add by composing; never block / reject / "no"-default; "i always say now" makes substrate-landing decisions Otto's authority within scope (Aaron 2026-05-05)
 description: |
-  Aaron's same-tick framing 2026-05-05 verbatim: "and yes and" + "the improve
-  of backlos" + "backlogs" + "*". The backlog operates as improv ("yes and"
+  Aaron's same-tick framing 2026-05-05 verbatim: "and yes and" + "the improve of backlos" + "backlogs" + "*". The backlog operates as improv ("yes and"
   comedy principle): accept offers + extend by composing with existing items.
   Never block / reject / "no"-default. Composes with VISION.md scope-creep-
   is-feature framing (never kill paths) + larger-mechanizable-backlog-wins-
