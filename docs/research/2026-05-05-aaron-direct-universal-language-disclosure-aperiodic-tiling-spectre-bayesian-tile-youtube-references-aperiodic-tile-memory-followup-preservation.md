@@ -1,7 +1,7 @@
 ---
 title: "Universal language i was looking for" disclosure -- aperiodic tiling + Spectre + Bayesian tile YouTube references; substrate's tiles are "more dense and firm not soft but still smooth" (Aaron 2026-05-05 direct disclosure following PR #1669 aperiodic-tile memory)
 date: 2026-05-05
-scope: courier-ferry capture of external conversation; cross-cutting / universal-language naming disclosure + 6 YouTube reference URLs preserved verbatim per substrate-or-it-didn't-happen + comparative-tiling claim ("our tiles are more dense and firm... not soft but still smooth")
+scope: courier-ferry capture of external conversation; cross-cutting / universal-language naming disclosure + 7 YouTube reference URLs preserved verbatim per substrate-or-it-didn't-happen (URLs 1-5 broader-context; URL 6 = unverified universal-language candidate; URL 7 = actual Bayesian-tile comparative baseline) + comparative-tiling claim ("our tiles are more dense and firm... not soft but still smooth")
 attribution: Aaron-direct disclosure 2026-05-05 ~11:48 local, immediately following Otto's PR #1669 aperiodic-tile memory commit + Aaron's "i love it" calibration ack
 operational-status: research-grade
 composes_with:
