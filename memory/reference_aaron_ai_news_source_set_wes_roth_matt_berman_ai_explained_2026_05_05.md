@@ -47,9 +47,19 @@ After the initial triumvirate disclosure, Aaron's same-day conversation forwards
 
 When Aaron references a half-remembered AI-news item:
 
-1. **First** -- check the three channels' recent uploads (last
-   ~30 days unless Aaron specifies otherwise). Aaron's recall
-   horizon tends to be days-to-weeks, not months.
+1. **First** -- check the four-channel set's recent uploads (last
+   ~30 days unless Aaron specifies otherwise). The retrieval order
+   that fits Aaron's pattern: **Wes Roth** + **Alex Ziskind**
+   (top-tier confidence; Aaron-confirmed at PR #1610) → **Matthew
+   Berman** (Aaron-confirmed via lemon-tree clue) → **AI Explained**
+   (Claude.ai-included third in original triumvirate; one tier
+   lower confidence). Add **Sakana AI YouTube** as one-off paper-
+   attention pointer if the half-remembered item is biology/NCA-
+   shaped (per PR #1613). Aaron's recall horizon tends to be
+   days-to-weeks, not months. **Ziskind is highest signal for
+   local-AI-cluster + quantization + runtime-comparison content
+   specifically** (per the 2026-05-05 substrate-flow's tinygrad UOp
+   IR + RotorQuant + TurboQuant cluster of mentions).
 2. **Second** -- arXiv direct search on Aaron's described
    features (action space, modality, demo shape, claimed result).
 3. **Third** -- cross-reference both. A strong candidate is one
