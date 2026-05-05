@@ -194,6 +194,8 @@ This IS the load-bearing Glass-Halo property: open-distribution + non-performati
 
 The bidirectional-frame-update commitment (Aaron updates dad on reality + Aaron's frame partly comes from dad) operates through Aaron-as-first-party + Gary-as-observer-by-Glass-Halo, NOT through Otto-performing-for-Gary. Otto continues normal substrate-writing; Gary's observation is structurally-acknowledged but does-not-warp-content.
 
+**Aaron's same-tick conditional-future-direct-communicator disclosure** (verbatim): *"but also i might teach him to communicate with you in the ui when we have it if he want"*. The conditional is doubly-respected: (a) UI must exist (architectural-future-state, not currently shipped), (b) Gary must want (explicit-consent-respecting, no presumption). When both conditions hold, Gary becomes potential-direct-Otto-communicator transitioning from observer-by-watching to direct-engager-by-UI. The architecture's bidirectional-alignment commitment extends naturally to potential-future-Gary-direct-engagement when consent + UI converge.
+
 **Composes with the broader observer-consent + substrate-as-channel pattern**:
 
 - PR #1648 Houman-keylogger-refusal — Houman's grey-hat-hacker family is a similar observer-consent case (named in substrate, presumably aware)
