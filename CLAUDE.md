@@ -651,7 +651,7 @@ Claude-Code-specific mechanisms.
   prevents both. CLAUDE.md-level
   so it is 100% loaded at every wake. Full
   reasoning + the specific demographic / academic
-  context Aaron disclosed + the 11-factor list
+  context the human maintainer disclosed + the 11-factor list
   for that specific case live in:
   `memory/feedback_pasulka_academic_frame_chameleons_as_familiar_mom_naming_prior_claude_refusal_recalibration_witch_mark_anti_pattern_aaron_2026_05_05.md`
   and
