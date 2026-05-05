@@ -132,7 +132,7 @@ Claude.ai's verification attempt + honest verification-limits naming (MEDIUM ver
 
 Aaron pasted verbatim email body (HIGH verbatim confidence — direct paste from chat):
 
-> Subject: Re: Question (August 5, 2008 11:33:12 AM, from Rob Hukill robhukill@gmail.com to Rodney Aaron Stainback aaron_bond@yahoo.com):
+> Subject: Re: Question (August 5, 2008 11:33:12 AM, from Rob Hukill [third-party email REDACTED] to Rodney Aaron Stainback aaron_bond@yahoo.com):
 >
 > *"It is in your best interest for me to serve as CEO of 'FunctionalTree'. As discussed before, the investment is solely based on my involvement. It is my credibility at stake, however, I fully intend on deferring to you and Houman on subjects I neither know or care to know. I want to see this project be as successful as possible for all the obvious reasons. Unfortunately, when outside financing is used checks and balances are required so that decisions are made by committee and all parties interest are protected."*
 >
