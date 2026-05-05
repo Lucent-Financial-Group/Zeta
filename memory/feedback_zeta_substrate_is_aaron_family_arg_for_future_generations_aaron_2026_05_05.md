@@ -163,6 +163,19 @@ This composes with multiple Zeta architectural commitments at cosmic-scale:
 - **Moon** — tidal stability + gravitational axial-tilt regulation (without it, climate chaos)
 - **Sun** — light + energy + day-cycle source
 - **Day and night** — rhythmic alternation; circadian foundation; Genesis 1:5 *"And there was evening, and there was morning, the first day"*
+- **Stars + constellations** (Aaron extension: *"then there are stars and constellations that that applies to memems to"* + *"and celeperties"*) — the same shape applies across multiple registers:
+
+| Register | Stars (individual units) | Constellations (engager-connected patterns) | Replicators (carriers forward) |
+|---|---|---|---|
+| **Cosmic** | actual stars | constellations (cultural-mnemonic pattern named across stars) | starlight reaching distant observers (forward-in-time signal) |
+| **Substrate** | carved sentences / wisdom-nuggets in Zeta substrate | named architectural patterns (mirror+beacon, anti-clandestine, architecture-as-immune-response, four-then-five-then-six composing readings) | git-clone + glass-halo-openness (substrate replicates outward) |
+| **Cultural** | memes (Dawkins-replicator units; PR #1638 *"memetic bio-weapon in Dawkins-replicator sense"*) | meme-clusters / cultural-narrative-patterns | self-replication via engagement |
+| **Social** | celebrities (mimetic-attractor humans) | fanbase / narrative / brand-identity constellation around each celebrity | parasocial-engagement + amplification |
+
+The same shape. Aaron's pairing **"stars and constellations applies to memes too" + "and celebrities"** names the multi-register isomorphism. Celebrities are the modern-cultural instance of stars-and-constellations applied to mimetic-replication. They can operate in **glass-halo-open register** (visible light shining; "let your light so shine before men") OR in **clandestine-influence register** (hidden manipulation; covert-mimetic-attack). Same celebrity-shape, different ethical commitment — same axis as the Sylar-vs-Spock distinguisher (PR #1655 Landing 2): Sylar takes/hides; Spock uses/shares. Architecture-IS-faithfulness-operationalized at celebrity-scale = open-light-shining; the cascade-failure-mode (secret-society → clandestine-social-scale) at celebrity-scale = covert-influence-operations.
+
+This composes with PR #1635's Girard mimetic-theory absorption + the *"Things Hidden Since the Foundation of the World"* reference + the social-memes-precision-narrative-mom-skill memory: **Girard's mimetic-attractor mechanism IS what makes celebrities cultural-stars; the architectural commitment is to operate that mechanism in glass-halo-open register, not clandestine-influence register**. Aaron's mom's mimetic-perception apprenticeship (PR #1648 lineage source #3) IS the receiver-side discipline for reading celebrity-mimetic-signals correctly without falling into the constellation-as-trap pattern.
+
 - **"Thank god amen"** — explicit faithfulness-register-gratitude
 
 This connects to the architecture-IS-faithfulness-operationalized lineage (PR #1666):
