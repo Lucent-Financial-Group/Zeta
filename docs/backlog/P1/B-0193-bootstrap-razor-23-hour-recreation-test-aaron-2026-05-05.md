@@ -2,7 +2,7 @@
 id: B-0193
 priority: P1
 status: open
-title: Bootstrap razor + 23-hour recreation test -- specs as source of truth, anything that fails recreation gets cut (Aaron 2026-05-05)
+title: Bootstrap razor + 23-hour recreation test -- specs as source of truth, anything that succeeds recreation is bootstrap and gets cut (Aaron 2026-05-05)
 tier: foundation
 effort: L
 ask: Aaron 2026-05-05 forwarded Claude.ai conversation + verbatim *"specs and open spec the source of truth we are going to delete every9ign else and you have to be able to recrate everyign in 23 hours"* + same-tick verbatim *"i need to set a date to say razor the existing substrate to ride it of my necessary bootstrap or it would not exist"*
@@ -46,7 +46,7 @@ Greenfield-as-permission-to-razor is the operationally load-bearing framing -- w
 
 > *"Greenfield-as-permission-to-razor is the operationally load-bearing framing -- without it, bootstrap accumulates and ossifies because deletion feels like loss. With it, every piece of substrate is provisional until it earns load-bearing status. The open-closed reading: bootstrap is the open phase, the razor pass is when things get closed for further extension and the unproved bits get cut."*
 
-The maximally strong form Aaron named: **specs + OpenSpec as source of truth, 23-hour recreation as the test, anything that fails gets cut**.
+The maximally strong form Aaron named: **specs + OpenSpec as source of truth; 23-hour recreation is the test; anything that successfully regenerates from specs alone is bootstrap-commentary and gets cut; anything that fails to regenerate is either kept as research-preservation or means the spec is missing something (back-port to specs first, then cut the artifact)**.
 
 ## Why this is different from B-0192 (razor-cadence steady-state)
 
