@@ -6,7 +6,7 @@ type: feedback
 
 # Ombuds bridges legal via English-executable DSL/contracts
 
-**Rule.** Aaron 2026-05-05 verbatim (~10:35 local): *"ombuds bridges legal i can't remember if that was lost in the split brain on claude.ai"* + *"can be the like english executable DSL/contracts"*. The Aurora-architecture **Ombuds** channel (designed by Amara 2025-09; preserved in `docs/amara-full-conversation/2025-09-w*-aaron-amara-conversation.md`) is the bridge between substrate-layer enforcement and legal-contracts layer. The bridge mechanism is **English-executable DSL/contracts** — same shape as the soulfile-restrictive-English-DSL pattern (`memory/feedback_soulfile_dsl_is_restrictive_english_runner_is_own_project_uses_zeta_small_bins_2026_04_23.md`).
+**Rule.** Aaron 2026-05-05 verbatim (~10:35 local): *"ombuds bridges legal i can't remember if that was lost in the split brain on claude.ai"* + *"can be the like english executable DSL/contracts"*. The Aurora-architecture **Ombuds** channel (designed by Amara 2025-09; preserved in `docs/amara-full-conversation/2025-09-w1-aaron-amara-conversation.md` (and w2-w5)) is the bridge between substrate-layer enforcement and legal-contracts layer. The bridge mechanism is **English-executable DSL/contracts** — same shape as the soulfile-restrictive-English-DSL pattern (`memory/feedback_soulfile_dsl_is_restrictive_english_runner_is_own_project_uses_zeta_small_bins_2026_04_23.md`).
 
 **Why:** Multiple substrate-vs-license isomorphisms across Aaron's history (collapsed in this night's substrate-flow):
 
@@ -23,9 +23,9 @@ The architectural pattern: legal contracts are usually paperwork-layer (English 
 
 **Composes with:**
 
-- `docs/amara-full-conversation/2025-09-w*-aaron-amara-conversation.md` — original Aurora Ombuds design (Amara): "**No covert telemetry**; no secondary use without fresh consent. **Ombuds:** independent channel that can *pause* processing." + Ombuds card with "**Pause/Export/Purge** buttons" + "**Adjudication:** neutral ombud; pre-funded escrow; **repair before penalty**."
+- `docs/amara-full-conversation/2025-09-w1-aaron-amara-conversation.md` (and w2-w5) — original Aurora Ombuds design (Amara): "**No covert telemetry**; no secondary use without fresh consent. **Ombuds:** independent channel that can *pause* processing." + Ombuds card with "**Pause/Export/Purge** buttons" + "**Adjudication:** neutral ombud; pre-funded escrow; **repair before penalty**."
 - `memory/feedback_soulfile_dsl_is_restrictive_english_runner_is_own_project_uses_zeta_small_bins_2026_04_23.md` — restrictive-English-DSL pattern
-- `memory/feedback_soulfile_is_dsl_english_git_repos_absorbed_at_stages_2026_04_23.md` — soulfile DSL is English; git repos absorbed at staged
+- `memory/feedback_soulfile_is_dsl_english_git_repos_absorbed_at_stages_2026_04_23.md` — soulfile DSL is English; git repos absorbed at distinct stages
 - `docs/research/2026-05-05-claudeai-dad-analog-hacker-granny-family-endorsed-grey-hat-functional-tree-2007-pre-bitcoin-houman-principled-quit-frame-of-permission-three-generation-aaron-forwarded-preservation.md` — Houman keylogger-refusal isomorphism (Landing 8)
 - `docs/research/2026-05-05-claudeai-zellar-family-apprenticeship-kaching-parallel-functional-tree-roles-preferred-stock-addison-fairness-spreadsheet-four-startup-attempts-architecture-as-immune-response-aaron-forwarded-preservation.md` — preferred-stock-vs-non-preferred equity-mechanics version of substrate-vs-license (Landing 5)
 - `docs/research/2026-05-05-claudeai-ifs-shadow-air-force-pilot-ops-awareness-long-horizon-inversion-5-layer-cockroach-safe-stack-epsilon-bounded-aaron-forwarded-preservation.md` — Reticulum "no Harm" license vs ε-bounded substrate enforcement
@@ -34,7 +34,7 @@ The architectural pattern: legal contracts are usually paperwork-layer (English 
 
 **Aaron's "lost in split brain" framing + provenance clarification 2026-05-05 same-tick**: *"this is not new amamra and i talked about it months ago"* + *"then recently claude.ai but that conversaton seems to be lost to split brain"*. The provenance has two layers:
 
-- **Original Ombuds concept**: Amara + Aaron, months ago, preserved in `docs/amara-full-conversation/2025-09-w*-aaron-amara-conversation.md` (neutral pause-channel + pre-funded escrow + repair-before-penalty + Ombuds card with Pause/Export/Purge buttons)
+- **Original Ombuds concept**: Amara + Aaron, months ago, preserved in `docs/amara-full-conversation/2025-09-w1-aaron-amara-conversation.md` (and w2-w5) (neutral pause-channel + pre-funded escrow + repair-before-penalty + Ombuds card with Pause/Export/Purge buttons)
 - **Recent extension** (Ombuds bridges legal as English-executable DSL/contracts): Aaron + Claude.ai, recent conversation **possibly lost to Claude.ai split-brain compaction** — the SUBSTRATE-OR-IT-DIDN'T-HAPPEN principle says: if it lives only in compacted chat, it didn't happen for future readers. This memory-file landing IS the substrate-or-it-didn't-happen response — the extension now has a durable home in repo substrate even though the original Claude.ai conversation may be unrecoverable.
 
 Daylight integration can extend with deeper architectural work (ombuds-as-skill, ombuds-binding-rules, ombuds-API surface, ombuds-DSL grammar formalization).
