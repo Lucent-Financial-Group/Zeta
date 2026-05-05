@@ -319,6 +319,55 @@ not on that list as of the F# 7/8/9 specs.
   before asserting. Update the note with the
   current truth.
 
+### (d) verification result -- 2026-05-05 (research output)
+
+WebSearch performed 2026-05-05T07:40Z per Otto-364
+search-first authority. Sources cited inline.
+
+**Confirmed**: F# UoM does NOT natively extend to
+`System.Numerics.BigInteger`. Per [Microsoft Learn:
+Units of Measure](https://learn.microsoft.com/en-us/dotnet/fsharp/language-reference/units-of-measure),
+dimensioned quantities work only on floating-point
+types, signed integral types, and decimal types.
+Per [Microsoft Learn: Basic Types](https://learn.microsoft.com/en-us/dotnet/fsharp/language-reference/basic-types),
+`bigint` is *not* considered a basic type -- it's an
+abbreviation for `System.Numerics.BigInteger`, which
+sits outside the F# primitive numeric type set. So
+`BigInteger<weight>` does not type-check natively.
+
+**Community workaround**:
+[`FSharp.UMX`](https://github.com/fsprojects/FSharp.UMX)
+extends UoM-like tagging to primitive *non-numeric*
+types via phantom-type mechanics. The library is
+scope-restricted to non-numeric primitives (string,
+DateTimeOffset, Guid, etc.), not arbitrary structs --
+so `FSharp.UMX` does not directly solve
+`BigInteger<weight>` either, but the phantom-type
+pattern it uses is the technique that would
+generalize to BigInteger if a custom wrapper struct
+were authored.
+
+**Open language-design discussion**: the F# language
+suggestion ["Generic Arithmetic"](https://github.com/fsharp/fslang-suggestions/issues/831)
+discusses BigInteger as the escalation type for
+signed/unsigned `int64` addition / multiplication
+overflow. Not implemented; not specifically about
+UoM-on-BigInteger; adjacent in the broader
+"primitive-numeric-type-set is too narrow" direction.
+
+**Implication for B-0196 acceptance criterion (a)**:
+the substrate-survey output should treat
+`BigInteger<weight>` as requiring either (1) a custom
+phantom-type wrapper struct (FSharp.UMX-style),
+(2) abandoning UoM on BigInteger paths and pairing
+the BigInteger value with a separate
+`<weight>`-tagged unit-1 value for type-checking, or
+(3) waiting on the fslang-suggestions/831 outcome.
+Per the four-property hodl: option (1) is most
+likely DST-safe + lock-free + scale-free + DBSP-
+native; option (2) is workable but adds friction at
+the call site; option (3) is uncertain timing.
+
 ## Why P2 (not P1, not P3)
 
 - **Higher than P3** because there's a real trigger
