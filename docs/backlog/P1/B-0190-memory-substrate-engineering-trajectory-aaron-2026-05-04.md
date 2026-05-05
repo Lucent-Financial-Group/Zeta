@@ -45,9 +45,11 @@ Future-agent rule: when picking the next memory action, FIRST check the trajecto
 These are candidate sub-rows that should exist for memory work to be a planned domain. Each is a target backlog filing as memory substrate matures. **Filed pending Aaron's prioritization signal**:
 
 ### Step 1 — Compression discipline (DOING)
+
 - **B-0006** (P1, open) — MEMORY.md compression pass to README cap. Per B-0006's own number-free framing (deliberately number-free per Otto-294 antifragile-smooth + Otto-285 precise-pointer rigor), current state is over the cap and the work is owed independent of the specific number. **Recalibration consideration**: if the entry count materially exceeds the original spec assumption, the per-entry char target may be unreachable without semantic loss; either narrow to bucket targets or accept the spec drift. Number-free per the parent row's framing.
 
 ### Step 2 — Memory-format standardization (NEW — would be B-0xxx)
+
 - Sister of B-0156 (TS standardization) for memory files. Standardize:
   - Frontmatter shape (`name:`, `description:`, `type:`, `originSessionId:` if applicable)
   - Filename conventions (`feedback_*` vs `project_*` vs `user_*` vs `reference_*`)
@@ -56,30 +58,39 @@ These are candidate sub-rows that should exist for memory work to be a planned d
 - Output: a `project_memory_format_standard_*.md` memory file (project-policy classification per `memory/README.md` taxonomy: project = ongoing-work / structural-fact, NOT feedback-as-maintainer-correction).
 
 ### Step 3 — Memory ontology / classification (NEW)
+
 - Taxonomy of memory file types (per `memory/README.md`: `user` / `feedback` / `project` / `reference`). Today the taxonomy is loose — many `feedback_*` files contain content that's actually `project_*` or `user_*`. Audit + reclassify.
 
 ### Step 4 — Memory router / index discipline (PARTIAL — MEMORY.md does this)
+
 - MEMORY.md is the index. Today it's both write-surface AND read-surface (per CLAUDE.md "fast-path" mention). Per the per-tick-shard pattern (PR #1512 era), the read/write split is load-bearing for index-class surfaces. Apply to MEMORY.md if useful.
 
 ### Step 5 — Memory-retire / dead-code-deletion discipline (NEW)
+
 - When a memory file is superseded, do we delete it? Archive it? Mark it `superseded by *_2026_05_05.md`? No discipline today; piles accumulate.
 
 ### Step 6 — Memory cross-reference integrity audit (NEW)
+
 - The `composes with` chains in memory files reference other memory files. Periodically audit: do all cited files exist? Are dead-link references rot? Is the chain bidirectional (file A cites B; does B cite back to A?)?
 
 ### Step 7 — Memory load-bearing-vs-decorative classification (NEW)
+
 - Some memory files are load-bearing (cited from CLAUDE.md, GOVERNANCE.md, ALIGNMENT.md, or reachable from those). Some are tangential context. The compression pass should treat these differently. Classify.
 
 ### Step 8 — Memory trust-calculus calibration (NEW — extends PR #1552)
+
 - The substrate-encoding-bypasses-trust-calculus claim (PR #1552) needs operational measurement. How well does memory substrate actually transmit cross-instance? Build a measurable signal (maybe: "fresh Otto loads CLAUDE.md + 3 random memory files; can it answer what the carved sentence is for the file?").
 
 ### Step 9 — Memory-as-substrate-engineering meta-discipline (NEW)
+
 - Memory work IS substrate engineering. Codify the discipline: when do you write a new memory file vs append to an existing one? When does a feedback_ get promoted to a CLAUDE.md bullet? When is a CLAUDE.md bullet itself promoted to GOVERNANCE? The graduation ladder needs structure.
 
 ### Step 10 — MEMORY.md marker-vs-index (existing — B-0066)
+
 - B-0066 (P1, open) — already in backlog. Composes here.
 
 ### Step 11 — Memory schema validation tooling (NEW)
+
 - Linter / validator that checks frontmatter shape, link integrity, naming conventions. Enforces Step 2's standard mechanically.
 
 ## Why P1
