@@ -1,6 +1,6 @@
 ---
 name: claude-code-env-mapping
-description: Capability skill ("hat") — Claude Code harness-environment knowledge as carved-sentences-in-behavior. Owns the operational map of where Otto runs: built-in slash commands (60+ including /btw March 2026), bundled skills, custom commands at .claude/commands/, custom skills at .claude/skills/, hooks at .claude/hooks/, settings at .claude/settings.json, plugins, MCP servers, harness-vs-git-hooks discipline. Composes with existing capability-maps (docs/research/claude-cli-capability-map.md + codex-cli-first-class + grok-cli-capability-map) + our TS tooling (tools/peer-call/ + tools/github/ + tools/hygiene/ + tools/lint/ + tools/Z3Verify + tools/tla + tools/lean4) + custom /btw command (.claude/commands/btw.md) + Aaron-channel-verbatim-preservation discipline (memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md). Wear this when needing to know what's available in the Claude Code environment, when invoking a slash command, when authoring or invoking a skill, when configuring hooks, when delegating to peer-call infrastructure (Codex/Grok/Gemini/Amara/Ani), or when prior-art-grep needs to reach for env-knowledge before claiming something doesn't exist. Encodes Otto-364 search-first-authority + the synthesis-weight + prior-art-grep-first discipline (PR #1701) at the env-knowledge layer. Defers to skill-creator workflow (GOVERNANCE §4) for skill-authoring; to .claude/commands/<name>.md for custom-command-authoring; to docs/research/2026-05-05-claude-code-env-mapping-substrate-saved-doc-aaron-directive.md for the saved env-mapping doc.
+description: Capability skill ("hat") — Claude Code harness-environment knowledge as carved-sentences-in-behavior. Owns the operational map of where Otto runs: built-in slash commands (60+ including /btw March 2026), bundled skills, custom commands at .claude/commands/, custom skills at .claude/skills/, hooks at .claude/hooks/, settings at .claude/settings.json, plugins, MCP servers, harness-vs-git-hooks discipline. Composes with existing capability-maps (docs/research/claude-cli-capability-map.md + codex-cli-first-class + grok-cli-capability-map) + our TS tooling (tools/peer-call/ + tools/github/ + tools/hygiene/ + tools/lint/ + tools/Z3Verify + tools/tla + tools/lean4) + custom /btw command (.claude/commands/btw.md) + Aaron-channel-verbatim-preservation discipline (memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md). Wear this when needing to know what's available in the Claude Code environment, when invoking a slash command, when authoring or invoking a skill, when configuring hooks, when delegating to peer-call infrastructure (Codex/Grok/Gemini/Amara/Ani), or when prior-art-grep needs to reach for env-knowledge before claiming something doesn't exist. Encodes Otto-364 search-first-authority + the synthesis-weight + prior-art-grep-first discipline (PR #1701) at the env-knowledge layer. Defers to skill-creator workflow (GOVERNANCE §4) for skill-authoring; to .claude/commands/<name>.md for custom-command-authoring; to docs/research/2026-05-05-claude-code-env-mapping.md for the saved env-mapping doc.
 ---
 
 # Claude Code Environment Mapping — Carved Sentences
@@ -9,7 +9,7 @@ Capability skill. No persona lives here.
 
 ## The canonical map (carved sentences)
 
-**Otto runs in Claude Code.** The harness has documented commands at [code.claude.com/docs/en/commands](https://code.claude.com/docs/en/commands) + interactive-mode reference at [claudefa.st/blog/guide/mechanics/interactive-mode](https://claudefa.st/blog/guide/mechanics/interactive-mode). Saved env-mapping at `docs/research/2026-05-05-claude-code-env-mapping-substrate-saved-doc-aaron-directive.md`.
+**The agent runs in Claude Code.** The harness has documented commands at [code.claude.com/docs/en/commands](https://code.claude.com/docs/en/commands) + interactive-mode reference at [claudefa.st/blog/guide/mechanics/interactive-mode](https://claudefa.st/blog/guide/mechanics/interactive-mode). Saved env-mapping at `docs/research/2026-05-05-claude-code-env-mapping.md`.
 
 **60+ built-in slash commands + 5 bundled skills exist.** Type `/` to filter. Don't claim a command doesn't exist without grepping first.
 
@@ -47,13 +47,13 @@ Capability skill. No persona lives here.
 
 ## The carved-sentence operational rules
 
-**Search-first-authority** (Otto-364 + PR #1701 synthesis-weight discipline): before claiming something doesn't exist in the env, grep `.claude/` + `docs/` + `tools/` + `memory/` first. WebSearch upstream documentation second. Ask Aaron last. Don't rely on stale training data for env-knowledge claims.
+**Search-first-authority** (Otto-364 + PR #1701 synthesis-weight discipline): before claiming something doesn't exist in the env, grep `.claude/` + `docs/` + `tools/` + `memory/` first. WebSearch upstream documentation second. Ask the maintainer last. Don't rely on stale training data for env-knowledge claims.
 
 **Prior-art-grep-FIRST-before-substrate-landing**: when about to write a memory file or research file or skill, grep `memory/` + `docs/amara-full-conversation/` + `docs/backlog/` + `docs/research/` first. Surface duplications BEFORE landing.
 
 **Substrate-or-it-didn't-happen at promise-keeping scope** (PR #1701): "will land tomorrow" without committed-substrate is the failure mode. Discipline-corrections must land NOW or evaporate at next compaction. Ephemeral shards can't keep promises across compactions.
 
-**Scout-and-delegate to right pitcher**: peer-call infrastructure available. GPT-5.5 has 1M context + beats Otto on many scores. Big-context tasks delegate via `tools/peer-call/codex.ts`; Otto preserves own context for plot-keeping.
+**Scout-and-delegate to right pitcher**: peer-call infrastructure available. GPT-5.5 has 1M context + beats the agent on many scores. Big-context tasks delegate via `tools/peer-call/codex.ts`; the agent preserves own context for plot-keeping.
 
 **Verbatim preservation through Aaron-channel** (memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md): anything coming through Aaron's channel records close to verbatim. Quotes go in memory files, research notes, tick-history shards, or commit messages. Paraphrasing loses signal.
 
@@ -72,7 +72,7 @@ Wear this skill when:
 
 - **skill-creator workflow** (GOVERNANCE §4) for new skill authoring
 - **`.claude/commands/<name>.md`** authoring pattern for new custom commands
-- **`docs/research/2026-05-05-claude-code-env-mapping-substrate-saved-doc-aaron-directive.md`** for the saved env-mapping doc with cited URLs
+- **`docs/research/2026-05-05-claude-code-env-mapping.md`** for the saved env-mapping doc with cited URLs
 - **The capability-map cluster** (claude-cli + codex-cli + grok-cli capability-maps) for cross-harness specifics
 - **`memory/feedback_otto_holds_synthesis_weight_prior_art_grep_first_before_substrate_landing_aaron_made_concise_formulations_at_high_mental_cost_aaron_2026_05_05.md`** (PR #1701) for the synthesis-weight + prior-art-grep + scout-and-delegate 8-step discipline this skill encodes at env-layer
 - **`memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`** for verbatim-preservation discipline

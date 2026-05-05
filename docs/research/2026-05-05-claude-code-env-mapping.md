@@ -1,6 +1,6 @@
-# Claude Code environment-mapping substrate (saved doc per Aaron 2026-05-05 directive)
+# Claude Code environment-mapping substrate (saved doc per Aaron 2026-05-05 framing)
 
-**Scope:** Aaron 2026-05-05 directive: *"Claude Code Docs commands + Claude Code Interactive Mode Reference 2026) — senviroment mapping save this doc and we need a skill carved sentaces in behavire that referenes it and our ts files"*. This is the saved-doc substrate the `.claude/skills/claude-code-env-mapping/SKILL.md` references. URL-preservation + key-content-summary per IP-safety; full doc content stays at canonical Anthropic URLs (cited).
+**Scope:** Aaron 2026-05-05 framing: *"Claude Code Docs commands + Claude Code Interactive Mode Reference 2026) — senviroment mapping save this doc and we need a skill carved sentaces in behavire that referenes it and our ts files"*. This is the saved-doc substrate the `.claude/skills/claude-code-env-mapping/SKILL.md` references. URL-preservation + key-content-summary per IP-safety; full doc content stays at canonical Anthropic URLs (cited).
 
 **Attribution:** Aaron (first-party human maintainer). Otto landed the doc + skill creation per PR #1701 synthesis-weight + prior-art-grep-first + scout-and-delegate discipline applied at env-knowledge layer.
 
