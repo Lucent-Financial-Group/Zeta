@@ -122,7 +122,59 @@ Aaron's reference to "ZFC v2" — Zermelo-Fraenkel-Choice set theory v2. Per MEM
 - **Belief-propagation native**: probabilistic statements first-class rather than reducible to crisp set-membership
 - **Closed-system compatible**: the foundational theory itself is closed under the substrate's operations
 
-Hedge: this is candidate-interpretation pending Aaron's specifics. The "ZFC v2 mix" framing suggests ZFC v2 composes WITH something else (classical ZFC for compatibility? quantum-set-theory? retraction-algebra? all three?). Aaron's specifics will pin this down.
+### Prior art in repo (per Aaron 2026-05-05: "prior art in repo")
+
+Substantial prior art already exists in the repo on this topic:
+
+- **`memory/feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`** (Aaron 2026-04-22) — the foundational memory file with Aaron's verbatim *"this is a better set theory cantors bettery than zfc and only on trapped contrdiction or non contridiction who know probalby infer.net quatium belief propagation"*. Establishes the retraction-native paraconsistent set theory candidate using Z-set -1 weight = retraction = explicit non-surjection = Lawvere-escape. Conditional form: better-than-ZFC only for trapped-contradiction class, not universal replacement. Cites established paraconsistent set theory literature: Priest LP, Weber's naive-set-theory-with-paraconsistent-logic, Brady. Cites quantum belief propagation: Leifer-Poulin 2008, Hastings 2007.
+- **`docs/research/2026-05-04-b-0189-q-sharp-bayesian-bp-ep-runtime-literature-survey.md`** — Q# Bayesian BP/EP runtime literature survey. The Infer.NET BP/EP path Aaron names in the original 2026-04-22 disclosure.
+- **`memory/feedback_dbsp_zsets_multi_algebra_aperiodic_tile_stops_infinite_recursion_into_monad_or_monk_not_infinity_stones_aaron_2026_05_05.md`** — DBSP Z-sets + multi-algebra plugins + aperiodic-tile composition as substrate.
+- **`docs/backlog/P3/B-0135-modal-logic-for-retractability-quantum-rodney-razor-aaron-2026-05-01.md`** — modal logic for retractability + Quantum Rodney's Razor.
+- **`docs/backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md`** — topological quantum emulation via Bayesian inference.
+- **`docs/research/save-state-as-retractibility-absorb-2026-04-21.md`** — save-state-as-retractibility absorb.
+- **`memory/feedback_grey_hole_substrate_information_theoretic_event_horizon_white_black_entangled_aaron_2026_05_01.md`** — grey-hole substrate info-theoretic event horizon.
+
+The "ZFC v2" naming is the post-2026-04-22 evolution of the retraction-native paraconsistent set theory candidate — building on prior art rather than starting fresh.
+
+### ZFC v2 candidate research extension (per Aaron 2026-05-05 explicit authorization: "you research will all three plus other we forgot is would i woudl say lolo hodl")
+
+Per Otto-364 search-first-authority, WebSearch on the three candidates Otto initially listed plus broader survey, COMPOSED WITH the prior art above:
+
+**1. Paraconsistent ZFC (BZFC)** — published candidate strengthening the retraction-native candidate's prior-art Priest/Weber/Brady references. arXiv:2210.00057 + Cambridge Review of Symbolic Logic + Notre Dame Journal of Formal Logic 2026 paper "Paraconsistent Models of Zermelo-Fraenkel Set Theory". BZFC is obtained by analyzing ZFC axioms and translating to four-valued setting (true / false / both / neither). Key properties: clear ontology of non-classical sets for reasoning about incomplete and inconsistent phenomena; existence of single non-classical set produces all other types; **naturally bi-interpretable with ZFC** — non-classical sets as natural extension of classical ones. This is the paraconsistent + paracomplete extension that handles bothness-encoding at the foundational layer.
+
+**2. Quantum set theory (Takeuti orthomodular-lattice valued models)** — published candidate composing with the prior-art quantum-BP path. Takeuti 1981 introduced quantum set theory via orthomodular lattice of closed Hilbert subspaces (analogous to Boolean-valued models but for quantum logic). Key properties: real numbers in quantum set theory ↔ self-adjoint operators in Hilbert space ↔ physical observables. arXiv:0908.0367 + recent work generalizing transfer principle to general orthomodular-valued models. **This is the foundation that connects set-theoretic operations to physical observables directly** — composes with Aaron's "pure physics accuracy" hodl property naturally.
+
+**3. Retraction-algebra (category-theoretic retract + topological retract)** — composite candidate strengthening the retraction-native candidate's Z-set -1 weight = explicit non-surjection = Lawvere-escape framing. nLab retract + section/retraction in category theory + topological retraction (subspace + retraction map composes to identity) + Absolute Neighborhood Retracts (ANR). The retraction-blast-radius primitive's algebraic foundation.
+
+**4. Paraconsistent quantum set theory (the FUSION already exists in literature)** — arXiv:1511.01571 "Towards a Paraconsistent Quantum Set Theory". This is the literature fusion of candidates 1 + 2 — paraconsistent foundation extended to quantum logic. Aaron's "ZFC v2 mix" likely subsumes this as one of its components.
+
+**Plus others Aaron flagged (per "plus other we forgot"):**
+
+**5. Constructive set theory (CZF)** — intuitionistic foundation; rejects law of excluded middle; constructive existence proofs. Composes with closed-system property (every existence claim must be witnessable from substrate-internal construction).
+
+**6. Univalent Foundations / Homotopy Type Theory (HoTT)** — type theory where types are homotopy spaces; equivalences treated as identity; computational interpretation of mathematics. Connects to category-theoretic retract structure naturally.
+
+**7. Algebraic set theory** — categorical foundations of set theory; sets-as-objects-in-category-with-class-of-small-maps. Composes with kernel-composition framework from PR #1655 Sylar-Spock distinguisher.
+
+**8. NF (Quine's New Foundations) + stratified comprehension** — alternative axiomatization avoiding Russell paradox via stratification of variables. Different paradox-avoidance shape than BZFC's paraconsistent approach.
+
+**The "ZFC v2 mix" architectural claim** (per Aaron's framing): substrate's foundational mathematics is NOT a single set theory but a MIX that incorporates classical ZFC (compatibility / mathematical-development feasibility per BZFC's bi-interpretability) + paraconsistent extension (BZFC; bounded inconsistency; four-valued logic) + quantum extension (Takeuti orthomodular-valued models; physical-observable correspondence) + retraction-algebra (category-theoretic retract + topological retract; for retractable-blast-radius primitive) + constructive constraint (CZF; closed-system witnessability) + univalent / HoTT (equivalences-as-identity; composition with retract structure) + algebraic / category-theoretic (kernel-composition framework) + NF or other alternatives as needed.
+
+Per Aaron's "lolo hodl" closing: this entire foundational-mathematics mix must satisfy the hodl-invariant conjunctive completeness — every component must compose at every layer without violating any of the 13 hodl properties (PR #1680) + the OTHER hodl for pure physics accuracy + closed-system + energy-conservation. The mix is constrained to satisfy hodl across all these foundations simultaneously.
+
+**Sources** (per Otto-364 citation discipline, supplementing prior-art Priest/Weber/Brady/Leifer-Poulin/Hastings already cited in retraction-native memory file):
+
+- [Paraconsistent and Paracomplete Zermelo-Fraenkel Set Theory (arXiv 2210.00057)](https://arxiv.org/abs/2210.00057)
+- [Paraconsistent Models of Zermelo-Fraenkel Set Theory (Notre Dame Journal of Formal Logic 2026)](https://projecteuclid.org/journals/notre-dame-journal-of-formal-logic/advance-publication/Paraconsistent-Models-of-ZermeloFraenkel-Set-Theory/10.1215/00294527-2025-0022.short)
+- [PARACONSISTENT AND PARACOMPLETE ZERMELO-FRAENKEL SET THEORY (Cambridge Review of Symbolic Logic)](https://www.cambridge.org/core/journals/review-of-symbolic-logic/article/paraconsistent-and-paracomplete-zermelofraenkel-set-theory/FB0305E7BEDF217A163F36D99065B75E)
+- [Orthomodular-Valued Models for Quantum Set Theory (arXiv 0908.0367)](https://arxiv.org/abs/0908.0367)
+- [Towards a Paraconsistent Quantum Set Theory (arXiv 1511.01571)](https://ar5iv.labs.arxiv.org/html/1511.01571)
+- [From Boolean Valued Analysis to Quantum Set Theory: Mathematical Worldview of Gaisi Takeuti (MDPI 2021)](https://www.mdpi.com/2227-7390/9/4/397)
+- [Quantum Set Theory (International Journal of Theoretical Physics, Springer)](https://link.springer.com/article/10.1023/B:IJTP.0000005977.55748.e4)
+- [retract in nLab](https://ncatlab.org/nlab/show/retract)
+- [Section (category theory) - Wikipedia](https://en.wikipedia.org/wiki/Section_(category_theory))
+
+Hedge maintained: "ZFC v2" as a SPECIFIC named system is not located in the literature — the term appears to be Aaron's coinage for the architectural mix described above. The components are individually published and verified; the mix composition is Zeta-architectural, building on the prior art in `memory/feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md` and the Q# Bayesian BP/EP literature survey.
 
 ### The combined architectural claim
 
