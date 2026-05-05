@@ -1,4 +1,4 @@
-module Zeta.Core.Tests.Algebra.UnitsTests
+module Zeta.Tests.Algebra.UnitsTests
 
 open Xunit
 open Zeta.Core
@@ -154,4 +154,35 @@ let ``msToNs throws OverflowException on values that would overflow int64`` () =
 let ``msToNs throws OverflowException on negative values that would overflow`` () =
     let overflowing = -9_223_372_036_855L<ms>
     Assert.Throws<System.OverflowException>(fun () -> msToNs overflowing |> ignore)
+    |> ignore
+
+// ============================================================================
+// applyDelta overflow guard: Int64.MaxValue + positive delta throws.
+// ============================================================================
+
+[<Fact>]
+let ``applyDelta throws OverflowException on int64 overflow`` () =
+    let state = LanguagePrimitives.Int64WithMeasure<weight> System.Int64.MaxValue
+    let d = 1L<delta>
+    Assert.Throws<System.OverflowException>(fun () -> applyDelta state d |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``applyDelta throws OverflowException on int64 underflow`` () =
+    let state = LanguagePrimitives.Int64WithMeasure<weight> System.Int64.MinValue
+    let d = -1L<delta>
+    Assert.Throws<System.OverflowException>(fun () -> applyDelta state d |> ignore)
+    |> ignore
+
+// ============================================================================
+// logicalToWall positive-rate guard.
+// ============================================================================
+
+[<Fact>]
+let ``logicalToWall rejects zero/negative rate`` () =
+    Assert.Throws<System.ArgumentException>(fun () ->
+        logicalToWall 0.0<ms/tick> 100L<tick> |> ignore)
+    |> ignore
+    Assert.Throws<System.ArgumentException>(fun () ->
+        logicalToWall -1.0<ms/tick> 100L<tick> |> ignore)
     |> ignore

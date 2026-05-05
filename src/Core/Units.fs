@@ -123,7 +123,10 @@ module Units =
     /// Convert ticks to wall-clock milliseconds given an explicit tick rate.
     /// The `rate: float<ms/tick>` parameter forces the caller to declare
     /// the conversion factor at the call site (which is the point).
+    /// Validates `rate > 0` for symmetry with the wallToLogical* family.
     let logicalToWall (rate: float<ms/tick>) (t: int64<tick>) : float<ms> =
+        if float rate <= 0.0 then
+            invalidArg "rate" $"rate must be positive (got %f{float rate})"
         LanguagePrimitives.FloatWithMeasure<tick> (float t) * rate
 
     /// Convert wall-clock milliseconds to ticks given an explicit tick rate.
@@ -165,8 +168,11 @@ module Units =
     /// Apply a signed delta to a weight, producing a new weight.
     /// Both arguments are signed; result is signed. The function exists
     /// to make the semantic (state += delta) explicit at call sites.
+    /// Uses `Checked.(+)` so overflow throws `OverflowException` rather
+    /// than silently wrapping (e.g., `Int64.MaxValue + 1L<delta>`).
     let applyDelta (state: int64<weight>) (d: int64<delta>) : int64<weight> =
-        state + LanguagePrimitives.Int64WithMeasure<weight> (int64 d)
+        let raw = Checked.(+) (int64 state) (int64 d)
+        LanguagePrimitives.Int64WithMeasure<weight> raw
 
     /// Compute expected count over a window given a per-tick arrival rate.
     /// The unit algebra cancels naturally: `per_tick = /tick`, so
