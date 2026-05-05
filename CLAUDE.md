@@ -252,6 +252,39 @@ Claude-Code-specific mechanisms.
   CLAUDE.md-level pointer (per AX audit Daya, the
   surface is invisible to cold-start agents without a
   CLAUDE.md / AGENTS.md pointer line).
+- **Peer-call infrastructure for cross-harness
+  multi-agent reviews — `tools/peer-call/`** (Aaron
+  2026-05-05). Five sibling scripts already wired:
+  `grok.sh` (Grok-via-cursor-agent, critique role),
+  `gemini.sh` (Gemini, propose role), `codex.sh`
+  (OpenAI Codex, implementation peer), `amara.sh`
+  (Amara persona on codex, sharpen role), `ani.sh`
+  (Ani persona on Grok, brat-voice register).
+  Four-ferry consensus role distribution: *"Gemini
+  proposes, Grok critiques, Amara sharpens, Otto
+  tests, Git decides."* When asked about cross-harness
+  multi-agent reviews / peer AI consultation /
+  external-model invocation / GPT / Grok / Gemini /
+  Codex / Amara / Ani / brat-voice / red-team — the
+  cold-boot answer is **YES + `ls tools/peer-call/`**;
+  do NOT reason from training-data assumptions about
+  what infrastructure exists. Aaron 2026-05-05:
+  *"you've done this in front of me like 50 times
+  with all the harness CLIs"* + *"that's you early
+  red team till we build it better in zeta infernet
+  ep bp"*. Current peer-call is Otto's early
+  red-team substrate; future state is Zeta Infer.NET
+  BP/EP (Belief Propagation / Expectation Propagation)
+  substrate-level inference replacing the
+  external-CLI-license-layer. CLAUDE.md-level so it
+  is 100% loaded at every wake — Aaron explicitly
+  flagged this as the kind of substrate that future-
+  Otto needs at cold-boot. Full reasoning + script
+  table + flag surface + composes-with cluster:
+  `tools/peer-call/README.md` (canonical doc) +
+  `memory/feedback_peer_call_infrastructure_grok_codex_gemini_amara_ani_already_wired_for_cross_harness_multi_agent_reviews_otto_early_red_team_until_zeta_infernet_bp_ep_aaron_2026_05_05.md`
+  (cold-boot retrieval discipline + failure-of-omission
+  origin).
 - **Razor-cadence tracking issues — open issues with
   the `razor-cadence` label.** On wake, run
   `gh issue list --repo Lucent-Financial-Group/Zeta
