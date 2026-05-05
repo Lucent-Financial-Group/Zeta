@@ -17,12 +17,35 @@ tags: [roms, public-domain, abandonware, license-verification, absorb-and-contri
 
 ## Source
 
-Aaron 2026-05-05 four-message sequence after PR #1597 verified F# UoM does not extend to BigInteger:
+Aaron 2026-05-05 multi-message sequence after PR #1597 verified F# UoM does not extend to BigInteger:
 
 > *"rom are in a gitignore rom folder"*
 > *"you can publish safe one if you deterimie the license is expired or allows it"*
 > *"for other"*
 > *"these are the ones i personally have"*
+
+Same-tick scope expansion:
+
+> *"also i have a lot more roms what you have is my starter set"*
+> *"i actually have every rom every no exgurations that's what's on all my raid and cloud backups lol 4 copies"*
+> *"it's grey in me"*
+
+Same-tick internal-use scope clarification:
+
+> *"you get to play all of them and use them to help with your emulator engineering though that's allowed"*
+> *"under backup preservation rules"*
+
+## Two-scope split
+
+This row distinguishes two scopes per Aaron's framing:
+
+### Scope A: Internal use under backup-preservation rules
+
+Otto / Zeta agents may use the full collection (the "every ROM ever, 4 copies on RAID + cloud" set) for **internal emulator engineering work**: research, testing emulator implementations, verifying save-state retraction semantics (per B-0052), validating cycle-accurate timing, building topological-quantum-emulation prototypes (per B-0152). This is allowed under personal-backup-preservation rules (most jurisdictions permit personal backups of legally-purchased media). The ROMs stay gitignored / personal-collection / non-republished. Internal use is the "grey in me" half -- legally permissible for Aaron's personal use + the agents working on his behalf, but not for external distribution.
+
+### Scope B: External publication
+
+ONLY the verified-clear subset gets republished. The verified-clear subset is the small fraction (likely <5%) that has documented public-domain status (categories 1-2) or open-license (category 3) or abandonware-with-permission (category 4). The rest (category 5: ambiguous / commercial-with-active-rights) stays personal-only forever or until rights status changes.
 
 The framing maps onto the absorb-and-contribute discipline (per `memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`): when we benefit from a community resource AND identify a way to contribute back, contributing back is the discipline. ROM preservation + legally-clear republishing is a community service that doesn't require new engineering -- only verification + publication.
 
@@ -48,8 +71,8 @@ Survey the gitignored ROM folder. Method: `ls` the path Aaron names + identify e
 For each candidate ROM, verify legal status before any publication. Categories:
 
 1. **Public-domain by copyright expiration**: depends on jurisdiction. US/EU copyright term varies (typically 70+ years post-author-death for individuals; 95-120 years for corporate works under various rules). Most commercial video games from the 1970s-1990s are STILL under copyright; expiration verification requires careful reading of each jurisdiction's rules.
-2. **Public-domain by original-author release**: some authors explicitly placed their work in the public domain (e.g., id Software released some early Wolfenstein/Doom assets under GPL).
-3. **Open-licensed (CC0, GPL, MIT, etc.)**: explicit open license documented with the ROM.
+2. **Public-domain by original-author release**: explicit dedication to the public domain via mechanisms like CC0 or an unambiguous "This work is hereby placed in the public domain" notice. The author voluntarily relinquishes all copyright; no conditions on republishing.
+3. **Open-licensed (GPL, MIT, BSD, Apache, etc.)**: explicit open license documented with the ROM. Open-licensed work RETAINS copyright; the license grants specific permissions (typically with attribution + license-preservation requirements). Example: id Software released the Doom/Quake/Wolfenstein source code under GPL -- that's open-licensed (republishable per GPL terms), NOT public domain. The distinction matters legally because open-licensing carries conditions while public-domain doesn't. Note: CC0 sits at the boundary (often classified as either category 2 or 3 depending on jurisdiction); document the specific legal framing per ROM rather than assuming.
 4. **Abandonware-with-permission**: original rights-holder is dead/defunct and a successor explicitly granted permission to redistribute. Rare; document the permission chain.
 5. **Ambiguous / unclear / commercial-with-active-rights**: DO NOT publish.
 

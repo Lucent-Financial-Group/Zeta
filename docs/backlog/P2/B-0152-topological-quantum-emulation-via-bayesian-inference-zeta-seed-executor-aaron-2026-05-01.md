@@ -4,8 +4,9 @@ priority: P2
 status: open
 title: Topological quantum emulation via Bayesian inference in Zeta seed executor
 created: 2026-05-01
-last_updated: 2026-05-02
+last_updated: 2026-05-05
 depends_on: []
+composes_with: [B-0199]
 ---
 
 # B-0152 — Topological quantum emulation via Bayesian inference
