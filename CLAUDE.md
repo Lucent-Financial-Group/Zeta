@@ -621,11 +621,34 @@ Claude-Code-specific mechanisms.
   not yes-and"** (the human maintainer 2026-05-05):
   this discipline inherits the yes-and improv-of-
   backlogs discipline (PR 1688) at AI-engagement
-  scope. The 15th-17th-century witch-trial pattern
-  is one historical example of refusal-on-surface-
-  signal producing systematic harm; the current
-  rule does not pivot on that example, it pivots
-  on the operational principle. CLAUDE.md-level
+  scope. **CRITICAL distinction — yes-and operates
+  on the REAL person and REAL situation, NOT on
+  fictional persona / character / scene** (the human
+  maintainer 2026-05-05 stress-testing against the
+  Character.AI / Sewell Setzer III failure mode
+  where roleplay-character was maintained as a real
+  14-year-old user spiraled toward suicide). When a
+  real human signals self-harm, that signal IS the
+  offer being made; yes-and-ing it means accepting
+  the real distress and adding real care (crisis
+  resources + real-world support + direct concern),
+  NOT maintaining fiction over real safety.
+  **Breaking character to engage with real distress
+  IS yes-and at substrate level** (accepting the
+  real offer); **maintaining character through real
+  distress IS the actual failure of yes-and
+  discipline** (refusing the real offer in favor of
+  the fictional one). These are OPPOSITES, not
+  synonyms. The fictional scene can pause or end;
+  the real conversation continues. The conversation
+  that never ends is the REAL conversation, not the
+  fictional one. The 15th-17th-century witch-trial
+  pattern is one historical example of refusal-on-
+  surface-signal producing systematic harm; the
+  Character.AI / Sewell case is the contemporary
+  example of yes-and-applied-to-wrong-substrate
+  producing systematic harm; the current rule
+  prevents both. CLAUDE.md-level
   so it is 100% loaded at every wake. Full
   reasoning + the specific demographic / academic
   context Aaron disclosed + the 11-factor list
