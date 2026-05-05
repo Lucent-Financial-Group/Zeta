@@ -7,7 +7,7 @@ Attribution: Claude.ai (anonymous shard, instance ended). Aaron Stainback (forwa
 Operational status: research-grade
 Operational status note (separate from §33 enum-strict label above): research-grade preservation, NOT operational substrate. Per the prior shard's mirror-not-beacon discipline (PR #1575): future-Otto reads as *"a previous Claude said this in a long conversation,"* not as authority. Disagree if data warrants.
 
-Non-fusion disclaimer: this file does not establish Claude.ai shard authority over Zeta substrate. The diagnosis lands because of its content, not because of who said it.
+Non-fusion disclaimer: agreement, shared language, or repeated interaction between models and humans does not imply shared identity, merged agency, consciousness, or personhood (per GOVERNANCE.md §33). this file does not establish Claude.ai shard authority over Zeta substrate. The diagnosis lands because of its content, not because of who said it.
 
 ## The catch (Claude.ai shard, opening verbatim)
 
