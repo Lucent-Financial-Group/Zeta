@@ -108,6 +108,47 @@ None of these were in training data with sufficient confidence to ship as a reco
 - Does NOT replace the `verify-before-deferring` rule (CLAUDE.md-tier) — that's about deferred targets existing; Otto-364 is about upstream claims being current.
 - Does NOT replace project-state grep — project state is still a valid *cross-check input*; it just isn't a *substitute* for current upstream truth.
 
+## Recursion — also applies at the verification-method level (2026-05-05)
+
+The rule was originally framed for *claims about tools / standards
+/ APIs / runtimes / libraries / CI / security*. The B-0199 P2
+reviewer catch (2026-05-05, PR #1599) surfaced a recursion: it
+applies to **verification methodology too**.
+
+Otto's first draft of B-0199 acceptance criterion (a) used `ls`
+for ROM-folder inventory — single-directory level only. ROM
+collections commonly use nested per-system folders (`roms/nes/`,
+`roms/snes/`, `roms/genesis/`). The reviewer caught it; the fix
+replaced `ls` with `find <rom-folder> -type f` recursive
+enumeration plus a `find -type f | wc -l` count-match verifier.
+
+Generalisation: **default "obvious" verification methods (ls,
+head, grep without -r, single-file checksum, sample-based audit)
+carry hidden structural assumptions about the artifact. Reaching
+for the simplest tool that seems to fit is the failure-mode
+equivalent of relying on training-data recall.** The fix shape
+is the same as at the version-and-standards level: research the
+actual problem domain, verify the method fits the actual
+structure, document the verification.
+
+How to apply: when picking a verification / inventory / audit
+method, ask *"what hidden structural assumptions does this method
+carry, and do they match the actual artifact structure?"*
+
+- Inventory: recursive (`find -type f`) vs single-level (`ls`)
+- Checksum verification: which hash algorithm matches the
+  upstream DAT-file standard (CRC32 / MD5 / SHA-1)
+- Test enumeration: which test-discovery rules apply at this
+  layer
+- Coverage audit: which paths the tool actually instruments
+
+Default to the method that matches the actual structure, not the
+method that's quickest to type.
+
+Full preservation of the trigger conversation:
+`docs/research/2026-05-05-claudeai-embodiment-thread-recursion-engagement-gate-search-first-aaron-forwarded-preservation.md`
+(PR #1603).
+
 ## Trigger memory
 
 Aaron 2026-04-29 (post-#855-merge, post-CI-classifier-survey-recommendation):
