@@ -289,6 +289,22 @@ weeks. The most-related existing files:
   prevent the sleeping-bear hypothesis from drifting into a
   hold-all-truths unfalsifiable shape.
 
+## Paper-search status (2026-05-05 same-day cumulative eliminations)
+
+Across 2026-05-05's substrate-flow, Aaron progressively narrowed the half-remembered "universal language not English that trains to real-time actions" YouTube-paper search via 6+ candidate-elimination passes. Cumulative elimination count at paper-id level (each candidate STAYS as parallel substrate-relevant material per no-kill-paths; only paper-id status is eliminated):
+
+| Candidate | Status at paper-id level | Substrate role retained |
+|---|---|---|
+| **CodeAct** (Wang et al., ICML 2024) | ELIMINATED | Bridge engineering candidate (B-0200) |
+| **Coconut** (Meta, arXiv:2412.06769) | ELIMINATED at paper-id level (Aaron *"i'm not 100% sure that's the thing i saw"*) | THIS ROW's primary candidate for sleeping-bear empirical test (hypothesis-level finding stands) |
+| **Symbolica AI Categorical Deep Learning** (arXiv:2402.15332) | ELIMINATED (Aaron *"i love this but no it seemed kind of basic and not well pricpled but correct like relesed in the last month"*) | Categorical-DL parallel substrate; ZFCv2 + Milewski + Symbolica fellow-traveler lineage |
+| **Tinygrad UOp IR** (George Hotz / tiny corp) | ELIMINATED (Aaron *"it's still not tinygrad, i did see that but that's not my univeral language"*) | Kernel-layer engineering candidate (B-0202) |
+| **Speech ReaLLM** | ELIMINATED (Aaron's "more obscure" filter ruled out) | Real-time streaming research candidate |
+| **GibberLink / ggwave** | NOT ELIMINATED (still parallel candidate) | AI-to-AI audio protocol research |
+| **LAPA (Latent Action Pretraining)** | NOT ELIMINATED (still parallel candidate) | Latent action tokens research |
+
+**Next engagement step** (per the closing Claude.ai instance recommendation in PR #1623): **rewatch the YouTube videos** to find a fresh clue. Aaron's source-set is documented at `memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md` (extension to add Alex Ziskind + George Hotz / tinybox is in the same PR as this update). The half-remembered paper is in one of those channels' weekly review windows; targeted re-watching with the elimination-list as filter narrows the search.
+
 ## Out of scope
 
 This row is bounded; the following are **out of scope** for B-0201
