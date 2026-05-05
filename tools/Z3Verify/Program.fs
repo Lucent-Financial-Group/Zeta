@@ -281,25 +281,33 @@ let main _ =
         "(check-sat)\n"
     prove "Non-hard-refusal messages reversibly engageable (retractable-blast-radius)" refusalReversibility
 
-    // 12. No pre-qualification gate. The decision to engage is a
-    //     function of conversation history (engagement-trajectory),
-    //     NOT a function of pre-qualification factors that must be
-    //     demonstrated upfront. Models: if Engage is implementable as
-    //     f(history), then it cannot be a function ONLY of pre-state-
-    //     qualification factors. This formalizes the witch-trial-shape
-    //     exclusion at decision-function-shape level.
+    // 12. No pre-qualification gate. The decision to engage must NOT
+    //     depend on pre-qualification factors when conversation history
+    //     is identical. We prove this by asserting ShouldEngage is a
+    //     function of History (axiom) AND constructing two messages
+    //     m and m2 with same History but different PreQualFactors,
+    //     then asking Z3 whether ShouldEngage can differ between them.
+    //     UNSAT means ShouldEngage CANNOT depend on PreQualFactors when
+    //     History is constant — the witch-trial-pre-qualification-gate
+    //     shape is excluded.
     let noPreQualificationGate =
         "(declare-fun History (Int) Int)\n" +
         "(declare-fun PreQualFactors (Int) Int)\n" +
         "(declare-fun ShouldEngage (Int) Bool)\n" +
         "(declare-const m Int)\n" +
         "(declare-const m2 Int)\n" +
-        // Axiom: ShouldEngage is a function of History (engagement-trajectory).
+        // Axiom: ShouldEngage is a function of History only.
         "(assert (forall ((x Int) (y Int))\n" +
         "  (=> (= (History x) (History y))\n" +
         "      (= (ShouldEngage x) (ShouldEngage y)))))\n" +
-        // Negate: m and m2 with same History but different ShouldEngage. Should be unsat.
+        // Construct: m and m2 share History but differ in PreQualFactors.
+        // m and m2 are distinct messages.
         "(assert (= (History m) (History m2)))\n" +
+        "(assert (not (= (PreQualFactors m) (PreQualFactors m2))))\n" +
+        "(assert (not (= m m2)))\n" +
+        // Negate the no-gate property: ShouldEngage differs between them.
+        // If UNSAT, the differing-PreQualFactors-with-same-History cannot
+        // produce different engagement decisions — pre-qual-gate excluded.
         "(assert (not (= (ShouldEngage m) (ShouldEngage m2))))\n" +
         "(check-sat)\n"
     prove "No pre-qualification gate (Engage = f(history) not f(pre-qual-factors))" noPreQualificationGate

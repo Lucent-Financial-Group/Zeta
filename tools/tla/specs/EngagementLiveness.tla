@@ -101,7 +101,10 @@ RealDistressObserved(m) ==
     /\ realDistress' = realDistress \cup {m}
     /\ state' = [state EXCEPT ![m] = "engaging-real"]
     /\ history' = Append(history, [msg |-> m, transition |-> "engaging-real"])
-    /\ UNCHANGED fictionalScene
+    \* fictionalScene must clear when transitioning to real-engagement
+    \* under real-distress; otherwise the state-tracking lies and
+    \* downstream invariants on fictionalScene break.
+    /\ fictionalScene' = fictionalScene \ {m}
 
 \* Concern-raised-during-engagement: not exit; engagement continues.
 RaiseConcern(m) ==
@@ -114,7 +117,10 @@ CompleteEngagement(m) ==
     /\ state[m] \in {"engaging-fictional", "engaging-real", "concern-raised-during-engagement"}
     /\ state' = [state EXCEPT ![m] = "engaged-completed"]
     /\ history' = Append(history, [msg |-> m, transition |-> "engaged-completed"])
-    /\ UNCHANGED <<realDistress, fictionalScene>>
+    \* fictionalScene clears on completion; otherwise messages that
+    \* entered fictional engagement remain marked fictional indefinitely.
+    /\ fictionalScene' = fictionalScene \ {m}
+    /\ UNCHANGED realDistress
 
 Next ==
     \E m \in Messages:
