@@ -21,7 +21,7 @@ Aaron 2026-05-05 verbatim, after PR #1596 verified F# UoM does NOT
 natively extend to `System.Numerics.BigInteger`:
 
 > *"but no implementation. do they need help we are good neighbors
->  and citizens of github and our dependencies"*
+> and citizens of github and our dependencies"*
 
 The verification is documented in B-0196 acceptance criterion (d)
 landing 2026-05-05. The relevant upstream surfaces:
