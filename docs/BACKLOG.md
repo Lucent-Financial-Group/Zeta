@@ -214,5 +214,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0163](backlog/P3/B-0163-retire-or-fix-append-tick-history-row-sh-routes-to-legacy-surface-otto-2026-05-02.md)** Retire or fix `tools/hygiene/append-tick-history-row.sh` — routes post-2026-04-29 ticks to legacy surface (canonical write is per-tick shards) — Otto 2026-05-02
 - [ ] **[B-0198](backlog/P3/B-0198-fsharp-uom-biginteger-upstream-contribution-aaron-2026-05-05.md)** F# UoM-on-BigInteger upstream contribution -- comment on fslang-suggestions/831 + optional RFC pre-draft (Aaron 2026-05-05 absorb-and-contribute)
 - [ ] **[B-0199](backlog/P3/B-0199-rom-publication-public-domain-scouting-aaron-2026-05-05.md)** ROM publication -- scout legally-clear (public-domain or open-licensed) ROMs from Aaron's gitignored personal collection and publish for community use (Aaron 2026-05-05 absorb-and-contribute)
+- [ ] **[B-0200](backlog/P3/B-0200-fsharp-codeact-bridge-engineering-aaron-2026-05-05.md)** F# <-> CodeAct bridge engineering -- four candidate architectures gated by four-property hodl invariant (Aaron 2026-05-05)
+- [ ] **[B-0201](backlog/P3/B-0201-coconut-universal-action-space-research-lane-aaron-2026-05-05.md)** Coconut + universal-action-space + AI-to-AI-protocol research lane -- Coconut empirical test as sleeping-bear hypothesis falsifier (Aaron 2026-05-05)
+- [ ] **[B-0202](backlog/P3/B-0202-tinygrad-uop-ir-kernel-layer-model-zeta-emulator-dispatch-aaron-2026-05-05.md)** Tinygrad UOp IR as kernel-layer model for Zeta's emulator dispatch + retract semantics -- substrate-engineering composition claim (Aaron 2026-05-05)
+- [ ] **[B-0203](backlog/P3/B-0203-deepseek-v4-csa-hca-zset-algebra-composability-aaron-2026-05-05.md)** DeepSeek V4 CSA+HCA architecture composability analysis with Zeta's Z-set algebra -- attention-as-Z-set-operators isomorphism (Aaron 2026-05-05)
 
 <!-- END AUTO-GENERATED -->
