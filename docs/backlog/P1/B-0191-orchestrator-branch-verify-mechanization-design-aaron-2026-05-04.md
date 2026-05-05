@@ -77,7 +77,7 @@ if (WORKTREE_PATTERN.test(current)) {
 }
 ```
 
-Wired into Claude Code via `.claude/settings.json` PreToolUse hook on Bash tool invocations matching `git commit`. Other harnesses get equivalent wiring. The TS-over-bash choice is per Otto-272 DST + the harness-hooks-suffice memory file -- TypeScript is properly DST-able, bash is not, and harnesses always provide the bun runtime.
+Wired into Claude Code via `.claude/settings.json` PreToolUse hook on Bash tool invocations matching `git commit`. Other harnesses get equivalent wiring (Codex / Cursor / Aider may run Node or Deno rather than bun -- the script should use a runner-agnostic shebang or be invoked via the harness's available TS runtime; if no TS runtime is available the wrapper falls back to compiled JS). The TS-over-bash choice is per Otto-272 DST + the harness-hooks-suffice memory file -- TypeScript is properly DST-able and bash is not. Per-harness runtime audit is part of the implementation when this row ships.
 
 Acceptance: harness hook fires before `git commit` invocations, blocks when `ZETA_EXPECTED_BRANCH` is set and doesn't match. No git-hooks directory required.
 
@@ -114,7 +114,7 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 
 - **Demonstrated recurrence**: hazard hit twice in one session 2026-05-04, including in the substrate-encoding commit itself.
 - **Foundation tier**: every parallel-subagent dispatch carries this risk; the substrate-encoding-of-the-rule has not prevented recurrence.
-- **Low effort, high leverage**: pre-commit hook is ~50 lines of shell; mechanization removes the entire class of failure.
+- **Low effort, high leverage**: harness pre-tool-use hook is ~30 lines of TypeScript (per the section 1 example); mechanization removes the entire class of failure.
 
 ## Why not P0
 
