@@ -57,16 +57,29 @@ Two distinct razors, two distinct triggers:
 
 These don't conflate. B-0192 prevents new ossification; B-0193 cuts existing bootstrap that hasn't earned load-bearing status.
 
-## The 23-hour recreation test
+## The 23-hour recreation test (NEW-REPO experiment, NOT destructive on this repo)
 
-For each substrate artifact (memory file, feedback file, research doc, persona notebook, hygiene history, anything other than openspec/ + canonical specs):
+**Aaron 2026-05-05 same-tick scope correction**:
 
-> **Could a fresh-context Otto regenerate this artifact within 23 hours given only the openspec/ specs + the formal specs as input?**
+> *"lets not delete the code here, we can test that in a new repo with new instances to inform ourslefvs, you have permission in lfg and acehack not servicetitan to create reops"*
 
-If yes -> the artifact is bootstrap (commentary on what specs already say) and gets cut.
-If no -> either:
-  - the artifact is genuinely novel substrate (research preservation, decision rationale, external-context like genealogy) and gets *kept* as research artifact rather than razor'd as operational substrate, OR
-  - the artifact is encoding a real engineering rule that the specs are missing -> add it to specs, then cut the artifact.
+The test is run as an **experiment in a new repository** (LFG or AceHack org -- NOT ServiceTitan), with fresh-context Otto instances. The Zeta repo is NOT mutated. This makes the experiment safe (no destructive ops on accumulated substrate) and turns the question into research rather than demolition.
+
+**Experimental design**:
+
+1. Create a new test repo (LFG or AceHack org).
+2. Seed it with ONLY `openspec/specs/**` + `docs/*.tla` + `proofs/lean/**` + the absolute-minimum bootstrap docs (CLAUDE.md / AGENTS.md / GOVERNANCE.md if needed -- TBD; that itself is part of the experiment).
+3. Spin up fresh-context Otto instances against the test repo.
+4. Question: in 23 hours, can the fresh-context instance produce equivalent operational substrate to what Zeta has accumulated?
+5. Observe: what gets recreated cleanly, what diverges, what's missing.
+
+**What the experiment informs**:
+
+- Spec completeness gaps: what's load-bearing in Zeta but missing from the specs? -> back-port to specs.
+- Bootstrap-vs-novel-substrate distinction: what artifacts in Zeta did the experiment recreate (bootstrap) vs not recreate (novel) -> informs the keep-vs-cut criteria for any future actual razor pass.
+- Substrate-as-product validation: does the spec layer actually carry the architecture? Or does the substrate layer carry water the specs should be carrying?
+
+**Falsifiability**: the experiment either produces equivalent substrate or doesn't. Both findings are observable + informative. The Zeta repo's substrate stays intact regardless.
 
 ## Categories that need explicit treatment
 
@@ -90,21 +103,30 @@ Per Claude.ai 2026-05-05 same-tick:
 
 ## Acceptance criteria
 
-1. **Date set** for the razor pass. Aaron names it; the date IS the operational signature. *"Set a date" is also the falsifiable version of the earlier "the rate will slow" claim. The date becomes the operational signature -- if it passes without the razor pass, that's observable evidence the discipline didn't hold."* (Claude.ai 2026-05-05).
-2. **Keep-vs-cut criteria** documented before the pass runs. Per the categories above + any others Aaron names.
-3. **Spec-completeness audit** before cutting -- is each artifact's load-bearing claim actually in the specs? If a feedback file encodes a real engineering rule, that rule should appear in OpenSpec or the formal specs; if it doesn't, the rule needs to land in specs first, then the artifact can be cut.
-4. **First razor pass run** within the date window -- artifacts cut, kept-with-justification, or moved to research-preservation per category.
-5. **Recreation experiment** post-razor: does a fresh-context Otto + specs alone produce equivalent operational behavior? Falsifies the cut decisions.
+The test is run as a glass-halo research-reproducible experiment in a NEW repo (LFG or AceHack org). The Zeta repo is NOT mutated. Aaron 2026-05-05 same-tick:
+
+> *"we want this to be all glass halo research reproducable we can still get the insights and be honest whith nuking ourselves."* + same-tick correction *"without*"* + *"big whoops"* + *"thats's big difference"*
+
+The "without" reading is the load-bearing one: get the insights AND be honest WITHOUT actually nuking. The new-repo experimental framing IS the without-nuking version -- we observe what doesn't survive recreation as research finding, while preserving Zeta intact regardless.
+
+1. **Test repo created** in LFG or AceHack org (NOT ServiceTitan). Seeded with the minimal substrate hypothesis (specs + formal proofs + minimum bootstrap docs).
+2. **Date set** for the experiment run. The date IS the operational signature.
+3. **Keep-vs-cut criteria** documented before the experiment runs (categories above).
+4. **Fresh-context Otto instances** spin up against the test repo. 23-hour window.
+5. **Findings documented** in a research-grade preservation file (mirror-not-beacon, archive-header-style). What recreated cleanly, what diverged, what was missing. Spec-gap findings back-ported to OpenSpec specs.
+6. **Falsifies the regenerable claim**: experiment either produces equivalent operational substrate or it doesn't. Both findings are observable + informative.
 
 ## Out of scope
 
-- Cutting research-grade preservation files (mirror-not-beacon shards, external-AI conversation absorbs). Different category.
-- Cutting personal-history surfaces (CURRENT-* files, persona notebooks). Different category.
-- Mechanizing the razor itself as a cron / workflow. The first pass is a deliberate human-led decision; mechanization can come later if useful.
+- **Mutating the Zeta repo**: per Aaron 2026-05-05 explicit, the Zeta repo's substrate stays intact. The experiment runs in a separate test repo.
+- **Cutting Zeta's research-grade preservation files**: not part of this experiment.
+- **Cutting Zeta's personal-history surfaces** (CURRENT-* files, persona notebooks): not part of this experiment.
+- **Mechanizing the razor as a cron / workflow**: the experiment is human-led research; mechanization comes later if useful.
+- **Repos in ServiceTitan org**: explicit no-go per Aaron's authorization scope.
 
 ## The carved sentence
 
-**"Specs + OpenSpec are the source of truth. Anything else has to prove it can't be regenerated by a fresh-context Otto in 23 hours, or it gets cut. Greenfield-as-permission-to-razor: every piece of substrate is provisional until it earns load-bearing status. Two razors, two triggers: B-0192 daily on new rules at the encoding boundary; B-0193 deep pass on accumulated bootstrap. The date is the operational signature -- without a date, 'this is just bootstrap' becomes the new absorber."**
+**"Specs + OpenSpec are the foundational source of truth (per docs/ARCHITECTURE.md + openspec/README.md, pre-existing). The 23-hour recreation test is the new operationalization: a glass-halo research-reproducible experiment in a NEW repo (LFG or AceHack), fresh-context Otto + specs-only as input, observe what regenerates and what doesn't. Get the insights without nuking ourselves. Two razors, two triggers: B-0192 daily on new rules at the encoding boundary; B-0193 experimental deep pass on accumulated bootstrap. The date is the operational signature -- without a date, 'this is just bootstrap' becomes the new absorber."**
 
 ## Composes with
 
