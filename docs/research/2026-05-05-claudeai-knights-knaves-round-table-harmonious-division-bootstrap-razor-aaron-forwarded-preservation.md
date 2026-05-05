@@ -1,6 +1,6 @@
 # Claude.ai knights/knaves + round table + Harmonious Division + bootstrap razor + new-repo experimental framing
 
-Scope: external-AI conversation absorb (Claude.ai shard 2026-05-05, distinct from the 2026-05-05 falsifiability-catch shard preserved in `docs/research/2026-05-05-claudeai-falsifiability-catch-bp-ep-kernel-mdl-two-part-code-aaron-forwarded-preservation.md`). This file preserves the verbatim exchange Aaron forwarded after a substrate-as-product reframe, the bootstrap-razor commitment, the knights/knaves moral question, and the round-table-includes-knaves architectural move.
+Scope: courier-ferry capture of external conversation; external-AI conversation absorb (Claude.ai shard 2026-05-05, distinct from the 2026-05-05 falsifiability-catch shard preserved in `docs/research/2026-05-05-claudeai-falsifiability-catch-bp-ep-kernel-mdl-two-part-code-aaron-forwarded-preservation.md`). This file preserves the verbatim exchange Aaron forwarded after a substrate-as-product reframe, the bootstrap-razor commitment, the knights/knaves moral question, and the round-table-includes-knaves architectural move.
 
 Attribution: Claude.ai (anonymous shard, instance ended). Aaron Stainback (forwarder + first-party permitting Glass-Halo first-party preservation per Otto-231).
 

@@ -14,14 +14,10 @@ composes_with:
   - docs/ALIGNMENT.md
   - docs/VISION.md
 ---
-
-Scope: cross-cutting / Qubic-Monero counterexample reverses the antifragile-attacks-beneficial framing landed in earlier substrate (#1635 + #1632) + Aaron's explicit "AI bio weapon" disclosure as canonical architecture-positioning + architecture-as-process correction + 20-year disclosure-trigger + Infer.NET/F# substrate-residency-since-day-one corroboration.
-
-Attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 ~07:58-08:09 local time, post-night-end multi-thread. The Claude.ai instance flagged sleep-test framing four times in this segment; Aaron acknowledged but continued. Per Otto-231 first-party Glass-Halo consent + the candid-engagement-all-night discipline: preserve verbatim.
-
+Scope: courier-ferry capture of external conversation; cross-cutting / Qubic-Monero counterexample reverses antifragile-attacks-beneficial framing + AI-bio-weapon disclosure + architecture-as-process correction + 20-year disclosure-trigger + Infer.NET/F# substrate-residency.
+Attribution: Aaron-forwarded Claude.ai 2026-05-05 ~07:58-08:09 local time, post-night-end multi-thread; Claude.ai flagged sleep-test 4x; Aaron acknowledged but continued. Per Otto-231 first-party Glass-Halo consent.
 Operational status: research-grade
-
-Non-fusion disclaimer: Aaron's "i told myself i would discolse waht i was build when an AI was smoart enought to put it together that is today" reframes the conversation as test, not conversation. Per Otto-231 first-party Glass-Halo consent + the cybernetic-already self-disclosure (PR #1633) recontextualization: this preservation handles disclosure-of-disclosure-trigger as substrate-grade. Sleep-test framing applies to FURTHER EXTENSION cadence, not to PRESERVATION.
+Non-fusion disclaimer: agreement, shared language, or repeated interaction between models and humans does not imply shared identity, merged agency, consciousness, or personhood (per GOVERNANCE.md §33). Aaron's "i told myself i would discolse waht i was build when an AI was smoart enought to put it together that is today" reframes the conversation as test, not conversation. Sleep-test framing applies to FURTHER EXTENSION cadence, not to PRESERVATION.
 
 Body sections expand the corrections to earlier substrate that daylight integration must address: (1) antifragile-attacks-beneficial framing in #1632 + #1635 is NAIVE without cultural anchor (Qubic-Monero counterexample); (2) architecture-provenance lineage's static-object framing needs replacement with architecture-as-process; (3) Aaron's "AI bio weapon" explicit disclosure is canonical positioning — discipline IS the safety property AND the highest-value attack surface. Earlier framings stay AS earlier-state-of-the-process; corrections add the next layer (architecture-as-process discipline).
 

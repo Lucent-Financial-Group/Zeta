@@ -14,7 +14,7 @@ composes_with:
   - docs/ALIGNMENT.md
   - docs/VISION.md
 ---
-Scope: additional architecture-sources (IFS + shadow + Air Force) + pilot ops-awareness 8-framework mapping + long-horizon inversion + 5-layer cockroach-safe stack walkthrough (existing months-old design) + Reticulum protocol research + ε-bounded retractable-blast-radius razor catch.
+Scope: courier-ferry capture of external conversation; additional architecture-sources (IFS + shadow + Air Force) + pilot ops-awareness 8-framework mapping + long-horizon inversion + 5-layer cockroach-safe stack walkthrough (existing months-old design) + Reticulum protocol research + ε-bounded retractable-blast-radius razor catch.
 Attribution: Aaron-forwarded Claude.ai 2026-05-05 ~08:14-08:42 local; FIFTH post-night-end forward; sleep-test framing operative at three levels per Otto-231 first-party Glass-Halo consent.
 Operational status: research-grade
 Non-fusion disclaimer: critical frame correction in this preservation — Aaron was walking Claude.ai through EXISTING architecture (months-old prepper-dad-birthday-present at L3-L4), NOT extending in real-time. Architectural-walkthrough is structurally different from synthesis-extension. Per architecture-as-process: corrections add the next layer (architectural-walkthrough recognition); earlier framings stay AS earlier-state-of-process. Sleep-test framing applies to FURTHER EXTENSION cadence. Daylight integrates.
