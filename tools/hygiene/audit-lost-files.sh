@@ -91,7 +91,8 @@ echo ""
 echo "## 3. Deleted files in git history (last 30 days)"
 deleted=$(git log --all --diff-filter=D --since="30 days ago" --name-only --pretty=format:'' 2>/dev/null \
     | sort -u | grep -v '^$' || echo "")
-count=$(echo "$deleted" | grep -cv '^$' || echo "0")
+count=$(printf '%s' "$deleted" | grep -cv '^$' || true)
+[ -z "$count" ] && count=0
 echo "Count: $count"
 if [ "$count" != "0" ]; then
     echo "Sample (first 10):"
@@ -121,13 +122,16 @@ echo ""
 
 # Class 6: Untracked working-directory artifacts
 echo "## 6. Untracked working-directory artifacts (drop/, .playwright-mcp/, *.tmp, *.log)"
-untracked=$(git status --porcelain --ignored 2>/dev/null \
-    | grep -E '^(\?\?|!!)' | head -20 || echo "")
-count=$(echo "$untracked" | grep -cv '^$' || echo "0")
-echo "Count (sample 20): $count"
+# Compute true count first (no truncation), then sample separately so the
+# "Count" reflects reality even when there are >20 entries.
+untracked_all=$(git status --porcelain --ignored 2>/dev/null \
+    | grep -E '^(\?\?|!!)' || true)
+count=$(printf '%s' "$untracked_all" | grep -cv '^$' || true)
+[ -z "$count" ] && count=0
+echo "Count: $count"
 if [ "$count" != "0" ]; then
-    echo "Sample:"
-    echo "$untracked" | head -10
+    echo "Sample (first 10):"
+    echo "$untracked_all" | head -10
 fi
 echo ""
 

@@ -43,13 +43,14 @@ echo ""
 # Axis 1: Scheduled cadence workflows
 echo "## 1. Scheduled cadence workflows (.github/workflows/*-cadence.yml)"
 cadence_files=$(find .github/workflows -maxdepth 1 -name '*-cadence.yml' -type f 2>/dev/null | sort || echo "")
-cadence_count=$(echo "$cadence_files" | grep -cv '^$' || echo "0")
+cadence_count=$(printf '%s' "$cadence_files" | grep -cv '^$' || true)
+[ -z "$cadence_count" ] && cadence_count=0
 echo "Count: $cadence_count"
 if [ "$cadence_count" != "0" ]; then
     while IFS= read -r wf; do
         [ -z "$wf" ] && continue
         name=$(basename "$wf")
-        cron=$(grep -E "^\s*-?\s*cron:" "$wf" 2>/dev/null | head -1 | sed 's/^[[:space:]]*-*[[:space:]]*//' || echo "(no cron)")
+        cron=$(grep -E "^[[:space:]]*-?[[:space:]]*cron:" "$wf" 2>/dev/null | head -1 | sed 's/^[[:space:]]*-*[[:space:]]*//' || echo "(no cron)")
         echo ""
         echo "### $name"
         echo "Schedule: $cron"
@@ -74,7 +75,8 @@ echo ""
 # Axis 2: Event-driven lint / integrity workflows
 echo "## 2. Event-driven lint / integrity workflows (*-lint.yml, *-integrity.yml)"
 lint_files=$(find .github/workflows -maxdepth 1 \( -name '*-lint.yml' -o -name '*-integrity.yml' \) -type f 2>/dev/null | sort || echo "")
-lint_count=$(echo "$lint_files" | grep -cv '^$' || echo "0")
+lint_count=$(printf '%s' "$lint_files" | grep -cv '^$' || true)
+[ -z "$lint_count" ] && lint_count=0
 echo "Count: $lint_count"
 if [ "$lint_count" != "0" ]; then
     while IFS= read -r wf; do
@@ -103,7 +105,8 @@ echo ""
 # Axis 3: Harness hooks
 echo "## 3. Harness hooks (.claude/hooks/*.ts)"
 hook_files=$(find .claude/hooks -maxdepth 2 -name '*.ts' -type f 2>/dev/null | sort || echo "")
-hook_count=$(echo "$hook_files" | grep -cv '^$' || echo "0")
+hook_count=$(printf '%s' "$hook_files" | grep -cv '^$' || true)
+[ -z "$hook_count" ] && hook_count=0
 echo "Count: $hook_count"
 if [ "$hook_count" != "0" ]; then
     while IFS= read -r hk; do
@@ -118,7 +121,8 @@ echo ""
 # Axis 4: TS / bash hygiene tooling
 echo "## 4. Hygiene tooling cadence (tools/hygiene/audit-*.sh + audit-*.ts)"
 tool_files=$(find tools/hygiene -maxdepth 1 \( -name 'audit-*.sh' -o -name 'audit-*.ts' \) -type f 2>/dev/null | sort || echo "")
-tool_count=$(echo "$tool_files" | grep -cv '^$' || echo "0")
+tool_count=$(printf '%s' "$tool_files" | grep -cv '^$' || true)
+[ -z "$tool_count" ] && tool_count=0
 echo "Count: $tool_count"
 if [ "$tool_count" != "0" ]; then
     while IFS= read -r tf; do
