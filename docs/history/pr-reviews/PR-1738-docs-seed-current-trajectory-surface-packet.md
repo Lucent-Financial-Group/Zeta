@@ -44,7 +44,7 @@ This follows the Vera #659 triage claim recommendation: land a fresh current-sta
 | Field | Value |
 |---|---|
 | Merged | true |
-| Re-reviewed post-fix | true |
+| Re-reviewed post-fix | false |
 | Total threads | 2 |
 | Resolved threads | 0 |
 | Unresolved threads | 2 |
