@@ -84,6 +84,7 @@
     <Compile Include="ArrowSerializer.fs" />
     <Compile Include="DeltaCrdt.fs" />
     <Compile Include="SignalQuality.fs" />
+    <Compile Include="Maji.fs" />
   </ItemGroup>
 
   <ItemGroup>
