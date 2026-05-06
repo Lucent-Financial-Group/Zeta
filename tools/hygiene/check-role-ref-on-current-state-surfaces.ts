@@ -4,7 +4,7 @@
 // Origin: B-0162 (5 catches on PR #1202 past mechanization breakeven).
 // Rule 0: TS over .sh for non-install-graph scripts.
 
-import { readFileSync, existsSync, statSync, readdirSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, basename } from "node:path";
 
@@ -52,7 +52,8 @@ function expandSurfaces(patterns: string[]): string[] {
   const result: string[] = [];
   for (const pattern of patterns) {
     if (pattern.includes("**")) {
-      const prefix = pattern.split("/**/")[0];
+      const [prefix] = pattern.split("/**/");
+      if (prefix === undefined) continue;
       const leaf = basename(pattern);
       const dir = join(repoRoot, prefix);
       for (const f of findFilesRecursive(dir, leaf)) {
@@ -108,6 +109,7 @@ for (const surface of surfaces) {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
+      if (line === undefined) continue;
 
       if (line.trimStart().startsWith("```")) continue;
       if (line.includes(`\`${name}\``)) continue;
