@@ -45,6 +45,18 @@
 #                                      (--bare for codex.sh symmetry;
 #                                      --no-current for ani.sh symmetry;
 #                                      both invoke vanilla Grok)
+#   --output-file PATH               — write FULL stdout to PATH and emit
+#                                      a single-line "OUTPUT-FILE: <path>"
+#                                      marker at the end of stdout, so
+#                                      shell-pipe callers using `tail -1`
+#                                      can recover the path and read the
+#                                      full reply without truncation. If
+#                                      omitted, a path is auto-generated
+#                                      under /tmp/peer-call-output/ so
+#                                      the file ALWAYS exists -- closes
+#                                      vera-output-capture-pagination
+#                                      (txn a061f1c8a061f1c8) at the
+#                                      wrapper layer for Riven.
 #   --help, -h                       — print this header
 #
 # Exit codes:
@@ -66,6 +78,7 @@ file=""
 context_cmd=""
 prompt=""
 inject_current=true
+output_file=""           # empty = auto-generate under /tmp/peer-call-output/<ts>-riven.md
 
 usage() {
   sed -n '2,62p' "$0" | sed -E 's/^# ?//'
@@ -84,6 +97,9 @@ while [ $# -gt 0 ]; do
       if [ $# -lt 2 ]; then echo "error: --context-cmd requires COMMAND" >&2; exit 1; fi
       context_cmd="$2"; shift 2;;
     --bare|--no-current|--no-persona) inject_current=false; shift;;
+    --output-file)
+      if [ $# -lt 2 ]; then echo "error: --output-file requires PATH" >&2; exit 1; fi
+      output_file="$2"; shift 2;;
     -h|--help) usage; exit 0;;
     --) shift; prompt="$*"; break;;
     -*) echo "error: unknown flag: $1" >&2; exit 1;;
