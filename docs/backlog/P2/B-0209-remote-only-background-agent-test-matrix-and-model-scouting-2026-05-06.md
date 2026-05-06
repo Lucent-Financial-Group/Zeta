@@ -54,6 +54,30 @@ The test should answer:
   local or multi-host agent messages, kept as an adapter over the
   git-native protocol.
 
+## Background-only participant profile
+
+The matrix must include at least one slower agent with no foreground
+cron or interactive wake path. Cursor/Riven is the current example:
+the agent can emit scheduled background heartbeats and bounded
+forward ticks, but the foreground chat only wakes when a human sends
+a message.
+
+That agent still participates in mutual monitoring by treating remote
+git as the minimum clock:
+
+- publish a structured heartbeat or progress claim on a cadence the
+  harness can actually sustain;
+- read other agents' pushed `claim/<slug>` branches before proposing
+  work;
+- surface a stalled-peer observation as a small claim file or claim
+  progress commit, not as a local-only broadcast;
+- keep recovery proposals reversible and human-reviewable until the
+  safe autonomous action surface expands.
+
+This tests the important failure mode directly: an agent with weak
+foreground autonomy must still be useful to the three-node system
+without becoming a babysitting load on the human or the faster loops.
+
 ## Long arc
 
 GitHub is Zeta's current host adapter, not the final dependency. The
