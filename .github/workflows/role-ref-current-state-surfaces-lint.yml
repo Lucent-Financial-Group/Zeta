@@ -30,7 +30,7 @@ name: role-ref-current-state-surfaces-lint
 #   - runs-on ubuntu-24.04 pinned
 #
 # See:
-#   - tools/hygiene/check-role-ref-on-current-state-surfaces.sh
+#   - tools/hygiene/check-role-ref-on-current-state-surfaces.ts
 #   - docs/AGENT-BEST-PRACTICES.md Otto-279 carve-out
 #   - docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md
 
@@ -50,7 +50,7 @@ on:
       - docs/EXPERT-REGISTRY.md
       - .claude/skills/**
       - .claude/agents/**
-      - tools/hygiene/check-role-ref-on-current-state-surfaces.sh
+      - tools/hygiene/check-role-ref-on-current-state-surfaces.ts
       - .github/workflows/role-ref-current-state-surfaces-lint.yml
   push:
     branches: [main]
@@ -68,7 +68,7 @@ on:
       - docs/EXPERT-REGISTRY.md
       - .claude/skills/**
       - .claude/agents/**
-      - tools/hygiene/check-role-ref-on-current-state-surfaces.sh
+      - tools/hygiene/check-role-ref-on-current-state-surfaces.ts
       - .github/workflows/role-ref-current-state-surfaces-lint.yml
   workflow_dispatch: {}
 
@@ -86,8 +86,10 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
       - name: run role-ref lint (soft-launch mode)
         shell: bash
-        run: |
-          set -euo pipefail
-          bash tools/hygiene/check-role-ref-on-current-state-surfaces.sh
+        run: bun tools/hygiene/check-role-ref-on-current-state-surfaces.ts
