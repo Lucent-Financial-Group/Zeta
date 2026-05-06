@@ -75,7 +75,32 @@ function releaseLock(): void {
   try { rmSync(lockDir, { recursive: true, force: true }); } catch { /* best effort */ }
 }
 
+function readBroadcasts(): void {
+  const broadcastDir = join(home, ".local/share/zeta-broadcasts");
+  const peers = ["vera.md", "riven.md"];
+  for (const peer of peers) {
+    const path = join(broadcastDir, peer);
+    if (existsSync(path)) {
+      const content = readFileSync(path, "utf8").trim();
+      if (content) log(`broadcast from ${peer.replace(".md", "")}: ${content.split("\n")[0] ?? "(empty)"}`);
+    }
+  }
+}
+
+function writeBroadcast(summary: string): void {
+  const broadcastDir = join(home, ".local/share/zeta-broadcasts");
+  mkdirSync(broadcastDir, { recursive: true });
+  writeFileSync(join(broadcastDir, "otto.md"), [
+    `# Otto broadcast — ${nowIso()}`,
+    "",
+    "## Background tick status",
+    summary,
+  ].join("\n"));
+}
+
 function forward(): void {
+  readBroadcasts();
+
   // Fetch
   const fetch = git("fetch", "--quiet", "origin");
   if (fetch.status !== 0) {
@@ -131,12 +156,14 @@ function forward(): void {
           "--squash", "--auto"
         );
         log(`auto-merge result PR #${pr} status=${merge.status}`);
+        writeBroadcast(`Forward tick ${runId}: armed auto-merge on PR #${pr}.`);
         return; // one action per tick
       }
     } catch { continue; }
   }
 
   log(`no actionable PR found, idle tick`);
+  writeBroadcast(`Forward tick ${runId}: idle — no actionable PR. ${prNumbers.length} open.`);
 }
 
 // Main

@@ -167,3 +167,4 @@ Spine/
 # Alloy runner compiled-class scratch directory — produced by `javac
 # tools/alloy/AlloyRunner.java` on first test run. Regenerated; not source.
 tools/alloy/classes/
+.broadcasts/
