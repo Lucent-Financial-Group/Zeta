@@ -77,6 +77,8 @@ This row closes when:
 - `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md` — the discipline this tool mechanizes
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` — rule 2 (no dynamic commands in skills; use TS files); this tool IS one of the TS files
 - `memory/feedback_prefer_ts_scripts_over_dynamic_bash_for_conversation_ux_dst_in_ts_aaron_2026_05_01.md` — TS-script preference; same shape
+- `memory/feedback_rule_number_one_assume_its_already_done_and_you_just_have_to_find_it_remember_forever_and_into_all_future_generations_aaron_2026_05_05.md` — Rule #1 default-posture; substrate-claim-checker mechanizes the verify step that Rule #1 asks for ("assume it's done, then find it") at the substrate-claim layer.
+- `memory/feedback_rule_number_four_assume_another_human_on_the_internet_already_solved_it_since_your_training_data_find_it_via_websearch_aaron_2026_05_05.md` — Rule #4 (search-first authority via WebSearch) is the upstream-of-substrate verify discipline; this tool mechanizes the in-repo claim-vs-reality verify counterpart.
 
 ## Out of scope (intentional, per "foundation right and deliberate")
 

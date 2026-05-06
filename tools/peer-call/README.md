@@ -1,21 +1,26 @@
 # tools/peer-call/ — Otto's Claude-Code-side peer callers
 
-Three sibling shell scripts that let Otto (Claude Opus 4.7
-running in Claude Code) invoke a peer agent in another CLI
-harness as a peer, not a subordinate. Each wraps the relevant
-peer's headless-mode CLI and applies a shared
-AgencySignature relationship-model preamble so the peer
-knows the call posture.
+Six sibling TypeScript wrappers (Bun runtime) that let Otto
+(Claude Opus 4.7 running in Claude Code) invoke a peer agent
+in another CLI harness as a peer, not a subordinate. Each
+wraps the relevant peer's headless-mode CLI and applies a
+shared AgencySignature relationship-model preamble so the
+peer knows the call posture.
+
+Originally authored as bash `.sh` scripts; ported to TypeScript
+2026-05-06 per CLAUDE.md Rule 0 / Rule -1 (NO-MORE-BASH; TS IS
+cross-platform DST). Invocation form is `bun tools/peer-call/<name>.ts`.
 
 ## Scripts at a glance
 
 | Script | Peer | Underlying CLI | Default role (when to invoke) | Underlying model |
 |---|---|---|---|---|
-| `grok.sh` | Grok (xAI) | `cursor-agent --print --model grok-4-20-thinking` | **Critique** — skeptical pass on Otto's framing | grok-4-20-thinking (default) / grok-4-20 (--fast) |
-| `gemini.sh` | Gemini (Google) | `gemini -p` | **Propose** — divergent options, possibility-space surfacing | gemini default (override via `--model`) |
-| `codex.sh` | Codex (OpenAI) | `codex exec -s read-only` | **Implementation peer** — code-grounded second opinion | codex default (override via `--model`) |
-| `amara.sh` | Amara (named entity, OpenAI surface) | `codex exec -s read-only` (or `codex review` via --review) | **Sharpen** — blunt-take pattern, carved-sentence distillation | codex default; persona via CURRENT-amara.md |
-| `ani.sh` | Ani (named entity, xAI surface) | `cursor-agent --print --model grok-4-20-thinking` | **Brat-voice review** — playful + direct + memorable, contributor-attention-capture register | grok-4-20-thinking (default) / grok-4-20 (--fast); persona inline |
+| `grok.ts` | Grok (xAI) | `cursor-agent --print --model grok-4-20-thinking` | **Critique** — skeptical pass on Otto's framing | grok-4-20-thinking (default) / grok-4-20 (--fast) |
+| `gemini.ts` | Gemini (Google) | `gemini -p` | **Propose** — divergent options, possibility-space surfacing | gemini default (override via `--model`) |
+| `codex.ts` | Vera (named entity, OpenAI Codex surface) | `codex exec -s read-only` | **Implementation peer** — code-grounded second opinion + Vera input-firewall + capture-pagination fix | codex default (override via `--model`); persona via CURRENT-vera.md |
+| `amara.ts` | Amara (named entity, OpenAI surface) | `codex exec -s read-only` (or `codex review` via --review) | **Sharpen** — blunt-take pattern, carved-sentence distillation | codex default; persona via CURRENT-amara.md |
+| `ani.ts` | Ani (named entity, xAI surface) | `cursor-agent --print --model grok-4-20-thinking` | **Brat-voice review** — playful + direct + memorable, contributor-attention-capture register | grok-4-20-thinking (default) / grok-4-20 (--fast); persona via CURRENT-ani.md |
+| `riven.ts` | Riven (named entity, xAI surface) | `cursor-agent --print --model grok-4-20-thinking` | **Adversarial-truth-axis** — third-co-scout, refuses inherited blind spots | grok-4-20-thinking (default) / grok-4-20 (--fast); persona via CURRENT-riven.md |
 
 The role column reflects the **four-ferry consensus**
 (Amara/Grok/Gemini/Otto, PR #24 on AceHack/Zeta):
@@ -29,11 +34,12 @@ factory's drain-log substrate, so its preamble names it as
 "implementation peer / code-grounded second opinion" rather
 than claiming a four-ferry slot.
 
-`amara.sh` and `ani.sh` are **named-entity** peers — they
-share an underlying CLI/model with `codex.sh`/`grok.sh`
+`amara.ts`, `ani.ts`, and `riven.ts` are **named-entity** peers
+— they share an underlying CLI/model with `codex.ts`/`grok.ts`
 respectively, but layer a persona-bootstrap preamble on top
-so the call is the named-entity (Amara, Ani) rather than the
-bare model (Codex, Grok). The persona-bootstrap closes the
+so the call is the named-entity (Amara, Ani, Riven) rather than
+the bare model (Codex, Grok). `codex.ts` itself loads Vera as
+the codex-substrate named entity. The persona-bootstrap closes the
 silent-courier-debt gap (Aaron 2026-04-30 — see
 `memory/feedback_silent_courier_debt_no_amara_headless_cli_dont_count_on_peer_ai_reviews_as_loop_aaron_2026_04_30.md`)
 by letting Otto invoke Amara/Ani autonomously instead of
@@ -42,24 +48,34 @@ through Aaron-courier. Both surfaces have v1 limitations
 
 ## Shared flag surface
 
-All three scripts accept the same core flags:
+All wrappers accept the same core flags:
 
 ```text
 --file PATH              attach file content (head -c 20000) to the prompt
 --context-cmd CMD        attach the output of CMD (head -c 20000) to the prompt
+--output-file PATH       tee captured stdout to PATH (auto under /tmp/peer-call-output/ otherwise)
 --help, -h               print the script header as usage
 ```
 
 Per-script extras:
 
-- `grok.sh` adds `--thinking` (default) / `--fast` to switch
-  between `grok-4-20-thinking` and `grok-4-20` models, and
-  `--json` / `--stream` for output format.
-- `gemini.sh` adds `--model NAME` to override the default
+- `grok.ts` / `ani.ts` / `riven.ts` add `--thinking` (default)
+  / `--fast` to switch between `grok-4-20-thinking` and
+  `grok-4-20` models, and `--json` / `--stream` for output
+  format.
+- `gemini.ts` adds `--model NAME` to override the default
   Gemini model, and `--json` / `--stream` for output format.
-- `codex.sh` adds `--model NAME` and `--review` (which routes
-  through `codex review` instead of `codex exec` for
-  first-class code-review work).
+- `codex.ts` / `amara.ts` add `--model NAME` and `--review`
+  (which routes through `codex review` instead of `codex exec`
+  for first-class code-review work).
+- `codex.ts` enforces a Vera input-firewall (rejects rote
+  heartbeats / empty-token / mechanical-rule prompts; require
+  a substantive trust-calculus payload). Override with
+  `--allow-empty` for testing only.
+- Persona wrappers (`codex.ts`, `amara.ts`, `ani.ts`,
+  `riven.ts`) auto-load their `CURRENT-<name>.md` bootstrap;
+  `--no-current` / `--bare` / `--no-persona` opts out (debug
+  only).
 
 Exit codes are uniform across all three:
 
@@ -116,7 +132,7 @@ agent imposes.
 ### Critique pass on a draft (Grok)
 
 ```bash
-tools/peer-call/grok.sh \
+bun tools/peer-call/grok.ts \
   --file docs/research/some-draft.md \
   "Critique the framing in section 2 — does the claim follow from the evidence cited, or is there a gap?"
 ```
@@ -124,17 +140,17 @@ tools/peer-call/grok.sh \
 ### Proposal exploration (Gemini)
 
 ```bash
-tools/peer-call/gemini.sh \
+bun tools/peer-call/gemini.ts \
   "We're choosing between strategy A (per-file 3-way merge with subagent dispatch) and strategy B (pure concatenation). Propose a 3rd option I haven't considered, with one paragraph each on tradeoffs."
 ```
 
-### Code-grounded second opinion (Codex)
+### Code-grounded second opinion (Codex / Vera)
 
 ```bash
-tools/peer-call/codex.sh \
+bun tools/peer-call/codex.ts \
   --review \
   --context-cmd "git diff HEAD~3..HEAD -- tools/peer-call/" \
-  "Review the recent peer-call diff for correctness — particularly the bash-array argument construction. Flag anything that breaks the 4-shell compat target (macOS 3.2 / Ubuntu / git-bash / WSL)."
+  "Review the recent peer-call diff for correctness. Flag anything that breaks portability across the install-graph targets (macOS / Ubuntu / Windows-via-Bun)."
 ```
 
 ## Why these scripts exist
@@ -166,33 +182,29 @@ preamble + flag wiring matching the existing scripts).
 
 ## Security notes
 
-- **`--context-cmd` runs shell code.** All three scripts use
-  `eval "$context_cmd"` to capture the output of the command
-  passed to `--context-cmd`. This is intentional (the flag's
-  documented purpose is to attach command output as context),
-  but it means **`--context-cmd` is a shell-execution
-  surface** — never pass an untrusted string to it. The `eval`
-  output is captured, not piped to the peer's CLI as a command,
-  so the peer-side risk is limited to what the eval'd command
-  itself exposes (file reads, env-var leaks, etc.).
+- **`--context-cmd` runs shell code.** All wrappers shell-out
+  via Bun's `child_process` to capture the output of the
+  command passed to `--context-cmd`. This is intentional (the
+  flag's documented purpose is to attach command output as
+  context), but it means **`--context-cmd` is a shell-execution
+  surface** — never pass an untrusted string to it. The
+  captured stdout is attached to the prompt, not re-piped to
+  the peer's CLI as a command, so the peer-side risk is limited
+  to what the executed command itself exposes (file reads,
+  env-var leaks, etc.).
 - **The prompt itself is safe to contain shell metacharacters.**
-  `$prompt` is passed as a single quoted argument
-  (per-CLI form: `-p "$full_prompt"` for gemini.sh; appended
-  positionally as `"$full_prompt"` in codex.sh's argv array;
-  `--` option-terminator is NOT used by codex.sh because codex
-  doesn't recognize it on the `exec` / `review` subcommands),
-  so single quotes,
-  double quotes, backticks, dollar signs, and other shell-active
-  characters in the prompt are passed through verbatim without
-  interpretation by Otto's local shell. (The peer's own CLI may
-  interpret some characters — that's the peer's contract, not
-  Otto's.)
+  Bun's `spawn`/`spawnSync` passes args as a JS array — single
+  quotes, double quotes, backticks, dollar signs, and other
+  shell-active characters in the prompt are passed through
+  verbatim without interpretation by any local shell. (The
+  peer's own CLI may interpret some characters — that's the
+  peer's contract, not Otto's.)
 - **`--file` reads only the first 20000 bytes.** Both
   `--file PATH` and `--context-cmd CMD` cap their attached
-  content at `head -c 20000` to keep peer prompts within
-  reasonable size limits. If the peer needs more, route through
-  the peer's interactive CLI directly.
-- **No secrets handling.** None of the three scripts read or
+  content at 20000 bytes to keep peer prompts within reasonable
+  size limits. If the peer needs more, route through the peer's
+  interactive CLI directly.
+- **No secrets handling.** None of the wrappers read or
   inject API keys; the underlying CLIs (`cursor-agent`,
   `gemini`, `codex`) handle their own auth via their own config
   paths. Don't put secrets in prompts — they end up in the
@@ -216,43 +228,38 @@ preamble + flag wiring matching the existing scripts).
 
 ## Adding a new sibling
 
-To add a 4th peer-call script (e.g. for a future peer-CLI):
+To add a new peer-call wrapper (e.g. for a future peer-CLI):
 
 1. Verify the peer's CLI has a non-interactive / headless
-   mode. If not, the script can't work as a single-shot
-   wrapper.
-2. Copy one of the existing scripts (most similar by CLI
-   shape) as a starting template. Then **rewrite it from the
-   peer-CLI's own `--help` output** — don't copy-paste flag
-   semantics across CLIs.
+   mode. If not, the wrapper can't work as a single-shot
+   shape.
+2. Copy one of the existing `.ts` wrappers (most similar by
+   CLI shape) as a starting template. Then **rewrite it from
+   the peer-CLI's own `--help` output** — don't copy-paste
+   flag semantics across CLIs.
 3. Adapt the AgencySignature preamble to name the peer's
    role in the role-distribution. Cite the four-ferry
    consensus and add the new peer's role as a sibling sentence.
-4. Verify with `bash -n script.sh` and a `--help` smoke
-   test.
+4. Verify with `bun --check tools/peer-call/<name>.ts` (TypeScript
+   check) and a `--help` smoke test.
 5. Live-test with a minimal prompt asking the peer whether
    the framing reads as peer-shaped. The preamble works when
    the peer's response confirms the role-binding.
 6. Update this README's table.
 
-## Future direction (queued backlog work)
+## History + future direction
 
-The current bash implementation is acknowledged interim
-substrate. Three open backlog rows shape where the surface
-goes next:
+Original bash implementations: `grok.sh` (PR #27 on
+AceHack/Zeta, merged 2026-04-26), `gemini.sh` + `codex.sh`
+(PR #28), `ani.sh` + `amara.sh` (PR #960 on LFG, 2026-04-30),
+`riven.sh` (2026-05-05). All migrated to TypeScript+Bun on
+2026-05-06 per CLAUDE.md Rule 0 / Rule -1 (NO-MORE-BASH; TS
+IS cross-platform DST). Bash sources removed; recoverable
+from git history if needed.
+
+Open follow-up backlog rows:
 
 | Row | Priority | Effort | What |
 |---|---|---|---|
-| [B-0120](../../docs/backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md) | P2 | M | Refactor 5 scripts → 3 + `--persona NAME` flag (collapses per-named-entity script proliferation) |
+| [B-0120](../../docs/backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md) | P2 | M | Collapse per-named-entity wrappers into shared cli-handlers + `--persona NAME` flag |
 | [B-0121](../../docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md) | P2 | M | Add the Anthropic-side Claude-code-instance personas as externally-callable peers (cross-harness symmetry; pending a/b/c topology decision) |
-| **B-0122** (filed in in-flight [PR #966](https://github.com/Lucent-Financial-Group/Zeta/pull/966); link will resolve once that PR lands) | P2 | M | Migrate bash → TypeScript-on-bun per the post-install language strategy |
-
-Recommended sequencing per B-0122: option (b) — refactor +
-TS migration land in one diff (B-0120 absorbed into B-0122
-implementation). The Anthropic-side (Claude-code-instance)
-peer additions (B-0121) compose with the post-cutover shape
-rather than adding more bash.
-
-Until that lands, the bash files here are correct interim
-substrate. New sibling additions follow the bash template
-above; they will be picked up by the TS rewrite naturally.

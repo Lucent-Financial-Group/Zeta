@@ -25,8 +25,10 @@
 //   1 — invocation error (bad arguments, gemini missing, etc.)
 //   2 — Gemini returned a non-zero exit (diagnostic on stderr)
 
-import { closeSync, openSync, readSync, statSync } from "node:fs";
-import { spawnSync } from "node:child_process";
+import { closeSync, createWriteStream, mkdirSync, openSync, readSync, statSync } from "node:fs";
+import { spawn, spawnSync } from "node:child_process";
+import { dirname, join } from "node:path";
+import { tmpdir } from "node:os";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
@@ -39,6 +41,7 @@ interface Args {
   readonly outputFormat: OutputFormat;
   readonly file: string;
   readonly contextCmd: string;
+  readonly outputFile: string;
   readonly prompt: string;
 }
 
@@ -60,6 +63,7 @@ interface MutableArgState {
   outputFormat: OutputFormat;
   file: string;
   contextCmd: string;
+  outputFile: string;
   prompt: string;
 }
 
@@ -91,6 +95,12 @@ function classifyFlag(
     state.contextCmd = next;
     return { kind: "advance", skip: 2 };
   }
+  if (a === "--output-file") {
+    if (next === undefined) return { kind: "error", message: "error: --output-file requires PATH" };
+    if (next.startsWith("-")) return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
+    state.outputFile = next;
+    return { kind: "advance", skip: 2 };
+  }
   if (a === "-h" || a === "--help") return { kind: "help" };
   if (a === "--") return { kind: "stop" };
   if (a.startsWith("-")) return { kind: "error", message: `error: unknown flag: ${a}` };
@@ -104,6 +114,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     outputFormat: "text",
     file: "",
     contextCmd: "",
+    outputFile: "",
     prompt: "",
   };
   let i = 0;
@@ -123,6 +134,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     outputFormat: state.outputFormat,
     file: state.file,
     contextCmd: state.contextCmd,
+    outputFile: state.outputFile,
     prompt: state.prompt,
   };
 }
@@ -137,10 +149,17 @@ function emitHelp(): void {
       `  bun tools/peer-call/gemini.ts --model NAME "prompt text"\n` +
       `  bun tools/peer-call/gemini.ts --file PATH "prompt text"\n` +
       `  bun tools/peer-call/gemini.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun tools/peer-call/gemini.ts --output-file PATH "prompt text"\n` +
       `  bun tools/peer-call/gemini.ts --json "prompt text"\n` +
       `  bun tools/peer-call/gemini.ts --stream "prompt text"\n` +
       `\n` +
-      `Routing: wraps gemini -p (non-interactive headless mode).\n`,
+      `Routing: wraps gemini -p (non-interactive headless mode).\n` +
+      `\n` +
+      `Output capture: full stdout is teed to --output-file PATH (or an\n` +
+      `auto-generated path under /tmp/peer-call-output/). The path is\n` +
+      `emitted as a final-line "OUTPUT-FILE: <path>" marker so callers\n` +
+      `can recover the full response when stream output is paginated\n` +
+      `or truncated by an upstream buffer.\n`,
   );
 }
 
@@ -221,6 +240,135 @@ function runContextCmd(contextCmd: string): string {
   return `${result.stdout}${result.stderr}`.slice(0, CTX_HEAD_BYTES);
 }
 
+interface OutputCaptureResult {
+  readonly ok: boolean;
+  readonly path: string;
+  readonly error: string;
+}
+
+function makeAutoPath(dir: string): string {
+  const ts = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d+Z$/, "Z");
+  const rand = Math.random().toString(36).slice(2, 8);
+  return join(dir, `${ts}-gemini-${rand}.md`);
+}
+
+function resolveOutputFile(explicitPath: string): OutputCaptureResult {
+  if (explicitPath.startsWith("-")) {
+    return {
+      ok: false,
+      path: "",
+      error: `--output-file path cannot begin with '-': ${explicitPath}`,
+    };
+  }
+  if (explicitPath.length > 0) {
+    try {
+      mkdirSync(dirname(explicitPath), { recursive: true });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return {
+        ok: false,
+        path: "",
+        error: `failed to create parent dir for: ${explicitPath}: ${message}`,
+      };
+    }
+    return { ok: true, path: explicitPath, error: "" };
+  }
+  const baseTmp = process.env["PEER_CALL_OUTPUT_DIR"] ?? "/tmp/peer-call-output";
+  try {
+    mkdirSync(baseTmp, { recursive: true });
+  } catch {
+    const fallback = join(tmpdir(), "peer-call-output");
+    try {
+      mkdirSync(fallback, { recursive: true });
+    } catch (err2) {
+      const message = err2 instanceof Error ? err2.message : String(err2);
+      return {
+        ok: false,
+        path: "",
+        error: `failed to create output directory ${baseTmp} or fallback ${fallback}: ${message}`,
+      };
+    }
+    return { ok: true, path: makeAutoPath(fallback), error: "" };
+  }
+  return { ok: true, path: makeAutoPath(baseTmp), error: "" };
+}
+
+interface SpawnTeeResult {
+  readonly status: number;
+  readonly note: string;
+  readonly captureError: string;
+}
+
+async function spawnAndTee(
+  cmd: string,
+  args: readonly string[],
+  outputPath: string,
+): Promise<SpawnTeeResult> {
+  return new Promise((resolvePromise) => {
+    let captureError = "";
+    let writeStream: ReturnType<typeof createWriteStream> | undefined;
+    try {
+      writeStream = createWriteStream(outputPath, { flags: "w" });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      resolvePromise({
+        status: 1,
+        note: `failed to open capture file: ${outputPath}`,
+        captureError: message,
+      });
+      return;
+    }
+    writeStream.on("error", (err: Error) => {
+      captureError = err.message;
+    });
+
+    let child;
+    try {
+      // eslint-disable-next-line sonarjs/no-os-command-from-path
+      child = spawn(cmd, args as string[], { stdio: ["inherit", "pipe", "inherit"] });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      writeStream.end();
+      resolvePromise({ status: 1, note: `spawn failed: ${message}`, captureError });
+      return;
+    }
+
+    if (child.stdout !== null) {
+      child.stdout.on("data", (chunk: Buffer) => {
+        process.stdout.write(chunk);
+        if (writeStream !== undefined) writeStream.write(chunk);
+      });
+    }
+
+    child.on("error", (err: NodeJS.ErrnoException) => {
+      const code = err.code ?? "";
+      if (writeStream !== undefined) writeStream.end();
+      if (code === "ENOENT") {
+        resolvePromise({ status: 127, note: "command not found on PATH (ENOENT)", captureError });
+      } else if (code !== "") {
+        resolvePromise({ status: 1, note: `spawn failed (${code})`, captureError });
+      } else {
+        resolvePromise({ status: 1, note: `spawn error: ${err.message}`, captureError });
+      }
+    });
+
+    child.on("close", (status, signal) => {
+      const finalize = (): void => {
+        const classified = classifySpawnFailure(status, signal, undefined);
+        resolvePromise({ status: classified.status, note: classified.note, captureError });
+      };
+      if (writeStream !== undefined) {
+        writeStream.end(finalize);
+      } else {
+        finalize();
+      }
+    });
+  });
+}
+
 interface SpawnError {
   readonly code?: string;
 }
@@ -297,7 +445,7 @@ function buildFullPrompt(args: Args): PromptResult {
   return { ok: true, value: full };
 }
 
-export function main(argv: readonly string[]): number {
+export async function main(argv: readonly string[]): Promise<number> {
   const parsed = parseArgs(argv);
   if ("help" in parsed) {
     emitHelp();
@@ -310,8 +458,6 @@ export function main(argv: readonly string[]): number {
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
     process.stderr.write("see: bun tools/peer-call/gemini.ts --help\n");
-    // Exit code 1 = invocation/usage error per tools/peer-call/README.md
-    // (uniform 0/1/2 across all three peer-call wrappers).
     return 1;
   }
 
@@ -329,12 +475,12 @@ export function main(argv: readonly string[]): number {
     return 1;
   }
 
-  // gemini invocation: --approval-mode plan keeps the call read-only
-  // (per gemini --help: plan = "read-only mode"). Earlier draft used
-  // --yolo which auto-approved ALL tool calls including writes — that
-  // violates the "peer-call is read-only" contract per Copilot review
-  // on PR #28. Pass --skip-trust so the workspace doesn't gate on
-  // per-session trust prompts.
+  const captureFile = resolveOutputFile(parsed.outputFile);
+  if (!captureFile.ok) {
+    process.stderr.write(`error: ${captureFile.error}\n`);
+    return 1;
+  }
+
   const args: string[] = [
     "-p",
     promptResult.value,
@@ -348,32 +494,31 @@ export function main(argv: readonly string[]): number {
     args.push("-m", parsed.model);
   }
 
-  const result = spawnSync(
-    // eslint-disable-next-line sonarjs/no-os-command-from-path
-    "gemini",
-    args,
-    {
-      stdio: "inherit",
-      maxBuffer: SPAWN_MAX_BUFFER,
-    },
-  );
+  const result = await spawnAndTee("gemini", args, captureFile.path);
 
-  const classified = classifySpawnFailure(
-    result.status,
-    result.signal,
-    result.error as SpawnError | undefined,
-  );
-  if (classified.note.length > 0) {
-    process.stderr.write(`gemini: ${classified.note}\n`);
+  if (result.note.length > 0) {
+    process.stderr.write(`gemini: ${result.note}\n`);
   }
-  if (classified.status !== 0) {
+  if (result.captureError.length > 0) {
+    process.stderr.write(`gemini: capture-write error: ${result.captureError}\n`);
+  }
+  if (result.status !== 0) {
     process.stderr.write("\n");
-    process.stderr.write(`gemini exited with code ${String(classified.status)}\n`);
+    process.stderr.write(`gemini exited with code ${String(result.status)}\n`);
+    process.stdout.write(`OUTPUT-FILE: ${captureFile.path}\n`);
     return 2;
   }
+  process.stdout.write(`OUTPUT-FILE: ${captureFile.path}\n`);
   return 0;
 }
 
 if (import.meta.main) {
-  process.exit(main(process.argv.slice(2)));
+  void main(process.argv.slice(2)).then(
+    (code) => process.exit(code),
+    (err) => {
+      const message = err instanceof Error ? err.message : String(err);
+      process.stderr.write(`fatal: ${message}\n`);
+      process.exit(1);
+    },
+  );
 }

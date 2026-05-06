@@ -338,40 +338,47 @@ function fetchPR(
   );
   const pr = parseJsonOrExit<Record<string, unknown>>(prStdout, "fetchPR.gh-pr-view");
 
-  // Paginate review threads — discussion-heavy PRs can have >50.
-  // gh's --paginate flag follows pageInfo for any cursor field named
-  // `endCursor`; we expose the cursor in our query so it works.
-  const threadsStdout = runGhOrExit(
-    [
+  // Paginate review threads manually — discussion-heavy PRs can have >50.
+  // `gh api graphql --paginate` concatenates pages WITHOUT newlines (unlike
+  // `gh api --paginate` for REST, which is line-oriented), so a
+  // split('\n')-then-parse approach silently drops continuation pages on
+  // PRs with >100 threads. Drive pagination from TS via the endCursor.
+  const allNodes: ReviewThreadNode[] = [];
+  let endCursor: string | null = null;
+  let hasNextPage = true;
+  const threadsQuery = `query=query($o:String!,$r:String!,$n:Int!,$endCursor:String){repository(owner:$o,name:$r){pullRequest(number:$n){reviewThreads(first:100,after:$endCursor){pageInfo{hasNextPage endCursor}nodes{isResolved}}}}}`;
+  while (hasNextPage) {
+    const args = [
       "api",
       "graphql",
-      "--paginate",
       "-f",
-      `query=query($o:String!,$r:String!,$n:Int!,$endCursor:String){repository(owner:$o,name:$r){pullRequest(number:$n){reviewThreads(first:100,after:$endCursor){pageInfo{hasNextPage endCursor}nodes{isResolved}}}}}`,
+      threadsQuery,
       "-F",
       `o=${owner}`,
       "-F",
       `r=${repo}`,
       "-F",
       `n=${number}`,
-    ],
-    "fetchPR.gh-graphql-threads",
-  );
-  // gh --paginate emits one JSON object per page on stdout, separated by
-  // newlines (NDJSON-style for gh-graphql output). Aggregate the nodes.
-  const allNodes: ReviewThreadNode[] = [];
-  for (const line of threadsStdout.split("\n")) {
-    if (!line.trim()) continue;
+    ];
+    if (endCursor !== null) args.push("-f", `endCursor=${endCursor}`);
+    const pageStdout = runGhOrExit(args, "fetchPR.gh-graphql-threads");
     const parsed = parseJsonOrExit<{
       data?: {
         repository?: {
-          pullRequest?: { reviewThreads?: { nodes?: ReviewThreadNode[] } };
+          pullRequest?: {
+            reviewThreads?: {
+              pageInfo?: { hasNextPage?: boolean; endCursor?: string | null };
+              nodes?: ReviewThreadNode[];
+            };
+          };
         };
       };
-    }>(line, "fetchPR.gh-graphql-threads.page");
-    const nodes: ReviewThreadNode[] =
-      parsed.data?.repository?.pullRequest?.reviewThreads?.nodes ?? [];
-    allNodes.push(...nodes);
+    }>(pageStdout, "fetchPR.gh-graphql-threads.page");
+    const threads = parsed.data?.repository?.pullRequest?.reviewThreads;
+    allNodes.push(...(threads?.nodes ?? []));
+    hasNextPage = threads?.pageInfo?.hasNextPage ?? false;
+    endCursor = threads?.pageInfo?.endCursor ?? null;
+    if (hasNextPage && endCursor === null) break; // safety: stale cursor
   }
   const reviewThreads = { nodes: allNodes };
 

@@ -48,6 +48,8 @@ on:
       - docs/VISION.md
       - docs/ROADMAP.md
       - docs/EXPERT-REGISTRY.md
+      - .claude/skills/**
+      - .claude/agents/**
       - tools/hygiene/check-role-ref-on-current-state-surfaces.sh
       - .github/workflows/role-ref-current-state-surfaces-lint.yml
   push:
@@ -64,6 +66,8 @@ on:
       - docs/VISION.md
       - docs/ROADMAP.md
       - docs/EXPERT-REGISTRY.md
+      - .claude/skills/**
+      - .claude/agents/**
       - tools/hygiene/check-role-ref-on-current-state-surfaces.sh
       - .github/workflows/role-ref-current-state-surfaces-lint.yml
   workflow_dispatch: {}
