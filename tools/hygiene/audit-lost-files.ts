@@ -142,6 +142,16 @@ async function classOrphanBranches(ghAvailable: boolean): Promise<void> {
     "--format=%(refname:short)",
     "refs/remotes/origin/",
   ]);
+  // Per Codex 2026-05-06 review on PR #1702: surface git failures
+  // explicitly so the orphan-branch class isn't silently reported as
+  // empty when origin/main is missing or the local repo is bare.
+  if (refsResult.exitCode !== 0) {
+    console.log(
+      `SKIP: git for-each-ref exited ${refsResult.exitCode}; orphan-branch ref scan unreliable. stderr: ${refsResult.stderr.trim()}`,
+    );
+    console.log("");
+    return;
+  }
   const unmerged = new Set(
     refsResult.stdout
       .split("\n")

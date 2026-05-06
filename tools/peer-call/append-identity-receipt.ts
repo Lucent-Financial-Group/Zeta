@@ -40,6 +40,7 @@
 import { appendFileSync, readFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 
 const VALID_ACTORS = ["vera", "amara", "ani", "otto", "aaron"] as const;
@@ -81,7 +82,11 @@ interface Args {
 
 function repoRoot(): string {
   // Locate repo root via git rev-parse from script location.
-  const here = dirname(new URL(import.meta.url).pathname);
+  // Per Codex + Copilot 2026-05-06 review on PR #1702: convert
+  // import.meta.url via fileURLToPath() so paths are not percent-
+  // encoded (spaces in user dir) and are Windows-safe (no leading
+  // slash on file:///C:/...).
+  const here = dirname(fileURLToPath(import.meta.url));
   const result = spawnSync("git", ["-C", here, "rev-parse", "--show-toplevel"], {
     encoding: "utf8",
   });
@@ -299,7 +304,19 @@ function checkNoCollision(path: string, receiptId: string): void {
 }
 
 function main(): number {
-  const parsed = parseArgs(process.argv.slice(2));
+  // Per Copilot 2026-05-06 review on PR #1702: parseArgs.next() can
+  // throw when a flag is missing its value (e.g. `--actor` at end of
+  // argv); catch the throw at main() so the script exits with a
+  // user-friendly error instead of an unhandled-exception traceback.
+  let parsed: ReturnType<typeof parseArgs>;
+  try {
+    parsed = parseArgs(process.argv.slice(2));
+  } catch (e) {
+    process.stderr.write(
+      `append-identity-receipt: ${(e as Error).message}\n\n${usage()}`,
+    );
+    return 1;
+  }
   if ("help" in parsed) {
     process.stdout.write(usage());
     return 0;

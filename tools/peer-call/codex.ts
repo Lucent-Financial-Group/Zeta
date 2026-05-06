@@ -36,6 +36,7 @@
 import { closeSync, openSync, readSync, readFileSync, statSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
@@ -287,7 +288,13 @@ function findRepoRoot(): string | undefined {
   // Walk upward from this script's directory until we find a .git
   // entry. Mirrors the bash original's `git rev-parse --show-toplevel`
   // call but without requiring git on PATH.
-  let dir = resolve(dirname(new URL(import.meta.url).pathname));
+  // Per Codex + Copilot 2026-05-06 review on PR #1702: convert
+  // import.meta.url via fileURLToPath() so paths are not percent-
+  // encoded (e.g. spaces in user dir) and are Windows-safe (no
+  // leading slash on file:///C:/...). Bare `new URL().pathname`
+  // returns the percent-encoded path with a leading slash on
+  // Windows, breaking statSync downstream.
+  let dir = resolve(dirname(fileURLToPath(import.meta.url)));
   // Safety bound: ~32 levels max.
   for (let i = 0; i < 32; i += 1) {
     try {

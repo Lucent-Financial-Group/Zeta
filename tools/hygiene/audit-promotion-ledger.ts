@@ -535,10 +535,13 @@ async function main(): Promise<number> {
       console.log(`  - line ${pf.lineNo}: ${pf.reason}`);
     }
     console.log("");
-    // If the file is missing, exit early -- nothing else to do.
-    if (!existsSync(LEDGER_PATH)) {
-      return 2;
-    }
+    // Per Codex 2026-05-06 review on PR #1702: parse failures in
+    // an existing ledger MUST gate CI. The header documents exit
+    // code 2 for an unparseable ledger; previously this branch only
+    // returned 2 when the file was missing, so JSONL syntax corruption
+    // could still exit 0 after passing through validation. Fail-fast
+    // on any parse failure (file missing OR malformed lines).
+    return 2;
   }
 
   reportSchemaDoc(parse.schemaDoc);
