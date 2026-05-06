@@ -15,6 +15,7 @@ directory is Codex's substrate; Claude Code's lives at
 ├── AGENTS.md                    — Codex harness addendum
 ├── CURRENT-codex.md             — compact current-state handoff
 ├── bin/                         — Codex harness scripts
+│   ├── codex-loop-health.ts      — launchd loop health probe
 │   └── codex-loop-tick.ts        — launchd tick runner
 └── skills/                      — Codex-authored skill bundles
     └── <skill-name>/            — one directory per skill

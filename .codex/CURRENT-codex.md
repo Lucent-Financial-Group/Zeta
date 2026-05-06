@@ -48,6 +48,7 @@ Status:
 launchctl print gui/$(id -u)/com.zeta.codex-loop
 tail -50 ~/Library/Logs/zeta-codex-loop/runner.log
 tail -80 ~/Library/Logs/zeta-codex-loop/ticks.log
+bun ~/.local/share/zeta-codex-loop/Zeta/.codex/bin/codex-loop-health.ts
 ```
 
 Stop:

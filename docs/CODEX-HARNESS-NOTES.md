@@ -129,7 +129,25 @@ tail -50 ~/Library/Logs/zeta-codex-loop/runner.log
 tail -80 ~/Library/Logs/zeta-codex-loop/ticks.log
 tail -80 ~/Library/Logs/zeta-codex-loop/ticks.err
 cat ~/Library/Application\ Support/ZetaCodexLoop/last-codex-run.json
+bun ~/.local/share/zeta-codex-loop/Zeta/.codex/bin/codex-loop-health.ts
 ```
+
+The health probe returns:
+
+- exit `0` with `"severity": "ok"` when launchd is loaded, the
+  runner log is fresh, the lock is clear or young, and the
+  last Codex gate did not fail.
+- exit `1` with `"severity": "attention"` when the loop is
+  alive but the last Codex gate or launchd exit was non-zero.
+- exit `2` with `"severity": "stuck"` when launchd is missing,
+  the runner log is stale, a Codex gate is still running past
+  timeout + grace, or the lock points at a dead / over-time
+  process.
+
+The key distinction is deliberate: `codex=wait due_in=...` is
+not stuck. It means the heartbeat is alive and the model gate
+is cooling down. Stuck means the outside observer can no
+longer see fresh heartbeats or a bounded Codex gate exit.
 
 Start / reload:
 
