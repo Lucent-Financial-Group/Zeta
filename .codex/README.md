@@ -12,6 +12,11 @@ directory is Codex's substrate; Claude Code's lives at
 ```
 .codex/
 ├── README.md                    — this file
+├── AGENTS.md                    — Codex harness addendum
+├── CURRENT-codex.md             — compact current-state handoff
+├── bin/                         — Codex harness scripts
+│   ├── codex-loop-health.ts      — launchd loop health probe
+│   └── codex-loop-tick.ts        — launchd tick runner
 └── skills/                      — Codex-authored skill bundles
     └── <skill-name>/            — one directory per skill
         ├── SKILL.md             — frontmatter + instructions
@@ -47,12 +52,23 @@ but a Codex CLI session owns the edits.
 
 When a Codex CLI session first opens Zeta, it reads
 `AGENTS.md` (per Codex-CLI convention) which already
-provides the universal handbook. This `.codex/README.md` is
-the Codex-harness-specific entry-point, parallel to
-`CLAUDE.md` for Claude Code. Future Codex-CLI sessions can
-expand this README with session-bootstrap content as the
-Claude Code loop-agent's first-class-Codex research (PR #231)
-described.
+provides the universal handbook. Then it reads
+`.codex/AGENTS.md` for Codex-specific bootstrap and
+`.codex/CURRENT-codex.md` for compact current-state handoff.
+This `.codex/README.md` remains the Codex home map, parallel
+to the role that `CLAUDE.md` plays for Claude Code.
+
+When multiple agents are active on the same machine, Codex
+uses the shared-machine / shared-folder mode in
+`docs/AGENT-CLAIM-PROTOCOL.md`: dedicated worktree for
+writes, pushed `claim/<slug>` branch for task ownership, and
+local `$(git rev-parse --git-common-dir)/agent-heartbeats/*.json`
+for checkout/path intent.
+
+The host-level Codex loop is documented at
+[`docs/CODEX-HARNESS-NOTES.md`](../docs/CODEX-HARNESS-NOTES.md).
+It uses macOS `launchd` because Codex does not have Claude
+Code's native `CronCreate` / `CronList` tool surface.
 
 ## Skill authorship convention
 
@@ -81,6 +97,9 @@ described.
 - [`docs/research/openai-codex-cli-capability-map.md`](../docs/research/openai-codex-cli-capability-map.md)
   — Codex CLI capability map; catalogs surface area of the
   OpenAI Codex CLI harness relative to Claude Code.
+- [`docs/CODEX-HARNESS-NOTES.md`](../docs/CODEX-HARNESS-NOTES.md)
+  — host-local Codex launchd loop, status commands, logs, and
+  rediscovery notes.
 
 ## Provenance
 

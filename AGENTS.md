@@ -492,7 +492,9 @@ truth for any rule that applies across harnesses.
   Currently absent; add if and when we use Gemini
   CLI against this repo.
 - **`CODEX.md`** or **`.codex/AGENTS.md`** —
-  OpenAI Codex equivalent. Currently absent.
+  OpenAI Codex equivalent. Present at
+  `.codex/AGENTS.md`; it is additive and may not
+  contradict this file or `GOVERNANCE.md`.
 - **`.github/copilot-instructions.md`** — GitHub
   Copilot Workspace / Chat instructions. Present
   and factory-managed; audited on the same cadence
