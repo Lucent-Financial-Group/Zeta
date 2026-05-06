@@ -79,7 +79,7 @@ This follows the Vera #659 triage claim recommendation: land a fresh current-sta
 
   <pre>
   Trajectory RESUME packets elsewhere use a consistent header metadata style (e.g., `**Status**`, `**Current blocker**`, `**Next concrete action**`, `**Last updated**` in docs/trajectories/typescript-bun-migration/RESUME.md:3-8). Consider matching that formatting here to keep the trajectory packet surface uniform and easy to scan.
-  
+
   </pre>
 
 ## Fix commits (touching thread paths)
