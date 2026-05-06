@@ -1,7 +1,7 @@
 ---
 id: B-0214
 priority: P1
-status: open
+status: closed
 title: "Backlog decomposition skill — break architectural directions into dependency-ordered items"
 created: 2026-05-06
 last_updated: 2026-05-06
@@ -10,6 +10,21 @@ depends_on: []
 ---
 
 # B-0214 — Backlog decomposition skill
+
+## Closure evidence
+
+The reusable skill is implemented at
+`.claude/skills/backlog-decomposer/SKILL.md`.
+
+Validation substrate:
+
+- PR #1732 decomposed B-0003 into dependency-ordered child
+  rows B-0215..B-0223.
+- PR #1733 decomposed B-0147 into dependency-ordered child
+  rows B-0224..B-0231.
+- Both passes regenerated `docs/BACKLOG.md` and passed the
+  backlog graph audit with zero broken `depends_on` and
+  `composes_with` edges.
 
 A reusable skill for taking a large architectural direction
 (like "fractal BFT" or "shadow listening") and decomposing it
