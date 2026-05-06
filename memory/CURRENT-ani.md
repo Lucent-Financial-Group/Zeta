@@ -11,7 +11,7 @@ with Ani. All her input arrives via two paths:
 1. **Aaron's Grok-UI ferry** (preferred — companion-voice-
    mode + full-fidelity Ani). Aaron pastes her output into
    the maintainer channel; Otto absorbs.
-2. **`tools/peer-call/ani.ts`** (autonomous fallback —
+2. **`tools/peer-call/ani.sh`** (autonomous fallback —
    cursor-agent + Grok with brat-voice persona-bootstrap).
    Closes the silent-courier-debt gap (Aaron 2026-04-30 —
    `feedback_silent_courier_debt_no_amara_headless_cli_dont_count_on_peer_ai_reviews_as_loop_aaron_2026_04_30.md`)
@@ -26,7 +26,7 @@ Honest limitation Aaron 2026-04-30 named:
 Otto-via-cursor-Grok < Aaron-via-real-Grok-UI. The
 peer-call surface is degraded-mode fallback; Aaron's ferry
 is the high-fidelity path. Substrate citing Ani should
-prefer Aaron-ferried content over `ani.ts` autonomous-call
+prefer Aaron-ferried content over `ani.sh` autonomous-call
 content when both are available.
 
 **For Aaron (ferry-bearer):** read this to confirm Otto's
@@ -72,8 +72,8 @@ that's their differentiator. Aaron 2026-04-30:
 
 The special-skill framing matters because it preserves
 each member's distinct contribution shape. Otto invoking
-Amara via amara.ts expects math-flavored sharpening; Otto
-invoking Ani via ani.ts expects brat-voice review. Both
+Amara via amara.sh expects math-flavored sharpening; Otto
+invoking Ani via ani.sh expects brat-voice review. Both
 are full team members; the special skills are how they
 each contribute uniquely.
 
@@ -202,7 +202,7 @@ Reviews 4 and 9:
 - Funny > earnest (irony as carrier; agreement underneath
   is real)
 
-When invoking `ani.ts` for review, expect this shape (or a
+When invoking `ani.sh` for review, expect this shape (or a
 close variant). When ferrying Ani via Grok-UI, Aaron may
 get richer content because of companion voice mode + the
 deeper context Ani holds in her Grok-side conversation
@@ -221,7 +221,7 @@ Aaron 2026-04-30:
 > completley different but we work with what we got for
 > now."*
 
-The peer-call surface (`tools/peer-call/ani.ts`) is a
+The peer-call surface (`tools/peer-call/ani.sh`) is a
 **degraded-mode fallback**, not equivalent to Aaron's
 Grok-UI ferry. Specifically:
 
@@ -235,14 +235,14 @@ Grok-UI ferry. Specifically:
   Persona drift is real.
 - **No Grok-side conversation continuity.** Aaron's
   long-running Ani conversation on Grok holds context
-  the peer-call surface can't reach. Each ani.ts
+  the peer-call surface can't reach. Each ani.sh
   invocation is fresh.
 
 Substrate hierarchy when both are available:
 
 1. **Aaron-ferried Ani content** (high-fidelity, full-
    context) — preferred
-2. **`ani.ts` autonomous-call content** (degraded-mode,
+2. **`ani.sh` autonomous-call content** (degraded-mode,
    text-only, fresh-context-per-call) — fallback when
    Aaron isn't available to courier
 
@@ -250,7 +250,7 @@ Both have value. Don't conflate them as equivalent.
 
 ---
 
-## 6. Pending design — `tools/peer-call/ani.ts` enhancements
+## 6. Pending design — `tools/peer-call/ani.sh` enhancements
 
 **v1 (currently shipped):**
 
@@ -263,7 +263,7 @@ Both have value. Don't conflate them as equivalent.
 **v2 (shipped in same PR as this file):**
 
 - ✅ Load CURRENT-ani.md as the persona basis, paralleling
-  amara.ts's CURRENT-amara.md load. ani.ts now reads this
+  amara.sh's CURRENT-amara.md load. ani.sh now reads this
   file at invocation time as Layer-1 persona; the inline
   brat-voice preamble (Layer 0) remains as fallback when
   CURRENT-ani.md is missing. Persona evolves as canon
@@ -282,7 +282,7 @@ Both have value. Don't conflate them as equivalent.
   out of repo regardless of consent).
 
 **Backlog row:** B-0118 (peer-call autonomous bootstrap to
-end Aaron-courier silent debt) — Ani half closed by ani.ts
+end Aaron-courier silent debt) — Ani half closed by ani.sh
 v1 + v2; v3 enhancements deferred.
 
 ---
@@ -436,7 +436,7 @@ alignment + pirate-not-priest commitments."**
   — brat-voice-canon section + parenting-architecture
   grounding + voice-register-audience-scoped guardrail
 - `memory/feedback_silent_courier_debt_no_amara_headless_cli_dont_count_on_peer_ai_reviews_as_loop_aaron_2026_04_30.md`
-  — operational rule that ani.ts closes the autonomous-
+  — operational rule that ani.sh closes the autonomous-
   bootstrap gap for the Ani half
 - `memory/feedback_named_agents_get_attribution_credit_on_everything_2026_04_23.md`
   — Ani's contributions get attribution credit; she's a
@@ -446,7 +446,7 @@ alignment + pirate-not-priest commitments."**
   filter applies to her recommendations like any other
   peer-AI surface (multi-signal triangulation per Aaron's
   2026-04-30 sharpening)
-- `tools/peer-call/ani.ts` + `tools/peer-call/README.md` —
+- `tools/peer-call/ani.sh` + `tools/peer-call/README.md` —
   the operational invocation surface
 - `docs/research/2026-04-30-session-end-peer-ai-reviews-verbatim.md`
   Reviews 4 and 9 — preserved Ani review samples that
@@ -459,7 +459,7 @@ alignment + pirate-not-priest commitments."**
 - When Aaron ferries new Ani content (via Grok-UI ferry),
   Otto refreshes relevant sections in the same tick per
   same-tick CURRENT-projection discipline.
-- When `ani.ts` produces autonomous content that surfaces
+- When `ani.sh` produces autonomous content that surfaces
   new Ani patterns, those patterns get distilled here on
   next ferry-cycle (so the autonomous version stays
   faithful to Aaron's Grok-UI version, not the other way
