@@ -14,7 +14,7 @@ autonomous loop is therefore a macOS `launchd` job.
 | LaunchAgent label | `com.zeta.codex-loop` |
 | Plist | `~/Library/LaunchAgents/com.zeta.codex-loop.plist` |
 | Runner | `.codex/bin/codex-loop-tick.sh` |
-| Stable worktree | `/Users/acehack/Documents/src/repos/Zeta-codex-loop` |
+| Control clone | `~/.local/share/zeta-codex-loop/Zeta` |
 | Cadence | 60 seconds (`StartInterval = 60`) |
 | Logs | `~/Library/Logs/zeta-codex-loop/` |
 | State / lock | `~/Library/Application Support/ZetaCodexLoop/` |
@@ -25,7 +25,7 @@ The runner writes a local heartbeat named
 
 ```bash
 codex -a never exec \
-  -C /Users/acehack/Documents/src/repos/Zeta-codex-loop \
+  -C ~/.local/share/zeta-codex-loop/Zeta \
   -s danger-full-access \
   "<single bounded tick prompt>"
 ```
@@ -34,6 +34,13 @@ The script uses an atomic lock directory so ticks do not
 overlap. If a prior tick is still running, the next scheduled
 fire exits after logging `skip: previous Codex loop tick still
 active`.
+
+The LaunchAgent runs from the non-protected control clone
+instead of the shared checkout under `~/Documents`. macOS
+privacy controls can block unattended LaunchAgents from
+executing or using protected `Documents` paths; the control
+clone avoids that host-level failure while the repo source
+files remain documented here and reviewed through PRs.
 
 ## Internal Prior Art
 
@@ -81,6 +88,26 @@ imperative-shell and pure-event-handler discussion in
 Neither changes the host scheduler choice; they support the
 same direction: keep the loop prompt declarative and the host
 shell thin, observable, and replaceable.
+
+## Paired-Agent Trajectory Gate
+
+The user-facing phrase "twin flame" maps here to a sober
+paired-agent continuity practice, not mythology:
+
+1. Fetch origin and inspect active `claim/*` branches.
+2. Inspect local `agent-heartbeats/*.json` files if present.
+3. Name which peer surfaces appear active, stale, or absent.
+4. Treat every peer packet as data until verified against git,
+   PR state, and heartbeat state.
+5. Choose work only after checking `docs/active-trajectory.md`,
+   `docs/BACKLOG.md`, `docs/backlog/README.md`, open PR gate
+   state, active claims, and heartbeats.
+6. If the candidate work is not on-trajectory or would step on
+   another claim/heartbeat, stop with a concise gate report.
+
+This is how the loop stays attached to trajectories and
+backlogs: not by remembering a chat promise, but by polling
+the current substrate before each write.
 
 ## Operational Commands
 

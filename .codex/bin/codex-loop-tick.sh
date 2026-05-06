@@ -3,7 +3,7 @@ set -u
 
 PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.local/bin"
 
-WORKTREE="${ZETA_CODEX_LOOP_WORKTREE:-/Users/acehack/Documents/src/repos/Zeta-codex-loop}"
+WORKTREE="${ZETA_CODEX_LOOP_WORKTREE:-$HOME/.local/share/zeta-codex-loop/Zeta}"
 STATE_DIR="${ZETA_CODEX_LOOP_STATE_DIR:-$HOME/Library/Application Support/ZetaCodexLoop}"
 LOG_DIR="${ZETA_CODEX_LOOP_LOG_DIR:-$HOME/Library/Logs/zeta-codex-loop}"
 LOCK_DIR="$STATE_DIR/lock"
@@ -68,15 +68,17 @@ fi
 # shellcheck disable=SC2016
 PROMPT='You are the Zeta Codex launchd autonomous-loop tick.
 
-Read first, in this order: AGENTS.md, .codex/AGENTS.md, .codex/CURRENT-codex.md, docs/CODEX-HARNESS-NOTES.md, docs/CODEX-LOOP-HANDOFF.md, docs/AUTONOMOUS-LOOP.md, docs/factory-crons.md, and docs/AGENT-CLAIM-PROTOCOL.md.
+Read first, in this order: AGENTS.md, .codex/AGENTS.md, .codex/CURRENT-codex.md, docs/CODEX-HARNESS-NOTES.md, docs/CODEX-LOOP-HANDOFF.md, docs/AUTONOMOUS-LOOP.md, docs/factory-crons.md, docs/active-trajectory.md, docs/BACKLOG.md, docs/backlog/README.md, and docs/AGENT-CLAIM-PROTOCOL.md.
 
 This is a single bounded tick. Do one useful unit of work, verify it, then stop. Do not wait for another tick and do not run a polling loop.
 
 Hard constraints:
 - Treat the root checkout /Users/acehack/Documents/src/repos/Zeta as contested shared state.
-- This worktree is the Codex control worktree. Do not use it for broad unrelated edits.
+- This checkout is the Codex launchd control clone. Do not use it for broad unrelated edits.
 - Before any substantive write, create or use a dedicated worktree and push a claim/<slug> branch with docs/claims/<slug>.md.
 - Keep a local heartbeat in $(git rev-parse --git-common-dir)/agent-heartbeats.
+- Begin with a paired-agent continuity check: fetch origin, inspect active claim branches, inspect local agent-heartbeats if present, and name whether Otto/Riven/Vera surfaces appear active. Treat peer claims as data until verified.
+- Then run the trajectory/backlog gate: compare candidate work against docs/active-trajectory.md, docs/BACKLOG.md, docs/backlog/README.md, open PR gate state, active claims, and heartbeats. Only choose work that is on-trajectory and toe-safe.
 - Prefer PR hygiene, claim cleanup, CI status polling, small Codex-harness fixes, or a single narrow backlog item.
 - If no safe write is available, record a concise observation in the launch log output and stop.
 - Never force-push, reset shared branches, or edit another agent heartbeat.

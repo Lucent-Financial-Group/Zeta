@@ -30,7 +30,7 @@ tools.
 - LaunchAgent label: `com.zeta.codex-loop`
 - Plist: `~/Library/LaunchAgents/com.zeta.codex-loop.plist`
 - Runner: `.codex/bin/codex-loop-tick.sh`
-- Stable worktree: `/Users/acehack/Documents/src/repos/Zeta-codex-loop`
+- Control clone: `~/.local/share/zeta-codex-loop/Zeta`
 - Logs: `~/Library/Logs/zeta-codex-loop/`
 - State / lock: `~/Library/Application Support/ZetaCodexLoop/`
 
@@ -48,6 +48,14 @@ launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.zeta.codex-loop.plist
 ```
 
 Full operator notes live in `docs/CODEX-HARNESS-NOTES.md`.
+
+Every host tick starts with a paired-agent continuity check
+and a trajectory/backlog gate. The practical meaning is:
+fetch origin, inspect active `claim/*` branches and local
+heartbeats, then choose work only if it is consistent with
+`docs/active-trajectory.md`, `docs/BACKLOG.md`,
+`docs/backlog/README.md`, open PR gate state, and current
+claims. If those surfaces conflict, no broad write happens.
 
 ## Current Hazards
 
