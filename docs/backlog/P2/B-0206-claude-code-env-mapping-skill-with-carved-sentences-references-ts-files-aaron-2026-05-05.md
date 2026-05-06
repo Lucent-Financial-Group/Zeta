@@ -1,21 +1,24 @@
 ---
 id: B-0206
-title: Claude Code environment-mapping skill with carved-sentences-in-behavior referencing existing capability-maps + our TS files
 priority: P2
-status: backlog
+status: open
+title: Claude Code environment-mapping skill with carved-sentences-in-behavior referencing existing capability-maps + our TS files
+tier: factory-hygiene
+effort: S
+ask: re-run skill-creator workflow over .claude/skills/claude-code-env-mapping/ (already landed direct in PR #1702)
 created: 2026-05-05
-created_by: aaron
-owner: tbd (skill-creator workflow per GOVERNANCE §4)
+last_updated: 2026-05-05
 depends_on: []
 composes_with:
   - docs/research/claude-cli-capability-map.md
   - docs/research/codex-cli-first-class-2026-04-23.md
   - docs/research/grok-cli-capability-map.md
-  - .claude/commands/btw.md (existing /btw custom command)
+  - .claude/commands/btw.md
   - memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md
   - memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md
   - memory/feedback_carved_sentence_meme_compression_fits_working_memory_contagious_simple_and_true_aaron_2026_04_30.md
-  - memory/feedback_otto_holds_synthesis_weight_prior_art_grep_first_before_substrate_landing_aaron_made_concise_formulations_at_high_mental_cost_aaron_2026_05_05.md (PR #1701; prior-art-grep discipline)
+  - memory/feedback_otto_holds_synthesis_weight_prior_art_grep_first_before_substrate_landing_aaron_made_concise_formulations_at_high_mental_cost_aaron_2026_05_05.md
+tags: [claude-code, env-mapping, skill-creator-followup]
 ---
 
 # B-0206 — Claude Code environment-mapping skill with carved-sentences-in-behavior
@@ -47,7 +50,7 @@ A skill that **encodes harness-environment-mapping as carved-sentences-in-behavi
 
 **References** (the skill should explicitly cite + use):
 
-1. **Saved Claude Code Docs as substrate** — the env-mapping doc (commands + Interactive Mode Reference 2026) preserved at `docs/research/claude-code-env-mapping-2026-05-05.md` (or appropriate path)
+1. **Saved Claude Code Docs as substrate** — the env-mapping content lives at `docs/research/claude-cli-capability-map.md` (canonical capability map; the planned standalone `docs/research/2026-05-05-claude-code-env-mapping.md` was deleted in commit 3ce7a69 as a duplicate of the canonical map)
 2. **Existing capability-maps** — claude-cli-capability-map.md + codex-cli-first-class + grok-cli-capability-map.md (composes with the existing capability-map work; doesn't duplicate)
 3. **Our TS files** — `tools/peer-call/codex.ts` + `tools/peer-call/grok.ts` + `tools/peer-call/gemini.ts` + `tools/github/poll-pr-gate.ts` + the broader `tools/` TypeScript infrastructure (the skill knows what TS tooling exists and when to invoke each)
 4. **Existing `/btw` custom command** — `.claude/commands/btw.md` (the skill knows about /btw + its classification rules)
@@ -55,7 +58,7 @@ A skill that **encodes harness-environment-mapping as carved-sentences-in-behavi
 
 ## Skill creation must go through skill-creator workflow
 
-Per GOVERNANCE §4: skills are authored and modified only through the `skill-creator` workflow. This backlog row is the directive; the actual skill-creation runs the canonical draft → prompt-protector review → dry-run → commit workflow.
+Per GOVERNANCE §4: skills are authored and modified only through the `skill-creator` workflow. This row reflects current reality: PR #1702 landed `.claude/skills/claude-code-env-mapping/SKILL.md` via direct authoring (the original framing assumed a follow-up skill-creator run). The remaining open work captured by this row is to re-run the canonical draft → prompt-protector review → dry-run → commit workflow over the already-landed skill, treating the current file as the draft input. Status remains `open` until that pass completes.
 
 ## Acceptance criteria
 

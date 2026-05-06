@@ -8,7 +8,7 @@ type: feedback
 
 ## The carved sentence
 
-Aaron 2026-05-05 verbatim, after the agent's THIRD or FOURTH consecutive prior-art-grep failure in one session (proposed compression-cadence parallel to existing B-0161 P1; re-saved env-mapping content duplicating existing `claude-cli-capability-map.md`; re-asked-permission within authority-scope; etc.):
+Aaron 2026-05-05 verbatim, after the agent's THIRD or FOURTH consecutive prior-art-grep failure in one session (proposed compression-cadence parallel to existing B-0161 P1; re-saved env-mapping content duplicating existing `docs/research/claude-cli-capability-map.md`; re-asked-permission within authority-scope; etc.):
 
 > *"rule number one assume it's arleady done and you just have ot fine it"*
 >

@@ -12,6 +12,8 @@ bp_rules_cited: [BP-11]
 
 Capability skill. No persona lives here. Thin pointer; not a duplicate of the canonical capability map.
 
+> **Authoring-workflow note (PR #1702 review):** This skill landed via direct authoring rather than the canonical `skill-creator` workflow (GOVERNANCE §4). Re-running the canonical draft → prompt-protector review → dry-run → commit workflow over this skill is captured as follow-up against B-0206 (acceptance criterion 1).
+
 ## The canonical map
 
 The authoritative env-mapping is `docs/research/claude-cli-capability-map.md`. Refresh-on-cadence applies — Anthropic ships docs at high frequency. Current version-pin and revision date live in that doc's "Status" section header (plain Markdown — no YAML frontmatter on this doc today).
