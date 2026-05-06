@@ -134,7 +134,7 @@ removed at the next sweep.
 
 | Capability | Form in this repo | What we used it for on Zeta | State |
 |---|---|---|---|
-| `no-empty-dirs.sh` + allowlist | `tools/lint/` | Fail-fast on accidental empty-directory churn. | Active |
+| `no-empty-dirs.ts` + allowlist | `tools/lint/` | Fail-fast on accidental empty-directory churn. | Active |
 | `safety-clause-audit.sh` | `tools/lint/` | Custom safety-clause scanner. | Active |
 | Alignment audit trio: `audit_commit.sh`, `audit_personas.sh`, `audit_skills.sh`, `citations.sh` | `tools/alignment/` | Commit alignment, persona alignment, skill alignment, citation integrity — written for THIS factory's discipline. | Active |
 | `invariant-substrates/tally.ts` | `tools/invariant-substrates/` | Aaron's inventory probe for the composite-invariants pattern. | Active |
