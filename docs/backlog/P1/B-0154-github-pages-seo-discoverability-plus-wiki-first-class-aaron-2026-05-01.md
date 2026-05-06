@@ -4,10 +4,17 @@ priority: P1
 status: open
 title: GitHub Pages for SEO/discoverability + GitHub Wiki first-class integration (Aaron 2026-05-01)
 created: 2026-05-01
-last_updated: 2026-05-01
-decomposition: blob
+last_updated: 2026-05-06
+decomposition: clean
+children: [B-0232, B-0233, B-0234, B-0235, B-0236, B-0237]
 depends_on:
   - B-0047
+  - B-0232
+  - B-0233
+  - B-0234
+  - B-0235
+  - B-0236
+  - B-0237
 # Note: `depends_on` is a forward-compat schema field landed via the
 # 2026-05-01 extension to `memory/feedback_backlog_hygiene_cadenced_refactor_look_for_overlap_not_just_dump_2026_04_23.md`
 # (Aaron 2026-05-01 *"you could start adding depends on if you find that
@@ -17,6 +24,25 @@ depends_on:
 ---
 
 # B-0154 — GitHub Pages for SEO/discoverability + GitHub Wiki first-class
+
+## Decomposition status
+
+This row remains the umbrella for the discoverability
+trajectory. It is now split into smaller child blobs rather
+than fully atomic work:
+
+1. B-0232 — GitHub Pages Astro publishing workflow.
+2. B-0233 — Pages content sources and public information
+   architecture.
+3. B-0234 — SEO metadata, sitemap, robots, and AI crawler
+   allow-list.
+4. B-0235 — repository metadata and external sitemap
+   submission.
+5. B-0236 — Playwright validation harness and DORA metrics.
+6. B-0237 — GitHub Wiki first-class integration.
+
+Each child is intentionally smaller than this 500+ line
+umbrella and may receive its own later decomposition pass.
 
 ## Outcomes solved
 
