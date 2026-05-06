@@ -165,6 +165,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0206](backlog/P2/B-0206-claude-code-env-mapping-skill-with-carved-sentences-references-ts-files-aaron-2026-05-05.md)** Claude Code environment-mapping skill with carved-sentences-in-behavior referencing existing capability-maps + our TS files
 - [ ] **[B-0208](backlog/P2/B-0208-launchd-forward-tick-reliability-merge-into-heartbeat-2026-05-06.md)** Launchd forward-tick reliability — merge forward logic into working heartbeat tick OR fix StartInterval for new services
 - [ ] **[B-0209](backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md)** Remote-only background agent test matrix — prove claim coordination without local broadcast
+- [ ] **[B-0210](backlog/P2/B-0210-local-broadcast-peering-ask-protocol-2026-05-06.md)** Local broadcast peering asks — structured ask/receipt protocol over the same-machine bus
 
 ## P3 — convenience / deferred
 
