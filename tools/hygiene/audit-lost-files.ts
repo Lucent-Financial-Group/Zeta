@@ -101,6 +101,17 @@ async function classClosedNotMergedPRs(ghAvailable: boolean): Promise<void> {
     "--json",
     "number,title,closedAt,mergedAt,headRefName",
   ]);
+  // Per Codex 2026-05-06 review: never silently swallow a non-zero
+  // exit. A failed gh call would otherwise produce "Count: 0", which
+  // looks identical to genuine cleanliness and hides auth/network
+  // breakage. Surface the failure as a SKIP with the gh stderr.
+  if (r.exitCode !== 0) {
+    console.log(
+      `SKIP: gh pr list (closed) exited ${r.exitCode}; closed-not-merged class unreliable. stderr: ${r.stderr.trim()}`,
+    );
+    console.log("");
+    return;
+  }
   let prs: PrJson[] = [];
   try {
     prs = JSON.parse(r.stdout || "[]") as PrJson[];
@@ -143,6 +154,11 @@ async function classOrphanBranches(ghAvailable: boolean): Promise<void> {
     console.log("");
     return;
   }
+  // Per Codex 2026-05-06 review: orphan-branch detection wants the
+  // OPEN-PR set ("which branches still have a live PR keeping them
+  // attached"), not all-states. Closed/merged PRs do not block a
+  // branch from being orphaned -- in fact, a closed-not-merged PR is
+  // exactly the orphan signal we want to surface.
   const prResult = await runCmd([
     "gh",
     "pr",
@@ -150,12 +166,19 @@ async function classOrphanBranches(ghAvailable: boolean): Promise<void> {
     "--repo",
     REPO,
     "--state",
-    "all",
+    "open",
     "--limit",
     "500",
     "--json",
     "headRefName",
   ]);
+  if (prResult.exitCode !== 0) {
+    console.log(
+      `SKIP: gh pr list exited ${prResult.exitCode}; orphan-branch detection unreliable. stderr: ${prResult.stderr.trim()}`,
+    );
+    console.log("");
+    return;
+  }
   let prBranches = new Set<string>();
   try {
     const arr = JSON.parse(prResult.stdout || "[]") as Array<{
