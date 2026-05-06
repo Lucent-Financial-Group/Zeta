@@ -11,6 +11,7 @@
 //   bun tools/peer-call/grok.ts --file path/to/file.fs "prompt text"
 //   bun tools/peer-call/grok.ts --context-cmd "git diff HEAD~3..HEAD" "prompt text"
 //   bun tools/peer-call/grok.ts --json "prompt text"
+//   bun tools/peer-call/grok.ts --allow-empty "prompt"  # bypass firewall
 //   bun tools/peer-call/grok.ts --output-file PATH "prompt text"
 //
 // Routing: wraps `cursor-agent --print --model grok-4-20-thinking`
@@ -33,10 +34,12 @@
 //   0 — Grok responded successfully
 //   1 — invocation error (bad arguments, cursor-agent missing, etc.)
 //   2 — Grok returned a non-zero exit (response captured to stderr)
+//   3 — input-firewall rejected the prompt as not work-extractable
 
 import { closeSync, mkdirSync, openSync, readSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { dirname } from "node:path";
+import { formatBypassMessage, formatRejectionMessage, GROK_SUBSTANTIVE_TRIGGERS, peerFirewallCheck } from "./_firewall";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
@@ -51,6 +54,7 @@ interface Args {
   readonly file: string;
   readonly contextCmd: string;
   readonly prompt: string;
+  readonly allowEmpty: boolean;
   readonly outputFile: string;
 }
 
@@ -69,6 +73,7 @@ interface MutableArgState {
   file: string;
   contextCmd: string;
   prompt: string;
+  allowEmpty: boolean;
   outputFile: string;
 }
 
@@ -78,15 +83,23 @@ type StepResult =
   | { readonly kind: "help" }
   | { readonly kind: "error"; readonly message: string };
 
-function classifyFlag(
-  a: string,
-  next: string | undefined,
-  state: MutableArgState,
-): StepResult {
-  if (a === "--thinking") { state.mode = "thinking"; return { kind: "advance", skip: 1 }; }
-  if (a === "--fast")     { state.mode = "fast";     return { kind: "advance", skip: 1 }; }
-  if (a === "--json")     { state.outputFormat = "json";        return { kind: "advance", skip: 1 }; }
-  if (a === "--stream")   { state.outputFormat = "stream-json"; return { kind: "advance", skip: 1 }; }
+function classifyFlag(a: string, next: string | undefined, state: MutableArgState): StepResult {
+  if (a === "--thinking") {
+    state.mode = "thinking";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--fast") {
+    state.mode = "fast";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--json") {
+    state.outputFormat = "json";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--stream") {
+    state.outputFormat = "stream-json";
+    return { kind: "advance", skip: 1 };
+  }
   if (a === "--file") {
     if (next === undefined) return { kind: "error", message: "error: --file requires PATH" };
     state.file = next;
@@ -97,9 +110,14 @@ function classifyFlag(
     state.contextCmd = next;
     return { kind: "advance", skip: 2 };
   }
+  if (a === "--allow-empty") {
+    state.allowEmpty = true;
+    return { kind: "advance", skip: 1 };
+  }
   if (a === "--output-file") {
     if (next === undefined) return { kind: "error", message: "error: --output-file requires PATH" };
-    if (next.startsWith("-")) return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
+    if (next.startsWith("-"))
+      return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
     state.outputFile = next;
     return { kind: "advance", skip: 2 };
   }
@@ -118,6 +136,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     file: "",
     contextCmd: "",
     prompt: "",
+    allowEmpty: false,
     outputFile: "",
   };
   let i = 0;
@@ -139,6 +158,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     file: state.file,
     contextCmd: state.contextCmd,
     prompt: state.prompt,
+    allowEmpty: state.allowEmpty,
     outputFile: state.outputFile,
   };
 }
@@ -172,10 +192,14 @@ function emitHelp(): void {
       `  bun tools/peer-call/grok.ts --context-cmd "CMD" "prompt text"\n` +
       `  bun tools/peer-call/grok.ts --json "prompt text"\n` +
       `  bun tools/peer-call/grok.ts --stream "prompt text"\n` +
+      `  bun tools/peer-call/grok.ts --allow-empty "prompt"  # bypass firewall\n` +
       `  bun tools/peer-call/grok.ts --output-file PATH "prompt text"\n` +
       `\n` +
       `Routing: wraps cursor-agent --print --model grok-4-20-thinking\n` +
       `(default) or grok-4-20 (with --fast).\n` +
+      `\n` +
+      `Grok input-firewall: rejects rote-heartbeat / empty-token prompts\n` +
+      `with exit code 3. Override via --allow-empty (testing only; logged).\n` +
       `\n` +
       `Output capture: stdout is teed to the output file, with a final\n` +
       `"OUTPUT-FILE: <path>" marker on stdout for shell-pipe recovery.\n` +
@@ -295,11 +319,19 @@ export function main(argv: readonly string[]): number {
     return 1;
   }
 
+  if (parsed.allowEmpty) {
+    process.stderr.write(formatBypassMessage("Grok"));
+  } else {
+    const fwReason = peerFirewallCheck(parsed.prompt, GROK_SUBSTANTIVE_TRIGGERS);
+    if (fwReason !== null) {
+      process.stderr.write(formatRejectionMessage("Grok", fwReason));
+      return 3;
+    }
+  }
+
   if (!commandAvailable("cursor-agent")) {
     process.stderr.write("error: cursor-agent not on PATH\n");
-    process.stderr.write(
-      "install via Cursor desktop app + ensure ~/.local/bin is on PATH\n",
-    );
+    process.stderr.write("install via Cursor desktop app + ensure ~/.local/bin is on PATH\n");
     return 1;
   }
 
@@ -312,9 +344,7 @@ export function main(argv: readonly string[]): number {
   const model = pickModel(parsed.mode);
 
   // Resolve output-file path: explicit --output-file or auto-gen.
-  const outputFile = parsed.outputFile.length > 0
-    ? parsed.outputFile
-    : autogenOutputPath("grok");
+  const outputFile = parsed.outputFile.length > 0 ? parsed.outputFile : autogenOutputPath("grok");
   ensureParentDir(outputFile);
 
   // cursor-agent invocation: capture stdout so we can tee to file +

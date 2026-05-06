@@ -14,9 +14,9 @@ its semantics.
 
 This doc is the **standalone, linkable** companion to
 [`AGENT-ISSUE-WORKFLOW.md`](AGENT-ISSUE-WORKFLOW.md). That
-doc explains the *dual-track principle* and platform
-adapters; this doc specifies the *git-native claim
-mechanism* that every adapter is built on.
+doc explains the _dual-track principle_ and platform
+adapters; this doc specifies the _git-native claim
+mechanism_ that every adapter is built on.
 
 ## Hand-off template — paste this with the task
 
@@ -58,11 +58,18 @@ cd Zeta
 git pull --ff-only origin main
 ```
 
+If multiple agents are operating on the same machine or same
+repo directory, read
+[Shared machine / shared folder mode](#shared-machine--shared-folder-mode)
+before creating branches or editing files. In that mode, a
+pushed claim branch is the task lock, and a local heartbeat
+is the checkout/worktree traffic signal.
+
 ### 2. Check for an existing claim on the work you want
 
 Claim files live on pushed `claim/<slug>` branches (see
 step 3) — they may not yet be merged to `main`. To see
-*all* live claims, refresh remote refs and list both the
+_all_ live claims, refresh remote refs and list both the
 working tree (claims that have already merged or are
 still tracked on `main`) and remote claim branches:
 
@@ -110,7 +117,7 @@ git push -u origin claim/<slug>
 
 Commit as you normally would on `claim/<slug>` (or the
 branch you're using). If the work is expected to run longer
-than four hours, add an occasional *progress commit*
+than four hours, add an occasional _progress commit_
 touching the claim file so parallel agents see the claim is
 still live:
 
@@ -154,7 +161,7 @@ writing to the repo. Skip the claim steps and focus on the
 reading.
 
 If your Deep Research run produces a report that the user
-wants to land in the repo, *that* is a separate PR task —
+wants to land in the repo, _that_ is a separate PR task —
 claim it when you move from reading to writing.
 
 ### Codex / sandbox mode (PR-write)
@@ -166,7 +173,7 @@ that clones, works, and opens a PR in one shot:
   on a sandbox-local feature branch is invisible to parallel
   agents looking up `docs/claims/` on `main`. Land the
   `claim: <slug> - <scope>` commit on a pushed branch
-  *before* doing the work, so other agents see it via
+  _before_ doing the work, so other agents see it via
   `git ls-remote origin claim/<slug>` and the GitHub branch
   list. (Pushing the claim does not require an open PR; a
   bare branch is enough.)
@@ -209,7 +216,7 @@ is additive work that attaches to someone else's claim:
 - Leave comments on the PR / claim file / issue.
 - Open a separate advisory issue if the suggestion is big
   enough to warrant its own BACKLOG row.
-- Do not file a claim unless you are about to *write* code
+- Do not file a claim unless you are about to _write_ code
   or docs.
 
 Review and advisory output is valuable even when the
@@ -228,7 +235,7 @@ only read, a human AI without connector write access),
 - The maintainer commits the artifact on your behalf.
 - Attribution in the commit message names your substrate
   (e.g. `... contributed by chatgpt-deep-research per
-  <conversation-url>`).
+<conversation-url>`).
 
 This mode is **first-class**. The factory has observed
 external-AI Deep Research archive reports and external-AI
@@ -313,7 +320,7 @@ omit usernames and direct identities):
 Be honest about which harness is holding the claim — the
 honesty makes cross-harness audits (and the factory's
 alignment research) possible. If a parallel agent needs to
-*contact* the claim-holder, use the platform mirror (GitHub
+_contact_ the claim-holder, use the platform mirror (GitHub
 Issue, Jira ticket) or the PR thread; those surfaces accept
 real handles without polluting git history.
 
@@ -322,11 +329,11 @@ real handles without polluting git history.
 The lifecycle has three operations, each realised as a
 commit:
 
-| Operation | Commit message | File change |
-|---|---|---|
-| **Claim** | `claim: <slug> - <scope>` | Add `docs/claims/<slug>.md` |
-| **Progress** | `progress: <slug> - <signal>` | Touch `docs/claims/<slug>.md` (update ETA or append to Notes) |
-| **Release** | `release: <slug> - landed in <SHA>` or `release: <slug> - abandoned, reason: <...>` | Delete `docs/claims/<slug>.md` |
+| Operation    | Commit message                                                                      | File change                                                   |
+| ------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Claim**    | `claim: <slug> - <scope>`                                                           | Add `docs/claims/<slug>.md`                                   |
+| **Progress** | `progress: <slug> - <signal>`                                                       | Touch `docs/claims/<slug>.md` (update ETA or append to Notes) |
+| **Release**  | `release: <slug> - landed in <SHA>` or `release: <slug> - abandoned, reason: <...>` | Delete `docs/claims/<slug>.md`                                |
 
 Commit messages follow the `verb: <slug> - <detail>` pattern
 so parallel agents can filter the log:
@@ -364,6 +371,91 @@ rejection and discovers the existing claim. After the
 claim lands, work commits can move to a separate working
 branch (`feat/<thing>`); the `claim/<slug>` branch stays
 as the lock until release.
+
+### Shared machine / shared folder mode
+
+This section applies when two or more agents (or a human plus
+agents) are using the same physical machine, the same
+repository folder, or worktrees that share one `.git` common
+directory. In that setting, the remote claim branch is
+necessary but not sufficient: a checkout can change branches
+under another process, and local uncommitted edits are not
+visible through `origin/claim/*`.
+
+The rule is:
+
+> **One writer per working tree. One pushed claim branch per
+> task. One local heartbeat per active session.**
+
+Operationally:
+
+1. **Treat any shared root checkout as contested** unless a
+   human explicitly assigns it to one session. Do not switch
+   branches, commit, reset, stash, or edit files in a checkout
+   you do not own.
+2. **Use a dedicated worktree before writing.** Prefer a path
+   that names the session and slug so other local agents can
+   identify it quickly:
+   ```
+   git fetch origin
+   git worktree add ../Zeta-worktrees/<session>-<slug> origin/main
+   cd ../Zeta-worktrees/<session>-<slug>
+   git switch -c claim/<slug>
+   ```
+   If the claim branch already exists locally, create the
+   worktree directly from it:
+   ```
+   git worktree add ../Zeta-worktrees/<session>-<slug> claim/<slug>
+   ```
+3. **Push the claim before substantive edits.** The remote
+   branch is the durable coordination lock. A local worktree
+   or local heartbeat alone does not reserve work for the
+   swarm.
+4. **Write a local heartbeat before touching files.** Use the
+   repository's shared git common directory so every worktree
+   on the machine can see it:
+   ```
+   hb_dir="$(git rev-parse --git-common-dir)/agent-heartbeats"
+   mkdir -p "$hb_dir"
+   cat > "$hb_dir/<session>.json" <<'EOF'
+   {
+     "session": "<opaque session ID>",
+     "harness": "<codex|claude-code|cursor|gemini|human>",
+     "claim": "<slug>",
+     "branch": "claim/<slug>",
+     "worktree": "<absolute path>",
+     "paths": ["docs/AGENT-CLAIM-PROTOCOL.md", "tools/peer-call/"],
+     "updated_at": "<UTC ISO 8601>",
+     "status": "active"
+   }
+   EOF
+   ```
+   Update `updated_at`, `paths`, and `status` before starting
+   a new slice, after branch changes, every 10-15 minutes
+   during long work, and before handoff.
+5. **Check local heartbeats before editing a shared surface.**
+   A fresh heartbeat naming the same file or path prefix means
+   stop and coordinate. Treat heartbeats older than 30 minutes
+   as stale hints, not locks; the pushed claim branch remains
+   the authoritative task lock.
+6. **Do not commit heartbeat files.** They are local traffic
+   signals, not project substrate. If a heartbeat records a
+   decision, instruction, or handoff that must survive
+   compaction, promote that content into a claim progress
+   commit, PR comment, BACKLOG row, research note, or another
+   durable repo surface.
+
+This gives the swarm two layers:
+
+- **Remote shard:** `origin/claim/<slug>` and
+  `docs/claims/<slug>.md`; durable task ownership.
+- **Local heartbeat:** `.git/agent-heartbeats/<session>.json`
+  via `git rev-parse --git-common-dir`; ephemeral checkout
+  ownership and path-intent on the shared machine.
+
+The local heartbeat never overrides git history, review, or
+the maintainer. It only prevents avoidable same-folder
+collisions while several agents are active at once.
 
 ### Progress signal details
 
@@ -480,7 +572,7 @@ internal agents, not external claim-holders.
 
 **Claim facts, not framings.** If your work touches
 `docs/ALIGNMENT.md`, `GOVERNANCE.md`, or a research report,
-claim the *factual change* you are making (fix a typo, add
+claim the _factual change_ you are making (fix a typo, add
 a row, clarify a definition). Do not use the claim as an
 entry point for renegotiating the factory's values,
 philosophy, or register — those go through the renegotiation
@@ -500,11 +592,11 @@ remains the durable record; the platform mirror is an
 ephemeral overlay that gains richer UX (labels,
 notifications, dashboards) without changing the protocol.
 
-| Adapter | Mirror on claim | Mirror on release |
-|---|---|---|
-| **GitHub Issues** | Comment on the issue: `claimed by <session> <UTC-ts> - see docs/claims/<slug>.md`; add `in-progress` label | Comment `released - landed in <SHA>`; remove `in-progress` label; close issue if work done |
-| **Jira / Linear** | Transition to `In Progress`; assign to self; add comment linking `docs/claims/<slug>.md` | Transition to `Done` / `Released`; comment with commit SHA |
-| **Git-native only** | (no mirror) | (no mirror) |
+| Adapter             | Mirror on claim                                                                                            | Mirror on release                                                                          |
+| ------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **GitHub Issues**   | Comment on the issue: `claimed by <session> <UTC-ts> - see docs/claims/<slug>.md`; add `in-progress` label | Comment `released - landed in <SHA>`; remove `in-progress` label; close issue if work done |
+| **Jira / Linear**   | Transition to `In Progress`; assign to self; add comment linking `docs/claims/<slug>.md`                   | Transition to `Done` / `Released`; comment with commit SHA                                 |
+| **Git-native only** | (no mirror)                                                                                                | (no mirror)                                                                                |
 
 The platform comment and the claim file are created
 together, but the claim file is authoritative if they
@@ -516,7 +608,7 @@ platform. If the platform is down, the claim still exists.
 - Does **not** replace the dual-track principle. Durable
   git-history (BACKLOG rows, BUGS entries, commit messages)
   is still the authoritative record of what happened. Claim
-  files are the *coordination* surface, not the *history*
+  files are the _coordination_ surface, not the _history_
   surface.
 - Does **not** enforce claims at the git level. No
   pre-commit hook blocks work without a claim file. The
@@ -532,7 +624,7 @@ platform. If the platform is down, the claim still exists.
 - Does **not** expire automatically. Stale claims remain
   visible in `docs/claims/` until another agent
   force-releases them. The 24-hour window is the
-  force-release *permission*, not an auto-cleanup.
+  force-release _permission_, not an auto-cleanup.
 - Does **not** track work progress in detail. Progress
   signals are coarse ("the claim is still alive"); for
   fine-grained progress use PR draft status, commit log,

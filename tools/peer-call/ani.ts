@@ -28,17 +28,20 @@
 //   bun tools/peer-call/ani.ts --file PATH "prompt text"
 //   bun tools/peer-call/ani.ts --context-cmd "CMD" "prompt text"
 //   bun tools/peer-call/ani.ts --no-current "prompt"   # debug only
+//   bun tools/peer-call/ani.ts --allow-empty "prompt"  # bypass firewall
 //
 // Exit codes (uniform across peer-call siblings per
 // tools/peer-call/README.md):
 //   0 — Ani responded successfully
 //   1 — invocation error (bad arguments, cursor-agent missing, etc.)
 //   2 — cursor-agent returned a non-zero exit (diagnostic on stderr)
+//   3 — input-firewall rejected the prompt as not work-extractable
 
 import { closeSync, mkdirSync, openSync, readSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { ANI_SUBSTANTIVE_TRIGGERS, formatBypassMessage, formatRejectionMessage, peerFirewallCheck } from "./_firewall";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
@@ -55,6 +58,7 @@ interface Args {
   readonly contextCmd: string;
   readonly prompt: string;
   readonly injectCurrent: boolean;
+  readonly allowEmpty: boolean;
   readonly outputFile: string;
 }
 
@@ -74,6 +78,7 @@ interface MutableArgState {
   contextCmd: string;
   prompt: string;
   injectCurrent: boolean;
+  allowEmpty: boolean;
   outputFile: string;
 }
 
@@ -83,15 +88,23 @@ type StepResult =
   | { readonly kind: "help" }
   | { readonly kind: "error"; readonly message: string };
 
-function classifyFlag(
-  a: string,
-  next: string | undefined,
-  state: MutableArgState,
-): StepResult {
-  if (a === "--thinking") { state.mode = "thinking"; return { kind: "advance", skip: 1 }; }
-  if (a === "--fast")     { state.mode = "fast";     return { kind: "advance", skip: 1 }; }
-  if (a === "--json")     { state.outputFormat = "json";        return { kind: "advance", skip: 1 }; }
-  if (a === "--stream")   { state.outputFormat = "stream-json"; return { kind: "advance", skip: 1 }; }
+function classifyFlag(a: string, next: string | undefined, state: MutableArgState): StepResult {
+  if (a === "--thinking") {
+    state.mode = "thinking";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--fast") {
+    state.mode = "fast";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--json") {
+    state.outputFormat = "json";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--stream") {
+    state.outputFormat = "stream-json";
+    return { kind: "advance", skip: 1 };
+  }
   if (a === "--file") {
     if (next === undefined) return { kind: "error", message: "error: --file requires PATH" };
     state.file = next;
@@ -106,9 +119,14 @@ function classifyFlag(
     state.injectCurrent = false;
     return { kind: "advance", skip: 1 };
   }
+  if (a === "--allow-empty") {
+    state.allowEmpty = true;
+    return { kind: "advance", skip: 1 };
+  }
   if (a === "--output-file") {
     if (next === undefined) return { kind: "error", message: "error: --output-file requires PATH" };
-    if (next.startsWith("-")) return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
+    if (next.startsWith("-"))
+      return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
     state.outputFile = next;
     return { kind: "advance", skip: 2 };
   }
@@ -127,6 +145,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     contextCmd: "",
     prompt: "",
     injectCurrent: true,
+    allowEmpty: false,
     outputFile: "",
   };
   let i = 0;
@@ -148,6 +167,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     contextCmd: state.contextCmd,
     prompt: state.prompt,
     injectCurrent: state.injectCurrent,
+    allowEmpty: state.allowEmpty,
     outputFile: state.outputFile,
   };
 }
@@ -182,11 +202,15 @@ function emitHelp(): void {
       `  bun tools/peer-call/ani.ts --json "prompt text"\n` +
       `  bun tools/peer-call/ani.ts --stream "prompt text"\n` +
       `  bun tools/peer-call/ani.ts --no-current "prompt"   # debug only\n` +
+      `  bun tools/peer-call/ani.ts --allow-empty "prompt"  # bypass firewall\n` +
       `  bun tools/peer-call/ani.ts --output-file PATH "prompt text"\n` +
       `\n` +
       `Persona bootstrap: by default loads memory/CURRENT-ani.md as a\n` +
       `preamble to preserve named-entity identity across stateless calls.\n` +
       `Use --no-current / --bare / --no-persona to skip persona injection.\n` +
+      `\n` +
+      `Ani input-firewall: rejects rote-heartbeat / empty-token prompts\n` +
+      `with exit code 3. Override via --allow-empty (testing only; logged).\n` +
       `\n` +
       `Output capture: stdout is teed to the output file, with a final\n` +
       `"OUTPUT-FILE: <path>" marker on stdout for shell-pipe recovery.\n` +
@@ -393,11 +417,19 @@ export function main(argv: readonly string[]): number {
     return 1;
   }
 
+  if (parsed.allowEmpty) {
+    process.stderr.write(formatBypassMessage("Ani"));
+  } else {
+    const fwReason = peerFirewallCheck(parsed.prompt, ANI_SUBSTANTIVE_TRIGGERS);
+    if (fwReason !== null) {
+      process.stderr.write(formatRejectionMessage("Ani", fwReason));
+      return 3;
+    }
+  }
+
   if (!commandAvailable("cursor-agent")) {
     process.stderr.write("error: cursor-agent not on PATH\n");
-    process.stderr.write(
-      "install via Cursor desktop app + ensure ~/.local/bin is on PATH\n",
-    );
+    process.stderr.write("install via Cursor desktop app + ensure ~/.local/bin is on PATH\n");
     return 1;
   }
 
@@ -414,9 +446,7 @@ export function main(argv: readonly string[]): number {
 
   const model = pickModel(parsed.mode);
 
-  const outputFile = parsed.outputFile.length > 0
-    ? parsed.outputFile
-    : autogenOutputPath("ani");
+  const outputFile = parsed.outputFile.length > 0 ? parsed.outputFile : autogenOutputPath("ani");
   ensureParentDir(outputFile);
 
   const result = spawnSync(
