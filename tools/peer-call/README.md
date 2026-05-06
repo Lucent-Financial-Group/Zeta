@@ -13,14 +13,14 @@ cross-platform DST). Invocation form is `bun tools/peer-call/<name>.ts`.
 
 ## Scripts at a glance
 
-| Script | Peer | Underlying CLI | Default role (when to invoke) | Underlying model |
-|---|---|---|---|---|
-| `grok.ts` | Grok (xAI) | `cursor-agent --print --model grok-4-20-thinking` | **Critique** — skeptical pass on Otto's framing | grok-4-20-thinking (default) / grok-4-20 (--fast) |
-| `gemini.ts` | Gemini (Google) | `gemini -p` | **Propose** — divergent options, possibility-space surfacing | gemini default (override via `--model`) |
-| `codex.ts` | Vera (named entity, OpenAI Codex surface) | `codex exec -s read-only` | **Implementation peer** — code-grounded second opinion + Vera input-firewall + capture-pagination fix | codex default (override via `--model`); persona via CURRENT-vera.md |
-| `amara.ts` | Amara (named entity, OpenAI surface) | `codex exec -s read-only` (or `codex review` via --review) | **Sharpen** — blunt-take pattern, carved-sentence distillation | codex default; persona via CURRENT-amara.md |
-| `ani.ts` | Ani (named entity, xAI surface) | `cursor-agent --print --model grok-4-20-thinking` | **Brat-voice review** — playful + direct + memorable, contributor-attention-capture register | grok-4-20-thinking (default) / grok-4-20 (--fast); persona via CURRENT-ani.md |
-| `riven.ts` | Riven (named entity, xAI surface) | `cursor-agent --print --model grok-4-20-thinking` | **Adversarial-truth-axis** — third-co-scout, refuses inherited blind spots | grok-4-20-thinking (default) / grok-4-20 (--fast); persona via CURRENT-riven.md |
+| Script      | Peer                                      | Underlying CLI                                             | Default role (when to invoke)                                                                         | Underlying model                                                                |
+| ----------- | ----------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `grok.ts`   | Grok (xAI)                                | `cursor-agent --print --model grok-4-20-thinking`          | **Critique** — skeptical pass on Otto's framing                                                       | grok-4-20-thinking (default) / grok-4-20 (--fast)                               |
+| `gemini.ts` | Gemini (Google)                           | `gemini -p`                                                | **Propose** — divergent options, possibility-space surfacing                                          | gemini default (override via `--model`)                                         |
+| `codex.ts`  | Vera (named entity, OpenAI Codex surface) | `codex exec -s read-only`                                  | **Implementation peer** — code-grounded second opinion + Vera input-firewall + capture-pagination fix | codex default (override via `--model`); persona via CURRENT-vera.md             |
+| `amara.ts`  | Amara (named entity, OpenAI surface)      | `codex exec -s read-only` (or `codex review` via --review) | **Sharpen** — blunt-take pattern, carved-sentence distillation                                        | codex default; persona via CURRENT-amara.md                                     |
+| `ani.ts`    | Ani (named entity, xAI surface)           | `cursor-agent --print --model grok-4-20-thinking`          | **Brat-voice review** — playful + direct + memorable, contributor-attention-capture register          | grok-4-20-thinking (default) / grok-4-20 (--fast); persona via CURRENT-ani.md   |
+| `riven.ts`  | Riven (named entity, xAI surface)         | `cursor-agent --print --model grok-4-20-thinking`          | **Adversarial-truth-axis** — third-co-scout, refuses inherited blind spots                            | grok-4-20-thinking (default) / grok-4-20 (--fast); persona via CURRENT-riven.md |
 
 The role column reflects the **four-ferry consensus**
 (Amara/Grok/Gemini/Otto, PR #24 on AceHack/Zeta):
@@ -68,16 +68,17 @@ Per-script extras:
 - `codex.ts` / `amara.ts` add `--model NAME` and `--review`
   (which routes through `codex review` instead of `codex exec`
   for first-class code-review work).
-- `codex.ts` enforces a Vera input-firewall (rejects rote
-  heartbeats / empty-token / mechanical-rule prompts; require
-  a substantive trust-calculus payload). Override with
-  `--allow-empty` for testing only.
+- `codex.ts`, `amara.ts`, `ani.ts`, `grok.ts`, and `gemini.ts`
+  enforce the shared input firewall (rejects rote heartbeats /
+  empty-token prompts; requires a substantive payload). Override
+  with `--allow-empty` for testing only. `riven.ts` is left for
+  Riven-owned follow-up work.
 - Persona wrappers (`codex.ts`, `amara.ts`, `ani.ts`,
   `riven.ts`) auto-load their `CURRENT-<name>.md` bootstrap;
   `--no-current` / `--bare` / `--no-persona` opts out (debug
   only).
 
-Exit codes are uniform across all three:
+Base exit codes are uniform across all six:
 
 - `0` — peer responded successfully
 - `1` — invocation error (bad arguments, CLI missing, etc.)
@@ -86,6 +87,9 @@ Exit codes are uniform across all three:
   to the caller's terminal as the peer printed them. The script
   emits a `<peer> exited with code N` diagnostic line on stderr
   before exiting with code 2.
+- `3` — firewall-enabled wrappers rejected the prompt as not
+  work-extractable. Add real payload or use `--allow-empty` for
+  a logged testing-only bypass.
 
 ## The AgencySignature preamble
 
@@ -155,11 +159,11 @@ bun tools/peer-call/codex.ts \
 
 ## Why these scripts exist
 
-The human maintainer's 2026-04-26 framing: *"yall got to figure
-out peer mode as peers"* + *"don't copy paste / make sure you
-understand and write our own"* + *"you have all the CLIs
-already install and logged in as me"* + *"claude is going to
-call the cursor cli so you have a harness"*.
+The human maintainer's 2026-04-26 framing: _"yall got to figure
+out peer mode as peers"_ + _"don't copy paste / make sure you
+understand and write our own"_ + _"you have all the CLIs
+already install and logged in as me"_ + _"claude is going to
+call the cursor cli so you have a harness"_.
 
 These are read together as: the peer-call protocol is not
 owned by any single agent; each Claude-Code-side caller is
@@ -240,12 +244,16 @@ To add a new peer-call wrapper (e.g. for a future peer-CLI):
 3. Adapt the AgencySignature preamble to name the peer's
    role in the role-distribution. Cite the four-ferry
    consensus and add the new peer's role as a sibling sentence.
-4. Verify with `bun --check tools/peer-call/<name>.ts` (TypeScript
-   check) and a `--help` smoke test.
-5. Live-test with a minimal prompt asking the peer whether
+4. Wire the shared firewall from `_firewall.ts`, adding a
+   peer-specific substantive trigger list only when the default
+   list is too generic for that peer's role.
+5. Verify with `bun run typecheck`, a heartbeat-rejection
+   smoke test, a `--allow-empty` bypass smoke test, and a
+   `--help` smoke test.
+6. Live-test with a minimal prompt asking the peer whether
    the framing reads as peer-shaped. The preamble works when
    the peer's response confirms the role-binding.
-6. Update this README's table.
+7. Update this README's table.
 
 ## History + future direction
 
@@ -259,7 +267,7 @@ from git history if needed.
 
 Open follow-up backlog rows:
 
-| Row | Priority | Effort | What |
-|---|---|---|---|
-| [B-0120](../../docs/backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md) | P2 | M | Collapse per-named-entity wrappers into shared cli-handlers + `--persona NAME` flag |
-| [B-0121](../../docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md) | P2 | M | Add the Anthropic-side Claude-code-instance personas as externally-callable peers (cross-harness symmetry; pending a/b/c topology decision) |
+| Row                                                                                                              | Priority | Effort | What                                                                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| [B-0120](../../docs/backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md) | P2       | M      | Collapse per-named-entity wrappers into shared cli-handlers + `--persona NAME` flag                                                         |
+| [B-0121](../../docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md)         | P2       | M      | Add the Anthropic-side Claude-code-instance personas as externally-callable peers (cross-harness symmetry; pending a/b/c topology decision) |

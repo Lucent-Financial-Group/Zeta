@@ -15,6 +15,7 @@
 //   bun tools/peer-call/gemini.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
 //   bun tools/peer-call/gemini.ts --json "prompt text"
 //   bun tools/peer-call/gemini.ts --stream "prompt text"
+//   bun tools/peer-call/gemini.ts --allow-empty "prompt"  # bypass firewall
 //
 // Routing: wraps `gemini -p` (non-interactive headless mode).
 // Default model is whatever the gemini CLI is configured to use;
@@ -24,11 +25,18 @@
 //   0 — Gemini responded successfully
 //   1 — invocation error (bad arguments, gemini missing, etc.)
 //   2 — Gemini returned a non-zero exit (diagnostic on stderr)
+//   3 — input-firewall rejected the prompt as not work-extractable
 
 import { closeSync, createWriteStream, mkdirSync, openSync, readSync, statSync } from "node:fs";
 import { spawn, spawnSync } from "node:child_process";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
+import {
+  formatBypassMessage,
+  formatRejectionMessage,
+  GEMINI_SUBSTANTIVE_TRIGGERS,
+  peerFirewallCheck,
+} from "./_firewall";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
@@ -43,6 +51,7 @@ interface Args {
   readonly contextCmd: string;
   readonly outputFile: string;
   readonly prompt: string;
+  readonly allowEmpty: boolean;
 }
 
 interface ArgError {
@@ -65,6 +74,7 @@ interface MutableArgState {
   contextCmd: string;
   outputFile: string;
   prompt: string;
+  allowEmpty: boolean;
 }
 
 type StepResult =
@@ -73,18 +83,20 @@ type StepResult =
   | { readonly kind: "help" }
   | { readonly kind: "error"; readonly message: string };
 
-function classifyFlag(
-  a: string,
-  next: string | undefined,
-  state: MutableArgState,
-): StepResult {
+function classifyFlag(a: string, next: string | undefined, state: MutableArgState): StepResult {
   if (a === "--model") {
-    if (next === undefined) return { kind: "error", message: "error: --model requires NAME" };  // exitCode set in parseArgs
+    if (next === undefined) return { kind: "error", message: "error: --model requires NAME" }; // exitCode set in parseArgs
     state.model = next;
     return { kind: "advance", skip: 2 };
   }
-  if (a === "--json")   { state.outputFormat = "json";        return { kind: "advance", skip: 1 }; }
-  if (a === "--stream") { state.outputFormat = "stream-json"; return { kind: "advance", skip: 1 }; }
+  if (a === "--json") {
+    state.outputFormat = "json";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--stream") {
+    state.outputFormat = "stream-json";
+    return { kind: "advance", skip: 1 };
+  }
   if (a === "--file") {
     if (next === undefined) return { kind: "error", message: "error: --file requires PATH" };
     state.file = next;
@@ -95,9 +107,14 @@ function classifyFlag(
     state.contextCmd = next;
     return { kind: "advance", skip: 2 };
   }
+  if (a === "--allow-empty") {
+    state.allowEmpty = true;
+    return { kind: "advance", skip: 1 };
+  }
   if (a === "--output-file") {
     if (next === undefined) return { kind: "error", message: "error: --output-file requires PATH" };
-    if (next.startsWith("-")) return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
+    if (next.startsWith("-"))
+      return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
     state.outputFile = next;
     return { kind: "advance", skip: 2 };
   }
@@ -116,6 +133,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     contextCmd: "",
     outputFile: "",
     prompt: "",
+    allowEmpty: false,
   };
   let i = 0;
   while (i < argv.length) {
@@ -136,6 +154,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     contextCmd: state.contextCmd,
     outputFile: state.outputFile,
     prompt: state.prompt,
+    allowEmpty: state.allowEmpty,
   };
 }
 
@@ -152,8 +171,12 @@ function emitHelp(): void {
       `  bun tools/peer-call/gemini.ts --output-file PATH "prompt text"\n` +
       `  bun tools/peer-call/gemini.ts --json "prompt text"\n` +
       `  bun tools/peer-call/gemini.ts --stream "prompt text"\n` +
+      `  bun tools/peer-call/gemini.ts --allow-empty "prompt"  # bypass firewall\n` +
       `\n` +
       `Routing: wraps gemini -p (non-interactive headless mode).\n` +
+      `\n` +
+      `Gemini input-firewall: rejects rote-heartbeat / empty-token prompts\n` +
+      `with exit code 3. Override via --allow-empty (testing only; logged).\n` +
       `\n` +
       `Output capture: full stdout is teed to --output-file PATH (or an\n` +
       `auto-generated path under /tmp/peer-call-output/). The path is\n` +
@@ -302,11 +325,7 @@ interface SpawnTeeResult {
   readonly captureError: string;
 }
 
-async function spawnAndTee(
-  cmd: string,
-  args: readonly string[],
-  outputPath: string,
-): Promise<SpawnTeeResult> {
+async function spawnAndTee(cmd: string, args: readonly string[], outputPath: string): Promise<SpawnTeeResult> {
   return new Promise((resolvePromise) => {
     let captureError = "";
     let writeStream: ReturnType<typeof createWriteStream> | undefined;
@@ -461,11 +480,19 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 1;
   }
 
+  if (parsed.allowEmpty) {
+    process.stderr.write(formatBypassMessage("Gemini"));
+  } else {
+    const fwReason = peerFirewallCheck(parsed.prompt, GEMINI_SUBSTANTIVE_TRIGGERS);
+    if (fwReason !== null) {
+      process.stderr.write(formatRejectionMessage("Gemini", fwReason));
+      return 3;
+    }
+  }
+
   if (!commandAvailable("gemini")) {
     process.stderr.write("error: gemini not on PATH\n");
-    process.stderr.write(
-      "install via: npm i -g @google/gemini-cli (or per the maintainer's setup)\n",
-    );
+    process.stderr.write("install via: npm i -g @google/gemini-cli (or per the maintainer's setup)\n");
     return 1;
   }
 

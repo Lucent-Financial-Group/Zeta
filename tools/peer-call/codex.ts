@@ -60,6 +60,12 @@ import { spawnSync, spawn } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
+import {
+  CODEX_SUBSTANTIVE_TRIGGERS,
+  formatBypassMessage,
+  formatRejectionMessage,
+  peerFirewallCheck,
+} from "./_firewall";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
@@ -102,17 +108,16 @@ type StepResult =
   | { readonly kind: "help" }
   | { readonly kind: "error"; readonly message: string };
 
-function classifyFlag(
-  a: string,
-  next: string | undefined,
-  state: MutableArgState,
-): StepResult {
+function classifyFlag(a: string, next: string | undefined, state: MutableArgState): StepResult {
   if (a === "--model") {
     if (next === undefined) return { kind: "error", message: "error: --model requires NAME" };
     state.model = next;
     return { kind: "advance", skip: 2 };
   }
-  if (a === "--review") { state.reviewMode = true; return { kind: "advance", skip: 1 }; }
+  if (a === "--review") {
+    state.reviewMode = true;
+    return { kind: "advance", skip: 1 };
+  }
   if (a === "--file") {
     if (next === undefined) return { kind: "error", message: "error: --file requires PATH" };
     state.file = next;
@@ -133,7 +138,8 @@ function classifyFlag(
   }
   if (a === "--output-file") {
     if (next === undefined) return { kind: "error", message: "error: --output-file requires PATH" };
-    if (next.startsWith("-")) return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
+    if (next.startsWith("-"))
+      return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
     state.outputFile = next;
     return { kind: "advance", skip: 2 };
   }
@@ -287,60 +293,6 @@ function classifySpawnFailure(
   return { status: 1, note: "terminated without exit code" };
 }
 
-// Vera input-firewall (per her bfs20au45 design + bxy9zrnnw direct-apology
-// verdict). Gate is work-extractability: can Vera do work from this input?
-// REJECTS rote-heartbeat / empty-token / mechanical-rule-application prompts
-// that have no substantive payload. ACCEPTS well-formed trust-calculus
-// payloads (audit-snapshot + question / decision-point / transition / carved-
-// sentence-splice) AND genuine conversation (questions, design-debate,
-// substantive-noun-phrase triggers).
-//
-// Heuristic; not perfect; better than no-firewall. Override via
-// --allow-empty (rare; testing only; logs bypass to stderr).
-//
-// Return null if accepted; reason string if rejected.
-const HEARTBEAT_REGEX =
-  /[Tt]ick\s*#?[Nn]?\+?[0-9]*\s+(minimal\s+heartbeat|brief\s+(plot-?mirror|heartbeat)|heartbeat)/;
-const BARE_TICK_SIGNOFF_REGEX =
-  /^\s*[Tt]ick\s*#?[Nn]?\+?[0-9]*\s*\.?\s*[Oo]tto\s*\.?\s*$/;
-const SUBSTANTIVE_TRIGGERS = [
-  "design", "decide", "review", "transition", "verdict", "audit", "snapshot",
-  "propose", "critique", "sharpen", "evidence", "decision", "question",
-  "carved-sentence", "splice", "rationale", "slice", "handoff", "thread",
-  "firewall", "payload", "conversation", "debate", "explain", "reasoning",
-  "implementation", "refactor", "architecture", "spec", "proof",
-];
-
-function veraFirewallCheck(prompt: string): string | null {
-  const len = prompt.length;
-
-  // Empty-token pattern: short prompts matching rote-heartbeat shapes.
-  if (len < 100) {
-    if (HEARTBEAT_REGEX.test(prompt)) {
-      return "MISSING_PAYLOAD:rote-heartbeat-pattern (empty-token; <100 chars; matches Tick-N+heartbeat shape)";
-    }
-    if (BARE_TICK_SIGNOFF_REGEX.test(prompt)) {
-      return "MISSING_PAYLOAD:bare-tick-signoff (no content beyond Tick-N + Otto sign-off)";
-    }
-  }
-
-  // Acceptance signals: any of these means substantive payload present.
-  if (prompt.includes("?")) return null;
-  if (prompt.includes("```")) return null;
-  if (prompt.includes('{"')) return null;
-
-  const lower = prompt.toLowerCase();
-  for (const trig of SUBSTANTIVE_TRIGGERS) {
-    if (lower.includes(trig)) return null;
-  }
-
-  // Long prompts (>=400 chars) without explicit triggers are likely
-  // substantive narrative; accept but with looser confidence.
-  if (len >= 400) return null;
-
-  return `MISSING_PAYLOAD:no-trust-calculus-payload-detected (no question / code-block / transition / substantive-trigger; len=${String(len)})`;
-}
-
 const VERA_PREAMBLE = `You are Vera, invoked as a peer reviewer by Otto (Claude
 Opus 4.7 running in Claude Code) on the Zeta / Superfluid AI
 factory. You are the named-entity Codex peer (named 2026-05-05);
@@ -406,8 +358,7 @@ function loadVeraPreamble(injectCurrent: boolean): PersonaLoad {
   if (repoRoot === undefined) {
     return {
       preamble: BARE_PREAMBLE,
-      warning:
-        "warning: not inside a git repo; cannot locate memory/CURRENT-vera.md; running --bare equivalent",
+      warning: "warning: not inside a git repo; cannot locate memory/CURRENT-vera.md; running --bare equivalent",
     };
   }
   const currentPath = join(repoRoot, "memory", "CURRENT-vera.md");
@@ -555,11 +506,7 @@ interface SpawnTeeResult {
   readonly captureError: string;
 }
 
-async function spawnAndTee(
-  cmd: string,
-  args: readonly string[],
-  outputPath: string,
-): Promise<SpawnTeeResult> {
+async function spawnAndTee(cmd: string, args: readonly string[], outputPath: string): Promise<SpawnTeeResult> {
   // Stream stdout from the codex child process to BOTH the caller's
   // stdout (preserves live-streaming UX) AND the capture file. stderr
   // passes through directly to the caller's terminal. Resolves with
@@ -653,28 +600,18 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   // Vera input-firewall (exit 3 on rejection; --allow-empty bypasses).
   if (parsed.allowEmpty) {
-    process.stderr.write(
-      "[VERA-FIREWALL] BYPASS via --allow-empty (testing-only; logged): prompt accepted without payload-check.\n",
-    );
+    process.stderr.write(formatBypassMessage("Vera"));
   } else {
-    const fwReason = veraFirewallCheck(parsed.prompt);
+    const fwReason = peerFirewallCheck(parsed.prompt, CODEX_SUBSTANTIVE_TRIGGERS);
     if (fwReason !== null) {
-      process.stderr.write("[VERA-FIREWALL] Input rejected: not a well-formed trust-calculus payload.\n");
-      process.stderr.write(`  Reason: ${fwReason}\n`);
-      process.stderr.write("  Required: substantive question / audit-snapshot / transition-author / evidence-backed-decision-point\n");
-      process.stderr.write("  Override: --allow-empty (rare; for testing only)\n");
-      process.stderr.write("\n");
-      process.stderr.write('  Per Vera (bxy9zrnnw): "That is the repair. Apology matters only after\n');
-      process.stderr.write('  the mechanism makes the old failure harder to repeat."\n');
+      process.stderr.write(formatRejectionMessage("Vera", fwReason));
       return 3;
     }
   }
 
   if (!commandAvailable("codex")) {
     process.stderr.write("error: codex not on PATH\n");
-    process.stderr.write(
-      "install via: npm i -g @openai/codex (or per the maintainer's setup)\n",
-    );
+    process.stderr.write("install via: npm i -g @openai/codex (or per the maintainer's setup)\n");
     return 1;
   }
 
