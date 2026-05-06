@@ -215,15 +215,15 @@ function main(): number {
   }
 
   const prompt =
-    "Run a read-only Zeta loop gate report and stop. Do not edit files. Check active claim branches, local heartbeats, open PR gate state, docs/active-trajectory.md, docs/BACKLOG.md, and docs/backlog/README.md. Report the next toe-safe action in under 20 lines.";
+    "Run a bounded forward-progress Zeta loop gate and stop. Check active claim branches, local heartbeats, open PR gate state, docs/active-trajectory.md, docs/BACKLOG.md, and docs/backlog/README.md. If there is a safe actionable step, take exactly one toe-safe increment that moves the factory forward: rerun a transient failed CI job, inspect and address actionable PR review/CI state, advance an existing Codex claim, or make a small claim-scoped patch. Before write work, use a dedicated worktree and pushed claim branch; do not write in the contested root checkout, do not overwrite another agent's uncommitted work, do not overlap an active claim/path set, and do not increase budget. If no safe action exists, report the blocker and next toe-safe action in under 20 lines.";
 
   const codexStartedAt = nowIso();
   writeCodexState({ run_id: runId, started_at: codexStartedAt, status: "running" });
-  log(`codex read-only gate start run_id=${runId} timeout=${Math.round(codexTimeoutMs / 1000)}s`);
-  const codex = run("codex", ["-a", "never", "exec", "-C", worktree, "-s", "read-only", prompt], codexTimeoutMs);
+  log(`codex forward gate start run_id=${runId} timeout=${Math.round(codexTimeoutMs / 1000)}s`);
+  const codex = run("codex", ["-a", "never", "exec", "-C", worktree, "-s", "danger-full-access", prompt], codexTimeoutMs);
   appendFileSync(join(logDir, "ticks.log"), codex.stdout);
   appendFileSync(join(logDir, "ticks.err"), codex.stderr);
-  log(`codex read-only gate end run_id=${runId} status=${codex.status}`);
+  log(`codex forward gate end run_id=${runId} status=${codex.status}`);
   writeCodexState({ run_id: runId, started_at: codexStartedAt, finished_at: nowIso(), status: codex.status });
   return codex.status;
 }
