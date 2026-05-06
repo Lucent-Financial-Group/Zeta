@@ -111,6 +111,7 @@
     <Compile Include="Properties/Math.Invariants.Tests.fs" />
     <Compile Include="Properties/Fuzz.Tests.fs" />
     <Compile Include="Properties/Determinism.Tests.fs" />
+    <Compile Include="MajiTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
