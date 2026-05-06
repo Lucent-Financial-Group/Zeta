@@ -73,6 +73,12 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0221](backlog/P1/B-0221-alignment-authority-delegation-idle-pr-collaboration-substrate-2026-05-06.md)** ALIGNMENT.md rewrite - authority delegation and idle-PR collaboration substrate
 - [ ] **[B-0222](backlog/P1/B-0222-alignment-noether-compounding-rigor-pipeline-2026-05-06.md)** ALIGNMENT.md rewrite - Noether compounding-rigor pipeline
 - [ ] **[B-0223](backlog/P1/B-0223-alignment-rewrite-integration-crossrefs-cold-start-budget-2026-05-06.md)** ALIGNMENT.md rewrite - final integration, crossrefs, and cold-start budget
+- [ ] **[B-0232](backlog/P1/B-0232-pages-astro-publish-workflow-2026-05-06.md)** GitHub Pages discoverability - Astro publish workflow
+- [ ] **[B-0233](backlog/P1/B-0233-pages-content-sources-information-architecture-2026-05-06.md)** GitHub Pages discoverability - content sources and information architecture
+- [ ] **[B-0234](backlog/P1/B-0234-pages-seo-metadata-sitemap-robots-ai-crawlers-2026-05-06.md)** GitHub Pages discoverability - SEO metadata, sitemap, robots, and AI crawler access
+- [ ] **[B-0235](backlog/P1/B-0235-pages-repo-metadata-sitemap-submission-discovery-2026-05-06.md)** GitHub Pages discoverability - repo metadata, sitemap submission, and discovery signals
+- [ ] **[B-0236](backlog/P1/B-0236-pages-playwright-validation-dora-metrics-2026-05-06.md)** GitHub Pages discoverability - Playwright validation and DORA metrics
+- [ ] **[B-0237](backlog/P1/B-0237-github-wiki-first-class-integration-2026-05-06.md)** GitHub Wiki first-class integration after Pages launch
 
 ## P2 — research-grade
 
