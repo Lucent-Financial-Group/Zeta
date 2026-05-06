@@ -136,7 +136,7 @@ Aaron's ask doesn't specify a cadence. Suggested defaults:
 
 ## Cross-tool composition
 
-This list is the doc-form. The executable form would be `tools/hygiene/audit-lost-files.sh` running each survey command and reporting findings. **Not yet implemented** — owed-work for Otto-329 Phase 8 follow-up.
+This list is the doc-form. The executable form is `tools/hygiene/audit-lost-files.ts` (Bun-runtime TypeScript per CLAUDE.md Rule 0) running each survey command and reporting findings.
 
 Composes with:
 
@@ -156,7 +156,7 @@ Composes with:
 
 ## Owed work (post-Phase-8 list creation)
 
-- Implement `tools/hygiene/audit-lost-files.sh` covering survey commands for all 15 location-classes.
+- Extend `tools/hygiene/audit-lost-files.ts` (Bun-runtime TypeScript) to cover survey commands for all 15 location-classes (initial implementation landed; ongoing coverage expansion).
 - Add periodic-cron entry once cadence is set.
 - Append discovered location-classes back into this file.
 - Connect to Otto-329 Phase 5 PR-backup work — real-time backups should prevent most #1, #2, #14 losses.
