@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0002]
 tags: [alignment, governance, otto-287, bidirectional-alignment, factory-as-superfluid, matrix-pill, noether]
+decomposition: clean
 ---
 
 # ALIGNMENT.md rewrite — incorporate substrate cluster + bidirectional clause

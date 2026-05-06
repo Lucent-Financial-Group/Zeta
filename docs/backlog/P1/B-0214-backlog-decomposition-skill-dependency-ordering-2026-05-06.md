@@ -5,6 +5,7 @@ status: open
 title: "Backlog decomposition skill — break architectural directions into dependency-ordered items"
 created: 2026-05-06
 last_updated: 2026-05-06
+decomposition: atomic
 depends_on: []
 ---
 

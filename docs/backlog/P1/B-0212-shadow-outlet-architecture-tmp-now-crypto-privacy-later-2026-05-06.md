@@ -5,6 +5,7 @@ status: open
 title: "Shadow outlet architecture — /tmp ephemeral now, cryptographic privacy later"
 created: 2026-05-06
 last_updated: 2026-05-06
+decomposition: atomic
 depends_on: []
 ---
 
