@@ -10,7 +10,7 @@ created: 2026-04-29
 last_updated: 2026-05-02
 depends_on: []
 composes_with:
-  - B-0094
+  - docs/research/escrowed/aurora-autonomous-flywheel-thesis-2026-04-28.md
   - PR-714
 tags: [aaron-2026-04-29, escrow, naming-collision, factory-hygiene, deferred-research, vocabulary, vendoring]
 ---
