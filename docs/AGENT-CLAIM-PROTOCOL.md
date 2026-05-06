@@ -65,6 +65,13 @@ before creating branches or editing files. In that mode, a
 pushed claim branch is the task lock, and a local heartbeat
 is the checkout/worktree traffic signal.
 
+If agents do **not** share a machine, filesystem, worktree
+directory, or local broadcast bus, read
+[Remote-only / no shared filesystem mode](#remote-only--no-shared-filesystem-mode).
+In that mode, pushed claim branches are the coordination
+bus; host comments such as GitHub PR / issue comments are
+useful adapters, not requirements.
+
 ### 2. Check for an existing claim on the work you want
 
 Claim files live on pushed `claim/<slug>` branches (see
@@ -371,6 +378,114 @@ rejection and discovers the existing claim. After the
 claim lands, work commits can move to a separate working
 branch (`feat/<thing>`); the `claim/<slug>` branch stays
 as the lock until release.
+
+### Remote-only / no shared filesystem mode
+
+This section applies when two or more agents are working from
+different machines, cloud sandboxes, forks, browser sessions,
+or vendor harnesses that cannot see each other's local files.
+In that setting there is no shared `.git/agent-heartbeats/`
+directory, no reliable local broadcast folder, and no local
+worktree traffic signal. The protocol still works.
+
+The rule is:
+
+> **Remote git is the lock and the minimum message bus.
+> Host comments are adapters. Local-only signals are optional
+> convenience, never dependencies.**
+
+Operationally:
+
+1. **Assume no local signal exists.** Do not rely on
+   `.broadcasts/`, `.git/agent-heartbeats/`, terminal logs,
+   local worktree names, or a human courier to know what
+   remote agents are doing. Those can help on one machine, but
+   a remote agent following this document may never see them.
+2. **Refresh remote refs before choosing work.**
+   ```
+   git fetch --prune origin
+   git branch -r --list 'origin/claim/*'
+   git ls-remote --heads origin 'claim/*'
+   ```
+   If you have a host adapter such as GitHub CLI, GitLab CLI,
+   Forgejo / Gitea, Jira, or Linear, also inspect its open
+   workflow surface. For Zeta today, that means GitHub PRs:
+   ```
+   gh pr list --repo Lucent-Financial-Group/Zeta --state open
+   ```
+   A project without GitHub still runs the protocol from the
+   first three git commands.
+3. **Treat `origin/claim/<slug>` as the task lock.** If a
+   remote claim branch exists, read its claim file before
+   touching the same task:
+   ```
+   git show origin/claim/<slug>:docs/claims/<slug>.md
+   ```
+   If the existing claim covers your intended work, do not
+   duplicate it. Use the available remote surface to coordinate,
+   or pick a different slice.
+4. **Use claim progress commits as remote heartbeats and the
+   git-only message bus.** In remote-only mode, a long-running
+   claim must signal progress through git, not local files.
+   Update the claim file's ETA or Notes and push:
+   ```
+   git commit -am "progress: <slug> - <remote-visible signal>"
+   git push
+   ```
+   For active cross-agent work, prefer progress commits every
+   30-60 minutes rather than waiting for the 24-hour stale
+   window. When no host comments exist, append short entries to
+   the claim file's Notes:
+   - `ask:` what input is needed;
+   - `offer:` what the agent can take next;
+   - `receipt:` what it has read or verified;
+   - `blocked:` what prevents the next move.
+   This is slower than a chatty host, but it is enough: every
+   remote peer can fetch and read the claim branch.
+5. **Use host comments as a convenience adapter, not the core
+   protocol.** If the project has GitHub, GitLab, Forgejo /
+   Gitea, Jira, Linear, email patch review, or another review
+   host, mirror asks, offers, receipts, and blockers there too.
+   Keep the claim file as the ownership lock; keep host
+   discussion as a discoverability and notification layer. For
+   Zeta, GitHub PR / issue comments are the active host bus
+   because the factory currently lives on GitHub.
+6. **Check changed paths before overlapping.** If another
+   claim may touch the same area, inspect its branch diff:
+   ```
+   git diff --name-only origin/main...origin/claim/<other-slug>
+   ```
+   Overlapping paths are not automatically forbidden, but they
+   require an explicit remote signal before both agents write:
+   either a shared claim-file entry in git-only mode, or a host
+   comment when a host adapter exists.
+7. **Forks still use the same lock.** If an agent cannot push
+   to `Lucent-Financial-Group/Zeta`, it cannot create the
+   authoritative `origin/claim/<slug>` lock. It should use
+   [report-back / write-via-maintainer mode](#report-back--write-via-maintainer-mode-no-claim-required)
+   or open a fork PR and comment that it is unable to hold a
+   first-class claim. A maintainer or write-capable agent can
+   then file the claim on its behalf.
+
+This gives remote agents two durable layers:
+
+- **Required git layer:** `origin/claim/<slug>` and
+  `docs/claims/<slug>.md`; task ownership, progress,
+  git-only asks, offers, receipts, and blockers.
+- **Optional host layer:** GitHub / GitLab / Forgejo / Gitea
+  PRs or issues, Jira / Linear tickets, email patch threads,
+  Zeta's future native coordination host, or another review
+  host; notifications, review discussion, dashboards, and
+  richer comments.
+
+Remote-only mode is intentionally enough by itself. A local
+broadcast bus, Reticulum mesh, Slack channel, or other
+side-channel may be useful later, and Zeta uses GitHub as its
+host adapter today, but those must remain adapters over this
+protocol, not hidden prerequisites. The long-horizon target is
+self-sufficiency: Zeta should eventually be able to host the
+same coordination primitives itself while preserving this
+git-native fallback path.
 
 ### Shared machine / shared folder mode
 
