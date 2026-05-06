@@ -22,7 +22,10 @@
 #      downstream rows)
 #   7. Unclosed-but-merged rows (head-keyword matches recent merged-PR title)
 
-set -euo pipefail
+set -eu
+# Note: pipefail intentionally NOT set -- this script has many `... | head -N`
+# pipes where head closes the pipe early, which would otherwise SIGPIPE-kill
+# the whole script. Failures are guarded individually where they matter.
 
 REPO="${REPO:-Lucent-Financial-Group/Zeta}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
