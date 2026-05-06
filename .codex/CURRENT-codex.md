@@ -34,11 +34,20 @@ tools.
 - Logs: `~/Library/Logs/zeta-codex-loop/`
 - State / lock: `~/Library/Application Support/ZetaCodexLoop/`
 
+This is not a native in-chat cron. The active harness only
+runs while a turn is open; `launchd` is the host-level
+continuation mechanism. The LaunchAgent writes a heartbeat
+every minute and, when `ZETA_CODEX_LOOP_RUN_CODEX=1`, invokes
+a bounded read-only Codex gate report on the configured
+cooldown. Gate output is in `ticks.log` / `ticks.err`, not in
+the current chat transcript.
+
 Status:
 
 ```bash
 launchctl print gui/$(id -u)/com.zeta.codex-loop
 tail -50 ~/Library/Logs/zeta-codex-loop/runner.log
+tail -80 ~/Library/Logs/zeta-codex-loop/ticks.log
 ```
 
 Stop:

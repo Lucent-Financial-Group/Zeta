@@ -12,8 +12,10 @@ const runId = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/,
 const lockTtlMs = Number(process.env.ZETA_CODEX_LOOP_LOCK_TTL_SECONDS ?? "120") * 1000;
 const fetchTimeoutMs = Number(process.env.ZETA_CODEX_LOOP_FETCH_TIMEOUT_SECONDS ?? "45") * 1000;
 const runCodex = process.env.ZETA_CODEX_LOOP_RUN_CODEX === "1";
+const codexIntervalMs = Number(process.env.ZETA_CODEX_LOOP_CODEX_INTERVAL_SECONDS ?? "900") * 1000;
 const codexTimeoutMs = Number(process.env.ZETA_CODEX_LOOP_CODEX_TIMEOUT_SECONDS ?? "300") * 1000;
 const dryRun = process.env.ZETA_CODEX_LOOP_DRY_RUN === "1";
+const codexStateFile = join(stateDir, "last-codex-run.json");
 
 mkdirSync(stateDir, { recursive: true });
 mkdirSync(logDir, { recursive: true });
@@ -110,6 +112,25 @@ function writeText(path: string, text: string): void {
   writeFileSync(path, text);
 }
 
+function readLastCodexStartedAt(): number | null {
+  try {
+    const data = JSON.parse(readFileSync(codexStateFile, "utf8")) as { started_at?: string };
+    if (!data.started_at) {
+      return null;
+    }
+    const timestamp = Date.parse(data.started_at);
+    return Number.isNaN(timestamp) ? null : timestamp;
+  } catch {
+    return null;
+  }
+}
+
+function writeCodexState(state: Record<string, string | number>): void {
+  const tmp = `${codexStateFile}.tmp.${process.pid}`;
+  writeText(tmp, `${JSON.stringify({ ...state, updated_at: nowIso() }, null, 2)}\n`);
+  renameSync(tmp, codexStateFile);
+}
+
 function main(): number {
   if (!existsSync(worktree)) {
     log(`error: worktree missing: ${worktree}`);
@@ -174,7 +195,7 @@ function main(): number {
   }
 
   if (!runCodex) {
-    log(`heartbeat complete run_id=${runId} fetch=${fetchStatus} claims=${claims.length} open_prs=${openPrCount} dirty=${dirty.length}`);
+    log(`heartbeat complete run_id=${runId} fetch=${fetchStatus} claims=${claims.length} open_prs=${openPrCount} dirty=${dirty.length} codex=disabled`);
     return 0;
   }
 
@@ -183,14 +204,27 @@ function main(): number {
     return 0;
   }
 
+  const lastCodexStartedAt = readLastCodexStartedAt();
+  const elapsedMs = lastCodexStartedAt === null ? Number.POSITIVE_INFINITY : Date.now() - lastCodexStartedAt;
+  if (elapsedMs < codexIntervalMs) {
+    const dueInSeconds = Math.ceil((codexIntervalMs - elapsedMs) / 1000);
+    log(
+      `heartbeat complete run_id=${runId} fetch=${fetchStatus} claims=${claims.length} open_prs=${openPrCount} dirty=${dirty.length} codex=wait due_in=${dueInSeconds}s`,
+    );
+    return 0;
+  }
+
   const prompt =
     "Run a read-only Zeta loop gate report and stop. Do not edit files. Check active claim branches, local heartbeats, open PR gate state, docs/active-trajectory.md, docs/BACKLOG.md, and docs/backlog/README.md. Report the next toe-safe action in under 20 lines.";
 
+  const codexStartedAt = nowIso();
+  writeCodexState({ run_id: runId, started_at: codexStartedAt, status: "running" });
   log(`codex read-only gate start run_id=${runId} timeout=${Math.round(codexTimeoutMs / 1000)}s`);
   const codex = run("codex", ["-a", "never", "exec", "-C", worktree, "-s", "read-only", prompt], codexTimeoutMs);
   appendFileSync(join(logDir, "ticks.log"), codex.stdout);
   appendFileSync(join(logDir, "ticks.err"), codex.stderr);
   log(`codex read-only gate end run_id=${runId} status=${codex.status}`);
+  writeCodexState({ run_id: runId, started_at: codexStartedAt, finished_at: nowIso(), status: codex.status });
   return codex.status;
 }
 

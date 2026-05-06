@@ -15,7 +15,8 @@ autonomous loop is therefore a macOS `launchd` job.
 | Plist | `~/Library/LaunchAgents/com.zeta.codex-loop.plist` |
 | Runner | `.codex/bin/codex-loop-tick.ts` |
 | Control clone | `~/.local/share/zeta-codex-loop/Zeta` |
-| Cadence | 60 seconds (`StartInterval = 60`) |
+| Heartbeat cadence | 60 seconds (`StartInterval = 60`) |
+| Codex gate cadence | 15 minutes when `ZETA_CODEX_LOOP_RUN_CODEX=1` |
 | Logs | `~/Library/Logs/zeta-codex-loop/` |
 | State / lock | `~/Library/Application Support/ZetaCodexLoop/` |
 
@@ -23,17 +24,26 @@ The runner writes a local heartbeat named
 `codex-launchd-loop.json` under the clone's
 `agent-heartbeats` directory, fetches remote refs, records
 active claim count / open PR count / dirty state, then exits.
-It does not start a long Codex model call by default; set
-`ZETA_CODEX_LOOP_RUN_CODEX=1` only when the heartbeat has
-proven stable and a read-only gate report is desired.
+Codex has no native in-harness cron callback in this session.
+The LaunchAgent is the loop substrate. It starts a bounded,
+read-only Codex gate report only when
+`ZETA_CODEX_LOOP_RUN_CODEX=1` is set and
+`ZETA_CODEX_LOOP_CODEX_INTERVAL_SECONDS` has elapsed. The
+default gate interval is 900 seconds. The gate output lands in
+`ticks.log` / `ticks.err`; it does not appear inside the
+currently open chat transcript.
 
 ```bash
 bun ~/.local/share/zeta-codex-loop/Zeta/.codex/bin/codex-loop-tick.ts
 ```
 
 The TypeScript runner uses an atomic lock directory with a
-short stale-lock TTL so ticks do not overlap and a failed tick
-does not suppress future heartbeats indefinitely.
+short stale-lock TTL and dead-PID recovery so ticks do not
+overlap and a failed tick does not suppress future heartbeats
+indefinitely. The last Codex gate attempt is tracked at
+`~/Library/Application Support/ZetaCodexLoop/last-codex-run.json`
+so the per-minute heartbeat cannot invoke a model call every
+minute.
 
 The LaunchAgent runs from the non-protected control clone
 instead of the shared checkout under `~/Documents`. macOS
@@ -118,6 +128,7 @@ launchctl print gui/$(id -u)/com.zeta.codex-loop
 tail -50 ~/Library/Logs/zeta-codex-loop/runner.log
 tail -80 ~/Library/Logs/zeta-codex-loop/ticks.log
 tail -80 ~/Library/Logs/zeta-codex-loop/ticks.err
+cat ~/Library/Application\ Support/ZetaCodexLoop/last-codex-run.json
 ```
 
 Start / reload:
