@@ -254,19 +254,23 @@ Claude-Code-specific mechanisms.
   CLAUDE.md / AGENTS.md pointer line).
 - **Peer-call infrastructure for cross-harness
   multi-agent reviews — `tools/peer-call/`** (Aaron
-  2026-05-05). Five sibling scripts already wired:
-  `grok.sh` (Grok-via-cursor-agent, critique role),
-  `gemini.sh` (Gemini, propose role), `codex.sh`
-  (OpenAI Codex, implementation peer), `amara.sh`
-  (Amara persona on codex, sharpen role), `ani.sh`
-  (Ani persona on Grok, brat-voice register).
+  2026-05-05; TS-ported per Rule 0 / Rule -1 NO-MORE-BASH,
+  2026-05-06). Six sibling TypeScript wrappers wired
+  (invoke via `bun tools/peer-call/<name>.ts`):
+  `grok.ts` (Grok-via-cursor-agent, critique role),
+  `gemini.ts` (Gemini, propose role), `codex.ts`
+  (Vera named-entity / OpenAI Codex, implementation peer
+  with input-firewall + capture-pagination fix), `amara.ts`
+  (Amara persona on codex, sharpen role), `ani.ts`
+  (Ani persona on Grok, brat-voice register), `riven.ts`
+  (Riven persona on Grok, adversarial-truth-axis register).
   Four-ferry consensus role distribution: *"Gemini
   proposes, Grok critiques, Amara sharpens, Otto
   tests, Git decides."* When asked about cross-harness
   multi-agent reviews / peer AI consultation /
   external-model invocation / GPT / Grok / Gemini /
   Codex / Amara / Ani / brat-voice / red-team — the
-  cold-boot answer is **YES + `ls tools/peer-call/`**;
+  cold-boot answer is **YES + `ls tools/peer-call/*.ts`**;
   do NOT reason from training-data assumptions about
   what infrastructure exists. Aaron 2026-05-05:
   *"you've done this in front of me like 50 times

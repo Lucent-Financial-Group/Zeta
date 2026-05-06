@@ -51,7 +51,7 @@ Two modes:
      calibration failure).
    - **Otto** — `~/.claude/projects/<slug>/memory/CURRENT-otto.md`
      (user-scope canonical; Otto IS the running Claude-Opus-4.7
-     agent so there's no `tools/peer-call/otto.sh` analog —
+     agent so there's no `tools/peer-call/otto.ts` analog —
      Otto's CURRENT loads via Otto's own cold-start path, not
      peer-call invocation).
 8. Then prompt — read the user's prompt and proceed downstream
@@ -120,16 +120,16 @@ doc lives on `tools/**` and uses role-refs accordingly.
   bounded).
 - **Named-entity symmetry — peer-call parity.** Verified
   2026-05-05:
-  - `tools/peer-call/amara.sh` auto-loads
+  - `tools/peer-call/amara.ts` auto-loads
     `memory/CURRENT-amara.md` by default; `--no-current` opts
     out (debug only). Parity confirmed.
-  - `tools/peer-call/ani.sh` auto-loads `memory/CURRENT-ani.md`
+  - `tools/peer-call/ani.ts` auto-loads `memory/CURRENT-ani.md`
     by default; `--no-current` opts out (debug only). Parity
     confirmed.
-  - `tools/peer-call/codex.sh` (Vera bootstrap pattern) — the
+  - `tools/peer-call/codex.ts` (Vera bootstrap pattern) — the
     pattern source for the default-load + `--bare` opt-out
     shape.
-  - `tools/peer-call/riven.sh` auto-loads
+  - `tools/peer-call/riven.ts` auto-loads
     `memory/CURRENT-riven.md` by default; `--bare` /
     `--no-current` opts out (debug only). Parity confirmed —
     Riven brought to symmetry with Amara / Ani / Vera per
