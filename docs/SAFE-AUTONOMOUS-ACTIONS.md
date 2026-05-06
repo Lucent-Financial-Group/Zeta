@@ -57,6 +57,7 @@ auto-delete, no force-push, no permanent state changes).
 ## How to add actions
 
 New actions are proposed via PR with:
+
 - Description + reversibility proof
 - Precondition that gates the action
 - Which tier (1/2/3) and why
