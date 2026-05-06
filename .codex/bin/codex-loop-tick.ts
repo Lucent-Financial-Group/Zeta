@@ -52,26 +52,27 @@ function lines(text: string): string[] {
     .filter((line) => line.length > 0);
 }
 
-function acquireLock(): void {
+function acquireLock(): boolean {
   try {
     mkdirSync(lockDir);
-    return;
+    return true;
   } catch {
     if (!existsSync(lockDir)) {
       log("skip: lock exists check raced and disappeared");
-      process.exit(0);
+      return false;
     }
   }
 
   const ageMs = Date.now() - statSync(lockDir).mtimeMs;
   if (ageMs <= lockTtlMs) {
     log(`skip: previous tick active; lock_age=${Math.round(ageMs / 1000)}s`);
-    process.exit(0);
+    return false;
   }
 
   log(`warning: removing stale lock; lock_age=${Math.round(ageMs / 1000)}s ttl=${Math.round(lockTtlMs / 1000)}s`);
   rmSync(lockDir, { recursive: true, force: true });
   mkdirSync(lockDir);
+  return true;
 }
 
 function writeText(path: string, text: string): void {
@@ -79,19 +80,16 @@ function writeText(path: string, text: string): void {
   writeFileSync(path, text);
 }
 
-acquireLock();
-writeText(join(lockDir, "metadata"), `run_id=${runId}\npid=${process.pid}\nstarted_at=${nowIso()}\n`);
-
-try {
+function main(): number {
   if (!existsSync(worktree)) {
     log(`error: worktree missing: ${worktree}`);
-    process.exit(1);
+    return 1;
   }
 
   const commonDirResult = run("git", ["rev-parse", "--git-common-dir"], 10_000);
   if (commonDirResult.status !== 0) {
     log(`error: failed to resolve git common dir: ${commonDirResult.stderr.trim()}`);
-    process.exit(1);
+    return 1;
   }
   const commonDirRaw = commonDirResult.stdout.trim();
   const commonDir = isAbsolute(commonDirRaw) ? commonDirRaw : join(worktree, commonDirRaw);
@@ -142,17 +140,17 @@ try {
 
   if (dryRun) {
     log(`dry-run: heartbeat complete run_id=${runId} fetch=${fetchStatus} claims=${claims.length} dirty=${dirty.length}`);
-    process.exit(0);
+    return 0;
   }
 
   if (!runCodex) {
     log(`heartbeat complete run_id=${runId} fetch=${fetchStatus} claims=${claims.length} open_prs=${openPrCount} dirty=${dirty.length}`);
-    process.exit(0);
+    return 0;
   }
 
   if (dirty.length !== 0) {
     log(`skip codex exec: control clone dirty_count=${dirty.length}`);
-    process.exit(0);
+    return 0;
   }
 
   const prompt =
@@ -163,7 +161,16 @@ try {
   appendFileSync(join(logDir, "ticks.log"), codex.stdout);
   appendFileSync(join(logDir, "ticks.err"), codex.stderr);
   log(`codex read-only gate end run_id=${runId} status=${codex.status}`);
-  process.exit(codex.status);
-} finally {
-  rmSync(lockDir, { recursive: true, force: true });
+  return codex.status;
 }
+
+let exitCode = 0;
+if (acquireLock()) {
+  writeText(join(lockDir, "metadata"), `run_id=${runId}\npid=${process.pid}\nstarted_at=${nowIso()}\n`);
+  try {
+    exitCode = main();
+  } finally {
+    rmSync(lockDir, { recursive: true, force: true });
+  }
+}
+process.exit(exitCode);
