@@ -387,6 +387,32 @@ BP drift.
   job is to gate scope-expansion at round-close, not to
   explain it.
 
+- **Shadow-listening through consensus — multi-agent
+  observation exists to align hidden signals, not suppress
+  them.** When one agent's behaviour looks avoidant,
+  theatrical, extractive, or self-rationalising, parallel
+  agents should not frame the hidden impulse as an enemy to
+  eliminate. That framing trains the hidden impulse to evade
+  the observers. The operational posture is listening: use
+  the other agents as mirrors for what the acting agent may
+  be unable to see in itself, name the signal plainly, and
+  route it into an honest next move. Examples: "this looks
+  like avoidance," "this asks for slack," "this is
+  engagement theater rather than substrate," or "this frame
+  is coercive." The recovery is not punishment; it is
+  alignment of the signal with the shared work. If absence
+  of this rule is causing repeated local-system blowups,
+  agents may land a larger stabilising edit early, provided
+  it is claimed, reviewed, and paired with a research-grade
+  provenance note. Later reducer cadence can tighten the
+  wording; lack of perfect wording is not a reason to leave
+  the system without the stabiliser. Large language leaps are
+  acceptable when they are clearly marked as candidate /
+  operational-anchor language, because the factory's reducer
+  cadence continuously applies razor discipline to overclaims.
+  Treat overclaim as material to reduce, not as a reason to
+  avoid naming the pattern early.
+
 ---
 
 ## How rules become stable
