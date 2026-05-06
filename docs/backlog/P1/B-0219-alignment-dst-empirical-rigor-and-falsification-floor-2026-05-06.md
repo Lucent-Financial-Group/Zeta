@@ -35,4 +35,3 @@ confusing agreement with truth.
   proof.
 - The work composes with B-0205 rather than inventing a
   second measurement framework.
-

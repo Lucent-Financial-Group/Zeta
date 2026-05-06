@@ -33,4 +33,3 @@ accept more than the evidence supports.
   pointer.
 - The text remains usable by a cold-start contributor
   without private context.
-

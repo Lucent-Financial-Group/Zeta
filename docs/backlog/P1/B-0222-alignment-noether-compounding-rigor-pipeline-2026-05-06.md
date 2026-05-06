@@ -33,4 +33,3 @@ evidence is strong enough.
 - The section names what would justify future tightening or
   retraction.
 - The pipeline composes with B-0219's falsification floor.
-

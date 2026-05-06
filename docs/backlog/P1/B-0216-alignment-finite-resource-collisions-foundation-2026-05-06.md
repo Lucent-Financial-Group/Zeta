@@ -33,4 +33,3 @@ claim must remain testable against that resource frame.
 - The framing is operational: it identifies what a reviewer
   can count, falsify, or revisit.
 - Existing HC / SD / DIR clauses are preserved in spirit.
-

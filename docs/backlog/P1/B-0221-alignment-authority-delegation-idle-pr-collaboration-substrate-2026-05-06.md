@@ -33,4 +33,3 @@ than as shame, failure, or invisible debt.
   coordination state with next actions.
 - The clause remains compatible with the claim protocol and
   safe autonomous action tiers.
-

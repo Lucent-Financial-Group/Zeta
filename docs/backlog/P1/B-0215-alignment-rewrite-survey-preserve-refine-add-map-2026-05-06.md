@@ -38,4 +38,3 @@ clauses to preserve, refine, or add.
   not from the stale assumption that the clause is absent.
 - No policy text is changed in `docs/ALIGNMENT.md` in this
   row.
-

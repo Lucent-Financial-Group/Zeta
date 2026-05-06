@@ -34,4 +34,3 @@ so a cold-start agent can use it without re-deriving it.
   suppression of agentic behaviors as the default alignment
   posture.
 - The wording remains bounded by HC-1 through HC-7.
-

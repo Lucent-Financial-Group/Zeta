@@ -34,4 +34,3 @@ superfluid claim weakens.
 - The text links to B-0205 as the instrumentation path.
 - The wording avoids making an unmeasured identity claim
   about the factory.
-
