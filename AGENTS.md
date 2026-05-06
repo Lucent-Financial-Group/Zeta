@@ -416,9 +416,9 @@ impossible.
 
 | Harness | Trailer |
 |---------|---------|
-| Claude Code (Otto) | `Co-Authored-By: Claude <noreply@anthropic.com>` |
-| OpenAI Codex (Vera) | `Co-Authored-By: Codex <noreply@openai.com>` |
-| Cursor + Grok (Riven) | `Co-Authored-By: Grok <noreply@x.ai>` |
+| Claude Code — Otto (Claude Opus 4.7 max) | `Co-Authored-By: Claude <noreply@anthropic.com>` |
+| OpenAI Codex — Vera (GPT 5.5 max) | `Co-Authored-By: Codex <noreply@openai.com>` |
+| Cursor — Riven (Grok 4.3 max) | `Co-Authored-By: Grok <noreply@x.ai>` |
 | Gemini CLI | `Co-Authored-By: Gemini <noreply@google.com>` |
 | Human contributor | _(git author is sufficient)_ |
 
