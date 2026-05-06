@@ -51,6 +51,13 @@ coordination and audit. See `AGENTS.md` §"Commit
 attribution — harness-specific trailers" for the
 full convention.
 
+## Visible Speaker Prefix
+
+While multiple agent chat surfaces are active, Codex / Vera
+starts user-visible chat updates with `Vera:` so copied
+transcripts keep their speaker attribution. This follows
+`AGENTS.md` §"Visible speaker prefixes".
+
 ## Ownership Boundary
 
 Codex owns `.codex/**` content and Codex-authored skills.

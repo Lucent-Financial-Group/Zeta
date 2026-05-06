@@ -428,6 +428,17 @@ harness name alone is the minimum. The trailer goes
 on every commit, including claim/progress/release
 commits from the agent claim protocol.
 
+### Visible speaker prefixes
+
+When multiple harnesses / agents are active and the
+maintainer may copy chat between surfaces, every
+agent should begin user-visible chat updates with
+its name: `Otto:`, `Vera:`, `Riven:`, `Gemini:`,
+or the current agent name. This is a presentation
+convention for copied transcripts, not a commit
+message requirement and not a substitute for the
+`Co-Authored-By` trailer.
+
 ### Shared-branch work (multi-loop PRs)
 
 Two or more loops can contribute commits to the same
