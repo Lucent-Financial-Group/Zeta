@@ -32,4 +32,3 @@ and single high-cardinality-first storage designs.
   Prometheus fast path and which option best supports
   Aurora-style high-cardinality event streams.
 - The result feeds the Pareto synthesis in B-0230.
-

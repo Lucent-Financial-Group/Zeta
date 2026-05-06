@@ -31,4 +31,3 @@ systems earned honestly?
 - Any deliberate non-Pareto choice is labeled with the
   architectural reason.
 - The synthesis directly feeds the recommendation in B-0231.
-

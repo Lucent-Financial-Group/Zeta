@@ -32,4 +32,3 @@ storage bounds, and time-monotonicity.
   implementation and which can be validated after a prototype.
 - The output feeds B-0230 and the eventual implementation
   rows filed by B-0231.
-

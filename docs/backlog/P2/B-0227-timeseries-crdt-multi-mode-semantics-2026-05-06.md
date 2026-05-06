@@ -32,4 +32,3 @@ within the same algebra.
   associative, idempotent terms.
 - The result feeds B-0228's formal-spec plan and B-0229's
   meta-DSL integration sketch.
-

@@ -30,4 +30,3 @@ optimization opportunities.
 - The design composes with B-0148's MDX/meta-DSL framing.
 - CRDT modes remain visible enough to be formally specified.
 - The sketch distinguishes DSL surface from storage backend.
-

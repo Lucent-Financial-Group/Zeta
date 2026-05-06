@@ -33,4 +33,3 @@ candidate surfaced by live research.
   upstream docs, papers, or project pages.
 - The doc explicitly marks Prometheus as the good-citizen
   baseline rather than as the default final answer.
-

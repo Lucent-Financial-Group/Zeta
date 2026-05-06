@@ -32,4 +32,3 @@ directly with ZSet algebra or requires an adapter.
 - Retraction semantics are treated as load-bearing, not as
   an optional integration detail.
 - The output feeds B-0226, B-0227, and B-0229.
-
