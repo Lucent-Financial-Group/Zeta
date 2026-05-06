@@ -636,7 +636,7 @@ function renderComment(c: ReviewComment, depth: number): string {
       .replace(/>/g, "&gt;"),
   );
   const lines: string[] = [header, "", `${bodyIndent}<pre>`];
-  for (const l of escaped) lines.push(`${bodyIndent}${l}`);
+  for (const l of escaped) lines.push(l.length === 0 ? "" : `${bodyIndent}${l}`);
   lines.push(`${bodyIndent}</pre>`);
   return lines.join("\n");
 }
@@ -765,15 +765,16 @@ function buildOutcome(
 ): OutcomeBits {
   const resolvedThreads = threads.filter((t) => t.resolved === true).length;
   const unresolvedThreads = threads.filter((t) => t.resolved === false).length;
-  // Heuristic: re-reviewed post-fix iff at least one fix commit predates a
-  // review comment (i.e., a comment exists timestamped after a fix commit).
+  // Heuristic: re-reviewed post-fix iff the PR has the expected sequence:
+  // review comment, later fix commit, later review comment. A review that
+  // merely happens after the PR's original commit is not post-fix validation.
   let rereviewed = false;
   if (fixCommits.length > 0 && reviewComments.length > 0) {
-    const lastFixAt = fixCommits
-      .map((c) => c.committedAt)
-      .sort()
-      .pop()!;
-    rereviewed = reviewComments.some((c) => c.created_at > lastFixAt);
+    const reviewTimes = reviewComments.map((c) => c.created_at).sort();
+    rereviewed = fixCommits.some((fix) =>
+      reviewTimes.some((reviewAt) => reviewAt < fix.committedAt) &&
+      reviewTimes.some((reviewAt) => reviewAt > fix.committedAt),
+    );
   }
   return {
     merged: meta.state === "MERGED",

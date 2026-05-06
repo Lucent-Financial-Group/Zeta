@@ -46,7 +46,7 @@
 | Field | Value |
 |---|---|
 | Merged | true |
-| Re-reviewed post-fix | true |
+| Re-reviewed post-fix | false |
 | Total threads | 6 |
 | Resolved threads | 0 |
 | Unresolved threads | 6 |
