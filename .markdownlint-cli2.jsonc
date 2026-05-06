@@ -58,6 +58,17 @@
     // controlled prose.
     "docs/pr-discussions/**",
     "docs/pr-preservation/**",
+    // PR-archive-on-merge output (`tools/archive/archive-pr-reviews.ts`,
+    // landed via PR #1702 + workflow `.github/workflows/pr-archive-on-merge.yml`).
+    // Same verbatim-preservation rationale as `docs/pr-preservation/**`:
+    // archive files reproduce GitHub-rendered PR bodies + review-thread
+    // markdown, including blank-lines-around-lists, unordered-list-indent,
+    // trailing-spaces, and consecutive blank lines that are artifacts of
+    // the source content (not author-controlled prose). Reformatting to
+    // satisfy MD007/MD012/MD032 would violate the verbatim contract — same
+    // policy lives in `docs/AGENT-BEST-PRACTICES.md` "PR-preservation
+    // archive discipline".
+    "docs/history/pr-reviews/**",
     // Aurora ferry absorbs (`docs/aurora/2026-*-amara-*.md`) are
     // verbatim courier-protocol preservation of Amara's deepresearch
     // ferry reports per Otto-227 verbatim-preservation discipline.

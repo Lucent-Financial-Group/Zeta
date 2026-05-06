@@ -58,12 +58,11 @@ async function runCmd(
 }
 
 async function hasCommand(name: string): Promise<boolean> {
-  try {
-    const r = await runCmd(["which", name]);
-    return r.exitCode === 0 && r.stdout.trim().length > 0;
-  } catch {
-    return false;
-  }
+  // Use Bun.which (cross-platform: scans PATH and PATHEXT on Windows)
+  // instead of shelling out to `which`, which is not portable. Aligns
+  // with audit-trajectories.ts and audit-backlog-items.ts (per
+  // Copilot review on PR #1702).
+  return Bun.which(name) !== null;
 }
 
 function nowIso(): string {
@@ -301,6 +300,16 @@ async function classDraftPRs(ghAvailable: boolean): Promise<void> {
     "--json",
     "number,title",
   ]);
+  // Per Codex 2026-05-06 review on PR #1702: never silently swallow
+  // a non-zero exit. A failed gh call would otherwise print "Count: 0"
+  // -- identical to genuine cleanliness -- masking unreliable data.
+  if (r.exitCode !== 0) {
+    console.log(
+      `SKIP: gh pr list (drafts) exited ${r.exitCode}; draft-PR count unreliable. stderr: ${r.stderr.trim()}`,
+    );
+    console.log("");
+    return;
+  }
   let drafts: Array<{ number: number; title: string }> = [];
   try {
     drafts = JSON.parse(r.stdout || "[]") as Array<{

@@ -201,6 +201,15 @@ async function axisCadenceWorkflows(ghAvailable: boolean): Promise<void> {
       "--json",
       "conclusion,createdAt,status",
     ]);
+    // Per Codex 2026-05-06 review on PR #1702: surface gh failures
+    // explicitly so auth/network breakage doesn't masquerade as
+    // "no recent runs" cleanliness.
+    if (r.exitCode !== 0) {
+      console.log(
+        `  SKIP: gh run list exited ${r.exitCode}; recent-runs unreliable. stderr: ${r.stderr.trim()}`,
+      );
+      continue;
+    }
     let runs: RunRollupItem[] = [];
     try {
       runs = JSON.parse(r.stdout || "[]") as RunRollupItem[];
@@ -259,6 +268,14 @@ async function axisLintWorkflows(ghAvailable: boolean): Promise<void> {
       "--json",
       "conclusion",
     ]);
+    // Per Codex 2026-05-06 review on PR #1702: surface gh failures
+    // so a non-zero exit isn't reported as "0 failures" cleanliness.
+    if (r.exitCode !== 0) {
+      console.log(
+        `  SKIP: gh run list exited ${r.exitCode}; failure-count unreliable. stderr: ${r.stderr.trim()}`,
+      );
+      continue;
+    }
     let runs: Array<{ conclusion?: string | null }> = [];
     try {
       runs = JSON.parse(r.stdout || "[]") as Array<{
@@ -341,9 +358,24 @@ async function axisRazorCadence(ghAvailable: boolean): Promise<void> {
     "razor-cadence",
     "--state",
     "open",
+    // Default page size is 30; explicit --limit prevents truncation
+    // when the razor-cadence backlog grows past the default. Per
+    // Codex 2026-05-06 review on PR #1702.
+    "--limit",
+    "200",
     "--json",
     "number,title,createdAt",
   ]);
+  // Per Codex 2026-05-06 review on PR #1702: never silently swallow
+  // a non-zero exit. A failed gh call would otherwise print "Count: 0"
+  // -- identical to genuine cleanliness -- masking real cadence skips.
+  if (r.exitCode !== 0) {
+    console.log(
+      `SKIP: gh issue list exited ${r.exitCode}; razor-cadence count unreliable. stderr: ${r.stderr.trim()}`,
+    );
+    console.log("");
+    return;
+  }
   let issues: IssueJson[] = [];
   try {
     issues = JSON.parse(r.stdout || "[]") as IssueJson[];
