@@ -194,7 +194,7 @@ function main(): number {
 
   for (const line of lines) {
     const parts = line.split("\t");
-    const status = parts[0];
+    const status = parts[0] ?? "";
     const path = parts[1] ?? "";
     if (!path) continue;
     allViolations.push(...classify(path, status, state));
