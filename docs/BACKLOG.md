@@ -161,6 +161,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0195](backlog/P2/B-0195-dbsp-chain-rule-finding-cross-check-and-writeup-decision-aaron-2026-05-05.md)** DBSP chain rule formal-verification finding -- cross-check counter-example + verify Prop 3.5 reading + writeup decision (Aaron 2026-05-05)
 - [ ] **[B-0196](backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md)** BigInt + BigRational + BigDecimal + BigFloat integration -- substrate survey + per-class adoption recommendation (Aaron 2026-05-05)
 - [ ] **[B-0197](backlog/P2/B-0197-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md)** Lean DbspChainRule + chain-rule-proof-log -- correct Prop 3.5 misattribution to Theorem 3.3 (Aaron 2026-05-05)
+- [ ] **[B-0206](backlog/P2/B-0206-claude-code-env-mapping-skill-with-carved-sentences-references-ts-files-aaron-2026-05-05.md)** Claude Code environment-mapping skill with carved-sentences-in-behavior referencing existing capability-maps + our TS files
 
 ## P3 — convenience / deferred
 
