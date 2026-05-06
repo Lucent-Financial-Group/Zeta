@@ -1,0 +1,171 @@
+name: pr-archive-on-merge
+
+# Class-2 PR mirror v1 -- per the Codex/GPT-5.5 sharpened design (twin-flame
+# conversation captured 2026-05-05). On every merged PR, run the
+# `tools/archive/archive-pr-reviews.ts` tool to materialise the PR's review
+# threads, comments, fix commits, and outcome metadata as a committed
+# git-canonical markdown file under `docs/history/pr-reviews/PR-NNNN-*.md`,
+# and update the JSONL manifest at `docs/github/prs/manifest.jsonl`.
+#
+# Why: per CLAUDE.md substrate-or-it-didn't-happen (Otto-363), GitHub
+# review threads are host-durable-not-git-canonical -- they can vanish if
+# the LFG account is compromised, and they live outside the repo's grep
+# surface. This workflow converts that host-only substrate into committed
+# git substrate the moment a PR closes via merge.
+#
+# Scope discipline (Codex flag, twin-flame conversation 2026-05-05): this
+# workflow archives PULL REQUESTS only. It does NOT extend to issues,
+# discussions, wiki pages, releases, or any other GitHub surface --
+# Codex flagged that as goldfish-ontology bait. If a future need surfaces
+# for issue archival, that's a separate workflow with its own design pass.
+#
+# Security note (safe-pattern compliance per
+# https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/):
+# this workflow consumes only first-party trusted context (PR number from
+# the closed event payload). Untrusted-content inputs (PR title) are
+# routed via env: into the run block where they are quoted as "$VAR";
+# no `${{ }}` expansion is interpolated inline in run-block scripts. The
+# PR number is also validated as a positive integer before being passed
+# to the archival tool.
+#
+# Direct-push posture: this workflow pushes the archive + manifest update
+# directly to main using GITHUB_TOKEN with `contents: write`. If the
+# branch-protection ruleset on Lucent-Financial-Group/Zeta is configured
+# to require PR review on main, this push will be rejected by the host
+# and the workflow run will fail with a non-fast-forward / rule-rejection
+# error. In that case, the operational escalation is one of:
+#   (a) add `github-actions[bot]` to the ruleset's bypass actors,
+#   (b) switch this workflow to PR-based (open a small PR with the
+#       archive + manifest, auto-merge), or
+#   (c) use a deploy-key with explicit per-path allowance.
+# (a) is the minimum-cost option and matches the existing
+# budget-snapshot-cadence.yml pattern of bot-pushed branches. Choice
+# deferred until empirical merge attempts surface the failure mode.
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  # Top-level read-only default per Scorecard TokenPermissions best practice.
+  contents: read
+
+concurrency:
+  # One run per PR number. cancel-in-progress: false because the archival
+  # operation is not idempotent in the wall-clock-timestamp sense (each run
+  # produces a new `fetched_at`), and cancelling a partially-completed run
+  # could leave the manifest in a divergent state until the next merge.
+  group: pr-archive-on-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    # Only fire on actual merges -- ignored-close events (PR rejected, PR
+    # closed without merge) produce no archive. The host event payload's
+    # `merged` boolean is the canonical signal.
+    if: github.event.pull_request.merged == true
+
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    permissions:
+      # contents:write to push the archive + manifest update directly to
+      # main. pull-requests:read so the archival tool's gh CLI calls
+      # against /pulls/N/comments and graphql reviewThreads succeed under
+      # GITHUB_TOKEN. No other scopes needed.
+      contents: write
+      pull-requests: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          # Need full history for git rev-parse HEAD (commit_sha field in
+          # manifest entries), and so the subsequent push is fast-forward.
+          fetch-depth: 0
+          ref: main
+          # Persist credentials so the post-archival `git push` uses
+          # GITHUB_TOKEN. (default true; explicit for clarity)
+          persist-credentials: true
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6  # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Verify required tooling
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          command -v gh >/dev/null
+          command -v bun >/dev/null
+          gh auth status
+
+      - name: Validate PR number
+        env:
+          PR_NUMBER_RAW: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          # Defence-in-depth: PR number comes from a trusted event payload
+          # but we still sanity-check it as a positive integer before
+          # passing to a CLI tool.
+          if ! [[ "$PR_NUMBER_RAW" =~ ^[1-9][0-9]*$ ]]; then
+            echo "ERROR: PR number is not a positive integer: $PR_NUMBER_RAW" >&2
+            exit 1
+          fi
+
+      - name: Archive PR review substrate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_SHA_OVERRIDE: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          # GITHUB_SHA in the GHA env is the merge-commit SHA on main; we
+          # want that recorded as the manifest commit_sha so future re-runs
+          # against the same merge can detect "same archival baseline".
+          export GITHUB_SHA="$GITHUB_SHA_OVERRIDE"
+          bun tools/archive/archive-pr-reviews.ts "$PR_NUMBER"
+
+      - name: Inspect diff
+        id: diff
+        run: |
+          set -euo pipefail
+          # Stage just the two output paths; anything else is noise the
+          # archival tool should not be producing.
+          git add docs/history/pr-reviews/ docs/github/prs/manifest.jsonl
+          if git diff --cached --quiet; then
+            echo "changed=false" >>"$GITHUB_OUTPUT"
+            echo "archival produced no diff -- nothing to commit (deterministic-rerun no-op)"
+            exit 0
+          fi
+          echo "changed=true" >>"$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          # Configure committer identity for the workflow commit.
+          # github-actions[bot] is the canonical workflow identity per
+          # the budget-snapshot-cadence.yml convention.
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Compose commit message. PR_TITLE is untrusted (PR-author-
+          # controlled) so it's only embedded in the markdown body via
+          # printf with %s, never interpreted as shell.
+          msg="$(printf 'archive(pr-reviews): PR #%s on merge -- run %s\n\nPR title: %s\n\nGenerated by .github/workflows/pr-archive-on-merge.yml\nfrom tools/archive/archive-pr-reviews.ts.\n' "$PR_NUMBER" "$RUN_ID" "$PR_TITLE")"
+
+          git commit -m "$msg"
+
+          # Push to main. If branch-protection rejects this push, the
+          # workflow fails here -- the failure is the signal to switch to
+          # one of the escalation options documented at the top of this
+          # file. We do NOT --force; non-fast-forward must surface honestly.
+          git push origin HEAD:main

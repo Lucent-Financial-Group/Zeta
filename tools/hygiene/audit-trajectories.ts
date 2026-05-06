@@ -68,8 +68,10 @@ async function runCmd(
 }
 
 async function hasCommand(name: string): Promise<boolean> {
-  const r = await runCmd(["which", name]);
-  return r.exitCode === 0 && r.stdout.trim().length > 0;
+  // Use Bun.which (cross-platform: scans PATH and PATHEXT on Windows)
+  // instead of shelling out to `which`, which is not portable. This also
+  // avoids Bun.spawn throwing when `which` is itself absent.
+  return Bun.which(name) !== null;
 }
 
 function nowIso(): string {

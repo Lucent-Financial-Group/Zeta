@@ -36,7 +36,7 @@
 //   0 -- survey ran (findings reported in body)
 //   1 -- fatal invocation error (e.g., backlog dir missing)
 
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -70,8 +70,10 @@ async function runCmd(
 }
 
 async function hasCommand(name: string): Promise<boolean> {
-  const r = await runCmd(["which", name]);
-  return r.exitCode === 0 && r.stdout.trim().length > 0;
+  // Use Bun.which (cross-platform: scans PATH and PATHEXT on Windows)
+  // instead of shelling out to `which`, which is not portable. This also
+  // avoids Bun.spawn throwing when `which` is itself absent.
+  return Bun.which(name) !== null;
 }
 
 function nowIso(): string {
@@ -161,11 +163,17 @@ function parseFrontmatter(text: string): FrontmatterFields {
     return [...refs].sort();
   };
 
+  // Build with conditional spread so `exactOptionalPropertyTypes: true`
+  // doesn't reject explicit-undefined assignments to optional fields.
+  const id = getScalar("id");
+  const status = getScalar("status");
+  const created = getScalar("created");
+  const title = getScalar("title");
   return {
-    id: getScalar("id"),
-    status: getScalar("status"),
-    created: getScalar("created"),
-    title: getScalar("title"),
+    ...(id !== undefined ? { id } : {}),
+    ...(status !== undefined ? { status } : {}),
+    ...(created !== undefined ? { created } : {}),
+    ...(title !== undefined ? { title } : {}),
     dependsOnRefs: getListRefs("depends_on"),
     composesWithRefs: getListRefs("composes_with"),
   };
@@ -187,13 +195,9 @@ function loadBacklog(): BacklogRow[] {
     for (const name of entries) {
       if (!/^B-\d{4}.*\.md$/.test(name)) continue;
       const full = join(tierDir, name);
-      let st;
-      try {
-        st = statSync(full);
-      } catch {
-        continue;
-      }
-      if (!st.isFile()) continue;
+      // CodeQL js/file-system-race: stat-then-read introduces a TOCTOU
+      // window. Skip the precheck and let readFileSync surface ENOENT /
+      // EISDIR via its own error -- a single syscall is race-free.
       let text = "";
       try {
         text = readFileSync(full, "utf8");
