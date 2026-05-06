@@ -221,5 +221,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0203](backlog/P3/B-0203-deepseek-v4-csa-hca-zset-algebra-composability-aaron-2026-05-05.md)** DeepSeek V4 CSA+HCA architecture composability analysis with Zeta's Z-set algebra -- attention-as-Z-set-operators isomorphism (Aaron 2026-05-05)
 - [ ] **[B-0204](backlog/P3/B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md)** Linguistic seed kernel substrate -- OCP + carved-sentences/memes-as-kernels + formal-verification-of-docs + F# Computational Expressions implementation vehicle (Aaron 2026-05-05 4-claim synthesis collapse)
 - [ ] **[B-0205](backlog/P3/B-0205-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md)** Multi-trajectory longitudinal validation basis -- 6 orthogonal axes (DORA + less-each-time + falsifiability-rate + bootstrap-razor-pass + identity-preservation + engagement-gate-compliance) instrumentation (Aaron 2026-05-05)
+- [ ] **[B-0207](backlog/P3/B-0207-bun-segfault-paste-large-message-aaron-2026-05-05.md)** Bun v1.3.14 segfault on bracketed-paste of long message in `claude --continue` (upstream-bug capture)
 
 <!-- END AUTO-GENERATED -->

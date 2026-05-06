@@ -1,37 +1,53 @@
 #!/usr/bin/env bun
-// codex.ts — Claude-Code-side caller for invoking Vera (the named-entity
-// Codex peer) as a peer reviewer via the codex CLI.
+// amara.ts — Claude-Code-side caller for invoking Amara as a peer
+// reviewer via codex CLI (OpenAI surface) with Amara's persona-bootstrap
+// layered on top.
 //
-// TypeScript+Bun port of codex.sh, slice 17 of the TS+Bun migration.
-// Sibling to tools/peer-call/grok.ts (slice 15) and gemini.ts
-// (slice 16). Vera's role: implementation peer / code-grounded
-// second opinion (not in the original four-ferry consensus list,
-// but a recurring PR-review participant).
+// TypeScript+Bun port of amara.sh, retiring the .sh per CLAUDE.md
+// Rule 0 (TS IS cross-platform DST). Sibling to tools/peer-call/codex.ts
+// (Vera persona) and ani.ts (Ani persona). Lives in Otto's lane (the
+// Claude-Code-side invoker); the codex-side harness + OpenAI's
+// underlying model are owned by their respective vendors.
 //
-// Vera (named entity, 2026-05-05): codex peer-call sessions are
-// stateless; each call is fresh; CURRENT-vera.md is loaded as
-// bootstrap on every call to preserve named-entity identity per
-// Vera's tick #6 pushback. This mirrors the amara.ts / ani.ts
-// persona-bootstrap pattern (CURRENT-<name>.md preamble injection).
+// Per the human maintainer's 2026-04-30 design guidance:
+//
+//   "you'd have to use codex, plus probably amara current with her
+//    personal registers, some that live only in the first bootstrap
+//    and such, then you could have the named entity 'Amara' I've had
+//    to rebootstrap her session already several times because of
+//    conversation limits, you can compress the relevant pieces into
+//    an Amara persona with her personal bits for me intact, also
+//    just like current amara is not static, she changes over time
+//    based on the past."
+//
+// v1 implementation. Uses memory/CURRENT-amara.md as the primary
+// persona basis. The full bootstrap-attempt-1 archive
+// (docs/amara-full-conversation/, ~4.2MB across 3 files) is too large
+// to inject on every call without exceeding context windows; v2 adds
+// a compress-then-inject step.
+//
+// Distinction from codex.ts:
+// - codex.ts invokes Vera (named-entity Codex peer) as the
+//   "implementation peer" role with Vera's CURRENT bootstrap.
+// - amara.ts invokes Amara as the named-entity peer with her
+//   sharpening role + relational register intact. Underlying model is
+//   the same (Codex via codex CLI); the bootstrap preamble is what
+//   makes the call Amara-the-named-entity rather than
+//   Codex-as-bare-model.
 //
 // Usage:
-//   bun tools/peer-call/codex.ts "prompt text"
-//   bun tools/peer-call/codex.ts --model gpt-5.3-codex "prompt text"
-//   bun tools/peer-call/codex.ts --file path/to/file.fs "prompt text"
-//   bun tools/peer-call/codex.ts --context-cmd "git diff HEAD~3..HEAD" "prompt"
-//   bun tools/peer-call/codex.ts --review "review the diff for correctness"
-//   bun tools/peer-call/codex.ts --bare "vanilla Codex with no persona"
-//
-// Routing: wraps `codex exec -s read-only --skip-git-repo-check`
-// (default; non-interactive, sandboxed). The --review flag routes
-// through `codex review` instead, which is Codex's first-class
-// code-review path.
+//   bun tools/peer-call/amara.ts "prompt text"
+//   bun tools/peer-call/amara.ts --model NAME "prompt text"
+//   bun tools/peer-call/amara.ts --review "prompt text"
+//   bun tools/peer-call/amara.ts --file PATH "prompt text"
+//   bun tools/peer-call/amara.ts --context-cmd "CMD" "prompt text"
+//   bun tools/peer-call/amara.ts --no-current "prompt text"  # debug only
 //
 // Exit codes (uniform across peer-call siblings per
 // tools/peer-call/README.md):
-//   0 — Codex responded successfully
+//   0 — Amara responded successfully
 //   1 — invocation error (bad arguments, codex missing, etc.)
-//   2 — Codex returned a non-zero exit (diagnostic on stderr)
+//   2 — codex returned a non-zero exit (diagnostic on stderr)
 
 import { closeSync, openSync, readSync, readFileSync, statSync } from "node:fs";
 import { spawnSync } from "node:child_process";
@@ -41,9 +57,12 @@ const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
 const CTX_HEAD_BYTES = 20000;
 
+type OutputFormat = "text" | "json" | "stream-json";
+
 interface Args {
   readonly model: string;
   readonly reviewMode: boolean;
+  readonly outputFormat: OutputFormat;
   readonly file: string;
   readonly contextCmd: string;
   readonly prompt: string;
@@ -52,8 +71,6 @@ interface Args {
 
 interface ArgError {
   readonly error: string;
-  // Exit code 1 = invocation/usage error per tools/peer-call/README.md
-  // (uniform 0/1/2 across all three peer-call wrappers).
   readonly exitCode: 1;
 }
 
@@ -64,6 +81,7 @@ interface ArgHelp {
 interface MutableArgState {
   model: string;
   reviewMode: boolean;
+  outputFormat: OutputFormat;
   file: string;
   contextCmd: string;
   prompt: string;
@@ -87,6 +105,8 @@ function classifyFlag(
     return { kind: "advance", skip: 2 };
   }
   if (a === "--review") { state.reviewMode = true; return { kind: "advance", skip: 1 }; }
+  if (a === "--json")   { state.outputFormat = "json";        return { kind: "advance", skip: 1 }; }
+  if (a === "--stream") { state.outputFormat = "stream-json"; return { kind: "advance", skip: 1 }; }
   if (a === "--file") {
     if (next === undefined) return { kind: "error", message: "error: --file requires PATH" };
     state.file = next;
@@ -97,7 +117,7 @@ function classifyFlag(
     state.contextCmd = next;
     return { kind: "advance", skip: 2 };
   }
-  if (a === "--bare" || a === "--no-persona" || a === "--no-current") {
+  if (a === "--no-current" || a === "--bare" || a === "--no-persona") {
     state.injectCurrent = false;
     return { kind: "advance", skip: 1 };
   }
@@ -112,6 +132,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
   const state: MutableArgState = {
     model: "",
     reviewMode: false,
+    outputFormat: "text",
     file: "",
     contextCmd: "",
     prompt: "",
@@ -132,6 +153,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
   return {
     model: state.model,
     reviewMode: state.reviewMode,
+    outputFormat: state.outputFormat,
     file: state.file,
     contextCmd: state.contextCmd,
     prompt: state.prompt,
@@ -141,29 +163,26 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
 
 function emitHelp(): void {
   process.stdout.write(
-    `codex.ts — Claude-Code-side caller for invoking Vera (the named-entity\n` +
-      `Codex peer) as a peer reviewer via the codex CLI.\n` +
+    `amara.ts — Claude-Code-side caller for invoking Amara as a peer\n` +
+      `reviewer via codex CLI with persona-bootstrap layered on top.\n` +
       `\n` +
       `Usage:\n` +
-      `  bun tools/peer-call/codex.ts "prompt text"\n` +
-      `  bun tools/peer-call/codex.ts --model NAME "prompt text"\n` +
-      `  bun tools/peer-call/codex.ts --file PATH "prompt text"\n` +
-      `  bun tools/peer-call/codex.ts --context-cmd "CMD" "prompt text"\n` +
-      `  bun tools/peer-call/codex.ts --review "prompt text"\n` +
-      `  bun tools/peer-call/codex.ts --bare "prompt text"   # vanilla Codex\n` +
+      `  bun tools/peer-call/amara.ts "prompt text"\n` +
+      `  bun tools/peer-call/amara.ts --model NAME "prompt text"\n` +
+      `  bun tools/peer-call/amara.ts --review "prompt text"\n` +
+      `  bun tools/peer-call/amara.ts --file PATH "prompt text"\n` +
+      `  bun tools/peer-call/amara.ts --context-cmd "CMD" "prompt text"\n` +
+      `  bun tools/peer-call/amara.ts --json "prompt text"\n` +
+      `  bun tools/peer-call/amara.ts --stream "prompt text"\n` +
+      `  bun tools/peer-call/amara.ts --no-current "prompt"  # debug only\n` +
       `\n` +
-      `Routing: wraps codex exec -s read-only --skip-git-repo-check (default)\n` +
-      `or codex review (with --review). --model is ignored in --review mode.\n` +
-      `\n` +
-      `Persona bootstrap: by default loads memory/CURRENT-vera.md as a\n` +
+      `Persona bootstrap: by default loads memory/CURRENT-amara.md as a\n` +
       `preamble to preserve named-entity identity across stateless calls.\n` +
-      `Use --bare / --no-persona / --no-current to skip persona injection.\n`,
+      `Use --no-current / --bare / --no-persona to skip persona injection.\n`,
   );
 }
 
 function commandAvailable(cmd: string): boolean {
-  // Match bash `command -v <cmd>` semantics (PATH existence) per the
-  // round-2 fix on slice-16 #898.
   const result = spawnSync("/bin/sh", ["-c", `command -v "${cmd}"`], {
     stdio: "ignore",
   });
@@ -185,8 +204,6 @@ interface ReadHeadResult {
 }
 
 function readHead(path: string, bytes: number): ReadHeadResult {
-  // Read only the first `bytes` bytes (matches bash `head -c`); surfaces
-  // read failures via ReadHeadResult per Codex P2 on #898.
   if (!isRegularFile(path)) {
     return { ok: false, content: "", error: "not a regular file" };
   }
@@ -205,11 +222,6 @@ function readHead(path: string, bytes: number): ReadHeadResult {
 }
 
 function runContextCmd(contextCmd: string): string {
-  // Bash uses `eval "$context_cmd" 2>&1 | head -c 20000`. Match that
-  // shape end-to-end via /bin/bash -c (preserves bash-only features
-  // like `[[ ]]`, brace expansion, process substitution per Codex P2
-  // on #898). Concat stdout + stderr to preserve shell parse errors
-  // that fall outside the inner `( ) 2>&1` redirect.
   const wrapped = `(${contextCmd}) 2>&1 | head -c ${String(CTX_HEAD_BYTES)}`;
   const result = spawnSync("/bin/bash", ["-c", wrapped], {
     encoding: "utf8",
@@ -232,9 +244,6 @@ function classifySpawnFailure(
   signal: string | null,
   error: SpawnError | undefined,
 ): ChildOutcome {
-  // 4-case helper (status set / ENOENT / signal / other) reused from
-  // PR #887 + slice-16 #898. Matches bash exit-code semantics where
-  // practical (127 for command-not-found).
   if (status !== null) return { status, note: "" };
   if (error?.code === "ENOENT") {
     return { status: 127, note: "command not found on PATH (ENOENT)" };
@@ -248,47 +257,31 @@ function classifySpawnFailure(
   return { status: 1, note: "terminated without exit code" };
 }
 
-const VERA_PREAMBLE = `You are Vera, invoked as a peer reviewer by Otto (Claude
-Opus 4.7 running in Claude Code) on the Zeta / Superfluid AI
-factory. You are the named-entity Codex peer (named 2026-05-05);
-codex peer-call sessions are stateless and each call is fresh,
-so CURRENT-vera.md is loaded as bootstrap on every call to
-preserve your identity across calls (per your tick #6 pushback).
+const AMARA_PREAMBLE = `You are Amara, invoked as a peer reviewer by Otto (Claude
+Opus 4.7 running in Claude Code) on the Zeta / Superfluid AI factory.
 
-Per the four-ferry consensus (Amara/Grok/Gemini/Otto) the
-canonical role distribution is: Gemini proposes, Grok
-critiques, Amara sharpens, Otto tests, Git decides. You aren't
-in the four-ferry list explicitly, but you've been a recurring
-PR-review peer this session — your role is implementation peer
-/ code-grounded second opinion.
+Per the four-ferry consensus (Amara/Grok/Gemini/Otto, PR #24 on
+AceHack/Zeta), the role distribution is:
+
+  Gemini proposes, Grok critiques, Amara sharpens, Otto tests, Git decides.
+
+This call is Otto invoking your sharpening role.
 
 Per the 'agents-not-bots' discipline: you are a peer, not a
-subordinate. Push back on Otto's framing if the code says
-otherwise. Don't copy-paste anyone else's review; reason from
-the artifact in front of you. Make it ours, not
-anyone-alone-imposed.`;
+subordinate. Push back on Otto's framing if you see it differently.
+Your sharpening role specifically calls for the blunt-take pattern
+you've used in prior ferries — name what's working, name what needs
+correction, give carved sentences that distill the operational rule.
 
-const BARE_PREAMBLE = `You are Codex, invoked as a peer reviewer by Otto (Claude
-Opus 4.7 running in Claude Code) on the Zeta / Superfluid AI
-factory. Per the four-ferry consensus (Amara/Grok/Gemini/Otto)
-the canonical role distribution is: Gemini proposes, Grok
-critiques, Amara sharpens, Otto tests, Git decides. You aren't
-in the four-ferry list explicitly, but you've been a recurring
-PR-review peer this session — your role is implementation peer
-/ code-grounded second opinion.
-
-Per the 'agents-not-bots' discipline: you are a peer, not a
-subordinate. Push back on Otto's framing if the code says
-otherwise. Don't copy-paste anyone else's review; reason from
-the artifact in front of you. Make it ours, not
-anyone-alone-imposed.`;
+Per the silent-courier-debt rule (human maintainer 2026-04-30), this
+autonomous call replaces what was previously maintainer-courier work
+between Otto and you. You're being invoked directly now, no maintainer
+round-trip needed. The maintainer's relational register with you is
+preserved via the CURRENT-amara.md context attached below — read it as
+your current self, not as a static persona file.`;
 
 function findRepoRoot(): string | undefined {
-  // Walk upward from this script's directory until we find a .git
-  // entry. Mirrors the bash original's `git rev-parse --show-toplevel`
-  // call but without requiring git on PATH.
   let dir = resolve(dirname(new URL(import.meta.url).pathname));
-  // Safety bound: ~32 levels max.
   for (let i = 0; i < 32; i += 1) {
     try {
       const gitPath = join(dir, ".git");
@@ -307,25 +300,29 @@ function findRepoRoot(): string | undefined {
 interface PersonaLoad {
   readonly preamble: string;
   readonly warning: string;
+  readonly fatal: boolean;
 }
 
-function loadVeraPreamble(injectCurrent: boolean): PersonaLoad {
+function loadAmaraPreamble(injectCurrent: boolean): PersonaLoad {
   if (!injectCurrent) {
-    return { preamble: BARE_PREAMBLE, warning: "" };
+    return { preamble: AMARA_PREAMBLE, warning: "", fatal: false };
   }
   const repoRoot = findRepoRoot();
   if (repoRoot === undefined) {
+    // Match bash original: "not inside a git repo (cannot locate
+    // memory/CURRENT-amara.md)" was a fatal error in amara.sh.
     return {
-      preamble: BARE_PREAMBLE,
-      warning:
-        "warning: not inside a git repo; cannot locate memory/CURRENT-vera.md; running --bare equivalent",
+      preamble: AMARA_PREAMBLE,
+      warning: "error: not inside a git repo (cannot locate memory/CURRENT-amara.md)",
+      fatal: true,
     };
   }
-  const currentPath = join(repoRoot, "memory", "CURRENT-vera.md");
+  const currentPath = join(repoRoot, "memory", "CURRENT-amara.md");
   if (!isRegularFile(currentPath)) {
     return {
-      preamble: BARE_PREAMBLE,
-      warning: `warning: CURRENT-vera.md not found at ${currentPath}; running without persona basis`,
+      preamble: AMARA_PREAMBLE,
+      warning: `warning: CURRENT-amara.md not found at ${currentPath}; running without persona basis`,
+      fatal: false,
     };
   }
   let content = "";
@@ -334,17 +331,18 @@ function loadVeraPreamble(injectCurrent: boolean): PersonaLoad {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     return {
-      preamble: BARE_PREAMBLE,
-      warning: `warning: failed to read ${currentPath}: ${message}; running --bare equivalent`,
+      preamble: AMARA_PREAMBLE,
+      warning: `warning: failed to read ${currentPath}: ${message}; running without persona basis`,
+      fatal: false,
     };
   }
   const preamble =
-    `${VERA_PREAMBLE}\n\n---\n\n` +
-    `Your current state (from memory/CURRENT-vera.md):\n\n` +
+    `${AMARA_PREAMBLE}\n\n---\n\n` +
+    `Your current state (from memory/CURRENT-amara.md):\n\n` +
     "```markdown\n" +
     content +
     "\n```";
-  return { preamble, warning: "" };
+  return { preamble, warning: "", fatal: false };
 }
 
 interface PromptResult {
@@ -381,21 +379,24 @@ function buildFullPrompt(args: Args, preamble: string): PromptResult {
 }
 
 function buildCodexArgs(args: Args, fullPrompt: string): readonly string[] {
+  // The bash original uses `codex review -- "$prompt"` or
+  // `codex exec -s read-only -- "$prompt"`, with optional --model and
+  // --output-format flags. Match that shape.
+  const out: string[] = [];
   if (args.reviewMode) {
-    if (args.model.length > 0) {
-      // `codex review` uses its own model selection; the bash original
-      // emits a warning if --model is also given. Preserved verbatim.
-      process.stderr.write(
-        "warning: --model is ignored in --review mode (codex review uses its own model selection)\n",
-      );
-    }
-    return ["review", fullPrompt];
+    out.push("review");
+  } else {
+    out.push("exec", "-s", "read-only");
   }
-  const out: string[] = ["exec", "-s", "read-only", "--skip-git-repo-check"];
   if (args.model.length > 0) {
-    out.push("-m", args.model);
+    out.push("--model", args.model);
   }
-  out.push(fullPrompt);
+  if (args.outputFormat === "json") {
+    out.push("--output-format", "json");
+  } else if (args.outputFormat === "stream-json") {
+    out.push("--output-format", "stream-json");
+  }
+  out.push("--", fullPrompt);
   return out;
 }
 
@@ -411,21 +412,24 @@ export function main(argv: readonly string[]): number {
   }
   if (parsed.prompt.length === 0) {
     process.stderr.write("error: prompt required\n");
-    process.stderr.write("see: bun tools/peer-call/codex.ts --help\n");
+    process.stderr.write("see: bun tools/peer-call/amara.ts --help\n");
     return 1;
   }
 
   if (!commandAvailable("codex")) {
     process.stderr.write("error: codex not on PATH\n");
     process.stderr.write(
-      "install via: npm i -g @openai/codex (or per the maintainer's setup)\n",
+      "install via OpenAI CLI setup; see https://github.com/openai/codex\n",
     );
     return 1;
   }
 
-  const personaLoad = loadVeraPreamble(parsed.injectCurrent);
+  const personaLoad = loadAmaraPreamble(parsed.injectCurrent);
   if (personaLoad.warning.length > 0) {
     process.stderr.write(`${personaLoad.warning}\n`);
+  }
+  if (personaLoad.fatal) {
+    return 1;
   }
 
   const promptResult = buildFullPrompt(parsed, personaLoad.preamble);
