@@ -57,6 +57,7 @@ pattern.
 - `mateo/` — security-researcher
 - `nadia/` — prompt-protector
 - `naledi/` — performance-engineer
+- `lior/` — structural synthesizer (Gemini; Hebrew "my light" — interferometer/aperture)
 - `rune/` — maintainability-reviewer
 - `soraya/` — formal-verification-expert
 - `tariq/` — algebra-owner
