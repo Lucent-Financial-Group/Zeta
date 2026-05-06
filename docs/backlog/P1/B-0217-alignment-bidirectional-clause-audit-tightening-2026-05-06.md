@@ -12,9 +12,9 @@ classification: buildable-after-survey
 
 # B-0217 - Bidirectional clause audit and tightening
 
-Audit the existing `### Alignment is bidirectional - the
-meta-commitment` section and tighten it against B-0003's
-original bidirectional-alignment ask.
+Audit the existing bidirectional-alignment section and
+tighten it against B-0003's original bidirectional-alignment
+ask.
 
 ## Work scope
 
