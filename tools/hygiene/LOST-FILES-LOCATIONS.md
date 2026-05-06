@@ -125,6 +125,14 @@ Sometimes the only record of a decision lives in the PR description, which is lo
 - **Survey command**: `bun tools/hygiene/audit-memory-references.ts` — broken refs surface deleted files.
 - **Triage**: per Otto-238 retractability, deletions should leave a visible trail; a broken ref without a deletion-trail is suspect.
 
+### 16. Stale background shells / completed background tasks (resource-pressure class)
+
+Completed tool/Bash/Agent invocations that linger in process state without explicit cleanup. Distinct from the other 15 classes because the "lost file" is not git-tracked content — it's harness-level live process state that accumulates until a forced-cleanup-by-crash event reclaims it. Pattern surfaced by the maintainer 2026-05-05 (*"if you leve them dirty they build up like lost files"*) with empirical correlation: Bun v1.3.14 segfault observed 2026-05-05 when 4+ background tasks were running concurrently (resource-pressure failure mode, not a content-loss failure mode — but the failure can take running content with it).
+
+- **Survey command**: no runtime command-line equivalent for grepping outside the harness. Inside the Claude Code harness, `BashOutput` / `KillShell` tools manage live background-shell IDs; the harness surface is the only enumeration path. (Documented for reference; future tooling could expose a TS/Bun listing if the harness API permits.)
+- **Triage**: kill stale completed shells via harness-level tools (`KillShell` against the shell ID returned at dispatch) when count exceeds a threshold. Cleanup-cadence is owed work — Vera per-tick compression candidate (sweep completed background shells at end of each tick rather than waiting for forced-cleanup-by-crash).
+- **Composes with**: B-0207 (Bun v1.3.14 segfault row, the empirical correlation that motivated this class), `tools/hygiene/audit-trajectories.ts` cadence-aging tracking (similar accumulation-without-cleanup shape at a different surface), the broader resource-pressure failure mode (forced-cleanup-by-crash is the worst recovery path).
+
 ## Search cadence
 
 Aaron's ask doesn't specify a cadence. Suggested defaults:
