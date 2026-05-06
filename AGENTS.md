@@ -401,6 +401,54 @@ Detail lives in:
   description. "Why" beats "what" because `git
   diff` already carries the "what".
 
+### Commit attribution — harness-specific trailers
+
+Every AI-authored commit **must** include a
+`Co-Authored-By` trailer that identifies the model
+and harness. This is how parallel loops (Otto, Vera,
+Riven, future agents) tell each other's commits
+apart. Without distinct trailers, all commits look
+like they came from the same git user — making
+multi-loop coordination, audit, and PR review
+impossible.
+
+**Required trailers by harness:**
+
+| Harness | Trailer |
+|---------|---------|
+| Claude Code — Otto (Claude Opus 4.7 max) | `Co-Authored-By: Claude <noreply@anthropic.com>` |
+| OpenAI Codex — Vera (GPT 5.5 max) | `Co-Authored-By: Codex <noreply@openai.com>` |
+| Cursor — Riven (Grok 4.3 max) | `Co-Authored-By: Grok <noreply@x.ai>` |
+| Gemini CLI | `Co-Authored-By: Gemini <noreply@google.com>` |
+| Human contributor | *(git author is sufficient)* |
+
+The model version may be appended for precision
+(e.g. `Claude Opus 4.6 (1M context)`) but the
+harness name alone is the minimum. The trailer goes
+on every commit, including claim/progress/release
+commits from the agent claim protocol.
+
+### Shared-branch work (multi-loop PRs)
+
+Two or more loops can contribute commits to the same
+PR branch. The coordination mechanism:
+
+1. **Co-claim** the work via the agent claim protocol
+   (`docs/AGENT-CLAIM-PROTOCOL.md`) — add both
+   session IDs to a single claim file.
+2. Both loops **pull before pushing** (no force-push
+   on shared branches).
+3. The `Co-Authored-By` trailer on each commit tells
+   reviewers (and each other) who contributed what.
+4. Merge conflicts are resolved by the loop that
+   encounters them — standard git conflict
+   resolution; the claim protocol's "first pusher
+   wins" applies per-commit, not per-branch.
+
+This is how Otto and Vera weave commits on the same
+PR: distinct trailers, shared branch, co-claim
+coordination, pull-before-push discipline.
+
 ## Contributor required reading
 
 - `docs/VISION.md` — long-horizon research targets

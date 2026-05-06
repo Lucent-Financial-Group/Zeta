@@ -35,6 +35,22 @@ Before editing:
 - Name intended path prefixes in the heartbeat.
 - Do not commit heartbeat files.
 
+## Commit Attribution
+
+Every Codex commit **must** include:
+
+```
+Co-Authored-By: Codex <noreply@openai.com>
+```
+
+This trailer is how parallel loops (Otto on Claude
+Code, Riven on Cursor/Grok, Vera on Codex) tell
+each other's commits apart. Without it, all commits
+look identical to the git user — breaking multi-loop
+coordination and audit. See `AGENTS.md` §"Commit
+attribution — harness-specific trailers" for the
+full convention.
+
 ## Ownership Boundary
 
 Codex owns `.codex/**` content and Codex-authored skills.
