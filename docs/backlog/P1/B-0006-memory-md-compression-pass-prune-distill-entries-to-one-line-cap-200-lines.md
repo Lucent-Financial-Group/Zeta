@@ -1,7 +1,7 @@
 ---
 id: B-0006
 priority: P1
-status: open
+status: in-progress
 title: MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
 tier: maintenance
 effort: M
