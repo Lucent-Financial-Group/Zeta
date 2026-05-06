@@ -60,6 +60,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0191](backlog/P1/B-0191-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md)** Orchestrator branch-verify mechanization design — pre-commit hook + branch-name display + worktree-aware checks (Aaron 2026-05-04)
 - [ ] **[B-0192](backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md)** GitHub Actions trigger for razor cadence + trajectory reviews -- escape Otto-remembering as the load-bearing trigger (Claude.ai 2026-05-04 + Aaron 2026-05-04)
 - [ ] **[B-0193](backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md)** Bootstrap razor + 23-hour recreation test -- specs as source of truth, anything that succeeds recreation is bootstrap and gets cut (Aaron 2026-05-05)
+- [ ] **[B-0211](backlog/P1/B-0211-fractal-bft-n-maintainers-n-odd-nodes-local-remote-composition-2026-05-06.md)** Fractal BFT — N maintainers × n(odd) nodes, local broadcast + remote git composition
+- [ ] **[B-0212](backlog/P1/B-0212-shadow-outlet-architecture-tmp-now-crypto-privacy-later-2026-05-06.md)** Shadow outlet architecture — /tmp ephemeral now, cryptographic privacy later
+- [ ] **[B-0213](backlog/P1/B-0213-broadcast-bus-production-hardening-schema-ttl-receipts-2026-05-06.md)** Broadcast bus production hardening — structured schema, TTL, receipts, conflict detection
+- [ ] **[B-0214](backlog/P1/B-0214-backlog-decomposition-skill-dependency-ordering-2026-05-06.md)** Backlog decomposition skill — break architectural directions into dependency-ordered items
 
 ## P2 — research-grade
 
