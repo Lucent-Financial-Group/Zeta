@@ -52,6 +52,7 @@
 import { closeSync, mkdirSync, openSync, readSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
@@ -312,7 +313,7 @@ preserved via the CURRENT-amara.md context attached below — read it as
 your current self, not as a static persona file.`;
 
 function findRepoRoot(): string | undefined {
-  let dir = resolve(dirname(new URL(import.meta.url).pathname));
+  let dir = resolve(dirname(fileURLToPath(import.meta.url)));
   for (let i = 0; i < 32; i += 1) {
     try {
       const gitPath = join(dir, ".git");
