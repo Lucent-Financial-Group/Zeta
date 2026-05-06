@@ -11,6 +11,7 @@
 //   bun tools/peer-call/grok.ts --file path/to/file.fs "prompt text"
 //   bun tools/peer-call/grok.ts --context-cmd "git diff HEAD~3..HEAD" "prompt text"
 //   bun tools/peer-call/grok.ts --json "prompt text"
+//   bun tools/peer-call/grok.ts --output-file PATH "prompt text"
 //
 // Routing: wraps `cursor-agent --print --model grok-4-20-thinking`
 // (default) or `grok-4-20` (with --fast flag). The --print flag
@@ -21,13 +22,21 @@
 // contribution; the protocol convention is what we converge on
 // through use, as peers.
 //
+// Output capture (Class B fix for vera-output-capture-pagination):
+// stdout is teed to a file under /tmp/peer-call-output/<ts>-grok.md
+// (auto-generated path) or to --output-file PATH if specified, with
+// a final "OUTPUT-FILE: <path>" marker on stdout so shell callers
+// using `tail -1` can recover the path and read the FULL reply
+// without truncation. Mirrors codex.sh + riven.sh shape.
+//
 // Exit codes:
 //   0 — Grok responded successfully
 //   1 — invocation error (bad arguments, cursor-agent missing, etc.)
 //   2 — Grok returned a non-zero exit (response captured to stderr)
 
-import { closeSync, openSync, readSync, statSync } from "node:fs";
+import { closeSync, mkdirSync, openSync, readSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import { dirname } from "node:path";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
@@ -42,6 +51,7 @@ interface Args {
   readonly file: string;
   readonly contextCmd: string;
   readonly prompt: string;
+  readonly outputFile: string;
 }
 
 interface ArgError {
@@ -59,6 +69,7 @@ interface MutableArgState {
   file: string;
   contextCmd: string;
   prompt: string;
+  outputFile: string;
 }
 
 type StepResult =
@@ -86,6 +97,12 @@ function classifyFlag(
     state.contextCmd = next;
     return { kind: "advance", skip: 2 };
   }
+  if (a === "--output-file") {
+    if (next === undefined) return { kind: "error", message: "error: --output-file requires PATH" };
+    if (next.startsWith("-")) return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
+    state.outputFile = next;
+    return { kind: "advance", skip: 2 };
+  }
   if (a === "-h" || a === "--help") return { kind: "help" };
   if (a === "--") return { kind: "stop" };
   if (a.startsWith("-")) return { kind: "error", message: `error: unknown flag: ${a}` };
@@ -101,6 +118,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     file: "",
     contextCmd: "",
     prompt: "",
+    outputFile: "",
   };
   let i = 0;
   while (i < argv.length) {
@@ -121,7 +139,24 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     file: state.file,
     contextCmd: state.contextCmd,
     prompt: state.prompt,
+    outputFile: state.outputFile,
   };
+}
+
+function autogenOutputPath(entity: string): string {
+  const ts = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}Z$/, "Z");
+  return `/tmp/peer-call-output/${ts}-${entity}.md`;
+}
+
+function ensureParentDir(path: string): void {
+  try {
+    mkdirSync(dirname(path), { recursive: true });
+  } catch {
+    // best-effort; writeFileSync will surface the real error
+  }
 }
 
 function emitHelp(): void {
@@ -137,9 +172,14 @@ function emitHelp(): void {
       `  bun tools/peer-call/grok.ts --context-cmd "CMD" "prompt text"\n` +
       `  bun tools/peer-call/grok.ts --json "prompt text"\n` +
       `  bun tools/peer-call/grok.ts --stream "prompt text"\n` +
+      `  bun tools/peer-call/grok.ts --output-file PATH "prompt text"\n` +
       `\n` +
       `Routing: wraps cursor-agent --print --model grok-4-20-thinking\n` +
-      `(default) or grok-4-20 (with --fast).\n`,
+      `(default) or grok-4-20 (with --fast).\n` +
+      `\n` +
+      `Output capture: stdout is teed to the output file, with a final\n` +
+      `"OUTPUT-FILE: <path>" marker on stdout for shell-pipe recovery.\n` +
+      `Default path is /tmp/peer-call-output/<timestamp>-grok.md.\n`,
   );
 }
 
@@ -271,10 +311,16 @@ export function main(argv: readonly string[]): number {
 
   const model = pickModel(parsed.mode);
 
-  // cursor-agent invocation: no shell interpolation (args passed as
-  // separate array elements). The user's prompt is one fixed argument
-  // after `--`; cursor-agent does its own argument parsing. Same
-  // security posture as the bash original.
+  // Resolve output-file path: explicit --output-file or auto-gen.
+  const outputFile = parsed.outputFile.length > 0
+    ? parsed.outputFile
+    : autogenOutputPath("grok");
+  ensureParentDir(outputFile);
+
+  // cursor-agent invocation: capture stdout so we can tee to file +
+  // emit OUTPUT-FILE marker. stderr passes through inherit. The
+  // user's prompt is one fixed argument after `--`; cursor-agent
+  // does its own argument parsing.
   const result = spawnSync(
     // eslint-disable-next-line sonarjs/no-os-command-from-path
     "cursor-agent",
@@ -291,10 +337,26 @@ export function main(argv: readonly string[]): number {
       fullPromptResult.value,
     ],
     {
-      stdio: "inherit",
+      stdio: ["inherit", "pipe", "inherit"],
       maxBuffer: SPAWN_MAX_BUFFER,
+      encoding: "buffer",
     },
   );
+
+  const stdoutBuf: Buffer = (result.stdout as Buffer | null) ?? Buffer.alloc(0);
+  // Tee: write full reply to file AND mirror to our stdout.
+  try {
+    writeFileSync(outputFile, stdoutBuf);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`error: failed to write output-file ${outputFile}: ${msg}\n`);
+  }
+  process.stdout.write(stdoutBuf);
+  // Final marker on its own line for `tail -1` recovery.
+  if (stdoutBuf.length > 0 && !stdoutBuf.subarray(-1).equals(Buffer.from("\n"))) {
+    process.stdout.write("\n");
+  }
+  process.stdout.write(`OUTPUT-FILE: ${outputFile}\n`);
 
   const exitCode = result.status ?? 1;
   if (exitCode !== 0) {

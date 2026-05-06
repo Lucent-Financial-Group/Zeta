@@ -35,7 +35,7 @@
 //   1 — invocation error (bad arguments, cursor-agent missing, etc.)
 //   2 — cursor-agent returned a non-zero exit (diagnostic on stderr)
 
-import { closeSync, openSync, readSync, statSync } from "node:fs";
+import { closeSync, mkdirSync, openSync, readSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 
@@ -54,6 +54,7 @@ interface Args {
   readonly contextCmd: string;
   readonly prompt: string;
   readonly injectCurrent: boolean;
+  readonly outputFile: string;
 }
 
 interface ArgError {
@@ -72,6 +73,7 @@ interface MutableArgState {
   contextCmd: string;
   prompt: string;
   injectCurrent: boolean;
+  outputFile: string;
 }
 
 type StepResult =
@@ -103,6 +105,12 @@ function classifyFlag(
     state.injectCurrent = false;
     return { kind: "advance", skip: 1 };
   }
+  if (a === "--output-file") {
+    if (next === undefined) return { kind: "error", message: "error: --output-file requires PATH" };
+    if (next.startsWith("-")) return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
+    state.outputFile = next;
+    return { kind: "advance", skip: 2 };
+  }
   if (a === "-h" || a === "--help") return { kind: "help" };
   if (a === "--") return { kind: "stop" };
   if (a.startsWith("-")) return { kind: "error", message: `error: unknown flag: ${a}` };
@@ -118,6 +126,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     contextCmd: "",
     prompt: "",
     injectCurrent: true,
+    outputFile: "",
   };
   let i = 0;
   while (i < argv.length) {
@@ -138,7 +147,24 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
     contextCmd: state.contextCmd,
     prompt: state.prompt,
     injectCurrent: state.injectCurrent,
+    outputFile: state.outputFile,
   };
+}
+
+function autogenOutputPath(entity: string): string {
+  const ts = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}Z$/, "Z");
+  return `/tmp/peer-call-output/${ts}-${entity}.md`;
+}
+
+function ensureParentDir(path: string): void {
+  try {
+    mkdirSync(dirname(path), { recursive: true });
+  } catch {
+    // best-effort; writeFileSync will surface the real error
+  }
 }
 
 function emitHelp(): void {
@@ -155,10 +181,15 @@ function emitHelp(): void {
       `  bun tools/peer-call/ani.ts --json "prompt text"\n` +
       `  bun tools/peer-call/ani.ts --stream "prompt text"\n` +
       `  bun tools/peer-call/ani.ts --no-current "prompt"   # debug only\n` +
+      `  bun tools/peer-call/ani.ts --output-file PATH "prompt text"\n` +
       `\n` +
       `Persona bootstrap: by default loads memory/CURRENT-ani.md as a\n` +
       `preamble to preserve named-entity identity across stateless calls.\n` +
-      `Use --no-current / --bare / --no-persona to skip persona injection.\n`,
+      `Use --no-current / --bare / --no-persona to skip persona injection.\n` +
+      `\n` +
+      `Output capture: stdout is teed to the output file, with a final\n` +
+      `"OUTPUT-FILE: <path>" marker on stdout for shell-pipe recovery.\n` +
+      `Default path is /tmp/peer-call-output/<timestamp>-ani.md.\n`,
   );
 }
 
@@ -382,6 +413,11 @@ export function main(argv: readonly string[]): number {
 
   const model = pickModel(parsed.mode);
 
+  const outputFile = parsed.outputFile.length > 0
+    ? parsed.outputFile
+    : autogenOutputPath("ani");
+  ensureParentDir(outputFile);
+
   const result = spawnSync(
     // eslint-disable-next-line sonarjs/no-os-command-from-path
     "cursor-agent",
@@ -398,10 +434,24 @@ export function main(argv: readonly string[]): number {
       promptResult.value,
     ],
     {
-      stdio: "inherit",
+      stdio: ["inherit", "pipe", "inherit"],
       maxBuffer: SPAWN_MAX_BUFFER,
+      encoding: "buffer",
     },
   );
+
+  const stdoutBuf: Buffer = (result.stdout as Buffer | null) ?? Buffer.alloc(0);
+  try {
+    writeFileSync(outputFile, stdoutBuf);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`error: failed to write output-file ${outputFile}: ${msg}\n`);
+  }
+  process.stdout.write(stdoutBuf);
+  if (stdoutBuf.length > 0 && !stdoutBuf.subarray(-1).equals(Buffer.from("\n"))) {
+    process.stdout.write("\n");
+  }
+  process.stdout.write(`OUTPUT-FILE: ${outputFile}\n`);
 
   const exitCode = result.status ?? 1;
   if (exitCode !== 0) {

@@ -351,27 +351,57 @@ codex_args+=("$full_prompt")
 #     cat "$path"
 #
 # without losing any of the substantive reply.
+# Reject explicit output paths beginning with a dash to avoid
+# confusing downstream utilities (mkdir / dirname / tee) that may
+# parse them as flags. Per Vera's P2 finding on auto-review.
+case "$output_file" in
+  -*)
+    echo "error: --output-file path cannot begin with '-': $output_file" >&2
+    exit 1;;
+esac
+
 if [ -z "$output_file" ]; then
   out_dir="/tmp/peer-call-output"
-  mkdir -p "$out_dir"
+  if ! mkdir -p "$out_dir"; then
+    echo "error: failed to create output directory: $out_dir" >&2
+    exit 1
+  fi
+  # mktemp gives PID+randomness on top of a timestamp; defends
+  # against rapid concurrent calls colliding on the same path.
   ts="$(date -u +%Y%m%dT%H%M%SZ)"
-  output_file="$out_dir/${ts}-vera.md"
+  if ! output_file="$(mktemp "$out_dir/${ts}-vera-XXXXXX.md")"; then
+    echo "error: failed to allocate output file under $out_dir" >&2
+    exit 1
+  fi
+else
+  # Explicit path: ensure parent dir exists and bail loudly on failure.
+  if ! mkdir -p "$(dirname "$output_file")"; then
+    echo "error: failed to create parent dir for: $output_file" >&2
+    exit 1
+  fi
 fi
-
-# Ensure parent dir exists for explicit --output-file paths too.
-mkdir -p "$(dirname "$output_file")"
 
 # tee preserves stdout flow (so existing callers see the reply live)
 # AND writes the full content to $output_file. stderr is left
-# untouched -- Vera's diagnostics + codex's exit-code messages still
-# go to stderr as before.
-codex "${codex_args[@]}" 2> >(cat 1>&2) | tee "$output_file"
-# Capture the codex exit-code (first element of PIPESTATUS).
-exit_code="${PIPESTATUS[0]}"
+# alone (codex's stderr passes through directly to the caller's
+# terminal -- no process substitution, since that breaks under
+# read-only sandbox per Vera's auto-review finding).
+codex "${codex_args[@]}" | tee "$output_file"
+# Capture the codex exit-code AND the tee exit-code from PIPESTATUS.
+codex_status="${PIPESTATUS[0]}"
+tee_status="${PIPESTATUS[1]}"
+exit_code="$codex_status"
 
-# Emit the path marker as a final stdout line so `tail -1` callers
-# can recover the file path. Goes to stdout (not stderr) because
-# the marker IS the load-bearing return value for shell-pipe capture.
+if [ "$tee_status" -ne 0 ]; then
+  echo "" >&2
+  echo "error: tee failed (exit $tee_status); output capture incomplete: $output_file" >&2
+  exit 1
+fi
+
+# Emit a leading newline so the marker is guaranteed to be on its
+# own line even if the peer's reply did not end with one. Then the
+# path marker as the final stdout line for `tail -1` callers.
+printf '\n'
 echo "OUTPUT-FILE: $output_file"
 
 if [ "$exit_code" -ne 0 ]; then

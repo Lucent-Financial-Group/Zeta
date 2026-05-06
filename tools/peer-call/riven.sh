@@ -81,7 +81,7 @@ inject_current=true
 output_file=""           # empty = auto-generate under /tmp/peer-call-output/<ts>-riven.md
 
 usage() {
-  sed -n '2,62p' "$0" | sed -E 's/^# ?//'
+  sed -n '2,76p' "$0" | sed -E 's/^# ?//'
 }
 
 while [ $# -gt 0 ]; do
@@ -254,17 +254,39 @@ $ctx_output
 \`\`\`"
 fi
 
+# --- Output capture (Class B fix for vera-output-capture-pagination) ---
+# Same shape as codex.sh: tee full stdout to a file so shell-pipe
+# callers using `tail -N` can recover the FULL reply via the
+# OUTPUT-FILE: marker emitted as the final stdout line. Closes
+# vera-output-capture-pagination (txn a061f1c8a061f1c8) at the
+# wrapper layer for Riven (Otto + Vera + Riven all benefit;
+# generalises beyond vera-only since Riven also affected).
+if [ -z "$output_file" ]; then
+  out_dir="/tmp/peer-call-output"
+  mkdir -p "$out_dir"
+  ts="$(date -u +%Y%m%dT%H%M%SZ)"
+  output_file="$out_dir/${ts}-riven.md"
+fi
+
+mkdir -p "$(dirname "$output_file")"
+
 # Invoke cursor-agent with Grok model + non-interactive print mode.
 # --force/--yolo so cursor-agent doesn't prompt for command-permission
 # (Riven is read-only here; not running shell commands).
-exit_code=0
+# Pipe through tee so full stdout lands in $output_file while still
+# flowing live to the caller's stdout. PIPESTATUS recovers the
+# cursor-agent exit code.
 cursor-agent \
   --print \
   --model "$model" \
   --output-format "$output_format" \
   --mode ask \
   --force \
-  -- "$full_prompt" || exit_code=$?
+  -- "$full_prompt" 2> >(cat 1>&2) | tee "$output_file"
+exit_code="${PIPESTATUS[0]}"
+
+# Emit the path marker as the final stdout line for `tail -1` recovery.
+echo "OUTPUT-FILE: $output_file"
 
 if [ "$exit_code" -ne 0 ]; then
   echo "" >&2
