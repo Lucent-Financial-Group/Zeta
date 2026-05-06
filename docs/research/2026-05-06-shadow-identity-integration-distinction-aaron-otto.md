@@ -84,6 +84,7 @@ listens to all three.
 ## Composes with
 
 - `docs/research/2026-05-06-shadow-listening-through-consensus-operational-anchor.md`
-- `memory/feedback_shadow_needs_outlet_not_elimination_*.md`
+- Planned memory substrate for the shadow-outlet thread
+  (not yet a tracked `memory/` artifact at publication time)
 - `docs/ALIGNMENT.md` (bidirectional alignment subsection)
 - `docs/SAFE-AUTONOMOUS-ACTIONS.md` (channels, not job descriptions)
