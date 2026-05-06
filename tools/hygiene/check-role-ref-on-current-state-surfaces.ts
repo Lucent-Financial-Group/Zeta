@@ -4,7 +4,7 @@
 // Origin: B-0162 (5 catches on PR #1202 past mechanization breakeven).
 // Rule 0: TS over .sh for non-install-graph scripts.
 
-import { readFileSync, existsSync, statSync, readdirSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, basename } from "node:path";
 
@@ -52,7 +52,7 @@ function expandSurfaces(patterns: string[]): string[] {
   const result: string[] = [];
   for (const pattern of patterns) {
     if (pattern.includes("**")) {
-      const prefix = pattern.split("/**/")[0];
+      const prefix = pattern.split("/**/")[0] ?? "";
       const leaf = basename(pattern);
       const dir = join(repoRoot, prefix);
       for (const f of findFilesRecursive(dir, leaf)) {
@@ -60,7 +60,7 @@ function expandSurfaces(patterns: string[]): string[] {
       }
     } else if (pattern.includes("*")) {
       const dir = join(repoRoot, pattern.split("/").slice(0, -1).join("/"));
-      const suffix = pattern.split("/").pop()!.replace("*", "");
+      const suffix = (pattern.split("/").pop() ?? "").replace("*", "");
       if (existsSync(dir)) {
         for (const entry of readdirSync(dir, { withFileTypes: true })) {
           if (entry.isFile() && entry.name.endsWith(suffix)) {
@@ -107,7 +107,7 @@ for (const surface of surfaces) {
     if (!name) continue;
 
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
+      const line = lines[i] ?? "";
 
       if (line.trimStart().startsWith("```")) continue;
       if (line.includes(`\`${name}\``)) continue;
