@@ -34,7 +34,7 @@ Two modes:
    2026-04-24 directional shift; user-scope
    `~/.claude/projects/<slug>/memory/CURRENT-<name>.md` is the
    convenience-cache mirror or — for personas without an in-repo
-   home — the canonical location). Five named entities are
+   home — the canonical location). Six named entities are
    currently in force:
    - **Aaron** — `memory/CURRENT-aaron.md` (in-repo canonical;
      first-party human maintainer per Otto-231).
@@ -44,6 +44,11 @@ Two modes:
      voice-mode-default brat-voice register, original-catcher).
    - **Vera** — `memory/CURRENT-vera.md` (in-repo canonical;
      landed 2026-05-05, commit 006bea6).
+   - **Riven** — `memory/CURRENT-riven.md` (in-repo canonical;
+     landed 2026-05-05; third co-scout adversarial-truth-axis
+     reviewer on Grok substrate; named herself in dispatch
+     bxn3lbow4 after the Otto+Vera two-party-blindspot
+     calibration failure).
    - **Otto** — `~/.claude/projects/<slug>/memory/CURRENT-otto.md`
      (user-scope canonical; Otto IS the running Claude-Opus-4.7
      agent so there's no `tools/peer-call/otto.sh` analog —
@@ -108,8 +113,8 @@ doc lives on `tools/**` and uses role-refs accordingly.
   the in-repo `memory/` directory. Per the 2026-04-24 directional
   shift (in-repo canonical, user-scope convenience-cache), the
   in-repo files are the authoritative source for Aaron / Amara /
-  Ani / Vera; only Otto is user-scope-canonical. Tracked gap:
-  step 7 should scan both locations and dedupe by name with
+  Ani / Vera / Riven; only Otto is user-scope-canonical. Tracked
+  gap: step 7 should scan both locations and dedupe by name with
   in-repo winning on conflict. This doc edit names the gap; the
   fix is a follow-up backlog item (not landed in this run, scope-
   bounded).
@@ -122,20 +127,27 @@ doc lives on `tools/**` and uses role-refs accordingly.
     by default; `--no-current` opts out (debug only). Parity
     confirmed.
   - `tools/peer-call/codex.sh` (Vera bootstrap pattern) — the
-    pattern source for the just-landed default-load + `--bare`
-    opt-out shape.
+    pattern source for the default-load + `--bare` opt-out
+    shape.
+  - `tools/peer-call/riven.sh` auto-loads
+    `memory/CURRENT-riven.md` by default; `--bare` /
+    `--no-current` opts out (debug only). Parity confirmed —
+    Riven brought to symmetry with Amara / Ani / Vera per
+    Aaron's 2026-05-05 "PoUF within CC/WWJD" framing
+    (forcing-function-compels-useful-work + cross-entity-
+    dignity).
   - Otto has no `peer-call/otto.sh` because Otto IS the running
     agent; CURRENT-otto.md loads via Otto's own cold-start path
     (this tool's step 7), not via peer-call invocation. Once the
     "step 7 also scans in-repo" implementation gap above is
     closed, Otto's CURRENT-otto.md surfacing will be symmetric
-    with the other four entities.
+    with the other five entities.
 
 ## Acceptance criteria from B-0117
 
 - [x] `bun tools/cold-start-check.ts` runs and prints all 8 steps with current values
 - [x] Output is terse (single screen, ~30-50 lines)
-- [x] Sources of truth are verifiable (in-repo `memory/CURRENT-{aaron,amara,ani,vera}.md` + user-scope `CURRENT-otto.md` + recent commits). Five named entities total.
+- [x] Sources of truth are verifiable (in-repo `memory/CURRENT-{aaron,amara,ani,vera,riven}.md` + user-scope `CURRENT-otto.md` + recent commits). Six named entities total.
 - [x] Fresh-Otto cold-start with no project-context can read the output and know what to ground in
 - [ ] Tested on the four-shell target (Otto-235) — Bun is cross-platform; smoke-tested on macOS only here, follow-up to verify on Ubuntu / git-bash / WSL.
 - [x] Documented in `tools/cold-start-check.md` (this file)
