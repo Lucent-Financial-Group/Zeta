@@ -1,8 +1,8 @@
 namespace Zeta.Core
 
-/// Maji — identity-preservation and recovery types per Amara's formal
+/// Maji — identity-preservation and recovery types per the deep-research peer's formal
 /// operational model (docs/research/maji-formal-operational-model-
-/// amara-courier-ferry-2026-04-26.md). Context window is cache;
+/// deep-research-peer-courier-ferry-2026-04-26.md). Context window is cache;
 /// substrate is identity; Maji is the recovery/indexing function.
 ///
 /// These are the algebraic type definitions per §10 of the spec.
@@ -89,7 +89,7 @@ module Maji =
     /// Capture and collapse risks are SUBTRACTED (anti-cult-by-construction).
     let computeScore (weights: float[]) (score: MessiahScore) : float =
         if weights.Length < 7 then
-            failwith "MessiahScore requires 7 weights"
+            invalidArg (nameof weights) "MessiahScore requires 7 weights"
         else
             weights[0] * score.AlignmentWithOmega
             + weights[1] * score.ProjectionPreservation
@@ -118,7 +118,8 @@ module Maji =
           Policies: float
           MemoryGraph: float
           CorrectionHistory: float
-          CrossRefTopology: float }
+          CrossRefTopology: float
+          Provenance: float }
 
     /// Jaccard distance between two string lists (simple set-based metric).
     let private jaccard (a: string list) (b: string list) : float =
@@ -138,6 +139,7 @@ module Maji =
         + w.MemoryGraph * jaccard a.MemoryGraph b.MemoryGraph
         + w.CorrectionHistory * jaccard a.CorrectionHistory b.CorrectionHistory
         + w.CrossRefTopology * jaccard a.CrossRefTopology b.CrossRefTopology
+        + w.Provenance * jaccard a.Provenance b.Provenance
 
     // ── Projection-preservation check ────────────────────────────
 
