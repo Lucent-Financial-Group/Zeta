@@ -170,6 +170,14 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0208](backlog/P2/B-0208-launchd-forward-tick-reliability-merge-into-heartbeat-2026-05-06.md)** Launchd forward-tick reliability — merge forward logic into working heartbeat tick OR fix StartInterval for new services
 - [ ] **[B-0209](backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md)** Remote-only background agent test matrix — prove claim coordination without local broadcast
 - [ ] **[B-0210](backlog/P2/B-0210-local-broadcast-peering-ask-protocol-2026-05-06.md)** Local broadcast peering asks — structured ask/receipt protocol over the same-machine bus
+- [ ] **[B-0224](backlog/P2/B-0224-timeseries-candidate-landscape-source-priority-2026-05-06.md)** Timeseries native-ZSet research - candidate landscape and source-priority filter
+- [ ] **[B-0225](backlog/P2/B-0225-timeseries-algebra-fit-retraction-zset-mapping-2026-05-06.md)** Timeseries native-ZSet research - algebra fit, retraction, and ZSet mapping
+- [ ] **[B-0226](backlog/P2/B-0226-timeseries-cardinality-adaptive-storage-research-2026-05-06.md)** Timeseries native-ZSet research - cardinality-adaptive storage
+- [ ] **[B-0227](backlog/P2/B-0227-timeseries-crdt-multi-mode-semantics-2026-05-06.md)** Timeseries native-ZSet research - CRDT multi-mode semantics
+- [ ] **[B-0228](backlog/P2/B-0228-timeseries-formal-specification-plan-2026-05-06.md)** Timeseries native-ZSet research - formal specification plan
+- [ ] **[B-0229](backlog/P2/B-0229-timeseries-meta-dsl-integration-sketch-2026-05-06.md)** Timeseries native-ZSet research - meta-DSL integration sketch
+- [ ] **[B-0230](backlog/P2/B-0230-timeseries-pareto-frontier-tradeoff-synthesis-2026-05-06.md)** Timeseries native-ZSet research - Pareto frontier and tradeoff synthesis
+- [ ] **[B-0231](backlog/P2/B-0231-timeseries-recommendation-and-follow-up-rows-2026-05-06.md)** Timeseries native-ZSet research - recommendation and follow-up rows
 
 ## P3 — convenience / deferred
 

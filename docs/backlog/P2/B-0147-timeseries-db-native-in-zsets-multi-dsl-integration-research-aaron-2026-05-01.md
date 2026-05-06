@@ -4,11 +4,27 @@ priority: P2
 status: open
 title: TimeSeries DB native-in-Zsets multi-DSL integration research (metrics-are-our-eyes)
 created: 2026-05-01
-last_updated: 2026-05-02
+last_updated: 2026-05-06
 depends_on: []
+children: [B-0224, B-0225, B-0226, B-0227, B-0228, B-0229, B-0230, B-0231]
+decomposition: clean
 ---
 
 # B-0147 — TimeSeries DB native-in-Zsets multi-DSL integration research
+
+## Decomposition status
+
+This row is now the umbrella for the timeseries-native-in-
+ZSets research lane. The actionable research slices are:
+
+1. B-0224 candidate landscape and dependency-source filter.
+2. B-0225 algebra-fit / retraction / ZSet mapping analysis.
+3. B-0226 cardinality-adaptive storage research.
+4. B-0227 CRDT multi-mode timeseries semantics.
+5. B-0228 formal specification plan.
+6. B-0229 meta-DSL integration sketch.
+7. B-0230 Pareto-frontier synthesis.
+8. B-0231 recommendation and follow-up row filing.
 
 ## What
 
