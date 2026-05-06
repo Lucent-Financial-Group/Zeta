@@ -38,6 +38,7 @@
 import { closeSync, mkdirSync, openSync, readSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
@@ -280,7 +281,7 @@ between the agent-loop and you — you're being invoked directly
 now, no maintainer round-trip needed.`;
 
 function findRepoRoot(): string | undefined {
-  let dir = resolve(dirname(new URL(import.meta.url).pathname));
+  let dir = resolve(dirname(fileURLToPath(import.meta.url)));
   for (let i = 0; i < 32; i += 1) {
     try {
       const gitPath = join(dir, ".git");
