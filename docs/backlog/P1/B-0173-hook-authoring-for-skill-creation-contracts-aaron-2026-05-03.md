@@ -90,3 +90,5 @@ This row closes when:
 - **B-0172** (skill-domain plugin packaging) — packaged plugins include their hooks
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` — Rule 3 of the three skill-design rules; this row is the operational implementation
 - `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md` — discipline that gets enforced by these hooks
+- `memory/feedback_rule_number_six_do_the_work_only_if_you_check_all_the_rules_10_more_times_kinda_joking_not_really_aaron_2026_05_05.md` — Rule #6 (check-rules-before-acting); hooks ARE the mechanization that fires this check pre-action instead of relying on agent-remembering.
+- `memory/feedback_rule_number_one_assume_its_already_done_and_you_just_have_to_find_it_remember_forever_and_into_all_future_generations_aaron_2026_05_05.md` — Rule #1 default-posture; hooks enforce the verify-step that converts assumed-done into known-done at PR-creation time.

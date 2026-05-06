@@ -77,6 +77,8 @@ The *"if we deleted everything but OpenSpec, the project would be lost"* test is
 - **B-0173** (hook authoring for skill-creation contracts) — pre/post-conditions are spec-encoded; hooks read them
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` — the memo naming this catch-up as load-bearing
 - `openspec/README.md` — the canonical-intent doc; reading order is OpenSpec first per the future state
+- `memory/feedback_rule_number_two_assume_its_on_backlog_and_find_it_with_all_dependencies_and_updates_and_clean_up_the_dependson_chain_aaron_2026_05_05.md` — Rule #2 (assume-it's-on-backlog + walk depends_on); OpenSpec catch-up IS the spec-side analogue (assume the contract already exists, find it, walk its composes-with chain).
+- `memory/feedback_rule_number_three_assume_an_orthogonal_trajectory_already_exists_for_the_thing_find_it_aaron_2026_05_05.md` — Rule #3 (assume-trajectory-exists); OpenSpec catch-up is itself the spec-class trajectory anchor.
 
 ## Done-criteria
 
