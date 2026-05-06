@@ -9,7 +9,7 @@ ask: maintainer Aaron 2026-04-28 ("MEMORY.md do you think it's possible to just 
 created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0061, B-0067]
+composes_with: [B-0061, B-0067, B-0190]
 tags: [memory-md, factory-hygiene, hotspot, claude-code-harness, q1-automemory, auto-generated-index]
 ---
 

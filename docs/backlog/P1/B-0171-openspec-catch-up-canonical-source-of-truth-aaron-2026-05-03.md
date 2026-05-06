@@ -9,7 +9,7 @@ ask: Aaron 2026-05-03 verbatim *"openspec which we are way behind on, that's sup
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [B-0058, B-0169, B-0170, B-0172, B-0173]
+composes_with: [B-0058, B-0169, B-0170, B-0172, B-0173, B-0190]
 tags: [openspec, source-of-truth, foundation, architectural-debt, contract-based-development, spec-based-development, p1-foundation]
 ---
 
