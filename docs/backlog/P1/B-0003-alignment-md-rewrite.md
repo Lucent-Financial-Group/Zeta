@@ -7,14 +7,39 @@ tier: governance
 effort: L
 ask: maintainer Aaron 2026-04-25 ("alignment.md rewrite is due on the backlog... spread to all AIs and contributors via mathematically rigorous arguments that become more rigorous over time")
 created: 2026-04-25
-last_updated: 2026-05-02
+last_updated: 2026-05-06
 depends_on: []
+children: [B-0215, B-0216, B-0217, B-0218, B-0219, B-0220, B-0221, B-0222, B-0223]
 composes_with: [B-0002]
 tags: [alignment, governance, otto-287, bidirectional-alignment, factory-as-superfluid, matrix-pill, noether]
 decomposition: clean
 ---
 
 # ALIGNMENT.md rewrite — incorporate substrate cluster + bidirectional clause
+
+## Decomposition status
+
+This row is now the umbrella for the rewrite. The work is
+split into dependency-ordered child rows so agents can ship
+small, reviewable changes without re-reading the full blob
+each time:
+
+1. B-0215 surveys `docs/ALIGNMENT.md` and produces the
+   preserve/refine/add map.
+2. B-0216 promotes finite-resource collisions to the top
+   foundation.
+3. B-0217 audits and tightens the existing bidirectional
+   alignment section.
+4. B-0218 adds factory-as-superfluid empirical calibration.
+5. B-0219 adds the DST / empirical-rigor falsification
+   floor.
+6. B-0220 adds definition precision and matrix-pill /
+   poison-pill guardrails.
+7. B-0221 adds authority-delegation and idle-PR
+   collaboration substrate.
+8. B-0222 wires the Noether compounding-rigor pipeline.
+9. B-0223 performs the final integration, cross-reference,
+   and cold-start budget pass.
 
 Rewrite `docs/ALIGNMENT.md` to incorporate:
 
