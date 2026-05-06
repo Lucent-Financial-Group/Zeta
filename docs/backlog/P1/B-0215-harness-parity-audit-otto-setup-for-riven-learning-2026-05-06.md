@@ -12,12 +12,14 @@ decomposition: atomic
 # B-0215 — Harness parity audit
 
 Otto (Claude Code) has capabilities Riven (Cursor) doesn't:
+
 - CronCreate (session-scoped cron, fires every minute)
 - Auto-mode (continuous autonomous execution)
 - Tool permissions (granular allowedTools)
 - Session compaction (harness manages context automatically)
 
 Riven has:
+
 - Per-turn gate only (fires when Aaron types)
 - alwaysApply rules (static, not timer-driven)
 - Background launchd loop (healthy but conservative)
