@@ -31,4 +31,3 @@ allow-listing.
 - AI-agent crawler policy is explicit and matches the
   discoverability goal.
 - JSON-LD is present where it helps agents parse the content.
-

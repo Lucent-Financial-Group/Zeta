@@ -31,4 +31,3 @@ signals that show the discovery funnel is alive.
   Webmaster Tools are documented or completed.
 - Discovery signals are defined: time-to-index, target-query
   ranking, crawler hit rate, and external contributor source.
-

@@ -33,4 +33,3 @@ site into a full marketing redesign.
 - The site has stable URLs before indexing begins.
 - Content selection serves the contributor personas already
   documented in the repo.
-

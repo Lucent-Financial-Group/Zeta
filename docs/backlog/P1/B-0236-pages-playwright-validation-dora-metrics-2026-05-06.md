@@ -32,4 +32,3 @@ MTTR, and change failure rate.
   deployment path.
 - The metrics path composes with the timeseries lane instead
   of inventing a second observability substrate.
-

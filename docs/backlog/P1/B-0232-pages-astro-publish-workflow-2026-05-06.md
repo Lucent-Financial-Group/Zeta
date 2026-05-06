@@ -32,4 +32,3 @@ at the Pages URL.
 - Permissions are minimal and explicit, including
   `contents: read`, `pages: write`, and `id-token: write`.
 - The Pages URL returns HTTP 200 after deployment.
-
