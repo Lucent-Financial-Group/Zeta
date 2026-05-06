@@ -87,6 +87,90 @@ function releaseLock(): void {
     try { rmSync(lockDir, { recursive: true, force: true }); } catch { /* best effort */ }
 }
 
+const forwardActions = process.env.ZETA_RIVEN_LOOP_FORWARD_ACTIONS === "1";
+const forwardIntervalMs = Number(process.env.ZETA_RIVEN_LOOP_FORWARD_INTERVAL_SECONDS ?? "300") * 1000;
+const forwardStateFile = join(stateDir, "last-forward-run.json");
+const broadcastDir = join(home, ".local/share/zeta-broadcasts");
+
+function readBroadcasts(): void {
+    for (const peer of ["otto.md", "vera.md"]) {
+        const path = join(broadcastDir, peer);
+        if (existsSync(path)) {
+            const content = readFileSync(path, "utf8").trim();
+            if (content) log(`broadcast from ${peer.replace(".md", "")}: ${content.split("\n")[0] ?? "(empty)"}`);
+        }
+    }
+}
+
+function writeBroadcast(summary: string): void {
+    mkdirSync(broadcastDir, { recursive: true });
+    writeFileSync(join(broadcastDir, "riven.md"), [
+        `# Riven broadcast — ${nowIso()}`,
+        "",
+        "## Background tick status",
+        summary,
+    ].join("\n"));
+}
+
+function gh(...args: string[]): { status: number; stdout: string } {
+    const r = spawnSync("gh", args, {
+        cwd: worktree,
+        encoding: "utf8",
+        timeout: 60_000,
+        env: {
+            ...process.env,
+            PATH: `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:${join(home, ".local/bin")}`,
+        },
+    });
+    return { status: r.status ?? 1, stdout: r.stdout ?? "" };
+}
+
+function forwardTick(): void {
+    readBroadcasts();
+
+    const dirty = run("git", ["status", "--porcelain"], 10_000);
+    const dirtyCount = lines(dirty.stdout).length;
+    if (dirtyCount > 0) {
+        log(`forward: skip, dirty=${dirtyCount}`);
+        writeBroadcast(`Forward tick ${runId}: skip — dirty tree (${dirtyCount} files).`);
+        return;
+    }
+
+    const prsResult = gh(
+        "pr", "list", "--repo", "Lucent-Financial-Group/Zeta",
+        "--state", "open", "--json", "number", "--jq", ".[].number"
+    );
+    if (prsResult.status !== 0) {
+        log(`forward: gh pr list failed status=${prsResult.status}`);
+        writeBroadcast(`Forward tick ${runId}: gh pr list failed.`);
+        return;
+    }
+
+    const prNumbers = prsResult.stdout.trim().split("\n").filter(n => n.trim()).map(Number);
+    for (const pr of prNumbers) {
+        const gateResult = gh(
+            "pr", "view", String(pr), "--repo", "Lucent-Financial-Group/Zeta",
+            "--json", "mergeStateStatus,autoMergeRequest,reviewThreads",
+            "--jq", "{mergeState: .mergeStateStatus, autoMerge: (.autoMergeRequest != null), unresolvedThreads: ([.reviewThreads[]? | select(.isResolved == false)] | length)}"
+        );
+        if (gateResult.status !== 0) continue;
+        try {
+            const gate = JSON.parse(gateResult.stdout);
+            if (gate.mergeState === "CLEAN" && !gate.autoMerge && gate.unresolvedThreads === 0) {
+                log(`forward: arming auto-merge on PR #${pr}`);
+                gh("pr", "merge", String(pr), "--repo", "Lucent-Financial-Group/Zeta", "--squash", "--auto");
+                writeBroadcast(`Forward tick ${runId}: armed auto-merge on PR #${pr}.`);
+                writeFileSync(forwardStateFile, JSON.stringify({ run_id: runId, updated_at: nowIso() }, null, 2));
+                return;
+            }
+        } catch { continue; }
+    }
+
+    log(`forward: no actionable PR found`);
+    writeBroadcast(`Forward tick ${runId}: idle — no actionable PR. ${prNumbers.length} open.`);
+    writeFileSync(forwardStateFile, JSON.stringify({ run_id: runId, updated_at: nowIso() }, null, 2));
+}
+
 function heartbeat(): void {
     const fetch = run("git", ["fetch", "origin"], fetchTimeoutMs);
     const fetchOk = fetch.status === 0 ? "ok" : `exit-${fetch.status}`;
@@ -152,7 +236,22 @@ function heartbeat(): void {
         }
     }
 
-    const summary = `heartbeat complete run_id=${runId} fetch=${fetchOk} claims=${claimCount} open_prs=${prCount} dirty=${dirtyCount} riven=${agentStatus} ${dueIn}`.trim();
+    let forwardStatus = "disabled";
+    if (forwardActions && fetchOk === "ok") {
+        let lastForward: { updated_at?: string } = {};
+        try { lastForward = JSON.parse(readFileSync(forwardStateFile, "utf8")); } catch { /* first run */ }
+        const forwardElapsed = Date.now() - (lastForward.updated_at ? new Date(lastForward.updated_at).getTime() : 0);
+        if (forwardElapsed >= forwardIntervalMs) {
+            log(`forward-tick start run_id=${runId}`);
+            forwardTick();
+            forwardStatus = "ok";
+            log(`forward-tick end run_id=${runId}`);
+        } else {
+            forwardStatus = `wait due_in=${Math.round((forwardIntervalMs - forwardElapsed) / 1000)}s`;
+        }
+    }
+
+    const summary = `heartbeat complete run_id=${runId} fetch=${fetchOk} claims=${claimCount} open_prs=${prCount} dirty=${dirtyCount} riven=${agentStatus} forward=${forwardStatus} ${dueIn}`.trim();
     log(summary);
 
     writeFileSync(hbFile, JSON.stringify({
