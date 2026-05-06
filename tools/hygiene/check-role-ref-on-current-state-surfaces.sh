@@ -80,6 +80,8 @@ CURRENT_STATE_SURFACES=(
   "docs/WONT-DO.md"
   "docs/VISION.md"
   "docs/ROADMAP.md"
+  ".claude/skills/**/SKILL.md"
+  ".claude/agents/*.md"
 )
 
 # Parse persona-roster from docs/EXPERT-REGISTRY.md
@@ -110,7 +112,41 @@ ALL_NAMES=("${ROSTER_NAMES[@]}" "${EXTRA_PERSONAS[@]}" "${HUMAN_NAMES[@]}" "${EX
 
 VIOLATIONS=0
 
-for surface in "${CURRENT_STATE_SURFACES[@]}"; do
+# Expand the surface list — entries containing glob characters
+# (`*` / `?`) are expanded via `find` so the script stays portable
+# across macOS bash 3.2 / Ubuntu / git-bash / WSL (Otto-235 4-shell
+# compat target). Literal entries pass through unchanged.
+#
+# Recognised glob shapes:
+#   - "<dir>/**/<name>" → recursive find for files named <name> under <dir>
+#   - "<dir>/*<suffix>" → non-recursive find at depth 1 matching <suffix>
+#   - "<dir>/*"         → all files at depth 1 under <dir>
+EXPANDED_SURFACES=()
+for entry in "${CURRENT_STATE_SURFACES[@]}"; do
+  if [[ "$entry" == *'**'* ]]; then
+    # Recursive form: split on '**'
+    prefix="${entry%%/\*\*/*}"
+    leaf="${entry##*/\*\*/}"
+    if [[ -d "$prefix" ]]; then
+      while IFS= read -r m; do
+        [[ -n "$m" && -f "$m" ]] && EXPANDED_SURFACES+=("$m")
+      done < <(find "$prefix" -type f -name "$leaf" 2>/dev/null)
+    fi
+  elif [[ "$entry" == *'*'* || "$entry" == *'?'* ]]; then
+    # Non-recursive form
+    dir="${entry%/*}"
+    pat="${entry##*/}"
+    if [[ -d "$dir" ]]; then
+      while IFS= read -r m; do
+        [[ -n "$m" && -f "$m" ]] && EXPANDED_SURFACES+=("$m")
+      done < <(find "$dir" -maxdepth 1 -type f -name "$pat" 2>/dev/null)
+    fi
+  else
+    EXPANDED_SURFACES+=("$entry")
+  fi
+done
+
+for surface in "${EXPANDED_SURFACES[@]}"; do
   [[ ! -f "$surface" ]] && continue
 
   for name in "${ALL_NAMES[@]}"; do
@@ -157,7 +193,7 @@ for surface in "${CURRENT_STATE_SURFACES[@]}"; do
 done
 
 echo "" >&2
-echo "checked ${#CURRENT_STATE_SURFACES[@]} current-state surfaces; ${VIOLATIONS} violations" >&2
+echo "checked ${#EXPANDED_SURFACES[@]} current-state surfaces (from ${#CURRENT_STATE_SURFACES[@]} patterns); ${VIOLATIONS} violations" >&2
 
 if [[ $VIOLATIONS -gt 0 ]]; then
   echo "" >&2

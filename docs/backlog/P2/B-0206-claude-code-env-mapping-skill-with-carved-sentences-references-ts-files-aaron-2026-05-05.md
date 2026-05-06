@@ -7,7 +7,7 @@ created: 2026-05-05
 created_by: aaron
 owner: tbd (skill-creator workflow per GOVERNANCE §4)
 depends_on: []
-relates_to:
+composes_with:
   - docs/research/claude-cli-capability-map.md
   - docs/research/codex-cli-first-class-2026-04-23.md
   - docs/research/grok-cli-capability-map.md
