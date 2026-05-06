@@ -1,7 +1,7 @@
 ---
 id: B-0061
 priority: P1
-status: open
+status: closed
 title: Finish docs/BACKLOG.md monolith → per-row migration — "don't miss anything, no residue for next-Otto" (Aaron 2026-04-28)
 tier: factory-hygiene
 effort: L

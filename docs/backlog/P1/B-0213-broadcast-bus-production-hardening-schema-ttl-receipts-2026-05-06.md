@@ -5,6 +5,7 @@ status: open
 title: "Broadcast bus production hardening — structured schema, TTL, receipts, conflict detection"
 created: 2026-05-06
 last_updated: 2026-05-06
+decomposition: atomic
 depends_on: [B-0210]
 ---
 

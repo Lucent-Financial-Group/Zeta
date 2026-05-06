@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0002]
 tags: [alignment, governance, otto-287, bidirectional-alignment, factory-as-superfluid, matrix-pill, noether]
+decomposition: clean
 ---
 
 # ALIGNMENT.md rewrite — incorporate substrate cluster + bidirectional clause
@@ -85,17 +86,42 @@ The rewrite is "good enough to ship" when:
 - Definitions are precise enough that a fresh AI can use
   them directly without re-derivation (Otto-286).
 
-## Owed before / as part of the rewrite
+## Decomposition (2026-05-06 Otto)
 
-- Survey existing `docs/ALIGNMENT.md` structure (HC/SD/DIR
-  enumeration) and identify which clauses to preserve vs
-  refine vs add.
-- Inventory cross-references that need to update (CLAUDE.md
-  pointers, AGENTS.md pointers, README pointers).
-- Decide whether the bidirectional-alignment clause goes
-  under SD (self-direction) or its own new section. Otto-283
-  tracking: lean toward new section (bidirectional alignment
-  isn't strictly self-direction; it's two-way).
+Current state audit: bidirectional alignment clause already
+landed (20 matches in ALIGNMENT.md). Otto-287 physics and
+superfluid calibration NOT yet in the doc.
+
+### Step 1 — Survey (prerequisite, ~30min)
+
+- [ ] Audit current HC/SD/DIR clauses — which preserve, refine, add
+- [ ] Inventory cross-references (CLAUDE.md, AGENTS.md, README)
+- [ ] Classify the 8 numbered items above: done / partially done / owed
+- [ ] Bidirectional clause: DONE (own subsection, ~20 references)
+
+### Step 2 — Otto-287 physics foundation (parallel, ~1h)
+
+- [ ] Add finite-resource-collisions framing as rigorous ground
+- [ ] Place at top of doc (not buried) per acceptance criteria
+- [ ] Link to `docs/research/otto-287-noether-formalization-*.md`
+
+### Step 3 — Empirical calibration section (parallel, ~1h)
+
+- [ ] Factory-as-superfluid measurable claims
+- [ ] Falsifiable signals per Otto-285/281 DST rigor floor
+- [ ] Link to superfluid math research docs
+
+### Step 4 — Precision + falsification pass (parallel, ~1h)
+
+- [ ] Otto-286 precise definitions on every novel clause
+- [ ] Otto-283 "revisit if X" falsification signals
+- [ ] Otto-282 WHY included for each clause
+
+### Step 5 — Reading-time budget check (depends on 2-4, ~30min)
+
+- [ ] Apply finite-context physics to the doc itself
+- [ ] If too long for cold-start absorption, compress or split
+- [ ] Final cross-reference update pass
 
 ## Why P1 (not P2 / P3)
 

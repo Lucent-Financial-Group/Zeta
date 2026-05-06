@@ -8,6 +8,7 @@ effort: M
 ask: maintainer Aaron 2026-04-28 ("MEMORY.md do you think it's possible to just put like a marker in MEMORY.md that says memorys in memory/ and that would work? or it's more root to you than that and that would not work. It needs to work with the built in Q1 AutoDream/AutoMemory and your harness that we have the leaked source for? this would stop this from backing a hotspot too")
 created: 2026-04-28
 last_updated: 2026-05-02
+decomposition: blob
 depends_on: []
 composes_with: [B-0061, B-0067, B-0190]
 tags: [memory-md, factory-hygiene, hotspot, claude-code-harness, q1-automemory, auto-generated-index]

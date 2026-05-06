@@ -5,6 +5,7 @@ status: open
 title: GitHub settings refactor — split single ruleset into multiple smaller always-on rulesets, prefer git-native over legacy UI/CLI-only settings (Aaron 2026-05-01)
 created: 2026-05-01
 last_updated: 2026-05-01
+decomposition: blob
 depends_on:
   - B-0154
 ---
