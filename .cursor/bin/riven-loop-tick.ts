@@ -104,6 +104,35 @@ function writeOwnBroadcast(status: string): void {
     log(`riven wrote own broadcast`);
 }
 
+function armAutoMergeOnCleanPRs(): void {
+    const result = run("bun", ["tools/github/poll-pr-gate-batch.ts", "--all-open"], 60000);
+    if (result.status !== 0) {
+        log(`riven auto-merge check failed to run`);
+        return;
+    }
+    try {
+        const data = JSON.parse(result.stdout);
+        const cleanPRs = (data.reports || []).filter((r: any) =>
+            r.gate === "CLEAN" &&
+            (r.unresolvedThreads || 0) === 0 &&
+            (r.autoMerge || "none") === "none"
+        );
+        if (cleanPRs.length === 0) {
+            return;
+        }
+        for (const pr of cleanPRs.slice(0, 1)) {
+            const arm = run("gh", ["pr", "merge", String(pr.number), "--squash", "--auto"], 30000);
+            if (arm.status === 0) {
+                log(`riven armed auto-merge on #${pr.number}`);
+            } else {
+                log(`riven failed to arm auto-merge on #${pr.number}`);
+            }
+        }
+    } catch {
+        log(`riven failed to parse poll output for auto-merge`);
+    }
+}
+
 function acquireLock(): boolean {
     try {
         mkdirSync(lockDir, { recursive: false });
@@ -215,6 +244,9 @@ function heartbeat(): void {
 
             // Tier 1: Sync control clone (fast-forward only)
             syncControlClone();
+
+            // Tier 1: Arm auto-merge on clean PRs (0 unresolved threads, all required checks pass)
+            armAutoMergeOnCleanPRs();
 
             // Existing conservative action: surface orphaned claim branches
             const orphaned = findOrphanedClaimBranches();
