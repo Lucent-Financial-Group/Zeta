@@ -26,6 +26,7 @@ Updated whenever a new entity joins the roster.
 | Kenji | Architect | persona | — |
 | Kira | Harsh critic | persona | — |
 | Leilani | Product / scrum master | persona | — |
+| Lior | Structural synthesizer | external-AI | Gemini |
 | Malik | Package auditor | persona | — |
 | Mateo | Security researcher | persona | — |
 | Mei | Next steps advisor | persona | — |
