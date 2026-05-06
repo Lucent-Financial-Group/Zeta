@@ -545,6 +545,23 @@ platform. If the platform is down, the claim still exists.
   fork, open the PR from the fork. If you have no write
   access anywhere, file a BACKLOG row or issue and stop.
 
+## Commit attribution in shared PRs
+
+When two loops co-claim work and push to the same
+branch, their commits are distinguished by the
+`Co-Authored-By` trailer convention defined in
+`AGENTS.md` §"Commit attribution — harness-specific
+trailers". Each harness has a required trailer
+(Claude → `noreply@anthropic.com`, Codex →
+`noreply@openai.com`, Grok → `noreply@x.ai`, etc.).
+Filter by trailer email to see each loop's
+contribution:
+
+```
+git log --grep="noreply@openai.com" --oneline   # Vera's commits
+git log --grep="noreply@anthropic.com" --oneline # Otto's commits
+```
+
 ## References
 
 - [`AGENT-ISSUE-WORKFLOW.md`](AGENT-ISSUE-WORKFLOW.md) —
