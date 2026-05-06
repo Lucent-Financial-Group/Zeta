@@ -174,6 +174,10 @@ ZETA_CODEX_LOOP_DRY_RUN=1 bun .codex/bin/codex-loop-tick.ts
 - The root checkout remains contested shared state.
 - The launchd worktree is a control surface, not a place for
   broad unrelated edits.
+- Cross-agent coordination happens through git and GitHub:
+  pushed `claim/*` branches, local heartbeats, PRs, issues,
+  and review threads. Chat handoffs are evidence to verify,
+  not the coordination substrate.
 - Substantive write work still follows
   `docs/AGENT-CLAIM-PROTOCOL.md`: dedicated worktree, pushed
   claim branch, local heartbeat, commit / PR / release.
