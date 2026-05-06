@@ -55,14 +55,15 @@ When a Codex CLI session first opens Zeta, it reads
 provides the universal handbook. Then it reads
 `.codex/AGENTS.md` for Codex-specific bootstrap and
 `.codex/CURRENT-codex.md` for compact current-state handoff.
-This `.codex/README.md` remains the directory map, parallel
-to the role `CLAUDE.md` plays for Claude Code.
+This `.codex/README.md` remains the Codex home map, parallel
+to the role that `CLAUDE.md` plays for Claude Code.
 
 When multiple agents are active on the same machine, Codex
 uses the shared-machine / shared-folder mode in
 `docs/AGENT-CLAIM-PROTOCOL.md`: dedicated worktree for
 writes, pushed `claim/<slug>` branch for task ownership, and
-local `.git/agent-heartbeats/*.json` for checkout/path intent.
+local `$(git rev-parse --git-common-dir)/agent-heartbeats/*.json`
+for checkout/path intent.
 
 The host-level Codex loop is documented at
 [`docs/CODEX-HARNESS-NOTES.md`](../docs/CODEX-HARNESS-NOTES.md).

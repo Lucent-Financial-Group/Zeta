@@ -90,8 +90,9 @@ If a Codex session crashes:
 
 1. Read `.codex/AGENTS.md` and this file.
 2. Run `git worktree list --porcelain`.
-3. Inspect `.git/agent-heartbeats/*.json` from the shared git
-   common directory.
+3. Inspect `$(git rev-parse --git-common-dir)/agent-heartbeats/*.json`
+   so linked worktrees resolve the shared git common directory
+   correctly.
 4. Check `git branch -r --list 'origin/claim/*'`.
 5. Resume only work with a pushed claim branch, or file a new
    claim before writing.
