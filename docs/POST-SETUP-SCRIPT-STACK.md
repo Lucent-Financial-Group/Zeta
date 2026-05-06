@@ -178,7 +178,6 @@ cross-platform via migration):**
 | Script | BACKLOG row |
 |---|---|
 | `tools/audit-packages.sh` | "Migrate remaining bash audit scripts to bun + TypeScript (post-setup stack)" |
-| `tools/lint/no-empty-dirs.sh` | same row |
 | `tools/lint/safety-clause-audit.sh` | same row |
 | `tools/alignment/audit_commit.sh` | same row (migrate as alignment-quartet group) |
 | `tools/alignment/audit_personas.sh` | same row (group) |

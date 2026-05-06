@@ -754,8 +754,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: Install toolchain
+        run: ./tools/setup/install.sh
+
       - name: Run no-empty-dirs
-        run: tools/lint/no-empty-dirs.sh
+        run: bun tools/lint/no-empty-dirs.ts
 
   lint-markdown:
     # markdownlint-cli2 on every .md file outside the ignore list in

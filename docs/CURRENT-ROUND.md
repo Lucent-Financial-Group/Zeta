@@ -49,7 +49,7 @@ From `docs/BACKLOG.md` P0 "next round (committed)":
    (skill-tune-up) audits post-rename for BP-drift.
    Effort: M.
 2. **Empty-folder allowlist review** — periodic
-   allowlist audit for `tools/lint/no-empty-dirs.sh`.
+   allowlist audit for `tools/lint/no-empty-dirs.ts`.
    Two entries (`tools/alloy/classes`,
    `tools/tla/specs/states`) are load-bearing
    runtime-output paths; drop if populated by checked-in
