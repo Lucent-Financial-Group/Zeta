@@ -49,8 +49,9 @@ echo "Repo: $REPO_ROOT"
 echo "Backlog root: docs/backlog/"
 echo ""
 
-# Build a temp workspace for derived data
-TMPDIR_AUDIT=$(mktemp -d)
+# Build a temp workspace for derived data. BSD-compatible fallback for
+# `mktemp -d` (some platforms require an explicit template).
+TMPDIR_AUDIT=$(mktemp -d 2>/dev/null || mktemp -d -t 'zeta-backlog-audit')
 trap 'rm -rf "$TMPDIR_AUDIT"' EXIT
 
 ALL_ROWS="$TMPDIR_AUDIT/all-rows.tsv"     # tier<TAB>id<TAB>path<TAB>status<TAB>created<TAB>title
@@ -228,11 +229,15 @@ echo "**Orphan rows: $orphan_count**"
 if [ "$orphan_count" -gt 0 ]; then
     echo ""
     echo "Sample (first 20):"
+    # Truncate the input first so the producer-side `while` loop never
+    # races a downstream `head` close (defensive against future pipefail
+    # additions; see set-eu comment at top).
+    sample_orphans=$(printf '%s\n' "$orphans" | head -20)
     while IFS= read -r oid; do
         [ -z "$oid" ] && continue
         line=$(awk -F'\t' -v i="$oid" '$2==i { print $1 "\t" $4 "\t" $6; exit }' "$ALL_ROWS")
         printf '  - %s: %s\n' "$oid" "$line"
-    done <<< "$orphans" | head -20
+    done <<< "$sample_orphans"
 fi
 echo ""
 
