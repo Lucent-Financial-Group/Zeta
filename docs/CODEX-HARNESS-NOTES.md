@@ -13,27 +13,27 @@ autonomous loop is therefore a macOS `launchd` job.
 |---|---|
 | LaunchAgent label | `com.zeta.codex-loop` |
 | Plist | `~/Library/LaunchAgents/com.zeta.codex-loop.plist` |
-| Runner | `.codex/bin/codex-loop-tick.sh` |
+| Runner | `.codex/bin/codex-loop-tick.ts` |
 | Control clone | `~/.local/share/zeta-codex-loop/Zeta` |
 | Cadence | 60 seconds (`StartInterval = 60`) |
 | Logs | `~/Library/Logs/zeta-codex-loop/` |
 | State / lock | `~/Library/Application Support/ZetaCodexLoop/` |
 
 The runner writes a local heartbeat named
-`codex-launchd-loop.json` under the repo's shared
-`agent-heartbeats` directory, then invokes:
+`codex-launchd-loop.json` under the clone's
+`agent-heartbeats` directory, fetches remote refs, records
+active claim count / open PR count / dirty state, then exits.
+It does not start a long Codex model call by default; set
+`ZETA_CODEX_LOOP_RUN_CODEX=1` only when the heartbeat has
+proven stable and a read-only gate report is desired.
 
 ```bash
-codex -a never exec \
-  -C ~/.local/share/zeta-codex-loop/Zeta \
-  -s danger-full-access \
-  "<single bounded tick prompt>"
+bun ~/.local/share/zeta-codex-loop/Zeta/.codex/bin/codex-loop-tick.ts
 ```
 
-The script uses an atomic lock directory so ticks do not
-overlap. If a prior tick is still running, the next scheduled
-fire exits after logging `skip: previous Codex loop tick still
-active`.
+The TypeScript runner uses an atomic lock directory with a
+short stale-lock TTL so ticks do not overlap and a failed tick
+does not suppress future heartbeats indefinitely.
 
 The LaunchAgent runs from the non-protected control clone
 instead of the shared checkout under `~/Documents`. macOS
@@ -137,7 +137,7 @@ launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.zeta.codex-loop.plist
 Dry-run the runner without invoking Codex:
 
 ```bash
-ZETA_CODEX_LOOP_DRY_RUN=1 .codex/bin/codex-loop-tick.sh
+ZETA_CODEX_LOOP_DRY_RUN=1 bun .codex/bin/codex-loop-tick.ts
 ```
 
 ## Safety Shape

@@ -29,7 +29,7 @@ tools.
 
 - LaunchAgent label: `com.zeta.codex-loop`
 - Plist: `~/Library/LaunchAgents/com.zeta.codex-loop.plist`
-- Runner: `.codex/bin/codex-loop-tick.sh`
+- Runner: `.codex/bin/codex-loop-tick.ts`
 - Control clone: `~/.local/share/zeta-codex-loop/Zeta`
 - Logs: `~/Library/Logs/zeta-codex-loop/`
 - State / lock: `~/Library/Application Support/ZetaCodexLoop/`
