@@ -52,6 +52,28 @@ function lines(text: string): string[] {
     .filter((line) => line.length > 0);
 }
 
+function lockPid(): number | null {
+  try {
+    const metadata = readFileSync(join(lockDir, "metadata"), "utf8");
+    const match = metadata.match(/^pid=(\d+)$/m);
+    if (!match) {
+      return null;
+    }
+    return Number(match[1]);
+  } catch {
+    return null;
+  }
+}
+
+function processIsAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return (error as { code?: string }).code === "EPERM";
+  }
+}
+
 function acquireLock(): boolean {
   try {
     mkdirSync(lockDir);
@@ -64,6 +86,14 @@ function acquireLock(): boolean {
   }
 
   const ageMs = Date.now() - statSync(lockDir).mtimeMs;
+  const pid = lockPid();
+  if (pid !== null && !processIsAlive(pid)) {
+    log(`warning: removing dead-pid lock; pid=${pid} lock_age=${Math.round(ageMs / 1000)}s`);
+    rmSync(lockDir, { recursive: true, force: true });
+    mkdirSync(lockDir);
+    return true;
+  }
+
   if (ageMs <= lockTtlMs) {
     log(`skip: previous tick active; lock_age=${Math.round(ageMs / 1000)}s`);
     return false;
