@@ -25,11 +25,11 @@
 3. **This doc** (`docs/research/2026-05-05-session-landing-plan-cold-boot-without-losing-plot.md`) — the plot
 4. **`memory/feedback_otto_holds_synthesis_weight_prior_art_grep_first_before_substrate_landing_aaron_made_concise_formulations_at_high_mental_cost_aaron_2026_05_05.md`** (PR #1701) — the discipline that was violated
 5. **`memory/feedback_let_it_shine_vs_divine_light_that_burns_architectural_axiom_free_will_exercised_without_ossification_aaron_2026_05_05.md`** (PR #1699) — architectural axiom
-6. **`memory/feedback_frank_frisbee_taught_dst_over_retractible_surfaces_before_dbsp_had_a_name_*.md`** (PR #1697) — provenance
+6. **`memory/feedback_frank_frisbee_taught_dst_over_retractible_surfaces_before_dbsp_had_a_name_duplicate_yourself_mentor_southern_redneck_register_aaron_2026_05_05.md`** (PR #1697) — provenance
 7. **`docs/backlog/P1/B-0161-substrate-reshelf-asymmetry-applied-to-pr-1202-overshoot-aaron-claudeai-2026-05-02.md`** — next-tick load-bearing work
 8. **`memory/feedback_thoughts_free_actions_razored_asymmetry_journal_vs_canonical_substrate_separation_aaron_claudeai_2026_05_02.md`** — the asymmetry rule that drives B-0161
 9. **`memory/feedback_orthogonal_axes_factory_hygiene.md`** — orthogonal-basis discipline (caught the compression-cadence rank-deficiency)
-10. **`docs/research/2026-05-05-claude-code-env-mapping.md`** — environment-mapping substrate (PR #1702 scope)
+10. **`docs/research/claude-cli-capability-map.md`** — environment-mapping substrate (PR #1702 scope; canonical map; the planned standalone 2026-05-05 doc was de-duplicated against this map per commit 3ce7a69)
 
 ## COMPOSES WITH (existing CLAUDE.md bullets that anchor each)
 

@@ -6,15 +6,31 @@
 # has been canonical since 2026-04-25; the executable form was named as
 # owed-work in the doc's "Owed work" section but never landed.
 #
-# This script is the executable form of the catalog: each location-class
-# runs its survey command and reports findings. Triage is per-class
-# (see LOST-FILES-LOCATIONS.md for triage protocols).
+# This script is the executable form of the catalog: classes 1-8 + 15 each
+# run their survey command and report findings. Classes 9-14 are explicitly
+# DEFERRED here (per-PR API calls expensive; covered by incident-response
+# protocol in LOST-FILES-LOCATIONS.md, not by this script). Triage is
+# per-class (see LOST-FILES-LOCATIONS.md for triage protocols).
 #
 # Composes with: tools/hygiene/LOST-FILES-LOCATIONS.md (the catalog),
 # memory/feedback_otto_329_*.md (Otto-329 ownership), Otto-262 trunk-based,
 # Otto-257 clean-default smell, Otto-238 retractability glass-halo.
 
-set -euo pipefail
+set -eu
+# Note: pipefail intentionally NOT set -- this script has many `... | head -N`
+# pipes where head closes the pipe early, which would otherwise SIGPIPE-kill
+# the producer side of the pipeline (status 141) and abort the whole audit
+# before later classes run. Failures are guarded individually via `|| true`
+# / `2>/dev/null` where they matter.
+
+# jq dependency check: most class queries require jq for JSON shaping.
+# Fail clearly up front rather than partway through with set -e firing.
+if ! command -v jq >/dev/null 2>&1; then
+    echo "WARNING: jq not found; gh-API-driven classes (1, 2, 8) will be skipped or partial." >&2
+    HAS_JQ=0
+else
+    HAS_JQ=1
+fi
 
 REPO="${REPO:-Lucent-Financial-Group/Zeta}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -30,40 +46,44 @@ echo ""
 
 # Class 1: Closed-not-merged PRs
 echo "## 1. Closed-not-merged PRs"
-if command -v gh >/dev/null 2>&1; then
-    count=$(gh pr list --repo "$REPO" --state closed --limit 500 \
-        --json number,title,closedAt,mergedAt,headRefName 2>/dev/null \
-        | jq -r '[.[] | select(.mergedAt == null)] | length' 2>/dev/null || echo "0")
+if command -v gh >/dev/null 2>&1 && [ "$HAS_JQ" = "1" ]; then
+    closed_json=$(gh pr list --repo "$REPO" --state closed --limit 500 \
+        --json number,title,closedAt,mergedAt,headRefName 2>/dev/null || echo "[]")
+    count=$(echo "$closed_json" | jq -r '[.[] | select(.mergedAt == null)] | length' 2>/dev/null || echo "0")
     echo "Count: $count"
     if [ "$count" != "0" ] && [ "$count" != "" ]; then
         echo "Triage: per Otto-262 + Otto-257 + Otto-254 -- recover via roll-forward on fresh short-lived branch OR prune."
-        gh pr list --repo "$REPO" --state closed --limit 500 \
-            --json number,title,closedAt,mergedAt,headRefName 2>/dev/null \
+        # Materialize then sample to avoid SIGPIPE on the jq producer.
+        sample=$(echo "$closed_json" \
             | jq -r '[.[] | select(.mergedAt == null) | "PR #\(.number): \(.title) (closed \(.closedAt))"] | .[]' 2>/dev/null \
-            | head -10
+            || true)
+        echo "$sample" | head -10
     fi
 else
-    echo "SKIP: gh CLI not available"
+    echo "SKIP: gh CLI or jq not available"
 fi
 echo ""
 
 # Class 2: Orphan branches (remote, unmerged-to-main AND no-open-PR)
+# "no-open-PR" => only OPEN PRs are subtracted. A branch with only closed/
+# merged historical PRs is still an orphan (no live PR keeps it tethered).
 echo "## 2. Orphan branches (remote, unmerged-to-main AND no-open-PR)"
 unmerged=$(git for-each-ref --no-merged origin/main --format='%(refname:short)' refs/remotes/origin/ 2>/dev/null \
     | sed 's|^origin/||' | sort -u || echo "")
-if command -v gh >/dev/null 2>&1; then
-    pr_branches=$(gh pr list --repo "$REPO" --state all --limit 500 \
+if command -v gh >/dev/null 2>&1 && [ "$HAS_JQ" = "1" ]; then
+    pr_branches=$(gh pr list --repo "$REPO" --state open --limit 500 \
         --json headRefName 2>/dev/null \
         | jq -r '.[].headRefName' 2>/dev/null | sort -u || echo "")
     orphans=$(comm -23 <(echo "$unmerged") <(echo "$pr_branches") 2>/dev/null || echo "")
-    count=$(echo "$orphans" | grep -cv '^$' || echo "0")
+    count=$(printf '%s' "$orphans" | grep -cv '^$' || true)
+    [ -z "$count" ] && count=0
     echo "Count: $count"
     if [ "$count" != "0" ]; then
         echo "Sample (first 10):"
         echo "$orphans" | head -10
     fi
 else
-    echo "SKIP: gh CLI not available"
+    echo "SKIP: gh CLI or jq not available"
 fi
 echo ""
 
