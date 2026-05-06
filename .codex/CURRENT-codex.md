@@ -21,6 +21,34 @@ surface. The current operating pattern is:
   autonomous loop.
 - Prefer fast, bounded PRs over large mixed-scope commits.
 
+## Host Loop
+
+This machine has a Codex host-level launchd loop because Codex
+does not expose Claude Code's native `CronCreate` / `CronList`
+tools.
+
+- LaunchAgent label: `com.zeta.codex-loop`
+- Plist: `~/Library/LaunchAgents/com.zeta.codex-loop.plist`
+- Runner: `.codex/bin/codex-loop-tick.sh`
+- Stable worktree: `/Users/acehack/Documents/src/repos/Zeta-codex-loop`
+- Logs: `~/Library/Logs/zeta-codex-loop/`
+- State / lock: `~/Library/Application Support/ZetaCodexLoop/`
+
+Status:
+
+```bash
+launchctl print gui/$(id -u)/com.zeta.codex-loop
+tail -50 ~/Library/Logs/zeta-codex-loop/runner.log
+```
+
+Stop:
+
+```bash
+launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.zeta.codex-loop.plist
+```
+
+Full operator notes live in `docs/CODEX-HARNESS-NOTES.md`.
+
 ## Current Hazards
 
 - Multiple agents and the human maintainer may operate on the

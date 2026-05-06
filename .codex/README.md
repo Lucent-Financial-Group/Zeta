@@ -14,6 +14,8 @@ directory is Codex's substrate; Claude Code's lives at
 ├── README.md                    — this file
 ├── AGENTS.md                    — Codex harness addendum
 ├── CURRENT-codex.md             — compact current-state handoff
+├── bin/                         — Codex harness scripts
+│   └── codex-loop-tick.sh        — launchd tick runner
 └── skills/                      — Codex-authored skill bundles
     └── <skill-name>/            — one directory per skill
         ├── SKILL.md             — frontmatter + instructions
@@ -61,6 +63,11 @@ uses the shared-machine / shared-folder mode in
 writes, pushed `claim/<slug>` branch for task ownership, and
 local `.git/agent-heartbeats/*.json` for checkout/path intent.
 
+The host-level Codex loop is documented at
+[`docs/CODEX-HARNESS-NOTES.md`](../docs/CODEX-HARNESS-NOTES.md).
+It uses macOS `launchd` because Codex does not have Claude
+Code's native `CronCreate` / `CronList` tool surface.
+
 ## Skill authorship convention
 
 - **For Codex CLI sessions:** use the OpenAI Skill Creator
@@ -88,6 +95,9 @@ local `.git/agent-heartbeats/*.json` for checkout/path intent.
 - [`docs/research/openai-codex-cli-capability-map.md`](../docs/research/openai-codex-cli-capability-map.md)
   — Codex CLI capability map; catalogs surface area of the
   OpenAI Codex CLI harness relative to Claude Code.
+- [`docs/CODEX-HARNESS-NOTES.md`](../docs/CODEX-HARNESS-NOTES.md)
+  — host-local Codex launchd loop, status commands, logs, and
+  rediscovery notes.
 
 ## Provenance
 
