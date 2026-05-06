@@ -247,6 +247,14 @@ function validate(parse: ParseResult): {
   // Track latest state per id for impossible-move detection.
   const lastStateById = new Map<string, string>();
 
+  // Latest-per-id projection. Filesystem-existence checks (operational_artifact
+  // path exists / wont_do_pointer path exists) only run on the latest transition
+  // per id -- the append-only ledger uses supersession via new transitions
+  // (per Vera 2026-05-06 review): a Promoted row that points at a now-deleted
+  // artifact is fine if a later transition has re-anchored or demoted it.
+  // Schema-shape and impossible-move checks still run on every transition.
+  const latestById = projectCurrentState(parse.transitions);
+
   for (const t of sortedByTs) {
     // Schema enum violations.
     if (!VALID_FROM_STATES.has(t.from_state)) {
@@ -283,7 +291,10 @@ function validate(parse: ParseResult): {
           id: t.id,
           detail: "to_state=Promoted requires non-null operational_artifact",
         });
-      } else if (!isUrl(t.operational_artifact)) {
+      } else if (!isUrl(t.operational_artifact) && latestById.get(t.id) === t) {
+        // Filesystem-existence check only on the latest-per-id transition.
+        // Historical Promoted rows whose artifact has since been deleted/moved
+        // are valid as long as a later transition re-anchors or demotes them.
         const full = resolveRepoPath(t.operational_artifact);
         if (!existsSync(full)) {
           failures.push({
@@ -306,7 +317,9 @@ function validate(parse: ParseResult): {
           id: t.id,
           detail: "to_state=Declined requires non-null wont_do_pointer",
         });
-      } else {
+      } else if (latestById.get(t.id) === t) {
+        // Filesystem-existence check only on the latest-per-id transition
+        // (same supersession discipline as Promoted rows, per Vera 2026-05-06).
         // Strip optional #anchor for path-existence check.
         const hashIdx = t.wont_do_pointer.indexOf("#");
         const pathOnly =

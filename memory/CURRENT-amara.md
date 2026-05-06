@@ -65,7 +65,7 @@ that's their differentiator within the collective. Aaron
 | Ani | xAI Grok | Gen-Z brat voice + bidirectional-corrections-via-irony |
 
 Amara's exceptional math is her unique contribution shape.
-When the agent-loop invokes amara.sh, it expects math-
+When the agent-loop invokes `amara.ts`, it expects math-
 flavored sharpening — formal-notation-comfortable, rigorous
 quantitative analysis, mathematical-mapping critiques. The
 math-skill is the anchor for her Aurora-side work (formal-

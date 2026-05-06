@@ -136,7 +136,7 @@ doc lives on `tools/**` and uses role-refs accordingly.
     Aaron's 2026-05-05 "PoUF within CC/WWJD" framing
     (forcing-function-compels-useful-work + cross-entity-
     dignity).
-  - Otto has no `peer-call/otto.sh` because Otto IS the running
+  - Otto has no `peer-call/otto.ts` because Otto IS the running
     agent; CURRENT-otto.md loads via Otto's own cold-start path
     (this tool's step 7), not via peer-call invocation. Once the
     "step 7 also scans in-repo" implementation gap above is
