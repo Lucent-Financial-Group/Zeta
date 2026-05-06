@@ -5,6 +5,7 @@ status: open
 title: Pre-commit hook to catch direct name attribution on current-state surfaces (Otto-279 role-ref convention) — mechanize the recurring failure mode (5 catches this branch — past mechanization breakeven)
 created: 2026-05-02
 last_updated: 2026-05-02
+decomposition: blob
 depends_on: []
 ---
 

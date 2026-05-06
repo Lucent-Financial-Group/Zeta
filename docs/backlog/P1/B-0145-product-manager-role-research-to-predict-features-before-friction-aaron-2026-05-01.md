@@ -5,6 +5,7 @@ status: open
 title: Product Manager (PM-2) role — research-to-predict-features-before-friction
 created: 2026-05-01
 last_updated: 2026-05-02
+decomposition: blob
 depends_on: []
 ---
 

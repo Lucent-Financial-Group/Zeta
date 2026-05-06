@@ -5,6 +5,7 @@ status: open
 title: GitHub Pages for SEO/discoverability + GitHub Wiki first-class integration (Aaron 2026-05-01)
 created: 2026-05-01
 last_updated: 2026-05-01
+decomposition: blob
 depends_on:
   - B-0047
 # Note: `depends_on` is a forward-compat schema field landed via the
