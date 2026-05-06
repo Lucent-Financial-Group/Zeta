@@ -420,7 +420,7 @@ impossible.
 | OpenAI Codex — Vera (GPT 5.5 max) | `Co-Authored-By: Codex <noreply@openai.com>` |
 | Cursor — Riven (Grok 4.3 max) | `Co-Authored-By: Grok <noreply@x.ai>` |
 | Gemini CLI | `Co-Authored-By: Gemini <noreply@google.com>` |
-| Human contributor | _(git author is sufficient)_ |
+| Human contributor | *(git author is sufficient)* |
 
 The model version may be appended for precision
 (e.g. `Claude Opus 4.6 (1M context)`) but the
