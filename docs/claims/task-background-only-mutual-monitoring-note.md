@@ -6,7 +6,7 @@
 - **ETA:** 2026-05-06T19:20:00Z
 - **Scope:** Add a B-0209 note covering how a slower/background-only loop participates in mutual monitoring without a foreground cron.
 - **Durable target:** Small PR against B-0209.
-- **Platform mirror:** pending PR
+- **Platform mirror:** https://github.com/Lucent-Financial-Group/Zeta/pull/1726
 
 ## Notes
 
