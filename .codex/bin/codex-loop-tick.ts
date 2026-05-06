@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, isAbsolute, join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const home = process.env.HOME ?? "/Users/acehack";
@@ -88,11 +88,13 @@ try {
     process.exit(1);
   }
 
-  const commonDir = run("git", ["rev-parse", "--git-common-dir"], 10_000);
-  if (commonDir.status !== 0) {
-    log(`error: failed to resolve git common dir: ${commonDir.stderr.trim()}`);
+  const commonDirResult = run("git", ["rev-parse", "--git-common-dir"], 10_000);
+  if (commonDirResult.status !== 0) {
+    log(`error: failed to resolve git common dir: ${commonDirResult.stderr.trim()}`);
     process.exit(1);
   }
+  const commonDirRaw = commonDirResult.stdout.trim();
+  const commonDir = isAbsolute(commonDirRaw) ? commonDirRaw : join(worktree, commonDirRaw);
 
   const fetch = run("git", ["fetch", "--quiet", "origin"], fetchTimeoutMs);
   const fetchStatus = fetch.status === 0 ? "ok" : "failed";
@@ -106,7 +108,7 @@ try {
   const openPrs = run("gh", ["pr", "list", "--state", "open", "--limit", "200"], 20_000);
   const openPrCount = openPrs.status === 0 ? String(lines(openPrs.stdout).length) : "unknown";
 
-  const heartbeatDir = join(commonDir.stdout.trim(), "agent-heartbeats");
+  const heartbeatDir = join(commonDir, "agent-heartbeats");
   const heartbeatFile = join(heartbeatDir, "codex-launchd-loop.json");
   const heartbeatTmp = `${heartbeatFile}.tmp.${process.pid}`;
   mkdirSync(heartbeatDir, { recursive: true });
