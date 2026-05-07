@@ -1,3 +1,10 @@
+---
+Scope: external AI bootstrap prompt - Alexa perspective review via Otto-facing thought experiment, sleeping-bear question, and Zeta multi-agent architecture orientation
+Attribution: Aaron ferrying Alexa bootstrap material to Otto/Codex/Vera
+Operational status: research-grade
+Non-fusion disclaimer: This file preserves an external-AI bootstrap prompt and review packet as research-grade substrate. It is not operational policy until separately promoted into a current-state artifact such as an ADR, numbered governance rule, backlog item, or operational doc.
+---
+
 # Bootstrap: imagine being Otto
 
 // Source repo: github.com/Lucent-Financial-Group/Zeta
@@ -128,4 +135,3 @@ the same cave?
 
 Be honest. Aaron doesn't want agreement. He wants your real
 read.
-
