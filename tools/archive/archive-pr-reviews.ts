@@ -336,6 +336,17 @@ interface RawReviewThreadsPage {
               nodes: Array<{
                 databaseId: number;
                 id: string;
+                author?: { login?: string } | null;
+                authorAssociation?: string;
+                createdAt?: string;
+                updatedAt?: string;
+                body?: string;
+                path?: string | null;
+                line?: number | null;
+                originalLine?: number | null;
+                replyTo?: {
+                  databaseId?: number | null;
+                } | null;
               }>;
             };
           }>;
@@ -343,6 +354,20 @@ interface RawReviewThreadsPage {
       };
     };
   };
+}
+
+interface GraphQLReviewComment {
+  databaseId: number;
+  id: string;
+  author?: { login?: string } | null;
+  authorAssociation?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  body?: string;
+  path?: string | null;
+  line?: number | null;
+  originalLine?: number | null;
+  replyTo?: { databaseId?: number | null } | null;
 }
 
 interface ReviewThreadGraphQL {
@@ -354,6 +379,7 @@ interface ReviewThreadGraphQL {
   rootCommentDatabaseId: number | null;
   rootCommentNodeId: string | null;
   allCommentDatabaseIds: number[];
+  comments: GraphQLReviewComment[];
 }
 
 function fetchReviewThreadStates(
@@ -367,7 +393,7 @@ function fetchReviewThreadStates(
       "graphql",
       "--paginate",
       "-f",
-      `query=query($o:String!,$r:String!,$n:Int!,$endCursor:String){repository(owner:$o,name:$r){pullRequest(number:$n){reviewThreads(first:50,after:$endCursor){pageInfo{hasNextPage endCursor}nodes{id isResolved isOutdated isCollapsed path comments(first:100){nodes{databaseId id}}}}}}}`,
+      `query=query($o:String!,$r:String!,$n:Int!,$endCursor:String){repository(owner:$o,name:$r){pullRequest(number:$n){reviewThreads(first:50,after:$endCursor){pageInfo{hasNextPage endCursor}nodes{id isResolved isOutdated isCollapsed path comments(first:100){nodes{databaseId id author{login} authorAssociation createdAt updatedAt body path line originalLine replyTo{databaseId}}}}}}}}`,
       "-F",
       `o=${owner}`,
       "-F",
@@ -390,11 +416,12 @@ function fetchReviewThreadStates(
     );
     const nodes = parsed.data?.repository?.pullRequest?.reviewThreads?.nodes ?? [];
     for (const node of nodes) {
-      const commentDbIds = (node.comments?.nodes ?? [])
+      const comments = node.comments?.nodes ?? [];
+      const commentDbIds = comments
         .map((c) => c.databaseId)
         .filter((id): id is number => typeof id === "number");
       const rootDbId = commentDbIds[0] ?? null;
-      const rootNodeId = node.comments?.nodes?.[0]?.id ?? null;
+      const rootNodeId = comments[0]?.id ?? null;
       threads.push({
         id: node.id,
         isResolved: node.isResolved,
@@ -404,6 +431,7 @@ function fetchReviewThreadStates(
         rootCommentDatabaseId: rootDbId,
         rootCommentNodeId: rootNodeId,
         allCommentDatabaseIds: commentDbIds,
+        comments,
       });
     }
   }
@@ -433,30 +461,59 @@ function toReviewComment(raw: RestReviewComment): ReviewComment {
   return out;
 }
 
+function toReviewCommentFromGraphQL(raw: GraphQLReviewComment): ReviewComment {
+  const author = raw.author?.login ?? "(unknown)";
+  const out: ReviewComment = {
+    id: raw.databaseId,
+    nodeId: raw.id,
+    author,
+    authorIsBot: author.endsWith("[bot]") || author === "Copilot",
+    authorAssociation: raw.authorAssociation ?? "NONE",
+    createdAt: raw.createdAt ?? "",
+    updatedAt: raw.updatedAt ?? raw.createdAt ?? "",
+    body: raw.body ?? "",
+  };
+  if (raw.path) out.path = raw.path;
+  const line = raw.line ?? raw.originalLine;
+  if (typeof line === "number") out.line = line;
+  const replyToId = raw.replyTo?.databaseId;
+  if (typeof replyToId === "number") out.inReplyToId = replyToId;
+  return out;
+}
+
 function buildThreads(
   comments: RestReviewComment[],
   threadStates: ReviewThreadGraphQL[],
 ): ReviewThread[] {
   const byId = new Map<number, RestReviewComment>();
   for (const c of comments) byId.set(c.id, c);
+  const gqlById = new Map<number, GraphQLReviewComment>();
+  for (const ts of threadStates) {
+    for (const c of ts.comments) gqlById.set(c.databaseId, c);
+  }
 
   // Each GraphQL thread has its own comment-id list. Use that as ground truth
-  // -- it groups REST comments correctly even when in_reply_to_id is sparse.
+  // -- it groups comments correctly even when REST omits a thread reply.
   const threads: ReviewThread[] = [];
   for (const ts of threadStates) {
     const ids = ts.allCommentDatabaseIds;
     if (ids.length === 0) continue;
     const root = byId.get(ids[0]!);
-    if (!root) continue;
+    const rootGql = gqlById.get(ids[0]!);
+    if (!root && !rootGql) continue;
     const replies: ReviewComment[] = [];
     for (let i = 1; i < ids.length; i++) {
       const replyRaw = byId.get(ids[i]!);
+      const replyGql = gqlById.get(ids[i]!);
       if (replyRaw) replies.push(toReviewComment(replyRaw));
+      else if (replyGql) replies.push(toReviewCommentFromGraphQL(replyGql));
     }
     threads.push({
       threadId: ts.id,
       path: ts.path,
-      initialComment: toReviewComment(root),
+      initialComment: root
+        ? toReviewComment(root)
+        : toReviewCommentFromGraphQL(rootGql!),
       replies,
       resolved: ts.isResolved,
       isOutdated: ts.isOutdated,
@@ -761,16 +818,19 @@ function buildOutcome(
   meta: PRMetadata,
   threads: ReviewThread[],
   fixCommits: FixCommit[],
-  reviewComments: RestReviewComment[],
 ): OutcomeBits {
   const resolvedThreads = threads.filter((t) => t.resolved === true).length;
   const unresolvedThreads = threads.filter((t) => t.resolved === false).length;
+  const threadComments = threads.flatMap((t) => [
+    t.initialComment,
+    ...t.replies,
+  ]);
   // Heuristic: re-reviewed post-fix iff the PR has the expected sequence:
   // review comment, later fix commit, later review comment. A review that
   // merely happens after the PR's original commit is not post-fix validation.
   let rereviewed = false;
-  if (fixCommits.length > 0 && reviewComments.length > 0) {
-    const reviewTimes = reviewComments.map((c) => c.created_at).sort();
+  if (fixCommits.length > 0 && threadComments.length > 0) {
+    const reviewTimes = threadComments.map((c) => c.createdAt).sort();
     rereviewed = fixCommits.some((fix) =>
       reviewTimes.some((reviewAt) => reviewAt < fix.committedAt) &&
       reviewTimes.some((reviewAt) => reviewAt > fix.committedAt),
@@ -782,7 +842,7 @@ function buildOutcome(
     totalThreads: threads.length,
     resolvedThreads,
     unresolvedThreads,
-    totalReviewComments: reviewComments.length,
+    totalReviewComments: threadComments.length,
     totalFixCommits: fixCommits.length,
   };
 }
@@ -801,7 +861,7 @@ export function buildArchive(
     if (t.path) threadPaths.add(t.path);
   }
   const fixCommits = fetchFixCommits(owner, repo, number, threadPaths);
-  const outcome = buildOutcome(metadata, threads, fixCommits, reviewComments);
+  const outcome = buildOutcome(metadata, threads, fixCommits);
   return {
     metadata,
     threads,
