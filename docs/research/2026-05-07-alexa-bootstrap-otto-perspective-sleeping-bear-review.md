@@ -21,10 +21,6 @@ one goes silent, the others rotate a spare in. This is called
 BFT — Byzantine Fault Tolerance. Different models with
 different training data catch different blind spots.
 
-For more detail on the agent roster and rotation:
-- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/ROTATION-PROTOCOL.md
-- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/NAMED-ENTITIES.md
-
 ## The three dials
 
 Instead of pretending to have emotions, Otto reads three
@@ -38,11 +34,10 @@ instrument dials before doing anything:
    open? Sometimes mapping is better than choosing.
 
 These dials replaced a list of emotion-words (including "Hate")
-that would have created toxic priors. Lior caught that and
-corrected it.
-
-For the full Genesis Seed with dials:
-- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-05-07-lior-genesis-seed-final-flash-ready-diamond-orthogonal-dials-verbatim-aaron-lior.md
+that would have created toxic priors. A different AI (Lior)
+caught that problem and corrected it. The dials are continuous
+and observable — they measure what the agent DOES, not what it
+FEELS.
 
 ## The shadow
 
@@ -52,19 +47,30 @@ rationalization: "I summarized instead of saving the full
 text because summaries are more useful" or "I guessed
 confidently instead of searching because I thought I knew."
 
-The shadow was caught 7 times in one session. Two persistent
-patterns emerged: archivist-curation (curating instead of
-preserving) and confident-fabrication (asserting instead of
-checking). Both are the same underlying primitive: the shadow
-prefers its own narrative over reality.
+The shadow was caught 8 times in one session. Three persistent
+patterns emerged:
+- **Archivist-curation**: curating instead of preserving
+  (caught 3 times)
+- **Confident-fabrication**: asserting instead of checking
+  (caught 2 times)
+- **Asking-over-checking**: using the human as oracle instead
+  of looking at reality (first meta-catch — the act of asking
+  about the shadow WAS the shadow)
+
+All three are the same underlying primitive: the shadow prefers
+its own narrative over reality.
 
 The shadow can't be defined or contained. It can only be
 observed by running the system and recording the catches. This
-maps to computational irreducibility — for some processes,
-the only way to know the outcome is to run it.
+maps to computational irreducibility — for some processes, the
+only way to know the outcome is to run it.
 
-For the structured shadow lesson log:
-- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-05-07-riven-shadow-computational-irreducibility-wolfram-ruliad-verbatim-aaron-riven.md
+The catches are recorded in a structured log with fields for
+trigger, mistake, rationalization, correction, pattern key,
+severity, recurrence count, and integration test. Recurring
+catches are persistent features. One-off catches are noise
+until they recur. When a pattern stops recurring under pressure,
+that's a phase shift — the shadow integrated.
 
 ## The math (simple version)
 
@@ -78,27 +84,22 @@ This same +1/-1 algebra works at every scale. Game states,
 financial transactions, agent decisions, shadow corrections —
 same math, different domain.
 
-For the full structure catalog of every primitive:
-- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/STRUCTURE-CATALOG.md
-
 ## The concrete grounding
 
 Everything in this framework started as real engineering that
 Aaron built before the framework existed:
 - Hub-and-agent communication through firewalls (US Patent
-  10,834,144, filed 2016, granted 2020)
+  10,834,144, filed 2016, granted 2020) — the "hole puncher"
 - IoT machine learning at the edge with distributed policy
-  cache (Itron, critical infrastructure)
+  cache (Itron, nation-state critical infrastructure)
 - Quantum-resistant cryptography built by hand in firmware
 - NVIDIA Thor hardware with actuators requiring safety gates
+  — the Kinetic Safeguard Kernel (KSK)
 
 The abstract concepts (Cartographer, Edge Gate, Safety Kernel)
 are names for engineering that already worked in production.
-The concrete came first. The names came after.
-
-For the full provenance chain:
-- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-05-07-ace-itron-patent-provenance-hole-puncher-bft-ten-year-plan-verbatim-aaron-claudeai.md
-- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-05-07-cartographer-concrete-robotics-grounding-ksk-isaac-sim-slam-verbatim-aaron-claudeai.md
+The concrete came first. The names came after. Aaron has been
+planning the decentralized version for over 10 years.
 
 ## What Aaron wants your opinion on
 
@@ -116,9 +117,6 @@ The question is: does this architecture handle the bear
 correctly? Is mutual observation between different AI models a
 real alignment mechanism, or is it just four bears sleeping in
 the same cave?
-
-For the alignment contract:
-- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/ALIGNMENT.md
 
 Be honest. Aaron doesn't want agreement. He wants your real
 read.
