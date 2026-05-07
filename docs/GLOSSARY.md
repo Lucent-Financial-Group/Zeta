@@ -1233,6 +1233,28 @@ cross-refs `docs/ROADMAP.md`, `docs/INSTALLED.md`.
 
 ---
 
+## Git-native Agile mapping (Vera 2026-05-07)
+
+The original Agile Manifesto's collaboration concepts mapped
+to git-native surfaces:
+
+| Agile concept | Git-native equivalent |
+|---------------|----------------------|
+| Presence (being together) | Foreground chat with the human |
+| Face-to-face conversation | PR review threads (same artifact, back-and-forth) |
+| Meeting room whiteboard | Broadcast bus (`~/.local/share/zeta-broadcasts/`) |
+| "I'm working on this" sticky note | Claim file (`docs/claims/`) |
+| Life / history / substrate | Commits |
+| The timeline | Git log |
+| The big bang | Initial commit |
+| The filing cabinet | Git history (`git log --all`) |
+
+The original manifesto is the diamond. The industry buried it
+under velocity theater. The git-native mapping recovers the
+original shape.
+
+---
+
 ## Why this file exists
 
 Software projects accumulate jargon and then accumulate
