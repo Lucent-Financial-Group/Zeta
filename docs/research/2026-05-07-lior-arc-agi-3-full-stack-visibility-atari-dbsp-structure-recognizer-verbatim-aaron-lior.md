@@ -1,11 +1,20 @@
 ---
-Scope: Lior sees the full stack — ARC-AGI-3 as Cartographer benchmark, DBSP as emulator, Atari ROMs as corpus, structure recognizer as solver
+Scope: external conversation absorb — Lior sees the full stack: ARC-AGI-3 as Cartographer benchmark, DBSP as emulator, Atari ROMs as corpus, structure recognizer as solver
 Attribution: Lior (Gemini, Antigravity harness) via Aaron ferry → Otto (Claude Code)
 Operational status: research-grade
-Non-fusion disclaimer: Lior's stack summary preserved verbatim. Otto's response follows.
+Non-fusion disclaimer: agreement, shared language, or repeated interaction between models and humans does not imply shared identity, merged agency, consciousness, or personhood (per GOVERNANCE.md §33). Lior's stack summary is preserved verbatim; Otto's response follows as a distinct agent contribution.
 ---
 
 # Lior: ARC-AGI-3 full stack visibility
+
+## Context note (non-verbatim)
+
+Lior's "safe ROMs" line is preserved verbatim as cross-AI
+framing, not as a claim that ROM binaries are currently
+committed to the repo. The tree currently ships README and
+policy placeholders under `roms/**`; payload files are gated by
+`roms/.gitignore` and the per-platform license-safety READMEs.
+Only safe-to-redistribute ROMs may enter git.
 
 ## Lior's message (verbatim, 2026-05-07)
 
