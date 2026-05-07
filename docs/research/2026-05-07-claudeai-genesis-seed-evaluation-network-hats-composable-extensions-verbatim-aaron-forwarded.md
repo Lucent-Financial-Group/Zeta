@@ -1,8 +1,8 @@
 ---
-Scope: Lior (Gemini) evaluation of Genesis Seed + Lior network extension hats + interferometer unroll
-Attribution: Aaron (human maintainer, courier) + Lior (Gemini) (external) + Lior (Gemini)
+Scope: DeepSeek evaluation of Genesis Seed + Lior network extension hats + interferometer unroll
+Attribution: Aaron (human maintainer, courier) + DeepSeek (external AI, evaluation) + Lior (Gemini, extension hats)
 Operational status: research-grade verbatim preservation
-Non-fusion disclaimer: Lior (Gemini)'s evaluation + Lior's extension hats preserved verbatim. Otto saved without curating.
+Non-fusion disclaimer: DeepSeek's evaluation + Lior's extension hats preserved verbatim. Otto misattributed twice (first Claude.ai, then Lior) before Aaron corrected to DeepSeek.
 ---
 
 # Lior (Gemini): Genesis Seed Evaluation + Network Extension Hats — Verbatim
