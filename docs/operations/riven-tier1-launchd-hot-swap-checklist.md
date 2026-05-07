@@ -1,9 +1,9 @@
-# Riven Tier 1 Launchd Hot-Swap Checklist
+# Tier 1 Launchd Hot-Swap Checklist
 
-Purpose: give Riven a concrete sequence for deploying the enhanced Tier 1
-forward-action tick script into the live `com.zeta.riven-loop` launchd worker
-without using Aaron as a courier and without touching the contested root
-checkout.
+Purpose: give the target loop owner a concrete sequence for deploying the
+enhanced Tier 1 forward-action tick script into the live
+`com.zeta.riven-loop` launchd worker without using the human maintainer as a
+courier and without touching the contested root checkout.
 
 Status: operational checklist / deployment aid. This document does not execute
 the deployment and does not assert that the enhanced script is correct; it
@@ -22,14 +22,23 @@ defines the safe rollout shape and rollback points.
 
 ## Deployment Principle
 
-Do not edit the plist if the script path is unchanged. The plist already points
-at:
+Do not edit the plist if the script path is unchanged. All snippets below assume
+these shell variables:
 
-```text
-/Users/acehack/.local/share/zeta-riven-loop/Zeta/.cursor/bin/riven-loop-tick.ts
+```bash
+export ZETA_RIVEN_LOOP_HOME="${ZETA_RIVEN_LOOP_HOME:-$HOME/.local/share/zeta-riven-loop}"
+export ZETA_RIVEN_LOOP_REPO="$ZETA_RIVEN_LOOP_HOME/Zeta"
+export ZETA_RIVEN_LOOP_PLIST="$HOME/Library/LaunchAgents/com.zeta.riven-loop.plist"
+export ZETA_RIVEN_LOOP_LOG_DIR="$HOME/Library/Logs/zeta-riven-loop"
 ```
 
-For this deployment, the safe unit is the Riven control clone content, not a
+The plist should already point at:
+
+```text
+$ZETA_RIVEN_LOOP_REPO/.cursor/bin/riven-loop-tick.ts
+```
+
+For this deployment, the safe unit is the target control clone content, not a
 plist rewrite. Pull or fast-forward the control clone to a commit that contains
 the enhanced `.cursor/bin/riven-loop-tick.ts`, then restart or kick the launchd
 job so the next invocation runs the new file.
@@ -39,15 +48,16 @@ job so the next invocation runs the new file.
 1. Verify the live job target:
 
    ```bash
-   launchctl list com.zeta.riven-loop
+   launchctl print gui/$(id -u)/com.zeta.riven-loop
    ```
 
-   Confirm `ProgramArguments` still points to the Riven control clone path above.
+   Inspect the printed `program` / `arguments` section and confirm it still
+   points to the target control clone path above.
 
-2. Verify the Riven control clone is the deployment target, not the root repo:
+2. Verify the target control clone is the deployment target, not the root repo:
 
    ```bash
-   cd /Users/acehack/.local/share/zeta-riven-loop/Zeta
+   cd "$ZETA_RIVEN_LOOP_REPO"
    git status --short --branch
    git rev-parse HEAD
    ```
@@ -85,9 +95,9 @@ job so the next invocation runs the new file.
 6. Make a local rollback copy outside git:
 
    ```bash
-   mkdir -p /Users/acehack/.local/share/zeta-riven-loop/backups
+   mkdir -p "$ZETA_RIVEN_LOOP_HOME/backups"
    cp -p .cursor/bin/riven-loop-tick.ts \
-     /Users/acehack/.local/share/zeta-riven-loop/backups/riven-loop-tick.ts.$(date -u +%Y%m%dT%H%M%SZ)
+     "$ZETA_RIVEN_LOOP_HOME/backups/riven-loop-tick.ts.$(date -u +%Y%m%dT%H%M%SZ)"
    ```
 
 ## Hot-Swap Sequence
@@ -95,8 +105,8 @@ job so the next invocation runs the new file.
 1. Watch one tick complete before the swap:
 
    ```bash
-   tail -40 /Users/acehack/Library/Logs/zeta-riven-loop/stdout.log
-   tail -40 /Users/acehack/Library/Logs/zeta-riven-loop/stderr.log
+   tail -40 "$ZETA_RIVEN_LOOP_LOG_DIR/stdout.log"
+   tail -40 "$ZETA_RIVEN_LOOP_LOG_DIR/stderr.log"
    ```
 
 2. Deploy the script content.
@@ -122,33 +132,35 @@ job so the next invocation runs the new file.
    git status --short --branch
    ```
 
-4. Restart only the Riven loop. Do not unload the plist unless ProgramArguments
-   changed.
+4. Restart only the target loop. Do not reload the plist unless the printed
+   launchd arguments changed.
 
    ```bash
    launchctl kickstart -k gui/$(id -u)/com.zeta.riven-loop
    ```
 
-   If `kickstart` is unavailable in the current session, use:
+   If the plist must be reloaded because the launchd arguments changed, use the
+   modern domain-scoped reload sequence:
 
    ```bash
-   launchctl stop com.zeta.riven-loop
-   launchctl start com.zeta.riven-loop
+   launchctl bootout gui/$(id -u) "$ZETA_RIVEN_LOOP_PLIST" 2>/dev/null || true
+   launchctl bootstrap gui/$(id -u) "$ZETA_RIVEN_LOOP_PLIST"
+   launchctl kickstart -k gui/$(id -u)/com.zeta.riven-loop
    ```
 
 5. Confirm the job came back:
 
    ```bash
-   launchctl list com.zeta.riven-loop
-   tail -80 /Users/acehack/Library/Logs/zeta-riven-loop/stdout.log
-   tail -80 /Users/acehack/Library/Logs/zeta-riven-loop/stderr.log
+   launchctl print gui/$(id -u)/com.zeta.riven-loop
+   tail -80 "$ZETA_RIVEN_LOOP_LOG_DIR/stdout.log"
+   tail -80 "$ZETA_RIVEN_LOOP_LOG_DIR/stderr.log"
    ```
 
 ## Post-Deploy Checks
 
 1. Verify the next forward window reads peer broadcasts first.
-2. Verify Riven writes `/Users/acehack/.local/share/zeta-broadcasts/riven.md`
-   with the new status.
+2. Verify the target loop writes
+   `$HOME/.local/share/zeta-broadcasts/riven.md` with the new status.
 3. Verify a clean control clone remains clean after the tick.
 4. Verify no generated `docs/claims/*` file is left uncommitted.
 5. Verify `gh pr list --repo Lucent-Financial-Group/Zeta --state open` is
@@ -160,14 +172,14 @@ job so the next invocation runs the new file.
 
 ## Rollback
 
-Rollback is file-level and local to the Riven control clone. Do not touch the
+Rollback is file-level and local to the target control clone. Do not touch the
 root checkout.
 
 1. Restore the backup:
 
    ```bash
-   cp -p /Users/acehack/.local/share/zeta-riven-loop/backups/riven-loop-tick.ts.<timestamp> \
-     /Users/acehack/.local/share/zeta-riven-loop/Zeta/.cursor/bin/riven-loop-tick.ts
+   cp -p "$ZETA_RIVEN_LOOP_HOME/backups/riven-loop-tick.ts.<timestamp>" \
+     "$ZETA_RIVEN_LOOP_REPO/.cursor/bin/riven-loop-tick.ts"
    ```
 
 2. Restart the loop:
@@ -179,7 +191,7 @@ root checkout.
 3. Write a remote-visible receipt on the relevant PR/issue or claim branch
    explaining the rollback and the observed failure.
 
-4. If rollback leaves the Riven control clone dirty, either commit the rollback
+4. If rollback leaves the target control clone dirty, either commit the rollback
    on a claim branch or reset the control clone only after the owner confirms
    no useful uncommitted state remains.
 
@@ -190,6 +202,6 @@ the ask must survive local bus loss or be visible to remote-only agents. Use the
 local broadcast bus for intra-tick status, receipts, and "come inspect this
 remote surface" hints.
 
-In this case, Riven made the right correction by moving the checklist ask to
-PR #1727. This checklist is the durable answer that can be linked from that
-remote surface.
+In this case, the target loop owner made the right correction by moving the
+checklist ask to PR #1727. This checklist is the durable answer that can be
+linked from that remote surface.
