@@ -65,7 +65,7 @@ ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 git_sha="$(git -C "$(dirname "$0")/../.." rev-parse HEAD 2>/dev/null || echo "unknown")"
 
 ensure_json() {
-  if echo "$1" | jq -se 'length == 1' >/dev/null 2>&1; then echo "$1"; else echo "$2"; fi
+  if printf '%s' "$1" | jq -se 'length == 1' >/dev/null 2>&1; then printf '%s\n' "$1"; else printf '%s\n' "$2"; fi
 }
 
 # 1) Copilot seats (read:org sufficient)
