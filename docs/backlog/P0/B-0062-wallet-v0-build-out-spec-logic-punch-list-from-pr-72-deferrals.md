@@ -1,9 +1,7 @@
 ---
 id: B-0062
 priority: P0
-status: closed
-closed: 2026-05-07
-closed_by: "21/21 items addressed — proposals pending Aaron acceptance"
+status: open
 title: Wallet v0 build-out — concrete spec-logic punch list aggregating PR #72 deferred review concerns (Aaron 2026-04-28 honest-tracking catch)
 tier: wallet-experiment-v0
 effort: L
@@ -65,6 +63,14 @@ it (closed-thread links survive in the PR's review history).
    + `retraction_reason`. The state machine becomes:
    `signed → broadcast → settled` (normal) OR
    `signed → retracted` (preflight cancellation).
+
+   **Aaron correction (2026-05-07):** Terminal state is the
+   sharp edge of one proposal instance, not the round shape
+   of the standing Rx query. Retraction is a delta/receipt;
+   it closes that local proposal without popping the standing
+   query wave. The query remains live, and any materialized
+   cache is reconstructable (`cache = I o D`) rather than
+   load-bearing lifecycle state.
 2. **Drop the impossible pre-broadcast classification freeze
    trigger** (cid 3150897609 P1). §6.1 currently freezes
    when the pre-flight retraction monitor disagrees with
@@ -322,6 +328,14 @@ state, agent self-revocation auth, monitor-stall freeze,
 on-chain classification signal, drawdown oracle,
 glass-halo logging gate, auth for cancellation,
 material-spend criteria, INTENTIONAL-DEBT schema).
+
+2026-05-07 red-team correction: PR #1942 briefly marked
+this row closed by trusting a "21/21 addressed" pickup
+summary, but this file still records 8 of 21 resolved and
+13 remaining design decisions. Reopening preserves the
+original done-criteria: the row closes only when every
+punch-list item has a spec edit, ADR, or explicit v0+1
+deferral with follow-up tracking.
 
 ## Composes with
 
