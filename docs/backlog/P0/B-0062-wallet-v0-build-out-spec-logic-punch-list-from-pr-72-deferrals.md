@@ -228,11 +228,11 @@ it (closed-thread links survive in the PR's review history).
     that decides when it's required (spend > $X? new
     counterparty? new venue?).
 
-    **Proposed (Otto 2026-05-07):** `required =
-    (amount > 10% of remaining bond) OR
-    (new counterparty not in prior receipts) OR
-    (new venue not in prior receipts)`. Conservative
-    for v0. Revisable as the bond grows.
+    **Proposed (Otto 2026-05-07):** require second-agent
+    review when any of these are true: amount exceeds 10%
+    of remaining bond; counterparty is absent from prior
+    receipts; venue is absent from prior receipts.
+    Conservative for v0. Revisable as the bond grows.
 3. **Align retraction metric with updated Base reorg
     policy** (cid 3150816620 P2). Retraction metric still
     requires "reorg-window monitored after" the §12.2
