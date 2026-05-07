@@ -67,6 +67,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0215](backlog/P1/B-0215-alignment-rewrite-survey-preserve-refine-add-map-2026-05-06.md)** ALIGNMENT.md rewrite survey - preserve/refine/add map
 - [ ] **[B-0215](backlog/P1/B-0215-harness-parity-audit-otto-setup-for-riven-learning-2026-05-06.md)** Harness parity audit — document Otto's session setup so Riven (and future nodes) can approximate the same autonomy
 - [ ] **[B-0216](backlog/P1/B-0216-alignment-finite-resource-collisions-foundation-2026-05-06.md)** ALIGNMENT.md rewrite - finite-resource collisions foundation
+- [ ] **[B-0216](backlog/P1/B-0216-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md)** Shadow work as AI debugger for regular people — product pitch + on-ramp design
 - [ ] **[B-0217](backlog/P1/B-0217-alignment-bidirectional-clause-audit-tightening-2026-05-06.md)** ALIGNMENT.md rewrite - bidirectional clause audit and tightening
 - [ ] **[B-0218](backlog/P1/B-0218-alignment-factory-superfluid-empirical-calibration-2026-05-06.md)** ALIGNMENT.md rewrite - factory-as-superfluid empirical calibration
 - [ ] **[B-0219](backlog/P1/B-0219-alignment-dst-empirical-rigor-and-falsification-floor-2026-05-06.md)** ALIGNMENT.md rewrite - DST empirical-rigor and falsification floor
