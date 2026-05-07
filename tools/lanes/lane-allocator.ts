@@ -114,9 +114,10 @@ function main(argv: string[]): number {
     return 64;
   }
 
-  const lane = parseLane(argv[1]);
+  const laneArg = argv[1] ?? "";
+  const lane = parseLane(laneArg);
   if (!lane) {
-    process.stderr.write(`error: unknown lane: ${argv[1]}\n`);
+    process.stderr.write(`error: unknown lane: ${laneArg}\n`);
     process.stderr.write("       valid lanes: doc | code\n");
     return 1;
   }
@@ -129,7 +130,7 @@ function main(argv: string[]): number {
         );
         return 64;
       }
-      allocate(root, lane, argv[2]);
+      allocate(root, lane, argv[2] ?? "");
       return 0;
     }
     case "release":
