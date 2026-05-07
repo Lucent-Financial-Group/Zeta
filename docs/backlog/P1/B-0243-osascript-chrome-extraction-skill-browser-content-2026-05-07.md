@@ -1,7 +1,9 @@
 ---
 id: B-0243
 priority: P1
-status: open
+status: closed
+closed: 2026-05-07
+closed_by: "PR #1875"
 title: "Skill: osascript/Chrome authenticated browser content extraction"
 created: 2026-05-07
 last_updated: 2026-05-07

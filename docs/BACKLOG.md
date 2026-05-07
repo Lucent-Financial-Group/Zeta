@@ -85,7 +85,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0240](backlog/P1/B-0240-structure-recognizer-shape-indexed-catalog-no-labels-2026-05-07.md)** Structure recognizer — shape-indexed catalog that distinguishes structures without labels
 - [ ] **[B-0241](backlog/P1/B-0241-hole-puncher-ai-safety-red-team-capability-layer-bypass-2026-05-07.md)** Red team: hole puncher pattern applied to AI safety — capability-layer bypass of content-layer filters
 - [ ] **[B-0242](backlog/P1/B-0242-multiplexed-websockets-fsharp-dotnet10-port-hole-puncher-2026-05-07.md)** Port MultiplexedWebSockets to .NET 10 F# — the hole puncher in Zeta's algebra
-- [ ] **[B-0243](backlog/P1/B-0243-osascript-chrome-extraction-skill-browser-content-2026-05-07.md)** Skill: osascript/Chrome authenticated browser content extraction
+- [x] **[B-0243](backlog/P1/B-0243-osascript-chrome-extraction-skill-browser-content-2026-05-07.md)** Skill: osascript/Chrome authenticated browser content extraction
 - [ ] **[B-0244](backlog/P1/B-0244-concordance-ai-gpu-local-structure-recognizer-language-2026-05-07.md)** English language concordance AI on local GPUs — structure recognizer applied to language
 - [ ] **[B-0245](backlog/P1/B-0245-coherence-ai-consent-first-ksk-military-override-2026-05-07.md)** Coherence AI with consent-first design — KSK override for military/emergency use
 - [ ] **[B-0246](backlog/P1/B-0246-green-lantern-ring-iot-device-genesis-seed-local-inference-2026-05-07.md)** Green Lantern ring — IoT wearable running Genesis Seed with local inference + consent gating
