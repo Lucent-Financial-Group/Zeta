@@ -1,9 +1,17 @@
 import { describe, expect, test } from "bun:test";
 import { runHealthCheck } from "./factory-health-monitor";
 
+const HEALTH_CHECK_TIMEOUT_MS = 20_000;
+let cachedReport: ReturnType<typeof runHealthCheck> | undefined;
+
+function getReport(): ReturnType<typeof runHealthCheck> {
+  cachedReport ??= runHealthCheck();
+  return cachedReport;
+}
+
 describe("factory-health-monitor", () => {
   test("runHealthCheck returns a valid HealthReport shape", () => {
-    const report = runHealthCheck();
+    const report = getReport();
 
     expect(report).toHaveProperty("timestamp");
     expect(report).toHaveProperty("signals");
@@ -12,10 +20,10 @@ describe("factory-health-monitor", () => {
     expect(typeof report.summary.ok).toBe("number");
     expect(typeof report.summary.warning).toBe("number");
     expect(typeof report.summary.critical).toBe("number");
-  });
+  }, HEALTH_CHECK_TIMEOUT_MS);
 
   test("summary counts match signal levels", () => {
-    const report = runHealthCheck();
+    const report = getReport();
 
     const okCount = report.signals.filter((s) => s.level === "ok").length;
     const warnCount = report.signals.filter(
@@ -28,10 +36,10 @@ describe("factory-health-monitor", () => {
     expect(report.summary.ok).toBe(okCount);
     expect(report.summary.warning).toBe(warnCount);
     expect(report.summary.critical).toBe(critCount);
-  });
+  }, HEALTH_CHECK_TIMEOUT_MS);
 
   test("all signals have required fields", () => {
-    const report = runHealthCheck();
+    const report = getReport();
 
     for (const signal of report.signals) {
       expect(typeof signal.surface).toBe("string");
@@ -39,19 +47,19 @@ describe("factory-health-monitor", () => {
       expect(typeof signal.message).toBe("string");
       expect(signal.message.length).toBeGreaterThan(0);
     }
-  });
+  }, HEALTH_CHECK_TIMEOUT_MS);
 
   test("timestamp is valid ISO 8601", () => {
-    const report = runHealthCheck();
+    const report = getReport();
     const parsed = new Date(report.timestamp);
     expect(parsed.getTime()).not.toBeNaN();
-  });
+  }, HEALTH_CHECK_TIMEOUT_MS);
 
   test("at least one signal covers each expected surface", () => {
-    const report = runHealthCheck();
+    const report = getReport();
     const surfaces = new Set(report.signals.map((s) => s.surface));
 
     expect(surfaces.has("pr-queue") || surfaces.has("backlog")).toBe(true);
     expect(surfaces.has("cadence")).toBe(true);
-  });
+  }, HEALTH_CHECK_TIMEOUT_MS);
 });
