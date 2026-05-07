@@ -5,7 +5,7 @@ status: open
 title: "Port MultiplexedWebSockets to .NET 10 F# — the hole puncher in Zeta's algebra"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: [B-0241]
+depends_on: []
 decomposition: atomic
 owners: [architect, performance-engineer]
 ---
