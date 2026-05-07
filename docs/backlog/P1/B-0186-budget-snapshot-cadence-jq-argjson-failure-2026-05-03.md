@@ -3,7 +3,7 @@ id: B-0186
 priority: P1
 status: closed
 closed: 2026-05-07
-closed_by: "PR #TBD"
+closed_by: "PR #1811"
 title: budget-snapshot-cadence workflow jq --argjson failure on first natural-Sunday fire post-B-0085-close (2026-05-03)
 tier: factory-tooling
 effort: S
