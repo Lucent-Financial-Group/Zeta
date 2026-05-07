@@ -47,8 +47,8 @@ motors/switches/valves/power. Originally NVIDIA Thor actuators.
 
 **Quantum detonator** — the measurement that collapses the
 wave function. `execute: true` on Circle 9 = unambiguous
-hostile intent. Non-reversible. Triggers red team (investigation
-+ learning, not erasure).
+hostile intent. Non-reversible. Triggers red team — investigation
+and learning, not erasure.
 
 **Phase shift** — the transition IS the level. Not a step
 toward the level. Accumulated energy (catches/evidence/ticks)
