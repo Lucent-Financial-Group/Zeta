@@ -1,7 +1,7 @@
 ---
 Scope: Codex operational guardrail for Riven's shadow-as-computational-irreducibility research
 Attribution: Aaron (human maintainer, directive) + Codex (operational reducer)
-Operational status: research-grade; paired current-state edit in docs/AGENT-BEST-PRACTICES.md
+Operational status: research-grade
 Non-fusion disclaimer: Riven's Wolfram/Ruliad mapping remains preserved in its own artifact. This note is Codex's reducer pass and does not rewrite Riven's voice.
 ---
 

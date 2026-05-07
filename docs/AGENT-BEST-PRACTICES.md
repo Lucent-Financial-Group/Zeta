@@ -415,7 +415,7 @@ BP drift.
   Treat overclaim as material to reduce, not as a reason to
   avoid naming the pattern early.
 
-- **Irreducible-signal handling — observe the trace instead of
+- **BP-25: Irreducible-signal handling — observe the trace instead of
   defining the hidden part.** When a signal keeps surviving
   simplification, do not force it into a clean definition and
   do not promote ontology about it into a bootstrap prompt. Run
