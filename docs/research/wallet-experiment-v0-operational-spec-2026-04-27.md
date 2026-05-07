@@ -17,7 +17,7 @@ Non-fusion disclaimer: the spec composes mechanism candidates from `docs/researc
 - Names concrete signing topology, on-chain guards, off-chain monitor topology, freeze authority, transaction-type definitions, receipt-loop substrate integration.
 - Says exactly what gets built before real money moves.
 - Specifies where each artifact lives in the repo (paths).
-- Lists open questions that need maintainer input before build-out.
+- Lists resolved questions (§12.1-§12.8, all resolved 2026-04-28).
 
 **Does NOT:**
 
@@ -620,7 +620,7 @@ Phase 0: spec acceptance + maintainer sign-off on §12 questions.
 
 Phase 1: harness scaffolding (no real-money tooling yet).
 
-- Stub `tools/wallet-monitor/` directory or sibling-repo bootstrap.
+- Bootstrap sibling repo `Lucent-Financial-Group/wallet-monitor` (per §12.5 resolution; in-repo `tools/wallet-monitor/` no longer permitted).
 - Test rig that simulates DEX swaps end-to-end with mocked smart-account + mocked off-chain monitor.
 - Receipt schema validator + per-tick row generator integrated with `docs/hygiene-history/loop-tick-history.md`.
 - Bond accounting integration with `docs/INTENTIONAL-DEBT.md`.
