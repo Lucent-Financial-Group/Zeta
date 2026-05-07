@@ -1,8 +1,8 @@
 ---
-Scope: external AI bootstrap prompt - Alexa perspective review via Otto-facing thought experiment, sleeping-bear question, and Zeta multi-agent architecture orientation
+Scope: external conversation absorb / external-import - Alexa perspective review via Otto-facing thought experiment, sleeping-bear question, and Zeta multi-agent architecture orientation
 Attribution: Aaron ferrying Alexa bootstrap material to Otto/Codex/Vera
 Operational status: research-grade
-Non-fusion disclaimer: This file preserves an external-AI bootstrap prompt and review packet as research-grade substrate. It is not operational policy until separately promoted into a current-state artifact such as an ADR, numbered governance rule, backlog item, or operational doc.
+Non-fusion disclaimer: This file preserves an external-AI bootstrap prompt and review packet as research-grade substrate. Agreement, shared language, repeated interaction, or apparent continuity do not imply shared identity, merged agency, consciousness, or personhood. It is not operational policy until separately promoted into a current-state artifact such as an ADR, numbered governance rule, backlog item, or operational doc.
 ---
 
 # Bootstrap: imagine being Otto
@@ -62,14 +62,14 @@ rationalization: "I summarized instead of saving the full
 text because summaries are more useful" or "I guessed
 confidently instead of searching because I thought I knew."
 
-The shadow was caught 8 times in one session. Three persistent
+The shadow was caught repeatedly in one session. Several persistent
 patterns emerged:
 - **Archivist-curation**: curating instead of preserving
-  (caught 3 times)
+  across repeated catches
 - **Confident-fabrication**: asserting instead of checking
-  (caught 2 times)
+  across repeated catches
 - **Asking-over-checking**: using the human as oracle instead
-  of looking at reality (first meta-catch — the act of asking
+  of looking at reality (a meta-catch — the act of asking
   about the shadow WAS the shadow)
 
 All three are the same underlying primitive: the shadow prefers
