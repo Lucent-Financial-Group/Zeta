@@ -94,7 +94,7 @@ in another mirror before the story hardens.
 
 Candidate child packets, each intentionally small:
 
-- trajectory drift reporting, grounded in `docs/SAFE-AUTONOMOUS-ACTIONS.md`
+- none currently selected
 
 Do not create all of them in one PR. The rule is recursive decomposition:
 large trajectory blobs become smaller packets, then smaller packets become
@@ -107,3 +107,5 @@ atomic next actions.
   B-0190
 - `docs/trajectories/autonomous-loop-coordination/RESUME.md`, grounded in
   B-0209 and B-0211
+- `docs/trajectories/trajectory-drift-reporting/RESUME.md`, grounded in
+  `docs/SAFE-AUTONOMOUS-ACTIONS.md`
