@@ -304,6 +304,8 @@ BP drift.
   - `docs/ROUND-HISTORY.md` — round-close history
   - `docs/DECISIONS/**` — ADRs
   - `docs/aurora/**` — courier-ferry archive
+  - `docs/lost-substrate/**` — recovery and redundancy artifacts whose job
+    is to preserve what was at risk of being lost
   - `docs/pr-preservation/**` — PR conversation archive
   - `docs/hygiene-history/**` — tick-history + drain-logs
   - `docs/WINS.md` — historical wins log
