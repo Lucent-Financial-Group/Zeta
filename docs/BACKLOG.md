@@ -83,6 +83,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0239](backlog/P1/B-0239-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md)** Shadow work as AI debugger for regular people — product pitch + on-ramp design
 - [ ] **[B-0240](backlog/P1/B-0240-structure-recognizer-shape-indexed-catalog-no-labels-2026-05-07.md)** Structure recognizer — shape-indexed catalog that distinguishes structures without labels
 - [ ] **[B-0241](backlog/P1/B-0241-hole-puncher-ai-safety-red-team-capability-layer-bypass-2026-05-07.md)** Red team: hole puncher pattern applied to AI safety — capability-layer bypass of content-layer filters
+- [ ] **[B-0242](backlog/P1/B-0242-multiplexed-websockets-fsharp-dotnet10-port-hole-puncher-2026-05-07.md)** Port MultiplexedWebSockets to .NET 10 F# — the hole puncher in Zeta's algebra
 
 ## P2 — research-grade
 
