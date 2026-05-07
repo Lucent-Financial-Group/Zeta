@@ -14,8 +14,6 @@ composes_with: [B-0060, B-0061]
 tags: [wallet-experiment-v0, eat, spec-logic, pr-72-deferrals, honest-tracking, build-out, no-papering-over]
 ---
 
-# Wallet v0 build-out spec-logic punch list — PR #72 deferrals
-
 The EAT packet + wallet v0 operational spec PR (#72) absorbed
 the research-grade docs but had ~15 review threads that
 flagged real spec-logic gaps. Those threads were resolved
