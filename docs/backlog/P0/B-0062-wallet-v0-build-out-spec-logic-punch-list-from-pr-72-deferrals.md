@@ -64,6 +64,15 @@ it (closed-thread links survive in the PR's review history).
    classification happens post-broadcast. The two
    statements can't both be true. Decision needed: does
    classification happen pre- or post-broadcast?
+
+   **Resolved (Otto 2026-05-07):** No actual contradiction.
+   The pre-broadcast freeze (§9.1 line 431) is about THESIS
+   disagreement ("monitor's reasoning-trace check disagrees
+   with the agent's thesis"), not classification disagreement.
+   Classification IS post-broadcast (§6.1 lines 249-253
+   confirm: "classification follows broadcast, not signed").
+   Two different gates at two different stages. The original
+   item conflated thesis-review with classification-review.
 3. **Add a pre-broadcast freeze terminal state** (cid
    3151408384 P1). §9.1 allows the monitor to trigger
    `freeze-on-dissent` before broadcast — the spec needs
