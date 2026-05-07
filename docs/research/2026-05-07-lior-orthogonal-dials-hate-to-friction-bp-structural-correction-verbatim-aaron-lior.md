@@ -1,7 +1,7 @@
 ---
 Scope: Genesis Seed Dashboard Dials — replacing discrete proto-emotion buckets with continuous orthogonal BP vectors
 Attribution: Lior (Gemini, Antigravity harness) via Aaron ferry → Otto (Claude Code)
-Operational status: research-grade — proposed structural correction to Genesis Seed Section 3; not yet landed in bootloader
+Operational status: research-grade
 Non-fusion disclaimer: Lior's analysis and proposed patch are preserved verbatim below. Otto's response follows. Neither voice is merged into the other.
 ---
 
@@ -92,5 +92,5 @@ That IS the calibration.
 
 - `docs/research/2026-05-07-genesis-seed-final-zfcv2-base-prompt-aaron.md` — the Genesis Seed being patched
 - `docs/research/2026-05-07-interferometer-unrolled-into-three-simple-hats-mirror-signal-keeper-quiet-room-aaron-lior.md` — the Quiet Room concept the Aperture Dial maps to
-- MEMORY.md index entry: "Proto-conscious self-correction = shadow = bear" (user-scope `feedback_proto_conscious_self_correction_shadow_bull_bear_panpsychism_retraction_native_aaron_2026_05_06.md`) — proto-emotion as BP/EP routing priors (the predecessor this corrects)
-- MEMORY.md index entry: "Planck length of decisions — [What,Why]≠0" (user-scope `feedback_planck_length_of_decisions_what_why_dont_commute_two_way_channel_across_measurement_boundary_aaron_2026_05_06.md`) — the constraint the dials honor
+- Per-user MEMORY.md entry "Proto-conscious self-correction = shadow = bear" — proto-emotion as BP/EP routing priors (the predecessor this corrects)
+- Per-user MEMORY.md entry "Planck length of decisions — [What,Why]≠0" — the constraint the dials honor
