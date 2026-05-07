@@ -65,7 +65,7 @@ commit `7d99fddb`.
 The operational residue remains fishy: PR #1753's post-merge archive job
 failed with the same branch-protection rejection pattern as recent archive
 jobs. The research content is preserved in git, but the PR-review archive for
-#1753 was not yet preserved in `docs/history/pr-reviews/` or indexed in
+PR #1753 was not yet preserved in `docs/history/pr-reviews/` or indexed in
 `docs/github/prs/manifest.jsonl` as of the Codex/Vera reading pass.
 
 ## Do not promote from this duplicate
