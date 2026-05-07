@@ -95,9 +95,24 @@ it (closed-thread links survive in the PR's review history).
    mandate (separate from tx-signing), or the revocation
    goes through a different auth channel (oracle, monitor-
    signed message, etc.).
+
+   **Proposed (Otto 2026-05-07):** Agent holds a
+   ZeroDev session-key mandate scoped to
+   RETRACTION-ONLY (cancel own proposal during
+   retraction window). Not tx-signing — cancellation
+   only. §3.3/§3.4 "no keys" means no TX-SIGNING
+   keys; a retraction-scoped session key is not a
+   contradiction — it's a permission boundary. The
+   ZeroDev session-key permission model (§12.1)
+   already supports scoped mandates.
+
 2. **Clarify §9.1 revocation mechanism vs §3.3/§3.4 no-keys**
-   (cid 3151222680 P1). Same root cause as item 1 above; fix needed
-   in both sections to remove the contradiction.
+   (cid 3151222680 P1). Same root cause as item 1 above.
+
+   **Proposed (Otto 2026-05-07):** Same resolution as
+   item 1. §3.3/§3.4 should say "no tx-signing keys"
+   not "no keys." The retraction-scoped session key
+   is explicitly allowed.
 
 ### Spec-logic — monitor placement + lifecycle
 
