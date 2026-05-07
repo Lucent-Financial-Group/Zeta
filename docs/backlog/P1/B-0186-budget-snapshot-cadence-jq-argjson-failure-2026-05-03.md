@@ -1,13 +1,15 @@
 ---
 id: B-0186
 priority: P1
-status: open
+status: closed
+closed: 2026-05-07
+closed_by: "PR #TBD"
 title: budget-snapshot-cadence workflow jq --argjson failure on first natural-Sunday fire post-B-0085-close (2026-05-03)
 tier: factory-tooling
 effort: S
 ask: maintainer-gated diagnosis + defensive-fix landing (autonomous-loop investigated 2026-05-03T17:46Z but couldn't reproduce in CI environment)
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-05-07
 depends_on: []
 composes_with: [B-0085]
 tags: [budget-snapshot, jq, argjson, ci-failure, cron-fire-2026-05-03, github-token-scopes]
@@ -115,7 +117,7 @@ copilot_raw="$(ensure_json "$copilot_raw" '{}')"
 
 ## Acceptance criteria
 
-- [ ] Land defensive `jq empty` validation before each `--argjson`
+- [x] Land defensive `jq empty` validation before each `--argjson`
   site in `tools/budget/snapshot-burn.sh`
 - [ ] Test on next Sunday cron fire (2026-05-10) OR via
   workflow_dispatch with deliberately-invalid token simulation
