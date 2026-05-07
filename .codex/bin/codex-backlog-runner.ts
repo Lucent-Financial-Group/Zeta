@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
-// codex-backlog-runner.ts -- Tier 1 queue-empty backlog pickup gate.
+// codex-backlog-runner.ts -- Tier 1 queue-empty trajectory/backlog pickup gate.
 //
 // This runner is intentionally a gate, not an unattended broad executor. It
-// refuses to select backlog work while any PR is open, then delegates the
-// deterministic backlog choice to tools/backlog/autonomous-pickup.ts.
+// refuses to select new work while any PR is open. When the queue is empty it
+// picks trajectory enhancement first, then falls back to backlog pickup.
 
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
@@ -11,7 +11,12 @@ import { resolve } from "node:path";
 interface GateResult {
   status: "wait-pr-queue" | "ready";
   openPrCount: number;
+  pickupSource: "trajectory" | "backlog" | null;
   pickup: unknown | null;
+}
+
+interface PickupStatus {
+  status?: string;
 }
 
 function usage(): string {
@@ -19,8 +24,9 @@ function usage(): string {
     "Usage:",
     "  bun .codex/bin/codex-backlog-runner.ts [--json] [--repo-root DIR]",
     "",
-    "Runs only when the PR queue is empty. Emits the selected backlog",
-    "execution prompt from tools/backlog/autonomous-pickup.ts.",
+    "Runs only when the PR queue is empty. Emits a trajectory-first",
+    "pickup prompt, then falls back to backlog pickup when no trajectory",
+    "action is available.",
   ].join("\n");
 }
 
@@ -73,12 +79,26 @@ function openPrCount(repoRoot: string): number {
   return Number(parsed.count ?? 0);
 }
 
-function pickup(repoRoot: string): unknown {
-  const result = run(repoRoot, "bun", ["tools/backlog/autonomous-pickup.ts", "--json"]);
+function runPicker(repoRoot: string, script: string): unknown {
+  const result = run(repoRoot, "bun", [script, "--json"]);
   if (result.status !== 0) {
-    throw new Error(`autonomous-pickup failed: ${result.stderr || result.stdout}`);
+    throw new Error(`${script} failed: ${result.stderr || result.stdout}`);
   }
   return JSON.parse(result.stdout) as unknown;
+}
+
+function isSelected(pickup: unknown): boolean {
+  return typeof pickup === "object" && pickup !== null && (pickup as PickupStatus).status === "selected";
+}
+
+function pickup(repoRoot: string): { source: "trajectory" | "backlog" | null; value: unknown | null } {
+  const trajectory = runPicker(repoRoot, "tools/trajectories/autonomous-pickup.ts");
+  if (isSelected(trajectory)) {
+    return { source: "trajectory", value: trajectory };
+  }
+
+  const backlog = runPicker(repoRoot, "tools/backlog/autonomous-pickup.ts");
+  return { source: "backlog", value: backlog };
 }
 
 function printText(result: GateResult): void {
@@ -86,6 +106,7 @@ function printText(result: GateResult): void {
     process.stdout.write(`wait-pr-queue: ${result.openPrCount} open PR(s)\n`);
     return;
   }
+  process.stdout.write(`pickup-source: ${result.pickupSource ?? "none"}\n`);
   process.stdout.write(`${JSON.stringify(result.pickup, null, 2)}\n`);
 }
 
@@ -94,10 +115,11 @@ export function main(argv: string[]): number {
   try {
     args = parseArgs(argv);
     const count = openPrCount(args.repoRoot);
+    const selected = count > 0 ? { source: null, value: null } : pickup(args.repoRoot);
     const result: GateResult =
       count > 0
-        ? { status: "wait-pr-queue", openPrCount: count, pickup: null }
-        : { status: "ready", openPrCount: 0, pickup: pickup(args.repoRoot) };
+        ? { status: "wait-pr-queue", openPrCount: count, pickupSource: null, pickup: null }
+        : { status: "ready", openPrCount: 0, pickupSource: selected.source, pickup: selected.value };
 
     if (args.json) {
       process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);

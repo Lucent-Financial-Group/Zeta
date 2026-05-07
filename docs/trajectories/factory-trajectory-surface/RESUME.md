@@ -33,6 +33,27 @@ Minimum shape:
 If a trajectory grows too large, split it into child packets instead of adding
 more sections to one file.
 
+## Operating Rule — Enhance As We Go
+
+Trajectory is the first new-work surface. Backlog is the decomposition ledger,
+not a grab bag for random feature work. When a loop sees a bounded broken thing
+inside its claim scope, it fixes that thing directly. When the work is too
+large, ambiguous, or multi-lane, it decomposes the work into backlog rows and
+trajectory child packets before implementation.
+
+The loop shape is:
+
+```text
+observe evidence -> fix bounded breakage
+observe broad work -> decompose into backlog / trajectory substrate
+observe trajectory drift -> update or split the trajectory packet
+```
+
+Do not let maintenance masquerade as growth. Do not let backlog masquerade as
+execution. Do not let a trajectory become a giant branch. The trajectory packet
+remembers the lane, the backlog remembers the atomic work, and decomposition is
+the bridge between them.
+
 ## Current Known Trajectory Substrate
 
 - `docs/trajectories/typescript-bun-migration/RESUME.md` is the live example of
