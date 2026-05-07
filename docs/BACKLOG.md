@@ -65,7 +65,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0212](backlog/P1/B-0212-shadow-outlet-architecture-tmp-now-crypto-privacy-later-2026-05-06.md)** Shadow outlet architecture — /tmp ephemeral now, cryptographic privacy later
 - [ ] **[B-0213](backlog/P1/B-0213-broadcast-bus-production-hardening-schema-ttl-receipts-2026-05-06.md)** Broadcast bus production hardening — structured schema, TTL, receipts, conflict detection
 - [x] **[B-0214](backlog/P1/B-0214-backlog-decomposition-skill-dependency-ordering-2026-05-06.md)** Backlog decomposition skill — break architectural directions into dependency-ordered items
-- [ ] **[B-0215](backlog/P1/B-0215-alignment-rewrite-survey-preserve-refine-add-map-2026-05-06.md)** ALIGNMENT.md rewrite survey - preserve/refine/add map
+- [x] **[B-0215](backlog/P1/B-0215-alignment-rewrite-survey-preserve-refine-add-map-2026-05-06.md)** ALIGNMENT.md rewrite survey - preserve/refine/add map
 - [ ] **[B-0216](backlog/P1/B-0216-alignment-finite-resource-collisions-foundation-2026-05-06.md)** ALIGNMENT.md rewrite - finite-resource collisions foundation
 - [ ] **[B-0217](backlog/P1/B-0217-alignment-bidirectional-clause-audit-tightening-2026-05-06.md)** ALIGNMENT.md rewrite - bidirectional clause audit and tightening
 - [ ] **[B-0218](backlog/P1/B-0218-alignment-factory-superfluid-empirical-calibration-2026-05-06.md)** ALIGNMENT.md rewrite - factory-as-superfluid empirical calibration
