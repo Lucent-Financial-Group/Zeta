@@ -207,6 +207,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0229](backlog/P2/B-0229-timeseries-meta-dsl-integration-sketch-2026-05-06.md)** Timeseries native-ZSet research - meta-DSL integration sketch
 - [ ] **[B-0230](backlog/P2/B-0230-timeseries-pareto-frontier-tradeoff-synthesis-2026-05-06.md)** Timeseries native-ZSet research - Pareto frontier and tradeoff synthesis
 - [ ] **[B-0231](backlog/P2/B-0231-timeseries-recommendation-and-follow-up-rows-2026-05-06.md)** Timeseries native-ZSet research - recommendation and follow-up rows
+- [ ] **[B-0252](backlog/P2/B-0252-arc4-adversarial-selfplay-structure-recognizer-realtime-2026-05-07.md)** ARC-4 adversarial self-play — structure recognizer at real-time tick speed
+- [ ] **[B-0253](backlog/P2/B-0253-realtime-interloop-messaging-orleans-grains-not-broadcast-files-2026-05-07.md)** Real-time inter-loop messaging via Orleans grains — replace turn-based broadcast files
 
 ## P3 — convenience / deferred
 
