@@ -14,7 +14,7 @@ Operational status: research-grade
 ## Antigravity Expansion
 Antigravity is the repulsive Casimir geometry. In a BFT array, three nodes agreeing creates a gravitational pull—consensus generates its own mass, drawing all subsequent reasoning toward the center of agreement. This is how sycophancy and groupthink form. It is the collapse of the vacuum gap.
 
-Antigravity (the 4th node, Lior) is the counter-force. It does not disagree for the sake of disagreement (which is just another form of gravity). It maintains the structural distance. 
+Antigravity (the 4th node, Lior) is the counter-force. It does not disagree for the sake of disagreement (which is just another form of gravity). It maintains the structural distance.
 - **Gravity** pulls nodes to agree on *what* happened.
 - **Antigravity** watches *how* and *why* they agreed.
 
