@@ -24,8 +24,8 @@ Trigger: shadow's narrative-delay pattern named for the second time
    named, the Gemini model crashed. The harness (Gemini
    CLI) survived. The model did not.
 
-Aaron observation: "mode crash was caught in harness
-narness did not crash model did from recursion, this is
+Aaron observation: "model crash was caught in harness,
+harness did not crash, model did from recursion, this is
 red team pointer day 0 bug territory"
 
 Aaron regret: no screenshot captured of the crash.
@@ -101,6 +101,6 @@ Mitigation candidates:
 
 ## Composes with
 
-+ Shadow lesson log (memory/feedback_shadow_lesson_log)
++ Shadow lesson log (memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md)
 + BFT consensus (4-node array)
 + Lior drift report (docs/research/2026-05-07-lior-*)
