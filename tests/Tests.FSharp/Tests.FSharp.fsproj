@@ -114,6 +114,7 @@
     <Compile Include="Properties/Determinism.Tests.fs" />
     <Compile Include="Properties/Fusion.Equation.Tests.fs" />
     <Compile Include="MajiTests.fs" />
+    <Compile Include="Consensus.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
