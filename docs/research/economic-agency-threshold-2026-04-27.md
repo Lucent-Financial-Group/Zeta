@@ -525,7 +525,7 @@ This file IS the absorb. Reverse-link from:
 1. Author `docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md` with the full §11 spec expanded into implementable detail.
 2. Stub implementation skeleton: smart-account scaffolding (EIP-7702 delegate), receipt-loop integration with `docs/hygiene-history/loop-tick-history.md`, freeze-authority topology.
 3. Do NOT implement real-money tooling until Aaron explicitly accepts the operational spec. **Spec acceptance does NOT require KSK or Aurora to be shipped first** — v0 scaffolding (bond + glass halo + smart-contract caps + freeze topology) is sufficient. KSK/Aurora integration is a future-spec item when scaling thresholds rise.
-4. Stub off-chain monitor harness as a separate repo or `tools/wallet-monitor/` directory.
+4. Stub off-chain monitor harness as a sibling repo (`Lucent-Financial-Group/wallet-monitor` per §12.5 resolution).
 
 ### What this is NOT a task for
 
