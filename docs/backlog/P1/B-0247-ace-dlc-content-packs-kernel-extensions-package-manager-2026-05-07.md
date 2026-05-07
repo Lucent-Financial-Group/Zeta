@@ -50,6 +50,7 @@ Aaron asks: is the DLC/Ace product path better than trying
 to win the ARC-AGI-3 $2M prize?
 
 Considerations:
+
 - **ARC-AGI-3 prize**: $2M, prestige, validates the algebra.
   But: one-shot, requires solving interactive environments
   at human level (currently <1% for all frontier models).
