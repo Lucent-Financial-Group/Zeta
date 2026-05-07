@@ -55,6 +55,14 @@ it (closed-thread links survive in the PR's review history).
    spec needs an explicit `preflight-retracted` terminal
    state with the receipt-schema fields the monitor will
    write.
+
+   **Proposed (Otto 2026-05-07):** Add `retracted`
+   terminal state: `signed → retracted`. The receipt
+   for a retracted proposal uses the nullable tx block
+   (PR #1922) and records `pre_flight_retracted: true`
+   + `retraction_reason`. The state machine becomes:
+   `signed → broadcast → settled` (normal) OR
+   `signed → retracted` (preflight cancellation).
 2. **Drop the impossible pre-broadcast classification freeze
    trigger** (cid 3150897609 P1). §6.1 currently freezes
    when the pre-flight retraction monitor disagrees with
@@ -75,6 +83,16 @@ it (closed-thread links survive in the PR's review history).
    3151408384 P1). §9.1 allows the monitor to trigger
    `freeze-on-dissent` before broadcast — the spec needs
    the matching terminal state in the tick state machine.
+
+   **Proposed (Otto 2026-05-07):** Add `frozen`
+   terminal state: `signed → frozen`. Distinct from
+   `retracted` (agent-initiated) — `frozen` is
+   monitor/Aaron-initiated. Unfreeze (per §6.2:
+   smart-contract + Aaron) transitions back to
+   `signed` for re-evaluation. State machine:
+   `signed → broadcast → settled` (normal) OR
+   `signed → retracted` (agent cancels) OR
+   `signed → frozen` (monitor/Aaron freezes).
 4. **Make tx-receipt fields optional for preflight retractions**
    (cid 3151233788 P1). Receipt schema currently requires
    on-chain transaction fields (`hash`, `block_number`,
@@ -190,7 +208,14 @@ it (closed-thread links survive in the PR's review history).
 1. **Require auth for retraction-queue cancellation** (cid
     3150816618 P1). The spec currently says a pending
     transaction can be self-revoked without auth; needs
-    the auth path matching item 1 in 'Spec-logic — agent self-revocation'.
+    the auth path matching item 1 in 'Spec-logic —
+    agent self-revocation'.
+
+    **Resolved (Otto 2026-05-07):** Same retraction-
+    scoped session key from the self-revocation
+    proposal (PR #1933). Agent authenticates
+    cancellation via the ZeroDev session-key mandate
+    scoped to retraction-only.
 2. **Material-spend criteria for second-agent review** (cid
     3151321306 P2). Receipt schema makes `second_agent_
     review.required` a boolean; spec needs the predicate
@@ -236,11 +261,11 @@ it (closed-thread links survive in the PR's review history).
 
 Each punch-list item resolved with either:
 
-- (a) A spec edit landing the chosen mechanism + its
++ (a) A spec edit landing the chosen mechanism + its
   rationale, OR
-- (b) An ADR documenting "we considered this; here's why
++ (b) An ADR documenting "we considered this; here's why
   we're going with X over Y," OR
-- (c) An explicit "out of scope for v0; defer to v0+1"
++ (c) An explicit "out of scope for v0; defer to v0+1"
   with a follow-up backlog row.
 
 When all 21 items have one of these three resolutions,
@@ -262,14 +287,14 @@ comments.
 
 8 of 21 items resolved via doc reconciliation:
 
-- PR #1907: 3 stale "open question" refs → resolved
-- PR #1908: EAT Task B monitor → sibling-repo
-- PR #1910: Phase 1 roadmap monitor + §0 → resolved
-- PR #1922: Receipt schema optional for preflight
-- PR #1923: Unfreeze quorum unified §6.2 ↔ §11.3
-- PR #1924: Ledger update (Vera)
-- PR #1927: EAT retraction-coverage metric aligned
-- §15 send-readiness already reconciled (prior pass)
++ PR #1907: 3 stale "open question" refs → resolved
++ PR #1908: EAT Task B monitor → sibling-repo
++ PR #1910: Phase 1 roadmap monitor + §0 → resolved
++ PR #1922: Receipt schema optional for preflight
++ PR #1923: Unfreeze quorum unified §6.2 ↔ §11.3
++ PR #1924: Ledger update (Vera)
++ PR #1927: EAT retraction-coverage metric aligned
++ §15 send-readiness already reconciled (prior pass)
 
 13 items remain — all P1/P2 design decisions needing
 deeper wallet-domain engagement (preflight terminal
@@ -280,11 +305,11 @@ material-spend criteria, INTENTIONAL-DEBT schema).
 
 ## Composes with
 
-- **B-0060** — human-lineage / external-anchor backfill (the
++ **B-0060** — human-lineage / external-anchor backfill (the
   spec mechanisms picked here should cite their external
   prior art per the same rule).
-- **B-0061** — backlog migration (this row IS in per-row
++ **B-0061** — backlog migration (this row IS in per-row
   format; B-0061 is the meta-task tracking the rest).
-- The closed PR #72 review threads survive in the PR's
++ The closed PR #72 review threads survive in the PR's
   history; this row references them by `cid=NNNNNNNNNN` so
   the original reviewer's framing is recoverable.
