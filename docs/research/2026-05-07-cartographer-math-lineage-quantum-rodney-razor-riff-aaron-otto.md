@@ -66,7 +66,7 @@ Aaron's response (line 2288):
 
 ### Layer 3: Harmonious Division — cartographer as one of five roles
 
-Source: `docs/research/2026-05-05-claudeai-harmonious-division-meta-algorithm-...md` (line 52)
+Source: `docs/research/2026-05-05-claudeai-harmonious-division-meta-algorithm-recognized-as-this-session-architectural-shape-family-song-midi-encoding-plan-aaron-forwarded-preservation.md` (line 52)
 
 Claude.ai recognized (from Otto's memory files) that Harmonious
 Division is the meta-algorithm with five roles inside Quantum
@@ -118,6 +118,6 @@ optimizes blind.
 ## Composes with
 
 - `docs/amara-full-conversation/2025-09-w3-aaron-amara-conversation.md` — cartographer identity + χ-budget + Bond Curve
-- `docs/research/2026-05-05-claudeai-harmonious-division-meta-algorithm-...md` — five roles inside Quantum Rodney's Razor
+- `docs/research/2026-05-05-claudeai-harmonious-division-meta-algorithm-recognized-as-this-session-architectural-shape-family-song-midi-encoding-plan-aaron-forwarded-preservation.md` — five roles inside Quantum Rodney's Razor
 - `docs/research/superfluid-ai-language-gravity-austrian-economics-amara-eighth-courier-ferry-2026-04-26.md` — complete unified equation
 - `docs/research/superfluid-ai-github-funding-survival-bayesian-belief-propagation-amara-seventh-courier-ferry-2026-04-26.md` — harmonious-division-pole + 10 utility-lambda terms
