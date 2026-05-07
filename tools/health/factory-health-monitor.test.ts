@@ -1,5 +1,9 @@
 import { describe, expect, test } from "bun:test";
-import { runHealthCheck } from "./factory-health-monitor";
+import {
+  buildHealthReport,
+  runHealthCheck,
+  type HealthSignal,
+} from "./factory-health-monitor";
 
 const HEALTH_CHECK_TIMEOUT_MS = 20_000;
 let cachedReport: ReturnType<typeof runHealthCheck> | undefined;
@@ -10,6 +14,33 @@ function getReport(): ReturnType<typeof runHealthCheck> {
 }
 
 describe("factory-health-monitor", () => {
+  test("buildHealthReport summarizes deterministic signals", () => {
+    const signals: HealthSignal[] = [
+      { surface: "pr-queue", level: "ok", message: "ready" },
+      {
+        surface: "claims",
+        level: "warning",
+        message: "claim drift",
+        action: "audit claims",
+      },
+      {
+        surface: "cadence",
+        level: "critical",
+        message: "idle",
+        action: "wake runner",
+      },
+    ];
+
+    const report = buildHealthReport(
+      signals,
+      "2026-05-07T15:10:00.000Z",
+    );
+
+    expect(report.summary).toEqual({ ok: 1, warning: 1, critical: 1 });
+    expect(report.recommendedAction).toBe("wake runner");
+    expect(report.timestamp).toBe("2026-05-07T15:10:00.000Z");
+  });
+
   test("runHealthCheck returns a valid HealthReport shape", () => {
     const report = getReport();
 

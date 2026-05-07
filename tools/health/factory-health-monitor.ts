@@ -2,7 +2,7 @@
 // factory-health-monitor.ts -- Standing query for factory health signals.
 //
 // Detects conditions that need action across multiple surfaces:
-// PR queue, backlog state, CI status, claim freshness, trajectory
+// PR queue, backlog state, claim freshness, trajectory
 // progress. Produces a structured JSON report suitable for the
 // autonomous loop's tick-decision.
 //
@@ -10,16 +10,17 @@
 
 import { spawnSync } from "node:child_process";
 import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-interface HealthSignal {
+export interface HealthSignal {
   surface: string;
   level: "ok" | "warning" | "critical";
   message: string;
   action?: string;
 }
 
-interface HealthReport {
+export interface HealthReport {
   timestamp: string;
   signals: HealthSignal[];
   summary: {
@@ -30,9 +31,12 @@ interface HealthReport {
   recommendedAction: string | null;
 }
 
-const ROOT = resolve(import.meta.dir, "../..");
+type ToolCommand = "bun" | "gh" | "git";
 
-function run(cmd: string, args: string[]): { ok: boolean; stdout: string } {
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const REPO = process.env.REPO ?? "Lucent-Financial-Group/Zeta";
+
+function run(cmd: ToolCommand, args: string[]): { ok: boolean; stdout: string } {
   const r = spawnSync(cmd, args, {
     cwd: ROOT,
     encoding: "utf-8",
@@ -47,7 +51,7 @@ function checkPRQueue(): HealthSignal[] {
     "pr",
     "list",
     "--repo",
-    "Lucent-Financial-Group/Zeta",
+    REPO,
     "--state",
     "open",
     "--json",
@@ -271,10 +275,14 @@ function checkWorkingTreeCleanliness(): HealthSignal[] {
   }
 
   if (modified.length === 0 && untracked.length <= 5) {
+    const untrackedNote =
+      untracked.length === 0
+        ? "Working tree clean"
+        : `No modified files; ${untracked.length} untracked local file(s) present`;
     signals.push({
       surface: "working-tree",
       level: "ok",
-      message: "Working tree clean",
+      message: untrackedNote,
     });
   }
 
@@ -309,25 +317,20 @@ function checkTrajectoryProgress(): HealthSignal[] {
       }
     }
 
-    if (stalledCount > 0) {
-      signals.push({
-        surface: "trajectories",
-        level: "warning",
-        message: `${stalledCount} trajectory(ies) not updated in 7+ days`,
-        action: "refresh stalled trajectories or mark as paused",
-      });
-    }
-
     signals.push({
       surface: "trajectories",
-      level: "ok",
+      level: stalledCount > 0 ? "warning" : "ok",
       message: `${activeCount} active, ${stalledCount} stalled trajectory(ies)`,
+      ...(stalledCount > 0
+        ? { action: "refresh stalled trajectories or mark as paused" }
+        : {}),
     });
   } catch {
     signals.push({
       surface: "trajectories",
-      level: "ok",
-      message: "No trajectory directory found",
+      level: "warning",
+      message: "Could not inspect trajectory directory",
+      action: "verify docs/trajectories exists and is readable",
     });
   }
 
@@ -378,7 +381,7 @@ function checkLostFiles(): HealthSignal[] {
     "pr",
     "list",
     "--repo",
-    "Lucent-Financial-Group/Zeta",
+    REPO,
     "--state",
     "closed",
     "--limit",
@@ -459,7 +462,7 @@ function checkLostFiles(): HealthSignal[] {
     "pr",
     "list",
     "--repo",
-    "Lucent-Financial-Group/Zeta",
+    REPO,
     "--state",
     "open",
     "--json",
@@ -522,7 +525,15 @@ function checkRecentCommitCadence(): HealthSignal[] {
     "--format=%H",
   ]);
 
-  if (!r.ok) return signals;
+  if (!r.ok) {
+    signals.push({
+      surface: "cadence",
+      level: "warning",
+      message: "Could not query recent commit cadence",
+      action: "inspect local git state before trusting cadence health",
+    });
+    return signals;
+  }
 
   const commits = r.stdout.split("\n").filter(Boolean);
   if (commits.length === 0) {
@@ -543,17 +554,10 @@ function checkRecentCommitCadence(): HealthSignal[] {
   return signals;
 }
 
-export function runHealthCheck(): HealthReport {
-  const allSignals: HealthSignal[] = [
-    ...checkPRQueue(),
-    ...checkBacklogHealth(),
-    ...checkClaimFreshness(),
-    ...checkWorkingTreeCleanliness(),
-    ...checkTrajectoryProgress(),
-    ...checkLostFiles(),
-    ...checkRecentCommitCadence(),
-  ];
-
+export function buildHealthReport(
+  allSignals: HealthSignal[],
+  timestamp = new Date().toISOString(),
+): HealthReport {
   const summary = {
     ok: allSignals.filter((s) => s.level === "ok").length,
     warning: allSignals.filter((s) => s.level === "warning").length,
@@ -573,18 +577,60 @@ export function runHealthCheck(): HealthReport {
   }
 
   return {
-    timestamp: new Date().toISOString(),
+    timestamp,
     signals: allSignals,
     summary,
     recommendedAction,
   };
 }
 
-if (import.meta.main) {
-  const report = runHealthCheck();
-  const json = process.argv.includes("--json");
+export function runHealthCheck(): HealthReport {
+  return buildHealthReport([
+    ...checkPRQueue(),
+    ...checkBacklogHealth(),
+    ...checkClaimFreshness(),
+    ...checkWorkingTreeCleanliness(),
+    ...checkTrajectoryProgress(),
+    ...checkLostFiles(),
+    ...checkRecentCommitCadence(),
+  ]);
+}
 
-  if (json) {
+function printHelp(): void {
+  console.log(`Usage: bun tools/health/factory-health-monitor.ts [--json]
+
+Options:
+  --json   Emit the health report as JSON.
+  --help   Show this help text.`);
+}
+
+function parseArgs(args: string[]): { json: boolean; help: boolean } {
+  const parsed = { json: false, help: false };
+  for (const arg of args) {
+    if (arg === "--json") {
+      parsed.json = true;
+    } else if (arg === "--help" || arg === "-h") {
+      parsed.help = true;
+    } else {
+      console.error(`Unknown argument: ${arg}`);
+      printHelp();
+      process.exit(2);
+    }
+  }
+  return parsed;
+}
+
+if (import.meta.main) {
+  const args = parseArgs(process.argv.slice(2));
+
+  if (args.help) {
+    printHelp();
+    process.exit(0);
+  }
+
+  const report = runHealthCheck();
+
+  if (args.json) {
     console.log(JSON.stringify(report, null, 2));
   } else {
     console.log(`Factory Health Report — ${report.timestamp}`);
