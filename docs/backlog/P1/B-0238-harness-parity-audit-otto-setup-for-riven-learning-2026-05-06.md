@@ -1,5 +1,5 @@
 ---
-id: B-0215
+id: B-0238
 priority: P1
 status: open
 title: "Harness parity audit — document Otto's session setup so Riven (and future nodes) can approximate the same autonomy"
@@ -9,7 +9,7 @@ depends_on: [B-0208]
 decomposition: atomic
 ---
 
-# B-0215 — Harness parity audit
+# B-0238 — Harness parity audit
 
 Otto (Claude Code) has capabilities Riven (Cursor) doesn't:
 

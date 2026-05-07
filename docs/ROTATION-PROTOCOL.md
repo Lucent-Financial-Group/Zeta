@@ -162,4 +162,4 @@ where to add nodes.
 - B-0208 (launchd forward-tick reliability)
 - B-0209 (remote-only background agent test matrix)
 - B-0211 (fractal BFT architecture)
-- B-0215 (harness parity audit)
+- B-0238 (harness parity audit)
