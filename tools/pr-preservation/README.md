@@ -25,7 +25,7 @@ this tick with Phase-0-shipped state + remaining phases).
 ## Usage
 
 ```bash
-tools/pr-preservation/archive-pr.sh <PR-number>
+bun tools/pr-preservation/archive-pr.ts <PR-number>
 ```
 
 Writes `docs/pr-discussions/PR-<NNNN>-<slug>.md` — the PR
@@ -55,7 +55,7 @@ closed_at: ISO-8601 (if closed)
 head_ref: <branch-name>
 base_ref: main
 archived_at: ISO-8601 (when this archive was written)
-archive_tool: tools/pr-preservation/archive-pr.sh
+archive_tool: tools/pr-preservation/archive-pr.ts
 ```
 
 Followed by markdown sections:

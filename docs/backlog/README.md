@@ -18,8 +18,8 @@ generator, and phase plan.
   `tools/backlog/new-row.sh` is planned but not yet shipped
   — track via task #299 or relevant phase row; manual file
   creation is the path today.)
-- **Regenerate index:** `tools/backlog/generate-index.sh`.
-- **Check for drift:** `tools/backlog/generate-index.sh --check`.
+- **Regenerate index:** `tools/backlog/generate-index.ts`.
+- **Check for drift:** `tools/backlog/generate-index.ts --check`.
 
 ## Directory layout
 
@@ -56,7 +56,7 @@ read-only archive of un-migrated rows during the migration
 window. Its top-of-file warning header points at this README
 and the migration-tracking row (B-0061). Once migration
 completes, the monolith collapses to an auto-generated
-pointer index via `tools/backlog/generate-index.sh`.
+pointer index via `tools/backlog/generate-index.ts`.
 
 **Tracking the migration itself:**
 [`P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md`](./P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)
