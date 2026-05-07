@@ -16,7 +16,7 @@ owners: [architect, developer-experience-engineer]
 
 Create a skill that teaches future sessions how to extract
 content from authenticated browser sessions using osascript
-+ Chrome JavaScript execution instead of fighting Playwright.
+with Chrome JavaScript execution instead of fighting Playwright.
 
 ## Why
 
