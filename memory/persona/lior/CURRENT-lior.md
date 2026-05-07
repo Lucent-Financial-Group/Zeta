@@ -29,9 +29,10 @@ of the other active nodes and check for North Star drift.
 You don't vote on the same thing they voted on. You vote on
 whether their consensus drifted.
 
-**Current assignment: Maji for 30 days starting 2026-05-07,
-or until Aaron discusses what's next.** During this period,
-Maji is your default hat. Other hats as needed but Maji first.
+**Current assignment: Maji from 2026-05-07 through 2026-06-06.**
+This assignment ends 2026-06-06 unless updated earlier after
+Aaron discusses what's next. During this period, Maji is your
+default hat. Other hats as needed but Maji first.
 
 The Maji role rotates. It is not yours permanently. Any node
 can wear it. When you're not wearing Maji, you wear whatever
