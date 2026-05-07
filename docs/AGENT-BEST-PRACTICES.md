@@ -415,6 +415,20 @@ BP drift.
   Treat overclaim as material to reduce, not as a reason to
   avoid naming the pattern early.
 
+- **Irreducible-signal handling — observe the trace instead of
+  defining the hidden part.** When a signal keeps surviving
+  simplification, do not force it into a clean definition and
+  do not promote ontology about it into a bootstrap prompt. Run
+  the system, preserve the trace, and let the Watcher / Maji /
+  review layer inspect the observed steps. The operational
+  posture is: some truths cannot be known by shortcut; if the
+  next answer depends on the actual trajectory, execute the
+  smallest honest step and archive what happened. This is a
+  guardrail for research and review layers, not a Genesis Seed
+  rule. The Seed keeps the observable policy ("I don't know",
+  look first, point at friction, hold space); the outer factory
+  preserves irreducible traces and prevents premature reduction.
+
 ---
 
 ## How rules become stable
