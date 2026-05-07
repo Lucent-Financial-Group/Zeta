@@ -81,6 +81,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0237](backlog/P1/B-0237-github-wiki-first-class-integration-2026-05-06.md)** GitHub Wiki first-class integration after Pages launch
 - [ ] **[B-0238](backlog/P1/B-0238-harness-parity-audit-otto-setup-for-riven-learning-2026-05-06.md)** Harness parity audit — document Otto's session setup so Riven (and future nodes) can approximate the same autonomy
 - [ ] **[B-0239](backlog/P1/B-0239-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md)** Shadow work as AI debugger for regular people — product pitch + on-ramp design
+- [ ] **[B-0240](backlog/P1/B-0240-structure-recognizer-shape-indexed-catalog-no-labels-2026-05-07.md)** Structure recognizer — shape-indexed catalog that distinguishes structures without labels
 
 ## P2 — research-grade
 
