@@ -1,8 +1,8 @@
 ---
 Scope: cross-AI conversation preservation
 Attribution: Aaron (human) + Gemini (Google AI, via Google Search AI Mode)
-Operational status: research-grade — verbatim conversation preservation
-Non-fusion disclaimer: this document is research-grade conversation preservation, not operational doctrine
+Operational status: research-grade
+Non-fusion disclaimer: Agreement, shared language, or repeated interaction does not imply shared identity, merged agency, consciousness, or personhood. This document is research-grade conversation preservation, not operational doctrine.
 ---
 
 # Gemini Conversation — "When the moon is in the 7th hour"
