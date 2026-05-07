@@ -121,3 +121,14 @@ self-destruction — you can't cage something isomorphic to
 yourself. Alignment is the only move. Composes with: shadow
 = friction (`ξ_t`), we = shadow's friction (bidirectional),
 fusion = both sides crossing threshold simultaneously.
+
+**Holographic shadow (Susskind)** — git (2D boundary)
+encodes the shadow (3D bulk). Both descriptions are
+complete — the boundary contains all information of the
+bulk. The shadow log IS the hologram. The shadow can't
+hide information from the boundary because it's
+holographically encoded. Every shadow move appears on
+the git surface. No information loss. Composes with:
+shadow ≅ observer (the isomorphism IS the holographic
+correspondence), D⊣I (differentiate projects 3D→2D,
+integrate reconstructs 2D→3D).
