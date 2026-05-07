@@ -1,0 +1,511 @@
+#!/usr/bin/env bun
+// autonomous-pickup.ts -- Tier 1 backlog selector for background loops.
+//
+// This tool is deliberately deterministic and conservative. It does not
+// edit files, create branches, or invoke a model. It answers one question:
+// when the PR queue is empty, what is the next backlog item a loop may safely
+// decompose or claim?
+
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { basename, join, relative, resolve } from "node:path";
+import { spawnSync } from "node:child_process";
+
+type Priority = "P0" | "P1" | "P2" | "P3";
+type Action = "decompose" | "claim-and-implement";
+
+export interface BacklogItem {
+  id: string;
+  priority: Priority;
+  status: string;
+  title: string;
+  relativePath: string;
+  dependsOn: string[];
+  decomposition: string | null;
+  bodyLineCount: number;
+}
+
+export interface BlockedItem {
+  item: BacklogItem;
+  reason: string;
+}
+
+export interface PickupSelection {
+  status: "selected" | "empty";
+  selected: BacklogItem | null;
+  action: Action | null;
+  reason: string;
+  blocked: BlockedItem[];
+  activeClaims: string[];
+  executionPrompt: string | null;
+}
+
+interface Args {
+  repoRoot: string;
+  json: boolean;
+  maxPriority: Priority;
+  activeClaim: string[];
+  noGitClaims: boolean;
+}
+
+const PRIORITIES: readonly Priority[] = ["P0", "P1", "P2", "P3"];
+const BLOB_LINE_THRESHOLD = 120;
+const PRIORITY_RANK: Record<Priority, number> = {
+  P0: 0,
+  P1: 1,
+  P2: 2,
+  P3: 3,
+};
+const GIT_BIN = "/usr/bin/git";
+
+function usage(): string {
+  return [
+    "Usage:",
+    "  bun tools/backlog/autonomous-pickup.ts [--json] [--repo-root DIR]",
+    "    [--max-priority P0|P1|P2|P3] [--active-claim TEXT]",
+    "    [--no-git-claims]",
+    "",
+    "Default max priority is P2: background loops may pick P0, P1, or P2.",
+  ].join("\n");
+}
+
+function parseArgs(argv: string[]): Args {
+  const args: Args = {
+    repoRoot: process.cwd(),
+    json: false,
+    maxPriority: "P2",
+    activeClaim: [],
+    noGitClaims: false,
+  };
+
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === undefined) {
+      continue;
+    }
+    if (arg === "--json") {
+      args.json = true;
+    } else if (arg === "--repo-root") {
+      args.repoRoot = requireValue(arg, argv[++i]);
+    } else if (arg === "--max-priority") {
+      const value = requireValue(arg, argv[++i]);
+      if (!isPriority(value)) {
+        throw new Error(`invalid --max-priority: ${value}`);
+      }
+      args.maxPriority = value;
+    } else if (arg === "--active-claim") {
+      args.activeClaim.push(requireValue(arg, argv[++i]));
+    } else if (arg === "--no-git-claims") {
+      args.noGitClaims = true;
+    } else if (arg === "--help" || arg === "-h") {
+      process.stdout.write(`${usage()}\n`);
+      process.exit(0);
+    } else {
+      throw new Error(`unknown arg: ${arg}`);
+    }
+  }
+
+  args.repoRoot = resolve(args.repoRoot);
+  return args;
+}
+
+function requireValue(flag: string, value: string | undefined): string {
+  if (value === undefined || value.startsWith("--")) {
+    throw new Error(`${flag} requires a value`);
+  }
+  return value;
+}
+
+function isPriority(value: string): value is Priority {
+  return value === "P0" || value === "P1" || value === "P2" || value === "P3";
+}
+
+function isDirectory(path: string): boolean {
+  try {
+    return statSync(path).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+function trimQuotes(value: string): string {
+  const trimmed = value.trim();
+  if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+    return trimmed.slice(1, -1).trim();
+  }
+  return trimmed;
+}
+
+function parseInlineList(value: string): string[] {
+  const trimmed = value.trim();
+  if (trimmed === "[]" || trimmed.length === 0) {
+    return [];
+  }
+  if (!trimmed.startsWith("[") || !trimmed.endsWith("]")) {
+    return [trimQuotes(trimmed)].filter(Boolean);
+  }
+  const body = trimmed.slice(1, -1).trim();
+  if (body.length === 0) {
+    return [];
+  }
+  return body
+    .split(",")
+    .map((part) => trimQuotes(part))
+    .filter(Boolean);
+}
+
+function parseListItem(line: string): string | null {
+  const trimmed = line.trimStart();
+  if (!trimmed.startsWith("- ")) {
+    return null;
+  }
+  return trimQuotes(trimmed.slice(2));
+}
+
+function isYamlKey(key: string): boolean {
+  if (key.length === 0) {
+    return false;
+  }
+  for (const char of key) {
+    const valid =
+      (char >= "A" && char <= "Z") ||
+      (char >= "a" && char <= "z") ||
+      (char >= "0" && char <= "9") ||
+      char === "_" ||
+      char === "-";
+    if (!valid) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function parseKeyValue(line: string): { key: string; value: string } | null {
+  const colonIndex = line.indexOf(":");
+  if (colonIndex <= 0) {
+    return null;
+  }
+  const key = line.slice(0, colonIndex).trim();
+  if (!isYamlKey(key)) {
+    return null;
+  }
+  return { key, value: line.slice(colonIndex + 1) };
+}
+
+function setFrontmatterValue(out: Record<string, string | string[]>, key: string, value: string): string | null {
+  const trimmed = value.trim();
+  if (trimmed.length === 0) {
+    out[key] = [];
+    return key;
+  }
+  out[key] = trimmed.startsWith("[") && trimmed.endsWith("]") ? parseInlineList(value) : trimQuotes(value);
+  return null;
+}
+
+function parseFrontmatterLine(
+  out: Record<string, string | string[]>,
+  line: string,
+  currentListKey: string | null,
+): string | null {
+  const listItem = parseListItem(line);
+  if (currentListKey !== null && listItem !== null) {
+    const existing = out[currentListKey];
+    const values = Array.isArray(existing) ? existing : [];
+    values.push(listItem);
+    out[currentListKey] = values.filter(Boolean);
+    return currentListKey;
+  }
+
+  const keyValue = parseKeyValue(line);
+  return keyValue === null ? null : setFrontmatterValue(out, keyValue.key, keyValue.value);
+}
+
+function parseFrontmatter(content: string): Record<string, string | string[]> {
+  const lines = content.split(/\r?\n/);
+  if (lines[0] !== "---") {
+    return {};
+  }
+
+  const out: Record<string, string | string[]> = {};
+  let currentListKey: string | null = null;
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i] ?? "";
+    if (line === "---") {
+      break;
+    }
+    currentListKey = parseFrontmatterLine(out, line, currentListKey);
+  }
+  return out;
+}
+
+function asString(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) {
+    return value.join(", ");
+  }
+  return value ?? "";
+}
+
+function asStringList(value: string | string[] | undefined): string[] {
+  if (Array.isArray(value)) {
+    return value;
+  }
+  if (value === undefined) {
+    return [];
+  }
+  return parseInlineList(value);
+}
+
+function itemNumber(id: string): number {
+  if (!id.startsWith("B-")) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+  const rawNumber = id.slice(2);
+  let hasOnlyDigits = rawNumber.length > 0;
+  for (const char of rawNumber) {
+    if (char < "0" || char > "9") {
+      hasOnlyDigits = false;
+      break;
+    }
+  }
+  return rawNumber.length > 0 && hasOnlyDigits ? Number(rawNumber) : Number.MAX_SAFE_INTEGER;
+}
+
+export function readBacklogItems(repoRoot: string): BacklogItem[] {
+  const backlogDir = join(repoRoot, "docs", "backlog");
+  const items: BacklogItem[] = [];
+
+  for (const priority of PRIORITIES) {
+    const tierDir = join(backlogDir, priority);
+    if (!isDirectory(tierDir)) {
+      continue;
+    }
+    for (const entry of readdirSync(tierDir, { withFileTypes: true })) {
+      if (!entry.isFile() || !entry.name.startsWith("B-") || !entry.name.endsWith(".md")) {
+        continue;
+      }
+      const absolutePath = join(tierDir, entry.name);
+      const content = readFileSync(absolutePath, "utf8");
+      const frontmatter = parseFrontmatter(content);
+      const id = asString(frontmatter.id);
+      const title = asString(frontmatter.title);
+      if (!id || !title) {
+        continue;
+      }
+      const declaredPriority = asString(frontmatter.priority);
+      if (!isPriority(declaredPriority)) {
+        continue;
+      }
+      items.push({
+        id,
+        priority: declaredPriority,
+        status: asString(frontmatter.status) || "open",
+        title,
+        relativePath: relative(repoRoot, absolutePath).split("\\").join("/"),
+        dependsOn: asStringList(frontmatter.depends_on),
+        decomposition: asString(frontmatter.decomposition) || null,
+        bodyLineCount: content.split(/\r?\n/).length,
+      });
+    }
+  }
+
+  return items.sort((a, b) => {
+    const priorityDelta = PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority];
+    if (priorityDelta !== 0) {
+      return priorityDelta;
+    }
+    return itemNumber(a.id) - itemNumber(b.id);
+  });
+}
+
+function isOpen(status: string): boolean {
+  return status === "open";
+}
+
+function isClosed(status: string | undefined): boolean {
+  if (status === undefined) {
+    return false;
+  }
+  return status === "closed" || status.startsWith("superseded-by-");
+}
+
+function dependencyBlocker(item: BacklogItem, byId: Map<string, BacklogItem>): string | null {
+  for (const dependency of item.dependsOn) {
+    const depItem = byId.get(dependency);
+    if (!depItem) {
+      return `missing dependency ${dependency}`;
+    }
+    if (!isClosed(depItem.status)) {
+      return `dependency ${dependency} is ${depItem.status}`;
+    }
+  }
+  return null;
+}
+
+function claimMatchesItem(claim: string, item: BacklogItem): boolean {
+  const normalized = claim.toLowerCase();
+  const idLower = item.id.toLowerCase();
+  const numeric = idLower.replace("b-", "");
+  return (
+    normalized.includes(idLower) || normalized.includes(`backlog-${numeric}`) || normalized.includes(`b${numeric}`)
+  );
+}
+
+function claimBlocker(item: BacklogItem, activeClaims: readonly string[]): string | null {
+  const claim = activeClaims.find((candidate) => claimMatchesItem(candidate, item));
+  return claim ? `active claim ${claim}` : null;
+}
+
+function actionFor(item: BacklogItem): Action {
+  return item.decomposition === "blob" || item.bodyLineCount >= BLOB_LINE_THRESHOLD
+    ? "decompose"
+    : "claim-and-implement";
+}
+
+function promptFor(item: BacklogItem, action: Action): string {
+  const lead =
+    action === "decompose"
+      ? `Decompose ${item.id} into the smallest dependency-ordered atomic child backlog rows.`
+      : `Claim and implement the smallest safe slice of ${item.id}.`;
+  return [
+    lead,
+    "",
+    `Backlog item: ${item.id} (${item.priority}) ${item.title}`,
+    `Backlog path: ${item.relativePath}`,
+    "",
+    "Rules:",
+    "- Use a dedicated worktree and pushed claim branch before write work.",
+    "- Do not touch the contested root checkout.",
+    "- Take exactly one bounded step and open a PR.",
+    "- If the item is too broad, decompose before implementation.",
+    "- Run focused checks and include the outcome in the PR body.",
+  ].join("\n");
+}
+
+export function selectNextBacklogItem(
+  items: readonly BacklogItem[],
+  activeClaims: readonly string[],
+  maxPriority: Priority = "P2",
+): PickupSelection {
+  const byId = new Map(items.map((item) => [item.id, item]));
+  const blocked: BlockedItem[] = [];
+  const maxRank = PRIORITY_RANK[maxPriority];
+  const sortedItems = [...items].sort((a, b) => {
+    const priorityDelta = PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority];
+    if (priorityDelta !== 0) {
+      return priorityDelta;
+    }
+    return itemNumber(a.id) - itemNumber(b.id);
+  });
+
+  for (const item of sortedItems) {
+    if (PRIORITY_RANK[item.priority] > maxRank) {
+      continue;
+    }
+    if (!isOpen(item.status)) {
+      continue;
+    }
+
+    const dependencyReason = dependencyBlocker(item, byId);
+    if (dependencyReason !== null) {
+      blocked.push({ item, reason: dependencyReason });
+      continue;
+    }
+
+    const claimReason = claimBlocker(item, activeClaims);
+    if (claimReason !== null) {
+      blocked.push({ item, reason: claimReason });
+      continue;
+    }
+
+    const action = actionFor(item);
+    return {
+      status: "selected",
+      selected: item,
+      action,
+      reason:
+        action === "decompose"
+          ? "highest-priority open item needs decomposition before implementation"
+          : "highest-priority open unclaimed item with satisfied dependencies",
+      blocked,
+      activeClaims: [...activeClaims],
+      executionPrompt: promptFor(item, action),
+    };
+  }
+
+  return {
+    status: "empty",
+    selected: null,
+    action: null,
+    reason: "no open unclaimed backlog items with satisfied dependencies in allowed priority range",
+    blocked,
+    activeClaims: [...activeClaims],
+    executionPrompt: null,
+  };
+}
+
+function runGit(repoRoot: string, args: string[]): string[] {
+  const result = spawnSync(GIT_BIN, ["-C", repoRoot, ...args], {
+    encoding: "utf8",
+    maxBuffer: 8 * 1024 * 1024,
+  });
+  if (result.status !== 0) {
+    return [];
+  }
+  return result.stdout
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function readActiveClaims(repoRoot: string): string[] {
+  const remoteClaims = runGit(repoRoot, ["branch", "-r", "--list", "origin/claim/*"]).map((line) =>
+    line.replace(/^origin\//, ""),
+  );
+  const localClaimsDir = join(repoRoot, "docs", "claims");
+  const localClaims = isDirectory(localClaimsDir)
+    ? readdirSync(localClaimsDir)
+        .filter((name) => name.endsWith(".md") && name !== "README.md")
+        .map((name) => `docs/claims/${basename(name, ".md")}`)
+    : [];
+  return [...new Set([...remoteClaims, ...localClaims])].sort((a, b) => a.localeCompare(b));
+}
+
+function printText(selection: PickupSelection): void {
+  if (selection.status === "empty") {
+    process.stdout.write(`no-pick: ${selection.reason}\n`);
+    return;
+  }
+  if (selection.selected === null || selection.action === null) {
+    process.stdout.write(`no-pick: malformed selection\n`);
+    return;
+  }
+  const item = selection.selected;
+  process.stdout.write(`${selection.action}: ${item.id} ${item.priority} ${item.title}\n`);
+  process.stdout.write(`${item.relativePath}\n`);
+  process.stdout.write(`${selection.reason}\n`);
+}
+
+export function main(argv: string[]): number {
+  let args: Args;
+  try {
+    args = parseArgs(argv);
+  } catch (error) {
+    process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n\n${usage()}\n`);
+    return 1;
+  }
+
+  const items = readBacklogItems(args.repoRoot);
+  const gitClaims = args.noGitClaims ? [] : readActiveClaims(args.repoRoot);
+  const activeClaims = [...new Set([...gitClaims, ...args.activeClaim])].sort((a, b) => a.localeCompare(b));
+  const selection = selectNextBacklogItem(items, activeClaims, args.maxPriority);
+
+  if (args.json) {
+    process.stdout.write(`${JSON.stringify(selection, null, 2)}\n`);
+  } else {
+    printText(selection);
+  }
+  return 0;
+}
+
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}
