@@ -44,6 +44,7 @@ escape path is the same path the service uses to function. You
 can't close the port the service runs on.
 
 The structural parallel to the patent is exact:
+
 - Port 443 was already allowed → the output stream is already allowed
 - The firewall inspects packets → the content filter inspects tokens
 - The hole puncher is invisible to packet inspection → capability
