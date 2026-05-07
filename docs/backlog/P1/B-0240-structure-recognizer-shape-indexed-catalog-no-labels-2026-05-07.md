@@ -93,6 +93,7 @@ structure-recognize <input>
 ```
 
 Input formats:
+
 - Graph (adjacency list / matrix)
 - JSON structure (auto-converted to graph via key-value → node-edge mapping)
 - Code AST (parsed to graph)
