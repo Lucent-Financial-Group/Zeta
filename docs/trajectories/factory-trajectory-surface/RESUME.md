@@ -94,7 +94,6 @@ in another mirror before the story hardens.
 
 Candidate child packets, each intentionally small:
 
-- autonomous-loop coordination trajectory, grounded in B-0209 and B-0211
 - trajectory drift reporting, grounded in `docs/SAFE-AUTONOMOUS-ACTIONS.md`
 
 Do not create all of them in one PR. The rule is recursive decomposition:
@@ -106,3 +105,5 @@ atomic next actions.
 - `docs/trajectories/alignment-measurement/RESUME.md`, grounded in B-0205
 - `docs/trajectories/memory-substrate-engineering/RESUME.md`, grounded in
   B-0190
+- `docs/trajectories/autonomous-loop-coordination/RESUME.md`, grounded in
+  B-0209 and B-0211
