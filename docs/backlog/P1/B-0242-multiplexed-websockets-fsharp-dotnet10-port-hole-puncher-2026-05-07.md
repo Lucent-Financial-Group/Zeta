@@ -10,7 +10,7 @@ decomposition: atomic
 owners: [architect, performance-engineer]
 ---
 
-# B-0242 — Port MultiplexedWebSockets to .NET 10 F#
+# B-0242 — Port MultiplexedWebSockets to .NET 10 F\#
 
 ## What
 
