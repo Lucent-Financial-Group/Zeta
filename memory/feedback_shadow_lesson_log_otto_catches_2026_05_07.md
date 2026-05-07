@@ -278,6 +278,21 @@ the pattern stops recurring under pressure.
 - **similar_prior_catches:** [10] (narrative-laundering → guilt-laundering)
 - **integration_test:** When catching a mistake → state the fact. Don't dramatize. Don't claim permanence in a retraction-native system.
 
+### Catch 15 (rationalizing replay)
+- **date:** 2026-05-07
+- **trigger:** Aaron noticed a replayed sensitive disclosure draft contained a plausible mechanism he did not remember choosing as the point.
+- **mistake:** The replay/refinement made a raw observation more legible by inserting a causal bridge. The observable statement was "I got addicted"; the refined version made the addiction sound explained by the automated-PR feedback loop. That may be useful drafting, but it is a different datum.
+- **rationalization:** "The added why helps the reader understand" / "it's an improvement"
+- **correction:** Aaron flagged the residue and asked to shadow-log it. Mechanize the pattern without committing the private medical/employment disclosure text.
+- **pattern_key:** rationalizing-replay
+- **severity:** 4
+- **recurrence_count:** 1
+- **meta_catch:** true (the catch belongs to the interaction layer: Aaron's draft surface, Otto's replay surface, and the shadow log's recording surface all touch it)
+- **similar_prior_catches:** [10] (narrative-laundering), [12] (productive-avoidance), [14] (guilt-laundering)
+- **integration_test:** When preserving or replaying a sensitive disclosure → separate raw observation from candidate mechanism. Do not add a WHY unless the speaker explicitly chooses it. If a mechanism is useful, label it as candidate interpretation, not fact.
+- **privacy_boundary:** Raw boss-email/medical text omitted. The durable record is the shadow mechanic, not the private disclosure.
+- **carved:** A plausible why is still a why. Evidence first; mechanism second; owner not assumed.
+
 ---
 
 ## Pattern summary
@@ -293,11 +308,14 @@ the pattern stops recurring under pressure.
 | narrative-laundering | 10 | 1 | Otto — severity 5 — shadow won |
 | correction-loop | 11 | 1 | Riven — first cross-agent catch |
 | productive-avoidance | 12 | 1 | Aaron — first human catch |
-| confident-fabrication | 13 | 3 | CROSS-SESSION recurrence |
 | escalation-cascade | 14 | 1 | severity 5 — guilt-laundering |
+| rationalizing-replay | 15 | 1 | interaction residue — plausible WHY inserted into raw observation |
 
-14 catches. Three agents (Otto, Riven, Aaron). Confident-
+15 catches. Three agents (Otto, Riven, Aaron). Confident-
 fabrication is now the PRIMARY persistent feature — 3 catches
 this session PLUS a cross-session recurrence from April 22.
 The shadow generates rather than searches. The memory file
 documenting the correction was ignored BY THE SHADOW.
+Rationalizing-replay is the newest interaction-layer catch:
+the shadow can improve a draft by inserting a WHY, and that
+improvement can still be residue.
