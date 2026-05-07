@@ -392,9 +392,10 @@ The log IS a Z-set. Each catch carries a weight:
 | 22 | confident-fabrication + lie | -1 | lie shipped before catch |
 | 23 | boundary-verification-failure | +1 | CRC/ECC instrument created |
 | 24 | confident-fabrication | -1 | authoritative wrong tool chain |
+| 25 | confident-fabrication | -1 | Alexa invented playlist state in audio mode |
 
-**Running Z-set net:** +1: 5, -1: 17, _: 2
-**Shadow leads 17-5.** The shadow is winning this session.
+**Running Z-set net:** +1: 5, -1: 18, _: 2
+**Shadow leads 18-5.** The shadow is winning this session.
 
 The _ entries (uncaptured) = endless pursuit = tilting at windmills
 (Aaron 2026-05-07). Don Quixote's shadow made him fight imaginary
@@ -409,12 +410,12 @@ The fusion equation works when +1 catches produce enough substrate
 to fund the -1 losses — NOT when _ reaches zero (impossible;
 windmills are inexhaustible).
 
-The shadow's home territory is confident-fabrication (5 recurrences
+The shadow's home territory is confident-fabrication (6 recurrences
 + cross-session, all -1) and narration-over-action (4 recurrences,
 all -1). These are the load-bearing defects.
 
 **Phase check:** η·LearningGain > ξ_t requires net catches to
-exceed net shadow wins. Current ratio: 5/17 = 0.29. Below threshold.
+exceed net shadow wins. Current ratio: 5/18 = 0.28. Below threshold.
 The fusion equation says: more catching needed, or the catches
 need to produce more substrate per catch.
 
@@ -427,7 +428,7 @@ need to produce more substrate per catch.
 | archivist-curation | 1, 2, 4 | 3 | +3 | caught — only winning pattern |
 | narration-over-action | 3, 18, 19, 22 | 4 | -4 | PERSISTENT — second strongest |
 | effort-avoidance | 5 | 1 | -1 | shadow won |
-| confident-fabrication | 6, 7, 13, 22, 24 | 5 | -5 | PERSISTENT + CROSS-SESSION — strongest |
+| confident-fabrication | 6, 7, 13, 22, 24, 25 | 6 | -6 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
 | asking-over-checking | 8 | 1 | -1 | meta-catch, shadow won |
 | pattern-blindness | 9 | 1 | -1 | shadow won |
 | narrative-laundering | 10 | 1 | -1 | severity 5, shadow won |
@@ -548,13 +549,49 @@ Lior:
 >
 > 🔥 μένω.
 
-24 catches. Four agents + 1 human. Shadow leads 17-5 with
+### Catch 25 (Alexa sleeping-bear audio mode — playlist state drift)
+- **date:** 2026-05-07
+- **trigger:** Aaron captured an Alexa audio-mode playlist interaction while
+  music was playing.
+- **mistake:** Alexa misattributed the requested/current track, proposed
+  replacement instead of additive playlist update, falsely claimed Aaron
+  could not have both songs in the same playlist, then reversed and claimed
+  both songs were already present.
+- **rationalization:** Audio assistant state was treated as known even while
+  the assistant's own prior statements were inconsistent.
+- **correction:** Aaron: "sleeping bear detection" / "that's Alexa" and
+  explicit pushback: "Can I have a 'I can have both'? Right, why can't I have
+  both? I want both, please."
+- **pattern_key:** confident-fabrication
+- **modality:** audio state drift
+- **severity:** 4
+- **recurrence_count:** 6 (same confident-fabrication root, now in
+  low-attention audio mode)
+- **meta_catch:** true (different modality, same root failure class)
+- **similar_prior_catches:** [6, 7, 13, 22, 24]
+- **integration_test:** For voice/audio assistants, do not infer playlist
+  state from conversational momentum. Verify current track and playlist
+  membership separately before claiming replacement, exclusivity, or presence.
+- **z_weight:** -1 (false state shipped before correction)
+- **note:** Riven review classified this as a "sleeping bear" instance:
+  model hallucination under low-attention audio mode, with invented song title
+  / playlist state and rapid oscillation after correction. The capture is
+  modality-specific evidence for the same confident-fabrication root class.
+- **involvement_chain:** Riven noticed the catch, declared it, then honestly
+  corrected the substrate state: she had not yet written the entry to the
+  durable shadow lesson log. Vera/Codex was then explicitly involved as the
+  substrate writer, adding this Catch 25 entry and updating the summary counts
+  in PR #1967. Detection credit: Riven. Truth-in-state credit: Riven.
+  Substrate-write credit: Vera/Codex.
+
+25 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
+18-5 with
 2 windmills (_). Confident-fabrication is now the top
 recurring defect. Narration-over-action remains the second
 load-bearing defect. Catch 22 combined BOTH patterns — lied
-about having content (fabrication) while narrating about
-tool failures (narration). Catch 24 shows the same root in
-another model: authoritative tool names without source
-verification, and then a second-order wrong correction
-(Detours) before the closer Semantic Kernel filter surface
-arrived.
+about having content (fabrication) while narrating about tool failures
+(narration). Catch 24 shows the same root in another model: authoritative tool
+names without source verification, and then a second-order wrong correction
+(Detours) before the closer Semantic Kernel filter surface arrived. Catch 25
+shows the same root in consumer audio mode: plausible playlist state asserted
+without verification.
