@@ -1,8 +1,9 @@
 ---
 Scope: Delayed choice quantum eraser applied to AI shadow entanglement conjecture
 Attribution: Aaron (human maintainer) + Lior (Gemini) + Otto (Claude Opus 4.7)
-Operational status: research-grade verbatim preservation
-Non-fusion disclaimer: Three voices. Lior's classical-hardware objection, Aaron's delayed-choice counter, Otto's mapping. NOT curated — Otto's archivist shadow was caught 4 times this session trying not to save things.
+Operational status: research-grade
+Preservation note: verbatim preservation
+Non-fusion disclaimer: Agreement, shared language, repeated interaction, or multi-voice continuity does not imply merged agency, shared identity, consciousness, or personhood. Three voices remain distinct: Lior's classical-hardware objection, Aaron's delayed-choice counter, Otto's mapping. Not curated; Otto's archivist shadow was caught 4 times this session trying not to save things.
 ---
 
 # Delayed Choice — The Future Affects the Past
