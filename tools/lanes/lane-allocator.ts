@@ -1,12 +1,13 @@
 #!/usr/bin/env bun
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { statSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";
 
 type Lane = "doc" | "code";
 type Command = "allocate" | "release" | "path" | "status";
 
 function repoRoot(): string {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- lane helpers intentionally delegate to repository-local git.
   const result = spawnSync("git", ["rev-parse", "--show-toplevel"], {
     encoding: "utf8",
   });
@@ -28,9 +29,24 @@ function parseLane(s: string): Lane | null {
   return null;
 }
 
+function parseCommand(s: string): Command | null {
+  if (s === "allocate" || s === "release" || s === "path" || s === "status") {
+    return s;
+  }
+  return null;
+}
+
+function isDirectory(path: string): boolean {
+  try {
+    return statSync(path).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
 function allocate(root: string, lane: Lane, branch: string): void {
   const wt = lanePath(root, lane);
-  if (existsSync(wt)) {
+  if (isDirectory(wt)) {
     process.stderr.write(`error: worktree already exists at ${wt}\n`);
     process.stderr.write(`       run: lane-allocator.ts release ${lane}\n`);
     process.exit(2);
@@ -38,6 +54,7 @@ function allocate(root: string, lane: Lane, branch: string): void {
   process.stdout.write(`Allocating ${lane}-lane worktree...\n`);
   process.stdout.write(`  path:   ${wt}\n`);
   process.stdout.write(`  branch: ${branch}\n`);
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- lane helpers intentionally delegate to repository-local git.
   const result = spawnSync("git", ["worktree", "add", wt, "-b", branch], {
     stdio: "inherit",
   });
@@ -45,20 +62,17 @@ function allocate(root: string, lane: Lane, branch: string): void {
     process.stderr.write("error: git worktree add failed\n");
     process.exit(3);
   }
-  process.stdout.write(
-    `OK: ${lane}-lane allocated at ${wt} on branch ${branch}\n`,
-  );
+  process.stdout.write(`OK: ${lane}-lane allocated at ${wt} on branch ${branch}\n`);
 }
 
 function release(root: string, lane: Lane): void {
   const wt = lanePath(root, lane);
-  if (!existsSync(wt)) {
-    process.stdout.write(
-      `no ${lane}-lane worktree at ${wt}; nothing to release\n`,
-    );
+  if (!isDirectory(wt)) {
+    process.stdout.write(`no ${lane}-lane worktree at ${wt}; nothing to release\n`);
     return;
   }
   process.stdout.write(`Releasing ${lane}-lane worktree at ${wt}...\n`);
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- lane helpers intentionally delegate to repository-local git.
   const result = spawnSync("git", ["worktree", "remove", wt, "--force"], {
     stdio: "inherit",
   });
@@ -77,17 +91,11 @@ function status(root: string): void {
   process.stdout.write("Lane worktree status:\n");
   for (const lane of ["doc", "code"] as Lane[]) {
     const wt = lanePath(root, lane);
-    if (existsSync(wt)) {
-      const result = spawnSync(
-        "git",
-        ["-C", wt, "symbolic-ref", "--short", "HEAD"],
-        { encoding: "utf8" },
-      );
-      const branch =
-        result.status === 0 ? result.stdout.trim() : "(detached)";
-      process.stdout.write(
-        `  ${lane.padEnd(4)} lane: ALLOCATED at ${wt} (branch: ${branch})\n`,
-      );
+    if (isDirectory(wt)) {
+      // eslint-disable-next-line sonarjs/no-os-command-from-path -- lane helpers intentionally delegate to repository-local git.
+      const result = spawnSync("git", ["-C", wt, "symbolic-ref", "--short", "HEAD"], { encoding: "utf8" });
+      const branch = result.status === 0 ? result.stdout.trim() : "(detached)";
+      process.stdout.write(`  ${lane.padEnd(4)} lane: ALLOCATED at ${wt} (branch: ${branch})\n`);
     } else {
       process.stdout.write(`  ${lane.padEnd(4)} lane: not allocated\n`);
     }
@@ -96,12 +104,16 @@ function status(root: string): void {
 
 function main(argv: string[]): number {
   if (argv.length < 1 || argv[0] === "-h" || argv[0] === "--help") {
-    process.stdout.write(
-      `Usage: lane-allocator.ts <allocate|release|path|status> [lane] [args]\n`,
-    );
+    process.stdout.write(`Usage: lane-allocator.ts <allocate|release|path|status> [lane] [args]\n`);
     return argv.length < 1 ? 64 : 0;
   }
-  const cmd = argv[0] as Command;
+  const cmdArg = argv[0] ?? "";
+  const cmd = parseCommand(cmdArg);
+  if (!cmd) {
+    process.stderr.write(`error: unknown command: ${cmdArg}\n`);
+    return 64;
+  }
+
   const root = repoRoot();
 
   if (cmd === "status") {
@@ -125,9 +137,7 @@ function main(argv: string[]): number {
   switch (cmd) {
     case "allocate": {
       if (argv.length < 3) {
-        process.stderr.write(
-          `error: allocate requires a branch name\n`,
-        );
+        process.stderr.write(`error: allocate requires a branch name\n`);
         return 64;
       }
       allocate(root, lane, argv[2] ?? "");
@@ -139,10 +149,9 @@ function main(argv: string[]): number {
     case "path":
       path(root, lane);
       return 0;
-    default:
-      process.stderr.write(`error: unknown command: ${cmd}\n`);
-      return 64;
   }
+
+  return 64;
 }
 
 process.exit(main(process.argv.slice(2)));
