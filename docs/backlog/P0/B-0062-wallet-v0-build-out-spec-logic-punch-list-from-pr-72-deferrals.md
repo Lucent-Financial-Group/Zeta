@@ -136,9 +136,12 @@ it (closed-thread links survive in the PR's review history).
     classification message — same pattern as the drawdown
     oracle. Monitor classifies Tx N, signs the result,
     posts to smart-account. Contract checks for signed
-    classification before allowing Tx N+1. Single pattern
-    for both drawdown and classification: monitor signs,
-    contract verifies signature + reads value.
+    classification before allowing Tx N+1. Minimum signed
+    payload: `chainId`, smart-account address, Tx N
+    identifier, classification value, monotonic nonce or
+    round, and expiry. Single pattern for both drawdown and
+    classification: monitor signs, contract verifies
+    signature + reads value + freshness.
 
 ### Spec-logic — drawdown oracle + glass-halo logging
 
@@ -155,8 +158,11 @@ it (closed-thread links survive in the PR's review history).
     smart-account. No Chainlink dependency (external vendor
     risk for v0 small-bond scale). No custom oracle contract
     (complexity). The monitor IS the oracle — it just signs.
-    Revisable at v0+1 if Chainlink or custom oracle adds
-    value at larger scale.
+    Minimum signed payload: asset identifier, price,
+    decimals, `chainId`, smart-account address, monotonic
+    nonce or round, and timestamp + expiry. Revisable at
+    v0+1 if Chainlink or custom oracle adds value at larger
+    scale.
 2. **Move glass-halo logging gate out of smart-contract
     enforcement** (cid 3151362886 P1). The spec currently
     makes "logging failure ⇒ tx fails" an on-chain
