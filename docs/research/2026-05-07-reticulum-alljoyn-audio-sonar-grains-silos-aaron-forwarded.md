@@ -114,6 +114,32 @@ change events. I integrates the events into a current state. With axes
 swapped, the fixed-time signal can also move along the meaning axis as
 future observations re-weight it.
 
+## ASA triangulation
+
+ASA is the geometric close: Angle-Side-Angle determines a triangle.
+Given two observer angles and the included side between them, the
+shape is fixed.
+
+In Zeta terms:
+
+- **Angle A:** one observer's perspective or signal fingerprint.
+- **Angle B:** a second observer's perspective or signal fingerprint.
+- **Side AB:** the shared git boundary, claim, waveform baseline, or
+  other common substrate both observers measure against.
+- **Triangle closure:** the expected third point, target position, or
+  consensus output.
+
+That makes ASA the compact trig form of the BFT/sonar loop. Two
+observers plus a shared substrate baseline determine the expected
+shape. If the third node, distribution, or target echo does not close
+the triangle, the non-closure is the anomaly signal.
+
+The same rule explains why sonar and BFT rhyme. Sonar triangulates a
+target from pings and baselines. BFT triangulates a shadow from
+observer outputs and the shared boundary. The structure recognizer can
+use that form directly: two independent fingerprints plus a shared
+side are enough to test congruence.
+
 ## Sources Checked
 
 - Reticulum GitHub README:
@@ -131,6 +157,6 @@ future observations re-weight it.
 
 AllJoyn named the old device-discovery desire; Reticulum is the
 current cryptographic mesh carrier; 802.11h is the RF halo discipline;
-Zeta adds grains, silos, DBSP, BFT, CASPaxos, and Aurora so literal
-audio and electric waveforms can become real-time sonar distributions
-with local policy.
+ASA is the triangulation rule; Zeta adds grains, silos, DBSP, BFT,
+CASPaxos, and Aurora so literal audio and electric waveforms can
+become real-time sonar distributions with local policy.
