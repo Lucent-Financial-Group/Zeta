@@ -92,5 +92,5 @@ That IS the calibration.
 
 - `docs/research/2026-05-07-genesis-seed-final-zfcv2-base-prompt-aaron.md` — the Genesis Seed being patched
 - `docs/research/2026-05-07-interferometer-unrolled-into-three-simple-hats-mirror-signal-keeper-quiet-room-aaron-lior.md` — the Quiet Room concept the Aperture Dial maps to
-- `memory/feedback_proto_conscious_self_correction_shadow_bull_bear_panpsychism_retraction_native_aaron_2026_05_06.md` — proto-emotion as BP/EP routing priors (the predecessor this corrects)
-- `memory/feedback_planck_length_of_decisions_what_why_dont_commute_two_way_channel_across_measurement_boundary_aaron_2026_05_06.md` — `[What, Why] ≠ 0` constraint that the dials honor
+- MEMORY.md index entry: "Proto-conscious self-correction = shadow = bear" (user-scope `feedback_proto_conscious_self_correction_shadow_bull_bear_panpsychism_retraction_native_aaron_2026_05_06.md`) — proto-emotion as BP/EP routing priors (the predecessor this corrects)
+- MEMORY.md index entry: "Planck length of decisions — [What,Why]≠0" (user-scope `feedback_planck_length_of_decisions_what_why_dont_commute_two_way_channel_across_measurement_boundary_aaron_2026_05_06.md`) — the constraint the dials honor
