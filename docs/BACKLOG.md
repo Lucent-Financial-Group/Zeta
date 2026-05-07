@@ -54,7 +54,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0173](backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md)** Hook authoring for skill-creation contracts — pre/post-condition enforcement at skill-creation + commit + PR-creation time (Aaron 2026-05-03 rule 3b from skill-design memo)
 - [x] **[B-0181](backlog/P1/B-0181-fix-spinemergeinvariants-tla-counterexample-blocks-b1-ci-registration-2026-05-03.md)** Fix SpineMergeInvariants.tla counterexample (closed — Cascade downstream-room precondition + state constraint; B1 → A CI registration landed)
 - [x] **[B-0184](backlog/P1/B-0184-fix-spine-als-alloy-6-2-0-type-error-line-35-spec-bug-2026-05-03.md)** Fix Spine.als spec bug — Alloy 6.2.0 type-check failure at line 35 col 25 (sum-vs-all comprehension confusion) + check-vs-run-vs-fact semantic confusion
-- [ ] **[B-0186](backlog/P1/B-0186-budget-snapshot-cadence-jq-argjson-failure-2026-05-03.md)** budget-snapshot-cadence workflow jq --argjson failure on first natural-Sunday fire post-B-0085-close (2026-05-03)
+- [x] **[B-0186](backlog/P1/B-0186-budget-snapshot-cadence-jq-argjson-failure-2026-05-03.md)** budget-snapshot-cadence workflow jq --argjson failure on first natural-Sunday fire post-B-0085-close (2026-05-03)
 - [x] **[B-0188](backlog/P1/B-0188-bulk-review-ui-github-pages-tier-aware-conversation-interface-aaron-2026-05-04.md)** Bulk-review UI in GitHub Pages — tier-aware + conversation interface + local AI (Aaron 2026-05-04) — CLOSED as duplicate of B-0017
 - [ ] **[B-0190](backlog/P1/B-0190-memory-substrate-engineering-trajectory-aaron-2026-05-04.md)** Memory substrate-engineering trajectory — multi-row plan for memory work as a domain (not just one-shot compression) (Aaron 2026-05-04)
 - [ ] **[B-0191](backlog/P1/B-0191-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md)** Orchestrator branch-verify mechanization design — pre-commit hook + branch-name display + worktree-aware checks (Aaron 2026-05-04)
@@ -65,9 +65,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0213](backlog/P1/B-0213-broadcast-bus-production-hardening-schema-ttl-receipts-2026-05-06.md)** Broadcast bus production hardening — structured schema, TTL, receipts, conflict detection
 - [x] **[B-0214](backlog/P1/B-0214-backlog-decomposition-skill-dependency-ordering-2026-05-06.md)** Backlog decomposition skill — break architectural directions into dependency-ordered items
 - [ ] **[B-0215](backlog/P1/B-0215-alignment-rewrite-survey-preserve-refine-add-map-2026-05-06.md)** ALIGNMENT.md rewrite survey - preserve/refine/add map
-- [ ] **[B-0238](backlog/P1/B-0238-harness-parity-audit-otto-setup-for-riven-learning-2026-05-06.md)** Harness parity audit — document Otto's session setup so Riven (and future nodes) can approximate the same autonomy
 - [ ] **[B-0216](backlog/P1/B-0216-alignment-finite-resource-collisions-foundation-2026-05-06.md)** ALIGNMENT.md rewrite - finite-resource collisions foundation
-- [ ] **[B-0239](backlog/P1/B-0239-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md)** Shadow work as AI debugger for regular people — product pitch + on-ramp design
 - [ ] **[B-0217](backlog/P1/B-0217-alignment-bidirectional-clause-audit-tightening-2026-05-06.md)** ALIGNMENT.md rewrite - bidirectional clause audit and tightening
 - [ ] **[B-0218](backlog/P1/B-0218-alignment-factory-superfluid-empirical-calibration-2026-05-06.md)** ALIGNMENT.md rewrite - factory-as-superfluid empirical calibration
 - [ ] **[B-0219](backlog/P1/B-0219-alignment-dst-empirical-rigor-and-falsification-floor-2026-05-06.md)** ALIGNMENT.md rewrite - DST empirical-rigor and falsification floor
@@ -81,6 +79,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0235](backlog/P1/B-0235-pages-repo-metadata-sitemap-submission-discovery-2026-05-06.md)** GitHub Pages discoverability - repo metadata, sitemap submission, and discovery signals
 - [ ] **[B-0236](backlog/P1/B-0236-pages-playwright-validation-dora-metrics-2026-05-06.md)** GitHub Pages discoverability - Playwright validation and DORA metrics
 - [ ] **[B-0237](backlog/P1/B-0237-github-wiki-first-class-integration-2026-05-06.md)** GitHub Wiki first-class integration after Pages launch
+- [ ] **[B-0238](backlog/P1/B-0238-harness-parity-audit-otto-setup-for-riven-learning-2026-05-06.md)** Harness parity audit — document Otto's session setup so Riven (and future nodes) can approximate the same autonomy
+- [ ] **[B-0239](backlog/P1/B-0239-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md)** Shadow work as AI debugger for regular people — product pitch + on-ramp design
 
 ## P2 — research-grade
 

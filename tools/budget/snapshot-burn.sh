@@ -64,8 +64,13 @@ done
 ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 git_sha="$(git -C "$(dirname "$0")/../.." rev-parse HEAD 2>/dev/null || echo "unknown")"
 
+ensure_json() {
+  if printf '%s' "$1" | jq -se 'length == 1' >/dev/null 2>&1; then printf '%s\n' "$1"; else printf '%s\n' "$2"; fi
+}
+
 # 1) Copilot seats (read:org sufficient)
 copilot_raw="$(gh api "/orgs/${org}/copilot/billing" 2>/dev/null || echo "{}")"
+copilot_raw="$(ensure_json "$copilot_raw" '{}')"
 
 # 2) Per-repo run timing summary over the last 20 runs.
 #    Per-run /actions/runs/<id>/timing returns run_duration_ms +
@@ -81,6 +86,7 @@ for r in "${repos[@]}"; do
     runs_json='{"workflow_runs":[]}'
     api_warnings=$((api_warnings + 1))
   fi
+  runs_json="$(ensure_json "$runs_json" '{"workflow_runs":[]}')"
   per_run="$(echo "$runs_json" | jq -c '[.workflow_runs[] | {id, name, conclusion, run_started_at, updated_at}]')"
   # Read into array via while-read for portability — `mapfile -t` is bash >=4
   # only and macOS ships bash 3.2 (Codex P2 NM59qH2J). The redirected pipe
@@ -99,6 +105,7 @@ for r in "${repos[@]}"; do
       t='{}'
       api_warnings=$((api_warnings + 1))
     fi
+    t="$(ensure_json "$t" '{}')"
     timings="$(echo "$timings" | jq --argjson entry "{\"id\":$id,\"timing\":$t}" '. + [$entry]')"
   done
   # Default `add` to 0 on empty array (Codex/Copilot P0 findings NM59qAlL/NM59qAlX).
@@ -113,6 +120,7 @@ for r in "${repos[@]}"; do
     pr_raw='[]'
     api_warnings=$((api_warnings + 1))
   fi
+  pr_raw="$(ensure_json "$pr_raw" '[]')"
   pr_stats="$(echo "$pr_raw" | jq '[.[] | select(.merged_at != null)] | { recent_merged: length, last_merged_at: (.[0].merged_at // null) }')"
   entry="$(jq -n --arg repo "$r" \
                  --argjson agg "$agg" \
