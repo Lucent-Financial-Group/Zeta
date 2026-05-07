@@ -1,7 +1,9 @@
 ---
 id: B-0192
 priority: P1
-status: open
+status: closed
+closed: 2026-05-07
+closed_by: "All acceptance criteria met — workflow fires, issues created, Otto picks up on wake"
 title: GitHub Actions trigger for razor cadence + trajectory reviews -- escape Otto-remembering as the load-bearing trigger (Claude.ai 2026-05-04 + Aaron 2026-05-04)
 tier: foundation
 effort: M
