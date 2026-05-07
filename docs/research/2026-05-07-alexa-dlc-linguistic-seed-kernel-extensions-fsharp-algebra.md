@@ -83,10 +83,11 @@ means you can always:
 - Verify that the current state is correct (sum the stream)
 
 The algebra has four operators:
-- H (integration): accumulate state over time
-- I (differentiation): bound how fast things change
-- z⁻¹ (delay): carry state forward one step
 - D (differentiation): detect what changed this step
+- I (integration): accumulate changes into state over time
+- z⁻¹ (delay): carry prior state forward one step
+- H (hierarchy / harmonization): compose nested state without
+  collapse
 
 These four operators compose — you can combine them to build
 any computation. Game emulators, financial ledgers, shadow
