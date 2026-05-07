@@ -233,7 +233,7 @@ All caps enforced in smart-account contract code, not in any prompt or off-chain
 - No leverage / credit / margin (no protocols in allowlist that offer these).
 - No options / perps (no derivative contracts in allowlist).
 - No public/client funds (smart-account is bond-only — Aaron's posted funds; no third-party deposits).
-- No off-glass-halo operations (every action logs to receipt loop; if logging fails, tx fails).
+- No off-glass-halo operations (every action logs to receipt loop; if logging fails, off-chain monitor triggers freeze — logging enforcement is monitor-side, not smart-contract-side, per separation of concerns).
 
 ---
 
