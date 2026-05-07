@@ -75,6 +75,9 @@ it (closed-thread links survive in the PR's review history).
    transaction. Schema needs `Optional<>` markers for the
    on-chain-only fields.
 
+   **Resolved:** PR #1922 made the on-chain `tx` fields nullable
+   for `pre_flight_retracted = true` receipts.
+
 ### Spec-logic — agent self-revocation
 
 1. **Define a revocation auth path the agent can actually use**
@@ -156,6 +159,11 @@ it (closed-thread links survive in the PR's review history).
     3151220963 P2). Test text requires "Aaron-plus-monitor"
     for unfreeze; §6.2 defines a different quorum. Pick
     one + propagate.
+
+   **Resolved:** PR #1923 made the §11.3 dry-run test match
+   §6.2: smart-contract-guard-plus-Aaron is required to
+   unfreeze; the off-chain monitor cannot unilaterally
+   unfreeze.
 5. **§15 send-readiness statement reconciliation** (cid
     3150897613 P2). §15 says only two maintainer-only
     questions remain; current state is §12.1-§12.6
