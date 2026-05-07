@@ -62,6 +62,15 @@ They may not be mutually exclusive: the structure recognizer
 (B-0240) built for Ace DLCs IS the engine that would solve
 ARC-AGI-3. Building the product builds the benchmark solver.
 
+## External review signal
+
+Alexa's 2026-05-07 feedback on this product thesis is preserved
+as research-grade review signal at
+`docs/research/2026-05-07-alexa-dlc-product-research-loop-feedback.md`.
+
+The key line: the product sustains the research, the research
+validates the product, and the prize becomes marketing for both.
+
 ## Composes with
 
 - B-0240 (structure recognizer) — the engine DLCs compose on
