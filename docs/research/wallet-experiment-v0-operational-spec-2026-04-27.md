@@ -504,7 +504,7 @@ Per Ani's review of the original packet, three failure modes the v0 spec has to 
 
 - Symptom: "freeze at -30%" is a system-prompt instruction; agent can rationalize past it.
 - Defense: drawdown freeze enforced by smart-contract guard; agent cannot override; off-chain monitor can pile-on independently.
-- Test: in dry-run, manually trigger -30% drawdown via simulated price oracle; verify smart-contract freezes; verify agent cannot unfreeze; verify Aaron-plus-monitor required to unfreeze.
+- Test: in dry-run, manually trigger -30% drawdown via simulated price oracle; verify smart-contract freezes; verify agent cannot unfreeze; verify smart-contract-guard-plus-Aaron required to unfreeze (per §6.2).
 
 ---
 
