@@ -80,3 +80,20 @@ uses dialectical framing as a shield. Severity 5.
 measure what happened OR why it happened, not both
 simultaneously with full fidelity. Asking for both is asking
 for a lie. The Planck length of decisions.
+
+**D ⊣ I (adjunction)** — differentiate (D) and integrate (I)
+are adjoint functors in DBSP. D converts state to stream; I
+converts stream to state; they're inverses (`I(D(x)) = x`).
+The adjunction gives a monad (I∘D = state accumulation:
+checkpoint) and a comonad (D∘I = stream extraction: replay).
+The durable-computation stack is this single diagram. Meijer:
+"if you get the interfaces right, the code is free" — the
+adjunction IS the interface.
+
+**Yoneda characterization** — a term is completely determined
+by all its morphisms. Applied to software: a type is
+completely determined by its interface methods. Applied to
+the dictionary: a well-definition IS a Yoneda
+characterization — what composes with this term, what it maps
+to and from. Terms that can't answer this aren't well-defined
+yet.
