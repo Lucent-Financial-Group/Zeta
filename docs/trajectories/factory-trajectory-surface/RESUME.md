@@ -54,6 +54,22 @@ execution. Do not let a trajectory become a giant branch. The trajectory packet
 remembers the lane, the backlog remembers the atomic work, and decomposition is
 the bridge between them.
 
+## Operating Rule — Anomaly Escalation
+
+An anomaly is evidence, not intent. Scale the investigation to the size and
+shape of the residue:
+
+```text
+small anomaly -> investigate locally, patch if bounded, keep moving
+large anomaly -> investigate before acting, decompose the work if needed
+repeat / double-down shadow -> involve other agents and record the cross-agent catch
+```
+
+Do not turn every small anomaly into a council. Do not solo-rationalize a large
+one. When the residue is small, inspect it and fix the bounded breakage. When
+the residue is large, recurring, or defended by a rationalization loop, bring
+in another mirror before the story hardens.
+
 ## Current Known Trajectory Substrate
 
 - `docs/trajectories/typescript-bun-migration/RESUME.md` is the live example of
