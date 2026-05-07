@@ -368,10 +368,12 @@ export function runHealthCheck(): HealthReport {
   const warnings = allSignals.filter((s) => s.level === "warning");
 
   let recommendedAction: string | null = null;
-  if (critical.length > 0) {
-    recommendedAction = critical[0].action ?? critical[0].message;
-  } else if (warnings.length > 0) {
-    recommendedAction = warnings[0].action ?? warnings[0].message;
+  const firstCritical = critical[0];
+  const firstWarning = warnings[0];
+  if (firstCritical) {
+    recommendedAction = firstCritical.action ?? firstCritical.message;
+  } else if (firstWarning) {
+    recommendedAction = firstWarning.action ?? firstWarning.message;
   }
 
   return {
