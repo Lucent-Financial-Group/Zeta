@@ -209,6 +209,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0231](backlog/P2/B-0231-timeseries-recommendation-and-follow-up-rows-2026-05-06.md)** Timeseries native-ZSet research - recommendation and follow-up rows
 - [ ] **[B-0252](backlog/P2/B-0252-arc4-adversarial-selfplay-structure-recognizer-realtime-2026-05-07.md)** ARC-4 adversarial self-play — structure recognizer at real-time tick speed
 - [ ] **[B-0253](backlog/P2/B-0253-realtime-interloop-messaging-orleans-grains-not-broadcast-files-2026-05-07.md)** Real-time inter-loop messaging via Orleans grains — replace turn-based broadcast files
+- [ ] **[B-0254](backlog/P2/B-0254-infernet-probabilistic-triangulation-posterior-quorum-2026-05-07.md)** Posterior quorum triangulation over existing Bayesian DBSP substrate
 
 ## P3 — convenience / deferred
 
