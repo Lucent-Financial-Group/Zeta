@@ -1,0 +1,87 @@
+import { describe, expect, test } from "bun:test";
+import type { TrajectoryPacket } from "./autonomous-pickup";
+import { selectNextTrajectory } from "./autonomous-pickup";
+
+function packet(partial: Partial<TrajectoryPacket> & Pick<TrajectoryPacket, "slug" | "title">): TrajectoryPacket {
+  return {
+    relativePath: `docs/trajectories/${partial.slug}/RESUME.md`,
+    status: "active",
+    blocker: null,
+    nextAction: "Claim and implement one small action",
+    childCandidates: [],
+    backlogRefs: [],
+    bodyLineCount: 40,
+    ...partial,
+  };
+}
+
+describe("selectNextTrajectory", () => {
+  test("selects child-packet creation before implementation when candidates exist", () => {
+    const selection = selectNextTrajectory(
+      [
+        packet({
+          slug: "factory-trajectory-surface",
+          title: "Factory Trajectory Surface",
+          nextAction: "alignment measurement trajectory, grounded in B-0205",
+          childCandidates: ["alignment measurement trajectory, grounded in B-0205"],
+          backlogRefs: ["B-0205"],
+        }),
+      ],
+      [],
+    );
+
+    expect(selection.status).toBe("selected");
+    expect(selection.action).toBe("create-child-packet");
+    expect(selection.executionPrompt).toContain("Create exactly one child trajectory packet");
+    expect(selection.executionPrompt).toContain("Trajectory is number one");
+    expect(selection.executionPrompt).toContain("B-0205");
+  });
+
+  test("routes broad follow-up text to decomposition", () => {
+    const selection = selectNextTrajectory(
+      [
+        packet({
+          slug: "typescript-bun-migration",
+          title: "TypeScript / Bun migration",
+          nextAction: "Possible follow-ups: (a) audit bash siblings; (b) switch budget wrapper",
+        }),
+      ],
+      [],
+    );
+
+    expect(selection.status).toBe("selected");
+    expect(selection.action).toBe("decompose");
+  });
+
+  test("blocks packets with explicit blockers", () => {
+    const selection = selectNextTrajectory(
+      [
+        packet({
+          slug: "blocked-lane",
+          title: "Blocked lane",
+          blocker: "waiting for maintainer decision",
+        }),
+        packet({ slug: "ready-lane", title: "Ready lane" }),
+      ],
+      [],
+    );
+
+    expect(selection.status).toBe("selected");
+    expect(selection.selected?.slug).toBe("ready-lane");
+    expect(selection.blocked[0]?.reason).toContain("waiting for maintainer decision");
+  });
+
+  test("skips matching active claims", () => {
+    const selection = selectNextTrajectory(
+      [
+        packet({ slug: "factory-trajectory-surface", title: "claimed" }),
+        packet({ slug: "typescript-bun-migration", title: "fallback" }),
+      ],
+      ["claim/factory-trajectory-surface"],
+    );
+
+    expect(selection.status).toBe("selected");
+    expect(selection.selected?.slug).toBe("typescript-bun-migration");
+    expect(selection.blocked[0]?.reason).toContain("claim/factory-trajectory-surface");
+  });
+});
