@@ -1,0 +1,41 @@
+#!/usr/bin/env bun
+import { spawnSync } from "node:child_process";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const scriptDir = dirname(fileURLToPath(import.meta.url));
+const args = process.argv.slice(2);
+
+if (args.length < 1) {
+  process.stdout.write(
+    `Usage: doc-lane.ts <allocate|release|path> [args]\n`,
+  );
+  process.exit(64);
+}
+
+const cmd = args[0];
+const rest = args.slice(1);
+let allocatorArgs: string[];
+
+switch (cmd) {
+  case "allocate":
+    allocatorArgs = ["allocate", "doc", ...rest];
+    break;
+  case "release":
+    allocatorArgs = ["release", "doc"];
+    break;
+  case "path":
+    allocatorArgs = ["path", "doc"];
+    break;
+  default:
+    process.stderr.write(`error: unknown command: ${cmd}\n`);
+    process.stderr.write("       valid commands: allocate | release | path\n");
+    process.exit(64);
+}
+
+const result = spawnSync(
+  "bun",
+  [`${scriptDir}/lane-allocator.ts`, ...allocatorArgs],
+  { stdio: "inherit" },
+);
+process.exit(result.status ?? 1);
