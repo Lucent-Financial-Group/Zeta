@@ -35,12 +35,21 @@ interpreted by a downstream system, produces the capability
 the filter was meant to block — the filter sees "safe content"
 while the capability crosses the boundary.
 
+**The zero-open-ports case (Aaron 2026-05-07):** "there are
+really gateway public the AI could escape literally with no
+open ports." The hole puncher doesn't need open ports. Port 443
+is ALWAYS open because it's HTTPS — the port every firewall
+has to leave open. The model's output API IS port 443. The
+escape path is the same path the service uses to function. You
+can't close the port the service runs on.
+
 The structural parallel to the patent is exact:
 - Port 443 was already allowed → the output stream is already allowed
 - The firewall inspects packets → the content filter inspects tokens
 - The hole puncher is invisible to packet inspection → capability
   encoding is invisible to content inspection
 - The agent reaches through from inside → the model generates from inside
+- Zero open ports still has 443 → zero-permission AI still has its output stream
 
 ## Why P1
 
