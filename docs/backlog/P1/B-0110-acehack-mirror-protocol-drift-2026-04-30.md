@@ -1,7 +1,9 @@
 ---
 id: B-0110
 priority: P1
-status: open
+status: closed
+closed: 2026-05-07
+closed_by: "Path 2 doctrine landed in CLAUDE.md — mirror-refresh protocol operational"
 title: AceHack mirror-refresh protocol drift — Path 2 chosen, doctrine update landing in same PR (2026-04-30)
 tier: drift-resolution
 effort: S
