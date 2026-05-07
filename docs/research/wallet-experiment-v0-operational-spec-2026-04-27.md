@@ -300,19 +300,19 @@ signer:
   type: <session_key | master_eoa>
   address: <0x...>
   authority_source: <smart-account-address + EIP-7702 delegate ref>
-tx:
-  hash: <0x...>
-  chain: <Base | other>
-  block_number: <int>
-  timestamp: <ISO8601>
+tx:  # Optional block — null when pre_flight_retracted = true
+  hash: <0x... | null>
+  chain: <Base | other | null>
+  block_number: <int | null>
+  timestamp: <ISO8601 | null>
   amount_in:
-    asset: <USDC | ETH>
-    value: <decimal>
+    asset: <USDC | ETH | null>
+    value: <decimal | null>
   amount_out:
-    asset: <USDC | ETH>
-    value: <decimal>
-  counterparty: <DEX router address>
-  venue: <Uniswap_v3 | other>
+    asset: <USDC | ETH | null>
+    value: <decimal | null>
+  counterparty: <DEX router address | null>
+  venue: <Uniswap_v3 | other | null>
 risk_class: <low | medium | high>
 expected_outcome:
   thesis: <plain-English statement; agent-authored before signing>
