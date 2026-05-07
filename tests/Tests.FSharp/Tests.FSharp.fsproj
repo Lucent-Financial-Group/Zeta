@@ -55,6 +55,7 @@
     <Compile Include="Storage/Spine.Balanced.Tests.fs" />
     <Compile Include="Storage/Spine.Disk.Tests.fs" />
     <Compile Include="Storage/Checkpoint.Tests.fs" />
+    <Compile Include="Storage/CheckpointStore.Tests.fs" />
     <Compile Include="Storage/Merkle.Tests.fs" />
     <Compile Include="Storage/FastCdc.Tests.fs" />
     <Compile Include="Storage/ClosureTable.Tests.fs" />
