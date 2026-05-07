@@ -334,6 +334,185 @@ function checkTrajectoryProgress(): HealthSignal[] {
   return signals;
 }
 
+function checkLostFiles(): HealthSignal[] {
+  const signals: HealthSignal[] = [];
+
+  const deletedRecent = run("git", [
+    "log",
+    "--all",
+    "--diff-filter=D",
+    "--since=7 days ago",
+    "--name-only",
+    "--pretty=format:",
+  ]);
+
+  if (deletedRecent.ok) {
+    const deleted = deletedRecent.stdout
+      .split("\n")
+      .filter((l) => l.trim().length > 0);
+    if (deleted.length > 0) {
+      signals.push({
+        surface: "lost-files",
+        level: "warning",
+        message: `${deleted.length} file(s) deleted in last 7 days`,
+        action:
+          "audit recent deletions — check if content was captured elsewhere before removal",
+      });
+    }
+  }
+
+  const stash = run("git", ["stash", "list"]);
+  if (stash.ok && stash.stdout.length > 0) {
+    const stashCount = stash.stdout.split("\n").filter(Boolean).length;
+    if (stashCount > 0) {
+      signals.push({
+        surface: "lost-files",
+        level: "warning",
+        message: `${stashCount} stash entry(ies) — possible lost work-in-progress`,
+        action: "review stash entries — pop or drop",
+      });
+    }
+  }
+
+  const closedNotMerged = run("gh", [
+    "pr",
+    "list",
+    "--repo",
+    "Lucent-Financial-Group/Zeta",
+    "--state",
+    "closed",
+    "--limit",
+    "20",
+    "--json",
+    "number,mergedAt,closedAt,title",
+  ]);
+
+  if (closedNotMerged.ok) {
+    try {
+      const prs = JSON.parse(closedNotMerged.stdout) as Array<{
+        number: number;
+        mergedAt: string | null;
+        closedAt: string;
+        title: string;
+      }>;
+      const unmerged = prs.filter((pr) => {
+        if (pr.mergedAt) return false;
+        const age = Date.now() - new Date(pr.closedAt).getTime();
+        return age < 30 * 24 * 60 * 60 * 1000;
+      });
+
+      if (unmerged.length > 0) {
+        signals.push({
+          surface: "lost-files",
+          level: "warning",
+          message: `${unmerged.length} closed-not-merged PR(s) in last 30 days: ${unmerged.map((p) => `#${p.number}`).join(", ")}`,
+          action:
+            "check if closed-not-merged PRs contain unrecovered content",
+        });
+      }
+    } catch {
+      // parse failure
+    }
+  }
+
+  const orphanBranches = run("git", [
+    "for-each-ref",
+    "--no-merged",
+    "origin/main",
+    "--format=%(refname:short)",
+    "refs/remotes/origin/",
+  ]);
+
+  if (orphanBranches.ok && orphanBranches.stdout) {
+    const branches = orphanBranches.stdout.split("\n").filter(Boolean);
+    const nonClaim = branches.filter(
+      (b) => !b.includes("claim/") && !b.includes("origin/main"),
+    );
+    if (nonClaim.length > 10) {
+      signals.push({
+        surface: "lost-files",
+        level: "warning",
+        message: `${nonClaim.length} orphan branch(es) not merged to main`,
+        action:
+          "audit orphan branches for unrecovered content — per LOST-FILES-LOCATIONS.md class 2",
+      });
+    }
+  }
+
+  const worktrees = run("git", ["worktree", "list", "--porcelain"]);
+  if (worktrees.ok) {
+    const wtPaths = worktrees.stdout
+      .split("\n")
+      .filter((l) => l.startsWith("worktree "));
+    if (wtPaths.length > 1) {
+      signals.push({
+        surface: "lost-files",
+        level: "warning",
+        message: `${wtPaths.length - 1} extra worktree(s) — possible subagent remnants`,
+        action:
+          "check worktrees for uncommitted changes — per LOST-FILES-LOCATIONS.md class 7",
+      });
+    }
+  }
+
+  const drafts = run("gh", [
+    "pr",
+    "list",
+    "--repo",
+    "Lucent-Financial-Group/Zeta",
+    "--state",
+    "open",
+    "--json",
+    "number,isDraft,title",
+  ]);
+
+  if (drafts.ok) {
+    try {
+      const prs = JSON.parse(drafts.stdout) as Array<{
+        number: number;
+        isDraft: boolean;
+        title: string;
+      }>;
+      const draftPRs = prs.filter((pr) => pr.isDraft);
+      if (draftPRs.length > 0) {
+        signals.push({
+          surface: "lost-files",
+          level: "warning",
+          message: `${draftPRs.length} draft PR(s): ${draftPRs.map((p) => `#${p.number}`).join(", ")}`,
+          action:
+            "review draft PRs — publish or close — per LOST-FILES-LOCATIONS.md class 8",
+        });
+      }
+    } catch {
+      // parse failure
+    }
+  }
+
+  const memoryRefs = run("bun", [
+    join(ROOT, "tools/hygiene/audit-memory-references.ts"),
+  ]);
+  if (memoryRefs.ok && memoryRefs.stdout.includes("BROKEN")) {
+    const brokenCount = (memoryRefs.stdout.match(/BROKEN/g) || []).length;
+    signals.push({
+      surface: "lost-files",
+      level: "warning",
+      message: `${brokenCount} broken memory reference(s) — possible deleted memory files`,
+      action:
+        "fix broken memory references — per LOST-FILES-LOCATIONS.md class 15",
+    });
+  }
+
+  if (signals.length === 0) {
+    signals.push({
+      surface: "lost-files",
+      level: "ok",
+      message: "No lost-file signals detected",
+    });
+  }
+
+  return signals;
+}
+
 function checkRecentCommitCadence(): HealthSignal[] {
   const signals: HealthSignal[] = [];
   const r = run("git", [
@@ -371,6 +550,7 @@ export function runHealthCheck(): HealthReport {
     ...checkClaimFreshness(),
     ...checkWorkingTreeCleanliness(),
     ...checkTrajectoryProgress(),
+    ...checkLostFiles(),
     ...checkRecentCommitCadence(),
   ];
 
