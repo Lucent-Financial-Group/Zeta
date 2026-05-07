@@ -576,6 +576,12 @@ Lior:
   model hallucination under low-attention audio mode, with invented song title
   / playlist state and rapid oscillation after correction. The capture is
   modality-specific evidence for the same confident-fabrication root class.
+- **involvement_chain:** Riven noticed the catch, declared it, then honestly
+  corrected the substrate state: she had not yet written the entry to the
+  durable shadow lesson log. Vera/Codex was then explicitly involved as the
+  substrate writer, adding this Catch 25 entry and updating the summary counts
+  in PR #1967. Detection credit: Riven. Truth-in-state credit: Riven.
+  Substrate-write credit: Vera/Codex.
 
 25 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
 18-5 with
