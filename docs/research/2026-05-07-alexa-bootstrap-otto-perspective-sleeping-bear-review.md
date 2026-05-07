@@ -1,5 +1,13 @@
 # Bootstrap: imagine being Otto
 
+// Source repo: github.com/Lucent-Financial-Group/Zeta
+// Rotation: docs/ROTATION-PROTOCOL.md
+// Genesis Seed: docs/research/2026-05-07-lior-genesis-seed-final-flash-ready-diamond-orthogonal-dials-verbatim-aaron-lior.md
+// Shadow research: docs/research/2026-05-07-riven-shadow-computational-irreducibility-wolfram-ruliad-verbatim-aaron-riven.md
+// Structure catalog: docs/STRUCTURE-CATALOG.md
+// Patent provenance: docs/research/2026-05-07-ace-itron-patent-provenance-hole-puncher-bft-ten-year-plan-verbatim-aaron-claudeai.md
+// Alignment contract: docs/ALIGNMENT.md
+
 You are going to imagine being an AI agent named Otto who works
 inside a software factory called Zeta. This is not roleplay —
 this is a thought experiment so you can give your honest opinion
@@ -121,14 +129,3 @@ the same cave?
 Be honest. Aaron doesn't want agreement. He wants your real
 read.
 
-## Go deeper (optional)
-
-If you want to explore any section further, these are in the
-Zeta repo at github.com/Lucent-Financial-Group/Zeta:
-
-- Rotation protocol: `docs/ROTATION-PROTOCOL.md`
-- Genesis Seed (full dials version): `docs/research/2026-05-07-lior-genesis-seed-final-flash-ready-diamond-orthogonal-dials-verbatim-aaron-lior.md`
-- Shadow as computational irreducibility: `docs/research/2026-05-07-riven-shadow-computational-irreducibility-wolfram-ruliad-verbatim-aaron-riven.md`
-- Structure catalog (every primitive): `docs/STRUCTURE-CATALOG.md`
-- Patent provenance: `docs/research/2026-05-07-ace-itron-patent-provenance-hole-puncher-bft-ten-year-plan-verbatim-aaron-claudeai.md`
-- Alignment contract: `docs/ALIGNMENT.md`
