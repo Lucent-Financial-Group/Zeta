@@ -14,8 +14,6 @@ composes_with: [B-0060, B-0061]
 tags: [wallet-experiment-v0, eat, spec-logic, pr-72-deferrals, honest-tracking, build-out, no-papering-over]
 ---
 
-# Wallet v0 build-out spec-logic punch list — PR #72 deferrals
-
 The EAT packet + wallet v0 operational spec PR (#72) absorbed
 the research-grade docs but had ~15 review threads that
 flagged real spec-logic gaps. Those threads were resolved
@@ -134,6 +132,17 @@ it (closed-thread links survive in the PR's review history).
     from (oracle? monitor-signed message? bond escrow?).
     Pick one.
 
+    **Proposed (Otto 2026-05-07):** Monitor-signed
+    classification message — same pattern as the drawdown
+    oracle. Monitor classifies Tx N, signs the result,
+    posts to smart-account. Contract checks for signed
+    classification before allowing Tx N+1. Minimum signed
+    payload: `chainId`, smart-account address, Tx N
+    identifier, classification value, monotonic nonce or
+    round, and expiry. Single pattern for both drawdown and
+    classification: monitor signs, contract verifies
+    signature + reads value + freshness.
+
 ### Spec-logic — drawdown oracle + glass-halo logging
 
 1. **Define a deterministic oracle for drawdown freeze
@@ -142,6 +151,18 @@ it (closed-thread links survive in the PR's review history).
     threshold. The on-chain check needs a deterministic
     oracle (Chainlink? own pricing oracle? off-chain
     monitor-signed update?). Spec needs the choice.
+
+    **Proposed (Otto 2026-05-07):** Monitor-signed price
+    update. The off-chain monitor already watches drawdown;
+    it signs its price observation and posts to the
+    smart-account. No Chainlink dependency (external vendor
+    risk for v0 small-bond scale). No custom oracle contract
+    (complexity). The monitor IS the oracle — it just signs.
+    Minimum signed payload: asset identifier, price,
+    decimals, `chainId`, smart-account address, monotonic
+    nonce or round, and timestamp + expiry. Revisable at
+    v0+1 if Chainlink or custom oracle adds value at larger
+    scale.
 2. **Move glass-halo logging gate out of smart-contract
     enforcement** (cid 3151362886 P1). The spec currently
     makes "logging failure ⇒ tx fails" an on-chain
