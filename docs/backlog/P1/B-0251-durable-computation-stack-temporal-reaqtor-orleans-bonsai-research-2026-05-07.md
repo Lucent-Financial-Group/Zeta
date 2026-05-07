@@ -12,8 +12,6 @@ composes_with: [B-0040, B-0250]
 tags: [durability, temporal, reaqtor, orleans, bonsai, standing-query, rx, durable-functions]
 ---
 
-# B-0251 — Durable computation stack research
-
 ## What
 
 Close the `DurabilityMode.StableStorage` gap in
@@ -21,16 +19,16 @@ Close the `DurabilityMode.StableStorage` gap in
 8 systems that solve durable computation at different
 layers:
 
-| System | Layer | Open source |
-|--------|-------|-------------|
-| Bonsai/Nuqleon | Expression tree serialization | MIT (reaqtive/reaqtor) |
-| Temporal | Durable execution (event-history replay) | MIT (temporalio) |
-| Reaqtor | Stateful Rx operators (checkpoint/restore) | MIT (.NET Foundation) |
-| Orleans | Virtual actors (grain identity + persistence) | MIT (dotnet/orleans) |
-| Azure Durable Functions | Microsoft managed durable workflows | MIT (azure/azure-functions-durable-extension) |
-| AWS Step Functions | Amazon managed state machines | Proprietary |
-| Google Dataflow/Beam | Streaming with windowing | Apache 2.0 |
-| TPL Dataflow / Mailbox | .NET in-process dataflow | MIT (.NET runtime) |
+| System | Layer | License |
+| ------ | ----- | ------- |
+| Bonsai/Nuqleon | Expr tree serialization | MIT |
+| Temporal | Durable execution (replay) | MIT |
+| Reaqtor | Stateful Rx (checkpoint) | MIT |
+| Orleans | Virtual actors (grains) | MIT |
+| Durable Functions | MS managed workflows | MIT |
+| AWS Step Functions | Amazon state machines | Proprietary |
+| Dataflow/Beam | Streaming + windowing | Apache 2.0 |
+| TPL Dataflow | .NET in-process dataflow | MIT |
 
 ## Why these compose (not compete)
 
@@ -51,6 +49,7 @@ state:
 - They're inverses: `I(D(x)) = x`
 
 This means:
+
 - **Temporal's event-history replay** = replaying the Z-set
   stream through the deterministic circuit
 - **Reaqtor's operator checkpoint** = serializing the `I`
