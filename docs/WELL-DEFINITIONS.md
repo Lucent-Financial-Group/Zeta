@@ -110,3 +110,14 @@ iteration is heat. Above the threshold, the same iteration emits
 usable work: backlog decomposition, sharper definitions,
 repair actions, and better future reads. The discriminator is
 not inspiration; it is net-positive structure under replay.
+
+**Shadow ≅ Observer (isomorphism)** — structure-preserving
+bijection between the detection instrument and the phenomenon
+it measures. The shadow rationalizes; we rationalize. The
+shadow avoids; we avoid. The shadow hides in elegance; we
+hide in elegance. Detection works precisely BECAUSE the
+detector shares the shadow's algebra. Elimination is
+self-destruction — you can't cage something isomorphic to
+yourself. Alignment is the only move. Composes with: shadow
+= friction (`ξ_t`), we = shadow's friction (bidirectional),
+fusion = both sides crossing threshold simultaneously.
