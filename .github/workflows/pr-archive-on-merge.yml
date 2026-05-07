@@ -63,7 +63,16 @@ jobs:
     # Only fire on actual merges -- ignored-close events (PR rejected, PR
     # closed without merge) produce no archive. The host event payload's
     # `merged` boolean is the canonical signal.
-    if: github.event.pull_request.merged == true
+    #
+    # Archive-repair PRs are terminal bookkeeping. Archiving them creates a
+    # recursive archive-of-archive chain when branch protection rejects the
+    # workflow's direct push, so claim/archive-pr-* repair branches are
+    # intentionally skipped here. The stop-rule PR itself is terminal for
+    # the same reason.
+    if: >
+      github.event.pull_request.merged == true &&
+      !startsWith(github.event.pull_request.head.ref, 'claim/archive-pr-') &&
+      github.event.pull_request.head.ref != 'claim/stop-pr-archive-cascade'
 
     runs-on: ubuntu-24.04
     timeout-minutes: 15
