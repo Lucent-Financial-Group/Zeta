@@ -22,8 +22,8 @@ Non-fusion disclaimer: the spec composes mechanism candidates from `docs/researc
 **Does NOT:**
 
 - Implement any tooling (no Solidity, no off-chain monitor code, no harness changes).
-- Choose a chain (open question; default candidate = Base for L2 EIP-7702 + EIP-3009 support, but maintainer call).
-- Commit to a specific smart-account framework (Safe / ZeroDev / Coinbase Smart Wallet / others — open question).
+- Choose a chain (RESOLVED §12.2: Base for L2 EIP-7702 + EIP-3009 support).
+- Commit to a specific smart-account framework (RESOLVED §12.1: ZeroDev-on-7702).
 - Authorize any real-money transactions.
 - Block on KSK or Aurora shipping (per EAT packet §11.0 + §12 — v0 scaffold is sufficient at v0 scale).
 
@@ -135,7 +135,7 @@ Three actors, three control loops:
 
 ### §3.2 Smart-account layer (EIP-7702 delegate)
 
-- Mechanism: EIP-7702 authorization tuple from Aaron's EOA delegating code execution to a smart-account contract (Safe / ZeroDev / Coinbase Smart Wallet / equivalent — open question §12.1).
+- Mechanism: EIP-7702 authorization tuple from Aaron's EOA delegating code execution to a ZeroDev smart-account contract (RESOLVED §12.1).
 - Function: enforces hard-coded caps before any tx broadcasts. Holds session keys for the agent's mandates.
 - Cannot be overridden by the agent.
 - Caps are enforced **at the contract level**, not at the application level (cryptographic, not prompt-level).
