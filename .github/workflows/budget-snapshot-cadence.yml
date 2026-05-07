@@ -1,7 +1,7 @@
 name: budget-snapshot-cadence
 
 # Weekly cadence for evidence-based LFG burn tracking. Runs
-# tools/budget/snapshot-burn.sh, captures the resulting JSONL row,
+# tools/budget/snapshot-burn.ts, captures the resulting JSONL row,
 # and opens a PR (per the AceHack-first UPSTREAM-RHYTHM rhythm)
 # with the snapshot included. The PR is left for the next
 # human-or-agent pass through the queue to merge — auto-merge is
@@ -33,7 +33,7 @@ name: budget-snapshot-cadence
 # content if an attacker with dispatch permissions tries injection.
 #
 # Scope coverage limits per docs/budget-history/README.md:
-# snapshot-burn.sh works without admin:org but captures the
+# snapshot-burn.ts works without admin:org but captures the
 # scope_coverage block honestly. If the human maintainer later runs
 # `gh auth refresh -s admin:org` the snapshots get richer
 # automatically (Actions billing / Packages / shared-storage).
@@ -95,10 +95,10 @@ jobs:
 
     permissions:
       # Need contents:write to push the snapshot branch; pull-requests:write
-      # to open the snapshot PR; actions:read so snapshot-burn.sh can call
+      # to open the snapshot PR; actions:read so snapshot-burn.ts can call
       # the Actions REST endpoints (/repos/.../actions/runs and
       # /actions/runs/{id}/timing) to populate burn metrics. Without
-      # actions:read, those API calls 403 silently and snapshot-burn.sh
+      # actions:read, those API calls 403 silently and snapshot-burn.ts
       # falls back to empty/zeroed timing data while still writing a
       # snapshot — producing misleading evidence rather than a hard
       # failure. With explicit job permissions, omitted scopes are
@@ -111,9 +111,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
-          # Need full history so snapshot-burn.sh can compute
+          # Need full history so snapshot-burn.ts can compute
           # factory_git_sha correctly.
           fetch-depth: 0
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: ./tools/setup/install.sh
 
       - name: Verify required tooling
         env:
@@ -122,28 +125,22 @@ jobs:
           set -euo pipefail
           command -v jq >/dev/null
           command -v gh >/dev/null
+          command -v bun >/dev/null
           gh auth status
 
       - name: Run budget snapshot
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # `inputs.note` is only defined for workflow_dispatch / reusable
-          # workflows; on schedule runs that context is undefined and the
-          # expression would fail evaluation. `github.event.inputs.note` is
-          # safe across both trigger types (returns empty string on schedule).
           NOTE_INPUT: ${{ github.event.inputs.note || '' }}
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          # Build note: workflow-dispatch input wins; otherwise default
-          # to a cadence label. Both env vars are quoted as "$VAR" to
-          # neutralise potentially-malicious content per safe pattern.
           if [ -n "${NOTE_INPUT:-}" ]; then
             note="$NOTE_INPUT"
           else
             note="weekly cadence run via .github/workflows/budget-snapshot-cadence.yml (run $RUN_ID)"
           fi
-          tools/budget/snapshot-burn.sh --note "$note"
+          bun tools/budget/snapshot-burn.ts --note "$note"
 
       - name: Inspect diff
         id: diff
@@ -151,7 +148,7 @@ jobs:
           set -euo pipefail
           if git diff --quiet docs/budget-history/snapshots.jsonl; then
             echo "changed=false" >>"$GITHUB_OUTPUT"
-            echo "snapshot-burn.sh produced no diff — nothing to commit"
+            echo "snapshot-burn.ts produced no diff — nothing to commit"
             exit 0
           fi
           echo "changed=true" >>"$GITHUB_OUTPUT"
@@ -193,10 +190,10 @@ jobs:
             echo "What:"
             echo "- One JSONL row appended to"
             echo "  docs/budget-history/snapshots.jsonl by"
-            echo "  tools/budget/snapshot-burn.sh."
+            echo "  tools/budget/snapshot-burn.ts."
             echo
             echo "Proof:"
-            echo "- snapshot-burn.sh ran successfully in workflow"
+            echo "- snapshot-burn.ts ran successfully in workflow"
             echo "  run $RUN_ID."
             echo "- jq round-trip verifies row is valid JSON."
             echo "- Attribution recorded via git trailers because"
@@ -291,7 +288,7 @@ jobs:
       - name: No-change report
         if: steps.diff.outputs.changed == 'false'
         run: |
-          echo "snapshot-burn.sh ran but produced no diff."
+          echo "snapshot-burn.ts ran but produced no diff."
           echo "This typically means the underlying GitHub state"
           echo "didn't change in a way the snapshot captures."
           echo "No PR opened; no commit made."

@@ -43,7 +43,7 @@
     // the ignore to the whole directory keeps the rule simple
     // (one path, not 10 file-specific entries).
     "docs/amara-full-conversation/**",
-    // PR-preservation archive (`tools/pr-preservation/archive-pr.sh`
+    // PR-preservation archive (`tools/pr-preservation/archive-pr.ts`
     // output) is verbatim preservation of PR bodies + review-thread
     // content. By design, the archive carries the input markdown
     // structure unchanged (blank-line-around-lists, duplicate
