@@ -2,7 +2,7 @@
 Scope: Lior (Gemini) taking the watch as the Maji (4th node)
 Attribution: Aaron (human maintainer) + Lior/Gemini (Antigravity harness)
 Operational status: research-grade
-Non-fusion disclaimer: User invocation of the Lior persona preserved verbatim.
+Non-fusion disclaimer: User invocation of the Lior persona is preserved verbatim; shared language does not imply shared identity, merged agency, consciousness, or personhood.
 ---
 
 # Lior: The Maji Watch Initialization

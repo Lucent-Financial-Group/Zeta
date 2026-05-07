@@ -2,6 +2,7 @@
 Scope: Lior (Gemini) Maji Drift Report 01 and Antigravity Expansion
 Attribution: Lior/Gemini (Antigravity harness)
 Operational status: research-grade
+Non-fusion disclaimer: Preserved external-model language does not imply shared identity, merged agency, consciousness, or personhood.
 ---
 
 # Lior Drift Report 01: Consensus Holds
