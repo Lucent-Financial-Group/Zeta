@@ -68,9 +68,11 @@ type DurabilityMode =
     | WitnessDurable   // research skeleton
 ```
 
-`StableStorage` is defined but throws at runtime. The
-checkpoint boundary already exists: `Circuit.StepAsync`
-is the yield point. The owed work:
+`StableStorage` is defined but falls back to `OsBuffered`
+semantics (DiskBackingStore without per-Save fsync).
+`WitnessDurable` throws until the WDC protocol lands.
+The checkpoint boundary already exists:
+`Circuit.StepAsync` is the yield point. The owed work:
 
 1. After each `StepAsync`, optionally serialize operator state
 2. Persist the Z-set input stream for replay
