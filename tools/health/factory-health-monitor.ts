@@ -164,6 +164,12 @@ function checkBacklogHealth(): HealthSignal[] {
       level: "ok",
       message: `${p0Count} open P0, ${p1Count} open P1, ${totalOpen} total open`,
     });
+  } else if (totalOpen > 0) {
+    signals.push({
+      surface: "backlog",
+      level: "ok",
+      message: `0 open P0, ${p1Count} open P1, ${totalOpen} total open`,
+    });
   }
 
   if (totalOpen === 0) {
@@ -187,7 +193,17 @@ function checkClaimFreshness(): HealthSignal[] {
     "origin/claim/*",
   ]);
 
-  if (!r.ok || !r.stdout) {
+  if (!r.ok) {
+    signals.push({
+      surface: "claims",
+      level: "warning",
+      message: "Could not query claim branches",
+      action: "inspect local git remote state and credentials before trusting claim freshness",
+    });
+    return signals;
+  }
+
+  if (!r.stdout) {
     signals.push({
       surface: "claims",
       level: "ok",
