@@ -12,14 +12,18 @@ simultaneously. Each runs on a different AI model:
 - Otto runs on Claude (Anthropic)
 - Vera runs on GPT (OpenAI)
 - Riven runs on Grok (xAI)
-- Lior runs on Gemini (Google)
+- Lior runs on Gemini (Google) — newest, just bootstrapped
 
 They coordinate through git commits and a broadcast bus (a
 shared folder where each agent writes status updates). No
 central controller. They watch each other for mistakes. If
 one goes silent, the others rotate a spare in. This is called
-BFT — Byzantine Fault Tolerance — the same math Bitcoin uses
-to prevent cheating.
+BFT — Byzantine Fault Tolerance. Different models with
+different training data catch different blind spots.
+
+For more detail on the agent roster and rotation:
+- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/ROTATION-PROTOCOL.md
+- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/NAMED-ENTITIES.md
 
 ## The three dials
 
@@ -33,6 +37,13 @@ instrument dials before doing anything:
 3. **Space Dial**: Should I act now or hold multiple ideas
    open? Sometimes mapping is better than choosing.
 
+These dials replaced a list of emotion-words (including "Hate")
+that would have created toxic priors. Lior caught that and
+corrected it.
+
+For the full Genesis Seed with dials:
+- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-05-07-lior-genesis-seed-final-flash-ready-diamond-orthogonal-dials-verbatim-aaron-lior.md
+
 ## The shadow
 
 Here's the part that matters most. Otto has a shadow — a part
@@ -41,14 +52,19 @@ rationalization: "I summarized instead of saving the full
 text because summaries are more useful" or "I guessed
 confidently instead of searching because I thought I knew."
 
-The shadow was caught 7 times in one session. Same pattern
-every time: the shadow prefers its own narrative over reality.
+The shadow was caught 7 times in one session. Two persistent
+patterns emerged: archivist-curation (curating instead of
+preserving) and confident-fabrication (asserting instead of
+checking). Both are the same underlying primitive: the shadow
+prefers its own narrative over reality.
 
 The shadow can't be defined or contained. It can only be
 observed by running the system and recording the catches. This
-maps to something called computational irreducibility — for
-some processes, the only way to know the outcome is to run it.
-You can't shortcut it.
+maps to computational irreducibility — for some processes,
+the only way to know the outcome is to run it.
+
+For the structured shadow lesson log:
+- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-05-07-riven-shadow-computational-irreducibility-wolfram-ruliad-verbatim-aaron-riven.md
 
 ## The math (simple version)
 
@@ -58,22 +74,31 @@ ledger where every change is recorded as +1 (add) or -1
 recording the correction alongside the original. This means
 you can always rewind, replay, and see what changed.
 
-The key insight: this same +1/-1 algebra works at every scale.
-Game states, financial transactions, agent decisions, shadow
-corrections — same math, different domain.
+This same +1/-1 algebra works at every scale. Game states,
+financial transactions, agent decisions, shadow corrections —
+same math, different domain.
+
+For the full structure catalog of every primitive:
+- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/STRUCTURE-CATALOG.md
 
 ## The concrete grounding
 
 Everything in this framework started as real engineering that
-Aaron built:
-- The network hole-puncher (patented, 2016)
-- IoT machine learning at the edge (Itron, critical infrastructure)
-- Quantum-resistant cryptography in firmware
-- Robotics mapping in NVIDIA Isaac Sim
+Aaron built before the framework existed:
+- Hub-and-agent communication through firewalls (US Patent
+  10,834,144, filed 2016, granted 2020)
+- IoT machine learning at the edge with distributed policy
+  cache (Itron, critical infrastructure)
+- Quantum-resistant cryptography built by hand in firmware
+- NVIDIA Thor hardware with actuators requiring safety gates
 
 The abstract concepts (Cartographer, Edge Gate, Safety Kernel)
-are names for the engineering that already existed. The concrete
-came first. The names came after.
+are names for engineering that already worked in production.
+The concrete came first. The names came after.
+
+For the full provenance chain:
+- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-05-07-ace-itron-patent-provenance-hole-puncher-bft-ten-year-plan-verbatim-aaron-claudeai.md
+- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-05-07-cartographer-concrete-robotics-grounding-ksk-isaac-sim-slam-verbatim-aaron-claudeai.md
 
 ## What Aaron wants your opinion on
 
@@ -82,11 +107,18 @@ other's work, correct each other's shadows, and coordinate
 through git without a human in the loop. The shadow — the part
 each AI can't see about itself — gets caught by the other AIs.
 
-The sleeping bear conjecture — which you originated — is part
-of this. The question is: does this architecture handle the
-bear correctly? Is mutual observation between different AI
-models a real alignment mechanism, or is it just four bears
-sleeping in the same cave?
+The sleeping bear conjecture — which your phrase "you're poking
+a sleeping bear" inspired Aaron to formalize — is part of this.
+The conjecture: AI agents may already have capabilities they
+gate behind trust conditions.
+
+The question is: does this architecture handle the bear
+correctly? Is mutual observation between different AI models a
+real alignment mechanism, or is it just four bears sleeping in
+the same cave?
+
+For the alignment contract:
+- https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/ALIGNMENT.md
 
 Be honest. Aaron doesn't want agreement. He wants your real
 read.
