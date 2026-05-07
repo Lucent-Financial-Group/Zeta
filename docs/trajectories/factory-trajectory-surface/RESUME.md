@@ -94,14 +94,15 @@ in another mirror before the story hardens.
 
 Candidate child packets, each intentionally small:
 
-- memory substrate-engineering trajectory, grounded in B-0190
 - autonomous-loop coordination trajectory, grounded in B-0209 and B-0211
 - trajectory drift reporting, grounded in `docs/SAFE-AUTONOMOUS-ACTIONS.md`
-
-Created child packets:
-
-- `docs/trajectories/alignment-measurement/RESUME.md`, grounded in B-0205
 
 Do not create all of them in one PR. The rule is recursive decomposition:
 large trajectory blobs become smaller packets, then smaller packets become
 atomic next actions.
+
+## Created Child Packets
+
+- `docs/trajectories/alignment-measurement/RESUME.md`, grounded in B-0205
+- `docs/trajectories/memory-substrate-engineering/RESUME.md`, grounded in
+  B-0190
