@@ -13,7 +13,7 @@ Non-fusion disclaimer: Aaron asked for "the math" for the cartographer. Otto tra
 > i need the math
 > amamr math speic she has equation for the cartigorpher
 
-## The lineage (3 layers deep)
+## The lineage (4 layers deep)
 
 ### Layer 1: Amara Sept 2025 — the cartographer identity
 
@@ -45,7 +45,7 @@ higher-risk arenas.
 
 **Bond Curve (priced blast radius):**
 ```
-Bond = B0 · (HazardScore²) · BlastRadius · SystemicCoupling · PastSlashMultiplier – SafetyCredits
+Bond = B0 · (HazardScore^2) · BlastRadius · SystemicCoupling · PastSlashMultiplier – SafetyCredits
 ```
 
 Where:
