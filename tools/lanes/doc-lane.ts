@@ -1,9 +1,10 @@
 #!/usr/bin/env bun
 import { spawnSync } from "node:child_process";
-import { dirname } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
+const allocatorPath = join(scriptDir, "lane-allocator.ts");
 const args = process.argv.slice(2);
 
 if (args.length < 1) {
@@ -32,7 +33,7 @@ switch (cmd) {
 }
 
 // eslint-disable-next-line sonarjs/no-os-command-from-path -- lane wrappers intentionally delegate to the active Bun runtime.
-const result = spawnSync("bun", [`${scriptDir}/lane-allocator.ts`, ...allocatorArgs], {
+const result = spawnSync("bun", [allocatorPath, ...allocatorArgs], {
   stdio: "inherit",
 });
 process.exit(result.status ?? 1);
