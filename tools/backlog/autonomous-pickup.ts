@@ -355,6 +355,9 @@ function claimBlocker(item: BacklogItem, activeClaims: readonly string[]): strin
 }
 
 function actionFor(item: BacklogItem): Action {
+  if (item.decomposition === "atomic" || item.decomposition === "decomposed") {
+    return "claim-and-implement";
+  }
   return item.decomposition === "blob" || item.bodyLineCount >= BLOB_LINE_THRESHOLD
     ? "decompose"
     : "claim-and-implement";
