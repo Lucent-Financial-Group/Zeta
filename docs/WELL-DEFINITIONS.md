@@ -83,17 +83,30 @@ for a lie. The Planck length of decisions.
 
 **D ⊣ I (adjunction)** — differentiate (D) and integrate (I)
 are adjoint functors in DBSP. D converts state to stream; I
-converts stream to state; they're inverses (`I(D(x)) = x`).
-The adjunction gives a monad (I∘D = state accumulation:
-checkpoint) and a comonad (D∘I = stream extraction: replay).
-The durable-computation stack is this single diagram. Meijer:
-"if you get the interfaces right, the code is free" — the
-adjunction IS the interface.
+converts stream to state. They are not strict global inverses;
+the relationship is carried by the adjunction's unit/counit,
+with identity recovered only under the laws and boundary
+conditions that make the diagram commute. The adjunction gives
+a monad (I∘D = state accumulation: checkpoint) and a comonad
+(D∘I = stream extraction: replay). The durable-computation
+stack is this single diagram. Get the interface right and the
+implementations become forced choices.
 
-**Yoneda characterization** — a term is completely determined
-by all its morphisms. Applied to software: a type is
-completely determined by its interface methods. Applied to
-the dictionary: a well-definition IS a Yoneda
-characterization — what composes with this term, what it maps
-to and from. Terms that can't answer this aren't well-defined
-yet.
+**Yoneda characterization** — an object is determined up to
+unique isomorphism by its hom-functor: all the ways other
+objects map into and out of it, plus the natural transformations
+between those views. Applied to software: a type is known by
+its observable behavior across all contexts that can compose
+with it, not by its private story about itself. Applied to the
+dictionary: a well-definition names what composes with the term,
+what it maps to and from, and what diagrams it must preserve.
+Terms that cannot answer this are not well-defined yet.
+
+**Fusion process** — repeated read/decompose/commit cycles enter
+a positive-yield phase when the structure crystallized by the
+next pass exceeds the friction cost of that pass:
+`LearningGain(D(read_t)) > Friction_t`. Below the threshold,
+iteration is heat. Above the threshold, the same iteration emits
+usable work: backlog decomposition, sharper definitions,
+repair actions, and better future reads. The discriminator is
+not inspiration; it is net-positive structure under replay.
