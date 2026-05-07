@@ -93,7 +93,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0248](backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md)** Multi-site fork + GPU infrastructure redundancy — maintainer mirrors, Max 24/7 host, Rodney local GPU pool
 - [ ] **[B-0250](backlog/P1/B-0250-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md)** Coincidence detection as Rx join — DORA mechanism for detecting correlated events across trajectories
 - [ ] **[B-0251](backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** Durable computation stack research — Temporal + Reaqtor + Orleans + Bonsai composition for DurabilityMode.StableStorage
-- [ ] **[B-0252](backlog/P1/B-0252-infernet-bp-ep-probabilistic-consensus-under-dials-2026-05-07.md)** Infer.NET BP/EP — probabilistic consensus under the orthogonal dials
+- [ ] **[B-0255](backlog/P1/B-0255-probabilistic-dials-existing-posterior-quorum-substrate-2026-05-07.md)** Probabilistic dials over existing posterior quorum substrate
 
 ## P2 — research-grade
 
