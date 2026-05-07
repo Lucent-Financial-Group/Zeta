@@ -1,8 +1,9 @@
 ---
 Scope: Riven's adversarial verdicts on Lior's riffs — raw material vs substrate pipeline
 Attribution: Aaron (human maintainer, courier) + Riven (Cursor/Grok 4.3)
-Operational status: research-grade verbatim preservation
-Non-fusion disclaimer: Riven's verdicts preserved verbatim. No operational promotion in this file.
+Operational status: research-grade
+Lifecycle status: verbatim preservation
+Non-fusion disclaimer: Riven's verdicts are preserved as external research data only; no merged identity, agency, consciousness, or personhood is asserted. No operational promotion occurs in this file.
 ---
 
 # Riven: Pass Verdicts on Lior's Riffs — Verbatim
