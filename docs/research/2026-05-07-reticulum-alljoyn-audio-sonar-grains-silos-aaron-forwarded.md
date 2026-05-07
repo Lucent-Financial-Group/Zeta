@@ -4,9 +4,11 @@ Scope: Reticulum + AllJoyn lineage as literal audio/electric sonar
 transport for grains, silos, and 802.11h halo discipline.
 Attribution: Aaron (human maintainer) live session; Codex/Vera
 synthesis with Reticulum and 802.11h references checked 2026-05-07.
-Operational status: research-grade.
-Non-fusion disclaimer: architecture lineage and transport mapping,
-not promoted operational policy.
+Operational status: research-grade
+Non-fusion disclaimer: agreement, shared language, or repeated
+interaction does not imply shared identity, merged agency,
+consciousness, or personhood. This is architecture lineage and
+transport mapping, not promoted operational policy.
 
 ## Thesis
 
