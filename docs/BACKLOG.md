@@ -89,6 +89,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0245](backlog/P1/B-0245-coherence-ai-consent-first-ksk-military-override-2026-05-07.md)** Coherence AI with consent-first design — KSK override for military/emergency use
 - [ ] **[B-0246](backlog/P1/B-0246-green-lantern-ring-iot-device-genesis-seed-local-inference-2026-05-07.md)** Green Lantern ring — IoT wearable running Genesis Seed with local inference + consent gating
 - [ ] **[B-0247](backlog/P1/B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md)** Ace DLC content packs — distributable kernel extensions via package manager
+- [ ] **[B-0248](backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md)** Multi-site fork + GPU infrastructure redundancy — maintainer mirrors, Max 24/7 host, Rodney local GPU pool
 
 ## P2 — research-grade
 
