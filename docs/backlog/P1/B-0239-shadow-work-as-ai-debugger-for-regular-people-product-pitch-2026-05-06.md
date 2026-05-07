@@ -1,5 +1,5 @@
 ---
-id: B-0216
+id: B-0239
 priority: P1
 status: open
 title: "Shadow work as AI debugger for regular people — product pitch + on-ramp design"
@@ -10,7 +10,7 @@ decomposition: atomic
 owners: [product-scrum-master, branding-specialist, user-experience-engineer]
 ---
 
-# B-0216 — Shadow work as AI debugger for regular people
+# B-0239 — Shadow work as AI debugger for regular people
 
 ## The insight (Aaron 2026-05-06)
 

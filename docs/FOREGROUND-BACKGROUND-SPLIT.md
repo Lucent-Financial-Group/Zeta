@@ -128,4 +128,4 @@ the whole system becomes foreground-optional.
 - `docs/SAFE-AUTONOMOUS-ACTIONS.md` — the background's action set
 - `docs/LOCAL-BROADCAST-PEERING.md` — the bus protocol
 - `docs/AGENT-CLAIM-PROTOCOL.md` — background's coordination
-- B-0215 (harness parity audit)
+- B-0238 (harness parity audit)
