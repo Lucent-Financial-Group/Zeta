@@ -57,7 +57,7 @@ This is defense-first work. Aaron 2026-05-07: "our red team
 should get on that." The attack vector exists structurally —
 better to find the defense before someone else finds the attack.
 
-The Ace product architecture (B-0240, Itron edge gate) is the
+The Ace product architecture (Itron edge gate, per-user memory) is the
 DEFENSE against this vector: gate capability, not topics. But
 the defense needs to be tested against the attack it's designed
 to prevent.
