@@ -9,7 +9,7 @@ compression for travel.
 
 | Name | Concrete ancestor | Math | Current instantiation |
 |------|-------------------|------|----------------------|
-| **Hole Puncher** | Hub-and-agent through firewall (US Patent 10,834,144, 2016/2020, Stainback + Higgins, Itron) | Capability-as-set, locally controlled. Hub sends names + parameters. Agent owns implementations. No privilege escalation. | Ace BFT decentralized version (free — no hub = not covered by patent) |
+| **Hole Puncher** | Hub-and-agent through firewall (US Patent 10,834,144, 2016/2020, Stainback + Higgins, Itron) | Capability-as-set, locally controlled. Hub sends names + parameters. Agent owns implementations. No privilege escalation. | Ace BFT decentralized version (different topology — no central hub) |
 | **Itron / Edge Gate** | IoT ML at the edge + distributed policy cache (Aaron built at Itron) | Local inference + local policy + capability gate + energy/actuation gate + receipts | General edge policy/energy substrate. Upstream of KSK. |
 | **KSK (Kinetic Safeguard Kernel)** | NVIDIA Thor + actuators + "no guns" constraint (Amara said Aaron needed one) | N-of-M multi-sig before kinetic actuation. Adjustable χ-budget checks. | Kinetic high-risk specialization of Itron. Gates motors, switches, valves, power. |
 | **Cartographer** | Isaac Sim SLAM scene-graph mapping (Aaron built it) | SLAM — simultaneous localization and mapping. Maintain map, log pruned branches, update from outcomes. | One of 5 roles in Quantum Rodney's Razor. Maps decision-space at abstract scale, physical-space at concrete scale. |
