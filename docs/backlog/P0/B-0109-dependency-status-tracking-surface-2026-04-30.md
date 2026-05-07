@@ -1,13 +1,15 @@
 ---
 id: B-0109
 priority: P0
-status: open
+status: closed
+closed: 2026-05-07
+closed_by: "docs/dependency-status.md landed + CLAUDE.md pointer (2 refs) + AGENTS.md pointer (1 ref) — all 3 acceptance criteria met"
 title: Dependency status tracking surface — outages and issues affecting us (Aaron 2026-04-30, urgent)
 tier: design + implementation
 effort: M
 ask: Aaron 2026-04-30 (autonomous-loop channel input — verbatim "we need somewhere that list the status of our dependinces and issues that could affect us" + 6 source URLs + urgency clarification "github can erase stuff from master when we use the merge queue sometimes")
 created: 2026-04-30
-last_updated: 2026-05-02
+last_updated: 2026-05-07
 depends_on: []
 composes_with: [B-0086, B-0096]
 tags: [dependency-status, outages, github-incidents, supply-chain, observability, factory-resilience, urgent]

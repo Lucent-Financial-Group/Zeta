@@ -14,7 +14,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0062](backlog/P0/B-0062-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md)** Wallet v0 build-out — concrete spec-logic punch list aggregating PR #72 deferred review concerns (Aaron 2026-04-28 honest-tracking catch)
 - [x] **[B-0073](backlog/P0/B-0073-lfg-csharp-code-scanning-cleanup-13-alerts-blocking-ruleset-2026-04-28.md)** LFG csharp Code Scanning cleanup — 13 open alerts gating code_quality severity:all ruleset on every PR
 - [x] **[B-0085](backlog/P0/B-0085-budget-cadence-workflow-cron-misses-task-287-deadline-window-aaron-2026-04-28.md)** Budget cadence workflow's weekly-Sundays cron misses task #287 cost-visibility deadline window (2026-04-26..04-29)
-- [ ] **[B-0109](backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md)** Dependency status tracking surface — outages and issues affecting us (Aaron 2026-04-30, urgent)
+- [x] **[B-0109](backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md)** Dependency status tracking surface — outages and issues affecting us (Aaron 2026-04-30, urgent)
 - [ ] **[B-0160](backlog/P0/B-0160-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md)** Mechanical authorization check skill build — pace-instruction resolver per Claude.ai 2026-05-02 architectural correction
 - [ ] **[B-0249](backlog/P0/B-0249-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md)** Autonomous backlog pickup — loops must start new work, not just maintain
 
