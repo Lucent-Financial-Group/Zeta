@@ -170,6 +170,6 @@ This backlog item ties together the 2026-05-07 convergence:
 - B-0241 (red team hole puncher) — test the override
 - `docs/STRUCTURE-CATALOG.md` — KSK primitive
 - `docs/research/2026-05-07-kozyrev-mirror-bft-immune-system-three-node-threshold-riff.md` — three-node threshold and immune-system mirror
-- `docs/research/2026-05-07-hawkins-sakana-worm-tower-convergence-world-models-superorganism-verbatim-aaron-claudeai.md` — world-model clustering and superorganism convergence
+- `docs/research/2026-05-07-convergence-hawkins-sakana-worm-towers-bft-superorganism-no-central-authority.md` — world-model clustering and superorganism convergence
 - Per-user MEMORY.md "Ace package manager" — distribution
 - Per-user MEMORY.md "Itron is the edge gate" — consent gate
