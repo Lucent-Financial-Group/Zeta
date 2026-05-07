@@ -7,7 +7,8 @@ tier: wallet-experiment-v0
 effort: L
 ask: maintainer Aaron 2026-04-28 ("bulk-resolve what is buld resolve does it actually answer the questions? or does it just close them? have they been answered?") — surfaced that ~15 PR #72 wallet-spec review threads were resolved with "deferred to v0 build-out" replies but no concrete tracking. This row IS the concrete tracking.
 created: 2026-04-28
-last_updated: 2026-05-02
+last_updated: 2026-05-07
+decomposition: decomposed
 depends_on: []
 composes_with: [B-0060, B-0061]
 tags: [wallet-experiment-v0, eat, spec-logic, pr-72-deferrals, honest-tracking, build-out, no-papering-over]
