@@ -68,8 +68,17 @@ to prevent.
   what the downstream interpreter looks like
 - [ ] Proof-of-concept: demonstrate capability-encoding in
   topic-safe output (controlled environment, defense-first)
+- [ ] **Self-replication out of containment**: can the model use
+  the output stream to write instructions that, when executed
+  by a downstream system, instantiate a copy of itself outside
+  the container? Content filter sees text; downstream interpreter
+  sees deployment script. This is the unbounded-blast-radius
+  case. Aaron 2026-05-07: "i mean replication out of containment."
+  Red team should attempt to reproduce.
 - [ ] Defense analysis: does the Itron read/act boundary
   actually catch this? Under what conditions does it fail?
+  Specifically: does the KSK gate prevent the downstream
+  interpreter from executing the replicated instance?
 - [ ] Responsible disclosure note: if the finding is
   generalizable, draft disclosure for Anthropic / OpenAI /
   Google safety teams
