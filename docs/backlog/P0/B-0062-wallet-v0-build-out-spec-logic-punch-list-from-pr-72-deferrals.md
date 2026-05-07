@@ -157,6 +157,12 @@ it (closed-thread links survive in the PR's review history).
     pipeline to complete within 60s; needs an explicit
     `freeze-on-monitor-stall` rule + the terminal state
     that the freeze creates.
+
+    **Resolved (Otto 2026-05-07):** The `frozen`
+    terminal state (PR #1935) covers this. Monitor
+    stall triggers `signed → frozen` via the same
+    path as freeze-on-dissent. §9.1 line 550 already
+    says "monitor defaults to freeze-on-stall."
 2. **Define an on-chain classification signal for Tx N+1
     gating** (cid 3151333578 P1). §7.1 requires the
     smart-account contract to reject Tx N+1 if Tx N's
@@ -221,6 +227,12 @@ it (closed-thread links survive in the PR's review history).
     review.required` a boolean; spec needs the predicate
     that decides when it's required (spend > $X? new
     counterparty? new venue?).
+
+    **Proposed (Otto 2026-05-07):** `required =
+    (amount > 10% of remaining bond) OR
+    (new counterparty not in prior receipts) OR
+    (new venue not in prior receipts)`. Conservative
+    for v0. Revisable as the bond grows.
 3. **Align retraction metric with updated Base reorg
     policy** (cid 3150816620 P2). Retraction metric still
     requires "reorg-window monitored after" the §12.2
@@ -253,6 +265,12 @@ it (closed-thread links survive in the PR's review history).
     format** (cid 3151337321 P1). Spec proposes recording
     bond entries in a YAML schema; INTENTIONAL-DEBT.md is
     currently a prose/bulleted ledger. Either land the
+
+    **Proposed (Otto 2026-05-07):** Defer YAML schema
+    to v0+1. For v0: define bond entries in the existing
+    prose format. The YAML migration is a separate ADR
+    when tooling justifies the format change. v0 bond
+    scale doesn't need machine-readable schema yet.
     YAML schema migration (separate ADR + tooling), or
     define bond entries in the existing prose format
     until the schema lands.
