@@ -213,6 +213,26 @@ grade absorb), but the substantive concerns now have a
 concrete punch list, not just scattered closed-thread
 comments.
 
+## Progress (2026-05-07 session)
+
+8 of 21 items resolved via doc reconciliation:
+
+- PR #1907: 3 stale "open question" refs → resolved
+- PR #1908: EAT Task B monitor → sibling-repo
+- PR #1910: Phase 1 roadmap monitor + §0 → resolved
+- PR #1922: Receipt schema optional for preflight
+- PR #1923: Unfreeze quorum unified §6.2 ↔ §11.3
+- PR #1924: Ledger update (Vera)
+- PR #1927: EAT retraction-coverage metric aligned
+- §15 send-readiness already reconciled (prior pass)
+
+13 items remain — all P1/P2 design decisions needing
+deeper wallet-domain engagement (preflight terminal
+state, agent self-revocation auth, monitor-stall freeze,
+on-chain classification signal, drawdown oracle,
+glass-halo logging gate, auth for cancellation,
+material-spend criteria, INTENTIONAL-DEBT schema).
+
 ## Composes with
 
 - **B-0060** — human-lineage / external-anchor backfill (the
