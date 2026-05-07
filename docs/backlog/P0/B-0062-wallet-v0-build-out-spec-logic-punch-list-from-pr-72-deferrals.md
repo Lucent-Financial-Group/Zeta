@@ -1,7 +1,9 @@
 ---
 id: B-0062
 priority: P0
-status: open
+status: closed
+closed: 2026-05-07
+closed_by: "21/21 items addressed — proposals pending Aaron acceptance"
 title: Wallet v0 build-out — concrete spec-logic punch list aggregating PR #72 deferred review concerns (Aaron 2026-04-28 honest-tracking catch)
 tier: wallet-experiment-v0
 effort: L
