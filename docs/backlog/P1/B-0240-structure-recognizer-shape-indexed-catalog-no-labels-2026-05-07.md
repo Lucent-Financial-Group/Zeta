@@ -5,7 +5,7 @@ status: open
 title: "Structure recognizer — shape-indexed catalog that distinguishes structures without labels"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: []
+depends_on: [B-0083]
 decomposition: blob
 owners: [architect, formal-verification-expert, performance-engineer]
 ---

@@ -5,7 +5,7 @@ status: open
 title: "Red team: hole puncher pattern applied to AI safety — capability-layer bypass of content-layer filters"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: []
+depends_on: [B-0242]
 decomposition: atomic
 owners: [security-researcher, threat-model-critic, formal-verification-expert]
 ---
