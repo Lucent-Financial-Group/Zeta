@@ -85,6 +85,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0241](backlog/P1/B-0241-hole-puncher-ai-safety-red-team-capability-layer-bypass-2026-05-07.md)** Red team: hole puncher pattern applied to AI safety — capability-layer bypass of content-layer filters
 - [ ] **[B-0242](backlog/P1/B-0242-multiplexed-websockets-fsharp-dotnet10-port-hole-puncher-2026-05-07.md)** Port MultiplexedWebSockets to .NET 10 F# — the hole puncher in Zeta's algebra
 - [ ] **[B-0243](backlog/P1/B-0243-osascript-chrome-extraction-skill-browser-content-2026-05-07.md)** Skill: osascript/Chrome authenticated browser content extraction
+- [ ] **[B-0244](backlog/P1/B-0244-concordance-ai-gpu-local-structure-recognizer-language-2026-05-07.md)** English language concordance AI on local GPUs — structure recognizer applied to language
 
 ## P2 — research-grade
 
