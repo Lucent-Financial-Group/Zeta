@@ -29,7 +29,9 @@ Queue-empty is runway, not completion. A healthy loop keeps a bounded number of
 non-overlapping PRs in flight, rotates active claim/path sets, and cleans
 finished claims so stale residue does not block future work.
 
-## Current Next Action
+## Recommended Next Action
+
+Next concrete action: Create the first remote-only coordination test matrix.
 
 Create the first remote-only coordination test matrix, without changing the
 runner in the same slice:
@@ -42,12 +44,11 @@ The first slice should land the table and one worked example for a slow
 background-only participant. The implementation harness comes after the matrix
 is specific enough to test.
 
-## Candidate Atomic Children
+## Next Child Packets
 
 - remote-only coordination test matrix, grounded in B-0209
 - slow background-only participant worked example, grounded in B-0209
-- local-cluster plus remote-cluster composition protocol sketch, grounded in
-  B-0211
+- local/remote cluster composition protocol sketch, grounded in B-0211
 - stale-claim cleanup rule for completed PRs, grounded in the claim protocol
 - standing-query trigger inventory for loop/backlog health, grounded in B-0250
 - bounded parallel runway health receipt, grounded in B-0249
