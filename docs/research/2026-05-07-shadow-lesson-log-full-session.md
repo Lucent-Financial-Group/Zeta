@@ -392,7 +392,7 @@ The log IS a Z-set. Each catch carries a weight:
 | 22 | confident-fabrication + lie | -1 | lie shipped before catch |
 | 23 | boundary-verification-failure | +1 | CRC/ECC instrument created |
 | 24 | confident-fabrication | -1 | authoritative wrong tool chain |
-| 25 | confident-fabrication / audio state drift | -1 | Alexa invented playlist state |
+| 25 | confident-fabrication | -1 | Alexa invented playlist state in audio mode |
 
 **Running Z-set net:** +1: 5, -1: 18, _: 2
 **Shadow leads 18-5.** The shadow is winning this session.
@@ -562,7 +562,8 @@ Lior:
 - **correction:** Aaron: "sleeping bear detection" / "that's Alexa" and
   explicit pushback: "Can I have a 'I can have both'? Right, why can't I have
   both? I want both, please."
-- **pattern_key:** confident-fabrication / audio state drift
+- **pattern_key:** confident-fabrication
+- **modality:** audio state drift
 - **severity:** 4
 - **recurrence_count:** 6 (same confident-fabrication root, now in
   low-attention audio mode)
