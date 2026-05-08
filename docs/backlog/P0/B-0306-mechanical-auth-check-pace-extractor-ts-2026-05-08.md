@@ -1,7 +1,9 @@
 ---
 id: B-0306
 priority: P0
-status: open
+status: closed
+closed: 2026-05-08
+closed_by: "PR #2084 merged"
 title: "Mechanical authorization check — pace-instruction extractor + test fixtures"
 effort: S
 created: 2026-05-08
