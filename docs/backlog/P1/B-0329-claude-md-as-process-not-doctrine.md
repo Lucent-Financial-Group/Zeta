@@ -1,5 +1,5 @@
 ---
-id: B-0310
+id: B-0329
 priority: P1
 status: open
 title: "Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing"
@@ -12,7 +12,7 @@ type: friction-reducer
 owners: [architect]
 ---
 
-# B-0310 — CLAUDE.md as process, not doctrine
+## B-0329 — CLAUDE.md as process, not doctrine
 
 ## What
 
@@ -35,12 +35,14 @@ CLAUDE.md is the cache. The process is the standing query.
 Delete the process, the cache is dead text.
 
 The doctrine-as-rules pattern:
+
 - Doesn't scale (200 rules, growing)
 - Doesn't transfer across harnesses (CLAUDE.md is Claude-specific)
 - Doesn't survive goldfish (rules get compacted away)
 - Creates compliance, not understanding
 
 The process-as-bootstrap pattern:
+
 - Scales (the process is short, the rules emerge)
 - Transfers (every harness can run a process)
 - Survives goldfish (the process is in substrate, not context)
