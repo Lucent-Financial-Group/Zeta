@@ -101,12 +101,14 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0265](backlog/P1/B-0265-ruleset-split-ci-gate-ruleset-2026-05-08.md)** GitHub ruleset split — CI gate ruleset (required status checks)
 - [ ] **[B-0266](backlog/P1/B-0266-ruleset-split-review-policy-ruleset-2026-05-08.md)** GitHub ruleset split — review policy ruleset (conversation resolution + reviews)
 - [ ] **[B-0267](backlog/P1/B-0267-ruleset-split-safety-ruleset-2026-05-08.md)** GitHub ruleset split — safety ruleset (deletion + force-push + linear history)
-- [ ] **[B-0268](backlog/P1/B-0268-canary-test-rules-autoload-verification-2026-05-08.md)** Verify .claude/rules/ auto-load — run canary test
+- [x] **[B-0268](backlog/P1/B-0268-canary-test-rules-autoload-verification-2026-05-08.md)** Verify .claude/rules/ auto-load — run canary test
 - [ ] **[B-0269](backlog/P1/B-0269-extract-carved-sentences-from-claude-md-to-rules-2026-05-08.md)** Extract carved sentences from CLAUDE.md to .claude/rules/
 - [ ] **[B-0270](backlog/P1/B-0270-pm2-role-skill-definition-2026-05-08.md)** PM-2 role — skill definition + persona agent
 - [ ] **[B-0271](backlog/P1/B-0271-pm2-first-research-pass-2026-05-08.md)** PM-2 role — first research pass on Zeta feature gaps
 - [ ] **[B-0272](backlog/P1/B-0272-atari-rom-canonical-naming-tosec-lookup-2026-05-08.md)** Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup
 - [ ] **[B-0273](backlog/P1/B-0273-atari-rom-safe-unsafe-folder-split-2026-05-08.md)** Atari 2600 ROM safe/unsafe folder split for license compliance
+- [ ] **[B-0274](backlog/P1/B-0274-pages-astro-workflow-scaffold-and-sha-pinning-2026-05-08.md)** Pages discoverability - Astro workflow scaffold and SHA pinning
+- [ ] **[B-0275](backlog/P1/B-0275-pages-astro-http-200-and-deploy-validation-2026-05-08.md)** Pages discoverability - Astro deploy validation and HTTP 200 check
 
 ## P2 — research-grade
 

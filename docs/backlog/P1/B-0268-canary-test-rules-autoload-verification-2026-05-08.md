@@ -1,7 +1,9 @@
 ---
 id: B-0268
 priority: P1
-status: open
+status: closed
+closed: 2026-05-08
+closed_by: "Canary PASSED — .claude/rules/ auto-loads at session start"
 title: "Verify .claude/rules/ auto-load — run canary test"
 created: 2026-05-08
 last_updated: 2026-05-08
