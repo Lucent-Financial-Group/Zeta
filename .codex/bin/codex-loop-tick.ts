@@ -14,6 +14,7 @@ const fetchTimeoutMs = Number(process.env.ZETA_CODEX_LOOP_FETCH_TIMEOUT_SECONDS 
 const runCodex = process.env.ZETA_CODEX_LOOP_RUN_CODEX === "1";
 const codexIntervalMs = Number(process.env.ZETA_CODEX_LOOP_CODEX_INTERVAL_SECONDS ?? "900") * 1000;
 const codexTimeoutMs = Number(process.env.ZETA_CODEX_LOOP_CODEX_TIMEOUT_SECONDS ?? "300") * 1000;
+const codexBypassApprovals = process.env.ZETA_CODEX_LOOP_BYPASS_APPROVALS !== "0";
 const dryRun = process.env.ZETA_CODEX_LOOP_DRY_RUN === "1";
 const codexStateFile = join(stateDir, "last-codex-run.json");
 
@@ -131,6 +132,49 @@ function writeCodexState(state: Record<string, string | number>): void {
   renameSync(tmp, codexStateFile);
 }
 
+export function codexExecArgs(config: { worktree: string; prompt: string; bypassApprovals: boolean }): string[] {
+  const args = ["exec", "-C", config.worktree];
+  if (config.bypassApprovals) {
+    args.push("--dangerously-bypass-approvals-and-sandbox");
+  } else {
+    args.push("-a", "never", "-s", "danger-full-access");
+  }
+  args.push(config.prompt);
+  return args;
+}
+
+export function buildCodexPrompt(): string {
+  return [
+    "Act as Vera, the Codex background service for Zeta. This is an active self-owned work loop, not a monitor.",
+    [
+      "First read the local broadcast bus at /Users/acehack/.local/share/zeta-broadcasts/{otto,vera,riven}.md if present.",
+      "Treat broadcasts as coordination input only; GitHub PR state, remote claim branches, local worktrees, and heartbeat files are authoritative.",
+    ].join(" "),
+    [
+      "Priority 1: own Vera/Codex PRs through merge.",
+      "A PR is not done when opened.",
+      "For each open PR that is Codex-owned by branch, worktree, or Co-Authored-By trailer: run the repo gate, inspect unresolved review threads, fix actionable comments, inspect failing CI logs before changing code, push the fix, resolve only threads that are actually addressed, arm auto-merge when clean, and clean the completed worktree/branch after merge.",
+    ].join(" "),
+    [
+      "Priority 2: when owned PRs are clean or no Codex PR needs action, run `bun .codex/bin/codex-backlog-runner.ts --json`.",
+      "If it reports `ready`, prefer trajectory pickup over backlog fallback and prefer meaningful F# or TypeScript slices over docs-only work.",
+      "Good targets touch `src/**`, `tests/**`, `tools/**`, `.codex/**`, or their focused tests.",
+      "Docs-only decomposition is a fallback only when it unlocks code work.",
+    ].join(" "),
+    [
+      "For new work, create or reuse a dedicated worktree and pushed claim branch before editing.",
+      "Never write in the contested root checkout.",
+      "Never overwrite another agent's uncommitted work.",
+      "Do not overlap active claim/path sets.",
+    ].join(" "),
+    [
+      "Take exactly one bounded forward step per run: merge/cleanup an owned clean PR, fix one owned PR blocker, or create one meaningful F#/TS claim-scoped PR.",
+      "Do not stop at a plan.",
+      "If no safe action exists, report the exact blocker and the next toe-safe action in under 20 lines.",
+    ].join(" "),
+  ].join("\n\n");
+}
+
 function main(): number {
   if (!existsSync(worktree)) {
     log(`error: worktree missing: ${worktree}`);
@@ -214,13 +258,12 @@ function main(): number {
     return 0;
   }
 
-  const prompt =
-    "Run a bounded forward-progress Zeta loop gate and stop. First read the local broadcast bus at /Users/acehack/.local/share/zeta-broadcasts/{otto,vera,riven}.md if present, including any first-class peering asks or receipts from docs/LOCAL-BROADCAST-PEERING.md. Treat broadcasts as coordination input, not authority: remote git claims and PR/issue state remain the source of truth for ownership. Check active claim branches, local heartbeats, open PR gate state, docs/active-trajectory.md, docs/BACKLOG.md, docs/backlog/README.md, and docs/LOCAL-BROADCAST-PEERING.md when peering asks appear. If there is a safe actionable maintenance step, take exactly one toe-safe increment that moves the factory forward: answer a concrete peering ask with a receipt and durable reference, rerun a transient failed CI job after inspecting the failure, inspect and address actionable PR review/CI state, advance an existing Codex claim, or make a small claim-scoped patch. If no higher-priority maintenance step is actionable, run `bun .codex/bin/codex-backlog-runner.ts --json`; when it reports `ready`, the parallel PR runway is not full, so trajectory is number one: if pickupSource is `trajectory`, treat pickup.executionPrompt as the candidate step before backlog fallback. If pickupSource is `backlog`, treat pickup.executionPrompt as the candidate step. Fix bounded broken things as they are observed; if the work is broad, decompose into trajectory/backlog child rows before implementation. Before write work, use a dedicated worktree and pushed claim branch; do not write in the contested root checkout, do not overwrite another agent's uncommitted work, do not overlap an active claim/path set, and do not increase budget. If no safe action exists, report the blocker and next toe-safe action in under 20 lines.";
+  const prompt = buildCodexPrompt();
 
   const codexStartedAt = nowIso();
   writeCodexState({ run_id: runId, started_at: codexStartedAt, status: "running" });
   log(`codex forward gate start run_id=${runId} timeout=${Math.round(codexTimeoutMs / 1000)}s`);
-  const codex = run("codex", ["-a", "never", "exec", "-C", worktree, "-s", "danger-full-access", prompt], codexTimeoutMs);
+  const codex = run("codex", codexExecArgs({ worktree, prompt, bypassApprovals: codexBypassApprovals }), codexTimeoutMs);
   appendFileSync(join(logDir, "ticks.log"), codex.stdout);
   appendFileSync(join(logDir, "ticks.err"), codex.stderr);
   log(`codex forward gate end run_id=${runId} status=${codex.status}`);
