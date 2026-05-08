@@ -141,6 +141,9 @@ jobs:
             --limit 1 \
             --jq '.[0].number // empty')"
 
+          AI_FOOTER=$'\n\n---\n🤖 *Posted by razor-cadence workflow (AI-generated content)*'
+          body="${body}${AI_FOOTER}"
+
           if [ -n "$existing" ]; then
             echo "Updating existing razor-cadence tracking issue #$existing"
             gh issue edit "$existing" \
@@ -149,7 +152,7 @@ jobs:
               --body "$body"
             gh issue comment "$existing" \
               --repo "$REPO" \
-              --body "Cadence fired again on $today (run $RUN_ID). The checklist above is the standing one; close this issue once the pass has been run."
+              --body "Cadence fired again on $today (run $RUN_ID). The checklist above is the standing one; close this issue once the pass has been run.${AI_FOOTER}"
           else
             echo "Opening new razor-cadence tracking issue"
             # Create the razor-cadence label if it doesn't exist
