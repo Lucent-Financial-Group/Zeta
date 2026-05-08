@@ -1,10 +1,14 @@
 #!/usr/bin/env bun
 import { spawnSync } from "node:child_process";
 
+const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
+
 interface CommandResult {
   stdout: string;
   stderr: string;
   status: number;
+  error: string | undefined;
+  signal: NodeJS.Signals | null;
 }
 
 interface RecentMerge {
@@ -24,20 +28,36 @@ interface WorldviewSnapshot {
 }
 
 function run(command: string, args: string[]): CommandResult {
+  // Shelling out is intentional here: gh owns GitHub auth and git owns
+  // repository history. Args are fixed arrays, never shell-interpolated.
   const result = spawnSync(command, args, {
     encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
     stdio: ["ignore", "pipe", "pipe"],
   });
 
+  const stdout = typeof result.stdout === "string" ? result.stdout : "";
+  const stderr = typeof result.stderr === "string" ? result.stderr : "";
+  let error: string | undefined;
+  if (result.error instanceof Error) {
+    error = result.error.message;
+  }
+
   return {
-    stdout: result.stdout.trim(),
-    stderr: result.stderr.trim(),
+    stdout: stdout.trim(),
+    stderr: stderr.trim(),
     status: result.status ?? 1,
+    error,
+    signal: result.signal,
   };
 }
 
 function fail(message: string, result: CommandResult): never {
-  const detail = result.stderr || result.stdout || "no output";
+  const signal = result.signal ? `terminated by signal ${result.signal}` : "";
+  const detail =
+    [result.stderr, result.stdout, result.error, signal].find(
+      (candidate) => candidate !== undefined && candidate.length > 0,
+    ) ?? "no output";
   console.error(`${message}: ${detail}`);
   process.exit(1);
 }
@@ -91,6 +111,9 @@ function readRecentMerges(range: string): RecentMerge[] {
   const result = run("git", [
     "log",
     range,
+    "--merges",
+    "--first-parent",
+    "--max-count=25",
     "--format=%H%x1f%P%x1f%an%x1f%aI%x1f%s",
   ]);
 
@@ -117,12 +140,12 @@ function readRecentMerges(range: string): RecentMerge[] {
   });
 }
 
-function main(): void {
+export function main(): 0 {
   const repository =
     process.env.ZETA_GITHUB_REPOSITORY ??
     process.env.GITHUB_REPOSITORY ??
     "Lucent-Financial-Group/Zeta";
-  const recentMergeRange = process.env.ZETA_WORLDVIEW_RECENT_RANGE ?? "origin/main..HEAD";
+  const recentMergeRange = process.env.ZETA_WORLDVIEW_RECENT_RANGE ?? "origin/main";
 
   const snapshot: WorldviewSnapshot = {
     generatedAt: new Date().toISOString(),
@@ -133,6 +156,9 @@ function main(): void {
   };
 
   console.log(JSON.stringify(snapshot, null, 2));
+  return 0;
 }
 
-main();
+if (import.meta.main) {
+  process.exit(main());
+}

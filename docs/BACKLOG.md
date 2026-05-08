@@ -251,7 +251,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0254](backlog/P2/B-0254-infernet-probabilistic-triangulation-posterior-quorum-2026-05-07.md)** Posterior quorum triangulation over existing Bayesian DBSP substrate
 - [ ] **[B-0283](backlog/P2/B-0283-interloop-messaging-protocol-design-2026-05-08.md)** Interloop messaging — protocol design (message types + delivery)
 - [ ] **[B-0284](backlog/P2/B-0284-interloop-messaging-implementation-2026-05-08.md)** Interloop messaging — implementation on chosen transport
-- [ ] **[B-0285](backlog/P2/B-0285-arc4-selfplay-arena-design-2026-05-08.md)** ARC-4 — adversarial self-play arena design
+- [x] **[B-0285](backlog/P2/B-0285-arc4-selfplay-arena-design-2026-05-08.md)** ARC-4 — adversarial self-play arena design
 - [ ] **[B-0286](backlog/P2/B-0286-arc4-selfplay-implementation-2026-05-08.md)** ARC-4 — self-play implementation + training loop
 
 ## P3 — convenience / deferred
