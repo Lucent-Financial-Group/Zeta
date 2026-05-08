@@ -78,5 +78,13 @@
     "huggingface-skills@claude-plugins-official": true,
     "postman@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "command": "bun --bun tools/orchestrator-checks/verify-branch.ts"
+      }
+    ]
   }
 }
