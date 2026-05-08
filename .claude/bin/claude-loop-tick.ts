@@ -99,6 +99,9 @@ function heartbeat(): void {
     // Fetch
     const fetch = run("git", ["fetch", "origin"], fetchTimeoutMs);
     const fetchOk = fetch.status === 0 ? "ok" : `exit-${fetch.status}`;
+    if (fetch.status === 0) {
+        run("git", ["reset", "--hard", "origin/main"], 10_000);
+    }
 
     // Claims
     const claims = run("git", ["branch", "-r", "--list", "origin/claim/*"], 10_000);
