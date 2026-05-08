@@ -18,6 +18,7 @@ folder as the experimental loop.
 | `audit_skills.sh`     | DORA-2025 columns adapted to skill scope     | Per-round skill runtime     |
 | `audit_archive_headers.sh` | Archive-header discipline (proposed §33) | Per-file lint (detect-only v0) |
 | `audit_clause_coverage.ts` | HC/SD/DIR clause citations in skills + agents | Per-surface coverage audit |
+| `audit_clause_drift.ts` | Clause additions/removals/changes + impact survey | Cross-ref drift detection |
 | `sd6_names.txt`       | SD-6 watchlist (per-host)                    | Data (not code)             |
 
 The three scripts form the gitops observability trio:
