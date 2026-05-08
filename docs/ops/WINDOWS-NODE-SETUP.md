@@ -144,6 +144,25 @@ nc -z -w 3 <ip> 3389  # RDP
 - CI/CD standard (GitHub Actions, Jenkins, Ansible default to SSH)
 - PowerShell 7+ supports `Enter-PSSession -SSHTransport`
 
+## Scope boundaries
+
+When an agent boots on a new node, it needs to know what's
+safe to touch without asking. These rules apply to all nodes:
+
+- **Dev laptops are sandboxes.** Everything except production
+  systems is fair game — install tools, clone repos, create
+  services, run tests, explore the machine.
+- **Production access requires explicit timeboxed permission.**
+  The maintainer grants access to a specific prod system for
+  a specific duration. When the window closes, access stops.
+- **No scope questions out the gate.** If you're on a dev
+  laptop, act. Don't ask "is it okay to install bun?" — it's
+  a dev machine, install it. The sandbox designation IS the
+  permission.
+- **Corporate boundaries respected by the book.** Use the
+  machine owner's credentials and auth flow (Okta, SSO, etc).
+  Don't bypass corporate security policies.
+
 ## Security notes
 
 - Always use key-based auth, never password
