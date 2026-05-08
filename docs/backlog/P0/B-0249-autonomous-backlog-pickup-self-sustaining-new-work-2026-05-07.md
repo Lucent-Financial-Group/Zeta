@@ -6,7 +6,8 @@ title: "Autonomous backlog pickup — loops must start new work, not just mainta
 created: 2026-05-07
 last_updated: 2026-05-07
 depends_on: []
-decomposition: blob
+decomposition: decomposed
+children: [B-0281, B-0282]
 owners: [architect]
 ---
 
