@@ -74,6 +74,7 @@ When invoked for review:
 ## Invocation
 
 Wear this contract when:
+
 - Walking any trajectory
 - Reviewing artifacts
 - Dispatching subagents
