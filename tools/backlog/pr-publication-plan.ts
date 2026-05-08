@@ -7,7 +7,8 @@
 // from machine-readable inputs so the executor path can stay small and
 // testable.
 
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
 
 export type CheckStatus = "passed" | "failed" | "running" | "pending" | "skipped";
 
@@ -30,6 +31,7 @@ export interface PublicationInput {
   backlogPath: string;
   branch: string;
   baseBranch: string;
+  bodyFilePath: string;
   summary: string[];
   checks: FocusedCheck[];
   requiredChecks: RequiredCheckCounts;
@@ -56,6 +58,7 @@ export interface PublicationPlan {
 interface Args {
   inputPath: string | null;
   json: boolean;
+  writeBody: boolean;
 }
 
 const DEFAULT_REPO = "Lucent-Financial-Group/Zeta";
@@ -68,7 +71,7 @@ const CODEX_COMMIT_TRAILER = "Co-Authored-By: Codex <noreply@openai.com>";
 function usage(): string {
   return [
     "Usage:",
-    "  bun tools/backlog/pr-publication-plan.ts --input publication.json [--json]",
+    "  bun tools/backlog/pr-publication-plan.ts --input publication.json [--json] [--write-body]",
     "",
     "Input JSON shape: PublicationInput exported by this module.",
   ].join("\n");
@@ -82,13 +85,15 @@ function requireValue(flag: string, value: string | undefined): string {
 }
 
 function parseArgs(argv: readonly string[]): Args {
-  const args: Args = { inputPath: null, json: false };
+  const args: Args = { inputPath: null, json: false, writeBody: false };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--input") {
       args.inputPath = requireValue(arg, argv[++i]);
     } else if (arg === "--json") {
       args.json = true;
+    } else if (arg === "--write-body") {
+      args.writeBody = true;
     } else if (arg === "--help" || arg === "-h") {
       process.stdout.write(`${usage()}\n`);
       process.exit(0);
@@ -119,6 +124,19 @@ function validateRepoPath(path: string): void {
     normalized.startsWith(".git/")
   ) {
     throw new Error(`unsafe repo-relative path: ${path}`);
+  }
+}
+
+function validateBodyFilePath(path: string): void {
+  const value = path.trim();
+  if (
+    value.length === 0 ||
+    value.startsWith("-") ||
+    value.includes("\0") ||
+    value.endsWith("/") ||
+    value.endsWith("\\")
+  ) {
+    throw new Error(`unsafe PR body file path: ${path}`);
   }
 }
 
@@ -169,7 +187,9 @@ export function validatePublicationInput(input: PublicationInput): void {
   assertNonEmpty("backlogTitle", input.backlogTitle);
   assertNonEmpty("branch", input.branch);
   assertNonEmpty("baseBranch", input.baseBranch);
+  assertNonEmpty("bodyFilePath", input.bodyFilePath);
   validateRepoPath(input.backlogPath);
+  validateBodyFilePath(input.bodyFilePath);
   const branch = validateNormalizedBranchRef("branch", input.branch);
   validateNormalizedBranchRef("baseBranch", input.baseBranch);
   if (isDefaultBranchRef(branch)) {
@@ -265,7 +285,7 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
     "--title",
     title,
     "--body-file",
-    "<body-file>",
+    input.bodyFilePath,
   ];
   return {
     prTitle: title,
@@ -282,6 +302,15 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
   };
 }
 
+export function writePrBodyFile(plan: PublicationPlan): void {
+  const bodyFile = plan.commands.createPr.at(-1);
+  if (bodyFile === undefined || bodyFile.length === 0) {
+    throw new Error("createPr command is missing --body-file path");
+  }
+  mkdirSync(dirname(bodyFile), { recursive: true });
+  writeFileSync(bodyFile, plan.prBody, { flag: "wx" });
+}
+
 function readInput(path: string): PublicationInput {
   return JSON.parse(readFileSync(path, "utf8")) as PublicationInput;
 }
@@ -290,6 +319,9 @@ export function main(argv: readonly string[]): number {
   try {
     const args = parseArgs(argv);
     const plan = buildPublicationPlan(readInput(args.inputPath ?? ""));
+    if (args.writeBody) {
+      writePrBodyFile(plan);
+    }
     process.stdout.write(args.json ? `${JSON.stringify(plan, null, 2)}\n` : plan.prBody);
     return 0;
   } catch (error) {
