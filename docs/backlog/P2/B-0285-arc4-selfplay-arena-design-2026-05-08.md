@@ -1,7 +1,9 @@
 ---
 id: B-0285
 priority: P2
-status: open
+status: closed
+closed: 2026-05-08
+closed_by: "Arena.fs landed — PR #2014"
 title: "ARC-4 — adversarial self-play arena design"
 created: 2026-05-08
 parent: B-0252
