@@ -48,6 +48,8 @@ describe("codex-loop-tick service contract", () => {
     expect(prompt).toContain("review how aligned the decision was");
     expect(prompt).toContain("syncing with the AI");
     expect(prompt).toContain("bulk alignment");
+    expect(prompt).toContain("reviewing assumptions, correcting drift, steering the next walk");
+    expect(prompt).toContain("learning the human");
     expect(prompt).toContain("pick an orthogonal item from the deep backlog");
     expect(prompt).toContain("Walk trajectories, not task piles");
     expect(prompt).toContain("avoid hard-defined workflows");
