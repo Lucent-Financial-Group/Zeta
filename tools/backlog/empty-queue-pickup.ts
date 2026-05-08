@@ -249,7 +249,7 @@ export function orchestrate(args: CliArgs, runner: CommandRunner = spawnRunner()
   result.backlogId = backlogId;
   result.executionPrompt = pickup.executionPrompt ?? null;
 
-  if (pickup.status !== "selected" || pickup.selected === null) {
+  if (pickup.status !== "selected" || pickup.selected == null) {
     result.status = "no-selection";
     return result;
   }
