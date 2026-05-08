@@ -122,6 +122,12 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0287](backlog/P1/B-0287-ace-dlc-package-format-spec-2026-05-08.md)** Ace DLC — package format specification
 - [ ] **[B-0288](backlog/P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** Ace DLC — package manager CLI (install/verify/list)
 - [ ] **[B-0290](backlog/P1/B-0290-green-lantern-consent-gate-firmware-2026-05-08.md)** Green Lantern ring — consent gate firmware design
+- [ ] **[B-0291](backlog/P1/B-0291-concordance-ai-corpus-pipeline-2026-05-08.md)** Concordance AI — corpus ingestion + tokenization pipeline
+- [ ] **[B-0292](backlog/P1/B-0292-concordance-ai-local-gpu-inference-2026-05-08.md)** Concordance AI — local GPU inference for structure recognition
+- [ ] **[B-0293](backlog/P1/B-0293-coherence-ai-consent-architecture-2026-05-08.md)** Coherence AI — consent-first architecture design
+- [ ] **[B-0294](backlog/P1/B-0294-coherence-ai-ksk-override-implementation-2026-05-08.md)** Coherence AI — KSK override implementation
+- [ ] **[B-0295](backlog/P1/B-0295-pages-repo-metadata-discovery-surface-2026-05-08.md)** Pages discoverability - repository metadata and discovery surface
+- [ ] **[B-0296](backlog/P1/B-0296-pages-sitemap-submission-discovery-metrics-2026-05-08.md)** Pages discoverability - sitemap submission and discovery metrics
 
 ## P2 — research-grade
 
