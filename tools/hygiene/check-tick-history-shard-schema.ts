@@ -63,11 +63,13 @@ function scanOne(shardPath: string): ScanResult {
   const bareMatch = BARE_RE.exec(base);
   const hashMatch = HASH_RE.exec(base);
   if (bareMatch) {
-    hh = bareMatch[1].slice(0, 2);
-    mmOfHour = bareMatch[1].slice(2, 4);
+    const hhmm = bareMatch[1] ?? "";
+    hh = hhmm.slice(0, 2);
+    mmOfHour = hhmm.slice(2, 4);
   } else if (hashMatch) {
-    hh = hashMatch[1].slice(0, 2);
-    mmOfHour = hashMatch[1].slice(2, 4);
+    const hhmm = hashMatch[1] ?? "";
+    hh = hhmm.slice(0, 2);
+    mmOfHour = hhmm.slice(2, 4);
   } else {
     return {
       path: pathRel,
@@ -101,7 +103,7 @@ function scanOne(shardPath: string): ScanResult {
     };
   }
 
-  const ts = col1Match[1];
+  const ts = col1Match[1] ?? "";
   const tsYyyy = ts.slice(0, 4);
   const tsMm = ts.slice(5, 7);
   const tsDd = ts.slice(8, 10);
