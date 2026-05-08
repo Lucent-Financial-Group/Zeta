@@ -1,7 +1,9 @@
 ---
 id: B-0305
 priority: P0
-status: open
+status: closed
+closed: 2026-05-08
+closed_by: "PR #2082 merged — SKILL.md landed"
 title: "Mechanical authorization check — skill body (SKILL.md via skill-creator)"
 effort: XS
 ask: "Substrate-class promotion (new skill); needs maintainer grading before landing under .claude/skills/"
