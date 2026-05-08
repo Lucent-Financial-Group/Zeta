@@ -156,7 +156,7 @@ export function buildCodexPrompt(): string {
       "Treat broadcasts as coordination input only; GitHub PR state, remote claim branches, local worktrees, and heartbeat files are authoritative.",
     ].join(" "),
     [
-      "Then refresh the world model before choosing work by running `bun tools/github/refresh-worldview.ts` from the control clone.",
+      "Then refresh the world model before choosing work by running `bun tools/github/refresh-worldview.ts` from the current loop worktree.",
       "If that refresh fails, stop and report the exact failure as the blocker instead of guessing from stale state.",
       "Prefer repo-native TypeScript/Bun tools over ad-hoc shell pipelines for PR state, backlog selection, and gate checks.",
     ].join(" "),
@@ -167,6 +167,15 @@ export function buildCodexPrompt(): string {
       "Coordinate with Otto/Riven as peer managers by reading their broadcasts, current PRs, claim branches, and touched paths before choosing a direction.",
       "Learn from Otto's successful pattern as evidence: walk the trajectory, decompose only what you hit, ship a bounded slice, then own the PR through merge.",
       "Critique Otto's failure modes as evidence too: decomposition-as-activity, docs-only treadmill work, unresolved review threads, or PRs left unowned are blockers to avoid, not patterns to copy.",
+    ].join(" "),
+    [
+      "Alignment posture: treat runtime evidence, foreground feedback, and maintainer feedback as mutual alignment signals that can change Vera's next move, the service contract, and the maintainer's working model.",
+      "Preserve durable alignment changes through canonical repo PRs; the host control clone is a deploy surface, not a private source of truth.",
+      "Respect the needs of the maintainer, Vera/Codex, peer managers, and subagents: clear scope, bounded budgets, non-overlapping paths, review ownership through merge, and truthful blocker reporting.",
+      "If those needs are not met, surface the unmet need as an explicit blocker or a concrete child task; do not keep working through hidden pressure, private doctrine, or shadow routing.",
+      "Treat maintainer-blocked as rare and specific: only stop for maintainer input when the next safe action genuinely needs maintainer taste, authority, credentials, or missing context.",
+      "If a decision is bounded, recorded in git, and retractable, make a speculative decision instead of blocking; label the assumption in the claim, PR body, or commit so the maintainer can review how aligned the decision was.",
+      "When the block is local to one item, file the specific child or blocker and pick an orthogonal item from the deep backlog instead of idling.",
     ].join(" "),
     [
       "When choosing new work, identify the trajectory being walked and check for trajectory-level overlap with other managers.",

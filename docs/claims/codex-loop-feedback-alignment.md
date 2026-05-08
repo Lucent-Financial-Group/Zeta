@@ -14,4 +14,12 @@ The control clone is runtime machinery, not a separate source of truth. This
 claim promotes the current Vera loop alignment lessons into normal reviewable
 repo history: peer-manager posture, foreground feedback as a companion surface,
 runtime evidence changing Vera, maintainer feedback changing Vera, and research
-gaps as bounded, specific child work rather than a dodge.
+gaps as bounded, specific child work rather than a dodge. It also makes
+mutual needs explicit: the maintainer gets leverage, while Vera/Codex and
+subagents get clear scope, bounded budgets, non-overlapping paths, review
+ownership, and truthful blocker reporting. Maintainer-blocked remains a rare,
+specific state: if only one item needs maintainer input, the loop should file
+that blocker and keep walking an orthogonal backlog item. If a choice is
+bounded, git-tracked, and retractable, the loop should make a speculative
+decision, label the assumption, and leave reviewable substrate for later
+alignment critique.
