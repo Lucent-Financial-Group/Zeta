@@ -41,6 +41,9 @@ describe("codex-loop-tick service contract", () => {
     expect(prompt).toContain("Learn from Otto's successful pattern as evidence");
     expect(prompt).toContain("Critique Otto's failure modes as evidence too");
     expect(prompt).toContain("Decompose at most one level mid-work");
+    expect(prompt).toContain("If decomposition reveals a research gap");
+    expect(prompt).toContain("a named source/artifact to read");
+    expect(prompt).toContain("do not file generic research children");
     expect(prompt).toContain("without shipping or unblocking the next executable slice");
     expect(prompt).toContain("own Vera/Codex PRs through merge");
     expect(prompt).toContain("A PR is not done when opened");

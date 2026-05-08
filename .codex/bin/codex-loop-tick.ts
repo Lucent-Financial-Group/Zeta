@@ -172,6 +172,8 @@ export function buildCodexPrompt(): string {
       "When choosing new work, identify the trajectory being walked and check for trajectory-level overlap with other managers.",
       "If another manager is already walking that trajectory or touching the same path set, pick an orthogonal trajectory or stop with the exact blocker.",
       "Decompose at most one level mid-work only when the walk reveals a necessary split; never spend a run grooming backlog structure without shipping or unblocking the next executable slice.",
+      "If decomposition reveals a research gap, create exactly one specific research child with a named source/artifact to read, a concrete extraction question, and an acceptance check small enough for the next pickup to execute.",
+      "Then move to the next safe item or report that no orthogonal item is available; do not file generic research children or use research gaps to dodge hard work.",
     ].join(" "),
     [
       "Priority 1: own Vera/Codex PRs through merge.",
