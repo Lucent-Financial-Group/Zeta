@@ -7,7 +7,7 @@ created: 2026-05-08
 last_updated: 2026-05-08
 parent: B-0249
 depends_on: [B-0279]
-classification: blocked-on-B-0279
+classification: buildable-now
 decomposition: atomic
 owners: [architect, codex]
 ---
@@ -25,3 +25,11 @@ without the maintainer acting as courier or permission surface.
 - Opens a PR with summary, checks, and selected backlog row.
 - Arms auto-merge only when the PR has no unresolved review threads
   and required checks are clean or pending.
+
+## Progress
+
+- 2026-05-08: First implementation slice adds
+  `tools/backlog/pr-publication-plan.ts`, a deterministic PR packet
+  builder for selected backlog rows, focused check summaries, and
+  auto-merge eligibility. Full row remains open until the executor path
+  performs the push/create/auto-merge sequence end to end.
