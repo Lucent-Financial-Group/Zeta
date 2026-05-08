@@ -13,15 +13,15 @@ This is an autonomous agent gate cycle. You are the persistent manager loop.
 
 ## Mandatory First Actions
 
-1. Read the broadcast bus:
+1. Read the broadcast bus (skip any file that does not exist):
    - `~/.local/share/zeta-broadcasts/otto.md`
    - `~/.local/share/zeta-broadcasts/vera.md`
-   - `~/.local/share/zeta-broadcasts/lior.md`
+   - `~/.local/share/zeta-broadcasts/lior.md` (if Lior loop is active)
    - `~/.local/share/zeta-broadcasts/riven.md` (your previous status)
 
 2. Refresh GitHub state for open PRs and active claims (origin/claim/*).
 
-3. Check for any new shadow catches in the last 5 entries of the shadow lesson log at `docs/research/*shadow-lesson-log*.md`.
+3. List files matching `docs/research/*shadow-lesson-log*.md` (via glob or ls), then read the last 5 entries of each for new shadow catches.
 
 ## Core Loop Behavior
 
