@@ -280,6 +280,27 @@ wait for instruction. Priority ladder:
    refresh-debt accumulation even when nothing needs
    doing.
 
+   **Minimum open-PR runway.** GitHub PRs are the
+   authoritative coordination queue for cross-agent work. A
+   healthy active factory targets roughly two open PRs per
+   active implementation loop, with a hard minimum of one
+   open owned background PR per loop. If the open PR pool is
+   below that target, or this loop has no owned PR in flight,
+   the tick does not stop after observation. It opens or
+   advances the next bounded PR from the priority ladder
+   before idling.
+
+   The valid blockers are concrete: no non-overlapping path
+   set, an active claim on the same path set, failure to create
+   a dedicated worktree, a required CI/review action that must
+   be handled first, or an explicit budget/safety stop. A dirty
+   shared/root checkout is not an execution option to offer the
+   maintainer; it is the reason to create an isolated worktree.
+   A stale local status file or "nothing to do" narration is not
+   a blocker. Do not create duplicate backlog rows to satisfy
+   runway; use existing backlog rows, decomposition state,
+   claims, and PR review threads as the work source.
+
 2. **Drop-zone audit second.** Run `ls -la drop/`. The
    maintainer deposits files for absorption there
    (`drop/README.md`). If only the tracked sentinels

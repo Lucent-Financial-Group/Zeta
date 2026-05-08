@@ -138,4 +138,53 @@ let ``state machine — decided round rejects further messages`` () =
     let s5 = unwrap (transition s4 Finalize)
     match transition s5 (CastVote(lior, "merge")) with
     | InvalidTransition r -> Assert.Contains("already decided", r)
-    | Ok _ -> Assert.Fail "expected invalid transition"
+    | TransitionResult.Ok _ -> Assert.Fail "expected invalid transition"
+
+let cleanPr n =
+    { Number = n; ChecksPassed = 7; ChecksFailed = 0
+      ChecksInProgress = 0; UnresolvedThreads = 0; AutoMergeArmed = true }
+
+let failedPr n =
+    { Number = n; ChecksPassed = 5; ChecksFailed = 2
+      ChecksInProgress = 0; UnresolvedThreads = 0; AutoMergeArmed = false }
+
+let threadsPr n =
+    { Number = n; ChecksPassed = 7; ChecksFailed = 0
+      ChecksInProgress = 0; UnresolvedThreads = 3; AutoMergeArmed = true }
+
+[<Fact>]
+let ``evaluateGate — clean PR merges`` () =
+    Assert.Equal(Merge, evaluateGate (cleanPr 1946))
+
+[<Fact>]
+let ``evaluateGate — failed checks block`` () =
+    match evaluateGate (failedPr 1947) with
+    | Block r -> Assert.Contains("failed checks", r)
+    | Merge -> Assert.Fail "expected block"
+
+[<Fact>]
+let ``evaluateGate — unresolved threads block`` () =
+    match evaluateGate (threadsPr 1948) with
+    | Block r -> Assert.Contains("unresolved threads", r)
+    | Merge -> Assert.Fail "expected block"
+
+[<Fact>]
+let ``prConsensus — all nodes see clean PR commits`` () =
+    let pr = cleanPr 1950
+    let states = nodes |> List.map (fun n -> (n, pr))
+    let result = prConsensus nodes states
+    Assert.True(isCommitted result)
+    Assert.Equal(Some Merge, committedValue result)
+
+[<Fact>]
+let ``prConsensus — one node sees failure, rest see clean — blocks`` () =
+    let states =
+        [ (otto, cleanPr 1951)
+          (vera, cleanPr 1951)
+          (riven, failedPr 1951)
+          (lior, cleanPr 1951) ]
+    let result = prConsensus nodes states
+    match result with
+    | Committed(Merge, _, _) -> ()
+    | Committed(Block _, _, _) -> Assert.Fail "3/4 see Merge, should commit Merge"
+    | Rejected _ -> Assert.Fail "3/4 agree on Merge, should commit"
