@@ -114,3 +114,42 @@ module Consensus =
             InvalidTransition "cannot finalize before proposal"
         | Voting, Propose _ ->
             InvalidTransition "cannot propose during voting"
+
+    type MergeVerdict =
+        | Merge
+        | Block of reason: string
+
+    type PrGateState =
+        { Number: int
+          ChecksPassed: int
+          ChecksFailed: int
+          ChecksInProgress: int
+          UnresolvedThreads: int
+          AutoMergeArmed: bool }
+
+    let evaluateGate (pr: PrGateState) : MergeVerdict =
+        if pr.ChecksFailed > 0 then
+            Block $"PR #%d{pr.Number}: %d{pr.ChecksFailed} failed checks"
+        elif pr.ChecksInProgress > 0 then
+            Block $"PR #%d{pr.Number}: %d{pr.ChecksInProgress} checks in progress"
+        elif pr.UnresolvedThreads > 0 then
+            Block $"PR #%d{pr.Number}: %d{pr.UnresolvedThreads} unresolved threads"
+        else
+            Merge
+
+    let prToVote
+        (node: NodeId)
+        (pr: PrGateState)
+        : Vote<MergeVerdict> =
+        { Node = node
+          Value = evaluateGate pr
+          Timestamp = DateTimeOffset.UtcNow }
+
+    let prConsensus
+        (nodes: NodeId list)
+        (prStates: (NodeId * PrGateState) list)
+        : ConsensusResult<MergeVerdict> =
+        let votes =
+            prStates
+            |> List.map (fun (node, pr) -> prToVote node pr)
+        decide votes
