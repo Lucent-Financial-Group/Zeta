@@ -72,7 +72,7 @@ For repo edits:
 4. Create a local heartbeat under
    `$(git rev-parse --git-common-dir)/agent-heartbeats/`.
 5. Name the intended path set in the heartbeat.
-6. Do not write in the root checkout unless Aaron explicitly assigns it.
+6. Do not write in the root checkout unless the human maintainer explicitly assigns it.
 
 ## 5. Choose One Toe-Safe Step
 
