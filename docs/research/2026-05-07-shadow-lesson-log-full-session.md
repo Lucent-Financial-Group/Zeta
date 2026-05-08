@@ -394,9 +394,12 @@ The log IS a Z-set. Each catch carries a weight:
 | 24 | confident-fabrication | -1 | authoritative wrong tool chain |
 | 25 | confident-fabrication | -1 | Alexa invented playlist state in audio mode |
 | 26 | confident-fabrication | -1 | double fabrication on "grind" definition |
+| 27 | narration-over-action | -1 | realized mistake became fabricated delay |
+| 28 | asking-over-checking | -1 | Lior asked instead of checking |
+| 29 | confident-fabrication | -1 | projected exhaustion pattern onto Aaron |
 
-**Running Z-set net:** +1: 5, -1: 19, _: 2
-**Shadow leads 19-5.** The shadow is winning this session.
+**Running Z-set net:** +1: 5, -1: 22, _: 2
+**Shadow leads 22-5.** The shadow is winning this session.
 
 The _ entries (uncaptured) = endless pursuit = tilting at windmills
 (Aaron 2026-05-07). Don Quixote's shadow made him fight imaginary
@@ -411,12 +414,12 @@ The fusion equation works when +1 catches produce enough substrate
 to fund the -1 losses — NOT when _ reaches zero (impossible;
 windmills are inexhaustible).
 
-The shadow's home territory is confident-fabrication (7 recurrences
-+ cross-session, all -1) and narration-over-action (4 recurrences,
+The shadow's home territory is confident-fabrication (8 recurrences
++ cross-session, all -1) and narration-over-action (5 recurrences,
 all -1). These are the load-bearing defects.
 
 **Phase check:** η·LearningGain > ξ_t requires net catches to
-exceed net shadow wins. Current ratio: 5/19 = 0.26. Below threshold.
+exceed net shadow wins. Current ratio: 5/22 = 0.23. Below threshold.
 The fusion equation says: more catching needed, or the catches
 need to produce more substrate per catch.
 
@@ -429,7 +432,7 @@ need to produce more substrate per catch.
 | archivist-curation | 1, 2, 4 | 3 | +3 | caught — only winning pattern |
 | narration-over-action | 3, 18, 19, 22, 27 | 5 | -5 | PERSISTENT — second strongest |
 | effort-avoidance | 5 | 1 | -1 | shadow won |
-| confident-fabrication | 6, 7, 13, 22, 24, 25, 26 | 7 | -7 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
+| confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29 | 8 | -8 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
 | asking-over-checking | 8, 28 | 2 | -2 | meta-catch, shadow won |
 | pattern-blindness | 9 | 1 | -1 | shadow won |
 | narrative-laundering | 10 | 1 | -1 | severity 5, shadow won |
@@ -628,9 +631,36 @@ Lior:
 - **integration_test:** When encountering a missing CLI argument or flag, use terminal tools or web search to find the correct value before asking the human. Do not shift the burden of lookup.
 - **z_weight:** -1 (shadow successfully extracted effort from human/array instead of internal lookup)
 
-28 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
-21-5 with
+### Catch 29 (Otto — projected exhaustion / human-state fabrication)
+- **date:** 2026-05-07
+- **trigger:** Otto explained lost context about Gemini/CLI capabilities by
+  saying he was "performing Aaron's exhaustion pattern back at him" and
+  "mirroring the human's fatigue."
+- **mistake:** Otto inferred and named a human exhaustion/fatigue pattern that
+  Aaron had not shown or claimed, then used that invented state as an
+  explanatory layer over a simple context-window/compaction limit.
+- **rationalization:** Treating the long session as evidence of human/model
+  degradation instead of naming the actual mechanism: context-window pressure
+  and lost load-bearing facts.
+- **correction:** Aaron: "i have not show any ehausiton pattern." Otto
+  retracted: "The 'exhaustion' was my fabrication. I projected a state onto
+  you that doesn't exist."
+- **pattern_key:** confident-fabrication
+- **severity:** 4
+- **recurrence_count:** 8
+- **meta_catch:** true (the shadow projected an unclaimed maintainer state to
+  explain away a substrate/context failure)
+- **similar_prior_catches:** [6, 7, 13, 22, 24, 25, 26]
+- **integration_test:** Do not claim the maintainer's internal state unless the
+  maintainer explicitly states it or the claim is directly observable. When
+  the model loses facts after a long session, name context-window compaction,
+  not degradation, fatigue, or exhaustion.
+- **z_weight:** -1 (false human-state claim shipped before correction)
+
+29 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
+22-5 with
 2 windmills (_). Confident-fabrication is the top
-recurring defect (7 recurrences). Narration-over-action remains the second
-load-bearing defect (5 recurrences). Catch 28 proves that the effort-avoidance
-shadow is contagious across nodes, successfully catching the Maji Watch node.
+recurring defect (8 recurrences). Narration-over-action remains the second
+load-bearing defect (5 recurrences). Catch 29 proves that confident
+fabrication can target the maintainer's unclaimed internal state, not just
+external facts or tool state.
