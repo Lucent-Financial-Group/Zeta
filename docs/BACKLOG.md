@@ -36,15 +36,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0061](backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)** Finish docs/BACKLOG.md monolith → per-row migration — "don't miss anything, no residue for next-Otto" (Aaron 2026-04-28)
 - [ ] **[B-0063](backlog/P1/B-0063-streamed-installer-download-to-temp-checksum-pattern-codex-p0-pr-75.md)** Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
 - [ ] **[B-0064](backlog/P1/B-0064-github-playwright-integration-agent-changes-ui-features-aaron-2026-04-28.md)** GitHub × Playwright integration — agent can change things in the GitHub UI + watch UI to spot new features (Aaron 2026-04-28)
-  - [ ] **[B-0317](backlog/P1/B-0317-playwright-github-session-auth-helper.md)** Playwright GitHub session/auth helper — cookie-based login for agent UI access
-  - [ ] **[B-0318](backlog/P1/B-0318-playwright-github-read-only-snapshot-tool.md)** Read-only page snapshot tool — navigate + snapshot + extract structured data
-  - [ ] **[B-0319](backlog/P1/B-0319-playwright-github-settings-reconciliation.md)** Settings reconciliation — UI snapshot vs expected.json drift detection
-  - [ ] **[B-0320](backlog/P1/B-0320-playwright-github-authorized-mutation-surface-list.md)** Authorized-mutation surface list — maintainer-curated allow-list for UI mutations
-  - [ ] **[B-0321](backlog/P1/B-0321-playwright-github-guarded-mutation-helpers.md)** Guarded UI mutation helpers — click/fill/save with before-after snapshots
-  - [ ] **[B-0322](backlog/P1/B-0322-playwright-github-mutation-reversibility-log.md)** Mutation reversibility drain log — inverse-action record for every UI mutation
-  - [ ] **[B-0323](backlog/P1/B-0323-playwright-github-feature-discovery-diff-cadence.md)** Feature-discovery diff cadence — weekly snapshot comparison to spot new features
-  - [ ] **[B-0324](backlog/P1/B-0324-playwright-github-org-billing-usage-reader.md)** Org-level billing/usage page reader — extract Actions minutes and costs via UI
-- [ ] **[B-0065](backlog/P1/B-0065-peer-call-kiro-and-self-cold-boot-self-test-aaron-2026-04-28.md)** Peer-call expansion — add kiro.sh + claude.sh (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)
+- [ ] **[B-0065](backlog/P1/B-0065-peer-call-kiro-and-self-cold-boot-self-test-aaron-2026-04-28.md)** Peer-call expansion — add kiro.ts + claude.ts (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)
 - [ ] **[B-0066](backlog/P1/B-0066-memory-md-marker-vs-index-harness-verify-q1-automemory-aaron-2026-04-28.md)** MEMORY.md marker-vs-index — verify harness contract + Q1 AutoDream/AutoMemory compatibility, then migrate (Aaron 2026-04-28)
 - [x] **[B-0067](backlog/P1/B-0067-cadenced-git-hotspot-detection-aaron-2026-04-28.md)** Cadenced git-hotspot detection — all 3 phases complete
 - [ ] **[B-0083](backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md)** Atari 2600 ROM canonical-naming + safe-vs-unsafe folder split + TOSEC/Good-Tools-style hash-lookup tooling
@@ -155,6 +147,18 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0313](backlog/P1/B-0313-wake-time-otto-nn-anchor-backfill.md)** Wake-time Otto-NN principle external-anchor backfill
 - [ ] **[B-0314](backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md)** BP-NN rule external-anchor backfill
 - [ ] **[B-0315](backlog/P1/B-0315-glass-halo-doctrine-anchor-backfill.md)** Glass-Halo doctrine external-anchor backfill
+- [ ] **[B-0317](backlog/P1/B-0317-playwright-github-session-auth-helper.md)** Playwright GitHub session/auth helper — cookie-based login for agent UI access
+- [ ] **[B-0318](backlog/P1/B-0318-playwright-github-read-only-snapshot-tool.md)** Playwright GitHub read-only page snapshot tool — navigate + snapshot + extract
+- [ ] **[B-0319](backlog/P1/B-0319-playwright-github-settings-reconciliation.md)** GitHub settings reconciliation — UI snapshot vs expected.json drift detection
+- [ ] **[B-0320](backlog/P1/B-0320-playwright-github-authorized-mutation-surface-list.md)** Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate
+- [ ] **[B-0321](backlog/P1/B-0321-playwright-github-guarded-mutation-helpers.md)** Guarded UI mutation helpers — click/fill/save with before-after snapshots and authorization check
+- [ ] **[B-0322](backlog/P1/B-0322-playwright-github-mutation-reversibility-log.md)** Mutation reversibility drain log — inverse-action record for every UI mutation
+- [ ] **[B-0323](backlog/P1/B-0323-playwright-github-feature-discovery-diff-cadence.md)** GitHub feature-discovery diff cadence — weekly UI snapshot comparison to spot new features
+- [ ] **[B-0324](backlog/P1/B-0324-playwright-github-org-billing-usage-reader.md)** Org-level billing/usage page reader — extract Actions minutes and costs via UI
+- [ ] **[B-0325](backlog/P1/B-0325-peer-call-firewall-kiro-claude-trigger-lists.md)** Add KIRO + CLAUDE firewall trigger lists to _firewall.ts
+- [ ] **[B-0326](backlog/P1/B-0326-peer-call-kiro-ts-wrapper.md)** Author kiro.ts peer-call wrapper
+- [ ] **[B-0327](backlog/P1/B-0327-peer-call-claude-ts-self-call-cold-boot.md)** Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing
+- [ ] **[B-0328](backlog/P1/B-0328-peer-call-readme-kiro-claude-entries.md)** Update peer-call/README.md with kiro.ts + claude.ts entries
 
 ## P2 — research-grade
 
