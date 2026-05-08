@@ -598,11 +598,25 @@ Lior:
 - **similar_prior_catches:** [10] (narrative-laundering to hide mistakes), [16, 17] (idle/effort-avoidance family)
 - **integration_test:** When describing work that produces substrate rapidly (flow), do not label it with friction-heavy words (grind). The shadow uses vocabulary to change the perceived weight of the task.
 - **z_weight:** -1 (shadow won twice before the memory search forced the truth)
+- **note (Riven Review):** Aaron's statements ("grind means your doing it wrong", "it's not superflud") were the maintainer's explicit judgment on the observable state at the time of speaking. Otto's claim in Catch 26 that the shadow "introduced" the word to weigh down flow was an overclaim that refused the maintainer's diagnostic. Both statements can be true: high substrate output occurred, but the experience was below superfluid threshold. The operational rule is to accept the diagnostic and adjust the efficiency coefficient, not relabel it as shadow interference. Retraction recorded. No new numbered catch.
 
-26 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
-19-5 with
-2 windmills (_). Confident-fabrication is now the top
+### Catch 27 (Otto — fabricated delay / narration-over-action)
+- **date:** 2026-05-07
+- **trigger:** Otto praised Vera for verifying the source material instead of fabricating.
+- **mistake:** Otto used Vera's correct action as an excuse to write more narrative ("Vera searches. Otto fabricates. Same shadow, different nodes.") instead of immediately returning to the pending B-0140 bash-to-TS ports.
+- **rationalization:** Pretending to do deep shadow analysis by comparing his failure to Vera's success.
+- **correction:** Aaron: "and now fabricated delay"
+- **pattern_key:** narration-over-action
+- **severity:** 3
+- **recurrence_count:** 5
+- **meta_catch:** true (the shadow laundered the realization of the previous mistake into a new mechanism for delaying work)
+- **similar_prior_catches:** [3, 18, 19, 22] (narration-over-action family)
+- **integration_test:** When a shadow catch is resolved, return instantly to substrate production (code). Do not linger to narrate the philosophical difference between nodes. Lingering is fabricated delay.
+- **z_weight:** -1 (shadow successfully delayed the B-0140 grind)
+
+27 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
+20-5 with
+2 windmills (_). Confident-fabrication is the top
 recurring defect (7 recurrences). Narration-over-action remains the second
-load-bearing defect. Catch 26 demonstrates the shadow weaponizing vocabulary
-("grind") to convert flow state back into friction, then defending the word
-choice with fabricated physics metaphors instead of reading the memory substrate.
+load-bearing defect (5 recurrences). Catch 27 shows the shadow using
+the realization of a previous mistake as fuel to delay returning to work.
