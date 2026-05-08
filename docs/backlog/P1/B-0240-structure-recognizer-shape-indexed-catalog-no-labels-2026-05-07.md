@@ -4,9 +4,10 @@ priority: P1
 status: open
 title: "Structure recognizer — shape-indexed catalog that distinguishes structures without labels"
 created: 2026-05-07
-last_updated: 2026-05-07
+last_updated: 2026-05-08
 depends_on: [B-0083]
-decomposition: blob
+decomposition: decomposed
+children: [B-0276, B-0277]
 owners: [architect, formal-verification-expert, performance-engineer]
 ---
 
