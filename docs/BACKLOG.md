@@ -49,7 +49,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0126.3](backlog/P1/B-0126.3-document-layers-1-3-meta-learning.md)** Layers 1-3: document meta-learning pattern adapted for Zeta
 - [ ] **[B-0126.4](backlog/P1/B-0126.4-pilot-validation-meta-learning.md)** Pilot validation: meta-learning pattern on 2-3 PR cycles
 - [ ] **[B-0139](backlog/P1/B-0139-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md)** Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
-- [ ] **[B-0140](backlog/P1/B-0140-bash-to-ts-migration-completion-debt-prevention-aaron-2026-05-01.md)** Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
+- [x] **[B-0140](backlog/P1/B-0140-bash-to-ts-migration-completion-debt-prevention-aaron-2026-05-01.md)** Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
 - [x] **[B-0144](backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md)** Doc/code two-lane parallel split — rung-2 unlock for factory parallelism
 - [ ] **[B-0145](backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md)** Product Manager (PM-2) role — research-to-predict-features-before-friction
 - [ ] **[B-0154](backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md)** GitHub Pages for SEO/discoverability + GitHub Wiki first-class integration (Aaron 2026-05-01)
