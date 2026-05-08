@@ -74,6 +74,19 @@ class FakeContext implements GitHubSessionContext {
   }
 }
 
+class FailingPageContext implements GitHubSessionContext {
+  public closed = false;
+
+  newPage(): Promise<GitHubSessionPage> {
+    return Promise.reject(new Error("page failed"));
+  }
+
+  close(): Promise<void> {
+    this.closed = true;
+    return Promise.resolve();
+  }
+}
+
 function fakeDriver(context: GitHubSessionContext): GitHubSessionDriver {
   return {
     newContext(storageStatePath: string): Promise<GitHubSessionContext> {
@@ -99,7 +112,7 @@ describe("resolveStorageStatePath", () => {
   test("prefers explicit path over environment", () => {
     expect(
       resolveStorageStatePath({
-        storageStatePath: "/explicit/state.json",
+        storageStatePath: " /explicit/state.json ",
         env: { [GITHUB_STORAGE_STATE_ENV]: "/env/state.json" },
       }),
     ).toBe("/explicit/state.json");
@@ -120,6 +133,19 @@ describe("validateStorageStateFile", () => {
       validateStorageStateFile(tempStorageState('{"cookies":[]}')),
       "does not contain github.com cookies",
     );
+  });
+
+  test("rejects spoofed GitHub cookie domains", async () => {
+    await expectRejectsWith(
+      validateStorageStateFile(tempStorageState('{"cookies":[{"domain":"evilgithub.com"}]}')),
+      "does not contain github.com cookies",
+    );
+  });
+
+  test("wraps unreadable storage-state paths in an auth error", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-github-auth-dir-"));
+    tempDirs.push(dir);
+    await expectRejectsWith(validateStorageStateFile(dir), "is not readable");
   });
 });
 
@@ -157,6 +183,21 @@ describe("withGitHubSession", () => {
     );
 
     expect(result).toBe("ok");
+    expect(context.closed).toBe(true);
+  });
+
+  test("closes the context when page creation fails", async () => {
+    const storageStatePath = tempStorageState();
+    const context = new FailingPageContext();
+
+    await expectRejectsWith(
+      withGitHubSession(() => "unreachable", {
+        storageStatePath,
+        driver: fakeDriver(context),
+      }),
+      "page failed",
+    );
+
     expect(context.closed).toBe(true);
   });
 });

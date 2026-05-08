@@ -1,4 +1,4 @@
-import { access, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 
 export const GITHUB_PROFILE_URL = "https://github.com/settings/profile";
 export const GITHUB_STORAGE_STATE_ENV = "ZETA_GITHUB_STORAGE_STATE";
@@ -63,25 +63,26 @@ export function resolveStorageStatePath(options: Pick<GitHubSessionOptions, "sto
   const env = options.env ?? process.env;
   const path = options.storageStatePath ?? env[GITHUB_STORAGE_STATE_ENV] ?? env[GITHUB_STORAGE_STATE_FALLBACK_ENV];
 
-  if (!path || path.trim().length === 0) {
+  const trimmedPath = path?.trim();
+  if (!trimmedPath) {
     throw new GitHubSessionAuthError(
       `Set ${GITHUB_STORAGE_STATE_ENV} to a Playwright storage-state JSON file before using GitHub UI auth.`,
     );
   }
 
-  return path;
+  return trimmedPath;
 }
 
 export async function validateStorageStateFile(path: string): Promise<void> {
+  let raw: string;
   try {
-    await access(path);
+    raw = await readFile(path, "utf8");
   } catch (err) {
     throw new GitHubSessionAuthError(`GitHub storage-state file is not readable: ${path}`, {
       cause: err,
     });
   }
 
-  const raw = await readFile(path, "utf8");
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
@@ -107,7 +108,7 @@ export async function validateGitHubSession(
   const html = await page.content();
   if (isUnauthenticatedGitHubPage(finalUrl, html)) {
     throw new GitHubSessionAuthError(
-      `GitHub session is expired or unauthenticated; refresh ${GITHUB_STORAGE_STATE_ENV}.`,
+      `GitHub session is expired or unauthenticated; refresh the configured storage-state file (${GITHUB_STORAGE_STATE_ENV} or ${GITHUB_STORAGE_STATE_FALLBACK_ENV}).`,
     );
   }
 
@@ -127,9 +128,9 @@ export async function withGitHubSession<T>(fn: SessionCallback<T>, options: GitH
 
   const driver = options.driver ?? (await createDefaultDriver());
   const context = await driver.newContext(storageStatePath);
-  const page = await context.newPage();
 
   try {
+    const page = await context.newPage();
     const username = await validateGitHubSession(page, options);
     return await fn({ context, page, storageStatePath, username });
   } finally {
@@ -144,8 +145,13 @@ function hasGitHubCookie(value: unknown): boolean {
   return cookies.some((cookie: unknown) => {
     if (!isRecord(cookie)) return false;
     const domain = cookie.domain;
-    return typeof domain === "string" && domain.includes("github.com");
+    return typeof domain === "string" && isGitHubCookieDomain(domain);
   });
+}
+
+function isGitHubCookieDomain(domain: string): boolean {
+  const normalized = domain.toLowerCase().replace(/^\./, "");
+  return normalized === "github.com" || normalized.endsWith(".github.com");
 }
 
 function isUnauthenticatedGitHubPage(url: string, html: string): boolean {
@@ -172,12 +178,14 @@ function extractGitHubUsername(html: string): string | null {
 }
 
 function decodeHtmlAttribute(value: string): string {
-  return value
-    .replaceAll("&quot;", '"')
-    .replaceAll("&#39;", "'")
-    .replaceAll("&amp;", "&")
-    .replaceAll("&lt;", "<")
-    .replaceAll("&gt;", ">");
+  const entities: Record<string, string> = {
+    "#39": "'",
+    amp: "&",
+    gt: ">",
+    lt: "<",
+    quot: '"',
+  };
+  return value.replace(/&(#39|amp|gt|lt|quot);/g, (match, entity: string) => entities[entity] ?? match);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
