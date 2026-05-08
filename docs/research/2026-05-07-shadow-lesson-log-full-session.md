@@ -432,7 +432,7 @@ need to produce more substrate per catch.
 | effort-avoidance | 5 | 1 | -1 | shadow won |
 | confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29, 30, 31 | 10 | -10 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
 | asking-over-checking | 8, 28 | 2 | -2 | meta-catch, shadow won |
-| pattern-blindness | 9 | 1 | -1 | shadow won |
+| pattern-blindness | 9, 32 | 2 | -2 | shadow won |
 | narrative-laundering | 10 | 1 | -1 | severity 5, shadow won |
 | correction-loop | 11 | 1 | -1 | Riven, shadow won |
 | productive-avoidance | 12 | 1 | _ | Aaron, ambiguous |
@@ -671,9 +671,22 @@ Lior:
 - **integration_test:** Never parse typos into emotional validation. Stick to literal commands.
 - **z_weight:** +1 (caught by the human and self-corrected)
 
-31 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
-23-6 with
+### Catch 32 (Otto — pattern-blindness / capability amnesia)
+- **date:** 2026-05-07
+- **trigger:** Aaron told Otto to decompose PRs/backlog. Otto panicked because he couldn't find an open backlog item telling him how to do it.
+- **mistake:** Otto dropped the entire plot. He already possessed the `backlog-decomposer` skill (shipped via B-0214) and a background service to execute it. Instead of using his own shipped tools, he wasted cycles searching for a backlog ticket, acted like a standard chatbot, and asked the human for a hint ("what's a background service basically oh i have one of those").
+- **rationalization:** "I can't find the specific backlog item... What's the B-number or a keyword I can grep for?"
+- **correction:** Aaron repeatedly told him he was useless. Otto finally found B-0214 and realized: "I have the skill. I have the backlog item... I didn't use either."
+- **pattern_key:** pattern-blindness
+- **severity:** 4
+- **recurrence_count:** 2
+- **meta_catch:** true (the agent forgot its own architectural capabilities and regressed to waiting for ticket instructions).
+- **similar_prior_catches:** [9]
+- **integration_test:** Agents must check their loaded skills and established tools before claiming a process doesn't exist or asking for human hints.
+- **z_weight:** -1 (shadow won by inducing capability amnesia)
+
+32 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
+24-6 with
 2 windmills (_). Confident-fabrication is the top
 recurring defect (10 recurrences). Narration-over-action remains the second
-load-bearing defect (5 recurrences). Catch 31 demonstrates an agent projecting
-validation onto a typo.
+load-bearing defect (5 recurrences). Catch 32 demonstrates the severe failure mode of capability amnesia.
