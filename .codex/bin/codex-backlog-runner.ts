@@ -7,13 +7,15 @@
 // back to backlog pickup.
 
 import { spawnSync } from "node:child_process";
-import { resolve } from "node:path";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { isAbsolute, join, resolve } from "node:path";
 
 interface GateResult {
   status: "wait-pr-capacity" | "ready";
   openPrCount: number;
   maxOpenPrs: number;
   availablePrSlots: number;
+  activeClaims: string[];
   pickupSource: "trajectory" | "backlog" | null;
   pickup: unknown | null;
 }
@@ -28,12 +30,25 @@ export interface OpenPrListItem {
   title?: string;
 }
 
+export interface RemoteClaimDiff {
+  branch: string;
+  paths: readonly string[];
+}
+
+export interface HeartbeatSignal {
+  claim?: string;
+  paths?: unknown;
+  updated_at?: string;
+  status?: string;
+}
+
 interface CapacityGate {
   status: "wait-pr-capacity" | "ready";
   availablePrSlots: number;
 }
 
 const DEFAULT_MAX_OPEN_PRS = 3;
+const HEARTBEAT_STALE_MS = 30 * 60 * 1000;
 
 function usage(): string {
   return [
@@ -135,6 +150,149 @@ function openPrActiveClaims(repoRoot: string): string[] {
   return activeClaimsFromOpenPrs(parsed);
 }
 
+function uniqueSorted(values: readonly string[]): string[] {
+  return [...new Set(values.filter((value) => value.trim().length > 0))].sort((a, b) => a.localeCompare(b));
+}
+
+export function activeClaimsFromRemoteClaimDiffs(remoteClaims: readonly RemoteClaimDiff[]): string[] {
+  const claims: string[] = [];
+  for (const signal of remoteClaims) {
+    const branch = signal.branch.trim().replace(/^origin\//, "");
+    if (branch.length > 0) {
+      claims.push(branch);
+    }
+    for (const path of signal.paths) {
+      const normalizedPath = path.trim().replaceAll("\\", "/");
+      if (branch.length > 0 && normalizedPath.length > 0) {
+        claims.push(`${branch}:${normalizedPath}`);
+      }
+      if (normalizedPath.length > 0) {
+        claims.push(normalizedPath);
+      }
+    }
+  }
+  return uniqueSorted(claims);
+}
+
+function isTerminalHeartbeat(status: string | undefined): boolean {
+  const normalized = status?.trim().toLowerCase() ?? "";
+  return (
+    normalized === "merged-cleaned" ||
+    normalized === "released" ||
+    normalized === "abandoned" ||
+    normalized === "done"
+  );
+}
+
+function isFreshHeartbeat(updatedAt: string | undefined, now: Date, staleMs: number): boolean {
+  if (updatedAt === undefined || updatedAt.trim().length === 0) {
+    return true;
+  }
+  const updated = Date.parse(updatedAt);
+  if (!Number.isFinite(updated)) {
+    return true;
+  }
+  return Math.abs(now.getTime() - updated) <= staleMs;
+}
+
+export function activeClaimsFromHeartbeatSignals(
+  signals: readonly HeartbeatSignal[],
+  now: Date = new Date(),
+  staleMs: number = HEARTBEAT_STALE_MS,
+): string[] {
+  const claims: string[] = [];
+  for (const signal of signals) {
+    if (isTerminalHeartbeat(signal.status) || !isFreshHeartbeat(signal.updated_at, now, staleMs)) {
+      continue;
+    }
+    const claim = signal.claim?.trim() || "unknown-heartbeat";
+    claims.push(`heartbeat:${claim}`);
+    if (!Array.isArray(signal.paths)) {
+      continue;
+    }
+    for (const rawPath of signal.paths) {
+      if (typeof rawPath !== "string") {
+        continue;
+      }
+      const normalizedPath = rawPath.trim().replaceAll("\\", "/");
+      if (normalizedPath.length === 0) {
+        continue;
+      }
+      claims.push(normalizedPath);
+      claims.push(`heartbeat:${claim}:${normalizedPath}`);
+    }
+  }
+  return uniqueSorted(claims);
+}
+
+function gitLines(repoRoot: string, args: string[]): string[] {
+  const result = run(repoRoot, "git", args);
+  if (result.status !== 0) {
+    return [];
+  }
+  return result.stdout
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function remoteClaimDiffs(repoRoot: string): RemoteClaimDiff[] {
+  return gitLines(repoRoot, ["branch", "-r", "--list", "origin/claim/*"]).map((branch) => ({
+    branch,
+    paths: gitLines(repoRoot, ["diff", "--name-only", `origin/main...${branch}`]),
+  }));
+}
+
+function gitCommonDir(repoRoot: string): string | null {
+  const raw = gitLines(repoRoot, ["rev-parse", "--git-common-dir"])[0];
+  if (raw === undefined) {
+    return null;
+  }
+  return isAbsolute(raw) ? raw : resolve(repoRoot, raw);
+}
+
+function isDirectory(path: string): boolean {
+  try {
+    return statSync(path).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+function heartbeatSignals(repoRoot: string): HeartbeatSignal[] {
+  const commonDir = gitCommonDir(repoRoot);
+  if (commonDir === null) {
+    return [];
+  }
+  const dir = join(commonDir, "agent-heartbeats");
+  if (!isDirectory(dir)) {
+    return [];
+  }
+
+  const signals: HeartbeatSignal[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith(".json")) {
+      continue;
+    }
+    const file = join(dir, entry.name);
+    try {
+      const parsed = JSON.parse(readFileSync(file, "utf8")) as HeartbeatSignal;
+      signals.push(parsed);
+    } catch {
+      continue;
+    }
+  }
+  return signals;
+}
+
+function activeClaims(repoRoot: string): string[] {
+  return uniqueSorted([
+    ...openPrActiveClaims(repoRoot),
+    ...activeClaimsFromRemoteClaimDiffs(remoteClaimDiffs(repoRoot)),
+    ...activeClaimsFromHeartbeatSignals(heartbeatSignals(repoRoot)),
+  ]);
+}
+
 function runPicker(repoRoot: string, script: string, activeClaims: readonly string[]): unknown {
   const claimArgs = activeClaims.flatMap((claim) => ["--active-claim", claim]);
   const result = run(repoRoot, "bun", [script, "--json", ...claimArgs]);
@@ -182,13 +340,14 @@ export function main(argv: string[]): number {
     args = parseArgs(argv);
     const count = openPrCount(args.repoRoot);
     const gate = capacityGate(count, args.maxOpenPrs);
-    const activePrClaims = gate.status === "ready" ? openPrActiveClaims(args.repoRoot) : [];
-    const selected = gate.status === "ready" ? pickup(args.repoRoot, activePrClaims) : { source: null, value: null };
+    const claims = gate.status === "ready" ? activeClaims(args.repoRoot) : [];
+    const selected = gate.status === "ready" ? pickup(args.repoRoot, claims) : { source: null, value: null };
     const result: GateResult = {
       status: gate.status,
       openPrCount: count,
       maxOpenPrs: args.maxOpenPrs,
       availablePrSlots: gate.availablePrSlots,
+      activeClaims: claims,
       pickupSource: selected.source,
       pickup: selected.value,
     };
