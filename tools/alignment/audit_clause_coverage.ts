@@ -8,9 +8,9 @@
 // surfaces with zero clause references as coverage gaps.
 //
 // This is a detection surface, not a gate — it does not block commits.
-// The alignment-auditor (Sova) uses this output to prioritize clause-
-// coverage improvements. The --gate flag optionally fails if any surface
-// has fewer than N clause citations (advisory, not enforcement).
+// The alignment-auditor uses this output to prioritize clause-coverage
+// improvements. The --gate flag optionally fails if any surface has
+// fewer than N clause citations (advisory, not enforcement).
 //
 // Usage:
 //   bun tools/alignment/audit_clause_coverage.ts
@@ -66,13 +66,13 @@ interface AuditResult {
 }
 
 function repoRoot(): string {
-  // spawnSync with array args — no shell injection risk
   const result = spawnSync(
-    "git",
+    "git", // eslint-disable-line sonarjs/no-os-command-from-path
     ["rev-parse", "--show-toplevel"],
     { encoding: "utf8" },
   );
   if (result.error) throw new Error(`git rev-parse failed: ${result.error.message}`);
+  if (result.status !== 0) throw new Error(`git rev-parse exited with status ${String(result.status)}`);
   return result.stdout.trim();
 }
 
@@ -320,11 +320,12 @@ export function main(argv: readonly string[]): AuditExitCode {
   }
 
   if (args.gate !== null) {
-    const failing = result.surfaces.filter((s) => s.clauseCount < args.gate!);
+    const gateN = args.gate;
+    const failing = result.surfaces.filter((s) => s.clauseCount < gateN);
     if (failing.length > 0) {
       for (const f of failing) {
         process.stderr.write(
-          `audit_clause_coverage: ${f.name} (${f.kind}) has ${String(f.clauseCount)} clauses < gate ${String(args.gate)}\n`,
+          `audit_clause_coverage: ${f.name} (${f.kind}) has ${String(f.clauseCount)} clauses < gate ${String(gateN)}\n`,
         );
       }
       return 1;
