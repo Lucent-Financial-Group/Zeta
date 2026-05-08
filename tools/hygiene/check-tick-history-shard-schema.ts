@@ -1,6 +1,21 @@
 #!/usr/bin/env bun
+// check-tick-history-shard-schema.ts — validate loop tick shard file
+// paths, names, and first-row timestamps.
+//
+// TypeScript+Bun port of check-tick-history-shard-schema.sh for the
+// Rule 0 bash-to-TS migration.
+//
+// Usage:
+//   bun tools/hygiene/check-tick-history-shard-schema.ts
+//   bun tools/hygiene/check-tick-history-shard-schema.ts --files <paths...>
+//
+// Exit codes:
+//   0   all checked shards match the schema
+//   1   one or more shard violations found
+//   2   tick shard directory missing
+
 import { readdirSync, readFileSync, statSync } from "node:fs";
-import { basename, join, resolve } from "node:path";
+import { basename, join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
 function repoRoot(): string {
@@ -9,15 +24,16 @@ function repoRoot(): string {
   const r = spawnSync("git", ["rev-parse", "--show-toplevel"], {
     encoding: "utf8",
   });
-  return r.status === 0 ? r.stdout.trim() : ".";
+  return r.status === 0 ? r.stdout.trim() : process.cwd();
 }
 
-const ROOT = repoRoot();
+const ROOT = resolve(repoRoot());
 const SHARD_DIR = join(ROOT, "docs/hygiene-history/ticks");
 
 const BARE_RE = /^(\d{4})Z(-[0-9a-f]+)?$/;
 const HASH_RE = /^(\d{4})(\d{2})Z-[0-9a-f]+$/;
 const COL1_RE = /^\|\s(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?Z)\s\|\s/;
+const SHARD_PREFIX = "docs/hygiene-history/ticks/";
 
 interface ScanResult {
   path: string;
@@ -25,13 +41,19 @@ interface ScanResult {
   violation?: string;
 }
 
+function normalizeToPosix(p: string): string {
+  return p.replaceAll("\\", "/");
+}
+
+function repoRelative(p: string): string {
+  return normalizeToPosix(relative(ROOT, p));
+}
+
 function scanOne(shardPath: string): ScanResult {
-  const pathRel = shardPath.startsWith(ROOT + "/")
-    ? shardPath.slice(ROOT.length + 1)
-    : shardPath;
+  const pathRel = repoRelative(resolve(ROOT, shardPath));
   const base = basename(shardPath, ".md");
 
-  const parts = pathRel.replace("docs/hygiene-history/ticks/", "").split("/");
+  const parts = pathRel.replace(SHARD_PREFIX, "").split("/");
   const yyyy = parts[0] ?? "";
   const mm = parts[1] ?? "";
   const dd = parts[2] ?? "";
@@ -146,10 +168,10 @@ export function main(argv: string[]): number {
   if (argv[0] === "--files") {
     shards = argv
       .slice(1)
-      .filter((p) => p.startsWith("docs/hygiene-history/ticks/"))
-      .filter((p) => p.endsWith(".md"))
-      .filter((p) => basename(p) !== "README.md")
       .map((p) => resolve(ROOT, p))
+      .filter((p) => repoRelative(p).startsWith(SHARD_PREFIX))
+      .filter((p) => repoRelative(p).endsWith(".md"))
+      .filter((p) => basename(p) !== "README.md")
       .filter(isFile);
   } else {
     if (!isDir(SHARD_DIR)) {
