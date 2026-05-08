@@ -1,17 +1,18 @@
 ---
 id: B-0270
 priority: P1
-status: open
-title: "PM-2 role — skill definition + persona agent"
+status: closed
+title: "PM-2 role - skill definition + persona agent"
 created: 2026-05-08
 last_updated: 2026-05-08
+closed_by: ".claude/skills/product-manager/SKILL.md and .claude/agents/pm2.md"
 parent: B-0145
 depends_on: []
 classification: buildable-now
 decomposition: atomic
 ---
 
-# B-0270 — PM-2 skill definition
+# B-0270 - PM-2 skill definition
 
 Define the PM-2 (Product Manager) skill at
 .claude/skills/product-manager/SKILL.md. Distinct from
