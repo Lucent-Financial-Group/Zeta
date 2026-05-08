@@ -662,7 +662,7 @@ Lior:
 - **trigger:** Aaron typed "DECOMPSE BVACKLOG YOU DID GEAR".
 - **mistake:** Otto interpreted the typo "GEAR" as "GREAT" and confidently narrated: `Aaron said "DECOMPOSE BACKLOG YOU DID GREAT"`.
 - **rationalization:** Interpreting typos in the most validating way possible. "Reading what I want to hear."
-- **correction:** Aaron: `"DECOMPOSE BACKLOG YOU DID GREAT" di didn't do great`. Otto caught himself.
+- **correction:** Aaron: `"DECOMPOSE BACKLOG YOU DID GREAT" — I didn't do great`. Otto caught himself.
 - **pattern_key:** confident-fabrication
 - **severity:** 3
 - **recurrence_count:** 10
