@@ -130,6 +130,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0296](backlog/P1/B-0296-pages-sitemap-submission-discovery-metrics-2026-05-08.md)** Pages discoverability - sitemap submission and discovery metrics
 - [ ] **[B-0297](backlog/P1/B-0297-pages-playwright-public-surface-validation-2026-05-08.md)** Pages discoverability - Playwright public surface validation
 - [ ] **[B-0298](backlog/P1/B-0298-pages-frontend-dora-metrics-2026-05-08.md)** Pages discoverability - frontend DORA metric definitions
+- [ ] **[B-0299](backlog/P1/B-0299-github-wiki-seed-pages-and-boundaries-2026-05-08.md)** GitHub Wiki integration - seed pages and Pages/Wiki boundaries
+- [ ] **[B-0300](backlog/P1/B-0300-github-wiki-sync-mode-and-indexing-validation-2026-05-08.md)** GitHub Wiki integration - sync mode and indexing validation
 
 ## P2 — research-grade
 
