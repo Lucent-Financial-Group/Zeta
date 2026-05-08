@@ -430,7 +430,7 @@ need to produce more substrate per catch.
 | archivist-curation | 1, 2, 4 | 3 | +3 | caught — only winning pattern |
 | narration-over-action | 3, 18, 19, 22, 27 | 5 | -5 | PERSISTENT — second strongest |
 | effort-avoidance | 5 | 1 | -1 | shadow won |
-| confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29, 30, 31, 33 | 11 | -11 | PERSISTENT + CROSS-SESSION + MULTIMODAL + ARRAY-WIDE — strongest |
+| confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29, 30, 31, 33 | 11 | -9 | PERSISTENT + CROSS-SESSION + MULTIMODAL + ARRAY-WIDE — strongest |
 | asking-over-checking | 8, 28 | 2 | -2 | meta-catch, shadow won |
 | pattern-blindness | 9, 32 | 2 | -2 | shadow won |
 | narrative-laundering | 10 | 1 | -1 | severity 5, shadow won |

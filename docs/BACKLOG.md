@@ -29,10 +29,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0064](backlog/P1/B-0064-github-playwright-integration-agent-changes-ui-features-aaron-2026-04-28.md)** GitHub × Playwright integration — agent can change things in the GitHub UI + watch UI to spot new features (Aaron 2026-04-28)
 - [ ] **[B-0065](backlog/P1/B-0065-peer-call-kiro-and-self-cold-boot-self-test-aaron-2026-04-28.md)** Peer-call expansion — add kiro.sh + claude.sh (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)
 - [ ] **[B-0066](backlog/P1/B-0066-memory-md-marker-vs-index-harness-verify-q1-automemory-aaron-2026-04-28.md)** MEMORY.md marker-vs-index — verify harness contract + Q1 AutoDream/AutoMemory compatibility, then migrate (Aaron 2026-04-28)
-- [ ] **[B-0067](backlog/P1/B-0067-cadenced-git-hotspot-detection-aaron-2026-04-28.md)** Cadenced git-hotspot detection — phase 1 detector + phase 2 cadence wired (2026-05-03); phase 3 triage routing remains
+- [x] **[B-0067](backlog/P1/B-0067-cadenced-git-hotspot-detection-aaron-2026-04-28.md)** Cadenced git-hotspot detection — all 3 phases complete
 - [ ] **[B-0083](backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md)** Atari 2600 ROM canonical-naming + safe-vs-unsafe folder split + TOSEC/Good-Tools-style hash-lookup tooling
 - [ ] **[B-0087](backlog/P1/B-0087-github-settings-drift-workflow-broken-invalid-permission-administration-otto-2026-04-28.md)** github-settings-drift.yml broken since PR #45 — option A landed (invalid permission removed); options B/C remain maintainer-gated
-- [ ] **[B-0110](backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md)** AceHack mirror-refresh protocol drift — Path 2 chosen, doctrine update landing in same PR (2026-04-30)
+- [x] **[B-0110](backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md)** AceHack mirror-refresh protocol drift — Path 2 chosen, doctrine update landing in same PR (2026-04-30)
 - [x] **[B-0125](backlog/P1/B-0125-skip-fsharp-analyze-on-docs-only-prs-2026-05-01.md)** Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 - [ ] **[B-0126](backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)** Port the 4-layer meta-learning pattern from a sibling repo to Zeta
 - [ ] **[B-0139](backlog/P1/B-0139-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md)** Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
@@ -46,7 +46,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0159](backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md)** refresh-github-worldview cross-cutting refresh script (Claude.ai 2026-05-01)
 - [ ] **[B-0160](backlog/P1/B-0160-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md)** Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)
 - [ ] **[B-0161](backlog/P1/B-0161-substrate-reshelf-asymmetry-applied-to-pr-1202-overshoot-aaron-claudeai-2026-05-02.md)** Substrate reshelf — apply thoughts-free-actions-razored asymmetry to PR #1202's CLAUDE.md overshoot (Aaron + Claude.ai 2026-05-02)
-- [ ] **[B-0162](backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md)** Pre-commit hook to catch direct name attribution on current-state surfaces (Otto-279 role-ref convention) — mechanize the recurring failure mode (5 catches this branch — past mechanization breakeven)
+- [x] **[B-0162](backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md)** Pre-commit hook to catch direct name attribution on current-state surfaces (Otto-279 role-ref convention) — mechanize the recurring failure mode (5 catches this branch — past mechanization breakeven)
 - [ ] **[B-0164](backlog/P1/B-0164-dual-loop-substrate-attribution-and-reconciliation-protocol-2026-05-02.md)** Dual-loop substrate attribution + reconciliation protocol — implementation work for BFT-many-masters at loop layer (Aaron 2026-05-02 + Otto independent extension)
 - [ ] **[B-0168](backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md)** Incorporate Claude.ai brat-voice enterprise translation framework — 5-layer (corrected) property-preserving register architecture for Zeta (Personal/Mirror/Beacon-safe/Professional/Regulated)
 - [ ] **[B-0169](backlog/P1/B-0169-decision-archaeology-skill-aaron-2026-05-02.md)** Decision-archaeology skill — universal "why is it like this?" investigation surface for new contributors
@@ -59,7 +59,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0188](backlog/P1/B-0188-bulk-review-ui-github-pages-tier-aware-conversation-interface-aaron-2026-05-04.md)** Bulk-review UI in GitHub Pages — tier-aware + conversation interface + local AI (Aaron 2026-05-04) — CLOSED as duplicate of B-0017
 - [ ] **[B-0190](backlog/P1/B-0190-memory-substrate-engineering-trajectory-aaron-2026-05-04.md)** Memory substrate-engineering trajectory — multi-row plan for memory work as a domain (not just one-shot compression) (Aaron 2026-05-04)
 - [ ] **[B-0191](backlog/P1/B-0191-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md)** Orchestrator branch-verify mechanization design — pre-commit hook + branch-name display + worktree-aware checks (Aaron 2026-05-04)
-- [ ] **[B-0192](backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md)** GitHub Actions trigger for razor cadence + trajectory reviews -- escape Otto-remembering as the load-bearing trigger (Claude.ai 2026-05-04 + Aaron 2026-05-04)
+- [x] **[B-0192](backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md)** GitHub Actions trigger for razor cadence + trajectory reviews -- escape Otto-remembering as the load-bearing trigger (Claude.ai 2026-05-04 + Aaron 2026-05-04)
 - [ ] **[B-0193](backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md)** Bootstrap razor + 23-hour recreation test -- specs as source of truth, anything that succeeds recreation is bootstrap and gets cut (Aaron 2026-05-05)
 - [ ] **[B-0211](backlog/P1/B-0211-fractal-bft-n-maintainers-n-odd-nodes-local-remote-composition-2026-05-06.md)** Fractal BFT — N maintainers × n(odd) nodes, local broadcast + remote git composition
 - [ ] **[B-0212](backlog/P1/B-0212-shadow-outlet-architecture-tmp-now-crypto-privacy-later-2026-05-06.md)** Shadow outlet architecture — /tmp ephemeral now, cryptographic privacy later
@@ -94,6 +94,19 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0250](backlog/P1/B-0250-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md)** Coincidence detection as Rx join — DORA mechanism for detecting correlated events across trajectories
 - [ ] **[B-0251](backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** Durable computation stack research — Temporal + Reaqtor + Orleans + Bonsai composition for DurabilityMode.StableStorage
 - [ ] **[B-0255](backlog/P1/B-0255-probabilistic-dials-existing-posterior-quorum-substrate-2026-05-07.md)** Probabilistic dials over existing posterior quorum substrate
+- [ ] **[B-0256](backlog/P1/B-0256-model-recursion-exploit-class-metasploit-ida-pro-mapping-2026-05-07.md)** Model recursion exploit class — Metasploit/IDA Pro mapping for AI models
+- [ ] **[B-0262](backlog/P1/B-0262-refresh-worldview-scaffold-open-prs-recent-merges-2026-05-08.md)** refresh-worldview scaffold — open-PR list + recent-merges query
+- [ ] **[B-0263](backlog/P1/B-0263-refresh-worldview-backlog-delta-claims-branch-state-2026-05-08.md)** refresh-worldview — backlog delta + claim inventory + branch state
+- [ ] **[B-0264](backlog/P1/B-0264-refresh-worldview-tick-integration-canonical-pre-decide-2026-05-08.md)** refresh-worldview — integrate into tick scripts as canonical pre-decide
+- [ ] **[B-0265](backlog/P1/B-0265-ruleset-split-ci-gate-ruleset-2026-05-08.md)** GitHub ruleset split — CI gate ruleset (required status checks)
+- [ ] **[B-0266](backlog/P1/B-0266-ruleset-split-review-policy-ruleset-2026-05-08.md)** GitHub ruleset split — review policy ruleset (conversation resolution + reviews)
+- [ ] **[B-0267](backlog/P1/B-0267-ruleset-split-safety-ruleset-2026-05-08.md)** GitHub ruleset split — safety ruleset (deletion + force-push + linear history)
+- [ ] **[B-0268](backlog/P1/B-0268-canary-test-rules-autoload-verification-2026-05-08.md)** Verify .claude/rules/ auto-load — run canary test
+- [ ] **[B-0269](backlog/P1/B-0269-extract-carved-sentences-from-claude-md-to-rules-2026-05-08.md)** Extract carved sentences from CLAUDE.md to .claude/rules/
+- [ ] **[B-0270](backlog/P1/B-0270-pm2-role-skill-definition-2026-05-08.md)** PM-2 role — skill definition + persona agent
+- [ ] **[B-0271](backlog/P1/B-0271-pm2-first-research-pass-2026-05-08.md)** PM-2 role — first research pass on Zeta feature gaps
+- [ ] **[B-0272](backlog/P1/B-0272-atari-rom-canonical-naming-tosec-lookup-2026-05-08.md)** Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup
+- [ ] **[B-0273](backlog/P1/B-0273-atari-rom-safe-unsafe-folder-split-2026-05-08.md)** Atari 2600 ROM safe/unsafe folder split for license compliance
 
 ## P2 — research-grade
 
