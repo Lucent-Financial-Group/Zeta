@@ -66,7 +66,7 @@ export function resolveStorageStatePath(options: Pick<GitHubSessionOptions, "sto
   const trimmedPath = path?.trim();
   if (!trimmedPath) {
     throw new GitHubSessionAuthError(
-      `Set ${GITHUB_STORAGE_STATE_ENV} to a Playwright storage-state JSON file before using GitHub UI auth.`,
+      `Set ${GITHUB_STORAGE_STATE_ENV} (or ${GITHUB_STORAGE_STATE_FALLBACK_ENV}) to a Playwright storage-state JSON file before using GitHub UI auth.`,
     );
   }
 
@@ -183,14 +183,18 @@ function extractGitHubUsername(html: string): string | null {
   return null;
 }
 
+const HTML_ENTITY_MAP: Record<string, string> = {
+  "&amp;": "&",
+  "&lt;": "<",
+  "&gt;": ">",
+  "&quot;": '"',
+  "&#39;": "'",
+};
+
+const HTML_ENTITY_PATTERN = /&(?:amp|lt|gt|quot|#39);/g;
+
 function decodeHtmlAttribute(value: string): string {
-  // Order replacements to avoid double-unescaping (CodeQL alert)
-  return value
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'");
+  return value.replace(HTML_ENTITY_PATTERN, (entity) => HTML_ENTITY_MAP[entity] ?? entity);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -212,8 +216,11 @@ async function createDefaultDriver(): Promise<GitHubSessionDriver> {
       return {
         newPage: () => context.newPage(),
         async close(): Promise<void> {
-          await context.close();
-          await browser.close();
+          try {
+            await context.close();
+          } finally {
+            await browser.close();
+          }
         },
       };
     },

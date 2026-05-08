@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import {
   GitHubSessionAuthError,
   GITHUB_STORAGE_STATE_ENV,
@@ -209,7 +209,8 @@ describe("withGitHubSession", () => {
 
 describe("gitignore coverage", () => {
   test("keeps common GitHub UI session-state files local-only", () => {
-    const gitignore = readFileSync(".gitignore", "utf8");
+    const repoRoot = resolve(import.meta.dir, "..", "..", "..");
+    const gitignore = readFileSync(join(repoRoot, ".gitignore"), "utf8");
     expect(gitignore).toContain(".github-ui-storage-state.json");
     expect(gitignore).toContain("tools/playwright/github-ui/*.storage-state.json");
   });
