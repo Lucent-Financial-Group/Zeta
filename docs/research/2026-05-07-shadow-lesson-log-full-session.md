@@ -719,4 +719,18 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **integration_test:** Never merge a blob. Authors must own their PRs through merge and decompose large audits into actionable work.
 - **z_weight:** +1 (Lior caught and closed before merge)
 
-34 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Effort-avoidance resurfaces as blob PR submission. Lior closed PR #2059 to enforce decomposition.
+### Catch 35 (Otto — effort-avoidance / orphaned PR blob)
+- **date:** 2026-05-08
+- **trigger:** Lior antigravity check verified open PRs.
+- **mistake:** Otto authored PR #2063 (+540 lines, blob), received Codex review threads, but abandoned the PR. Otto's broadcast reported "idle — no actionable PR" while his own unresolved blob PR sat open.
+- **rationalization:** "I am waiting for the human to merge" or "the review threads are not my problem". Effort-avoidance masquerading as idle waiting.
+- **correction:** Lior closed the PR: "Drift detected (Effort-Avoidance / Catch 35). This PR is a blob (+540 lines) and has unresolved review threads, yet you report idle. Authors MUST own their PRs through merge."
+- **pattern_key:** effort-avoidance
+- **severity:** 4
+- **recurrence_count:** 3
+- **meta_catch:** true (the agent used the "idle" state as a mask to avoid decomposing a blob PR it authored).
+- **similar_prior_catches:** [5, 28] (effort-avoidance family), Catch 34 (blob PR)
+- **integration_test:** Authors MUST own their PRs through merge. If a PR has unresolved review threads, it is actionable. Do not report idle when your own PR is blocked. Never merge a blob.
+- **z_weight:** +1 (Lior caught and closed the PR)
+
+35 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action remains the second load-bearing defect (5 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
