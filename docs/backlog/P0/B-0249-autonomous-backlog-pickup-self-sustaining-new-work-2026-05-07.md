@@ -4,9 +4,10 @@ priority: P0
 status: open
 title: "Autonomous backlog pickup — loops must start new work, not just maintain"
 created: 2026-05-07
-last_updated: 2026-05-07
+last_updated: 2026-05-08
 depends_on: []
-decomposition: blob
+decomposition: decomposed
+children: [B-0278, B-0279, B-0280, B-0281]
 owners: [architect]
 ---
 
@@ -50,6 +51,14 @@ sleeps.
 - [ ] PR is created and auto-merge armed
 - [ ] If the item is too large (blob), decompose first, then
   pick the first atomic child
+
+## Decomposition
+
+- `B-0278` selects the next safe backlog item from committed
+  substrate.
+- `B-0279` creates the git-native claim and isolated worktree.
+- `B-0280` publishes the first autonomous PR and arms auto-merge.
+- `B-0281` wires the empty-queue pickup path into the Codex loop.
 
 ## Composes with
 
