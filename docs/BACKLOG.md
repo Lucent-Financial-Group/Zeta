@@ -132,6 +132,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0298](backlog/P1/B-0298-pages-frontend-dora-metrics-2026-05-08.md)** Pages discoverability - frontend DORA metric definitions
 - [ ] **[B-0299](backlog/P1/B-0299-github-wiki-seed-pages-and-boundaries-2026-05-08.md)** GitHub Wiki integration - seed pages and Pages/Wiki boundaries
 - [ ] **[B-0300](backlog/P1/B-0300-github-wiki-sync-mode-and-indexing-validation-2026-05-08.md)** GitHub Wiki integration - sync mode and indexing validation
+- [ ] **[B-0301](backlog/P1/B-0301-pages-public-source-inventory-exclusion-boundary-2026-05-08.md)** Pages content sources - public inventory and exclusion boundary
+- [ ] **[B-0302](backlog/P1/B-0302-pages-stable-route-map-pre-indexing-freeze-2026-05-08.md)** Pages content sources - stable route map before indexing
+- [ ] **[B-0303](backlog/P1/B-0303-pages-contributor-on-ramp-information-architecture-2026-05-08.md)** Pages content sources - contributor on-ramp information architecture
+- [ ] **[B-0304](backlog/P1/B-0304-pages-selected-research-publication-queue-redaction-gate-2026-05-08.md)** Pages content sources - selected research queue and redaction gate
 
 ## P2 — research-grade
 
