@@ -4,7 +4,7 @@ priority: P1
 status: open
 title: TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
 created: 2026-05-01
-last_updated: 2026-05-05
+last_updated: 2026-05-08
 decomposition: decomposed
 children: [B-0140]
 depends_on:
@@ -125,9 +125,9 @@ script** (`tools/hygiene/apply-github-settings.ts`).
 Porting snapshot + check FIRST gives the apply script
 natural TS imports for both.
 
-### Phase 2 — Schema + safety lints
+### Phase 2 — Schema + safety lints -- DONE
 
-1. `tools/hygiene/check-tick-history-shard-schema.sh` → `.ts`
+1. `tools/hygiene/check-tick-history-shard-schema.sh` → `.ts` -- DONE (PR #1986)
 
 Composes with the recurring tick-shard schema violations
 this session has hit (e.g., `1455Z-followup.md` rename to

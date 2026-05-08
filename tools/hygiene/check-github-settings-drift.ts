@@ -133,14 +133,18 @@ export async function main(argv: readonly string[]): Promise<number> {
   try {
     writeFileSync(tmpPath, liveContent, "utf8");
 
-    // Run diff
+    // Run diff — exit 0 = identical, 1 = differences, 2 = error
     const diffResult = await runCmd(["diff", "-u", expected, tmpPath]);
 
     if (diffResult.exitCode === 0) {
       process.stderr.write(`github-settings-drift: no drift (repo=${repo})\n`);
       return 0;
+    } else if (diffResult.exitCode >= 2) {
+      // diff exit code 2+ means an error (missing file, unreadable, etc.)
+      process.stderr.write(`error: diff command failed (exit ${diffResult.exitCode}): ${diffResult.stderr.trim()}\n`);
+      return 2;
     } else {
-      // Print diff to stdout
+      // exit code 1 = differences found (drift detected)
       process.stdout.write(diffResult.stdout);
       process.stderr.write("\n");
       process.stderr.write(`github-settings-drift: DRIFT DETECTED (repo=${repo})\n`);

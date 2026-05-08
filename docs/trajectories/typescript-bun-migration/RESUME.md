@@ -73,7 +73,7 @@ Post-install scripts that operate on the repo (lints, audits, hygiene checks, pe
 - **git cluster** (slices 13/20) — complete: push-with-retry / batch-resolve-pr-threads
 - **pr-preservation cluster** (slice 21) — complete: archive-pr
 
-The bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked clean in production. See "Soak + bash-retirement phase" actions in the status line at the top of this doc.
+Most bash originals from Bucket B/D remain in-tree as equivalence references and will retire once the TS ports have soaked clean in production. Bucket C scripts (check-github-settings-drift, snapshot-github-settings) had their .sh originals deleted upon porting. See "Soak + bash-retirement phase" actions in the status line at the top of this doc.
 
 ### Bucket C — ~~Needs human decision~~ Ported (2 files)
 

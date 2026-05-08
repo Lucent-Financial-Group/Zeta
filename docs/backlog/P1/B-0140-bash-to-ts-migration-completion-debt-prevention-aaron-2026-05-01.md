@@ -4,7 +4,7 @@ priority: P1
 status: open
 title: Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
 created: 2026-05-01
-last_updated: 2026-05-05
+last_updated: 2026-05-08
 depends_on: []
 composes_with: [B-0190, B-0196]
 ---
@@ -113,7 +113,7 @@ with .ts counterparts removed. 2 CI workflows updated to call .ts.
 | tools/lanes/doc-lane.sh | #1961 | merged |
 | tools/lanes/lane-allocator.sh | #1961 | merged |
 | tools/profile.sh | #1962 | merged |
-| tools/hygiene/check-tick-history-shard-schema.sh | #1986 (Vera) | in CI |
+| tools/hygiene/check-tick-history-shard-schema.sh | #1986 (Vera) | merged, .sh deleted |
 
 **REMAINING (0 files — all ported in B-0156 PR):**
 
