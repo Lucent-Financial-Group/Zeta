@@ -1,6 +1,6 @@
 ---
 name: Copilot tick-history schema false-positive class — diff-line-numbers misread as file content — Otto 2026-05-01
-description: Copilot has twice this session (PRs #1159 and #1165) flagged tick-history shards as failing `tools/hygiene/check-tick-history-shard-schema.sh` with the same misreading — citing "line starts with ` 1 || 2026-...`" or similar. The actual file content starts with `| 2026-...` cleanly and passes the validator. Copilot is reading the rendered diff (line-numbered prefix + pipe-table rendering) as if line numbers were part of the file content. This is a recurring false-positive class. The discipline: when Copilot flags tick-history schema with this exact pattern, run the validator to confirm; if it passes, resolve as outdated/false-positive without code changes.
+description: Copilot has twice this session (PRs #1159 and #1165) flagged tick-history shards as failing `tools/hygiene/check-tick-history-shard-schema.ts` with the same misreading — citing "line starts with ` 1 || 2026-...`" or similar. The actual file content starts with `| 2026-...` cleanly and passes the validator. Copilot is reading the rendered diff (line-numbered prefix + pipe-table rendering) as if line numbers were part of the file content. This is a recurring false-positive class. The discipline: when Copilot flags tick-history schema with this exact pattern, run the validator to confirm; if it passes, resolve as outdated/false-positive without code changes.
 type: feedback
 caused_by:
   - "Otto observation 2026-05-01 — second-occurrence of Copilot's same-shape false-positive on tick-history shard schema validation. Earlier instance was PR #1159 (shard 2047Z); current instance was PR #1165 (shard 2120Z). Both alleged 'line starts with ` 1 || 2026-...`' or similar; both shards' actual file content starts with `| 2026-...` cleanly and passes the bash validator script."
@@ -15,12 +15,12 @@ composes_with:
 # Rule
 
 When Copilot posts a review comment on a `docs/hygiene-history/ticks/<YYYY>/<MM>/<DD>/<HHMM>Z.md`
-shard claiming it fails `tools/hygiene/check-tick-history-shard-schema.sh` with text
+shard claiming it fails `tools/hygiene/check-tick-history-shard-schema.ts` with text
 matching the pattern *"line starts with ` <N> || <date>...`"* or *"col1 must
 be exactly..."* or *"leading whitespace before the pipe"*:
 
 1. **Run the validator first in `--files` mode** —
-   `bash tools/hygiene/check-tick-history-shard-schema.sh --files <shard-path>`.
+   `bun tools/hygiene/check-tick-history-shard-schema.ts --files <shard-path>`.
    The `--files` flag scopes the audit to the cited shard;
    without it the script runs a full-tree audit and you have
    to grep for the shard name in the output (per the script's
@@ -45,14 +45,14 @@ Copilot finding (verbatim):
 
 > *"P0: This shard's first non-empty line doesn't match the
 > tick-history schema and will fail
-> `tools/hygiene/check-tick-history-shard-schema.sh`. It starts with
+> `tools/hygiene/check-tick-history-shard-schema.ts`. It starts with
 > leading whitespace and `1 || ...` instead of starting at column 0
 > with `| <ISO8601 ts> | ...`."*
 
 Verification:
 
 ```bash
-$ bash tools/hygiene/check-tick-history-shard-schema.sh \
+$ bun tools/hygiene/check-tick-history-shard-schema.ts \
     --files docs/hygiene-history/ticks/2026/05/01/2047Z.md
 checked 1 shard files; 0 violations
 ```
@@ -71,12 +71,12 @@ Copilot finding (verbatim):
 > non-empty line must start at column 0 with `| <ISO8601 UTC ts> | ...`
 > (no leading spaces / no line numbering). Current line starts with
 > ` 1 || 2026-...`, which will fail
-> `tools/hygiene/check-tick-history-shard-schema.sh`'s col1 regex."*
+> `tools/hygiene/check-tick-history-shard-schema.ts`'s col1 regex."*
 
 Verification:
 
 ```bash
-$ bash tools/hygiene/check-tick-history-shard-schema.sh \
+$ bun tools/hygiene/check-tick-history-shard-schema.ts \
     --files docs/hygiene-history/ticks/2026/05/01/2120Z.md
 checked 1 shard files; 0 violations
 ```

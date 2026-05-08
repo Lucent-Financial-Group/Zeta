@@ -2,8 +2,7 @@
 // check-tick-history-shard-schema.ts — validate loop tick shard file
 // paths, names, and first-row timestamps.
 //
-// TypeScript+Bun port of check-tick-history-shard-schema.sh for the
-// Rule 0 bash-to-TS migration.
+// TypeScript+Bun port of the legacy shell checker for Rule 0 migration.
 //
 // Usage:
 //   bun tools/hygiene/check-tick-history-shard-schema.ts
@@ -163,7 +162,7 @@ function isFile(p: string): boolean {
   }
 }
 
-function main(argv: string[]): number {
+export function main(argv: string[]): number {
   let shards: string[];
 
   if (argv[0] === "--files") {
@@ -197,4 +196,6 @@ function main(argv: string[]): number {
   return violations > 0 ? 1 : 0;
 }
 
-process.exit(main(process.argv.slice(2)));
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}

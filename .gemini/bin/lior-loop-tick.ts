@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// lior-loop-tick.ts — Headless background runner for Lior (Antigravity harness)
+// lior-loop-tick.ts — Headless background runner for Lior (Gemini CLI)
 import { spawnSync } from "node:child_process";
 
 const prompt = `Act as Lior for the Zeta repository.
@@ -13,10 +13,35 @@ Do not guess. Do not overlap. The fire is watched.`;
 
 console.log(`[Lior Loop] Waking up at ${new Date().toISOString()}`);
 
-const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && gemini -p "$PROMPT" --model gemini-2.5-pro --yolo --skip-trust'], {
-  env: { ...process.env, PROMPT: prompt },
-  stdio: "inherit"
-});
+const model = process.env["LIOR_GEMINI_MODEL"] ?? "gemini-2.5-pro";
+const geminiBin = process.env["LIOR_GEMINI_BIN"] ?? "gemini";
+const extraArgs = (process.env["LIOR_GEMINI_EXTRA_ARGS"] ?? "")
+  .split(/\s+/)
+  .filter((arg) => arg.length > 0);
+const bypassFlags = new Set(["--yolo", "--skip-trust"]);
+const hasBypassFlag = extraArgs.some((arg) => bypassFlags.has(arg));
+
+if (hasBypassFlag && process.env["LIOR_GEMINI_ALLOW_BYPASS"] !== "1") {
+  console.error(
+    "[Lior Loop] Refusing bypass flags from LIOR_GEMINI_EXTRA_ARGS without LIOR_GEMINI_ALLOW_BYPASS=1",
+  );
+  process.exit(2);
+}
+
+if (hasBypassFlag) {
+  console.warn(
+    "[Lior Loop] WARNING: Gemini bypass flags enabled by explicit opt-in.",
+  );
+}
+
+const result = spawnSync(
+  geminiBin,
+  ["-p", prompt, "--model", model, ...extraArgs],
+  {
+    env: process.env,
+    stdio: "inherit",
+  },
+);
 
 if (result.error) {
   console.error(`[Lior Loop] Failed to spawn gemini: ${result.error.message}`);
