@@ -4,10 +4,12 @@ priority: P1
 status: open
 title: "Ace DLC — package format specification"
 created: 2026-05-08
+last_updated: 2026-05-08
 parent: B-0247
 depends_on: []
 classification: buildable-now
 decomposition: atomic
+owners: [architect, public-api-designer]
 ---
 
 # B-0287 — DLC package format
