@@ -6,9 +6,11 @@ title: Mechanical authorization check skill build — pace-instruction resolver 
 effort: M
 ask: Substrate-class promotion (new skill); needs maintainer grading before landing under .claude/skills/
 created: 2026-05-02
-last_updated: 2026-05-02
+last_updated: 2026-05-08
 tags: [skill-build, claude-ai, mechanical-check, authorization-source, never-idle, no-op-cadence, codex-handoff, pr-1200]
 type: friction-reducer
+decomposition: decomposed
+children: [B-0305, B-0306, B-0307, B-0308, B-0309]
 ---
 
 # B-0160 — Mechanical authorization check skill build
