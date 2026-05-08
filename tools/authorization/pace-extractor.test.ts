@@ -122,7 +122,7 @@ describe("extractPaceInstructions", () => {
     expect(sources).toContain("codex");
   });
 
-  test("peer-authored file mentioning Aaron uses filename source", async () => {
+  test("peer-authored file mentioning Aaron uses issuer line for source", async () => {
     const root = makeTempRoot();
     writeFileSync(
       join(root, "memory", "feedback_cooling_claudeai_2026_05_04.md"),
@@ -145,6 +145,47 @@ describe("extractPaceInstructions", () => {
     expect(instruction.source).toBe("claude.ai");
     expect(instruction.raw).toContain("recommend holding");
     expect(instruction.timestamp).toBe("2026-05-04");
+  });
+
+  test("peer-authored file without issuer line falls back to filename source", async () => {
+    const root = makeTempRoot();
+    writeFileSync(
+      join(root, "memory", "feedback_cooling_claudeai_2026_05_04.md"),
+      [
+        "---",
+        "name: Peer summary of maintainer pace",
+        "description: Claude.ai discusses Aaron pace language",
+        "type: feedback",
+        "---",
+        "",
+        'Aaron used the phrase "go hard", but recommend holding until maintainer returns.',
+      ].join("\n"),
+    );
+
+    const result = await extractPaceInstructions(root);
+    expect(result.length).toBe(1);
+    const instruction = instructionAt(result, 0);
+    expect(instruction.source).toBe("claude.ai");
+  });
+
+  test("role-ref 'the human maintainer' recognized as aaron source", async () => {
+    const root = makeTempRoot();
+    writeFileSync(
+      join(root, "CLAUDE.md"),
+      [
+        "# CLAUDE.md",
+        "",
+        "the human maintainer 2026-05-02:",
+        "",
+        '> *"go hard, you don\'t have to do minimum action"*',
+      ].join("\n"),
+    );
+
+    const result = await extractPaceInstructions(root);
+    expect(result.length).toBe(1);
+    const instruction = instructionAt(result, 0);
+    expect(instruction.source).toBe("aaron");
+    expect(instruction.timestamp).toBe("2026-05-02");
   });
 
   test("multiple pace lines in one file emit separate candidates with correct timestamps", async () => {

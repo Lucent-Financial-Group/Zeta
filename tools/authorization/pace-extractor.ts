@@ -33,6 +33,7 @@ const PACE_PATTERNS = [
 ];
 
 const SOURCE_PATTERNS: [RegExp, string][] = [
+  [/\bthe\s+human\s+maintainer\b/i, "aaron"],
   [/\bAaron\b/i, "aaron"],
   [/\bClaude(?:\.ai|ai)?\b/i, "claude.ai"],
   [/\bCodex\b/i, "codex"],
@@ -44,6 +45,7 @@ const SOURCE_PATTERNS: [RegExp, string][] = [
 ];
 
 const ISSUER_PATTERNS: [RegExp, string][] = [
+  [/^(?:[-*>\s"']*)(?:the\s+human\s+maintainer)\b/i, "aaron"],
   [/^(?:[-*>\s"']*)Aaron\b/i, "aaron"],
   [/^(?:[-*>\s"']*)Claude(?:\.ai|ai)?\b/i, "claude.ai"],
   [/^(?:[-*>\s"']*)Codex\b/i, "codex"],
@@ -104,13 +106,10 @@ function inferSource(
     if (issuerSource !== "unknown") return issuerSource;
   }
 
-  const rawIssuerSource = inferIssuerSource(raw);
-  if (rawIssuerSource !== "unknown") return rawIssuerSource;
+  const filenameSource = inferSourceFromFilename(filename);
+  if (filenameSource !== "unknown") return filenameSource;
 
-  const rawSource = inferSourceFromText(raw);
-  if (rawSource !== "unknown") return rawSource;
-
-  return inferSourceFromFilename(filename);
+  return inferSourceFromText(raw);
 }
 
 function extractInlineTimestamp(text: string): string | null {
