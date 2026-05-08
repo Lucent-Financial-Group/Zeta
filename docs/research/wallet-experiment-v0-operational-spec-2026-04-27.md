@@ -381,6 +381,21 @@ substrate_anchors:
   intentional_debt_entry: <docs/INTENTIONAL-DEBT.md row ref>
 ```
 
+### §7.2.1 Second-agent review predicate
+
+`second_agent_review.required = true` when any material-spend
+predicate is true at proposal time:
+
+- Proposed amount exceeds 10% of the remaining bond.
+- Counterparty is absent from prior wallet v0 receipts.
+- Venue is absent from prior wallet v0 receipts.
+
+If review is required, the tx cannot enter the broadcast step until
+`second_agent_review.status = approved`. Rejections terminate the local
+proposal as `pre_flight_retracted = true` with the reviewer rationale
+copied into `retraction_reason`. The predicate is deliberately
+conservative for v0's $100/week bond and is revisable at v0+1.
+
 ### §7.3 Per-tick row schema in `docs/hygiene-history/loop-tick-history.md`
 
 Every wallet-experiment tick produces a row parallel to the existing autonomous-loop heartbeat rows. Schema:
