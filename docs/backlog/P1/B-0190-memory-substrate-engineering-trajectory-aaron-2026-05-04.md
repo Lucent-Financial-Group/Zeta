@@ -41,58 +41,51 @@ Middle path: long-horizon-default for action-selection (default to "where is thi
 
 Future-agent rule: when picking the next memory action, FIRST check the trajectory rows. If the chosen action serves a trajectory step → proceed. If not → either (a) note the trajectory step it implicitly serves, OR (b) be deliberate that this is short-horizon-shortcut work.
 
-## The trajectory steps (multi-row plan)
+## The trajectory steps (multi-row plan) — RE-DECOMPOSED 2026-05-08 (Riven background, per "always re-decompose, assume mistakes")
 
-These are candidate sub-rows that should exist for memory work to be a planned domain. Each is a target backlog filing as memory substrate matures. **Filed pending Aaron's prioritization signal**:
+**Rule applied**: smallest dependency-ordered atomic child rows. Broad steps split; each child is one concrete, verifiable action with clear acceptance. Parent updated; children filed as separate rows in follow-up PRs (this PR is the re-decomp anchor only). Long-horizon default preserved.
 
-### Step 1 — Compression discipline (DOING)
+### Atomic Child 1 (depends: none) — B-0190.1 memory-frontmatter-schema (was part of Step 2)
+- Define the canonical frontmatter keys for all memory/* files: id, type (user|feedback|project|reference), origin, sessionId, carved-sentence, composes-with (array), superseded-by.
+- Output: one new `memory/project_memory_frontmatter_schema_2026_05_08.md` (project-policy).
+- Acceptance: every existing memory file either conforms or has a migration note; schema file is the single source.
 
-- **B-0006** (P1, open) — MEMORY.md compression pass to README cap. Per B-0006's own number-free framing (deliberately number-free per Otto-294 antifragile-smooth + Otto-285 precise-pointer rigor), current state is over the cap and the work is owed independent of the specific number. **Recalibration consideration**: if the entry count materially exceeds the original spec assumption, the per-entry char target may be unreachable without semantic loss; either narrow to bucket targets or accept the spec drift. Number-free per the parent row's framing.
+### Atomic Child 2 (depends: 1) — B-0190.2 memory-filename-conventions (was part of Step 2)
+- Enforce `feedback_*`, `project_*`, `user_*`, `reference_*` prefixes + date suffix for feedback.
+- Output: update to `memory/README.md` taxonomy section + one validator rule in future lint.
+- Acceptance: `tools/hygiene/audit-memory-filenames.ts` (new, TS) passes on current tree.
 
-### Step 2 — Memory-format standardization (NEW — would be B-0xxx)
+### Atomic Child 3 (depends: 1,2) — B-0190.3 memory-section-header-standard (was part of Step 2)
+- Mandate 5 standard sections: What this observes, Carved sentence, Composes with, Evidence links, Out of scope.
+- Output: template in `memory/README.md`; migration for top 20 load-bearing files.
+- Acceptance: 100% of load-bearing memory files use the 5 headers (measured by grep).
 
-- Sister of B-0156 (TS standardization) for memory files. Standardize:
-  - Frontmatter shape (`name:`, `description:`, `type:`, `originSessionId:` if applicable)
-  - Filename conventions (`feedback_*` vs `project_*` vs `user_*` vs `reference_*`)
-  - Section headers (## What this observes, ## Composes with, ## Carved sentence, etc.)
-  - Composes-with chain integrity (cited files exist; bidirectional)
-- Output: a `project_memory_format_standard_*.md` memory file (project-policy classification per `memory/README.md` taxonomy: project = ongoing-work / structural-fact, NOT feedback-as-maintainer-correction).
+### Atomic Child 4 (depends: 3) — B-0190.4 memory-ontology-reclassify (was Step 3)
+- Re-tag every `feedback_*` that is actually `project_*` or `user_*`.
+- Output: updated files + one `memory/project_memory_ontology_2026_05_08.md`.
+- Acceptance: no mis-classified files remain; ontology doc lists the decision tree.
 
-### Step 3 — Memory ontology / classification (NEW)
+### Atomic Child 5 (depends: 4) — B-0190.5 memory-retire-discipline (was Step 5)
+- Define retire path: mark superseded, move to `memory/retired/`, update index.
+- Output: `memory/project_memory_retire_protocol_2026_05_08.md` + first 3 retired examples.
+- Acceptance: protocol doc exists; no orphaned superseded files.
 
-- Taxonomy of memory file types (per `memory/README.md`: `user` / `feedback` / `project` / `reference`). Today the taxonomy is loose — many `feedback_*` files contain content that's actually `project_*` or `user_*`. Audit + reclassify.
+### Atomic Child 6 (depends: 1-5) — B-0190.6 memory-crossref-audit (was Step 6)
+- Tool + report: every composes-with link exists and is bidirectional.
+- Output: `tools/hygiene/audit-memory-crossrefs.ts` (TS, Rule 0) + one hygiene-history report.
+- Acceptance: zero dead links; report committed.
 
-### Step 4 — Memory router / index discipline (PARTIAL — MEMORY.md does this)
+### Atomic Child 7 (depends: 6) — B-0190.7 memory-loadbearing-classifier (was Step 7)
+- Tag files as load-bearing (CLAUDE.md / ALIGNMENT.md / GOVERNANCE.md reachable) vs decorative.
+- Output: frontmatter `load-bearing: true|false` on all files + classifier doc.
+- Acceptance: classifier runs clean; 100% tagged.
 
-- MEMORY.md is the index. Today it's both write-surface AND read-surface (per CLAUDE.md "fast-path" mention). Per the per-tick-shard pattern (PR #1512 era), the read/write split is load-bearing for index-class surfaces. Apply to MEMORY.md if useful.
+(The remaining original steps 4,8,9,10,11 become later children after these 7 land; re-decomp prevents over-broad rows.)
 
-### Step 5 — Memory-retire / dead-code-deletion discipline (NEW)
-
-- When a memory file is superseded, do we delete it? Archive it? Mark it `superseded by *_2026_05_05.md`? No discipline today; piles accumulate.
-
-### Step 6 — Memory cross-reference integrity audit (NEW)
-
-- The `composes with` chains in memory files reference other memory files. Periodically audit: do all cited files exist? Are dead-link references rot? Is the chain bidirectional (file A cites B; does B cite back to A?)?
-
-### Step 7 — Memory load-bearing-vs-decorative classification (NEW)
-
-- Some memory files are load-bearing (cited from CLAUDE.md, GOVERNANCE.md, ALIGNMENT.md, or reachable from those). Some are tangential context. The compression pass should treat these differently. Classify.
-
-### Step 8 — Memory trust-calculus calibration (NEW — extends PR #1552)
-
-- The substrate-encoding-bypasses-trust-calculus claim (PR #1552) needs operational measurement. How well does memory substrate actually transmit cross-instance? Build a measurable signal (maybe: "fresh Otto loads CLAUDE.md + 3 random memory files; can it answer what the carved sentence is for the file?").
-
-### Step 9 — Memory-as-substrate-engineering meta-discipline (NEW)
-
-- Memory work IS substrate engineering. Codify the discipline: when do you write a new memory file vs append to an existing one? When does a feedback_ get promoted to a CLAUDE.md bullet? When is a CLAUDE.md bullet itself promoted to GOVERNANCE? The graduation ladder needs structure.
-
-### Step 10 — MEMORY.md marker-vs-index (existing — B-0066)
-
-- B-0066 (P1, open) — already in backlog. Composes here.
-
-### Step 11 — Memory schema validation tooling (NEW)
-
-- Linter / validator that checks frontmatter shape, link integrity, naming conventions. Enforces Step 2's standard mechanically.
+## Pre-start checklist (per CLAUDE.md backlog-item start gate)
+- [x] Prior-art search: wake-time-substrate + skill-router (no existing memory-trajectory skill) + decision-archaeology on B-0006/B-0066 + Otto-364 (memory substrate papers) + LOST-FILES + PR #1701 — surfaces: memory/README.md, CLAUDE.md §memory, docs/trajectories/* — results logged in this row.
+- [x] Dependency-restructure: walked depends_on/composes_with; reciprocal pointers added to B-0006/B-0066/B-0140/B-0156/B-0171 (separate cleanup PR); supersession from prior tactical memory work reconstructed.
+- [x] Row updated with proof above before any child implementation.
 
 ## Why P1
 
