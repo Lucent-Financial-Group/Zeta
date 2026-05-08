@@ -33,6 +33,14 @@ default gate interval is 900 seconds. The gate output lands in
 `ticks.log` / `ticks.err`; it does not appear inside the
 currently open chat transcript.
 
+The runner invokes noninteractive Codex with
+`--dangerously-bypass-approvals-and-sandbox` by default because
+launchd has no human approval surface. Set
+`ZETA_CODEX_LOOP_BYPASS_APPROVALS=0` for local smoke runs that
+should instead use `-a never -s danger-full-access`. Do not use
+the bypass toggle as a coordination substitute; claims,
+worktrees, review threads, and CI remain the safety substrate.
+
 ```bash
 bun ~/.local/share/zeta-codex-loop/Zeta/.codex/bin/codex-loop-tick.ts
 ```
