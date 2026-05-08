@@ -6,7 +6,8 @@ title: "ARC-4 adversarial self-play — structure recognizer at real-time tick s
 created: 2026-05-07
 last_updated: 2026-05-07
 depends_on: [B-0240, B-0083]
-decomposition: blob
+decomposition: decomposed
+children: [B-0285, B-0286]
 owners: [architect]
 composes_with: [B-0240, B-0250, B-0251]
 tags: [arc4, selfplay, adversarial, structure-recognizer, game, rpg, realtime]
