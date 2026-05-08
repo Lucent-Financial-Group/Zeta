@@ -95,6 +95,12 @@ describe("validation", () => {
     expect(() => validatePublicationInput(input({ branch: "refs/remotes/origin/main" }))).toThrow(
       "refusing to publish from default branch",
     );
+    expect(() => validatePublicationInput(input({ branch: "origin/main" }))).toThrow(
+      "refusing to publish from default branch",
+    );
+    expect(() => validatePublicationInput(input({ branch: "upstream/main" }))).toThrow(
+      "refusing to publish from default branch",
+    );
   });
 
   test("requires focused checks and safe backlog path", () => {

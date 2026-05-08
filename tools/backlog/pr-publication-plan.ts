@@ -150,6 +150,14 @@ function validateNormalizedBranchRef(label: string, branch: string): string {
   return normalized;
 }
 
+function isDefaultBranchRef(branch: string): boolean {
+  if (DEFAULT_BRANCHES.has(branch)) {
+    return true;
+  }
+  const parts = branch.split("/");
+  return parts.length === 2 && DEFAULT_BRANCHES.has(parts[1] ?? "");
+}
+
 export function validatePublicationInput(input: PublicationInput): void {
   if (!/^B-[0-9]+$/.test(input.backlogId)) {
     throw new Error(`invalid backlog id: ${input.backlogId}`);
@@ -160,7 +168,7 @@ export function validatePublicationInput(input: PublicationInput): void {
   validateRepoPath(input.backlogPath);
   const branch = validateNormalizedBranchRef("branch", input.branch);
   validateNormalizedBranchRef("baseBranch", input.baseBranch);
-  if (DEFAULT_BRANCHES.has(branch)) {
+  if (isDefaultBranchRef(branch)) {
     throw new Error(`refusing to publish from default branch: ${input.branch}`);
   }
   if (input.summary.length === 0 || input.summary.some((line) => line.trim().length === 0)) {
