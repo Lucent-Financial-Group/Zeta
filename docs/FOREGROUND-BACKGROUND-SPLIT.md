@@ -22,6 +22,9 @@ scopes of attention.
 - Minimum PR runway (keep at least one, target two, open
   background PRs per active implementation loop unless a
   concrete safety blocker is present)
+- Worktree isolation (a dirty shared/root checkout is never
+  a normal write surface and never a permission prompt; create
+  a dedicated worktree or stop on a concrete failure)
 
 **Does NOT own:**
 
