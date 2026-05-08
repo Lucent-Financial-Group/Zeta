@@ -4,11 +4,13 @@ priority: P1
 status: open
 title: "GitHub Pages discoverability - repo metadata, sitemap submission, and discovery signals"
 created: 2026-05-06
-last_updated: 2026-05-06
+last_updated: 2026-05-08
 parent: B-0154
 depends_on: [B-0232, B-0234]
 classification: blocked-on-live-pages-and-sitemap
-decomposition: blob
+decomposition: decomposed
+children: [B-0295, B-0296]
+owners: [architect, docs]
 ---
 
 # B-0235 - Repo metadata and discovery signals
