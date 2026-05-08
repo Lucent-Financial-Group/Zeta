@@ -168,8 +168,6 @@ rg --files tools/peer-call tools/lint tools/budget tools/git tools/hygiene \
 2. Re-verify sibling-repo comparison points (`../SQLSharp` commit hash, `../scratch` mtime).
 3. Confirm DST + coverage gate items in the per-slice checklist apply (or document deferred-check exemption).
 
-Cluster G is the recommended-default for slice 7; Cluster H is the natural step-up; Cluster I (write-side) and Cluster C (budget) remain deferred for special handling.
-
 ## Bun / tooling requirements
 
 - `package.json` already declares `"packageManager": "bun@1.3.13"` and `"engines": { "bun": ">=1.3.13" }` (per PR #849)
