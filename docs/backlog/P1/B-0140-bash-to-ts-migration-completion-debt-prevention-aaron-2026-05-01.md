@@ -6,6 +6,8 @@ title: Bash → TS migration completion — debt-prevention prerequisite to B-01
 created: 2026-05-01
 last_updated: 2026-05-08
 depends_on: []
+decomposition: atomic
+classification: buildable-now
 composes_with: [B-0190, B-0196]
 ---
 

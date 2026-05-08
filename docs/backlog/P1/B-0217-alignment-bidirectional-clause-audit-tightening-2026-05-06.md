@@ -7,7 +7,8 @@ created: 2026-05-06
 last_updated: 2026-05-06
 parent: B-0003
 depends_on: [B-0215]
-classification: buildable-after-survey
+decomposition: atomic
+classification: buildable-now
 ---
 
 # B-0217 - Bidirectional clause audit and tightening

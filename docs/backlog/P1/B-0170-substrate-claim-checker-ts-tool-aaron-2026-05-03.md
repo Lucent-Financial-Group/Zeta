@@ -9,6 +9,8 @@ ask: Otto 2026-05-03 self-grading, surfaced via drift instances (the verify-then
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
+decomposition: atomic
+classification: buildable-now
 composes_with: [B-0169]
 tags: [tooling, ts, substrate-claim-checker, verify-then-claim, drift-detection, mechanization, hub-shaped, foundation]
 ---

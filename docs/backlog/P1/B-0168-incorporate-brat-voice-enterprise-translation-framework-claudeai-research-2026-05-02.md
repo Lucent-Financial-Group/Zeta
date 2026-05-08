@@ -9,6 +9,8 @@ ask: Aaron 2026-05-02 ("we can incorporate it on the backlog it's good research 
 created: 2026-05-02
 last_updated: 2026-05-02
 depends_on: []
+decomposition: atomic
+classification: buildable-now
 composes_with: [B-0164, B-0167]
 tags: [register-architecture, brat-voice, enterprise-translation, claudeai-research, lucent, gen-z-recruitment, alignment-discipline, beacon-safe, plain-language]
 ---

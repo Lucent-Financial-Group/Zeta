@@ -9,6 +9,8 @@ ask: Aaron 2026-05-04 verbatim *"for humans this is why oh my zsh reminds us of 
 created: 2026-05-04
 last_updated: 2026-05-05
 depends_on: []
+decomposition: atomic
+classification: buildable-now
 composes_with: [B-0006, B-0140, B-0156, B-0162]
 tags: [orchestrator, concurrency-hazard, mechanization, pre-commit-hook, worktree, foundation]
 ---

@@ -7,6 +7,7 @@ created: 2026-05-06
 last_updated: 2026-05-06
 parent: B-0003
 depends_on: [B-0217, B-0219]
+decomposition: atomic
 classification: blocked-on-bidirectional-and-rigor-clauses
 ---
 

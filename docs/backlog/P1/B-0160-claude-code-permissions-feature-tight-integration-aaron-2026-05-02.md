@@ -6,6 +6,8 @@ title: Claude Code `/permissions` feature — research current API + integrate t
 created: 2026-05-02
 last_updated: 2026-05-02
 depends_on: []
+decomposition: atomic
+classification: buildable-now
 ---
 
 # B-0160 — Claude Code `/permissions` feature tight integration (Aaron 2026-05-02)
