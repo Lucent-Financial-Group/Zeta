@@ -49,7 +49,7 @@ Frontend + backend land in later PRs once the stack is chosen
 ```bash
 cd samples/FactoryDemo.Db
 docker-compose up -d                   # start Postgres; schema + seed applied automatically
-bash smoke-test.sh                     # verify seed loaded correctly (optional)
+bun smoke-test.ts                      # verify seed loaded correctly (optional)
 
 # Poke around:
 docker-compose exec db psql -U postgres -c \
@@ -70,7 +70,7 @@ The `docker-compose up -d` command:
 4. Persists data in a named volume (`factory-demo-db-data`)
    so restarts keep the data; `down -v` wipes it
 
-**Expected seed** (verified by `smoke-test.sh`):
+**Expected seed** (verified by `smoke-test.ts`):
 Lead: 10 opps / $54K, Qualified: 6 / $42.2K, Proposal: 6 / $57.2K,
 Won: 6 / $26.7K, Lost: 2 / $4.9K. 20 customers total, 2 intentional
 email collisions for the duplicate-review scenario, 33 activity rows.
