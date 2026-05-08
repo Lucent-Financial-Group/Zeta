@@ -4,11 +4,12 @@ priority: P1
 status: open
 title: "GitHub Pages discoverability - Astro publish workflow"
 created: 2026-05-06
-last_updated: 2026-05-06
+last_updated: 2026-05-08
 parent: B-0154
 depends_on: [B-0047]
 classification: buildable-now
-decomposition: blob
+decomposition: decomposed
+children: [B-0262, B-0263]
 ---
 
 # B-0232 - Astro Pages publish workflow
