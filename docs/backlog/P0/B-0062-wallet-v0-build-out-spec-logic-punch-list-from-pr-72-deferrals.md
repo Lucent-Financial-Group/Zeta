@@ -122,7 +122,7 @@ it (closed-thread links survive in the PR's review history).
    goes through a different auth channel (oracle, monitor-
    signed message, etc.).
 
-   **Proposed (Otto 2026-05-07):** Agent holds a
+   **Resolved (Vera 2026-05-08):** Agent holds a
    ZeroDev session-key mandate scoped to
    RETRACTION-ONLY (cancel own proposal during
    retraction window). Not tx-signing — cancellation
@@ -130,15 +130,19 @@ it (closed-thread links survive in the PR's review history).
    keys; a retraction-scoped session key is not a
    contradiction — it's a permission boundary. The
    ZeroDev session-key permission model (§12.1)
-   already supports scoped mandates.
+   already supports scoped mandates. The wallet v0 spec now
+   lands this in §3.3 and §9.1.
 
 2. **Clarify §9.1 revocation mechanism vs §3.3/§3.4 no-keys**
    (cid 3151222680 P1). Same root cause as item 1 above.
 
-   **Proposed (Otto 2026-05-07):** Same resolution as
+   **Resolved (Vera 2026-05-08):** Same resolution as
    item 1. §3.3/§3.4 should say "no tx-signing keys"
    not "no keys." The retraction-scoped session key
-   is explicitly allowed.
+   is explicitly allowed. The wallet v0 spec now states that
+   retraction authority can cancel only; it cannot sign or
+   broadcast a new tx, and the agent still receives no raw key
+   custody.
 
 ### Spec-logic — monitor placement + lifecycle
 
@@ -232,11 +236,12 @@ it (closed-thread links survive in the PR's review history).
     the auth path matching item 1 in 'Spec-logic —
     agent self-revocation'.
 
-    **Resolved (Otto 2026-05-07):** Same retraction-
+    **Resolved (Vera 2026-05-08):** Same retraction-
     scoped session key from the self-revocation
-    proposal (PR #1933). Agent authenticates
+    proposal. Agent authenticates
     cancellation via the ZeroDev session-key mandate
-    scoped to retraction-only.
+    scoped to retraction-only. The wallet v0 spec now lands
+    this in §3.3 and §9.1.
 2. **Material-spend criteria for second-agent review** (cid
     3151321306 P2). Receipt schema makes `second_agent_
     review.required` a boolean; spec needs the predicate
@@ -318,7 +323,7 @@ comments.
 
 ## Progress (2026-05-07 session)
 
-11 of 21 items resolved via doc reconciliation:
+14 of 21 items resolved via doc reconciliation:
 
 + PR #1907: 3 stale "open question" refs → resolved
 + PR #1908: EAT Task B monitor → sibling-repo
@@ -331,11 +336,12 @@ comments.
 + Vera 2026-05-08: drawdown oracle landed in wallet spec §5.5
 + Vera 2026-05-08: Tx N+1 classification signal landed in wallet spec §7.1
 + Vera 2026-05-08: glass-halo logging gate moved to monitor freeze path
++ Vera 2026-05-08: retraction-scoped session-key auth landed in wallet
+  spec §3.3/§9.1 for self-revocation and cancellation
 
-10 items remain — all P1/P2 design decisions needing
+7 items remain — all P1/P2 design decisions needing
 deeper wallet-domain engagement (preflight terminal
-state, agent self-revocation auth, monitor-stall freeze,
-auth for cancellation, material-spend criteria,
+state, monitor-stall freeze, material-spend criteria,
 INTENTIONAL-DEBT schema).
 
 2026-05-07 red-team correction: PR #1942 briefly marked
