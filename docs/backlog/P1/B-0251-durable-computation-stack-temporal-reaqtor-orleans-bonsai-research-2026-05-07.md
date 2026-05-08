@@ -6,7 +6,8 @@ title: "Durable computation stack research — Temporal + Reaqtor + Orleans + Bo
 created: 2026-05-07
 last_updated: 2026-05-07
 depends_on: [B-0250]
-decomposition: blob
+decomposition: decomposed
+children: [B-0278, B-0279, B-0280]
 owners: [architect]
 composes_with: [B-0040, B-0250]
 tags: [durability, temporal, reaqtor, orleans, bonsai, standing-query, rx, durable-functions]
