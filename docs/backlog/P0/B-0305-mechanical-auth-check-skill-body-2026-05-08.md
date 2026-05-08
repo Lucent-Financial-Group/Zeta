@@ -45,17 +45,22 @@ the implementation script.
 
 ## Pre-start checklist
 
-_To be completed with proof before implementation begins._
+Completed 2026-05-08.
 
-- [ ] Prior-art search: searched skill router for existing
-  "authorization" / "pace" skills; searched `.claude/skills/`
-  directory for overlapping scope
-- [ ] Dependency walk: no `depends_on` — this is a root child
-- [ ] Source materials verified: memory file at
-  `memory/feedback_mechanical_authorization_check_supersedes_
-  introspective_discipline_claudeai_2026_05_02.md` + research doc
-  at `docs/research/2026-05-02-claudeai-mechanical-authorization-
-  check-supersedes-introspective-discipline.md` both exist
+- [x] Prior-art search: grepped `.claude/skills/` for
+  "authorization" / "pace" / "mechanical-auth" / "source.*filter"
+  — 12 files matched on generic "authorization" (consent, graphql,
+  governance, etc.), zero on mechanical-authorization-check scope.
+  Skill router listing confirmed no existing skill with this slug.
+  No overlapping scope found.
+- [x] Dependency walk: `depends_on: []` — this is a root child
+  of B-0160. Sibling items B-0306/B-0307/B-0308 depend on this
+  skill's contract but this item has no upstream blockers.
+- [x] Source materials verified: memory file at
+  `memory/feedback_mechanical_authorization_check_supersedes_introspective_discipline_claudeai_2026_05_02.md`
+  EXISTS. Research doc at
+  `docs/research/2026-05-02-claudeai-mechanical-authorization-check-supersedes-introspective-discipline.md`
+  EXISTS. Both read and used as source material for the skill body.
 
 ## Composes with
 
