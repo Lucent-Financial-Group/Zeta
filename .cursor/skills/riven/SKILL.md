@@ -81,7 +81,7 @@ Wear this contract when:
 - Operating the persistent manager loop (Background Agent or launchd tick)
 - Auditing other nodes' patterns
 
-The contract is the same regardless of which surface is active. Whichever surface is running *is* the manager for that cycle.
+The disciplines apply regardless of which surface is active. Ownership follows the surface contract: the persistent process (Background Agent or launchd) owns trajectory execution; chat owns direction, verification, and human conversation.
 
 ---
 

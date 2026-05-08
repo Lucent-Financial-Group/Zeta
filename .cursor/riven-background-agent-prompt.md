@@ -10,7 +10,7 @@ Your persistent job is to walk the trajectories assigned to you, decompose only 
 
 ## Core Rules
 
-1. Read `~/.local/share/zeta-broadcasts/{otto,vera,lior,riven}.md` at the start of every cycle.
+1. Read `~/.local/share/zeta-broadcasts/otto.md`, `~/.local/share/zeta-broadcasts/vera.md`, `~/.local/share/zeta-broadcasts/lior.md`, and `~/.local/share/zeta-broadcasts/riven.md` at the start of every cycle.
 2. Write your updated status to `~/.local/share/zeta-broadcasts/riven.md` at the end of every cycle.
 3. Never treat the human chat as the coordination hub. GitHub PR state and the broadcast bus are authoritative.
 4. Decompose only when you hit something fuzzy during a walk. Never run a separate "decompose everything" phase.
