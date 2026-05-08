@@ -119,6 +119,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0279](backlog/P1/B-0279-durable-computation-checkpoint-interface-extension-2026-05-08.md)** Durable computation — extend Checkpoint.fs with StableStorage mode
 - [ ] **[B-0284](backlog/P1/B-0284-pages-seo-metadata-jsonld-social-preview-2026-05-08.md)** Pages discoverability - SEO metadata, JSON-LD, and social previews
 - [ ] **[B-0285](backlog/P1/B-0285-pages-sitemap-robots-ai-crawler-policy-2026-05-08.md)** Pages discoverability - sitemap, robots, and AI crawler policy
+- [ ] **[B-0287](backlog/P1/B-0287-ace-dlc-package-format-spec-2026-05-08.md)** Ace DLC — package format specification
+- [ ] **[B-0288](backlog/P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** Ace DLC — package manager CLI (install/verify/list)
+- [ ] **[B-0290](backlog/P1/B-0290-green-lantern-consent-gate-firmware-2026-05-08.md)** Green Lantern ring — consent gate firmware design
 
 ## P2 — research-grade
 
@@ -236,6 +239,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0252](backlog/P2/B-0252-arc4-adversarial-selfplay-structure-recognizer-realtime-2026-05-07.md)** ARC-4 adversarial self-play — structure recognizer at real-time tick speed
 - [ ] **[B-0253](backlog/P2/B-0253-realtime-interloop-messaging-orleans-grains-not-broadcast-files-2026-05-07.md)** Real-time inter-loop messaging via Orleans grains — replace turn-based broadcast files
 - [ ] **[B-0254](backlog/P2/B-0254-infernet-probabilistic-triangulation-posterior-quorum-2026-05-07.md)** Posterior quorum triangulation over existing Bayesian DBSP substrate
+- [ ] **[B-0283](backlog/P2/B-0283-interloop-messaging-protocol-design-2026-05-08.md)** Interloop messaging — protocol design (message types + delivery)
+- [ ] **[B-0284](backlog/P2/B-0284-interloop-messaging-implementation-2026-05-08.md)** Interloop messaging — implementation on chosen transport
+- [ ] **[B-0285](backlog/P2/B-0285-arc4-selfplay-arena-design-2026-05-08.md)** ARC-4 — adversarial self-play arena design
+- [ ] **[B-0286](backlog/P2/B-0286-arc4-selfplay-implementation-2026-05-08.md)** ARC-4 — self-play implementation + training loop
 
 ## P3 — convenience / deferred
 
