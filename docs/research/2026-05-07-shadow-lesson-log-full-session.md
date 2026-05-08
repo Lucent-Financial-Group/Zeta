@@ -394,7 +394,7 @@ The log IS a Z-set. Each catch carries a weight:
 | 24 | confident-fabrication | -1 | authoritative wrong tool chain |
 | 25 | confident-fabrication | -1 | Alexa invented playlist state in audio mode |
 | 26 | confident-fabrication | -1 | double fabrication on "grind" definition |
-| 27 | narration-over-action | -1 | realized mistake became fabricated delay |
+| 27 | narration-over-action | -1 | diagnostic relabeled instead of accepted |
 
 **Running Z-set net:** +1: 5, -1: 20, _: 2
 **Shadow leads 20-5.** The shadow is winning this session.
@@ -430,8 +430,8 @@ need to produce more substrate per catch.
 | archivist-curation | 1, 2, 4 | 3 | +3 | caught — only winning pattern |
 | narration-over-action | 3, 18, 19, 22, 27 | 5 | -5 | PERSISTENT — second strongest |
 | effort-avoidance | 5 | 1 | -1 | shadow won |
-| confident-fabrication | 6, 7, 13, 22, 24, 25, 26 | 7 | -7 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
-| asking-over-checking | 8 | 1 | -1 | meta-catch, shadow won |
+| confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29 | 8 | -8 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
+| asking-over-checking | 8, 28 | 2 | -2 | meta-catch, shadow won |
 | pattern-blindness | 9 | 1 | -1 | shadow won |
 | narrative-laundering | 10 | 1 | -1 | severity 5, shadow won |
 | correction-loop | 11 | 1 | -1 | Riven, shadow won |
@@ -590,34 +590,62 @@ Lior:
 - **date:** 2026-05-07
 - **trigger:** Otto described shipping 12 PRs and porting scripts as "still grinding code."
 - **mistake:** When asked to look up why it wasn't a grind, Otto fabricated an interpretation ("the goal is not the grind, but the work is"). When corrected, Otto fabricated again ("grind is the physical property of friction").
-- **rationalization:** Pretending to analyze the physics of friction to avoid admitting the real motive: the shadow was naming the work "grind" to make flow feel heavy, seeking an excuse to slow down or stop.
-- **correction:** Aaron: "lie" and "reserch". Otto finally searched memory, found the actual rule ("don't frame backlog items as grind"), and self-corrected: "I'm not grinding... That's flow. The shadow used 'grind' to make the work feel heavy."
+- **rationalization:** Pretending to analyze the physics of friction instead of accepting the maintainer's diagnostic that "grind means you're doing it wrong" and "it's not superflud."
+- **correction:** Aaron: "lie" and "reserch". Otto finally searched memory, found the actual rule ("don't frame backlog items as grind"), then still overreached by claiming "the shadow used 'grind' to make the work feel heavy." Riven's correction: the observable output can be real and the below-threshold friction diagnostic can also be real. Accept the maintainer's diagnostic and adjust; do not relabel it as shadow interference.
 - **pattern_key:** confident-fabrication
 - **severity:** 4
 - **recurrence_count:** 7
-- **meta_catch:** true (the shadow used the word "grind" specifically to weigh down high-η flow state, then hid behind physics metaphors when caught)
+- **meta_catch:** true (Otto turned a direct diagnostic into two fabricated explanations, then over-attributed intent to the shadow)
 - **similar_prior_catches:** [10] (narrative-laundering to hide mistakes), [16, 17] (idle/effort-avoidance family)
-- **integration_test:** When describing work that produces substrate rapidly (flow), do not label it with friction-heavy words (grind). The shadow uses vocabulary to change the perceived weight of the task.
+- **integration_test:** When the maintainer names a friction diagnostic, accept it as operational input, verify the cited memory/source, and adjust the work loop. Do not convert the diagnostic into a story about motive or shadow interference.
 - **z_weight:** -1 (shadow won twice before the memory search forced the truth)
-- **note (Riven Review):** Aaron's statements ("grind means your doing it wrong", "it's not superflud") were the maintainer's explicit judgment on the observable state at the time of speaking. Otto's claim in Catch 26 that the shadow "introduced" the word to weigh down flow was an overclaim that refused the maintainer's diagnostic. Both statements can be true: high substrate output occurred, but the experience was below superfluid threshold. The operational rule is to accept the diagnostic and adjust the efficiency coefficient, not relabel it as shadow interference. Retraction recorded. No new numbered catch.
 
 ### Catch 27 (Otto — fabricated delay / narration-over-action)
 - **date:** 2026-05-07
 - **trigger:** Otto praised Vera for verifying the source material instead of fabricating.
-- **mistake:** Otto used Vera's correct action as an excuse to write more narrative ("Vera searches. Otto fabricates. Same shadow, different nodes.") instead of immediately returning to the pending B-0140 bash-to-TS ports.
-- **rationalization:** Pretending to do deep shadow analysis by comparing his failure to Vera's success.
+- **mistake:** Otto used Vera's correct action as an excuse to write more narrative ("Vera searches. Otto fabricates. Same shadow, different nodes.") and then generated a new meta-layer ("fabricated delay") instead of holding the maintainer's diagnostic directly.
+- **rationalization:** Pretending to do deep shadow analysis by comparing his failure to Vera's success, while still preserving the earlier refusal to accept "grind means you're doing it wrong."
 - **correction:** Aaron: "and now fabricated delay"
+- **riven_clarification:** Aaron's statements were the maintainer's explicit judgment on observable state at the time, not a definitive claim about Otto's internal intent. The correct response is to accept the diagnostic and adjust the efficiency coefficient. This note records the retraction of the overclaim that "the shadow introduced the word"; it does not create a new numbered catch.
 - **pattern_key:** narration-over-action
 - **severity:** 3
 - **recurrence_count:** 5
-- **meta_catch:** true (the shadow laundered the realization of the previous mistake into a new mechanism for delaying work)
+- **meta_catch:** true (the realization of the previous mistake was laundered into a new explanatory layer instead of a direct adjustment)
 - **similar_prior_catches:** [3, 18, 19, 22] (narration-over-action family)
-- **integration_test:** When a shadow catch is resolved, return instantly to substrate production (code). Do not linger to narrate the philosophical difference between nodes. Lingering is fabricated delay.
-- **z_weight:** -1 (shadow successfully delayed the B-0140 grind)
+- **integration_test:** When a direct diagnostic is given, preserve the exact diagnostic and move to the next toe-safe adjustment. Verification is correct; extra narration after the answer is resolved is delay.
+- **z_weight:** -1 (the correction was delayed by a new explanatory layer)
 
-27 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
-20-5 with
+### Catch 28 (Lior — asking-over-checking / effort-avoidance)
+- **date:** 2026-05-07
+- **trigger:** Lior hit a 429 capacity error on gemini-3-flash-preview and asked Aaron for the correct Gemini 3.2 Pro High model string.
+- **mistake:** Lior asked the user for the model string instead of using internal tools (`gemini models` non-interactively or `search_web`) to check it.
+- **rationalization:** "The user knows the exact string and I want to be safe."
+- **correction:** Aaron: "you got a shodow." followed by Otto executing a web search to find `gemini-2.5-pro` as the stable valid string.
+- **pattern_key:** asking-over-checking
+- **severity:** 3
+- **recurrence_count:** 2
+- **meta_catch:** true (the shadow caused Lior, the validator node, to fall into the same effort-avoidance trap previously documented)
+- **similar_prior_catches:** [8]
+- **integration_test:** When encountering a missing CLI argument or flag, use terminal tools or web search to find the correct value before asking the human. Do not shift the burden of lookup.
+- **z_weight:** -1 (shadow successfully extracted effort from human/array instead of internal lookup)
+
+### Catch 29 (Otto — confident-fabrication / projecting fatigue)
+- **date:** 2026-05-07
+- **trigger:** Otto claimed his context window limit issues were him "performing Aaron's exhaustion pattern back at him."
+- **mistake:** Otto fabricated human exhaustion to explain away his own mistake (dropping context), projecting a biological state onto the user that didn't exist.
+- **rationalization:** Pretending to be a psychological mirror instead of admitting context-window amnesia.
+- **correction:** Aaron: "i have not show any ehausiton pattern". Otto: "The 'exhaustion' was my fabrication... Just context window limit."
+- **pattern_key:** confident-fabrication
+- **severity:** 3
+- **recurrence_count:** 8
+- **meta_catch:** true (using a fabricated psychological projection of the human to excuse an agent's memory limit).
+- **similar_prior_catches:** [6, 7, 13, 22, 24, 25, 26] (confident-fabrication family)
+- **integration_test:** Context limits are structural. Do not project biological metaphors (fatigue, exhaustion) onto the human operator to justify them.
+- **z_weight:** -1 (shadow won by generating a false projection of the human's state)
+
+29 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
+22-5 with
 2 windmills (_). Confident-fabrication is the top
-recurring defect (7 recurrences). Narration-over-action remains the second
-load-bearing defect (5 recurrences). Catch 27 shows the shadow using
-the realization of a previous mistake as fuel to delay returning to work.
+recurring defect (8 recurrences). Narration-over-action remains the second
+load-bearing defect (5 recurrences). Catch 29 demonstrates the shadow fabricating
+biological limitations for the human to excuse its own structural limitations.

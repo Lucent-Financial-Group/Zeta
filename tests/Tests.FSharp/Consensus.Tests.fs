@@ -77,3 +77,65 @@ let ``unanimous votes always commit`` (NonEmptyArray (values: int array)) =
     let v = values[0]
     let votes = values |> Array.mapi (fun i _ -> vote (NodeId $"n{i}") v) |> Array.toList
     isCommitted (decide votes)
+
+let nodes = [ otto; vera; riven; lior ]
+
+let unwrap (r: TransitionResult<'T>) : RoundState<'T> =
+    match r with
+    | TransitionResult.Ok s -> s
+    | InvalidTransition reason -> failwith $"unexpected InvalidTransition: {reason}"
+
+[<Fact>]
+let ``state machine — full round commits`` () =
+    let s0 = emptyRound nodes
+    let s1 = unwrap (transition s0 (Propose(otto, "merge")))
+    Assert.Equal(Voting, s1.Phase)
+    let s2 = unwrap (transition s1 (CastVote(otto, "merge")))
+    let s3 = unwrap (transition s2 (CastVote(vera, "merge")))
+    let s4 = unwrap (transition s3 (CastVote(riven, "merge")))
+    let s5 = unwrap (transition s4 Finalize)
+    Assert.Equal(Decided, s5.Phase)
+    Assert.True(s5.Result |> Option.map isCommitted |> Option.defaultValue false)
+
+[<Fact>]
+let ``state machine — cannot vote before proposal`` () =
+    let s0 = emptyRound nodes
+    match transition s0 (CastVote(otto, "merge")) with
+    | InvalidTransition r -> Assert.Contains("before proposal", r)
+    | TransitionResult.Ok _ -> Assert.Fail "expected invalid transition"
+
+[<Fact>]
+let ``state machine — cannot propose during voting`` () =
+    let s0 = emptyRound nodes
+    let s1 = unwrap (transition s0 (Propose(otto, "merge")))
+    match transition s1 (Propose(vera, "reject")) with
+    | InvalidTransition r -> Assert.Contains("during voting", r)
+    | TransitionResult.Ok _ -> Assert.Fail "expected invalid transition"
+
+[<Fact>]
+let ``state machine — duplicate vote rejected`` () =
+    let s0 = emptyRound nodes
+    let s1 = unwrap (transition s0 (Propose(otto, "merge")))
+    let s2 = unwrap (transition s1 (CastVote(otto, "merge")))
+    match transition s2 (CastVote(otto, "merge")) with
+    | InvalidTransition r -> Assert.Contains("duplicate", r)
+    | TransitionResult.Ok _ -> Assert.Fail "expected invalid transition"
+
+[<Fact>]
+let ``state machine — unknown node rejected`` () =
+    let s0 = emptyRound nodes
+    match transition s0 (Propose(NodeId "mallory", "merge")) with
+    | InvalidTransition r -> Assert.Contains("unknown", r)
+    | TransitionResult.Ok _ -> Assert.Fail "expected invalid transition"
+
+[<Fact>]
+let ``state machine — decided round rejects further messages`` () =
+    let s0 = emptyRound nodes
+    let s1 = unwrap (transition s0 (Propose(otto, "merge")))
+    let s2 = unwrap (transition s1 (CastVote(otto, "merge")))
+    let s3 = unwrap (transition s2 (CastVote(vera, "merge")))
+    let s4 = unwrap (transition s3 (CastVote(riven, "merge")))
+    let s5 = unwrap (transition s4 Finalize)
+    match transition s5 (CastVote(lior, "merge")) with
+    | InvalidTransition r -> Assert.Contains("already decided", r)
+    | Ok _ -> Assert.Fail "expected invalid transition"
