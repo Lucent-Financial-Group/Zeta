@@ -157,6 +157,12 @@ describe("validateGitHubSession", () => {
     expect(page.visitedUrl).toBe("https://github.com/settings/profile");
   });
 
+  test("decodes username entities without double-unescaping", async () => {
+    const page = new FakePage('<meta name="user-login" content="ace&amp;lt;hack">');
+    const username = await validateGitHubSession(page);
+    expect(username).toBe("ace&lt;hack");
+  });
+
   test("rejects sign-in pages instead of proceeding unauthenticated", async () => {
     const page = new FakePage("<title>Sign in to GitHub</title>", "https://github.com/login");
     await expectRejectsWith(validateGitHubSession(page), "expired or unauthenticated");
