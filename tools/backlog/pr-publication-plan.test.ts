@@ -155,6 +155,9 @@ describe("validation", () => {
       validatePublicationInput(input({ bodyFilePath: "C:/tmp/body.md" }));
     }).toThrow("unsafe repo-relative path");
     expect(() => {
+      validatePublicationInput(input({ bodyFilePath: "C:../outside/body.md" }));
+    }).toThrow("unsafe repo-relative path");
+    expect(() => {
       validatePublicationInput(input({ bodyFilePath: "../body.md" }));
     }).toThrow("unsafe repo-relative path");
     expect(() => {

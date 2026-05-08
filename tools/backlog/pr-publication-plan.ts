@@ -119,7 +119,7 @@ function validateRepoPath(path: string): void {
   if (
     normalized.trim().length === 0 ||
     normalized.startsWith("/") ||
-    /^[A-Za-z]:\//.test(normalized) ||
+    /^[A-Za-z]:/.test(normalized) ||
     normalized.startsWith("../") ||
     normalized.includes("/../") ||
     normalized === ".git" ||
