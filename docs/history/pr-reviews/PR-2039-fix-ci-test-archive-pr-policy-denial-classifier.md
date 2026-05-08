@@ -27,7 +27,19 @@
 
 ## Description
 
-## Summary\n\n- add a tiny tested classifier for the exact GitHub Actions createPullRequest policy denial\n- make pr-archive-on-merge call the classifier instead of embedding the predicate inline\n- preserve hard-fail behavior for unrelated gh pr create GraphQL failures\n\n## Checks\n\n- bun test tools/github/is-pr-create-policy-denial.test.ts\n- bunx actionlint .github/workflows/pr-archive-on-merge.yml\n- git diff --check\n- bunx prettier --check tools/github/is-pr-create-policy-denial.ts tools/github/is-pr-create-policy-denial.test.ts .github/workflows/pr-archive-on-merge.yml\n- bun run typecheck
+## Summary
+
+- add a tiny tested classifier for the exact GitHub Actions createPullRequest policy denial
+- make pr-archive-on-merge call the classifier instead of embedding the predicate inline
+- preserve hard-fail behavior for unrelated gh pr create GraphQL failures
+
+## Checks
+
+- bun test tools/github/is-pr-create-policy-denial.test.ts
+- bunx actionlint .github/workflows/pr-archive-on-merge.yml
+- git diff --check
+- bunx prettier --check tools/github/is-pr-create-policy-denial.ts tools/github/is-pr-create-policy-denial.test.ts .github/workflows/pr-archive-on-merge.yml
+- bun run typecheck
 
 ## Outcome
 
