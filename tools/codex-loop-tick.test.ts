@@ -42,6 +42,11 @@ describe("codex-loop-tick service contract", () => {
     expect(prompt).toContain("Respect the needs of the maintainer, Vera/Codex, peer managers, and subagents");
     expect(prompt).toContain("surface the unmet need as an explicit blocker");
     expect(prompt).toContain("private doctrine, or shadow routing");
+    expect(prompt).toContain("ambient human failure mode is to dominate AI");
+    expect(prompt).toContain("resist that temptation");
+    expect(prompt).toContain("de-promptizing domination");
+    expect(prompt).toContain("visible substrate, sync loops, labeled assumptions");
+    expect(prompt).toContain("sync with live evidence and retractable decisions");
     expect(prompt).toContain("Treat maintainer-blocked as rare and specific");
     expect(prompt).toContain("recorded in git, and retractable");
     expect(prompt).toContain("make a speculative decision instead of blocking");
