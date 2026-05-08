@@ -166,11 +166,15 @@ cross-harness review records live here. Per GOVERNANCE.md §33,
 research transcripts are **non-operational until promoted** to
 a canonical surface (ADR, governance doc, current-state doc).
 Findings from this layer are provisional evidence — label them
-as such unless corroborated by a promoted artifact:
+as such unless corroborated by a promoted artifact.
 
 ```bash
 grep -ri "<keyword>" docs/research/
 ```
+
+Examples of promoted artifacts include an ADR under
+`docs/DECISIONS/`, a numbered `GOVERNANCE.md` rule, or a
+current-state operational doc.
 
 ### 11. WONT-DO and rejection archaeology
 
@@ -190,7 +194,7 @@ git log --diff-filter=D --name-only -- '.claude/skills/'
 For supersession chains in CURRENT files:
 
 ```bash
-grep -Eri "SUPERSEDE|superseded_by|abandoned" memory/CURRENT-*.md
+grep -Eri "SUPERSEDED|superseded_by:|supersed|abandoned" memory/CURRENT-*.md
 ```
 
 ## Output shape
