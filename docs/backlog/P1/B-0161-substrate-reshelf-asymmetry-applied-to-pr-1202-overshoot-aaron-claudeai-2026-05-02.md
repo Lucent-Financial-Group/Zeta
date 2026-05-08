@@ -7,6 +7,7 @@ created: 2026-05-02
 last_updated: 2026-05-02
 depends_on:
   - B-0160
+decomposition: atomic
 ---
 
 # B-0161 — Substrate reshelf for PR #1202 asymmetry-application (Aaron + Claude.ai 2026-05-02)

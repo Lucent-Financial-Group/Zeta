@@ -6,6 +6,8 @@ title: Port the 4-layer meta-learning pattern from a sibling repo to Zeta
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+decomposition: atomic
+classification: buildable-now
 ---
 
 # B-0126 — Port the 4-layer meta-learning pattern from STCRM to Zeta

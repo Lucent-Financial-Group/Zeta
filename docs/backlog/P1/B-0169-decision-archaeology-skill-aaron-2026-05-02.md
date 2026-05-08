@@ -9,6 +9,8 @@ ask: Aaron 2026-05-02 (autonomous-loop channel — *"that is amazing i never ask
 created: 2026-05-02
 last_updated: 2026-05-02
 depends_on: []
+decomposition: atomic
+classification: buildable-now
 composes_with: [B-0058]
 tags: [skill, onboarding, contributor-experience, dx, ux, ax, git-blame, lineage, intent-reconstruction]
 ---

@@ -9,6 +9,8 @@ ask: codex P0 review on PR #75 (5 threads on tools/setup/common/curl-fetch.sh, m
 created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
+decomposition: atomic
+classification: buildable-now
 composes_with: [B-0060]
 tags: [install-path, supply-chain, upstream-installers, codex-p0, pr-75, streaming-vs-buffered, checksum]
 ---
