@@ -3,7 +3,7 @@
 Substrate-claim-checker per the verify-then-claim discipline memo
 (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
 
-Catches two of the seven sub-classes B-0170 names:
+Catches 3 of the 7 sub-classes B-0170 names:
 
 - **Count drift** (v0.4.4) — between narrative claims (e.g. "18+ drift
   instances", "13-row table", "5 procedure skills") and the actual
@@ -11,9 +11,12 @@ Catches two of the seven sub-classes B-0170 names:
   `check-counts.ts`.
 - **Existence drift** (v0.5) — claims that a file or directory exists
   when it doesn't on disk. Implemented in `check-existence.ts`.
+- **Path-form drift** (v0.7) — same physical file referenced with
+  inconsistent path forms within a single document. Implemented in
+  `check-path-forms.ts`.
 
-The remaining 5 sub-classes (semantic-equivalence, empirical-output,
-convention, path-form, self-recursive) are deferred to v0.6+.
+The remaining 4 sub-classes (semantic-equivalence, empirical-output,
+convention, self-recursive) are deferred to v0.8+.
 
 ## Usage
 
@@ -55,11 +58,11 @@ input error).
 
 ## What this does NOT do (v0)
 
-- **Existence drift** (file/dir/tool claimed to exist; doesn't) — v1
+- **Existence drift** (file/dir/tool claimed to exist; doesn't) — shipped v0.5
+- **Path-form drift** (fully-qualified vs bare paths inconsistent) — shipped v0.7
 - **Semantic-equivalence drift** (command substitution claims) — v1
 - **Empirical-output drift** (run-the-command-and-compare) — v1
 - **Convention drift** (recommended pattern doesn't match canonical) — v1
-- **Path-form drift** (fully-qualified vs bare paths inconsistent) — v1
 - **Self-recursive drift** (the memo about drift contains its own drift) — v1
 
 ## Composes with
@@ -166,3 +169,43 @@ If both are present, drift wins for exit code (1).
 ### Implementation
 
 Uses `git check-ignore --quiet <path>` via `spawnSync` (no shell — avoids command injection) to ask git directly. Exit code 0 from git = path IS gitignored; exit code 1 = NOT gitignored. The 5-second timeout guards against pathological cases.
+
+## v0.7 — `check-path-forms.ts` (path-form drift)
+
+The third sub-class checker, covering **path-form drift** — when the same physical file is referenced with inconsistent path forms within a single document.
+
+### What it catches
+
+A document references the same file using different string forms:
+
+- `tools/substrate-claim-checker/check-counts.ts` on line 3
+- `check-counts.ts` on line 7
+
+Both resolve to the same on-disk file, but a reader may not realize they're the same, and a grep for the full path misses the bare form.
+
+### How it works
+
+1. Extracts all path claims via `findPathClaims()` (reused from `check-existence.ts`)
+2. Resolves each claim to an absolute path using the same 3-root resolution (file dir → parent dir → repo root)
+3. Groups claims by resolved absolute path
+4. For groups with >1 distinct string form, emits a path-form drift finding
+
+Non-resolving paths are skipped (that's `check-existence.ts`'s domain).
+
+### Usage
+
+```bash
+bun tools/substrate-claim-checker/check-path-forms.ts <file>
+bun tools/substrate-claim-checker/check-path-forms.ts <file1> <file2> ...
+```
+
+Exit codes: `0` clean, `1` drift detected or input error.
+
+### Known limitations (v0.7)
+
+- **Same-directory prose vs usage-example forms**: a README documenting
+  its own directory naturally uses bare filenames in prose (`check-counts.ts`)
+  and fully-qualified paths in usage examples
+  (`tools/substrate-claim-checker/check-counts.ts`). Both are intentional.
+  v1 candidate: exempt paths inside fenced code blocks from grouping, since
+  usage examples conventionally show repo-root-relative invocations.
