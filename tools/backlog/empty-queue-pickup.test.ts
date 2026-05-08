@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { orchestrate, type CommandRunner, type OrchestrationResult } from "./empty-queue-pickup";
+import { orchestrate, type CommandRunner } from "./empty-queue-pickup";
 
 function fakeRunner(responses: Map<string, { status: number; stdout: string; stderr: string }>): CommandRunner {
   return {
