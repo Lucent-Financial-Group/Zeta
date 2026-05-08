@@ -1,7 +1,9 @@
 ---
 id: B-0279
 priority: P0
-status: open
+status: closed
+closed: 2026-05-08
+closed_by: "tools/backlog/claim-worktree-bootstrap.ts plus focused bootstrap tests"
 title: "Autonomous backlog pickup - claim and worktree bootstrap"
 created: 2026-05-08
 last_updated: 2026-05-08
