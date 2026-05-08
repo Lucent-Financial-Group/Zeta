@@ -31,7 +31,7 @@ that mechanically enforces the format standard defined by B-0330:
 2. **Filename convention check** — prefix matches declared type,
    underscore separators, no spaces.
 3. **Section header check** — required sections present per type
-   (feedback files need `## Why:` / `## How to apply:`; all
+   (feedback files need `## Why` / `## How to apply`; all
    files need `description:` in frontmatter).
 4. **Link integrity** — all `](*.md)` links in body resolve to
    existing files.

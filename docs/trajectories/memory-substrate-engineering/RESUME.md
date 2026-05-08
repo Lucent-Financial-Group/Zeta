@@ -45,7 +45,7 @@ now with no dependencies:
 **Existing (compose, not children):**
 
 - B-0006 — MEMORY.md compression (Step 1, in-progress)
-- B-0066 — Marker-vs-index (Steps 4+10, decomposed into B-0257..B-0261)
+- B-0066 — Marker-vs-index (Steps 4+10, decomposition pending)
 
 ## Current Rule
 

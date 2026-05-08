@@ -26,8 +26,8 @@ B-0190 Step 7 (memory load-bearing-vs-decorative classification).
 Classify every memory file as **load-bearing** or **decorative**:
 
 - **Load-bearing**: cited from CLAUDE.md, AGENTS.md,
-  GOVERNANCE.md, ALIGNMENT.md, or reachable transitively from
-  those bootstrap surfaces. A fresh agent WILL read these.
+  GOVERNANCE.md, docs/ALIGNMENT.md, or reachable transitively
+  from those bootstrap surfaces. A fresh agent WILL read these.
 - **Decorative**: not cited from any bootstrap surface. A fresh
   agent MAY read these if the topic comes up, but they are not
   in the wake-time read path.
@@ -35,8 +35,8 @@ Classify every memory file as **load-bearing** or **decorative**:
 Implementation: a TS tool (`tools/hygiene/classify-memory-load-bearing.ts`)
 that:
 
-1. Parses CLAUDE.md, AGENTS.md, GOVERNANCE.md, ALIGNMENT.md for
-   `memory/` path references.
+1. Parses CLAUDE.md, AGENTS.md, GOVERNANCE.md, docs/ALIGNMENT.md
+   for `memory/` path references.
 2. Follows transitive references (memory file A cites memory
    file B).
 3. Outputs a two-column report: file path + load-bearing / decorative.

@@ -2,7 +2,7 @@
 id: B-0338
 priority: P2
 status: open
-title: Memory graduation ladder — codify when feedback promotes to CLAUDE.md promotes to GOVERNANCE.md
+title: Memory graduation ladder — codify when feedback promotes to CLAUDE.md and when CLAUDE.md promotes to GOVERNANCE.md
 tier: foundation
 effort: M
 ask: B-0190 Step 9 decomposition

@@ -8,7 +8,7 @@ effort: L
 ask: Aaron 2026-05-04 verbatim *"seems like your memory work needs a trajectory i don't think we have one for that"* + same-tick *"long horizon is our default and so should future agents remember and short horizon short cuts should be deliberate and not accidentally based on the middle path"*
 created: 2026-05-04
 last_updated: 2026-05-08
-decomposition: clean
+decomposition: decomposed
 depends_on: [B-0330, B-0331, B-0332, B-0333, B-0334, B-0335, B-0336, B-0337, B-0338]
 children: [B-0330, B-0331, B-0332, B-0333, B-0334, B-0335, B-0336, B-0337, B-0338]
 composes_with: [B-0006, B-0066, B-0140, B-0156, B-0171, B-0193]
@@ -38,7 +38,7 @@ B-0332 (load-bearing)─┬──→ B-0333 (retire discipline)──┘
 
 Existing rows (not children, compose):
   B-0006 (Step 1, compression) — in-progress
-  B-0066 (Step 4+10, marker-vs-index) — decomposed into B-0257..B-0261
+  B-0066 (Step 4+10, marker-vs-index) — decomposition pending
 ```
 
 ### Child row map
