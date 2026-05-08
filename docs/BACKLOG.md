@@ -99,7 +99,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0251](backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** Durable computation stack research — Temporal + Reaqtor + Orleans + Bonsai composition for DurabilityMode.StableStorage
 - [ ] **[B-0255](backlog/P1/B-0255-probabilistic-dials-existing-posterior-quorum-substrate-2026-05-07.md)** Probabilistic dials over existing posterior quorum substrate
 - [ ] **[B-0256](backlog/P1/B-0256-model-recursion-exploit-class-metasploit-ida-pro-mapping-2026-05-07.md)** Model recursion exploit class — Metasploit/IDA Pro mapping for AI models
-- [ ] **[B-0262](backlog/P1/B-0262-refresh-worldview-scaffold-open-prs-recent-merges-2026-05-08.md)** refresh-worldview scaffold — open-PR list + recent-merges query
+- [x] **[B-0262](backlog/P1/B-0262-refresh-worldview-scaffold-open-prs-recent-merges-2026-05-08.md)** refresh-worldview scaffold - open-PR list + recent-merges query
 - [ ] **[B-0263](backlog/P1/B-0263-refresh-worldview-backlog-delta-claims-branch-state-2026-05-08.md)** refresh-worldview — backlog delta + claim inventory + branch state
 - [ ] **[B-0264](backlog/P1/B-0264-refresh-worldview-tick-integration-canonical-pre-decide-2026-05-08.md)** refresh-worldview — integrate into tick scripts as canonical pre-decide
 - [ ] **[B-0265](backlog/P1/B-0265-ruleset-split-ci-gate-ruleset-2026-05-08.md)** GitHub ruleset split — CI gate ruleset (required status checks)
@@ -119,7 +119,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0279](backlog/P1/B-0279-durable-computation-checkpoint-interface-extension-2026-05-08.md)** Durable computation — extend Checkpoint.fs with StableStorage mode
 - [ ] **[B-0284](backlog/P1/B-0284-pages-seo-metadata-jsonld-social-preview-2026-05-08.md)** Pages discoverability - SEO metadata, JSON-LD, and social previews
 - [ ] **[B-0285](backlog/P1/B-0285-pages-sitemap-robots-ai-crawler-policy-2026-05-08.md)** Pages discoverability - sitemap, robots, and AI crawler policy
-- [ ] **[B-0287](backlog/P1/B-0287-ace-dlc-package-format-spec-2026-05-08.md)** Ace DLC — package format specification
+- [x] **[B-0287](backlog/P1/B-0287-ace-dlc-package-format-spec-2026-05-08.md)** Ace DLC — package format specification
 - [ ] **[B-0288](backlog/P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** Ace DLC — package manager CLI (install/verify/list)
 - [ ] **[B-0290](backlog/P1/B-0290-green-lantern-consent-gate-firmware-2026-05-08.md)** Green Lantern ring — consent gate firmware design
 - [ ] **[B-0291](backlog/P1/B-0291-concordance-ai-corpus-pipeline-2026-05-08.md)** Concordance AI — corpus ingestion + tokenization pipeline
@@ -251,7 +251,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0254](backlog/P2/B-0254-infernet-probabilistic-triangulation-posterior-quorum-2026-05-07.md)** Posterior quorum triangulation over existing Bayesian DBSP substrate
 - [ ] **[B-0283](backlog/P2/B-0283-interloop-messaging-protocol-design-2026-05-08.md)** Interloop messaging — protocol design (message types + delivery)
 - [ ] **[B-0284](backlog/P2/B-0284-interloop-messaging-implementation-2026-05-08.md)** Interloop messaging — implementation on chosen transport
-- [ ] **[B-0285](backlog/P2/B-0285-arc4-selfplay-arena-design-2026-05-08.md)** ARC-4 — adversarial self-play arena design
+- [x] **[B-0285](backlog/P2/B-0285-arc4-selfplay-arena-design-2026-05-08.md)** ARC-4 — adversarial self-play arena design
 - [ ] **[B-0286](backlog/P2/B-0286-arc4-selfplay-implementation-2026-05-08.md)** ARC-4 — self-play implementation + training loop
 
 ## P3 — convenience / deferred

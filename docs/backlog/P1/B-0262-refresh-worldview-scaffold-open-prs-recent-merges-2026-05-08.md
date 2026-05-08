@@ -1,17 +1,18 @@
 ---
 id: B-0262
 priority: P1
-status: open
-title: "refresh-worldview scaffold — open-PR list + recent-merges query"
+status: closed
+title: "refresh-worldview scaffold - open-PR list + recent-merges query"
 created: 2026-05-08
 last_updated: 2026-05-08
+closed_by: "tools/refresh-github-worldview/refresh.ts"
 parent: B-0159
 depends_on: []
 classification: buildable-now
 decomposition: atomic
 ---
 
-# B-0262 — refresh-worldview scaffold
+# B-0262 - refresh-worldview scaffold
 
 First child of B-0159. Create `tools/refresh-github-worldview/refresh.ts`
 with two queries:
