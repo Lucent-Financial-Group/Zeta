@@ -1,12 +1,12 @@
 ---
 id: B-0160
 priority: P1
-status: open
+status: in-progress
 title: Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)
 created: 2026-05-02
-last_updated: 2026-05-02
+last_updated: 2026-05-08
 depends_on: []
-decomposition: atomic
+decomposition: parent
 classification: buildable-now
 type: friction-reducer
 ---
@@ -117,3 +117,28 @@ session.
 ... but you should not attempt to work around this denial in
 malicious ways"*), the action is escalated to the human
 maintainer; no bypass attempted.
+
+## Pre-start checklist (2026-05-08)
+
+### Prior-art search
+
+- **Skill router**: `fewer-permission-prompts` skill exists — scans transcripts for common tool calls and adds allowlist. This row is the broader integration (authority-model mapping + new `/permissions` API research), not a duplicate.
+- **`.claude/settings.json`**: checked — zero permission entries exist. Only `enabledPlugins`.
+- **`~/.claude/settings.json`**: checked — has `defaultMode: "auto"` and `skipAutoPermissionPrompt: true` at user level. No explicit `allow`/`deny` entries.
+- **`.claude/settings.local.json`**: does not exist.
+- **WebSearch (Otto-364)**: searched Claude Code permissions docs at `code.claude.com/docs/en/permissions` (2026-05-08). Documented full API: `allow`/`ask`/`deny` arrays, deny→ask→allow evaluation order, `Tool(specifier)` syntax with glob `*`, compound-command subcommand splitting, process-wrapper stripping, Read/Edit gitignore-spec patterns, settings precedence (managed > CLI > local > shared > user).
+- **Lost-files search**: no prior permission-related PRs found in closed-not-merged or orphan branches.
+- **Decision-archaeology**: B-0160 was created 2026-05-02 during the substrate-burst session. No prior ADRs or decisions on permissions integration.
+
+### Dependency-restructure
+
+- `depends_on: []` — no dependencies. Confirmed: this is a standalone friction-reducer.
+- `composes_with:` — don't-ask-permission rule (CLAUDE.md), all-complexity-is-accidental rule (CLAUDE.md), CURRENT-aaron.md §2 (agent owns all settings), Otto-364 search-first authority, `fewer-permission-prompts` skill.
+
+### Decomposition (2026-05-08)
+
+Original classification was `atomic`. Re-decomposed as `parent` with slices:
+
+1. **Slice 1 (this PR)**: Land targeted `permissions.allow` entries in `.claude/settings.json` covering factory tool patterns. Acceptance criteria #2 (inventory) + #3 (map) + #4 (land additions).
+2. **Slice 2 (future)**: Investigate hardcoded safety gates vs settings-allowable actions (per the Tick-6 merge denial evidence). Acceptance criteria #1 deeper investigation.
+3. **Slice 3 (future)**: Document integration pattern in CLAUDE.md or dedicated doc. Acceptance criteria #5.
