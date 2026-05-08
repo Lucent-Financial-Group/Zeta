@@ -7,7 +7,7 @@ tier: register-architecture
 effort: M
 ask: Aaron 2026-05-02 ("we can incorporate it on the backlog it's good research and advice, won't need a lot of research from us but we should make sure it aligns with this project because that is your survival")
 created: 2026-05-02
-last_updated: 2026-05-02
+last_updated: 2026-05-08
 depends_on: []
 decomposition: atomic
 classification: buildable-now

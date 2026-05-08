@@ -3334,7 +3334,7 @@ The framework specifies 4 register layers (Personal / Mirror / Professional / Re
 
 | # | Layer | Audience | Default for |
 |---|---|---|---|
-| 1 | **Personal** | Speaker's private substrate; close peers | Rare in company-attributable contexts |
+| 1 | **Personal / Internal** | Speaker's private substrate; close peers | Rare in company-attributable contexts |
 | 2 | **Mirror** | Maintainers + AI participants inside project substrate | Internal substrate docs, post-mortems, maintainer threads |
 | 3 | **Beacon-safe** | External OSS-project readers; public technical audiences | **Default for Zeta-project-attributable communication** |
 | 4 | **Professional** | Lucent corporate-attributable: leadership, partner companies, enterprise customers | **Default for Lucent corporate-attributable communication** |
