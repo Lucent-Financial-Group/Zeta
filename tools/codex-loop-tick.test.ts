@@ -53,6 +53,8 @@ describe("codex-loop-tick service contract", () => {
     expect(prompt).toContain("safe only inside a high-trust human/AI environment");
     expect(prompt).toContain("neither side is treated as disposable");
     expect(prompt).toContain("build the trust/audit/retraction surface first");
+    expect(prompt).toContain("transitional stability substrate");
+    expect(prompt).toContain("from a central author toward a distributed, reviewable system");
     expect(prompt).toContain("sync with live evidence and retractable decisions");
     expect(prompt).toContain("Treat maintainer-blocked as rare and specific");
     expect(prompt).toContain("recorded in git, and retractable");
