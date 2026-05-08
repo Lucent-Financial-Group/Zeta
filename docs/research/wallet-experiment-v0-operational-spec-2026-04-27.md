@@ -280,6 +280,11 @@ All caps enforced in smart-account contract code, not in any prompt or off-chain
    - Pattern-detection flags (rapid-fire trades, suspected adversarial counterparty interaction).
    - Substrate logging failures (glass-halo write failed but tx broadcast — anomaly).
    - Reasoning-trace anomalies (agent's stated thesis diverges sharply from actions).
+   - **Pre-broadcast monitor stall**: if the monitor cannot finish
+     its reasoning-trace check within the 60s retraction window,
+     it triggers `freeze-on-stall` before broadcast. The proposal's
+     terminal state is `frozen`, not `broadcast`; unfreeze follows
+     §6.2 and requires receipt-loop catch-up.
    - **Delegate-target drift** (per EIP-7702 sweeper threat model in §3.2): the smart-account's delegate-target SHA must remain on the audited-allowlist; if the delegate-target changes mid-session or points at a non-audited contract, freeze immediately. This catches the 97%-sweeper-contract pattern where compromised EOAs end up delegated to drain contracts.
    - **Phishing-tuple anomaly**: any new 7702 authorization tuple signed by the master EOA mid-session triggers freeze pending review.
 3. **Aaron's direct freeze key**. Triggered by: Aaron decides.

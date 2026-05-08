@@ -170,11 +170,11 @@ it (closed-thread links survive in the PR's review history).
     `freeze-on-monitor-stall` rule + the terminal state
     that the freeze creates.
 
-    **Resolved (Otto 2026-05-07):** The `frozen`
-    terminal state (PR #1935) covers this. Monitor
-    stall triggers `signed → frozen` via the same
-    path as freeze-on-dissent. §9.1 line 550 already
-    says "monitor defaults to freeze-on-stall."
+    **Resolved (Vera 2026-05-08):** The wallet v0 spec now
+    lands this in §6.1 and §9.1. Monitor stall triggers
+    `signed → frozen` before broadcast via the same off-chain
+    monitor path as freeze-on-dissent; unfreeze follows §6.2
+    and requires receipt-loop catch-up.
 2. **Define an on-chain classification signal for Tx N+1
     gating** (cid 3151333578 P1). §7.1 requires the
     smart-account contract to reject Tx N+1 if Tx N's
@@ -323,7 +323,7 @@ comments.
 
 ## Progress (2026-05-07 session)
 
-14 of 21 items resolved via doc reconciliation:
+15 of 21 items resolved via doc reconciliation:
 
 + PR #1907: 3 stale "open question" refs → resolved
 + PR #1908: EAT Task B monitor → sibling-repo
@@ -338,11 +338,11 @@ comments.
 + Vera 2026-05-08: glass-halo logging gate moved to monitor freeze path
 + Vera 2026-05-08: retraction-scoped session-key auth landed in wallet
   spec §3.3/§9.1 for self-revocation and cancellation
++ Vera 2026-05-08: monitor-stall freeze landed in wallet spec §6.1/§9.1
 
-7 items remain — all P1/P2 design decisions needing
+6 items remain — all P1/P2 design decisions needing
 deeper wallet-domain engagement (preflight terminal
-state, monitor-stall freeze, material-spend criteria,
-INTENTIONAL-DEBT schema).
+state, material-spend criteria, INTENTIONAL-DEBT schema).
 
 2026-05-07 red-team correction: PR #1942 briefly marked
 this row closed by trusting a "21/21 addressed" pickup
