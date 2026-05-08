@@ -107,10 +107,9 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   const { repo, expected } = parsed.args;
 
-  // Read expected snapshot
-  let expectedContent: string;
+  // Verify expected snapshot exists
   try {
-    expectedContent = readFileSync(expected, "utf8");
+    readFileSync(expected, "utf8");
   } catch {
     process.stderr.write(`error: expected snapshot not found: ${expected}\n`);
     return 2;

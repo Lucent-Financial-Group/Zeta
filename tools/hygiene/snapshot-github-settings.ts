@@ -79,14 +79,6 @@ function parseJsonSafe(raw: string | null, fallback: unknown = null): unknown {
   }
 }
 
-function sortByName(arr: unknown[]): unknown[] {
-  return [...arr].sort((a, b) => {
-    const aName = (a as Record<string, unknown>).name as string ?? "";
-    const bName = (b as Record<string, unknown>).name as string ?? "";
-    return aName.localeCompare(bName);
-  });
-}
-
 interface Args {
   readonly repo: string;
 }
