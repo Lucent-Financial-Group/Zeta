@@ -10,7 +10,7 @@
 //   bun tools/hygiene/audit-formal-artifacts.ts --json
 
 import { readFileSync } from "node:fs";
-import { dirname, resolve, relative, extname, basename } from "node:path";
+import { dirname, resolve, extname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
@@ -63,7 +63,7 @@ function classify(relPath: string): Category | null {
   return null;
 }
 
-async function buildReferenceIndex(): Promise<Map<string, string[]>> {
+async function buildReferenceIndex(): Promise<Map<string, string>> {
   const substrateMdFiles = await gitLsFiles(
     "docs/backlog/**/*.md",
     "docs/research/**/*.md",
@@ -71,12 +71,12 @@ async function buildReferenceIndex(): Promise<Map<string, string[]>> {
     "docs/**/*.md",
   );
 
-  const index = new Map<string, string[]>();
+  const index = new Map<string, string>();
 
   for (const mdFile of substrateMdFiles) {
     try {
       const content = readFileSync(resolve(REPO_ROOT, mdFile), "utf-8");
-      index.set(mdFile, [content]);
+      index.set(mdFile, content);
     } catch {
       // skip unreadable
     }
@@ -87,12 +87,12 @@ async function buildReferenceIndex(): Promise<Map<string, string[]>> {
 
 function findRefsInIndex(
   relPath: string,
-  index: Map<string, string[]>,
+  index: Map<string, string>,
 ): string[] {
   const name = basename(relPath);
   const refs: string[] = [];
 
-  for (const [mdFile, [content]] of index) {
+  for (const [mdFile, content] of index) {
     if (content.includes(relPath) || content.includes(name)) {
       refs.push(mdFile);
     }
