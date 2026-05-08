@@ -1,11 +1,12 @@
 #!/usr/bin/env bun
-// audit_clause_coverage.ts — alignment-clause coverage audit for skills + agents.
+// audit_clause_coverage.ts — alignment-clause coverage audit.
 //
-// B-0058 slice 1: new-surface alignment-clause consistency check.
-// Scans .claude/skills/*/SKILL.md and .claude/agents/*.md for references
-// to alignment clauses (HC-1..HC-7, SD-1..SD-9, DIR-1..DIR-5) from
-// docs/ALIGNMENT.md. Reports which surfaces cite which clauses and flags
-// surfaces with zero clause references as coverage gaps.
+// B-0058: new-surface alignment-clause consistency check.
+// Scans .claude/skills/*/SKILL.md, .claude/agents/*.md, and
+// docs/backlog/P0/*.md + docs/backlog/P1/*.md for references to
+// alignment clauses (HC-1..HC-7, SD-1..SD-9, DIR-1..DIR-5) from
+// docs/ALIGNMENT.md. Reports which surfaces cite which clauses and
+// flags surfaces with zero clause references as coverage gaps.
 //
 // This is a detection surface, not a gate — it does not block commits.
 // The alignment-auditor uses this output to prioritize clause-coverage
@@ -48,8 +49,10 @@ type ParseResult =
   | { readonly kind: "help" }
   | { readonly kind: "error"; readonly message: string };
 
+type SurfaceKind = "skill" | "agent" | "backlog";
+
 interface SurfaceRow {
-  readonly kind: "skill" | "agent";
+  readonly kind: SurfaceKind;
   readonly name: string;
   readonly path: string;
   readonly clausesCited: readonly string[];
@@ -184,6 +187,42 @@ function listAgentSurfaces(): readonly SurfaceRow[] {
   return rows;
 }
 
+function listBacklogSurfaces(): readonly SurfaceRow[] {
+  const rows: SurfaceRow[] = [];
+  for (const priority of ["P0", "P1"] as const) {
+    const dir = `docs/backlog/${priority}`;
+    let entries: readonly import("node:fs").Dirent[];
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const e of entries) {
+      if (!e.isFile()) continue;
+      if (!e.name.endsWith(".md")) continue;
+      const path = `${dir}/${e.name}`;
+      let content: string;
+      try {
+        content = readFileSync(path, "utf8");
+      } catch {
+        continue;
+      }
+      const idMatch = /^(B-\d+)/.exec(e.name);
+      const name = idMatch !== null ? (idMatch[1] ?? e.name) : e.name;
+      const clausesCited = extractClauses(content);
+      rows.push({
+        kind: "backlog",
+        name,
+        path,
+        clausesCited,
+        clauseCount: clausesCited.length,
+      });
+    }
+  }
+  rows.sort((a, b) => byteCompare(a.name, b.name));
+  return rows;
+}
+
 function byteCompare(a: string, b: string): number {
   if (a < b) return -1;
   if (a > b) return 1;
@@ -193,7 +232,8 @@ function byteCompare(a: string, b: string): number {
 export function audit(): AuditResult {
   const skills = listSkillSurfaces();
   const agents = listAgentSurfaces();
-  const surfaces = [...skills, ...agents];
+  const backlog = listBacklogSurfaces();
+  const surfaces = [...skills, ...agents, ...backlog];
 
   const allCited = new Set<string>();
   for (const s of surfaces) {
@@ -202,7 +242,7 @@ export function audit(): AuditResult {
   const uncitedClauses = ALL_CLAUSES.filter((c) => !allCited.has(c));
 
   return {
-    schema: "alignment-clause-coverage-v1",
+    schema: "alignment-clause-coverage-v2",
     totalSurfaces: surfaces.length,
     totalWithZero: surfaces.filter((s) => s.clauseCount === 0).length,
     totalClauses: ALL_CLAUSES.length,
@@ -235,7 +275,10 @@ function emitMd(r: AuditResult): string {
   lines.push("");
   lines.push(`Schema: \`${r.schema}\`. Clauses from \`docs/ALIGNMENT.md\`: ${String(r.totalClauses)}.`);
   lines.push("");
-  lines.push(`Surfaces audited: **${String(r.totalSurfaces)}** (${String(r.surfaces.filter((s) => s.kind === "skill").length)} skills, ${String(r.surfaces.filter((s) => s.kind === "agent").length)} agents).`);
+  const skillCount = r.surfaces.filter((s) => s.kind === "skill").length;
+  const agentCount = r.surfaces.filter((s) => s.kind === "agent").length;
+  const backlogCount = r.surfaces.filter((s) => s.kind === "backlog").length;
+  lines.push(`Surfaces audited: **${String(r.totalSurfaces)}** (${String(skillCount)} skills, ${String(agentCount)} agents, ${String(backlogCount)} backlog P0/P1).`);
   lines.push(`Surfaces with zero clause citations: **${String(r.totalWithZero)}**.`);
   if (r.uncitedClauses.length > 0) {
     lines.push(`Clauses cited by no surface: **${r.uncitedClauses.join(", ")}**.`);
