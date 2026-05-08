@@ -89,6 +89,7 @@ git show <sha>
 
 Read the commit message AND the surrounding diff. The commit
 message is often the first archaeology answer. Look for:
+
 - PR number references (`(#NNN)`)
 - `Co-Authored-By` footers (which agent/persona)
 - Backlog item references (`B-NNNN`)
