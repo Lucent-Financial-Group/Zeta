@@ -87,6 +87,8 @@ module StructureFingerprint =
     /// in-degree 0). Returns the number of layers. If the graph
     /// has cycles or no roots, returns 0.
     let private layerCount (g: Graph<'N>) : int =
+        if hasCycle g then 0
+        else
         let allNodes = Graph.nodes g
         let roots =
             allNodes
@@ -242,10 +244,10 @@ module StructureFingerprint =
             if signals.HasCycles
                && float e > 1.5 * float n
                && signals.IsBipartite
-            then 0.7
+            then 0.75
             elif signals.HasCycles
                  && float e > 2.0 * float n
-            then 0.65
+            then 0.7
             else 0.0
 
         // Bipartite
@@ -261,8 +263,8 @@ module StructureFingerprint =
               (TreeHierarchy, treeScore)
               (LayeredDag, layeredScore)
               (PubSub, pubsubScore)
-              (StateMachine, stateScore)
               (OperatorAlgebra, algebraScore)
+              (StateMachine, stateScore)
               (Bipartite, bipartiteScore) ]
 
         let best =
@@ -281,8 +283,8 @@ module StructureFingerprint =
           Signals = signals }
 
     /// Compare two fingerprints for similarity.
-    /// Returns 1.0 for identical shapes, 0.5 for related shapes,
-    /// 0.0 for unrelated shapes.
+    /// Returns 1.0 for identical shapes, 0.4–0.5 for related shapes,
+    /// 0.1 when either shape is Unknown, 0.0 for unrelated shapes.
     let similarity (a: Fingerprint) (b: Fingerprint) : float =
         if a.Shape = b.Shape then 1.0
         else

@@ -1,4 +1,5 @@
 module Zeta.Tests.Algebra.StructureFingerprintTests
+#nowarn "0893"
 
 open FsUnit.Xunit
 open global.Xunit
@@ -42,6 +43,23 @@ let private stateMachine () : Graph<string> =
 let private pubsub () : Graph<int> =
     Graph.fromEdgeSeq
         [ (0, 1, 1L); (0, 2, 1L); (0, 3, 1L); (0, 4, 1L); (0, 5, 1L) ]
+
+let private operatorAlgebra () : Graph<int> =
+    // Dense cyclic bipartite graph: two partitions {0,1,2} and {3,4,5}
+    // with cross-partition edges and back-edges
+    Graph.fromEdgeSeq
+        [ (0, 3, 1L); (0, 4, 1L); (1, 3, 1L); (1, 5, 1L)
+          (2, 4, 1L); (2, 5, 1L); (3, 0, 1L); (4, 1, 1L)
+          (5, 2, 1L); (3, 1, 1L) ]
+
+let private bipartiteGraph () : Graph<int> =
+    // Acyclic bipartite: many sources {0,1,2,3} -> few sinks {4,5}
+    Graph.fromEdgeSeq
+        [ (0, 4, 1L); (1, 4, 1L); (2, 5, 1L); (3, 5, 1L) ]
+
+let private diamondDag () : Graph<int> =
+    // 0→1, 0→2, 2→1 — a DAG (no cycle) with shared descendant
+    Graph.fromEdgeSeq [ (0, 1, 1L); (0, 2, 1L); (2, 1, 1L) ]
 
 
 // ─── Pipeline recognition ─────────────────────
@@ -165,6 +183,32 @@ let ``similarity of unrelated shapes is 0.0`` () =
     let fp1 = StructureFingerprint.fingerprint (ring 5)
     let fp2 = StructureFingerprint.fingerprint (pipeline 5)
     StructureFingerprint.similarity fp1 fp2 |> should equal 0.0
+
+
+// ─── Operator algebra recognition ─────────────
+
+[<Fact>]
+let ``fingerprint recognizes dense cyclic bipartite graph as OperatorAlgebra`` () =
+    let fp = StructureFingerprint.fingerprint (operatorAlgebra ())
+    fp.Shape |> should equal StructureFingerprint.OperatorAlgebra
+    fp.Confidence |> should be (greaterThan 0.7)
+
+
+// ─── Bipartite recognition ───────────────────
+
+[<Fact>]
+let ``fingerprint recognizes acyclic bipartite graph as Bipartite`` () =
+    let fp = StructureFingerprint.fingerprint (bipartiteGraph ())
+    fp.Shape |> should equal StructureFingerprint.Bipartite
+    fp.Confidence |> should be (greaterThan 0.5)
+
+
+// ─── Cycle detection correctness ─────────────
+
+[<Fact>]
+let ``extractSignals does not report cycle in diamond DAG`` () =
+    let signals = StructureFingerprint.extractSignals (diamondDag ())
+    signals.HasCycles |> should equal false
 
 
 // ─── Shape labels ─────────────────────────────
