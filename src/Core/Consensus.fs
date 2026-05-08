@@ -48,3 +48,69 @@ module Consensus =
         match result with
         | Committed(v, _, _) -> Some v
         | Rejected _ -> None
+
+    type Phase =
+        | Proposed
+        | Voting
+        | Decided
+
+    type Message<'T> =
+        | Propose of proposer: NodeId * value: 'T
+        | CastVote of voter: NodeId * value: 'T
+        | Finalize
+
+    type RoundState<'T> =
+        { Phase: Phase
+          Proposal: 'T option
+          Proposer: NodeId option
+          Votes: Vote<'T> list
+          Result: ConsensusResult<'T> option
+          Nodes: NodeId list }
+
+    let emptyRound (nodes: NodeId list) : RoundState<'T> =
+        { Phase = Proposed
+          Proposal = None
+          Proposer = None
+          Votes = []
+          Result = None
+          Nodes = nodes }
+
+    type TransitionResult<'T> =
+        | Ok of RoundState<'T>
+        | InvalidTransition of reason: string
+
+    let transition<'T when 'T: equality>
+        (state: RoundState<'T>)
+        (msg: Message<'T>)
+        : TransitionResult<'T> =
+        match state.Phase, msg with
+        | Proposed, Propose(proposer, value) ->
+            if not (List.contains proposer state.Nodes) then
+                InvalidTransition $"unknown proposer: %A{proposer}"
+            else
+                Ok { state with
+                        Phase = Voting
+                        Proposal = Some value
+                        Proposer = Some proposer }
+        | Voting, CastVote(voter, value) ->
+            if not (List.contains voter state.Nodes) then
+                InvalidTransition $"unknown voter: %A{voter}"
+            elif state.Votes |> List.exists (fun v -> v.Node = voter) then
+                InvalidTransition $"duplicate vote from %A{voter}"
+            else
+                let vote =
+                    { Node = voter
+                      Value = value
+                      Timestamp = DateTimeOffset.UtcNow }
+                Ok { state with Votes = vote :: state.Votes }
+        | Voting, Finalize ->
+            let result = decide state.Votes
+            Ok { state with Phase = Decided; Result = Some result }
+        | Decided, _ ->
+            InvalidTransition "round already decided"
+        | Proposed, CastVote _ ->
+            InvalidTransition "cannot vote before proposal"
+        | Proposed, Finalize ->
+            InvalidTransition "cannot finalize before proposal"
+        | Voting, Propose _ ->
+            InvalidTransition "cannot propose during voting"
