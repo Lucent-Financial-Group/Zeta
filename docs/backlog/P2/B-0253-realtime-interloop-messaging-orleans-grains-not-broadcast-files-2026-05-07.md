@@ -6,7 +6,8 @@ title: "Real-time inter-loop messaging via Orleans grains — replace turn-based
 created: 2026-05-07
 last_updated: 2026-05-07
 depends_on: [B-0251, B-0040]
-decomposition: blob
+decomposition: decomposed
+children: [B-0283, B-0284]
 owners: [architect]
 composes_with: [B-0040, B-0250, B-0251]
 tags: [orleans, grains, silos, realtime, messaging, broadcast, rpg]
