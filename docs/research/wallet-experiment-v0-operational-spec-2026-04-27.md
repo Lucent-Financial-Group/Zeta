@@ -153,6 +153,11 @@ EIP-7702 has documented production vulnerabilities since the Pectra hard fork:
 
 - Holder: not the agent directly. Lives in the smart-account layer's permission store.
 - Function: scoped key for a specific mandate (e.g., "DEX swaps on USDC↔ETH on Base, per-tx max $X, daily max $Y, velocity max N tx/hr").
+- Retraction authority: the smart-account also mints a
+  retraction-only session-key capability scoped to "cancel this
+  agent-authored pending proposal during its pre-flight retraction
+  window." This capability can cancel; it cannot sign or broadcast
+  a new tx.
 - The agent **proposes** transactions; the session key signs only after smart-account validation passes.
 - No agent-held hot keys.
 
@@ -452,12 +457,13 @@ After session-key signs but before smart-account broadcasts: the tx sits in a **
 During the window:
 
 - The agent can **self-revoke** by calling a smart-account
-  method, **authenticated by the active session key** (the same
-  key that signed the proposal). proposal_id alone is not
-  sufficient — anyone observing or guessing a proposal_id could
-  otherwise stall the queue (DoS) by repeatedly cancelling
-  pending tx. The session-key signature on the cancel-call binds
-  the cancellation to the principal that authored the proposal.
+  method, **authenticated by the retraction-only session-key
+  capability** minted for the active proposal. proposal_id alone is
+  not sufficient — anyone observing or guessing a proposal_id could
+  otherwise stall the queue (DoS) by repeatedly cancelling pending
+  tx. The session-key signature on the cancel-call binds the
+  cancellation to the principal that authored the proposal, without
+  giving the agent raw key custody or tx-signing power.
   The off-chain monitor key and Aaron's master key are also
   accepted as cancellation principals (defense-in-depth).
 - The off-chain monitor can **freeze-on-dissent**: if the monitor's reasoning-trace check disagrees with the agent's thesis, monitor triggers freeze before broadcast.
