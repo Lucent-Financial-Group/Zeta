@@ -1,7 +1,9 @@
 ---
 id: B-0278
 priority: P0
-status: open
+status: closed
+closed: 2026-05-08
+closed_by: "tools/backlog/autonomous-pickup.ts priority/age selector, open-child/open-PR claim filtering, decompose-first action, and focused tests"
 title: "Autonomous backlog pickup - priority selector"
 created: 2026-05-08
 last_updated: 2026-05-08
