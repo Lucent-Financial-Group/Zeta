@@ -8,7 +8,8 @@ last_updated: 2026-05-06
 parent: B-0154
 depends_on: [B-0232]
 classification: blocked-on-pages-workflow
-decomposition: blob
+decomposition: decomposed
+children: [B-0274, B-0275]
 ---
 
 # B-0233 - Pages content sources
