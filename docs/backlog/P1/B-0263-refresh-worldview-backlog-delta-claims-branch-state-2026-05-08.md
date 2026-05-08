@@ -1,7 +1,7 @@
 ---
 id: B-0263
 priority: P1
-status: open
+status: closed
 title: "refresh-worldview — backlog delta + claim inventory + branch state"
 created: 2026-05-08
 last_updated: 2026-05-08
