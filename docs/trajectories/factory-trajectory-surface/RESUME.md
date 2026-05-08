@@ -109,3 +109,5 @@ atomic next actions.
   B-0209 and B-0211
 - `docs/trajectories/trajectory-drift-reporting/RESUME.md`, grounded in
   `docs/SAFE-AUTONOMOUS-ACTIONS.md`
+- `docs/trajectories/autonomous-backlog-pickup/RESUME.md`, grounded in B-0249
+  and children B-0278 through B-0281
