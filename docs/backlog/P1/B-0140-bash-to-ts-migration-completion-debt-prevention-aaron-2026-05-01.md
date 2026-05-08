@@ -105,18 +105,23 @@ with .ts counterparts removed. 2 CI workflows updated to call .ts.
 | tools/pr-preservation/archive-pr.sh | .ts |
 | tools/skill-catalog/backfill_dv2_frontmatter.sh | .ts |
 
-**PORT NEEDED** — .sh only, no .ts counterpart:
+**PORTED (Phase 2, 2026-05-07):**
+
+| .sh path | PR | Status |
+|----------|-----|--------|
+| tools/lanes/code-lane.sh | #1961 | merged |
+| tools/lanes/doc-lane.sh | #1961 | merged |
+| tools/lanes/lane-allocator.sh | #1961 | merged |
+| tools/profile.sh | #1962 | merged |
+| tools/hygiene/check-tick-history-shard-schema.sh | #1986 (Vera) | in CI |
+
+**REMAINING (3 files):**
 
 | .sh path | lines | CI-referenced |
 |----------|-------|--------------|
-| tools/hygiene/check-github-settings-drift.sh | 83 | yes (github-settings-drift.yml) |
-| tools/hygiene/snapshot-github-settings.sh | 165 | yes (github-settings-drift.yml paths trigger) |
-| tools/hygiene/check-tick-history-shard-schema.sh | 262 | no |
+| tools/hygiene/check-github-settings-drift.sh | 83 | yes |
+| tools/hygiene/snapshot-github-settings.sh | 165 | yes |
 | tools/hygiene/audit-orphan-role-refs.sh | 322 | no |
-| tools/lanes/code-lane.sh | 51 | no |
-| tools/lanes/doc-lane.sh | 51 | no |
-| tools/lanes/lane-allocator.sh | 176 | no |
-| tools/profile.sh | 83 | no |
 
 **KEEP** — external dependencies (Lean4 .lake packages):
 All `tools/lean4/.lake/packages/*/scripts/*.sh` — not our code.
