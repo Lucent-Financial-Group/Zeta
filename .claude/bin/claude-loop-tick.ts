@@ -26,7 +26,7 @@ const runId = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/,
 const lockTtlMs = Number(process.env.ZETA_CLAUDE_LOOP_LOCK_TTL_SECONDS ?? "120") * 1000;
 const fetchTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_FETCH_TIMEOUT_SECONDS ?? "45") * 1000;
 const runClaude = process.env.ZETA_CLAUDE_LOOP_RUN_CLAUDE === "1";
-const claudeIntervalMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_INTERVAL_SECONDS ?? "900") * 1000;
+const claudeIntervalMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_INTERVAL_SECONDS ?? "60") * 1000;
 const claudeTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_TIMEOUT_SECONDS ?? "600") * 1000;
 const dryRun = process.env.ZETA_CLAUDE_LOOP_DRY_RUN === "1";
 const claudeStateFile = join(stateDir, "last-claude-run.json");
@@ -136,9 +136,17 @@ function heartbeat(): void {
                 log(`dry-run: would run claude ${workMode}`);
                 claudeStatus = "dry-run";
             } else {
+                const preamble = [
+                    `You are Otto's background worker in Lucent-Financial-Group/Zeta.`,
+                    `BEFORE ANY WORK: 1) Read CLAUDE.md and AGENTS.md for all repo conventions.`,
+                    `2) Run "bun tools/github/refresh-worldview.ts" to get current repo state.`,
+                    `3) Build gate: "dotnet build -c Release" must end with 0 Warning(s) 0 Error(s).`,
+                    `KEY RULES: TypeScript over bash (Rule 0). All PRs target Lucent-Financial-Group/Zeta.`,
+                    `Search the internet before asserting version/API claims (Otto-364).`,
+                ].join(" ");
                 const prompt = workMode === "pickup"
-                    ? `You are Otto's background service. Zero open PRs. Pick a buildable-now backlog item from docs/backlog/ (grep for "classification: buildable-now" and "status: open"). Prefer items with F# or TS code over docs-only items. Create a branch, do the work, commit, push, open a PR with gh pr create, arm auto-merge with gh pr merge --auto --squash. One item per cycle.`
-                    : `You are Otto's background service. There are ${prNum} open PRs. Run: bun tools/github/poll-pr-gate-batch.ts --all-open. For any PR where gate=BLOCKED and nextAction=resolve-threads: check out the branch, read the review comments (gh api repos/Lucent-Financial-Group/Zeta/pulls/NUMBER/comments), fix the code issues, push, reply to threads, arm auto-merge (gh pr merge NUMBER --auto --squash). Own your PRs through merge.`;
+                    ? `${preamble} TASK: Zero open PRs. Pick a buildable-now backlog item (grep docs/backlog/ for "classification: buildable-now" and "status: open"). Prefer F# or TS code items over docs-only. Create a branch, do the work, run the build gate, commit, push, open a PR with "gh pr create", arm auto-merge with "gh pr merge --auto --squash". One item per cycle.`
+                    : `${preamble} TASK: There are ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open". For any PR where gate=BLOCKED and nextAction=resolve-threads: check out the branch, read the review comments, fix the code issues, push, reply to threads, resolve them via GraphQL, arm auto-merge. Own your PRs through merge.`;
 
                 const gate = run("claude", [
                     "-p", prompt,
