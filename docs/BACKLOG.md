@@ -107,6 +107,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0271](backlog/P1/B-0271-pm2-first-research-pass-2026-05-08.md)** PM-2 role — first research pass on Zeta feature gaps
 - [ ] **[B-0272](backlog/P1/B-0272-atari-rom-canonical-naming-tosec-lookup-2026-05-08.md)** Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup
 - [ ] **[B-0273](backlog/P1/B-0273-atari-rom-safe-unsafe-folder-split-2026-05-08.md)** Atari 2600 ROM safe/unsafe folder split for license compliance
+- [ ] **[B-0274](backlog/P1/B-0274-pages-astro-workflow-scaffold-and-sha-pinning-2026-05-08.md)** Pages discoverability - Astro workflow scaffold and SHA pinning
+- [ ] **[B-0275](backlog/P1/B-0275-pages-astro-http-200-and-deploy-validation-2026-05-08.md)** Pages discoverability - Astro deploy validation and HTTP 200 check
 
 ## P2 — research-grade
 

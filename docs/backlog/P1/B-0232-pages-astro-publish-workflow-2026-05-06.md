@@ -9,7 +9,7 @@ parent: B-0154
 depends_on: [B-0047]
 classification: buildable-now
 decomposition: decomposed
-children: [B-0262, B-0263]
+children: [B-0274, B-0275]
 ---
 
 # B-0232 - Astro Pages publish workflow

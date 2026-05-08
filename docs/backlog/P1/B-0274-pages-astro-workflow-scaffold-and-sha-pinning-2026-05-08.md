@@ -1,5 +1,5 @@
 ---
-id: B-0262
+id: B-0274
 priority: P1
 status: open
 title: "Pages discoverability - Astro workflow scaffold and SHA pinning"
@@ -11,7 +11,7 @@ classification: buildable-now
 decomposition: atomic
 ---
 
-# B-0262 - Astro workflow scaffold
+# B-0274 - Astro workflow scaffold
 
 Create the GitHub Pages deployment workflow skeleton for Astro,
 including minimal permissions and SHA-pinned actions.
