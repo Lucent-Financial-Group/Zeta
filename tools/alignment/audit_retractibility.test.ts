@@ -97,7 +97,8 @@ describe("countInboundRefs", () => {
   });
 
   test("returns zero for a nonexistent path pattern", () => {
-    const result = countInboundRefs("this/path/definitely/does/not/exist/anywhere.md", process.cwd());
+    const needle = ["x9z8y7w6", "no", "such", "file"].join("/") + ".md";
+    const result = countInboundRefs(needle, process.cwd());
     expect(result.count).toBe(0);
     expect(result.from).toEqual([]);
   });
