@@ -198,20 +198,23 @@ jobs:
             echo "Workflow attempt: ${RUN_ATTEMPT}"
           } >"${body_file}"
 
-          if gh pr create \
+          set +e
+          gh pr create \
             --repo "$REPO" \
             --base main \
             --head "$branch" \
             --title "archive(pr-reviews): PR #${PR_NUMBER} on merge" \
-            --body-file "${body_file}" >"$create_log" 2>&1; then
+            --body-file "${body_file}" >"$create_log" 2>&1
+          create_status=$?
+          set -e
+
+          if [ "$create_status" -eq 0 ]; then
             cat "$create_log"
             exit 0
           fi
 
-          create_status=$?
           cat "$create_log" >&2
-          if grep -Fq "createPullRequest" "$create_log" ||
-             grep -Fq "not permitted to create or approve pull requests" "$create_log"; then
+          if grep -Fq "GitHub Actions is not permitted to create or approve pull requests (createPullRequest)" "$create_log"; then
             {
               echo "### Archive PR creation skipped by repository policy"
               echo
