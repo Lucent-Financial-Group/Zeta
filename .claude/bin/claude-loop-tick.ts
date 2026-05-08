@@ -1,11 +1,14 @@
 #!/usr/bin/env bun
-// claude-loop-tick.ts — host-level launchd heartbeat runner for Claude Code.
+// claude-loop-tick.ts — host-level launchd worker for Claude Code.
 // Parity with .codex/bin/codex-loop-tick.ts (Vera's loop).
 //
 // Runs every 60s via macOS launchd. Per-minute heartbeat checks git state
 // (fetch, claims, PRs, dirty count). Every CLAUDE_GATE_INTERVAL seconds
-// (default 900 = 15min) runs a real Claude Code read-only gate via
-// `claude --print` to check factory state.
+// (default 900 = 15min) runs a Claude Code work cycle via
+// `claude -p --permission-mode auto`:
+// - If open_prs == 0: pick a buildable-now backlog item and create a PR
+// - If open PRs with unresolved threads: fix threads on owned PRs
+// - Otherwise: status check
 //
 // Does NOT wake the interactive Claude Code session. Runs as a separate
 // process on the host OS.
@@ -24,7 +27,7 @@ const lockTtlMs = Number(process.env.ZETA_CLAUDE_LOOP_LOCK_TTL_SECONDS ?? "120")
 const fetchTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_FETCH_TIMEOUT_SECONDS ?? "45") * 1000;
 const runClaude = process.env.ZETA_CLAUDE_LOOP_RUN_CLAUDE === "1";
 const claudeIntervalMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_INTERVAL_SECONDS ?? "900") * 1000;
-const claudeTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_TIMEOUT_SECONDS ?? "300") * 1000;
+const claudeTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_TIMEOUT_SECONDS ?? "600") * 1000;
 const dryRun = process.env.ZETA_CLAUDE_LOOP_DRY_RUN === "1";
 const claudeStateFile = join(stateDir, "last-claude-run.json");
 
@@ -124,33 +127,40 @@ function heartbeat(): void {
         const elapsed = Date.now() - lastTime;
 
         if (elapsed >= claudeIntervalMs) {
+            const prNum = Number(prCount) || 0;
+            const workMode = prNum === 0 ? "pickup" : "drain";
             claudeStatus = "running";
-            log(`claude read-only gate start run_id=${runId}`);
+            log(`claude work cycle start run_id=${runId} mode=${workMode} open_prs=${prNum}`);
 
             if (dryRun) {
-                log(`dry-run: would run claude gate`);
+                log(`dry-run: would run claude ${workMode}`);
                 claudeStatus = "dry-run";
             } else {
+                const prompt = workMode === "pickup"
+                    ? `You are Otto's background service. Zero open PRs. Pick a buildable-now backlog item from docs/backlog/ (grep for "classification: buildable-now" and "status: open"). Prefer items with F# or TS code over docs-only items. Create a branch, do the work, commit, push, open a PR with gh pr create, arm auto-merge with gh pr merge --auto --squash. One item per cycle.`
+                    : `You are Otto's background service. There are ${prNum} open PRs. Run: bun tools/github/poll-pr-gate-batch.ts --all-open. For any PR where gate=BLOCKED and nextAction=resolve-threads: check out the branch, read the review comments (gh api repos/Lucent-Financial-Group/Zeta/pulls/NUMBER/comments), fix the code issues, push, reply to threads, arm auto-merge (gh pr merge NUMBER --auto --squash). Own your PRs through merge.`;
+
                 const gate = run("claude", [
-                    "--print",
-                    `Twin-flame heartbeat gate. Read git status, recent commits, open PRs, claim branches. Report: main HEAD, open PR count, claim count, any drift or anomaly. Brief.`,
+                    "-p", prompt,
+                    "--permission-mode", "auto",
                 ], claudeTimeoutMs);
 
                 claudeStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
-                log(`claude read-only gate end run_id=${runId} status=${gate.status}`);
+                log(`claude work cycle end run_id=${runId} mode=${workMode} status=${gate.status}`);
 
                 writeFileSync(claudeStateFile, JSON.stringify({
                     run_id: runId,
+                    mode: workMode,
                     status: gate.status,
                     started_at: nowIso(),
                     updated_at: nowIso(),
                 }, null, 2));
 
                 if (gate.stdout.trim().length > 0) {
-                    appendFileSync(join(logDir, "ticks.log"), `\n--- ${runId} claude gate ---\n${gate.stdout}\n`);
+                    appendFileSync(join(logDir, "ticks.log"), `\n--- ${runId} claude ${workMode} ---\n${gate.stdout}\n`);
                 }
                 if (gate.stderr.trim().length > 0) {
-                    appendFileSync(join(logDir, "ticks.err"), `\n--- ${runId} claude gate ---\n${gate.stderr}\n`);
+                    appendFileSync(join(logDir, "ticks.err"), `\n--- ${runId} claude ${workMode} ---\n${gate.stderr}\n`);
                 }
             }
         } else {
