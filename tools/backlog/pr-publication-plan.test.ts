@@ -4,6 +4,7 @@ import {
   buildPrTitle,
   buildPublicationPlan,
   decideAutoMerge,
+  normalizeBranchRef,
   validatePublicationInput,
   type PublicationInput,
 } from "./pr-publication-plan";
@@ -88,6 +89,12 @@ describe("validation", () => {
     expect(() => validatePublicationInput(input({ branch: "main" }))).toThrow(
       "refusing to publish from default branch",
     );
+    expect(() => validatePublicationInput(input({ branch: "refs/heads/main" }))).toThrow(
+      "refusing to publish from default branch",
+    );
+    expect(() => validatePublicationInput(input({ branch: "origin/main" }))).toThrow(
+      "refusing to publish from default branch",
+    );
   });
 
   test("requires focused checks and safe backlog path", () => {
@@ -111,5 +118,24 @@ describe("validation", () => {
     );
     expect(title.length).toBeLessThanOrEqual(120);
     expect(title.endsWith("…")).toBe(true);
+  });
+
+  test("normalizes full refs before command construction", () => {
+    expect(normalizeBranchRef("refs/heads/claim/task-b0280-pr-publication-plan")).toBe(
+      "claim/task-b0280-pr-publication-plan",
+    );
+    expect(normalizeBranchRef("refs/remotes/origin/claim/task-b0280-pr-publication-plan")).toBe(
+      "claim/task-b0280-pr-publication-plan",
+    );
+
+    const plan = buildPublicationPlan(
+      input({
+        branch: "refs/heads/claim/task-b0280-pr-publication-plan",
+        baseBranch: "refs/heads/main",
+      }),
+    );
+    expect(plan.commands.push).toEqual(["git", "push", "-u", "origin", "claim/task-b0280-pr-publication-plan"]);
+    expect(plan.commands.createPr).toContain("main");
+    expect(plan.commands.createPr).toContain("claim/task-b0280-pr-publication-plan");
   });
 });

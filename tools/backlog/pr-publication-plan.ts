@@ -59,6 +59,7 @@ interface Args {
 
 const DEFAULT_REPO = "Lucent-Financial-Group/Zeta";
 const DEFAULT_BRANCHES = new Set(["main", "master", "trunk"]);
+const REMOTE_REF_PREFIX = /^refs\/remotes\/[^/]+\//;
 
 function usage(): string {
   return [
@@ -117,6 +118,18 @@ function validateRepoPath(path: string): void {
   }
 }
 
+export function normalizeBranchRef(branch: string): string {
+  let normalized = branch.trim();
+  if (normalized.startsWith("refs/heads/")) {
+    normalized = normalized.slice("refs/heads/".length);
+  } else if (REMOTE_REF_PREFIX.test(normalized)) {
+    normalized = normalized.replace(REMOTE_REF_PREFIX, "");
+  } else if (normalized.startsWith("origin/")) {
+    normalized = normalized.slice("origin/".length);
+  }
+  return normalized;
+}
+
 export function validatePublicationInput(input: PublicationInput): void {
   if (!/^B-[0-9]+$/.test(input.backlogId)) {
     throw new Error(`invalid backlog id: ${input.backlogId}`);
@@ -125,7 +138,8 @@ export function validatePublicationInput(input: PublicationInput): void {
   assertNonEmpty("branch", input.branch);
   assertNonEmpty("baseBranch", input.baseBranch);
   validateRepoPath(input.backlogPath);
-  if (DEFAULT_BRANCHES.has(input.branch)) {
+  const branch = normalizeBranchRef(input.branch);
+  if (DEFAULT_BRANCHES.has(branch)) {
     throw new Error(`refusing to publish from default branch: ${input.branch}`);
   }
   if (input.summary.length === 0 || input.summary.some((line) => line.trim().length === 0)) {
@@ -203,6 +217,8 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
   validatePublicationInput(input);
   const title = buildPrTitle(input);
   const autoMerge = decideAutoMerge(input);
+  const branch = normalizeBranchRef(input.branch);
+  const baseBranch = normalizeBranchRef(input.baseBranch);
   const createPr = [
     "gh",
     "pr",
@@ -210,9 +226,9 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
     "--repo",
     DEFAULT_REPO,
     "--base",
-    input.baseBranch,
+    baseBranch,
     "--head",
-    input.branch,
+    branch,
     "--title",
     title,
     "--body-file",
@@ -223,7 +239,7 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
     prBody: buildPrBody(input),
     autoMerge,
     commands: {
-      push: ["git", "push", "-u", "origin", input.branch],
+      push: ["git", "push", "-u", "origin", branch],
       createPr,
       armAutoMerge: autoMerge.allowed
         ? ["gh", "pr", "merge", "<pr-url>", "--repo", DEFAULT_REPO, "--auto", "--squash"]
