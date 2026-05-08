@@ -14,7 +14,9 @@ directory is Codex's substrate; Claude Code's lives at
 ├── README.md                    — this file
 ├── AGENTS.md                    — Codex harness addendum
 ├── CURRENT-codex.md             — compact current-state handoff
+├── CURRENT-vera.md              — Vera continuity handoff
 ├── TOOL-MAP.md                  — Codex/Vera runtime surface map
+├── VERA-CONTINUITY-CHECKLIST.md — Vera startup/write checklist
 ├── bin/                         — Codex harness scripts
 │   ├── codex-loop-health.ts      — launchd loop health probe
 │   └── codex-loop-tick.ts        — launchd tick runner
@@ -56,6 +58,9 @@ When a Codex CLI session first opens Zeta, it reads
 provides the universal handbook. Then it reads
 `.codex/AGENTS.md` for Codex-specific bootstrap and
 `.codex/CURRENT-codex.md` for compact current-state handoff.
+Vera/Codex sessions then read `.codex/CURRENT-vera.md` and
+`.codex/VERA-CONTINUITY-CHECKLIST.md` before relying on chat
+continuity or local ad-hoc memory.
 This `.codex/README.md` remains the Codex home map, parallel
 to the role that `CLAUDE.md` plays for Claude Code.
 

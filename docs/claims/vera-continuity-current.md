@@ -5,7 +5,7 @@
 - **Claimed at:** 2026-05-08T15:48:58Z
 - **ETA:** 2026-05-08T16:20:00Z
 - **Scope:** Add a Codex/Vera current-state continuity file and startup checklist.
-- **Durable target:** `.codex/CURRENT-vera.md`, `.codex/VERA-CONTINUITY-CHECKLIST.md`, `.codex/README.md`
+- **Durable target:** `.codex/CURRENT-vera.md`, `.codex/VERA-CONTINUITY-CHECKLIST.md`, `.codex/CURRENT-codex.md`, `.codex/README.md`
 - **Platform mirror:** GitHub PR to be opened from `claim/vera-continuity-current`
 
 ## Notes
