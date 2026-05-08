@@ -67,6 +67,7 @@
     <Compile Include="Durability.fs" />
     <Compile Include="Checkpoint.fs" />
     <Compile Include="Consensus.fs" />
+    <Compile Include="Arena.fs" />
     <Compile Include="NestedCircuit.fs" />
     <Compile Include="Runtime.fs" />
     <Compile Include="WorkStealingRuntime.fs" />
