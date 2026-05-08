@@ -68,6 +68,59 @@
         }
       },
       "enforcement": "active",
+      "id": 16134995,
+      "name": "CI Gate",
+      "rules": [
+        {
+          "parameters": {
+            "strict_required_status_checks_policy": false,
+            "do_not_enforce_on_create": false,
+            "required_status_checks": [
+              {
+                "context": "build-and-test (macos-26)",
+                "integration_id": 15368
+              },
+              {
+                "context": "build-and-test (ubuntu-24.04)",
+                "integration_id": 15368
+              },
+              {
+                "context": "build-and-test (ubuntu-24.04-arm)",
+                "integration_id": 15368
+              },
+              {
+                "context": "lint (actionlint)",
+                "integration_id": 15368
+              },
+              {
+                "context": "lint (markdownlint)",
+                "integration_id": 15368
+              },
+              {
+                "context": "lint (semgrep)",
+                "integration_id": 15368
+              },
+              {
+                "context": "lint (shellcheck)",
+                "integration_id": 15368
+              }
+            ]
+          },
+          "type": "required_status_checks"
+        }
+      ],
+      "target": "branch"
+    },
+    {
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "~DEFAULT_BRANCH"
+          ]
+        }
+      },
+      "enforcement": "active",
       "id": 15256879,
       "name": "Default",
       "rules": [
@@ -123,18 +176,7 @@
       "required_approving_review_count": 0
     },
     "required_signatures": false,
-    "required_status_checks": {
-      "contexts": [
-        "build-and-test (macos-26)",
-        "build-and-test (ubuntu-24.04)",
-        "build-and-test (ubuntu-24.04-arm)",
-        "lint (actionlint)",
-        "lint (markdownlint)",
-        "lint (semgrep)",
-        "lint (shellcheck)"
-      ],
-      "strict": false
-    }
+    "required_status_checks": null
   },
   "actions_permissions": {
     "allowed_actions": "all",
