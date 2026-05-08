@@ -4,11 +4,12 @@ priority: P1
 status: open
 title: "GitHub Pages discoverability - SEO metadata, sitemap, robots, and AI crawler access"
 created: 2026-05-06
-last_updated: 2026-05-06
+last_updated: 2026-05-08
 parent: B-0154
 depends_on: [B-0232, B-0233]
 classification: blocked-on-pages-content
-decomposition: blob
+decomposition: decomposed
+children: [B-0284, B-0285]
 ---
 
 # B-0234 - SEO metadata and crawler access
@@ -31,3 +32,9 @@ allow-listing.
 - AI-agent crawler policy is explicit and matches the
   discoverability goal.
 - JSON-LD is present where it helps agents parse the content.
+
+## Decomposition
+
+- `B-0284` owns per-page SEO metadata, canonical URLs, social
+  preview cards, and JSON-LD.
+- `B-0285` owns sitemap, robots, and AI-agent crawler policy.
