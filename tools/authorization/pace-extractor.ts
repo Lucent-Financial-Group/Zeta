@@ -33,8 +33,9 @@ const PACE_PATTERNS = [
 ];
 
 const SOURCE_PATTERNS: [RegExp, string][] = [
+  [/\bthe\s+human\s+maintainer\b/i, "aaron"],
   [/\bAaron\b/i, "aaron"],
-  [/\bClaude\.ai\b/i, "claude.ai"],
+  [/\bClaude(?:\.ai|ai)?\b/i, "claude.ai"],
   [/\bCodex\b/i, "codex"],
   [/\bAmara\b/i, "amara"],
   [/\bGemini\b/i, "gemini"],
@@ -43,28 +44,83 @@ const SOURCE_PATTERNS: [RegExp, string][] = [
   [/\bRiven\b/i, "riven"],
 ];
 
+const ISSUER_PATTERNS: [RegExp, string][] = [
+  [/^(?:[-*>\s"']*)(?:the\s+human\s+maintainer)\b/i, "aaron"],
+  [/^(?:[-*>\s"']*)Aaron\b/i, "aaron"],
+  [/^(?:[-*>\s"']*)Claude(?:\.ai|ai)?\b/i, "claude.ai"],
+  [/^(?:[-*>\s"']*)Codex\b/i, "codex"],
+  [/^(?:[-*>\s"']*)Amara\b/i, "amara"],
+  [/^(?:[-*>\s"']*)Gemini\b/i, "gemini"],
+  [/^(?:[-*>\s"']*)Grok\b/i, "grok"],
+  [/^(?:[-*>\s"']*)Ani\b/i, "ani"],
+  [/^(?:[-*>\s"']*)Riven\b/i, "riven"],
+];
+
+const FILENAME_SOURCE_PATTERNS: [RegExp, string][] = [
+  [/(?:^|[/_.-])aaron(?:[/_.-]|$)/i, "aaron"],
+  [/(?:^|[/_.-])claude[_.-]?ai(?:[/_.-]|$)/i, "claude.ai"],
+  [/(?:^|[/_.-])codex(?:[/_.-]|$)/i, "codex"],
+  [/(?:^|[/_.-])amara(?:[/_.-]|$)/i, "amara"],
+  [/(?:^|[/_.-])gemini(?:[/_.-]|$)/i, "gemini"],
+  [/(?:^|[/_.-])grok(?:[/_.-]|$)/i, "grok"],
+  [/(?:^|[/_.-])ani(?:[/_.-]|$)/i, "ani"],
+  [/(?:^|[/_.-])riven(?:[/_.-]|$)/i, "riven"],
+];
+
 const DATE_RE = /\b(20\d{2}-\d{2}-\d{2})\b/;
 const FILENAME_DATE_RE = /(\d{4})_(\d{2})_(\d{2})/;
+const NON_EMPTY_RE = /\S/;
+const MAX_ATTRIBUTION_LOOKBACK = 12;
 
-function containsPaceInstruction(text: string): boolean {
-  return PACE_PATTERNS.some((p) => p.test(text));
+function containsPaceInstruction(line: string): boolean {
+  return PACE_PATTERNS.some((p) => p.test(line));
 }
 
-function inferSource(text: string, filename: string): string {
+function inferSourceFromText(text: string): string {
   for (const [re, label] of SOURCE_PATTERNS) {
     if (re.test(text)) return label;
   }
-  for (const [re, label] of SOURCE_PATTERNS) {
+  return "unknown";
+}
+
+function inferIssuerSource(text: string): string {
+  for (const [re, label] of ISSUER_PATTERNS) {
+    if (re.test(text)) return label;
+  }
+  return "unknown";
+}
+
+function inferSourceFromFilename(filename: string): string {
+  for (const [re, label] of FILENAME_SOURCE_PATTERNS) {
     if (re.test(filename)) return label;
   }
   return "unknown";
 }
 
-function extractTimestamp(text: string, filename: string): string | null {
+function inferSource(
+  raw: string,
+  previousLine: string | null,
+  filename: string,
+): string {
+  if (previousLine !== null) {
+    const issuerSource = inferIssuerSource(previousLine);
+    if (issuerSource !== "unknown") return issuerSource;
+  }
+
+  const filenameSource = inferSourceFromFilename(filename);
+  if (filenameSource !== "unknown") return filenameSource;
+
+  return inferSourceFromText(raw);
+}
+
+function extractInlineTimestamp(text: string): string | null {
   const inlineMatch = DATE_RE.exec(text);
   const inlineTimestamp = inlineMatch?.[1];
   if (inlineTimestamp !== undefined) return inlineTimestamp;
+  return null;
+}
 
+function extractFilenameTimestamp(filename: string): string | null {
   const fnMatch = FILENAME_DATE_RE.exec(filename);
   const year = fnMatch?.[1];
   const month = fnMatch?.[2];
@@ -76,15 +132,16 @@ function extractTimestamp(text: string, filename: string): string | null {
   return null;
 }
 
-function extractRawQuote(text: string): string {
-  const lines = text.split("\n");
-  const paceLines: string[] = [];
-  for (const line of lines) {
-    if (PACE_PATTERNS.some((p) => p.test(line))) {
-      paceLines.push(line.trim());
-    }
-  }
-  return paceLines.join(" ").slice(0, 500);
+function extractTimestamp(
+  raw: string,
+  previousLine: string | null,
+  filename: string,
+): string | null {
+  return (
+    extractInlineTimestamp(raw) ??
+    (previousLine === null ? null : extractInlineTimestamp(previousLine)) ??
+    extractFilenameTimestamp(filename)
+  );
 }
 
 function stripFrontmatter(content: string): string {
@@ -92,6 +149,30 @@ function stripFrontmatter(content: string): string {
   const endIdx = content.indexOf("---", 3);
   if (endIdx === -1) return content;
   return content.slice(endIdx + 3);
+}
+
+function previousAttributionLine(
+  lines: string[],
+  beforeIndex: number,
+): string | null {
+  let seen = 0;
+  for (
+    let i = beforeIndex - 1;
+    i >= 0 && seen < MAX_ATTRIBUTION_LOOKBACK;
+    i -= 1
+  ) {
+    const candidate = lines[i]?.trim();
+    if (candidate === undefined || !NON_EMPTY_RE.test(candidate)) continue;
+
+    seen += 1;
+    if (
+      inferIssuerSource(candidate) !== "unknown" ||
+      extractInlineTimestamp(candidate) !== null
+    ) {
+      return candidate;
+    }
+  }
+  return null;
 }
 
 function extractFromFile(
@@ -102,15 +183,22 @@ function extractFromFile(
 
   const content = readFileSync(filePath, "utf-8");
   const body = stripFrontmatter(content);
-
-  if (!containsPaceInstruction(body)) return [];
-
   const relPath = relative(rootPath, filePath);
-  const source = inferSource(body, relPath);
-  const timestamp = extractTimestamp(body, relPath);
-  const raw = extractRawQuote(body);
+  const lines = body.split("\n");
+  const instructions: PaceInstruction[] = [];
 
-  return [{ source, timestamp, raw, file: relPath }];
+  for (const [index, line] of lines.entries()) {
+    if (!containsPaceInstruction(line)) continue;
+
+    const raw = line.trim().slice(0, 500);
+    const previous = previousAttributionLine(lines, index);
+    const source = inferSource(raw, previous, relPath);
+    const timestamp = extractTimestamp(raw, previous, relPath);
+
+    instructions.push({ source, timestamp, raw, file: relPath });
+  }
+
+  return instructions;
 }
 
 export async function extractPaceInstructions(

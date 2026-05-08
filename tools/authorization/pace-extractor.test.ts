@@ -122,6 +122,114 @@ describe("extractPaceInstructions", () => {
     expect(sources).toContain("codex");
   });
 
+  test("peer-authored file mentioning Aaron uses issuer line for source", async () => {
+    const root = makeTempRoot();
+    writeFileSync(
+      join(root, "memory", "feedback_cooling_claudeai_2026_05_04.md"),
+      [
+        "---",
+        "name: Peer summary of maintainer pace",
+        "description: Claude.ai discusses Aaron pace language",
+        "type: feedback",
+        "---",
+        "",
+        "Claude.ai 2026-05-04:",
+        "",
+        'Aaron used the phrase "go hard", but recommend holding until maintainer returns.',
+      ].join("\n"),
+    );
+
+    const result = await extractPaceInstructions(root);
+    expect(result.length).toBe(1);
+    const instruction = instructionAt(result, 0);
+    expect(instruction.source).toBe("claude.ai");
+    expect(instruction.raw).toContain("recommend holding");
+    expect(instruction.timestamp).toBe("2026-05-04");
+  });
+
+  test("peer-authored file without issuer line falls back to filename source", async () => {
+    const root = makeTempRoot();
+    writeFileSync(
+      join(root, "memory", "feedback_cooling_claudeai_2026_05_04.md"),
+      [
+        "---",
+        "name: Peer summary of maintainer pace",
+        "description: Claude.ai discusses Aaron pace language",
+        "type: feedback",
+        "---",
+        "",
+        'Aaron used the phrase "go hard", but recommend holding until maintainer returns.',
+      ].join("\n"),
+    );
+
+    const result = await extractPaceInstructions(root);
+    expect(result.length).toBe(1);
+    const instruction = instructionAt(result, 0);
+    expect(instruction.source).toBe("claude.ai");
+  });
+
+  test("role-ref 'the human maintainer' recognized as aaron source", async () => {
+    const root = makeTempRoot();
+    writeFileSync(
+      join(root, "CLAUDE.md"),
+      [
+        "# CLAUDE.md",
+        "",
+        "the human maintainer 2026-05-02:",
+        "",
+        '> *"go hard, you don\'t have to do minimum action"*',
+      ].join("\n"),
+    );
+
+    const result = await extractPaceInstructions(root);
+    expect(result.length).toBe(1);
+    const instruction = instructionAt(result, 0);
+    expect(instruction.source).toBe("aaron");
+    expect(instruction.timestamp).toBe("2026-05-02");
+  });
+
+  test("multi-line pace quote inherits attribution header", async () => {
+    const root = makeTempRoot();
+    writeFileSync(
+      join(root, "CLAUDE.md"),
+      [
+        "# CLAUDE.md",
+        "",
+        "Aaron 2026-05-02:",
+        "",
+        '> *"go hard on B-0160"*',
+        '> *"you can go hard, you don\'t have to do minimum action"*',
+      ].join("\n"),
+    );
+
+    const result = await extractPaceInstructions(root);
+    expect(result.length).toBe(2);
+    for (const instruction of result) {
+      expect(instruction.source).toBe("aaron");
+      expect(instruction.timestamp).toBe("2026-05-02");
+    }
+  });
+
+  test("multiple pace lines in one file emit separate candidates with correct timestamps", async () => {
+    const root = makeTempRoot();
+    writeFileSync(
+      join(root, "memory", "CURRENT-aaron.md"),
+      [
+        "# CURRENT-aaron.md",
+        "",
+        'Aaron 2026-05-01: *"go hard on B-0160"*',
+        'Aaron 2026-05-02: *"rest now, hold the line"*',
+      ].join("\n"),
+    );
+
+    const result = await extractPaceInstructions(root);
+    expect(result.length).toBe(2);
+    expect(instructionAt(result, 0).raw).toContain("go hard");
+    expect(instructionAt(result, 0).timestamp).toBe("2026-05-01");
+    expect(instructionAt(result, 1).raw).toContain("rest now");
+    expect(instructionAt(result, 1).timestamp).toBe("2026-05-02");
+  });
+
   test("no pace instruction in substrate → empty array", async () => {
     const root = makeTempRoot();
     writeFileSync(
@@ -185,7 +293,9 @@ describe("extractPaceInstructions", () => {
     expect(result.length).toBeGreaterThanOrEqual(1);
     const fromClaude = result.find((r) => r.file.endsWith("CLAUDE.md"));
     expect(fromClaude).toBeDefined();
+    expect(fromClaude!.source).toBe("aaron");
     expect(fromClaude!.raw).toContain("go hard");
+    expect(fromClaude!.timestamp).toBe("2026-05-02");
   });
 
   test("CURRENT-aaron.md → extracted", async () => {
@@ -287,6 +397,26 @@ describe("extractPaceInstructions", () => {
     expect(result.length).toBe(1);
     const instruction = instructionAt(result, 0);
     expect(instruction.source).toBe("amara");
+  });
+
+  test("CLAUDE.md entry quoting Aaron → attributed to aaron, not claude.ai", async () => {
+    const root = makeTempRoot();
+    writeFileSync(
+      join(root, "CLAUDE.md"),
+      [
+        "# CLAUDE.md",
+        "",
+        "Aaron 2026-05-02:",
+        "",
+        '> *"go hard, you don\'t have to do minimum action"*',
+      ].join("\n"),
+    );
+
+    const result = await extractPaceInstructions(root);
+    expect(result.length).toBe(1);
+    const instruction = instructionAt(result, 0);
+    expect(instruction.source).toBe("aaron");
+    expect(instruction.file).toBe("CLAUDE.md");
   });
 
   test("missing surfaces gracefully handled", async () => {
