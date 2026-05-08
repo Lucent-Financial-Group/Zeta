@@ -60,6 +60,7 @@ interface Args {
 const DEFAULT_REPO = "Lucent-Financial-Group/Zeta";
 const DEFAULT_BRANCHES = new Set(["main", "master", "trunk"]);
 const REMOTE_REF_PREFIX = /^refs\/remotes\/[^/]+\//;
+const FORBIDDEN_REF_CHARS = /[\x00-\x20~^:?*[\\\x7f]/;
 
 function usage(): string {
   return [
@@ -128,6 +129,27 @@ export function normalizeBranchRef(branch: string): string {
   return normalized;
 }
 
+function validateNormalizedBranchRef(label: string, branch: string): string {
+  const normalized = normalizeBranchRef(branch);
+  const invalid =
+    normalized.length === 0 ||
+    normalized.startsWith("-") ||
+    normalized.startsWith("/") ||
+    normalized.endsWith("/") ||
+    normalized.endsWith(".") ||
+    normalized.includes("//") ||
+    normalized.includes("..") ||
+    normalized.includes("@{") ||
+    normalized === "@" ||
+    FORBIDDEN_REF_CHARS.test(normalized) ||
+    normalized.split("/").some((part) => part.startsWith(".") || part.endsWith(".lock"));
+
+  if (invalid) {
+    throw new Error(`invalid normalized ${label} ref: ${branch}`);
+  }
+  return normalized;
+}
+
 export function validatePublicationInput(input: PublicationInput): void {
   if (!/^B-[0-9]+$/.test(input.backlogId)) {
     throw new Error(`invalid backlog id: ${input.backlogId}`);
@@ -136,7 +158,8 @@ export function validatePublicationInput(input: PublicationInput): void {
   assertNonEmpty("branch", input.branch);
   assertNonEmpty("baseBranch", input.baseBranch);
   validateRepoPath(input.backlogPath);
-  const branch = normalizeBranchRef(input.branch);
+  const branch = validateNormalizedBranchRef("branch", input.branch);
+  validateNormalizedBranchRef("baseBranch", input.baseBranch);
   if (DEFAULT_BRANCHES.has(branch)) {
     throw new Error(`refusing to publish from default branch: ${input.branch}`);
   }
@@ -215,8 +238,8 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
   validatePublicationInput(input);
   const title = buildPrTitle(input);
   const autoMerge = decideAutoMerge(input);
-  const branch = normalizeBranchRef(input.branch);
-  const baseBranch = normalizeBranchRef(input.baseBranch);
+  const branch = validateNormalizedBranchRef("branch", input.branch);
+  const baseBranch = validateNormalizedBranchRef("baseBranch", input.baseBranch);
   const createPr = [
     "gh",
     "pr",

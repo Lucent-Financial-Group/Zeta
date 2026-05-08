@@ -109,6 +109,32 @@ describe("validation", () => {
     expect(body).toContain("- running: `bun run typecheck` — CI may still be pending");
   });
 
+  test("rejects empty normalized refs", () => {
+    expect(() => validatePublicationInput(input({ branch: "refs/heads/" }))).toThrow("invalid normalized branch ref");
+    expect(() => validatePublicationInput(input({ branch: "refs/remotes/origin/" }))).toThrow(
+      "invalid normalized branch ref",
+    );
+    expect(() => validatePublicationInput(input({ baseBranch: "refs/heads/" }))).toThrow(
+      "invalid normalized baseBranch ref",
+    );
+  });
+
+  test("rejects option-like and malformed normalized refs", () => {
+    expect(() => validatePublicationInput(input({ branch: "refs/heads/-claim" }))).toThrow(
+      "invalid normalized branch ref",
+    );
+    expect(() => validatePublicationInput(input({ branch: "-claim" }))).toThrow("invalid normalized branch ref");
+    expect(() => validatePublicationInput(input({ baseBranch: "refs/heads/-main" }))).toThrow(
+      "invalid normalized baseBranch ref",
+    );
+    expect(() => validatePublicationInput(input({ branch: "claim..bad" }))).toThrow("invalid normalized branch ref");
+    expect(() => validatePublicationInput(input({ branch: "claim/@{bad" }))).toThrow("invalid normalized branch ref");
+    expect(() => validatePublicationInput(input({ branch: "claim/bad.lock" }))).toThrow(
+      "invalid normalized branch ref",
+    );
+    expect(() => validatePublicationInput(input({ branch: "claim bad" }))).toThrow("invalid normalized branch ref");
+  });
+
   test("trims long PR titles", () => {
     const title = buildPrTitle(
       input({
