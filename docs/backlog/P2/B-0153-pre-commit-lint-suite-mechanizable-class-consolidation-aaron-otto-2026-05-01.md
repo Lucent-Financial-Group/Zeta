@@ -6,6 +6,7 @@ title: Pre-commit lint suite — consolidate the 13 mechanizable lint-classes ch
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: friction-reducer
 ---
 
 # B-0153 — Pre-commit lint suite — mechanizable lint-class consolidation

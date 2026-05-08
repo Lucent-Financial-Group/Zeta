@@ -6,6 +6,7 @@ title: Bi-directional messaging integration with Aaron — text/iMessage/WhatsAp
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: feature
 ---
 
 # B-0143 — Bi-directional messaging integration with Aaron

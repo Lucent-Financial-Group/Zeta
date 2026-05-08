@@ -13,6 +13,7 @@ depends_on:
 # `depends_on` is a forward-compat schema field per
 # `memory/feedback_backlog_hygiene_cadenced_refactor_look_for_overlap_not_just_dump_2026_04_23.md`
 # 2026-05-01 extension; informational-only until tooling lands.
+type: friction-reducer
 ---
 
 # B-0158 — Adopt `.claude/rules/<rule>.md` pattern + carved-sentences-only constraint

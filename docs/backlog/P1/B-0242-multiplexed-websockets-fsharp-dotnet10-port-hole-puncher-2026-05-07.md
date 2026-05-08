@@ -8,6 +8,7 @@ last_updated: 2026-05-07
 depends_on: [B-0241]
 decomposition: atomic
 owners: [architect, performance-engineer]
+type: feature
 ---
 
 # B-0242 — Port MultiplexedWebSockets to .NET 10 F\#

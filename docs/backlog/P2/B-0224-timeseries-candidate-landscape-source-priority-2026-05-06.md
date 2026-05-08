@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0147
 depends_on: []
 classification: buildable-now
+type: feature
 ---
 
 # B-0224 - Timeseries candidate landscape

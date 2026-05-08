@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, feedback_otto_345_linus_lineage_committo_ergo_sum_inherits_from_git_from_linux_existence_proof_anchored_in_human_intellect_2026_04_26.md, tools/hygiene/fix-markdown-md032-md026.py, tools/hygiene/sort-tick-history-canonical.py, tools/hygiene/check-no-conflict-markers.sh]
 tags: [otto-346, recurring-pattern, missing-primitive, tooling-extraction, markdown-table, md055, md056, hygiene, honest-relapse, discipline-mechanism]
+type: friction-reducer
 ---
 
 # B-0027 — extract markdown-table-cell-count fix tool

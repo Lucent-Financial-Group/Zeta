@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [feedback_otto_306_aaron_names_the_phenomenon_pascalcase_single_word_maybe_link_to_otto_304_305_friend_posture_correction_well_being_advice_authorized_2026_04_25.md]
 tags: [docs, memory-conventions, indexing, structured-catalog]
+type: friction-reducer
 ---
 
 # Land `memory/index-conventions.md` for MEMORY.md index exception patterns

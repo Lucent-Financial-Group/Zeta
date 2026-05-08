@@ -14,6 +14,7 @@ composes_with:
   - feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md
   - project_laptop_only_source_integration_scratch_sqlsharp_features_or_designs_high_priority_2026_04_27.md
 tags: [discipline-cleanup, no-copy, sibling-repos]
+type: friction-reducer
 ---
 
 # B-0112 — Stale 2026-04-27 project file internals-bleed-out cleanup

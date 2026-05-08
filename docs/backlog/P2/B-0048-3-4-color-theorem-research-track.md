@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0050, B-0051, docs/research/chain-rule-proof-log.md, tools/lean4/Lean4/DbspChainRule.lean, .claude/agents/formal-verification-expert.md, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md]
 tags: [graph-coloring, four-color-theorem, three-color, gonthier-coq, appel-haken, formal-verification, lean4, alloy, z3, csp, proof-by-reflection, planar-graphs]
+type: feature
 ---
 
 # B-0048 — 3-color / 4-color theorem research track

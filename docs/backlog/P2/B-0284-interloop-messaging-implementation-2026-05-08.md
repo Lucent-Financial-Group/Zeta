@@ -8,6 +8,7 @@ parent: B-0253
 depends_on: [B-0283]
 classification: blocked-on-B-0283
 decomposition: atomic
+type: feature
 ---
 
 # B-0284 — Interloop messaging implementation

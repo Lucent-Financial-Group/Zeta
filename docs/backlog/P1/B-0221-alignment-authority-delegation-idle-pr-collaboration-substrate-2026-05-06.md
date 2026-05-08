@@ -9,6 +9,7 @@ parent: B-0003
 depends_on: [B-0217, B-0219]
 decomposition: atomic
 classification: blocked-on-bidirectional-and-rigor-clauses
+type: friction-reducer
 ---
 
 # B-0221 - Authority delegation and idle-PR substrate

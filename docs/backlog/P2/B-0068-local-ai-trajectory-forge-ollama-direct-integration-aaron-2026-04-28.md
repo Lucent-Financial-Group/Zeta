@@ -9,6 +9,7 @@ created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
 tags: [local-ai, multi-harness, ollama, forge, hardware-aware]
+type: feature
 ---
 
 # B-0068 — Local AI trajectory umbrella

@@ -13,6 +13,7 @@ composes_with:
   - docs/research/escrowed/aurora-autonomous-flywheel-thesis-2026-04-28.md
   - PR-714
 tags: [aaron-2026-04-29, escrow, naming-collision, factory-hygiene, deferred-research, vocabulary, vendoring]
+type: friction-reducer
 ---
 
 # B-0095 — Escrow rules + naming-collision resolution + deferred-research migration

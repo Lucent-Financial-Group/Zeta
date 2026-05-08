@@ -13,6 +13,7 @@ composes_with:
   - tools/setup/install.sh
   - feedback_aaron_terse_directives_high_leverage_do_not_underweight.md
 tags: [deepseek-2026-04-30, zsh, install-script, friction-reduction, peer-review-finding]
+type: friction-reducer
 ---
 
 # B-0115 — Shell aliases for `:wq` / `:q` (vim muscle-memory in zsh)

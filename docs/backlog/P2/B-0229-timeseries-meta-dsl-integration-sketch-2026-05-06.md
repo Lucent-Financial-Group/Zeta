@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0147
 depends_on: [B-0148, B-0225, B-0227]
 classification: blocked-on-mdx-and-crdt-semantics
+type: feature
 ---
 
 # B-0229 - Timeseries meta-DSL integration sketch

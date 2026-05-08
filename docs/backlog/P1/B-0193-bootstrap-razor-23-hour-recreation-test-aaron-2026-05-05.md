@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0006, B-0190, B-0192, B-0204, B-0205]
 tags: [bootstrap-razor, specs-as-source-of-truth, recreation-test, openspec, falsifiability, foundation, greenfield-discipline]
+type: friction-reducer
 ---
 
 # B-0193 -- Bootstrap razor + 23-hour recreation test

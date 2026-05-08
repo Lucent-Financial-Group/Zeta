@@ -13,6 +13,7 @@ decomposition: atomic
 classification: buildable-now
 composes_with: [B-0164, B-0167]
 tags: [register-architecture, brat-voice, enterprise-translation, claudeai-research, lucent, gen-z-recruitment, alignment-discipline, beacon-safe, plain-language]
+type: friction-reducer
 ---
 
 # B-0168 — Incorporate Claude.ai brat-voice enterprise translation framework

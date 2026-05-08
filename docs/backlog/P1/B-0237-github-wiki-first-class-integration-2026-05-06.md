@@ -11,6 +11,7 @@ classification: blocked-on-pages-primary-surface
 decomposition: decomposed
 children: [B-0299, B-0300]
 owners: [docs, architect]
+type: friction-reducer
 ---
 
 # B-0237 - GitHub Wiki first-class integration

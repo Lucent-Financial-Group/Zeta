@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, B-0015, B-0027, B-0028, B-0031, tools/hygiene/fix-markdown-md032-md026.py]
 tags: [otto-346, recurring-pattern, missing-primitive, tooling-extraction, markdownlint, repo-aware-exclusions, real-cost, typescript, ts-migration]
+type: friction-reducer
 ---
 
 # B-0030 — extract markdownlint-with-repo-aware-exclusions tool

@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0147
 depends_on: [B-0225]
 classification: blocked-on-algebra-fit
+type: feature
 ---
 
 # B-0227 - CRDT multi-mode timeseries semantics

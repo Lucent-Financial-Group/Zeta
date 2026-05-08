@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [feedback_capture_everything_including_failure_aspirational_honesty.md, feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md, feedback_verify_target_exists_before_deferring.md, feedback_future_self_not_bound_by_past_decisions.md, feedback_never_idle_speculative_work_over_waiting.md, feedback_decohere_star_kernel_vocabulary_entry_dont_decohere_star_factory_rule_2026_04_21.md, feedback_persistable_star_kernel_vocabulary_substrate_property_meta_operator_2026_04_21.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, docs/AGENT-BEST-PRACTICES.md, docs/ALIGNMENT.md, docs/CONFLICT-RESOLUTION.md]
 tags: [meta-cognition, alignment-trajectory, factory-discipline, measurables, witnessable-evolution, retractible-ceiling]
+type: friction-reducer
 ---
 
 # B-0037 — Meta-cognition as first-class factory discipline

@@ -9,6 +9,7 @@ depends_on: []
 decomposition: atomic
 classification: buildable-now
 composes_with: [B-0190, B-0196]
+type: friction-reducer
 ---
 
 # B-0140 — Bash → TS migration completion

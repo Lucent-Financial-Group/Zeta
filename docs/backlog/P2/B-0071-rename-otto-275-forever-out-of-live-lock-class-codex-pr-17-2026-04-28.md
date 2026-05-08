@@ -9,6 +9,7 @@ created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
 tags: [substrate-rename, taxonomy, live-lock, otto-352, memory-hygiene]
+type: friction-reducer
 ---
 
 # B-0071 — Rename `feedback_otto_275_forever_manufactured_patience_live_lock_9th_pattern_2026_04_26.md`

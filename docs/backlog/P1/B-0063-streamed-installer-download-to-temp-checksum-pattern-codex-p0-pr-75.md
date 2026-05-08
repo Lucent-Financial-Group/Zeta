@@ -13,6 +13,7 @@ decomposition: atomic
 classification: buildable-now
 composes_with: [B-0060]
 tags: [install-path, supply-chain, upstream-installers, codex-p0, pr-75, streaming-vs-buffered, checksum]
+type: friction-reducer
 ---
 
 # Streamed-installer download-to-temp + checksum-verify pattern

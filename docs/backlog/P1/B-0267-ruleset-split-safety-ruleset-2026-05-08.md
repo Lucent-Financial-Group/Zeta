@@ -9,6 +9,7 @@ parent: B-0155
 depends_on: [B-0265]
 classification: buildable-now
 decomposition: atomic
+type: friction-reducer
 ---
 
 # B-0267 — Safety ruleset

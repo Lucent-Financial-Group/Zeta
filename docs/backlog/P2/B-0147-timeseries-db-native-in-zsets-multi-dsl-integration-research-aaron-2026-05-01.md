@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 depends_on: []
 children: [B-0224, B-0225, B-0226, B-0227, B-0228, B-0229, B-0230, B-0231]
 decomposition: clean
+type: feature
 ---
 
 # B-0147 — TimeSeries DB native-in-Zsets multi-DSL integration research

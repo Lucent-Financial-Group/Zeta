@@ -9,6 +9,7 @@ created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
 tags: [pr-72, punch-list, spec-consistency, b-0062, deferral-tracking]
+type: friction-reducer
 ---
 
 # B-0074 — PR #72 punch-list / spec-consistency drift sweep

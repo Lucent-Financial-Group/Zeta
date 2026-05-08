@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0147
 depends_on: [B-0224, B-0225, B-0226, B-0227, B-0228, B-0229]
 classification: blocked-on-research-slices
+type: feature
 ---
 
 # B-0230 - Pareto frontier and tradeoff synthesis

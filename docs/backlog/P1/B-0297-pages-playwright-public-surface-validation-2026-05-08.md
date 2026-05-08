@@ -10,6 +10,7 @@ depends_on: [B-0232, B-0234, B-0284, B-0285]
 classification: blocked-on-pages-content-and-seo-files
 decomposition: atomic
 owners: [qa, docs]
+type: friction-reducer
 ---
 
 # B-0297 - Pages Playwright validation

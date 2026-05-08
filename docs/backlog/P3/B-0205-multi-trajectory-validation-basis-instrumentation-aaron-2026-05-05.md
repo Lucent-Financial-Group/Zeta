@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0193, B-0196, B-0204]
 tags: [validation-basis, longitudinal, dora, less-each-time, falsifiability-rate, bootstrap-razor, identity-preservation, engagement-gate, orthogonal-axes, drift-correlation, instrumentation, multi-decade, anti-ossification]
+type: friction-reducer
 ---
 
 # B-0205 -- Multi-trajectory validation basis instrumentation

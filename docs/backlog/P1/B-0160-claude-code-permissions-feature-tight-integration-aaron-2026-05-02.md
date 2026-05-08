@@ -8,6 +8,7 @@ last_updated: 2026-05-02
 depends_on: []
 decomposition: atomic
 classification: buildable-now
+type: friction-reducer
 ---
 
 # B-0160 — Claude Code `/permissions` feature tight integration (Aaron 2026-05-02)

@@ -21,6 +21,7 @@ depends_on:
 # relationship when doing that"*). Authoring is the discipline now;
 # tooling (`tools/backlog/generate-index.sh` topo-sort + cycle-detection
 # lint) lands as separate work — currently informational-only.
+type: friction-reducer
 ---
 
 # B-0154 — GitHub Pages for SEO/discoverability + GitHub Wiki first-class

@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0098, B-0099, B-0101]
 tags: [autonomous-loop, tick-history, backpressure, quiescence, repo-hygiene, soulfile]
+type: friction-reducer
 ---
 
 # Pure-wait tick backpressure / quiescence rule

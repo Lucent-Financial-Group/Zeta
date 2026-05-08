@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0003
 depends_on: [B-0215, B-0219]
 classification: buildable-after-rigor-floor
+type: friction-reducer
 ---
 
 # B-0220 - Definition precision and guardrails

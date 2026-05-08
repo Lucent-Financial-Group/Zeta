@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0003]
 tags: [substrate-quality, beacon-safety, otto-351, otto-352, external-anchors, human-lineage, prior-art, agent-design-research, research-discipline]
+type: friction-reducer
 ---
 
 # Human-lineage / external-anchor backfill across all substrate

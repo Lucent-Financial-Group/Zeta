@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0086]
 tags: [research-absorb, immune-system, aurora-bridge, superorganism, factory-substrate]
+type: friction-reducer
 ---
 
 # Immune system upgrades — research absorb

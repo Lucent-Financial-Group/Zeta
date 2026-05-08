@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0098, B-0099, B-0100]
 tags: [code-review, copilot, reviewer-noise, taxonomy, classification]
+type: friction-reducer
 ---
 
 # Reviewer-artifact classification — small 5-bucket table

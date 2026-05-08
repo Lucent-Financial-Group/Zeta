@@ -9,6 +9,7 @@ depends_on: [B-0240, B-0244, B-0245]
 decomposition: decomposed
 children: [B-0287, B-0288]
 owners: [architect, product-scrum-master, public-api-designer]
+type: feature
 ---
 
 # B-0247 — Ace DLC content packs

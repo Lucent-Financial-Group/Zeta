@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0026, B-0052, B-0053, B-0152, B-0198, B-0202]
 tags: [roms, public-domain, abandonware, license-verification, absorb-and-contribute, citizenship, emulator, arc3]
+type: feature
 ---
 
 # B-0199 -- ROM publication: scout legally-clear ROMs and publish for community use

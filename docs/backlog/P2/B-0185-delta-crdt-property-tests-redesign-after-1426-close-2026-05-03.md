@@ -13,6 +13,7 @@ composes_with:
   - docs/research/2026-05-03-math-proofs-honest-assessment.md
   - memory/feedback_under_specified_action_preconditions_recurring_class_in_formal_specs_aaron_2026_05_03.md
 tags: [c3, fscheck, delta-crdt, anti-entropy, redesign, math-proofs-assessment]
+type: friction-reducer
 ---
 
 # B-0185 — Delta-CRDT property tests redesign

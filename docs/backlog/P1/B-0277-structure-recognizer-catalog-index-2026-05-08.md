@@ -10,6 +10,7 @@ depends_on: [B-0276]
 classification: blocked-on-B-0276
 decomposition: atomic
 owners: [architect, performance-engineer]
+type: feature
 ---
 
 # B-0277 — Shape-indexed catalog

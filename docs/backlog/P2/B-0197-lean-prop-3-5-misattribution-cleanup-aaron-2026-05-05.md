@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0195]
 tags: [lean, formal-verification, dbsp, citation-correction, hygiene]
+type: friction-reducer
 ---
 
 # B-0197 -- Lean Prop 3.5 misattribution cleanup

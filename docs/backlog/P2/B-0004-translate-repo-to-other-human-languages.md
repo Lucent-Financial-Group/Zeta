@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0003]
 tags: [inclusivity, bidirectional-alignment, internationalization, i18n, localization, l10n, globalization, g11n, accessibility, a11y, translation, education, precision-dictionary]
+type: feature
 ---
 
 # Translate repo into other human languages — i18n / l10n / g11n / a11y

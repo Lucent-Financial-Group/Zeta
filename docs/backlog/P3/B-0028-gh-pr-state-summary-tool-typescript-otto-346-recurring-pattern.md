@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, B-0015, B-0027, tools/hygiene/sort-tick-history-canonical.py, tools/hygiene/fix-markdown-md032-md026.py]
 tags: [otto-346, recurring-pattern, missing-primitive, tooling-extraction, gh-cli, json-parsing, typescript, ts-migration, B-0015-sibling]
+type: friction-reducer
 ---
 
 # B-0028 — extract gh-PR-state-summary tool (TypeScript)

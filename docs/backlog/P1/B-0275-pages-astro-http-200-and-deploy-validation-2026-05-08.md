@@ -9,6 +9,7 @@ parent: B-0232
 depends_on: [B-0274]
 classification: blocked-on-workflow-scaffold
 decomposition: atomic
+type: friction-reducer
 ---
 
 # B-0275 - Astro deploy validation

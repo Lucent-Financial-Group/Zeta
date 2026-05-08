@@ -6,6 +6,7 @@ title: Retire or fix `tools/hygiene/append-tick-history-row.sh` — routes post-
 created: 2026-05-02
 last_updated: 2026-05-02
 depends_on: []
+type: friction-reducer
 ---
 
 # B-0163 — Retire or fix `append-tick-history-row.sh` (Otto 2026-05-02)

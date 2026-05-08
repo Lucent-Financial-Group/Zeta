@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0147
 depends_on: [B-0230]
 classification: blocked-on-pareto-synthesis
+type: feature
 ---
 
 # B-0231 - Timeseries recommendation and follow-up rows

@@ -11,6 +11,7 @@ last_updated: 2026-05-03
 depends_on: []
 composes_with: [B-0125, B-0153, B-0156, B-0177]
 tags: [ci, workflows, detect-changes, parallel-pr, gating, fine-grained-workflows, sibling-repo, external-anchor, tooling]
+type: friction-reducer
 ---
 
 # detect-changes pattern — per-change-class workflow gating

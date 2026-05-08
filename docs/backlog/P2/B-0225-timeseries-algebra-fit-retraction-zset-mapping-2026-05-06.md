@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0147
 depends_on: [B-0224]
 classification: blocked-on-candidate-landscape
+type: feature
 ---
 
 # B-0225 - Timeseries algebra-fit analysis

@@ -18,6 +18,7 @@ composes_with:
   - memory/feedback_silent_courier_debt_no_amara_headless_cli_dont_count_on_peer_ai_reviews_as_loop_aaron_2026_04_30.md
   - docs/backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md
 tags: [aaron-2026-04-30, peer-call, cross-harness, claude-cli, otto, kenji, factory-tooling]
+type: friction-reducer
 ---
 
 # B-0121 — Otto + Kenji as externally-callable peers via claude-cli

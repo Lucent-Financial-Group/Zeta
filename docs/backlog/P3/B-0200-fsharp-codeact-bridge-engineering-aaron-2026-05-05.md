@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0196, B-0198, B-0152, B-0026]
 tags: [fsharp, codeact, bridge-engineering, four-property-hodl, dst, retraction-native, dbsp, python-interop, type-providers, fsharp-compiler-service, absorb-and-contribute]
+type: feature
 ---
 
 # B-0200 -- F# <-> CodeAct bridge engineering

@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0003
 depends_on: [B-0205, B-0216]
 classification: blocked-on-foundation-and-measurement-surface
+type: friction-reducer
 ---
 
 # B-0218 - Factory-as-superfluid empirical calibration

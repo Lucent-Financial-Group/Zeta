@@ -6,6 +6,7 @@ title: Deliberate-quiet-periods practice protocol — Aaron pulls back during se
 created: 2026-05-02
 last_updated: 2026-05-02
 depends_on: []
+type: friction-reducer
 ---
 
 # B-0165 — Deliberate-quiet-periods practice protocol

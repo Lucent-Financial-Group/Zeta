@@ -7,6 +7,7 @@ created: 2026-05-01
 last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0199, B-0202, B-0204]
+type: feature
 ---
 
 # B-0152 — Topological quantum emulation via Bayesian inference

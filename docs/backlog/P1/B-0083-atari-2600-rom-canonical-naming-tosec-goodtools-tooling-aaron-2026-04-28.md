@@ -12,6 +12,7 @@ decomposition: decomposed
 children: [B-0272, B-0273]
 depends_on: []
 tags: [aaron-2026-04-28, roms, atari-2600, tosec, good-tools, canonical-naming, datfile, license-safety, gitignore-already-protects, high-priority-after-0-0-0, scheduled-after-0-0-0]
+type: friction-reducer
 ---
 
 # B-0083 — Atari 2600 ROM canonical-naming + tooling

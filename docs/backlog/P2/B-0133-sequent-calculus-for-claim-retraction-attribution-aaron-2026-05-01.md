@@ -6,6 +6,7 @@ title: Sequent calculus / labeled deductive systems for claim/retraction/attribu
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: feature
 ---
 
 # B-0133 — Sequent calculus for claim/retraction/attribution

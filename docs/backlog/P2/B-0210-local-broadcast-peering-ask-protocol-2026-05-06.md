@@ -7,6 +7,7 @@ created: 2026-05-06
 last_updated: 2026-05-06
 depends_on:
   - B-0209
+type: friction-reducer
 ---
 
 # B-0210 — Local broadcast peering asks

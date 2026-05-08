@@ -7,6 +7,7 @@ created: 2026-05-06
 last_updated: 2026-05-06
 decomposition: atomic
 depends_on: [B-0210]
+type: feature
 ---
 
 # B-0213 — Broadcast bus production hardening

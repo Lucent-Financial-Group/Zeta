@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0060, B-0061]
 tags: [agent-capability, github-ui, playwright, mcp, automation, friction-reduction, feature-discovery]
+type: friction-reducer
 ---
 
 # GitHub × Playwright integration — agent UI access

@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0147
 depends_on: [B-0133, B-0134, B-0135, B-0137, B-0142, B-0225, B-0227]
 classification: blocked-on-formal-foundation-and-crdt-semantics
+type: feature
 ---
 
 # B-0228 - Timeseries formal-specification plan

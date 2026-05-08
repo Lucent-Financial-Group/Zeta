@@ -10,6 +10,7 @@ depends_on:
   - B-0068
   - B-0208
   - B-0202
+type: friction-reducer
 ---
 
 # B-0209 — Remote-only background agent test matrix

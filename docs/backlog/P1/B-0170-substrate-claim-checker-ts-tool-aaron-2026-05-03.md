@@ -13,6 +13,7 @@ decomposition: atomic
 classification: buildable-now
 composes_with: [B-0169]
 tags: [tooling, ts, substrate-claim-checker, verify-then-claim, drift-detection, mechanization, hub-shaped, foundation]
+type: friction-reducer
 ---
 
 # Substrate-claim-checker TS tool — mechanize the verify-then-claim discipline

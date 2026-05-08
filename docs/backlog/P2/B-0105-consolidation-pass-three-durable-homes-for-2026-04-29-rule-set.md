@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0098, B-0099, B-0100, B-0101, B-0102, B-0103, B-0104]
 tags: [consolidation, factory-hygiene, durable-home-discipline, p2, blocks-new-substrate]
+type: friction-reducer
 ---
 
 # Consolidation pass — three durable homes max

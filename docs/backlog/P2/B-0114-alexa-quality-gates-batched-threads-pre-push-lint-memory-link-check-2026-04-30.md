@@ -13,6 +13,7 @@ composes_with:
   - docs/backlog/P2/B-0113-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md
   - memory/feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md
 tags: [alexa-2026-04-30, peer-review-finding, factory-hygiene, mechanism-not-vigilance, pre-push-hook, substrate-quality]
+type: friction-reducer
 ---
 
 # B-0114 — Three quality-gate improvements (Alexa peer review 2026-04-30)

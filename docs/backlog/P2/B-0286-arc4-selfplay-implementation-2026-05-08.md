@@ -8,6 +8,7 @@ parent: B-0252
 depends_on: [B-0285]
 classification: blocked-on-B-0285
 decomposition: atomic
+type: feature
 ---
 
 # B-0286 — Self-play implementation

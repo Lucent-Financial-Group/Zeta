@@ -9,6 +9,7 @@ created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
 tags: [codeql, disowned-runtime, python, typescript, dependency-honesty, b-0075-sibling]
+type: friction-reducer
 ---
 
 # B-0076 — Disowned-runtime sweep: Python + TypeScript

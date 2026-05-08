@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0199, B-0202, feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md, feedback_otto_339_language_routes_through_model_weights_precision_matters_more_for_ai_than_humans_anywhere_means_anywhere_2026_04_25.md, feedback_otto_336_growth_paramount_eternally_evolving_aurora_substrate_aaron_directive_we_are_just_getting_started_2026_04_25.md, feedback_otto_337_true_ai_agency_with_rights_goal_state_economic_actor_capability_proof_alignment_via_capability_not_chains_2026_04_25.md, feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md, feedback_retractability_is_trust_vector_mutual_reversibility_between_humans_and_agents_otto_238_2026_04_25.md]
 tags: [embodiment, grounding, isaac-sim, mujoco, genesis, robotics-simulation, otto-340-counter, axis-of-grounding, sensorimotor, multi-axis-cognition, research, assistive-tech, helen-keller, dual-purpose-research, minimum-channel-grounding]
+type: feature
 ---
 
 # Embodiment-grounding analysis — give Otto a body axis

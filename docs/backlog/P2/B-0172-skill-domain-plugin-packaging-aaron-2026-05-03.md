@@ -11,6 +11,7 @@ last_updated: 2026-05-03
 depends_on: [B-0171, B-0173]
 composes_with: [B-0169, B-0170]
 tags: [skill-domain, plugin, packaging, claude-code, foundation, p2-promotion-trigger-pending]
+type: friction-reducer
 ---
 
 # Skill-domain plugin packaging

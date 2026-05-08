@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 depends_on: [B-0212]
 decomposition: atomic
 owners: [product-scrum-master, branding-specialist, user-experience-engineer]
+type: feature
 ---
 
 # B-0239 — Shadow work as AI debugger for regular people

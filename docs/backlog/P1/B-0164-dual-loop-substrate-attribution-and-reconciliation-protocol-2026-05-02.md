@@ -7,6 +7,7 @@ created: 2026-05-02
 last_updated: 2026-05-02
 depends_on:
   - B-0160
+type: friction-reducer
 ---
 
 # B-0164 — Dual-loop substrate attribution + reconciliation protocol

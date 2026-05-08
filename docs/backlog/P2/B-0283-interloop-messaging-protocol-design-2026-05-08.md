@@ -8,6 +8,7 @@ parent: B-0253
 depends_on: []
 classification: buildable-now
 decomposition: atomic
+type: feature
 ---
 
 # B-0283 — Interloop messaging protocol
