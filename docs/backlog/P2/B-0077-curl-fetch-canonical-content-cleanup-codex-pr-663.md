@@ -9,6 +9,7 @@ created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
 tags: [pr-663, codex, deferred, acehack-canonical, curl-fetch, install-hardening]
+type: friction-reducer
 ---
 
 # B-0077 — curl-fetch.sh canonical-content cleanup

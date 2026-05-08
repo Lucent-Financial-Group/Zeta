@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [docs/POST-SETUP-SCRIPT-STACK.md]
 tags: [post-setup-stack, bun, typescript, migration, sibling-migration-guardrail]
+type: friction-reducer
 ---
 
 # Migrate batch-resolve-pr-threads.sh to bun+TS

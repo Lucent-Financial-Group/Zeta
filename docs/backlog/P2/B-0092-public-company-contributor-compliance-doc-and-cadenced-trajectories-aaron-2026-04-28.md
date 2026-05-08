@@ -12,6 +12,7 @@ depends_on: []
 composes_with:
   - B-0090
 tags: [aaron-2026-04-28, factory-hygiene, contributor-compliance, public-company, insider-information, cadenced-trajectories, sec-rule-10b-5, reg-fd, sarbanes-oxley]
+type: friction-reducer
 ---
 
 # B-0092 — Public-company contributor compliance + cadenced trajectories

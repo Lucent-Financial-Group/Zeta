@@ -6,6 +6,7 @@ title: RX (Research eXperience) researcher persona — meta-research on the rese
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: feature
 ---
 
 # B-0151 — RX (Research eXperience) researcher persona

@@ -20,6 +20,7 @@ composes_with:
   - docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md
   # B-0122 (peer-call-typescript-migration-cutover) is filed in the in-flight PR #966; will land on main when that PR merges.
 tags: [aaron-2026-04-30, peer-call, architecture-refactor, deduplication, factory-tooling]
+type: friction-reducer
 ---
 
 # B-0120 — Peer-call architecture refactor (script-per-CLI + persona-flag)

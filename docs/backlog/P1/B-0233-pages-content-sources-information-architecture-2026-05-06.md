@@ -10,6 +10,7 @@ depends_on: [B-0232, B-0301, B-0302, B-0303, B-0304]
 classification: blocked-on-pages-workflow
 decomposition: clean
 children: [B-0301, B-0302, B-0303, B-0304]
+type: friction-reducer
 ---
 
 # B-0233 - Pages content sources

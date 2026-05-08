@@ -11,6 +11,7 @@ children: [B-0278, B-0279, B-0280]
 owners: [architect]
 composes_with: [B-0040, B-0250]
 tags: [durability, temporal, reaqtor, orleans, bonsai, standing-query, rx, durable-functions]
+type: feature
 ---
 
 ## What

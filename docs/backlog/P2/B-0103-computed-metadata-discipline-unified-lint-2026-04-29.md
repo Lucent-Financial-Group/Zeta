@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0098, B-0099, B-0102]
 tags: [ci-lint, factory-hygiene, derived-metadata, manual-drift-class, mechanical-guard, p2-promotion]
+type: friction-reducer
 ---
 
 # Computed-metadata-discipline — unified lint

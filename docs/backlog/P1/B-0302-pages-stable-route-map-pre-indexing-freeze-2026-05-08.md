@@ -10,6 +10,7 @@ depends_on: [B-0301]
 classification: blocked-on-B-0301
 decomposition: atomic
 owners: [architect, docs]
+type: friction-reducer
 ---
 
 # B-0302 - Pages stable route map

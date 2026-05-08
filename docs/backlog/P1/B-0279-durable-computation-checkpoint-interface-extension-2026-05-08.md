@@ -8,6 +8,7 @@ parent: B-0251
 depends_on: [B-0278]
 classification: blocked-on-B-0278
 decomposition: atomic
+type: feature
 ---
 
 # B-0279 — Checkpoint StableStorage extension

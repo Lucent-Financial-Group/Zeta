@@ -6,6 +6,7 @@ title: Modal logic for retractability — Quantum-Rodney's-Razor in S4 or dynami
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: feature
 ---
 
 # B-0135 — Modal logic for retractability

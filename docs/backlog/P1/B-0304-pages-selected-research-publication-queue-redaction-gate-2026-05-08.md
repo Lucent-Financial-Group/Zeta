@@ -10,6 +10,7 @@ depends_on: [B-0301, B-0302]
 classification: blocked-on-B-0302
 decomposition: atomic
 owners: [architect, docs]
+type: friction-reducer
 ---
 
 # B-0304 - Selected research publication queue

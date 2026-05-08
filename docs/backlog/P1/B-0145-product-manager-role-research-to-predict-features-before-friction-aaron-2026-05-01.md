@@ -8,6 +8,7 @@ last_updated: 2026-05-02
 decomposition: decomposed
 children: [B-0270, B-0271]
 depends_on: []
+type: friction-reducer
 ---
 
 # B-0145 — Product Manager (PM-2) role — research-to-predict-features-before-friction

@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0054, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md, feedback_capture_everything_including_failure_aspirational_honesty.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
 tags: [bungie, halo, destiny, marathon, myth, pop-culture, operational-resonance, video-games, paired-dual, retractibility-as-weapon, sword-logic, durandal-rampancy]
+type: feature
 ---
 
 # B-0042 — Bungie corpus priority seed (sub-entry of pop-culture/media P2 track)

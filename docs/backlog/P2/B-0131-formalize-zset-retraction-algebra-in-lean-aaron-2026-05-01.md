@@ -6,6 +6,7 @@ title: Extend Z-set retraction algebra Lean formalization beyond the existing DB
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: feature
 ---
 
 # B-0131 — Extend Z-set retraction algebra Lean formalization

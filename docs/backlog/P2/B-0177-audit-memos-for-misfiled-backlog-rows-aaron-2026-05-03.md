@@ -11,6 +11,7 @@ last_updated: 2026-05-03
 depends_on: []
 composes_with: [B-0175]
 tags: [backlog, memory, audit, category-confusion, substrate-architecture, index, retrieval]
+type: friction-reducer
 ---
 
 # Audit memory/ for misfiled backlog rows

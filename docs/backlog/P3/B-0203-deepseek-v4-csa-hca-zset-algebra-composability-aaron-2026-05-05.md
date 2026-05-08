@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0152, B-0196, B-0202, B-0026, B-0204]
 tags: [deepseek, deepseek-v4, csa, hca, compressed-sparse-attention, heavily-compressed-attention, mla, mixture-of-experts, four-property-hodl, dbsp, zset-algebra, fp8, manifold-constrained-hyper-connections, mhc, kv-cache, attention-architecture, mit-license, open-weights]
+type: feature
 ---
 
 # B-0203 -- DeepSeek V4 CSA+HCA composability with Zeta's Z-set algebra

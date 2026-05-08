@@ -10,6 +10,7 @@ depends_on: [B-0232]
 classification: blocked-on-pages-workflow
 decomposition: atomic
 owners: [architect, docs]
+type: friction-reducer
 ---
 
 # B-0301 - Pages public source inventory

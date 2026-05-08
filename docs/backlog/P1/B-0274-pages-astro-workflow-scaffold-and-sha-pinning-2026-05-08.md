@@ -9,6 +9,7 @@ parent: B-0232
 depends_on: [B-0047]
 classification: buildable-now
 decomposition: atomic
+type: friction-reducer
 ---
 
 # B-0274 - Astro workflow scaffold

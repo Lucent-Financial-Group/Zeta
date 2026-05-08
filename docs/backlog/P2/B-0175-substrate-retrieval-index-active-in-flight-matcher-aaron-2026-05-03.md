@@ -11,6 +11,7 @@ last_updated: 2026-05-03
 depends_on: []
 composes_with: [B-0170, B-0174]
 tags: [substrate, retrieval, index, semantic, memos, carved-sentences, beacon-safe, mirror-beacon-architecture, claude-md, agents-md, alignment-frontier]
+type: friction-reducer
 ---
 
 # Substrate-retrieval-index — active in-flight matcher for memos + carved sentences

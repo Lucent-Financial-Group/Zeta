@@ -11,6 +11,7 @@ last_updated: 2026-05-03
 depends_on: [B-0170]
 composes_with: [B-0169, B-0173]
 tags: [calibration, multi-harness, cross-model, frontier-ability, convergence, code-review, tool-authoring, p3-research]
+type: friction-reducer
 ---
 
 # Cross-model tool-review convergence-rate replay protocol

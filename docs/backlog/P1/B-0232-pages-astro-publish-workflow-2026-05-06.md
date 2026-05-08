@@ -10,6 +10,7 @@ depends_on: [B-0047]
 classification: buildable-now
 decomposition: decomposed
 children: [B-0274, B-0275]
+type: friction-reducer
 ---
 
 # B-0232 - Astro Pages publish workflow

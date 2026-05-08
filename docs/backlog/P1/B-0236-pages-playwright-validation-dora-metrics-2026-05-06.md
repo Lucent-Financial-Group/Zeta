@@ -11,6 +11,7 @@ classification: blocked-on-pages-and-metrics-lane
 decomposition: decomposed
 children: [B-0297, B-0298]
 owners: [qa, observability]
+type: friction-reducer
 ---
 
 # B-0236 - Pages validation and DORA metrics

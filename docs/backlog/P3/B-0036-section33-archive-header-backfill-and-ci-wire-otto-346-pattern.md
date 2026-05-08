@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, GOVERNANCE.md-section-33-archive-header-discipline, tools/hygiene/check-tick-history-order.sh]
 tags: [hygiene-tooling, lint-discipline, otto-346-recurring-pattern-to-substrate-primitive, governance-section33, courier-ferry-imports, archive-header-discipline, mechanism-over-vigilance]
+type: friction-reducer
 ---
 
 # B-0036 — §33 Archive-Header Backfill + CI Wire

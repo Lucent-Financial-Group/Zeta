@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0103]
 tags: [github-platform, force-push, pr-aliveness, merge-cascade, micro-class-refinement]
+type: friction-reducer
 ---
 
 # PR-liveness race during merge cascade — refinement

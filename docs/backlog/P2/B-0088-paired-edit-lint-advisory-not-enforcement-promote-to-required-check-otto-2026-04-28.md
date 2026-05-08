@@ -12,6 +12,7 @@ depends_on: []
 composes_with:
   - B-0087
 tags: [otto-2026-04-28, github-actions, branch-protection, advisory-vs-enforcement, factory-hygiene, memory-index-integrity]
+type: friction-reducer
 ---
 
 # B-0088 — paired-edit lint is advisory; either promote to required or weaken its claim

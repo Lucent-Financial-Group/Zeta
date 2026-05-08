@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [feedback_otto_311_aaron_brute_force_search_should_store_energy_into_elegant_solution_irreducibility_to_energy_storage_to_economics_in_any_sufficiently_sophisticated_system_2026_04_25.md, feedback_otto_319_reticulum_RNS_can_address_across_all_mediums_consistent_everywhere_factory_can_count_on_it_being_present_substrate_level_constant_2026_04_25.md]
 tags: [infrastructure, ip-rotation, tor-replacement, protocol-quality, brute-force-to-elegance]
+type: feature
 ---
 
 # Proper protocol better than Tor — B-0009 follow-up

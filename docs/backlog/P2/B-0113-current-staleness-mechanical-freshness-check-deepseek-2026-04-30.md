@@ -13,6 +13,7 @@ composes_with:
   - PR-934
   - feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md
 tags: [deepseek-2026-04-30, current-files, mechanism-not-vigilance, freshness-check, factory-hygiene, peer-review-finding]
+type: friction-reducer
 ---
 
 # B-0113 — Mechanical CURRENT-staleness check

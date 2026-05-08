@@ -19,6 +19,7 @@ composes_with:
   - memory/feedback_carved_sentence_meme_compression_fits_working_memory_contagious_simple_and_true_aaron_2026_04_30.md
   - memory/feedback_otto_holds_synthesis_weight_prior_art_grep_first_before_substrate_landing_aaron_made_concise_formulations_at_high_mental_cost_aaron_2026_05_05.md
 tags: [claude-code, env-mapping, skill-creator-followup]
+type: friction-reducer
 ---
 
 # B-0206 — Claude Code environment-mapping skill with carved-sentences-in-behavior

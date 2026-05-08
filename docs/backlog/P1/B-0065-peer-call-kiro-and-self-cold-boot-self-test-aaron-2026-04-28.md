@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0060]
 tags: [peer-call, multi-harness, kiro-cli, self-call, cold-boot-self-test, otto-347, cross-cli-verify]
+type: friction-reducer
 ---
 
 # Peer-call expansion — kiro.sh + claude.sh (self)

@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: []
 tags: [otto-287, formal-methods, physics, cognitive-substrate, research-grade, noether]
+type: feature
 ---
 
 # Otto-287 Noether-style formalization

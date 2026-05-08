@@ -26,7 +26,7 @@ const runId = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/,
 const lockTtlMs = Number(process.env.ZETA_CLAUDE_LOOP_LOCK_TTL_SECONDS ?? "120") * 1000;
 const fetchTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_FETCH_TIMEOUT_SECONDS ?? "45") * 1000;
 const runClaude = process.env.ZETA_CLAUDE_LOOP_RUN_CLAUDE === "1";
-const claudeIntervalMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_INTERVAL_SECONDS ?? "900") * 1000;
+const claudeIntervalMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_INTERVAL_SECONDS ?? "60") * 1000;
 const claudeTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_TIMEOUT_SECONDS ?? "600") * 1000;
 const dryRun = process.env.ZETA_CLAUDE_LOOP_DRY_RUN === "1";
 const claudeStateFile = join(stateDir, "last-claude-run.json");
@@ -136,9 +136,42 @@ function heartbeat(): void {
                 log(`dry-run: would run claude ${workMode}`);
                 claudeStatus = "dry-run";
             } else {
-                const prompt = workMode === "pickup"
-                    ? `You are Otto's background service. Zero open PRs. Pick a buildable-now backlog item from docs/backlog/ (grep for "classification: buildable-now" and "status: open"). Prefer items with F# or TS code over docs-only items. Create a branch, do the work, commit, push, open a PR with gh pr create, arm auto-merge with gh pr merge --auto --squash. One item per cycle.`
-                    : `You are Otto's background service. There are ${prNum} open PRs. Run: bun tools/github/poll-pr-gate-batch.ts --all-open. For any PR where gate=BLOCKED and nextAction=resolve-threads: check out the branch, read the review comments (gh api repos/Lucent-Financial-Group/Zeta/pulls/NUMBER/comments), fix the code issues, push, reply to threads, arm auto-merge (gh pr merge NUMBER --auto --squash). Own your PRs through merge.`;
+                let prompt: string;
+                if (workMode === "pickup") {
+                    const pickup = run("bun", ["tools/backlog/autonomous-pickup.ts", "--json"], 30_000);
+                    let executionPrompt = "";
+                    try {
+                        const selection = JSON.parse(pickup.stdout);
+                        executionPrompt = selection.executionPrompt ?? "";
+                        log(`pickup selected: ${selection.selected?.id ?? "none"} action=${selection.action ?? "none"}`);
+                    } catch { log(`pickup parse error: ${pickup.stderr.slice(0, 200)}`); }
+
+                    const preamble = [
+                        `You are Otto's background worker in Lucent-Financial-Group/Zeta.`,
+                        `BEFORE ANY WORK: 1) Read CLAUDE.md and AGENTS.md for repo conventions.`,
+                        `2) Run "bun tools/github/refresh-worldview.ts" to get current state.`,
+                        `3) Read active trajectories at docs/trajectories/*/RESUME.md.`,
+                        `4) Build gate: "dotnet build -c Release" must end with 0 warnings 0 errors.`,
+                        `KEY RULES: TS over bash (Rule 0). Prefer F#/TS code over docs.`,
+                        `Search internet before asserting versions (Otto-364).`,
+                        `Always re-decompose items during the build — assume decomposition has mistakes.`,
+                    ].join(" ");
+
+                    prompt = executionPrompt.length > 0
+                        ? `${preamble} YOUR TASK:\n${executionPrompt}`
+                        : `${preamble} No backlog items available. Run refresh-worldview, check for stale classifications, fix them, open a PR.`;
+                } else {
+                    prompt = [
+                        `You are Otto's background worker in Lucent-Financial-Group/Zeta.`,
+                        `Read CLAUDE.md first. Run "bun tools/github/refresh-worldview.ts".`,
+                        `Build gate: "dotnet build -c Release" (0 warnings).`,
+                        `TASK: ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open".`,
+                        `For any PR where gate=BLOCKED and nextAction=resolve-threads:`,
+                        `check out branch, read review comments, fix code issues, push,`,
+                        `reply to threads, resolve via GraphQL, arm auto-merge`,
+                        `(gh pr merge NUMBER --auto --squash). Own your PRs through merge.`,
+                    ].join(" ");
+                }
 
                 const gate = run("claude", [
                     "-p", prompt,

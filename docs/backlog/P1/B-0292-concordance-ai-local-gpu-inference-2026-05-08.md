@@ -8,6 +8,7 @@ parent: B-0244
 depends_on: [B-0291]
 classification: blocked-on-B-0291
 decomposition: atomic
+type: feature
 ---
 
 # B-0292 — Local GPU inference

@@ -11,6 +11,7 @@ classification: blocked-on-live-pages-and-sitemap
 decomposition: decomposed
 children: [B-0295, B-0296]
 owners: [architect, docs]
+type: friction-reducer
 ---
 
 # B-0235 - Repo metadata and discovery signals

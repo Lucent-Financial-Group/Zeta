@@ -9,6 +9,7 @@ parent: B-0159
 depends_on: [B-0262, B-0263]
 classification: blocked-on-B-0262
 decomposition: atomic
+type: friction-reducer
 ---
 
 # B-0264 — refresh-worldview tick integration

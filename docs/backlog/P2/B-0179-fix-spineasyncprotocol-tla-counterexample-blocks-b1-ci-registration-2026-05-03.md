@@ -11,6 +11,7 @@ last_updated: 2026-05-03
 depends_on: []
 composes_with: [docs/research/2026-05-03-math-proofs-honest-assessment.md, docs/research/proof-tool-coverage.md, B-0180, B-0181]
 tags: [tla-plus, formal-verification, spine-async, counterexample, b1, math-proofs-assessment, verify-then-claim]
+type: friction-reducer
 ---
 
 # Fix SpineAsyncProtocol.tla counterexample

@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0140, B-0156, B-0189, B-0196]
 tags: [dbsp, plugin-api, bilinear, capability-detection, active-patterns, fsharp-type-system, retraction-correctness, research+implementation]
+type: friction-reducer
 ---
 
 # B-0194 -- IncrementalAuto dispatcher + checkBilinear law + capability detection

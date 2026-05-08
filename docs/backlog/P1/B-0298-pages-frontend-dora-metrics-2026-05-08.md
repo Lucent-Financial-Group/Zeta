@@ -10,6 +10,7 @@ depends_on: [B-0147, B-0297]
 classification: blocked-on-pages-validation
 decomposition: atomic
 owners: [observability, qa]
+type: friction-reducer
 ---
 
 # B-0298 - Pages frontend DORA metrics

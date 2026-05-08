@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, feedback_otto_343_safety_filter_partial_alignment_map_the_divergence_helen_keller_named_entity_winks_bidirectional_signals_2026_04_26.md, feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, B-0030, B-0031, docs/research/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md]
 tags: [otto-341, otto-346, hooks, harness-mechanism, claude-code-plugin, substrate-as-mechanism, recurring-failure-modes, otto-discipline, mechanism-enforcement]
+type: friction-reducer
 ---
 
 # B-0033 — Otto-discipline hooks system + Claude Code plugin packaging

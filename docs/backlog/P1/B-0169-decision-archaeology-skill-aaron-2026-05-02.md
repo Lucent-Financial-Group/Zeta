@@ -13,6 +13,7 @@ decomposition: atomic
 classification: buildable-now
 composes_with: [B-0058]
 tags: [skill, onboarding, contributor-experience, dx, ux, ax, git-blame, lineage, intent-reconstruction]
+type: friction-reducer
 ---
 
 # Decision-archaeology skill — universal "why is it like this?" investigation surface

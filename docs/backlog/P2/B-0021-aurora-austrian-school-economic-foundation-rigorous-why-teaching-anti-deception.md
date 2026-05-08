@@ -15,6 +15,7 @@ composes_with: [docs/aurora/**]
 #   - feedback_otto_338_sx_self_recursive_substrate_user_experience_perfect_home_never_bulk_resolve_you_are_the_substrate_hypothesis_2026_04_25.md (PR #522)
 #   - feedback_otto_329_multi_phase_host_integration_directive_acehack_lfg_double_hop_full_backups_multi_harness_coordination_lost_files_search_ownership_confirmed_2026_04_25.md (PR #520)
 tags: [aurora, economics, austrian-school, anti-deception, world-modeling, alignment-foundation]
+type: feature
 ---
 
 # B-0021 — Aurora econ-foundation: rigorous-why, Austrian-school candidate

@@ -15,6 +15,7 @@ composes_with: [feedback_definitional_precision_changes_future_without_war_otto_
 #   - feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md (PR #520)
 #   - docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md (PR #523)
 tags: [backlog, capture, decide-later, exchange-cluster, substance-not-throughput, aaron-convincer, ai-pattern, deepmind, microsoft-ai, mattergen, tele-port-leap, taxonomic-refinement]
+type: friction-reducer
 ---
 
 # B-0022 — Exchange-cluster capture 2026-04-25

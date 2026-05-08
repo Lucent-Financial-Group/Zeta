@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0046, feedback_capture_everything_including_failure_aspirational_honesty.md, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, docs/ALIGNMENT.md]
 tags: [aspirational, broad-scope, institutional-landscape, opencorporates, gleif, openownership, alignment-trajectory-denominator, scoping-first, license-gated]
+type: feature
 ---
 
 # B-0043 — Universal company + government information substrate

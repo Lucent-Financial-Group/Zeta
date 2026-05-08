@@ -11,6 +11,7 @@ depends_on:
   - B-0086
   - B-0122
 composes_with: [B-0190, B-0194, B-0196]
+type: friction-reducer
 ---
 
 # B-0156 — TypeScript standardization across non-install scripts

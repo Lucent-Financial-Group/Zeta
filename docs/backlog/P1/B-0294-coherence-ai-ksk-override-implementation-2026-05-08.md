@@ -8,6 +8,7 @@ parent: B-0245
 depends_on: [B-0293]
 classification: blocked-on-B-0293
 decomposition: atomic
+type: feature
 ---
 
 # B-0294 — KSK override

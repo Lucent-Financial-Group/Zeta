@@ -7,6 +7,7 @@ created: 2026-05-06
 last_updated: 2026-05-06
 decomposition: atomic
 depends_on: []
+type: feature
 ---
 
 # B-0212 — Shadow outlet architecture

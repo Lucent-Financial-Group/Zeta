@@ -13,6 +13,7 @@ decomposition: atomic
 classification: buildable-now
 composes_with: [B-0006, B-0140, B-0156, B-0162]
 tags: [orchestrator, concurrency-hazard, mechanization, pre-commit-hook, worktree, foundation]
+type: friction-reducer
 ---
 
 # B-0191 — Orchestrator branch-verify mechanization design

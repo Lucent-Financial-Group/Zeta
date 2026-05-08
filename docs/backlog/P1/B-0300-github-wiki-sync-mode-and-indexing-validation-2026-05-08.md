@@ -10,6 +10,7 @@ depends_on: [B-0299]
 classification: blocked-on-wiki-seed-plan
 decomposition: atomic
 owners: [docs, qa]
+type: friction-reducer
 ---
 
 # B-0300 - Wiki sync and indexing validation

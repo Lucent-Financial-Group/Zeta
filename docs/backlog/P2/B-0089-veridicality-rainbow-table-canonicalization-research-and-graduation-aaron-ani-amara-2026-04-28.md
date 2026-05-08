@@ -12,6 +12,7 @@ depends_on: []
 composes_with:
   - B-0060
 tags: [aaron-2026-04-28, ani-voice-mode-original-catch, amara-reactive-elaboration, veridicality, rainbow-table, canonicalization, research-graduation, naming-canonical, stop-mythology]
+type: friction-reducer
 ---
 
 # B-0089 — Veridicality rainbow-table canonicalization — research + graduation

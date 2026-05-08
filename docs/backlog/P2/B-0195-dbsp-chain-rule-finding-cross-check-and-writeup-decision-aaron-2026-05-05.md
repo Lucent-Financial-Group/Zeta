@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0189, B-0197]
 tags: [dbsp, formal-verification, lean, chain-rule, paper-writeup, research]
+type: friction-reducer
 ---
 
 # B-0195 -- DBSP chain rule formal-verification finding: cross-check + writeup decision

@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0086]
 tags: [ci-codeql, peer-call, by-design-suppression, missing-mechanism]
+type: friction-reducer
 ---
 
 # CodeQL by-design dismissal pattern for peer-call siblings

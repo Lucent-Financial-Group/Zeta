@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: []
 tags: [bayesian-inference, belief-propagation, probabilistic-programming, language-primitives, symbiosis, otto-298, otto-301, infer-net, hejlsberg-lang-next, long-horizon, no-rush]
+type: feature
 ---
 
 # Contribute Bayesian inference + belief propagation primitives upstream

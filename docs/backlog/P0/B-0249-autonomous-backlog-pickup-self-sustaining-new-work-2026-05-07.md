@@ -9,6 +9,7 @@ depends_on: []
 decomposition: decomposed
 children: [B-0278, B-0279, B-0280, B-0281]
 owners: [architect]
+type: friction-reducer
 ---
 
 # B-0249 — Autonomous backlog pickup

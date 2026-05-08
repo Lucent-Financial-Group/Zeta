@@ -11,6 +11,7 @@ last_updated: 2026-05-03
 depends_on: []
 composes_with: [docs/research/2026-05-03-math-proofs-honest-assessment.md, B-0017]
 tags: [ci, formal-verification, tlc, alloy, lean, cost-optimization, linux-only, tests]
+type: friction-reducer
 ---
 
 # Filter formal-verification tests to standard Linux only

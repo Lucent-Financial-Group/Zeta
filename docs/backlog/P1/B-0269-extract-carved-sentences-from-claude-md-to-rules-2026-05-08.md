@@ -9,6 +9,7 @@ parent: B-0158
 depends_on: [B-0268]
 classification: blocked-on-B-0268
 decomposition: atomic
+type: feature
 ---
 
 # B-0269 — Extract carved sentences to rules

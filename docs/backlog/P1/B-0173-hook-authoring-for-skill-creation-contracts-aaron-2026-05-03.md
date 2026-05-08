@@ -12,6 +12,7 @@ depends_on: [B-0170, B-0171]
 decomposition: atomic
 composes_with: [B-0169, B-0172]
 tags: [hooks, contract-based-development, design-by-contract, openspec, pre-condition, post-condition, ci, p1-foundation]
+type: friction-reducer
 ---
 
 # Hook authoring for skill-creation contracts

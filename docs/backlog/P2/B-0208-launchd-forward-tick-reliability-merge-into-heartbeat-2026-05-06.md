@@ -6,6 +6,7 @@ title: "Launchd forward-tick reliability — merge forward logic into working he
 created: 2026-05-06
 last_updated: 2026-05-06
 depends_on: []
+type: friction-reducer
 ---
 
 # B-0208 — Launchd forward-tick reliability

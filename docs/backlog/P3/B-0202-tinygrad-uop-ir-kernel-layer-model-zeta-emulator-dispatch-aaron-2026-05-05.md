@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0052, B-0053, B-0152, B-0196, B-0026, B-0199, B-0204]
 tags: [tinygrad, uop-ir, mu-ops, kernel-layer, universal-ir, multi-backend, cuda, rocm, oneapi, metal, opencl, llvm, graph-rewrite, pattern-matcher, four-property-hodl, dst, retraction-native, dbsp, scale-free, george-hotz, tiny-corp, tinybox, alex-ziskind]
+type: feature
 ---
 
 # B-0202 -- Tinygrad UOp IR as kernel-layer model

@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, B-0030, docs/GLOSSARY.md, B-0010]
 tags: [naming-clarity, glossary, git-semantic-collision, vocabulary-discipline, otto-339-anywhere, references-directory]
+type: friction-reducer
 ---
 
 # B-0031 — rectify "upstream" colloquial vs git-semantic naming around references/

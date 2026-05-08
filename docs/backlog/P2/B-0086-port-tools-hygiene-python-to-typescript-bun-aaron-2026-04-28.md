@@ -12,6 +12,7 @@ depends_on: []
 composes_with:
   - B-0061
 tags: [aaron-2026-04-28, typescript, bun, factory-default, language-discipline, port-candidate]
+type: friction-reducer
 ---
 
 # B-0086 — Port `tools/hygiene/` Python scripts to TypeScript/Bun

@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: []
 tags: [docs, decisions-adr, aurora, aurora-ksk, dangling-reference]
+type: feature
 ---
 
 # Land Aurora-KSK design ADR if still needed

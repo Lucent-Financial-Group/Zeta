@@ -9,6 +9,7 @@ created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
 tags: [pr-663, codex, deferred, acehack-canonical, markdownlint]
+type: friction-reducer
 ---
 
 # B-0078 — Narrow markdownlint research-doc carve-out

@@ -9,6 +9,7 @@ parent: B-0003
 depends_on: [B-0215]
 decomposition: atomic
 classification: buildable-now
+type: friction-reducer
 ---
 
 # B-0217 - Bidirectional clause audit and tightening

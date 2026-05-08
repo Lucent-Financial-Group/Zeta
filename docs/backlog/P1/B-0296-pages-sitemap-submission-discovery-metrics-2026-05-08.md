@@ -10,6 +10,7 @@ depends_on: [B-0285, B-0295]
 classification: blocked-on-sitemap-and-metadata
 decomposition: atomic
 owners: [architect, docs]
+type: friction-reducer
 ---
 
 # B-0296 - Sitemap submission and discovery metrics

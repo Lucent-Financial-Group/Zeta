@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [project_frontier_burn_rate_ui_first_class_git_native_for_private_repo_adopters_servicetitan_84_percent_2026_04_23.md]
 tags: [ci, runner-strategy, wasm, embedded, nightly, build-throughput]
+type: friction-reducer
 ---
 
 # Investigate CI macos+slim nightly-move if more than 2x PR wait time

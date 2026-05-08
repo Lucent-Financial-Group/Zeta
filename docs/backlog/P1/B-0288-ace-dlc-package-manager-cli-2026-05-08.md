@@ -10,6 +10,7 @@ depends_on: [B-0287]
 classification: blocked-on-B-0287
 decomposition: atomic
 owners: [architect, public-api-designer]
+type: feature
 ---
 
 # B-0288 — DLC package manager CLI

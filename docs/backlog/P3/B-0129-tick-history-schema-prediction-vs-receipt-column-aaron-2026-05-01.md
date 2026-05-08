@@ -6,6 +6,7 @@ title: Tick-history shard schema — add prediction-vs-receipt distinction (opti
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: friction-reducer
 ---
 
 # B-0129 — Tick-history shard schema: prediction-vs-receipt column distinction

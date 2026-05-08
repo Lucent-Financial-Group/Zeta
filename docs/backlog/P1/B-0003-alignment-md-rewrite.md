@@ -13,6 +13,7 @@ children: [B-0215, B-0216, B-0217, B-0218, B-0219, B-0220, B-0221, B-0222, B-022
 composes_with: [B-0002]
 tags: [alignment, governance, otto-287, bidirectional-alignment, factory-as-superfluid, matrix-pill, noether]
 decomposition: clean
+type: friction-reducer
 ---
 
 # ALIGNMENT.md rewrite — incorporate substrate cluster + bidirectional clause

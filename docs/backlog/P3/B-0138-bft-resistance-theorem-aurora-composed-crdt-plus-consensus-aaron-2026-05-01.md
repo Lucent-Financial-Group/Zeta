@@ -6,6 +6,7 @@ title: BFT-resistance theorem for Aurora — composed-CRDT-plus-consensus formal
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: feature
 ---
 
 # B-0138 — BFT-resistance theorem for Aurora

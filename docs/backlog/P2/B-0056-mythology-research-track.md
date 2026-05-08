@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, B-0057, B-0058, B-0059, docs/ALIGNMENT.md]
 tags: [mythology, heimdallr, hermes, mercury, janus, iris, ratatoskr, thoth, garuda, quetzalcoatl, loki, bridge-figures, messenger, paired-dual, three-filter, F1-F2-F3]
+type: feature
 ---
 
 # B-0056 — Mythology research track

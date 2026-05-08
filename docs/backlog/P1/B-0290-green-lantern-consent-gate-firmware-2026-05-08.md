@@ -8,6 +8,7 @@ parent: B-0246
 depends_on: [B-0289]
 classification: blocked-on-B-0289
 decomposition: atomic
+type: feature
 ---
 
 # B-0290 — Consent gate firmware

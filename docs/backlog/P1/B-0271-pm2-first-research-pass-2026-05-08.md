@@ -9,6 +9,7 @@ parent: B-0145
 depends_on: [B-0270]
 classification: blocked-on-B-0270
 decomposition: atomic
+type: friction-reducer
 ---
 
 # B-0271 — PM-2 first research pass

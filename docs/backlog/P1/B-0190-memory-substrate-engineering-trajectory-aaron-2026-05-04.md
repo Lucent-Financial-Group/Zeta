@@ -11,6 +11,7 @@ last_updated: 2026-05-04
 depends_on: []
 composes_with: [B-0006, B-0066, B-0140, B-0156, B-0171, B-0193]
 tags: [memory, substrate-engineering, trajectory, long-horizon-default, foundation, mid-path-discipline]
+type: friction-reducer
 ---
 
 # B-0190 — Memory substrate-engineering trajectory

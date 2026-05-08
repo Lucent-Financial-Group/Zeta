@@ -10,6 +10,7 @@ depends_on: [B-0284]
 classification: blocked-on-B-0284
 decomposition: atomic
 owners: [architect, docs]
+type: friction-reducer
 ---
 
 # B-0285 - Sitemap and crawler policy

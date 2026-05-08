@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0164]
 tags: [dbsp, substrate-vision, glass-halo, training-data, fine-tuning, verbatim-preservation, chat-as-substrate]
+type: feature
 ---
 
 # Chat-input-as-ACID-durable-DBSP-event vision

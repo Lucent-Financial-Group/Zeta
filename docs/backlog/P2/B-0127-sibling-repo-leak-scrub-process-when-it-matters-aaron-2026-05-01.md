@@ -6,6 +6,7 @@ title: Sibling-repo leak scrub-process — when scrubbing matters; future-defens
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: friction-reducer
 ---
 
 # B-0127 — Sibling-repo leak scrub-process: design + decision-criteria for when scrubbing matters

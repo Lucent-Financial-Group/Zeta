@@ -1,7 +1,9 @@
 ---
 id: B-0280
 priority: P0
-status: open
+status: closed
+closed: 2026-05-08
+closed_by: "tools/backlog/pr-publication-executor.ts — executor with push/create-pr/auto-merge sequence and 10 focused tests"
 title: "Autonomous backlog pickup - PR publication and auto-merge"
 created: 2026-05-08
 last_updated: 2026-05-08
@@ -40,3 +42,10 @@ without the maintainer acting as courier or permission surface.
   file argument with a validated `bodyFilePath` input and adds an explicit
   `--write-body` helper that writes the generated review packet exactly once
   before `gh pr create` runs.
+- 2026-05-08: Final slice adds `tools/backlog/pr-publication-executor.ts` —
+  the executor that takes a PublicationPlan, writes the PR body file, pushes
+  the branch, opens the PR via `gh pr create`, parses the PR URL, and arms
+  auto-merge via `gh pr merge --auto --squash` when the gate allows. Command
+  runner is dependency-injected for testability. 10 focused tests cover the
+  full happy path, push/create-pr/auto-merge failures, auto-merge gating,
+  and URL extraction.

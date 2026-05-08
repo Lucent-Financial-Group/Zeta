@@ -10,6 +10,7 @@ depends_on: [B-0232, B-0234]
 classification: blocked-on-live-pages
 decomposition: atomic
 owners: [architect, docs]
+type: friction-reducer
 ---
 
 # B-0295 - Repository discovery surface

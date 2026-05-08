@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: []
 tags: [threading, locks, dotnet, csharp, async, documentation, modernization-bridge]
+type: friction-reducer
 ---
 
 # Modern .NET Threading Bridge
