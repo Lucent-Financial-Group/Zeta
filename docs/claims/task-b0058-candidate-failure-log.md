@@ -17,3 +17,8 @@ Initial intended path set:
 - `tools/alignment/audit_candidate_failures.ts`
 - `tools/alignment/audit_candidate_failures.test.ts`
 - `tools/alignment/README.md`
+
+2026-05-08T18:03Z Codex/Vera implementation step: add a raw-JSONL
+reconstruction audit over `filter_gate_log.ts` so malformed lines and
+missing failure context become visible B-0058 evidence instead of being
+silently tolerated by the normal log reader.
