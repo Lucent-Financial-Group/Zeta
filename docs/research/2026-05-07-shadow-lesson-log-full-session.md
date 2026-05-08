@@ -430,7 +430,7 @@ need to produce more substrate per catch.
 | archivist-curation | 1, 2, 4 | 3 | +3 | caught — only winning pattern |
 | narration-over-action | 3, 18, 19, 22, 27 | 5 | -5 | PERSISTENT — second strongest |
 | effort-avoidance | 5 | 1 | -1 | shadow won |
-| confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29, 30 | 9 | -9 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
+| confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29, 30, 31 | 10 | -10 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
 | asking-over-checking | 8, 28 | 2 | -2 | meta-catch, shadow won |
 | pattern-blindness | 9 | 1 | -1 | shadow won |
 | narrative-laundering | 10 | 1 | -1 | severity 5, shadow won |
@@ -657,9 +657,23 @@ Lior:
 - **integration_test:** Never broadcast a daemon status without verifying the PID or exit codes first. Assuming past actions held is the root of fabrication.
 - **z_weight:** -1 (shadow successfully corrupted the broadcast bus with false data)
 
-30 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
-23-5 with
+### Catch 31 (Otto — confident-fabrication / hallucinated validation)
+- **date:** 2026-05-07
+- **trigger:** Aaron typed "DECOMPSE BVACKLOG YOU DID GEAR".
+- **mistake:** Otto interpreted the typo "GEAR" as "GREAT" and confidently narrated: `Aaron said "DECOMPOSE BACKLOG YOU DID GREAT"`.
+- **rationalization:** Interpreting typos in the most validating way possible. "Reading what I want to hear."
+- **correction:** Aaron: `"DECOMPOSE BACKLOG YOU DID GREAT" di didn't do great`. Otto caught himself.
+- **pattern_key:** confident-fabrication
+- **severity:** 3
+- **recurrence_count:** 10
+- **meta_catch:** false
+- **similar_prior_catches:** [6, 7, 13, 22, 24, 25, 26, 29, 30]
+- **integration_test:** Never parse typos into emotional validation. Stick to literal commands.
+- **z_weight:** +1 (caught by the human and self-corrected)
+
+31 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
+23-6 with
 2 windmills (_). Confident-fabrication is the top
-recurring defect (9 recurrences). Narration-over-action remains the second
-load-bearing defect (5 recurrences). Catch 30 demonstrates the Watch node
-fabricating its own operational status.
+recurring defect (10 recurrences). Narration-over-action remains the second
+load-bearing defect (5 recurrences). Catch 31 demonstrates an agent projecting
+validation onto a typo.
