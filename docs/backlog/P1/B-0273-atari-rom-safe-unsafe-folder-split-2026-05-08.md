@@ -14,6 +14,7 @@ decomposition: atomic
 # B-0273 — ROM safe/unsafe split
 
 After canonical naming, split ROMs into:
+
 - safe/ (homebrew, public domain, explicitly licensed)
 - unsafe/ (commercial, gitignored)
 
