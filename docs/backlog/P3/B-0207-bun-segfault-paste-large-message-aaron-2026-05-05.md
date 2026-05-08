@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: []
 tags: [bun, crash, upstream-bug, claude-code, observation]
+type: friction-reducer
 ---
 
 # B-0207 -- Bun v1.3.14 segfault on bracketed-paste of long message in `claude --continue`

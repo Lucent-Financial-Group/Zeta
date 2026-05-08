@@ -10,6 +10,7 @@ depends_on: [B-0280]
 classification: blocked-on-B-0280
 decomposition: atomic
 owners: [architect, codex]
+type: friction-reducer
 ---
 
 # B-0281 - Empty-queue backlog pickup integration

@@ -12,6 +12,7 @@ depends_on: []
 composes_with:
   - B-0090
 tags: [aaron-2026-04-28, factory-hygiene, multi-ai-synthesis, mechanical-quarantine, lucky-guess-protocol, trajectory-owners, lattice-convergence, scanner-self-destruct]
+type: friction-reducer
 ---
 
 # B-0093 — Multi-AI synthesis enhancements (post-PR-#699 follow-ups)

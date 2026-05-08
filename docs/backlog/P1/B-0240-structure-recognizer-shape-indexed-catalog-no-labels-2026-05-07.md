@@ -9,6 +9,7 @@ depends_on: [B-0083]
 decomposition: decomposed
 children: [B-0276, B-0277]
 owners: [architect, formal-verification-expert, performance-engineer]
+type: feature
 ---
 
 # B-0240 — Structure recognizer: shape-indexed catalog, no labels

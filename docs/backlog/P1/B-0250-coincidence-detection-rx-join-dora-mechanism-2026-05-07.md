@@ -8,6 +8,7 @@ last_updated: 2026-05-07
 depends_on: [B-0240, B-0249]
 decomposition: atomic
 owners: [architect, performance-engineer]
+type: feature
 ---
 
 # B-0250 — Coincidence detection as Rx join (DORA mechanism)

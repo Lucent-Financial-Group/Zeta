@@ -11,6 +11,7 @@ children: [B-0285, B-0286]
 owners: [architect]
 composes_with: [B-0240, B-0250, B-0251]
 tags: [arc4, selfplay, adversarial, structure-recognizer, game, rpg, realtime]
+type: feature
 ---
 
 ## What

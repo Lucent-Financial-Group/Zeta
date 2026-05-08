@@ -6,6 +6,7 @@ title: Distill the Claude.ai CSAP-pushback conversation into uber-architecture (
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: friction-reducer
 ---
 
 # B-0124 — Distill the Claude.ai CSAP-pushback conversation into uber-architecture (across 4 projects, eventually)

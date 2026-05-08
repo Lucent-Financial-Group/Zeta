@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0046, B-0049, B-0054, B-0056, B-0059, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
 tags: [universal-sweep, biology, trade-vocational, blue-collar, autopoiesis, time-energy-substrate, mr-khan-pedagogy, three-filter, yin-yang]
+type: friction-reducer
 ---
 
 # B-0045 — All schools, all subjects (universal substrate-knowledge sweep)

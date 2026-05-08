@@ -8,6 +8,7 @@ last_updated: 2026-05-07
 depends_on: [B-0110, B-0240, B-0246, B-0247]
 decomposition: sliceable
 owners: [architect, infrastructure-operator, security-auditor]
+type: feature
 ---
 
 # B-0248 — Multi-site fork + GPU infrastructure redundancy

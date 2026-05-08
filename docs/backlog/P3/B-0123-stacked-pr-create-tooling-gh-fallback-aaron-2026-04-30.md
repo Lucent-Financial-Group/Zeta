@@ -14,6 +14,7 @@ composes_with:
   - docs/best-practices/
   - memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md
 tags: [aaron-2026-04-30, factory-tooling, gh-cli, stacked-prs, dx-friction, upstream-contribution-candidate]
+type: friction-reducer
 ---
 
 # B-0123 — Stacked-PR creation tooling

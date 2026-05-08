@@ -12,6 +12,7 @@ depends_on: []
 composes_with:
   - B-0060
 tags: [aaron-2026-04-28, factory-hygiene, lost-substrate, cadenced-audit, content-loss-surface, metric-ladder]
+type: friction-reducer
 ---
 
 # B-0090 — Cadenced lost-substrate recovery audit

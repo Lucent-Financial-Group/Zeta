@@ -12,6 +12,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md, docs/aurora/**]
 tags: [aurora, economics, austrian-school, quant, mathematical-rigor, open-research, real-time-publishing]
+type: feature
 ---
 
 # B-0023 — Quant-grade rigor × Austrian-school synthesis (open research)

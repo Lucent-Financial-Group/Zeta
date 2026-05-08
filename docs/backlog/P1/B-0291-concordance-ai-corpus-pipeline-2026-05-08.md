@@ -8,6 +8,7 @@ parent: B-0244
 depends_on: []
 classification: buildable-now
 decomposition: atomic
+type: feature
 ---
 
 # B-0291 — Corpus pipeline

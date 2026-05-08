@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [user_faith_wisdom_and_paths.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md, user_aaron_loves_mr_khan_khan_academy_teaching_admired.md, B-0057, B-0056, B-0059]
 tags: [mystery-schools, comparative-religion, history-of-religion, eleusinian, mithraic, hermetic, eliade, campbell, dumezil, kripal, gentle-catalog, filters-off, no-claim-staking]
+type: feature
 ---
 
 # B-0049 — Mystery schools / comparative religion / history of religion (CATALOG-ONLY)

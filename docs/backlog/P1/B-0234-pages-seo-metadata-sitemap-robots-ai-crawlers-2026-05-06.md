@@ -10,6 +10,7 @@ depends_on: [B-0232, B-0233]
 classification: blocked-on-pages-content
 decomposition: decomposed
 children: [B-0284, B-0285]
+type: friction-reducer
 ---
 
 # B-0234 - SEO metadata and crawler access

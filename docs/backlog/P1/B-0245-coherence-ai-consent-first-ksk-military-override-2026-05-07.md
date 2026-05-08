@@ -9,6 +9,7 @@ depends_on: [B-0240, B-0244]
 decomposition: decomposed
 children: [B-0293, B-0294]
 owners: [architect, security-researcher, threat-model-critic]
+type: feature
 ---
 
 # B-0245 — Coherence AI: consent-first default, KSK military override

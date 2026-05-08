@@ -10,6 +10,7 @@ depends_on: [B-0232, B-0233, B-0234]
 classification: blocked-on-pages-primary-surface
 decomposition: atomic
 owners: [docs, architect]
+type: friction-reducer
 ---
 
 # B-0299 - Wiki seed pages and boundaries

@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0003
 depends_on: [B-0002, B-0215]
 classification: blocked-on-survey-and-noether-foundation
+type: friction-reducer
 ---
 
 # B-0216 - Finite-resource collisions foundation

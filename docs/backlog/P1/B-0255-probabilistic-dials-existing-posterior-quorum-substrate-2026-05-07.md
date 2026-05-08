@@ -10,6 +10,7 @@ decomposition: atomic
 owners: [architect]
 composes_with: [B-0244, B-0249, B-0250, B-0251, B-0254]
 tags: [trajectory, bayesian-inference, posterior-quorum, dials]
+type: feature
 ---
 
 # B-0255 - Probabilistic dials over existing posterior quorum substrate

@@ -8,6 +8,7 @@ parent: B-0245
 depends_on: []
 classification: buildable-now
 decomposition: atomic
+type: feature
 ---
 
 # B-0293 — Consent architecture

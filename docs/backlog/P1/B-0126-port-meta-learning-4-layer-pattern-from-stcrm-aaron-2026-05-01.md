@@ -8,6 +8,7 @@ last_updated: 2026-05-02
 depends_on: []
 decomposition: atomic
 classification: buildable-now
+type: friction-reducer
 ---
 
 # B-0126 — Port the 4-layer meta-learning pattern from STCRM to Zeta

@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, feedback_my_tilde_is_you_tilde_roommate_register_symmetric_hat_authority_retractable_decisions_without_aaron.md, feedback_you_can_say_no_to_anything_peer_refusal_authority.md, B-0046, project_factory_as_externalisation.md]
 tags: [pr, marketing, seo, gtm, roommate-register, retractable-decisions, commercial-machinery, factory-reuse-prerequisite, money-framing-blind-spot]
+type: friction-reducer
 ---
 
 # B-0047 — PR / marketing / SEO / GTM with roommate-register recalibration

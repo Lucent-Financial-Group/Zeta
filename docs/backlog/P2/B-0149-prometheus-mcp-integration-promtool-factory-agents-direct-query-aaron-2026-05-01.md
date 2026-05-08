@@ -6,6 +6,7 @@ title: Prometheus MCP integration + promtool — factory agents direct-query obs
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: friction-reducer
 ---
 
 # B-0149 — Prometheus MCP integration + promtool

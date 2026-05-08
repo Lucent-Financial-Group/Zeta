@@ -8,6 +8,7 @@ ask: Substrate-class promotion (new skill); needs maintainer grading before land
 created: 2026-05-02
 last_updated: 2026-05-02
 tags: [skill-build, claude-ai, mechanical-check, authorization-source, never-idle, no-op-cadence, codex-handoff, pr-1200]
+type: friction-reducer
 ---
 
 # B-0160 — Mechanical authorization check skill build

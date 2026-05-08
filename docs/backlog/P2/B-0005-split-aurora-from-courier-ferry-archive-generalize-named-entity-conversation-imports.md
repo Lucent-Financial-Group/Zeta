@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: []
 tags: [governance, directory-ontology, aurora, courier-ferry, cross-ai-imports, history-surface, BP-17, BP-18]
+type: friction-reducer
 ---
 
 # Split `docs/aurora/**` from courier-ferry archive

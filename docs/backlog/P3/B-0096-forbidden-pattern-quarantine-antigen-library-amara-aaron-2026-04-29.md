@@ -14,6 +14,7 @@ composes_with:
   - B-0095
   - PR-707
 tags: [aaron-2026-04-29, amara-2026-04-29, escrow-eligible, antigen-library, forbidden-patterns, red-team, ctf, game-day, dual-use, immune-governance, deferred-thesis]
+type: friction-reducer
 ---
 
 # B-0096 — Forbidden Pattern Quarantine / Antigen Library — escrow-eligible candidate

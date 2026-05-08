@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: []
 tags: [security, red-team, offensive-security, ctf, game-days, blue-team-balance, responsible-use]
+type: feature
 ---
 
 # Red-team / offensive-security library for game-days + CTF parity

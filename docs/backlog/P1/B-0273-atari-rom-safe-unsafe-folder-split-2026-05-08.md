@@ -9,6 +9,7 @@ parent: B-0083
 depends_on: [B-0272]
 classification: blocked-on-B-0272
 decomposition: atomic
+type: friction-reducer
 ---
 
 # B-0273 — ROM safe/unsafe split

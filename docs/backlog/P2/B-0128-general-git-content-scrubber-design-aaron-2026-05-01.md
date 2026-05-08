@@ -6,6 +6,7 @@ title: General git content scrubber — design + decision-criteria + mechanism f
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: friction-reducer
 ---
 
 # B-0128 — General git content scrubber: design + decision-criteria + mechanism for any-class leak cleanup

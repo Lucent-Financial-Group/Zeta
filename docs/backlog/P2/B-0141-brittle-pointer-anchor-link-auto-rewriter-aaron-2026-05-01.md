@@ -11,6 +11,7 @@ last_updated: 2026-05-03
 depends_on: []
 composes_with: [B-0170, B-0175, B-0177]
 tags: [pointer, anchor-link, brittle, mechanization, markdown, rename, cross-reference, auto-rewriter, tooling, decision-graph, graph-edge-preservation, prov-o]
+type: feature
 ---
 
 # Brittle-pointer auto-rewriter — section-number pointers to anchor-links

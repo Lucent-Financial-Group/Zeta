@@ -10,6 +10,7 @@ depends_on: [B-0233]
 classification: blocked-on-pages-content
 decomposition: atomic
 owners: [architect, docs]
+type: friction-reducer
 ---
 
 # B-0284 - SEO metadata and structured data

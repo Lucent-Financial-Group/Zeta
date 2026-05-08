@@ -9,6 +9,7 @@ parent: B-0083
 depends_on: []
 classification: buildable-now
 decomposition: atomic
+type: friction-reducer
 ---
 
 # B-0272 — ROM canonical naming

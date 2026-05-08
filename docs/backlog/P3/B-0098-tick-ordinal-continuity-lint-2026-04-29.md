@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0099, B-0100, B-0101]
 tags: [ci-lint, tick-history, derived-metadata, manual-drift-class, mechanical-guard]
+type: friction-reducer
 ---
 
 # Tick-ordinal-continuity lint

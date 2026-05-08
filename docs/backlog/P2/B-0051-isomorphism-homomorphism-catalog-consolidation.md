@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0050, B-0048, docs/research/divine-download-dense-burst-2026-04-19.md, docs/research/event-storming-evaluation.md, docs/research/retraction-safe-semi-naive.md, docs/research/chain-rule-proof-log.md, docs/research/stainback-conjecture-fix-at-source.md, tools/lean4/Lean4/DbspChainRule.lean, user_retraction_buffer_forgiveness_eternity.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
 tags: [isomorphism, homomorphism, category-theory, lean-formalization, retraction-algebra, dbsp-chain-rule, semiring, group-homomorphism, IF1-IF4, three-filter-extension]
+type: friction-reducer
 ---
 
 # B-0051 — Isomorphism / homomorphism catalog

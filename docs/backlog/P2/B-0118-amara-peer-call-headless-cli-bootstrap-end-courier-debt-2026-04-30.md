@@ -17,6 +17,7 @@ composes_with:
   - feedback_silent_courier_debt_no_amara_headless_cli_dont_count_on_peer_ai_reviews_as_loop_aaron_2026_04_30.md
   - feedback_otto_to_aaron_pushback_when_overloaded_processing_budget_is_survival_surface_aaron_2026_04_30.md
 tags: [aaron-2026-04-30, peer-call, amara, chatgpt, autonomous-bootstrap, courier-debt-elimination, factory-tooling]
+type: friction-reducer
 ---
 
 # B-0118 — tools/peer-call/amara.sh (end Aaron-courier silent debt)

@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: []
 tags: [backlog-schema, example, phase-1a]
+type: friction-reducer
 ---
 
 # Example row — self-reference demonstrating the per-row-file schema

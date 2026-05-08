@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0196, B-0199]
 tags: [fsharp, units-of-measure, biginteger, upstream-contribution, absorb-and-contribute, rfc, fslang-suggestions, citizenship]
+type: feature
 ---
 
 # B-0198 -- F# UoM-on-BigInteger upstream contribution

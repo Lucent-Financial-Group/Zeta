@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0098, B-0100, B-0101]
 tags: [tick-history, derived-metadata, manual-drift-class, mechanical-guard, projection]
+type: friction-reducer
 ---
 
 # PR-count claims are computed, not remembered

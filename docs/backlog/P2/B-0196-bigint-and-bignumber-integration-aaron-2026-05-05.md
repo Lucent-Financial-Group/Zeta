@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0140, B-0156, B-0189, B-0194, B-0198, B-0202, B-0204, B-0205]
 tags: [numerics, bigint, bigrational, bigdecimal, bigfloat, mpfr, dbsp, generic-numerics, srtp, research, alignment]
+type: friction-reducer
 ---
 
 # B-0196 -- BigInt and other big-number integration in Zeta

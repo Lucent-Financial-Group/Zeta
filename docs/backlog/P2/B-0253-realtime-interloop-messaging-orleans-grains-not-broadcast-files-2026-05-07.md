@@ -11,6 +11,7 @@ children: [B-0283, B-0284]
 owners: [architect]
 composes_with: [B-0040, B-0250, B-0251]
 tags: [orleans, grains, silos, realtime, messaging, broadcast, rpg]
+type: feature
 ---
 
 ## What

@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0007, B-0152, B-0196]
 tags: [q-sharp, quantum-runtime, bayesian-inference, belief-propagation, expectation-propagation, research-opportunity, infer-net, microsoft-quantum, edge-runner-research, beacon-candidate-pending]
+type: feature
 ---
 
 # B-0189 — Q# runtime acceleration via Bayesian inference

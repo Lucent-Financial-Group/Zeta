@@ -11,6 +11,7 @@ last_updated: 2026-05-03
 depends_on: [B-0170]
 composes_with: [B-0175]
 tags: [substrate-claim-checker, false-positive, context-aware, hypothetical, contrastive, drift, severity-tier, tooling]
+type: friction-reducer
 ---
 
 # Substrate-claim-checker v0.7 — context-aware suppression

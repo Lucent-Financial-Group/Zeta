@@ -13,6 +13,7 @@ depends_on: [B-0257, B-0258, B-0259, B-0260, B-0261]
 children: [B-0257, B-0258, B-0259, B-0260, B-0261]
 composes_with: [B-0061, B-0067, B-0190]
 tags: [memory-md, factory-hygiene, hotspot, claude-code-harness, q1-automemory, auto-generated-index]
+type: friction-reducer
 ---
 
 # MEMORY.md marker-vs-index — verify, then migrate

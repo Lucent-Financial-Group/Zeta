@@ -9,6 +9,7 @@ depends_on: [B-0240, B-0242, B-0244, B-0245]
 decomposition: decomposed
 children: [B-0289, B-0290]
 owners: [architect, product-scrum-master, user-experience-engineer]
+type: feature
 ---
 
 # B-0246 — Green Lantern ring: IoT wearable Genesis Seed

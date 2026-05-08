@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [B-0164]
 tags: [ani-review, peer-ai-review, register-fluency, multi-ai-bft, load-bearing-substrate, gen-z-survival-chain]
+type: friction-reducer
 ---
 
 # B-0167 — Ani-review tracking surface for load-bearing register-class substrate

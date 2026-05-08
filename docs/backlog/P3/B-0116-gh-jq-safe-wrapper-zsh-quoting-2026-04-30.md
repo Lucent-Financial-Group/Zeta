@@ -13,6 +13,7 @@ composes_with:
   - tools/github/poll-pr-gate.ts
   - feedback_kernel_pipe_vs_js_space_stream_ordering_ts_bun_port_pattern_2026_04_30.md
 tags: [deepseek-2026-04-30, zsh, gh-cli, jq, friction-reduction, peer-review-finding]
+type: friction-reducer
 ---
 
 # B-0116 — tools/gh-jq-safe.sh wrapper (zsh quoting friction)

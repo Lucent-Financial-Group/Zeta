@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0003
 depends_on: [B-0216, B-0217, B-0218, B-0219, B-0220, B-0221, B-0222]
 classification: blocked-on-content-slices
+type: friction-reducer
 ---
 
 # B-0223 - Final integration and cold-start budget

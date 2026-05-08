@@ -20,6 +20,7 @@ composes_with:
   - docs/backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md
   - docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md
 tags: [aaron-2026-04-30, peer-call, typescript-cutover, bun-ts-migration, post-install, factory-tooling]
+type: friction-reducer
 ---
 
 # B-0122 — Peer-call scripts TypeScript migration

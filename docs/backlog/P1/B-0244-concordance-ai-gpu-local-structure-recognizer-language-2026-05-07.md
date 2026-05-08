@@ -9,6 +9,7 @@ depends_on: [B-0240, B-0242]
 decomposition: decomposed
 children: [B-0291, B-0292]
 owners: [architect, performance-engineer]
+type: feature
 ---
 
 # B-0244 — Concordance AI: structure recognizer for language, on local GPUs

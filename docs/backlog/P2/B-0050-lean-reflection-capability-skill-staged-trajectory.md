@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [tools/lean4/Lean4/DbspChainRule.lean, docs/research/chain-rule-proof-log.md, docs/research/stainback-conjecture-fix-at-source.md, B-0048, B-0051, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md, .claude/agents/formal-verification-expert.md]
 tags: [lean4, reflection, metaprogramming, mathlib, proof-automation, tactic-authoring, custom-elaborators, formal-verification, stainback-conjecture, ceramist-port]
+type: friction-reducer
 ---
 
 # B-0050 — Lean reflection capability skill + scouting note

@@ -11,6 +11,7 @@ last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0152, B-0026, B-0196, B-0200]
 tags: [coconut, latent-reasoning, sleeping-bear-hypothesis, gibberlink, ggwave, lapa, codeact, four-property-hodl, arc-agi-3, empirical-falsifier, research-lane, no-kill-paths]
+type: feature
 ---
 
 # B-0201 -- Coconut + universal-action-space research lane

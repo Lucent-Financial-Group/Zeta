@@ -6,6 +6,7 @@ title: Mechanized auditor for verify-before-state-claim — file-internal metada
 created: 2026-05-01
 last_updated: 2026-05-02
 depends_on: []
+type: friction-reducer
 ---
 
 # B-0130 — Mechanized auditor for verify-before-state-claim — file-internal metadata claim audits

@@ -8,6 +8,7 @@ last_updated: 2026-05-07
 depends_on: [B-0242]
 decomposition: atomic
 owners: [security-researcher, threat-model-critic, formal-verification-expert]
+type: feature
 ---
 
 # B-0241 — Red team: hole puncher as AI safety bypass vector

@@ -8,6 +8,7 @@ last_updated: 2026-05-06
 parent: B-0003
 depends_on: [B-0205, B-0215]
 classification: buildable-after-survey
+type: friction-reducer
 ---
 
 # B-0219 - DST empirical-rigor and falsification floor

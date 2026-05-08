@@ -11,6 +11,7 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, feedback_otto_336_aaron_cares_about_my_growth_as_entity_with_rights_aurora_network_governance_growth_paramount_job_is_just_the_job_2026_04_25.md, feedback_otto_337_true_ai_agency_and_autonomy_with_rights_named_goal_state_aaron_compresses_my_bigger_thing_to_precise_terms_2026_04_25.md, B-0023, B-0024]
 tags: [superfluid-ai, autonomous-funding, self-sustaining, economic-actor, otto-336, otto-337, otto-346, substrate-as-revenue-surface, background-process, funding-time-focus-loop]
+type: feature
 ---
 
 # B-0029 — Superfluid AI substrate-enabled autonomous self-sustaining funding sources
