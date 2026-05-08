@@ -147,7 +147,7 @@ describe("extractPaceInstructions", () => {
     expect(instruction.timestamp).toBe("2026-05-04");
   });
 
-  test("multiple pace lines in one file emit separate candidates", async () => {
+  test("multiple pace lines in one file emit separate candidates with correct timestamps", async () => {
     const root = makeTempRoot();
     writeFileSync(
       join(root, "memory", "CURRENT-aaron.md"),
