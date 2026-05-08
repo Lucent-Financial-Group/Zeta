@@ -43,13 +43,16 @@ evidence until the decision-intent is clear enough to act on.
 Each mode names a different shape of the "why" question.
 Pick the mode first; the investigation order (below) adapts.
 
-| Mode | Question shape | Example |
-|---|---|---|
-| **Existence** | Why does THIS exist? | "Why is there a `HardwareCrc` module?" |
-| **Rejection** | Why was THIS rejected / deferred? | "Why is gRPC in WONT-DO?" |
-| **Supersession** | What did THIS replace, and why? | "Why did we abandon the double-hop workflow?" |
-| **Justification** | What is the evidence FOR this decision? | "What drove the retraction-native algebra choice?" |
-| **Attribution** | Who made this decision, in what context? | "Which round / persona / session introduced BP-11?" |
+- **Existence** — Why does THIS exist?
+  Example: "Why is there a `HardwareCrc` module?"
+- **Rejection** — Why was THIS rejected / deferred?
+  Example: "Why is gRPC in WONT-DO?"
+- **Supersession** — What did THIS replace, and why?
+  Example: "Why did we abandon the double-hop workflow?"
+- **Justification** — What is the evidence FOR this decision?
+  Example: "What drove the retraction-native algebra choice?"
+- **Attribution** — Who made this decision, in what context?
+  Example: "Which round / persona / session introduced BP-11?"
 
 Modes compose: a supersession investigation often needs
 attribution on both the old and new decisions, plus
