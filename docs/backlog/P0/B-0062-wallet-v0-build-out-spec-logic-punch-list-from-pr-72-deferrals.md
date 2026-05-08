@@ -1,7 +1,9 @@
 ---
 id: B-0062
 priority: P0
-status: open
+status: closed
+closed: 2026-05-08
+closed_by: "Vera final companion-spec cleanup: EAT retraction metric aligned with wallet spec §9.3; all 21 PR #72 deferrals now have resolution notes"
 title: Wallet v0 build-out — concrete spec-logic punch list aggregating PR #72 deferred review concerns (Aaron 2026-04-28 honest-tracking catch)
 tier: wallet-experiment-v0
 effort: L
@@ -154,16 +156,28 @@ it (closed-thread links survive in the PR's review history).
    monitor implementation to a sibling repository; the
    acceptance criteria + Phase 1 roadmap still permit the
    in-repo `tools/wallet-monitor/` form factor. Pick one.
+
+   **Resolved:** The wallet v0 acceptance criteria and Phase 1
+   roadmap now require sibling repo
+   `Lucent-Financial-Group/wallet-monitor`; in-repo
+   `tools/wallet-monitor/` is explicitly not permitted at the v0
+   gate.
 2. **Topology section alignment with §12.1 framework choice**
    (cid 3151260676 P2). Topology section still labels the
    smart-account framework as "open question" but §12.1
    RESOLVED it to ZeroDev-on-7702. Update topology to
    match.
+
+   **Resolved:** The wallet v0 acceptance criteria, topology,
+   and §12.1 now consistently bind v0 to ZeroDev-on-7702.
 3. **Phase 1 roadmap sibling-repo monitor requirement**
    (cid 3151260677 P2). Phase 1 still lists "stub
    tools/wallet-monitor/ directory or sibling-repo
    bootstrap"; §12.5 RESOLVED removes the "or in-repo"
    option. Update roadmap.
+
+   **Resolved:** The Phase 1 roadmap now says to bootstrap the
+   sibling repo and names the in-repo monitor option as removed.
 
 ### Spec-logic — monitor-stall freeze + classification
 
@@ -262,6 +276,13 @@ it (closed-thread links survive in the PR's review history).
     policy** (cid 3150816620 P2). Retraction metric still
     requires "reorg-window monitored after" the §12.2
     Base-reorg policy. Update to current policy.
+
+    **Resolved (Vera 2026-05-08):** EAT §9 and wallet spec
+    §9.3 now align: Base v0 does not require "reorg-window
+    monitored after broadcast" because Flashblocks
+    preconfirmation makes that signal non-meaningful for the
+    v0 metric. The chain-finality subsection re-enters scope
+    if v0 moves off Base.
 4. **Unify the unfreeze quorum across sections** (cid
     3151220963 P2). Test text requires "Aaron-plus-monitor"
     for unfreeze; §6.2 defines a different quorum. Pick
@@ -276,13 +297,27 @@ it (closed-thread links survive in the PR's review history).
     questions remain; current state is §12.1-§12.6
     Otto-resolved + §12.7-§12.8 Aaron-resolved. Refresh
     statement.
+
+    **Resolved:** EAT §21 and wallet spec §15 now state that
+    the maintainer-only questions are resolved; wallet v0 spec
+    acceptance opens at the real-money phase rather than being
+    blocked by stale §12 open-question text.
 6. **EAT retraction-coverage metric alignment with wallet
     spec** (cid 3151233791 P2). Companion-spec drift
     between EAT doc and wallet v0; align metric.
+
+    **Resolved (Vera 2026-05-08):** EAT §9 now mirrors wallet
+    spec §9.3: retraction coverage counts the pre-flight
+    retraction window plus failed-attempt receipt logging, and
+    explicitly excludes Base reorg-window monitoring.
 7. **EAT Task B in-repo monitor option removal** (cid
     3151301494 P2). EAT Task B still permits in-repo
     monitor form factor; align with §12.5 sibling-repo
     resolution.
+
+    **Resolved:** EAT Task B now requires the sibling repo
+    `Lucent-Financial-Group/wallet-monitor` for the off-chain
+    monitor harness, matching wallet spec §12.5.
 
 ### Schema migration
 
@@ -330,7 +365,7 @@ comments.
 
 ## Progress (2026-05-07 session)
 
-19 of 21 items resolved via doc reconciliation:
+21 of 21 items resolved via doc reconciliation:
 
 + PR #1907: 3 stale "open question" refs → resolved
 + PR #1908: EAT Task B monitor → sibling-repo
@@ -352,9 +387,13 @@ comments.
   lifecycle states landed in wallet spec §7.3
 + Vera 2026-05-08: INTENTIONAL-DEBT bond accounting aligned to existing
   six-field prose ledger format in wallet spec §8.1
++ Vera 2026-05-08: EAT retraction-coverage metric aligned with wallet spec
+  §9.3 and Base reorg-window monitoring removed from the v0 metric
++ Vera 2026-05-08: final companion-spec cleanup localized prior monitor,
+  topology, roadmap, and send-readiness resolutions under the relevant
+  punch-list items
 
-2 items remain — final companion-spec cleanup requiring
-deeper wallet-domain engagement.
+0 items remain. B-0062 is closed.
 
 2026-05-07 red-team correction: PR #1942 briefly marked
 this row closed by trusting a "21/21 addressed" pickup

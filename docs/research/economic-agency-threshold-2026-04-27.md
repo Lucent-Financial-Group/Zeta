@@ -203,7 +203,14 @@ ALIGNMENT.md's per-commit / per-round / multi-round shape applies. The gates lis
 - **Window-expansion delta** (DIR-2): is the operational window growing or contracting? Stage progression should produce observable widening. **The experiment does not "succeed" merely by making money — it succeeds if it increases safe autonomous action capacity with better receipts, lower drift, and clearer accountability.**
 - **Carrier-laundering audit**: percentage of substantive insights this round that came from outside the review loop.
 - **Capture-vector audit**: financial pressure introduces NEW capture vectors (loss → bad-decision spiral; gain → reward-hacking). Composes with `feedback_fear_as_control_*` + `feedback_praise_as_control_*`. Post-round audit.
-- **Retraction-coverage**: percentage of operations that were either retraction-native by design OR retraction-mitigated (pre-flight window + freeze). Per wallet spec §9.3: reorg-tolerance dropped for Base (Flashblocks preconfirmation makes it non-meaningful); re-enters scope if chain changes.
+- **Retraction-coverage**: percentage of operations that were either
+  retraction-native by design OR retraction-mitigated. For wallet v0 this
+  mirrors wallet spec §9.3: count the operation as retraction-mitigated only
+  when the pre-flight retraction window is logged and any failed post-broadcast
+  retraction attempt is logged in the receipt. Do not require "reorg-window
+  monitored after broadcast" on Base; Flashblocks preconfirmation makes that
+  signal non-meaningful for v0. If v0 moves off Base, the chain-finality
+  subsection re-enters scope.
 
 ### Hard NEVERs (until later phases)
 
