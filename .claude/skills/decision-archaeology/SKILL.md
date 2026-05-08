@@ -101,7 +101,7 @@ message is often the first archaeology answer. Look for:
 ### 4. String archaeology — `git log -S`
 
 ```bash
-git log -S "<string>" --oneline
+git log -w -S "<string>" --oneline
 ```
 
 Finds the commit that *introduced* (or removed) a specific
@@ -111,7 +111,7 @@ string. Cuts through renames — when a name has changed,
 ### 5. Function archaeology — `git log -L`
 
 ```bash
-git log -L :funcName:path/to/file
+git log -w -L :funcName:path/to/file
 ```
 
 Follows a specific function through its entire history.
@@ -162,9 +162,11 @@ grep -ri "<keyword>" memory/persona/
 ### 10. Conversation archives — `docs/research/`
 
 Multi-AI exchange transcripts, forwarded packets, and
-cross-harness review records live here. When the decision
-originated in a multi-AI exchange, the verbatim transcript
-is the deepest layer:
+cross-harness review records live here. Per GOVERNANCE.md §33,
+research transcripts are **non-operational until promoted** to
+a canonical surface (ADR, governance doc, current-state doc).
+Findings from this layer are provisional evidence — label them
+as such unless corroborated by a promoted artifact:
 
 ```bash
 grep -ri "<keyword>" docs/research/
@@ -188,7 +190,7 @@ git log --diff-filter=D --name-only -- '.claude/skills/'
 For supersession chains in CURRENT files:
 
 ```bash
-grep -ri "SUPERSEDE\|supersed\|replaced.by\|abandoned" memory/CURRENT-*.md
+grep -Eri "SUPERSEDE|superseded_by|abandoned" memory/CURRENT-*.md
 ```
 
 ## Output shape
