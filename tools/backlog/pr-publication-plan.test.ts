@@ -68,6 +68,7 @@ describe("buildPublicationPlan", () => {
     expect(plan.prBody).toContain("## Backlog row");
     expect(plan.prBody).toContain("B-0280");
     expect(plan.prBody).toContain("Decision: arm auto-merge");
+    expect(plan.bodyFilePath).toBe("tmp/pr-bodies/B-0280.md");
     expect(plan.commands.commit).toEqual([
       "git",
       "commit",
@@ -149,6 +150,9 @@ describe("validation", () => {
     );
     expect(() => {
       validatePublicationInput(input({ bodyFilePath: "/tmp/body.md" }));
+    }).toThrow("unsafe repo-relative path");
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: "C:/tmp/body.md" }));
     }).toThrow("unsafe repo-relative path");
     expect(() => {
       validatePublicationInput(input({ bodyFilePath: "../body.md" }));

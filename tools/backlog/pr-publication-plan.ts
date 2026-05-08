@@ -46,6 +46,7 @@ export interface AutoMergeDecision {
 export interface PublicationPlan {
   prTitle: string;
   prBody: string;
+  bodyFilePath: string;
   autoMerge: AutoMergeDecision;
   commands: {
     commit: string[];
@@ -118,6 +119,7 @@ function validateRepoPath(path: string): void {
   if (
     normalized.trim().length === 0 ||
     normalized.startsWith("/") ||
+    /^[A-Za-z]:\//.test(normalized) ||
     normalized.startsWith("../") ||
     normalized.includes("/../") ||
     normalized === ".git" ||
@@ -291,6 +293,7 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
   return {
     prTitle: title,
     prBody: buildPrBody(input),
+    bodyFilePath: input.bodyFilePath,
     autoMerge,
     commands: {
       commit: ["git", "commit", "-m", title, "-m", CODEX_COMMIT_TRAILER],
@@ -304,12 +307,8 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
 }
 
 export function writePrBodyFile(plan: PublicationPlan): void {
-  const bodyFile = plan.commands.createPr.at(-1);
-  if (bodyFile === undefined || bodyFile.length === 0) {
-    throw new Error("createPr command is missing --body-file path");
-  }
-  mkdirSync(dirname(bodyFile), { recursive: true });
-  writeFileSync(bodyFile, plan.prBody, { flag: "wx" });
+  mkdirSync(dirname(plan.bodyFilePath), { recursive: true });
+  writeFileSync(plan.bodyFilePath, plan.prBody, { flag: "wx" });
 }
 
 function readInput(path: string): PublicationInput {
