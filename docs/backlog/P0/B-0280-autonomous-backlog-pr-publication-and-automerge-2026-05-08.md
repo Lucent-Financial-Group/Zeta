@@ -33,3 +33,6 @@ without the maintainer acting as courier or permission surface.
   builder for selected backlog rows, focused check summaries, and
   auto-merge eligibility. Full row remains open until the executor path
   performs the push/create/auto-merge sequence end to end.
+- 2026-05-08: Second implementation slice adds the deterministic Codex
+  commit command, including the required Codex co-author trailer, to the
+  publication plan.

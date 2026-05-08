@@ -46,6 +46,7 @@ export interface PublicationPlan {
   prBody: string;
   autoMerge: AutoMergeDecision;
   commands: {
+    commit: string[];
     push: string[];
     createPr: string[];
     armAutoMerge: string[] | null;
@@ -62,6 +63,7 @@ const DEFAULT_BRANCHES = new Set(["main", "master", "trunk"]);
 const REMOTE_SHORTHAND_NAMES = new Set(["origin", "upstream"]);
 const REMOTE_REF_PREFIX = /^refs\/remotes\/[^/]+\//;
 const FORBIDDEN_REF_CHARS = /[\x00-\x20~^:?*[\\\x7f]/;
+const CODEX_COMMIT_TRAILER = "Co-Authored-By: Codex <noreply@openai.com>";
 
 function usage(): string {
   return [
@@ -270,6 +272,7 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
     prBody: buildPrBody(input),
     autoMerge,
     commands: {
+      commit: ["git", "commit", "-m", title, "-m", CODEX_COMMIT_TRAILER],
       push: ["git", "push", "-u", "origin", branch],
       createPr,
       armAutoMerge: autoMerge.allowed

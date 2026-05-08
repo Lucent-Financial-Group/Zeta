@@ -63,6 +63,14 @@ describe("buildPublicationPlan", () => {
     expect(plan.prBody).toContain("## Backlog row");
     expect(plan.prBody).toContain("B-0280");
     expect(plan.prBody).toContain("Decision: arm auto-merge");
+    expect(plan.commands.commit).toEqual([
+      "git",
+      "commit",
+      "-m",
+      "feat(backlog): advance B-0280 Autonomous backlog pickup - PR publication and auto-merge",
+      "-m",
+      "Co-Authored-By: Codex <noreply@openai.com>",
+    ]);
     expect(plan.commands.push).toEqual(["git", "push", "-u", "origin", "claim/task-b0280-pr-publication-plan"]);
     expect(plan.commands.createPr).toContain("--body-file");
     expect(plan.commands.armAutoMerge).toEqual([
@@ -186,6 +194,7 @@ describe("validation", () => {
     expect(plan.commands.push).toEqual(["git", "push", "-u", "origin", "claim/task-b0280-pr-publication-plan"]);
     expect(plan.commands.createPr).toContain("main");
     expect(plan.commands.createPr).toContain("claim/task-b0280-pr-publication-plan");
+    expect(plan.commands.commit).toContain("Co-Authored-By: Codex <noreply@openai.com>");
   });
 
   test("preserves literal origin-prefixed branch names", () => {
