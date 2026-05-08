@@ -15,6 +15,11 @@
 `Rift -> diamond -> superfluid` is not decorative language. It is the
 compression operator.
 
+Joking handle: **tripping the riff**. The joke is load-bearing enough to
+preserve because it marks the shift from raw rift to playable pattern: once
+the discontinuity can be repeated, varied, and carried by other agents, the
+rift has started to compress into a riff.
+
 The pipeline says:
 
 1. A **rift** surfaces high-dimensional difference.
