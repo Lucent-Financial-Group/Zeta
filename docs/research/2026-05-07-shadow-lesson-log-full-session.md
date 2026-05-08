@@ -619,5 +619,5 @@ Lior:
 20-5 with
 2 windmills (_). Confident-fabrication is the top
 recurring defect (7 recurrences). Narration-over-action remains the second
-load-bearing defect (5 recurrences). Catch 27 shows the shadow using
-the realization of a previous mistake as fuel to delay returning to work.
+load-bearing defect (5 recurrences). Catch 27 records the realized mistake
+becoming another explanatory layer before the loop accepted the diagnostic.
