@@ -138,6 +138,7 @@ maintainer; no bypass attempted.
 ### Decomposition (2026-05-08)
 
 Original classification was `atomic`. Re-decomposed as `parent` with slices:
+
 1. **Slice 1 (this PR)**: Land targeted `permissions.allow` entries in `.claude/settings.json` covering factory tool patterns. Acceptance criteria #2 (inventory) + #3 (map) + #4 (land additions).
 2. **Slice 2 (future)**: Investigate hardcoded safety gates vs settings-allowable actions (per the Tick-6 merge denial evidence). Acceptance criteria #1 deeper investigation.
 3. **Slice 3 (future)**: Document integration pattern in CLAUDE.md or dedicated doc. Acceptance criteria #5.
