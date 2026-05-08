@@ -173,12 +173,14 @@ jobs:
           # `<!-- resume-diff-bot-marker -->` which is stable across
           # runs but invisible in the rendered comment.
           MARKER='<!-- resume-diff-bot-marker -->'
+          AI_FOOTER=$'\n\n---\n🤖 *Posted by resume-diff workflow (AI-generated content)*'
 
-          # Prepend marker to the body so future runs can find it.
+          # Prepend marker and append AI attribution footer.
           BODY_FILE="$(mktemp)"
           {
             printf '%s\n' "$MARKER"
             cat "$DIFF_FILE"
+            printf '%s\n' "$AI_FOOTER"
           } > "$BODY_FILE"
 
           # Look for an existing comment containing the marker.
