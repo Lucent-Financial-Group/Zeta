@@ -3,7 +3,7 @@
 // Parity with .claude/bin/claude-loop-tick.ts (Otto) and .codex/bin/codex-loop-tick.ts (Vera).
 //
 // Runs every 60s via macOS launchd. Per-minute heartbeat checks git state.
-// Every RIVEN_GATE_INTERVAL seconds (default 900 = 15min) runs a real
+// Every ZETA_RIVEN_LOOP_AGENT_INTERVAL_SECONDS (default 900 = 15min) runs a real
 // Cursor agent read-only gate via `agent` CLI.
 
 import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -93,7 +93,7 @@ const forwardStateFile = join(stateDir, "last-forward-run.json");
 const broadcastDir = join(home, ".local/share/zeta-broadcasts");
 
 function readBroadcasts(): void {
-    for (const peer of ["otto.md", "vera.md"]) {
+    for (const peer of ["otto.md", "vera.md", "lior.md"]) {
         const path = join(broadcastDir, peer);
         if (existsSync(path)) {
             const content = readFileSync(path, "utf8").trim();
