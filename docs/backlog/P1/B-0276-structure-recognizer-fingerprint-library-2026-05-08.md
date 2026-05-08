@@ -1,7 +1,9 @@
 ---
 id: B-0276
 priority: P1
-status: open
+status: closed
+closed: 2026-05-08
+closed_by: "StructureFingerprint.fs — 10 shapes, extractSignals, classify, fingerprint, similarity; 16 tests"
 title: "Structure recognizer — fingerprint library for codebase shapes"
 created: 2026-05-08
 last_updated: 2026-05-08
