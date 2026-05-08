@@ -141,6 +141,16 @@ describe("validation", () => {
     expect(() => validatePublicationInput(input({ branch: "claim bad" }))).toThrow("invalid normalized branch ref");
   });
 
+  test("rejects non-branch refs that keep a refs prefix", () => {
+    expect(() => validatePublicationInput(input({ branch: "refs/tags/v1" }))).toThrow("invalid normalized branch ref");
+    expect(() => validatePublicationInput(input({ branch: "refs/remotes/origin" }))).toThrow(
+      "invalid normalized branch ref",
+    );
+    expect(() => validatePublicationInput(input({ baseBranch: "refs/tags/v1" }))).toThrow(
+      "invalid normalized baseBranch ref",
+    );
+  });
+
   test("trims long PR titles", () => {
     const title = buildPrTitle(
       input({
@@ -161,6 +171,8 @@ describe("validation", () => {
     );
     expect(normalizeBranchRef("origin/main")).toBe("main");
     expect(normalizeBranchRef("upstream/main")).toBe("main");
+    expect(normalizeBranchRef("release/main")).toBe("release/main");
+    expect(normalizeBranchRef("refs/heads/release/main")).toBe("release/main");
     expect(normalizeBranchRef("origin/claim/task-b0280-pr-publication-plan")).toBe(
       "origin/claim/task-b0280-pr-publication-plan",
     );

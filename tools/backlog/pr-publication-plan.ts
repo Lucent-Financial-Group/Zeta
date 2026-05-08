@@ -59,6 +59,7 @@ interface Args {
 
 const DEFAULT_REPO = "Lucent-Financial-Group/Zeta";
 const DEFAULT_BRANCHES = new Set(["main", "master", "trunk"]);
+const REMOTE_SHORTHAND_NAMES = new Set(["origin", "upstream"]);
 const REMOTE_REF_PREFIX = /^refs\/remotes\/[^/]+\//;
 const FORBIDDEN_REF_CHARS = /[\x00-\x20~^:?*[\\\x7f]/;
 
@@ -127,7 +128,7 @@ export function normalizeBranchRef(branch: string): string {
     normalized = normalized.replace(REMOTE_REF_PREFIX, "");
   }
   const parts = normalized.split("/");
-  if (parts.length === 2 && DEFAULT_BRANCHES.has(parts[1] ?? "")) {
+  if (parts.length === 2 && REMOTE_SHORTHAND_NAMES.has(parts[0] ?? "") && DEFAULT_BRANCHES.has(parts[1] ?? "")) {
     normalized = parts[1] ?? normalized;
   }
   return normalized;
@@ -137,6 +138,7 @@ function validateNormalizedBranchRef(label: string, branch: string): string {
   const normalized = normalizeBranchRef(branch);
   const invalid =
     normalized.length === 0 ||
+    normalized.startsWith("refs/") ||
     normalized.startsWith("-") ||
     normalized.startsWith("/") ||
     normalized.endsWith("/") ||
@@ -155,11 +157,7 @@ function validateNormalizedBranchRef(label: string, branch: string): string {
 }
 
 function isDefaultBranchRef(branch: string): boolean {
-  if (DEFAULT_BRANCHES.has(branch)) {
-    return true;
-  }
-  const parts = branch.split("/");
-  return parts.length === 2 && DEFAULT_BRANCHES.has(parts[1] ?? "");
+  return DEFAULT_BRANCHES.has(branch);
 }
 
 export function validatePublicationInput(input: PublicationInput): void {
