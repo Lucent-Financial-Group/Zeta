@@ -20,6 +20,7 @@ folder as the experimental loop.
 | `audit_clause_coverage.ts` | HC/SD/DIR clause citations in skills, agents, backlog P0/P1 | Per-surface coverage audit |
 | `audit_clause_drift.ts` | Clause additions/removals/changes + impact survey | Cross-ref drift detection |
 | `audit_retractibility.ts` | Git-tracked + inbound-ref entanglement per surface | Retractibility gate (B-0058 #1) |
+| `filter_gate_log.ts`  | Pass/fail/defer decisions for candidate adoptions | Honesty log (B-0058 #3) |
 | `sd6_names.txt`       | SD-6 watchlist (per-host)                    | Data (not code)             |
 
 The three scripts form the gitops observability trio:
