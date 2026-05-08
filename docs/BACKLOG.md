@@ -164,6 +164,13 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0327](backlog/P1/B-0327-peer-call-claude-ts-self-call-cold-boot.md)** Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing
 - [ ] **[B-0328](backlog/P1/B-0328-peer-call-readme-kiro-claude-entries.md)** Update peer-call/README.md with kiro.ts + claude.ts entries
 - [ ] **[B-0329](backlog/P1/B-0329-claude-md-as-process-not-doctrine.md)** Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing
+- [ ] **[B-0330](backlog/P1/B-0330-memory-format-standardization-step2-b0190.md)** Memory-format standardization — define frontmatter shape, filename conventions, section headers
+- [ ] **[B-0331](backlog/P1/B-0331-memory-ontology-classification-audit-step3-b0190.md)** Memory ontology/classification audit — reclassify mistyped feedback/project/user/reference files
+- [ ] **[B-0332](backlog/P1/B-0332-memory-load-bearing-vs-decorative-classifier-step7-b0190.md)** Memory load-bearing-vs-decorative classifier — identify which memory files are cited from bootstrap surfaces
+- [ ] **[B-0333](backlog/P1/B-0333-memory-retire-supersession-discipline-step5-b0190.md)** Memory-retire/supersession discipline — define what happens when a memory file is superseded
+- [ ] **[B-0334](backlog/P1/B-0334-memory-cross-reference-integrity-enforcement-step6-b0190.md)** Memory cross-reference integrity enforcement — bidirectional composes-with audit
+- [ ] **[B-0335](backlog/P1/B-0335-memory-schema-validation-tooling-step11-b0190.md)** Memory schema validation tooling — TS linter enforcing format standard mechanically
+- [ ] **[B-0336](backlog/P1/B-0336-b0006-acceptance-recalibration-b0190.md)** B-0006 acceptance recalibration — adjust compression targets given load-bearing classification
 
 ## P2 — research-grade
 
@@ -286,6 +293,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0285](backlog/P2/B-0285-arc4-selfplay-arena-design-2026-05-08.md)** ARC-4 — adversarial self-play arena design
 - [ ] **[B-0286](backlog/P2/B-0286-arc4-selfplay-implementation-2026-05-08.md)** ARC-4 — self-play implementation + training loop
 - [ ] **[B-0316](backlog/P2/B-0316-long-tail-anchor-sweep-cadence.md)** Long-tail external-anchor cadenced sweep — memory files + research docs
+- [ ] **[B-0337](backlog/P2/B-0337-memory-trust-calculus-calibration-step8-b0190.md)** Memory trust-calculus calibration — measure cross-instance transmission fidelity
+- [ ] **[B-0338](backlog/P2/B-0338-memory-graduation-ladder-step9-b0190.md)** Memory graduation ladder — codify when feedback promotes to CLAUDE.md and when CLAUDE.md promotes to GOVERNANCE.md
 
 ## P3 — convenience / deferred
 
