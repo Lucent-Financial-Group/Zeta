@@ -5,7 +5,7 @@ export function isActionsCreatePullRequestPolicyDenial(output: string): boolean 
   return output.includes(ACTIONS_CREATE_PR_POLICY_DENIAL);
 }
 
-async function main(argv: string[]): Promise<number> {
+export async function main(argv: readonly string[]): Promise<number> {
   if (argv.length > 1) {
     console.error("usage: bun tools/github/is-pr-create-policy-denial.ts [log-file]");
     return 2;
