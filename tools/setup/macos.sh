@@ -46,24 +46,20 @@ echo "✓ Xcode CLT at $(xcode-select -p 2>/dev/null || echo 'pending user confi
 # ── 2. Homebrew ─────────────────────────────────────────────────────
 if ! command -v brew >/dev/null 2>&1; then
   echo "↓ installing Homebrew..."
-  # Capture to a named variable + check exit code explicitly.
-  # bash's `set -e` is not reliably triggered by a failing
-  # command substitution without `inherit_errexit`. Pattern:
-  # capture, check length, exec only on non-empty + curl-
-  # success. The proper fix (download-to-temp + checksum-
-  # verify) is tracked as B-0063; this is a small-improvement-
-  # not-structurally-safe form acknowledged in
-  # tools/setup/common/curl-fetch.sh COMMAND-SUBSTITUTION +
-  # SET-E section.
-  if ! HOMEBREW_INSTALLER="$(curl_fetch_stream https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
-    echo "error: failed to fetch Homebrew installer; check network and re-run install.sh" >&2
+  # Download to temp file then exec — the B-0063 structural fix.
+  # Homebrew does not publish a SHA256 for install.sh (the script
+  # tracks HEAD of github.com/Homebrew/install with no tagged
+  # releases). Trust anchor: HTTPS + GitHub + the Homebrew project.
+  # We verify non-empty to catch truncated downloads.
+  HOMEBREW_INSTALLER_TMP="$(mktemp)"
+  trap 'rm -f "${HOMEBREW_INSTALLER_TMP}"' EXIT
+  curl_fetch --output "${HOMEBREW_INSTALLER_TMP}" \
+    https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+  if [ ! -s "${HOMEBREW_INSTALLER_TMP}" ]; then
+    echo "error: Homebrew installer empty after download; refusing to exec" >&2
     exit 1
   fi
-  if [ -z "$HOMEBREW_INSTALLER" ]; then
-    echo "error: Homebrew installer was empty; refusing to exec" >&2
-    exit 1
-  fi
-  /bin/bash -c "$HOMEBREW_INSTALLER"
+  /bin/bash "${HOMEBREW_INSTALLER_TMP}"
   # Ensure brew is on PATH for the remainder of this script run.
   if [ -x /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"

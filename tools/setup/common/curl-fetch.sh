@@ -3,23 +3,17 @@
 # tools/setup/common/curl-fetch.sh — sourceable helpers for
 # fetching URLs during install.
 #
-# Two helpers with DIFFERENT retry semantics by output mode:
+# One helper:
 #   - curl_fetch        — file-output downloads. `--retry 5`
 #                         + `--retry-all-errors` (safe because
 #                         curl restarts the file from scratch
 #                         on retry).
-#   - curl_fetch_stream — streamed-to-shell installers
-#                         (`curl ... | sh`, `bash -c
-#                         "$(curl ...)"`). NO retries. Streamed
-#                         retry is unsafe — partial bytes
-#                         already piped to the consumer cannot
-#                         be un-received. Streamed installers
-#                         fail-fast on transient errors;
-#                         caller re-runs install.sh.
-# Do NOT assume all curl usage in this repo is retried —
-# only the `curl_fetch` (file-output) variant retries. See
-# the per-function comments below + B-0063 for the
-# download-to-temp structural fix to the streamed case.
+#
+# All upstream-installer call sites (Homebrew, mise, elan)
+# now use the download-to-temp + verify + exec pattern via
+# curl_fetch. The former curl_fetch_stream function (streamed
+# pipe-to-shell, no retries) was removed by B-0063 — no call
+# sites remain.
 #
 # WHY
 # ===
@@ -39,36 +33,19 @@
 # *"sounds like a common helper would help too rather than
 # copy/paste."*
 #
-# TWO FUNCTIONS — file-output vs streamed
-# =======================================
-# Two helpers are exposed because the safe retry policy
-# differs by output mode. Code review on the original single-
-# function form flagged the partial-output-replay risk for
-# pipe-to-shell call sites:
-#
-#   curl_fetch        — for file-output downloads
-#                       (`-o`/`--output` to disk). Uses
-#                       `--retry-all-errors` because curl
-#                       restarts the file from scratch on
-#                       retry, so partial-output replay
-#                       cannot happen.
-#
-#   curl_fetch_stream — for streamed-to-shell installers
-#                       (`curl ... | sh`, `bash -c "$(curl
-#                       ...)"`). NO --retry. Reviewers
-#                       confirmed: even bare
-#                       `--retry` (without `--retry-all-
-#                       errors`) can retry after bytes have
-#                       already been written to stdout, and
-#                       the consumer cannot un-receive piped
-#                       bytes. Streamed installers fail-fast
-#                       on transient errors; the user re-runs
-#                       install.sh. Proper download-to-temp
-#                       hardening tracked as B-0063.
+# DOWNLOAD-TO-TEMP PATTERN (B-0063)
+# ==================================
+# All upstream-installer call sites now download to a temp
+# file via curl_fetch (with full retries), verify content
+# (SHA256 when upstream publishes one, non-empty size check
+# otherwise), then exec the verified file. This replaces the
+# former curl_fetch_stream pipe-to-shell pattern which could
+# not safely retry (partial bytes already piped to the shell
+# consumer cannot be un-received).
 #
 # USAGE
 # =====
-# Source this file, then call the appropriate helper:
+# Source this file, then call curl_fetch:
 #
 #     # shellcheck source=/dev/null
 #     source "$REPO_ROOT/tools/setup/common/curl-fetch.sh"
@@ -76,13 +53,12 @@
 #     # File output (safe with full retries):
 #     curl_fetch --output "$path" "$url"
 #
-#     # Streamed pipe (must use the stream variant):
-#     curl_fetch_stream https://example.com/install.sh | sh
-#
-#     # Command substitution (capture to var first; see
-#     # IDEMPOTENCE / SET-E note below):
-#     INSTALLER="$(curl_fetch_stream https://example.com/install.sh)"
-#     /bin/bash -c "$INSTALLER"
+#     # Upstream installers — download to temp, verify, exec:
+#     TMP="$(mktemp)"
+#     trap 'rm -f "$TMP"' EXIT
+#     curl_fetch --output "$TMP" "$url"
+#     [ -s "$TMP" ] || { echo "error: empty download" >&2; exit 1; }
+#     bash "$TMP"
 #
 # RETRY POLICY (rationale)
 # ========================
@@ -104,47 +80,26 @@
 #                            -S: show errors when silent
 #                            -L: follow redirects
 #
-# COMMAND-SUBSTITUTION + SET-E (caveat per codex review)
-# ======================================================
-# bash's `errexit` (`set -e`) is NOT reliably triggered by a
-# command substitution that fails without producing output —
-# in some bash versions (especially without `inherit_errexit`
-# enabled) `VAR="$(failing_cmd)"` leaves `VAR=""` and continues.
-# Our macos.sh capture pattern uses an explicit two-gate
-# approach: `if ! HOMEBREW_INSTALLER="$(curl_fetch_stream
-# ...)"; then exit 1; fi` (catches curl failure via the
-# if-not test on the assignment's exit status — verified on
-# bash 3.2.57 / 5.x: `if ! x="$(false)"; then echo CAUGHT;
-# fi` does print CAUGHT) PLUS a secondary `[ -z
-# "$HOMEBREW_INSTALLER" ] && exit 1` empty-string check.
-# Network errors trigger the first gate (curl-22 / curl-6 /
-# HTTP-non-2xx via `-fsSL`); the unreachable case where curl
-# exits 0 but produces empty output is caught by the second
-# gate. Either failure produces a hard `exit 1` with a
-# diagnostic message — never falls through to `bash -c ""`.
-# This is NOT a defense against partial-byte corruption —
-# proper fix is download-to-temp + checksum-verify, tracked
-# as B-0063. The current pattern is a small improvement over
-# the prior `bash -c "$(curl ...)"` direct form (which
-# silently ran whatever partial output survived); it is NOT
-# the structurally safe form.
+# COMMAND-SUBSTITUTION + SET-E (historical note)
+# ===============================================
+# All installer call sites now use download-to-temp + exec
+# (B-0063), which sidesteps the command-substitution + set -e
+# interaction entirely. curl_fetch writes to a file; failure
+# is caught by curl's non-zero exit + set -euo pipefail; the
+# size check ([ -s "$TMP" ]) catches the edge case of an
+# empty download. No command substitution in the critical path.
 #
 # IDEMPOTENCE
 # ===========
-# Re-sourcing this file is a no-op once both helpers are
+# Re-sourcing this file is a no-op once the helper is
 # loaded. The guard uses a file-local sentinel variable
 # (`_CURL_FETCH_LOADED`) instead of probing for an
 # existing `curl_fetch` function: a function-name probe
-# would silently skip BOTH definitions if the caller
+# would silently skip the definition if the caller
 # environment already had an unrelated `curl_fetch`
-# function, leaving `curl_fetch_stream` undefined and
-# breaking the streamed callers (`tools/setup/linux.sh` /
-# `tools/setup/macos.sh` / `tools/setup/common/elan.sh`)
-# at runtime with `curl_fetch_stream:
-# command not found`. Sentinel-based guarding ties the
-# load decision to "did this file load?" instead of "does
-# that name exist?" — collisions in the caller environment
-# can no longer accidentally suppress our definitions.
+# function. Sentinel-based guarding ties the load decision
+# to "did this file load?" instead of "does that name
+# exist?"
 
 if [[ -z "${_CURL_FETCH_LOADED:-}" ]]; then
 _CURL_FETCH_LOADED=1
@@ -181,33 +136,6 @@ curl_fetch() {
     retry_args+=(--retry-all-errors)
   fi
   curl -fsSL "${retry_args[@]}" "$@"
-}
-
-# Streamed variant — NO --retry, NO --retry-all-errors.
-#
-# Reviewers surfaced that even bare `curl
-# --retry` (without --retry-all-errors) can still retry after
-# bytes have been written to stdout: the connect error happens
-# mid-transfer, curl resets the input but the bytes already
-# piped into the consumer (`sh`, `bash -c "$(...)"`) cannot be
-# un-written. The consumer then sees concatenated partial+full
-# script content, which can re-execute commands or run
-# truncated halves. There is no curl-flag combination that
-# gives both retry-on-transient AND safe-restart-on-streamed-
-# stdout — those are mutually exclusive without an
-# intermediate buffer.
-#
-# Therefore this variant ships WITHOUT retries. Streamed
-# installer failures (mise.run / Homebrew / elan) bubble up
-# as install errors; the user re-runs install.sh.
-#
-# The proper structural fix — download to a temp file with
-# `curl_fetch` (file-output), checksum-verify if available,
-# then `bash <tempfile` — is tracked as backlog item B-0063
-# (streamed-installer download-to-temp pattern). Until that
-# lands, this variant is fail-fast-no-retry by design.
-curl_fetch_stream() {
-  curl -fsSL "$@"
 }
 
 fi
