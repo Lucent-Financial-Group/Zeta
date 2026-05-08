@@ -7,7 +7,7 @@ tier: foundation
 effort: L
 ask: Aaron 2026-05-04 verbatim *"seems like your memory work needs a trajectory i don't think we have one for that"* + same-tick *"long horizon is our default and so should future agents remember and short horizon short cuts should be deliberate and not accidentally based on the middle path"*
 created: 2026-05-04
-last_updated: 2026-05-04
+last_updated: 2026-05-08
 depends_on: []
 composes_with: [B-0006, B-0066, B-0140, B-0156, B-0171, B-0193]
 tags: [memory, substrate-engineering, trajectory, long-horizon-default, foundation, mid-path-discipline]
@@ -46,7 +46,8 @@ Future-agent rule: when picking the next memory action, FIRST check the trajecto
 **Rule applied**: smallest dependency-ordered atomic child rows. Broad steps split; each child is one concrete, verifiable action with clear acceptance. Parent updated; children filed as separate rows in follow-up PRs (this PR is the re-decomp anchor only). Long-horizon default preserved.
 
 ### Atomic Child 1 (depends: none) — B-0190.1 memory-frontmatter-schema (was part of Step 2)
-- Define the canonical frontmatter keys for all memory/* files: id, type (user|feedback|project|reference), origin, sessionId, carved-sentence, composes-with (array), superseded-by.
+- Define the canonical frontmatter keys for all memory/* files: id, type (user|feedback|project|reference), origin, carved_sentence, composes_with (array), superseded_by.
+  (Note: `sessionId` excluded — per policy `memory/feedback_session_id_out_of_factory_files_peer_claude_parity_test_worktree_launch_otto_241_2026_04_24.md` session IDs must not appear in committed substrate. Key names use underscore style to match existing memory-file conventions.)
 - Output: one new `memory/project_memory_frontmatter_schema_2026_05_08.md` (project-policy).
 - Acceptance: every existing memory file either conforms or has a migration note; schema file is the single source.
 
@@ -83,7 +84,7 @@ Future-agent rule: when picking the next memory action, FIRST check the trajecto
 (The remaining original steps 4,8,9,10,11 become later children after these 7 land; re-decomp prevents over-broad rows.)
 
 ## Pre-start checklist (per CLAUDE.md backlog-item start gate)
-- [x] Prior-art search: wake-time-substrate + skill-router (no existing memory-trajectory skill) + decision-archaeology on B-0006/B-0066 + Otto-364 (memory substrate papers) + LOST-FILES + PR #1701 — surfaces: memory/README.md, CLAUDE.md §memory, docs/trajectories/* — results logged in this row.
+- [x] Prior-art search: wake-time-substrate + skill-router (no existing memory-trajectory skill) + decision-archaeology on B-0006/B-0066 + Otto-364 (memory substrate papers) + LOST-FILES + PR #1701 — surfaces searched and **concrete findings**: (1) `memory/README.md` exists and covers filename taxonomy only — no schema or retirement protocol; (2) `docs/trajectories/` directory does not exist on main; (3) skill router has no memory-trajectory or memory-schema skill; (4) B-0006 covers memory indexing/compression (tactical), B-0066 covers MEMORY.md drain (tactical) — neither defines a multi-row strategic trajectory; (5) no `project_memory_frontmatter_schema*` file found under `memory/`; (6) PR #1701 prior-art grep: no prior memory-trajectory rows found; (7) `tools/hygiene/LOST-FILES-LOCATIONS.md` — no lost memory-strategy files flagged. Result: no prior art conflicts with this row; this is new strategic territory.
 - [x] Dependency-restructure: walked depends_on/composes_with; reciprocal pointers added to B-0006/B-0066/B-0140/B-0156/B-0171 (separate cleanup PR); supersession from prior tactical memory work reconstructed.
 - [x] Row updated with proof above before any child implementation.
 

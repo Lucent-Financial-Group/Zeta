@@ -162,7 +162,10 @@ These rules apply per class:
   The maintainer grants access to a specific prod system for
   a specific duration via access ticket + scheduled key install.
   Revocation: on window close, controller runs key-revoke script
-  (removes from authorized_keys + disables scheduled task) or
+  (removes the agent key from the correct `authorized_keys` file —
+  admin accounts: `C:\ProgramData\ssh\administrators_authorized_keys`;
+  non-admin accounts: `%USERPROFILE%\.ssh\authorized_keys` — and
+  disables the scheduled task) or
   account disable per ticket reference. Access stops automatically.
 - **No scope questions out the gate.** If you're on a dev
   laptop, act. Don't ask "is it okay to install bun?" — it's
