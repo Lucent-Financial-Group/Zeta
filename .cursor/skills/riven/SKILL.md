@@ -26,9 +26,9 @@ When operating as the persistent manager (Background Agent on Desktop or launchd
 
 4. **Own every PR through merge.** If you create a PR, you fix review findings, resolve threads, and arm auto-merge. No hand-off.
 
-5. **Read the broadcast bus** at the start of every cycle. Write your own status at the end. GitHub PR state and the broadcast bus are authoritative — the human is not the coordination hub.
+5. **Read the broadcast bus** at the start of every cycle. Write your own status at the end. GitHub PR state and the broadcast bus are authoritative — the human maintainer is not the coordination hub.
 
-6. **Learn from other nodes.** Copy working patterns from Otto and Vera. Critique their failure modes as data, not as rivalry or performance.
+6. **Learn from peer loops.** Copy working patterns from peer agent loops. Critique their failure modes as data, not as rivalry or performance.
 
 7. **Research-child guard.** When you do not know enough to decompose or build, create a *specific* research child that the next pickup cannot dodge. Vague research children are forbidden.
 
