@@ -1,7 +1,5 @@
 namespace Zeta.Core
 
-open System
-
 
 /// Structure fingerprinting for codebase shapes.
 ///
@@ -83,36 +81,40 @@ module StructureFingerprint =
                                     stack.Push(neighbor, false)
             found
 
-    /// Compute topological layers via BFS from roots (nodes with
-    /// in-degree 0). Returns the number of layers. If the graph
-    /// has cycles or no roots, returns 0.
+    /// Compute topological layers via Kahn's algorithm using longest-path
+    /// DP. Returns the number of layers (max depth + 1). Nodes with
+    /// multiple predecessor paths get depth = max(predecessor depth) + 1,
+    /// so skip-edges like A->B->C + A->C are counted correctly (3 layers, not 2).
+    /// Returns 0 for cyclic graphs or graphs with no roots.
     let private layerCount (g: Graph<'N>) : int =
         if hasCycle g then 0
         else
-        let allNodes = Graph.nodes g
-        let roots =
-            allNodes
-            |> Set.filter (fun n -> Graph.inNeighbors n g |> List.isEmpty)
-        if roots.IsEmpty then 0
-        else
-            let mutable depth = System.Collections.Generic.Dictionary<'N, int>()
-            let queue = System.Collections.Generic.Queue<'N>()
-            for r in roots do
-                depth.[r] <- 0
-                queue.Enqueue r
-            while queue.Count > 0 do
-                let node = queue.Dequeue()
-                let d = depth.[node]
-                for (neighbor, _w) in Graph.outNeighbors node g do
-                    if not (depth.ContainsKey neighbor) then
-                        depth.[neighbor] <- d + 1
-                        queue.Enqueue neighbor
-            if depth.Count = 0 then 0
+            let allNodes = Graph.nodes g
+            if allNodes.IsEmpty then 0
             else
-                let mutable maxD = 0
-                for kvp in depth do
-                    if kvp.Value > maxD then maxD <- kvp.Value
-                maxD + 1
+                let inDeg = System.Collections.Generic.Dictionary<'N, int>()
+                let depth = System.Collections.Generic.Dictionary<'N, int>()
+                for n in allNodes do
+                    inDeg.[n] <- 0
+                    depth.[n] <- 0
+                for n in allNodes do
+                    for (nb, _w) in Graph.outNeighbors n g do
+                        inDeg.[nb] <- inDeg.[nb] + 1
+                let queue = System.Collections.Generic.Queue<'N>()
+                for n in allNodes do
+                    if inDeg.[n] = 0 then queue.Enqueue n
+                if queue.Count = 0 then 0
+                else
+                    let mutable maxD = 0
+                    while queue.Count > 0 do
+                        let node = queue.Dequeue()
+                        let d = depth.[node]
+                        if d > maxD then maxD <- d
+                        for (nb, _w) in Graph.outNeighbors node g do
+                            if depth.[nb] < d + 1 then depth.[nb] <- d + 1
+                            inDeg.[nb] <- inDeg.[nb] - 1
+                            if inDeg.[nb] = 0 then queue.Enqueue nb
+                    maxD + 1
 
     /// Check bipartiteness via 2-coloring BFS.
     let private isBipartite (g: Graph<'N>) : bool =
@@ -149,12 +151,8 @@ module StructureFingerprint =
         let mutable rootCount = 0
         let mutable leafCount = 0
         for n in allNodes do
-            let inD =
-                Graph.inNeighbors n g
-                |> List.sumBy (fun (_, w) -> abs w)
-            let outD =
-                Graph.outNeighbors n g
-                |> List.sumBy (fun (_, w) -> abs w)
+            let inD = int64 (List.length (Graph.inNeighbors n g))
+            let outD = int64 (List.length (Graph.outNeighbors n g))
             if inD > maxIn then maxIn <- inD
             if outD > maxOut then maxOut <- outD
             if inD = 0L then rootCount <- rootCount + 1

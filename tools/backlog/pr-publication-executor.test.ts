@@ -5,9 +5,8 @@ import {
   substituteUrl,
   type CommandResult,
   type CommandRunner,
-  type PublicationPlan,
 } from "./pr-publication-executor";
-import { buildPublicationPlan, type PublicationInput } from "./pr-publication-plan";
+import { buildPublicationPlan, type PublicationInput, type PublicationPlan } from "./pr-publication-plan";
 
 function input(overrides: Partial<PublicationInput> = {}): PublicationInput {
   return {
