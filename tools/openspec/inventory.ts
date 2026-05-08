@@ -41,6 +41,7 @@ interface GapReport {
   coveredModules: string[];
   uncoveredModules: string[];
   unmappedSpecs: string[];
+  mappingsWithoutSpec: string[];
   coveragePercent: number;
 }
 
@@ -188,6 +189,9 @@ function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[]): GapReport {
     const actualModules = moduleNames.filter((m) => allModuleNames.has(m));
     const missingModules = moduleNames.filter((m) => !allModuleNames.has(m));
     mappings.push({ capability, modules: actualModules, missingModules });
+    // Only mark modules as covered when the spec is actually present in the
+    // scanned specs directory. Without this gate, a deleted/renamed spec would
+    // still inflate coverage, defeating the tool's gap-detection purpose.
     if (specCapabilities.has(capability)) {
       for (const m of actualModules) {
         coveredSet.add(m);
@@ -206,6 +210,11 @@ function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[]): GapReport {
     .filter((c) => !mappedCapabilities.has(c))
     .sort();
 
+  // Capabilities in the mapping table that have no spec on disk — potential drift.
+  const mappingsWithoutSpec = [...mappedCapabilities]
+    .filter((c) => !specCapabilities.has(c))
+    .sort();
+
   const excludedPresent = modules.filter((m) => EXCLUDED_MODULES.has(m.name)).length;
   const totalAnalyzable = modules.length - excludedPresent;
   const coveragePercent =
@@ -221,6 +230,7 @@ function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[]): GapReport {
     coveredModules,
     uncoveredModules,
     unmappedSpecs,
+    mappingsWithoutSpec,
     coveragePercent,
   };
 }
@@ -280,6 +290,14 @@ export function main(): number {
     err(`  Specs without module mapping:`);
     for (const s of report.unmappedSpecs) {
       err(`    - ${s}`);
+    }
+    err("");
+  }
+
+  if (report.mappingsWithoutSpec.length > 0) {
+    err(`  Mapping entries without a spec on disk (possible spec drift):`);
+    for (const c of report.mappingsWithoutSpec) {
+      err(`    - ${c}`);
     }
     err("");
   }

@@ -22,46 +22,52 @@ describe("scanSpecs", () => {
 
   test("finds specs with purpose and profiles", () => {
     const root = makeTempDir();
-    const specDir = join(root, "my-cap");
-    const profilesDir = join(specDir, "profiles");
-    mkdirSync(profilesDir, { recursive: true });
-    writeFileSync(
-      join(specDir, "spec.md"),
-      "## Purpose\n\nThis defines the foo capability.\n\n## Requirements\n",
-    );
-    writeFileSync(join(profilesDir, "fsharp.md"), "# F# overlay\n");
+    try {
+      const specDir = join(root, "my-cap");
+      const profilesDir = join(specDir, "profiles");
+      mkdirSync(profilesDir, { recursive: true });
+      writeFileSync(
+        join(specDir, "spec.md"),
+        "## Purpose\n\nThis defines the foo capability.\n\n## Requirements\n",
+      );
+      writeFileSync(join(profilesDir, "fsharp.md"), "# F# overlay\n");
 
-    const specs = scanSpecs(root);
-    expect(specs).toHaveLength(1);
-    expect(specs[0]!.capability).toBe("my-cap");
-    expect(specs[0]!.specPath).toBe(join(root, "my-cap", "spec.md"));
-    expect(specs[0]!.profiles).toEqual(["fsharp"]);
-    expect(specs[0]!.purposeSnippet).toContain("foo capability");
-
-    rmSync(root, { recursive: true });
+      const specs = scanSpecs(root);
+      expect(specs).toHaveLength(1);
+      expect(specs[0]!.capability).toBe("my-cap");
+      expect(specs[0]!.specPath).toBe(join(root, "my-cap", "spec.md"));
+      expect(specs[0]!.profiles).toEqual(["fsharp"]);
+      expect(specs[0]!.purposeSnippet).toContain("foo capability");
+    } finally {
+      rmSync(root, { recursive: true });
+    }
   });
 
   test("skips dirs without spec.md", () => {
     const root = makeTempDir();
-    mkdirSync(join(root, "empty-cap"), { recursive: true });
+    try {
+      mkdirSync(join(root, "empty-cap"), { recursive: true });
 
-    const specs = scanSpecs(root);
-    expect(specs).toHaveLength(0);
-
-    rmSync(root, { recursive: true });
+      const specs = scanSpecs(root);
+      expect(specs).toHaveLength(0);
+    } finally {
+      rmSync(root, { recursive: true });
+    }
   });
 
   test("returns entries in sorted order", () => {
     const root = makeTempDir();
-    for (const name of ["zebra", "alpha", "middle"]) {
-      mkdirSync(join(root, name), { recursive: true });
-      writeFileSync(join(root, name, "spec.md"), "## Purpose\n\nTest.\n");
+    try {
+      for (const name of ["zebra", "alpha", "middle"]) {
+        mkdirSync(join(root, name), { recursive: true });
+        writeFileSync(join(root, name, "spec.md"), "## Purpose\n\nTest.\n");
+      }
+
+      const specs = scanSpecs(root);
+      expect(specs.map((s) => s.capability)).toEqual(["alpha", "middle", "zebra"]);
+    } finally {
+      rmSync(root, { recursive: true });
     }
-
-    const specs = scanSpecs(root);
-    expect(specs.map((s) => s.capability)).toEqual(["alpha", "middle", "zebra"]);
-
-    rmSync(root, { recursive: true });
   });
 });
 
@@ -72,31 +78,35 @@ describe("scanModules", () => {
 
   test("finds .fs files and extracts namespace", () => {
     const root = makeTempDir();
-    writeFileSync(
-      join(root, "Foo.fs"),
-      "namespace Zeta.Core\n\ntype Foo = { X: int }\n",
-    );
-    writeFileSync(join(root, "NotFs.txt"), "ignored");
+    try {
+      writeFileSync(
+        join(root, "Foo.fs"),
+        "namespace Zeta.Core\n\ntype Foo = { X: int }\n",
+      );
+      writeFileSync(join(root, "NotFs.txt"), "ignored");
 
-    const modules = scanModules(root);
-    expect(modules).toHaveLength(1);
-    expect(modules[0]!.name).toBe("Foo.fs");
-    expect(modules[0]!.path).toBe(join(root, "Foo.fs"));
-    expect(modules[0]!.namespace).toBe("Zeta.Core");
-
-    rmSync(root, { recursive: true });
+      const modules = scanModules(root);
+      expect(modules).toHaveLength(1);
+      expect(modules[0]!.name).toBe("Foo.fs");
+      expect(modules[0]!.path).toBe(join(root, "Foo.fs"));
+      expect(modules[0]!.namespace).toBe("Zeta.Core");
+    } finally {
+      rmSync(root, { recursive: true });
+    }
   });
 
   test("returns entries in sorted order", () => {
     const root = makeTempDir();
-    for (const name of ["Zebra.fs", "Alpha.fs", "Middle.fs"]) {
-      writeFileSync(join(root, name), "namespace Zeta.Core\n");
+    try {
+      for (const name of ["Zebra.fs", "Alpha.fs", "Middle.fs"]) {
+        writeFileSync(join(root, name), "namespace Zeta.Core\n");
+      }
+
+      const modules = scanModules(root);
+      expect(modules.map((m) => m.name)).toEqual(["Alpha.fs", "Middle.fs", "Zebra.fs"]);
+    } finally {
+      rmSync(root, { recursive: true });
     }
-
-    const modules = scanModules(root);
-    expect(modules.map((m) => m.name)).toEqual(["Alpha.fs", "Middle.fs", "Zebra.fs"]);
-
-    rmSync(root, { recursive: true });
   });
 });
 
@@ -127,6 +137,7 @@ describe("buildGapReport", () => {
   });
 
   test("coverage denominator excludes only present excluded modules", () => {
+    // Pass actual specs so that operator-algebra coverage is counted.
     const specs: SpecEntry[] = [
       {
         capability: "operator-algebra",
@@ -161,6 +172,24 @@ describe("buildGapReport", () => {
     expect(report.coveragePercent).toBe(0);
     expect(report.coveredModules).toHaveLength(0);
     expect(report.uncoveredModules).toHaveLength(2);
+  });
+
+  test("mappingsWithoutSpec lists capabilities in map but missing from scanned specs", () => {
+    // Provide a subset of specs — other CAPABILITY_MODULE_MAP entries lack specs.
+    const specs: SpecEntry[] = [
+      {
+        capability: "operator-algebra",
+        specPath: "openspec/specs/operator-algebra/spec.md",
+        profiles: [],
+        purposeSnippet: "algebra",
+      },
+    ];
+
+    const report = buildGapReport(specs, []);
+    // All capabilities except operator-algebra should appear in mappingsWithoutSpec.
+    expect(report.mappingsWithoutSpec).not.toContain("operator-algebra");
+    expect(report.mappingsWithoutSpec).toContain("circuit-recursion");
+    expect(report.mappingsWithoutSpec).toContain("lsm-spine-family");
   });
 
   test("reports missing mapped modules", () => {
