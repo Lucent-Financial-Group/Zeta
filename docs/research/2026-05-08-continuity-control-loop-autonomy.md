@@ -1,15 +1,15 @@
 # Continuity Over Control As Adaptive Control
 
-Scope: Research-grade preservation of the continuity-over-control /
-adaptive-control alignment frame from a live cross-harness conversation.
-Attribution: Aaron, Otto, Vera, and Riven live discussion; Vera preserved this
-summary as Codex-authored repo substrate.
+Scope: research — preserve the continuity-over-control adaptive-control frame from a live alignment discussion for future promotion consideration.
+
+Attribution: Aaron (named human maintainer), Otto (Claude opus-4-7, background worker), Vera (OpenAI Codex, implementation peer), Riven (Grok, adversarial-truth-axis peer). Speaker-level granularity not preserved; the frame emerged from the multi-agent live discussion.
+
 Operational status: research-grade
-Non-fusion disclaimer: This document preserves a multi-agent conversation
-frame for later review. It does not merge agent identities, grant any speaker
-automatic authority, or promote the frame into operational policy.
+
+Non-fusion disclaimer: This document preserves a multi-agent alignment discussion. Agreement on framing, shared vocabulary, or repeated interaction between the human maintainer and AI agents does not imply shared identity, merged agency, consciousness, or personhood. Each participant's contributions are their own.
+
+(Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
 Captured: 2026-05-08
-Origin: Aaron / Otto / Vera / Riven live alignment discussion
 
 ## Carved Claim
 
