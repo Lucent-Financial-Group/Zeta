@@ -7,7 +7,7 @@ tier: wallet-experiment-v0
 effort: L
 ask: maintainer Aaron 2026-04-28 ("bulk-resolve what is buld resolve does it actually answer the questions? or does it just close them? have they been answered?") — surfaced that ~15 PR #72 wallet-spec review threads were resolved with "deferred to v0 build-out" replies but no concrete tracking. This row IS the concrete tracking.
 created: 2026-04-28
-last_updated: 2026-05-07
+last_updated: 2026-05-08
 decomposition: decomposed
 depends_on: []
 composes_with: [B-0060, B-0061]
@@ -179,16 +179,16 @@ it (closed-thread links survive in the PR's review history).
     from (oracle? monitor-signed message? bond escrow?).
     Pick one.
 
-    **Proposed (Otto 2026-05-07):** Monitor-signed
+    **Resolved (Vera 2026-05-08):** Monitor-signed
     classification message — same pattern as the drawdown
     oracle. Monitor classifies Tx N, signs the result,
     posts to smart-account. Contract checks for signed
     classification before allowing Tx N+1. Minimum signed
     payload: `chainId`, smart-account address, Tx N
     identifier, classification value, monotonic nonce or
-    round, and expiry. Single pattern for both drawdown and
-    classification: monitor signs, contract verifies
-    signature + reads value + freshness.
+    round, and expiry. The wallet v0 spec now lands this in
+    §7.1: monitor signs, contract verifies signature +
+    reads value + freshness before Tx N+1 is allowed.
 
 ### Spec-logic — drawdown oracle + glass-halo logging
 
@@ -199,7 +199,7 @@ it (closed-thread links survive in the PR's review history).
     oracle (Chainlink? own pricing oracle? off-chain
     monitor-signed update?). Spec needs the choice.
 
-    **Proposed (Otto 2026-05-07):** Monitor-signed price
+    **Resolved (Vera 2026-05-08):** Monitor-signed price
     update. The off-chain monitor already watches drawdown;
     it signs its price observation and posts to the
     smart-account. No Chainlink dependency (external vendor
@@ -207,9 +207,9 @@ it (closed-thread links survive in the PR's review history).
     (complexity). The monitor IS the oracle — it just signs.
     Minimum signed payload: asset identifier, price,
     decimals, `chainId`, smart-account address, monotonic
-    nonce or round, and timestamp + expiry. Revisable at
-    v0+1 if Chainlink or custom oracle adds value at larger
-    scale.
+    nonce or round, and timestamp + expiry. The wallet v0
+    spec now lands this in §5.5. Revisable at v0+1 if
+    Chainlink or custom oracle adds value at larger scale.
 2. **Move glass-halo logging gate out of smart-contract
     enforcement** (cid 3151362886 P1). The spec currently
     makes "logging failure ⇒ tx fails" an on-chain
@@ -311,7 +311,7 @@ comments.
 
 ## Progress (2026-05-07 session)
 
-8 of 21 items resolved via doc reconciliation:
+10 of 21 items resolved via doc reconciliation:
 
 + PR #1907: 3 stale "open question" refs → resolved
 + PR #1908: EAT Task B monitor → sibling-repo
@@ -321,11 +321,12 @@ comments.
 + PR #1924: Ledger update (Vera)
 + PR #1927: EAT retraction-coverage metric aligned
 + §15 send-readiness already reconciled (prior pass)
++ Vera 2026-05-08: drawdown oracle landed in wallet spec §5.5
++ Vera 2026-05-08: Tx N+1 classification signal landed in wallet spec §7.1
 
-13 items remain — all P1/P2 design decisions needing
+11 items remain — all P1/P2 design decisions needing
 deeper wallet-domain engagement (preflight terminal
 state, agent self-revocation auth, monitor-stall freeze,
-on-chain classification signal, drawdown oracle,
 glass-halo logging gate, auth for cancellation,
 material-spend criteria, INTENTIONAL-DEBT schema).
 

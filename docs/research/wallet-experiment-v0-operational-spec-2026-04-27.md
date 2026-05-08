@@ -225,8 +225,20 @@ All caps enforced in smart-account contract code, not in any prompt or off-chain
 ### §5.5 Drawdown freeze
 
 - Trigger: realized + unrealized loss reaches -30% of bond.
-- Enforcement: smart-account checks bond-vs-current-value on every tx; freezes if breached.
-- Off-chain monitor can additionally freeze on stricter threshold (-20%) if monitor logic decides.
+- Enforcement: smart-account checks the latest monitor-signed
+  drawdown observation before every tx; freezes if breached.
+- Off-chain monitor can additionally freeze on stricter threshold
+  (-20%) if monitor logic decides.
+- Oracle source for v0: the off-chain monitor signs a price /
+  mark-to-bond observation and posts it to the smart-account.
+  The smart-account verifies the monitor signature, freshness,
+  mandate scope, and replay guard before using the value. v0
+  deliberately avoids Chainlink and a custom oracle contract at
+  the $100/week bond scale; those can be reconsidered at v0+1 if
+  the bond or venue surface grows.
+- Minimum signed payload: asset identifier, price, decimals,
+  `chainId`, smart-account address, mandate / budget id,
+  monotonic nonce or round, observed-at timestamp, and expiry.
 
 ### §5.6 Hard-coded NEVERs (per EAT packet §9)
 
@@ -287,6 +299,15 @@ All caps enforced in smart-account contract code, not in any prompt or off-chain
 > Transaction N+1 cannot execute until Transaction N has a receipt, classification, and substrate entry.
 
 Enforced at the smart-account layer: a tx-attempt that would be Tx N+1 reverts if Tx N's receipt-classified flag is not set.
+
+The receipt-classified flag is set only by a monitor-signed
+classification message. The off-chain monitor classifies Tx N,
+signs the classification, and posts it to the smart-account; the
+smart-account verifies the monitor signature, freshness, and replay
+guard before allowing Tx N+1. Minimum signed payload: `chainId`,
+smart-account address, tx identifier, classification value, mandate
+/ budget id, monotonic nonce or round, classified-at timestamp, and
+expiry.
 
 ### §7.2 Receipt schema
 
