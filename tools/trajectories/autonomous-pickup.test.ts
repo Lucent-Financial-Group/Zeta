@@ -72,6 +72,26 @@ describe("selectNextTrajectory", () => {
     expect(selection.blocked[0]?.reason).toBe("no next action found");
   });
 
+  test("ignores placeholder child candidates when next action is concrete", () => {
+    const selection = selectNextTrajectory(
+      [
+        packet({
+          slug: "ready-lane",
+          title: "Ready lane",
+          nextAction: "Claim and implement one small action",
+          childCandidates: ["none currently selected"],
+        }),
+      ],
+      [],
+    );
+
+    expect(selection.status).toBe("selected");
+    expect(selection.selected?.slug).toBe("ready-lane");
+    expect(selection.action).toBe("claim-and-implement");
+    expect(selection.executionPrompt).not.toContain("First child candidate");
+    expect(selection.executionPrompt).not.toContain("none currently selected");
+  });
+
   test("blocks packets with explicit blockers", () => {
     const selection = selectNextTrajectory(
       [

@@ -15,6 +15,6 @@ The bounded gate observed `codex-backlog-runner` selecting
 selected`. That placeholder should block the packet as having no concrete next
 action instead of producing a bogus child-packet prompt.
 
-2026-05-08T06:27Z: Vera resumed the stale Codex claim, preserved the existing
-worktree patch, and verified the selector now routes the packet to `blocked`
-with reason `no next action found`.
+2026-05-08T06:27Z: The Codex harness resumed the stale claim, preserved the
+existing worktree patch, and verified the selector now routes the packet to
+`blocked` with reason `no next action found`.
