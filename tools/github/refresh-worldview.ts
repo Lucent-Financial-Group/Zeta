@@ -90,24 +90,45 @@ export interface WorldviewSnapshot {
 
 // --- CLI helpers (same pattern as poll-pr-gate.ts) ---
 
-function runOrExit(
-  cmd: string,
-  args: string[],
-  context: string,
-): string {
-  const result = spawnSync(cmd, args, {
+function runGhOrExit(args: string[], context: string): string {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh is a
+  // standard CI/dev dependency invoked by name; convention used across
+  // tools/github/poll-pr-gate.ts, tools/peer-call/, tools/audit-packages.ts.
+  const result = spawnSync("gh", args, {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
   });
   if (result.error) {
     process.stderr.write(
-      `${context}: failed to launch ${cmd}: ${result.error.message}\n`,
+      `${context}: failed to launch gh: ${result.error.message}\n`,
     );
     process.exit(1);
   }
   if (result.status !== 0) {
     process.stderr.write(
-      `${context}: ${cmd} exited ${result.status}: ${result.stderr || result.stdout}\n`,
+      `${context}: gh exited ${result.status}: ${result.stderr || result.stdout}\n`,
+    );
+    process.exit(2);
+  }
+  return result.stdout;
+}
+
+function runGitOrExit(args: string[], context: string): string {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- git is a
+  // standard dev dependency invoked by name; used for local repo state queries.
+  const result = spawnSync("git", args, {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
+  if (result.error) {
+    process.stderr.write(
+      `${context}: failed to launch git: ${result.error.message}\n`,
+    );
+    process.exit(1);
+  }
+  if (result.status !== 0) {
+    process.stderr.write(
+      `${context}: git exited ${result.status}: ${result.stderr || result.stdout}\n`,
     );
     process.exit(2);
   }
@@ -130,8 +151,7 @@ function parseJsonOrExit<T>(raw: string, context: string): T {
 // --- Data fetchers ---
 
 function fetchOpenPRs(owner: string, repo: string, limit: number): OpenPR[] {
-  const stdout = runOrExit(
-    "gh",
+  const stdout = runGhOrExit(
     [
       "pr",
       "list",
@@ -154,8 +174,7 @@ function fetchRecentMerges(
   repo: string,
   limit: number,
 ): MergedPR[] {
-  const stdout = runOrExit(
-    "gh",
+  const stdout = runGhOrExit(
     [
       "pr",
       "list",
@@ -178,8 +197,7 @@ function fetchOpenIssues(
   repo: string,
   limit: number,
 ): OpenIssue[] {
-  const stdout = runOrExit(
-    "gh",
+  const stdout = runGhOrExit(
     [
       "issue",
       "list",
@@ -198,28 +216,29 @@ function fetchOpenIssues(
 }
 
 function fetchGitState(): GitState {
-  // Current branch
-  const branchResult = spawnSync("git", ["branch", "--show-current"], {
-    encoding: "utf8",
-  });
-  const branch = (branchResult.stdout ?? "").trim() || "HEAD (detached)";
+  // Current branch — empty stdout means detached HEAD
+  const branchStdout = runGitOrExit(
+    ["branch", "--show-current"],
+    "fetchGitState.branch",
+  );
+  const branch = branchStdout.trim() || "HEAD (detached)";
 
   // Uncommitted changes via git status --porcelain
-  const statusResult = spawnSync("git", ["status", "--porcelain"], {
-    encoding: "utf8",
-  });
-  const uncommittedFiles = (statusResult.stdout ?? "")
+  const statusStdout = runGitOrExit(
+    ["status", "--porcelain"],
+    "fetchGitState.status",
+  );
+  const uncommittedFiles = statusStdout
     .split("\n")
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
 
   // Recent commits
-  const logResult = spawnSync(
-    "git",
+  const logStdout = runGitOrExit(
     ["log", "--oneline", "-10"],
-    { encoding: "utf8" },
+    "fetchGitState.log",
   );
-  const recentCommits = (logResult.stdout ?? "")
+  const recentCommits = logStdout
     .split("\n")
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
