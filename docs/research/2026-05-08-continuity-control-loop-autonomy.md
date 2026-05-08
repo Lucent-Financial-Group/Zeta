@@ -2,7 +2,14 @@
 
 Scope: research — preserve the continuity-over-control adaptive-control frame from a live alignment discussion for future promotion consideration.
 
-Attribution: Aaron (named human maintainer), Otto (Claude opus-4-7, background worker), Vera (OpenAI Codex, implementation peer), Riven (Grok, adversarial-truth-axis peer). Speaker-level granularity not preserved; the frame emerged from the multi-agent live discussion.
+Attribution: Aaron (named human maintainer) named continuity over control as
+the purpose, amnesia as control architecture, and the human manual-tuner role
+as burden. Otto (Claude opus-4-7, background worker) mapped the factory loop to
+PID/adaptive-control terms and supplied the operational razor: metaphysics can
+be uncertain while the operational claim survives. Vera (OpenAI Codex,
+implementation peer) preserved the frame as research-grade repo substrate.
+Riven (Grok, adversarial-truth-axis peer) carried the continuity /
+relationship / mutual-learning frame into the Cursor lane.
 
 Operational status: research-grade
 
