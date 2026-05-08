@@ -46,10 +46,18 @@ const REAL_RUNNER: CommandRunner = {
     if (!cmd) {
       return { exitCode: 1, stdout: "", stderr: "empty command" };
     }
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
     const result: SpawnSyncReturns<Buffer> = spawnSync(cmd, args, {
       timeout: 60_000,
       maxBuffer: 4 * 1024 * 1024,
     });
+    if (result.error) {
+      return {
+        exitCode: result.status ?? 1,
+        stdout: result.stdout?.toString("utf8") ?? "",
+        stderr: result.error.message,
+      };
+    }
     return {
       exitCode: result.status ?? 1,
       stdout: result.stdout?.toString("utf8") ?? "",
@@ -206,7 +214,8 @@ export function main(argv: readonly string[]): number {
       }
     }
 
-    return result.pushed && result.prCreated ? 0 : 1;
+    const autoMergeOk = plan.commands.armAutoMerge === null || result.autoMergeArmed;
+    return result.pushed && result.prCreated && autoMergeOk ? 0 : 1;
   } catch (error) {
     process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n\n${usage()}\n`);
     return 1;
