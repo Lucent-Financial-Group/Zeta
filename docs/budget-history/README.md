@@ -152,5 +152,5 @@ Decision deferred to post-Stage-2 review, explicitly.
   — LFG paid-plan context
 - `tools/budget/snapshot-burn.sh` — the capture script
 - `tools/budget/project-runway.sh` — the projection companion
-- `tools/hygiene/snapshot-github-settings.sh` — sibling
+- `tools/hygiene/snapshot-github-settings.ts` — sibling
   declarative-settings-as-code pattern (parallel tool shape)

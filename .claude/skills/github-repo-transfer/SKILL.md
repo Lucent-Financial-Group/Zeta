@@ -62,7 +62,7 @@ Do **not** wear this hat for:
 ```
 [1] Authorize                decision recorded; admin both sides
        |
-[2] Pre-transfer scorecard   snapshot-github-settings.sh → JSON baseline
+[2] Pre-transfer scorecard   snapshot-github-settings.ts → JSON baseline
        |
 [3] Adjacent-surface         wiki / pages / discussions / agents / security / pulse
     scorecard                (per AGENT-GITHUB-SURFACES.md)
@@ -114,7 +114,7 @@ Any failure → stop and file an `HB-NNN` row.
 ### Step 2 — Pre-transfer scorecard
 
 ```bash
-tools/hygiene/snapshot-github-settings.sh \
+bun tools/hygiene/snapshot-github-settings.ts \
   --repo <old-owner>/<name> \
   > /tmp/pre-transfer-scorecard.json
 
@@ -187,7 +187,7 @@ gh api /repos/<new>/<name> --jq '.full_name'
 ### Step 6 — Post-transfer diff
 
 ```bash
-tools/hygiene/snapshot-github-settings.sh \
+bun tools/hygiene/snapshot-github-settings.ts \
   --repo <new>/<name> \
   > /tmp/post-transfer-scorecard.json
 
@@ -287,8 +287,8 @@ way and you mentied it for the skills earler, works in code too lol"*.
   — ten-surface playbook (steps 3, 8).
 - [`docs/hygiene-history/repo-transfer-history.md`](../../../docs/hygiene-history/repo-transfer-history.md)
   — fire-history (step 9).
-- [`tools/hygiene/snapshot-github-settings.sh`](../../../tools/hygiene/snapshot-github-settings.sh),
-  [`tools/hygiene/check-github-settings-drift.sh`](../../../tools/hygiene/check-github-settings-drift.sh)
+- [`tools/hygiene/snapshot-github-settings.ts`](../../../tools/hygiene/snapshot-github-settings.ts),
+  [`tools/hygiene/check-github-settings-drift.ts`](../../../tools/hygiene/check-github-settings-drift.ts)
   — scorecard tooling (steps 2, 6).
 - `memory/project_zeta_org_migration_to_lucent_financial_group.md`
   — the worked-example memory.

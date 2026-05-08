@@ -115,13 +115,13 @@ with .ts counterparts removed. 2 CI workflows updated to call .ts.
 | tools/profile.sh | #1962 | merged |
 | tools/hygiene/check-tick-history-shard-schema.sh | #1986 (Vera) | in CI |
 
-**REMAINING (3 files):**
+**REMAINING (0 files — all ported in B-0156 PR):**
 
-| .sh path | lines | CI-referenced |
-|----------|-------|--------------|
-| tools/hygiene/check-github-settings-drift.sh | 83 | yes |
-| tools/hygiene/snapshot-github-settings.sh | 165 | yes |
-| tools/hygiene/audit-orphan-role-refs.sh | 322 | no |
+| .sh path | lines | CI-referenced | status |
+|----------|-------|--------------|--------|
+| tools/hygiene/check-github-settings-drift.sh | 83 | yes | ported to .ts, .sh deleted |
+| tools/hygiene/snapshot-github-settings.sh | 165 | yes | ported to .ts, .sh deleted |
+| tools/hygiene/audit-orphan-role-refs.sh | 322 | no | ported to .ts, .sh deleted |
 
 **KEEP** — external dependencies (Lean4 .lake packages):
 All `tools/lean4/.lake/packages/*/scripts/*.sh` — not our code.

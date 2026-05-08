@@ -84,20 +84,21 @@ Trajectory: grow `.ps1` siblings for Windows (task #305),
 verify Otto-235 four-bash-alignment empirically. NOT TS
 candidates.
 
-### Non-install `.sh` files without TS sibling (6 ports needed)
+### Non-install `.sh` files without TS sibling (3 ports remaining)
 
 ```text
 tools/profile.sh
 tools/peer-call/amara.sh
 tools/peer-call/ani.sh
-tools/hygiene/check-tick-history-shard-schema.sh
-tools/hygiene/snapshot-github-settings.sh
-tools/hygiene/check-github-settings-drift.sh
 ```
 
-Six files. Each gets a TS sibling; bash version stays as a
-fallback during transition (per existing `.sh` + `.ts`
-coexistence pattern across `tools/lint/`, `tools/hygiene/`).
+Three files remain. `snapshot-github-settings.sh`,
+`check-github-settings-drift.sh`, and
+`check-tick-history-shard-schema.sh` were ported and the
+`.sh` originals deleted. Each remaining file gets a TS
+sibling; bash version stays as a fallback during transition
+(per existing `.sh` + `.ts` coexistence pattern across
+`tools/lint/`, `tools/hygiene/`).
 
 ### Python files in our codebase (0)
 
@@ -114,15 +115,15 @@ documented for clarity.
 
 ## Phase plan
 
-### Phase 1 — Highest-leverage ports first (compose with B-0155)
+### Phase 1 — Highest-leverage ports first (compose with B-0155) -- DONE
 
-1. `tools/hygiene/snapshot-github-settings.sh` → `.ts`
-2. `tools/hygiene/check-github-settings-drift.sh` → `.ts`
+1. `tools/hygiene/snapshot-github-settings.sh` → `.ts` -- DONE
+2. `tools/hygiene/check-github-settings-drift.sh` → `.ts` -- DONE
 
 These two are foundation for the **B-0155 reconciliation
-script** (`tools/hygiene/apply-github-settings.sh` →
-`apply-github-settings.ts`). Porting snapshot + check FIRST
-gives the apply script natural TS imports for both.
+script** (`tools/hygiene/apply-github-settings.ts`).
+Porting snapshot + check FIRST gives the apply script
+natural TS imports for both.
 
 ### Phase 2 — Schema + safety lints
 

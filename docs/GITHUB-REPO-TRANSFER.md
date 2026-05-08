@@ -61,8 +61,8 @@ preserves all of the following across the cutover:
 
 A transfer surfaces these changes *without* sending a
 notification. Every entry here is something the
-declarative-scorecard diff (`tools/hygiene/check-github-settings-drift.sh`
-after `tools/hygiene/snapshot-github-settings.sh`) should
+declarative-scorecard diff (`tools/hygiene/check-github-settings-drift.ts`
+after `tools/hygiene/snapshot-github-settings.ts`) should
 catch. Until GitHub documents the transfer code path
 comprehensively, treat this list as empirical.
 
@@ -287,8 +287,8 @@ secret-scanning-push-protection, both flipped
   row).
 - `docs/GITHUB-SETTINGS.md` + `tools/hygiene/github-settings.expected.json`
   (the declarative scorecard the routine consumes).
-- `tools/hygiene/snapshot-github-settings.sh` +
-  `tools/hygiene/check-github-settings-drift.sh`
+- `tools/hygiene/snapshot-github-settings.ts` +
+  `tools/hygiene/check-github-settings-drift.ts`
   (the scorecard tooling).
 - `memory/project_zeta_org_migration_to_lucent_financial_group.md`
   (the memory).
@@ -312,8 +312,8 @@ volatile chat.
   adjacent-surface scorecard and cross-cutting heal.
 - [`docs/hygiene-history/repo-transfer-history.md`](hygiene-history/repo-transfer-history.md)
   — fire-history event log.
-- `tools/hygiene/snapshot-github-settings.sh`,
-  `tools/hygiene/check-github-settings-drift.sh` —
+- `tools/hygiene/snapshot-github-settings.ts`,
+  `tools/hygiene/check-github-settings-drift.ts` —
   scorecard tooling.
 - `memory/project_zeta_org_migration_to_lucent_financial_group.md`
   — the worked-example memory.

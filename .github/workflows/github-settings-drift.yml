@@ -30,8 +30,8 @@ on:
   pull_request:
     paths:
       - "tools/hygiene/github-settings.expected.json"
-      - "tools/hygiene/snapshot-github-settings.sh"
-      - "tools/hygiene/check-github-settings-drift.sh"
+      - "tools/hygiene/snapshot-github-settings.ts"
+      - "tools/hygiene/check-github-settings-drift.ts"
       - ".github/workflows/github-settings-drift.yml"
 
 permissions:
@@ -69,6 +69,8 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
       - name: check drift
         env:
           # Both values below are first-party trusted context.
@@ -77,4 +79,4 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          tools/hygiene/check-github-settings-drift.sh --repo "$GH_REPO"
+          bun tools/hygiene/check-github-settings-drift.ts --repo "$GH_REPO"
