@@ -81,15 +81,15 @@ function inferSource(
   previousLine: string | null,
   filename: string,
 ): string {
-  const filenameSource = inferSourceFromFilename(filename);
-  if (filenameSource !== "unknown") return filenameSource;
-
   if (previousLine !== null) {
     const issuerSource = inferSourceFromText(previousLine);
     if (issuerSource !== "unknown") return issuerSource;
   }
 
-  return inferSourceFromText(raw);
+  const rawSource = inferSourceFromText(raw);
+  if (rawSource !== "unknown") return rawSource;
+
+  return inferSourceFromFilename(filename);
 }
 
 function extractTimestamp(text: string, filename: string): string | null {

@@ -331,6 +331,26 @@ describe("extractPaceInstructions", () => {
     expect(instruction.source).toBe("amara");
   });
 
+  test("CLAUDE.md entry quoting Aaron → attributed to aaron, not claude.ai", async () => {
+    const root = makeTempRoot();
+    writeFileSync(
+      join(root, "CLAUDE.md"),
+      [
+        "# CLAUDE.md",
+        "",
+        "Aaron 2026-05-02:",
+        "",
+        '> *"go hard, you don\'t have to do minimum action"*',
+      ].join("\n"),
+    );
+
+    const result = await extractPaceInstructions(root);
+    expect(result.length).toBe(1);
+    const instruction = instructionAt(result, 0);
+    expect(instruction.source).toBe("aaron");
+    expect(instruction.file).toBe("CLAUDE.md");
+  });
+
   test("missing surfaces gracefully handled", async () => {
     const root = makeTempRoot();
     const result = await extractPaceInstructions(root);
