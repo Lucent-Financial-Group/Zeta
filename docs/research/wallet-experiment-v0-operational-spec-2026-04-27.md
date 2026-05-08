@@ -401,7 +401,7 @@ conservative for v0's $100/week bond and is revisable at v0+1.
 Every wallet-experiment tick produces a row parallel to the existing autonomous-loop heartbeat rows. Schema:
 
 ```
-| <ISO8601 timestamp> (wallet-experiment tick — proposal_id <id>) | <model_id> / session continuation | <commit SHA> | <one-line-action — proposal-only / signed / broadcast / classified / frozen> | (proposal id #<id>) | minimal |
+| <ISO8601 timestamp> (wallet-experiment tick — proposal_id <id>) | <model_id> / session continuation | <commit SHA> | <one-line-action — proposal-only / signed / broadcast / classified / retracted / frozen> | (proposal id #<id>) | minimal |
 ```
 
 Tick types in order during a single wallet operation:
@@ -410,7 +410,22 @@ Tick types in order during a single wallet operation:
 2. **signed**: smart-account validated; session key signed; pre-flight retraction window opened.
 3. **broadcast**: retraction window expired; tx on-chain.
 4. **classified**: actual outcome logged; loss/gain category assigned; receipt complete.
-5. **frozen** (if applicable): freeze authority triggered; details in receipt.
+5. **retracted**: pre-flight cancellation accepted before broadcast;
+   receipt uses `tx: null`, `pre_flight_retracted: true`, and
+   `retraction_reason`.
+6. **frozen**: freeze authority triggered before or after broadcast;
+   details in receipt.
+
+Local proposal lifecycle:
+
+- Normal path: `proposal-only -> signed -> broadcast -> classified`.
+- Pre-flight cancellation path: `signed -> retracted`. This is a
+  terminal state for the local proposal instance only; it does not
+  close the standing Rx query wave, and any materialized cache remains
+  reconstructable from deltas (`cache = I o D`).
+- Pre-broadcast freeze path: `signed -> frozen`. Unfreeze follows
+  §6.2 and returns the proposal to `signed` for re-evaluation, not
+  automatic broadcast.
 
 Tx N+1 cannot fire a `proposal-only` row until Tx N has a `classified` row.
 

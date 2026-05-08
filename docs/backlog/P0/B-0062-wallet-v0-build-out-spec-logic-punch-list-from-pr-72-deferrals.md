@@ -56,13 +56,15 @@ it (closed-thread links survive in the PR's review history).
    state with the receipt-schema fields the monitor will
    write.
 
-   **Proposed (Otto 2026-05-07):** Add `retracted`
+   **Resolved (Vera 2026-05-08):** Add `retracted`
    terminal state: `signed → retracted`. The receipt
    for a retracted proposal uses the nullable tx block
    (PR #1922) and records `pre_flight_retracted: true`
    + `retraction_reason`. The state machine becomes:
    `signed → broadcast → settled` (normal) OR
-   `signed → retracted` (preflight cancellation).
+   `signed → retracted` (preflight cancellation). The
+   wallet v0 spec now lands this in §7.3 and preserves the
+   standing query correction below.
 
    **Aaron correction (2026-05-07):** Terminal state is the
    sharp edge of one proposal instance, not the round shape
@@ -92,7 +94,7 @@ it (closed-thread links survive in the PR's review history).
    `freeze-on-dissent` before broadcast — the spec needs
    the matching terminal state in the tick state machine.
 
-   **Proposed (Otto 2026-05-07):** Add `frozen`
+   **Resolved (Vera 2026-05-08):** Add `frozen`
    terminal state: `signed → frozen`. Distinct from
    `retracted` (agent-initiated) — `frozen` is
    monitor/Aaron-initiated. Unfreeze (per §6.2:
@@ -100,7 +102,8 @@ it (closed-thread links survive in the PR's review history).
    `signed` for re-evaluation. State machine:
    `signed → broadcast → settled` (normal) OR
    `signed → retracted` (agent cancels) OR
-   `signed → frozen` (monitor/Aaron freezes).
+   `signed → frozen` (monitor/Aaron freezes). The wallet v0
+   spec now lands this in §7.3.
 4. **Make tx-receipt fields optional for preflight retractions**
    (cid 3151233788 P1). Receipt schema currently requires
    on-chain transaction fields (`hash`, `block_number`,
@@ -325,7 +328,7 @@ comments.
 
 ## Progress (2026-05-07 session)
 
-16 of 21 items resolved via doc reconciliation:
+18 of 21 items resolved via doc reconciliation:
 
 + PR #1907: 3 stale "open question" refs → resolved
 + PR #1908: EAT Task B monitor → sibling-repo
@@ -343,10 +346,12 @@ comments.
 + Vera 2026-05-08: monitor-stall freeze landed in wallet spec §6.1/§9.1
 + Vera 2026-05-08: second-agent material-spend review predicate landed in
   wallet spec §7.2.1
++ Vera 2026-05-08: preflight `retracted` and `frozen` local proposal
+  lifecycle states landed in wallet spec §7.3
 
-5 items remain — all P1/P2 design decisions needing
-deeper wallet-domain engagement (preflight terminal
-state, INTENTIONAL-DEBT schema).
+3 items remain — all P1/P2 design decisions needing
+deeper wallet-domain engagement (INTENTIONAL-DEBT schema and final
+companion-spec cleanup).
 
 2026-05-07 red-team correction: PR #1942 briefly marked
 this row closed by trusting a "21/21 addressed" pickup
