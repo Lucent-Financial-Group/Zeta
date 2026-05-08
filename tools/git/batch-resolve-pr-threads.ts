@@ -32,6 +32,7 @@
 //   2 — argument errors
 
 import { spawnSync } from "node:child_process";
+import { appendAttribution } from "../github/ai-attribution";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
@@ -468,12 +469,16 @@ function emitSummary(args: {
   }
 }
 
+function attributed(body: string): string {
+  return appendAttribution(body, { agent: "batch-resolve-pr-threads" });
+}
+
 function applyResolutions(classified: ClassifiedThreads): number {
   const total = classified.dangling.length + classified.nameAttribution.length;
   process.stdout.write(`\nAPPLY MODE — resolving ${String(total)} threads...\n`);
   for (const tid of classified.dangling) {
     process.stdout.write(`  resolving dangling-ref: ${tid}\n`);
-    const err = resolveThread(tid, REPLY_DANGLING_REF);
+    const err = resolveThread(tid, attributed(REPLY_DANGLING_REF));
     if (err !== null) {
       process.stderr.write(
         `error: could not ${err.stage} thread ${err.threadId}: ${err.message}\n`,
@@ -483,7 +488,7 @@ function applyResolutions(classified: ClassifiedThreads): number {
   }
   for (const tid of classified.nameAttribution) {
     process.stdout.write(`  resolving name-attribution: ${tid}\n`);
-    const err = resolveThread(tid, REPLY_NAME_ATTRIBUTION);
+    const err = resolveThread(tid, attributed(REPLY_NAME_ATTRIBUTION));
     if (err !== null) {
       process.stderr.write(
         `error: could not ${err.stage} thread ${err.threadId}: ${err.message}\n`,
