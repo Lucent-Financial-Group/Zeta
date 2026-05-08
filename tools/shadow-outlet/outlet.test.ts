@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { existsSync, mkdirSync, readdirSync, rmSync } from "node:fs";
+import { existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -60,6 +60,18 @@ describe("shadow-outlet", () => {
     const read = JSON.parse(r.stdout);
     expect(read.id).toBe(entry.id);
     expect(read.content).toBe("test read");
+  });
+
+  test("read --exclude hides own entries (self-invisibility)", () => {
+    const w = run("write", "--agent", "otto", "--content", "shadow thought", "--json");
+    const entry = JSON.parse(w.stdout);
+
+    const blocked = run("read", entry.id, "--exclude", "otto");
+    expect(blocked.exitCode).toBe(1);
+
+    const allowed = run("read", entry.id, "--exclude", "vera", "--json");
+    expect(allowed.exitCode).toBe(0);
+    expect(JSON.parse(allowed.stdout).id).toBe(entry.id);
   });
 
   test("read returns error for missing id", () => {

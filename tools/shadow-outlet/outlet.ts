@@ -14,7 +14,7 @@
 //   bun tools/shadow-outlet/outlet.ts write --agent otto --content "exploring X"
 //   bun tools/shadow-outlet/outlet.ts list                          # all entries
 //   bun tools/shadow-outlet/outlet.ts list --exclude otto           # consensus view (exclude self)
-//   bun tools/shadow-outlet/outlet.ts read <id>                     # read one entry
+//   bun tools/shadow-outlet/outlet.ts read <id> --exclude otto       # read one entry (self-invisibility enforced)
 //   bun tools/shadow-outlet/outlet.ts clean                         # remove all entries
 //   bun tools/shadow-outlet/outlet.ts clean --agent otto            # remove one agent's entries
 //   bun tools/shadow-outlet/outlet.ts --json                        # JSON output for all subcommands
@@ -46,7 +46,7 @@ function entryPath(id: string): string {
 
 function writeEntry(agent: string, content: string): Entry {
   ensureDir();
-  const id = randomUUID().slice(0, 8);
+  const id = randomUUID();
   const entry: Entry = {
     id,
     agent,
@@ -74,11 +74,13 @@ function listEntries(exclude?: string): Entry[] {
   return entries.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 }
 
-function readEntry(id: string): Entry | null {
+function readEntry(id: string, exclude?: string): Entry | null {
   const p = entryPath(id);
   if (!existsSync(p)) return null;
   try {
-    return JSON.parse(readFileSync(p, "utf-8")) as Entry;
+    const entry = JSON.parse(readFileSync(p, "utf-8")) as Entry;
+    if (exclude && entry.agent === exclude) return null;
+    return entry;
   } catch {
     return null;
   }
@@ -108,7 +110,7 @@ function usage(): void {
   console.log(`Usage:
   bun tools/shadow-outlet/outlet.ts write --agent <name> --content <text>
   bun tools/shadow-outlet/outlet.ts list [--exclude <agent>]
-  bun tools/shadow-outlet/outlet.ts read <id>
+  bun tools/shadow-outlet/outlet.ts read <id> [--exclude <agent>]
   bun tools/shadow-outlet/outlet.ts clean [--agent <name>]
 
 Flags:
@@ -122,11 +124,11 @@ function parseArgs(argv: string[]): { command: string; flags: Record<string, str
   const positional: string[] = [];
 
   for (let i = 1; i < args.length; i++) {
-    const a = args[i];
+    const a = args[i]!;
     if (a.startsWith("--")) {
       const key = a.slice(2);
       const next = args[i + 1];
-      if (next && !next.startsWith("--")) {
+      if (next !== undefined && !next.startsWith("--")) {
         flags[key] = next;
         i++;
       } else {
@@ -182,7 +184,7 @@ function main(): void {
         console.error("Error: entry id required");
         process.exit(1);
       }
-      const entry = readEntry(id);
+      const entry = readEntry(id, flags.exclude);
       if (!entry) {
         console.error(`Error: entry ${id} not found`);
         process.exit(1);
