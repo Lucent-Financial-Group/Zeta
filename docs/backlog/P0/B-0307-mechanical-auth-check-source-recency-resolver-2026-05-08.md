@@ -1,7 +1,7 @@
 ---
 id: B-0307
 priority: P0
-status: in-progress
+status: closed
 title: "Mechanical authorization check — source-filter + recency resolver"
 effort: S
 created: 2026-05-08
