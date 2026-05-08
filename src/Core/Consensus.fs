@@ -16,28 +16,55 @@ module Consensus =
         | Rejected of reason: string * votes: int * total: int
 
     let quorumThreshold (nodeCount: int) : int =
-        (2 * ((nodeCount - 1) / 3)) + 1
+        if nodeCount <= 0 then
+            0
+        else
+            (2 * ((nodeCount - 1) / 3)) + 1
+
+    let private nodeName (NodeId value) = value
 
     let decide<'T when 'T: equality>
+        (nodeCount: int)
         (votes: Vote<'T> list)
         : ConsensusResult<'T> =
-        let total = votes.Length
-        let threshold = quorumThreshold total
-        let groups =
+        let threshold = quorumThreshold nodeCount
+        let duplicateNodes =
             votes
-            |> List.groupBy (fun v -> v.Value)
-            |> List.sortByDescending (fun (_, vs) -> vs.Length)
-        match groups with
-        | [] ->
-            Rejected("no votes", 0, 0)
-        | (value, supporters) :: _ when supporters.Length >= threshold ->
-            Committed(value, supporters.Length, total)
-        | (_, supporters) :: _ ->
-            Rejected(
-                $"no quorum: best=%d{supporters.Length} threshold=%d{threshold}",
-                supporters.Length,
-                total
+            |> List.groupBy (fun v -> v.Node)
+            |> List.choose (fun (node, nodeVotes) ->
+                if nodeVotes.Length > 1 then
+                    Some node
+                else
+                    None
             )
+
+        match duplicateNodes with
+        | duplicate :: _ ->
+            Rejected(
+                $"duplicate votes from node: %s{nodeName duplicate}",
+                votes.Length,
+                nodeCount
+            )
+        | [] ->
+            if nodeCount <= 0 then
+                Rejected("invalid node count", votes.Length, nodeCount)
+            else
+                let groups =
+                    votes
+                    |> List.groupBy (fun v -> v.Value)
+                    |> List.sortByDescending (fun (_, vs) -> vs.Length)
+
+                match groups with
+                | [] ->
+                    Rejected("no votes", 0, nodeCount)
+                | (value, supporters) :: _ when supporters.Length >= threshold ->
+                    Committed(value, supporters.Length, nodeCount)
+                | (_, supporters) :: _ ->
+                    Rejected(
+                        $"no quorum: best=%d{supporters.Length} threshold=%d{threshold}",
+                        supporters.Length,
+                        nodeCount
+                    )
 
     let isCommitted (result: ConsensusResult<'T>) : bool =
         match result with
