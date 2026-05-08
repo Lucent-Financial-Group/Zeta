@@ -4,6 +4,7 @@ import {
   buildPrTitle,
   buildPublicationPlan,
   decideAutoMerge,
+  normalizeBranchRef,
   validatePublicationInput,
   type PublicationInput,
 } from "./pr-publication-plan";
@@ -88,6 +89,18 @@ describe("validation", () => {
     expect(() => validatePublicationInput(input({ branch: "main" }))).toThrow(
       "refusing to publish from default branch",
     );
+    expect(() => validatePublicationInput(input({ branch: "refs/heads/main" }))).toThrow(
+      "refusing to publish from default branch",
+    );
+    expect(() => validatePublicationInput(input({ branch: "refs/remotes/origin/main" }))).toThrow(
+      "refusing to publish from default branch",
+    );
+    expect(() => validatePublicationInput(input({ branch: "origin/main" }))).toThrow(
+      "refusing to publish from default branch",
+    );
+    expect(() => validatePublicationInput(input({ branch: "upstream/main" }))).toThrow(
+      "refusing to publish from default branch",
+    );
   });
 
   test("requires focused checks and safe backlog path", () => {
@@ -102,6 +115,42 @@ describe("validation", () => {
     expect(body).toContain("- running: `bun run typecheck` — CI may still be pending");
   });
 
+  test("rejects empty normalized refs", () => {
+    expect(() => validatePublicationInput(input({ branch: "refs/heads/" }))).toThrow("invalid normalized branch ref");
+    expect(() => validatePublicationInput(input({ branch: "refs/remotes/origin/" }))).toThrow(
+      "invalid normalized branch ref",
+    );
+    expect(() => validatePublicationInput(input({ baseBranch: "refs/heads/" }))).toThrow(
+      "invalid normalized baseBranch ref",
+    );
+  });
+
+  test("rejects option-like and malformed normalized refs", () => {
+    expect(() => validatePublicationInput(input({ branch: "refs/heads/-claim" }))).toThrow(
+      "invalid normalized branch ref",
+    );
+    expect(() => validatePublicationInput(input({ branch: "-claim" }))).toThrow("invalid normalized branch ref");
+    expect(() => validatePublicationInput(input({ baseBranch: "refs/heads/-main" }))).toThrow(
+      "invalid normalized baseBranch ref",
+    );
+    expect(() => validatePublicationInput(input({ branch: "claim..bad" }))).toThrow("invalid normalized branch ref");
+    expect(() => validatePublicationInput(input({ branch: "claim/@{bad" }))).toThrow("invalid normalized branch ref");
+    expect(() => validatePublicationInput(input({ branch: "claim/bad.lock" }))).toThrow(
+      "invalid normalized branch ref",
+    );
+    expect(() => validatePublicationInput(input({ branch: "claim bad" }))).toThrow("invalid normalized branch ref");
+  });
+
+  test("rejects non-branch refs that keep a refs prefix", () => {
+    expect(() => validatePublicationInput(input({ branch: "refs/tags/v1" }))).toThrow("invalid normalized branch ref");
+    expect(() => validatePublicationInput(input({ branch: "refs/remotes/origin" }))).toThrow(
+      "invalid normalized branch ref",
+    );
+    expect(() => validatePublicationInput(input({ baseBranch: "refs/tags/v1" }))).toThrow(
+      "invalid normalized baseBranch ref",
+    );
+  });
+
   test("trims long PR titles", () => {
     const title = buildPrTitle(
       input({
@@ -111,5 +160,43 @@ describe("validation", () => {
     );
     expect(title.length).toBeLessThanOrEqual(120);
     expect(title.endsWith("…")).toBe(true);
+  });
+
+  test("normalizes full refs before command construction", () => {
+    expect(normalizeBranchRef("refs/heads/claim/task-b0280-pr-publication-plan")).toBe(
+      "claim/task-b0280-pr-publication-plan",
+    );
+    expect(normalizeBranchRef("refs/remotes/origin/claim/task-b0280-pr-publication-plan")).toBe(
+      "claim/task-b0280-pr-publication-plan",
+    );
+    expect(normalizeBranchRef("origin/main")).toBe("main");
+    expect(normalizeBranchRef("upstream/main")).toBe("main");
+    expect(normalizeBranchRef("release/main")).toBe("release/main");
+    expect(normalizeBranchRef("refs/heads/release/main")).toBe("release/main");
+    expect(normalizeBranchRef("origin/claim/task-b0280-pr-publication-plan")).toBe(
+      "origin/claim/task-b0280-pr-publication-plan",
+    );
+
+    const plan = buildPublicationPlan(
+      input({
+        branch: "refs/heads/claim/task-b0280-pr-publication-plan",
+        baseBranch: "refs/heads/main",
+      }),
+    );
+    expect(plan.commands.push).toEqual(["git", "push", "-u", "origin", "claim/task-b0280-pr-publication-plan"]);
+    expect(plan.commands.createPr).toContain("main");
+    expect(plan.commands.createPr).toContain("claim/task-b0280-pr-publication-plan");
+  });
+
+  test("preserves literal origin-prefixed branch names", () => {
+    const plan = buildPublicationPlan(
+      input({
+        branch: "origin/feature",
+        baseBranch: "refs/heads/main",
+      }),
+    );
+
+    expect(plan.commands.push).toEqual(["git", "push", "-u", "origin", "origin/feature"]);
+    expect(plan.commands.createPr).toContain("origin/feature");
   });
 });

@@ -59,6 +59,9 @@ interface Args {
 
 const DEFAULT_REPO = "Lucent-Financial-Group/Zeta";
 const DEFAULT_BRANCHES = new Set(["main", "master", "trunk"]);
+const REMOTE_SHORTHAND_NAMES = new Set(["origin", "upstream"]);
+const REMOTE_REF_PREFIX = /^refs\/remotes\/[^/]+\//;
+const FORBIDDEN_REF_CHARS = /[\x00-\x20~^:?*[\\\x7f]/;
 
 function usage(): string {
   return [
@@ -117,6 +120,46 @@ function validateRepoPath(path: string): void {
   }
 }
 
+export function normalizeBranchRef(branch: string): string {
+  let normalized = branch.trim();
+  if (normalized.startsWith("refs/heads/")) {
+    normalized = normalized.slice("refs/heads/".length);
+  } else if (REMOTE_REF_PREFIX.test(normalized)) {
+    normalized = normalized.replace(REMOTE_REF_PREFIX, "");
+  }
+  const parts = normalized.split("/");
+  if (parts.length === 2 && REMOTE_SHORTHAND_NAMES.has(parts[0] ?? "") && DEFAULT_BRANCHES.has(parts[1] ?? "")) {
+    normalized = parts[1] ?? normalized;
+  }
+  return normalized;
+}
+
+function validateNormalizedBranchRef(label: string, branch: string): string {
+  const normalized = normalizeBranchRef(branch);
+  const invalid =
+    normalized.length === 0 ||
+    normalized.startsWith("refs/") ||
+    normalized.startsWith("-") ||
+    normalized.startsWith("/") ||
+    normalized.endsWith("/") ||
+    normalized.endsWith(".") ||
+    normalized.includes("//") ||
+    normalized.includes("..") ||
+    normalized.includes("@{") ||
+    normalized === "@" ||
+    FORBIDDEN_REF_CHARS.test(normalized) ||
+    normalized.split("/").some((part) => part.startsWith(".") || part.endsWith(".lock"));
+
+  if (invalid) {
+    throw new Error(`invalid normalized ${label} ref: ${branch}`);
+  }
+  return normalized;
+}
+
+function isDefaultBranchRef(branch: string): boolean {
+  return DEFAULT_BRANCHES.has(branch);
+}
+
 export function validatePublicationInput(input: PublicationInput): void {
   if (!/^B-[0-9]+$/.test(input.backlogId)) {
     throw new Error(`invalid backlog id: ${input.backlogId}`);
@@ -125,7 +168,9 @@ export function validatePublicationInput(input: PublicationInput): void {
   assertNonEmpty("branch", input.branch);
   assertNonEmpty("baseBranch", input.baseBranch);
   validateRepoPath(input.backlogPath);
-  if (DEFAULT_BRANCHES.has(input.branch)) {
+  const branch = validateNormalizedBranchRef("branch", input.branch);
+  validateNormalizedBranchRef("baseBranch", input.baseBranch);
+  if (isDefaultBranchRef(branch)) {
     throw new Error(`refusing to publish from default branch: ${input.branch}`);
   }
   if (input.summary.length === 0 || input.summary.some((line) => line.trim().length === 0)) {
@@ -203,6 +248,8 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
   validatePublicationInput(input);
   const title = buildPrTitle(input);
   const autoMerge = decideAutoMerge(input);
+  const branch = validateNormalizedBranchRef("branch", input.branch);
+  const baseBranch = validateNormalizedBranchRef("baseBranch", input.baseBranch);
   const createPr = [
     "gh",
     "pr",
@@ -210,9 +257,9 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
     "--repo",
     DEFAULT_REPO,
     "--base",
-    input.baseBranch,
+    baseBranch,
     "--head",
-    input.branch,
+    branch,
     "--title",
     title,
     "--body-file",
@@ -223,7 +270,7 @@ export function buildPublicationPlan(input: PublicationInput): PublicationPlan {
     prBody: buildPrBody(input),
     autoMerge,
     commands: {
-      push: ["git", "push", "-u", "origin", input.branch],
+      push: ["git", "push", "-u", "origin", branch],
       createPr,
       armAutoMerge: autoMerge.allowed
         ? ["gh", "pr", "merge", "<pr-url>", "--repo", DEFAULT_REPO, "--auto", "--squash"]
