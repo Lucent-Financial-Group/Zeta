@@ -62,10 +62,11 @@ function inferSource(text: string, filename: string): string {
 
 function extractTimestamp(text: string, filename: string): string | null {
   const inlineMatch = text.match(DATE_RE);
-  if (inlineMatch) return inlineMatch[1];
+  if (inlineMatch?.[1]) return inlineMatch[1];
 
   const fnMatch = filename.match(FILENAME_DATE_RE);
-  if (fnMatch) return `${fnMatch[1]}-${fnMatch[2]}-${fnMatch[3]}`;
+  if (fnMatch?.[1] && fnMatch[2] && fnMatch[3])
+    return `${fnMatch[1]}-${fnMatch[2]}-${fnMatch[3]}`;
 
   return null;
 }
