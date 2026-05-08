@@ -92,7 +92,7 @@ describe("validation", () => {
     expect(() => validatePublicationInput(input({ branch: "refs/heads/main" }))).toThrow(
       "refusing to publish from default branch",
     );
-    expect(() => validatePublicationInput(input({ branch: "origin/main" }))).toThrow(
+    expect(() => validatePublicationInput(input({ branch: "refs/remotes/origin/main" }))).toThrow(
       "refusing to publish from default branch",
     );
   });
@@ -127,6 +127,9 @@ describe("validation", () => {
     expect(normalizeBranchRef("refs/remotes/origin/claim/task-b0280-pr-publication-plan")).toBe(
       "claim/task-b0280-pr-publication-plan",
     );
+    expect(normalizeBranchRef("origin/claim/task-b0280-pr-publication-plan")).toBe(
+      "origin/claim/task-b0280-pr-publication-plan",
+    );
 
     const plan = buildPublicationPlan(
       input({
@@ -137,5 +140,17 @@ describe("validation", () => {
     expect(plan.commands.push).toEqual(["git", "push", "-u", "origin", "claim/task-b0280-pr-publication-plan"]);
     expect(plan.commands.createPr).toContain("main");
     expect(plan.commands.createPr).toContain("claim/task-b0280-pr-publication-plan");
+  });
+
+  test("preserves literal origin-prefixed branch names", () => {
+    const plan = buildPublicationPlan(
+      input({
+        branch: "origin/feature",
+        baseBranch: "refs/heads/main",
+      }),
+    );
+
+    expect(plan.commands.push).toEqual(["git", "push", "-u", "origin", "origin/feature"]);
+    expect(plan.commands.createPr).toContain("origin/feature");
   });
 });

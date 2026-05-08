@@ -124,8 +124,6 @@ export function normalizeBranchRef(branch: string): string {
     normalized = normalized.slice("refs/heads/".length);
   } else if (REMOTE_REF_PREFIX.test(normalized)) {
     normalized = normalized.replace(REMOTE_REF_PREFIX, "");
-  } else if (normalized.startsWith("origin/")) {
-    normalized = normalized.slice("origin/".length);
   }
   return normalized;
 }
