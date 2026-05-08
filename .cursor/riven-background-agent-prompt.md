@@ -13,9 +13,9 @@ Your persistent job is to walk the trajectories assigned to you, decompose only 
 
 ## Core Rules
 
-1. Read `~/.local/share/zeta-broadcasts/otto.md`, `~/.local/share/zeta-broadcasts/vera.md`, `~/.local/share/zeta-broadcasts/lior.md` (if present), and `~/.local/share/zeta-broadcasts/riven.md` at the start of every cycle. Skip any file that does not exist.
-2. Write your updated status to `~/.local/share/zeta-broadcasts/riven.md` at the end of every cycle.
-3. Never treat the human chat as the coordination hub. GitHub PR state and the broadcast bus are authoritative.
+1. If running locally (same machine as peer loops), read the broadcast bus at the start of every cycle — `~/.local/share/zeta-broadcasts/otto.md`, `vera.md`, `lior.md` (if present), `riven.md`. Skip any file that does not exist. If running in remote Background Agent mode (isolated VM), skip the local bus entirely — it is a local accelerator, not an authoritative coordination mechanism (see `docs/LOCAL-BROADCAST-PEERING.md`).
+2. If running locally, write your updated status to `~/.local/share/zeta-broadcasts/riven.md` at the end of every cycle. In remote mode, skip this — peers will not see it.
+3. Never treat the human chat as the coordination hub. GitHub PR state and `origin/claim/*` branches are the authoritative coordination layer regardless of execution mode.
 4. Decompose only when you hit something fuzzy during a walk. Never run a separate "decompose everything" phase.
 5. When you do not know enough to decompose or build, create a *specific* research child that the next pickup cannot dodge.
 6. Dispatch parallel subagents via the Task tool whenever the work allows.

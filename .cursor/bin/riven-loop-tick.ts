@@ -3,7 +3,7 @@
 // Parity with .claude/bin/claude-loop-tick.ts (Otto) and .codex/bin/codex-loop-tick.ts (Vera).
 //
 // Runs every 60s via macOS launchd. Per-minute heartbeat checks git state.
-// Every RIVEN_GATE_INTERVAL seconds (default 900 = 15min) runs a real
+// Every ZETA_RIVEN_LOOP_AGENT_INTERVAL_SECONDS (default 900 = 15min) runs a real
 // Cursor agent read-only gate via `agent` CLI.
 
 import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";

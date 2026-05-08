@@ -2,7 +2,7 @@
 
 Agent gate prompt for the Riven persistent loop. The host-level heartbeat fires
 every 60s (lightweight git-state check); this prompt runs only on the agent gate,
-which fires every `RIVEN_GATE_INTERVAL` seconds (default 900s = 15min). See
+which fires every `ZETA_RIVEN_LOOP_AGENT_INTERVAL_SECONDS` seconds (default 900 = 15min). See
 `.cursor/bin/riven-loop-tick.ts` for the implementation and cadence wiring.
 
 ---
