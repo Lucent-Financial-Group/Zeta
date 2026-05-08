@@ -22,23 +22,28 @@ rows (B-0006, B-0066). The dependency graph has two roots that are buildable
 now with no dependencies:
 
 **Buildable now:**
+
 - B-0330 — Memory-format standardization (Step 2, P1, S)
 - B-0332 — Load-bearing-vs-decorative classifier (Step 7, P1, S)
 
 **Blocked on B-0330:**
+
 - B-0331 — Memory ontology/classification audit (Step 3, P1, M)
 - B-0334 — Cross-reference integrity enforcement (Step 6, P1, S)
 - B-0335 — Memory schema validation tooling (Step 11, P1, M)
 
 **Blocked on B-0332:**
+
 - B-0333 — Memory-retire/supersession discipline (Step 5, P1, S)
 - B-0336 — B-0006 acceptance recalibration (AC-3, P1, S)
 - B-0337 — Trust-calculus calibration (Step 8, P2, M)
 
 **Blocked on B-0330 + B-0332 + B-0333:**
+
 - B-0338 — Memory graduation ladder (Step 9, P2, M)
 
 **Existing (compose, not children):**
+
 - B-0006 — MEMORY.md compression (Step 1, in-progress)
 - B-0066 — Marker-vs-index (Steps 4+10, decomposed into B-0257..B-0261)
 
