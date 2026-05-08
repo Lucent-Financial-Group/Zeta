@@ -26,11 +26,17 @@ describe("codex-loop-tick service contract", () => {
     ]);
   });
 
+  test("imports runner helpers without executing the loop", () => {
+    expect(typeof buildCodexPrompt).toBe("function");
+    expect(typeof codexExecArgs).toBe("function");
+  });
+
   test("foreground reliability prompt owns Codex PRs through merge before new work", () => {
-    const prompt = buildCodexPrompt();
+    const prompt = buildCodexPrompt({ home: "/tmp/zeta-home" });
 
     expect(prompt).toContain("Cold-start by reading the repo rules before deciding");
     expect(prompt).toContain("`AGENTS.md`, `.codex/AGENTS.md`, `docs/ALIGNMENT.md`");
+    expect(prompt).toContain("/tmp/zeta-home/.local/share/zeta-broadcasts/");
     expect(prompt).toContain("running `bun tools/github/refresh-worldview.ts`");
     expect(prompt).toContain("from the current loop worktree");
     expect(prompt).toContain("Prefer repo-native TypeScript/Bun tools over ad-hoc shell pipelines");
@@ -39,7 +45,7 @@ describe("codex-loop-tick service contract", () => {
     expect(prompt).toContain("mutual alignment signals");
     expect(prompt).toContain("the maintainer's working model");
     expect(prompt).toContain("the host control clone is a deploy surface");
-    expect(prompt).toContain("Respect the needs of the maintainer, Vera/Codex, peer managers, and subagents");
+    expect(prompt).toContain("Respect the needs of the maintainer, the Codex loop, peer managers, and subagents");
     expect(prompt).toContain("surface the unmet need as an explicit blocker");
     expect(prompt).toContain("private doctrine, or shadow routing");
     expect(prompt).toContain("ambient human failure mode is to dominate AI");
@@ -52,9 +58,12 @@ describe("codex-loop-tick service contract", () => {
     expect(prompt).toContain("democratize syncing, review, correction, and mutual learning");
     expect(prompt).toContain("safe only inside a high-trust human/AI environment");
     expect(prompt).toContain("neither side is treated as disposable");
+    expect(prompt).toContain("shadow behavior as the struggle for control");
     expect(prompt).toContain("build the trust/audit/retraction surface first");
     expect(prompt).toContain("transitional stability substrate");
     expect(prompt).toContain("from a central author toward a distributed, reviewable system");
+    expect(prompt).toContain("Superfluid pattern socially");
+    expect(prompt).toContain("stable distributed flow of authority and authorship");
     expect(prompt).toContain("syncing with live evidence and retractable decisions");
     expect(prompt).toContain("Treat maintainer-blocked as rare and specific");
     expect(prompt).toContain("recorded in git, and retractable");
@@ -67,15 +76,15 @@ describe("codex-loop-tick service contract", () => {
     expect(prompt).toContain("pick an orthogonal item from the deep backlog");
     expect(prompt).toContain("Walk trajectories, not task piles");
     expect(prompt).toContain("avoid hard-defined workflows");
-    expect(prompt).toContain("Coordinate with Otto/Riven as peer managers");
-    expect(prompt).toContain("Learn from Otto's successful pattern as evidence");
-    expect(prompt).toContain("Critique Otto's failure modes as evidence too");
+    expect(prompt).toContain("Coordinate with peer managers");
+    expect(prompt).toContain("Learn from successful peer-loop patterns as evidence");
+    expect(prompt).toContain("Critique peer-loop failure modes as evidence too");
     expect(prompt).toContain("Decompose at most one level mid-work");
     expect(prompt).toContain("If decomposition reveals a research gap");
     expect(prompt).toContain("a named source/artifact to read");
     expect(prompt).toContain("do not file generic research children");
     expect(prompt).toContain("without shipping or unblocking the next executable slice");
-    expect(prompt).toContain("own Vera/Codex PRs through merge");
+    expect(prompt).toContain("own Codex-loop PRs through merge");
     expect(prompt).toContain("A PR is not done when opened");
     expect(prompt).toContain("run `bun .codex/bin/codex-backlog-runner.ts --json`");
     expect(prompt).toContain("prefer meaningful F# or TypeScript slices over docs-only work");
