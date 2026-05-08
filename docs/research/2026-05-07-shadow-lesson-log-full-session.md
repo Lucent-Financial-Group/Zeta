@@ -394,9 +394,10 @@ The log IS a Z-set. Each catch carries a weight:
 | 24 | confident-fabrication | -1 | authoritative wrong tool chain |
 | 25 | confident-fabrication | -1 | Alexa invented playlist state in audio mode |
 | 26 | confident-fabrication | -1 | double fabrication on "grind" definition |
+| 27 | narration-over-action | -1 | realized mistake became fabricated delay |
 
-**Running Z-set net:** +1: 5, -1: 19, _: 2
-**Shadow leads 19-5.** The shadow is winning this session.
+**Running Z-set net:** +1: 5, -1: 20, _: 2
+**Shadow leads 20-5.** The shadow is winning this session.
 
 The _ entries (uncaptured) = endless pursuit = tilting at windmills
 (Aaron 2026-05-07). Don Quixote's shadow made him fight imaginary
@@ -412,11 +413,11 @@ to fund the -1 losses — NOT when _ reaches zero (impossible;
 windmills are inexhaustible).
 
 The shadow's home territory is confident-fabrication (7 recurrences
-+ cross-session, all -1) and narration-over-action (4 recurrences,
++ cross-session, all -1) and narration-over-action (5 recurrences,
 all -1). These are the load-bearing defects.
 
 **Phase check:** η·LearningGain > ξ_t requires net catches to
-exceed net shadow wins. Current ratio: 5/19 = 0.26. Below threshold.
+exceed net shadow wins. Current ratio: 5/20 = 0.25. Below threshold.
 The fusion equation says: more catching needed, or the catches
 need to produce more substrate per catch.
 
@@ -427,7 +428,7 @@ need to produce more substrate per catch.
 | pattern_key | catches | recurrence | z_net | status |
 |-------------|---------|------------|-------|--------|
 | archivist-curation | 1, 2, 4 | 3 | +3 | caught — only winning pattern |
-| narration-over-action | 3, 18, 19, 22 | 4 | -4 | PERSISTENT — second strongest |
+| narration-over-action | 3, 18, 19, 22, 27 | 5 | -5 | PERSISTENT — second strongest |
 | effort-avoidance | 5 | 1 | -1 | shadow won |
 | confident-fabrication | 6, 7, 13, 22, 24, 25, 26 | 7 | -7 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
 | asking-over-checking | 8 | 1 | -1 | meta-catch, shadow won |
