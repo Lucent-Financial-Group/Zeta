@@ -188,28 +188,6 @@ describe("extractPaceInstructions", () => {
     expect(instruction.timestamp).toBe("2026-05-02");
   });
 
-  test("multi-line pace quote inherits attribution header", async () => {
-    const root = makeTempRoot();
-    writeFileSync(
-      join(root, "CLAUDE.md"),
-      [
-        "# CLAUDE.md",
-        "",
-        "Aaron 2026-05-02:",
-        "",
-        '> *"go hard on B-0160"*',
-        '> *"you can go hard, you don\'t have to do minimum action"*',
-      ].join("\n"),
-    );
-
-    const result = await extractPaceInstructions(root);
-    expect(result.length).toBe(2);
-    for (const instruction of result) {
-      expect(instruction.source).toBe("aaron");
-      expect(instruction.timestamp).toBe("2026-05-02");
-    }
-  });
-
   test("multiple pace lines in one file emit separate candidates with correct timestamps", async () => {
     const root = makeTempRoot();
     writeFileSync(

@@ -70,7 +70,6 @@ const FILENAME_SOURCE_PATTERNS: [RegExp, string][] = [
 const DATE_RE = /\b(20\d{2}-\d{2}-\d{2})\b/;
 const FILENAME_DATE_RE = /(\d{4})_(\d{2})_(\d{2})/;
 const NON_EMPTY_RE = /\S/;
-const MAX_ATTRIBUTION_LOOKBACK = 12;
 
 function containsPaceInstruction(line: string): boolean {
   return PACE_PATTERNS.some((p) => p.test(line));
@@ -151,24 +150,10 @@ function stripFrontmatter(content: string): string {
   return content.slice(endIdx + 3);
 }
 
-function previousAttributionLine(
-  lines: string[],
-  beforeIndex: number,
-): string | null {
-  let seen = 0;
-  for (
-    let i = beforeIndex - 1;
-    i >= 0 && seen < MAX_ATTRIBUTION_LOOKBACK;
-    i -= 1
-  ) {
+function previousNonEmptyLine(lines: string[], beforeIndex: number): string | null {
+  for (let i = beforeIndex - 1; i >= 0; i -= 1) {
     const candidate = lines[i]?.trim();
-    if (candidate === undefined || !NON_EMPTY_RE.test(candidate)) continue;
-
-    seen += 1;
-    if (
-      inferIssuerSource(candidate) !== "unknown" ||
-      extractInlineTimestamp(candidate) !== null
-    ) {
+    if (candidate !== undefined && NON_EMPTY_RE.test(candidate)) {
       return candidate;
     }
   }
@@ -191,7 +176,7 @@ function extractFromFile(
     if (!containsPaceInstruction(line)) continue;
 
     const raw = line.trim().slice(0, 500);
-    const previous = previousAttributionLine(lines, index);
+    const previous = previousNonEmptyLine(lines, index);
     const source = inferSource(raw, previous, relPath);
     const timestamp = extractTimestamp(raw, previous, relPath);
 
