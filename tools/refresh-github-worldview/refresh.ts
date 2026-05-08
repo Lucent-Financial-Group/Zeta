@@ -62,32 +62,61 @@ function fail(message: string, result: CommandResult): never {
   process.exit(1);
 }
 
+function parseRepository(repository: string): { owner: string; name: string } {
+  const [owner, name, extra] = repository.split("/");
+  if (!owner || !name || extra !== undefined) {
+    console.error(`invalid GitHub repository '${repository}', expected owner/name`);
+    process.exit(1);
+  }
+  return { owner, name };
+}
+
 function readOpenPullRequests(repository: string): unknown[] {
-  const fields = [
-    "number",
-    "title",
-    "headRefName",
-    "baseRefName",
-    "state",
-    "isDraft",
-    "mergeStateStatus",
-    "reviewDecision",
-    "url",
-    "updatedAt",
-    "author",
-  ].join(",");
+  const { owner, name } = parseRepository(repository);
+  const query = `
+    query($owner: String!, $name: String!, $endCursor: String) {
+      repository(owner: $owner, name: $name) {
+        pullRequests(
+          first: 100
+          after: $endCursor
+          states: OPEN
+          orderBy: { field: UPDATED_AT, direction: DESC }
+        ) {
+          nodes {
+            number
+            title
+            headRefName
+            baseRefName
+            state
+            isDraft
+            mergeStateStatus
+            reviewDecision
+            url
+            updatedAt
+            author {
+              login
+            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+      }
+    }
+  `;
 
   const result = run("gh", [
-    "pr",
-    "list",
-    "--repo",
-    repository,
-    "--state",
-    "open",
-    "--limit",
-    "100",
-    "--json",
-    fields,
+    "api",
+    "graphql",
+    "--paginate",
+    "--slurp",
+    "-F",
+    `owner=${owner}`,
+    "-F",
+    `name=${name}`,
+    "-f",
+    `query=${query}`,
   ]);
 
   if (result.status !== 0) {
@@ -95,11 +124,28 @@ function readOpenPullRequests(repository: string): unknown[] {
   }
 
   try {
-    const parsed: unknown = JSON.parse(result.stdout || "[]");
-    if (!Array.isArray(parsed)) {
-      throw new Error("expected array");
+    const pages: unknown = JSON.parse(result.stdout || "[]");
+    if (!Array.isArray(pages)) {
+      throw new Error("expected paginated array");
     }
-    return parsed;
+    return pages.flatMap((page) => {
+      if (typeof page !== "object" || page === null || !("data" in page)) {
+        throw new Error("expected GraphQL page object");
+      }
+      const pageRecord = page as Record<string, unknown>;
+      const data = pageRecord.data as {
+        repository?: {
+          pullRequests?: {
+            nodes?: unknown[];
+          };
+        };
+      };
+      const nodes = data.repository?.pullRequests?.nodes;
+      if (!Array.isArray(nodes)) {
+        throw new Error("expected pullRequests.nodes array");
+      }
+      return nodes;
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error(`failed to parse gh JSON: ${message}`);
