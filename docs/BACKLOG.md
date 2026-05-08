@@ -95,18 +95,11 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0251](backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** Durable computation stack research — Temporal + Reaqtor + Orleans + Bonsai composition for DurabilityMode.StableStorage
 - [ ] **[B-0255](backlog/P1/B-0255-probabilistic-dials-existing-posterior-quorum-substrate-2026-05-07.md)** Probabilistic dials over existing posterior quorum substrate
 - [ ] **[B-0256](backlog/P1/B-0256-model-recursion-exploit-class-metasploit-ida-pro-mapping-2026-05-07.md)** Model recursion exploit class — Metasploit/IDA Pro mapping for AI models
-- [ ] **[B-0262](backlog/P1/B-0262-refresh-worldview-scaffold-open-prs-recent-merges-2026-05-08.md)** refresh-worldview scaffold — open-PR list + recent-merges query
-- [ ] **[B-0263](backlog/P1/B-0263-refresh-worldview-backlog-delta-claims-branch-state-2026-05-08.md)** refresh-worldview — backlog delta + claim inventory + branch state
-- [ ] **[B-0264](backlog/P1/B-0264-refresh-worldview-tick-integration-canonical-pre-decide-2026-05-08.md)** refresh-worldview — integrate into tick scripts as canonical pre-decide
-- [ ] **[B-0265](backlog/P1/B-0265-ruleset-split-ci-gate-ruleset-2026-05-08.md)** GitHub ruleset split — CI gate ruleset (required status checks)
-- [ ] **[B-0266](backlog/P1/B-0266-ruleset-split-review-policy-ruleset-2026-05-08.md)** GitHub ruleset split — review policy ruleset (conversation resolution + reviews)
-- [ ] **[B-0267](backlog/P1/B-0267-ruleset-split-safety-ruleset-2026-05-08.md)** GitHub ruleset split — safety ruleset (deletion + force-push + linear history)
-- [ ] **[B-0268](backlog/P1/B-0268-canary-test-rules-autoload-verification-2026-05-08.md)** Verify .claude/rules/ auto-load — run canary test
-- [ ] **[B-0269](backlog/P1/B-0269-extract-carved-sentences-from-claude-md-to-rules-2026-05-08.md)** Extract carved sentences from CLAUDE.md to .claude/rules/
-- [ ] **[B-0270](backlog/P1/B-0270-pm2-role-skill-definition-2026-05-08.md)** PM-2 role — skill definition + persona agent
-- [ ] **[B-0271](backlog/P1/B-0271-pm2-first-research-pass-2026-05-08.md)** PM-2 role — first research pass on Zeta feature gaps
-- [ ] **[B-0272](backlog/P1/B-0272-atari-rom-canonical-naming-tosec-lookup-2026-05-08.md)** Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup
-- [ ] **[B-0273](backlog/P1/B-0273-atari-rom-safe-unsafe-folder-split-2026-05-08.md)** Atari 2600 ROM safe/unsafe folder split for license compliance
+- [ ] **[B-0257](backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md)** MEMORY.md marker-vs-index - harness contract verification and evidence
+- [ ] **[B-0258](backlog/P1/B-0258-memory-md-index-generator-implementation-2026-05-08.md)** MEMORY.md marker-vs-index - index generator implementation
+- [ ] **[B-0259](backlog/P1/B-0259-memory-md-hook-and-ci-drift-enforcement-2026-05-08.md)** MEMORY.md marker-vs-index - hook and CI drift enforcement
+- [ ] **[B-0260](backlog/P1/B-0260-memory-md-cutover-and-parity-validation-2026-05-08.md)** MEMORY.md marker-vs-index - cutover and parity validation
+- [ ] **[B-0261](backlog/P1/B-0261-memory-md-q1-autodream-automemory-compatibility-validation-2026-05-08.md)** MEMORY.md marker-vs-index - Q1 AutoDream/AutoMemory compatibility validation
 
 ## P2 — research-grade
 
