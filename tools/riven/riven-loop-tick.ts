@@ -32,6 +32,7 @@ function log(message: string): void {
 }
 
 function run(command: string, args: string[], timeoutMs: number): { status: number; stdout: string; stderr: string } {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- command/args are controlled (git, gh, agent)
     const result = spawnSync(command, args, {
         cwd: worktree,
         encoding: "utf8",
@@ -109,6 +110,7 @@ function writeBroadcast(summary: string): void {
 }
 
 function gh(...args: string[]): { status: number; stdout: string } {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
     const r = spawnSync("gh", args, {
         cwd: worktree,
         encoding: "utf8",
