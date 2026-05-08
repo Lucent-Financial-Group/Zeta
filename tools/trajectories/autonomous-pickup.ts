@@ -113,6 +113,31 @@ function stripMarkdown(value: string): string {
   return trimmed;
 }
 
+function isPlaceholderAction(value: string | null): boolean {
+  if (value === null) {
+    return true;
+  }
+  const normalized = stripMarkdown(value).toLowerCase();
+  return (
+    normalized === "" ||
+    normalized === "none" ||
+    normalized === "none currently selected" ||
+    normalized === "no current action" ||
+    normalized === "not currently selected" ||
+    normalized === "n/a" ||
+    normalized === "na" ||
+    normalized === "tbd"
+  );
+}
+
+function actionableText(value: string | null): string | null {
+  if (value === null) {
+    return null;
+  }
+  const stripped = stripMarkdown(value);
+  return isPlaceholderAction(stripped) ? null : stripped;
+}
+
 function firstHeading(lines: readonly string[], fallback: string): string {
   for (const line of lines) {
     const trimmed = line.trim();
@@ -169,7 +194,7 @@ function bulletsFromSection(lines: readonly string[], heading: string): string[]
     .map((line) => line.trim())
     .filter((line) => line.startsWith("- "))
     .map((line) => stripMarkdown(line.slice(2)))
-    .filter(Boolean);
+    .filter((line) => !isPlaceholderAction(line));
 }
 
 function paragraphFromSection(lines: readonly string[], heading: string): string | null {
@@ -222,8 +247,8 @@ function readPacket(repoRoot: string, slug: string): TrajectoryPacket | null {
     const lines = content.split(/\r?\n/);
     const childCandidates = bulletsFromSection(lines, "Next Child Packets");
     const nextAction =
-      firstField(lines, ["Next concrete action", "Recommended next action"]) ??
-      paragraphFromSection(lines, "Recommended next action") ??
+      actionableText(firstField(lines, ["Next concrete action", "Recommended next action"])) ??
+      actionableText(paragraphFromSection(lines, "Recommended next action")) ??
       (childCandidates.length > 0 ? (childCandidates[0] ?? null) : null);
 
     return {
@@ -269,7 +294,7 @@ function blockerReason(packet: TrajectoryPacket): string | null {
   if (packet.blocker !== null && packet.blocker.toLowerCase() !== "none") {
     return `active blocker: ${packet.blocker}`;
   }
-  if (packet.nextAction === null) {
+  if (packet.nextAction === null || isPlaceholderAction(packet.nextAction)) {
     return "no next action found";
   }
   return null;
@@ -287,7 +312,7 @@ function claimBlocker(packet: TrajectoryPacket, activeClaims: readonly string[])
 
 function actionFor(packet: TrajectoryPacket): TrajectoryAction {
   const next = packet.nextAction?.toLowerCase() ?? "";
-  if (packet.childCandidates.length > 0) {
+  if (packet.childCandidates.some((candidate) => !isPlaceholderAction(candidate))) {
     return "create-child-packet";
   }
   if (
@@ -309,7 +334,7 @@ function promptFor(packet: TrajectoryPacket, action: TrajectoryAction): string {
   } else if (action === "decompose") {
     lead = `Decompose ${packet.slug} into one atomic, claimable next trajectory action.`;
   }
-  const firstChild = packet.childCandidates[0];
+  const firstChild = packet.childCandidates.find((candidate) => !isPlaceholderAction(candidate));
   const childLine = firstChild === undefined ? [] : [`First child candidate: ${firstChild}`, ""];
   return [
     lead,
