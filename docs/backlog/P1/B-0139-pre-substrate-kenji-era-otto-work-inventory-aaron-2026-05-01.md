@@ -1,7 +1,7 @@
 ---
 id: B-0139
 priority: P1
-status: open
+status: in-progress
 title: Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 created: 2026-05-01
 last_updated: 2026-05-08
@@ -72,7 +72,7 @@ Composes with task #321 (Recovery lane — branch/worktree/stash inventory + cla
 
 ## Status
 
-**Filed.** Awaiting activation signal. First concrete step (when Aaron decides to invest): repo-archaeology on `tools/lean4/`, `src/Core/`, `proofs/`, `docs/research/`, and `docs/**.tla` — produce a CSV/markdown catalog of every formal/engineering artifact with its substrate-status.
+**In progress.** First slice landed: `tools/hygiene/audit-formal-artifacts.ts` — a TS script (Rule 0 compliant) that catalogs all formal verification artifacts (Lean4, TLA+, Z3, Alloy, formal tests) and cross-references each against docs/ for substrate-status. Finds 30 artifacts (4295 lines); 24 referenced in substrate, 6 unreferenced TLA+ specs (`AsyncStreamEnumerator.tla`, `BftConsensus.tla`, `ChaosEnvDeterminism.tla`, `ConsistentHashRebalance.tla`, `FeatureFlagsResolution.tla`, `InfoTheoreticSharder.tla`). Remaining slices: F# src/Core/ artifact inventory, docs/research/ cross-reference audit, branch/worktree content inventory, MEMORY.md backfill.
 
 ## Verify-before-deferring note
 
