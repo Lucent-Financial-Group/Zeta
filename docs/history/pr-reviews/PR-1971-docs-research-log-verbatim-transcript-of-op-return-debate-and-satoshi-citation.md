@@ -22,8 +22,8 @@
 | Branch | `research/op-return-verbatim` |
 | Base branch | `main` |
 | URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1971 |
-| Changed files | 3 |
-| Additions / deletions | +277 / -0 |
+| Changed files | 1 |
+| Additions / deletions | +108 / -0 |
 
 ## Description
 
