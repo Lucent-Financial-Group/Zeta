@@ -19,6 +19,9 @@ scopes of attention.
 - Forward actions (arm auto-merge, resolve phantom threads, sync clones)
 - Rotation detection (stale peers, activation requests)
 - Git state (fetch, dirty check, main HEAD)
+- Minimum PR runway (keep at least one, target two, open
+  background PRs per active implementation loop unless a
+  concrete safety blocker is present)
 
 **Does NOT own:**
 
