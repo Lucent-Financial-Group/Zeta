@@ -73,16 +73,18 @@ Post-install scripts that operate on the repo (lints, audits, hygiene checks, pe
 - **git cluster** (slices 13/20) — complete: push-with-retry / batch-resolve-pr-threads
 - **pr-preservation cluster** (slice 21) — complete: archive-pr
 
-The bash originals remain in-tree as the equivalence reference and will retire once the TS ports have soaked clean in production. See "Soak + bash-retirement phase" actions in the status line at the top of this doc.
+Most bash originals from Bucket B/D remain in-tree as equivalence references and will retire once the TS ports have soaked clean in production. Bucket C scripts (check-github-settings-drift, snapshot-github-settings) had their .sh originals deleted upon porting. See "Soak + bash-retirement phase" actions in the status line at the top of this doc.
 
-### Bucket C — Needs human decision (2 files)
+### Bucket C — ~~Needs human decision~~ Ported (2 files)
+
+Ported to TypeScript in the B-0156 PR. Both scripts use `gh api` via
+`Bun.spawn` shell-out (option (a) — keeps `gh` as the auth + HTTP layer,
+same as the bash originals).
 
 ```text
-tools/hygiene/check-github-settings-drift.sh
-tools/hygiene/snapshot-github-settings.sh
+tools/hygiene/check-github-settings-drift.ts   # was .sh
+tools/hygiene/snapshot-github-settings.ts       # was .sh
 ```
-
-Rationale: these scripts use `gh api` heavily. Going TS could mean either (a) stay shell-out wrappers (TS shells to gh), or (b) switch to Octokit / @octokit/rest with proper typed responses. Each direction has tradeoffs (debug-ability vs type-safety). Maintainer call.
 
 ### Bucket D — Ported, bash retained (33 files; 5 removed)
 
@@ -138,14 +140,8 @@ tools/budget/project-runway.sh                     # ported in #902 (budget clus
 
 **Why this child exists**: the repo has moved beyond the older
 "Recommended next slice" queue. Live inventory now shows the peer-call, lint,
-budget, and git Bucket B scripts as `.ts` files, while the only remaining
-source-level bash candidates in this trajectory are the Bucket C GitHub-settings
-scripts:
-
-```text
-tools/hygiene/check-github-settings-drift.sh
-tools/hygiene/snapshot-github-settings.sh
-```
+budget, and git Bucket B scripts as `.ts` files. The former Bucket C
+GitHub-settings scripts have also been ported (B-0156).
 
 **Scope**: documentation/control-plane only. Update this resume and adjacent
 trajectory references so future agents do not revive already-completed Cluster

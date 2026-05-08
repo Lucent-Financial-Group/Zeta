@@ -29,8 +29,8 @@ That silent drift is exactly what this system detects.
 
 1. **Expected state** is recorded in
    `tools/hygiene/github-settings.expected.json` — normalized
-   output of `tools/hygiene/snapshot-github-settings.sh`.
-2. **Drift detector** is `tools/hygiene/check-github-settings-drift.sh`.
+   output of `tools/hygiene/snapshot-github-settings.ts`.
+2. **Drift detector** is `tools/hygiene/check-github-settings-drift.ts`.
    It re-runs the snapshot against the live repo and diffs
    against the expected JSON. Exit 0 on match, 1 on drift.
 3. **Cadence** is enforced by
@@ -42,7 +42,7 @@ That silent drift is exactly what this system detects.
 4. **On any settings change** (ruleset edit, new required
    check, flipped security toggle, new environment, ...) the
    same-commit obligation is: re-run
-   `snapshot-github-settings.sh`, commit the new expected
+   `snapshot-github-settings.ts`, commit the new expected
    JSON alongside whatever configuration caused the drift,
    with a message explaining *why* the setting changed.
 
@@ -239,7 +239,7 @@ Dynamic (GitHub-managed):
 ```bash
 # After making an intentional settings change in GitHub
 # UI or via API, re-snapshot and commit:
-tools/hygiene/snapshot-github-settings.sh \
+bun tools/hygiene/snapshot-github-settings.ts \
   --repo Lucent-Financial-Group/Zeta \
   > tools/hygiene/github-settings.expected.json
 git add tools/hygiene/github-settings.expected.json
@@ -348,18 +348,18 @@ Aaron 2026-05-01: *"these are nasty thats why they are legacy."*
 ### Reconciliation script (Phase 2 mechanization)
 
 Envisioned (not yet implemented):
-`tools/hygiene/apply-github-settings.sh` — reads
+`tools/hygiene/apply-github-settings.ts` — reads
 `tools/hygiene/github-settings.expected.json` and applies via `gh
 api PUT/POST/DELETE` to the host. Idempotent. Run with `--dry-run`
 to preview, then without to apply. Composes with the existing
-`snapshot-github-settings.sh` (read-only) and
-`check-github-settings-drift.sh` (diff-only) — `apply` is the third
+`snapshot-github-settings.ts` (read-only) and
+`check-github-settings-drift.ts` (diff-only) — `apply` is the third
 verb that closes the loop.
 
 After Phase 2 ships, every settings change flows through:
 
 1. Edit `tools/hygiene/github-settings.expected.json`
-2. Run `apply-github-settings.sh` (verifies + applies)
+2. Run `apply-github-settings.ts` (verifies + applies)
 3. Drift workflow stays green by construction
 
 Click-ops drift becomes structurally impossible — any host change
@@ -368,9 +368,9 @@ on next run.
 
 ## Related
 
-- `tools/hygiene/snapshot-github-settings.sh` — generates the
+- `tools/hygiene/snapshot-github-settings.ts` — generates the
   normalized JSON.
-- `tools/hygiene/check-github-settings-drift.sh` — the drift
+- `tools/hygiene/check-github-settings-drift.ts` — the drift
   detector.
 - `.github/workflows/github-settings-drift.yml` — cadence
   workflow.

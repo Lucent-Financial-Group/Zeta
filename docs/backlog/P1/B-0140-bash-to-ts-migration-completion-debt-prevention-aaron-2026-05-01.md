@@ -4,7 +4,7 @@ priority: P1
 status: open
 title: Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
 created: 2026-05-01
-last_updated: 2026-05-05
+last_updated: 2026-05-08
 depends_on: []
 composes_with: [B-0190, B-0196]
 ---
@@ -113,15 +113,15 @@ with .ts counterparts removed. 2 CI workflows updated to call .ts.
 | tools/lanes/doc-lane.sh | #1961 | merged |
 | tools/lanes/lane-allocator.sh | #1961 | merged |
 | tools/profile.sh | #1962 | merged |
-| tools/hygiene/check-tick-history-shard-schema.sh | #1986 (Vera) | in CI |
+| tools/hygiene/check-tick-history-shard-schema.sh | #1986 (Vera) | merged, .sh deleted |
 
-**REMAINING (3 files):**
+**REMAINING (0 files — all ported in B-0156 PR):**
 
-| .sh path | lines | CI-referenced |
-|----------|-------|--------------|
-| tools/hygiene/check-github-settings-drift.sh | 83 | yes |
-| tools/hygiene/snapshot-github-settings.sh | 165 | yes |
-| tools/hygiene/audit-orphan-role-refs.sh | 322 | no |
+| .sh path | lines | CI-referenced | status |
+|----------|-------|--------------|--------|
+| tools/hygiene/check-github-settings-drift.sh | 83 | yes | ported to .ts, .sh deleted |
+| tools/hygiene/snapshot-github-settings.sh | 165 | yes | ported to .ts, .sh deleted |
+| tools/hygiene/audit-orphan-role-refs.sh | 322 | no | ported to .ts, .sh deleted |
 
 **KEEP** — external dependencies (Lean4 .lake packages):
 All `tools/lean4/.lake/packages/*/scripts/*.sh` — not our code.
