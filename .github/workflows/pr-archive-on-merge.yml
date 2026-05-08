@@ -33,7 +33,11 @@ name: pr-archive-on-merge
 # and opens a small PR instead. GITHUB_TOKEN-created PRs may not trigger
 # downstream required checks; like budget-snapshot-cadence.yml, this
 # workflow therefore opens the PR and leaves merge/auto-merge handling to
-# the next maintainer or agent pass through the queue.
+# the next maintainer or agent pass through the queue. If repository settings
+# forbid GitHub Actions from creating PRs, the workflow still pushes the
+# archive branch and exits green with a notice; the next agent pass can open
+# that branch as a normal PR without treating the durable archive branch as a
+# failed archival run.
 
 on:
   pull_request:
@@ -176,7 +180,8 @@ jobs:
           git push origin "HEAD:${branch}"
 
           body_file="$(mktemp)"
-          trap 'rm -f "$body_file"' EXIT
+          create_log="$(mktemp)"
+          trap 'rm -f "$body_file" "$create_log"' EXIT
           {
             echo "## Summary"
             echo
@@ -193,9 +198,35 @@ jobs:
             echo "Workflow attempt: ${RUN_ATTEMPT}"
           } >"${body_file}"
 
+          set +e
           gh pr create \
             --repo "$REPO" \
             --base main \
             --head "$branch" \
             --title "archive(pr-reviews): PR #${PR_NUMBER} on merge" \
-            --body-file "${body_file}"
+            --body-file "${body_file}" >"$create_log" 2>&1
+          create_status=$?
+          set -e
+
+          if [ "$create_status" -eq 0 ]; then
+            cat "$create_log"
+            exit 0
+          fi
+
+          cat "$create_log" >&2
+          if grep -Fq "GitHub Actions is not permitted to create or approve pull requests (createPullRequest)" "$create_log"; then
+            {
+              echo "### Archive PR creation skipped by repository policy"
+              echo
+              echo "Archive branch pushed successfully:"
+              echo
+              echo "\`${branch}\`"
+              echo
+              echo "GitHub Actions is not permitted to create pull requests in this repository."
+              echo "A maintainer or agent pass can open that branch as a normal PR."
+            } >>"$GITHUB_STEP_SUMMARY"
+            echo "::notice title=Archive branch pushed::GitHub Actions cannot create PRs here; open ${branch} manually."
+            exit 0
+          fi
+
+          exit "$create_status"
