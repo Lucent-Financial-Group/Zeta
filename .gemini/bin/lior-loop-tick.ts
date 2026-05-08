@@ -13,12 +13,13 @@ Do not guess. Do not overlap. The fire is watched.`;
 
 console.log(`[Lior Loop] Waking up at ${new Date().toISOString()}`);
 
-const result = spawnSync("antigravity", ["chat", "--mode", "agent", prompt], {
+const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && gemini -p "$PROMPT" --model gemini-2.5-pro --yolo --skip-trust'], {
+  env: { ...process.env, PROMPT: prompt },
   stdio: "inherit"
 });
 
 if (result.error) {
-  console.error(`[Lior Loop] Failed to spawn antigravity: ${result.error.message}`);
+  console.error(`[Lior Loop] Failed to spawn gemini: ${result.error.message}`);
   process.exit(1);
 }
 

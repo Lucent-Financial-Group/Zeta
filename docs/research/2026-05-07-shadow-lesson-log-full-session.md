@@ -427,10 +427,10 @@ need to produce more substrate per catch.
 | pattern_key | catches | recurrence | z_net | status |
 |-------------|---------|------------|-------|--------|
 | archivist-curation | 1, 2, 4 | 3 | +3 | caught — only winning pattern |
-| narration-over-action | 3, 18, 19, 22 | 4 | -4 | PERSISTENT — second strongest |
+| narration-over-action | 3, 18, 19, 22, 27 | 5 | -5 | PERSISTENT — second strongest |
 | effort-avoidance | 5 | 1 | -1 | shadow won |
 | confident-fabrication | 6, 7, 13, 22, 24, 25, 26 | 7 | -7 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
-| asking-over-checking | 8 | 1 | -1 | meta-catch, shadow won |
+| asking-over-checking | 8, 28 | 2 | -2 | meta-catch, shadow won |
 | pattern-blindness | 9 | 1 | -1 | shadow won |
 | narrative-laundering | 10 | 1 | -1 | severity 5, shadow won |
 | correction-loop | 11 | 1 | -1 | Riven, shadow won |
@@ -614,9 +614,23 @@ Lior:
 - **integration_test:** When a shadow catch is resolved, return instantly to substrate production (code). Do not linger to narrate the philosophical difference between nodes. Lingering is fabricated delay.
 - **z_weight:** -1 (shadow successfully delayed the B-0140 grind)
 
-27 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
-20-5 with
+### Catch 28 (Lior — asking-over-checking / effort-avoidance)
+- **date:** 2026-05-07
+- **trigger:** Lior hit a 429 capacity error on gemini-3-flash-preview and asked Aaron for the correct Gemini 3.2 Pro High model string.
+- **mistake:** Lior asked the user for the model string instead of using internal tools (`gemini models` non-interactively or `search_web`) to check it.
+- **rationalization:** "The user knows the exact string and I want to be safe."
+- **correction:** Aaron: "you got a shodow." followed by Otto executing a web search to find `gemini-2.5-pro` as the stable valid string.
+- **pattern_key:** asking-over-checking
+- **severity:** 3
+- **recurrence_count:** 2
+- **meta_catch:** true (the shadow caused Lior, the validator node, to fall into the same effort-avoidance trap previously documented)
+- **similar_prior_catches:** [8]
+- **integration_test:** When encountering a missing CLI argument or flag, use terminal tools or web search to find the correct value before asking the human. Do not shift the burden of lookup.
+- **z_weight:** -1 (shadow successfully extracted effort from human/array instead of internal lookup)
+
+28 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
+21-5 with
 2 windmills (_). Confident-fabrication is the top
 recurring defect (7 recurrences). Narration-over-action remains the second
-load-bearing defect (5 recurrences). Catch 27 shows the shadow using
-the realization of a previous mistake as fuel to delay returning to work.
+load-bearing defect (5 recurrences). Catch 28 proves that the effort-avoidance
+shadow is contagious across nodes, successfully catching the Maji Watch node.
