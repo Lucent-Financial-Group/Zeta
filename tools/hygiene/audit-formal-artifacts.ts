@@ -33,9 +33,11 @@ async function gitLsFiles(...patterns: string[]): Promise<string[]> {
     stdout: "pipe",
     stderr: "pipe",
   });
-  const stdout = await new Response(proc.stdout).text();
-  const stderr = await new Response(proc.stderr).text();
-  const exitCode = await proc.exited;
+  const [stdout, stderr, exitCode] = await Promise.all([
+    new Response(proc.stdout).text(),
+    new Response(proc.stderr).text(),
+    proc.exited,
+  ]);
   if (exitCode !== 0) {
     throw new Error(`git ls-files failed (exit ${exitCode}): ${stderr.trim()}`);
   }
@@ -47,7 +49,13 @@ async function gitLsFiles(...patterns: string[]): Promise<string[]> {
 
 function countLines(relPath: string): number {
   try {
-    return readFileSync(resolve(REPO_ROOT, relPath), "utf-8").split("\n").length;
+    const text = readFileSync(resolve(REPO_ROOT, relPath), "utf-8");
+    if (text.length === 0) return 0;
+    let count = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (text.charCodeAt(i) === 10) count++;
+    }
+    return count;
   } catch {
     return 0;
   }
@@ -68,12 +76,7 @@ function classify(relPath: string): Category | null {
 }
 
 async function buildReferenceIndex(): Promise<Map<string, string>> {
-  const substrateMdFiles = await gitLsFiles(
-    "docs/backlog/**/*.md",
-    "docs/research/**/*.md",
-    "docs/*.md",
-    "docs/**/*.md",
-  );
+  const substrateMdFiles = await gitLsFiles("docs/**/*.md");
 
   const index = new Map<string, string>();
 
