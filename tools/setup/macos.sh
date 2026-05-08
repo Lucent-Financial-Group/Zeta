@@ -51,7 +51,7 @@ if ! command -v brew >/dev/null 2>&1; then
   # tracks HEAD of github.com/Homebrew/install with no tagged
   # releases). Trust anchor: HTTPS + GitHub + the Homebrew project.
   # We verify non-empty to catch truncated downloads.
-  HOMEBREW_INSTALLER_TMP="$(mktemp)"
+  HOMEBREW_INSTALLER_TMP="$(mktemp)" || { echo "error: mktemp failed" >&2; exit 1; }
   trap 'rm -f "${HOMEBREW_INSTALLER_TMP}"' EXIT
   curl_fetch --output "${HOMEBREW_INSTALLER_TMP}" \
     https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
