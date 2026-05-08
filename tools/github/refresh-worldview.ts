@@ -1,0 +1,338 @@
+#!/usr/bin/env bun
+// refresh-worldview.ts — canonical pre-decide worldview snapshot.
+//
+// Gathers open PRs, recently merged PRs, open issues, and local git
+// state into a single structured JSON payload. This is the refresh-
+// before-decide tool — replaces ad-hoc `gh pr list`, `gh issue list`,
+// `git status`, `git log` chains that the refresh-before-decide
+// invariant requires before every tick decision.
+//
+// Origin: B-0159 (P1) + B-0262/263/264 backlog items requesting a
+// canonical refresh script. Follows the same pattern as
+// `poll-pr-gate.ts` and `poll-pr-gate-batch.ts` — TS+Bun, structured
+// JSON output, `spawnSync` for CLI calls.
+//
+// Usage:
+//   bun tools/github/refresh-worldview.ts
+//   bun tools/github/refresh-worldview.ts --owner Lucent-Financial-Group --repo Zeta
+//   bun tools/github/refresh-worldview.ts --pr-limit 20 --issue-limit 10
+//
+// Output: one JSON object on stdout, shape:
+//   {
+//     "owner": "Lucent-Financial-Group",
+//     "repo": "Zeta",
+//     "queriedAt": "2026-05-08T12:00:00.000Z",
+//     "openPRs": [ { number, title, headRefName, createdAt, updatedAt,
+//                     autoMergeRequest, reviewDecision }, ... ],
+//     "recentMerges": [ { number, title, mergedAt }, ... ],
+//     "openIssues": [ { number, title, labels, createdAt }, ... ],
+//     "gitState": {
+//       "branch": "main",
+//       "uncommittedFiles": [ "M src/foo.fs", ... ],
+//       "recentCommits": [ "abc1234 feat: something", ... ]
+//     }
+//   }
+//
+// Exit codes:
+//   0 — query succeeded, JSON emitted
+//   1 — invocation / argument error
+//   2 — gh CLI returned non-zero (auth, rate-limit, etc.)
+//   3 — output couldn't be parsed
+
+import { spawnSync } from "node:child_process";
+
+const SPAWN_MAX_BUFFER = 32 * 1024 * 1024; // 32 MiB
+
+// --- Types ---
+
+interface OpenPR {
+  number: number;
+  title: string;
+  headRefName: string;
+  createdAt: string;
+  updatedAt: string;
+  autoMergeRequest: { enabledAt?: string } | null;
+  reviewDecision: string;
+}
+
+interface MergedPR {
+  number: number;
+  title: string;
+  mergedAt: string;
+}
+
+interface IssueLabel {
+  name: string;
+}
+
+interface OpenIssue {
+  number: number;
+  title: string;
+  labels: IssueLabel[];
+  createdAt: string;
+}
+
+interface GitState {
+  branch: string;
+  uncommittedFiles: string[];
+  recentCommits: string[];
+}
+
+export interface WorldviewSnapshot {
+  owner: string;
+  repo: string;
+  queriedAt: string;
+  openPRs: OpenPR[];
+  recentMerges: MergedPR[];
+  openIssues: OpenIssue[];
+  gitState: GitState;
+}
+
+// --- CLI helpers (same pattern as poll-pr-gate.ts) ---
+
+function runOrExit(
+  cmd: string,
+  args: string[],
+  context: string,
+): string {
+  const result = spawnSync(cmd, args, {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
+  if (result.error) {
+    process.stderr.write(
+      `${context}: failed to launch ${cmd}: ${result.error.message}\n`,
+    );
+    process.exit(1);
+  }
+  if (result.status !== 0) {
+    process.stderr.write(
+      `${context}: ${cmd} exited ${result.status}: ${result.stderr || result.stdout}\n`,
+    );
+    process.exit(2);
+  }
+  return result.stdout;
+}
+
+function parseJsonOrExit<T>(raw: string, context: string): T {
+  try {
+    return JSON.parse(raw) as T;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`${context}: JSON parse error: ${msg}\n`);
+    process.stderr.write(
+      `first 200 bytes of output: ${raw.slice(0, 200)}\n`,
+    );
+    process.exit(3);
+  }
+}
+
+// --- Data fetchers ---
+
+function fetchOpenPRs(owner: string, repo: string, limit: number): OpenPR[] {
+  const stdout = runOrExit(
+    "gh",
+    [
+      "pr",
+      "list",
+      "--repo",
+      `${owner}/${repo}`,
+      "--state",
+      "open",
+      "--json",
+      "number,title,headRefName,createdAt,updatedAt,autoMergeRequest,reviewDecision",
+      "--limit",
+      String(limit),
+    ],
+    "fetchOpenPRs",
+  );
+  return parseJsonOrExit<OpenPR[]>(stdout, "fetchOpenPRs");
+}
+
+function fetchRecentMerges(
+  owner: string,
+  repo: string,
+  limit: number,
+): MergedPR[] {
+  const stdout = runOrExit(
+    "gh",
+    [
+      "pr",
+      "list",
+      "--repo",
+      `${owner}/${repo}`,
+      "--state",
+      "merged",
+      "--json",
+      "number,title,mergedAt",
+      "--limit",
+      String(limit),
+    ],
+    "fetchRecentMerges",
+  );
+  return parseJsonOrExit<MergedPR[]>(stdout, "fetchRecentMerges");
+}
+
+function fetchOpenIssues(
+  owner: string,
+  repo: string,
+  limit: number,
+): OpenIssue[] {
+  const stdout = runOrExit(
+    "gh",
+    [
+      "issue",
+      "list",
+      "--repo",
+      `${owner}/${repo}`,
+      "--state",
+      "open",
+      "--json",
+      "number,title,labels,createdAt",
+      "--limit",
+      String(limit),
+    ],
+    "fetchOpenIssues",
+  );
+  return parseJsonOrExit<OpenIssue[]>(stdout, "fetchOpenIssues");
+}
+
+function fetchGitState(): GitState {
+  // Current branch
+  const branchResult = spawnSync("git", ["branch", "--show-current"], {
+    encoding: "utf8",
+  });
+  const branch = (branchResult.stdout ?? "").trim() || "HEAD (detached)";
+
+  // Uncommitted changes via git status --porcelain
+  const statusResult = spawnSync("git", ["status", "--porcelain"], {
+    encoding: "utf8",
+  });
+  const uncommittedFiles = (statusResult.stdout ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+
+  // Recent commits
+  const logResult = spawnSync(
+    "git",
+    ["log", "--oneline", "-10"],
+    { encoding: "utf8" },
+  );
+  const recentCommits = (logResult.stdout ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+
+  return { branch, uncommittedFiles, recentCommits };
+}
+
+// --- Arg parsing ---
+
+interface ParsedArgs {
+  owner: string;
+  repo: string;
+  prLimit: number;
+  mergeLimit: number;
+  issueLimit: number;
+}
+
+function parseArgs(argv: string[]): ParsedArgs {
+  const out: ParsedArgs = {
+    owner: "Lucent-Financial-Group",
+    repo: "Zeta",
+    prLimit: 50,
+    mergeLimit: 5,
+    issueLimit: 20,
+  };
+  const requireValue = (flag: string, v: string | undefined): string => {
+    if (v === undefined || v.startsWith("-")) {
+      process.stderr.write(`${flag} requires a value\n`);
+      process.exit(1);
+    }
+    return v;
+  };
+  const requirePositiveInt = (flag: string, v: string): number => {
+    const n = Number.parseInt(v, 10);
+    if (!Number.isFinite(n) || n <= 0) {
+      process.stderr.write(
+        `${flag} must be a positive integer (got ${v})\n`,
+      );
+      process.exit(1);
+    }
+    return n;
+  };
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === undefined) continue;
+    if (arg === "--owner") {
+      out.owner = requireValue("--owner", argv[++i]);
+    } else if (arg === "--repo") {
+      out.repo = requireValue("--repo", argv[++i]);
+    } else if (arg === "--pr-limit") {
+      out.prLimit = requirePositiveInt(
+        "--pr-limit",
+        requireValue("--pr-limit", argv[++i]),
+      );
+    } else if (arg === "--merge-limit") {
+      out.mergeLimit = requirePositiveInt(
+        "--merge-limit",
+        requireValue("--merge-limit", argv[++i]),
+      );
+    } else if (arg === "--issue-limit") {
+      out.issueLimit = requirePositiveInt(
+        "--issue-limit",
+        requireValue("--issue-limit", argv[++i]),
+      );
+    } else if (arg === "--help" || arg === "-h") {
+      process.stdout.write(
+        "Usage: refresh-worldview.ts [--owner X] [--repo Y]\n" +
+          "       [--pr-limit N] [--merge-limit N] [--issue-limit N]\n" +
+          "\n" +
+          "Gathers open PRs, recent merges, open issues, and git state\n" +
+          "into a single structured JSON snapshot for the refresh-before-\n" +
+          "decide invariant.\n",
+      );
+      process.exit(0);
+    } else {
+      process.stderr.write(`unknown arg: ${arg}\n`);
+      process.exit(1);
+    }
+  }
+  return out;
+}
+
+// --- Main ---
+
+export function main(argv: string[]): number {
+  const args = parseArgs(argv);
+  const openPRs = fetchOpenPRs(args.owner, args.repo, args.prLimit);
+  const recentMerges = fetchRecentMerges(
+    args.owner,
+    args.repo,
+    args.mergeLimit,
+  );
+  const openIssues = fetchOpenIssues(
+    args.owner,
+    args.repo,
+    args.issueLimit,
+  );
+  const gitState = fetchGitState();
+
+  const snapshot: WorldviewSnapshot = {
+    owner: args.owner,
+    repo: args.repo,
+    queriedAt: new Date().toISOString(),
+    openPRs,
+    recentMerges,
+    openIssues,
+    gitState,
+  };
+
+  process.stdout.write(`${JSON.stringify(snapshot, null, 2)}\n`);
+  return 0;
+}
+
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}
