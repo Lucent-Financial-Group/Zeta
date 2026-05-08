@@ -50,7 +50,8 @@ function scanOne(shardPath: string): ScanResult {
     return {
       path: pathRel,
       ok: false,
-      violation: "filename does not match HHMMZ.md or HHMMSSZ-<hash>.md",
+      violation:
+        "filename does not match HHMMZ.md, HHMMZ-<hex>.md, or HHMMSSZ-<hex>.md",
     };
   }
 
@@ -139,7 +140,7 @@ function isFile(p: string): boolean {
   }
 }
 
-function main(argv: string[]): number {
+export function main(argv: string[]): number {
   let shards: string[];
 
   if (argv[0] === "--files") {
@@ -173,4 +174,6 @@ function main(argv: string[]): number {
   return violations > 0 ? 1 : 0;
 }
 
-process.exit(main(process.argv.slice(2)));
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}
