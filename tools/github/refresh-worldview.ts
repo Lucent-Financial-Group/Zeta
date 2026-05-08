@@ -37,7 +37,8 @@
 //   0 — query succeeded, JSON emitted
 //   1 — invocation / argument error
 //   2 — gh CLI returned non-zero (auth, rate-limit, etc.)
-//   3 — output couldn't be parsed
+//   3 — git command returned non-zero (not in worktree, missing git, etc.)
+//   4 — output couldn't be parsed
 
 import { spawnSync } from "node:child_process";
 
@@ -130,7 +131,7 @@ function runGitOrExit(args: string[], context: string): string {
     process.stderr.write(
       `${context}: git exited ${result.status}: ${result.stderr || result.stdout}\n`,
     );
-    process.exit(2);
+    process.exit(3);
   }
   return result.stdout;
 }
@@ -144,7 +145,7 @@ function parseJsonOrExit<T>(raw: string, context: string): T {
     process.stderr.write(
       `first 200 bytes of output: ${raw.slice(0, 200)}\n`,
     );
-    process.exit(3);
+    process.exit(4);
   }
 }
 
@@ -272,6 +273,12 @@ function parseArgs(argv: string[]): ParsedArgs {
     return v;
   };
   const requirePositiveInt = (flag: string, v: string): number => {
+    if (!/^\d+$/.test(v)) {
+      process.stderr.write(
+        `${flag} must be a positive integer (got ${v})\n`,
+      );
+      process.exit(1);
+    }
     const n = Number.parseInt(v, 10);
     if (!Number.isFinite(n) || n <= 0) {
       process.stderr.write(
