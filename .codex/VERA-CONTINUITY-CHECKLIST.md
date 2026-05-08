@@ -122,5 +122,5 @@ Before final response:
 - push any committed work
 - open or update the PR
 - release the claim in the same PR when work is ready
-- update `/Users/acehack/.local/share/zeta-broadcasts/vera.md`
+- update `~/.local/share/zeta-broadcasts/vera.md`
 - report the durable outcome and exact next safe action
