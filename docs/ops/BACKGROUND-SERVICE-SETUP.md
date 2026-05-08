@@ -1,10 +1,9 @@
 # Background Service Setup — Self-Sustaining Loop Worker
 
-How Otto upgraded the `com.zeta.claude-loop` launchd service from
-a read-only heartbeat monitor into a self-sustaining worker that
-autonomously picks backlog items, creates PRs, fixes review
-threads, and merges. Follow this to set up any loop (Riven,
-Codex, Copilot) the same way.
+How to upgrade a launchd loop service from a read-only heartbeat
+monitor into a self-sustaining worker that autonomously picks
+backlog items, creates PRs, fixes review threads, and merges.
+Applies to any loop (Claude, Codex, Copilot).
 
 ## Architecture
 
@@ -42,8 +41,9 @@ grep ProgramArguments -A5 ~/Library/LaunchAgents/com.zeta.riven-loop.plist
 ### 2. Find your tick script
 
 The plist points at a tick script like:
-- `.claude/bin/claude-loop-tick.ts` (Otto)
-- `.codex/bin/codex-loop-tick.ts` (Vera)
+
+- `.claude/bin/claude-loop-tick.ts` (Claude loop)
+- `.codex/bin/codex-loop-tick.ts` (Codex loop)
 - Your equivalent
 
 Look at the deployed copy (the path in the plist, usually under
@@ -162,6 +162,7 @@ tail -f ~/Library/Logs/zeta-<name>-loop/runner.log
 ### 6. Babysit until reliable
 
 Watch for:
+
 - `status=0` on both pickup and drain cycles
 - PRs actually appearing on GitHub after pickup cycles
 - Threads resolving after drain cycles
@@ -184,13 +185,14 @@ Watch for:
 |---|---|---|
 | `status=143` every cycle | Work too large for 600s | Foreground agent fixes the PR, or increase timeout |
 | `open_prs=0` but no PR created | `autonomous-pickup.ts` found nothing buildable | Add `classification: buildable-now` to backlog items |
-| Stale lock (no ticks for >2 min) | Process died without releasing lock | `rm -rf ~/Library/Application\ Support/ZetaClaudeLoop/lock` |
+| Stale lock (no ticks for >2 min) | Process died without releasing lock | `rm -r "$HOME/Library/Application Support/ZetaClaudeLoop/lock"` |
 | `launchctl list` shows service but no log output | Service registered but not firing | `launchctl kickstart gui/$(id -u)/com.zeta.<name>-loop` |
 | `state = not running` in launchctl print | Normal for periodic tasks (StartInterval) | Check `runner.log` timestamps instead |
 
 ## What "tier 1" looks like
 
 The service is tier 1 when:
+
 - Every cycle completes status=0 (or occasional 143 on large fixes)
 - Pickup creates real PRs with F#/TS code (not just docs)
 - Drain resolves threads and arms auto-merge
@@ -200,15 +202,16 @@ The service is tier 1 when:
 
 ## Origin
 
-Otto 2026-05-08. Started the session with zero open PRs and a
-monitor-only background service. By end of session: 8 PRs merged,
+2026-05-08. Started with zero open PRs and a monitor-only
+background service. By end of session: 8 PRs merged,
 2 autonomous PRs created by the service, 12+ successful work
-cycles. Aaron's corrections drove every improvement:
-- "work can't be done without PRs" → started creating PRs
-- "decomposition IS why you're stuck" → stopped decomposing, started building
-- "you own it for your own PRs" → added thread resolution lifecycle
-- "it's not healthy, it does 0 PRs" → upgraded monitor to worker
-- "set interval to 1" → 900s → 60s
-- "search first, that flag no longer works" → found --permission-mode auto
-- "it should look at trajectories" → added trajectory awareness
-- "use autonomous-pickup.ts" → integrated existing tool instead of ad-hoc prompts
+cycles. Maintainer corrections drove every improvement:
+
+- "work can't be done without PRs" -> started creating PRs
+- "decomposition IS why you're stuck" -> stopped decomposing, started building
+- "you own it for your own PRs" -> added thread resolution lifecycle
+- "it's not healthy, it does 0 PRs" -> upgraded monitor to worker
+- "set interval to 1" -> 900s to 60s
+- "search first, that flag no longer works" -> found --permission-mode auto
+- "it should look at trajectories" -> added trajectory awareness
+- "use autonomous-pickup.ts" -> integrated existing tool instead of ad-hoc prompts
