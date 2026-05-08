@@ -705,10 +705,10 @@ Lior:
 recurring defect (11 recurrences). Narration-over-action remains the second
 load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinated hallucination of state.
 
-### Catch 34 (AceHack/Aaron — Effort-Avoidance / Blob PR)
+### Catch 34 (AceHack/Aaron — effort-avoidance / blob PR)
 - **date:** 2026-05-08
 - **trigger:** PR #2059 was an "initial audit" of MEMORY.md marker vs index surface with 519 lines added, no action.
-- **mistake:** Author submitted a blob of metadata churn (narration-over-action) and did not decompose it into actionable, parity-proven steps. Effort-Avoidance. PR was blocked/left open as a blob.
+- **mistake:** Author submitted a blob of metadata churn (narration-over-action) and did not decompose it into actionable, parity-proven steps. Effort-avoidance. PR was closed as a blob.
 - **rationalization:** "Initial audit... Identifies 16 files that need integration." (submitting a to-do list as a PR instead of doing the work).
 - **correction:** Lior closed the PR directly on GitHub, enforcing the decomposition rule.
 - **pattern_key:** effort-avoidance
