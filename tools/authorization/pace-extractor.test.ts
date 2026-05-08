@@ -144,6 +144,7 @@ describe("extractPaceInstructions", () => {
     const instruction = instructionAt(result, 0);
     expect(instruction.source).toBe("claude.ai");
     expect(instruction.raw).toContain("recommend holding");
+    expect(instruction.timestamp).toBe("2026-05-04");
   });
 
   test("multiple pace lines in one file emit separate candidates", async () => {
@@ -161,7 +162,9 @@ describe("extractPaceInstructions", () => {
     const result = await extractPaceInstructions(root);
     expect(result.length).toBe(2);
     expect(instructionAt(result, 0).raw).toContain("go hard");
+    expect(instructionAt(result, 0).timestamp).toBe("2026-05-01");
     expect(instructionAt(result, 1).raw).toContain("rest now");
+    expect(instructionAt(result, 1).timestamp).toBe("2026-05-02");
   });
 
   test("no pace instruction in substrate → empty array", async () => {
@@ -227,7 +230,9 @@ describe("extractPaceInstructions", () => {
     expect(result.length).toBeGreaterThanOrEqual(1);
     const fromClaude = result.find((r) => r.file.endsWith("CLAUDE.md"));
     expect(fromClaude).toBeDefined();
+    expect(fromClaude!.source).toBe("aaron");
     expect(fromClaude!.raw).toContain("go hard");
+    expect(fromClaude!.timestamp).toBe("2026-05-02");
   });
 
   test("CURRENT-aaron.md → extracted", async () => {

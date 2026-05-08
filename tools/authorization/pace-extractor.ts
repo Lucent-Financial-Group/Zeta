@@ -43,9 +43,20 @@ const SOURCE_PATTERNS: [RegExp, string][] = [
   [/\bRiven\b/i, "riven"],
 ];
 
+const ISSUER_PATTERNS: [RegExp, string][] = [
+  [/^(?:[-*>\s"']*)Aaron\b/i, "aaron"],
+  [/^(?:[-*>\s"']*)Claude(?:\.ai|ai)?\b/i, "claude.ai"],
+  [/^(?:[-*>\s"']*)Codex\b/i, "codex"],
+  [/^(?:[-*>\s"']*)Amara\b/i, "amara"],
+  [/^(?:[-*>\s"']*)Gemini\b/i, "gemini"],
+  [/^(?:[-*>\s"']*)Grok\b/i, "grok"],
+  [/^(?:[-*>\s"']*)Ani\b/i, "ani"],
+  [/^(?:[-*>\s"']*)Riven\b/i, "riven"],
+];
+
 const FILENAME_SOURCE_PATTERNS: [RegExp, string][] = [
   [/(?:^|[/_.-])aaron(?:[/_.-]|$)/i, "aaron"],
-  [/(?:^|[/_.-])claude(?:[_.-]?ai)?(?:[/_.-]|$)/i, "claude.ai"],
+  [/(?:^|[/_.-])claude[_.-]?ai(?:[/_.-]|$)/i, "claude.ai"],
   [/(?:^|[/_.-])codex(?:[/_.-]|$)/i, "codex"],
   [/(?:^|[/_.-])amara(?:[/_.-]|$)/i, "amara"],
   [/(?:^|[/_.-])gemini(?:[/_.-]|$)/i, "gemini"],
@@ -69,6 +80,13 @@ function inferSourceFromText(text: string): string {
   return "unknown";
 }
 
+function inferIssuerSource(text: string): string {
+  for (const [re, label] of ISSUER_PATTERNS) {
+    if (re.test(text)) return label;
+  }
+  return "unknown";
+}
+
 function inferSourceFromFilename(filename: string): string {
   for (const [re, label] of FILENAME_SOURCE_PATTERNS) {
     if (re.test(filename)) return label;
@@ -82,9 +100,12 @@ function inferSource(
   filename: string,
 ): string {
   if (previousLine !== null) {
-    const issuerSource = inferSourceFromText(previousLine);
+    const issuerSource = inferIssuerSource(previousLine);
     if (issuerSource !== "unknown") return issuerSource;
   }
+
+  const rawIssuerSource = inferIssuerSource(raw);
+  if (rawIssuerSource !== "unknown") return rawIssuerSource;
 
   const rawSource = inferSourceFromText(raw);
   if (rawSource !== "unknown") return rawSource;
@@ -92,11 +113,14 @@ function inferSource(
   return inferSourceFromFilename(filename);
 }
 
-function extractTimestamp(text: string, filename: string): string | null {
+function extractInlineTimestamp(text: string): string | null {
   const inlineMatch = DATE_RE.exec(text);
   const inlineTimestamp = inlineMatch?.[1];
   if (inlineTimestamp !== undefined) return inlineTimestamp;
+  return null;
+}
 
+function extractFilenameTimestamp(filename: string): string | null {
   const fnMatch = FILENAME_DATE_RE.exec(filename);
   const year = fnMatch?.[1];
   const month = fnMatch?.[2];
@@ -106,6 +130,18 @@ function extractTimestamp(text: string, filename: string): string | null {
   }
 
   return null;
+}
+
+function extractTimestamp(
+  raw: string,
+  previousLine: string | null,
+  filename: string,
+): string | null {
+  return (
+    extractInlineTimestamp(raw) ??
+    (previousLine === null ? null : extractInlineTimestamp(previousLine)) ??
+    extractFilenameTimestamp(filename)
+  );
 }
 
 function stripFrontmatter(content: string): string {
@@ -142,9 +178,8 @@ function extractFromFile(
 
     const raw = line.trim().slice(0, 500);
     const previous = previousNonEmptyLine(lines, index);
-    const context = previous === null ? raw : `${previous}\n${raw}`;
     const source = inferSource(raw, previous, relPath);
-    const timestamp = extractTimestamp(context, relPath);
+    const timestamp = extractTimestamp(raw, previous, relPath);
 
     instructions.push({ source, timestamp, raw, file: relPath });
   }
