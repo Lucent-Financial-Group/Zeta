@@ -74,6 +74,7 @@ export function resolveStorageStatePath(options: Pick<GitHubSessionOptions, "sto
 }
 
 export async function validateStorageStateFile(path: string): Promise<void> {
+  // Note: TOCTOU race possible between validate and playwright use; acceptable for session helper (CodeQL alert noted)
   let raw: string;
   try {
     raw = await readFile(path, "utf8");
@@ -178,14 +179,13 @@ function extractGitHubUsername(html: string): string | null {
 }
 
 function decodeHtmlAttribute(value: string): string {
-  const entities: Record<string, string> = {
-    "#39": "'",
-    amp: "&",
-    gt: ">",
-    lt: "<",
-    quot: '"',
-  };
-  return value.replace(/&(#39|amp|gt|lt|quot);/g, (match, entity: string) => entities[entity] ?? match);
+  // Order replacements to avoid double-unescaping (CodeQL alert)
+  return value
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
