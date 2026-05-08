@@ -71,9 +71,14 @@ class, apply **most-recent-not-rescinded wins**:
 1. Collect all instructions from the authorized source for the
    decision class.
 2. Order by timestamp (most recent first).
-3. The most recent instruction is operative unless explicitly
-   rescinded by a later instruction from the same authorized
-   source.
+3. Scan newest-to-oldest. A bare explicit rescind invalidates
+   only the older instruction it names; it is not itself the
+   replacement pace unless it also states one.
+4. The first source-authorized pace instruction that has not
+   been invalidated by a newer explicit rescind is operative.
+5. If the scan finds only rescinds or cannot identify the
+   rescinded target, return `operative: unclear` and
+   `decision: escalate`.
 
 Do not average across framings. Do not weight by emphasis or
 repetition. Recency is the single ordering key.
