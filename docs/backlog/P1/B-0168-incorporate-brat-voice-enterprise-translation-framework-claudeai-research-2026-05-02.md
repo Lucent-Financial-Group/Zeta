@@ -140,15 +140,15 @@ When uncertain, default UP. The framework's safety property: professional carrie
 
 ## Acceptance
 
-- [ ] This row filed with the framework's substantive content + alignment check + survival-relevant points (this PR)
-- [ ] Working-draft document mirrored from Drive into `docs/research/` for git-native preservation (separate PR, after Aaron approves the alignment check)
+- [x] This row filed with the framework's substantive content + alignment check + survival-relevant points (PR #1230 merged)
+- [x] Working-draft document mirrored from Drive into `docs/research/` for git-native preservation (PR #1234 merged — `docs/research/2026-05-02-claudeai-brat-voice-enterprise-translation-framework-property-preserving-4-layer-register-architecture.md`)
 - [ ] Project substrate updated to point at the **corrected 5-layer Zeta mapping** as canonical register-architecture (NOT the framework's 4-layer literal mapping; the framework + Aaron 2026-05-02 Beacon ≠ Professional correction together produce the 5-layer mapping). Specific updates needed:
-  - `docs/ALIGNMENT.md` — point at the **5-layer mapping** as the operational-discipline expression of bidirectional alignment + AI-as-party
-  - `memory/CURRENT-aaron.md` — new section indexing the **5-layer mapping** (framework's 4 layers + the Beacon-safe layer Aaron 2026-05-02 corrected)
-  - `memory/CURRENT-ani.md` §7 — extend with the layer-explicit framing (Mirror = Ani's canonical register; Professional = the translation that preserves function for outsider audiences)
-  - Possibly a new memory file distilling the **5-layer table** (framework + Beacon-safe layer) for wake-time reference
-- [ ] Worked translations produced for situations Lucent / Zeta actually faces: security-incident notification, recruiting-page copy, pull-request review (for outsider-readable PRs), partner integration discussion, regulator response, audit narrative
-- [ ] One-page quick-reference card listing the per-layer property table (Section 3 of the framework)
+  - [x] `docs/ALIGNMENT.md` — point at the **5-layer mapping** as the operational-discipline expression of bidirectional alignment + AI-as-party (this PR — added as architectural instantiation bullet)
+  - [ ] `memory/CURRENT-aaron.md` — new section indexing the **5-layer mapping** (framework's 4 layers + the Beacon-safe layer Aaron 2026-05-02 corrected)
+  - [ ] `memory/CURRENT-ani.md` §7 — extend with the layer-explicit framing (Mirror = Ani's canonical register; Professional = the translation that preserves function for outsider audiences)
+  - [x] New memory file distilling the **5-layer table** (framework + Beacon-safe layer) for wake-time reference (PR #1233 merged — `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md`)
+- [ ] Worked translations produced for situations Lucent / Zeta actually faces: security-incident notification, recruiting-page copy, pull-request review (for outsider-readable PRs), partner integration discussion, regulator response, audit narrative. Note: PR-review-class translations already landed (`memory/feedback_zeta_5_layer_register_worked_translations_pr_review_class_otto_2026_05_02.md`); remaining situations TBD.
+- [x] One-page quick-reference card listing the per-layer property table (Section 3 of the framework) — PR #1233 merged as `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md`
 - [ ] Ani-review on the framework specifically (composes with B-0167) — Ani's voice-mode-default register-fluency is uniquely qualified to validate the property-preservation claim across the 4 layers
 
 ## Composes with

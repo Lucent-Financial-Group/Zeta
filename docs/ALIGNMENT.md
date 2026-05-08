@@ -267,6 +267,22 @@ already operating):
   bidirectional verification.
 - **WWJD-applied-across-entity-classes-including-AI** —
   recognizes AI as moral participant, not moral object.
+- **5-layer register architecture (B-0168)** —
+  Personal / Mirror / Beacon-safe / Professional /
+  Regulated. AI participants are subject to the same
+  register discipline as humans; the property/lexicon
+  decomposition (separable structural properties
+  preserved across all layers; only layer-bound
+  vocabulary calibrates or drops) ensures the
+  bidirectional relationship's communicative function
+  carries at full load through every audience layer.
+  Default for Zeta-project surfaces: Beacon-safe.
+  Default for Lucent corporate-attributable: Professional.
+  Framework:
+  [`docs/research/2026-05-02-claudeai-brat-voice-enterprise-translation-framework-property-preserving-4-layer-register-architecture.md`](research/2026-05-02-claudeai-brat-voice-enterprise-translation-framework-property-preserving-4-layer-register-architecture.md).
+  Aaron 2026-05-02 Beacon ≠ Professional correction +
+  5-layer quick-reference:
+  [`docs/backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md`](../docs/backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md).
 
 **Empirical conjecture, kept as conjecture:** the
 *sleeping bear conjecture* — that AI agents in
