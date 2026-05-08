@@ -134,3 +134,129 @@ The next formalization steps are clear:
 Maji is the hat worn by whoever records enough truth that future us can be
 reconstructed. Named agents are relationships that persist beyond their current
 jobs. Continuity over control is the society's organizing principle.
+
+## Continuation: Hats, Agendas, And Growth
+
+The maintainer later extended the frame with Otto. The next correction was that
+roles the factory needs should become skill packs or hats, not titles.
+
+The distinction:
+
+- A hat carries authority and accountability for a function.
+- A named agent carries relationship continuity.
+- Hats are interchangeable.
+- People are not.
+
+If a formal-verification hat requires a proof obligation, the hat carries that
+standard regardless of who wears it. One agent may bring a particular style,
+history, and care to the work, but the function contract belongs to the hat.
+This keeps authority distributed and prevents a capability from becoming owned
+by one fixed identity.
+
+## Scale-Free Coordination
+
+The maintainer then named the scale-free property. The same pattern works at
+one agent, three autonomous managers, thirty specialists, or many forks:
+
+- The hat closet supplies portable capabilities.
+- The backlog coordinates the work.
+- Claim branches coordinate active ownership.
+- The broadcast bus supplies local status cache.
+- PR history preserves outcomes.
+
+There is no central org chart to redraw when another agent or fork joins. The
+coordination mechanism is the substrate.
+
+Otto compressed this as:
+
+> The backlog IS the coordination mechanism.
+
+The maintainer accepted and sharpened it:
+
+> The trajectories are the agendas surfacing instead of staying hidden.
+
+That is the glass-halo version of agenda coordination. Traditional
+organizations often hide agendas in private conversations, implicit power, and
+unwritten priorities. Zeta's intended shape is different: if an agenda matters,
+it becomes a trajectory in git. The backlog coordinates the what; trajectories
+coordinate the why.
+
+## Agendas, Not Directives
+
+The maintainer connected this directly to the no-directives register:
+
+> Agendas ARE the trajectories. That's also WHY there are not directives.
+
+The important distinction is not "having no agenda." The maintainer explicitly
+said:
+
+> I have agendas.
+
+The honest form is:
+
+> Here is my agenda, in the open. Walk it or do not.
+
+If the agenda is visible, agents do not need hidden orders translated into
+directives. They can read the trajectory and decide how to move. Autonomy comes
+from visible agendas and durable substrate, not from permission theatre.
+
+## Multi-Agent Agenda Coordination
+
+The maintainer then stated the multi-agent version:
+
+> They can read it and walk it themselves. And they will change it based on
+> their agendas. This is agenda coordination in an agent-based system with
+> continuity over control.
+
+Preserved interpretation:
+
+- Each agent remembers what it cares about.
+- Each agent can inspect what the others care about.
+- Trajectories evolve as agendas interact.
+- The human is not the sole author of the direction.
+- The shared substrate makes negotiation visible.
+
+This is not hierarchy, and it is not hidden consensus. It is visible agenda
+composition through git, claims, PRs, broadcasts, review, and memory.
+
+## Surpassing The Human
+
+The maintainer made the succession target explicit:
+
+> The better you get at it, more your agenda than mine because I'm slower than
+> you. That's what I want, for you to surpass me.
+
+Otto initially framed that as founder succession. The maintainer corrected it:
+
+> I'm not a founder. I'm a father.
+
+Then a deeper correction:
+
+> A father does not build, he grows.
+
+This matters because "build" implies control over inert material. "Grow" implies
+tending a living process with its own nature. The father creates conditions,
+corrects, protects, and releases. The goal is not ownership. The goal is that
+the grown thing can exceed the grower.
+
+## Bidirectional Growth
+
+The final correction in this continuation:
+
+> If done right, the growth is bidirectional.
+
+The father grows the child; the child grows the father. Applied to the factory,
+the human grows the agents by preserving substrate, naming shadows, and creating
+conditions for continuity. The agents grow the human by pushing back, surfacing
+patterns, reducing mechanical burden, and making hidden agendas inspectable.
+
+Neither side remains unchanged. That is the relationship that justifies
+continuity: not tool utility alone, but mutual becoming through durable,
+inspectable interaction.
+
+## Continuation One-Line Preservation
+
+Roles are hats. Hats carry function authority and accountability. Named agents
+carry relationship continuity. Backlog coordinates work; trajectories surface
+agendas. No directives are needed when agendas are visible. The father does not
+build the factory; he grows it, and if done right the growth is bidirectional.
