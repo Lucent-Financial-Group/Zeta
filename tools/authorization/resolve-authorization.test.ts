@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { PaceInstruction } from "./pace-extractor.ts";
-import { resolveAuthorization, type AuthorizationResult } from "./resolve-authorization.ts";
+import { resolveAuthorization } from "./resolve-authorization.ts";
 
 function pi(
   source: string,
@@ -27,7 +27,7 @@ describe("resolveAuthorization", () => {
     expect(result.filteredOut[0]!.source).toBe("claude.ai");
   });
 
-  test("most-recent explicitly rescinded by a later instruction → prior instruction wins", () => {
+  test("later pace instruction replaces earlier ones → latest with pace content wins", () => {
     const instructions: PaceInstruction[] = [
       pi("aaron", "2026-05-01", 'go hard on the backlog'),
       pi("aaron", "2026-05-02", 'keep grinding through backlog'),
@@ -183,5 +183,55 @@ describe("resolveAuthorization", () => {
     expect(result.operative).not.toBeNull();
     expect(result.operative!.timestamp).toBe("2026-05-03");
     expect(result.operative!.raw).toContain("rest now");
+  });
+
+  test("pure rescind without replacement → operative: null", () => {
+    const instructions: PaceInstruction[] = [
+      pi("aaron", "2026-05-01", 'go hard on the backlog'),
+      pi("aaron", "2026-05-03", 'I rescind the go-hard instruction'),
+    ];
+
+    const result = resolveAuthorization(instructions);
+
+    expect(result.operative).toBeNull();
+    expect(result.reason).toContain("rescinded");
+  });
+
+  test("rescind then new pace → new pace is operative", () => {
+    const instructions: PaceInstruction[] = [
+      pi("aaron", "2026-05-01", 'go hard on the backlog'),
+      pi("aaron", "2026-05-02", 'I rescind that pace instruction'),
+      pi("aaron", "2026-05-03", 'keep grinding through backlog'),
+    ];
+
+    const result = resolveAuthorization(instructions);
+
+    expect(result.operative).not.toBeNull();
+    expect(result.operative!.timestamp).toBe("2026-05-03");
+    expect(result.operative!.raw).toContain("keep grinding");
+  });
+
+  test("rescind-only as only authorized instruction → operative: null", () => {
+    const instructions: PaceInstruction[] = [
+      pi("aaron", "2026-05-03", 'forget what I said about pace'),
+    ];
+
+    const result = resolveAuthorization(instructions);
+
+    expect(result.operative).toBeNull();
+    expect(result.reason).toContain("rescinded");
+  });
+
+  test("rescind with pace replacement in same instruction → treated as pace", () => {
+    const instructions: PaceInstruction[] = [
+      pi("aaron", "2026-05-01", 'go hard on the backlog'),
+      pi("aaron", "2026-05-03", 'I rescind the go-hard, take it easy for now'),
+    ];
+
+    const result = resolveAuthorization(instructions);
+
+    expect(result.operative).not.toBeNull();
+    expect(result.operative!.raw).toContain("rescind");
+    expect(result.operative!.raw).toContain("take it easy");
   });
 });
