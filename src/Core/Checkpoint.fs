@@ -82,8 +82,27 @@ type FileCheckpointStore(rootDir: string) =
     do
         Directory.CreateDirectory canonicalRoot |> ignore
 
+    /// Is Windows / macOS case-insensitive filesystem?
+    /// Same pattern as DiskBackingStore.
+    let isCaseInsensitivePathFs =
+        OperatingSystem.IsWindows() || OperatingSystem.IsMacOS()
+
+    let pathComparison =
+        if isCaseInsensitivePathFs then StringComparison.OrdinalIgnoreCase
+        else StringComparison.Ordinal
+
     let checkpointPath (circuitId: string) =
-        Path.Combine(canonicalRoot, circuitId + ".checkpoint")
+        let candidate =
+            Path.GetFullPath(
+                Path.Combine(canonicalRoot, circuitId + ".checkpoint"))
+        let rootWithSep =
+            canonicalRoot.TrimEnd(Path.DirectorySeparatorChar)
+            + string Path.DirectorySeparatorChar
+        if not (candidate.StartsWith(rootWithSep, pathComparison)) then
+            raise (ArgumentException(
+                $"Circuit ID would escape checkpoint root: {circuitId}",
+                nameof circuitId))
+        candidate
 
     interface ICheckpointStore with
         member _.SaveCheckpointAsync
@@ -136,6 +155,28 @@ type FileCheckpointStore(rootDir: string) =
             fs.Close()
 
             File.Move(tmpPath, target, true)
+
+            // Best-effort directory fsync — ensures the rename
+            // metadata is durable on POSIX. On Linux/macOS we
+            // can open the directory as a FileStream and flush;
+            // on Windows this is not supported and we accept
+            // the limitation (.NET has no portable dir-fsync
+            // API). The checkpoint is still recoverable via the
+            // temp file pattern; worst case under power loss is
+            // reverting to the prior checkpoint.
+            try
+                let dirPath = Path.GetDirectoryName target
+                use dirFs =
+                    new FileStream(
+                        dirPath,
+                        FileMode.Open,
+                        FileAccess.Read,
+                        FileShare.ReadWrite)
+                dirFs.Flush true
+            with
+            | :? UnauthorizedAccessException -> ()
+            | :? IOException -> ()
+
             ValueTask.CompletedTask
 
         member _.LoadCheckpointAsync(circuitId, _ct) =
@@ -143,37 +184,48 @@ type FileCheckpointStore(rootDir: string) =
             if not (File.Exists path) then
                 ValueTask.FromResult ValueNone
             else
-                let bytes = File.ReadAllBytes path
-                use ms = new MemoryStream(bytes)
-                use br = new BinaryReader(ms)
-                let tick = br.ReadInt64()
-                let count = br.ReadInt32()
-                let readers =
-                    Array.init count (fun _ ->
-                        let opId = br.ReadInt32()
-                        let _version = br.ReadInt32()
-                        let dataLen = br.ReadInt32()
-                        let data = br.ReadBytes dataLen
-                        let opMs = new MemoryStream(data)
-                        let opBr = new BinaryReader(opMs)
-                        let reader =
-                            { new ICheckpointReader with
-                                member _.ReadInt32() =
-                                    opBr.ReadInt32()
-                                member _.ReadInt64() =
-                                    opBr.ReadInt64()
-                                member _.ReadFloat() =
-                                    opBr.ReadDouble()
-                                member _.ReadBool() =
-                                    opBr.ReadBoolean()
-                                member _.ReadBytes() =
-                                    let len = opBr.ReadInt32()
-                                    opBr.ReadBytes len
-                                member _.ReadString() =
-                                    opBr.ReadString() }
-                        (opId, reader))
-                ValueTask.FromResult(
-                    ValueSome(struct (tick, readers)))
+                // Treat corrupt / truncated checkpoint as
+                // missing — safer than crashing recovery.
+                // The circuit will fall back to replay from
+                // the event stream (Temporal model).
+                try
+                    let bytes = File.ReadAllBytes path
+                    use ms = new MemoryStream(bytes)
+                    use br = new BinaryReader(ms)
+                    let tick = br.ReadInt64()
+                    let count = br.ReadInt32()
+                    if count < 0 then
+                        ValueTask.FromResult ValueNone
+                    else
+                        let readers =
+                            Array.init count (fun _ ->
+                                let opId = br.ReadInt32()
+                                let _version = br.ReadInt32()
+                                let dataLen = br.ReadInt32()
+                                let data = br.ReadBytes dataLen
+                                let opMs = new MemoryStream(data)
+                                let opBr = new BinaryReader(opMs)
+                                let reader =
+                                    { new ICheckpointReader with
+                                        member _.ReadInt32() =
+                                            opBr.ReadInt32()
+                                        member _.ReadInt64() =
+                                            opBr.ReadInt64()
+                                        member _.ReadFloat() =
+                                            opBr.ReadDouble()
+                                        member _.ReadBool() =
+                                            opBr.ReadBoolean()
+                                        member _.ReadBytes() =
+                                            let len = opBr.ReadInt32()
+                                            opBr.ReadBytes len
+                                        member _.ReadString() =
+                                            opBr.ReadString() }
+                                (opId, reader))
+                        ValueTask.FromResult(
+                            ValueSome(struct (tick, readers)))
+                with
+                | :? EndOfStreamException -> ValueTask.FromResult ValueNone
+                | :? IOException -> ValueTask.FromResult ValueNone
 
 
 /// In-memory checkpoint store for testing and DST.
