@@ -31,7 +31,7 @@ import { spawnSync } from "node:child_process";
 
 type AuditExitCode = 0 | 1 | 2;
 
-const ALL_CLAUSES: readonly string[] = [
+export const ALL_CLAUSES: readonly string[] = [
   "HC-1", "HC-2", "HC-3", "HC-4", "HC-5", "HC-6", "HC-7",
   "SD-1", "SD-2", "SD-3", "SD-4", "SD-5", "SD-6", "SD-7", "SD-8", "SD-9",
   "DIR-1", "DIR-2", "DIR-3", "DIR-4", "DIR-5",
@@ -113,7 +113,7 @@ function parseArgs(argv: readonly string[]): ParseResult {
   return { kind: "args", args: state };
 }
 
-function extractClauses(content: string): readonly string[] {
+export function extractClauses(content: string): readonly string[] {
   const found = new Set<string>();
   const re = /\b(HC-[1-7]|SD-[1-9]|DIR-[1-5])\b/g;
   let match: RegExpExecArray | null;
