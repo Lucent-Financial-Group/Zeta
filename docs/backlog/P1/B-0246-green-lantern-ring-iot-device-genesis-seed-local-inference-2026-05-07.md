@@ -6,7 +6,8 @@ title: "Green Lantern ring — IoT wearable running Genesis Seed with local infe
 created: 2026-05-07
 last_updated: 2026-05-07
 depends_on: [B-0240, B-0242, B-0244, B-0245]
-decomposition: blob
+decomposition: decomposed
+children: [B-0289, B-0290]
 owners: [architect, product-scrum-master, user-experience-engineer]
 ---
 
