@@ -198,10 +198,14 @@ function heartbeat(): void {
         const elapsed = Date.now() - lastTime;
 
         if (elapsed >= agentIntervalMs) {
-            const prNum = Number(prCount) || 0;
-            const workMode = prNum === 0 ? "pickup" : "drain";
+            const prNum = Number(prCount);
+            const prCountUnknown = Number.isNaN(prNum);
+            if (prCountUnknown) {
+                log(`riven: open PR count unknown (prCount="${prCount}"), fail-closed to drain`);
+            }
+            const workMode = prCountUnknown || prNum > 0 ? "drain" : "pickup";
             agentStatus = "running";
-            log(`riven work cycle start run_id=${runId} mode=${workMode} open_prs=${prNum}`);
+            log(`riven work cycle start run_id=${runId} mode=${workMode} open_prs=${prCount}`);
 
             if (dryRun) {
                 log(`dry-run: would run riven ${workMode}`);
@@ -210,12 +214,23 @@ function heartbeat(): void {
                 let prompt: string;
                 if (workMode === "pickup") {
                     const pickup = run("bun", ["tools/backlog/autonomous-pickup.ts", "--json"], 30_000);
-                    let executionPrompt = "";
+                    let executionPrompt: string | null = null;
                     try {
                         const selection = JSON.parse(pickup.stdout);
                         executionPrompt = selection.executionPrompt ?? "";
                         log(`pickup selected: ${selection.selected?.id ?? "none"} action=${selection.action ?? "none"}`);
-                    } catch { log(`pickup parse error: ${pickup.stderr.slice(0, 200)}`); }
+                    } catch {
+                        log(`pickup parse error: ${pickup.stderr.slice(0, 200)}`);
+                    }
+
+                    if (executionPrompt === null) {
+                        log(`pickup selector failed — skipping work cycle`);
+                        agentStatus = "skip-pickup-error";
+                        writeFileSync(agentStateFile, JSON.stringify({
+                            run_id: runId, status: "pickup-error", updated_at: nowIso(),
+                        }, null, 2));
+                        return;
+                    }
 
                     const preamble = [
                         `You are Riven's background worker in Lucent-Financial-Group/Zeta.`,
@@ -235,7 +250,7 @@ function heartbeat(): void {
                         `You are Riven's background worker in Lucent-Financial-Group/Zeta.`,
                         `Read CLAUDE.md first. Run "bun tools/github/refresh-worldview.ts".`,
                         `Build gate: "dotnet build -c Release" (0 warnings).`,
-                        `TASK: ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open".`,
+                        `TASK: ${prCount} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open".`,
                         `For any PR where gate=BLOCKED and nextAction=resolve-threads:`,
                         `check out branch, read review comments, fix code issues, push,`,
                         `reply to threads, resolve via GraphQL, arm auto-merge`,
