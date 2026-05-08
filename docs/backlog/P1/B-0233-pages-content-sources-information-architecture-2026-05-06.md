@@ -4,11 +4,12 @@ priority: P1
 status: open
 title: "GitHub Pages discoverability - content sources and information architecture"
 created: 2026-05-06
-last_updated: 2026-05-06
+last_updated: 2026-05-08
 parent: B-0154
 depends_on: [B-0232]
 classification: blocked-on-pages-workflow
-decomposition: blob
+decomposition: decomposed
+children: [B-0264, B-0265]
 ---
 
 # B-0233 - Pages content sources
