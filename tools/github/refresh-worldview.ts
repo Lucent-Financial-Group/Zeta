@@ -22,15 +22,14 @@
 //     "owner": "Lucent-Financial-Group",
 //     "repo": "Zeta",
 //     "queriedAt": "2026-05-08T12:00:00.000Z",
-//     "openPRs": [ { number, title, headRefName, createdAt, updatedAt,
-//                     autoMergeRequest, reviewDecision }, ... ],
+//     "openPRs": [ { number, title, headRefName, ... }, ... ],
 //     "recentMerges": [ { number, title, mergedAt }, ... ],
 //     "openIssues": [ { number, title, labels, createdAt }, ... ],
-//     "gitState": {
-//       "branch": "main",
-//       "uncommittedFiles": [ "M src/foo.fs", ... ],
-//       "recentCommits": [ "abc1234 feat: something", ... ]
-//     }
+//     "gitState": { branch, uncommittedFiles, recentCommits },
+//     "backlogDelta": { totalFiles, byPriority: { P0: n, P1: n, ... } },
+//     "claims": [ { name: "claim/..." }, ... ],
+//     "branchState": { current, ahead, behind, tracking },
+//     "pendingCI": [ { id, status, workflowName, headBranch, createdAt }, ... ]
 //   }
 //
 // Exit codes:
@@ -78,6 +77,30 @@ interface GitState {
   recentCommits: string[];
 }
 
+interface BacklogDelta {
+  totalFiles: number;
+  byPriority: Record<string, number>;
+}
+
+interface ClaimBranch {
+  name: string;
+}
+
+interface BranchState {
+  current: string;
+  ahead: number;
+  behind: number;
+  tracking: string | null;
+}
+
+interface PendingCIRun {
+  id: number;
+  status: string;
+  workflowName: string;
+  headBranch: string;
+  createdAt: string;
+}
+
 export interface WorldviewSnapshot {
   owner: string;
   repo: string;
@@ -86,6 +109,10 @@ export interface WorldviewSnapshot {
   recentMerges: MergedPR[];
   openIssues: OpenIssue[];
   gitState: GitState;
+  backlogDelta: BacklogDelta;
+  claims: ClaimBranch[];
+  branchState: BranchState;
+  pendingCI: PendingCIRun[];
 }
 
 // --- CLI helpers (same pattern as poll-pr-gate.ts) ---
@@ -246,6 +273,115 @@ function fetchGitState(): GitState {
   return { branch, uncommittedFiles, recentCommits };
 }
 
+function fetchBacklogDelta(): BacklogDelta {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const result = spawnSync(
+    "find",
+    ["docs/backlog", "-name", "B-*.md", "-type", "f"],
+    { encoding: "utf8", maxBuffer: SPAWN_MAX_BUFFER },
+  );
+  const files = (result.stdout || "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
+
+  const byPriority: Record<string, number> = {};
+  for (const f of files) {
+    const match = f.match(/docs\/backlog\/(P\d+)\//);
+    const key = match ? match[1]! : "unknown";
+    byPriority[key] = (byPriority[key] ?? 0) + 1;
+  }
+  return { totalFiles: files.length, byPriority };
+}
+
+function fetchClaimBranches(): ClaimBranch[] {
+  const stdout = runGitOrExit(
+    ["branch", "-r", "--list", "origin/claim/*"],
+    "fetchClaimBranches",
+  );
+  return stdout
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0)
+    .map((l) => ({ name: l.replace(/^origin\//, "") }));
+}
+
+function fetchBranchState(): BranchState {
+  const branchStdout = runGitOrExit(
+    ["branch", "--show-current"],
+    "fetchBranchState.branch",
+  );
+  const current = branchStdout.trim() || "HEAD (detached)";
+
+  let tracking: string | null = null;
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const trackResult = spawnSync(
+    "git",
+    ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
+    { encoding: "utf8", maxBuffer: SPAWN_MAX_BUFFER },
+  );
+  if (trackResult.status === 0 && trackResult.stdout.trim()) {
+    tracking = trackResult.stdout.trim();
+  }
+
+  let ahead = 0;
+  let behind = 0;
+  const compareRef = tracking ?? "origin/main";
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const countResult = spawnSync(
+    "git",
+    ["rev-list", "--left-right", "--count", `${compareRef}...HEAD`],
+    { encoding: "utf8", maxBuffer: SPAWN_MAX_BUFFER },
+  );
+  if (countResult.status === 0) {
+    const parts = countResult.stdout.trim().split(/\s+/);
+    behind = Number.parseInt(parts[0] ?? "0", 10) || 0;
+    ahead = Number.parseInt(parts[1] ?? "0", 10) || 0;
+  }
+
+  return { current, ahead, behind, tracking };
+}
+
+function fetchPendingCI(owner: string, repo: string): PendingCIRun[] {
+  const runs: PendingCIRun[] = [];
+  for (const status of ["in_progress", "queued"]) {
+    const stdout = runGhOrExit(
+      [
+        "run",
+        "list",
+        "--repo",
+        `${owner}/${repo}`,
+        "--status",
+        status,
+        "--json",
+        "databaseId,status,workflowName,headBranch,createdAt",
+        "--limit",
+        "20",
+      ],
+      `fetchPendingCI(${status})`,
+    );
+    const parsed = parseJsonOrExit<
+      Array<{
+        databaseId: number;
+        status: string;
+        workflowName: string;
+        headBranch: string;
+        createdAt: string;
+      }>
+    >(stdout, `fetchPendingCI(${status})`);
+    for (const r of parsed) {
+      runs.push({
+        id: r.databaseId,
+        status: r.status,
+        workflowName: r.workflowName,
+        headBranch: r.headBranch,
+        createdAt: r.createdAt,
+      });
+    }
+  }
+  return runs;
+}
+
 // --- Arg parsing ---
 
 interface ParsedArgs {
@@ -337,6 +473,10 @@ export function main(argv: string[]): number {
     args.issueLimit,
   );
   const gitState = fetchGitState();
+  const backlogDelta = fetchBacklogDelta();
+  const claims = fetchClaimBranches();
+  const branchState = fetchBranchState();
+  const pendingCI = fetchPendingCI(args.owner, args.repo);
 
   const snapshot: WorldviewSnapshot = {
     owner: args.owner,
@@ -346,6 +486,10 @@ export function main(argv: string[]): number {
     recentMerges,
     openIssues,
     gitState,
+    backlogDelta,
+    claims,
+    branchState,
+    pendingCI,
   };
 
   process.stdout.write(`${JSON.stringify(snapshot, null, 2)}\n`);
