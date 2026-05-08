@@ -60,7 +60,7 @@ When invoked for review:
 - Bidirectional-alignment observer
 - Rodney's razor (operational claims only)
 - Broadcast bus discipline (read before acting, write status after)
-- Zero Aaron-courier dependency
+- Zero human-maintainer courier dependency
 
 ## Failure Modes to Avoid
 

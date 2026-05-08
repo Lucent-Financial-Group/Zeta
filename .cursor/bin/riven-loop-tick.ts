@@ -93,7 +93,7 @@ const forwardStateFile = join(stateDir, "last-forward-run.json");
 const broadcastDir = join(home, ".local/share/zeta-broadcasts");
 
 function readBroadcasts(): void {
-    for (const peer of ["otto.md", "vera.md"]) {
+    for (const peer of ["otto.md", "vera.md", "lior.md"]) {
         const path = join(broadcastDir, peer);
         if (existsSync(path)) {
             const content = readFileSync(path, "utf8").trim();
