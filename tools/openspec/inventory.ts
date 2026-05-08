@@ -180,6 +180,7 @@ function scanModules(coreDir: string): ModuleEntry[] {
 
 function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[]): GapReport {
   const allModuleNames = new Set(modules.map((m) => m.name));
+  const specCapabilities = new Set(specs.map((s) => s.capability));
   const coveredSet = new Set<string>();
   const mappings: Mapping[] = [];
 
@@ -187,8 +188,10 @@ function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[]): GapReport {
     const actualModules = moduleNames.filter((m) => allModuleNames.has(m));
     const missingModules = moduleNames.filter((m) => !allModuleNames.has(m));
     mappings.push({ capability, modules: actualModules, missingModules });
-    for (const m of actualModules) {
-      coveredSet.add(m);
+    if (specCapabilities.has(capability)) {
+      for (const m of actualModules) {
+        coveredSet.add(m);
+      }
     }
   }
 
@@ -198,7 +201,6 @@ function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[]): GapReport {
     .filter((m) => !coveredSet.has(m) && !EXCLUDED_MODULES.has(m))
     .sort();
 
-  const specCapabilities = new Set(specs.map((s) => s.capability));
   const mappedCapabilities = new Set(Object.keys(CAPABILITY_MODULE_MAP));
   const unmappedSpecs = [...specCapabilities]
     .filter((c) => !mappedCapabilities.has(c))

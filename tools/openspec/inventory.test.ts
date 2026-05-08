@@ -127,18 +127,40 @@ describe("buildGapReport", () => {
   });
 
   test("coverage denominator excludes only present excluded modules", () => {
+    const specs: SpecEntry[] = [
+      {
+        capability: "operator-algebra",
+        specPath: "openspec/specs/operator-algebra/spec.md",
+        profiles: ["fsharp"],
+        purposeSnippet: "the core algebra",
+      },
+    ];
+    const modules: ModuleEntry[] = [
+      { name: "ZSet.fs", path: "src/Core/ZSet.fs", namespace: "Zeta.Core" },
+      { name: "Sketch.fs", path: "src/Core/Sketch.fs", namespace: "Zeta.Core" },
+    ];
+
+    const report = buildGapReport(specs, modules);
+    // Neither AssemblyInfo.fs nor FSharpApi.fs is in the module list,
+    // so denominator should be 2 (not 2 - 2 = 0).
+    // ZSet.fs is covered via operator-algebra mapping (spec present), so 1/2 = 50%.
+    expect(report.coveragePercent).toBe(50);
+    expect(report.uncoveredModules).toHaveLength(1);
+    expect(report.uncoveredModules).toContain("Sketch.fs");
+  });
+
+  test("modules are not covered when their capability spec is missing", () => {
     const modules: ModuleEntry[] = [
       { name: "ZSet.fs", path: "src/Core/ZSet.fs", namespace: "Zeta.Core" },
       { name: "Sketch.fs", path: "src/Core/Sketch.fs", namespace: "Zeta.Core" },
     ];
 
     const report = buildGapReport([], modules);
-    // Neither AssemblyInfo.fs nor FSharpApi.fs is in the module list,
-    // so denominator should be 2 (not 2 - 2 = 0).
-    // ZSet.fs is covered via operator-algebra mapping, so 1/2 = 50%.
-    expect(report.coveragePercent).toBe(50);
-    expect(report.uncoveredModules).toHaveLength(1);
-    expect(report.uncoveredModules).toContain("Sketch.fs");
+    // No specs present — even though ZSet.fs is in the operator-algebra mapping,
+    // coverage should be 0% because the spec itself doesn't exist.
+    expect(report.coveragePercent).toBe(0);
+    expect(report.coveredModules).toHaveLength(0);
+    expect(report.uncoveredModules).toHaveLength(2);
   });
 
   test("reports missing mapped modules", () => {
