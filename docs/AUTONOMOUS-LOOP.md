@@ -218,6 +218,7 @@ wait for instruction. Priority ladder:
    Run before picking speculative work:
 
    ```
+   bun tools/authorization/check-authorization.ts
    bun tools/hygiene/check-no-op-cadence-pattern.ts
    grep -rE "CADENCE-TRACK" docs/hygiene-history/ticks/
    ```
@@ -234,6 +235,16 @@ wait for instruction. Priority ladder:
    same-tick-prohibited (e.g., AutoDream's fresh-memories
    rule): write `CADENCE-TRACK: <work> overdue, deferred to
    <trigger>` into this tick's shard.
+
+   **Check 0c — authorization check** (B-0308): runs
+   `bun tools/authorization/check-authorization.ts` which
+   composes the pace-extractor (B-0306) and resolver (B-0307).
+   Prints two-layer DX output: raw JSON (Layer 1) then labeled
+   interpretation (Layer 2). If `operative: null`, the never-idle
+   floor applies. Does NOT gate work — surfaces information for
+   the agent to read and apply. The `formatShardField()` export
+   provides the value for the tick-shard `operative-authorization`
+   field.
 
    Why critical: agent drift into ~20-tick-acknowledgment
    patterns is what these checks catch at decision-time.
