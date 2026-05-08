@@ -248,11 +248,13 @@ it (closed-thread links survive in the PR's review history).
     that decides when it's required (spend > $X? new
     counterparty? new venue?).
 
-    **Proposed (Otto 2026-05-07):** require second-agent
+    **Resolved (Vera 2026-05-08):** require second-agent
     review when any of these are true: amount exceeds 10%
     of remaining bond; counterparty is absent from prior
     receipts; venue is absent from prior receipts.
-    Conservative for v0. Revisable as the bond grows.
+    Conservative for v0. Revisable as the bond grows. The
+    wallet v0 spec now lands this in §7.2.1 and blocks
+    broadcast until required review is approved.
 3. **Align retraction metric with updated Base reorg
     policy** (cid 3150816620 P2). Retraction metric still
     requires "reorg-window monitored after" the §12.2
@@ -323,7 +325,7 @@ comments.
 
 ## Progress (2026-05-07 session)
 
-15 of 21 items resolved via doc reconciliation:
+16 of 21 items resolved via doc reconciliation:
 
 + PR #1907: 3 stale "open question" refs → resolved
 + PR #1908: EAT Task B monitor → sibling-repo
@@ -339,10 +341,12 @@ comments.
 + Vera 2026-05-08: retraction-scoped session-key auth landed in wallet
   spec §3.3/§9.1 for self-revocation and cancellation
 + Vera 2026-05-08: monitor-stall freeze landed in wallet spec §6.1/§9.1
++ Vera 2026-05-08: second-agent material-spend review predicate landed in
+  wallet spec §7.2.1
 
-6 items remain — all P1/P2 design decisions needing
+5 items remain — all P1/P2 design decisions needing
 deeper wallet-domain engagement (preflight terminal
-state, material-spend criteria, INTENTIONAL-DEBT schema).
+state, INTENTIONAL-DEBT schema).
 
 2026-05-07 red-team correction: PR #1942 briefly marked
 this row closed by trusting a "21/21 addressed" pickup
