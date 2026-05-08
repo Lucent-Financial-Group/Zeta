@@ -4,11 +4,13 @@ priority: P1
 status: open
 title: "GitHub Pages discoverability - Playwright validation and DORA metrics"
 created: 2026-05-06
-last_updated: 2026-05-06
+last_updated: 2026-05-08
 parent: B-0154
 depends_on: [B-0147, B-0232, B-0234]
 classification: blocked-on-pages-and-metrics-lane
-decomposition: blob
+decomposition: decomposed
+children: [B-0297, B-0298]
+owners: [qa, observability]
 ---
 
 # B-0236 - Pages validation and DORA metrics

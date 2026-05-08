@@ -128,6 +128,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0294](backlog/P1/B-0294-coherence-ai-ksk-override-implementation-2026-05-08.md)** Coherence AI — KSK override implementation
 - [ ] **[B-0295](backlog/P1/B-0295-pages-repo-metadata-discovery-surface-2026-05-08.md)** Pages discoverability - repository metadata and discovery surface
 - [ ] **[B-0296](backlog/P1/B-0296-pages-sitemap-submission-discovery-metrics-2026-05-08.md)** Pages discoverability - sitemap submission and discovery metrics
+- [ ] **[B-0297](backlog/P1/B-0297-pages-playwright-public-surface-validation-2026-05-08.md)** Pages discoverability - Playwright public surface validation
+- [ ] **[B-0298](backlog/P1/B-0298-pages-frontend-dora-metrics-2026-05-08.md)** Pages discoverability - frontend DORA metric definitions
 
 ## P2 — research-grade
 
