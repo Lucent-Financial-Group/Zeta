@@ -1,13 +1,13 @@
 ---
 id: B-0063
 priority: P1
-status: open
+status: done
 title: Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
 tier: install-path-supply-chain
 effort: M
 ask: codex P0 review on PR #75 (5 threads on tools/setup/common/curl-fetch.sh, macos.sh, linux.sh, elan.sh) flagging that even bare `curl --retry` can retry after bytes are written to stdout, leaving the shell consumer with partial+full concatenated script content. PR #75 immediate fix: drop --retry from `curl_fetch_stream` entirely. This row tracks the structurally safe replacement.
 created: 2026-04-28
-last_updated: 2026-05-02
+last_updated: 2026-05-08
 depends_on: []
 decomposition: atomic
 classification: buildable-now
@@ -108,18 +108,26 @@ This pattern:
 
 ## Done-criteria
 
-- [ ] All three call sites converted to download-to-temp
-      + size-check + exec pattern.
-- [ ] For each call site, the upstream's verifiability
+- [x] All three call sites converted to download-to-temp,
+      size-check, and exec pattern.
+      - `elan.sh`: pinned commit SHA + SHA256 verify (pre-existing).
+      - `linux.sh` mise: pinned tarball + per-arch SHA256 (pre-existing).
+      - `macos.sh` Homebrew: download-to-temp + non-empty size check
+        (converted by this PR).
+- [x] For each call site, the upstream's verifiability
       story is documented in the inline comment (signed
       release / SHA256SUMS / project-as-trust-anchor with
       no upstream verification).
-- [ ] `tools/setup/common/curl-fetch.sh` doc-comments
-      reflect the new pattern; the `curl_fetch_stream`
-      function may then be DEPRECATED-WARNING-on-use or
-      removed entirely.
+      - `elan.sh`: commit-pinned + SHA256.
+      - `linux.sh` mise: version-pinned tarball + per-arch SHA256.
+      - `macos.sh` Homebrew: no upstream SHA256 (HEAD-tracking,
+        no tagged releases); trust anchor is HTTPS + GitHub +
+        Homebrew project. Documented inline.
+- [x] `tools/setup/common/curl-fetch.sh` doc-comments
+      reflect the new pattern; `curl_fetch_stream` removed
+      entirely (no remaining call sites).
 - [ ] CI passes on macOS-26, ubuntu-24.04, ubuntu-24.04-arm
-      with the new pattern.
+      with the new pattern (pending CI run on PR).
 
 ## Why P1 (not P0)
 

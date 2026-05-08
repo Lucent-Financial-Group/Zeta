@@ -141,6 +141,12 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0302](backlog/P1/B-0302-pages-stable-route-map-pre-indexing-freeze-2026-05-08.md)** Pages content sources - stable route map before indexing
 - [ ] **[B-0303](backlog/P1/B-0303-pages-contributor-on-ramp-information-architecture-2026-05-08.md)** Pages content sources - contributor on-ramp information architecture
 - [ ] **[B-0304](backlog/P1/B-0304-pages-selected-research-publication-queue-redaction-gate-2026-05-08.md)** Pages content sources - selected research queue and redaction gate
+- [ ] **[B-0310](backlog/P1/B-0310-concept-registry-extraction-tool.md)** Concept-registry extraction tool — canonical inventory of load-bearing concepts
+- [ ] **[B-0311](backlog/P1/B-0311-external-anchor-coverage-scanner.md)** External-anchor coverage scanner — per-concept anchor presence/absence audit
+- [ ] **[B-0312](backlog/P1/B-0312-alignment-clause-anchor-backfill.md)** HC/SD/DIR alignment-clause external-anchor backfill
+- [ ] **[B-0313](backlog/P1/B-0313-wake-time-otto-nn-anchor-backfill.md)** Wake-time Otto-NN principle external-anchor backfill
+- [ ] **[B-0314](backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md)** BP-NN rule external-anchor backfill
+- [ ] **[B-0315](backlog/P1/B-0315-glass-halo-doctrine-anchor-backfill.md)** Glass-Halo doctrine external-anchor backfill
 
 ## P2 — research-grade
 
@@ -262,6 +268,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0284](backlog/P2/B-0284-interloop-messaging-implementation-2026-05-08.md)** Interloop messaging — implementation on chosen transport
 - [x] **[B-0285](backlog/P2/B-0285-arc4-selfplay-arena-design-2026-05-08.md)** ARC-4 — adversarial self-play arena design
 - [ ] **[B-0286](backlog/P2/B-0286-arc4-selfplay-implementation-2026-05-08.md)** ARC-4 — self-play implementation + training loop
+- [ ] **[B-0316](backlog/P2/B-0316-long-tail-anchor-sweep-cadence.md)** Long-tail external-anchor cadenced sweep — memory files + research docs
 
 ## P3 — convenience / deferred
 
