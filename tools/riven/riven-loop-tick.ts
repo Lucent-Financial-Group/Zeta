@@ -2,9 +2,9 @@
 // riven-loop-tick.ts — host-level launchd heartbeat runner for Riven (Cursor/Grok).
 // Manager contract injected. This is the live version that executes the trajectory manager behavior.
 
-import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node/fs";
-import { join } from "node/path";
-import { spawnSync } from "node/child_process";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { spawnSync } from "node:child_process";
 
 const home = process.env.HOME ?? "/Users/acehack";
 const worktree = process.env.ZETA_RIVEN_LOOP_WORKTREE ?? join(home, ".local/share/zeta-riven-loop/Zeta");
@@ -67,7 +67,7 @@ function acquireLock(): boolean {
                 try { process.kill(pid, 0); return false; } catch { /* stale */ }
             }
             const acquiredMatch = meta.match(/^acquired_at=(.+)$/m);
-            if (acquiredMatch) {
+            if (acquiredMatch?.[1]) {
                 const age = Date.now() - new Date(acquiredMatch[1]).getTime();
                 if (age < lockTtlMs) return false;
             }
