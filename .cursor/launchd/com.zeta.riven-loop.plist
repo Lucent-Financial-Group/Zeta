@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key><string>com.zeta.riven-loop</string>
+    <key>ProgramArguments</key><array>
+        <string>/opt/homebrew/bin/bun</string>
+        <string>/Users/acehack/.local/share/zeta-riven-loop/Zeta/.cursor/bin/riven-loop-tick.ts</string>
+    </array>
+    <key>StartInterval</key><integer>60</integer>
+    <key>RunAtLoad</key><true/>
+    <key>StandardOutPath</key><string>/Users/acehack/Library/Logs/zeta-riven-loop/stdout.log</string>
+    <key>StandardErrorPath</key><string>/Users/acehack/Library/Logs/zeta-riven-loop/stderr.log</string>
+    <key>EnvironmentVariables</key><dict>
+        <key>HOME</key><string>/Users/acehack</string>
+        <key>ZETA_RIVEN_LOOP_RUN_AGENT</key><string>1</string>
+        <key>ZETA_RIVEN_LOOP_FORWARD_ACTIONS</key><string>1</string>
+    </dict>
+</dict>
+</plist>
