@@ -442,27 +442,35 @@ All paths are glass-halo (public, version-controlled, auditable by either party 
 
 ## §8 — Bond accounting
 
-### §8.1 Bond entry schema in `docs/INTENTIONAL-DEBT.md`
+### §8.1 Bond entry format in `docs/INTENTIONAL-DEBT.md`
 
-Schema:
+Wallet v0 does not require a YAML migration of
+`docs/INTENTIONAL-DEBT.md`. For v0, every posted bond lands as a normal
+intentional-debt row using the ledger's existing six-field prose contract.
+The row title should use:
 
-```yaml
-entry_id: wallet-v0-<seq>
-type: blast-radius-bond
-posted_by: aaron
-posted_at: <ISO8601>
-asset: USDC
-value: <decimal>
-purpose: |
-  Wallet experiment v0 — deliberate-tuition bond for mapping
-  blast radius of agent-proposed DEX swaps on Base. v0 scaffold
-  per docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md.
-expected_loss: full
-recovery_curve: |
-  Bond exhaustion → freeze; postmortem required;
-  scaling-threshold review before bond renewal.
-related_receipts: <list of proposal_ids that draw against this bond>
+```markdown
+### <YYYY-MM-DD> — Wallet v0 blast-radius bond <seq>
 ```
+
+The six fields carry the wallet-specific accounting facts:
+
+- **Shortcut:** name the deliberate blast-radius-bond constraint and include
+  `posted_by`, `posted_at`, `asset`, `value`, expected loss (`full` for v0),
+  and the wallet spec path.
+- **Why now:** state why a finite bond is the right v0 risk budget instead of
+  pretending the agent has unbounded operating authority.
+- **Right long-term solution:** describe the un-shortcut version, including a
+  machine-readable bond ledger or contract-indexed accounting if v0+1 scale
+  justifies it.
+- **Trigger:** include bond exhaustion, bond renewal, scaling-threshold review,
+  and the receipt IDs that draw against this bond.
+- **Estimated effort:** `S` for a single v0 row; `M` or `L` if the trigger is
+  schema migration plus tooling.
+- **Filed by:** the agent/persona opening the bond row and the PR or round.
+
+If multiple bonds, assets, or automated accounting become necessary, the YAML
+schema migration is a v0+1 ADR + tooling task, not a v0 acceptance blocker.
 
 ### §8.2 Bond exhaustion
 

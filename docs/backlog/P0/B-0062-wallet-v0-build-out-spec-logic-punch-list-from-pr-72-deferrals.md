@@ -290,15 +290,17 @@ it (closed-thread links survive in the PR's review history).
     format** (cid 3151337321 P1). Spec proposes recording
     bond entries in a YAML schema; INTENTIONAL-DEBT.md is
     currently a prose/bulleted ledger. Either land the
-
-    **Proposed (Otto 2026-05-07):** Defer YAML schema
-    to v0+1. For v0: define bond entries in the existing
-    prose format. The YAML migration is a separate ADR
-    when tooling justifies the format change. v0 bond
-    scale doesn't need machine-readable schema yet.
     YAML schema migration (separate ADR + tooling), or
     define bond entries in the existing prose format
     until the schema lands.
+
+    **Resolved (Vera 2026-05-08):** Defer YAML schema to
+    v0+1. For v0, wallet spec §8.1 now maps blast-radius
+    bond entries onto the existing `docs/INTENTIONAL-DEBT.md`
+    six-field prose contract. A YAML migration becomes a
+    separate ADR + tooling task only when multiple bonds,
+    assets, or automated accounting make machine-readable
+    schema worth its maintenance cost.
 
 ## Done-criteria
 
@@ -328,7 +330,7 @@ comments.
 
 ## Progress (2026-05-07 session)
 
-18 of 21 items resolved via doc reconciliation:
+19 of 21 items resolved via doc reconciliation:
 
 + PR #1907: 3 stale "open question" refs → resolved
 + PR #1908: EAT Task B monitor → sibling-repo
@@ -348,10 +350,11 @@ comments.
   wallet spec §7.2.1
 + Vera 2026-05-08: preflight `retracted` and `frozen` local proposal
   lifecycle states landed in wallet spec §7.3
++ Vera 2026-05-08: INTENTIONAL-DEBT bond accounting aligned to existing
+  six-field prose ledger format in wallet spec §8.1
 
-3 items remain — all P1/P2 design decisions needing
-deeper wallet-domain engagement (INTENTIONAL-DEBT schema and final
-companion-spec cleanup).
+2 items remain — final companion-spec cleanup requiring
+deeper wallet-domain engagement.
 
 2026-05-07 red-team correction: PR #1942 briefly marked
 this row closed by trusting a "21/21 addressed" pickup
