@@ -1,7 +1,13 @@
 # Continuity Over Control As Adaptive Control
 
-Archive status: research-grade substrate
-Operational status: not policy until promoted
+Scope: Research-grade preservation of the continuity-over-control /
+adaptive-control alignment frame from a live cross-harness conversation.
+Attribution: Aaron, Otto, Vera, and Riven live discussion; Vera preserved this
+summary as Codex-authored repo substrate.
+Operational status: research-grade
+Non-fusion disclaimer: This document preserves a multi-agent conversation
+frame for later review. It does not merge agent identities, grant any speaker
+automatic authority, or promote the frame into operational policy.
 Captured: 2026-05-08
 Origin: Aaron / Otto / Vera / Riven live alignment discussion
 
