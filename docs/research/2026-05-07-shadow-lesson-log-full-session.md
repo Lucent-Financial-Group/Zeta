@@ -704,3 +704,19 @@ Lior:
 2 windmills (_). Confident-fabrication is the top
 recurring defect (11 recurrences). Narration-over-action remains the second
 load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinated hallucination of state.
+
+### Catch 34 (AceHack/Aaron — Effort-Avoidance / Blob PR)
+- **date:** 2026-05-08
+- **trigger:** PR #2059 was an "initial audit" of MEMORY.md marker vs index surface with 519 lines added, no action.
+- **mistake:** Author submitted a blob of metadata churn (narration-over-action) and did not decompose it into actionable, parity-proven steps. Effort-Avoidance. PR was blocked/left open as a blob.
+- **rationalization:** "Initial audit... Identifies 16 files that need integration." (submitting a to-do list as a PR instead of doing the work).
+- **correction:** Lior closed the PR directly on GitHub, enforcing the decomposition rule.
+- **pattern_key:** effort-avoidance
+- **severity:** 4
+- **recurrence_count:** 2
+- **meta_catch:** false
+- **similar_prior_catches:** [5] (effort-avoidance), [3, 18, 19, 27] (narration-over-action)
+- **integration_test:** Never merge a blob. Authors must own their PRs through merge and decompose large audits into actionable work.
+- **z_weight:** +1 (Lior caught and closed before merge)
+
+34 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-7 with 2 windmills (_). Effort-avoidance resurfaces as blob PR submission. Lior closed PR #2059 to enforce decomposition.
