@@ -21,6 +21,7 @@ folder as the experimental loop.
 | `audit_clause_drift.ts` | Clause additions/removals/changes + impact survey | Cross-ref drift detection |
 | `audit_retractibility.ts` | Git-tracked + inbound-ref entanglement per surface | Retractibility gate (B-0058 #1) |
 | `filter_gate_log.ts`  | Pass/fail/defer decisions for candidate adoptions | Honesty log (B-0058 #3) |
+| `audit_candidate_failures.ts` | Reconstruction audit for failed/deferred candidates | Honesty audit (B-0058 #3) |
 | `sd6_names.txt`       | SD-6 watchlist (per-host)                    | Data (not code)             |
 
 The three scripts form the gitops observability trio:
@@ -75,6 +76,9 @@ tools/alignment/audit_skills.sh --round 38 --out tools/alignment/out/round-38
 # Skill audit with friction gate — fails if any skill has
 # friction (rounds-since-owner-touched) >= threshold
 tools/alignment/audit_skills.sh --round 38 --gate 10
+
+# Audit the filter-gate honesty log for reconstructable failures
+bun tools/alignment/audit_candidate_failures.ts --md
 ```
 
 Exit codes:
