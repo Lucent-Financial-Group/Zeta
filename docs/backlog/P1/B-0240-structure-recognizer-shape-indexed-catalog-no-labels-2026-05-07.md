@@ -6,7 +6,8 @@ title: "Structure recognizer — shape-indexed catalog that distinguishes struct
 created: 2026-05-07
 last_updated: 2026-05-07
 depends_on: [B-0083]
-decomposition: blob
+decomposition: decomposed
+children: [B-0274, B-0275]
 owners: [architect, formal-verification-expert, performance-engineer]
 ---
 
