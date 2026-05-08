@@ -105,6 +105,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0269](backlog/P1/B-0269-extract-carved-sentences-from-claude-md-to-rules-2026-05-08.md)** Extract carved sentences from CLAUDE.md to .claude/rules/
 - [ ] **[B-0270](backlog/P1/B-0270-pm2-role-skill-definition-2026-05-08.md)** PM-2 role — skill definition + persona agent
 - [ ] **[B-0271](backlog/P1/B-0271-pm2-first-research-pass-2026-05-08.md)** PM-2 role — first research pass on Zeta feature gaps
+- [ ] **[B-0272](backlog/P1/B-0272-atari-rom-canonical-naming-tosec-lookup-2026-05-08.md)** Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup
+- [ ] **[B-0273](backlog/P1/B-0273-atari-rom-safe-unsafe-folder-split-2026-05-08.md)** Atari 2600 ROM safe/unsafe folder split for license compliance
 
 ## P2 — research-grade
 
