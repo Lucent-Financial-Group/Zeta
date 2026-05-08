@@ -1,4 +1,7 @@
 import { describe, expect, test } from "bun:test";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   buildPrBody,
   buildPrTitle,
@@ -6,6 +9,7 @@ import {
   decideAutoMerge,
   normalizeBranchRef,
   validatePublicationInput,
+  writePrBodyFile,
   type PublicationInput,
 } from "./pr-publication-plan";
 
@@ -16,6 +20,7 @@ function input(overrides: Partial<PublicationInput> = {}): PublicationInput {
     backlogPath: "docs/backlog/P0/B-0280-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md",
     branch: "claim/task-b0280-pr-publication-plan",
     baseBranch: "main",
+    bodyFilePath: "tmp/pr-bodies/B-0280.md",
     summary: [
       "adds a deterministic PR publication packet",
       "keeps auto-merge arming behind review-thread and required-check gates",
@@ -63,6 +68,7 @@ describe("buildPublicationPlan", () => {
     expect(plan.prBody).toContain("## Backlog row");
     expect(plan.prBody).toContain("B-0280");
     expect(plan.prBody).toContain("Decision: arm auto-merge");
+    expect(plan.bodyFilePath).toBe("tmp/pr-bodies/B-0280.md");
     expect(plan.commands.commit).toEqual([
       "git",
       "commit",
@@ -73,6 +79,7 @@ describe("buildPublicationPlan", () => {
     ]);
     expect(plan.commands.push).toEqual(["git", "push", "-u", "origin", "claim/task-b0280-pr-publication-plan"]);
     expect(plan.commands.createPr).toContain("--body-file");
+    expect(plan.commands.createPr).toContain("tmp/pr-bodies/B-0280.md");
     expect(plan.commands.armAutoMerge).toEqual([
       "gh",
       "pr",
@@ -89,6 +96,26 @@ describe("buildPublicationPlan", () => {
     const plan = buildPublicationPlan(input({ unresolvedReviewThreads: 1 }));
     expect(plan.autoMerge.allowed).toBe(false);
     expect(plan.commands.armAutoMerge).toBeNull();
+  });
+
+  test("writes the generated PR body to the configured body file once", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-pr-body-"));
+    const originalCwd = process.cwd();
+    const bodyFilePath = "body/body.md";
+    try {
+      process.chdir(dir);
+      const plan = buildPublicationPlan(input({ bodyFilePath }));
+
+      writePrBodyFile(plan);
+
+      expect(readFileSync(join(dir, bodyFilePath), "utf8")).toBe(plan.prBody);
+      expect(() => {
+        writePrBodyFile(plan);
+      }).toThrow();
+    } finally {
+      process.chdir(originalCwd);
+      rmSync(dir, { force: true, recursive: true });
+    }
   });
 });
 
@@ -116,6 +143,29 @@ describe("validation", () => {
     expect(() => validatePublicationInput(input({ backlogPath: "../outside.md" }))).toThrow(
       "unsafe repo-relative path",
     );
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: "-body.md" }));
+    }).toThrow(
+      "unsafe PR body file path",
+    );
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: "/tmp/body.md" }));
+    }).toThrow("unsafe repo-relative path");
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: "C:/tmp/body.md" }));
+    }).toThrow("unsafe repo-relative path");
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: "C:../outside/body.md" }));
+    }).toThrow("unsafe repo-relative path");
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: "../body.md" }));
+    }).toThrow("unsafe repo-relative path");
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: "tmp/../body.md" }));
+    }).toThrow("unsafe repo-relative path");
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: ".git/body.md" }));
+    }).toThrow("unsafe repo-relative path");
   });
 
   test("formats body check notes without mutating input", () => {

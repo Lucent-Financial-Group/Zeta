@@ -36,3 +36,7 @@ without the maintainer acting as courier or permission surface.
 - 2026-05-08: Second implementation slice adds the deterministic Codex
   commit command, including the required Codex co-author trailer, to the
   publication plan.
+- 2026-05-08: Third implementation slice replaces the placeholder PR body
+  file argument with a validated `bodyFilePath` input and adds an explicit
+  `--write-body` helper that writes the generated review packet exactly once
+  before `gh pr create` runs.
