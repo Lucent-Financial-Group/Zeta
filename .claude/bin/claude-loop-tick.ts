@@ -26,7 +26,7 @@ const runId = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/,
 const lockTtlMs = Number(process.env.ZETA_CLAUDE_LOOP_LOCK_TTL_SECONDS ?? "120") * 1000;
 const fetchTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_FETCH_TIMEOUT_SECONDS ?? "45") * 1000;
 const runClaude = process.env.ZETA_CLAUDE_LOOP_RUN_CLAUDE === "1";
-const claudeIntervalMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_INTERVAL_SECONDS ?? "60") * 1000;
+const claudeIntervalMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_INTERVAL_SECONDS ?? "900") * 1000;
 const claudeTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_TIMEOUT_SECONDS ?? "600") * 1000;
 const dryRun = process.env.ZETA_CLAUDE_LOOP_DRY_RUN === "1";
 const claudeStateFile = join(stateDir, "last-claude-run.json");
@@ -138,15 +138,15 @@ function heartbeat(): void {
             } else {
                 const preamble = [
                     `You are Otto's background worker in Lucent-Financial-Group/Zeta.`,
-                    `BEFORE ANY WORK: 1) Read CLAUDE.md and AGENTS.md for all repo conventions.`,
-                    `2) Run "bun tools/github/refresh-worldview.ts" to get current repo state.`,
-                    `3) Build gate: "dotnet build -c Release" must end with 0 Warning(s) 0 Error(s).`,
-                    `KEY RULES: TypeScript over bash (Rule 0). All PRs target Lucent-Financial-Group/Zeta.`,
-                    `Search the internet before asserting version/API claims (Otto-364).`,
+                    `BEFORE ANY WORK: 1) Read CLAUDE.md and AGENTS.md for repo conventions.`,
+                    `2) Run "bun tools/github/refresh-worldview.ts" to get current state.`,
+                    `3) Read active trajectories at docs/trajectories/*/RESUME.md — pick work that advances a trajectory.`,
+                    `4) Build gate: "dotnet build -c Release" must end with 0 warnings 0 errors.`,
+                    `KEY RULES: TS over bash (Rule 0). Prefer F#/TS code PRs over docs. Search internet before asserting versions (Otto-364).`,
                 ].join(" ");
                 const prompt = workMode === "pickup"
-                    ? `${preamble} TASK: Zero open PRs. Pick a buildable-now backlog item (grep docs/backlog/ for "classification: buildable-now" and "status: open"). Prefer F# or TS code items over docs-only. Create a branch, do the work, run the build gate, commit, push, open a PR with "gh pr create", arm auto-merge with "gh pr merge --auto --squash". One item per cycle.`
-                    : `${preamble} TASK: There are ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open". For any PR where gate=BLOCKED and nextAction=resolve-threads: check out the branch, read the review comments, fix the code issues, push, reply to threads, resolve them via GraphQL, arm auto-merge. Own your PRs through merge.`;
+                    ? `${preamble} TASK: Zero open PRs. TWO OPTIONS — pick whichever advances a trajectory more: (A) Pick a "classification: buildable-now" + "status: open" backlog item, create branch, code it, PR it, arm auto-merge. (B) If a backlog item has "decomposition: blob", decompose it into buildable children with depends_on edges, then pick a child and PR it. One cycle = one PR minimum.`
+                    : `${preamble} TASK: There are ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open". For any PR where gate=BLOCKED and nextAction=resolve-threads: check out branch, read review comments, fix code issues, push, reply to threads, resolve via GraphQL, arm auto-merge. Own your PRs through merge.`;
 
                 const gate = run("claude", [
                     "-p", prompt,
