@@ -138,6 +138,7 @@ function validateBodyFilePath(path: string): void {
   ) {
     throw new Error(`unsafe PR body file path: ${path}`);
   }
+  validateRepoPath(value);
 }
 
 export function normalizeBranchRef(branch: string): string {

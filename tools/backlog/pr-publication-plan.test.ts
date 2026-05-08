@@ -99,17 +99,20 @@ describe("buildPublicationPlan", () => {
 
   test("writes the generated PR body to the configured body file once", () => {
     const dir = mkdtempSync(join(tmpdir(), "zeta-pr-body-"));
-    const bodyFilePath = join(dir, "body.md");
+    const originalCwd = process.cwd();
+    const bodyFilePath = "body/body.md";
     try {
+      process.chdir(dir);
       const plan = buildPublicationPlan(input({ bodyFilePath }));
 
       writePrBodyFile(plan);
 
-      expect(readFileSync(bodyFilePath, "utf8")).toBe(plan.prBody);
+      expect(readFileSync(join(dir, bodyFilePath), "utf8")).toBe(plan.prBody);
       expect(() => {
         writePrBodyFile(plan);
       }).toThrow();
     } finally {
+      process.chdir(originalCwd);
       rmSync(dir, { force: true, recursive: true });
     }
   });
@@ -144,6 +147,18 @@ describe("validation", () => {
     }).toThrow(
       "unsafe PR body file path",
     );
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: "/tmp/body.md" }));
+    }).toThrow("unsafe repo-relative path");
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: "../body.md" }));
+    }).toThrow("unsafe repo-relative path");
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: "tmp/../body.md" }));
+    }).toThrow("unsafe repo-relative path");
+    expect(() => {
+      validatePublicationInput(input({ bodyFilePath: ".git/body.md" }));
+    }).toThrow("unsafe repo-relative path");
   });
 
   test("formats body check notes without mutating input", () => {
