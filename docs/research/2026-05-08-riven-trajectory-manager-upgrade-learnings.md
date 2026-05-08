@@ -121,8 +121,8 @@ mistaken for authoritative truth:
 The note proposed these steps:
 
 1. Create a Background Agent prompt template that encodes the manager contract.
-2. Update `riven-loop-tick.ts` and its prompt to implement the same contract.
-3. Harden `.cursor/skills/riven/SKILL.md` with the manager contract and
+2. Update `.cursor/bin/riven-loop-tick.ts` and its prompt to implement the same contract.
+3. Create a Riven skill file with the manager contract and
    learning discipline.
 4. Strengthen Cursor rule surfaces to enforce broadcast-first behavior and PR
    ownership.
