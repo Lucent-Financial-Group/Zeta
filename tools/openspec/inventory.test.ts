@@ -34,6 +34,7 @@ describe("scanSpecs", () => {
     const specs = scanSpecs(root);
     expect(specs).toHaveLength(1);
     expect(specs[0]!.capability).toBe("my-cap");
+    expect(specs[0]!.specPath).toBe(join(root, "my-cap", "spec.md"));
     expect(specs[0]!.profiles).toEqual(["fsharp"]);
     expect(specs[0]!.purposeSnippet).toContain("foo capability");
 
@@ -46,6 +47,19 @@ describe("scanSpecs", () => {
 
     const specs = scanSpecs(root);
     expect(specs).toHaveLength(0);
+
+    rmSync(root, { recursive: true });
+  });
+
+  test("returns entries in sorted order", () => {
+    const root = makeTempDir();
+    for (const name of ["zebra", "alpha", "middle"]) {
+      mkdirSync(join(root, name), { recursive: true });
+      writeFileSync(join(root, name, "spec.md"), "## Purpose\n\nTest.\n");
+    }
+
+    const specs = scanSpecs(root);
+    expect(specs.map((s) => s.capability)).toEqual(["alpha", "middle", "zebra"]);
 
     rmSync(root, { recursive: true });
   });
@@ -67,7 +81,20 @@ describe("scanModules", () => {
     const modules = scanModules(root);
     expect(modules).toHaveLength(1);
     expect(modules[0]!.name).toBe("Foo.fs");
+    expect(modules[0]!.path).toBe(join(root, "Foo.fs"));
     expect(modules[0]!.namespace).toBe("Zeta.Core");
+
+    rmSync(root, { recursive: true });
+  });
+
+  test("returns entries in sorted order", () => {
+    const root = makeTempDir();
+    for (const name of ["Zebra.fs", "Alpha.fs", "Middle.fs"]) {
+      writeFileSync(join(root, name), "namespace Zeta.Core\n");
+    }
+
+    const modules = scanModules(root);
+    expect(modules.map((m) => m.name)).toEqual(["Alpha.fs", "Middle.fs", "Zebra.fs"]);
 
     rmSync(root, { recursive: true });
   });
@@ -97,6 +124,33 @@ describe("buildGapReport", () => {
     expect(report.uncoveredModules).not.toContain("AssemblyInfo.fs");
     expect(report.uncoveredModules).not.toContain("ZSet.fs");
     expect(report.coveragePercent).toBeGreaterThan(0);
+  });
+
+  test("coverage denominator excludes only present excluded modules", () => {
+    const modules: ModuleEntry[] = [
+      { name: "ZSet.fs", path: "src/Core/ZSet.fs", namespace: "Zeta.Core" },
+      { name: "Sketch.fs", path: "src/Core/Sketch.fs", namespace: "Zeta.Core" },
+    ];
+
+    const report = buildGapReport([], modules);
+    // Neither AssemblyInfo.fs nor FSharpApi.fs is in the module list,
+    // so denominator should be 2 (not 2 - 2 = 0).
+    // ZSet.fs is covered via operator-algebra mapping, so 1/2 = 50%.
+    expect(report.coveragePercent).toBe(50);
+    expect(report.uncoveredModules).toHaveLength(1);
+    expect(report.uncoveredModules).toContain("Sketch.fs");
+  });
+
+  test("reports missing mapped modules", () => {
+    const modules: ModuleEntry[] = [
+      { name: "ZSet.fs", path: "src/Core/ZSet.fs", namespace: "Zeta.Core" },
+    ];
+
+    const report = buildGapReport([], modules);
+    const algebraMapping = report.mappings.find((m) => m.capability === "operator-algebra");
+    expect(algebraMapping).toBeDefined();
+    expect(algebraMapping!.missingModules).toContain("Algebra.fs");
+    expect(algebraMapping!.missingModules).not.toContain("ZSet.fs");
   });
 
   test("flags specs not in mapping table", () => {
@@ -138,7 +192,7 @@ describe("mapping table integrity", () => {
 
 describe("integration: real repo scan", () => {
   test("finds at least 6 specs in the real openspec/specs/ dir", () => {
-    const repoRoot = join(__dirname, "..", "..");
+    const repoRoot = join(import.meta.dir, "..", "..");
     const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
     expect(specs.length).toBeGreaterThanOrEqual(6);
 
@@ -152,7 +206,7 @@ describe("integration: real repo scan", () => {
   });
 
   test("finds at least 50 modules in the real src/Core/ dir", () => {
-    const repoRoot = join(__dirname, "..", "..");
+    const repoRoot = join(import.meta.dir, "..", "..");
     const modules = scanModules(join(repoRoot, "src", "Core"));
     expect(modules.length).toBeGreaterThanOrEqual(50);
   });

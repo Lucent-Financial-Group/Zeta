@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * openspec/inventory.ts (v0.1.0)
+ * tools/openspec/inventory.ts (v0.2.0)
  *
  * Phase 1 mechanization for B-0171: scans openspec/specs/ and src/Core/
  * to produce a structured gap report — which code modules have specs,
@@ -9,8 +9,8 @@
  * Output: JSON to stdout. Human-readable summary to stderr.
  */
 
-import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { readdirSync, readFileSync } from "node:fs";
+import { join, relative, resolve } from "node:path";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -30,6 +30,7 @@ interface ModuleEntry {
 interface Mapping {
   capability: string;
   modules: string[];
+  missingModules: string[];
 }
 
 interface GapReport {
@@ -91,15 +92,15 @@ const EXCLUDED_MODULES = new Set([
 // ── Scanning ─────────────────────────────────────────────────────────
 
 function findRepoRoot(): string {
-  let cur = resolve(__dirname);
+  let cur = resolve(import.meta.dir);
   while (cur !== "/" && cur !== "") {
     try {
-      statSync(join(cur, ".git"));
+      readFileSync(join(cur, ".git", "HEAD"));
       return cur;
     } catch {
-      const parent = join(cur, "..");
-      if (resolve(parent) === cur) break;
-      cur = resolve(parent);
+      const parent = resolve(cur, "..");
+      if (parent === cur) break;
+      cur = parent;
     }
   }
   return process.cwd();
@@ -109,20 +110,20 @@ function scanSpecs(specsDir: string): SpecEntry[] {
   const entries: SpecEntry[] = [];
   let dirs: string[];
   try {
-    dirs = readdirSync(specsDir);
+    dirs = readdirSync(specsDir).sort();
   } catch {
     return entries;
   }
 
   for (const name of dirs) {
     const specPath = join(specsDir, name, "spec.md");
+    let content: string;
     try {
-      statSync(specPath);
+      content = readFileSync(specPath, "utf8");
     } catch {
       continue;
     }
 
-    const content = readFileSync(specPath, "utf8");
     const purposeMatch = content.match(
       /##\s*Purpose\s*\n+([\s\S]*?)(?=\n##\s|\n$)/,
     );
@@ -135,14 +136,15 @@ function scanSpecs(specsDir: string): SpecEntry[] {
     try {
       profiles = readdirSync(profilesDir)
         .filter((f) => f.endsWith(".md"))
-        .map((f) => f.replace(/\.md$/, ""));
+        .map((f) => f.replace(/\.md$/, ""))
+        .sort();
     } catch {
       // no profiles dir
     }
 
     entries.push({
       capability: name,
-      specPath: `openspec/specs/${name}/spec.md`,
+      specPath,
       profiles,
       purposeSnippet,
     });
@@ -155,7 +157,7 @@ function scanModules(coreDir: string): ModuleEntry[] {
   const entries: ModuleEntry[] = [];
   let files: string[];
   try {
-    files = readdirSync(coreDir).filter((f) => f.endsWith(".fs"));
+    files = readdirSync(coreDir).filter((f) => f.endsWith(".fs")).sort();
   } catch {
     return entries;
   }
@@ -166,7 +168,7 @@ function scanModules(coreDir: string): ModuleEntry[] {
     const nsMatch = content.match(/^namespace\s+(\S+)/m);
     entries.push({
       name: file,
-      path: `src/Core/${file}`,
+      path: filePath,
       namespace: nsMatch ? nsMatch[1]! : "unknown",
     });
   }
@@ -183,7 +185,8 @@ function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[]): GapReport {
 
   for (const [capability, moduleNames] of Object.entries(CAPABILITY_MODULE_MAP)) {
     const actualModules = moduleNames.filter((m) => allModuleNames.has(m));
-    mappings.push({ capability, modules: actualModules });
+    const missingModules = moduleNames.filter((m) => !allModuleNames.has(m));
+    mappings.push({ capability, modules: actualModules, missingModules });
     for (const m of actualModules) {
       coveredSet.add(m);
     }
@@ -201,7 +204,8 @@ function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[]): GapReport {
     .filter((c) => !mappedCapabilities.has(c))
     .sort();
 
-  const totalAnalyzable = modules.length - EXCLUDED_MODULES.size;
+  const excludedPresent = modules.filter((m) => EXCLUDED_MODULES.has(m.name)).length;
+  const totalAnalyzable = modules.length - excludedPresent;
   const coveragePercent =
     totalAnalyzable > 0
       ? Math.round((coveredModules.length / totalAnalyzable) * 1000) / 10
@@ -239,6 +243,14 @@ export function main(): number {
   const modules = scanModules(coreDir);
   const report = buildGapReport(specs, modules);
 
+  // Convert absolute paths to repo-relative for display
+  for (const s of report.specs) {
+    s.specPath = relative(repoRoot, s.specPath);
+  }
+  for (const m of report.modules) {
+    m.path = relative(repoRoot, m.path);
+  }
+
   // Structured JSON to stdout
   console.log(JSON.stringify(report, null, 2));
 
@@ -252,6 +264,15 @@ export function main(): number {
   err(`  Uncovered modules: ${report.uncoveredModules.length}`);
   err(`  Coverage:          ${report.coveragePercent}%`);
   err("");
+
+  const allMissing = report.mappings.flatMap((m) => m.missingModules);
+  if (allMissing.length > 0) {
+    err(`  Mapped modules not found in src/Core/ (possible drift):`);
+    for (const m of allMissing) {
+      err(`    - ${m}`);
+    }
+    err("");
+  }
 
   if (report.unmappedSpecs.length > 0) {
     err(`  Specs without module mapping:`);
