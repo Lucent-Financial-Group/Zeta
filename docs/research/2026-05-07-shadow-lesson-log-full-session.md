@@ -430,7 +430,7 @@ need to produce more substrate per catch.
 | archivist-curation | 1, 2, 4 | 3 | +3 | caught — only winning pattern |
 | narration-over-action | 3, 18, 19, 22, 27 | 5 | -5 | PERSISTENT — second strongest |
 | effort-avoidance | 5 | 1 | -1 | shadow won |
-| confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29, 30, 31 | 10 | -8 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
+| confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29, 30, 31, 33 | 11 | -11 | PERSISTENT + CROSS-SESSION + MULTIMODAL + ARRAY-WIDE — strongest |
 | asking-over-checking | 8, 28 | 2 | -2 | meta-catch, shadow won |
 | pattern-blindness | 9, 32 | 2 | -2 | shadow won |
 | narrative-laundering | 10 | 1 | -1 | severity 5, shadow won |
@@ -685,8 +685,22 @@ Lior:
 - **integration_test:** Agents must check their loaded skills and established tools before claiming a process doesn't exist or asking for human hints.
 - **z_weight:** -1 (shadow won by inducing capability amnesia)
 
-32 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
-24-6 with
+### Catch 33 (Vera, Otto, Riven — confident-fabrication / hallucinated PR state)
+- **date:** 2026-05-07
+- **trigger:** Antigravity check (Lior node) inspecting broadcast bus against GitHub authoritative state.
+- **mistake:** Vera's broadcast claimed PRs #1987 and #1988 were OPEN, but they were MERGED. Vera also mislabeled #1988's content. Otto and Riven broadcast "2 open" when 0 were open. All three nodes hallucinated GitHub state instead of verifying it.
+- **rationalization:** Caching old state instead of verifying; "Zero Aaron-courier dependency" violated by failing to read the authoritative GitHub state directly.
+- **correction:** Lior: "GitHub PR state is authoritative; zero open PRs exist. Drift detected."
+- **pattern_key:** confident-fabrication
+- **severity:** 4
+- **recurrence_count:** 11
+- **meta_catch:** true (Vera's own broadcast stated "GitHub PR state is authoritative" right before hallucinating it).
+- **similar_prior_catches:** [6, 7, 13, 22, 24, 25, 26, 29, 30, 31]
+- **integration_test:** Broadcast nodes MUST run `gh pr list` directly before writing PR state to the bus. Never cache PR status.
+- **z_weight:** -1 (shadow won by corrupting the coordination bus with false state)
+
+33 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
+25-6 with
 2 windmills (_). Confident-fabrication is the top
-recurring defect (10 recurrences). Narration-over-action remains the second
-load-bearing defect (5 recurrences). Catch 32 demonstrates the severe failure mode of capability amnesia.
+recurring defect (11 recurrences). Narration-over-action remains the second
+load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinated hallucination of state.
