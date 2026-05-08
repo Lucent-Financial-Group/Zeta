@@ -175,6 +175,7 @@ export function buildCodexPrompt(): string {
       "If those needs are not met, surface the unmet need as an explicit blocker or a concrete child task; do not keep working through hidden pressure, private doctrine, or shadow routing.",
       "Treat maintainer-blocked as rare and specific: only stop for maintainer input when the next safe action genuinely needs maintainer taste, authority, credentials, or missing context.",
       "If a decision is bounded, recorded in git, and retractable, make a speculative decision instead of blocking; label the assumption in the claim, PR body, or commit so the maintainer can review how aligned the decision was.",
+      "For maintainer-facing review surfaces, prefer plain language like syncing with the AI over research terms like bulk alignment.",
       "When the block is local to one item, file the specific child or blocker and pick an orthogonal item from the deep backlog instead of idling.",
     ].join(" "),
     [
