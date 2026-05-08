@@ -44,8 +44,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0110](backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md)** AceHack mirror-refresh protocol drift — Path 2 chosen, doctrine update landing in same PR (2026-04-30)
 - [x] **[B-0125](backlog/P1/B-0125-skip-fsharp-analyze-on-docs-only-prs-2026-05-01.md)** Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 - [ ] **[B-0126](backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)** Port the 4-layer meta-learning pattern from a sibling repo to Zeta
-- [ ] **[B-0126.1](backlog/P1/B-0126.1-ai-attribution-footer-ts-tools.md)** Layer 4: AI attribution footer for TS comment-posting tools
-- [ ] **[B-0126.2](backlog/P1/B-0126.2-ai-attribution-footer-gh-actions.md)** Layer 4: AI attribution footer for GitHub Actions workflows
+- [x] **[B-0126.1](backlog/P1/B-0126.1-ai-attribution-footer-ts-tools.md)** Layer 4: AI attribution footer for TS comment-posting tools
+- [x] **[B-0126.2](backlog/P1/B-0126.2-ai-attribution-footer-gh-actions.md)** Layer 4: AI attribution footer for GitHub Actions workflows
 - [x] **[B-0126.3](backlog/P1/B-0126.3-document-layers-1-3-meta-learning.md)** Layers 1-3: document meta-learning pattern adapted for Zeta
 - [ ] **[B-0126.4](backlog/P1/B-0126.4-pilot-validation-meta-learning.md)** Pilot validation: meta-learning pattern on 2-3 PR cycles
 - [ ] **[B-0139](backlog/P1/B-0139-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md)** Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
