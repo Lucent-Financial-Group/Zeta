@@ -1,15 +1,16 @@
 ---
 id: B-0060
 priority: P1
-status: open
+status: umbrella
 title: Human-lineage / external-anchor backfill across all factory substrate — Beacon-safe + human-anchored prior-art citations for every load-bearing concept
 tier: substrate-quality
 effort: L
 ask: maintainer Aaron 2026-04-28 ("we should backlog human lineage to all our substraight stuff too if it exists, all our AI stuff even though we are just editing md files is coding and thee might be articles and research papers or question/answer fourms stack overflow etc... we should research waht we've already done and make sure it's beacon safe and human anchored/linage.")
 created: 2026-04-28
-last_updated: 2026-05-02
+last_updated: 2026-05-08
 depends_on: []
 composes_with: [B-0003]
+children: [B-0310, B-0311, B-0312, B-0313, B-0314, B-0315, B-0316]
 tags: [substrate-quality, beacon-safety, otto-351, otto-352, external-anchors, human-lineage, prior-art, agent-design-research, research-discipline]
 type: friction-reducer
 ---
@@ -103,6 +104,47 @@ For each load-bearing substrate concept:
       vocabulary doesn't collide with Beacon-blocked
       terminology (per Otto-351 + the prompt-protector
       review).
+
+## Decomposition (2026-05-08)
+
+This umbrella row is decomposed into 7 atomic child rows,
+dependency-ordered across 3 layers:
+
+**Layer 0 — Tooling (no external deps, buildable now):**
+
+| Child | Title | Effort | Depends on |
+| --- | --- | --- | --- |
+| B-0310 | Concept-registry extraction tool | S | — |
+
+**Layer 1 — Scanner (depends on registry):**
+
+| Child | Title | Effort | Depends on |
+| --- | --- | --- | --- |
+| B-0311 | External-anchor coverage scanner | S | B-0310 |
+
+**Layer 2 — Research backfill (parallelizable, depends on scanner):**
+
+| Child | Title | Effort | Depends on |
+| --- | --- | --- | --- |
+| B-0312 | HC/SD/DIR alignment-clause anchor backfill | M | B-0311 |
+| B-0313 | Wake-time Otto-NN principle anchor backfill | M | B-0311 |
+| B-0314 | BP-NN rule anchor backfill | M | B-0311 |
+| B-0315 | Glass-Halo doctrine anchor backfill | S | B-0311 |
+
+**Layer 3 — Long-tail cadence (depends on scanner):**
+
+| Child | Title | Effort | Depends on |
+| --- | --- | --- | --- |
+| B-0316 | Long-tail anchor cadenced sweep setup | S | B-0311 |
+
+Dependency graph:
+```
+B-0310 → B-0311 → B-0312 (HC/SD/DIR)
+                 → B-0313 (Otto-NN)
+                 → B-0314 (BP-NN)
+                 → B-0315 (Glass-Halo)
+                 → B-0316 (cadence setup)
+```
 
 ## Composes with
 
