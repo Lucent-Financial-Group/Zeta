@@ -49,6 +49,7 @@
     <Compile Include="Units.fs" />
     <Compile Include="Advanced.fs" />
     <Compile Include="Fusion.fs" />
+    <Compile Include="Fusion.Equation.fs" />
     <Compile Include="Spine.fs" />
     <Compile Include="SpineAsync.fs" />
     <Compile Include="BalancedSpine.fs" />
@@ -64,6 +65,9 @@
     <Compile Include="HigherOrder.fs" />
     <Compile Include="DiskSpine.fs" />
     <Compile Include="Durability.fs" />
+    <Compile Include="Checkpoint.fs" />
+    <Compile Include="Consensus.fs" />
+    <Compile Include="Arena.fs" />
     <Compile Include="NestedCircuit.fs" />
     <Compile Include="Runtime.fs" />
     <Compile Include="WorkStealingRuntime.fs" />

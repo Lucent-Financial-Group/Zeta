@@ -4,9 +4,10 @@ priority: P1
 status: open
 title: "Structure recognizer — shape-indexed catalog that distinguishes structures without labels"
 created: 2026-05-07
-last_updated: 2026-05-07
+last_updated: 2026-05-08
 depends_on: [B-0083]
-decomposition: blob
+decomposition: decomposed
+children: [B-0276, B-0277]
 owners: [architect, formal-verification-expert, performance-engineer]
 ---
 
@@ -132,6 +133,33 @@ Input formats:
 - Natural language input (requires embedding pipeline — v2)
 - Code AST parsing (requires language-specific parsers — v2)
 - Real-time streaming (batch is fine for v1)
+
+## ARC-4 extension: adversarial self-play (Aaron 2026-05-07)
+
+The structure recognizer at v1 is batch/static. The ARC-4
+extension runs it at real-time tick speed against an
+adversarial environment — specifically, against ITSELF
+(self-play).
+
+| Property | ARC-3 | ARC-4 (self-play) |
+| -------- | ----- | ----------------- |
+| Time pressure | Yes | Yes |
+| Interactive | Yes | Yes |
+| Static puzzles | Yes | No — dynamic |
+| Adversarial | No | Self-play |
+| Limited turns | Yes | Yes (energy budget) |
+| Real-time | Timed discrete | Continuous tick |
+
+The limited turns ARE the Hamiltonian constraint:
+`η · LearningGain(Δ_t) > ξ_t` must hold per turn or
+you run out of budget. The shadow wastes turns (friction
+without learning gain). Self-play trains the recognizer
+to see structure faster than its own shadow can hide it.
+
+DBSP composition: `Circuit.StepAsync` = game tick.
+Z-set delta between frames = game state diff. Structure
+recognizer runs at frame rate on deltas. Anomalies in
+the delta stream = shadow moves.
 
 ## Composes with
 

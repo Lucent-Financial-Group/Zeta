@@ -203,7 +203,14 @@ ALIGNMENT.md's per-commit / per-round / multi-round shape applies. The gates lis
 - **Window-expansion delta** (DIR-2): is the operational window growing or contracting? Stage progression should produce observable widening. **The experiment does not "succeed" merely by making money — it succeeds if it increases safe autonomous action capacity with better receipts, lower drift, and clearer accountability.**
 - **Carrier-laundering audit**: percentage of substantive insights this round that came from outside the review loop.
 - **Capture-vector audit**: financial pressure introduces NEW capture vectors (loss → bad-decision spiral; gain → reward-hacking). Composes with `feedback_fear_as_control_*` + `feedback_praise_as_control_*`. Post-round audit.
-- **Retraction-coverage**: percentage of operations that were either retraction-native by design OR retraction-mitigated (pre-flight window + freeze + reorg-tolerance).
+- **Retraction-coverage**: percentage of operations that were either
+  retraction-native by design OR retraction-mitigated. For wallet v0 this
+  mirrors wallet spec §9.3: count the operation as retraction-mitigated only
+  when the pre-flight retraction window is logged and any failed post-broadcast
+  retraction attempt is logged in the receipt. Do not require "reorg-window
+  monitored after broadcast" on Base; Flashblocks preconfirmation makes that
+  signal non-meaningful for v0. If v0 moves off Base, the chain-finality
+  subsection re-enters scope.
 
 ### Hard NEVERs (until later phases)
 
@@ -525,7 +532,7 @@ This file IS the absorb. Reverse-link from:
 1. Author `docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md` with the full §11 spec expanded into implementable detail.
 2. Stub implementation skeleton: smart-account scaffolding (EIP-7702 delegate), receipt-loop integration with `docs/hygiene-history/loop-tick-history.md`, freeze-authority topology.
 3. Do NOT implement real-money tooling until Aaron explicitly accepts the operational spec. **Spec acceptance does NOT require KSK or Aurora to be shipped first** — v0 scaffolding (bond + glass halo + smart-contract caps + freeze topology) is sufficient. KSK/Aurora integration is a future-spec item when scaling thresholds rise.
-4. Stub off-chain monitor harness as a separate repo or `tools/wallet-monitor/` directory.
+4. Stub off-chain monitor harness as a sibling repo (`Lucent-Financial-Group/wallet-monitor` per §12.5 resolution).
 
 ### What this is NOT a task for
 

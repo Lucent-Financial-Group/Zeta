@@ -6,7 +6,8 @@ title: "Coherence AI with consent-first design — KSK override for military/eme
 created: 2026-05-07
 last_updated: 2026-05-07
 depends_on: [B-0240, B-0244]
-decomposition: blob
+decomposition: decomposed
+children: [B-0293, B-0294]
 owners: [architect, security-researcher, threat-model-critic]
 ---
 

@@ -4,11 +4,13 @@ priority: P1
 status: open
 title: "GitHub Wiki first-class integration after Pages launch"
 created: 2026-05-06
-last_updated: 2026-05-06
+last_updated: 2026-05-08
 parent: B-0154
 depends_on: [B-0232, B-0233, B-0234]
 classification: blocked-on-pages-primary-surface
-decomposition: blob
+decomposition: decomposed
+children: [B-0299, B-0300]
+owners: [docs, architect]
 ---
 
 # B-0237 - GitHub Wiki first-class integration

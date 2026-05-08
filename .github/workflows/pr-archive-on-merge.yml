@@ -28,19 +28,16 @@ name: pr-archive-on-merge
 # PR number is also validated as a positive integer before being passed
 # to the archival tool.
 #
-# Direct-push posture: this workflow pushes the archive + manifest update
-# directly to main using GITHUB_TOKEN with `contents: write`. If the
-# branch-protection ruleset on Lucent-Financial-Group/Zeta is configured
-# to require PR review on main, this push will be rejected by the host
-# and the workflow run will fail with a non-fast-forward / rule-rejection
-# error. In that case, the operational escalation is one of:
-#   (a) add `github-actions[bot]` to the ruleset's bypass actors,
-#   (b) switch this workflow to PR-based (open a small PR with the
-#       archive + manifest, auto-merge), or
-#   (c) use a deploy-key with explicit per-path allowance.
-# (a) is the minimum-cost option and matches the existing
-# budget-snapshot-cadence.yml pattern of bot-pushed branches. Choice
-# deferred until empirical merge attempts surface the failure mode.
+# PR-based posture: branch protection rejects direct GITHUB_TOKEN pushes
+# to main, so this workflow commits archive output to a unique bot branch
+# and opens a small PR instead. GITHUB_TOKEN-created PRs may not trigger
+# downstream required checks; like budget-snapshot-cadence.yml, this
+# workflow therefore opens the PR and leaves merge/auto-merge handling to
+# the next maintainer or agent pass through the queue. If repository settings
+# forbid GitHub Actions from creating PRs, the workflow still pushes the
+# archive branch and exits green with a notice; the next agent pass can open
+# that branch as a normal PR without treating the durable archive branch as a
+# failed archival run.
 
 on:
   pull_request:
@@ -64,43 +61,45 @@ jobs:
     # closed without merge) produce no archive. The host event payload's
     # `merged` boolean is the canonical signal.
     #
-    # Repo-local archive-repair PRs are terminal bookkeeping. Archiving them
-    # creates a recursive archive-of-archive chain when branch protection
-    # rejects the workflow's direct push, so local claim/archive-pr-* repair
-    # branches are intentionally skipped here. Fork PRs with matching branch
-    # names must still be archived.
+    # Repo-local archive PRs are terminal bookkeeping. Archiving them creates
+    # a recursive archive-of-archive chain, so local claim/archive-pr-* repair
+    # branches and automation/pr-archive-* bot branches are intentionally
+    # skipped here. Fork PRs with matching branch names must still be archived.
     if: >
       github.event.pull_request.merged == true &&
       !(
         github.event.pull_request.head.repo.full_name == github.repository &&
-        startsWith(github.event.pull_request.head.ref, 'claim/archive-pr-')
+        (
+          startsWith(github.event.pull_request.head.ref, 'claim/archive-pr-') ||
+          startsWith(github.event.pull_request.head.ref, 'automation/pr-archive-')
+        )
       )
 
     runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     permissions:
-      # contents:write to push the archive + manifest update directly to
-      # main. pull-requests:read so the archival tool's gh CLI calls
-      # against /pulls/N/comments and graphql reviewThreads succeed under
-      # GITHUB_TOKEN. No other scopes needed.
+      # contents:write to push the archive + manifest update to a bot branch.
+      # pull-requests:write opens the archive PR and also covers the archival
+      # tool's read calls against /pulls/N/comments and graphql reviewThreads
+      # under GITHUB_TOKEN. No other scopes needed.
       contents: write
-      pull-requests: read
+      pull-requests: write
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           # Need full history for git rev-parse HEAD (commit_sha field in
-          # manifest entries), and so the subsequent push is fast-forward.
+          # manifest entries), and so the bot branch is based on current main.
           fetch-depth: 0
           ref: main
-          # Persist credentials so the post-archival `git push` uses
+          # Persist credentials so the post-archival bot-branch push uses
           # GITHUB_TOKEN. (default true; explicit for clarity)
           persist-credentials: true
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6  # v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
 
@@ -153,13 +152,15 @@ jobs:
           fi
           echo "changed=true" >>"$GITHUB_OUTPUT"
 
-      - name: Commit and push
+      - name: Commit and open archive PR
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           # Configure committer identity for the workflow commit.
@@ -175,8 +176,57 @@ jobs:
 
           git commit -m "$msg"
 
-          # Push to main. If branch-protection rejects this push, the
-          # workflow fails here -- the failure is the signal to switch to
-          # one of the escalation options documented at the top of this
-          # file. We do NOT --force; non-fast-forward must surface honestly.
-          git push origin HEAD:main
+          branch="automation/pr-archive-${PR_NUMBER}-run-${RUN_ID}-attempt-${RUN_ATTEMPT}"
+          git push origin "HEAD:${branch}"
+
+          body_file="$(mktemp)"
+          create_log="$(mktemp)"
+          trap 'rm -f "$body_file" "$create_log"' EXIT
+          {
+            echo "## Summary"
+            echo
+            echo "- Archive review substrate for merged PR #${PR_NUMBER}"
+            echo "- Update docs/github/prs/manifest.jsonl"
+            echo
+            echo "## Notes"
+            echo
+            echo "Generated by .github/workflows/pr-archive-on-merge.yml"
+            echo "from tools/archive/archive-pr-reviews.ts."
+            echo
+            echo "PR title: ${PR_TITLE}"
+            echo "Workflow run: ${RUN_ID}"
+            echo "Workflow attempt: ${RUN_ATTEMPT}"
+          } >"${body_file}"
+
+          set +e
+          gh pr create \
+            --repo "$REPO" \
+            --base main \
+            --head "$branch" \
+            --title "archive(pr-reviews): PR #${PR_NUMBER} on merge" \
+            --body-file "${body_file}" >"$create_log" 2>&1
+          create_status=$?
+          set -e
+
+          if [ "$create_status" -eq 0 ]; then
+            cat "$create_log"
+            exit 0
+          fi
+
+          cat "$create_log" >&2
+          if bun tools/github/is-pr-create-policy-denial.ts "$create_log"; then
+            {
+              echo "### Archive PR creation skipped by repository policy"
+              echo
+              echo "Archive branch pushed successfully:"
+              echo
+              echo "\`${branch}\`"
+              echo
+              echo "GitHub Actions is not permitted to create pull requests in this repository."
+              echo "A maintainer or agent pass can open that branch as a normal PR."
+            } >>"$GITHUB_STEP_SUMMARY"
+            echo "::notice title=Archive branch pushed::GitHub Actions cannot create PRs here; open ${branch} manually."
+            exit 0
+          fi
+
+          exit "$create_status"

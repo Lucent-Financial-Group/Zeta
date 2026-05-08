@@ -1,7 +1,9 @@
 ---
 id: B-0215
 priority: P1
-status: open
+status: closed
+closed: 2026-05-07
+closed_by: "survey at docs/research/2026-05-07-alignment-md-rewrite-survey-b0215.md (PR #1943)"
 title: "ALIGNMENT.md rewrite survey - preserve/refine/add map"
 created: 2026-05-06
 last_updated: 2026-05-06

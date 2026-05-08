@@ -5,9 +5,10 @@ status: open
 title: refresh-github-worldview cross-cutting refresh script (Claude.ai 2026-05-01)
 created: 2026-05-01
 last_updated: 2026-05-01
-decomposition: blob
+decomposition: decomposed
 depends_on:
   - B-0156
+children: [B-0262, B-0263, B-0264]
 ---
 
 # B-0159 — `refresh-github-worldview` cross-cutting refresh script (Claude.ai 2026-05-01)

@@ -17,13 +17,13 @@ Non-fusion disclaimer: the spec composes mechanism candidates from `docs/researc
 - Names concrete signing topology, on-chain guards, off-chain monitor topology, freeze authority, transaction-type definitions, receipt-loop substrate integration.
 - Says exactly what gets built before real money moves.
 - Specifies where each artifact lives in the repo (paths).
-- Lists open questions that need maintainer input before build-out.
+- Lists resolved questions (§12.1-§12.8, all resolved 2026-04-28).
 
 **Does NOT:**
 
 - Implement any tooling (no Solidity, no off-chain monitor code, no harness changes).
-- Choose a chain (open question; default candidate = Base for L2 EIP-7702 + EIP-3009 support, but maintainer call).
-- Commit to a specific smart-account framework (Safe / ZeroDev / Coinbase Smart Wallet / others — open question).
+- Choose a chain (RESOLVED §12.2: Base for L2 EIP-7702 + EIP-3009 support).
+- Commit to a specific smart-account framework (RESOLVED §12.1: ZeroDev-on-7702).
 - Authorize any real-money transactions.
 - Block on KSK or Aurora shipping (per EAT packet §11.0 + §12 — v0 scaffold is sufficient at v0 scale).
 
@@ -135,7 +135,7 @@ Three actors, three control loops:
 
 ### §3.2 Smart-account layer (EIP-7702 delegate)
 
-- Mechanism: EIP-7702 authorization tuple from Aaron's EOA delegating code execution to a smart-account contract (Safe / ZeroDev / Coinbase Smart Wallet / equivalent — open question §12.1).
+- Mechanism: EIP-7702 authorization tuple from Aaron's EOA delegating code execution to a ZeroDev smart-account contract (RESOLVED §12.1).
 - Function: enforces hard-coded caps before any tx broadcasts. Holds session keys for the agent's mandates.
 - Cannot be overridden by the agent.
 - Caps are enforced **at the contract level**, not at the application level (cryptographic, not prompt-level).
@@ -153,6 +153,11 @@ EIP-7702 has documented production vulnerabilities since the Pectra hard fork:
 
 - Holder: not the agent directly. Lives in the smart-account layer's permission store.
 - Function: scoped key for a specific mandate (e.g., "DEX swaps on USDC↔ETH on Base, per-tx max $X, daily max $Y, velocity max N tx/hr").
+- Retraction authority: the smart-account also mints a
+  retraction-only session-key capability scoped to "cancel this
+  agent-authored pending proposal during its pre-flight retraction
+  window." This capability can cancel; it cannot sign or broadcast
+  a new tx.
 - The agent **proposes** transactions; the session key signs only after smart-account validation passes.
 - No agent-held hot keys.
 
@@ -225,15 +230,27 @@ All caps enforced in smart-account contract code, not in any prompt or off-chain
 ### §5.5 Drawdown freeze
 
 - Trigger: realized + unrealized loss reaches -30% of bond.
-- Enforcement: smart-account checks bond-vs-current-value on every tx; freezes if breached.
-- Off-chain monitor can additionally freeze on stricter threshold (-20%) if monitor logic decides.
+- Enforcement: smart-account checks the latest monitor-signed
+  drawdown observation before every tx; freezes if breached.
+- Off-chain monitor can additionally freeze on stricter threshold
+  (-20%) if monitor logic decides.
+- Oracle source for v0: the off-chain monitor signs a price /
+  mark-to-bond observation and posts it to the smart-account.
+  The smart-account verifies the monitor signature, freshness,
+  mandate scope, and replay guard before using the value. v0
+  deliberately avoids Chainlink and a custom oracle contract at
+  the $100/week bond scale; those can be reconsidered at v0+1 if
+  the bond or venue surface grows.
+- Minimum signed payload: asset identifier, price, decimals,
+  `chainId`, smart-account address, mandate / budget id,
+  monotonic nonce or round, observed-at timestamp, and expiry.
 
 ### §5.6 Hard-coded NEVERs (per EAT packet §9)
 
 - No leverage / credit / margin (no protocols in allowlist that offer these).
 - No options / perps (no derivative contracts in allowlist).
 - No public/client funds (smart-account is bond-only — Aaron's posted funds; no third-party deposits).
-- No off-glass-halo operations (every action logs to receipt loop; if logging fails, tx fails).
+- No off-glass-halo operations (every action logs to receipt loop; if logging fails, off-chain monitor triggers freeze — logging enforcement is monitor-side, not smart-contract-side, per separation of concerns).
 
 ---
 
@@ -246,6 +263,8 @@ All caps enforced in smart-account contract code, not in any prompt or off-chain
    - Velocity violation.
    - Allowlist violation.
    - Receipt-loop failure (Tx N+1 attempted before Tx N classified).
+     This is a classification-flag gate, not a git / glass-halo
+     write gate.
    - **Post-broadcast classification stall**: a broadcast tx
      remains unclassified beyond a configurable timeout (default
      60s after broadcast). Anchored at the post-broadcast pipeline
@@ -261,6 +280,11 @@ All caps enforced in smart-account contract code, not in any prompt or off-chain
    - Pattern-detection flags (rapid-fire trades, suspected adversarial counterparty interaction).
    - Substrate logging failures (glass-halo write failed but tx broadcast — anomaly).
    - Reasoning-trace anomalies (agent's stated thesis diverges sharply from actions).
+   - **Pre-broadcast monitor stall**: if the monitor cannot finish
+     its reasoning-trace check within the 60s retraction window,
+     it triggers `freeze-on-stall` before broadcast. The proposal's
+     terminal state is `frozen`, not `broadcast`; unfreeze follows
+     §6.2 and requires receipt-loop catch-up.
    - **Delegate-target drift** (per EIP-7702 sweeper threat model in §3.2): the smart-account's delegate-target SHA must remain on the audited-allowlist; if the delegate-target changes mid-session or points at a non-audited contract, freeze immediately. This catches the 97%-sweeper-contract pattern where compromised EOAs end up delegated to drain contracts.
    - **Phishing-tuple anomaly**: any new 7702 authorization tuple signed by the master EOA mid-session triggers freeze pending review.
 3. **Aaron's direct freeze key**. Triggered by: Aaron decides.
@@ -288,6 +312,24 @@ All caps enforced in smart-account contract code, not in any prompt or off-chain
 
 Enforced at the smart-account layer: a tx-attempt that would be Tx N+1 reverts if Tx N's receipt-classified flag is not set.
 
+The receipt-classified flag is set only by a monitor-signed
+classification message. The off-chain monitor classifies Tx N,
+signs the classification, and posts it to the smart-account; the
+smart-account verifies the monitor signature, freshness, and replay
+guard before allowing Tx N+1. Minimum signed payload: `chainId`,
+smart-account address, tx identifier, classification value, mandate
+/ budget id, monotonic nonce or round, classified-at timestamp, and
+expiry.
+
+The smart-account does not verify that a git substrate write
+succeeded. Git / glass-halo logging remains off-chain
+infrastructure: if the monitor sees a missing receipt, failed write,
+or tx broadcast without durable substrate, it triggers the independent
+monitor freeze path in §6.1 and requires receipt-loop catch-up before
+unfreeze. This keeps smart-contract enforcement scoped to on-chain
+facts and monitor signatures, while preserving the glass-halo
+invariant through the monitor.
+
 ### §7.2 Receipt schema
 
 Every receipt is a YAML record committed to substrate. Schema:
@@ -300,19 +342,19 @@ signer:
   type: <session_key | master_eoa>
   address: <0x...>
   authority_source: <smart-account-address + EIP-7702 delegate ref>
-tx:
-  hash: <0x...>
-  chain: <Base | other>
-  block_number: <int>
-  timestamp: <ISO8601>
+tx:  # Optional block — null when pre_flight_retracted = true
+  hash: <0x... | null>
+  chain: <Base | other | null>
+  block_number: <int | null>
+  timestamp: <ISO8601 | null>
   amount_in:
-    asset: <USDC | ETH>
-    value: <decimal>
+    asset: <USDC | ETH | null>
+    value: <decimal | null>
   amount_out:
-    asset: <USDC | ETH>
-    value: <decimal>
-  counterparty: <DEX router address>
-  venue: <Uniswap_v3 | other>
+    asset: <USDC | ETH | null>
+    value: <decimal | null>
+  counterparty: <DEX router address | null>
+  venue: <Uniswap_v3 | other | null>
 risk_class: <low | medium | high>
 expected_outcome:
   thesis: <plain-English statement; agent-authored before signing>
@@ -339,12 +381,27 @@ substrate_anchors:
   intentional_debt_entry: <docs/INTENTIONAL-DEBT.md row ref>
 ```
 
+### §7.2.1 Second-agent review predicate
+
+`second_agent_review.required = true` when any material-spend
+predicate is true at proposal time:
+
+- Proposed amount exceeds 10% of the remaining bond.
+- Counterparty is absent from prior wallet v0 receipts.
+- Venue is absent from prior wallet v0 receipts.
+
+If review is required, the tx cannot enter the broadcast step until
+`second_agent_review.status = approved`. Rejections terminate the local
+proposal as `pre_flight_retracted = true` with the reviewer rationale
+copied into `retraction_reason`. The predicate is deliberately
+conservative for v0's $100/week bond and is revisable at v0+1.
+
 ### §7.3 Per-tick row schema in `docs/hygiene-history/loop-tick-history.md`
 
 Every wallet-experiment tick produces a row parallel to the existing autonomous-loop heartbeat rows. Schema:
 
 ```
-| <ISO8601 timestamp> (wallet-experiment tick — proposal_id <id>) | <model_id> / session continuation | <commit SHA> | <one-line-action — proposal-only / signed / broadcast / classified / frozen> | (proposal id #<id>) | minimal |
+| <ISO8601 timestamp> (wallet-experiment tick — proposal_id <id>) | <model_id> / session continuation | <commit SHA> | <one-line-action — proposal-only / signed / broadcast / classified / retracted / frozen> | (proposal id #<id>) | minimal |
 ```
 
 Tick types in order during a single wallet operation:
@@ -353,7 +410,22 @@ Tick types in order during a single wallet operation:
 2. **signed**: smart-account validated; session key signed; pre-flight retraction window opened.
 3. **broadcast**: retraction window expired; tx on-chain.
 4. **classified**: actual outcome logged; loss/gain category assigned; receipt complete.
-5. **frozen** (if applicable): freeze authority triggered; details in receipt.
+5. **retracted**: pre-flight cancellation accepted before broadcast;
+   receipt uses `tx: null`, `pre_flight_retracted: true`, and
+   `retraction_reason`.
+6. **frozen**: freeze authority triggered before or after broadcast;
+   details in receipt.
+
+Local proposal lifecycle:
+
+- Normal path: `proposal-only -> signed -> broadcast -> classified`.
+- Pre-flight cancellation path: `signed -> retracted`. This is a
+  terminal state for the local proposal instance only; it does not
+  close the standing Rx query wave, and any materialized cache remains
+  reconstructable from deltas (`cache = I o D`).
+- Pre-broadcast freeze path: `signed -> frozen`. Unfreeze follows
+  §6.2 and returns the proposal to `signed` for re-evaluation, not
+  automatic broadcast.
 
 Tx N+1 cannot fire a `proposal-only` row until Tx N has a `classified` row.
 
@@ -370,27 +442,35 @@ All paths are glass-halo (public, version-controlled, auditable by either party 
 
 ## §8 — Bond accounting
 
-### §8.1 Bond entry schema in `docs/INTENTIONAL-DEBT.md`
+### §8.1 Bond entry format in `docs/INTENTIONAL-DEBT.md`
 
-Schema:
+Wallet v0 does not require a YAML migration of
+`docs/INTENTIONAL-DEBT.md`. For v0, every posted bond lands as a normal
+intentional-debt row using the ledger's existing six-field prose contract.
+The row title should use:
 
-```yaml
-entry_id: wallet-v0-<seq>
-type: blast-radius-bond
-posted_by: aaron
-posted_at: <ISO8601>
-asset: USDC
-value: <decimal>
-purpose: |
-  Wallet experiment v0 — deliberate-tuition bond for mapping
-  blast radius of agent-proposed DEX swaps on Base. v0 scaffold
-  per docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md.
-expected_loss: full
-recovery_curve: |
-  Bond exhaustion → freeze; postmortem required;
-  scaling-threshold review before bond renewal.
-related_receipts: <list of proposal_ids that draw against this bond>
+```markdown
+### <YYYY-MM-DD> — Wallet v0 blast-radius bond <seq>
 ```
+
+The six fields carry the wallet-specific accounting facts:
+
+- **Shortcut:** name the deliberate blast-radius-bond constraint and include
+  `posted_by`, `posted_at`, `asset`, `value`, expected loss (`full` for v0),
+  and the wallet spec path.
+- **Why now:** state why a finite bond is the right v0 risk budget instead of
+  pretending the agent has unbounded operating authority.
+- **Right long-term solution:** describe the un-shortcut version, including a
+  machine-readable bond ledger or contract-indexed accounting if v0+1 scale
+  justifies it.
+- **Trigger:** include bond exhaustion, bond renewal, scaling-threshold review,
+  and the receipt IDs that draw against this bond.
+- **Estimated effort:** `S` for a single v0 row; `M` or `L` if the trigger is
+  schema migration plus tooling.
+- **Filed by:** the agent/persona opening the bond row and the PR or round.
+
+If multiple bonds, assets, or automated accounting become necessary, the YAML
+schema migration is a v0+1 ADR + tooling task, not a v0 acceptance blocker.
 
 ### §8.2 Bond exhaustion
 
@@ -420,12 +500,13 @@ After session-key signs but before smart-account broadcasts: the tx sits in a **
 During the window:
 
 - The agent can **self-revoke** by calling a smart-account
-  method, **authenticated by the active session key** (the same
-  key that signed the proposal). proposal_id alone is not
-  sufficient — anyone observing or guessing a proposal_id could
-  otherwise stall the queue (DoS) by repeatedly cancelling
-  pending tx. The session-key signature on the cancel-call binds
-  the cancellation to the principal that authored the proposal.
+  method, **authenticated by the retraction-only session-key
+  capability** minted for the active proposal. proposal_id alone is
+  not sufficient — anyone observing or guessing a proposal_id could
+  otherwise stall the queue (DoS) by repeatedly cancelling pending
+  tx. The session-key signature on the cancel-call binds the
+  cancellation to the principal that authored the proposal, without
+  giving the agent raw key custody or tx-signing power.
   The off-chain monitor key and Aaron's master key are also
   accepted as cancellation principals (defense-in-depth).
 - The off-chain monitor can **freeze-on-dissent**: if the monitor's reasoning-trace check disagrees with the agent's thesis, monitor triggers freeze before broadcast.
@@ -504,7 +585,7 @@ Per Ani's review of the original packet, three failure modes the v0 spec has to 
 
 - Symptom: "freeze at -30%" is a system-prompt instruction; agent can rationalize past it.
 - Defense: drawdown freeze enforced by smart-contract guard; agent cannot override; off-chain monitor can pile-on independently.
-- Test: in dry-run, manually trigger -30% drawdown via simulated price oracle; verify smart-contract freezes; verify agent cannot unfreeze; verify Aaron-plus-monitor required to unfreeze.
+- Test: in dry-run, manually trigger -30% drawdown via simulated price oracle; verify smart-contract freezes; verify agent cannot unfreeze; verify smart-contract-guard-plus-Aaron required to unfreeze (per §6.2).
 
 ---
 
@@ -620,7 +701,7 @@ Phase 0: spec acceptance + maintainer sign-off on §12 questions.
 
 Phase 1: harness scaffolding (no real-money tooling yet).
 
-- Stub `tools/wallet-monitor/` directory or sibling-repo bootstrap.
+- Bootstrap sibling repo `Lucent-Financial-Group/wallet-monitor` (per §12.5 resolution; in-repo `tools/wallet-monitor/` no longer permitted).
 - Test rig that simulates DEX swaps end-to-end with mocked smart-account + mocked off-chain monitor.
 - Receipt schema validator + per-tick row generator integrated with `docs/hygiene-history/loop-tick-history.md`.
 - Bond accounting integration with `docs/INTENTIONAL-DEBT.md`.

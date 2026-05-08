@@ -55,6 +55,7 @@
     <Compile Include="Storage/Spine.Balanced.Tests.fs" />
     <Compile Include="Storage/Spine.Disk.Tests.fs" />
     <Compile Include="Storage/Checkpoint.Tests.fs" />
+    <Compile Include="Storage/CheckpointStore.Tests.fs" />
     <Compile Include="Storage/Merkle.Tests.fs" />
     <Compile Include="Storage/FastCdc.Tests.fs" />
     <Compile Include="Storage/ClosureTable.Tests.fs" />
@@ -111,7 +112,10 @@
     <Compile Include="Properties/Math.Invariants.Tests.fs" />
     <Compile Include="Properties/Fuzz.Tests.fs" />
     <Compile Include="Properties/Determinism.Tests.fs" />
+    <Compile Include="Properties/Fusion.Equation.Tests.fs" />
     <Compile Include="MajiTests.fs" />
+    <Compile Include="Consensus.Tests.fs" />
+    <Compile Include="Arena.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>

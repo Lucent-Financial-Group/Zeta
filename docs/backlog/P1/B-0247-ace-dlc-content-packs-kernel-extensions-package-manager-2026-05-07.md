@@ -4,9 +4,10 @@ priority: P1
 status: open
 title: "Ace DLC content packs — distributable kernel extensions via package manager"
 created: 2026-05-07
-last_updated: 2026-05-07
+last_updated: 2026-05-08
 depends_on: [B-0240, B-0244, B-0245]
-decomposition: blob
+decomposition: decomposed
+children: [B-0287, B-0288]
 owners: [architect, product-scrum-master, public-api-designer]
 ---
 

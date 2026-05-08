@@ -33,6 +33,43 @@ Minimum shape:
 If a trajectory grows too large, split it into child packets instead of adding
 more sections to one file.
 
+## Operating Rule — Enhance As We Go
+
+Trajectory is the first new-work surface. Backlog is the decomposition ledger,
+not a grab bag for random feature work. When a loop sees a bounded broken thing
+inside its claim scope, it fixes that thing directly. When the work is too
+large, ambiguous, or multi-lane, it decomposes the work into backlog rows and
+trajectory child packets before implementation.
+
+The loop shape is:
+
+```text
+observe evidence -> fix bounded breakage
+observe broad work -> decompose into backlog / trajectory substrate
+observe trajectory drift -> update or split the trajectory packet
+```
+
+Do not let maintenance masquerade as growth. Do not let backlog masquerade as
+execution. Do not let a trajectory become a giant branch. The trajectory packet
+remembers the lane, the backlog remembers the atomic work, and decomposition is
+the bridge between them.
+
+## Operating Rule — Anomaly Escalation
+
+An anomaly is evidence, not intent. Scale the investigation to the size and
+shape of the residue:
+
+```text
+small anomaly -> investigate locally, patch if bounded, keep moving
+large anomaly -> investigate before acting, decompose the work if needed
+repeat / double-down shadow -> involve other agents and record the cross-agent catch
+```
+
+Do not turn every small anomaly into a council. Do not solo-rationalize a large
+one. When the residue is small, inspect it and fix the bounded breakage. When
+the residue is large, recurring, or defended by a rationalization loop, bring
+in another mirror before the story hardens.
+
 ## Current Known Trajectory Substrate
 
 - `docs/trajectories/typescript-bun-migration/RESUME.md` is the live example of
@@ -57,11 +94,18 @@ more sections to one file.
 
 Candidate child packets, each intentionally small:
 
-- alignment measurement trajectory, grounded in B-0205
-- memory substrate-engineering trajectory, grounded in B-0190
-- autonomous-loop coordination trajectory, grounded in B-0209 and B-0211
-- trajectory drift reporting, grounded in `docs/SAFE-AUTONOMOUS-ACTIONS.md`
+- none currently selected
 
 Do not create all of them in one PR. The rule is recursive decomposition:
 large trajectory blobs become smaller packets, then smaller packets become
 atomic next actions.
+
+## Created Child Packets
+
+- `docs/trajectories/alignment-measurement/RESUME.md`, grounded in B-0205
+- `docs/trajectories/memory-substrate-engineering/RESUME.md`, grounded in
+  B-0190
+- `docs/trajectories/autonomous-loop-coordination/RESUME.md`, grounded in
+  B-0209 and B-0211
+- `docs/trajectories/trajectory-drift-reporting/RESUME.md`, grounded in
+  `docs/SAFE-AUTONOMOUS-ACTIONS.md`

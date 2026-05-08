@@ -2,7 +2,7 @@
 // daily-cost-report.ts — daily cost-monitoring entry point.
 //
 // TypeScript+Bun port of daily-cost-report.sh, slice 18 of the
-// TS+Bun migration. Wraps snapshot-burn.sh + project-runway.sh and
+// TS+Bun migration. Wraps snapshot-burn.ts + project-runway.ts and
 // writes the human-readable projection to docs/budget-history/
 // latest-report.md. Designed to be the single entry point for the
 // daily /schedule remote-trigger routine (task #287 visibility
@@ -19,19 +19,11 @@
 //   2 on CLI-argument errors
 //
 // Composes with:
-//   - tools/budget/snapshot-burn.sh (data-capture primitive — bash;
-//     TS port `snapshot-burn.ts` landed in #894 but this wrapper still
-//     spawns the .sh during the soak period)
-//   - tools/budget/project-runway.sh (projection primitive; bash-only)
+//   - tools/budget/snapshot-burn.ts (data-capture primitive)
+//   - tools/budget/project-runway.ts (projection primitive)
 //   - docs/budget-history/snapshots.jsonl (append-only data store)
 //   - docs/budget-history/latest-report.md (visibility surface;
 //     OVERWRITTEN each run, not append-only)
-//
-// Note: this wrapper spawns the bash siblings (snapshot-burn.sh,
-// project-runway.sh) NOT the TS port — the bash versions are the
-// soak-period reference until they retire. Once project-runway is
-// also TS-ported and the cluster soaks clean, this wrapper can
-// switch to spawning the .ts versions.
 
 import { statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
@@ -127,10 +119,10 @@ function classifySpawnFailure(
 function runSnapshotBurn(dryRun: boolean): { exitCode: number; note: string } {
   const args = dryRun ? ["--dry-run"] : [];
   const argsSuffix = args.length > 0 ? ` ${args.join(" ")}` : "";
-  process.stdout.write(`==> snapshot-burn.sh${argsSuffix}\n`);
+  process.stdout.write(`==> snapshot-burn.ts${argsSuffix}\n`);
 
-  const path = resolve(scriptDir(), "snapshot-burn.sh");
-  const result = spawnSync(path, args, {
+  const path = resolve(scriptDir(), "snapshot-burn.ts");
+  const result = spawnSync("bun", [path, ...args], {
     stdio: "inherit",
     maxBuffer: SPAWN_MAX_BUFFER,
   });
@@ -143,21 +135,12 @@ function runSnapshotBurn(dryRun: boolean): { exitCode: number; note: string } {
 }
 
 function runProjectRunway(): { exitCode: number; output: string; note: string } {
-  const path = resolve(scriptDir(), "project-runway.sh");
-  // Capture combined stdout+stderr in-order via shell-side `2>&1`
-  // (matches bash original `$("$script_dir/project-runway.sh" 2>&1)`
-  // which preserves chronological interleaving). Concatenating
-  // `result.stdout + result.stderr` would reorder warnings vs
-  // success output (Copilot P1 on #901).
-  // The path is constructed from import.meta.url + dirname, not from
-  // user input, so shell-quoting safety isn't an issue here.
-  const result = spawnSync("/bin/bash", ["-c", `"${path}" 2>&1`], {
+  const path = resolve(scriptDir(), "project-runway.ts");
+  const result = spawnSync("bun", [path], {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
     stdio: ["inherit", "pipe", "pipe"],
   });
-  // Defensive: result.stdout can be null when the child fails to
-  // start (Copilot P0 on #901). Guard with `?? ""`.
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const output = result.stdout ?? "";
   const classified = classifySpawnFailure(
@@ -177,11 +160,11 @@ function buildReport(args: { ts: string; gitSha: string; projection: string }): 
 
 **Generated:** \`${args.ts}\`
 **Factory git SHA:** \`${args.gitSha}\`
-**Source:** \`tools/budget/daily-cost-report.ts\` (wraps snapshot-burn.sh + project-runway.sh)
+**Source:** \`tools/budget/daily-cost-report.ts\` (wraps snapshot-burn.ts + project-runway.ts)
 
 This file is **OVERWRITTEN** on each daily run. Historical snapshots live in
 \`docs/budget-history/snapshots.jsonl\` (append-only); historical projections
-can be reconstructed from any snapshot subset via \`tools/budget/project-runway.sh\`.
+can be reconstructed from any snapshot subset via \`tools/budget/project-runway.ts\`.
 
 ---
 
@@ -207,8 +190,8 @@ ${args.projection}
 - Snapshots: \`docs/budget-history/snapshots.jsonl\`
 - Methodology: \`docs/budget-history/README.md\`
 - Wrapper: \`tools/budget/daily-cost-report.ts\` (this run)
-- Capture script: \`tools/budget/snapshot-burn.sh\`
-- Projection script: \`tools/budget/project-runway.sh\`
+- Capture script: \`tools/budget/snapshot-burn.ts\`
+- Projection script: \`tools/budget/project-runway.ts\`
 `;
 }
 
@@ -227,37 +210,37 @@ interface StepResult {
 
 function runSnapshotStep(skipSnapshot: boolean, dryRun: boolean): StepResult {
   if (skipSnapshot) {
-    process.stdout.write("==> snapshot-burn.sh SKIPPED per --skip-snapshot\n");
+    process.stdout.write("==> snapshot-burn.ts SKIPPED per --skip-snapshot\n");
     return { ok: true };
   }
   const burn = runSnapshotBurn(dryRun);
   if (burn.exitCode !== 0) {
     if (burn.note.length > 0) {
-      process.stderr.write(`snapshot-burn.sh: ${burn.note}\n`);
+      process.stderr.write(`snapshot-burn.ts: ${burn.note}\n`);
     }
-    process.stderr.write(`error: snapshot-burn.sh failed (exit ${String(burn.exitCode)})\n`);
+    process.stderr.write(`error: snapshot-burn.ts failed (exit ${String(burn.exitCode)})\n`);
     return { ok: false };
   }
   return { ok: true };
 }
 
 const BOOTSTRAP_PROJECTION =
-  "No snapshots captured yet. The first snapshot-burn.sh run will append a baseline row to docs/budget-history/snapshots.jsonl. Once N >= 2 snapshots exist across LFG merges, projection becomes available.";
+  "No snapshots captured yet. The first snapshot-burn.ts run will append a baseline row to docs/budget-history/snapshots.jsonl. Once N >= 2 snapshots exist across LFG merges, projection becomes available.";
 
 function runProjectionStep(snapshotsPath: string): StepResult {
   if (!isRegularFileSafe(snapshotsPath)) {
     process.stdout.write(
-      "==> project-runway.sh SKIPPED (no snapshots yet); writing bootstrap report\n",
+      "==> project-runway.ts SKIPPED (no snapshots yet); writing bootstrap report\n",
     );
     return { ok: true, projection: BOOTSTRAP_PROJECTION };
   }
-  process.stdout.write("==> project-runway.sh\n");
+  process.stdout.write("==> project-runway.ts\n");
   const runway = runProjectRunway();
   if (runway.exitCode !== 0) {
     if (runway.note.length > 0) {
-      process.stderr.write(`project-runway.sh: ${runway.note}\n`);
+      process.stderr.write(`project-runway.ts: ${runway.note}\n`);
     }
-    process.stderr.write(`error: project-runway.sh failed (exit ${String(runway.exitCode)})\n`);
+    process.stderr.write(`error: project-runway.ts failed (exit ${String(runway.exitCode)})\n`);
     return { ok: false };
   }
   return { ok: true, projection: runway.output };

@@ -6,7 +6,8 @@ title: "English language concordance AI on local GPUs — structure recognizer a
 created: 2026-05-07
 last_updated: 2026-05-07
 depends_on: [B-0240, B-0242]
-decomposition: blob
+decomposition: decomposed
+children: [B-0291, B-0292]
 owners: [architect, performance-engineer]
 ---
 
