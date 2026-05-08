@@ -194,7 +194,6 @@ function heartbeat(): void {
         const elapsed = Date.now() - lastTime;
 
         if (elapsed >= agentIntervalMs) {
-            agentStatus = "running";
             log(`riven agent gate start run_id=${runId}`);
 
             if (dryRun) {
