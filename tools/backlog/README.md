@@ -42,6 +42,7 @@ ask: maintainer Otto-180
 created: 2026-04-24
 last_updated: 2026-04-24
 depends_on: []
+decomposition: blob
 composes_with:
   - B-0031
   - B-0038
@@ -67,6 +68,7 @@ tags: [game-industry, sharding, multi-node]
 | `created`      | yes      | YYYY-MM-DD   | First-landing date. |
 | `last_updated` | yes      | YYYY-MM-DD   | Updated on every content edit. |
 | `depends_on`   | no       | list of `B-NNNN` | Hard prerequisite ordering (this row cannot land until each listed row lands). Distinct from `composes_with` (which is bidirectional cross-reference, not ordering). Empty list `[]` = no known dependencies. Backfill-discipline: incremental on-demand as rows are touched (Aaron 2026-05-02 backfill thesis). Graph-traversal field; not surfaced in `BACKLOG.md` index. |
+| `decomposition`| no       | enum         | Optional decomposition marker. `blob` means the row is intentionally too large or fuzzy for a single implement cycle and should be split before pickup. |
 | `composes_with`| no       | list of `B-NNNN` | Cross-references; strict-lint-candidate Phase-2+. |
 | `tags`         | no       | list of string | Free-form. Examples: `multi-node`, `dst`, `ui-rename`. |
 
