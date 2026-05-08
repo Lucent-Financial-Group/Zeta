@@ -7,14 +7,30 @@ tier: factory-hygiene
 effort: M
 ask: maintainer Aaron 2026-04-28 ("MEMORY.md do you think it's possible to just put like a marker in MEMORY.md that says memorys in memory/ and that would work? or it's more root to you than that and that would not work. It needs to work with the built in Q1 AutoDream/AutoMemory and your harness that we have the leaked source for? this would stop this from backing a hotspot too")
 created: 2026-04-28
-last_updated: 2026-05-02
-decomposition: blob
-depends_on: []
+last_updated: 2026-05-08
+decomposition: clean
+depends_on: [B-0257, B-0258, B-0259, B-0260, B-0261]
+children: [B-0257, B-0258, B-0259, B-0260, B-0261]
 composes_with: [B-0061, B-0067, B-0190]
 tags: [memory-md, factory-hygiene, hotspot, claude-code-harness, q1-automemory, auto-generated-index]
 ---
 
 # MEMORY.md marker-vs-index — verify, then migrate
+
+## Decomposition status (2026-05-08)
+
+This row is now an umbrella. Execution is split into
+dependency-ordered child rows so loops can pick small,
+reviewable units instead of re-planning the blob each tick:
+
+1. B-0257 - harness contract verification and evidence capture
+2. B-0258 - index generator implementation
+3. B-0259 - hook + CI drift enforcement
+4. B-0260 - cutover + parity validation
+5. B-0261 - Q1 AutoDream/AutoMemory compatibility check
+
+The umbrella depends on all children so backlog pickup selects
+the executable child rows first.
 
 `memory/MEMORY.md` is currently a hand-maintained one-line-per-
 file index that becomes a git-hotspot — every memory-adding
