@@ -126,6 +126,10 @@ export function normalizeBranchRef(branch: string): string {
   } else if (REMOTE_REF_PREFIX.test(normalized)) {
     normalized = normalized.replace(REMOTE_REF_PREFIX, "");
   }
+  const parts = normalized.split("/");
+  if (parts.length === 2 && DEFAULT_BRANCHES.has(parts[1] ?? "")) {
+    normalized = parts[1] ?? normalized;
+  }
   return normalized;
 }
 

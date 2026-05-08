@@ -159,6 +159,8 @@ describe("validation", () => {
     expect(normalizeBranchRef("refs/remotes/origin/claim/task-b0280-pr-publication-plan")).toBe(
       "claim/task-b0280-pr-publication-plan",
     );
+    expect(normalizeBranchRef("origin/main")).toBe("main");
+    expect(normalizeBranchRef("upstream/main")).toBe("main");
     expect(normalizeBranchRef("origin/claim/task-b0280-pr-publication-plan")).toBe(
       "origin/claim/task-b0280-pr-publication-plan",
     );
