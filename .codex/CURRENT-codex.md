@@ -80,6 +80,10 @@ claims. If those surfaces conflict, no broad write happens.
   agent's work underneath them.
 - Local uncommitted edits are invisible to pushed claim
   branches.
+- Chat continuity is not enough for Vera/Codex re-entry. Read
+  `.codex/CURRENT-vera.md` and
+  `.codex/VERA-CONTINUITY-CHECKLIST.md` before relying on
+  current-thread memory or ad-hoc local notes.
 
 The mitigation is the worktree + heartbeat discipline now
 documented in `docs/AGENT-CLAIM-PROTOCOL.md`.
@@ -89,12 +93,14 @@ documented in `docs/AGENT-CLAIM-PROTOCOL.md`.
 If a Codex session crashes:
 
 1. Read `.codex/AGENTS.md` and this file.
-2. Run `git worktree list --porcelain`.
-3. Inspect `$(git rev-parse --git-common-dir)/agent-heartbeats/*.json`
+2. Read `.codex/CURRENT-vera.md` and run the checklist in
+   `.codex/VERA-CONTINUITY-CHECKLIST.md`.
+3. Run `git worktree list --porcelain`.
+4. Inspect `$(git rev-parse --git-common-dir)/agent-heartbeats/*.json`
    so linked worktrees resolve the shared git common directory
    correctly.
-4. Check `git branch -r --list 'origin/claim/*'`.
-5. Resume only work with a pushed claim branch, or file a new
+5. Check `git branch -r --list 'origin/claim/*'`.
+6. Resume only work with a pushed claim branch, or file a new
    claim before writing.
 
 This file is a current-state aid, not a source of authority.
