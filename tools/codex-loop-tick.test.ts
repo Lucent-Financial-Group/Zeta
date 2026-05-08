@@ -29,10 +29,15 @@ describe("codex-loop-tick service contract", () => {
   test("foreground reliability prompt owns Codex PRs through merge before new work", () => {
     const prompt = buildCodexPrompt();
 
+    expect(prompt).toContain("Cold-start by reading the repo rules before deciding");
+    expect(prompt).toContain("`AGENTS.md`, `.codex/AGENTS.md`, `docs/ALIGNMENT.md`");
+    expect(prompt).toContain("run `bun tools/github/refresh-worldview.ts`");
+    expect(prompt).toContain("Prefer repo-native TypeScript/Bun tools over ad-hoc shell pipelines");
     expect(prompt).toContain("own Vera/Codex PRs through merge");
     expect(prompt).toContain("A PR is not done when opened");
     expect(prompt).toContain("run `bun .codex/bin/codex-backlog-runner.ts --json`");
     expect(prompt).toContain("prefer meaningful F# or TypeScript slices over docs-only work");
     expect(prompt).toContain("Never write in the contested root checkout");
+    expect(prompt).toContain("`dotnet build -c Release` for F#/.NET work");
   });
 });
