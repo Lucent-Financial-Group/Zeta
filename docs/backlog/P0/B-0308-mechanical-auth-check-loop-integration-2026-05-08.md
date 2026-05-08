@@ -3,6 +3,7 @@ id: B-0308
 priority: P0
 status: open
 title: "Mechanical authorization check — autonomous-loop tick-start integration"
+effort: S
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: B-0160
@@ -41,6 +42,18 @@ in the chat/console output.
 6. Tick-history shard template includes an "operative-
    authorization" field populated by this check.
 7. TypeScript, runs under Bun (Rule 0).
+
+## Pre-start checklist
+
+_To be completed with proof before implementation begins._
+
+- [ ] Prior-art search: searched `docs/AUTONOMOUS-LOOP.md` for
+  current tick-start sequence; searched `tools/` for existing
+  tick-start wiring patterns
+- [ ] Dependency walk: B-0305 (skill body) landed; B-0307
+  (resolver) landed; both verified in `.claude/skills/` and
+  `tools/authorization/` respectively
+- [ ] Reciprocal pointers: B-0309 `depends_on` includes this row
 
 ## Composes with
 
