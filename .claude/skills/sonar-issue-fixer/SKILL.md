@@ -132,7 +132,7 @@ treats them as regressions.
 
 - `dotnet build Zeta.sln -c Release` if analyzer is wired.
 - OR read the SonarLint VS Code problem pane export.
-- OR read `tools/audit-packages.sh`-adjacent lint output.
+- OR read `tools/audit-packages.ts`-adjacent lint output.
 
 Produce a list: `(file, line, rule code, brief message)`.
 
