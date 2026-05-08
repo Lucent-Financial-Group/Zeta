@@ -12,6 +12,8 @@ in the contested root checkout on 2026-05-08. The maintainer explicitly
 authorized Codex/Vera to carry the note forward because debugging the local
 root checkout would take longer.
 
+Attribution: GitHub Copilot (original author), Codex/Vera (preservation).
+
 Operational status: research-grade conversation absorb. This file preserves
 the framing as alignment research substrate; it does not promote new
 operational policy by itself.

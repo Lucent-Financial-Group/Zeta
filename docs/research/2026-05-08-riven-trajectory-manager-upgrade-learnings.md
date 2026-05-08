@@ -11,6 +11,8 @@ Scope: Research-grade preservation of a Copilot-authored note found untracked
 in the contested root checkout on 2026-05-08. The maintainer explicitly
 authorized Codex/Vera to carry the note forward.
 
+Attribution: GitHub Copilot (original author), Codex/Vera (preservation).
+
 Operational status: research-grade conversation absorb and planning snapshot.
 Current PR numbers, broadcast state, and "current state" lines may be stale.
 GitHub PR state, remote claim branches, current file contents, local worktrees,
