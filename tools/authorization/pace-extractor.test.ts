@@ -4,6 +4,15 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { extractPaceInstructions, type PaceInstruction } from "./pace-extractor.ts";
 
+function instructionAt(
+  instructions: PaceInstruction[],
+  index: number,
+): PaceInstruction {
+  const instruction = instructions[index];
+  expect(instruction).toBeDefined();
+  return instruction!;
+}
+
 function makeTempRoot(): string {
   const root = mkdtempSync(join(tmpdir(), "pace-ext-"));
   mkdirSync(join(root, "memory"), { recursive: true });
@@ -31,10 +40,11 @@ describe("extractPaceInstructions", () => {
 
     const result = await extractPaceInstructions(root);
     expect(result.length).toBe(1);
-    expect(result[0].source).toBe("aaron");
-    expect(result[0].file).toContain("feedback_go_hard_aaron_2026_05_02.md");
-    expect(result[0].raw).toContain("go hard");
-    expect(result[0].timestamp).toBe("2026-05-02");
+    const instruction = instructionAt(result, 0);
+    expect(instruction.source).toBe("aaron");
+    expect(instruction.file).toContain("feedback_go_hard_aaron_2026_05_02.md");
+    expect(instruction.raw).toContain("go hard");
+    expect(instruction.timestamp).toBe("2026-05-02");
   });
 
   test("two instructions from maintainer → both returned in chronological order", async () => {
@@ -70,7 +80,9 @@ describe("extractPaceInstructions", () => {
 
     const result = await extractPaceInstructions(root);
     expect(result.length).toBe(2);
-    expect(result[0].timestamp!.localeCompare(result[1].timestamp!)).toBeLessThanOrEqual(0);
+    const first = instructionAt(result, 0);
+    const second = instructionAt(result, 1);
+    expect((first.timestamp ?? "").localeCompare(second.timestamp ?? "")).toBeLessThanOrEqual(0);
   });
 
   test("peer-AI framing → extracted with peer-AI source tag", async () => {
@@ -149,8 +161,9 @@ describe("extractPaceInstructions", () => {
 
     const result = await extractPaceInstructions(root);
     expect(result.length).toBe(1);
-    expect(result[0].raw).toContain("stop grinding");
-    expect(result[0].source).toBe("aaron");
+    const instruction = instructionAt(result, 0);
+    expect(instruction.raw).toContain("stop grinding");
+    expect(instruction.source).toBe("aaron");
   });
 
   test("CLAUDE.md pace bullet → extracted", async () => {
@@ -190,9 +203,10 @@ describe("extractPaceInstructions", () => {
 
     const result = await extractPaceInstructions(root);
     expect(result.length).toBe(1);
-    expect(result[0].source).toBe("aaron");
-    expect(result[0].raw).toContain("keep grinding");
-    expect(result[0].file).toContain("CURRENT-aaron.md");
+    const instruction = instructionAt(result, 0);
+    expect(instruction.source).toBe("aaron");
+    expect(instruction.raw).toContain("keep grinding");
+    expect(instruction.file).toContain("CURRENT-aaron.md");
   });
 
   test("docs/active-trajectory.md → extracted", async () => {
@@ -208,7 +222,8 @@ describe("extractPaceInstructions", () => {
 
     const result = await extractPaceInstructions(root);
     expect(result.length).toBe(1);
-    expect(result[0].file).toContain("active-trajectory.md");
+    const instruction = instructionAt(result, 0);
+    expect(instruction.file).toContain("active-trajectory.md");
   });
 
   test("mixed sources across surfaces → all extracted", async () => {
@@ -270,7 +285,8 @@ describe("extractPaceInstructions", () => {
 
     const result = await extractPaceInstructions(root);
     expect(result.length).toBe(1);
-    expect(result[0].source).toBe("amara");
+    const instruction = instructionAt(result, 0);
+    expect(instruction.source).toBe("amara");
   });
 
   test("missing surfaces gracefully handled", async () => {

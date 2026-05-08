@@ -61,11 +61,17 @@ function inferSource(text: string, filename: string): string {
 }
 
 function extractTimestamp(text: string, filename: string): string | null {
-  const inlineMatch = text.match(DATE_RE);
-  if (inlineMatch) return inlineMatch[1];
+  const inlineMatch = DATE_RE.exec(text);
+  const inlineTimestamp = inlineMatch?.[1];
+  if (inlineTimestamp !== undefined) return inlineTimestamp;
 
-  const fnMatch = filename.match(FILENAME_DATE_RE);
-  if (fnMatch) return `${fnMatch[1]}-${fnMatch[2]}-${fnMatch[3]}`;
+  const fnMatch = FILENAME_DATE_RE.exec(filename);
+  const year = fnMatch?.[1];
+  const month = fnMatch?.[2];
+  const day = fnMatch?.[3];
+  if (year !== undefined && month !== undefined && day !== undefined) {
+    return `${year}-${month}-${day}`;
+  }
 
   return null;
 }
