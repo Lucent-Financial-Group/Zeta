@@ -3,8 +3,8 @@
 **Status**: Soak + bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); **Bucket B is empty**)
 **Milestone**: 42 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21). Bucket B is empty as of 2026-04-30T08:07:32Z. Trajectory transitions from "porting" phase to "soak + bash-retirement" phase.
 **Current blocker**: None.
-**Next concrete action**: This trajectory's "porting" phase is complete. Possible follow-ups: (a) audit + retire bash siblings for clusters that have soaked clean (no production breakage observed in the .ts ports), starting with the oldest-merged ports; (b) for budget cluster specifically, switch `daily-cost-report.ts` (slice 18) from spawning the .sh siblings to spawning the .ts versions now that snapshot-burn.ts (slice 14) and project-runway.ts (slice 19) are both available; (c) pursue Bucket C (2 files using gh-api heavily) — maintainer decision on shell-out wrapper vs Octokit. Bucket A (14 setup-script files) stays bash by design.
-**Last updated**: 2026-04-30
+**Next concrete action**: Land the atomic child candidate below: refresh the trajectory's live-state references now that Bucket B ports and bash-retirement have advanced past the old Cluster G/H recommendations. This is a documentation/control-plane slice only; no script porting or bash deletion belongs in the child.
+**Last updated**: 2026-05-08
 
 ## Why this trajectory exists
 
@@ -132,46 +132,35 @@ tools/budget/daily-cost-report.sh                  # ported in #901 (budget wrap
 tools/budget/project-runway.sh                     # ported in #902 (budget cluster closes)
 ```
 
-## Recommended next slice
+## Atomic child candidate
 
-Cluster A (#868) + Cluster B (#870, #872) + Cluster E (#874) + Cluster F-3-of-4 (#876) all landed. Remaining candidates:
+**Child**: refresh the TS/Bun migration live-state references.
 
-```text
-# Cluster G — peer-call bash wrappers (3 files, identical shape)
-tools/peer-call/codex.sh
-tools/peer-call/gemini.sh
-tools/peer-call/grok.sh
-```
-
-```text
-# Cluster H — lint-pattern scripts (3-4 files)
-tools/lint/no-empty-dirs.sh
-tools/lint/runner-version-freshness.sh
-tools/lint/no-directives-otto-prose.sh
-tools/lint/doc-comment-history-audit.sh
-```
+**Why this child exists**: the repo has moved beyond the older
+"Recommended next slice" queue. Live inventory now shows the peer-call, lint,
+budget, and git Bucket B scripts as `.ts` files, while the only remaining
+source-level bash candidates in this trajectory are the Bucket C GitHub-settings
+scripts:
 
 ```text
-# Cluster I — write-side / interactive scripts (deferred)
-tools/hygiene/append-tick-history-row.sh           # write-side, file mutation
-tools/hygiene/audit-agencysignature-main-tip.sh    # similar — may write
-tools/hygiene/capture-tick-snapshot.sh             # likely writes
-tools/hygiene/counterweight-audit.sh               # similar
-tools/hygiene/validate-agencysignature-pr-body.sh
-tools/git/batch-resolve-pr-threads.sh              # gh API mutations
-tools/git/push-with-retry.sh                       # git push side
+tools/hygiene/check-github-settings-drift.sh
+tools/hygiene/snapshot-github-settings.sh
 ```
 
-```text
-# Cluster C — budget reports (touches shared production state, deferred for visibility-constraint review)
-tools/budget/daily-cost-report.sh
-tools/budget/project-runway.sh
-tools/budget/snapshot-burn.sh
+**Scope**: documentation/control-plane only. Update this resume and adjacent
+trajectory references so future agents do not revive already-completed Cluster
+G/H/I and budget-cluster port queues or schedule bash-retirement work that has
+already happened.
+
+**Non-scope**: do not port the Bucket C scripts in this child. Bucket C still
+needs the documented shell-out-wrapper versus Octokit decision.
+
+**Focused check**:
+
+```bash
+rg --files tools/peer-call tools/lint tools/budget tools/git tools/hygiene \
+  | rg '(peer-call/(codex|gemini|grok)\.(sh|ts)|lint/(no-empty-dirs|runner-version-freshness|no-directives-otto-prose|doc-comment-history-audit)\.(sh|ts)|budget/(daily-cost-report|project-runway|snapshot-burn)\.(sh|ts)|git/(batch-resolve-pr-threads|push-with-retry)\.(sh|ts)|hygiene/(check-github-settings-drift|snapshot-github-settings)\.sh)'
 ```
-
-Estimated complexity: **Small (S)** for G (3 thin wrapper scripts, near-identical); **Small-Medium** for H (lint-pattern); **Larger** for I (write-side equivalence-test setup); **Medium-Large** for C (visibility-constraint care).
-
-Cluster G is the recommended-default for slice 7 (smallest + simplest); H is the natural step-up; I + C remain deferred.
 
 **Gate B prerequisite (mandatory before first mutating action on the slice)**:
 
