@@ -6,7 +6,7 @@ title: Port the 4-layer meta-learning pattern from a sibling repo to Zeta
 created: 2026-05-01
 last_updated: 2026-05-08
 depends_on: []
-decomposition: parent
+decomposition: decomposed
 children: [B-0126.1, B-0126.2, B-0126.3, B-0126.4]
 classification: buildable-now
 type: friction-reducer

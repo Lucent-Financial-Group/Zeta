@@ -20,7 +20,7 @@ chosen, this hat is the discipline. 18 specs live under
   dump).
 - Debating invariant vs temporal property vs state
   constraint.
-- Reviewing `tools/run-tlc.sh` behaviour.
+- Reviewing `tools/formal-verification/run-tlc.ts` behaviour.
 
 ## Zeta's TLA+ scope
 
@@ -234,7 +234,7 @@ spec.
   portfolio
 - `tools/tla/tla2tools.jar` — TLC itself (installed by
   `tools/setup/common/verifiers.sh`)
-- `tools/run-tlc.sh` — invocation wrapper
+- `tools/formal-verification/run-tlc.ts` — invocation wrapper
 - `docs/SPEC-CAUGHT-A-BUG.md` — historical record of
   bugs TLC caught
 - `.claude/skills/formal-verification-expert/SKILL.md` —
