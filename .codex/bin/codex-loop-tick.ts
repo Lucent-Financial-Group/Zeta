@@ -319,13 +319,15 @@ function main(): number {
   return codex.status;
 }
 
-let exitCode = 0;
-if (acquireLock()) {
-  writeText(join(lockDir, "metadata"), `run_id=${runId}\npid=${process.pid}\nstarted_at=${nowIso()}\n`);
-  try {
-    exitCode = main();
-  } finally {
-    rmSync(lockDir, { recursive: true, force: true });
+if (import.meta.main) {
+  let exitCode = 0;
+  if (acquireLock()) {
+    writeText(join(lockDir, "metadata"), `run_id=${runId}\npid=${process.pid}\nstarted_at=${nowIso()}\n`);
+    try {
+      exitCode = main();
+    } finally {
+      rmSync(lockDir, { recursive: true, force: true });
+    }
   }
+  process.exit(exitCode);
 }
-process.exit(exitCode);

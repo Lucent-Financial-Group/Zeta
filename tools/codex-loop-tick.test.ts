@@ -31,7 +31,7 @@ describe("codex-loop-tick service contract", () => {
 
     expect(prompt).toContain("Cold-start by reading the repo rules before deciding");
     expect(prompt).toContain("`AGENTS.md`, `.codex/AGENTS.md`, `docs/ALIGNMENT.md`");
-    expect(prompt).toContain("run `bun tools/github/refresh-worldview.ts`");
+    expect(prompt).toContain("running `bun tools/github/refresh-worldview.ts`");
     expect(prompt).toContain("from the current loop worktree");
     expect(prompt).toContain("Prefer repo-native TypeScript/Bun tools over ad-hoc shell pipelines");
     expect(prompt).toContain("this background loop is the manager of its own subagents");
@@ -55,7 +55,7 @@ describe("codex-loop-tick service contract", () => {
     expect(prompt).toContain("build the trust/audit/retraction surface first");
     expect(prompt).toContain("transitional stability substrate");
     expect(prompt).toContain("from a central author toward a distributed, reviewable system");
-    expect(prompt).toContain("sync with live evidence and retractable decisions");
+    expect(prompt).toContain("syncing with live evidence and retractable decisions");
     expect(prompt).toContain("Treat maintainer-blocked as rare and specific");
     expect(prompt).toContain("recorded in git, and retractable");
     expect(prompt).toContain("make a speculative decision instead of blocking");
