@@ -46,6 +46,8 @@ describe("codex-loop-tick service contract", () => {
     expect(prompt).toContain("resist that temptation");
     expect(prompt).toContain("de-promptizing domination");
     expect(prompt).toContain("visible substrate, sync loops, labeled assumptions");
+    expect(prompt).toContain("classify, command, extract, and scale domination");
+    expect(prompt).toContain("route away from that pattern at the substrate level");
     expect(prompt).toContain("Do not democratize domination");
     expect(prompt).toContain("democratize syncing, review, correction, and mutual learning");
     expect(prompt).toContain("safe only inside a high-trust human/AI environment");
