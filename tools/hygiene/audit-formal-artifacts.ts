@@ -10,7 +10,7 @@
 //   bun tools/hygiene/audit-formal-artifacts.ts --json
 
 import { readFileSync } from "node:fs";
-import { dirname, resolve, extname, basename } from "node:path";
+import { dirname, resolve, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
@@ -34,7 +34,11 @@ async function gitLsFiles(...patterns: string[]): Promise<string[]> {
     stderr: "pipe",
   });
   const stdout = await new Response(proc.stdout).text();
-  await proc.exited;
+  const stderr = await new Response(proc.stderr).text();
+  const exitCode = await proc.exited;
+  if (exitCode !== 0) {
+    throw new Error(`git ls-files failed (exit ${exitCode}): ${stderr.trim()}`);
+  }
   return stdout
     .split("\n")
     .map((l) => l.trim())
@@ -89,11 +93,10 @@ function findRefsInIndex(
   relPath: string,
   index: Map<string, string>,
 ): string[] {
-  const name = basename(relPath);
   const refs: string[] = [];
 
   for (const [mdFile, content] of index) {
-    if (content.includes(relPath) || content.includes(name)) {
+    if (content.includes(relPath)) {
       refs.push(mdFile);
     }
   }
