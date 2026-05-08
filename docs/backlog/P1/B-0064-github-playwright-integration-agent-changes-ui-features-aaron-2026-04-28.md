@@ -1,13 +1,15 @@
 ---
 id: B-0064
 priority: P1
-status: open
+status: umbrella
 title: GitHub × Playwright integration — agent can change things in the GitHub UI + watch UI to spot new features (Aaron 2026-04-28)
 tier: agent-capability-expansion
 effort: M
 ask: maintainer Aaron 2026-04-28 ("backlog github/playwrite integration, this is for all those things you need me to change, you should be able to change in the UI, also looking at the UI will help you understand how i see things and find new features as soon as they come out, backlog")
 created: 2026-04-28
-last_updated: 2026-05-02
+last_updated: 2026-05-08
+decomposition: clean
+children: [B-0317, B-0318, B-0319, B-0320, B-0321, B-0322, B-0323, B-0324]
 depends_on: []
 composes_with: [B-0060, B-0061]
 tags: [agent-capability, github-ui, playwright, mcp, automation, friction-reduction, feature-discovery]
