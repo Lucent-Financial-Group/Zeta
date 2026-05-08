@@ -420,6 +420,17 @@ harness the vscode harness is what needs to test
 it's own entry point … and we will use vvscode
 for the rest."*
 
+**Tier-1 bootstrap guardrail.** In Zeta, any
+proposal phrased as a "background CLI for
+Copilot" must first be routed away from the PR
+reviewer product. The PR reviewer is a cloud
+review robot, not a harness. Tier 1 means
+foundation only: identify the exact Copilot
+surface, read the local harness docs, avoid the
+root checkout, and describe the host-loop shape
+before any daemon or write-capable automation is
+built.
+
 ---
 
 ## GitHub Copilot — PR code review (reviewer robot; NOT a harness)
@@ -441,6 +452,12 @@ persona agents). The capability-boundary rule
 integration because the verifier and the verified
 are the same runtime" does not apply — the PR
 reviewer is not the runtime the factory runs on.
+
+**Routing rule:** if the task is about a host-
+level background loop, control clone, log
+directory, lock/state directory, health probe, or
+broadcast bus, it does **not** belong on this PR
+review surface.
 
 **What it can do:**
 
@@ -641,6 +658,120 @@ fact-tested-unavailable, not aspirational**.
   on Zeta a per-product decision (Zeta's
   current stance: not yet accepted on this
   repo).
+
+# GitHub Copilot CLI — background daemon harness; stub; priority 2
+
+**Status:** stub. GitHub Copilot CLI is a
+run-in-background autonomous daemon, distinct
+from (1) PR code review robot, (2) VS Code
+interactive harness, and (3) coding agent
+one-shot agentic harness. Unlike Claude
+Code's interactive model and Copilot coding
+agent's sandbox execution, Copilot CLI
+background harness runs autonomously on a
+host system via host-level scheduler
+(LaunchAgent on macOS or equivalent).
+
+**Tier 1 scope (foundation only):** this lane is
+currently design-first. The first output is a
+host-loop and health-probe scaffold, not
+autonomous code shipping. Before any background
+automation exists, the design must pin the exact
+Copilot surface, keep execution out of the root
+checkout, and model the control paths on the
+Codex host loop.
+
+**Tier 1 host-loop shape:**
+
+- Control clone:
+  `~/.local/share/zeta-copilot-loop/Zeta`
+- Logs:
+  `~/Library/Logs/zeta-copilot-loop/`
+- Broadcast file:
+  `~/.local/share/zeta-broadcasts/copilot.md`
+- State / lock directory: TBD during scaffold
+- Health probe: read-only proof before any write
+  authority
+
+**Is it a harness?** Yes. It loads factory
+artefacts (AGENTS.md, skills, hooks,
+MEMORY.md) from a control clone; executes
+agent-directed work autonomously between
+turns; cannot self-verify its factory
+integration per each-harness-tests-own rule.
+Classify as a **background daemon harness**
+for inventory purposes — distinct from
+interactive (Claude Code) and one-shot
+(Copilot coding agent) harness types.
+
+**Owner (tentative):** TBD.
+
+**Cadence:** every 5-10 rounds once populated.
+
+**Integration-point tests owned by:** external
+harness (Claude Code or another populated
+harness) per each-harness-tests-own rule.
+External harness reads background logs, runs
+health-probe executable, inspects state/lock
+directory, and verifies factory integration
+via these outputs rather than in-process
+observation.
+
+**Known surfaces to inventory when populated:**
+
+- Host-level scheduler mechanism (LaunchAgent
+  plist on macOS; systemd equivalent on Linux;
+  Task Scheduler equivalent on Windows).
+- Control clone repository (separate git
+  checkout from root; autonomously fetched and
+  reset between ticks).
+- Tick runner executable (TypeScript CLI or
+  compiled binary; invoked by scheduler every
+  N minutes).
+- Heartbeat mechanism (periodic continuity
+  signal written to Application Support
+  directory; read by external harness to verify
+  scheduler is still running).
+- Continuity gate pattern (fetch origin →
+  inspect claims → inspect heartbeats → check
+  trajectory/backlog/PR state → safe-default
+  no-write if surfaces conflict).
+- Health-probe mechanism (standalone
+  executable run by external harness to verify
+  background harness is healthy and aligned
+  with current factory state).
+- Log outputs (background harness writes to
+  host log directory, not to chat; runner.log,
+  ticks.log, ticks.err structure).
+- State/lock directory (persistent state
+  between ticks; checked by continuity gate).
+
+**Factory-relevant deltas vs Claude Code:**
+
+- Scheduler type: Claude Code uses in-chat
+  cron (`CronCreate`/`CronList` tools);
+  Copilot CLI uses host-level scheduler
+  (LaunchAgent, systemd, Task Scheduler).
+- Coordination: Copilot CLI must implement
+  worktree + heartbeat discipline for shared
+  machine safety (per AGENT-CLAIM-PROTOCOL).
+- Verification model: Copilot CLI outputs
+  verified via external harness reading logs +
+  running health probe, not in-process
+  observation (same model as Codex).
+- Control clone: Copilot CLI does not touch
+  root checkout; maintains separate git
+  worktree for autonomous work.
+- Turnless execution: Copilot CLI ticks occur
+  between turns (no human interaction required
+  to advance the tick).
+
+Reference pattern: See `.codex/CURRENT-codex.md`
+(Codex implements analogous host-loop pattern
+with LaunchAgent, control clone, heartbeat,
+continuity gate, and health-probe mechanism;
+serves as concrete design exemplar for Copilot
+CLI implementation).
 
 ---
 
