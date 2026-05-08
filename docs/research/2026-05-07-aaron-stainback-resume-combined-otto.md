@@ -55,7 +55,7 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Managed **252-node Solr cluster** with cross-region disaster recovery
 - Rewrote search service: **200-node in-memory Solr cluster** with custom search DSL and natural language processing — pre-LLM, pre-RLHF, built with domain expertise
 - Threaded **Jaccard similarity + BERT embeddings** through LexisNexis's **35-year-old search DSL** (Lycos-era query language) without breaking existing users — "thread the needle" pattern
-- **1M-row legal citation training dataset** (binary classifier: valid citations vs normalized legal phrases) — on personal RAID, predates LLM era
+- **1M-row legal citation training dataset** (binary classifier: valid citations vs normalized legal phrases) — predates LLM era
 - Reindexed **200 years of US legal history in under 24 hours** across 200 nodes — old system took 3 months (90× speedup)
 - Increased KubeFlow TensorFlow training throughput by **800%**
 - Filed **48 issues on Knative** (serving, eventing, operator) — security contexts across all components, Kafka channels, CloudEvents batching, HA operations, operator lifecycle
