@@ -5,17 +5,14 @@
 //
 // Run: bun test tools/alignment/filter_gate_log.test.ts
 
-import { afterEach, describe, expect, test } from "bun:test";
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { describe, expect, test } from "bun:test";
+import { rmSync, writeFileSync } from "node:fs";
 import {
   computeSummary,
-  type Decision,
   type FilterGateEntry,
   main,
   parseArgs,
   readLog,
-  recordEntry,
 } from "./filter_gate_log.ts";
 
 describe("parseArgs", () => {
