@@ -17,7 +17,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0109](backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md)** Dependency status tracking surface — outages and issues affecting us (Aaron 2026-04-30, urgent)
 - [ ] **[B-0160](backlog/P0/B-0160-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md)** Mechanical authorization check skill build — pace-instruction resolver per Claude.ai 2026-05-02 architectural correction
 - [ ] **[B-0249](backlog/P0/B-0249-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md)** Autonomous backlog pickup — loops must start new work, not just maintain
-- [ ] **[B-0278](backlog/P0/B-0278-autonomous-backlog-selector-priority-safe-pickup-2026-05-08.md)** Autonomous backlog pickup - priority selector
+- [x] **[B-0278](backlog/P0/B-0278-autonomous-backlog-selector-priority-safe-pickup-2026-05-08.md)** Autonomous backlog pickup - priority selector
 - [ ] **[B-0279](backlog/P0/B-0279-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md)** Autonomous backlog pickup - claim and worktree bootstrap
 - [ ] **[B-0280](backlog/P0/B-0280-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md)** Autonomous backlog pickup - PR publication and auto-merge
 - [ ] **[B-0281](backlog/P0/B-0281-codex-loop-empty-queue-backlog-pickup-integration-2026-05-08.md)** Codex loop - empty queue autonomous backlog pickup
@@ -115,7 +115,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0275](backlog/P1/B-0275-pages-astro-http-200-and-deploy-validation-2026-05-08.md)** Pages discoverability - Astro deploy validation and HTTP 200 check
 - [ ] **[B-0276](backlog/P1/B-0276-structure-recognizer-fingerprint-library-2026-05-08.md)** Structure recognizer — fingerprint library for codebase shapes
 - [ ] **[B-0277](backlog/P1/B-0277-structure-recognizer-catalog-index-2026-05-08.md)** Structure recognizer — shape-indexed catalog without labels
-- [ ] **[B-0278](backlog/P1/B-0278-durable-computation-survey-8-systems-2026-05-08.md)** Durable computation survey — compare 8 systems against Zeta's gap
+- [x] **[B-0278](backlog/P1/B-0278-durable-computation-survey-8-systems-2026-05-08.md)** Durable computation survey — compare 8 systems against Zeta's gap
 - [ ] **[B-0279](backlog/P1/B-0279-durable-computation-checkpoint-interface-extension-2026-05-08.md)** Durable computation — extend Checkpoint.fs with StableStorage mode
 - [ ] **[B-0284](backlog/P1/B-0284-pages-seo-metadata-jsonld-social-preview-2026-05-08.md)** Pages discoverability - SEO metadata, JSON-LD, and social previews
 - [ ] **[B-0285](backlog/P1/B-0285-pages-sitemap-robots-ai-crawler-policy-2026-05-08.md)** Pages discoverability - sitemap, robots, and AI crawler policy

@@ -6,12 +6,12 @@
 // when the PR queue is empty, what is the next backlog item a loop may safely
 // decompose or claim?
 
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
 type Priority = "P0" | "P1" | "P2" | "P3";
-type Action = "decompose" | "claim-and-implement";
+type Action = "decompose-first" | "claim-and-implement";
 
 export interface BacklogItem {
   id: string;
@@ -20,6 +20,9 @@ export interface BacklogItem {
   title: string;
   relativePath: string;
   dependsOn: string[];
+  parent: string | null;
+  created: string | null;
+  lastUpdated: string | null;
   decomposition: string | null;
   bodyLineCount: number;
 }
@@ -56,6 +59,7 @@ const PRIORITY_RANK: Record<Priority, number> = {
   P3: 3,
 };
 const GIT_BIN = "/usr/bin/git";
+const GH_BINS = ["/opt/homebrew/bin/gh", "/usr/bin/gh"] as const;
 
 function usage(): string {
   return [
@@ -301,19 +305,44 @@ export function readBacklogItems(repoRoot: string): BacklogItem[] {
         title,
         relativePath: relative(repoRoot, absolutePath).split("\\").join("/"),
         dependsOn: asStringList(frontmatter.depends_on),
+        parent: asString(frontmatter.parent) || null,
+        created: asString(frontmatter.created) || null,
+        lastUpdated: asString(frontmatter.last_updated) || null,
         decomposition: asString(frontmatter.decomposition) || null,
         bodyLineCount: content.split(/\r?\n/).length,
       });
     }
   }
 
-  return items.sort((a, b) => {
-    const priorityDelta = PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority];
-    if (priorityDelta !== 0) {
-      return priorityDelta;
-    }
-    return itemNumber(a.id) - itemNumber(b.id);
-  });
+  return items.sort(compareBacklogItems);
+}
+
+function ageKey(item: BacklogItem): string {
+  return item.created ?? item.lastUpdated ?? "9999-12-31";
+}
+
+function compareAge(a: BacklogItem, b: BacklogItem): number {
+  const createdDelta = ageKey(a).localeCompare(ageKey(b));
+  if (createdDelta !== 0) {
+    return createdDelta;
+  }
+  const updatedDelta = (a.lastUpdated ?? "9999-12-31").localeCompare(b.lastUpdated ?? "9999-12-31");
+  if (updatedDelta !== 0) {
+    return updatedDelta;
+  }
+  return 0;
+}
+
+function compareBacklogItems(a: BacklogItem, b: BacklogItem): number {
+  const priorityDelta = PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority];
+  if (priorityDelta !== 0) {
+    return priorityDelta;
+  }
+  const ageDelta = compareAge(a, b);
+  if (ageDelta !== 0) {
+    return ageDelta;
+  }
+  return itemNumber(a.id) - itemNumber(b.id);
 }
 
 function isOpen(status: string): boolean {
@@ -327,7 +356,7 @@ function isClosed(status: string | undefined): boolean {
   return status === "closed" || status.startsWith("superseded-by-");
 }
 
-function dependencyBlocker(item: BacklogItem, byId: Map<string, BacklogItem>): string | null {
+function dependencyBlocker(item: BacklogItem, byId: ReadonlyMap<string, BacklogItem>): string | null {
   for (const dependency of item.dependsOn) {
     const depItem = byId.get(dependency);
     if (!depItem) {
@@ -354,18 +383,59 @@ function claimBlocker(item: BacklogItem, activeClaims: readonly string[]): strin
   return claim ? `active claim ${claim}` : null;
 }
 
+function decomposedParentBlocker(
+  item: BacklogItem,
+  openChildrenByParent: ReadonlyMap<string, readonly BacklogItem[]>,
+): string | null {
+  if (item.decomposition !== "decomposed") {
+    return null;
+  }
+  const openChildren = openChildrenByParent.get(item.id) ?? [];
+  if (openChildren.length === 0) {
+    return null;
+  }
+  const childIds = openChildren.map((child) => child.id).sort((a, b) => a.localeCompare(b));
+  return `decomposed parent has open child ${childIds.join(", ")}`;
+}
+
+function openChildrenByParent(items: readonly BacklogItem[]): Map<string, BacklogItem[]> {
+  const grouped = new Map<string, BacklogItem[]>();
+  for (const item of items) {
+    if (item.parent === null || !isOpen(item.status)) {
+      continue;
+    }
+    const children = grouped.get(item.parent) ?? [];
+    children.push(item);
+    grouped.set(item.parent, children);
+  }
+  return grouped;
+}
+
+function itemBlocker(
+  item: BacklogItem,
+  byId: ReadonlyMap<string, BacklogItem>,
+  childrenByParent: ReadonlyMap<string, readonly BacklogItem[]>,
+  activeClaims: readonly string[],
+): string | null {
+  return (
+    decomposedParentBlocker(item, childrenByParent) ??
+    dependencyBlocker(item, byId) ??
+    claimBlocker(item, activeClaims)
+  );
+}
+
 function actionFor(item: BacklogItem): Action {
   if (item.decomposition === "atomic" || item.decomposition === "decomposed") {
     return "claim-and-implement";
   }
   return item.decomposition === "blob" || item.bodyLineCount >= BLOB_LINE_THRESHOLD
-    ? "decompose"
+    ? "decompose-first"
     : "claim-and-implement";
 }
 
 function promptFor(item: BacklogItem, action: Action): string {
   const lead =
-    action === "decompose"
+    action === "decompose-first"
       ? `Decompose ${item.id} into the smallest dependency-ordered atomic child backlog rows.`
       : `Claim and implement the smallest safe slice of ${item.id}.`;
   return [
@@ -391,13 +461,8 @@ export function selectNextBacklogItem(
   const byId = new Map(items.map((item) => [item.id, item]));
   const blocked: BlockedItem[] = [];
   const maxRank = PRIORITY_RANK[maxPriority];
-  const sortedItems = [...items].sort((a, b) => {
-    const priorityDelta = PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority];
-    if (priorityDelta !== 0) {
-      return priorityDelta;
-    }
-    return itemNumber(a.id) - itemNumber(b.id);
-  });
+  const childrenByParent = openChildrenByParent(items);
+  const sortedItems = [...items].sort(compareBacklogItems);
 
   for (const item of sortedItems) {
     if (PRIORITY_RANK[item.priority] > maxRank) {
@@ -407,15 +472,9 @@ export function selectNextBacklogItem(
       continue;
     }
 
-    const dependencyReason = dependencyBlocker(item, byId);
-    if (dependencyReason !== null) {
-      blocked.push({ item, reason: dependencyReason });
-      continue;
-    }
-
-    const claimReason = claimBlocker(item, activeClaims);
-    if (claimReason !== null) {
-      blocked.push({ item, reason: claimReason });
+    const blockedReason = itemBlocker(item, byId, childrenByParent, activeClaims);
+    if (blockedReason !== null) {
+      blocked.push({ item, reason: blockedReason });
       continue;
     }
 
@@ -425,7 +484,7 @@ export function selectNextBacklogItem(
       selected: item,
       action,
       reason:
-        action === "decompose"
+        action === "decompose-first"
           ? "highest-priority open item needs decomposition before implementation"
           : "highest-priority open unclaimed item with satisfied dependencies",
       blocked,
@@ -472,6 +531,51 @@ function readActiveClaims(repoRoot: string): string[] {
   return [...new Set([...remoteClaims, ...localClaims])].sort((a, b) => a.localeCompare(b));
 }
 
+function ghBin(): string | null {
+  return GH_BINS.find((candidate) => existsSync(candidate)) ?? null;
+}
+
+function readOpenPrClaims(repoRoot: string): string[] {
+  const gh = ghBin();
+  if (gh === null) {
+    return [];
+  }
+
+  const result = spawnSync(
+    gh,
+    ["pr", "list", "--state", "open", "--limit", "1000", "--json", "number,headRefName,title"],
+    {
+      cwd: repoRoot,
+      encoding: "utf8",
+      maxBuffer: 16 * 1024 * 1024,
+    },
+  );
+  if (result.status !== 0) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(result.stdout) as {
+      number?: number;
+      headRefName?: string;
+      title?: string;
+    }[];
+    return parsed.flatMap((pr) => {
+      const claims: string[] = [];
+      if (pr.headRefName !== undefined && pr.headRefName.trim().length > 0) {
+        claims.push(pr.headRefName.trim());
+      }
+      if (pr.title !== undefined && pr.title.trim().length > 0) {
+        const numberLabel = typeof pr.number === "number" ? pr.number.toString() : "unknown";
+        claims.push(`pr-${numberLabel}:${pr.title.trim()}`);
+      }
+      return claims;
+    });
+  } catch {
+    return [];
+  }
+}
+
 function printText(selection: PickupSelection): void {
   if (selection.status === "empty") {
     process.stdout.write(`no-pick: ${selection.reason}\n`);
@@ -498,7 +602,10 @@ export function main(argv: string[]): number {
 
   const items = readBacklogItems(args.repoRoot);
   const gitClaims = args.noGitClaims ? [] : readActiveClaims(args.repoRoot);
-  const activeClaims = [...new Set([...gitClaims, ...args.activeClaim])].sort((a, b) => a.localeCompare(b));
+  const openPrClaims = args.noGitClaims ? [] : readOpenPrClaims(args.repoRoot);
+  const activeClaims = [...new Set([...gitClaims, ...openPrClaims, ...args.activeClaim])].sort((a, b) =>
+    a.localeCompare(b),
+  );
   const selection = selectNextBacklogItem(items, activeClaims, args.maxPriority);
 
   if (args.json) {
