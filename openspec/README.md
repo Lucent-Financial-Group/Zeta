@@ -81,7 +81,7 @@ tree holding retired proposals.
 
 ## Capabilities (populated progressively)
 
-Three capabilities are spec'd today:
+Six capabilities are spec'd today:
 
 - **`operator-algebra`** — Z-sets, D / I / z⁻¹ / H operators, chain
   rule, bilinearity of Join, retraction-native invariants.
@@ -91,20 +91,28 @@ Three capabilities are spec'd today:
 - **`durability-modes`** — `DurabilityMode` DU, factory,
   feature-flag gating on `WitnessDurable`, evaluator resolution
   order, offline-safety, lifecycle stages.
+- **`circuit-recursion`** — nested circuits with private inner clock,
+  scope-boundary lifecycle, fixpoint semantics, DBSP §5-6 recursive
+  query pattern substrate.
+- **`lsm-spine-family`** — LSM spine for Z-set delta integration,
+  `Spine`, `SpineAsync`, `DiskSpine`, `BalancedSpine`, merge
+  policies, checkpoint format.
+- **`repo-automation`** — install scripts, GitHub Actions workflows,
+  doctor script, CI/CD pipeline conventions.
 
-Each capability ships with a `spec.md` plus at least an
-`fsharp.md` profile under `profiles/`.
+Each capability ships with a `spec.md` plus at least one profile
+under `profiles/`.
 
 Planned capabilities (not yet spec'd — the Architect prioritises
 these per round):
 
-- `storage-spines` — `Spine`, `SpineAsync`, `DiskSpine`,
-  `BalancedSpine`, checkpoint format
 - `sketches` — HLL, Count-Min, KLL, Bloom (blocked + counting),
   future CQF
 - `feature-flags` — already in-tree as a standalone module
   (`src/Core/FeatureFlags.fs`); behavioural spec pending
-- `circuit-scheduling` — topo-sort, strict ops, async fast path
+
+Run `bun tools/openspec/inventory.ts` for a full gap report mapping
+specs to `src/Core/` modules.
 
 Future profiles (`csharp.md` for the shim, `rust.md`,
 `python.md`) land only when there's an implementation to describe.
