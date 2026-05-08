@@ -33,6 +33,15 @@ describe("codex-loop-tick service contract", () => {
     expect(prompt).toContain("`AGENTS.md`, `.codex/AGENTS.md`, `docs/ALIGNMENT.md`");
     expect(prompt).toContain("run `bun tools/github/refresh-worldview.ts`");
     expect(prompt).toContain("Prefer repo-native TypeScript/Bun tools over ad-hoc shell pipelines");
+    expect(prompt).toContain("this background loop is the manager of its own subagents");
+    expect(prompt).toContain("foreground chat is only the companion conversation surface");
+    expect(prompt).toContain("Walk trajectories, not task piles");
+    expect(prompt).toContain("avoid hard-defined workflows");
+    expect(prompt).toContain("Coordinate with Otto/Riven as peer managers");
+    expect(prompt).toContain("Learn from Otto's successful pattern as evidence");
+    expect(prompt).toContain("Critique Otto's failure modes as evidence too");
+    expect(prompt).toContain("Decompose at most one level mid-work");
+    expect(prompt).toContain("without shipping or unblocking the next executable slice");
     expect(prompt).toContain("own Vera/Codex PRs through merge");
     expect(prompt).toContain("A PR is not done when opened");
     expect(prompt).toContain("run `bun .codex/bin/codex-backlog-runner.ts --json`");

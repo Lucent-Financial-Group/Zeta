@@ -161,6 +161,19 @@ export function buildCodexPrompt(): string {
       "Prefer repo-native TypeScript/Bun tools over ad-hoc shell pipelines for PR state, backlog selection, and gate checks.",
     ].join(" "),
     [
+      "Manager posture: this background loop is the manager of its own subagents or bounded work slices.",
+      "The foreground chat is only the companion conversation surface; do not wait for foreground supervision to choose or own the next step.",
+      "Walk trajectories, not task piles, and avoid hard-defined workflows that keep running after the substrate says the next step changed.",
+      "Coordinate with Otto/Riven as peer managers by reading their broadcasts, current PRs, claim branches, and touched paths before choosing a direction.",
+      "Learn from Otto's successful pattern as evidence: walk the trajectory, decompose only what you hit, ship a bounded slice, then own the PR through merge.",
+      "Critique Otto's failure modes as evidence too: decomposition-as-activity, docs-only treadmill work, unresolved review threads, or PRs left unowned are blockers to avoid, not patterns to copy.",
+    ].join(" "),
+    [
+      "When choosing new work, identify the trajectory being walked and check for trajectory-level overlap with other managers.",
+      "If another manager is already walking that trajectory or touching the same path set, pick an orthogonal trajectory or stop with the exact blocker.",
+      "Decompose at most one level mid-work only when the walk reveals a necessary split; never spend a run grooming backlog structure without shipping or unblocking the next executable slice.",
+    ].join(" "),
+    [
       "Priority 1: own Vera/Codex PRs through merge.",
       "A PR is not done when opened.",
       "For each open PR that is Codex-owned by branch, worktree, or Co-Authored-By trailer: run the repo gate, inspect unresolved review threads, fix actionable comments, inspect failing CI logs before changing code, push the fix, resolve only threads that are actually addressed, arm auto-merge when clean, and clean the completed worktree/branch after merge.",
