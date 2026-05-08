@@ -5,7 +5,8 @@ status: open
 title: Adopt `.claude/rules/<rule>.md` pattern + carved-sentences-only constraint (Aaron 2026-05-01)
 created: 2026-05-01
 last_updated: 2026-05-01
-decomposition: blob
+decomposition: decomposed
+children: [B-0268, B-0269]
 depends_on:
   - B-0006
   - B-0153
