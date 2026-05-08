@@ -9,8 +9,9 @@
 
 import { spawnSync } from "bun";
 import { dirname } from "path";
+import { fileURLToPath } from "url";
 
-const SCRIPT_DIR = dirname(new URL(import.meta.url).pathname);
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
 // Check if db service is running
 const psCheck = spawnSync(["docker-compose", "ps", "--services"], {
@@ -26,26 +27,27 @@ if (!services.includes("db")) {
 // Wait for Postgres to accept connections before smoke-checking.
 // The compose healthcheck covers container-up; pg_isready confirms the
 // server is actually answering. Bounded: 30 attempts * 1s = 30s budget.
-process.stdout.write("Waiting for Postgres to accept connections");
-let pgReady = false;
-for (let i = 0; i < 30; i++) {
-  const readyCheck = spawnSync(
-    ["docker-compose", "exec", "-T", "db", "pg_isready", "-U", "postgres", "-d", "postgres"],
-    { cwd: SCRIPT_DIR },
-  );
-  if (readyCheck.exitCode === 0) {
-    console.log(" ready.");
-    pgReady = true;
-    break;
+async function waitForPostgres(): Promise<boolean> {
+  process.stdout.write("Waiting for Postgres to accept connections");
+  for (let i = 0; i < 30; i++) {
+    const readyCheck = spawnSync(
+      ["docker-compose", "exec", "-T", "db", "pg_isready", "-U", "postgres", "-d", "postgres"],
+      { cwd: SCRIPT_DIR },
+    );
+    if (readyCheck.exitCode === 0) {
+      console.log(" ready.");
+      return true;
+    }
+    process.stdout.write(".");
+    await Bun.sleep(1000);
   }
-  process.stdout.write(".");
-  // Synchronous 1-second sleep using spawnSync
-  spawnSync(["sleep", "1"]);
-}
-
-if (!pgReady) {
   console.log("");
   console.error("Postgres did not become ready within 30s.");
+  return false;
+}
+
+const pgReady = await waitForPostgres();
+if (!pgReady) {
   process.exit(1);
 }
 

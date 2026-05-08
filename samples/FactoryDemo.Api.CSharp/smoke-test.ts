@@ -15,22 +15,22 @@
 
 import { spawn, spawnSync } from "bun";
 import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 import { tmpdir } from "os";
-import { mkdtempSync, writeFileSync, readFileSync, unlinkSync } from "fs";
+import { mkdtempSync, readFileSync } from "fs";
 
-const SCRIPT_DIR = dirname(new URL(import.meta.url).pathname);
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROJECT = join(SCRIPT_DIR, "FactoryDemo.Api.CSharp.csproj");
 
 // Check for dotnet
-const dotnetCheck = spawnSync(["which", "dotnet"]);
-if (dotnetCheck.exitCode !== 0) {
+if (!Bun.which("dotnet")) {
   console.error("Missing required tool: dotnet");
   process.exit(2);
 }
 
 // Pick a high random port to avoid clashes with other dev services.
 const PORT = 5100 + Math.floor(Math.random() * 400);
-const URL = `http://localhost:${PORT}`;
+const BASE_URL = `http://localhost:${PORT}`;
 
 console.log("Building API...");
 const buildResult = spawnSync([
@@ -45,15 +45,15 @@ if (buildResult.exitCode !== 0) {
 // Per-run server log
 const logDir = mkdtempSync(join(tmpdir(), "factory-demo-api-csharp-"));
 const LOG_FILE = join(logDir, "server.log");
-console.log(`Starting API on ${URL} (server log: ${LOG_FILE})...`);
+console.log(`Starting API on ${BASE_URL} (server log: ${LOG_FILE})...`);
 
 // Run API in background
-const logFile = Bun.file(LOG_FILE);
+const logFileHandle = Bun.file(LOG_FILE);
 const apiProc = spawn(
-  ["dotnet", "run", "--project", PROJECT, "-c", "Release", "--no-build", "--urls", URL],
+  ["dotnet", "run", "--project", PROJECT, "-c", "Release", "--no-build", "--urls", BASE_URL],
   {
-    stdout: LOG_FILE,
-    stderr: LOG_FILE,
+    stdout: logFileHandle,
+    stderr: logFileHandle,
   },
 );
 
@@ -73,7 +73,7 @@ process.on("SIGTERM", () => { cleanup(); process.exit(143); });
 async function waitForReady(): Promise<boolean> {
   for (let i = 0; i < 20; i++) {
     try {
-      const resp = await fetch(`${URL}/`);
+      const resp = await fetch(`${BASE_URL}/`);
       if (resp.ok) return true;
     } catch {
       // not ready yet
@@ -92,7 +92,7 @@ async function check(
   expected: string,
 ): Promise<void> {
   try {
-    const resp = await fetch(`${URL}${path}`);
+    const resp = await fetch(`${BASE_URL}${path}`);
     if (!resp.ok) {
       console.log(`  FAIL ${label.padEnd(50)} expected=${expected} got=HTTP ${resp.status}`);
       fail = 1;
@@ -179,7 +179,7 @@ async function main() {
 
   // 404 behavior
   try {
-    const resp = await fetch(`${URL}/api/customers/999`);
+    const resp = await fetch(`${BASE_URL}/api/customers/999`);
     const status = resp.status;
     if (status === 404) {
       console.log(`  OK   ${"missing customer HTTP status".padEnd(50)} (404)`);
