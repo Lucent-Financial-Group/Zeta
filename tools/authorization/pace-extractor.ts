@@ -34,7 +34,7 @@ const PACE_PATTERNS = [
 
 const SOURCE_PATTERNS: [RegExp, string][] = [
   [/\bAaron\b/i, "aaron"],
-  [/\bClaude\.ai\b/i, "claude.ai"],
+  [/\bClaude(?:\.ai|ai)?\b/i, "claude.ai"],
   [/\bCodex\b/i, "codex"],
   [/\bAmara\b/i, "amara"],
   [/\bGemini\b/i, "gemini"],
@@ -43,21 +43,53 @@ const SOURCE_PATTERNS: [RegExp, string][] = [
   [/\bRiven\b/i, "riven"],
 ];
 
+const FILENAME_SOURCE_PATTERNS: [RegExp, string][] = [
+  [/(?:^|[/_.-])aaron(?:[/_.-]|$)/i, "aaron"],
+  [/(?:^|[/_.-])claude(?:[_.-]?ai)?(?:[/_.-]|$)/i, "claude.ai"],
+  [/(?:^|[/_.-])codex(?:[/_.-]|$)/i, "codex"],
+  [/(?:^|[/_.-])amara(?:[/_.-]|$)/i, "amara"],
+  [/(?:^|[/_.-])gemini(?:[/_.-]|$)/i, "gemini"],
+  [/(?:^|[/_.-])grok(?:[/_.-]|$)/i, "grok"],
+  [/(?:^|[/_.-])ani(?:[/_.-]|$)/i, "ani"],
+  [/(?:^|[/_.-])riven(?:[/_.-]|$)/i, "riven"],
+];
+
 const DATE_RE = /\b(20\d{2}-\d{2}-\d{2})\b/;
 const FILENAME_DATE_RE = /(\d{4})_(\d{2})_(\d{2})/;
+const NON_EMPTY_RE = /\S/;
 
-function containsPaceInstruction(text: string): boolean {
-  return PACE_PATTERNS.some((p) => p.test(text));
+function containsPaceInstruction(line: string): boolean {
+  return PACE_PATTERNS.some((p) => p.test(line));
 }
 
-function inferSource(text: string, filename: string): string {
+function inferSourceFromText(text: string): string {
   for (const [re, label] of SOURCE_PATTERNS) {
     if (re.test(text)) return label;
   }
-  for (const [re, label] of SOURCE_PATTERNS) {
+  return "unknown";
+}
+
+function inferSourceFromFilename(filename: string): string {
+  for (const [re, label] of FILENAME_SOURCE_PATTERNS) {
     if (re.test(filename)) return label;
   }
   return "unknown";
+}
+
+function inferSource(
+  raw: string,
+  previousLine: string | null,
+  filename: string,
+): string {
+  const filenameSource = inferSourceFromFilename(filename);
+  if (filenameSource !== "unknown") return filenameSource;
+
+  if (previousLine !== null) {
+    const issuerSource = inferSourceFromText(previousLine);
+    if (issuerSource !== "unknown") return issuerSource;
+  }
+
+  return inferSourceFromText(raw);
 }
 
 function extractTimestamp(text: string, filename: string): string | null {
@@ -76,22 +108,21 @@ function extractTimestamp(text: string, filename: string): string | null {
   return null;
 }
 
-function extractRawQuote(text: string): string {
-  const lines = text.split("\n");
-  const paceLines: string[] = [];
-  for (const line of lines) {
-    if (PACE_PATTERNS.some((p) => p.test(line))) {
-      paceLines.push(line.trim());
-    }
-  }
-  return paceLines.join(" ").slice(0, 500);
-}
-
 function stripFrontmatter(content: string): string {
   if (!content.startsWith("---")) return content;
   const endIdx = content.indexOf("---", 3);
   if (endIdx === -1) return content;
   return content.slice(endIdx + 3);
+}
+
+function previousNonEmptyLine(lines: string[], beforeIndex: number): string | null {
+  for (let i = beforeIndex - 1; i >= 0; i -= 1) {
+    const candidate = lines[i]?.trim();
+    if (candidate !== undefined && NON_EMPTY_RE.test(candidate)) {
+      return candidate;
+    }
+  }
+  return null;
 }
 
 function extractFromFile(
@@ -102,15 +133,23 @@ function extractFromFile(
 
   const content = readFileSync(filePath, "utf-8");
   const body = stripFrontmatter(content);
-
-  if (!containsPaceInstruction(body)) return [];
-
   const relPath = relative(rootPath, filePath);
-  const source = inferSource(body, relPath);
-  const timestamp = extractTimestamp(body, relPath);
-  const raw = extractRawQuote(body);
+  const lines = body.split("\n");
+  const instructions: PaceInstruction[] = [];
 
-  return [{ source, timestamp, raw, file: relPath }];
+  for (const [index, line] of lines.entries()) {
+    if (!containsPaceInstruction(line)) continue;
+
+    const raw = line.trim().slice(0, 500);
+    const previous = previousNonEmptyLine(lines, index);
+    const context = previous === null ? raw : `${previous}\n${raw}`;
+    const source = inferSource(raw, previous, relPath);
+    const timestamp = extractTimestamp(context, relPath);
+
+    instructions.push({ source, timestamp, raw, file: relPath });
+  }
+
+  return instructions;
 }
 
 export async function extractPaceInstructions(

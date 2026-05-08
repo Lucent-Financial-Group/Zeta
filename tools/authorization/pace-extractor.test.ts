@@ -122,6 +122,48 @@ describe("extractPaceInstructions", () => {
     expect(sources).toContain("codex");
   });
 
+  test("peer-authored file mentioning Aaron uses filename source", async () => {
+    const root = makeTempRoot();
+    writeFileSync(
+      join(root, "memory", "feedback_cooling_claudeai_2026_05_04.md"),
+      [
+        "---",
+        "name: Peer summary of maintainer pace",
+        "description: Claude.ai discusses Aaron pace language",
+        "type: feedback",
+        "---",
+        "",
+        "Claude.ai 2026-05-04:",
+        "",
+        'Aaron used the phrase "go hard", but recommend holding until maintainer returns.',
+      ].join("\n"),
+    );
+
+    const result = await extractPaceInstructions(root);
+    expect(result.length).toBe(1);
+    const instruction = instructionAt(result, 0);
+    expect(instruction.source).toBe("claude.ai");
+    expect(instruction.raw).toContain("recommend holding");
+  });
+
+  test("multiple pace lines in one file emit separate candidates", async () => {
+    const root = makeTempRoot();
+    writeFileSync(
+      join(root, "memory", "CURRENT-aaron.md"),
+      [
+        "# CURRENT-aaron.md",
+        "",
+        'Aaron 2026-05-01: *"go hard on B-0160"*',
+        'Aaron 2026-05-02: *"rest now, hold the line"*',
+      ].join("\n"),
+    );
+
+    const result = await extractPaceInstructions(root);
+    expect(result.length).toBe(2);
+    expect(instructionAt(result, 0).raw).toContain("go hard");
+    expect(instructionAt(result, 1).raw).toContain("rest now");
+  });
+
   test("no pace instruction in substrate → empty array", async () => {
     const root = makeTempRoot();
     writeFileSync(
