@@ -1,7 +1,9 @@
 ---
 id: B-0287
 priority: P1
-status: open
+status: closed
+closed: 2026-05-08
+closed_by: "Spec landed at docs/research/2026-05-08-ace-dlc-package-format-spec.md"
 title: "Ace DLC — package format specification"
 created: 2026-05-08
 last_updated: 2026-05-08
