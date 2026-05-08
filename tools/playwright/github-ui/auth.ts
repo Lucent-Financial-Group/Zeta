@@ -35,7 +35,7 @@ export interface GitHubSession {
   context: GitHubSessionContext;
   page: GitHubSessionPage;
   storageStatePath: string;
-  username: string | null;
+  username: string;
 }
 
 export interface GitHubSessionOptions {
@@ -101,7 +101,7 @@ export async function validateStorageStateFile(path: string): Promise<void> {
 export async function validateGitHubSession(
   page: GitHubSessionPage,
   options: Pick<GitHubSessionOptions, "expectedUsername" | "profileUrl"> = {},
-): Promise<string | null> {
+): Promise<string> {
   const profileUrl = options.profileUrl ?? GITHUB_PROFILE_URL;
   await page.goto(profileUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
 
@@ -114,9 +114,14 @@ export async function validateGitHubSession(
   }
 
   const username = extractGitHubUsername(html);
+  if (!username) {
+    throw new GitHubSessionAuthError(
+      "Could not extract authenticated GitHub username from profile page; the session may be invalid or GitHub markup may have changed.",
+    );
+  }
   if (options.expectedUsername && username !== options.expectedUsername) {
     throw new GitHubSessionAuthError(
-      `GitHub session user mismatch: expected ${options.expectedUsername}, got ${username ?? "unknown"}.`,
+      `GitHub session user mismatch: expected ${options.expectedUsername}, got ${username}.`,
     );
   }
 
@@ -197,7 +202,13 @@ async function createDefaultDriver(): Promise<GitHubSessionDriver> {
   return {
     async newContext(storageStatePath: string): Promise<GitHubSessionContext> {
       const browser = await playwright.chromium.launch({ headless: true });
-      const context = await browser.newContext({ storageState: storageStatePath });
+      let context: GitHubSessionContext;
+      try {
+        context = await browser.newContext({ storageState: storageStatePath });
+      } catch (err) {
+        await browser.close();
+        throw err;
+      }
       return {
         newPage: () => context.newPage(),
         async close(): Promise<void> {

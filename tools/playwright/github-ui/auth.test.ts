@@ -161,6 +161,11 @@ describe("validateGitHubSession", () => {
     const page = new FakePage("<title>Sign in to GitHub</title>", "https://github.com/login");
     await expectRejectsWith(validateGitHubSession(page), "expired or unauthenticated");
   });
+
+  test("fails closed when username metadata is missing from profile page", async () => {
+    const page = new FakePage("<html><body>some page without username meta tags</body></html>");
+    await expectRejectsWith(validateGitHubSession(page), "Could not extract authenticated GitHub username");
+  });
 });
 
 describe("withGitHubSession", () => {
