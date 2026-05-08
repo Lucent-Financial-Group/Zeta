@@ -21,9 +21,9 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0279](backlog/P0/B-0279-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md)** Autonomous backlog pickup - claim and worktree bootstrap
 - [x] **[B-0280](backlog/P0/B-0280-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md)** Autonomous backlog pickup - PR publication and auto-merge
 - [x] **[B-0281](backlog/P0/B-0281-codex-loop-empty-queue-backlog-pickup-integration-2026-05-08.md)** Codex loop - empty queue autonomous backlog pickup
-- [ ] **[B-0305](backlog/P0/B-0305-mechanical-auth-check-skill-body-2026-05-08.md)** Mechanical authorization check — skill body (SKILL.md via skill-creator)
-- [ ] **[B-0306](backlog/P0/B-0306-mechanical-auth-check-pace-extractor-ts-2026-05-08.md)** Mechanical authorization check — pace-instruction extractor + test fixtures
-- [ ] **[B-0307](backlog/P0/B-0307-mechanical-auth-check-source-recency-resolver-2026-05-08.md)** Mechanical authorization check — source-filter + recency resolver
+- [x] **[B-0305](backlog/P0/B-0305-mechanical-auth-check-skill-body-2026-05-08.md)** Mechanical authorization check — skill body (SKILL.md via skill-creator)
+- [x] **[B-0306](backlog/P0/B-0306-mechanical-auth-check-pace-extractor-ts-2026-05-08.md)** Mechanical authorization check — pace-instruction extractor + test fixtures
+- [x] **[B-0307](backlog/P0/B-0307-mechanical-auth-check-source-recency-resolver-2026-05-08.md)** Mechanical authorization check — source-filter + recency resolver
 - [ ] **[B-0308](backlog/P0/B-0308-mechanical-auth-check-loop-integration-2026-05-08.md)** Mechanical authorization check — autonomous-loop tick-start integration
 - [ ] **[B-0309](backlog/P0/B-0309-mechanical-auth-check-claude-md-pointer-2026-05-08.md)** Mechanical authorization check — CLAUDE.md discoverable-skill pointer
 
@@ -36,7 +36,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0061](backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)** Finish docs/BACKLOG.md monolith → per-row migration — "don't miss anything, no residue for next-Otto" (Aaron 2026-04-28)
 - [ ] **[B-0063](backlog/P1/B-0063-streamed-installer-download-to-temp-checksum-pattern-codex-p0-pr-75.md)** Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
 - [ ] **[B-0064](backlog/P1/B-0064-github-playwright-integration-agent-changes-ui-features-aaron-2026-04-28.md)** GitHub × Playwright integration — agent can change things in the GitHub UI + watch UI to spot new features (Aaron 2026-04-28)
-- [ ] **[B-0065](backlog/P1/B-0065-peer-call-kiro-and-self-cold-boot-self-test-aaron-2026-04-28.md)** Peer-call expansion — add kiro.sh + claude.sh (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)
+- [ ] **[B-0065](backlog/P1/B-0065-peer-call-kiro-and-self-cold-boot-self-test-aaron-2026-04-28.md)** Peer-call expansion — add kiro.ts + claude.ts (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)
 - [ ] **[B-0066](backlog/P1/B-0066-memory-md-marker-vs-index-harness-verify-q1-automemory-aaron-2026-04-28.md)** MEMORY.md marker-vs-index — verify harness contract + Q1 AutoDream/AutoMemory compatibility, then migrate (Aaron 2026-04-28)
 - [x] **[B-0067](backlog/P1/B-0067-cadenced-git-hotspot-detection-aaron-2026-04-28.md)** Cadenced git-hotspot detection — all 3 phases complete
 - [ ] **[B-0083](backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md)** Atari 2600 ROM canonical-naming + safe-vs-unsafe folder split + TOSEC/Good-Tools-style hash-lookup tooling
@@ -44,6 +44,10 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0110](backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md)** AceHack mirror-refresh protocol drift — Path 2 chosen, doctrine update landing in same PR (2026-04-30)
 - [x] **[B-0125](backlog/P1/B-0125-skip-fsharp-analyze-on-docs-only-prs-2026-05-01.md)** Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 - [ ] **[B-0126](backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)** Port the 4-layer meta-learning pattern from a sibling repo to Zeta
+- [x] **[B-0126.1](backlog/P1/B-0126.1-ai-attribution-footer-ts-tools.md)** Layer 4: AI attribution footer for TS comment-posting tools
+- [x] **[B-0126.2](backlog/P1/B-0126.2-ai-attribution-footer-gh-actions.md)** Layer 4: AI attribution footer for GitHub Actions workflows
+- [x] **[B-0126.3](backlog/P1/B-0126.3-document-layers-1-3-meta-learning.md)** Layers 1-3: document meta-learning pattern adapted for Zeta
+- [ ] **[B-0126.4](backlog/P1/B-0126.4-pilot-validation-meta-learning.md)** Pilot validation: meta-learning pattern on 2-3 PR cycles
 - [ ] **[B-0139](backlog/P1/B-0139-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md)** Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 - [ ] **[B-0140](backlog/P1/B-0140-bash-to-ts-migration-completion-debt-prevention-aaron-2026-05-01.md)** Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
 - [x] **[B-0144](backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md)** Doc/code two-lane parallel split — rung-2 unlock for factory parallelism
@@ -141,6 +145,24 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0302](backlog/P1/B-0302-pages-stable-route-map-pre-indexing-freeze-2026-05-08.md)** Pages content sources - stable route map before indexing
 - [ ] **[B-0303](backlog/P1/B-0303-pages-contributor-on-ramp-information-architecture-2026-05-08.md)** Pages content sources - contributor on-ramp information architecture
 - [ ] **[B-0304](backlog/P1/B-0304-pages-selected-research-publication-queue-redaction-gate-2026-05-08.md)** Pages content sources - selected research queue and redaction gate
+- [ ] **[B-0310](backlog/P1/B-0310-concept-registry-extraction-tool.md)** Concept-registry extraction tool — canonical inventory of load-bearing concepts
+- [ ] **[B-0311](backlog/P1/B-0311-external-anchor-coverage-scanner.md)** External-anchor coverage scanner — per-concept anchor presence/absence audit
+- [ ] **[B-0312](backlog/P1/B-0312-alignment-clause-anchor-backfill.md)** HC/SD/DIR alignment-clause external-anchor backfill
+- [ ] **[B-0313](backlog/P1/B-0313-wake-time-otto-nn-anchor-backfill.md)** Wake-time Otto-NN principle external-anchor backfill
+- [ ] **[B-0314](backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md)** BP-NN rule external-anchor backfill
+- [ ] **[B-0315](backlog/P1/B-0315-glass-halo-doctrine-anchor-backfill.md)** Glass-Halo doctrine external-anchor backfill
+- [ ] **[B-0317](backlog/P1/B-0317-playwright-github-session-auth-helper.md)** Playwright GitHub session/auth helper — cookie-based login for agent UI access
+- [ ] **[B-0318](backlog/P1/B-0318-playwright-github-read-only-snapshot-tool.md)** Playwright GitHub read-only page snapshot tool — navigate + snapshot + extract
+- [ ] **[B-0319](backlog/P1/B-0319-playwright-github-settings-reconciliation.md)** GitHub settings reconciliation — UI snapshot vs expected.json drift detection
+- [ ] **[B-0320](backlog/P1/B-0320-playwright-github-authorized-mutation-surface-list.md)** Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate
+- [ ] **[B-0321](backlog/P1/B-0321-playwright-github-guarded-mutation-helpers.md)** Guarded UI mutation helpers — click/fill/save with before-after snapshots and authorization check
+- [ ] **[B-0322](backlog/P1/B-0322-playwright-github-mutation-reversibility-log.md)** Mutation reversibility drain log — inverse-action record for every UI mutation
+- [ ] **[B-0323](backlog/P1/B-0323-playwright-github-feature-discovery-diff-cadence.md)** GitHub feature-discovery diff cadence — weekly UI snapshot comparison to spot new features
+- [ ] **[B-0324](backlog/P1/B-0324-playwright-github-org-billing-usage-reader.md)** Org-level billing/usage page reader — extract Actions minutes and costs via UI
+- [ ] **[B-0325](backlog/P1/B-0325-peer-call-firewall-kiro-claude-trigger-lists.md)** Add KIRO + CLAUDE firewall trigger lists to _firewall.ts
+- [ ] **[B-0326](backlog/P1/B-0326-peer-call-kiro-ts-wrapper.md)** Author kiro.ts peer-call wrapper
+- [ ] **[B-0327](backlog/P1/B-0327-peer-call-claude-ts-self-call-cold-boot.md)** Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing
+- [ ] **[B-0328](backlog/P1/B-0328-peer-call-readme-kiro-claude-entries.md)** Update peer-call/README.md with kiro.ts + claude.ts entries
 
 ## P2 — research-grade
 
@@ -262,6 +284,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0284](backlog/P2/B-0284-interloop-messaging-implementation-2026-05-08.md)** Interloop messaging — implementation on chosen transport
 - [x] **[B-0285](backlog/P2/B-0285-arc4-selfplay-arena-design-2026-05-08.md)** ARC-4 — adversarial self-play arena design
 - [ ] **[B-0286](backlog/P2/B-0286-arc4-selfplay-implementation-2026-05-08.md)** ARC-4 — self-play implementation + training loop
+- [ ] **[B-0316](backlog/P2/B-0316-long-tail-anchor-sweep-cadence.md)** Long-tail external-anchor cadenced sweep — memory files + research docs
 
 ## P3 — convenience / deferred
 

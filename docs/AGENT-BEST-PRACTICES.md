@@ -429,6 +429,71 @@ BP drift.
   look first, point at friction, hold space); the outer factory
   preserves irreducible traces and prevents premature reduction.
 
+## PR-review meta-learning (Layers 1-3)
+
+These three rules encode the meta-learning pattern proven at
+ServiceTitan STCRM (PR #2562) and ported to Zeta via B-0126.
+Layer 4 (AI attribution footer) is implemented separately
+(B-0126.1, B-0126.2). The three layers compose with each
+other — Layer 1 is ground; Layer 2 is meta; Layer 3 is
+meta-meta.
+
+- **BP-26** *Fix the reviewer's findings — reply with reasoning,
+  then resolve. (Layer 1 — ground rule.)*
+  When a bot or peer-agent reviewer posts a finding on a PR,
+  the code author responds with reasoning (agree + fix, or
+  disagree + explain), then resolves the thread. Never
+  auto-dismiss without engagement. This is the baseline
+  contract — every finding gets acknowledged, not swallowed.
+  **Rationale:** unengaged dismissal loses signal. The finding
+  may be wrong, but the reasoning that produced it is data
+  about what the reviewer substrate encodes. Engagement
+  preserves that data; dismissal discards it. **stable**
+
+- **BP-27** *Every reviewer finding is a joint learning
+  opportunity — land the substrate update in the SAME PR.
+  (Layer 2 — meta-rule.)*
+  Each reviewer finding has two outcomes beyond fixing the
+  diff: (a) if the finding is a real bug, encode the lesson
+  in code-author substrate (the code, a test, a lint rule, a
+  skill body, a `.claude/rules/` file, or `AGENTS.md` /
+  `GOVERNANCE.md`) so the class of bug is caught earlier next
+  time; (b) if the finding is off-base, encode the correction
+  in reviewer-instructions (`.github/copilot-instructions.md`,
+  the reviewer skill's `SKILL.md`, `docs/AGENT-BEST-PRACTICES.md`,
+  or a Semgrep / CodeQL rule adjustment) so the reviewer
+  stops firing on that class. **Both paths land in the same
+  PR as the finding, not as follow-up work.** Provenance
+  stays attached to the incident; reviewers load the updated
+  rule from the moment the fix ships.
+  **Rationale:** deferring the encoding to "next session" or
+  "follow-up PR" breaks provenance (the incident and the
+  lesson separate), creates orphan TODOs that decay, and
+  means the reviewer fires the same class of finding on the
+  next PR because the correction hasn't shipped yet. Same-PR
+  encoding closes the loop in one atomic commit.
+  **re-search-flag**
+
+- **BP-28** *Encode the class of error, not the instance.
+  (Layer 3 — meta-meta-rule.)*
+  When encoding a lesson per BP-27, test it: imagine the
+  next 3 PRs that could hit a similar bug — would this
+  encoding catch all 3, or only the exact instance that
+  fired today? Aim for catches-all-3. The encoding surface
+  should name the *pattern* (e.g. "async disposal without
+  ConfigureAwait" not "line 42 of Foo.fs missed
+  ConfigureAwait") and the *trigger condition* (e.g. "any
+  IAsyncDisposable in a hot path" not "the ShardWriter
+  class"). If the encoding only catches the instance, widen
+  it before committing.
+  **Rationale:** instance-level encoding grows linearly with
+  bug-discovery rate (one rule per incident). Class-level
+  encoding grows sub-linearly (one rule per pattern family).
+  The ServiceTitan STCRM pilot (PR #2562 rounds 1-5)
+  confirmed convergence: round 4 validated that class-level
+  encoding from round 2 caught cousin-bugs that instance-
+  level encoding would have missed. **stable**
+
 ---
 
 ## How rules become stable

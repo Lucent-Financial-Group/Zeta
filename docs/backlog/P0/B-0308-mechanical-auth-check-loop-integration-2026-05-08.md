@@ -1,14 +1,14 @@
 ---
 id: B-0308
 priority: P0
-status: open
+status: in-progress
 title: "Mechanical authorization check — autonomous-loop tick-start integration"
 effort: S
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: B-0160
 depends_on: [B-0305, B-0307]
-classification: blocked
+classification: in-progress
 decomposition: atomic
 owners: [architect]
 type: friction-reducer
@@ -45,15 +45,17 @@ in the chat/console output.
 
 ## Pre-start checklist
 
-_To be completed with proof before implementation begins._
-
-- [ ] Prior-art search: searched `docs/AUTONOMOUS-LOOP.md` for
-  current tick-start sequence; searched `tools/` for existing
-  tick-start wiring patterns
-- [ ] Dependency walk: B-0305 (skill body) landed; B-0307
-  (resolver) landed; both verified in `.claude/skills/` and
-  `tools/authorization/` respectively
-- [ ] Reciprocal pointers: B-0309 `depends_on` includes this row
+- [x] Prior-art search: searched `docs/AUTONOMOUS-LOOP.md` for
+  current tick-start sequence (step 2, Check 0a/0b); searched
+  `tools/authorization/` (found extractor + resolver landed);
+  searched `tools/loop/` (no existing loop TS tools);
+  grep for "check-authorization" across repo (no prior art)
+- [x] Dependency walk: B-0306 extractor at
+  `tools/authorization/pace-extractor.ts` (landed PR #2085);
+  B-0307 resolver at `tools/authorization/resolve-authorization.ts`
+  (landed PR #2091); both verified on `origin/main` at 4c8590fe
+- [x] Reciprocal pointers: B-0309 not yet created (future
+  tick-shard-template integration); B-0160 parent verified
 
 ## Composes with
 

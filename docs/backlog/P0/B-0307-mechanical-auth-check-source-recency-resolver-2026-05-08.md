@@ -1,14 +1,14 @@
 ---
 id: B-0307
 priority: P0
-status: open
+status: closed
 title: "Mechanical authorization check — source-filter + recency resolver"
 effort: S
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: B-0160
 depends_on: [B-0305, B-0306]
-classification: blocked
+classification: buildable-now
 decomposition: atomic
 owners: [architect]
 type: friction-reducer
@@ -66,13 +66,19 @@ paired test at `tools/authorization/resolve-authorization.test.ts`.
 
 ## Pre-start checklist
 
-_To be completed with proof before implementation begins._
+Completed 2026-05-08.
 
-- [ ] Prior-art search: searched skill router, `.claude/skills/`,
-  `tools/` for existing authorization-resolution substrate
-- [ ] Dependency walk: B-0305 (skill body) landed with source-filter
-  rules; B-0306 (extractor) landed with `PaceInstruction` type
-- [ ] Reciprocal pointers: B-0308 `depends_on` includes this row
+- [x] Prior-art search: grepped `resolve-authorization|resolveAuthorization|AuthorizationResult`
+  across repo — 1 hit (this backlog row only). Grepped `source.?filter|recency.?filter|rescind`
+  under `tools/` — 2 hits (pace-extractor.ts and its test, which mention "rescind" in
+  comments only). Skill router listing confirmed `mechanical-authorization-check` skill
+  exists (B-0305, PR #2082) — defines contract only, no resolver implementation.
+  No overlapping scope found.
+- [x] Dependency walk: B-0305 (skill body) closed via PR #2082 — source-filter rules
+  defined. B-0306 (extractor) closed via PR #2084 — `PaceInstruction` type exported
+  from `tools/authorization/pace-extractor.ts`. Both dependencies satisfied.
+- [x] Reciprocal pointers: B-0308 has `depends_on: [B-0305, B-0307]` — confirmed
+  includes this row.
 
 ## Composes with
 

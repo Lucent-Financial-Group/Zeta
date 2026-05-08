@@ -1,5 +1,10 @@
 import { describe, expect, test } from "bun:test";
-import { activeClaimsFromOpenPrs, capacityGate } from "../../.codex/bin/codex-backlog-runner";
+import {
+  activeClaimsFromHeartbeatSignals,
+  activeClaimsFromOpenPrs,
+  activeClaimsFromRemoteClaimDiffs,
+  capacityGate,
+} from "../../.codex/bin/codex-backlog-runner";
 
 describe("capacityGate", () => {
   test("allows work while there are open parallel PR slots", () => {
@@ -26,5 +31,69 @@ describe("activeClaimsFromOpenPrs", () => {
 
     expect(claims).toContain("codex/factory-trajectory-surface-alignment-measurement");
     expect(claims).toContain("pr-1881:trajectory: alignment measurement child packet");
+  });
+});
+
+describe("activeClaimsFromRemoteClaimDiffs", () => {
+  test("adds remote claim branches and touched paths as pickup blockers", () => {
+    const claims = activeClaimsFromRemoteClaimDiffs([
+      {
+        branch: "origin/claim/trajectory-typescript-bun-live-state",
+        paths: ["docs/trajectories/typescript-bun-migration/RESUME.md", "docs/backlog/P0/B-0058-example.md"],
+      },
+    ]);
+
+    expect(claims).toContain("claim/trajectory-typescript-bun-live-state");
+    expect(claims).toContain("docs/trajectories/typescript-bun-migration/RESUME.md");
+    expect(claims).toContain("docs/backlog/P0/B-0058-example.md");
+    expect(claims).toContain(
+      "claim/trajectory-typescript-bun-live-state:docs/trajectories/typescript-bun-migration/RESUME.md",
+    );
+  });
+});
+
+describe("activeClaimsFromHeartbeatSignals", () => {
+  const now = new Date("2026-05-08T17:00:00Z");
+
+  test("adds fresh heartbeat paths as pickup blockers", () => {
+    const claims = activeClaimsFromHeartbeatSignals(
+      [
+        {
+          claim: "trajectory-typescript-bun-live-state",
+          paths: ["docs/trajectories/typescript-bun-migration/RESUME.md", "docs/backlog/P0/B-0058-example.md"],
+          updated_at: "2026-05-08T16:55:00Z",
+          status: "active",
+        },
+      ],
+      now,
+    );
+
+    expect(claims).toContain("heartbeat:trajectory-typescript-bun-live-state");
+    expect(claims).toContain("docs/trajectories/typescript-bun-migration/RESUME.md");
+    expect(claims).toContain(
+      "heartbeat:trajectory-typescript-bun-live-state:docs/trajectories/typescript-bun-migration/RESUME.md",
+    );
+  });
+
+  test("ignores stale or completed heartbeat paths", () => {
+    const claims = activeClaimsFromHeartbeatSignals(
+      [
+        {
+          claim: "stale",
+          paths: ["docs/backlog/P0/B-0001-stale.md"],
+          updated_at: "2026-05-08T16:00:00Z",
+          status: "active",
+        },
+        {
+          claim: "done",
+          paths: ["docs/backlog/P0/B-0002-done.md"],
+          updated_at: "2026-05-08T16:59:00Z",
+          status: "merged-cleaned",
+        },
+      ],
+      now,
+    );
+
+    expect(claims).toEqual([]);
   });
 });

@@ -1,7 +1,9 @@
 ---
 id: B-0306
 priority: P0
-status: open
+status: closed
+closed: 2026-05-08
+closed_by: "PR #2084 merged"
 title: "Mechanical authorization check — pace-instruction extractor + test fixtures"
 effort: S
 created: 2026-05-08
@@ -63,13 +65,19 @@ test at `tools/authorization/pace-extractor.test.ts`.
 
 ## Pre-start checklist
 
-_To be completed with proof before implementation begins._
+Completed 2026-05-08.
 
-- [ ] Prior-art search: searched skill router, `.claude/skills/`,
-  `tools/`, `memory/` for existing pace-extraction substrate
-- [ ] Dependency walk: B-0160 parent verified as `decomposed`,
-  no unresolved `depends_on` for this child
-- [ ] Reciprocal pointers: B-0307 `depends_on` includes this row
+- [x] Prior-art search: grepped `pace-extractor|PaceInstruction`
+  across repo — 7 hits, all in backlog/skill/research docs, no
+  existing TS implementation. `tools/authorization/` directory
+  does not exist. Skill router has `mechanical-authorization-check`
+  skill (B-0305, landed PR #2082) — defines contract only, no
+  implementation. No other extraction substrate found.
+- [x] Dependency walk: B-0160 parent verified as `decomposed`
+  with `children: [B-0305, B-0306, B-0307, B-0308, B-0309]`.
+  B-0306 has `depends_on: []` — no blockers.
+- [x] Reciprocal pointers: B-0307 has `depends_on: [B-0305, B-0306]`
+  — confirmed includes this row.
 
 ## Composes with
 

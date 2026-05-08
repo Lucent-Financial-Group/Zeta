@@ -1,13 +1,15 @@
 ---
 id: B-0065
 priority: P1
-status: open
-title: Peer-call expansion — add kiro.sh + claude.sh (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)
+status: umbrella
+title: Peer-call expansion — add kiro.ts + claude.ts (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)
 tier: peer-call-substrate
 effort: M
 ask: maintainer Aaron 2026-04-28 ("tools/peer-call/{gemini,codex,grok}.sh → kiro.sh and yourself this will help you testing youself from cold boot too")
 created: 2026-04-28
-last_updated: 2026-05-02
+last_updated: 2026-05-08
+decomposition: clean
+children: [B-0325, B-0326, B-0327, B-0328]
 depends_on: []
 composes_with: [B-0060]
 tags: [peer-call, multi-harness, kiro-cli, self-call, cold-boot-self-test, otto-347, cross-cli-verify]
