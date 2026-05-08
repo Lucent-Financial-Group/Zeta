@@ -53,6 +53,25 @@ describe("selectNextTrajectory", () => {
     expect(selection.action).toBe("decompose");
   });
 
+  test("blocks placeholder child candidate text", () => {
+    const selection = selectNextTrajectory(
+      [
+        packet({
+          slug: "factory-trajectory-surface",
+          title: "Factory Trajectory Surface",
+          nextAction: "none currently selected",
+          childCandidates: ["none currently selected"],
+        }),
+        packet({ slug: "typescript-bun-migration", title: "fallback" }),
+      ],
+      [],
+    );
+
+    expect(selection.status).toBe("selected");
+    expect(selection.selected?.slug).toBe("typescript-bun-migration");
+    expect(selection.blocked[0]?.reason).toBe("no next action found");
+  });
+
   test("blocks packets with explicit blockers", () => {
     const selection = selectNextTrajectory(
       [
