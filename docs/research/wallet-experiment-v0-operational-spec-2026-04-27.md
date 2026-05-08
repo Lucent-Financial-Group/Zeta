@@ -258,6 +258,8 @@ All caps enforced in smart-account contract code, not in any prompt or off-chain
    - Velocity violation.
    - Allowlist violation.
    - Receipt-loop failure (Tx N+1 attempted before Tx N classified).
+     This is a classification-flag gate, not a git / glass-halo
+     write gate.
    - **Post-broadcast classification stall**: a broadcast tx
      remains unclassified beyond a configurable timeout (default
      60s after broadcast). Anchored at the post-broadcast pipeline
@@ -308,6 +310,15 @@ guard before allowing Tx N+1. Minimum signed payload: `chainId`,
 smart-account address, tx identifier, classification value, mandate
 / budget id, monotonic nonce or round, classified-at timestamp, and
 expiry.
+
+The smart-account does not verify that a git substrate write
+succeeded. Git / glass-halo logging remains off-chain
+infrastructure: if the monitor sees a missing receipt, failed write,
+or tx broadcast without durable substrate, it triggers the independent
+monitor freeze path in §6.1 and requires receipt-loop catch-up before
+unfreeze. This keeps smart-contract enforcement scoped to on-chain
+facts and monitor signatures, while preserving the glass-halo
+invariant through the monitor.
 
 ### §7.2 Receipt schema
 

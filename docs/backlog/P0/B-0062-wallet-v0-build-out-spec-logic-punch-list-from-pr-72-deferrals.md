@@ -217,6 +217,13 @@ it (closed-thread links survive in the PR's review history).
     making it a contract-level gate is a separation-of-
     concerns mistake. Move to off-chain monitor.
 
+    **Resolved (Vera 2026-05-08):** The wallet v0 spec now
+    clarifies §6.1 and §7.1: the smart-account only enforces
+    the monitor-signed classification flag. It does not verify
+    git / glass-halo writes. Missing receipts, failed writes,
+    or tx-broadcast-without-substrate are off-chain monitor
+    anomalies that trigger freeze and receipt-loop catch-up.
+
 ### Acceptance-criteria + auth + metric alignment
 
 1. **Require auth for retraction-queue cancellation** (cid
@@ -311,7 +318,7 @@ comments.
 
 ## Progress (2026-05-07 session)
 
-10 of 21 items resolved via doc reconciliation:
+11 of 21 items resolved via doc reconciliation:
 
 + PR #1907: 3 stale "open question" refs → resolved
 + PR #1908: EAT Task B monitor → sibling-repo
@@ -323,12 +330,13 @@ comments.
 + §15 send-readiness already reconciled (prior pass)
 + Vera 2026-05-08: drawdown oracle landed in wallet spec §5.5
 + Vera 2026-05-08: Tx N+1 classification signal landed in wallet spec §7.1
++ Vera 2026-05-08: glass-halo logging gate moved to monitor freeze path
 
-11 items remain — all P1/P2 design decisions needing
+10 items remain — all P1/P2 design decisions needing
 deeper wallet-domain engagement (preflight terminal
 state, agent self-revocation auth, monitor-stall freeze,
-glass-halo logging gate, auth for cancellation,
-material-spend criteria, INTENTIONAL-DEBT schema).
+auth for cancellation, material-spend criteria,
+INTENTIONAL-DEBT schema).
 
 2026-05-07 red-team correction: PR #1942 briefly marked
 this row closed by trusting a "21/21 addressed" pickup
