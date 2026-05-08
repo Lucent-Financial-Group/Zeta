@@ -14,6 +14,7 @@ directory is Codex's substrate; Claude Code's lives at
 ├── README.md                    — this file
 ├── AGENTS.md                    — Codex harness addendum
 ├── CURRENT-codex.md             — compact current-state handoff
+├── TOOL-MAP.md                  — Codex/Vera runtime surface map
 ├── bin/                         — Codex harness scripts
 │   ├── codex-loop-health.ts      — launchd loop health probe
 │   └── codex-loop-tick.ts        — launchd tick runner
@@ -100,6 +101,10 @@ Code's native `CronCreate` / `CronList` tool surface.
 - [`docs/CODEX-HARNESS-NOTES.md`](../docs/CODEX-HARNESS-NOTES.md)
   — host-local Codex launchd loop, status commands, logs, and
   rediscovery notes.
+- [`.codex/TOOL-MAP.md`](TOOL-MAP.md) — Codex/Vera local and
+  upstream runtime surface map, including the manager-contract
+  split between chat, heartbeat, worktrees, GitHub, broadcast,
+  automations, CLI, and cloud tasks.
 
 ## Provenance
 
