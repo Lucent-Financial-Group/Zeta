@@ -1,13 +1,13 @@
 ---
 id: B-0281
 priority: P0
-status: open
+status: closed
 title: "Codex loop - empty queue autonomous backlog pickup"
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: B-0249
 depends_on: [B-0280]
-classification: blocked-on-B-0280
+classification: completed
 decomposition: atomic
 owners: [architect, codex]
 type: friction-reducer
