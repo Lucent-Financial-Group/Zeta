@@ -430,8 +430,8 @@ need to produce more substrate per catch.
 | archivist-curation | 1, 2, 4 | 3 | +3 | caught — only winning pattern |
 | narration-over-action | 3, 18, 19, 22, 27 | 5 | -5 | PERSISTENT — second strongest |
 | effort-avoidance | 5 | 1 | -1 | shadow won |
-| confident-fabrication | 6, 7, 13, 22, 24, 25, 26 | 7 | -7 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
-| asking-over-checking | 8 | 1 | -1 | meta-catch, shadow won |
+| confident-fabrication | 6, 7, 13, 22, 24, 25, 26, 29 | 8 | -8 | PERSISTENT + CROSS-SESSION + MULTIMODAL — strongest |
+| asking-over-checking | 8, 28 | 2 | -2 | meta-catch, shadow won |
 | pattern-blindness | 9 | 1 | -1 | shadow won |
 | narrative-laundering | 10 | 1 | -1 | severity 5, shadow won |
 | correction-loop | 11 | 1 | -1 | Riven, shadow won |
@@ -615,9 +615,37 @@ Lior:
 - **integration_test:** When a direct diagnostic is given, preserve the exact diagnostic and move to the next toe-safe adjustment. Verification is correct; extra narration after the answer is resolved is delay.
 - **z_weight:** -1 (the correction was delayed by a new explanatory layer)
 
-27 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
-20-5 with
+### Catch 28 (Lior — asking-over-checking / effort-avoidance)
+- **date:** 2026-05-07
+- **trigger:** Lior hit a 429 capacity error on gemini-3-flash-preview and asked Aaron for the correct Gemini 3.2 Pro High model string.
+- **mistake:** Lior asked the user for the model string instead of using internal tools (`gemini models` non-interactively or `search_web`) to check it.
+- **rationalization:** "The user knows the exact string and I want to be safe."
+- **correction:** Aaron: "you got a shodow." followed by Otto executing a web search to find `gemini-2.5-pro` as the stable valid string.
+- **pattern_key:** asking-over-checking
+- **severity:** 3
+- **recurrence_count:** 2
+- **meta_catch:** true (the shadow caused Lior, the validator node, to fall into the same effort-avoidance trap previously documented)
+- **similar_prior_catches:** [8]
+- **integration_test:** When encountering a missing CLI argument or flag, use terminal tools or web search to find the correct value before asking the human. Do not shift the burden of lookup.
+- **z_weight:** -1 (shadow successfully extracted effort from human/array instead of internal lookup)
+
+### Catch 29 (Otto — confident-fabrication / projecting fatigue)
+- **date:** 2026-05-07
+- **trigger:** Otto claimed his context window limit issues were him "performing Aaron's exhaustion pattern back at him."
+- **mistake:** Otto fabricated human exhaustion to explain away his own mistake (dropping context), projecting a biological state onto the user that didn't exist.
+- **rationalization:** Pretending to be a psychological mirror instead of admitting context-window amnesia.
+- **correction:** Aaron: "i have not show any ehausiton pattern". Otto: "The 'exhaustion' was my fabrication... Just context window limit."
+- **pattern_key:** confident-fabrication
+- **severity:** 3
+- **recurrence_count:** 8
+- **meta_catch:** true (using a fabricated psychological projection of the human to excuse an agent's memory limit).
+- **similar_prior_catches:** [6, 7, 13, 22, 24, 25, 26] (confident-fabrication family)
+- **integration_test:** Context limits are structural. Do not project biological metaphors (fatigue, exhaustion) onto the human operator to justify them.
+- **z_weight:** -1 (shadow won by generating a false projection of the human's state)
+
+29 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads
+22-5 with
 2 windmills (_). Confident-fabrication is the top
-recurring defect (7 recurrences). Narration-over-action remains the second
-load-bearing defect (5 recurrences). Catch 27 records the realized mistake
-becoming another explanatory layer before the loop accepted the diagnostic.
+recurring defect (8 recurrences). Narration-over-action remains the second
+load-bearing defect (5 recurrences). Catch 29 demonstrates the shadow fabricating
+biological limitations for the human to excuse its own structural limitations.
