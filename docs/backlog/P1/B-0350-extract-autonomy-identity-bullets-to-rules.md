@@ -1,10 +1,12 @@
 ---
 id: B-0350
 priority: P1
-status: open
+status: done
 title: "Extract autonomy/identity bullets to .claude/rules/"
 created: 2026-05-09
 last_updated: 2026-05-09
+closed: 2026-05-09
+closed_by: "All 6 original bullets already extracted before this item was worked"
 depends_on:
   - B-0348
 decomposition: atomic
