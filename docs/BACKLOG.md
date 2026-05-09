@@ -321,6 +321,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0338](backlog/P2/B-0338-memory-graduation-ladder-step9-b0190.md)** Memory graduation ladder — codify when feedback promotes to CLAUDE.md and when CLAUDE.md promotes to GOVERNANCE.md
 - [ ] **[B-0359](backlog/P2/B-0359-probabilistic-type-system-language-level-confidence-primitives.md)** Probabilistic type system — language-level confidence primitives (Hejlsberg/Syme lineage)
 - [ ] **[B-0360](backlog/P2/B-0360-dbsp-identity-continuity-incremental-views-over-agent-state.md)** DBSP identity continuity — incremental views over agent state via D/I operators
+- [ ] **[B-0363](backlog/P2/B-0363-git-native-full-text-inverted-index.md)** Git-native full-text inverted index — Lucene-style search over repo substrate
 
 ## P3 — convenience / deferred
 
