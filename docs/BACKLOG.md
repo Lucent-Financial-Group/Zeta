@@ -123,7 +123,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0274](backlog/P1/B-0274-pages-astro-workflow-scaffold-and-sha-pinning-2026-05-08.md)** Pages discoverability - Astro workflow scaffold and SHA pinning
 - [ ] **[B-0275](backlog/P1/B-0275-pages-astro-http-200-and-deploy-validation-2026-05-08.md)** Pages discoverability - Astro deploy validation and HTTP 200 check
 - [x] **[B-0276](backlog/P1/B-0276-structure-recognizer-fingerprint-library-2026-05-08.md)** Structure recognizer — fingerprint library for codebase shapes
-- [ ] **[B-0277](backlog/P1/B-0277-structure-recognizer-catalog-index-2026-05-08.md)** Structure recognizer — shape-indexed catalog without labels
+- [x] **[B-0277](backlog/P1/B-0277-structure-recognizer-catalog-index-2026-05-08.md)** Structure recognizer — shape-indexed catalog without labels
 - [x] **[B-0278](backlog/P1/B-0278-durable-computation-survey-8-systems-2026-05-08.md)** Durable computation survey — compare 8 systems against Zeta's gap
 - [ ] **[B-0279](backlog/P1/B-0279-durable-computation-checkpoint-interface-extension-2026-05-08.md)** Durable computation — extend Checkpoint.fs with StableStorage mode
 - [ ] **[B-0284](backlog/P1/B-0284-pages-seo-metadata-jsonld-social-preview-2026-05-08.md)** Pages discoverability - SEO metadata, JSON-LD, and social previews
@@ -154,7 +154,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0317](backlog/P1/B-0317-playwright-github-session-auth-helper.md)** Playwright GitHub session/auth helper — cookie-based login for agent UI access
 - [ ] **[B-0318](backlog/P1/B-0318-playwright-github-read-only-snapshot-tool.md)** Playwright GitHub read-only page snapshot tool — navigate + snapshot + extract
 - [ ] **[B-0319](backlog/P1/B-0319-playwright-github-settings-reconciliation.md)** GitHub settings reconciliation — UI snapshot vs expected.json drift detection
-- [x] **[B-0320](backlog/P1/B-0320-playwright-github-authorized-mutation-surface-list.md)** Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate
+- [ ] **[B-0320](backlog/P1/B-0320-playwright-github-authorized-mutation-surface-list.md)** Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate
 - [ ] **[B-0321](backlog/P1/B-0321-playwright-github-guarded-mutation-helpers.md)** Guarded UI mutation helpers — click/fill/save with before-after snapshots and authorization check
 - [ ] **[B-0322](backlog/P1/B-0322-playwright-github-mutation-reversibility-log.md)** Mutation reversibility drain log — inverse-action record for every UI mutation
 - [ ] **[B-0323](backlog/P1/B-0323-playwright-github-feature-discovery-diff-cadence.md)** GitHub feature-discovery diff cadence — weekly UI snapshot comparison to spot new features
