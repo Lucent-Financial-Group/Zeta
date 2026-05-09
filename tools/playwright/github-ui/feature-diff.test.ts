@@ -104,7 +104,7 @@ describe("diffPageSnapshots — toggles", () => {
     const prior = makeSnapshot(BASE_URL, { toggles: {} });
     const current = makeSnapshot(BASE_URL, { toggles: { "feature-a": true, "feature-b": false } });
     const diff = diffPageSnapshots(prior, current);
-    expect(diff.newToggles.sort()).toEqual(["feature-a", "feature-b"]);
+    expect([...diff.newToggles].sort()).toEqual(["feature-a", "feature-b"]);
   });
 
   test("empty current: all prior toggles are removed", () => {
