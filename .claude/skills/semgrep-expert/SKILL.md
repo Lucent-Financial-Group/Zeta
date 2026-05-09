@@ -1,6 +1,6 @@
 ---
 name: semgrep-expert
-description: Semgrep tool decisions — vs CodeQL/Roslyn, CI integration, p/ci p/secrets p/owasp-top-ten rule-packs, false-positive triage, SARIF export.
+description: Semgrep — CI integration, rule-pack selection, false-positive triage, SARIF, Semgrep vs CodeQL vs Roslyn routing.
 ---
 
 # Semgrep Expert — Tool-Level Skill

@@ -1,6 +1,6 @@
 ---
 name: ethical-hacker
-description: Authorised pentesting — PTES/OSSTMM, kill-chain, exploit validation, CEH/OSCP/SANS-560, signed-scope engagements.
+description: Authorised penetration testing — PTES/OSSTMM methodology, kill-chain execution, exploit validation, scope-bound engagement.
 ---
 
 # Ethical Hacker — the operator-inside-scope hat
