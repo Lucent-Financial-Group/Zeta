@@ -23,19 +23,25 @@ describe("parseWorktreeList", () => {
 
   test("strips refs/heads/ prefix from branch field", () => {
     const raw = `worktree /repo\nHEAD abc\nbranch refs/heads/feat/my-task\n\n`;
-    const entry = parseWorktreeList(raw)[0]!;
+    const entries = parseWorktreeList(raw);
+    expect(entries).toHaveLength(1);
+    const entry = entries[0]!;
     expect(entry.branch).toBe("feat/my-task");
   });
 
   test("handles detached HEAD (no branch line)", () => {
     const raw = `worktree /repo\nHEAD deadbeef\n\n`;
-    const entry = parseWorktreeList(raw)[0]!;
+    const entries = parseWorktreeList(raw);
+    expect(entries).toHaveLength(1);
+    const entry = entries[0]!;
     expect(entry.branch).toBe("(detached)");
   });
 
   test("handles bare worktree marker", () => {
     const raw = `worktree /bare.git\nHEAD 0000000\nbranch refs/heads/main\nbare\n\n`;
-    const entry = parseWorktreeList(raw)[0]!;
+    const entries = parseWorktreeList(raw);
+    expect(entries).toHaveLength(1);
+    const entry = entries[0]!;
     expect(entry.bare).toBe(true);
   });
 
