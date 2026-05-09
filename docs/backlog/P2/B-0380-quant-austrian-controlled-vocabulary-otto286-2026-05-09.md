@@ -75,6 +75,7 @@ from scratch." That choice has order-of-magnitude effort implications.
 
 A committed file at `docs/aurora/quant-austrian-vocabulary.md`
 containing the four definitions with:
+
 - Term + precise definition
 - What it INCLUDES (examples that pass)
 - What it EXCLUDES (examples that fail, with justification)

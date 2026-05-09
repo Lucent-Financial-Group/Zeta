@@ -80,6 +80,7 @@ is conducted.
 ## Output artifact
 
 `docs/aurora/YYYY-MM-DD-quant-austrian-synthesis-adr.md` with:
+
 - Formalizability matrix (5 rows × verdict + framework + gap + confidence)
 - Overall synthesis assessment
 - Open-research publishing pipeline design

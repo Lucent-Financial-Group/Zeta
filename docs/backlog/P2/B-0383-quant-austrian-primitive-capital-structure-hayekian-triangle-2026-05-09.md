@@ -46,6 +46,7 @@ provides the most developed diagrammatic treatment. Lewin's
 
 Multi-stage production is structurally similar to several
 well-developed quant frameworks:
+
 - **Multi-period capital investment models** in corporate finance
   (real options theory; Myers 1977, Dixit & Pindyck 1994)
 - **Production function with vintage capital** (Solow-Johansen
@@ -79,6 +80,7 @@ well-developed quant frameworks:
 ## Output artifact
 
 `docs/aurora/YYYY-MM-DD-primitive-capital-structure.md` with:
+
 - Statement of the Austrian primitive (with Böhm-Bawerk /
   Hayek / Garrison / Lewin variants)
 - Best-candidate quant formalization

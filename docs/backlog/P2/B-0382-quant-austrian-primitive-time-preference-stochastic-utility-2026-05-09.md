@@ -42,6 +42,7 @@ phenomena.
 ## The quant-side analog
 
 Standard stochastic discount factor (SDF) / pricing kernel:
+
 - Epstein-Zin recursive utility separates risk-aversion from
   intertemporal-substitution elasticity (IES)
 - Discount factor β in standard expected utility = constant time-discount
@@ -74,6 +75,7 @@ Standard stochastic discount factor (SDF) / pricing kernel:
 ## Output artifact
 
 `docs/aurora/YYYY-MM-DD-primitive-time-preference.md` with:
+
 - Statement of the Austrian primitive (with intra-Austrian variants)
 - Best-candidate quant formalization (with justification)
 - What formalization type it achieves (per B-0380: representation /

@@ -60,6 +60,7 @@ vocabulary from B-0380. For each source:
 
 Per Otto-364: WebSearch before asserting. Do not rely on training data
 for the state of the literature. Use:
+
 - Google Scholar: "Austrian business cycle theory stochastic model"
 - Google Scholar: "Hayekian triangle formal mathematical"
 - Google Scholar: "time preference stochastic calculus"
@@ -72,6 +73,7 @@ Date the searches in the output doc.
 
 `docs/aurora/YYYY-MM-DD-quant-austrian-synthesis-survey.md`
 with:
+
 - A classification table (one row per source)
 - Narrative for each entry explaining the synthesis-gap remaining
 - Overall synthesis-gap summary after all sources reviewed
