@@ -1,7 +1,7 @@
 ---
 id: B-0076
 priority: P2
-status: open
+status: done
 title: Disowned-runtime sweep — Python + TypeScript surface (same pattern PR #662 fixed for Java)
 effort: S
 ask: extend the codeql.yml analyze matrix to cover python + javascript-typescript like PR #662 did for java-kotlin
