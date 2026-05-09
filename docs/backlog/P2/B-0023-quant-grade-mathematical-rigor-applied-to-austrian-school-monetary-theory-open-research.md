@@ -1,15 +1,17 @@
 ---
 id: B-0023
 priority: P2
-status: open
+status: decomposed
 title: Quant-grade mathematical rigor applied to Austrian-school monetary theory — synthesis that doesn't exist cleanly in either school; open research, open source, real-time
 tier: research-and-architecture
 effort: XL
 ask: Aaron 2026-04-25 ("we are going to find out and let the world know lol, everything we do is open source lol like in real time")
 # Note: schema field renamed `directive:` → `ask:` per Otto-293 (one-way "directive" language). Other rows still use `directive:`; serialized rename across schema is owed-work per Otto-244 (rename cascades OK if right long-term + careful).
 created: 2026-04-25
-last_updated: 2026-05-02
+last_updated: 2026-05-09
 depends_on: []
+children: [B-0380, B-0381, B-0382, B-0383, B-0384, B-0385, B-0386, B-0387]
+decomposition: clean
 composes_with: [docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md, docs/aurora/**]
 tags: [aurora, economics, austrian-school, quant, mathematical-rigor, open-research, real-time-publishing]
 type: feature
@@ -130,29 +132,37 @@ Composes with Otto-279 (research counts as history), Otto-286 (definitional prec
 - ADR (or series of ADRs) recording which Austrian primitives admit quant-grade formalization + which don't + why
 - Real-time publishing pipeline established (open-source-as-we-go)
 
-## Decomposition (2026-05-09, Riven background worker, one bounded step)
+## Re-decomposition into smallest atomic children (2026-05-09)
 
-B-0023 is broad open-research (XL). Re-decomposed (per "always re-decompose during build — assume mistakes") into 6 smallest dependency-ordered atomic child rows. Survey first, then per-primitive formalization, then synthesis/ADR/publish.
+Per "always re-decompose items during the build — assume decomposition has
+mistakes" and "if too broad, decompose before implementation":
 
-**Buildable now (no deps):**
+**Dependency-ordered atomic child rows:**
 
-- B-0380 — Survey existing partial-synthesis literature (Selgin/White, Garrison, Saifedean, Keen, agent-based Austrian models)
+| ID | Title | Priority | Effort | Depends on |
+|----|-------|----------|--------|-----------|
+| B-0380 | Controlled-vocabulary pass (Otto-286): define "quant-grade rigor", "Austrian primitive", "formalization", "synthesis gap" | P3 | S | — |
+| B-0381 | Literature survey: existing partial quant × Austrian synthesis attempts; annotated bibliography | P3 | M | B-0380 |
+| B-0382 | Per-primitive #1: time-preference → stochastic utility-discount | P3 | M | B-0380, B-0381 |
+| B-0383 | Per-primitive #2: capital-structure / Hayekian triangle → multi-stage stochastic production | P3 | M | B-0380, B-0381 |
+| B-0384 | Per-primitive #3: calculation-problem → information-theoretic complexity bound | P3 | M | B-0380, B-0381 |
+| B-0385 | Per-primitive #4: ABCT → credit-cycle stochastic process with regime-switching | P3 | M | B-0380, B-0381 |
+| B-0386 | Per-primitive #5: sound-money → monetary-aggregate process with hard-cap constraint | P3 | M | B-0380, B-0381 |
+| B-0387 | Synthesis ADR: formalizability matrix + open-research publishing pipeline | P2 | M | B-0382, B-0383, B-0384, B-0385, B-0386 |
 
-**Blocked on B-0380:**
+**Dependency order:**
 
-- B-0381 — Formalize time-preference as stochastic discount process (Itô + utility)
-- B-0382 — Formalize capital-structure / Hayek triangle as staged production feedback network
-- B-0383 — Formalize calculation problem as information-complexity bound (entropy measure)
-- B-0384 — Formalize ABCT as credit-cycle regime-switching jump-diffusion
+```
+B-0380 (vocabulary)
+  └─ B-0381 (survey)
+       ├─ B-0382 (time-preference) ─┐
+       ├─ B-0383 (capital-structure) │
+       ├─ B-0384 (calculation-problem) ├─ B-0387 (synthesis ADR)
+       ├─ B-0385 (ABCT)             │
+       └─ B-0386 (sound-money) ─────┘
+```
 
-**Blocked on B-0380 + B-0381..B-0384:**
+B-0382–B-0386 are parallelizable (independent primitives, different
+mathematical traditions). B-0387 requires all five verdicts.
 
-- B-0385 — Cross-primitive synthesis + falsifiability criteria + progressive publication ADR
-
-All children are P2 research slices; each is a single bounded investigation + publish step. Follow-up PRs will create the child .md rows and claim them one-at-a-time.
-
-Focused checks (in dedicated worktree, root untouched):
-
-- `dotnet build -c Release`: 0 Warning(s) 0 Error(s) — gate passed.
-- No bash scripts touched (Rule 0: TS preferred, but this decomp step is doc-only bootstrap).
-- Trajectory read: autonomous-backlog-pickup + alignment-measurement active; this fits backlog-pickup lane.
+Original B-0023 becomes the tracking/parent row (`status: decomposed`).

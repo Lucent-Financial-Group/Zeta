@@ -343,6 +343,14 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0377](backlog/P2/B-0377-aurora-split-schema-docs-update-agent-best-practices-otto279-2026-05-09.md)** Update AGENT-BEST-PRACTICES.md BP-17/18 + Otto-279 memory file — replace docs/aurora/** history-surface ref with chosen name
 - [ ] **[B-0378](backlog/P2/B-0378-aurora-split-governance-copilot-instructions-update-2026-05-09.md)** Update GOVERNANCE.md §33 + .github/copilot-instructions.md to reference the new named-entity-conversation-imports directory
 - [ ] **[B-0379](backlog/P2/B-0379-aurora-split-execute-git-mv-cross-refs-2026-05-09.md)** Execute the docs/aurora split — mkdir new dir, git mv history-import files, update all cross-refs in memory/** and ROUND-HISTORY
+- [ ] **[B-0380](backlog/P2/B-0380-quant-austrian-controlled-vocabulary-otto286-2026-05-09.md)** Controlled-vocabulary pass — define "quant-grade rigor", "Austrian primitive", "formalization", "synthesis gap" (Otto-286 precision before any research begins)
+- [ ] **[B-0381](backlog/P2/B-0381-quant-austrian-literature-survey-partial-synthesis-2026-05-09.md)** Literature survey — existing partial quant × Austrian synthesis attempts; annotated bibliography with synthesis-gap remaining after each
+- [ ] **[B-0382](backlog/P2/B-0382-quant-austrian-primitive-time-preference-stochastic-utility-2026-05-09.md)** Per-primitive formalizability assessment — time-preference as stochastic utility-discount (Austrian primitive #1)
+- [ ] **[B-0383](backlog/P2/B-0383-quant-austrian-primitive-capital-structure-hayekian-triangle-2026-05-09.md)** Per-primitive formalizability assessment — capital-structure / Hayekian triangle as multi-stage stochastic production process (Austrian primitive #2)
+- [ ] **[B-0384](backlog/P2/B-0384-quant-austrian-primitive-calculation-problem-information-theoretic-2026-05-09.md)** Per-primitive formalizability assessment — calculation problem as information-theoretic complexity bound (Austrian primitive #3)
+- [ ] **[B-0385](backlog/P2/B-0385-quant-austrian-primitive-abct-credit-cycle-regime-switching-2026-05-09.md)** Per-primitive formalizability assessment — ABCT as credit-cycle stochastic process with regime-switching (Austrian primitive #4)
+- [ ] **[B-0386](backlog/P2/B-0386-quant-austrian-primitive-sound-money-hard-cap-monetary-process-2026-05-09.md)** Per-primitive formalizability assessment — sound-money as monetary-aggregate process with hard-cap constraint (Austrian primitive #5)
+- [ ] **[B-0387](backlog/P2/B-0387-quant-austrian-synthesis-adr-publishing-pipeline-2026-05-09.md)** Synthesis ADR — which Austrian primitives admit quant-grade formalization (+ which don't + why); open-research publishing pipeline
 
 ## P3 — convenience / deferred
 
