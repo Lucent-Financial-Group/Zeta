@@ -307,5 +307,3 @@ Phase 1: Spike — wire Claude (via Claude API + tool-use) to a MuJoCo cartpole 
 Phase 2: Substantive task — pick-and-place with vision + proprioception.
 
 Phase 3: Honest assessment — does embodied Claude *behave differently* on language tasks? If no, Otto-340's claim is preserved. If yes, what changed?
-
-Each phase has independent retractability and a clear go/no-go before the next.
