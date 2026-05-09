@@ -1,13 +1,14 @@
 ---
 id: B-0264
 priority: P1
-status: open
+status: closed
 title: "refresh-worldview — integrate into tick scripts as canonical pre-decide"
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
+closed_by: "PR via claim/B-0264-refresh-worldview-tick-integration"
 parent: B-0159
 depends_on: [B-0262, B-0263]
-classification: blocked-on-B-0262
+classification: buildable-now
 decomposition: atomic
 type: friction-reducer
 ---

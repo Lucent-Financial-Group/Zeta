@@ -105,6 +105,7 @@ export interface WorldviewSnapshot {
   owner: string;
   repo: string;
   queriedAt: string;
+  summary: string;
   openPRs: OpenPR[];
   recentMerges: MergedPR[];
   openIssues: OpenIssue[];
@@ -457,6 +458,32 @@ function parseArgs(argv: string[]): ParsedArgs {
   return out;
 }
 
+// --- Summary builder ---
+
+function buildSummary(
+  openPRs: OpenPR[],
+  recentMerges: MergedPR[],
+  openIssues: OpenIssue[],
+  gitState: GitState,
+  backlogDelta: BacklogDelta,
+  claims: ClaimBranch[],
+  branchState: BranchState,
+  pendingCI: PendingCIRun[],
+): string {
+  const parts: string[] = [];
+  parts.push(`${openPRs.length} open PRs`);
+  parts.push(`${recentMerges.length} recent merges`);
+  parts.push(`${openIssues.length} open issues`);
+  parts.push(`${claims.length} claims`);
+  parts.push(`${backlogDelta.totalFiles} backlog items`);
+  if (pendingCI.length > 0) parts.push(`${pendingCI.length} CI runs pending`);
+  if (gitState.uncommittedFiles.length > 0)
+    parts.push(`${gitState.uncommittedFiles.length} dirty files`);
+  if (branchState.behind > 0) parts.push(`${branchState.behind} behind`);
+  if (branchState.ahead > 0) parts.push(`${branchState.ahead} ahead`);
+  return parts.join(", ");
+}
+
 // --- Main ---
 
 export function main(argv: string[]): number {
@@ -478,10 +505,22 @@ export function main(argv: string[]): number {
   const branchState = fetchBranchState();
   const pendingCI = fetchPendingCI(args.owner, args.repo);
 
+  const summary = buildSummary(
+    openPRs,
+    recentMerges,
+    openIssues,
+    gitState,
+    backlogDelta,
+    claims,
+    branchState,
+    pendingCI,
+  );
+
   const snapshot: WorldviewSnapshot = {
     owner: args.owner,
     repo: args.repo,
     queriedAt: new Date().toISOString(),
+    summary,
     openPRs,
     recentMerges,
     openIssues,
