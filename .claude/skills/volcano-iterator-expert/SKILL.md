@@ -1,6 +1,6 @@
 ---
 name: volcano-iterator-expert
-description: Volcano/iterator execution model — open/next/close protocol, pull-based pipeline, blocking operators, bushy/left-deep trees, classic DBMS execution layer.
+description: Volcano/iterator model — open/next/close, pull-based pipeline, blocking operators, bushy/left-deep trees.
 ---
 
 # Volcano Iterator Expert — Classical Pull-Based Model

@@ -1,6 +1,6 @@
 ---
 name: time-and-clocks-expert
-description: Time and clocks — wall-clock vs monotonic, NTP/PTP drift, epoch arithmetic, UTC/TAI leap seconds, logical clocks (Lamport/vector), DST-safe time reasoning.
+description: Time and clocks — wall vs monotonic, NTP/PTP drift, UTC/TAI, logical clocks (Lamport/vector), DST-safe.
 ---
 
 # Time + Clocks Expert — Ordering, Sync, Causality
