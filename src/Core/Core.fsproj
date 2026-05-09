@@ -45,6 +45,7 @@
     <Compile Include="Veridicality.fs" />
     <Compile Include="Graph.fs" />
     <Compile Include="StructureFingerprint.fs" />
+    <Compile Include="StructureCatalog.fs" />
     <Compile Include="PhaseExtraction.fs" />
     <Compile Include="Window.fs" />
     <Compile Include="Units.fs" />
