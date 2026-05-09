@@ -1,7 +1,7 @@
 ---
 id: B-0358
 priority: P1
-status: open
+status: closed
 title: "Bool as degenerate distribution — replace binary API returns with confidence scores"
 effort: M
 created: 2026-05-09
@@ -62,13 +62,15 @@ weights as evidence).
 
 ## Acceptance criteria
 
-- [ ] `validateProvenance` and `validateClaim` return `float`
-- [ ] `falsifiabilityWith` takes `string -> float` (gradient
-      variant already landed in PR #2205)
-- [ ] `groundingWith` takes `string -> float`
-- [ ] All callers updated to threshold where needed
-- [ ] Existing tests pass with {0.0, 1.0} endpoint values
-- [ ] `antiConsensusGate` remains `Result` (it's a gate, not
+- [x] `validateProvenance` and `validateClaim` return `float`
+- [x] `falsifiabilityWith` takes `string -> float` (gradient
+      variant already landed in PR #2205 as `falsifiabilityWithScore`)
+- [x] `groundingWith` takes `string -> float` (gradient variant
+      added as `groundingWithScore` — parallel to `falsifiabilityWithScore`)
+- [x] All callers updated to threshold where needed (only tests;
+      no non-test callers exist)
+- [x] Existing tests pass with {0.0, 1.0} endpoint values
+- [x] `antiConsensusGate` remains `Result` (it's a gate, not
       a score — the confidence is binary by design here)
 
 ## Composes with

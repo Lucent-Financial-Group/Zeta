@@ -294,6 +294,25 @@ module SignalQuality =
             if total = 0 then 1.0
             else float grounded / float total
 
+    /// Gradient grounding — each claim gets a score in [0.0, 1.0]
+    /// instead of a binary yes/no. The aggregate is the weighted average
+    /// over currently-asserted claims (weighted by residual positive
+    /// `Weight`). This is the "round" variant; `groundingWith` is the
+    /// "sharp" (boolean) variant.
+    let groundingWithScore (scorer: string -> float) (claims: ZSet<string>) : float =
+        let span = claims.AsSpan()
+        if span.IsEmpty then 1.0
+        else
+            let mutable scoreSum = 0.0
+            let mutable weightSum = 0L
+            for i = 0 to span.Length - 1 do
+                if span.[i].Weight > 0L then
+                    let w = span.[i].Weight
+                    weightSum <- weightSum + w
+                    scoreSum <- scoreSum + (scorer span.[i].Key |> max 0.0 |> min 1.0) * float w
+            if weightSum = 0L then 1.0
+            else scoreSum / float weightSum
+
     /// Grounding-dimension measure. Disagreement = `1 - grounded`
     /// so that high grounding produces low disagreement, matching the
     /// composite-math convention.
@@ -307,6 +326,18 @@ module SignalQuality =
                   Severity = severityOfScore disagreement
                   Score = disagreement
                   Evidence = sprintf "grounded=%.3f claims=%d" grounded claims.Count } }
+
+    /// Gradient grounding measure — scorer returns [0.0, 1.0] per claim.
+    let groundingMeasureGradient (scorer: string -> float) : IQualityMeasure<ZSet<string>> =
+        { new IQualityMeasure<ZSet<string>> with
+            member _.Dimension = Grounding
+            member _.Measure(claims: ZSet<string>) =
+                let grounded = groundingWithScore scorer claims
+                let disagreement = 1.0 - grounded
+                { Dimension = Grounding
+                  Severity = severityOfScore disagreement
+                  Score = disagreement
+                  Evidence = sprintf "grounded=%.3f(gradient) claims=%d" grounded claims.Count } }
 
 
     // ───────────────────────────────────────────────────────────────
