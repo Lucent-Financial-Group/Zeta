@@ -7,7 +7,7 @@ open Zeta.Core
 
 // ═══════════════════════════════════════════════════════════════════
 // Compression dimension — high-repetition strings compress well
-// (low ratio / low suspicion); random-like strings do not.
+// (low ratio / low disagreement); random-like strings do not.
 // ═══════════════════════════════════════════════════════════════════
 
 [<Fact>]
