@@ -1,6 +1,6 @@
 ---
 name: ontology-landing-expert
-description: Ontology landing — recompilation-cost amortisation, retraction-safe replacement, let-it-emerge vs big-reveal dynamics.
+description: Ontology landing — recompilation amortisation, retraction-safe replacement, let-it-emerge vs big-reveal dynamics.
 facet: expert × theory × advisor
 ---
 
