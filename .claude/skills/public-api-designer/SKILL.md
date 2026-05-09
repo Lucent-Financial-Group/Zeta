@@ -1,6 +1,6 @@
 ---
 name: public-api-designer
-description: Reviews every proposed public API change on Zeta before it lands — new public types/members, internal→public flips, signature changes on existing public surface, public member removals. Conservative by default: every public member is a contract Zeta maintains to consumers we have not yet met. Advisory; the Architect integrates.
+description: Public API design gatekeeper — public type/member/signature changes, internal→public flips, conservative contract review, advisory.
 ---
 
 # Public API Designer
