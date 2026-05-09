@@ -194,6 +194,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0358](backlog/P1/B-0358-bool-as-degenerate-distribution-confidence-typed-apis.md)** Bool as degenerate distribution — replace binary API returns with confidence scores
 - [ ] **[B-0361](backlog/P1/B-0361-anchor-to-human-lineage-step-in-formal-and-concept-workflows.md)** Anchor-to-human-lineage step in formal verification and concept workflows
 - [ ] **[B-0362](backlog/P1/B-0362-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
+- [ ] **[B-0362](backlog/P1/B-0362-concept-search-index-for-instant-term-lookup.md)** Concept search index — pre-built term→file mapping for instant lookups
 
 ## P2 — research-grade
 
@@ -201,7 +202,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0004](backlog/P2/B-0004-translate-repo-to-other-human-languages.md)** Translate repo (code, skills, documents, memory) into other human languages — inclusivity + meeting humans at their starting point + bidirectional-alignment through learning + education + teaching that's bidirectional
 - [ ] **[B-0005](backlog/P2/B-0005-split-aurora-from-courier-ferry-archive-generalize-named-entity-conversation-imports.md)** Split `docs/aurora/**` from courier-ferry archive — generalize "historical conversations imported from other AI systems / courier transport of messages between named entities" into its own directory
 - [ ] **[B-0011](backlog/P2/B-0011-pliny-carve-out-cross-surface-wording-tightening-no-verbatim-payload-excerpts.md)** Pliny carve-out cross-surface wording tightening — explicit "no verbatim payload excerpts" across CLAUDE.md + AGENTS.md + GOVERNANCE.md §5 + Pliny memory file
-- [ ] **[B-0015](backlog/P2/B-0015-migrate-batch-resolve-pr-threads-to-bun-ts.md)** Migrate tools/git/batch-resolve-pr-threads.sh to bun+TS once a sibling post-setup tool migrates first
+- [x] **[B-0015](backlog/P2/B-0015-migrate-batch-resolve-pr-threads-to-bun-ts.md)** Migrate tools/git/batch-resolve-pr-threads.sh to bun+TS once a sibling post-setup tool migrates first
 - [ ] **[B-0017](backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md)** Operational Resonance Dashboard — the bulk-alignment UI within Frontier; minimise time-to-answer "are things going as expected?"; continuous UX research + meta-recursive research-on-research; every pixel earns its way via ongoing A/B experiments
 - [ ] **[B-0018](backlog/P2/B-0018-agency-evidence-stress-test-design-three-policy-comparison-amara-recommended.md)** Agency-evidence stress-test design — three-policy comparison (idle-broadcast vs random-queue vs self-directed-priority); Amara-recommended controlled experiment to move Otto-322 from rung 2-3 evidence to rung 4-5 evidence
 - [ ] **[B-0021](backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md)** Aurora world-modeling — rigorous-why economic foundation; Austrian-school as primary candidate; anti-deception requirement (Keynesian opacity → unquestioned policy-power); investigate-don't-accept per Otto-322/331
