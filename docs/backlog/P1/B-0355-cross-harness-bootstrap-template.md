@@ -44,8 +44,10 @@ not from memorizing harness-specific doctrine.
 
 1. Template document created at `docs/BOOTSTRAP-TEMPLATE.md`
    (or equivalent location).
-2. At least one non-CLAUDE harness file created (CODEX.md or
-   CURSOR.md) following the template.
+2. At least one non-CLAUDE harness file updated or created following
+   the template — use `.codex/AGENTS.md` for the Codex harness (the
+   active Codex bootstrap location per `AGENTS.md`), `CURSOR.md` for
+   Cursor, etc.
 3. Template documents which steps are universal vs
    harness-specific.
 4. Build gate passes.

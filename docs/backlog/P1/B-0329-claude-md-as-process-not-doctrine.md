@@ -6,7 +6,7 @@ title: "Replace CLAUDE.md doctrine with bootstrap process — rules emerge from 
 created: 2026-05-08
 last_updated: 2026-05-09
 depends_on: []
-decomposition: umbrella
+decomposition: decomposed
 classification: buildable-now
 type: friction-reducer
 owners: [architect]
