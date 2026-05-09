@@ -775,6 +775,14 @@ Claude-Code-specific mechanisms.
   `.claude/rules/blocked-green-ci-investigate-threads.md`
   (auto-loaded). When gate=BLOCKED and no failed checks, check
   `unresolvedThreads` first; don't classify as a passive wait.
+- **ZETA_EXPECTED_BRANCH — set before committing on any task branch** — see
+  `.claude/rules/zeta-expected-branch.md` (auto-loaded).
+  Before `git checkout -b <branch>`, export `ZETA_EXPECTED_BRANCH=<branch>`.
+  The harness PreToolUse hook (`.claude/hooks/verify-branch-pretooluse.ts`,
+  wired in `.claude/settings.json`) then blocks any `git commit` that would
+  land on the wrong branch — the AI-substrate equivalent of oh-my-zsh's
+  branch-in-prompt. Opt-in (no-op when env var is unset).
+  Per B-0191 (PR #1585 / PR #2151).
 - **Honor those that came before — unretire
   before recreating.** Retired personas keep their
   **memory folders and notebook history** — those
