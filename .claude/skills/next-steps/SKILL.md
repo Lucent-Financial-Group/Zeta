@@ -1,6 +1,6 @@
 ---
 name: next-steps
-description: Recommends the next 3-5 items to work on, ranked by value-delivered-per-effort. Invoke at session end, before committing, or when the human asks "what now?". Reads BACKLOG.md + recent ROUND-HISTORY.md + open harsh-critic findings + incomplete research reports and proposes a short, sharp list with reasoning.
+description: Next-steps recommender — top 3-5 items ranked by value-per-effort from backlog, findings, and research.
 ---
 
 # Next Steps Advisor

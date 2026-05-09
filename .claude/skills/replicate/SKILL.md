@@ -1,6 +1,6 @@
 ---
 name: replicate
-description: Replicates the agent factory to a REMOTE machine via SSH. Composes make-persistent as the local primitive — replicate(target) = ssh(target) → make-persistent(). Handles SSH key exchange, remote environment validation, repo clone, and delegates to make-persistent for service registration.
+description: Remote agent replication — SSH key exchange, repo clone, service registration via make-persistent.
 when-to-wear: When spreading the factory to a new remote machine, recovering a remote node, or upgrading a remote node's service.
 ---
 

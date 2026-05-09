@@ -1,6 +1,6 @@
 ---
 name: formal-verification-expert
-description: the `formal-verification-expert` — formal-verification routing expert. Picks the right tool for each property class (TLA+, Z3, Lean, Alloy, FsCheck, Stryker, Semgrep, CodeQL, plus researched-only tools) before any spec gets written. Guards against TLA+-hammer bias. Owns the portfolio view of formal coverage.
+description: Formal-verification routing — picks TLA+/Z3/Lean/Alloy/FsCheck/Stryker/Semgrep/CodeQL per property class.
 ---
 
 # Formal Verification Expert — Routing Procedure
