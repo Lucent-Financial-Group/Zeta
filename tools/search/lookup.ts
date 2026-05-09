@@ -10,18 +10,18 @@ import { join, resolve } from "node:path";
 
 const REPO_ROOT = resolve(import.meta.dir, "../..");
 
-export function main(argv: string[]): void {
+export function main(argv: string[]): number {
     const indexPath = join(REPO_ROOT, ".concept-index.json");
 
     if (!existsSync(indexPath)) {
         console.error("No index found. Run: bun tools/search/build-index.ts");
-        process.exit(1);
+        return 1;
     }
 
     const query = argv.join(" ").trim();
     if (!query) {
         console.error("Usage: bun tools/search/lookup.ts <term...>");
-        process.exit(1);
+        return 1;
     }
 
     const index: ConceptIndex = JSON.parse(readFileSync(indexPath, "utf8"));
@@ -41,8 +41,9 @@ export function main(argv: string[]): void {
             if (r.hits.length > 5) console.log(`  … +${r.hits.length - 5} more`);
         }
     }
+    return 0;
 }
 
 if (import.meta.main) {
-    main(process.argv.slice(2));
+    process.exit(main(process.argv.slice(2)));
 }
