@@ -1,8 +1,17 @@
 # Cost Reduction Lessons — token budget economics
 
-Learnings from running a 200+ skill AI factory on Claude Code.
-These don't matter for a prototype with one dev. They matter
-the moment you scale to a team.
+Learnings from running a 200+ skill AI factory on Claude Code
+on **enterprise API billing** (per-token, not subscription).
+
+For prototypes with one dev on Max ($200/month), token budgets
+don't matter — you're capped. On enterprise API billing, every
+token is real money. This doc is for the API billing case.
+
+## The headline number
+
+A heavy week on Opus 4.6 high-effort with 3 background agents
+costs **$8,000-12,000/week** on enterprise API billing. The
+breakdown and the levers to cut it are below.
 
 ## Lesson 1: Skill descriptions are a per-call tax
 
@@ -100,21 +109,107 @@ descriptions costs nothing.
 | Carve descriptions | Low (3K tokens) | Same or better |
 | Both | Medium | Best |
 
-## Summary: cost-per-PR proxy
+## Lesson 6: Extended thinking is 70% of the bill (THE BIG ONE)
 
-For a factory producing ~60 PRs/day across 3 agents:
+### The problem
 
-| Cost center | Current $/day | After fixes $/day |
+High-effort mode on Opus generates **10-50K thinking tokens
+PER RESPONSE**. These are billed as **output tokens at $75/M**
+— 5x the input rate. This is the dominant cost center, not
+skill descriptions or CLAUDE.md.
+
+### The math
+
+```
+One response on Opus high-effort:
+  Thinking tokens: ~25K average (hidden, still billed)
+  Visible output:  ~5K
+  Total output:    30K × $75/M = $2.25 per response
+
+One heavy interactive session (400 turns):
+  Output: 400 × 30K = 12M tokens × $75/M = $900
+  Input:  400 × 200K = 80M tokens × $1.50/M (cached) = $120
+  Session total: ~$1,020
+
+One background loop tick (shorter):
+  Output: ~10K tokens × $75/M = $0.75
+  Input:  ~50K tokens × $15/M = $0.75
+  Tick total: ~$1.50
+```
+
+### Weekly cost breakdown (enterprise API billing)
+
+| Cost center | $/day | $/week |
 |---|---|---|
-| Skill listing (300 sessions) | $15.00 | $4.50 |
-| CLAUDE.md (300 sessions) | $22.50 | $9.00 |
-| Actual agent work (output tokens) | ~$150.00 | ~$150.00 |
-| **Total** | **$187.50** | **$163.50** |
-| **Per PR** | **$3.13** | **$2.73** |
+| **Interactive Opus high-effort** (2 heavy sessions) | $1,000 | $7,000 |
+| **Background loops** (3 agents, ~120 ticks/day) | $180 | $1,260 |
+| **Subagent spawns** (reviewers, explorers) | $100 | $700 |
+| Skill listing overhead | $15 | $105 |
+| CLAUDE.md overhead | $23 | $161 |
+| **TOTAL** | **$1,318** | **$9,226** |
 
-The skill listing and CLAUDE.md are ~20% of the per-PR cost.
-Not the biggest line item (output tokens dominate), but the
-easiest to cut — zero-effort mechanical edits.
+**Extended thinking output = 76% of total cost.**
+
+### The levers (ranked by impact)
+
+| Lever | Savings | Effort |
+|---|---|---|
+| **Use Sonnet for background loops** | ~$900/week (5x cheaper output) | Change one line in tick script |
+| **Use Sonnet for mechanical work** (thread resolution, lint, backlog) | ~$500/week | Route by task type |
+| **Reserve Opus high-effort for decisions** (architecture, debugging, research) | ~$2,000/week | Discipline |
+| **Shorter sessions** (avoid compaction tax) | ~$500/week | Natural with loops |
+| Carve skill descriptions (B-0347) | $75/week | Mechanical edit |
+| Trim CLAUDE.md (B-0161) | $115/week | Mechanical edit |
+
+### The single biggest optimization
+
+**Switch background loops from Opus to Sonnet.**
+
+```
+Background loops (current — Opus):
+  120 ticks/day × $1.50/tick = $180/day = $1,260/week
+
+Background loops (Sonnet — 5x cheaper):
+  120 ticks/day × $0.30/tick = $36/day = $252/week
+
+Savings: $1,008/week = $52,416/year
+```
+
+Sonnet handles mechanical work (PR thread resolution,
+backlog pickup, lint fixes, thread drain) as well as
+Opus. Opus is only needed for architecture decisions,
+novel debugging, and research synthesis.
+
+## Lesson 7: Model routing is the enterprise cost strategy
+
+For enterprise API billing, the question isn't "Opus or
+Sonnet" — it's "which model for which task."
+
+| Task class | Right model | Output rate |
+|---|---|---|
+| Architecture, debugging, research | Opus high-effort | $75/M |
+| Code generation, feature work | Opus or Sonnet | $15-75/M |
+| Thread resolution, lint, backlog | Sonnet | $15/M |
+| Status checks, heartbeats | Haiku | $5/M |
+| Bulk formatting, rename passes | Haiku | $5/M |
+
+A factory that routes tasks to models by complexity can
+run at **30-40% of the cost** of one that uses Opus for
+everything.
+
+## Summary: the cost stack
+
+| Layer | % of bill | Fix |
+|---|---|---|
+| Extended thinking (output tokens) | 76% | Model routing |
+| Visible output (code generation) | 12% | Sonnet for mechanical |
+| Input context (conversation + files) | 8% | Shorter sessions |
+| Bootstrap overhead (skills + CLAUDE.md) | 4% | Carve + trim |
+
+**Don't optimize the 4% first. Optimize the 76%.**
+
+But do both — the 4% is free to fix and compounds
+with headcount.
 
 ## Pricing reference (May 2026)
 
@@ -130,8 +225,17 @@ Note: Opus 4.7's new tokenizer can produce up to 35% more
 tokens for the same input text — the rate card is unchanged
 but per-request cost can increase.
 
+## For the conversation with Kevin
+
+- Prototype phase (1 dev, Max plan): $200/month. Doesn't matter.
+- Enterprise API (current): ~$9K/week on Opus high-effort everywhere.
+- Enterprise API (optimized routing): ~$4K/week. Same output.
+- The fix isn't "use AI less." It's "use the right model for
+  each task class." Background loops on Sonnet alone saves $52K/year.
+
 ## Tracked at
 
-- B-0347 (carved-sentence skill descriptions)
-- B-0161 (CLAUDE.md trim)
+- B-0347 (carved-sentence skill descriptions — the 4%)
+- B-0161 (CLAUDE.md trim — the 4%)
 - `docs/ops/SKILL-ROUTING-BUDGET.md` (budget math detail)
+- Background loop model routing (not yet filed — file when ready)
