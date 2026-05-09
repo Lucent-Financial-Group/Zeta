@@ -18,7 +18,7 @@ import { spawnSync } from "node:child_process";
 import {
   formatBypassMessage,
   formatRejectionMessage,
-  DEFAULT_SUBSTANTIVE_TRIGGERS,
+  CLAUDE_SUBSTANTIVE_TRIGGERS,
   peerFirewallCheck,
 } from "./_firewall";
 
@@ -94,7 +94,7 @@ export function main(argv: readonly string[]): number {
   if (allowEmpty) {
     process.stderr.write(formatBypassMessage(PEER_NAME));
   } else {
-    const fwReason = peerFirewallCheck(prompt, DEFAULT_SUBSTANTIVE_TRIGGERS);
+    const fwReason = peerFirewallCheck(prompt, CLAUDE_SUBSTANTIVE_TRIGGERS);
     if (fwReason !== null) {
       process.stderr.write(formatRejectionMessage(PEER_NAME, fwReason));
       return 3;
