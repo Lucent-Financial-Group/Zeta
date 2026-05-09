@@ -1,7 +1,7 @@
 ---
 id: B-0325
 priority: P1
-status: open
+status: claimed
 title: "Add KIRO + CLAUDE firewall trigger lists to _firewall.ts"
 tier: peer-call-substrate
 effort: XS
