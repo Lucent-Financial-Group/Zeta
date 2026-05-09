@@ -40,8 +40,8 @@ packet, preserve verbatim in `docs/research/` BEFORE summarizing.
 
 Magnitude classifier: small correction -> task; implementation
 readiness -> task + notes; doctrine correction -> memory file;
-superseding architecture -> research preservation + memory absorb
-+ supersession note.
+superseding architecture -> research preservation + memory absorb +
+supersession note.
 
 ## Strike-don't-annotate refinement (2026-05-05)
 
