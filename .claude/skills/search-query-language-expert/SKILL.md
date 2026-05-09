@@ -1,6 +1,6 @@
 ---
 name: search-query-language-expert
-description: Search query languages — Lucene syntax, ES Query DSL, KQL, ES|QL, Solr edismax, Vespa YQL, Postgres tsquery; injection safety, query-parser vs query-builder.
+description: Search query languages — Lucene, ES DSL, KQL, ES|QL, Solr edismax, Vespa YQL, tsquery; injection safety.
 ---
 
 # Search-Query-Language Expert — the Syntax Surface

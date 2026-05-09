@@ -1,6 +1,6 @@
 ---
 name: jit-codegen-expert
-description: "Query JIT codegen — Hyper/Umbra/LLVM-style whole-pipeline fusion, .NET Reflection.Emit/DynamicMethod/Expressions, compilation-latency vs execution tradeoffs."
+description: Query JIT codegen — Hyper/Umbra/LLVM-style pipeline fusion, .NET Reflection.Emit/DynamicMethod/Expressions.
 ---
 
 # JIT-Codegen Expert — Query-Specific Compilation

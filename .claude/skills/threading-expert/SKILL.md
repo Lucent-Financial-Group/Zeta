@@ -1,6 +1,6 @@
 ---
 name: threading-expert
-description: Threading and concurrency primitives — OS threads, thread pools, lock-free data structures, memory models, .NET Task/async, F# MailboxProcessor, race detection.
+description: Threading/concurrency — OS threads, thread pools, lock-free structures, memory models, .NET Task/async, F# MailboxProcessor.
 ---
 
 # Threading Expert — Concurrency Primitives and Hazards
