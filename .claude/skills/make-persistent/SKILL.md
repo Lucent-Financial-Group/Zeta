@@ -42,6 +42,7 @@ dotnet build -c Release
 ## Phase 3: Deploy tick script
 
 Key settings in `.claude/bin/claude-loop-tick.ts`:
+
 - Interval: 60s
 - Timeout: 600s
 - `git reset --hard origin/main` after fetch
