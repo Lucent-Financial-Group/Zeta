@@ -1,7 +1,7 @@
 ---
 id: B-0126
 priority: P1
-status: open
+status: done
 title: Port the 4-layer meta-learning pattern from a sibling repo to Zeta
 created: 2026-05-01
 last_updated: 2026-05-08
