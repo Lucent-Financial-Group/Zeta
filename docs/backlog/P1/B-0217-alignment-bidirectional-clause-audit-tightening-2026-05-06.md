@@ -4,7 +4,7 @@ priority: P1
 status: open
 title: "ALIGNMENT.md rewrite - bidirectional clause audit and tightening"
 created: 2026-05-06
-last_updated: 2026-05-06
+last_updated: 2026-05-08
 parent: B-0003
 depends_on: [B-0215]
 decomposition: atomic
@@ -41,7 +41,7 @@ so a cold-start agent can use it without re-deriving it.
 
 **Proof of prior-art search (Otto-364 + 7-axis inventory before starting B-0217):**
 
-- Wake-time-substrate: read CLAUDE.md bidirectional section + ALIGNMENT.md §"Alignment is bidirectional" (lines 197-425) + research/2026-05-02-*.md
+- Wake-time-substrate: read CLAUDE.md bidirectional section + docs/ALIGNMENT.md §"Alignment is bidirectional" (lines 197+) + research/2026-05-02-*.md
 - Skill-router: alignment-auditor, alignment-observability, razor-discipline (Rodney's), spec-zealot
 - Orthogonal-axes: B-0192 razor-cadence, B-0160 mechanical-auth, B-0193 bootstrap-razor
 - Decision-archaeology: B-0169 (walked depends_on B-0215 + parent B-0003)
@@ -51,7 +51,7 @@ so a cold-start agent can use it without re-deriving it.
 
 **Dependency-restructure proof:**
 
-- depends_on: [B-0215] walked — B-0215 is open P1 (no drift).
+- depends_on: [B-0215] walked — B-0215 is closed (closed 2026-05-07; dependency satisfied).
 - Reciprocal composes_with added to B-0215 row? Deferred to next atomic (this slice is gate-only).
 - Supersession: none (original B-0003 ask preserved).
 - Broken pointers: none.
