@@ -2,6 +2,14 @@
 // concept-index.ts — B-0362
 // Materialized concept index: regex standing queries over the
 // corpus produce a term->file mapping. Rebuild is sub-second.
+//
+// Guardrails (Vera 2026-05-09):
+// 1. Curated, not corpus-wide — add query classes deliberately
+// 2. Each query class needs a name and provenance (when/why added)
+// 3. New connections become queries only after earning a term +
+//    memory/backlog anchor
+// 4. Size gate: if .concept-index.json exceeds 5MB, the queries
+//    have drifted toward full-text — tighten the regexes
 
 import { readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, resolve, relative } from "node:path";
