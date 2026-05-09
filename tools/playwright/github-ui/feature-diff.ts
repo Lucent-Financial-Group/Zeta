@@ -105,8 +105,8 @@ export function diffPageSnapshots(prior: GitHubPageSnapshot, current: GitHubPage
 
   const allToggleKeys = new Set([...Object.keys(priorToggles), ...Object.keys(curToggles)]);
   for (const key of allToggleKeys) {
-    const inPrior = key in priorToggles;
-    const inCur = key in curToggles;
+    const inPrior = Object.hasOwn(priorToggles, key);
+    const inCur = Object.hasOwn(curToggles, key);
     if (!inPrior && inCur) {
       newToggles.push(key);
     } else if (inPrior && !inCur) {
@@ -125,8 +125,8 @@ export function diffPageSnapshots(prior: GitHubPageSnapshot, current: GitHubPage
 
   const allFormKeys = new Set([...Object.keys(priorForm), ...Object.keys(curForm)]);
   for (const key of allFormKeys) {
-    const inPrior = key in priorForm;
-    const inCur = key in curForm;
+    const inPrior = Object.hasOwn(priorForm, key);
+    const inCur = Object.hasOwn(curForm, key);
     if (!inPrior && inCur) {
       newFormFields.push(key);
     } else if (inPrior && !inCur) {
@@ -333,6 +333,14 @@ interface CliError {
   readonly error: string;
 }
 
+function cliValue(argv: readonly string[], index: number, flag: string): string | CliError {
+  const value = argv[index + 1];
+  if (value === undefined || value.startsWith("-")) {
+    return { error: `missing value for ${flag}` };
+  }
+  return value;
+}
+
 function parseCliArgs(argv: readonly string[]): CliArgs | CliError {
   let prior = "";
   let current = "";
@@ -344,19 +352,25 @@ function parseCliArgs(argv: readonly string[]): CliArgs | CliError {
     if (a === "--help" || a === "-h") {
       return { prior, current, out, help: true };
     }
-    if ((a === "--prior" || a === "-p") && i + 1 < argv.length) {
-      prior = argv[++i] ?? prior;
-      i++;
+    if (a === "--prior" || a === "-p") {
+      const value = cliValue(argv, i, a);
+      if (typeof value !== "string") return value;
+      prior = value;
+      i += 2;
       continue;
     }
-    if ((a === "--current" || a === "-c") && i + 1 < argv.length) {
-      current = argv[++i] ?? current;
-      i++;
+    if (a === "--current" || a === "-c") {
+      const value = cliValue(argv, i, a);
+      if (typeof value !== "string") return value;
+      current = value;
+      i += 2;
       continue;
     }
-    if ((a === "--out" || a === "-o") && i + 1 < argv.length) {
-      out = argv[++i] ?? out;
-      i++;
+    if (a === "--out" || a === "-o") {
+      const value = cliValue(argv, i, a);
+      if (typeof value !== "string") return value;
+      out = value;
+      i += 2;
       continue;
     }
     return { error: `unknown flag: ${a}` };
@@ -409,8 +423,16 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 1;
   }
 
-  const report = diffSnapshotSets(priorSet, currentSet);
-  const markdown = renderDiffReport(report);
+  let report: FeatureDiffReport;
+  let markdown: string;
+  try {
+    report = diffSnapshotSets(priorSet, currentSet);
+    markdown = renderDiffReport(report);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`error diffing snapshot sets: ${msg}\n`);
+    return 1;
+  }
 
   if (parsed.out) {
     const outPath = resolve(parsed.out);

@@ -1,11 +1,12 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   diffPageSnapshots,
   diffSnapshotSets,
   loadSnapshotSet,
+  main,
   MONITORED_PAGES,
   renderDiffReport,
   saveSnapshotSet,
@@ -30,6 +31,28 @@ function tempDir(): string {
   const dir = mkdtempSync(join(tmpdir(), "zeta-feature-diff-"));
   tempDirs.push(dir);
   return dir;
+}
+
+function writeJson(dir: string, name: string, value: unknown): string {
+  const path = join(dir, name);
+  writeFileSync(path, JSON.stringify(value), "utf8");
+  return path;
+}
+
+async function captureStderr(
+  action: () => Promise<number>,
+): Promise<{ readonly code: number; readonly stderr: string }> {
+  const originalWrite = process.stderr.write;
+  let stderr = "";
+  process.stderr.write = ((chunk: unknown) => {
+    stderr += String(chunk);
+    return true;
+  }) as typeof process.stderr.write;
+  try {
+    return { code: await action(), stderr };
+  } finally {
+    process.stderr.write = originalWrite;
+  }
 }
 
 function makeSnapshot(
@@ -114,6 +137,16 @@ describe("diffPageSnapshots — toggles", () => {
     expect(diff.removedToggles).toContain("feature-a");
     expect(diff.newToggles).toHaveLength(0);
   });
+
+  test("prototype-colliding toggle keys are treated as own snapshot data", () => {
+    const prior = makeSnapshot(BASE_URL, { toggles: {} });
+    const current = makeSnapshot(BASE_URL, {
+      toggles: { toString: true } as unknown as Record<string, boolean>,
+    });
+    const diff = diffPageSnapshots(prior, current);
+    expect(diff.newToggles).toEqual(["toString"]);
+    expect(diff.changedToggles).toHaveLength(0);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -188,6 +221,16 @@ describe("diffPageSnapshots — form fields", () => {
     const diff = diffPageSnapshots(prior, current);
     expect(diff.newFormFields).toHaveLength(0);
     expect(diff.removedFormFields).toHaveLength(0);
+    expect(diff.changedFormFields).toHaveLength(0);
+  });
+
+  test("prototype-colliding form keys are treated as own snapshot data", () => {
+    const prior = makeSnapshot(BASE_URL, { formValues: {} });
+    const current = makeSnapshot(BASE_URL, {
+      formValues: { toString: "enabled" } as unknown as Record<string, string>,
+    });
+    const diff = diffPageSnapshots(prior, current);
+    expect(diff.newFormFields).toEqual(["toString"]);
     expect(diff.changedFormFields).toHaveLength(0);
   });
 });
@@ -519,6 +562,27 @@ describe("saveSnapshotSet / loadSnapshotSet", () => {
 
   test("loadSnapshotSet throws on missing file", () => {
     expect(() => loadSnapshotSet("/nonexistent/path/2026-05-08.json")).toThrow();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// CLI
+// ---------------------------------------------------------------------------
+
+describe("main", () => {
+  test("reports a missing flag value directly", async () => {
+    const result = await captureStderr(() => main(["--prior"]));
+    expect(result.code).toBe(1);
+    expect(result.stderr).toContain("missing value for --prior");
+  });
+
+  test("malformed snapshot shapes return user-facing errors", async () => {
+    const dir = tempDir();
+    const prior = writeJson(dir, "prior.json", { date: "2026-05-01", pages: {} });
+    const current = writeJson(dir, "current.json", { date: "2026-05-08" });
+    const result = await captureStderr(() => main(["--prior", prior, "--current", current]));
+    expect(result.code).toBe(1);
+    expect(result.stderr).toContain("error diffing snapshot sets");
   });
 });
 
