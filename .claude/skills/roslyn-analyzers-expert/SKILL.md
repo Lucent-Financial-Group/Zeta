@@ -1,6 +1,6 @@
 ---
 name: roslyn-analyzers-expert
-description: Capability skill ("hat") — static-analysis narrow under `static-analysis-expert`. Owns Roslyn `DiagnosticAnalyzer` + `CodeFixProvider` + `CompletionProvider` authoring, analyzer lifecycle (register-compilation-start, symbol action, syntax-node action, operation action), `DiagnosticDescriptor` discipline, severity + category conventions, `AnalyzerConfigOptions` + `.editorconfig` wiring, suppressor (`DiagnosticSuppressor`) design, analyzer-packaging for NuGet, analyzer-testing harness (`Microsoft.CodeAnalysis.Testing`), and performance rules (free-threaded, stateless, no IO). Wear this when authoring or reviewing a Roslyn analyzer, designing a code-fix, triaging an analyzer false positive, or packaging an analyzer for the `Zeta.Analyzers` NuGet. Defers to `static-analysis-expert` for cross-tool policy, to `roslyn-generators-expert` for source-generators, to `fsharp-analyzers-expert` for F# analyzers, to `public-api-designer` for public analyzer rule shape, and to `msbuild-expert` for analyzer item-group wiring.
+description: Roslyn analyzers — DiagnosticAnalyzer/CodeFixProvider authoring, lifecycle, severity, editorconfig wiring, suppressor, NuGet packaging.
 ---
 
 # Roslyn Analyzers Expert — DiagnosticAnalyzer + CodeFixProvider

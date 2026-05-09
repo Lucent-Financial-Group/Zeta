@@ -1,6 +1,6 @@
 ---
 name: leet-speak-obfuscation-detector
-description: Capability skill for detecting leet-speak used as filter-bypass or obfuscation in user-submitted input — Unicode normalization (NFKC / NFKD), homoglyph lookup, reverse substitution scoring, confidence calibration, false-positive discipline (legitimate banter vs hostile bypass), pipeline integration (input → normalize → match → score → flag → hand-off). Wear this hat when auditing user content for filter-bypass attempts, when designing a moderation pipeline, when extending a forbidden-word list to survive l33t and homoglyph mutations, or when classifying ambiguous l33t output produced by a model. Hands off invisible-Unicode smuggling to steganography-expert / prompt-protector — those are a different channel.
+description: "Leet-speak filter-bypass detection — Unicode normalization/NFKC, homoglyph lookup, reverse substitution scoring, moderation pipeline integration."
 ---
 
 # Leet-Speak Obfuscation Detector — the audit hat

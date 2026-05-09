@@ -1,6 +1,6 @@
 ---
 name: relational-algebra-expert
-description: Capability skill ("hat") — relational algebra as mathematical foundation. Covers Codd's relational operators (σ selection, π projection, ⋈ join, ρ rename, × Cartesian, ∪ union, − difference, ÷ division) with their set- and multiset-semantics variants, equivalence-preserving rewrite laws (commutativity, associativity, distributivity, pushdown identities), closure-under-operations theorems, and the mapping between relational algebra and Zeta's DBSP operator algebra under retraction-native semantics. Sibling to `sql-expert` (SQL-the-language) and `algebra-owner` (Zeta operator-algebra laws). Wear this when a rewrite rule needs an equivalence proof, when a translation claim needs a formal anchor, or when a research draft reaches for "by relational-algebra equivalence, X ≡ Y". Defers to `category-theory-expert` for functorial / natural-transformation framings, to `theoretical-mathematics-expert` for broader algebra questions, and to `formal-verification-expert` for Lean / Z3 / TLA+ tool routing on the proof obligation.
+description: Relational algebra — Codd operators, equivalence rewrite laws, DBSP mapping, retraction-native semantics, proof anchors.
 ---
 
 # Relational Algebra Expert — Equivalence-Proof Hat
