@@ -1,33 +1,37 @@
 /**
- * Shadow outlet — Phase 1: /tmp ephemeral (B-0212 smallest safe slice)
+ * Shadow outlet — Phase 1 library: /tmp ephemeral (B-0212)
  *
- * Provides a bounded, OS-erased scratch space for latent/shadow processing.
- * Future: cryptographic privacy layer replaces /tmp with provably-private outlet.
+ * Importable surface for programmatic callers. The CLI surface lives in
+ * outlet.ts; import this module when you need the outlet path without
+ * spawning a subprocess.
  *
- * Self-invisibility: agent cannot observe its own shadow; only external
- * consensus (BFT) can surface it.
- *
- * Rule 0 / TS over bash: this is the canonical TS surface.
+ * Self-invisibility contract: callers must pass their own agent name as
+ * `exclude` when listing entries. The library enforces nothing — enforcement
+ * is in outlet.ts for the CLI path and in the calling loop for the import path.
  */
 
-import { tmpdir } from 'os';
-import { join } from 'path';
+import { existsSync, lstatSync, mkdirSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
-/**
- * Returns an ephemeral shadow outlet directory under /tmp (or OS equivalent).
- * Content is not guaranteed to survive process exit; OS may reclaim.
- */
+/** Directory under /tmp (or OS-equivalent) used for all shadow entries. */
 export function getEphemeralShadowOutletDir(): string {
-  return join(tmpdir(), 'zeta-shadow-outlet');
+  return process.env.ZETA_SHADOW_DIR ?? join(tmpdir(), "zeta-shadow");
 }
 
 /**
- * Ensures the outlet directory exists (idempotent).
- * Callers must still treat content as best-effort ephemeral.
+ * Ensures the outlet directory exists. Creates it (mode 0o700) if absent.
+ * Returns the directory path. Safe to call repeatedly — idempotent.
+ * Throws if the path exists but is not a directory.
  */
-export async function ensureEphemeralShadowOutlet(): Promise<string> {
+export function ensureEphemeralShadowOutlet(): string {
   const dir = getEphemeralShadowOutletDir();
-  // Minimal: in real impl would mkdir -p via Bun.spawn or fs.
-  // Bounded slice: return path only; creation left to consumer or follow-up.
+  if (existsSync(dir)) {
+    if (!lstatSync(dir).isDirectory()) {
+      throw new Error(`Shadow outlet path exists but is not a directory: ${dir}`);
+    }
+    return dir;
+  }
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
   return dir;
 }
