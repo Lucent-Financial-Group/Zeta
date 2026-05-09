@@ -8,10 +8,6 @@
           {
             "type": "command",
             "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/verify-branch-pretooluse.ts"
-          },
-          {
-            "type": "command",
-            "command": "bun --bun tools/orchestrator-checks/verify-branch.ts"
           }
         ]
       }

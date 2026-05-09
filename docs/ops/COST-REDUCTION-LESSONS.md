@@ -225,7 +225,7 @@ Note: Opus 4.7's new tokenizer can produce up to 35% more
 tokens for the same input text — the rate card is unchanged
 but per-request cost can increase.
 
-## For the conversation with Kevin
+## For the cost conversation with finance
 
 - Prototype phase (1 dev, Max plan): $200/month. Doesn't matter.
 - Enterprise API (current): ~$9K/week on Opus high-effort everywhere.

@@ -201,8 +201,8 @@ function heartbeat(): void {
                     stderr_lines: lines(gate.stderr).length,
                     produced_pr: !!prMatch,
                     pr_number: prMatch ? Number(prMatch[1]) : null,
-                    had_build_error: gate.stdout.includes("Error(s)") || gate.stderr.includes("error FS"),
-                    had_test_failure: gate.stdout.includes("Failed!") || gate.stdout.includes("Failed:"),
+                    had_build_error: /Build FAILED/i.test(gate.stdout) || /[1-9]\d*\s+Error\(s\)/.test(gate.stdout) || gate.stderr.includes("error FS"),
+                    had_test_failure: /Failed:\s*[1-9]/.test(gate.stdout) || /Test Run Failed/.test(gate.stdout),
                 };
                 appendFileSync(ratingsFile, JSON.stringify(rating) + "\n");
 
