@@ -6,7 +6,7 @@
 // Usage: bun tools/skill-catalog/audit-skill-descriptions.ts
 // Focused check output is included in the PR body for this slice.
 
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -39,17 +39,19 @@ function auditDescriptions(): AuditResult {
   let total = 0;
   let long = 0;
   const examples: string[] = [];
-  const entries = readdirSync(SKILLS_ROOT, { withFileTypes: true });
+  const entries = readdirSync(SKILLS_ROOT, { withFileTypes: true }).sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
   for (const e of entries) {
     if (!e.isDirectory()) continue;
     const skillMd = join(SKILLS_ROOT, e.name, "SKILL.md");
+    let content: string;
     try {
-      if (!statSync(skillMd).isFile()) continue;
+      content = readFileSync(skillMd, "utf8");
     } catch {
       continue;
     }
     total++;
-    const content = readFileSync(skillMd, "utf8");
     const desc = extractDescription(content);
     if (desc && desc.length > 120) {
       long++;
@@ -60,7 +62,7 @@ function auditDescriptions(): AuditResult {
   return { total, long, examples };
 }
 
-function main() {
+export function main() {
   const result = auditDescriptions();
   console.log(`B-0347 audit: scanned ${result.total} skills, ${result.long} descriptions exceed 120-char routing budget.`);
   if (result.examples.length > 0) {
