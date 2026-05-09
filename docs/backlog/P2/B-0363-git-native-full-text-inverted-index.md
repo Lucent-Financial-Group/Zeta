@@ -19,16 +19,21 @@ tags: [search, lucene, inverted-index, git-native, full-text]
 ## What
 
 Build a Lucene-style inverted index stored as git-native
-committed files. Two-layer search architecture:
+files. Three-layer search architecture (Vera tightening,
+2026-05-09):
 
 | Layer | Purpose | Size | Speed |
 | ----- | ------- | ---- | ----- |
 | Concept index (B-0362) | Curated regex standing queries | ~1MB | 22ms |
-| Full-text index (this) | Ad-hoc search across corpus | ~5-10MB | <100ms |
+| Full-text index (this) | Token / phrase / field search | ~5-10MB | <100ms |
+| Regex accelerator | Trigram/ngram candidates → verify against source | thin | varies |
 
 The concept index handles "what touches Otto-357?" (standing
 queries). The full-text index handles "where did anyone mention
-'watermark backpressure'?" (ad-hoc grep replacement).
+'watermark backpressure'?" (token/phrase search). The regex
+accelerator handles arbitrary regex by narrowing candidates
+via trigram index, then verifying matches against source files
+— the index narrows, source is truth.
 
 ## Design
 
@@ -57,11 +62,26 @@ queries). The full-text index handles "where did anyone mention
 Aaron 2026-05-09: "we could always do git native lucene for
 full text rx"
 
-## Size guardrail
+## First slice (Vera's gate, 2026-05-09)
 
-Per Vera's guardrails on B-0362: if the full-text index
-exceeds 10MB, investigate whether the tokenizer is too
-aggressive or the corpus has grown beyond the design point.
+Do NOT rush to commit generated segments. First slice must be:
+1. Deterministic builder (same input → same output)
+2. Size report (how big is the index for current corpus?)
+3. Query demo (does it actually beat rg for the use cases?)
+4. Hard gate: generated index must stay under X MB and be
+   reproducible byte-for-byte
+
+If too big → keep as host-cache only (`.gitignore`d), not
+git-tracked. Concept index remains the canonical little knife;
+full-text is the bigger machine in the shop.
+
+## Key distinction: index narrows, source is truth
+
+The index should narrow candidates, not become the truth.
+Regex semantics can drift if the index is treated as
+authoritative. The verify-against-source step is mandatory
+for regex queries — the trigram/ngram index produces
+candidates, `rg` verifies them against actual files.
 
 ## Composes with
 
