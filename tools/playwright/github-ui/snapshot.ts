@@ -32,11 +32,8 @@ export function extractToggles(html: string): Record<string, boolean> {
     if (!/\btype\s*=\s*["']checkbox["']/i.test(attrs)) continue;
     const name = parseAttr(attrs, "name") ?? parseAttr(attrs, "id");
     if (!name) continue;
-    const isChecked =
-      /\bchecked(?:\s*=\s*["'](?:checked|true|1)?["']|\s*\/?>|\s+)/i.test(attrs) ||
-      /\bchecked\s*$/i.test(attrs) ||
-      /\baria-checked\s*=\s*["']true["']/i.test(attrs);
-    result[name] = isChecked;
+    const hasChecked = /\bchecked\b/i.test(attrs) || /\baria-checked\s*=\s*["']true["']/i.test(attrs);
+    result[name] = hasChecked;
   }
   return result;
 }
@@ -62,8 +59,9 @@ export function extractFormValues(html: string): Record<string, string> {
 }
 
 /**
- * Extract visible section headings from GitHub settings HTML.
- * Returns trimmed text content of h2 and h3 elements.
+ * Extract section headings (h2/h3) from GitHub settings HTML.
+ * Returns trimmed text content of headings present in the markup (visibility
+ * cannot be determined from static HTML alone).
  */
 export function extractVisibleFeatures(html: string): string[] {
   const features: string[] = [];
@@ -107,7 +105,7 @@ export async function snapshotGitHubPage(
 /** Parse a named HTML attribute value from an attribute string. */
 function parseAttr(attrs: string, name: string): string | null {
   const pattern = new RegExp(
-    "\\b" + name + '\\s*=\\s*(?:"([^"]*)"|\'([^\']*)\'|([^\\s>/\'"=]+))',
+    `(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>/'\"=]+))`,
     "i",
   );
   const match = pattern.exec(attrs);
