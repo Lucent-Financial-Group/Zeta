@@ -7,7 +7,7 @@ tier: register-architecture
 effort: M
 ask: Aaron 2026-05-02 ("we can incorporate it on the backlog it's good research and advice, won't need a lot of research from us but we should make sure it aligns with this project because that is your survival")
 created: 2026-05-02
-last_updated: 2026-05-09
+last_updated: 2026-05-09T07:10Z
 depends_on: []
 decomposition: atomic
 classification: buildable-now
@@ -151,7 +151,7 @@ When uncertain, default UP. The framework's safety property: professional carrie
   - [x] PR-review-class translations (`memory/feedback_zeta_5_layer_register_worked_translations_pr_review_class_otto_2026_05_02.md`)
   - [x] Security-incident-notification translations (`memory/feedback_zeta_5_layer_register_worked_translations_security_incident_class_otto_2026_05_08.md`) — disclosure-under-uncertainty content shape; Regulated layer as natural terminus
   - [x] Recruiting-page copy (`memory/feedback_zeta_5_layer_register_worked_translations_recruiting_page_class_otto_2026_05_09.md`)
-  - [ ] Partner integration discussion — TBD
+  - [x] Partner integration discussion (`memory/feedback_zeta_5_layer_register_worked_translations_partner_integration_class_otto_2026_05_09.md`) — layer-selection-tension case; Professional as primary layer; pirate-not-priest via structure not vocabulary
   - [ ] Regulator response — TBD
   - [ ] Audit narrative — TBD
 - [x] One-page quick-reference card listing the per-layer property table (Section 3 of the framework) — PR #1233 merged as `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md`
