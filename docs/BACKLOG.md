@@ -115,7 +115,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0266](backlog/P1/B-0266-ruleset-split-review-policy-ruleset-2026-05-08.md)** GitHub ruleset split — review policy ruleset (conversation resolution + reviews)
 - [ ] **[B-0267](backlog/P1/B-0267-ruleset-split-safety-ruleset-2026-05-08.md)** GitHub ruleset split — safety ruleset (deletion + force-push + linear history)
 - [x] **[B-0268](backlog/P1/B-0268-canary-test-rules-autoload-verification-2026-05-08.md)** Verify .claude/rules/ auto-load — run canary test
-- [ ] **[B-0269](backlog/P1/B-0269-extract-carved-sentences-from-claude-md-to-rules-2026-05-08.md)** Extract carved sentences from CLAUDE.md to .claude/rules/
+- [x] **[B-0269](backlog/P1/B-0269-extract-carved-sentences-from-claude-md-to-rules-2026-05-08.md)** Extract carved sentences from CLAUDE.md to .claude/rules/
 - [x] **[B-0270](backlog/P1/B-0270-pm2-role-skill-definition-2026-05-08.md)** PM-2 role - skill definition + persona agent
 - [ ] **[B-0271](backlog/P1/B-0271-pm2-first-research-pass-2026-05-08.md)** PM-2 role — first research pass on Zeta feature gaps
 - [ ] **[B-0272](backlog/P1/B-0272-atari-rom-canonical-naming-tosec-lookup-2026-05-08.md)** Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup
