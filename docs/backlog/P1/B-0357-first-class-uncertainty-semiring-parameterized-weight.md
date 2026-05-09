@@ -125,3 +125,27 @@ Candidate weight types:
 - Tropical semiring work in `NovelMath.fs`
 - The Superfluid reactor equation (uncertainty in the
   learning gain term)
+
+## Prior art — time-uncertainty in production databases
+
+Aaron 2026-05-09: "lookup spanner and cockroach db real db
+primitives of time and lamport include uncertainty measurement
+on the datetime" + "there is tidb we should research this
+actually and decide if we want to support multiple and make
+it pluggable."
+
+| System | Timestamp model | Uncertainty primitive |
+|---|---|---|
+| Spanner | TrueTime (GPS + atomic) | `[earliest, latest]` interval; commit-wait |
+| CockroachDB | HLC (Lamport + wall-clock) | Read uncertainty restart window |
+| TiDB | TSO (centralized oracle) | Single-point, no interval |
+| YugabyteDB | HLC variant | Similar to CockroachDB |
+
+Lamport's logical clocks → Spanner's TrueTime intervals →
+Zeta's weight semiring intervals. Three instantiations of
+"carry uncertainty, don't pretend precision."
+
+**Research question:** should Zeta parameterize the
+time-uncertainty model (pluggable, like the weight
+semiring) so it works over any of these backends? Or
+hardcode one model?
