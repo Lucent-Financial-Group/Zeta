@@ -62,6 +62,7 @@ lands first, anchors carry forward into the rewrite.
 ## Pre-start checklist (2026-05-09)
 
 **Prior-art-search:**
+
 - Skill router: no existing skill covers external-anchor backfill for
   alignment clauses.
 - `tools/alignment/audit_external_anchors.ts` (B-0311, done 2026-05-09)
@@ -72,6 +73,7 @@ lands first, anchors carry forward into the rewrite.
   supersession.
 
 **Dependency-restructure:**
+
 - B-0311 status updated to `done` in same branch.
 - B-0003 (ALIGNMENT.md rewrite) is not yet started; HC anchors will
   carry forward per composes_with note.
