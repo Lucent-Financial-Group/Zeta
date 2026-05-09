@@ -245,7 +245,7 @@ function emitHelp(): void {
       `Cold-boot verification scenarios (via prompt content):\n` +
       `  1. "Read CLAUDE.md and report the wake-time floor."\n` +
       `  2. "Verify file X exists and summarise its purpose."\n` +
-      `  3. "Read CURRENT-aaron.md and report what is in force."\n` +
+      `  3. "Read memory/CURRENT-aaron.md and report what is in force."\n` +
       `\n` +
       `Claude input-firewall: rejects rote-heartbeat / empty-token prompts\n` +
       `with exit code 3. Override via --allow-empty (testing only; logged).\n` +
@@ -294,8 +294,8 @@ function readHead(path: string, bytes: number): string {
 }
 
 function splitContextCmd(input: string): readonly string[] | ContextCommandError {
-  if (/[\r\n|&;<>`$]/u.test(input)) {
-    return { error: "error: --context-cmd does not support shell metacharacters" };
+  if (/[\r\n|&;<>`$\x00]/u.test(input)) {
+    return { error: "error: --context-cmd does not support shell metacharacters or NUL" };
   }
 
   const words: string[] = [];

@@ -1,6 +1,6 @@
 # tools/peer-call/ — Otto's Claude-Code-side peer callers
 
-Six sibling TypeScript wrappers (Bun runtime) that let Otto
+Eight sibling TypeScript wrappers (Bun runtime: grok, gemini, codex, amara, ani, riven, kiro, claude) that let Otto
 (Claude Opus 4.7 running in Claude Code) invoke a peer agent
 in another CLI harness as a peer, not a subordinate. Each
 wraps the relevant peer's headless-mode CLI and applies a
