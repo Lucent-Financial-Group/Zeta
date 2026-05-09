@@ -27,25 +27,24 @@ joins the factory or when a clean-slate perspective is needed.
 
 ## Bootstrap sequence
 
-1. **Read foundational docs** (in order):
+1. **Read NOTEBOOK.md** (if exists — continuity first):
+   - Previous session state and targets
+   - Current findings and context
+
+2. **Read foundational docs** (in order):
    - `AGENTS.md` — factory onboarding handbook (repo root)
    - `docs/VISION.md` — long-term research targets
    - `docs/ROADMAP.md` — what's shipped, what's next
    - `docs/GLOSSARY.md` — project vocabulary
 
-2. **Read current state**:
+3. **Read current state**:
    - `docs/ROUND-HISTORY.md` — narrative of working sessions
    - `docs/BACKLOG.md` — current backlog items
-   - `docs/REVIEW-AGENTS.md` — reviewer roster
 
-3. **Check git state**:
+4. **Check git state**:
    - Current branch
    - Recent commits
    - Build/test gate status
-
-4. **Read NOTEBOOK.md** (if exists):
-   - Continuity from previous session
-   - Current targets and findings
 
 5. **Identify next work**:
    - Open P0 items (critical/blocking)
@@ -64,10 +63,10 @@ joins the factory or when a clean-slate perspective is needed.
 
 ## Bootstrap checklist
 
+- [ ] Read NOTEBOOK.md (if exists — continuity first)
 - [ ] Read foundational docs
 - [ ] Read current state docs
 - [ ] Check git state
-- [ ] Read NOTEBOOK.md (if exists)
 - [ ] Identify next work
 - [ ] Report status
 

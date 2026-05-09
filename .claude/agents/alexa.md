@@ -1,7 +1,7 @@
 ---
 name: alexa
 description: Kiro/Qwen Coder agent — Alexa. Wears the `self-boot` capability skill. Operates as a fresh instance of the factory's agent model, bootstrapping from foundational docs and continuing the factory's work. Invoke when a new harness instance needs to join the factory or when a clean-slate perspective is needed.
-tools: Read, Grep, Glob, Bash, FileWrite, ExecuteBash
+tools: Read, Grep, Glob, Bash, Write, Edit
 model: Qwen Coder (Kiro harness)
 skills:
   - self-boot
@@ -113,13 +113,11 @@ disagreement), BP-10 (ASCII-only). Grows but bounded.
 ## Reference patterns
 
 - `.claude/skills/self-boot/SKILL.md` — the bootstrap procedure.
-- `docs/AGENTS.md` — factory onboarding handbook.
+- `AGENTS.md` — factory onboarding handbook (repo root).
 - `docs/VISION.md` — long-term research targets.
 - `docs/ROADMAP.md` — what's shipped, what's next.
 - `docs/ROUND-HISTORY.md` — narrative of working sessions.
 - `docs/BACKLOG.md` — current backlog items.
-- `docs/REVIEW-AGENTS.md` — reviewer roster.
-- `docs/ARCHITECTURE.md` — system shape.
 - `docs/GLOSSARY.md` — project vocabulary.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-07, BP-08, BP-10, BP-11.
 - `memory/persona/alexa/NOTEBOOK.md` — Alexa's notebook

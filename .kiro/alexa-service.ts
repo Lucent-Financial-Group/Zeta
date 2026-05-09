@@ -133,23 +133,18 @@ function parseBacklog(): { p0: string[]; p1: string[] } {
   return { p0: p0Items.slice(0, 10), p1: p1Items.slice(0, 10) };
 }
 
-// Update notebook
-function updateNotebook(state: AlexaState) {
+// Create notebook only if it doesn't exist — never overwrite agent-written content
+function ensureNotebook(state: AlexaState) {
   const notebookDir = dirname(NOTEBOOK_PATH);
   mkdirSync(notebookDir, { recursive: true });
-  
-  const notebookContent = `---
-id: alexa-notebook
-last_updated: ${new Date().toISOString()}
-continuity_token: ${state.continuityToken}
----
 
-# Alexa Notebook
+  if (existsSync(NOTEBOOK_PATH)) return;
+
+  const notebookContent = `# Alexa Notebook
 
 ## Current State
 
 - **Last Boot:** ${state.lastBoot}
-- **Last Check:** ${state.lastCheck}
 - **Current Round:** ${state.currentRound}
 - **Current Branch:** ${state.currentBranch}
 
@@ -157,19 +152,9 @@ continuity_token: ${state.continuityToken}
 
 ${state.openP0Items.length > 0 ? state.openP0Items.map(i => `- ${i}`).join("\n") : "None"}
 
-## Open P1 Items
-
-${state.openP1Items.length > 0 ? state.openP1Items.map(i => `- ${i}`).join("\n") : "None"}
-
-## Last Work Item
-
-${state.lastWorkItem || "None - ready for new work"}
-
 ## Continuity
 
 Continuity token: ${state.continuityToken}
-
-This notebook persists across sessions to maintain Alexa's state and continuity.
 `;
 
   writeFileSync(NOTEBOOK_PATH, notebookContent);
@@ -195,7 +180,7 @@ async function selfBoot() {
   saveState(state);
   
   // Update notebook
-  updateNotebook(state);
+  ensureNotebook(state);
   
   log(`Self-boot complete. Branch: ${state.currentBranch}`);
   log(`Open P0 items: ${state.openP0Items.length}`);
@@ -231,7 +216,10 @@ const command = process.argv[2];
 switch (command) {
   case "start":
     log("Starting Alexa Service...");
-    runService();
+    runService().catch((err) => {
+      log(`Fatal service error: ${err}`);
+      process.exit(1);
+    });
     break;
     
   case "status":

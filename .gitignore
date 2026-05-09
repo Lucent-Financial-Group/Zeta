@@ -176,3 +176,7 @@ Spine/
 tools/alloy/classes/
 .broadcasts/
 .concept-index.json
+
+# Kiro agent runtime state — machine-local, regenerated per boot.
+.kiro/alexa-state.json
+.kiro/alexa-service.log
