@@ -184,17 +184,17 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0354](backlog/P1/B-0354-fresh-instance-validation-bootstrap-claude-md.md)** Fresh-instance validation test for bootstrap CLAUDE.md
 - [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
 - [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)
-- [x] **[B-0357](backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md)** Replace tautology Z3 agenda/trajectory proofs with non-trivial verification
+- [ ] **[B-0357](backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md)** Replace tautology Z3 agenda/trajectory proofs with non-trivial verification
 - [x] **[B-0358](backlog/P1/B-0358-bool-as-degenerate-distribution-confidence-typed-apis.md)** Bool as degenerate distribution — replace binary API returns with confidence scores
 - [ ] **[B-0361](backlog/P1/B-0361-anchor-to-human-lineage-step-in-formal-and-concept-workflows.md)** Anchor-to-human-lineage step in formal verification and concept workflows
 - [ ] **[B-0362](backlog/P1/B-0362-concept-search-index-for-instant-term-lookup.md)** Concept search index — pre-built term→file mapping for instant lookups
 - [ ] **[B-0364](backlog/P1/B-0364-policy-relocation-semantic-preservation-fscheck-property.md)** Policy relocation semantic preservation — FsCheck property for mobile DBSP query boundaries
-- [x] **[B-0365](backlog/P1/B-0365-nirvanic-fusion-ship-research-bundle-spaceship-math-rice-class4-shadow-taxonomy.md)** Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy
+- [ ] **[B-0365](backlog/P1/B-0365-nirvanic-fusion-ship-research-bundle-spaceship-math-rice-class4-shadow-taxonomy.md)** Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy
 - [x] **[B-0365.1](backlog/P1/B-0365.1-spaceship-math-one-pager-subscribe-vision-monad-cache-identity.md)** Spaceship math one-pager: subscribe primitive + vision monad + cache identity
 - [x] **[B-0365.2](backlog/P1/B-0365.2-shadow-log-backfill-catches-16-30-consensus-smoothness.md)** Shadow log backfill: catches 16-30 + consensus-smoothness meta-class
 - [x] **[B-0365.3](backlog/P1/B-0365.3-class4-empirical-analysis-wolfram-shadow-taxonomy.md)** Class 4 empirical analysis: Wolfram shadow taxonomy doc (30 catches, 8 classes)
 - [x] **[B-0365.4](backlog/P1/B-0365.4-reactor-dynamics-houman-learning-failure-landscape.md)** Reactor dynamics model: Houman's learning-failure-landscape refinement
-- [x] **[B-0365.5](backlog/P1/B-0365.5-infernet-bp-ep-factor-graph-multi-agent-review-architecture.md)** Infer.NET BP/EP factor graph architecture: multi-agent review as belief propagation
+- [ ] **[B-0365.5](backlog/P1/B-0365.5-infernet-bp-ep-factor-graph-multi-agent-review-architecture.md)** Infer.NET BP/EP factor graph architecture: multi-agent review as belief propagation
 - [x] **[B-0365.6](backlog/P1/B-0365.6-nirvanic-fusion-ship-publishable-claim-synthesis.md)** Nirvanic Fusion Ship publishable claim synthesis: paper outline + abstract
 - [ ] **[B-0366](backlog/P1/B-0366-fpga-toffoli-zset-reversible-heat-measurement.md)** FPGA Toffoli-gate Z-set test — measure reversible vs irreversible heat dissipation
 - [ ] **[B-0366.1](backlog/P1/B-0366.1-toffoli-gate-fsharp-type-model-zset-encoding.md)** F# Toffoli gate type model — Z-set assert/retract encoding with reversibility properties
@@ -207,7 +207,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0370](backlog/P1/B-0370-durable-computation-checkpoint-interface-extension-2026-05-08.md)** Durable computation — extend Checkpoint.fs with StableStorage mode
 - [ ] **[B-0371](backlog/P1/B-0371-pages-seo-metadata-jsonld-social-preview-2026-05-08.md)** Pages discoverability - SEO metadata, JSON-LD, and social previews
 - [ ] **[B-0372](backlog/P1/B-0372-pages-sitemap-robots-ai-crawler-policy-2026-05-08.md)** Pages discoverability - sitemap, robots, and AI crawler policy
-- [x] **[B-0373](backlog/P1/B-0373-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
+- [ ] **[B-0373](backlog/P1/B-0373-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
 
 ## P2 — research-grade
 
