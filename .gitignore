@@ -175,3 +175,4 @@ Spine/
 # tools/alloy/AlloyRunner.java` on first test run. Regenerated; not source.
 tools/alloy/classes/
 .broadcasts/
+.concept-index.json
