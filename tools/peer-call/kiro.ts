@@ -27,7 +27,7 @@
 //   3 — input-firewall rejected the prompt as not work-extractable
 
 import { closeSync, mkdirSync, mkdtempSync, openSync, readSync, statSync, writeSync } from "node:fs";
-import { spawnSync } from "node:child_process";
+import { spawnSync, type SpawnSyncOptionsWithStringEncoding } from "node:child_process";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import {
@@ -285,11 +285,11 @@ function parseContextCmd(contextCmd: string): ContextCommand | ContextCommandErr
 }
 
 function runContextCmd(command: ContextCommand): string {
-  const options = {
+  const options: SpawnSyncOptionsWithStringEncoding = {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
     stdio: ["ignore", "pipe", "pipe"],
-  } as const;
+  };
   const result =
     command.executable === "git"
       ? spawnSync("git", command.args, options)
