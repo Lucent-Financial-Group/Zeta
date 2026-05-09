@@ -245,10 +245,10 @@ jobs:
               # SC2222 (later pattern shadowed by earlier one).
               src/*|tests/*|tools/*) code_changed=true ;;
               *.cs|*.fs|*.fsproj|*.csproj|*.sln) code_changed=true ;;
-              # Java surface: tools/alloy/AlloyRunner.java is the
-              # only first-party Java today; java is a mise-pinned
-              # runtime per .mise.toml.
-              *.java) code_changed=true ;;
+              # JVM surface: tools/alloy/AlloyRunner.java is the
+              # only first-party Java today. CodeQL java-kotlin
+              # extractor handles .java + .kt + .scala.
+              *.java|*.kt|*.scala) code_changed=true ;;
               *.py|pyproject.toml|requirements*.txt) code_changed=true ;;
               *.js|*.jsx|*.ts|*.tsx|*.mjs|*.cjs) code_changed=true ;;
               package.json|package-lock.json|tsconfig*.json) code_changed=true ;;
