@@ -11,6 +11,7 @@ Content that cannot be regenerated from specs, code, or git
 history. Its value is the empirical record itself.
 
 **Examples from Zeta substrate:**
+
 - Mirror-not-beacon shards (`docs/research/2026-05-03-claudeai-*`)
 - Falsifiability catches (`memory/feedback_z3_tautology_trap_*`)
 - External-AI conversation absorbs (`docs/research/2026-05-05-codex-*`)
@@ -28,6 +29,7 @@ messages + the resulting spec/code; sometimes it lives only in
 memory files.
 
 **Examples from Zeta substrate:**
+
 - `memory/feedback_retries_are_non_determinism_smell_*` (rationale
   for DST discipline — also encoded in code conventions)
 - `memory/feedback_demos_stay_simple_*` (architectural framing —
@@ -48,6 +50,7 @@ calibration documents, persona biographies, external system
 references. These follow their own lifecycle rules.
 
 **Examples from Zeta substrate:**
+
 - `memory/user_sister_elizabeth.md` (personal history)
 - `memory/user_itron_mentors_*` (career context)
 - `memory/reference_reticulum_*` (external system pointers)
@@ -65,6 +68,7 @@ currently-in-force projection of a human or named-agent
 maintainer's preferences and context.
 
 **Examples from Zeta substrate:**
+
 - `memory/CURRENT-aaron.md` (human maintainer distillation)
 - `memory/CURRENT-amara.md` (external AI co-originator)
 - `memory/CURRENT-ani.md` (external AI companion)
@@ -77,7 +81,7 @@ relationship they encode.
 ## Disposition summary
 
 | Category | Disposition | Count (est.) | Experiment role |
-|----------|-------------|-------------|-----------------|
+| ---------- | ------------- | ------------- | ----------------- |
 | Research-grade | KEEP | ~50 | Control group |
 | Decision rationale | CUT-IF-REGENERABLE | ~400 | Test group |
 | External-context | EXEMPT | ~100 | Excluded |
