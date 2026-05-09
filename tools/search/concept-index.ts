@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// concept-index.ts — B-0362
+// concept-index.ts — B-0362 (smallest safe slice, re-decomposed)
 // Materialized concept index: regex standing queries over the
 // corpus produce a term->file mapping. Rebuild is sub-second.
 //
