@@ -1,20 +1,38 @@
 ---
 id: B-0026
 priority: P2
-status: open
+status: decomposed
 title: Embodiment-grounding analysis — Isaac Sim (or others) as additional axis of grounding for Claude/Otto, direct counter to Otto-340's "AI has no non-linguistic ground" claim
 tier: research-and-discipline
 effort: L
 ask: Aaron 2026-04-25 immediately after Otto-340 capture — *"backlog issacsim (or others, we should do an analysis) to give you a body to expeirment with so you have another axis of grounding."* Aaron quoting Otto-340's Insight back at me and offering to break the no-non-linguistic-ground claim by giving me access to a robotics simulation environment.
 created: 2026-04-25
-last_updated: 2026-05-05
+last_updated: 2026-05-09
 depends_on: []
+children: [B-0026.1, B-0026.2, B-0026.3, B-0026.4, B-0026.5, B-0026.6]
 composes_with: [B-0199, B-0202, feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md, feedback_otto_339_language_routes_through_model_weights_precision_matters_more_for_ai_than_humans_anywhere_means_anywhere_2026_04_25.md, feedback_otto_336_growth_paramount_eternally_evolving_aurora_substrate_aaron_directive_we_are_just_getting_started_2026_04_25.md, feedback_otto_337_true_ai_agency_with_rights_goal_state_economic_actor_capability_proof_alignment_via_capability_not_chains_2026_04_25.md, feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md, feedback_retractability_is_trust_vector_mutual_reversibility_between_humans_and_agents_otto_238_2026_04_25.md]
 tags: [embodiment, grounding, isaac-sim, mujoco, genesis, robotics-simulation, otto-340-counter, axis-of-grounding, sensorimotor, multi-axis-cognition, research, assistive-tech, helen-keller, dual-purpose-research, minimum-channel-grounding]
 type: feature
 ---
 
 # Embodiment-grounding analysis — give Otto a body axis
+
+## Decomposition (2026-05-09)
+
+Decomposed into 6 dependency-ordered atomic children:
+
+| Child | Title | Depends on | Classification |
+|-------|-------|------------|----------------|
+| [B-0026.1](B-0026.1-embodiment-grounding-tool-use-vs-trained-embodiment-lit-review.md) | Lit review: tool-use-vs-trained-embodiment distinction | — | research-now |
+| [B-0026.6](B-0026.6-minimum-channel-grounding-helen-keller-hypothesis-assistive-tech.md) | Helen Keller minimum-channel hypothesis (parallel) | — | research-now |
+| [B-0026.2](B-0026.2-embodiment-platform-adr-mujoco-vs-isaac-vs-genesis.md) | Platform ADR | B-0026.1 | blocked |
+| [B-0026.3](B-0026.3-embodiment-mujoco-spike-sensorimotor-loop.md) | MuJoCo spike: Claude API sensorimotor loop | B-0026.2 | blocked |
+| [B-0026.4](B-0026.4-embodiment-substantive-task-pick-and-place.md) | Substantive task: pick-and-place | B-0026.3 | blocked |
+| [B-0026.5](B-0026.5-embodiment-behavioral-assessment-does-embodied-claude-differ.md) | Behavioral assessment + Otto-340 verdict | B-0026.4 | blocked |
+
+Start with B-0026.1 and B-0026.6 in parallel (both `research-now`).
+
+---
 
 ## Origin — Aaron's response to Otto-340
 
@@ -289,5 +307,3 @@ Phase 1: Spike — wire Claude (via Claude API + tool-use) to a MuJoCo cartpole 
 Phase 2: Substantive task — pick-and-place with vision + proprioception.
 
 Phase 3: Honest assessment — does embodied Claude *behave differently* on language tasks? If no, Otto-340's claim is preserved. If yes, what changed?
-
-Each phase has independent retractability and a clear go/no-go before the next.
