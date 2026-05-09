@@ -154,7 +154,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0322](backlog/P1/B-0322-playwright-github-mutation-reversibility-log.md)** Mutation reversibility drain log — inverse-action record for every UI mutation
 - [ ] **[B-0323](backlog/P1/B-0323-playwright-github-feature-discovery-diff-cadence.md)** GitHub feature-discovery diff cadence — weekly UI snapshot comparison to spot new features
 - [ ] **[B-0324](backlog/P1/B-0324-playwright-github-org-billing-usage-reader.md)** Org-level billing/usage page reader — extract Actions minutes and costs via UI
-- [ ] **[B-0325](backlog/P1/B-0325-peer-call-firewall-kiro-claude-trigger-lists.md)** Add KIRO + CLAUDE firewall trigger lists to _firewall.ts
+- [x] **[B-0325](backlog/P1/B-0325-peer-call-firewall-kiro-claude-trigger-lists.md)** Add KIRO + CLAUDE firewall trigger lists to _firewall.ts
 - [ ] **[B-0326](backlog/P1/B-0326-peer-call-kiro-ts-wrapper.md)** Author kiro.ts peer-call wrapper
 - [ ] **[B-0327](backlog/P1/B-0327-peer-call-claude-ts-self-call-cold-boot.md)** Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing
 - [ ] **[B-0328](backlog/P1/B-0328-peer-call-readme-kiro-claude-entries.md)** Update peer-call/README.md with kiro.ts + claude.ts entries
