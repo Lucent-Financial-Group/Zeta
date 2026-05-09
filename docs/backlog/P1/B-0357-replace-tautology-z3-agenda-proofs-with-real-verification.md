@@ -1,7 +1,9 @@
 ---
 id: B-0357
 priority: P1
-status: done
+status: closed
+closed: 2026-05-09
+closed_by: "Lemma 17 strengthened with stateA1≠stateA2 — all Z3 proofs now non-tautological (PR #2367)"
 title: "Replace tautology Z3 agenda/trajectory proofs with non-trivial verification"
 effort: M
 created: 2026-05-09
