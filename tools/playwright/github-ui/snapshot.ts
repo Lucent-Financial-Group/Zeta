@@ -49,7 +49,6 @@ export async function snapshotGitHubPage(
       timestamp: new Date().toISOString(),
       username: session.username,
       extracted,
-      rawSnapshotRef: undefined,
     };
   }, options as any);
 }
