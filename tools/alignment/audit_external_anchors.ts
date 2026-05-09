@@ -102,8 +102,10 @@ export interface AnchorEntry {
 
 // Matches [title](https://...) — captures title and URL.
 const MARKDOWN_LINK_RE = /\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g;
-// Matches bare https?://... not already inside a markdown link.
-const BARE_URL_RE = /(?<!\()https?:\/\/[^\s),\]"'`>]+/g;
+// Matches bare https?://... not already inside a markdown link (](url) pattern).
+// Uses (?<!\]\() to exclude only markdown-link URLs; plain parenthesized URLs
+// like (https://example.com) in prose are intentionally captured.
+const BARE_URL_RE = /(?<!\]\()https?:\/\/[^\s),\]"'`>]+/g;
 
 export function extractUrlsFromWindow(
   content: string,

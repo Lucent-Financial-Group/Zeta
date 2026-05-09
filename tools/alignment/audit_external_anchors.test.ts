@@ -114,6 +114,28 @@ describe("extractUrlsFromWindow", () => {
     expect(urls).toContain("https://example.com/far");
   });
 
+  test("parenthesized bare URL is captured (not excluded by markdown-link lookbehind)", () => {
+    const prose = [
+      "HC-5 is mentioned here",
+      "See also (https://example.com/bare) for reference",
+    ].join("\n");
+    const entries = extractUrlsFromWindow(prose, "HC-5", 5);
+    const urls = entries.map((e) => e.url);
+    expect(urls).toContain("https://example.com/bare");
+  });
+
+  test("markdown-link URL not double-counted as bare URL", () => {
+    const prose = [
+      "HC-6 is here",
+      "[title](https://example.com/mdlink)",
+    ].join("\n");
+    const entries = extractUrlsFromWindow(prose, "HC-6", 5);
+    const mdUrl = entries.filter((e) => e.url === "https://example.com/mdlink");
+    // captured exactly once; title populated from markdown link
+    expect(mdUrl).toHaveLength(1);
+    expect(mdUrl[0]?.title).toBe("title");
+  });
+
   test("deduplicates repeated URLs", () => {
     const repeated = [
       "HC-2 intro",
