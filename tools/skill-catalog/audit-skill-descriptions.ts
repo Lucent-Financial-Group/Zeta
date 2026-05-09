@@ -19,9 +19,18 @@ interface AuditResult {
 }
 
 function extractDescription(content: string): string | null {
-  // Match description: "..." or description: ... up to first \n or end
-  const m = content.match(/^\s*description:\s*["']?([^"'\n]+)["']?\s*$/m);
-  return m ? m[1].trim() : null;
+  // Capture full scalar up to end of line, then strip surrounding quotes.
+  // Using [^"'\n]+ would exclude apostrophes mid-sentence (e.g. "Zeta's").
+  const m = content.match(/^\s*description:\s*(.+?)\s*$/m);
+  if (!m) return null;
+  let val = m[1].trim();
+  if (
+    (val.startsWith('"') && val.endsWith('"')) ||
+    (val.startsWith("'") && val.endsWith("'"))
+  ) {
+    val = val.slice(1, -1).trim();
+  }
+  return val || null;
 }
 
 function auditDescriptions(): AuditResult {
@@ -66,4 +75,6 @@ function main() {
   console.log("\nNext step: run carving batches on flagged skills (one PR per 5).");
 }
 
-main();
+if (import.meta.main) {
+  main();
+}
