@@ -10,13 +10,9 @@
 // { file, sha1, matched, canonicalName, renamed }.
 // --apply: renames matched files to their canonical names.
 
-import { createHash } from "node:crypto";
 import {
-  closeSync,
-  openSync,
   readdirSync,
   readFileSync,
-  readSync,
   renameSync,
   existsSync,
 } from "node:fs";
@@ -135,22 +131,14 @@ export function parseDatfile(xml: string): ReadonlyMap<string, DatEntry> {
 
 // --- File hashing ---
 
-export function hashFileSha1(path: string): string {
-  const hash = createHash("sha1");
-  const fd = openSync(path, "r");
-  const buffer = Buffer.allocUnsafe(1024 * 1024);
-  try {
-    let bytesRead = 0;
-    do {
-      bytesRead = readSync(fd, buffer, 0, buffer.length, null);
-      if (bytesRead > 0) {
-        hash.update(buffer.subarray(0, bytesRead));
-      }
-    } while (bytesRead > 0);
-  } finally {
-    closeSync(fd);
+export async function hashFileSha1(path: string): Promise<string> {
+  const hasher = new Bun.CryptoHasher("sha1");
+  const file = Bun.file(path);
+  const stream = file.stream();
+  for await (const chunk of stream) {
+    hasher.update(chunk);
   }
-  return hash.digest("hex");
+  return hasher.digest("hex");
 }
 
 // --- Directory scanning ---
@@ -159,6 +147,7 @@ export function scanRomFiles(dir: string): readonly string[] {
   const files: string[] = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     if (!entry.isFile()) continue;
+    if (entry.name.startsWith(".")) continue;
     const ext = extname(entry.name).toLowerCase();
     if (ROM_EXTENSIONS.has(ext)) {
       files.push(join(dir, entry.name));
@@ -177,16 +166,16 @@ interface MatchResult {
   readonly renamed: boolean;
 }
 
-export function matchAndReport(
+export async function matchAndReport(
   datLookup: ReadonlyMap<string, DatEntry>,
   romFiles: readonly string[],
   apply: boolean,
-): readonly MatchResult[] {
+): Promise<readonly MatchResult[]> {
   const results: MatchResult[] = [];
   const usedNames = new Set<string>();
 
   for (const filePath of romFiles) {
-    const sha1 = hashFileSha1(filePath);
+    const sha1 = await hashFileSha1(filePath);
     const entry = datLookup.get(sha1);
     const currentName = basename(filePath);
 
@@ -302,7 +291,7 @@ function parseArgs(argv: readonly string[]): Args {
   return { datfile, dir, apply };
 }
 
-export function main(argv: readonly string[]): number {
+export async function main(argv: readonly string[]): Promise<number> {
   const args = parseArgs(argv);
 
   if (!existsSync(args.datfile)) {
@@ -326,7 +315,7 @@ export function main(argv: readonly string[]): number {
     return 0;
   }
 
-  const results = matchAndReport(lookup, romFiles, args.apply);
+  const results = await matchAndReport(lookup, romFiles, args.apply);
 
   const matched = results.filter((r) => r.matched);
   const unmatched = results.filter((r) => !r.matched);
@@ -344,5 +333,5 @@ export function main(argv: readonly string[]): number {
 }
 
 if (import.meta.main) {
-  process.exit(main(process.argv.slice(2)));
+  main(process.argv.slice(2)).then((code) => process.exit(code));
 }

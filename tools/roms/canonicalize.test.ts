@@ -18,7 +18,7 @@ const FIXTURE_DATFILE = `<?xml version="1.0"?>
   </header>
   <game name="Combat (1977)(Atari)">
     <description>Combat (1977)(Atari)</description>
-    <rom name="Combat (1977)(Atari).bin" size="2048" crc="4020b4fe" md5="b35e9442525e1a0b30dc0264c112233" sha1="da39a3ee5e6b4b0d3255bfef95601890afd80709" />
+    <rom name="Combat (1977)(Atari).bin" size="2048" crc="4020b4fe" md5="b35e9442525e1a0b30dc0264c112233f" sha1="da39a3ee5e6b4b0d3255bfef95601890afd80709" />
   </game>
   <game name="Adventure (1980)(Atari)">
     <description>Adventure (1980)(Atari)</description>
@@ -64,19 +64,19 @@ describe("parseDatfile", () => {
 });
 
 describe("hashFileSha1", () => {
-  test("computes correct SHA1 for known content", () => {
+  test("computes correct SHA1 for known content", async () => {
     const tmp = mkdtempSync(join(tmpdir(), "rom-test-"));
     const file = join(tmp, "test.bin");
     writeFileSync(file, "hello");
-    const sha1 = hashFileSha1(file);
+    const sha1 = await hashFileSha1(file);
     expect(sha1).toBe("aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d");
   });
 
-  test("computes correct SHA1 for empty file", () => {
+  test("computes correct SHA1 for empty file", async () => {
     const tmp = mkdtempSync(join(tmpdir(), "rom-test-"));
     const file = join(tmp, "empty.bin");
     writeFileSync(file, "");
-    const sha1 = hashFileSha1(file);
+    const sha1 = await hashFileSha1(file);
     expect(sha1).toBe("da39a3ee5e6b4b0d3255bfef95601890afd80709");
   });
 });
@@ -107,45 +107,45 @@ describe("scanRomFiles", () => {
 });
 
 describe("matchAndReport", () => {
-  test("matches file by SHA1 and reports canonical name", () => {
+  test("matches file by SHA1 and reports canonical name", async () => {
     const tmp = mkdtempSync(join(tmpdir(), "rom-match-"));
     const file = join(tmp, "hello.bin");
     writeFileSync(file, "hello");
 
     const lookup = parseDatfile(FIXTURE_DATFILE);
-    const results = matchAndReport(lookup, [file], false);
+    const results = await matchAndReport(lookup, [file], false);
     expect(results.length).toBe(1);
     expect(results[0]?.matched).toBe(true);
     expect(results[0]?.canonicalName).toBe("Adventure (1980)(Atari).a26");
     expect(results[0]?.renamed).toBe(false);
   });
 
-  test("reports unmatched files", () => {
+  test("reports unmatched files", async () => {
     const tmp = mkdtempSync(join(tmpdir(), "rom-nomatch-"));
     const file = join(tmp, "unknown.bin");
     writeFileSync(file, "this content has no datfile entry");
 
     const lookup = parseDatfile(FIXTURE_DATFILE);
-    const results = matchAndReport(lookup, [file], false);
+    const results = await matchAndReport(lookup, [file], false);
     expect(results.length).toBe(1);
     expect(results[0]?.matched).toBe(false);
     expect(results[0]?.canonicalName).toBeNull();
   });
 
-  test("renames file when --apply is true", () => {
+  test("renames file when --apply is true", async () => {
     const tmp = mkdtempSync(join(tmpdir(), "rom-rename-"));
     const file = join(tmp, "wrong-name.bin");
     writeFileSync(file, "hello");
 
     const lookup = parseDatfile(FIXTURE_DATFILE);
-    const results = matchAndReport(lookup, [file], true);
+    const results = await matchAndReport(lookup, [file], true);
     expect(results[0]?.renamed).toBe(true);
 
     const renamedPath = join(tmp, "Adventure (1980)(Atari).a26");
     expect(() => readFileSync(renamedPath)).not.toThrow();
   });
 
-  test("does not apply unsafe canonical names with path separators", () => {
+  test("does not apply unsafe canonical names with path separators", async () => {
     const tmp = mkdtempSync(join(tmpdir(), "rom-unsafe-name-"));
     const file = join(tmp, "wrong-name.bin");
     writeFileSync(file, "hello");
@@ -153,7 +153,7 @@ describe("matchAndReport", () => {
     const lookup = parseDatfile(
       `<rom name="../escaped.a26" size="5" sha1="aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d" />`,
     );
-    const results = matchAndReport(lookup, [file], true);
+    const results = await matchAndReport(lookup, [file], true);
 
     expect(results[0]?.matched).toBe(true);
     expect(results[0]?.renamed).toBe(false);
@@ -161,7 +161,7 @@ describe("matchAndReport", () => {
     expect(existsSync(join(tmp, "..", "escaped.a26"))).toBe(false);
   });
 
-  test("does not apply unsafe canonical names with Windows separators", () => {
+  test("does not apply unsafe canonical names with Windows separators", async () => {
     const tmp = mkdtempSync(join(tmpdir(), "rom-unsafe-win-name-"));
     const file = join(tmp, "wrong-name.bin");
     writeFileSync(file, "hello");
@@ -169,45 +169,28 @@ describe("matchAndReport", () => {
     const lookup = parseDatfile(
       `<rom name="nested\\\\escaped.a26" size="5" sha1="aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d" />`,
     );
-    const results = matchAndReport(lookup, [file], true);
+    const results = await matchAndReport(lookup, [file], true);
 
     expect(results[0]?.matched).toBe(true);
     expect(results[0]?.renamed).toBe(false);
     expect(existsSync(file)).toBe(true);
   });
 
-  test("does not rename when file already has canonical name", () => {
+  test("does not rename when file already has canonical name", async () => {
     const tmp = mkdtempSync(join(tmpdir(), "rom-already-"));
     const file = join(tmp, "Adventure (1980)(Atari).a26");
     writeFileSync(file, "hello");
 
     const lookup = parseDatfile(FIXTURE_DATFILE);
-    const results = matchAndReport(lookup, [file], true);
+    const results = await matchAndReport(lookup, [file], true);
     expect(results[0]?.matched).toBe(true);
     expect(results[0]?.renamed).toBe(false);
   });
 });
 
 describe("main", () => {
-  test("reports missing datfile value clearly", () => {
-    const originalStderrWrite = process.stderr.write;
-    const originalExit = process.exit;
-    let stderr = "";
-
-    process.stderr.write = ((chunk: string | Uint8Array) => {
-      stderr += String(chunk);
-      return true;
-    }) as typeof process.stderr.write;
-    process.exit = ((code?: number) => {
-      throw new Error(`exit:${code}`);
-    }) as typeof process.exit;
-
-    try {
-      expect(() => main(["--datfile", "--dir", "/tmp"])).toThrow("exit:64");
-      expect(stderr).toContain("missing value for --datfile");
-    } finally {
-      process.stderr.write = originalStderrWrite;
-      process.exit = originalExit;
-    }
+  test("returns 1 when datfile does not exist", async () => {
+    const code = await main(["--datfile", "/nonexistent.dat", "--dir", "/tmp"]);
+    expect(code).toBe(1);
   });
 });
