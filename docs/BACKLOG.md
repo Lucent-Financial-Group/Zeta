@@ -180,6 +180,14 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0345](backlog/P1/B-0345-document-recreation-findings-b0193.md)** Document recreation findings — research-grade preservation of experiment results
 - [ ] **[B-0346](backlog/P1/B-0346-backport-spec-gaps-to-openspec-b0193.md)** Back-port spec gaps to OpenSpec — close gaps the recreation experiment reveals
 - [ ] **[B-0347](backlog/P1/B-0347-carved-sentence-skill-descriptions-routing-budget.md)** Carved-sentence skill descriptions — fit 200+ skills into routing budget
+- [ ] **[B-0348](backlog/P1/B-0348-classify-claude-md-bullets-for-extraction.md)** Classify all CLAUDE.md bullets into extraction tiers
+- [ ] **[B-0349](backlog/P1/B-0349-extract-operational-discipline-bullets-to-rules.md)** Extract operational-discipline bullets to .claude/rules/
+- [ ] **[B-0350](backlog/P1/B-0350-extract-autonomy-identity-bullets-to-rules.md)** Extract autonomy/identity bullets to .claude/rules/
+- [ ] **[B-0351](backlog/P1/B-0351-extract-infrastructure-safety-bullets-to-rules.md)** Extract infrastructure/safety bullets to .claude/rules/
+- [ ] **[B-0352](backlog/P1/B-0352-extract-meta-governance-bullets-to-rules.md)** Extract meta/governance bullets to .claude/rules/
+- [ ] **[B-0353](backlog/P1/B-0353-write-bootstrap-process-claude-md.md)** Write bootstrap-process CLAUDE.md (<50 lines)
+- [ ] **[B-0354](backlog/P1/B-0354-fresh-instance-validation-bootstrap-claude-md.md)** Fresh-instance validation test for bootstrap CLAUDE.md
+- [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
 
 ## P2 — research-grade
 
