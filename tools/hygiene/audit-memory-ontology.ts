@@ -281,23 +281,39 @@ function applyFixes(
     }
   }
 
-  // Update MEMORY.md index if it exists
-  const memoryMdPath = join(memoryDir, "MEMORY.md");
-  try {
-    let memoryMd = readFileSync(memoryMdPath, "utf-8");
-    let updated = false;
-    for (const entry of toFix) {
-      if (memoryMd.includes(entry.file)) {
-        memoryMd = memoryMd.replaceAll(entry.file, entry.suggestedName);
-        updated = true;
+  // Update MEMORY.md index — only for files that actually renamed
+  // Build a map from old name -> new name for successfully renamed files only
+  const renamedMap = new Map<string, string>();
+  for (const line of fixed) {
+    const parts = line.split(" -> ");
+    if (parts.length === 2) {
+      renamedMap.set(parts[0]!, parts[1]!);
+    }
+  }
+
+  if (renamedMap.size > 0) {
+    const memoryMdPath = join(memoryDir, "MEMORY.md");
+    try {
+      let memoryMd = readFileSync(memoryMdPath, "utf-8");
+      let updated = false;
+      for (const [oldName, newName] of renamedMap) {
+        if (memoryMd.includes(oldName)) {
+          memoryMd = memoryMd.replaceAll(oldName, newName);
+          updated = true;
+        }
+      }
+      if (updated) {
+        writeFileSync(memoryMdPath, memoryMd, "utf-8");
+        fixed.push("MEMORY.md index updated");
+      }
+    } catch (e: unknown) {
+      // MEMORY.md not existing is fine; other I/O errors should be surfaced
+      const code = (e as NodeJS.ErrnoException)?.code;
+      if (code !== "ENOENT") {
+        const msg = e instanceof Error ? e.message : String(e);
+        errors.push(`Failed to update MEMORY.md: ${msg}`);
       }
     }
-    if (updated) {
-      writeFileSync(memoryMdPath, memoryMd, "utf-8");
-      fixed.push("MEMORY.md index updated");
-    }
-  } catch {
-    // MEMORY.md might not exist — not an error
   }
 
   return { fixed, errors };
