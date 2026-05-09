@@ -191,23 +191,19 @@ describe("matchAndReport", () => {
 describe("main", () => {
   test("reports missing datfile value clearly", () => {
     const originalStderrWrite = process.stderr.write;
-    const originalExit = process.exit;
     let stderr = "";
 
     process.stderr.write = ((chunk: string | Uint8Array) => {
       stderr += String(chunk);
       return true;
     }) as typeof process.stderr.write;
-    process.exit = ((code?: number) => {
-      throw new Error(`exit:${code}`);
-    }) as typeof process.exit;
 
     try {
-      expect(() => main(["--datfile"])).toThrow("exit:64");
+      const code = main(["--datfile"]);
+      expect(code).toBe(64);
       expect(stderr).toContain("missing value for --datfile");
     } finally {
       process.stderr.write = originalStderrWrite;
-      process.exit = originalExit;
     }
   });
 });
