@@ -175,7 +175,7 @@ describe("main", () => {
     expect(main(["list", "--store", dir])).toBe(0);
   });
 
-  test("list --json on empty store returns valid JSON", () => {
+  test("list --json on empty store returns 0", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-test-"));
     expect(main(["list", "--store", dir, "--json"])).toBe(0);
   });

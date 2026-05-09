@@ -4,7 +4,7 @@ priority: P1
 status: in-progress
 title: "Ace DLC — package manager CLI (install/verify/list)"
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 parent: B-0247
 depends_on: [B-0287]
 classification: buildable-now
