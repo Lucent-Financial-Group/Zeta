@@ -23,13 +23,11 @@
 //   64 — argument error
 
 import { readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { basename, join } from "node:path";
+import { join } from "node:path";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-
-type MemoryType = "feedback" | "user" | "project" | "reference";
 
 interface MismatchEntry {
   readonly file: string;
@@ -58,13 +56,6 @@ interface Args {
 // Constants
 // ---------------------------------------------------------------------------
 
-const VALID_TYPES: ReadonlySet<string> = new Set([
-  "feedback",
-  "user",
-  "project",
-  "reference",
-]);
-
 const SKIP_FILES: ReadonlySet<string> = new Set([
   "MEMORY.md",
   "README.md",
@@ -87,13 +78,13 @@ function parseArgs(): Args {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === "--memory-dir" && i + 1 < args.length) {
-      memoryDir = args[++i];
+      memoryDir = args[++i]!;
     } else if (arg === "--json") {
       json = true;
     } else if (arg === "--fix") {
       fix = true;
     } else if (arg === "--limit" && i + 1 < args.length) {
-      const n = parseInt(args[++i], 10);
+      const n = parseInt(args[++i]!, 10);
       if (isNaN(n) || n < 1) {
         console.error("error: --limit must be a positive integer");
         process.exit(64);
@@ -125,7 +116,7 @@ Options:
  */
 function extractPrefix(filename: string): string | null {
   const match = filename.match(/^(feedback|user|project|reference)_/);
-  return match ? match[1] : null;
+  return match ? match[1]! : null;
 }
 
 /**
@@ -142,7 +133,7 @@ function extractType(content: string): string | null {
   const typeMatch = frontmatter.match(/^type:\s*(.+)$/m);
   if (!typeMatch) return null;
 
-  return typeMatch[1].trim();
+  return typeMatch[1]!.trim();
 }
 
 /**
