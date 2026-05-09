@@ -185,14 +185,36 @@ function heartbeat(): void {
                     "-w",
                     "--model", claudeModel,
                     "--permission-mode", "auto",
+                    "--output-format", "json",
                 ], claudeTimeoutMs);
 
                 claudeStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
                 log(`claude work cycle end run_id=${runId} mode=${workMode} model=${claudeModel} status=${gate.status}`);
 
-                const prMatch = workMode === "pickup"
-                    ? gate.stdout.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/)
-                    : null;
+                let inputTokens = 0;
+                let outputTokens = 0;
+                let cacheReadTokens = 0;
+                let cacheCreationTokens = 0;
+                let costUsd = 0;
+                let claudeResult = "";
+                let prMatch: RegExpMatchArray | null = null;
+                try {
+                    const parsed = JSON.parse(gate.stdout);
+                    inputTokens = parsed.usage?.input_tokens ?? 0;
+                    outputTokens = parsed.usage?.output_tokens ?? 0;
+                    cacheReadTokens = parsed.usage?.cache_read_input_tokens ?? 0;
+                    cacheCreationTokens = parsed.usage?.cache_creation_input_tokens ?? 0;
+                    costUsd = parsed.total_cost_usd ?? 0;
+                    claudeResult = parsed.result ?? "";
+                    if (workMode === "pickup") {
+                        prMatch = claudeResult.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/);
+                    }
+                } catch {
+                    if (workMode === "pickup") {
+                        prMatch = gate.stdout.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/);
+                    }
+                }
+
                 const rating = {
                     run_id: runId,
                     model: claudeModel,
@@ -204,8 +226,13 @@ function heartbeat(): void {
                     stderr_lines: lines(gate.stderr).length,
                     produced_pr: !!prMatch,
                     pr_number: prMatch ? Number(prMatch[1]) : null,
-                    had_build_error: /Build FAILED/i.test(gate.stdout) || /[1-9]\d*\s+Error\(s\)/.test(gate.stdout) || gate.stderr.includes("error FS"),
-                    had_test_failure: /Failed:\s*[1-9]/.test(gate.stdout) || /Test Run Failed/.test(gate.stdout),
+                    had_build_error: /Build FAILED/i.test(claudeResult) || /[1-9]\d*\s+Error\(s\)/.test(claudeResult) || gate.stderr.includes("error FS"),
+                    had_test_failure: /Failed:\s*[1-9]/.test(claudeResult) || /Test Run Failed/.test(claudeResult),
+                    input_tokens: inputTokens,
+                    output_tokens: outputTokens,
+                    cache_read_tokens: cacheReadTokens,
+                    cache_creation_tokens: cacheCreationTokens,
+                    cost_usd: costUsd,
                 };
                 appendFileSync(ratingsFile, JSON.stringify(rating) + "\n");
 
@@ -218,8 +245,9 @@ function heartbeat(): void {
                     updated_at: nowIso(),
                 }, null, 2));
 
-                if (gate.stdout.trim().length > 0) {
-                    appendFileSync(join(logDir, "ticks.log"), `\n--- ${runId} claude ${workMode} ---\n${gate.stdout}\n`);
+                const logContent = claudeResult || gate.stdout;
+                if (logContent.trim().length > 0) {
+                    appendFileSync(join(logDir, "ticks.log"), `\n--- ${runId} claude ${workMode} model=${claudeModel} in=${inputTokens} out=${outputTokens} cache_read=${cacheReadTokens} cache_create=${cacheCreationTokens} cost=$${costUsd.toFixed(4)} ---\n${logContent}\n`);
                 }
                 if (gate.stderr.trim().length > 0) {
                     appendFileSync(join(logDir, "ticks.err"), `\n--- ${runId} claude ${workMode} ---\n${gate.stderr}\n`);
