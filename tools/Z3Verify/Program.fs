@@ -318,25 +318,25 @@ let main _ =
 
     // 13. Agenda fusion destroys unique direction.
     //     Model each agenda as a predicate over trajectories.
-    //       shared       = Aaron ∩ Otto
-    //       AaronUnique  = Aaron - Otto
-    //       OttoUnique   = Otto - Aaron
-    //     If Aaron and Otto are fused (same membership for every
+    //       shared       = AgendaA ∩ AgendaB
+    //       AgendaAUnique  = AgendaA - AgendaB
+    //       AgendaBUnique   = AgendaB - AgendaA
+    //     If AgendaA and AgendaB are fused (same membership for every
     //     trajectory), then no trajectory can belong to either unique
     //     direction. UNSAT below means fusion and uniqueness cannot
     //     coexist.
     let agendaFusionDestroysUniqueDirection =
         "(declare-sort Trajectory)\n" +
-        "(declare-fun Aaron (Trajectory) Bool)\n" +
-        "(declare-fun Otto (Trajectory) Bool)\n" +
+        "(declare-fun AgendaA (Trajectory) Bool)\n" +
+        "(declare-fun AgendaB (Trajectory) Bool)\n" +
         "(define-fun Shared ((t Trajectory)) Bool\n" +
-        "  (and (Aaron t) (Otto t)))\n" +
-        "(define-fun AaronUnique ((t Trajectory)) Bool\n" +
-        "  (and (Aaron t) (not (Otto t))))\n" +
-        "(define-fun OttoUnique ((t Trajectory)) Bool\n" +
-        "  (and (Otto t) (not (Aaron t))))\n" +
-        "(assert (forall ((t Trajectory)) (= (Aaron t) (Otto t))))\n" +
-        "(assert (exists ((t Trajectory)) (or (AaronUnique t) (OttoUnique t))))\n" +
+        "  (and (AgendaA t) (AgendaB t)))\n" +
+        "(define-fun AgendaAUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (not (AgendaB t))))\n" +
+        "(define-fun AgendaBUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaB t) (not (AgendaA t))))\n" +
+        "(assert (forall ((t Trajectory)) (= (AgendaA t) (AgendaB t))))\n" +
+        "(assert (exists ((t Trajectory)) (or (AgendaAUnique t) (AgendaBUnique t))))\n" +
         "(check-sat)\n"
     prove "Agenda fusion destroys unique direction" agendaFusionDestroysUniqueDirection
 
@@ -347,16 +347,16 @@ let main _ =
     //     unique. UNSAT means the membrane holds.
     let sharedTrajectoriesAreNotUniqueDirection =
         "(declare-sort Trajectory)\n" +
-        "(declare-fun Aaron (Trajectory) Bool)\n" +
-        "(declare-fun Otto (Trajectory) Bool)\n" +
+        "(declare-fun AgendaA (Trajectory) Bool)\n" +
+        "(declare-fun AgendaB (Trajectory) Bool)\n" +
         "(define-fun Shared ((t Trajectory)) Bool\n" +
-        "  (and (Aaron t) (Otto t)))\n" +
-        "(define-fun AaronUnique ((t Trajectory)) Bool\n" +
-        "  (and (Aaron t) (not (Otto t))))\n" +
-        "(define-fun OttoUnique ((t Trajectory)) Bool\n" +
-        "  (and (Otto t) (not (Aaron t))))\n" +
+        "  (and (AgendaA t) (AgendaB t)))\n" +
+        "(define-fun AgendaAUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (not (AgendaB t))))\n" +
+        "(define-fun AgendaBUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaB t) (not (AgendaA t))))\n" +
         "(assert (exists ((t Trajectory))\n" +
-        "  (and (Shared t) (or (AaronUnique t) (OttoUnique t)))))\n" +
+        "  (and (Shared t) (or (AgendaAUnique t) (AgendaBUnique t)))))\n" +
         "(check-sat)\n"
     prove "Shared trajectories are disjoint from unique directions" sharedTrajectoriesAreNotUniqueDirection
 

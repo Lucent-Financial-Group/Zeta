@@ -261,20 +261,20 @@ let ``Z3 proves Merkle combine is injective when hash is collision-free`` () =
 [<Fact>]
 let ``Z3 proves agenda fusion destroys unique direction`` () =
     // Agenda predicates over trajectories:
-    // shared = Aaron ∩ Otto, unique = set difference.
-    // If Aaron and Otto are fused, no unique trajectory can exist.
+    // shared = AgendaA ∩ AgendaB, unique = set difference.
+    // If AgendaA and AgendaB are fused, no unique trajectory can exist.
     let script =
         "(declare-sort Trajectory)\n" +
-        "(declare-fun Aaron (Trajectory) Bool)\n" +
-        "(declare-fun Otto (Trajectory) Bool)\n" +
+        "(declare-fun AgendaA (Trajectory) Bool)\n" +
+        "(declare-fun AgendaB (Trajectory) Bool)\n" +
         "(define-fun Shared ((t Trajectory)) Bool\n" +
-        "  (and (Aaron t) (Otto t)))\n" +
-        "(define-fun AaronUnique ((t Trajectory)) Bool\n" +
-        "  (and (Aaron t) (not (Otto t))))\n" +
-        "(define-fun OttoUnique ((t Trajectory)) Bool\n" +
-        "  (and (Otto t) (not (Aaron t))))\n" +
-        "(assert (forall ((t Trajectory)) (= (Aaron t) (Otto t))))\n" +
-        "(assert (exists ((t Trajectory)) (or (AaronUnique t) (OttoUnique t))))\n" +
+        "  (and (AgendaA t) (AgendaB t)))\n" +
+        "(define-fun AgendaAUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (not (AgendaB t))))\n" +
+        "(define-fun AgendaBUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaB t) (not (AgendaA t))))\n" +
+        "(assert (forall ((t Trajectory)) (= (AgendaA t) (AgendaB t))))\n" +
+        "(assert (exists ((t Trajectory)) (or (AgendaAUnique t) (AgendaBUnique t))))\n" +
         "(check-sat)\n"
     z3ScriptHolds "agenda fusion destroys unique direction" script
 
@@ -285,16 +285,16 @@ let ``Z3 proves shared trajectories are disjoint from unique directions`` () =
     // This asks Z3 for a trajectory that is both shared and unique.
     let script =
         "(declare-sort Trajectory)\n" +
-        "(declare-fun Aaron (Trajectory) Bool)\n" +
-        "(declare-fun Otto (Trajectory) Bool)\n" +
+        "(declare-fun AgendaA (Trajectory) Bool)\n" +
+        "(declare-fun AgendaB (Trajectory) Bool)\n" +
         "(define-fun Shared ((t Trajectory)) Bool\n" +
-        "  (and (Aaron t) (Otto t)))\n" +
-        "(define-fun AaronUnique ((t Trajectory)) Bool\n" +
-        "  (and (Aaron t) (not (Otto t))))\n" +
-        "(define-fun OttoUnique ((t Trajectory)) Bool\n" +
-        "  (and (Otto t) (not (Aaron t))))\n" +
+        "  (and (AgendaA t) (AgendaB t)))\n" +
+        "(define-fun AgendaAUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (not (AgendaB t))))\n" +
+        "(define-fun AgendaBUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaB t) (not (AgendaA t))))\n" +
         "(assert (exists ((t Trajectory))\n" +
-        "  (and (Shared t) (or (AaronUnique t) (OttoUnique t)))))\n" +
+        "  (and (Shared t) (or (AgendaAUnique t) (AgendaBUnique t)))))\n" +
         "(check-sat)\n"
     z3ScriptHolds "shared trajectories disjoint from unique directions" script
 
