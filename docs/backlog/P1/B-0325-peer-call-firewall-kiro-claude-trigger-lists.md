@@ -1,7 +1,7 @@
 ---
 id: B-0325
 priority: P1
-status: open
+status: closed
 title: "Add KIRO + CLAUDE firewall trigger lists to _firewall.ts"
 tier: peer-call-substrate
 effort: XS
@@ -45,7 +45,7 @@ cross-file dependency on an unmerged sibling.
 
 ## Done-criteria
 
-- [ ] `KIRO_SUBSTANTIVE_TRIGGERS` exported from `_firewall.ts`
-- [ ] `CLAUDE_SUBSTANTIVE_TRIGGERS` exported from `_firewall.ts`
-- [ ] Both extend `DEFAULT_SUBSTANTIVE_TRIGGERS` (spread pattern)
-- [ ] `bun run typecheck` passes
+- [x] `KIRO_SUBSTANTIVE_TRIGGERS` exported from `_firewall.ts`
+- [x] `CLAUDE_SUBSTANTIVE_TRIGGERS` exported from `_firewall.ts`
+- [x] Both extend `DEFAULT_SUBSTANTIVE_TRIGGERS` (spread pattern)
+- [x] `bun run typecheck` passes (scoped to `tools/peer-call/`; repo-wide failures are pre-existing in `snapshot.ts`, unrelated to this item)
