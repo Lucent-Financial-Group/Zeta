@@ -111,7 +111,7 @@ const updatedDefaultPayload = {
   ],
 };
 
-async function main(): Promise<void> {
+export async function main(): Promise<void> {
   const dryRun = process.argv.includes("--dry-run");
 
   console.log("B-0266: Review Policy ruleset migration");
@@ -127,17 +127,32 @@ async function main(): Promise<void> {
     );
     console.log(JSON.stringify(updatedDefaultPayload, null, 2));
     console.log();
-    console.log("[DRY RUN] Would re-snapshot expected.json");
+    console.log("[DRY RUN] Would re-snapshot expected.json for same repo");
     return;
   }
 
-  console.log("Step 1: Creating Review Policy ruleset...");
-  const created = (await ghApi(
-    "POST",
+  // Preflight: ensure no duplicate "Review Policy" ruleset (idempotency)
+  console.log("Preflight: checking for existing Review Policy ruleset...");
+  const existingRulesets = (await ghApi(
+    "GET",
     `repos/${OWNER}/${REPO}/rulesets`,
-    reviewPolicyPayload,
-  )) as { id: number; name: string };
-  console.log(`  Created ruleset "${created.name}" (id: ${created.id})`);
+  )) as Array<{ id: number; name: string }>;
+  const existingReviewPolicy = existingRulesets.find(
+    (r) => r.name === "Review Policy",
+  );
+  if (existingReviewPolicy) {
+    console.log(
+      `  "Review Policy" ruleset already exists (id: ${existingReviewPolicy.id}) — skipping create`,
+    );
+  } else {
+    console.log("Step 1: Creating Review Policy ruleset...");
+    const created = (await ghApi(
+      "POST",
+      `repos/${OWNER}/${REPO}/rulesets`,
+      reviewPolicyPayload,
+    )) as { id: number; name: string };
+    console.log(`  Created ruleset "${created.name}" (id: ${created.id})`);
+  }
   console.log();
 
   console.log(
@@ -151,10 +166,12 @@ async function main(): Promise<void> {
   console.log("  Default ruleset updated (3 rules: deletion, non_fast_forward, required_linear_history)");
   console.log();
 
-  console.log("Step 3: Re-snapshotting expected.json...");
+  console.log("Step 3: Re-snapshotting expected.json (targeting same repo)...");
   const snapshotResult = await run([
     "bun",
     "tools/hygiene/snapshot-github-settings.ts",
+    "--repo",
+    `${OWNER}/${REPO}`,
   ]);
   if (snapshotResult.exitCode !== 0) {
     console.error("  Snapshot failed:", snapshotResult.stderr);
@@ -169,7 +186,9 @@ async function main(): Promise<void> {
   console.log("  bun tools/hygiene/check-github-settings-drift.ts");
 }
 
-main().catch((err) => {
-  console.error("Migration failed:", err);
-  process.exit(1);
-});
+if (import.meta.main) {
+  main().catch((err) => {
+    console.error("Migration failed:", err);
+    process.exit(1);
+  });
+}
