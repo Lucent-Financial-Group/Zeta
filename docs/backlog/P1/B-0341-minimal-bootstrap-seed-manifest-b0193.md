@@ -1,7 +1,7 @@
 ---
 id: B-0341
 priority: P1
-status: open
+status: done
 title: Minimal bootstrap seed manifest — exact file set for the recreation test repo
 tier: foundation
 effort: S
