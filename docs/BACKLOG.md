@@ -24,8 +24,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0305](backlog/P0/B-0305-mechanical-auth-check-skill-body-2026-05-08.md)** Mechanical authorization check — skill body (SKILL.md via skill-creator)
 - [x] **[B-0306](backlog/P0/B-0306-mechanical-auth-check-pace-extractor-ts-2026-05-08.md)** Mechanical authorization check — pace-instruction extractor + test fixtures
 - [x] **[B-0307](backlog/P0/B-0307-mechanical-auth-check-source-recency-resolver-2026-05-08.md)** Mechanical authorization check — source-filter + recency resolver
-- [ ] **[B-0308](backlog/P0/B-0308-mechanical-auth-check-loop-integration-2026-05-08.md)** Mechanical authorization check — autonomous-loop tick-start integration
-- [ ] **[B-0309](backlog/P0/B-0309-mechanical-auth-check-claude-md-pointer-2026-05-08.md)** Mechanical authorization check — CLAUDE.md discoverable-skill pointer
+- [x] **[B-0308](backlog/P0/B-0308-mechanical-auth-check-loop-integration-2026-05-08.md)** Mechanical authorization check — autonomous-loop tick-start integration
+- [x] **[B-0309](backlog/P0/B-0309-mechanical-auth-check-claude-md-pointer-2026-05-08.md)** Mechanical authorization check — CLAUDE.md discoverable-skill pointer
 
 ## P1 — within 2-3 rounds
 
