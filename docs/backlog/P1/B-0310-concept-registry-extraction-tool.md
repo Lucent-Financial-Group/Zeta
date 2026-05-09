@@ -7,7 +7,7 @@ tier: substrate-quality
 effort: S
 parent: B-0060
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: []
 composes_with: [B-0060, B-0311]
 tags: [substrate-quality, tooling, concept-registry, human-lineage]
@@ -47,11 +47,15 @@ anchoring work under B-0060.
   "concepts": [
     {
       "id": "HC-1",
-      "class": "alignment-clause",
+      "conceptClass": "alignment-clause",
       "source": "docs/ALIGNMENT.md",
-      "label": "..."
+      "label": "...",
+      "anchor": "optional-human-lineage-anchor"
     }
-  ]
+  ],
+  "summary": {
+    "alignment-clause": 7
+  }
 }
 ```
 
