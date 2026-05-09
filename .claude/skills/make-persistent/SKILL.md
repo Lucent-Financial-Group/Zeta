@@ -60,6 +60,7 @@ Key settings in `.claude/bin/claude-loop-tick.ts`:
 ### macOS
 
 ```bash
+BUN_PATH="$(which bun)"
 cat > ~/Library/LaunchAgents/com.zeta.claude-loop.plist << 'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
@@ -118,9 +119,9 @@ cat > ~/.config/systemd/user/zeta-claude-loop.service << EOF
 [Unit]
 Description=Zeta Claude Loop
 [Service]
+Environment=ZETA_CLAUDE_LOOP_RUN_CLAUDE=1
 ExecStart=$BUN_PATH $LOOP_DIR/.claude/bin/claude-loop-tick.ts
 WorkingDirectory=$LOOP_DIR
-Environment=ZETA_CLAUDE_LOOP_RUN_CLAUDE=1
 Restart=always
 RestartSec=60
 [Install]
