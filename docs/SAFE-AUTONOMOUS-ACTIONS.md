@@ -13,6 +13,7 @@ auto-delete, no force-push, no permanent state changes).
 | Read broadcasts | Read peer `.md` files from `~/.local/share/zeta-broadcasts/` at tick start | Read-only |
 | Write own broadcast | Overwrite own `.md` file with current status at tick end | Yes (overwritten next tick) |
 | Sync control clone | `git pull --ff-only` on the loop's control clone after merges | Yes (fast-forward only) |
+| Write shadow entry | `bun tools/shadow-outlet/outlet.ts write --agent <name> --content "..."` to `/tmp/zeta-shadow/` for ephemeral scratch/exploration | Yes (OS-erased; `clean` subcommand available) |
 
 ## Tier 2 — next to implement
 
@@ -71,3 +72,4 @@ New actions are proposed via PR with:
 - `.claude/bin/claude-forward-tick.ts` (Otto)
 - `.codex/bin/codex-loop-tick.ts` (Vera)
 - `.cursor/bin/riven-loop-tick.ts` (Riven)
+- `tools/shadow-outlet/outlet.ts` — shadow outlet CLI (B-0212 Phase 1)

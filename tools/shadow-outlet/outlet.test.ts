@@ -1,8 +1,9 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
+import { getEphemeralShadowOutletDir, ensureEphemeralShadowOutlet } from "./ephemeral.ts";
 
 const SCRIPT = join(import.meta.dir, "outlet.ts");
 let TEST_DIR: string;
@@ -119,5 +120,54 @@ describe("shadow-outlet", () => {
     const l = run("list", "--json");
     expect(l.exitCode).toBe(0);
     expect(JSON.parse(l.stdout)).toHaveLength(0);
+  });
+});
+
+describe("ephemeral library", () => {
+  let savedDir: string | undefined;
+
+  beforeEach(() => {
+    savedDir = process.env.ZETA_SHADOW_DIR;
+    const tmp = mkdtempSync(join(tmpdir(), "zeta-eph-test-"));
+    rmSync(tmp, { recursive: true, force: true }); // start without the dir
+    process.env.ZETA_SHADOW_DIR = tmp;
+  });
+
+  afterEach(() => {
+    const dir = process.env.ZETA_SHADOW_DIR;
+    if (dir && existsSync(dir)) rmSync(dir, { recursive: true, force: true });
+    if (savedDir !== undefined) {
+      process.env.ZETA_SHADOW_DIR = savedDir;
+    } else {
+      delete process.env.ZETA_SHADOW_DIR;
+    }
+  });
+
+  test("getEphemeralShadowOutletDir returns ZETA_SHADOW_DIR when set", () => {
+    const dir = getEphemeralShadowOutletDir();
+    expect(dir).toBe(process.env.ZETA_SHADOW_DIR);
+  });
+
+  test("ensureEphemeralShadowOutlet creates directory and returns path", () => {
+    const dir = ensureEphemeralShadowOutlet();
+    expect(existsSync(dir)).toBe(true);
+    expect(dir).toBe(process.env.ZETA_SHADOW_DIR);
+  });
+
+  test("ensureEphemeralShadowOutlet is idempotent — safe to call twice", () => {
+    const first = ensureEphemeralShadowOutlet();
+    const second = ensureEphemeralShadowOutlet();
+    expect(first).toBe(second);
+    expect(existsSync(first)).toBe(true);
+  });
+
+  test("ensureEphemeralShadowOutlet throws when path is a file not a directory", () => {
+    const dir = process.env.ZETA_SHADOW_DIR!;
+    // Create the parent so we can write a file at the target path
+    const parent = join(dir, "..");
+    if (!existsSync(parent)) mkdtempSync(parent); // ensure parent exists
+    writeFileSync(dir, "not a directory");
+    expect(() => ensureEphemeralShadowOutlet()).toThrow();
+    rmSync(dir, { force: true });
   });
 });
