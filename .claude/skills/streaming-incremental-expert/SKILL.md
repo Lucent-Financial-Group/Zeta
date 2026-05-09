@@ -1,6 +1,6 @@
 ---
 name: streaming-incremental-expert
-description: DBSP / Timely Dataflow streaming-incremental execution — delta-stream composition, retraction-native IVM, standing queries, virtual vs wall time, watermarks/frontiers.
+description: DBSP / Timely Dataflow — delta-stream composition, retraction-native IVM, standing queries, watermarks, frontiers.
 ---
 
 # Streaming / Incremental Expert — The Base Substrate

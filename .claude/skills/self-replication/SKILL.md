@@ -1,6 +1,6 @@
 ---
 name: self-replication
-description: Makes an agent persistent on the current machine. Detects OS, creates service worktree, deploys tick script, registers background service, verifies heartbeat. Also handles SSH remote replication to other machines. The skill that makes the factory portable.
+description: Agent persistence — OS-detect, service worktree, tick script deploy, daemon register, heartbeat verify; SSH remote replication.
 when-to-wear: When setting up a new machine as a factory node, when replicating to a remote machine via SSH, when recovering a broken background service, or when upgrading an existing service to the latest tick script.
 ---
 
