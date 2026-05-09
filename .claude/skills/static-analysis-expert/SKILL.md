@@ -1,6 +1,6 @@
 ---
 name: static-analysis-expert
-description: Capability skill ("hat") — umbrella for every static-analysis tool in Zeta's toolbelt. Owns cross-tool policy: which analyser class covers which concern (lint, correctness, security, perf, style, public-API, banned-API), severity-baseline discipline, warn-as-error gating, suppression policy, false-positive triage, CI integration, analyser packaging. Wear this when framing the static-analysis strategy, deciding which tool picks up a new concern, debating a severity change, or reconciling overlapping diagnostics between Roslyn analyzers, Roslyn generators, Semgrep, CodeQL, SonarQube, F# analyzers, or Stryker. Defers to each tool's narrow for rule-authoring specifics — `roslyn-analyzers-expert`, `roslyn-generators-expert`, `fsharp-analyzers-expert`, `semgrep-expert`, `semgrep-rule-authoring`, `codeql-expert`, `sonar-issue-fixer`, `stryker-expert` — and to `formal-verification-expert` for proof-tool routing.
+description: Static analysis umbrella — cross-tool policy, severity baselines, warn-as-error, suppression triage, CI integration.
 ---
 
 # Static Analysis Expert — Cross-Tool Policy Umbrella
