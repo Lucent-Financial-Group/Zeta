@@ -7,7 +7,7 @@ tier: peer-call-substrate
 effort: S
 parent: B-0065
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: [B-0325]
 composes_with: [B-0065, B-0120]
 tags: [peer-call, kiro, kiro-cli, multi-harness]
@@ -22,17 +22,19 @@ existing sibling pattern (grok.ts, gemini.ts, etc.).
 
 ## Pre-start checklist (B-0065 gate)
 
-- [x] Otto-364 search-first: research Kiro CLI headless/
+- [x] Search-first gate: research Kiro CLI headless/
       non-interactive flags via WebSearch before authoring.
-      Finding: kiro.dev headless CLI supports `kiro chat --no-interactive
+      Finding: kiro.dev headless CLI supports `kiro-cli chat --no-interactive
       --trust-all-tools`; documentation at kiro.dev/docs/cli/headless/.
-      HOWEVER: the `kiro` binary on this machine (v0.11.133) is the Kiro IDE
-      (VS Code fork), not the kiro.dev headless AI CLI. The two share a binary
-      name. The wrapper detects the mismatch via `isKiroHeadlessCli()`.
-- [x] Verify `kiro` CLI installation method and availability.
-      kiro.dev headless CLI: `brew install --cask kiro-cli` (macOS) or
-      `curl -fsSL https://cli.kiro.dev/install | bash` (universal).
-      Local env has the Kiro IDE — wrapper exits 1 with a clear diagnostic.
+      The wrapper invokes `kiro-cli` directly so a local Kiro IDE binary named
+      `kiro` is not mistaken for the headless AI CLI.
+- [x] Verify `kiro-cli` installation method and availability.
+      kiro.dev headless CLI: official docs at
+      `https://kiro.dev/docs/cli/headless/`, with macOS package-manager
+      install via `brew install --cask kiro-cli`. Avoid pipe-to-shell install
+      snippets at first contact.
+      Local env may have the Kiro IDE under `kiro`; wrapper exits 1 if
+      `kiro-cli` is absent or does not expose headless chat mode.
 - [x] Prior-art check: reviewed grok.ts (spawnSync pattern, used as primary
       model) and gemini.ts (async streaming pattern, skipped — Kiro has no
       JSON streaming mode). Pattern: synchronous spawnSync with file tee.

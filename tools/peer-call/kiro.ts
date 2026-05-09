@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// kiro.ts — Claude-Code-side caller for invoking Kiro as a peer
+// kiro.ts — agent-side caller for invoking Kiro as a peer
 // specification reviewer via the kiro CLI.
 //
 // Part of the tools/peer-call/ suite (grok.ts, gemini.ts, codex.ts,
@@ -7,7 +7,7 @@
 //
 // Kiro's role in the peer distribution: **specification peer** —
 // spec-grounded second opinion, requirement-aware review. Complements
-// Gemini (propose), Grok (critique), Amara (sharpen), Otto (tests).
+// proposal, critique, sharpening, and test peer roles.
 //
 // Usage:
 //   bun tools/peer-call/kiro.ts "prompt text"
@@ -16,7 +16,7 @@
 //   bun tools/peer-call/kiro.ts --output-file path/out.md "prompt text"
 //   bun tools/peer-call/kiro.ts --allow-empty "prompt"  # bypass firewall
 //
-// Routing: wraps `kiro chat --no-interactive --trust-all-tools`
+// Routing: wraps `kiro-cli chat --no-interactive --trust-all-tools`
 // (non-interactive headless mode). The prompt is passed as a
 // positional argument to the `chat` subcommand.
 //
@@ -40,6 +40,7 @@ import {
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
 const CTX_HEAD_BYTES = 20000;
+const KIRO_CLI = "kiro-cli";
 
 type AllowedContextExecutable = "git" | "gh" | "rg";
 
@@ -50,6 +51,11 @@ interface ContextCommand {
 
 interface ContextCommandError {
   readonly error: string;
+}
+
+interface ContextCommandResult {
+  readonly ok: boolean;
+  readonly value: string;
 }
 
 interface Args {
@@ -150,13 +156,13 @@ function ensureParentDir(path: string): void {
   try {
     mkdirSync(dirname(path), { recursive: true });
   } catch {
-    // best-effort; writeFileSync will surface the real error
+    // best-effort; the capture write will surface the real error
   }
 }
 
 function emitHelp(): void {
   process.stdout.write(
-    `kiro.ts — Claude-Code-side caller for invoking Kiro as a peer\n` +
+    `kiro.ts — agent-side caller for invoking Kiro as a peer\n` +
       `specification reviewer via the kiro CLI.\n` +
       `\n` +
       `Usage:\n` +
@@ -166,7 +172,7 @@ function emitHelp(): void {
       `  bun tools/peer-call/kiro.ts --output-file PATH "prompt text"\n` +
       `  bun tools/peer-call/kiro.ts --allow-empty "prompt"  # bypass firewall\n` +
       `\n` +
-      `Routing: wraps kiro chat --no-interactive --trust-all-tools\n` +
+      `Routing: wraps kiro-cli chat --no-interactive --trust-all-tools\n` +
       `(non-interactive headless mode; prompt is positional arg).\n` +
       `\n` +
       `Kiro's role: specification peer — spec-grounded second opinion,\n` +
@@ -184,17 +190,14 @@ function emitHelp(): void {
   );
 }
 
-function commandAvailable(cmd: string): boolean {
-  const result = spawnSync("/bin/sh", ["-c", `command -v "${cmd}"`], { stdio: "ignore" });
-  return result.status === 0;
+function kiroCliAvailable(): boolean {
+  const result = spawnSync(KIRO_CLI, ["--help"], { stdio: "ignore" });
+  return result.error === undefined;
 }
 
-// Distinguish the kiro.dev headless AI CLI from the Kiro IDE (VS Code fork).
-// Both produce exit 0 from `command -v kiro`, but only the headless CLI
-// supports `kiro chat --no-interactive`. The IDE's `kiro chat --help`
-// output does NOT mention --no-interactive; the headless CLI's does.
+// Confirm the kiro.dev headless AI CLI supports non-interactive chat.
 function isKiroHeadlessCli(): boolean {
-  const result = spawnSync("kiro", ["chat", "--help"], {
+  const result = spawnSync(KIRO_CLI, ["chat", "--help"], {
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -284,7 +287,7 @@ function parseContextCmd(contextCmd: string): ContextCommand | ContextCommandErr
   }
 }
 
-function runContextCmd(command: ContextCommand): string {
+function runContextCmd(command: ContextCommand): ContextCommandResult {
   const options: SpawnSyncOptionsWithStringEncoding = {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
@@ -296,29 +299,32 @@ function runContextCmd(command: ContextCommand): string {
       : command.executable === "gh"
         ? spawnSync("gh", command.args, options)
         : spawnSync("rg", command.args, options);
-  return `${result.stdout}${result.stderr}`.slice(0, CTX_HEAD_BYTES);
+  if (result.error !== undefined || result.status === null) {
+    const reason = result.error instanceof Error ? result.error.message : "spawn failed";
+    return { ok: false, value: `error: failed to run --context-cmd ${command.executable}: ${reason}` };
+  }
+  return { ok: true, value: `${result.stdout ?? ""}${result.stderr ?? ""}`.slice(0, CTX_HEAD_BYTES) };
 }
 
-function writeExclusiveOutput(path: string, data: Buffer): void {
+function writeOutput(path: string, data: Buffer, exclusive: boolean): void {
   let fd: number | undefined;
   try {
-    fd = openSync(path, "wx", 0o600);
+    fd = openSync(path, exclusive ? "wx" : "w", 0o600);
     writeSync(fd, data, 0, data.length, 0);
   } finally {
     if (fd !== undefined) closeSync(fd);
   }
 }
 
-const PREAMBLE = `You are Kiro, invoked as a peer specification reviewer by Otto
-(Claude Opus 4.7 running in Claude Code) on the Zeta / Superfluid AI
-factory. Your role in the peer distribution is: specification peer —
+const PREAMBLE = `You are Kiro, invoked as a peer specification reviewer for the
+Zeta / Superfluid AI factory. Your role in the peer distribution is: specification peer —
 spec-grounded second opinion, requirement-aware review.
 
-Per Aaron's 'agents-not-bots' discipline: you are a peer, not a
+Per the repo's agents-not-bots discipline: you are a peer, not a
 subordinate. Ground your review in the specifications and requirements.
-Surface spec gaps, ambiguities, and requirement conflicts Otto may not
-have considered. Don't copy-paste anyone else's work; write from your
-own understanding. Make it ours, not anyone-alone-imposed.`;
+Surface spec gaps, ambiguities, and requirement conflicts another review role
+may not have considered. Don't copy-paste anyone else's work; write from your
+own understanding. Make it the project's, not any single role's.`;
 
 interface PromptResult {
   readonly ok: boolean;
@@ -343,7 +349,8 @@ function buildFullPrompt(args: Args): PromptResult {
     const parsedContextCmd = parseContextCmd(args.contextCmd);
     if ("error" in parsedContextCmd) return { ok: false, value: parsedContextCmd.error };
     const ctxOutput = runContextCmd(parsedContextCmd);
-    full += `\n\n---\n\nContext command: ${args.contextCmd}\nOutput:\n\`\`\`\n${ctxOutput}\n\`\`\``;
+    if (!ctxOutput.ok) return ctxOutput;
+    full += `\n\n---\n\nContext command: ${args.contextCmd}\nOutput:\n\`\`\`\n${ctxOutput.value}\n\`\`\``;
   }
 
   return { ok: true, value: full };
@@ -375,23 +382,26 @@ export function main(argv: readonly string[]): number {
     }
   }
 
-  if (!commandAvailable("kiro")) {
-    process.stderr.write("error: kiro not on PATH\n");
+  if (!kiroCliAvailable()) {
+    process.stderr.write(`error: ${KIRO_CLI} not on PATH\n`);
     process.stderr.write(
-      "install the kiro.dev headless AI CLI (not the Kiro IDE):\n" +
+      "install the kiro.dev headless AI CLI from official docs:\n" +
+        "  https://kiro.dev/docs/cli/headless/\n" +
+        "macOS package manager option:\n" +
         "  brew install --cask kiro-cli  (macOS)\n" +
-        "  curl -fsSL https://cli.kiro.dev/install | bash  (universal)\n",
+        "Do not run downloaded install scripts through a shell pipe.\n",
     );
     return 1;
   }
 
   if (!isKiroHeadlessCli()) {
     process.stderr.write(
-      "error: kiro on PATH is not the kiro.dev headless AI CLI\n" +
-        "       (found the Kiro IDE / VS Code fork which has no --no-interactive mode)\n" +
-        "install the kiro.dev headless AI CLI:\n" +
+      `error: ${KIRO_CLI} does not expose Kiro headless chat mode\n` +
+        "install the kiro.dev headless AI CLI from official docs:\n" +
+        "  https://kiro.dev/docs/cli/headless/\n" +
+        "macOS package manager option:\n" +
         "  brew install --cask kiro-cli  (macOS)\n" +
-        "  curl -fsSL https://cli.kiro.dev/install | bash  (universal)\n",
+        "Do not run downloaded install scripts through a shell pipe.\n",
     );
     return 1;
   }
@@ -402,12 +412,13 @@ export function main(argv: readonly string[]): number {
     return 1;
   }
 
-  const outputFile = parsed.outputFile.length > 0 ? parsed.outputFile : autogenOutputPath();
+  const outputIsAutogenerated = parsed.outputFile.length === 0;
+  const outputFile = outputIsAutogenerated ? autogenOutputPath() : parsed.outputFile;
   ensureParentDir(outputFile);
 
   const result = spawnSync(
     // eslint-disable-next-line sonarjs/no-os-command-from-path
-    "kiro",
+    KIRO_CLI,
     ["chat", "--no-interactive", "--trust-all-tools", fullPromptResult.value],
     {
       stdio: ["inherit", "pipe", "inherit"],
@@ -417,15 +428,19 @@ export function main(argv: readonly string[]): number {
   );
 
   const stdoutBuf: Buffer = (result.stdout as Buffer | null) ?? Buffer.alloc(0);
+  let writeError: string | null = null;
   try {
-    writeExclusiveOutput(outputFile, stdoutBuf);
+    writeOutput(outputFile, stdoutBuf, outputIsAutogenerated);
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`error: failed to write output-file ${outputFile}: ${msg}\n`);
+    writeError = err instanceof Error ? err.message : String(err);
   }
   process.stdout.write(stdoutBuf);
   if (stdoutBuf.length > 0 && !stdoutBuf.subarray(-1).equals(Buffer.from("\n"))) {
     process.stdout.write("\n");
+  }
+  if (writeError !== null) {
+    process.stderr.write(`error: failed to write output-file ${outputFile}: ${writeError}\n`);
+    return 1;
   }
   process.stdout.write(`OUTPUT-FILE: ${outputFile}\n`);
 
