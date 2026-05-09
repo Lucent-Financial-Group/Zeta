@@ -39,43 +39,29 @@ function writeJson(dir: string, name: string, value: unknown): string {
   return path;
 }
 
+interface CaptureIo {
+  readonly stdout?: (chunk: string) => void;
+  readonly stderr?: (chunk: string) => void;
+}
+
 async function captureStderr(
-  action: () => Promise<number>,
+  action: (io: CaptureIo) => Promise<number>,
 ): Promise<{ readonly code: number; readonly stderr: string }> {
-  const originalWrite = process.stderr.write;
   let stderr = "";
-  process.stderr.write = ((chunk: unknown) => {
-    stderr += String(chunk);
-    return true;
-  }) as typeof process.stderr.write;
-  try {
-    return { code: await action(), stderr };
-  } finally {
-    process.stderr.write = originalWrite;
-  }
+  const io = { stderr: (chunk: string) => void (stderr += chunk) };
+  return { code: await action(io), stderr };
 }
 
 async function captureStreams(
-  action: () => Promise<number>,
+  action: (io: CaptureIo) => Promise<number>,
 ): Promise<{ readonly code: number; readonly stdout: string; readonly stderr: string }> {
-  const originalStdoutWrite = process.stdout.write;
-  const originalStderrWrite = process.stderr.write;
   let stdout = "";
   let stderr = "";
-  process.stdout.write = ((chunk: unknown) => {
-    stdout += String(chunk);
-    return true;
-  }) as typeof process.stdout.write;
-  process.stderr.write = ((chunk: unknown) => {
-    stderr += String(chunk);
-    return true;
-  }) as typeof process.stderr.write;
-  try {
-    return { code: await action(), stdout, stderr };
-  } finally {
-    process.stdout.write = originalStdoutWrite;
-    process.stderr.write = originalStderrWrite;
-  }
+  const io = {
+    stdout: (chunk: string) => void (stdout += chunk),
+    stderr: (chunk: string) => void (stderr += chunk),
+  };
+  return { code: await action(io), stdout, stderr };
 }
 
 function makeSnapshot(
@@ -645,7 +631,7 @@ describe("saveSnapshotSet / loadSnapshotSet", () => {
 
 describe("main", () => {
   test("reports a missing flag value directly", async () => {
-    const result = await captureStderr(() => main(["--prior"]));
+    const result = await captureStderr((io) => main(["--prior"], io));
     expect(result.code).toBe(1);
     expect(result.stderr).toContain("missing value for --prior");
   });
@@ -653,7 +639,7 @@ describe("main", () => {
   test("accepts dash-prefixed flag values as paths", async () => {
     const dir = tempDir();
     const current = writeJson(dir, "current.json", { date: "2026-05-08", pages: {} });
-    const result = await captureStderr(() => main(["--prior", "-prior.json", "--current", current]));
+    const result = await captureStderr((io) => main(["--prior", "-prior.json", "--current", current], io));
     expect(result.code).toBe(1);
     expect(result.stderr).toContain("error loading snapshot sets");
     expect(result.stderr).not.toContain("missing value for --prior");
@@ -663,7 +649,7 @@ describe("main", () => {
     const dir = tempDir();
     const prior = writeJson(dir, "prior.json", { date: "2026-05-01", pages: {} });
     const current = writeJson(dir, "current.json", { date: "2026-05-08" });
-    const result = await captureStderr(() => main(["--prior", prior, "--current", current]));
+    const result = await captureStderr((io) => main(["--prior", prior, "--current", current], io));
     expect(result.code).toBe(1);
     expect(result.stderr).toContain("error diffing snapshot sets");
   });
@@ -678,7 +664,7 @@ describe("main", () => {
         [addedUrl]: makeSnapshot(addedUrl),
       },
     });
-    const result = await captureStreams(() => main(["--prior", prior, "--current", current]));
+    const result = await captureStreams((io) => main(["--prior", prior, "--current", current], io));
     expect(result.code).toBe(0);
     expect(result.stdout).toContain("Pages added to monitoring");
     expect(result.stderr).not.toContain("new feature candidates detected");
@@ -694,7 +680,7 @@ describe("main", () => {
         [addedUrl]: makeSnapshot(addedUrl, { toggles: { "workflow-permissions": true } }),
       },
     });
-    const result = await captureStreams(() => main(["--prior", prior, "--current", current]));
+    const result = await captureStreams((io) => main(["--prior", prior, "--current", current], io));
     expect(result.code).toBe(2);
     expect(result.stdout).toContain("workflow-permissions");
     expect(result.stderr).toContain("new feature candidates detected");
@@ -710,7 +696,7 @@ describe("main", () => {
         [addedUrl]: makeSnapshot(addedUrl, { formValues: { "workflow-policy": "selected" } }),
       },
     });
-    const result = await captureStreams(() => main(["--prior", prior, "--current", current]));
+    const result = await captureStreams((io) => main(["--prior", prior, "--current", current], io));
     expect(result.code).toBe(2);
     expect(result.stdout).toContain("workflow-policy");
     expect(result.stderr).toContain("new feature candidates detected");
