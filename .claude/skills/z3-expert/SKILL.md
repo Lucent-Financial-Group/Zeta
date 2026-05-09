@@ -1,6 +1,6 @@
 ---
 name: z3-expert
-description: Z3 SMT solver idioms for Zeta's verification surface at tools/Z3Verify/ — F# API, sorts/constraints, quantifiers, proof obligations, tactic chains, model extraction.
+description: Z3 SMT solver — F# API, sorts/constraints, quantifiers, proof obligations, tactic chains, model extraction.
 ---
 
 # Z3 Expert — Procedure + Lore

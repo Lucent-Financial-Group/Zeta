@@ -1,6 +1,6 @@
 ---
 name: translator-expert
-description: Cross-domain technical translation — expert ontology to minimal shared vocabulary; compiling domain concepts across programming languages, algebras, formalisms.
+description: Cross-domain translation — expert ontology to shared vocabulary across programming languages, algebras, formalisms.
 facet: expert × theory × reference
 ---
 

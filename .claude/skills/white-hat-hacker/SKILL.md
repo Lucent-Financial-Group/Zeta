@@ -1,6 +1,6 @@
 ---
 name: white-hat-hacker
-description: Authorised offensive security — coordinated disclosure, bug-bounty submission, penetration testing, CVE writing; gated by explicit authorisation per engagement.
+description: Authorised offensive security — coordinated disclosure, bug-bounty, pentest, CVE writing; engagement-auth required.
 ---
 
 # White-Hat Hacker — the disclosure-ethics hat

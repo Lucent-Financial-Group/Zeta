@@ -1,6 +1,6 @@
 ---
 name: structured-logging-expert
-description: Structured log schema design — OTel Logs, ECS field catalogue, message templates, PII redaction, correlation fields (trace/span/request), schema-as-API discipline.
+description: Structured logging — OTel Logs, ECS fields, message templates, PII redaction, correlation IDs, schema-as-API.
 ---
 
 # Structured Logging Expert — Schema Discipline for Events
