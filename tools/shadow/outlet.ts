@@ -17,14 +17,15 @@ export async function createShadowOutlet(prefix = "zeta-shadow"): Promise<Shadow
   // Reject separators and parent segments to prevent escaping tmpdir
   const safe = prefix.replace(/[/\\]/g, "").replace(/\.\./g, "");
   if (!safe) throw new Error(`Invalid outlet prefix: "${prefix}"`);
-  const path = await mkdtemp(join(tmpdir(), `${safe}-`));
+  const root = tmpdir();
+  const path = await mkdtemp(join(root, `${safe}-`));
   const id = basename(path);
   return {
     path,
     id,
     async cleanup() {
-      // Guard: verify path stays within tmpdir before recursive deletion
-      if (!path.startsWith(tmpdir() + sep)) {
+      // Guard: verify path stays within the root captured at creation time
+      if (!path.startsWith(root + sep)) {
         throw new Error(`Refusing cleanup outside tmpdir: ${path}`);
       }
       await rm(path, { recursive: true, force: true });
