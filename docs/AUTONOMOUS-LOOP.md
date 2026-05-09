@@ -253,9 +253,24 @@ wait for instruction. Priority ladder:
    `docs/hygiene-history/ticks/2026/05/03/0918Z.md`, plus
    PR #1366 (TS port of the check script).
 
-1. **Open-PR hygiene first.** Before picking speculative
-   work, audit the open PR pool via
-   `gh pr list --state open --json number,title,mergeStateStatus,mergeable,isCrossRepository,headRepositoryOwner,autoMergeRequest`.
+1. **Refresh worldview, then open-PR hygiene.** Before
+   picking speculative work, run the canonical pre-decide
+   refresh:
+
+   ```
+   bun tools/github/refresh-worldview.ts
+   ```
+
+   This replaces ad-hoc `gh pr list` / `git status` /
+   `git log` chains with a single structured JSON snapshot
+   (open PRs, recent merges, open issues, git state,
+   backlog delta, claim branches, branch state, pending
+   CI, and a one-line `summary` for cross-cutting drift
+   detection). If the refresh fails, stop and report the
+   exact failure as the blocker instead of guessing from
+   stale state.
+
+   Then audit the open PR pool from the `openPRs` array.
    For each open PR:
    - **Verify fork-status live** (`isCrossRepository` +
      `headRepositoryOwner.login`) rather than carrying

@@ -22,6 +22,7 @@
 //     "owner": "Lucent-Financial-Group",
 //     "repo": "Zeta",
 //     "queriedAt": "2026-05-08T12:00:00.000Z",
+//     "summary": "1 open PR, 3 recent merges, ...",
 //     "openPRs": [ { number, title, headRefName, ... }, ... ],
 //     "recentMerges": [ { number, title, mergedAt }, ... ],
 //     "openIssues": [ { number, title, labels, createdAt }, ... ],
@@ -52,6 +53,8 @@ interface OpenPR {
   updatedAt: string;
   autoMergeRequest: { enabledAt?: string } | null;
   reviewDecision: string;
+  isCrossRepository: boolean;
+  headRepositoryOwner: { login: string };
 }
 
 interface MergedPR {
@@ -105,6 +108,7 @@ export interface WorldviewSnapshot {
   owner: string;
   repo: string;
   queriedAt: string;
+  summary: string;
   openPRs: OpenPR[];
   recentMerges: MergedPR[];
   openIssues: OpenIssue[];
@@ -187,7 +191,7 @@ function fetchOpenPRs(owner: string, repo: string, limit: number): OpenPR[] {
       "--state",
       "open",
       "--json",
-      "number,title,headRefName,createdAt,updatedAt,autoMergeRequest,reviewDecision",
+      "number,title,headRefName,createdAt,updatedAt,autoMergeRequest,reviewDecision,isCrossRepository,headRepositoryOwner",
       "--limit",
       String(limit),
     ],
@@ -457,6 +461,37 @@ function parseArgs(argv: string[]): ParsedArgs {
   return out;
 }
 
+// --- Summary builder ---
+
+function plural(n: number, singular: string, pluralForm?: string): string {
+  return `${n} ${n === 1 ? singular : (pluralForm ?? singular + "s")}`;
+}
+
+function buildSummary(
+  openPRs: OpenPR[],
+  recentMerges: MergedPR[],
+  openIssues: OpenIssue[],
+  gitState: GitState,
+  backlogDelta: BacklogDelta,
+  claims: ClaimBranch[],
+  branchState: BranchState,
+  pendingCI: PendingCIRun[],
+): string {
+  const parts: string[] = [];
+  parts.push(plural(openPRs.length, "open PR"));
+  parts.push(plural(recentMerges.length, "recent merge"));
+  parts.push(plural(openIssues.length, "open issue"));
+  parts.push(plural(claims.length, "claim"));
+  parts.push(plural(backlogDelta.totalFiles, "backlog item"));
+  if (pendingCI.length > 0)
+    parts.push(plural(pendingCI.length, "CI run") + " pending");
+  if (gitState.uncommittedFiles.length > 0)
+    parts.push(plural(gitState.uncommittedFiles.length, "dirty file"));
+  if (branchState.behind > 0) parts.push(`${branchState.behind} behind`);
+  if (branchState.ahead > 0) parts.push(`${branchState.ahead} ahead`);
+  return parts.join(", ");
+}
+
 // --- Main ---
 
 export function main(argv: string[]): number {
@@ -478,10 +513,22 @@ export function main(argv: string[]): number {
   const branchState = fetchBranchState();
   const pendingCI = fetchPendingCI(args.owner, args.repo);
 
+  const summary = buildSummary(
+    openPRs,
+    recentMerges,
+    openIssues,
+    gitState,
+    backlogDelta,
+    claims,
+    branchState,
+    pendingCI,
+  );
+
   const snapshot: WorldviewSnapshot = {
     owner: args.owner,
     repo: args.repo,
     queriedAt: new Date().toISOString(),
+    summary,
     openPRs,
     recentMerges,
     openIssues,
