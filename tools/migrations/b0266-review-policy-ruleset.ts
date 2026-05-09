@@ -32,6 +32,7 @@ async function run(cmd: readonly string[]): Promise<SpawnResult> {
     cmd: [...cmd],
     stdout: "pipe",
     stderr: "pipe",
+    cwd: repoRoot,
   });
   const [stdout, stderr] = await Promise.all([
     new Response(proc.stdout).text(),
@@ -66,7 +67,8 @@ async function ghApi(
       `gh api ${method} ${path} failed (exit ${exitCode}): ${stderr.trim()}`,
     );
   }
-  return JSON.parse(stdout);
+  const trimmed = stdout.trim();
+  return trimmed ? JSON.parse(trimmed) : null;
 }
 
 const reviewPolicyPayload = {
@@ -119,7 +121,19 @@ const updatedDefaultPayload = {
   ],
 };
 
-export async function main(): Promise<void> {
+function rulesMatch(
+  existing: Array<{ type: string; parameters?: unknown }>,
+  expected: typeof reviewPolicyPayload.rules,
+): boolean {
+  if (existing.length !== expected.length) return false;
+  const sortByType = (a: { type: string }, b: { type: string }) =>
+    a.type.localeCompare(b.type);
+  const a = [...existing].sort(sortByType);
+  const b = [...expected].sort(sortByType);
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+export async function main(): Promise<number> {
   const dryRun = process.argv.includes("--dry-run");
 
   console.log("B-0266: Review Policy ruleset migration");
@@ -149,13 +163,29 @@ export async function main(): Promise<void> {
     console.log(JSON.stringify(updatedDefaultPayload, null, 2));
     console.log();
     console.log("[DRY RUN] Would re-snapshot expected.json for same repo");
-    return;
+    return 0;
   }
 
   if (alreadyExists) {
-    console.log(
-      `Step 1: "Review Policy" already exists (id: ${alreadyExists.id}), skipping create.`,
-    );
+    const detail = (await ghApi(
+      "GET",
+      `repos/${OWNER}/${REPO}/rulesets/${alreadyExists.id}`,
+    )) as { id: number; name: string; rules: Array<{ type: string; parameters?: unknown }> };
+    if (rulesMatch(detail.rules ?? [], reviewPolicyPayload.rules)) {
+      console.log(
+        `Step 1: "Review Policy" already exists (id: ${alreadyExists.id}) with matching rules — skipping`,
+      );
+    } else {
+      console.log(
+        `Step 1: "Review Policy" exists (id: ${alreadyExists.id}) but rules differ — updating in-place`,
+      );
+      await ghApi(
+        "PUT",
+        `repos/${OWNER}/${REPO}/rulesets/${alreadyExists.id}`,
+        reviewPolicyPayload,
+      );
+      console.log("  Updated Review Policy ruleset to match expected payload");
+    }
   } else {
     console.log("Step 1: Creating Review Policy ruleset...");
     const created = (await ghApi(
@@ -192,7 +222,8 @@ export async function main(): Promise<void> {
     REPO_SLUG,
   ]);
   if (snapshotResult.exitCode !== 0) {
-    throw new Error(`Snapshot failed: ${snapshotResult.stderr}`);
+    console.error("  Snapshot failed:", snapshotResult.stderr);
+    return 1;
   }
   const expectedPath = resolve(
     repoRoot,
@@ -204,10 +235,13 @@ export async function main(): Promise<void> {
 
   console.log("Done. Verify with:");
   console.log("  bun tools/hygiene/check-github-settings-drift.ts");
+  return 0;
 }
 
 if (import.meta.main) {
-  main().catch((err) => {
+  main().then((code) => {
+    if (code !== 0) process.exit(code);
+  }).catch((err) => {
     console.error("Migration failed:", err);
     process.exit(1);
   });
