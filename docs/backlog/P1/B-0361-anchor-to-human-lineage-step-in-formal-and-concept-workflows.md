@@ -1,7 +1,7 @@
 ---
 id: B-0361
 priority: P1
-status: in-progress
+status: done
 title: "Anchor-to-human-lineage step in formal verification and concept workflows"
 effort: S
 created: 2026-05-09
@@ -52,8 +52,10 @@ of things that are trivially true by definition.
 
 ## Acceptance criteria
 
-- [ ] Formal-verification-expert skill updated with
-      "check literature first" step
+- [x] Formal-verification-expert skill updated with
+      "check literature first" step (literature-first anchor check
+      section + step 0 in example walk + Anchor output block +
+      KNOWN_ANCHORS reference in reference patterns)
 - [x] Concept-registry schema gains `anchor:` field
       (tools/alignment/concept_registry.ts — schema v1.1,
       Concept.anchor + Concept.anchorState + Registry.anchoredCount)
