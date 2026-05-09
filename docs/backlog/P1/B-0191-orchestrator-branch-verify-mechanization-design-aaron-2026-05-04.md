@@ -165,7 +165,7 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 
 - Create `.claude/rules/zeta-expected-branch.md` with carved sentence + hook wiring table.
 - Add CLAUDE.md pointer bullet for cold-start discoverability.
-- Update backlog row status from `open` → `in-progress`.
+- Keep backlog row status `open`; record this PR as AC3 progress without using an unsupported in-progress enum.
 
 **Remaining after this PR:**
 

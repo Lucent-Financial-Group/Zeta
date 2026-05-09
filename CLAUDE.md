@@ -907,9 +907,7 @@ Claude-Code-specific mechanisms.
   T" → skill; "Role X has responsibilities Y, Z" →
   agent. CLAUDE.md-level so it is 100% loaded at
   every wake. Doc-supported by canonical Anthropic
-  source (`code.claude.com/docs/en/memory`); the
-  rules-auto-load piece specifically is unverified
-  in our harness pending the canary test. Full
+  source (`code.claude.com/docs/en/memory`). Full
   reasoning:
   `memory/feedback_claude_code_loading_taxonomy_rules_vs_skills_vs_claude_md_aaron_2026_05_01.md`.
 
