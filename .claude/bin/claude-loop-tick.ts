@@ -189,6 +189,7 @@ function heartbeat(): void {
                 claudeStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
                 log(`claude work cycle end run_id=${runId} mode=${workMode} model=${claudeModel} status=${gate.status}`);
 
+                const prMatch = gate.stdout.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/);
                 const rating = {
                     run_id: runId,
                     model: claudeModel,
@@ -198,7 +199,8 @@ function heartbeat(): void {
                     ended_at: nowIso(),
                     stdout_lines: lines(gate.stdout).length,
                     stderr_lines: lines(gate.stderr).length,
-                    produced_pr: gate.stdout.includes("github.com") && gate.stdout.includes("/pull/"),
+                    produced_pr: !!prMatch,
+                    pr_number: prMatch ? Number(prMatch[1]) : null,
                     had_build_error: gate.stdout.includes("Error(s)") || gate.stderr.includes("error FS"),
                     had_test_failure: gate.stdout.includes("Failed!") || gate.stdout.includes("Failed:"),
                 };
