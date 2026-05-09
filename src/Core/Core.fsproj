@@ -15,6 +15,7 @@
     <Compile Include="Algebra.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="ZSet.fs" />
+    <Compile Include="ToffoliGate.fs" />
     <Compile Include="IndexedZSet.fs" />
     <Compile Include="Circuit.fs" />
     <Compile Include="PluginApi.fs" />
