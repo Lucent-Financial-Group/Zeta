@@ -185,7 +185,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
 - [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)
 - [ ] **[B-0357](backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md)** Replace tautology Z3 agenda/trajectory proofs with non-trivial verification
-- [ ] **[B-0358](backlog/P1/B-0358-bool-as-degenerate-distribution-confidence-typed-apis.md)** Bool as degenerate distribution — replace binary API returns with confidence scores
+- [x] **[B-0358](backlog/P1/B-0358-bool-as-degenerate-distribution-confidence-typed-apis.md)** Bool as degenerate distribution — replace binary API returns with confidence scores
 - [ ] **[B-0361](backlog/P1/B-0361-anchor-to-human-lineage-step-in-formal-and-concept-workflows.md)** Anchor-to-human-lineage step in formal verification and concept workflows
 - [ ] **[B-0362](backlog/P1/B-0362-concept-search-index-for-instant-term-lookup.md)** Concept search index — pre-built term→file mapping for instant lookups
 - [ ] **[B-0364](backlog/P1/B-0364-policy-relocation-semantic-preservation-fscheck-property.md)** Policy relocation semantic preservation — FsCheck property for mobile DBSP query boundaries
