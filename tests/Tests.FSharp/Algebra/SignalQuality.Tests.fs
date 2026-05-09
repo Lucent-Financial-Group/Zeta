@@ -15,7 +15,7 @@ let ``compressionRatio on empty string returns neutral 0.0`` () =
     // Empty input short-circuits to 0.0 (neutral Pass) — the gzip
     // header would otherwise dominate for any below-threshold input
     // and deterministically score every short string as maximally
-    // suspicious. See `compressionMinInputBytes` docstring.
+    // divergent. See `compressionMinInputBytes` docstring.
     SignalQuality.compressionRatio "" |> should (equalWithin 1e-9) 0.0
 
 
@@ -270,6 +270,6 @@ let ``end-to-end composite separates structured prose from padded fluff`` () =
         |> SignalQuality.composite SignalQuality.uniformWeights
     let structuredScore = runOne structured claimsStructured
     let fluffScore = runOne fluff claimsFluff
-    // Fluff should score strictly more suspicious than the structured
+    // Fluff should score strictly more disagreement-heavy than the structured
     // prose. This is the load-bearing end-to-end behaviour.
     fluffScore.Composite |> should be (greaterThan structuredScore.Composite)
