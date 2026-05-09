@@ -110,7 +110,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0256](backlog/P1/B-0256-model-recursion-exploit-class-metasploit-ida-pro-mapping-2026-05-07.md)** Model recursion exploit class — Metasploit/IDA Pro mapping for AI models
 - [x] **[B-0262](backlog/P1/B-0262-refresh-worldview-scaffold-open-prs-recent-merges-2026-05-08.md)** refresh-worldview scaffold - open-PR list + recent-merges query
 - [x] **[B-0263](backlog/P1/B-0263-refresh-worldview-backlog-delta-claims-branch-state-2026-05-08.md)** refresh-worldview — backlog delta + claim inventory + branch state
-- [ ] **[B-0264](backlog/P1/B-0264-refresh-worldview-tick-integration-canonical-pre-decide-2026-05-08.md)** refresh-worldview — integrate into tick scripts as canonical pre-decide
+- [x] **[B-0264](backlog/P1/B-0264-refresh-worldview-tick-integration-canonical-pre-decide-2026-05-08.md)** refresh-worldview — integrate into tick scripts as canonical pre-decide
 - [x] **[B-0265](backlog/P1/B-0265-ruleset-split-ci-gate-ruleset-2026-05-08.md)** GitHub ruleset split — CI gate ruleset (required status checks)
 - [ ] **[B-0266](backlog/P1/B-0266-ruleset-split-review-policy-ruleset-2026-05-08.md)** GitHub ruleset split — review policy ruleset (conversation resolution + reviews)
 - [ ] **[B-0267](backlog/P1/B-0267-ruleset-split-safety-ruleset-2026-05-08.md)** GitHub ruleset split — safety ruleset (deletion + force-push + linear history)
