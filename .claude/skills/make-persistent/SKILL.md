@@ -118,6 +118,8 @@ Register-ScheduledTask -TaskName "ZetaClaudeLoop" `
 
 ```bash
 mkdir -p ~/.config/systemd/user
+BUN_PATH="$(which bun)"
+LOOP_DIR="$HOME/.local/share/zeta-claude-loop/Zeta"
 cat > ~/.config/systemd/user/zeta-claude-loop.service << EOF
 [Unit]
 Description=Zeta Claude Loop

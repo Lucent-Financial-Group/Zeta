@@ -16,7 +16,7 @@ make-persistent()`.
   laptop, Linux server, cloud VM, another Mac)
 - Recovering a remote node that went dark
 - Upgrading a remote node's tick script or service
-- Adding a new node to the society (Otto, Vera, Riven)
+- Adding a new node to the society (the architect, the developer-experience-engineer, or other harness agents)
 
 ## Prerequisites
 
