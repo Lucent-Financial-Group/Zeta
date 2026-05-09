@@ -1,7 +1,7 @@
 ---
 id: B-0364
 priority: P1
-status: open
+status: claimed
 title: "Policy relocation semantic preservation — FsCheck property for mobile DBSP query boundaries"
 effort: M
 created: 2026-05-09
@@ -47,12 +47,18 @@ reintegration.
 
 ## Acceptance criteria
 
-- [ ] FsCheck property in tests/Tests.FSharp/Properties/
-- [ ] Property covers at least one non-trivial query (join or
+- [x] FsCheck property in tests/Tests.FSharp/Properties/
+- [x] Property covers at least one non-trivial query (join or
       aggregate, not just map)
-- [ ] Property passes with 1000+ generated inputs
-- [ ] Adversarial review (shadow catch #30 protocol): is the
+      — two properties: Join+GroupByCount and GroupByCount-only
+- [x] Property passes with 1000+ generated inputs
+      — MaxTest = 1000 on each property; 4/4 tests pass
+- [x] Adversarial review (shadow catch #30 protocol): is the
       property trivially true by definition?
+      — No: each Circuit.create() produces independent mutable state
+        (join indices, output snapshots). A non-deterministic or
+        shared-state implementation would falsify the properties.
+        Comment in the file documents this explicitly.
 
 ## Composes with
 
