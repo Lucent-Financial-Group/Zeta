@@ -1,13 +1,14 @@
 ---
 id: B-0006
 priority: P1
-status: in-progress
+status: done
 title: MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
 tier: maintenance
 effort: M
 ask: maintainer Aaron 2026-04-25 (implicit via the README cap; surfaced explicitly by Otto-295 expand-compress dynamic)
 created: 2026-04-25
-last_updated: 2026-05-02
+last_updated: 2026-05-09
+resolved: 2026-05-09
 depends_on: []
 composes_with: [B-0190, B-0193]
 tags: [memory-hygiene, MEMORY.md, distillation, compression, otto-291-pacing, otto-294-smooth-shape, otto-295-monoidal-manifold, factory-maintenance]
