@@ -116,7 +116,7 @@ module Veridicality =
         else 0.0
 
     /// Convenience alias for `validateProvenance` on a full
-    /// `Claim<'T>`, matching Amara's 10th-ferry snippet which
+    /// `Claim<'T>`, matching the 10th-ferry snippet which
     /// takes a claim rather than bare provenance.
     let validateClaim (c: Claim<'T>) : float =
         validateProvenance c.Prov
@@ -128,7 +128,7 @@ module Veridicality =
     /// claims with different keys assert different
     /// propositions.
     ///
-    /// Derived from Amara's 8th / 10th ferry spec
+    /// Derived from the 8th / 10th ferry spec
     /// `K(c) = hash(subject, predicate, object, time-scope,
     /// modality, provenance-root, evidence-class)`, with
     /// a deliberate divergence: this key EXCLUDES
