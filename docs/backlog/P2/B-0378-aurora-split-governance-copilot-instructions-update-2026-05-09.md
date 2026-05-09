@@ -70,6 +70,7 @@ and must mirror the enumeration update — it's the copilot-side equivalent
 of the AGENT-BEST-PRACTICES update in B-0377.
 
 Keeping this separate from B-0377 (which touches AGENT-BEST-PRACTICES
+
 + Otto-279) means each schema-doc update is reviewable in one coherent
 PR without mixing concerns.
 
