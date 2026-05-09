@@ -1,7 +1,7 @@
 ---
 id: B-0336
 priority: P1
-status: open
+status: done
 title: B-0006 acceptance recalibration — adjust compression targets given load-bearing classification
 tier: maintenance
 effort: S
