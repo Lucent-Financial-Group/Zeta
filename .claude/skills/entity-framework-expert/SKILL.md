@@ -1,6 +1,6 @@
 ---
 name: entity-framework-expert
-description: EF Core — provider model, LINQ→SQL translation, DbContext lifecycle, change tracking, migrations, Zeta provider design.
+description: EF Core — provider model, LINQ→SQL translation, DbContext lifecycle, change tracking, migrations, Zeta provider.
 ---
 
 # Entity Framework Core Expert — Provider + Client Hat
