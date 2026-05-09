@@ -1,5 +1,5 @@
 ---
-id: B-0362
+id: B-0373
 priority: P1
 status: open
 title: "Alignment proof primitive ladder — one type, one falsifiable property"

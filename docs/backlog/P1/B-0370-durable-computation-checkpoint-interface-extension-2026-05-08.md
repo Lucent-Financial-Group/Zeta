@@ -1,5 +1,5 @@
 ---
-id: B-0279
+id: B-0370
 priority: P1
 status: done
 title: "Durable computation — extend Checkpoint.fs with StableStorage mode"

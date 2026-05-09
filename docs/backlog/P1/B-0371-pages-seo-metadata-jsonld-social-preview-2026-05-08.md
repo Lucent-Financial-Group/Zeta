@@ -1,5 +1,5 @@
 ---
-id: B-0284
+id: B-0371
 priority: P1
 status: open
 title: "Pages discoverability - SEO metadata, JSON-LD, and social previews"
