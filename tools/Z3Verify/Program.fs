@@ -485,6 +485,10 @@ let main _ =
         "(declare-const stateA2 Int)\n" +
         "(declare-const trace SharedTrace)\n" +
         "(declare-fun PolicyA (Int SharedTrace) Action)\n" +
+        // Intervention: distinct private-state values (mirrors Lemma 16's SAT witness).
+        // Without this, Z3 could achieve UNSAT trivially via stateA1=stateA2 rather
+        // than via the collapse constraint — that would weaken the proof.
+        "(assert (not (= stateA1 stateA2)))\n" +
         // Collapse constraint: policy output is invariant under state change.
         "(assert (forall ((s1 Int) (s2 Int) (t SharedTrace))\n" +
         "  (= (PolicyA s1 t) (PolicyA s2 t))))\n" +
