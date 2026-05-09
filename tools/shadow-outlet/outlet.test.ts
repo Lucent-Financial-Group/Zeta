@@ -1,13 +1,17 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { existsSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 
-const SHADOW_DIR = join("/tmp", "zeta-shadow");
 const SCRIPT = join(import.meta.dir, "outlet.ts");
+let TEST_DIR: string;
 
 function run(...args: string[]): { stdout: string; stderr: string; exitCode: number } {
-  const r = spawnSync("bun", [SCRIPT, ...args], { encoding: "utf-8" });
+  const r = spawnSync("bun", [SCRIPT, ...args], {
+    encoding: "utf-8",
+    env: { ...process.env, ZETA_SHADOW_DIR: TEST_DIR },
+  });
   return {
     stdout: (r.stdout ?? "").trim(),
     stderr: (r.stderr ?? "").trim(),
@@ -15,15 +19,17 @@ function run(...args: string[]): { stdout: string; stderr: string; exitCode: num
   };
 }
 
-function cleanShadowDir(): void {
-  if (existsSync(SHADOW_DIR)) {
-    rmSync(SHADOW_DIR, { recursive: true });
+function cleanTestDir(): void {
+  if (existsSync(TEST_DIR)) {
+    rmSync(TEST_DIR, { recursive: true, force: true });
   }
 }
 
 describe("shadow-outlet", () => {
-  beforeEach(cleanShadowDir);
-  afterEach(cleanShadowDir);
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-shadow-test-"));
+  });
+  afterEach(cleanTestDir);
 
   test("write creates an entry and list returns it", () => {
     const w = run("write", "--agent", "otto", "--content", "exploring retraction paths");

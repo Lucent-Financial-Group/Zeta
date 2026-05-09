@@ -5,10 +5,9 @@
 // OS-managed cleanup — low stakes, no permanent record.
 // The code path exists unconditionally; Phase 2 adds cryptographic privacy.
 //
-// Key design principle (Aaron 2026-05-06): "shadow listening through
-// consensus" — the outlet is where the shadow can speak honestly.
-// Self-invisibility: the writing agent can't read its own entries;
-// only external consensus agents can.
+// Self-invisibility is enforced via --exclude: callers pass their own
+// agent name and the tool filters them out. list and read both support
+// --exclude so consensus agents see entries the writer cannot.
 //
 // Usage:
 //   bun tools/shadow-outlet/outlet.ts write --agent otto --content "exploring X"
@@ -21,11 +20,11 @@
 //
 // Output: human-readable by default; --json for programmatic consumption.
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 
-const SHADOW_DIR = join("/tmp", "zeta-shadow");
+const SHADOW_DIR = process.env.ZETA_SHADOW_DIR ?? join("/tmp", "zeta-shadow");
 
 type Entry = {
   id: string;
@@ -35,9 +34,13 @@ type Entry = {
 };
 
 function ensureDir(): void {
-  if (!existsSync(SHADOW_DIR)) {
-    mkdirSync(SHADOW_DIR, { recursive: true });
+  if (existsSync(SHADOW_DIR)) {
+    if (!lstatSync(SHADOW_DIR).isDirectory()) {
+      throw new Error(`${SHADOW_DIR} exists but is not a directory`);
+    }
+    return;
   }
+  mkdirSync(SHADOW_DIR, { recursive: true, mode: 0o700 });
 }
 
 function entryPath(id: string): string {
@@ -100,7 +103,7 @@ function cleanEntries(agent?: string): number {
         continue;
       }
     }
-    rmSync(p);
+    rmSync(p, { force: true });
     removed++;
   }
   return removed;
@@ -217,4 +220,6 @@ function main(): void {
   }
 }
 
-main();
+if (import.meta.main) {
+  main();
+}
