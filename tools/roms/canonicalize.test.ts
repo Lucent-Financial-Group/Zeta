@@ -2,7 +2,13 @@ import { describe, expect, test } from "bun:test";
 import { existsSync, mkdtempSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { parseDatfile, hashFileSha1, scanRomFiles, matchAndReport } from "./canonicalize.ts";
+import {
+  main,
+  parseDatfile,
+  hashFileSha1,
+  scanRomFiles,
+  matchAndReport,
+} from "./canonicalize.ts";
 
 const FIXTURE_DATFILE = `<?xml version="1.0"?>
 <!DOCTYPE datafile SYSTEM "http://www.logiqx.com/Dats/datafile.dtd">
@@ -12,7 +18,7 @@ const FIXTURE_DATFILE = `<?xml version="1.0"?>
   </header>
   <game name="Combat (1977)(Atari)">
     <description>Combat (1977)(Atari)</description>
-    <rom name="Combat (1977)(Atari).bin" size="2048" crc="4020b4fe" md5="b35e9442525e1a0b30dc0264c tried" sha1="da39a3ee5e6b4b0d3255bfef95601890afd80709" />
+    <rom name="Combat (1977)(Atari).bin" size="2048" crc="4020b4fe" md5="b35e9442525e1a0b30dc0264c112233" sha1="da39a3ee5e6b4b0d3255bfef95601890afd80709" />
   </game>
   <game name="Adventure (1980)(Atari)">
     <description>Adventure (1980)(Atari)</description>
@@ -92,6 +98,8 @@ describe("scanRomFiles", () => {
     const tmp = mkdtempSync(join(tmpdir(), "rom-scan-"));
     writeFileSync(join(tmp, "notes.txt"), "data");
     writeFileSync(join(tmp, "save.sav"), "data");
+    writeFileSync(join(tmp, "README"), "data");
+    writeFileSync(join(tmp, ".DS_Store"), "data");
 
     const files = scanRomFiles(tmp);
     expect(files.length).toBe(0);
@@ -177,5 +185,29 @@ describe("matchAndReport", () => {
     const results = matchAndReport(lookup, [file], true);
     expect(results[0]?.matched).toBe(true);
     expect(results[0]?.renamed).toBe(false);
+  });
+});
+
+describe("main", () => {
+  test("reports missing datfile value clearly", () => {
+    const originalStderrWrite = process.stderr.write;
+    const originalExit = process.exit;
+    let stderr = "";
+
+    process.stderr.write = ((chunk: string | Uint8Array) => {
+      stderr += String(chunk);
+      return true;
+    }) as typeof process.stderr.write;
+    process.exit = ((code?: number) => {
+      throw new Error(`exit:${code}`);
+    }) as typeof process.exit;
+
+    try {
+      expect(() => main(["--datfile", "--dir", "/tmp"])).toThrow("exit:64");
+      expect(stderr).toContain("missing value for --datfile");
+    } finally {
+      process.stderr.write = originalStderrWrite;
+      process.exit = originalExit;
+    }
   });
 });
