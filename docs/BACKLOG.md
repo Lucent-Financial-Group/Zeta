@@ -16,7 +16,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0085](backlog/P0/B-0085-budget-cadence-workflow-cron-misses-task-287-deadline-window-aaron-2026-04-28.md)** Budget cadence workflow's weekly-Sundays cron misses task #287 cost-visibility deadline window (2026-04-26..04-29)
 - [x] **[B-0109](backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md)** Dependency status tracking surface — outages and issues affecting us (Aaron 2026-04-30, urgent)
 - [ ] **[B-0160](backlog/P0/B-0160-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md)** Mechanical authorization check skill build — pace-instruction resolver per Claude.ai 2026-05-02 architectural correction
-- [ ] **[B-0249](backlog/P0/B-0249-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md)** Autonomous backlog pickup — loops must start new work, not just maintain
+- [x] **[B-0249](backlog/P0/B-0249-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md)** Autonomous backlog pickup — loops must start new work, not just maintain
 - [x] **[B-0278](backlog/P0/B-0278-autonomous-backlog-selector-priority-safe-pickup-2026-05-08.md)** Autonomous backlog pickup - priority selector
 - [x] **[B-0279](backlog/P0/B-0279-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md)** Autonomous backlog pickup - claim and worktree bootstrap
 - [x] **[B-0280](backlog/P0/B-0280-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md)** Autonomous backlog pickup - PR publication and auto-merge
@@ -154,7 +154,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0317](backlog/P1/B-0317-playwright-github-session-auth-helper.md)** Playwright GitHub session/auth helper — cookie-based login for agent UI access
 - [ ] **[B-0318](backlog/P1/B-0318-playwright-github-read-only-snapshot-tool.md)** Playwright GitHub read-only page snapshot tool — navigate + snapshot + extract
 - [ ] **[B-0319](backlog/P1/B-0319-playwright-github-settings-reconciliation.md)** GitHub settings reconciliation — UI snapshot vs expected.json drift detection
-- [x] **[B-0320](backlog/P1/B-0320-playwright-github-authorized-mutation-surface-list.md)** Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate
+- [ ] **[B-0320](backlog/P1/B-0320-playwright-github-authorized-mutation-surface-list.md)** Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate
 - [ ] **[B-0321](backlog/P1/B-0321-playwright-github-guarded-mutation-helpers.md)** Guarded UI mutation helpers — click/fill/save with before-after snapshots and authorization check
 - [ ] **[B-0322](backlog/P1/B-0322-playwright-github-mutation-reversibility-log.md)** Mutation reversibility drain log — inverse-action record for every UI mutation
 - [ ] **[B-0323](backlog/P1/B-0323-playwright-github-feature-discovery-diff-cadence.md)** GitHub feature-discovery diff cadence — weekly UI snapshot comparison to spot new features
