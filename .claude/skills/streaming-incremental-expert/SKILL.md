@@ -1,6 +1,6 @@
 ---
 name: streaming-incremental-expert
-description: Capability skill ("hat") — engine-type specialization under `execution-model-expert`, and the **base substrate** Zeta's engine rests on. Covers streaming / incremental execution: DBSP (Budiu et al. 2022), Timely Dataflow + Differential Dataflow (McSherry et al.), Materialize's production layer, standing queries, delta-stream composition, retraction-native incremental view maintenance, time-domain reasoning (virtual vs wall time), and watermarks / frontiers. Wear this when framing any engine-level decision that touches incrementality, when a research draft reaches for a DBSP / differential-dataflow claim, or when a classical-engine assumption (monotone inputs, snapshot-based consistency) needs re-stating under streaming semantics. Defers to `algebra-owner` for Zeta's operator-algebra laws under retraction, to `execution-model-expert` for cross-model framing, to `streaming-window-expert` for windowed-aggregation specifics, and to `formal-verification-expert` for TLA+ / Lean proofs on streaming invariants.
+description: DBSP / Timely Dataflow — delta-stream composition, retraction-native IVM, standing queries, watermarks, frontiers.
 ---
 
 # Streaming / Incremental Expert — The Base Substrate

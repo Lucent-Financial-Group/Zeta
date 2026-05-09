@@ -1,6 +1,6 @@
 ---
 name: z3-expert
-description: Capability skill ("hat") — Z3 SMT solver idioms for Zeta's verification surface at `tools/Z3Verify/` (F# program shelling to the `z3` CLI over stdin) and `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (16+ pointwise algebraic lemmas). Covers SMT-LIB2 script shape, the UNSAT-equals-proof idiom, int vs bitvector theory choice, quantifier patterns, timeout budgets, `which z3` gating in tests. Wear this when writing or reviewing a `.smt2` file, adding a Z3 lemma in `Program.fs`, adding an xUnit wrapper in `Z3.Laws.Tests.fs`, or debating Z3 vs TLA+ vs Lean with the `formal-verification-expert`. Peer to `lean4-expert`, `tla-expert`, `alloy-expert`.
+description: Z3 SMT solver — F# API, sorts/constraints, quantifiers, proof obligations, tactic chains, model extraction.
 ---
 
 # Z3 Expert — Procedure + Lore

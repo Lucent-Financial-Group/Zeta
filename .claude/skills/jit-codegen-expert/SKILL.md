@@ -1,6 +1,6 @@
 ---
 name: jit-codegen-expert
-description: Capability skill ("hat") — engine-type specialization under `execution-model-expert`. Covers query-specific JIT code generation: the Hyper / Umbra / SingleStore style where a query is compiled to native code (via LLVM, .NET IL, or a custom IR), with whole-pipeline fusion eliminating intermediate materialisation. Also covers the closer-to-home .NET paths: `System.Linq.Expressions` compilation, `DynamicMethod`, `System.Reflection.Emit`, and Roslyn-based source-generation. Wear this when framing a query-specific codegen tier, evaluating compilation-latency vs execution-win trade-offs, or deciding whether codegen wins on top of the .NET JIT's existing work. Zeta's call: **research roadmap, not today's path**. Defers to `execution-model-expert` for cross-model framing, to `performance-engineer` for benchmark-driven judgement, to `csharp-expert` / `fsharp-expert` for language-idiom choices in generated code, and to `deterministic-simulation-theory-expert` for DST compat of the codegen pipeline.
+description: Query JIT codegen — Hyper/Umbra/LLVM-style pipeline fusion, .NET Reflection.Emit/DynamicMethod/Expressions.
 ---
 
 # JIT-Codegen Expert — Query-Specific Compilation

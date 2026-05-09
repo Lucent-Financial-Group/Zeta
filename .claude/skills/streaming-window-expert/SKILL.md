@@ -1,6 +1,6 @@
 ---
 name: streaming-window-expert
-description: Capability skill ("hat") — streaming narrow under `streaming-incremental-expert`. Covers windowed aggregation: tumbling / hopping / sliding / session windows; window-assignment semantics; watermark policy; late-event handling (drop, side-output, emit-with-retract); allowed-lateness bounds; window-state storage and eviction; the interaction between windowed operators and retraction-native deltas. Wear this when designing a windowed aggregate, reconciling a user-facing window semantic with the streaming substrate, or evaluating a watermark / late-event trade-off. Defers to `streaming-incremental-expert` for the broader substrate, to `algebra-owner` for retraction-safe-aggregator invariants, to `sql-expert` for the SQL:2016 window semantics, and to `storage-specialist` for window-state persistence.
+description: Windowed streaming — tumbling/hopping/session windows, watermarks, late events, retraction-native deltas.
 ---
 
 # Streaming Window Expert — Windowed Aggregation Narrow

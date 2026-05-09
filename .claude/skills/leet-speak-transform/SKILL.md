@@ -1,6 +1,6 @@
 ---
 name: leet-speak-transform
-description: Capability skill for leet-speak (l33t / 1337) text transformation — bidirectional encode / decode across canonical dialects (basic numeric substitution, aggressive, Unicode-homoglyph), shibboleth-register awareness, and the rules that separate signal from cringe. Wear this hat when a task needs to produce or parse l33t text for culture / banter / demo / normalization, when a filter-bypass decoder is needed, or when an analyst has to tell genuine l33t from performative l33t. Generic across projects; not Zeta-specific. Pairs with leet-speak-obfuscation-detector (security-adjacent) and leet-speak-history-and-culture (when / where / who).
+description: Leet-speak bidirectional transform — encode/decode across numeric/aggressive/Unicode-homoglyph dialects, register awareness.
 ---
 
 # Leet-Speak Transform — the encode / decode hat

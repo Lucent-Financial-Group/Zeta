@@ -1,13 +1,13 @@
 ---
 id: B-0326
 priority: P1
-status: open
+status: closed
 title: "Author kiro.ts peer-call wrapper"
 tier: peer-call-substrate
 effort: S
 parent: B-0065
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: [B-0325]
 composes_with: [B-0065, B-0120]
 tags: [peer-call, kiro, kiro-cli, multi-harness]
@@ -22,10 +22,23 @@ existing sibling pattern (grok.ts, gemini.ts, etc.).
 
 ## Pre-start checklist (B-0065 gate)
 
-- [ ] Otto-364 search-first: research Kiro CLI headless/
-      non-interactive flags via WebSearch before authoring
-- [ ] Verify `kiro` CLI installation method and availability
-- [ ] Prior-art check: review grok.ts + gemini.ts patterns
+- [x] Search-first gate: research Kiro CLI headless/
+      non-interactive flags via WebSearch before authoring.
+      Finding: kiro.dev headless CLI supports
+      `kiro-cli chat --no-interactive --trust-all-tools`; documentation
+      at kiro.dev/docs/cli/headless/.
+      The wrapper invokes `kiro-cli` directly so a local Kiro IDE binary named
+      `kiro` is not mistaken for the headless AI CLI.
+- [x] Verify `kiro-cli` installation method and availability.
+      kiro.dev headless CLI: official docs at
+      `https://kiro.dev/docs/cli/headless/`; follow the official
+      platform-specific install flow. Avoid pipe-to-shell install snippets
+      at first contact.
+      Local env may have the Kiro IDE under `kiro`; wrapper exits 1 if
+      `kiro-cli` is absent or does not expose headless chat mode.
+- [x] Prior-art check: reviewed grok.ts (spawnSync pattern, used as primary
+      model) and gemini.ts (async streaming pattern, skipped — Kiro has no
+      JSON streaming mode). Pattern: synchronous spawnSync with file tee.
 
 ## Scope
 

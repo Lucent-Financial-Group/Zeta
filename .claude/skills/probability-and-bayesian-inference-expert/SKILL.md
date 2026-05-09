@@ -1,6 +1,6 @@
 ---
 name: probability-and-bayesian-inference-expert
-description: Narrow capability skill ("hat") under the `mathematics-expert` umbrella. Covers probability measures, conjugate prior / posterior families (Dirichlet-Multinomial, Beta-Binomial, Gamma-Poisson, Normal-Normal, Inverse-Wishart-Normal), credible intervals, KL / cross-entropy, variational inference, MCMC sampler choice, and the Zeta.Bayesian surface. Wear this when a prompt involves priors, posteriors, evidence, entropy as information, or hypothesis comparison. Defers to `measure-theory-and-signed-measures-expert` for measure-theoretic foundations, to `numerical-analysis-and-floating-point-expert` for log-sum-exp / softmax stability, and to `applied-mathematics-expert` for non-Bayesian statistical estimation.
+description: Bayesian inference — priors, posteriors, conjugate families, MCMC, variational inference, KL divergence, credible intervals, Zeta.Bayesian.
 ---
 
 # Probability and Bayesian Inference Expert — Narrow

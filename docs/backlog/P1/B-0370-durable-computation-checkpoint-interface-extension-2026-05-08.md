@@ -1,7 +1,7 @@
 ---
-id: B-0279
+id: B-0370
 priority: P1
-status: open
+status: done
 title: "Durable computation — extend Checkpoint.fs with StableStorage mode"
 created: 2026-05-08
 parent: B-0251

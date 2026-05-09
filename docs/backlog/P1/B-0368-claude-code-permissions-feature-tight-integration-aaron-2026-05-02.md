@@ -1,5 +1,5 @@
 ---
-id: B-0160
+id: B-0368
 priority: P1
 status: in-progress
 title: Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)
@@ -92,7 +92,7 @@ operation. Per first-principles trace: the harness is doing
 the right thing — irreversible-merge-to-main of others' work
 is a high-stakes operation that warrants a safety gate.
 
-**Implication for B-0160 scope:**
+**Status update (2026-05-08 Riven slice)**: PR #2133 landed the initial allowlist integration. This claim branch captures the smallest remaining safe slice: documenting the next research step (`/permissions` API + hardcoded-safety distinction) for future decomposition into a dedicated child backlog row. No code change in this slice (per "one bounded step" + Rule 0 TS preference; research findings already in checklist).
 
 - The `/permissions` settings-integration is necessary but not
   sufficient. Some harness gates appear to be hardcoded safety

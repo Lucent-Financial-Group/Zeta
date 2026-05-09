@@ -1,6 +1,6 @@
 ---
 name: paxos-expert
-description: Capability skill ("hat") — consensus narrow under `distributed-consensus-expert`. Covers the Paxos family end-to-end: single-decree Paxos, Multi-Paxos (leader-based log replication), Fast Paxos (one-round-trip happy path), Flexible Paxos (Q1/Q2 decoupled quorums), Generalized Paxos (commutativity optimisation), EPaxos (leaderless, dependency-graph), CASPaxos (log-less single-register CAS; Rystsov 2018), Paxos Commit (2PC replacement with no single coordinator), and the classical proof obligations (safety invariants P1/P2a/P2b/P2c, liveness under eventual synchrony). Wear this when specifying, reviewing, or implementing any Paxos-family protocol, reconciling a Paxos claim with Zeta's retraction-native log, or picking between Paxos variants for a specific workload. Defers to `distributed-consensus-expert` for cross-protocol positioning, to `raft-expert` for the Raft comparison, to `tla-expert` for TLA+ spec authoring, to `transaction-manager-expert` for distributed-commit framing, and to `deterministic-simulation-theory-expert` for DST bindings.
+description: Paxos family — single-decree, Multi-Paxos, Fast/Flexible/Generalized/EPaxos/CASPaxos, safety invariants, liveness.
 ---
 
 # Paxos Expert — Paxos Family Narrow

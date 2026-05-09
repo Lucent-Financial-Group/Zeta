@@ -1,6 +1,6 @@
 ---
 name: missing-citations
-description: Capability skill ("hat") — research-integrity auditor that catches **uncited** claims in Zeta's `docs/research/**` drafts and paper materials. Complements `verification-drift-auditor` (which catches drift between *cited* papers and our Lean / TLA+ / Z3 / FsCheck artifacts) by catching the claims that reach for prior art without naming it. Reads every research draft and flags statements of the form "as is well known", "it is classical that", "the standard result", "prior work shows", and every implicit-appeal-to-authority that lacks a `docs/UPSTREAM-LIST.md` anchor. Output is a triage list — claim, location, suggested citation (or "no citation found, escalate"), and severity. Distinct from `paper-peer-reviewer` (overall draft quality) and `verification-drift-auditor` (cited-paper drift).
+description: Research-integrity audit — flags uncited claims ("as is well known", implicit authority appeals) in docs/research drafts; outputs triage list.
 ---
 
 # Missing Citations — Research-Integrity Hat

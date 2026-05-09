@@ -12,9 +12,9 @@ Wraps `tools/orchestrator-checks/verify-branch.ts` (PR #1585) into the Claude Co
 
 If `ZETA_EXPECTED_BRANCH` is unset, the hook is a no-op (exits 0, allow). The default-off behavior means wiring this hook does not change any commit flow unless an agent (or maintainer) explicitly sets the env var for a task.
 
-#### Opt-in configuration
+#### Configuration
 
-Add this block to the top-level object in `.claude/settings.json`:
+The hook is wired in `.claude/settings.json` under `hooks.PreToolUse` with `"matcher": "Bash"`:
 
 ```json
 {
@@ -25,7 +25,6 @@ Add this block to the top-level object in `.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(git commit*)",
             "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/verify-branch-pretooluse.ts"
           }
         ]
@@ -35,7 +34,7 @@ Add this block to the top-level object in `.claude/settings.json`:
 }
 ```
 
-The `if` clause restricts the hook to `git commit` subcommands so other Bash invocations (build, test, file ops, etc.) are unaffected.
+The `matcher` fires on all Bash tool calls, but the script itself reads stdin JSON and filters to `git commit` commands only. When `ZETA_EXPECTED_BRANCH` is unset, the script exits 0 before reading stdin -- zero overhead.
 
 #### How to use after wiring
 

@@ -1,5 +1,5 @@
 ---
-id: B-0278
+id: B-0369
 priority: P1
 status: closed
 closed: 2026-05-08

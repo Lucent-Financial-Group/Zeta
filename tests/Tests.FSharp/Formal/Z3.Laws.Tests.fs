@@ -51,6 +51,11 @@ let private runZ3 (script: string) : bool =
     runZ3Raw script |> fun s -> s.Contains "unsat"
 
 
+let private firstZ3Token (output: string) =
+    output.Split([| ' '; '\n'; '\r'; '\t' |], StringSplitOptions.RemoveEmptyEntries)
+    |> Array.tryHead
+
+
 /// Tiny header declaring the `a b c i d` integer constants used by the
 /// simple pointwise lemmas. The full-SMT forms (chain rule, Merkle,
 /// Bloom, bit-vectors) build their own preambles inline.
@@ -85,6 +90,17 @@ let private z3ScriptHolds (name: string) (fullScript: string) =
         let unsat = runZ3 fullScript
         if not unsat then
             failwithf "Z3 failed to prove lemma %s. Output:\n%s" name (runZ3Raw fullScript)
+
+
+/// Assert that a self-contained script has a model. Use this to show a
+/// counterexample to an implication, not to claim a universal theorem.
+let private z3ScriptHasModel (name: string) (fullScript: string) =
+    match which "z3" with
+    | None -> ()
+    | Some _ ->
+        let output = runZ3Raw fullScript
+        if firstZ3Token output <> Some "sat" then
+            failwithf "Z3 failed to find witness %s. Output:\n%s" name output
 
 
 [<Fact>]
@@ -256,6 +272,90 @@ let ``Z3 proves Merkle combine is injective when hash is collision-free`` () =
         "(assert (not (and (= a1 a2) (= b1 b2) (= c1 c2) (= d1 d2))))\n" +
         "(check-sat)\n"
     z3ScriptHolds "Merkle second-preimage resistance" script
+
+
+[<Fact>]
+let ``Z3 proves agenda monotonicity under quality threshold`` () =
+    // Non-trivial replacement for the tautological Lemma 13 (2026-05-09).
+    // If agent A demands strictly higher quality than agent B
+    // (threshold_A > threshold_B), then A's agenda is a subset of B's.
+    // Z3 must derive Quality(t) >= threshold_A > threshold_B, showing
+    // Quality(t) >= threshold_B contradicts NOT InAgendaB(t).
+    // This is not a tautology: SAT without the threshold ordering constraint.
+    let script =
+        "(declare-sort Trajectory)\n" +
+        "(declare-fun Quality (Trajectory) Int)\n" +
+        "(declare-const threshold_A Int)\n" +
+        "(declare-const threshold_B Int)\n" +
+        "(define-fun InAgendaA ((t Trajectory)) Bool\n" +
+        "  (>= (Quality t) threshold_A))\n" +
+        "(define-fun InAgendaB ((t Trajectory)) Bool\n" +
+        "  (>= (Quality t) threshold_B))\n" +
+        "(assert (> threshold_A threshold_B))\n" +
+        "(assert (exists ((t Trajectory))\n" +
+        "  (and (InAgendaA t) (not (InAgendaB t)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "agenda monotonicity: higher quality threshold implies subset (agenda containment)" script
+
+
+[<Fact>]
+let ``Z3 proves agenda range disjointness for non-overlapping quality windows`` () =
+    // Non-trivial replacement for the tautological Lemma 14 (2026-05-09).
+    // If A's quality ceiling is strictly below B's floor (hi_A < lo_B),
+    // no trajectory can appear in both agendas.
+    // Z3 must resolve Quality(t) <= hi_A AND Quality(t) >= lo_B against
+    // hi_A < lo_B — a three-way arithmetic contradiction, not a
+    // definitional P AND NOT P.
+    let script =
+        "(declare-sort Trajectory)\n" +
+        "(declare-fun Quality (Trajectory) Int)\n" +
+        "(declare-const lo_A Int)\n" +
+        "(declare-const hi_A Int)\n" +
+        "(declare-const lo_B Int)\n" +
+        "(declare-const hi_B Int)\n" +
+        "(define-fun InAgendaA ((t Trajectory)) Bool\n" +
+        "  (and (>= (Quality t) lo_A) (<= (Quality t) hi_A)))\n" +
+        "(define-fun InAgendaB ((t Trajectory)) Bool\n" +
+        "  (and (>= (Quality t) lo_B) (<= (Quality t) hi_B)))\n" +
+        "(assert (<= lo_A hi_A))\n" +
+        "(assert (<= lo_B hi_B))\n" +
+        "(assert (< hi_A lo_B))\n" +
+        "(assert (exists ((t Trajectory))\n" +
+        "  (and (InAgendaA t) (InAgendaB t))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "agenda range disjointness: non-overlapping quality windows exclude shared trajectories" script
+
+
+[<Fact>]
+let ``Z3 finds shared trajectory with independent persona policies`` () =
+    // This is a SAT witness for non-entailment: shared trajectory alone
+    // does not force collapsed persona. The model has shared agenda
+    // membership for one trajectory and different policy outputs for a
+    // future input. A stronger theorem would need richer semantics for
+    // private state, agenda deltas, policy updates, and membrane rules.
+    let script =
+        "(declare-sort Trajectory)\n" +
+        "(declare-sort Input)\n" +
+        "(declare-sort Action)\n" +
+        "(declare-const SharedT Trajectory)\n" +
+        "(declare-const FutureInput Input)\n" +
+        "(declare-const ActionA Action)\n" +
+        "(declare-const ActionB Action)\n" +
+        "(declare-fun AgendaA (Trajectory) Bool)\n" +
+        "(declare-fun AgendaB (Trajectory) Bool)\n" +
+        "(declare-fun PolicyA (Input) Action)\n" +
+        "(declare-fun PolicyB (Input) Action)\n" +
+        "(define-fun SharedTrajectory ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (AgendaB t)))\n" +
+        "(define-fun CollapsedPersona () Bool\n" +
+        "  (forall ((i Input)) (= (PolicyA i) (PolicyB i))))\n" +
+        "(assert (SharedTrajectory SharedT))\n" +
+        "(assert (= (PolicyA FutureInput) ActionA))\n" +
+        "(assert (= (PolicyB FutureInput) ActionB))\n" +
+        "(assert (not (= ActionA ActionB)))\n" +
+        "(assert (not CollapsedPersona))\n" +
+        "(check-sat)\n"
+    z3ScriptHasModel "shared trajectory with independent persona policies" script
 
 
 [<Fact>]

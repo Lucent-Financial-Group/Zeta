@@ -1,6 +1,6 @@
 ---
 name: commit-message-shape
-description: Capability skill ("hat") — codifies Zeta's commit-message conventions. Subject line ≤ 72 chars in imperative mood; blank line; body explaining the WHY (not the what — the diff shows what); optional bullet list of concrete changes; Co-Authored-By footer. Scope prefix (`skill(name):`, `deps:`, `docs:`) is encouraged but optional. Wear this when drafting any commit message; invocable by any persona.
+description: "Commit-message conventions — imperative subject, WHY body, scope prefix, Co-Authored-By footer."
 ---
 
 # Commit-Message Shape — Procedure
@@ -95,6 +95,43 @@ Purpose: auditable attribution; GitHub renders the
 coauthor; future contributors see the origin. The
 `noreply@anthropic.com` is a real Anthropic address;
 don't invent a different email.
+
+## HEREDOC mechanics
+
+Multi-line commit messages and PR bodies use the HEREDOC
+pattern to preserve formatting through the shell:
+
+```bash
+git commit -m "$(cat <<'EOF'
+feat(B-0042): add the thing
+
+Why: Aaron asked for it. The constraint is X.
+
+- Change 1
+- Change 2
+
+Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+EOF
+)"
+```
+
+Key details:
+
+- **Single-quoted `'EOF'`** — prevents shell expansion
+  inside the message (dollar signs, backticks stay literal).
+- **No leading whitespace** on the `EOF` terminator line.
+- **The closing `)"` on the same line as `EOF`** — no
+  trailing newline after the message.
+
+PR bodies use the same pattern:
+
+```bash
+gh pr create --title "the title" --body "$(cat <<'EOF'
+## Summary
+...
+EOF
+)"
+```
 
 ## One commit or several
 

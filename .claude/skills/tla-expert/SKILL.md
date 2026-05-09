@@ -1,6 +1,6 @@
 ---
 name: tla-expert
-description: Capability skill ("hat") — TLA+ specification idioms for Zeta's 18 `.tla` specs under `tools/tla/specs/`. Covers spec shape (VARIABLES / Init / Next / Spec), invariants vs temporal properties, `.cfg` file discipline, state-space bounds, PlusCal vs raw TLA+ trade-offs, TLC runner invocation, counter-example reproduction, Lamport's idioms. Wear this when writing or reviewing a `.tla` / `.cfg` file, or when diagnosing a TLC model-check failure.
+description: TLA+ — operators, fairness, refinement mappings, TLC model checking, TLAPS proof discipline.
 ---
 
 # TLA+ Expert — Procedure + Lore

@@ -1,10 +1,10 @@
 ---
 id: B-0126
 priority: P1
-status: open
+status: closed
 title: Port the 4-layer meta-learning pattern from a sibling repo to Zeta
 created: 2026-05-01
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: []
 decomposition: decomposed
 children: [B-0126.1, B-0126.2, B-0126.3, B-0126.4]

@@ -19,27 +19,27 @@ let private goodProv () : Veridicality.Provenance =
 
 [<Fact>]
 let ``validateProvenance accepts a fully-populated signed provenance`` () =
-    Veridicality.validateProvenance (goodProv ()) |> should equal true
+    Veridicality.validateProvenance (goodProv ()) |> should equal 1.0
 
 [<Fact>]
 let ``validateProvenance rejects empty SourceId`` () =
     let p = { goodProv () with SourceId = "" }
-    Veridicality.validateProvenance p |> should equal false
+    Veridicality.validateProvenance p |> should equal 0.0
 
 [<Fact>]
 let ``validateProvenance rejects empty RootAuthority`` () =
     let p = { goodProv () with RootAuthority = "" }
-    Veridicality.validateProvenance p |> should equal false
+    Veridicality.validateProvenance p |> should equal 0.0
 
 [<Fact>]
 let ``validateProvenance rejects empty ArtifactHash`` () =
     let p = { goodProv () with ArtifactHash = "" }
-    Veridicality.validateProvenance p |> should equal false
+    Veridicality.validateProvenance p |> should equal 0.0
 
 [<Fact>]
 let ``validateProvenance rejects SignatureOk = false`` () =
     let p = { goodProv () with SignatureOk = false }
-    Veridicality.validateProvenance p |> should equal false
+    Veridicality.validateProvenance p |> should equal 0.0
 
 [<Fact>]
 let ``validateProvenance accepts BuilderId = None (not a hard gate)`` () =
@@ -48,7 +48,7 @@ let ``validateProvenance accepts BuilderId = None (not a hard gate)`` () =
     // identity (e.g., a human-authored doc signed with a personal
     // key).
     let p = { goodProv () with BuilderId = None }
-    Veridicality.validateProvenance p |> should equal true
+    Veridicality.validateProvenance p |> should equal 1.0
 
 
 // ─── Claim<'T> / validateClaim ─────────
@@ -60,7 +60,7 @@ let ``validateClaim wraps validateProvenance on the claim's provenance`` () =
           Payload = 42
           Weight = 1L
           Prov = goodProv () }
-    Veridicality.validateClaim c |> should equal true
+    Veridicality.validateClaim c |> should equal 1.0
 
 [<Fact>]
 let ``validateClaim is polymorphic over the Payload type`` () =
@@ -71,7 +71,7 @@ let ``validateClaim is polymorphic over the Payload type`` () =
           Payload = "Zeta is a retraction-native substrate."
           Weight = 1L
           Prov = goodProv () }
-    Veridicality.validateClaim c |> should equal true
+    Veridicality.validateClaim c |> should equal 1.0
 
 [<Fact>]
 let ``validateClaim rejects a claim with invalid provenance`` () =
@@ -80,7 +80,7 @@ let ``validateClaim rejects a claim with invalid provenance`` () =
           Payload = ()
           Weight = 1L
           Prov = { goodProv () with SignatureOk = false } }
-    Veridicality.validateClaim c |> should equal false
+    Veridicality.validateClaim c |> should equal 0.0
 
 [<Fact>]
 let ``Claim supports negative Weight for retraction semantics`` () =
@@ -93,7 +93,7 @@ let ``Claim supports negative Weight for retraction semantics`` () =
           Payload = 7
           Weight = -1L
           Prov = goodProv () }
-    Veridicality.validateClaim c |> should equal true
+    Veridicality.validateClaim c |> should equal 1.0
 
 
 // ─── canonicalKey / groupByCanonical ─────────

@@ -46,11 +46,11 @@ Per the verify-then-claim catalogue:
 | Sub-class | v0? | Description |
 |---|---|---|
 | Count drift | ✓ shipped | "N rows / instances / items" vs actual count |
-| Existence drift | v1 | "file/dir/tool exists" claim vs `ls` / `test -e` |
+| Existence drift | ✓ shipped | "file/dir/tool exists" claim vs `ls` / `test -e` |
 | Semantic-equivalence drift | v1 | command substitution equivalence claims |
 | Empirical-output drift | v1 | "command returns X" vs actual output |
 | Convention drift | v1 | recommended pattern matches canonical convention |
-| Path-form drift | v1 | fully-qualified vs bare paths consistent across document |
+| Path-form drift | ✓ shipped | fully-qualified vs bare paths consistent across document |
 | Self-recursive drift | v1 | the memo about X contains its own X |
 | Cross-surface count drift (frontmatter ↔ body ↔ section heading ↔ carved sentence ↔ MEMORY.md) | v1 (v0 catches narrative-vs-table within a single document; cross-surface narrative-to-narrative comparison is v1 work) | five surfaces should match consistent N |
 
