@@ -26,7 +26,7 @@ files. Three-layer search architecture (Vera tightening,
 | ----- | ------- | ---- | ----- |
 | Concept index (B-0362) | Curated regex standing queries | ~1MB | 22ms |
 | Full-text index (this) | Token / phrase / field search | ~5-10MB | <100ms |
-| Regex accelerator | Trigram/ngram candidates → verify against source | thin | varies |
+| Regex accelerator | Trigram/ngram candidates -> verify against source | thin | varies |
 
 The concept index handles "what touches Otto-357?" (standing
 queries). The full-text index handles "where did anyone mention
@@ -44,8 +44,9 @@ via trigram index, then verifying matches against source files
 - **All git-tracked**: segments are committed artifacts, survive
   across sessions and hosts, diffable
 - **Rebuild**: `bun tools/search/build-fulltext.ts` writes
-  segment files
+  segment files (proposed entry-point — not yet authored)
 - **Query**: `bun tools/search/query.ts <terms>` reads segments
+  (proposed entry-point — not yet authored)
 
 ## Implementation options
 
