@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, writeFileSync, closeSync, openSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, writeFileSync, closeSync, openSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { parseArgs, main } from "./ace.ts";
@@ -72,6 +72,19 @@ describe("listInstalled", () => {
     closeSync(openSync(filePath, "w"));
     const result = listInstalled(filePath);
     expect(result).toEqual([]);
+  });
+
+  test("returns empty array when store directory is unreadable", () => {
+    // Skip when running as root (chmod has no effect)
+    if (process.getuid && process.getuid() === 0) return;
+    const dir = mkdtempSync(join(tmpdir(), "ace-test-"));
+    chmodSync(dir, 0o000);
+    try {
+      const result = listInstalled(dir);
+      expect(result).toEqual([]);
+    } finally {
+      chmodSync(dir, 0o755);
+    }
   });
 
   test("returns empty array for empty store", () => {

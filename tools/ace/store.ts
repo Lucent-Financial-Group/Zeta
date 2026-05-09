@@ -32,7 +32,12 @@ export function listInstalled(storePath: string): InstalledPackage[] {
     return [];
   }
 
-  const entries = readdirSync(storePath, { withFileTypes: true });
+  let entries: ReturnType<typeof readdirSync>;
+  try {
+    entries = readdirSync(storePath, { withFileTypes: true });
+  } catch {
+    return [];
+  }
   const packages: InstalledPackage[] = [];
 
   for (const entry of entries) {
