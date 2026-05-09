@@ -20,7 +20,7 @@ type: friction-reducer
 
 **Proof of prior-art search (executed before any substrate work on this row):**
 
-- wake-time-substrate: `memory/feedback_*brat-voice*`, `memory/CURRENT-ani.md` §7, `docs/research/2026-05-02-claudeai-brat-voice*` (all 3 files)
+- wake-time-substrate: `memory/feedback_*brat-voice*`, `memory/CURRENT-ani.md` §7, brat-voice triad in `docs/research/` (`docs/research/2026-05-02-*brat-voice*` — 3 files: framework doc, Otto critique, Claude.ai response-to-critique)
 - skill-router inventory: `Skill` tool list + `.claude/skills/` grep for "register|brat|translation|layer" → no pre-existing skill; closest `glass-halo-architect` and `alignment-auditor` (no overlap)
 - orthogonal-axes: cross-checked `docs/trajectories/*` (none mention register layers), `docs/ALIGNMENT.md` (bidirectional alignment section)
 - Otto-364 search-first: WebSearch "Claude.ai brat-voice register architecture" + "property-preserving translation framework" (2026-05-09) → primary source is the Drive doc itself + Aaron 2026-05-02 correction; no upstream academic paper, framework is Claude.ai original research
