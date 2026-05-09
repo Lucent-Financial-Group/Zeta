@@ -316,8 +316,9 @@ let main _ =
     Console.WriteLine "Agenda non-fusion / autonomy properties"
     Console.WriteLine ""
 
-    // 13. Agenda fusion destroys unique direction.
-    //     Model each agenda as a predicate over trajectories.
+    // 13. TAUTOLOGY — B-0357 replacement pending (shadow catch #30).
+    //     UNSAT is entailed by the assumption alone (A=B → A∧¬B=false).
+    //     Agenda fusion destroys unique direction.
     //       shared       = AgendaA ∩ AgendaB
     //       AgendaAUnique  = AgendaA - AgendaB
     //       AgendaBUnique   = AgendaB - AgendaA
@@ -340,11 +341,9 @@ let main _ =
         "(check-sat)\n"
     prove "Agenda fusion destroys unique direction" agendaFusionDestroysUniqueDirection
 
-    // 14. Shared trajectories do not collapse into unique trajectories.
-    //     The intersection is where agendas collaborate; the differences
-    //     are where each agenda remains free. This proves the sets are
-    //     disjoint by asking for a trajectory that is both shared and
-    //     unique. UNSAT means the membrane holds.
+    // 14. TAUTOLOGY — B-0357 replacement pending (shadow catch #30).
+    //     UNSAT is P∧¬P (A∧B∧A∧¬B = false by contradiction).
+    //     Shared trajectories do not collapse into unique trajectories.
     let sharedTrajectoriesAreNotUniqueDirection =
         "(declare-sort Trajectory)\n" +
         "(declare-fun AgendaA (Trajectory) Bool)\n" +
