@@ -93,12 +93,14 @@
     <Compile Include="Infra/Dsl.Tests.fs" />
     <Compile Include="Infra/Environment.Tests.fs" />
     <Compile Include="Infra/Rx.Tests.fs" />
+    <Compile Include="Infra/FeatureFlags.Tests.fs" />
 
     <!-- Crdt/ -->
     <Compile Include="Crdt/GCounter.Tests.fs" />
     <Compile Include="Crdt/PNCounter.Tests.fs" />
     <Compile Include="Crdt/OrSet.Tests.fs" />
     <Compile Include="Crdt/Lww.Tests.fs" />
+    <Compile Include="Crdt/DeltaCrdt.Tests.fs" />
 
     <!-- Plugin/ -->
     <Compile Include="Plugin/Harness.Tests.fs" />
