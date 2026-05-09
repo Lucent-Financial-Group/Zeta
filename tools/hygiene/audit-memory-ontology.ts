@@ -17,9 +17,9 @@
 //   bun tools/hygiene/audit-memory-ontology.ts --fix --limit 20  # fix only the first N
 //
 // Exit codes:
-//   0 — no mismatches (or --fix succeeded)
-//   1 — mismatches found (report mode)
-//   2 — errors during fix
+//   0 — audit clean
+//   1 — mismatches, missing_type, or read_errors found (report or fix mode)
+//   2 — errors during fix operations
 //   64 — argument error
 
 import { existsSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
@@ -42,6 +42,7 @@ interface AuditResult {
   readonly matched: number;
   readonly mismatched: readonly MismatchEntry[];
   readonly missing_type: readonly string[];
+  readonly read_errors: readonly string[];
   readonly byPrefix: Record<string, number>;
   readonly byType: Record<string, number>;
 }
@@ -168,6 +169,7 @@ function audit(memoryDir: string): AuditResult {
 
   const mismatched: MismatchEntry[] = [];
   const missing_type: string[] = [];
+  const read_errors: string[] = [];
   let matched = 0;
   const byPrefix: Record<string, number> = {};
   const byType: Record<string, number> = {};
@@ -184,7 +186,9 @@ function audit(memoryDir: string): AuditResult {
     let content: string;
     try {
       content = readFileSync(filepath, "utf-8");
-    } catch {
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      read_errors.push(`${file}: ${msg}`);
       continue;
     }
 
@@ -222,6 +226,7 @@ function audit(memoryDir: string): AuditResult {
     matched,
     mismatched,
     missing_type,
+    read_errors,
     byPrefix,
     byType,
   };
@@ -355,6 +360,14 @@ if (args.json && !args.fix) {
       console.log(`  ${f}`);
     }
   }
+
+  if (result.read_errors.length > 0) {
+    console.log();
+    console.log("Read errors:");
+    for (const e of result.read_errors) {
+      console.log(`  ${e}`);
+    }
+  }
 }
 
 if (args.fix) {
@@ -363,6 +376,9 @@ if (args.fix) {
     console.log(JSON.stringify({ ...result, fixed, errors }, null, 2));
     if (errors.length > 0) {
       process.exit(2);
+    }
+    if (result.missing_type.length > 0 || result.read_errors.length > 0) {
+      process.exit(1);
     }
   } else {
     console.log();
@@ -378,7 +394,18 @@ if (args.fix) {
       }
       process.exit(2);
     }
+    if (result.missing_type.length > 0 || result.read_errors.length > 0) {
+      if (result.missing_type.length > 0) {
+        console.log();
+        console.log(`Warning: ${result.missing_type.length} file(s) with missing type field remain (cannot auto-fix)`);
+      }
+      if (result.read_errors.length > 0) {
+        console.log();
+        console.log(`Warning: ${result.read_errors.length} file(s) could not be read`);
+      }
+      process.exit(1);
+    }
   }
-} else if (result.mismatched.length > 0 || result.missing_type.length > 0) {
+} else if (result.mismatched.length > 0 || result.missing_type.length > 0 || result.read_errors.length > 0) {
   process.exit(1);
 }
