@@ -78,7 +78,17 @@ export async function readOrgBillingUsage(
       };
     }
 
-    const minutesUsed = parseInt(actionsMatch[1].replace(/,/g, ""), 10) || 0;
+    const minutesUsedText = actionsMatch[1];
+    if (!minutesUsedText) {
+      return {
+        org,
+        actions: { minutesUsed: 0, minutesLimit: null },
+        error: "parse-error",
+        rawExcerpt: html.substring(0, 300),
+      };
+    }
+
+    const minutesUsed = parseInt(minutesUsedText.replace(/,/g, ""), 10) || 0;
     let minutesLimit: number | null = null;
     if (actionsMatch[2] && actionsMatch[2].toLowerCase() !== "unlimited") {
       minutesLimit = parseInt(actionsMatch[2].replace(/,/g, ""), 10) || null;
