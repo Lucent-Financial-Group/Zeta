@@ -86,6 +86,7 @@ to evaluate against.
 `docs/DECISIONS/YYYY-MM-DD-frontier-tier-aware-bulk-grouping-model.md`
 
 Structure:
+
 - Context (why tiering for bulk review)
 - Tier definitions (0-4 with classification rules)
 - Routing decisions per tier

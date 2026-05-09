@@ -31,6 +31,7 @@ metric (B-0390) and use the tier-aware grouping model (B-0392).
 **1. Factory status overview** (the primary "are things OK?" signal)
 
 Real-time-as-possible signals (fetched client-side, git-native):
+
 - Open PRs by status (CI green / CI failing / BLOCKED / draft)
 - Active claim branches (count, age of oldest)
 - Backlog health (open P0/P1 count, newly-closed items)
@@ -45,6 +46,7 @@ processing design per B-0389 research scope.
 **2. Tier-grouped review surface** (per B-0392 model)
 
 Shows pending review items grouped by tier:
+
 - Tier 0 (mechanical): auto-merge ready, no reviewer attention needed
 - Tier 1 (structured): fast-scan cards, bulk-approve button
 - Tier 2 (judgment): individual cards requiring attention

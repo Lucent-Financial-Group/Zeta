@@ -36,6 +36,7 @@ Produce a committed doc with:
    in the parent row (B-0017) and in `docs/GLOSSARY.md`.
 
 Candidate pool from B-0017 body (starting point, not exhaustive):
+
 - Operational Resonance Dashboard
 - Coherence Surface
 - Resonance Console

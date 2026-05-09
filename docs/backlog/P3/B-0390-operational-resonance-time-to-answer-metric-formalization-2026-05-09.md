@@ -54,6 +54,7 @@ The document must define:
 Two measurement modalities needed:
 
 **A — Laboratory measurement** (controlled usability study):
+
 - Scenario: present a maintainer or agent with a defined
   "are things going as expected?" question; measure time to
   answer.
@@ -61,6 +62,7 @@ Two measurement modalities needed:
   (composes with B-0389 methodology).
 
 **B — Instrumented measurement** (production dashboard):
+
 - Event schema: what events to capture (page load, scroll depth,
   click sequences) that proxy for time-to-answer.
 - Why proxy: direct time-to-answer requires knowing "stop event"
@@ -94,6 +96,7 @@ What does "are things going as expected?" mean precisely?
 ## Why first (parallel to B-0388 and B-0389)
 
 Without a metric:
+
 - B-0392 (tier grouping) cannot say whether tier grouping
   reduces time-to-answer.
 - B-0393 (A/B infrastructure) has no primary variable to measure.
@@ -107,6 +110,7 @@ This is the measurement foundation all downstream rows depend on.
 `docs/research/frontier/time-to-answer-metric.md`
 
 Structure:
+
 - Operational definition (start/stop events)
 - Baseline estimate
 - Precision requirements

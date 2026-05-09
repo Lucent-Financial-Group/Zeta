@@ -37,6 +37,7 @@ This is **Path A — bridge implementation** while Path B
 **1. Chat widget in the dashboard**
 
 A sidebar or bottom-panel chat interface that:
+
 - Is scoped to the current dashboard context (maintainer is
   viewing a tier-2 batch of PRs; the LLM can see those PR
   summaries as context)
@@ -50,16 +51,19 @@ Two options to evaluate; implementer picks after checking
 current upstream state (Otto-364 search-first):
 
 **Option A1 — WebLLM** (`web-llm` npm package):
+
 - Runs LLMs in the browser via WebGPU (Chrome/Edge on capable hardware)
 - Supports Llama, Phi, Mistral, Gemma families
 - Good for capable hardware; degrades on weak hardware
 
 **Option A2 — transformers.js** (`@huggingface/transformers`):
+
 - Runs smaller models via WebAssembly + ONNX
 - Works on more hardware (no WebGPU required)
 - Lower capability ceiling than WebLLM
 
 Implementer chooses after:
+
 1. WebSearch current docs for both libraries (Otto-364)
 2. Evaluating which model families work for "review discussion"
    (needs reasoning, not just text completion)
@@ -69,6 +73,7 @@ Implementer chooses after:
 **3. Context injection**
 
 The LLM chat is context-aware:
+
 - When viewing the tier-grouped review surface, the current
   batch of PRs/items is injected as context
 - Context injection is minimal: PR title + description +

@@ -90,6 +90,7 @@ may operationalize outdated or misremembered UX heuristics.
 `docs/research/frontier/operational-resonance-research-scope.md`
 
 Structure:
+
 - Domain → canonical sources → key claims → open questions → relevance to B-0390
 
 ## Focused check
