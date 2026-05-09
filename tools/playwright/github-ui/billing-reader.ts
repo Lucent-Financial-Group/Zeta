@@ -8,7 +8,7 @@ export class BillingPermissionError extends Error {
   constructor(org: string) {
     super(
       `Insufficient permissions to read billing for org "${org}". ` +
-        "The authenticated user must have billing-admin or owner role.",
+        "The authenticated user must have billing manager or owner role.",
     );
     this.name = "BillingPermissionError";
   }

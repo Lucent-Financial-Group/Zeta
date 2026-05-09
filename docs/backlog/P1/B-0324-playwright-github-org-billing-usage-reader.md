@@ -1,7 +1,7 @@
 ---
 id: B-0324
 priority: P1
-status: in-progress
+status: open
 title: "Org-level billing/usage page reader — extract Actions minutes and costs via UI"
 tier: agent-capability-expansion
 effort: S
