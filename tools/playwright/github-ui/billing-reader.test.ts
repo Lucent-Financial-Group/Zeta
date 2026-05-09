@@ -172,8 +172,8 @@ describe("detectPermissionDenied", () => {
     expect(detectPermissionDenied("<html></html>", "https://github.com/404")).toBe(true);
   });
 
-  test("detects login redirect", () => {
-    expect(detectPermissionDenied("<html></html>", "https://github.com/login")).toBe(true);
+  test("does not treat login redirect as permission denied (readOrgBilling throws GitHubSessionAuthError)", () => {
+    expect(detectPermissionDenied("<html></html>", "https://github.com/login")).toBe(false);
   });
 
   test("detects permission message in HTML", () => {

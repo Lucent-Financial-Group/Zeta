@@ -46,11 +46,11 @@ read, closing a known data gap.
 
 ## Done-criteria
 
-- [ ] `tools/playwright/github-ui/billing-reader.ts` exists.
+- [x] `tools/playwright/github-ui/billing-reader.ts` exists.
 - [ ] Running it returns structured billing data for the
-      Lucent-Financial-Group org.
-- [ ] Output is JSON-serializable and includes at minimum
-      Actions minutes used and limit.
+      Lucent-Financial-Group org. ← follow-up: needs live auth credentials.
+- [x] Output is JSON-serializable and includes at minimum
+      Actions minutes used and limit (types defined; 27 unit tests pass).
 
 ## What this row does NOT do
 
@@ -83,11 +83,3 @@ Full item scope includes live navigation + CI end-to-end. Smallest safe
 slice: pure-function HTML extractors + `readOrgBilling` navigator + unit
 tests. Live Playwright run requires org billing-admin credentials unavailable
 in CI — deferred to follow-up slice that adds an integration test fixture.
-
-## Done-criteria progress
-
-- [x] `tools/playwright/github-ui/billing-reader.ts` exists.
-- [ ] Running it returns structured billing data for the
-      Lucent-Financial-Group org. ← follow-up: needs live auth credentials.
-- [x] Output is JSON-serializable and includes at minimum
-      Actions minutes used and limit (types defined; 27 unit tests pass).

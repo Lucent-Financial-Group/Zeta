@@ -1,4 +1,4 @@
-import { withGitHubSession, type GitHubSessionOptions } from "./auth";
+import { withGitHubSession, GitHubSessionAuthError, type GitHubSessionOptions } from "./auth";
 
 // ---------------------------------------------------------------------------
 // Errors
@@ -144,11 +144,13 @@ export function extractBillingHeadings(html: string): string[] {
 }
 
 /**
- * Returns true when the page indicates the user lacks billing access.
- * GitHub redirects to /404 or /login, or renders a permission-denied message.
+ * Returns true when the page indicates the authenticated user lacks billing
+ * authorization. Does NOT include login redirects \u2014 those indicate session
+ * expiry and should be surfaced as a GitHubSessionAuthError, not a permission
+ * error.
  */
 export function detectPermissionDenied(html: string, pageUrl: string): boolean {
-  if (/^https?:\/\/github\.com\/404/.test(pageUrl) || /^https?:\/\/github\.com\/login/.test(pageUrl)) return true;
+  if (/^https?:\/\/github\.com\/404/.test(pageUrl)) return true;
   if (/you don['\u2019]t have (permission|access)/i.test(html)) return true;
   if (/not (authorized|permitted) to (view|access|manage) billing/i.test(html)) return true;
   return false;
@@ -178,6 +180,11 @@ export async function readOrgBilling(
     const finalUrl = session.page.url();
     const html = await session.page.content();
 
+    if (/^https?:\/\/github\.com\/login/.test(finalUrl)) {
+      throw new GitHubSessionAuthError(
+        `GitHub session appears expired — billing navigation redirected to login. Refresh the storage-state file.`,
+      );
+    }
     if (detectPermissionDenied(html, finalUrl)) {
       throw new BillingPermissionError(org);
     }
