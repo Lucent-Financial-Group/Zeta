@@ -145,13 +145,13 @@ describe("ephemeral library", () => {
 
   test("getEphemeralShadowOutletDir returns ZETA_SHADOW_DIR when set", () => {
     const dir = getEphemeralShadowOutletDir();
-    expect(dir).toBe(process.env.ZETA_SHADOW_DIR);
+    expect(dir).toBe(process.env.ZETA_SHADOW_DIR!);
   });
 
   test("ensureEphemeralShadowOutlet creates directory and returns path", () => {
     const dir = ensureEphemeralShadowOutlet();
     expect(existsSync(dir)).toBe(true);
-    expect(dir).toBe(process.env.ZETA_SHADOW_DIR);
+    expect(dir).toBe(process.env.ZETA_SHADOW_DIR!);
   });
 
   test("ensureEphemeralShadowOutlet is idempotent — safe to call twice", () => {
