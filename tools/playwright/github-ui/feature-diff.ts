@@ -116,8 +116,8 @@ export function diffPageSnapshots(prior: GitHubPageSnapshot, current: GitHubPage
     }
   }
 
-  const newFeatures = [...curFeatures].filter((f) => !priorFeatures.has(f));
-  const removedFeatures = [...priorFeatures].filter((f) => !curFeatures.has(f));
+  const newFeatures = [...curFeatures].filter((f) => !priorFeatures.has(f)).sort();
+  const removedFeatures = [...priorFeatures].filter((f) => !curFeatures.has(f)).sort();
 
   const newFormFields: string[] = [];
   const removedFormFields: string[] = [];
@@ -139,8 +139,6 @@ export function diffPageSnapshots(prior: GitHubPageSnapshot, current: GitHubPage
   newToggles.sort();
   removedToggles.sort();
   changedToggles.sort((a, b) => a.key.localeCompare(b.key));
-  newFeatures.sort();
-  removedFeatures.sort();
   newFormFields.sort();
   removedFormFields.sort();
   changedFormFields.sort((a, b) => a.key.localeCompare(b.key));
@@ -357,6 +355,10 @@ function parseCliArgs(argv: readonly string[]): CliArgs | CliError {
   let i = 0;
   while (i < argv.length) {
     const a = argv[i] ?? "";
+    if (a === "--") {
+      // End-of-flags: remaining args treated as positional (ignored by this CLI)
+      break;
+    }
     if (a === "--help" || a === "-h") {
       return { prior, current, out, help: true };
     }

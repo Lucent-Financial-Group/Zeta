@@ -571,6 +571,27 @@ describe("renderDiffReport", () => {
     expect(md).toContain("https://github.com/new/page");
     expect(md).toContain("New pages added");
   });
+
+  test("summary Removed elements count includes removedFormFields", () => {
+    const report = makeReport({
+      pageDiffs: [
+        {
+          url: BASE_URL,
+          newToggles: [],
+          removedToggles: ["toggle-a"],
+          changedToggles: [],
+          newFeatures: [],
+          removedFeatures: ["Section B"],
+          newFormFields: [],
+          removedFormFields: ["field-x", "field-y"],
+          changedFormFields: [],
+        },
+      ],
+    });
+    const md = renderDiffReport(report);
+    // 1 removedToggle + 1 removedFeature + 2 removedFormFields = 4 total
+    expect(md).toContain("| 4 |");
+  });
 });
 
 // ---------------------------------------------------------------------------
