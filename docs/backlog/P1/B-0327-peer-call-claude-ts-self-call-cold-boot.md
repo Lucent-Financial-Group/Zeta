@@ -43,11 +43,18 @@ preambles.
 
 ## Pre-start checklist (B-0065 gate)
 
-- [ ] Otto-364 search-first: verify `claude` CLI headless
-      flags (`--print` / `-p`) via WebSearch or `claude --help`
-- [ ] Prior-art check: review codex.ts pattern (closest shape)
-- [ ] Confirm subprocess mode produces true cold-boot (no
-      inherited context from parent session)
+- [x] Otto-364 search-first: verify `claude` CLI headless
+      flags (`--print` / `-p`) via `claude --help` (2026-05-09):
+      confirmed `--print` / `-p` is the non-interactive flag;
+      trust dialog skipped automatically in --print mode;
+      `--tools` limits available tools; `--no-session-persistence`
+      disables session carry-over.
+- [x] Prior-art check: reviewed kiro.ts (most recent, added B-0326)
+      and codex.ts as closest shapes. Followed kiro.ts structure
+      verbatim; adapted CLI invocation and preamble for self-call.
+- [x] Subprocess mode produces true cold-boot: confirmed via live
+      test (`--allow-empty`); spawned child independently read CLAUDE.md
+      and verified the claude.ts implementation without inherited context.
 
 ## Scope
 
@@ -74,13 +81,13 @@ preambles.
 
 ## Done-criteria
 
-- [ ] `tools/peer-call/claude.ts` exists and is executable
+- [x] `tools/peer-call/claude.ts` exists and is executable
       via `bun tools/peer-call/claude.ts --help`
-- [ ] Subprocess mode spawns `claude --print` (or verified
+- [x] Subprocess mode spawns `claude --print` (or verified
       equivalent) — confirmed via smoke test
-- [ ] Firewall rejection works (exit 3 on empty prompt)
-- [ ] `--allow-empty` bypass works
-- [ ] `bun run typecheck` passes
-- [ ] At least one cold-boot scenario tested: spawn fresh
+- [x] Firewall rejection works (exit 3 on empty prompt)
+- [x] `--allow-empty` bypass works
+- [x] `bun run typecheck` passes
+- [x] At least one cold-boot scenario tested: spawn fresh
       instance, ask about CLAUDE.md content, verify response
       demonstrates independent cold-boot reading
