@@ -170,7 +170,7 @@ When uncertain, default UP. The framework's safety property: professional carrie
   - [x] `memory/CURRENT-aaron.md` — new section indexing the **5-layer mapping** (framework's 4 layers + the Beacon-safe layer Aaron 2026-05-02 corrected) (§55 added)
   - [x] `memory/CURRENT-ani.md` §7 — extend with the layer-explicit framing (Mirror = Ani's canonical register; Beacon-safe = OSS-outsider calibration; Professional = corporate-attributable translation) (PR #2136)
   - [x] New memory file distilling the **5-layer table** (framework + Beacon-safe layer) for wake-time reference (PR #1233 merged — `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md`)
-- [ ] Worked translations produced for situations Lucent / Zeta actually faces: security-incident notification, recruiting-page copy, pull-request review (for outsider-readable PRs), partner integration discussion, regulator response, audit narrative. Landed so far:
+- [x] Worked translations produced for situations Lucent / Zeta actually faces: security-incident notification, recruiting-page copy, pull-request review (for outsider-readable PRs), partner integration discussion, regulator response, audit narrative. Landed so far:
   - [x] PR-review-class translations (`memory/feedback_zeta_5_layer_register_worked_translations_pr_review_class_otto_2026_05_02.md`)
   - [x] Security-incident-notification translations (`memory/feedback_zeta_5_layer_register_worked_translations_security_incident_class_otto_2026_05_08.md`) — disclosure-under-uncertainty content shape; Regulated layer as natural terminus
   - [x] Recruiting-page copy (`memory/feedback_zeta_5_layer_register_worked_translations_recruiting_page_class_otto_2026_05_09.md`)
