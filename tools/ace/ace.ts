@@ -25,11 +25,10 @@ interface ArgError {
 }
 
 export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
-  if (argv.length === 0 || argv[0] === "help" || argv[0] === "--help" || argv[0] === "-h") {
+  const command = argv[0];
+  if (!command || command === "help" || command === "--help" || command === "-h") {
     return { command: "help" };
   }
-
-  const command = argv[0];
 
   if (command === "list") {
     let storePath = defaultStorePath();

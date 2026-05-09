@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync, closeSync, openSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { parseArgs, main } from "./ace.ts";
@@ -18,8 +18,7 @@ describe("parseArgs", () => {
   test("list with defaults", () => {
     const result = parseArgs(["list"]);
     expect("error" in result).toBe(false);
-    if (!("error" in result)) {
-      expect(result.command).toBe("list");
+    if (!("error" in result) && result.command === "list") {
       expect(result.json).toBe(false);
     }
   });
@@ -67,6 +66,14 @@ describe("listInstalled", () => {
     expect(result).toEqual([]);
   });
 
+  test("returns empty array when store path is a file", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-test-"));
+    const filePath = join(dir, "not-a-directory");
+    closeSync(openSync(filePath, "w"));
+    const result = listInstalled(filePath);
+    expect(result).toEqual([]);
+  });
+
   test("returns empty array for empty store", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-test-"));
     const result = listInstalled(dir);
@@ -96,9 +103,10 @@ describe("listInstalled", () => {
 
     const result = listInstalled(dir);
     expect(result.length).toBe(1);
-    expect(result[0].hash).toBe(hash);
-    expect(result[0].manifest.name).toBe("test-package");
-    expect(result[0].manifest.description).toBe("A test DLC");
+    const first = result[0]!;
+    expect(first.hash).toBe(hash);
+    expect(first.manifest.name).toBe("test-package");
+    expect(first.manifest.description).toBe("A test DLC");
   });
 
   test("skips malformed manifests", () => {
@@ -121,26 +129,39 @@ describe("listInstalled", () => {
     expect(result).toEqual([]);
   });
 
+  test("skips manifests missing version field", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-test-"));
+    const pkgDir = join(dir, "no-version");
+    mkdirSync(pkgDir);
+    writeFileSync(
+      join(pkgDir, "manifest.json"),
+      JSON.stringify({ format_version: 1, name: "x", content_hash: "sha256:abc" }),
+    );
+
+    const result = listInstalled(dir);
+    expect(result).toEqual([]);
+  });
+
   test("sorts by name", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-test-"));
-    for (const [hash, name] of [["h2", "zebra"], ["h1", "alpha"]]) {
-      const pkgDir = join(dir, hash);
+    for (const pair of [["h2", "zebra"], ["h1", "alpha"]]) {
+      const pkgDir = join(dir, pair[0]!);
       mkdirSync(pkgDir);
       writeFileSync(
         join(pkgDir, "manifest.json"),
         JSON.stringify({
           format_version: 1,
-          name,
+          name: pair[1],
           version: "1.0.0",
-          content_hash: `sha256:${hash}`,
+          content_hash: `sha256:${pair[0]}`,
         }),
       );
     }
 
     const result = listInstalled(dir);
     expect(result.length).toBe(2);
-    expect(result[0].manifest.name).toBe("alpha");
-    expect(result[1].manifest.name).toBe("zebra");
+    expect(result[0]!.manifest.name).toBe("alpha");
+    expect(result[1]!.manifest.name).toBe("zebra");
   });
 });
 

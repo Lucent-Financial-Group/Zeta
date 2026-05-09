@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 export interface AceManifest {
@@ -24,6 +24,14 @@ export function listInstalled(storePath: string): InstalledPackage[] {
     return [];
   }
 
+  try {
+    if (!statSync(storePath).isDirectory()) {
+      return [];
+    }
+  } catch {
+    return [];
+  }
+
   const entries = readdirSync(storePath, { withFileTypes: true });
   const packages: InstalledPackage[] = [];
 
@@ -38,6 +46,7 @@ export function listInstalled(storePath: string): InstalledPackage[] {
       if (
         typeof manifest.format_version !== "number" ||
         typeof manifest.name !== "string" ||
+        typeof manifest.version !== "string" ||
         typeof manifest.content_hash !== "string"
       ) {
         continue;
