@@ -22,7 +22,7 @@
 //   2 — errors during fix
 //   64 — argument error
 
-import { readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 // ---------------------------------------------------------------------------
@@ -34,6 +34,7 @@ interface MismatchEntry {
   readonly prefix: string;
   readonly type: string;
   readonly suggestedName: string;
+  readonly error?: string;
 }
 
 interface AuditResult {
@@ -61,8 +62,17 @@ const SKIP_FILES: ReadonlySet<string> = new Set([
   "README.md",
 ]);
 
-const DEFAULT_MEMORY_DIR =
-  `${process.env.HOME}/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory`;
+const VALID_TYPES: ReadonlySet<string> = new Set([
+  "feedback",
+  "user",
+  "project",
+  "reference",
+]);
+
+const DEFAULT_MEMORY_DIR = (() => {
+  const home = process.env.HOME ?? process.env.USERPROFILE ?? "";
+  return `${home}/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory`;
+})();
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -188,6 +198,15 @@ function audit(memoryDir: string): AuditResult {
 
     if (type === prefix) {
       matched++;
+    } else if (!VALID_TYPES.has(type)) {
+      // Type from frontmatter is not in the allowed ontology — flag as error
+      mismatched.push({
+        file,
+        prefix,
+        type,
+        suggestedName: file, // no rename — type is invalid
+        error: `Invalid type '${type}' in frontmatter (allowed: ${[...VALID_TYPES].join(", ")})`,
+      });
     } else {
       mismatched.push({
         file,
@@ -217,9 +236,41 @@ function applyFixes(
   const fixed: string[] = [];
   const errors: string[] = [];
 
+  // Detect duplicate suggestedName values in the fix set
+  const suggestedNameCounts = new Map<string, number>();
   for (const entry of toFix) {
+    if (entry.error) continue; // skip entries with invalid types
+    suggestedNameCounts.set(
+      entry.suggestedName,
+      (suggestedNameCounts.get(entry.suggestedName) ?? 0) + 1,
+    );
+  }
+
+  for (const entry of toFix) {
+    // Skip entries with invalid type (no valid rename target)
+    if (entry.error) {
+      errors.push(`Skipped ${entry.file}: ${entry.error}`);
+      continue;
+    }
+
+    // Skip if multiple files would rename to the same target
+    if ((suggestedNameCounts.get(entry.suggestedName) ?? 0) > 1) {
+      errors.push(
+        `Skipped ${entry.file}: duplicate target '${entry.suggestedName}' (${suggestedNameCounts.get(entry.suggestedName)} files would collide)`,
+      );
+      continue;
+    }
+
     const oldPath = join(memoryDir, entry.file);
     const newPath = join(memoryDir, entry.suggestedName);
+
+    // Check for destination file collision
+    if (existsSync(newPath)) {
+      errors.push(
+        `Skipped ${entry.file}: destination '${entry.suggestedName}' already exists`,
+      );
+      continue;
+    }
 
     try {
       renameSync(oldPath, newPath);
@@ -294,6 +345,9 @@ if (args.fix) {
   const { fixed, errors } = applyFixes(args.memoryDir, result.mismatched, args.limit);
   if (args.json) {
     console.log(JSON.stringify({ ...result, fixed, errors }, null, 2));
+    if (errors.length > 0) {
+      process.exit(2);
+    }
   } else {
     console.log();
     console.log(`Fixed ${fixed.length} files:`);
