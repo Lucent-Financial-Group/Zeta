@@ -136,6 +136,18 @@ let ``groundingWithScore ignores retracted claims`` () =
 
 
 [<Fact>]
+let ``groundingWithScore weights scores by claim weight`` () =
+    // strong-claim has weight 9, weak-claim weight 1
+    // scorer: strong=1.0, weak=0.0
+    // weighted avg = (1.0*9 + 0.0*1) / (9+1) = 0.9
+    let claims =
+        SignalQuality.claimsOf [ ("strong-claim", 9L); ("weak-claim", 1L) ]
+    let scorer (s: string) = if s = "strong-claim" then 1.0 else 0.0
+    SignalQuality.groundingWithScore scorer claims
+    |> should (equalWithin 1e-9) 0.9
+
+
+[<Fact>]
 let ``falsifiabilityWith returns 1.0 on an empty claim store`` () =
     let empty = ZSet<string>.Empty
     SignalQuality.falsifiabilityWith (fun _ -> false) empty
