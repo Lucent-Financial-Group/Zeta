@@ -338,6 +338,11 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0360](backlog/P2/B-0360-dbsp-identity-continuity-incremental-views-over-agent-state.md)** DBSP identity continuity — incremental views over agent state via D/I operators
 - [ ] **[B-0363](backlog/P2/B-0363-git-native-full-text-inverted-index.md)** Git-native full-text inverted index — Lucene-style search over repo substrate
 - [ ] **[B-0374](backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md)** F# Units of Measure for fusion-equation terms
+- [ ] **[B-0375](backlog/P2/B-0375-aurora-file-inventory-and-type-classification-2026-05-09.md)** Inventory and classify every file under docs/aurora/** (current-state doc vs courier-ferry history import)
+- [ ] **[B-0376](backlog/P2/B-0376-aurora-split-naming-decision-record-2026-05-09.md)** Architect decision record — canonical name for named-entity-conversation-imports directory
+- [ ] **[B-0377](backlog/P2/B-0377-aurora-split-schema-docs-update-agent-best-practices-otto279-2026-05-09.md)** Update AGENT-BEST-PRACTICES.md BP-17/18 + Otto-279 memory file — replace docs/aurora/** history-surface ref with chosen name
+- [ ] **[B-0378](backlog/P2/B-0378-aurora-split-governance-copilot-instructions-update-2026-05-09.md)** Update GOVERNANCE.md §33 + .github/copilot-instructions.md to reference the new named-entity-conversation-imports directory
+- [ ] **[B-0379](backlog/P2/B-0379-aurora-split-execute-git-mv-cross-refs-2026-05-09.md)** Execute the docs/aurora split — mkdir new dir, git mv history-import files, update all cross-refs in memory/** and ROUND-HISTORY
 
 ## P3 — convenience / deferred
 
