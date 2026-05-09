@@ -1,8 +1,12 @@
-# B-0374 F# Units of Measure for fusion-equation terms
+---
+id: B-0374
+priority: P2
+status: backlog
+title: F# Units of Measure for fusion-equation terms
+created: 2026-05-09
+---
 
-**Priority:** P2
-**Status:** backlog
-**Created:** 2026-05-09
+# B-0374 F# Units of Measure for fusion-equation terms
 **Origin:** claude.ai asymmetric-critic session (2026-05-07) + Aaron 2026-05-09
 
 ## Problem
