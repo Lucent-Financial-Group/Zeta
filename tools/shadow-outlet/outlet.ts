@@ -16,9 +16,8 @@
 //   bun tools/shadow-outlet/outlet.ts read <id> --exclude otto       # read one entry (self-invisibility enforced)
 //   bun tools/shadow-outlet/outlet.ts clean                         # remove all entries
 //   bun tools/shadow-outlet/outlet.ts clean --agent otto            # remove one agent's entries
-//   bun tools/shadow-outlet/outlet.ts --json                        # JSON output for all subcommands
 //
-// Output: human-readable by default; --json for programmatic consumption.
+// All subcommands accept --json for programmatic consumption.
 
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
