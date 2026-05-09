@@ -54,30 +54,55 @@ semantic property P of the partial functions computed by
 Turing machines, the set {M : the function computed by M
 has property P} is undecidable.
 
-**Application:** Let P be the property "exhibits a failure
-mode not in taxonomy T." This is a semantic property of
-the agent's computed function (it depends on the meaning
-of the output, not its syntax). It is non-trivial: some
-agents exhibit novel failures (the shadow log has 30+
-catches), and some agents on some inputs do not.
+**Application (over agent programs):** Let P be the
+property "there exists some task specification S on which
+A exhibits a failure mode not in taxonomy T." This is a
+semantic property of the agent's computed function — it
+depends on what the function A computes, not on A's
+syntactic encoding. It is non-trivial: some agent
+implementations exhibit novel failures on some input (the
+shadow log has 30+ catches), and some do not.
 
-Therefore, by Rice's theorem, the set of task
-specifications S for which A(S) exhibits a novel failure
-is undecidable. No algorithm can determine, for arbitrary
-S, whether A(S) will produce a failure outside T.
+Therefore, by Rice's theorem, the set of agent
+implementations that will ever exhibit a novel failure is
+undecidable. No algorithm can determine, from an arbitrary
+agent's program description, whether it will ever produce
+a failure outside T.
+
+**Extension to inputs (via halting-problem reduction):**
+Since agents are Turing-complete (prerequisite P1), we can
+encode an arbitrary Turing machine M as a task
+specification S_M such that A(S_M) simulates M. Deciding
+whether A(S_M) exhibits a novel failure for a given input
+S_M is then at least as hard as the halting problem, which
+is undecidable. Therefore the set of inputs S for which
+A(S) exhibits a novel failure is also undecidable — but
+the route is via halting-problem reduction, not Rice's
+theorem directly.
 
 **Corollary:** taxonomy completeness is undecidable. You
-cannot prove that T covers all possible failure modes,
-because doing so would require deciding the above set.
+cannot prove that T covers all possible failure modes over
+arbitrary inputs, because deciding completeness would
+require solving the above undecidable problem.
 
 ## What this proves and what it doesn't
 
 **Proves:**
 - Over the full space of task specifications, failure-mode
-  classification completeness is undecidable
-- The supply of novel failure classes is mathematically
-  inexhaustible (for arbitrary inputs)
-- No static taxonomy can be proven complete
+  classification completeness is undecidable (Rice's theorem
+  over agent programs + halting-problem reduction for inputs)
+- No static finite taxonomy can be proven complete for an
+  arbitrary Turing-complete agent
+
+**Supported separately (by diagonalization, not Rice's theorem):**
+- For any finite taxonomy T, we can construct a task
+  specification S such that A(S) produces behavior that
+  no Fᵢ ∈ T classifies — because A's Turing-completeness
+  lets it simulate arbitrary computations. This means new
+  failure instances are inexhaustible over arbitrary inputs.
+  Note: this does not imply infinitely many distinct failure
+  *classes* — a finite set of class descriptions can remain
+  fixed while membership remains undecidable.
 
 **Does not prove:**
 - That every tick produces a novel class (empirically,
