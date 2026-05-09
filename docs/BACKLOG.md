@@ -325,7 +325,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0359](backlog/P2/B-0359-probabilistic-type-system-language-level-confidence-primitives.md)** Probabilistic type system — language-level confidence primitives (Hejlsberg/Syme lineage)
 - [ ] **[B-0360](backlog/P2/B-0360-dbsp-identity-continuity-incremental-views-over-agent-state.md)** DBSP identity continuity — incremental views over agent state via D/I operators
 - [ ] **[B-0363](backlog/P2/B-0363-git-native-full-text-inverted-index.md)** Git-native full-text inverted index — Lucene-style search over repo substrate
-- [ ] **[](backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md)**
+- [ ] **[](backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md)** 
 
 ## P3 — convenience / deferred
 
