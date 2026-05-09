@@ -96,6 +96,8 @@ launchctl bootstrap gui/$(id -u) \
 ### Windows
 
 ```powershell
+[System.Environment]::SetEnvironmentVariable(
+    "ZETA_CLAUDE_LOOP_RUN_CLAUDE", "1", "User")
 $action = New-ScheduledTaskAction `
     -Execute "bun" `
     -Argument ".claude/bin/claude-loop-tick.ts" `
@@ -106,9 +108,6 @@ $trigger = New-ScheduledTaskTrigger `
 $settings = New-ScheduledTaskSettingsSet `
     -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries `
     -StartWhenAvailable
-# Ensure tick script can execute autonomous work (gates on this env var)
-[System.Environment]::SetEnvironmentVariable(
-    "ZETA_CLAUDE_LOOP_RUN_CLAUDE", "1", "User")
 Register-ScheduledTask -TaskName "ZetaClaudeLoop" `
     -Action $action -Trigger $trigger `
     -Settings $settings -RunLevel Highest
