@@ -14,10 +14,11 @@
 // process on the host OS.
 
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { homedir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-const home = process.env.HOME ?? "/Users/acehack";
+const home = process.env.HOME ?? homedir();
 const worktree = process.env.ZETA_CLAUDE_LOOP_WORKTREE ?? join(home, ".local/share/zeta-claude-loop/Zeta");
 const stateDir = process.env.ZETA_CLAUDE_LOOP_STATE_DIR ?? join(home, "Library/Application Support/ZetaClaudeLoop");
 const logDir = process.env.ZETA_CLAUDE_LOOP_LOG_DIR ?? join(home, "Library/Logs/zeta-claude-loop");
@@ -29,7 +30,9 @@ const runClaude = process.env.ZETA_CLAUDE_LOOP_RUN_CLAUDE === "1";
 const claudeIntervalMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_INTERVAL_SECONDS ?? "60") * 1000;
 const claudeTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_TIMEOUT_SECONDS ?? "600") * 1000;
 const dryRun = process.env.ZETA_CLAUDE_LOOP_DRY_RUN === "1";
+const claudeModel = process.env.ZETA_CLAUDE_LOOP_MODEL ?? "sonnet";
 const claudeStateFile = join(stateDir, "last-claude-run.json");
+const ratingsFile = join(stateDir, "model-ratings.jsonl");
 
 mkdirSync(stateDir, { recursive: true });
 mkdirSync(logDir, { recursive: true });
@@ -176,20 +179,42 @@ function heartbeat(): void {
                     ].join(" ");
                 }
 
+                const startedAt = nowIso();
                 const gate = run("claude", [
                     "-p", prompt,
                     "-w",
+                    "--model", claudeModel,
                     "--permission-mode", "auto",
                 ], claudeTimeoutMs);
 
                 claudeStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
-                log(`claude work cycle end run_id=${runId} mode=${workMode} status=${gate.status}`);
+                log(`claude work cycle end run_id=${runId} mode=${workMode} model=${claudeModel} status=${gate.status}`);
+
+                const prMatch = workMode === "pickup"
+                    ? gate.stdout.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/)
+                    : null;
+                const rating = {
+                    run_id: runId,
+                    model: claudeModel,
+                    mode: workMode,
+                    status: gate.status,
+                    started_at: startedAt,
+                    ended_at: nowIso(),
+                    stdout_lines: lines(gate.stdout).length,
+                    stderr_lines: lines(gate.stderr).length,
+                    produced_pr: !!prMatch,
+                    pr_number: prMatch ? Number(prMatch[1]) : null,
+                    had_build_error: /Build FAILED/i.test(gate.stdout) || /[1-9]\d*\s+Error\(s\)/.test(gate.stdout) || gate.stderr.includes("error FS"),
+                    had_test_failure: /Failed:\s*[1-9]/.test(gate.stdout) || /Test Run Failed/.test(gate.stdout),
+                };
+                appendFileSync(ratingsFile, JSON.stringify(rating) + "\n");
 
                 writeFileSync(claudeStateFile, JSON.stringify({
                     run_id: runId,
                     mode: workMode,
+                    model: claudeModel,
                     status: gate.status,
-                    started_at: nowIso(),
+                    started_at: startedAt,
                     updated_at: nowIso(),
                 }, null, 2));
 
@@ -207,7 +232,7 @@ function heartbeat(): void {
         }
     }
 
-    const summary = `heartbeat complete run_id=${runId} fetch=${fetchOk} claims=${claimCount} open_prs=${prCount} dirty=${dirtyCount} claude=${claudeStatus} ${dueIn}`.trim();
+    const summary = `heartbeat complete run_id=${runId} fetch=${fetchOk} claims=${claimCount} open_prs=${prCount} dirty=${dirtyCount} claude=${claudeStatus} model=${claudeModel} ${dueIn}`.trim();
     log(summary);
 
     writeFileSync(hbFile, JSON.stringify({
