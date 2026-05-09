@@ -1,7 +1,7 @@
 ---
 id: B-0361
 priority: P1
-status: open
+status: in-progress
 title: "Anchor-to-human-lineage step in formal verification and concept workflows"
 effort: S
 created: 2026-05-09
@@ -54,9 +54,13 @@ of things that are trivially true by definition.
 
 - [ ] Formal-verification-expert skill updated with
       "check literature first" step
-- [ ] Concept-registry schema gains `anchor:` field
-- [ ] At least one example of an anchored concept
-      (e.g., "non-fusion" → Pearl interventional independence)
+- [x] Concept-registry schema gains `anchor:` field
+      (tools/alignment/concept_registry.ts — schema v1.1,
+      Concept.anchor + Concept.anchorState + Registry.anchoredCount)
+- [x] At least one example of an anchored concept
+      (non-fusion → Pearl (2009) d-separation; glass-halo,
+      retraction-native, bidirectional-alignment, no-directives
+      also anchored with citations)
 
 ## Composes with
 
