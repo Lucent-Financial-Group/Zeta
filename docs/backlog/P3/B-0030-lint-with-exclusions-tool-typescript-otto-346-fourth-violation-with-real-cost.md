@@ -1,7 +1,7 @@
 ---
 id: B-0030
 priority: P3
-status: open
+status: done
 title: Extract `tools/hygiene/lint-md-with-exclusions.ts` (TypeScript) — markdownlint-with-repo-aware-exclusions tool; Otto-346 violation #4 this session, this one with real cost (~60s instead of ~3s)
 tier: hygiene-tooling
 effort: S
