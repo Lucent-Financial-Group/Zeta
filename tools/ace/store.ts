@@ -1,4 +1,5 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import type { Dirent } from "node:fs";
 import { join } from "node:path";
 
 export interface AceManifest {
@@ -32,7 +33,7 @@ export function listInstalled(storePath: string): InstalledPackage[] {
     return [];
   }
 
-  let entries: ReturnType<typeof readdirSync>;
+  let entries: Dirent<string>[];
   try {
     entries = readdirSync(storePath, { withFileTypes: true });
   } catch {
