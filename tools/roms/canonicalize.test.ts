@@ -203,7 +203,7 @@ describe("main", () => {
     }) as typeof process.exit;
 
     try {
-      expect(() => main(["--datfile", "--dir", "/tmp"])).toThrow("exit:64");
+      expect(() => main(["--datfile"])).toThrow("exit:64");
       expect(stderr).toContain("missing value for --datfile");
     } finally {
       process.stderr.write = originalStderrWrite;

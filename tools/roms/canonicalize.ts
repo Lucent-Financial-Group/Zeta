@@ -260,7 +260,7 @@ function parseArgs(argv: readonly string[]): Args {
 
   function readOptionValue(index: number, flag: string): string {
     const value = argv[index + 1];
-    if (value === undefined || value.startsWith("-")) {
+    if (value === undefined) {
       process.stderr.write(`missing value for ${flag}\n`);
       process.exit(64);
     }
