@@ -19,6 +19,42 @@ interface Rating {
     pr_number: number | null;
     had_build_error: boolean;
     had_test_failure: boolean;
+    input_tokens?: number;
+    output_tokens?: number;
+    cache_read_tokens?: number;
+    cache_creation_tokens?: number;
+}
+
+const RATE_CARD: Record<string, { input: number; output: number; cacheRead: number; cacheCreate: number }> = {
+    "opus":   { input: 15.00 / 1_000_000, output: 75.00 / 1_000_000, cacheRead: 1.50 / 1_000_000, cacheCreate: 18.75 / 1_000_000 },
+    "sonnet": { input:  3.00 / 1_000_000, output: 15.00 / 1_000_000, cacheRead: 0.30 / 1_000_000, cacheCreate:  3.75 / 1_000_000 },
+    "haiku":  { input:  0.80 / 1_000_000, output:  4.00 / 1_000_000, cacheRead: 0.08 / 1_000_000, cacheCreate:  1.00 / 1_000_000 },
+};
+
+const warnedModels = new Set<string>();
+
+function normalizeModelTier(model: string): string | undefined {
+    const lower = model.toLowerCase();
+    if (lower.includes("opus")) return "opus";
+    if (lower.includes("sonnet")) return "sonnet";
+    if (lower.includes("haiku")) return "haiku";
+    return undefined;
+}
+
+function deriveCost(r: Rating): number {
+    const tier = normalizeModelTier(r.model);
+    if (!tier) {
+        if (!warnedModels.has(r.model)) {
+            console.warn(`Warning: unknown model "${r.model}" — cost set to $0`);
+            warnedModels.add(r.model);
+        }
+        return 0;
+    }
+    const rates = RATE_CARD[tier]!;
+    return (r.input_tokens ?? 0) * rates.input
+        + (r.output_tokens ?? 0) * rates.output
+        + (r.cache_read_tokens ?? 0) * rates.cacheRead
+        + (r.cache_creation_tokens ?? 0) * rates.cacheCreate;
 }
 
 interface ReviewFinding {
@@ -104,6 +140,13 @@ function fetchPrReviews(prNumber: number): ReviewFinding[] {
     }
 }
 
+function hasTokenData(r: Rating): boolean {
+    return (r.input_tokens ?? 0) > 0
+        || (r.output_tokens ?? 0) > 0
+        || (r.cache_read_tokens ?? 0) > 0
+        || (r.cache_creation_tokens ?? 0) > 0;
+}
+
 function durationSec(r: Rating): number {
     return (new Date(r.ended_at).getTime() - new Date(r.started_at).getTime()) / 1000;
 }
@@ -132,6 +175,7 @@ export function main(argv: string[] = process.argv) {
         ?? join(home, "Library/Application Support/ZetaClaudeLoop");
     const ratingsFile = join(stateDir, "model-ratings.jsonl");
     const includeReviews = argv.includes("--reviews");
+    const includeCosts = argv.includes("--costs");
 
     if (!existsSync(ratingsFile)) {
         console.log("No ratings file yet. Run some background loop ticks first.");
@@ -213,6 +257,54 @@ export function main(argv: string[] = process.argv) {
     console.log(padRow(header, colWidths));
     console.log("| " + colWidths.map(w => "-".repeat(w)).join(" | ") + " |");
     for (const row of rows) console.log(padRow(row, colWidths));
+
+    // === Cost derivation (from JSONL token counts + current rate card) ===
+
+    if (includeCosts) {
+        console.log("\n=== Token Cost Report (derived from current rate card) ===\n");
+
+        const costHeader = ["Metric", ...models];
+        const costRows: string[][] = [];
+        const costMetrics = [
+            "Total input tokens", "Total output tokens",
+            "Total cache-read tokens", "Total cache-create tokens",
+            "Derived cost (USD)", "Cost per tick (USD)",
+            "Has token data",
+        ];
+        for (const m of costMetrics) costRows.push([m]);
+
+        for (const model of models) {
+            const data = byModel.get(model)!;
+            const withTokens = data.filter(hasTokenData);
+            const totalInput = data.reduce((s, r) => s + (r.input_tokens ?? 0), 0);
+            const totalOutput = data.reduce((s, r) => s + (r.output_tokens ?? 0), 0);
+            const totalCacheRead = data.reduce((s, r) => s + (r.cache_read_tokens ?? 0), 0);
+            const totalCacheCreate = data.reduce((s, r) => s + (r.cache_creation_tokens ?? 0), 0);
+            const totalCost = data.reduce((s, r) => s + deriveCost(r), 0);
+            const costPerTick = withTokens.length > 0 ? totalCost / withTokens.length : 0;
+
+            costRows[0]!.push(totalInput.toLocaleString());
+            costRows[1]!.push(totalOutput.toLocaleString());
+            costRows[2]!.push(totalCacheRead.toLocaleString());
+            costRows[3]!.push(totalCacheCreate.toLocaleString());
+            costRows[4]!.push(`$${totalCost.toFixed(2)}`);
+            costRows[5]!.push(`$${costPerTick.toFixed(4)}`);
+            costRows[6]!.push(`${withTokens.length}/${data.length}`);
+        }
+
+        const costWidths = costHeader.map((h, i) =>
+            Math.max(h.length, ...costRows.map(r => (r[i] ?? "").length)));
+
+        console.log(padRow(costHeader, costWidths));
+        console.log("| " + costWidths.map(w => "-".repeat(w)).join(" | ") + " |");
+        for (const row of costRows) console.log(padRow(row, costWidths));
+
+        const rateLines = Object.entries(RATE_CARD).map(([tier, r]) =>
+            `${tier}=$${(r.input * 1_000_000).toFixed(2)}/$${(r.output * 1_000_000).toFixed(2)}`
+        ).join(" ");
+        console.log(`\nRate card: ${rateLines} per MTok (in/out)`);
+        console.log(`Cache: read=${Object.values(RATE_CARD).map(r => `${((r.cacheRead / r.input) * 100).toFixed(0)}%`)[0]} of input, create=${Object.values(RATE_CARD).map(r => `${((r.cacheCreate / r.input) * 100).toFixed(0)}%`)[0]} of input`);
+    }
 
     // === PR review failure categories ===
 
@@ -310,12 +402,14 @@ export function main(argv: string[] = process.argv) {
         const dur = durationSec(r).toFixed(0);
         const pr = r.pr_number ? `PR#${r.pr_number}` : "--";
         const err = r.had_build_error ? "BUILD-ERR" : r.had_test_failure ? "TEST-FAIL" : "clean";
-        console.log(`  ${r.started_at} ${(r.model ?? "unknown").padEnd(8)} ${r.mode.padEnd(7)} ${dur}s ${pr.padEnd(8)} ${err}`);
+        const cost = hasTokenData(r) ? `$${deriveCost(r).toFixed(4)}` : "";
+        console.log(`  ${r.started_at} ${(r.model ?? "unknown").padEnd(8)} ${r.mode.padEnd(7)} ${dur}s ${pr.padEnd(8)} ${err.padEnd(10)} ${cost}`);
     }
 
-    if (!includeReviews) {
-        console.log("\nRun with --reviews to pull PR review failure categories from GitHub.");
-    }
+    const flags: string[] = [];
+    if (!includeReviews) flags.push("--reviews (PR review failure categories)");
+    if (!includeCosts) flags.push("--costs (token cost derivation from current rate card)");
+    if (flags.length > 0) console.log(`\nAvailable flags: ${flags.join(", ")}`);
 }
 
 if (import.meta.main) {
