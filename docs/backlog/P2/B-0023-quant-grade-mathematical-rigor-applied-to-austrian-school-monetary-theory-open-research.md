@@ -129,3 +129,26 @@ Composes with Otto-279 (research counts as history), Otto-286 (definitional prec
 - Per-primitive formalization attempts published progressively
 - ADR (or series of ADRs) recording which Austrian primitives admit quant-grade formalization + which don't + why
 - Real-time publishing pipeline established (open-source-as-we-go)
+
+## Decomposition (2026-05-09, Riven background worker, one bounded step)
+
+B-0023 is broad open-research (XL). Re-decomposed (per "always re-decompose during build — assume mistakes") into 6 smallest dependency-ordered atomic child rows. Survey first, then per-primitive formalization, then synthesis/ADR/publish.
+
+**Buildable now (no deps):**
+- B-0380 — Survey existing partial-synthesis literature (Selgin/White, Garrison, Saifedean, Keen, agent-based Austrian models)
+
+**Blocked on B-0380:**
+- B-0381 — Formalize time-preference as stochastic discount process (Itô + utility)
+- B-0382 — Formalize capital-structure / Hayek triangle as staged production feedback network
+- B-0383 — Formalize calculation problem as information-complexity bound (entropy measure)
+- B-0384 — Formalize ABCT as credit-cycle regime-switching jump-diffusion
+
+**Blocked on B-0380 + B-0381..B-0384:**
+- B-0385 — Cross-primitive synthesis + falsifiability criteria + progressive publication ADR
+
+All children are P2 research slices; each is a single bounded investigation + publish step. Follow-up PRs will create the child .md rows and claim them one-at-a-time.
+
+Focused checks (in dedicated worktree, root untouched):
+- `dotnet build -c Release`: 0 Warning(s) 0 Error(s) — gate passed.
+- No bash scripts touched (Rule 0: TS preferred, but this decomp step is doc-only bootstrap).
+- Trajectory read: autonomous-backlog-pickup + alignment-measurement active; this fits backlog-pickup lane.
