@@ -83,13 +83,13 @@ describe("extractUrlsFromWindow", () => {
 
   test("classifies doi.org as paper", () => {
     const entries = extractUrlsFromWindow(content, "HC-1", 5);
-    const doi = entries.find((e) => e.url.includes("doi.org"));
+    const doi = entries.find((e) => e.url.startsWith("https://doi.org/"));
     expect(doi?.kind).toBe("paper");
   });
 
   test("captures markdown link title", () => {
     const entries = extractUrlsFromWindow(content, "HC-1", 5);
-    const doi = entries.find((e) => e.url.includes("doi.org"));
+    const doi = entries.find((e) => e.url.startsWith("https://doi.org/"));
     expect(doi?.title).toBe("Pearl 2009");
   });
 
@@ -101,7 +101,7 @@ describe("extractUrlsFromWindow", () => {
 
   test("bare URL has empty title", () => {
     const entries = extractUrlsFromWindow(content, "HC-1", 5);
-    const arxiv = entries.find((e) => e.url.includes("arxiv.org"));
+    const arxiv = entries.find((e) => e.url.startsWith("https://arxiv.org/"));
     expect(arxiv?.title).toBe("");
   });
 
