@@ -113,6 +113,34 @@ let ``falsifiabilityWith returns 1.0 on an empty claim store`` () =
     |> should (equalWithin 1e-9) 1.0
 
 
+[<Fact>]
+let ``falsifiabilityWithScore returns gradient average`` () =
+    let claims =
+        SignalQuality.claimsOf [ ("testable-claim", 1L); ("vague-claim", 1L); ("unfalsifiable", 1L) ]
+    let scorer (s: string) =
+        match s with
+        | "testable-claim" -> 1.0
+        | "vague-claim" -> 0.5
+        | _ -> 0.0
+    SignalQuality.falsifiabilityWithScore scorer claims
+    |> should (equalWithin 1e-9) 0.5
+
+
+[<Fact>]
+let ``falsifiabilityWithScore clamps to 0-1`` () =
+    let claims = SignalQuality.claimsOf [ ("over", 1L) ]
+    SignalQuality.falsifiabilityWithScore (fun _ -> 2.5) claims
+    |> should (equalWithin 1e-9) 1.0
+
+
+[<Fact>]
+let ``falsifiabilityWithScore ignores retracted claims`` () =
+    let claims =
+        SignalQuality.claimsOf [ ("alive", 1L); ("dead", 1L); ("dead", -1L) ]
+    SignalQuality.falsifiabilityWithScore (fun _ -> 0.8) claims
+    |> should (equalWithin 1e-9) 0.8
+
+
 // ═══════════════════════════════════════════════════════════════════
 // Consistency — only over-retraction flags inconsistency; clean
 // cancellation to zero is fine.

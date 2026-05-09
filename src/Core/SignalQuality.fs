@@ -335,6 +335,23 @@ module SignalQuality =
             if total = 0 then 1.0
             else float falsifiable / float total
 
+    /// Gradient falsifiability — each claim gets a score in [0.0, 1.0]
+    /// instead of a binary yes/no. The aggregate is the weighted average
+    /// over currently-asserted claims. This is the "round" variant;
+    /// `falsifiabilityWith` is the "sharp" (boolean) variant.
+    let falsifiabilityWithScore (scorer: string -> float) (claims: ZSet<string>) : float =
+        let span = claims.AsSpan()
+        if span.IsEmpty then 1.0
+        else
+            let mutable scoreSum = 0.0
+            let mutable total = 0
+            for i = 0 to span.Length - 1 do
+                if span.[i].Weight > 0L then
+                    total <- total + 1
+                    scoreSum <- scoreSum + (scorer span.[i].Key |> max 0.0 |> min 1.0)
+            if total = 0 then 1.0
+            else scoreSum / float total
+
     /// Falsifiability-dimension measure. Suspicion score =
     /// `1 - falsifiable` (higher falsifiability = lower suspicion).
     let falsifiabilityMeasure (predicate: string -> bool) : IQualityMeasure<ZSet<string>> =
@@ -347,6 +364,18 @@ module SignalQuality =
                   Severity = severityOfScore suspicion
                   Score = suspicion
                   Evidence = sprintf "falsifiable=%.3f claims=%d" falsifiable claims.Count } }
+
+    /// Gradient falsifiability measure — scorer returns [0.0, 1.0] per claim.
+    let falsifiabilityMeasureGradient (scorer: string -> float) : IQualityMeasure<ZSet<string>> =
+        { new IQualityMeasure<ZSet<string>> with
+            member _.Dimension = Falsifiability
+            member _.Measure(claims: ZSet<string>) =
+                let falsifiable = falsifiabilityWithScore scorer claims
+                let disagreement = 1.0 - falsifiable
+                { Dimension = Falsifiability
+                  Severity = severityOfScore disagreement
+                  Score = disagreement
+                  Evidence = sprintf "falsifiable=%.3f(gradient) claims=%d" falsifiable claims.Count } }
 
 
     // ───────────────────────────────────────────────────────────────
