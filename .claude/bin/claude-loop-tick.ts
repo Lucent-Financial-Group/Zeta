@@ -178,6 +178,7 @@ function heartbeat(): void {
 
                 const gate = run("claude", [
                     "-p", prompt,
+                    "-w",
                     "--permission-mode", "auto",
                 ], claudeTimeoutMs);
 
