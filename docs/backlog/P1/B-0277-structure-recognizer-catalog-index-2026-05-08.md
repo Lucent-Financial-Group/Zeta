@@ -4,7 +4,7 @@ priority: P1
 status: closed
 title: "Structure recognizer — shape-indexed catalog without labels"
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 parent: B-0240
 depends_on: [B-0276]
 classification: closed
