@@ -7,7 +7,7 @@ tier: agent-capability-expansion
 effort: S
 parent: B-0064
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: [B-0318]
 composes_with: [B-0064, B-0319]
 tags: [agent-capability, github-ui, playwright, feature-discovery, cadence]

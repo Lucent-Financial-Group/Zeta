@@ -124,6 +124,15 @@ export function diffPageSnapshots(
     }
   }
 
+  newToggles.sort();
+  removedToggles.sort();
+  changedToggles.sort((a, b) => a.key.localeCompare(b.key));
+  newFeatures.sort();
+  removedFeatures.sort();
+  newFormFields.sort();
+  removedFormFields.sort();
+  changedFormFields.sort((a, b) => a.key.localeCompare(b.key));
+
   return {
     url: current.url,
     newToggles,
@@ -142,9 +151,9 @@ export function diffSnapshotSets(prior: SnapshotSet, current: SnapshotSet): Feat
   const priorUrls = new Set(Object.keys(prior.pages));
   const curUrls = new Set(Object.keys(current.pages));
 
-  const pagesAdded = [...curUrls].filter((u) => !priorUrls.has(u));
-  const pagesRemoved = [...priorUrls].filter((u) => !curUrls.has(u));
-  const sharedUrls = [...curUrls].filter((u) => priorUrls.has(u));
+  const pagesAdded = [...curUrls].filter((u) => !priorUrls.has(u)).sort();
+  const pagesRemoved = [...priorUrls].filter((u) => !curUrls.has(u)).sort();
+  const sharedUrls = [...curUrls].filter((u) => priorUrls.has(u)).sort();
 
   const pageDiffs = sharedUrls.map((url) =>
     diffPageSnapshots(prior.pages[url] as GitHubPageSnapshot, current.pages[url] as GitHubPageSnapshot),
@@ -169,6 +178,9 @@ const SNAPSHOT_DIR = "docs/hygiene-history/github-ui-snapshots";
 export function saveSnapshotSet(set: SnapshotSet, outDir: string = SNAPSHOT_DIR): string {
   const dir = resolve(outDir);
   mkdirSync(dir, { recursive: true });
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(set.date)) {
+    throw new Error(`Invalid snapshot date format: ${set.date}. Expected YYYY-MM-DD.`);
+  }
   const filename = `${set.date}.json`;
   const outPath = join(dir, filename);
   writeFileSync(outPath, JSON.stringify(set, null, 2) + "\n", "utf8");
@@ -403,9 +415,10 @@ export async function main(argv: readonly string[]): Promise<number> {
     process.stdout.write(markdown + "\n");
   }
 
-  const hasNewCandidates = report.pageDiffs.some(
-    (d) => d.newToggles.length > 0 || d.newFeatures.length > 0,
-  );
+  const hasNewCandidates = report.pagesAdded.length > 0 ||
+    report.pageDiffs.some(
+      (d) => d.newToggles.length > 0 || d.newFeatures.length > 0,
+    );
   if (hasNewCandidates) {
     process.stderr.write(`new feature candidates detected — triage recommended\n`);
     return 2;
