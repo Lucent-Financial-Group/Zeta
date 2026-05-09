@@ -1,7 +1,7 @@
 # Claim - b0011-pliny-carve-out-smallest-slice-riven-2026-05-09
 
-- **Session ID:** riven/20260509T2050Z
-- **Harness:** riven (Cursor/Grok)
+- **Session ID:** cursor/20260509T2050Z
+- **Harness:** cursor
 - **Claimed at:** 2026-05-09T20:50:00Z
 - **ETA:** 2026-05-09T21:30:00Z
 - **Scope:** Claim B-0011; take smallest safe slice = re-decompose before any wording edit (high-blast governance). Use dedicated worktree + pushed claim branch. Run focused checks (build gate, Pliny grep). Open PR for the decomp step only.
@@ -10,7 +10,7 @@
 
 ## Notes
 
-Riven background worker per user_query. BEFORE steps completed: CLAUDE/AGENTS read, refresh-worldview, trajectories RESUME read, build gate 0w/0e passed in root and worktree.
+Cursor/Grok background worker per user_query. BEFORE steps completed: CLAUDE/AGENTS read, refresh-worldview, trajectories RESUME read, build gate 0w/0e passed in root and worktree.
 
 One bounded step: re-decompose B-0011 (original decomp mistake: assumed single atomic PR across 4 surfaces; reality = approval gate + staged per-surface to respect Otto-300 blast-radius). This PR lands only the re-decomp + claim file. No verbatim Pliny payloads found in focused grep. All per rules: TS preference noted (no bash), worktree only, no root touch.
 
