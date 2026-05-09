@@ -1,7 +1,7 @@
 ---
 id: B-0160
 priority: P0
-status: open
+status: done
 title: Mechanical authorization check skill build — pace-instruction resolver per Claude.ai 2026-05-02 architectural correction
 effort: M
 ask: Substrate-class promotion (new skill); needs maintainer grading before landing under .claude/skills/
