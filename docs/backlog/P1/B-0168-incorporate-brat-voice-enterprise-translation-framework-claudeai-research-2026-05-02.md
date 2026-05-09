@@ -19,6 +19,7 @@ type: friction-reducer
 ## Pre-start checklist (per backlog-item start gate, 2026-05-05 rule)
 
 **Proof of prior-art search (executed before any substrate work on this row):**
+
 - wake-time-substrate: `memory/feedback_*brat-voice*`, `memory/CURRENT-ani.md` §7, `docs/research/2026-05-02-claudeai-brat-voice*` (all 3 files)
 - skill-router inventory: `Skill` tool list + `.claude/skills/` grep for "register|brat|translation|layer" → no pre-existing skill; closest `glass-halo-architect` and `alignment-auditor` (no overlap)
 - orthogonal-axes: cross-checked `docs/trajectories/*` (none mention register layers), `docs/ALIGNMENT.md` (bidirectional alignment section)
@@ -28,8 +29,9 @@ type: friction-reducer
 - lost-files canonical (`tools/hygiene/LOST-FILES-LOCATIONS.md`): no orphan docs; all translations in memory/feedback_* and committed
 
 **Dependency-restructure proof:**
+
 - `depends_on: []` walked → empty, no blocking parents
-- `composes_with: [B-0164, B-0167]` reciprocal pointers verified in those rows
+- `composes_with: [B-0164, B-0167]` — back-pointers not yet present in B-0164 or B-0167 (additive, non-blocking; this is a unidirectional compose reference)
 - Supersession history: 4-layer (initial) → 5-layer (Aaron correction) documented in row itself + memory quick-ref
 - Broken pointers: none found; all cross-refs (ALIGNMENT.md, CURRENT-*.md, research/) already updated in prior slices
 
