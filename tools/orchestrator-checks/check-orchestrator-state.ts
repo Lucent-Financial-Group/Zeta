@@ -75,10 +75,16 @@ export function checkOrchestratorState(
   const worktrees = parseWorktreeList(
     run("git", ["worktree", "list", "--porcelain"]),
   );
-  // Own worktree is the first entry; exclude it from drift check.
+  // Identify caller's own worktree by matching CWD (first entry is always main worktree per git docs).
+  // Exclude it when scanning for other worktrees on expectedBranch (CWD-bleed-over hazard).
+  const cwd = process.cwd();
+  const ownIdx = worktrees.findIndex((w) => cwd.startsWith(w.path));
+  const ownWorktree = ownIdx >= 0 ? worktrees[ownIdx] : worktrees[0];
   const driftedWorktrees =
     expectedBranch && worktrees.length > 1
-      ? worktrees.slice(1).filter((w) => w.branch === expectedBranch)
+      ? worktrees
+          .filter((_, i) => i !== ownIdx)
+          .filter((w) => w.branch === expectedBranch)
       : [];
   return {
     currentBranch,
