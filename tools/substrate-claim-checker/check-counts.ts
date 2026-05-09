@@ -165,6 +165,7 @@ function findClaims(lines: string[]): Claim[] {
     "named-persona experts",
     "tools",
     "sub-classes",
+    "check-types",
   ];
   // Match "20 rows" / "20+ rows" (whitespace-separated) or
   // "20-row" / "20+-row" (hyphenated), capturing integer + optional '+'.
