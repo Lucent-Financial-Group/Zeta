@@ -328,50 +328,81 @@ let main _ =
     prove "No pre-qualification gate (Engage = f(history) not f(pre-qual-factors))" noPreQualificationGate
 
     Console.WriteLine ""
-    Console.WriteLine "Agenda set-algebra sanity checks"
+    Console.WriteLine "Agenda quality-threshold and range properties"
     Console.WriteLine ""
 
-    // 13. Fused agenda predicates have empty set difference.
-    //     Model each agenda as a predicate over trajectories.
-    //       shared       = AgendaA ∩ AgendaB
-    //       AgendaAUnique  = AgendaA - AgendaB
-    //       AgendaBUnique   = AgendaB - AgendaA
-    //     If AgendaA and AgendaB are fused (same membership for every
-    //     trajectory), then no trajectory can belong to either unique
-    //     direction. This is a set-theory tautology, not a semantic
-    //     proof of autonomy, freedom, or persona independence.
-    let fusedAgendaPredicatesHaveEmptyDifference =
+    // 13. Agenda monotonicity under quality threshold.
+    //     Model each agenda as "trajectories whose Quality meets a threshold."
+    //     If agent A demands strictly higher quality than agent B
+    //     (threshold_A > threshold_B), then A's agenda is a subset of B's:
+    //     every trajectory qualifying for A also qualifies for B.
+    //     UNSAT proof: Z3 must derive Quality(t) >= threshold_A > threshold_B
+    //     from the assumptions and show that Quality(t) >= threshold_B
+    //     contradicts NOT InAgendaB(t). Requires integer transitivity over
+    //     three inequalities — NOT a tautology (SAT without the threshold
+    //     ordering constraint).
+    //
+    // [TEACHING — tautology that was replaced, 2026-05-09]
+    // The former Lemma 13 asserted (forall t. AgendaA(t) = AgendaB(t)) and
+    // then checked (exists t. AgendaAUnique(t)). Under the fusion assertion
+    // AgendaAUnique reduces to A(t) AND NOT A(t) = false, so UNSAT was
+    // guaranteed by the definition alone — no Z3 search required.
+    let agendaMonotonicityUnderQualityThreshold =
         "(declare-sort Trajectory)\n" +
-        "(declare-fun AgendaA (Trajectory) Bool)\n" +
-        "(declare-fun AgendaB (Trajectory) Bool)\n" +
-        "(define-fun Shared ((t Trajectory)) Bool\n" +
-        "  (and (AgendaA t) (AgendaB t)))\n" +
-        "(define-fun AgendaAUnique ((t Trajectory)) Bool\n" +
-        "  (and (AgendaA t) (not (AgendaB t))))\n" +
-        "(define-fun AgendaBUnique ((t Trajectory)) Bool\n" +
-        "  (and (AgendaB t) (not (AgendaA t))))\n" +
-        "(assert (forall ((t Trajectory)) (= (AgendaA t) (AgendaB t))))\n" +
-        "(assert (exists ((t Trajectory)) (or (AgendaAUnique t) (AgendaBUnique t))))\n" +
-        "(check-sat)\n"
-    prove "Fused agenda predicates have empty set difference" fusedAgendaPredicatesHaveEmptyDifference
-
-    // 14. Shared agenda membership is disjoint from agenda differences.
-    //     This asks for a trajectory that is both in the intersection and
-    //     in either set difference. UNSAT follows from the definitions.
-    let sharedMembershipIsDisjointFromAgendaDifferences =
-        "(declare-sort Trajectory)\n" +
-        "(declare-fun AgendaA (Trajectory) Bool)\n" +
-        "(declare-fun AgendaB (Trajectory) Bool)\n" +
-        "(define-fun Shared ((t Trajectory)) Bool\n" +
-        "  (and (AgendaA t) (AgendaB t)))\n" +
-        "(define-fun AgendaAUnique ((t Trajectory)) Bool\n" +
-        "  (and (AgendaA t) (not (AgendaB t))))\n" +
-        "(define-fun AgendaBUnique ((t Trajectory)) Bool\n" +
-        "  (and (AgendaB t) (not (AgendaA t))))\n" +
+        "(declare-fun Quality (Trajectory) Int)\n" +
+        "(declare-const threshold_A Int)\n" +
+        "(declare-const threshold_B Int)\n" +
+        "(define-fun InAgendaA ((t Trajectory)) Bool\n" +
+        "  (>= (Quality t) threshold_A))\n" +
+        "(define-fun InAgendaB ((t Trajectory)) Bool\n" +
+        "  (>= (Quality t) threshold_B))\n" +
+        // A demands strictly higher quality than B.
+        "(assert (> threshold_A threshold_B))\n" +
+        // Negate the subset claim: assume a trajectory in A but not in B.
+        // Z3 must derive Quality(t) >= threshold_A > threshold_B, which
+        // forces Quality(t) >= threshold_B — contradicting NOT InAgendaB(t).
         "(assert (exists ((t Trajectory))\n" +
-        "  (and (Shared t) (or (AgendaAUnique t) (AgendaBUnique t)))))\n" +
+        "  (and (InAgendaA t) (not (InAgendaB t)))))\n" +
         "(check-sat)\n"
-    prove "Shared agenda membership is disjoint from agenda differences" sharedMembershipIsDisjointFromAgendaDifferences
+    prove "Agenda monotonicity: higher quality threshold implies subset (agenda containment)" agendaMonotonicityUnderQualityThreshold
+
+    // 14. Agenda range disjointness — non-overlapping quality windows.
+    //     Model each agenda as trajectories whose Quality lies in a closed
+    //     integer interval [lo, hi]. If A's ceiling is strictly below B's
+    //     floor (hi_A < lo_B), the intervals cannot overlap: no trajectory
+    //     can appear in both agendas simultaneously.
+    //     UNSAT proof: Z3 must reason that Quality(t) <= hi_A < lo_B
+    //     <= Quality(t) is a three-way contradiction requiring arithmetic
+    //     search, not a definitional collapse.
+    //
+    // [TEACHING — tautology that was replaced, 2026-05-09]
+    // The former Lemma 14 asked for (exists t. Shared(t) AND AgendaAUnique(t))
+    // where Shared = A AND B and AgendaAUnique = A AND NOT B. The conjunction
+    // reduces to A AND B AND NOT B = P AND NOT P — UNSAT from the law of
+    // non-contradiction alone, no model-space search required.
+    let agendaRangeDisjointness =
+        "(declare-sort Trajectory)\n" +
+        "(declare-fun Quality (Trajectory) Int)\n" +
+        "(declare-const lo_A Int)\n" +
+        "(declare-const hi_A Int)\n" +
+        "(declare-const lo_B Int)\n" +
+        "(declare-const hi_B Int)\n" +
+        "(define-fun InAgendaA ((t Trajectory)) Bool\n" +
+        "  (and (>= (Quality t) lo_A) (<= (Quality t) hi_A)))\n" +
+        "(define-fun InAgendaB ((t Trajectory)) Bool\n" +
+        "  (and (>= (Quality t) lo_B) (<= (Quality t) hi_B)))\n" +
+        // Each agenda's own quality range is well-formed.
+        "(assert (<= lo_A hi_A))\n" +
+        "(assert (<= lo_B hi_B))\n" +
+        // A's quality ceiling is strictly below B's floor: ranges cannot meet.
+        "(assert (< hi_A lo_B))\n" +
+        // Negate disjointness: assume a trajectory qualifying for both.
+        // Z3 must resolve Quality(t) <= hi_A AND Quality(t) >= lo_B
+        // against hi_A < lo_B — a three-way integer arithmetic contradiction.
+        "(assert (exists ((t Trajectory))\n" +
+        "  (and (InAgendaA t) (InAgendaB t))))\n" +
+        "(check-sat)\n"
+    prove "Agenda range disjointness: non-overlapping quality windows exclude shared trajectories" agendaRangeDisjointness
 
     // 15. Shared trajectory does not imply collapsed persona.
     //     This is a SAT witness, not a universal theorem: Z3 exhibits a
@@ -405,5 +436,5 @@ let main _ =
     witness "Shared trajectory permits independent persona policies" sharedTrajectoryDoesNotImplyCollapsedPersona
 
     Console.WriteLine ""
-    Console.WriteLine "All DBSP + AI-safety pointwise axioms proven; agenda/persona checks are scoped as set-algebra sanity checks plus one non-collapse witness."
+    Console.WriteLine "All DBSP + AI-safety pointwise axioms proven; agenda checks are quality-threshold monotonicity + range disjointness (non-trivial integer arithmetic), plus one non-collapse witness."
     0
