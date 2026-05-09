@@ -387,9 +387,7 @@ export function main(argv: readonly string[]): number {
     process.stderr.write(
       "install the kiro.dev headless AI CLI from official docs:\n" +
         "  https://kiro.dev/docs/cli/headless/\n" +
-        "macOS package manager option:\n" +
-        "  brew install --cask kiro-cli  (macOS)\n" +
-        "Do not run downloaded install scripts through a shell pipe.\n",
+        "Follow the official install flow for your platform. Do not run downloaded install scripts through a shell pipe.\n",
     );
     return 1;
   }
@@ -399,9 +397,7 @@ export function main(argv: readonly string[]): number {
       `error: ${KIRO_CLI} does not expose Kiro headless chat mode\n` +
         "install the kiro.dev headless AI CLI from official docs:\n" +
         "  https://kiro.dev/docs/cli/headless/\n" +
-        "macOS package manager option:\n" +
-        "  brew install --cask kiro-cli  (macOS)\n" +
-        "Do not run downloaded install scripts through a shell pipe.\n",
+        "Follow the official install flow for your platform. Do not run downloaded install scripts through a shell pipe.\n",
     );
     return 1;
   }
