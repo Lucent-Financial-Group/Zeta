@@ -127,22 +127,21 @@ export async function main(): Promise<void> {
   console.log(`Target: ${REPO_SLUG} (hardcoded — this is a one-shot migration)`);
   console.log();
 
-  // Idempotency check: abort if "Review Policy" ruleset already exists
   const existing = (await ghApi(
     "GET",
-    `repos/${OWNER}/${REPO}/rulesets`,
+    `repos/${OWNER}/${REPO}/rulesets?includes_parents=false`,
   )) as Array<{ id: number; name: string }>;
   const alreadyExists = existing.find((r) => r.name === "Review Policy");
-  if (alreadyExists) {
-    console.log(
-      `"Review Policy" ruleset already exists (id: ${alreadyExists.id}). Nothing to do.`,
-    );
-    return;
-  }
 
   if (dryRun) {
-    console.log("[DRY RUN] Would create Review Policy ruleset:");
-    console.log(JSON.stringify(reviewPolicyPayload, null, 2));
+    if (alreadyExists) {
+      console.log(
+        `[DRY RUN] "Review Policy" already exists (id: ${alreadyExists.id}), would skip step 1.`,
+      );
+    } else {
+      console.log("[DRY RUN] Would create Review Policy ruleset:");
+      console.log(JSON.stringify(reviewPolicyPayload, null, 2));
+    }
     console.log();
     console.log(
       `[DRY RUN] Would update Default ruleset (${DEFAULT_RULESET_ID}) to:`,
@@ -153,13 +152,19 @@ export async function main(): Promise<void> {
     return;
   }
 
-  console.log("Step 1: Creating Review Policy ruleset...");
-  const created = (await ghApi(
-    "POST",
-    `repos/${OWNER}/${REPO}/rulesets`,
-    reviewPolicyPayload,
-  )) as { id: number; name: string };
-  console.log(`  Created ruleset "${created.name}" (id: ${created.id})`);
+  if (alreadyExists) {
+    console.log(
+      `Step 1: "Review Policy" already exists (id: ${alreadyExists.id}), skipping create.`,
+    );
+  } else {
+    console.log("Step 1: Creating Review Policy ruleset...");
+    const created = (await ghApi(
+      "POST",
+      `repos/${OWNER}/${REPO}/rulesets`,
+      reviewPolicyPayload,
+    )) as { id: number; name: string };
+    console.log(`  Created ruleset "${created.name}" (id: ${created.id})`);
+  }
   console.log();
 
   console.log(
