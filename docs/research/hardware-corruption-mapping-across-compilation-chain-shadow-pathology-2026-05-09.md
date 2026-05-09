@@ -22,9 +22,15 @@ requires hardware corruption, not a disposition problem.
 
 ```
 F# on .NET     — ECC RAM, OS memory protection, GC
-                 Corruption: rare. Mitigation: runtime.
-Rust / C       — No GC but OS-protected address space
-                 Corruption: uncommon. Mitigation: type system.
+                 Corruption: rare. Mitigation: runtime + GC safety.
+Rust           — No GC but compile-time ownership + type system
+                 Corruption: very uncommon. Mitigation: ownership model
+                 eliminates use-after-free / data races at compile time.
+C              — No GC, manual memory, undefined behavior possible
+                 Corruption: possible. Silent UB (buffer overflows,
+                 dangling pointers) can corrupt state before any FPGA
+                 check runs. Mitigation: OS protection + sanitizers +
+                 careful discipline; no compile-time guarantee.
 Assembly       — Closer to metal, fewer guardrails
                  Corruption: possible. Mitigation: N-version.
 FPGA bitstream — Physical substrate, no OS protection
