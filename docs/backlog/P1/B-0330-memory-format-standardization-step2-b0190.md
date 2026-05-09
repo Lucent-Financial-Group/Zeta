@@ -1,13 +1,13 @@
 ---
 id: B-0330
 priority: P1
-status: open
+status: closed
 title: Memory-format standardization — define frontmatter shape, filename conventions, section headers
 tier: foundation
 effort: S
 ask: B-0190 Step 2 decomposition
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 parent: B-0190
 depends_on: []
 composes_with: [B-0190, B-0331, B-0334, B-0335, B-0338]
