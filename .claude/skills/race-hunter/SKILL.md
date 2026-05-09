@@ -1,6 +1,6 @@
 ---
 name: race-hunter
-description: Use this skill when reviewing Zeta.Core F# code for concurrency bugs — missed `Interlocked.CompareExchange`, torn reads on shared mutable state, lock-across-await, unguarded `ResizeArray` iteration during concurrent `Register`. Produces a ranked P0/P1/P2 finding list with file:line references and concrete repros.
+description: F# concurrency race hunter — Interlocked gaps, torn reads, lock-across-await, unguarded ResizeArray iteration.
 ---
 
 # Zeta.Core Race Hunter
