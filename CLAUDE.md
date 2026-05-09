@@ -776,7 +776,7 @@ Claude-Code-specific mechanisms.
   (auto-loaded). When gate=BLOCKED and no failed checks, check
   `unresolvedThreads` first; don't classify as a passive wait.
 - **ZETA_EXPECTED_BRANCH — set before committing on any task branch** — see
-  `.claude/rules/zeta-expected-branch.md` (auto-loaded).
+  `.claude/rules/zeta-expected-branch.md`.
   Before `git checkout -b <branch>`, export `ZETA_EXPECTED_BRANCH=<branch>`.
   The harness PreToolUse hook (`.claude/hooks/verify-branch-pretooluse.ts`,
   wired in `.claude/settings.json`) then blocks any `git commit` that would
