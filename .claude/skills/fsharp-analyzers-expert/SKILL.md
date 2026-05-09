@@ -1,6 +1,6 @@
 ---
 name: fsharp-analyzers-expert
-description: Capability skill ("hat") — static-analysis narrow under `static-analysis-expert`, F# counterpart to `roslyn-analyzers-expert`. Owns F# analyzer authoring against the F# Compiler Services (FCS) analyzer SDK (`FSharp.Analyzers.SDK`, `Ionide.Analyzers`), covers the shape of an `Analyzer` attribute, the `CliContext` / `EditorContext` split, FSharp.Compiler.CodeAnalysis / FSharp.Compiler.Syntax / FSharp.Compiler.Symbols API surfaces, range-based diagnostics, `ignoreFiles` discipline, analyzer packaging, and how F#'s lack of a source-generator equivalent (outside Type Providers) shifts work onto analyzers + Type Providers. Wear this when authoring or reviewing an F# analyzer, debating whether a pattern belongs in an analyzer vs a Type Provider vs a compiler feature request, or packaging an F# analyzer for the Zeta toolbelt. Defers to `static-analysis-expert` for cross-tool policy, to `roslyn-analyzers-expert` for the C# analyzer sibling, to `roslyn-generators-expert` on the question of F# Type Providers (which live under `fsharp-expert`), to `fsharp-expert` for F# language / FCS depth, and to `public-api-designer` for published analyzer surface.
+description: F# analyzers — FCS analyzer SDK, Ionide, CliContext/EditorContext, range diagnostics, analyzer packaging.
 ---
 
 # F# Analyzers Expert — FCS Analyzer SDK
