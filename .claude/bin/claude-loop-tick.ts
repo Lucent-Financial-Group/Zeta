@@ -98,7 +98,43 @@ function releaseLock(): void {
     try { rmSync(lockDir, { recursive: true, force: true }); } catch { /* best effort */ }
 }
 
+interface AuthCheckOutput {
+    queriedAt: string;
+    result: {
+        operative: { source: string; timestamp: string; raw: string; file: string } | null;
+        reason: string;
+    };
+}
+
+function runAuthorizationCheck(): { json: AuthCheckOutput | null; interpretation: string; shardField: string } {
+    const result = run("bun", ["tools/authorization/check-authorization.ts", worktree], 30_000);
+    if (result.status !== 0) {
+        const msg = `[authorization] check failed (exit ${result.status}): ${result.stderr.slice(0, 120)}`;
+        log(msg);
+        return { json: null, interpretation: msg, shardField: "check-failed" };
+    }
+    const raw = result.stdout;
+    // Two-layer DX: extract JSON block between the layer markers
+    const jsonMatch = raw.match(/--- Layer 1: raw structured output ---\n([\s\S]*?)\n--- Layer 2: interpretation ---/);
+    const interpMatch = raw.match(/--- Layer 2: interpretation ---\n(.+)/);
+    const shardMatch = raw.match(/--- Shard field value ---\n(.+)/);
+    let parsed: AuthCheckOutput | null = null;
+    if (jsonMatch) {
+        try { parsed = JSON.parse(jsonMatch[1]); } catch { /* tolerate */ }
+    }
+    const interpretation = interpMatch ? interpMatch[1].trim() : "[authorization] (parse error)";
+    const shardField = shardMatch ? shardMatch[1].trim() : "unknown";
+    // Layer 1: log raw JSON
+    log(`authorization-check Layer1: ${jsonMatch ? jsonMatch[1].replace(/\s+/g, " ").slice(0, 200) : "(no json)"}`);
+    // Layer 2: log interpretation
+    log(`authorization-check Layer2: ${interpretation}`);
+    return { json: parsed, interpretation, shardField };
+}
+
 function heartbeat(): void {
+    // Authorization check (B-0308) — runs first at every tick start
+    const authCheck = runAuthorizationCheck();
+
     // Fetch
     const fetch = run("git", ["fetch", "origin"], fetchTimeoutMs);
     const fetchOk = fetch.status === 0 ? "ok" : `exit-${fetch.status}`;
@@ -161,6 +197,8 @@ function heartbeat(): void {
                         `KEY RULES: TS over bash (Rule 0). Prefer F#/TS code over docs.`,
                         `Search internet before asserting versions (Otto-364).`,
                         `Always re-decompose items during the build — assume decomposition has mistakes.`,
+                        `OPERATIVE AUTHORIZATION (B-0308, ${authCheck.json?.queriedAt ?? "unknown"}): ${authCheck.interpretation}.`,
+                        `Include "operative-authorization: ${authCheck.shardField}" in your tick-history shard frontmatter.`,
                     ].join(" ");
 
                     prompt = executionPrompt.length > 0
@@ -171,6 +209,7 @@ function heartbeat(): void {
                         `You are Otto's background worker in Lucent-Financial-Group/Zeta.`,
                         `Read CLAUDE.md first. Run "bun tools/github/refresh-worldview.ts".`,
                         `Build gate: "dotnet build -c Release" (0 warnings).`,
+                        `OPERATIVE AUTHORIZATION (B-0308, ${authCheck.json?.queriedAt ?? "unknown"}): ${authCheck.interpretation}.`,
                         `TASK: ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open".`,
                         `For any PR where gate=BLOCKED and nextAction=resolve-threads:`,
                         `check out branch, read review comments, fix code issues, push,`,
@@ -275,6 +314,7 @@ function heartbeat(): void {
         updated_at: nowIso(),
         status: "active",
         dirty_count: String(dirtyCount),
+        operative_authorization: authCheck.shardField,
     }, null, 2));
 }
 

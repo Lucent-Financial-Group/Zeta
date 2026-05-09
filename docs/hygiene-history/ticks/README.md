@@ -62,6 +62,26 @@ legacy table on cadence; until that lands, the legacy table is
 the authoritative read surface and shards are the authoritative
 write surface — both are canonical.
 
+### YAML frontmatter fields
+
+Shards that use YAML frontmatter (preferred for richer shards)
+should include:
+
+```yaml
+---
+tick: "<ISO 8601 UTC timestamp>"
+agent: otto        # or vera, kenji, etc.
+mode: autonomous   # or interactive
+operative-authorization: "<source> <date>: \"<raw>\""  # B-0308
+---
+```
+
+The `operative-authorization` field (B-0308) is populated by
+`bun tools/authorization/check-authorization.ts` at tick start.
+Format: `formatShardField()` output from that tool. If the
+check is not available, use `"none — never-idle default"`.
+This field is informational; it does not gate any work.
+
 ## Naming
 
 ```
