@@ -234,7 +234,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0071](backlog/P2/B-0071-rename-otto-275-forever-out-of-live-lock-class-codex-pr-17-2026-04-28.md)** Rename otto_275_forever memory out of "live-lock 9th pattern" subclass + reclassify per Otto-352 taxonomy split
 - [ ] **[B-0072](backlog/P2/B-0072-memory-md-index-entry-length-normalization-copilot-pr-72-2026-04-28.md)** Normalize MEMORY.md index entry lengths to one-line-per-memory per memory/README.md guidance
 - [ ] **[B-0074](backlog/P2/B-0074-pr-72-punch-list-stale-item-sweep-spec-consistency-2026-04-28.md)** PR #72 punch-list / spec-consistency drift sweep — 8 codex threads on stale items + cross-doc alignment
-- [ ] **[B-0076](backlog/P2/B-0076-disowned-runtime-sweep-python-typescript-2026-04-28.md)** Disowned-runtime sweep — Python + TypeScript surface (same pattern PR #662 fixed for Java)
+- [x] **[B-0076](backlog/P2/B-0076-disowned-runtime-sweep-python-typescript-2026-04-28.md)** Disowned-runtime sweep — Python + TypeScript surface (same pattern PR #662 fixed for Java)
 - [ ] **[B-0077](backlog/P2/B-0077-curl-fetch-canonical-content-cleanup-codex-pr-663.md)** tools/setup/common/curl-fetch.sh canonical-content cleanup — Codex P0/P1 on PR #663
 - [ ] **[B-0078](backlog/P2/B-0078-markdownlint-research-carve-out-narrowing-codex-pr-663.md)** Narrow markdownlint carve-out from `docs/research/2026-*-*.md` to verbatim-only pattern — Codex P1 on PR #663
 - [ ] **[B-0079](backlog/P2/B-0079-audit-agencysignature-script-hardening-codex-pr-663.md)** tools/hygiene/audit-agencysignature-main-tip.sh hardening — 4 Codex findings on PR #663
