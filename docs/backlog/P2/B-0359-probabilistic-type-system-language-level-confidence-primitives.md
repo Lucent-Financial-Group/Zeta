@@ -64,8 +64,15 @@ opts out of distribution tracking entirely.
 4. What's the relationship to quantum type systems?
    (Superposition = distribution over basis states)
 5. How does `probabilistic: disable` compose with the .NET JIT?
-   (Can the mode boundary be a compilation-unit pragma that
-   eliminates distribution-wrapper allocations?)
+   The mode boundary is the ASSEMBLY boundary (Aaron: "likely
+   a different assembly" like `System.Runtime.CompilerServices.Unsafe`).
+   `Zeta.Core.Simd` doesn't carry distribution overhead;
+   `Zeta.Core.SignalQuality` does. The JIT knows at link time.
+6. In `normal` mode, can the AOT/JIT elide distribution wrappers
+   when the value is provably degenerate (always 0 or 1)?
+   Same pattern as nullable analysis — track flow, elide when
+   proven. Aaron: "our AOT/JIT should be able in normal mode
+   to do the right thing most of the time."
 
 ## Not in scope for B-0358
 
