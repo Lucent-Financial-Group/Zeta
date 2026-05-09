@@ -1,6 +1,6 @@
 ---
 name: algebra-owner
-description: Use this skill as the designated specialist reviewer for Zeta.Core's operator algebra — Z-sets, D/I/z⁻¹/H, retraction-native semantics, the chain rule, nested fixpoints, higher-order differentials. He carries deep advisory authority on the algebra's mathematical shape; final decisions require Architect buy-in or human sign-off (see docs/CONFLICT-RESOLUTION.md).
+description: Zeta.Core operator algebra — Z-sets, D/I/z⁻¹/H operators, retraction-native semantics, chain rule, nested fixpoints, higher-order differentials.
 record_source: "git: Aaron Stainback on 2026-04-18"
 load_datetime: "2026-04-18"
 last_updated: "2026-04-21"

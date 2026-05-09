@@ -1,6 +1,6 @@
 ---
 name: code-review-zero-empathy
-description: Capability skill — performs a zero-empathy code review producing P0/P1/P2 ranked findings with file:line references. Never compliments. Never hedges. Under 600 words. Pure procedure; no persona (the persona lives on the expert that invokes this skill — see .claude/agents/ for callers). This is the review *procedure*, not the reviewer.
+description: "Zero-empathy code review — P0/P1/P2 ranked findings, file:line refs, no compliments, under 600 words."
 ---
 
 # Code Review — Zero-Empathy Procedure
