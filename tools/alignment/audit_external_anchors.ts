@@ -111,34 +111,40 @@ export function extractUrlsFromWindow(
   windowLines = 20,
 ): AnchorEntry[] {
   const lines = content.split("\n");
-  // Find the first line that contains the concept ID as a token.
+  // Aggregate anchors across ALL occurrences of the concept ID,
+  // not just the first, to avoid false anchor-pending for concepts
+  // whose citations appear near later mentions.
   const idPattern = new RegExp(`\\b${escapeRegex(conceptId)}\\b`);
-  const anchorIdx = lines.findIndex((l) => idPattern.test(l));
-  if (anchorIdx < 0) return [];
-
-  const start = Math.max(0, anchorIdx - windowLines);
-  const end = Math.min(lines.length, anchorIdx + windowLines + 1);
-  const window = lines.slice(start, end).join("\n");
+  const matchIndices = lines
+    .map((l, i) => (idPattern.test(l) ? i : -1))
+    .filter((i) => i >= 0);
+  if (matchIndices.length === 0) return [];
 
   const seen = new Set<string>();
   const entries: AnchorEntry[] = [];
 
-  // Pass 1: markdown links (title available).
-  for (const m of window.matchAll(MARKDOWN_LINK_RE)) {
-    const title = m[1] ?? "";
-    const url = m[2] ?? "";
-    if (!seen.has(url)) {
-      seen.add(url);
-      entries.push({ url, kind: classifyUrl(url), title });
-    }
-  }
+  for (const anchorIdx of matchIndices) {
+    const start = Math.max(0, anchorIdx - windowLines);
+    const end = Math.min(lines.length, anchorIdx + windowLines + 1);
+    const window = lines.slice(start, end).join("\n");
 
-  // Pass 2: bare URLs not already captured.
-  for (const m of window.matchAll(BARE_URL_RE)) {
-    const url = m[0];
-    if (!seen.has(url)) {
-      seen.add(url);
-      entries.push({ url, kind: classifyUrl(url), title: "" });
+    // Pass 1: markdown links (title available).
+    for (const m of window.matchAll(MARKDOWN_LINK_RE)) {
+      const title = m[1] ?? "";
+      const url = m[2] ?? "";
+      if (!seen.has(url)) {
+        seen.add(url);
+        entries.push({ url, kind: classifyUrl(url), title });
+      }
+    }
+
+    // Pass 2: bare URLs not already captured.
+    for (const m of window.matchAll(BARE_URL_RE)) {
+      const url = m[0];
+      if (!seen.has(url)) {
+        seen.add(url);
+        entries.push({ url, kind: classifyUrl(url), title: "" });
+      }
     }
   }
 
