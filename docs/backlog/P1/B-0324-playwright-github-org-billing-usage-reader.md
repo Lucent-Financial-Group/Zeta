@@ -61,6 +61,7 @@ read, closing a known data gap.
 ## Pre-start checklist (2026-05-09)
 
 **Prior-art search:**
+
 - Skill router: no billing-reader skill exists; `github-ui` tools in
   `tools/playwright/github-ui/` cover snapshot/auth/reconcile — no billing.
 - `tools/hygiene/LOST-FILES-LOCATIONS.md`: checked; no orphaned billing
@@ -70,6 +71,7 @@ read, closing a known data gap.
 - Result: no prior art; this is net-new substrate.
 
 **Dependency-restructure:**
+
 - `depends_on: [B-0318]` — B-0318 provides `withGitHubSession`; merged
   (PR #2309 area). Dependency satisfied.
 - `composes_with: [B-0064, B-0319]` — B-0064 is the parent UI-reader

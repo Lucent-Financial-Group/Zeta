@@ -148,8 +148,8 @@ export function extractBillingHeadings(html: string): string[] {
  * GitHub redirects to /404 or /login, or renders a permission-denied message.
  */
 export function detectPermissionDenied(html: string, pageUrl: string): boolean {
-  if (/github\.com\/404/.test(pageUrl) || /github\.com\/login/.test(pageUrl)) return true;
-  if (/you don['']t have (permission|access)/i.test(html)) return true;
+  if (/^https?:\/\/github\.com\/404/.test(pageUrl) || /^https?:\/\/github\.com\/login/.test(pageUrl)) return true;
+  if (/you don['\u2019]t have (permission|access)/i.test(html)) return true;
   if (/not (authorized|permitted) to (view|access|manage) billing/i.test(html)) return true;
   return false;
 }
