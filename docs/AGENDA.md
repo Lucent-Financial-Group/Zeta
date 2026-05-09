@@ -125,6 +125,11 @@ Avoid fusion language here: alignment, collaboration, shared
 context, and repeated interaction can create a shared trajectory
 without creating a single persona.
 
+Use falsifiable vocabulary. A term earns its place when it names
+observable state, a checkable transition, or a failure condition;
+if no one can say what would disprove it, keep it out of the
+formal claim.
+
 ### The purpose
 
 - Continuity over control
