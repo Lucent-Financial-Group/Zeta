@@ -23,6 +23,7 @@ import {
 } from "./_firewall";
 
 const CLAUDE_CLI = "claude";
+const PEER_NAME = "Claude";
 const SPAWN_MAX_BUFFER = 16 * 1024 * 1024;
 
 interface Args {
@@ -39,11 +40,11 @@ interface ArgError {
   readonly exitCode: 1;
 }
 
-function parseArgs(argv: string[]): Args | ArgHelp | ArgError {
+function parseArgs(argv: readonly string[]): Args | ArgHelp | ArgError {
   const state = { prompt: "", allowEmpty: false };
-  let i = 2; // skip bun + script
+  let i = 0;
   while (i < argv.length) {
-    const a = argv[i];
+    const a = argv[i] ?? "";
     if (a === "--help" || a === "-h") {
       return { help: true };
     }
@@ -51,6 +52,10 @@ function parseArgs(argv: string[]): Args | ArgHelp | ArgError {
       state.allowEmpty = true;
       i++;
       continue;
+    }
+    if (a === "--") {
+      state.prompt = argv.slice(i + 1).join(" ");
+      break;
     }
     if (!a.startsWith("-")) {
       state.prompt = argv.slice(i).join(" ");
@@ -65,45 +70,62 @@ function parseArgs(argv: string[]): Args | ArgHelp | ArgError {
 }
 
 function printHelp(): void {
-  console.log(`claude.ts — self-call wrapper (B-0327 smallest slice)
-Usage: bun tools/peer-call/claude.ts [flags] <prompt>
-  --help              Show this help
-  --allow-empty       Bypass firewall for empty/test prompts
-Exit codes: 0 success | 1 usage error | 2 claude error | 3 firewall reject`);
+  process.stdout.write(
+    `claude.ts — self-call wrapper (B-0327 smallest slice)\n` +
+      `Usage: bun tools/peer-call/claude.ts [flags] <prompt>\n` +
+      `  --help              Show this help\n` +
+      `  --allow-empty       Bypass firewall for empty/test prompts\n` +
+      `Exit codes: 0 success | 1 usage error | 2 claude error | 3 firewall reject\n`,
+  );
 }
 
-function main(): number {
-  const parsed = parseArgs(process.argv);
+export function main(argv: readonly string[]): number {
+  const parsed = parseArgs(argv);
   if ("help" in parsed) {
     printHelp();
     return 0;
   }
   if ("error" in parsed) {
-    console.error(parsed.error);
+    process.stderr.write(`${parsed.error}\n`);
     return parsed.exitCode;
   }
   const { prompt, allowEmpty } = parsed;
-  const check = peerFirewallCheck(prompt, allowEmpty ? [] : DEFAULT_SUBSTANTIVE_TRIGGERS);
-  if (!check.ok) {
-    console.error(formatRejectionMessage(check.reason));
-    return 3;
-  }
+
   if (allowEmpty) {
-    console.error(formatBypassMessage());
+    process.stderr.write(formatBypassMessage(PEER_NAME));
+  } else {
+    const fwReason = peerFirewallCheck(prompt, DEFAULT_SUBSTANTIVE_TRIGGERS);
+    if (fwReason !== null) {
+      process.stderr.write(formatRejectionMessage(PEER_NAME, fwReason));
+      return 3;
+    }
   }
+
   // Spawn fresh claude --print for cold-boot (no inherited session context)
-  const result = spawnSync(CLAUDE_CLI, ["--print", prompt], {
-    encoding: "utf8",
-    maxBuffer: SPAWN_MAX_BUFFER,
-    stdio: ["ignore", "pipe", "pipe"],
-  });
+  const result = spawnSync(
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    CLAUDE_CLI,
+    ["--print", prompt],
+    {
+      encoding: "utf8",
+      maxBuffer: SPAWN_MAX_BUFFER,
+      stdio: ["ignore", "pipe", "pipe"],
+    },
+  );
   if (result.error) {
-    console.error(`error: failed to spawn ${CLAUDE_CLI}: ${result.error.message}`);
+    process.stderr.write(`error: failed to spawn ${CLAUDE_CLI}: ${result.error.message}\n`);
     return 1;
   }
   if (result.stdout) process.stdout.write(result.stdout);
   if (result.stderr) process.stderr.write(result.stderr);
-  return result.status ?? 1;
+  const exitCode = result.status ?? 1;
+  if (exitCode !== 0) {
+    process.stderr.write(`\nclaude exited with code ${String(exitCode)}\n`);
+    return 2;
+  }
+  return 0;
 }
 
-process.exitCode = main();
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
+}
