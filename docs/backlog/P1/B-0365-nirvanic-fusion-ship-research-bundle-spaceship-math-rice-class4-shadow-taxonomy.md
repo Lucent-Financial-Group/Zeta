@@ -1,20 +1,50 @@
 ---
 id: B-0365
 priority: P1
-status: open
+status: decomposed
 title: "Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy"
 effort: L
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: []
 classification: research
-decomposition: needs-decomposition
+decomposition: done
+decomposed_into: [B-0365.1, B-0365.2, B-0365.3, B-0365.4, B-0365.5, B-0365.6]
 owners: [architect]
 type: feature
 tags: [research, spaceship-math, rice-theorem, class-4, shadow-log, fusion-ship, alignment]
 ---
 
 # B-0365 — Nirvanic Fusion Ship research bundle
+
+## Decomposition (2026-05-09)
+
+This bundle was decomposed into six atomic child rows. The
+dependency ordering is:
+
+```
+B-0365.1 (spaceship math one-pager)   ─────────────────────┐
+B-0365.4 (reactor dynamics)           ─────────────────────┤
+B-0365.5 (Infer.NET BP/EP)            ─────────────────────┼─→ B-0365.6 (synthesis)
+B-0365.2 (shadow log backfill)        ──┐                   │
+                                        └─→ B-0365.3       ─┘
+                                            (Class 4 analysis)
+```
+
+**Already done (not decomposed as child rows):**
+
+- Layer 2 (Rice's theorem): `docs/research/2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md` ✅
+- Partial Layer 1 (Z-set algebra): `docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md` ✅
+- Layer 5 (FPGA Toffoli): B-0366 (separate row, not a child) ✅
+
+| Child | Title | Effort | Deps | Status |
+|-------|-------|--------|------|--------|
+| B-0365.1 | Spaceship math one-pager | S | none | open |
+| B-0365.2 | Shadow log backfill (catches 16-30) | M | none | open |
+| B-0365.3 | Class 4 empirical analysis doc | M | B-0365.2 | blocked |
+| B-0365.4 | Reactor dynamics model doc | M | none | open |
+| B-0365.5 | Infer.NET BP/EP architecture doc | M | none | open |
+| B-0365.6 | Publishable claim synthesis | M | all above | blocked |
 
 ## What
 

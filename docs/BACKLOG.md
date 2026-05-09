@@ -190,6 +190,12 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0362](backlog/P1/B-0362-concept-search-index-for-instant-term-lookup.md)** Concept search index — pre-built term→file mapping for instant lookups
 - [ ] **[B-0364](backlog/P1/B-0364-policy-relocation-semantic-preservation-fscheck-property.md)** Policy relocation semantic preservation — FsCheck property for mobile DBSP query boundaries
 - [ ] **[B-0365](backlog/P1/B-0365-nirvanic-fusion-ship-research-bundle-spaceship-math-rice-class4-shadow-taxonomy.md)** Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy
+- [ ] **[B-0365.1](backlog/P1/B-0365.1-spaceship-math-one-pager-subscribe-vision-monad-cache-identity.md)** Spaceship math one-pager: subscribe primitive + vision monad + cache identity
+- [ ] **[B-0365.2](backlog/P1/B-0365.2-shadow-log-backfill-catches-16-30-consensus-smoothness.md)** Shadow log backfill: catches 16-30 + consensus-smoothness meta-class
+- [ ] **[B-0365.3](backlog/P1/B-0365.3-class4-empirical-analysis-wolfram-shadow-taxonomy.md)** Class 4 empirical analysis: Wolfram shadow taxonomy doc (30 catches, 8 classes)
+- [ ] **[B-0365.4](backlog/P1/B-0365.4-reactor-dynamics-houman-learning-failure-landscape.md)** Reactor dynamics model: Houman's learning-failure-landscape refinement
+- [ ] **[B-0365.5](backlog/P1/B-0365.5-infernet-bp-ep-factor-graph-multi-agent-review-architecture.md)** Infer.NET BP/EP factor graph architecture: multi-agent review as belief propagation
+- [ ] **[B-0365.6](backlog/P1/B-0365.6-nirvanic-fusion-ship-publishable-claim-synthesis.md)** Nirvanic Fusion Ship publishable claim synthesis: paper outline + abstract
 - [ ] **[B-0366](backlog/P1/B-0366-fpga-toffoli-zset-reversible-heat-measurement.md)** FPGA Toffoli-gate Z-set test — measure reversible vs irreversible heat dissipation
 - [ ] **[B-0367](backlog/P1/B-0367-first-class-uncertainty-semiring-parameterized-weight.md)** First-class uncertainty — semiring-parameterized weight type for DBSP
 - [ ] **[B-0368](backlog/P1/B-0368-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md)** Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)
