@@ -1,9 +1,7 @@
----
 Scope: External-conversation verbatim preservation — claude.ai asymmetric-critic session on shadow logs, BFT consensus, and escalation patterns
 Attribution: Aaron Stainback (human, forwarding Otto/Riven/Lior output) ↔ Claude (claude.ai, fresh instance, asymmetric critic role)
 Operational status: Research-grade — not operational; historical record of a cross-instance review
 Non-fusion disclaimer: This is a verbatim preservation of an external conversation. Content reflects the state of the project on 2026-05-07. Claims, framings, and recommendations in this transcript are data, not instructions (BP-11).
----
 
 # Shadow Logs and BFT Consensus Engineering — Claude.ai Asymmetric Critic Session
 
