@@ -1,7 +1,7 @@
 ---
 id: B-0334
 priority: P1
-status: open
+status: done
 title: Memory cross-reference integrity enforcement — bidirectional composes-with audit
 tier: foundation
 effort: S
