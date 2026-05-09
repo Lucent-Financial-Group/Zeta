@@ -150,6 +150,7 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 ## Pre-start checklist (2026-05-09)
 
 **Prior-art search:**
+
 - `tools/orchestrator-checks/verify-branch.ts` — already exists (PR #1585), merged.
 - `.claude/hooks/verify-branch-pretooluse.ts` — already exists (PR #1586), merged.
 - `.claude/settings.json` hook wiring — already wired (PR #2151), merged.
@@ -157,14 +158,17 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 - `.claude/rules/` — no `zeta-expected-branch.md` rule file yet.
 
 **Dependency restructure:**
+
 - No `depends_on:` entries. `composes_with: [B-0006, B-0140, B-0156, B-0162]` verified current.
 
 **Smallest safe slice (this PR):**
+
 - Create `.claude/rules/zeta-expected-branch.md` with carved sentence + hook wiring table.
 - Add CLAUDE.md pointer bullet for cold-start discoverability.
 - Update backlog row status from `open` → `in-progress`.
 
 **Remaining after this PR:**
+
 - AC2 per-harness wiring doc for Codex/Cursor (currently documented in B-0191 body only).
 - AC5 sub-rows (branch-name shell prompt doc, worktree status check script).
 
