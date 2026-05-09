@@ -8,7 +8,7 @@ last_updated: 2026-05-09
 parent: B-0155
 depends_on: [B-0265]
 classification: buildable-now
-decomposition: atomic
+decomposition: 2-slice
 type: friction-reducer
 ---
 

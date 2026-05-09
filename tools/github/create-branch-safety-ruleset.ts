@@ -15,8 +15,7 @@ async function main() {
     console.log("Target: all branches, enforce on main + develop");
     return;
   }
-  // TODO: gh api repos/.../rulesets --method POST with payload
-  console.log("Implement full create in next slice");
+  throw new Error("Full creation not implemented — use --dry-run or wait for slice 2");
 }
 
 main().catch(console.error);
