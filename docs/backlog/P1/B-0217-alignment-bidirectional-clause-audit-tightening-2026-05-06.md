@@ -40,6 +40,7 @@ so a cold-start agent can use it without re-deriving it.
 ## Pre-start checklist (gate per CLAUDE.md / AGENTS.md)
 
 **Proof of prior-art search (Otto-364 + 7-axis inventory before starting B-0217):**
+
 - Wake-time-substrate: read CLAUDE.md bidirectional section + ALIGNMENT.md §"Alignment is bidirectional" (lines 197-425) + research/2026-05-02-*.md
 - Skill-router: alignment-auditor, alignment-observability, razor-discipline (Rodney's), spec-zealot
 - Orthogonal-axes: B-0192 razor-cadence, B-0160 mechanical-auth, B-0193 bootstrap-razor
@@ -49,6 +50,7 @@ so a cold-start agent can use it without re-deriving it.
 - Result: section exists, needs tightening vs one-way frame; no superseding prior row found. Logged 2026-05-08.
 
 **Dependency-restructure proof:**
+
 - depends_on: [B-0215] walked — B-0215 is open P1 (no drift).
 - Reciprocal composes_with added to B-0215 row? Deferred to next atomic (this slice is gate-only).
 - Supersession: none (original B-0003 ask preserved).
