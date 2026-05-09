@@ -1,7 +1,7 @@
 ---
 id: B-0330
 priority: P1
-status: claimed
+status: open
 title: Memory-format standardization — define frontmatter shape, filename conventions, section headers
 tier: foundation
 effort: S
