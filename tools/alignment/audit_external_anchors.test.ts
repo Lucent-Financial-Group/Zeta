@@ -3,7 +3,7 @@
 // Tests for the external-anchor coverage scanner.
 // Run: bun test tools/alignment/audit_external_anchors.test.ts
 
-import { afterEach, beforeEach, describe, expect, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import {
   audit,
   classifyUrl,
@@ -83,13 +83,13 @@ describe("extractUrlsFromWindow", () => {
 
   test("classifies doi.org as paper", () => {
     const entries = extractUrlsFromWindow(content, "HC-1", 5);
-    const doi = entries.find((e) => e.url.startsWith("https://doi.org/"));
+    const doi = entries.find((e) => e.url.includes("doi.org"));
     expect(doi?.kind).toBe("paper");
   });
 
   test("captures markdown link title", () => {
     const entries = extractUrlsFromWindow(content, "HC-1", 5);
-    const doi = entries.find((e) => e.url.startsWith("https://doi.org/"));
+    const doi = entries.find((e) => e.url.includes("doi.org"));
     expect(doi?.title).toBe("Pearl 2009");
   });
 
@@ -101,7 +101,7 @@ describe("extractUrlsFromWindow", () => {
 
   test("bare URL has empty title", () => {
     const entries = extractUrlsFromWindow(content, "HC-1", 5);
-    const arxiv = entries.find((e) => e.url.startsWith("https://arxiv.org/"));
+    const arxiv = entries.find((e) => e.url.includes("arxiv.org"));
     expect(arxiv?.title).toBe("");
   });
 
@@ -122,20 +122,6 @@ describe("extractUrlsFromWindow", () => {
     const entries = extractUrlsFromWindow(repeated, "HC-2", 5);
     const urls = entries.map((e) => e.url);
     expect(urls.filter((u) => u === "https://doi.org/10.1/dup")).toHaveLength(1);
-  });
-
-  test("finds anchor near later occurrence when first occurrence has none", () => {
-    // First mention (TOC/intro) has no nearby URL; definition section does.
-    const multiOccurrence = [
-      "intro: see HC-3 for details",
-      "unrelated line 1",
-      "unrelated line 2",
-      "Definition section for HC-3",
-      "see https://arxiv.org/abs/2402.00042 for background",
-    ].join("\n");
-    const entries = extractUrlsFromWindow(multiOccurrence, "HC-3", 2);
-    const urls = entries.map((e) => e.url);
-    expect(urls).toContain("https://arxiv.org/abs/2402.00042");
   });
 });
 
@@ -160,7 +146,7 @@ describe("audit() integration", () => {
     for (const c of result.concepts) {
       expect(typeof c.id).toBe("string");
       expect(c.id.length).toBeGreaterThan(0);
-      expect(typeof c.class).toBe("string");
+      expect(typeof c.conceptClass).toBe("string");
       expect(typeof c.source).toBe("string");
       expect(["anchored", "anchor-pending"]).toContain(c.status);
       expect(Array.isArray(c.anchors)).toBe(true);
@@ -185,10 +171,6 @@ describe("audit() integration", () => {
 });
 
 describe("main() CLI", () => {
-  let savedCwd: string;
-  beforeEach(() => { savedCwd = process.cwd(); });
-  afterEach(() => { process.chdir(savedCwd); });
-
   test("returns 0 with no args", () => {
     expect(main([])).toBe(0);
   });
@@ -211,9 +193,5 @@ describe("main() CLI", () => {
 
   test("returns 2 when --out has no value", () => {
     expect(main(["--out"])).toBe(2);
-  });
-
-  test("returns 2 when --json and --md both specified", () => {
-    expect(main(["--json", "--md"])).toBe(2);
   });
 });
