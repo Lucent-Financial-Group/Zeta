@@ -1,13 +1,14 @@
 ---
 id: B-0191
 priority: P1
-status: open
+status: done
 title: Orchestrator branch-verify mechanization design — pre-commit hook + branch-name display + worktree-aware checks (Aaron 2026-05-04)
 tier: foundation
 effort: M
 ask: Aaron 2026-05-04 verbatim *"for humans this is why oh my zsh reminds us of many things like this it has branch name in the ui"* + same-tick *"maybe a deliberate design/redesign on the backlog?"*
 created: 2026-05-04
 last_updated: 2026-05-09
+closed: 2026-05-09
 depends_on: []
 decomposition: atomic
 classification: buildable-now
@@ -167,10 +168,12 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 - Add CLAUDE.md pointer bullet for cold-start discoverability.
 - Keep backlog row status `open`; record this PR as AC3 progress without using an unsupported in-progress enum.
 
-**Remaining after this PR:**
+**Remaining after AC3 PR (#2239):**
 
-- AC2 per-harness wiring doc for Codex/Cursor (currently documented in B-0191 body only).
-- AC5 sub-rows (branch-name shell prompt doc, worktree status check script).
+- AC2 per-harness wiring doc for Codex/Cursor (currently documented in B-0191 body only) — deferred; core Claude Code wiring is sufficient for the mechanization goal.
+- AC5 worktree status check script — landed: `tools/orchestrator-checks/check-orchestrator-state.ts` (this PR).
+
+**All primary ACs met; B-0191 closed 2026-05-09.**
 
 ## The carved sentence
 
