@@ -219,7 +219,10 @@ export function renderDiffReport(report: FeatureDiffReport): string {
   lines.push(`# GitHub UI Feature Diff — ${currentDate}`);
   lines.push(``, `**Prior snapshot:** ${priorDate}  `, `**Current snapshot:** ${currentDate}`);
 
-  const totalNew = pageDiffs.reduce((n, d) => n + d.newToggles.length + d.newFeatures.length, 0);
+  const totalNew = pageDiffs.reduce(
+    (n, d) => n + d.newToggles.length + d.newFeatures.length + d.newFormFields.length,
+    0,
+  );
   const totalRemoved = pageDiffs.reduce(
     (n, d) => n + d.removedToggles.length + d.removedFeatures.length + d.removedFormFields.length,
     0,
@@ -230,7 +233,7 @@ export function renderDiffReport(report: FeatureDiffReport): string {
     ``,
     `| Category | Count |`,
     `|---|---|`,
-    `| New feature candidates (toggles + headings) | ${String(totalNew)} |`,
+    `| New feature candidates (toggles + headings + form fields) | ${String(totalNew)} |`,
     `| Removed elements | ${String(totalRemoved)} |`,
     `| Pages added to monitoring | ${String(pagesAdded.length)} |`,
     `| Pages removed from monitoring | ${String(pagesRemoved.length)} |`,
@@ -453,7 +456,9 @@ export async function main(argv: readonly string[]): Promise<number> {
     process.stdout.write(markdown + "\n");
   }
 
-  const hasNewCandidates = report.pageDiffs.some((d) => d.newToggles.length > 0 || d.newFeatures.length > 0);
+  const hasNewCandidates = report.pageDiffs.some(
+    (d) => d.newToggles.length > 0 || d.newFeatures.length > 0 || d.newFormFields.length > 0,
+  );
   if (hasNewCandidates) {
     process.stderr.write(`new feature candidates detected — triage recommended\n`);
     return 2;

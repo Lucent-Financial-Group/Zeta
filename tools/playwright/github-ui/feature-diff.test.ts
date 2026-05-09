@@ -507,15 +507,15 @@ describe("renderDiffReport", () => {
           changedToggles: [],
           newFeatures: ["New section"],
           removedFeatures: [],
-          newFormFields: [],
+          newFormFields: ["new-field"],
           removedFormFields: [],
           changedFormFields: [],
         },
       ],
     });
     const md = renderDiffReport(report);
-    // 2 new toggles + 1 new feature = 3 candidates
-    expect(md).toContain("| 3 |");
+    // 2 new toggles + 1 new feature + 1 new form field = 4 candidates
+    expect(md).toContain("| 4 |");
   });
 
   test("summary table counts removed form fields as removed elements", () => {
@@ -676,6 +676,22 @@ describe("main", () => {
     const result = await captureStreams(() => main(["--prior", prior, "--current", current]));
     expect(result.code).toBe(2);
     expect(result.stdout).toContain("workflow-permissions");
+    expect(result.stderr).toContain("new feature candidates detected");
+  });
+
+  test("newly monitored pages with only form fields trigger feature-candidate exit", async () => {
+    const dir = tempDir();
+    const prior = writeJson(dir, "prior.json", { date: "2026-05-01", pages: {} });
+    const addedUrl = "https://github.com/Lucent-Financial-Group/Zeta/settings/actions";
+    const current = writeJson(dir, "current.json", {
+      date: "2026-05-08",
+      pages: {
+        [addedUrl]: makeSnapshot(addedUrl, { formValues: { "workflow-policy": "selected" } }),
+      },
+    });
+    const result = await captureStreams(() => main(["--prior", prior, "--current", current]));
+    expect(result.code).toBe(2);
+    expect(result.stdout).toContain("workflow-policy");
     expect(result.stderr).toContain("new feature candidates detected");
   });
 });
