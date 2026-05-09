@@ -1,7 +1,7 @@
 ---
 id: B-0356
 priority: P1
-status: open
+status: partial
 title: "Capture model + token usage in commit trailer (git-native, cost derived at query time)"
 effort: S
 created: 2026-05-09
