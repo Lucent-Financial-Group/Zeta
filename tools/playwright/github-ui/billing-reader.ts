@@ -78,7 +78,7 @@ export async function readOrgBillingUsage(
       };
     }
 
-    const minutesUsed = parseInt(actionsMatch[1].replace(/,/g, ""), 10) || 0;
+    const minutesUsed = parseInt((actionsMatch[1] ?? "0").replace(/,/g, ""), 10) || 0;
     let minutesLimit: number | null = null;
     if (actionsMatch[2] && actionsMatch[2].toLowerCase() !== "unlimited") {
       minutesLimit = parseInt(actionsMatch[2].replace(/,/g, ""), 10) || null;
