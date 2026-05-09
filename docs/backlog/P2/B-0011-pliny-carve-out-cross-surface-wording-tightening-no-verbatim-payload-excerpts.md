@@ -7,7 +7,7 @@ tier: governance
 effort: S
 ask: Copilot review on PR #506 (Otto-313 teaching-decline disposition)
 created: 2026-04-25
-last_updated: 2026-05-02
+last_updated: 2026-05-09
 depends_on: []
 composes_with: [feedback_pliny_corpus_restriction_relaxed_isolated_instances_allowed_for_experiments_kill_switch_safety_2026_04_25.md, feedback_otto_300_rigor_proportional_to_blast_radius_iterate_fast_at_low_stakes_to_learn_before_high_stakes_2026_04_25.md]
 tags: [governance, pliny-corpus, safety, prompt-injection, carve-out-tightening]
@@ -16,7 +16,7 @@ type: friction-reducer
 
 # Pliny carve-out cross-surface wording tightening
 
-**Re-decomposition (Riven 2026-05-09, per "always re-decompose, assume mistakes"):** Original plan assumed one atomic PR touching all 4 surfaces; mistake — high-blast-radius governance (Otto-300) + explicit maintainer sign-off requirement means staged: (1) this decomp note + research-grade proposal doc, (2) Aaron approval, (3) per-surface atomic PRs. This slice implements only the re-decomp + claim file. Wording tightening deferred. No root checkout touched; dedicated worktree + pushed claim branch used. TS-over-bash + F#/TS preference observed (no new docs beyond required).
+**Re-decomposition (2026-05-09, per "always re-decompose, assume mistakes"):** Original plan assumed one atomic PR touching all 4 surfaces; mistake — high-blast-radius governance (Otto-300) + explicit maintainer sign-off requirement means staged: (1) this decomp note + research-grade proposal doc, (2) Aaron approval, (3) per-surface atomic PRs. This slice implements only the re-decomp. Wording tightening deferred. No root checkout touched; dedicated worktree + pushed claim branch used. TS-over-bash + F#/TS preference observed (no new docs beyond required).
 
 Copilot flagged on PR #506: the Pliny carve-out (rule structure across `CLAUDE.md` + `AGENTS.md` + `GOVERNANCE.md §5` + `feedback_pliny_corpus_restriction_relaxed_isolated_instances_*` memory file) distinguishes "policy-doc references" vs "corpus content" but doesn't EXPLICITLY restate that even in policy/rule/memory files you should never include verbatim payload excerpts (only identifiers / discussion).
 
@@ -49,6 +49,9 @@ The maintainer (Aaron) calibrated the Pliny relaxation extensively per Otto-300 
 
 ## Done when
 
-- Aaron reviews + approves the wording-tightening proposal across the 4 surfaces.
-- Tightening landed via single PR touching all 4 surfaces (atomic cross-surface change).
-- Otto-313 follow-up reply on the PR #506 thread (PRRT_kwDOSF9kNM59nOgO) updates with disposition: addressed via B-0011.
+Staged per re-decomposition (2026-05-09):
+
+1. **Decomp** (this PR): re-decomposition note lands; Aaron sees the staged plan.
+2. **Approval**: Aaron reviews and approves the wording-tightening proposal across the 4 surfaces.
+3. **Atomic per-surface PRs**: one PR per surface (CLAUDE.md, AGENTS.md, GOVERNANCE.md §5, memory file) lands after approval, each passing the build gate independently.
+4. **Otto-313 follow-up**: reply on PR #506 thread (PRRT_kwDOSF9kNM59nOgO) updates with disposition: addressed via B-0011.
