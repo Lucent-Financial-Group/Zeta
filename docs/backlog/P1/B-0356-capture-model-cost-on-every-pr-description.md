@@ -23,14 +23,33 @@ subagents) should include a `Tokens:` trailer in the commit
 message — raw token counts only, no cost estimate:
 
 ```
-Tokens: model=opus input=200420 output=45100 dur=156s
+Tokens: model=opus input=200420 output=45100 cache_read=180000 cache_write=20420 dur=156s
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ```
 
-**Tokens are the atoms. Cost is derived at query time** from
-the current rate card. Never store cost — it changes when
-pricing changes. Store the immutable fact (tokens used),
-derive the view (dollar cost) when you need it.
+**Five numbers fully determine cost at any future rate card:**
+
+| Fact | Why |
+|---|---|
+| `model` | Determines rate card row |
+| `input` | Total input tokens |
+| `output` | Total output including thinking tokens |
+| `cache_read` | Input subset that hit prompt cache (90% discount) |
+| `cache_write` | Input subset written to cache (25% premium) |
+
+**Tokens are the atoms. Cost is derived at query time:**
+
+```
+uncached = input - cache_read - cache_write
+cost = (uncached × input_rate)
+     + (cache_read × input_rate × 0.10)
+     + (cache_write × input_rate × 1.25)
+     + (output × output_rate)
+```
+
+Never store cost — it changes when pricing changes. Store
+the immutable facts (tokens used + cache breakdown), derive
+the view (dollar cost) when you need it.
 
 Git-native. Survives host migration. Queryable via
 `git log --grep="Tokens:"`.
@@ -45,17 +64,19 @@ never rot, only the rate card changes.
 
 ## Implementation
 
-1. The `claude` CLI prints token usage to stderr on
-   completion. Parse the last line matching
-   `"input_tokens": N, "output_tokens": N` from stderr.
-2. In `claude-loop-tick.ts`, capture stderr output
-   (already done — logged to `ticks.err`), extract
-   token counts.
+1. Claude Code session JSONL transcripts at
+   `~/.claude/projects/` already contain per-message
+   `input_tokens`, `output_tokens`,
+   `cache_creation_input_tokens`, and
+   `cache_read_input_tokens`. Sum across the session.
+2. In `claude-loop-tick.ts`, after the `claude -p` call
+   completes, parse the session JSONL (or stderr summary)
+   to extract the five token counts.
 3. Include `Tokens:` trailer in the commit message the
    tick creates, right above the `Co-Authored-By` footer.
 4. In `model-rating-report.ts`, add `--git-costs` flag
-   that parses `git log --grep="Tokens:"`, multiplies by
-   the current pricing table, and aggregates per-model.
+   that parses `git log --grep="Tokens:"`, applies the
+   current pricing formula, and aggregates per-model.
 
 ## Acceptance criteria
 
