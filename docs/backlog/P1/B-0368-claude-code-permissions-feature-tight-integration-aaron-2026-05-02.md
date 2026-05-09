@@ -1,5 +1,5 @@
 ---
-id: B-0160
+id: B-0368
 priority: P1
 status: in-progress
 title: Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)

@@ -1,5 +1,5 @@
 ---
-id: B-0285
+id: B-0372
 priority: P1
 status: open
 title: "Pages discoverability - sitemap, robots, and AI crawler policy"
