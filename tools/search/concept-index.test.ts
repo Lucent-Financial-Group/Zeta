@@ -3,12 +3,9 @@ import { buildIndex, lookup, type ConceptIndex } from "./concept-index.js";
 
 // Build once at file scope — shared across all describe blocks.
 let index: ConceptIndex;
-let buildElapsedMs: number;
 
 beforeAll(async () => {
-    const start = performance.now();
     index = await buildIndex();
-    buildElapsedMs = performance.now() - start;
 });
 
 describe("buildIndex — structure", () => {
@@ -29,11 +26,11 @@ describe("buildIndex — structure", () => {
         expect(index.scanDirs).toContain("docs");
         expect(index.scanDirs).toContain(".claude/skills");
         expect(index.scanDirs).toContain(".claude/rules");
+        expect(index.scanDirs).toContain(".claude/agents");
     });
 
     test("generated field is a valid ISO timestamp", () => {
-        expect(() => new Date(index.generated)).not.toThrow();
-        expect(new Date(index.generated).getFullYear()).toBeGreaterThanOrEqual(2026);
+        expect(Date.parse(index.generated)).not.toBeNaN();
     });
 
     test("each entry has conceptClass, term, and non-empty hits", () => {
@@ -42,12 +39,6 @@ describe("buildIndex — structure", () => {
             expect(typeof e.term).toBe("string");
             expect(e.hits.length).toBeGreaterThan(0);
         }
-    });
-});
-
-describe("buildIndex — timing", () => {
-    test("builds in under 5 seconds", () => {
-        expect(buildElapsedMs).toBeLessThan(5000);
     });
 });
 

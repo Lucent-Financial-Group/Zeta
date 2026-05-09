@@ -12,7 +12,7 @@
 //    have drifted toward full-text — tighten the regexes
 
 import { readdirSync, existsSync } from "node:fs";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { join, resolve, relative } from "node:path";
 
 const REPO_ROOT = resolve(import.meta.dir, "../..");
@@ -70,23 +70,17 @@ function scanFiles(dir: string): string[] {
     return results;
 }
 
-// Async reads in parallel — collapses 10s serial reads to <3s on 2943 files.
+// Reads and processes one file at a time — O(1) peak memory vs O(corpus).
 export async function buildIndex(): Promise<ConceptIndex> {
     const allFiles: string[] = [];
     for (const dir of SCAN_DIRS) {
         allFiles.push(...scanFiles(dir));
     }
 
-    const fileContents = await Promise.all(
-        allFiles.map(async (file) => ({
-            file,
-            content: await readFile(join(REPO_ROOT, file), "utf8"),
-        })),
-    );
-
     const hitMap = new Map<string, Map<string, number>>();
 
-    for (const { file, content } of fileContents) {
+    for (const file of allFiles) {
+        const content = await readFile(join(REPO_ROOT, file), "utf8");
         const lines = content.split("\n");
         for (const [conceptClass, pattern] of CONCEPT_QUERIES) {
             const re = new RegExp(pattern.source, pattern.flags);
@@ -135,36 +129,3 @@ export function lookup(index: ConceptIndex, query: string): IndexEntry[] {
     });
 }
 
-if (import.meta.main) {
-    const args = process.argv.slice(2);
-    const outPath = join(REPO_ROOT, ".concept-index.json");
-
-    if (args[0] === "--build" || args.length === 0) {
-        const index = await buildIndex();
-        const payload = JSON.stringify(index, null, 2);
-        await writeFile(outPath, payload);
-        const sizeKB = (Buffer.byteLength(payload) / 1024).toFixed(0);
-        const totalHits = index.entries.reduce((s, e) => s + e.hits.length, 0);
-        console.log(`Built: ${index.entryCount} entries, ${sizeKB}KB, ${totalHits} total hits`);
-    } else {
-        const { readFileSync } = await import("node:fs");
-        if (!existsSync(outPath)) {
-            console.error("No index found. Run: bun tools/search/build-index.ts");
-            process.exit(1);
-        }
-        const index: ConceptIndex = JSON.parse(readFileSync(outPath, "utf8"));
-        const query = args.join(" ");
-        const results = lookup(index, query);
-        if (results.length === 0) {
-            console.log(`No matches for "${query}"`);
-        } else {
-            for (const r of results) {
-                console.log(`[${r.conceptClass}] ${r.term} (${r.hits.length} files)`);
-                for (const h of r.hits.slice(0, 5)) {
-                    console.log(`  ${h.file}:${h.line}`);
-                }
-                if (r.hits.length > 5) console.log(`  ... +${r.hits.length - 5} more`);
-            }
-        }
-    }
-}
