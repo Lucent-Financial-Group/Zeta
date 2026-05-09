@@ -1,6 +1,6 @@
 ---
 name: distributed-consensus-expert
-description: Capability skill ("hat") — umbrella for every consensus protocol Zeta's multi-node roadmap may land. Owns cross-protocol positioning (safety vs liveness trade-offs, quorum arithmetic, FLP impossibility framing, linearizability vs sequential vs causal consistency, leader-based vs leaderless, CFT vs BFT), and routes to the two mainline narrows (`paxos-expert`, `raft-expert`) plus `distributed-coordination-expert` for the ZooKeeper / etcd primitive zoo that sits on top of consensus. Wear this when framing the distributed-consensus strategy, choosing between protocol families, reconciling Zeta's retraction-native substrate with a replicated log, or deciding what to prove in TLA+ before writing code. Defers to `paxos-expert` for Paxos-family depth, to `raft-expert` for Raft depth, to `distributed-coordination-expert` for primitives built on consensus, to `transaction-manager-expert` for distributed commit, to `tla-expert` for protocol specs, and to `deterministic-simulation-theory-expert` for DST binding.
+description: Distributed consensus — FLP impossibility, quorum arithmetic, CFT vs BFT, linearizability, Paxos/Raft protocol selection.
 ---
 
 # Distributed Consensus Expert — Protocol-Family Umbrella
