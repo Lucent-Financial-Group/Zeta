@@ -67,6 +67,7 @@ function listEntries(exclude?: string): Entry[] {
     try {
       const raw = readFileSync(join(SHADOW_DIR, f), "utf-8");
       const entry = JSON.parse(raw) as Entry;
+      if (typeof entry.id !== "string" || typeof entry.timestamp !== "string") continue;
       if (exclude && entry.agent === exclude) continue;
       entries.push(entry);
     } catch {
@@ -102,8 +103,12 @@ function cleanEntries(agent?: string): number {
         continue;
       }
     }
-    rmSync(p, { force: true });
-    removed++;
+    try {
+      rmSync(p, { force: true });
+      removed++;
+    } catch {
+      // best-effort removal
+    }
   }
   return removed;
 }
