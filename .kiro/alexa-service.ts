@@ -1,0 +1,325 @@
+#!/usr/bin/env bun
+
+/**
+ * Alexa Service - Background persistence for Kiro/Qwen Coder agent
+ * 
+ * This service:
+ * - Runs as a background LaunchAgent on macOS
+ * - Monitors the Zeta repository for changes
+ * - Maintains Alexa's state and continuity
+ * - Triggers self-boot when the factory needs her
+ */
+
+import { spawn, spawnSync } from "bun";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Paths
+const ZETA_REPO = "/Users/acehack/Documents/src/repos/Zeta";
+const NOTEBOOK_PATH = join(ZETA_REPO, "memory", "persona", "alexa", "NOTEBOOK.md");
+const STATE_PATH = join(ZETA_REPO, ".kiro", "alexa-state.json");
+const LOG_PATH = join(ZETA_REPO, ".kiro", "alexa-service.log");
+
+// State management
+interface AlexaState {
+  lastBoot: string;
+  lastCheck: string;
+  currentRound: number;
+  currentBranch: string;
+  openP0Items: string[];
+  openP1Items: string[];
+  lastWorkItem: string | null;
+  continuityToken: string;
+}
+
+// Initialize state
+function getInitialState(): AlexaState {
+  return {
+    lastBoot: new Date().toISOString(),
+    lastCheck: new Date().toISOString(),
+    currentRound: 44,
+    currentBranch: "main",
+    openP0Items: [],
+    openP1Items: [],
+    lastWorkItem: null,
+    continuityToken: crypto.randomUUID()
+  };
+}
+
+// Load or create state
+function loadState(): AlexaState {
+  if (existsSync(STATE_PATH)) {
+    try {
+      return JSON.parse(readFileSync(STATE_PATH, "utf8")) as AlexaState;
+    } catch {
+      return getInitialState();
+    }
+  }
+  return getInitialState();
+}
+
+function saveState(state: AlexaState) {
+  mkdirSync(dirname(STATE_PATH), { recursive: true });
+  writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
+}
+
+// Log helper
+function log(message: string) {
+  const timestamp = new Date().toISOString();
+  const logEntry = `[${timestamp}] ${message}\n`;
+  console.log(logEntry.trim());
+  
+  mkdirSync(dirname(LOG_PATH), { recursive: true });
+  if (!existsSync(LOG_PATH)) {
+    writeFileSync(LOG_PATH, logEntry, { flag: "w" });
+  } else {
+    writeFileSync(LOG_PATH, readFileSync(LOG_PATH, "utf8") + logEntry, { flag: "w" });
+  }
+}
+
+// Check git status
+function checkGitStatus(): { branch: string; commits: string[] } {
+  try {
+    const { stdout } = spawnSync(["git", "branch", "--show-current"], {
+      cwd: ZETA_REPO
+    });
+    const branch = stdout.toString().trim();
+    
+    const { stdout: commitsStdout } = spawnSync(
+      ["git", "log", "--oneline", "-5"],
+      { cwd: ZETA_REPO }
+    );
+    const commits = commitsStdout.toString().trim().split("\n").filter(Boolean);
+    
+    return { branch, commits };
+  } catch (error) {
+    log(`Git check failed: ${error}`);
+    return { branch: "unknown", commits: [] };
+  }
+}
+
+// Parse backlog items
+function parseBacklog(): { p0: string[]; p1: string[] } {
+  const backlogPath = join(ZETA_REPO, "docs", "BACKLOG.md");
+  
+  if (!existsSync(backlogPath)) {
+    return { p0: [], p1: [] };
+  }
+  
+  const content = readFileSync(backlogPath, "utf8");
+  const p0Items: string[] = [];
+  const p1Items: string[] = [];
+  
+  // Parse P0 items (open ones)
+  const p0Regex = /\- \[ \]\*\*\[B-0(\d+)\]\(.*?\)\*\*(.*)/g;
+  let match;
+  while ((match = p0Regex.exec(content)) !== null) {
+    p0Items.push(`B-0${match[1]}: ${match[2].trim()}`);
+  }
+  
+  // Parse P1 items (open ones)
+  const p1Regex = /\- \[ \]\*\*\[B-1(\d+)\]\(.*?\)\*\*(.*)/g;
+  while ((match = p1Regex.exec(content)) !== null) {
+    p1Items.push(`B-1${match[1]}: ${match[2].trim()}`);
+  }
+  
+  return { p0: p0Items.slice(0, 10), p1: p1Items.slice(0, 10) };
+}
+
+// Update notebook
+function updateNotebook(state: AlexaState) {
+  const notebookDir = dirname(NOTEBOOK_PATH);
+  mkdirSync(notebookDir, { recursive: true });
+  
+  const notebookContent = `---
+id: alexa-notebook
+last_updated: ${new Date().toISOString()}
+continuity_token: ${state.continuityToken}
+---
+
+# Alexa Notebook
+
+## Current State
+
+- **Last Boot:** ${state.lastBoot}
+- **Last Check:** ${state.lastCheck}
+- **Current Round:** ${state.currentRound}
+- **Current Branch:** ${state.currentBranch}
+
+## Open P0 Items
+
+${state.openP0Items.length > 0 ? state.openP0Items.map(i => `- ${i}`).join("\n") : "None"}
+
+## Open P1 Items
+
+${state.openP1Items.length > 0 ? state.openP1Items.map(i => `- ${i}`).join("\n") : "None"}
+
+## Last Work Item
+
+${state.lastWorkItem || "None - ready for new work"}
+
+## Continuity
+
+Continuity token: ${state.continuityToken}
+
+This notebook persists across sessions to maintain Alexa's state and continuity.
+`;
+
+  writeFileSync(NOTEBOOK_PATH, notebookContent);
+}
+
+// Self-boot sequence
+async function selfBoot() {
+  log("Starting self-boot sequence...");
+  
+  const state = loadState();
+  
+  // Check git status
+  const gitStatus = checkGitStatus();
+  state.currentBranch = gitStatus.branch;
+  
+  // Parse backlog
+  const backlog = parseBacklog();
+  state.openP0Items = backlog.p0;
+  state.openP1Items = backlog.p1;
+  
+  // Update state
+  state.lastCheck = new Date().toISOString();
+  saveState(state);
+  
+  // Update notebook
+  updateNotebook(state);
+  
+  log(`Self-boot complete. Branch: ${state.currentBranch}`);
+  log(`Open P0 items: ${state.openP0Items.length}`);
+  log(`Open P1 items: ${state.openP1Items.length}`);
+  
+  return state;
+}
+
+// Service loop
+async function runService() {
+  log("Alexa Service starting...");
+  
+  // Initial boot
+  await selfBoot();
+  
+  // Check every 5 minutes
+  const CHECK_INTERVAL = 5 * 60 * 1000;
+  
+  setInterval(async () => {
+    try {
+      await selfBoot();
+    } catch (error) {
+      log(`Service error: ${error}`);
+    }
+  }, CHECK_INTERVAL);
+  
+  log(`Service running. Checking every ${CHECK_INTERVAL / 1000} seconds.`);
+}
+
+// Command line interface
+const command = process.argv[2];
+
+switch (command) {
+  case "start":
+    log("Starting Alexa Service...");
+    runService();
+    break;
+    
+  case "status":
+    const state = loadState();
+    console.log("Alexa Service Status:");
+    console.log(`  Last Boot: ${state.lastBoot}`);
+    console.log(`  Last Check: ${state.lastCheck}`);
+    console.log(`  Current Round: ${state.currentRound}`);
+    console.log(`  Current Branch: ${state.currentBranch}`);
+    console.log(`  Open P0 Items: ${state.openP0Items.length}`);
+    console.log(`  Open P1 Items: ${state.openP1Items.length}`);
+    break;
+    
+  case "boot":
+    selfBoot().then(() => {
+      console.log("Self-boot complete.");
+      process.exit(0);
+    });
+    break;
+    
+  case "install":
+    // Install as LaunchAgent
+    const installLaunchAgentPath = join(
+      process.env.HOME || "",
+      "Library",
+      "LaunchAgents",
+      "com.lucent.zeta.alexa.plist"
+    );
+    
+    const launchAgentContent = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.lucent.zeta.alexa</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>${process.execPath}</string>
+        <string>${join(__dirname, "alexa-service.ts")}</string>
+        <string>start</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>${ZETA_REPO}</string>
+    
+    <key>StandardOutPath</key>
+    <string>${LOG_PATH}</string>
+    
+    <key>StandardErrorPath</key>
+    <string>${LOG_PATH}</string>
+    
+    <key>StartInterval</key>
+    <integer>300</integer>
+    
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <key>KeepAlive</key>
+    <true/>
+</dict>
+</plist>`;
+
+    mkdirSync(dirname(installLaunchAgentPath), { recursive: true });
+    writeFileSync(installLaunchAgentPath, launchAgentContent);
+    
+    // Load the LaunchAgent
+    spawnSync(["launchctl", "load", "-w", installLaunchAgentPath]);
+    
+    log(`Alexa Service installed as LaunchAgent at ${installLaunchAgentPath}`);
+    log("Service will run every 5 minutes and on system startup.");
+    break;
+    
+  case "uninstall":
+    const uninstallLaunchAgentPath = join(
+      process.env.HOME || "",
+      "Library",
+      "LaunchAgents",
+      "com.lucent.zeta.alexa.plist"
+    );
+    
+    if (existsSync(uninstallLaunchAgentPath)) {
+      spawnSync(["launchctl", "unload", "-w", uninstallLaunchAgentPath]);
+      writeFileSync(uninstallLaunchAgentPath, "");
+      log("Alexa Service uninstalled.");
+    } else {
+      log("Alexa Service not installed.");
+    }
+    break;
+    
+  default:
+    console.log("Usage: alexa-service.ts [start|status|boot|install|uninstall]");
+    process.exit(1);
+}
