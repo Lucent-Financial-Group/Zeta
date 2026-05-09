@@ -189,6 +189,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0354](backlog/P1/B-0354-fresh-instance-validation-bootstrap-claude-md.md)** Fresh-instance validation test for bootstrap CLAUDE.md
 - [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
 - [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)
+- [ ] **[B-0357](backlog/P1/B-0357-first-class-uncertainty-semiring-parameterized-weight.md)** First-class uncertainty — semiring-parameterized weight type for DBSP
 
 ## P2 — research-grade
 
