@@ -10,9 +10,16 @@
 //
 // Requires: gh CLI authenticated with repo admin scope.
 
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
 const OWNER = "Lucent-Financial-Group";
 const REPO = "Zeta";
 const DEFAULT_RULESET_ID = 15256879;
+const REPO_SLUG = `${OWNER}/${REPO}`;
+
+const scriptDir = dirname(fileURLToPath(import.meta.url));
+const repoRoot = resolve(scriptDir, "../..");
 
 interface SpawnResult {
   readonly stdout: string;
@@ -118,6 +125,19 @@ export async function main(): Promise<void> {
   console.log("========================================");
   console.log();
 
+  // Idempotency check: abort if "Review Policy" ruleset already exists
+  const existing = (await ghApi(
+    "GET",
+    `repos/${OWNER}/${REPO}/rulesets`,
+  )) as Array<{ id: number; name: string }>;
+  const alreadyExists = existing.find((r) => r.name === "Review Policy");
+  if (alreadyExists) {
+    console.log(
+      `"Review Policy" ruleset already exists (id: ${alreadyExists.id}). Nothing to do.`,
+    );
+    return;
+  }
+
   if (dryRun) {
     console.log("[DRY RUN] Would create Review Policy ruleset:");
     console.log(JSON.stringify(reviewPolicyPayload, null, 2));
@@ -131,28 +151,13 @@ export async function main(): Promise<void> {
     return;
   }
 
-  // Preflight: ensure no duplicate "Review Policy" ruleset (idempotency)
-  console.log("Preflight: checking for existing Review Policy ruleset...");
-  const existingRulesets = (await ghApi(
-    "GET",
+  console.log("Step 1: Creating Review Policy ruleset...");
+  const created = (await ghApi(
+    "POST",
     `repos/${OWNER}/${REPO}/rulesets`,
-  )) as Array<{ id: number; name: string }>;
-  const existingReviewPolicy = existingRulesets.find(
-    (r) => r.name === "Review Policy",
-  );
-  if (existingReviewPolicy) {
-    console.log(
-      `  "Review Policy" ruleset already exists (id: ${existingReviewPolicy.id}) — skipping create`,
-    );
-  } else {
-    console.log("Step 1: Creating Review Policy ruleset...");
-    const created = (await ghApi(
-      "POST",
-      `repos/${OWNER}/${REPO}/rulesets`,
-      reviewPolicyPayload,
-    )) as { id: number; name: string };
-    console.log(`  Created ruleset "${created.name}" (id: ${created.id})`);
-  }
+    reviewPolicyPayload,
+  )) as { id: number; name: string };
+  console.log(`  Created ruleset "${created.name}" (id: ${created.id})`);
   console.log();
 
   console.log(
@@ -163,21 +168,30 @@ export async function main(): Promise<void> {
     `repos/${OWNER}/${REPO}/rulesets/${DEFAULT_RULESET_ID}`,
     updatedDefaultPayload,
   );
-  console.log("  Default ruleset updated (3 rules: deletion, non_fast_forward, required_linear_history)");
+  console.log(
+    "  Default ruleset updated (3 rules: deletion, non_fast_forward, required_linear_history)",
+  );
   console.log();
 
-  console.log("Step 3: Re-snapshotting expected.json (targeting same repo)...");
+  console.log("Step 3: Re-snapshotting expected.json...");
+  const snapshotScript = resolve(
+    repoRoot,
+    "tools/hygiene/snapshot-github-settings.ts",
+  );
   const snapshotResult = await run([
     "bun",
-    "tools/hygiene/snapshot-github-settings.ts",
+    snapshotScript,
     "--repo",
-    `${OWNER}/${REPO}`,
+    REPO_SLUG,
   ]);
   if (snapshotResult.exitCode !== 0) {
     console.error("  Snapshot failed:", snapshotResult.stderr);
     process.exit(1);
   }
-  const expectedPath = "tools/hygiene/github-settings.expected.json";
+  const expectedPath = resolve(
+    repoRoot,
+    "tools/hygiene/github-settings.expected.json",
+  );
   await Bun.write(expectedPath, snapshotResult.stdout);
   console.log(`  Wrote ${expectedPath}`);
   console.log();
