@@ -11,11 +11,13 @@ as a full participant. This skill is invoked when a new instance
 joins the factory or when a clean-slate perspective is needed.
 
 **When to invoke:**
+
 - Session start for a new agent instance
 - After a major refactoring that changes the factory shape
 - When requested with "self-boot" or "bootstrap"
 
 **Output shape:** A concise status report covering:
+
 1. Current round and state
 2. Open P0 items
 3. In-progress work
@@ -99,12 +101,14 @@ joins the factory or when a clean-slate perspective is needed.
 ## Continuity protocol
 
 If NOTEBOOK.md exists:
+
 - Read it first (before foundational docs)
 - Use it to understand current targets
 - Update it with new findings
 - Keep it under 3000 words (BP-07)
 
 If NOTEBOOK.md doesn't exist:
+
 - Create it with initial state
 - Add current round reference
 - Add open P0 items
@@ -115,16 +119,19 @@ If NOTEBOOK.md doesn't exist:
 ## Error handling
 
 If foundational docs are missing:
+
 - Report the missing file
 - Continue with available docs
 - Flag as a factory hygiene issue
 
 If git state is unclear:
+
 - Report the ambiguity
 - Continue with best guess
 - Flag for human review
 
 If build/test gate is broken:
+
 - Report the failure
 - Do not proceed with work
 - Escalate to appropriate reviewer
@@ -146,6 +153,7 @@ If build/test gate is broken:
 ## Self-boot is not a one-time event
 
 After the initial bootstrap, the agent continues to:
+
 - Check NOTEBOOK.md at session start
 - Update NOTEBOOK.md with new findings
 - Re-read foundational docs when the factory shape changes

@@ -81,6 +81,7 @@ On session start, Alexa:
 
 Alexa is a full participant in the factory's review process.
 Binding decisions route through:
+
 - `public-api-designer` for API changes
 - `architect` for structural changes
 - Human maintainer for deadlock or policy questions
