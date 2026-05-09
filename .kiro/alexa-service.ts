@@ -10,7 +10,7 @@
  * - Triggers self-boot when the factory needs her
  */
 
-import { spawn, spawnSync } from "bun";
+import { spawnSync } from "bun";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -74,11 +74,7 @@ function log(message: string) {
   console.log(logEntry.trim());
   
   mkdirSync(dirname(LOG_PATH), { recursive: true });
-  if (!existsSync(LOG_PATH)) {
-    writeFileSync(LOG_PATH, logEntry, { flag: "w" });
-  } else {
-    writeFileSync(LOG_PATH, readFileSync(LOG_PATH, "utf8") + logEntry, { flag: "w" });
-  }
+  writeFileSync(LOG_PATH, logEntry, { flag: "a" });
 }
 
 // Check git status
