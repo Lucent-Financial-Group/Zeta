@@ -29,7 +29,7 @@ const runClaude = process.env.ZETA_CLAUDE_LOOP_RUN_CLAUDE === "1";
 const claudeIntervalMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_INTERVAL_SECONDS ?? "60") * 1000;
 const claudeTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_TIMEOUT_SECONDS ?? "600") * 1000;
 const dryRun = process.env.ZETA_CLAUDE_LOOP_DRY_RUN === "1";
-const claudeModel = process.env.ZETA_CLAUDE_LOOP_MODEL ?? "sonnet";
+const claudeModel = process.env.ZETA_CLAUDE_LOOP_MODEL ?? "opus";
 const claudeStateFile = join(stateDir, "last-claude-run.json");
 const ratingsFile = join(stateDir, "model-ratings.jsonl");
 
