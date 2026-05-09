@@ -56,6 +56,45 @@ const ROM_EXTENSIONS = new Set([
   ".col",
 ]);
 
+function decodeXmlAttributeValue(value: string): string {
+  return value.replace(
+    /&(#x[0-9a-fA-F]+|#[0-9]+|amp|lt|gt|quot|apos);/g,
+    (_match, entity: string) => {
+      switch (entity) {
+        case "amp":
+          return "&";
+        case "lt":
+          return "<";
+        case "gt":
+          return ">";
+        case "quot":
+          return '"';
+        case "apos":
+          return "'";
+        default:
+          if (entity.startsWith("#x")) {
+            return String.fromCodePoint(parseInt(entity.slice(2), 16));
+          }
+          if (entity.startsWith("#")) {
+            return String.fromCodePoint(parseInt(entity.slice(1), 10));
+          }
+          return `&${entity};`;
+      }
+    },
+  );
+}
+
+function isSafeCanonicalName(name: string): boolean {
+  return (
+    name.length > 0 &&
+    name !== "." &&
+    name !== ".." &&
+    !name.includes("\0") &&
+    !name.includes("/") &&
+    !name.includes("\\")
+  );
+}
+
 export function parseDatfile(xml: string): ReadonlyMap<string, DatEntry> {
   const lookup = new Map<string, DatEntry>();
   const romTagRe = /<rom\s+([^>]*?)\/?\s*>/g;
@@ -70,7 +109,7 @@ export function parseDatfile(xml: string): ReadonlyMap<string, DatEntry> {
       const key = attrMatch[1];
       const val = attrMatch[2];
       if (key !== undefined && val !== undefined) {
-        attrs[key] = val;
+        attrs[key] = decodeXmlAttributeValue(val);
       }
     }
     attrRe.lastIndex = 0;
@@ -151,6 +190,20 @@ export function matchAndReport(
 
     if (apply && !alreadyCorrect) {
       const dir = filePath.slice(0, filePath.length - currentName.length);
+      if (!isSafeCanonicalName(canonicalName)) {
+        process.stderr.write(
+          `skip: unsafe canonical name from datfile: ${canonicalName}\n`,
+        );
+        usedNames.add(canonicalName);
+        results.push({
+          file: filePath,
+          sha1,
+          matched: true,
+          canonicalName,
+          renamed: false,
+        });
+        continue;
+      }
       const target = join(dir, canonicalName);
       if (existsSync(target) || usedNames.has(canonicalName)) {
         process.stderr.write(

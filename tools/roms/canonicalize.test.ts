@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { parseDatfile, hashFileSha1, scanRomFiles, matchAndReport } from "./canonicalize.ts";
@@ -36,6 +36,13 @@ describe("parseDatfile", () => {
     const lookup = parseDatfile(FIXTURE_DATFILE);
     const entry = lookup.get("aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d");
     expect(entry?.name).toBe("Adventure (1980)(Atari).a26");
+  });
+
+  test("decodes XML entities in canonical names", () => {
+    const xml = `<rom name="Fish &amp; Chips &quot;Demo&quot;.bin" size="5" sha1="aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d" />`;
+    const lookup = parseDatfile(xml);
+    const entry = lookup.get("aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d");
+    expect(entry?.name).toBe('Fish & Chips "Demo".bin');
   });
 
   test("returns empty map for empty input", () => {
@@ -128,6 +135,37 @@ describe("matchAndReport", () => {
 
     const renamedPath = join(tmp, "Adventure (1980)(Atari).a26");
     expect(() => readFileSync(renamedPath)).not.toThrow();
+  });
+
+  test("does not apply unsafe canonical names with path separators", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "rom-unsafe-name-"));
+    const file = join(tmp, "wrong-name.bin");
+    writeFileSync(file, "hello");
+
+    const lookup = parseDatfile(
+      `<rom name="../escaped.a26" size="5" sha1="aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d" />`,
+    );
+    const results = matchAndReport(lookup, [file], true);
+
+    expect(results[0]?.matched).toBe(true);
+    expect(results[0]?.renamed).toBe(false);
+    expect(existsSync(file)).toBe(true);
+    expect(existsSync(join(tmp, "..", "escaped.a26"))).toBe(false);
+  });
+
+  test("does not apply unsafe canonical names with Windows separators", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "rom-unsafe-win-name-"));
+    const file = join(tmp, "wrong-name.bin");
+    writeFileSync(file, "hello");
+
+    const lookup = parseDatfile(
+      `<rom name="nested\\\\escaped.a26" size="5" sha1="aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d" />`,
+    );
+    const results = matchAndReport(lookup, [file], true);
+
+    expect(results[0]?.matched).toBe(true);
+    expect(results[0]?.renamed).toBe(false);
+    expect(existsSync(file)).toBe(true);
   });
 
   test("does not rename when file already has canonical name", () => {
