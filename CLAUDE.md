@@ -442,9 +442,20 @@ Claude-Code-specific mechanisms.
   `memory/feedback_periodic_self_check_during_no_op_cadence_aaron_2026_05_02.md`.
 - **Mechanical authorization check** — see
   `.claude/rules/mechanical-authorization-check.md`
-  (auto-loaded). At every wake, filter pace instructions
+  (auto-loaded) and the `mechanical-authorization-check`
+  skill (`.claude/skills/mechanical-authorization-check/SKILL.md`,
+  B-0305). The skill operationalizes the carved sentence:
+  *"A corrective that depends on the right disposition
+  can't catch the failure that produced the wrong
+  disposition."* At every wake, filter pace instructions
   by authorization-source; only human maintainer
-  authorizes project pace.
+  authorizes project pace. The full pipeline
+  (extractor B-0306 → resolver B-0307 → loop
+  integration B-0308) runs as
+  `bun tools/authorization/check-authorization.ts`
+  at each autonomous-loop tick start; output appears
+  in the heartbeat JSON (`operative_authorization` field)
+  and is included in tick-history shard frontmatter.
 - **Shard-cadence triumph — 31 consecutive 15min
   shards no-failure post-recovery (the human maintainer
   2026-05-04).**
