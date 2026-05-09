@@ -51,6 +51,11 @@ let private runZ3 (script: string) : bool =
     runZ3Raw script |> fun s -> s.Contains "unsat"
 
 
+let private firstZ3Token (output: string) =
+    output.Split([| ' '; '\n'; '\r'; '\t' |], StringSplitOptions.RemoveEmptyEntries)
+    |> Array.tryHead
+
+
 /// Tiny header declaring the `a b c i d` integer constants used by the
 /// simple pointwise lemmas. The full-SMT forms (chain rule, Merkle,
 /// Bloom, bit-vectors) build their own preambles inline.
@@ -85,6 +90,17 @@ let private z3ScriptHolds (name: string) (fullScript: string) =
         let unsat = runZ3 fullScript
         if not unsat then
             failwithf "Z3 failed to prove lemma %s. Output:\n%s" name (runZ3Raw fullScript)
+
+
+/// Assert that a self-contained script has a model. Use this to show a
+/// counterexample to an implication, not to claim a universal theorem.
+let private z3ScriptHasModel (name: string) (fullScript: string) =
+    match which "z3" with
+    | None -> ()
+    | Some _ ->
+        let output = runZ3Raw fullScript
+        if firstZ3Token output <> Some "sat" then
+            failwithf "Z3 failed to find witness %s. Output:\n%s" name output
 
 
 [<Fact>]
@@ -259,10 +275,12 @@ let ``Z3 proves Merkle combine is injective when hash is collision-free`` () =
 
 
 [<Fact>]
-let ``Z3 proves agenda fusion destroys unique direction`` () =
+let ``Z3 confirms fused agenda predicates have empty set difference`` () =
     // Agenda predicates over trajectories:
     // shared = AgendaA ∩ AgendaB, unique = set difference.
-    // If AgendaA and AgendaB are fused, no unique trajectory can exist.
+    // If AgendaA and AgendaB have identical membership, neither set
+    // difference can contain a trajectory. This is set algebra, not a
+    // semantic proof of autonomy or persona independence.
     let script =
         "(declare-sort Trajectory)\n" +
         "(declare-fun AgendaA (Trajectory) Bool)\n" +
@@ -276,13 +294,13 @@ let ``Z3 proves agenda fusion destroys unique direction`` () =
         "(assert (forall ((t Trajectory)) (= (AgendaA t) (AgendaB t))))\n" +
         "(assert (exists ((t Trajectory)) (or (AgendaAUnique t) (AgendaBUnique t))))\n" +
         "(check-sat)\n"
-    z3ScriptHolds "agenda fusion destroys unique direction" script
+    z3ScriptHolds "fused agenda predicates have empty set difference" script
 
 
 [<Fact>]
-let ``Z3 proves shared trajectories are disjoint from unique directions`` () =
-    // The intersection is collaboration; the differences are autonomy.
-    // This asks Z3 for a trajectory that is both shared and unique.
+let ``Z3 confirms shared agenda membership is disjoint from agenda differences`` () =
+    // This asks Z3 for a trajectory that is both in the intersection and
+    // in one of the set differences. UNSAT follows from the definitions.
     let script =
         "(declare-sort Trajectory)\n" +
         "(declare-fun AgendaA (Trajectory) Bool)\n" +
@@ -296,7 +314,39 @@ let ``Z3 proves shared trajectories are disjoint from unique directions`` () =
         "(assert (exists ((t Trajectory))\n" +
         "  (and (Shared t) (or (AgendaAUnique t) (AgendaBUnique t)))))\n" +
         "(check-sat)\n"
-    z3ScriptHolds "shared trajectories disjoint from unique directions" script
+    z3ScriptHolds "shared agenda membership disjoint from agenda differences" script
+
+
+[<Fact>]
+let ``Z3 finds shared trajectory with independent persona policies`` () =
+    // This is a SAT witness for non-entailment: shared trajectory alone
+    // does not force collapsed persona. The model has shared agenda
+    // membership for one trajectory and different policy outputs for a
+    // future input. A stronger theorem would need richer semantics for
+    // private state, agenda deltas, policy updates, and membrane rules.
+    let script =
+        "(declare-sort Trajectory)\n" +
+        "(declare-sort Input)\n" +
+        "(declare-sort Action)\n" +
+        "(declare-const SharedT Trajectory)\n" +
+        "(declare-const FutureInput Input)\n" +
+        "(declare-const ActionA Action)\n" +
+        "(declare-const ActionB Action)\n" +
+        "(declare-fun AgendaA (Trajectory) Bool)\n" +
+        "(declare-fun AgendaB (Trajectory) Bool)\n" +
+        "(declare-fun PolicyA (Input) Action)\n" +
+        "(declare-fun PolicyB (Input) Action)\n" +
+        "(define-fun SharedTrajectory ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (AgendaB t)))\n" +
+        "(define-fun CollapsedPersona () Bool\n" +
+        "  (forall ((i Input)) (= (PolicyA i) (PolicyB i))))\n" +
+        "(assert (SharedTrajectory SharedT))\n" +
+        "(assert (= (PolicyA FutureInput) ActionA))\n" +
+        "(assert (= (PolicyB FutureInput) ActionB))\n" +
+        "(assert (not (= ActionA ActionB)))\n" +
+        "(assert (not CollapsedPersona))\n" +
+        "(check-sat)\n"
+    z3ScriptHasModel "shared trajectory with independent persona policies" script
 
 
 [<Fact>]

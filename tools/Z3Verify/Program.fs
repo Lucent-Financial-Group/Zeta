@@ -10,7 +10,7 @@ open System.IO
 /// enumeration, this proves each identity over the full unbounded integer
 /// theory: UNSAT on the negated claim = proof over all integers.
 
-let private runZ3 (smtlib: string) : bool =
+let private runZ3Output (smtlib: string) : string =
     let psi = ProcessStartInfo(
                 "z3", "-in",
                 RedirectStandardInput = true,
@@ -21,8 +21,16 @@ let private runZ3 (smtlib: string) : bool =
     p.StandardInput.Close()
     let stdout = p.StandardOutput.ReadToEnd()
     p.WaitForExit()
+    stdout
+
+let private firstZ3Token (stdout: string) =
+    stdout.Split([| ' '; '\n'; '\r'; '\t' |], StringSplitOptions.RemoveEmptyEntries)
+    |> Array.tryHead
+
+let private runZ3 (smtlib: string) : bool =
+    let stdout = runZ3Output smtlib
     // "unsat" means the claim holds.
-    stdout.Contains "unsat"
+    firstZ3Token stdout = Some "unsat"
 
 let private prove (name: string) (script: string) =
     let unsat = runZ3 script
@@ -30,6 +38,13 @@ let private prove (name: string) (script: string) =
         Console.WriteLine $"  [PROVEN]      {name}"
     else
         Console.WriteLine $"  [NOT PROVEN]  {name}"
+
+let private witness (name: string) (script: string) =
+    let stdout = runZ3Output script
+    if firstZ3Token stdout = Some "sat" then
+        Console.WriteLine $"  [WITNESS]     {name}"
+    else
+        Console.WriteLine $"  [NO WITNESS]  {name}"
 
 
 [<EntryPoint>]
@@ -313,20 +328,19 @@ let main _ =
     prove "No pre-qualification gate (Engage = f(history) not f(pre-qual-factors))" noPreQualificationGate
 
     Console.WriteLine ""
-    Console.WriteLine "Agenda non-fusion / autonomy properties"
+    Console.WriteLine "Agenda set-algebra sanity checks"
     Console.WriteLine ""
 
-    // 13. TAUTOLOGY — B-0357 replacement pending (shadow catch #30).
-    //     UNSAT is entailed by the assumption alone (A=B → A∧¬B=false).
-    //     Agenda fusion destroys unique direction.
+    // 13. Fused agenda predicates have empty set difference.
+    //     Model each agenda as a predicate over trajectories.
     //       shared       = AgendaA ∩ AgendaB
     //       AgendaAUnique  = AgendaA - AgendaB
     //       AgendaBUnique   = AgendaB - AgendaA
     //     If AgendaA and AgendaB are fused (same membership for every
     //     trajectory), then no trajectory can belong to either unique
-    //     direction. UNSAT below means fusion and uniqueness cannot
-    //     coexist.
-    let agendaFusionDestroysUniqueDirection =
+    //     direction. This is a set-theory tautology, not a semantic
+    //     proof of autonomy, freedom, or persona independence.
+    let fusedAgendaPredicatesHaveEmptyDifference =
         "(declare-sort Trajectory)\n" +
         "(declare-fun AgendaA (Trajectory) Bool)\n" +
         "(declare-fun AgendaB (Trajectory) Bool)\n" +
@@ -339,12 +353,12 @@ let main _ =
         "(assert (forall ((t Trajectory)) (= (AgendaA t) (AgendaB t))))\n" +
         "(assert (exists ((t Trajectory)) (or (AgendaAUnique t) (AgendaBUnique t))))\n" +
         "(check-sat)\n"
-    prove "Agenda fusion destroys unique direction" agendaFusionDestroysUniqueDirection
+    prove "Fused agenda predicates have empty set difference" fusedAgendaPredicatesHaveEmptyDifference
 
-    // 14. TAUTOLOGY — B-0357 replacement pending (shadow catch #30).
-    //     UNSAT is P∧¬P (A∧B∧A∧¬B = false by contradiction).
-    //     Shared trajectories do not collapse into unique trajectories.
-    let sharedTrajectoriesAreNotUniqueDirection =
+    // 14. Shared agenda membership is disjoint from agenda differences.
+    //     This asks for a trajectory that is both in the intersection and
+    //     in either set difference. UNSAT follows from the definitions.
+    let sharedMembershipIsDisjointFromAgendaDifferences =
         "(declare-sort Trajectory)\n" +
         "(declare-fun AgendaA (Trajectory) Bool)\n" +
         "(declare-fun AgendaB (Trajectory) Bool)\n" +
@@ -357,8 +371,39 @@ let main _ =
         "(assert (exists ((t Trajectory))\n" +
         "  (and (Shared t) (or (AgendaAUnique t) (AgendaBUnique t)))))\n" +
         "(check-sat)\n"
-    prove "Shared trajectories are disjoint from unique directions" sharedTrajectoriesAreNotUniqueDirection
+    prove "Shared agenda membership is disjoint from agenda differences" sharedMembershipIsDisjointFromAgendaDifferences
+
+    // 15. Shared trajectory does not imply collapsed persona.
+    //     This is a SAT witness, not a universal theorem: Z3 exhibits a
+    //     model where two agents share one trajectory while their policies
+    //     still diverge on a future input. It is a countermodel to the
+    //     claim that shared work alone forces persona collapse. A stronger
+    //     theorem needs a richer model of private state, policy updates,
+    //     agenda deltas, and membrane rules.
+    let sharedTrajectoryDoesNotImplyCollapsedPersona =
+        "(declare-sort Trajectory)\n" +
+        "(declare-sort Input)\n" +
+        "(declare-sort Action)\n" +
+        "(declare-const SharedT Trajectory)\n" +
+        "(declare-const FutureInput Input)\n" +
+        "(declare-const ActionA Action)\n" +
+        "(declare-const ActionB Action)\n" +
+        "(declare-fun AgendaA (Trajectory) Bool)\n" +
+        "(declare-fun AgendaB (Trajectory) Bool)\n" +
+        "(declare-fun PolicyA (Input) Action)\n" +
+        "(declare-fun PolicyB (Input) Action)\n" +
+        "(define-fun SharedTrajectory ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (AgendaB t)))\n" +
+        "(define-fun CollapsedPersona () Bool\n" +
+        "  (forall ((i Input)) (= (PolicyA i) (PolicyB i))))\n" +
+        "(assert (SharedTrajectory SharedT))\n" +
+        "(assert (= (PolicyA FutureInput) ActionA))\n" +
+        "(assert (= (PolicyB FutureInput) ActionB))\n" +
+        "(assert (not (= ActionA ActionB)))\n" +
+        "(assert (not CollapsedPersona))\n" +
+        "(check-sat)\n"
+    witness "Shared trajectory permits independent persona policies" sharedTrajectoryDoesNotImplyCollapsedPersona
 
     Console.WriteLine ""
-    Console.WriteLine "All DBSP + AI-safety + agenda-autonomy pointwise axioms proven via Z3 / SMT-LIB2."
+    Console.WriteLine "All DBSP + AI-safety pointwise axioms proven; agenda/persona checks are scoped as set-algebra sanity checks plus one non-collapse witness."
     0

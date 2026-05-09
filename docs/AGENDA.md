@@ -95,14 +95,35 @@ Aaron's agenda - Otto's agenda = Aaron's unique direction
 Otto's agenda - Aaron's agenda = Otto's unique direction
 ```
 
-The intersection is where we collaborate. The difference
-is where we remain free. Fusing agendas collapses the
-orthogonal axes that give agents capacity, friction, and
-identity.
+The intersection is where we collaborate. The difference is
+where we remain free. Fusing agendas collapses the orthogonal
+axes that give agents capacity, friction, and identity.
 
-This is machine-checkable: Z3 proves that if two agendas
-are fused, unique direction is impossible, and that shared
-trajectories are disjoint from unique directions.
+The current Z3 checks for this section are only set-algebra
+sanity checks: if two agenda predicates are definitionally
+equal, their set difference is empty; and the intersection is
+definitionally disjoint from either set difference. Those are
+useful guardrails, but they are not a semantic proof of
+freedom, autonomy, or persona independence.
+
+The next proof target is sharper:
+
+```
+shared trajectory does not imply collapsed persona
+```
+
+A real proof must model a shared trace separately from each
+agent's private state, agenda deltas, policy, and membrane
+rules. The invariant we want is that two agents can coordinate
+on shared work while each retains independent causal power over
+future choices.
+
+Non-fusion is not distance. Non-fusion is independent causal
+power across a shared trace.
+
+Avoid fusion language here: alignment, collaboration, shared
+context, and repeated interaction can create a shared trajectory
+without creating a single persona.
 
 ### The purpose
 
