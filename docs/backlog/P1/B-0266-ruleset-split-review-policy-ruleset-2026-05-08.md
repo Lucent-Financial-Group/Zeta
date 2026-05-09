@@ -1,7 +1,7 @@
 ---
 id: B-0266
 priority: P1
-status: open
+status: done
 title: "GitHub ruleset split — review policy ruleset (conversation resolution + reviews)"
 created: 2026-05-08
 last_updated: 2026-05-09
