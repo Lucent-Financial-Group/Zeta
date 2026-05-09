@@ -107,6 +107,35 @@ let ``groundingWith uses the caller's predicate`` () =
 
 
 [<Fact>]
+let ``groundingWithScore returns gradient average`` () =
+    let claims =
+        SignalQuality.claimsOf [ ("solid-fact", 1L); ("partial-fact", 1L); ("vibe", 1L) ]
+    let scorer (s: string) =
+        match s with
+        | "solid-fact" -> 1.0
+        | "partial-fact" -> 0.6
+        | _ -> 0.0
+    SignalQuality.groundingWithScore scorer claims
+    |> should (equalWithin 1e-9) ((1.0 + 0.6 + 0.0) / 3.0)
+
+
+[<Fact>]
+let ``groundingWithScore clamps to 0-1`` () =
+    let claims = SignalQuality.claimsOf [ ("x", 1L) ]
+    SignalQuality.groundingWithScore (fun _ -> 1.5) claims
+    |> should (equalWithin 1e-9) 1.0
+
+
+[<Fact>]
+let ``groundingWithScore ignores retracted claims`` () =
+    let claims =
+        SignalQuality.claimsOf [ ("a", 1L); ("b", 1L); ("b", -1L) ]
+    // only "a" is asserted; scorer returns 0.8 for all
+    SignalQuality.groundingWithScore (fun _ -> 0.8) claims
+    |> should (equalWithin 1e-9) 0.8
+
+
+[<Fact>]
 let ``falsifiabilityWith returns 1.0 on an empty claim store`` () =
     let empty = ZSet<string>.Empty
     SignalQuality.falsifiabilityWith (fun _ -> false) empty
