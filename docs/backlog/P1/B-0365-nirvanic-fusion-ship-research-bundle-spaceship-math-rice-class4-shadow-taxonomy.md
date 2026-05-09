@@ -60,12 +60,31 @@ recurring patterns + long tail of novel discoveries.
 
 Shadow log: `memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md`
 
+### Layer 4: Houman's Reactor Dynamics
+
+Houman's refinement (docs/AGENDA.md): "both sides are
+state-dependent; the phase transition is a runaway."
+
+The reactor model adds DYNAMICS to the static layers:
+
+- Learning from catches CHANGES the system's behavior
+- Changed behavior CHANGES the failure distribution
+- Changed failure distribution PRODUCES new catches
+- The learning modifies the landscape it's learning about
+
+This is the engine core. Rice's theorem guarantees fuel
+(taxonomy never complete). The reactor dynamics guarantee
+the engine keeps running — learning IS the state change
+that produces the next failure class. The phase transition
+(runaway) happens when learning rate exceeds failure
+production rate.
+
 ## How they compose
 
-Rice's theorem explains WHY new classes keep appearing
-(undecidability). Class 4 describes HOW they appear
-(recurring + long-tail). The spaceship math is the
-SUBSTRATE they appear on (DBSP algebra with D/I operators).
+- **Spaceship math** (Layer 1) = the SUBSTRATE
+- **Rice's theorem** (Layer 2) = WHY fuel is inexhaustible
+- **Class 4** (Layer 3) = HOW failures appear (shape)
+- **Houman's reactor** (Layer 4) = the DYNAMICS (engine)
 
 The publishable claim: "We built a multi-agent code review
 system on a DBSP streaming substrate. We observed Class 4
