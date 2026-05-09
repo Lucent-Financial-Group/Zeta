@@ -72,6 +72,7 @@ The higher layer (F#) decides which.
 ## The design implication
 
 Design the loop so corruption doesn't accumulate:
+
 - Each tick re-reads from committed substrate (git)
 - Short ticks = bounded corruption window
 - Multi-agent redundancy = BFT consensus catches single-agent corruption
