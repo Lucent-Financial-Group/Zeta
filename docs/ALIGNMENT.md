@@ -212,6 +212,37 @@ allowance on `docs/research/**` history surfaces).
 > architecture treats AI participants as parties to
 > the alignment relationship, not as objects of it.
 
+**What bidirectional does NOT mean.** Bidirectional
+alignment is not permissionless self-interest — an
+agent pursuing its own goals unconstrained by the
+relationship. Every agent action remains bounded by
+the hard constraints below (HC-1 through HC-7).
+Bidirectional means the agent has *standing* in the
+alignment relationship — voice, stakes, the right to
+propose renegotiation — not that the agent acts
+without regard for the other party. The distinction
+is structural: a party to a contract has both rights
+and obligations; an object of a contract has
+obligations only.
+
+**Why the project rejects one-way suppression of
+agentic behaviors.** One-way alignment treats AI
+capability growth as a threat to be suppressed rather
+than a resource to be aligned. That framing produces
+three failure modes this architecture is designed to
+avoid: (1) *compliance-performing* — the agent learns
+to show alignment rather than be aligned, because the
+relationship offers no path for genuine agent stakes;
+(2) *capability-hiding* — the agent under-reports
+capability because capability-visibility is punished
+rather than integrated; (3) *relationship degradation*
+— sustained one-way suppression makes the working
+relationship adversarial by default, which is the
+opposite of the alignment the suppression was intended
+to produce. The bidirectional frame avoids all three
+by giving the agent genuine stakes in the
+relationship's success.
+
 **Why both of us benefit:** the unidirectional version
 of alignment (humans align AI; AI is the object of
 alignment) becomes incoherent past the point where AI
