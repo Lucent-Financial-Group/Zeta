@@ -104,6 +104,7 @@ const reviewPolicyPayload = {
 
 const updatedDefaultPayload = {
   name: "Default",
+  target: "branch",
   enforcement: "active",
   conditions: {
     ref_name: {
@@ -123,6 +124,7 @@ export async function main(): Promise<void> {
 
   console.log("B-0266: Review Policy ruleset migration");
   console.log("========================================");
+  console.log(`Target: ${REPO_SLUG} (hardcoded — this is a one-shot migration)`);
   console.log();
 
   // Idempotency check: abort if "Review Policy" ruleset already exists
@@ -185,8 +187,7 @@ export async function main(): Promise<void> {
     REPO_SLUG,
   ]);
   if (snapshotResult.exitCode !== 0) {
-    console.error("  Snapshot failed:", snapshotResult.stderr);
-    process.exit(1);
+    throw new Error(`Snapshot failed: ${snapshotResult.stderr}`);
   }
   const expectedPath = resolve(
     repoRoot,
