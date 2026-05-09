@@ -2,7 +2,7 @@
 id: B-0356
 priority: P1
 status: open
-title: "Capture model + token cost on every PR description"
+title: "Capture model + token cost in commit message footer (git-native)"
 effort: S
 created: 2026-05-09
 last_updated: 2026-05-09
@@ -14,33 +14,28 @@ type: friction-reducer
 tags: [cost-governance, model-routing, A/B-testing, enterprise-billing]
 ---
 
-# B-0356 — Capture model + token cost on every PR description
+# B-0356 — Capture model + token cost in commit message footer
 
 ## What
 
-Every PR created by the background loop (or foreground subagents)
-should include a cost metadata footer in the PR description:
+Every commit created by the background loop (or foreground
+subagents) should include a cost trailer in the commit message:
 
 ```
-### Cost metadata
-- Model: opus
-- Input tokens: 200,420
-- Output tokens: 45,100
-- Estimated cost: $4.13
-- Duration: 156s
+Cost: model=opus input=200420 output=45100 est=$4.13 dur=156s
+Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ```
+
+Git-native. Survives host migration. Queryable via `git log`.
+PR descriptions are host-durable-not-git-canonical — cost data
+belongs in the commit, not the PR.
 
 ## Why
 
 On enterprise API billing, this data is the evidence for
 Kevin's reports. Without it, cost analysis requires
-reconstructing token usage from API logs — which we don't
-have access to from the repo side. PR descriptions are
-git-canonical (host-durable) and queryable via `gh api`.
-
-The model-rating-report.ts already tracks model/duration/
-produced_pr — adding cost to the PR description closes the
-loop so the report can pull cost directly from GitHub.
+reconstructing token usage from API logs. Commit messages
+are git-canonical and queryable via `git log --grep="Cost:"`.
 
 ## Implementation
 
@@ -51,18 +46,18 @@ loop so the report can pull cost directly from GitHub.
    (already done — logged to `ticks.err`), extract
    token counts, compute estimated cost using the
    pricing table in `docs/ops/COST-REDUCTION-LESSONS.md`.
-3. When the tick creates a PR (via `gh pr create`), append
-   the cost metadata footer to the PR body.
-4. In `model-rating-report.ts --reviews`, pull cost from
-   PR description via `gh api` and include in the
-   per-model comparison table.
+3. Include `Cost:` trailer in the commit message the tick
+   creates, right above the `Co-Authored-By` footer.
+4. In `model-rating-report.ts`, add `--git-costs` flag
+   that parses `git log --grep="Cost:"` and aggregates
+   per-model cost data from committed history.
 
 ## Acceptance criteria
 
-- [ ] Every background-loop PR has cost metadata in description
-- [ ] `model-rating-report.ts --reviews` includes cost column
-- [ ] Foreground subagent PRs also include cost (when dispatched
-  via the parallel A/B pattern)
+- [ ] Every background-loop commit has `Cost:` trailer
+- [ ] `git log --grep="Cost:" --oneline` shows cost per commit
+- [ ] `model-rating-report.ts --git-costs` aggregates from log
+- [ ] Foreground subagent commits also include cost trailer
 
 ## Composes with
 
