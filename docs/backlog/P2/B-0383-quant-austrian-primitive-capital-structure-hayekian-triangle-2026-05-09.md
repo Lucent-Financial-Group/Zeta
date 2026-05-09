@@ -13,6 +13,7 @@ composes_with: [B-0023, B-0380, B-0381, B-0382, B-0384, B-0385, B-0386, B-0387]
 parent: B-0023
 tags: [aurora, economics, austrian-school, quant, mathematical-rigor, capital-structure, hayekian-triangle, production-theory]
 type: research
+
 ---
 
 # B-0383 — Formalizability assessment: capital-structure / Hayekian triangle → multi-stage stochastic production
@@ -46,6 +47,7 @@ provides the most developed diagrammatic treatment. Lewin's
 
 Multi-stage production is structurally similar to several
 well-developed quant frameworks:
+
 - **Multi-period capital investment models** in corporate finance
   (real options theory; Myers 1977, Dixit & Pindyck 1994)
 - **Production function with vintage capital** (Solow-Johansen
@@ -79,6 +81,7 @@ well-developed quant frameworks:
 ## Output artifact
 
 `docs/aurora/YYYY-MM-DD-primitive-capital-structure.md` with:
+
 - Statement of the Austrian primitive (with Böhm-Bawerk /
   Hayek / Garrison / Lewin variants)
 - Best-candidate quant formalization

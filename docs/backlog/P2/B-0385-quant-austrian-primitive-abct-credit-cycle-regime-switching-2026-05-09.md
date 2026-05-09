@@ -13,6 +13,7 @@ composes_with: [B-0023, B-0380, B-0381, B-0382, B-0383, B-0384, B-0386, B-0387]
 parent: B-0023
 tags: [aurora, economics, austrian-school, quant, mathematical-rigor, abct, business-cycle, regime-switching, stochastic-processes]
 type: research
+
 ---
 
 # B-0385 — Formalizability assessment: ABCT → credit-cycle stochastic process with regime-switching
@@ -30,6 +31,7 @@ ABCT (Mises 1912 *Theory of Money and Credit*; Hayek 1929/1931
 *Prices and Production*): when central banks or fractional-reserve
 banks expand credit beyond genuine savings, they artificially lower
 interest rates below the natural rate. This:
+
 1. Induces entrepreneurs to invest in longer production structures
    (malinvestment in capital-intensive / "higher-order" goods)
 2. Creates an unsustainable boom (apparent prosperity from the
@@ -52,6 +54,7 @@ forces this definitional question to be resolved.
 ## The quant-side analogs
 
 Credit cycles and regime-switching are well-developed in quant finance:
+
 - **Regime-switching models** (Hamilton 1989, Markov regime-switching):
   two states (boom / bust) with transition probabilities driven by
   observable credit-expansion indicators — directly applicable
@@ -92,6 +95,7 @@ Credit cycles and regime-switching are well-developed in quant finance:
 ## Output artifact
 
 `docs/aurora/YYYY-MM-DD-primitive-abct.md` with:
+
 - Statement of ABCT (Mises / Hayek variants; Garrison's diagrammatic
   treatment as bridge to B-0383)
 - Best-candidate quant formalization (regime-switching, jump-diffusion)

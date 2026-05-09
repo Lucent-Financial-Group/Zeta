@@ -90,6 +90,7 @@ established results in computer science and information theory:
 ## Output artifact
 
 `docs/aurora/YYYY-MM-DD-primitive-calculation-problem.md` with:
+
 - Statement of the Austrian primitive (Mises 1920 + Hayek 1945
   knowledge-problem extension, with their distinct claims)
 - Best-candidate formal frameworks (complexity theory, information

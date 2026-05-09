@@ -166,4 +166,3 @@ B-0382–B-0386 are parallelizable (independent primitives, different
 mathematical traditions). B-0387 requires all five verdicts.
 
 Original B-0023 becomes the tracking/parent row (`status: decomposed`).
-

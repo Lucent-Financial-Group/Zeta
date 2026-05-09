@@ -31,6 +31,7 @@ Sound money (Mises *Theory of Money and Credit* 1912; Rothbard
 *Bitcoin Standard* 2018): money whose supply is not subject to
 arbitrary expansion by political authorities. The Austrian preference
 for gold (and by extension Bitcoin) rests on:
+
 1. **Stock-to-flow ratio**: high ratio = difficult to inflate supply
    = low time-preference encoding in the monetary unit
 2. **Supply predictability**: known future supply schedule allows
@@ -46,6 +47,7 @@ for gold (and by extension Bitcoin) rests on:
 ## The quant-side analogs
 
 The hard-cap constraint is structurally novel from the quant perspective:
+
 - Standard monetary models treat money supply as a control variable
   (monetary policy) or a process driven by central bank decisions
   (reaction functions, Taylor rule)
@@ -87,6 +89,7 @@ The hard-cap constraint is structurally novel from the quant perspective:
 ## Output artifact
 
 `docs/aurora/YYYY-MM-DD-primitive-sound-money.md` with:
+
 - Statement of the Austrian sound-money primitive (Mises /
   Rothbard / Saifedean variants with their distinct claims)
 - Formal definition candidate for "sound money process"

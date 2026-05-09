@@ -13,6 +13,7 @@ composes_with: [B-0023, B-0381, B-0382, B-0383, B-0384, B-0385, B-0386, B-0387]
 parent: B-0023
 tags: [aurora, economics, austrian-school, quant, mathematical-rigor, otto-286, controlled-vocabulary]
 type: research
+
 ---
 
 # B-0380 — Controlled-vocabulary pass for quant × Austrian synthesis
@@ -75,6 +76,7 @@ from scratch." That choice has order-of-magnitude effort implications.
 
 A committed file at `docs/aurora/quant-austrian-vocabulary.md`
 containing the four definitions with:
+
 - Term + precise definition
 - What it INCLUDES (examples that pass)
 - What it EXCLUDES (examples that fail, with justification)
