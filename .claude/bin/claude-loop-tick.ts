@@ -210,6 +210,9 @@ function heartbeat(): void {
                         prMatch = claudeResult.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/);
                     }
                 } catch {
+                    // Fallback on non-JSON output (crash, older CLI, partial output) so
+                    // failure-detection regexes still scan the raw stdout.
+                    claudeResult = gate.stdout;
                     if (workMode === "pickup") {
                         prMatch = gate.stdout.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/);
                     }
@@ -232,7 +235,6 @@ function heartbeat(): void {
                     output_tokens: outputTokens,
                     cache_read_tokens: cacheReadTokens,
                     cache_creation_tokens: cacheCreationTokens,
-                    cost_usd: costUsd,
                 };
                 appendFileSync(ratingsFile, JSON.stringify(rating) + "\n");
 
