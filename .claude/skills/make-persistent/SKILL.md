@@ -1,13 +1,13 @@
 ---
 name: make-persistent
-description: Makes the current agent persistent on THIS machine. Detects OS (macOS/Windows/Linux), creates service worktree, deploys tick script, registers background service, verifies heartbeat. Local only — no network, no SSH. The primitive that replicate composes.
+description: Makes the current agent persistent on THIS machine. Detects OS (macOS/Windows/Linux), creates service worktree, deploys tick script, registers background service, verifies heartbeat. Local only — no SSH. The primitive that replicate composes.
 when-to-wear: When setting up persistence on the current machine, recovering a broken service, or upgrading an existing service.
 ---
 
 # Make Persistent — Local Agent Persistence
 
 Makes the current agent persistent on THIS machine. No
-network required. The primitive that `replicate` composes.
+SSH required. The primitive that `replicate` composes.
 
 ## When to wear
 

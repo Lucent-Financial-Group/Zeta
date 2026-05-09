@@ -21,8 +21,8 @@ make-persistent()`.
 ## Prerequisites
 
 - SSH access to the target (key-based, not password)
-- Target has: git, bun (or node), dotnet SDK, and
-  the harness CLI (claude / cursor-agent / codex)
+- Target has: git, bun, dotnet SDK, gh (GitHub CLI),
+  and the harness CLI (claude / cursor-agent / codex)
 - This machine has the repo cloned and building
 
 ## Phase 1: Validate SSH connectivity
@@ -41,7 +41,7 @@ ssh-copy-id "$TARGET"
 ## Phase 2: Validate remote environment
 
 ```bash
-ssh "$TARGET" "which git bun dotnet && uname -s"
+ssh "$TARGET" "which git bun dotnet gh && uname -s"
 ```
 
 | Requirement | Install if missing |
@@ -49,6 +49,7 @@ ssh "$TARGET" "which git bun dotnet && uname -s"
 | git | OS package manager |
 | bun | OS package manager or official installer |
 | dotnet | `dotnet-install.sh` or OS package manager |
+| gh | OS package manager or `gh auth login` |
 | claude | `npm install -g @anthropic-ai/claude-code` |
 
 Record the remote OS (Darwin / Linux / Windows via
@@ -83,7 +84,7 @@ ssh "$TARGET" '
     background service for this machine. The repo is \
     already cloned. Detect OS, deploy tick script, \
     register service, verify heartbeat." \
-    --permission-mode auto
+    -w --permission-mode auto
 '
 ```
 
