@@ -212,6 +212,16 @@ describe("diffPageSnapshots — visible features", () => {
     expect(diff.newFeatures).toEqual(["a-current", "z-current"]);
     expect(diff.removedFeatures).toEqual(["a-prior", "z-prior"]);
   });
+
+  test("duplicate headings are reported once per logical heading", () => {
+    const prior = makeSnapshot(BASE_URL, { visibleFeatures: ["General settings", "Beta features", "Beta features"] });
+    const current = makeSnapshot(BASE_URL, {
+      visibleFeatures: ["General settings", "Copilot settings", "Copilot settings"],
+    });
+    const diff = diffPageSnapshots(prior, current);
+    expect(diff.newFeatures).toEqual(["Copilot settings"]);
+    expect(diff.removedFeatures).toEqual(["Beta features"]);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -508,6 +518,26 @@ describe("renderDiffReport", () => {
     expect(md).toContain("| 3 |");
   });
 
+  test("summary table counts removed form fields as removed elements", () => {
+    const report = makeReport({
+      pageDiffs: [
+        {
+          url: BASE_URL,
+          newToggles: [],
+          removedToggles: [],
+          changedToggles: [],
+          newFeatures: [],
+          removedFeatures: [],
+          newFormFields: [],
+          removedFormFields: ["legacy-field"],
+          changedFormFields: [],
+        },
+      ],
+    });
+    const md = renderDiffReport(report);
+    expect(md).toContain("| Removed elements | 1 |");
+  });
+
   test("report is non-empty string with heading", () => {
     const md = renderDiffReport(makeReport());
     expect(md.startsWith("# GitHub UI Feature Diff")).toBe(true);
@@ -597,6 +627,15 @@ describe("main", () => {
     const result = await captureStderr(() => main(["--prior"]));
     expect(result.code).toBe(1);
     expect(result.stderr).toContain("missing value for --prior");
+  });
+
+  test("accepts dash-prefixed flag values as paths", async () => {
+    const dir = tempDir();
+    const current = writeJson(dir, "current.json", { date: "2026-05-08", pages: {} });
+    const result = await captureStderr(() => main(["--prior", "-prior.json", "--current", current]));
+    expect(result.code).toBe(1);
+    expect(result.stderr).toContain("error loading snapshot sets");
+    expect(result.stderr).not.toContain("missing value for --prior");
   });
 
   test("malformed snapshot shapes return user-facing errors", async () => {

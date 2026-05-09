@@ -116,8 +116,8 @@ export function diffPageSnapshots(prior: GitHubPageSnapshot, current: GitHubPage
     }
   }
 
-  const newFeatures = current.extracted.visibleFeatures.filter((f) => !priorFeatures.has(f));
-  const removedFeatures = prior.extracted.visibleFeatures.filter((f) => !curFeatures.has(f));
+  const newFeatures = [...curFeatures].filter((f) => !priorFeatures.has(f));
+  const removedFeatures = [...priorFeatures].filter((f) => !curFeatures.has(f));
 
   const newFormFields: string[] = [];
   const removedFormFields: string[] = [];
@@ -220,7 +220,10 @@ export function renderDiffReport(report: FeatureDiffReport): string {
   lines.push(``, `**Prior snapshot:** ${priorDate}  `, `**Current snapshot:** ${currentDate}`);
 
   const totalNew = pageDiffs.reduce((n, d) => n + d.newToggles.length + d.newFeatures.length, 0);
-  const totalRemoved = pageDiffs.reduce((n, d) => n + d.removedToggles.length + d.removedFeatures.length, 0);
+  const totalRemoved = pageDiffs.reduce(
+    (n, d) => n + d.removedToggles.length + d.removedFeatures.length + d.removedFormFields.length,
+    0,
+  );
   lines.push(
     ``,
     `## Summary`,
@@ -333,9 +336,11 @@ interface CliError {
   readonly error: string;
 }
 
+const KNOWN_CLI_FLAGS = new Set(["--prior", "-p", "--current", "-c", "--out", "-o", "--help", "-h"]);
+
 function cliValue(argv: readonly string[], index: number, flag: string): string | CliError {
   const value = argv[index + 1];
-  if (value === undefined || value.startsWith("-")) {
+  if (value === undefined || KNOWN_CLI_FLAGS.has(value)) {
     return { error: `missing value for ${flag}` };
   }
   return value;
