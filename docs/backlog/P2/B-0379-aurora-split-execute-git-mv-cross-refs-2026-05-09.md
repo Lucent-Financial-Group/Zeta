@@ -37,6 +37,7 @@ mkdir -p docs/<chosen-name>
 (Replace `<chosen-name>` with the directory from B-0376 ADR.)
 
 Copy or create a `README.md` for the new directory that:
+
 - States it is a history surface.
 - Cites the four required archive-header fields (GOVERNANCE §33).
 - Lists the file-types that belong here.
@@ -50,6 +51,7 @@ git mv docs/aurora/<file> docs/<chosen-name>/<file>
 ```
 
 **Do NOT move:**
+
 - `docs/aurora/README.md` — stays (update to reflect that aurora is now
   current-state only).
 - `docs/aurora/collaborators.md` — this is meta; review classification
@@ -60,6 +62,7 @@ git mv docs/aurora/<file> docs/<chosen-name>/<file>
 ### Step 3 — Update docs/aurora/README.md
 
 Remove the history-surface scope from the aurora README. Update to reflect:
+
 - `docs/aurora/**` is now current-state only.
 - History imports moved to `docs/<chosen-name>/`.
 - Add a one-line pointer to the new directory.
@@ -123,6 +126,7 @@ history surface — ambiguity survives the PR.
 ## Effort note
 
 Rated M (not S) because:
+
 - The `memory/**` cross-ref sweep can touch 10+ files (B-0005 lists
   multiple memory files referencing `docs/aurora/**`).
 - The git-mv step itself is S, but the cross-ref cleanup scales with
