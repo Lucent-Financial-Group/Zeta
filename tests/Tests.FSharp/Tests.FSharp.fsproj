@@ -117,6 +117,7 @@
     <Compile Include="Properties/Fuzz.Tests.fs" />
     <Compile Include="Properties/Determinism.Tests.fs" />
     <Compile Include="Properties/Fusion.Equation.Tests.fs" />
+    <Compile Include="Properties/PolicyRelocation.Tests.fs" />
     <Compile Include="MajiTests.fs" />
     <Compile Include="Consensus.Tests.fs" />
     <Compile Include="Arena.Tests.fs" />
