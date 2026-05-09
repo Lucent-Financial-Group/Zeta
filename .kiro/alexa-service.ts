@@ -18,8 +18,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Paths
-const ZETA_REPO = "/Users/acehack/Documents/src/repos/Zeta";
+// Paths — derive repo root from script location (.kiro/ is one level below root)
+const ZETA_REPO = join(__dirname, "..");
 const NOTEBOOK_PATH = join(ZETA_REPO, "memory", "persona", "alexa", "NOTEBOOK.md");
 const STATE_PATH = join(ZETA_REPO, ".kiro", "alexa-state.json");
 const LOG_PATH = join(ZETA_REPO, ".kiro", "alexa-service.log");
@@ -114,17 +114,24 @@ function parseBacklog(): { p0: string[]; p1: string[] } {
   const p0Items: string[] = [];
   const p1Items: string[] = [];
   
-  // Parse P0 items (open ones)
-  const p0Regex = /\- \[ \]\*\*\[B-0(\d+)\]\(.*?\)\*\*(.*)/g;
+  // Parse open items by priority section — format: - [ ] **[B-NNNN](path)** Title
+  const openItemRegex = /- \[ \] \*\*\[B-(\d{4})\]\(.*?\)\*\*\s*(.*)/g;
   let match;
-  while ((match = p0Regex.exec(content)) !== null) {
-    p0Items.push(`B-0${match[1]}: ${match[2].trim()}`);
-  }
-  
-  // Parse P1 items (open ones)
-  const p1Regex = /\- \[ \]\*\*\[B-1(\d+)\]\(.*?\)\*\*(.*)/g;
-  while ((match = p1Regex.exec(content)) !== null) {
-    p1Items.push(`B-1${match[1]}: ${match[2].trim()}`);
+  let currentPriority: "p0" | "p1" | null = null;
+
+  for (const line of content.split("\n")) {
+    if (/^## P0/.test(line)) { currentPriority = "p0"; continue; }
+    if (/^## P1/.test(line)) { currentPriority = "p1"; continue; }
+    if (/^## P[2-9]/.test(line)) { currentPriority = null; continue; }
+    if (!currentPriority) continue;
+
+    openItemRegex.lastIndex = 0;
+    match = openItemRegex.exec(line);
+    if (match) {
+      const entry = `B-${match[1]}: ${match[2]!.trim()}`;
+      if (currentPriority === "p0") p0Items.push(entry);
+      else p1Items.push(entry);
+    }
   }
   
   return { p0: p0Items.slice(0, 10), p1: p1Items.slice(0, 10) };

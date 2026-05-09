@@ -28,10 +28,9 @@ joins the factory or when a clean-slate perspective is needed.
 ## Bootstrap sequence
 
 1. **Read foundational docs** (in order):
-   - `docs/AGENTS.md` — factory onboarding handbook
+   - `AGENTS.md` — factory onboarding handbook (repo root)
    - `docs/VISION.md` — long-term research targets
    - `docs/ROADMAP.md` — what's shipped, what's next
-   - `docs/ARCHITECTURE.md` — system shape
    - `docs/GLOSSARY.md` — project vocabulary
 
 2. **Read current state**:
@@ -140,7 +139,7 @@ If build/test gate is broken:
 
 ## Reference patterns
 
-- `docs/AGENTS.md` — factory onboarding handbook
+- `AGENTS.md` — factory onboarding handbook (repo root)
 - `docs/VISION.md` — long-term research targets
 - `docs/ROADMAP.md` — what's shipped, what's next
 - `docs/ROUND-HISTORY.md` — narrative of working sessions
