@@ -116,6 +116,7 @@ EOF
 ```
 
 Key details:
+
 - **Single-quoted `'EOF'`** — prevents shell expansion
   inside the message (dollar signs, backticks stay literal).
 - **No leading whitespace** on the `EOF` terminator line.
