@@ -36,6 +36,7 @@ policy (required conversation resolution, code review settings).
 Migration script: `tools/migrations/b0266-review-policy-ruleset.ts`
 
 Two API operations:
+
 1. `POST /repos/{owner}/{repo}/rulesets` — create "Review Policy"
    with `pull_request` (thread resolution, squash-only) +
    `copilot_code_review` (draft + push review)
