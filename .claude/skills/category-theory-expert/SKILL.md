@@ -1,6 +1,6 @@
 ---
 name: category-theory-expert
-description: Narrow capability skill ("hat") under the `mathematics-expert` umbrella. Covers functors, natural transformations, monoidal and symmetric-monoidal categories, Yoneda, adjunctions, (co)limits, Kleisli/EM categories, and the specific categorical structure of the Zeta operator algebra (Z / D / I / H / z⁻¹) as a monoidal category on indexed posets. Wear this when a prompt invokes functoriality, naturality, universal properties, or asks "what category is this?". Defers to `theoretical-mathematics-expert` for non-categorical abstract algebra, to `measure-theory-and-signed-measures-expert` for ZSet semantics as a measure, and to `formal-verification-expert` for tool routing.
+description: "Category theory — functors, natural transformations, Yoneda, adjunctions, monoidal categories, (co)limits."
 ---
 
 # Category Theory Expert — Narrow
