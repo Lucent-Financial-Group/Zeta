@@ -401,7 +401,7 @@ Claude-Code-specific mechanisms.
   100% loaded at every wake, alongside verify-
   before-deferring. Full reasoning:
   `memory/feedback_future_self_not_bound_by_past_decisions.md`.
-- **Never be idle — speculative factory work
+- **Never be idle** rule extracted to `.claude/rules/never-be-idle.md` (full carved sentence, action hierarchy, Superfluid lens, and memory pointers live there per B-0269 smallest safe slice). CLAUDE.md now holds only the cross-reference.
   beats waiting; AND optimize for amortized speed
   to hit the Superfluid phase transition (the human
   maintainer 2026-05-02).** When about to stop, wait for
