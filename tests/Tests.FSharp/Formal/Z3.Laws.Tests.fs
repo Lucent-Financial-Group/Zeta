@@ -406,6 +406,9 @@ let ``Z3 proves collapsed policy has no causal power: state change cannot change
         "(declare-const stateA2 Int)\n" +
         "(declare-const trace SharedTrace)\n" +
         "(declare-fun PolicyA (Int SharedTrace) Action)\n" +
+        // Intervention: distinct private-state values — ensures UNSAT comes from
+        // the collapse constraint, not the trivial stateA1=stateA2 identity case.
+        "(assert (not (= stateA1 stateA2)))\n" +
         // Collapse: policy output is invariant to private-state changes.
         "(assert (forall ((s1 Int) (s2 Int) (t SharedTrace))\n" +
         "  (= (PolicyA s1 t) (PolicyA s2 t))))\n" +

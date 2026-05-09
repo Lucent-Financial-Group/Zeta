@@ -1,7 +1,9 @@
 ---
 id: B-0365
 priority: P1
-status: decomposed
+status: done
+closed: 2026-05-09
+closed_by: "all 6 child rows done (B-0365.1–B-0365.6)"
 title: "Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy"
 effort: L
 created: 2026-05-09
@@ -43,7 +45,7 @@ B-0365.2 (shadow log backfill)        ──┐                   │
 | B-0365.2 | Shadow log backfill (catches 16-30) | M | none | done |
 | B-0365.3 | Class 4 empirical analysis doc | M | B-0365.2 | done |
 | B-0365.4 | Reactor dynamics model doc | M | none | done |
-| B-0365.5 | Infer.NET BP/EP architecture doc | M | none | open |
+| B-0365.5 | Infer.NET BP/EP architecture doc | M | none | done |
 | B-0365.6 | Publishable claim synthesis | M | all above | done |
 
 ## What

@@ -1,7 +1,9 @@
 ---
 id: B-0373
 priority: P1
-status: claimed
+status: done
+closed: 2026-05-09
+closed_by: "adversarial review pass completed — Lemma 17 strengthened with stateA1≠stateA2 constraint"
 title: "Alignment proof primitive ladder — one type, one falsifiable property"
 effort: M
 created: 2026-05-09
@@ -115,9 +117,17 @@ it into optimistic proof language.
         NOT proved: any specific concrete agent is non-collapsed;
         proving that requires membrane specs + private-state update
         rules — the next slice.
-- [ ] Run an adversarial review pass before promoting the proof
+- [x] Run an adversarial review pass before promoting the proof
       vocabulary to `docs/ALIGNMENT.md`, `docs/AGENDA.md`, or
       other current-state surfaces.
+      → Adversarial finding (2026-05-09): Lemma 17 missing
+        `(assert (not (= stateA1 stateA2)))` — UNSAT could be
+        achieved trivially via identity (stateA1=stateA2) rather
+        than via the collapse constraint. Fixed in Program.fs +
+        Z3.Laws.Tests.fs. UNSAT now exclusively attributable to
+        collapse. Vocabulary not yet promoted to ALIGNMENT.md
+        (no promotion needed until non-collapse for a concrete
+        agent is proven — that requires the next slice).
 
 ## Non-goals
 
