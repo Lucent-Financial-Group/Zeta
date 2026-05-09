@@ -190,6 +190,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
 - [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)
 - [ ] **[B-0357](backlog/P1/B-0357-first-class-uncertainty-semiring-parameterized-weight.md)** First-class uncertainty — semiring-parameterized weight type for DBSP
+- [ ] **[B-0357](backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md)** Replace tautology Z3 agenda/trajectory proofs with non-trivial verification
 
 ## P2 — research-grade
 
@@ -314,6 +315,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0316](backlog/P2/B-0316-long-tail-anchor-sweep-cadence.md)** Long-tail external-anchor cadenced sweep — memory files + research docs
 - [ ] **[B-0337](backlog/P2/B-0337-memory-trust-calculus-calibration-step8-b0190.md)** Memory trust-calculus calibration — measure cross-instance transmission fidelity
 - [ ] **[B-0338](backlog/P2/B-0338-memory-graduation-ladder-step9-b0190.md)** Memory graduation ladder — codify when feedback promotes to CLAUDE.md and when CLAUDE.md promotes to GOVERNANCE.md
+- [ ] **[B-0359](backlog/P2/B-0359-probabilistic-type-system-language-level-confidence-primitives.md)** Probabilistic type system — language-level confidence primitives (Hejlsberg/Syme lineage)
 
 ## P3 — convenience / deferred
 
