@@ -1,6 +1,6 @@
 ---
 name: columnar-storage-expert
-description: Capability skill ("hat") — storage-layout narrow under `sql-engine-expert`. Covers columnar on-disk / in-memory segment layout, compression schemes (dictionary, run-length / RLE, frame-of-reference / FOR, delta, bit-packed, Roaring bitmaps, ALP for floats), Arrow / Parquet interop, columnar-scan kernels (vectorised predicate pushdown, late materialisation), column-group layouts (PAX / DSM / NSM hybrids), and the Zeta-specific question of how Z-relation multiplicities are encoded in columnar form. Wear this when designing segment layouts, choosing compression codecs, evaluating Arrow / Parquet as interop formats, or reconciling columnar scan with retraction-native deltas. Defers to `storage-specialist` for end-to-end persistence, to `vectorised-execution-expert` for scan kernels, to `hardware-intrinsics-expert` for SIMD decompression, and to `algebra-owner` for retraction-native layout invariants.
+description: "Columnar storage — segment layout, dictionary/RLE/FOR compression, Arrow/Parquet interop, late materialisation."
 ---
 
 # Columnar Storage Expert — Segment Layout + Compression

@@ -1,6 +1,6 @@
 ---
 name: commit-message-shape
-description: Capability skill ("hat") — codifies Zeta's commit-message conventions. Subject line ≤ 72 chars in imperative mood; blank line; body explaining the WHY (not the what — the diff shows what); optional bullet list of concrete changes; Co-Authored-By footer. Scope prefix (`skill(name):`, `deps:`, `docs:`) is encouraged but optional. Wear this when drafting any commit message; invocable by any persona.
+description: "Commit-message conventions — imperative subject, WHY body, scope prefix, Co-Authored-By footer."
 ---
 
 # Commit-Message Shape — Procedure
