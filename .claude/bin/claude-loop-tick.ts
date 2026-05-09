@@ -29,7 +29,9 @@ const runClaude = process.env.ZETA_CLAUDE_LOOP_RUN_CLAUDE === "1";
 const claudeIntervalMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_INTERVAL_SECONDS ?? "60") * 1000;
 const claudeTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_TIMEOUT_SECONDS ?? "600") * 1000;
 const dryRun = process.env.ZETA_CLAUDE_LOOP_DRY_RUN === "1";
+const claudeModel = process.env.ZETA_CLAUDE_LOOP_MODEL ?? "sonnet";
 const claudeStateFile = join(stateDir, "last-claude-run.json");
+const ratingsFile = join(stateDir, "model-ratings.jsonl");
 
 mkdirSync(stateDir, { recursive: true });
 mkdirSync(logDir, { recursive: true });
@@ -176,20 +178,38 @@ function heartbeat(): void {
                     ].join(" ");
                 }
 
+                const startedAt = nowIso();
                 const gate = run("claude", [
                     "-p", prompt,
                     "-w",
+                    "--model", claudeModel,
                     "--permission-mode", "auto",
                 ], claudeTimeoutMs);
 
                 claudeStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
-                log(`claude work cycle end run_id=${runId} mode=${workMode} status=${gate.status}`);
+                log(`claude work cycle end run_id=${runId} mode=${workMode} model=${claudeModel} status=${gate.status}`);
+
+                const rating = {
+                    run_id: runId,
+                    model: claudeModel,
+                    mode: workMode,
+                    status: gate.status,
+                    started_at: startedAt,
+                    ended_at: nowIso(),
+                    stdout_lines: lines(gate.stdout).length,
+                    stderr_lines: lines(gate.stderr).length,
+                    produced_pr: gate.stdout.includes("github.com") && gate.stdout.includes("/pull/"),
+                    had_build_error: gate.stdout.includes("Error(s)") || gate.stderr.includes("error FS"),
+                    had_test_failure: gate.stdout.includes("Failed!") || gate.stdout.includes("Failed:"),
+                };
+                appendFileSync(ratingsFile, JSON.stringify(rating) + "\n");
 
                 writeFileSync(claudeStateFile, JSON.stringify({
                     run_id: runId,
                     mode: workMode,
+                    model: claudeModel,
                     status: gate.status,
-                    started_at: nowIso(),
+                    started_at: startedAt,
                     updated_at: nowIso(),
                 }, null, 2));
 
@@ -207,7 +227,7 @@ function heartbeat(): void {
         }
     }
 
-    const summary = `heartbeat complete run_id=${runId} fetch=${fetchOk} claims=${claimCount} open_prs=${prCount} dirty=${dirtyCount} claude=${claudeStatus} ${dueIn}`.trim();
+    const summary = `heartbeat complete run_id=${runId} fetch=${fetchOk} claims=${claimCount} open_prs=${prCount} dirty=${dirtyCount} claude=${claudeStatus} model=${claudeModel} ${dueIn}`.trim();
     log(summary);
 
     writeFileSync(hbFile, JSON.stringify({

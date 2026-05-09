@@ -81,6 +81,7 @@ cat > ~/Library/LaunchAgents/com.zeta.claude-loop.plist << 'PLIST'
     <key>EnvironmentVariables</key><dict>
         <key>HOME</key><string>HOME</string>
         <key>ZETA_CLAUDE_LOOP_RUN_CLAUDE</key><string>1</string>
+        <key>ZETA_CLAUDE_LOOP_MODEL</key><string>sonnet</string>
     </dict>
 </dict>
 </plist>
