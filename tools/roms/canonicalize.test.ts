@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { existsSync, mkdtempSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
@@ -204,6 +204,21 @@ describe("main", () => {
       expect(stderr).toContain("missing value for --datfile");
     } finally {
       process.stderr.write = originalStderrWrite;
+    }
+  });
+
+  test("accepts hyphen-prefixed datfile and directory values", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "rom-cli-hyphen-"));
+    const originalCwd = process.cwd();
+    writeFileSync(join(tmp, "-set.dat"), FIXTURE_DATFILE);
+    mkdirSync(join(tmp, "-roms"));
+
+    try {
+      process.chdir(tmp);
+      const code = main(["--datfile", "-set.dat", "--dir", "-roms"]);
+      expect(code).toBe(0);
+    } finally {
+      process.chdir(originalCwd);
     }
   });
 });
