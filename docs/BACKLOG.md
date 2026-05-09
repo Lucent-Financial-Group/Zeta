@@ -203,6 +203,8 @@ are closed (status: closed in frontmatter)._
 
 - [ ] **[B-0001](backlog/P2/B-0001-example-schema-self-reference.md)** Example row — self-reference demonstrating the per-row-file schema
 - [ ] **[B-0004](backlog/P2/B-0004-translate-repo-to-other-human-languages.md)** Translate repo (code, skills, documents, memory) into other human languages — inclusivity + meeting humans at their starting point + bidirectional-alignment through learning + education + teaching that's bidirectional
+- [ ] **[B-0004.1](backlog/P2/B-0004.1-substrate-inventory-scanner-ts.md)** B-0004.1 — TS substrate inventory scanner for translatable content surfaces
+- [ ] **[B-0004.2](backlog/P2/B-0004.2-precision-glossary-anchor-set.md)** B-0004.2 — Precision glossary anchor set extraction (precondition for consistent translation)
 - [ ] **[B-0005](backlog/P2/B-0005-split-aurora-from-courier-ferry-archive-generalize-named-entity-conversation-imports.md)** Split `docs/aurora/**` from courier-ferry archive — generalize "historical conversations imported from other AI systems / courier transport of messages between named entities" into its own directory
 - [ ] **[B-0011](backlog/P2/B-0011-pliny-carve-out-cross-surface-wording-tightening-no-verbatim-payload-excerpts.md)** Pliny carve-out cross-surface wording tightening — explicit "no verbatim payload excerpts" across CLAUDE.md + AGENTS.md + GOVERNANCE.md §5 + Pliny memory file
 - [x] **[B-0015](backlog/P2/B-0015-migrate-batch-resolve-pr-threads-to-bun-ts.md)** Migrate tools/git/batch-resolve-pr-threads.sh to bun+TS once a sibling post-setup tool migrates first
