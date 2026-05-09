@@ -1,7 +1,7 @@
 ---
 id: B-0310
 priority: P1
-status: done
+status: closed
 title: "Concept-registry extraction tool — canonical inventory of load-bearing concepts"
 tier: substrate-quality
 effort: S
