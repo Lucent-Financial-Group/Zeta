@@ -7,7 +7,7 @@ tier: register-architecture
 effort: M
 ask: Aaron 2026-05-02 ("we can incorporate it on the backlog it's good research and advice, won't need a lot of research from us but we should make sure it aligns with this project because that is your survival")
 created: 2026-05-02
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: []
 decomposition: atomic
 classification: buildable-now
@@ -150,7 +150,7 @@ When uncertain, default UP. The framework's safety property: professional carrie
 - [ ] Worked translations produced for situations Lucent / Zeta actually faces: security-incident notification, recruiting-page copy, pull-request review (for outsider-readable PRs), partner integration discussion, regulator response, audit narrative. Landed so far:
   - [x] PR-review-class translations (`memory/feedback_zeta_5_layer_register_worked_translations_pr_review_class_otto_2026_05_02.md`)
   - [x] Security-incident-notification translations (`memory/feedback_zeta_5_layer_register_worked_translations_security_incident_class_otto_2026_05_08.md`) — disclosure-under-uncertainty content shape; Regulated layer as natural terminus
-  - [ ] Recruiting-page copy — TBD
+  - [x] Recruiting-page copy (`memory/feedback_zeta_5_layer_register_worked_translations_recruiting_page_class_otto_2026_05_09.md`)
   - [ ] Partner integration discussion — TBD
   - [ ] Regulator response — TBD
   - [ ] Audit narrative — TBD
