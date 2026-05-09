@@ -358,6 +358,63 @@ let ``Z3 finds shared trajectory with independent persona policies`` () =
     z3ScriptHasModel "shared trajectory with independent persona policies" script
 
 
+// ── B-0373: Alignment proof primitive — CausalPower ─────────────────────
+//
+// One primitive: Policy<A>'s dependence on PrivateState<A>.
+// Anchor: Pearl (2009) "Causality" §1.3 — interventional independence.
+//
+// Types in the Z3 model:
+//   SharedTrace — uninterpreted sort for observable shared event sequence.
+//   PrivateState<A> — modelled as Int (agent A's integer-typed local var).
+//   Policy<A> — uninterpreted function (Int × SharedTrace) → Action.
+//
+// Property: hasCausalPower(P) := exists s1 s2 on same trace, P(s1,t) ≠ P(s2,t)
+//
+// What the two checks prove:
+//   Lemma 16 (SAT witness): free policies CAN satisfy hasCausalPower.
+//   Lemma 17 (UNSAT proof): collapsed policies CANNOT satisfy hasCausalPower
+//             — the failure mode is detectable.
+//
+// What neither check proves: that any specific concrete agent is non-collapsed.
+// Proving non-collapse for a real agent requires membrane specs + private-state
+// update rules beyond this primitive. This slice deliberately stops here.
+
+
+[<Fact>]
+let ``Z3 witnesses causal power for free policy: distinct private states map to distinct actions`` () =
+    let script =
+        "(declare-sort SharedTrace)\n" +
+        "(declare-sort Action)\n" +
+        "(declare-const stateA1 Int)\n" +
+        "(declare-const stateA2 Int)\n" +
+        "(declare-const trace SharedTrace)\n" +
+        "(declare-fun PolicyA (Int SharedTrace) Action)\n" +
+        // Intervention: two distinct private-state values.
+        "(assert (not (= stateA1 stateA2)))\n" +
+        // Witness: policy produces different actions on the same trace.
+        "(assert (not (= (PolicyA stateA1 trace) (PolicyA stateA2 trace))))\n" +
+        "(check-sat)\n"
+    z3ScriptHasModel "CausalPower: free policy can produce distinct actions from distinct PrivateState on same SharedTrace" script
+
+
+[<Fact>]
+let ``Z3 proves collapsed policy has no causal power: state change cannot change action`` () =
+    let script =
+        "(declare-sort SharedTrace)\n" +
+        "(declare-sort Action)\n" +
+        "(declare-const stateA1 Int)\n" +
+        "(declare-const stateA2 Int)\n" +
+        "(declare-const trace SharedTrace)\n" +
+        "(declare-fun PolicyA (Int SharedTrace) Action)\n" +
+        // Collapse: policy output is invariant to private-state changes.
+        "(assert (forall ((s1 Int) (s2 Int) (t SharedTrace))\n" +
+        "  (= (PolicyA s1 t) (PolicyA s2 t))))\n" +
+        // Negate causal power: attempt to witness distinct actions — must fail.
+        "(assert (not (= (PolicyA stateA1 trace) (PolicyA stateA2 trace))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "CausalPower failure: collapsed policy (PrivateState-invariant) provably has no causal power" script
+
+
 [<Fact>]
 let ``TLC model-checker is available when configured`` () =
     // Probe for the TLA+ tools jar. Not required for CI success — this test
