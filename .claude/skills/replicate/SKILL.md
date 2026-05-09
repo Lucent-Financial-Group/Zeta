@@ -100,8 +100,8 @@ Or, if the target runs a different harness:
 ```bash
 ssh "$TARGET" '
   sleep 120
-  # macOS: launchd logs
-  tail -5 ~/Library/Logs/zeta-claude-loop/stdout.log 2>/dev/null ||
+  # macOS: launchd logs (tick script writes to runner.log, not stdout)
+  tail -5 ~/Library/Logs/zeta-claude-loop/runner.log 2>/dev/null ||
   # Linux: systemd journal
   journalctl --user -u zeta-claude-loop --no-pager -n 5
 '
