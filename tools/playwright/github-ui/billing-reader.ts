@@ -6,15 +6,22 @@ export interface OrgBillingUsage {
     minutesUsed: number;
     minutesLimit: number | null;
   };
+  /**
+   * Not populated in this slice; reserved for future extraction.
+   */
   storage?: {
     usedGB: number;
     limitGB: number | null;
   };
+  /**
+   * Not populated in this slice; reserved for future extraction.
+   */
   packages?: {
     usedGB: number;
     limitGB: number | null;
   };
   error?: "insufficient-permissions" | "page-not-found" | "parse-error";
+  /** Included only when error is set, to aid debugging. */
   rawExcerpt?: string;
 }
 
@@ -23,9 +30,9 @@ export interface BillingReaderOptions extends GitHubSessionOptions {
 }
 
 /**
- * Reads org-level GitHub billing/usage page and extracts Actions minutes + costs.
+ * Reads org-level GitHub billing/usage page and extracts Actions minutes used and limit.
  * Read-only; uses B-0317 auth + B-0318 session pattern.
- * Smallest safe slice: Actions minutes primary, other fields best-effort.
+ * Smallest safe slice: Actions minutes primary. Storage/packages reserved for future slices.
  */
 export async function readOrgBillingUsage(
   options: BillingReaderOptions = {}
@@ -34,7 +41,7 @@ export async function readOrgBillingUsage(
   const url = `https://github.com/organizations/${org}/settings/billing`;
 
   return withGitHubSession(async (session) => {
-    await session.page.goto(url, { waitUntil: "networkidle", timeout: 30000 });
+    await session.page.goto(url, { waitUntil: "domcontentloaded", timeout: 30_000 });
 
     const html = await session.page.content();
     const lower = html.toLowerCase();
@@ -57,24 +64,29 @@ export async function readOrgBillingUsage(
       };
     }
 
-    // Minimal safe extract for Actions minutes (common UI patterns)
+    // Minimal safe extract for Actions minutes (common GitHub billing UI patterns)
     const actionsMatch =
       /actions[^<]*?(\d[\d,]*)\s*(?:of|\/)\s*(\d[\d,]*|unlimited)/i.exec(html) ??
       /minutes[^<]*?used[^<]*?(\d[\d,]*)/i.exec(html);
 
-    let minutesUsed = 0;
+    if (!actionsMatch) {
+      return {
+        org,
+        actions: { minutesUsed: 0, minutesLimit: null },
+        error: "parse-error",
+        rawExcerpt: html.substring(0, 300),
+      };
+    }
+
+    const minutesUsed = parseInt(actionsMatch[1].replace(/,/g, ""), 10) || 0;
     let minutesLimit: number | null = null;
-    if (actionsMatch) {
-      minutesUsed = parseInt(actionsMatch[1].replace(/,/g, ""), 10) || 0;
-      if (actionsMatch[2] && actionsMatch[2].toLowerCase() !== "unlimited") {
-        minutesLimit = parseInt(actionsMatch[2].replace(/,/g, ""), 10) || null;
-      }
+    if (actionsMatch[2] && actionsMatch[2].toLowerCase() !== "unlimited") {
+      minutesLimit = parseInt(actionsMatch[2].replace(/,/g, ""), 10) || null;
     }
 
     return {
       org,
       actions: { minutesUsed, minutesLimit },
-      rawExcerpt: html.substring(0, 300),
     };
   }, options);
 }
