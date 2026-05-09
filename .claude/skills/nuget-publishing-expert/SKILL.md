@@ -1,6 +1,6 @@
 ---
 name: nuget-publishing-expert
-description: Capability skill ("hat") — NuGet package publishing discipline for when Zeta ships. Stub-weight today (we haven't published yet); gains mass when Aaron flips the NuGet-publish switch. Covers package metadata (Authors, Description, ProjectUrl, LicenseExpression, Tags), versioning (SemVer), signing, README inclusion, symbol packages, deprecation flow, the Zeta.* prefix reservation work. Wear this when wiring NuGet publish into CI or when preparing a release PR.
+description: NuGet publishing — package metadata, SemVer, signing, symbol packages, deprecation flow, Zeta.* prefix reservation.
 ---
 
 # NuGet Publishing Expert — Procedure + Lore
