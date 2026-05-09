@@ -1,7 +1,7 @@
 ---
 id: B-0339
 priority: P1
-status: open
+status: done
 title: Keep-vs-cut criteria documentation — define the 4 category taxonomy before bootstrap-razor runs
 tier: foundation
 effort: S
