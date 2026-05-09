@@ -164,7 +164,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0327](backlog/P1/B-0327-peer-call-claude-ts-self-call-cold-boot.md)** Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing
 - [ ] **[B-0328](backlog/P1/B-0328-peer-call-readme-kiro-claude-entries.md)** Update peer-call/README.md with kiro.ts + claude.ts entries
 - [ ] **[B-0329](backlog/P1/B-0329-claude-md-as-process-not-doctrine.md)** Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing
-- [ ] **[B-0330](backlog/P1/B-0330-memory-format-standardization-step2-b0190.md)** Memory-format standardization — define frontmatter shape, filename conventions, section headers
+- [x] **[B-0330](backlog/P1/B-0330-memory-format-standardization-step2-b0190.md)** Memory-format standardization — define frontmatter shape, filename conventions, section headers
 - [ ] **[B-0331](backlog/P1/B-0331-memory-ontology-classification-audit-step3-b0190.md)** Memory ontology/classification audit — reclassify mistyped feedback/project/user/reference files
 - [ ] **[B-0332](backlog/P1/B-0332-memory-load-bearing-vs-decorative-classifier-step7-b0190.md)** Memory load-bearing-vs-decorative classifier — identify which memory files are cited from bootstrap surfaces
 - [ ] **[B-0333](backlog/P1/B-0333-memory-retire-supersession-discipline-step5-b0190.md)** Memory-retire/supersession discipline — define what happens when a memory file is superseded
@@ -188,6 +188,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0353](backlog/P1/B-0353-write-bootstrap-process-claude-md.md)** Write bootstrap-process CLAUDE.md (<50 lines)
 - [ ] **[B-0354](backlog/P1/B-0354-fresh-instance-validation-bootstrap-claude-md.md)** Fresh-instance validation test for bootstrap CLAUDE.md
 - [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
+- [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)
 
 ## P2 — research-grade
 
