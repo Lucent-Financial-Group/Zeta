@@ -1,13 +1,13 @@
 ---
 id: B-0327
 priority: P1
-status: open
+status: closed
 title: "Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing"
 tier: peer-call-substrate
 effort: S
 parent: B-0065
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 depends_on: [B-0325]
 composes_with: [B-0065, B-0121]
 tags: [peer-call, claude, self-call, cold-boot-self-test, cross-cli-verify]

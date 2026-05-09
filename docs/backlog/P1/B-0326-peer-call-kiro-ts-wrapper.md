@@ -1,7 +1,7 @@
 ---
 id: B-0326
 priority: P1
-status: open
+status: closed
 title: "Author kiro.ts peer-call wrapper"
 tier: peer-call-substrate
 effort: S
