@@ -22,6 +22,7 @@
 //     "owner": "Lucent-Financial-Group",
 //     "repo": "Zeta",
 //     "queriedAt": "2026-05-08T12:00:00.000Z",
+//     "summary": "1 open PR, 3 recent merges, ...",
 //     "openPRs": [ { number, title, headRefName, ... }, ... ],
 //     "recentMerges": [ { number, title, mergedAt }, ... ],
 //     "openIssues": [ { number, title, labels, createdAt }, ... ],
@@ -52,6 +53,8 @@ interface OpenPR {
   updatedAt: string;
   autoMergeRequest: { enabledAt?: string } | null;
   reviewDecision: string;
+  isCrossRepository: boolean;
+  headRepositoryOwner: { login: string };
 }
 
 interface MergedPR {
@@ -188,7 +191,7 @@ function fetchOpenPRs(owner: string, repo: string, limit: number): OpenPR[] {
       "--state",
       "open",
       "--json",
-      "number,title,headRefName,createdAt,updatedAt,autoMergeRequest,reviewDecision",
+      "number,title,headRefName,createdAt,updatedAt,autoMergeRequest,reviewDecision,isCrossRepository,headRepositoryOwner",
       "--limit",
       String(limit),
     ],
@@ -460,6 +463,10 @@ function parseArgs(argv: string[]): ParsedArgs {
 
 // --- Summary builder ---
 
+function plural(n: number, singular: string, pluralForm?: string): string {
+  return `${n} ${n === 1 ? singular : (pluralForm ?? singular + "s")}`;
+}
+
 function buildSummary(
   openPRs: OpenPR[],
   recentMerges: MergedPR[],
@@ -471,14 +478,15 @@ function buildSummary(
   pendingCI: PendingCIRun[],
 ): string {
   const parts: string[] = [];
-  parts.push(`${openPRs.length} open PRs`);
-  parts.push(`${recentMerges.length} recent merges`);
-  parts.push(`${openIssues.length} open issues`);
-  parts.push(`${claims.length} claims`);
-  parts.push(`${backlogDelta.totalFiles} backlog items`);
-  if (pendingCI.length > 0) parts.push(`${pendingCI.length} CI runs pending`);
+  parts.push(plural(openPRs.length, "open PR"));
+  parts.push(plural(recentMerges.length, "recent merge"));
+  parts.push(plural(openIssues.length, "open issue"));
+  parts.push(plural(claims.length, "claim"));
+  parts.push(plural(backlogDelta.totalFiles, "backlog item"));
+  if (pendingCI.length > 0)
+    parts.push(plural(pendingCI.length, "CI run") + " pending");
   if (gitState.uncommittedFiles.length > 0)
-    parts.push(`${gitState.uncommittedFiles.length} dirty files`);
+    parts.push(plural(gitState.uncommittedFiles.length, "dirty file"));
   if (branchState.behind > 0) parts.push(`${branchState.behind} behind`);
   if (branchState.ahead > 0) parts.push(`${branchState.ahead} ahead`);
   return parts.join(", ");

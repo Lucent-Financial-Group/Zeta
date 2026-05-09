@@ -15,12 +15,12 @@ type: friction-reducer
 
 # B-0264 — refresh-worldview tick integration
 
-Third child of B-0159. Wire refresh.ts into all agent
-tick scripts as the canonical pre-decide refresh call.
+Third child of B-0159. Wire refresh-worldview.ts into all
+agent tick scripts as the canonical pre-decide refresh call.
 
 ## Acceptance criteria
 
-- Otto's tick calls refresh.ts before picking work
-- Vera's tick calls refresh.ts before picking work
-- Lior's tick calls refresh.ts before reporting status
+- Otto's tick calls refresh-worldview.ts before picking work
+- Vera's tick calls refresh-worldview.ts before picking work
+- Lior's tick calls refresh-worldview.ts before reporting status
 - Summary field in JSON enables cross-cutting drift detection
