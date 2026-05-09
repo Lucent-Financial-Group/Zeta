@@ -2,7 +2,7 @@
 id: B-0356
 priority: P1
 status: open
-title: "Capture model + token cost in commit message footer (git-native)"
+title: "Capture model + token usage in commit trailer (git-native, cost derived at query time)"
 effort: S
 created: 2026-05-09
 last_updated: 2026-05-09
@@ -14,28 +14,34 @@ type: friction-reducer
 tags: [cost-governance, model-routing, A/B-testing, enterprise-billing]
 ---
 
-# B-0356 — Capture model + token cost in commit message footer
+# B-0356 — Capture model + token usage in commit trailer
 
 ## What
 
 Every commit created by the background loop (or foreground
-subagents) should include a cost trailer in the commit message:
+subagents) should include a `Tokens:` trailer in the commit
+message — raw token counts only, no cost estimate:
 
 ```
-Cost: model=opus input=200420 output=45100 est=$4.13 dur=156s
+Tokens: model=opus input=200420 output=45100 dur=156s
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ```
 
-Git-native. Survives host migration. Queryable via `git log`.
-PR descriptions are host-durable-not-git-canonical — cost data
-belongs in the commit, not the PR.
+**Tokens are the atoms. Cost is derived at query time** from
+the current rate card. Never store cost — it changes when
+pricing changes. Store the immutable fact (tokens used),
+derive the view (dollar cost) when you need it.
+
+Git-native. Survives host migration. Queryable via
+`git log --grep="Tokens:"`.
 
 ## Why
 
 On enterprise API billing, this data is the evidence for
-Kevin's reports. Without it, cost analysis requires
-reconstructing token usage from API logs. Commit messages
-are git-canonical and queryable via `git log --grep="Cost:"`.
+Kevin's reports. Token counts are the raw material; the
+report script multiplies by the current pricing table to
+produce cost. No re-pricing hygiene needed — the facts
+never rot, only the rate card changes.
 
 ## Implementation
 
@@ -44,20 +50,19 @@ are git-canonical and queryable via `git log --grep="Cost:"`.
    `"input_tokens": N, "output_tokens": N` from stderr.
 2. In `claude-loop-tick.ts`, capture stderr output
    (already done — logged to `ticks.err`), extract
-   token counts, compute estimated cost using the
-   pricing table in `docs/ops/COST-REDUCTION-LESSONS.md`.
-3. Include `Cost:` trailer in the commit message the tick
-   creates, right above the `Co-Authored-By` footer.
+   token counts.
+3. Include `Tokens:` trailer in the commit message the
+   tick creates, right above the `Co-Authored-By` footer.
 4. In `model-rating-report.ts`, add `--git-costs` flag
-   that parses `git log --grep="Cost:"` and aggregates
-   per-model cost data from committed history.
+   that parses `git log --grep="Tokens:"`, multiplies by
+   the current pricing table, and aggregates per-model.
 
 ## Acceptance criteria
 
-- [ ] Every background-loop commit has `Cost:` trailer
-- [ ] `git log --grep="Cost:" --oneline` shows cost per commit
-- [ ] `model-rating-report.ts --git-costs` aggregates from log
-- [ ] Foreground subagent commits also include cost trailer
+- [ ] Every background-loop commit has `Tokens:` trailer
+- [ ] `git log --grep="Tokens:" --oneline` shows usage per commit
+- [ ] `model-rating-report.ts --git-costs` derives cost from log
+- [ ] Foreground subagent commits also include token trailer
 
 ## Composes with
 
