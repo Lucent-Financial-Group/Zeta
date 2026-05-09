@@ -23,7 +23,9 @@ function extractDescription(content: string): string | null {
   // Using [^"'\n]+ would exclude apostrophes mid-sentence (e.g. "Zeta's").
   const m = content.match(/^\s*description:\s*(.+?)\s*$/m);
   if (!m) return null;
-  let val = m[1].trim();
+  const raw = m[1];
+  if (raw == null) return null;
+  let val = raw.trim();
   if (
     (val.startsWith('"') && val.endsWith('"')) ||
     (val.startsWith("'") && val.endsWith("'"))
