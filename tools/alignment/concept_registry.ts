@@ -114,7 +114,7 @@ function attachAnchor(concept: Concept): Concept {
     if (!known) return concept;
     return {
         ...concept,
-        anchor: known.state !== "factory-native" ? known.citation : undefined,
+        ...(known.state !== "factory-native" ? { anchor: known.citation } : {}),
         anchorState: known.state,
     };
 }
