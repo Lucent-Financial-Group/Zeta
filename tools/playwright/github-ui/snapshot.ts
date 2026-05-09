@@ -29,6 +29,7 @@ export function extractToggles(html: string): Record<string, boolean> {
   const result: Record<string, boolean> = {};
   const tagPattern = /<input\b([^>]*?)(?:\s*\/?>)/gi;
   for (const [, attrs] of html.matchAll(tagPattern)) {
+    if (attrs == null) continue;
     if (!/\btype\s*=\s*["']checkbox["']/i.test(attrs)) continue;
     const name = parseAttr(attrs, "name") ?? parseAttr(attrs, "id");
     if (!name) continue;
@@ -51,6 +52,7 @@ export function extractFormValues(html: string): Record<string, string> {
   const textTypes = new Set(["text", "email", "url", "number", "search", "tel"]);
   const tagPattern = /<input\b([^>]*?)(?:\s*\/?>)/gi;
   for (const [, attrs] of html.matchAll(tagPattern)) {
+    if (attrs == null) continue;
     const typeRaw = parseAttr(attrs, "type");
     // Inputs with no explicit type default to "text" in HTML
     const type = typeRaw?.toLowerCase() ?? "text";
@@ -71,6 +73,7 @@ export function extractVisibleFeatures(html: string): string[] {
   const features: string[] = [];
   const headingPattern = /<h[23]\b[^>]*>([\s\S]*?)<\/h[23]>/gi;
   for (const [, inner] of html.matchAll(headingPattern)) {
+    if (inner == null) continue;
     const text = inner.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
     if (text) features.push(text);
   }
