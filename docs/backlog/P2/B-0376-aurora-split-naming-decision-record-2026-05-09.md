@@ -36,8 +36,8 @@ Write and commit an Architect decision record (ADR) under
    - **Path B**: `docs/aurora/system/**` (current-state) vs
      `docs/aurora/imports/**` (history imports) — lower migration cost.
 
-3. Updates B-0005 frontmatter `status: open → in-progress` and adds
-   a pointer to the ADR.
+3. Keeps B-0005 frontmatter `status: decomposed` and adds a pointer
+   to the ADR without reactivating the parent row.
 
 **No file moves in this step.**
 
@@ -67,7 +67,8 @@ directory-name choice AND a Path A/B choice.
 
 - A committed ADR under `docs/DECISIONS/YYYY-MM-DD-aurora-split-naming.md`
   with both choices made (directory name + path).
-- B-0005 frontmatter updated to reference the ADR.
+- B-0005 frontmatter remains `status: decomposed` and is updated to
+  reference the ADR.
 - No files under `docs/aurora/**` modified.
 
 ## Pre-start checklist
