@@ -39,6 +39,7 @@ Third child of B-0155. Dedicated ruleset for branch safety
 - [x] Snapshot updated
 
 ## Pre-start checklist (B-0267 start gate)
+
 - Prior-art-search: axes (wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology, LOST-FILES-LOCATIONS.md) executed; B-0266 migration script + github/ TS tools + ruleset patterns from recent merges surveyed (2026-05-09 refresh).
 - Dependency-restructure: depends_on [B-0265] walked; reciprocal composes_with added in B-0155 parent; no broken pointers.
 - Re-decomposition note (per always-re-decompose): original "atomic" assumption mistaken — split requires 2 slices (1. creator skeleton + claim, 2. full gh api + legacy removal + tests). This is slice 1 (bounded: skeleton only).
@@ -64,6 +65,7 @@ bun tools/migrations/b0267-safety-ruleset.ts --dry-run
 ```
 
 ## Evidence
+
 - Claim branch: claim/b0267-safety-ruleset-smallest-slice-riven-2026-05-08
 - Tool: tools/github/create-branch-safety-ruleset.ts (TS per Rule 0)
 - Build gate: dotnet build -c Release → 0 warnings 0 errors (passed in worktree)
