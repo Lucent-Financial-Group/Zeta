@@ -28,7 +28,7 @@ Target bullets (operational discipline — how the agent works):
 2. **Future-self is not bound by past-self** (~14 lines)
 3. **Search-first authority** (~33 lines)
 4. **Refresh-before-decide** (~24 lines)
-5. **Refresh world model via poll-pr-gate.ts** (~26 lines)
+5. **Refresh world model via `tools/github/poll-pr-gate.ts`** (~26 lines)
 6. **BLOCKED-with-green-CI means investigate** (~23 lines)
 7. **Backlog-item start gate** (long single-paragraph)
 
