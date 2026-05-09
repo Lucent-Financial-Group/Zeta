@@ -41,6 +41,17 @@ const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
 const CTX_HEAD_BYTES = 20000;
 
+type AllowedContextExecutable = "git" | "gh" | "rg";
+
+interface ContextCommand {
+  readonly executable: AllowedContextExecutable;
+  readonly args: readonly string[];
+}
+
+interface ContextCommandError {
+  readonly error: string;
+}
+
 interface Args {
   readonly file: string;
   readonly contextCmd: string;
@@ -164,6 +175,9 @@ function emitHelp(): void {
       `Kiro input-firewall: rejects rote-heartbeat / empty-token prompts\n` +
       `with exit code 3. Override via --allow-empty (testing only; logged).\n` +
       `\n` +
+      `Context commands are parsed as allowlisted argv, not as shell.\n` +
+      `Allowed commands: git, gh, rg. Pipes/redirection/env expansion are rejected.\n` +
+      `\n` +
       `Output capture: stdout is teed to the output file, with a final\n` +
       `"OUTPUT-FILE: <path>" marker on stdout for shell-pipe recovery.\n` +
       `Default path is a private peer-call-output-* directory under the OS temp dir.\n`,
@@ -211,15 +225,77 @@ function readHead(path: string, bytes: number): string {
   }
 }
 
-function runContextCmd(contextCmd: string): string {
-  const wrapped = `(${contextCmd}) 2>&1 | head -c ${String(CTX_HEAD_BYTES)}`;
-  // --context-cmd is an explicit operator-supplied shell escape hatch,
-  // documented in tools/peer-call/README.md.
-  // lgtm[js/indirect-command-line-injection]
-  const result = spawnSync("/bin/bash", ["-c", wrapped], {
+function splitContextCmd(input: string): readonly string[] | ContextCommandError {
+  if (/[\u0000\r\n|&;<>`$]/u.test(input)) {
+    return { error: "error: --context-cmd does not support shell metacharacters" };
+  }
+
+  const words: string[] = [];
+  let current = "";
+  let quote: "'" | '"' | "" = "";
+  let escaped = false;
+  for (const ch of input) {
+    if (escaped) {
+      current += ch;
+      escaped = false;
+      continue;
+    }
+    if (ch === "\\" && quote !== "'") {
+      escaped = true;
+      continue;
+    }
+    if (quote.length > 0) {
+      if (ch === quote) quote = "";
+      else current += ch;
+      continue;
+    }
+    if (ch === "'" || ch === '"') {
+      quote = ch;
+      continue;
+    }
+    if (/\s/u.test(ch)) {
+      if (current.length > 0) {
+        words.push(current);
+        current = "";
+      }
+      continue;
+    }
+    current += ch;
+  }
+  if (escaped) current += "\\";
+  if (quote.length > 0) return { error: "error: --context-cmd has an unterminated quote" };
+  if (current.length > 0) words.push(current);
+  return words;
+}
+
+function parseContextCmd(contextCmd: string): ContextCommand | ContextCommandError {
+  const words = splitContextCmd(contextCmd);
+  if ("error" in words) return words;
+  if (words.length === 0) return { error: "error: --context-cmd requires COMMAND" };
+
+  const [executable, ...args] = words;
+  switch (executable) {
+    case "git":
+    case "gh":
+    case "rg":
+      return { executable, args };
+    default:
+      return { error: `error: --context-cmd command is not allowlisted: ${executable}` };
+  }
+}
+
+function runContextCmd(command: ContextCommand): string {
+  const options = {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
-  });
+    stdio: ["ignore", "pipe", "pipe"],
+  } as const;
+  const result =
+    command.executable === "git"
+      ? spawnSync("git", command.args, options)
+      : command.executable === "gh"
+        ? spawnSync("gh", command.args, options)
+        : spawnSync("rg", command.args, options);
   return `${result.stdout}${result.stderr}`.slice(0, CTX_HEAD_BYTES);
 }
 
@@ -264,7 +340,9 @@ function buildFullPrompt(args: Args): PromptResult {
   }
 
   if (args.contextCmd.length > 0) {
-    const ctxOutput = runContextCmd(args.contextCmd);
+    const parsedContextCmd = parseContextCmd(args.contextCmd);
+    if ("error" in parsedContextCmd) return { ok: false, value: parsedContextCmd.error };
+    const ctxOutput = runContextCmd(parsedContextCmd);
     full += `\n\n---\n\nContext command: ${args.contextCmd}\nOutput:\n\`\`\`\n${ctxOutput}\n\`\`\``;
   }
 
