@@ -85,6 +85,36 @@ production rate.
 - **Rice's theorem** (Layer 2) = WHY fuel is inexhaustible
 - **Class 4** (Layer 3) = HOW failures appear (shape)
 - **Houman's reactor** (Layer 4) = the DYNAMICS (engine)
+- **FPGA Toffoli test** (Layer 5) = HARDWARE validation (B-0366)
+- **Infer.NET BP/EP** (Layer 6) = SELF-EVOLVING inference
+
+### Layer 6: Infer.NET BP/EP — self-evolving agent inference
+
+Three-stage evolution (Aaron 2026-05-05, CLAUDE.md):
+
+| Stage | What | Layer |
+| ----- | ---- | ----- |
+| Current | Peer-call CLI → external AI services | LICENSE |
+| Next | Zeta Infer.NET BP/EP factor graphs | SUBSTRATE |
+| FPGA | Reversible message-passing inference | HARDWARE |
+
+The multi-agent review becomes a factor graph: each agent
+is a factor, beliefs propagate via BP/EP, the posterior
+over "is this PR safe/correct/aligned?" is computed by
+message-passing. Self-evolving because CASPaxos consensus
+moves the graph topology — new agents = new factors, new
+review criteria = new variables.
+
+The FPGA connection: message-passing IS the Toffoli-gate
+substrate. Each message is a forward operation, each belief
+update is reversible (retract a message → recompute), +1/-1
+Z-set weights are message multiplicities in the factor graph.
+
+Full chain: Z-set algebra → DBSP D/I → Infer.NET BP/EP
+factor graphs → reversible message-passing on FPGA →
+Landauer-limited multi-agent inference.
+
+Source: `memory/feedback_peer_call_infrastructure_*_infernet_bp_ep_*`
 
 The publishable claim: "We built a multi-agent code review
 system on a DBSP streaming substrate. We observed Class 4
