@@ -79,7 +79,6 @@ export function checkOrchestratorState(
   // Exclude it when scanning for other worktrees on expectedBranch (CWD-bleed-over hazard).
   const cwd = process.cwd();
   const ownIdx = worktrees.findIndex((w) => cwd.startsWith(w.path));
-  const ownWorktree = ownIdx >= 0 ? worktrees[ownIdx] : worktrees[0];
   const driftedWorktrees =
     expectedBranch && worktrees.length > 1
       ? worktrees
