@@ -6,17 +6,21 @@
 //   bun tools/roms/canonicalize.ts --datfile <path.dat> --dir <rom-dir>
 //   bun tools/roms/canonicalize.ts --datfile <path.dat> --dir <rom-dir> --apply
 //
-// Output (default dry-run): JSON array of { file, sha1, match, canonicalName }.
+// Output (default dry-run): JSON array of
+// { file, sha1, matched, canonicalName, renamed }.
 // --apply: renames matched files to their canonical names.
 
 import { createHash } from "node:crypto";
 import {
+  closeSync,
+  openSync,
   readdirSync,
   readFileSync,
+  readSync,
   renameSync,
   existsSync,
 } from "node:fs";
-import { basename, extname, join } from "node:path";
+import { basename, dirname, extname, join } from "node:path";
 
 // --- Datfile parsing (Logiqx XML) ---
 
@@ -132,8 +136,21 @@ export function parseDatfile(xml: string): ReadonlyMap<string, DatEntry> {
 // --- File hashing ---
 
 export function hashFileSha1(path: string): string {
-  const data = readFileSync(path);
-  return createHash("sha1").update(data).digest("hex");
+  const hash = createHash("sha1");
+  const fd = openSync(path, "r");
+  const buffer = Buffer.allocUnsafe(1024 * 1024);
+  try {
+    let bytesRead = 0;
+    do {
+      bytesRead = readSync(fd, buffer, 0, buffer.length, null);
+      if (bytesRead > 0) {
+        hash.update(buffer.subarray(0, bytesRead));
+      }
+    } while (bytesRead > 0);
+  } finally {
+    closeSync(fd);
+  }
+  return hash.digest("hex");
 }
 
 // --- Directory scanning ---
@@ -143,7 +160,7 @@ export function scanRomFiles(dir: string): readonly string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     if (!entry.isFile()) continue;
     const ext = extname(entry.name).toLowerCase();
-    if (ROM_EXTENSIONS.has(ext) || ext === "") {
+    if (ROM_EXTENSIONS.has(ext)) {
       files.push(join(dir, entry.name));
     }
   }
@@ -189,7 +206,7 @@ export function matchAndReport(
     let renamed = false;
 
     if (apply && !alreadyCorrect) {
-      const dir = filePath.slice(0, filePath.length - currentName.length);
+      const dir = dirname(filePath);
       if (!isSafeCanonicalName(canonicalName)) {
         process.stderr.write(
           `skip: unsafe canonical name from datfile: ${canonicalName}\n`,
@@ -241,12 +258,23 @@ function parseArgs(argv: readonly string[]): Args {
   let dir: string | undefined;
   let apply = false;
 
+  function readOptionValue(index: number, flag: string): string {
+    const value = argv[index + 1];
+    if (value === undefined || value.startsWith("-")) {
+      process.stderr.write(`missing value for ${flag}\n`);
+      process.exit(64);
+    }
+    return value;
+  }
+
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--datfile" || arg === "-d") {
-      datfile = argv[++i];
+      datfile = readOptionValue(i, arg);
+      i++;
     } else if (arg === "--dir") {
-      dir = argv[++i];
+      dir = readOptionValue(i, arg);
+      i++;
     } else if (arg === "--apply") {
       apply = true;
     } else if (arg === "--help" || arg === "-h") {
