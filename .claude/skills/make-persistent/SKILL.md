@@ -34,8 +34,13 @@ which bun git dotnet claude gh
 
 ```bash
 LOOP_DIR="$HOME/.local/share/zeta-claude-loop/Zeta"
-git clone https://github.com/Lucent-Financial-Group/Zeta.git "$LOOP_DIR"
-cd "$LOOP_DIR"
+BUN_PATH="$(which bun)"
+if [ -d "$LOOP_DIR/.git" ]; then
+  cd "$LOOP_DIR" && git fetch origin && git reset --hard origin/main
+else
+  git clone https://github.com/Lucent-Financial-Group/Zeta.git "$LOOP_DIR"
+  cd "$LOOP_DIR"
+fi
 dotnet build -c Release
 ```
 
@@ -63,7 +68,7 @@ cat > ~/Library/LaunchAgents/com.zeta.claude-loop.plist << 'PLIST'
 <dict>
     <key>Label</key><string>com.zeta.claude-loop</string>
     <key>ProgramArguments</key><array>
-        <string>/opt/homebrew/bin/bun</string>
+        <string>BUN_PATH</string>
         <string>LOOP_DIR/.claude/bin/claude-loop-tick.ts</string>
     </array>
     <key>StartInterval</key><integer>60</integer>
@@ -80,7 +85,7 @@ cat > ~/Library/LaunchAgents/com.zeta.claude-loop.plist << 'PLIST'
 </plist>
 PLIST
 
-sed -i '' "s|LOOP_DIR|$LOOP_DIR|g; s|HOME|$HOME|g" \
+sed -i '' "s|BUN_PATH|$BUN_PATH|g; s|LOOP_DIR|$LOOP_DIR|g; s|HOME|$HOME|g" \
   ~/Library/LaunchAgents/com.zeta.claude-loop.plist
 mkdir -p ~/Library/Logs/zeta-claude-loop
 launchctl bootstrap gui/$(id -u) \
@@ -113,8 +118,9 @@ cat > ~/.config/systemd/user/zeta-claude-loop.service << EOF
 [Unit]
 Description=Zeta Claude Loop
 [Service]
-ExecStart=/usr/bin/bun $LOOP_DIR/.claude/bin/claude-loop-tick.ts
+ExecStart=$BUN_PATH $LOOP_DIR/.claude/bin/claude-loop-tick.ts
 WorkingDirectory=$LOOP_DIR
+Environment=ZETA_CLAUDE_LOOP_RUN_CLAUDE=1
 Restart=always
 RestartSec=60
 [Install]

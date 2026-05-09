@@ -47,7 +47,7 @@ ssh "$TARGET" "which git bun dotnet && uname -s"
 | Requirement | Install if missing |
 |---|---|
 | git | OS package manager |
-| bun | `curl -fsSL https://bun.sh/install \| bash` |
+| bun | OS package manager or official installer |
 | dotnet | `dotnet-install.sh` or OS package manager |
 | claude | `npm install -g @anthropic-ai/claude-code` |
 
@@ -58,13 +58,16 @@ WSL) — this determines which service manager
 ## Phase 3: Clone repo on target
 
 ```bash
-REMOTE_LOOP_DIR="\$HOME/.local/share/zeta-claude-loop/Zeta"
-ssh "$TARGET" "
-  git clone https://github.com/Lucent-Financial-Group/Zeta.git \
-    $REMOTE_LOOP_DIR 2>/dev/null || \
-  (cd $REMOTE_LOOP_DIR && git fetch origin && git reset --hard origin/main)
-  cd $REMOTE_LOOP_DIR && dotnet build -c Release
-"
+ssh "$TARGET" '
+  LOOP_DIR="$HOME/.local/share/zeta-claude-loop/Zeta"
+  if [ -d "$LOOP_DIR/.git" ]; then
+    cd "$LOOP_DIR" && git fetch origin && git reset --hard origin/main
+  else
+    git clone https://github.com/Lucent-Financial-Group/Zeta.git "$LOOP_DIR"
+    cd "$LOOP_DIR"
+  fi
+  dotnet build -c Release
+'
 ```
 
 ## Phase 4: Delegate to make-persistent
@@ -73,13 +76,15 @@ The local primitive handles service registration.
 Run it on the remote machine:
 
 ```bash
-ssh "$TARGET" "cd $REMOTE_LOOP_DIR && claude -p \
-  'Wear the make-persistent skill. Register the \
-  background service for this machine. The repo is \
-  already cloned at $REMOTE_LOOP_DIR. Detect OS, \
-  deploy tick script, register service, verify \
-  heartbeat.' \
-  --permission-mode auto"
+ssh "$TARGET" '
+  LOOP_DIR="$HOME/.local/share/zeta-claude-loop/Zeta"
+  cd "$LOOP_DIR" && claude -p \
+    "Wear the make-persistent skill. Register the \
+    background service for this machine. The repo is \
+    already cloned. Detect OS, deploy tick script, \
+    register service, verify heartbeat." \
+    --permission-mode auto
+'
 ```
 
 Or, if the target runs a different harness:
@@ -93,10 +98,13 @@ Or, if the target runs a different harness:
 ## Phase 5: Verify remote heartbeat
 
 ```bash
-ssh "$TARGET" "sleep 120 && \
-  tail -5 ~/Library/Logs/zeta-claude-loop/runner.log \
-  2>/dev/null || \
-  journalctl --user -u zeta-claude-loop --no-pager -n 5"
+ssh "$TARGET" '
+  sleep 120
+  # macOS: launchd logs
+  tail -5 ~/Library/Logs/zeta-claude-loop/stdout.log 2>/dev/null ||
+  # Linux: systemd journal
+  journalctl --user -u zeta-claude-loop --no-pager -n 5
+'
 ```
 
 Should show heartbeat + pickup activity.
