@@ -51,6 +51,14 @@ describe("parseDatfile", () => {
     expect(entry?.name).toBe('Fish & Chips "Demo".bin');
   });
 
+  test("handles single-quoted XML attributes", () => {
+    const xml = `<rom name='SingleQuote.bin' size='1024' sha1='aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d' />`;
+    const lookup = parseDatfile(xml);
+    expect(lookup.size).toBe(1);
+    const entry = lookup.get("aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d");
+    expect(entry?.name).toBe("SingleQuote.bin");
+  });
+
   test("returns empty map for empty input", () => {
     const lookup = parseDatfile("");
     expect(lookup.size).toBe(0);

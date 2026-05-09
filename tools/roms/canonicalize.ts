@@ -102,7 +102,7 @@ function isSafeCanonicalName(name: string): boolean {
 export function parseDatfile(xml: string): ReadonlyMap<string, DatEntry> {
   const lookup = new Map<string, DatEntry>();
   const romTagRe = /<rom\s+([^>]*?)\/?\s*>/g;
-  const attrRe = /(\w+)\s*=\s*"([^"]*)"/g;
+  const attrRe = /(\w+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g;
 
   let tagMatch: RegExpExecArray | null;
   while ((tagMatch = romTagRe.exec(xml)) !== null) {
@@ -111,7 +111,7 @@ export function parseDatfile(xml: string): ReadonlyMap<string, DatEntry> {
     let attrMatch: RegExpExecArray | null;
     while ((attrMatch = attrRe.exec(attrStr)) !== null) {
       const key = attrMatch[1];
-      const val = attrMatch[2];
+      const val = attrMatch[2] ?? attrMatch[3];
       if (key !== undefined && val !== undefined) {
         attrs[key] = decodeXmlAttributeValue(val);
       }
