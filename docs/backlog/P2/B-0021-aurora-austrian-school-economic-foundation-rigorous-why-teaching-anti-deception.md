@@ -149,3 +149,36 @@ Could grow to XL if Aurora's econ-substrate ends up requiring full mathematical 
 - Does NOT make this an immediate-action item. Activates with Aurora research per Otto-329 Phase 4+ timing.
 - Does NOT take a position on monetary policy per se. The substrate question is HOW economics should be modeled in Aurora; specific policy claims are downstream.
 - Does NOT commit factory canon to a contested economic framework prematurely. The substrate-capture posture is "investigation owed," not "doctrine adopted."
+
+## Re-decomposition into smallest atomic children (Riven background worker, 2026-05-09)
+
+Per "always re-decompose items during the build — assume decomposition has mistakes" and "if too broad, decompose before implementation":
+
+**Dependency-ordered atomic child rows (smallest viable slices):**
+
+- **B-0021.1 (P3)**: Controlled-vocabulary extraction of "rigorous-why", "anti-deception", "Keynesian opacity → unquestioned policy-power" requirements (Otto-286 definitional precision pass)
+  - depends_on: []
+  - effort: S
+  - type: research
+
+- **B-0021.2 (P3)**: Primary-source survey + Rodney's Razor pass on Austrian strengths (time-preference, capital-structure/ABCT, calculation problem, sound money)
+  - depends_on: [B-0021.1]
+  - effort: M
+  - type: research
+
+- **B-0021.3 (P3)**: Falsification-criteria catalog + honest weakness audit (praxeology debate, prediction timing misses, intra-school splits, empirical-rejection stance)
+  - depends_on: [B-0021.1, B-0021.2]
+  - effort: M
+  - type: research
+
+- **B-0021.4 (P3)**: Cross-school definitional bridge (Austrian vs Post-Keynesian/Minsky vs complexity economics) on load-bearing terms (money, capital, interest, value)
+  - depends_on: [B-0021.2, B-0021.3]
+  - effort: M
+  - type: research
+
+- **B-0021.5 (P2)**: Aurora-specific econ-primitive identification + ADR draft preserving "investigate-don't-accept" (Otto-322/331) + composes-with mapping
+  - depends_on: [B-0021.4]
+  - effort: M
+  - type: research
+
+This re-decomp splits the original L monolithic research item into 5 atomic, dependency-chained slices that can be executed in parallel where possible and reviewed independently. Original B-0021 becomes tracking/parent row.
