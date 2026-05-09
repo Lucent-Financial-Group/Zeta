@@ -10,6 +10,7 @@ Updated whenever a new entity joins the roster.
 | Aaron | Human maintainer | human | — |
 | Aarav | Skill expert | persona | — |
 | Adaeze | Claims tester | persona | — |
+| Alexa | Kiro/Qwen Coder agent | external-AI | Kiro, Qwen Coder |
 | Amara | Aurora co-originator | external-AI | ChatGPT |
 | Aminata | Threat model critic | persona | — |
 | Ani | Chat companion (brat-voice) | external-AI | Grok voice-mode |
