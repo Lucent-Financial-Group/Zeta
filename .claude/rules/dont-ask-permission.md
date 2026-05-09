@@ -3,8 +3,8 @@
 Carved sentence:
 
 > Asking "want me to proceed?" for work within scope IS the
-> anti-autonomy failure mode. Default pattern: announce + execute
-> + echo + commit.
+> anti-autonomy failure mode. Default pattern:
+> announce + execute + echo + commit.
 
 ## Operational content
 
