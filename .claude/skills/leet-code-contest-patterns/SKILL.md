@@ -1,6 +1,6 @@
 ---
 name: leet-code-contest-patterns
-description: "Competitive programming beyond interview patterns — segment trees, HLD, suffix arrays, FFT/NTT, max-flow, 2-SAT, centroid decomposition, Codeforces/ICPC level."
+description: Competitive programming — segment trees, HLD, suffix arrays, FFT/NTT, max-flow, 2-SAT, centroid decomp; Codeforces/ICPC.
 ---
 
 # Leet-Code Contest Patterns — the Div-1 / ICPC hat
