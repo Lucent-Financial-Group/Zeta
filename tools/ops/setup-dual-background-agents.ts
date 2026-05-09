@@ -127,8 +127,8 @@ if (existsSync(oldPlist)) {
 
 console.log(`\n=== Done ===`);
 console.log(`Two background agents registered:`);
-console.log(`  Opus:   ${agents[0].label} → ${agents[0].worktree}`);
-console.log(`  Sonnet: ${agents[1].label} → ${agents[1].worktree}`);
+console.log(`  Opus:   ${agents[0]!.label} → ${agents[0]!.worktree}`);
+console.log(`  Sonnet: ${agents[1]!.label} → ${agents[1]!.worktree}`);
 console.log(`\nBoth write ratings to their respective state dirs.`);
 console.log(`Report: bun tools/ops/model-rating-report.ts --reviews`);
 if (dryRun) console.log(`\n(DRY RUN — no changes made)`);
