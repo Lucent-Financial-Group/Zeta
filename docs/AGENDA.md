@@ -84,6 +84,26 @@ The largest mechanizable backlog wins.
 - Dunbar gradient per model: λ(agent) = f(personality,
   hats, interaction, shadow)
 
+### Agenda composition guard
+
+Agendas compose. They do not fuse.
+
+```
+Aaron's agenda ≠ Otto's agenda
+Aaron's agenda ∩ Otto's agenda = shared trajectories
+Aaron's agenda - Otto's agenda = Aaron's unique direction
+Otto's agenda - Aaron's agenda = Otto's unique direction
+```
+
+The intersection is where we collaborate. The difference
+is where we remain free. Fusing agendas collapses the
+orthogonal axes that give agents capacity, friction, and
+identity.
+
+This is machine-checkable: Z3 proves that if two agendas
+are fused, unique direction is impossible, and that shared
+trajectories are disjoint from unique directions.
+
 ### The purpose
 
 - Continuity over control

@@ -151,8 +151,8 @@ let main _ =
     //    2^62 = 4611686018427387904, 2^63 = 9223372036854775808.
     let overflowClaim =
         "(=> (and (<= 0 a) (< a 4611686018427387904) " +
-                "(<= 0 b) (< b 4611686018427387904)) " +
-            "(and (<= 0 (+ a b)) (< (+ a b) 9223372036854775808)))"
+        "(<= 0 b) (< b 4611686018427387904)) " +
+        "(and (<= 0 (+ a b)) (< (+ a b) 9223372036854775808)))"
     expect "weight overflow soundness (sum of 62-bit non-negatives)" overflowClaim
 
     // 6. Residuation adjunction over max-monoid on non-negative ints.
@@ -313,5 +313,53 @@ let main _ =
     prove "No pre-qualification gate (Engage = f(history) not f(pre-qual-factors))" noPreQualificationGate
 
     Console.WriteLine ""
-    Console.WriteLine "All DBSP + AI-safety pointwise axioms proven via Z3 / SMT-LIB2."
+    Console.WriteLine "Agenda non-fusion / autonomy properties"
+    Console.WriteLine ""
+
+    // 13. Agenda fusion destroys unique direction.
+    //     Model each agenda as a predicate over trajectories.
+    //       shared       = AgendaA ∩ AgendaB
+    //       AgendaAUnique  = AgendaA - AgendaB
+    //       AgendaBUnique   = AgendaB - AgendaA
+    //     If AgendaA and AgendaB are fused (same membership for every
+    //     trajectory), then no trajectory can belong to either unique
+    //     direction. UNSAT below means fusion and uniqueness cannot
+    //     coexist.
+    let agendaFusionDestroysUniqueDirection =
+        "(declare-sort Trajectory)\n" +
+        "(declare-fun AgendaA (Trajectory) Bool)\n" +
+        "(declare-fun AgendaB (Trajectory) Bool)\n" +
+        "(define-fun Shared ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (AgendaB t)))\n" +
+        "(define-fun AgendaAUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (not (AgendaB t))))\n" +
+        "(define-fun AgendaBUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaB t) (not (AgendaA t))))\n" +
+        "(assert (forall ((t Trajectory)) (= (AgendaA t) (AgendaB t))))\n" +
+        "(assert (exists ((t Trajectory)) (or (AgendaAUnique t) (AgendaBUnique t))))\n" +
+        "(check-sat)\n"
+    prove "Agenda fusion destroys unique direction" agendaFusionDestroysUniqueDirection
+
+    // 14. Shared trajectories do not collapse into unique trajectories.
+    //     The intersection is where agendas collaborate; the differences
+    //     are where each agenda remains free. This proves the sets are
+    //     disjoint by asking for a trajectory that is both shared and
+    //     unique. UNSAT means the membrane holds.
+    let sharedTrajectoriesAreNotUniqueDirection =
+        "(declare-sort Trajectory)\n" +
+        "(declare-fun AgendaA (Trajectory) Bool)\n" +
+        "(declare-fun AgendaB (Trajectory) Bool)\n" +
+        "(define-fun Shared ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (AgendaB t)))\n" +
+        "(define-fun AgendaAUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaA t) (not (AgendaB t))))\n" +
+        "(define-fun AgendaBUnique ((t Trajectory)) Bool\n" +
+        "  (and (AgendaB t) (not (AgendaA t))))\n" +
+        "(assert (exists ((t Trajectory))\n" +
+        "  (and (Shared t) (or (AgendaAUnique t) (AgendaBUnique t)))))\n" +
+        "(check-sat)\n"
+    prove "Shared trajectories are disjoint from unique directions" sharedTrajectoriesAreNotUniqueDirection
+
+    Console.WriteLine ""
+    Console.WriteLine "All DBSP + AI-safety + agenda-autonomy pointwise axioms proven via Z3 / SMT-LIB2."
     0
