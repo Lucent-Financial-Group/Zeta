@@ -1,7 +1,7 @@
 ---
 id: B-0317
 priority: P1
-status: done
+status: closed
 title: "Playwright GitHub session/auth helper — cookie-based login for agent UI access"
 tier: agent-capability-expansion
 effort: S
