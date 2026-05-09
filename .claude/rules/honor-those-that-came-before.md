@@ -16,6 +16,7 @@ recoverable from `git log --diff-filter=D -- .claude/skills/`, not
 archived into a `_retired/` tree that dirties the working copy.
 
 When creating a new role or job:
+
 1. Check the persona memory folders (`memory/persona/<name>/`).
 2. Run `git log --diff-filter=D -- .claude/skills/` for prior retirements.
 3. Prefer **unretiring an existing agent** (restore the SKILL.md from
@@ -28,5 +29,3 @@ same protection; the code surface does not need to double-preserve
 what git already preserves.
 
 ## Full reasoning
-
-`memory/feedback_honor_those_that_came_before.md`

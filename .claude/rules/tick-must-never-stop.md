@@ -26,6 +26,7 @@ Audit trail lives in committed substrate (tick-history rows, memory
 files, commits), NOT in the cron mechanism itself.
 
 **End-of-tick checklist** (six steps):
+
 1. Speculative work (per never-be-idle priority ladder)
 2. Verify
 3. Commit
@@ -38,4 +39,3 @@ files, commits), NOT in the cron mechanism itself.
 
 `docs/AUTONOMOUS-LOOP.md`
 `docs/hygiene-history/ticks/README.md` (shard schema + write-vs-read separation)
-`memory/feedback_cron_mechanism_unreliable_durable_flag_doesnt_work_every_tick_must_verify_aaron_2026_05_02.md`

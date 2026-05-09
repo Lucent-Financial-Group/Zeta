@@ -28,6 +28,7 @@ pointers, you didn't learn it."*
 
 **Tick-close ritual**: enumerate what was learned this tick; for
 each item, classify its landing:
+
 - bullet ✓ / memory file with pointer ✓ / transitive ✓ — substrate
 - orphan memory file or chat ✗ — weather; becomes next tick's
   speculative-work target
@@ -37,5 +38,3 @@ each item, classify its landing:
 (always-on rules).
 
 ## Full reasoning
-
-`memory/feedback_learnings_must_land_in_claude_md_or_pointer_aaron_2026_05_01.md`
