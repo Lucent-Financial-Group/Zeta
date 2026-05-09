@@ -7,8 +7,12 @@ import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 
 function getDefaultMemoryDir(): string {
-    const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
-    return join(repoRoot, "memory");
+    try {
+        const repoRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
+        return join(repoRoot, "memory");
+    } catch {
+        throw new Error("Not a git repository or git is unavailable. Pass --memory-dir to specify the memory directory explicitly.");
+    }
 }
 
 const VALID_TYPES = ["feedback", "user", "project", "reference"] as const;
@@ -21,10 +25,10 @@ const PREFIX_TO_TYPE: Record<string, MemoryType> = {
     reference_: "reference",
 };
 
-// Per B-0330: feedback files require Why + How-to-apply; project files require Why.
+// Per B-0330: feedback and project files require Why + How-to-apply.
 const REQUIRED_BODY_MARKERS: Partial<Record<MemoryType, string[]>> = {
     feedback: ["Why:", "How to apply:"],
-    project: ["Why:"],
+    project: ["Why:", "How to apply:"],
 };
 
 const SPECIAL_FILES = new Set([
@@ -132,13 +136,17 @@ function applyFixes(file: string, content: string, violations: Violation[]): str
             if (!prefix) continue;
             const expectedType = PREFIX_TO_TYPE[prefix];
             if (!expectedType) continue;
-            if (fixed.includes("\ntype:")) {
-                fixed = fixed.replace(/\ntype:[^\n]*/, `\ntype: ${expectedType}`);
+            // Restrict replacement to the frontmatter block (before the closing \n---).
+            // Replacing in the full file can accidentally rewrite a `type:` occurrence in
+            // the body (e.g., in code examples) while leaving the frontmatter unchanged.
+            const fmEnd = fixed.indexOf("\n---", 3);
+            if (fmEnd === -1) continue;
+            const fm = fixed.slice(0, fmEnd);
+            const rest = fixed.slice(fmEnd);
+            if (fm.includes("\ntype:")) {
+                fixed = fm.replace(/\ntype:[^\n]*/, `\ntype: ${expectedType}`) + rest;
             } else {
-                const endIdx = fixed.indexOf("\n---", 3);
-                if (endIdx !== -1) {
-                    fixed = fixed.slice(0, endIdx) + `\ntype: ${expectedType}` + fixed.slice(endIdx);
-                }
+                fixed = fm + `\ntype: ${expectedType}` + rest;
             }
         }
     }
@@ -284,7 +292,14 @@ function main(argv: string[] = process.argv): number {
         }
     }
 
-    const result = validate(memoryDir);
+    let result: ValidateResult;
+    try {
+        result = validate(memoryDir);
+    } catch (e) {
+        console.error(`Error reading memory directory "${memoryDir}": ${e}`);
+        console.error("Pass --memory-dir to specify a valid directory.");
+        return 1;
+    }
 
     if (fix) {
         const fixableFiles = new Set(
@@ -303,6 +318,12 @@ function main(argv: string[] = process.argv): number {
                 writeFileSync(filePath, fixed, "utf8");
                 if (!jsonOutput) console.log(`Fixed: ${file}`);
             }
+        }
+        // Re-validate so output and --enforce reflect the post-fix state.
+        try {
+            result = validate(memoryDir);
+        } catch {
+            // If re-validate fails unexpectedly, fall through with the pre-fix result.
         }
     }
 
