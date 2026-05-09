@@ -32,6 +32,7 @@ B-0365.2 (shadow log backfill)        ──┐                   │
 ```
 
 **Already done (not decomposed as child rows):**
+
 - Layer 2 (Rice's theorem): `docs/research/2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md` ✅
 - Partial Layer 1 (Z-set algebra): `docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md` ✅
 - Layer 5 (FPGA Toffoli): B-0366 (separate row, not a child) ✅
