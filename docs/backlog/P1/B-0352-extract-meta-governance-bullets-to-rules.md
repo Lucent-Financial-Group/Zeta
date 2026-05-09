@@ -7,6 +7,7 @@ created: 2026-05-09
 last_updated: 2026-05-09
 depends_on:
   - B-0348
+progress_note: "3/7 done (wake-time-substrate + skill-router + rule-0 extracted in this PR). Remaining: Don't-refuse-engagement (80 lines), Lost-files, DSL-form, Claude-Code-loading-taxonomy (37 lines)."
 decomposition: atomic
 classification: buildable-now
 type: friction-reducer
