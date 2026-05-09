@@ -1,7 +1,7 @@
 ---
 id: B-0217
 priority: P1
-status: in-progress
+status: open
 title: "ALIGNMENT.md rewrite - bidirectional clause audit and tightening"
 created: 2026-05-06
 last_updated: 2026-05-08
