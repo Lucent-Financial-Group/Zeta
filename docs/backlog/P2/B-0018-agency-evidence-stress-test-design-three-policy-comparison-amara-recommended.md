@@ -19,9 +19,11 @@ type: feature
 # Agency-evidence stress-test design
 
 ## Re-decomposition (2026-05-09, Riven background worker, one bounded step)
+
 B-0018 was too broad (M effort full experiment). Re-decomposed into smallest dependency-ordered atomic child rows (assume mistakes, per rule). Children prefer TS/F# implementation over prose docs. One bounded step: this decomp record + child row stubs. Focused check: dotnet build -c Release passed 0w/0e before/after.
 
 **Dependency-ordered atomic children:**
+
 1. B-0018.1 (S, root) — Policy library TS interface (idle-broadcast, random-queue, self-directed-priority types + selection fn)
 2. B-0018.2 (S, depends 1) — Queue snapshot capturer (TS util, deterministic from idle-window state)
 3. B-0018.3 (S, depends 1+2) — Measurement aggregator (TS, records selection, reason, output, review survival)
