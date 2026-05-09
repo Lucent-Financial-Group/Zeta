@@ -26,9 +26,10 @@
 //   2 — Kiro returned a non-zero exit (diagnostic on stderr)
 //   3 — input-firewall rejected the prompt as not work-extractable
 
-import { closeSync, mkdirSync, openSync, readSync, statSync, writeFileSync } from "node:fs";
+import { closeSync, mkdirSync, mkdtempSync, openSync, readSync, statSync, writeSync } from "node:fs";
 import { spawnSync } from "node:child_process";
-import { dirname } from "node:path";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import {
   formatBypassMessage,
   formatRejectionMessage,
@@ -130,11 +131,8 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
 }
 
 function autogenOutputPath(): string {
-  const ts = new Date()
-    .toISOString()
-    .replace(/[-:]/g, "")
-    .replace(/\.\d{3}Z$/, "Z");
-  return `/tmp/peer-call-output/${ts}-kiro.md`;
+  const dir = mkdtempSync(join(tmpdir(), "peer-call-output-"));
+  return join(dir, "kiro.md");
 }
 
 function ensureParentDir(path: string): void {
@@ -168,7 +166,7 @@ function emitHelp(): void {
       `\n` +
       `Output capture: stdout is teed to the output file, with a final\n` +
       `"OUTPUT-FILE: <path>" marker on stdout for shell-pipe recovery.\n` +
-      `Default path is /tmp/peer-call-output/<timestamp>-kiro.md.\n`,
+      `Default path is a private peer-call-output-* directory under the OS temp dir.\n`,
   );
 }
 
@@ -215,11 +213,24 @@ function readHead(path: string, bytes: number): string {
 
 function runContextCmd(contextCmd: string): string {
   const wrapped = `(${contextCmd}) 2>&1 | head -c ${String(CTX_HEAD_BYTES)}`;
+  // --context-cmd is an explicit operator-supplied shell escape hatch,
+  // documented in tools/peer-call/README.md.
+  // lgtm[js/indirect-command-line-injection]
   const result = spawnSync("/bin/bash", ["-c", wrapped], {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
   });
   return `${result.stdout}${result.stderr}`.slice(0, CTX_HEAD_BYTES);
+}
+
+function writeExclusiveOutput(path: string, data: Buffer): void {
+  let fd: number | undefined;
+  try {
+    fd = openSync(path, "wx", 0o600);
+    writeSync(fd, data, 0, data.length, 0);
+  } finally {
+    if (fd !== undefined) closeSync(fd);
+  }
 }
 
 const PREAMBLE = `You are Kiro, invoked as a peer specification reviewer by Otto
@@ -329,7 +340,7 @@ export function main(argv: readonly string[]): number {
 
   const stdoutBuf: Buffer = (result.stdout as Buffer | null) ?? Buffer.alloc(0);
   try {
-    writeFileSync(outputFile, stdoutBuf);
+    writeExclusiveOutput(outputFile, stdoutBuf);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     process.stderr.write(`error: failed to write output-file ${outputFile}: ${msg}\n`);
