@@ -16,9 +16,9 @@ export async function main(): Promise<number> {
     console.log("Target: all branches, enforce on main + develop");
     return 0;
   }
-  // TODO: gh api repos/.../rulesets --method POST with payload
-  console.log("Implement full create in next slice");
-  return 0;
+  // Live path not yet implemented — fail loudly to prevent silent CI no-op.
+  console.error("ERROR: live mode not implemented. Run with --dry-run to preview.");
+  return 1;
 }
 
 if (import.meta.main) {
