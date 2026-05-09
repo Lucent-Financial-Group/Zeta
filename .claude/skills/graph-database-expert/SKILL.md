@@ -1,6 +1,6 @@
 ---
 name: graph-database-expert
-description: "Graph databases — Neo4j, Neptune, JanusGraph, Memgraph; Cypher/GQL/Gremlin, property graph vs RDF, supernode hazard, traversal patterns."
+description: "Graph databases — Neo4j, Neptune, JanusGraph, Memgraph; Cypher/GQL/Gremlin, property graph vs RDF, supernode hazard."
 ---
 
 # Graph Database Expert — Applied Vendor Landscape
