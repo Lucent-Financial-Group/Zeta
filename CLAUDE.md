@@ -828,11 +828,10 @@ Claude-Code-specific mechanisms.
   `.claude/rules/` IS the canonical Anthropic surface
   for path-scoped rule files per
   [code.claude.com/docs/en/memory](https://code.claude.com/docs/en/memory)
-  — Zeta currently doesn't use it; the discoverable
-  surfaces here are `.claude/skills/`,
-  `.claude/agents/`, and `.claude/commands/`. Adopting
-  `.claude/rules/` is a viable future addition for
-  path-scoped behavioral guidance.) Tick-close ritual:
+  — Zeta now uses `.claude/rules/` actively; the
+  discoverable surfaces are `.claude/skills/`,
+  `.claude/agents/`, `.claude/commands/`, and
+  `.claude/rules/` (always-on rules).) Tick-close ritual:
   enumerate what was
   learned this tick; for each item, classify
   landing (bullet ✓ / memory file with pointer ✓ /
@@ -883,14 +882,13 @@ Claude-Code-specific mechanisms.
   failure-mode shape.** Direct-load: CLAUDE.md and
   CLAUDE.local.md auto-load full at session start;
   per Anthropic docs `.claude/rules/*.md` without
-  `paths:` also auto-loads with same priority **but
-  this is unverified in our harness — canary test
-  pending in `.claude/rules/test-canary.md`; treat
-  rules as direct-load only after the canary
-  confirms**. Lazy-load: `.claude/rules/*.md` with
-  `paths:` glob loads when Claude reads matching
-  files (also doc-supported / unverified in our
-  harness). Router-keyed: `.claude/skills/<name>/SKILL.md`
+  `paths:` also auto-loads with same priority —
+  **empirically confirmed in this harness** (rule files
+  load at session start; see `.claude/rules/test-canary.md`
+  for test methodology). Lazy-load: `.claude/rules/*.md`
+  with `paths:` glob loads when Claude reads matching
+  files (doc-supported; lazy-load path not yet
+  empirically tested in this harness). Router-keyed: `.claude/skills/<name>/SKILL.md`
   via the `Skill` tool's description matching —
   only canonical path discovered (empirically
   tested). Subagent-discovery: `.claude/agents/<name>.md`.
