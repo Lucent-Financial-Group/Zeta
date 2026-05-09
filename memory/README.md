@@ -114,3 +114,55 @@ rules every seat should share.
 Personas should read their own notebook **before** the
 shared memory on wake-up, so individual voice dominates
 over averaged voice.
+
+## Supersession discipline (B-0333)
+
+When a memory file is superseded by a newer one:
+
+1. **Add `superseded_by:` frontmatter** to the old file,
+   pointing to the replacement filename (without path).
+   The old file stays — git history is the archive, but
+   the frontmatter field tells agents to prefer the
+   successor without requiring them to search git.
+
+2. **Update MEMORY.md index.** Replace the old entry with
+   the new file's entry. If both should remain visible
+   (the old file has historical value beyond the
+   superseded content), keep both but add "(superseded)"
+   to the old entry's hook text.
+
+3. **Repair cross-references.** Any file citing the
+   superseded file in a `Composes with:` or `Full
+   reasoning:` section should be updated to point to
+   the replacement. The audit tool
+   `tools/hygiene/audit-memory-cross-references.ts`
+   (B-0334) detects broken cross-references.
+
+4. **Check load-bearing status.** If the superseded file
+   is cited from CLAUDE.md, AGENTS.md, GOVERNANCE.md,
+   or docs/ALIGNMENT.md (load-bearing per B-0332's
+   classification), update the bootstrap surface pointer
+   to the replacement. A load-bearing file superseded
+   without updating its bootstrap citation is a
+   wake-time regression.
+
+### When to supersede vs update in place
+
+- **Supersede** when the replacement changes the rule
+  itself (the old rule was wrong or the context shifted
+  enough that the old framing misleads).
+- **Update in place** when the content is refined but the
+  rule is the same (typo fix, added example, clarified
+  scope). Add a dated revision note in the body.
+- **Merge** when two files cover the same ground and
+  should be one. Create the merged file, supersede both
+  originals pointing to it.
+
+### Deletion
+
+Deletion is the simplest option (git preserves the file)
+but loses the `superseded_by:` breadcrumb. Prefer
+supersession over deletion unless the file is truly
+noise. Per the "honor those that came before" rule
+(CLAUDE.md), check git history for prior retirements
+before creating new files on the same topic.

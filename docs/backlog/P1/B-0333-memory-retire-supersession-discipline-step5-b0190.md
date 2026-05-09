@@ -1,7 +1,7 @@
 ---
 id: B-0333
 priority: P1
-status: open
+status: done
 title: Memory-retire/supersession discipline — define what happens when a memory file is superseded
 tier: foundation
 effort: S
