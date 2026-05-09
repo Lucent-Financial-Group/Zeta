@@ -67,7 +67,7 @@ export interface FeatureDiffReport {
   readonly pagesAdded: readonly string[];
   /** Page URLs present in prior but absent in current (dropped from monitoring). */
   readonly pagesRemoved: readonly string[];
-  /** Diffs for pages present in both sets. */
+  /** Diffs for every page present in the current set, including newly monitored pages. */
   readonly pageDiffs: readonly PageDiff[];
 }
 
@@ -75,11 +75,23 @@ export interface FeatureDiffReport {
 // Pure diff functions
 // ---------------------------------------------------------------------------
 
+const SNAPSHOT_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+function emptyPageSnapshot(url: string): GitHubPageSnapshot {
+  return {
+    url,
+    timestamp: "",
+    username: "",
+    extracted: {
+      toggles: {},
+      formValues: {},
+      visibleFeatures: [],
+    },
+  };
+}
+
 /** Diff two snapshots of the same page. */
-export function diffPageSnapshots(
-  prior: GitHubPageSnapshot,
-  current: GitHubPageSnapshot,
-): PageDiff {
+export function diffPageSnapshots(prior: GitHubPageSnapshot, current: GitHubPageSnapshot): PageDiff {
   const priorToggles = prior.extracted.toggles;
   const curToggles = current.extracted.toggles;
   const priorFeatures = new Set(prior.extracted.visibleFeatures);
@@ -153,11 +165,13 @@ export function diffSnapshotSets(prior: SnapshotSet, current: SnapshotSet): Feat
 
   const pagesAdded = [...curUrls].filter((u) => !priorUrls.has(u)).sort();
   const pagesRemoved = [...priorUrls].filter((u) => !curUrls.has(u)).sort();
-  const sharedUrls = [...curUrls].filter((u) => priorUrls.has(u)).sort();
+  const currentUrls = [...curUrls].sort();
 
-  const pageDiffs = sharedUrls.map((url) =>
-    diffPageSnapshots(prior.pages[url] as GitHubPageSnapshot, current.pages[url] as GitHubPageSnapshot),
-  );
+  const pageDiffs = currentUrls.map((url) => {
+    const currentPage = current.pages[url] as GitHubPageSnapshot;
+    const priorPage = prior.pages[url] ?? emptyPageSnapshot(currentPage.url);
+    return diffPageSnapshots(priorPage, currentPage);
+  });
 
   return {
     priorDate: prior.date,
@@ -178,7 +192,7 @@ const SNAPSHOT_DIR = "docs/hygiene-history/github-ui-snapshots";
 export function saveSnapshotSet(set: SnapshotSet, outDir: string = SNAPSHOT_DIR): string {
   const dir = resolve(outDir);
   mkdirSync(dir, { recursive: true });
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(set.date)) {
+  if (!SNAPSHOT_DATE_PATTERN.test(set.date)) {
     throw new Error(`Invalid snapshot date format: ${set.date}. Expected YYYY-MM-DD.`);
   }
   const filename = `${set.date}.json`;
@@ -206,10 +220,7 @@ export function renderDiffReport(report: FeatureDiffReport): string {
   lines.push(``, `**Prior snapshot:** ${priorDate}  `, `**Current snapshot:** ${currentDate}`);
 
   const totalNew = pageDiffs.reduce((n, d) => n + d.newToggles.length + d.newFeatures.length, 0);
-  const totalRemoved = pageDiffs.reduce(
-    (n, d) => n + d.removedToggles.length + d.removedFeatures.length,
-    0,
-  );
+  const totalRemoved = pageDiffs.reduce((n, d) => n + d.removedToggles.length + d.removedFeatures.length, 0);
   lines.push(
     ``,
     `## Summary`,
@@ -415,10 +426,8 @@ export async function main(argv: readonly string[]): Promise<number> {
     process.stdout.write(markdown + "\n");
   }
 
-  const hasNewCandidates = report.pagesAdded.length > 0 ||
-    report.pageDiffs.some(
-      (d) => d.newToggles.length > 0 || d.newFeatures.length > 0,
-    );
+  const hasNewCandidates =
+    report.pagesAdded.length > 0 || report.pageDiffs.some((d) => d.newToggles.length > 0 || d.newFeatures.length > 0);
   if (hasNewCandidates) {
     process.stderr.write(`new feature candidates detected — triage recommended\n`);
     return 2;

@@ -104,7 +104,7 @@ describe("diffPageSnapshots — toggles", () => {
     const prior = makeSnapshot(BASE_URL, { toggles: {} });
     const current = makeSnapshot(BASE_URL, { toggles: { "feature-a": true, "feature-b": false } });
     const diff = diffPageSnapshots(prior, current);
-    expect([...diff.newToggles].sort()).toEqual(["feature-a", "feature-b"]);
+    expect(diff.newToggles).toEqual(["feature-a", "feature-b"]);
   });
 
   test("empty current: all prior toggles are removed", () => {
@@ -147,6 +147,14 @@ describe("diffPageSnapshots — visible features", () => {
     const diff = diffPageSnapshots(prior, current);
     expect(diff.newFeatures).toHaveLength(0);
     expect(diff.removedFeatures).toHaveLength(0);
+  });
+
+  test("new and removed headings are sorted for deterministic reports", () => {
+    const prior = makeSnapshot(BASE_URL, { visibleFeatures: ["z-prior", "a-prior"] });
+    const current = makeSnapshot(BASE_URL, { visibleFeatures: ["z-current", "a-current"] });
+    const diff = diffPageSnapshots(prior, current);
+    expect(diff.newFeatures).toEqual(["a-current", "z-current"]);
+    expect(diff.removedFeatures).toEqual(["a-prior", "z-prior"]);
   });
 });
 
@@ -270,6 +278,41 @@ describe("diffSnapshotSets", () => {
     const report = diffSnapshotSets(priorSet, currentSet);
     const settingsDiff = report.pageDiffs.find((d) => d.url === BASE_URL);
     expect(settingsDiff?.newToggles).toContain("copilot-autofix");
+  });
+
+  test("new page contributes feature candidates to pageDiffs", () => {
+    const NEW_URL = "https://github.com/Lucent-Financial-Group/Zeta/settings/actions";
+    const currentSet: SnapshotSet = {
+      date: "2026-05-08",
+      pages: {
+        [NEW_URL]: makeSnapshot(NEW_URL, {
+          toggles: { "workflow-permissions": true },
+          formValues: { "actions-default": "enabled" },
+          visibleFeatures: ["Actions permissions"],
+        }),
+      },
+    };
+    const report = diffSnapshotSets({ date: "2026-05-01", pages: {} }, currentSet);
+    const diff = report.pageDiffs.find((d) => d.url === NEW_URL);
+    expect(report.pagesAdded).toEqual([NEW_URL]);
+    expect(diff?.newToggles).toEqual(["workflow-permissions"]);
+    expect(diff?.newFeatures).toEqual(["Actions permissions"]);
+    expect(diff?.newFormFields).toEqual(["actions-default"]);
+  });
+
+  test("page and diff ordering is deterministic", () => {
+    const zUrl = "https://github.com/Lucent-Financial-Group/Zeta/settings/z";
+    const aUrl = "https://github.com/Lucent-Financial-Group/Zeta/settings/a";
+    const currentSet: SnapshotSet = {
+      date: "2026-05-08",
+      pages: {
+        [zUrl]: makeSnapshot(zUrl, { toggles: { z: true } }),
+        [aUrl]: makeSnapshot(aUrl, { toggles: { a: true } }),
+      },
+    };
+    const report = diffSnapshotSets({ date: "2026-05-01", pages: {} }, currentSet);
+    expect(report.pagesAdded).toEqual([aUrl, zUrl]);
+    expect(report.pageDiffs.map((d) => d.url)).toEqual([aUrl, zUrl]);
   });
 });
 
@@ -459,6 +502,12 @@ describe("saveSnapshotSet / loadSnapshotSet", () => {
     const set: SnapshotSet = { date: "2026-05-08", pages: {} };
     const outPath = saveSnapshotSet(set, dir);
     expect(outPath).toContain("2026-05-08.json");
+  });
+
+  test("saveSnapshotSet rejects unsafe date-derived filenames", () => {
+    const dir = tempDir();
+    const set: SnapshotSet = { date: "../2026-05-08", pages: {} };
+    expect(() => saveSnapshotSet(set, dir)).toThrow("YYYY-MM-DD");
   });
 
   test("saveSnapshotSet creates directory if absent", () => {
