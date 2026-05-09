@@ -1,7 +1,7 @@
 ---
 id: B-0335
 priority: P1
-status: open
+status: done
 title: Memory schema validation tooling — TS linter enforcing format standard mechanically
 tier: foundation
 effort: M
