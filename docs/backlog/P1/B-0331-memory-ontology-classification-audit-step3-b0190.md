@@ -1,13 +1,13 @@
 ---
 id: B-0331
 priority: P1
-status: open
+status: done
 title: Memory ontology/classification audit — reclassify mistyped feedback/project/user/reference files
 tier: foundation
 effort: M
 ask: B-0190 Step 3 decomposition
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 parent: B-0190
 depends_on: [B-0330]
 composes_with: [B-0190, B-0330, B-0332]
@@ -54,6 +54,20 @@ subjective.
 ~936 files to audit; batch tooling needed; MEMORY.md index
 updates cascade.
 
+## Completion notes (2026-05-09)
+
+Audit tool built at `tools/hygiene/audit-memory-ontology.ts`.
+Scanned 623 memory files; found only 2 misclassified (both had
+`type: project` in frontmatter but `feedback_` prefix):
+
+1. `feedback_human_maintainer_is_hari_seldon_archetype_...` ->
+   `project_human_maintainer_is_hari_seldon_archetype_...`
+2. `feedback_uncertainty_spanner_cockroachdb_tidb_...` ->
+   `project_uncertainty_spanner_cockroachdb_tidb_...`
+
+Both renamed and MEMORY.md index updated. Post-fix audit: 623/623
+files matched (0 mismatches, 0 missing type fields).
+
 ## Prior art
 
 - `memory/README.md` — taxonomy definition.
@@ -61,3 +75,5 @@ updates cascade.
   integrity checker (exists).
 - `tools/hygiene/audit-memory-index-duplicates.ts` — duplicate
   detector (exists).
+- `tools/hygiene/audit-memory-ontology.ts` — ontology/classification
+  audit tool (new, this PR).
