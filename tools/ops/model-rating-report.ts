@@ -31,8 +31,26 @@ const RATE_CARD: Record<string, { input: number; output: number; cacheRead: numb
     "haiku":  { input:  0.80 / 1_000_000, output:  4.00 / 1_000_000, cacheRead: 0.08 / 1_000_000, cacheCreate:  1.00 / 1_000_000 },
 };
 
+const warnedModels = new Set<string>();
+
+function normalizeModelTier(model: string): string | undefined {
+    const lower = model.toLowerCase();
+    if (lower.includes("opus")) return "opus";
+    if (lower.includes("sonnet")) return "sonnet";
+    if (lower.includes("haiku")) return "haiku";
+    return undefined;
+}
+
 function deriveCost(r: Rating): number {
-    const rates = RATE_CARD[r.model] ?? RATE_CARD["sonnet"]!;
+    const tier = normalizeModelTier(r.model);
+    if (!tier) {
+        if (!warnedModels.has(r.model)) {
+            console.warn(`Warning: unknown model "${r.model}" — cost set to $0`);
+            warnedModels.add(r.model);
+        }
+        return 0;
+    }
+    const rates = RATE_CARD[tier]!;
     return (r.input_tokens ?? 0) * rates.input
         + (r.output_tokens ?? 0) * rates.output
         + (r.cache_read_tokens ?? 0) * rates.cacheRead
@@ -120,6 +138,13 @@ function fetchPrReviews(prNumber: number): ReviewFinding[] {
     } catch {
         return [];
     }
+}
+
+function hasTokenData(r: Rating): boolean {
+    return (r.input_tokens ?? 0) > 0
+        || (r.output_tokens ?? 0) > 0
+        || (r.cache_read_tokens ?? 0) > 0
+        || (r.cache_creation_tokens ?? 0) > 0;
 }
 
 function durationSec(r: Rating): number {
@@ -250,7 +275,7 @@ export function main(argv: string[] = process.argv) {
 
         for (const model of models) {
             const data = byModel.get(model)!;
-            const withTokens = data.filter(r => (r.input_tokens ?? 0) > 0 || (r.output_tokens ?? 0) > 0);
+            const withTokens = data.filter(hasTokenData);
             const totalInput = data.reduce((s, r) => s + (r.input_tokens ?? 0), 0);
             const totalOutput = data.reduce((s, r) => s + (r.output_tokens ?? 0), 0);
             const totalCacheRead = data.reduce((s, r) => s + (r.cache_read_tokens ?? 0), 0);
@@ -274,8 +299,11 @@ export function main(argv: string[] = process.argv) {
         console.log("| " + costWidths.map(w => "-".repeat(w)).join(" | ") + " |");
         for (const row of costRows) console.log(padRow(row, costWidths));
 
-        console.log(`\nRate card: opus=$15/$75 sonnet=$3/$15 haiku=$0.80/$4 per MTok (in/out)`);
-        console.log(`Cache: read=10% of input, create=125% of input`);
+        const rateLines = Object.entries(RATE_CARD).map(([tier, r]) =>
+            `${tier}=$${(r.input * 1_000_000).toFixed(2)}/$${(r.output * 1_000_000).toFixed(2)}`
+        ).join(" ");
+        console.log(`\nRate card: ${rateLines} per MTok (in/out)`);
+        console.log(`Cache: read=${Object.values(RATE_CARD).map(r => `${((r.cacheRead / r.input) * 100).toFixed(0)}%`)[0]} of input, create=${Object.values(RATE_CARD).map(r => `${((r.cacheCreate / r.input) * 100).toFixed(0)}%`)[0]} of input`);
     }
 
     // === PR review failure categories ===
@@ -374,7 +402,7 @@ export function main(argv: string[] = process.argv) {
         const dur = durationSec(r).toFixed(0);
         const pr = r.pr_number ? `PR#${r.pr_number}` : "--";
         const err = r.had_build_error ? "BUILD-ERR" : r.had_test_failure ? "TEST-FAIL" : "clean";
-        const cost = (r.input_tokens ?? 0) > 0 ? `$${deriveCost(r).toFixed(4)}` : "";
+        const cost = hasTokenData(r) ? `$${deriveCost(r).toFixed(4)}` : "";
         console.log(`  ${r.started_at} ${(r.model ?? "unknown").padEnd(8)} ${r.mode.padEnd(7)} ${dur}s ${pr.padEnd(8)} ${err.padEnd(10)} ${cost}`);
     }
 
