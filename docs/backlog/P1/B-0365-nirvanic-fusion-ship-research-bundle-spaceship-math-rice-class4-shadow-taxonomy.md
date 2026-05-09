@@ -39,12 +39,12 @@ B-0365.2 (shadow log backfill)        ──┐                   │
 
 | Child | Title | Effort | Deps | Status |
 |-------|-------|--------|------|--------|
-| B-0365.1 | Spaceship math one-pager | S | none | open |
-| B-0365.2 | Shadow log backfill (catches 16-30) | M | none | open |
-| B-0365.3 | Class 4 empirical analysis doc | M | B-0365.2 | blocked |
-| B-0365.4 | Reactor dynamics model doc | M | none | open |
+| B-0365.1 | Spaceship math one-pager | S | none | done |
+| B-0365.2 | Shadow log backfill (catches 16-30) | M | none | done |
+| B-0365.3 | Class 4 empirical analysis doc | M | B-0365.2 | done |
+| B-0365.4 | Reactor dynamics model doc | M | none | done |
 | B-0365.5 | Infer.NET BP/EP architecture doc | M | none | open |
-| B-0365.6 | Publishable claim synthesis | M | all above | blocked |
+| B-0365.6 | Publishable claim synthesis | M | all above | done |
 
 ## What
 
