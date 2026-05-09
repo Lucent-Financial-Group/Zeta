@@ -1,6 +1,6 @@
 ---
 name: linq-expert
-description: "LINQ — IQueryable/IEnumerable, expression-tree providers, SelectMany monad, Nuqleon query serialisation, Standard Query Operators, Zeta operator algebra."
+description: LINQ — IQueryable/IEnumerable, expression trees, SelectMany monad, Nuqleon serialisation, Zeta algebra.
 ---
 
 # LINQ Expert — Language-Integrated Query Hat

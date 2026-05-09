@@ -1,6 +1,6 @@
 ---
 name: tla-expert
-description: TLA+ specification idioms for Zeta's 18 specs under tools/tla/specs/ — operators, fairness, refinement mappings, TLC model checking, TLAPS proof discipline.
+description: TLA+ — operators, fairness, refinement mappings, TLC model checking, TLAPS proof discipline.
 ---
 
 # TLA+ Expert — Procedure + Lore

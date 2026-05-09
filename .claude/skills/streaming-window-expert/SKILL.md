@@ -1,6 +1,6 @@
 ---
 name: streaming-window-expert
-description: Windowed streaming aggregation — tumbling/hopping/session windows, watermark policy, late-event handling, allowed-lateness, retraction-native window deltas.
+description: Windowed streaming — tumbling/hopping/session windows, watermarks, late events, retraction-native deltas.
 ---
 
 # Streaming Window Expert — Windowed Aggregation Narrow
