@@ -7,6 +7,7 @@ created: 2026-05-09
 ---
 
 # B-0374 F# Units of Measure for fusion-equation terms
+
 **Origin:** claude.ai asymmetric-critic session (2026-05-07) + Aaron 2026-05-09
 
 ## Problem
