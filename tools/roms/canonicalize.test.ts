@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { existsSync, mkdtempSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
@@ -191,23 +191,34 @@ describe("matchAndReport", () => {
 describe("main", () => {
   test("reports missing datfile value clearly", () => {
     const originalStderrWrite = process.stderr.write;
-    const originalExit = process.exit;
     let stderr = "";
 
     process.stderr.write = ((chunk: string | Uint8Array) => {
       stderr += String(chunk);
       return true;
     }) as typeof process.stderr.write;
-    process.exit = ((code?: number) => {
-      throw new Error(`exit:${code}`);
-    }) as typeof process.exit;
 
     try {
-      expect(() => main(["--datfile", "--dir", "/tmp"])).toThrow("exit:64");
+      const code = main(["--datfile"]);
+      expect(code).toBe(64);
       expect(stderr).toContain("missing value for --datfile");
     } finally {
       process.stderr.write = originalStderrWrite;
-      process.exit = originalExit;
+    }
+  });
+
+  test("accepts hyphen-prefixed datfile and directory values", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "rom-cli-hyphen-"));
+    const originalCwd = process.cwd();
+    writeFileSync(join(tmp, "-set.dat"), FIXTURE_DATFILE);
+    mkdirSync(join(tmp, "-roms"));
+
+    try {
+      process.chdir(tmp);
+      const code = main(["--datfile", "-set.dat", "--dir", "-roms"]);
+      expect(code).toBe(0);
+    } finally {
+      process.chdir(originalCwd);
     }
   });
 });

@@ -253,6 +253,15 @@ interface Args {
   readonly apply: boolean;
 }
 
+class ArgError extends Error {
+  readonly exitCode: number;
+
+  constructor(message: string, exitCode: number) {
+    super(message);
+    this.exitCode = exitCode;
+  }
+}
+
 function parseArgs(argv: readonly string[]): Args {
   let datfile: string | undefined;
   let dir: string | undefined;
@@ -260,9 +269,8 @@ function parseArgs(argv: readonly string[]): Args {
 
   function readOptionValue(index: number, flag: string): string {
     const value = argv[index + 1];
-    if (value === undefined || value.startsWith("-")) {
-      process.stderr.write(`missing value for ${flag}\n`);
-      process.exit(64);
+    if (value === undefined) {
+      throw new ArgError(`missing value for ${flag}`, 64);
     }
     return value;
   }
@@ -284,26 +292,32 @@ function parseArgs(argv: readonly string[]): Args {
           "  --dir          Directory containing ROM files to match.\n" +
           "  --apply        Actually rename files (default: dry-run report).\n",
       );
-      process.exit(0);
+      throw new ArgError("", 0);
     } else {
-      process.stderr.write(`unknown arg: ${arg}\n`);
-      process.exit(64);
+      throw new ArgError(`unknown arg: ${arg}`, 64);
     }
   }
 
   if (!datfile) {
-    process.stderr.write("--datfile is required\n");
-    process.exit(64);
+    throw new ArgError("--datfile is required", 64);
   }
   if (!dir) {
-    process.stderr.write("--dir is required\n");
-    process.exit(64);
+    throw new ArgError("--dir is required", 64);
   }
   return { datfile, dir, apply };
 }
 
 export function main(argv: readonly string[]): number {
-  const args = parseArgs(argv);
+  let args: Args;
+  try {
+    args = parseArgs(argv);
+  } catch (e) {
+    if (e instanceof ArgError) {
+      if (e.message) process.stderr.write(`${e.message}\n`);
+      return e.exitCode;
+    }
+    throw e;
+  }
 
   if (!existsSync(args.datfile)) {
     process.stderr.write(`datfile not found: ${args.datfile}\n`);
