@@ -179,6 +179,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0344](backlog/P1/B-0344-run-23-hour-recreation-experiment-b0193.md)** Run the 23-hour recreation experiment — fresh-context Otto against specs-only repo
 - [ ] **[B-0345](backlog/P1/B-0345-document-recreation-findings-b0193.md)** Document recreation findings — research-grade preservation of experiment results
 - [ ] **[B-0346](backlog/P1/B-0346-backport-spec-gaps-to-openspec-b0193.md)** Back-port spec gaps to OpenSpec — close gaps the recreation experiment reveals
+- [ ] **[B-0347](backlog/P1/B-0347-carved-sentence-skill-descriptions-routing-budget.md)** Carved-sentence skill descriptions — fit 200+ skills into routing budget
 
 ## P2 — research-grade
 
