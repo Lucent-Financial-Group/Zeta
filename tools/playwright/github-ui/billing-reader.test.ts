@@ -55,6 +55,16 @@ describe("extractUsageMetric — progress element", () => {
     expect(result.used).toBe(0);
     expect(result.included).toBe(2000);
   });
+
+  test("extracts used and included when aria-valuemax precedes aria-valuenow", () => {
+    const html = `<section>
+      <h2>Actions</h2>
+      <progress aria-valuemax="3000" aria-valuenow="2345" value="2345" max="3000"></progress>
+    </section>`;
+    const result = extractUsageMetric(html, "Actions");
+    expect(result.used).toBe(2345);
+    expect(result.included).toBe(3000);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -122,6 +132,11 @@ describe("extractCopilotSeats", () => {
   test("extracts bare seat count", () => {
     const html = `<div><h2>Copilot</h2><span>5 seats</span></div>`;
     expect(extractCopilotSeats(html)).toBe(5);
+  });
+
+  test("extracts comma-formatted seat count (>999)", () => {
+    const html = `<div><h2>GitHub Copilot</h2><p>1,234 active seats</p></div>`;
+    expect(extractCopilotSeats(html)).toBe(1234);
   });
 
   test("returns null when Copilot section absent", () => {

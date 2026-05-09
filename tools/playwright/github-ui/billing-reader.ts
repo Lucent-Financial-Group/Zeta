@@ -73,15 +73,30 @@ export function parseUsageNumber(text: string): number | null {
 export function extractUsageMetric(html: string, sectionKeyword: string): UsageMetric {
   const kwEsc = sectionKeyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-  // Strategy 1: <progress aria-valuenow="N" aria-valuemax="N">
-  const progressPattern = new RegExp(
-    `${kwEsc}[\\s\\S]{0,3000}?aria-valuenow\\s*=\\s*["'](\\d+(?:\\.\\d+)?)["'][\\s\\S]{0,500}?aria-valuemax\\s*=\\s*["'](\\d+(?:\\.\\d+)?)["']`,
+  // Strategy 1: <progress aria-valuenow="N" aria-valuemax="N"> — attribute order not guaranteed.
+  const numAttr = `(\\d+(?:\\.\\d+)?)`;
+  const progressPatternNowFirst = new RegExp(
+    `${kwEsc}[\\s\\S]{0,3000}?aria-valuenow\\s*=\\s*["']${numAttr}["'][\\s\\S]{0,500}?aria-valuemax\\s*=\\s*["']${numAttr}["']`,
     "i",
   );
-  const progressMatch = progressPattern.exec(html);
-  if (progressMatch) {
-    const used = parseFloat(progressMatch[1] as string);
-    const included = parseFloat(progressMatch[2] as string);
+  const progressPatternMaxFirst = new RegExp(
+    `${kwEsc}[\\s\\S]{0,3000}?aria-valuemax\\s*=\\s*["']${numAttr}["'][\\s\\S]{0,500}?aria-valuenow\\s*=\\s*["']${numAttr}["']`,
+    "i",
+  );
+  const nowFirstMatch = progressPatternNowFirst.exec(html);
+  if (nowFirstMatch) {
+    const used = parseFloat(nowFirstMatch[1] as string);
+    const included = parseFloat(nowFirstMatch[2] as string);
+    return {
+      used: isFinite(used) ? used : null,
+      included: isFinite(included) ? included : null,
+    };
+  }
+  const maxFirstMatch = progressPatternMaxFirst.exec(html);
+  if (maxFirstMatch) {
+    // groups: [1]=valuemax, [2]=valuenow — swap to used/included semantics
+    const included = parseFloat(maxFirstMatch[1] as string);
+    const used = parseFloat(maxFirstMatch[2] as string);
     return {
       used: isFinite(used) ? used : null,
       included: isFinite(included) ? included : null,
@@ -122,10 +137,10 @@ export function extractUsageMetric(html: string, sectionKeyword: string): UsageM
  * Returns null when Copilot is not listed on the page.
  */
 export function extractCopilotSeats(html: string): number | null {
-  const pattern = /Copilot[\s\S]{0,2000}?(\d+)\s*(?:active\s+)?seat/i;
+  const pattern = /Copilot[\s\S]{0,2000}?([\d,]+)\s*(?:active\s+)?seat/i;
   const match = pattern.exec(html);
   if (!match) return null;
-  const val = parseInt(match[1] as string, 10);
+  const val = parseInt((match[1] as string).replace(/,/g, ""), 10);
   return isFinite(val) ? val : null;
 }
 
