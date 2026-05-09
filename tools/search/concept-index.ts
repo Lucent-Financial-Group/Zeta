@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
-// concept-index.ts — B-0362
+// concept-index.ts — B-0362 (smallest safe slice, re-decomposed)
 // Materialized concept index: regex standing queries over the
-// corpus produce a term->file mapping. Rebuild is sub-second.
+// corpus produce a term->file mapping. Lookup is sub-second; rebuild ~11s.
 //
 // Guardrails (Vera 2026-05-09):
 // 1. Curated, not corpus-wide — add query classes deliberately
