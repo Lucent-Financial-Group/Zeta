@@ -39,6 +39,19 @@ and the entire language not possible of sharp."*
   primitive (weight 1 = sharp, weight 0.7 = round)
 - **B-0358**: incremental step (API returns float instead of bool)
 
+## Three-mode design (Aaron 2026-05-09)
+
+| Mode | Effect | Use case |
+| ---- | ------ | -------- |
+| `probabilistic: strict` | Enforces roundness — sharp is a compile error unless explicitly derived from a distribution | API surfaces, quality scoring, veridicality gates |
+| `probabilistic: normal` | Both sharp and round available, no enforcement | Default for most code |
+| `probabilistic: disable` | Fast path — real bools, no distribution overhead | Hot-path SIMD kernels, spine compaction, merge loops |
+
+Same pattern as F#'s `--strict` / default / optimization
+pragmas. The `disable` mode is the performance escape hatch:
+code that operates on concrete values where sharp IS correct
+opts out of distribution tracking entirely.
+
 ## Research questions
 
 1. Can F#'s type system express "all returns are distributions"
@@ -50,6 +63,9 @@ and the entire language not possible of sharp."*
    (Retractions as negative probabilities = signed measures)
 4. What's the relationship to quantum type systems?
    (Superposition = distribution over basis states)
+5. How does `probabilistic: disable` compose with the .NET JIT?
+   (Can the mode boundary be a compilation-unit pragma that
+   eliminates distribution-wrapper allocations?)
 
 ## Not in scope for B-0358
 
