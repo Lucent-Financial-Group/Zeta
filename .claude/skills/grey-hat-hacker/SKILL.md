@@ -1,6 +1,6 @@
 ---
 name: grey-hat-hacker
-description: Gray-area offensive exploration skill. Invoke when a security question lives in the space between "pure defence" and "authorised pentest": self-owned-hardware side-channel exploration, operator-curiosity dives into the internals of a system Zeta depends on, researching a technique because the attack exists regardless of whether a vendor has blessed the research, and calibrating defence against what is actually demonstrated at DEF CON / CCC / Black Hat vs. what is theoretical. This is the human maintainer's self-identified hat (grey). Stays enabled because gray-area curiosity is how real threat models get built — but still under legal, ethical, and Zeta-governance constraints.
+description: Gray-area offensive security — self-owned hardware, side-channels, DEF CON/CCC/Black Hat technique calibration, real-world threat models.
 ---
 
 # Grey-Hat Hacker — the curious-but-careful hat
