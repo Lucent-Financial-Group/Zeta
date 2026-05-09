@@ -89,13 +89,13 @@ type QualitySeverity =
 
 /// A single measurement outcome. `Score` is normalised to `[0.0, 1.0]`
 /// where `0.0` means the dimension looks clean and `1.0` means the
-/// dimension is maximally suspect. Callers compose findings through
+/// dimension is maximally divergent. Callers compose findings through
 /// `composite`.
 [<Struct>]
 type QualityFinding = {
     Dimension: QualityDimension
     Severity: QualitySeverity
-    /// Suspicion score in `[0.0, 1.0]`; higher = lower quality.
+    /// Disagreement score in `[0.0, 1.0]`; higher = lower quality.
     Score: float
     Evidence: string
 }
@@ -129,7 +129,7 @@ module SignalQuality =
     // read without re-deriving band cutoffs themselves.
     // ───────────────────────────────────────────────────────────────
 
-    /// Translate a `[0.0, 1.0]` suspicion score into a severity band.
+    /// Translate a `[0.0, 1.0]` disagreement score into a severity band.
     /// Cutoffs chosen to match the teaching-direction bands used in
     /// the operator-input quality log (1.0-2.4 / 2.5-3.9 / 4.0-5.0),
     /// rescaled to the `[0.0, 1.0]` range used here: `< 0.30` = Pass,
@@ -154,7 +154,7 @@ module SignalQuality =
     /// carries meaningful signal. Below this threshold the gzip
     /// header + trailer overhead (~20 bytes) dominates the output
     /// size and the ratio is deterministically close to `1.0` — so
-    /// the dimension would report maximum suspicion for any short
+    /// the dimension would report maximum disagreement for any short
     /// legitimate string, producing spurious Quarantine verdicts
     /// unrelated to content quality. `compressionRatio` short-
     /// circuits to `0.0` (neutral) below this bound.
@@ -202,7 +202,7 @@ module SignalQuality =
                 elif ratio > 1.0 then 1.0
                 else ratio
 
-    /// Compression-dimension measure. Suspicion score is the
+    /// Compression-dimension measure. Disagreement score is the
     /// compression ratio directly — high ratio means low structural
     /// regularity, which is a bullshit signal in the spec's framing.
     /// Evidence reports the UTF-8 byte length (the quantity the
@@ -280,7 +280,7 @@ module SignalQuality =
     /// over-retracted entries (`Weight < 0L`) are ignored — the
     /// former are "no claim"; the latter are contradictions already
     /// captured by `consistencyMeasure`, so counting them here would
-    /// double-penalise the stream and inflate suspicion.
+    /// double-penalise the stream and inflate the score.
     let groundingWith (predicate: string -> bool) (claims: ZSet<string>) : float =
         let span = claims.AsSpan()
         if span.IsEmpty then 1.0
@@ -294,18 +294,18 @@ module SignalQuality =
             if total = 0 then 1.0
             else float grounded / float total
 
-    /// Grounding-dimension measure. Suspicion score = `1 - grounded`
-    /// so that high grounding produces low suspicion, matching the
+    /// Grounding-dimension measure. Disagreement = `1 - grounded`
+    /// so that high grounding produces low disagreement, matching the
     /// composite-math convention.
     let groundingMeasure (predicate: string -> bool) : IQualityMeasure<ZSet<string>> =
         { new IQualityMeasure<ZSet<string>> with
             member _.Dimension = Grounding
             member _.Measure(claims: ZSet<string>) =
                 let grounded = groundingWith predicate claims
-                let suspicion = 1.0 - grounded
+                let disagreement = 1.0 - grounded
                 { Dimension = Grounding
-                  Severity = severityOfScore suspicion
-                  Score = suspicion
+                  Severity = severityOfScore disagreement
+                  Score = disagreement
                   Evidence = sprintf "grounded=%.3f claims=%d" grounded claims.Count } }
 
 
@@ -352,17 +352,17 @@ module SignalQuality =
             if total = 0 then 1.0
             else scoreSum / float total
 
-    /// Falsifiability-dimension measure. Suspicion score =
-    /// `1 - falsifiable` (higher falsifiability = lower suspicion).
+    /// Falsifiability-dimension measure. Disagreement =
+    /// `1 - falsifiable` (higher falsifiability = lower disagreement).
     let falsifiabilityMeasure (predicate: string -> bool) : IQualityMeasure<ZSet<string>> =
         { new IQualityMeasure<ZSet<string>> with
             member _.Dimension = Falsifiability
             member _.Measure(claims: ZSet<string>) =
                 let falsifiable = falsifiabilityWith predicate claims
-                let suspicion = 1.0 - falsifiable
+                let disagreement = 1.0 - falsifiable
                 { Dimension = Falsifiability
-                  Severity = severityOfScore suspicion
-                  Score = suspicion
+                  Severity = severityOfScore disagreement
+                  Score = disagreement
                   Evidence = sprintf "falsifiable=%.3f claims=%d" falsifiable claims.Count } }
 
     /// Gradient falsifiability measure — scorer returns [0.0, 1.0] per claim.
@@ -402,16 +402,16 @@ module SignalQuality =
                 if span.[i].Weight >= 0L then consistent <- consistent + 1
             float consistent / float span.Length
 
-    /// Consistency-dimension measure. Suspicion = `1 - consistency`.
+    /// Consistency-dimension measure. Disagreement = `1 - consistency`.
     let consistencyMeasure : IQualityMeasure<ZSet<string>> =
         { new IQualityMeasure<ZSet<string>> with
             member _.Dimension = Consistency
             member _.Measure(claims: ZSet<string>) =
                 let consistency = consistencyScore claims
-                let suspicion = 1.0 - consistency
+                let disagreement = 1.0 - consistency
                 { Dimension = Consistency
-                  Severity = severityOfScore suspicion
-                  Score = suspicion
+                  Severity = severityOfScore disagreement
+                  Score = disagreement
                   Evidence = sprintf "consistent=%.3f claims=%d" consistency claims.Count } }
 
 
@@ -419,7 +419,7 @@ module SignalQuality =
     // Drift dimension — how far the current claim set has moved from
     // a prior snapshot. Computed as symmetric-difference cardinality
     // divided by union cardinality (Jaccard complement); low drift
-    // under new-evidence = suspicion low; high drift without new
+    // under new-evidence = disagreement low; high drift without new
     // evidence = goalpost-shifting.
     // ───────────────────────────────────────────────────────────────
 
