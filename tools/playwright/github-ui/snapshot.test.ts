@@ -165,6 +165,19 @@ describe("extractToggles", () => {
     const html = `<input type="checkbox" checked>`;
     expect(extractToggles(html)).toEqual({});
   });
+
+  test("treats checked='false' as true (HTML boolean attr — presence equals true)", () => {
+    const html = `<input type="checkbox" name="foo" checked="false">`;
+    expect(extractToggles(html)["foo"]).toBe(true);
+  });
+
+  test("does not confuse data-name with name attribute", () => {
+    const html = `<input type="checkbox" data-name="ignored" data-id="ignored-id" name="real" checked>`;
+    const result = extractToggles(html);
+    expect(result["real"]).toBe(true);
+    expect("ignored" in result).toBe(false);
+    expect("ignored-id" in result).toBe(false);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -200,6 +213,14 @@ describe("extractFormValues", () => {
 
   test("returns empty object for HTML with no text inputs", () => {
     expect(extractFormValues(EMPTY_HTML)).toEqual({});
+  });
+
+  test("does not confuse data-name with name (regression: parseAttr boundary)", () => {
+    const html = `<input type="text" data-name="wrong" data-id="wrong-id" name="correct" id="correct-id" value="v">`;
+    const result = extractFormValues(html);
+    expect(result["correct"]).toBe("v");
+    expect("wrong" in result).toBe(false);
+    expect("wrong-id" in result).toBe(false);
   });
 });
 

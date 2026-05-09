@@ -32,8 +32,12 @@ export function extractToggles(html: string): Record<string, boolean> {
     if (!/\btype\s*=\s*["']checkbox["']/i.test(attrs)) continue;
     const name = parseAttr(attrs, "name") ?? parseAttr(attrs, "id");
     if (!name) continue;
-    const hasChecked = /\bchecked\b/i.test(attrs) || /\baria-checked\s*=\s*["']true["']/i.test(attrs);
-    result[name] = hasChecked;
+    // HTML boolean attribute: presence of `checked` is true regardless of value.
+    // (?:^|\s) boundary prevents matching `data-checked` as the `checked` attr.
+    const isChecked =
+      /(?:^|\s)checked(?:\s|=|$)/i.test(attrs) ||
+      /\baria-checked\s*=\s*["']true["']/i.test(attrs);
+    result[name] = isChecked;
   }
   return result;
 }
@@ -102,7 +106,7 @@ export async function snapshotGitHubPage(
   }, options);
 }
 
-/** Parse a named HTML attribute value from an attribute string. */
+// (?:^|\s) boundary avoids matching hyphenated attr suffixes (e.g. data-id when seeking id).
 function parseAttr(attrs: string, name: string): string | null {
   const pattern = new RegExp(
     `(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>/'\"=]+))`,
