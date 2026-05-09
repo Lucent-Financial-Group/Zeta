@@ -14,8 +14,6 @@ type: feature
 tags: [search, lucene, inverted-index, git-native, full-text]
 ---
 
-# B-0363 — Git-native full-text inverted index
-
 ## What
 
 Build a Lucene-style inverted index stored as git-native
@@ -26,7 +24,7 @@ files. Three-layer search architecture (Vera tightening,
 | ----- | ------- | ---- | ----- |
 | Concept index (B-0362) | Curated regex standing queries | ~1MB | 22ms |
 | Full-text index (this) | Token / phrase / field search | ~5-10MB | <100ms |
-| Regex accelerator | Trigram/ngram candidates -> verify against source | thin | varies |
+| Regex accelerator | Trigram/ngram -> verify | thin | varies |
 
 The concept index handles "what touches Otto-357?" (standing
 queries). The full-text index handles "where did anyone mention
@@ -66,6 +64,7 @@ full text rx"
 ## First slice (Vera's gate, 2026-05-09)
 
 Do NOT rush to commit generated segments. First slice must be:
+
 1. Deterministic builder (same input → same output)
 2. Size report (how big is the index for current corpus?)
 3. Query demo (does it actually beat rg for the use cases?)
