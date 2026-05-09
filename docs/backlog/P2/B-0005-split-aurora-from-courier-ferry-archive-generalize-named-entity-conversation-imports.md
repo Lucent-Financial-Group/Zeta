@@ -229,3 +229,23 @@ This work is "good enough to ship" when:
   (peer-Claude exchanges land in the same home).
 - **Otto-181 BACKLOG schema** (this row's frontmatter
   schema source).
+
+## Re-decomposition (Riven, 2026-05-09) — assume original mistake
+
+Original B-0005 decomposition (Path A/B choice + 5-15 moves) is too broad for atomic PRs and lacks explicit dependency ordering. Re-decomposed into smallest dependency-ordered atomic child rows (each S-effort, one-PRSafe, verifiable in isolation). Root has no depends_on.
+
+**Atomic children (dependency order):**
+
+1. **B-0378** (P2, S, root): Inventory + classify every file under `docs/aurora/**` (current-state Aurora docs vs courier-ferry history imports). Produce machine-readable classification (no edits yet). Focused check: `rg --files docs/aurora` + manual type tally. Unblocks all downstream.
+
+2. **B-0379** (P2, S, depends_on: B-0378): Architect decision record for canonical name of named-entity-conversation-imports home (`docs/courier/**` vs `docs/cross-ai-imports/**` vs `docs/imported-conversations/**`). Update only B-0005 frontmatter + this row. No mass moves.
+
+3. **B-0380** (P2, S, depends_on: B-0379): Update `docs/AGENT-BEST-PRACTICES.md` BP-17/18 + Otto-279 memory file to replace `docs/aurora/**` history-surface ref with chosen name. Verify with canonical-home-auditor dry-run.
+
+4. **B-0381** (P2, S, depends_on: B-0378 + B-0379): GOVERNANCE.md §33 archive-header rule update + copilot-instructions.md mirror. Add explicit "named-entity-conversation-imports" category definition.
+
+5. **B-0382** (P2, M, depends_on: B-0380 + B-0381): Execute the split (Path A chosen in B-0379): mkdir new dir, git mv history files, update all cross-refs in memory/** + ROUND-HISTORY. Run full focused checks (build, auditor, rg).
+
+**Why this re-decomp fixes the mistake:** Original bundled decision + execution + schema updates into one M row. Now each atom is independently buildable/reviewable, with clear dep edges, matching "smallest dependency-ordered atomic" rule and "re-decompose during build" discipline. B-0005 now acts only as parent pointer (no direct implementation).
+
+**Next bounded step after this PR:** Pick B-0378 (root, S).
