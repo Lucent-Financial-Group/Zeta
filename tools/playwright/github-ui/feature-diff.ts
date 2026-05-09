@@ -448,8 +448,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     process.stdout.write(markdown + "\n");
   }
 
-  const hasNewCandidates =
-    report.pagesAdded.length > 0 || report.pageDiffs.some((d) => d.newToggles.length > 0 || d.newFeatures.length > 0);
+  const hasNewCandidates = report.pageDiffs.some((d) => d.newToggles.length > 0 || d.newFeatures.length > 0);
   if (hasNewCandidates) {
     process.stderr.write(`new feature candidates detected — triage recommended\n`);
     return 2;

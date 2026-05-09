@@ -55,6 +55,29 @@ async function captureStderr(
   }
 }
 
+async function captureStreams(
+  action: () => Promise<number>,
+): Promise<{ readonly code: number; readonly stdout: string; readonly stderr: string }> {
+  const originalStdoutWrite = process.stdout.write;
+  const originalStderrWrite = process.stderr.write;
+  let stdout = "";
+  let stderr = "";
+  process.stdout.write = ((chunk: unknown) => {
+    stdout += String(chunk);
+    return true;
+  }) as typeof process.stdout.write;
+  process.stderr.write = ((chunk: unknown) => {
+    stderr += String(chunk);
+    return true;
+  }) as typeof process.stderr.write;
+  try {
+    return { code: await action(), stdout, stderr };
+  } finally {
+    process.stdout.write = originalStdoutWrite;
+    process.stderr.write = originalStderrWrite;
+  }
+}
+
 function makeSnapshot(
   url: string,
   overrides: Partial<{
@@ -583,6 +606,38 @@ describe("main", () => {
     const result = await captureStderr(() => main(["--prior", prior, "--current", current]));
     expect(result.code).toBe(1);
     expect(result.stderr).toContain("error diffing snapshot sets");
+  });
+
+  test("newly monitored empty pages do not trigger feature-candidate exit", async () => {
+    const dir = tempDir();
+    const prior = writeJson(dir, "prior.json", { date: "2026-05-01", pages: {} });
+    const addedUrl = "https://github.com/Lucent-Financial-Group/Zeta/settings/actions";
+    const current = writeJson(dir, "current.json", {
+      date: "2026-05-08",
+      pages: {
+        [addedUrl]: makeSnapshot(addedUrl),
+      },
+    });
+    const result = await captureStreams(() => main(["--prior", prior, "--current", current]));
+    expect(result.code).toBe(0);
+    expect(result.stdout).toContain("Pages added to monitoring");
+    expect(result.stderr).not.toContain("new feature candidates detected");
+  });
+
+  test("newly monitored pages with toggles still trigger feature-candidate exit", async () => {
+    const dir = tempDir();
+    const prior = writeJson(dir, "prior.json", { date: "2026-05-01", pages: {} });
+    const addedUrl = "https://github.com/Lucent-Financial-Group/Zeta/settings/actions";
+    const current = writeJson(dir, "current.json", {
+      date: "2026-05-08",
+      pages: {
+        [addedUrl]: makeSnapshot(addedUrl, { toggles: { "workflow-permissions": true } }),
+      },
+    });
+    const result = await captureStreams(() => main(["--prior", prior, "--current", current]));
+    expect(result.code).toBe(2);
+    expect(result.stdout).toContain("workflow-permissions");
+    expect(result.stderr).toContain("new feature candidates detected");
   });
 });
 
