@@ -7,10 +7,13 @@ Carved sentence (B-0192):
 
 ## Operational content
 
-On wake, run `gh issue list --repo Lucent-Financial-Group/Zeta
---label razor-cadence --state open` to check whether the daily
+On wake, run the following to check whether the daily
 razor-cadence workflow (`.github/workflows/razor-cadence.yml`,
-fires 09:17 UTC) has surfaced pending razor-pass work.
+fires 09:17 UTC) has surfaced pending razor-pass work:
+
+```
+gh issue list --repo Lucent-Financial-Group/Zeta --label razor-cadence --state open
+```
 
 The tracking issue carries a 5-item cadence checklist (Test 1
 metaphysical-cut, Test 2 unfalsifiability-cut, mechanization
