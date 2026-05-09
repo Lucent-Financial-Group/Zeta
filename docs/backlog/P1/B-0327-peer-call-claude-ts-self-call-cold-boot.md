@@ -77,7 +77,7 @@ preambles.
   (via prompt content, not special flags):
   1. "Read CLAUDE.md and report the wake-time floor."
   2. "Verify file X exists and summarise its purpose."
-  3. "Read CURRENT-aaron.md and report what's in force."
+  3. "Read memory/CURRENT-aaron.md and report what's in force."
 
 ## Done-criteria
 
