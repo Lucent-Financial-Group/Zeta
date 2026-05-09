@@ -150,41 +150,24 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
 interface OutputFileResult {
   readonly ok: boolean;
   readonly path: string;
-  readonly exclusive: boolean;
   readonly error: string;
 }
 
 function makeAutoPath(dir: string): string {
-  const ts = new Date()
-    .toISOString()
-    .replace(/[-:]/g, "")
-    .replace(/\.\d+Z$/, "Z");
+  const ts = new Date().toISOString().replace(/[-:.]/g, "").replace(/Z$/, "Z");
   const rand = Math.random().toString(36).slice(2, 8);
   return join(dir, `${ts}-kiro-${rand}.md`);
 }
 
 function resolveOutputFile(explicitPath: string): OutputFileResult {
-  if (explicitPath.startsWith("-")) {
-    return {
-      ok: false,
-      path: "",
-      exclusive: false,
-      error: `--output-file path cannot begin with '-': ${explicitPath}`,
-    };
-  }
   if (explicitPath.length > 0) {
     try {
       mkdirSync(dirname(explicitPath), { recursive: true });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      return {
-        ok: false,
-        path: "",
-        exclusive: false,
-        error: `failed to create parent dir for: ${explicitPath}: ${message}`,
-      };
+      return { ok: false, path: "", error: `failed to create parent dir for: ${explicitPath}: ${message}` };
     }
-    return { ok: true, path: explicitPath, exclusive: false, error: "" };
+    return { ok: true, path: explicitPath, error: "" };
   }
 
   const baseTmp = process.env["PEER_CALL_OUTPUT_DIR"] ?? "/tmp/peer-call-output";
@@ -199,13 +182,12 @@ function resolveOutputFile(explicitPath: string): OutputFileResult {
       return {
         ok: false,
         path: "",
-        exclusive: true,
         error: `failed to create output directory ${baseTmp} or fallback ${fallback}: ${message}`,
       };
     }
-    return { ok: true, path: makeAutoPath(fallback), exclusive: true, error: "" };
+    return { ok: true, path: makeAutoPath(fallback), error: "" };
   }
-  return { ok: true, path: makeAutoPath(baseTmp), exclusive: true, error: "" };
+  return { ok: true, path: makeAutoPath(baseTmp), error: "" };
 }
 
 function emitHelp(): void {
@@ -363,10 +345,10 @@ function runContextCmd(command: ContextCommand): ContextCommandResult {
   return { ok: true, value: `${result.stdout ?? ""}${result.stderr ?? ""}`.slice(0, CTX_HEAD_BYTES) };
 }
 
-function writeOutput(path: string, data: Buffer, exclusive: boolean): void {
+function writeOutput(path: string, data: Buffer): void {
   let fd: number | undefined;
   try {
-    fd = openSync(path, exclusive ? "wx" : "w", 0o600);
+    fd = openSync(path, "w", 0o600);
     writeSync(fd, data, 0, data.length, 0);
   } finally {
     if (fd !== undefined) closeSync(fd);
@@ -485,7 +467,7 @@ export function main(argv: readonly string[]): number {
   const stdoutBuf: Buffer = (result.stdout as Buffer | null) ?? Buffer.alloc(0);
   let writeError: string | null = null;
   try {
-    writeOutput(outputFile.path, stdoutBuf, outputFile.exclusive);
+    writeOutput(outputFile.path, stdoutBuf);
   } catch (err) {
     writeError = err instanceof Error ? err.message : String(err);
   }
