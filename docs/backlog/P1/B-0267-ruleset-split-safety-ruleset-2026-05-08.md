@@ -46,22 +46,15 @@ Third child of B-0155. Dedicated ruleset for branch safety
 
 ## Implementation
 
-Migration script: `tools/migrations/b0267-safety-ruleset.ts`
+Slice 1 skeleton: `tools/github/create-branch-safety-ruleset.ts`
 
-Order-independent with B-0266 — reads current Default rules
-and filters out safety types rather than assuming a fixed
-prior state. If Default ends up empty after removing safety
-rules, deletes it; otherwise updates with remaining rules.
+Dry-run-only skeleton for slice 1. Full gh api creation + Default
+ruleset update + tests are slice 2. Order-independent with B-0266.
 
 ### Run
 
 ```bash
-bun tools/migrations/b0267-safety-ruleset.ts
-```
-
-Dry run first:
-```bash
-bun tools/migrations/b0267-safety-ruleset.ts --dry-run
+bun tools/github/create-branch-safety-ruleset.ts --dry-run
 ```
 
 ## Evidence
