@@ -78,7 +78,10 @@ export function checkOrchestratorState(
   // Identify caller's own worktree by matching CWD (first entry is always main worktree per git docs).
   // Exclude it when scanning for other worktrees on expectedBranch (CWD-bleed-over hazard).
   const cwd = process.cwd();
-  const ownIdx = worktrees.findIndex((w) => cwd.startsWith(w.path));
+  // Use exact-boundary comparison: bare startsWith("/Zeta") would wrongly match "/Zeta-feature".
+  const ownIdx = worktrees.findIndex(
+    (w) => cwd === w.path || cwd.startsWith(w.path + "/"),
+  );
   const driftedWorktrees =
     expectedBranch && worktrees.length > 1
       ? worktrees

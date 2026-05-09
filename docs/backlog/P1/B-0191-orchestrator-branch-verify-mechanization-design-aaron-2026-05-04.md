@@ -1,7 +1,7 @@
 ---
 id: B-0191
 priority: P1
-status: done
+status: closed
 title: Orchestrator branch-verify mechanization design — pre-commit hook + branch-name display + worktree-aware checks (Aaron 2026-05-04)
 tier: foundation
 effort: M

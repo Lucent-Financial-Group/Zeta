@@ -10,7 +10,7 @@ import {
 } from "./check-orchestrator-state";
 
 describe("parseWorktreeList", () => {
-  test("parses a single bare worktree block", () => {
+  test("parses a single non-bare worktree block", () => {
     const raw = `worktree /repo\nHEAD abc123\nbranch refs/heads/main\n\n`;
     const entries = parseWorktreeList(raw);
     expect(entries).toHaveLength(1);
