@@ -184,17 +184,17 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0354](backlog/P1/B-0354-fresh-instance-validation-bootstrap-claude-md.md)** Fresh-instance validation test for bootstrap CLAUDE.md
 - [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
 - [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)
-- [ ] **[B-0357](backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md)** Replace tautology Z3 agenda/trajectory proofs with non-trivial verification
+- [x] **[B-0357](backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md)** Replace tautology Z3 agenda/trajectory proofs with non-trivial verification
 - [x] **[B-0358](backlog/P1/B-0358-bool-as-degenerate-distribution-confidence-typed-apis.md)** Bool as degenerate distribution — replace binary API returns with confidence scores
 - [ ] **[B-0361](backlog/P1/B-0361-anchor-to-human-lineage-step-in-formal-and-concept-workflows.md)** Anchor-to-human-lineage step in formal verification and concept workflows
 - [ ] **[B-0362](backlog/P1/B-0362-concept-search-index-for-instant-term-lookup.md)** Concept search index — pre-built term→file mapping for instant lookups
 - [ ] **[B-0364](backlog/P1/B-0364-policy-relocation-semantic-preservation-fscheck-property.md)** Policy relocation semantic preservation — FsCheck property for mobile DBSP query boundaries
-- [ ] **[B-0365](backlog/P1/B-0365-nirvanic-fusion-ship-research-bundle-spaceship-math-rice-class4-shadow-taxonomy.md)** Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy
+- [x] **[B-0365](backlog/P1/B-0365-nirvanic-fusion-ship-research-bundle-spaceship-math-rice-class4-shadow-taxonomy.md)** Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy
 - [x] **[B-0365.1](backlog/P1/B-0365.1-spaceship-math-one-pager-subscribe-vision-monad-cache-identity.md)** Spaceship math one-pager: subscribe primitive + vision monad + cache identity
 - [x] **[B-0365.2](backlog/P1/B-0365.2-shadow-log-backfill-catches-16-30-consensus-smoothness.md)** Shadow log backfill: catches 16-30 + consensus-smoothness meta-class
 - [x] **[B-0365.3](backlog/P1/B-0365.3-class4-empirical-analysis-wolfram-shadow-taxonomy.md)** Class 4 empirical analysis: Wolfram shadow taxonomy doc (30 catches, 8 classes)
 - [x] **[B-0365.4](backlog/P1/B-0365.4-reactor-dynamics-houman-learning-failure-landscape.md)** Reactor dynamics model: Houman's learning-failure-landscape refinement
-- [ ] **[B-0365.5](backlog/P1/B-0365.5-infernet-bp-ep-factor-graph-multi-agent-review-architecture.md)** Infer.NET BP/EP factor graph architecture: multi-agent review as belief propagation
+- [x] **[B-0365.5](backlog/P1/B-0365.5-infernet-bp-ep-factor-graph-multi-agent-review-architecture.md)** Infer.NET BP/EP factor graph architecture: multi-agent review as belief propagation
 - [x] **[B-0365.6](backlog/P1/B-0365.6-nirvanic-fusion-ship-publishable-claim-synthesis.md)** Nirvanic Fusion Ship publishable claim synthesis: paper outline + abstract
 - [ ] **[B-0366](backlog/P1/B-0366-fpga-toffoli-zset-reversible-heat-measurement.md)** FPGA Toffoli-gate Z-set test — measure reversible vs irreversible heat dissipation
 - [ ] **[B-0366.1](backlog/P1/B-0366.1-toffoli-gate-fsharp-type-model-zset-encoding.md)** F# Toffoli gate type model — Z-set assert/retract encoding with reversibility properties
@@ -207,7 +207,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0370](backlog/P1/B-0370-durable-computation-checkpoint-interface-extension-2026-05-08.md)** Durable computation — extend Checkpoint.fs with StableStorage mode
 - [ ] **[B-0371](backlog/P1/B-0371-pages-seo-metadata-jsonld-social-preview-2026-05-08.md)** Pages discoverability - SEO metadata, JSON-LD, and social previews
 - [ ] **[B-0372](backlog/P1/B-0372-pages-sitemap-robots-ai-crawler-policy-2026-05-08.md)** Pages discoverability - sitemap, robots, and AI crawler policy
-- [ ] **[B-0373](backlog/P1/B-0373-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
+- [x] **[B-0373](backlog/P1/B-0373-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
 
 ## P2 — research-grade
 
@@ -223,7 +223,20 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0021](backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md)** Aurora world-modeling — rigorous-why economic foundation; Austrian-school as primary candidate; anti-deception requirement (Keynesian opacity → unquestioned policy-power); investigate-don't-accept per Otto-322/331
 - [ ] **[B-0023](backlog/P2/B-0023-quant-grade-mathematical-rigor-applied-to-austrian-school-monetary-theory-open-research.md)** Quant-grade mathematical rigor applied to Austrian-school monetary theory — synthesis that doesn't exist cleanly in either school; open research, open source, real-time
 - [ ] **[B-0026](backlog/P2/B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md)** Embodiment-grounding analysis — Isaac Sim (or others) as additional axis of grounding for Claude/Otto, direct counter to Otto-340's "AI has no non-linguistic ground" claim
+- [ ] **[B-0026.1](backlog/P2/B-0026.1-embodiment-grounding-tool-use-vs-trained-embodiment-lit-review.md)** B-0026.1 — Lit review: tool-use-vs-trained-embodiment grounding distinction (Otto-340 structural nuance)
+- [ ] **[B-0026.2](backlog/P2/B-0026.2-embodiment-platform-adr-mujoco-vs-isaac-vs-genesis.md)** B-0026.2 — Platform ADR: MuJoCo vs Isaac Sim vs Genesis for embodiment grounding experiment
+- [ ] **[B-0026.3](backlog/P2/B-0026.3-embodiment-mujoco-spike-sensorimotor-loop.md)** B-0026.3 — MuJoCo spike: wire Claude API tool-use to sensorimotor loop
+- [ ] **[B-0026.4](backlog/P2/B-0026.4-embodiment-substantive-task-pick-and-place.md)** B-0026.4 — Substantive embodiment experiment: pick-and-place with vision + proprioception
+- [ ] **[B-0026.5](backlog/P2/B-0026.5-embodiment-behavioral-assessment-does-embodied-claude-differ.md)** B-0026.5 — Behavioral assessment: does embodied Claude differ on language tasks? (honest null-hypothesis)
+- [ ] **[B-0026.6](backlog/P2/B-0026.6-minimum-channel-grounding-helen-keller-hypothesis-assistive-tech.md)** B-0026.6 — Helen Keller minimum-channel hypothesis: dual-purpose grounding + assistive-tech research
 - [ ] **[B-0029](backlog/P2/B-0029-superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources.md)** Superfluid-AI substrate-enabled autonomous self-sustaining funding sources — research the surfaces where the substrate itself can generate economic value in background, closing the funding-time-focus loop so the work is self-sustaining
+- [ ] **[B-0029.1](backlog/P2/B-0029.1-funding-surface-survey-comparable-oss-projects.md)** B-0029.1 — Survey: comparable OSS/AI-substrate projects' funding state (GitHub Sponsors, Open Collective, npm funding)
+- [ ] **[B-0029.2](backlog/P2/B-0029.2-open-source-funding-setup-github-sponsors-npm-funding.md)** B-0029.2 — Setup: GitHub Sponsors profile + npm funding field (the 54th-package experiment)
+- [ ] **[B-0029.3](backlog/P2/B-0029.3-grants-survey-anthropic-microsoft-fsharp-dotnet-foundation.md)** B-0029.3 — Survey: AI/substrate research grants (Anthropic, Microsoft Research, F# Foundation, .NET Foundation)
+- [ ] **[B-0029.4](backlog/P2/B-0029.4-trading-bot-prerequisite-reframe-update-b0024.md)** B-0029.4 — Trading-bot path reframe: update B-0024 with Aaron's API-access offer (capability-gate, not infrastructure-gate)
+- [ ] **[B-0029.5](backlog/P2/B-0029.5-substrate-as-saas-market-validation.md)** B-0029.5 — Survey: substrate-as-SaaS market validation (hosted factory-discipline tooling opportunity)
+- [ ] **[B-0029.6](backlog/P2/B-0029.6-ip-research-output-licensing-pathways.md)** B-0029.6 — Survey: IP and research-output licensing pathways (academic grants, training-data licensing, course/book revenue)
+- [ ] **[B-0029.7](backlog/P2/B-0029.7-self-sustaining-loop-closure-measurement-design.md)** B-0029.7 — Measurement design: self-sustaining loop closure (does the funding → time-budget → output feedback loop close?)
 - [ ] **[B-0032](backlog/P2/B-0032-heartbeat-file-integrity-threat-model-aminata-review-direct-to-main-attack-surface.md)** Heartbeat-file integrity threat-model + Aminata adversarial review — Aaron 2026-04-26 surfaced direct-to-main attack surface; substrate-poisoning of heartbeat files = cognition-poisoning per Otto-339/340; per-commit-attestation (Sigstore/SLSA) gated on Bouncy Castle symbiosis foundation per Otto-346
 - [ ] **[B-0033](backlog/P2/B-0033-otto-discipline-hooks-system-substrate-as-mechanism-claude-code-plugin.md)** Otto-discipline hooks system — convert recurring failure-modes from language-layer substrate to harness-layer mechanism via Claude Code hooks; package as plugin (Aaron 2026-04-26 insight from "eval" hook firing)
 - [ ] **[B-0037](backlog/P2/B-0037-meta-cognition-first-class-factory-discipline.md)** Meta-cognition as first-class factory discipline — survey, audit cadence, measurables
