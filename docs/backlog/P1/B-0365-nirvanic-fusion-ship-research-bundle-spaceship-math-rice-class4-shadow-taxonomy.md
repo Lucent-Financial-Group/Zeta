@@ -1,7 +1,7 @@
 ---
 id: B-0365
 priority: P1
-status: done
+status: closed
 closed: 2026-05-09
 closed_by: "all 6 child rows done (B-0365.1–B-0365.6)"
 title: "Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy"

@@ -1,7 +1,7 @@
 ---
 id: B-0373
 priority: P1
-status: done
+status: closed
 closed: 2026-05-09
 closed_by: "adversarial review pass completed — Lemma 17 strengthened with stateA1≠stateA2 constraint"
 title: "Alignment proof primitive ladder — one type, one falsifiable property"
