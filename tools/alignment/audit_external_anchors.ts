@@ -111,34 +111,36 @@ export function extractUrlsFromWindow(
   windowLines = 20,
 ): AnchorEntry[] {
   const lines = content.split("\n");
-  // Find the first line that contains the concept ID as a token.
   const idPattern = new RegExp(`\\b${escapeRegex(conceptId)}\\b`);
-  const anchorIdx = lines.findIndex((l) => idPattern.test(l));
-  if (anchorIdx < 0) return [];
-
-  const start = Math.max(0, anchorIdx - windowLines);
-  const end = Math.min(lines.length, anchorIdx + windowLines + 1);
-  const window = lines.slice(start, end).join("\n");
 
   const seen = new Set<string>();
   const entries: AnchorEntry[] = [];
 
-  // Pass 1: markdown links (title available).
-  for (const m of window.matchAll(MARKDOWN_LINK_RE)) {
-    const title = m[1] ?? "";
-    const url = m[2] ?? "";
-    if (!seen.has(url)) {
-      seen.add(url);
-      entries.push({ url, kind: classifyUrl(url), title });
-    }
-  }
+  // Union URL windows across ALL occurrences of the concept ID.
+  // Scanning only the first occurrence misses anchors near later
+  // (often definition-section) mentions — P0 fix.
+  for (let anchorIdx = 0; anchorIdx < lines.length; anchorIdx++) {
+    if (!idPattern.test(lines[anchorIdx] ?? "")) continue;
 
-  // Pass 2: bare URLs not already captured.
-  for (const m of window.matchAll(BARE_URL_RE)) {
-    const url = m[0];
-    if (!seen.has(url)) {
-      seen.add(url);
-      entries.push({ url, kind: classifyUrl(url), title: "" });
+    const start = Math.max(0, anchorIdx - windowLines);
+    const end = Math.min(lines.length, anchorIdx + windowLines + 1);
+    const window = lines.slice(start, end).join("\n");
+
+    for (const m of window.matchAll(MARKDOWN_LINK_RE)) {
+      const title = m[1] ?? "";
+      const url = m[2] ?? "";
+      if (!seen.has(url)) {
+        seen.add(url);
+        entries.push({ url, kind: classifyUrl(url), title });
+      }
+    }
+
+    for (const m of window.matchAll(BARE_URL_RE)) {
+      const url = m[0];
+      if (!seen.has(url)) {
+        seen.add(url);
+        entries.push({ url, kind: classifyUrl(url), title: "" });
+      }
     }
   }
 
@@ -155,7 +157,7 @@ export type ConceptStatus = "anchored" | "anchor-pending";
 
 export interface ConceptCoverage {
   readonly id: string;
-  readonly conceptClass: string;
+  readonly class: string;
   readonly source: string;
   readonly status: ConceptStatus;
   readonly anchors: readonly AnchorEntry[];
@@ -174,20 +176,28 @@ const REPO_ROOT = resolve(import.meta.dir, "../..");
 
 function readSource(rel: string): string {
   const abs = join(REPO_ROOT, rel);
-  return existsSync(abs) ? readFileSync(abs, "utf8") : "";
+  if (!existsSync(abs)) {
+    process.stderr.write(`audit_external_anchors: source not found: ${rel}\n`);
+    return "";
+  }
+  return readFileSync(abs, "utf8");
 }
 
 export function audit(): AuditResult {
   const registry = buildRegistry();
   const concepts: ConceptCoverage[] = [];
+  const fileCache = new Map<string, string>();
 
   for (const concept of registry.concepts) {
-    const content = readSource(concept.source);
+    if (!fileCache.has(concept.source)) {
+      fileCache.set(concept.source, readSource(concept.source));
+    }
+    const content = fileCache.get(concept.source) ?? "";
     const anchors = extractUrlsFromWindow(content, concept.id, 20);
     const status: ConceptStatus = anchors.length > 0 ? "anchored" : "anchor-pending";
     concepts.push({
       id: concept.id,
-      conceptClass: concept.conceptClass,
+      class: concept.conceptClass,
       source: concept.source,
       status,
       anchors,
@@ -232,7 +242,7 @@ function emitMd(r: AuditResult): string {
             .map((a) => (a.title !== "" ? `[${a.title}](${a.url}) \`${a.kind}\`` : `${a.url} \`${a.kind}\``))
             .join("<br>")
         : "(none)";
-    lines.push(`| \`${c.id}\` | ${c.conceptClass} | ${c.source} | **${c.status}** | ${urlCells} |`);
+    lines.push(`| \`${c.id}\` | ${c.class} | ${c.source} | **${c.status}** | ${urlCells} |`);
   }
   lines.push("");
   return lines.join("\n");
@@ -250,7 +260,7 @@ function emitHumanSummary(r: AuditResult): string {
   if (pending.length > 0) {
     lines.push(`anchor-pending (${String(pending.length)}):`);
     for (const c of pending) {
-      lines.push(`  [${c.conceptClass}] ${c.id}  (${c.source})`);
+      lines.push(`  [${c.class}] ${c.id}  (${c.source})`);
     }
     lines.push("");
   }
@@ -260,7 +270,7 @@ function emitHumanSummary(r: AuditResult): string {
     lines.push(`anchored (${String(anchored.length)}):`);
     for (const c of anchored) {
       const firstUrl = c.anchors[0]?.url ?? "";
-      lines.push(`  [${c.conceptClass}] ${c.id}  ${firstUrl}`);
+      lines.push(`  [${c.class}] ${c.id}  ${firstUrl}`);
     }
   }
   return lines.join("\n");
@@ -309,6 +319,8 @@ function parseArgs(argv: readonly string[]): ParseResult {
     }
     return { kind: "error", message: `audit_external_anchors.ts: unknown arg: ${arg}` };
   }
+  if (state.json && state.md)
+    return { kind: "error", message: "audit_external_anchors.ts: --json and --md are mutually exclusive" };
   return { kind: "args", args: state };
 }
 
@@ -337,7 +349,12 @@ export function main(argv: readonly string[]): AuditExitCode {
     return 2;
   }
 
-  process.chdir(repoRoot());
+  try {
+    process.chdir(repoRoot());
+  } catch (e) {
+    process.stderr.write(`audit_external_anchors.ts: ${String(e)}\n`);
+    return 2;
+  }
 
   const { args } = parsed;
   const result = audit();
