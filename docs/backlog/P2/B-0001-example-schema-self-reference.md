@@ -18,7 +18,7 @@ type: friction-reducer
 
 This is a placeholder row that exists to:
 
-1. Exercise the `tools/backlog/generate-index.sh` generator
+1. Exercise the `tools/backlog/generate-index.ts` generator
    against a non-empty `docs/backlog/` tree, so drift-CI and
    manual `--check` runs have something to validate.
 2. Show contributors what the file shape looks like end-to-
@@ -53,7 +53,7 @@ recovered via `git log --diff-filter=D` if needed).
 ## Cross-references
 
 - `tools/backlog/README.md` — schema spec.
-- `tools/backlog/generate-index.sh` — the generator this
+- `tools/backlog/generate-index.ts` — the generator this
   file exercises.
 - `docs/research/backlog-split-design-otto-181.md` — full
   design spec.
