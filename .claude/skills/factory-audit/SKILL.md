@@ -1,6 +1,6 @@
 ---
 name: factory-audit
-description: Meta-meta skill — audits the software factory itself (governance rules, persona coverage, round cadence, memory hygiene, documentation landscape, reviewer protocol) and proposes structural improvements. Broader than `skill-gap-finder` (which only looks for absent skills) and than `skill-tune-up` (which only ranks existing skills). Outputs: proposed new § governance rules, persona spawns / reassignments, cadence adjustments, meta-process tweaks. Recommends only — no unilateral factory changes. Invoke every ~10 rounds or when a round surfaces a pattern that isn't a skill gap but a factory shape question.
+description: Factory audit — governance rules, persona coverage, round cadence, memory hygiene, documentation landscape, meta-process.
 ---
 
 # Factory Audit — Procedure
