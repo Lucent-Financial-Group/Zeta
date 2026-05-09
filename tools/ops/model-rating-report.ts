@@ -2,6 +2,7 @@
 // model-rating-report.ts — analyze background loop model A/B ratings
 
 import { readFileSync, existsSync } from "node:fs";
+import { homedir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -126,7 +127,7 @@ function padRow(cells: string[], widths: number[]): string {
 }
 
 export function main(argv: string[] = process.argv) {
-    const home = process.env.HOME ?? "/Users/acehack";
+    const home = process.env.HOME ?? homedir();
     const stateDir = process.env.ZETA_CLAUDE_LOOP_STATE_DIR
         ?? join(home, "Library/Application Support/ZetaClaudeLoop");
     const ratingsFile = join(stateDir, "model-ratings.jsonl");

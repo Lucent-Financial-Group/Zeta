@@ -40,6 +40,7 @@ At $15/M input tokens (Opus 4.6):
 | 50 devs + agents | ~5,000 | $91,250 | **$63,875** |
 
 **With prompt caching** (cache hit = 10% of input price):
+
 - First load: full price ($0.050 per session)
 - Cached loads (within 5min TTL): $0.005 per session
 - Background loops hitting every 60s stay cached; the
@@ -86,6 +87,7 @@ background loop's 60s tick cycle naturally stays short.
 ## Lesson 4: The `/doctor` command catches budget waste
 
 `/doctor` reports:
+
 - Skill descriptions exceeding per-entry cap (truncated)
 - Skill descriptions dropped entirely (invisible to router)
 - Large CLAUDE.md files
