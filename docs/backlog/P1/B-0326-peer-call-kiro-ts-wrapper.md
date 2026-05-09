@@ -22,10 +22,20 @@ existing sibling pattern (grok.ts, gemini.ts, etc.).
 
 ## Pre-start checklist (B-0065 gate)
 
-- [ ] Otto-364 search-first: research Kiro CLI headless/
-      non-interactive flags via WebSearch before authoring
-- [ ] Verify `kiro` CLI installation method and availability
-- [ ] Prior-art check: review grok.ts + gemini.ts patterns
+- [x] Otto-364 search-first: research Kiro CLI headless/
+      non-interactive flags via WebSearch before authoring.
+      Finding: kiro.dev headless CLI supports `kiro chat --no-interactive
+      --trust-all-tools`; documentation at kiro.dev/docs/cli/headless/.
+      HOWEVER: the `kiro` binary on this machine (v0.11.133) is the Kiro IDE
+      (VS Code fork), not the kiro.dev headless AI CLI. The two share a binary
+      name. The wrapper detects the mismatch via `isKiroHeadlessCli()`.
+- [x] Verify `kiro` CLI installation method and availability.
+      kiro.dev headless CLI: `brew install --cask kiro-cli` (macOS) or
+      `curl -fsSL https://cli.kiro.dev/install | bash` (universal).
+      Local env has the Kiro IDE — wrapper exits 1 with a clear diagnostic.
+- [x] Prior-art check: reviewed grok.ts (spawnSync pattern, used as primary
+      model) and gemini.ts (async streaming pattern, skipped — Kiro has no
+      JSON streaming mode). Pattern: synchronous spawnSync with file tee.
 
 ## Scope
 
