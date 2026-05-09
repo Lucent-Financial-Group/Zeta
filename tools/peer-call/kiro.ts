@@ -191,16 +191,23 @@ function emitHelp(): void {
 }
 
 function kiroCliAvailable(): boolean {
-  const result = spawnSync(KIRO_CLI, ["--help"], { stdio: "ignore" });
+  const result = spawnSync(
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    KIRO_CLI,
+    ["--help"],
+    { stdio: "ignore" },
+  );
   return result.error === undefined;
 }
 
 // Confirm the kiro.dev headless AI CLI supports non-interactive chat.
 function isKiroHeadlessCli(): boolean {
-  const result = spawnSync(KIRO_CLI, ["chat", "--help"], {
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-  });
+  const result = spawnSync(
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    KIRO_CLI,
+    ["chat", "--help"],
+    { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+  );
   const combined = `${result.stdout ?? ""}${result.stderr ?? ""}`;
   return combined.includes("--no-interactive") || combined.includes("no-interactive");
 }
@@ -293,6 +300,7 @@ function runContextCmd(command: ContextCommand): ContextCommandResult {
     maxBuffer: SPAWN_MAX_BUFFER,
     stdio: ["ignore", "pipe", "pipe"],
   };
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const result =
     command.executable === "git"
       ? spawnSync("git", command.args, options)
