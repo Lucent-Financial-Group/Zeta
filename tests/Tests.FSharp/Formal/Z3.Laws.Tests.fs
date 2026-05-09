@@ -275,46 +275,55 @@ let ``Z3 proves Merkle combine is injective when hash is collision-free`` () =
 
 
 [<Fact>]
-let ``Z3 confirms fused agenda predicates have empty set difference`` () =
-    // Agenda predicates over trajectories:
-    // shared = AgendaA ∩ AgendaB, unique = set difference.
-    // If AgendaA and AgendaB have identical membership, neither set
-    // difference can contain a trajectory. This is set algebra, not a
-    // semantic proof of autonomy or persona independence.
+let ``Z3 proves agenda monotonicity under quality threshold`` () =
+    // Non-trivial replacement for the tautological Lemma 13 (2026-05-09).
+    // If agent A demands strictly higher quality than agent B
+    // (threshold_A > threshold_B), then A's agenda is a subset of B's.
+    // Z3 must derive Quality(t) >= threshold_A > threshold_B, showing
+    // Quality(t) >= threshold_B contradicts NOT InAgendaB(t).
+    // This is not a tautology: SAT without the threshold ordering constraint.
     let script =
         "(declare-sort Trajectory)\n" +
-        "(declare-fun AgendaA (Trajectory) Bool)\n" +
-        "(declare-fun AgendaB (Trajectory) Bool)\n" +
-        "(define-fun Shared ((t Trajectory)) Bool\n" +
-        "  (and (AgendaA t) (AgendaB t)))\n" +
-        "(define-fun AgendaAUnique ((t Trajectory)) Bool\n" +
-        "  (and (AgendaA t) (not (AgendaB t))))\n" +
-        "(define-fun AgendaBUnique ((t Trajectory)) Bool\n" +
-        "  (and (AgendaB t) (not (AgendaA t))))\n" +
-        "(assert (forall ((t Trajectory)) (= (AgendaA t) (AgendaB t))))\n" +
-        "(assert (exists ((t Trajectory)) (or (AgendaAUnique t) (AgendaBUnique t))))\n" +
+        "(declare-fun Quality (Trajectory) Int)\n" +
+        "(declare-const threshold_A Int)\n" +
+        "(declare-const threshold_B Int)\n" +
+        "(define-fun InAgendaA ((t Trajectory)) Bool\n" +
+        "  (>= (Quality t) threshold_A))\n" +
+        "(define-fun InAgendaB ((t Trajectory)) Bool\n" +
+        "  (>= (Quality t) threshold_B))\n" +
+        "(assert (> threshold_A threshold_B))\n" +
+        "(assert (exists ((t Trajectory))\n" +
+        "  (and (InAgendaA t) (not (InAgendaB t)))))\n" +
         "(check-sat)\n"
-    z3ScriptHolds "fused agenda predicates have empty set difference" script
+    z3ScriptHolds "agenda monotonicity: higher quality threshold implies subset (agenda containment)" script
 
 
 [<Fact>]
-let ``Z3 confirms shared agenda membership is disjoint from agenda differences`` () =
-    // This asks Z3 for a trajectory that is both in the intersection and
-    // in one of the set differences. UNSAT follows from the definitions.
+let ``Z3 proves agenda range disjointness for non-overlapping quality windows`` () =
+    // Non-trivial replacement for the tautological Lemma 14 (2026-05-09).
+    // If A's quality ceiling is strictly below B's floor (hi_A < lo_B),
+    // no trajectory can appear in both agendas.
+    // Z3 must resolve Quality(t) <= hi_A AND Quality(t) >= lo_B against
+    // hi_A < lo_B — a three-way arithmetic contradiction, not a
+    // definitional P AND NOT P.
     let script =
         "(declare-sort Trajectory)\n" +
-        "(declare-fun AgendaA (Trajectory) Bool)\n" +
-        "(declare-fun AgendaB (Trajectory) Bool)\n" +
-        "(define-fun Shared ((t Trajectory)) Bool\n" +
-        "  (and (AgendaA t) (AgendaB t)))\n" +
-        "(define-fun AgendaAUnique ((t Trajectory)) Bool\n" +
-        "  (and (AgendaA t) (not (AgendaB t))))\n" +
-        "(define-fun AgendaBUnique ((t Trajectory)) Bool\n" +
-        "  (and (AgendaB t) (not (AgendaA t))))\n" +
+        "(declare-fun Quality (Trajectory) Int)\n" +
+        "(declare-const lo_A Int)\n" +
+        "(declare-const hi_A Int)\n" +
+        "(declare-const lo_B Int)\n" +
+        "(declare-const hi_B Int)\n" +
+        "(define-fun InAgendaA ((t Trajectory)) Bool\n" +
+        "  (and (>= (Quality t) lo_A) (<= (Quality t) hi_A)))\n" +
+        "(define-fun InAgendaB ((t Trajectory)) Bool\n" +
+        "  (and (>= (Quality t) lo_B) (<= (Quality t) hi_B)))\n" +
+        "(assert (<= lo_A hi_A))\n" +
+        "(assert (<= lo_B hi_B))\n" +
+        "(assert (< hi_A lo_B))\n" +
         "(assert (exists ((t Trajectory))\n" +
-        "  (and (Shared t) (or (AgendaAUnique t) (AgendaBUnique t)))))\n" +
+        "  (and (InAgendaA t) (InAgendaB t))))\n" +
         "(check-sat)\n"
-    z3ScriptHolds "shared agenda membership disjoint from agenda differences" script
+    z3ScriptHolds "agenda range disjointness: non-overlapping quality windows exclude shared trajectories" script
 
 
 [<Fact>]
