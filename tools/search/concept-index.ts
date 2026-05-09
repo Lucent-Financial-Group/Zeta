@@ -70,17 +70,22 @@ function scanFiles(dir: string): string[] {
     return results;
 }
 
-// Reads and processes one file at a time — O(1) peak memory vs O(corpus).
 export async function buildIndex(): Promise<ConceptIndex> {
     const allFiles: string[] = [];
     for (const dir of SCAN_DIRS) {
         allFiles.push(...scanFiles(dir));
     }
 
+    const fileContents = await Promise.all(
+        allFiles.map(async (file) => ({
+            file,
+            content: await readFile(join(REPO_ROOT, file), "utf8"),
+        })),
+    );
+
     const hitMap = new Map<string, Map<string, number>>();
 
-    for (const file of allFiles) {
-        const content = await readFile(join(REPO_ROOT, file), "utf8");
+    for (const { file, content } of fileContents) {
         const lines = content.split("\n");
         for (const [conceptClass, pattern] of CONCEPT_QUERIES) {
             const re = new RegExp(pattern.source, pattern.flags);
