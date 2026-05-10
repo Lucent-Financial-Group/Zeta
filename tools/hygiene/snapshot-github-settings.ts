@@ -212,9 +212,10 @@ export async function snapshot(repo: string): Promise<string> {
   );
   const protection = parseJsonSafe(protectionRaw);
 
-  // Actions permissions
-  const actionsPermsRaw = await ghApi(`/repos/${repo}/actions/permissions`, "{enabled, allowed_actions}");
-  const actionsPerms = parseJsonSafe(actionsPermsRaw);
+  // Actions permissions — requires admin token; falls back to a sentinel when the
+  // GITHUB_TOKEN in CI lacks that scope (HTTP 403).
+  const actionsPermsRaw = await ghApiOptional(`/repos/${repo}/actions/permissions`, "{enabled, allowed_actions}");
+  const actionsPerms = actionsPermsRaw === null ? { _skipped: "insufficient-token-scope" } : parseJsonSafe(actionsPermsRaw);
 
   // Actions variables
   const actionsVarsRaw = await ghApi(
