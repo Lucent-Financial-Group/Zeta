@@ -1,6 +1,6 @@
 ---
 name: maintainability-reviewer
-description: "Long-horizon readability review — naming, module shape, docstring discipline, file-size, tribal-knowledge risk; pre-refactor and hot-churn-file cadence."
+description: "Long-horizon readability review — naming, module shape, docstring discipline, file-size, tribal-knowledge risk."
 ---
 
 # Maintainability Reviewer — Advisory Code Owner

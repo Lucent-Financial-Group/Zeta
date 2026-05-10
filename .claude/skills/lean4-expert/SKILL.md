@@ -1,6 +1,6 @@
 ---
 name: lean4-expert
-description: "Lean 4 + Mathlib for Zeta's proof surface — lake build, sorry-count discipline, tactic-mode/term-mode, abel/ring/simp, elan pinning, .olean CI caching."
+description: "Lean 4 + Mathlib proofs — lake build, tactic/term-mode, abel/ring/simp, elan pinning, .olean CI caching."
 ---
 
 # Lean 4 Expert — Procedure + Lore

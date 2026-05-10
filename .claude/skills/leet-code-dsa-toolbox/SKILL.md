@@ -1,6 +1,6 @@
 ---
 name: leet-code-dsa-toolbox
-description: "Interview DSA primitives — union-find, trie, heap, segment tree, Fenwick tree, monotonic stack/deque, LRU cache, balanced BST; once a pattern is chosen."
+description: "DSA interview primitives — union-find, trie, heap, segment tree, Fenwick tree, monotonic stack/deque, LRU cache, BST."
 ---
 
 # Leet-Code DSA Toolbox — the primitives hat

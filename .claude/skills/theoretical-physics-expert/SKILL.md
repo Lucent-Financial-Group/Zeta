@@ -1,6 +1,6 @@
 ---
 name: theoretical-physics-expert
-description: Theoretical physics — symmetry/group theory, quantum field theory, general relativity, statistical mechanics; formal physics reasoning for Zeta substrate.
+description: "Theoretical physics — symmetry/group theory, QFT, general relativity, statistical mechanics, formal reasoning."
 ---
 
 # Theoretical Physics Expert — Split
