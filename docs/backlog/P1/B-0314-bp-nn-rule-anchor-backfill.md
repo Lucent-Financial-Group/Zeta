@@ -7,7 +7,7 @@ tier: substrate-quality
 effort: M
 parent: B-0060
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-10
 depends_on: [B-0311]
 composes_with: [B-0060]
 tags: [substrate-quality, external-anchors, best-practices, beacon-safety, research]
@@ -16,14 +16,14 @@ type: friction-reducer
 
 # BP-NN rule external-anchor backfill
 
-Research and land external prior-art anchors for the 25
+Research and land external prior-art anchors for the 28
 BP-NN rules in `docs/AGENT-BEST-PRACTICES.md`. Priority:
 rules enforced by CI/pre-commit hooks first (they fire most
 frequently and need the strongest justification trail).
 
 ## Scope
 
-BP-1 through BP-25 as enumerated in
+BP-1 through BP-28 as enumerated in
 `docs/AGENT-BEST-PRACTICES.md`.
 
 ## Priority ordering within scope
@@ -46,10 +46,39 @@ BP-1 through BP-25 as enumerated in
 
 ## Done-criteria
 
-- [ ] All 25 rules have external anchor or "original" note.
+- [ ] All 28 rules have external anchor or "original" note.
 - [ ] Citations include URL, author/org, title, date.
 - [ ] Beacon-safety pass on all cited sources.
-- [ ] Coverage scanner (B-0311) confirms 25/25 resolved.
+- [ ] Coverage scanner (B-0311) confirms 28/28 resolved.
+
+### Slice progress
+
+| Rule | Status | Research landing |
+| --- | --- | --- |
+| BP-10 | anchored (slice 1, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md` |
+| BP-11 | anchored (slice 1, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md` |
+| BP-01–BP-09, BP-12–BP-28 | anchor-pending | slices 2+ |
+
+**Slice-1 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice1
+
+## Pre-start checklist (2026-05-10, Otto)
+
+**Prior-art search:**
+
+- Searched: `.claude/rules/`, `docs/research/` for existing BP-NN anchor work.
+- Found: no prior research doc exists for BP-NN anchors. B-0313 (slice 1)
+  established the citation format used here (research doc at `docs/research/`
+  + inline citations in source doc).
+- Memory files read: `feedback_never_idle_speculative_work_over_waiting.md`
+  (operational context); B-0060 B-0311 B-0313 backlog rows (parent + sibling
+  shape).
+- Tools searched: skill router, `docs/research/` glob — no BP-NN anchor
+  research doc exists yet.
+
+**Dependency check:**
+
+- B-0311 (coverage scanner): status: closed (landed). No blocking dep.
+- `composes_with: [B-0060]` — B-0060 is umbrella, status: umbrella (ongoing).
 
 ## Reviewers
 
