@@ -267,6 +267,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0046.1](backlog/P2/B-0046.1-economics-history-stage1-reading-list-scaffold.md)** Economics + history Stage 1 — reading-list scaffold (substrate shelf)
 - [ ] **[B-0048](backlog/P2/B-0048-3-4-color-theorem-research-track.md)** 3-color / 4-color theorem research track — graph coloring, computer-assisted proof, Gonthier Coq formalization, formal-verification routing
 - [ ] **[B-0049](backlog/P2/B-0049-mystery-schools-comparative-religion-history-of-religion.md)** Mystery schools / comparative religion / history of religion research track — CATALOG-ONLY register, gentle, no claim-staking
+- [ ] **[B-0049.1](backlog/P2/B-0049.1-mystery-schools-stage1-eleusinian-bibliographic-scaffold.md)** Mystery schools Stage 1 — Eleusinian mysteries bibliographic scaffold
 - [ ] **[B-0050](backlog/P2/B-0050-lean-reflection-capability-skill-staged-trajectory.md)** Lean reflection — learn it properly, land a capability skill + scouting note (staged 5-stage trajectory)
 - [ ] **[B-0051](backlog/P2/B-0051-isomorphism-homomorphism-catalog-consolidation.md)** Isomorphism / homomorphism catalog — consolidate the category-theory surface, identify gaps, lift to coherent track
 - [ ] **[B-0054](backlog/P2/B-0054-pop-culture-media-research-track.md)** Pop-culture / media research track — operational-resonance sweep across film, TV, YouTube documentary, music, video games, conspiracy-corpus
