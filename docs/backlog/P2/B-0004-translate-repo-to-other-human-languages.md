@@ -225,6 +225,7 @@ artifact; specific translations age + get refreshed.
 ## Pre-start checklist (backlog-item-start-gate, 2026-05-10)
 
 **Prior-art search:**
+
 - Skill router: no existing i18n/l10n/translation skill found.
 - `docs/WONT-DO.md`: no translation-related declined features.
 - `docs/backlog/P*`: no other i18n rows found (B-0004 is the root).
@@ -233,6 +234,7 @@ artifact; specific translations age + get refreshed.
 - PR history: no closed/merged PRs for translation tooling found.
 
 **Dependency restructure:**
+
 - `depends_on: []` — no upstream dependencies; infrastructure work starts from scratch.
 - `composes_with: [B-0003]` reciprocal pointer confirmed (B-0003 body references precision-dictionary; B-0004 anchor work depends on it).
 - Children decomposed in dependency order below.
@@ -273,4 +275,3 @@ B-0004.1 (inventory scanner, no deps)
 
 **Buildable now (no blockers):** B-0004.1, B-0004.2, B-0004.3, B-0004.4  
 **Buildable after B-0004.2:** B-0004.5, B-0004.6 (in parallel)  
-**Blocked until pilot infrastructure ready:** B-0004.7 through B-0004.12
