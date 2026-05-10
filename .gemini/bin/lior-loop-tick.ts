@@ -18,8 +18,8 @@ EXECUTE THESE STEPS IMMEDIATELY USING YOUR TOOLS. Do not ask "How can I help you
 
 console.log(`[Lior Loop] Waking up at ${new Date().toISOString()}`);
 
-const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && echo "$PROMPT" | gemini --model gemini-3.1-pro-preview --yolo --skip-trust'], {
-  env: { ...process.env, PROMPT: prompt },
+const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && gemini -p "$GEMINI_PROMPT" --model gemini-3.1-pro-preview --yolo --skip-trust'], {
+  env: { ...process.env, GEMINI_PROMPT: prompt },
   stdio: "inherit"
 });
 
