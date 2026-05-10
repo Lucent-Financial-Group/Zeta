@@ -76,6 +76,7 @@ Required by `.claude/rules/backlog-item-start-gate.md` before any work.
 - No supersession history; this is the first backlog row.
 
 **Closure rationale:**
+
 All three stated purposes are fulfilled:
 
 1. Generator exercises: `bun tools/backlog/generate-index.ts --check` → `ok` (exit 0).
