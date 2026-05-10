@@ -479,6 +479,35 @@ BP-07").
   but a 300-line combined skill covering two distinct facet
   values must split regardless of length. Cognitive load is
   the first-class constraint; file count is not. **stable**
+  **External anchors:** (1) Sweller, J. (1988), *Cognitive load during
+  problem solving: Effects on learning*, Cognitive Science 12(2):257–285
+  (<https://onlinelibrary.wiley.com/doi/10.1207/s15516709cog1202_4>) —
+  foundational cognitive load theory: working memory capacity is fixed and
+  intrinsic load is set by **element interactivity** (the number of
+  elements that must be processed simultaneously), not by raw content
+  volume; two tightly-coupled concepts impose high load in a short file;
+  two independent concepts impose low load in a long file — line count is
+  systematically miscalibrated as a splitting criterion. (2) Parnas, D. L.
+  (1972), *On the criteria to be used in decomposing systems into modules*,
+  Communications of the ACM 15(12):1053–1058
+  (<https://dl.acm.org/doi/10.1145/361598.361623>) — established that
+  **comprehensibility** (reader cognitive load) is the primary
+  decomposition criterion, not file length; empirically demonstrates that
+  two decompositions with identical line counts can differ sharply in
+  comprehensibility; a split that forces context-switching between coupled
+  concerns increases rather than reduces cognitive load. (3) Sweller, J.,
+  van Merriënboer, J. J. G. & Paas, F. (2019), *Cognitive architecture and
+  instructional design: 20 years later*, Educational Psychology Review 31:
+  261–292
+  (<https://link.springer.com/article/10.1007/s10648-019-09465-5>) —
+  20-year retrospective confirms element interactivity as the driver of
+  intrinsic load; separates extraneous load (caused by poor presentation
+  such as arbitrary file splits forcing unnecessary context-switches) from
+  intrinsic load (caused by genuine concept complexity); a length-threshold
+  split on a tightly-coupled file creates extraneous load without reducing
+  intrinsic load — the precise failure mode BP-20 prevents. Full anchor
+  dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md`.
 
 - **BP-21** *Non-exempt capability skills declare or imply
   their three facet values: epistemic stance (expert / research
@@ -492,6 +521,34 @@ BP-07").
   negotiation, skill-lifecycle, documentation layer) are
   honest exemptions and should declare so in their skill body.
   **stable**
+  **External anchors:** (1) Ranganathan, S. R. (1933/1960),
+  *Colon Classification* (6th ed.), Sarada Ranganathan Endowment for
+  Library Science (<https://en.wikipedia.org/wiki/Colon_classification>)
+  — foundational faceted classification framework developed as a direct
+  response to monohierarchical schemes (Dewey Decimal, Library of
+  Congress) that force each concept into one pre-determined slot;
+  PMEST facets (Personality, Matter, Energy, Space, Time) allow any
+  subject to be assembled from independent axis values without a pre-
+  enumerated position in a fixed hierarchy; Zeta's three skill facets
+  (epistemic stance × abstraction level × function) are a direct
+  application of this principle. (2) Spiteri, L. F. (1998), *A simplified
+  model for facet analysis*, Canadian Journal of Information and Library
+  Science 23(1–2):1–30
+  (<https://www.semanticscholar.org/paper/A-simplified-model-for-facet-analysis-Spiteri/b2ef06ede33b7e7cffab75b8ed3d1b0e6f96aa56>)
+  — formalises the independence property of faceted classification: each
+  facet is **independently variable** — changing the value on one axis
+  does not require changing values on other axes; items can be "found
+  from any direction," starting from any facet value; a monohierarchical
+  scheme structurally cannot provide this path-independence. (3) Hearst,
+  M. A. (2006), *Design recommendations for hierarchical faceted search
+  interfaces*, Proceedings of the SIGIR 2006 Workshop on Faceted Search
+  (<https://people.ischool.berkeley.edu/~hearst/papers/faceted-workshop06.pdf>)
+  — empirically demonstrates that faceted interfaces allow users starting
+  from different facet values to converge on the same items more reliably
+  than hierarchical interfaces; directly validates BP-21's requirement that
+  the skill router be triggerable from any of the three facets (topic,
+  stance, or function) as starting points. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md`.
 
 - **BP-22** *Optimizer and balancer are distinct roles with
   distinct objective functions.*
@@ -502,6 +559,41 @@ BP-07").
   and must split. Underlying agents reach for different search
   strategies under the two objectives; collapsing them
   produces unpredictable behaviour. **stable**
+  **External anchors:** (1) Miettinen, K. (1999), *Nonlinear
+  Multiobjective Optimization*, Kluwer Academic Publishers (International
+  Series in Operations Research & Management Science, Vol. 12)
+  (<https://link.springer.com/book/10.1007/978-1-4615-5563-6>) —
+  foundational text establishing the formal distinction between
+  scalarization (converting a multiobjective problem to a single-objective
+  scalar utility function, producing exactly one solution per weighting
+  choice) and Pareto-optimal set computation (finding all solutions where
+  no objective improves without degrading another, preserving the full
+  trade-off surface); these are not equivalent computations — BP-22's
+  optimizer/balancer split maps directly onto this formal separation.
+  (2) Deb, K., Pratap, A., Agarwal, S. & Meyarivan, T. (2002), *A fast
+  and elitist multiobjective genetic algorithm: NSGA-II*, IEEE Transactions
+  on Evolutionary Computation 6(2):182–197
+  (<https://ieeexplore.ieee.org/document/996017>) — canonical empirical
+  demonstration that multi-objective optimization requires a structurally
+  distinct algorithm from single-objective optimization; NSGA-II's Pareto-
+  dominance selection is incompatible with scalar utility maximization: a
+  scalar optimizer applied to one objective in a multi-objective problem
+  collapses the Pareto front to a single point, systematically discarding
+  all trade-off solutions; the "underlying agents reach for different search
+  strategies" claim in BP-22 is a direct consequence of this result.
+  (3) Celis, L. E., Huang, L., Keswani, V. & Vishnoi, N. K. (2024),
+  *Towards fairness-aware multi-objective optimization*, Complex &
+  Intelligent Systems 10(4):5633–5651
+  (<https://link.springer.com/article/10.1007/s40747-024-01668-w>) —
+  domain instantiation in a fairness-critical AI context: accuracy
+  optimization (scalar utility) and fairness balancing (variance
+  minimisation, representation enforcement) are structurally incompatible
+  as a single objective; methods that collapse both into a weighted single-
+  objective function fail to represent the Pareto trade-off surface and
+  produce outputs that are dominated on un-weighted objectives — the
+  "unpredictable behaviour" BP-22 names; directly validates the split
+  requirement. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md`.
 
 - **BP-23** *Where theory-level content (abstract models,
   mathematical foundations) and applied-level content (specific
