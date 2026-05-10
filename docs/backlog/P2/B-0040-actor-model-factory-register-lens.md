@@ -1,7 +1,7 @@
 ---
 id: B-0040
 priority: P2
-status: done
+status: closed
 title: Actor model as factory-operational-register lens — Hewitt 1973 / Meijer / Akka / Orleans / Service Fabric
 tier: research-grade-vocabulary-lens
 effort: L

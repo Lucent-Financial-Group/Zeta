@@ -259,7 +259,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0037.2](backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md)** B-0037.2 — Per-round meta-check checklist in ROUND-HISTORY.md template
 - [ ] **[B-0037.3](backlog/P2/B-0037.3-meta-cognition-measurables-wiring.md)** B-0037.3 — Meta-cognition measurables wired into alignment-trajectory dashboard
 - [ ] **[B-0037.4](backlog/P2/B-0037.4-meta-cognition-distributed-vs-concentrated-adr.md)** B-0037.4 — ADR for distributed-vs-concentrated meta-cognition framework
-- [ ] **[B-0040](backlog/P2/B-0040-actor-model-factory-register-lens.md)** Actor model as factory-operational-register lens — Hewitt 1973 / Meijer / Akka / Orleans / Service Fabric
+- [x] **[B-0040](backlog/P2/B-0040-actor-model-factory-register-lens.md)** Actor model as factory-operational-register lens — Hewitt 1973 / Meijer / Akka / Orleans / Service Fabric
 - [ ] **[B-0042](backlog/P2/B-0042-bungie-corpus-priority-seed.md)** Bungie corpus priority seed — Halo / Destiny / Marathon / Myth / Oni / Pathways Into Darkness / "Grimwar
 - [ ] **[B-0045](backlog/P2/B-0045-all-schools-all-subjects-universal-substrate-knowledge.md)** All schools, all subjects — universal substrate-knowledge sweep; biology inaugural; trade/vocational equal-or-higher weight
 - [ ] **[B-0046](backlog/P2/B-0046-economics-history-factory-need-to-know-substrate.md)** Economics + history factory need-to-know surface — substrate denominated in time/energy not money-extraction; Ammous Bitcoin-Standard candidate-probe gated by yin-yang

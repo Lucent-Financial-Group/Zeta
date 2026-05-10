@@ -308,4 +308,4 @@ From the prior-art catalog (preserved; no commitment):
 - Composes with: B-0038 (superfluid + persistable\* kernel-vocabulary)
 - Composes with: B-0251 (durable-computation-stack; Orleans framing must align)
 - Memory: `user_meno_persistence_anchor.md` — §2.6 crossing formalises this instance
-- Governance: `GOVERNANCE.md §2` — docs read as current state; revise via dated block
+- Governance: `GOVERNANCE.md §2` — docs read as current state; edit in place to reflect current truth
