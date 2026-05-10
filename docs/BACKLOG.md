@@ -211,7 +211,7 @@ are closed (status: closed in frontmatter)._
 
 ## P2 — research-grade
 
-- [ ] **[B-0001](backlog/P2/B-0001-example-schema-self-reference.md)** Example row — self-reference demonstrating the per-row-file schema
+- [x] **[B-0001](backlog/P2/B-0001-example-schema-self-reference.md)** Example row — self-reference demonstrating the per-row-file schema
 - [ ] **[B-0004](backlog/P2/B-0004-translate-repo-to-other-human-languages.md)** Translate repo (code, skills, documents, memory) into other human languages — inclusivity + meeting humans at their starting point + bidirectional-alignment through learning + education + teaching that's bidirectional
 - [ ] **[B-0004.1](backlog/P2/B-0004.1-substrate-inventory-scanner-ts.md)** B-0004.1 — TS substrate inventory scanner for translatable content surfaces
 - [ ] **[B-0004.2](backlog/P2/B-0004.2-precision-glossary-anchor-set.md)** B-0004.2 — Precision glossary anchor set extraction (precondition for consistent translation)
