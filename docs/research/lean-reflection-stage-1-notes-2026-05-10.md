@@ -53,7 +53,9 @@ A parse tree node. No semantic meaning — just structure. Produced by parsing,
 consumed by macros and elaborators.
 
 ```lean
+
 -- The `Syntax` type has four variants:
+
 -- Syntax.missing  — parse error placeholder
 -- Syntax.node k children  — internal node (k = SyntaxNodeKind = Name)
 -- Syntax.atom info val  — terminal (a string like "+" or "if")
@@ -81,6 +83,7 @@ The internal AST. Fully typed, de Bruijn-indexed (variables are numbers, not
 names — avoids capture). Produced by elaboration, consumed by the kernel.
 
 ```lean
+
 -- Key Expr constructors:
 Expr.bvar (deBruijn : Nat)       -- bound variable (number = distance to binder)
 Expr.fvar (id : FVarId)          -- free variable in local context
@@ -131,6 +134,7 @@ The key metaprogramming monad. Adds metavariable context (a mapping from
 — the variables in scope at a given proof state).
 
 ```lean
+
 -- Create a fresh metavariable (a "hole" to fill later)
 mkFreshExprMVar (type? : Option Expr) : MetaM Expr
 
@@ -163,6 +167,7 @@ defers for later solving (typeclasses, coercions, tactic blocks).
 The signature of a **term elaborator**:
 
 ```lean
+
 -- stx: the Syntax node to elaborate
 -- expectedType?: what type the result should have (can be `none`)
 -- returns: the Expr this syntax elaborates to
@@ -175,6 +180,7 @@ Used inside tactic implementations. Has access to the list of current goals
 (`MVarId`s) and can manipulate them.
 
 ```lean
+
 -- Get all current goals
 getGoals : TacticM (List MVarId)
 
@@ -195,6 +201,7 @@ The simplest metaprogramming tool. A macro takes a `Syntax` tree and returns
 a new `Syntax` tree. No type information. Pure structural rewriting.
 
 ```lean
+
 -- Single-rule macro (the `macro` keyword)
 macro "myNotation" x:term "⊕" y:term : term => `($x + $y + 0)
 
@@ -214,6 +221,7 @@ Used when the expansion needs type information or proof search. The elaborator
 receives the expected type and can create metavariables.
 
 ```lean
+
 -- Single elaborator
 elab "myTerm" : term => do
   let type ← inferType (mkConst `Nat)
@@ -264,6 +272,7 @@ Marks a definition as unfoldable by proof automation. The default is
 `@[irreducible]` means "never unfold" (useful for abstract types).
 
 ```lean
+
 -- In DbspChainRule.lean:
 abbrev ZSet (K : Type _) : Type _ := K →₀ ℤ
 abbrev Stream (G : Type _) : Type _ := ℕ → G
@@ -278,6 +287,7 @@ Marks a definition as deprecated, producing a warning when used. Takes the
 replacement name.
 
 ```lean
+
 -- In DbspChainRule.lean:
 @[deprecated Dop_LTI_commute (since := "2026-04-19")]
 theorem chain_rule ... := Dop_LTI_commute ...
@@ -390,6 +400,7 @@ look like, how `MetaM` manipulates them, and how `closeMainGoal` closes a goal
 with a proof term. All of that is now in this note.
 
 **Composes with:**
+
 - `tools/lean4/Lean4/DbspChainRule.lean` — the proof that benefits from Stage 2+
 - B-0051 — isomorphism catalog, IF4 filter
 - B-0048 — 3-colorability (Stage 4 decision procedure target)
