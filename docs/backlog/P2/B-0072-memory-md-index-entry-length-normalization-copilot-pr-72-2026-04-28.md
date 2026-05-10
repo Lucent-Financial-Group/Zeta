@@ -59,6 +59,7 @@ session). Re-shaping ~30+ entries inline on PR #72 would:
 ## Pre-start checklist (2026-05-10)
 
 Prior-art search:
+
 - Rule #1 (assume already done): searched `tools/hygiene/` for existing memory-normalization script — found `audit-memory-index-duplicates.ts`, `audit-memory-references.ts`, `validate-memory-schema.ts`, but no entry-length normalizer.
 - Rule #2 (assume on backlog): B-0066 (auto-gen MEMORY.md) is decomposed into B-0257–B-0261 but not yet shipped; B-0072 remains independent and valid.
 - Rule #3 (orthogonal trajectory): TS-migration trajectory covers `tools/hygiene/*.ts`; no length-normalization axis exists.
@@ -66,10 +67,12 @@ Prior-art search:
 - B-0066 / B-0067 dependency check: B-0066 is open (P1); B-0072 acceptance says "whichever ships first satisfies the row." B-0072 is the faster path.
 
 Dependency restructure:
+
 - `depends_on: []` — no blockers.
 - `composes_with: [B-0066, B-0067]` — both noted below.
 
 Proof of work (2026-05-10):
+
 - `tools/hygiene/normalize-memory-index-entries.ts` written (Rule 0 compliant TS).
 - Applied to `memory/MEMORY.md`: 190 bullet entries normalized from mixed lengths to ≤200 chars each.
 - 0 bullet entries remain >200 chars. Only L3 (non-bullet fast-path header, 557 chars) is outside scope.

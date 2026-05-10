@@ -78,7 +78,10 @@ function normalizeLine(line: string): string {
   const m = line.match(/^(- \[)(.*?)(\]\([^)]+\))(?: — (.*))?$/);
   if (!m) return line; // Unrecognised format — leave unchanged.
 
-  const [, prefix, displayText, linkClose, rawDesc] = m;
+  const prefix = m[1]!;
+  const displayText = m[2]!;
+  const linkClose = m[3]!;
+  const rawDesc = m[4];
   const desc = rawDesc ?? "";
   const hasDesc = rawDesc !== undefined;
 
