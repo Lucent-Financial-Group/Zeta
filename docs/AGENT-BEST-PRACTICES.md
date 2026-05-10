@@ -28,10 +28,53 @@ BP-07").
   invocation-trigger surface and the scope gate. A lazy
   description invites wrong-task invocation which is
   indistinguishable from scope-creep injection. **stable**
+  **External anchors:** (1) Anthropic (2025), *"Define tools"*
+  (<https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/implement-tool-use>)
+  and *"Writing effective tools for AI agents"*
+  (<https://www.anthropic.com/engineering/writing-tools-for-agents>) — canonical
+  first-party source: "providing extremely detailed descriptions is by far the most
+  important factor in tool performance"; names wrong-tool-selection as the primary
+  failure mode; establishes the 1024-character hard limit and third-person writing
+  convention. (2) Anonymous (2026), *Learning to Rewrite Tool Descriptions for
+  Reliable LLM-Agent Tool Use*, arXiv:2602.20426
+  (<https://arxiv.org/abs/2602.20426>) — empirically shows that human-oriented
+  descriptions degrade agent selection accuracy at scale; verbose descriptions
+  consume token budget and depress attention-driven tool selection, providing the
+  academic justification for the ≤1024 chars constraint as a token-budget ceiling.
+  (3) Patil, S. G. et al. (2025), *The Berkeley Function Calling Leaderboard
+  (BFCL)*, ICML 2025
+  (<https://proceedings.mlr.press/v267/patil25a.html>) — standard benchmark
+  quantifying wrong-tool-selection as a measurable failure class; benchmark
+  construction operationalises the "scope gate" concept: a description that can
+  match more than one tool makes the test item unanswerable by specification.
+  Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md`.
 
 - **BP-02** *Every skill has a "What this does NOT do" block.*
   **Rationale:** explicit negative boundaries block scope-creep
   injections and make the skill's contract testable. **stable**
+  **External anchors:** (1) Meyer, B. (1992), *Applying "Design by Contract"*,
+  IEEE Computer 25(10):40–51
+  (<https://ieeexplore.ieee.org/document/161279/>) — foundational principle:
+  a component's contract is only complete when both what it does and what it
+  promises nothing about are expressible as assertions; negative postconditions
+  are checkable at runtime, making them testable in Meyer's precise sense;
+  BP-02's "What this does NOT do" block is the natural-language equivalent of
+  DbC's negative contract boundary. (2) Vesey, A. (2024), *API Security through
+  Contract-Driven Programming*, CMU Software Engineering Institute Blog
+  (<https://www.sei.cmu.edu/blog/api-security-through-contract-driven-programming/>)
+  — names implicit contract boundaries as the primary API attack surface
+  (Heartbleed as canonical illustration); explicit in-source negative boundaries
+  make contract violations visible and testable, directly operationalising
+  BP-02's scope-creep-injection rationale. (3) OpenAI (2025), *A Practical Guide
+  to Building AI Agents*
+  (<https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/>)
+  — formalises "should not do" as a first-class specification tier alongside
+  "should do"; the Model Spec states "no exceptions apply even if an out-of-scope
+  action seems to be in the user's best interest" — the explicit negative scope
+  declaration is the structural blocker against helpful-but-injected scope
+  expansion. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md`.
 
 - **BP-03** *Skill body ≤ ~300 lines; one purpose per skill.*
   **Rationale:** bloat dilutes triggering and reviewability.
@@ -287,6 +330,29 @@ BP-07").
   **Rationale:** without rule IDs, tune-up is freeform prose
   and improvements can't be verified next round. With IDs, the
   loop closes: fix → verify → retire finding. **stable**
+  **External anchors:** (1) ISO/IEC/IEEE 29148:2018, *Systems and Software
+  Engineering: Life Cycle Processes — Requirements Engineering*
+  (<https://www.iso.org/standard/72089.html>) — mandates that every
+  requirement carry a unique identifier traceable upward to its source and
+  downward to verification evidence; without a stable ID the traceable chain
+  breaks, making "fix → verify → retire" mechanically impossible — directly
+  maps onto BP-15's rationale. (2) DISA/DoD, *Security Technical Implementation
+  Guides (STIGs)*
+  (<https://www.cyber.mil/stigs/>) — demonstrates at scale that stable finding
+  IDs (`Vuln ID` / `Rule ID`) are not cosmetic: they are the mechanism that
+  allows a security audit loop to close across STIG version bumps; without
+  stable IDs a finding must be re-verified from scratch or abandoned, preventing
+  verified closure — the same failure mode BP-15 prevents in skill tune-up.
+  (3) Russell, J. P. & Regel, T. (2000), *After the Quality Audit: Closing the
+  Loop on the Audit Process*, ASQ Quality Press
+  (<https://www.semanticscholar.org/paper/After-the-Quality-Audit:-Closing-the-Loop-on-the-Russell-Regel/75abe2438d4b88e32f191854c4ffaad494c312d3>);
+  and McClain, G. (2024), *Closing the Audit Loop*, INTOSAI Journal Q3 2024
+  (<https://intosaijournal.org/journal-entry/closing-the-audit-loop-a-methodology-for-tracking-audit-recommendations/>)
+  — canonical quality-management treatment: an audit is not complete when a
+  finding is written; it is complete only when corrective action is verified;
+  closure without verification is procedurally invalid; persistent per-finding
+  references are the enabling mechanism. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md`.
 
 ## Formal coverage
 
