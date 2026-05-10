@@ -126,7 +126,8 @@ Lands two remaining doctrines:
    adding doctrine content contradicts the B-0353 condensation intent.
 
 All five B-0315 doctrines now have external anchor or "original" note
-on at least one defining surface. Done-criteria met:
+on at least one defining surface. Core done-criteria met; the coverage
+scanner remains deferred to the next audit pass:
 
 - [x] All Glass-Halo doctrines have external anchor or "original" note
 - [x] Citations include URL, author/org, title, date
