@@ -14,6 +14,7 @@ decomposition: atomic
 owners: [architect]
 type: friction-reducer
 tags: [search, index, concept-registry, performance]
+
 ---
 
 # B-0362 — Concept search index
@@ -58,6 +59,7 @@ Index rebuilt on commit (or on-demand via `bun tools/search/build-index.ts`).
 ## Resolution
 
 Shipped in two PRs merged 2026-05-09:
+
 - PR #2322 `feat(B-0362): smallest safe slice — concept search index (curated regex term→file)` — introduced curated-not-corpus design (Vera 2026-05-09 guardrails), 8 concept-query classes
 - PR #2323 `feat(B-0362): concept search index — build-index.ts, lookup.ts, AND semantics, tests` — full implementation: `tools/search/build-index.ts`, `tools/search/lookup.ts`, `tools/search/concept-index.ts`, 13 passing tests
 
