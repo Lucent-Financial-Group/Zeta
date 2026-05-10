@@ -1,17 +1,18 @@
 ---
 id: B-0040
 priority: P2
-status: open
+status: closed
 title: Actor model as factory-operational-register lens — Hewitt 1973 / Meijer / Akka / Orleans / Service Fabric
 tier: research-grade-vocabulary-lens
 effort: L
 ask: Aaron 2026-04-21 — research track on whether the actor model's vocabulary provides a productive lens for naming factory-internal coordination patterns WITHOUT committing the factory's implementation to actor-framework infrastructure.
 created: 2026-04-26
-last_updated: 2026-05-02
+last_updated: 2026-05-10
 depends_on: []
-composes_with: [project_factory_positioning_fully_asynchronous_agentic_ai_aaron_2026_04_21.md, feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_2026_04_21.md, B-0038]
+composes_with: [project_factory_positioning_fully_asynchronous_agentic_ai_aaron_2026_04_21.md, feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_2026_04_21.md, B-0038, B-0251]
 tags: [actor-model, vocabulary-as-lens, hewitt, meijer, akka, orleans, service-fabric, async-agentic, no-bottlenecks, research-grade]
 type: friction-reducer
+
 ---
 
 # B-0040 — Actor model as factory-register lens
@@ -52,8 +53,36 @@ Workshop paper on agent-orchestration-patterns-borrowing-from-actor-model.
 - **Co-reviewer:** Rodney (complexity-reduction on the lens-vs-framework boundary)
 - **Gate:** Aaron sign-off for external publication per money-framing memory commercial-surface gate
 
+## Pre-start checklist (2026-05-10)
+
+**Prior-art-search:**
+
+- `docs/research/actor-model-hewitt-meijer-akka-orleans-service-fabric-2026-04-21.md` —
+  comprehensive prior-art catalog covering scope items (a)–(f); already exists.
+- Related backlog: B-0038 (superfluid/persistable* cluster), B-0251 (durable-computation-
+  stack incl. Orleans), B-0253 (realtime-interloop-messaging via Orleans grains), B-0254
+  (infernet probabilistic triangulation).
+- No existing skill or memory covers the applicability-assessment + vocab-crossing +
+  explicit-rejection synthesis layer that B-0040 outputs.
+
+**Dependency-restructure:**
+
+- `depends_on: []` — no blocking dependencies; confirmed clean.
+- Composition with B-0251 added (durable-computation-stack uses Orleans/Akka vocabulary;
+  the register-lens synthesis must not conflict with that framing).
+
+**Gap:** Prior-art catalog exists. Output synthesis doc
+(`actor-model-register-lens-YYYY-MM-DD.md`) does not. That is what this item produces.
+
+**Smallest safe slice (feat/B-0040-actor-model-register-lens, 2026-05-10):**
+`docs/research/actor-model-register-lens-2026-05-10.md` — applicability assessment +
+recommended vocab crossings + explicit rejections, referencing the prior-art catalog.
+
 ## Cross-reference
 
 - AceHack commit: `8e66e44`
+- Prior-art catalog: `docs/research/actor-model-hewitt-meijer-akka-orleans-service-fabric-2026-04-21.md`
+- Output doc: `docs/research/actor-model-register-lens-2026-05-10.md`
 - Composes with: B-0038 (superfluid + persistable\* substrate-property cluster — actor-model is a candidate vocabulary lens for that cluster)
+- Composes with: B-0251 (durable-computation-stack incl. Orleans/Akka vocabulary)
 - Source memories: `project_factory_positioning_fully_asynchronous_agentic_ai_*`, `feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_*`
