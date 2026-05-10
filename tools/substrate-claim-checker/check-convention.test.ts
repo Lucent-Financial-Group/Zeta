@@ -155,6 +155,39 @@ describe("checkFile", () => {
     }
   });
 
+  test("accepts hard-wrapped reciprocal top-of-file marker", () => {
+    const fx = setupRepo();
+    try {
+      const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
+      const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
+      writeFileSync(
+        oldAdr,
+        [
+          "# ADR old",
+          "",
+          "> **Superseded by**",
+          "> [`docs/DECISIONS/new.md`](new.md).",
+          "",
+        ].join("\n"),
+      );
+      writeFileSync(
+        newAdr,
+        [
+          "# ADR new",
+          "",
+          "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.",
+          "",
+        ].join("\n"),
+      );
+
+      const result = checkFile(newAdr);
+      expect(result.ok).toBe(true);
+      expect(result.findings).toEqual([]);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
   test("flags reciprocal marker that names the wrong ADR", () => {
     const fx = setupRepo();
     try {

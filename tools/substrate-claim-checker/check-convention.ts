@@ -243,10 +243,22 @@ function resolveTarget(
 }
 
 function supersededByMarkerLines(targetContent: string): string[] {
-  return targetContent
-    .split("\n")
-    .slice(0, 25)
-    .filter((line) => /\bsuperseded by\b/i.test(line));
+  const lines = targetContent.split("\n").slice(0, 25);
+  const markerLines: string[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i] ?? "";
+    if (!/\bsuperseded by\b/i.test(line)) continue;
+
+    const parts = [line.trim()];
+    const next = lines[i + 1]?.trim();
+    if (next !== undefined && next.length > 0) {
+      parts.push(next);
+    }
+    markerLines.push(parts.join(" "));
+  }
+
+  return markerLines;
 }
 
 function markerNamesSupersedingAdr(markerLines: string[], supersedingFile: string): boolean {
