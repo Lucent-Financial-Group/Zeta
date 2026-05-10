@@ -37,6 +37,34 @@ describe("findSupersessionClaims", () => {
     expect(claims.at(0)?.target).toBe("old.md");
   });
 
+  test("finds hard-wrapped markdown link ADR supersession targets", () => {
+    const claims = findSupersessionClaims([
+      "**Status:** Accepted. Supersedes ADR",
+      "[v1](old.md) after review.",
+    ]);
+    expect(claims).toHaveLength(1);
+    expect(claims.at(0)?.line).toBe(1);
+    expect(claims.at(0)?.target).toBe("old.md");
+  });
+
+  test("finds hard-wrapped backtick ADR supersession targets", () => {
+    const claims = findSupersessionClaims([
+      "**Status:** Accepted. Supersedes ADR",
+      "`docs/DECISIONS/old.md` after review.",
+    ]);
+    expect(claims).toHaveLength(1);
+    expect(claims.at(0)?.line).toBe(1);
+    expect(claims.at(0)?.target).toBe("docs/DECISIONS/old.md");
+  });
+
+  test("strips markdown link titles from supersession targets", () => {
+    const claims = findSupersessionClaims([
+      'Supersedes ADR [v1](old.md "historical record").',
+    ]);
+    expect(claims).toHaveLength(1);
+    expect(claims.at(0)?.target).toBe("old.md");
+  });
+
   test("ignores supersession text inside fenced code", () => {
     const claims = findSupersessionClaims([
       "```md",

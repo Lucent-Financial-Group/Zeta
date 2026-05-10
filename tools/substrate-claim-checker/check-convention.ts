@@ -24,6 +24,11 @@ interface SupersessionClaim {
   raw: string;
 }
 
+interface SearchLine {
+  line: number;
+  text: string;
+}
+
 interface CheckResult {
   findings: Finding[];
   ok: boolean;
@@ -56,7 +61,7 @@ function findRepoRoot(startPath: string): string {
 }
 
 function normalizeTarget(target: string): string {
-  let result = target.trim();
+  let result = stripMarkdownLinkTitle(target);
   if (result.startsWith("<") && result.endsWith(">")) {
     result = result.slice(1, -1);
   }
@@ -67,6 +72,21 @@ function normalizeTarget(target: string): string {
     result = result.slice(0, Math.min(...cutPoints));
   }
   return result;
+}
+
+function stripMarkdownLinkTitle(target: string): string {
+  const result = target.trim();
+  if (result.startsWith("<")) {
+    const closeAt = result.indexOf(">");
+    if (closeAt >= 0) return result.slice(1, closeAt);
+  }
+
+  const titleMarkers = [' "', " '", " ("];
+  const cutPoints = titleMarkers
+    .map((marker) => result.indexOf(marker))
+    .filter((n) => n >= 0);
+  if (cutPoints.length === 0) return result;
+  return result.slice(0, Math.min(...cutPoints)).trimEnd();
 }
 
 function updateFenceState(
@@ -92,6 +112,16 @@ function updateFenceState(
     state.char = null;
     state.len = 0;
   }
+}
+
+function startsFenceDelimiter(line: string): boolean {
+  const trimmed = line.trimStart();
+  const first = trimmed.at(0);
+  if (first !== "`" && first !== "~") return false;
+
+  let len = 0;
+  while (trimmed.at(len) === first) len++;
+  return len >= 3;
 }
 
 function pushUnique(
@@ -127,21 +157,54 @@ function pushMatchesForLine(
   }
 }
 
+function logicalSearchLines(lines: string[]): SearchLine[] {
+  const searchLines: SearchLine[] = [];
+  const fence = { char: null as "`" | "~" | null, len: 0 };
+  const paragraph: string[] = [];
+  let paragraphLine = 0;
+
+  const flushParagraph = (): void => {
+    if (paragraph.length === 0) return;
+    searchLines.push({ line: paragraphLine, text: paragraph.join(" ") });
+    paragraph.length = 0;
+    paragraphLine = 0;
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i] ?? "";
+    if (startsFenceDelimiter(line)) {
+      flushParagraph();
+      updateFenceState(line, fence);
+      continue;
+    }
+    if (fence.char !== null) {
+      updateFenceState(line, fence);
+      continue;
+    }
+
+    const trimmed = line.trim();
+    if (trimmed.length === 0) {
+      flushParagraph();
+      continue;
+    }
+    if (paragraph.length === 0) paragraphLine = i + 1;
+    paragraph.push(trimmed);
+  }
+
+  flushParagraph();
+  return searchLines;
+}
+
 function findSupersessionClaims(lines: string[]): SupersessionClaim[] {
   const claims: SupersessionClaim[] = [];
   const seen = new Set<string>();
-  const fence = { char: null as "`" | "~" | null, len: 0 };
   const backtickRe = /\bSupersedes(?:\s+ADR)?\s+`([^`\n]+?\.md)`/gi;
   const linkRe =
     /\bSupersedes(?:\s+ADR)?\s+\[[^\]\n]+?\]\(((?:[^()\n]|\([^()\n]*\))+)\)/gi;
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i] ?? "";
-    updateFenceState(line, fence);
-    if (fence.char !== null) continue;
-
-    pushMatchesForLine(backtickRe, line, i + 1, claims, seen);
-    pushMatchesForLine(linkRe, line, i + 1, claims, seen);
+  for (const searchLine of logicalSearchLines(lines)) {
+    pushMatchesForLine(backtickRe, searchLine.text, searchLine.line, claims, seen);
+    pushMatchesForLine(linkRe, searchLine.text, searchLine.line, claims, seen);
   }
 
   return claims;
