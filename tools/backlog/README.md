@@ -61,6 +61,8 @@ tags: [game-industry, sharding, multi-node]
 | `id`           | yes      | `B-NNNN`     | Zero-padded 4 digits, sequential. Factory-wide unique. |
 | `priority`     | yes      | `P0..P3`     | Directory must match (`P2` row → `docs/backlog/P2/`). |
 | `status`       | yes      | enum         | `open` / `closed` / `superseded-by-B-NNNN` / `deferred` |
+| `closed`       | when closed | YYYY-MM-DD | Date the row was closed; required when `status: closed`. |
+| `closed_by`    | when closed | string    | Evidence string (commit / PR / claim) that closed the row; required when `status: closed`. |
 | `title`        | yes      | string       | Short index-display title. |
 | `tier`         | no       | string       | Free-form; e.g. `research-grade`, `active-substrate`. |
 | `effort`       | no       | `S` / `M` / `L` | Size estimate. |

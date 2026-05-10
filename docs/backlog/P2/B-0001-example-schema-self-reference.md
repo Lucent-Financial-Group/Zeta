@@ -57,16 +57,25 @@ recovered via `git log --diff-filter=D` if needed).
 
 Required by `.claude/rules/backlog-item-start-gate.md` before any work.
 
-**Prior-art search:**
+**Prior-art search** (axes from `.claude/rules/backlog-item-start-gate.md`):
 
-- Skill router: no overlapping skill covers "backlog example row" scope.
-- `tools/backlog/`: `generate-index.ts`, `README.md` exist — generator
-  is the tool this row exercises.
-- `tools/hygiene/LOST-FILES-LOCATIONS.md`: no lost artifacts for B-0001.
-- `docs/DECISIONS/2026-04-22-backlog-per-row-file-restructure.md`:
-  Phase 1a/1b/1c phases documented; Phase 1c (`backlog-index-integrity.yml`)
-  is landed (confirmed: `.github/workflows/backlog-index-integrity.yml`).
-- `docs/BACKLOG.md --check`: `bun tools/backlog/generate-index.ts --check`
+- **Skill router**: no skill covers "backlog example row" scope; searched
+  for `backlog`, `schema`, `example` — no overlapping skill found.
+- **Wake-time-substrate axis**: CLAUDE.md + `.claude/rules/` loaded at
+  session start — no mention of B-0001-specific substrate.
+- **Orthogonal-axes / orthogonal backlog**: no other backlog row references
+  or depends on B-0001 (searched `grep -r "B-0001" docs/backlog/`).
+- **Otto-364 search-first-authority**: no upstream docs for this
+  internal factory item; axis not applicable.
+- **PR #1701 prior-art grep**: searched PR history — #1701 is the
+  backlog-split Phase-1a PR that created this row; no other prior art.
+- **Decision-archaeology**: `docs/DECISIONS/2026-04-22-backlog-per-row-file-restructure.md`
+  is the authoritative ADR; Phase 1a/1b/2/3 phases documented; Phase 1b
+  (`backlog-index-integrity.yml`) is landed (confirmed:
+  `.github/workflows/backlog-index-integrity.yml`).
+- **Lost-files canonical surface** (`tools/hygiene/LOST-FILES-LOCATIONS.md`):
+  no lost artifacts for B-0001 found across the 15 location classes.
+- **`docs/BACKLOG.md --check`**: `bun tools/backlog/generate-index.ts --check`
   returns exit 0 — no drift.
 
 **Dependency-restructure:**
