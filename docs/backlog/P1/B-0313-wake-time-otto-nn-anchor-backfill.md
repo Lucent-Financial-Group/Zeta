@@ -48,6 +48,7 @@ strengthens external credibility and teachability.
 ## Pre-start checklist (2026-05-10, Otto)
 
 **Prior-art search:**
+
 - Searched: wake-time-substrate rule (`.claude/rules/`), skill router,
   `docs/research/` for existing Otto-NN anchor work.
 - Found: no prior research docs for Otto-247/341/357 anchors; no existing
@@ -57,6 +58,7 @@ strengthens external credibility and teachability.
   (Otto-351/352 source).
 
 **Dependency check:**
+
 - B-0311 (coverage scanner): status: closed (landed). No blocking dep.
 - B-0310 (concept registry): closed. No blocking dep.
 - `composes_with: [B-0060]` — B-0060 is umbrella, status: umbrella
