@@ -143,6 +143,10 @@ function startsFenceDelimiter(line: string): boolean {
   return len >= 3;
 }
 
+function stripMarkdownStructuralPrefix(text: string): string {
+  return text.replace(/^(?:(?:>\s*)+|[-*+]\s+|\d+[.)]\s+)/, "").trimStart();
+}
+
 function pushUnique(
   claims: SupersessionClaim[],
   seen: Set<string>,
@@ -205,7 +209,7 @@ function logicalSearchLines(lines: string[]): SearchLine[] {
     if (current === undefined || next === undefined) continue;
     if (next.line !== current.line + 1) continue;
     if (!wrapPrefixRe.test(current.text)) continue;
-    searchLines.push({ line: current.line, text: `${current.text} ${next.text}` });
+    searchLines.push({ line: current.line, text: `${current.text} ${stripMarkdownStructuralPrefix(next.text)}` });
   }
 
   return searchLines;
@@ -253,7 +257,7 @@ function supersededByMarkerLines(targetContent: string): string[] {
     const parts = [line.trim()];
     const next = lines[i + 1]?.trim();
     if (next !== undefined && next.length > 0) {
-      parts.push(next);
+      parts.push(stripMarkdownStructuralPrefix(next));
     }
     markerLines.push(parts.join(" "));
   }

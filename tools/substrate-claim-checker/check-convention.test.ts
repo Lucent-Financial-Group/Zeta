@@ -87,6 +87,16 @@ describe("findSupersessionClaims", () => {
     expect(claims).toEqual([]);
   });
 
+  test("finds hard-wrapped markdown link with blockquote prefix on continuation", () => {
+    const claims = findSupersessionClaims([
+      "**Status:** Accepted. Supersedes ADR",
+      "> [v1](old.md) after review.",
+    ]);
+    expect(claims).toHaveLength(1);
+    expect(claims.at(0)?.line).toBe(1);
+    expect(claims.at(0)?.target).toBe("old.md");
+  });
+
   test("ignores supersession text inside fenced code", () => {
     const claims = findSupersessionClaims([
       "```md",
@@ -183,6 +193,30 @@ describe("checkFile", () => {
       const result = checkFile(newAdr);
       expect(result.ok).toBe(true);
       expect(result.findings).toEqual([]);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("finds supersession claim when link continuation uses blockquote prefix", () => {
+    const fx = setupRepo();
+    try {
+      const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
+      const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
+      writeFileSync(oldAdr, "# ADR old\n");
+      writeFileSync(
+        newAdr,
+        [
+          "**Status:** Accepted. Supersedes ADR",
+          "> [v1](docs/DECISIONS/old.md) after review.",
+          "",
+        ].join("\n"),
+      );
+
+      const result = checkFile(newAdr);
+      expect(result.ok).toBe(true);
+      expect(result.findings).toHaveLength(1);
+      expect(result.findings.at(0)?.target).toBe("docs/DECISIONS/old.md");
     } finally {
       fx.cleanup();
     }
