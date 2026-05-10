@@ -81,10 +81,15 @@ function makeEntry(overrides: Partial<MutationLogEntry> = {}): MutationLogEntry 
       },
     },
     diff: {
+      url: "https://github.com/Lucent-Financial-Group/Zeta/settings/security_analysis",
+      newToggles: [],
+      removedToggles: [],
       changedToggles: [{ key: "dependabot-security-updates", prior: false, current: true }],
-      changedFormValues: [],
-      addedFeatures: [],
+      newFeatures: [],
       removedFeatures: [],
+      newFormFields: [],
+      removedFormFields: [],
+      changedFormFields: [],
     },
     status: "applied",
     ...overrides,
@@ -140,7 +145,10 @@ class FakeRevertPage implements MutableGitHubSessionPage {
 }
 
 class FakeRevertContext implements MutableGitHubSessionContext {
-  constructor(private readonly page: FakeRevertPage) {}
+  private readonly page: FakeRevertPage;
+  constructor(page: FakeRevertPage) {
+    this.page = page;
+  }
   newPage(): Promise<FakeRevertPage> {
     return Promise.resolve(this.page);
   }
@@ -150,7 +158,10 @@ class FakeRevertContext implements MutableGitHubSessionContext {
 }
 
 class FakeRevertDriver implements MutableGitHubSessionDriver {
-  constructor(private readonly page: FakeRevertPage) {}
+  private readonly page: FakeRevertPage;
+  constructor(page: FakeRevertPage) {
+    this.page = page;
+  }
   newContext(_storageStatePath: string): Promise<FakeRevertContext> {
     return Promise.resolve(new FakeRevertContext(this.page));
   }
