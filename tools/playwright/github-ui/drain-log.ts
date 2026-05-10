@@ -16,9 +16,9 @@ const DEFAULT_LOG_PATH = resolve(REPO_ROOT, "docs/hygiene-history/playwright-mut
 
 /**
  * A drain-log entry persisted on disk.  Extends the in-memory MutationLogEntry
- * with a status field that varies per record ("applied" | "reverted") — each
- * record is individually immutable; reversals are recorded as new lines with
- * the same id and status "reverted" (append-only invariant).
+ * with a status field ("applied" | "reverted") — each record is individually
+ * immutable; reversals are recorded as new lines with the same id and status
+ * "reverted" (append-only invariant).
  */
 export type DrainLogEntry = Omit<MutationLogEntry, "status"> & {
   readonly status: "applied" | "reverted";
@@ -48,7 +48,7 @@ function ensureLogDir(logPath: string): void {
   }
 }
 
-/** Parse all lines from the log file, skipping blank and malformed lines. */
+/** Parse all lines from the log file, skipping blank, parse-failed, or schema-invalid lines. */
 function readAllLines(logPath: string): DrainLogEntry[] {
   if (!existsSync(logPath)) return [];
   const raw = readFileSync(logPath, "utf8");
@@ -57,7 +57,13 @@ function readAllLines(logPath: string): DrainLogEntry[] {
     const trimmed = line.trim();
     if (trimmed.length === 0) continue;
     try {
-      entries.push(JSON.parse(trimmed) as DrainLogEntry);
+      const parsed = JSON.parse(trimmed) as Partial<DrainLogEntry>;
+      if (
+        typeof parsed.id === "string" &&
+        (parsed.status === "applied" || parsed.status === "reverted")
+      ) {
+        entries.push(parsed as DrainLogEntry);
+      }
     } catch {
       // Skip truncated/malformed lines (e.g. from a crash mid-append).
     }
@@ -166,8 +172,17 @@ export async function revert(
     id: entryId,         // same id as original — this is the revert event
     status: "reverted",
   };
-  ensureLogDir(logPath);
-  appendFileSync(logPath, JSON.stringify(revertMarker) + "\n", "utf8");
+  try {
+    ensureLogDir(logPath);
+    appendFileSync(logPath, JSON.stringify(revertMarker) + "\n", "utf8");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      success: false,
+      entryId,
+      error: `Inverse mutation succeeded but marker append failed: ${message}`,
+    };
+  }
 
   return { success: true, entryId };
 }
