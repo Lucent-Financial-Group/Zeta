@@ -52,11 +52,13 @@ M — GitHub API integration + file copying logic.
 ## Pre-start checklist (start-gate 2026-05-10 riven)
 
 **Prior-art search (surfaces + queries):**
+
 - tools/ **/*.ts "gh api" | "dry-run" | "seed" | "bootstrap" → hits in create-branch-safety-ruleset.ts (dry-run gh), migrations/b0267*.ts (gh child_process), hygiene/*.ts (gh api error handling). Rule 0 TS confirmed.
 - docs/backlog/P1/B-034* → sibling B-0341 closed, B-0342 recent.
 - No pre-existing tools/bootstrap-razor/ or seed-test-repo.ts.
 
 **Dependency-restructure:**
+
 - depends_on [B-0341] verified closed; manifest at docs/bootstrap-razor/SEED-MANIFEST.md is yaml include/exclude, machine-readable.
 - composes_with [B-0193, B-0344] — reciprocal pointers intact in parent/sibling rows.
 - No broken links; supersession via decision-archaeology not needed (new row).
