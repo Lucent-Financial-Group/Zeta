@@ -1,13 +1,15 @@
 ---
 id: B-0033
 priority: P2
-status: open
+status: decomposed
 title: Otto-discipline hooks system — convert recurring failure-modes from language-layer substrate to harness-layer mechanism via Claude Code hooks; package as plugin (Aaron 2026-04-26 insight from "eval" hook firing)
 tier: hygiene-tooling-and-discipline
 effort: L
 ask: Aaron 2026-04-26 watched the Write-tool security hook fire on "eval" substring during the Maji research doc write; observation — *"i love these hooks great for learning, seems like current otto could setup similar hooks for future otto for the rules that have not fully absorbe into the substrate reflexivly / instincts. also good for when we make a harness plugin."* The recurring failure-modes Otto-NNN substrate names but per-instance discipline keeps slipping on are the natural targets for hook-based mechanism-enforcement. Per Otto-341 mechanism-over-discipline at the harness layer.
 created: 2026-04-26
-last_updated: 2026-05-02
+last_updated: 2026-05-09
+status: decomposed
+decomposed_into: [B-0033.1-claude-code-hooks-ts-harness-entrypoint, B-0033.2-pre-edit-recent-read-enforcement-hook, B-0033.3-pre-bash-inline-python-heredoc-detector-hook, B-0033.4-pre-commit-directive-vocabulary-grep-hook, B-0033.5-pre-commit-dst-exempt-comment-flag-hook, B-0033.6-pre-commit-magic-number-rationale-checker-hook, B-0033.7-pre-action-bulk-resolve-justification-hook, B-0033.8-pre-commit-heartbeat-identical-row-detector-hook, B-0033.9-pre-commit-table-cellcount-conflict-marker-hook, B-0033.10-otto-discipline-hooks-claude-code-plugin-packaging]
 depends_on: []
 composes_with: [feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, feedback_otto_343_safety_filter_partial_alignment_map_the_divergence_helen_keller_named_entity_winks_bidirectional_signals_2026_04_26.md, feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, B-0030, B-0031, docs/research/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md]
 tags: [otto-341, otto-346, hooks, harness-mechanism, claude-code-plugin, substrate-as-mechanism, recurring-failure-modes, otto-discipline, mechanism-enforcement]
@@ -15,6 +17,25 @@ type: friction-reducer
 ---
 
 # B-0033 — Otto-discipline hooks system + Claude Code plugin packaging
+
+## Re-decomposition (2026-05-09, Riven background worker, one bounded step)
+
+B-0033 was too broad (L effort, 3 layers + plugin + 9+ failure modes). Re-decomposed into smallest dependency-ordered atomic child rows (assume mistakes, per rule). Children prefer TS implementation (Claude Code hooks are TS) over prose docs. One bounded step: this decomp record + child row stubs. Focused checks: dotnet build -c Release passed 0 Warning(s) 0 Error(s) before/after in worktree; no other files touched.
+
+**Dependency-ordered atomic children (smallest safe slices, TS-first):**
+
+1. B-0033.1 (S, root) — Claude Code hooks TS harness entrypoint + .claude/settings.json wiring stub
+2. B-0033.2 (S, dep 1) — Pre-Edit hook: recent-Read + mtime enforcement (Otto-343 Edit-without-Read)
+3. B-0033.3 (S, dep 1) — Pre-bash hook: inline-python3 -c / heredoc detector (Otto-346)
+4. B-0033.4 (S, dep 1) — Pre-commit hook: directive vocabulary grep (Otto-293 + B-0025)
+5. B-0033.5 (S, dep 1) — Pre-commit hook: DST-exempt comment flag (Otto-281)
+6. B-0033.6 (S, dep 1) — Pre-commit hook: magic-number-without-rationale checker (Otto-282)
+7. B-0033.7 (S, dep 1) — Pre-action GraphQL hook: bulk-resolve justification requirement
+8. B-0033.8 (S, dep 1) — Pre-commit hook: heartbeat identical-(none) row repetition detector
+9. B-0033.9 (S, dep 1) — Pre-commit hook: markdown table cell-count + conflict-marker (model B-0030)
+10. B-0033.10 (M, dep 1-9) — Package Layer-2 hooks as standalone Claude Code plugin + publish (Otto-346 good-citizenship)
+
+Child stubs created as placeholders; each is one-PR implementable, verifiable in isolation. This closes the "decompose before impl" + "re-decompose during build" gates.
 
 ## Origin — Aaron 2026-04-26 from "eval" hook firing
 
