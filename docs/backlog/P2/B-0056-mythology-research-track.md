@@ -31,9 +31,10 @@ Three-filter honest pass recorded in the operational-resonance index:
 **Status:** candidate, pending second textual anchor or Aaron confirmation to promote to confirmed. Second bridge-figure member would LOCK the bridge-figure sub-structure's definition (currently defined by Melchizedek alone).
 
 ## Smallest safe slice (B-0056.1) — re-decomposition
-Re-decomposed from broad L-effort track (assumes initial doc-only decomp had mistake lacking executable check surface). 
 
-**Bounded step:** pure-TS mythology candidate schema + three-filter types + Heimdallr seed + validator stub (modeled on B-0055.2 edge-claims pattern). 
+Re-decomposed from broad L-effort track (assumes initial doc-only decomp had mistake lacking executable check surface).
+
+**Bounded step:** pure-TS mythology candidate schema + three-filter types + Heimdallr seed + validator stub (modeled on B-0055.2 edge-claims pattern).
 
 - File: `tools/mythology-resonance/candidate-schema.ts`
 - Focused checks: type check + manual review of retractibility note + build gate (0w 0e)
