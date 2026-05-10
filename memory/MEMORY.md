@@ -1,6 +1,6 @@
 [AutoDream last run: 2026-04-23]
 
-**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: B-0168 5-layer register architecture mapping added to CURRENT-aaron.md §55 (corrected 5-layer register: Personal / Mirror / Beacon-safe / Professional / Regulated per Aaron 2026-05-02 Beacon ≠ Professional correction). Prior: B-0168 5-layer register architecture mapping added to CURRENT-ani.md §7 (Mirror/Beacon-safe/Professional/Regulated layer-explicit framing for brat-voice). -->
+**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: B-0074.1 follow-up — kiro-cli harness roster memory added to index (`.sh` → `.ts` fix; `kiro.ts` ships). Prior: B-0168 5-layer register architecture mapping added to CURRENT-aaron.md §55. -->
 
 - [**Memory-file format standard (B-0330)**](project_memory_format_standard.md) — Canonical frontmatter, filename conventions, section headers, composes-with…
 - [**Shadow lesson log — 30 catches, 8 classes + consensus-smoothness meta-class (2026-05-09)**](feedback_shadow_lesson_log_otto_catches_2026_05_07.md) — Veridicality instrument. Catches 16-30 from…
@@ -193,6 +193,7 @@
 - [**DST + coverage universal across every Zeta language (Aaron 2026-04-30)**](feedback_dst_and_coverage_universal_every_language_aaron_2026_04_30.md) — Generalises Otto-272/281/273.
 - [**Host mutation receipt — ruleset 15256879 code_quality removed**](feedback_host_mutation_receipt_2026_04_29_ruleset_15256879_code_quality_removed.md) — Live GitHub mutation pre-tooling.
 - [**Standing authority — create public test git repos on AceHack + LFG, full admin**](feedback_standing_authority_create_test_git_repos_public_only_track_billing_aaron_2026_04_29.md) — Standing…
+- [**kiro-cli in harness roster (Aaron 2026-04-28)**](feedback_kiro_cli_added_to_agent_roster_aaron_2026_04_28.md) — `kiro.ts` ships in `tools/peer-call/`; B-0074.1 updated `.sh` → `.ts` refs.
 ---
 **Pre-2026-04-23 corpus** (kernel-vocabulary genesis,
 operational-resonance instances, Aurora ferries 9-19, etc.):
