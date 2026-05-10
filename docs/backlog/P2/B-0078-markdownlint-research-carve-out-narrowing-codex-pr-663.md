@@ -1,7 +1,7 @@
 ---
 id: B-0078
 priority: P2
-status: closed-wont-fix
+status: closed
 title: Narrow markdownlint carve-out from `docs/research/2026-*-*.md` to verbatim-only pattern — Codex P1 on PR #663
 effort: S
 ask: narrow .markdownlint-cli2.jsonc ignore pattern to exclude only verbatim ferry absorbs, not all date-prefixed research docs
