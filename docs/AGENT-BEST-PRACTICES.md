@@ -213,6 +213,22 @@ BP-07").
   **Rationale:** a compromised peer agent attempts to propagate
   injection downstream. Subagent briefs must re-state safety
   rules explicitly; they do not travel automatically. **re-search-flag**
+  **External anchors:** (1) Lee, D. & Tiwari, M. (2024), *Prompt Infection:
+  LLM-to-LLM Prompt Injection within Multi-Agent Systems*, arXiv 2410.07283
+  (<https://arxiv.org/abs/2410.07283>) — demonstrates self-replicating
+  injection propagation across agent boundaries; attack succeeds unless each
+  receiving agent independently sanitises its inputs. (2) Zhan, Q. et al.
+  (2024), *InjecAgent: Benchmarking Indirect Prompt Injections in
+  Tool-Integrated LLM Agents*, ACL 2024 Findings, arXiv 2403.02691
+  (<https://arxiv.org/abs/2403.02691>) — 1,054-case empirical benchmark:
+  GPT-4 successfully hijacked by peer/tool-response payloads in 24–48% of
+  cases; peer agents are untrusted injection sources. (3) OWASP AI Agent
+  Security Cheat Sheet (2024–2025)
+  (<https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html>)
+  — "Implement trust boundaries between agents and validate and sanitize
+  inter-agent communications"; directly operationalises BP-12. Full anchor
+  dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md`.
 
 ## Knowledge placement
 
@@ -221,6 +237,25 @@ BP-07").
   **Rationale:** memory shapes behaviour; retrieval supplies
   facts. Module paths, module names, this round's BACKLOG state
   — retrieve. Tone, authority, workflow — embed. **stable**
+  **External anchors:** (1) Lewis, P. et al. (2020), *Retrieval-Augmented
+  Generation for Knowledge-Intensive NLP Tasks*, NeurIPS 2020, arXiv
+  2005.11401 (<https://arxiv.org/abs/2005.11401>) — foundational paper
+  (13,000+ citations) establishing the parametric/non-parametric memory
+  dichotomy: parametric memory (embedded in skill) for stable reasoning
+  patterns; non-parametric (retrieved at runtime) for volatile factual
+  knowledge. (2) Mallen, A. et al. (2023), *When Not to Trust Language
+  Models: Investigating Effectiveness of Parametric and Non-Parametric
+  Memories*, ACL 2023, arXiv 2212.10511 (<https://arxiv.org/abs/2212.10511>)
+  — empirically proves when parametric memory fails: volatile / long-tail /
+  entity-specific knowledge degrades regardless of model scale; retrieval
+  outperforms parametric by orders of magnitude for such knowledge. (3)
+  Neeman, E. et al. (2023), *DisentQA: Disentangling Parametric and
+  Contextual Knowledge with Counterfactual Question Answering*, ACL 2023,
+  pages 10056–10070 (<https://aclanthology.org/2023.acl-long.559/>) —
+  names the entanglement pathology when stable and volatile knowledge are
+  mixed; BP-13's embed/retrieve split is the architectural disentanglement
+  solution. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md`.
 
 ## Testing & review
 
@@ -229,6 +264,23 @@ BP-07").
   **Rationale:** shared state masks regressions as flakiness.
   Isolated runs turn a behaviour change into a dataset-level
   diff. **re-search-flag**
+  **External anchors:** (1) Biderman, S. et al. (2024), *Lessons from the
+  Trenches on Reproducible Evaluation of Language Models*, arXiv 2405.14782
+  (<https://arxiv.org/abs/2405.14782>) — three years of lm-evaluation-harness
+  practice (Hugging Face Open LLM Leaderboard); establishes task versioning,
+  environment capture, and isolation as non-negotiable for regression
+  detection; shared state is the primary reproducibility failure mode. (2)
+  Liang, P. et al. (2022/2023), *Holistic Evaluation of Language Models
+  (HELM)*, TMLR 2023, arXiv 2211.09110 (<https://arxiv.org/abs/2211.09110>)
+  — architecture precedent for isolated, parameterised, fully-replayable eval
+  environments; raw-output archiving ensures score differences are
+  attributable to the system under test, not harness variance. (3) Yehudai,
+  A. et al. (2025), *Survey on Evaluation of LLM-based Agents*, arXiv
+  2503.16416 (<https://arxiv.org/abs/2503.16416>) — current agent-eval survey;
+  confirms that dynamic environments without isolation produce irreproducible
+  results and endorses offline static eval sets for regression detection.
+  Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md`.
 
 - **BP-15** *Tune-up suggestions cite rule IDs (BP-NN) for
   auditability.*

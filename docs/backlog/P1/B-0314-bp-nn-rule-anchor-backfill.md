@@ -63,11 +63,15 @@ BP-1 through BP-28 as enumerated in
 | BP-04 | anchored (slice 3, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md` |
 | BP-08 | anchored (slice 3, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md` |
 | BP-09 | anchored (slice 3, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md` |
-| BP-01–BP-02, BP-05–BP-06, BP-12–BP-15, BP-17–BP-28 | anchor-pending | slices 4+ |
+| BP-12 | anchored (slice 4, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md` |
+| BP-13 | anchored (slice 4, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md` |
+| BP-14 | anchored (slice 4, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md` |
+| BP-01–BP-02, BP-05–BP-06, BP-15, BP-17–BP-28 | anchor-pending | slices 5+ |
 
 **Slice-1 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice1
 **Slice-2 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice2
 **Slice-3 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice3
+**Slice-4 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice4
 
 ## Pre-start checklist (2026-05-10, Otto)
 
