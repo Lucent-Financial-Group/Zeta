@@ -51,6 +51,11 @@ function ensureLogDir(logPath: string): void {
   }
 }
 
+function appendDrainLogEntry(entry: DrainLogEntry, logPath: string): void {
+  ensureLogDir(logPath);
+  appendFileSync(logPath, JSON.stringify(entry) + "\n", "utf8");
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -103,9 +108,7 @@ function readAllLines(logPath: string): DrainLogEntry[] {
  * Append-only — never modifies existing lines.
  */
 export function appendEntry(entry: MutationLogEntry, logPath: string = DEFAULT_LOG_PATH): void {
-  ensureLogDir(logPath);
-  const line = JSON.stringify(entry) + "\n";
-  appendFileSync(logPath, line, "utf8");
+  appendDrainLogEntry(entry, logPath);
 }
 
 /**
@@ -133,6 +136,14 @@ export function listPending(logPath: string = DEFAULT_LOG_PATH): DrainLogEntry[]
     }
   }
   return result;
+}
+
+function findLatestEntry(entries: readonly DrainLogEntry[], entryId: string): DrainLogEntry | null {
+  for (let index = entries.length - 1; index >= 0; index -= 1) {
+    const entry = entries[index];
+    if (entry?.id === entryId) return entry;
+  }
+  return null;
 }
 
 /**
@@ -177,14 +188,8 @@ async function revertUnlocked(
 ): Promise<RevertResult> {
   const all = readAllLines(logPath);
 
-  // Find the most recent record for this id
-  const entries = all.filter((e) => e.id === entryId);
-  if (entries.length === 0) {
-    return { success: false, entryId, error: `No log entry found with id "${entryId}".` };
-  }
-
-  const latest = entries.at(-1);
-  if (latest === undefined) {
+  const latest = findLatestEntry(all, entryId);
+  if (latest === null) {
     return { success: false, entryId, error: `No log entry found with id "${entryId}".` };
   }
   if (latest.status === "reverted") {
@@ -221,8 +226,7 @@ async function revertUnlocked(
     status: "reverted",
   };
   try {
-    ensureLogDir(logPath);
-    appendFileSync(logPath, JSON.stringify(revertMarker) + "\n", "utf8");
+    appendDrainLogEntry(revertMarker, logPath);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     indeterminateReverts.add(entryId);
