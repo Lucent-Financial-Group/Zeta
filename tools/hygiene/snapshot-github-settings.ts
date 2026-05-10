@@ -70,6 +70,23 @@ async function ghApiOptional(path: string, jqFilter?: string): Promise<string | 
   return r.stdout.trim();
 }
 
+// Like ghApiOptional but only silences HTTP 403 token-scope errors; all other
+// failures are fatal so they don't get silently swallowed by the sentinel path.
+async function ghApiSkip403(path: string, jqFilter?: string): Promise<string | null> {
+  const args = ["gh", "api", path];
+  if (jqFilter !== undefined) {
+    args.push("--jq", jqFilter);
+  }
+  const r = await runCmd(args);
+  if (r.exitCode !== 0) {
+    if (r.stderr.includes("HTTP 403")) {
+      return null;
+    }
+    throw new Error(`gh api ${path} failed (exit ${r.exitCode}): ${r.stderr.trim()}`);
+  }
+  return r.stdout.trim();
+}
+
 function parseJsonSafe(raw: string | null, fallback: unknown = null): unknown {
   if (raw === null || raw.length === 0) return fallback;
   try {
@@ -244,8 +261,9 @@ export async function snapshot(repo: string): Promise<string> {
   const pages = parseJsonSafe(pagesRaw);
 
   // CodeQL default setup — requires admin token; falls back to a sentinel when the
-  // GITHUB_TOKEN in CI lacks that scope (HTTP 403).
-  const codeqlRaw = await ghApiOptional(
+  // GITHUB_TOKEN in CI lacks that scope (HTTP 403). Other errors remain fatal so
+  // transient API failures are not silently hidden from the drift check.
+  const codeqlRaw = await ghApiSkip403(
     `/repos/${repo}/code-scanning/default-setup`,
     "{state, languages: (.languages | sort), query_suite}"
   );
