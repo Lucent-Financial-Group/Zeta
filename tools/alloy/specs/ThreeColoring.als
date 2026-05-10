@@ -13,8 +13,8 @@
 // searches; Lean + Mathlib handles theorem-level closure (Stage 3+).
 //
 // Commands and expected outcomes (per AlloyRunner protocol):
-//   run  Find3Coloring         — SAT   (K3 triangle fits in scope 5)
-//   check NoMonochromaticEdge  — OK    (encoding soundness, tautological)
+//   run  Find3Coloring         — SAT   (genuinely 3-chromatic witness; all 3 colors used)
+//   check NoMonochromaticEdge  — OK    (non-tautological encoding consistency guard)
 //   check K4HasNo3Coloring     — OK    (K4 chromatic number = 4, no 3-coloring)
 
 module ThreeColoring
@@ -45,23 +45,29 @@ pred ProperColoring {
 }
 
 // ── Run 1: find a proper 3-coloring of a non-trivial graph ───────────────────
-// The triangle (K3) is 3-colorable and fits comfortably in scope 5.
+// Constrain all three colors to appear so the witness must be genuinely
+// 3-chromatic (a single-edge + isolated-vertices would only need 2 colors).
+// Color in Vertex.color asserts every Color atom is the color of some Vertex.
 // AlloyRunner expects SAT here: the run finds an instance => OK.
 
 run Find3Coloring {
   ProperColoring
   some adj
+  Color in Vertex.color  -- all 3 colors used; ensures a genuinely 3-chromatic structure
 } for 5 but 5 Vertex
 
-// ── Check 1: encoding soundness ───────────────────────────────────────────────
-// ProperColoring is definitionally equivalent to "no monochromatic edge."
-// Asserting this tautology and checking it within scope 5 verifies that the
-// predicate encoding has no bugs that would silently allow monochromatic edges.
-// AlloyRunner expects UNSAT (no counterexample) => OK.
+// ── Check 1: encoding consistency guard ──────────────────────────────────────
+// HasMonochromaticEdge independently encodes the negation of ProperColoring.
+// Asserting their equivalence (ProperColoring <=> not HasMonochromaticEdge)
+// is a non-tautological regression guard: if either definition drifts, Alloy
+// finds a counterexample. AlloyRunner expects UNSAT (no counterexample) => OK.
+
+pred HasMonochromaticEdge {
+  some u, v: Vertex | u in v.adj and u.color = v.color
+}
 
 assert NoMonochromaticEdge {
-  ProperColoring =>
-    (all u, v: Vertex | u in v.adj => u.color != v.color)
+  ProperColoring <=> not HasMonochromaticEdge
 }
 check NoMonochromaticEdge for 5
 

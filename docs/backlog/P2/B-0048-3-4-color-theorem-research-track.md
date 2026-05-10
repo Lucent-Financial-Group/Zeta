@@ -1,7 +1,7 @@
 ---
 id: B-0048
 priority: P2
-status: in-progress
+status: open
 title: 3-color / 4-color theorem research track — graph coloring, computer-assisted proof, Gonthier Coq formalization, formal-verification routing
 tier: formal-verification-research
 effort: L
@@ -51,7 +51,7 @@ Graph coloring is the paradigmatic CSP. Imani's planner (operator-cost model) al
 - skill-router: `alloy-expert` skill covers Alloy modeling; no graph-coloring spec existed
 - orthogonal-axes: `tools/alloy/specs/` contains `Spine.als` and `InfoTheoreticSharder.als` — pattern clear
 - Otto-364: Alloy 6 / SAT4J already in use; no version drift risk
-- lost-files: `LOST-FILES-LOCATIONS.md` consulted; no orphan graph-coloring artifacts found
+- lost-files: `tools/hygiene/LOST-FILES-LOCATIONS.md` consulted; no orphan graph-coloring artifacts found
 
 **Dependency-restructure:**
 
