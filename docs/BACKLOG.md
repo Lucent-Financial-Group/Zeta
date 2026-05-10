@@ -275,6 +275,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0054.2](backlog/P2/B-0054.2-video-game-priority-seeds-extension.md)** Video-game priority tier — Brütal Legend + Final Fantasy VI/VII
 - [ ] **[B-0055](backlog/P2/B-0055-frontier-edge-claims-CTF-flags.md)** Frontier edge-claims research track — plant flags on unclaimed intellectual territory (CTF-style, falsifiable, retractibly-defensible)
 - [ ] **[B-0056](backlog/P2/B-0056-mythology-research-track.md)** Mythology research track — operational-resonance candidates from world-mythology bridge / messenger / boundary figures
+- [x] **[B-0056.1](backlog/P2/B-0056.1-mythology-resonance-catalog-v0.md)** Mythology resonance catalog v0 — typed schema + 3 seed entries (Heimdallr, Hermes/Mercury, Loki anti-instance)
 - [ ] **[B-0057](backlog/P2/B-0057-occult-western-esoteric-research-track.md)** Occult / Western-esoteric tradition research track — operational-resonance candidates from Hermetic / Kabbalistic / Thelemic / Golden Dawn / Theosophical / alchemical lineages
 - [ ] **[B-0059](backlog/P2/B-0059-etymology-epistemology-research-track.md)** Etymology + epistemology research track — linguistic-substrate of kernel-vocabulary + three-filter discipline calibration
 - [ ] **[B-0068](backlog/P2/B-0068-local-ai-trajectory-forge-ollama-direct-integration-aaron-2026-04-28.md)** Local AI trajectory — Forge CLI/harness + Ollama + direct local-model integration (umbrella)
