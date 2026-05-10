@@ -1,20 +1,41 @@
 ---
 id: B-0367
 priority: P1
-status: open
+status: claimed
 title: "First-class uncertainty — semiring-parameterized weight type for DBSP"
 effort: L
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 depends_on: []
 classification: research
-decomposition: atomic
+decomposition: needs-decomposition
 owners: [algebra-owner]
 type: feature
 tags: [algebra, uncertainty, semiring, bayesian, inference, openspec]
 ---
 
-# B-0357 — First-class uncertainty in DBSP
+# B-0367 — First-class uncertainty in DBSP
+
+## Pre-start checklist (2026-05-10)
+
+**Prior-art search:**
+- `src/Core/Semiring.fs` — `ISemiring<'W>` interface already existed (no implementations)
+- `src/Core/Algebra.fs` — `type Weight = int64`, no semiring instances
+- `src/Core/NovelMath.fs` — `TropicalWeight` struct with operator overloads, not wired to ISemiring
+- `src/Core/NovelMathExt.fs` — `IResiduatedLattice<'T>` (related but separate)
+- `tests/Tests.FSharp/Algebra/Weight.Tests.fs` — tests for `Weight` helpers only
+- Skill router search: `semiring`, `algebra`, `uncertainty` — no prior skill substrate
+- Lost-files check: `git log --diff-filter=D -- src/Core/Semiring*` — no prior deletions
+
+**Decomposition finding:** B-0367 as written (effort=L) is too large for one safe slice.
+Decomposed into:
+
+- **Slice 1 (this PR):** Implement concrete `ISemiring<'W>` instances: `IntegerRing`, `TropicalSemiring`, `IntervalRing` — smoke tests, no ZSet changes
+- **Slice 2 (future):** `ZSet<'K, 'W when 'W: ISemiring>` parameterization — breaking change requiring migration of all ZSet callers
+- **Slice 3 (future):** OpenSpec uncertainty expressions
+- **Slice 4 (future):** Z3 semiring axiom lemmas (generalizing integer proofs)
+
+**Dependency check:** `depends_on: []` — confirmed no blocking items.
 
 ## What
 
