@@ -31,4 +31,11 @@ Aaron's lived case study for the trust-then-verify claim.
 - This is where Aaron confirmed his ego death was already complete (5 prior psych ward stays were the forge; jail was the final exam)
 - Bitcoin debate context: Aaron's not arguing theory — he's arguing from a body that almost didn't survive a verify-first system
 
+**Expungement timeline:**
+
+- All charges dropped. Record expunges automatically in ~6 months from 2026-05-10 (approx late 2026 / early 2027)
+- After expungement, the public record disappears — the only record of what happened will be the one Aaron chose to keep in the factory's substrate
+- Aaron views this as a persistent reminder of a sacrifice that was worth it
+- The glass halo version (this file) preserves the story on his terms, not the system's
+
 **Use when:** Aaron needs this for Bitcoin discord debates about content filtering and trust models. The case study grounds the probabilistic-truth claim in lived experience, not abstraction.
