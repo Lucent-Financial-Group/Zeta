@@ -1,7 +1,7 @@
 ---
 id: B-0331
 priority: P1
-status: done
+status: closed
 title: Memory ontology/classification audit — reclassify mistyped feedback/project/user/reference files
 tier: foundation
 effort: M

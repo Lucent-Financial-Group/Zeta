@@ -1,7 +1,7 @@
 ---
 id: B-0072
 priority: P2
-status: done
+status: closed
 title: Normalize MEMORY.md index entry lengths to one-line-per-memory per memory/README.md guidance
 effort: M
 ask: copilot review on PR #72 (memory/MEMORY.md line 16)

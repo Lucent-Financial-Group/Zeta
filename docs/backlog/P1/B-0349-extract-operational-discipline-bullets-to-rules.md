@@ -1,7 +1,7 @@
 ---
 id: B-0349
 priority: P1
-status: done
+status: closed
 title: "Extract operational-discipline bullets to .claude/rules/"
 created: 2026-05-09
 last_updated: 2026-05-09

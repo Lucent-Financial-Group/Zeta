@@ -1,7 +1,7 @@
 ---
 id: B-0332
 priority: P1
-status: done
+status: closed
 title: Memory load-bearing-vs-decorative classifier — identify which memory files are cited from bootstrap surfaces
 tier: foundation
 effort: S

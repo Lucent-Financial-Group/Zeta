@@ -1,7 +1,7 @@
 ---
 id: B-0320
 priority: P1
-status: done
+status: closed
 title: "Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate"
 tier: agent-capability-expansion
 effort: S

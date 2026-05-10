@@ -1,7 +1,7 @@
 ---
 id: B-0361
 priority: P1
-status: done
+status: closed
 title: "Anchor-to-human-lineage step in formal verification and concept workflows"
 effort: S
 created: 2026-05-09
