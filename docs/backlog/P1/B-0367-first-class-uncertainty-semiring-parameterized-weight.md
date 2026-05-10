@@ -12,7 +12,6 @@ decomposition: needs-decomposition
 owners: [algebra-owner]
 type: feature
 tags: [algebra, uncertainty, semiring, bayesian, inference, openspec]
-
 ---
 
 # B-0367 — First-class uncertainty in DBSP
@@ -20,7 +19,6 @@ tags: [algebra, uncertainty, semiring, bayesian, inference, openspec]
 ## Pre-start checklist (2026-05-10)
 
 **Prior-art search:**
-
 - `src/Core/Semiring.fs` — `ISemiring<'W>` interface already existed (no implementations)
 - `src/Core/Algebra.fs` — `type Weight = int64`, no semiring instances
 - `src/Core/NovelMath.fs` — `TropicalWeight` struct with operator overloads, not wired to ISemiring
