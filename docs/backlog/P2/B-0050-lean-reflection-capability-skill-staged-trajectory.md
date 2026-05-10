@@ -12,6 +12,7 @@ depends_on: []
 composes_with: [tools/lean4/Lean4/DbspChainRule.lean, docs/research/chain-rule-proof-log.md, docs/research/stainback-conjecture-fix-at-source.md, B-0048, B-0051, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md, .claude/agents/formal-verification-expert.md]
 tags: [lean4, reflection, metaprogramming, mathlib, proof-automation, tactic-authoring, custom-elaborators, formal-verification, stainback-conjecture, ceramist-port]
 type: friction-reducer
+
 ---
 
 # B-0050 — Lean reflection capability skill + scouting note
@@ -62,6 +63,7 @@ If Aaron meant "reflection" in the general programming sense (C#/F#/Java runtime
 ## Pre-start checklist (Stage 1 — 2026-05-10)
 
 **Prior-art search axes:**
+
 - `wake-time-substrate`: no existing `lean-reflection-expert` skill or memory file found
 - `skill-router`: `lean4-expert` skill covers `lake build`, tactic basics, Mathlib — does NOT cover `MetaM`/`TermElabM`/`macro`/`elab_rules`; `formal-verification-expert` routes Lean vs Z3 vs TLA+ but is not a metaprogramming lore skill
 - `orthogonal-axes`: `lean4-expert` and `lean-reflection-expert` are clearly orthogonal (build+proof-basics vs metaprogramming+reflection)
@@ -72,14 +74,17 @@ If Aaron meant "reflection" in the general programming sense (C#/F#/Java runtime
 - `honor-those-that-came-before`: no `memory/persona/<lean-reflection>` folder; no retired SKILL.md; safe to mint new
 
 **Dependency restructure:**
+
 - `depends_on: []` — no blockers
 - `composes_with` pointers verified: `DbspChainRule.lean` exists at `tools/lean4/Lean4/DbspChainRule.lean` ✓; `chain-rule-proof-log.md` and `stainback-conjecture-fix-at-source.md` are in `docs/research/` ✓
 
 **Stage 1 implementation (this PR):**
+
 - `docs/research/lean-reflection-stage-1-notes-2026-05-10.md` — scouting note
 - `.claude/skills/lean-reflection-expert/SKILL.md` — Stage 1 read-only reflection competence skill
 
 **Does NOT implement:**
+
 - Stages 2-5 (tactic authoring, macro/elab authoring, decision procedures, proof-automation integration)
 - Any new Lean proof files
 

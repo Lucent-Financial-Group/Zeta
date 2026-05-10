@@ -180,6 +180,7 @@ When reading a tactic like `by ring` or `by abel`:
 ## Stage 2 prerequisite checklist (not yet implemented)
 
 To move to Stage 2 (tactic authoring), the following are prerequisites:
+
 - [ ] Understand `MVarId` and what a "goal" looks like as an `Expr`
 - [ ] Understand `closeMainGoal` / `liftMetaTactic` patterns
 - [ ] Write a trivial `TacticM Unit` that closes a goal with `rfl`
