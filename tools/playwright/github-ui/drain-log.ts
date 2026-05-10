@@ -76,7 +76,7 @@ function readAllLines(logPath: string): DrainLogEntry[] {
  */
 export function appendEntry(entry: MutationLogEntry, logPath: string = DEFAULT_LOG_PATH): void {
   ensureLogDir(logPath);
-  const line = JSON.stringify(entry as DrainLogEntry) + "\n";
+  const line = JSON.stringify(entry) + "\n";
   appendFileSync(logPath, line, "utf8");
 }
 
@@ -129,7 +129,10 @@ export async function revert(
     return { success: false, entryId, error: `No log entry found with id "${entryId}".` };
   }
 
-  const latest = entries[entries.length - 1] as DrainLogEntry;
+  const latest = entries.at(-1);
+  if (latest === undefined) {
+    return { success: false, entryId, error: `No log entry found with id "${entryId}".` };
+  }
   if (latest.status === "reverted") {
     return { success: false, entryId, error: `Entry "${entryId}" is already reverted.` };
   }
@@ -141,14 +144,15 @@ export async function revert(
     params: latest.params,
   };
 
-  let result;
+  let result: Awaited<ReturnType<typeof mutate>>;
   try {
     result = await mutate(inverseRequest, options);
-  } catch (err) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     return {
       success: false,
       entryId,
-      error: `Inverse mutation threw: ${err instanceof Error ? err.message : String(err)}`,
+      error: `Inverse mutation threw: ${message}`,
     };
   }
   if (!result.success) {

@@ -4,7 +4,6 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { appendEntry, listPending, revert, type DrainLogEntry } from "./drain-log";
 import type { MutationLogEntry, MutationOptions } from "./mutate";
-import type { PageGotoOptions } from "./auth";
 import type {
   MutableGitHubSessionContext,
   MutableGitHubSessionDriver,
@@ -114,7 +113,7 @@ class FakeRevertPage implements MutableGitHubSessionPage {
     this.username = username;
   }
 
-  goto(url: string, _opts?: PageGotoOptions): Promise<void> {
+  goto(url: string): Promise<void> {
     this.currentUrl = url;
     return Promise.resolve();
   }
@@ -139,16 +138,18 @@ class FakeRevertPage implements MutableGitHubSessionPage {
     return Promise.resolve();
   }
 
-  fill(_selector: string, _value: string): Promise<void> {
+  fill(): Promise<void> {
     return Promise.resolve();
   }
 }
 
 class FakeRevertContext implements MutableGitHubSessionContext {
   private readonly page: FakeRevertPage;
+
   constructor(page: FakeRevertPage) {
     this.page = page;
   }
+
   newPage(): Promise<FakeRevertPage> {
     return Promise.resolve(this.page);
   }
@@ -159,10 +160,12 @@ class FakeRevertContext implements MutableGitHubSessionContext {
 
 class FakeRevertDriver implements MutableGitHubSessionDriver {
   private readonly page: FakeRevertPage;
+
   constructor(page: FakeRevertPage) {
     this.page = page;
   }
-  newContext(_storageStatePath: string): Promise<FakeRevertContext> {
+
+  newContext(): Promise<FakeRevertContext> {
     return Promise.resolve(new FakeRevertContext(this.page));
   }
 }
@@ -261,6 +264,15 @@ describe("listPending", () => {
     expect(pending).toHaveLength(1);
     expect(pending[0]?.id).toBe(e2.id);
   });
+
+  test("skips malformed JSONL records without blocking valid entries", () => {
+    const logPath = tempLogPath();
+    const entry = makeEntry();
+    appendEntry(entry, logPath);
+    appendFileSync(logPath, "{not-json}\n", "utf8");
+
+    expect(listPending(logPath)).toEqual([entry]);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -321,5 +333,32 @@ describe("revert", () => {
     const revertRecord = parsed.find((e) => e.id === entry.id && e.status === "reverted");
     expect(original).toBeDefined();
     expect(revertRecord).toBeDefined();
+  });
+
+  test("reports thrown inverse mutation without appending revert marker", async () => {
+    const logPath = tempLogPath();
+    const entry = makeEntry();
+    appendEntry(entry, logPath);
+
+    const surfacesPath = tempSurfacesFile([
+      { id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] },
+    ]);
+    const storageDir = mkdtempSync(join(tmpdir(), "zeta-drain-missing-storage-"));
+    tempDirs.push(storageDir);
+
+    const result = await revert(
+      entry.id,
+      {
+        storageStatePath: join(storageDir, "missing.json"),
+        authorizedSurfacesPath: surfacesPath,
+      },
+      logPath,
+    );
+
+    expect(result).toMatchObject({ success: false, entryId: entry.id });
+    if (!result.success) {
+      expect(result.error).toContain("Inverse mutation threw:");
+    }
+    expect(readFileSync(logPath, "utf8").trim().split("\n")).toHaveLength(1);
   });
 });
