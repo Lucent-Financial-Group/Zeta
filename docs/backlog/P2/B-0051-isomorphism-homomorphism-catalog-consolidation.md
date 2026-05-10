@@ -12,6 +12,7 @@ depends_on: []
 composes_with: [B-0050, B-0048, docs/research/divine-download-dense-burst-2026-04-19.md, docs/research/event-storming-evaluation.md, docs/research/retraction-safe-semi-naive.md, docs/research/chain-rule-proof-log.md, docs/research/stainback-conjecture-fix-at-source.md, tools/lean4/Lean4/DbspChainRule.lean, user_retraction_buffer_forgiveness_eternity.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
 tags: [isomorphism, homomorphism, category-theory, lean-formalization, retraction-algebra, dbsp-chain-rule, semiring, group-homomorphism, IF1-IF4, three-filter-extension]
 type: friction-reducer
+
 ---
 
 # B-0051 — Isomorphism / homomorphism catalog
@@ -96,6 +97,7 @@ Every claim in the catalog is **retractibly-revisable** — if IF2 fails on coun
 ## Pre-start checklist (2026-05-10, B-0051.1 slice)
 
 **Prior-art search:**
+
 - Searched skill router: `category-theory-expert` skill exists (`.claude/skills/category-theory-expert/SKILL.md`), covers categorical surface. No existing isomorphism-catalog skill or file found.
 - Searched `docs/category-theory/README.md`: no catalog reference before this PR.
 - Searched `docs/GLOSSARY.md`: zero entries for isomorphism/homomorphism/functor/natural transformation.
@@ -105,12 +107,14 @@ Every claim in the catalog is **retractibly-revisable** — if IF2 fails on coun
 - Found prior research: `docs/research/2026-05-01-claudeai-category-theory-lever-taxonomy-grounding-aaron-forwarded.md` — useful background on categorical framing; absorbed into catalog motivation.
 
 **Dependency restructure:**
+
 - `depends_on: []` — confirmed; no blocking items.
 - `composes_with` pointers verified: all listed files exist and contain the cited content.
 - Reciprocal pointer added: `docs/category-theory/README.md` now cross-references the catalog.
 
 **Decomposition:**
 B-0051 as written is an L-effort item. Decomposed into:
+
 - **B-0051.1** (this PR): `docs/research/isomorphism-catalog.md` v0 — forward index of 9 claims (CAT-001 through CAT-009) with IF-filter framework + promotion protocol. Status: `partial`.
 - **B-0051.2** (future): mechanical IF3 counterexample searches for CAT-004 through CAT-009.
 - **B-0051.3** (future): Lean formalization of CAT-002 (semi-naive semiring homomorphism) to `formalized` status.

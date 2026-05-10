@@ -6,6 +6,7 @@ origin: B-0051 (P2)
 owner: category-theory-expert (capability skill); formal-verification-expert (Lean formalization routing)
 status: v0 — forward index, promotion-protocol draft
 tags: [isomorphism, homomorphism, category-theory, retraction-algebra, dbsp, lean-formalization, IF-filters]
+
 ---
 
 # Isomorphism / Homomorphism Catalog
@@ -15,6 +16,7 @@ Not a list of analogies — every entry claims that the same algebraic laws
 hold in both domains, and the IF-filter checklist enforces the distinction.
 
 Cross-references:
+
 - `docs/category-theory/README.md` — categorical foundations for DBSP contributors
 - `docs/research/chain-rule-proof-log.md` — the homomorphism at stream level
 - `tools/lean4/Lean4/DbspChainRule.lean` — the live Lean formalization surface
@@ -82,11 +84,13 @@ multiplicity 1
 exists a unique group homomorphism `f̄ : ZSet[X] → G` such that `f̄ ∘ ι = f`
 
 **Source files:**
+
 - `.claude/skills/category-theory-expert/SKILL.md` § "ZSet as a free abelian-group functor"
 - `docs/research/retraction-safe-semi-naive.md`
 - Implied throughout `src/Core/` ZSet operations
 
 **Counterexample attempts (IF3):**
+
 - Date: 2026-05-10
 - Operator tested: multiset union vs. group addition; negation vs. complementary multiplicities
 - Attempt: tried to construct a ZSet element that fails the universal-property factorization
@@ -117,11 +121,13 @@ as a module homomorphism)
 **Preservation law:** `body(a + b) = body(a) + body(b)` for all linear operators `a`, `b`
 
 **Source files:**
+
 - `docs/research/retraction-safe-semi-naive.md` line 77: *"body is a semiring
   homomorphism on linear operators"*
 - `src/Core/RecursiveSigned.fs`
 
 **Counterexample attempts (IF3):**
+
 - Date: 2026-05-10 (initial search only)
 - Operator tested: addition on linear operators
 - Attempt: checked whether non-linear rules in `body` break additivity
@@ -154,11 +160,13 @@ IF4 ✓ — Lean file exists)
 **Preservation law:** `D(s + t) = D(s) + D(t)` (linearity); `D(I(s)) = s`
 
 **Source files:**
+
 - `docs/research/chain-rule-proof-log.md` lines 110, 244
 - `tools/lean4/Lean4/DbspChainRule.lean` — the formal carrier
 - `openspec/specs/operator-algebra/spec.md`
 
 **Counterexample attempts (IF3):**
+
 - Date: 2026-05-10
 - Operator tested: D(s + t) vs. D(s) + D(t) for concrete stream examples
 - Attempt: boundary condition at n=0 (s(-1) undefined)
@@ -193,6 +201,7 @@ IF4 partially — statable via `CategoryTheory.Functor` on the time-indexed cate
 `I ∘ D = id` on zero-initial streams, `z⁻¹` commutes with `D` up to boundary
 
 **Source files:**
+
 - `openspec/specs/operator-algebra/spec.md`
 - `tools/lean4/Lean4/DbspChainRule.lean`
 - `docs/research/chain-rule-proof-log.md`
@@ -231,6 +240,7 @@ IF4 not yet attempted)
 current state from the log
 
 **Source files:**
+
 - `docs/research/event-storming-evaluation.md` lines 35, 159
 
 **Counterexample attempts (IF3):** Not yet run. Priority: low (illustrative
@@ -263,6 +273,7 @@ unitarity + CPT)
 commute with the mapping
 
 **Source files:**
+
 - `docs/research/divine-download-dense-burst-2026-04-19.md` §
   "The retraction-native isomorphism" (lines 86–99)
 
@@ -293,6 +304,7 @@ in the source file needs operator-preservation check; IF3 not run; IF4 not
 attempted)
 
 **Source files:**
+
 - `docs/research/stainback-conjecture-fix-at-source.md` line 423
 
 **Counterexample attempts (IF3):** Not run. Priority: medium (the claim is
@@ -312,6 +324,7 @@ analogy, not pure engineering need; IF2 needs algebraic statement of "intention
 map" and "action weight"; IF3 not run; IF4 deferred)
 
 **Source files:**
+
 - `memory/user_retraction_buffer_forgiveness_eternity.md` § "The isomorphism"
 
 **Note:** IF1 partial because Aaron reached this isomorphism by reflection, not
@@ -333,6 +346,7 @@ resilience; IF2 needs the operator-composition laws stated explicitly on both
 sides; IF3 not run; IF4 deferred)
 
 **Source files:**
+
 - `memory/user_harm_handling_ladder_resist_reduce_nullify_absorb.md`
 
 **Counterexample attempts (IF3):** Not run. Priority: low for factory engineering;
@@ -373,4 +387,3 @@ is additive — prior knowledge is not erased, it is bounded.
 
 No new persona created; `honor-those-that-came-before` protocol was checked:
 `git log --diff-filter=D -- .claude/skills/` shows no retired category-theory
-persona to unretire.
