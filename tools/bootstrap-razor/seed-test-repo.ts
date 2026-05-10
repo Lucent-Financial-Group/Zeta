@@ -49,7 +49,15 @@ export function main(argv: string[]): number {
   const dryRun = argv.includes("--dry-run");
 
   if (dryRun) {
-    const manifest = readFileSync(manifestPath, "utf8");
+    let manifest: string;
+    try {
+      manifest = readFileSync(manifestPath, "utf8");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`seed-test-repo: unable to read manifest at ${manifestPath}: ${message}`);
+      return 1;
+    }
+
     console.log("DRY-RUN: would read manifest from", manifestPath);
     const includeGlobs = extractYamlListBlock(manifest, "include");
     if (includeGlobs.length > 0) {
