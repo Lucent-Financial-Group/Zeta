@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
@@ -14,6 +14,7 @@ import {
   type MutationRequest,
 } from "./mutate";
 import type { PageGotoOptions } from "./auth";
+import type { DrainLogEntry } from "./drain-log";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -41,6 +42,12 @@ function tempSurfacesFile(surfaces: object[]): string {
   const path = join(dir, "authorized-surfaces.json");
   writeFileSync(path, JSON.stringify({ version: 1, surfaces }));
   return path;
+}
+
+function tempLogPath(): string {
+  const dir = mkdtempSync(join(tmpdir(), "zeta-mutate-log-test-"));
+  tempDirs.push(dir);
+  return join(dir, "log.jsonl");
 }
 
 // ---------------------------------------------------------------------------
@@ -153,9 +160,11 @@ const HTML_TOGGLE_ON = `
 // ---------------------------------------------------------------------------
 
 function makeOpts(page: FakeMutablePage, surfacesPath?: string): MutationOptions {
+  // Default logPath to a temp path so tests never write to the real drain log.
   const base: MutationOptions = {
     storageStatePath: tempStorageState(),
     driver: new FakeMutableDriver(page),
+    logPath: tempLogPath(),
   };
   if (surfacesPath !== undefined) {
     return { ...base, authorizedSurfacesPath: surfacesPath };
@@ -435,5 +444,69 @@ describe("mutate — snapshot pair invariant", () => {
     if (!result.success) throw new Error("Expected success");
     expect(result.drainLogEntry.before).toEqual(result.before);
     expect(result.drainLogEntry.after).toEqual(result.after);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Drain log auto-write (B-0322)
+// ---------------------------------------------------------------------------
+
+describe("mutate — drain log auto-write", () => {
+  const req: MutationRequest = {
+    surfaceId: "dependabot-toggles",
+    action: "toggle-on",
+    params: { url: TARGET_URL, toggleKey: "dependabot-security-updates" },
+  };
+
+  test("writes one JSONL line to logPath on success", async () => {
+    const logPath = tempLogPath();
+    const result = await mutate(req, { ...makeOpts(makePage()), logPath });
+    expect(result.success).toBe(true);
+    expect(existsSync(logPath)).toBe(true);
+    const lines = readFileSync(logPath, "utf8").split("\n").filter((l) => l.trim().length > 0);
+    expect(lines).toHaveLength(1);
+  });
+
+  test("written entry matches the drainLogEntry in the result", async () => {
+    const logPath = tempLogPath();
+    const result = await mutate(req, { ...makeOpts(makePage()), logPath });
+    if (!result.success) throw new Error("Expected success");
+    const line = readFileSync(logPath, "utf8").trim();
+    const written = JSON.parse(line) as DrainLogEntry;
+    expect(written.id).toBe(result.drainLogEntry.id);
+    expect(written.action).toBe("toggle-on");
+    expect(written.inverseAction).toBe("toggle-off");
+    expect(written.status).toBe("applied");
+  });
+
+  test("does not write when skipLog is true", async () => {
+    const logPath = tempLogPath();
+    const result = await mutate(req, { ...makeOpts(makePage()), logPath, skipLog: true });
+    expect(result.success).toBe(true);
+    expect(existsSync(logPath)).toBe(false);
+  });
+
+  test("reports log write failure without marking an applied mutation failed", async () => {
+    const logPath = mkdtempSync(join(tmpdir(), "zeta-mutate-log-dir-"));
+    tempDirs.push(logPath);
+    const page = makePage();
+
+    const result = await mutate(req, { ...makeOpts(page), logPath });
+
+    expect(page.clickedSelectors).toHaveLength(1);
+    expect(result.success).toBe(true);
+    if (!result.success) throw new Error("Expected success");
+    expect(result.drainLogWriteError).toContain(logPath);
+    expect(result.drainLogWriteError).toContain("Failed to append drain-log entry");
+  });
+
+  test("does not write when mutation fails (auth rejection)", async () => {
+    const logPath = tempLogPath();
+    const result = await mutate(
+      { ...req, surfaceId: "non-existent" },
+      { ...makeOpts(makePage()), logPath },
+    );
+    expect(result.success).toBe(false);
+    expect(existsSync(logPath)).toBe(false);
   });
 });

@@ -9,6 +9,7 @@ import {
 } from "./auth";
 import { extractToggles, extractFormValues, extractVisibleFeatures, type GitHubPageSnapshot } from "./snapshot";
 import { diffPageSnapshots, type PageDiff } from "./feature-diff";
+import { appendEntry, DEFAULT_LOG_PATH } from "./drain-log";
 
 // ---------------------------------------------------------------------------
 // Errors
@@ -99,6 +100,8 @@ export interface MutationSuccess {
   readonly after: GitHubPageSnapshot;
   readonly diff: PageDiff;
   readonly drainLogEntry: MutationLogEntry;
+  /** Present when the UI mutation applied but the append-only drain-log write failed. */
+  readonly drainLogWriteError?: string;
 }
 
 export interface MutationFailure {
@@ -131,6 +134,10 @@ export interface MutationOptions
   readonly driver?: MutableGitHubSessionDriver;
   /** Override authorized surfaces path (for testing). */
   readonly authorizedSurfacesPath?: string;
+  /** Override drain-log path (for testing). Defaults to DEFAULT_LOG_PATH from drain-log.ts. */
+  readonly logPath?: string;
+  /** Set true to suppress auto-write to the drain log (used by revert() to avoid double-logging). */
+  readonly skipLog?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -321,7 +328,7 @@ export async function mutate(
     // 9. Structured diff (echoed to chat output per don't-ask-permission echo discipline)
     const diff = diffPageSnapshots(before, after);
 
-    // 10. Build drain log entry (B-0322 drain-log.ts implements the write)
+    // 10. Build drain log entry and persist it (append-only invariant)
     const drainLogEntry: MutationLogEntry = {
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
@@ -335,7 +342,21 @@ export async function mutate(
       status: "applied",
     };
 
-    return { success: true, before, after, diff, drainLogEntry };
+    let drainLogWriteError: string | undefined;
+
+    if (options.skipLog !== true) {
+      const logPath = options.logPath ?? DEFAULT_LOG_PATH;
+      try {
+        appendEntry(drainLogEntry, logPath);
+      } catch (err) {
+        drainLogWriteError =
+          `Failed to append drain-log entry to ${logPath}: ${err instanceof Error ? err.message : String(err)}`;
+      }
+    }
+
+    return drainLogWriteError === undefined
+      ? { success: true, before, after, diff, drainLogEntry }
+      : { success: true, before, after, diff, drainLogEntry, drainLogWriteError };
   } finally {
     await context.close();
   }
