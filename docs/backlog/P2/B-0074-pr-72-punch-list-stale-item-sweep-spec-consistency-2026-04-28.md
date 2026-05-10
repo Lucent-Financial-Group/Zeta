@@ -6,7 +6,7 @@ title: PR #72 punch-list / spec-consistency drift sweep — 8 codex threads on s
 effort: M
 ask: chatgpt-codex-connector + copilot reviews on PR #72
 created: 2026-04-28
-last_updated: 2026-05-02
+last_updated: 2026-05-10
 depends_on: []
 tags: [pr-72, punch-list, spec-consistency, b-0062, deferral-tracking]
 type: friction-reducer
@@ -37,10 +37,17 @@ session. Codex flagged 4 stale entries:
    item flagged the §9.1 vs §3.3/§3.4 self-revocation
    contradiction; subsequent EAT/wallet edits resolved it.
    Remove from punch list with audit trail in commit message.
+   **RESOLVED:** B-0062 closed 2026-05-08 (Vera final
+   companion-spec cleanup); all 21 punch-list items carry
+   resolution notes. No further action needed.
 2. **L152 — reorg-metric blocker (cid: SIvLus5-BHvP)**: stale
    reorg-metric blocker, no longer applicable.
+   **RESOLVED:** B-0062 closed 2026-05-08; reorg-metric item
+   aligned in EAT §9 / wallet spec §9.3.
 3. **L161 — §15 unresolved-questions item (cid: SIvLus5-BHvU)**:
    the §15 entry that was open is now closed; drop from punch.
+   **RESOLVED:** B-0062 closed 2026-05-08; §15 send-readiness
+   statement reconciled (prior pass).
 4. **L62 — pre-broadcast freeze item (cid: SIvLus5-Bk-Z)**:
    the in-repo-monitor topology aspect of this entry was
    resolved by the §13.4 in-repo-monitor removal (earlier
@@ -50,6 +57,11 @@ session. Codex flagged 4 stale entries:
    invariant the punch-list item flagged) remains OPEN.**
    The B-0062 entry should be split: close the topology
    sub-item, keep the state-machine sub-item open.
+   **RESOLVED:** B-0062 closed 2026-05-08; both the topology
+   sub-item and the state-machine semantics sub-item received
+   explicit resolution notes (`frozen` terminal state §7.3,
+   thesis-review vs classification-review distinction in
+   item 2 of the preflight-retraction state-machine section).
 
 ### EAT/wallet cross-doc alignment
 
@@ -72,6 +84,10 @@ session. Codex flagged 4 stale entries:
    PR's branch). Once #28's content propagates to AceHack
    main + PR #72 rebases, the reference becomes valid. Either
    wait for the rebase or relabel the reference now.
+   **RESOLVED (B-0074.1 2026-05-10):** All peer-call scripts
+   migrated to `.ts` (Rule 0). `kiro.ts` already ships.
+   Memory file updated to reference `.ts` paths and note that
+   no further kiro stub is needed.
 2. **`docs/backlog/P1/B-0067-cadenced-git-hotspot-detection-aaron-2026-04-28.md`
    L50 (cid: SIvLus5-B6tS)**: log-line analysis should
    exclude blank lines from hotspot scoring. Small
@@ -79,6 +95,9 @@ session. Codex flagged 4 stale entries:
    (Earlier draft incorrectly cited the location as
    `docs/research/...` — the actual file is the B-0067
    backlog row at the path above.)
+   **RESOLVED:** `audit-git-hotspots.ts` line 215 already
+   filters empty strings via `s.length > 0` in the TS port.
+   B-0067 closed 2026-05-07 with Phase 3 triage complete.
 
 ## Why deferred (not fixed in PR #72)
 
@@ -89,12 +108,35 @@ focused sweep PR that touches just these 4 files.
 
 ## Acceptance
 
-- 4 stale entries removed from B-0062 with explicit audit
-  trail
-- EAT §504 + wallet-v0 §377 cross-doc consistency verified
-- kiro-cli memory rephrased OR PR #72 rebased (whichever
-  resolves the live xref first)
-- git-hotspot log-line filter algorithm refined
+- [x] 4 stale entries removed from B-0062 with explicit audit
+  trail — **DONE:** B-0062 closed 2026-05-08 with all 21
+  items resolved; resolution notes added in-row above.
+- [ ] EAT §504 + wallet-v0 §377 cross-doc consistency verified
+  — **OPEN:** EAT §21.e prose and wallet spec §8.1 bond-ledger
+  schema still need a targeted audit pass.
+- [x] kiro-cli memory rephrased OR PR #72 rebased (whichever
+  resolves the live xref first) — **DONE (B-0074.1):** memory
+  file updated to `.ts` paths; kiro.ts already ships.
+- [x] git-hotspot log-line filter algorithm refined — **DONE:**
+  `audit-git-hotspots.ts:215` filters `s.length > 0`; B-0067
+  closed 2026-05-07.
+
+## Progress
+
+### B-0074.1 (2026-05-10, PR #TODO)
+
+Smallest safe slice: kiro-cli memory file stale `.sh`-path fix.
+
+- Items 1-4 (B-0062 punch-list stale-item removal): marked
+  resolved per B-0062 closure 2026-05-08.
+- Item 7 (kiro memory L18): updated `.sh` → `.ts`; noted
+  `kiro.ts` already ships.
+- Item 8 (B-0067 blank-line filter): confirmed already resolved
+  in the TS port at `audit-git-hotspots.ts:215`.
+
+**Remaining open:** Items 5 (EAT §504 wallet-acceptance prose)
+and 6 (wallet spec §377 bond-ledger vs INTENTIONAL-DEBT.md).
+Both require a targeted doc-audit pass — separate slice.
 
 ## Composes with
 
