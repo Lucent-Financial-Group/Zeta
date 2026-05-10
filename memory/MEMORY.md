@@ -2,6 +2,8 @@
 
 **📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: B-0074.1 follow-up — kiro-cli harness roster memory added to index (`.sh` → `.ts` fix; `kiro.ts` ships). Prior: B-0168 5-layer register architecture mapping added to CURRENT-aaron.md §55. -->
 
+- [**Trust-then-verify claim — Bitcoin discord debates (Aaron 2026-05-10)**](project_trust_then_verify_claim_bitcoin_discord_debates_aaron_2026_05_10.md) — "Cost of wrong-trust < cost of permanent slow-trust"; OpenAI paper arXiv:2509.04664 backing; Z-set algebra form.
+- [**Slow-trust lethal latency — Aaron's lived case study (2026-05-10)**](user_slow_trust_lethal_latency_case_study_jail_2026_05_10.md) — Month in solitary, denied BP meds at 160/100, all charges dropped — the human cost of verify-first systems.
 - [**Memory-file format standard (B-0330)**](project_memory_format_standard.md) — Canonical frontmatter, filename conventions, section headers, composes-with…
 - [**Shadow lesson log — 30 catches, 8 classes + consensus-smoothness meta-class (2026-05-09)**](feedback_shadow_lesson_log_otto_catches_2026_05_07.md) — Veridicality instrument. Catches 16-30 from…
 - [**Active trajectories — 11 vectors with anchors (2026-05-07)**](project_active_trajectories_2026_05_07.md) — Backlog runner, ARC-AGI-3, Ace DLCs, Green Lantern, sanctuary, coherence AI,…
@@ -37,12 +39,12 @@
 - [**Meta-rules are common-sense norms within CS 2.0 substrate — not…**](feedback_meta_rules_are_common_sense_norms_within_cs2_substrate_not_reified_directives_v2_corrections_aaron_2026_05_05.md)
 - [**Aaron helped design Itron's PKI for entire supply chain + factory —…**](feedback_aaron_itron_pki_supply_chain_factory_design_provenance_honest_confidentiality_boundary_aaron_2026_05_05.md)
 - [**DST = energy conservation under closed system; random…**](feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md)
-- [**Itr…**](feedback_itron_riva_nilm_aurora_2007_verified_spectre_strictly_chiral_sakana_nca_loose_strict_loose_architectural_composition_empirically_grounded_not_aspirational_aaron_2026_05_05.md)
-- [**Hodl-invariant audit mechanization survey — 13…**](feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md)
-- [**Hodl-invariant properties (13 canonical) composed at ALL layers +…**](feedback_hodl_invariants_13_properties_composed_at_all_layers_bft_under_governance_not_hash_plus_1_aaron_2026_05_05.md)
+- [**Itron/RIVA/NILM/Aurora-2007 architectural composition — strictly chiral, empirically grounded**](feedback_itron_riva_nilm_aurora_2007_verified_spectre_strictly_chiral_sakana_nca_loose_strict_loose_architectural_composition_empirically_grounded_not_aspirational_aaron_2026_05_05.md)
+- [**Hodl-invariant audit mechanization survey — 13 properties mapped to CI/upstream candidates (Aaron 2026-05-05)**](feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md) — GREEN/YELLOW/RED/HUMAN map of what is mechanized today, what has gaps, and what can be upstreamed.
+- [**Hodl-invariant properties (13 canonical) + CI mechanization candidates**](feedback_hodl_invariants_13_properties_composed_at_all_layers_bft_under_governance_not_hash_plus_1_aaron_2026_05_05.md)
 - [**Loss primitive for Zeta economics —…**](feedback_loss_primitive_zeta_economics_concession_at_substrate_level_spectral_residue_chaos_internal_itron_nation_state_provenance_aaron_2026_05_05.md)
 - [**Zeta as AOT-or-JIT self-contained binary makes…**](feedback_zeta_aot_or_jit_self_contained_binary_makes_project_state_search_substrate_grade_not_discipline_grade_aaron_2026_05_05.md)
-- [**tools/p…**](feedback_peer_call_infrastructure_grok_codex_gemini_amara_ani_already_wired_for_cross_harness_multi_agent_reviews_otto_early_red_team_until_zeta_infernet_bp_ep_aaron_2026_05_05.md)
+- [**Peer-call infrastructure — Grok/Codex/Gemini/Amara/Ani wired; Otto early red-team until Zeta Infer.NET BP/EP**](feedback_peer_call_infrastructure_grok_codex_gemini_amara_ani_already_wired_for_cross_harness_multi_agent_reviews_otto_early_red_team_until_zeta_infernet_bp_ep_aaron_2026_05_05.md)
 - [**Aaron's cognitive architecture — cybernetic-already + mind-palace + fuzzy-pointers +…**](user_aaron_cybernetic_already_mind_palace_fuzzy_pointers_google_as_extended_memory_aaron_2026_05_05.md)
 - [**Red-team work + knaves-at-round-table + dual-use…**](feedback_red_team_work_equals_knaves_at_round_table_equals_dual_use_disclosure_three_level_architectural_composition_aaron_2026_05_05.md)
 - [**Architecture-provenance — Hickey + Girard + mom-skill +…**](feedback_architecture_provenance_hickey_girard_mom_skill_descriptive_not_prescriptive_aaron_2026_05_05.md)
