@@ -156,7 +156,7 @@ that produced it.
 
 **4. AI persona distinctness — measurable behavioral differentiation**
 
-- Ozsoy, M. G. (2024). "How to Model AI Agents as Personas?" arXiv:2603.03140.
+- Ozsoy, M. G. (2026). "How to Model AI Agents as Personas?" arXiv:2603.03140.
   <https://arxiv.org/abs/2603.03140>
 
   Relevance: Empirical study demonstrating that generic (un-named,

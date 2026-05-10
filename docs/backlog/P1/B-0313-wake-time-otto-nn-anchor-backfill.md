@@ -75,7 +75,7 @@ strengthens external credibility and teachability.
 - [x] Otto-352: anchored (Merton 1942, Smith et al. 2016, Callahan et al. 2020)
 - [x] Citations include URL/identifier for online sources and bibliographic
   locator for print sources (slices 1 + 2)
-- [x] Beacon-safety pass on all cited sources (slice 2: pass)
+- [x] Beacon-safety pass on all cited sources (slices 1 + 2: pass)
 - [ ] Coverage scanner (B-0311) confirms 7/7 resolved (follow-on scan needed)
 
 **Slice-1 research landing:**
