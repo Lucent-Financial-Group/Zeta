@@ -48,3 +48,19 @@ ServiceTitan (per Aaron 2026-05-05 explicit).
 ## Effort
 
 M — GitHub API integration + file copying logic.
+
+## Pre-start checklist (start-gate 2026-05-10 riven)
+
+**Prior-art search (surfaces + queries):**
+- tools/ **/*.ts "gh api" | "dry-run" | "seed" | "bootstrap" → hits in create-branch-safety-ruleset.ts (dry-run gh), migrations/b0267*.ts (gh child_process), hygiene/*.ts (gh api error handling). Rule 0 TS confirmed.
+- docs/backlog/P1/B-034* → sibling B-0341 closed, B-0342 recent.
+- No pre-existing tools/bootstrap-razor/ or seed-test-repo.ts.
+
+**Dependency-restructure:**
+- depends_on [B-0341] verified closed; manifest at docs/bootstrap-razor/SEED-MANIFEST.md is yaml include/exclude, machine-readable.
+- composes_with [B-0193, B-0344] — reciprocal pointers intact in parent/sibling rows.
+- No broken links; supersession via decision-archaeology not needed (new row).
+
+**Re-decomposition (assumed original mistake):** Original "create + seed" + 4 ACs = M broad for atomic step. Bounded slice: minimal TS stub (dry-run + manifest reader, no gh, no create). Follow-up: gh api, idempotency, commit logic.
+
+**Proof logged:** start-gate complete before code; see claim commit + this update.
