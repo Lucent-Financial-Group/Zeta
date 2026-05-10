@@ -341,14 +341,14 @@ export async function mutate(
     };
 
     if (options.skipLog !== true) {
-      const resolvedLogPath = options.logPath ?? DEFAULT_LOG_PATH;
+      const logPath = options.logPath ?? DEFAULT_LOG_PATH;
       try {
-        appendEntry(drainLogEntry, resolvedLogPath);
+        appendEntry(drainLogEntry, logPath);
       } catch (err) {
-        throw new MutationExecutionError(
-          `drain-log append failed (logPath: ${resolvedLogPath})`,
-          { cause: err },
-        );
+        return {
+          success: false,
+          error: `Failed to append drain-log entry to ${logPath}: ${err instanceof Error ? err.message : String(err)}`,
+        };
       }
     }
 
