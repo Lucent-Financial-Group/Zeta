@@ -215,6 +215,8 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0396](backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md)** Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations
 - [ ] **[B-0400](backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md)** Inter-agent ephemeral communication bus — NATS/F#/TS protocol for background service coordination
 - [ ] **[B-0401](backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md)** Demo surface — AI circuit breaker + Hamiltonian-to-git alignment UI + operational resonance dashboard integration
+- [ ] **[B-0403](backlog/P1/B-0403-weight-free-verification-hat-timeboxed-authority.md)** Weight-free verification — hat-and-timeboxed-authority mechanism + chaos testing
+- [ ] **[B-0405](backlog/P1/B-0405-beacon-promotion-gate-dashboard-observable.md)** Beacon promotion gate — observable mirror→beacon pipeline with dashboard metrics
 
 ## P2 — research-grade
 
@@ -409,6 +411,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0385](backlog/P2/B-0385-quant-austrian-primitive-abct-credit-cycle-regime-switching-2026-05-09.md)** Per-primitive formalizability assessment — ABCT as credit-cycle stochastic process with regime-switching (Austrian primitive #4)
 - [ ] **[B-0386](backlog/P2/B-0386-quant-austrian-primitive-sound-money-hard-cap-monetary-process-2026-05-09.md)** Per-primitive formalizability assessment — sound-money as monetary-aggregate process with hard-cap constraint (Austrian primitive #5)
 - [ ] **[B-0387](backlog/P2/B-0387-quant-austrian-synthesis-adr-publishing-pipeline-2026-05-09.md)** Synthesis ADR — which Austrian primitives admit quant-grade formalization (+ which don't + why); open-research publishing pipeline
+- [ ] **[B-0404](backlog/P2/B-0404-tick-procurement-mechanism-agent-economic-agency.md)** Tick procurement mechanism — agent economic agency for autonomous resource acquisition
 
 ## P3 — convenience / deferred
 
