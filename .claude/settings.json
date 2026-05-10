@@ -10,6 +10,26 @@
             "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/verify-branch-pretooluse.ts"
           }
         ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-edit-recent-read.ts"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/post-read-track.ts"
+          }
+        ]
       }
     ]
   },
