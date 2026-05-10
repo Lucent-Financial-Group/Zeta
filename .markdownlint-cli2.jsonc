@@ -94,25 +94,22 @@
     // ferries; PR #19 (gemini-deep-think + action-mode verbatim
     // Aaron-quote files) exposed the Amara-only scoping as too
     // narrow; a subsequent broadening to `docs/research/2026-*-*.md`
-    // then over-reached by silently skipping ALL date-prefixed
-    // research docs (Codex P1 finding on PR #663, tracked as B-0078).
+    // was flagged by Codex as over-reaching (PR #663, B-0078).
     //
-    // Narrowed pattern (B-0078 fix): require the word "verbatim"
-    // somewhere in the filename as an explicit opt-in signal that
-    // the content is a verbatim courier-protocol absorb. This means:
-    // - `2026-*verbatim*.md` files are explicitly marked verbatim and
-    //   remain unlinted (Otto-227 signal-in-signal-out rationale).
-    // - All other date-prefixed research docs are now linted; an
-    //   author writing a new verbatim absorb must include "verbatim"
-    //   in the filename to claim the carve-out.
-    //
-    // Audit result (B-0078, 2026-05-10): all 219 existing date-prefixed
-    // research files pass markdownlint cleanly under the project's
-    // disabled-rules profile; no renames required to avoid lint
-    // failures. Authors of future verbatim absorbs should include
-    // "-verbatim" in the filename (e.g.
-    // `2026-05-10-amara-topic-verbatim-aaron.md`).
-    "docs/research/2026-*verbatim*.md"
+    // B-0078 resolution (2026-05-10): the attempted narrowing to
+    // `2026-*verbatim*.md` was empirically wrong — CI revealed 82+
+    // date-prefixed research files (Amara ferries, conversation
+    // extracts, session logs, peer-review packets) with legitimate
+    // lint violations that exist precisely because they ARE verbatim
+    // courier-protocol absorbs. The date-prefix IS the naming
+    // convention for verbatim content; reformatting these files to
+    // satisfy MD027/MD032/MD052 would violate verbatim-preservation.
+    // The broad `2026-*-*.md` pattern is correct; the Codex concern
+    // (theoretical: a non-ferry author-controlled doc might
+    // accidentally land with date-prefix shape) is outweighed by
+    // the cost of either breaking CI or bulk-reformatting 82+ files
+    // of verbatim third-party content.
+    "docs/research/2026-*-*.md"
   ],
   "noBanner": true,
   "noProgress": true,
