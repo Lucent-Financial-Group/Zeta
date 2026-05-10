@@ -100,6 +100,8 @@ export interface MutationSuccess {
   readonly after: GitHubPageSnapshot;
   readonly diff: PageDiff;
   readonly drainLogEntry: MutationLogEntry;
+  /** Present when the UI mutation applied but the append-only drain-log write failed. */
+  readonly drainLogWriteError?: string;
 }
 
 export interface MutationFailure {
@@ -340,19 +342,21 @@ export async function mutate(
       status: "applied",
     };
 
+    let drainLogWriteError: string | undefined;
+
     if (options.skipLog !== true) {
       const logPath = options.logPath ?? DEFAULT_LOG_PATH;
       try {
         appendEntry(drainLogEntry, logPath);
       } catch (err) {
-        return {
-          success: false,
-          error: `Failed to append drain-log entry to ${logPath}: ${err instanceof Error ? err.message : String(err)}`,
-        };
+        drainLogWriteError =
+          `Failed to append drain-log entry to ${logPath}: ${err instanceof Error ? err.message : String(err)}`;
       }
     }
 
-    return { success: true, before, after, diff, drainLogEntry };
+    return drainLogWriteError === undefined
+      ? { success: true, before, after, diff, drainLogEntry }
+      : { success: true, before, after, diff, drainLogEntry, drainLogWriteError };
   } finally {
     await context.close();
   }

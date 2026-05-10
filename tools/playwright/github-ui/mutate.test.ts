@@ -486,6 +486,20 @@ describe("mutate — drain log auto-write", () => {
     expect(existsSync(logPath)).toBe(false);
   });
 
+  test("reports log write failure without marking an applied mutation failed", async () => {
+    const logPath = mkdtempSync(join(tmpdir(), "zeta-mutate-log-dir-"));
+    tempDirs.push(logPath);
+    const page = makePage();
+
+    const result = await mutate(req, { ...makeOpts(page), logPath });
+
+    expect(page.clickedSelectors).toHaveLength(1);
+    expect(result.success).toBe(true);
+    if (!result.success) throw new Error("Expected success");
+    expect(result.drainLogWriteError).toContain(logPath);
+    expect(result.drainLogWriteError).toContain("Failed to append drain-log entry");
+  });
+
   test("does not write when mutation fails (auth rejection)", async () => {
     const logPath = tempLogPath();
     const result = await mutate(
