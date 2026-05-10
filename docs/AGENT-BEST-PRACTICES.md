@@ -36,7 +36,7 @@ BP-07").
 - **BP-03** *Skill body ≤ ~300 lines; one purpose per skill.*
   **Rationale:** bloat dilutes triggering and reviewability.
   Split at the cap; merge only via `skill-creator`. **stable**
-  **External anchors:** (1) Wang et al. (2024), *AgentSquare: Automatic LLM
+  **External anchors:** (1) Shang et al. (2024), *AgentSquare: Automatic LLM
   Agent Search in Modular Design Space*, ICLR 2025, arXiv 2410.06153
   (<https://arxiv.org/abs/2410.06153>) — formalises modular agent design as
   single-purpose independent modules with uniform I/O interfaces; empirically

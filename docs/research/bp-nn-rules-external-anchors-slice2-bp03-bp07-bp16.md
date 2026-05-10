@@ -39,7 +39,7 @@ the Single Responsibility Principle (SRP) applied to LLM skill/prompt modules.
 
 ### External anchors
 
-**1. Wang et al. — "AgentSquare: Automatic LLM Agent Search in Modular Design Space"
+**1. Shang et al. — "AgentSquare: Automatic LLM Agent Search in Modular Design Space"
 (ICLR 2025, arXiv 2410.06153)**
 
 - URL: <https://arxiv.org/abs/2410.06153>
@@ -143,18 +143,23 @@ Performance" (2024)**
 - Relevance: Practitioner research identifying "degradation in reasoning
   performance of LLMs at around 3000 tokens, well below the context windows of
   LLMs," and that "instruction following rate degrades as the number of
-  instructions increases." The 3000-word cap in BP-07 maps directly onto this
-  empirically observed degradation threshold — the cap is not arbitrary but
-  calibrated to the measured failure onset.
+  instructions increases." Note: the source reports degradation in *tokens*;
+  BP-07's cap is expressed in *words* (different units; ~1 word ≈ 1.3 tokens
+  on average for English prose, so 3000 words ≈ 3900 tokens). The 3000-word
+  cap is calibrated to the same order of magnitude as this threshold, erring
+  slightly above the token count — this is a conservative approximation
+  grounded in the source's finding of below-context-window onset.
 
 ### Mechanism note
 
 The three anchors together explain different layers of the same failure mode:
 Liu et al. (2024) identifies *where* in context information is most attended to
-(edges not middle); Chroma Research (2024) identifies *what* triggers rot (length
-+ distractor density); MLOps Community (2024) identifies the *threshold* (~3000
-tokens) at which degradation becomes measurable. BP-07's cap + prune cadence
-addresses all three.
+(edges not middle); Chroma Research (2024) identifies *what* triggers rot
+(length + distractor density); MLOps Community (2024) identifies the *threshold*
+(~3000 tokens, approximately 2000–2300 words) at which degradation becomes
+measurable. BP-07's 3000-word cap is calibrated to this token-scale threshold
+(with an explicit word/token unit difference acknowledged); the prune cadence
+addresses all three failure layers.
 
 ---
 
@@ -206,14 +211,6 @@ Safety-Critical Systems-on-Chip" (MDPI Electronics, 2018, vol. 7 no. 6)**
   tractability. The conclusion: "complementary tool classes are necessary for
   high-assurance coverage" — directly grounding BP-16's requirement that ≥ 2
   independent tools be used.
-
-**3. National Institute of Standards and Technology (NIST) — "Guidelines for
-Property Specification Using Formal Methods" (NIST SP 800-193 adjacent guidance)**
-
-- Relevance: NIST's guidance on high-assurance systems consistently recommends
-  multiple independent verification layers; no single formal method satisfies
-  all verification criteria for P0 properties in critical systems. This
-  represents the regulatory and standards consensus behind BP-16.
 
 ### Zeta anchor case
 
