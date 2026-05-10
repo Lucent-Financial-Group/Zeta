@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { appendFileSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
-import { appendEntry, listPending, revert, type DrainLogEntry } from "./drain-log";
+import { appendEntry, DEFAULT_LOG_PATH, listPending, revert, type DrainLogEntry } from "./drain-log";
 import type { MutationLogEntry, MutationOptions } from "./mutate";
 import type {
   MutableGitHubSessionContext,
@@ -106,11 +106,13 @@ function appendRevertMarker(logPath: string, entry: MutationLogEntry): void {
 
 class FakeRevertPage implements MutableGitHubSessionPage {
   private currentUrl = "";
+  private readonly onClick: (() => Promise<void> | void) | undefined;
   readonly username: string;
   readonly clickedSelectors: string[] = [];
 
-  constructor(username: string) {
+  constructor(username: string, onClick?: () => Promise<void> | void) {
     this.username = username;
+    this.onClick = onClick;
   }
 
   goto(url: string): Promise<void> {
@@ -133,9 +135,9 @@ class FakeRevertPage implements MutableGitHubSessionPage {
     return this.currentUrl;
   }
 
-  click(selector: string): Promise<void> {
+  async click(selector: string): Promise<void> {
     this.clickedSelectors.push(selector);
-    return Promise.resolve();
+    await this.onClick?.();
   }
 
   fill(): Promise<void> {
@@ -170,10 +172,10 @@ class FakeRevertDriver implements MutableGitHubSessionDriver {
   }
 }
 
-function makeRevertOpts(surfacesPath: string): MutationOptions {
+function makeRevertOpts(surfacesPath: string, page = new FakeRevertPage("octocat")): MutationOptions {
   return {
     storageStatePath: tempStorageState(),
-    driver: new FakeRevertDriver(new FakeRevertPage("octocat")),
+    driver: new FakeRevertDriver(page),
     authorizedSurfacesPath: surfacesPath,
   };
 }
@@ -183,6 +185,12 @@ function makeRevertOpts(surfacesPath: string): MutationOptions {
 // ---------------------------------------------------------------------------
 
 describe("appendEntry", () => {
+  test("defaults to the repository hygiene-history log path", () => {
+    expect(DEFAULT_LOG_PATH).toBe(
+      resolve(import.meta.dir, "..", "..", "..", "docs/hygiene-history/playwright-mutations/log.jsonl"),
+    );
+  });
+
   test("creates log file if it does not exist", () => {
     const logPath = tempLogPath();
     expect(existsSync(logPath)).toBe(false);
@@ -273,6 +281,16 @@ describe("listPending", () => {
 
     expect(listPending(logPath)).toEqual([entry]);
   });
+
+  test("skips schema-invalid JSONL records without poisoning valid entries", () => {
+    const logPath = tempLogPath();
+    const entry = makeEntry();
+    appendEntry(entry, logPath);
+    appendFileSync(logPath, `${JSON.stringify({ id: entry.id, status: "reverted" })}\n`, "utf8");
+    appendFileSync(logPath, `${JSON.stringify({ id: crypto.randomUUID(), status: "applied" })}\n`, "utf8");
+
+    expect(listPending(logPath)).toEqual([entry]);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -360,5 +378,60 @@ describe("revert", () => {
       expect(result.error).toContain("Inverse mutation threw:");
     }
     expect(readFileSync(logPath, "utf8").trim().split("\n")).toHaveLength(1);
+  });
+
+  test("serializes concurrent revert attempts for the same entry id", async () => {
+    const logPath = tempLogPath();
+    const entry = makeEntry({ action: "toggle-on", inverseAction: "toggle-off" });
+    appendEntry(entry, logPath);
+    const surfacesPath = tempSurfacesFile([
+      { id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] },
+    ]);
+    let releaseClick: () => void = () => {
+      throw new Error("releaseClick was not initialized.");
+    };
+    const clickBlock = new Promise<void>((resolveBlock) => {
+      releaseClick = resolveBlock;
+    });
+
+    const first = revert(entry.id, makeRevertOpts(surfacesPath, new FakeRevertPage("octocat", () => clickBlock)), logPath);
+    const second = await revert(entry.id, makeRevertOpts(surfacesPath), logPath);
+
+    expect(second).toMatchObject({ success: false, entryId: entry.id });
+    if (!second.success) {
+      expect(second.error).toContain("already being reverted");
+    }
+
+    releaseClick();
+    expect((await first).success).toBe(true);
+  });
+
+  test("marks append-failure reverts indeterminate and blocks retry", async () => {
+    const logPath = tempLogPath();
+    const entry = makeEntry({ action: "toggle-on", inverseAction: "toggle-off" });
+    appendEntry(entry, logPath);
+    const surfacesPath = tempSurfacesFile([
+      { id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] },
+    ]);
+    const page = new FakeRevertPage("octocat", () => {
+      rmSync(logPath, { force: true });
+      mkdirSync(logPath);
+    });
+
+    const result = await revert(entry.id, makeRevertOpts(surfacesPath, page), logPath);
+
+    expect(result).toMatchObject({ success: false, entryId: entry.id });
+    if (!result.success) {
+      expect(result.error).toContain("marker append failed");
+      expect(result.error).toContain("Verify the target surface manually");
+    }
+
+    rmSync(logPath, { recursive: true, force: true });
+    appendEntry(entry, logPath);
+    const retry = await revert(entry.id, makeRevertOpts(surfacesPath), logPath);
+    expect(retry).toMatchObject({ success: false, entryId: entry.id });
+    if (!retry.success) {
+      expect(retry.error).toContain("indeterminate revert");
+    }
   });
 });

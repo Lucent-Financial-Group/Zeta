@@ -1,14 +1,14 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import type { MutationLogEntry, MutationOptions, MutationRequest } from "./mutate";
+import type { MutationLogEntry, MutationOptions, MutationParams, MutationRequest } from "./mutate";
 import { mutate } from "./mutate";
 
 // ---------------------------------------------------------------------------
 // Log file location
 // ---------------------------------------------------------------------------
 
-const REPO_ROOT = resolve(import.meta.dir, "../../..");
-const DEFAULT_LOG_PATH = resolve(REPO_ROOT, "docs/hygiene-history/playwright-mutations/log.jsonl");
+const REPO_ROOT = resolve(import.meta.dir, "..", "..", "..");
+export const DEFAULT_LOG_PATH = resolve(REPO_ROOT, "docs/hygiene-history/playwright-mutations/log.jsonl");
 
 // ---------------------------------------------------------------------------
 // Types
@@ -37,6 +37,9 @@ export interface RevertFailure {
 
 export type RevertResult = RevertSuccess | RevertFailure;
 
+const inFlightReverts = new Set<string>();
+const indeterminateReverts = new Set<string>();
+
 // ---------------------------------------------------------------------------
 // Core I/O helpers
 // ---------------------------------------------------------------------------
@@ -48,6 +51,30 @@ function ensureLogDir(logPath: string): void {
   }
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isMutationParams(value: unknown): value is MutationParams {
+  return isRecord(value) && typeof value.url === "string" && typeof value.toggleKey === "string";
+}
+
+function isDrainLogEntry(value: unknown): value is DrainLogEntry {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.id === "string" &&
+    typeof value.timestamp === "string" &&
+    typeof value.surfaceId === "string" &&
+    typeof value.action === "string" &&
+    typeof value.inverseAction === "string" &&
+    isMutationParams(value.params) &&
+    isRecord(value.before) &&
+    isRecord(value.after) &&
+    isRecord(value.diff) &&
+    (value.status === "applied" || value.status === "reverted")
+  );
+}
+
 /** Parse all lines from the log file, skipping blank, parse-failed, or schema-invalid lines. */
 function readAllLines(logPath: string): DrainLogEntry[] {
   if (!existsSync(logPath)) return [];
@@ -57,13 +84,8 @@ function readAllLines(logPath: string): DrainLogEntry[] {
     const trimmed = line.trim();
     if (trimmed.length === 0) continue;
     try {
-      const parsed = JSON.parse(trimmed) as Partial<DrainLogEntry>;
-      if (
-        typeof parsed.id === "string" &&
-        (parsed.status === "applied" || parsed.status === "reverted")
-      ) {
-        entries.push(parsed as DrainLogEntry);
-      }
+      const parsed: unknown = JSON.parse(trimmed);
+      if (isDrainLogEntry(parsed)) entries.push(parsed);
     } catch {
       // Skip truncated/malformed lines (e.g. from a crash mid-append).
     }
@@ -127,6 +149,32 @@ export async function revert(
   options: MutationOptions = {},
   logPath: string = DEFAULT_LOG_PATH,
 ): Promise<RevertResult> {
+  if (indeterminateReverts.has(entryId)) {
+    return {
+      success: false,
+      entryId,
+      error:
+        `Entry "${entryId}" has an indeterminate revert: the inverse mutation may already have succeeded ` +
+        "without a persisted marker. Verify the target surface manually before retrying.",
+    };
+  }
+  if (inFlightReverts.has(entryId)) {
+    return { success: false, entryId, error: `Entry "${entryId}" is already being reverted.` };
+  }
+
+  inFlightReverts.add(entryId);
+  try {
+    return await revertUnlocked(entryId, options, logPath);
+  } finally {
+    inFlightReverts.delete(entryId);
+  }
+}
+
+async function revertUnlocked(
+  entryId: string,
+  options: MutationOptions,
+  logPath: string,
+): Promise<RevertResult> {
   const all = readAllLines(logPath);
 
   // Find the most recent record for this id
@@ -177,10 +225,13 @@ export async function revert(
     appendFileSync(logPath, JSON.stringify(revertMarker) + "\n", "utf8");
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
+    indeterminateReverts.add(entryId);
     return {
       success: false,
       entryId,
-      error: `Inverse mutation succeeded but marker append failed: ${message}`,
+      error:
+        `Inverse mutation succeeded but marker append failed: ${message}. ` +
+        "Verify the target surface manually before retrying.",
     };
   }
 
