@@ -345,7 +345,7 @@ BP-07").
   verified closure — the same failure mode BP-15 prevents in skill tune-up.
   (3) Russell, J. P. & Regel, T. (2000), *After the Quality Audit: Closing the
   Loop on the Audit Process*, ASQ Quality Press
-  (<https://www.semanticscholar.org/paper/After-the-Quality-Audit:-Closing-the-Loop-on-the-Russell-Regel/75abe2438d4b88e32f191854c4ffaad494c512d3>);
+  (<https://www.semanticscholar.org/paper/After-the-Quality-Audit:-Closing-the-Loop-on-the-Russell-Regel/75abe2438d4b88e32f191854c4ffaad494c312d3>);
   and McClain, G. (2024), *Closing the Audit Loop*, INTOSAI Journal Q3 2024
   (<https://intosaijournal.org/journal-entry/closing-the-audit-loop-a-methodology-for-tracking-audit-recommendations/>)
   — canonical quality-management treatment: an audit is not complete when a
