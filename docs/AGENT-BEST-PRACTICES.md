@@ -223,7 +223,7 @@ BP-07").
   (<https://arxiv.org/abs/2403.02691>) — 1,054-case empirical benchmark:
   GPT-4 successfully hijacked by peer/tool-response payloads in 24–48% of
   cases; peer agents are untrusted injection sources. (3) OWASP AI Agent
-  Security Cheat Sheet (2025)
+  Security Cheat Sheet (2024–2025)
   (<https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html>)
   — "Implement trust boundaries between agents and validate and sanitize
   inter-agent communications"; directly operationalises BP-12. Full anchor
