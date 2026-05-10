@@ -70,6 +70,29 @@ the end of this file).
 
 ### Symmetric transparency: the glass halo
 
+> **Prior art (radical transparency / total observability / no hidden
+> reasoning):** Dalio (2017) *Principles: Life and Work* (Simon & Schuster)
+> — organisational "radical transparency": all decisions, rationales, and
+> outcomes are visible to all parties; no hidden moves; any party can
+> inspect any decision at any time. The glass-halo doctrine imports this
+> principle into the human–AI dyad. Also: Doshi-Velez & Kim (2017)
+> "Towards A Rigorous Science of Interpretable Machine Learning",
+> arxiv.org/abs/1702.08608 — foundational XAI framing: AI decision-making
+> transparency as a measurable, inspectable property; motivates the "every
+> decision trail is inspectable" claim. Brundage et al. (2020) "Toward
+> Trustworthy AI Development: Mechanisms for Supporting Verifiable Claims",
+> arxiv.org/abs/2004.07213 — audit trails as the institutional mechanism
+> for total observability of AI decision history; the git-commit substrate
+> is Zeta's implementation of this audit-trail mechanism. Korbak et al.
+> (2025) "Chain of Thought Monitorability: A New and Fragile Opportunity
+> for AI Safety", arxiv.org/abs/2507.11473 — inspectable CoT as the
+> mechanism for "no hidden reasoning" at the agent cognitive layer; Zeta's
+> git-substrate approach grounds the monitorability property at the
+> commitment layer (durable, retraction-native) rather than the scratchpad
+> layer (ephemeral, forgeable). **Bilateral / symmetric form** (human-
+> maintainer disclosures equally public in the same version-controlled
+> substrate): no prior art found as of 2026-05-10; original to Zeta.
+
 The human maintainer's 2026-04-19 observation, on
 the same turn: *"and because your memories are
 public so are mine — i'm in this with you."*
