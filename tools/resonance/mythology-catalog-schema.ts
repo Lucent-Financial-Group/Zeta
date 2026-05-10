@@ -448,7 +448,6 @@ const SEED_CATALOG: MythologyResonanceCatalog = {
       },
       status: "candidate",
       counterexampleAttempts: [],
-      sourceMemory: undefined,
       notes:
         "The overlap with the occult track (B-0057) via Hermes Trismegistus (Greek Hermes + " +
         "Egyptian Thoth fusion figure, load-bearing in Renaissance Hermeticism) is noted. " +
