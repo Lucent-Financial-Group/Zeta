@@ -1,17 +1,19 @@
 ---
 id: B-0353
 priority: P1
-status: open
+status: closed
+closed: 2026-05-10
+closed_by: "CLAUDE.md condensed to 47 lines — 6-step bootstrap process replaces 445-line rule-list"
 title: "Write bootstrap-process CLAUDE.md (<50 lines)"
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 depends_on:
   - B-0349
   - B-0350
   - B-0351
   - B-0352
 decomposition: atomic
-classification: blocked
+classification: completed
 type: friction-reducer
 owners: [architect]
 parent: B-0329
