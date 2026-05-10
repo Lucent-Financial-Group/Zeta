@@ -1,5 +1,13 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  appendFileSync,
+  chmodSync,
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { appendEntry, DEFAULT_LOG_PATH, listPending, revert, type DrainLogEntry } from "./drain-log";
@@ -97,6 +105,11 @@ function makeEntry(overrides: Partial<MutationLogEntry> = {}): MutationLogEntry 
 
 function appendRevertMarker(logPath: string, entry: MutationLogEntry): void {
   const marker: DrainLogEntry = { ...entry, status: "reverted" };
+  appendFileSync(logPath, JSON.stringify(marker) + "\n", "utf8");
+}
+
+function appendIndeterminateMarker(logPath: string, entry: MutationLogEntry): void {
+  const marker: DrainLogEntry = { ...entry, status: "indeterminate" };
   appendFileSync(logPath, JSON.stringify(marker) + "\n", "utf8");
 }
 
@@ -273,6 +286,15 @@ describe("listPending", () => {
     expect(pending[0]?.id).toBe(e2.id);
   });
 
+  test("does not return entries whose latest record is indeterminate", () => {
+    const logPath = tempLogPath();
+    const entry = makeEntry();
+    appendEntry(entry, logPath);
+    appendIndeterminateMarker(logPath, entry);
+
+    expect(listPending(logPath)).toEqual([]);
+  });
+
   test("skips malformed JSONL records without blocking valid entries", () => {
     const logPath = tempLogPath();
     const entry = makeEntry();
@@ -353,7 +375,7 @@ describe("revert", () => {
     expect(revertRecord).toBeDefined();
   });
 
-  test("reports thrown inverse mutation without appending revert marker", async () => {
+  test("records durable indeterminate marker when inverse mutation throws", async () => {
     const logPath = tempLogPath();
     const entry = makeEntry();
     appendEntry(entry, logPath);
@@ -375,9 +397,15 @@ describe("revert", () => {
 
     expect(result).toMatchObject({ success: false, entryId: entry.id });
     if (!result.success) {
-      expect(result.error).toContain("Inverse mutation threw:");
+      expect(result.error).toContain("Inverse mutation threw after durable indeterminate marker");
+      expect(result.error).toContain("Verify the target surface manually");
     }
-    expect(readFileSync(logPath, "utf8").trim().split("\n")).toHaveLength(1);
+    const parsed = readFileSync(logPath, "utf8")
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line) as DrainLogEntry);
+    expect(parsed).toHaveLength(2);
+    expect(parsed.at(-1)?.status).toBe("indeterminate");
   });
 
   test("serializes concurrent revert attempts for the same entry id", async () => {
@@ -406,7 +434,7 @@ describe("revert", () => {
     expect((await first).success).toBe(true);
   });
 
-  test("marks append-failure reverts indeterminate and blocks retry", async () => {
+  test("persists indeterminate revert state and blocks retry after marker append failure", async () => {
     const logPath = tempLogPath();
     const entry = makeEntry({ action: "toggle-on", inverseAction: "toggle-off" });
     appendEntry(entry, logPath);
@@ -414,20 +442,18 @@ describe("revert", () => {
       { id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] },
     ]);
     const page = new FakeRevertPage("octocat", () => {
-      rmSync(logPath, { force: true });
-      mkdirSync(logPath);
+      chmodSync(logPath, 0o444);
     });
 
     const result = await revert(entry.id, makeRevertOpts(surfacesPath, page), logPath);
+    chmodSync(logPath, 0o644);
 
     expect(result).toMatchObject({ success: false, entryId: entry.id });
     if (!result.success) {
-      expect(result.error).toContain("marker append failed");
+      expect(result.error).toContain("reverted marker append failed");
       expect(result.error).toContain("Verify the target surface manually");
     }
 
-    rmSync(logPath, { recursive: true, force: true });
-    appendEntry(entry, logPath);
     const retry = await revert(entry.id, makeRevertOpts(surfacesPath), logPath);
     expect(retry).toMatchObject({ success: false, entryId: entry.id });
     if (!retry.success) {

@@ -16,12 +16,14 @@ export const DEFAULT_LOG_PATH = resolve(REPO_ROOT, "docs/hygiene-history/playwri
 
 /**
  * A drain-log entry persisted on disk.  Extends the in-memory MutationLogEntry
- * with a status field ("applied" | "reverted") — each record is individually
- * immutable; reversals are recorded as new lines with the same id and status
- * "reverted" (append-only invariant).
+ * with a status field. Each record is individually immutable; reversals and
+ * indeterminate revert attempts are recorded as new lines with the same id
+ * (append-only invariant).
  */
+export type DrainLogStatus = "applied" | "reverted" | "indeterminate";
+
 export type DrainLogEntry = Omit<MutationLogEntry, "status"> & {
-  readonly status: "applied" | "reverted";
+  readonly status: DrainLogStatus;
 };
 
 export interface RevertSuccess {
@@ -38,7 +40,6 @@ export interface RevertFailure {
 export type RevertResult = RevertSuccess | RevertFailure;
 
 const inFlightReverts = new Set<string>();
-const indeterminateReverts = new Set<string>();
 
 // ---------------------------------------------------------------------------
 // Core I/O helpers
@@ -76,7 +77,7 @@ function isDrainLogEntry(value: unknown): value is DrainLogEntry {
     isRecord(value.before) &&
     isRecord(value.after) &&
     isRecord(value.diff) &&
-    (value.status === "applied" || value.status === "reverted")
+    (value.status === "applied" || value.status === "reverted" || value.status === "indeterminate")
   );
 }
 
@@ -121,7 +122,7 @@ export function appendEntry(entry: MutationLogEntry, logPath: string = DEFAULT_L
 export function listPending(logPath: string = DEFAULT_LOG_PATH): DrainLogEntry[] {
   const all = readAllLines(logPath);
   // Track latest status per id
-  const latestStatus = new Map<string, "applied" | "reverted">();
+  const latestStatus = new Map<string, DrainLogStatus>();
   // Track the full entry keyed by id (last-wins for metadata, but status is separate)
   const byId = new Map<string, DrainLogEntry>();
   for (const entry of all) {
@@ -160,15 +161,6 @@ export async function revert(
   options: MutationOptions = {},
   logPath: string = DEFAULT_LOG_PATH,
 ): Promise<RevertResult> {
-  if (indeterminateReverts.has(entryId)) {
-    return {
-      success: false,
-      entryId,
-      error:
-        `Entry "${entryId}" has an indeterminate revert: the inverse mutation may already have succeeded ` +
-        "without a persisted marker. Verify the target surface manually before retrying.",
-    };
-  }
   if (inFlightReverts.has(entryId)) {
     return { success: false, entryId, error: `Entry "${entryId}" is already being reverted.` };
   }
@@ -195,6 +187,15 @@ async function revertUnlocked(
   if (latest.status === "reverted") {
     return { success: false, entryId, error: `Entry "${entryId}" is already reverted.` };
   }
+  if (latest.status === "indeterminate") {
+    return {
+      success: false,
+      entryId,
+      error:
+        `Entry "${entryId}" has an indeterminate revert: the inverse mutation may already have succeeded ` +
+        "without a reverted marker. Verify the target surface manually before retrying.",
+    };
+  }
 
   // Build the inverse request
   const inverseRequest: MutationRequest = {
@@ -202,6 +203,22 @@ async function revertUnlocked(
     action: latest.inverseAction,
     params: latest.params,
   };
+
+  const indeterminateMarker: DrainLogEntry = {
+    ...latest,
+    timestamp: new Date().toISOString(),
+    status: "indeterminate",
+  };
+  try {
+    appendDrainLogEntry(indeterminateMarker, logPath);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      success: false,
+      entryId,
+      error: `Unable to persist indeterminate revert marker before mutation: ${message}. No inverse mutation was attempted.`,
+    };
+  }
 
   let result: Awaited<ReturnType<typeof mutate>>;
   try {
@@ -211,11 +228,19 @@ async function revertUnlocked(
     return {
       success: false,
       entryId,
-      error: `Inverse mutation threw: ${message}`,
+      error:
+        `Inverse mutation threw after durable indeterminate marker was written: ${message}. ` +
+        "Verify the target surface manually before retrying.",
     };
   }
   if (!result.success) {
-    return { success: false, entryId, error: `Inverse mutation failed: ${result.error}` };
+    return {
+      success: false,
+      entryId,
+      error:
+        `Inverse mutation failed after durable indeterminate marker was written: ${result.error}. ` +
+        "Verify the target surface manually before retrying.",
+    };
   }
 
   // Append revert marker — full entry from the inverse mutation, id overridden
@@ -229,13 +254,12 @@ async function revertUnlocked(
     appendDrainLogEntry(revertMarker, logPath);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    indeterminateReverts.add(entryId);
     return {
       success: false,
       entryId,
       error:
-        `Inverse mutation succeeded but marker append failed: ${message}. ` +
-        "Verify the target surface manually before retrying.",
+        `Inverse mutation succeeded but reverted marker append failed: ${message}. ` +
+        "The durable indeterminate marker remains in the log. Verify the target surface manually before retrying.",
     };
   }
 

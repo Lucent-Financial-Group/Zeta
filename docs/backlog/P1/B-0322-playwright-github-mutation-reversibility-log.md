@@ -53,8 +53,9 @@ fire-and-forget — a trust violation.
      (B-0321), then marks the entry as "reverted".
   4. Exports a `listPending()` function that returns all
      entries with status "applied" (not yet reverted).
-- The log file is committed as part of hygiene-history —
-  visible to the maintainer in git.
+- The default log path is under hygiene-history, so actual
+  mutation entries become visible to the maintainer in git
+  when committed.
 
 ## Done-criteria
 
@@ -62,8 +63,8 @@ fire-and-forget — a trust violation.
 - [ ] Log entries are written on every mutation via B-0321.
 - [x] `revert()` function can mechanically undo a logged
       mutation.
-- [x] Log file lives under `docs/hygiene-history/` and is
-      committed.
+- [x] Default log path lives under `docs/hygiene-history/`;
+      actual mutation entries are committed when produced.
 
 ## Pre-start checklist (B-0322 prior-art + dependency check)
 
