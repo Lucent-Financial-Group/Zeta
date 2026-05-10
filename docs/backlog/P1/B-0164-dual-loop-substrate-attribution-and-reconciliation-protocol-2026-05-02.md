@@ -11,7 +11,7 @@ children:
   - B-0164.1
   - B-0164.2
   - B-0164.3
-decomposition: parent
+decomposition: decomposed
 type: friction-reducer
 ---
 
