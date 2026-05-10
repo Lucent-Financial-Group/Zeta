@@ -87,6 +87,8 @@ BP-1 through BP-28 as enumerated in
 **Slice-6 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice6
 **Slice-7 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice7 (in progress)
 **Slice-8 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice8
+**Slice-9 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice9 (this claim — smallest decomposed slice for BP-23/24/25)
+**Slice-10 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice10 (decomposed)
 
 ## Pre-start checklist (2026-05-10, Otto)
 
