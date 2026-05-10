@@ -351,6 +351,58 @@ describe("checkFile", () => {
     }
   });
 
+  test("does not treat non-marker superseded-by prose as a reciprocal marker", () => {
+    const fx = setupRepo();
+    try {
+      const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
+      const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
+      writeFileSync(
+        oldAdr,
+        [
+          "# ADR old",
+          "",
+          "**Status:** Superseded by a later decision.",
+          "`new.md` appears on the next paragraph line.",
+          "",
+        ].join("\n"),
+      );
+      writeFileSync(newAdr, "Supersedes ADR [v1](old.md).\n");
+
+      const result = checkFile(newAdr);
+      expect(result.ok).toBe(true);
+      expect(result.findings).toHaveLength(1);
+      expect(result.findings.at(0)?.reason).toContain("not reciprocated");
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("does not append unrelated non-blockquote lines to a wrapped marker", () => {
+    const fx = setupRepo();
+    try {
+      const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
+      const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
+      writeFileSync(
+        oldAdr,
+        [
+          "# ADR old",
+          "",
+          "> **Superseded by**",
+          "`new.md` appears in unrelated prose.",
+          "",
+        ].join("\n"),
+      );
+      writeFileSync(newAdr, "Supersedes ADR [v1](old.md).\n");
+
+      const result = checkFile(newAdr);
+      expect(result.ok).toBe(true);
+      expect(result.findings).toHaveLength(1);
+      expect(result.findings.at(0)?.reason).toContain("does not name new.md");
+    } finally {
+      fx.cleanup();
+    }
+  });
+
   test("does not false-positive on superseded-by text inside fenced code in marker scan", () => {
     const fx = setupRepo();
     try {

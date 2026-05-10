@@ -29,6 +29,11 @@ interface SearchLine {
   text: string;
 }
 
+interface FenceState {
+  char: "`" | "~" | null;
+  len: number;
+}
+
 interface CheckResult {
   findings: Finding[];
   ok: boolean;
@@ -110,7 +115,7 @@ function isInsideRepo(candidate: string, repoRoot: string): boolean {
 
 function updateFenceState(
   line: string,
-  state: { char: "`" | "~" | null; len: number },
+  state: FenceState,
 ): void {
   const trimmed = line.trimStart();
   const first = trimmed.at(0);
@@ -145,6 +150,18 @@ function startsFenceDelimiter(line: string): boolean {
 
 function stripMarkdownStructuralPrefix(text: string): string {
   return text.replace(/^(?:(?:>\s*)+|[-*+]\s+|\d+[.)]\s+)/, "").trimStart();
+}
+
+function stripBlockquotePrefix(text: string): string {
+  return text.trimStart().replace(/^(?:>\s*)+/, "").trimStart();
+}
+
+function isBlockquoteLine(text: string): boolean {
+  return text.trimStart().startsWith(">");
+}
+
+function isSupersededByMarkerLine(text: string): boolean {
+  return /^\*\*Superseded by\*\*(?:\s|$)/i.test(stripBlockquotePrefix(text));
 }
 
 function pushUnique(
@@ -182,7 +199,7 @@ function pushMatchesForLine(
 
 function logicalSearchLines(lines: string[]): SearchLine[] {
   const searchLines: SearchLine[] = [];
-  const fence = { char: null as "`" | "~" | null, len: 0 };
+  const fence: FenceState = { char: null, len: 0 };
   const physicalLines: SearchLine[] = [];
 
   for (let i = 0; i < lines.length; i++) {
@@ -246,25 +263,10 @@ function resolveTarget(
   return null;
 }
 
-function looksLikeWrappedTargetContinuation(text: string): boolean {
-  const stripped = stripMarkdownStructuralPrefix(text.trim());
-  return stripped.startsWith("`") || stripped.startsWith("[") || stripped.startsWith("<");
-}
-
 function supersededByMarkerLines(targetContent: string): string[] {
-  const allLines = targetContent.split("\n");
-  const lines: string[] = [];
-  let inFence = false;
-  for (let i = 0; i < allLines.length && lines.length < 25; i++) {
-    const line = allLines[i] ?? "";
-    if (/^```/.test(line.trim())) {
-      inFence = !inFence;
-      continue;
-    }
-    if (!inFence) lines.push(line);
-  }
+  const lines = targetContent.split("\n").slice(0, 25);
   const markerLines: string[] = [];
-  const fence = { char: null as "`" | "~" | null, len: 0 };
+  const fence: FenceState = { char: null, len: 0 };
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i] ?? "";
@@ -276,12 +278,13 @@ function supersededByMarkerLines(targetContent: string): string[] {
       updateFenceState(line, fence);
       continue;
     }
-    if (!/\bsuperseded by\b/i.test(line)) continue;
+    if (!isSupersededByMarkerLine(line)) continue;
 
-    const parts = [line.trim()];
-    const nextRaw = lines[i + 1] ?? "";
-    if (nextRaw.trim().length > 0 && looksLikeWrappedTargetContinuation(nextRaw)) {
-      parts.push(stripMarkdownStructuralPrefix(nextRaw.trim()));
+    const parts = [stripBlockquotePrefix(line)];
+    const next = lines[i + 1] ?? "";
+    if (isBlockquoteLine(line) && isBlockquoteLine(next)) {
+      const continuation = stripBlockquotePrefix(next);
+      if (continuation.length > 0) parts.push(continuation);
     }
     markerLines.push(parts.join(" "));
   }
