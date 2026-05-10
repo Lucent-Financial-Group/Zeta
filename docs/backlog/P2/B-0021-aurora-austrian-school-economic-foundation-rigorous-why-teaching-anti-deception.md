@@ -8,7 +8,7 @@ effort: L
 ask: Aaron 2026-04-25 (post-substance-vs-throughput correction)
 created: 2026-04-25
 last_updated: 2026-05-10
-depends_on: []
+depends_on: [B-0021.1]
 composes_with: [docs/aurora/**]
 children: [B-0021.1, B-0021.2, B-0021.3, B-0021.4, B-0021.5]
 # composes_with also references files currently in flight on open PRs (will resolve post-merge)
