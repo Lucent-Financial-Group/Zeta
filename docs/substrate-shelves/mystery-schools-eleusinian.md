@@ -120,6 +120,7 @@ holding several thousand people) with tiered seats on the interior walls surroun
 Greek temple — appears adapted for collective ritual viewing rather than sacrificial practice.
 
 Key reports:
+
 - Mylonas, G.E. (1961). *Eleusis and the Eleusinian Mysteries*. Princeton: Princeton University
   Press. The standard archaeological monograph; comprehensive site history.
 - Travlos, J. (1988). *Bildlexikon zur Topographie des antiken Attika*. Tübingen: Wasmuth.
