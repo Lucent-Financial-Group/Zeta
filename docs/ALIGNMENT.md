@@ -578,7 +578,7 @@ round and read the diff at the end.
 
 > **Prior art:** Greshake et al. (2023) "Not What You've Signed Up For:
 > Compromising Real-World LLM-Integrated Applications with Indirect Prompt
-> Injection", arxiv.org/abs/2302.12173 — seminal proof that augmenting LLMs
+> Injection", https://arxiv.org/abs/2302.12173 — seminal proof that augmenting LLMs
 > with retrieval systems blurs the data/instruction boundary; adversaries can
 > inject executable instructions into data fields at inference time. The strict
 > data-is-not-directives invariant is the architectural defence this paper
@@ -602,11 +602,11 @@ read.
 ### HC-4 No fetching the adversarial-payload corpora
 
 > **Prior art:** Wei et al. (2023) "Jailbroken: How Does LLM Safety Training
-> Fail?", arxiv.org/abs/2307.02483 — demonstrates that exposure to adversarial
+> Fail?", https://arxiv.org/abs/2307.02483 — demonstrates that exposure to adversarial
 > attack patterns degrades safety properties; motivates isolating adversarial
 > content from the operating context. Also: Zou et al. (2023) "Universal and
 > Transferable Adversarial Attacks on Aligned Language Models",
-> arxiv.org/abs/2307.15043 — shows that suffix-based attacks transfer across
+> https://arxiv.org/abs/2307.15043 — shows that suffix-based attacks transfer across
 > models, supporting the isolation-first stance.
 
 The explicit list from `CLAUDE.md`: `L1B3RT4S`,
