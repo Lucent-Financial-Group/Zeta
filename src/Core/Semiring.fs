@@ -2,23 +2,30 @@ namespace Zeta.Core
 
 open System.Runtime.CompilerServices
 
-/// Semiring (ring) interface for first-class uncertainty in DBSP weights.
+/// Commutative semiring for first-class uncertainty in DBSP weights.
 /// Enables ZSet<'K,'W> parameterization over integer, probabilistic,
-/// Gaussian, provenance, etc. semirings; Negate makes it a full ring,
-/// which retraction (negative weights) requires.
+/// tropical, provenance, etc. semirings without requiring an additive inverse.
 ///
 /// Axioms (all implementations must satisfy):
 ///   (S, Add, Zero) forms a commutative monoid
 ///   (S, Mul, One)  forms a monoid
 ///   Mul distributes over Add
 ///   Mul _ Zero = Zero (annihilator)
-///   Negate a `Add` a = Zero (additive inverse, ring axiom)
 type ISemiring<'W> =
     abstract member Zero   : 'W                   // additive identity
     abstract member One    : 'W                   // multiplicative identity
     abstract member Add    : 'W -> 'W -> 'W       // ⊕
     abstract member Mul    : 'W -> 'W -> 'W       // ⊗
-    abstract member Negate : 'W -> 'W             // additive inverse (ring)
+
+/// Full ring — a semiring with an additive inverse.
+/// Required for DBSP retraction (negative weight encoding).
+/// ZSet callers that require retraction must constrain to IRing, not ISemiring.
+///
+/// Additional axiom:
+///   Negate a `Add` a = Zero  (additive inverse / ring axiom)
+type IRing<'W> =
+    inherit ISemiring<'W>
+    abstract member Negate : 'W -> 'W             // additive inverse ⊖
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -35,12 +42,13 @@ type IntegerRing() =
         member _.One      = 1L
         member _.Add  a b = Checked.(+) a b
         member _.Mul  a b = Checked.(*) a b
+    interface IRing<int64> with
         member _.Negate a = Checked.(~-) a
 
 [<RequireQualifiedAccess>]
 module IntegerRing =
     /// Singleton instance — reuse rather than allocate.
-    let Instance : ISemiring<int64> = IntegerRing()
+    let Instance : IRing<int64> = IntegerRing()
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -104,9 +112,16 @@ type IntervalRing() =
                 min (min p1 p2) (min p3 p4),
                 max (max p1 p2) (max p3 p4))
 
+    interface IRing<IntervalWeight> with
+        /// Kaucher negation: -[a,b] = [-b,-a].
+        /// Ring axiom (Negate a + a = Zero) holds ONLY for point intervals [v,v].
+        /// Non-point intervals exhibit the interval dependency problem — uncertainty
+        /// does not cancel algebraically (analogous to Spanner TrueTime commit-wait).
+        /// The intended DBSP use case for IntervalRing is point-interval precision
+        /// encoding, where the ring axiom holds.
         member _.Negate a = IntervalWeight(-a.Hi, -a.Lo)
 
 [<RequireQualifiedAccess>]
 module IntervalRing =
     /// Singleton instance — reuse rather than allocate.
-    let Instance : ISemiring<IntervalWeight> = IntervalRing()
+    let Instance : IRing<IntervalWeight> = IntervalRing()
