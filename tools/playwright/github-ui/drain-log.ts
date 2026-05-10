@@ -252,7 +252,9 @@ async function revertUnlocked(
 
   let result: Awaited<ReturnType<typeof mutate>>;
   try {
-    result = await mutate(inverseRequest, options);
+    // skipLog: true — drain-log handles the revert marker append itself; the
+    // inverse mutation must not auto-log as a separate "applied" entry.
+    result = await mutate(inverseRequest, { ...options, skipLog: true });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return {

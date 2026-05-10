@@ -9,6 +9,7 @@ import {
 } from "./auth";
 import { extractToggles, extractFormValues, extractVisibleFeatures, type GitHubPageSnapshot } from "./snapshot";
 import { diffPageSnapshots, type PageDiff } from "./feature-diff";
+import { appendEntry, DEFAULT_LOG_PATH } from "./drain-log";
 
 // ---------------------------------------------------------------------------
 // Errors
@@ -131,6 +132,10 @@ export interface MutationOptions
   readonly driver?: MutableGitHubSessionDriver;
   /** Override authorized surfaces path (for testing). */
   readonly authorizedSurfacesPath?: string;
+  /** Override drain-log path (for testing). Defaults to DEFAULT_LOG_PATH from drain-log.ts. */
+  readonly logPath?: string;
+  /** Set true to suppress auto-write to the drain log (used by revert() to avoid double-logging). */
+  readonly skipLog?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -321,7 +326,7 @@ export async function mutate(
     // 9. Structured diff (echoed to chat output per don't-ask-permission echo discipline)
     const diff = diffPageSnapshots(before, after);
 
-    // 10. Build drain log entry (B-0322 drain-log.ts implements the write)
+    // 10. Build drain log entry and persist it (append-only invariant)
     const drainLogEntry: MutationLogEntry = {
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
@@ -334,6 +339,10 @@ export async function mutate(
       diff,
       status: "applied",
     };
+
+    if (options.skipLog !== true) {
+      appendEntry(drainLogEntry, options.logPath ?? DEFAULT_LOG_PATH);
+    }
 
     return { success: true, before, after, diff, drainLogEntry };
   } finally {
