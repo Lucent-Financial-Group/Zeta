@@ -57,6 +57,7 @@ transparency theory, AI audit-trail / accountability research, CoT
 monitorability safety research.
 
 Queries run (2026-05-10):
+
 - "radical transparency organizational theory Dalio AI systems accountability"
 - "algorithmic transparency explainability AI decision audit trail XAI"
 - "LLM chain-of-thought reasoning transparency no hidden reasoning AI observability"
@@ -66,6 +67,7 @@ Queries run (2026-05-10):
 - "Korbak chain of thought monitorability fragile opportunity AI safety arxiv"
 
 Results:
+
 - Dalio (2017) *Principles: Life and Work* → radical transparency / no hidden moves
 - Doshi-Velez & Kim (2017) arxiv:1702.08608 → total observability / inspectable decisions
 - Brundage et al. (2020) arxiv:2004.07213 → audit trails / total observability
@@ -86,6 +88,7 @@ in their ALIGNMENT.md surface only — specifically the
 "Symmetric transparency: the glass halo" section.
 
 Remaining for subsequent slices:
+
 - Glass-halo transparency in CLAUDE.md / README.md
 - Retraction-native in AGENTS.md
 - Radical honesty / total observability / no hidden reasoning in AGENTS.md
