@@ -379,7 +379,7 @@ const SEED_CATALOG: MythologyResonanceCatalog = {
           f1:
             "Factory observability/gate-keeping patterns and the endpoint-abstraction were " +
             "reached for microservice-boundary and monitoring reasons. " +
-            "Heimdallr mapping was noticed after Aaron's single-word signal 'hemdal' " +
+            "Heimdallr mapping was noticed after the human maintainer's single-word signal 'hemdal' " +
             "(2026-04-21), not used to design the factory's gate-keeping layer.",
           f2:
             "F2 is partial rather than full pass: the bridge-guardian-as-the-bridge shape " +
@@ -404,11 +404,11 @@ const SEED_CATALOG: MythologyResonanceCatalog = {
         "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
       collectionIndexInstance: 12,
       notes:
-        "This is collection-index instance #12 candidate, first documented from Aaron's " +
+        "This is collection-index instance #12 candidate, first documented from the human maintainer's " +
         "'hemdal' signal (2026-04-21). Per the collection index: 'second bridge-figure " +
         "member would LOCK the bridge-figure sub-structure definition (currently defined " +
         "by Melchizedek alone).' Promotion to confirmed requires: (a) counterexample search " +
-        "and (b) either Aaron confirmation or a second Eddic textual anchor that tightens F2 " +
+        "and (b) either human-maintainer confirmation or a second Eddic textual anchor that tightens F2 " +
         "beyond the role-shape level (e.g., a Bifröst-guardianship formula matching a factory " +
         "unification statement at the lexical level). " +
         "The Gjallarhorn-as-circuit-breaker-signal claim is loosely held (not primary claim).",
@@ -570,35 +570,37 @@ function printSummary(catalog: MythologyResonanceCatalog): void {
   );
 }
 
-const args = Bun.argv.slice(2);
+if (import.meta.main) {
+  const args = Bun.argv.slice(2);
 
-if (args.includes("--validate")) {
-  const results = validateCatalog(SEED_CATALOG);
-  let hasError = false;
-  for (const r of results) {
-    if (r.kind === "error") {
-      console.error(`INVALID: ${r.message}`);
-      hasError = true;
+  if (args.includes("--validate")) {
+    const results = validateCatalog(SEED_CATALOG);
+    let hasError = false;
+    for (const r of results) {
+      if (r.kind === "error") {
+        console.error(`INVALID: ${r.message}`);
+        hasError = true;
+      }
     }
-  }
-  if (!hasError) {
-    console.log(`All ${SEED_CATALOG.entries.length} entries pass schema validation.`);
-  }
-  process.exit(hasError ? 1 : 0);
-} else if (args.includes("--summary")) {
-  printSummary(SEED_CATALOG);
-} else {
-  // default: validate + summary
-  const results = validateCatalog(SEED_CATALOG);
-  let hasError = false;
-  for (const r of results) {
-    if (r.kind === "error") {
-      console.error(`INVALID: ${r.message}`);
-      hasError = true;
+    if (!hasError) {
+      console.log(`All ${SEED_CATALOG.entries.length} entries pass schema validation.`);
     }
-  }
-  if (!hasError) {
+    process.exit(hasError ? 1 : 0);
+  } else if (args.includes("--summary")) {
     printSummary(SEED_CATALOG);
+  } else {
+    // default: validate + summary
+    const results = validateCatalog(SEED_CATALOG);
+    let hasError = false;
+    for (const r of results) {
+      if (r.kind === "error") {
+        console.error(`INVALID: ${r.message}`);
+        hasError = true;
+      }
+    }
+    if (!hasError) {
+      printSummary(SEED_CATALOG);
+    }
+    process.exit(hasError ? 1 : 0);
   }
-  process.exit(hasError ? 1 : 0);
 }
