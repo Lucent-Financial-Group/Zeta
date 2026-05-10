@@ -212,6 +212,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0372](backlog/P1/B-0372-pages-sitemap-robots-ai-crawler-policy-2026-05-08.md)** Pages discoverability - sitemap, robots, and AI crawler policy
 - [x] **[B-0373](backlog/P1/B-0373-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
 - [x] **[B-0396](backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md)** Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations
+- [ ] **[B-0400](backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md)** Inter-agent ephemeral communication bus — NATS/F#/TS protocol for background service coordination
 
 ## P2 — research-grade
 
