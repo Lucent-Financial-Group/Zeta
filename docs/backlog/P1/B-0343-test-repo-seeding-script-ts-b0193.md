@@ -7,7 +7,7 @@ tier: foundation
 effort: M
 ask: B-0193 decomposition — AC 1 (test repo created and seeded)
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-10
 parent: B-0193
 depends_on: [B-0341]
 composes_with: [B-0193, B-0344]
@@ -53,7 +53,7 @@ M — GitHub API integration + file copying logic.
 
 **Prior-art search (surfaces + queries):**
 
-- tools/ **/*.ts "gh api" | "dry-run" | "seed" | "bootstrap" → hits in create-branch-safety-ruleset.ts (dry-run gh), migrations/b0267*.ts (gh child_process), hygiene/*.ts (gh api error handling). Rule 0 TS confirmed.
+- `tools/**/*.ts` grep for `"gh api"`, `"dry-run"`, `"seed"`, `"bootstrap"` → hits in create-branch-safety-ruleset.ts (dry-run gh), migrations/b0267*.ts (gh child_process), hygiene/*.ts (gh api error handling). Rule 0 TS confirmed.
 - docs/backlog/P1/B-034* → sibling B-0341 closed, B-0342 recent.
 - No pre-existing tools/bootstrap-razor/ or seed-test-repo.ts.
 
