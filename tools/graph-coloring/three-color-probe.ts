@@ -19,7 +19,7 @@ type Coloring = number[];
 
 function isSafe(v: number, color: number, coloring: Coloring, graph: Graph): boolean {
   for (let i = 0; i < graph.length; i++) {
-    if (graph[v][i] === 1 && coloring[i] === color) return false;
+    if (graph[v]![i] === 1 && coloring[i] === color) return false;
   }
   return true;
 }
