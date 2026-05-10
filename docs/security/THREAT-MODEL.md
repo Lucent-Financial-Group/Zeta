@@ -493,15 +493,18 @@ If task #276 (tick-history direct-to-main) ever ships, minimum controls required
 3. **Content-lint gate**: a CI job that validates heartbeat file structure
    (frontmatter schema check) before write completes — semantic poison that
    passes syntactic review is the residual T3 gap.
-4. **Invisible-Unicode detection** (Semgrep rule 13 equivalent) applied to
+4. **Invisible-Unicode detection** (`invisible-unicode-in-text` Semgrep rule,
+   already enforced in CI via `.semgrep.yml` across `**/*.md`) applied to
    heartbeat file paths specifically — visual review cannot catch Unicode
    smuggling (zero-width joiners, RTL overrides, homograph characters).
+   No additional heartbeat-path-specific coverage is required beyond the
+   existing CI enforcement.
 5. **Second independent reviewer** before gate opens — bus-factor exception
    means review gate provides no T2+ defence without a second human reviewer.
 
-### Defender persona
+### Adversarial review record
 
-**Aminata (`threat-model-critic`)** completed adversarial review of this section
+The **threat-model-critic** completed adversarial review of this section
 (B-0032.3, 2026-05-10). Ten findings (AH-1..AH-10): 3 critical, 6 important,
 1 watch — all absorbed into this section above. Follow the escalation path in
 `docs/CONFLICT-RESOLUTION.md` for re-audit cadence.
