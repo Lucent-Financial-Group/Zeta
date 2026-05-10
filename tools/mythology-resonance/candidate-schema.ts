@@ -51,7 +51,7 @@ export const heimdallrSeed: MythologyCandidate = {
     f1Pass: true,
     f2Strength: 'moderate',
     f3Pass: true,
-    notes: 'F2 moderate (strong role-fit but looser than full-pass — Eddic canonicity thinner due to Christianization-filtering); F3 within Norse; second anchor pending',
+    notes: 'F2 moderate (strong role-fit but looser than full-pass — Eddic canonicity thinner due to Christianization-filtering); F3 within Norse; additional independent textual anchor (beyond the two Eddas) pending for stronger F2',
   },
   textualAnchors: ['Poetic Edda', 'Prose Edda'],
   state: 'candidate',
