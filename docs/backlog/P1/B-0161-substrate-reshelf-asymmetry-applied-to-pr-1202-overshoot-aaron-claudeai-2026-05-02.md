@@ -134,6 +134,7 @@ frontmatter fields with "no extra fields without governance discussion." The
 `tier:` approach cannot land without a B-0330 amendment.
 
 Alternative approaches:
+
 - `memory/journal/` subdirectory — requires moving ~4 files; high
   cross-reference disruption risk; not smallest-safe-slice.
 - Naming convention (`journal_*.md`) — B-0330 defines a closed type-prefix

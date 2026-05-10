@@ -180,7 +180,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0350](backlog/P1/B-0350-extract-autonomy-identity-bullets-to-rules.md)** Extract autonomy/identity bullets to .claude/rules/
 - [x] **[B-0351](backlog/P1/B-0351-extract-infrastructure-safety-bullets-to-rules.md)** Extract infrastructure/safety bullets to .claude/rules/
 - [x] **[B-0352](backlog/P1/B-0352-extract-meta-governance-bullets-to-rules.md)** Extract meta/governance bullets to .claude/rules/
-- [ ] **[B-0353](backlog/P1/B-0353-write-bootstrap-process-claude-md.md)** Write bootstrap-process CLAUDE.md (<50 lines)
+- [x] **[B-0353](backlog/P1/B-0353-write-bootstrap-process-claude-md.md)** Write bootstrap-process CLAUDE.md (<50 lines)
 - [ ] **[B-0354](backlog/P1/B-0354-fresh-instance-validation-bootstrap-claude-md.md)** Fresh-instance validation test for bootstrap CLAUDE.md
 - [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
 - [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)
@@ -300,7 +300,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0079](backlog/P2/B-0079-audit-agencysignature-script-hardening-codex-pr-663.md)** tools/hygiene/audit-agencysignature-main-tip.ts hardening — 5 Codex findings on PR #663 (sh→ts ported)
 - [ ] **[B-0081](backlog/P2/B-0081-path-gate-kotlin-scala-codex-pr-662.md)** codeql.yml path-gate should match `*.kt` + `*.scala` not just `*.java` — Codex P2 on PR #662
 - [ ] **[B-0082](backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md)** docs/GLOSSARY.md provenance entries use persona-name attribution; convert to role-refs
-- [ ] **[B-0086](backlog/P2/B-0086-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md)** Port tools/hygiene Python scripts to TypeScript/Bun (factory-default; AI/ML carve-out applies)
+- [x] **[B-0086](backlog/P2/B-0086-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md)** Port tools/hygiene Python scripts to TypeScript/Bun (factory-default; AI/ML carve-out applies)
 - [ ] **[B-0088](backlog/P2/B-0088-paired-edit-lint-advisory-not-enforcement-promote-to-required-check-otto-2026-04-28.md)** memory/MEMORY.md paired-edit lint is advisory only (not in required-status-checks); promote or remove the discoverability claim
 - [ ] **[B-0089](backlog/P2/B-0089-veridicality-rainbow-table-canonicalization-research-and-graduation-aaron-ani-amara-2026-04-28.md)** Veridicality rainbow-table canonicalization — research + ship semantic + scoring layers; drop "bullshit detector" as a forward-going name
 - [ ] **[B-0090](backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md)** Cadenced lost-substrate recovery audit (worktrees + orphan branches + closed-not-merged PRs + draft PRs aged > N days)
