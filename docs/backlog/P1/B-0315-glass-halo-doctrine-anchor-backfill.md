@@ -127,6 +127,7 @@ Lands two remaining doctrines:
 
 All five B-0315 doctrines now have external anchor or "original" note
 on at least one defining surface. Done-criteria met:
+
 - [x] All Glass-Halo doctrines have external anchor or "original" note
 - [x] Citations include URL, author/org, title, date
 - [x] Beacon-safety pass: all cited sources (Dalio, Doshi-Velez/Kim,
