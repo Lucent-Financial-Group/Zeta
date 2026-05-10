@@ -228,6 +228,19 @@ the multi-AI synthesis arc + Aaron's explicit delegation
 - Does NOT introduce a new tick-history schema — same column
   structure as the legacy table, one row per shard.
 
+## Composition with divergence shards
+
+When two concurrent agent loops disagree on a substrate-class commitment,
+a **divergence shard** is written to `docs/hygiene-history/divergences/`
+in addition to (not instead of) the normal tick shard here.
+
+- **Tick shard** (this directory): records what a loop DID.
+- **Divergence shard** (divergences/): records a CONFLICT between two loops.
+
+Both surfaces are canonical write surfaces; neither replaces the other.
+See: `docs/hygiene-history/divergences/README.md` for the divergence shard
+schema and reconciliation protocol (B-0164 AC #4, 2026-05-10).
+
 ## Migration of historical content
 
 The legacy table at `docs/hygiene-history/loop-tick-history.md`
