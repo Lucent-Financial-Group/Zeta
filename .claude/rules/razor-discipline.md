@@ -21,6 +21,7 @@ operational form survives the razor. The metaphysical form
 *"agent has a world model"* (cognitive-interiority claim) is cut.
 
 **Canonical razor in Zeta** is:
+
 - **Rodney's Razor** — well-defined Occam's, applied to shipped
   artifacts; essential-vs-accidental cut.
 - **Quantum Rodney's Razor** — possibility-space pruning, applied

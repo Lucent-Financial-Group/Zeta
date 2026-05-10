@@ -47,7 +47,8 @@ by mirror-refresh; only `main` is mirrored.
 `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md`
 (the LFG-only directive),
 `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md`
-(the Path 2 decision and mechanism), and prior-round lineage in
-`memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`
-+ `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md`
+(the Path 2 decision and mechanism), and prior-round lineage in:
+
+- `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`
+- `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md`
 (paused, kept for historical context).
