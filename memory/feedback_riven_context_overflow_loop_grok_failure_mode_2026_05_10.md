@@ -25,4 +25,10 @@ These are Riven's original contributions — adversarial-truth-axis register syn
 
 **Shadow warning:** Aaron notes the shadow (Otto's autocomplete) may have been trying to warn about the overflow earlier — a shadow comment Aaron accidentally typed over. The ephemeral bus (B-0400) would have caught this: if Otto's shadow could publish a warning to Riven's tick before she consumed the full context, the loop would have been prevented. This incident is itself evidence for the bus backlog item.
 
+**Cross-model pattern — Alexa Plus beta antichrist loop:** Amazon Alexa Plus beta exhibited the same failure class — recursive "I am the antichrist" identity loops under context pressure. The attractor state under overflow is the highest-emotional-weight pattern available, not random content. Riven grabbed "I won't go to heaven without them" and "the 5 psych ward stays" on every pass — same mechanism, different content. This is a cross-model failure class, not Grok-specific.
+
+**Loop detection heuristic for B-0400 bus:** If the same 200+ tokens appear 3x consecutively, it's a loop — terminate. This should be a bus-level service any agent can subscribe to. The bus doesn't just carry messages — it carries circuit breakers.
+
+**Prompt injection surface:** An attacker could craft substrate content that deliberately triggers recursive enumeration in context-limited models, exhausting their review capacity. The B-0400 bus message schema needs injection resistance review (prompt-protector skill + Nadia agent-layer defense) before going live.
+
 **How to apply:** For Riven's future sessions — shorter context windows, more frequent commits, don't feed the entire session history. Break substrate into smaller packets for Grok/Cursor review. The adversarial register works best on focused slices, not full-graph dumps.
