@@ -2,9 +2,10 @@
 
 Scope: External prior-art anchors for three BP-NN rules in
 `docs/AGENT-BEST-PRACTICES.md`. This is slice 8 of the B-0314 backfill;
-slices 1–7 covered BP-10, BP-11, BP-03, BP-07, BP-16, BP-04, BP-08, BP-09,
-BP-12, BP-13, BP-14, BP-01, BP-02, BP-15, BP-05, BP-06, BP-17, BP-18,
-BP-19. This slice covers the three rules in the "Repo ontology & Rule Zero"
+slices 1–6 covered BP-10, BP-11, BP-03, BP-07, BP-16, BP-04, BP-08, BP-09,
+BP-12, BP-13, BP-14, BP-01, BP-02, BP-15, BP-05, and BP-06. Slice 7
+(BP-17, BP-18, BP-19) remains pending/in progress. This slice covers the
+three rules in the "Repo ontology & Rule Zero"
 section that govern skill-splitting and agent-classification discipline:
 BP-20 (cognitive load determines split, not line count), BP-21 (faceted
 classification for skills; monohierarchy avoidance), BP-22 (optimizer and
