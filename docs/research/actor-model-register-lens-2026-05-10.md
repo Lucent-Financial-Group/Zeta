@@ -4,6 +4,7 @@ date: 2026-05-10
 backlog: B-0040
 prior-art: docs/research/actor-model-hewitt-meijer-akka-orleans-service-fabric-2026-04-21.md
 status: synthesis (draft, awaiting Aaron sign-off before external publication)
+
 ---
 
 # Actor model as factory-operational-register lens
@@ -54,11 +55,13 @@ adopting any actor framework.
 ### 1.2 What "vocabulary as lens" means operationally
 
 A vocabulary lens is adopted when:
+
 - A factory-internal concept *already exists* and is named informally
 - The actor-model term names the same concept with more precision
 - The actor-model term carries 50 years of usage context that informs edge-case handling
 
 A vocabulary lens is NOT adopted when:
+
 - The factory would need to implement new infrastructure to satisfy the term's semantics
 - The term's semantics would be violated by existing factory architecture
 - The term implies a runtime guarantee the factory does not provide

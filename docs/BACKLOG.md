@@ -255,6 +255,10 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0033.1](backlog/P2/B-0033.1-claude-code-hooks-ts-harness-entrypoint.md)** Claude Code hooks TS harness entrypoint + .claude/settings.json wiring stub (B-0033 atomic child)
 - [x] **[B-0033.2](backlog/P2/B-0033.2-pre-edit-recent-read-enforcement-hook.md)** Pre-Edit hook: recent-Read + mtime enforcement (Otto-343 Edit-without-Read) (B-0033.1 dep)
 - [ ] **[B-0037](backlog/P2/B-0037-meta-cognition-first-class-factory-discipline.md)** Meta-cognition as first-class factory discipline — survey, audit cadence, measurables
+- [ ] **[B-0037.1](backlog/P2/B-0037.1-meta-cognition-taxonomy-survey-doc.md)** B-0037.1 — Meta-cognition taxonomy survey doc
+- [ ] **[B-0037.2](backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md)** B-0037.2 — Per-round meta-check checklist in ROUND-HISTORY.md template
+- [ ] **[B-0037.3](backlog/P2/B-0037.3-meta-cognition-measurables-wiring.md)** B-0037.3 — Meta-cognition measurables wired into alignment-trajectory dashboard
+- [ ] **[B-0037.4](backlog/P2/B-0037.4-meta-cognition-distributed-vs-concentrated-adr.md)** B-0037.4 — ADR for distributed-vs-concentrated meta-cognition framework
 - [ ] **[B-0040](backlog/P2/B-0040-actor-model-factory-register-lens.md)** Actor model as factory-operational-register lens — Hewitt 1973 / Meijer / Akka / Orleans / Service Fabric
 - [ ] **[B-0042](backlog/P2/B-0042-bungie-corpus-priority-seed.md)** Bungie corpus priority seed — Halo / Destiny / Marathon / Myth / Oni / Pathways Into Darkness / "Grimwar
 - [ ] **[B-0045](backlog/P2/B-0045-all-schools-all-subjects-universal-substrate-knowledge.md)** All schools, all subjects — universal substrate-knowledge sweep; biology inaugural; trade/vocational equal-or-higher weight

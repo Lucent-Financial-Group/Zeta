@@ -12,6 +12,7 @@ depends_on: []
 composes_with: [project_factory_positioning_fully_asynchronous_agentic_ai_aaron_2026_04_21.md, feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_2026_04_21.md, B-0038]
 tags: [actor-model, vocabulary-as-lens, hewitt, meijer, akka, orleans, service-fabric, async-agentic, no-bottlenecks, research-grade]
 type: friction-reducer
+
 ---
 
 # B-0040 — Actor model as factory-register lens
@@ -55,6 +56,7 @@ Workshop paper on agent-orchestration-patterns-borrowing-from-actor-model.
 ## Pre-start checklist (2026-05-10)
 
 **Prior-art-search:**
+
 - `docs/research/actor-model-hewitt-meijer-akka-orleans-service-fabric-2026-04-21.md` —
   comprehensive prior-art catalog covering scope items (a)–(f); already exists.
 - Related backlog: B-0038 (superfluid/persistable* cluster), B-0251 (durable-computation-
@@ -64,6 +66,7 @@ Workshop paper on agent-orchestration-patterns-borrowing-from-actor-model.
   explicit-rejection synthesis layer that B-0040 outputs.
 
 **Dependency-restructure:**
+
 - `depends_on: []` — no blocking dependencies; confirmed clean.
 - Composition with B-0251 added (durable-computation-stack uses Orleans/Akka vocabulary;
   the register-lens synthesis must not conflict with that framing).
