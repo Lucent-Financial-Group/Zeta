@@ -1,7 +1,7 @@
 ---
 id: B-0322
 priority: P1
-status: open
+status: claimed
 title: "Mutation reversibility drain log — inverse-action record for every UI mutation"
 tier: agent-capability-expansion
 effort: S
@@ -58,12 +58,19 @@ fire-and-forget — a trust violation.
 
 ## Done-criteria
 
-- [ ] `tools/playwright/github-ui/drain-log.ts` exists.
+- [x] `tools/playwright/github-ui/drain-log.ts` exists.
 - [ ] Log entries are written on every mutation via B-0321.
-- [ ] `revert()` function can mechanically undo a logged
+- [x] `revert()` function can mechanically undo a logged
       mutation.
-- [ ] Log file lives under `docs/hygiene-history/` and is
+- [x] Log file lives under `docs/hygiene-history/` and is
       committed.
+
+## Pre-start checklist (B-0322 prior-art + dependency check)
+
+Prior-art surfaces searched: B-0321 PR #2502 (merged 2026-05-10), mutate.ts
+drain-log entry shape already prototyped there. No competing implementation
+found. Depends-on B-0321 is fulfilled. Inverse-action mapping already in
+mutate.ts.
 
 ## What this row does NOT do
 
