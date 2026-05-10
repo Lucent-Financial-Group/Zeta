@@ -249,9 +249,18 @@ function resolveTarget(
 function supersededByMarkerLines(targetContent: string): string[] {
   const lines = targetContent.split("\n").slice(0, 25);
   const markerLines: string[] = [];
+  const fence = { char: null as "`" | "~" | null, len: 0 };
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i] ?? "";
+    if (startsFenceDelimiter(line)) {
+      updateFenceState(line, fence);
+      continue;
+    }
+    if (fence.char !== null) {
+      updateFenceState(line, fence);
+      continue;
+    }
     if (!/\bsuperseded by\b/i.test(line)) continue;
 
     const parts = [line.trim()];

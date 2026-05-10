@@ -115,6 +115,22 @@ describe("findSupersessionClaims", () => {
     ]);
     expect(claims).toEqual([]);
   });
+
+  test("finds backtick target with anchor suffix", () => {
+    const claims = findSupersessionClaims([
+      "Supersedes ADR `docs/DECISIONS/old.md#status`.",
+    ]);
+    expect(claims).toHaveLength(1);
+    expect(claims.at(0)?.target).toBe("docs/DECISIONS/old.md");
+  });
+
+  test("finds backtick target with query suffix", () => {
+    const claims = findSupersessionClaims([
+      "Supersedes ADR `docs/DECISIONS/old.md?v=2`.",
+    ]);
+    expect(claims).toHaveLength(1);
+    expect(claims.at(0)?.target).toBe("docs/DECISIONS/old.md");
+  });
 });
 
 describe("checkFile", () => {
@@ -302,6 +318,39 @@ describe("checkFile", () => {
       } catch {
         // Best-effort temp cleanup.
       }
+      fx.cleanup();
+    }
+  });
+
+  test("does not false-positive on superseded-by text inside fenced code in marker scan", () => {
+    const fx = setupRepo();
+    try {
+      const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
+      const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
+      // old.md has "superseded by" only inside a fenced code block — no real prose marker
+      writeFileSync(
+        oldAdr,
+        [
+          "# ADR old",
+          "",
+          "```md",
+          "Superseded by new.md",
+          "```",
+          "",
+          "**Status:** Accepted.",
+        ].join("\n"),
+      );
+      writeFileSync(
+        newAdr,
+        "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.\n",
+      );
+
+      const result = checkFile(newAdr);
+      expect(result.ok).toBe(true);
+      // fenced "superseded by" must not count — finding expected
+      expect(result.findings).toHaveLength(1);
+      expect(result.findings.at(0)?.target).toBe("docs/DECISIONS/old.md");
+    } finally {
       fx.cleanup();
     }
   });
