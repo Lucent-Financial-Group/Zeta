@@ -293,7 +293,7 @@ export function summarizeCatalog(catalog: MediaResonanceCatalog): CatalogSummary
 const SEED_CATALOG: MediaResonanceCatalog = {
   schema: "media-resonance-v1",
   created: "2026-05-10",
-  lastUpdated: "2026-05-10",
+  lastUpdated: "2026-05-10", // updated by B-0054.2
   origin: "B-0054",
   entries: [
     {
@@ -506,6 +506,223 @@ const SEED_CATALOG: MediaResonanceCatalog = {
         "Comedy-as-substrate-probe principle (Monty Python register) applies here: Brooks " +
         "makes the self-reference legible by playing it for laughs, which is pedagogically " +
         "valuable — the comedic framing makes the structural property MORE visible, not less.",
+    },
+
+    // ── B-0054.2: Video-game priority tier (Aaron-marked higher-than-rest) ─────
+
+    {
+      id: "MR-005",
+      title: "Brütal Legend — world constructed from artistic substrate (heavy-metal mythology)",
+      medium: "video-game",
+      creator: "Double Fine Productions / Tim Schafer",
+      year: "2009",
+      mechanic:
+        "Eddie Riggs is transported to a world physically constituted from heavy-metal " +
+        "album art and mythology: mountains are guitar headstocks, temples are formed from " +
+        "iconic album imagery, enemies and factions embody distinct metal subgenres. " +
+        "The world does not merely reference the tradition — it IS constructed from it. " +
+        "Ormagöden, the fire-beast god of the first age, is both a mythological figure " +
+        "and the literal creative substrate from which the world was formed. " +
+        "The RTS layer requires Eddie to deploy units derived from their tradition's " +
+        "aesthetic logic (e.g., Drowning Doom uses funeral-doom aesthetic as terrain advantage).",
+      factoryOperator: {
+        label: "tradition-names as generative-ground substrate — operational-resonance discipline",
+        source: "memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md",
+      },
+      structuralType: "generative-ground",
+      subStructure: "artistic-tradition-as-physical-substrate",
+      filters: {
+        f1_engineering_first: "pass",
+        f2_structural: "partial",
+        f3_tradition_name: "pass",
+        rationale: {
+          f2:
+            "F2 is partial rather than full pass: the factory's tradition-names-as-substrate " +
+            "discipline holds that tradition-names are posterior-bump evidence for substrate " +
+            "correctness (F3 gate), not the primary generative force. Brütal Legend inverts " +
+            "this: the artistic tradition IS the generative-ground, not evidence of it. " +
+            "The structural shape is recognizable but the causal direction differs — " +
+            "warranting candidate status rather than confirmed.",
+          f3:
+            "F3 strong: Tim Schafer is a load-bearing auteur (Monkey Island, Grim Fandango, " +
+            "Psychonauts, Broken Age); Brütal Legend is canonical in the adventure-game " +
+            "and action-RTS corpuses; heavy-metal mythology is well-documented academically " +
+            "(Robert Walser *Running with the Devil* 1993; metal-studies journal literature).",
+        },
+      },
+      status: "candidate",
+      counterexampleAttempts: [],
+      sourceMemory: "memory/feedback_pop_culture_media_is_operational_resonance_corpus_multi_medium.md",
+      notes:
+        "Composes with B-0054.4 (Double Fine sub-thread — Broken Age + Brütal Legend). " +
+        "Broken Age's paired-dual structure (Vella / Shay) is a separate candidate MR entry. " +
+        "F2 partial status makes this a candidate pending a counterexample search that either " +
+        "tightens the operator-shape claim or reveals the causal-direction mismatch is disqualifying.",
+    },
+    {
+      id: "MR-006",
+      title: "Final Fantasy VI — World of Balance / World of Ruin as irreversible-substrate-collapse",
+      medium: "video-game",
+      creator: "Square / Hironobu Sakaguchi, Yoshitaka Amano",
+      year: "1994",
+      mechanic:
+        "FFVI splits into two Acts around Kefka's destruction of the Warring Triad: " +
+        "Act 1 is the World of Balance (organized, institutional power, Magitek-industrial), " +
+        "Act 2 is the World of Ruin (same geography, 1 year later, fragmented, Kefka reigns). " +
+        "The WoB → WoR transition is an irreversible substrate collapse: the Warring Triad's " +
+        "stasis is broken and cannot be restored. The party persists across both states — " +
+        "identity is preserved through substrate collapse. This is the anti-retractibility " +
+        "failure mode as narrative: what retraction-preservation prevents, Kefka enacts. " +
+        "The WoB and WoR are also a paired-dual: neither state is comprehensible without " +
+        "the other; the WoR's meaning derives entirely from what WoB contained.",
+      factoryOperator: {
+        label: "retractibility-preservation — operations that break this produce irreversible substrate collapse",
+        source: "memory/feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md",
+      },
+      structuralType: "paired-dual",
+      subStructure: "anti-retractibility-failure-as-narrative-event",
+      filters: {
+        f1_engineering_first: "pass",
+        f2_structural: "pass",
+        f3_tradition_name: "pass",
+        rationale: {
+          f2:
+            "F2 passes on two distinct structural grounds: (1) the WoB/WoR transition enacts " +
+            "the failure mode retractibility-preservation is designed to prevent — " +
+            "an operation (removing the Warring Triad's stasis) leaves a permanent, " +
+            "irreversible change to the substrate (the planet's collapse into Kefka's " +
+            "light-of-judgment regime). The factory's math-safety definition says this IS " +
+            "what non-retractibility-preserving operations do. (2) The party's survival " +
+            "through the substrate collapse instantiates identity-preservation-through-substrate-change " +
+            "(same structural shape as Doctor Who regeneration, MR-001).",
+          f3:
+            "F3 maximal: FFVI is widely considered the peak of 16-bit RPG design; " +
+            "the WoB/WoR structure is the most-analyzed narrative structure in JRPG academic " +
+            "literature; Kefka is the canonical villain-who-wins in the genre; " +
+            "'Terra's Theme' and the opera sequence are academically analyzed pieces " +
+            "of game music (William Cheng *Sound Play* 2014).",
+        },
+      },
+      status: "confirmed",
+      counterexampleAttempts: [
+        {
+          date: "2026-05-10",
+          mechanicTested:
+            "Does the World of Ruin represent a reversible change (could the WoB be restored), " +
+            "which would invalidate the irreversibility claim?",
+          attempt:
+            "FFVI's narrative explicitly forecloses WoB restoration: the Warring Triad are " +
+            "destroyed (not merely moved), Kefka has absorbed their power, and the plot " +
+            "resolves with Kefka's defeat NOT restoring WoB — magic leaves the world entirely, " +
+            "a second irreversible substrate transition. Two sequential irreversible transitions " +
+            "with no rollback path confirms the anti-retractibility reading.",
+          result: "refuted",
+        },
+        {
+          date: "2026-05-10",
+          mechanicTested:
+            "Is WoB/WoR a 'before/after' temporal sequence rather than a paired-dual " +
+            "(which would be structural type 'instantiation', not 'paired-dual')?",
+          attempt:
+            "The two world-states are not separable: the WoR's geography, characters, and " +
+            "stakes are only meaningful against the WoB context. Celes's awakening in WoR " +
+            "is incomprehensible without WoB; Kefka's tower only exists because WoB did. " +
+            "Unlike a simple before/after, the player's understanding requires holding both " +
+            "simultaneously — confirming the paired-dual structural type.",
+          result: "refuted",
+        },
+      ],
+      sourceMemory: "memory/feedback_pop_culture_media_is_operational_resonance_corpus_multi_medium.md",
+      notes:
+        "The 'and expand' in Aaron's seed (B-0054 §Video-game priority seeds) suggests " +
+        "FFVII through FFXVI are additional expansion candidates; this entry covers only FFVI. " +
+        "FFVII gets its own entry MR-007 (Lifestream generative-ground).",
+    },
+    {
+      id: "MR-007",
+      title: "Final Fantasy VII — Lifestream as generative-ground + Mako drain as retraction-cost accumulation",
+      medium: "video-game",
+      creator: "Square / Hironobu Sakaguchi, Tetsuya Nomura, Yoshinori Kitase",
+      year: "1997",
+      mechanic:
+        "FFVII's Lifestream is the planet's fundamental substrate: all life emerges from it " +
+        "at birth and returns to it at death. Materia = crystallized knowledge from the Lifestream " +
+        "(substrate-accessible operators). Mako energy = Shinra Reactors extract Lifestream and " +
+        "convert it to industrial power — a retraction-cost operation that accumulates: each " +
+        "extraction depletes the substrate irreversibly, and at sufficient scale the planet dies. " +
+        "Jenova / Sephiroth exploit the Lifestream as a vector to corrupt the planetary substrate " +
+        "from within (the Reunion protocol). Cloud's false memories are a corrupted View<T>@clock: " +
+        "the accessed view (Cloud as SOLDIER) diverges from the substrate truth (Cloud as failed " +
+        "infantryman who absorbed Zack's memories); Tifa's testimony is the ground-truth substrate " +
+        "that eventually corrects the corrupted view.",
+      factoryOperator: {
+        label: "generative-ground substrate + retraction-cost accumulation + corrupted View<T>@clock",
+        source: "memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md",
+      },
+      structuralType: "generative-ground",
+      subStructure: "retraction-cost-accumulation + corrupted-view-operator",
+      filters: {
+        f1_engineering_first: "pass",
+        f2_structural: "pass",
+        f3_tradition_name: "pass",
+        rationale: {
+          f2:
+            "F2 passes on three distinct operator-shape grounds: (1) Lifestream as " +
+            "generative-ground: all operators (Materia) and all entities (life) are substrate-derived " +
+            "— matching the factory's algebra where operators extend the substrate, not external to it. " +
+            "(2) Mako drain: retraction-cost-accumulation where each extraction is individually " +
+            "acceptable but cumulative depletion destroys the substrate — the factory's math-safety " +
+            "principle applied to resource algebra. (3) Cloud's false memories: the View<T>@clock " +
+            "accessed by Cloud is corrupted relative to the substrate truth; the corruption is " +
+            "detectable only by comparing against independent ground-truth (Tifa's account). " +
+            "Three independent F2 grounds at operator-shape precision — exceptionally strong.",
+          f3:
+            "F3 maximal: FFVII is the most commercially successful JRPG in history; " +
+            "the Remake trilogy (2020–2024) demonstrates ongoing canonical weight; " +
+            "the Lifestream / Jenova / Cetra mythology is extensively documented in " +
+            "game-studies literature and official lore compendiums; Crisis Core and Advent Children " +
+            "expand the same substrate lore over 27 years of continuous canonical elaboration.",
+        },
+      },
+      status: "confirmed",
+      counterexampleAttempts: [
+        {
+          date: "2026-05-10",
+          mechanicTested:
+            "Is Mako drain actually reversible (Shinra could stop extracting and the " +
+            "planet would recover), invalidating the retraction-cost-accumulation claim?",
+          attempt:
+            "FFVII's plot makes restoration impossible within story time: the planet is " +
+            "already near-terminal; Holy/Meteor sequence is required precisely because normal " +
+            "recovery is foreclosed. Even if theoretical reversibility exists over geological time, " +
+            "the accumulated cost exceeds what the Lifestream can self-heal within human timescales — " +
+            "which IS the factory's retraction-cost concern: locally reversible, globally irreversible " +
+            "at scale. This strengthens rather than refutes the accumulation claim.",
+          result: "refuted",
+        },
+        {
+          date: "2026-05-10",
+          mechanicTested:
+            "Are Cloud's false memories a character-writing choice rather than a structural " +
+            "View<T>@clock corruption — if so, F2 fails for that sub-claim.",
+          attempt:
+            "Hojo's experiment deliberately injected Zack's memories into Cloud's substrate " +
+            "(Mako poisoning + direct cellular absorption of SOLDIER identity via S-Cells). " +
+            "The corruption is mechanistic, not merely psychological: Cloud's brain substrate " +
+            "literally contains Zack's memories encoded as his own. The FFVII Remake trilogy " +
+            "makes this explicit at a cellular-mechanism level. The corrupted-view property " +
+            "is load-bearing to the plot (Cloud's entire identity arc hinges on it). " +
+            "Structural match is at the mechanism level, not just the narrative level.",
+          result: "refuted",
+        },
+      ],
+      sourceMemory: "memory/feedback_pop_culture_media_is_operational_resonance_corpus_multi_medium.md",
+      notes:
+        "Three independent F2 grounds in one entry is unusual; each could be decomposed into " +
+        "separate MR-NNN entries (MR-007a Lifestream, MR-007b Mako, MR-007c Cloud-memory) " +
+        "for cleaner single-mechanic discipline — deferred to B-0054.x future slice. " +
+        "The FFVII Remake trilogy (2020–2024) introduces timeline-awareness mechanics that " +
+        "may warrant their own entry under the retractibly-coexisting-histories structural type.",
     },
   ],
 };

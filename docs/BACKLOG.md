@@ -272,6 +272,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0050](backlog/P2/B-0050-lean-reflection-capability-skill-staged-trajectory.md)** Lean reflection — learn it properly, land a capability skill + scouting note (staged 5-stage trajectory)
 - [ ] **[B-0051](backlog/P2/B-0051-isomorphism-homomorphism-catalog-consolidation.md)** Isomorphism / homomorphism catalog — consolidate the category-theory surface, identify gaps, lift to coherent track
 - [ ] **[B-0054](backlog/P2/B-0054-pop-culture-media-research-track.md)** Pop-culture / media research track — operational-resonance sweep across film, TV, YouTube documentary, music, video games, conspiracy-corpus
+- [x] **[B-0054.2](backlog/P2/B-0054.2-video-game-priority-seeds-extension.md)** Video-game priority tier — Brütal Legend + Final Fantasy VI/VII
 - [ ] **[B-0055](backlog/P2/B-0055-frontier-edge-claims-CTF-flags.md)** Frontier edge-claims research track — plant flags on unclaimed intellectual territory (CTF-style, falsifiable, retractibly-defensible)
 - [ ] **[B-0056](backlog/P2/B-0056-mythology-research-track.md)** Mythology research track — operational-resonance candidates from world-mythology bridge / messenger / boundary figures
 - [ ] **[B-0057](backlog/P2/B-0057-occult-western-esoteric-research-track.md)** Occult / Western-esoteric tradition research track — operational-resonance candidates from Hermetic / Kabbalistic / Thelemic / Golden Dawn / Theosophical / alchemical lineages
