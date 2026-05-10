@@ -436,6 +436,85 @@ describe("checkFile", () => {
     }
   });
 
+  test("does not treat status-line prose naming the superseding file as a reciprocal marker", () => {
+    const fx = setupRepo();
+    try {
+      const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
+      const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
+      // old.md: "superseded by new.md" appears inline in a Status sentence (not a marker form)
+      writeFileSync(
+        oldAdr,
+        [
+          "# ADR old",
+          "",
+          "**Status:** Superseded by new.md.",
+          "",
+        ].join("\n"),
+      );
+      writeFileSync(newAdr, "Supersedes ADR [v1](old.md).\n");
+
+      const result = checkFile(newAdr);
+      expect(result.ok).toBe(true);
+      // prose Status-line naming the file must not satisfy the reciprocal marker — finding expected
+      expect(result.findings).toHaveLength(1);
+      expect(result.findings.at(0)?.reason).toContain("not reciprocated");
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("does not treat superseded-by text in tilde-fenced block as a reciprocal marker", () => {
+    const fx = setupRepo();
+    try {
+      const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
+      const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
+      // old.md: canonical marker form is inside a tilde fence — must not count
+      writeFileSync(
+        oldAdr,
+        [
+          "# ADR old",
+          "",
+          "~~~md",
+          "> **Superseded by** [`new.md`](new.md).",
+          "~~~",
+          "",
+          "**Status:** Accepted.",
+        ].join("\n"),
+      );
+      writeFileSync(
+        newAdr,
+        "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.\n",
+      );
+
+      const result = checkFile(newAdr);
+      expect(result.ok).toBe(true);
+      // tilde-fenced "superseded by" must not count — finding expected
+      expect(result.findings).toHaveLength(1);
+      expect(result.findings.at(0)?.target).toBe("docs/DECISIONS/old.md");
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("returns ok=false and emits target-read errors when referenced ADR cannot be read", () => {
+    const fx = setupRepo();
+    try {
+      const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
+      const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
+      writeFileSync(oldAdr, "# ADR old\n");
+      writeFileSync(newAdr, "Supersedes ADR [v1](old.md).\n");
+      // Remove old.md after it's been stat'd (simulate a read failure by removing before checkFile runs)
+      // Instead, write a directory where the file is expected to be
+      rmSync(oldAdr, { force: true });
+      mkdirSync(oldAdr); // EISDIR — readFile will return ok: false
+
+      const result = checkFile(newAdr);
+      expect(result.ok).toBe(false);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
   test("returns ok=false for missing input file", () => {
     const result = checkFile("/no/such/path/check-convention-test.md");
     expect(result.ok).toBe(false);

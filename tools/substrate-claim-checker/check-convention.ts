@@ -329,13 +329,17 @@ function checkFile(filePath: string): CheckResult {
     : resolve(dirname(filePath));
   const fileParentDir = dirname(fileDir);
   const findings: Finding[] = [];
+  let hadTargetErrors = false;
 
   for (const claim of claims) {
     const resolved = resolveTarget(claim.target, fileDir, fileParentDir, repoRoot);
     if (resolved === null) continue; // existence drift belongs to check-existence.ts
 
     const target = readFile(resolved);
-    if (!target.ok) continue;
+    if (!target.ok) {
+      hadTargetErrors = true;
+      continue;
+    }
 
     const markerLines = supersededByMarkerLines(target.content);
     const targetDisplay = relative(repoRoot, resolved);
@@ -359,7 +363,7 @@ function checkFile(filePath: string): CheckResult {
     }
   }
 
-  return { findings, ok: true };
+  return { findings, ok: !hadTargetErrors };
 }
 
 export { checkFile, findSupersessionClaims };
@@ -379,10 +383,7 @@ export function main(): number {
 
   for (const arg of args) {
     const { findings, ok } = checkFile(arg);
-    if (!ok) {
-      inputErrors++;
-      continue;
-    }
+    if (!ok) inputErrors++;
     for (const f of findings) {
       console.log(
         `${f.file}:${String(f.line)}: convention drift — ${f.reason}`,
