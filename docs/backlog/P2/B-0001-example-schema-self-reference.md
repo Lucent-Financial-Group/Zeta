@@ -14,6 +14,7 @@ depends_on: []
 composes_with: []
 tags: [backlog-schema, example, phase-1a]
 type: friction-reducer
+
 ---
 
 # Example row — self-reference demonstrating the per-row-file schema
@@ -57,6 +58,7 @@ recovered via `git log --diff-filter=D` if needed).
 Required by `.claude/rules/backlog-item-start-gate.md` before any work.
 
 **Prior-art search:**
+
 - Skill router: no overlapping skill covers "backlog example row" scope.
 - `tools/backlog/`: `generate-index.ts`, `README.md` exist — generator
   is the tool this row exercises.
@@ -68,12 +70,14 @@ Required by `.claude/rules/backlog-item-start-gate.md` before any work.
   returns exit 0 — no drift.
 
 **Dependency-restructure:**
+
 - `depends_on: []` — no dependencies.
 - `composes_with: []` — standalone example row.
 - No supersession history; this is the first backlog row.
 
 **Closure rationale:**
 All three stated purposes are fulfilled:
+
 1. Generator exercises: `bun tools/backlog/generate-index.ts --check` → `ok` (exit 0).
 2. Schema documentation: file shape is demonstrated and real rows (B-0002…B-0400+)
    now fill the per-row corpus, supplanting the need for this example.
