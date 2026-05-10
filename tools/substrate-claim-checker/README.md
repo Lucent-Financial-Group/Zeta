@@ -66,13 +66,14 @@ input error).
   or blockquotes) aren't recognized yet. v1 candidate: relax the
   leading-anchor in `findTables` from `^\|` to `^\s*\|`.
 
-## What this does NOT do (v0)
+## Drift classes
 
+- **Count drift** (claimed markdown-table row count doesn't match) — shipped v0
 - **Existence drift** (file/dir/tool claimed to exist; doesn't) — shipped v0.5
 - **Path-form drift** (fully-qualified vs bare paths inconsistent) — shipped v0.7
+- **Convention drift** (recommended pattern doesn't match canonical) — shipped v0.9
 - **Semantic-equivalence drift** (command substitution claims) — v1
 - **Empirical-output drift** (run-the-command-and-compare) — v1
-- **Convention drift** (recommended pattern doesn't match canonical) — shipped v0.9
 - **Self-recursive drift** (the memo about drift contains its own drift) — v1
 
 ## Composes with

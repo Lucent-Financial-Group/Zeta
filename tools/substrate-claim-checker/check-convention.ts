@@ -74,6 +74,10 @@ function normalizeTarget(target: string): string {
   return result;
 }
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function stripMarkdownLinkTitle(target: string): string {
   const result = target.trim();
   if (result.startsWith("<")) {
@@ -87,6 +91,21 @@ function stripMarkdownLinkTitle(target: string): string {
     .filter((n) => n >= 0);
   if (cutPoints.length === 0) return result;
   return result.slice(0, Math.min(...cutPoints)).trimEnd();
+}
+
+function isRepoRelativeTarget(target: string): boolean {
+  if (target.length === 0) return false;
+  if (isAbsolute(target)) return false;
+  if (/^[A-Za-z]:[\\/]/.test(target)) return false;
+  if (target.startsWith("\\\\")) return false;
+  if (target.startsWith("//")) return false;
+  if (/^[A-Za-z][A-Za-z0-9+.-]*:/.test(target)) return false;
+  return true;
+}
+
+function isInsideRepo(candidate: string, repoRoot: string): boolean {
+  const rel = relative(repoRoot, candidate);
+  return rel.length === 0 || (!rel.startsWith("..") && !isAbsolute(rel));
 }
 
 function updateFenceState(
@@ -148,7 +167,7 @@ function pushMatchesForLine(
     const matchedTarget = match[1];
     if (matchedTarget === undefined) continue;
     const target = normalizeTarget(matchedTarget);
-    if (target.length === 0) continue;
+    if (!isRepoRelativeTarget(target)) continue;
     pushUnique(claims, seen, {
       line: lineNumber,
       target,
@@ -160,20 +179,11 @@ function pushMatchesForLine(
 function logicalSearchLines(lines: string[]): SearchLine[] {
   const searchLines: SearchLine[] = [];
   const fence = { char: null as "`" | "~" | null, len: 0 };
-  const paragraph: string[] = [];
-  let paragraphLine = 0;
-
-  const flushParagraph = (): void => {
-    if (paragraph.length === 0) return;
-    searchLines.push({ line: paragraphLine, text: paragraph.join(" ") });
-    paragraph.length = 0;
-    paragraphLine = 0;
-  };
+  const physicalLines: SearchLine[] = [];
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i] ?? "";
     if (startsFenceDelimiter(line)) {
-      flushParagraph();
       updateFenceState(line, fence);
       continue;
     }
@@ -183,15 +193,21 @@ function logicalSearchLines(lines: string[]): SearchLine[] {
     }
 
     const trimmed = line.trim();
-    if (trimmed.length === 0) {
-      flushParagraph();
-      continue;
-    }
-    if (paragraph.length === 0) paragraphLine = i + 1;
-    paragraph.push(trimmed);
+    if (trimmed.length > 0) physicalLines.push({ line: i + 1, text: trimmed });
   }
 
-  flushParagraph();
+  searchLines.push(...physicalLines);
+
+  const wrapPrefixRe = /\bSupersedes(?:\s+ADR)?\s*$/i;
+  for (let i = 0; i < physicalLines.length - 1; i++) {
+    const current = physicalLines[i];
+    const next = physicalLines[i + 1];
+    if (current === undefined || next === undefined) continue;
+    if (next.line !== current.line + 1) continue;
+    if (!wrapPrefixRe.test(current.text)) continue;
+    searchLines.push({ line: current.line, text: `${current.text} ${next.text}` });
+  }
+
   return searchLines;
 }
 
@@ -210,17 +226,6 @@ function findSupersessionClaims(lines: string[]): SupersessionClaim[] {
   return claims;
 }
 
-function isRepoRelativeTarget(target: string): boolean {
-  if (target.startsWith("http://") || target.startsWith("https://")) return false;
-  if (isAbsolute(target)) return false;
-  return true;
-}
-
-function isInsideRepo(absPath: string, repoRoot: string): boolean {
-  const rel = relative(repoRoot, absPath);
-  return rel !== "" && !rel.startsWith("..") && !isAbsolute(rel);
-}
-
 function resolveTarget(
   target: string,
   fileDir: string,
@@ -230,7 +235,7 @@ function resolveTarget(
   if (!isRepoRelativeTarget(target)) return null;
   const candidateRoots = [fileDir, fileParentDir, repoRoot];
   for (const root of candidateRoots) {
-    const candidate = join(root, target);
+    const candidate = resolve(root, target);
     if (!isInsideRepo(candidate, repoRoot)) continue;
     if (statExists(candidate)) return candidate;
   }
@@ -246,9 +251,10 @@ function supersededByMarkerLines(targetContent: string): string[] {
 
 function markerNamesSupersedingAdr(markerLines: string[], supersedingFile: string): boolean {
   const supersedingBase = basename(supersedingFile);
-  const escaped = supersedingBase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const re = new RegExp(`\\b${escaped}\\b`, "i");
-  return markerLines.some((line) => re.test(line) || line.toLowerCase().includes(supersedingBase.toLowerCase()));
+  const tokenRe = new RegExp(
+    `(^|[^A-Za-z0-9._-])${escapeRegExp(supersedingBase)}($|[^A-Za-z0-9._-])`,
+  );
+  return markerLines.some((line) => tokenRe.test(line));
 }
 
 function readFile(filePath: string): { content: string; ok: true } | { ok: false } {

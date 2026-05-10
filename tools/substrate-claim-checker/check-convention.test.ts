@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { checkFile, findSupersessionClaims } from "./check-convention.ts";
 
 function setupRepo(): { root: string; cleanup: () => void } {
@@ -47,6 +47,17 @@ describe("findSupersessionClaims", () => {
     expect(claims.at(0)?.target).toBe("old.md");
   });
 
+  test("reports hard-wrapped claims at the physical claim line", () => {
+    const claims = findSupersessionClaims([
+      "**Date:** 2026-05-10",
+      "**Status:** Accepted. Supersedes ADR",
+      "[v1](old.md) after review.",
+    ]);
+    expect(claims).toHaveLength(1);
+    expect(claims.at(0)?.line).toBe(2);
+    expect(claims.at(0)?.target).toBe("old.md");
+  });
+
   test("finds hard-wrapped backtick ADR supersession targets", () => {
     const claims = findSupersessionClaims([
       "**Status:** Accepted. Supersedes ADR",
@@ -63,6 +74,17 @@ describe("findSupersessionClaims", () => {
     ]);
     expect(claims).toHaveLength(1);
     expect(claims.at(0)?.target).toBe("old.md");
+  });
+
+  test("ignores non-repo-local supersession targets", () => {
+    const claims = findSupersessionClaims([
+      "Supersedes ADR `https://example.test/docs/DECISIONS/old.md`.",
+      "Supersedes ADR `file:///tmp/old.md`.",
+      "Supersedes ADR `/tmp/old.md`.",
+      "Supersedes ADR `C:\\zeta\\old.md`.",
+      "Supersedes ADR `\\\\server\\share\\old.md`.",
+    ]);
+    expect(claims).toEqual([]);
   });
 
   test("ignores supersession text inside fenced code", () => {
@@ -153,6 +175,26 @@ describe("checkFile", () => {
     }
   });
 
+  test("flags reciprocal marker that only contains the ADR basename as a substring", () => {
+    const fx = setupRepo();
+    try {
+      const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
+      const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
+      writeFileSync(
+        oldAdr,
+        "> **Superseded by** [`renew.md`](renew.md) and `new.md.bak`.\n",
+      );
+      writeFileSync(newAdr, "Supersedes ADR [v1](old.md).\n");
+
+      const result = checkFile(newAdr);
+      expect(result.ok).toBe(true);
+      expect(result.findings).toHaveLength(1);
+      expect(result.findings.at(0)?.reason).toContain("does not name new.md");
+    } finally {
+      fx.cleanup();
+    }
+  });
+
   test("skips unresolved targets for existence checker", () => {
     const fx = setupRepo();
     try {
@@ -162,6 +204,27 @@ describe("checkFile", () => {
       expect(result.ok).toBe(true);
       expect(result.findings).toEqual([]);
     } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("does not read absolute supersession targets outside the repo", () => {
+    const fx = setupRepo();
+    const outside = join(dirname(fx.root), "check-convention-outside-old.md");
+    try {
+      const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
+      writeFileSync(outside, "# outside ADR\n");
+      writeFileSync(newAdr, `Supersedes ADR \`${outside}\`.\n`);
+
+      const result = checkFile(newAdr);
+      expect(result.ok).toBe(true);
+      expect(result.findings).toEqual([]);
+    } finally {
+      try {
+        rmSync(outside, { force: true });
+      } catch {
+        // Best-effort temp cleanup.
+      }
       fx.cleanup();
     }
   });
