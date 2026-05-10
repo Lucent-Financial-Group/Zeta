@@ -247,7 +247,17 @@ function resolveTarget(
 }
 
 function supersededByMarkerLines(targetContent: string): string[] {
-  const lines = targetContent.split("\n").slice(0, 25);
+  const allLines = targetContent.split("\n");
+  const lines: string[] = [];
+  let inFence = false;
+  for (let i = 0; i < allLines.length && lines.length < 25; i++) {
+    const line = allLines[i] ?? "";
+    if (/^```/.test(line.trim())) {
+      inFence = !inFence;
+      continue;
+    }
+    if (!inFence) lines.push(line);
+  }
   const markerLines: string[] = [];
   const fence = { char: null as "`" | "~" | null, len: 0 };
 
