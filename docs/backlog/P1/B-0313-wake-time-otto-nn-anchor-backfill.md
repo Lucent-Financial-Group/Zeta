@@ -76,7 +76,7 @@ strengthens external credibility and teachability.
 - [x] Citations include URL/identifier for online sources and bibliographic
   locator for print sources (slices 1 + 2)
 - [x] Beacon-safety pass on all cited sources (slices 1 + 2: pass)
-- [ ] Coverage scanner (B-0311) confirms 7/7 resolved (follow-on scan needed)
+- [x] Coverage scanner (B-0311) confirms 7/7 resolved (post-slice-2 run 2026-05-10: 58 concepts scanned, Otto-NN 7/7 anchored via research docs; see focused check output in PR)
 
 **Slice-1 research landing:**
 `docs/research/otto-nn-principles-external-anchors-slice1-otto247-otto341-otto357.md`
