@@ -110,7 +110,26 @@ Every flag is retractible (git-tracked defense-surface, revision-block-preserved
 
 Does NOT force-push revised flags; does NOT delete defense-surface files; does NOT publish public-facing `docs/EDGE-CLAIMS.md` without Aaron sign-off (ship is a distribution-irreversibility event); does NOT stake a flag that depends on unretractible infrastructure.
 
+## Pre-start checklist (B-0055.1 — 2026-05-10)
+
+**Prior-art search:**
+- wake-time-substrate: defense-surface memory files verified present (see §Seed flags above)
+- skill-router: `media-catalog-schema.ts` idiom found at `tools/resonance/` — same pattern, extending to CTF flags
+- orthogonal-axes: no existing `edge-claims` catalog schema in `tools/research/`
+- Otto-364: no upstream TS library for CTF-flag catalogs; factory idiom is bespoke schema
+- PR #1701 prior-art-grep: searched `tools/` for "edge-claims" — none found
+- lost-files surface: `tools/hygiene/LOST-FILES-LOCATIONS.md` consulted; no orphaned edge-claims artifacts
+
+**Dependency-restructure:**
+- `depends_on:` — empty; no blocking items
+- `composes_with:` pointers verified reachable: all six listed above ✓
+
+**Slice claimed:** B-0055.1 — typed TS schema (`tools/research/edge-claims-catalog.ts`) with
+all 11 seed flags, CTF state-machine, 4 alignment-trajectory measurables, validation + summary CLI.
+Does NOT publish `docs/EDGE-CLAIMS.md` (gated on Aaron sign-off per §Retractibility-protecting constraints).
+
 ## Cross-reference
 
 - AceHack commit: `1767008`
+- B-0055.1 implementation: `tools/research/edge-claims-catalog.ts` (2026-05-10)
 - Composes with: math-safety memory, retractibly-rewrite memory, operational-resonance index, ALIGNMENT.md, mythology/occult/etymology/AI-ethics tracks (catalog established names; this track plants the factory's own contributions)
