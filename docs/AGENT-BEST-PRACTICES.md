@@ -56,6 +56,25 @@ BP-07").
   degrades ~30% after 8–12 dialogue turns even when context
   is intact. Naming the contract is the cheapest anchor.
   **stable**
+  **External anchors:** (1) Li, K. et al. (2024), *Measuring and
+  Controlling Instruction (In)Stability in Language Model Dialogs*,
+  Harvard VCG Lab, arXiv 2402.10962
+  (<https://arxiv.org/abs/2402.10962>) — foundational empirical study:
+  significant persona drift within 8 rounds of self-chat; root cause is
+  transformer attention decay over long exchanges; compact contract
+  declarations survive attention decay better than verbose persona
+  descriptions. (2) Choi, J. et al. (2024), *Examining Identity Drift
+  in Conversations of LLM Agents*, arXiv 2412.00804
+  (<https://arxiv.org/abs/2412.00804>) — nine LLMs examined; larger
+  models drift more; "assigning a persona may not help to maintain
+  identity" without a compact anchor. (3) Zhao, M. et al. (2024),
+  *Consistently Simulating Human Personas with Multi-Turn Reinforcement
+  Learning*, arXiv 2511.00222
+  (<https://arxiv.org/html/2511.00222v1>) — RL with consistency reward
+  signals reduces drift by >55%; validates that explicit contract
+  signals are the effective stabilisation mechanism. Full anchor
+  dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md`.
 
 - **BP-05** *Prefer declarative behaviour over embedded
   chain-of-thought.*
@@ -92,12 +111,49 @@ BP-07").
   frontmatter and notebook, frontmatter wins.*
   **Rationale:** mutable state must never override the
   peer-reviewed contract. **stable**
+  **External anchors:** (1) Meyer, B. (1992), *Applying "Design by
+  Contract"*, IEEE Computer 25(10):40–51
+  (<https://www.kth.se/social/files/59526bfb56be5b4f17000807/meyer-92-contracts.pdf>)
+  — foundational principle: the class invariant holds before and after
+  every operation regardless of intermediate state; runtime state that
+  conflicts with the declared contract is invalid state, not a contract
+  override. (2) Fowler, M. (2012), *ImmutableServer* bliki
+  (<https://martinfowler.com/bliki/ImmutableServer.html>) — the
+  template (declared configuration) is the canonical representation;
+  drift between template and running state is a defect; "immutable
+  infrastructure makes drift structurally impossible." (3) Schema-Driven
+  Development community consensus (2024): the schema is the single
+  source of truth; runtime state *reflects* the schema, it does not
+  override it — direct restatement of Meyer's invariant principle in
+  contemporary DevOps. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md`.
 
 - **BP-09** *All state is git-diffable ASCII. No binary blobs,
   no opaque artefacts, no embedded base64.*
   **Rationale:** reviewability is the only mitigation for a
   writable prompt. If a human can't diff it, a reviewer can't
   protect it. **stable**
+  **External anchors:** (1) Hunt, A. & Thomas, D. (1999/2019),
+  *The Pragmatic Programmer*, Topic 16 "The Power of Plain Text"
+  (<https://www.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/f_0035.xhtml>)
+  — canonical principle: "plain text won't become obsolete … it
+  helps leverage your work and simplifies debugging and testing";
+  version control audit trails depend on diff-capable plain text
+  and cannot provide equivalent guarantees for binary formats.
+  (2) Linux kernel binary blob policy (2002–present) and Apache
+  security-discuss
+  (<https://www.mail-archive.com/security-discuss@community.apache.org/msg00390.html>)
+  — decades-long operational proof: "third parties cannot review
+  the code for vulnerabilities or backdoors" when state is a binary
+  blob; the review loop is excluded by the format choice itself.
+  (3) OWASP Software Supply Chain Security Cheat Sheet (2024–2025)
+  (<https://cheatsheetseries.owasp.org/cheatsheets/Software_Supply_Chain_Security_Cheat_Sheet.html>)
+  — OWASP Top 10 2025, A03 — binary components without auditable
+  source are the primary supply-chain attack surface; opaque
+  artefacts (including base64-encoded blobs inside text files)
+  defeat composition analysis and integrity verification. Full
+  anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md`.
 
 ## Security & injection defence
 
