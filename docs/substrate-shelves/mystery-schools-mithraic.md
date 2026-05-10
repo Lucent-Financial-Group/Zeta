@@ -145,6 +145,7 @@ estimates exceed 1,000 individual monuments and 420 mithraea.
 
 **Mithraeum architecture.**
 Mithraea are the most architecturally consistent of any ancient mystery cult. Standard features:
+
 - A rectangular chamber with two elevated side benches (*podia*) for reclining during communal
   meals.
 - A central aisle between the benches leading to an altar and the tauroctony image at the far end.
@@ -209,6 +210,7 @@ revised since 1971. His iconographic corpus (TMMM) remains indispensable regardl
 framework.
 
 **Maarten J. Vermaseren** — *Corpus Inscriptionum et Monumentorum Religionis Mithriacae* (2 vols.,
+
 1956–60). The definitive monument and inscription corpus. Standard abbreviation: CIMRM + number.
 Any serious Mithraic research begins with CIMRM. Vermaseren also wrote *Mithras, the Secret God*
 (1963), a popular synthesis.
@@ -241,6 +243,7 @@ leading voice for an "astral" interpretation rooted in Roman, not Iranian, intel
 His 2006 monograph is the best current one-volume synthesis.
 
 **Manfred Clauss** — *The Roman Cult of Mithras: The God and His Mysteries* (2000; German original
+
 1990). Social-history approach: who were the initiates, where were the mithraea, what was their
 relationship to military and imperial structures? Clauss's database work on grade distributions
 and occupational profiles is empirically valuable.
