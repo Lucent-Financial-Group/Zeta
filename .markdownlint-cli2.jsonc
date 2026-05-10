@@ -93,30 +93,26 @@
     // `docs/research/2026-*-amara-*.md` which only covered Amara
     // ferries; PR #19 (gemini-deep-think + action-mode verbatim
     // Aaron-quote files) exposed the Amara-only scoping as too
-    // narrow.
+    // narrow; a subsequent broadening to `docs/research/2026-*-*.md`
+    // then over-reached by silently skipping ALL date-prefixed
+    // research docs (Codex P1 finding on PR #663, tracked as B-0078).
     //
-    // Repo convention: files in `docs/research/` with the
-    // `2026-MM-DD-<source-or-topic>-...md` date-PREFIX shape are
-    // verbatim courier-protocol absorbs; they carry "## Verbatim
-    // preservation" sections + GOVERNANCE §33 archive headers
-    // (Scope / Attribution / Operational status: research-grade /
-    // Non-fusion disclaimer). Author-controlled research docs use
-    // non-date-prefixed names (e.g. `actor-model-*.md`,
-    // `agent-cadence-log.md`) or date-SUFFIXED names (e.g.
-    // `aaron-knative-...-2026-04-21.md`) — date-prefix vs
-    // date-suffix is the discriminator.
+    // Narrowed pattern (B-0078 fix): require the word "verbatim"
+    // somewhere in the filename as an explicit opt-in signal that
+    // the content is a verbatim courier-protocol absorb. This means:
+    // - `2026-*verbatim*.md` files are explicitly marked verbatim and
+    //   remain unlinted (Otto-227 signal-in-signal-out rationale).
+    // - All other date-prefixed research docs are now linted; an
+    //   author writing a new verbatim absorb must include "verbatim"
+    //   in the filename to claim the carve-out.
     //
-    // Same Otto-227 signal-in-signal-out rationale as the aurora
-    // carve-out: the body is verbatim ferry output and
-    // reformatting MD027 / MD032 / MD029 would alter
-    // courier-protocol content. Pattern is broader than the
-    // amara-only original — covers any ferry source via the
-    // date-prefix convention. Trade-off: a non-ferry
-    // author-controlled doc that accidentally lands with
-    // date-prefix shape would skip lint; the cost of that miss is
-    // small (research docs are markdown only) compared to the
-    // cost of churning verbatim ferry content.
-    "docs/research/2026-*-*.md"
+    // Audit result (B-0078, 2026-05-10): all 219 existing date-prefixed
+    // research files pass markdownlint cleanly under the project's
+    // disabled-rules profile; no renames required to avoid lint
+    // failures. Authors of future verbatim absorbs should include
+    // "-verbatim" in the filename (e.g.
+    // `2026-05-10-amara-topic-verbatim-aaron.md`).
+    "docs/research/2026-*verbatim*.md"
   ],
   "noBanner": true,
   "noProgress": true,
