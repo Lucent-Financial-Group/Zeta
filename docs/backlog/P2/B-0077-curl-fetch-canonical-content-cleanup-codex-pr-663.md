@@ -1,7 +1,7 @@
 ---
 id: B-0077
 priority: P2
-status: done
+status: closed
 title: tools/setup/common/curl-fetch.sh canonical-content cleanup — Codex P0/P1 on PR #663
 effort: S
 ask: address Codex P0 (docstring with `curl ... | sh` examples) + P1 (commentary about install paths is inaccurate) on AceHack first, then forward-sync to LFG

@@ -1,7 +1,7 @@
 ---
 id: B-0348
 priority: P1
-status: done
+status: closed
 title: "Classify all CLAUDE.md bullets into extraction tiers"
 created: 2026-05-09
 last_updated: 2026-05-09

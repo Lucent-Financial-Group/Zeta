@@ -30,11 +30,11 @@ are closed (status: closed in frontmatter)._
 ## P1 — within 2-3 rounds
 
 - [ ] **[B-0003](backlog/P1/B-0003-alignment-md-rewrite.md)** ALIGNMENT.md rewrite — incorporate Otto-281..287 + bidirectional alignment + factory-as-superfluid + Noether direction; spread via rigor not manipulation (matrix-pill not poison-pill)
-- [ ] **[B-0006](backlog/P1/B-0006-memory-md-compression-pass-prune-distill-entries-to-one-line-cap-200-lines.md)** MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
+- [x] **[B-0006](backlog/P1/B-0006-memory-md-compression-pass-prune-distill-entries-to-one-line-cap-200-lines.md)** MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
 - [ ] **[B-0058](backlog/P1/B-0058-ai-ethics-and-safety-research-track.md)** AI ethics + safety research track — filter-gate for resonance adoptions + alignment-clause consistency audit
 - [ ] **[B-0060](backlog/P1/B-0060-human-lineage-external-anchor-backfill-all-substrate-beacon-safe.md)** Human-lineage / external-anchor backfill across all factory substrate — Beacon-safe + human-anchored prior-art citations for every load-bearing concept
 - [x] **[B-0061](backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)** Finish docs/BACKLOG.md monolith → per-row migration — "don't miss anything, no residue for next-Otto" (Aaron 2026-04-28)
-- [ ] **[B-0063](backlog/P1/B-0063-streamed-installer-download-to-temp-checksum-pattern-codex-p0-pr-75.md)** Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
+- [x] **[B-0063](backlog/P1/B-0063-streamed-installer-download-to-temp-checksum-pattern-codex-p0-pr-75.md)** Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
 - [ ] **[B-0064](backlog/P1/B-0064-github-playwright-integration-agent-changes-ui-features-aaron-2026-04-28.md)** GitHub × Playwright integration — agent can change things in the GitHub UI + watch UI to spot new features (Aaron 2026-04-28)
 - [ ] **[B-0065](backlog/P1/B-0065-peer-call-kiro-and-self-cold-boot-self-test-aaron-2026-04-28.md)** Peer-call expansion — add kiro.ts + claude.ts (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)
 - [ ] **[B-0066](backlog/P1/B-0066-memory-md-marker-vs-index-harness-verify-q1-automemory-aaron-2026-04-28.md)** MEMORY.md marker-vs-index — verify harness contract + Q1 AutoDream/AutoMemory compatibility, then migrate (Aaron 2026-04-28)
@@ -47,7 +47,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0126.1](backlog/P1/B-0126.1-ai-attribution-footer-ts-tools.md)** Layer 4: AI attribution footer for TS comment-posting tools
 - [x] **[B-0126.2](backlog/P1/B-0126.2-ai-attribution-footer-gh-actions.md)** Layer 4: AI attribution footer for GitHub Actions workflows
 - [x] **[B-0126.3](backlog/P1/B-0126.3-document-layers-1-3-meta-learning.md)** Layers 1-3: document meta-learning pattern adapted for Zeta
-- [ ] **[B-0126.4](backlog/P1/B-0126.4-pilot-validation-meta-learning.md)** Pilot validation: meta-learning pattern on 2-3 PR cycles
+- [x] **[B-0126.4](backlog/P1/B-0126.4-pilot-validation-meta-learning.md)** Pilot validation: meta-learning pattern on 2-3 PR cycles
 - [ ] **[B-0139](backlog/P1/B-0139-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md)** Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate
 - [x] **[B-0140](backlog/P1/B-0140-bash-to-ts-migration-completion-debt-prevention-aaron-2026-05-01.md)** Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
 - [x] **[B-0144](backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md)** Doc/code two-lane parallel split — rung-2 unlock for factory parallelism
@@ -64,7 +64,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0164.2](backlog/P1/B-0164.2-multi-loop-tick-tooling-attribution.md)** Multi-loop tick-history tooling attribution (dual-loop AC #5)
 - [ ] **[B-0164.3](backlog/P1/B-0164.3-cron-tick-coordination-dual-loop.md)** Cron-tick coordination for dual-loop operation (dual-loop AC #6)
 - [ ] **[B-0168](backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md)** Incorporate Claude.ai brat-voice enterprise translation framework — 5-layer (corrected) property-preserving register architecture for Zeta (Personal/Mirror/Beacon-safe/Professional/Regulated)
-- [ ] **[B-0169](backlog/P1/B-0169-decision-archaeology-skill-aaron-2026-05-02.md)** Decision-archaeology skill — universal "why is it like this?" investigation surface for new contributors
+- [x] **[B-0169](backlog/P1/B-0169-decision-archaeology-skill-aaron-2026-05-02.md)** Decision-archaeology skill — universal "why is it like this?" investigation surface for new contributors
 - [ ] **[B-0170](backlog/P1/B-0170-substrate-claim-checker-ts-tool-aaron-2026-05-03.md)** Substrate-claim-checker TS tool — mechanize the verify-then-claim discipline (Otto 2026-05-03; drift instances (the verify-then-claim memo's body table is canonical) catalogued as empirical eval-set)
 - [ ] **[B-0171](backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md)** OpenSpec catch-up — restore OpenSpec capabilities as canonical source-of-truth (Aaron 2026-05-03 architectural-debt naming; "if we deleted everything other than it [OpenSpec]")
 - [ ] **[B-0173](backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md)** Hook authoring for skill-creation contracts — pre/post-condition enforcement at skill-creation + commit + PR-creation time (Aaron 2026-05-03 rule 3b from skill-design memo)
@@ -114,7 +114,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0263](backlog/P1/B-0263-refresh-worldview-backlog-delta-claims-branch-state-2026-05-08.md)** refresh-worldview — backlog delta + claim inventory + branch state
 - [x] **[B-0264](backlog/P1/B-0264-refresh-worldview-tick-integration-canonical-pre-decide-2026-05-08.md)** refresh-worldview — integrate into tick scripts as canonical pre-decide
 - [x] **[B-0265](backlog/P1/B-0265-ruleset-split-ci-gate-ruleset-2026-05-08.md)** GitHub ruleset split — CI gate ruleset (required status checks)
-- [ ] **[B-0266](backlog/P1/B-0266-ruleset-split-review-policy-ruleset-2026-05-08.md)** GitHub ruleset split — review policy ruleset (conversation resolution + reviews)
+- [x] **[B-0266](backlog/P1/B-0266-ruleset-split-review-policy-ruleset-2026-05-08.md)** GitHub ruleset split — review policy ruleset (conversation resolution + reviews)
 - [x] **[B-0267](backlog/P1/B-0267-ruleset-split-safety-ruleset-2026-05-08.md)** GitHub ruleset split — safety ruleset (deletion + force-push + linear history)
 - [x] **[B-0268](backlog/P1/B-0268-canary-test-rules-autoload-verification-2026-05-08.md)** Verify .claude/rules/ auto-load — run canary test
 - [x] **[B-0269](backlog/P1/B-0269-extract-carved-sentences-from-claude-md-to-rules-2026-05-08.md)** Extract carved sentences from CLAUDE.md to .claude/rules/
@@ -129,9 +129,9 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0287](backlog/P1/B-0287-ace-dlc-package-format-spec-2026-05-08.md)** Ace DLC — package format specification
 - [ ] **[B-0288](backlog/P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** Ace DLC — package manager CLI (install/verify/list)
 - [ ] **[B-0290](backlog/P1/B-0290-green-lantern-consent-gate-firmware-2026-05-08.md)** Green Lantern ring — consent gate firmware design
-- [ ] **[B-0291](backlog/P1/B-0291-concordance-ai-corpus-pipeline-2026-05-08.md)** Concordance AI — corpus ingestion + tokenization pipeline
+- [x] **[B-0291](backlog/P1/B-0291-concordance-ai-corpus-pipeline-2026-05-08.md)** Concordance AI — corpus ingestion + tokenization pipeline
 - [ ] **[B-0292](backlog/P1/B-0292-concordance-ai-local-gpu-inference-2026-05-08.md)** Concordance AI — local GPU inference for structure recognition
-- [ ] **[B-0293](backlog/P1/B-0293-coherence-ai-consent-architecture-2026-05-08.md)** Coherence AI — consent-first architecture design
+- [x] **[B-0293](backlog/P1/B-0293-coherence-ai-consent-architecture-2026-05-08.md)** Coherence AI — consent-first architecture design
 - [ ] **[B-0294](backlog/P1/B-0294-coherence-ai-ksk-override-implementation-2026-05-08.md)** Coherence AI — KSK override implementation
 - [ ] **[B-0295](backlog/P1/B-0295-pages-repo-metadata-discovery-surface-2026-05-08.md)** Pages discoverability - repository metadata and discovery surface
 - [ ] **[B-0296](backlog/P1/B-0296-pages-sitemap-submission-discovery-metrics-2026-05-08.md)** Pages discoverability - sitemap submission and discovery metrics
@@ -144,7 +144,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0303](backlog/P1/B-0303-pages-contributor-on-ramp-information-architecture-2026-05-08.md)** Pages content sources - contributor on-ramp information architecture
 - [ ] **[B-0304](backlog/P1/B-0304-pages-selected-research-publication-queue-redaction-gate-2026-05-08.md)** Pages content sources - selected research queue and redaction gate
 - [x] **[B-0310](backlog/P1/B-0310-concept-registry-extraction-tool.md)** Concept-registry extraction tool — canonical inventory of load-bearing concepts
-- [ ] **[B-0311](backlog/P1/B-0311-external-anchor-coverage-scanner.md)** External-anchor coverage scanner — per-concept anchor presence/absence audit
+- [x] **[B-0311](backlog/P1/B-0311-external-anchor-coverage-scanner.md)** External-anchor coverage scanner — per-concept anchor presence/absence audit
 - [ ] **[B-0312](backlog/P1/B-0312-alignment-clause-anchor-backfill.md)** HC/SD/DIR alignment-clause external-anchor backfill
 - [ ] **[B-0313](backlog/P1/B-0313-wake-time-otto-nn-anchor-backfill.md)** Wake-time Otto-NN principle external-anchor backfill
 - [ ] **[B-0314](backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md)** BP-NN rule external-anchor backfill
@@ -152,7 +152,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0317](backlog/P1/B-0317-playwright-github-session-auth-helper.md)** Playwright GitHub session/auth helper — cookie-based login for agent UI access
 - [x] **[B-0318](backlog/P1/B-0318-playwright-github-read-only-snapshot-tool.md)** Playwright GitHub read-only page snapshot tool — navigate + snapshot + extract
 - [x] **[B-0319](backlog/P1/B-0319-playwright-github-settings-reconciliation.md)** GitHub settings reconciliation — UI snapshot vs expected.json drift detection
-- [ ] **[B-0320](backlog/P1/B-0320-playwright-github-authorized-mutation-surface-list.md)** Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate
+- [x] **[B-0320](backlog/P1/B-0320-playwright-github-authorized-mutation-surface-list.md)** Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate
 - [ ] **[B-0321](backlog/P1/B-0321-playwright-github-guarded-mutation-helpers.md)** Guarded UI mutation helpers — click/fill/save with before-after snapshots and authorization check
 - [ ] **[B-0322](backlog/P1/B-0322-playwright-github-mutation-reversibility-log.md)** Mutation reversibility drain log — inverse-action record for every UI mutation
 - [ ] **[B-0323](backlog/P1/B-0323-playwright-github-feature-discovery-diff-cadence.md)** GitHub feature-discovery diff cadence — weekly UI snapshot comparison to spot new features
@@ -163,24 +163,24 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0328](backlog/P1/B-0328-peer-call-readme-kiro-claude-entries.md)** Update peer-call/README.md with kiro.ts + claude.ts entries
 - [ ] **[B-0329](backlog/P1/B-0329-claude-md-as-process-not-doctrine.md)** Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing
 - [x] **[B-0330](backlog/P1/B-0330-memory-format-standardization-step2-b0190.md)** Memory-format standardization — define frontmatter shape, filename conventions, section headers
-- [ ] **[B-0331](backlog/P1/B-0331-memory-ontology-classification-audit-step3-b0190.md)** Memory ontology/classification audit — reclassify mistyped feedback/project/user/reference files
-- [ ] **[B-0332](backlog/P1/B-0332-memory-load-bearing-vs-decorative-classifier-step7-b0190.md)** Memory load-bearing-vs-decorative classifier — identify which memory files are cited from bootstrap surfaces
-- [ ] **[B-0333](backlog/P1/B-0333-memory-retire-supersession-discipline-step5-b0190.md)** Memory-retire/supersession discipline — define what happens when a memory file is superseded
-- [ ] **[B-0334](backlog/P1/B-0334-memory-cross-reference-integrity-enforcement-step6-b0190.md)** Memory cross-reference integrity enforcement — bidirectional composes-with audit
-- [ ] **[B-0335](backlog/P1/B-0335-memory-schema-validation-tooling-step11-b0190.md)** Memory schema validation tooling — TS linter enforcing format standard mechanically
-- [ ] **[B-0336](backlog/P1/B-0336-b0006-acceptance-recalibration-b0190.md)** B-0006 acceptance recalibration — adjust compression targets given load-bearing classification
-- [ ] **[B-0339](backlog/P1/B-0339-keep-vs-cut-criteria-documentation-b0193.md)** Keep-vs-cut criteria documentation — define the 4 category taxonomy before bootstrap-razor runs
-- [ ] **[B-0340](backlog/P1/B-0340-spec-completeness-audit-inventory-b0193.md)** Spec completeness audit — run inventory.ts, document coverage gaps
-- [ ] **[B-0341](backlog/P1/B-0341-minimal-bootstrap-seed-manifest-b0193.md)** Minimal bootstrap seed manifest — exact file set for the recreation test repo
+- [x] **[B-0331](backlog/P1/B-0331-memory-ontology-classification-audit-step3-b0190.md)** Memory ontology/classification audit — reclassify mistyped feedback/project/user/reference files
+- [x] **[B-0332](backlog/P1/B-0332-memory-load-bearing-vs-decorative-classifier-step7-b0190.md)** Memory load-bearing-vs-decorative classifier — identify which memory files are cited from bootstrap surfaces
+- [x] **[B-0333](backlog/P1/B-0333-memory-retire-supersession-discipline-step5-b0190.md)** Memory-retire/supersession discipline — define what happens when a memory file is superseded
+- [x] **[B-0334](backlog/P1/B-0334-memory-cross-reference-integrity-enforcement-step6-b0190.md)** Memory cross-reference integrity enforcement — bidirectional composes-with audit
+- [x] **[B-0335](backlog/P1/B-0335-memory-schema-validation-tooling-step11-b0190.md)** Memory schema validation tooling — TS linter enforcing format standard mechanically
+- [x] **[B-0336](backlog/P1/B-0336-b0006-acceptance-recalibration-b0190.md)** B-0006 acceptance recalibration — adjust compression targets given load-bearing classification
+- [x] **[B-0339](backlog/P1/B-0339-keep-vs-cut-criteria-documentation-b0193.md)** Keep-vs-cut criteria documentation — define the 4 category taxonomy before bootstrap-razor runs
+- [x] **[B-0340](backlog/P1/B-0340-spec-completeness-audit-inventory-b0193.md)** Spec completeness audit — run inventory.ts, document coverage gaps
+- [x] **[B-0341](backlog/P1/B-0341-minimal-bootstrap-seed-manifest-b0193.md)** Minimal bootstrap seed manifest — exact file set for the recreation test repo
 - [ ] **[B-0342](backlog/P1/B-0342-recreation-success-metrics-rubric-b0193.md)** Recreation success metrics — evaluation rubric for the 23-hour test
 - [ ] **[B-0343](backlog/P1/B-0343-test-repo-seeding-script-ts-b0193.md)** Test-repo seeding script (TS) — create + seed the recreation experiment repo
 - [ ] **[B-0344](backlog/P1/B-0344-run-23-hour-recreation-experiment-b0193.md)** Run the 23-hour recreation experiment — fresh-context Otto against specs-only repo
 - [ ] **[B-0345](backlog/P1/B-0345-document-recreation-findings-b0193.md)** Document recreation findings — research-grade preservation of experiment results
 - [ ] **[B-0346](backlog/P1/B-0346-backport-spec-gaps-to-openspec-b0193.md)** Back-port spec gaps to OpenSpec — close gaps the recreation experiment reveals
 - [ ] **[B-0347](backlog/P1/B-0347-carved-sentence-skill-descriptions-routing-budget.md)** Carved-sentence skill descriptions — fit 200+ skills into routing budget
-- [ ] **[B-0348](backlog/P1/B-0348-classify-claude-md-bullets-for-extraction.md)** Classify all CLAUDE.md bullets into extraction tiers
-- [ ] **[B-0349](backlog/P1/B-0349-extract-operational-discipline-bullets-to-rules.md)** Extract operational-discipline bullets to .claude/rules/
-- [ ] **[B-0350](backlog/P1/B-0350-extract-autonomy-identity-bullets-to-rules.md)** Extract autonomy/identity bullets to .claude/rules/
+- [x] **[B-0348](backlog/P1/B-0348-classify-claude-md-bullets-for-extraction.md)** Classify all CLAUDE.md bullets into extraction tiers
+- [x] **[B-0349](backlog/P1/B-0349-extract-operational-discipline-bullets-to-rules.md)** Extract operational-discipline bullets to .claude/rules/
+- [x] **[B-0350](backlog/P1/B-0350-extract-autonomy-identity-bullets-to-rules.md)** Extract autonomy/identity bullets to .claude/rules/
 - [x] **[B-0351](backlog/P1/B-0351-extract-infrastructure-safety-bullets-to-rules.md)** Extract infrastructure/safety bullets to .claude/rules/
 - [x] **[B-0352](backlog/P1/B-0352-extract-meta-governance-bullets-to-rules.md)** Extract meta/governance bullets to .claude/rules/
 - [x] **[B-0353](backlog/P1/B-0353-write-bootstrap-process-claude-md.md)** Write bootstrap-process CLAUDE.md (<50 lines)
@@ -189,7 +189,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)
 - [x] **[B-0357](backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md)** Replace tautology Z3 agenda/trajectory proofs with non-trivial verification
 - [x] **[B-0358](backlog/P1/B-0358-bool-as-degenerate-distribution-confidence-typed-apis.md)** Bool as degenerate distribution — replace binary API returns with confidence scores
-- [ ] **[B-0361](backlog/P1/B-0361-anchor-to-human-lineage-step-in-formal-and-concept-workflows.md)** Anchor-to-human-lineage step in formal verification and concept workflows
+- [x] **[B-0361](backlog/P1/B-0361-anchor-to-human-lineage-step-in-formal-and-concept-workflows.md)** Anchor-to-human-lineage step in formal verification and concept workflows
 - [x] **[B-0362](backlog/P1/B-0362-concept-search-index-for-instant-term-lookup.md)** Concept search index — pre-built term→file mapping for instant lookups
 - [ ] **[B-0364](backlog/P1/B-0364-policy-relocation-semantic-preservation-fscheck-property.md)** Policy relocation semantic preservation — FsCheck property for mobile DBSP query boundaries
 - [x] **[B-0365](backlog/P1/B-0365-nirvanic-fusion-ship-research-bundle-spaceship-math-rice-class4-shadow-taxonomy.md)** Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy
@@ -200,18 +200,18 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0365.5](backlog/P1/B-0365.5-infernet-bp-ep-factor-graph-multi-agent-review-architecture.md)** Infer.NET BP/EP factor graph architecture: multi-agent review as belief propagation
 - [x] **[B-0365.6](backlog/P1/B-0365.6-nirvanic-fusion-ship-publishable-claim-synthesis.md)** Nirvanic Fusion Ship publishable claim synthesis: paper outline + abstract
 - [ ] **[B-0366](backlog/P1/B-0366-fpga-toffoli-zset-reversible-heat-measurement.md)** FPGA Toffoli-gate Z-set test — measure reversible vs irreversible heat dissipation
-- [ ] **[B-0366.1](backlog/P1/B-0366.1-toffoli-gate-fsharp-type-model-zset-encoding.md)** F# Toffoli gate type model — Z-set assert/retract encoding with reversibility properties
+- [x] **[B-0366.1](backlog/P1/B-0366.1-toffoli-gate-fsharp-type-model-zset-encoding.md)** F# Toffoli gate type model — Z-set assert/retract encoding with reversibility properties
 - [ ] **[B-0366.2](backlog/P1/B-0366.2-toffoli-circuit-zset-join-formal-model.md)** Toffoli circuit for Z-set join — formal gate-network model
 - [ ] **[B-0366.3](backlog/P1/B-0366.3-fpga-vhdl-toffoli-synthesis-design.md)** FPGA synthesis design — VHDL/Verilog Toffoli gate network for Z-set join
 - [ ] **[B-0366.4](backlog/P1/B-0366.4-fpga-power-measurement-experimental-protocol.md)** FPGA empirical power measurement — experimental protocol for Landauer validation
 - [ ] **[B-0367](backlog/P1/B-0367-first-class-uncertainty-semiring-parameterized-weight.md)** First-class uncertainty — semiring-parameterized weight type for DBSP
 - [ ] **[B-0368](backlog/P1/B-0368-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md)** Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)
 - [x] **[B-0369](backlog/P1/B-0369-durable-computation-survey-8-systems-2026-05-08.md)** Durable computation survey — compare 8 systems against Zeta's gap
-- [ ] **[B-0370](backlog/P1/B-0370-durable-computation-checkpoint-interface-extension-2026-05-08.md)** Durable computation — extend Checkpoint.fs with StableStorage mode
+- [x] **[B-0370](backlog/P1/B-0370-durable-computation-checkpoint-interface-extension-2026-05-08.md)** Durable computation — extend Checkpoint.fs with StableStorage mode
 - [ ] **[B-0371](backlog/P1/B-0371-pages-seo-metadata-jsonld-social-preview-2026-05-08.md)** Pages discoverability - SEO metadata, JSON-LD, and social previews
 - [ ] **[B-0372](backlog/P1/B-0372-pages-sitemap-robots-ai-crawler-policy-2026-05-08.md)** Pages discoverability - sitemap, robots, and AI crawler policy
 - [x] **[B-0373](backlog/P1/B-0373-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
-- [ ] **[B-0396](backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md)** Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations
+- [x] **[B-0396](backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md)** Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations
 
 ## P2 — research-grade
 
@@ -292,16 +292,16 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0059](backlog/P2/B-0059-etymology-epistemology-research-track.md)** Etymology + epistemology research track — linguistic-substrate of kernel-vocabulary + three-filter discipline calibration
 - [ ] **[B-0068](backlog/P2/B-0068-local-ai-trajectory-forge-ollama-direct-integration-aaron-2026-04-28.md)** Local AI trajectory — Forge CLI/harness + Ollama + direct local-model integration (umbrella)
 - [ ] **[B-0068.1](backlog/P2/B-0068.1-forge-cli-ollama-research-slice-aaron-2026-05-10.md)** Forge CLI + Ollama harness integration research slice (B-0068 child 1)
-- [ ] **[B-0069](backlog/P2/B-0069-heredoc-patterns-encode-into-commit-message-shape-skill-aaron-2026-04-28.md)** Encode HEREDOC patterns into commit-message-shape skill (Aaron 2026-04-28)
+- [x] **[B-0069](backlog/P2/B-0069-heredoc-patterns-encode-into-commit-message-shape-skill-aaron-2026-04-28.md)** Encode HEREDOC patterns into commit-message-shape skill (Aaron 2026-04-28)
 - [x] **[B-0070](backlog/P2/B-0070-orphan-role-ref-detector-lint-aaron-2026-04-28.md)** Orphan role-ref detector lint — catch ferry-N without named source on code surfaces (Aaron 2026-04-28)
 - [ ] **[B-0071](backlog/P2/B-0071-rename-otto-275-forever-out-of-live-lock-class-codex-pr-17-2026-04-28.md)** Rename otto_275_forever memory out of "live-lock 9th pattern" subclass + reclassify per Otto-352 taxonomy split
-- [ ] **[B-0072](backlog/P2/B-0072-memory-md-index-entry-length-normalization-copilot-pr-72-2026-04-28.md)** Normalize MEMORY.md index entry lengths to one-line-per-memory per memory/README.md guidance
+- [x] **[B-0072](backlog/P2/B-0072-memory-md-index-entry-length-normalization-copilot-pr-72-2026-04-28.md)** Normalize MEMORY.md index entry lengths to one-line-per-memory per memory/README.md guidance
 - [ ] **[B-0074](backlog/P2/B-0074-pr-72-punch-list-stale-item-sweep-spec-consistency-2026-04-28.md)** PR #72 punch-list / spec-consistency drift sweep — 8 codex threads on stale items + cross-doc alignment
 - [x] **[B-0076](backlog/P2/B-0076-disowned-runtime-sweep-python-typescript-2026-04-28.md)** Disowned-runtime sweep — Python + TypeScript surface (same pattern PR #662 fixed for Java)
-- [ ] **[B-0077](backlog/P2/B-0077-curl-fetch-canonical-content-cleanup-codex-pr-663.md)** tools/setup/common/curl-fetch.sh canonical-content cleanup — Codex P0/P1 on PR #663
+- [x] **[B-0077](backlog/P2/B-0077-curl-fetch-canonical-content-cleanup-codex-pr-663.md)** tools/setup/common/curl-fetch.sh canonical-content cleanup — Codex P0/P1 on PR #663
 - [x] **[B-0078](backlog/P2/B-0078-markdownlint-research-carve-out-narrowing-codex-pr-663.md)** Narrow markdownlint carve-out from `docs/research/2026-*-*.md` to verbatim-only pattern — Codex P1 on PR #663
 - [x] **[B-0079](backlog/P2/B-0079-audit-agencysignature-script-hardening-codex-pr-663.md)** tools/hygiene/audit-agencysignature-main-tip.ts hardening — 5 Codex findings on PR #663 (sh→ts ported)
-- [ ] **[B-0081](backlog/P2/B-0081-path-gate-kotlin-scala-codex-pr-662.md)** codeql.yml path-gate should match `*.kt` + `*.scala` not just `*.java` — Codex P2 on PR #662
+- [x] **[B-0081](backlog/P2/B-0081-path-gate-kotlin-scala-codex-pr-662.md)** codeql.yml path-gate should match `*.kt` + `*.scala` not just `*.java` — Codex P2 on PR #662
 - [ ] **[B-0082](backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md)** docs/GLOSSARY.md provenance entries use persona-name attribution; convert to role-refs
 - [x] **[B-0086](backlog/P2/B-0086-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md)** Port tools/hygiene Python scripts to TypeScript/Bun (factory-default; AI/ML carve-out applies)
 - [ ] **[B-0088](backlog/P2/B-0088-paired-edit-lint-advisory-not-enforcement-promote-to-required-check-otto-2026-04-28.md)** memory/MEMORY.md paired-edit lint is advisory only (not in required-status-checks); promote or remove the discoverability claim

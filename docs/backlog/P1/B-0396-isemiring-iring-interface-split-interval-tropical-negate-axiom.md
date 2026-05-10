@@ -1,7 +1,7 @@
 ---
 id: B-0396
 priority: P1
-status: done
+status: closed
 title: "Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations"
 created: 2026-05-10
 last_updated: 2026-05-10
