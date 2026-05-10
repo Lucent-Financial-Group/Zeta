@@ -136,7 +136,7 @@ the vocabulary choices in operational rules.
 
 **3. Instruction format shapes LLM agent behavior**
 
-- Zhao, Y. et al. (2024). *Agentic Artificial Intelligence:
+- Zhao, Y. et al. (2026). *Agentic Artificial Intelligence:
   Architectures, Taxonomies, and Evaluation of Large Language Model
   Agents.* arXiv 2601.12560.
   <https://arxiv.org/html/2601.12560v1>
@@ -245,7 +245,7 @@ framing produces more robust behavior than directive-based control.
 | Principle | Status | Primary anchor |
 | --- | --- | --- |
 | Otto-247 | anchored (slice 1) | Dodge et al. 2024 (LLM cutoffs) + Meta Eng 2026 |
-| Otto-341 | anchored (slice 1) | McLuhan 1964 + Sapir-Whorf + Zhao et al. 2024 |
+| Otto-341 | anchored (slice 1) | McLuhan 1964 + Sapir-Whorf + Zhao et al. 2026 |
 | Otto-357 | anchored (slice 1) | Ryan & Deci 2000 + Jensen & Meckling 1976 + Gabriel 2020 |
 | Otto-275 | anchor-pending | deferred to slice 2 |
 | Otto-279 | anchor-pending | deferred to slice 2 |
