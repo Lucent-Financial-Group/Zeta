@@ -210,15 +210,28 @@ function findSupersessionClaims(lines: string[]): SupersessionClaim[] {
   return claims;
 }
 
+function isRepoRelativeTarget(target: string): boolean {
+  if (target.startsWith("http://") || target.startsWith("https://")) return false;
+  if (isAbsolute(target)) return false;
+  return true;
+}
+
+function isInsideRepo(absPath: string, repoRoot: string): boolean {
+  const rel = relative(repoRoot, absPath);
+  return rel !== "" && !rel.startsWith("..") && !isAbsolute(rel);
+}
+
 function resolveTarget(
   target: string,
   fileDir: string,
   fileParentDir: string,
   repoRoot: string,
 ): string | null {
+  if (!isRepoRelativeTarget(target)) return null;
   const candidateRoots = [fileDir, fileParentDir, repoRoot];
   for (const root of candidateRoots) {
-    const candidate = isAbsolute(target) ? target : join(root, target);
+    const candidate = join(root, target);
+    if (!isInsideRepo(candidate, repoRoot)) continue;
     if (statExists(candidate)) return candidate;
   }
   return null;
