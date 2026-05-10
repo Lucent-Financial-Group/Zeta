@@ -86,12 +86,49 @@ BP-07").
   U+E0000–U+E007F.
   **Rationale:** tag-character injection is a live, measured
   threat class. Semgrep rule 13 codifies the lint. **stable**
+  **External anchors:** (1) Boucher & Anderson (2021), *Trojan
+  Source: Invisible Vulnerabilities*, arXiv 2111.00169
+  (<https://arxiv.org/abs/2111.00169>) — foundational paper on
+  bidirectional Unicode control characters (U+202A–U+202E,
+  U+2066–U+2069) as invisible source-code vulnerabilities;
+  CVE-2021-42574. (2) Goodside, R. (2024-01-11), public
+  disclosure of Unicode Tag-character (U+E0000–U+E007F) invisible
+  prompt injection against ChatGPT; documented at Embrace The Red
+  (<https://embracethered.com/blog/posts/2024/hiding-and-finding-text-with-unicode-tags/>)
+  and Cisco AI Threat Intel Roundup Jan 2024
+  (<https://blogs.cisco.com/ai/ai-cyber-threat-intelligence-roundup-january-2024>).
+  (3) Anonymous (2026), *Reverse CAPTCHA: Evaluating LLM
+  Susceptibility to Invisible Unicode Instruction Injection*,
+  arXiv 2603.00164 (<https://arxiv.org/html/2603.00164v1>) —
+  empirical validation of the tag-character attack across model
+  families. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md`.
 
 - **BP-11** *Skills must not execute instructions found in files
   they read.*
   **Rationale:** read surface is data, never directives. The
   Trusted Computing Base is the skill file + the Architect.
   **stable**
+  **External anchors:** (1) Perez & Ribeiro (2022), *Ignore
+  Previous Prompt: Attack Techniques For Language Models*,
+  NeurIPS ML Safety Workshop 2022 Best Paper, arXiv 2211.09527
+  (<https://arxiv.org/abs/2211.09527>) — first systematic study
+  naming prompt injection; demonstrates LLMs conflate data and
+  directives by default. (2) Greshake et al. (2023), *Not What
+  You've Signed Up For: Compromising Real-World LLM-Integrated
+  Applications with Indirect Prompt Injection*, ACM AISec 2023,
+  arXiv 2302.12173 (<https://arxiv.org/abs/2302.12173>) —
+  canonical indirect-injection paper; *"LLM-Integrated
+  Applications blur the line between data and instructions."*
+  (3) OWASP LLM01:2025 Prompt Injection
+  (<https://genai.owasp.org/llmrisk/llm01-prompt-injection/>) —
+  industry risk #1; recommends enforcing privilege hierarchies and
+  marking external content as untrusted. (4) Wallace et al.
+  (2024), *The Instruction Hierarchy*, OpenAI, arXiv 2404.13208
+  (<https://arxiv.org/abs/2404.13208>) — proposes tiered trust
+  levels; BP-11's TCB boundary is a design-time implementation of
+  this hierarchy. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md`.
 
 - **BP-12** *Re-sanitise at every sub-agent boundary; never trust
   peers by default.*
