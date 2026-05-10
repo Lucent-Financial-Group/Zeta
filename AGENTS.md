@@ -203,18 +203,18 @@ These apply to any AI harness.
   has a bounded undo path.
 
   > **Prior art:** Richardson (2016+) "Saga Pattern",
-  > microservices.io/patterns/data/saga.html —
+  > <https://microservices.io/patterns/data/saga.html> —
   > formalises compensating transactions as the
   > mechanism for retractable distributed operations;
   > each action has an explicit inverse, making all
   > side effects undoable without destructive rollback.
   > Also: Microsoft Azure Architecture Center,
   > "Compensating Transaction" pattern,
-  > learn.microsoft.com/en-us/azure/architecture/patterns/compensating-transaction.
+  > <https://learn.microsoft.com/en-us/azure/architecture/patterns/compensating-transaction>.
   > Git-native retraction (code via revert, docs via
   > revert, memory via delete) is original to Zeta.
   > Full doctrine: [`docs/ALIGNMENT.md`
-  > §HC-2](docs/ALIGNMENT.md).
+  > §HC-2](docs/ALIGNMENT.md#hc-2-retraction-native-operations).
 
   No destructive git operations (`rm -rf` beyond the
   agent's working tree, force-push to shared branches,

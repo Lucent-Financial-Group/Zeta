@@ -237,4 +237,5 @@ and agent decisions are equally visible in the same public
 version-controlled substrate — neither party can hide a move from the
 other. The bilateral / symmetric form is original to Zeta; see
 [`docs/ALIGNMENT.md` §"Symmetric transparency: the glass
-halo"](docs/ALIGNMENT.md) for the full definition and mutual commitment.
+halo"](docs/ALIGNMENT.md#symmetric-transparency-the-glass-halo) for the
+full definition and mutual commitment.
