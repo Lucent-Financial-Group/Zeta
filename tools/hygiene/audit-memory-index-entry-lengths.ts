@@ -13,8 +13,6 @@
 
 import { readFileSync } from "node:fs";
 
-type AuditExitCode = 0 | 2 | 64;
-
 interface Args {
   readonly target: string;
   readonly enforce: boolean;
