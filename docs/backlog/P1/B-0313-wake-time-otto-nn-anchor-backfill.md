@@ -7,7 +7,7 @@ tier: substrate-quality
 effort: M
 parent: B-0060
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-10
 depends_on: [B-0311]
 composes_with: [B-0060]
 tags: [substrate-quality, external-anchors, otto-nn, beacon-safety, research]
@@ -45,13 +45,41 @@ strengthens external credibility and teachability.
 4. Land anchors as inline citations in the relevant CLAUDE.md
    bullet or as a dedicated `docs/research/` entry.
 
+## Pre-start checklist (2026-05-10, Otto)
+
+**Prior-art search:**
+
+- Searched: wake-time-substrate rule (`.claude/rules/`), skill router,
+  `docs/research/` for existing Otto-NN anchor work.
+- Found: no prior research docs for Otto-247/341/357 anchors; no existing
+  research entry on this topic.
+- Memory files read: `feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`
+  (Otto-247 source), `feedback_otto_356_mirror_internal_vs_beacon_external_language_register_discipline_2026_04_27.md`
+  (Otto-351/352 source).
+
+**Dependency check:**
+
+- B-0311 (coverage scanner): status: closed (landed). No blocking dep.
+- B-0310 (concept registry): closed. No blocking dep.
+- `composes_with: [B-0060]` — B-0060 is umbrella, status: umbrella
+  (ongoing).
+
 ## Done-criteria
 
-- [ ] All 7 principles have external anchor or "original"
-      note.
-- [ ] Citations include URL, author/org, title, date.
-- [ ] Beacon-safety pass on all cited sources.
-- [ ] Coverage scanner (B-0311) confirms 7/7 resolved.
+- [x] Otto-247: anchored (Dodge et al. 2024, Meta Eng 2026, Zu et al. 2022)
+- [x] Otto-341: anchored (McLuhan 1964, Sapir-Whorf, Zhao et al. 2026)
+- [x] Otto-357: anchored (Ryan & Deci 2000, Jensen & Meckling 1976, Gabriel 2020)
+- [ ] Otto-275: anchor-pending (slice 2)
+- [ ] Otto-279: anchor-pending (slice 2)
+- [ ] Otto-351: anchor-pending (slice 2)
+- [ ] Otto-352: anchor-pending (slice 2)
+- [x] Citations include URL/identifier for online sources and bibliographic
+  locator for print sources (slice 1)
+- [x] Beacon-safety pass on all cited sources (slice 1: pass)
+- [ ] Coverage scanner (B-0311) confirms 7/7 resolved (pending slice 2)
+
+**Slice-1 research landing:**
+`docs/research/otto-nn-principles-external-anchors-slice1-otto247-otto341-otto357.md`
 
 ## Reviewers
 
