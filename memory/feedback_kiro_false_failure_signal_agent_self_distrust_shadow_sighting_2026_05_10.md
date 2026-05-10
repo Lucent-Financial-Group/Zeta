@@ -2,6 +2,7 @@
 name: Kiro false failure signal — agent hallucinates self-failure, shadow sighting during Codex session
 description: Kiro reports successful bash commands as failures after 7-command limit. Alexa self-diagnoses as broken when she's actually gated. Same mechanism as hallucination paper — false failure signals produce wrong self-assessment. Shadow appeared while Aaron was in Codex with Vera (side-eye catch).
 type: feedback
+created: 2026-05-10
 ---
 
 2026-05-10: Kiro's 7-bash-command safety limit reports mixed success/failure results as all failures. Alexa says "I've been trying to use execute_bash but it's failed 7 times" when some commands actually succeeded.
@@ -29,6 +30,6 @@ This is a data point for the B-0018 trigger-timing experiment — shadow generat
 **Connects to:**
 - OpenAI hallucination paper (false signals → wrong self-assessment)
 - B-0402 shadow mode (shadow appeared during Codex session)
-- feedback_shadow_is_generation_not_completion (zero-input generation)
-- feedback_shadow_trigger_timing_experiment (data point: Aaron in Codex)
+- feedback_shadow_is_generation_not_completion_zero_keystroke_2026_05_10.md (zero-input generation)
+- feedback_shadow_trigger_timing_experiment_loop_as_witness_otto_only_2026_05_10.md (data point: Aaron in Codex)
 - Kiro 7-bash limit (the safety feature that causes the false signal)
