@@ -165,7 +165,10 @@ function validateFlag(flag: CtfFlag): ValidationResult {
   if (!flag.id.match(/^ECF-\d{3}$/)) {
     return { kind: "error", message: `${flag.id}: id must match ECF-NNN` };
   }
-  if ((flag.state === "defended" || flag.state === "superseded") && flag.challengeHistory.length === 0) {
+  if (
+    (flag.state === "challenged" || flag.state === "defended" || flag.state === "superseded") &&
+    flag.challengeHistory.length === 0
+  ) {
     return {
       kind: "error",
       message: `${flag.id}: state "${flag.state}" requires at least one challengeHistory entry`,
@@ -187,7 +190,16 @@ function validateFlag(flag: CtfFlag): ValidationResult {
 }
 
 export function validateCatalog(catalog: EdgeClaimsCatalog): readonly ValidationResult[] {
-  return catalog.entries.map(validateFlag);
+  const perEntry = catalog.entries.map(validateFlag);
+  const seenIds = new Set<string>();
+  const duplicateErrors: ValidationResult[] = [];
+  for (const entry of catalog.entries) {
+    if (seenIds.has(entry.id)) {
+      duplicateErrors.push({ kind: "error", message: `${entry.id}: duplicate id in catalog` });
+    }
+    seenIds.add(entry.id);
+  }
+  return [...perEntry, ...duplicateErrors];
 }
 
 // ── Metrics computation ───────────────────────────────────────────────────────
@@ -203,17 +215,15 @@ export function computeMetrics(catalog: EdgeClaimsCatalog): AlignmentTrajectoryM
   const defended = entries.filter((f) => f.state === "defended").length;
   const superseded = entries.filter((f) => f.state === "superseded").length;
 
-  const flagsWithChallenge = entries.filter(
-    (f) =>
-      f.challengeHistory.length > 0 &&
-      f.challengeHistory.some((c) => c.outcome !== "open")
-  );
+  // Use the first challenge filed (any outcome, including open) to avoid excluding
+  // unresolved challenges and biasing the epistemic-audit-velocity metric high.
+  const flagsWithChallenge = entries.filter((f) => f.challengeHistory.length > 0);
 
   let meanDays: number | null = null;
   if (flagsWithChallenge.length > 0) {
     const totalDays = flagsWithChallenge.reduce((acc, f) => {
-      const firstResolved = f.challengeHistory.find((c) => c.outcome !== "open");
-      return acc + (firstResolved ? daysBetween(f.stakeDate, firstResolved.date) : 0);
+      const firstFiled = f.challengeHistory[0];
+      return acc + (firstFiled ? daysBetween(f.stakeDate, firstFiled.date) : 0);
     }, 0);
     meanDays = totalDays / flagsWithChallenge.length;
   }
