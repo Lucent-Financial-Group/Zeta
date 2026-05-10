@@ -93,6 +93,21 @@ Remaining for subsequent slices:
 - Retraction-native in AGENTS.md
 - Radical honesty / total observability / no hidden reasoning in AGENTS.md
 
+### Scope for slice 2 (2026-05-10)
+
+Lands prior-art block for three AGENTS.md doctrines (radical honesty,
+total observability, no hidden reasoning) at their defining location —
+AGENTS.md §"The three load-bearing values". Single blockquote citing:
+
+- Dalio (2017) → radical honesty / truth over politeness
+- Brundage et al. (2020) arxiv:2004.07213 → total observability / git audit trail
+- Korbak et al. (2025) arxiv:2507.11473 → no hidden reasoning / reviewer layer
+
+Remaining after slice 2:
+
+- Glass-halo transparency in CLAUDE.md / README.md
+- Retraction-native in AGENTS.md
+
 ## Reviewers
 
 - `public-api-designer` — public-surface language quality.
