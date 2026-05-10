@@ -165,4 +165,3 @@ This item is decomposed into 5 atomic, dependency-ordered child rows. B-0021 is 
 
 **Dependency graph**: B-0021.1 → B-0021.2 → B-0021.3 → B-0021.4 → B-0021.5 (linear chain; no parallelism until B-0021.3 completes).
 
-**Done when**: B-0021.5 is closed (ADR landed, Aurora research docs reference it). B-0021 parent closes with B-0021.5.
