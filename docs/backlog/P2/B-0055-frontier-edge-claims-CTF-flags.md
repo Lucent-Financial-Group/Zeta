@@ -12,6 +12,7 @@ depends_on: []
 composes_with: [feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_retractibly_rewrite_definitions_laws_precedence_real_nice_like.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, project_operational_resonance_instances_collection_index_2026_04_22.md, docs/ALIGNMENT.md, user_aaron_self_describes_as_retractible.md]
 tags: [edge-claims, CTF, falsifiable, retractibility, math-safety, alignment-trajectory, pyramid-topology, factory-as-experiment, paired-dual, sword-logic, unclaimed-territory, flag-planting]
 type: friction-reducer
+
 ---
 
 # B-0055 — Frontier edge-claims (11 CTF flags)
@@ -113,6 +114,7 @@ Does NOT force-push revised flags; does NOT delete defense-surface files; does N
 ## Pre-start checklist (B-0055.1 — 2026-05-10)
 
 **Prior-art search:**
+
 - wake-time-substrate: defense-surface memory files verified present (see §Seed flags above)
 - skill-router: `media-catalog-schema.ts` idiom found at `tools/resonance/` — same pattern, extending to CTF flags
 - orthogonal-axes: no existing `edge-claims` catalog schema in `tools/research/`
@@ -121,6 +123,7 @@ Does NOT force-push revised flags; does NOT delete defense-surface files; does N
 - lost-files surface: `tools/hygiene/LOST-FILES-LOCATIONS.md` consulted; no orphaned edge-claims artifacts
 
 **Dependency-restructure:**
+
 - `depends_on:` — empty; no blocking items
 - `composes_with:` pointers verified reachable: all six listed above ✓
 
