@@ -164,4 +164,3 @@ This item is decomposed into 5 atomic, dependency-ordered child rows. B-0021 is 
 | [B-0021.5](B-0021.5-aurora-econ-primitive-identification-adr.md) | P2 | P2/ | Aurora econ-primitive identification + ADR (final synthesis) | B-0021.4 |
 
 **Dependency graph**: B-0021.1 → B-0021.2 → B-0021.3 → B-0021.4 → B-0021.5 (linear chain; no parallelism until B-0021.3 completes).
-
