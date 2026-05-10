@@ -9,11 +9,12 @@
 const DRY_RUN = process.argv.includes("--dry-run");
 
 export async function main(): Promise<number> {
-  console.log("B-0267: Branch Safety ruleset (smallest slice)");
+  console.log("B-0267: Branch Safety ruleset (smallest slice, re-decomposed)");
   if (DRY_RUN) {
     console.log("DRY-RUN: would create ruleset 'Branch Safety' via gh api");
     console.log("Rules: deletion + non_fast_forward + required_linear_history");
     console.log("Target: all branches, enforce on main + develop");
+    console.log("Focused check: dry-run path active, live mutation disabled (safe slice)");
     return 0;
   }
   // Live path not yet implemented — fail loudly to prevent silent CI no-op.
