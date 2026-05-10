@@ -94,21 +94,15 @@ export const ALL_HEARTBEAT_ATTACK_VECTORS: HeartbeatAttackVector[] = [
   },
 ]
 
-const KNOWN_KINDS = [
-  'repository-compromise',
-  'force-push-attack',
-  'insider-threat',
-  'supply-chain',
-  'direct-to-main-bypass',
-  'content-injection',
-] as const
+const KNOWN_KINDS = ALL_HEARTBEAT_ATTACK_VECTORS.map(v => v.kind) as const
 
 export function isHeartbeatAttackVector(v: unknown): v is HeartbeatAttackVector {
+  if (typeof v !== 'object' || v === null || !('kind' in v)) return false
+  const o = v as any
+  if (typeof o.kind !== 'string' || !(KNOWN_KINDS as readonly string[]).includes(o.kind)) return false
   return (
-    typeof v === 'object' &&
-    v !== null &&
-    'kind' in v &&
-    typeof (v as any).kind === 'string' &&
-    (KNOWN_KINDS as readonly string[]).includes((v as any).kind)
+    typeof o.surface === 'string' &&
+    typeof o.impact === 'string' &&
+    typeof o.mitigation === 'string'
   )
 }

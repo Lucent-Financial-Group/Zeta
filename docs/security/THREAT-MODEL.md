@@ -403,15 +403,15 @@ is the graduation step.
 
 ### Defender persona and escalation
 
-- **Aminata (`threat-model-critic`).** Owns the channel-closure
+- **The `threat-model-critic` reviewer.** Owns the channel-closure
   class. Reviews every round-close for channel-closure drift
   and files findings into `docs/security/SECURITY-BACKLOG.md`.
   Advisory; binding decisions go via Architect or human
   maintainer sign-off per GOVERNANCE §11.
-- **Nazar (`security-operations-engineer`).** Runtime-ops
+- **The `security-operations-engineer` reviewer.** Runtime-ops
   coverage for h₂ incidents (non-retractable markers shipped
-  to production). Distinct from Aminata: Aminata designs the
-  threat class; Nazar handles incidents in it.
+  to production). Distinct from the threat-model-critic: the threat-model-critic designs the
+  threat class; the security-operations-engineer handles incidents in it.
 - **Mateo (`security-researcher`).** Prior-art scouting for
   each sub-threat — has anyone else named this threat class
   formally? Proximate candidates: right-to-be-forgotten /
@@ -449,7 +449,7 @@ Attack surface typed as *versioned* discriminated union — not a completeness
 claim: `tools/security/heartbeat-attack-vectors.ts` (B-0032.1, PR #2390).
 "Exhaustive" in TypeScript means all *declared* variants are handled; it does
 not mean all real-world attack classes are declared. Six vectors tracked as of
-B-0032.3 Aminata review (2026-05-10).
+B-0032.3 threat-model-critic review (2026-05-10).
 
 | Vector | STRIDE | Surface | Impact | Mitigation | Tier gap |
 |---|---|---|---|---|---|
