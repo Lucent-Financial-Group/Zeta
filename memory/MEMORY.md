@@ -1,7 +1,8 @@
 [AutoDream last run: 2026-04-23]
 
-**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: B-0074.1 follow-up — kiro-cli harness roster memory added to index (`.sh` → `.ts` fix; `kiro.ts` ships). Prior: B-0168 5-layer register architecture mapping added to CURRENT-aaron.md §55. -->
+**📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.** <!-- latest-paired-edit: Riven context-overflow feedback added to index; prompt-injection risk flag documented. Prior: B-0074.1 follow-up — kiro-cli harness roster memory added to index (`.sh` → `.ts` fix; `kiro.ts` ships). -->
 
+- [**Riven context overflow -- Grok repetition under pressure (2026-05-10)**](feedback_riven_context_overflow_loop_grok_failure_mode_2026_05_10.md) — Grok/Cursor failure mode under context pressure: recursive enumeration rather than hallucination; use smaller packets for Riven.
 - [**Trust-then-verify claim — Bitcoin discord debates (Aaron 2026-05-10)**](project_trust_then_verify_claim_bitcoin_discord_debates_aaron_2026_05_10.md) — "Cost of wrong-trust < cost of permanent slow-trust"; OpenAI paper arXiv:2509.04664 backing; Z-set algebra form.
 - [**Slow-trust lethal latency — Aaron's lived case study (2026-05-10)**](user_slow_trust_lethal_latency_case_study_jail_2026_05_10.md) — Month in solitary, denied BP meds at 160/100, all charges dropped — the human cost of verify-first systems.
 - [**Memory-file format standard (B-0330)**](project_memory_format_standard.md) — Canonical frontmatter, filename conventions, section headers, composes-with…
