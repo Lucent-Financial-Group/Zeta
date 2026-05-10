@@ -13,6 +13,8 @@ open System.Runtime.CompilerServices
 ///   Mul distributes over Add
 ///   Mul _ Zero = Zero (annihilator)
 ///   Negate a `Add` a = Zero (additive inverse, ring axiom)
+///     ↳ May hold only over a restricted domain (e.g. point intervals).
+///     ↳ Implementations that have no inverse raise InvalidOperationException.
 type ISemiring<'W> =
     abstract member Zero   : 'W                   // additive identity
     abstract member One    : 'W                   // multiplicative identity
@@ -104,6 +106,12 @@ type IntervalRing() =
                 min (min p1 p2) (min p3 p4),
                 max (max p1 p2) (max p3 p4))
 
+        /// Kaucher negation: -[a,b] = [-b,-a].
+        /// Ring axiom (Negate a + a = Zero) holds ONLY for point intervals [v,v].
+        /// Non-point intervals exhibit the interval dependency problem — uncertainty
+        /// does not cancel algebraically (analogous to Spanner TrueTime commit-wait).
+        /// The intended DBSP use case for IntervalRing is point-interval precision
+        /// encoding, where the ring axiom holds.
         member _.Negate a = IntervalWeight(-a.Hi, -a.Lo)
 
 [<RequireQualifiedAccess>]

@@ -59,9 +59,10 @@ type TropicalWeight =
 // ─── TropicalSemiring — ISemiring<TropicalWeight> implementation ──
 
 /// `ISemiring<TropicalWeight>` over `(ℤ∪{∞}, min, +)`.
-/// The tropical semiring has no additive inverse — it satisfies ISemiring
-/// but NOT IRing. Callers that need retraction (negative weights) must use
-/// IntegerRing or IntervalRing instead.
+/// The tropical semiring has no true additive inverse — `Negate` raises
+/// `InvalidOperationException` per the ISemiring contract's partial-domain
+/// allowance. Callers that need retraction (negative weights) must use
+/// `IntegerRing` or `IntervalRing` instead.
 [<Sealed>]
 type TropicalSemiring() =
     interface ISemiring<TropicalWeight> with
