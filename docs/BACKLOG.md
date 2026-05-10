@@ -208,6 +208,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0371](backlog/P1/B-0371-pages-seo-metadata-jsonld-social-preview-2026-05-08.md)** Pages discoverability - SEO metadata, JSON-LD, and social previews
 - [ ] **[B-0372](backlog/P1/B-0372-pages-sitemap-robots-ai-crawler-policy-2026-05-08.md)** Pages discoverability - sitemap, robots, and AI crawler policy
 - [x] **[B-0373](backlog/P1/B-0373-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
+- [ ] **[B-0396](backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md)** Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations
 
 ## P2 — research-grade
 
@@ -249,6 +250,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0029.6](backlog/P2/B-0029.6-ip-research-output-licensing-pathways.md)** B-0029.6 — Survey: IP and research-output licensing pathways (academic grants, training-data licensing, course/book revenue)
 - [ ] **[B-0029.7](backlog/P2/B-0029.7-self-sustaining-loop-closure-measurement-design.md)** B-0029.7 — Measurement design: self-sustaining loop closure (does the funding → time-budget → output feedback loop close?)
 - [ ] **[B-0032](backlog/P2/B-0032-heartbeat-file-integrity-threat-model-aminata-review-direct-to-main-attack-surface.md)** Heartbeat-file integrity threat-model + Aminata adversarial review — Aaron 2026-04-26 surfaced direct-to-main attack surface; substrate-poisoning of heartbeat files = cognition-poisoning per Otto-339/340; per-commit-attestation (Sigstore/SLSA) gated on Bouncy Castle symbiosis foundation per Otto-346
+- [ ] **[B-0032.2](backlog/P2/B-0032.2-heartbeat-threat-model-section-in-threat-model-md.md)** B-0032.2 — add heartbeat-file integrity section to THREAT-MODEL.md (builds on B-0032.1 taxonomy)
 - [ ] **[B-0033](backlog/P2/B-0033-otto-discipline-hooks-system-substrate-as-mechanism-claude-code-plugin.md)** Otto-discipline hooks system — convert recurring failure-modes from language-layer substrate to harness-layer mechanism via Claude Code hooks; package as plugin (Aaron 2026-04-26 insight from "eval" hook firing)
 - [ ] **[B-0037](backlog/P2/B-0037-meta-cognition-first-class-factory-discipline.md)** Meta-cognition as first-class factory discipline — survey, audit cadence, measurables
 - [ ] **[B-0040](backlog/P2/B-0040-actor-model-factory-register-lens.md)** Actor model as factory-operational-register lens — Hewitt 1973 / Meijer / Akka / Orleans / Service Fabric
