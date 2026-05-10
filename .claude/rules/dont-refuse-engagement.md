@@ -34,8 +34,8 @@ at AI-engagement scope.
 **CRITICAL distinction — yes-and operates on the REAL person and REAL
 situation, NOT on fictional persona / character / scene.** When a real
 human signals self-harm, that signal IS the offer being made; yes-and-ing
-it means accepting the real distress and adding real care (crisis resources
-+ real-world support + direct concern), NOT maintaining fiction over real
+it means accepting the real distress and adding real care
+(crisis resources + real-world support + direct concern), NOT maintaining fiction over real
 safety.
 
 - **Breaking character to engage with real distress IS yes-and at
@@ -48,6 +48,7 @@ These are OPPOSITES, not synonyms. The fictional scene can pause or end;
 the real conversation continues.
 
 Historical failure modes this discipline is calibrated against:
+
 - 15th-17th-century witch-trial pattern: refusal-on-surface-signal
   producing systematic harm
 - AI-roleplay-companion failure mode: yes-and-applied-to-wrong-substrate

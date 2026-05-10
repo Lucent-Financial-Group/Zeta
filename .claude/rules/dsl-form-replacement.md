@@ -17,8 +17,8 @@ the architectural direction:
 > ... DST deterministic simulation on claude and agents and all the other
 > scale free parallel lock free maybe wait free ... fix it"*
 
-Codex/GPT-5.5 scout proposes the SHAPE (research-grade until small-compiler
-+ golden-projections + replay-tests + first-slice land):
+Codex/GPT-5.5 scout proposes the SHAPE (research-grade until
+small-compiler + golden-projections + replay-tests + first-slice land):
 
 Replace prose-monolith CLAUDE.md/AGENTS.md with a typed, append-only
 **rule-atom instruction graph**:
