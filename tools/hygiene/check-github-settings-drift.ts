@@ -128,6 +128,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   // Strip scope-limited fields: when the live snapshot emits {_skipped: "insufficient-token-scope"}
   // for a field (e.g. actions/permissions requires admin token, not available in CI), drop that
   // field from both sides so a missing-scope field doesn't register as false drift.
+  // Stripping is recursive so nested fields (e.g. counts.webhooks) are also handled.
   let liveObj: Record<string, unknown>;
   let expectedObj: Record<string, unknown>;
   try {
@@ -138,26 +139,52 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 2;
   }
 
-  const skippedKeys: string[] = [];
-  for (const [key, value] of Object.entries(liveObj)) {
-    if (
-      value !== null &&
-      typeof value === "object" &&
-      "_skipped" in (value as Record<string, unknown>) &&
-      (value as Record<string, unknown>)._skipped === "insufficient-token-scope"
-    ) {
-      skippedKeys.push(key);
+  function isSkipped(v: unknown): boolean {
+    return (
+      v !== null &&
+      typeof v === "object" &&
+      "_skipped" in (v as Record<string, unknown>) &&
+      (v as Record<string, unknown>)._skipped === "insufficient-token-scope"
+    );
+  }
+
+  function stripSkippedSentinels(
+    live: Record<string, unknown>,
+    exp: Record<string, unknown>,
+    pathPrefix: string,
+    report: string[],
+  ): void {
+    for (const key of Object.keys(live)) {
+      const val = live[key];
+      if (isSkipped(val)) {
+        report.push(pathPrefix.length > 0 ? `${pathPrefix}.${key}` : key);
+        delete live[key];
+        delete exp[key];
+      } else if (
+        val !== null &&
+        typeof val === "object" &&
+        !Array.isArray(val) &&
+        exp[key] !== null &&
+        typeof exp[key] === "object" &&
+        !Array.isArray(exp[key])
+      ) {
+        stripSkippedSentinels(
+          val as Record<string, unknown>,
+          exp[key] as Record<string, unknown>,
+          pathPrefix.length > 0 ? `${pathPrefix}.${key}` : key,
+          report,
+        );
+      }
     }
   }
 
-  if (skippedKeys.length > 0) {
+  const skippedPaths: string[] = [];
+  stripSkippedSentinels(liveObj, expectedObj, "", skippedPaths);
+
+  if (skippedPaths.length > 0) {
     process.stderr.write(
-      `github-settings-drift: skipping ${skippedKeys.length} field(s) not readable with current token: ${skippedKeys.join(", ")}\n`,
+      `github-settings-drift: skipping ${skippedPaths.length} field(s) not readable with current token: ${skippedPaths.join(", ")}\n`,
     );
-    for (const key of skippedKeys) {
-      delete liveObj[key];
-      delete expectedObj[key];
-    }
     liveContent = JSON.stringify(liveObj, null, 2);
     expectedContent = JSON.stringify(expectedObj, null, 2);
   }

@@ -251,13 +251,14 @@ export async function snapshot(repo: string): Promise<string> {
   );
   const codeql = codeqlRaw === null ? { _skipped: "insufficient-token-scope" } : parseJsonSafe(codeqlRaw);
 
-  // Counts
-  const webhooksCountRaw = await ghApi(`/repos/${repo}/hooks`, "length");
+  // Counts — hooks requires admin token; falls back to a sentinel when the
+  // GITHUB_TOKEN in CI lacks that scope (HTTP 403).
+  const webhooksCountRaw = await ghApiOptional(`/repos/${repo}/hooks`, "length");
   const deployKeysCountRaw = await ghApi(`/repos/${repo}/keys`, "length");
   const actionsSecretsCountRaw = await ghApi(`/repos/${repo}/actions/secrets`, ".secrets | length");
   const dependabotSecretsCountRaw = await ghApiOptional(`/repos/${repo}/dependabot/secrets`, ".secrets | length");
 
-  const webhooksCount = parseInt(webhooksCountRaw, 10) || 0;
+  const webhooksCount = webhooksCountRaw === null ? { _skipped: "insufficient-token-scope" } : (parseInt(webhooksCountRaw, 10) || 0);
   const deployKeysCount = parseInt(deployKeysCountRaw, 10) || 0;
   const actionsSecretsCount = parseInt(actionsSecretsCountRaw, 10) || 0;
   const dependabotSecretsCount = parseInt(dependabotSecretsCountRaw ?? "0", 10) || 0;
