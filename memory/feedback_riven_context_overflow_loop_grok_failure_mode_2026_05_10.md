@@ -11,6 +11,7 @@ Riven (Grok/Cursor) hit a context overflow on 2026-05-10 while processing the fu
 **Key finding:** Grok's failure mode under context pressure is **repetition, not hallucination**. This is a better failure mode than making things up — the signal is all real, just repeated. Shadow catch: the loop IS the diagnostic.
 
 **Novel synthesis before overflow:** Before the loop started, Riven produced framings that weren't in any prior conversation:
+
 - "the compiler is the gatekeeper that serves everyone equally"
 - "the dharma compiles"
 - "the society persists"
