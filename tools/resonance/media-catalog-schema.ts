@@ -7,9 +7,10 @@
 // memory/feedback_pop_culture_media_is_operational_resonance_corpus_multi_medium.md
 // for the B-0054 pop-culture / media research track.
 //
-// This module is schema-only (no I/O). The markdown catalog at
-// docs/research/media-resonance-catalog.md is the human-readable index;
-// this file is the machine-checkable type surface.
+// This module exports schema types and validation helpers. The CLI (run via
+// `bun tools/resonance/media-catalog-schema.ts`) validates and summarises the
+// seed catalog. The markdown catalog at docs/research/media-resonance-catalog.md
+// is the human-readable index; this file is the machine-checkable type surface.
 //
 // Usage (type-check only, no runtime needed):
 //   bun --check tools/resonance/media-catalog-schema.ts
@@ -74,7 +75,7 @@ export interface ThreeFilterResult {
   /** F3 — Tradition-name-load-bearing: does the media work carry
    *  canonical / doctrinal weight in its tradition, not incidental usage? */
   readonly f3_tradition_name: FilterResult;
-  /** Optional rationale per filter — required when result != "pass". */
+  /** Rationale per filter — required when the result is not "pass"; recommended for "pass" when non-obvious. */
   readonly rationale?: {
     readonly f1?: string;
     readonly f2?: string;
@@ -225,9 +226,21 @@ function validateEntry(entry: MediaResonanceEntry): ValidationResult {
     if (entry.counterexampleAttempts.length === 0) {
       return {
         kind: "error",
-        message: `${entry.id}: "confirmed" requires at least one counterexample attempt`,
+        message: `${entry.id}: "${entry.status}" requires at least one counterexample attempt`,
       };
     }
+  }
+
+  // Rationale is required when any filter result != "pass"
+  const { f1_engineering_first: f1, f2_structural: f2, f3_tradition_name: f3, rationale } = entry.filters;
+  if (f1 !== "pass" && !rationale?.f1) {
+    return { kind: "error", message: `${entry.id}: rationale.f1 required when F1 = "${f1}"` };
+  }
+  if (f2 !== "pass" && !rationale?.f2) {
+    return { kind: "error", message: `${entry.id}: rationale.f2 required when F2 = "${f2}"` };
+  }
+  if (f3 !== "pass" && !rationale?.f3) {
+    return { kind: "error", message: `${entry.id}: rationale.f3 required when F3 = "${f3}"` };
   }
 
   return { kind: "ok" };
@@ -399,7 +412,7 @@ const SEED_CATALOG: MediaResonanceCatalog = {
       ],
       sourceMemory: "memory/feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md",
       notes:
-        "The Chronovisor (Ernetti 1972 claim) is a separate entry MR-004 with weaker F3; " +
+        "The Chronovisor (Ernetti 1972 claim) is a separate future entry (MR-005 candidate) with weaker F3; " +
         "Devs is the fictional dramatization of the same operator shape with stronger F3.",
     },
     {
@@ -412,9 +425,7 @@ const SEED_CATALOG: MediaResonanceCatalog = {
         "The official Hyrule Historia (2011) establishes that Ocarina of Time branches " +
         "into three divergent canonical timelines based on Link's victory/defeat. " +
         "The branching is retractibly-rewrite: each timeline is a separately-tracked " +
-        "canonical history that does not collapse into the others. The Triforce trinity " +
-        "(Power / Wisdom / Courage) forms a three-in-one substrate unity parallel " +
-        "to the factory's trinity-of-repos instantiation instance #1.",
+        "canonical history that does not collapse into the others.",
       factoryOperator: {
         label: "retractibly-rewrite branching history — append-only retraction-native substrate",
         source: "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
@@ -536,6 +547,7 @@ function printSummary(catalog: MediaResonanceCatalog): void {
   );
 }
 
+if (import.meta.main) {
 const args = Bun.argv.slice(2);
 
 if (args.includes("--validate")) {
@@ -568,3 +580,4 @@ if (args.includes("--validate")) {
   }
   process.exit(hasError ? 1 : 0);
 }
+} // end import.meta.main

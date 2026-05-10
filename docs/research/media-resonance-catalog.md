@@ -94,7 +94,7 @@ Retractibility of physical substrate without retractibility of self.
 
 **Status:** `confirmed`
 
-**Counterexample attempts (F3):**
+**Counterexample attempts:**
 
 - **Date:** 2026-05-10
 - **Mechanic tested:** Is regeneration identity-breaking (new person) rather than identity-preserving?
@@ -133,7 +133,7 @@ only to see it. This directly instantiates the `View<T>@clock` operator.
 
 **Status:** `confirmed`
 
-**Counterexample attempts (F3):**
+**Counterexample attempts:**
 
 - **Date:** 2026-05-10
 - **Mechanic tested:** Does the Devs device allow writes / mutations? Foreknowledge →
@@ -144,7 +144,7 @@ only to see it. This directly instantiates the `View<T>@clock` operator.
   of the deterministic universe, not a write operation.
 - **Result:** refuted (counterexample not found)
 
-**Notes:** The Chronovisor (Ernetti 1972 claim, MR-004 candidate) is the conspiracy-corpus
+**Notes:** The Chronovisor (Ernetti 1972 claim, MR-005 candidate) is the conspiracy-corpus
 instance of the same operator shape. Devs is the fictional dramatization with stronger F3.
 Both are cataloged separately with different F3 calibration.
 
@@ -179,7 +179,7 @@ a separate MR entry when triaged.
 
 **Status:** `confirmed`
 
-**Counterexample attempts (F3):**
+**Counterexample attempts:**
 
 - **Date:** 2026-05-10
 - **Mechanic tested:** Do the three timelines eventually collapse into one (which would
@@ -215,7 +215,7 @@ scene for ~3 minutes to show forward-time real-time observation of themselves.
 
 **Status:** `confirmed`
 
-**Counterexample attempts (F3):**
+**Counterexample attempts:**
 
 - **Date:** 2026-05-10
 - **Mechanic tested:** Is this just a comedic gag (4th-wall break for laughs) rather
