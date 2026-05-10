@@ -39,6 +39,18 @@ export interface RevertFailure {
 
 export type RevertResult = RevertSuccess | RevertFailure;
 
+interface DrainLogReadSuccess {
+  readonly success: true;
+  readonly entries: DrainLogEntry[];
+}
+
+interface DrainLogReadFailure {
+  readonly success: false;
+  readonly error: string;
+}
+
+type DrainLogReadResult = DrainLogReadSuccess | DrainLogReadFailure;
+
 const inFlightReverts = new Set<string>();
 
 // ---------------------------------------------------------------------------
@@ -65,6 +77,10 @@ function isMutationParams(value: unknown): value is MutationParams {
   return isRecord(value) && typeof value.url === "string" && typeof value.toggleKey === "string";
 }
 
+function isNodeError(error: unknown): error is NodeJS.ErrnoException {
+  return error instanceof Error && "code" in error;
+}
+
 function isDrainLogEntry(value: unknown): value is DrainLogEntry {
   if (!isRecord(value)) return false;
   return (
@@ -82,9 +98,17 @@ function isDrainLogEntry(value: unknown): value is DrainLogEntry {
 }
 
 /** Parse all lines from the log file, skipping blank, parse-failed, or schema-invalid lines. */
-function readAllLines(logPath: string): DrainLogEntry[] {
-  if (!existsSync(logPath)) return [];
-  const raw = readFileSync(logPath, "utf8");
+function readAllLines(logPath: string): DrainLogReadResult {
+  let raw: string;
+  try {
+    raw = readFileSync(logPath, "utf8");
+  } catch (error) {
+    if (isNodeError(error) && error.code === "ENOENT") {
+      return { success: true, entries: [] };
+    }
+    const message = error instanceof Error ? error.message : String(error);
+    return { success: false, error: `Unable to read drain log at ${logPath}: ${message}` };
+  }
   const entries: DrainLogEntry[] = [];
   for (const line of raw.split("\n")) {
     const trimmed = line.trim();
@@ -96,7 +120,7 @@ function readAllLines(logPath: string): DrainLogEntry[] {
       // Skip truncated/malformed lines (e.g. from a crash mid-append).
     }
   }
-  return entries;
+  return { success: true, entries };
 }
 
 // ---------------------------------------------------------------------------
@@ -120,7 +144,9 @@ export function appendEntry(entry: MutationLogEntry, logPath: string = DEFAULT_L
  * per id so that listing reflects current reality.
  */
 export function listPending(logPath: string = DEFAULT_LOG_PATH): DrainLogEntry[] {
-  const all = readAllLines(logPath);
+  const readResult = readAllLines(logPath);
+  if (!readResult.success) return [];
+  const all = readResult.entries;
   // Track latest status per id
   const latestStatus = new Map<string, DrainLogStatus>();
   // Track the full entry keyed by id (last-wins for metadata, but status is separate)
@@ -178,7 +204,11 @@ async function revertUnlocked(
   options: MutationOptions,
   logPath: string,
 ): Promise<RevertResult> {
-  const all = readAllLines(logPath);
+  const readResult = readAllLines(logPath);
+  if (!readResult.success) {
+    return { success: false, entryId, error: readResult.error };
+  }
+  const all = readResult.entries;
 
   const latest = findLatestEntry(all, entryId);
   if (latest === null) {

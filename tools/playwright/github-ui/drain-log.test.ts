@@ -3,6 +3,7 @@ import {
   appendFileSync,
   chmodSync,
   existsSync,
+  mkdirSync,
   mkdtempSync,
   readFileSync,
   rmSync,
@@ -259,6 +260,13 @@ describe("listPending", () => {
     expect(listPending(logPath)).toEqual([]);
   });
 
+  test("returns empty array when the log path cannot be read", () => {
+    const logPath = tempLogPath();
+    mkdirSync(logPath);
+
+    expect(listPending(logPath)).toEqual([]);
+  });
+
   test("returns applied entries", () => {
     const logPath = tempLogPath();
     appendEntry(makeEntry(), logPath);
@@ -326,6 +334,18 @@ describe("revert", () => {
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error).toContain("non-existent-id");
+    }
+  });
+
+  test("returns structured failure when the log path cannot be read", async () => {
+    const logPath = tempLogPath();
+    mkdirSync(logPath);
+
+    const result = await revert("entry-id", {}, logPath);
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toContain("Unable to read drain log");
     }
   });
 
