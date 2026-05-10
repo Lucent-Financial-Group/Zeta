@@ -68,6 +68,13 @@ This is the transition layer between the math and the humans
 who need to feel the math working. The algebra is the engine;
 this component is the dashboard gauges.
 
+**UX reference: DeBank (debank.com)** — DeFi social scoring done
+right. Opt-in, transparent formula, user sees own score, useful
+not creepy. Study their UI for how to make partial-credit scoring
+feel like a feature, not surveillance. Glass Halo + DeBank UX
+patterns = scoring that humans trust because they can see and
+challenge the formula.
+
 **First version: static GitHub Pages.** Can be pure HTML/JS,
 no backend. Reads from git history via GitHub API. Iterates
 from there.
