@@ -214,7 +214,17 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0001](backlog/P2/B-0001-example-schema-self-reference.md)** Example row — self-reference demonstrating the per-row-file schema
 - [ ] **[B-0004](backlog/P2/B-0004-translate-repo-to-other-human-languages.md)** Translate repo (code, skills, documents, memory) into other human languages — inclusivity + meeting humans at their starting point + bidirectional-alignment through learning + education + teaching that's bidirectional
 - [ ] **[B-0004.1](backlog/P2/B-0004.1-substrate-inventory-scanner-ts.md)** B-0004.1 — TS substrate inventory scanner for translatable content surfaces
+- [ ] **[B-0004.10](backlog/P2/B-0004.10-language-folder-structure-per-language-index.md)** B-0004.10 — Language folder structure formalization + per-language contributor index
+- [ ] **[B-0004.11](backlog/P2/B-0004.11-external-surfaces-translation-first-language.md)** B-0004.11 — External-facing surfaces translation — first language (NuGet metadata, GitHub description, README)
+- [ ] **[B-0004.12](backlog/P2/B-0004.12-second-language-pilot.md)** B-0004.12 — Second language pilot: validate process reproducibility across a different language family
 - [ ] **[B-0004.2](backlog/P2/B-0004.2-precision-glossary-anchor-set.md)** B-0004.2 — Precision glossary anchor set extraction (precondition for consistent translation)
+- [ ] **[B-0004.3](backlog/P2/B-0004.3-drift-detection-lint-tool.md)** B-0004.3 — Drift-detection lint tool: flag stale translations when English source changes
+- [ ] **[B-0004.4](backlog/P2/B-0004.4-cross-reference-preservation-validator.md)** B-0004.4 — Cross-reference preservation validator: ensure translated file trees have self-consistent internal links
+- [ ] **[B-0004.5](backlog/P2/B-0004.5-translation-pipeline-adr-tooling-selection.md)** B-0004.5 — Translation pipeline ADR: AI provider selection, quality metrics, human review process
+- [ ] **[B-0004.6](backlog/P2/B-0004.6-first-language-selection-adr.md)** B-0004.6 — First language selection ADR: evidence-based pick of pilot language + community outreach plan
+- [ ] **[B-0004.7](backlog/P2/B-0004.7-p0-substrate-translation-pilot-first-language.md)** B-0004.7 — P0 substrate translation pilot: translate CLAUDE/AGENTS/ALIGNMENT/GOVERNANCE/VISION into first chosen language
+- [ ] **[B-0004.8](backlog/P2/B-0004.8-precision-anchor-translations-first-language.md)** B-0004.8 — Precision anchor translations: extend anchors-en.json to anchors-<lang>.json for first language
+- [ ] **[B-0004.9](backlog/P2/B-0004.9-memory-skills-translation-first-language.md)** B-0004.9 — Memory + skills translation — first language (second deployment tier)
 - [ ] **[B-0005](backlog/P2/B-0005-split-aurora-from-courier-ferry-archive-generalize-named-entity-conversation-imports.md)** Split `docs/aurora/**` from courier-ferry archive — generalize "historical conversations imported from other AI systems / courier transport of messages between named entities" into its own directory
 - [ ] **[B-0011](backlog/P2/B-0011-pliny-carve-out-cross-surface-wording-tightening-no-verbatim-payload-excerpts.md)** Pliny carve-out cross-surface wording tightening — explicit "no verbatim payload excerpts" across CLAUDE.md + AGENTS.md + GOVERNANCE.md §5 + Pliny memory file
 - [x] **[B-0015](backlog/P2/B-0015-migrate-batch-resolve-pr-threads-to-bun-ts.md)** Migrate tools/git/batch-resolve-pr-threads.sh to bun+TS once a sibling post-setup tool migrates first
