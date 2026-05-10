@@ -69,6 +69,9 @@ type TropicalSemiring() =
         member _.One  = TropicalWeight.One
         member _.Add  a b = a + b   // min
         member _.Mul  a b = a * b   // saturating +
+        member _.Negate _ =
+            raise (System.InvalidOperationException(
+                "TropicalSemiring has no additive inverse — use IntegerRing for retraction"))
 
 [<RequireQualifiedAccess>]
 module TropicalSemiring =

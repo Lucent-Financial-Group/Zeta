@@ -21,7 +21,7 @@ let inline checkMonoidLaws (sr: ISemiring<'W>) (a: 'W) =
     sr.Mul a sr.One  |> should equal a
 
 /// Verify additive inverse: a + Negate(a) = Zero.
-let inline checkRingNegate (sr: IRing<'W>) (a: 'W) =
+let inline checkRingNegate (sr: ISemiring<'W>) (a: 'W) =
     sr.Add a (sr.Negate a) |> should equal sr.Zero
 
 
@@ -52,20 +52,20 @@ let ``IntegerRing — Negate`` () =
 [<Fact>]
 let ``IntegerRing — monoid laws`` () =
     let sr = IntegerRing.Instance
-    checkMonoidLaws (sr :> ISemiring<int64>) 42L
-    checkMonoidLaws (sr :> ISemiring<int64>) -7L
+    checkMonoidLaws sr 42L
+    checkMonoidLaws sr -7L
 
 [<Fact>]
 let ``IntegerRing — ring negate law`` () =
-    let sr : IRing<int64> = IntegerRing.Instance
+    let sr = IntegerRing.Instance
     checkRingNegate sr 42L
     checkRingNegate sr -7L
 
 [<Fact>]
 let ``IntegerRing — matches legacy Weight constants`` () =
-    // Ensure IRing<int64> aligns with existing Weight module.
-    (IntegerRing.Instance :> ISemiring<int64>).Zero |> should equal Weight.Zero
-    (IntegerRing.Instance :> ISemiring<int64>).One  |> should equal Weight.One
+    // Ensure ISemiring<int64> aligns with existing Weight module.
+    IntegerRing.Instance.Zero |> should equal Weight.Zero
+    IntegerRing.Instance.One  |> should equal Weight.One
 
 
 // ─── IntervalRing ─────────────────────────────────────────────────
@@ -124,13 +124,13 @@ let ``IntervalRing — Negate reverses interval`` () =
 [<Fact>]
 let ``IntervalRing — monoid laws`` () =
     let sr = IntervalRing.Instance
-    checkMonoidLaws (sr :> ISemiring<IntervalWeight>) (IntervalWeight(3.0, 7.0))
-    checkMonoidLaws (sr :> ISemiring<IntervalWeight>) (IntervalWeight(-1.0, 1.0))
+    checkMonoidLaws sr (IntervalWeight(3.0, 7.0))
+    checkMonoidLaws sr (IntervalWeight(-1.0, 1.0))
 
 [<Fact>]
 let ``IntervalRing — point intervals satisfy ring negate law`` () =
     // Point intervals [v,v] behave like real numbers: [v,v] + [-v,-v] = [0,0].
-    let sr : IRing<IntervalWeight> = IntervalRing.Instance
+    let sr = IntervalRing.Instance
     checkRingNegate sr (IntervalWeight.Point 3.0)
     checkRingNegate sr (IntervalWeight.Point -2.0)
 
@@ -194,8 +194,6 @@ let ``TropicalSemiring — monoid laws`` () =
     checkMonoidLaws sr TropicalWeight.Infinity
 
 [<Fact>]
-let ``TropicalSemiring — does not implement IRing (no additive inverse)`` () =
-    // The tropical semiring is a semiring, not a ring — it has no Negate.
-    // Verify at the type level that TropicalSemiring.Instance is not an IRing.
-    let isTropicalRing = TropicalSemiring.Instance :? IRing<TropicalWeight>
-    isTropicalRing |> should be False
+let ``TropicalSemiring — Negate raises (no additive inverse)`` () =
+    (fun () -> TropicalSemiring.Instance.Negate (TropicalWeight 1L) |> ignore)
+    |> should throw typeof<System.InvalidOperationException>
