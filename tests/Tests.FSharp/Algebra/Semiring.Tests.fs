@@ -21,8 +21,8 @@ let inline checkMonoidLaws (sr: ISemiring<'W>) (a: 'W) =
     sr.Mul a sr.One  |> should equal a
 
 /// Verify additive inverse: a + Negate(a) = Zero.
-let inline checkRingNegate (sr: ISemiring<'W>) (a: 'W) =
-    sr.Add a (sr.Negate a) |> should equal sr.Zero
+let inline checkRingNegate (sr: IRing<'W>) (a: 'W) =
+    (sr :> ISemiring<'W>).Add a (sr.Negate a) |> should equal (sr :> ISemiring<'W>).Zero
 
 
 // ─── IntegerRing ──────────────────────────────────────────────────
@@ -193,7 +193,5 @@ let ``TropicalSemiring — monoid laws`` () =
     checkMonoidLaws sr (TropicalWeight 10L)
     checkMonoidLaws sr TropicalWeight.Infinity
 
-[<Fact>]
-let ``TropicalSemiring — Negate raises (no additive inverse)`` () =
-    (fun () -> TropicalSemiring.Instance.Negate (TropicalWeight 1L) |> ignore)
-    |> should throw typeof<System.InvalidOperationException>
+// TropicalSemiring does not implement IRing — Negate is intentionally absent.
+// Callers that need retraction must use IntegerRing or IntervalRing.

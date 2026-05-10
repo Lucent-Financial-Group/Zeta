@@ -2,23 +2,32 @@ namespace Zeta.Core
 
 open System.Runtime.CompilerServices
 
-/// Semiring (ring) interface for first-class uncertainty in DBSP weights.
+/// Semiring interface for first-class uncertainty in DBSP weights.
 /// Enables ZSet<'K,'W> parameterization over integer, probabilistic,
-/// Gaussian, provenance, etc. semirings; Negate makes it a full ring,
-/// which retraction (negative weights) requires.
+/// Gaussian, provenance, tropical, etc. semirings.
 ///
 /// Axioms (all implementations must satisfy):
 ///   (S, Add, Zero) forms a commutative monoid
 ///   (S, Mul, One)  forms a monoid
 ///   Mul distributes over Add
 ///   Mul _ Zero = Zero (annihilator)
-///   Negate a `Add` a = Zero (additive inverse, ring axiom)
+///
+/// Note: semirings do NOT require an additive inverse. Semirings that also
+/// support negation implement IRing<'W> instead.
 type ISemiring<'W> =
-    abstract member Zero   : 'W                   // additive identity
-    abstract member One    : 'W                   // multiplicative identity
-    abstract member Add    : 'W -> 'W -> 'W       // ⊕
-    abstract member Mul    : 'W -> 'W -> 'W       // ⊗
-    abstract member Negate : 'W -> 'W             // additive inverse (ring)
+    abstract member Zero : 'W                   // additive identity
+    abstract member One  : 'W                   // multiplicative identity
+    abstract member Add  : 'W -> 'W -> 'W       // ⊕
+    abstract member Mul  : 'W -> 'W -> 'W       // ⊗
+
+/// Ring interface — extends ISemiring<'W> with an additive inverse.
+/// Retraction (negative weights in DBSP) requires a ring. Pure semirings
+/// (tropical, boolean, probabilistic) deliberately do not implement this.
+///
+/// Additional axiom: Negate a `Add` a = Zero
+type IRing<'W> =
+    inherit ISemiring<'W>
+    abstract member Negate : 'W -> 'W             // additive inverse
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -30,7 +39,7 @@ type ISemiring<'W> =
 /// multiplicity ring used by the current `ZSet<'K>`.
 [<Sealed>]
 type IntegerRing() =
-    interface ISemiring<int64> with
+    interface IRing<int64> with
         member _.Zero     = 0L
         member _.One      = 1L
         member _.Add  a b = Checked.(+) a b
@@ -40,26 +49,36 @@ type IntegerRing() =
 [<RequireQualifiedAccess>]
 module IntegerRing =
     /// Singleton instance — reuse rather than allocate.
-    let Instance : ISemiring<int64> = IntegerRing()
+    let Instance : IRing<int64> = IntegerRing()
 
 
 // ═══════════════════════════════════════════════════════════════════
 // INTERVAL WEIGHT  [lo, hi] ⊂ ℝ  — bounded-uncertainty ring
 // ═══════════════════════════════════════════════════════════════════
 
-/// Closed real interval `[Lo, Hi]` forming a ring under interval
-/// arithmetic. Represents "the true value lies in this range."
+/// Real interval weight `[Lo, Hi]` for bounded-uncertainty arithmetic.
+/// Represents "the true value lies somewhere in this range."
 ///
-/// Arithmetic rules follow Kaucher interval arithmetic:
+/// Arithmetic follows standard interval arithmetic:
 ///   Add:    [a,b] + [c,d] = [a+c, b+d]
-///   Mul:    [a,b] * [c,d] = [min(products), max(products)]
+///   Mul:    [a,b] * [c,d] = hull of corner products (Kaucher)
 ///   Negate: -[a,b]        = [-b, -a]
 ///
 /// Uncertainty interpretation: the width (Hi - Lo) is the epistemic
 /// uncertainty. A point interval [v, v] is certain. This generalises
-/// Spanner's TrueTime [earliest, latest] commit-wait interval to an
-/// algebraic ring, making interval uncertainty a first-class DBSP
-/// weight — same circuit topology, different semiring.
+/// Spanner's TrueTime [earliest, latest] commit-wait interval to a
+/// first-class DBSP weight — same circuit topology, different semiring.
+///
+/// Ring note: standard interval arithmetic has an additive inverse
+/// (-[a,b] = [-b,-a]) but does NOT satisfy the ring axiom for non-point
+/// proper intervals: [a,b] + (-[a,b]) = [a-b, b-a] ≠ [0,0] when a≠b.
+/// This is the interval dependency problem. Point intervals [v,v] do
+/// form a proper ring (isomorphic to ℝ). IntervalRing implements IRing
+/// for the Negate operation while callers should be aware that the ring
+/// axiom holds exactly only for point intervals.
+///
+/// Improper intervals (Lo > Hi) are allowed and are used in Kaucher
+/// arithmetic as the formal additive inverses.
 [<Struct; IsReadOnly; CustomEquality; NoComparison>]
 type IntervalWeight =
     val Lo : float
@@ -87,7 +106,7 @@ type IntervalWeight =
 
 [<Sealed>]
 type IntervalRing() =
-    interface ISemiring<IntervalWeight> with
+    interface IRing<IntervalWeight> with
         member _.Zero = IntervalWeight.Zero
         member _.One  = IntervalWeight.One
 
@@ -104,9 +123,10 @@ type IntervalRing() =
                 min (min p1 p2) (min p3 p4),
                 max (max p1 p2) (max p3 p4))
 
+        // -[a,b] = [-b,-a]; ring axiom holds for point intervals only.
         member _.Negate a = IntervalWeight(-a.Hi, -a.Lo)
 
 [<RequireQualifiedAccess>]
 module IntervalRing =
     /// Singleton instance — reuse rather than allocate.
-    let Instance : ISemiring<IntervalWeight> = IntervalRing()
+    let Instance : IRing<IntervalWeight> = IntervalRing()

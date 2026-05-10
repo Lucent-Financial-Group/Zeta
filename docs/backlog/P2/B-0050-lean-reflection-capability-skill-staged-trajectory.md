@@ -50,7 +50,7 @@ If Aaron meant "reflection" in the general programming sense (C#/F#/Java runtime
 
 ## Re-decomposition (2026-05-10, Riven background)
 
-Stage 1 landed in PR #2412. Re-decomposed per "assume decomposition has mistakes" rule: original 5-stage assumes linear progression; actual may interleave tactic authoring (Stage 2) with macro work (Stage 3) for Zeta algebra embedding. Smallest safe slice for this claim: B-0050.2 (tactic authoring competence) as standalone P2 row. Full re-decomp to follow in next slice.
+Stage 1 landed in PR #2412. Re-decomposed per "assume decomposition has mistakes" rule: original 5-stage assumes linear progression; actual may interleave tactic authoring (Stage 2) with macro work (Stage 3) for Zeta algebra embedding. Smallest safe next slice: B-0050.2 (tactic authoring competence) — planned as a follow-up P2 row; child row file to be created when that slice starts.
 
 ## Owner / effort
 

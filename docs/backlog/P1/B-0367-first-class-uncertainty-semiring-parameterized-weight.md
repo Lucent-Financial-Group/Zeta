@@ -1,14 +1,14 @@
 ---
 id: B-0367
 priority: P1
-status: claimed
+status: open
 title: "First-class uncertainty — semiring-parameterized weight type for DBSP"
 effort: L
 created: 2026-05-09
 last_updated: 2026-05-10
 depends_on: []
 classification: research
-decomposition: needs-decomposition
+decomposition: blob
 owners: [algebra-owner]
 type: feature
 tags: [algebra, uncertainty, semiring, bayesian, inference, openspec]
@@ -74,8 +74,14 @@ ZSet<'K, 'W when 'W : ISemiring>
     zero: 'W
     add: 'W -> 'W -> 'W
     mul: 'W -> 'W -> 'W
-    (optionally) negate: 'W -> 'W  // ring, not just semiring
+
+  and IRing extends ISemiring with:
+    negate: 'W -> 'W  // additive inverse; ring implementations only
 ```
+
+The algebra is now split: `ISemiring<'W>` is the base constraint; `IRing<'W>`
+adds `Negate` for implementations that support retraction (IntegerRing, IntervalRing).
+Pure semirings (TropicalSemiring) implement only `ISemiring<'W>`.
 
 Candidate weight types:
 
