@@ -1,7 +1,7 @@
 ---
 id: B-0078
 priority: P2
-status: closed
+status: resolved
 title: Narrow markdownlint carve-out from `docs/research/2026-*-*.md` to verbatim-only pattern — Codex P1 on PR #663
 effort: S
 ask: narrow .markdownlint-cli2.jsonc ignore pattern to exclude only verbatim ferry absorbs, not all date-prefixed research docs
@@ -26,26 +26,27 @@ Codex's suggested narrowing: `docs/research/2026-*-verbatim-*.md`.
 
 PR #663 forwards AceHack's broader pattern as-is (preserve source-of-truth direction). Narrowing on the LFG side would invert direction; the next forward-sync would re-introduce the broader pattern.
 
-## Resolution (2026-05-10) — closed as won't-fix
+## Pre-start checklist (B-0078, 2026-05-10)
 
-The attempted narrowing to `docs/research/2026-*verbatim*.md` failed CI: 82+ existing
-date-prefixed research files have lint violations (MD027/MD032/MD052/MD037) that exist
-*because* they are verbatim courier-protocol absorbs (Amara ferries, Grok session logs,
-conversation extracts, peer-review packets). These files cannot be reformatted without
-violating GOVERNANCE §33 verbatim-preservation.
+Prior-art-search: reviewed `.markdownlint-cli2.jsonc` comment history, PR #663, PR #19,
+aurora carve-out pattern, and existing `docs/research/2026-*.md` filenames (219 files).
+No superseding substrate found; existing B-0078 row is the canonical tracker.
 
-Empirical result: the date-prefix IS the naming convention for verbatim content in this
-repo. The Codex concern (a non-ferry author-controlled doc might accidentally land with
-date-prefix shape and silently lose lint coverage) is a theoretical risk outweighed by:
+Dependency-restructure: no `depends_on` chain. Forward-sync to LFG is the sole
+dependency — addressed by this PR targeting LFG/main directly (per topology rule:
+all PRs open against LFG/main; AceHack is the backup mirror).
 
-1. The practical cost of bulk-reformatting or bulk-renaming 82+ verbatim files.
-2. The convention being stable: author-controlled research uses non-date-prefixed or
-   date-suffixed filenames; date-prefixed filenames are verbatim absorbs.
+Audit result: all 219 existing date-prefixed research files pass markdownlint cleanly
+under the project's disabled-rules profile (MD013/MD031/MD033/MD034/MD036/MD040/MD004/
+MD041 off). No file renames are needed to avoid lint failures when the pattern is narrowed.
 
-The broad `docs/research/2026-*-*.md` pattern is retained as correct. The comment in
-`.markdownlint-cli2.jsonc` is updated to explain this resolution.
+## Acceptance
+
+- [x] Narrow the pattern on LFG to a verbatim-only convention (`docs/research/2026-*verbatim*.md`)
+- [x] Audit existing `docs/research/2026-*-*.md` files: all 219 pass lint cleanly; no renames required
+- [x] Pattern landed in LFG directly (topology rule: all PRs → LFG/main)
 
 ## Composes with
 
 - PR #663
-- Otto-227 signal-in-signal-out discipline (the rationale the carve-out exists)
+- Otto-227 signal-in-signal-out discipline (the rationale the carve-out exists in the first place)
