@@ -213,6 +213,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0373](backlog/P1/B-0373-alignment-proof-primitive-ladder-one-type-one-property.md)** Alignment proof primitive ladder — one type, one falsifiable property
 - [x] **[B-0396](backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md)** Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations
 - [ ] **[B-0400](backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md)** Inter-agent ephemeral communication bus — NATS/F#/TS protocol for background service coordination
+- [ ] **[B-0401](backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md)** Demo surface — AI circuit breaker + Hamiltonian-to-git alignment UI + operational resonance dashboard integration
 
 ## P2 — research-grade
 
