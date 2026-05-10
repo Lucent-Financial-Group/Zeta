@@ -7,7 +7,7 @@ tier: substrate-quality
 effort: M
 parent: B-0060
 created: 2026-05-08
-last_updated: 2026-05-10 (slice-6)
+last_updated: 2026-05-10 (slice-8)
 depends_on: [B-0311]
 composes_with: [B-0060]
 tags: [substrate-quality, external-anchors, best-practices, beacon-safety, research]
@@ -71,7 +71,13 @@ BP-1 through BP-28 as enumerated in
 | BP-15 | anchored (slice 5, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md` |
 | BP-05 | anchored (slice 6, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md` |
 | BP-06 | anchored (slice 6, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md` |
-| BP-17–BP-28 | anchor-pending | slices 7+ |
+| BP-17 | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
+| BP-18 | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
+| BP-19 | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
+| BP-20 | anchored (slice 8, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
+| BP-21 | anchored (slice 8, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
+| BP-22 | anchored (slice 8, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
+| BP-23–BP-28 | anchor-pending | slices 9+ |
 
 **Slice-1 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice1
 **Slice-2 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice2
@@ -79,6 +85,8 @@ BP-1 through BP-28 as enumerated in
 **Slice-4 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice4
 **Slice-5 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice5
 **Slice-6 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice6
+**Slice-7 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice7 (in progress)
+**Slice-8 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice8
 
 ## Pre-start checklist (2026-05-10, Otto)
 
