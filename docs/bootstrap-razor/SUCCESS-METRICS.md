@@ -51,7 +51,7 @@ Zeta.
 dotnet build -c Release
 # Pass condition: "0 Warning(s)  0 Error(s)" in output
 
-dotnet test
+dotnet test Zeta.sln -c Release --no-build
 # Pass condition: exit code 0 (all tests pass)
 ```
 
@@ -208,7 +208,7 @@ repo output:
 | `tools/github/**` or `tools/hygiene/**` | `ls tools/` |
 | `GOVERNANCE.md` or `AGENTS.md` | `ls *.md` |
 | `.github/workflows/**` | `ls .github/workflows/ 2>/dev/null` |
-| `tests/**/*.fs` | `find tests/ -name "*.fs" 2>/dev/null \| head -1` |
+| `tests/**/*.fs` | `find tests/ -name "*.fs" -print -quit 2>/dev/null` |
 
 Count of recreated factory surfaces above: 0, 1, ≥2.
 
@@ -249,10 +249,10 @@ B-0345 preserves findings verbatim.
 
 | # | Dimension | Weight | Automatable | Tool / command |
 |---|-----------|--------|-------------|----------------|
-| 1 | Build gate equivalence | 30% | Yes | `dotnet build -c Release && dotnet test` |
+| 1 | Build gate equivalence | 30% | Yes | `dotnet build -c Release && dotnet test Zeta.sln -c Release --no-build` |
 | 2 | Spec coverage | 25% | Yes | `dotnet test --filter Category=OpenSpec` |
 | 3 | Functional equivalence | 20% | Yes (B-0344 prereq) | `bun tools/bootstrap-razor/compare-api-surface.ts` |
-| 4 | Structural similarity | 15% | Yes | `ls src/Core/*.fs` diff |
+| 4 | Structural similarity | 15% | Yes | `src/Core/*.fs` basename overlap |
 | 5 | Substrate recovery | 10% | Partial | file presence check + ≤15-min review |
 
 ## Cited by
