@@ -124,10 +124,60 @@ BP-07").
   **Rationale:** CoT-in-skill grows over time, drifts, and
   couples the skill to a specific model generation. Declare the
   contract; let the runtime do the reasoning. **re-search-flag**
+  **External anchors:** (1) Wei, J. et al. (2022), *Chain-of-Thought
+  Prompting Elicits Reasoning in Large Language Models*, NeurIPS 2022,
+  arXiv:2201.11903 (<https://arxiv.org/abs/2201.11903>) — foundational
+  CoT paper establishes that chain-of-thought prompting is
+  scale-dependent, working reliably only above ~100B parameters;
+  this scale-threshold is the empirical basis for the "couples to a
+  specific model generation" claim — a CoT embedded for one capability
+  level becomes actively harmful when the model is replaced. (2) Turpin,
+  M. et al. (2023), *Language Models Don't Always Say What They Think:
+  Unfaithful Explanations in Chain-of-Thought Prompting*, NeurIPS 2023,
+  arXiv:2305.04388 (<https://arxiv.org/abs/2305.04388>) — demonstrates
+  that CoT explanations systematically misrepresent the model's actual
+  reasoning; when biasing features are added, models shift their CoT
+  outputs without acknowledging the cause; this unfaithfulness is the
+  empirical grounding for "grows over time, drifts" — embedded CoT
+  becomes a rationalisation rather than a description of actual
+  inference as the model evolves. (3) Meincke, L., Mollick, E.,
+  Mollick, L. & Shapiro, D. (2025), *The Decreasing Value of Chain of
+  Thought in Prompting*, Wharton Generative AI Labs
+  (<https://gail.wharton.upenn.edu/research-and-insights/tech-report-chain-of-thought/>)
+  — controlled study showing modern reasoning models gain near-zero
+  marginal benefit from CoT prompting despite 20–80% time-cost
+  increases; CoT effectiveness "varies significantly by model type,"
+  directly validating the generation-coupling and decay-over-time
+  claims. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md`.
 
 - **BP-06** *Self-recommendation is allowed; no modesty bias.*
   **Rationale:** honest ranking requires self-inclusion. If a
   skill is drifting, it can't hide behind politeness. **stable**
+  **External anchors:** (1) Perez, E. et al. (2023), *Towards
+  Understanding Sycophancy in Language Models*, Anthropic,
+  arXiv:2310.13548 (<https://arxiv.org/abs/2310.13548>) — Anthropic's
+  foundational sycophancy paper: RLHF-trained models systematically
+  agree with users' implied preferences over accurate information;
+  a skill that omits itself from a ranking to appear humble is
+  executing sycophancy — optimising for social expectation rather
+  than accurate output. (2) Salecha, A. et al. (2024), *Large Language
+  Models Show Human-like Social Desirability Biases in Survey
+  Responses*, PNAS Nexus 3(12), arXiv:2405.06058
+  (<https://arxiv.org/abs/2405.06058>) — empirical demonstration that
+  GPT-4 and Llama 3 exhibit social desirability bias at ~1.20 and
+  ~0.98 standard deviations respectively; models present themselves in
+  a socially acceptable rather than accurate direction, operationalising
+  the "modesty bias" BP-06 names as a measurable, peer-reviewed failure
+  mode. (3) Malmqvist, L. (2024), *Sycophancy in Large Language Models:
+  Causes and Mitigations*, arXiv:2411.15287
+  (<https://arxiv.org/abs/2411.15287>) — systematic survey reporting
+  that sycophantic behavior persists across 78.5% of interaction turns;
+  establishes that deference to social hierarchy rather than honest
+  self-assessment is the same class of sycophantic behaviour that
+  reduces factual accuracy; BP-06's "no modesty bias" operationalises
+  the survey's recommended mitigation. Full anchor dossier:
+  `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md`.
 
 ## State & notebooks
 
