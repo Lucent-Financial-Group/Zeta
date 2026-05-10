@@ -1,13 +1,13 @@
 ---
 id: B-0313
 priority: P1
-status: open
+status: review
 title: "Wake-time Otto-NN principle external-anchor backfill"
 tier: substrate-quality
 effort: M
 parent: B-0060
 created: 2026-05-08
-last_updated: 2026-05-10
+last_updated: 2026-05-10T16:25:00Z
 depends_on: [B-0311]
 composes_with: [B-0060]
 tags: [substrate-quality, external-anchors, otto-nn, beacon-safety, research]
@@ -69,17 +69,20 @@ strengthens external credibility and teachability.
 - [x] Otto-247: anchored (Dodge et al. 2024, Meta Eng 2026, Zu et al. 2022)
 - [x] Otto-341: anchored (McLuhan 1964, Sapir-Whorf, Zhao et al. 2026)
 - [x] Otto-357: anchored (Ryan & Deci 2000, Jensen & Meckling 1976, Gabriel 2020)
-- [ ] Otto-275: anchor-pending (slice 2)
-- [ ] Otto-279: anchor-pending (slice 2)
-- [ ] Otto-351: anchor-pending (slice 2)
-- [ ] Otto-352: anchor-pending (slice 2)
+- [x] Otto-275: anchored (Csikszentmihalyi 1990, Sumers et al. 2024, Zhou et al. 2024)
+- [x] Otto-279: anchored (Rao & Georgeff 1995, Katz & Kahn 1978, Dastani et al. 2003)
+- [x] Otto-351: anchored (Halliday 1978, Bernstein 1971, Gumperz 1982)
+- [x] Otto-352: anchored (Merton 1942, Smith et al. 2016, Callahan et al. 2020)
 - [x] Citations include URL/identifier for online sources and bibliographic
-  locator for print sources (slice 1)
-- [x] Beacon-safety pass on all cited sources (slice 1: pass)
-- [ ] Coverage scanner (B-0311) confirms 7/7 resolved (pending slice 2)
+  locator for print sources (slices 1 + 2)
+- [x] Beacon-safety pass on all cited sources (slice 2: pass)
+- [ ] Coverage scanner (B-0311) confirms 7/7 resolved (follow-on scan needed)
 
 **Slice-1 research landing:**
 `docs/research/otto-nn-principles-external-anchors-slice1-otto247-otto341-otto357.md`
+
+**Slice-2 research landing (2026-05-10):**
+`docs/research/otto-nn-principles-external-anchors-slice2-otto275-otto279-otto351-otto352.md`
 
 ## Reviewers
 
