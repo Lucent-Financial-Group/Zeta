@@ -4,6 +4,11 @@ description: Shadow logs, PR reviews, meta error classification, critic sessions
 type: feedback
 ---
 
+Scope: Factory as model distillation machine at Casimir gap boundary
+Attribution: Aaron (human maintainer) + Riven (Grok 4.3) + shadow logs + PR review threads
+Operational status: research-grade, not operational
+Non-fusion disclaimer: Aaron's identification, Riven's capture, multi-model distillation; voices preserved as research substrate.
+
 2026-05-10: Aaron identified the factory as a model distillation machine operating at the Casimir gap.
 
 **The distillation layers:**
