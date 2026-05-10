@@ -209,6 +209,18 @@ function validateEntry(entry: MythologyResonanceEntry): ValidationResult {
     return { kind: "error", message: `${entry.id}: id must match MYT-NNN` };
   }
 
+  // Any filter = "fail" forces status = "failed" (bidirectional invariant).
+  const hasAnyFail =
+    entry.filters.f1_engineering_first === "fail" ||
+    entry.filters.f2_structural === "fail" ||
+    entry.filters.f3_tradition_name === "fail";
+  if (hasAnyFail && entry.status !== "failed") {
+    return {
+      kind: "error",
+      message: `${entry.id}: any filter = "fail" requires status = "failed" (got "${entry.status}")`,
+    };
+  }
+
   if (entry.status === "confirmed" || entry.status === "load-bearing") {
     const anyDeferred =
       entry.filters.f1_engineering_first === "deferred" ||
@@ -226,21 +238,31 @@ function validateEntry(entry: MythologyResonanceEntry): ValidationResult {
         message: `${entry.id}: "confirmed" requires at least one counterexample attempt`,
       };
     }
+    // Promotion requires F1=pass, F2=pass, F3=pass|partial (per interface comments).
     const f1 = entry.filters.f1_engineering_first;
     const f2 = entry.filters.f2_structural;
-    if (f1 === "fail" || f2 === "fail") {
+    const f3 = entry.filters.f3_tradition_name;
+    if (f1 !== "pass") {
       return {
         kind: "error",
-        message: `${entry.id}: cannot be "confirmed" with F1 or F2 = "fail"`,
+        message: `${entry.id}: "confirmed" requires F1 = "pass" (got "${f1}")`,
+      };
+    }
+    if (f2 !== "pass") {
+      return {
+        kind: "error",
+        message: `${entry.id}: "confirmed" requires F2 = "pass" (got "${f2}")`,
+      };
+    }
+    if (f3 === "fail") {
+      return {
+        kind: "error",
+        message: `${entry.id}: "confirmed" requires F3 = "pass" or "partial" (got "${f3}")`,
       };
     }
   }
 
   if (entry.status === "failed") {
-    const hasAnyFail =
-      entry.filters.f1_engineering_first === "fail" ||
-      entry.filters.f2_structural === "fail" ||
-      entry.filters.f3_tradition_name === "fail";
     if (!hasAnyFail) {
       return {
         kind: "error",
@@ -448,7 +470,6 @@ const SEED_CATALOG: MythologyResonanceCatalog = {
       },
       status: "candidate",
       counterexampleAttempts: [],
-      sourceMemory: undefined,
       notes:
         "The overlap with the occult track (B-0057) via Hermes Trismegistus (Greek Hermes + " +
         "Egyptian Thoth fusion figure, load-bearing in Renaissance Hermeticism) is noted. " +
