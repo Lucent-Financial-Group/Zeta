@@ -243,12 +243,13 @@ export async function snapshot(repo: string): Promise<string> {
   const pagesRaw = await ghApiOptional(`/repos/${repo}/pages`, "{source, build_type, https_enforced, public}");
   const pages = parseJsonSafe(pagesRaw);
 
-  // CodeQL default setup
-  const codeqlRaw = await ghApi(
+  // CodeQL default setup — requires admin token; falls back to a sentinel when the
+  // GITHUB_TOKEN in CI lacks that scope (HTTP 403).
+  const codeqlRaw = await ghApiOptional(
     `/repos/${repo}/code-scanning/default-setup`,
     "{state, languages: (.languages | sort), query_suite}"
   );
-  const codeql = parseJsonSafe(codeqlRaw);
+  const codeql = codeqlRaw === null ? { _skipped: "insufficient-token-scope" } : parseJsonSafe(codeqlRaw);
 
   // Counts
   const webhooksCountRaw = await ghApi(`/repos/${repo}/hooks`, "length");
