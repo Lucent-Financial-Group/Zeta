@@ -246,6 +246,11 @@ function resolveTarget(
   return null;
 }
 
+function looksLikeWrappedTargetContinuation(text: string): boolean {
+  const stripped = stripMarkdownStructuralPrefix(text.trim());
+  return stripped.startsWith("`") || stripped.startsWith("[") || stripped.startsWith("<");
+}
+
 function supersededByMarkerLines(targetContent: string): string[] {
   const allLines = targetContent.split("\n");
   const lines: string[] = [];
@@ -274,9 +279,9 @@ function supersededByMarkerLines(targetContent: string): string[] {
     if (!/\bsuperseded by\b/i.test(line)) continue;
 
     const parts = [line.trim()];
-    const next = lines[i + 1]?.trim();
-    if (next !== undefined && next.length > 0) {
-      parts.push(stripMarkdownStructuralPrefix(next));
+    const nextRaw = lines[i + 1] ?? "";
+    if (nextRaw.trim().length > 0 && looksLikeWrappedTargetContinuation(nextRaw)) {
+      parts.push(stripMarkdownStructuralPrefix(nextRaw.trim()));
     }
     markerLines.push(parts.join(" "));
   }

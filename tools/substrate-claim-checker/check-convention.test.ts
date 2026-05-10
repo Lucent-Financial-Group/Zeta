@@ -322,6 +322,35 @@ describe("checkFile", () => {
     }
   });
 
+  test("does not accept prose continuation after superseded-by line as a marker", () => {
+    const fx = setupRepo();
+    try {
+      const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
+      const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
+      // old.md: "superseded by" appears in prose; the NEXT line contains the ADR name as prose too
+      writeFileSync(
+        oldAdr,
+        [
+          "# ADR old",
+          "",
+          "This approach was superseded by",
+          "new.md conventions adopted later.",
+        ].join("\n"),
+      );
+      writeFileSync(
+        newAdr,
+        "Supersedes ADR `docs/DECISIONS/old.md`.\n",
+      );
+
+      const result = checkFile(newAdr);
+      expect(result.ok).toBe(true);
+      // prose continuation must not satisfy the reciprocal marker — finding expected
+      expect(result.findings).toHaveLength(1);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
   test("does not false-positive on superseded-by text inside fenced code in marker scan", () => {
     const fx = setupRepo();
     try {
