@@ -22,18 +22,22 @@ type: friction-reducer
 Original scope was M-effort and doc-heavy. Re-decomposed into 7 dependency-ordered atomic children (B-0037.1–B-0037.7), all S-effort, P2/P3, with two buildable roots now. Prefer TS code slices over pure docs. Root children unblock the rest.
 
 **Buildable now (no deps):**
+
 - B-0037.1 — TS meta-move taxonomy scanner (smallest safe code slice: scans .claude/skills/ + docs/ for overclaim*/decohere*/meta* patterns, emits JSON report)
 - B-0037.2 — Per-round meta-check cadence template (append-only checklist for ROUND-HISTORY.md)
 
 **Blocked on .1:**
+
 - B-0037.3 — Meta-cognition measurables extractor (TS, consumes scanner output, wires self-corrections etc.)
 - B-0037.4 — Distributed-vs-concentrated framework decision ADR stub (code + doc)
 
 **Blocked on .2:**
+
 - B-0037.5 — Meta-drift detection lag measurer (TS)
 - B-0037.6 — Higher-order retractible-ceiling test harness (F# property tests for retraction safety)
 
 **Blocked on .1+.2:**
+
 - B-0037.7 — Meta-cognition dashboard stub (alignment-trajectory integration)
 
 This re-decomp corrects: (a) no code-first bias in original, (b) deliverables not atomic, (c) missing retraction-native emphasis from revision.

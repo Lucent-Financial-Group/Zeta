@@ -59,16 +59,9 @@ type TropicalWeight =
 // ─── TropicalSemiring — ISemiring<TropicalWeight> implementation ──
 
 /// `ISemiring<TropicalWeight>` over `(ℤ∪{∞}, min, +)`.
-<<<<<<< HEAD
 /// The tropical semiring has no additive inverse — it satisfies ISemiring
 /// but NOT IRing. Callers that need retraction (negative weights) must use
 /// IntegerRing or IntervalRing instead.
-=======
-/// Note: the tropical semiring has NO additive inverse (Negate),
-/// so `Negate` raises `InvalidOperationException` — this is a
-/// *semiring*, not a ring. Callers that need retraction must use
-/// `IntegerRing` or `IntervalRing`.
->>>>>>> a27aecf (claim(B-0367): semiring-weight instances — IntegerRing, IntervalRing, TropicalSemiring with 25 smoke tests)
 [<Sealed>]
 type TropicalSemiring() =
     interface ISemiring<TropicalWeight> with
@@ -76,12 +69,9 @@ type TropicalSemiring() =
         member _.One  = TropicalWeight.One
         member _.Add  a b = a + b   // min
         member _.Mul  a b = a * b   // saturating +
-<<<<<<< HEAD
-=======
         member _.Negate _ =
             raise (System.InvalidOperationException(
                 "TropicalSemiring has no additive inverse — use IntegerRing for retraction"))
->>>>>>> a27aecf (claim(B-0367): semiring-weight instances — IntegerRing, IntervalRing, TropicalSemiring with 25 smoke tests)
 
 [<RequireQualifiedAccess>]
 module TropicalSemiring =
