@@ -7,7 +7,7 @@ tier: operational-resonance-research
 effort: L
 ask: Aaron 2026-04-21 — *"hemdal"* (Heimdallr, single-word candidate) then *"mythology backlog"*
 created: 2026-04-26
-last_updated: 2026-05-02
+last_updated: 2026-05-10
 depends_on: []
 composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, B-0057, B-0058, B-0059, docs/ALIGNMENT.md]
 tags: [mythology, heimdallr, hermes, mercury, janus, iris, ratatoskr, thoth, garuda, quetzalcoatl, loki, bridge-figures, messenger, paired-dual, three-filter, F1-F2-F3]
@@ -29,6 +29,15 @@ Three-filter honest pass recorded in the operational-resonance index:
 - **F3 passes** within Norse tradition but Norse-canonicity is thinner than Abrahamic (Christianization-filtered Eddas)
 
 **Status:** candidate, pending second textual anchor or Aaron confirmation to promote to confirmed. Second bridge-figure member would LOCK the bridge-figure sub-structure's definition (currently defined by Melchizedek alone).
+
+## Smallest safe slice (B-0056.1) — re-decomposition
+Re-decomposed from broad L-effort track (assumes initial doc-only decomp had mistake lacking executable check surface). 
+
+**Bounded step:** pure-TS mythology candidate schema + three-filter types + Heimdallr seed + validator stub (modeled on B-0055.2 edge-claims pattern). 
+
+- File: `tools/mythology-resonance/candidate-schema.ts`
+- Focused checks: type check + manual review of retractibility note + build gate (0w 0e)
+- One PR only; wider candidates (Hermes etc.) become later .2+ children after this lands.
 
 ## Wider-track candidates (to be triaged individually)
 
