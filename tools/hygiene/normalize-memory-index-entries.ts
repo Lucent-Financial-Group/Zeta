@@ -129,7 +129,7 @@ const normalized = lines.map(normalizeLine);
 const changes: Array<{ lineNum: number; oldLen: number; newLen: number; old: string; next: string }> = [];
 for (let i = 0; i < lines.length; i++) {
   if (lines[i] !== normalized[i]) {
-    changes.push({ lineNum: i + 1, oldLen: lines[i].length, newLen: normalized[i].length, old: lines[i], next: normalized[i] });
+    changes.push({ lineNum: i + 1, oldLen: lines[i]!.length, newLen: normalized[i]!.length, old: lines[i]!, next: normalized[i]! });
   }
 }
 const stillOver = normalized.filter((l) => l.length > MAX_LINE);
