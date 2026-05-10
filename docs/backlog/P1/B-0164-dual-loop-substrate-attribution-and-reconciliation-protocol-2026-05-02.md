@@ -64,6 +64,30 @@ Aaron's morning reconciliation has to resolve these. The architecture's commitme
 - Named-agent distinctness commitment (Otto-279) — Codex would be a distinct named agent
 - BFT-many-masters at cognitive layer — this is the loop-layer counterpart
 
+## Pre-start checklist (2026-05-10, fix/B-0164-divergence-shard-schema)
+
+**Slice**: AC #4 only — substrate-divergence shard schema (`docs/hygiene-history/divergences/` README)
+
+### 1. Prior-art search
+
+- `wake-time-substrate`: tick shard README at `docs/hygiene-history/ticks/README.md` — no divergence directory or schema found
+- `skill-router`: no skill named "divergence-shard" or "dual-loop"
+- `orthogonal-axes` / `tools/hygiene/LOST-FILES-LOCATIONS.md`: no existing divergence surface
+- `Otto-364` (search-first): `docs/backlog/P1/B-0164-*.md` is the only source naming the `divergences/` path
+- `PR #1701` prior-art grep: `grep -r "divergences/" docs/` returns only the B-0164 row itself
+- `decision-archaeology` via `git log --all --oneline -- docs/hygiene-history/divergences/`: no history
+- **Result**: no prior art found; directory does not exist; safe to create
+
+### 2. Dependency restructure
+
+- `depends_on: B-0160` — B-0160 is P0 (`docs/backlog/P0/B-0160-*.md`); the divergence-shard schema (AC #4) does not depend on B-0160's harness integration; AC #4 is schema-only, safe to land independently
+- `composes_with: B-0162, B-0163` — B-0162 (pre-commit hook, P1) and B-0163 (append-tick-history-row.sh retirement, P3) are independent; no pointer update needed for this slice
+- `composes_with: ticks/README.md` — reciprocal pointer added in divergences/README.md
+
+### 3. Proof of isolation
+
+ACs #1 (attribution channel), #3 (branch attribution) are already satisfied by existing substrate. AC #2 (PR review protocol) and AC #6 (cron coordination) require dual-loop running. AC #5 (tooling) is gated by B-0163. AC #4 is the only AC deliverable without those dependencies.
+
 ## Effort
 
 L — substantial work. ~1-2 weeks for full implementation including Codex onboarding, tooling adjustment, divergence-shard format, cron coordination.
