@@ -1,6 +1,6 @@
 ---
 name: ml-engineering-expert
-description: Applied ML engineering — training, fine-tuning (LoRA/RLHF/DPO), embeddings, vector stores, feature pipelines, model-serving, distillation, quantisation.
+description: "Applied ML engineering — fine-tuning (LoRA/RLHF/DPO), embeddings, feature pipelines, model-serving, distillation, quantisation."
 ---
 
 # ML Engineering Expert — the applied-ML hat

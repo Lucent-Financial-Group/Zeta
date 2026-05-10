@@ -1,6 +1,6 @@
 ---
 name: writing-expert
-description: English-prose discipline for factory artefacts — README clarity, ADR structure, commit messages, API docs, technical precision, concise over verbose.
+description: "English prose for factory artifacts — README clarity, ADR structure, commit messages, API docs, technical precision."
 ---
 
 # Writing Expert — English-Prose Discipline for Factory Artefacts

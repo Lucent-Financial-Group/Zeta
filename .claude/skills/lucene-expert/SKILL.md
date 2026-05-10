@@ -1,6 +1,6 @@
 ---
 name: lucene-expert
-description: "Apache Lucene / Lucene.NET internals — IndexWriter/Analyzer/Similarity, BM25, HNSW vectors, Codec pluggability, merge policy, explain-plan debugging."
+description: "Lucene / Lucene.NET — IndexWriter, Analyzer, BM25, HNSW vectors, Codec pluggability, merge policy, explain-plan."
 ---
 
 # Lucene Expert — the JVM Library

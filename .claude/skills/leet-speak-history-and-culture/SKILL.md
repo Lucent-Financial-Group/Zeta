@@ -1,6 +1,6 @@
 ---
 name: leet-speak-history-and-culture
-description: "Leet-speak culture and history — BBS/phreaking origins, cDc/Phrack/warez scene, shibboleth function, authentic vs performative l33t, adjacent dialects."
+description: "Leet-speak culture/history — BBS/phreaking, cDc/Phrack/warez, shibboleth, authentic vs performative l33t, adjacent dialects."
 ---
 
 # Leet-Speak History and Culture — the why-and-when hat

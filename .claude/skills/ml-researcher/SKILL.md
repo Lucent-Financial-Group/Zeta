@@ -1,6 +1,6 @@
 ---
 name: ml-researcher
-description: ML theory research — PAC bounds, SGD/optimization, Bayesian nonparametrics, causal inference, kernel methods, convergence proofs, paper-level reading.
+description: "ML theory research — PAC bounds, SGD/optimization, Bayesian nonparametrics, causal inference, kernel methods, convergence proofs."
 ---
 
 # ML Researcher — the ML-theory / classical-ML research hat

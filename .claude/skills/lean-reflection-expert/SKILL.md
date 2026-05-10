@@ -1,6 +1,6 @@
 ---
 name: lean-reflection-expert
-description: "Lean 4 reflection and metaprogramming — read and diagnose code using MetaM, TermElabM, TacticM, macro, elab_rules, Syntax/Expr pipeline, @[simp]/@[reducible]/@[irreducible] attributes. Stage 1: read-only competence. Complements lean4-expert (build/proofs). Routes from formal-verification-expert when the question is about Lean metaprogramming rather than proof strategy."
+description: "Lean 4 metaprogramming — MetaM, TermElabM, TacticM, macro/elab_rules, Syntax/Expr pipeline, simp/reducible attributes."
 stage: 1
 backlog: B-0050
 ---

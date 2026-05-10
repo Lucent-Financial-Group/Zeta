@@ -1,6 +1,6 @@
 ---
 name: search-engine-library-expert
-description: Embeddable search libraries — Lucene, Tantivy, Xapian, Bleve, Quickwit; segment architecture, merge policies, NRT, codecs, FST term dicts, posting codecs.
+description: "Embeddable search libraries — Lucene, Tantivy, Xapian, Bleve, Quickwit; segments, NRT, codecs, FST term dicts, posting codecs."
 ---
 
 # Search-Engine Library Expert — Lucene, Tantivy, Xapian et al

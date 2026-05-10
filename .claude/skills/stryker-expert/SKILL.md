@@ -1,6 +1,6 @@
 ---
 name: stryker-expert
-description: Stryker.NET mutation testing — mutation-score interpretation, threshold policy, operator selection, survivor triage, stryker-config.json hygiene, CI cost.
+description: "Stryker.NET mutation testing — score interpretation, threshold policy, operator selection, survivor triage, CI cost."
 ---
 
 # Stryker Expert — Tool-Level Skill

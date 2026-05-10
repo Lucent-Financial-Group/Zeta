@@ -1,6 +1,6 @@
 ---
 name: vector-database-expert
-description: Vector databases — Milvus, Weaviate, Qdrant, pgvector, Pinecone; HNSW/IVF-PQ indexing, ANN benchmarks, hybrid search, embedding pipeline integration.
+description: "Vector databases — Milvus, Weaviate, Qdrant, pgvector, Pinecone; HNSW/IVF-PQ, ANN benchmarks, hybrid search, embeddings."
 ---
 
 # Vector-Database Expert — Dense Vector ANN
