@@ -341,7 +341,15 @@ export async function mutate(
     };
 
     if (options.skipLog !== true) {
-      appendEntry(drainLogEntry, options.logPath ?? DEFAULT_LOG_PATH);
+      const resolvedLogPath = options.logPath ?? DEFAULT_LOG_PATH;
+      try {
+        appendEntry(drainLogEntry, resolvedLogPath);
+      } catch (err) {
+        throw new MutationExecutionError(
+          `drain-log append failed (logPath: ${resolvedLogPath})`,
+          { cause: err },
+        );
+      }
     }
 
     return { success: true, before, after, diff, drainLogEntry };

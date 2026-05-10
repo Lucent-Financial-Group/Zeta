@@ -1,7 +1,7 @@
 ---
 id: B-0322
 priority: P1
-status: done
+status: closed
 title: "Mutation reversibility drain log — inverse-action record for every UI mutation"
 tier: agent-capability-expansion
 effort: S

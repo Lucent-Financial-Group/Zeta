@@ -481,7 +481,8 @@ describe("mutate — drain log auto-write", () => {
 
   test("does not write when skipLog is true", async () => {
     const logPath = tempLogPath();
-    await mutate(req, { ...makeOpts(makePage()), logPath, skipLog: true });
+    const result = await mutate(req, { ...makeOpts(makePage()), logPath, skipLog: true });
+    expect(result.success).toBe(true);
     expect(existsSync(logPath)).toBe(false);
   });
 
