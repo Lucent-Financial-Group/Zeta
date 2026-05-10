@@ -8,21 +8,53 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(scriptDir, "../..");
 const manifestPath = resolve(repoRoot, "docs/bootstrap-razor/SEED-MANIFEST.md");
 
+function extractYamlListBlock(source: string, key: string): string[] {
+  const yamlFenceMatches = source.matchAll(/```ya?ml\s*\n([\s\S]*?)```/gi);
+  for (const fenceMatch of yamlFenceMatches) {
+    const yamlBody = fenceMatch[1];
+    if (yamlBody === undefined) {
+      continue;
+    }
+
+    const lines = yamlBody.split(/\r?\n/);
+    const keyLineIndex = lines.findIndex((line) => line.trim() === `${key}:`);
+    if (keyLineIndex < 0) {
+      continue;
+    }
+
+    const entries: string[] = [];
+    for (const line of lines.slice(keyLineIndex + 1)) {
+      if (/^\S/.test(line) && line.trim().endsWith(":")) {
+        break;
+      }
+
+      const uncommented = line.replace(/\s+#.*$/, "").trim();
+      if (!uncommented.startsWith("- ")) {
+        continue;
+      }
+
+      const entry = uncommented.slice(2).trim();
+      if (entry.length > 0) {
+        entries.push(entry);
+      }
+    }
+
+    return entries;
+  }
+
+  return [];
+}
+
 export function main(argv: string[]): number {
   const dryRun = argv.includes("--dry-run");
 
   if (dryRun) {
     const manifest = readFileSync(manifestPath, "utf8");
     console.log("DRY-RUN: would read manifest from", manifestPath);
-    // Capture only the fenced YAML block content under `include:`, stopping
-    // before the closing fence (```) to avoid leaking Markdown syntax.
-    const includeMatch = manifest.match(
-      /include:\s*```yaml\s*([\s\S]*?)```/,
-    );
-    if (includeMatch) {
-      const captured = includeMatch[1];
+    const includeGlobs = extractYamlListBlock(manifest, "include");
+    if (includeGlobs.length > 0) {
       console.log("DRY-RUN: would seed these globs:");
-      console.log(captured !== undefined ? captured.trim() : "(empty)");
+      console.log(includeGlobs.join("\n"));
     } else {
       console.log("DRY-RUN: manifest parse fallback (no fenced include block)");
     }
