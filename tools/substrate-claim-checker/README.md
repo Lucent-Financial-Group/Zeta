@@ -3,7 +3,7 @@
 Substrate-claim-checker per the verify-then-claim discipline memo
 (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
 
-Catches 4 of the 7 sub-classes B-0170 names:
+Catches 5 B-0170 check-types:
 
 - **Count drift** (v0.4.4) — between narrative claims (e.g. "18+ drift
   instances", "13-row table", "5 procedure skills") and the actual
@@ -19,15 +19,20 @@ Catches 4 of the 7 sub-classes B-0170 names:
   Catches eval-set instances #19 and #20 (frontmatter claims a count
   that diverges from the actual table row count). Implemented in
   `check-cross-surface.ts`.
+- **Convention drift** (v0.9) — claims that a current ADR supersedes
+  an earlier ADR when the earlier ADR lacks the reciprocal top-of-file
+  `Superseded by` marker naming the superseding ADR. Implemented in
+  `check-convention.ts`.
 
-The remaining 3 sub-classes (semantic-equivalence, empirical-output,
-convention) are deferred to v0.9+.
+The remaining deferred check-types include semantic-equivalence,
+empirical-output, and self-recursive drift.
 
 ## Usage
 
 ```bash
 bun tools/substrate-claim-checker/check-counts.ts <file>
 bun tools/substrate-claim-checker/check-counts.ts memory/feedback_*.md
+bun tools/substrate-claim-checker/check-convention.ts docs/DECISIONS/*.md
 ```
 
 Exit code 0 = no drift detected (warnings alone are non-blocking per the v0.6 severity model — see "v0.6 — gitignore awareness for existence-drift" below). Exit code 1 = drift detected (or
@@ -67,7 +72,7 @@ input error).
 - **Path-form drift** (fully-qualified vs bare paths inconsistent) — shipped v0.7
 - **Semantic-equivalence drift** (command substitution claims) — v1
 - **Empirical-output drift** (run-the-command-and-compare) — v1
-- **Convention drift** (recommended pattern doesn't match canonical) — v1
+- **Convention drift** (recommended pattern doesn't match canonical) — shipped v0.9
 - **Self-recursive drift** (the memo about drift contains its own drift) — v1
 
 ## Composes with
