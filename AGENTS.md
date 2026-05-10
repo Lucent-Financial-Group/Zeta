@@ -84,6 +84,21 @@ Maintainer directive, 2026-04-22:
 
 ## The three load-bearing values
 
+> **Prior art (radical honesty / total observability / no hidden reasoning):**
+> Dalio (2017) *Principles: Life and Work* (Simon & Schuster) — organisational
+> "radical transparency": all decisions visible to all parties; no hidden moves;
+> findings surface accurately, not diplomatically softened. Grounds "truth over
+> politeness" at the code-review layer. Also: Brundage et al. (2020) "Toward
+> Trustworthy AI Development: Mechanisms for Supporting Verifiable Claims",
+> https://arxiv.org/abs/2004.07213 — audit trails as the mechanism for total
+> observability; the git-commit substrate is Zeta's implementation of this
+> mechanism ("substrate or it didn't happen"). Also: Korbak et al. (2025)
+> "Chain of Thought Monitorability: A New and Fragile Opportunity for AI
+> Safety", https://arxiv.org/abs/2507.11473 — inspectable CoT as the mechanism
+> for no hidden reasoning; Zeta operationalises this at the reviewer layer
+> (harsh-critic, spec-zealot, paper-peer-reviewer). Full doctrine grounding:
+> [`docs/ALIGNMENT.md` §"Symmetric transparency"](docs/ALIGNMENT.md).
+
 1. **Truth over politeness.** Claims that fail tests
    get fixed, not softened.
 2. **Algebra over engineering.** The Z-set / operator
