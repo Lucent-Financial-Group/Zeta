@@ -1,15 +1,16 @@
 ---
 id: B-0352
 priority: P1
-status: open
+status: closed
+closed: 2026-05-10
+closed_by: "all 7 bullets extracted — dont-refuse-engagement + lost-files-surface + dsl-form-replacement + claude-code-loading-taxonomy extracted in this PR; wake-time-substrate + skill-router + rule-0 in prior PR"
 title: "Extract meta/governance bullets to .claude/rules/"
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-10
 depends_on:
   - B-0348
-progress_note: "3/7 done (wake-time-substrate + skill-router + rule-0 extracted in this PR). Remaining: Don't-refuse-engagement (80 lines), Lost-files, DSL-form, Claude-Code-loading-taxonomy (37 lines)."
 decomposition: atomic
-classification: buildable-now
+classification: completed
 type: friction-reducer
 owners: [architect]
 parent: B-0329
