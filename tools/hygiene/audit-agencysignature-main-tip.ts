@@ -32,7 +32,7 @@ const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const SPEC_DOC =
   "docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md";
 
-const POSITIVE_INT_RE = /^\d+$/;
+const POSITIVE_INT_RE = /^[1-9]\d*$/;
 const V1_TRAILER_RE = /^Agency-Signature-Version:\s*1/im;
 const COAUTHOR_RE = /^Co-authored-by:\s*Claude/im;
 
