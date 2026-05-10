@@ -535,6 +535,7 @@ Beacon-safe.
 > *```"*
 
 The ferry-3 doctrine sentence subtly tightens ferry-2's:
+
 - ferry-2: *"GitHub actor/committer identity records the credential used. Agent trailers record the operational agency mode. Neither alone proves human review."*
 - ferry-3: *"Credential identity records who the host saw. Agent trailers record who/what operated. Neither alone proves human review."*
 
