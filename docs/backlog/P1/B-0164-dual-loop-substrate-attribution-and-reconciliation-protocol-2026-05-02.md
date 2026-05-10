@@ -4,9 +4,14 @@ priority: P1
 status: open
 title: Dual-loop substrate attribution + reconciliation protocol — implementation work for BFT-many-masters at loop layer (Aaron 2026-05-02 + Otto independent extension)
 created: 2026-05-02
-last_updated: 2026-05-02
+last_updated: 2026-05-10
 depends_on:
   - B-0160
+children:
+  - B-0164.1
+  - B-0164.2
+  - B-0164.3
+decomposition: parent
 type: friction-reducer
 ---
 
@@ -122,3 +127,22 @@ P1 because:
 - The architecture's BFT-many-masters commitment requires this layer to close the gap
 
 Per the just-landed first-principles trust calculus discipline: the trace IS the verification surface. The trace above checks out; the row earns its P1 placement.
+
+## Decomposition (2026-05-10)
+
+ACs #1, #3, #4 are closed. Remaining open work extracted as atomic child rows:
+
+| Child | AC | Blocker | File |
+|-------|----|---------|------|
+| B-0164.1 | AC #2 — PR-review disagreement-preservation | B-0160 (dual-loop not running) | `B-0164.1-pr-review-disagreement-preservation-protocol.md` |
+| B-0164.2 | AC #5 — Multi-loop tick-tooling attribution | B-0163 (tooling retirement) | `B-0164.2-multi-loop-tick-tooling-attribution.md` |
+| B-0164.3 | AC #6 — Cron-tick coordination | B-0160 + B-0164.1 | `B-0164.3-cron-tick-coordination-dual-loop.md` |
+
+**Dependency order:**
+
+```
+B-0160  ──→  B-0164.1  ──→  B-0164.3
+B-0163  ──→  B-0164.2  ──→  (B-0164.3 write-safety audit)
+```
+
+B-0164 itself closes when all three children are resolved.
