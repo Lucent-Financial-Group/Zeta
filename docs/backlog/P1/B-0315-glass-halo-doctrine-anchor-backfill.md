@@ -1,13 +1,15 @@
 ---
 id: B-0315
 priority: P1
-status: open
+status: closed
+closed: 2026-05-10
+closed_by: "all 5 doctrines anchored across 3 slices — ALIGNMENT.md (slice 1+fix), AGENTS.md (slice 2+3), README.md (slice 3)"
 title: "Glass-Halo doctrine external-anchor backfill"
 tier: substrate-quality
 effort: S
 parent: B-0060
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-10
 depends_on: [B-0311]
 composes_with: [B-0060]
 tags: [substrate-quality, external-anchors, glass-halo, beacon-safety, research]
@@ -107,6 +109,31 @@ Remaining after slice 2:
 
 - Glass-halo transparency in CLAUDE.md / README.md
 - Retraction-native in AGENTS.md
+
+### Scope for slice 3 (2026-05-10)
+
+Lands two remaining doctrines:
+
+1. **Retraction-native in AGENTS.md** — bullet added to §"How AI agents
+   should treat this codebase", citing Richardson (2016+) Saga Pattern
+   and Microsoft Azure Compensating Transaction pattern as prior art;
+   git-native retraction noted as original to Zeta.
+
+2. **Glass-halo transparency in README.md** — acknowledgements paragraph
+   added noting the bilateral / symmetric form as original to Zeta,
+   linking to `docs/ALIGNMENT.md` §"Symmetric transparency: the glass halo".
+   CLAUDE.md omitted: currently razor-trimmed to 47-line bootstrap;
+   adding doctrine content contradicts the B-0353 condensation intent.
+
+All five B-0315 doctrines now have external anchor or "original" note
+on at least one defining surface. Done-criteria met:
+
+- [x] All Glass-Halo doctrines have external anchor or "original" note
+- [x] Citations include URL, author/org, title, date
+- [x] Beacon-safety pass: all cited sources (Dalio, Doshi-Velez/Kim,
+      Brundage et al., Korbak et al., Richardson Saga, MS Azure) are
+      reputable academic/industry publications
+- [ ] Coverage scanner (B-0311, closed) — deferred to next audit pass
 
 ## Reviewers
 
